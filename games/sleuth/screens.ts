@@ -24,6 +24,7 @@ import {
   STORY,
   TALK,
   WHY_INTRO,
+  THEORIES,
   WON,
   WRONG,
   narrow,
@@ -59,6 +60,7 @@ export function titleScreen(): Pixels {
   // darken the sky band for the logo
   for (let y = 0; y < 78; y++) for (let x = 0; x < W; x++) if ((x + y) % 2 === 0 && p.get(x, y) !== c('neon', 2)) p.set(x, y, c('rain', 0));
   logo(p, 6);
+  p.rect(96, 64, 128, 9, c('black', 0));
   microC(p, 160, 66, 'AN INSPECTOR ADA PENN MYSTERY', c('paper', 5), 1);
   // Ada under the marquee, in silhouette with her hat
   const ada = actor('ada', 56);
@@ -195,10 +197,25 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
     if (night) p.map((px, py, col) => (((px + py) % 2 === 0 || (px % 4 === 1 && py % 2 === 1)) && !lit.has(col) ? c('black', 0) : col));
     return p;
   };
-  put('act1.gif', gif(actCard(view(views.act1, 24, 19), ACT_CARDS.act1.title, ACT_CARDS.act1.time, ACT_CARDS.act1.lines)));
-  put('act2.gif', gif(actCard(view(views.act2, 17, 21, true), ACT_CARDS.act2.title, ACT_CARDS.act2.time, ACT_CARDS.act2.lines)));
+  put('act1.gif', gif(actCard(view(views.act1, 26, 21), ACT_CARDS.act1.title, ACT_CARDS.act1.time, ACT_CARDS.act1.lines)));
+  put('act2.gif', gif(actCard(view(views.act2, 16, 25, true), ACT_CARDS.act2.title, ACT_CARDS.act2.time, ACT_CARDS.act2.lines)));
   lst('act1.lst', [['act1.gif', 12]]);
   lst('act2.lst', [['act2.gif', 12]]);
+
+  // Act Two's exit: Ada's three theories, cartoons with captions
+  for (const k of ['think', 'swap', 'poison', 'dark', 'end'] as const) put(`th${k}.txt`, wide(THEORIES[k]));
+  lst('theories.lst', [
+    ['casefile.gif', 0],
+    ['ththink.txt'],
+    ['swap.fli', 0],
+    ['thswap.txt'],
+    ['poison.fli', 0],
+    ['thpoison.txt'],
+    ['dark.fli', 0],
+    ['thdark.txt'],
+    ['casefile.gif', 0],
+    ['thend.txt'],
+  ]);
 
   // the endings
   put('won.gif', gif(caseFile('CASE CLOSED')));

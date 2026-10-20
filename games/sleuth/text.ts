@@ -424,9 +424,10 @@ export const ACT_CARDS = {
       'The power is off. Only the ghost',
       'light burns.',
       '',
-      'Find 4 more: in the cloakroom, the',
-      "booth, Victor's safe and the dark",
-      'under the stage. Then the green room.',
+      'Find 4 more: in the cloakroom,',
+      "the booth, Victor's safe and the",
+      'dark under the stage. Then back',
+      'to the green room.',
     ],
   },
 };
@@ -506,3 +507,16 @@ A WORD ABOUT FAIR PLAY
 
 Built with GAME-MAKER 3.0 by Recreational Software Designs.`);
 }
+
+/** Act Two's exit: Ada's three theories, each a cartoon with a caption. */
+export const THEORIES = {
+  think: `Two in the morning. Ada sits alone in row A with the ghost light humming on the stage.
+
+There are three ways it could have been done.`,
+  swap: `ONE: somebody swapped the trick dagger for a real one in the interval, while the prop table stood alone in the dark wing.`,
+  poison: `TWO: somebody poisoned the tea in Count Corvin's goblet, and the dagger only finished the job.`,
+  dark: `THREE: somebody slipped on stage in a blackout before the death scene, and struck in the dark.`,
+  end: `Only one of these is true. The evidence will say which.
+
+Take what you have found to the green room.`,
+};
