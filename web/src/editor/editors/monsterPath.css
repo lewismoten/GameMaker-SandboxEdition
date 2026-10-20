@@ -278,3 +278,42 @@
   image-rendering: pixelated;
   display: block;
 }
+
+.mpath-zoom {
+  display: flex;
+}
+.mpath-zoom button {
+  border-radius: 0;
+  min-width: 36px;
+}
+.mpath-zoom button:first-child {
+  border-radius: 6px 0 0 6px;
+}
+.mpath-zoom button:last-child {
+  border-radius: 0 6px 6px 0;
+}
+.mpath-zoom button + button {
+  border-left: none;
+}
+
+.mpath-pop button {
+  background: #23234a;
+  color: #f0f0ff;
+  border-color: #6b6b8f;
+}
+.mpath-pop button:hover {
+  background: #33336a;
+}
+.mpath-pop button.danger {
+  color: #ff8a80;
+}
+.mpath-pop .mpath-orients button {
+  background: #fff;
+}
+.mpath-pop-head .modal-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 4px;
+}

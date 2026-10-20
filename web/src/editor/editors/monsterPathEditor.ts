@@ -88,6 +88,34 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   const kind = (): PathKind => pathKind(mon(), tab);
   const path = () => mon().march[tab];
   const box = () => pathBox(kind());
+  /** The part of the drawing box on screen (blocks from the origin). */
+  let viewRect = { x0: -7, y0: -7, w: 15, h: 15 };
+  const view = () => viewRect;
+
+  /** Zooms so the whole path (and the origin) fits with a little room around it. */
+  function fitView(width?: number, centre?: { x: number; y: number }): void {
+    const b = box();
+    const aspect = b.w / b.h;
+    const pts = [{ x: 0, y: 0 }, ...corners(path(), kind())];
+    const minX = Math.min(...pts.map((p) => p.x));
+    const maxX = Math.max(...pts.map((p) => p.x));
+    const minY = Math.min(...pts.map((p) => p.y));
+    const maxY = Math.max(...pts.map((p) => p.y));
+    let w = width ?? Math.max(maxX - minX + 7, (maxY - minY + 7) * aspect, kind() === 'normal' ? 13 : 19);
+    w = Math.max(8, Math.min(b.w, Math.round(w)));
+    const hgt = Math.min(b.h, Math.max(5, Math.round(w / aspect)));
+    const c = centre ?? { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
+    const x0 = Math.max(b.x0, Math.min(b.x0 + b.w - w, Math.round(c.x - w / 2 + 0.5)));
+    const y0 = Math.max(b.y0, Math.min(b.y0 + b.h - hgt, Math.round(c.y - hgt / 2 + 0.5)));
+    viewRect = { x0, y0, w, h: hgt };
+    mapLayer = undefined;
+    dirty = true;
+  }
+  function zoom(f: number): void {
+    const v = view();
+    fitView(v.w * f, { x: v.x0 + v.w / 2 - 0.5, y: v.y0 + v.h / 2 - 0.5 });
+    hidePop();
+  }
 
   // ---- Maps: the scenes that use this monster set -------------------------------------
   function mapChoices(): MapChoice[] {
@@ -192,7 +220,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
 
   // ---- Drawing ----------------------------------------------------------------------------
   function buildMapLayer(): void {
-    const b = box();
+    const b = view();
     const c = document.createElement('canvas');
     c.width = b.w * BLEN;
     c.height = b.h * BLEN;
@@ -215,8 +243,8 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   }
 
   /** Canvas pixel centre of a spot given in blocks from the origin. */
-  const cx = (x: number) => (x - box().x0) * CELL + CELL / 2;
-  const cy = (y: number) => (y - box().y0) * CELL + CELL / 2;
+  const cx = (x: number) => (x - view().x0) * CELL + CELL / 2;
+  const cy = (y: number) => (y - view().y0) * CELL + CELL / 2;
 
   function arrow(x1: number, y1: number, x2: number, y2: number, color: string, dashed = false): void {
     ctx.save();
@@ -265,11 +293,11 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   }
 
   function draw(): void {
-    const b = box();
+    const b = view();
     if (canvas.width !== b.w * CELL) canvas.width = b.w * CELL;
     if (canvas.height !== b.h * CELL) canvas.height = b.h * CELL;
     canvas.style.aspectRatio = `${b.w} / ${b.h}`;
-    if (!mapLayer || mapLayer.width !== b.w * BLEN) buildMapLayer();
+    if (!mapLayer) buildMapLayer();
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(mapLayer!, 0, 0, canvas.width, canvas.height);
     const k = kind();
@@ -356,7 +384,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
 
     // The walking monster.
     if (walker && list.length) {
-      const pic = walker.frame < mon().pic.length ? (mon().pic[walker.frame]?.[0] ?? -1) : -1;
+      const pic = mon().pic[Math.max(0, walker.frame)]?.[0] ?? -1;
       const s = sprite(pic, walker.orient);
       const wx = (walker.bx - start.x - b.x0) * CELL + walker.px * SCALE;
       const wy = (walker.by - start.y - b.y0) * CELL + walker.py * SCALE;
@@ -394,6 +422,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   function changed(restart = true): void {
     o.onEdit();
     if (restart) restartWalker();
+    renderTabs();
     renderSide();
     renderNumbers();
     dirty = true;
@@ -401,7 +430,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
 
   function cellAt(e: PointerEvent | MouseEvent): { x: number; y: number } {
     const r = canvas.getBoundingClientRect();
-    const b = box();
+    const b = view();
     const x = Math.floor(((e.clientX - r.left) / r.width) * b.w);
     const y = Math.floor(((e.clientY - r.top) / r.height) * b.h);
     return { x: Math.max(0, Math.min(b.w - 1, x)) + b.x0, y: Math.max(0, Math.min(b.h - 1, y)) + b.y0 };
@@ -417,14 +446,17 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
 
   function segmentAt(e: PointerEvent): Corner | undefined {
     const r = canvas.getBoundingClientRect();
-    const b = box();
+    const b = view();
     const bx = ((e.clientX - r.left) / r.width) * b.w + b.x0 - 0.5;
     const by = ((e.clientY - r.top) / r.height) * b.h + b.y0 - 0.5;
     let best: Corner | undefined;
-    let bestD = 0.45;
+    let bestD = 0.3;
     let p = { x: 0, y: 0 };
+    const cell = { x: Math.round(bx), y: Math.round(by) };
+    const on = (q: { x: number; y: number }) => q.x === cell.x && q.y === cell.y;
     corners(path(), kind()).forEach((c, n) => {
-      if (!(n === 0 && kind() === 'chase')) {
+      // Clicking a segment's end block adds a corner there (closing a loop, say) instead.
+      if (!(n === 0 && kind() === 'chase') && !on(p) && !on(c)) {
         const vx = c.x - p.x;
         const vy = c.y - p.y;
         const l2 = vx * vx + vy * vy || 1;
@@ -598,9 +630,10 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   }
 
   function showPop(i: number): void {
-    const c = corners(path(), kind()).find((x) => x.i === i);
+    const list = corners(path(), kind());
+    const c = list.find((x) => x.i === i);
     if (!c) return;
-    const b = box();
+    const b = view();
     const left = ((c.x - b.x0 + 1) / b.w) * 100;
     const top = ((c.y - b.y0 + 1) / b.h) * 100;
     clear(
@@ -608,7 +641,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
       h(
         'div',
         { class: 'mpath-pop-head' },
-        h('strong', null, `Corner ${corners(path(), kind()).indexOf(c) + 1}`),
+        h('strong', null, `Corner ${list.indexOf(c) + 1}`),
         h('button', { class: 'modal-close', 'aria-label': 'Close', onclick: hidePop }, '×'),
       ),
       h('div', { class: 'meta' }, 'Picture on the way here'),
@@ -659,7 +692,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
             tab = p;
             selected = corners(path(), kind())[0]?.i ?? -1;
             hidePop();
-            mapLayer = undefined;
+            fitView();
             renderAll();
           },
         },
@@ -704,6 +737,13 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
         playing ? '❚❚ Pause' : '▶ Play',
       ),
       h('button', { onclick: restartWalker, title: 'Start the walk over' }, '↺ Restart'),
+      h(
+        'div',
+        { class: 'mpath-zoom', role: 'group', 'aria-label': 'Zoom' },
+        h('button', { onclick: () => zoom(1.5), title: 'Zoom out', 'aria-label': 'Zoom out' }, '−'),
+        h('button', { onclick: () => fitView(), title: 'Fit the path' }, 'Fit'),
+        h('button', { onclick: () => zoom(1 / 1.5), title: 'Zoom in', 'aria-label': 'Zoom in' }, '+'),
+      ),
     );
   }
 
@@ -764,7 +804,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
                 onclick: () => {
                   m.activate = v;
                   selected = corners(path(), kind())[0]?.i ?? -1;
-                  mapLayer = undefined;
+                  fitView();
                   o.onEdit();
                   restartWalker();
                   renderAll();
@@ -963,6 +1003,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
       if (tab === 1 && pathLength(mon().march[1]) === 0 && mon().activate === 0) tab = 0;
       selected = corners(path(), kind())[0]?.i ?? -1;
       hidePop();
+      fitView();
     }
     mapLayer = undefined;
     renderAll();

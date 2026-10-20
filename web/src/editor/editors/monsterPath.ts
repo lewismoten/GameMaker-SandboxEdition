@@ -140,8 +140,8 @@ export class PathWalker {
   px = 0;
   py = 0;
   orient = 0;
-  /** Animation frame (index into mon.pic), or LASTSL when it has none. */
-  frame = 0;
+  /** Animation frame (index into mon.pic; -1 before the first tick), or LASTSL when it has none. */
+  frame = -1;
   private dx = 0;
   private dy = 0;
   private offl = -1;
@@ -173,7 +173,7 @@ export class PathWalker {
     this.offs = 0;
     this.dest = this.p === 1 ? 1 : 0;
     this.orient = 0;
-    this.frame = 0;
+    this.frame = -1;
     this.nextAni = 0;
     this.clock = 0;
   }
