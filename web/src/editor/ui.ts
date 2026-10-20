@@ -86,7 +86,7 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
 
 export async function promptText(title: string, label: string, value = '', pattern?: string): Promise<string | undefined> {
   return modal<string>(title, (close) => {
-    const input = h('input', { type: 'text', value, required: true, pattern, autofocus: true });
+    const input = h('input', { type: 'text', value, required: true, pattern, autofocus: true, onfocus: (e: Event) => (e.target as HTMLInputElement).select() });
     const form = h(
       'form',
       {
