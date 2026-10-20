@@ -2,8 +2,9 @@
 // drop and up to 15 of your own), each a series of two-block-high frames.
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
+import { blockButton } from '../blockChooser';
 import { h, clear, numberField, selectField, checkField, debounce } from '../ui';
-import { blockCanvas, drawBlockTo } from '../draw';
+import { drawBlockTo } from '../draw';
 import { paletteChooser } from './blocks';
 import { BACKBL, CHARBL, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import { INF_REPEAT, MAXFRAME, MAXINV, SEQUENCE_NAMES, emptyFrame, frameCount, parseCharacter, serializeCharacter, type Sequence } from '../../formats/character';
@@ -94,8 +95,12 @@ registerEditor(['chr'], (host, project, file) => {
     );
   }
 
-  const cblOptions = (): [number, string][] => [[CHARBL, '— none —'], ...cbl.map((_, i) => [i, `Block ${i}`] as [number, string])];
-  const thumb = (n: number) => (n < CHARBL ? blockCanvas(cbl[n].pixels, chooser.palette, { transparent: true, className: 'checker' }) : h('span'));
+  /** A frame's block, chosen from pictures of the character blocks. */
+  const frameBlock = (get: () => number, set: (n: number) => void, title: string, canFire: boolean) =>
+    blockButton(() => cbl, () => chooser.palette, get, set, {
+      title,
+      extras: [{ value: CHARBL, label: 'none', icon: '∅' }, ...(canFire ? [{ value: MONBL, label: 'Fire a monster', icon: '🔥' }] : [])],
+    });
 
   function keyPicker(seq: Sequence): HTMLElement {
     const btn = h('button', { title: 'Click, then press the key' }, seq.key ? scanName(seq.key >> 8) : 'None');
@@ -172,14 +177,10 @@ registerEditor(['chr'], (host, project, file) => {
                 'tr',
                 null,
                 h('td', null, i + 1),
-                h('td', null, fires ? numberField('Monster', () => f.pic1, (v) => edit(() => (f.pic1 = v)), { min: 0, max: 63 }) : selectField('', cblOptions(), () => f.pic1, (v) => edit(() => ((f.pic1 = v), renderDetail())))),
-                h('td', null, fires ? '' : h('div', { class: 'row', style: 'gap:2px;flex-wrap:nowrap' }, thumb(f.pic1), selectField('', ORIENTS, () => f.orient & 15, (v) => edit(() => (f.orient = (f.orient & ~15) | v))))),
-                h(
-                  'td',
-                  null,
-                  selectField('', [...cblOptions(), [MONBL, 'Fire a monster']] as [number, string][], () => f.pic2, (v) => edit(() => ((f.pic2 = v), renderDetail()))),
-                ),
-                h('td', null, fires ? '' : h('div', { class: 'row', style: 'gap:2px;flex-wrap:nowrap' }, thumb(f.pic2), selectField('', ORIENTS, () => (f.orient >> 4) & 15, (v) => edit(() => (f.orient = (f.orient & 15) | (v << 4)))))),
+                h('td', null, fires ? numberField('Monster', () => f.pic1, (v) => edit(() => (f.pic1 = v)), { min: 0, max: 63 }) : frameBlock(() => f.pic1, (v) => edit(() => ((f.pic1 = v), renderDetail())), 'Top block', false)),
+                h('td', null, fires ? '' : selectField('', ORIENTS, () => f.orient & 15, (v) => edit(() => (f.orient = (f.orient & ~15) | v)))),
+                h('td', null, frameBlock(() => f.pic2, (v) => edit(() => ((f.pic2 = v), renderDetail())), 'Bottom block', true)),
+                h('td', null, fires ? '' : selectField('', ORIENTS, () => (f.orient >> 4) & 15, (v) => edit(() => (f.orient = (f.orient & 15) | (v << 4))))),
                 h('td', null, numberField('', () => f.x, (v) => edit(() => (f.x = v)), { min: -20, max: 20 })),
                 h('td', null, numberField('', () => f.y, (v) => edit(() => (f.y = v)), { min: -20, max: 20 })),
                 h('td', null, numberField('', () => f.pause, (v) => edit(() => (f.pause = v)), { min: 0, max: 999 })),
