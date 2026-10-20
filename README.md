@@ -10,6 +10,18 @@ You can learn more about this product here:
 [http://www.aderack.com/game-maker]
 
 
+Web Version
+===========
+
+The [`web`](web) folder holds a browser version of Game-Maker written in TypeScript
+(Vite, HTML canvas, Web Audio). It edits and saves games in the original file formats,
+opens original game folders, plays the CD's games (including the shareware ones), and
+exports any game as an installable web app that works offline.
+
+It is published at https://lewismoten.github.io/GameMaker/ by the GitHub Actions
+workflow in `.github/workflows/pages.yml`. See [web/README.md](web/README.md) for
+details.
+
 Using This Repository
 =====================
 
