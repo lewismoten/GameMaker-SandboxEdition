@@ -1,4 +1,8 @@
-ARROW KEYS walk Dex around.
+ARROW KEYS or W A S D walk Dex
+around. Q and E (or 7 and 9 on
+the number pad) walk up-left
+and up-right; 1 and 3 walk
+down-left and down-right.
 SPACE fires the Laser-Tag
 Zapper (once you find it).
 

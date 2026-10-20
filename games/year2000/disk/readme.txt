@@ -31,6 +31,10 @@ REQUIREMENTS
 CONTROLS
 --------
   Arrow keys .... walk (joystick works too)
+  W A S D ....... walk, same as the arrows
+  Q / E ......... walk up-left / up-right
+  Keypad 7 9 1 3  walk diagonally (up-left, up-right,
+                  down-left, down-right)
   Space ......... fire the Laser-Tag Zapper
   F1 ............ help          F2 .......... status (quarters!)
   F3 ............ music on/off  F4 .......... sound on/off

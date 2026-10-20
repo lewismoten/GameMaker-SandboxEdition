@@ -7,7 +7,11 @@ function check(name: string, s: string, width = 31): string {
 
 export const INSTRUCTIONS = check(
   'howto',
-  `ARROW KEYS walk Dex around.
+  `ARROW KEYS or W A S D walk Dex
+around. Q and E (or 7 and 9 on
+the number pad) walk up-left
+and up-right; 1 and 3 walk
+down-left and down-right.
 SPACE fires the Laser-Tag
 Zapper (once you find it).
 
@@ -117,6 +121,10 @@ REQUIREMENTS
 CONTROLS
 --------
   Arrow keys .... walk (joystick works too)
+  W A S D ....... walk, same as the arrows
+  Q / E ......... walk up-left / up-right
+  Keypad 7 9 1 3  walk diagonally (up-left, up-right,
+                  down-left, down-right)
   Space ......... fire the Laser-Tag Zapper
   F1 ............ help          F2 .......... status (quarters!)
   F3 ............ music on/off  F4 .......... sound on/off
