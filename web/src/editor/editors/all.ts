@@ -7,3 +7,4 @@ import './integrator';
 import './monsters';
 import './character';
 import './sounds';
+import './media';
