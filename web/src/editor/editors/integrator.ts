@@ -20,7 +20,7 @@ import {
   type Point,
 } from '../../formats/game';
 import { BACKBL, newBlockSet, parseBlocks } from '../../formats/blocks';
-import { MLEN, MWID, parseMap } from '../../formats/map';
+import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../formats/map';
 import { defaultPalette, parsePalette } from '../../formats/palette';
 
 const WORLD = { x: 5, y: 29, w: 310, h: 165 };
@@ -166,6 +166,22 @@ registerEditor(['gam'], (host, project) => {
     const s = emptyScene(ADVTYPE);
     s.desc = `Level ${game.scenes.filter((x) => x.gametype === ADVTYPE).length + 1}`;
     s.pos = { x: 40 + ((game.scenes.length * 37) % 220), y: 70 + ((game.scenes.length * 23) % 90) };
+    // A new level shares the last level's palette, blocks, monsters, hero and sounds,
+    // on a map of its own (open ground in its most used floor block), so it isn't empty.
+    const prev = [...game.scenes].reverse().find((x) => x.gametype === ADVTYPE);
+    if (prev) {
+      s.files = prev.files.map((f, i) => (i === 1 || i >= 9 ? '' : f));
+      const mapName = project.freeName(`level${game.scenes.filter((x) => x.gametype === ADVTYPE).length + 1}`, 'map');
+      const oldMap = prev.files[1] && project.files.get(prev.files[1]);
+      const map = newMap();
+      if (oldMap) {
+        const counts = new Map<number, number>();
+        for (const b of parseMap(oldMap).blocks) counts.set(b, (counts.get(b) ?? 0) + 1);
+        map.blocks.fill([...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0);
+      }
+      project.files.set(mapName, serializeMap(map));
+      s.files[1] = mapName;
+    }
     const free = game.scenes.findIndex((x, i) => i > 1 && x.gametype === NOSCENE);
     if (free >= 0) game.scenes[free] = s;
     else game.scenes.push(s);
