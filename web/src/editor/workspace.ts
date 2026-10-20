@@ -2,6 +2,7 @@
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from './project';
 import { pickFile } from './filePicker';
+import { MAKERS } from './makers';
 import { KIND_ICON } from './thumbs';
 import { editors, fileInfo } from './editors';
 import { GameFiles, loadFileList, normalize } from '../project/files';
@@ -32,8 +33,7 @@ const KIND_HELP: Partial<Record<FileKind, string>> = {
   rec: 'a recorded demo',
 };
 
-/** Tools register extra ways to make files (convert, record...) here. */
-export const MAKERS: Partial<Record<FileKind, { label: string; run: (p: Project) => Promise<string | undefined> }[]>> = {};
+
 
 export class Workspace {
   readonly project: Project;
