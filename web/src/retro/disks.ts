@@ -92,7 +92,7 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   });
-  // The original games, on their printed shareware disks (play only, like other shareware).
+  // Our own games, on their printed shareware disks (open to change, unlike other shareware).
   for (const g of catalog.filter((c) => c.original)) {
     const label = g.original?.label;
     disks.push({

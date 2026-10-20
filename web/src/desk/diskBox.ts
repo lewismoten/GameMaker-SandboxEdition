@@ -64,7 +64,7 @@ function sizeText(bytes: number): string {
 /** A line about the disk: what it is, who made it, its size. */
 export function diskFacts(d: Disk): string {
   return [
-    d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'original' ? 'Shareware from Sandbox Software (play only — register to support the author)' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
+    d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'original' ? 'Shareware from Sandbox Software, our own games: play them or open them in Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
     d.catalog ? creditLine(d.catalog) : '',
     sizeText(d.bytes),
     d.writeProtected ? 'write-protected' : '',

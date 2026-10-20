@@ -272,9 +272,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       driveActions,
       h('span', { class: 'drive-actions-title', title: diskFacts(d) }, d.kind === 'blank' ? 'Blank disk in A:' : `${d.title} in A:`),
       d.gam ? h('button', { class: 'primary', onclick: act('play') }, '▶ Play') : null,
-      // Shareware is play-only.
-      d.kind !== 'original' ? h('button', { onclick: act('design') }, d.kind === 'blank' ? '✎ New game' : '✎ Design') : null,
-      d.kind !== 'blank' && d.kind !== 'original' ? h('button', { onclick: act('modern'), title: 'Open it in today’s web Game-Maker' }, 'Today’s web →') : null,
+      h('button', { onclick: act('design') }, d.kind === 'blank' ? '✎ New game' : '✎ Design'),
+      d.kind !== 'blank' ? h('button', { onclick: act('modern'), title: 'Open it in today’s web Game-Maker' }, 'Today’s web →') : null,
       d.kind === 'original' && d.catalog?.original?.manual ? h('button', { onclick: () => void openGameManual(d.catalog!) }, '📖 Manual') : null,
     );
   }
