@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, type Plugin, type Rollup } from 'vite';
 import { resolve } from 'node:path';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { serviceWorkerSource, hashText } from './src/export/serviceWorker';
@@ -12,6 +12,32 @@ function publicFiles(): string[] {
   const out = readdirSync(publicDir).filter((f) => statSync(resolve(publicDir, f)).isFile());
   if (existsSync(resolve(publicDir, 'games/index.json'))) out.push('games/index.json');
   return out;
+}
+
+type Bundle = Rollup.OutputBundle;
+
+/** play.html plus every chunk, stylesheet and asset reachable from it. */
+function playerGraph(bundle: Bundle): string[] {
+  const out = new Set<string>(['play.html']);
+  const html = bundle['play.html'];
+  const queue: string[] = [];
+  const mention = (text: string) => {
+    for (const f of Object.keys(bundle)) if (!out.has(f) && f.startsWith('assets/') && text.includes(f.slice('assets/'.length))) queue.push(f);
+  };
+  if (html?.type === 'asset') mention(String(html.source));
+  while (queue.length) {
+    const f = queue.pop()!;
+    if (out.has(f)) continue;
+    out.add(f);
+    const item = bundle[f];
+    if (item?.type === 'chunk') {
+      queue.push(...item.imports, ...item.dynamicImports);
+      const meta = (item as unknown as { viteMetadata?: { importedCss: Set<string>; importedAssets: Set<string> } }).viteMetadata;
+      if (meta) queue.push(...meta.importedCss, ...meta.importedAssets);
+      mention(item.code); // e.g. the audio worklet, referenced by URL
+    } else if (item?.type === 'asset' && f.endsWith('.css')) mention(String(item.source));
+  }
+  return [...out].sort();
 }
 
 /**
@@ -28,7 +54,7 @@ function offline(): Plugin {
       const precache = [...new Set(['./', ...built, ...publicFiles()])].filter((f) => f !== 'sw.js');
       const version = hashText(built.sort().join('|'));
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: serviceWorkerSource(version, precache) });
-      const player = built.filter((f) => f === 'play.html' || f.startsWith('assets/'));
+      const player = playerGraph(bundle);
       this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
     },
   };
