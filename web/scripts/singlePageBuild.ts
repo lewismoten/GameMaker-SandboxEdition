@@ -1,6 +1,6 @@
 // Builds standalone.html: the template for "Export as one web page". It is the game player
 // (src/export/standalonePlayer.ts) compiled into a single classic <script>, with its styles
-// in a <style> and the OPL music AudioWorklet bundled as text and loaded from a Blob URL,
+// in a <style> and the OPL music AudioWorklet bundled into a data: URL,
 // so the page needs no other file and runs from file://. The exporter fills in the title and
 // the game (see src/export/singlePage.ts).
 //
@@ -36,7 +36,7 @@ async function bundle(input: string, format: 'es' | 'iife', plugins: Plugin[] = 
   return Object.fromEntries(out.output.map((o) => [o.fileName, o]));
 }
 
-/** `import url from './x.ts?worker&url'` becomes a Blob URL of x.ts bundled into one module. */
+/** `import url from './x.ts?worker&url'` becomes a data: URL of x.ts bundled into one module. */
 function inlineWorkers(): Plugin {
   return {
     name: 'gamemaker-inline-workers',
@@ -50,7 +50,9 @@ function inlineWorkers(): Plugin {
       if (!id.startsWith(VIRTUAL)) return null;
       const out = await bundle(id.slice(VIRTUAL.length), 'es');
       const code = (out['entry.js'] as Rollup.OutputChunk).code;
-      return `export default URL.createObjectURL(new Blob([${JSON.stringify(code)}], { type: 'text/javascript' }));`;
+      // A data: URL, not a Blob URL: a page opened from file:// has an opaque origin, and
+      // Chrome refuses blob:null worklet modules as cross-origin, but data: always loads.
+      return `export default ${JSON.stringify('data:text/javascript;charset=utf-8,' + encodeURIComponent(code))};`;
     },
   };
 }
