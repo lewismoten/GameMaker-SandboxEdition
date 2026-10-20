@@ -51,7 +51,12 @@ export function limits(b: Built): Limit[] {
       where: 'MAXIMUS.GAM',
     },
     { what: 'Scene file-name pool', max: '65,520 bytes (PLAYGAME clamps it at 0xFFF0)', used: `${pool} bytes`, where: 'MAXIMUS.GAM' },
-    { what: 'Links per scene', max: String(MAXSCENELINKS), used: `${maxLinks} (each sector chart: the warp home and 18 planets)`, where: 'SECTOR1..5' },
+    {
+      what: 'Links per scene',
+      max: String(MAXSCENELINKS),
+      used: `${maxLinks} (a sector chart: the warp home, 18 planets and the jump ring onward)`,
+      where: 'SECTOR1..5',
+    },
     {
       what: 'Files per scene',
       max: String(SCENEFILES),
@@ -268,7 +273,7 @@ export function manual(b: Built): object {
       },
       {
         head: 'The Galaxy and the Shards',
-        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing names the shard, and the <b>long-range scan</b> after it shows the whole world: where you land (green) and where the vault lies (gold).</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
+        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Jump rings</h2><p>Every sector chart also holds a <b>jump ring</b>, walled in behind the next sector's crystal gates: carry those shards and it takes you straight on. The ring in The Deep Black leads to the Maelstrom itself.</p><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing names the shard, and the <b>long-range scan</b> after it shows the whole world: where you land (green) and where the vault lies (gold).</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
       },
       {
         head: 'Worlds and Vaults',

@@ -17,7 +17,7 @@ SCENE FILE-NAME POOL
 
 LINKS PER SCENE
   Limit: 20
-  Used:  19 (each sector chart: the warp home and 18 planets)
+  Used:  20 (a sector chart: the warp home, 18 planets and the jump ring onward)
   Where: SECTOR1..5
 
 FILES PER SCENE

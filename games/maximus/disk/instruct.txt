@@ -21,7 +21,9 @@ comes a long-range scan: green
 is you, gold is the vault.
 Trading posts sell supplies:
 nudge a pad to buy, one of
-each per visit.
+each per visit. A jump ring
+behind gates takes you on to
+the next sector.
 
 ON FOOT
 Left/Right walk. Up fires your

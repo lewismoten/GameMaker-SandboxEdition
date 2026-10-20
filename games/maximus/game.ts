@@ -150,7 +150,7 @@ export function buildGame(): Built {
     const list = worlds.filter((w) => w.sector === k);
     const designs = list.map((w) => designFor(w.world.kind, w.world.biome, w.index));
     const shards = list.map((w, i) => (w.world.shard !== undefined ? i : -1)).filter((i) => i >= 0);
-    const m = sectorMap(sets.space, 1000 + k * 77, list.length, designs, shards);
+    const m = sectorMap(sets.space, 1000 + k * 77, list.length, designs, shards, [k * 2, k * 2 + 1]);
     populate(m.grid, bbl.space, sec.level <= 2 ? monsters.space1 : monsters.space2, spaceSpots(m.grid, bbl.space, m.arrive), {
       seed: 30 + k,
       level: sec.level,
@@ -213,6 +213,8 @@ export function buildGame(): Built {
       chr: 'pod',
     });
     sc.links[0] = link(SCENE.galaxy, m.warp, galaxy.sectors[k].arrive);
+    // link 20: the jump ring to the next sector, or from the last sector to the Maelstrom
+    sc.links[19] = k < SECTORS.length - 1 ? link(SCENE.sector(k + 1), m.jump, sectorMaps[k + 1].jumpArrive) : link(SCENE.maelstrom, m.jump, maelstrom.arrive);
     sc.pos = { x: 30 + k * 62, y: 90 };
     record({
       scene: n,

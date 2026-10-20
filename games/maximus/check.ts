@@ -161,9 +161,9 @@ if (!only.length || only.includes('heart')) {
 // sector charts: fly the pod from the warp to a few planets and see what it costs
 if (!only.length || only.includes('sectors')) {
   for (const info of b.scenes.filter((s) => s.kind === 'space' && s.sector !== undefined)) {
-    const links = b.game.scenes[info.scene].links.filter((l) => l.toScene !== 0xffff);
+    const links = b.game.scenes[info.scene].links.filter((l) => l.toScene !== 0xffff && l.toScene >= 12);
     let worst = 0;
-    for (const li of [1, Math.floor(links.length / 2), links.length - 1]) {
+    for (const li of [0, Math.floor(links.length / 2), links.length - 1]) {
       const sim = simFor(b, info, li);
       sim.scene.links = undefined; // fly through other planets without landing
       await sim.run(3);

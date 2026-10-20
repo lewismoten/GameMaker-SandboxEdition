@@ -77,6 +77,32 @@ function gateCorridor(g: Grid, s: SetBuilder, cx: number, cy: number, dir: [numb
   });
 }
 
+/** A box of rock around a 2x2 warp at (wxp, wyp), opening in direction `dir` through shard gates. */
+function gatedBox(g: Grid, s: SetBuilder, wxp: number, wyp: number, dir: [number, number], shards: number[]): void {
+  for (let y = wyp - 3; y <= wyp + 4; y++)
+    for (let x = wxp - 3; x <= wxp + 4; x++) {
+      const edge = y === wyp - 3 || y === wyp + 4 || x === wxp - 3 || x === wxp + 4;
+      if (edge) g.set(x, y, s.id('rock:big'), true);
+      else if (!g.isLocked(x, y)) g.set(x, y, s.id('void:0'), true);
+    }
+  // the gate cells replace part of the wall, two wide, one layer per shard
+  const [dx, dy] = dir;
+  const ox = dx > 0 ? wxp + 4 : dx < 0 ? wxp - 3 : wxp;
+  const oy = dy > 0 ? wyp + 4 : dy < 0 ? wyp - 3 : wyp;
+  const px = dy !== 0 ? 1 : 0;
+  const py = dx !== 0 ? 1 : 0;
+  shards.forEach((shard, i) => {
+    const gx = ox + dx * i;
+    const gy = oy + dy * i;
+    g.set(gx, gy, s.id(`gate:${shard}`), true);
+    g.set(gx + px, gy + py, s.id(`gate:${shard}`), true);
+    if (i > 0) {
+      g.set(gx - px, gy - py, s.id('rock:big'), true);
+      g.set(gx + 2 * px, gy + 2 * py, s.id('rock:big'), true);
+    }
+  });
+}
+
 export interface GalaxyResult {
   grid: Grid;
   arriveHome: P;
@@ -138,31 +164,7 @@ export function galaxyMap(s: SetBuilder): GalaxyResult {
       [0, -1],
     ];
     const dir = dirs.reduce((best, d) => (Math.cos(toCore - Math.atan2(d[1], d[0])) > Math.cos(toCore - Math.atan2(best[1], best[0])) ? d : best));
-    if (gateShards[k].length) {
-      // a box of rock around the warp, open toward the Core through the gates
-      for (let y = wyp - 3; y <= wyp + 4; y++)
-        for (let x = wxp - 3; x <= wxp + 4; x++) {
-          const edge = y === wyp - 3 || y === wyp + 4 || x === wxp - 3 || x === wxp + 4;
-          if (edge) g.set(x, y, s.id('rock:big'), true);
-          else if (!g.isLocked(x, y)) g.set(x, y, s.id('void:0'), true);
-        }
-      // the gate cells replace part of the wall, two deep
-      const [dx, dy] = dir;
-      const ox = dx > 0 ? wxp + 4 : dx < 0 ? wxp - 3 : wxp;
-      const oy = dy > 0 ? wyp + 4 : dy < 0 ? wyp - 3 : wyp;
-      const px = dy !== 0 ? 1 : 0;
-      const py = dx !== 0 ? 1 : 0;
-      gateShards[k].forEach((shard, i) => {
-        const gx = ox + dx * i;
-        const gy = oy + dy * i;
-        g.set(gx, gy, s.id(`gate:${shard}`), true);
-        g.set(gx + px, gy + py, s.id(`gate:${shard}`), true);
-        if (i > 0) {
-          g.set(gx - px, gy - py, s.id('rock:big'), true);
-          g.set(gx + 2 * px, gy + 2 * py, s.id('rock:big'), true);
-        }
-      });
-    }
+    if (gateShards[k].length) gatedBox(g, s, wxp, wyp, dir, gateShards[k]);
     // arrival (coming back from the sector): just outside the enclosure toward the Core
     const [dx, dy] = dir;
     sectors.push({ warp: { x: wxp, y: wyp }, arrive: { x: wx(wxp + dx * 7), y: wy(wyp + dy * 7) } });
@@ -181,12 +183,15 @@ export interface SectorResult {
   grid: Grid;
   arrive: P;
   warp: P;
+  /** A shortcut warp to the next sector (or the Maelstrom), behind its shard gates. */
+  jump: P;
+  jumpArrive: P;
   planets: { at: P; back: P; design: number }[];
   open: P[];
 }
 
 /** A sector chart with `count` planets; `shards` lists which planet indexes hold a shard. */
-export function sectorMap(s: SetBuilder, seed: number, count: number, designs: number[], shards: number[]): SectorResult {
+export function sectorMap(s: SetBuilder, seed: number, count: number, designs: number[], shards: number[], jumpGates: number[]): SectorResult {
   const r = rng(seed);
   const g = new Grid();
   starfield(g, s, seed, 0.25 + r() * 0.2);
@@ -209,6 +214,12 @@ export function sectorMap(s: SetBuilder, seed: number, count: number, designs: n
   const ty = 16;
   for (let y = ty - 1; y <= ty + 1; y++) for (let x = tx - 1; x <= tx + WARES.length; x++) g.set(x, y, s.id(`hull:${(x + y) & 3}`), true);
   WARES.forEach((w, k) => g.set(tx + k, ty + 2, s.id(`buy:${w.id}`), true));
+  // the jump ring: a shortcut onward, bottom-right, sealed by the next sector's gates
+  const jump = { x: 84, y: 84 };
+  put2x2(g, s, 'warp1', jump.x, jump.y);
+  gatedBox(g, s, jump.x, jump.y, [-1, 0], jumpGates);
+  const jumpArrive = { x: jump.x - 6, y: jump.y };
+  g.set(jump.x - 4, jump.y - 1, s.id('buoy:0'), true);
   // asteroid belt
   const belt = 22 + Math.floor(r() * 6);
   for (let a = 0; a < 360; a += 1.2) {
@@ -221,7 +232,7 @@ export function sectorMap(s: SetBuilder, seed: number, count: number, designs: n
   }
   // planets on orbits, spread around
   const planets: { at: P; back: P; design: number }[] = [];
-  const taken: P[] = [{ x: cx, y: cy }, warp, { x: tx, y: ty }, { x: tx + 3, y: ty }];
+  const taken: P[] = [{ x: cx, y: cy }, warp, { x: tx, y: ty }, { x: tx + 3, y: ty }, jump, { x: jump.x - 5, y: jump.y }];
   let tries = 0;
   while (planets.length < count && tries++ < 5000) {
     const orbit = 8 + Math.floor(r() * 38);
@@ -263,5 +274,5 @@ export function sectorMap(s: SetBuilder, seed: number, count: number, designs: n
   const seen = reachable(g, s.blocks, arrive.x, arrive.y, { tall: false });
   for (const p of planets)
     if (!seen[p.at.y * W + p.at.x] && !seen[p.back.y * W + p.back.x]) throw new Error(`sector ${seed}: planet at ${p.at.x},${p.at.y} cut off`);
-  return { grid: g, arrive, warp, planets, open: open.slice(56) };
+  return { grid: g, arrive, warp, jump, jumpArrive, planets, open: open.slice(56) };
 }
