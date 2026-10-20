@@ -5,7 +5,6 @@
 import { BACKBL, MONBL, parseBlocks } from '../formats/blocks';
 import { DROPSEQ, INF_REPEAT, MAXSEQ, PICKUPSEQ, SEQUENCE_NAMES, frameCount, parseCharacter, type Character, type Sequence } from '../formats/character';
 import { ADVTYPE, parseGame } from '../formats/game';
-import { MAP_CELLS } from '../formats/map';
 import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
 import { scanName } from '../input/scancodes';
 import type { GameFiles } from '../project/files';
@@ -266,25 +265,6 @@ function instructionsOf(files: GameFiles, name: string | undefined, depth = 0): 
   return [];
 }
 
-/** True when the level's most common map block has gravity pulling down (a platform game). */
-function pullsDown(files: GameFiles, l: Level, sets: Map<string, ReturnType<typeof parseBlocks>>): boolean {
-  const map = files.get(l.map);
-  if (!l.bbl || !map || map.length < MAP_CELLS * 2) return false;
-  if (!sets.has(l.bbl)) {
-    const b = files.get(l.bbl);
-    if (!b) return false;
-    try {
-      sets.set(l.bbl, parseBlocks(b, BACKBL));
-    } catch {
-      return false;
-    }
-  }
-  const counts = new Uint32Array(256);
-  for (let i = 0; i < MAP_CELLS; i++) counts[map[i * 2]]++;
-  const common = counts.indexOf(Math.max(...counts));
-  return !!((sets.get(l.bbl)![common]?.grav ?? 0) & 4);
-}
-
 /** The key map of a whole game, from its .gam file and the characters of its levels. */
 export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
   const gam = gamFile ?? files.mainGame();
@@ -329,8 +309,7 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
       }
       for (const blk of blockSets.get(b)!) if (blk.effect >= 5 && blk.effect < MAXSEQ && blk.eamt > 0) refills.add(blk.effect);
     }
-    const gravity = mine.filter((l) => pullsDown(files, l, blockSets)).length * 2 > mine.length;
-    for (const { scan, action } of characterActions(chr, gravity)) {
+    for (const { scan, action } of characterActions(chr)) {
       if (action.uses !== undefined && !refills.has(action.seq)) action.details = action.details.map((d) => d.replace('; some blocks can give more', ''));
       if (scan) {
         const list = byKey.get(scan) ?? [];
