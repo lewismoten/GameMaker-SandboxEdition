@@ -5,10 +5,7 @@
   "description": "Web port of Recreational Software Designs' GameMaker 3.0: design, play and export games as offline web apps.",
   "type": "module",
   "scripts": {
-    "games": "node scripts/copy-games.mjs",
-    "predev": "npm run games",
     "dev": "vite",
-    "prebuild": "npm run games",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",

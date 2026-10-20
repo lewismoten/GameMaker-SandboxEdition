@@ -3,17 +3,18 @@ import { defineConfig, type Plugin, type Rollup } from 'vite';
 import { resolve } from 'node:path';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { serviceWorkerSource, hashText } from './src/export/serviceWorker';
+import { cdGames } from './scripts/cdGames';
 
 const publicDir = resolve(__dirname, 'public');
 
-/** Top-level public files (sample game folders are cached on demand, not precached). */
+/** Top-level public files (icons, manifest). */
 function publicFiles(): string[] {
   if (!existsSync(publicDir)) return [];
-  const out = readdirSync(publicDir).filter((f) => statSync(resolve(publicDir, f)).isFile());
-  if (existsSync(resolve(publicDir, 'games/index.json'))) out.push('games/index.json');
-  for (const f of ['dos/xferplay.exe', 'dos/sndblast.drv']) if (existsSync(resolve(publicDir, f))) out.push(f);
-  return out;
+  return readdirSync(publicDir).filter((f) => statSync(resolve(publicDir, f)).isFile());
 }
+
+/** Game folders are cached when a game is first played, not at install. */
+const precacheable = (f: string) => f !== 'sw.js' && (!f.startsWith('games/') || f === 'games/index.json');
 
 type Bundle = Rollup.OutputBundle;
 
@@ -52,7 +53,7 @@ function offline(): Plugin {
     enforce: 'post', // after Vite's HTML plugin has emitted the pages
     generateBundle(_options, bundle) {
       const built = Object.keys(bundle);
-      const precache = [...new Set(['./', ...built, ...publicFiles()])].filter((f) => f !== 'sw.js');
+      const precache = [...new Set(['./', ...built, ...publicFiles()])].filter(precacheable);
       const version = hashText(built.sort().join('|'));
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: serviceWorkerSource(version, precache) });
       const player = playerGraph(bundle);
@@ -64,7 +65,7 @@ function offline(): Plugin {
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [offline()],
+  plugins: [cdGames(resolve(__dirname, '../cd')), offline()],
   build: {
     target: 'es2022',
     rollupOptions: {

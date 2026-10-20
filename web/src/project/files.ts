@@ -65,6 +65,14 @@ export const IGNORED_FILE = /\.(exe|com|bat|drv|ico|bak|obj|map\.bak)$/i;
 export interface CatalogEntry {
   id: string;
   title: string;
+  /** gameware: free samples that came with Game-Maker; shareware: play only. */
+  kind: 'gameware' | 'shareware';
+  /** Folder of the game's files, relative to the site root. */
+  path: string;
+  /** Shareware: the author's notice and registration details. */
+  notice?: string;
+  /** Shareware: CRC-32 of the .gam file. */
+  gamCrc?: number;
   gam: string | null;
   files: string[];
 }
@@ -75,12 +83,12 @@ export async function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
   return res.json();
 }
 
-export async function loadHostedGame(entry: CatalogEntry, base = './games/', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
+export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
   const files = new GameFiles();
   let done = 0;
   await Promise.all(
     entry.files.map(async (name) => {
-      const res = await fetch(`${base}${entry.id}/${name}`);
+      const res = await fetch(`${base}${entry.path}${name}`);
       if (res.ok) files.set(name, new Uint8Array(await res.arrayBuffer()));
       onProgress?.(++done, entry.files.length);
     }),
