@@ -162,7 +162,7 @@ export function describeSequence(chr: Character, i: number, carriesAtStart?: (bl
   }
   // Up first, then (mostly) back down: a jump.
   // Where gravity pulls down, moving up is jumping: gravity brings the hero back.
-  const jumps = top < 0 && ((y - top >= -top / 2 && frames.length > 1) || gravity);
+  const jumps = top <= -6 && ((y - top >= -top / 2 && frames.length > 1) || gravity);
   const dir = direction(x, jumps ? 0 : y);
   let kind: ActionKind;
   let title: string;
@@ -188,7 +188,7 @@ export function describeSequence(chr: Character, i: number, carriesAtStart?: (bl
     details.push('Its sequence has no frames.');
   } else if (fired.length) {
     kind = 'fire';
-    title = dir && !jumps ? `Fire, moving ${dir.word}` : 'Fire';
+    title = dir && !jumps && Math.abs(x) + Math.abs(y) >= 4 ? `Fire, moving ${dir.word}` : 'Fire';
     short = 'Fire';
   } else if (jumps) {
     kind = 'jump';

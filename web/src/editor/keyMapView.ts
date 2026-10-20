@@ -161,9 +161,15 @@ function drawKeyboard(rows: Row[], info: (scan: number) => CapInfo | undefined, 
       tl.textContent = text;
       g.append(tl);
       if (i) {
-        const act = svg('text', { x: x + (w * U) / 2, y: ROW_Y(r) + hh * U - 9, class: `km-cap-act${w === 1 && i.short.length > 4 ? ' tight' : ''}`, 'text-anchor': 'middle' });
         const s = i.short.length > 6 ? `${i.short.slice(0, 5)}…` : i.short;
-        act.textContent = i.more ? `${s}+` : s;
+        const shown = i.more ? `${s}+` : s;
+        const act = svg('text', {
+          x: x + (w * U) / 2,
+          y: ROW_Y(r) + hh * U - 9,
+          class: `km-cap-act${w === 1 && shown.length > 4 ? ' tight' : ''}`,
+          'text-anchor': 'middle',
+        });
+        act.textContent = shown;
         g.append(act);
         g.addEventListener('click', () => onPick(scan));
         g.addEventListener('keydown', (e) => {

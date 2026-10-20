@@ -7,7 +7,9 @@
   border-radius: 10px;
   background: #0b0b3a;
   color: #e8e8ff;
-  font: 14px/1.45 system-ui, sans-serif;
+  font:
+    14px/1.45 system-ui,
+    sans-serif;
   box-shadow: 6px 6px 0 #000;
 }
 .km-dialog::backdrop {
@@ -27,7 +29,10 @@
 }
 .km-head h2 {
   margin: 0;
-  font: 700 17px/1.2 ui-monospace, 'Courier New', monospace;
+  font:
+    700 17px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
   color: #ffd400;
   letter-spacing: 0.04em;
 }
@@ -51,7 +56,10 @@
 }
 .km h3 {
   margin: 18px 0 8px;
-  font: 700 14px/1.2 ui-monospace, 'Courier New', monospace;
+  font:
+    700 14px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
   color: #55ffff;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -107,7 +115,9 @@
   padding: 12px;
   border-radius: 10px;
   background: linear-gradient(#2a2a3a, #18181f);
-  box-shadow: inset 0 2px 0 #444, 0 3px 0 #000;
+  box-shadow:
+    inset 0 2px 0 #444,
+    0 3px 0 #000;
 }
 .km-board {
   display: block;
@@ -128,11 +138,15 @@
   stroke-width: 1;
 }
 .km-cap .km-cap-label {
-  font: 600 11px ui-monospace, monospace;
+  font:
+    600 11px ui-monospace,
+    monospace;
   fill: #9a9aac;
 }
 .km-cap .km-cap-act {
-  font: 700 12px system-ui, sans-serif;
+  font:
+    700 12px system-ui,
+    sans-serif;
   fill: #000080;
 }
 .km-cap .km-cap-act.tight {
@@ -187,7 +201,9 @@
   border-radius: 8px;
   background: #10104a;
   scroll-margin: 60px;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 .km-row.picked {
   border-color: #ffd400;
@@ -202,7 +218,9 @@
   border-radius: 5px;
   background: #ffd400;
   color: #000080;
-  font: 700 13px ui-monospace, monospace;
+  font:
+    700 13px ui-monospace,
+    monospace;
   text-align: center;
 }
 .km-key.small {
@@ -307,17 +325,24 @@
 .km-instr summary {
   cursor: pointer;
   color: #ffd400;
-  font: 700 14px ui-monospace, monospace;
+  font:
+    700 14px ui-monospace,
+    monospace;
 }
 .km-text {
+  width: fit-content;
   max-width: 100%;
+  box-sizing: border-box;
   overflow: auto;
   margin: 8px 0;
   padding: 12px 16px;
   border: 2px solid #5555ff;
   background: #000;
   color: #ff55ff;
-  font: 14px/1.35 ui-monospace, 'Courier New', monospace;
+  font:
+    14px/1.35 ui-monospace,
+    'Courier New',
+    monospace;
   white-space: pre;
 }
 .km-gif {
