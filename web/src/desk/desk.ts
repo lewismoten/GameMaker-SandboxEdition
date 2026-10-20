@@ -7,6 +7,7 @@ import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
 import { openDiskBox, floppyElement, type DiskAction } from './diskBox';
 import { openCatalog } from './catalog';
 import { renderShot } from './boxArt';
+import { installCrtWarp } from './crtWarp';
 import { loadCatalog } from '../project/files';
 import { Project } from '../editor/project';
 import type { SpeedSetting } from '../engine/scene';
@@ -135,6 +136,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     onDisksChanged: (insert) => void refreshDisks(insert),
   });
   pc = computer;
+  const removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);
   crt.addEventListener('click', () => void power(true));
 
   /** 'gfx': the designers need the whole window; 'manual': the user enlarged the screen. */
@@ -278,6 +280,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     .catch(() => undefined);
   return () => {
     window.removeEventListener('keydown', onKey);
+    removeWarp();
     computer.screen.destroy();
     computer.keys.detach();
   };
