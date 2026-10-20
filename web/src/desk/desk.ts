@@ -126,10 +126,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   clear(root, desk);
 
   let pc: Computer | undefined;
+  let enlarged = false; // the user pressed the enlarge button
   const computer = new Computer(crt, {
     speed,
     openModern: (projectId, file) => nav.toModern(projectId, file),
-    onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : false),
+    // The designers take the whole window; afterwards, go back to how the user had it.
+    onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
   });
   pc = computer;
@@ -137,6 +139,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** 'gfx': the designers need the whole window; 'manual': the user enlarged the screen. */
   function setZoom(zoom: 'gfx' | 'manual' | false): void {
+    if (zoom !== 'gfx') enlarged = zoom === 'manual';
     desk.dataset.zoom = zoom || 'false';
     pc?.focus(); // undefined while the PC is still being built
   }
