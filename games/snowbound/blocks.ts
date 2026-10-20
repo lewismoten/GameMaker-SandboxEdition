@@ -146,7 +146,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('walk', sidewalk(43));
   book.add('deepWalk', mound(sidewalk(43), 6), { solid: SOLID, effect: MONEY, eamt: 1, score: 10, touch: 'walk' });
   // The mall lot: a cleared space slowly dusts over and fills back in (a global squall).
-  book.add('lot', lot(47), { next: 'lotDust', ntime: 420 });
+  book.add('lot', lot(47), { next: 'lotDust', ntime: 540 });
   const dust = lot(47);
   const rd = rng(5);
   for (let k = 0; k < 90; k++) dust.set(Math.floor(rd() * 20), Math.floor(rd() * 20), c('snow', 4 + (k % 3 === 0 ? 1 : 0)));
