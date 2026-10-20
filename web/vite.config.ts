@@ -11,6 +11,7 @@ function publicFiles(): string[] {
   if (!existsSync(publicDir)) return [];
   const out = readdirSync(publicDir).filter((f) => statSync(resolve(publicDir, f)).isFile());
   if (existsSync(resolve(publicDir, 'games/index.json'))) out.push('games/index.json');
+  for (const f of ['dos/xferplay.exe', 'dos/sndblast.drv']) if (existsSync(resolve(publicDir, f))) out.push(f);
   return out;
 }
 
