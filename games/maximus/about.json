@@ -1,0 +1,21 @@
+{
+  "title": "Maximus: The Hundred Worlds",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1995,
+  "price": "$15",
+  "blurb": "Courier Max flies a pod across a galaxy of ninety-odd hand-made planets, on foot, by rover and under the sea, hunting ten star-shards.",
+  "exe": "MAXIMUS.EXE",
+  "sound": "sb",
+  "label": { "background": "#0b1030", "band": "#f0a020", "ink": "#ffffff", "logo": "SANDBOX SOFTWARE" },
+  "box": {
+    "background": "#0b1030",
+    "accent": "#f0a020",
+    "ink": "#ffffff",
+    "tagline": "One courier. One hundred worlds.",
+    "back": "",
+    "features": [],
+    "shots": [["p01.map", 5, 30]],
+    "rating": "Ages 8 and up"
+  }
+}
