@@ -50,8 +50,13 @@ to look the way they did, from the original source and files.
   and Nebula, the other gameware, your games, and a blank disk. Scroll through them and
   click one to put it in drive A:; the drive then offers Play, Design and today's web.
 - **The pink Game-Maker box** and its CD start Game-Maker. **The shareware catalog**
-  lists the shareware games, and **`TERMINAL`** dials a fictional BBS where they can be
-  read about and "downloaded" (time-compressed) into `C:\DOWNLOAD`, then run from DOS.
+  lists the shareware games. **`TERMINAL`** has a dialing directory of recreated
+  Pittsburgh boards: THE -= S A N D B O X =- BBS (Renegade, sandbox-themed ANSI art),
+  where the games can be read about and "downloaded" (time-compressed) into
+  `C:\DOWNLOAD` and run from DOS, and The Sofa (a multi-line Major BBS with a live
+  teleconference). The modem rings and handshakes, and PKUNZIP runs as fast as the PC.
+- **The poster** on the wall, Moten Snow-to-Software Operations, is an homage to
+  shoveling snow in the winter of 1992 to buy Game-Maker.
 - **The Owner's Guide** is a manual for the desk, typeset like a 1994 printed manual,
   with screen shots drawn by the same text-mode screen (`src/manual`). It can be
   printed. Today's web interface has its own guide at `#/help`.
