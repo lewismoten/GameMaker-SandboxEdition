@@ -12,8 +12,6 @@
   height: calc(9.25 * var(--shelf-u));
   padding: 0 4px;
   box-sizing: content-box;
-  perspective: 1100px;
-  perspective-origin: 50% 30%;
 }
 
 /* the plank, with a shadow on the wall under it */
@@ -41,7 +39,9 @@
   padding: 0;
   background: none;
   cursor: pointer;
-  transform-style: preserve-3d;
+  /* each box turns in its own slot, seen straight on, and never pokes into its neighbors */
+  perspective: 700px;
+  overflow-x: clip;
   transition:
     width 0.45s cubic-bezier(0.3, 0.7, 0.3, 1),
     translate 0.2s;
@@ -76,7 +76,6 @@
   box-shadow:
     inset 2px 0 2px rgba(0, 0, 0, 0.35),
     inset -1px 0 0 rgba(255, 255, 255, 0.08);
-  transform: translateZ(calc(1 * var(--shelf-u) + 1px));
 }
 
 /* reach for it: the box slides up off the shelf a little */
