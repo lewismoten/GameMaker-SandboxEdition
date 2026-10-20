@@ -40,7 +40,7 @@ const grille = () => h('div', { class: 'spk-grille' });
 
 export function speakers(): { left: HTMLElement; right: HTMLElement; power(on: boolean): void } {
   const led = h('span', { class: 'spk-led', title: 'Power' });
-  const left = h('div', { class: 'speaker left', 'aria-hidden': 'true' }, grille(), h('span', { class: 'spk-brand' }, 'RSD'));
+  const left = h('div', { class: 'speaker left', 'aria-hidden': 'true' }, grille(), h('span', { class: 'spk-brand' }, 'Illogitech'));
   const right = h(
     'div',
     { class: 'speaker right' },

@@ -120,7 +120,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           { class: 'monitor' },
           h('button', { class: 'sticky', onclick: () => nav.toModern() }, 'Too retro? Use today’s web →'),
           h('div', { class: 'screen-bezel' }, crt),
-          h('span', { class: 'brand' }, 'RSD  SVGA'),
+          h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
           h('button', { class: 'enlarge', title: 'Fill the window with the screen', 'aria-label': 'Enlarge screen', onclick: () => setZoom('manual') }, '⤢'),
           h('span', { class: 'monitor-led' }),
         ),

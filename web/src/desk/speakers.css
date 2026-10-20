@@ -39,8 +39,8 @@
 .spk-brand {
   margin-top: 14px;
   color: #8f8770;
-  font: 700 8px/1 system-ui, sans-serif;
-  letter-spacing: 0.2em;
+  font: italic 800 9px/1 'Arial Black', Arial, sans-serif;
+  letter-spacing: -0.02em;
   text-align: center;
 }
 

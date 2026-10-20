@@ -142,9 +142,8 @@
   right: 0;
   bottom: 9px;
   color: #8f8770;
-  font: 700 7px/1 system-ui, sans-serif;
+  font: italic 800 6px/1 system-ui, sans-serif;
   text-align: center;
-  letter-spacing: 0.1em;
 }
 
 .ball-mouse.nudge {

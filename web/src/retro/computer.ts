@@ -123,7 +123,7 @@ export class Computer implements RetroHost {
     s.clear(attr(7, 0));
     s.cursorVisible = false;
     const turbo = !this.opts.speed.ticksPerSecond;
-    s.print(`RSD-486 BIOS  Version 1.94\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);

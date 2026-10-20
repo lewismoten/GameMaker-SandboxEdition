@@ -10,7 +10,7 @@ function ballMouse(): HTMLElement {
     { class: 'ball-mouse', title: 'A two-button ball mouse' },
     h('span', { class: 'mouse-btn left' }),
     h('span', { class: 'mouse-btn right' }),
-    h('span', { class: 'mouse-logo' }, 'RSD'),
+    h('span', { class: 'mouse-logo' }, 'SQUEAK'),
   );
   // a nudge, as if someone moved it; real clicks go to the screen
   mouse.addEventListener('click', () => {
