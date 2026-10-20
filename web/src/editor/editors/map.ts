@@ -9,6 +9,8 @@ import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../formats/blo
 import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../../formats/map';
 import { LASTMON, parseMonsters, type Monster } from '../../formats/monster';
 import { normalize } from '../../project/files';
+import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from '../mapClip';
+import './mapExport.css';
 
 type Mode = 'paint' | 'rect' | 'fill' | 'pick' | 'monster';
 
@@ -145,13 +147,15 @@ registerEditor(['map'], (host, project, file) => {
     }
   }
 
-  /** The whole map at one pixel per block pixel (2000×2000), as the scene draws it. */
-  function renderWhole(opts: { monsters: boolean; grid: boolean; links: boolean }, scale = 1): HTMLCanvasElement {
+  /** The map (or the part of it in `area`) at one pixel per block pixel, as the scene draws it. */
+  function renderWhole(opts: { monsters: boolean; grid: boolean; links: boolean }, scale = 1, area: BlockRect = WHOLE_MAP): HTMLCanvasElement {
     const s = BLEN * scale;
-    const c = h('canvas', { width: MLEN * s, height: MWID * s });
+    const c = h('canvas', { width: area.w * s, height: area.h * s });
     const g = c.getContext('2d')!;
     g.imageSmoothingEnabled = false;
-    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) g.drawImage(bgImgs[map.blocks[y * MLEN + x]] ?? bgImgs[0], x * s, y * s, s, s);
+    g.translate(-area.x * s, -area.y * s);
+    for (let y = area.y; y < area.y + area.h; y++)
+      for (let x = area.x; x < area.x + area.w; x++) g.drawImage(bgImgs[map.blocks[y * MLEN + x]] ?? bgImgs[0], x * s, y * s, s, s);
     if (opts.monsters)
       for (const m of map.monsters) {
         if (m.monnum >= LASTMON) continue;
@@ -177,38 +181,136 @@ registerEditor(['map'], (host, project, file) => {
 
   async function exportImage(): Promise<void> {
     const opts = { monsters: true, grid: false, links: false };
-    await modal<void>('Download the whole map', (close) => {
-      const preview = h('div', {
-        class: 'map-export-preview',
-        style: 'background:#000;border-radius:6px;overflow:hidden;line-height:0;max-width:min(400px,100%);aspect-ratio:1',
-      });
+    const level = contentBounds(
+      map.blocks,
+      map.monsters.filter((m) => m.monnum < LASTMON).map((m) => ({ x: m.curx, y: m.cury })),
+    );
+    // where the character can start in this map (the game shows a screen round it)
+    const starts = linkMarks()
+      .filter((m) => m.kind === 'to')
+      .filter((m, i, all) => all.findIndex((o) => o.x === m.x && o.y === m.y) === i);
+    const startChoices: [number, string][] = starts.length
+      ? starts.map((m, i) => [i, `${m.label} (${m.x}, ${m.y})`])
+      : [[0, `the middle of the level (${level.x + (level.w >> 1)}, ${level.y + (level.h >> 1)})`]];
+    const startAt = (i: number) => starts[i] ?? { x: level.x + (level.w >> 1), y: level.y + (level.h >> 1) };
+    type AreaMode = 'whole' | 'level' | 'screen';
+    let mode: AreaMode = level.w < MLEN || level.h < MWID ? 'level' : 'whole';
+    let start = 0;
+    let screens = 1;
+    let scale = 1;
+    let area: BlockRect = mode === 'level' ? { ...level } : { ...WHOLE_MAP };
+    const PREVIEW = 4; // preview pixels per block
+
+    await modal<void>('Download a picture of the map', (close) => {
+      let shot = renderWhole(opts, PREVIEW / BLEN);
+      shot.className = 'pixel map-export-shot';
+      const frame = h('div', { class: 'map-export-frame' });
+      for (const hd of ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as Handle[])
+        frame.append(h('span', { class: `map-export-handle h-${hd}`, dataset: { handle: hd } }));
+      const preview = h('div', { class: 'map-export-preview' }, shot, frame);
+      const info = h('p', { class: 'meta map-export-info' });
+      const modeBar = h('div', { class: 'map-export-modes', role: 'radiogroup', 'aria-label': 'Which part of the map' });
+      const screenOpts = h('div', { class: 'map-export-screen row' });
+      const scaleSel = selectField(
+        'Picture size',
+        [
+          [1, '1× (a block is 20 pixels)'],
+          [2, '2×'],
+          [3, '3×'],
+        ],
+        () => scale,
+        (v) => ((scale = v), refresh()),
+      );
+      const fixed = () => mode === 'screen';
       const refresh = () => {
-        const c = renderWhole(opts, 0.2);
-        c.className = 'pixel';
-        c.style.cssText = 'width:100%;height:100%;image-rendering:pixelated';
-        clear(preview, c);
+        const p = (v: number) => `${(v / MLEN) * 100}%`;
+        Object.assign(frame.style, { left: p(area.x), top: p(area.y), width: p(area.w), height: `${(area.h / MWID) * 100}%` });
+        frame.classList.toggle('fixed', fixed());
+        frame.title = fixed() ? 'Drag to move the screen' : 'Drag to move; drag an edge or corner to resize';
+        info.textContent = `Blocks ${area.x}–${area.x + area.w - 1} across, ${area.y}–${area.y + area.h - 1} down (${area.w}×${area.h}): a ${area.w * BLEN * scale}×${area.h * BLEN * scale} PNG picture.`;
+        [...modeBar.children].forEach((b) => b.setAttribute('aria-checked', String((b as HTMLElement).dataset.mode === mode)));
+        screenOpts.hidden = mode !== 'screen';
       };
-      refresh();
+      const setMode = (m: AreaMode) => {
+        mode = m;
+        area = m === 'whole' ? { ...WHOLE_MAP } : m === 'level' ? { ...level } : gameView(startAt(start), { w: screens, h: screens });
+        if (m === 'screen' && scale === 1) scale = 2;
+        scaleSel.querySelector('select')!.value = String(scale);
+        refresh();
+      };
+      const modeBtn = (m: AreaMode, label: string, title: string) =>
+        h('button', { role: 'radio', dataset: { mode: m }, title, onclick: () => setMode(m) }, label);
+      modeBar.append(
+        modeBtn('whole', 'Whole map', `All ${MLEN}×${MWID} blocks`),
+        modeBtn('level', 'Just the level', 'Leaves out the background fill round the level, which the character never sees'),
+        modeBtn('screen', 'Game screen', 'One screen as the game shows it when the character starts there (a screenshot)'),
+      );
+      screenOpts.append(
+        selectField(
+          'Start point',
+          startChoices,
+          () => start,
+          (v) => ((start = v), setMode('screen')),
+        ),
+        selectField(
+          'Size',
+          [
+            [1, '1 screen (16×10 blocks)'],
+            [2, '2×2 screens'],
+            [3, '3×3 screens'],
+          ],
+          () => screens,
+          (v) => ((screens = v), setMode('screen')),
+        ),
+      );
+      // drag the frame, its edges or its corners (in whole blocks)
+      frame.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        frame.setPointerCapture(e.pointerId);
+        const handle = ((e.target as HTMLElement).dataset.handle as Handle | undefined) ?? 'move';
+        const r = preview.getBoundingClientRect();
+        const from = { ...area };
+        const move = (ev: PointerEvent) => {
+          const dx = Math.round(((ev.clientX - e.clientX) / r.width) * MLEN);
+          const dy = Math.round(((ev.clientY - e.clientY) / r.height) * MWID);
+          area = dragRect(from, handle, dx, dy, fixed());
+          if (mode === 'whole' && (area.w < MLEN || area.h < MWID)) mode = 'level';
+          refresh();
+        };
+        const up = () => (frame.removeEventListener('pointermove', move), frame.removeEventListener('pointerup', up));
+        frame.addEventListener('pointermove', move);
+        frame.addEventListener('pointerup', up);
+      });
       const opt = (label: string, k: keyof typeof opts) => {
         const input = h('input', { type: 'checkbox', checked: opts[k], style: 'width:auto;margin:0' });
-        input.addEventListener('change', () => ((opts[k] = input.checked), refresh()));
+        input.addEventListener('change', () => {
+          opts[k] = input.checked;
+          const c = renderWhole(opts, PREVIEW / BLEN);
+          c.className = shot.className;
+          shot.replaceWith(c);
+          shot = c;
+        });
         return h('label', { style: 'display:flex;flex-direction:row;align-items:center;gap:8px;font-weight:normal' }, input, label);
       };
+      setMode(mode);
       return h(
         'div',
-        { class: 'stack' },
-        h(
-          'p',
-          { class: 'meta' },
-          `All ${MLEN}×${MWID} blocks drawn with ${bblName || 'these blocks'} in the scene’s colors: a ${MLEN * BLEN}×${MWID * BLEN} PNG picture.`,
-        ),
+        { class: 'stack map-export' },
+        modeBar,
+        screenOpts,
         preview,
+        info,
         h(
           'div',
-          { class: 'stack', style: 'gap:4px' },
-          opt('Monsters where they start', 'monsters'),
-          opt('Block grid (yellow lines every 10 blocks)', 'grid'),
-          opt('Scene links and start points', 'links'),
+          { class: 'map-export-opts' },
+          h(
+            'div',
+            { class: 'stack', style: 'gap:4px' },
+            opt('Monsters where they start', 'monsters'),
+            opt('Block grid (yellow lines every 10 blocks)', 'grid'),
+            opt('Scene links and start points', 'links'),
+          ),
+          scaleSel,
         ),
         h(
           'div',
@@ -219,9 +321,10 @@ registerEditor(['map'], (host, project, file) => {
             {
               class: 'primary',
               onclick: () =>
-                renderWhole(opts).toBlob(async (b) => {
+                renderWhole(opts, scale, area).toBlob(async (b) => {
                   if (!b) return toast('The picture could not be made.', 'error');
-                  download(file.replace(/\.map$/i, '') + '-map.png', new Uint8Array(await b.arrayBuffer()), 'image/png');
+                  const suffix = mode === 'screen' ? 'screen' : area.w === MLEN && area.h === MWID ? 'map' : 'level';
+                  download(`${file.replace(/\.map$/i, '')}-${suffix}.png`, new Uint8Array(await b.arrayBuffer()), 'image/png');
                   close(undefined);
                 }, 'image/png'),
             },
@@ -430,7 +533,7 @@ registerEditor(['map'], (host, project, file) => {
         () => zoom,
         (v) => ((zoom = v), draw()),
       ),
-      h('button', { onclick: () => void exportImage(), title: 'Save all 100×100 blocks as one 2000×2000 picture' }, '🖼 Download whole map'),
+      h('button', { onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' }, '🖼 Download map picture'),
     ),
     h(
       'div',
