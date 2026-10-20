@@ -34,6 +34,8 @@ export class TextScreen {
   private image: ImageData;
   private px: Uint32Array;
   private colors = new Uint32Array(16);
+  /** Device pixels per VGA pixel: drawn sharper when the screen is shown larger. */
+  private scale = 1;
   private dirty = true;
   private raf = 0;
   cursorX = 0;
@@ -89,6 +91,18 @@ export class TextScreen {
   }
 
   markDirty(): void {
+    this.dirty = true;
+  }
+
+  /** Draws each VGA pixel as scale x scale device pixels (1..4). */
+  setScale(scale: number): void {
+    const k = Math.max(1, Math.min(4, Math.round(scale)));
+    if (k === this.scale) return;
+    this.scale = k;
+    this.canvas.width = COLS * CW * k;
+    this.canvas.height = ROWS * CH * k;
+    this.image = this.ctx.createImageData(this.canvas.width, this.canvas.height);
+    this.px = new Uint32Array(this.image.data.buffer);
     this.dirty = true;
   }
 
@@ -215,8 +229,8 @@ export class TextScreen {
   }
 
   private render(): void {
-    const { px, colors } = this;
-    const W = COLS * CW;
+    const { px, colors, scale: k } = this;
+    const W = COLS * CW * k;
     for (let cy = 0; cy < ROWS; cy++)
       for (let cx = 0; cx < COLS; cx++) {
         const i = cy * COLS + cx;
@@ -228,11 +242,11 @@ export class TextScreen {
         for (let row = 0; row < 8; row++) {
           let bits = FONT_CP437[glyph + row];
           if (cursorHere && row >= 6) bits = 0xff;
-          const o0 = (cy * CH + row * 2) * W + cx * CW;
+          // each font row is two VGA lines tall
+          const o0 = (cy * CH + row * 2) * k * W + cx * CW * k;
           for (let b = 0; b < 8; b++) {
             const c = bits & (1 << b) ? fg : bg;
-            px[o0 + b] = c;
-            px[o0 + W + b] = c;
+            for (let line = 0; line < 2 * k; line++) px.fill(c, o0 + line * W + b * k, o0 + line * W + b * k + k);
           }
         }
       }
