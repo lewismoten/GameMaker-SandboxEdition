@@ -51,7 +51,7 @@ export function buildGame(levels: Level[], startAt?: string): Game {
       'teddy.snd',
       LEVEL_SONGS[i],
       `${l.file}.lst`,
-      '',
+      levels[i + 1] ? 'drive.fli' : '',
       ...new Array(9).fill(''),
     ];
     scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
