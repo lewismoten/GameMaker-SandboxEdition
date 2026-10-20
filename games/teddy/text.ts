@@ -68,39 +68,40 @@ export const STORY = pages(
 
 export const HELP = pages(
   [
-    'MOVING',
-    ' LEFT/RIGHT  walk',
-    ' UP          hop (hold it to',
-    '             hop higher, let',
-    '             go to steer)',
+    'MOVING (arrows or W A D)',
+    ' LEFT/RIGHT  walk (A/D)',
+    ' UP/W  hop (hold it to hop',
+    '       higher, let go to',
+    '       steer)',
+    ' Q/E   hop up and left/right',
+    '       in one go',
     '',
     "TEDDY'S TRICKS",
     ' SPACE  speak: WOOF! scares',
     '        squirrels, cats,',
     '        pigeons and geese',
     ' DOWN   dig: unearths bones,',
-    '        digs through soft',
-    '        dirt and sand',
+    '        digs through soft dirt',
     ' F      fetch: pick up Doc',
     "        Leo's costume",
   ],
   [
-    ' H      high five: pops',
-    '        balloons, slaps the',
-    '        hands held out above',
-    ' S      sit pretty: sends up',
-    '        a heart for anybody',
-    '        asking "SIT!"',
-    ' T      spin: turns',
-    '        revolving doors and',
-    '        turnstiles',
-    ' R      roll over: shakes',
-    '        loose a fluff ball',
-    '        that knocks stacks',
-    '        over',
-    ' D      play dead (hold):',
-    '        flat as a rug, so',
-    '        things fly over you',
+    'TRICKS ON THE NUMBER KEYS',
+    ' 1  high five: pops balloons,',
+    '    slaps hands held out',
+    ' 2  sit pretty: a heart for',
+    '    anybody asking "SIT!"',
+    ' 3  spin: turns revolving',
+    '    doors and turnstiles',
+    ' 4  play dead (hold): flat',
+    '    as a rug, so things fly',
+    '    over you',
+    ' 5  roll over: shakes loose',
+    '    a fluff ball that knocks',
+    '    stacks over',
+    '',
+    '',
+    '',
   ],
   [
     'TREATS are worth points. A',
@@ -189,82 +190,131 @@ export const LOST = pages([
   'Try again! Remember:',
   ' - BONES give energy back',
   ' - WOOF at pests first',
-  ' - play dead (D) when things',
+  ' - play dead (4) when things',
   '   come flying at you',
 ]);
 
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
   backyard: ["Fetch Doc Leo's hat, then dig", 'under the fence to the car.', 'NEW: HOP SPEAK DIG FETCH'],
-  street: ['Bow tie. Watch the sprinklers', 'and the mail truck.', 'NEW: HIGH FIVE (H)'],
-  park: ['Big shoes. Geese guard the', 'bridge; kids want a sit!', 'NEW: SIT PRETTY (S)'],
-  city: ['The horn. Spin the revolving', 'doors; play dead under pins!', 'NEW: SPIN (T)  PLAY DEAD (D)'],
-  klub: ['The red nose! Earn tickets', 'with tricks. Showtime!', 'NEW: ROLL OVER (R)'],
+  street: ['Bow tie. Watch the sprinklers', 'and the mail truck.', 'NEW: HIGH FIVE (1)'],
+  park: ['Big shoes. Geese guard the', 'bridge; kids want a sit!', 'NEW: SIT PRETTY (2)'],
+  city: ['The horn. Spin the revolving', 'doors; play dead under pins!', 'NEW: SPIN (3)  PLAY DEAD (4)'],
+  klub: ['The red nose! Earn tickets', 'with tricks. Showtime!', 'NEW: ROLL OVER (5)'],
 };
 
+/** Lines on the disk's text files: 31 columns at most. */
+const README_WIDTH = 31;
+
 export function readme(price: string): string {
-  return `              TEDDY'S LITTLE BIG ADVENTURE
-                    Version 1.0 - 1995
-                (c) 1995 Sandbox Software
+  const out = `
+ TEDDY'S LITTLE BIG ADVENTURE
+     Version 1.0 - 1995
+  (c) 1995 Sandbox Software
 
-  Teddy is a Pembroke Welsh Corgi who knows a ton of tricks. His
-  person, Doc Leo, is a friendly hobo clown and tonight is the star
-  of the Klown Klub's Big Show. But Teddy's big sister Gwin (younger,
-  bigger, a brown pit-lab mix who ruins everything) ran off with Doc
-  Leo's costume suitcase and scattered it all over town.
+Teddy is a Pembroke Welsh Corgi
+who knows a ton of tricks. His
+person, Doc Leo, is a friendly
+hobo clown, and tonight he is
+the star of the Klown Klub's
+Big Show. But Teddy's big
+sister Gwin (younger, bigger, a
+brown pit-lab mix who ruins
+everything) ran off with Doc
+Leo's costume suitcase and
+scattered it all over town.
 
-  Hop, bark, dig, high five, sit pretty, spin, roll over and play
-  dead your way from the backyard to Maple Street, the park,
-  downtown and the Klown Klub, and get every piece of the costume -
-  the hat, the bow tie, the shoes, the horn and the red nose - to the
-  show on time.
+Hop, bark, dig, high five, sit
+pretty, spin, play dead and
+roll over your way from the
+backyard to Maple Street, the
+park, downtown and the Klown
+Klub, and get every piece of
+the costume - the hat, the bow
+tie, the shoes, the horn and
+the red nose - to the show on
+time.
 
-  STARTING THE GAME
-    Type TEDDY and press Enter. A VGA display is required. A Sound
-    Blaster (or compatible) is recommended for the music and the
-    digitized sound effects; the PC speaker works too.
+STARTING THE GAME
+  Type TEDDY and press Enter.
+  A VGA display is required. A
+  Sound Blaster (or compatible)
+  is recommended for the music
+  and digitized sound effects;
+  the PC speaker works too.
 
-  KEYS
-    LEFT/RIGHT walk         UP hop (hold for higher)
-    SPACE      speak        DOWN dig
-    F          fetch        H    high five
-    S          sit pretty   T    spin
-    R          roll over    D    play dead (hold)
-    F1 help  F2 status  F3 music  F4 sound  F5 save  F6 load  ESC quit
+KEYS
+  LEFT/RIGHT or A/D  walk
+  UP or W  hop (hold: higher)
+  Q / E    hop up-left/right
+  DOWN     dig
+  SPACE    speak
+  F        fetch
+  1        high five
+  2        sit pretty
+  3        spin
+  4        play dead (hold)
+  5        roll over
+  F1 help     F2 status
+  F3 music    F4 sound
+  F5 save     F6 load
+  ESC quit
 
-  FILES ON THIS DISK
-    TEDDY.GAM     the game          *.MAP      five levels
-    *.BBL *.MBL   blocks            *.MON      monsters
-    TEDDY.CHR     Teddy             TEDDY.SND  sound effects
-    *.CMF         Sound Blaster     *.VOC      digitized sounds
-    *.GIF *.FLI   pictures          README.TXT this file
+FILES ON THIS DISK
+  TEDDY.GAM   the game
+  *.MAP       five levels
+  *.BBL *.MBL blocks
+  *.MON       monsters
+  TEDDY.CHR   Teddy
+  TEDDY.SND   sound effects
+  *.CMF       Sound Blaster
+              music
+  *.VOC       digitized sounds
+  *.GIF *.FLI pictures
+  *.LST       slide shows
+  README.TXT  this file
 
-  THIS IS SHAREWARE
-    This is shareware. You may copy TEDDY'S LITTLE BIG ADVENTURE and
-    give it to your friends, upload it to your favorite BBS, or put it
-    on a shareware disk, as long as all of the files are included and
-    unchanged.
+THIS IS SHAREWARE
+  You may copy TEDDY'S LITTLE
+  BIG ADVENTURE and give it to
+  your friends, upload it to
+  your favorite BBS, or put it
+  on a shareware disk, as long
+  as all of the files are
+  included and unchanged.
 
-    If you enjoy it, please register for ${price} with Sandbox Software.
-    Registered players receive the next adventure, a full-color poster
-    of Teddy, and our thanks. Send a check or money order (US funds)
-    to:
+  If you enjoy it, please
+  register for ${price} with
+  Sandbox Software. Registered
+  players receive the next
+  adventure, a full-color
+  poster of Teddy, and our
+  thanks. Send a check or
+  money order (US funds) to:
 
-        Sandbox Software
-        Dept. WOOF
-        P.O. Box 1995
-        Pittsburgh, PA 15213
+    Sandbox Software
+    Dept. WOOF
+    P.O. Box 1995
+    Pittsburgh, PA 15213
 
-    (This is a fictional address for this game - there is no real
-    Sandbox Software to mail. Please do not send money anywhere.)
+  (This is a fictional address
+  for this game - there is no
+  real Sandbox Software to
+  mail. Please do not send
+  money anywhere.)
 
-  SAYING THANKS
-    Built with GAME-MAKER 3.0 by Recreational Software Designs.
-    For Teddy, for Gwin (yes, even Gwin), and for Doc Leo and every
-    friendly clown in every klown klub.
+SAYING THANKS
+  Built with GAME-MAKER 3.0 by
+  Recreational Software
+  Designs. For Teddy, for Gwin
+  (yes, even Gwin), and for Doc
+  Leo and every friendly clown
+  in every Klown Klub.
 
-  Woof!
-`;
+Woof!
+`.replace(/^\n/, '');
+  for (const l of out.split('\n')) if (l.length > README_WIDTH) throw new Error(`readme line over ${README_WIDTH} columns: "${l}"`);
+  return out;
 }
 
 export const README = readme('$12');

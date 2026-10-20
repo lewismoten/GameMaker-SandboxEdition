@@ -16,31 +16,55 @@ export const SEQ = {
   speak: 8,
   /** Down: dig. */
   dig: 9,
-  /** H: high five. */
+  /** 1: high five. */
   five: 10,
-  /** S: sit pretty. */
+  /** 2: sit pretty. */
   sit: 11,
-  /** T: spin. */
+  /** 3: spin. */
   spin: 12,
-  /** R: roll over. */
+  /** 5: roll over. */
   roll: 13,
-  /** D: play dead (hold). */
+  /** 4: play dead (hold). */
   dead: 14,
+  /** D: walk right (the same as Right). */
+  rightD: 15,
+  /** A: walk left. */
+  leftA: 16,
+  /** W: hop. */
+  hopW: 17,
+  /** Q: hop up and to the left. */
+  hopLeft: 18,
+  /** E: hop up and to the right. */
+  hopRight: 19,
 } as const;
 
-/** Keys: high byte = PC scan code, low byte = ASCII. */
+/**
+ * Keys: high byte = PC scan code, low byte = ASCII. Every Sandbox game takes the arrows
+ * and W/A/S/D, with Q/E for up-left/up-right; tricks are on the number keys (the same
+ * numbers as in Sandcastle Knight).
+ */
 export const KEY = {
   right: 0x4d00,
   left: 0x4b00,
   up: 0x4800,
   down: 0x5000,
   space: 0x3920,
-  h: 0x2368,
-  s: 0x1f73,
-  t: 0x1474,
-  r: 0x1372,
-  d: 0x2064,
   f: 0x2166,
+  w: 0x1177,
+  a: 0x1e61,
+  d: 0x2064,
+  q: 0x1071,
+  e: 0x1265,
+  /** 1: high five. */
+  five: 0x0231,
+  /** 2: sit pretty. */
+  sit: 0x0332,
+  /** 3: spin. */
+  spin: 0x0433,
+  /** 4: play dead (hold). */
+  dead: 0x0534,
+  /** 5: roll over. */
+  roll: 0x0635,
 } as const;
 
 /** Scan codes for recordings and the simulator. */
