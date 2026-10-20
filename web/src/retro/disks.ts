@@ -9,7 +9,8 @@ export const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'te
 /** Up to 720 KB fit on a double density disk; more needs high density (1.44 MB). */
 export const DD_BYTES = 737_280;
 
-export type DiskKind = 'rsd' | 'gameware' | 'project' | 'blank';
+/** original: the games made for this project, on professionally printed labels. */
+export type DiskKind = 'rsd' | 'gameware' | 'original' | 'project' | 'blank';
 
 export interface Disk {
   id: string;
@@ -91,6 +92,24 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   });
+  // The original games, on their printed shareware disks (play only, like other shareware).
+  for (const g of catalog.filter((c) => c.original)) {
+    const label = g.original?.label;
+    disks.push({
+      id: `cd:${g.id}`,
+      kind: 'original',
+      title: g.title,
+      label: g.title,
+      color: label?.band ?? '#222',
+      stripe: label?.band ?? '#c62828',
+      density: (g.bytes ?? 0) > DD_BYTES ? 'HD' : 'DD',
+      gam: g.gam ?? undefined,
+      bytes: g.bytes ?? 0,
+      writeProtected: true,
+      catalog: g,
+      load: () => loadHostedGame(g),
+    });
+  }
   for (const p of (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'))) {
     disks.push({
       id: `project:${p.id}`,
