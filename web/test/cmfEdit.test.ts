@@ -19,6 +19,7 @@ import {
   traceMusic,
   writeSong,
 } from '../src/formats/cmfEdit';
+import { ENVELOPE, FLAGS, getOp, setOp, setFeedback, getFeedback, presetName, MULT } from '../src/editor/music/sbi';
 import { INSTRUMENTS, song as composeSong } from '../src/audio/compose';
 
 const root = resolve(__dirname, '../../cd/gameware');
@@ -172,5 +173,25 @@ describe('CMF editing model', () => {
     expect(loop.songTick(80)).toBe(80);
     const l = traceMusic(musicOf(loop.bytes), 160);
     expect(l.filter((x) => x.endsWith('on 0 64')).length).toBe(3);
+  });
+});
+
+describe('SBI instrument settings', () => {
+  it('reads and writes operator fields without touching the others', () => {
+    const inst = INSTRUMENTS.piano.slice();
+    const level = ENVELOPE[0];
+    expect(getOp(inst, level, 1)).toBe(63); // carrier level 0x00 attenuation = loudest
+    setOp(inst, level, 0, 0);
+    expect(inst[2]).toBe(0x7f); // KSL bits kept (0x4f has KSL 1)
+    setOp(inst, ENVELOPE[1], 1, 3);
+    expect(inst[5]).toBe(0x32);
+    setOp(inst, FLAGS[1], 0, 1);
+    expect(inst[0]).toBe(0x81);
+    setOp(inst, MULT, 1, 4);
+    expect(inst[1]).toBe(0x04);
+    setFeedback(inst, 5);
+    expect(getFeedback(inst)).toBe(5);
+    expect(inst[10] & 1).toBe(0);
+    expect(presetName(INSTRUMENTS.bass)).toBe('bass');
   });
 });
