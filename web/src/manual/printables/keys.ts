@@ -79,3 +79,110 @@ export function cardKeys(bound: string[], fromManual: Map<string, string>, overr
   }
   return rows;
 }
+
+// ------------------------------------------------------------------ moving
+
+export type Dir = 'up' | 'down' | 'left' | 'right' | 'up-left' | 'up-right' | 'down-left' | 'down-right';
+
+/** A key bound in a .CHR file, with how its sequence moves the character. */
+export interface BoundKey {
+  /** PLAYGAME's name for it ("Up / Pad 8", "Home / Pad 7", "W"). */
+  name: string;
+  /** Total motion of the sequence, in pixels. */
+  dx: number;
+  dy: number;
+  /** The sequence's frames, so two keys running the same moves can be matched. */
+  sig: string;
+}
+
+/** Keys that are directions whatever they do. */
+const DIR_OF_KEY: Record<string, Dir> = {
+  Up: 'up',
+  Down: 'down',
+  Left: 'left',
+  Right: 'right',
+  Home: 'up-left',
+  PgUp: 'up-right',
+  End: 'down-left',
+  PgDn: 'down-right',
+};
+
+/** Letters that stand in for directions when their moves agree. */
+const LETTER_DIR: Record<string, Dir> = { W: 'up', A: 'left', S: 'down', D: 'right', Q: 'up-left', E: 'up-right', Z: 'down-left', C: 'down-right' };
+
+export const DIR_ORDER: Dir[] = ['up', 'down', 'left', 'right', 'up-left', 'up-right', 'down-left', 'down-right'];
+export const DIR_ARROW: Record<Dir, string> = {
+  up: '↑',
+  down: '↓',
+  left: '←',
+  right: '→',
+  'up-left': '↖',
+  'up-right': '↗',
+  'down-left': '↙',
+  'down-right': '↘',
+};
+/** Number pad key for each direction. */
+export const DIR_PAD: Record<Dir, string> = { up: '8', down: '2', left: '4', right: '6', 'up-left': '7', 'up-right': '9', 'down-left': '1', 'down-right': '3' };
+
+function dirOfMotion(dx: number, dy: number): Dir | undefined {
+  const h = dx > 0 ? 'right' : dx < 0 ? 'left' : '';
+  const v = dy < 0 ? 'up' : dy > 0 ? 'down' : '';
+  return ((v && h ? `${v}-${h}` : v || h) || undefined) as Dir | undefined;
+}
+
+export interface MoveRow {
+  dir: Dir;
+  /** Card labels of the keys that move this way ("Up", "W"); the pad key is implied for arrows. */
+  keys: string[];
+  /** Also on the number pad (arrows always are: Up is Pad 8). */
+  pad: boolean;
+  does: string;
+}
+
+/**
+ * Splits the bound keys into directions (arrows, number pad corners, and letters such as
+ * W A S D Q E that run the same moves as an arrow or move the way their place on the keyboard
+ * says) and everything else.
+ */
+export function splitKeys(
+  bound: BoundKey[],
+  fromManual: Map<string, string>,
+  overrides: Record<string, string> = {},
+): { moves: MoveRow[]; actions: CardKey[] } {
+  const dirSig = new Map<string, Dir>();
+  for (const b of bound) {
+    const d = DIR_OF_KEY[keyLabel(b.name)];
+    if (d && !dirSig.has(b.sig)) dirSig.set(b.sig, d);
+  }
+  const rows = new Map<Dir, MoveRow>();
+  const other: string[] = [];
+  const seen = new Set<string>();
+  for (const b of bound) {
+    const key = keyLabel(b.name);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    let dir = DIR_OF_KEY[key];
+    if (!dir && LETTER_DIR[key]) {
+      const same = dirSig.get(b.sig);
+      if (same) dir = same;
+      else if (dirOfMotion(Math.sign(b.dx), Math.sign(b.dy)) === LETTER_DIR[key] && !overrides[key]) dir = LETTER_DIR[key];
+    }
+    if (!dir) {
+      other.push(b.name);
+      continue;
+    }
+    let row = rows.get(dir);
+    if (!row) rows.set(dir, (row = { dir, keys: [], pad: false, does: '' }));
+    if (b.name.includes('Pad')) row.pad = true;
+    row.keys.push(key);
+    row.does ||= overrides[key] ?? fromManual.get(key) ?? '';
+  }
+  const moves = DIR_ORDER.filter((d) => rows.has(d)).map((d) => {
+    const r = rows.get(d)!;
+    // arrows first, then letters
+    r.keys.sort((a, b) => Number(!DIR_OF_KEY[a]) - Number(!DIR_OF_KEY[b]));
+    r.does ||= `Move ${d}`;
+    return r;
+  });
+  return { moves, actions: cardKeys(other, fromManual, overrides) };
+}
