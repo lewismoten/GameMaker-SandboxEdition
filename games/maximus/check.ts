@@ -4,7 +4,7 @@
 //   and the uplink back to orbit is reachable;
 // - rover worlds: the rover can drive all the way around the planet;
 // - the training deck can be crossed by "hold right, hop when stuck".
-import { ITEM_BASE, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './common';
+import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './common';
 import { newCharInfo } from '../../web/src/engine/world';
 import { reachable } from './mapkit';
 import { buildGame } from './game';
@@ -172,6 +172,78 @@ if (!only.length || only.includes('sectors')) {
       if (!r.arrived) report.push(`${info.name}: the pod could not reach planet link ${li}`);
     }
     if (worst > 150) report.push(`${info.name}: flying to a planet cost up to ${worst} HP`);
+  }
+}
+// mechanics: pick up a module and fire it; take a shard; pay a credit door; buy at a post
+if (!only.length || only.includes('mechanics')) {
+  const put = (sim: ReturnType<typeof simFor>, x: number, y: number) => {
+    sim.w.chr.x[0] = x;
+    sim.w.chr.y[0] = y;
+    sim.w.chr.x[1] = sim.w.chr.y[1] = 0;
+    sim.w.mx = (x - 8 + 100) % 100;
+    sim.w.my = (y - 5 + 100) % 100;
+  };
+  // module: Little Hollow holds the Plasma Lance
+  {
+    const info = b.scenes.find((s) => s.module === 0)!;
+    const sim = simFor(b, info, 1);
+    await sim.run(2);
+    put(sim, info.vault!.x, info.vault!.y);
+    await sim.run(4);
+    sim.press(SCAN.p);
+    await sim.run(8);
+    sim.release(SCAN.p);
+    await sim.run(4);
+    if (!sim.w.ci.inv.includes(ITEM_BASE)) report.push(`module: picking up the Plasma Lance failed (inventory ${sim.w.ci.inv.join(',')})`);
+    if (!sim.w.ci.seqon[SEQ.plasma]) report.push('module: the lance key is not enabled after pickup');
+    const before = sim.w.mm.filter((m) => m.monnum === MON.plasma).length;
+    sim.press(SCAN.z);
+    await sim.run(3);
+    sim.release(SCAN.z);
+    const after = sim.w.mm.filter((m) => m.monnum === MON.plasma).length;
+    console.log(`mechanics: inventory ${sim.w.ci.inv.join(',')}, plasma bolts ${before} -> ${after}`);
+    if (after <= before) report.push('module: Z did not fire a plasma bolt');
+  }
+  // shard: Ambermoor holds the Ruby
+  {
+    const info = b.scenes.find((s) => s.shard === 0)!;
+    const sim = simFor(b, info, 1);
+    await sim.run(2);
+    put(sim, info.vault!.x - 1, info.vault!.y);
+    sim.press(SCAN.right);
+    await sim.run(6);
+    sim.release(SCAN.right);
+    console.log(`mechanics: Ruby counter ${sim.w.ci.meter[SHARD_COUNTER]}`);
+    if (sim.w.ci.meter[SHARD_COUNTER] !== 1) report.push(`shard: touching the Ruby left counter 20 at ${sim.w.ci.meter[SHARD_COUNTER]}`);
+  }
+  // credit door: walk into a vault door with 15 credits
+  {
+    const info = b.scenes.find((s) => s.name === 'Verdance')!;
+    const sim = simFor(b, info, 1);
+    await sim.run(2);
+    sim.w.ci.meter[MONEY] = 16;
+    put(sim, info.vault!.x - 8, info.vault!.y);
+    sim.press(SCAN.right);
+    await sim.run(25);
+    sim.release(SCAN.right);
+    console.log(`mechanics: door left ${sim.w.ci.meter[MONEY] - 1} of 15 credits`);
+    if (sim.w.ci.meter[MONEY] !== 6) report.push(`door: 15 credits became ${sim.w.ci.meter[MONEY] - 1} after the credit door (expected 5)`);
+  }
+  // trading post: nudge the 1-Up pad with 120 credits
+  {
+    const info = b.scenes.find((s) => s.name === 'The Cradle')!;
+    const sim = simFor(b, info, 1);
+    sim.scene.links = undefined;
+    await sim.run(2);
+    sim.w.ci.meter[MONEY] = 121;
+    const lives = sim.w.ci.lives;
+    const pad = [...sim.w.map].findIndex((c) => c === b.sets.space.id('buy:oneup'));
+    put(sim, pad % 100, Math.floor(pad / 100) + 1);
+    sim.press(SCAN.up);
+    await sim.run(10);
+    sim.release(SCAN.up);
+    console.log(`mechanics: shop lives ${lives} -> ${sim.w.ci.lives}, credits 120 -> ${sim.w.ci.meter[MONEY] - 1}`);
+    if (sim.w.ci.lives !== lives + 1 || sim.w.ci.meter[MONEY] !== 21) report.push(`shop: buying a 1-Up gave lives ${lives} -> ${sim.w.ci.lives}, credits 120 -> ${sim.w.ci.meter[MONEY] - 1}`);
   }
 }
 console.log(`checked ${checked} scenes`);
