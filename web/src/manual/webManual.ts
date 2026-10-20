@@ -18,7 +18,9 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     'home',
     'The home page',
     `<h3>Your games</h3>
-    <p><b>+ New game</b> starts an empty game. <b>Open game folder…</b>, <b>Open files or
+    <p><b>+ Make a new game</b> asks for a title and how to start: <b>Ready to play</b> gives you a
+    first level with scenery, monsters, a hero and sounds borrowed from the CD library, to change
+    as you like; <b>Empty</b> gives you just a title and an ending. <b>Open game folder…</b>, <b>Open files or
     .zip…</b>, or dropping files on the page imports an original game: the folder with its
     <code>.GAM</code>, <code>.MAP</code>, <code>.BBL</code> and other files.</p>
     <h3>Sample games</h3>
@@ -32,14 +34,18 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   [
     'workspace',
     'Working on a game',
-    `<p>Opening a game shows its files on the left, grouped by kind, and the selected file’s
-    editor on the right. Changes are saved as you go.</p>
+    `<p>Opening a game lists every kind of file on the left, even the ones you have none of
+    yet, and shows the selected file’s editor on the right. Changes are saved as you go.</p>
     <ul>
       <li><b>▶ Play test</b> plays the game from its first scene.</li>
-      <li><b>+ New</b> makes a new file of any kind; <b>Add files…</b> brings in pictures,
-      sounds or music.</li>
-      <li>Each file can be renamed, duplicated, downloaded or deleted. The <code>.GAM</code>
-      file can’t be deleted or renamed.</li>
+      <li>The <b>+</b> beside a kind adds one: a new file, one from the <b>library</b> (the free
+      sample games on the CD, shown as pictures), one from your computer, or one made by a tool
+      (see below). <b>+ Add a file…</b> shows every kind as a grid of cards.</li>
+      <li>✎ edits a file; the red 🗑 deletes it. The <code>.GAM</code> file can’t be deleted.</li>
+      <li>Wherever a file is chosen (a scene’s map, a sound’s sample, a palette to view with),
+      you see its picture; click it to choose another, or ✎ to edit it.</li>
+      <li><b>+ Add level scene</b> starts a level with the last level’s palette, blocks,
+      monsters and hero, on a fresh map of its own.</li>
     </ul>`,
   ],
   [
@@ -55,6 +61,19 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       <tr><td><code>.CHR</code></td><td>Character</td><td>The player’s animation sequences (idle, die, hurt, pick up, drop and up to 15 of your own), the keys that start them, and what they need.</td></tr>
       <tr><td><code>.SND</code></td><td>Sounds</td><td>30 effects, each a PC-speaker tune or a Sound Blaster <code>.VOC</code> sample.</td></tr>
       <tr><td><code>.GIF .FLI .CMF .VOC .TXT</code> and more</td><td>Media</td><td>View pictures and animations, hear music and samples, and edit text screens and slide shows.</td></tr>
+    </table>`,
+  ],
+  [
+    'tools',
+    'Making pictures, sounds and music',
+    `<table>
+      <tr><th>To make</th><th>Use</th></tr>
+      <tr><td>A picture (<code>.GIF</code>)</td><td><b>Convert a picture…</b> takes any image, fits it to 320×200 and reduces it to 256 colors (or to one of your palettes), with or without dithering.</td></tr>
+      <tr><td>An animation (<code>.FLI</code>)</td><td><b>From an animated GIF or pictures…</b> turns an animated GIF, or several pictures in order, into an FLI at the speed you choose.</td></tr>
+      <tr><td>Music (<code>.CMF</code>)</td><td><b>Compose a song…</b>: pick a mood, key, length and speed and press Compose for a new tune; edit the notes if you like.</td></tr>
+      <tr><td>A Sound Blaster sound (<code>.VOC</code>)</td><td><b>Record with the microphone…</b> or <b>Make a sound effect…</b>, then add a robot, chipmunk, deep, radio or echo effect.</td></tr>
+      <tr><td>PC speaker sounds (<code>.SND</code>)</td><td>In the sound set editor, press a recipe (heal, coin, laser, explosion…) for a new take on it, and change it with higher, lower, faster, echo, mutate and more. The recipe that suits each of the game’s own nine sounds is highlighted.</td></tr>
+      <tr><td>A demo (<code>.REC</code>)</td><td><b>Record one by playing…</b> starts the game in its first level and records your keys; watch it back, and trim the end. Choose it as the start scene’s demo recording.</td></tr>
     </table>`,
   ],
   [
