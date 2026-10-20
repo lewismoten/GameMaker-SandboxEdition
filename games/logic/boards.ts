@@ -97,4 +97,26 @@ export const BOARDS: BoardSpec[] = [
     answer:
       'The arrow is a diode: you can only go through it the way it points. Before you go through, turn the switch on, wait for the gate to open, and turn the switch OFF again.',
   },
+  {
+    file: 'tv',
+    title: 'The TV Set',
+    room: 'living',
+    card: ['Channel 3, channel 4, and', 'the Bowling Channel. Live!'],
+    rows: [
+      '################',
+      '#........#.....#',
+      '#........#..X..#',
+      '#........#.....#',
+      '#........###g###',
+      '#.......@#.....#',
+      '#.$......#.....#',
+      '#........#.....#',
+      '#........>>....#',
+      '#####0####t#####',
+    ],
+    wires: { 0: { path: 'R6 U5 R1' } },
+    solution: 'DDD RR D wwwwww RR UUUUUU',
+    hint: 'If I turn the power on, I can never cross that wire. If I don\'t, the gate stays shut.',
+    answer: 'That is a timer button, not a switch. Bump it as you go by: it turns itself off after about five seconds. Wait for the gate to open and the wire to go dark, then cross.',
+  },
 ];
