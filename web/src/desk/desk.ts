@@ -19,6 +19,7 @@ import { deskModem } from './modem';
 import { drawBox, boxModel, openBoxViewer } from './gameBox';
 import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './snowWindow';
+import { drawGmBox, gmBoxContents } from './gmBox';
 import { fitStage } from './stage';
 import { loadCatalog, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/project';
@@ -38,20 +39,6 @@ function loadTurbo(): boolean {
   } catch {
     return true;
   }
-}
-
-/** The CD, with its label printed around the hole. */
-function cdDisc(): HTMLElement {
-  const disc = h('div', { class: 'cd-disc', 'aria-hidden': 'true' });
-  disc.innerHTML = `<svg viewBox="0 0 100 100">
-    <defs>
-      <path id="cd-top" d="M 16 50 A 34 34 0 0 1 84 50"/>
-      <path id="cd-bottom" d="M 13 50 A 37 37 0 0 0 87 50"/>
-    </defs>
-    <text class="cd-title"><textPath href="#cd-top" startOffset="50%" text-anchor="middle">GAME-MAKER 3.0</textPath></text>
-    <text class="cd-small"><textPath href="#cd-bottom" startOffset="50%" text-anchor="middle">RECREATIONAL SOFTWARE DESIGNS</textPath></text>
-  </svg>`;
-  return disc;
 }
 
 export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
@@ -117,12 +104,6 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h(
         'div',
         { class: 'desk-left' },
-        h(
-          'button',
-          { class: 'prop manual-prop', onclick: () => void openDosManual() },
-          h('div', { class: 'booklet-cover' }, h('strong', null, 'GAME-MAKER'), h('span', null, 'Owner’s Guide'), h('em', null, 'Version 3.0')),
-          h('span', { class: 'caption' }, 'Owner’s Guide'),
-        ),
         h('button', { class: 'prop disk-box', onclick: () => void flip() }, box, h('span', { class: 'caption' }, 'Disk box — pick a game')),
       ),
       h(
@@ -156,7 +137,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         { class: 'desk-right' },
         h(
           'button',
-          { class: 'prop gm-box', onclick: () => void startGameMaker(), 'aria-label': 'Game-Maker 3.0 box: start Game-Maker' },
+          { class: 'prop gm-box', onclick: () => void openGmBox(), 'aria-label': 'Game-Maker 3.0 box: look inside' },
           h(
             'div',
             { class: 'retail' },
@@ -165,8 +146,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
             boxTiles,
             h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
           ),
-          cdDisc(),
-          h('span', { class: 'caption' }, 'Game-Maker 3.0 — start the editor'),
+          h('span', { class: 'caption' }, 'Game-Maker 3.0 — open the box'),
         ),
         h(
           'button',
@@ -341,6 +321,20 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     if (action === 'play' && d.gam) await command(`A:\n${d.gam.replace(/\.gam$/i, '').toUpperCase()}`);
     // Game-Maker starts in the current folder: the disk, or C:\GM for a new game.
     else if (action === 'design') await command(d.kind === 'blank' ? 'C:\nCD \\GM\nGM' : 'A:\nGM');
+  }
+
+  /** The Game-Maker box: turn it over, read the Owner's Guide, or put the CD in and start it. */
+  async function openGmBox(): Promise<void> {
+    const tiles = [...boxTiles.querySelectorAll<HTMLElement>('.tile')].map((t) => [t.querySelector('canvas')!, t.querySelector('span')!.textContent ?? ''] as [HTMLCanvasElement, string]);
+    await openBoxViewer({ title: 'Game-Maker 3.0' }, drawGmBox(tiles), {
+      insert: () => void startGameMaker(),
+      insertLabel: 'Put the CD in and start Game-Maker',
+      manual: () => void openDosManual(),
+      extras: gmBoxContents(() => {
+        document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
+        void openDosManual();
+      }),
+    });
   }
 
   async function startGameMaker(): Promise<void> {
