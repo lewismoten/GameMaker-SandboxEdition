@@ -75,3 +75,64 @@ export function tint(p: Pixels, map: (c: number) => number): Pixels {
   q.px.set(p.px);
   return q.map((_x, _y, c) => (c === CLEAR ? c : map(c)));
 }
+
+/**
+ * A snake of `n` monsters chasing each other around a rectangular loop (w x h blocks,
+ * clockwise from its top-left corner). Every segment is its own monster type whose path is
+ * the same loop started at a different point, so together they slither like one animal.
+ * Every path has five legs (the first one split) so the corners cost every segment alike.
+ * Returns where each segment starts, relative to the loop's top-left corner.
+ */
+export function snake(
+  b: Bestiary,
+  name: string,
+  n: number,
+  w: number,
+  h: number,
+  speed: number,
+  pic: (i: number) => string,
+  o: { power?: number; score?: number; becomes?: string; spacing?: number } = {},
+): { name: string; x: number; y: number }[] {
+  const sides: [number, number, number][] = [
+    [1, 0, w],
+    [0, 1, h],
+    [-1, 0, w],
+    [0, -1, h],
+  ];
+  const perimeter = 2 * (w + h);
+  const out: { name: string; x: number; y: number }[] = [];
+  for (let i = 0; i < n; i++) {
+    const q = (perimeter - i * (o.spacing ?? 2) + perimeter * 4) % perimeter;
+    // where q falls
+    let rest = q;
+    let side = 0;
+    while (rest >= sides[side][2]) {
+      rest -= sides[side][2];
+      side++;
+    }
+    let x = 0;
+    let y = 0;
+    for (let s = 0; s < side; s++) {
+      x += sides[s][0] * sides[s][2];
+      y += sides[s][1] * sides[s][2];
+    }
+    x += sides[side][0] * rest;
+    y += sides[side][1] * rest;
+    const legs: [number, number, number][] = [];
+    const [dx, dy, len] = sides[side];
+    const left = len - rest;
+    // split the current side in two (or the first whole side, when starting on a corner)
+    const first = rest === 0 ? Math.ceil(len / 2) : left;
+    legs.push([dx * first, dy * first, speed]);
+    if (rest === 0) legs.push([dx * (len - first), dy * (len - first), speed]);
+    for (let k = 1; k < 4; k++) {
+      const [ex, ey, el] = sides[(side + k) % 4];
+      legs.push([ex * el, ey * el, speed]);
+    }
+    if (rest > 0) legs.push([dx * rest, dy * rest, speed]);
+    const seg = `${name}${i}`;
+    b.add(seg, { power: o.power ?? 50, becomes: o.becomes ?? 'boom', score: o.score ?? 200, path: legs, pics: [[pic(i), 4]] });
+    out.push({ name: seg, x, y });
+  }
+  return out;
+}

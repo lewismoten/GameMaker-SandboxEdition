@@ -4,7 +4,8 @@
 import { Pixels, rng } from '../kit/pixels';
 import { CLEAR, blob, micro, shadeAt } from './art';
 import { opaque, slicesOf, tint, weakPoint } from './boss';
-import { pics, sym } from './enemies';
+import { pics } from './enemies';
+import { keyOf, mite as miteArt } from './sprites';
 import { mite } from './enemies';
 import { arena } from './mapkit';
 import type { Bestiary } from './mons';
@@ -102,47 +103,7 @@ function bossTiles(bs: BlockSet, a: StageArt): void {
 }
 
 function bossVirus(b: Bestiary, p: Pal): void {
-  const mk: Record<string, number> = { o: p.c('ink', 0), v: p.c('virus', 2), V: p.c('virus', 4), e: p.c('slime', 5), l: p.c('virus', 1) };
-  pics(
-    b,
-    'mite',
-    sym(
-      [
-        '..........',
-        '...l......',
-        '....l.....',
-        '.....l.ooo',
-        '......ovvV',
-        'lll..ovVVV',
-        '...lovvvve',
-        '...lovvvvv',
-        'lll..ovvvv',
-        '......ovvv',
-        '.....l.ooo',
-        '....l.....',
-        '...l......',
-      ],
-      mk,
-    ),
-    sym(
-      [
-        '..........',
-        '..........',
-        '..l.......',
-        '...ll.looo',
-        '......ovvV',
-        '.lll.ovVVV',
-        '....ovvvve',
-        '....ovvvvv',
-        '.lll.ovvvv',
-        '......ovvv',
-        '...ll.looo',
-        '..l.......',
-        '..........',
-      ],
-      mk,
-    ),
-  );
+  pics(b, 'mite', ...miteArt(keyOf(p, { main: 'virus', accent: 'slime' })));
   mite(b, 'mite', [
     [2, 1, 3],
     [-1, 3, 3],
