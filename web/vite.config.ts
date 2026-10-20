@@ -74,6 +74,20 @@ function manualReload(): Plugin {
       server.ws.send({ type: 'custom', event: 'gm:source-changed', data: { file } });
       return [];
     },
+    // New or deleted files (e.g. a module matched by import.meta.glob) make Vite send a
+    // full reload directly; turn those into the same "ready to reload" notice.
+    configureServer(server) {
+      const channels = new Set([server.ws, server.environments?.client?.hot].filter((c) => !!c));
+      for (const channel of channels) {
+        const send = channel.send.bind(channel) as (...args: unknown[]) => void;
+        channel.send = ((...args: unknown[]) => {
+          const payload = args[0] as { type?: string; path?: string } | undefined;
+          if (payload && typeof payload === 'object' && payload.type === 'full-reload')
+            return send({ type: 'custom', event: 'gm:source-changed', data: { file: payload.path ?? '' } });
+          return send(...args);
+        }) as typeof channel.send;
+      }
+    },
   };
 }
 
