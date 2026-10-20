@@ -6,8 +6,8 @@ This is shareware.
 
 You may copy Maximus and give it to your friends, upload it to
 your favorite BBS, or put it on a shareware CD, as long as all
-573 files stay together and nobody charges money for it. (Yes,
-573. A hundred worlds take some room: about 6 MB. Unzip it to
+573 files stay together and nobody charges money for it.
+(A hundred worlds take some room: 5.9 MB. Unzip it all to
 your hard disk.)
 
 If you enjoy Maximus, please register it! Registration is
