@@ -1,0 +1,299 @@
+/* Home page game library: collections on the left, the chosen collection's games as
+   picture tiles beside them. On a phone the collections become a row of tabs. */
+
+.home .library {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.lib-cats {
+  position: sticky;
+  top: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.lib-cat {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lib-cat:hover {
+  background: var(--panel-2);
+}
+
+.lib-cat.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.lib-cat-icon {
+  text-align: center;
+}
+
+.lib-cat-count {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.lib-main {
+  min-width: 0;
+}
+
+.lib-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.lib-head h2 {
+  margin: 0;
+}
+
+.lib-search {
+  width: min(260px, 100%);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  color: inherit;
+  font: inherit;
+}
+
+.lib-main > .lead {
+  margin: 6px 0 14px;
+}
+
+.lib-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.lib-tools:empty {
+  display: none;
+}
+
+.lib-tiles {
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+}
+
+.lib-tiles .card {
+  position: relative;
+  padding: 12px 12px 10px;
+}
+
+.lib-tiles .card[hidden] {
+  display: none;
+}
+
+.lib-tiles .card h3 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card .card-shot-none {
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+}
+
+/* ⋯ more actions */
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.card-title h3 {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-more {
+  position: relative;
+  flex: none;
+}
+
+.card-more > summary {
+  list-style: none;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.card-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.card-more-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 190px;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.card-more-menu button {
+  width: 100%;
+  text-align: left;
+}
+
+/* ⚠ health badge on a tile's picture */
+.health-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 2px solid #000;
+  border-radius: 50%;
+  font:
+    700 15px/1 system-ui,
+    sans-serif;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* not yet checked, or nothing wrong: kept in layout so it can be seen scrolling into view */
+.health-badge.unknown {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.health-badge.error {
+  background: #ffcc00;
+  color: #000;
+}
+
+.health-badge.warning {
+  background: #9fb4ff;
+  color: #000;
+}
+
+.health-report {
+  max-width: 640px;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.health-report h4 {
+  margin: 14px 0 4px;
+}
+
+.health-report ul {
+  margin: 0;
+  padding-left: 4px;
+  list-style: none;
+}
+
+.health-report li {
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.health-report li .sev {
+  display: inline-block;
+  width: 18px;
+}
+
+.health-report li.error .sev {
+  color: #d89a00;
+}
+
+.health-report li.warning .sev {
+  color: var(--muted);
+}
+
+.health-summary {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+
+.health-summary.ok {
+  border-left: 4px solid #2a9d4b;
+}
+
+.health-summary.error {
+  border-left: 4px solid #ffcc00;
+}
+
+.health-summary.warning {
+  border-left: 4px solid #9fb4ff;
+}
+
+@media (max-width: 720px) {
+  .home .library {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .lib-cats {
+    top: 44px;
+    z-index: 4;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 6px;
+    scrollbar-width: none;
+  }
+
+  .lib-cat {
+    flex: none;
+    width: auto;
+    grid-template-columns: auto auto auto;
+    padding: 7px 10px;
+  }
+
+  .lib-tiles {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .lib-search {
+    width: 100%;
+  }
+}
