@@ -49,8 +49,8 @@ function addBooths(set: BlockSet, floor: Floor): void {
   const top = on(floor);
   top.rect(2, 4, 16, 16, C('red', 1));
   top.rect(3, 2, 14, 4, C('red', 3)).rect(3, 2, 14, 1, C('red', 4));
-  top.rect(4, 7, 12, 7, C('paper', 2));
-  micro(top, 5, 8, 'PHONE', C('red', 2));
+  top.rect(0, 7, 20, 7, C('paper', 2));
+  micro(top, 1, 8, 'PHONE', C('red', 2));
   top.rect(2, 15, 16, 5, C('red', 2));
   micro(top, 6, 15, '25¢', C('gold', 5));
   set.add('booth_top', top, { solid: SOLID });
@@ -325,9 +325,9 @@ function tollBot(floor: Floor): Pixels {
 function pillStand(floor: Floor, k: number): Pixels {
   const p = on(floor);
   p.rect(1, 3, 18, 15, C('pink', 2)).rect(1, 3, 18, 3, C('pink', 4));
-  p.rect(3, 8, 14, 8, C('paper', 2));
-  micro(p, 4, 9, k === 0 ? 'FOOD' : 'PILL', C('pink', 1));
-  micro(p, 4, 13, k === 0 ? 'PILL' : 'DRIVE', C('denim', 1));
+  p.rect(1, 8, 18, 10, C('paper', 2));
+  micro(p, 2, 9, k === 0 ? 'FOOD' : 'PILL', C('pink', 1));
+  micro(p, 2, 13, k === 0 ? 'PILL' : 'DRIVE', C('denim', 1));
   return p;
 }
 
@@ -381,8 +381,8 @@ function arcade(state: 'a' | 'b' | 'over' | 'tilt'): Pixels {
   micro(p, 3, 0, state === 'tilt' ? 'TILT' : 'ZAP!', C('gold', 5));
   p.rect(4, 5, 12, 8, C('grey', 0));
   if (state === 'over') {
-    micro(p, 5, 6, 'GAME', C('red', 4));
-    micro(p, 5, 9, 'OVER', C('red', 4));
+    micro(p, 3, 5, 'GAME', C('red', 4));
+    micro(p, 3, 11, 'OVER', C('red', 4));
   } else {
     const r = rng(state === 'a' ? 3 : 4);
     for (let i = 0; i < 6; i++) p.set(5 + r() * 10, 6 + r() * 6, C('grey', 7));
@@ -468,9 +468,9 @@ function staffDoor(kind: 'keycard' | 'remote' | 'pass', floor: Floor): Pixels {
   const col = kind === 'keycard' ? 'pink' : kind === 'remote' ? 'gold' : 'purple';
   p.rect(0, 0, 20, 20, C(col, 1));
   for (let y = 1; y < 20; y += 3) p.rect(1, y, 18, 2, C(col, 3));
-  p.rect(4, 6, 12, 7, C('paper', 2));
-  micro(p, 5, 7, kind === 'keycard' ? 'STAFF' : kind === 'remote' ? 'GARGE' : 'MOON', C(col, 1));
-  micro(p, 5, 13 - 4, kind === 'keycard' ? 'ONLY' : kind === 'remote' ? 'DOOR' : 'PASS', C('denim', 1));
+  p.rect(0, 5, 20, 12, C('paper', 2));
+  micro(p, 1, 6, kind === 'keycard' ? 'STAFF' : kind === 'remote' ? 'GATE' : 'MOON', C(col, 1));
+  micro(p, 1, 11, kind === 'keycard' ? 'ONLY' : kind === 'remote' ? 'CLICK' : 'PASS', C('denim', 1));
   p.rect(15, 14, 3, 3, C('red', 4));
   return p;
 }
@@ -714,48 +714,17 @@ function volcanoSpawner(): Pixels {
 }
 
 // ------------------------------------------------------------------ the sets
-export function earthSet(): BlockSet {
+export function suburbSet(): BlockSet {
   const s = new BlockSet(150, false);
-  addFloors(s, [
-    'grass',
-    'flowers',
-    'sidewalk',
-    'road',
-    'roadH',
-    'roadV',
-    'deck',
-    'lane',
-    'laneLine',
-    'tile',
-    'carpet',
-    'marble',
-    'beach',
-    'shag',
-    'seafloor',
-    'jungle',
-    'concrete',
-  ]);
-  s.add('static', on('static', 51), { next: 'static2', ntime: 1 });
-  s.add('static2', on('static', 52), { next: 'static', ntime: 1 });
+  addFloors(s, ['grass', 'flowers', 'sidewalk', 'road', 'roadH', 'roadV', 'deck', 'lane', 'laneLine', 'concrete']);
   s.add('void', blank(C('grey', 0)), { solid: SOLID });
   s.add('clouds', clouds(1), { solid: SOLID });
   s.add('clouds2', clouds(2), { solid: SOLID });
-
   addItems(s, 'grass', ['page', 'quarter', 'pill', 'battery', 'zapper', 'cola', 'remote']);
   addItems(s, 'sidewalk', ['page', 'quarter']);
   addItems(s, 'deck', ['page', 'quarter', 'pill', 'battery', 'cola']);
-  addItems(s, 'tile', ['page', 'quarter', 'pill', 'battery', 'keycard', 'cola']);
-  addItems(s, 'carpet', ['quarter', 'page']);
-  addItems(s, 'marble', ['quarter', 'pill', 'battery']);
-  addItems(s, 'beach', ['quarter', 'pill']);
-  addItems(s, 'seafloor', ['quarter']);
-  addItems(s, 'jungle', ['quarter', 'pill']);
-  addItems(s, 'static', ['quarter']);
-
   addBooths(s, 'sidewalk');
-  addLasers(s, 'tile', 14, 22);
   addWalkways(s, 'tube');
-
   // Dome Sweet Dome.
   addBig(s, 'dome', domeHome(FLOORS.grass, 'pink'));
   addBig(s, 'domeB', domeHome(FLOORS.grass, 'teal'));
@@ -796,6 +765,25 @@ export function earthSet(): BlockSet {
   addBig(s, 'bbInfo', billboard(['INFORMATION', 'SUPERHIGHWAY', 'NEXT 9 EXITS'], 'denim', 'gold', FLOORS.deck));
   addBig(s, 'bbFax', billboard(['FAX-A-PIZZA!', 'HOT PIZZA BY', 'FAX IN 30 SEC'], 'red', 'gold', FLOORS.deck));
 
+  return s;
+}
+
+export function citySet(): BlockSet {
+  const s = new BlockSet(150, false);
+  addFloors(s, ['tile', 'carpet', 'marble', 'beach', 'shag', 'seafloor', 'jungle', 'concrete', 'sidewalk']);
+  s.add('static', on('static', 51), { next: 'static2', ntime: 1 });
+  s.add('static2', on('static', 52), { next: 'static', ntime: 1 });
+  s.add('void', blank(C('grey', 0)), { solid: SOLID });
+  addItems(s, 'tile', ['page', 'quarter', 'pill', 'battery', 'keycard', 'cola']);
+  addItems(s, 'carpet', ['quarter', 'page']);
+  addItems(s, 'marble', ['quarter', 'pill', 'battery']);
+  addItems(s, 'beach', ['quarter', 'pill']);
+  addItems(s, 'seafloor', ['quarter']);
+  addItems(s, 'jungle', ['quarter', 'pill']);
+  addItems(s, 'static', ['quarter']);
+  addBooths(s, 'sidewalk');
+  addLasers(s, 'tile', 14, 22);
+  addWalkways(s, 'tube');
   // Mega Mall 2000.
   s.add('mallTop', mallWall(true), { solid: SOLID });
   s.add('mallWall', mallWall(false), { solid: SOLID });
@@ -823,12 +811,12 @@ export function earthSet(): BlockSet {
   addBig(
     s,
     'nTv',
-    neonSign('TV-O-RAMA', 3, () => mallWall(false), 'teal'),
+    neonSign('TV-RAMA', 3, () => mallWall(false), 'teal'),
   );
   addBig(
     s,
     'nPill',
-    neonSign('PILLS 2GO', 3, () => mallWall(false), 'gold'),
+    neonSign('PILLS', 3, () => mallWall(false), 'gold'),
   );
 
   // The Teleport-A-Phone Exchange (and wherever its wrong numbers go).
