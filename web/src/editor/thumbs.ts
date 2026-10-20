@@ -4,6 +4,7 @@
 // waveforms, music as a little score.
 import { kindOf, type FileKind } from './project';
 import { paintIndexed } from './draw';
+import { drawWave } from './waveform';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } from '../formats/blocks';
 import { parsePalette, defaultPalette, type Palette } from '../formats/palette';
 import { parseMap, MLEN, MWID } from '../formats/map';
@@ -183,17 +184,23 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       }
       case 'voc': {
         if (!isVoc(bytes)) return iconFor(kind);
-        const v = decodeVoc(bytes).samples;
-        const n = 48;
-        const step = Math.max(1, Math.floor(v.length / n));
-        return bars(Array.from({ length: n }, (_, i) => Math.abs(v[i * step] ?? 0)), 1, '#ffb44a');
+        // the whole sound, as an oscilloscope would draw it
+        const [c] = canvas(SIZE, SIZE * 0.6);
+        drawWave(c, decodeVoc(bytes).samples);
+        return c;
       }
       case 'cmf': {
         if (!isCmf(bytes)) return iconFor(kind);
         const music = parseCmf(bytes).music;
         const notes: number[] = [];
         for (let i = 0; i < music.length - 2 && notes.length < 40; i++) if ((music[i] & 0xf0) === 0x90 && music[i + 2] > 0) notes.push(music[i + 1]);
-        return notes.length ? bars(notes.map((n) => n - 30), 70, '#8fb4ff') : iconFor(kind);
+        return notes.length
+          ? bars(
+              notes.map((n) => n - 30),
+              70,
+              '#8fb4ff',
+            )
+          : iconFor(kind);
       }
       case 'gam': {
         const g = parseGame(bytes);
