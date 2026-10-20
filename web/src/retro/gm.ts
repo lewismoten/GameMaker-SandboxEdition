@@ -1,17 +1,24 @@
 // Game-Maker 3.00 as it looked in DOS: GM.EXE/MENU.EXE's text-mode menu bars
-// (code/GM/MENU.C), help screens, the PLAYGAME menu, and file pickers that open the
-// graphic designers on the disk in drive A:.
+// (code/GM/MENU.C), help screens, the PLAYGAME menu, UTILITY.EXE's menu, and file
+// pickers that open the graphic designers on a game folder (C:\GM\<GAME>, or a disk).
 import type { RetroHost } from './host';
 import { attr } from './textScreen';
-import { BARATTR, TITLEATTR, MENUATTR, SHADATTR, errorBox, getFileName, horizMenu, showHelpScreen, vertMenu } from './textUi';
+import { BARATTR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './textUi';
+import { browseFile, type Picked } from './picker';
+import { isModified } from './hardDisk';
 import { templateFor } from '../editor/templates';
 import type { FileKind } from '../editor/project';
+import { createZip } from '../project/zip';
+import { download } from '../editor/ui';
 
 const GMTOPBAR = '                            G A M E  -  M A K E R  V3.00                        ';
 const MAIN_BAR = '     Play        Design      Utilities      About        Quit         Help      ';
 const MAIN_XS = [0, 14, 27, 40, 53, 66, 80];
 const DESIGN_BAR = '  Palette  Block  Monster  Map  Character  Image  Sound  Integrator  Main  Help ';
 const DESIGN_XS = [0, 10, 17, 26, 31, 42, 49, 56, 68, 74, 80];
+// UTILITY.C's bar
+const UTIL_BAR = ' Backup  Restore  Transfer  Joystick Setup   Joystick Diagnostic   Main   Help  ';
+const UTIL_XS = [0, 8, 17, 27, 43, 66, 72, 80];
 
 interface Tool {
   exe: string;
@@ -29,8 +36,18 @@ export const TOOLS: Tool[] = [
   { exe: 'CHAREDIT.EXE', title: 'CHARACTER MAKER', kinds: ['chr'], question: 'Enter name of character set to load: ' },
   { exe: 'IMAGE.EXE', title: 'GRAPHICS IMAGE READER', kinds: ['gif'], question: 'Enter the GIF picture: ' },
   { exe: 'SNDEDIT.EXE', title: 'SOUND DESIGNER', kinds: ['snd'], question: 'Enter the sound set: ' },
-  { exe: 'GRATOR.EXE', title: 'INTEGRATOR', kinds: ['gam'], question: '' },
+  { exe: 'GRATOR.EXE', title: 'INTEGRATOR', kinds: ['gam'], question: 'Enter game to design: ' },
 ];
+
+const pathText = (p: { drive: string; parts: string[] }) => `${p.drive}:\\${p.parts.join('\\')}`;
+
+/** Game-Maker worked in the current game area; start pickers there or in C:\GM. */
+function gameArea(h: RetroHost): { drive: string; parts: string[] } {
+  const w = h.workDir();
+  if (w.drive === 'A' || (w.parts[0] === 'GM' && w.parts.length >= 1) || (w.parts[0] === 'DOWNLOAD' && w.parts.length === 2)) return w;
+  if (w.drive === 'D' && w.parts.length === 2) return w;
+  return { drive: 'C', parts: ['GM'] };
+}
 
 function drawBars(h: RetroHost, bar: string): void {
   h.screen.write(0, 0, TITLEATTR, GMTOPBAR);
@@ -42,8 +59,8 @@ function drawDesktop(h: RetroHost): void {
   s.gameMakerColors();
   s.fill(0, 2, 79, 24, attr(7, 0));
   const d = h.disk();
-  const status = d ? ` Drive A: ${d.disk.title}${d.disk.gam ? ` (${d.disk.gam.toUpperCase()})` : ''} ` : ' No disk in drive A: ';
-  s.write(0, 24, attr(8, 0), status.padEnd(80));
+  const status = ` Game area: ${pathText(gameArea(h))}${d ? `     Drive A: ${d.disk.title}` : ''} `;
+  s.write(0, 24, attr(8, 0), status.padEnd(80).slice(0, 80));
 }
 
 async function help(h: RetroHost, name: string): Promise<void> {
@@ -70,7 +87,7 @@ export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'mai
         await design(h);
         break;
       case 3:
-        await errorBox(h, 'UTILITY.EXE copies and deletes game files.', 'Use DIR, COPY and DEL at the DOS prompt instead.  (C)ontinue');
+        await utilities(h);
         break;
       case 4:
         await help(h, 'about.hlp');
@@ -79,7 +96,6 @@ export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'mai
         await help(h, 'gmmain.hlp');
         break;
       default:
-        h.screen.gameMakerColors();
         h.screen.resetPalette();
         h.screen.clear();
         return;
@@ -102,44 +118,59 @@ async function design(h: RetroHost): Promise<void> {
   }
 }
 
-/** Picks (or creates) a file on the disk, then shows the designer. */
+/** Picks a file in a game folder (or makes a new one), then shows the designer. */
 export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
-  const project = await h.writableProject();
-  if (!project) return;
   drawDesktop(h);
-  let file: string | null;
-  if (tool.kinds[0] === 'gam') file = project.gam;
-  else {
-    const names = tool.kinds.flatMap((k) => project.files.byExtension(k)).map((n) => n.toUpperCase());
-    file = await getFileName(h, 5, 7, tool.question, names);
-    if (file === null) return;
-    file = file.toLowerCase();
-    if (!/\.[a-z0-9]{1,3}$/.test(file)) file = `${file}.${tool.kinds[0]}`;
-    if (!project.files.has(file)) {
-      const kind = file.split('.').pop() as FileKind;
+  const integrator = tool.kinds[0] === 'gam';
+  const picked = await browseFile(h, h.fs, tool.question, tool.kinds, gameArea(h), { allowNew: true });
+  if (!picked) return;
+  let project;
+  let fileName = picked.name.toLowerCase();
+  if (integrator && !picked.exists && picked.drive === 'C' && picked.parts.length === 1 && picked.parts[0] === 'GM') {
+    // A new name in C:\GM starts a new game in its own folder.
+    const dir = picked.name.replace(/\..*$/, '');
+    const r = await errorBox(h, `${dir} is a new game.`, `(N)ew game in C:\\GM\\${dir}   (E)xit`);
+    if (r !== 'N' && r !== 'Enter') return;
+    const title = (await askText(h, 'Title of your game:', 19, dir))?.trim() || dir;
+    project = await h.newGameFolder(dir, title);
+    fileName = project.gam;
+  } else {
+    if (picked.drive === 'C' && picked.parts.length < 2 && picked.parts[0] !== undefined) {
+      await errorBox(h, 'Choose a game folder first (such as SAMPLE\\).', 'Or type a new name in the Integrator to start a game.  (C)ontinue');
+      return;
+    }
+    project = await h.editableGameIn(picked.drive, picked.parts);
+    if (!project) return;
+    if (integrator) fileName = project.gam;
+    else if (!project.files.has(fileName)) {
+      const kind = fileName.split('.').pop() as FileKind;
       const template = tool.kinds.includes(kind) ? templateFor(kind) : undefined;
-      if (!template || !/^[a-z0-9_]{1,8}\.[a-z]{3}$/.test(file)) {
-        await errorBox(h, `${file.toUpperCase()} is not a ${tool.kinds.map((k) => `.${k.toUpperCase()}`).join('/')} file name.`, '(C)ontinue');
+      if (!template || !/^[a-z0-9_]{1,8}\.[a-z]{3}$/.test(fileName)) {
+        await errorBox(h, `${fileName.toUpperCase()} is not a ${tool.kinds.map((k) => `.${k.toUpperCase()}`).join('/')} file name.`, '(C)ontinue');
         return;
       }
-      const r = await errorBox(h, `${file.toUpperCase()} does not exist yet.`, '(N)ew file   (E)xit');
+      const r = await errorBox(h, `${fileName.toUpperCase()} does not exist yet.`, '(N)ew file   (E)xit');
       if (r !== 'N' && r !== 'Enter') return;
-      project.files.set(file, template.make(project));
+      project.files.set(fileName, template.make(project));
     }
   }
   // The real designers switched the screen to 320x200 VGA graphics.
-  const close = messageLoading(h, tool);
+  const close = messageLoading(h, tool.exe);
   await new Promise((r) => setTimeout(r, 400));
   close();
-  await h.openEditor(project, file, `${tool.exe} · ${tool.title}`);
+  await h.openEditor(project, fileName, `${tool.exe} · ${tool.title}`);
 }
 
-function messageLoading(h: RetroHost, tool: Tool): () => void {
+function messageLoading(h: RetroHost, exe: string): () => void {
   const s = h.screen;
-  const text = ` Loading ${tool.exe}... `;
+  const text = ` Loading ${exe}... `;
   const saved = s.window(40 - Math.floor(text.length / 2), 12, text.length, 1, MENUATTR, SHADATTR);
   s.write(40 - Math.floor(text.length / 2), 12, MENUATTR, text);
   return () => s.restore(saved);
+}
+
+async function pickGame(h: RetroHost, question: string): Promise<Picked | null> {
+  return browseFile(h, h.fs, question, ['gam'], gameArea(h));
 }
 
 /** PLAYGAME.EXE's own menu (PLAYGAME.C main()). */
@@ -159,17 +190,73 @@ export async function playgame(h: RetroHost): Promise<void> {
     choice = await vertMenu(h, 30, 9, 20, 3, choice);
     s.restore(saved);
     if (choice === 1) {
-      const d = h.disk();
-      if (!d || !d.files.byExtension('gam').length) {
-        await errorBox(h, 'There is no game on the disk in drive A:.', 'Put a game disk in the drive.  (C)ontinue');
+      const pick = await pickGame(h, 'Enter game to play: ');
+      if (!pick) continue;
+      const game = await h.gameIn(pick.drive, pick.parts);
+      if (!game) {
+        await errorBox(h, `I can't find the game in ${pathText(pick)}.`, '(C)ontinue');
         continue;
       }
-      const gams = d.files.byExtension('gam').map((n) => n.toUpperCase());
-      const pick = await getFileName(h, 5, 5, 'Enter game to play: ', gams);
-      if (!pick) continue;
-      await h.playGame(d.files, pick.toLowerCase(), d.disk.title);
+      await h.playGame(game.files, pick.name.toLowerCase(), game.title, game.notice);
     } else if (choice === 2) {
       await errorBox(h, 'Sound Blaster at 220h, IRQ 7, and Auto-Detect VGA', 'are already set up for this PC.  (C)ontinue');
     } else return;
+  }
+}
+
+/** UTILITY.EXE: backup, restore, transfer, joystick. */
+async function utilities(h: RetroHost): Promise<void> {
+  let ch = 1;
+  for (;;) {
+    drawDesktop(h);
+    drawBars(h, UTIL_BAR);
+    ch = await horizMenu(h, 1, UTIL_XS, ch || 1);
+    if (ch === 0 || ch === 6) return;
+    if (ch === 7) {
+      await help(h, 'backres.hlp');
+      continue;
+    }
+    if (ch === 4 || ch === 5) {
+      await errorBox(h, 'Joysticks and game pads are set up by your browser', '(the Gamepad API) on this PC.  (C)ontinue');
+      continue;
+    }
+    const pick = await pickGame(h, ch === 1 ? 'Enter Game to Backup: ' : ch === 2 ? 'Enter game area to restore to: ' : 'Enter Game to Transfer: ');
+    if (!pick) continue;
+    const game = await h.gameIn(pick.drive, pick.parts);
+    if (!game) {
+      await errorBox(h, `I can't find the game in ${pathText(pick)}.`, '(C)ontinue');
+      continue;
+    }
+    if (ch === 1) {
+      // Backups go to the real computer's downloads, as a .ZIP of the game's files.
+      const zip = await createZip(game.files.entries().map(([n, b]) => ({ name: n.toUpperCase(), data: b })));
+      const name = `${pick.parts[pick.parts.length - 1] ?? 'GAME'}.ZIP`;
+      download(name, zip, 'application/zip');
+      await errorBox(h, `Backed up ${pathText(pick)} to ${name}`, 'in your downloads folder.  (C)ontinue');
+    } else if (ch === 2) {
+      if (game.kind !== 'hd' || game.hd?.source !== 'installed') {
+        await errorBox(h, 'Only games installed with Game-Maker can be restored', 'to how they came on the CD.  (C)ontinue');
+      } else if (!(await isModified(game.hd))) {
+        await errorBox(h, `${game.title} has not been changed.`, '(C)ontinue');
+      } else {
+        const r = await errorBox(h, `Restore ${game.title} as it came on the CD?`, 'Your changes will be lost.  (R)estore (A)bort');
+        if (r === 'R') {
+          await h.restoreGame(game.hd);
+          await errorBox(h, 'Restore Done!', '(C)ontinue');
+        }
+      }
+    } else if (ch === 3) {
+      if (game.kind === 'shareware') {
+        await errorBox(h, `${game.title} is shareware: get copies from the BBS`, 'or from its author.  (C)ontinue');
+        continue;
+      }
+      const to = await askText(h, 'Enter Path to Transfer Game to:', 12, 'A:\\');
+      if (to === null) continue;
+      if (to.trim().toUpperCase() !== 'A:\\' && to.trim().toUpperCase() !== 'A:') {
+        await errorBox(h, 'This PC can only transfer games to drive A:.', '(C)ontinue');
+        continue;
+      }
+      await h.transferToFloppy(game);
+    }
   }
 }
