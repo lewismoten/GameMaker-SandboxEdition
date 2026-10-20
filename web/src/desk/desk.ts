@@ -12,8 +12,10 @@ import { installCrtWarp } from './crtWarp';
 import { sevenSegment, floppyDrive, cdDrive, openTray } from './caseParts';
 import { keyboard } from './keyboard';
 import { deskModem } from './modem';
+import { drawBox, boxModel, openBoxViewer } from './gameBox';
+import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './snowWindow';
-import { loadCatalog } from '../project/files';
+import { loadCatalog, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/project';
 import type { SpeedSetting } from '../engine/scene';
 
@@ -268,8 +270,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       driveActions,
       h('span', { class: 'drive-actions-title', title: diskFacts(d) }, d.kind === 'blank' ? 'Blank disk in A:' : `${d.title} in A:`),
       d.gam ? h('button', { class: 'primary', onclick: act('play') }, '▶ Play') : null,
-      h('button', { onclick: act('design') }, d.kind === 'blank' ? '✎ New game' : '✎ Design'),
-      d.kind !== 'blank' ? h('button', { onclick: act('modern'), title: 'Open it in today’s web Game-Maker' }, 'Today’s web →') : null,
+      // Shareware is play-only.
+      d.kind !== 'original' ? h('button', { onclick: act('design') }, d.kind === 'blank' ? '✎ New game' : '✎ Design') : null,
+      d.kind !== 'blank' && d.kind !== 'original' ? h('button', { onclick: act('modern'), title: 'Open it in today’s web Game-Maker' }, 'Today’s web →') : null,
+      d.kind === 'original' && d.catalog?.original?.manual ? h('button', { onclick: () => void openGameManual(d.catalog!) }, '📖 Manual') : null,
     );
   }
 
@@ -346,6 +350,38 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     await openTray(cd);
   }
 
+  /** The shelf on the wall: a box for each original game. */
+  async function fillShelf(games: CatalogEntry[]): Promise<void> {
+    if (!games.length) return;
+    const shelf = h('div', { class: 'game-shelf', 'aria-label': 'Game boxes' });
+    desk.querySelector('.desk-scene')?.append(shelf);
+    for (const g of games) {
+      const faces = await drawBox(g).catch(() => undefined);
+      if (!faces) continue;
+      shelf.append(
+        h(
+          'button',
+          {
+            class: 'shelf-box',
+            title: `${g.title} — take it off the shelf`,
+            onclick: () =>
+              void openBoxViewer(g, faces, {
+                manual: g.original?.manual ? () => void openGameManual(g, faces.front) : undefined,
+                insert: () => void insertOriginal(g.id),
+              }),
+          },
+          boxModel(faces),
+        ),
+      );
+    }
+  }
+
+  async function insertOriginal(id: string): Promise<void> {
+    if (!disks.length) await refreshDisks();
+    const d = disks.find((x) => x.id === `cd:${id}`);
+    if (d) await insertFromBox(d);
+  }
+
   async function catalog(): Promise<void> {
     const entries = await loadCatalog().catch(() => []);
     await openCatalog(entries, { callBbs: () => void command('C:\nTERMINAL'), downloaded: (id) => computer.downloads.has(id) });
@@ -353,6 +389,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   setTurbo(turbo);
   void refreshDisks();
+  void loadCatalog().then((cat) => fillShelf(cat.filter((g) => g.original?.box)));
   void loadCatalog()
     .then((cat) =>
       Promise.all(
