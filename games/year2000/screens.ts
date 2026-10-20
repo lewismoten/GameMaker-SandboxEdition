@@ -234,8 +234,8 @@ export function titleScreen(a: Art): Pixels {
   // Flying cars streak across.
   scaleBlit(p, a.car, 18, 92, 2);
   speedLines(p, 18, 92, 30, C('pink', 5));
-  scaleBlit(p, a.carT, 252, 70, 2, true);
-  scaleBlit(p, a.truck, 236, 118, 1, true);
+  scaleBlit(p, a.carT, 236, 100, 2, true);
+  scaleBlit(p, a.truck, 196, 122, 1, true);
   chromeCentered(p, 8, 'IN THE YEAR', 3);
   chromeCentered(p, 40, '2000!', 7, true);
   // Dex and Sparky on the grid.

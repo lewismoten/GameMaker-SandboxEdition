@@ -119,7 +119,10 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   // Sparky: three zaps to calm him down, and he drops the cover page.
   def(MON.sparky, { pics: anim('sparky', 2), power: 140, towards: RANDOM(3), becomes: MON.sparky2, score: 500 });
   def(MON.sparky2, { pics: anim('sparkyMad', 2), power: 140, towards: RANDOM(4), becomes: MON.sparky3, score: 750 });
-  def(MON.sparky3, { pics: anim('sparkyMad', 1), power: 140, towards: RANDOM(5), becomes: MON.cover, score: 1000 });
-  def(MON.cover, { pics: [['cover', 50]], power: 50 });
+  def(MON.sparky3, { pics: anim('sparkyMad', 1), power: 140, towards: RANDOM(5), becomes: MON.sparkyDizzy, score: 1000 });
+  // Dizzy for a moment (no zap can touch him), then he lets go of the cover page.
+  def(MON.sparkyDizzy, { pics: anim('dizzy', 3), power: 250, end: 40, becomes: MON.cover });
+  // The cover page: tough enough that lava can't hurt it (only a careless zap can).
+  def(MON.cover, { pics: [['cover', 50]], power: 99 });
   return set;
 }

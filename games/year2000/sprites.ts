@@ -513,6 +513,19 @@ export function buildMonsterBlocks(): BlockSet {
   two('lava', lavaPic, { hp: -8 });
   two('sparky', (k) => dogPic(k, true), { hp: -4 });
   two('sparkyMad', (k) => dogPic(k, true, true), { hp: -6 });
+  two('dizzy', (k) => {
+    const p = dogPic(0, true);
+    // Seeing stars: three of them, going round.
+    for (let i = 0; i < 3; i++) {
+      const a = k * 1 + (i * Math.PI * 2) / 3;
+      const x = 14 + Math.cos(a) * 5;
+      const y = 2 + Math.sin(a) * 1.5;
+      p.set(x, y, C('gold', 5))
+        .set(x + 1, y, C('gold', 4))
+        .set(x, y + 1, C('gold', 4));
+    }
+    return p;
+  });
   s.add('cover', coverMon(), { effect: CTR.cover, eamt: 1, score: 2000 });
   two('shopper', shopperPic, { hp: -3 });
   two('skater', skaterPic, { hp: -6 });

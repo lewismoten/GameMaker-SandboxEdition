@@ -98,5 +98,6 @@ export const MON = {
   secbotPatrol: 40,
   dinoV: 41,
   meteorL: 42,
+  sparkyDizzy: 43,
   none: 64,
 } as const;
