@@ -6,6 +6,8 @@ import { readLine } from './textInput';
 import { toCp437 } from './cp437';
 import { commas } from './vfs';
 import type { CatalogEntry } from '../project/files';
+import { dialSounds } from './modem';
+import { loginScreen, fadeBar } from './ansiArt';
 
 const BBS_NAME = 'THE GAME-MAKER EXCHANGE';
 const PHONE = '555-0144';
@@ -15,6 +17,10 @@ const TIME_COMPRESSION = 25; // nobody wants to wait ten minutes
 class Term {
   private fg = 7;
   constructor(private h: RetroHost) {}
+
+  get screenRef(): RetroHost['screen'] {
+    return this.h.screen;
+  }
 
   /** Prints with |XX color codes, keeping the bottom status line. */
   print(text: string): void {
@@ -26,9 +32,10 @@ class Term {
         for (const ch of p) {
           if (ch === '\n') this.newline();
           else {
+            // Like a real terminal, wrap only when the next character arrives.
+            if (s.cursorX >= COLS) this.newline();
             s.put(s.cursorX, s.cursorY, ch.charCodeAt(0), attr(this.fg, 0));
             s.cursorX++;
-            if (s.cursorX >= COLS) this.newline();
           }
         }
     });
@@ -78,67 +85,25 @@ class Term {
   }
 }
 
+/** Visible width of text with |XX color codes. */
+const width = (text: string) => text.replace(/\|\d\d/g, '').length;
+
+/** ╔═══╡ Title ╞═══╗ across the screen. */
+function boxTop(title: string): string {
+  const left = Math.floor((COLS - 2 - title.length - 4) / 2);
+  const right = COLS - 2 - title.length - 4 - left;
+  return `|09╔${'═'.repeat(left)}╡ |15${title} |09╞${'═'.repeat(right)}╗`;
+}
+
+const boxBottom = () => `|09╚${'═'.repeat(COLS - 2)}╝`;
+const boxRule = () => `|09╟${'─'.repeat(COLS - 2)}╢`;
+
+/** ║ text padded to the box width ║ */
+function boxRow(text: string): string {
+  return `|09║${text}${' '.repeat(Math.max(0, COLS - 2 - width(text)))}|09║`;
+}
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-// ---- modem sounds -----------------------------------------------------------------
-
-const DTMF: Record<string, [number, number]> = {
-  '1': [697, 1209], '2': [697, 1336], '3': [697, 1477], '4': [770, 1209], '5': [770, 1336], '6': [770, 1477],
-  '7': [852, 1209], '8': [852, 1336], '9': [852, 1477], '0': [941, 1336],
-};
-
-function tone(ctx: AudioContext, freqs: number[], start: number, dur: number, gain = 0.06, type: OscillatorType = 'sine'): void {
-  const g = ctx.createGain();
-  g.gain.value = gain;
-  g.connect(ctx.destination);
-  for (const f of freqs) {
-    const o = ctx.createOscillator();
-    o.type = type;
-    o.frequency.value = f;
-    o.connect(g);
-    o.start(start);
-    o.stop(start + dur);
-  }
-}
-
-function noise(ctx: AudioContext, start: number, dur: number, gain = 0.04): void {
-  const buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
-  const d = buf.getChannelData(0);
-  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-  const src = ctx.createBufferSource();
-  src.buffer = buf;
-  const bp = ctx.createBiquadFilter();
-  bp.type = 'bandpass';
-  bp.frequency.value = 1800;
-  bp.Q.value = 0.8;
-  const g = ctx.createGain();
-  g.gain.value = gain;
-  src.connect(bp).connect(g).connect(ctx.destination);
-  src.start(start);
-}
-
-/** Dial tone, touch-tones, then the handshake screech. Returns its length in ms. */
-function modemSounds(ctx: AudioContext | undefined, number: string): number {
-  if (!ctx) return 2500;
-  let t = ctx.currentTime + 0.05;
-  tone(ctx, [350, 440], t, 0.9);
-  t += 1;
-  for (const d of number.replace(/\D/g, '')) {
-    tone(ctx, DTMF[d], t, 0.09);
-    t += 0.13;
-  }
-  t += 1.2;
-  tone(ctx, [2100], t, 1.2, 0.05); // answer tone
-  t += 1.3;
-  for (let i = 0; i < 6; i++) {
-    tone(ctx, [980 + (i % 2) * 200], t, 0.25, 0.04, 'square');
-    noise(ctx, t + 0.25, 0.35);
-    t += 0.6;
-  }
-  noise(ctx, t, 1.4, 0.05);
-  t += 1.5;
-  return (t - ctx.currentTime) * 1000;
-}
 
 // ---- the BBS ------------------------------------------------------------------------
 
@@ -163,64 +128,190 @@ function wrap(text: string, width: number): string[] {
   return out;
 }
 
+const statusLine = (online: string) => ` TERMINAL 2.1 │ COM2 │ 14400 N81 │ ANSI │ ${online}`;
+
+/** Dials, waits through the handshake, and prints what the modem says. */
+async function dial(t: Term, h: RetroHost): Promise<void> {
+  t.line('|15TERMINAL 2.1  |07Modem on COM2 ready.');
+  t.line();
+  await t.typeSlowly('ATZ');
+  t.line();
+  await sleep(300);
+  t.line('OK');
+  await t.typeSlowly('ATM1L2X4');
+  t.line();
+  await sleep(200);
+  t.line('OK');
+  await t.typeSlowly(`ATDT${PHONE}`);
+  t.line();
+  const call = dialSounds(h.audio(), PHONE);
+  const start = performance.now();
+  const until = (sec: number) => sleep(Math.max(0, start + sec * 1000 - performance.now()));
+  for (const r of call.rings) {
+    await until(r);
+    t.line('RINGING');
+  }
+  await until(call.answer);
+  t.line('|08(carrier detected, negotiating...)');
+  await until(call.connect);
+  t.line('|14CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS');
+}
+
 export async function runTerminal(h: RetroHost): Promise<void> {
   const t = new Term(h);
   const s = h.screen;
   s.resetPalette();
   s.clear(attr(7, 0));
   s.cursorVisible = true;
-  t.status(` TERMINAL 2.1 │ COM2 │ 14400 N81 │ ANSI │ Offline`);
-  t.line('|15TERMINAL 2.1  |07Modem on COM2 ready.');
-  t.line();
-  await t.typeSlowly('ATZ');
-  t.line();
-  t.line('OK');
-  await t.typeSlowly(`ATDT${PHONE}`);
-  t.line();
-  const ms = modemSounds(h.audio(), PHONE);
-  await sleep(ms);
-  t.line('|14CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS');
-  t.status(` TERMINAL 2.1 │ COM2 │ 14400 N81 │ ANSI │ Online 00:00`);
-  await sleep(500);
-  s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
+  t.status(statusLine('Offline'));
+  await dial(t, h);
+  const online = performance.now();
+  const minutesLeft = () => Math.max(1, 60 - Math.floor((performance.now() - online) / 60000));
+  t.status(statusLine('Online'));
+  await sleep(700);
+
+  // The logon screen.
   s.cursorX = 0;
-  s.cursorY = 0;
-  t.line('|09╔══════════════════════════════════════════════════════════════════════════╗');
-  t.line(`|09║|14              ${BBS_NAME.padEnd(36)}|11Node 1 of 2       |09║`);
-  t.line('|09║|07     Shareware made with Game-Maker · Help for Game-Maker designers       |09║');
-  t.line('|09╚══════════════════════════════════════════════════════════════════════════╝');
+  s.cursorY = loginScreen(s);
+  t.print('|11Enter your handle, or |15GUEST|11: |15');
+  const name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
   t.line();
-  t.print('|11What is your name (or GUEST)? |15');
-  const name = ((await readLine(s, h.keys, [], 30, attr(15, 0))) ?? 'GUEST').trim() || 'GUEST';
-  t.line();
-  t.line(`|07Welcome, |15${name}|07! You are caller |14#1,994|07. Time allowed today: |1460|07 minutes.`);
-  t.line();
+  if (name !== 'GUEST') {
+    t.print('|11Password: |15');
+    await readLine(s, h.keys, [], 16, attr(0, 0)); // typed in black: nobody sees it
+    t.line();
+  }
+  await lastCallers(t, name);
 
   const catalog = (await h.catalog()).filter((g) => g.kind === 'shareware' && g.gam);
+  let show = true;
   for (;;) {
-    t.line('|09── |15Main Menu |09──────────────────────────────');
-    t.line('|15[|14F|15] |07Files: Game-Maker shareware games');
-    t.line('|15[|14B|15] |07Bulletins');
-    t.line('|15[|14G|15] |07Goodbye (log off)');
-    t.print('|11Command: |15');
+    if (show) mainMenu(t, s);
+    show = false;
+    t.print(`|09[|15Main Menu|09] |07Time left: |14${minutesLeft()}|07 min |09: |15`);
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
-    t.line();
-    if (k === 'F') await files(t, h, catalog);
-    else if (k === 'B') await bulletins(t);
+    if (k === 'F' || k === 'N') {
+      await files(t, h, catalog);
+      show = true;
+    } else if (k === 'B') {
+      await bulletins(t);
+      show = true;
+    } else if (k === 'S') await systemInfo(t, catalog.length);
+    else if (k === 'Y') yourStats(t, name, h, minutesLeft());
+    else if (k === 'C') await pageSysop(t, h);
+    else if (k === '?' || k === 'Enter') show = true;
     else if (k === 'G' || k === 'Escape') {
-      t.line('|07Thanks for calling! Remember to register the shareware you enjoy.');
-      await sleep(900);
+      t.print('|11Log off now? |15[Y/n] ');
+      const yes = (await t.key()) !== 'N';
+      t.line();
+      if (!yes) continue;
+      t.line();
+      t.line(`|07Thanks for calling ${BBS_NAME}!`);
+      t.line('|07Remember to register the shareware you enjoy.');
+      await sleep(1200);
+      t.line();
       t.line('|12NO CARRIER');
-      t.status(` TERMINAL 2.1 │ COM2 │ 14400 N81 │ ANSI │ Offline`);
+      t.status(statusLine('Offline'));
       await sleep(900);
       s.clear();
       return;
-    }
+    } else t.line('|12Unknown command. |07Press |15?|07 for the menu.');
   }
 }
 
+/** Renegade-style: the last few callers after logon. */
+async function lastCallers(t: Term, name: string): Promise<void> {
+  const s = t.screenRef;
+  s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
+  s.cursorX = 0;
+  s.cursorY = 0;
+  t.line(`|07Logon #|141,994|07 · Welcome${name === 'GUEST' ? '' : ' back'}, |15${name}|07!`);
+  t.line();
+  t.line(boxTop('Last Few Callers'));
+  t.line(boxRow(' |11Caller  Handle               Location              Baud   Time  Did'));
+  t.line(boxRule());
+  const callers: [string, string, string, string, string][] = [
+    ['1,989', 'PIXEL WIZARD', 'Nashua, NH', '9600', 'D'],
+    ['1,990', 'MONSTER MASH', 'Concord, NH', '14400', 'U'],
+    ['1,991', 'SCROLLMASTER', 'Lowell, MA', '2400', '-'],
+    ['1,992', 'THE BLOCKSMITH', 'Manchester, NH', '14400', 'D'],
+    ['1,993', 'GRAVITY GIRL', 'Keene, NH', '9600', 'DU'],
+  ];
+  callers.forEach(([n, who, where, baud, did], i) =>
+    t.line(boxRow(` |14${n.padStart(6)}  |15${who.padEnd(20)} |07${where.padEnd(20)} |10${baud.padStart(5)}  |07${String(19 + i).padStart(2)}:${String((i * 17) % 60).padStart(2, '0')}  |13${did}`)),
+  );
+  t.line(boxBottom());
+  t.line('|08   D = downloaded   U = uploaded');
+  t.line();
+  t.print('|07Press |15[Enter]|07 to continue');
+  await t.key();
+}
+
+function mainMenu(t: Term, s: RetroHost['screen']): void {
+  s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
+  s.cursorX = 0;
+  s.cursorY = 0;
+  fadeBar(s, 0, 1);
+  s.cursorY = 1;
+  t.line(boxTop('Main Menu'));
+  const item = (key: string, label: string) => `|09[|14${key}|09] |07${label.padEnd(30)}`;
+  const rows: [string, string, string, string][] = [
+    ['F', 'File Areas', 'B', 'Bulletins'],
+    ['N', 'New Files Scan', 'S', 'System Information'],
+    ['Y', 'Your Statistics', 'C', 'Page the SysOp'],
+    ['?', 'Redisplay this menu', 'G', 'Goodbye (log off)'],
+  ];
+  t.line(boxRow(''));
+  for (const [a, la, b, lb] of rows) t.line(boxRow(`    ${item(a, la)}${item(b, lb)}`));
+  t.line(boxRow(''));
+  t.line(boxBottom());
+  t.line();
+}
+
+async function systemInfo(t: Term, files: number): Promise<void> {
+  t.line();
+  for (const l of [
+    `|15${BBS_NAME} |08─ |07a Renegade-style BBS`,
+    `|07Nodes: |142|07   Modem: |1414,400 bps V.32bis|07   Files online: |14${files}`,
+    '|07Callers: |141,994|07   Running since: |14March 1993',
+    '|07Specialty: shareware made with |15Game-Maker|07 and tips for designers.',
+  ])
+    t.line(l);
+  t.line();
+}
+
+function yourStats(t: Term, name: string, h: RetroHost, left: number): void {
+  t.line();
+  t.line(`|07Handle: |15${name}|07   Security level: |14${name === 'GUEST' ? 10 : 20}|07   Time left today: |14${left}|07 min`);
+  t.line(`|07Files downloaded: |14${h.downloads.list().length}|07   Uploads: |140|07   Ratio: |14no limit`);
+  t.line();
+}
+
+async function pageSysop(t: Term, h: RetroHost): Promise<void> {
+  t.print('|07Paging the SysOp');
+  const ctx = h.audio();
+  for (let i = 0; i < 5; i++) {
+    if (ctx) {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      g.gain.value = 0.05;
+      o.type = 'square';
+      o.frequency.value = i % 2 ? 1200 : 900;
+      o.connect(g).connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + 0.15);
+    }
+    t.print('.');
+    await sleep(500);
+  }
+  t.line();
+  t.line('|12The SysOp is not available. |07Leave a message in the Bulletins next time!');
+  t.line();
+}
+
 async function bulletins(t: Term): Promise<void> {
+  t.line();
   for (const l of [
     '|14Bulletin #1: |15About shareware',
     '|07Shareware is try-before-you-buy. Play these games for free; if you',
@@ -233,13 +324,19 @@ async function bulletins(t: Term): Promise<void> {
   ])
     t.line(l);
   t.line();
+  t.print('|07Press |15[Enter]|07 to continue');
+  await t.key();
 }
 
 async function files(t: Term, h: RetroHost, catalog: CatalogEntry[]): Promise<void> {
-  t.line('|09File area 1: |15Game-Maker shareware games');
-  t.line('|09 #  |15File name     Size  |07Description');
-  t.line('|09─── ─────────── ─────── ───────────────────────────────────────────────────');
-  let lines = 3;
+  const s = h.screen;
+  s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
+  s.cursorX = 0;
+  s.cursorY = 0;
+  t.line(boxTop('File Area 1: Game-Maker Shareware'));
+  t.line(boxRow('|11  #  File name        Size  Description'));
+  t.line(boxBottom());
+  let lines = 4;
   for (const [i, g] of catalog.entries()) {
     const got = h.downloads.has(g.id) ? '|10*' : ' ';
     const by = g.author ?? g.company;
@@ -309,13 +406,36 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   }
   t.line();
   t.line('|10Transfer complete.');
-  t.line(`|07PKUNZIP ${zipName(g)} C:\\DOWNLOAD\\${g.id.toUpperCase()}`);
-  for (const f of [...(g.exe ? [g.exe.toLowerCase()] : []), ...g.files].slice(0, 12)) {
-    t.line(`|08  Inflating: ${f.toUpperCase()}`);
-    await sleep(40);
-  }
-  if (g.files.length > 12) t.line(`|08  ...and ${g.files.length - 11} more`);
+  await unzip(t, h, g);
   h.downloads.add(g.id);
   t.line(`|07Type |15CD \\DOWNLOAD\\${g.id.toUpperCase()}|07 then |15${(g.exe ?? '').replace(/\.EXE$/i, '')}|07 after you log off to play.`);
   t.line();
+}
+
+/** Bytes per second PKUNZIP inflates and writes to the hard disk. */
+const UNZIP_RATE = { turbo: 420_000, slow: 32_000 };
+
+/** PKUNZIP into C:\DOWNLOAD: each file takes as long as its size needs on this PC. */
+async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
+  const s = h.screen;
+  const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
+  t.line(`|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${g.id.toUpperCase()}`);
+  t.line(`|07Searching ZIP: ${zipName(g)}`);
+  const files: [string, number][] = [
+    ...(g.exe ? [[g.exe, 60_000] as [string, number]] : []),
+    ...g.files.map((f, i): [string, number] => [f.toUpperCase(), g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length)]),
+  ];
+  for (const [name, size] of files) {
+    t.print(`|07  Inflating: ${name.padEnd(13)}`);
+    const x = s.cursorX;
+    const ms = (size / rate) * 1000;
+    const start = performance.now();
+    for (let f = 0; f < 1; ) {
+      f = ms ? Math.min(1, (performance.now() - start) / ms) : 1;
+      s.write(x, s.cursorY, attr(7, 0), `${Math.round(f * 100)}%`.padStart(4));
+      if (f < 1) await sleep(Math.min(100, ms / 4));
+    }
+    s.write(x, s.cursorY, attr(7, 0), '    ');
+    t.line();
+  }
 }
