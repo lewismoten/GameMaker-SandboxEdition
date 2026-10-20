@@ -224,7 +224,7 @@ function drawSticker(g: CanvasRenderingContext2D, p: Placed, st: Sticker, S: num
       const bandH = y + hh - bandTop;
       // round stickers narrow toward the bottom, so their words sit higher and narrower
       const inset = p.shape === 'star' ? 0.5 : round ? 0.62 : 0.86;
-      const lift = p.shape === 'star' ? 0.1 : round ? 0.06 : 0;
+      const lift = p.shape === 'star' ? 0.14 : round ? 0.06 : 0;
       if (s.text)
         drawLines(
           g,
@@ -237,7 +237,7 @@ function drawSticker(g: CanvasRenderingContext2D, p: Placed, st: Sticker, S: num
       if (s.sub)
         drawLines(
           g,
-          fit(g, s.sub, w * inset * (round ? 0.7 : 0.9), bandH * (s.text ? 0.17 : 0.4), '700', 'Arial, sans-serif'),
+          fit(g, s.sub, w * inset * (p.shape === 'star' ? 0.6 : round ? 0.7 : 0.9), bandH * (s.text ? 0.17 : 0.4), '700', 'Arial, sans-serif'),
           cx,
           bandTop + bandH * ((s.text ? 0.6 : 0.4) - lift),
           '700',
