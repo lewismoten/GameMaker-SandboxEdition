@@ -13,6 +13,7 @@ export function commonMonsters(b: Bestiary): void {
     if (name.startsWith('treat')) b.pic(name, px, { effect: CTR.treats, eamt: 1, score: 10 });
     else if (name.startsWith('bone')) b.pic(name, px, { hp: 25, score: 50 });
     else if (name.startsWith('ticket')) b.pic(name, px, { effect: CTR.tickets, eamt: 1, score: 25 });
+    else if (name.startsWith('poodle')) b.pic(name, px, { hp: 10, score: 250 });
     else b.pic(name, px);
   }
   for (const [name, px] of Object.entries(GWIN)) b.pic(name, px, name.startsWith('gwin') ? { effect: CTR.treats, eamt: -1 } : {});
@@ -149,6 +150,17 @@ export function commonMonsters(b: Bestiary): void {
       power: POWER.pickup,
     },
     MON.ticket,
+  );
+  b.add(
+    'poodle',
+    {
+      pics: [
+        ['poodle1', 6],
+        ['poodle2', 6],
+      ],
+      power: POWER.pickup,
+    },
+    MON.poodle,
   );
   b.add(
     'ticketFall',

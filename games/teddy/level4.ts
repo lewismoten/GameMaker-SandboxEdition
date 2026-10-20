@@ -740,6 +740,8 @@ export function city(): Level {
     [74, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
+  // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
+  for (const [x, y] of [[13, 35], [22, 30], [58, 30]]) m.mon(x, y, 'poodle');
   m.mon(66, G, 'buried');
   m.mark('start', 4, 39);
   m.mark('exit', car, 39);

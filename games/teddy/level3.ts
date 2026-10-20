@@ -544,6 +544,8 @@ export function park(): Level {
     [79, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
+  // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
+  for (const [x, y] of [[12, 32], [30, 30], [p1 + 2, 35]]) m.mon(x, y, 'poodle');
   m.mark('start', 5, 39);
   m.mark('exit', car, 39);
   return {

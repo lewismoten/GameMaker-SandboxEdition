@@ -564,6 +564,8 @@ export function klub(): Level {
     [68, 35],
   ];
   for (const [x, y] of treats) m.treat(x, y);
+  // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
+  for (const [x, y] of [[in0 + 15, 32], [b0 + 11, 39], [68, 35]]) m.mon(x, y, 'poodle');
   m.treat(in0 + 13, 32, 'bone');
   m.mark('start', 4, 39);
   m.mark('exit', leoX, 35);

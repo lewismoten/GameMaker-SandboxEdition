@@ -101,6 +101,8 @@ export const MON = {
   ticket: 12,
   ticketFall: 13,
   treatFall: 14,
+  /** One of Doc Leo's balloon animals (a balloon dog), worth points and a little energy. */
+  poodle: 15,
   /** Level monsters start here. */
   level: 16,
   none: 64,

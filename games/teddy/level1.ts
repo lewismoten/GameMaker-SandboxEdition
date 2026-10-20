@@ -481,6 +481,8 @@ export function backyard(): Level {
     [72, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
+  // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
+  for (const [x, y] of [[16, 36], [30, 35], [57, 34]]) m.mon(x, y, 'poodle');
   m.mon(21, GROUND, 'buried');
   m.mon(40, GROUND, 'buried');
   m.mon(61, GROUND, 'buried');
