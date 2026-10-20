@@ -175,7 +175,7 @@ class Integrator {
         drawDesignBars(s);
         w ??= s.window(50, 3, 27, 12, MENUATTR, SHADATTR);
         s.write(50, 3, PGMTITLECOL, '         INTEGRATOR        ');
-        s.write(50, 4, PGMTITLECOL, '        Version 3.00       ');
+        s.write(50, 4, PGMTITLECOL, '       SE Version 3.00     ');
         s.write(50, 5, PGMTITLECOL, '      By Gregory Stone     ');
         s.write(50, 6, PGMTITLECOL, '     Copyright (C) 1994    ');
         ['Choose a game', 'New game', 'New game area (directory)', 'Edit the chosen game', 'Save the chosen game', 'Delete a game', 'Quit'].forEach((t, i) =>

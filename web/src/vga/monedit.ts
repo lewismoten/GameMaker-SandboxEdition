@@ -149,7 +149,7 @@ class MonsterMaker {
       drawDesignBars(sc);
       const w = sc.window(20, 3, 22, 13, MENUATTR, SHADATTR);
       sc.write(20, 3, PGMTITLECOL, '    MONSTER  MAKER    ');
-      sc.write(20, 4, PGMTITLECOL, '     Version 3.00     ');
+      sc.write(20, 4, PGMTITLECOL, '    SE Version 3.00   ');
       sc.write(20, 5, PGMTITLECOL, '   By  Oliver Stone   ');
       sc.write(20, 6, PGMTITLECOL, '  Copyright (C) 1994  ');
       [

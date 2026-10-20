@@ -218,7 +218,7 @@ class CharacterMaker {
       drawDesignBars(sc);
       const w = sc.window(30, 3, 24, 14, MENUATTR, SHADATTR);
       sc.write(30, 3, PGMTITLECOL, '    CHARACTER  MAKER    ');
-      sc.write(30, 4, PGMTITLECOL, '      Version 3.00      ');
+      sc.write(30, 4, PGMTITLECOL, '     SE Version 3.00    ');
       sc.write(30, 5, PGMTITLECOL, '    By  Oliver Stone    ');
       sc.write(30, 6, PGMTITLECOL, '   Copyright (C) 1994   ');
       [

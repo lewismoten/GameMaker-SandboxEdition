@@ -295,7 +295,7 @@ class BlockDesigner {
       drawDesignBars(s);
       const w = s.window(7, 3, 23, 14, MENUATTR, SHADATTR);
       s.write(7, 3, PGMTITLECOL, '    BLOCK DESIGNER     ');
-      s.write(7, 4, PGMTITLECOL, '     Version 3.00      ');
+      s.write(7, 4, PGMTITLECOL, '    SE Version 3.00    ');
       s.write(7, 5, PGMTITLECOL, '   By Gregory Stone    ');
       s.write(7, 6, PGMTITLECOL, '  Copyright (C) 1991   ');
       [

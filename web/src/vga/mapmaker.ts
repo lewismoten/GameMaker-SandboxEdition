@@ -192,7 +192,7 @@ class MapMaker {
       const w = sc.window(30, 3, 26, 15, MENUATTR, SHADATTR);
       drawDesignBars(sc);
       sc.write(30, 3, PGMTITLECOL, '        MAP  MAKER        ');
-      sc.write(30, 4, PGMTITLECOL, '       Version 3.00       ');
+      sc.write(30, 4, PGMTITLECOL, '      SE Version 3.00     ');
       sc.write(30, 5, PGMTITLECOL, '     By Gregory Stone     ');
       sc.write(30, 6, PGMTITLECOL, '    Copyright (C) 1994    ');
       [

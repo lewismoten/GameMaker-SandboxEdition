@@ -82,7 +82,7 @@ class PaletteDesigner {
       drawDesignBars(s);
       const w = s.window(1, 3, 21, 11, MENUATTR, SHADATTR);
       s.write(1, 3, PGMTITLECOL, '  PALETTE DESIGNER   ');
-      s.write(1, 4, PGMTITLECOL, '    Version 3.00     ');
+      s.write(1, 4, PGMTITLECOL, '   SE Version 3.00   ');
       s.write(1, 5, PGMTITLECOL, '  By Gregory Stone   ');
       s.write(1, 6, PGMTITLECOL, ' Copyright (C) 1994  ');
       ['Choose a Palette', 'New Palette', 'Edit Chosen Palette', 'Save a Palette', 'Delete a Palette', 'Quit'].forEach((t, i) =>

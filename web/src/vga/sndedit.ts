@@ -109,7 +109,7 @@ class SoundDesigner {
       const w = sc.window(50, 3, 20, 12, MENUATTR, SHADATTR);
       drawDesignBars(sc);
       sc.write(50, 3, PGMTITLECOL, '   SOUND DESIGNER   ');
-      sc.write(50, 4, PGMTITLECOL, '    Version 3.00    ');
+      sc.write(50, 4, PGMTITLECOL, '   SE Version 3.00  ');
       sc.write(50, 5, PGMTITLECOL, '  By  Oliver Stone  ');
       sc.write(50, 6, PGMTITLECOL, ' Copyright (C) 1994 ');
       [' Choose a Sound Set ', ' New Sound Set', ' Edit Sounds', ' Save a Sound Set', ' Delete a Sound Set', ' Convert a CMF File', ' Quit'].forEach((t, i) =>
