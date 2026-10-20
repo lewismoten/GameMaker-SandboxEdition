@@ -1,111 +1,114 @@
-// TERMINAL.EXE: dials a (fictional) 1994 BBS where the CD's shareware games can be read
-// about and "downloaded" into C:\DOWNLOAD. Colors use BBS pipe codes: |XX = color XX.
+// TERMINAL.EXE: a dialing directory of (recreated) Pittsburgh BBSes. THE -= S A N D B O X =-
+// BBS, a Renegade board, has the CD's shareware games to read about and "download" into
+// C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/sofa.ts).
 import type { RetroHost } from './host';
 import { attr, COLS, ROWS } from './textScreen';
 import { readLine } from './textInput';
 import { toCp437 } from './cp437';
 import { commas } from './vfs';
 import type { CatalogEntry } from '../project/files';
-import { dialSounds } from './modem';
-import { loginScreen, fadeBar } from './ansiArt';
+import { sandboxLogin, sandBanner } from './ansiArt';
+import { Term, boxBottom, boxRow, boxRule, boxTop, dial, sleep, statusLine } from './term';
+import { runSofa, SOFA_PHONE } from './sofa';
 
-const BBS_NAME = 'THE GAME-MAKER EXCHANGE';
-const PHONE = '555-0144';
+const BBS_NAME = 'THE -= S A N D B O X =- BBS';
+const PHONE = '412-555-0144';
 const CPS = 1650; // 14,400 bps with V.42bis, in characters per second
 const TIME_COMPRESSION = 25; // nobody wants to wait ten minutes
 
-class Term {
-  private fg = 7;
-  constructor(private h: RetroHost) {}
+// ---- the dialing directory -----------------------------------------------------------
 
-  get screenRef(): RetroHost['screen'] {
-    return this.h.screen;
-  }
+const DIRECTORY = [
+  { name: BBS_NAME, number: PHONE, software: 'Renegade', run: runSandbox },
+  { name: 'The Sofa', number: SOFA_PHONE, software: 'Major BBS, 8 lines', run: runSofa },
+];
 
-  /** Prints with |XX color codes, keeping the bottom status line. */
-  print(text: string): void {
-    const s = this.h.screen;
-    const parts = toCp437(text).split(/\|(\d\d)/);
-    parts.forEach((p, i) => {
-      if (i % 2) this.fg = Number(p) & 15;
-      else
-        for (const ch of p) {
-          if (ch === '\n') this.newline();
-          else {
-            // Like a real terminal, wrap only when the next character arrives.
-            if (s.cursorX >= COLS) this.newline();
-            s.put(s.cursorX, s.cursorY, ch.charCodeAt(0), attr(this.fg, 0));
-            s.cursorX++;
-          }
-        }
-    });
-  }
-
-  line(text = ''): void {
-    this.print(text + '\n');
-  }
-
-  private newline(): void {
-    const s = this.h.screen;
-    s.cursorX = 0;
-    s.cursorY++;
-    if (s.cursorY >= ROWS - 1) {
-      // Scroll rows 0..23, leaving the status bar alone.
-      s.chars.copyWithin(0, COLS, (ROWS - 1) * COLS);
-      s.attrs.copyWithin(0, COLS, (ROWS - 1) * COLS);
-      s.fill(0, ROWS - 2, COLS - 1, ROWS - 2, attr(7, 0));
-      s.cursorY = ROWS - 2;
+export async function runTerminal(h: RetroHost): Promise<void> {
+  const t = new Term(h);
+  const s = h.screen;
+  for (;;) {
+    s.resetPalette();
+    s.clear(attr(7, 0));
+    s.cursorVisible = true;
+    t.status(statusLine('Offline'));
+    t.line(boxTop('TERMINAL 2.1 Dialing Directory', '03', '15'));
+    t.line(boxRow('|11 #  Name                         Number        Baud   Software', '03'));
+    t.line(boxRule('03'));
+    DIRECTORY.forEach((d, i) => t.line(boxRow(`|14 ${i + 1}  |15${d.name.padEnd(28)} |07${d.number.padEnd(13)} |1014400  |07${d.software}`, '03')));
+    t.line(boxBottom('03'));
+    t.line();
+    t.print('|11Dial which entry? |07(|151|07-|15' + DIRECTORY.length + '|07, |15Esc|07 to quit) |15');
+    const k = await t.key();
+    t.line(k.length === 1 ? k : '');
+    const entry = DIRECTORY[Number(k) - 1];
+    if (k === 'Escape' || k === 'Q') {
+      s.clear();
+      return;
     }
-  }
-
-  status(text: string): void {
-    this.h.screen.write(0, ROWS - 1, attr(0, 3), toCp437(text).padEnd(COLS).slice(0, COLS));
-  }
-
-  async key(): Promise<string> {
-    const k = await this.h.keys.next();
-    return k.key.length === 1 ? k.key.toUpperCase() : k.key;
-  }
-
-  async more(): Promise<boolean> {
-    this.print('|15[|11More|15] |07Press a key, Q to stop');
-    const k = await this.key();
-    // Erase the prompt line and write over it.
-    const s = this.h.screen;
-    s.fill(0, s.cursorY, COLS - 1, s.cursorY, attr(7, 0));
-    s.cursorX = 0;
-    return k !== 'Q' && k !== 'Escape';
-  }
-
-  async typeSlowly(text: string, ms = 35): Promise<void> {
-    for (const ch of text) {
-      this.print(ch);
-      await sleep(ms);
-    }
+    if (!entry) continue;
+    s.clear(attr(7, 0));
+    await dial(t, h, entry.number);
+    t.status(statusLine('Online'));
+    await sleep(700);
+    await entry.run(t, h);
+    t.line();
+    t.line('|12NO CARRIER');
+    t.status(statusLine('Offline'));
+    await sleep(1200);
   }
 }
 
-/** Visible width of text with |XX color codes. */
-const width = (text: string) => text.replace(/\|\d\d/g, '').length;
+// ---- THE -= S A N D B O X =- BBS ----------------------------------------------------------
 
-/** ╔═══╡ Title ╞═══╗ across the screen. */
-function boxTop(title: string): string {
-  const left = Math.floor((COLS - 2 - title.length - 4) / 2);
-  const right = COLS - 2 - title.length - 4 - left;
-  return `|09╔${'═'.repeat(left)}╡ |15${title} |09╞${'═'.repeat(right)}╗`;
+async function runSandbox(t: Term, h: RetroHost): Promise<void> {
+  const s = h.screen;
+  const online = performance.now();
+  const minutesLeft = () => Math.max(1, 60 - Math.floor((performance.now() - online) / 60000));
+
+  // The logon screen.
+  s.cursorX = 0;
+  s.cursorY = sandboxLogin(s);
+  t.print('|14Enter your handle, or |15GUEST|14: |15');
+  const name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
+  t.line();
+  if (name !== 'GUEST') {
+    t.print('|14Password: |15');
+    await readLine(s, h.keys, [], 16, attr(0, 0)); // typed in black: nobody sees it
+    t.line();
+  }
+  await lastCallers(t, name);
+
+  const catalog = (await h.catalog()).filter((g) => g.kind === 'shareware' && g.gam);
+  let show = true;
+  for (;;) {
+    if (show) mainMenu(t, s);
+    show = false;
+    t.print(`|06[|14Sandbox|06] |07Time left: |14${minutesLeft()}|07 min |06: |15`);
+    const k = await t.key();
+    t.line(k.length === 1 ? k : '');
+    if (k === 'F' || k === 'N') {
+      await files(t, h, catalog);
+      show = true;
+    } else if (k === 'B') {
+      await bulletins(t);
+      show = true;
+    } else if (k === 'S') await systemInfo(t, catalog.length);
+    else if (k === 'Y') yourStats(t, name, h, minutesLeft());
+    else if (k === 'C') await pageSysop(t, h);
+    else if (k === '?' || k === 'Enter') show = true;
+    else if (k === 'G' || k === 'Escape') {
+      t.print('|14Leave the sandbox? |15[Y/n] ');
+      const yes = (await t.key()) !== 'N';
+      t.line();
+      if (!yes) continue;
+      t.line();
+      t.line(`|07Thanks for playing in ${BBS_NAME}!`);
+      t.line('|07Shake the sand out of your shoes, and register the shareware you enjoy.');
+      await sleep(1200);
+      return;
+    } else t.line('|12Unknown command. |07Press |15?|07 for the menu.');
+  }
 }
-
-const boxBottom = () => `|09╚${'═'.repeat(COLS - 2)}╝`;
-const boxRule = () => `|09╟${'─'.repeat(COLS - 2)}╢`;
-
-/** ║ text padded to the box width ║ */
-function boxRow(text: string): string {
-  return `|09║${text}${' '.repeat(Math.max(0, COLS - 2 - width(text)))}|09║`;
-}
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-// ---- the BBS ------------------------------------------------------------------------
 
 function zipName(g: CatalogEntry): string {
   return `${(g.exe ?? g.id).replace(/\.EXE$/i, '').slice(0, 8).toUpperCase()}.ZIP`;
@@ -128,98 +131,6 @@ function wrap(text: string, width: number): string[] {
   return out;
 }
 
-const statusLine = (online: string) => ` TERMINAL 2.1 │ COM2 │ 14400 N81 │ ANSI │ ${online}`;
-
-/** Dials, waits through the handshake, and prints what the modem says. */
-async function dial(t: Term, h: RetroHost): Promise<void> {
-  t.line('|15TERMINAL 2.1  |07Modem on COM2 ready.');
-  t.line();
-  await t.typeSlowly('ATZ');
-  t.line();
-  await sleep(300);
-  t.line('OK');
-  await t.typeSlowly('ATM1L2X4');
-  t.line();
-  await sleep(200);
-  t.line('OK');
-  await t.typeSlowly(`ATDT${PHONE}`);
-  t.line();
-  const call = dialSounds(h.audio(), PHONE);
-  const start = performance.now();
-  const until = (sec: number) => sleep(Math.max(0, start + sec * 1000 - performance.now()));
-  for (const r of call.rings) {
-    await until(r);
-    t.line('RINGING');
-  }
-  await until(call.answer);
-  t.line('|08(carrier detected, negotiating...)');
-  await until(call.connect);
-  t.line('|14CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS');
-}
-
-export async function runTerminal(h: RetroHost): Promise<void> {
-  const t = new Term(h);
-  const s = h.screen;
-  s.resetPalette();
-  s.clear(attr(7, 0));
-  s.cursorVisible = true;
-  t.status(statusLine('Offline'));
-  await dial(t, h);
-  const online = performance.now();
-  const minutesLeft = () => Math.max(1, 60 - Math.floor((performance.now() - online) / 60000));
-  t.status(statusLine('Online'));
-  await sleep(700);
-
-  // The logon screen.
-  s.cursorX = 0;
-  s.cursorY = loginScreen(s);
-  t.print('|11Enter your handle, or |15GUEST|11: |15');
-  const name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
-  t.line();
-  if (name !== 'GUEST') {
-    t.print('|11Password: |15');
-    await readLine(s, h.keys, [], 16, attr(0, 0)); // typed in black: nobody sees it
-    t.line();
-  }
-  await lastCallers(t, name);
-
-  const catalog = (await h.catalog()).filter((g) => g.kind === 'shareware' && g.gam);
-  let show = true;
-  for (;;) {
-    if (show) mainMenu(t, s);
-    show = false;
-    t.print(`|09[|15Main Menu|09] |07Time left: |14${minutesLeft()}|07 min |09: |15`);
-    const k = await t.key();
-    t.line(k.length === 1 ? k : '');
-    if (k === 'F' || k === 'N') {
-      await files(t, h, catalog);
-      show = true;
-    } else if (k === 'B') {
-      await bulletins(t);
-      show = true;
-    } else if (k === 'S') await systemInfo(t, catalog.length);
-    else if (k === 'Y') yourStats(t, name, h, minutesLeft());
-    else if (k === 'C') await pageSysop(t, h);
-    else if (k === '?' || k === 'Enter') show = true;
-    else if (k === 'G' || k === 'Escape') {
-      t.print('|11Log off now? |15[Y/n] ');
-      const yes = (await t.key()) !== 'N';
-      t.line();
-      if (!yes) continue;
-      t.line();
-      t.line(`|07Thanks for calling ${BBS_NAME}!`);
-      t.line('|07Remember to register the shareware you enjoy.');
-      await sleep(1200);
-      t.line();
-      t.line('|12NO CARRIER');
-      t.status(statusLine('Offline'));
-      await sleep(900);
-      s.clear();
-      return;
-    } else t.line('|12Unknown command. |07Press |15?|07 for the menu.');
-  }
-}
-
 /** Renegade-style: the last few callers after logon. */
 async function lastCallers(t: Term, name: string): Promise<void> {
   const s = t.screenRef;
@@ -232,11 +143,11 @@ async function lastCallers(t: Term, name: string): Promise<void> {
   t.line(boxRow(' |11Caller  Handle               Location              Baud   Time  Did'));
   t.line(boxRule());
   const callers: [string, string, string, string, string][] = [
-    ['1,989', 'PIXEL WIZARD', 'Nashua, NH', '9600', 'D'],
-    ['1,990', 'MONSTER MASH', 'Concord, NH', '14400', 'U'],
-    ['1,991', 'SCROLLMASTER', 'Lowell, MA', '2400', '-'],
-    ['1,992', 'THE BLOCKSMITH', 'Manchester, NH', '14400', 'D'],
-    ['1,993', 'GRAVITY GIRL', 'Keene, NH', '9600', 'DU'],
+    ['1,989', 'PIXEL WIZARD', 'Monroeville, PA', '9600', 'D'],
+    ['1,990', 'MONSTER MASH', 'Bethel Park, PA', '14400', 'U'],
+    ['1,991', 'SCROLLMASTER', 'Penn Hills, PA', '2400', '-'],
+    ['1,992', 'THE BLOCKSMITH', 'Mt. Lebanon, PA', '14400', 'D'],
+    ['1,993', 'SAND CASTLE', 'Squirrel Hill, PA', '9600', 'DU'],
   ];
   callers.forEach(([n, who, where, baud, did], i) =>
     t.line(boxRow(` |14${n.padStart(6)}  |15${who.padEnd(20)} |07${where.padEnd(20)} |10${baud.padStart(5)}  |07${String(19 + i).padStart(2)}:${String((i * 17) % 60).padStart(2, '0')}  |13${did}`)),
@@ -252,12 +163,12 @@ function mainMenu(t: Term, s: RetroHost['screen']): void {
   s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
   s.cursorX = 0;
   s.cursorY = 0;
-  fadeBar(s, 0, 1);
+  sandBanner(s, BBS_NAME);
   s.cursorY = 1;
   t.line(boxTop('Main Menu'));
-  const item = (key: string, label: string) => `|09[|14${key}|09] |07${label.padEnd(30)}`;
+  const item = (key: string, label: string) => `|06[|14${key}|06] |07${label.padEnd(30)}`;
   const rows: [string, string, string, string][] = [
-    ['F', 'File Areas', 'B', 'Bulletins'],
+    ['F', 'File Areas (the sand pile)', 'B', 'Bulletins'],
     ['N', 'New Files Scan', 'S', 'System Information'],
     ['Y', 'Your Statistics', 'C', 'Page the SysOp'],
     ['?', 'Redisplay this menu', 'G', 'Goodbye (log off)'],
@@ -272,9 +183,9 @@ function mainMenu(t: Term, s: RetroHost['screen']): void {
 async function systemInfo(t: Term, files: number): Promise<void> {
   t.line();
   for (const l of [
-    `|15${BBS_NAME} |08─ |07a Renegade-style BBS`,
+    `|15${BBS_NAME} |08─ |07Pittsburgh, PA |08─ |07Renegade`,
     `|07Nodes: |142|07   Modem: |1414,400 bps V.32bis|07   Files online: |14${files}`,
-    '|07Callers: |141,994|07   Running since: |14March 1993',
+    '|07Callers: |141,994|07   SysOp: |14Lewis',
     '|07Specialty: shareware made with |15Game-Maker|07 and tips for designers.',
   ])
     t.line(l);
@@ -319,8 +230,12 @@ async function bulletins(t: Term): Promise<void> {
     '|07readme. Many authors send a full version with more levels.',
     '',
     '|14Bulletin #2: |15Made with Game-Maker',
-    '|07Every game in the Files area was built with Game-Maker by',
+    '|07Every game in the sand pile was built with Game-Maker by',
     '|07Recreational Software Designs. No programming needed!',
+    '',
+    '|14Bulletin #3: |15Other boards in the 412',
+    '|07Feel like kicking back? Call |13The Sofa|07, a multi-line Major BBS',
+    '|07with teleconference. It is in TERMINAL\'s dialing directory.',
   ])
     t.line(l);
   t.line();
@@ -333,7 +248,7 @@ async function files(t: Term, h: RetroHost, catalog: CatalogEntry[]): Promise<vo
   s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
   s.cursorX = 0;
   s.cursorY = 0;
-  t.line(boxTop('File Area 1: Game-Maker Shareware'));
+  t.line(boxTop('The Sand Pile: Game-Maker Shareware'));
   t.line(boxRow('|11  #  File name        Size  Description'));
   t.line(boxBottom());
   let lines = 4;
