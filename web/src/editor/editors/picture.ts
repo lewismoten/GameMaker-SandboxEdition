@@ -1,11 +1,13 @@
 // Pictures (.GIF): view, import, and copy 20x20 areas into blocks (IMAGE.EXE).
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
-import { h, clear, selectField, numberField, pickFiles, toast, download } from '../ui';
-import { paintIndexed } from '../draw';
+import { h, clear, selectField, pickFiles, toast, download, confirmDialog } from '../ui';
+import { blockCanvas, paintBlock, paintIndexed } from '../draw';
+import './picture.css';
+import { isBlankBlock } from './pictureLogic';
 import { decodeGif, encodeGif, isGif, type IndexedImage } from '../../formats/gif';
 import { matchColor, parsePalette, type Palette } from '../../formats/palette';
-import { BLEN, BACKBL, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type BlockKind } from '../../formats/blocks';
+import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../formats/blocks';
 import { gamePreview } from './mediaShared';
 
 // ---- pictures -----------------------------------------------------------------
@@ -51,6 +53,8 @@ registerEditor(['gif'], (host, project, file) => {
   const draw = () => {
     paintIndexed(canvas, img.pixels, img.width, img.height, img.palette);
     const ctx = canvas.getContext('2d')!;
+    ctx.strokeStyle = '#000';
+    ctx.strokeRect(overlay.x - 0.5, overlay.y - 0.5, BLEN + 1, BLEN + 1);
     ctx.strokeStyle = '#ffd400';
     ctx.strokeRect(overlay.x + 0.5, overlay.y + 0.5, BLEN - 1, BLEN - 1);
     info.textContent = `${img.width}×${img.height} pixels. Grab area at (${overlay.x}, ${overlay.y}).`;
@@ -64,26 +68,119 @@ registerEditor(['gif'], (host, project, file) => {
       overlay.y -= overlay.y % BLEN;
     }
     draw();
+    updatePreview();
   });
 
+  // ---- copy into a block: the set's blocks, the slot being replaced, before → after ----
   const blockFiles = ['bbl', 'mbl', 'cbl'].flatMap((e) => project.files.byExtension(e));
   let target = blockFiles[0] ?? '';
   let targetBlock = 0;
   let remap = true;
-  const grab = () => {
-    if (!target) return toast('Create a block set first.', 'error');
-    const kind = target.split('.').pop() as BlockKind;
+  let advance = true;
+  let blocks: Block[] = [];
+  let destPal: Palette = img.palette;
+  let kind: BlockKind = 'bbl';
+  const slots = h('div', { class: 'pic-slots', role: 'listbox', 'aria-label': 'Block to replace' });
+  const before = h('canvas', { class: 'pixel checker', width: BLEN, height: BLEN });
+  const after = h('canvas', { class: 'pixel checker', width: BLEN, height: BLEN });
+  const beforeCap = h('figcaption');
+  const slotLabel = h('strong');
+  const copyBtn = h('button', { class: 'primary', onclick: () => void grab() }, 'Copy into block');
+
+  const loadSet = () => {
+    if (!target || !project.files.has(target)) {
+      blocks = [];
+      return;
+    }
+    kind = target.split('.').pop() as BlockKind;
     const raw = project.files.get(target)!;
-    const blocks = parseBlocks(raw, Math.max(BLOCK_COUNTS[kind], Math.ceil(raw.length / BLOCK_SIZE)));
-    const destPal = project.paletteFor(target).palette;
-    const b = blocks[Math.min(targetBlock, blocks.length - 1)];
+    blocks = parseBlocks(raw, Math.max(BLOCK_COUNTS[kind], Math.ceil(raw.length / BLOCK_SIZE)));
+    destPal = project.paletteFor(target).palette;
+    targetBlock = Math.min(targetBlock, BLOCK_COUNTS[kind] - 1);
+  };
+  /** The grabbed 20×20 area as it will be stored in the block. */
+  const grabbed = (): Uint8Array => {
+    const px = new Uint8Array(BLEN * BLEN);
     for (let y = 0; y < BLEN; y++)
       for (let x = 0; x < BLEN; x++) {
         const v = img.pixels[(overlay.y + y) * img.width + overlay.x + x];
-        b.pixels[y * BLEN + x] = remap ? matchColor(destPal, img.palette[v * 3], img.palette[v * 3 + 1], img.palette[v * 3 + 2]) : v;
+        px[y * BLEN + x] = remap ? matchColor(destPal, img.palette[v * 3], img.palette[v * 3 + 1], img.palette[v * 3 + 2]) : v;
       }
+    return px;
+  };
+  const sprite = () => kind !== 'bbl';
+  const renderSlots = () => {
+    clear(
+      slots,
+      ...blocks.slice(0, BLOCK_COUNTS[kind]).map((b, i) =>
+        h(
+          'button',
+          {
+            class: `${i === targetBlock ? 'target' : ''} ${isBlankBlock(b.pixels, sprite()) ? 'blank' : ''}`,
+            role: 'option',
+            'aria-selected': String(i === targetBlock),
+            title: `Block ${i}${isBlankBlock(b.pixels, sprite()) ? ' (empty)' : ''}`,
+            onclick: () => ((targetBlock = i), updateTarget()),
+          },
+          blockCanvas(b.pixels, destPal, { transparent: sprite(), className: sprite() ? 'checker' : '' }),
+          h('small', null, i),
+        ),
+      ),
+    );
+  };
+  const updatePreview = () => {
+    if (!blocks.length) return;
+    paintBlock(after, grabbed(), destPal, { transparent: sprite() });
+  };
+  const updateTarget = () => {
+    if (!blocks.length) {
+      clear(slots, h('p', { class: 'meta' }, 'This game has no block sets yet. Add a background, monster or character block set first.'));
+      copyBtn.disabled = true;
+      return;
+    }
+    copyBtn.disabled = false;
+    const b = blocks[targetBlock];
+    const blank = isBlankBlock(b.pixels, sprite());
+    paintBlock(before, b.pixels, destPal, { transparent: sprite() });
+    beforeCap.textContent = blank ? 'Now: empty' : 'Now';
+    slotLabel.textContent = `Block ${targetBlock} of ${target}`;
+    copyBtn.textContent = blank ? `Copy into block ${targetBlock}` : `Replace block ${targetBlock}`;
+    [...slots.children].forEach((el, i) => {
+      el.classList.toggle('target', i === targetBlock);
+      el.setAttribute('aria-selected', String(i === targetBlock));
+    });
+    slots.children[targetBlock]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    updatePreview();
+  };
+  const reloadSet = () => {
+    loadSet();
+    if (blocks.length) renderSlots();
+    updateTarget();
+  };
+
+  const grab = async () => {
+    if (!target || !blocks.length) return toast('Create a block set first.', 'error');
+    const b = blocks[targetBlock];
+    if (
+      !isBlankBlock(b.pixels, sprite()) &&
+      !(await confirmDialog(
+        'Replace this block?',
+        `Block ${targetBlock} of ${target} already has a picture. Replace it with the area you chose?`,
+        `Replace block ${targetBlock}`,
+      ))
+    )
+      return;
+    b.pixels.set(grabbed());
     project.files.set(target, serializeBlocks(blocks));
     toast(`Copied into block ${targetBlock} of ${target}.`);
+    const copied = targetBlock;
+    if (advance) {
+      const next = blocks.findIndex((x, i) => i > copied && i < BLOCK_COUNTS[kind] && isBlankBlock(x.pixels, sprite()));
+      if (next >= 0) targetBlock = next;
+    }
+    renderSlots();
+    updateTarget();
+    slots.children[copied]?.classList.add('just-copied');
   };
 
   let replacePal = '';
@@ -98,32 +195,67 @@ registerEditor(['gif'], (host, project, file) => {
     canvas,
     info,
     h(
-      'div',
-      { class: 'panel toolbar', style: 'margin-top:8px' },
-      fileField(
-        project,
-        'Block set',
-        ['bbl', 'mbl', 'cbl'],
-        () => target,
-        (v) => v && (target = v),
-        { allowNone: false },
+      'section',
+      { class: 'panel pic-copy' },
+      h('h3', null, 'Copy the area into a block'),
+      h(
+        'div',
+        { class: 'toolbar' },
+        fileField(
+          project,
+          'Block set',
+          ['bbl', 'mbl', 'cbl'],
+          () => target,
+          (v) => v && ((target = v), reloadSet()),
+          { allowNone: false },
+        ),
+        selectField(
+          'Colors',
+          [
+            [1, 'Match the block set’s palette'],
+            [0, 'Copy color numbers as they are'],
+          ] as [number, string][],
+          () => (remap ? 1 : 0),
+          (v) => ((remap = !!v), updatePreview()),
+        ),
       ),
-      numberField(
-        'Block number',
-        () => targetBlock,
-        (v) => (targetBlock = v),
-        { min: 0, max: BACKBL - 1 },
+      h(
+        'div',
+        { class: 'pic-copy-body' },
+        h(
+          'div',
+          { class: 'pic-swap' },
+          slotLabel,
+          h(
+            'div',
+            { class: 'pic-swap-row' },
+            h('figure', null, before, beforeCap),
+            h('span', { class: 'pic-arrow', 'aria-hidden': 'true' }, '➜'),
+            h('figure', null, after, h('figcaption', null, 'After copying')),
+          ),
+          h(
+            'label',
+            { class: 'pic-advance' },
+            (() => {
+              const c = h('input', { type: 'checkbox', checked: advance });
+              c.addEventListener('change', () => (advance = c.checked));
+              return c;
+            })(),
+            'Then move on to the next empty block',
+          ),
+          copyBtn,
+        ),
+        h(
+          'div',
+          { class: 'pic-slots-wrap' },
+          h(
+            'div',
+            { class: 'meta' },
+            'Click the block to replace. The orange frame is the one you’re about to change; blocks marked “empty” have nothing drawn yet.',
+          ),
+          slots,
+        ),
       ),
-      selectField(
-        'Colors',
-        [
-          [1, 'Match the block set’s palette'],
-          [0, 'Copy color numbers as they are'],
-        ] as [number, string][],
-        () => (remap ? 1 : 0),
-        (v) => (remap = !!v),
-      ),
-      h('button', { class: 'primary', onclick: grab }, 'Copy into block'),
     ),
     h(
       'div',
@@ -165,6 +297,7 @@ registerEditor(['gif'], (host, project, file) => {
     preview.el,
   );
   draw();
+  reloadSet();
   return preview.stop;
 });
 
