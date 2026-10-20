@@ -11,6 +11,7 @@ import { renderShot } from './boxArt';
 import { installCrtWarp } from './crtWarp';
 import { sevenSegment, floppyDrive, cdDrive, openTray } from './caseParts';
 import { keyboard } from './keyboard';
+import { deskModem } from './modem';
 import { snowyWindow } from './snowWindow';
 import { loadCatalog } from '../project/files';
 import { Project } from '../editor/project';
@@ -63,6 +64,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const powerBtn = h('button', { class: 'case-btn power', 'aria-label': 'Power', 'aria-pressed': 'false', onclick: () => void power() }, '⏻');
   const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) });
   const box = h('div', { class: 'box' });
+  const modem = deskModem(() => void command('C:\nTERMINAL'));
   // Captions from the real box; pictures from the sample games' own maps.
   const BOX_TILES: [string, string][] = [
     ['pipemare', 'EXPLORE MAZES'],
@@ -129,6 +131,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         h(
           'div',
           { class: 'case' },
+          // the modem sits on top of the case, beside the monitor stand
+          modem.el,
           h('div', { class: 'case-buttons' }, h('label', null, powerBtn, 'POWER'), h('label', null, turboBtn, 'TURBO')),
           h('div', { class: 'leds' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz'))),
           h('span'),
@@ -214,6 +218,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     desk.dataset.power = 'on';
     powerBtn.setAttribute('aria-pressed', 'true');
     powerLed.classList.add('on');
+    modem.power(true);
     setTurbo(turbo);
     await computer.powerOn();
     setTurbo(turbo);

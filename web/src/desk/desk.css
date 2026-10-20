@@ -1362,3 +1362,70 @@
     display: none;
   }
 }
+
+/* the external modem (desk/modem.ts), sitting on top of the case */
+.case > .modem {
+  position: absolute;
+  left: 22px;
+  bottom: calc(100% + 1px);
+  z-index: 1;
+  width: 150px;
+}
+
+.case > .modem .caption {
+  display: none;
+}
+
+.case > .modem:hover,
+.case > .modem:focus-visible {
+  transform: translateY(-3px);
+}
+
+.modem-body {
+  position: relative;
+  height: 44px;
+  padding: 6px 8px 0;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(#3b3d42, #1f2024 70%);
+  box-shadow:
+    inset 0 1px 0 #6a6d75,
+    0 8px 12px rgba(0, 0, 0, 0.45);
+  text-align: left;
+}
+
+.modem-brand {
+  display: block;
+  color: #c9ccd2;
+  font: 700 7px/1 system-ui, sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.modem-lights {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7px;
+}
+
+.mlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.mlight small {
+  color: #9da1a9;
+  font: 600 5.5px/1 system-ui, sans-serif;
+}
+
+.mled {
+  width: 7px;
+  height: 4px;
+  border-radius: 1px;
+  background: #3a1210;
+}
+
+.mled.on {
+  background: #ff4b36;
+  box-shadow: 0 0 5px #ff4b36;
+}
