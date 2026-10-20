@@ -195,6 +195,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     // vga stays in the monitor like the real thing.
     onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
+    // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
+    onDriveAccess: (drive) => {
+      if (drive === 'A') floppy.busy(700);
+      else if (drive === 'D') cd.busy(900);
+    },
   });
   pc = computer;
   const capture = deskCapture(computer);

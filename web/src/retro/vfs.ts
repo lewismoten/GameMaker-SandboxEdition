@@ -81,6 +81,8 @@ export function resolvePath(input: string, drive: string, cwdOf: (drive: string)
 
 export class FileSystem {
   drives = new Map<string, Drive>();
+  /** Told whenever a drive is read (the desk lights that drive's LED). */
+  onAccess?: (drive: string) => void;
 
   addDrive(d: Drive): void {
     this.drives.set(d.letter, d);
@@ -90,6 +92,7 @@ export class FileSystem {
   async find(drive: string, parts: string[]): Promise<DosNode | null | undefined> {
     const d = this.drives.get(drive);
     if (!d) return undefined;
+    this.onAccess?.(drive);
     let list = await d.root();
     if (list === null) return null;
     let node: DosNode = { name: '\\', dir: true, size: 0, date: DOS_DATE, list: async () => list! };

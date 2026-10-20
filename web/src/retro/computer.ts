@@ -30,6 +30,8 @@ export interface ComputerOptions {
   speed: SpeedSetting;
   onModeChange?: (mode: MonitorMode) => void;
   onDisksChanged?: (insert?: string) => void;
+  /** A drive is being read (DIR, loading a game or Game-Maker, ...): light its LED. */
+  onDriveAccess?: (drive: string) => void;
   openModern: (projectId: string, file?: string) => void;
 }
 
@@ -97,6 +99,7 @@ export class Computer implements RetroHost {
       makeDir: (drive, parts) => this.makeDir(drive, parts),
     });
     this.downloads.onChange = () => this.opts.onDisksChanged?.();
+    this.fs.onAccess = (drive) => this.opts.onDriveAccess?.(drive);
     this.buildDrives();
     this.setMode('off');
   }
@@ -225,6 +228,7 @@ export class Computer implements RetroHost {
   }
 
   disk(): InsertedDisk | undefined {
+    if (this.inserted) this.opts.onDriveAccess?.('A');
     return this.inserted;
   }
 
@@ -368,6 +372,7 @@ export class Computer implements RetroHost {
     try {
       switch (ref.kind) {
         case 'gm':
+          this.opts.onDriveAccess?.(this.shell.drive);
           await runGameMaker(this);
           break;
         case 'playgame':
@@ -383,6 +388,7 @@ export class Computer implements RetroHost {
           this.screen.print('Game-Maker 3.00 is already installed in C:\\GM.\nType GM to start it.\n');
           break;
         case 'game': {
+          this.opts.onDriveAccess?.(ref.diskId ? 'A' : this.shell.drive);
           const files = new GameFiles(await ref.files());
           await this.playGame(files, ref.gam, ref.title, ref.notice);
           break;
@@ -530,6 +536,7 @@ export class Computer implements RetroHost {
   /** The game in a folder (A:\, C:\GM\X, C:\DOWNLOAD\X, D:\GM\X, D:\GAMEWARE\X). */
   async gameIn(drive: string, parts: string[]): Promise<FolderGame | undefined> {
     const path = `${drive}:\\${parts.join('\\')}`;
+    this.opts.onDriveAccess?.(drive);
     if (drive === 'A' && !parts.length) {
       const d = this.inserted;
       if (!d || d.disk.kind === 'blank') return undefined;
