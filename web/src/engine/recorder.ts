@@ -48,6 +48,11 @@ export class Recorder {
     this.paused = false;
   }
 
+  /** Game ticks counted since the recording or playback (re)started; the playback position. */
+  get tick(): number {
+    return this.timer;
+  }
+
   get playing(): boolean {
     return this.mode === PLAYBACK;
   }
@@ -81,7 +86,13 @@ export class Recorder {
 
   /** For save games. */
   snapshot(): unknown {
-    return { mode: this.mode, keys: this.keys.slice(0, Math.max(this.index, this.keys.length)), index: this.index, timer: this.timer, lastKeyPress: this.lastKeyPress };
+    return {
+      mode: this.mode,
+      keys: this.keys.slice(0, Math.max(this.index, this.keys.length)),
+      index: this.index,
+      timer: this.timer,
+      lastKeyPress: this.lastKeyPress,
+    };
   }
 
   restore(s: { mode: number; keys: RecordedKey[]; index: number; timer: number; lastKeyPress: number }): void {
