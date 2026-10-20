@@ -130,7 +130,7 @@ export function mediaThumb(files: GameFiles, name: string, palette?: Palette, de
   const kind = kindOf(name);
   const bytes = files.get(name);
   const thumb = (pic: ScreenPicture) => screenCanvas(pic, 'thumb pixel');
-  if (bytes && kind === 'bkd') {
+  if (bytes && (kind === 'bkd' || kind === 'gif')) {
     const pic = pictureScreen(files, name);
     if (pic) return thumb(pic);
   }
