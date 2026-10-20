@@ -19,6 +19,8 @@ import { buildParlorBlocks, buildParlorMap, buildParlorMonsters } from './parlor
 import { buildScreens } from './screens';
 import { buildFlics } from './flics';
 import { buildMusic } from './music';
+import { buildSounds } from './sounds';
+import { serializeSoundSet } from '../../web/src/formats/sound';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -49,4 +51,7 @@ const view = (i: number) => ({ map: acts[i].map, bbl: tbs.build(), mbl: critters
 for (const [name, bytes] of Object.entries(buildScreens({ act1: view(0), act2: view(1) }))) disk.put(name, bytes);
 for (const [name, bytes] of Object.entries(buildFlics())) disk.put(name, bytes);
 for (const [name, bytes] of Object.entries(buildMusic())) disk.put(name, bytes);
+const sounds = buildSounds();
+disk.put('final.snd', serializeSoundSet(sounds.set));
+for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
 disk.write();
