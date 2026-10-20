@@ -204,7 +204,7 @@ export class InstrumentPanel {
     const head = h(
       'div',
       { class: 'mus-inst-head' },
-      h('h3', null, `Instrument of ${doc.trackName(ch)}`),
+      h('h3', null, `Track ${ch + 1} instrument${drum ? ` · ${doc.trackName(ch)}` : ''}`),
       h(
         'div',
         { class: 'toolbar' },

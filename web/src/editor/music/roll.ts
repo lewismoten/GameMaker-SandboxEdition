@@ -785,7 +785,20 @@ export class PianoRoll {
         for (const n of sel) setNote(song, n, n.on.tick + dt, noteEnd(song, n) - n.on.tick, n.on.a + dk);
       });
       if (dk) void doc.audition(doc.track, sel[0].on.a);
+      this.reveal(sel);
     }
+  }
+
+  /** Scrolls so the notes are in view. */
+  reveal(notes: Note[]): void {
+    if (!notes.length) return;
+    const keys = notes.map((n) => n.on.a);
+    const hi = Math.max(...keys);
+    const lo = Math.min(...keys);
+    if (hi > this.topKey || lo < this.topKey - this.visibleRows + 1) this.setTopKey((hi + lo) / 2 + this.visibleRows / 2);
+    const start = Math.min(...notes.map((n) => n.on.tick));
+    if (start < this.scrollX || start > this.scrollX + this.span * 0.9) this.scrollX = Math.max(0, start - this.span * 0.1);
+    this.doc.emit('view');
   }
 
   copy(): void {
@@ -802,6 +815,7 @@ export class PianoRoll {
       doc.selection.clear();
       for (const c of doc.clipboard) doc.selection.add(addNote(doc.song, doc.track, c.key, at + c.dt, c.len));
     });
+    this.reveal([...doc.selection]);
   }
 
   // ---- instrument change popup ----
