@@ -10,11 +10,20 @@ export class GameFiles {
   }
 
   get(name: string | undefined): Uint8Array | undefined {
-    return name ? this.files.get(normalize(name)) : undefined;
+    return name ? (this.files.get(normalize(name)) ?? this.files.get(cdName(name))) : undefined;
   }
 
   has(name: string | undefined): boolean {
-    return !!name && this.files.has(normalize(name));
+    return !!name && (this.files.has(normalize(name)) || this.files.has(cdName(name)));
+  }
+
+  /** The stored name a reference opens (see cdName), or undefined when there is none. */
+  resolve(name: string | undefined): string | undefined {
+    if (!name) return undefined;
+    const n = normalize(name);
+    if (this.files.has(n)) return n;
+    const c = cdName(name);
+    return this.files.has(c) ? c : undefined;
   }
 
   set(name: string, bytes: Uint8Array): void {
@@ -62,6 +71,15 @@ export function normalize(name: string): string {
   const base = (name.replace(/\\/g, '/').split('/').pop() ?? name).trim().toLowerCase();
   const dot = base.indexOf('.');
   return dot < 0 ? base.slice(0, 8) : `${base.slice(0, Math.min(dot, 8))}.${base.slice(dot + 1, dot + 4)}`;
+}
+
+/**
+ * The name a file got on the Game-Maker CD. Its ISO 9660 copy allowed only A-Z, 0-9 and _,
+ * so A-J.BKD, PARSEC-W.GIF and CAN'T.GIF are a_j.bkd, parsec_w.gif and can_t.gif there,
+ * while the games still name them the DOS way. A name not found as is is looked up this way.
+ */
+export function cdName(name: string): string {
+  return normalize(name).replace(/[^a-z0-9_.]/g, '_');
 }
 
 /** Files only meaningful to DOS. */
