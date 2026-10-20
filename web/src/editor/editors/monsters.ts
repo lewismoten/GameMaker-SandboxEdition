@@ -3,6 +3,8 @@ import { registerEditor } from './index';
 import { h, clear, numberField, selectField, checkField, debounce } from '../ui';
 import { blockCanvas, paintBlock } from '../draw';
 import { paletteChooser } from './blocks';
+import { blockButton } from '../blockChooser';
+import { fileField } from '../filePicker';
 import { MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import { LASTMON, LASTSL, MAXMARCH, parseMonsters, serializeMonsters, type Monster } from '../../formats/monster';
 
@@ -44,6 +46,8 @@ registerEditor(['mon'], (host, project, file) => {
   let current = 0;
   const save = debounce(() => project.files.set(file, serializeMonsters(mons)), 250);
   const chooser = paletteChooser(project, mblName || file, () => render());
+  /** Each monster as its first animation frame, for choosing monsters by picture. */
+  const monsterPictures = () => mons.map((mon) => mblk[mon.pic[0]?.[0] ?? -1] ?? newBlockSet('mbl')[0]);
 
   const list = h('div', { class: 'block-picker', style: 'max-height:none;grid-template-columns:repeat(auto-fill,44px)' });
   const detail = h('div', { class: 'stack', style: 'flex:1 1 520px;min-width:0' });
@@ -90,8 +94,6 @@ registerEditor(['mon'], (host, project, file) => {
     const frames = m.pic.slice(0, LASTSL);
     const count = frames.findIndex(([p]) => p >= MONBL || p < 0);
     const shown = count < 0 ? LASTSL : count;
-    const blockOptions: [number, string][] = [...Array.from({ length: MONBL }, (_, i) => [i, `Block ${i}`] as [number, string])];
-    const monOptions: [number, string][] = [[LASTMON, 'Nothing (it is gone)'], ...Array.from({ length: LASTMON }, (_, i) => [i, `Monster ${i}`] as [number, string])];
     const endKind = m.end === -2 ? -2 : m.end === -1 ? -1 : m.end === 0 ? 0 : 1;
 
     const pathTable = (p: 0 | 1, title: string, hint: string) =>
@@ -137,7 +139,7 @@ registerEditor(['mon'], (host, project, file) => {
         h(
           'table',
           { class: 'data' },
-          h('thead', null, h('tr', null, h('th', null, 'Frame'), h('th', null, 'Picture'), h('th', null, ''), h('th', null, 'Ticks (1/18 s)'))),
+          h('thead', null, h('tr', null, h('th', null, 'Frame'), h('th', null, 'Picture'), h('th', null, 'Ticks (1/18 s)'))),
           h(
             'tbody',
             null,
@@ -146,8 +148,7 @@ registerEditor(['mon'], (host, project, file) => {
                 'tr',
                 null,
                 h('td', null, i + 1),
-                h('td', null, selectField('', blockOptions, () => f[0], (v) => edit(() => ((f[0] = v), renderDetail(), renderList())))),
-                h('td', null, f[0] >= 0 && f[0] < MONBL ? blockCanvas(mblk[f[0]].pixels, chooser.palette, { transparent: true, className: 'checker' }) : ''),
+                h('td', null, blockButton(() => mblk, () => chooser.palette, () => f[0], (v) => edit(() => ((f[0] = v), renderDetail(), renderList())), { title: `Frame ${i + 1}: a monster block` })),
                 h('td', null, numberField('', () => f[1], (v) => edit(() => (f[1] = v)), { min: 1, max: 32767 })),
               ),
             ),
@@ -190,7 +191,16 @@ registerEditor(['mon'], (host, project, file) => {
         { class: 'panel grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr))' },
         numberField('Power', () => m.power, (v) => edit(() => (m.power = v)), { min: 0, max: 255, title: 'Stronger monsters destroy weaker ones they touch. 100 or more cannot be destroyed by touching the character.' }),
         numberField('Score when destroyed by a weapon', () => m.upscore, (v) => edit(() => (m.upscore = v)), { min: -32768, max: 32767 }),
-        selectField('When destroyed it becomes', monOptions, () => (m.newmon < 0 ? LASTMON : m.newmon), (v) => edit(() => (m.newmon = v))),
+        h(
+          'label',
+          { class: 'field' },
+          h('span', null, 'When destroyed it becomes'),
+          blockButton(monsterPictures, () => chooser.palette, () => (m.newmon < 0 ? LASTMON : m.newmon), (v) => edit(() => (m.newmon = v)), {
+            title: 'The monster it turns into when destroyed',
+            extras: [{ value: LASTMON, label: 'nothing', icon: '∅' }],
+            only: (_, i) => !!mons[i]?.used,
+          }),
+        ),
         selectField(
           'Lives',
           [
@@ -249,11 +259,12 @@ registerEditor(['mon'], (host, project, file) => {
     h(
       'div',
       { class: 'toolbar', style: 'margin-bottom:8px' },
-      selectField('Monster blocks', project.files.byExtension('mbl').map((f) => [f, f] as [string, string]), () => mblName, (v) => {
+      fileField(project, 'Monster blocks', ['mbl'], () => mblName, (v) => {
+        if (!v) return;
         mblName = v;
         mblk = parseBlocks(project.files.get(v)!, MONBL);
         render();
-      }),
+      }, { allowNone: false }),
       chooser.el,
     ),
     h('div', { class: 'row' }, h('div', { style: 'flex:0 1 240px' }, list), detail),
