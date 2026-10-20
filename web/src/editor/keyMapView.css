@@ -355,6 +355,22 @@
   .km-body {
     padding: 10px;
   }
+  /* The main keys scroll sideways at a readable size; the arrows and number pad fit below. */
+  .km-boards {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding: 8px;
+  }
+  .km-board:first-child {
+    flex: none;
+    width: 600px;
+  }
+  .km-board:last-child {
+    flex: none;
+    width: min(300px, 100%);
+  }
   .km-row {
     grid-template-columns: 1fr;
     gap: 6px;
