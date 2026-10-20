@@ -3,7 +3,12 @@
 import { h } from '../../editor/ui';
 import { mapShot } from '../../desk/boxArt';
 import type { CatalogEntry } from '../../project/files';
-import type { MapPanel, PrintablesFile } from './types';
+import type { MapPanel, PrintablesFile, Portrait } from './types';
+import { cdName } from '../../project/files';
+import { parseCharacter } from '../../formats/character';
+import { BLEN, CHARBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
+import { parsePalette } from '../../formats/palette';
+import { paintIndexed } from '../../editor/draw';
 
 /** Printed on everything with an address on it. */
 export const FICTIONAL_NOTE =
@@ -120,4 +125,33 @@ export function fictionalNote(): HTMLElement {
 export function splitTitle(title: string): [string, string] {
   const i = title.indexOf(':');
   return i < 0 ? [title, ''] : [title.slice(0, i), title.slice(i + 1).trim()];
+}
+
+async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
+  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
+  if (!n) return undefined;
+  const r = await fetch(`./${entry.path}${n}`).catch(() => undefined);
+  return r?.ok ? new Uint8Array(await r.arrayBuffer()) : undefined;
+}
+
+/** The hero as he stands in his first character sequence: top and bottom block, 20 x 40. */
+export async function portrait(entry: CatalogEntry, p: Portrait): Promise<string | undefined> {
+  const [chrB, cblB, palB] = await Promise.all([p.chr, p.cbl, p.pal].map((f) => fetchFile(entry, f)));
+  if (!chrB || !cblB || !palB) return undefined;
+  try {
+    const chr = parseCharacter(chrB);
+    const blocks = parseBlocks(cblB, CHARBL);
+    const frame = chr.sequences[p.seq ?? 0].frames[0];
+    const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
+    for (const [pic, y0] of [
+      [frame.pic1, 0],
+      [frame.pic2, BLEN],
+    ] as const)
+      if (blocks[pic]) px.set(blocks[pic].pixels, y0 * BLEN);
+    const c = document.createElement('canvas');
+    paintIndexed(c, px, BLEN, BLEN * 2, parsePalette(palB), true);
+    return c.toDataURL();
+  } catch {
+    return undefined;
+  }
 }

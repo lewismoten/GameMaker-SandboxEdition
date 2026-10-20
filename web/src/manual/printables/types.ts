@@ -97,6 +97,14 @@ export interface JournalItem extends ItemBase {
   entries: { date: string; html: string }[];
 }
 
+/** The hero from a .CHR file: the first frame of a sequence (0 = standing). */
+export interface Portrait {
+  chr: string;
+  cbl: string;
+  pal: string;
+  seq?: number;
+}
+
 /** An ID card, license or membership card from the game's world. */
 export interface IdCardItem extends ItemBase {
   kind: 'idcard';
@@ -109,6 +117,8 @@ export interface IdCardItem extends ItemBase {
   ink?: string;
   /** Photo: a map window centered on the hero (2x2 blocks works well). */
   photo?: MapPanel;
+  /** Or the hero himself, from his character file (drawn over `photo` if both are given). */
+  portrait?: Portrait;
   /** Text on the back of the card. */
   back?: string;
 }

@@ -1,7 +1,7 @@
 // The kinds of paper a game describes in its printables.json: maps and posters, hint books,
 // letters, newspapers, journals, ID cards, charts and fold-out star charts.
 import { h } from '../../editor/ui';
-import { sheet, html, mapPicture, hashString, rng, type PrintContext, type Sheet } from './kit';
+import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
 import { redCode } from './redFilm';
 import type { ChartItem, HintBookItem, IdCardItem, JournalItem, LetterItem, MapItem, MapPanel, NewspaperItem, PrintableItem, StarChartItem } from './types';
 
@@ -150,6 +150,7 @@ async function journal(it: JournalItem): Promise<Sheet[]> {
 // ------------------------------------------------------------------ ID card
 async function idCard(ctx: PrintContext, it: IdCardItem): Promise<Sheet[]> {
   const photo = it.photo ? await ctx.shot(it.photo) : undefined;
+  const face = it.portrait ? await portrait(ctx.entry, it.portrait) : undefined;
   const style = `--card:${it.color ?? '#2b4f8c'};--card-ink:${it.ink ?? '#fff'}`;
   const r = rng(hashString(it.name));
   const front = sheet(
@@ -160,7 +161,12 @@ async function idCard(ctx: PrintContext, it: IdCardItem): Promise<Sheet[]> {
     h(
       'div',
       { class: 'id-body' },
-      h('div', { class: 'id-photo' }, photo ? h('img', { src: photo, alt: it.name }) : null),
+      h(
+        'div',
+        { class: 'id-photo', style: photo ? `background-image:url(${photo})` : '' },
+        face ? h('img', { src: face, alt: it.name, class: 'id-face' }) : null,
+        !photo && !face ? h('span', null, 'PHOTO ON FILE') : null,
+      ),
       h(
         'div',
         { class: 'id-fields' },

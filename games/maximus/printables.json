@@ -1,0 +1,1204 @@
+{
+  "pitch": "Courier Max flies, walks, drives and dives across 88 worlds to bring ten star-shards home and relight the dead star at the heart of the galaxy.",
+  "keys": {
+    "Z": "Plasma Lance",
+    "X": "Nova Core",
+    "Q": "Dash Boots (left)",
+    "E": "Dash Boots (right)",
+    "C": "Shield Emitter",
+    "F": "Hover Pack",
+    "V": "Mine Layer",
+    "H": "Med Kit",
+    "W": "Flak Cannon",
+    "T": "Hail (say hello)",
+    "P": "Pick up a module",
+    "D": "Drop a module"
+  },
+  "items": [
+    {
+      "kind": "starchart",
+      "title": "Fold-out galaxy chart",
+      "note": "Opens out, prints landscape",
+      "promised": true,
+      "heading": "THE HUNDRED WORLDS",
+      "hub": {
+        "name": "MAXIMUS CORE",
+        "note": "all ten shards"
+      },
+      "sectors": [
+        {
+          "name": "The Cradle",
+          "gate": "open",
+          "worlds": [
+            {
+              "name": "Verdance",
+              "kind": "surface"
+            },
+            {
+              "name": "Little Hollow",
+              "kind": "surface",
+              "holds": "Plasma Lance"
+            },
+            {
+              "name": "Ambermoor",
+              "kind": "surface",
+              "holds": "Ruby shard"
+            },
+            {
+              "name": "Sandglass",
+              "kind": "surface"
+            },
+            {
+              "name": "Frostmere",
+              "kind": "surface"
+            },
+            {
+              "name": "Willowisp",
+              "kind": "surface"
+            },
+            {
+              "name": "Copperfield",
+              "kind": "surface",
+              "holds": "Dash Boots"
+            },
+            {
+              "name": "Tamsin Lakes",
+              "kind": "surface"
+            },
+            {
+              "name": "Old Orchard",
+              "kind": "surface"
+            },
+            {
+              "name": "Brightwater",
+              "kind": "ocean",
+              "holds": "Amber shard"
+            },
+            {
+              "name": "Kelpie",
+              "kind": "ocean"
+            },
+            {
+              "name": "Dune Wheel",
+              "kind": "rover"
+            },
+            {
+              "name": "Saltpan",
+              "kind": "rover"
+            },
+            {
+              "name": "Outpost Nine",
+              "kind": "station",
+              "holds": "Med Kit"
+            },
+            {
+              "name": "Waystation Ceres",
+              "kind": "station"
+            },
+            {
+              "name": "Mossback",
+              "kind": "surface"
+            },
+            {
+              "name": "Gale Point",
+              "kind": "surface"
+            },
+            {
+              "name": "Hearthstone",
+              "kind": "surface"
+            }
+          ]
+        },
+        {
+          "name": "Emberreach",
+          "gate": "Ruby + Amber",
+          "worlds": [
+            {
+              "name": "Cinderfall",
+              "kind": "surface",
+              "holds": "Citrine shard"
+            },
+            {
+              "name": "Ashveil",
+              "kind": "surface"
+            },
+            {
+              "name": "Pyre",
+              "kind": "surface",
+              "holds": "Nova Core"
+            },
+            {
+              "name": "Basalt Bay",
+              "kind": "surface"
+            },
+            {
+              "name": "Smoulder",
+              "kind": "surface"
+            },
+            {
+              "name": "Kiln",
+              "kind": "surface"
+            },
+            {
+              "name": "Ironfield",
+              "kind": "surface"
+            },
+            {
+              "name": "Scorchmark",
+              "kind": "surface",
+              "holds": "Hover Pack"
+            },
+            {
+              "name": "Ember Isle",
+              "kind": "ocean"
+            },
+            {
+              "name": "Hot Springs",
+              "kind": "ocean",
+              "holds": "Emerald shard"
+            },
+            {
+              "name": "Slag Run",
+              "kind": "rover"
+            },
+            {
+              "name": "Furnace Flats",
+              "kind": "rover"
+            },
+            {
+              "name": "Forge Station",
+              "kind": "station"
+            },
+            {
+              "name": "Mine Twelve",
+              "kind": "station"
+            },
+            {
+              "name": "Redrock",
+              "kind": "surface",
+              "holds": "Spring Shocks"
+            },
+            {
+              "name": "Charcoal",
+              "kind": "surface"
+            },
+            {
+              "name": "Firefly",
+              "kind": "surface"
+            },
+            {
+              "name": "Last Ember",
+              "kind": "surface"
+            }
+          ]
+        },
+        {
+          "name": "The Shallows",
+          "gate": "Citrine + Emerald",
+          "worlds": [
+            {
+              "name": "Coralline",
+              "kind": "ocean"
+            },
+            {
+              "name": "Tidewater",
+              "kind": "ocean",
+              "holds": "Hydro Jets"
+            },
+            {
+              "name": "Pearlbed",
+              "kind": "ocean",
+              "holds": "Jade shard"
+            },
+            {
+              "name": "Riptide",
+              "kind": "ocean"
+            },
+            {
+              "name": "Kelp Deep",
+              "kind": "ocean"
+            },
+            {
+              "name": "Lagoon",
+              "kind": "ocean"
+            },
+            {
+              "name": "Saltmarsh",
+              "kind": "surface"
+            },
+            {
+              "name": "Marrowsea",
+              "kind": "ocean"
+            },
+            {
+              "name": "Anchorage",
+              "kind": "station"
+            },
+            {
+              "name": "Seafoam",
+              "kind": "ocean"
+            },
+            {
+              "name": "Mistral Isle",
+              "kind": "surface",
+              "holds": "Shield Emitter"
+            },
+            {
+              "name": "Fernreach",
+              "kind": "surface"
+            },
+            {
+              "name": "Mushroom Moon",
+              "kind": "surface",
+              "holds": "Aqua shard"
+            },
+            {
+              "name": "Sporefield",
+              "kind": "surface"
+            },
+            {
+              "name": "Breakwater",
+              "kind": "rover"
+            },
+            {
+              "name": "Dry Dock",
+              "kind": "station"
+            },
+            {
+              "name": "Lighthouse",
+              "kind": "station"
+            },
+            {
+              "name": "Undertow",
+              "kind": "ocean"
+            }
+          ]
+        },
+        {
+          "name": "Glasswind",
+          "gate": "Jade + Aqua",
+          "worlds": [
+            {
+              "name": "Prism",
+              "kind": "surface",
+              "holds": "Sapphire shard"
+            },
+            {
+              "name": "Glasswind",
+              "kind": "surface"
+            },
+            {
+              "name": "Shiver",
+              "kind": "surface"
+            },
+            {
+              "name": "Rimefall",
+              "kind": "surface",
+              "holds": "Mine Layer"
+            },
+            {
+              "name": "Quartzite",
+              "kind": "surface"
+            },
+            {
+              "name": "Toxin Bloom",
+              "kind": "surface"
+            },
+            {
+              "name": "Venom Marsh",
+              "kind": "surface",
+              "holds": "Flak Cannon"
+            },
+            {
+              "name": "Sulfur",
+              "kind": "surface"
+            },
+            {
+              "name": "Lumen",
+              "kind": "surface"
+            },
+            {
+              "name": "Icicle",
+              "kind": "surface"
+            },
+            {
+              "name": "Facet",
+              "kind": "rover"
+            },
+            {
+              "name": "Mirror Flats",
+              "kind": "rover"
+            },
+            {
+              "name": "Cryo Lab",
+              "kind": "station"
+            },
+            {
+              "name": "Glass Abyss",
+              "kind": "ocean",
+              "holds": "Amethyst shard"
+            },
+            {
+              "name": "Frozen Sea",
+              "kind": "ocean"
+            },
+            {
+              "name": "Shardfall",
+              "kind": "surface"
+            },
+            {
+              "name": "Opaline",
+              "kind": "surface"
+            },
+            {
+              "name": "Hoarfrost",
+              "kind": "surface"
+            }
+          ]
+        },
+        {
+          "name": "The Deep Black",
+          "gate": "Sapphire + Amethyst",
+          "worlds": [
+            {
+              "name": "Nadir",
+              "kind": "surface"
+            },
+            {
+              "name": "Gloom",
+              "kind": "surface"
+            },
+            {
+              "name": "Hollow Sun",
+              "kind": "surface",
+              "holds": "Rose shard"
+            },
+            {
+              "name": "Blacktide",
+              "kind": "ocean"
+            },
+            {
+              "name": "Drowned Moon",
+              "kind": "ocean"
+            },
+            {
+              "name": "Ghost Station",
+              "kind": "station",
+              "holds": "Pearl shard"
+            },
+            {
+              "name": "Derelict Ark",
+              "kind": "station"
+            },
+            {
+              "name": "Final Relay",
+              "kind": "station"
+            },
+            {
+              "name": "Dread",
+              "kind": "surface"
+            },
+            {
+              "name": "Obsidian",
+              "kind": "surface"
+            },
+            {
+              "name": "Pale Reach",
+              "kind": "surface"
+            },
+            {
+              "name": "Nightglass",
+              "kind": "surface"
+            },
+            {
+              "name": "Silent Tor",
+              "kind": "rover"
+            },
+            {
+              "name": "Wither",
+              "kind": "surface"
+            },
+            {
+              "name": "Umbra",
+              "kind": "surface"
+            },
+            {
+              "name": "Event Horizon",
+              "kind": "ocean"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Gates: two crystal gates seal each sector; carry both shards to open them.",
+        "The Core: the Maelstrom, the Citadel, the Heart.",
+        "Jump rings behind each sector’s gates lead straight on."
+      ],
+      "inset": {
+        "map": "galaxy.map",
+        "x": 40,
+        "y": 44,
+        "w": 16,
+        "h": 10,
+        "caption": "The galaxy chart, as seen from the pod"
+      }
+    },
+    {
+      "kind": "chart",
+      "title": "Courier’s sector map",
+      "note": "All 88 worlds and their vaults",
+      "promised": true,
+      "heading": "COURIER’S SECTOR MAP: ALL 88 WORLDS",
+      "intro": "Every world in the five sectors, how you get around on it, and what its vault holds. Gold signal worlds hold a shard; module vaults hold courier gear.",
+      "tables": [
+        {
+          "head": "1. THE CRADLE  (gate: open)",
+          "columns": [
+            "World",
+            "Travel",
+            "Vault"
+          ],
+          "rows": [
+            [
+              "Verdance",
+              "On foot",
+              "-"
+            ],
+            [
+              "Little Hollow",
+              "On foot",
+              "Plasma Lance"
+            ],
+            [
+              "Ambermoor",
+              "On foot",
+              "Ruby shard"
+            ],
+            [
+              "Sandglass",
+              "On foot",
+              "-"
+            ],
+            [
+              "Frostmere",
+              "On foot",
+              "-"
+            ],
+            [
+              "Willowisp",
+              "On foot",
+              "-"
+            ],
+            [
+              "Copperfield",
+              "On foot",
+              "Dash Boots"
+            ],
+            [
+              "Tamsin Lakes",
+              "On foot",
+              "-"
+            ],
+            [
+              "Old Orchard",
+              "On foot",
+              "-"
+            ],
+            [
+              "Brightwater",
+              "Diving bell",
+              "Amber shard"
+            ],
+            [
+              "Kelpie",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Dune Wheel",
+              "Rover",
+              "-"
+            ],
+            [
+              "Saltpan",
+              "Rover",
+              "-"
+            ],
+            [
+              "Outpost Nine",
+              "Station",
+              "Med Kit"
+            ],
+            [
+              "Waystation Ceres",
+              "Station",
+              "-"
+            ],
+            [
+              "Mossback",
+              "On foot",
+              "-"
+            ],
+            [
+              "Gale Point",
+              "On foot",
+              "-"
+            ],
+            [
+              "Hearthstone",
+              "On foot",
+              "-"
+            ]
+          ]
+        },
+        {
+          "head": "2. EMBERREACH  (gate: Ruby + Amber)",
+          "columns": [
+            "World",
+            "Travel",
+            "Vault"
+          ],
+          "rows": [
+            [
+              "Cinderfall",
+              "On foot",
+              "Citrine shard"
+            ],
+            [
+              "Ashveil",
+              "On foot",
+              "-"
+            ],
+            [
+              "Pyre",
+              "On foot",
+              "Nova Core"
+            ],
+            [
+              "Basalt Bay",
+              "On foot",
+              "-"
+            ],
+            [
+              "Smoulder",
+              "On foot",
+              "-"
+            ],
+            [
+              "Kiln",
+              "On foot",
+              "-"
+            ],
+            [
+              "Ironfield",
+              "On foot",
+              "-"
+            ],
+            [
+              "Scorchmark",
+              "On foot",
+              "Hover Pack"
+            ],
+            [
+              "Ember Isle",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Hot Springs",
+              "Diving bell",
+              "Emerald shard"
+            ],
+            [
+              "Slag Run",
+              "Rover",
+              "-"
+            ],
+            [
+              "Furnace Flats",
+              "Rover",
+              "-"
+            ],
+            [
+              "Forge Station",
+              "Station",
+              "-"
+            ],
+            [
+              "Mine Twelve",
+              "Station",
+              "-"
+            ],
+            [
+              "Redrock",
+              "On foot",
+              "Spring Shocks"
+            ],
+            [
+              "Charcoal",
+              "On foot",
+              "-"
+            ],
+            [
+              "Firefly",
+              "On foot",
+              "-"
+            ],
+            [
+              "Last Ember",
+              "On foot",
+              "-"
+            ]
+          ]
+        },
+        {
+          "head": "3. THE SHALLOWS  (gate: Citrine + Emerald)",
+          "columns": [
+            "World",
+            "Travel",
+            "Vault"
+          ],
+          "rows": [
+            [
+              "Coralline",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Tidewater",
+              "Diving bell",
+              "Hydro Jets"
+            ],
+            [
+              "Pearlbed",
+              "Diving bell",
+              "Jade shard"
+            ],
+            [
+              "Riptide",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Kelp Deep",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Lagoon",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Saltmarsh",
+              "On foot",
+              "-"
+            ],
+            [
+              "Marrowsea",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Anchorage",
+              "Station",
+              "-"
+            ],
+            [
+              "Seafoam",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Mistral Isle",
+              "On foot",
+              "Shield Emitter"
+            ],
+            [
+              "Fernreach",
+              "On foot",
+              "-"
+            ],
+            [
+              "Mushroom Moon",
+              "On foot",
+              "Aqua shard"
+            ],
+            [
+              "Sporefield",
+              "On foot",
+              "-"
+            ],
+            [
+              "Breakwater",
+              "Rover",
+              "-"
+            ],
+            [
+              "Dry Dock",
+              "Station",
+              "-"
+            ],
+            [
+              "Lighthouse",
+              "Station",
+              "-"
+            ],
+            [
+              "Undertow",
+              "Diving bell",
+              "-"
+            ]
+          ]
+        },
+        {
+          "head": "4. GLASSWIND  (gate: Jade + Aqua)",
+          "columns": [
+            "World",
+            "Travel",
+            "Vault"
+          ],
+          "rows": [
+            [
+              "Prism",
+              "On foot",
+              "Sapphire shard"
+            ],
+            [
+              "Glasswind",
+              "On foot",
+              "-"
+            ],
+            [
+              "Shiver",
+              "On foot",
+              "-"
+            ],
+            [
+              "Rimefall",
+              "On foot",
+              "Mine Layer"
+            ],
+            [
+              "Quartzite",
+              "On foot",
+              "-"
+            ],
+            [
+              "Toxin Bloom",
+              "On foot",
+              "-"
+            ],
+            [
+              "Venom Marsh",
+              "On foot",
+              "Flak Cannon"
+            ],
+            [
+              "Sulfur",
+              "On foot",
+              "-"
+            ],
+            [
+              "Lumen",
+              "On foot",
+              "-"
+            ],
+            [
+              "Icicle",
+              "On foot",
+              "-"
+            ],
+            [
+              "Facet",
+              "Rover",
+              "-"
+            ],
+            [
+              "Mirror Flats",
+              "Rover",
+              "-"
+            ],
+            [
+              "Cryo Lab",
+              "Station",
+              "-"
+            ],
+            [
+              "Glass Abyss",
+              "Diving bell",
+              "Amethyst shard"
+            ],
+            [
+              "Frozen Sea",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Shardfall",
+              "On foot",
+              "-"
+            ],
+            [
+              "Opaline",
+              "On foot",
+              "-"
+            ],
+            [
+              "Hoarfrost",
+              "On foot",
+              "-"
+            ]
+          ]
+        },
+        {
+          "head": "5. THE DEEP BLACK  (gate: Sapphire + Amethyst)",
+          "columns": [
+            "World",
+            "Travel",
+            "Vault"
+          ],
+          "rows": [
+            [
+              "Nadir",
+              "On foot",
+              "-"
+            ],
+            [
+              "Gloom",
+              "On foot",
+              "-"
+            ],
+            [
+              "Hollow Sun",
+              "On foot",
+              "Rose shard"
+            ],
+            [
+              "Blacktide",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Drowned Moon",
+              "Diving bell",
+              "-"
+            ],
+            [
+              "Ghost Station",
+              "Station",
+              "Pearl shard"
+            ],
+            [
+              "Derelict Ark",
+              "Station",
+              "-"
+            ],
+            [
+              "Final Relay",
+              "Station",
+              "-"
+            ],
+            [
+              "Dread",
+              "On foot",
+              "-"
+            ],
+            [
+              "Obsidian",
+              "On foot",
+              "-"
+            ],
+            [
+              "Pale Reach",
+              "On foot",
+              "-"
+            ],
+            [
+              "Nightglass",
+              "On foot",
+              "-"
+            ],
+            [
+              "Silent Tor",
+              "Rover",
+              "-"
+            ],
+            [
+              "Wither",
+              "On foot",
+              "-"
+            ],
+            [
+              "Umbra",
+              "On foot",
+              "-"
+            ],
+            [
+              "Event Horizon",
+              "Diving bell",
+              "-"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "hintbook",
+      "title": "Maximus Hint Book",
+      "note": "Answers hidden: use the red film",
+      "promised": true,
+      "intro": "Find your question, then slide the red film over the answer under it. Read one answer at a time: a courier who knows everything has nothing left to find.",
+      "sections": [
+        {
+          "head": "First Steps",
+          "hints": [
+            {
+              "q": "How do I get off the training deck?",
+              "a": "Pay the credit door with the credits you pick up, ride the lift, and walk into the airlock. The pod is waiting."
+            },
+            {
+              "q": "How do I land on a planet?",
+              "a": "Fly the pod into the middle of the planet on the sector chart."
+            },
+            {
+              "q": "How do I get back to space?",
+              "a": "Walk into the uplink beacon behind you where you landed. On sea worlds, surface at the buoy."
+            },
+            {
+              "q": "I keep running out of lives.",
+              "a": "Buy an extra life at the trading post for 100 credits, and save with F5 before every vault."
+            }
+          ]
+        },
+        {
+          "head": "The Star-Shards",
+          "hints": [
+            {
+              "q": "Where is the Ruby shard?",
+              "a": "Ambermoor, in The Cradle. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Amber shard?",
+              "a": "Brightwater, in The Cradle. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Citrine shard?",
+              "a": "Cinderfall, in Emberreach. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Emerald shard?",
+              "a": "Hot Springs, in Emberreach. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Jade shard?",
+              "a": "Pearlbed, in The Shallows. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Aqua shard?",
+              "a": "Mushroom Moon, in The Shallows. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Sapphire shard?",
+              "a": "Prism, in Glasswind. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Amethyst shard?",
+              "a": "Glass Abyss, in Glasswind. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Rose shard?",
+              "a": "Hollow Sun, in The Deep Black. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            },
+            {
+              "q": "Where is the Pearl shard?",
+              "a": "Ghost Station, in The Deep Black. Look for the gold signal on the sector chart, then use the long-range scan on the planet card to find the vault."
+            }
+          ]
+        },
+        {
+          "head": "Courier Modules",
+          "hints": [
+            {
+              "q": "Where do I find the Plasma Lance?",
+              "a": "In a vault on Little Hollow, in The Cradle. Press P to pick it up; its key is Z."
+            },
+            {
+              "q": "Where do I find the Nova Core?",
+              "a": "In a vault on Pyre, in Emberreach. Press P to pick it up; its key is X."
+            },
+            {
+              "q": "Where do I find the Dash Boots?",
+              "a": "In a vault on Copperfield, in The Cradle. Press P to pick it up; its key is Q / E."
+            },
+            {
+              "q": "Where do I find the Shield Emitter?",
+              "a": "In a vault on Mistral Isle, in The Shallows. Press P to pick it up; its key is C."
+            },
+            {
+              "q": "Where do I find the Hover Pack?",
+              "a": "In a vault on Scorchmark, in Emberreach. Press P to pick it up; its key is F."
+            },
+            {
+              "q": "Where do I find the Mine Layer?",
+              "a": "In a vault on Rimefall, in Glasswind. Press P to pick it up; its key is V."
+            },
+            {
+              "q": "Where do I find the Med Kit?",
+              "a": "In a vault on Outpost Nine, in The Cradle. Press P to pick it up; its key is H."
+            },
+            {
+              "q": "Where do I find the Flak Cannon?",
+              "a": "In a vault on Venom Marsh, in Glasswind. Press P to pick it up; its key is W."
+            },
+            {
+              "q": "Where do I find the Hydro Jets?",
+              "a": "In a vault on Tidewater, in The Shallows. Press P to pick it up; its key is Q / E (sub)."
+            },
+            {
+              "q": "Where do I find the Spring Shocks?",
+              "a": "In a vault on Redrock, in Emberreach. Press P to pick it up; its key is Up (rover)."
+            }
+          ]
+        },
+        {
+          "head": "Getting Unstuck",
+          "hints": [
+            {
+              "q": "My blaster bounces off a creature.",
+              "a": "It is armored, like an Ironback or a Gun Turret. Only the Plasma Lance (Z) cracks armor."
+            },
+            {
+              "q": "The rover cannot climb a ledge.",
+              "a": "Find the Spring Shocks on Redrock in Emberreach. Then Up makes the rover jump."
+            },
+            {
+              "q": "A wall of rock blocks the way to a vault.",
+              "a": "Walk into it. Some rock is not rock at all, and crystal walls shatter at a touch."
+            },
+            {
+              "q": "How do I reach the Maelstrom?",
+              "a": "Open the crystal gates in The Deep Black with the Sapphire and Amethyst shards; its jump ring leads to the Maelstrom."
+            },
+            {
+              "q": "Something in the Maelstrom cannot be hurt.",
+              "a": "The Phantom, magma and tumbling asteroids cannot be hurt at all. Keep moving."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "idcard",
+      "title": "Courier license",
+      "note": "Max’s ID card",
+      "org": "MAXIMA STATION COURIER CORPS",
+      "name": "MAX",
+      "role": "Courier, First Class",
+      "fields": [
+        [
+          "License",
+          "MC-0088"
+        ],
+        [
+          "Base",
+          "Maxima Station"
+        ],
+        [
+          "Rated",
+          "Pod, rover, bell"
+        ],
+        [
+          "Expires",
+          "When the light does"
+        ]
+      ],
+      "color": "#0b1030",
+      "ink": "#f0a020",
+      "portrait": {
+        "chr": "courier.chr",
+        "cbl": "courier.cbl",
+        "pal": "home.pal"
+      },
+      "photo": {
+        "map": "galaxy.map",
+        "x": 48,
+        "y": 50,
+        "w": 2,
+        "h": 2
+      },
+      "back": "This courier carries the light of the galaxy. Every station, port and outpost shall grant safe docking and a hot meal. Couriers deliver."
+    },
+    {
+      "kind": "letter",
+      "title": "Dispatch orders",
+      "note": "From the Station Master",
+      "letterhead": "MAXIMA STATION · OFFICE OF THE STATION MASTER",
+      "address": "Sector Zero, Courier Ring, Deck 1",
+      "date": "Station day 10,001",
+      "to": "To: Courier Max, Bay 7",
+      "style": "type",
+      "body": "<p>Max,</p><p>You have heard the news by now: the Core has cracked and the warp lanes are failing. Every courier on the ring has been grounded except you, because you are the only one who has flown all five sectors and come back with the cargo intact.</p><p>Your orders are simple and impossible. Find the ten star-shards. Carry them through the crystal gates, sector by sector. Fly the Maelstrom. Bring them home to the Heart.</p><p>The pod is fueled. The trading posts will take your credits. Hail anyone you meet; most of them will be glad to see a courier.</p><p>Couriers deliver. Deliver this one.</p>",
+      "signature": "Station Master Orla Venn"
+    },
+    {
+      "kind": "newspaper",
+      "title": "The Galactic Courier",
+      "note": "Newspaper, special edition",
+      "masthead": "The Galactic Courier",
+      "date": "Special Edition · Sector Zero",
+      "price": "2 credits",
+      "headline": "THE CORE GOES DARK",
+      "deck": "Warp lanes failing sector by sector; ten star-shards scattered across the Hundred Worlds",
+      "photo": {
+        "map": "heart.map",
+        "x": 64,
+        "y": 38,
+        "w": 12,
+        "h": 8,
+        "caption": "The Heart of Maximus, last photographed before the light went out."
+      },
+      "columns": [
+        "<p>MAXIMA STATION - The Maximus Core, the forge-star that has lit the galaxy for ten thousand years, cracked at 0400 station time. Its light, held in ten star-shards, was flung across the Hundred Worlds.</p><p>Within the hour the lanes to Emberreach went quiet. By nightfall The Shallows had stopped answering.</p>",
+        "<p>\"We have never lost a lane before,\" said a dock chief at the station, who asked not to be named. \"Now we are losing them one after another.\"</p><p>The Courier Corps has grounded all but one pilot. Station sources confirm the courier known as Max has been given the job of bringing the shards home.</p>",
+        "<p>Traders at Waystation Ceres report pirate skiffs moving into the empty lanes. Couriers are advised to fly armed.</p><p>Crystal gates have reportedly sealed every sector beyond The Cradle. Scholars believe each gate answers only to its own pair of shards.</p>"
+      ],
+      "briefs": [
+        [
+          "GLOOP SEASON EARLY",
+          "Verdance farmers report hopping slimes in record numbers. Harmless alone; never alone."
+        ],
+        [
+          "LIGHTHOUSE STILL TURNS",
+          "The old station in The Shallows keeps its light burning, though nobody has heard from its crew."
+        ],
+        [
+          "TRADING POSTS OPEN",
+          "Extra lives 100 credits, repairs 20, med kits 50. One of each per visit."
+        ]
+      ]
+    }
+  ],
+  "stickers": [
+    {
+      "text": "COURIERS",
+      "sub": "DELIVER",
+      "shape": "badge",
+      "color": "#0b1030",
+      "ink": "#f0a020"
+    },
+    {
+      "text": "10",
+      "sub": "STAR-SHARDS",
+      "shape": "star",
+      "color": "#f0a020",
+      "ink": "#0b1030"
+    }
+  ],
+  "news": [
+    {
+      "head": "Courier’s corner",
+      "html": "<p>Registered couriers: your fold-out galaxy chart, the sector map of all 88 worlds and the hint book are in this box. Fold the chart along the creases and keep it by the keyboard.</p>"
+    }
+  ]
+}
