@@ -126,9 +126,7 @@
           ]
         }
       ],
-      "legend": [
-        "2. Jamie Street (noon) is on the sled run poster."
-      ]
+      "legend": ["2. Jamie Street (noon) is on the sled run poster."]
     },
     {
       "kind": "map",
@@ -233,18 +231,9 @@
         "<p>At LaVale Mall, stores plan to open on time. The Timeout arcade promises the heat will be on.</p><p>A local software shop reports one copy of a popular game-making kit left in the window at $89. The price goes up in January.</p>"
       ],
       "briefs": [
-        [
-          "SHOVELING FOR HIRE",
-          "A sign has gone up at Gale and Dunn: one dollar a scoop, founder and operator on duty."
-        ],
-        [
-          "HYDRANTS BURIED",
-          "The fire department asks residents to dig out hydrants near their homes."
-        ],
-        [
-          "FORECAST",
-          "Clearing by noon. Squalls near the mall after dark."
-        ]
+        ["SHOVELING FOR HIRE", "A sign has gone up at Gale and Dunn: one dollar a scoop, founder and operator on duty."],
+        ["HYDRANTS BURIED", "The fire department asks residents to dig out hydrants near their homes."],
+        ["FORECAST", "Clearing by noon. Squalls near the mall after dark."]
       ]
     },
     {
@@ -283,22 +272,10 @@
       "name": "THE FOUNDER",
       "role": "Founder and Operator",
       "fields": [
-        [
-          "Rate",
-          "$1 a scoop"
-        ],
-        [
-          "Corner",
-          "Gale St. & Dunn Dr."
-        ],
-        [
-          "Hours",
-          "Sunrise to closing time"
-        ],
-        [
-          "Goal",
-          "One pink box"
-        ]
+        ["Rate", "$1 a scoop"],
+        ["Corner", "Gale St. & Dunn Dr."],
+        ["Hours", "Sunrise to closing time"],
+        ["Goal", "One pink box"]
       ],
       "color": "#1f4f8f",
       "ink": "#fff",
@@ -343,6 +320,66 @@
       "shape": "badge",
       "color": "#e9f2fb",
       "ink": "#1f4f8f"
+    },
+    {
+      "text": "SHOVEL KID",
+      "sub": "$1 A SCOOP",
+      "shape": "badge",
+      "color": "#e9f2fb",
+      "ink": "#1f4f8f",
+      "hero": {
+        "chr": "kid.chr",
+        "cbl": "kid.cbl",
+        "pal": "noon.pal"
+      }
+    },
+    {
+      "text": "PLOWED IN",
+      "sub": "THE CITY PLOW",
+      "shape": "rect",
+      "color": "#f2b632",
+      "ink": "#1a1208",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[16, 17]]
+      }
+    },
+    {
+      "text": "INCOMING!",
+      "sub": "SNOWBALL FIGHT",
+      "shape": "circle",
+      "color": "#1f4f8f",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[10]]
+      }
+    },
+    {
+      "text": "WOOF",
+      "sub": "NEIGHBOR'S DOG",
+      "shape": "star",
+      "color": "#b3121a",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[6]]
+      }
+    },
+    {
+      "text": "JAMIE STREET",
+      "sub": "SLED RUN",
+      "shape": "rect",
+      "color": "#cfe3f7",
+      "ink": "#1f4f8f",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[26]]
+      }
     }
   ],
   "news": [

@@ -147,9 +147,7 @@
           ]
         }
       ],
-      "legend": [
-        "Green arrows: where you start. Gold dots: castles and goals. Red stars: secrets."
-      ]
+      "legend": ["Green arrows: where you start. Gold dots: castles and goals. Red stars: secrets."]
     },
     {
       "kind": "hintbook",
@@ -251,18 +249,9 @@
         "<p>Teddy, a Pembroke Welsh Corgi and the sandbox's only knight, has picked up his shovel. Asked about his plans, he sat, offered a paw, and rolled over.</p><p>Ants, beetles and crabs are said to be moving into the ruins.</p>"
       ],
       "briefs": [
-        [
-          "TENNIS BALL MISSING",
-          "Last seen near the tomato plants. Reward: one belly rub."
-        ],
-        [
-          "MODEM HEARD AT NIGHT",
-          "Neighbors report squealing from the upstairs window. Probably the BBS."
-        ],
-        [
-          "WEATHER",
-          "Sunny. Low tide in the lagoon by noon."
-        ]
+        ["TENNIS BALL MISSING", "Last seen near the tomato plants. Reward: one belly rub."],
+        ["MODEM HEARD AT NIGHT", "Neighbors report squealing from the upstairs window. Probably the BBS."],
+        ["WEATHER", "Sunny. Low tide in the lagoon by noon."]
       ]
     },
     {
@@ -273,22 +262,10 @@
       "name": "TEDDY",
       "role": "Knight, Good Boy",
       "fields": [
-        [
-          "Breed",
-          "Pembroke Welsh Corgi"
-        ],
-        [
-          "Tricks",
-          "Sit, spin, roll, jump, play dead"
-        ],
-        [
-          "Best toy",
-          "Flying disc"
-        ],
-        [
-          "Sister",
-          "Gwin (it's fine)"
-        ]
+        ["Breed", "Pembroke Welsh Corgi"],
+        ["Tricks", "Sit, spin, roll, jump, play dead"],
+        ["Best toy", "Flying disc"],
+        ["Sister", "Gwin (it's fine)"]
       ],
       "color": "#b3121a",
       "ink": "#fff",
@@ -321,6 +298,66 @@
       "shape": "star",
       "color": "#8a5a2b",
       "ink": "#fff"
+    },
+    {
+      "text": "SIR TEDDY",
+      "sub": "KNIGHT OF THE SANDBOX",
+      "shape": "badge",
+      "color": "#f2d48a",
+      "ink": "#b3121a",
+      "hero": {
+        "chr": "sandcast.chr",
+        "cbl": "sandcast.cbl",
+        "pal": "sandcast.pal"
+      }
+    },
+    {
+      "text": "SNAP!",
+      "sub": "LAGOON CRAB",
+      "shape": "circle",
+      "color": "#55c8e8",
+      "ink": "#7a1010",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[12]]
+      }
+    },
+    {
+      "text": "ANTS!",
+      "sub": "ANTHILL KEEP",
+      "shape": "rect",
+      "color": "#e8c070",
+      "ink": "#3a1a08",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[7]]
+      }
+    },
+    {
+      "text": "STRIKE!",
+      "sub": "BEETLE BOWLING",
+      "shape": "star",
+      "color": "#1f9a3a",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[9]]
+      }
+    },
+    {
+      "text": "GWIN",
+      "sub": "BIG SISTER",
+      "shape": "circle",
+      "color": "#b3121a",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[38]]
+      }
     }
   ],
   "news": [

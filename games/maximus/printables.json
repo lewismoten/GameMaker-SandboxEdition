@@ -453,492 +453,120 @@
       "tables": [
         {
           "head": "1. THE CRADLE  (gate: open)",
-          "columns": [
-            "World",
-            "Travel",
-            "Vault"
-          ],
+          "columns": ["World", "Travel", "Vault"],
           "rows": [
-            [
-              "Verdance",
-              "Foot",
-              "-"
-            ],
-            [
-              "Little Hollow",
-              "Foot",
-              "Plasma Lance"
-            ],
-            [
-              "Ambermoor",
-              "Foot",
-              "Ruby shard"
-            ],
-            [
-              "Sandglass",
-              "Foot",
-              "-"
-            ],
-            [
-              "Frostmere",
-              "Foot",
-              "-"
-            ],
-            [
-              "Willowisp",
-              "Foot",
-              "-"
-            ],
-            [
-              "Copperfield",
-              "Foot",
-              "Dash Boots"
-            ],
-            [
-              "Tamsin Lakes",
-              "Foot",
-              "-"
-            ],
-            [
-              "Old Orchard",
-              "Foot",
-              "-"
-            ],
-            [
-              "Brightwater",
-              "Bell",
-              "Amber shard"
-            ],
-            [
-              "Kelpie",
-              "Bell",
-              "-"
-            ],
-            [
-              "Dune Wheel",
-              "Rover",
-              "-"
-            ],
-            [
-              "Saltpan",
-              "Rover",
-              "-"
-            ],
-            [
-              "Outpost Nine",
-              "Station",
-              "Med Kit"
-            ],
-            [
-              "Waystation Ceres",
-              "Station",
-              "-"
-            ],
-            [
-              "Mossback",
-              "Foot",
-              "-"
-            ],
-            [
-              "Gale Point",
-              "Foot",
-              "-"
-            ],
-            [
-              "Hearthstone",
-              "Foot",
-              "-"
-            ]
+            ["Verdance", "Foot", "-"],
+            ["Little Hollow", "Foot", "Plasma Lance"],
+            ["Ambermoor", "Foot", "Ruby shard"],
+            ["Sandglass", "Foot", "-"],
+            ["Frostmere", "Foot", "-"],
+            ["Willowisp", "Foot", "-"],
+            ["Copperfield", "Foot", "Dash Boots"],
+            ["Tamsin Lakes", "Foot", "-"],
+            ["Old Orchard", "Foot", "-"],
+            ["Brightwater", "Bell", "Amber shard"],
+            ["Kelpie", "Bell", "-"],
+            ["Dune Wheel", "Rover", "-"],
+            ["Saltpan", "Rover", "-"],
+            ["Outpost Nine", "Station", "Med Kit"],
+            ["Waystation Ceres", "Station", "-"],
+            ["Mossback", "Foot", "-"],
+            ["Gale Point", "Foot", "-"],
+            ["Hearthstone", "Foot", "-"]
           ]
         },
         {
           "head": "2. EMBERREACH  (gate: Ruby + Amber)",
-          "columns": [
-            "World",
-            "Travel",
-            "Vault"
-          ],
+          "columns": ["World", "Travel", "Vault"],
           "rows": [
-            [
-              "Cinderfall",
-              "Foot",
-              "Citrine shard"
-            ],
-            [
-              "Ashveil",
-              "Foot",
-              "-"
-            ],
-            [
-              "Pyre",
-              "Foot",
-              "Nova Core"
-            ],
-            [
-              "Basalt Bay",
-              "Foot",
-              "-"
-            ],
-            [
-              "Smolder",
-              "Foot",
-              "-"
-            ],
-            [
-              "Kiln",
-              "Foot",
-              "-"
-            ],
-            [
-              "Ironfield",
-              "Foot",
-              "-"
-            ],
-            [
-              "Scorchmark",
-              "Foot",
-              "Hover Pack"
-            ],
-            [
-              "Ember Isle",
-              "Bell",
-              "-"
-            ],
-            [
-              "Hot Springs",
-              "Bell",
-              "Emerald shard"
-            ],
-            [
-              "Slag Run",
-              "Rover",
-              "-"
-            ],
-            [
-              "Furnace Flats",
-              "Rover",
-              "-"
-            ],
-            [
-              "Forge Station",
-              "Station",
-              "-"
-            ],
-            [
-              "Mine Twelve",
-              "Station",
-              "-"
-            ],
-            [
-              "Redrock",
-              "Foot",
-              "Spring Shocks"
-            ],
-            [
-              "Charcoal",
-              "Foot",
-              "-"
-            ],
-            [
-              "Firefly",
-              "Foot",
-              "-"
-            ],
-            [
-              "Last Ember",
-              "Foot",
-              "-"
-            ]
+            ["Cinderfall", "Foot", "Citrine shard"],
+            ["Ashveil", "Foot", "-"],
+            ["Pyre", "Foot", "Nova Core"],
+            ["Basalt Bay", "Foot", "-"],
+            ["Smolder", "Foot", "-"],
+            ["Kiln", "Foot", "-"],
+            ["Ironfield", "Foot", "-"],
+            ["Scorchmark", "Foot", "Hover Pack"],
+            ["Ember Isle", "Bell", "-"],
+            ["Hot Springs", "Bell", "Emerald shard"],
+            ["Slag Run", "Rover", "-"],
+            ["Furnace Flats", "Rover", "-"],
+            ["Forge Station", "Station", "-"],
+            ["Mine Twelve", "Station", "-"],
+            ["Redrock", "Foot", "Spring Shocks"],
+            ["Charcoal", "Foot", "-"],
+            ["Firefly", "Foot", "-"],
+            ["Last Ember", "Foot", "-"]
           ]
         },
         {
           "head": "3. THE SHALLOWS  (gate: Citrine + Emerald)",
-          "columns": [
-            "World",
-            "Travel",
-            "Vault"
-          ],
+          "columns": ["World", "Travel", "Vault"],
           "rows": [
-            [
-              "Coralline",
-              "Bell",
-              "-"
-            ],
-            [
-              "Tidewater",
-              "Bell",
-              "Hydro Jets"
-            ],
-            [
-              "Pearlbed",
-              "Bell",
-              "Jade shard"
-            ],
-            [
-              "Riptide",
-              "Bell",
-              "-"
-            ],
-            [
-              "Kelp Deep",
-              "Bell",
-              "-"
-            ],
-            [
-              "Lagoon",
-              "Bell",
-              "-"
-            ],
-            [
-              "Saltmarsh",
-              "Foot",
-              "-"
-            ],
-            [
-              "Marrowsea",
-              "Bell",
-              "-"
-            ],
-            [
-              "Anchorage",
-              "Station",
-              "-"
-            ],
-            [
-              "Seafoam",
-              "Bell",
-              "-"
-            ],
-            [
-              "Mistral Isle",
-              "Foot",
-              "Shield Emitter"
-            ],
-            [
-              "Fernreach",
-              "Foot",
-              "-"
-            ],
-            [
-              "Mushroom Moon",
-              "Foot",
-              "Aqua shard"
-            ],
-            [
-              "Sporefield",
-              "Foot",
-              "-"
-            ],
-            [
-              "Breakwater",
-              "Rover",
-              "-"
-            ],
-            [
-              "Dry Dock",
-              "Station",
-              "-"
-            ],
-            [
-              "Lighthouse",
-              "Station",
-              "-"
-            ],
-            [
-              "Undertow",
-              "Bell",
-              "-"
-            ]
+            ["Coralline", "Bell", "-"],
+            ["Tidewater", "Bell", "Hydro Jets"],
+            ["Pearlbed", "Bell", "Jade shard"],
+            ["Riptide", "Bell", "-"],
+            ["Kelp Deep", "Bell", "-"],
+            ["Lagoon", "Bell", "-"],
+            ["Saltmarsh", "Foot", "-"],
+            ["Marrowsea", "Bell", "-"],
+            ["Anchorage", "Station", "-"],
+            ["Seafoam", "Bell", "-"],
+            ["Mistral Isle", "Foot", "Shield Emitter"],
+            ["Fernreach", "Foot", "-"],
+            ["Mushroom Moon", "Foot", "Aqua shard"],
+            ["Sporefield", "Foot", "-"],
+            ["Breakwater", "Rover", "-"],
+            ["Dry Dock", "Station", "-"],
+            ["Lighthouse", "Station", "-"],
+            ["Undertow", "Bell", "-"]
           ]
         },
         {
           "head": "4. GLASSWIND  (gate: Jade + Aqua)",
-          "columns": [
-            "World",
-            "Travel",
-            "Vault"
-          ],
+          "columns": ["World", "Travel", "Vault"],
           "rows": [
-            [
-              "Prism",
-              "Foot",
-              "Sapphire shard"
-            ],
-            [
-              "Glasswind",
-              "Foot",
-              "-"
-            ],
-            [
-              "Shiver",
-              "Foot",
-              "-"
-            ],
-            [
-              "Rimefall",
-              "Foot",
-              "Mine Layer"
-            ],
-            [
-              "Quartzite",
-              "Foot",
-              "-"
-            ],
-            [
-              "Toxin Bloom",
-              "Foot",
-              "-"
-            ],
-            [
-              "Venom Marsh",
-              "Foot",
-              "Flak Cannon"
-            ],
-            [
-              "Sulfur",
-              "Foot",
-              "-"
-            ],
-            [
-              "Lumen",
-              "Foot",
-              "-"
-            ],
-            [
-              "Icicle",
-              "Foot",
-              "-"
-            ],
-            [
-              "Facet",
-              "Rover",
-              "-"
-            ],
-            [
-              "Mirror Flats",
-              "Rover",
-              "-"
-            ],
-            [
-              "Cryo Lab",
-              "Station",
-              "-"
-            ],
-            [
-              "Glass Abyss",
-              "Bell",
-              "Amethyst shard"
-            ],
-            [
-              "Frozen Sea",
-              "Bell",
-              "-"
-            ],
-            [
-              "Shardfall",
-              "Foot",
-              "-"
-            ],
-            [
-              "Opaline",
-              "Foot",
-              "-"
-            ],
-            [
-              "Hoarfrost",
-              "Foot",
-              "-"
-            ]
+            ["Prism", "Foot", "Sapphire shard"],
+            ["Glasswind", "Foot", "-"],
+            ["Shiver", "Foot", "-"],
+            ["Rimefall", "Foot", "Mine Layer"],
+            ["Quartzite", "Foot", "-"],
+            ["Toxin Bloom", "Foot", "-"],
+            ["Venom Marsh", "Foot", "Flak Cannon"],
+            ["Sulfur", "Foot", "-"],
+            ["Lumen", "Foot", "-"],
+            ["Icicle", "Foot", "-"],
+            ["Facet", "Rover", "-"],
+            ["Mirror Flats", "Rover", "-"],
+            ["Cryo Lab", "Station", "-"],
+            ["Glass Abyss", "Bell", "Amethyst shard"],
+            ["Frozen Sea", "Bell", "-"],
+            ["Shardfall", "Foot", "-"],
+            ["Opaline", "Foot", "-"],
+            ["Hoarfrost", "Foot", "-"]
           ]
         },
         {
           "head": "5. THE DEEP BLACK  (gate: Sapphire + Amethyst)",
-          "columns": [
-            "World",
-            "Travel",
-            "Vault"
-          ],
+          "columns": ["World", "Travel", "Vault"],
           "rows": [
-            [
-              "Nadir",
-              "Foot",
-              "-"
-            ],
-            [
-              "Gloom",
-              "Foot",
-              "-"
-            ],
-            [
-              "Hollow Sun",
-              "Foot",
-              "Rose shard"
-            ],
-            [
-              "Blacktide",
-              "Bell",
-              "-"
-            ],
-            [
-              "Drowned Moon",
-              "Bell",
-              "-"
-            ],
-            [
-              "Ghost Station",
-              "Station",
-              "Pearl shard"
-            ],
-            [
-              "Derelict Ark",
-              "Station",
-              "-"
-            ],
-            [
-              "Final Relay",
-              "Station",
-              "-"
-            ],
-            [
-              "Dread",
-              "Foot",
-              "-"
-            ],
-            [
-              "Obsidian",
-              "Foot",
-              "-"
-            ],
-            [
-              "Pale Reach",
-              "Foot",
-              "-"
-            ],
-            [
-              "Nightglass",
-              "Foot",
-              "-"
-            ],
-            [
-              "Silent Tor",
-              "Rover",
-              "-"
-            ],
-            [
-              "Wither",
-              "Foot",
-              "-"
-            ],
-            [
-              "Umbra",
-              "Foot",
-              "-"
-            ],
-            [
-              "Event Horizon",
-              "Bell",
-              "-"
-            ]
+            ["Nadir", "Foot", "-"],
+            ["Gloom", "Foot", "-"],
+            ["Hollow Sun", "Foot", "Rose shard"],
+            ["Blacktide", "Bell", "-"],
+            ["Drowned Moon", "Bell", "-"],
+            ["Ghost Station", "Station", "Pearl shard"],
+            ["Derelict Ark", "Station", "-"],
+            ["Final Relay", "Station", "-"],
+            ["Dread", "Foot", "-"],
+            ["Obsidian", "Foot", "-"],
+            ["Pale Reach", "Foot", "-"],
+            ["Nightglass", "Foot", "-"],
+            ["Silent Tor", "Rover", "-"],
+            ["Wither", "Foot", "-"],
+            ["Umbra", "Foot", "-"],
+            ["Event Horizon", "Bell", "-"]
           ]
         }
       ]
@@ -1096,22 +724,10 @@
       "name": "MAX",
       "role": "Courier, First Class",
       "fields": [
-        [
-          "License",
-          "MC-0088"
-        ],
-        [
-          "Base",
-          "Maxima Station"
-        ],
-        [
-          "Rated",
-          "Pod, rover, bell"
-        ],
-        [
-          "Expires",
-          "When the light does"
-        ]
+        ["License", "MC-0088"],
+        ["Base", "Maxima Station"],
+        ["Rated", "Pod, rover, bell"],
+        ["Expires", "When the light does"]
       ],
       "color": "#0b1030",
       "ink": "#f0a020",
@@ -1164,18 +780,9 @@
         "<p>Traders at Waystation Ceres report pirate skiffs moving into the empty lanes. Couriers are advised to fly armed.</p><p>Crystal gates have reportedly sealed every sector beyond The Cradle. Scholars believe each gate answers only to its own pair of shards.</p>"
       ],
       "briefs": [
-        [
-          "GLOOP SEASON EARLY",
-          "Verdance farmers report hopping slimes in record numbers. Harmless alone; never alone."
-        ],
-        [
-          "LIGHTHOUSE STILL TURNS",
-          "The old station in The Shallows keeps its light burning, though nobody has heard from its crew."
-        ],
-        [
-          "TRADING POSTS OPEN",
-          "Extra lives 100 credits, repairs 20, med kits 50. One of each per visit."
-        ]
+        ["GLOOP SEASON EARLY", "Verdance farmers report hopping slimes in record numbers. Harmless alone; never alone."],
+        ["LIGHTHOUSE STILL TURNS", "The old station in The Shallows keeps its light burning, though nobody has heard from its crew."],
+        ["TRADING POSTS OPEN", "Extra lives 100 credits, repairs 20, med kits 50. One of each per visit."]
       ]
     }
   ],
@@ -1193,6 +800,66 @@
       "shape": "star",
       "color": "#f0a020",
       "ink": "#0b1030"
+    },
+    {
+      "text": "COURIER MAX",
+      "sub": "WE DELIVER",
+      "shape": "badge",
+      "color": "#0b1030",
+      "ink": "#f0a020",
+      "hero": {
+        "chr": "courier.chr",
+        "cbl": "courier.cbl",
+        "pal": "citadel.pal"
+      }
+    },
+    {
+      "text": "GLOOP MOTHER",
+      "sub": "HANDLE WITH CARE",
+      "shape": "circle",
+      "color": "#f0a020",
+      "ink": "#0b1030",
+      "sprite": {
+        "blocks": "land.mbl",
+        "pal": "citadel.pal",
+        "grid": [[2]]
+      }
+    },
+    {
+      "text": "PIRATE ACE",
+      "sub": "SPACE IS NOT SAFE",
+      "shape": "rect",
+      "color": "#1d2a6b",
+      "ink": "#f0a020",
+      "sprite": {
+        "blocks": "space.mbl",
+        "pal": "citadel.pal",
+        "grid": [[6]]
+      }
+    },
+    {
+      "text": "VOID EYE",
+      "sub": "IT SEES YOU",
+      "shape": "star",
+      "color": "#7a2bbf",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "space.mbl",
+        "pal": "citadel.pal",
+        "grid": [[22]]
+      }
+    },
+    {
+      "text": "SNAPWEED",
+      "sub": "DON'T WATER IT",
+      "shape": "rect",
+      "color": "#2f8f4a",
+      "ink": "#0b1030",
+      "sprite": {
+        "blocks": "land.mbl",
+        "pal": "citadel.pal",
+        "grid": [[34]]
+      }
     }
   ],
   "news": [
