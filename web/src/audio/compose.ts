@@ -49,7 +49,7 @@ export interface Voice {
   /** MIDI channel 0..8 (each gets its own instrument). */
   channel: number;
   instrument: Uint8Array;
-  /** "C4 q, E4 e., r e, [C4 E4 G4] h" — brackets play a chord on consecutive channels' worth of notes (same channel restarts). */
+  /** "C4 q, E4 e., r e, [C4 E4 G4] h" — brackets play a chord, its notes on this channel and the next ones (leave them free). */
   notes: string;
   velocity?: number;
   /** Shift every note by semitones. */
@@ -64,6 +64,7 @@ export function song(bpm: number, voices: Voice[]): Uint8Array {
   const ticksPerBeat = Math.round((146 * 60) / bpm);
   const instruments: Uint8Array[] = [];
   const events: CmfEvent[] = [];
+  const chordChannels = new Map<number, Uint8Array>();
   for (const v of voices) {
     instruments[v.channel] = v.instrument;
     let t = 0;
@@ -72,16 +73,20 @@ export function song(bpm: number, voices: Voice[]): Uint8Array {
       if (!m) throw new Error(`Bad note "${raw}"`);
       const len = LEN[m[2]] * (m[3] ? 1.5 : 1) * ticksPerBeat;
       const names = m[1].replace(/[[\]]/g, ' ').trim().split(/\s+/);
-      for (const name of names) {
+      // An FM channel is one voice: a chord's notes go on this channel and the ones after it.
+      names.forEach((name, k) => {
         const n = midi(name);
-        if (n === null) continue;
+        if (n === null) return;
+        const ch = Math.min(15, v.channel + k);
+        if (k > 0) chordChannels.set(ch, v.instrument);
         const note = n + (v.transpose ?? 0);
-        events.push({ tick: t, data: [0x90 | v.channel, note, v.velocity ?? 100] });
-        events.push({ tick: t + len * 0.92, data: [0x80 | v.channel, note, 0] });
-      }
+        events.push({ tick: t, data: [0x90 | ch, note, v.velocity ?? 100] });
+        events.push({ tick: t + len * 0.92, data: [0x80 | ch, note, 0] });
+      });
       t += len;
     }
   }
+  for (const [c, inst] of chordChannels) instruments[c] ??= inst;
   for (let c = 0; c < 16; c++) instruments[c] ??= INSTRUMENTS.piano;
   return encodeCmf({ instruments, events, ticksPerBeat });
 }
