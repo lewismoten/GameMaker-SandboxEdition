@@ -86,6 +86,8 @@ Speech and effects digitized at 11 kHz.
 
 Thanks to every courier who ever delivered anything on time.
 
+Dedicated to three real couriers: Lewis's mother, a letter carrier; his father, who kept the post office running in maintenance; and his grandmother, a postal clerk. They were all at the post office when he bought Game-Maker in 1992.
+
 This is shareware. If you enjoy it, please register.`);
 
 /**
