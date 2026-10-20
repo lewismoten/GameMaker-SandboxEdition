@@ -1,6 +1,6 @@
-// The Klown Klub's people and things that turn up in every level: the Klown Car waiting
-// at each level's end (it only opens for the piece of Doc Leo's costume Teddy fetched),
-// its driver Pockets, and the costume pieces themselves.
+// The Klown Klub's people and things that turn up in every level: Doc Leo's red CitiCar
+// waiting at each level's end (it only opens for the piece of Doc Leo's costume Teddy
+// fetched), Pockets who drives it for him today, and the costume pieces themselves.
 import { Pixels } from '../kit/pixels';
 import { CLEAR, blob, over, sprite } from './draw';
 import { P } from './pal';
@@ -75,46 +75,62 @@ export function propOn(base: Pixels, name: string): Pixels {
   return over(p, propSprite(name));
 }
 
-/** The Klown Car: 2x2 blocks [roof L, roof R], [door, back]. `open` swings the door. */
+/**
+ * Doc Leo's car: a red 1976 CitiCar, the tiny electric wedge (a doorstop on wheels), 2x2
+ * blocks [roof L, roof R], [door, back]. It faces right: a flat back, a flat roof, then
+ * one long slope from the roof down over the windshield to the pointed nose, with big
+ * black bumpers at both ends. `open` swings the door open (only the lower left block
+ * changes, as that is the block Teddy walks into).
+ */
 export function klownCar(base: (bx: number, by: number) => Pixels, open: boolean): Pixels[][] {
   const p = canvas(2, 2, base);
-  // body: a yellow bubble with blue dots
-  blob(p, 20, 24, 19, 14, P.r('yellow'), 0, 3);
-  for (const [x, y] of [
-    [8, 20],
-    [16, 30],
-    [27, 22],
-    [33, 31],
-    [22, 15],
-    [12, 30],
-  ])
-    p.rect(x, y, 3, 3, c('blue', 2)).set(x, y, c('blue', 3));
-  // windshield and a flower on the antenna
-  blob(p, 26, 15, 7, 5, P.r('sky'), 4, 7);
-  p.line(34, 12, 37, 2, c('metal', 1));
-  blob(p, 37, 2, 2, 2, P.r('pink'), 1, 3);
-  p.set(37, 2, c('yellow', 3));
-  // bumpers and wheels
-  p.rect(0, 30, 3, 3, c('metal', 3)).rect(37, 30, 3, 3, c('metal', 3));
-  for (const x of [9, 31]) {
-    blob(p, x, 34, 5, 5, P.r('ink'), 0, 1);
-    p.rect(x - 1, 33, 3, 3, c('metal', 3));
-  }
-  // the door
-  if (open) {
-    p.rect(4, 17, 13, 15, c('ink', 0));
-    p.rect(1, 17, 3, 15, c('red', 2));
-  } else {
-    p.rect(4, 17, 13, 15, c('red', 2));
-    p.frame(4, 17, 13, 15, c('red', 0));
-    p.rect(13, 24, 2, 2, c('yellow', 3));
-    // a little "star" sticker
-    p.set(9, 21, c('yellow', 3)).set(8, 22, c('yellow', 3)).set(9, 22, c('yellow', 3)).set(10, 22, c('yellow', 3)).set(9, 23, c('yellow', 3));
-  }
+  citiCar(p, 0, 0, open);
   return cut(p);
 }
 
-/** Pockets, the Klown Car driver: [head, body] over a background. */
+/** Draws the CitiCar into a 40x40 area at (x0, y0) (also used, scaled, in the cartoons). */
+export function citiCar(p: Pixels, x0: number, y0: number, open = false): void {
+  const roofY = 7;
+  const slopeX = 17; // where the roof ends and the wedge begins
+  const noseX = 38;
+  const sill = 31;
+  const top = (x: number) => (x <= slopeX ? roofY : roofY + Math.round(((x - slopeX) * (25 - roofY)) / (noseX - slopeX)));
+  for (let x = 2; x <= noseX; x++) {
+    for (let y = top(x); y <= sill; y++) {
+      const edge = y === top(x) || x === 2 || x === noseX || y === sill;
+      const shade = edge ? c('red', 0) : y > 25 ? c('red', 1) : x < 5 ? c('red', 1) : c('red', 2);
+      p.set(x0 + x, y0 + y, shade);
+    }
+  }
+  // a highlight along the roof and down the wedge
+  for (let x = 4; x < noseX - 1; x++) p.set(x0 + x, y0 + top(x) + 1, c('red', 3));
+  // windows: the back side window, the door window, and the windshield along the slope
+  for (let y = roofY + 3; y <= 18; y++) for (let x = 4; x <= 8; x++) p.set(x0 + x, y0 + y, y < 12 ? c('sky', 7) : c('sky', 5));
+  for (let y = roofY + 3; y <= 18; y++)
+    for (let x = 11; x <= 24; x++) if (y >= top(x) + 3) p.set(x0 + x, y0 + y, x - y > 2 ? c('sky', 7) : c('sky', 5));
+  // the door: a seam round it and a little handle
+  const dx0 = 10;
+  const dx1 = 19;
+  for (let y = roofY + 2; y <= sill - 1; y++) p.set(x0 + dx0, y0 + y, c('red', 0)).set(x0 + dx1, y0 + y, c('red', 0));
+  p.rect(x0 + dx0, y0 + sill - 1, dx1 - dx0 + 1, 1, c('red', 0));
+  p.rect(x0 + 16, y0 + 21, 2, 1, c('metal', 3));
+  if (open) {
+    p.rect(x0 + dx0, y0 + 20, dx1 - dx0 + 1, sill - 20, c('ink', 0));
+    p.rect(x0 + 3, y0 + 20, 6, sill - 20, c('red', 2)).frame(x0 + 3, y0 + 20, 6, sill - 20, c('red', 0));
+  }
+  // the big black bumpers, front and back, and a headlight in the nose
+  p.rect(x0 + 0, y0 + 26, 4, 6, c('ink', 0)).rect(x0 + 0, y0 + 26, 4, 1, c('ink', 1));
+  p.rect(x0 + noseX - 2, y0 + 27, 4, 6, c('ink', 0)).rect(x0 + noseX - 2, y0 + 27, 4, 1, c('ink', 1));
+  p.rect(x0 + noseX - 4, y0 + 23, 2, 2, c('yellow', 3));
+  p.rect(x0 + 3, y0 + 23, 1, 2, c('red', 3));
+  // small wheels with silver hubcaps
+  for (const x of [9, 30]) {
+    blob(p, x0 + x, y0 + 35, 4, 4, P.r('ink'), 0, 1);
+    p.rect(x0 + x - 1, y0 + 34, 3, 3, c('metal', 3));
+  }
+}
+
+/** Pockets, driving Doc Leo's CitiCar today: [head, body] over a background. */
 export function pockets(base: (by: number) => Pixels, wave = false): Pixels[] {
   const p = canvas(1, 2, (_, by) => base(by));
   const fig = sprite(

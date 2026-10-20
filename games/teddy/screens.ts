@@ -10,7 +10,7 @@ import { buildPalette, buildScreenPalette, type Pal } from './pal';
 import { POSES } from './teddy';
 import { GWIN } from './gwin';
 import { docLeo, type Costume } from './people';
-import { klownCar, propSprite } from './klown';
+import { citiCar, propSprite } from './klown';
 import { renderRegion } from './render';
 import type { Level } from './level';
 import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from './music';
@@ -333,32 +333,29 @@ export function introFli(): Uint8Array {
 }
 
 /**
- * Between stops (an FLI): the Klown Car putters across town with Teddy riding shotgun,
- * Pockets at the wheel, toward the big top on the horizon.
+ * Between stops (an FLI): Doc Leo's little red CitiCar hums across town (it is electric:
+ * no exhaust, just a whirr), Pockets at the wheel and Teddy's head out of the back window.
  */
 export function driveFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const bg = landscape(11);
   bg.rect(0, 168, W, 32, c('asphalt', 1));
   for (let x = 0; x < W; x += 40) bg.rect(x + 8, 182, 20, 3, c('yellow', 3));
-  const clear = new Pixels(20, 20, CLEAR);
-  const car = klownCar(() => clear, false);
   const carPic = new Pixels(40, 40, CLEAR);
-  car.forEach((row, by) => row.forEach((px, bx) => carPic.blit(px, bx * 20, by * 20, CLEAR)));
+  citiCar(carPic, 0, 0);
   for (let f = 0; f < 44; f++) {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
     const x = -130 + f * 11;
     const bob = f % 2;
-    // Teddy's head out of the window, ears flapping; Pockets' hat behind the windshield
-    scaleBlit(p, carPic, x, 72 + bob, 3);
-    // Pockets' bowler behind the wheel, Teddy's head out of the window, ears flapping
-    p.rect(x + 86, 98 + bob, 14, 3, c('ink', 0)).rect(x + 89, 92 + bob, 8, 6, c('ink', 0));
-    scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x + 46, 96 + bob, 2);
-    // exhaust puffs
-    for (let k = 0; k < 3; k++) blob(p, x - 8 - k * 14 - (f % 3) * 3, 182 - k * 5, 5 + k * 2, 4 + k, SP.r('cloud'), 0, 2);
-    if (f > 16 && f < 30) outlined(p, x + 130, 88, 'HONK!', c('yellow', 3), c('ink', 0), 2);
-    centered(p, 12, 'OFF TO THE NEXT STOP!', c('paint', 3), 1, c('ink', 0));
+    scaleBlit(p, carPic, x, 66 + bob, 3);
+    // Pockets' bowler behind the door window; Teddy's head out of the back window, ears flapping
+    p.rect(x + 40, 104 + bob, 16, 3, c('ink', 0)).rect(x + 43, 97 + bob, 10, 7, c('ink', 0));
+    scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x - 4, 92 + bob, 2);
+    // the electric whirr
+    for (let k = 0; k < 3; k++) p.rect(x - 14 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));
+    if (f > 16 && f < 30) outlined(p, x + 124, 84, 'HONK!', c('yellow', 3), c('ink', 0), 2);
+    centered(p, 12, f < 22 ? 'OFF TO THE NEXT STOP!' : "DOC LEO'S CITICAR: 100% ELECTRIC", c('paint', 3), 1, c('ink', 0));
     frames.push(Uint8Array.from(p.px));
   }
   return encodeFli(frames, SP.pal, { speed: 4 });
