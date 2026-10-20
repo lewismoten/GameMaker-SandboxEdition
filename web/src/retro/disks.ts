@@ -54,7 +54,7 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   });
-  for (const p of await listProjects().catch(() => [])) {
+  for (const p of (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'))) {
     disks.push({
       id: `project:${p.id}`,
       kind: 'project',
