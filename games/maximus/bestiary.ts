@@ -122,7 +122,14 @@ function makeMonster(c: Creature, pics: number[], becomes: number | undefined): 
   m.newmon = becomes ?? LASTMON;
   m.end = c.end ?? 0;
   const anim = c.anim ?? 6;
-  m.pic = Array.from({ length: LASTSL + 1 }, (_, k) => (k < pics.length ? [pics[k], anim] : [100, 1]) as [number, number]);
+  // PLAYGAME steps through 20 animation slots (the 21st is never reached): fill them all,
+  // the drawn frames cycling with a little swing in their timing so no two monsters of a
+  // kind flap in lockstep for long
+  const swing = [0, 1, 0, -1, 0, 2, 0, -1, 1, 0, 0, 1, 0, -1, 0, 2, -1, 0, 1, 0];
+  m.pic = Array.from(
+    { length: LASTSL + 1 },
+    (_, k) => (k < LASTSL ? [pics[k % pics.length], Math.max(1, anim + (pics.length > 1 ? swing[k] : 0))] : [100, 1]) as [number, number],
+  );
   switch (c.move.kind) {
     case 'still':
       break;

@@ -40,9 +40,9 @@ MONSTERS IN A .MON
   Used:  64 in each of 8 files (512 monsters, 352 creatures + the courier's own shots and loot)
   Where: *.MON
 
-ANIMATION FRAMES PER MONSTER
-  Limit: 21
-  Used:  up to 3 drawn frames, every monster animated
+ANIMATION STEPS PER MONSTER
+  Limit: 21 slots (PLAYGAME steps through 20)
+  Used:  all 20 in every creature: up to 3 drawn frames cycling with varied timing
   Where: *.MON
 
 PATH CORNERS PER MONSTER

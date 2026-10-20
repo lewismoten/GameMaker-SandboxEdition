@@ -301,8 +301,8 @@ export function wonScreens(): Map<string, Uint8Array> {
     c.sprite(drawCourier({ arm: [150, 170], backArm: [150, 170] }), 140, 40, 2);
     c.sprite(drawPod('idle', { glow: 1 }), 200, 70, 2);
     c.panel(20, 140, 280, 52, C('blue')[0], C('blue')[3]);
-    ['The warp lanes hum again. Ships', 'move in every sector, and every', 'pilot knows the name of the', 'courier who brought the light.'].forEach(
-      (l, k) => c.text(28, 146 + k * 11, l, C('ice')[7]),
+    ['The warp lanes hum again. Ships', 'move in every sector, and every', 'pilot knows the name of the', 'courier who brought the light.'].forEach((l, k) =>
+      c.text(28, 146 + k * 11, l, C('ice')[7]),
     );
     out.set('won2.gif', gif(c));
   }

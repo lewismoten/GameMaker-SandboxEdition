@@ -93,11 +93,20 @@ function parseLine(notes: string): { at: number; len: number; notes: number[] }[
   return out;
 }
 
-export function arrange(spec: SongSpec): Uint8Array {
+/** A copy of an instrument with its carrier turned down by `att` (0.75 dB steps). */
+function soften(inst: Uint8Array, att: number): Uint8Array {
+  const out = inst.slice();
+  out[3] = (out[3] & 0xc0) | Math.min(63, (out[3] & 0x3f) + att);
+  return out;
+}
+
+/** Arranges a song; `only` keeps just those MIDI channels (for listening tests). */
+export function arrange(spec: SongSpec, only?: number[]): Uint8Array {
   const tpb = Math.round((146 * 60) / spec.bpm);
   const events: CmfEvent[] = [];
   const on = (ch: number, note: number, beat: number, len: number, vel = 100) => {
     if (note < 12 || note > 115) return;
+    if (only && !only.includes(ch)) return;
     events.push({ tick: beat * tpb, data: [0x90 | ch, note, vel] });
     events.push({ tick: (beat + len * 0.9) * tpb, data: [0x80 | ch, note, 0] });
   };
@@ -186,8 +195,10 @@ export function arrange(spec: SongSpec): Uint8Array {
   instruments[CH.harm] = I[spec.lead === 'brass' ? 'strings' : 'softLead'];
   instruments[CH.bass] = I[spec.bass ?? (spec.style === 'drive' || spec.style === 'race' || spec.style === 'machine' ? 'synthBass' : 'bass')];
   instruments[CH.arp] = I[spec.arp ?? (spec.style === 'glass' ? 'glass' : spec.style === 'folk' ? 'pluck' : 'bell')];
-  instruments[CH.padA] = I[spec.pad ?? 'pad'];
-  instruments[CH.padB] = I[spec.pad ?? 'pad'];
+  // the pad sits under the tune: its carrier attenuated about 8 dB (two voices of it)
+  instruments[CH.padA] = soften(I[spec.pad ?? 'pad'], 0x0e);
+  instruments[CH.padB] = soften(I[spec.pad ?? 'pad'], 0x0e);
+  instruments[CH.arp] = soften(instruments[CH.arp], 0x06);
   instruments[6] = I.piano;
   instruments[7] = I.piano;
   instruments[8] = I.piano;

@@ -71,7 +71,12 @@ export function limits(b: Built): Limit[] {
       used: `64 in each of 8 files (${8 * 64} monsters, 352 creatures + the courier's own shots and loot)`,
       where: '*.MON',
     },
-    { what: 'Animation frames per monster', max: String(LASTSL + 1), used: 'up to 3 drawn frames, every monster animated', where: '*.MON' },
+    {
+      what: 'Animation steps per monster',
+      max: `${LASTSL + 1} slots (PLAYGAME steps through ${LASTSL})`,
+      used: `all ${LASTSL} in every creature: up to 3 drawn frames cycling with varied timing`,
+      where: '*.MON',
+    },
     { what: 'Path corners per monster', max: `${MAXMARCH} (x 2 paths)`, used: '10 (hopping slimes, figure eights)', where: '*.MON' },
     { what: 'Monster blocks in a .MBL', max: String(MONBL), used: `${MONBL} in each of 4 files`, where: 'LAND/SEA/SPACE/MECH.MBL' },
     {
