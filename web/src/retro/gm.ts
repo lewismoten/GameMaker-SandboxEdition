@@ -11,10 +11,12 @@ import type { FileKind } from '../editor/project';
 import { createZip } from '../project/zip';
 import { download } from '../editor/ui';
 import { runPaletteDesigner } from '../vga/palchos';
+import { runSoundDesigner } from '../vga/sndedit';
 
 /** Designers ported to VGA graphics: they run their own menus, as the .EXEs did. */
 const PORTED: Record<string, (h: RetroHost) => Promise<void>> = {
   'PALCHOS.EXE': runPaletteDesigner,
+  'SNDEDIT.EXE': runSoundDesigner,
 };
 
 const GMTOPBAR = '                            G A M E  -  M A K E R  V3.00                        ';
