@@ -737,3 +737,44 @@ dialog.modal .buttons {
   font-weight: 400;
   opacity: 0.85;
 }
+
+/* a file slot (editor/filePicker.ts fileField) */
+.file-field-body {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.file-field-choose {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 8px 4px 4px;
+  text-align: left;
+}
+
+.file-field-choose .thumb {
+  width: 40px;
+  height: 32px;
+  flex: none;
+  font-size: 18px;
+}
+
+.file-field-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 600 12px ui-monospace, monospace;
+}
+
+.file-field-edit {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+}

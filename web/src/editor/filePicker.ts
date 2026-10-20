@@ -136,3 +136,36 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     );
   });
 }
+
+/**
+ * A file slot shown as its thumbnail and name, with buttons to choose another (the
+ * visual picker) and to edit it. Replaces drop-down lists of file names.
+ */
+export function fileField(project: Project, label: string, kinds: FileKind[], get: () => string, set: (name: string) => void, opts: { allowNone?: boolean; title?: string } = {}): HTMLElement {
+  const body = h('div', { class: 'file-field-body' });
+  const render = () => {
+    const name = get();
+    const exists = !!name && project.files.has(name);
+    clear(
+      body,
+      h(
+        'button',
+        {
+          class: 'file-field-choose',
+          title: `Choose ${label.toLowerCase()}`,
+          onclick: async () => {
+            const picked = await pickFile(project, kinds[0], { kinds, current: name, allowNone: opts.allowNone ?? true, title: label });
+            if (picked === undefined) return;
+            set(picked);
+            render();
+          },
+        },
+        exists ? fileThumb(name, project.files.get(name), { files: project.files, palette: project.paletteFor(name).palette }) : h('span', { class: 'thumb icon' }, name ? '⚠' : '＋'),
+        h('span', { class: 'file-field-name' }, name ? name.toUpperCase() : 'none', name && !exists ? h('small', null, ' (missing)') : null),
+      ),
+      exists ? h('a', { class: 'file-field-edit', href: `#/p/${project.id}/${encodeURIComponent(name)}`, title: `Edit ${name}`, 'aria-label': `Edit ${name}` }, '✎') : null,
+    );
+  };
+  render();
+  return h('div', { class: 'field file-field', title: opts.title }, h('span', null, label), body);
+}
