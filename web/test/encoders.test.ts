@@ -36,4 +36,21 @@ describe('encoders', () => {
     });
     expect([...c.palette]).toEqual([...pal]);
   });
+
+  it('stores only what changed between FLI frames', () => {
+    const frames = Array.from({ length: 6 }, (_, f) => {
+      const px = new Uint8Array(320 * 200).fill(3);
+      for (let y = 50; y < 70; y++) for (let x = 20 + f * 30; x < 40 + f * 30; x++) px[y * 320 + x] = 9 + f;
+      px[199 * 320 + 319] = f; // a change at the very end too
+      return px;
+    });
+    const bytes = encodeFli(frames, new Uint8Array(768), { speed: 2 });
+    expect(bytes.length).toBeLessThan(20000);
+    const anim = parseFli(bytes);
+    const c = newFliCanvas(anim);
+    frames.forEach((f, n) => {
+      applyFliFrame(anim, n, c);
+      expect(Buffer.compare(Buffer.from(c.pixels), Buffer.from(f))).toBe(0);
+    });
+  });
 });

@@ -221,6 +221,57 @@ function brun(px: Uint8Array, w: number, h: number): number[] {
   return out;
 }
 
+/**
+ * LC (delta) chunk: only the lines and spans that changed since the previous frame.
+ * Returns undefined when nothing changed, or when a full BRUN frame would be smaller.
+ */
+function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number): number[] | undefined {
+  let first = 0;
+  while (first < h && rowSame(prev, px, first, w)) first++;
+  if (first === h) return [0, 0, 0, 0]; // an empty change: same picture
+  let last = h - 1;
+  while (last > first && rowSame(prev, px, last, w)) last--;
+  const out = [first & 255, first >> 8, (last - first + 1) & 255, (last - first + 1) >> 8];
+  for (let y = first; y <= last; y++) {
+    const row = y * w;
+    const packets: number[] = [];
+    let count = 0;
+    let x = 0;
+    let lastEnd = 0;
+    while (x < w) {
+      if (prev[row + x] === px[row + x]) {
+        x++;
+        continue;
+      }
+      // a span of changed pixels (a short run of unchanged ones inside it is kept)
+      let end = x;
+      while (end < w && end - x < 127 && (prev[row + end] !== px[row + end] || (end + 1 < w && prev[row + end + 1] !== px[row + end + 1]))) end++;
+      let skip = x - lastEnd;
+      while (skip > 255) {
+        // a skip longer than 255: an empty literal packet carries part of it
+        packets.push(255, 0);
+        count++;
+        skip -= 255;
+      }
+      const n = end - x;
+      const allSame = px.subarray(row + x, row + end).every((v) => v === px[row + x]);
+      if (allSame && n > 2) packets.push(skip, (256 - n) & 255, px[row + x]);
+      else packets.push(skip, n, ...px.subarray(row + x, row + end));
+      count++;
+      lastEnd = end;
+      x = end;
+    }
+    if (count > 255) return undefined;
+    out.push(count, ...packets);
+  }
+  return out;
+}
+
+function rowSame(a: Uint8Array, b: Uint8Array, y: number, w: number): boolean {
+  for (let i = y * w, e = i + w; i < e; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
 function fliChunk(type: number, data: number[]): number[] {
   let size = data.length + 6;
   const pad = size & 1;
@@ -236,14 +287,20 @@ function fliChunk(type: number, data: number[]): number[] {
 export function encodeFli(frames: Uint8Array[], palette: Uint8Array, opts: { width?: number; height?: number; speed?: number } = {}): Uint8Array {
   const w = opts.width ?? 320;
   const h = opts.height ?? 200;
-  const records = [...frames, frames[0]].map((px, i) => {
+  const all = [...frames, frames[0]];
+  const records = all.map((px, i) => {
     const chunks: number[][] = [];
     if (i === 0) {
       const colors: number[] = [1, 0, 0, 0]; // one packet: skip 0, count 0 = 256 colors
       for (let c = 0; c < 768; c++) colors.push(palette[c] & 63);
       chunks.push(fliChunk(11, colors));
     }
-    chunks.push(fliChunk(15, brun(px, w, h)));
+    // After the first frame, store only what changed, when that is smaller.
+    const prev = i > 0 ? all[i - 1] : undefined;
+    const delta = prev ? lineDelta(prev, px, w, h) : undefined;
+    const full = delta && delta.length < 64000 ? undefined : brun(px, w, h);
+    if (delta && (!full || delta.length < full.length)) chunks.push(fliChunk(12, delta));
+    else chunks.push(fliChunk(15, full ?? brun(px, w, h)));
     const body = chunks.flat();
     const size = body.length + 16;
     return [size & 255, (size >> 8) & 255, (size >> 16) & 255, size >>> 24, 0xfa, 0xf1, chunks.length, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...body];
