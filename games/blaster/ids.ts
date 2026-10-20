@@ -90,7 +90,7 @@ export const SND = {
  */
 export const POWER = {
   spark: 1,
-  bullet: 40,
+  bullet: 50,
   enemy: 50,
   boom: 50,
   core: 150,
