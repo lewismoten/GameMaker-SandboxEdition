@@ -5,6 +5,7 @@ import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, loadHostedGame, typ
 import { deleteProject, listProjects, loadProject } from '../project/storage';
 import { createZip, isZip, readZip } from '../project/zip';
 import { exportWebApp } from '../export/exportWebApp';
+import { exportDos } from '../export/exportDos';
 import { parseGame } from '../formats/game';
 
 export interface HomeNav {
@@ -93,6 +94,7 @@ async function renderProjects(host: HTMLElement, nav: HomeNav): Promise<void> {
           h('a', { href: `./play.html?project=${encodeURIComponent(p.id)}` }, h('button', null, 'Play')),
           h('button', { onclick: () => void downloadProject(p.id) }, 'Download .zip'),
           h('button', { onclick: () => void exportProject(p.id) }, 'Export web app'),
+          h('button', { onclick: () => void exportProjectForDos(p.id) }, 'Export for DOS'),
           h(
             'button',
             {
@@ -209,6 +211,19 @@ export async function exportProject(id: string): Promise<void> {
     const { name, zip } = await exportWebApp(p.files, { title, gam: p.record.gam });
     download(name, zip, 'application/zip');
     toast(`Saved ${name}. Unzip it onto any static web host.`);
+  } catch (e) {
+    toast((e as Error).message, 'error');
+  }
+}
+
+export async function exportProjectForDos(id: string): Promise<void> {
+  const p = await loadProject(id);
+  if (!p) return;
+  try {
+    const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
+    const { name, zip, exe } = await exportDos(p.files, { title, gam: p.record.gam });
+    download(name, zip, 'application/zip');
+    toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
   } catch (e) {
     toast((e as Error).message, 'error');
   }
