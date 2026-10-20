@@ -98,3 +98,26 @@ describe('animated gif', () => {
     expect(delays.reduce((a, b) => a + b, 0)).toBe(53);
   });
 });
+
+describe('mp4 mux', () => {
+  it('puts ftyp, moov, then mdat, with the chunk offset at the first sample', async () => {
+    const { muxMp4, topBoxes } = await import('../src/media/mp4Mux');
+    const samples = [
+      { data: Uint8Array.from([0, 0, 0, 2, 0x65, 1]), duration: 5, key: true },
+      { data: Uint8Array.from([0, 0, 0, 1, 0x41]), duration: 5, key: false },
+      { data: Uint8Array.from([0, 0, 0, 1, 0x41]), duration: 10, key: false },
+    ];
+    const mp4 = muxMp4({ width: 320, height: 200, timescale: 70, avcC: Uint8Array.from([1, 0x64, 0, 0x28, 0xff, 0xe0, 0]), samples });
+    const boxes = topBoxes(mp4);
+    expect(boxes.map((b) => b.type)).toEqual(['ftyp', 'moov', 'mdat']);
+    expect(boxes.reduce((n, b) => n + b.size, 0)).toBe(mp4.length);
+    const stco = mp4.findIndex((_, i) => String.fromCharCode(...mp4.subarray(i, i + 4)) === 'stco');
+    const offset = new DataView(mp4.buffer).getUint32(stco + 12);
+    expect(offset).toBe(boxes[2].offset + 8);
+    expect([...mp4.subarray(offset, offset + 6)]).toEqual([0, 0, 0, 2, 0x65, 1]);
+    // durations run-length coded: 2 x 5, 1 x 10; total 20/70 s in mvhd
+    const stts = mp4.findIndex((_, i) => String.fromCharCode(...mp4.subarray(i, i + 4)) === 'stts');
+    const v = new DataView(mp4.buffer);
+    expect([v.getUint32(stts + 8), v.getUint32(stts + 12), v.getUint32(stts + 16), v.getUint32(stts + 20), v.getUint32(stts + 24)]).toEqual([2, 2, 5, 1, 10]);
+  });
+});
