@@ -99,7 +99,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     const thumbCanvas = (cell: HTMLElement) => () => cell.querySelector<HTMLCanvasElement>('canvas.thumb');
 
     /** Lays the cards out under a heading per sound group, with chips to show one group. */
-    const layout = (cells: { el: HTMLElement; group?: SoundGroup }[], empty: HTMLElement | null) => {
+    const layout = (cells: { el: HTMLElement; group?: SoundGroup; none?: boolean }[], empty: HTMLElement | null) => {
       if (!grouped) {
         clear(grid, ...cells.map((c) => c.el), cells.length ? null : empty);
         return;
@@ -123,7 +123,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         );
       clear(
         filters,
-        chip('all', 'All', cells.length),
+        chip('all', 'All', cells.filter((c) => !c.none).length),
         ...SOUND_GROUPS.filter((g) => count(g.id)).map((g) => chip(g.id, `${g.icon} ${g.label}`, count(g.id), `Sounds like: ${g.hint}`)),
       );
       const none = cells.filter((c) => !c.group);
@@ -167,7 +167,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         { class: 'hint' },
         `This game has no ${KIND_LABELS[kind].toLowerCase()} yet. Make a new one, add one from your computer, or take one from the library.`,
       );
-      layout(none ? [{ el: none }, ...cells] : cells, empty);
+      layout(none ? [{ el: none, none: true }, ...cells] : cells, empty);
     };
 
     const showLibrary = async () => {
