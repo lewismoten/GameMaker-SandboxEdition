@@ -20,7 +20,6 @@ import {
   clipKind,
   clipTiming,
   clipWidth,
-  formatSeconds,
   MAX_SLIDES,
   moveEntry,
   secondsForWidth,
