@@ -9,9 +9,10 @@ as Game-Maker 3.0 files.
 For the founder and operator
 of Moten Snow-to-Software
 Operations, Gale St & Dunn Dr,
-Dowden Additions, winter of
-1992, who shoveled his way to
-a copy of Game-Maker. Each
+Dowden Additions, Fort Ashby,
+Mineral County, W.Va., winter
+of 1992, who shoveled his way
+to a copy of Game-Maker. Each
 driveway was one pixel.
 
 Made with GAME-MAKER by
@@ -20,7 +21,6 @@ Recreational Software Designs.
 Thanks to everyone who ever
 left a kid a five dollar tip
 on the porch.
-
 
 
 

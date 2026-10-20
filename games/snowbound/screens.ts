@@ -202,30 +202,31 @@ export function buildScreens(
   const body = (p: Pixels, x: number, y: number, w: number, lines: string[]) => {
     lines.forEach((l, i) => micro(p, x, y + i * 7, l.slice(0, Math.floor(w / 4)), c('newsink', 1)));
   };
-  const n1 = paper('MOUNTAIN COURIER', 'FRIDAY  DECEMBER 11  1992');
+  const n1 = paper('MINERAL COURIER', 'FORT ASHBY  W.VA.   FRIDAY  DECEMBER 11  1992');
   centered(n1, 40, 'SNOWBOUND!', c('newsink', 0), 3);
-  centered(n1, 66, 'Area buried; schools closed; plows out', c('newsink', 0));
+  centered(n1, 66, 'Mineral County buried; schools closed', c('newsink', 0));
   scaleBlit(n1, extras.shot, 10, 84, 1);
   n1.frame(9, 83, 162, 82, c('newsink', 0));
   micro(n1, 10, 168, 'GALE ST AT DUNN DR  THIS MORNING', c('newsink', 1));
   body(n1, 180, 84, 130, [
-    'DOWDEN ADDITIONS - THE STORM',
-    'THAT CAME IN OVERNIGHT LEFT',
-    'A FOOT AND A HALF OF SNOW.',
+    'FORT ASHBY - THE STORM THAT',
+    'CAME IN OVERNIGHT LEFT A FOOT',
+    'AND A HALF OF SNOW ON DOWDEN',
+    'ADDITIONS AND ALL OF MINERAL',
+    'COUNTY.',
     '',
     'PLOWS ARE OUT ON GALE STREET',
     'AND BOWDEN DRIVE. DRIVERS:',
     'WATCH FOR SLEDS ON JAMIE ST.',
     '',
-    'THERE ARE NO MAILBOXES TO',
-    'DIG OUT HERE - THE CARRIER',
-    'WALKS THE MAIL TO EVERY',
-    'DOOR SLOT. SO PLEASE CLEAR',
-    'YOUR FRONT WALK TOO!',
+    'NO MAILBOXES TO DIG OUT IN',
+    'DOWDEN - THE CARRIER WALKS',
+    'THE MAIL TO EVERY DOOR SLOT.',
+    'CLEAR YOUR FRONT WALK TOO!',
   ]);
   save('news1.gif', n1);
 
-  const n2 = paper('MOUNTAIN COURIER', 'PAGE 6       CLASSIFIEDS');
+  const n2 = paper('MINERAL COURIER', 'MINERAL COUNTY  PAGE 6  CLASSIFIEDS');
   n2.rect(10, 42, 196, 148, c('paper', 4)).frame(10, 42, 196, 148, c('newsink', 0)).frame(12, 44, 192, 144, c('newsink', 0));
   text(n2, 22, 52, 'DESIGN YOUR', c('newsink', 0), 2);
   text(n2, 22, 70, 'OWN GAMES!', c('newsink', 0), 2);
@@ -270,7 +271,7 @@ export function buildScreens(
   body(n2, 216, 126, 92, ['NOTICE:', 'THE PRICE OF', 'GAME-MAKER GOES', 'UP TO $129 IN', 'JANUARY.', '', 'BUY BEFORE', 'CHRISTMAS!']);
   save('news2.gif', n2);
 
-  const n3 = paper('MOUNTAIN COURIER', 'PAGE 2        LOCAL NEWS');
+  const n3 = paper('MINERAL COURIER', 'MINERAL COUNTY  PAGE 2  LOCAL NEWS');
   centered(n3, 40, 'KID SHOVELS FOR', c('newsink', 0), 2);
   centered(n3, 56, 'GAME-MAKER', c('newsink', 0), 2);
   centered(n3, 72, '"Moten Snow-to-Software Operations"', c('newsink', 0));
@@ -278,11 +279,11 @@ export function buildScreens(
   n3.frame(12, 86, 88, 86, c('newsink', 0));
   micro(n3, 14, 176, 'OUR FOUNDER', c('newsink', 1));
   body(n3, 110, 88, 200, [
-    'A DOWDEN ADDITIONS TEEN HAS A PLAN FOR',
-    'ALL THIS SNOW. HE WILL SHOVEL ANY',
-    'DRIVEWAY OR WALK AROUND FOR ONE DOLLAR A',
-    'SCOOP - AND EVERY DOLLAR GOES INTO A',
-    'COFFEE CAN UNTIL IT HOLDS $89.',
+    'A FORT ASHBY TEEN FROM DOWDEN ADDITIONS',
+    'HAS A PLAN FOR ALL THIS SNOW. HE WILL',
+    'SHOVEL ANY DRIVEWAY OR WALK AROUND FOR',
+    'ONE DOLLAR A SCOOP - AND EVERY DOLLAR',
+    'GOES INTO A COFFEE CAN UNTIL IT HOLDS $89.',
     '',
     '"THAT IS WHAT GAME-MAKER COSTS AT THE',
     'MALL," HE TOLD THE COURIER. "EACH',
