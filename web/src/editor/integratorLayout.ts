@@ -404,7 +404,12 @@ function hitsBox(a: Point, b: Point, p: Point, hw: number, hh: number): boolean 
 }
 
 /** What makes a layout hard to read, in cell units: crossing arrows, arrows under cards, long arrows. */
-export function layoutCost(pairs: [number, number][], at: Map<number, Point>, unit = { w: 1, h: 1 }): { cross: number; under: number; length: number } {
+export function layoutCost(
+  pairs: [number, number][],
+  at: Map<number, Point>,
+  unit = { w: 1, h: 1 },
+  full = true,
+): { cross: number; under: number; length: number } {
   const ids = [...at.keys()];
   let cross = 0;
   let under = 0;
@@ -414,6 +419,7 @@ export function layoutCost(pairs: [number, number][], at: Map<number, Point>, un
     const pa = at.get(a)!;
     const pb = at.get(b)!;
     length += Math.hypot((pa.x - pb.x) / unit.w, (pa.y - pb.y) / unit.h);
+    if (!full) continue;
     for (let j = i + 1; j < pairs.length; j++) {
       const [c, d] = pairs[j];
       if (a === c || a === d || b === c || b === d) continue;
@@ -424,17 +430,34 @@ export function layoutCost(pairs: [number, number][], at: Map<number, Point>, un
   return { cross, under, length };
 }
 
-function score(g: Graph, cells: Cells): number {
-  const at = new Map([...cells].map(([s, p]) => [s, { x: p.c, y: p.r }]));
-  const { cross, under, length } = layoutCost(g.pairs, at);
-  // arrows that run backwards (right to left / bottom to top) along the tree are harder to follow
-  return cross * 4 + under * 3 + length * 0.35;
+function score(g: Graph, cells: Cells, at: Map<number, Point>, w: number, h: number, area: Area): number {
+  const { cross, under } = layoutCost(g.pairs, at, { w: 22, h: 18 });
+  // long arrows, counted in steps between neighbouring cards
+  const { length } = layoutCost(g.pairs, new Map([...cells].map(([s, p]) => [s, { x: p.c, y: p.r }])), { w: 1, h: 1 }, false);
+  // arrows that run backwards (right to left, bottom to top) from a scene to the ones it leads to first are harder to follow
+  const { kids } = spanningForest(g);
+  let back = 0;
+  for (const [s, ch] of kids)
+    for (const c of ch) {
+      const a = cells.get(s)!;
+      const b = cells.get(c)!;
+      if (b.c < a.c - 0.5) back += 1;
+      if (b.r < a.r - 0.5) back += 0.5;
+    }
+  // cards squeezed close together, with little room to see the arrows between them
+  const { dx, dy } = spacing(w, h, area);
+  const crowd = g.nodes.length * ((w > 1 ? 1 - dx / MAX_GAP.x : 0) + (h > 1 ? 1 - dy / MAX_GAP.y : 0));
+  return cross * 4 + under * 3 + length * 0.35 + back * 1.5 + crowd * 0.6;
 }
+
+const spacing = (w: number, h: number, a: Area) => ({
+  dx: w > 1 ? Math.min(MAX_GAP.x, (a.x1 - a.x0) / (w - 1)) : 0,
+  dy: h > 1 ? Math.min(MAX_GAP.y, (a.y1 - a.y0) / (h - 1)) : 0,
+});
 
 /** Turns grid cells into Pos values, spaced evenly and centred in the world. */
 function toPositions(cells: Cells, w: number, h: number, a: Area): Map<number, Point> {
-  const dx = w > 1 ? Math.min(MAX_GAP.x, (a.x1 - a.x0) / (w - 1)) : 0;
-  const dy = h > 1 ? Math.min(MAX_GAP.y, (a.y1 - a.y0) / (h - 1)) : 0;
+  const { dx, dy } = spacing(w, h, a);
   const cx = (a.x0 + a.x1) / 2 - ((w - 1) * dx) / 2;
   const cy = (a.y0 + a.y1) / 2 - ((h - 1) * dy) / 2;
   const out = new Map<number, Point>();
@@ -492,7 +515,7 @@ export function arrangements(game: Game, limit = 6): Arrangement[] {
       const key = [...positions].map(([s, p]) => `${s}:${p.x},${p.y}`).join(' ');
       if (found.some((f) => f.key === key)) continue;
       // cards hanging over the world's frame look untidy: only when there's no other way
-      found.push({ kind: cand.kind, positions, cost: score(g, n.cells) + cand.bias + (area === TIGHT ? 3 : 0), key });
+      found.push({ kind: cand.kind, positions, cost: score(g, n.cells, positions, n.w, n.h, area) + cand.bias + (area === TIGHT ? 3 : 0), key });
     }
   }
   if (found.length)

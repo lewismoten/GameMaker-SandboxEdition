@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, type Game } from '../src/formats/game';
-import { CARD_UNITS, POS_MAX, POS_MIN, autoArrange, clampPos, sceneLayers, spreadOut } from '../src/editor/integratorLayout';
+import { CARD_UNITS, POS_MAX, POS_MIN, arrangements, autoArrange, clampPos, layoutCost, sceneLayers, settle, spreadOut } from '../src/editor/integratorLayout';
 
 function chain(n: number): Game {
   const g = newGame('Test');
@@ -70,5 +70,50 @@ describe('integrator layout', () => {
     checkNoOverlap(g, pos);
     expect(pos.get(0)!.x).toBeLessThan(pos.get(3)!.x);
     expect(pos.get(1)!.x).toBeGreaterThan(pos.get(3)!.x);
+  });
+
+  it('settles wanted columns in order, one apart, as near as can be', () => {
+    expect(settle([0, 5, 9])).toEqual([0, 5, 9]);
+    expect(settle([3, 3, 3])).toEqual([2, 3, 4]);
+    expect(settle([1, 0, 0], 0)).toEqual([0, 1, 2]);
+  });
+
+  it('leaves a tidy arrangement alone when spreading out', () => {
+    const g = chain(3);
+    g.scenes.forEach((s, i) => (s.pos = { x: 20 + i * 40, y: 60 + (i % 2) * 30 }));
+    const pos = spreadOut(g);
+    g.scenes.forEach((s, i) => expect(pos.get(i)).toEqual(s.pos));
+  });
+
+  it('offers other arrangements, best first', () => {
+    const list = arrangements(chain(5));
+    expect(list.length).toBeGreaterThan(1);
+    for (let i = 1; i < list.length; i++) expect(list[i].cost).toBeGreaterThanOrEqual(list[i - 1].cost);
+  });
+
+  // every game on the CD and in games/: clean layouts, fast
+  const root = resolve(__dirname, '../..');
+  const gams: string[] = [];
+  for (const dir of ['cd/gameware', 'cd/sharware', 'games'])
+    if (existsSync(resolve(root, dir)))
+      for (const d of readdirSync(resolve(root, dir))) {
+        const base = existsSync(resolve(root, dir, d, 'disk')) ? resolve(root, dir, d, 'disk') : resolve(root, dir, d);
+        if (statSync(base).isDirectory()) for (const f of readdirSync(base)) if (/\.gam$/i.test(f)) gams.push(resolve(base, f));
+      }
+  it.each(gams.map((f) => [f.slice(root.length + 1), f]))('arranges %s cleanly', (_, file) => {
+    const g = parseGame(new Uint8Array(readFileSync(file)));
+    const t = performance.now();
+    const pos = autoArrange(g);
+    expect(performance.now() - t).toBeLessThan(1500);
+    checkNoOverlap(g, pos);
+    const pairs: [number, number][] = [];
+    g.scenes.forEach((s, i) => {
+      if (s.gametype === NOSCENE) return;
+      for (const l of s.links)
+        if (l.toScene !== NOSCENE && l.toScene !== i && g.scenes[l.toScene] && g.scenes[l.toScene].gametype !== NOSCENE) pairs.push([i, l.toScene]);
+    });
+    const centres = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
+    expect(layoutCost(pairs, centres, { w: 22, h: 18 }).cross).toBe(0);
+    checkNoOverlap(g, spreadOut(g));
   });
 });
