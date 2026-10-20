@@ -37,6 +37,7 @@ export interface SceneInfo {
   shard?: number;
   module?: number;
   arrive: { x: number; y: number };
+  vault?: { x: number; y: number };
   map: Grid;
   bbl: string;
   chr: string;
@@ -274,6 +275,7 @@ export function buildGame(): Built {
           scene: w.scene,
           name: world.name,
           file,
+          vault: p.vault,
           kind: world.kind,
           biome: world.biome,
           sector: k,

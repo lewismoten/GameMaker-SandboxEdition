@@ -4,6 +4,8 @@ import { Disk } from '../kit/disk';
 import { buildGame } from './game';
 import { present } from './present';
 import { README } from './text';
+import { about, limitsTxt, manual } from './docs';
+import { writeFileSync } from 'node:fs';
 
 const t0 = Date.now();
 const built = buildGame();
@@ -11,6 +13,10 @@ await present(built);
 const disk = new Disk(new URL('./disk', import.meta.url).pathname);
 for (const [name, bytes] of built.files) disk.put(name, bytes);
 disk.put('readme.txt', README('$15'));
+disk.put('limits.txt', limitsTxt(built));
+const here = (f: string) => new URL(`./${f}`, import.meta.url).pathname;
+writeFileSync(here('about.json'), JSON.stringify(about(built), null, 2) + '\n');
+writeFileSync(here('manual.json'), JSON.stringify(manual(built), null, 2) + '\n');
 disk.write();
 for (const p of built.problems) console.log('PROBLEM', p);
 console.log(

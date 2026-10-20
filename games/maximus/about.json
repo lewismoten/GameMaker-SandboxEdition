@@ -4,18 +4,57 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$15",
-  "blurb": "Courier Max flies a pod across a galaxy of ninety-odd hand-made planets, on foot, by rover and under the sea, hunting ten star-shards.",
+  "blurb": "Courier Max crosses a galaxy of 88 worlds by pod, on foot, by rover and in a diving bell, hunting the ten star-shards that can relight the dead star at its heart.",
   "exe": "MAXIMUS.EXE",
   "sound": "sb",
-  "label": { "background": "#0b1030", "band": "#f0a020", "ink": "#ffffff", "logo": "SANDBOX SOFTWARE" },
+  "label": {
+    "background": "#0b1030",
+    "band": "#f0a020",
+    "ink": "#ffffff",
+    "logo": "SANDBOX SOFTWARE"
+  },
   "box": {
     "background": "#0b1030",
     "accent": "#f0a020",
     "ink": "#ffffff",
-    "tagline": "One courier. One hundred worlds.",
-    "back": "",
-    "features": [],
-    "shots": [["p01.map", 5, 30]],
+    "tagline": "One courier. A hundred worlds. Ten shards of light.",
+    "back": "The Maximus Core, the forge-star at the heart of the galaxy, has gone dark. Its light was held in ten star-shards, and they are scattered across the Hundred Worlds.\n\nMax is a courier. Couriers deliver. Fly the pod between five sectors of planets - grasslands, glaciers, lava fields, crystal caverns, drowned temples and derelict stations - then land and explore every one on foot, by rover or in the diving bell. Every planet is a little globe: walk east long enough and you come home. Find the ten modules hidden in the vaults, earn credits for the trading posts, open the shard gates sector by sector, and fly through the Maelstrom to the Heart of Maximus.",
+    "features": [
+      "100 scenes: a galaxy chart, 5 sector charts and 88 explorable worlds",
+      "Four ways to travel - courier pod, jet-hopping on foot, the diving bell and the rover",
+      "Every planet wraps around: a real little world with caves, ruins, lakes and floating islands",
+      "352 creatures in four families, each with its own behavior",
+      "10 courier modules to find: plasma lance, nova burst, shields, mines, hover pack and more",
+      "Sound Blaster music and 30 digitized sound effects",
+      "Pushes Game-Maker to every limit - see LIMITS.TXT"
+    ],
+    "shots": [
+      [
+        "w12.map",
+        4,
+        24
+      ],
+      [
+        "w48.map",
+        54,
+        13
+      ],
+      [
+        "galaxy.map",
+        42,
+        45
+      ],
+      [
+        "w60.map",
+        3,
+        33
+      ],
+      [
+        "heart.map",
+        61,
+        46
+      ]
+    ],
     "rating": "Ages 8 and up"
   }
 }

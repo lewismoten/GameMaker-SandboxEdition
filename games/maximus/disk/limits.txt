@@ -1,0 +1,132 @@
+MAXIMUS: THE HUNDRED WORLDS - HOW FAR GAME-MAKER GOES
+======================================================
+
+Maximus was built to find the edges of Game-Maker 3.0 and to
+stand on them. These are the limits we found in its file
+formats and in PLAYGAME, and how close this game comes.
+
+SCENES IN A .GAM
+  Limit: 231 (PLAYGAME allocates all scenes in one 64K block of 283-byte records)
+  Used:  100: title, ending, training deck, galaxy, 5 sectors, 88 worlds, Maelstrom, Citadel, Heart. We stopped at 100: 28300 bytes of scene records sit easily in DOS memory, every scene still loads in a moment, and the integrator's 310x165 world view still shows each scene box and link
+  Where: MAXIMUS.GAM
+
+SCENE FILE-NAME POOL
+  Limit: 65,520 bytes (PLAYGAME clamps it at 0xFFF0)
+  Used:  2903 bytes
+  Where: MAXIMUS.GAM
+
+LINKS PER SCENE
+  Limit: 20
+  Used:  19 (each sector chart: the warp home and 18 planets)
+  Where: SECTOR1..5
+
+FILES PER SCENE
+  Limit: 20
+  Used:  12 (all 12 slots PLAYGAME reads for the title scene, all 11 for every world, all 4 for the ending)
+  Where: all scenes
+
+MAP SIZE
+  Limit: 100 x 100 blocks
+  Used:  98 maps, every one 100 x 100 and wrapping all the way round
+  Where: *.MAP
+
+MONSTERS PLACED ON A MAP
+  Limit: 200
+  Used:  200 in the Maelstrom (every slot: not one left for a shot); 7443 in all
+  Where: MAEL.MAP
+
+MONSTERS IN A .MON
+  Limit: 64
+  Used:  64 in each of 8 files (512 monsters, 352 creatures + the courier's own shots and loot)
+  Where: *.MON
+
+ANIMATION FRAMES PER MONSTER
+  Limit: 21
+  Used:  up to 3 drawn frames, every monster animated
+  Where: *.MON
+
+PATH CORNERS PER MONSTER
+  Limit: 10 (x 2 paths)
+  Used:  10 (hopping slimes, figure eights)
+  Where: *.MON
+
+MONSTER BLOCKS IN A .MBL
+  Limit: 100
+  Used:  100 in each of 4 files
+  Where: LAND/SEA/SPACE/MECH.MBL
+
+BACKGROUND BLOCKS IN A .BBL
+  Limit: 150
+  Used:  150 in each of 4 files (600 blocks)
+  Where: SURFACE/OCEAN/STATION/SPACE.BBL
+
+CHARACTER BLOCKS IN A .CBL
+  Limit: 50
+  Used:  50 in each of 4 files
+  Where: COURIER/POD/DIVER/ROVER.CBL
+
+CHARACTER SEQUENCES
+  Limit: 20 x 10 frames
+  Used:  all 20 in each of 4 .CHR files; the Nova burst uses all 10 frames
+  Where: *.CHR
+
+INVENTORY SLOTS
+  Limit: 10
+  Used:  10 courier modules
+  Where: module blocks 140..149
+
+COUNTERS (METERS)
+  Limit: 30
+  Used:  hit points, lives, credits, 15 ammo counters, all 10 extra counters (the star-shards)
+  Where: counters 20..29
+
+SOUND EFFECTS IN A .SND
+  Limit: 30
+  Used:  30, each with its own digitized .VOC (30 files)
+  Where: MAXIMUS.SND
+
+PALETTE COLORS
+  Limit: 256 (255 drawable; 255 is the sprite clear color)
+  Used:  86 shared + 149 per place = 235; 98 palettes, one per scene
+  Where: *.PAL
+
+MONSTERS DRAWN AT ONCE
+  Limit: 50
+  Used:  Maelstrom keeps under it so none goes invisible
+  Where: MAEL.MAP
+
+DEMO RECORDING
+  Limit: 1000 key events
+  Used:  34 events
+  Where: DEMO.REC
+
+TEXT SCREEN WIDTH
+  Limit: 31 columns
+  Used:  30 (a full 31 leaves its newline behind: a blank line)
+  Where: INSTRUCT.TXT
+
+CMF INSTRUMENTS / FM VOICES
+  Limit: 16 / 9 (6 + 5 drums in rhythm mode)
+  Used:  15 songs, rhythm mode in all
+  Where: *.CMF
+
+PICTURES BETWEEN SCENES
+  Limit: any GIF, FLI, BKD, TXT or LST
+  Used:  23 GIFs, 5 FLIs, 91 BKD windows into 6 tall card GIFs, 93 slide shows
+  Where: CARDS1..5.GIF, PLACES.GIF
+
+Some limits shaped the game:
+
+ * Game-Maker animates block TYPES on one clock, so every
+   force field of a world blinks together. Vending pads
+   cannot restock without restocking all at once, so each
+   sells one of each per visit.
+ * A scene reloads its map each time you enter, so star-
+   shards are counters (20..29), not objects: a shard cannot
+   be counted twice and gates test for it without using it.
+ * The Maelstrom fills all 200 monster slots, so there is no
+   slot left for a single shot: in the storm, weapons jam.
+ * Every map wraps, so every planet is a little globe: walk
+   east long enough and you come home.
+ * One tall GIF per sector holds every planet card; each
+   planet's .BKD file shows its own 320x200 window of it.
