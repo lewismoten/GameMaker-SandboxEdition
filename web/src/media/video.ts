@@ -116,14 +116,28 @@ export class LiveRecorder {
   readonly ext: 'mp4' | 'webm';
   readonly mime: string;
   private track: CanvasCaptureMediaStreamTrack;
+  private raf = 0;
 
   constructor(canvas: HTMLCanvasElement, audio?: MediaStreamTrack, fps = 70) {
     const fmt = recorderFormat(!!audio);
     if (!fmt) throw new Error('This browser cannot record video');
     this.ext = fmt.ext;
     this.mime = fmt.mime;
-    const stream = canvas.captureStream(fps);
+    // Frames on our clock, not only when the canvas changes: a screen that holds still
+    // (a title, "Hit any key") must still fill its time in the video.
+    const stream = canvas.captureStream(0);
     this.track = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack;
+    const every = 1000 / fps;
+    let last = 0;
+    const pump = (t: number) => {
+      if (this.track.readyState === 'ended') return;
+      if (t - last >= every - 1 && this.recorder?.state === 'recording') {
+        last = t;
+        this.track.requestFrame();
+      }
+      this.raf = requestAnimationFrame(pump);
+    };
+    this.raf = requestAnimationFrame(pump);
     if (audio) stream.addTrack(audio);
     this.recorder = new MediaRecorder(stream, {
       mimeType: fmt.mime,
@@ -149,6 +163,7 @@ export class LiveRecorder {
 
   /** Stops and resolves with the whole video. */
   stop(): Promise<Blob> {
+    cancelAnimationFrame(this.raf);
     if (this.recorder.state !== 'inactive') this.recorder.stop();
     this.track.stop();
     return this.stopped;

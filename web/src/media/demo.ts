@@ -75,6 +75,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
   let session: Session | undefined;
   let video: { rec: LiveRecorder; mix: AudioMix; timer: ReturnType<typeof setInterval> } | undefined;
   const lastTick = recordingTicks(o.rec);
+  let generation = 0;
   const host = h('div', { class: 'player-host rec-player demo-player' });
   const status = h('span', { class: 'meta demo-status' });
   const fmt = recorderFormat(true);
@@ -103,6 +104,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
     void stopVideo(false);
     player?.stop();
     session = undefined;
+    const gen = ++generation;
     const files = skip ? withoutOpening(o.files, o.gam) : new GameFiles(o.files.entries());
     player = mountPlayer(host, files, o.gam, {
       title: o.title,
@@ -110,7 +112,8 @@ export function playDemo(o: DemoOptions): Promise<void> {
       autoStart: true,
       noKeysButton: true,
       onSession: (s) => (session = s),
-      onExit: () => void stopVideo(true),
+      // a replaced player exits later: only the current one ends the video
+      onExit: () => gen === generation && void stopVideo(true),
     });
     status.textContent = skip ? 'Straight into the playing. Esc leaves.' : 'From the title screen. Esc leaves.';
     if (!record) return;
@@ -119,6 +122,10 @@ export function playDemo(o: DemoOptions): Promise<void> {
     try {
       const rec = new LiveRecorder(machine.screen.canvas, mix.track, 70);
       const began = performance.now();
+      let played = false;
+      let endedAt = 0;
+      let seenTick = -1;
+      let seenAt = 0;
       video = {
         rec,
         mix,
@@ -126,8 +133,18 @@ export function playDemo(o: DemoOptions): Promise<void> {
           const s = Math.floor((performance.now() - began) / 1000);
           const left = Math.max(0, Math.ceil((lastTick + 36 - tick()) / 18.2));
           status.textContent = `⏺ Recording ${rec.ext.toUpperCase()} · ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} · about ${left} s to go`;
-          // two seconds after the last recorded key, the video is done
-          if (session?.rec.playing && tick() >= lastTick + 36) void stopVideo(true);
+          // two seconds after the last recorded key (or after the playback ends), the video is done
+          if (session?.rec.playing) {
+            played = true;
+            const t = tick();
+            if (t !== seenTick) [seenTick, seenAt] = [t, performance.now()];
+            // ...or once the keys have run out and the game holds still (a score table) for 3 s
+            const stalled = t >= lastTick - 90 && performance.now() - seenAt > 3000;
+            if (t >= lastTick + 36 || stalled) void stopVideo(true);
+          } else if (played) {
+            endedAt ||= performance.now();
+            if (performance.now() - endedAt > 2000) void stopVideo(true);
+          }
         }, 250),
       };
       host.classList.add('recording');
