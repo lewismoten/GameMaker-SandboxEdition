@@ -883,7 +883,8 @@
   box-shadow:
     0 2px 0 rgba(255, 255, 255, 0.15),
     6px 10px 18px rgba(0, 0, 0, 0.5);
-  image-rendering: pixelated;
+  /* smooth, not pixelated: the poster hangs at a tilt */
+  image-rendering: auto;
 }
 
 /* push-pins */
