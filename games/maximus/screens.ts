@@ -2,6 +2,7 @@
 // credit pages, high scores, load/save, the planet cards (every card of a sector lives
 // in one tall GIF; each planet's .BKD shows its own 320x200 window of it), and the end.
 import { encodeGif } from '../../web/src/formats/gif';
+import { encodeFli } from '../../web/src/formats/fli';
 import { serializeBackdrop, serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../kit/pixels';
 import { tileNoise } from './art';
@@ -171,52 +172,72 @@ export function menuScreen(): Uint8Array {
   return gif(c);
 }
 
-const STORY: { text: string[]; art: (c: Canvas) => void }[] = [
+/**
+ * The story pages. `art` paints a page at time t (0..1); pages with `frames` also play as a
+ * short .FLI that ends on exactly the picture the page's GIF then holds.
+ */
+const STORY: { text: string[]; frames?: number; art: (c: Canvas, t: number) => void }[] = [
   {
     text: ['The Maximus Core, the forge-star', 'at the heart of the galaxy, has', 'gone dark.'],
-    art: (c) => {
+    frames: 14,
+    art: (c, spin) => {
       // spiral galaxy with a dead black heart
       for (let i = 0; i < 2600; i++) {
         const arm = i % 2;
         const t = (i / 2600) * 9;
         const rr = 6 + t * 13;
-        const a = t * 1.3 + arm * Math.PI + Math.sin(i) * 0.25;
+        const a = t * 1.3 + arm * Math.PI + Math.sin(i) * 0.25 + (1 - spin) * 0.9;
         c.set(160 + Math.cos(a) * rr * 1.4, 80 + Math.sin(a) * rr * 0.6, C(i % 3 ? 'neb' : 'neb2')[Math.max(1, 7 - Math.floor(t * 0.7))]);
       }
-      c.sphere(160, 80, 10, [0, 0, C('violet')[1]]);
-      c.sphere(160, 80, 14, [0], {});
-      c.sphere(160, 80, 9, [0]);
+      // the Core: blazing, flickering, then out
+      if (spin < 0.55) c.sphere(160, 80, 12 + (Math.round(spin * 20) % 2) * 2, [C('orange')[4], C('yellow')[6], WHITE]);
+      else if (spin < 0.8) c.sphere(160, 80, 11 - (spin - 0.55) * 20, [C('red')[1], C('red')[3], C('orange')[4]]);
+      else {
+        c.sphere(160, 80, 10, [0, 0, C('violet')[1]]);
+        c.sphere(160, 80, 14, [0], {});
+        c.sphere(160, 80, 9, [0]);
+      }
     },
   },
   {
     text: ['Its light was held in ten star-', 'shards. When the Core cracked,', 'they scattered across a hundred', 'worlds.'],
-    art: (c) => {
+    frames: 12,
+    art: (c, t) => {
+      const p = 1 - (1 - t) ** 2;
       for (let k = 0; k < 10; k++) {
         const a = (k / 10) * Math.PI * 2;
-        for (let i = 0; i < 40; i++) c.set(160 + Math.cos(a) * i * 2.2, 80 + Math.sin(a) * i * 1.1, C('yellow')[Math.max(0, 7 - Math.floor(i / 5))]);
-        c.sprite(drawShard(k), 150 + Math.round(Math.cos(a) * 110), 70 + Math.round(Math.sin(a) * 55), 1);
+        for (let i = 0; i < 40 * p; i++) c.set(160 + Math.cos(a) * i * 2.2, 80 + Math.sin(a) * i * 1.1, C('yellow')[Math.max(0, 7 - Math.floor(i / 5))]);
+        c.sprite(drawShard(k), 150 + Math.round(Math.cos(a) * 110 * p), 70 + Math.round(Math.sin(a) * 55 * p), 1);
       }
-      c.sphere(160, 80, 8, [C('red')[1], C('orange')[3], WHITE]);
+      // the crack: a white flash that shrinks back to the wounded star
+      c.sphere(160, 80, 8 + Math.max(0, 0.35 - t) * 60, [C('red')[1], C('orange')[3], WHITE]);
     },
   },
   {
     text: ['Without the Core the warp lanes', 'are failing. Sector by sector,', 'the galaxy is going quiet.'],
-    art: (c) => {
+    frames: 12,
+    art: (c, t) => {
       for (let k = 0; k < 5; k++) {
         const x = 40 + k * 60;
         planetArt(c, x, 80, 18, ['verdant', 'lava', 'ocean', 'crystal', 'abyss'][k], 30 + k);
-        for (let i = 0; i < 14; i++) if (k < 4) c.set(x + 20 + i * 3, 80, C('grey')[i % 2 ? 2 : 4 - Math.floor(k / 2)]);
+        // each lane burns bright, then goes out, one after another
+        const lit = t < 0.15 + k * 0.2;
+        for (let i = 0; i < 14; i++)
+          if (k < 4) c.set(x + 20 + i * 3, 80, lit ? C('cyan')[(i + Math.round(t * 30)) % 3 ? 6 : 7] : C('grey')[i % 2 ? 2 : 4 - Math.floor(k / 2)]);
       }
     },
   },
   {
     text: ['Max is a courier. Couriers', 'deliver. This time the package', 'is the light of the galaxy.'],
-    art: (c) => {
+    frames: 10,
+    art: (c, t) => {
       c.rect(0, 120, 320, 40, C('grey')[2]);
       c.rect(0, 120, 320, 2, C('grey')[5]);
       for (let x = 0; x < 320; x += 40) c.rect(x, 122, 2, 38, C('grey')[1]);
-      c.sprite(drawPod('idle', { glow: 1 }), 170, 60, 3);
-      c.sprite(drawCourier({ arm: [150, 170], backArm: [5, 10] }), 110, 40, 2);
+      // Max waves from the hangar deck; the pod's lamps blink
+      const k = Math.round(t * 9);
+      c.sprite(drawPod('idle', { glow: t === 1 ? 1 : k % 2 }), 170, 60, 3);
+      c.sprite(drawCourier(t === 1 || k % 2 ? { arm: [150, 170], backArm: [5, 10] } : { arm: [110, 130], backArm: [5, 10] }), 110, 40, 2);
     },
   },
   {
@@ -229,26 +250,41 @@ const STORY: { text: string[]; art: (c: Canvas) => void }[] = [
   },
   {
     text: ['Fly the pod. Walk the worlds.', 'Dive the seas. Drive the flats.', 'And bring the light home.'],
-    art: (c) => {
+    frames: 12,
+    art: (c, t) => {
+      // the pod climbs out of orbit while the bell and the rover come in from the sides
+      const e = 1 - (1 - t) ** 3;
+      const k = Math.round(t * 11);
       planetArt(c, 160, 170, 110, 'verdant', 40);
-      c.sprite(drawPod('u', { flicker: 2 }), 145, 30, 3);
-      c.sprite(drawDiver({ prop: 1, lamp: true }), 40, 60, 2);
-      c.sprite(drawRover({ wheel: 1 }), 240, 60, 2);
+      c.sprite(drawPod('u', { flicker: t === 1 ? 2 : k % 3 }), 145, Math.round(30 + (1 - e) * 60), 3);
+      c.sprite(drawDiver({ prop: t === 1 ? 1 : k % 3, lamp: true }), Math.round(40 - (1 - e) * 80), 60, 2);
+      c.sprite(drawRover({ wheel: t === 1 ? 1 : k % 6 }), Math.round(240 + (1 - e) * 90), 60, 2);
     },
   },
 ];
 
 export function storySlides(): Map<string, Uint8Array> {
   const out = new Map<string, Uint8Array>();
-  STORY.forEach((s, i) => {
+  const page = (i: number, t: number) => {
+    const s = STORY[i];
     const c = new Canvas();
     spaceBg(c, 40 + i, i !== 3);
-    s.art(c);
+    s.art(c, t);
     c.panel(16, 150, 288, 46, C('blue')[0], C('blue')[3]);
     s.text.forEach((line, k) => c.text(24, 156 + k * 9, line, k === 0 ? C('ice')[7] : C('ice')[6]));
-    out.set(`story${i + 1}.gif`, gif(c));
+    return c;
+  };
+  const list: { name: string; pause: number }[] = [];
+  STORY.forEach((s, i) => {
+    if (s.frames) {
+      const frames = Array.from({ length: s.frames }, (_, f) => page(i, f / (s.frames! - 1)).px);
+      out.set(`story${i + 1}.fli`, encodeFli(frames, SCREEN.pal, { speed: 6 }));
+      list.push({ name: `story${i + 1}.fli`, pause: 0 });
+    }
+    out.set(`story${i + 1}.gif`, gif(page(i, 1)));
+    list.push({ name: `story${i + 1}.gif`, pause: 12 });
   });
-  out.set('story.lst', serializeSlideList(STORY.map((_, i) => ({ name: `story${i + 1}.gif`, pause: 12 }))));
+  out.set('story.lst', serializeSlideList(list));
   return out;
 }
 
