@@ -124,7 +124,6 @@ registerEditor(['gif'], (host, project, file) => {
     toast(`Copied into block ${targetBlock} of ${target}.`);
   };
 
-  const pals = project.files.byExtension('pal');
   let replacePal = '';
   const preview = gamePreview(project, file);
   clear(
@@ -135,7 +134,7 @@ registerEditor(['gif'], (host, project, file) => {
     h(
       'div',
       { class: 'panel toolbar', style: 'margin-top:8px' },
-      selectField('Block set', blockFiles.map((f) => [f, f] as [string, string]), () => target, (v) => (target = v)),
+      fileField(project, 'Block set', ['bbl', 'mbl', 'cbl'], () => target, (v) => v && (target = v), { allowNone: false }),
       numberField('Block number', () => targetBlock, (v) => (targetBlock = v), { min: 0, max: BACKBL - 1 }),
       selectField('Colors', [[1, 'Match the block set’s palette'], [0, 'Copy color numbers as they are']] as [number, string][], () => (remap ? 1 : 0), (v) => (remap = !!v)),
       h('button', { class: 'primary', onclick: grab }, 'Copy into block'),
@@ -143,7 +142,7 @@ registerEditor(['gif'], (host, project, file) => {
     h(
       'div',
       { class: 'panel toolbar', style: 'margin-top:8px' },
-      selectField('Palette for imported pictures', [['', 'This picture’s palette'], ...pals.map((p) => [p, p] as [string, string])], () => replacePal, (v) => (replacePal = v)),
+      fileField(project, 'Palette for imported pictures', ['pal'], () => replacePal, (v) => (replacePal = v), { noneLabel: ['This picture’s palette', 'keep the colors it has'] }),
       h(
         'button',
         {

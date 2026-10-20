@@ -1,6 +1,7 @@
 // Palette editor (PALCHOS.EXE): 256 VGA colors with 0..63 red/green/blue.
 import { registerEditor } from './index';
-import { h, clear, selectField } from '../ui';
+import { fileField } from '../filePicker';
+import { h, clear } from '../ui';
 import { parsePalette, paletteCss, serializePalette, defaultPalette } from '../../formats/palette';
 import { decodeGif, isGif } from '../../formats/gif';
 
@@ -86,7 +87,7 @@ registerEditor(['pal'], (host, project, file) => {
           ? h(
               'div',
               { class: 'toolbar' },
-              selectField('Copy colors from picture', gifs.map((g) => [g, g] as [string, string]), () => gifChoice, (v) => (gifChoice = v)),
+              fileField(project, 'Copy colors from picture', ['gif'], () => gifChoice, (v) => v && (gifChoice = v), { allowNone: false }),
               h(
                 'button',
                 {
