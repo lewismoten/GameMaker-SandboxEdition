@@ -4,6 +4,7 @@ import { Machine, GameAborted } from '../engine/machine';
 import { runGame, type RunOptions } from '../engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
+import { TouchControls, wantsTouchControls } from './touch';
 
 export interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -12,6 +13,8 @@ export interface PlayerOptions extends RunOptions {
   onExit?: () => void;
   /** Called whenever the game writes a file (high scores, saved games). */
   onFileWrite?: (name: string, bytes: Uint8Array) => void;
+  /** Show on-screen controls (defaults to touch screens only). */
+  touch?: boolean;
 }
 
 export interface PlayerHandle {
@@ -28,6 +31,11 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   canvas.setAttribute('aria-label', `${opts.title ?? 'Game'} screen`);
   container.append(canvas);
   const machine = new Machine(canvas, files);
+  const touch = (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard) : undefined;
+  if (touch) {
+    container.classList.add('has-touch');
+    container.append(touch.el);
+  }
   const previousWrite = files.onChange;
   files.onChange = (name) => {
     previousWrite?.(name);
@@ -49,7 +57,12 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       await machine.audio.resume();
       try {
         // Without an onQuit handler, "Quit" just shows the game's menu again.
-        await runGame(machine, gamFile, { joystick: readGamepad, onQuit: () => true, ...opts });
+        await runGame(machine, gamFile, {
+          joystick: readGamepad,
+          onQuit: () => true,
+          onFrame: touch ? (w) => touch.setKeys(w.chr.sequences.map((s) => s.key >> 8)) : undefined,
+          ...opts,
+        });
       } catch (e) {
         if (!(e instanceof GameAborted)) {
           console.error(e);

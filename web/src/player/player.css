@@ -121,3 +121,8 @@
     opacity: 0.75;
   }
 }
+
+.gm-player.has-touch canvas {
+  max-height: calc(100% - 150px);
+  width: auto;
+}
