@@ -63,7 +63,7 @@ export const SECTORS: Sector[] = [
       W('Ashveil', 'surface', 'ash', 'A grey world under a grey sky.'),
       W('Pyre', 'surface', 'lava', 'Do not touch the floor.', { module: 1 }),
       W('Basalt Bay', 'surface', 'ash', 'Black cliffs over a warm sea.'),
-      W('Smoulder', 'surface', 'autumn', 'The forests here are always burning.'),
+      W('Smolder', 'surface', 'autumn', 'The forests here are always burning.'),
       W('Kiln', 'surface', 'desert', 'Baked clay and baked couriers.'),
       W('Ironfield', 'surface', 'ash', 'Iron spires in an iron plain.'),
       W('Scorchmark', 'surface', 'lava', 'Craters on craters.', { module: 4 }),
