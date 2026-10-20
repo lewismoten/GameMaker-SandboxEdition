@@ -28,7 +28,7 @@ async function route(): Promise<void> {
   const [, kind, id, file] = location.hash.split('/');
   if (kind === 'p' && id) {
     if (workspace?.project.id === id) {
-      if (file) workspace.open(decodeURIComponent(file));
+      if (file && decodeURIComponent(file) !== workspace.currentFile) workspace.open(decodeURIComponent(file));
       return;
     }
     workspace?.dispose();

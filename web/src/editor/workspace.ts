@@ -50,6 +50,10 @@ export class Workspace {
 
   private listed = new Set<string>();
 
+  get currentFile(): string | undefined {
+    return this.current;
+  }
+
   dispose(): void {
     this.cleanup?.();
     this.player?.stop();
