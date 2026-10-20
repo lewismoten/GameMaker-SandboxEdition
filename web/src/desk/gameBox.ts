@@ -193,21 +193,34 @@ export async function drawBox(entry: CatalogEntry): Promise<BoxFaces | undefined
     f.fill();
   }
   f.restore();
-  titleText(f, box, title.toUpperCase(), fw / 2, 190, fw - 60, 110);
+  // "Main: Subtitle" — a big name with its subtitle under it
+  const [mainTitle, subTitle] = title.includes(':') ? [title.slice(0, title.indexOf(':')), title.slice(title.indexOf(':') + 1).trim()] : [title, ''];
+  titleText(f, box, mainTitle.toUpperCase(), fw / 2, subTitle ? 170 : 190, fw - 60, 120);
+  let tagY = 248;
+  if (subTitle) {
+    f.textAlign = 'center';
+    f.font = SANS(fit(f, subTitle.toUpperCase(), (px) => SANS(px, 900), fw - 100, 40), 900);
+    f.lineWidth = 6;
+    f.strokeStyle = '#000';
+    f.strokeText(subTitle.toUpperCase(), fw / 2, 218);
+    f.fillStyle = shade(box.accent, 0.35);
+    f.fillText(subTitle.toUpperCase(), fw / 2, 218);
+    tagY = 262;
+  }
   f.fillStyle = box.ink;
-  f.font = SANS(26, 700);
+  f.font = SANS(24, 700);
   f.textAlign = 'center';
-  wrap(f, box.tagline, fw / 2, 248, fw - 80, 30);
+  wrap(f, box.tagline, fw / 2, tagY, fw - 80, 28);
   f.textAlign = 'left';
-  const shotH = framedShot(f, shots[0], 50, 300, fw - 100, -0.02);
+  const shotH = framedShot(f, shots[0], 50, 316, fw - 100, -0.02);
   let bx = 40;
-  const by = 300 + shotH + 40;
+  const by = 316 + shotH + 36;
   bx += badge(f, 'VGA 256 COLORS', bx, by, '#0b0b0b', '#fff') + 10;
   badge(f, sb ? 'SOUND BLASTER' : 'PC SPEAKER SOUND', bx, by, sb ? '#c62828' : '#2e7d32', '#fff');
   // the shareware sash
   f.save();
-  f.translate(fw - 70, 114);
-  f.rotate(Math.PI / 4);
+  f.translate(fw - 62, fh - 62);
+  f.rotate(-Math.PI / 4);
   f.fillStyle = '#d81e1e';
   f.fillRect(-140, -18, 280, 36);
   f.fillStyle = '#fff';
