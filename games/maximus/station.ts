@@ -399,7 +399,7 @@ export function stationSet(): SetBuilder {
   );
   s.add(
     'door:open',
-    panel(84, 0).map((x, y, c) => (x < 2 || x > 17 ? R('tech')[1] : c)),
+    panel(84, 0).map((x, _y, c) => (x < 2 || x > 17 ? R('tech')[1] : c)),
   );
   s.add(
     'field:on',

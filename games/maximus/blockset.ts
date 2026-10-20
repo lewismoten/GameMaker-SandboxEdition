@@ -29,7 +29,7 @@ export class SetBuilder {
 
   constructor(
     readonly name: string,
-    readonly defaultGrav = G.down,
+    readonly defaultGrav: number = G.down,
   ) {
     for (const b of this.blocks) b.grav = defaultGrav;
   }
