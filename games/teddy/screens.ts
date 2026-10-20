@@ -174,6 +174,13 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   return p;
 }
 
+/** The cartoons that tell the story before the story pages (built in cartoons.ts). */
+const STORY_REEL: [string, number][] = [
+  ['leo.fli', 0],
+  ['car.fli', 0],
+  ['intro.fli', 0],
+];
+
 export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   const out: Record<string, Uint8Array> = {};
   const put = (name: string, bytes: Uint8Array | string) => (out[name] = typeof bytes === 'string' ? dosText(bytes) : bytes);
@@ -181,7 +188,10 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
 
   put('title.gif', gif(titleScreen()));
   put('intro.fli', introFli());
+  // The story told as a slide show of cartoons: Doc Leo's clown act, his CitiCar, then Gwin.
   lst('title.lst', [
+    ['leo.fli', 0],
+    ['car.fli', 0],
     ['intro.fli', 0],
     ['title.gif', 10],
   ]);
@@ -189,7 +199,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   const textPage = (base: string, heading: string, body: string) => {
     put(`${base}.gif`, gif(page(heading, base.length * 7)));
     put(`${base}.txt`, body);
-    lst(`${base}.lst`, [[`${base}.gif`, 0], [`${base}.txt`]]);
+    lst(`${base}.lst`, [...(base === 'story' ? STORY_REEL : []), [`${base}.gif`, 0], [`${base}.txt`]]);
   };
   textPage('story', 'THE STORY', STORY);
   textPage('help', 'HOW TO PLAY', HELP);
@@ -200,7 +210,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('won.gif', gif(wonScreen()));
   put('wontxt.gif', gif(page('THE BIG SHOW', 19)));
   put('won.txt', WON);
-  lst('won.lst', [['won.gif', 8], ['wontxt.gif', 0], ['won.txt']]);
+  lst('won.lst', [['won.gif', 8], ['parade.fli', 0], ['wontxt.gif', 0], ['won.txt']]);
   put('lost.gif', gif(lostScreen()));
   put('losttxt.gif', gif(page('TUCKERED OUT', 23)));
   put('lost.txt', LOST);
