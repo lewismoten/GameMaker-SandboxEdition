@@ -1,0 +1,136 @@
+// sandcast.snd: every effect is a hand-made PC speaker tune of 36 steps (1/145.6 s each,
+// about a quarter second). No Sound Blaster samples: this game is for the beeper.
+import { newSoundSet, serializeSoundSet } from '../../web/src/formats/sound';
+import { rng } from '../kit/pixels';
+import { speaker } from '../kit/sound';
+import { SND } from './rules';
+
+const NOTE: Record<string, number> = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 };
+/** "E5" -> Hz. */
+const hz = (n: string) => {
+  const m = /^([A-G]#?)(\d)$/.exec(n)!;
+  return 440 * 2 ** ((NOTE[m[1]] + (Number(m[2]) + 1) * 12 - 69) / 12);
+};
+
+/** Notes as [name or 0 for rest, steps]; a little vibrato keeps the beeper from sounding flat. */
+function tune(notes: [string | 0, number][], vibrato = 0): Uint16Array {
+  const seq: number[] = [];
+  for (const [n, len] of notes) for (let i = 0; i < len; i++) seq.push(n ? hz(n) * (1 + Math.sin(seq.length * 1.9) * vibrato) : 0);
+  return speaker((i) => seq[i] ?? 0);
+}
+
+/** Fast alternation between notes (a chord the beeper can play). */
+function arp(chords: [string[], number][], rate = 1): Uint16Array {
+  const seq: number[] = [];
+  for (const [notes, len] of chords) for (let i = 0; i < len; i++) seq.push(hz(notes[Math.floor(i / rate) % notes.length]));
+  return speaker((i) => seq[i] ?? 0);
+}
+
+export function buildSounds(): Uint8Array {
+  const s = newSoundSet();
+  const put = (n: number, f: Uint16Array) => (s.freqs[n] = f);
+  const r = rng(77);
+
+  // Hit points up: a sweet rising major arpeggio with a shimmer on top.
+  put(
+    SND.help,
+    arp([
+      [['C5', 'E5', 'G5'], 12],
+      [['E5', 'G5', 'C6'], 12],
+      [['G5', 'C6', 'E6'], 12],
+    ]),
+  );
+  // A monster beaten: a pop of noise that drops into a chirp.
+  put(
+    SND.kill,
+    speaker((i) => (i < 8 ? 300 + r() * 2600 : i < 24 ? 1800 * 0.86 ** (i - 8) + (i % 2) * 90 : 0)),
+  );
+  // Scooping sand: a soft gritty shff, then a little rising blip.
+  put(
+    SND.addSand,
+    speaker((i) => (i < 12 ? 180 + r() * 420 : i < 16 ? 0 : i < 30 ? 700 + (i - 16) * 55 : 0)),
+  );
+  // Spending sand: pat-pat (two low thumps), the way you pat a sand wall.
+  put(
+    SND.useSand,
+    speaker((i) => (i < 6 ? 140 - i * 6 + r() * 60 : i < 12 ? 0 : i < 18 ? 120 - (i - 12) * 5 + r() * 50 : i < 22 ? 0 : i < 30 ? 520 : 0)),
+  );
+  // Extra life: a little fanfare.
+  put(
+    SND.addLife,
+    tune(
+      [
+        ['G4', 4],
+        ['C5', 4],
+        ['E5', 4],
+        ['G5', 6],
+        ['E5', 3],
+        ['G5', 3],
+        ['C6', 12],
+      ],
+      0.004,
+    ),
+  );
+  // Points: a bright two-tone coin.
+  put(
+    SND.addScore,
+    tune([
+      ['B5', 5],
+      ['E6', 20],
+      [0, 11],
+    ]),
+  );
+  // Points lost: a sad slide down.
+  put(
+    SND.subScore,
+    speaker((i) => (i < 30 ? 660 * 0.965 ** i : 0)),
+  );
+  // A flag, a key, a golden shell: three notes that climb, then ring.
+  put(
+    SND.addOther,
+    arp(
+      [
+        [['C5'], 5],
+        [['G5'], 5],
+        [['C6', 'E6', 'G6'], 26],
+      ],
+      2,
+    ),
+  );
+  // A gate grinds open: falling warble over a growl.
+  put(
+    SND.useOther,
+    speaker((i) => 380 * 0.97 ** i + Math.sin(i * 2.6) * 70 + (i % 3 === 0 ? 40 : 0)),
+  );
+  // Flinging sand: a whoosh of noise that falls away.
+  put(
+    SND.fling,
+    speaker((i) => (i < 22 ? (2600 - i * 100) * (0.6 + r() * 0.5) : 0)),
+  );
+  // Water splash: a wet warbling drop, then spray.
+  put(
+    SND.splash,
+    speaker((i) => (i < 14 ? 1400 * 0.9 ** i + Math.sin(i * 3) * 120 : i < 30 ? 1500 + r() * 2500 : 0)),
+  );
+  // Hurt: a harsh low wobble.
+  put(
+    SND.hurt,
+    speaker((i) => (i < 26 ? (i % 2 ? 160 : 110) * (1 - i / 70) + (i % 4 < 2 ? 30 : 0) : 0)),
+  );
+  // The knight crumbles: a long sliding wobble down to nothing.
+  put(
+    SND.die,
+    speaker((i) => 900 * 0.94 ** i * (1 + 0.12 * Math.sin(i * 1.7))),
+  );
+  // Picking something up: a quick rising sweep with a sparkle.
+  put(
+    SND.pickup,
+    speaker((i) => (i < 18 ? 400 * 1.11 ** i : i < 22 ? 0 : i < 28 ? 2093 : i < 34 ? 2637 : 0)),
+  );
+  // NO CARRIER: a modem's dying screech.
+  put(
+    SND.noCarrier,
+    speaker((i) => (i < 12 ? 2100 + (i % 2) * 300 : i < 24 ? 1200 + r() * 1800 : 980 * (1 - (i - 24) / 14))),
+  );
+  return serializeSoundSet(s);
+}

@@ -1,0 +1,167 @@
+// The numbers that tie Sandcastle Knight's blocks, monsters, character and maps together.
+import { emptyBlock, type Block } from '../../web/src/formats/blocks';
+import type { Pixels } from '../kit/pixels';
+
+/** Character sequences (0-4 are Game-Maker's fixed ones). */
+export const SEQ = {
+  idle: 0,
+  die: 1,
+  hurt: 2,
+  pickup: 3,
+  drop: 4,
+  // Walking while the bucket is in the inventory: listed first, so they win the key.
+  bucketRight: 5,
+  bucketLeft: 6,
+  bucketUp: 7,
+  bucketDown: 8,
+  right: 9,
+  left: 10,
+  up: 11,
+  down: 12,
+  /** Space: fling a clod of sand (needs the shovel). */
+  fling: 13,
+  /** B: throw a water splash (needs the bucket; its counter is the water supply). */
+  splash: 14,
+} as const;
+
+/** Counters ("repetition meters"). 3 is money; 20-29 are free for the game. */
+export const CTR = {
+  lives: 1,
+  /** Sand you carry (shown as Money on the F2 status screen). */
+  sand: 3,
+  /** 1 + uses left in your bucket: walls you can still pack (pickup gives plenty). */
+  bucket: 20,
+  /** 1 + digs left in your shovel. */
+  shovel: 21,
+  /** Tower flags planted in the current castle (the gate takes 4). */
+  flags: 22,
+  /** Golden shells (the lagoon's sea gate takes 3). */
+  shells: 23,
+  /** Acorn keys for root doors underground. */
+  acorns: 24,
+} as const;
+
+/** Sound effects in the .SND set (0-8 are played by Game-Maker for counter changes). */
+export const SND = {
+  help: 0,
+  kill: 1,
+  addSand: 2,
+  useSand: 3,
+  addLife: 4,
+  addScore: 5,
+  subScore: 6,
+  addOther: 7,
+  useOther: 8,
+  fling: 9,
+  splash: 10,
+  hurt: 11,
+  die: 12,
+  pickup: 13,
+  noCarrier: 14,
+  none: 30,
+} as const;
+
+/** Monster numbers in sandcast.mon. */
+export const MON = {
+  clod: 0,
+  splash: 1,
+  puff: 2,
+  ant: 3,
+  antRow: 4,
+  beetleH: 5,
+  beetleV: 6,
+  beetleLoop: 7,
+  beetleFlip: 8,
+  crabH: 9,
+  crabV: 10,
+  crabFlip: 11,
+  hairball: 12,
+  yarn: 13,
+  pawL: 14,
+  pawLAngry: 15,
+  pawLRetreat: 16,
+  pawR: 17,
+  pawRAngry: 18,
+  pawRRetreat: 19,
+  tail: 20,
+  droplet: 21,
+  gremlin: 22,
+  beetleChase: 23,
+  crabBox: 24,
+  antRowV: 25,
+  beetleBig: 26,
+  none: 64,
+} as const;
+
+/** Background block attributes by name; next/touch refer to other blocks by name. */
+export interface BlockDef {
+  solid?: number;
+  score?: number;
+  hp?: number;
+  next?: string;
+  ntime?: number;
+  touch?: string;
+  grav?: number;
+  obj?: boolean;
+  effect?: number;
+  eamt?: number;
+  birthMon?: number;
+  birthTime?: number;
+}
+
+/** Collects named 20x20 blocks in order, then resolves names into a block set. */
+export class BlockSet {
+  readonly names: string[] = [];
+  private pics: Pixels[] = [];
+  private defs: BlockDef[] = [];
+  constructor(
+    readonly count: number,
+    readonly transparent: boolean,
+  ) {}
+
+  add(name: string, px: Pixels, def: BlockDef = {}): number {
+    if (this.names.includes(name)) throw new Error(`Block ${name} twice`);
+    if (this.names.length >= this.count) throw new Error(`Too many blocks (${name})`);
+    this.names.push(name);
+    this.pics.push(px);
+    this.defs.push(def);
+    return this.names.length - 1;
+  }
+
+  id(name: string): number {
+    const i = this.names.indexOf(name);
+    if (i < 0) throw new Error(`No block ${name}`);
+    return i;
+  }
+
+  has(name: string): boolean {
+    return this.names.includes(name);
+  }
+
+  pic(name: string): Pixels {
+    return this.pics[this.id(name)];
+  }
+
+  build(): Block[] {
+    return Array.from({ length: this.count }, (_, i) => {
+      const b = emptyBlock(i, this.transparent);
+      const p = this.pics[i];
+      const d = this.defs[i];
+      if (!p || !d) return b;
+      b.pixels = Uint8Array.from(p.px);
+      b.solid = d.solid ?? 0;
+      b.scorePts = d.score ?? 0;
+      b.chHitPt = d.hp ?? 0;
+      b.nextBl = d.next ? this.id(d.next) : i;
+      b.ntime = d.ntime ?? 0;
+      b.touchBl = d.touch ? this.id(d.touch) : i;
+      b.grav = d.grav ?? 0;
+      b.obj = d.obj ? 1 : 0;
+      b.effect = d.effect ?? 0;
+      b.eamt = d.eamt ?? 0;
+      b.birthMon = d.birthMon ?? MON.none;
+      b.birthTime = d.birthTime ?? 0;
+      return b;
+    });
+  }
+}
