@@ -197,6 +197,10 @@ button.grator-play.playing {
   .grator-board {
     height: 58vh;
   }
+  .grator-screen figcaption {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 .grator-attention {
   border-color: var(--title-text);
