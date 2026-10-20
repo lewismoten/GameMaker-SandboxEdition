@@ -114,6 +114,13 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
   }
 
   const mons = buildMonsters(mb, wires);
+  /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
+  const partName = (ch: string, x: number, y: number) => {
+    const tb = traceBits.get(`${x},${y}`) ?? 0;
+    if (ch === 'g') return sideGates.has(`${x},${y}`) ? 'gateV' : 'gate';
+    const vertical = tb & (N | S) && !(tb & (E | W));
+    return 'oif'.includes(ch) && vertical ? `${PARTS[ch]}V` : PARTS[ch];
+  };
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
   let placed = 0;
@@ -149,7 +156,7 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
       else throw new Error(`${spec.file}: what is '${ch}' at ${x},${y}?`);
       if (ch in PARTS)
         map.monsters[placed++] = {
-          monnum: mons.id(ch === 'g' && sideGates.has(`${x},${y}`) ? 'gateV' : PARTS[ch]),
+          monnum: mons.id(partName(ch, x, y)),
           status: 0,
           xtra: 0,
           curx: OX + x,

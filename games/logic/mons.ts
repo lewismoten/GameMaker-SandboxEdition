@@ -67,11 +67,14 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
       k,
     );
   });
-  // Knife switches: off stops current, on lets it by. A bump flips one.
-  b.add('switchOff', { pics: [['swOff', 50]], power: POWER.switchOff, becomes: 'switchOnHot' }, ROUTES);
-  b.add('switchOnHot', { pics: [['swOnHot', 50]], power: POWER.hot, end: HOT_TICKS, becomes: 'switchOn' });
-  b.add('switchOn', { pics: [['swOn', 50]], power: POWER.switchOn, becomes: 'switchOffHot' });
-  b.add('switchOffHot', { pics: [['swOffHot', 50]], power: POWER.hot, end: HOT_TICKS, becomes: 'switchOff' });
+  // Knife switches: off stops current, on lets it by. A bump flips one. Parts named with
+  // a V sit on wires running up and down (their pictures are turned a quarter).
+  for (const v of ['', 'V']) {
+    b.add(`switchOff${v}`, { pics: [[`swOff${v}`, 50]], power: POWER.switchOff, becomes: `switchOnHot${v}` }, v ? undefined : ROUTES);
+    b.add(`switchOnHot${v}`, { pics: [[`swOnHot${v}`, 50]], power: POWER.hot, end: HOT_TICKS, becomes: `switchOn${v}` });
+    b.add(`switchOn${v}`, { pics: [[`swOn${v}`, 50]], power: POWER.switchOn, becomes: `switchOffHot${v}` });
+    b.add(`switchOffHot${v}`, { pics: [[`swOffHot${v}`, 50]], power: POWER.hot, end: HOT_TICKS, becomes: `switchOff${v}` });
+  }
   // Timer buttons: on for a while, then off by themselves (or at a second bump).
   b.add('timerOff', { pics: [['timerOff', 50]], power: POWER.switchOff, becomes: 'timerHot' });
   b.add('timerHot', { pics: [['timer0', 50]], power: POWER.hot, end: HOT_TICKS, becomes: 'timerOn' });
@@ -85,37 +88,30 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
   b.add('timerOffHot', { pics: [['timerOff', 50]], power: POWER.hot, end: HOT_TICKS, becomes: 'timerOff' });
   // Force-field gates: deadly to touch; current reaching one shuts it down for good, and
   // the open gate's posts swallow any current that follows (so the doorway stays safe).
-  // "gateV" is the same gate turned a quarter, for current coming in from the side.
-  for (const [name, orient] of [
-    ['gate', 0],
-    ['gateV', 1],
-  ] as const) {
-    const path: [number, number, number, number][] = [[0, 0, 0, orient]];
-    b.add(`${name}Open`, { pics: [['gateFade2', 50]], power: POWER.open, end: -2, path });
-    b.add(`${name}Opening`, {
+  for (const v of ['', 'V']) {
+    b.add(`gateOpen${v}`, { pics: [[`gateFade2${v}`, 50]], power: POWER.open, end: -2 });
+    b.add(`gateOpening${v}`, {
       pics: [
-        ['gateFade1', 4],
-        ['gateFade2', 6],
+        [`gateFade1${v}`, 4],
+        [`gateFade2${v}`, 6],
       ],
       power: POWER.open,
       end: 10,
-      becomes: `${name}Open`,
-      path,
+      becomes: `gateOpen${v}`,
     });
-    b.add(name, {
+    b.add(`gate${v}`, {
       pics: [
-        ['gate0', 2],
-        ['gate1', 2],
-        ['gate2', 2],
+        [`gate0${v}`, 2],
+        [`gate1${v}`, 2],
+        [`gate2${v}`, 2],
       ],
       power: POWER.gate,
-      becomes: `${name}Opening`,
-      path,
+      becomes: `gateOpening${v}`,
     });
+    // Fuses carry current until Watt bumps one (or control current hits it): then never again.
+    b.add(`fuse${v}`, { pics: [[`fuse${v}`, 50]], power: POWER.current, becomes: `fuseBlown${v}` });
+    b.add(`fuseBlown${v}`, { pics: [[`fuseBlown${v}`, 50]], power: POWER.fuseBlown, end: -2 });
   }
-  // Fuses carry current until Watt bumps one (or control current hits it): then never again.
-  b.add('fuse', { pics: [['fuse', 50]], power: POWER.current, becomes: 'fuseBlown' });
-  b.add('fuseBlown', { pics: [['fuseBlown', 50]], power: POWER.fuseBlown, end: -2 });
   // Relays: control current (pink) throws them; then they stay thrown.
   b.add('relayNO', { pics: [['relayNO', 50]], power: POWER.relayNO, becomes: 'relayNOon' });
   b.add('relayNOon', { pics: [['relayNOon', 50]], power: POWER.current, becomes: 'relayNOon' });

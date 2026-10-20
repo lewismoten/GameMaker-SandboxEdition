@@ -51,4 +51,27 @@ export const BOARDS: BoardSpec[] = [
     answer:
       'A gate stays open once current has reached it. Bump the switch again to turn the power off, wait for the last spark to drain away, then walk through.',
   },
+  {
+    file: 'coffee',
+    title: 'The Coffee Maker',
+    room: 'kitchen',
+    card: ['It brews at 6:00 a.m. sharp.', 'Whether you are ready or not.'],
+    rows: [
+      '#0##############',
+      '#o.....#.......#',
+      '#......#...X...#',
+      '#......#.......#',
+      '#......###g#####',
+      '#....&..@......#',
+      '#.....o...######',
+      '#.........######',
+      '#..$......######',
+      '################',
+    ],
+    wires: { 0: { path: 'D6 R8 U2 R1' } },
+    solution: 'DDLLURRUULLUUUULLLLL www L www RRRR DDDD RRRR UUU R',
+    hint: 'I turned the top switch on and now I am stuck down by the bottom switch!',
+    answer:
+      'Two switches in a row both have to be on. Turn on the bottom one FIRST, while the wire is still dead, then the top one. When the gate opens, turn the top switch off again so you can step over the wire.',
+  },
 ];

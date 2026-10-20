@@ -1,5 +1,6 @@
 // Sprites: Watt the repair robot (.CBL) and the moving parts of the boards (.MBL): the
 // current itself, switches, timer buttons, force-field gates, fuses and relays.
+import { orientIndex } from '../../web/src/formats/blocks';
 import { Pixels, rng } from '../kit/pixels';
 import { CLEAR, bevel, blob, micro, outline, shadeAt } from './draw';
 import { c, r } from './pal';
@@ -12,19 +13,26 @@ export const ZAP = -100;
 
 /** A segment of live current running left to right through the middle of a block. */
 function spark(frame: number, ramp: string): Pixels {
-  // Everything stays in rows 8..11: Watt may bump a switch up to 8 pixels deep, and
-  // must not touch current running through its middle.
+  // A bead of current. PLAYGAME tests touches on the unturned picture, so the bead is round
+  // and small (columns 7..12, rows 8..13): Watt can bump a switch 8 pixels deep, or stand
+  // in an open gate's doorway, without touching current running through.
   const p = blank();
-  const R = rng(frame * 31 + ramp.length);
   const k = r(ramp);
-  for (let x = 0; x < 20; x++) {
-    const wob = Math.sin((x + frame * 5) / 2.2);
-    p.set(x, 8, wob > 0.3 ? k[3] : k[1]).set(x, 11, wob < -0.3 ? k[3] : k[1]);
-    p.set(x, 9, R() < 0.2 ? k[3] : k[4]).set(x, 10, R() < 0.2 ? k[3] : k[4]);
-  }
-  // a bright bead travels along the wire
-  const bx = (frame * 10 + 4) % 20;
-  p.rect(bx - 1, 8, 3, 4, k[4]);
+  const cx = 9.5;
+  const cy = 10.5;
+  for (let y = 8; y < 14; y++)
+    for (let x = 7; x < 13; x++) {
+      const d = Math.hypot(x + 0.5 - (cx + 0.5), y + 0.5 - (cy + 0.5));
+      if (d > 3.2) continue;
+      p.set(x, y, d < 1.3 ? k[4] : d < 2.3 ? k[frame ? 3 : 4] : k[frame ? 1 : 2]);
+    }
+  return p;
+}
+
+/** A picture turned a quarter (for parts on wires that run up and down). */
+export function turned(src: Pixels): Pixels {
+  const p = blank();
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.px[y * 20 + x] = src.px[orientIndex(1, x, y)];
   return p;
 }
 
@@ -135,17 +143,21 @@ export function buildMonsterBlocks(): BlockSet {
   add('sparkB', spark(1, 'spark'), { hp: ZAP });
   add('ctrlA', spark(0, 'pink'), { hp: ZAP });
   add('ctrlB', spark(1, 'pink'), { hp: ZAP });
-  add('swOff', switchPic(false), { solid: SOLID });
-  add('swOn', switchPic(true), { solid: SOLID });
-  add('swOffHot', switchPic(false, true), { solid: SOLID });
-  add('swOnHot', switchPic(true, true), { solid: SOLID });
+  // Parts on wires that run up and down get the same pictures turned a quarter.
+  for (const v of ['', 'V']) {
+    const t = (px: Pixels) => (v ? turned(px) : px);
+    add(`swOff${v}`, t(switchPic(false)), { solid: SOLID });
+    add(`swOn${v}`, t(switchPic(true)), { solid: SOLID });
+    add(`swOffHot${v}`, t(switchPic(false, true)), { solid: SOLID });
+    add(`swOnHot${v}`, t(switchPic(true, true)), { solid: SOLID });
+    for (let f = 0; f < 3; f++) add(`gate${f}${v}`, t(gatePic(f)), { hp: ZAP });
+    add(`gateFade1${v}`, t(gatePic(0, 1)));
+    add(`gateFade2${v}`, t(gatePic(1, 2)));
+    add(`fuse${v}`, t(fusePic(false)), { solid: SOLID });
+    add(`fuseBlown${v}`, t(fusePic(true)), { solid: SOLID });
+  }
   for (let h = 0; h < 8; h++) add(`timer${h}`, timerPic(true, h), { solid: SOLID });
   add('timerOff', timerPic(false, 0), { solid: SOLID });
-  for (let f = 0; f < 3; f++) add(`gate${f}`, gatePic(f), { hp: ZAP });
-  add('gateFade1', gatePic(0, 1));
-  add('gateFade2', gatePic(1, 2));
-  add('fuse', fusePic(false), { solid: SOLID });
-  add('fuseBlown', fusePic(true), { solid: SOLID });
   add('relayNO', relayPic(false, false), { solid: SOLID });
   add('relayNOon', relayPic(true, false), { solid: SOLID });
   add('relayNC', relayPic(true, true), { solid: SOLID });

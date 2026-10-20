@@ -30,8 +30,37 @@ export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: 
   const count = () => (peak = Math.max(peak, sim.w.mm.filter((m) => m.monnum < LASTMON).length));
   const run = async (n: number) => {
     for (let i = 0; i < n && !sim.dead && sim.link < 0; i++) {
+      if (process.env.DEBUG === '3') {
+        const w = sim.w;
+        const { picChkTouch, monPicNum } = await import('../../web/src/engine/monsters');
+        const { chrFrame } = await import('../../web/src/engine/keys');
+        w.mm.forEach((m, i) => {
+          const mi = w.mi[i];
+          if (m.monnum >= LASTMON || mi.scrPos.x === -100) return;
+          const lx = Math.min(mi.scrPos.x, w.ci.scrx);
+          const ly = Math.min(mi.scrPos.y, w.ci.scry);
+          const pic = monPicNum(w, i);
+          const f = chrFrame(w);
+          if (
+            pic < 100 &&
+            f.pic2 < 50 &&
+            picChkTouch(w.ci.scrx - lx, w.ci.scry - ly, w.cblk[f.pic2].pixels, mi.scrPos.x - lx, mi.scrPos.y - ly, w.mblk[pic].pixels)
+          )
+            console.log(sim.ticks, 'touch', b.mons.names[m.monnum], mi.scrPos, 'watt', w.ci.scrx, w.ci.scry, 'frame', f.pic2, 'hp', w.ci.hitpts);
+        });
+      }
       await sim.tick();
       count();
+      if (process.env.DEBUG === '2') {
+        const w = sim.w;
+        const near = w.mm.flatMap((m, i) =>
+          m.monnum < LASTMON && Math.abs(w.mi[i].scrPos.x - w.ci.scrx) < 24 && Math.abs(w.mi[i].scrPos.y - w.ci.scry) < 24
+            ? [`${b.mons.names[m.monnum]}(${w.mi[i].scrPos.x},${w.mi[i].scrPos.y} o${w.mi[i].orient} p${w.mi[i].curPic})`]
+            : [],
+        );
+        if (near.length)
+          console.log(sim.ticks, 'watt', w.ci.scrx, w.ci.scry, 'seq', w.chr.cseq, 'hp', w.ci.hitpts, 'grav', w.ci.gravx, w.ci.gravy, near.join(' '));
+      }
       if (process.env.DEBUG && sim.w.chr.cseq === 1 && !dying) {
         dying = true;
         const w = sim.w;

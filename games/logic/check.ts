@@ -17,7 +17,7 @@ for (const name of ['down0', 'down1', 'blink', 'up0', 'up1', 'side0', 'side1']) 
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
       const solid = px.get(x, y) !== 255;
-      if (solid && (y < 4 || (y >= 8 && y < 12 && (x < 4 || x >= 16)))) {
+      if (solid && (y < 4 || x < 2 || x > 17 || (y >= 8 && y < 14 && (x < 4 || x >= 16)))) {
         console.log(`Watt's ${name} has a pixel at ${x},${y}`);
         bad++;
       }
