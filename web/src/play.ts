@@ -32,7 +32,7 @@ async function loadBundle(): Promise<{ id: string; title: string; gam: string; f
   return { id: `bundle:${m.id}`, title: m.title, gam: m.gam, files };
 }
 
-async function choose(): Promise<{ id: string; title: string; gam: string; files: GameFiles; back?: string } | undefined> {
+async function choose(): Promise<{ id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string } | undefined> {
   const params = new URLSearchParams(location.search);
   const gameId = params.get('game');
   const projectId = params.get('project');
@@ -42,7 +42,15 @@ async function choose(): Promise<{ id: string; title: string; gam: string; files
   }
   if (gameId) {
     const entry = (await loadCatalog()).find((g) => g.id === gameId && g.gam);
-    if (entry) return { id: `game:${entry.id}`, title: entry.title, gam: entry.gam!, files: await loadHostedGame(entry), back: './' };
+    if (entry)
+      return {
+        id: `game:${entry.id}`,
+        title: entry.title,
+        gam: entry.gam!,
+        files: await loadHostedGame(entry),
+        back: './',
+        notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
+      };
   }
   return loadBundle();
 }
@@ -61,6 +69,7 @@ async function main(): Promise<void> {
   const start = () =>
     mountPlayer(root, game.files, game.gam, {
       title: game.title,
+      notice: game.notice,
       onFileWrite: (name, bytes) => void writeSaveFile(game.id, name, bytes),
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {
