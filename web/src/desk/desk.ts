@@ -18,7 +18,7 @@ import { speakers } from './speakers';
 import { mug, wallPhone, deskLamp } from './deskProps';
 import { deskModem } from './modem';
 import { openBoxViewer } from './gameBox';
-import { gameShelf } from './shelf';
+import { gameShelf, type Shelf } from './shelf';
 import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './snowWindow';
 import { drawGmBox, gmBoxContents } from './gmBox';
@@ -366,10 +366,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     await openTray(cd);
   }
 
+  let shelf: Shelf | undefined;
+
   /** The shelf on the wall: a box for each original game (desk/shelf.ts). */
   async function fillShelf(games: CatalogEntry[]): Promise<void> {
     const scene = desk.querySelector<HTMLElement>('.desk-scene');
-    if (scene) await gameShelf(scene, games, { insert: (id) => void insertOriginal(id), manual: (g, front) => void openGameManual(g, front) });
+    if (scene) shelf = await gameShelf(scene, games, { insert: (id) => void insertOriginal(id), manual: (g, front) => void openGameManual(g, front) });
   }
 
   async function insertOriginal(id: string): Promise<void> {
@@ -400,6 +402,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     window.removeEventListener('keydown', onKey);
     unfit();
     lamp.dispose();
+    shelf?.dispose();
     removeWarp();
     computer.screen.destroy();
     computer.keys.detach();
