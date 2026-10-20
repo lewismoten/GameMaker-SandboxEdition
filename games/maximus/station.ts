@@ -652,11 +652,11 @@ function stationExtras(s: SetBuilder): void {
   D('sign:up', signp('arrow'));
   s.add(
     'window:wide0',
-    windowView(3).map((x, y, c) => (x < 2 || x > 17 ? R('tech')[3] : c)),
+    windowView(3).map((x, _y, c) => (x < 2 || x > 17 ? R('tech')[3] : c)),
   );
   s.add(
     'window:wide1',
-    windowView(6).map((x, y, c) => (x < 2 || x > 17 ? R('tech')[3] : c)),
+    windowView(6).map((x, _y, c) => (x < 2 || x > 17 ? R('tech')[3] : c)),
   );
   s.add(
     'girder:v',
