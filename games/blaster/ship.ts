@@ -42,8 +42,26 @@ const HALF = [
 
 function shipPic(p: Pal, flame: 0 | 1, flash = false): Pixels {
   const key: Record<string, number> = flash
-    ? { o: p.c('cyan', 3), s: p.c('steel', 6), S: p.c('steel', 6), d: p.c('cyan', 5), h: p.c('cyan', 5), c: p.c('steel', 6), C: p.c('steel', 6), r: p.c('cyan', 5) }
-    : { o: p.c('ink', 0), s: p.c('steel', 2), S: p.c('steel', 4), d: p.c('steel', 1), h: p.c('steel', 6), c: p.c('cyan', 2), C: p.c('cyan', 4), r: p.c('red', 2) };
+    ? {
+        o: p.c('cyan', 3),
+        s: p.c('steel', 6),
+        S: p.c('steel', 6),
+        d: p.c('cyan', 5),
+        h: p.c('cyan', 5),
+        c: p.c('steel', 6),
+        C: p.c('steel', 6),
+        r: p.c('cyan', 5),
+      }
+    : {
+        o: p.c('ink', 0),
+        s: p.c('steel', 2),
+        S: p.c('steel', 4),
+        d: p.c('steel', 1),
+        h: p.c('steel', 6),
+        c: p.c('cyan', 2),
+        C: p.c('cyan', 4),
+        r: p.c('red', 2),
+      };
   key.f = flame ? p.c('fire', 4) : p.c('fire', 6);
   key.F = flame ? p.c('fire', 6) : p.c('fire', 7);
   const rows = HALF.map((h) => h + [...h].reverse().join(''));
