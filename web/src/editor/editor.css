@@ -717,3 +717,23 @@ dialog.modal .buttons {
 .pick-card.selected {
   outline: 3px solid var(--accent);
 }
+
+/* "New game": ready to play or empty */
+.start-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.start-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  text-align: left;
+}
+
+.start-choice small {
+  font-weight: 400;
+  opacity: 0.85;
+}

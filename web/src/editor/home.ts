@@ -1,6 +1,7 @@
 // Home page: your projects, importing original game folders, and the CD's sample games.
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './ui';
 import { Project } from './project';
+import { starterProject } from './starter';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../project/files';
 import { deleteProject, listProjects, loadProject } from '../project/storage';
 import { createZip, crc32, isZip, readZip } from '../project/zip';
@@ -184,9 +185,23 @@ export function showNotice(g: CatalogEntry): Promise<unknown> {
 }
 
 async function newGame(nav: HomeNav): Promise<void> {
-  const name = await promptText('New game', 'Title (shown on the menu screen)', 'My Game');
-  if (!name) return;
-  const p = Project.create(name);
+  const choice = await modal<{ name: string; starter: boolean }>('New game', (close) => {
+    const input = h('input', { type: 'text', value: 'My Game', required: true, autofocus: true, onfocus: (e: Event) => (e.target as HTMLInputElement).select() });
+    const go = (starter: boolean) => input.reportValidity() && close({ name: input.value.trim(), starter });
+    return h(
+      'form',
+      { class: 'stack', onsubmit: (e: Event) => (e.preventDefault(), go(true)) },
+      h('label', null, 'Title (shown on the menu screen)', input),
+      h(
+        'div',
+        { class: 'start-choices' },
+        h('button', { type: 'submit', class: 'start-choice primary' }, h('strong', null, '▶ Ready to play'), h('small', null, 'A first level with scenery, monsters, a hero and sounds from the CD library, to change as you like.')),
+        h('button', { type: 'button', class: 'start-choice', onclick: () => go(false) }, h('strong', null, '◻ Empty'), h('small', null, 'Just a title and an ending. Add every file yourself.')),
+      ),
+    );
+  });
+  if (!choice?.name) return;
+  const p = choice.starter ? await starterProject(choice.name).catch(() => Project.create(choice.name)) : Project.create(choice.name);
   await p.saveNow();
   nav.openProject(p.id);
 }
