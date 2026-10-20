@@ -10,6 +10,7 @@ import { monsterSet, type MonsterSet } from './bestiary';
 import type { SetBuilder } from './blockset';
 import { courier, vehicle, type CharSet } from './chars';
 import { heartMap, maelstromMap } from './core';
+import { homeMap } from './home';
 import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from './fauna';
 import { Grid, W, reachable } from './mapkit';
 import { oceanSet } from './ocean';
@@ -138,8 +139,7 @@ export function buildGame(): Built {
   const chrOf = (kind: WorldKind) => (kind === 'ocean' ? 'diver' : kind === 'rover' ? 'rover' : kind === 'surface' ? 'courier' : 'courier');
 
   // home: the training deck of Maxima Station
-  const home = stationPlanet({ seed: 1995, level: 1 }, sets.station, { home: true });
-  populate(home.grid, bbl.station, monsters.mech1, spotsOf(home), { seed: 1, level: 1, count: 40, species: 2 });
+  const home = homeMap(sets.station, monsters.mech1);
   // galaxy
   const galaxy = galaxyMap(sets.space);
   populate(galaxy.grid, bbl.space, monsters.space1, spaceSpots(galaxy.grid, bbl.space, galaxy.arriveHome), { seed: 2, level: 1, count: 70, species: 4 });

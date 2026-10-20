@@ -1,0 +1,157 @@
+// Everything around the play: pictures, films, music and sound, wired into the scene
+// file slots (title, menu, story, instructions, credits, high scores, load/save, the
+// planet cards before each landing, the films between places, won and lost).
+import { serializeSlideList } from '../../web/src/formats/graphicScripts';
+import { serializeGame } from '../../web/src/formats/game';
+import { dosText } from '../kit/disk';
+import type { Built } from './game';
+import { buildSongs } from './music';
+import { buildSounds } from './sounds';
+import { hiscoreScreen, menuScreen, pageScreen, placeCards, sectorCards, slotScreen, storySlides, titleScreen, wonScreens, planetArt } from './screens';
+import { descentFli, introFli, launchFli, warpFli, wonFli } from './flics';
+import { CREDITS, INSTRUCTIONS } from './text';
+import { SCENE, SECTORS, allWorlds } from './universe';
+import { drawCourier } from './courier';
+import { drawShard } from './items';
+
+export function present(b: Built): void {
+  const put = (name: string, bytes: Uint8Array) => b.files.set(name.toLowerCase(), bytes);
+  const putAll = (m: Map<string, Uint8Array>) => m.forEach((v, k) => put(k, v));
+  const g = b.game;
+
+  // sound and music
+  const snd = buildSounds();
+  put('maximus.snd', snd.snd);
+  putAll(snd.vocs);
+  putAll(buildSongs());
+
+  // films
+  put('intro.fli', introFli());
+  put('warp.fli', warpFli());
+  put('descent.fli', descentFli());
+  put('launch.fli', launchFli());
+  put('won.fli', wonFli());
+
+  // title, menu and the start scene's pages
+  put('title.gif', titleScreen());
+  put(
+    'title.lst',
+    serializeSlideList([
+      { name: 'intro.fli', pause: 0 },
+      { name: 'title.gif', pause: 12 },
+    ]),
+  );
+  put('menu.gif', menuScreen());
+  putAll(storySlides());
+  put(
+    'instbg.gif',
+    pageScreen('INSTRUCTIONS', 81, (c) => {
+      c.sprite(drawCourier({ arm: [80, 90], gun: 'blaster', flash: 2.5 }), 292, 120, 1);
+    }),
+  );
+  put('instruct.txt', dosText(INSTRUCTIONS));
+  put('inst.lst', serializeSlideList([{ name: 'instbg.gif', pause: 0 }, { name: 'instruct.txt' }]));
+  put(
+    'credbg.gif',
+    pageScreen('CREDITS', 82, (c) => {
+      planetArt(c, 300, 190, 30, 'crystal', 5);
+      for (let k = 0; k < 10; k++) c.sprite(drawShard(k).crop(5, 0, 10, 20), 4, 20 + k * 17, 1);
+    }),
+  );
+  put('credits.txt', dosText(CREDITS));
+  put('credits.lst', serializeSlideList([{ name: 'credbg.gif', pause: 0 }, { name: 'credits.txt' }]));
+  put('hiscore.gif', hiscoreScreen());
+  put('load.gif', slotScreen('LOAD GAME', 91));
+  put('save.gif', slotScreen('SAVE GAME', 92));
+  putAll(wonScreens());
+
+  const s0 = g.scenes[SCENE.start];
+  s0.files = [
+    'title.lst',
+    'title.cmf',
+    'menu.gif',
+    'galaxy.cmf',
+    'story.lst',
+    'story.cmf',
+    'inst.lst',
+    'credits.lst',
+    'hiscore.gif',
+    'load.gif',
+    'save.gif',
+    b.files.has('demo.rec') ? 'demo.rec' : '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ];
+  const s1 = g.scenes[SCENE.end];
+  s1.files = ['won.lst', 'triumph.cmf', 'lost.gif', 'lament.cmf', ...new Array(16).fill('')];
+
+  // planet cards: each sector's cards in one tall GIF, a .BKD window per world, and a
+  // little slide show per world: the descent film, then its card
+  const worlds = allWorlds();
+  SECTORS.forEach((_, k) =>
+    putAll(
+      sectorCards(
+        k,
+        worlds.filter((w) => w.sector === k),
+      ),
+    ),
+  );
+  for (const w of worlds) put(`w${w.scene}.lst`, serializeSlideList([{ name: 'descent.fli', pause: 0 }, { name: `w${w.scene}.bkd` }]));
+  putAll(
+    placeCards([
+      {
+        file: 'mael',
+        title: 'MAELSTROM',
+        sub: 'THE WAY TO THE CORE',
+        text: 'Two hundred rocks in a storm that never ends. Your weapons are useless here: just fly.',
+        biome: 'core',
+      },
+      {
+        file: 'citadel',
+        title: 'CITADEL',
+        sub: 'AROUND THE CORE',
+        text: 'The fortress that guards the dead star. Find the teleporter in its vault.',
+        biome: 'station',
+      },
+      {
+        file: 'heart',
+        title: 'THE HEART',
+        sub: 'MAXIMUS CORE',
+        text: 'Crack the Guardian armor with the Plasma Lance. Only a shield orb can touch its eye.',
+        biome: 'core',
+      },
+    ]),
+  );
+
+  // scene songs and graphics
+  const SONG_OF: Record<string, string> = { ocean: 'ocean.cmf', station: 'station.cmf', rover: 'rover.cmf' };
+  for (const info of b.scenes) {
+    const sc = g.scenes[info.scene];
+    if (info.scene === SCENE.galaxy) {
+      sc.files[8] = 'galaxy.cmf';
+      sc.files[10] = 'warp.fli';
+    } else if (info.scene === SCENE.home) sc.files[8] = 'cradle.cmf';
+    else if (info.scene === SCENE.maelstrom) {
+      sc.files[8] = 'storm.cmf';
+      sc.files[9] = 'mael.bkd';
+    } else if (info.scene === SCENE.citadel) {
+      sc.files[8] = 'black.cmf';
+      sc.files[9] = 'citadel.bkd';
+    } else if (info.scene === SCENE.heart) {
+      sc.files[8] = 'boss.cmf';
+      sc.files[9] = 'heart.bkd';
+    } else if (info.kind === 'space') sc.files[8] = `${SECTORS[info.sector!].song}.cmf`;
+    else {
+      sc.files[8] = SONG_OF[info.kind] ?? `${SECTORS[info.sector!].song}.cmf`;
+      sc.files[9] = `w${info.scene}.lst`;
+      sc.files[10] = 'launch.fli';
+    }
+  }
+  put('maximus.gam', serializeGame(g));
+}
