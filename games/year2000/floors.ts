@@ -81,7 +81,10 @@ export const FLOORS: Record<string, Painter> = {
   /** A hover lane on the Skyway: a dark glowing strip. */
   lane: () => {
     const p = new Pixels(20, 20);
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('night'), 2, 4, Math.abs(y - 9.5) / 10, x, y));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('purple'), 0, 1, 0.3 + 0.7 * (1 - Math.abs(y - 9.5) / 10), x, y));
+    const r = rng(13);
+    for (let i = 0; i < 4; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 18), C('purple', 3));
+    p.rect(2, 19, 6, 1, C('chrome', 3)).rect(12, 19, 6, 1, C('chrome', 3));
     return p;
   },
   laneLine: () => {
