@@ -594,6 +594,7 @@
   display: inline-block;
   padding: 0.3em 0.5em;
   color: rgb(115, 205, 245);
+  text-align: left;
   font:
     400 1em/1.35 Arial,
     Helvetica,
