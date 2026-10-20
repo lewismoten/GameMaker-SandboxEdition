@@ -109,6 +109,18 @@ export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
   f.font = SANS(20, 700, true);
   f.fillText('CREATE YOUR OWN COMPUTER GAMES', 18, 145);
   badge(f, W - 186, H - 120, 168);
+  // this fork's box, not RSD's: a band under the tagline
+  f.fillStyle = '#1d3f7a';
+  f.fillRect(0, 154, W, 30);
+  f.fillStyle = YELLOW;
+  f.fillRect(0, 184, W, 3);
+  f.fillStyle = '#fff';
+  f.font = SANS(17, 900);
+  f.fillText('SANDBOX EDITION', 18, 175);
+  f.font = SANS(13, 700, true);
+  f.textAlign = 'right';
+  f.fillText('a modified fork of Game-Maker 3.0', W - 18, 175);
+  f.textAlign = 'left';
   // version flash
   f.save();
   f.translate(110, H - 80);
@@ -189,7 +201,8 @@ export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
     b.fillText(l, 44, y + 50 + i * 22),
   );
   b.font = SANS(12, 400);
-  b.fillText('© 1991–1994 Recreational Software Designs. All rights reserved.', 30, H - 22);
+  b.fillText('Game-Maker © 1991–1994 Recreational Software Designs; released under the MIT License in 2014.', 30, H - 40);
+  b.fillText('Sandbox Edition box art, made for this modified fork. Not the original RSD box.', 30, H - 22);
 
   // ---- sides and ends
   const spine = (): string => {
@@ -232,7 +245,7 @@ export function gmBoxContents(openGuide: () => void): HTMLElement {
       <path id="holo-bottom" d="M 13 50 A 37 37 0 0 0 87 50"/>
     </defs>
     <text class="cd-title"><textPath href="#holo-top" startOffset="50%" text-anchor="middle">GAME-MAKER 3.0</textPath></text>
-    <text class="cd-small"><textPath href="#holo-bottom" startOffset="50%" text-anchor="middle">RECREATIONAL SOFTWARE DESIGNS</textPath></text>
+    <text class="cd-small"><textPath href="#holo-bottom" startOffset="50%" text-anchor="middle">SANDBOX EDITION · NOT AN ORIGINAL RSD DISC</textPath></text>
   </svg>`;
   // the sheen follows the light: move the pointer over the disc to tilt it
   disc.addEventListener('pointermove', (e) => {
@@ -248,8 +261,8 @@ export function gmBoxContents(openGuide: () => void): HTMLElement {
       { class: 'guide-book', onclick: openGuide, title: 'Read the Owner’s Guide' },
       h('strong', null, 'GAME-MAKER'),
       h('span', null, 'Owner’s Guide'),
-      h('em', null, 'Version 3.0'),
-      h('small', null, 'Recreational Software Designs'),
+      h('em', null, 'Sandbox Edition'),
+      h('small', null, 'Sandbox Edition · a new guide for this fork'),
     ),
     disc,
   );

@@ -181,3 +181,15 @@
     transform: none;
   }
 }
+
+/* "SANDBOX EDITION" band under the tagline of the Game-Maker box on the desk (desk.ts) */
+.gm-box .edition-ribbon {
+  position: relative;
+  z-index: 2;
+  padding: 1px 6px;
+  border-bottom: 1px solid #f2e600;
+  background: #1d3f7a;
+  color: #fff;
+  font: 900 6px/1.4 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.06em;
+}

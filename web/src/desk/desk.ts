@@ -23,6 +23,7 @@ import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './snowWindow';
 import { drawGmBox, gmBoxContents } from './gmBox';
 import { fitStage } from './stage';
+import { EDITION, FORK_NOTE } from '../edition';
 import { loadCatalog, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/project';
 import type { SpeedSetting } from '../engine/scene';
@@ -81,7 +82,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       'header',
       { class: 'desk-bar' },
       h('h1', null, 'GAME-MAKER'),
-      h('span', null, '1994 edition'),
+      h('span', { title: FORK_NOTE }, `${EDITION} · the 1994 desk`),
       h('span', { class: 'spacer' }),
       matchMedia('(pointer: coarse)').matches ? h('span', { class: 'touch-tip' }, 'No keyboard? The disk box, CD and catalog type for you.') : null,
       h('button', { onclick: () => nav.toModern() }, 'Switch to today’s web →'),
@@ -150,6 +151,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
             { class: 'retail' },
             h('div', { class: 'banner' }, h('em', null, 'COMPUTER-AIDED DESIGN TOOLS'), h('strong', null, 'GAME-MAKER')),
             h('div', { class: 'tagline' }, 'CREATE YOUR OWN COMPUTER GAMES'),
+            h('div', { class: 'edition-ribbon' }, 'SANDBOX EDITION'),
             boxTiles,
             h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
           ),
