@@ -14,6 +14,7 @@ import { SHARED_END } from './palette';
 import { ROLES } from './roles';
 import { SECTORS, SCENE, allWorlds } from './universe';
 import { SONGS } from './music';
+import { wrapDoc } from './text';
 
 export interface Limit {
   what: string;
@@ -127,12 +128,11 @@ export function limits(b: Built): Limit[] {
 export function limitsTxt(b: Built): string {
   const rows = limits(b);
   const out = [
-    'MAXIMUS: THE HUNDRED WORLDS - HOW FAR GAME-MAKER GOES',
-    '======================================================',
+    'MAXIMUS: THE HUNDRED WORLDS',
+    'HOW FAR GAME-MAKER GOES',
+    '==============================',
     '',
-    'Maximus was built to find the edges of Game-Maker 3.0 and to',
-    'stand on them. These are the limits we found in its file',
-    'formats and in PLAYGAME, and how close this game comes.',
+    'Maximus was built to find the edges of Game-Maker 3.0 and to stand on them. These are the limits we found in its file formats and in PLAYGAME, and how close this game comes.',
     '',
   ];
   for (const r of rows) {
@@ -144,21 +144,21 @@ export function limitsTxt(b: Built): string {
   }
   out.push('Some limits shaped the game:');
   out.push('');
-  out.push(' * Game-Maker animates block TYPES on one clock, so every');
-  out.push('   force field of a world blinks together. Vending pads');
-  out.push('   cannot restock without restocking all at once, so each');
-  out.push('   sells one of each per visit.');
-  out.push(' * A scene reloads its map each time you enter, so star-');
-  out.push('   shards are counters (20..29), not objects: a shard cannot');
-  out.push('   be counted twice and gates test for it without using it.');
-  out.push(' * The Maelstrom fills all 200 monster slots, so there is no');
-  out.push('   slot left for a single shot: in the storm, weapons jam.');
-  out.push(' * Every map wraps, so every planet is a little globe: walk');
-  out.push('   east long enough and you come home.');
-  out.push(' * One big GIF per sector holds every planet card and every');
-  out.push('   long-range scan; each .BKD file shows its own 320x200');
-  out.push('   window of it, so 176 pictures load from 5 files.');
-  return out.join('\n') + '\n';
+  out.push(
+    '* Game-Maker animates block TYPES on one clock, so every force field of a world blinks together. Vending pads cannot restock without restocking all at once, so each sells one of each per visit.',
+  );
+  out.push(
+    '* A scene reloads its map each time you enter, so star-shards are counters (20..29), not objects: a shard cannot be counted twice and gates test for it without using it.',
+  );
+  out.push('* The Maelstrom fills all 200 monster slots, so there is no slot left for a single shot: in the storm, weapons jam.');
+  out.push('* Every map wraps, so every planet is a little globe: walk east long enough and you come home.');
+  out.push(
+    '* One big GIF per sector holds every planet card and every long-range scan; each .BKD file shows its own 320x200 window of it, so 176 pictures load from 5 files.',
+  );
+  out.push(
+    '* A character has 20 key sequences, each with one key, and Maximus uses all 20 (moves, blaster, six module weapons, two dashes, hover, pick up, drop, hail). There is no slot left to give W/A/S/D a copy of the arrows.',
+  );
+  return wrapDoc(out.join('\n'));
 }
 
 /** The most interesting 16x10 window of a map: many different blocks, monsters, few empty cells. */
