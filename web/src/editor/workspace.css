@@ -1,0 +1,85 @@
+/* The workspace's file list: search box and foldable sections (see workspace.ts). */
+
+.sidebar .file-search {
+  position: relative;
+  margin: 10px 0 2px;
+}
+
+.sidebar .file-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 64px 5px 26px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg, transparent) no-repeat 8px 50% / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='6.5' cy='6.5' r='4.5' fill='none' stroke='%23888' stroke-width='2'/%3E%3Cpath d='M10 10l4.5 4.5' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E");
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+}
+
+.sidebar .file-search-count {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.sidebar h4 .fold {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 2px 4px 2px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar h4 .fold:hover {
+  color: var(--text, inherit);
+}
+
+.sidebar h4 .chev {
+  display: inline-block;
+  width: 10px;
+  transition: transform 0.15s;
+  transform: rotate(90deg);
+}
+
+.sidebar .file-section.folded h4 .chev {
+  transform: none;
+}
+
+.sidebar h4 .count {
+  margin-left: auto;
+  margin-right: 6px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--panel-2);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+/* Folded: only the file being edited stays in view. Searching shows every match. */
+.sidebar:not(.searching) .file-section.folded .file-row:not(.active) {
+  display: none;
+}
+
+.sidebar .file-row[hidden],
+.sidebar .file-section[hidden] {
+  display: none;
+}
+
+.sidebar.searching .file-section .empty {
+  display: none;
+}
