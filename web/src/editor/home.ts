@@ -2,6 +2,7 @@
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './ui';
 import { Project } from './project';
 import { starterProject } from './starter';
+import { renderShot } from '../desk/boxArt';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../project/files';
 import { deleteProject, listProjects, loadProject } from '../project/storage';
 import { createZip, crc32, isZip, readZip } from '../project/zip';
@@ -13,7 +14,25 @@ export interface HomeNav {
   openProject(id: string): void;
 }
 
+/** Draws a game's first level into a card's picture when the card scrolls into view. */
+const shotObserver = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (!e.isIntersecting) continue;
+    shotObserver.unobserve(e.target);
+    const el = e.target as HTMLCanvasElement & { game?: CatalogEntry };
+    if (el.game) void renderShot(el.game, el, el.width / 20, el.height / 20).catch(() => undefined);
+  }
+});
+
+function cardShot(g: CatalogEntry): HTMLCanvasElement {
+  const c = h('canvas', { class: 'card-shot pixel', width: 160, height: 100 }) as HTMLCanvasElement & { game?: CatalogEntry };
+  c.game = g;
+  shotObserver.observe(c);
+  return c;
+}
+
 export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
+  const heroShot = h('canvas', { class: 'pixel', width: 320, height: 200 });
   const projects = h('div', { class: 'cards' });
   const samples = h('div', { class: 'cards' }, h('p', { class: 'meta' }, 'Loading…'));
   const shareware = h('div', { class: 'cards' });
@@ -26,8 +45,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       { class: 'home' },
       h(
         'section',
-        null,
-        h('p', { class: 'lead' }, 'Design arcade and adventure games the way Game-Maker 3.0 did in 1994 — blocks, monsters, characters, maps, sounds and scenes — using the original file formats. Play games from the original CD, and publish your own as installable web apps that work offline.'),
+        { class: 'hero' },
+        h(
+          'div',
+          { class: 'hero-text' },
+          h('em', null, 'Computer-aided design tools'),
+          h('h1', { class: 'hero-logo' }, 'GAME-MAKER'),
+          h('p', null, 'Make your own arcade and adventure games — blocks, monsters, heroes, maps, music and sound — in the original 1994 file formats. No programming.'),
+          h(
+            'div',
+            { class: 'hero-actions' },
+            h('button', { class: 'primary big', onclick: () => void newGame(nav) }, '+ Make a new game'),
+            h('button', { class: 'big', onclick: () => document.getElementById('samples')?.scrollIntoView({ behavior: 'smooth' }) }, '▶ Play a game'),
+          ),
+        ),
+        h('div', { class: 'hero-screen', 'aria-hidden': 'true' }, heroShot),
       ),
       h(
         'section',
@@ -44,7 +76,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         h('div', { style: 'height:12px' }),
         projects,
       ),
-      h('section', null, h('h2', null, 'Sample games from the Game-Maker CD'), h('p', { class: 'lead' }, 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.'), samples),
+      h('section', { id: 'samples' }, h('h2', null, 'Sample games from the Game-Maker CD'), h('p', { class: 'lead' }, 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.'), samples),
       h(
         'section',
         null,
@@ -75,6 +107,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   await renderProjects(projects, nav);
   try {
     const catalog = await loadCatalog();
+    // the banner's screen: a level from one of RSD's own games
+    const show = catalog.find((g) => g.id === ['pipemare', 'sample', 'houses'][Math.floor(Math.random() * 3)]);
+    if (show) {
+      (heroShot as HTMLCanvasElement & { game?: CatalogEntry }).game = show;
+      shotObserver.observe(heroShot);
+    }
     // Recreational Software Designs' own games first.
     const rsd = ['sample', 'pipemare', 'nebula'];
     const gameware = catalog.filter((g) => g.kind !== 'shareware').sort((a, b) => (rsd.includes(b.id) ? 1 : 0) - (rsd.includes(a.id) ? 1 : 0) || rsd.indexOf(a.id) - rsd.indexOf(b.id));
@@ -139,6 +177,7 @@ function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
   return h(
     'div',
     { class: 'card' },
+    g.gam ? cardShot(g) : null,
     h('h3', null, g.gam ? g.title : `${g.id} (pictures, monsters and sounds)`),
     h('div', { class: 'meta' }, `${['sample', 'pipemare', 'nebula'].includes(g.id) ? 'By Recreational Software Designs · ' : ''}${g.id}/ · ${g.files.length} files`),
     h(
@@ -165,8 +204,9 @@ function sharewareCard(g: CatalogEntry): HTMLElement {
   return h(
     'div',
     { class: 'card' },
+    cardShot(g),
     h('h3', null, g.title),
-    h('div', { class: 'meta' }, 'Shareware · play only'),
+    h('div', { class: 'meta' }, `${g.original ? `${g.company ?? 'Sandbox Software'} · new ` : ''}Shareware · play only`),
     h(
       'div',
       { class: 'actions' },
