@@ -136,6 +136,19 @@
   color: #6d6553;
 }
 
+.monitor .enlarge {
+  position: absolute;
+  right: 13%;
+  bottom: 1.6%;
+  padding: 1px 6px;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 3px;
+  background: linear-gradient(#f1ecdc, #c9c0a5);
+  color: #3c372b;
+  font: 700 12px/1.2 system-ui, sans-serif;
+  cursor: pointer;
+}
+
 .monitor .monitor-led {
   position: absolute;
   right: 8%;
@@ -146,7 +159,20 @@
   background: #253;
 }
 
-.desk[data-power='on'] .monitor .monitor-led {
+.desk[data-power='on'] .monitor .enlarge {
+  position: absolute;
+  right: 13%;
+  bottom: 1.6%;
+  padding: 1px 6px;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 3px;
+  background: linear-gradient(#f1ecdc, #c9c0a5);
+  color: #3c372b;
+  font: 700 12px/1.2 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.monitor .monitor-led {
   background: var(--led-green);
   box-shadow: 0 0 8px var(--led-green);
 }

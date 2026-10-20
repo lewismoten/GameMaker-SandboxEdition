@@ -70,6 +70,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           h('button', { class: 'sticky', onclick: () => nav.toModern() }, 'Too retro? Use today’s web →'),
           h('div', { class: 'screen-bezel' }, crt),
           h('span', { class: 'brand' }, 'RSD  SVGA'),
+          h('button', { class: 'enlarge', title: 'Fill the window with the screen', 'aria-label': 'Enlarge screen', onclick: () => setZoom('manual') }, '⤢'),
           h('span', { class: 'monitor-led' }),
         ),
         h('div', { class: 'monitor-stand' }),
@@ -104,18 +105,26 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   );
   clear(root, desk);
 
+  let pc: Computer | undefined;
   const computer = new Computer(crt, {
     speed,
     openModern: (projectId, file) => nav.toModern(projectId, file),
     onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
   });
+  pc = computer;
   crt.addEventListener('click', () => void power(true));
 
   /** 'gfx': the designers need the whole window; 'manual': the user enlarged the screen. */
   function setZoom(zoom: 'gfx' | 'manual' | false): void {
     desk.dataset.zoom = zoom || 'false';
+    pc?.focus(); // undefined while the PC is still being built
   }
+  const onKey = (e: KeyboardEvent) => {
+    // Esc leaves a manual zoom only when nothing on the PC is running (games use Esc).
+    if (e.key === 'Escape' && desk.dataset.zoom === 'manual' && !computer.busy) setZoom(false);
+  };
+  window.addEventListener('keydown', onKey);
 
   function setTurbo(on: boolean): void {
     turbo = on;
@@ -234,6 +243,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   setTurbo(turbo);
   void refreshDisks();
   return () => {
+    window.removeEventListener('keydown', onKey);
     computer.screen.destroy();
     computer.keys.detach();
   };
