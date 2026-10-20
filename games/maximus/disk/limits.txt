@@ -167,7 +167,7 @@ MONSTERS DRAWN AT ONCE
 
 DEMO RECORDING
   Limit: 1000 key events
-  Used:  752 events
+  Used:  48 events
   Where: DEMO.REC
 
 TEXT SCREEN WIDTH

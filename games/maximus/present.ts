@@ -84,7 +84,7 @@ export async function present(b: Built): Promise<void> {
   // the attract-mode demo, played by the headless engine
   const demo = await buildDemo(b);
   put('demo.rec', demo.rec);
-  if (!demo.reached) b.problems.push('demo: the autopilot did not reach the airlock');
+  if (!demo.reached) b.problems.push('demo: the autopilot did not reach the airlock and the warp ring');
 
   const s0 = g.scenes[SCENE.start];
   s0.files = [
