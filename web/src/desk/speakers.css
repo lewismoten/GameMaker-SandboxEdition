@@ -1,0 +1,112 @@
+/* the desk speakers (desk/speakers.ts), standing either side of the monitor */
+.speaker {
+  position: absolute;
+  top: 384px;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  width: 78px;
+  height: 158px;
+  padding: 8px 7px 0;
+  box-sizing: border-box;
+  border-radius: 5px 5px 3px 3px;
+  background: linear-gradient(100deg, var(--plastic-hi), var(--plastic) 45%, var(--plastic-lo));
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -4px 0 var(--plastic-edge),
+    inset -3px 0 0 rgba(0, 0, 0, 0.08),
+    0 10px 14px rgba(0, 0, 0, 0.45);
+}
+
+.speaker.left {
+  right: calc(50% + 330px + 6px);
+}
+
+.speaker.right {
+  left: calc(50% + 330px + 6px);
+}
+
+/* a dark cloth grille over the driver */
+.spk-grille {
+  height: 92px;
+  border-radius: 3px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.07) 0 22%, transparent 24%) 0 0 / 4px 4px,
+    radial-gradient(circle at 50% 45%, #2b2a28, #171615 70%);
+  box-shadow: inset 0 0 0 2px #a9a088;
+}
+
+.spk-brand {
+  margin-top: 14px;
+  color: #8f8770;
+  font: 700 8px/1 system-ui, sans-serif;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+.spk-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 2px;
+}
+
+.spk-knob {
+  --turn: 135deg;
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #5a5650, #2a2826 70%);
+  box-shadow:
+    0 0 0 2px #9e967c,
+    0 2px 3px rgba(0, 0, 0, 0.5);
+  transform: rotate(var(--turn));
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.spk-knob::after {
+  /* the pointer line */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  width: 2px;
+  height: 8px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: #f4f1e6;
+}
+
+.spk-knob:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 3px;
+}
+
+.spk-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #1f3a22;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.spk-led.on {
+  background: var(--led-green);
+  box-shadow: 0 0 6px var(--led-green);
+}
+
+.spk-jack {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #000 0 40%, #6d6a64 45% 60%, #b8b09a 65%);
+}
+
+@media (max-width: 960px) {
+  .speaker {
+    display: none;
+  }
+}

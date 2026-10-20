@@ -13,6 +13,7 @@ import { installCrtWarp } from './crtWarp';
 import { sevenSegment, floppyDrive, cdDrive, openTray } from './caseParts';
 import { keyboard } from './keyboard';
 import { keyboardTray } from './tray';
+import { speakers } from './speakers';
 import { deskModem } from './modem';
 import { drawBox, boxModel, openBoxViewer } from './gameBox';
 import { openGameManual } from '../manual/gameManual';
@@ -69,6 +70,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const powerBtn = h('button', { class: 'case-btn power', 'aria-label': 'Power', 'aria-pressed': 'false', onclick: () => void power() }, '⏻');
   const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) });
   const box = h('div', { class: 'box' });
+  const spk = speakers();
   const modem = deskModem(() => void command('C:\nTERMINAL'));
   // Captions from the real box; pictures from the sample games' own maps.
   const BOX_TILES: [string, string][] = [
@@ -109,6 +111,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         h('img', { src: './desk/moten-snow-to-software.jpg', alt: 'Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel', loading: 'lazy' }),
       ),
       snowyWindow(),
+      spk.left,
+      spk.right,
       h(
         'div',
         { class: 'desk-left' },
@@ -225,6 +229,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     powerBtn.setAttribute('aria-pressed', 'true');
     powerLed.classList.add('on');
     modem.power(true);
+    spk.power(true);
     setTurbo(turbo);
     await computer.powerOn();
     setTurbo(turbo);
