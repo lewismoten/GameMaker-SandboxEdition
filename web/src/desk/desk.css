@@ -265,13 +265,10 @@
   height: 100%;
 }
 
-/* the designers' 320x200 VGA picture, at a whole multiple of its size (vga/vga.ts) */
+/* the designers' 320x200 VGA picture, filling the tube like the text does (vga/vga.ts) */
 .crt .crt-vga {
   position: absolute;
   inset: 3.5% 4%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .desk[data-zoom='false'] .crt .crt-vga {
@@ -279,6 +276,9 @@
 }
 
 .crt-vga .vga-screen {
+  display: block;
+  width: 100%;
+  height: 100%;
   outline: none;
   cursor: none;
   touch-action: none;

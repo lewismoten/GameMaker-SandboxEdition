@@ -1,7 +1,8 @@
 // VGA mode 13h as Game-Maker's designers used it: a 320x200 screen of palette indexes,
 // a 256-color DAC of 6-bit components, the BIOS 8x8 font, the mouse cursor, BIOS key
 // reads and the 18.2 Hz clock. The drawing routines are ports of code/GM/GRAPHC.C.
-// The picture is drawn at a whole multiple of 320x200 device pixels that fits its box.
+// Like a real monitor, the picture fills its box; it is drawn from a whole-number
+// upscale of 320x200 so pixels keep hard edges.
 import { FONT_CP437 } from '../retro/cp437';
 import { Keyboard, type TypedKey } from '../input/keyboard';
 
@@ -113,14 +114,13 @@ export class Vga {
     this.canvas.remove();
   }
 
-  /** The largest whole multiple of 320x200 device pixels that fits the box. */
+  /** Backing store: the smallest whole multiple of 320x200 at least as big as the box. */
   private fit(): void {
     const dpr = devicePixelRatio || 1;
-    const k = Math.max(1, Math.floor(Math.min((this.holder.clientWidth * dpr) / SIZEX, (this.holder.clientHeight * dpr) / SIZEY)));
+    const k = Math.max(1, Math.min(6, Math.ceil(Math.max((this.holder.clientWidth * dpr) / SIZEX, (this.holder.clientHeight * dpr) / SIZEY))));
+    if (this.canvas.width === SIZEX * k) return;
     this.canvas.width = SIZEX * k;
     this.canvas.height = SIZEY * k;
-    this.canvas.style.width = `${(SIZEX * k) / dpr}px`;
-    this.canvas.style.height = `${(SIZEY * k) / dpr}px`;
     this.dirty = true;
   }
 
