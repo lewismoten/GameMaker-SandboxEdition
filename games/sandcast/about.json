@@ -21,7 +21,7 @@
     "back": "Summer, 1995. Teddy is a Pembroke Welsh Corgi and the knight of the backyard sandbox: tin helmet, red plume, short legs, big heart. He knows lots of tricks, he loves his toys, and everybody loves him.\n\nThen his big sister Gwin, a brown pit-lab mix twice his size, came through with the zoomies. Every castle flattened. Hose on, kiddie pool tipped, a hole dug under the whole sandbox, and Teddy's toys scattered everywhere. Now she's snoring on the patio, right on top of the Crown of the Sandbox.\n\nScoop sand, dig dunes, plug anthills and build tower after tower until the gates rise. Ride the hose currents, time the tide, and when Gwin's in the way, toss her a tennis ball. She can't resist one.",
     "features": [
       "Five castles and a whole sandbox to roam, plus a secret dial-up to THE -= S A N D B O X =- BBS",
-      "Teddy knows tricks: sit, spin, roll over, jump and play dead, each on its own key (spinning even bowls over ants)",
+      "Teddy knows tricks: sit, spin, play dead and roll over, each on its own number key (spinning even bowls over ants)",
       "Gwin naps in doorways and galumphs about: toss her a tennis ball and off she trots",
       "Squeaky bones, flying discs, dog biscuits and peanut butter scattered all over the sandbox",
       "Hose currents, crumbling bridges, rolling waves and a tidal flat that floods",
@@ -29,31 +29,11 @@
       "Animated FLI intro and story, VGA graphics and PC speaker sound - no sound card needed"
     ],
     "shots": [
-      [
-        "patio.map",
-        8,
-        0
-      ],
-      [
-        "keep.map",
-        9,
-        0
-      ],
-      [
-        "lagoon.map",
-        0,
-        12
-      ],
-      [
-        "moat.map",
-        10,
-        4
-      ],
-      [
-        "sandbox.map",
-        26,
-        19
-      ]
+      ["patio.map", 8, 0],
+      ["keep.map", 9, 0],
+      ["lagoon.map", 0, 12],
+      ["moat.map", 10, 4],
+      ["sandbox.map", 26, 19]
     ],
     "rating": "Ages 6 and up",
     "hours": 5,
@@ -72,13 +52,7 @@
       "from": "Joyport Gazette"
     },
     "poster": {
-      "map": [
-        "sandbox.map",
-        0,
-        0,
-        50,
-        37
-      ],
+      "map": ["sandbox.map", 0, 0, 50, 37],
       "title": "Map of the Sandbox",
       "caption": "Five castles, the tide pool and the hose: the whole backyard"
     }

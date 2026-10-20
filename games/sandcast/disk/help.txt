@@ -1,10 +1,10 @@
-ARROWS  walk     P  pick up
-SPACE   fling sand (shovel)
-B       throw water (bucket)
-F       toss a tennis ball
-TRICKS: S sit  T spin
-R roll over  J jump
-D play dead
+ARROWS or W A S D  walk
+P      pick up
+SPACE  fling sand (shovel)
+B      throw water (bucket)
+F      toss a tennis ball
+TRICKS: 2 sit   3 spin
+4 play dead     5 roll over
 F2 status F5 save F6 load
 
 SAND: scoop sand piles, and
@@ -26,7 +26,7 @@ water. Toss her a tennis ball
 Walk toward her first: things
 fly the way you last walked.
 
-SPIN (T) kicks up a whirl of
+SPIN (3) kicks up a whirl of
 sand that bowls over ants and
 beetles.
 

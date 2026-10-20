@@ -9,32 +9,31 @@ export const SEQ = {
   hurt: 2,
   pickup: 3,
   drop: 4,
-  // Walking while the bucket is in the inventory: listed first, so they win the key.
-  // (From behind you can't see the bucket in Teddy's mouth, so walking up needs no copy.)
-  bucketRight: 5,
-  bucketLeft: 6,
-  bucketDown: 7,
-  right: 8,
-  left: 9,
-  up: 10,
-  down: 11,
+  // Walking: the arrows, then the same four steps on W/A/S/D (Game-Maker runs one
+  // sequence per key, so each key needs its own copy).
+  right: 5,
+  left: 6,
+  up: 7,
+  down: 8,
+  rightD: 9,
+  leftA: 10,
+  upW: 11,
+  downS: 12,
   /** Space: fling a clod of sand (needs the shovel). */
-  fling: 12,
+  fling: 13,
   /** B: throw a water splash (needs the bucket; its counter is the water supply). */
-  splash: 13,
+  splash: 14,
   /** F: toss a tennis ball (its counter is the balls you carry). Gwin can't resist one. */
-  fetch: 14,
-  // Teddy's tricks.
-  /** S: sit. */
-  sit: 15,
-  /** T: spin, kicking up a little whirl of sand that bowls over ants and beetles. */
-  spin: 16,
-  /** R: roll over. */
-  roll: 17,
-  /** J: jump. */
-  jump: 18,
-  /** D: play dead. */
-  playDead: 19,
+  fetch: 15,
+  // Teddy's tricks, on the number keys (the same numbers as in Teddy's Little Big Adventure).
+  /** 2: sit. */
+  sit: 16,
+  /** 3: spin, kicking up a little whirl of sand that bowls over ants and beetles. */
+  spin: 17,
+  /** 4: play dead. */
+  playDead: 18,
+  /** 5: roll over. */
+  roll: 19,
 } as const;
 
 /** Counters ("repetition meters"). 3 is money; 20-29 are free for the game. */

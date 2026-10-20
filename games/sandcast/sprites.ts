@@ -502,8 +502,6 @@ const STEPS = ['stand', 'a', 'b'] as const;
 for (const st of STEPS) cb.add(`down_${st}`, corgi(FRONT, FRONT_LEGS[st]));
 for (const st of STEPS) cb.add(`up_${st}`, corgi(BACK, BACK_LEGS[st]));
 for (const st of STEPS) cb.add(`right_${st}`, corgi(SIDE, SIDE_LEGS[st]));
-for (const st of STEPS) cb.add(`bdown_${st}`, withBucket(corgi(FRONT, FRONT_LEGS[st]), 7, 12 + (st === 'a' ? 1 : 0)));
-for (const st of STEPS) cb.add(`bright_${st}`, withBucket(corgi(SIDE, SIDE_LEGS[st]), 14, 9 + (st === 'b' ? 1 : 0)));
 // Idle: an ear flick and a head tilt.
 {
   const rows = FRONT.slice();
@@ -565,14 +563,6 @@ cb.add('sit0', art(sitRows(), K));
   rows[16] = ' kOOOOWWWWWWWkWWkOk ';
   rows[17] = ' kOOOkkWWkk  kkkOOk ';
   cb.add('sit1', art(rows, K));
-}
-// Jump: up in the air, shadow left behind on the sand.
-for (const h of [3, 6]) {
-  const p = corgi(FRONT, FRONT_LEGS.a);
-  const q = sprite();
-  q.blit(p.crop(0, h, 20, 20 - h), 0, 0);
-  for (let x = 6; x < 14; x++) if (dither(x, 19, 0.5)) q.set(x, 19, SAND[3]);
-  cb.add(`jump${h}`, q);
 }
 // Rolling over: the side view turned a quarter at a time, belly up halfway round.
 /** Turns a 20x20 sprite clockwise by `q` quarter turns. */

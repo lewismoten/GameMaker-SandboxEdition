@@ -1,6 +1,5 @@
-// sandcast.chr: Teddy, a one-block corgi knight. Walking with the bucket in his
-// inventory uses its own sequences (listed first, so they win the arrow keys), which is
-// how he is seen carrying it in his mouth. The last five sequences are his tricks.
+// sandcast.chr: Teddy, a one-block corgi knight. He walks on the arrows and on W/A/S/D;
+// the last four sequences are his tricks, on the number keys.
 import { CHARBL, MONBL } from '../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
 import { BG } from './bblocks';
@@ -24,15 +23,18 @@ const KEY = {
   left: 0x4b00,
   up: 0x4800,
   down: 0x5000,
+  w: 0x1177,
+  a: 0x1e61,
+  s: 0x1f73,
+  d: 0x2064,
   space: 0x3920,
   b: 0x3062,
   p: 0x1970,
   f: 0x2166,
-  s: 0x1f73,
-  t: 0x1474,
-  r: 0x1372,
-  j: 0x246a,
-  d: 0x2064,
+  two: 0x0332,
+  three: 0x0433,
+  four: 0x0534,
+  five: 0x0635,
 };
 
 function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
@@ -69,17 +71,17 @@ export function buildCharacter(): Character {
   set(S[SEQ.pickup], [f('idle_sway', 2), f('down_stand', 2)], { key: KEY.p, sound: SND.pickup, ground: 1, norepeat: 1, jstkMov: 0, jstkBut: 0 });
   set(S[SEQ.drop], [f('down_stand', 1)], { key: 0 });
 
-  const moves: [number, number, string, number, number, boolean, number, number][] = [
-    [SEQ.bucketRight, KEY.right, 'bright', STEP, 0, false, 3, bucket],
-    [SEQ.bucketLeft, KEY.left, 'bright', -STEP, 0, true, 7, bucket],
-    [SEQ.bucketDown, KEY.down, 'bdown', 0, STEP, false, 5, bucket],
-    [SEQ.right, KEY.right, 'right', STEP, 0, false, 3, 150],
-    [SEQ.left, KEY.left, 'right', -STEP, 0, true, 7, 150],
-    [SEQ.up, KEY.up, 'up', 0, -STEP, false, 1, 150],
-    [SEQ.down, KEY.down, 'down', 0, STEP, false, 5, 150],
+  const moves: [number, number, string, number, number, boolean, number][] = [
+    [SEQ.right, KEY.right, 'right', STEP, 0, false, 3],
+    [SEQ.left, KEY.left, 'right', -STEP, 0, true, 7],
+    [SEQ.up, KEY.up, 'up', 0, -STEP, false, 1],
+    [SEQ.down, KEY.down, 'down', 0, STEP, false, 5],
+    [SEQ.rightD, KEY.d, 'right', STEP, 0, false, 0],
+    [SEQ.leftA, KEY.a, 'right', -STEP, 0, true, 0],
+    [SEQ.upW, KEY.w, 'up', 0, -STEP, false, 0],
+    [SEQ.downS, KEY.s, 'down', 0, STEP, false, 0],
   ];
-  for (const [n, key, prefix, dx, dy, mirror, joy, bloc] of moves)
-    set(S[n], walk(prefix, dx, dy, mirror), { key, bloc, jstkMov: joy, jstkBut: 4, sound: SND.none });
+  for (const [n, key, prefix, dx, dy, mirror, joy] of moves) set(S[n], walk(prefix, dx, dy, mirror), { key, jstkMov: joy, jstkBut: 4, sound: SND.none });
 
   set(S[SEQ.fling], [f('fling_back', 3), birth(MON.clod), f('fling_fwd', 3), f('down_stand', 1)], {
     key: KEY.space,
@@ -110,7 +112,7 @@ export function buildCharacter(): Character {
 
   // Tricks: Teddy knows lots of them.
   const trick = { ground: 1, norepeat: 1, jstkMov: 0, jstkBut: 4 };
-  set(S[SEQ.sit], [f('sit0', 12), f('sit1', 14), f('sit0', 10), f('down_stand', 1)], { ...trick, key: KEY.s, sound: SND.trick });
+  set(S[SEQ.sit], [f('sit0', 12), f('sit1', 14), f('sit0', 10), f('down_stand', 1)], { ...trick, key: KEY.two, sound: SND.trick });
   // Spinning round (down, left, up, right, twice) kicks up a whirl of sand.
   const L = (pic: string) => f(pic, 2, 0, 0, true);
   set(
@@ -127,17 +129,16 @@ export function buildCharacter(): Character {
       f('right_stand', 2),
       f('down_stand', 2),
     ],
-    { ...trick, key: KEY.t, sound: SND.whirl },
+    { ...trick, key: KEY.three, sound: SND.whirl },
   );
   set(S[SEQ.roll], [f('right_stand', 2), f('roll1', 3), f('belly', 8), f('roll3', 3), f('right_stand', 2), f('down_stand', 1)], {
     ...trick,
-    key: KEY.r,
+    key: KEY.five,
     sound: SND.trick,
   });
-  set(S[SEQ.jump], [f('down_a', 1), f('jump3', 2), f('jump6', 4), f('jump3', 2), f('down_stand', 1)], { ...trick, key: KEY.j, sound: SND.bark });
   set(S[SEQ.playDead], [f('roll1', 3), f('dead', 30), f('dead', 12), f('roll3', 3), f('right_stand', 2), f('down_stand', 1)], {
     ...trick,
-    key: KEY.d,
+    key: KEY.four,
     sound: SND.die,
   });
 
