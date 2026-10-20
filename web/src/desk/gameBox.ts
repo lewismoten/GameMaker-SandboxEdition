@@ -570,12 +570,24 @@ export interface BoxViewerActions {
   insertLabel?: string;
   /** Things that came in the box, shown beside it. */
   extras?: HTMLElement;
+  /** The previous (-1) or next (1) box on the shelf, to look at without closing the viewer. */
+  step?: (dir: 1 | -1) => Promise<BoxViewerPage | undefined>;
 }
 
-/** Brings a box to the middle of the screen to turn, zoom and read. */
+export interface BoxViewerPage {
+  entry: Pick<CatalogEntry, 'title'>;
+  faces: BoxFaces;
+  actions: BoxViewerActions;
+}
+
+/**
+ * Brings a box to the middle of the screen to turn, zoom and read. With actions.step,
+ * ◀ ▶ (or PageUp/PageDown, [ and ]) go along the shelf to the other boxes.
+ */
 export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFaces, actions: BoxViewerActions): Promise<void> {
   return new Promise((resolve) => {
-    const model = boxModel(faces);
+    let model = boxModel(faces);
+    let current: BoxViewerPage = { entry, faces, actions };
     const stage = h('div', { class: 'box-stage' }, model);
     let rx = -12;
     let ry = 32;
@@ -584,6 +596,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
     let py = 0;
     let auto = true;
     let raf = 0;
+    let stepping = false;
     const apply = () => {
       model.style.transform = `translate(${px}px, ${py}px) scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
     };
@@ -600,9 +613,31 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       overlay.remove();
       resolve();
     };
+    /** Puts the shelf's next or previous box in place of this one. */
+    const step = async (dir: 1 | -1) => {
+      if (stepping || !current.actions.step) return;
+      stepping = true;
+      const page = await current.actions.step(dir).catch(() => undefined);
+      stepping = false;
+      if (!page || !overlay.isConnected) return;
+      current = page;
+      const next = boxModel(page.faces);
+      next.classList.add(dir > 0 ? 'from-right' : 'from-left');
+      model.replaceWith(next);
+      model = next;
+      rx = -12;
+      ry = 32;
+      zoom = 1;
+      px = py = 0;
+      auto = true;
+      apply();
+      fill();
+    };
     const onKey = (e: KeyboardEvent) => {
       e.stopImmediatePropagation();
       if (e.key === 'Escape') close();
+      else if (e.key === 'PageDown' || e.key === ']') void step(1);
+      else if (e.key === 'PageUp' || e.key === '[') void step(-1);
       else if (e.key === 'ArrowLeft') ry -= 15;
       else if (e.key === 'ArrowRight') ry += 15;
       else if (e.key === 'ArrowUp') rx += 10;
@@ -610,9 +645,10 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       else if (e.key === '+' || e.key === '=') zoom = Math.min(4, zoom * 1.2);
       else if (e.key === '-') zoom = Math.max(0.4, zoom / 1.2);
       else return;
+      e.preventDefault();
+      if (['PageDown', 'PageUp', '[', ']', 'Escape'].includes(e.key)) return;
       auto = false;
       apply();
-      e.preventDefault();
     };
     window.addEventListener('keydown', onKey, true);
 
@@ -672,23 +708,42 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       apply();
     });
 
-    const overlay = h(
-      'div',
-      { class: 'box-viewer', role: 'dialog', 'aria-label': `${entry.title} box` },
-      stage,
-      actions.extras ?? null,
+    const arrow = (dir: 1 | -1) =>
       h(
-        'div',
-        { class: 'box-viewer-bar' },
-        h('strong', null, entry.title),
-        h('span', { class: 'hint' }, 'Drag to turn · scroll to zoom · shift-drag to pan · double-click to reset'),
-        actions.insert
-          ? h('button', { class: 'primary', onclick: () => (close(), actions.insert!()) }, actions.insertLabel ?? 'Put the disk in drive A:')
-          : null,
-        actions.manual ? h('button', { onclick: () => (close(), actions.manual!()) }, 'Read the manual') : null,
-        h('button', { onclick: close }, 'Close (Esc)'),
-      ),
-    );
+        'button',
+        {
+          class: `box-nav ${dir > 0 ? 'next' : 'prev'}`,
+          title: dir > 0 ? 'Next box on the shelf (PageDown or ])' : 'Previous box on the shelf (PageUp or [)',
+          'aria-label': dir > 0 ? 'Next box' : 'Previous box',
+          onclick: () => void step(dir),
+        },
+        dir > 0 ? '▶' : '◀',
+      );
+    const extrasSlot = h('div', { class: 'box-extras-slot' });
+    const bar = h('div', { class: 'box-viewer-bar' });
+    const overlay = h('div', { class: 'box-viewer', role: 'dialog' }, stage, extrasSlot, bar);
+    /** The title, buttons and extras for the box being shown. */
+    const fill = () => {
+      const { entry: e, actions: a } = current;
+      overlay.setAttribute('aria-label', `${e.title} box`);
+      extrasSlot.replaceChildren(...(a.extras ? [a.extras] : []));
+      bar.replaceChildren(
+        h('strong', null, e.title),
+        h(
+          'span',
+          { class: 'hint' },
+          `Drag to turn · scroll to zoom · shift-drag to pan · double-click to reset${a.step ? ' · PageUp/PageDown for other boxes' : ''}`,
+        ),
+        ...[
+          a.insert ? h('button', { class: 'primary', onclick: () => (close(), a.insert!()) }, a.insertLabel ?? 'Put the disk in drive A:') : null,
+          a.manual ? h('button', { onclick: () => (close(), a.manual!()) }, 'Read the manual') : null,
+          h('button', { onclick: close }, 'Close (Esc)'),
+        ].filter((x): x is HTMLButtonElement => !!x),
+      );
+      overlay.querySelectorAll('.box-nav').forEach((n) => n.remove());
+      if (a.step) overlay.append(arrow(-1), arrow(1));
+    };
+    fill();
     document.body.append(overlay);
     apply();
     raf = requestAnimationFrame(spin);
