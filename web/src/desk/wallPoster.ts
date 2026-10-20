@@ -76,7 +76,7 @@ async function drawPoster(entry: CatalogEntry, poster: Poster): Promise<HTMLCanv
   const picH = Math.round(ph * scale);
   const picX = (W - picW) / 2;
   const head = 58;
-  const H = Math.max(Math.round(W * 1.42), head + picH + 90);
+  const H = Math.max(Math.round(W * 1.25), head + picH + 90);
   const c = document.createElement('canvas');
   c.width = W;
   c.height = H;
