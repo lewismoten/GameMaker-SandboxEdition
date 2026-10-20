@@ -58,6 +58,26 @@ function wreckPic(p: Pal, k: number): Pixels {
   return s;
 }
 
+/** A turret's armored collar (its barrel, drawn on the mount block, shows through the middle). */
+function ringPic(p: Pal, hp: number): Pixels {
+  const s = pic();
+  const ramp = hp === 3 ? 'steel' : hp === 2 ? 'gold' : 'red';
+  const r = p.r(ramp);
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      const d = Math.hypot(x - 9.5, y - 9.5);
+      if (d > 9.3 || d < 5.2) continue;
+      const lit = (9.5 - x + (9.5 - y)) / 19;
+      s.set(x, y, r[Math.max(0, Math.min(r.length - 1, Math.round((r.length - 1) * (0.45 + lit * 0.5) - (d > 8.4 ? 1 : 0))))]);
+    }
+  for (let i = 0; i < 8; i++) {
+    const a = (i * Math.PI) / 4 + Math.PI / 8;
+    s.set(9.5 + Math.cos(a) * 7.2, 9.5 + Math.sin(a) * 7.2, p.c('ink', 0));
+  }
+  if (hp < 3) for (let i = 0; i < 4 - hp; i++) s.rect(4 + i * 5, 3 + ((i * 7) % 12), 2, 1, p.c('ink', 0));
+  return s;
+}
+
 function sparkPic(p: Pal): Pixels {
   const s = pic();
   s.rect(9, 6, 2, 8, p.c('cyan', 5)).rect(6, 9, 8, 2, p.c('cyan', 5));
@@ -128,6 +148,10 @@ export function addCommon(b: Bestiary, p: Pal): void {
     ],
   });
   // the dying flash of a turret, then its wreck (which smothers the bullets its mount keeps making)
+  for (let hp = 3; hp >= 1; hp--) mb.add(`ring${hp}`, ringPic(p, hp), { chHitPt: HURT.enemy });
+  b.add('ring3', { power: POWER.enemy, becomes: 'ring2', score: 10, pics: [['ring3', 50]] });
+  b.add('ring2', { power: POWER.enemy, becomes: 'ring1', score: 10, pics: [['ring2', 50]] });
+  b.add('ring1', { power: POWER.enemy, becomes: 'turretBoom', score: 250, pics: [['ring1', 50]] });
   b.add('turretBoom', { power: POWER.boom, end: 9, becomes: 'wreck', pics: [0, 1, 2, 3].map((k) => [`big${k}`, 2]) });
   const bullet = {
     power: POWER.bullet,
