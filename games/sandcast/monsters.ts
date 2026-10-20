@@ -42,7 +42,7 @@ export function buildMonsters(): Monster[] {
   const set = newMonsterSet();
   const def = (n: number, s: Spec) => (set[n] = make(s));
 
-  // The knight's throws: they fly the way he last walked.
+  // Teddy's throws: they fly the way he last walked.
   def(MON.clod, {
     pics: [
       ['clod0', 2],
@@ -182,11 +182,12 @@ export function buildMonsters(): Monster[] {
   });
   def(MON.crabFlip, { pics: [['crabFlip', 50]], power: 150, end: 45 });
 
-  // The cat's patio.
-  def(MON.hairball, {
+  // Gwin's patio: slobbery tennis balls roll out of her mouth as she snores, and
+  // rope toys fly out of her toy box.
+  def(MON.slobber, {
     pics: [
-      ['hairball0', 4],
-      ['hairball1', 4],
+      ['slobber0', 4],
+      ['slobber1', 4],
     ],
     power: 30,
     towards: 1,
@@ -194,10 +195,10 @@ export function buildMonsters(): Monster[] {
     becomes: MON.puff,
     score: 30,
   });
-  def(MON.yarn, {
+  def(MON.rope, {
     pics: [
-      ['yarn0', 3],
-      ['yarn1', 3],
+      ['rope0', 3],
+      ['rope1', 3],
     ],
     power: 120,
     towards: 128,
@@ -248,6 +249,57 @@ export function buildMonsters(): Monster[] {
       [5, 0, 2, 0],
       [0, 0, 2, 4],
     ],
+  });
+
+  // Teddy's tennis ball: strong enough to flip anything, and Gwin can never resist one.
+  def(MON.ball, {
+    pics: [
+      ['ball0', 2],
+      ['ball1', 2],
+    ],
+    power: 200,
+    towards: 9,
+    end: 16,
+  });
+  // The spin's whirl of sand stays where Teddy spun, for a moment.
+  def(MON.whirl, {
+    pics: [
+      ['whirl0', 2],
+      ['whirl1', 2],
+    ],
+    power: 45,
+    end: 12,
+  });
+
+  // Gwin: too big to bowl over with sand or water, but a tennis ball... she has to have it.
+  // Then she trots off, ball in mouth, to bury it somewhere.
+  def(MON.gwinRoam, {
+    pics: [
+      ['gwin0', 6],
+      ['gwin1', 6],
+    ],
+    power: 180,
+    towards: 64,
+    becomes: MON.gwinHappy,
+    score: 100,
+  });
+  def(MON.gwinNap, {
+    pics: [
+      ['gwinNap0', 18],
+      ['gwinNap1', 18],
+    ],
+    power: 180,
+    thru: false,
+    becomes: MON.gwinHappy,
+    score: 100,
+  });
+  def(MON.gwinHappy, {
+    pics: [
+      ['gwinHappy0', 3],
+      ['gwinHappy1', 3],
+    ],
+    power: 250,
+    end: 54,
   });
 
   // Hose droplets fly from the nozzle and splash on whatever they hit.

@@ -1,8 +1,8 @@
 // Monster blocks (sandcast.mbl) and character blocks (sandcast.cbl).
 import { CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
-import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, PURPLE, RED, SAND, STEEL, TABBY, WATER, WOOD, YELLOW } from './palette';
+import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, RED, SAND, STEEL, TABBY, WATER, WOOD, YELLOW } from './palette';
 import { BlockSet } from './rules';
-import { CLEAR, Pixels, art, ball, outline, rng, shade, sprite } from './art';
+import { CLEAR, Pixels, art, ball, dither, outline, rng, shade, sprite } from './art';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 
@@ -125,54 +125,73 @@ function crab(frame: number, flipped = false): Pixels {
 mb.add('crab0', crab(0), { hp: -2 });
 mb.add('crab1', crab(1), { hp: -2 });
 mb.add('crabFlip', crab(0, true));
-function hairball(frame: number): Pixels {
+function slobberBall(frame: number): Pixels {
+  // One of Gwin's tennis balls, soggy with slobber, rolling (the seam turns).
   const p = sprite();
-  const r = rng(240 + frame);
-  for (let n = 0; n < 160; n++) {
-    const a = r() * Math.PI * 2;
-    const d = Math.sqrt(r()) * 6;
-    const x = 10 + Math.cos(a) * d;
-    const y = 11 + Math.sin(a) * d;
-    p.line(x, y, x + Math.cos(a + frame) * 2, y + Math.sin(a + 1) * 2, shade(TABBY, 1 + r() * 4 - (y - 11) / 6));
+  ball(p, 10, 10, 6.5, YELLOW, 3);
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (Math.hypot(x - 10, y - 10) <= 6.5 && dither(x, y, 0.3)) p.set(x, y, shade(GRASS, 5));
+  const a = frame * 0.8;
+  for (let t = -6; t <= 6; t += 0.5) {
+    const x = 10 + Math.cos(a) * t + Math.sin(a) * Math.cos(t / 2.2) * 3;
+    const y = 10 + Math.sin(a) * t - Math.cos(a) * Math.cos(t / 2.2) * 3;
+    if (Math.hypot(x - 10, y - 10) < 6) p.set(x, y, STEEL[7]);
   }
-  p.set(8, 9, 0).set(12, 9, 0).set(8, 8, STEEL[7]).set(12, 8, STEEL[7]);
-  return p;
+  // Drool.
+  p.line(6, 15, 5, 19 - frame, WATER[7]).set(5, 19 - frame, WATER[9]);
+  p.line(13, 16, 14, 18 + frame, WATER[7]);
+  p.set(8, 7, STEEL[7]).set(7, 8, WATER[9]);
+  return outline(p, GRASS[0]);
 }
-mb.add('hairball0', hairball(0), { hp: -5 });
-mb.add('hairball1', hairball(1), { hp: -5 });
-function yarn(frame: number): Pixels {
+mb.add('slobber0', slobberBall(0), { hp: -5 });
+mb.add('slobber1', slobberBall(1), { hp: -5 });
+function ropeToy(frame: number): Pixels {
+  // A knotted tug rope, red and white, tumbling end over end.
   const p = sprite();
-  ball(p, 10, 10, 7, PURPLE, 3);
-  for (let k = 0; k < 5; k++) {
-    const a = k * 0.7 + frame * 0.35;
-    for (let t = -6; t <= 6; t++) {
-      const x = 10 + Math.cos(a) * t;
-      const y = 10 + Math.sin(a) * t + Math.cos(t / 2) * 1.5;
-      if (Math.hypot(x - 10, y - 10) < 6.5) p.set(x, y, PURPLE[k % 2 ? 1 : 4]);
-    }
+  const a = frame ? Math.PI / 4 : -Math.PI / 4;
+  for (let t = -6; t <= 6; t += 0.25) {
+    const x = 10 + Math.cos(a) * t;
+    const y = 10 + Math.sin(a) * t;
+    const stripe = Math.floor((t + 6) * 1.2) % 2 === 0;
+    p.disc(x, y, 1.6, stripe ? RED[4] : STEEL[7]);
   }
-  p.line(16, 14, 19, 18 - frame * 2, PURPLE[2]);
-  return p;
+  for (const e of [-1, 1]) {
+    const x = 10 + Math.cos(a) * 7 * e;
+    const y = 10 + Math.sin(a) * 7 * e;
+    ball(p, x, y, 3, RED, 3);
+    p.set(x + e * 2, y + 2, STEEL[7]).set(x - 2, y + e * 2, STEEL[6]);
+  }
+  return outline(p, RED[0]);
 }
-mb.add('yarn0', yarn(0), { hp: -2 });
-mb.add('yarn1', yarn(1), { hp: -2 });
+mb.add('rope0', ropeToy(0), { hp: -2 });
+mb.add('rope1', ropeToy(1), { hp: -2 });
 function paw(frame: number, angry: boolean, left: boolean): Pixels {
   const p = sprite();
-  const ramp = angry ? RED : TABBY;
+  // Gwin's big brown paws. Splashed once, she starts scrabbling in her sleep (muddy, claws out).
+  const ramp = angry ? OCHRE : WOOD;
+  const r = rng(260 + frame + (angry ? 2 : 0));
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
       const dx = (x - 10) / 9;
       const dy = (y - 11 - frame) / 8;
       if (dx * dx + dy * dy <= 1 || (y < 11 + frame && Math.abs(x - 10) < 8)) {
-        const stripe = !angry && Math.sin(y / 2.4) > 0.6 && y < 9;
-        p.set(x, y, shade(ramp, (stripe ? 2.5 : 4.5) - dy * 1.2 + (angry ? 0 : 0.5)));
+        const fur = Math.sin(x * 1.7 + y * 0.6) > 0.8 && y < 9;
+        p.set(x, y, shade(ramp, (fur ? 2.5 : 3.8) - dy * 1.2 + (angry ? 0 : 0.5)));
+        if (angry && r() < 0.12) p.set(x, y, OCHRE[1]);
       }
     }
   for (const x of [5, 10, 15]) {
-    p.disc(x, 15 + frame, 2, angry ? RED[6] : PINK[3]);
-    if (angry) p.line(x, 17 + frame, x, 19, STEEL[7]);
+    p.disc(x, 15 + frame, 2, angry ? OCHRE[1] : WOOD[0]);
+    p.line(x, 17 + frame, x, 19, angry ? STEEL[7] : STEEL[3]);
   }
-  p.disc(10, 10 + frame, 2.6, angry ? RED[6] : PINK[2]);
+  p.disc(10, 10 + frame, 2.6, angry ? OCHRE[1] : WOOD[0]);
+  if (angry)
+    for (const [x, y] of [
+      [1, 4],
+      [18, 6],
+      [2, 12],
+      [17, 13],
+    ])
+      p.set(x, y, SAND[7]).set(x + 1, y - 1, SAND[5]);
   return left ? p : p.flipX();
 }
 mb.add('pawL0', paw(0, false, true), { hp: -3, solid: SOLID });
@@ -185,7 +204,7 @@ mb.add('pawRAngry0', paw(0, true, false), { hp: -4, solid: SOLID });
 mb.add('pawRAngry1', paw(1, true, false), { hp: -4, solid: SOLID });
 {
   // A soaked paw, dripping, pulled back.
-  const p = paw(0, false, true).map((_x, _y, c) => (c === CLEAR ? c : TABBY.includes(c) ? shade(TABBY, TABBY.indexOf(c) - 1.5) : c));
+  const p = paw(0, false, true).map((_x, _y, c) => (c === CLEAR ? c : WOOD.includes(c) ? shade(WOOD, WOOD.indexOf(c) - 1.5) : c));
   for (const [x, y] of [
     [4, 19],
     [9, 18],
@@ -196,7 +215,7 @@ mb.add('pawRAngry1', paw(1, true, false), { hp: -4, solid: SOLID });
   mb.add('pawWet', p);
 }
 function tail(frame: number): Pixels {
-  // A fluffy tabby tail swishing across the flagstones, darker at the tip.
+  // Gwin's tail, an otter tail as thick as a rope toy, wagging across the flagstones.
   const p = sprite();
   for (let i = 0; i <= 60; i++) {
     const t = i / 60;
@@ -208,10 +227,10 @@ function tail(frame: number): Pixels {
       for (let dx = -r; dx <= r; dx += 0.5) {
         if (dx * dx + dy * dy > r * r) continue;
         const lit = (-dx - dy) / (r * 2);
-        p.set(x + dx, y + dy, t > 0.85 ? shade(TABBY, 1 + lit * 2) : shade(TABBY, (stripe ? 2.6 : 4.4) + lit * 2));
+        p.set(x + dx, y + dy, shade(WOOD, (stripe ? 3.2 : 3.8) + lit * 2));
       }
   }
-  return outline(p, TABBY[0]);
+  return outline(p, WOOD[0]);
 }
 mb.add('tail0', tail(0), { hp: -2 });
 mb.add('tail1', tail(1), { hp: -2 });
@@ -242,122 +261,279 @@ for (let k = 0; k < 3; k++) {
   mb.add(`gremlin${k}`, p, { hp: -5 });
 }
 
-// ================================================================= the knight
-export const cb = new BlockSet(CHARBL, true);
-
-const K = {
-  k: STEEL[0],
-  S: STEEL[5],
-  s: STEEL[3],
-  w: STEEL[7],
-  d: STEEL[1],
-  r: RED[3],
-  R: RED[5],
-  b: WATER[3],
-  B: WATER[5],
-  Y: YELLOW[3],
-  n: WOOD[1],
-  c: RED[2],
-  C: RED[4],
-};
-
-const HEAD_DOWN = [
-  '         rR',
-  '        rRRr',
-  '       kkrRkk',
-  '      kSSSSSsk',
-  '     kSwSSSSssk',
-  '     kSSSSSSssk',
-  '     kkkkkkkkkk',
-  '     kSdSdSdSdk',
-  '     kSSSSSSssk',
-  '      kssssssk',
-];
-const BODY_DOWN = ['    kkbbbYYbbbkk', '   kSkbbbYYbbbkSk', '   kskYYYYYYYYksk', '   kskbbbYYbbbksk', '    kkbbbYYbbbkk', '     kBBBBBBBBk'];
-const LEGS = {
-  stand: ['      kddkkddk', '      kddk kddk', '      knnk knnk', '      kkkk kkkk'],
-  a: ['      kddkkddk', '      knnk kddk', '      kkkk knnk', '           kkkk'],
-  b: ['      kddkkddk', '      kddk knnk', '      knnk kkkk', '      kkkk'],
-};
-const HEAD_UP = [
-  '         rR',
-  '        rRRr',
-  '       krRRrk',
-  '      kSSrRSsk',
-  '     kSwSrRSssk',
-  '     kSSSrRSssk',
-  '     kSSSSSSssk',
-  '     kSSSSSSssk',
-  '     ksSSSSSsdk',
-  '      kssssssk',
-];
-const BODY_UP = ['    kkcCCCCCckk', '   kSkcCCCCCCckSk', '   kskcCCCCCCcksk', '   kskcCCCCCCcksk', '    kkcCCCCCCckk', '     kcccccccck'];
-const HEAD_RIGHT = [
-  '     Rr',
-  '    rRRr',
-  '     rrkkkk',
-  '     kSSSSSk',
-  '    kSwSSSSsk',
-  '    kSSSSSSsk',
-  '    kSSSSkkkk',
-  '    kSSSSdkdk',
-  '    kSSSSSSsk',
-  '     ksssssk',
-];
-const BODY_RIGHT = ['     kbbbbbbk', '    kbbkSSkbk', '    kbbkSSkbk', '    kbbbkkbbk', '     kbbbbbk', '     kBBBBBk'];
-const LEGS_RIGHT = {
-  stand: ['     kddkddk', '     kddkddk', '     knnknnk', '     kkkkkkk'],
-  a: ['     kddkddk', '    kddk  kdk', '    knnk  knnk', '    kkkk  kkkk'],
-  b: ['     kddkddk', '      kddkk', '      knnnk', '      kkkkk'],
-};
-
-function knight(head: string[], body: string[], legs: string[]): Pixels {
-  return art([...head, ...body, ...legs], K);
+// Teddy's tennis ball, tossed (F).
+function tennis(frame: number): Pixels {
+  const p = sprite();
+  ball(p, 10, 10, 4.5, YELLOW, 3);
+  for (let y = 5; y < 16; y++) for (let x = 5; x < 16; x++) if (Math.hypot(x - 10, y - 10) <= 4.5 && dither(x, y, 0.35)) p.set(x, y, GRASS[5]);
+  const a = frame * 1.6;
+  for (let t = -4; t <= 4; t += 0.5) {
+    const x = 10 + Math.cos(a) * t;
+    const y = 10 + Math.sin(a) * t + Math.cos(t / 1.6) * 1.4;
+    p.set(x, y, STEEL[7]);
+  }
+  p.set(8, 8, STEEL[7]);
+  // Motion streaks.
+  p.line(1, 9, 3, 9, STEEL[5]).line(2, 12, 4, 12, STEEL[4]);
+  return outline(p, GRASS[0]);
+}
+mb.add('ball0', tennis(0));
+mb.add('ball1', tennis(1));
+// The whirl of sand Teddy's spin kicks up.
+for (let k = 0; k < 2; k++) {
+  const p = sprite();
+  for (let i = 0; i < 70; i++) {
+    const t = i / 70;
+    const a = t * Math.PI * 4 + k * Math.PI;
+    const d = 2 + t * 7.5;
+    p.disc(10 + Math.cos(a) * d, 10 + Math.sin(a) * d * 0.8, 1.1, shade(SAND, 8 - t * 4));
+  }
+  mb.add(`whirl${k}`, p);
 }
 
-/** Puts a bucket in the knight's hand. */
+// ================================================================= Gwin
+// Teddy's big sister: a brown pit-lab mix, twice his size, with a white blaze, floppy ears,
+// a big happy head and a tongue that never stays in. She fills a whole block; Teddy doesn't.
+const G = {
+  k: WOOD[0],
+  B: WOOD[3],
+  b: WOOD[2],
+  L: WOOD[4],
+  l: WOOD[5],
+  W: STEEL[7],
+  w: STEEL[5],
+  e: STEEL[0],
+  E: STEEL[7],
+  n: STEEL[1],
+  t: PINK[2],
+  T: PINK[1],
+  c: RED[4],
+  y: YELLOW[3],
+};
+const GWIN_FACE = [
+  '     kkkkkkkkkk     ',
+  '   kkbBBLLLLBBbkk   ',
+  '  kbbBBLLlLLLBBbbk  ',
+  ' kbbkBBLLLLLLBBkbbk ',
+  ' kbbkBBEeBBEeBBkbbk ',
+  'kbbbkBBeeBBeeBBBkbbk',
+  'kbbk kBBBBWBBBBk kbk',
+  'kbk  kBBBWWWBBBk  kk',
+  ' k   kBBWnnnWBBk    ',
+  '      kBWnnnWBk     ',
+  '      kWWkTkWWk     ',
+  '      kcckttkcck    ',
+  '     kBccyttccBk    ',
+  '    kBBBWktkWBBBk   ',
+  '   kBBBBWWkWWBBBBk  ',
+  '   kBBBBWWWWWBBBBk  ',
+  '   kbBBBBWWWBBBBbk  ',
+];
+function gwin(legs: number, tongue: number): Pixels {
+  const rows = GWIN_FACE.slice();
+  if (!tongue) rows[11] = '      kcckTTkcck    ';
+  const feet = legs
+    ? ['   kBBk kBBk kBk    ', '   kWWk kWWk kWWk   ', '   kkk  kkkk  kkk   ']
+    : ['    kBk kBBk kBBk   ', '   kWWk kWWk kWWk   ', '   kkk  kkkk  kkk   '];
+  return art([...rows, ...feet], G);
+}
+mb.add('gwin0', gwin(0, 1), { hp: -3, solid: SOLID });
+mb.add('gwin1', gwin(1, 0), { hp: -3, solid: SOLID });
+// Asleep across a doorway: a long brown loaf, ears flopped, belly rising and falling.
+function gwinNap(breath: number): Pixels {
+  const p = sprite();
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      const dx = (x - 11) / 8.5;
+      const dy = (y - 12) / (5.5 + breath * 0.6);
+      if (dx * dx + dy * dy <= 1) p.set(x, y, shade(WOOD, 3.4 - dy * 1.2 + (dx < -0.6 ? -0.5 : 0)));
+    }
+  // Head resting on her paws at the left.
+  ball(p, 4.5, 12, 4.5, WOOD, 3);
+  p.rect(1, 15, 7, 2, WOOD[2]).rect(1, 16, 3, 2, STEEL[7]).rect(5, 16, 3, 2, STEEL[7]);
+  p.line(3, 9, 7, 9, WOOD[1]).rect(5, 8, 3, 6, WOOD[2]); // floppy ear
+  p.line(1, 12, 3, 12, WOOD[0]); // shut eye
+  p.set(0, 13, STEEL[1]).set(0, 14, STEEL[1]); // nose
+  p.rect(9, 14, 3, 2, STEEL[7]); // the white blaze, peeking
+  // Zzz.
+  const z = (x: number, y: number) =>
+    p
+      .line(x, y, x + 2, y, STEEL[7])
+      .line(x + 2, y, x, y + 2, STEEL[7])
+      .line(x, y + 2, x + 2, y + 2, STEEL[7]);
+  z(2 + breath, 1);
+  if (breath) z(7, 3);
+  return outline(p, WOOD[0]);
+}
+mb.add('gwinNap0', gwinNap(0), { hp: -1, solid: SOLID });
+mb.add('gwinNap1', gwinNap(1), { hp: -1, solid: SOLID });
+// With a ball in her mouth: the happiest dog in Pittsburgh, tail a blur, bothering nobody.
+function gwinHappy(wag: number): Pixels {
+  const rows = GWIN_FACE.slice();
+  rows[4] = ' kbbkBBkkBBkkBBkbbk ';
+  rows[10] = '      kWyyyyyWk     ';
+  rows[11] = '     kcyyGyyycck    ';
+  rows[12] = '     kByyyyyyyBk    ';
+  const p = art([...rows, '   kBBk kBBk kBk    ', '   kWWk kWWk kWWk   ', '   kkk  kkkk  kkk   '], { ...G, G: GRASS[5] });
+  // Wag lines.
+  const x = wag ? 17 : 16;
+  p.line(x, 13, x + 2, 11, STEEL[6]).line(x, 16, x + 2, 17, STEEL[6]);
+  return p;
+}
+mb.add('gwinHappy0', gwinHappy(0));
+mb.add('gwinHappy1', gwinHappy(1));
+
+// ================================================================= Teddy
+export const cb = new BlockSet(CHARBL, true);
+
+// A Pembroke Welsh Corgi: red-and-white, big ears, short legs, in a tin helmet with a red plume.
+const K = {
+  k: TABBY[0],
+  O: TABBY[4],
+  o: TABBY[2],
+  L: TABBY[5],
+  W: STEEL[7],
+  w: STEEL[5],
+  e: STEEL[0],
+  n: STEEL[0],
+  p: PINK[2],
+  t: PINK[3],
+  S: STEEL[5],
+  s: STEEL[3],
+  h: STEEL[7],
+  r: RED[3],
+  R: RED[5],
+  c: WATER[4],
+  y: YELLOW[3],
+};
+
+const FRONT = [
+  '         rR         ',
+  ' kk     rRRr     kk ',
+  ' kOk   kkRrkk   kOk ',
+  ' kOpk kShSSSsk kpOk ',
+  ' kOppkkSSSSSskkppOk ',
+  ' kOpppkkkkkkkkpppOk ',
+  '  kOOOOOOOOOOOOOOk  ',
+  '  kOOWeOOWWOOWeOOk  ',
+  '  kOOeeOOWWOOeeOOk  ',
+  '  kOOOOOWWWWOOOOOk  ',
+  '   kOOWWWnnWWWOOk   ',
+  '    kOWWkttkWWOk    ',
+  '    kccccyycccck    ',
+  '   kOWWWWWWWWWWOk   ',
+  '  kOOWWWWWWWWWWOOk  ',
+  '  kOOOWWWWWWWWOOOk  ',
+  '  koOOkWWWWWWkOOok  ',
+];
+const FRONT_LEGS = {
+  stand: ['    kWWk    kWWk    ', '    kWWk    kWWk    ', '    kkkk    kkkk    '],
+  a: ['    kWWk    kWWk    ', '    kkkk    kWWk    ', '            kkkk    '],
+  b: ['    kWWk    kWWk    ', '    kWWk    kkkk    ', '    kkkk            '],
+};
+const BACK = [
+  '         rR         ',
+  ' kk     rRRr     kk ',
+  ' kOk   kkRrkk   kOk ',
+  ' kOOk kSSRrSsk kOOk ',
+  ' kOOOkkSSRrSskkOOOk ',
+  ' kOOOOkkkkkkkkOOOOk ',
+  '  kOOOOOOOOOOOOOOk  ',
+  '  kOOLOOOOOOOOOOOk  ',
+  '  kOOOOOOOOOOOOOOk  ',
+  '   kOOOOOOOOOOOOk   ',
+  '    kcccccccccck    ',
+  '   kOOOOOOOOOOOOk   ',
+  '  kOOLOOOOOOOOOOOk  ',
+  '  kOOOOOOOOOOOOOOk  ',
+  '  kOOOOOOooOOOOOOk  ',
+  '  kOOWWWWOOWWWWOOk  ',
+  '  kOWWWWWkkWWWWWOk  ',
+];
+const BACK_LEGS = {
+  stand: ['    kOWk    kWOk    ', '    kWWk    kWWk    ', '    kkkk    kkkk    '],
+  a: ['    kOWk    kWOk    ', '    kkkk    kWWk    ', '            kkkk    '],
+  b: ['    kOWk    kWOk    ', '    kWWk    kkkk    ', '    kkkk            '],
+};
+const SIDE = [
+  '                    ',
+  '             rR     ',
+  '         kk rRRr    ',
+  '         kOkkkRkk   ',
+  '         kpOkShSsk  ',
+  '         kppkSSSsk  ',
+  '         kpOkkkkkkk ',
+  '        kOOOOOOeOOk ',
+  '        kOOOOOOOOWWk',
+  '        kOOOOWWWWWnk',
+  '  kkkkkkkOOOWWkkkk  ',
+  ' kOOOOOOOOOcWWWk    ',
+  ' kOLOOOOOOOcWWWk    ',
+  ' kOOOOOOOOOcWWWWk   ',
+  ' kWOOOOOOOOOWWWWk   ',
+  ' kWWOOOOOOOWWWWWk   ',
+  ' kWWWkkkkkkkWWWk    ',
+];
+const SIDE_LEGS = {
+  stand: ['  kWWk     kWWk     ', '  kWWk     kWWk     ', '  kkkk     kkkk     '],
+  a: [' kWWk       kWWk    ', 'kWWk         kWWk   ', 'kkk           kkk  '],
+  b: ['  kWWk    kWWk      ', '   kWWk   kWWk      ', '   kkkk   kkkk      '],
+};
+
+const corgi = (rows: string[], legs: string[]) => art([...rows, ...legs], K);
+const sitRows = (): string[] => [
+  '',
+  ...FRONT.slice(0, 13),
+  '   kOWWWWWWWWWWOk   ',
+  '  kOOWWWWWWWWWWOOk  ',
+  ' kOOOOWWWWWWWWOOOOk ',
+  ' kOOOkkWWkkWWkkOOOk ',
+  ' kOOOOkWWkkWWkOOOOk ',
+  '  kkkkkkkkkkkkkkkk  ',
+];
+
+/** A sand-colored bucket handle in Teddy's mouth, the pail hanging below. */
 function withBucket(p: Pixels, x: number, y: number): Pixels {
   const b = art([' kkkk', 'k    k', 'kkkkkk', 'kBWWWk', 'kBWWWk', ' kBWk', ' kkkk'], { k: WATER[0], B: WATER[3], W: WATER[5] });
   return p.blit(b, x, y, CLEAR);
 }
 
 const STEPS = ['stand', 'a', 'b'] as const;
-for (const st of STEPS) cb.add(`down_${st}`, knight(HEAD_DOWN, BODY_DOWN, LEGS[st]));
-for (const st of STEPS) cb.add(`up_${st}`, knight(HEAD_UP, BODY_UP, LEGS[st === 'a' ? 'b' : st === 'b' ? 'a' : 'stand']));
-for (const st of STEPS) cb.add(`right_${st}`, knight(HEAD_RIGHT, BODY_RIGHT, LEGS_RIGHT[st]));
-for (const st of STEPS) cb.add(`bdown_${st}`, withBucket(knight(HEAD_DOWN, BODY_DOWN, LEGS[st]), 14, 11 + (st === 'a' ? 1 : 0)));
-for (const st of STEPS)
-  cb.add(`bup_${st}`, withBucket(knight(HEAD_UP, BODY_UP, LEGS[st === 'a' ? 'b' : st === 'b' ? 'a' : 'stand']), 0, 11 + (st === 'b' ? 1 : 0)));
-for (const st of STEPS) cb.add(`bright_${st}`, withBucket(knight(HEAD_RIGHT, BODY_RIGHT, LEGS_RIGHT[st]), 11, 11));
-// Plume sways while idle.
+for (const st of STEPS) cb.add(`down_${st}`, corgi(FRONT, FRONT_LEGS[st]));
+for (const st of STEPS) cb.add(`up_${st}`, corgi(BACK, BACK_LEGS[st]));
+for (const st of STEPS) cb.add(`right_${st}`, corgi(SIDE, SIDE_LEGS[st]));
+for (const st of STEPS) cb.add(`bdown_${st}`, withBucket(corgi(FRONT, FRONT_LEGS[st]), 7, 12 + (st === 'a' ? 1 : 0)));
+for (const st of STEPS) cb.add(`bright_${st}`, withBucket(corgi(SIDE, SIDE_LEGS[st]), 14, 9 + (st === 'b' ? 1 : 0)));
+// Idle: an ear flick and a head tilt.
 {
-  const head = HEAD_DOWN.slice();
-  head[0] = '          rR';
-  head[1] = '         rRRr';
-  cb.add('idle_sway', knight(head, BODY_DOWN, LEGS.stand));
+  const rows = FRONT.slice();
+  rows[1] = '  kk    rRRr     kk ';
+  rows[2] = '  kOk  kkRrkk   kOk ';
+  rows[3] = '  kpOk kShSSSsk kpOk';
+  cb.add('idle_sway', corgi(rows, FRONT_LEGS.stand));
 }
-// Flinging sand: shovel back over the shoulder, then forward with a spray.
+// Flinging sand: the toy shovel in his teeth, back over his head, then forward with a spray.
 {
-  const p = knight(HEAD_DOWN, BODY_DOWN, LEGS.stand);
-  p.line(15, 11, 18, 2, WOOD[5]).line(16, 11, 19, 2, WOOD[3]);
-  p.rect(16, 0, 4, 3, RED[4]).set(16, 0, RED[6]);
+  const p = corgi(FRONT, FRONT_LEGS.stand);
+  p.line(10, 11, 16, 2, WOOD[5]).line(11, 11, 17, 2, WOOD[3]);
+  p.rect(15, 0, 4, 3, RED[4]).set(15, 0, RED[6]);
   cb.add('fling_back', p);
-  const q = knight(HEAD_DOWN, BODY_DOWN, LEGS.stand);
-  q.line(14, 12, 17, 16, WOOD[5]).line(14, 13, 17, 17, WOOD[3]);
-  q.rect(16, 16, 4, 4, RED[4]).set(16, 16, RED[6]);
+  const q = corgi(FRONT, FRONT_LEGS.stand);
+  q.line(10, 11, 15, 17, WOOD[5]).line(11, 11, 16, 17, WOOD[3]);
+  q.rect(14, 16, 4, 4, RED[4]).set(14, 16, RED[6]);
   for (const [x, y] of [
     [18, 13],
     [19, 15],
     [17, 11],
+    [19, 18],
   ])
     q.set(x, y, SAND[7]);
   cb.add('fling_fwd', q);
 }
-// Throwing water: bucket raised, then tipped.
+// Throwing water: bucket swung up by the handle, then tipped out.
 {
-  const p = withBucket(knight(HEAD_DOWN, BODY_DOWN, LEGS.stand), 14, 4);
-  cb.add('splash_up', p);
-  const q = withBucket(knight(HEAD_DOWN, BODY_DOWN, LEGS.stand), 14, 9);
+  cb.add('splash_up', withBucket(corgi(FRONT, FRONT_LEGS.stand), 12, 5));
+  const q = withBucket(corgi(FRONT, FRONT_LEGS.stand), 13, 10);
   for (const [x, y] of [
     [19, 9],
     [18, 7],
@@ -367,34 +543,91 @@ for (const st of STEPS) cb.add(`bright_${st}`, withBucket(knight(HEAD_RIGHT, BOD
     q.set(x, y, WATER[7]);
   cb.add('splash_out', q);
 }
+// Tossing a tennis ball: a ball in his mouth, then a flick of the head.
+{
+  const p = corgi(FRONT, FRONT_LEGS.stand);
+  ball(p, 10, 12, 2.6, YELLOW, 3);
+  p.set(9, 11, STEEL[7]);
+  cb.add('toss0', p);
+  const rows = FRONT.slice();
+  rows[11] = '    kOWWkppkWWOk    ';
+  const q = corgi(rows, FRONT_LEGS.stand);
+  ball(q, 16, 3, 2.4, YELLOW, 3);
+  q.line(13, 7, 15, 5, STEEL[6]);
+  cb.add('toss1', q);
+}
+// Sit: haunches down, front paws together, a proud chest; then a paw up to shake.
+cb.add('sit0', art(sitRows(), K));
+{
+  const rows = sitRows();
+  rows[14] = '   kOWWWWWWWWWWOkk  ';
+  rows[15] = '  kOOWWWWWWWWWkWWk  ';
+  rows[16] = ' kOOOOWWWWWWWkWWkOk ';
+  rows[17] = ' kOOOkkWWkk  kkkOOk ';
+  cb.add('sit1', art(rows, K));
+}
+// Jump: up in the air, shadow left behind on the sand.
+for (const h of [3, 6]) {
+  const p = corgi(FRONT, FRONT_LEGS.a);
+  const q = sprite();
+  q.blit(p.crop(0, h, 20, 20 - h), 0, 0);
+  for (let x = 6; x < 14; x++) if (dither(x, 19, 0.5)) q.set(x, 19, SAND[3]);
+  cb.add(`jump${h}`, q);
+}
+// Rolling over: the side view turned a quarter at a time, belly up halfway round.
+/** Turns a 20x20 sprite clockwise by `q` quarter turns. */
+function turn(p: Pixels, q: number): Pixels {
+  const out = sprite();
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      let [sx, sy] = [x, y];
+      for (let k = 0; k < q; k++) [sx, sy] = [sy, 19 - sx];
+      out.set(x, y, p.get(sx, sy));
+    }
+  return out;
+}
+{
+  const side = corgi(SIDE, SIDE_LEGS.stand);
+  // Shifted so he rolls about the middle of his body, not the corner of the block.
+  cb.add('roll1', turn(side, 1));
+  cb.add('belly', turn(side, 2));
+  cb.add('roll3', turn(side, 3));
+  // Play dead: belly up, eyes X-ed out, tongue lolling.
+  const rows = SIDE.slice();
+  rows[6] = '         kpOkkkkkkk ';
+  rows[7] = '        kOOOOOkOkOk ';
+  rows[8] = '        kOOOOOOkOWWk';
+  rows[9] = '        kOOOOWkOkWnk';
+  rows[10] = '  kkkkkkkOOOWWkkttk ';
+  rows[11] = ' kOOOOOOOOOcWWWk tt ';
+  cb.add('dead', turn(corgi(rows, SIDE_LEGS.stand), 2));
+}
 // Hurt: a flash of white, then red.
 cb.add(
   'hurt_white',
-  knight(HEAD_DOWN, BODY_DOWN, LEGS.stand).map((_x, _y, c) => (c === CLEAR ? c : c === K.k ? STEEL[4] : STEEL[7])),
+  corgi(FRONT, FRONT_LEGS.stand).map((_x, _y, c) => (c === CLEAR ? c : c === K.k ? STEEL[4] : STEEL[7])),
 );
 cb.add(
   'hurt_red',
-  knight(HEAD_DOWN, BODY_DOWN, LEGS.stand).map((_x, _y, c) => (c === CLEAR ? c : c === K.k ? RED[0] : shade(RED, 3 + (STEEL.includes(c) ? 2 : 0)))),
+  corgi(FRONT, FRONT_LEGS.stand).map((_x, _y, c) => (c === CLEAR ? c : c === K.k ? RED[0] : shade(RED, 3 + (c === K.W ? 2 : 0)))),
 );
-// Dying: the toy knight crumbles into a little pile of sand, helmet on top.
-for (let k = 0; k < 4; k++) {
-  const p = sprite();
-  const pile = [0, 4, 6, 7][k];
-  for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 20; x++) {
-      const dx = (x - 10) / (6 + pile);
-      const dy = (y - 19) / (pile + 0.1);
-      if (pile && dx * dx + dy * dy <= 1) p.set(x, y, shade(SAND, 6 - dx * 1.5 - (y - 19 + pile) / (pile + 1)));
-    }
-  const knightPart = knight(HEAD_DOWN, BODY_DOWN, LEGS.stand);
-  const keep = 20 - pile * 2.5;
-  const drop = [0, 6, 10, 12][k];
-  for (let y = 0; y < keep; y++)
-    for (let x = 0; x < 20; x++) {
-      const c = knightPart.get(x, y);
-      if (c !== CLEAR && y + drop < 20 && (k === 0 || y < 10)) p.set(x, y + drop, c);
-    }
-  cb.add(`die${k}`, p);
+// Tuckered out: Teddy wobbles, flops, and lies there with stars going round his helmet.
+{
+  cb.add('die0', corgi(FRONT, FRONT_LEGS.stand).flipX());
+  cb.add('die1', turn(corgi(SIDE, SIDE_LEGS.stand), 1));
+  cb.add('die2', cb.pic('dead'));
+  const stars = sprite().blit(cb.pic('dead'), 0, 0);
+  for (const [x, y] of [
+    [4, 0],
+    [11, 2],
+    [17, 0],
+  ])
+    stars
+      .set(x, y, YELLOW[4])
+      .set(x - 1, y + 1, YELLOW[3])
+      .set(x + 1, y + 1, YELLOW[3])
+      .set(x, y + 2, YELLOW[4]);
+  cb.add('die3', stars);
 }
 
 export const MB = mb;

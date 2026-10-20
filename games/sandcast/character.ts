@@ -1,6 +1,6 @@
-// sandcast.chr: Sir Grit, a one-block toy knight. Walking with the bucket in his
+// sandcast.chr: Teddy, a one-block corgi knight. Walking with the bucket in his
 // inventory uses its own sequences (listed first, so they win the arrow keys), which is
-// how he is seen carrying it.
+// how he is seen carrying it in his mouth. The last five sequences are his tricks.
 import { CHARBL, MONBL } from '../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
 import { BG } from './bblocks';
@@ -14,7 +14,7 @@ function f(pic: string, pause: number, x = 0, y = 0, mirror = false): Frame {
   return { ...emptyFrame(), x, y, pic1: CHARBL, pic2: c(pic), pause, orient: mirror ? 0x40 : 0 };
 }
 
-/** A frame that throws a monster from the knight's own square. */
+/** A frame that throws a monster from Teddy's own square. */
 function birth(mon: number): Frame {
   return { ...emptyFrame(), x: 0, y: 20, pic1: mon, pic2: MONBL, pause: 1 };
 }
@@ -27,6 +27,12 @@ const KEY = {
   space: 0x3920,
   b: 0x3062,
   p: 0x1970,
+  f: 0x2166,
+  s: 0x1f73,
+  t: 0x1474,
+  r: 0x1372,
+  j: 0x246a,
+  d: 0x2064,
 };
 
 function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
@@ -48,7 +54,16 @@ export function buildCharacter(): Character {
   const bucket = BG.id('bucket');
   const shovel = BG.id('shovel');
 
-  set(S[SEQ.idle], [f('down_stand', 40), f('idle_sway', 6), f('down_stand', 28), f('idle_sway', 5), f('down_stand', 3), f('idle_sway', 5)]);
+  set(S[SEQ.idle], [
+    f('down_stand', 40),
+    f('idle_sway', 6),
+    f('down_stand', 28),
+    f('idle_sway', 5),
+    f('down_stand', 3),
+    f('idle_sway', 5),
+    f('down_stand', 50),
+    f('sit0', 30),
+  ]);
   set(S[SEQ.die], [f('hurt_white', 2), f('die0', 3), f('die1', 4), f('die2', 4), f('die3', 24)], { sound: SND.die });
   set(S[SEQ.hurt], [f('hurt_white', 2), f('hurt_red', 2), f('hurt_white', 2), f('hurt_red', 1)], { sound: SND.hurt });
   set(S[SEQ.pickup], [f('idle_sway', 2), f('down_stand', 2)], { key: KEY.p, sound: SND.pickup, ground: 1, norepeat: 1, jstkMov: 0, jstkBut: 0 });
@@ -57,7 +72,6 @@ export function buildCharacter(): Character {
   const moves: [number, number, string, number, number, boolean, number, number][] = [
     [SEQ.bucketRight, KEY.right, 'bright', STEP, 0, false, 3, bucket],
     [SEQ.bucketLeft, KEY.left, 'bright', -STEP, 0, true, 7, bucket],
-    [SEQ.bucketUp, KEY.up, 'bup', 0, -STEP, false, 1, bucket],
     [SEQ.bucketDown, KEY.down, 'bdown', 0, STEP, false, 5, bucket],
     [SEQ.right, KEY.right, 'right', STEP, 0, false, 3, 150],
     [SEQ.left, KEY.left, 'right', -STEP, 0, true, 7, 150],
@@ -85,11 +99,54 @@ export function buildCharacter(): Character {
     jstkBut: 2,
   });
 
+  set(S[SEQ.fetch], [f('toss0', 3), birth(MON.ball), f('toss1', 3), f('down_stand', 1)], {
+    key: KEY.f,
+    sound: SND.squeak,
+    ground: 1,
+    norepeat: 1,
+    jstkMov: 0,
+    jstkBut: 4,
+  });
+
+  // Tricks: Teddy knows lots of them.
+  const trick = { ground: 1, norepeat: 1, jstkMov: 0, jstkBut: 4 };
+  set(S[SEQ.sit], [f('sit0', 12), f('sit1', 14), f('sit0', 10), f('down_stand', 1)], { ...trick, key: KEY.s, sound: SND.trick });
+  // Spinning round (down, left, up, right, twice) kicks up a whirl of sand.
+  const L = (pic: string) => f(pic, 2, 0, 0, true);
+  set(
+    S[SEQ.spin],
+    [
+      birth(MON.whirl),
+      f('down_stand', 2),
+      L('right_stand'),
+      f('up_stand', 2),
+      f('right_stand', 2),
+      f('down_stand', 2),
+      L('right_stand'),
+      f('up_stand', 2),
+      f('right_stand', 2),
+      f('down_stand', 2),
+    ],
+    { ...trick, key: KEY.t, sound: SND.whirl },
+  );
+  set(S[SEQ.roll], [f('right_stand', 2), f('roll1', 3), f('belly', 8), f('roll3', 3), f('right_stand', 2), f('down_stand', 1)], {
+    ...trick,
+    key: KEY.r,
+    sound: SND.trick,
+  });
+  set(S[SEQ.jump], [f('down_a', 1), f('jump3', 2), f('jump6', 4), f('jump3', 2), f('down_stand', 1)], { ...trick, key: KEY.j, sound: SND.bark });
+  set(S[SEQ.playDead], [f('roll1', 3), f('dead', 30), f('dead', 12), f('roll3', 3), f('right_stand', 2), f('down_stand', 1)], {
+    ...trick,
+    key: KEY.d,
+    sound: SND.die,
+  });
+
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // hit points
   ch.meter[CTR.lives] = 3;
   ch.meter[CTR.sand] = 1; // counters read one more than they hold
   ch.meter[SEQ.splash] = 0; // no water until you find some
+  ch.meter[SEQ.fetch] = 0; // no tennis balls until you find some
   for (let i = 20; i < 30; i++) ch.meter[i] = 1;
   ch.cseq = 0;
   ch.cframe = 0;

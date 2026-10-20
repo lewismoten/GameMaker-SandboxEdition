@@ -1,8 +1,8 @@
 // The background blocks (sandcast.bbl): the sandbox, castles, moats, hose streams, tide,
-// tunnels, the cat's patio and the BBS room, with every block's rules.
+// tunnels, Gwin's patio and the BBS room, with every block's rules.
 import { FONT8X8 } from '../../web/src/gfx/font8x8';
 import { BACKBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
-import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, PURPLE, RED, SAND, STEEL, TABBY, WATER, WOOD, YELLOW } from './palette';
+import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, PURPLE, RED, SAND, STEEL, WATER, WOOD, YELLOW } from './palette';
 import { BlockSet, CTR, MON, SEQ } from './rules';
 import { Pixels, art, ball, bevel, dither, pebbles, ripples, rng, sandTexture, shade, shadowOnSand, tile } from './art';
 
@@ -93,7 +93,7 @@ bg.add('boardV', plank(true), { solid: SOLID });
   p.rect(1, 1, 18, 1, WOOD[6]).rect(1, 1, 1, 18, WOOD[5]);
   bg.add('post', p, { solid: SOLID });
 }
-// The toy chest where Sir Grit sleeps.
+// Teddy's toy chest (and, on top of it, his favorite napping spot).
 {
   const p = tile(WOOD[1]);
   bevel(p, 0, 0, 20, 20, WOOD, 4, 2);
@@ -150,39 +150,48 @@ bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, t
   bg.add('pile', onSand(71, p), { effect: CTR.sand, eamt: 1, score: 5, touch: 'sand0' });
 }
 {
-  // Scallop shell.
+  // A squeaky rubber bone: one of Teddy's toys, scattered by Gwin. Points.
   const p = sprite20();
-  for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 20; x++) {
-      const dx = x - 10;
-      const dy = 15 - y;
-      const r2 = Math.sqrt(dx * dx + dy * dy);
-      const a = Math.atan2(dy, dx);
-      if (dy >= 0 && r2 <= 9 && a > 0.15 && a < Math.PI - 0.15) {
-        const rib = Math.abs(Math.sin(a * 7)) > 0.35;
-        p.set(x, y, rib ? shade(PINK, 3 - r2 / 6) : PINK[1]);
-      }
-    }
-  p.rect(8, 15, 5, 3, PINK[2]).rect(9, 16, 3, 1, PINK[3]);
-  bg.add('shell', onSand(72, p), { score: 100, touch: 'sand0' });
+  const bone = (x0: number, y0: number, x1: number, y1: number) => {
+    for (let t = 0; t <= 1; t += 0.05) p.disc(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, 2.2, PINK[2]);
+    for (const [x, y] of [
+      [x0, y0],
+      [x1, y1],
+    ])
+      for (const d of [-1, 1]) ball(p, x + d * 2, y - d * 2, 2.6, PINK, 2);
+  };
+  bone(5, 14, 15, 5);
+  p.line(7, 11, 12, 6, PINK[3]).set(9, 9, STEEL[7]);
+  bg.add('shell', onSand(72, p), { score: 100, effect: CTR.toys, eamt: 1, touch: 'sand0' });
 }
 {
-  // Starfish.
+  // A flying disc, chewed at the edge. Lots of points.
   const p = sprite20();
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
-      const dx = x - 9.5;
-      const dy = y - 10;
-      const r2 = Math.sqrt(dx * dx + dy * dy);
-      const a = Math.atan2(dy, dx) + Math.PI / 2;
-      const arm = 3.2 + 5.8 * Math.max(0, Math.cos(a * 2.5)) ** 2;
-      if (r2 <= arm) p.set(x, y, shade(RED, 4 + (dx < 0 ? 1 : 0) - r2 / 8 + (dy < 0 ? 1 : 0)));
+      const dx = (x - 10) / 8.5;
+      const dy = (y - 10) / 6.5;
+      const d = dx * dx + dy * dy;
+      if (d <= 1) p.set(x, y, d > 0.7 ? RED[2] : d < 0.25 ? RED[5] : shade(RED, 4 - dy));
     }
-  for (let k = 0; k < 5; k++) {
-    const a = (k / 5) * Math.PI * 2 - Math.PI / 2;
-    for (let d = 2; d < 7; d += 2) p.set(9.5 + Math.cos(a) * d, 10 + Math.sin(a) * d, YELLOW[3]);
-  }
-  bg.add('starfish', onSand(73, p), { score: 500, touch: 'sand0' });
+  p.ring(10, 10, 4, RED[2]);
+  for (const [x, y] of [
+    [16, 13],
+    [17, 12],
+    [3, 7],
+  ])
+    p.set(x, y, 255);
+  p.set(7, 7, STEEL[7]).set(8, 6, STEEL[7]);
+  bg.add('starfish', onSand(73, p), { score: 500, effect: CTR.toys, eamt: 1, touch: 'sand0' });
+}
+{
+  // A tennis ball: P picks it up, F tosses it. Gwin will drop anything for one.
+  const p = sprite20();
+  ball(p, 10, 11, 5, YELLOW, 3);
+  for (let y = 5; y < 17; y++) for (let x = 4; x < 16; x++) if (Math.hypot(x - 10, y - 11) <= 5 && dither(x, y, 0.35)) p.set(x, y, GRASS[5]);
+  for (let t = -5; t <= 5; t += 0.5) p.set(10 + t, 11 + Math.cos(t / 1.7) * 2 - 1, STEEL[7]);
+  p.set(8, 8, STEEL[7]);
+  bg.add('tennis', onSand(70, p), { effect: SEQ.fetch, eamt: 1, score: 25, touch: 'sand0' });
 }
 {
   // Golden conch shell.
@@ -201,57 +210,51 @@ bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, t
   bg.add('goldShell', onSand(74, p), { effect: CTR.shells, eamt: 1, score: 250, touch: 'sand0' });
 }
 {
-  // Popsicle (health).
+  // A bone-shaped dog biscuit (health).
   const p = art(
     [
       '',
-      '      kkkkkkk',
-      '     kRRRRrrrk',
-      '     kRwRRRrrk',
-      '     kRwRRRrrk',
-      '     kRRRRRrrk',
-      '     kBBBBBbbk',
-      '     kBwBBBbbk',
-      '     kBBBBBbbk',
-      '     kWWWWWwwk',
-      '     kWWWWWwwk',
-      '     kWWWWWwwk',
-      '      kkkkkkk',
-      '        kyyk',
-      '        kyyk',
-      '        kyyk',
-      '        kyyk',
-      '         kk',
+      '',
+      '',
+      '',
+      '  kkk         kkk',
+      ' kBBBk       kBBBk',
+      ' kBwBBkkkkkkkBBbBk',
+      '  kBBBBBBBBBBBBBk',
+      '   kBBwBBdBBdBBk',
+      '   kBdBBBBBBBBBk',
+      '  kBBBBBBBBBBBBBk',
+      ' kBwBBkkkkkkkBBbBk',
+      ' kBBbk       kbBBk',
+      '  kkk         kkk',
     ],
-    { k: RED[0], R: RED[4], r: RED[3], w: STEEL[7], B: WATER[5], b: WATER[4], W: STEEL[7], y: WOOD[5] },
+    { k: WOOD[0], B: WOOD[5], b: WOOD[4], w: WOOD[6], d: WOOD[3] },
   );
-  p.map((x, y, c) => (c === STEEL[7] && y > 8 ? (x > 10 ? STEEL[5] : STEEL[7]) : c));
   bg.add('popsicle', onSand(75, p), { hp: 40, touch: 'sand0' });
 }
 {
-  // Juice box (extra life).
+  // A jar of peanut butter (extra life: no corgi can resist it).
   const p = art(
     [
       '',
-      '            yy',
-      '           y',
-      '      kkkkkykk',
-      '      kGGGGyGGk',
-      '      kGGGGGGgk',
-      '      kWWWWWWgk',
-      '      kWrrWWWgk',
-      '      kWrrrWWgk',
-      '      kWWrWWWgk',
-      '      kWWWWWWgk',
-      '      kGGGGGGgk',
-      '      kGWWGWWgk',
-      '      kGGGGGGgk',
-      '      kGGGGGGgk',
-      '      kgggggggk',
-      '      kkkkkkkkk',
+      '',
+      '     kkkkkkkkk',
+      '    kRRRRRRRRrk',
+      '    kRwRRRRRRrk',
+      '    kkkkkkkkkkk',
+      '    kPPPPPPPPpk',
+      '    kWWWWWWWWwk',
+      '    kWrrWrWrWwk',
+      '    kWrWWrWrWwk',
+      '    kWWWWWWWWwk',
+      '    kPPPPPPPPpk',
+      '    kPwPPPPPPpk',
+      '    kPPPPPPPPpk',
+      '     kkkkkkkkk',
     ],
-    { k: GRASS[0], G: GRASS[5], g: GRASS[3], W: STEEL[7], r: RED[4], y: STEEL[6] },
+    { k: OCHRE[0], R: RED[4], r: RED[2], w: STEEL[7], P: OCHRE[5], p: OCHRE[3], W: STEEL[7] },
   );
+  p.map((_x, y, c) => (c === RED[2] && y > 5 ? RED[4] : c));
   bg.add('juice', onSand(76, p), { effect: CTR.lives, eamt: 1, score: 200, touch: 'sand0' });
   juiceArt = p;
 }
@@ -843,7 +846,7 @@ for (const [name, frame] of [
   bg.add('ladder', p);
 }
 
-// ---------------------------------------------------------------- the patio, where the cat lives
+// ---------------------------------------------------------------- the patio, where Gwin naps
 function flagstone(seed: number): Pixels {
   const p = tile(GREY[1]);
   const r = rng(seed);
@@ -882,32 +885,30 @@ bg.add('patio2', flagstone(172));
   bg.add('brick', p, { solid: SOLID });
 }
 {
-  // Lady Whiskerbane's water bowl: fills your bucket three splashes' worth.
+  // Gwin's water bowl (her name in red on the side): fills your bucket three splashes' worth.
   const mk = (full: boolean) => {
     const p = sprite20();
     ball(p, 10, 10, 9, STEEL, 4);
     p.disc(10, 10, 6.5, full ? WATER[5] : STEEL[2]);
     if (full) p.disc(8, 8, 2, WATER[7]).set(7, 7, WATER[9]);
-    p.rect(5, 1, 10, 1, PINK[2]);
-    for (const [x, ch] of [
-      [6, 1],
-      [9, 2],
-      [12, 1],
-    ])
-      p.rect(x, 2, 2, 1, PINK[ch]);
+    p.rect(5, 1, 10, 2, RED[4]);
+    for (const x of [6, 9, 12]) p.rect(x, 1, 1, 2, STEEL[7]);
     return onSand(173, p).map((_x, _y, c) => (SAND.includes(c) ? GREY[3] : c));
   };
   bg.add('bowl', mk(true), { solid: SOLID, effect: SEQ.splash, eamt: 3, score: 20, touch: 'bowlDry' });
   bg.add('bowlDry', mk(false), { solid: SOLID });
 }
 {
-  // Scratching post: rolls yarn balls at you.
+  // Gwin's toy box, overflowing: every so often a rope toy comes flying out.
   const p = tile(GREY[3]);
   p.blit(flagstone(174), 0, 0);
-  bevel(p, 3, 3, 14, 14, WOOD, 3, 1);
-  for (let y = 4; y < 16; y += 2) p.rect(4, y, 12, 1, SAND[7]).rect(4, y + 1, 12, 1, SAND[4]);
-  p.rect(7, 7, 6, 6, PURPLE[3]).rect(8, 8, 2, 2, PURPLE[4]);
-  bg.add('post2', p, { solid: SOLID, birthMon: MON.yarn, birthTime: 160 });
+  bevel(p, 2, 6, 16, 12, WOOD, 3, 1);
+  p.rect(3, 10, 14, 1, WOOD[1]);
+  ball(p, 6, 6, 3, YELLOW, 3);
+  p.line(9, 7, 15, 3, RED[4]).line(10, 7, 16, 3, STEEL[7]);
+  ball(p, 15, 6, 2.5, PINK, 2);
+  p.rect(8, 13, 4, 2, YELLOW[3]);
+  bg.add('post2', p, { solid: SOLID, birthMon: MON.rope, birthTime: 160 });
 }
 {
   // The Crown of the Sandbox, in a puddle of light.
@@ -933,21 +934,22 @@ bg.add('patio2', flagstone(172));
   );
   bg.add('crown', p, { score: 5000 });
 }
-// Lady Whiskerbane herself, asleep across the top of her patio: 6 x 4 blocks of tabby.
-// Her eyes blink; her mouth coughs up hairballs.
+// Gwin herself, asleep across the top of the patio on Teddy's crown: 6 x 4 blocks of
+// brown pit-lab. Her eye opens now and then; slobbery tennis balls roll out of her mouth.
 const CAT_W = 6;
 const CAT_H = 4;
 function drawCat(eyes: 'open' | 'shut'): Pixels {
+  // (Named for the slot it fills: this is Gwin, a brown pit-lab mix, sprawled asleep.)
   const c = new Pixels(CAT_W * 20, CAT_H * 20, 255);
   const body = (x: number, y: number) => {
-    // Body: a long loaf to the right of the head.
-    const bx = (x - 74) / 44;
-    const by = (y - 44) / 30;
+    const bx = (x - 76) / 42;
+    const by = (y - 46) / 28;
     return bx * bx + by * by;
   };
   const head = (x: number, y: number) => {
-    const hx = (x - 30) / 28;
-    const hy = (y - 46) / 24;
+    // A broad pit-bull head with a lab's soft muzzle.
+    const hx = (x - 30) / 26;
+    const hy = (y - 44) / 22;
     return hx * hx + hy * hy;
   };
   for (let y = 0; y < c.h; y++)
@@ -955,62 +957,65 @@ function drawCat(eyes: 'open' | 'shut'): Pixels {
       const b = body(x, y);
       const h = head(x, y);
       if (b <= 1) {
-        const stripe = Math.sin(x / 4.5 + Math.sin(y / 9) * 1.5) > 0.55;
-        const lit = (44 - y) / 30 - b * 0.6;
-        c.set(x, y, shade(TABBY, (stripe ? 2.5 : 4.2) + lit * 2));
+        const lit = (46 - y) / 28 - b * 0.6;
+        const sheen = Math.sin(x / 7 + y / 11) > 0.85 ? 0.6 : 0;
+        c.set(x, y, shade(WOOD, 3.3 + lit * 1.6 + sheen));
       }
       if (h <= 1) {
-        const stripe = y < 36 && Math.abs(Math.sin((x - 30) / 3)) > 0.85 && Math.abs(x - 30) < 10;
-        const lit = (46 - y) / 24 - h * 0.5;
-        c.set(x, y, shade(TABBY, (stripe ? 2.5 : 4.4) + lit * 1.8));
+        const lit = (44 - y) / 22 - h * 0.5;
+        c.set(x, y, shade(WOOD, 3.5 + lit * 1.5));
       }
     }
-  // Ears.
+  // Floppy ears, folded down beside her face.
   for (const [ex, dir] of [
-    [12, -1],
-    [48, 1],
+    [9, -1],
+    [51, 1],
   ] as const)
-    for (let y = 0; y < 18; y++)
-      for (let x = -9; x <= 9; x++) {
-        const w = (y / 18) * 9;
-        if (Math.abs(x) <= w) c.set(ex + x + dir * (18 - y) * 0.25, 10 + y, Math.abs(x) < w - 3 && y > 5 ? PINK[2] : TABBY[Math.abs(x) > w - 1.5 ? 1 : 4]);
+    for (let y = 0; y < 22; y++)
+      for (let x = -7; x <= 7; x++) {
+        const w = 7 - Math.abs(y - 9) * 0.45;
+        if (Math.abs(x) <= w) c.set(ex + x + dir * y * 0.15, 26 + y, shade(WOOD, 1.6 + (Math.abs(x) < w - 2 ? 0.8 : 0) - y / 30));
       }
-  // Cream muzzle and chest.
-  for (let y = 46; y < 70; y++)
-    for (let x = 14; x < 48; x++) {
-      const dx = (x - 30) / 14;
-      const dy = (y - 58) / 11;
-      if (dx * dx + dy * dy < 1) c.set(x, y, shade(TABBY, 6.6 - dy * 0.6));
+  // White blaze: a stripe up her forehead and a big white chest under her chin.
+  for (let y = 26; y < 50; y++) for (let x = 27; x < 34; x++) if (Math.abs(x - 30.5) < 1.2 + (y - 26) / 14) c.set(x, y, y > 46 ? STEEL[6] : STEEL[7]);
+  for (let y = 58; y < 80; y++)
+    for (let x = 44; x < 80; x++) {
+      const dx = (x - 62) / 18;
+      const dy = (y - 70) / 10;
+      if (dx * dx + dy * dy < 1 && body(x, y) <= 1) c.set(x, y, shade(STEEL, 7 - dy));
     }
+  // Muzzle, nose, and a pink tongue hanging out in her sleep.
+  for (let y = 48; y < 66; y++)
+    for (let x = 18; x < 43; x++) {
+      const dx = (x - 30.5) / 12;
+      const dy = (y - 56) / 9;
+      if (dx * dx + dy * dy < 1) c.set(x, y, shade(WOOD, 4.6 - dy * 0.8));
+    }
+  c.rect(26, 50, 9, 5, STEEL[1]).rect(27, 50, 3, 1, STEEL[4]);
+  c.line(30, 55, 30, 59, WOOD[0]).line(30, 59, 24, 62, WOOD[0]).line(30, 59, 37, 62, WOOD[0]);
+  c.rect(30, 61, 5, 9, PINK[2]).rect(31, 62, 1, 6, PINK[1]).rect(30, 69, 5, 1, PINK[1]);
   // Eyes (both inside one block: x 20..40, y 40..60).
-  for (const ex of [24, 35]) {
+  for (const ex of [23, 38]) {
     if (eyes === 'open') {
-      c.disc(ex, 47, 4, GRASS[5]).disc(ex, 47, 3, GRASS[6]);
-      c.rect(ex - 0.5, 43, 1.5, 9, 0);
-      c.set(ex - 2, 45, STEEL[7]);
-      c.ring(ex, 47, 4.2, TABBY[0]);
+      c.disc(ex, 43, 3.4, STEEL[7]).disc(ex, 43, 2.4, WOOD[1]).disc(ex, 43, 1.4, 0);
+      c.set(ex - 1, 42, STEEL[7]);
     } else {
-      for (let x = -4; x <= 4; x++) c.set(ex + x, 47 + Math.round((x * x) / 8), TABBY[0]);
-      c.set(ex - 4, 46, TABBY[0]).set(ex + 4, 46, TABBY[0]);
+      for (let x = -3; x <= 3; x++) c.set(ex + x, 43 + Math.round((x * x) / 6), WOOD[0]);
     }
   }
-  // Nose, mouth, whiskers.
-  c.rect(27, 54, 5, 3, PINK[2]).rect(28, 57, 3, 1, PINK[1]);
-  c.line(29, 58, 26, 61, TABBY[0]).line(30, 58, 33, 61, TABBY[0]);
-  c.disc(29.5, 63, 2.5, RED[1]);
-  for (const [y, d] of [
-    [56, 0],
-    [59, 2],
-    [62, 4],
-  ]) {
-    c.line(20, y, 2, y - 3 + d, STEEL[7]);
-    c.line(40, y, 58, y - 3 + d, STEEL[7]);
+  // Red collar with a gold tag.
+  for (let x = 12; x < 50; x++) {
+    const y = 66 + Math.round(Math.sin((x - 12) / 12) * 2);
+    c.rect(x, y, 1, 3, RED[4]);
   }
-  // Tail curled along the bottom right.
-  for (let x = 70; x < 118; x++) {
-    const y = 72 - Math.sin((x - 70) / 16) * 6;
-    for (let k = -3; k <= 3; k++) c.set(x, y + k, shade(TABBY, (Math.sin(x / 3) > 0.4 ? 2 : 4) + (k < 0 ? 1 : 0)));
-  }
+  c.disc(44, 72, 2.5, YELLOW[3]).set(43, 71, YELLOW[4]);
+  // Hind leg tucked along the bottom right.
+  for (let y = 60; y < 78; y++)
+    for (let x = 88; x < 118; x++) {
+      const dx = (x - 103) / 15;
+      const dy = (y - 70) / 8;
+      if (dx * dx + dy * dy < 1) c.set(x, y, shade(WOOD, 3 - dy));
+    }
   return c;
 }
 {
@@ -1026,7 +1031,7 @@ function drawCat(eyes: 'open' | 'shut'): Pixels {
         solid: SOLID,
         hp: -3,
         ...(eyeBlock ? { next: 'catBlink', ntime: 70 } : {}),
-        ...(mouth ? { birthMon: MON.hairball, birthTime: 64 } : {}),
+        ...(mouth ? { birthMon: MON.slobber, birthTime: 64 } : {}),
       });
       if (eyeBlock)
         bg.add('catBlink', flagstone(180 + bx + by * CAT_W).blit(shut.crop(bx * 20, by * 20, 20, 20), 0, 0, 255), {

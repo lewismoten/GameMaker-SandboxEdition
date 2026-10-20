@@ -10,18 +10,31 @@ export const SEQ = {
   pickup: 3,
   drop: 4,
   // Walking while the bucket is in the inventory: listed first, so they win the key.
+  // (From behind you can't see the bucket in Teddy's mouth, so walking up needs no copy.)
   bucketRight: 5,
   bucketLeft: 6,
-  bucketUp: 7,
-  bucketDown: 8,
-  right: 9,
-  left: 10,
-  up: 11,
-  down: 12,
+  bucketDown: 7,
+  right: 8,
+  left: 9,
+  up: 10,
+  down: 11,
   /** Space: fling a clod of sand (needs the shovel). */
-  fling: 13,
+  fling: 12,
   /** B: throw a water splash (needs the bucket; its counter is the water supply). */
-  splash: 14,
+  splash: 13,
+  /** F: toss a tennis ball (its counter is the balls you carry). Gwin can't resist one. */
+  fetch: 14,
+  // Teddy's tricks.
+  /** S: sit. */
+  sit: 15,
+  /** T: spin, kicking up a little whirl of sand that bowls over ants and beetles. */
+  spin: 16,
+  /** R: roll over. */
+  roll: 17,
+  /** J: jump. */
+  jump: 18,
+  /** D: play dead. */
+  playDead: 19,
 } as const;
 
 /** Counters ("repetition meters"). 3 is money; 20-29 are free for the game. */
@@ -41,6 +54,8 @@ export const CTR = {
   acorns: 24,
   /** Tower flags planted in the Hosewater Moat (its own count, so Anthill Keep's leftovers don't open it). */
   flags2: 25,
+  /** Teddy's toys found (squeaky bones and flying discs), for the F2 status screen. */
+  toys: 26,
 } as const;
 
 /** Sound effects in the .SND set (0-8 are played by Game-Maker for counter changes). */
@@ -60,6 +75,10 @@ export const SND = {
   die: 12,
   pickup: 13,
   noCarrier: 14,
+  bark: 15,
+  squeak: 16,
+  trick: 17,
+  whirl: 18,
   none: 30,
 } as const;
 
@@ -77,8 +96,10 @@ export const MON = {
   crabH: 9,
   crabV: 10,
   crabFlip: 11,
-  hairball: 12,
-  yarn: 13,
+  /** Slobbery tennis balls Gwin drops in her sleep; they roll after you. */
+  slobber: 12,
+  /** Rope toys flung out of Gwin's toy box. */
+  rope: 13,
   pawL: 14,
   pawLAngry: 15,
   pawLRetreat: 16,
@@ -92,6 +113,16 @@ export const MON = {
   crabBox: 24,
   antRowV: 25,
   beetleBig: 26,
+  /** Teddy's tossed tennis ball. */
+  ball: 27,
+  /** The sand whirl from Teddy's spin. */
+  whirl: 28,
+  /** Gwin on the loose, galumphing about. */
+  gwinRoam: 29,
+  /** Gwin flopped across a doorway, fast asleep. */
+  gwinNap: 30,
+  /** Gwin with a ball in her mouth, too pleased to bother anyone (for a while). */
+  gwinHappy: 31,
   none: 64,
 } as const;
 

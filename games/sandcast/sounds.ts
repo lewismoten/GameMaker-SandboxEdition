@@ -117,7 +117,7 @@ export function buildSounds(): Uint8Array {
     SND.hurt,
     speaker((i) => (i < 26 ? (i % 2 ? 160 : 110) * (1 - i / 70) + (i % 4 < 2 ? 30 : 0) : 0)),
   );
-  // The knight crumbles: a long sliding wobble down to nothing.
+  // Teddy flops over, tuckered out: a long sliding wobble down to nothing.
   put(
     SND.die,
     speaker((i) => 900 * 0.94 ** i * (1 + 0.12 * Math.sin(i * 1.7))),
@@ -131,6 +131,35 @@ export function buildSounds(): Uint8Array {
   put(
     SND.noCarrier,
     speaker((i) => (i < 12 ? 2100 + (i % 2) * 300 : i < 24 ? 1200 + r() * 1800 : 980 * (1 - (i - 24) / 14))),
+  );
+  // A corgi bark: two short rough yaps ("ruff-ruff!").
+  put(
+    SND.bark,
+    speaker((i) =>
+      i < 9 ? 520 + Math.sin(i * 2.3) * 160 + r() * 260 - i * 18 : i < 14 ? 0 : i < 22 ? 600 + Math.sin(i * 2.1) * 150 + r() * 260 - (i - 14) * 22 : 0,
+    ),
+  );
+  // A tossed tennis ball: a squeaky toy's wheeze up and down.
+  put(
+    SND.squeak,
+    speaker((i) => (i < 14 ? 1700 + i * 90 + (i % 2) * 140 : i < 18 ? 0 : i < 30 ? 2900 - (i - 18) * 110 + (i % 2) * 140 : 0)),
+  );
+  // A trick: a happy little "ta-da!" (good boy!).
+  put(
+    SND.trick,
+    tune([
+      ['E5', 4],
+      ['G5', 4],
+      ['C6', 4],
+      [0, 2],
+      ['G5', 3],
+      ['C6', 14],
+    ]),
+  );
+  // The spin: sand swirling, a rising and falling whirr.
+  put(
+    SND.whirl,
+    speaker((i) => (i < 34 ? 500 + Math.sin(i / 3.5) * 380 + r() * 300 : 0)),
   );
   return serializeSoundSet(s);
 }
