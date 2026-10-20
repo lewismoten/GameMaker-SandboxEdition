@@ -48,7 +48,10 @@ export function installCrtWarp(tube: HTMLElement, aspect = 3 / 4): () => void {
   svg.innerHTML = `
     <filter id="${ID}" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
       <feImage href="${displacementMap(aspect)}" x="0" y="0" preserveAspectRatio="none" result="map"/>
-      <feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="G"/>
+      <feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="G" result="warped"/>
+      <!-- the displacement samples the nearest pixel, which leaves jagged steps along the
+           bowed lines; a slight blur smooths them, as the soft spot of a tube's beam did -->
+      <feGaussianBlur in="warped" stdDeviation="0.45"/>
     </filter>`;
   document.body.append(svg);
   const filter = svg.querySelector('filter')!;
