@@ -231,7 +231,7 @@
   pointer-events: none;
   border-radius: inherit;
   background:
-    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 4px),
     radial-gradient(120% 90% at 30% 15%, rgba(255, 255, 255, 0.09), transparent 45%);
   z-index: 3;
 }
