@@ -16,6 +16,7 @@ import { parseSoundSet } from '../formats/sound';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { isCmf, parseCmf } from '../formats/cmf';
 import { parseGame } from '../formats/game';
+import { parseBackdrop } from '../formats/graphicScripts';
 import type { GameFiles } from '../project/files';
 
 /** Everything a thumbnail may need: the file and its neighbours (for palettes and blocks). */
@@ -166,6 +167,22 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         const g = decodeGif(bytes);
         const [c] = canvas(g.width, g.height);
         paintIndexed(c, g.pixels, g.width, g.height, g.palette);
+        return c;
+      }
+      case 'bkd': {
+        // the 320x200 window of its GIF that the game shows
+        const b = parseBackdrop(bytes);
+        const gif = src.files.get(b.gif);
+        if (!gif || !isGif(gif)) return iconFor(kind, `${b.gif} is missing`);
+        const g = decodeGif(gif);
+        const w = Math.min(320, g.width);
+        const hgt = Math.min(200, g.height);
+        const x0 = Math.max(0, Math.min(b.x, g.width - w));
+        const y0 = Math.max(0, Math.min(b.y, g.height - hgt));
+        const px = new Uint8Array(w * hgt);
+        for (let y = 0; y < hgt; y++) px.set(g.pixels.subarray((y0 + y) * g.width + x0, (y0 + y) * g.width + x0 + w), y * w);
+        const [c] = canvas(w, hgt);
+        paintIndexed(c, px, w, hgt, g.palette);
         return c;
       }
       case 'fli': {
