@@ -23,6 +23,7 @@ import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './snowWindow';
 import { drawGmBox, gmBoxContents } from './gmBox';
 import { fitStage } from './stage';
+import { keyCardSpot } from './keyCard';
 import { deskCapture } from './capture';
 import { EDITION, FORK_NOTE } from '../edition';
 import { loadCatalog, type CatalogEntry } from '../project/files';
@@ -62,6 +63,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const powerBtn = h('button', { class: 'case-btn power', 'aria-label': 'Power', 'aria-pressed': 'false', onclick: () => void power() }, '⏻');
   const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) });
   const box = h('div', { class: 'box' });
+  // the playing game's key card, taped to the monitor
+  const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
   const spk = speakers();
   const lamp = deskLamp();
   const modem = deskModem(() => void command('C:\nTERMINAL'));
@@ -134,6 +137,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
           h('button', { class: 'enlarge', title: 'Fill the window with the screen', 'aria-label': 'Enlarge screen', onclick: () => setZoom('manual') }, '⤢'),
           h('span', { class: 'monitor-led' }),
+          keyCard.el,
         ),
         h('div', { class: 'monitor-stand' }),
         h(
@@ -195,6 +199,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     // vga stays in the monitor like the real thing.
     onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
+    onGame: (game) => keyCard.show(game),
     // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
     onDriveAccess: (drive) => {
       if (drive === 'A') floppy.busy(700);

@@ -1,0 +1,142 @@
+/* the game's key card, taped to the monitor's bezel while it plays (desk/keyCard.ts) */
+.key-card-spot {
+  position: absolute;
+  left: -112px;
+  bottom: 34px;
+  z-index: 3;
+  width: 180px;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform: rotate(-5deg);
+  transform-origin: 90% 10%;
+  cursor: zoom-in;
+  filter: drop-shadow(2px 5px 5px rgba(0, 0, 0, 0.45));
+  transition: transform 0.15s;
+}
+
+.key-card-spot[hidden] {
+  display: none;
+}
+
+.key-card-spot:hover,
+.key-card-spot:focus-visible {
+  transform: rotate(-3deg) scale(1.04);
+  outline: none;
+}
+
+.key-card-spot .pp-sheet {
+  box-shadow: none;
+}
+
+/* a strip of clear tape holding it to the bezel */
+.key-card-spot .tape {
+  position: absolute;
+  right: 4px;
+  top: -7px;
+  width: 46px;
+  height: 15px;
+  background: rgba(255, 255, 240, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  transform: rotate(14deg);
+}
+
+.kc-printed .pp-paper {
+  width: 100%;
+}
+
+.key-card-overlay .key-card-large {
+  width: min(92vw, 860px);
+}
+
+.key-card-overlay .hint {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+/* an index card written out by hand from the game's character files */
+.idx-card {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.idx-sheet {
+  aspect-ratio: 5 / 3;
+  padding: 3cqw 4cqw;
+  box-sizing: border-box;
+  overflow: hidden;
+  background:
+    linear-gradient(transparent 13.2cqw, #e57373 13.2cqw 13.6cqw, transparent 13.6cqw),
+    repeating-linear-gradient(transparent 0 calc(var(--line, 5.8cqw) - 0.2cqw), #a9c1e6 calc(var(--line, 5.8cqw) - 0.2cqw) var(--line, 5.8cqw)) 0 13.6cqw / 100%
+      100% no-repeat,
+    #fbf8ee;
+  color: #1c2a6b;
+  font:
+    calc(var(--line, 5.8cqw) * 0.62) / var(--line, 5.8cqw) 'Comic Sans MS',
+    'Marker Felt',
+    'Segoe Print',
+    cursive;
+  text-align: left;
+}
+
+.idx-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2cqw;
+  height: 10.6cqw;
+  line-height: 10.6cqw;
+}
+
+.idx-head b {
+  overflow: hidden;
+  font-size: 5.4cqw;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.idx-head span {
+  color: #b3121a;
+  font-size: 3.4cqw;
+  letter-spacing: 0.2em;
+}
+
+.idx-list.two {
+  columns: 2;
+  column-gap: 3cqw;
+}
+
+.idx-row {
+  display: flex;
+  gap: 1.6cqw;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.idx-row kbd,
+.idx-always kbd {
+  flex: none;
+  min-width: 5cqw;
+  padding: 0 0.8cqw;
+  border: 0.25cqw solid #1c2a6b;
+  border-radius: 0.8cqw;
+  font: inherit;
+  text-align: center;
+}
+
+.idx-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.idx-always {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2.4cqw;
+  margin-top: 1cqw;
+  color: #6b1c1c;
+  font-size: 2.6cqw;
+  line-height: 4.2cqw;
+}
