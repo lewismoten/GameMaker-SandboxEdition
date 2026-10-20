@@ -1,5 +1,5 @@
 {
-  "pitch": "Shovel Dowden Additions one dollar a scoop and get to LaVale Mall with $89 before the price of Game-Maker goes up.",
+  "pitch": "Shovel Dowden Additions in Fort Ashby, West Virginia, one dollar a scoop and get to LaVale Mall with $89 before the price of Game-Maker goes up.",
   "keys": {
     "Space": "Throw a snowball",
     "Up": "Walk up / dig in your heels on the sled",
@@ -218,13 +218,13 @@
     },
     {
       "kind": "newspaper",
-      "title": "The Mountain Courier",
+      "title": "The Mineral Courier",
       "note": "The morning paper",
-      "masthead": "The Mountain Courier",
+      "masthead": "The Mineral County Courier",
       "date": "Friday, December 11, 1992",
       "price": "35¢",
       "headline": "AREA SNOWBOUND",
-      "deck": "Foot and a half overnight; schools closed; plows out on every road",
+      "deck": "Foot and a half overnight in Mineral County; schools closed; plows out on every road",
       "photo": {
         "map": "gale.map",
         "x": 8,
@@ -234,9 +234,9 @@
         "caption": "Gale Street at dawn: one driveway done, the rest waiting."
       },
       "columns": [
-        "<p>DOWDEN ADDITIONS - A storm that came in overnight left a foot and a half of snow across the area, closing schools and sending state plow crews out on every road before dawn.</p><p>Residents of Gale Street, Dunn Drive and Leota Street woke to find cars buried to the mirrors.</p>",
+        "<p>FORT ASHBY - A storm that came in overnight left a foot and a half of snow across Mineral County, closing schools and sending state plow crews out on every road before dawn.</p><p>Residents of Gale Street, Dunn Drive and Leota Street woke to find cars buried to the mirrors.</p>",
         "<p>With no mailboxes in the neighborhood, carriers walk the mail to every front door. \"If the walk isn't shoveled, I can't get there,\" one carrier said. \"Somebody is going to make a fortune today.\"</p><p>Jamie Street is closed to traffic and open to sleds.</p>",
-        "<p>At LaVale Mall, stores plan to open on time. The Timeout arcade promises the heat will be on.</p><p>A local software shop reports one copy of a popular game-making kit left in the window at $89. The price goes up in January.</p>"
+        "<p>Over the line in LaVale, Maryland, stores plan to open on time. The Timeout arcade promises the heat will be on.</p><p>A local software shop reports one copy of a popular game-making kit left in the window at $89. The price goes up in January.</p>"
       ],
       "briefs": [
         ["SHOVELING FOR HIRE", "A sign has gone up at Gale and Dunn: one dollar a scoop, founder and operator on duty."],
