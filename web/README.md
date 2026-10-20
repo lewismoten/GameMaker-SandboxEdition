@@ -13,6 +13,12 @@ the original source in [`code/GM`](../code/GM). It can:
 - **Publish games as web apps**: "Export web app" builds a ZIP with the player, the
   game's files, a web app manifest and a service worker. Unzipped onto any static host,
   the game can be installed on the desktop or home screen and played offline.
+- **Publish games for DOS**: "Export for DOS" builds a ZIP with the game's files in
+  their original formats plus the CD's stand-alone player (`cd/gm/XFERPLAY.EXE`)
+  renamed after the game (`MYGAME.GAM` gets `MYGAME.EXE`), `SNDBLAST.DRV` and a
+  `CONFIG.BAT`, so anyone can unzip it and run the game in DOSBox. File names must be
+  DOS 8.3 names; the export lists any that aren't. Saved games made in the browser
+  are left out because they use a different format.
 
 Graphics use an HTML canvas (an emulated 320×200, 256-color VGA mode 13h) and sound
 uses the Web Audio API (an OPL2 FM synthesizer in an AudioWorklet for `.cmf` music,
@@ -30,7 +36,8 @@ npm run preview   # serve the build (needed to try "Export web app")
 ```
 
 `npm run dev` and `npm run build` first run `scripts/copy-games.mjs`, which copies
-`cd/gameware` into `public/games` and writes a catalog (`public/games/index.json`).
+`cd/gameware` into `public/games`, writes a catalog (`public/games/index.json`), and
+copies the DOS player and sound driver from `cd/gm` into `public/dos`.
 
 The GitHub Actions workflow in [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)
 tests and builds on every push and pull request, and deploys `web/dist` to GitHub Pages
