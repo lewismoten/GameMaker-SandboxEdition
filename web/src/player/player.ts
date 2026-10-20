@@ -48,7 +48,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       canvas.focus();
       await machine.audio.resume();
       try {
-        await runGame(machine, gamFile, { joystick: readGamepad, ...opts });
+        // Without an onQuit handler, "Quit" just shows the game's menu again.
+        await runGame(machine, gamFile, { joystick: readGamepad, onQuit: () => true, ...opts });
       } catch (e) {
         if (!(e instanceof GameAborted)) {
           console.error(e);
