@@ -121,3 +121,23 @@ describe('mp4 mux', () => {
     expect([v.getUint32(stts + 8), v.getUint32(stts + 12), v.getUint32(stts + 16), v.getUint32(stts + 20), v.getUint32(stts + 24)]).toEqual([2, 2, 5, 1, 10]);
   });
 });
+
+describe('720x400 text capture', () => {
+  it('draws 9-dot cells, repeating the eighth column only for line drawing characters', async () => {
+    const { textPixels, TEXT_W, TEXT_H } = await import('../src/media/screenCapture');
+    const { FONT_CP437 } = await import('../src/retro/cp437');
+    expect([TEXT_W, TEXT_H]).toEqual([720, 400]);
+    const chars = new Uint8Array(80 * 25).fill(0xdb); // full block everywhere
+    chars[0] = 0xc4; // ─ joins its neighbor
+    chars[1] = 0xdb; // █ is in C0-DF too
+    chars[2] = 0xb0; // ░ is not: a gap
+    const attrs = new Uint8Array(80 * 25).fill(0x0f);
+    const colors = Uint32Array.from({ length: 16 }, (_, i) => i);
+    const out = new Uint32Array(720 * 400);
+    textPixels(chars, attrs, colors, out);
+    const row = [...Array(8)].findIndex((_, r) => FONT_CP437[0xc4 * 8 + r] & 0x80);
+    expect(out[row * 2 * 720 + 8]).toBe(15);
+    expect(out[0 * 720 + 9 + 8]).toBe(15);
+    expect(out[0 * 720 + 18 + 8]).toBe(0);
+  });
+});
