@@ -161,14 +161,16 @@ export function buildCharBlocks(pal: Pal) {
   const sledBase = (lean: number, brake = false) => {
     const p = new Pixels(20, 20, T);
     const k = pal.c('ink', 0);
-    // runners and deck
-    p.rect(3 + lean, 6, 2, 13, k).rect(15 + lean, 6, 2, 13, k);
-    p.rect(4 + lean, 5, 12, 13, pal.c('coat', 2)).rect(4 + lean, 5, 12, 1, pal.c('coat', 3));
-    for (let y = 7; y < 17; y += 3) p.rect(5 + lean, y, 10, 1, pal.c('coat', 1));
-    p.rect(3 + lean, 18, 14, 2, pal.c('wood', 1)).rect(4 + lean, 19, 12, 1, pal.c('gold', 2));
-    // rider
-    const rider = kidPic([...HEAD_DOWN, ...BODY_FRONT.slice(0, 4)], key);
-    p.blit(rider, lean * 2 - 0, -1, T);
+    // rider (head and shoulders), then the sled in front of their knees
+    const rider = kidPic([...HEAD_DOWN.slice(1), ...BODY_FRONT.slice(0, 4)], key);
+    p.blit(rider, lean * 2, -1, T);
+    p.rect(2 + lean, 10, 2, 9, k).rect(16 + lean, 10, 2, 9, k);
+    p.rect(3 + lean, 10, 14, 8, k)
+      .rect(4 + lean, 10, 12, 7, pal.c('coat', 2))
+      .rect(4 + lean, 10, 12, 1, pal.c('coat', 3));
+    for (let y = 12; y < 17; y += 2) p.rect(5 + lean, y, 10, 1, pal.c('coat', 1));
+    p.rect(5 + lean, 9, 3, 2, pal.c('gold', 2)).rect(12 + lean, 9, 3, 2, pal.c('gold', 2));
+    p.rect(2 + lean, 18, 16, 1, pal.c('grey', 4)).rect(3 + lean, 19, 14, 1, k);
     if (brake) {
       p.rect(1, 13, 3, 4, pal.c('wood', 0)).rect(16, 13, 3, 4, pal.c('wood', 0));
       for (const [x, y] of [

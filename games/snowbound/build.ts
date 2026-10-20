@@ -211,3 +211,6 @@ disk.put('lost.cmf', lostSong());
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
 disk.write();
+console.log(
+  `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,
+);
