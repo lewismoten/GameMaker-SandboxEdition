@@ -72,6 +72,7 @@ export interface JoystickUse {
   label: string;
   action: SeqAction;
   levels: string[];
+  chrs: string[];
 }
 
 export interface Instructions {
@@ -325,8 +326,10 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
       if (action.joystick) {
         const k = `${action.joystick}|${action.title}`;
         const j = joy.get(k);
-        if (j) j.levels.push(...levelNames.filter((l) => !j.levels.includes(l)));
-        else joy.set(k, { label: action.joystick, action, levels: [...levelNames] });
+        if (j) {
+          j.levels.push(...levelNames.filter((l) => !j.levels.includes(l)));
+          if (!j.chrs.includes(name)) j.chrs.push(name);
+        } else joy.set(k, { label: action.joystick, action, levels: [...levelNames], chrs: [name] });
       }
     }
   }
