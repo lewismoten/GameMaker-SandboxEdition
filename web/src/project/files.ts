@@ -79,6 +79,12 @@ export interface CatalogEntry {
   exe?: string;
   /** A few lines from the game's story or instructions. */
   blurb?: string;
+  /** Credits, from the game's own screens or Wikipedia. */
+  author?: string;
+  company?: string;
+  year?: number;
+  /** Registration price as its author stated it ("Freeware" for free games). */
+  price?: string;
   gam: string | null;
   files: string[];
 }
@@ -110,4 +116,9 @@ export async function loadFileList(list: Iterable<File>): Promise<GameFiles> {
     files.set(f.name, new Uint8Array(await f.arrayBuffer()));
   }
   return files;
+}
+
+/** "Eric-Jon Waugh · A-J Games · 1993" */
+export function creditLine(g: Pick<CatalogEntry, 'author' | 'company' | 'year'>): string {
+  return [g.author, g.company, g.year].filter(Boolean).join(' · ');
 }
