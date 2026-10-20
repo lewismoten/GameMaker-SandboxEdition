@@ -6,6 +6,7 @@ import { Computer, type MonitorMode } from '../retro/computer';
 import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
 import { openDiskBox, floppyElement, type DiskAction } from './diskBox';
 import { openCatalog } from './catalog';
+import { renderShot } from './boxArt';
 import { loadCatalog } from '../project/files';
 import { Project } from '../editor/project';
 import type { SpeedSetting } from '../engine/scene';
@@ -41,6 +42,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const powerBtn = h('button', { class: 'case-btn', 'aria-label': 'Power', 'aria-pressed': 'false', onclick: () => void power() }, 'POWER');
   const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) }, 'TURBO');
   const box = h('div', { class: 'box' });
+  // Captions from the real box; pictures from the sample games' own maps.
+  const BOX_TILES: [string, string][] = [
+    ['pipemare', 'EXPLORE MAZES'],
+    ['nebula', 'DESIGN WORLDS'],
+    ['sample', '256 COLOR VGA'],
+    ['peach', 'ANIMATE MONSTERS'],
+    ['zark', 'IMPORT GRAPHICS'],
+    ['terrain', 'DRAW BLOCKS'],
+  ];
+  const boxTiles = h('div', { class: 'tiles', 'aria-hidden': 'true' }, ...BOX_TILES.map(([id, caption]) => h('div', { class: 'tile', dataset: { game: id } }, h('canvas'), h('span', null, caption))));
 
   const desk = h(
     'div',
@@ -90,9 +101,17 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         { class: 'desk-right' },
         h(
           'button',
-          { class: 'prop cd-case', onclick: () => void startGameMaker() },
-          h('div', { class: 'jewel' }, h('div', { class: 'disc' }), h('div', { class: 'art' }, h('strong', null, 'GAME-MAKER'), h('small', null, 'Version 3.0 · CD-ROM'), h('small', null, 'Recreational Software Designs'))),
-          h('span', { class: 'caption' }, 'Game-Maker CD — start the editor'),
+          { class: 'prop gm-box', onclick: () => void startGameMaker(), 'aria-label': 'Game-Maker 3.0 box: start Game-Maker' },
+          h(
+            'div',
+            { class: 'retail' },
+            h('div', { class: 'banner' }, h('em', null, 'COMPUTER-AIDED DESIGN TOOLS'), h('strong', null, 'GAME-MAKER')),
+            h('div', { class: 'tagline' }, 'CREATE YOUR OWN COMPUTER GAMES'),
+            boxTiles,
+            h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
+          ),
+          h('div', { class: 'cd-disc' }, 'GAME-MAKER'),
+          h('span', { class: 'caption' }, 'Game-Maker 3.0 — start the editor'),
         ),
         h(
           'button',
@@ -244,6 +263,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   setTurbo(turbo);
   void refreshDisks();
+  void loadCatalog()
+    .then((cat) =>
+      Promise.all(
+        [...boxTiles.querySelectorAll<HTMLElement>('.tile')].map((t) => {
+          const g = cat.find((c) => c.id === t.dataset.game);
+          return g ? renderShot(g, t.querySelector('canvas')!) : false;
+        }),
+      ),
+    )
+    .catch(() => undefined);
   return () => {
     window.removeEventListener('keydown', onKey);
     computer.screen.destroy();

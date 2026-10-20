@@ -476,58 +476,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-/* the Game-Maker CD jewel case */
-.cd-case {
-  --tilt: 3deg;
-  width: 150px;
-}
-
-.cd-case .jewel {
-  position: relative;
-  height: 140px;
-  border-radius: 4px;
-  overflow: hidden;
-  background: linear-gradient(140deg, #000080, #1d1d9a 55%, #000050);
-  box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.35),
-    inset 10px 0 0 rgba(255, 255, 255, 0.08),
-    0 12px 18px rgba(0, 0, 0, 0.5);
-}
-
-.cd-case .jewel .art {
-  position: absolute;
-  inset: 12px 10px 10px 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  color: #ffd400;
-  text-align: center;
-}
-
-.cd-case .jewel .art strong {
-  font: 700 17px/1 ui-monospace, 'Courier New', monospace;
-  letter-spacing: 0.12em;
-  text-shadow: 2px 2px 0 #b00000;
-}
-
-.cd-case .jewel .art small {
-  color: #fff;
-  font: 600 9px/1.3 system-ui, sans-serif;
-}
-
-.cd-case .jewel .disc {
-  position: absolute;
-  right: -40px;
-  bottom: -40px;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: conic-gradient(from 30deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
-  opacity: 0.55;
-}
-
 /* stapled shareware catalog */
 .catalog-prop {
   --tilt: -4deg;
@@ -770,4 +718,127 @@
 
 .drive.cdrom[data-disk]::before {
   color: #000080;
+}
+
+/* ---- the pink Game-Maker box (after the real 1994 retail box) ------------------------ */
+
+.gm-box {
+  --tilt: 2deg;
+  width: 170px;
+}
+
+.gm-box .retail {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #f0a090;
+  box-shadow:
+    inset -6px 0 0 rgba(0, 0, 0, 0.12),
+    0 14px 22px rgba(0, 0, 0, 0.55);
+  text-align: left;
+}
+
+.gm-box .banner {
+  position: relative;
+  z-index: 2;
+  padding: 6px 8px 2px;
+  background: #0b0b0b;
+}
+
+.gm-box .banner em {
+  display: block;
+  color: #fff;
+  font: italic 700 8px/1 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.gm-box .banner strong {
+  display: block;
+  margin-top: 2px;
+  color: #f2e600;
+  font: italic 900 21px/1 'Arial Black', Arial, sans-serif;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  transform: skewX(-8deg);
+  text-shadow: 2px 2px 0 #1f9a3a;
+}
+
+.gm-box .tagline {
+  position: relative;
+  z-index: 2;
+  padding: 2px 6px;
+  background: #d81e1e;
+  color: #fff;
+  font: italic 700 6.5px/1.4 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.gm-box .tiles {
+  position: absolute;
+  left: -30px;
+  right: -40px;
+  top: 58px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 8px;
+  transform: rotate(-14deg);
+}
+
+.gm-box .tile {
+  background: #111;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.gm-box .tile canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  image-rendering: pixelated;
+  background: #223;
+}
+
+.gm-box .tile span {
+  display: block;
+  padding: 1px 3px;
+  background: #0b0b0b;
+  color: #fff;
+  font: 700 6.5px/1.3 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.gm-box .rsd-badge {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 2;
+  width: 54px;
+  padding: 3px;
+  border: 2px solid #f2e600;
+  background: #0f6e2c;
+  color: #fff;
+  font: 700 5.5px/1.25 Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.gm-box .cd-disc {
+  position: absolute;
+  left: -26px;
+  bottom: 34px;
+  z-index: 3;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #222 0 7%, #c9ced6 7% 16%, transparent 16%),
+    radial-gradient(circle, transparent 0 30%, rgba(255, 255, 255, 0.95) 30% 97%, #aab 97%),
+    conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
+  color: #000080;
+  font: 900 6.5px/1 'Arial Black', Arial, sans-serif;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 11px;
 }
