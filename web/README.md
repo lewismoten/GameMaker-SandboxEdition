@@ -29,6 +29,26 @@ Graphics use an HTML canvas (an emulated 320×200, 256-color VGA mode 13h) and s
 uses the Web Audio API (an OPL2 FM synthesizer in an AudioWorklet for `.cmf` music,
 oscillators for PC speaker effects, and buffers for `.voc` samples).
 
+## The 1994 desk
+
+The site opens on a mid-90s desk; "Switch to today's web" (remembered per visitor)
+goes to the modern interface and its "💾 1994 desk" button comes back. Nothing on the
+desk is emulated: the DOS prompt, Game-Maker's menus and the BBS are drawn by this app
+to look the way they did, from the original source and files.
+
+- **The PC** boots to a `C:\>` prompt (`DIR`, `CD`, `TYPE`, `HELP`, …). `GM` starts
+  Game-Maker's text-mode menus (from `MENU.C`, with the original `.HLP` help screens
+  from `runtime/run/GM`); its Design bar opens the graphic designers full screen in a
+  VGA-style skin, each with a button to continue in today's web editor. `PLAYGAME`
+  and `A:\<game>` play games on the monitor.
+- **TURBO** on the case switches between full speed and a 286-class PC (see below).
+- **The disk box** holds 3.5" disks: RSD's own Sample, Pipemare and Nebula, the other
+  gameware, your games, and a blank disk. Originals are write-protected, so designing
+  one first copies it to a new disk; a blank disk is formatted as a new game.
+- **The Game-Maker CD** starts Game-Maker. **The shareware catalog** lists the
+  shareware games, and **`TERMINAL`** dials a fictional BBS where they can be read
+  about and "downloaded" (time-compressed) into `C:\DOWNLOAD`, then run from DOS.
+
 ## Running it
 
 ```sh
@@ -104,6 +124,16 @@ time animate every tick). Differences:
   the VGA ROM font is not part of this repository.
 - A quick key tap shorter than one game tick still registers for Esc and F-keys.
 - Joysticks come from the browser's Gamepad API (no calibration screen).
+
+**Speed.** Game logic runs on the PC timer: an 18.2 Hz game clock and a 145.6 Hz
+scroll/sound clock, measured at 18.3 and 145.7 ticks per second in Chrome. That clock is
+the same on any CPU, but playgame *skips* ticks its main loop could not keep up with,
+so on period hardware animation, character moves and gravity ran slower (monsters still
+covered the same distance). Animations set to change every tick — like the spinning
+tornado in the Terrain/Tutor monster set — therefore look faster at full speed than
+many players remember. The desk's TURBO button (or `speed.ticksPerSecond` in code)
+emulates a slower PC by processing at most 8 ticks per second and skipping the rest,
+exactly as the original did.
 
 ## Data notes
 
