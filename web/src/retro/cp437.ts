@@ -87,12 +87,15 @@ export const FONT_CP437: Uint8Array = (() => {
 const UNICODE = '░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀■·∙►◄▲▼↑↓→←↕';
 const CODES = [...Array.from({ length: 48 }, (_, i) => 176 + i), 254, 250, 249, 16, 17, 30, 31, 24, 25, 26, 27, 18];
 
+/** Typography with no CP437 code, as a DOS user would have typed it. */
+const ASCII: Record<string, string> = { '–': '-', '—': '--', '‘': "'", '’': "'", '“': '"', '”': '"', '…': '...', '×': 'x', '½': '1/2' };
+
 /** Converts a string written with Unicode box characters to CP437 byte codes. */
 export function toCp437(s: string): string {
   let out = '';
   for (const ch of s) {
     const i = UNICODE.indexOf(ch);
-    out += i >= 0 ? String.fromCharCode(CODES[i]) : ch;
+    out += i >= 0 ? String.fromCharCode(CODES[i]) : (ASCII[ch] ?? ch);
   }
   return out;
 }
