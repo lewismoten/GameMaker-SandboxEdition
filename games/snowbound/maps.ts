@@ -1,5 +1,7 @@
 // The four levels, laid out with a little builder: fills, ASCII patches for parks and the
-// sled run, and stamps for houses, shops and the mall.
+// sled run, and stamps for houses, street-name signs and LaVale Mall. The streets are the
+// real ones of Dowden Additions, winter of 1992: Gale Street, Dunn Drive, Leota Street,
+// Leon Drive, Jamie Street and Bowden Drive.
 import { newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
 import type { BlockBook } from './blocks';
 import { MON } from './ids';
@@ -11,7 +13,7 @@ const LEGEND: Record<string, string> = {
   b: 'bush',
   f: 'fence',
   L: 'lamp',
-  M: 'mailbox',
+  y: 'hydrant',
   n: 'snowman',
   D: 'deep',
   a: 'asphalt',
@@ -127,15 +129,9 @@ export class MapBuilder {
     return garageLeft ? { door: x + 3, garage: x } : { door: x + 1, garage: x + 3 };
   }
 
-  /** A shop: flat roof, sign (padded with wall), windows and a door. */
-  shop(x: number, y: number, w: number, sign: string, signTiles: number, doorAt = 1): this {
-    for (let i = 0; i < w; i++) {
-      this.set(x + i, y, 'flatRoof');
-      const s = i - Math.floor((w - signTiles) / 2);
-      this.set(x + i, y + 1, s >= 0 && s < signTiles ? `${sign}${s}` : 'shopWall');
-      this.set(x + i, y + 2, i === doorAt ? 'shopDoor' : 'shopWin');
-    }
-    return this;
+  /** A green street-name sign on its corner post: two blocks, left half at (x, y). */
+  street(x: number, y: number, sign: string): this {
+    return this.set(x, y, `${sign}0`).set(x + 1, y, `${sign}1`);
   }
 
   build(): GameMap {
@@ -155,13 +151,18 @@ function bankRow(m: MapBuilder, x: number, y: number, w: number, gaps: number[])
 }
 
 // ------------------------------------------------------------------ level 1
-/** Pine Street, 7 AM: your own street. Five houses, one plow, Biscuit the dog. */
-export function pineStreet(book: BlockBook) {
+/**
+ * Gale Street, 7 AM: home is the corner house at Gale Street and Dunn Drive. Leota Street
+ * runs north between the neighbors, Leon Drive crosses the east end (and leads to the
+ * top of Jamie Street). One plow, Biscuit the dog, and no mailboxes anywhere: the carrier
+ * walks to every door, so every front walk needs digging out too.
+ */
+export function galeStreet(book: BlockBook) {
   const m = new MapBuilder(book);
-  m.fill(11, 11, 54, 21, '.');
+  m.fill(10, 11, 55, 21, '.');
   // north side: houses with driveways and walks
-  m.fill(11, 11, 54, 3, 'T');
-  m.fill(11, 13, 54, 1, 'b');
+  m.fill(10, 11, 55, 3, 'T');
+  m.fill(10, 13, 55, 1, 'b');
   const houses: [number, 'red' | 'blue' | 'yellow', boolean][] = [
     [12, 'red', false],
     [21, 'blue', true],
@@ -172,23 +173,23 @@ export function pineStreet(book: BlockBook) {
   houses.forEach(([x, color, left], i) => {
     const { door, garage } = m.house(x, 11, color, left, i !== 2);
     if (i === 0) {
-      // Your own house: Dad already shoveled it before work.
+      // Home, on the corner of Gale and Dunn: Dad already shoveled it before work.
       m.fill(garage, 14, 2, 3, 'a').fill(door, 14, 1, 3, 's');
     } else {
       m.fill(garage, 14, 2, 3, 'D').set(door, 14, 's').fill(door, 15, 1, 2, 'S');
-      m.set(left ? garage + 2 : garage - 1, 16, 'M');
+      if (i % 2) m.set(left ? garage + 2 : garage - 1, 16, 'y');
     }
   });
-  m.fill(11, 14, 1, 3, 'b').fill(18, 14, 2, 1, 'T').fill(27, 14, 2, 1, 'n').fill(36, 14, 2, 1, 'T').fill(45, 14, 3, 1, 'b').fill(55, 14, 9, 1, 'T');
+  m.fill(10, 14, 2, 3, 'b').fill(18, 14, 2, 1, 'T').fill(27, 14, 2, 1, 'n').fill(36, 14, 2, 1, 'T').fill(45, 14, 3, 1, 'b').fill(55, 14, 9, 1, 'T');
   m.set(58, 15, 'n').set(61, 16, 'c');
   m.set(26, 14, 'n');
   m.set(42, 14, '5'); // a tip on Mrs. Haines' porch
   // sidewalk, plow banks, the road, banks, the south sidewalk
-  m.fill(11, 17, 54, 1, 's');
+  m.fill(10, 17, 55, 1, 's');
   m.patch(11, 18, ['BB_BBBB_B_BBBBBBB_BB_BBBBB_BBBBBB_B_BBBBBBBB_BBBBBBB_B']);
-  m.fill(11, 19, 55, 1, '=').fill(11, 20, 55, 1, '-');
-  m.patch(11, 21, ['BBBBLBB_BBBBBBLBBB_BBBBBLBBBBB_BBBBLBBBBB_BBBBLBBBBhB']);
-  m.fill(11, 22, 54, 1, 's');
+  m.fill(8, 19, 59, 1, '=').fill(8, 20, 59, 1, '-');
+  m.patch(10, 21, ['BBBBBLBB_BBBBBBLBBB_BBBBBLBBBBB_BBBBLBBBBB_BBBBLBBBBhB']);
+  m.fill(10, 22, 55, 1, 's');
   // the park: your backyard snowman, the frozen pond, a practice fort
   m.patch(11, 23, [
     'T.c.....TT....,,,,,,,,,,,,,..........ff.fff......T....',
@@ -201,9 +202,22 @@ export function pineStreet(book: BlockBook) {
     'TT...T....T....TT...........T....................TT...',
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
   ]);
-  // the road out of town runs off the east end
-  m.fill(65, 19, 1, 2, '=').set(65, 20, '-');
-  m.link(65, 19, 'next', 0, 0).link(65, 20, 'next', 0, 0);
+  m.fill(10, 23, 1, 8, '.');
+  // Dunn Drive runs north-south past the house, plowed down to the asphalt.
+  m.fill(8, 4, 2, 27, 'a');
+  m.street(10, 18, 'stGaleDunn');
+  // Leota Street runs north between the yellow house and the red one, to two more customers.
+  m.fill(28, 4, 19, 7, '.').fill(28, 4, 19, 1, 'T');
+  m.fill(36, 4, 2, 15, 'a');
+  const lh = [m.house(29, 5, 'blue', true), m.house(40, 5, 'yellow', false, false)];
+  for (const h of lh) m.fill(h.garage, 8, 2, 2, 'D').fill(h.door, 8, 1, 2, 'S');
+  m.fill(28, 10, 19, 1, 's').fill(36, 10, 2, 1, 'a');
+  m.set(28, 9, 'b').set(46, 8, 'T').set(34, 8, 'n').set(46, 10, 'c');
+  m.street(38, 18, 'stGaleLeota');
+  // Leon Drive crosses the east end; take it north to the top of Jamie Street.
+  m.fill(65, 12, 2, 17, 'a');
+  m.street(63, 18, 'stGaleLeon');
+  for (let y = 12; y < 29; y++) m.link(66, y, 'next', 0, 0);
   // traffic: one plow working the street; Biscuit; a cardinal
   m.vehicle(MON.plowAR, MON.plowBR, 12, 19);
   m.mon(MON.dog, 30, 26).mon(MON.cardinal, 16, 24).mon(MON.cardinal, 52, 29);
@@ -211,8 +225,11 @@ export function pineStreet(book: BlockBook) {
 }
 
 // ------------------------------------------------------------------ level 2
-/** Knobley Hill, noon: the sled run down to town. */
-export function knobleyHill(book: BlockBook) {
+/**
+ * Jamie Street, noon: the steep end of Jamie Street is closed for sledding, and it is the
+ * fast way down from Leon Drive to Bowden Drive.
+ */
+export function jamieHill(book: BlockBook) {
   const m = new MapBuilder(book);
   const x0 = 30;
   const rows = [
@@ -306,6 +323,9 @@ export function knobleyHill(book: BlockBook) {
     rows.map((r, i) => (i % 9 === 4 ? r.replace(/~/g, ':') : r)),
   );
   const finishY = y0 + rows.findIndex((r) => r.includes('X'));
+  // the corner signs at the top and the bottom of the run
+  m.street(x0 + 2, y0 + 1, 'stLeonJamie');
+  m.street(x0 + 18, finishY - 2, 'stJamieBowden');
   for (let x = x0 + 2; x < x0 + 22; x++) m.link(x, finishY, 'next', 0, 0);
   // kids on toboggans cutting across
   for (const [x, y] of [
@@ -321,42 +341,46 @@ export function knobleyHill(book: BlockBook) {
 }
 
 // ------------------------------------------------------------------ level 3
-/** Main Street, Fort Ashby, 4 PM: shops, traffic, the frozen creek and the snowball war. */
-export function mainStreet(book: BlockBook) {
+/**
+ * Bowden Drive, 4:30 PM: a long row of customers, two plows and a car, the snowball war in
+ * the park, and the frozen creek. East end: the road to LaVale.
+ */
+export function bowdenDrive(book: BlockBook) {
   const m = new MapBuilder(book);
   const X = 6;
   m.fill(X, 21, 74, 26, '.');
-  // shops along the north side
+  // houses all along the north side
   m.fill(X, 21, 74, 3, 'T');
-  m.shop(X + 2, 21, 4, 'bakery', 3, 1);
-  m.shop(X + 8, 21, 5, 'hardware', 4, 3);
-  const h1 = m.house(X + 15, 21, 'yellow', true);
-  m.shop(X + 22, 21, 4, 'diner', 3, 2);
-  m.shop(X + 29, 21, 5, 'post', 5, 2);
-  const h2 = m.house(X + 37, 21, 'red', false);
-  m.shop(X + 45, 21, 4, 'bakery', 3, 2);
-  const h3 = m.house(X + 52, 21, 'blue', true, false);
+  m.fill(X, 24, 74, 1, 's').fill(X, 25, 74, 1, 's');
+  const north: [number, 'red' | 'blue' | 'yellow', boolean, 'D' | 'a'][] = [
+    [2, 'red', false, 'D'],
+    [9, 'blue', true, 'D'],
+    [16, 'yellow', true, 'a'],
+    [23, 'red', false, 'D'],
+    [30, 'blue', false, 'D'],
+    [37, 'red', false, 'a'],
+    [44, 'yellow', true, 'D'],
+    [52, 'blue', true, 'D'],
+  ];
+  north.forEach(([x, color, left, snow], i) => {
+    const h = m.house(X + x, 21, color, left, i % 3 !== 2);
+    m.fill(h.garage, 24, 2, 2, snow);
+    if (snow === 'D') m.set(h.door, 24, 'S');
+  });
   m.fill(X + 58, 21, 16, 3, 'T');
   m.set(X + 59, 23, 'b')
     .set(X + 62, 23, 'n')
     .set(X + 66, 23, 'b');
-  // sidewalks: deep snow in front of the shops (the owners pay), ice where it's shady
-  m.fill(X, 24, 74, 1, 's').fill(X, 25, 74, 1, 's');
-  m.fill(X + 2, 24, 4, 1, 'S')
-    .fill(X + 8, 24, 5, 1, 'S')
-    .fill(X + 22, 24, 4, 1, 'S')
-    .fill(X + 29, 24, 5, 1, 'S')
-    .fill(X + 45, 24, 4, 1, 'S');
-  for (const h of [h1, h2, h3]) m.fill(h.garage, 24, 2, 2, 'D');
-  m.set(X + 24, 25, '5'); // the diner owner leaves a tip
+  m.set(X + 24, 25, '5'); // the Kellers leave a tip on the walk
+  m.set(X + 35, 25, 'y').set(X + 57, 25, 'y');
   m.patch(X + 13, 25, ['vv'])
-    .patch(X + 34, 25, ['vvv'])
-    .patch(X + 50, 25, ['vv']);
+    .patch(X + 42, 25, ['vv'])
+    .patch(X + 50, 25, ['v']);
   bankRow(m, X, 26, 74, [2, 9, 13, 14, 20, 27, 34, 35, 36, 41, 48, 50, 51, 57, 66, 71]);
   m.fill(X, 27, 75, 1, '=').fill(X, 28, 75, 1, '-');
   bankRow(m, X, 29, 74, [4, 12, 22, 30, 39, 46, 53, 62, 70]);
   m.fill(X, 30, 74, 1, 's');
-  // the town park: forts, Big Pete, Biscuit, and Patterson Creek frozen solid
+  // the park: forts, Big Pete, Biscuit, and the creek frozen solid
   m.patch(X, 31, [
     '..T.....F.......T......b......T.....F........T......n.....T......F.....T..',
     '.T..........n.........................................................T...',
@@ -381,8 +405,10 @@ export function mainStreet(book: BlockBook) {
     .set(X + 60, 45, 'n')
     .set(X + 10, 44, 'b')
     .set(X + 70, 44, 'T');
-  // out of town on Route 28 toward the mall
+  // the corner where you come off Jamie Street, and the road to LaVale at the east end
+  m.street(X + 3, 26, 'stJamieBowden');
   m.fill(X + 74, 27, 1, 2, '=').set(X + 74, 28, '-');
+  m.street(X + 70, 26, 'stBowdenLaVale');
   m.set(X + 72, 26, 'm');
   m.link(X + 74, 27, 'next', 0, 0).link(X + 74, 28, 'next', 0, 0);
   // traffic: a plow in the near lane, a car in the far one
@@ -397,8 +423,8 @@ export function mainStreet(book: BlockBook) {
 }
 
 // ------------------------------------------------------------------ level 4
-/** Mill Creek Mall, 8 PM: the lot, the squall, and Bits & Bytes Software. */
-export function mall(book: BlockBook) {
+/** LaVale Mall, 8 PM: the lot, the squall, the Timeout arcade and Bits & Bytes Software. */
+export function lavaleMall(book: BlockBook) {
   const m = new MapBuilder(book);
   const X = 10;
   m.fill(X, 11, 60, 34, 'p');
@@ -417,6 +443,11 @@ export function mall(book: BlockBook) {
     .set(X + 40, 13, 'storeDoor')
     .set(X + 42, 13, 'boxWindow');
   m.set(X + 24, 13, 'mallDoor').set(X + 25, 13, 'mallDoor');
+  // Timeout, the arcade, with its chasing marquee
+  for (let i = 0; i < 3; i++) m.set(X + 17 + i, 12, `arcade0${i}`);
+  m.set(X + 17, 13, 'arcadeWin')
+    .set(X + 18, 13, 'arcadeDoor')
+    .set(X + 19, 13, 'arcadeWin');
   m.link(X + 40, 13, 'won', 0, 0);
   // walk in front of the mall
   m.fill(X, 14, 60, 2, 's');

@@ -1,4 +1,4 @@
-// SNOW.BBL: every background block of Fort Ashby, drawn in code. Index assignments are
+// SNOW.BBL: every background block of Dowden Additions and LaVale Mall, drawn in code. Index assignments are
 // by name; attributes (solid sides, money, gravity, what a block turns into when touched
 // or after time) are what make the game: deep snow is solid and pays $1 when you push
 // into it, parking-lot asphalt quietly snows back over, ice slides you, forts throw.
@@ -253,13 +253,15 @@ export function buildBlocks(pal: Pal): BlockBook {
   lamp.rect(6, 1, 8, 1, c('ink', 1)).rect(7, 2, 6, 4, c('glow', 3)).rect(8, 3, 4, 2, c('glow', 3)).rect(6, 6, 8, 1, c('ink', 1));
   lamp.rect(7, 0, 6, 1, c('snow', 6));
   book.add('lamp', lamp, { solid: SOLID });
-  const mailbox = yardBase(99);
-  mailbox.rect(9, 10, 2, 9, c('wood', 1));
-  blob(mailbox, 10, 8, 6, 4, R('siding'), 0, 3);
-  mailbox.rect(4, 8, 12, 4, c('siding', 2)).rect(4, 11, 12, 1, c('siding', 0));
-  mailbox.rect(15, 4, 1, 5, c('coat', 3)).rect(16, 4, 2, 2, c('coat', 3));
-  mailbox.rect(5, 4, 10, 2, c('snow', 6));
-  book.add('mailbox', mailbox, { solid: SOLID });
+  // No mailboxes in Dowden Additions (the carrier walks the mail to every door slot), so
+  // the plows have only the fire hydrants to bury.
+  const hydrant = yardBase(99);
+  hydrant.rect(6, 7, 8, 11, c('coat', 2)).rect(6, 7, 2, 11, c('coat', 3)).rect(12, 7, 2, 11, c('coat', 1));
+  hydrant.rect(4, 10, 12, 3, c('coat', 2)).rect(4, 10, 2, 3, c('coat', 3)).rect(15, 10, 1, 3, c('coat', 0));
+  hydrant.rect(7, 4, 6, 3, c('coat', 2)).rect(9, 2, 2, 2, c('gold', 3)).rect(5, 17, 10, 2, c('coat', 0));
+  blob(hydrant, 10, 4, 5, 2.4, snow, 4, 6);
+  blob(hydrant, 10, 18, 9, 3, snow, 3, 6);
+  book.add('hydrant', hydrant, { solid: SOLID });
   const snowman = yardBase(101);
   blob(snowman, 10, 15, 6, 4.5, snow, 2, 6);
   blob(snowman, 10, 9, 4.5, 3.8, snow, 2, 6);
@@ -363,6 +365,33 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('signHome', signpost('HOME', '<'), { solid: SOLID });
   book.add('signPlow', signpost('PLOWS', '^'), { solid: SOLID });
   book.add('signBus', signpost('BUS', 'v'), { solid: SOLID });
+
+  // Green street-name signs on a corner post, two blocks wide: name0 (left) and name1.
+  const streetSign = (name: string, top: string, bottom: string, bottomBlade = 'pine') => {
+    const big = new Pixels(40, 20);
+    big.blit(yardBase(115), 0, 0).blit(yardBase(117), 20, 0);
+    big.rect(19, 2, 2, 18, c('grey', 3)).rect(19, 2, 1, 18, c('grey', 4));
+    blob(big, 20, 19, 5, 2, snow, 3, 6);
+    const blade = (y: number, label: string, ramp: string) => {
+      const w = microWidth(label) + 6;
+      const x = 20 - Math.ceil(w / 2);
+      big
+        .rect(x, y, w, 8, c(ramp, 3))
+        .frame(x, y, w, 8, c('snow', 6))
+        .rect(x, y + 8, w, 1, c('ink', 0));
+      micro(big, x + 3, y + 2, label, c('snow', 6));
+      big.rect(x, y - 1, w, 1, c('snow', 6)).rect(x + 2, y - 2, w - 5, 1, c('snow', 5));
+    };
+    blade(2, top, 'pine');
+    blade(11, bottom, bottomBlade);
+    for (let t = 0; t < 2; t++) book.add(`${name}${t}`, big.crop(t * 20, 0, 20, 20), { solid: SOLID });
+  };
+  streetSign('stGaleDunn', 'GALE ST', 'DUNN DR');
+  streetSign('stGaleLeota', 'GALE ST', 'LEOTA ST');
+  streetSign('stGaleLeon', 'GALE ST', 'LEON DR');
+  streetSign('stLeonJamie', 'LEON DR', 'JAMIE ST');
+  streetSign('stJamieBowden', 'JAMIE ST', 'BOWDEN DR');
+  streetSign('stBowdenLaVale', 'BOWDEN DR', 'LAVALE >', 'siding');
 
   // Parked cars buried in the mall lot (two blocks: rear, front).
   const parked = (front: boolean) => {
@@ -479,51 +508,11 @@ export function buildBlocks(pal: Pal): BlockBook {
     }
   }
 
-  // ---------- shops and the mall ----------
+  // ---------- LaVale Mall ----------
   const flat = P();
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) flat.set(x, y, shadeAt(snow, 3, 6, 0.9 - y / 40 + ((x * 13 + y * 7) % 11 === 0 ? -0.2 : 0), x, y));
   flat.rect(0, 16, 20, 1, c('snow', 6)).rect(0, 17, 20, 3, c('brick', 1)).rect(0, 19, 20, 1, c('ink', 0));
   book.add('flatRoof', flat, { solid: SOLID });
-  const brickWall = (seed: number) => {
-    const p = P();
-    for (let y = 0; y < 20; y++)
-      for (let x = 0; x < 20; x++)
-        p.set(x, y, y % 4 === 3 || (x + (Math.floor(y / 4) % 2) * 4) % 8 === 0 ? c('brick', 0) : c('brick', 2 + ((x * 7 + y * 3 + seed) % 9 === 0 ? 1 : 0)));
-    return p;
-  };
-  book.add('shopWall', brickWall(1), { solid: SOLID });
-  const shopWin = brickWall(2);
-  shopWin.rect(1, 2, 18, 15, c('wood', 4));
-  gradient(shopWin, 2, 3, 16, 13, R('glow'), 3, 1);
-  for (let x = 3; x < 17; x += 3) shopWin.rect(x, 9, 2, 3, c(['coat', 'gold', 'money', 'pink', 'siding'][x % 5], 3));
-  shopWin.rect(2, 12, 16, 1, c('wood', 2));
-  for (let x = 4; x < 17; x += 4) shopWin.rect(x, 13, 3, 2, c(['butter', 'wood', 'coat'][x % 3], 2));
-  shopWin.rect(1, 17, 18, 2, c('snow', 6));
-  book.add('shopWin', shopWin, { solid: SOLID });
-  const shopDoor = brickWall(3);
-  shopDoor.rect(4, 2, 12, 18, c('wood', 1)).rect(6, 4, 8, 12, c('ice', 2));
-  gradient(shopDoor, 6, 4, 8, 12, R('glow'), 2, 0);
-  shopDoor.rect(7, 6, 6, 3, c('pink', 4)).rect(8, 7, 4, 1, c('pink', 2));
-  shopDoor.set(13, 14, c('gold', 3));
-  book.add('shopDoor', shopDoor, { solid: SOLID });
-
-  /** A sign painted across several blocks: name0, name1, ... */
-  const sign = (name: string, label: string, tiles: number, board: number[], ink: number, glowInk = false) => {
-    const w = tiles * 20;
-    const big = new Pixels(w, 20);
-    for (let t = 0; t < tiles; t++) big.blit(brickWall(t + 5), t * 20, 0);
-    big.rect(1, 3, w - 2, 14, board[0]).rect(2, 4, w - 4, 12, board[1]);
-    const tw = microWidth(label, 2);
-    if (glowInk) micro(big, Math.floor((w - tw) / 2) + 1, 6, label, board[0], 2);
-    micro(big, Math.floor((w - tw) / 2), 5, label, ink, 2);
-    big.rect(1, 2, w - 2, 1, c('snow', 6));
-    for (let t = 0; t < tiles; t++) book.add(`${name}${t}`, big.crop(t * 20, 0, 20, 20), { solid: SOLID });
-  };
-  const woodBoard = [c('wood', 0), c('wood', 1)];
-  sign('bakery', 'BAKERY', 3, woodBoard, c('gold', 3));
-  sign('hardware', 'HARDWARE', 4, woodBoard, c('gold', 3));
-  sign('diner', 'DINER', 3, [c('ink', 0), c('coat', 1)], c('snow', 6));
-  sign('post', 'POST OFFICE', 5, [c('ink', 0), c('siding', 1)], c('snow', 6));
 
   const mallWall = (seed: number) => {
     const p = speckle(P(), 0, 0, 20, 20, R('butter'), 1, 1, seed, 0.15);
@@ -532,7 +521,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('mallWall', mallWall(1), { solid: SOLID });
   {
-    const label = 'MILL CREEK MALL';
+    const label = 'LAVALE MALL';
     const tiles = 6;
     const big = new Pixels(tiles * 20, 20);
     for (let t = 0; t < tiles; t++) big.blit(mallWall(t + 3), t * 20, 0);
@@ -590,6 +579,45 @@ export function buildBlocks(pal: Pal): BlockBook {
   // The register: it only opens when you have $89 (the touch is refused below that).
   book.add('storeDoor', storeDoor(false), { solid: SOLID, effect: MONEY, eamt: -89, score: 8900, touch: 'storeOpen' });
   book.add('storeOpen', storeDoor(true));
+
+  // Timeout, the arcade: a marquee with chasing bulbs, two glowing cabinets in the
+  // windows, and a door that eats four quarters ($1) a push for a game - and warms you up.
+  const marquee = (frame: number) => {
+    const big = new Pixels(60, 20);
+    for (let t = 0; t < 3; t++) big.blit(mallWall(t + 31), t * 20, 0);
+    big.rect(1, 3, 58, 15, c('ink', 0));
+    for (let x = 2; x < 58; x += 2) big.set(x, 3, c('bulbs', (x / 2 + frame) % 4)).set(x, 17, c('bulbs', (x / 2 + frame + 2) % 4));
+    const label = 'TIMEOUT';
+    const x = Math.floor((60 - microWidth(label, 2)) / 2);
+    micro(big, x + 1, 7, label, c('orange', 0), 2);
+    micro(big, x, 6, label, frame ? c('orange', 3) : c('gold', 3), 2);
+    big.rect(0, 2, 60, 1, c('snow', 6));
+    return big;
+  };
+  for (const f of [0, 1]) {
+    const big = marquee(f);
+    for (let t = 0; t < 3; t++) book.add(`arcade${f}${t}`, big.crop(t * 20, 0, 20, 20), { solid: SOLID, next: `arcade${1 - f}${t}`, ntime: 6 });
+  }
+  const arcadeWin = mallWall(35);
+  arcadeWin.rect(1, 2, 18, 16, c('concrete', 0)).rect(2, 3, 16, 15, c('ink', 0));
+  for (const cx of [3, 11]) {
+    arcadeWin
+      .rect(cx, 5, 6, 13, c('siding', 1))
+      .rect(cx + 1, 6, 4, 4, c('money', 2))
+      .set(cx + 2, 7, c('gold', 3))
+      .set(cx + 3, 8, c('coat', 3));
+    arcadeWin.rect(cx + 1, 12, 4, 1, c('grey', 4)).set(cx + 2, 11, c('coat', 3));
+  }
+  arcadeWin.rect(1, 18, 18, 2, c('snow', 6));
+  book.add('arcadeWin', arcadeWin, { solid: SOLID });
+  const arcadeDoor = mallWall(37);
+  arcadeDoor.rect(2, 2, 16, 18, c('concrete', 0));
+  gradient(arcadeDoor, 3, 3, 14, 17, R('pink'), 1, 3);
+  arcadeDoor.rect(5, 6, 10, 7, c('ink', 0));
+  micro(arcadeDoor, 6, 7, '25', c('gold', 3));
+  arcadeDoor.rect(11, 8, 2, 3, c('grey', 4));
+  arcadeDoor.rect(15, 11, 1, 4, c('concrete', 3));
+  book.add('arcadeDoor', arcadeDoor, { solid: SOLID, effect: MONEY, eamt: -1, hp: 5, score: 250 });
 
   // ---------- Knobley Hill ----------
   const slope = (seed: number, tracks: boolean, steep = 0) => {

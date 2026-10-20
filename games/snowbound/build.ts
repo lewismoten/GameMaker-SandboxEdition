@@ -13,7 +13,7 @@ import { serializeSoundSet } from '../../web/src/formats/sound';
 import { Disk } from '../kit/disk';
 import { buildBlocks } from './blocks';
 import { MON } from './ids';
-import { knobleyHill, mainStreet, mall, pineStreet, type MapBuilder } from './maps';
+import { bowdenDrive, galeStreet, jamieHill, lavaleMall, type MapBuilder } from './maps';
 import { hillSong, lostSong, mainSong, mallSong, menuSong, pineSong, storySong, titleSong, wonSong } from './music';
 import { buildPalette, type TimeOfDay } from './pal';
 import { renderRegion } from './render';
@@ -53,63 +53,63 @@ interface Level {
 
 const LEVELS: Level[] = [
   {
-    file: 'pine',
-    desc: 'Pine Street',
+    file: 'gale',
+    desc: 'Gale Street',
     time: 'morning',
-    build: pineStreet,
+    build: galeStreet,
     chr: 'kid.chr',
-    song: ['pine.cmf', pineSong],
+    song: ['gale.cmf', pineSong],
     mons: { plowRun: 50, plowSpeed: 3 },
     card: {
-      title: '1. PINE STREET',
+      title: '1. GALE STREET',
       time: 'Friday, 7:00 AM.  18 inches!',
-      lines: ['Shovel the neighbors out: $1 a', 'scoop. Mind the plow. East to', 'Knobley Hill.'],
-      view: [11, 13],
+      lines: ['Home: Gale St & Dunn Dr. No', 'mailboxes here - clear the', 'walks too. East to Leon Dr.'],
+      view: [9, 13],
     },
   },
   {
-    file: 'hill',
-    desc: 'Knobley Hill',
+    file: 'jamie',
+    desc: 'Jamie Street',
     time: 'noon',
-    build: knobleyHill,
+    build: jamieHill,
     chr: 'sled.chr',
-    song: ['hill.cmf', hillSong],
+    song: ['jamie.cmf', hillSong],
     mons: {},
     card: {
-      title: '2. KNOBLEY HILL',
-      time: 'Noon. The fast way to town.',
-      lines: ['Steer LEFT/RIGHT, UP to brake,', 'DOWN to push. Catch the loose', 'dollars blowing down the run!'],
-      view: [33, 4],
+      title: '2. JAMIE STREET',
+      time: 'Noon. Closed for sledding!',
+      lines: ['Steer LEFT/RIGHT, UP to brake,', 'DOWN to push. Catch the loose', 'dollars on the way down.'],
+      view: [30, 4],
     },
   },
   {
-    file: 'main',
-    desc: 'Main Street',
+    file: 'bowden',
+    desc: 'Bowden Drive',
     time: 'dusk',
-    build: mainStreet,
+    build: bowdenDrive,
     chr: 'kid.chr',
-    song: ['main.cmf', mainSong],
+    song: ['bowden.cmf', mainSong],
     mons: { plowRun: 36, plow2Run: 30, carRun: 50, plowSpeed: 4, carSpeed: 5 },
     card: {
-      title: '3. MAIN STREET',
-      time: '4:30 PM. The shops are paying.',
-      lines: ['Snow forts in the park, Big', 'Pete by the creek. Route 28', 'east to the mall.'],
-      view: [8, 23],
+      title: '3. BOWDEN DRIVE',
+      time: '4:30 PM. Everybody is home.',
+      lines: ['Snow forts in the park, Big', 'Pete by the creek. East to', 'LaVale and the mall.'],
+      view: [6, 23],
     },
   },
   {
-    file: 'mall',
-    desc: 'Mill Creek Mall',
+    file: 'lavale',
+    desc: 'LaVale Mall',
     time: 'night',
-    build: mall,
+    build: lavaleMall,
     chr: 'kid.chr',
-    song: ['mall.cmf', mallSong],
+    song: ['lavale.cmf', mallSong],
     mons: { plowRun: 56, plow2Run: 52, plowSpeed: 4 },
     card: {
-      title: '4. MILL CREEK MALL',
+      title: '4. LAVALE MALL',
       time: '8:00 PM. One hour to closing.',
-      lines: ['The lot keeps snowing over:', 'shovel it again! Bits & Bytes', 'is waiting with the pink box.'],
-      view: [40, 9],
+      lines: ['The lot keeps snowing over.', 'Timeout is open; Bits & Bytes', 'has the pink box for $89.'],
+      view: [24, 10],
     },
   },
 ];
