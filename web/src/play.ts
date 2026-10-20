@@ -3,6 +3,7 @@
 //   play.html?project=<id> a project from the editor (IndexedDB)
 //   exported web apps     ./game/manifest.json lists the bundled game files
 import { mountPlayer } from './player/player';
+import { watchForUpdates } from './devReload';
 import { GameFiles, loadCatalog, loadHostedGame } from './project/files';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
 
@@ -85,3 +86,5 @@ void main();
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   void navigator.serviceWorker.register('./sw.js').catch(() => undefined);
 }
+
+watchForUpdates();

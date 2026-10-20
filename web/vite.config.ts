@@ -62,10 +62,25 @@ function offline(): Plugin {
   };
 }
 
+/**
+ * Development: don't hot-reload the page when a source file changes (it would switch
+ * off the retro PC); tell the page instead, which offers a Reload button.
+ */
+function manualReload(): Plugin {
+  return {
+    name: 'gamemaker-manual-reload',
+    apply: 'serve',
+    handleHotUpdate({ server, file }) {
+      server.ws.send({ type: 'custom', event: 'gm:source-changed', data: { file } });
+      return [];
+    },
+  };
+}
+
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [cdGames(resolve(__dirname, '../cd')), offline()],
+  plugins: [cdGames(resolve(__dirname, '../cd')), offline(), manualReload()],
   build: {
     target: 'es2022',
     rollupOptions: {

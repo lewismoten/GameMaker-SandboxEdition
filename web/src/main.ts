@@ -7,6 +7,7 @@ import { Workspace } from './editor/workspace';
 import { Project } from './editor/project';
 import { loadProject } from './project/storage';
 import { renderDesk } from './desk/desk';
+import { watchForUpdates } from './devReload';
 
 type Ui = 'desk' | 'modern';
 const UI_KEY = 'gm-ui';
@@ -118,3 +119,5 @@ else startDesk();
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   void navigator.serviceWorker.register('./sw.js').catch(() => undefined);
 }
+
+watchForUpdates();
