@@ -24,6 +24,12 @@ export interface CdCatalogEntry {
   notice?: string;
   /** Shareware: CRC-32 of the .gam file, to recognize the game when imported. */
   gamCrc?: number;
+  /** Total size of the game's files in bytes. */
+  bytes: number;
+  /** Shareware: the name of its DOS program (listed on the retro PC; never served). */
+  exe?: string;
+  /** A few lines from the game's own story or instruction screen. */
+  blurb?: string;
 }
 
 // Files that only matter to DOS (executables, batch files, icons, archives).
@@ -97,6 +103,21 @@ export interface GmInstallEntry {
 // 80x25 text-mode dumps); programs are listed but never served.
 const GM_TEXT = /\.(hlp|txt)$/i;
 
+/** First lines of a story/instruction screen ("*s.txt", "*story*", "*i.txt"), joined. */
+function blurbFor(names: string[], disk: Map<string, string>): string | undefined {
+  const texts = names.filter((n) => n.endsWith('.txt') && n !== 'gmhelp.txt' && !NOTICES.includes(n) && !/cred|c\d?\.txt$|end/.test(n));
+  const pick = texts.find((n) => /(story|str|sl|s\d?)\.txt$/.test(n)) ?? texts.find((n) => /(instr|i\d?)\.txt$/.test(n)) ?? texts[0];
+  if (!pick) return undefined;
+  const lines = dosText(readFileSync(disk.get(pick)!))
+    .split('\n')
+    .map((l) => l.trim().replace(/\s+/g, ' '))
+    // Skip rules and letter-spaced headings ("C O N T R O L S").
+    .filter((l) => l && !/^[-=*#~ ]+$/.test(l) && !/^(\S ){3,}\S$/.test(l));
+  // Rejoin words hyphenated across the 31 column lines.
+  const text = lines.join(' ').replace(/(\w)- (\w)/g, '$1$2');
+  return text.length > 220 ? `${text.slice(0, 217).replace(/\s+\S*$/, '')}…` : text;
+}
+
 interface Scan {
   gm: GmInstallEntry[];
   catalog: CdCatalogEntry[];
@@ -129,6 +150,7 @@ function scan(cdRoot: string): Scan {
       // Shareware folders without a game (e.g. archiving tools) are left out.
       if (kind === 'shareware' && !gam) continue;
       const gamBytes = gam ? readFileSync(disk.get(gam)!) : undefined;
+      const exe = readdirSync(from).find((n) => /\.exe$/i.test(n));
       const entry: CdCatalogEntry = {
         id,
         title: (kind === 'shareware' && SHAREWARE_TITLES[id]) || (gamBytes && gameTitle(gamBytes)) || id,
@@ -136,7 +158,10 @@ function scan(cdRoot: string): Scan {
         path,
         gam,
         files: names,
+        bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
+        blurb: blurbFor(names, disk),
       };
+      if (kind === 'shareware' && exe) entry.exe = exe.toUpperCase();
       if (kind === 'shareware') {
         // The author's readme/order form, plus any screen that talks about shareware or registering.
         const own = NOTICES.map((n) => disk.get(n)).filter((p): p is string => !!p);
