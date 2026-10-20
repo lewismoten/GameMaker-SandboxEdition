@@ -256,10 +256,114 @@ main.home {
   border-radius: 4px;
 }
 
-.sidebar button.file.active {
+.sidebar h4 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar h4 .add {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  font: 700 15px/1 system-ui, sans-serif;
+}
+
+.sidebar .file-row {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+
+.sidebar .file-row:hover,
+.sidebar .file-row:focus-within {
+  background: var(--panel-2);
+}
+
+.sidebar .file-row.active {
   background: var(--accent-soft);
+}
+
+.sidebar .file-row.active button.file {
   color: var(--accent);
   font-weight: 600;
+}
+
+.sidebar .file-row button.file {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar .icon-btn {
+  flex: none;
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  opacity: 0.45;
+}
+
+.sidebar .file-row:hover .icon-btn,
+.sidebar .file-row:focus-within .icon-btn,
+.sidebar .file-row.active .icon-btn {
+  opacity: 1;
+}
+
+.sidebar .icon-btn.danger {
+  color: var(--danger);
+}
+
+.sidebar .empty {
+  margin: 0 8px 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.sidebar .export-menu {
+  margin-top: 8px;
+}
+
+.sidebar .export-menu summary {
+  padding: 4px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+/* "Add a file": a grid of the kinds of files (editor/workspace.ts) */
+.kind-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: min(720px, 86vw);
+}
+
+@media (max-width: 640px) {
+  .kind-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.kind-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px;
+  text-align: center;
+}
+
+.kind-card .kind-icon {
+  font-size: 30px;
+}
+
+.kind-card small {
+  color: var(--muted);
+  font-size: 11px;
 }
 
 .editor {

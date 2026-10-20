@@ -1,7 +1,8 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from './project';
-import { TEMPLATES } from './templates';
+import { pickFile } from './filePicker';
+import { KIND_ICON } from './thumbs';
 import { editors, fileInfo } from './editors';
 import { GameFiles, loadFileList, normalize } from '../project/files';
 import { createZip } from '../project/zip';
@@ -10,6 +11,29 @@ import { exportDos } from '../export/exportDos';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 
 const ORDER: FileKind[] = ['gam', 'pal', 'bbl', 'mbl', 'cbl', 'mon', 'chr', 'map', 'snd', 'gif', 'fli', 'bkd', 'txt', 'lst', 'cmf', 'voc', 'rec', 'his', 'other'];
+/** The kinds always listed and offered in "Add a file" (4 x 4). */
+const SECTIONS: FileKind[] = ['pal', 'bbl', 'mbl', 'cbl', 'mon', 'chr', 'map', 'snd', 'gif', 'fli', 'cmf', 'voc', 'txt', 'lst', 'bkd', 'rec'];
+const KIND_HELP: Partial<Record<FileKind, string>> = {
+  pal: '256 colors to paint with',
+  bbl: 'the scenery, 150 blocks',
+  mbl: 'monster pictures, 100 blocks',
+  cbl: 'hero pictures, 50 blocks',
+  mon: '64 monsters and how they move',
+  chr: 'the hero: moves, keys, items',
+  map: 'a 100x100 level',
+  snd: '30 sound effects',
+  gif: 'a 320x200 picture',
+  fli: 'an animation',
+  cmf: 'Sound Blaster music',
+  voc: 'a Sound Blaster sound',
+  txt: 'words on screen',
+  lst: 'pictures one after another',
+  bkd: 'part of a big picture',
+  rec: 'a recorded demo',
+};
+
+/** Tools register extra ways to make files (convert, record...) here. */
+export const MAKERS: Partial<Record<FileKind, { label: string; run: (p: Project) => Promise<string | undefined> }[]>> = {};
 
 export class Workspace {
   readonly project: Project;
@@ -51,15 +75,51 @@ export class Workspace {
       const k = kindOf(n);
       groups.set(k, [...(groups.get(k) ?? []), n]);
     }
+    // Every kind of file a game can use is listed, even with nothing in it yet.
+    const sections = ORDER.filter((k) => k === 'gam' || SECTIONS.includes(k) || groups.has(k));
     clear(
       this.sidebar,
-      h('div', { class: 'stack' }, h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'), h('div', { class: 'toolbar' }, h('button', { onclick: () => void this.newFile() }, '+ New'), h('button', { onclick: () => void this.addFiles() }, 'Add files…'))),
-      h('div', { class: 'toolbar', style: 'margin-top:8px' }, h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'), h('button', { onclick: () => void this.exportApp() }, 'Export web app'), h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS')),
-      ...ORDER.filter((k) => groups.has(k)).map((k) => [
-        h('h4', null, KIND_LABELS[k]),
-        ...groups.get(k)!.map((n) => h('button', { class: `file ${n === this.current ? 'active' : ''}`, onclick: () => this.open(n), title: n }, n)),
-      ]),
+      h(
+        'div',
+        { class: 'stack' },
+        h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'),
+        h('div', { class: 'toolbar' }, h('button', { onclick: () => void this.newFile() }, '+ Add a file…'), h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…')),
+      ),
+      h('details', { class: 'export-menu' }, h('summary', null, 'Save & share'), h('div', { class: 'stack' }, h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'), h('button', { onclick: () => void this.exportApp() }, 'Export web app'), h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'))),
+      ...sections.map((k) =>
+        h(
+          'section',
+          { class: 'file-section' },
+          h(
+            'h4',
+            null,
+            h('span', null, KIND_LABELS[k]),
+            k === 'gam' ? null : h('button', { class: 'add', title: `Add ${KIND_LABELS[k].toLowerCase()}`, 'aria-label': `Add ${KIND_LABELS[k].toLowerCase()}`, onclick: () => void this.addOfKind(k) }, '+'),
+          ),
+          ...(groups.get(k) ?? []).map((n) =>
+            h(
+              'div',
+              { class: `file-row ${n === this.current ? 'active' : ''}` },
+              h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, n),
+              h('button', { class: 'icon-btn', title: `Edit ${n}`, 'aria-label': `Edit ${n}`, onclick: () => this.open(n) }, '✎'),
+              n === p.gam ? null : h('button', { class: 'icon-btn danger', title: `Delete ${n}`, 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) }, '🗑'),
+            ),
+          ),
+          groups.has(k) ? null : h('p', { class: 'empty' }, 'none yet'),
+        ),
+      ),
     );
+  }
+
+  /** Adds a file of one kind: new, from the library, or from your computer. */
+  private async addOfKind(kind: FileKind): Promise<void> {
+    const name = await pickFile(this.project, kind, { adding: true, title: `Add ${KIND_LABELS[kind].toLowerCase()}`, actions: this.makers(kind) });
+    if (name) this.open(name);
+  }
+
+  /** Extra ways to make files of a kind (converters, recorders); filled in by tools. */
+  private makers(kind: FileKind): { label: string; run: () => Promise<string | undefined> }[] {
+    return (MAKERS[kind] ?? []).map((m) => ({ label: m.label, run: () => m.run(this.project) }));
   }
 
   open(file: string): void {
@@ -114,17 +174,24 @@ export class Workspace {
     this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
   }
 
+  /** The "Add a file" dialog: a grid of every kind of file, with a picture of each. */
   private async newFile(): Promise<void> {
-    const kind = await modal<FileKind>('New file', (close) =>
-      h('div', { class: 'stack' }, ...TEMPLATES.map((t) => h('button', { onclick: () => close(t.kind) }, `${t.label} (.${t.kind})`))),
+    const kind = await modal<FileKind>('Add a file', (close) =>
+      h(
+        'div',
+        { class: 'kind-grid' },
+        ...SECTIONS.map((k) =>
+          h(
+            'button',
+            { class: 'kind-card', onclick: () => close(k) },
+            h('span', { class: 'kind-icon' }, KIND_ICON[k]),
+            h('strong', null, KIND_LABELS[k]),
+            h('small', null, KIND_HELP[k] ?? `.${k.toUpperCase()}`),
+          ),
+        ),
+      ),
     );
-    if (!kind) return;
-    const t = TEMPLATES.find((x) => x.kind === kind)!;
-    const suggested = this.project.freeName(this.project.gam.replace(/\.gam$/, ''), kind);
-    const name = await this.askName('Name the new file', suggested, kind);
-    if (!name) return;
-    this.project.files.set(name, t.make(this.project));
-    this.open(name);
+    if (kind) await this.addOfKind(kind);
   }
 
   private async askName(title: string, value: string, ext: string): Promise<string | undefined> {
