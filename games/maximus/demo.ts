@@ -51,9 +51,9 @@ export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: num
     lastX = sim.pos.x;
     const bx = sim.pos.bx;
     if (stuck > 2) {
-      // a person's tap lasts a few ticks
+      // a quick tap: a longer one plays back differently in PLAYGAME than in the headless sim
       ev(SCAN.up, true);
-      await step(3);
+      await step();
       ev(SCAN.up, false);
       stuck = 0;
     }
