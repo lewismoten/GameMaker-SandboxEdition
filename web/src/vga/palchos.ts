@@ -5,14 +5,12 @@
 // the right button to move a color along the chart (M) or copy it (C).
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/textScreen';
-import { BARATTR, MENUATTR, SHADATTR, TITLEATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import { PGMTITLECOL, drawDesignBars } from './designer';
 import { WorkArea } from '../retro/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './vga';
 import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, MAXFACECOL, initStartCols } from './facelift';
 
-const GMTOPBAR = '                            G A M E  -  M A K E R  V3.00                        ';
-const DESIGN_BAR = '  Palette  Block  Monster  Map  Character  Image  Sound  Integrator  Main  Help ';
-const PGMTITLECOL = 47;
 
 const TRANSCOL = 255;
 const COPY = 0;
@@ -81,8 +79,7 @@ class PaletteDesigner {
     let ink = 1;
     for (;;) {
       s.cursorVisible = false;
-      s.write(0, 0, TITLEATTR, GMTOPBAR);
-      s.write(0, 1, BARATTR, DESIGN_BAR);
+      drawDesignBars(s);
       const w = s.window(1, 3, 21, 11, MENUATTR, SHADATTR);
       s.write(1, 3, PGMTITLECOL, '  PALETTE DESIGNER   ');
       s.write(1, 4, PGMTITLECOL, '    Version 3.00     ');
