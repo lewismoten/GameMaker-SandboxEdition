@@ -6,6 +6,7 @@ import { libraryGame } from './library';
 import { loadCatalog } from '../project/files';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame } from '../formats/game';
 import { BACKBL, parseBlocks } from '../formats/blocks';
+import { parseSoundSet } from '../formats/sound';
 import { MLEN, MWID, newMap, parseMap, reindexMonsters, serializeMap } from '../formats/map';
 
 const KINDS = ['pal', 'map', 'bbl', 'mon', 'mbl', 'chr', 'cbl', 'snd'] as const;
@@ -25,6 +26,11 @@ export async function starterProject(title: string, from = 'sample'): Promise<Pr
   KINDS.forEach((k, i) => {
     if (k !== 'map') p.files.set(names[i], lib.get(level.files[i])!.slice());
   });
+  // and the Sound Blaster samples its sound set plays
+  for (const v of parseSoundSet(lib.get(level.files[7])!).digital) {
+    const voc = `${v.trim().toLowerCase()}.voc`;
+    if (v.trim() && lib.has(voc)) p.files.set(voc, lib.get(voc)!.slice());
+  }
   const blocks = parseBlocks(lib.get(level.files[2])!, BACKBL);
   const usedBlocks = lib.has(level.files[1]) ? parseMap(lib.get(level.files[1])!).blocks : new Uint8Array(0);
   const count = new Map<number, number>();
