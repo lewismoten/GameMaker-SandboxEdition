@@ -170,3 +170,50 @@ function pcm16(data: Uint8Array): Float32Array {
   for (let i = 0; i < out.length; i++) out[i] = (((data[i * 2] | (data[i * 2 + 1] << 8)) << 16) >> 16) / 32768;
   return out;
 }
+
+/**
+ * Encodes mono samples (-1..1) as an 8-bit unsigned PCM Creative Voice File, the kind a
+ * Sound Blaster plays. The rate is stored as a time constant, so it is rounded the way
+ * the card did (11025 Hz is stored as 11111 Hz).
+ */
+export function encodeVoc(samples: Float32Array, sampleRate = 11025): Uint8Array {
+  const timeConstant = Math.max(0, Math.min(255, Math.round(256 - 1_000_000 / sampleRate)));
+  const BLOCK = 0xfffff0; // a sound block's size is 24 bits
+  const blocks: Uint8Array[] = [];
+  let start = 0;
+  do {
+    const part = samples.subarray(start, Math.min(samples.length, start + BLOCK));
+    const first = start === 0;
+    const head = first ? 6 : 4;
+    const b = new Uint8Array(head + part.length);
+    const size = part.length + (first ? 2 : 0);
+    b[0] = first ? 1 : 2;
+    b[1] = size & 255;
+    b[2] = (size >> 8) & 255;
+    b[3] = (size >> 16) & 255;
+    if (first) {
+      b[4] = timeConstant;
+      b[5] = 0; // codec: 8-bit PCM
+    }
+    for (let i = 0; i < part.length; i++) b[head + i] = Math.max(0, Math.min(255, Math.round(part[i] * 127 + 128)));
+    blocks.push(b);
+    start += BLOCK;
+  } while (start < samples.length);
+  const header = new Uint8Array(26);
+  for (let i = 0; i < SIGNATURE.length; i++) header[i] = SIGNATURE.charCodeAt(i);
+  header[20] = 26;
+  const version = 0x010a;
+  header[22] = version & 255;
+  header[23] = version >> 8;
+  const check = (~version + 0x1234) & 0xffff;
+  header[24] = check & 255;
+  header[25] = check >> 8;
+  const out = new Uint8Array(header.length + blocks.reduce((n, b) => n + b.length, 0) + 1);
+  out.set(header);
+  let p = header.length;
+  for (const b of blocks) {
+    out.set(b, p);
+    p += b.length;
+  }
+  return out; // the last byte stays 0: the terminator block
+}
