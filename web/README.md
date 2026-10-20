@@ -41,8 +41,9 @@ to look the way they did, from the original source and files.
   are kept, and Utilities ▸ Restore puts them back) and `C:\DOWNLOAD` for BBS
   downloads; D: is the CD as shipped; A: is the floppy drive. `GM` starts Game-Maker's
   text-mode menus (from `MENU.C`, with the original `.HLP` help screens from
-  `runtime/run/GM`); its Design bar opens the graphic designers full screen in a
-  VGA-style skin, each with a button to continue in today's web editor. `PLAYGAME`
+  `runtime/run/GM`); its Design bar runs the eight designers ported from their C source
+  (`src/vga`: PALCHOS, BLOCEDIT, MONEDIT, MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR), each
+  with its own text menu and 320x200 VGA mode 13h screen drawn in the monitor. `PLAYGAME`
   and a game's `.EXE` play games on the monitor, whose picture bulges like CRT glass
   (an SVG displacement filter; full screen stays flat).
 - **TURBO** on the case switches between full speed and a 286-class PC (see below).
