@@ -135,7 +135,6 @@ registerEditor(['chr'], (host, project, file) => {
       [LASTSND, 'None'],
       ...Array.from({ length: LASTSND }, (_, i) => [i, `${i}: ${sounds?.digital[i] ? `${sounds.digital[i]}.voc` : (SOUND_NAMES[i] ?? 'PC speaker')}`] as [number, string]),
     ];
-    const objectOptions: [number, string][] = [[BACKBL, 'No (always available)'], ...bbl.map((b, i) => [i, `Background block ${i}${b.obj ? ' (object)' : ''}`] as [number, string]).filter(([i]) => bbl[i].obj)];
     const meter = chr.meter[current];
     const reps = current >= 5;
 
@@ -149,7 +148,19 @@ registerEditor(['chr'], (host, project, file) => {
         current >= 3 ? selectField('Joystick', JOY_DIRS, () => seq.jstkMov, (v) => edit(() => (seq.jstkMov = v))) : null,
         current >= 3 ? selectField('Joystick button', JOY_BUTTONS, () => seq.jstkBut, (v) => edit(() => (seq.jstkBut = v))) : null,
         selectField('Sound', soundOptions, () => (seq.sound < 0 || seq.sound >= LASTSND ? LASTSND : seq.sound), (v) => edit(() => (seq.sound = v))),
-        current >= 5 ? selectField('Needs object in inventory', objectOptions, () => seq.bloc, (v) => edit(() => (seq.bloc = v))) : null,
+        current >= 5
+          ? h(
+              'label',
+              { class: 'field' },
+              h('span', null, 'Needs object in inventory'),
+              blockButton(() => bbl, () => chooser.palette, () => seq.bloc, (v) => edit(() => (seq.bloc = v)), {
+                title: 'The object the hero must carry to do this',
+                extras: [{ value: BACKBL, label: 'nothing', icon: '∅' }],
+                transparent: false,
+                only: (b) => !!b.obj,
+              }),
+            )
+          : null,
         reps
           ? selectField('Executions', [[1, 'Limited'], [0, 'Unlimited']] as [number, string][], () => (meter === INF_REPEAT ? 0 : 1), (v) =>
               edit(() => ((chr.meter[current] = v ? 10 : INF_REPEAT), renderDetail())),
