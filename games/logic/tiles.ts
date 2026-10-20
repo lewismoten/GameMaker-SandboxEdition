@@ -34,8 +34,9 @@ export const E = 2;
 export const S = 4;
 export const W = 8;
 
-/** Battery kinds: steady current, pulsed current, or a dead cell you bump to start. */
-export type BatteryKind = 'steady' | 'pulse' | 'dead';
+/** Battery kinds: steady current, pulsed current (antipulse: off while pulse is on), or a
+ * dead cell you bump to start. */
+export type BatteryKind = 'steady' | 'pulse' | 'antipulse' | 'dead';
 /** Ticks a pulse battery stays on and off. */
 export const PULSE_ON = 27;
 export const PULSE_OFF = 27;

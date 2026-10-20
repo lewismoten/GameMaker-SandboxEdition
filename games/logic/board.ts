@@ -147,7 +147,7 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
       else if (isBattery(ch)) {
         const k = parseInt(ch, 16);
         const kind = spec.wires[ch]?.kind ?? 'steady';
-        put(x, y, kind === 'steady' ? `bat${k}` : kind === 'dead' ? `dead${k}` : `pulse${k}`);
+        put(x, y, kind === 'steady' ? `bat${k}` : kind === 'dead' ? `dead${k}` : kind === 'antipulse' ? `pulseOff${k}` : `pulse${k}`);
       } else if (ch === 'X') {
         put(x, y, 'outlet');
         exit = { x: OX + x, y: OY + y };

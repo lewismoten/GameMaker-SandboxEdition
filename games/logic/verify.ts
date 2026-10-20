@@ -70,8 +70,28 @@ export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: 
     }
   };
   await run(10);
+  let waitSafe = false;
   for (const ch of moves.replace(/\s+/g, '')) {
     if (sim.dead || sim.link >= 0) break;
+    if (ch === '$') {
+      waitSafe = true;
+      continue;
+    }
+    if (waitSafe && ch in SCAN) {
+      // like a player: wait until no current is within three blocks of where Watt is going
+      waitSafe = false;
+      const [dx, dy] = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] }[ch as 'U'] ?? [0, 0];
+      const tx = (sim.w.chr.x[0] + dx) * 20;
+      const ty = (sim.w.chr.y[0] + dy) * 20;
+      for (let i = 0; i < 200; i++) {
+        const w = sim.w;
+        const near = w.mm.some(
+          (m, k) => m.monnum < 16 && Math.hypot(w.mi[k].curx[0] * 20 + w.mi[k].curx[1] - tx, w.mi[k].cury[0] * 20 + w.mi[k].cury[1] - ty) < 60,
+        );
+        if (!near) break;
+        await run(1);
+      }
+    }
     if (ch === '.') await run(9);
     else if (ch === 'w') await run(30);
     else if (ch in SCAN) {

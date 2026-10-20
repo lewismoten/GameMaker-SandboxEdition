@@ -116,7 +116,31 @@ export const BOARDS: BoardSpec[] = [
     ],
     wires: { 0: { path: 'R6 U5 R1' } },
     solution: 'DDD RR D wwwwww RR UUUUUU',
-    hint: 'If I turn the power on, I can never cross that wire. If I don\'t, the gate stays shut.',
-    answer: 'That is a timer button, not a switch. Bump it as you go by: it turns itself off after about five seconds. Wait for the gate to open and the wire to go dark, then cross.',
+    hint: "If I turn the power on, I can never cross that wire. If I don't, the gate stays shut.",
+    answer:
+      'That is a timer button, not a switch. Bump it as you go by: it turns itself off after about five seconds. Wait for the gate to open and the wire to go dark, then cross.',
+  },
+  {
+    file: 'vcr',
+    title: 'The VCR',
+    room: 'living',
+    card: ['It has been blinking 12:00', 'since 1987. Nobody knows why.'],
+    rows: [
+      '############0###',
+      '#..............#',
+      '#..............#',
+      '#.*.*.*........#',
+      '#..............#',
+      '#.......@......#',
+      '#............g##',
+      '#...........#.X#',
+      '#.$.........#..#',
+      '##########1#####',
+    ],
+    wires: { 0: { path: 'D6 R1', kind: 'pulse' }, 1: { path: 'U9', kind: 'antipulse' } },
+    solution: 'R $R R $R R D D R',
+    hint: 'The current keeps coming and going. How do I get across?',
+    answer:
+      'Those batteries pulse: on for a moment, off for a moment, and the two take turns. Wait next to a wire until the current has just gone by, then roll across. Stop between the two wires and do it again.',
   },
 ];
