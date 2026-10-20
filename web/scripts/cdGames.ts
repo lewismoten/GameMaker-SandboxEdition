@@ -30,6 +30,10 @@ export interface CdCatalogEntry {
   exe?: string;
   /** A few lines from the game's own story or instruction screen. */
   blurb?: string;
+  author?: string;
+  company?: string;
+  year?: number;
+  price?: string;
 }
 
 // Files that only matter to DOS (executables, batch files, icons, archives).
@@ -37,23 +41,57 @@ const SKIP = /\.(exe|bat|com|ico|bak|drv|zip|lzh)$/i;
 const NOTICES = ['readme.txt', 'order.doc', 'register.txt', 'order.txt'];
 const NOTICE_WORDS = /shareware|freeware|regist/i;
 
-// Old .gam files often name the title scene "Title Screen" or a version number, so
-// shareware titles come from each game's own credits and story screens.
-const SHAREWARE_TITLES: Record<string, string> = {
-  ajqst2: "A-J's Quest 2 (demo)",
-  ajquest: "A-J's Quest",
-  bounerm: 'Bounerim',
-  congress: 'Progress or Congress?',
-  fluffyr: 'Fluffy Ralf',
-  gridlin: 'Gridline',
-  njlnflx: 'Nejilian Flux',
-  octolrs: 'Octolris',
-  orb: 'ORB - The Derelict Planet',
-  pac: 'PAC',
-  paperair: 'Paper Airplane',
-  parsec3d: 'Parsec Man 3D',
-  signhdg: 'Sign',
-  zoom: 'Zoom',
+/**
+ * Who made each game, when, and what registration cost. Sources: each game's own
+ * credit/readme screens on the CD, and https://en.wikipedia.org/wiki/Game-Maker.
+ * Fields no source states are left out rather than guessed. Old .gam files often name
+ * their title scene "Title Screen" or a version number, so titles live here too.
+ */
+export interface GameInfo {
+  title: string;
+  author?: string;
+  company?: string;
+  year?: number;
+  /** Registration / price, as the author stated it. */
+  price?: string;
+}
+
+const RSD = 'Recreational Software Designs';
+const AJ = 'A-J Games';
+const GAME_INFO: Record<string, GameInfo> = {
+  // gameware (the samples that came with Game-Maker)
+  sample: { title: 'Sample', author: 'Joan Stone', company: RSD, year: 1991 },
+  pipemare: { title: 'Pipemare', author: 'G. Oliver Stone', company: RSD, year: 1991 },
+  nebula: { title: 'Nebula', author: 'Andy Stone', company: RSD, year: 1991 },
+  terrain: { title: 'Terrain', company: RSD, year: 1991 },
+  houses: { title: 'Houses', company: RSD, year: 1991 },
+  penguin: { title: 'Penguin Pete', author: 'Joan Stone', company: RSD, year: 1991 },
+  tutor: { title: 'Tutor', company: RSD },
+  zark: { title: 'Zark', author: 'Eric-Jon Waugh', company: AJ },
+  heart: { title: 'The Patchwork Heart', company: AJ },
+  peach: { title: 'Peach the Lobster', company: AJ, year: 1994 },
+  glub: { title: 'Glubada Pond', company: AJ },
+  donut: { title: 'Crullo: Adventures of a Donut', company: AJ },
+  rings5: { title: "Cireneg's Rings", author: 'Eric-Jon Waugh', company: AJ, price: '$10' },
+  volume: { title: 'Linear Volume', author: 'Eric-Jon Waugh', company: AJ, year: 1993, price: '$10' },
+  outerlim: { title: 'Woman Warrior and the Outer Limits', author: 'Sheldon Chase', company: 'KD Software' },
+  warrior: { title: 'Woman Warrior and the Attack from Below', author: 'Sheldon Chase', company: 'KD Software' },
+  bcuda: { title: 'Barracuda: Secret Mission 1', company: 'GameLynk', year: 1992 },
+  // shareware
+  ajquest: { title: "A-J's Quest", author: 'Eric-Jon Waugh', company: AJ, year: 1992, price: '$15' },
+  ajqst2: { title: 'Return of A-J (demo)', author: 'Eric-Jon Waugh', company: AJ, year: 1994, price: '$15' },
+  bounerm: { title: 'Bounerim', company: AJ, price: '$20' },
+  congress: { title: 'Progress or Congress?', author: 'Mark Hadley', year: 1994, price: '$7–$15' },
+  fluffyr: { title: 'Fluffy Ralph', company: AJ, price: '$15' },
+  gridlin: { title: 'Gridline', author: 'Eric-Jon Waugh', company: AJ, year: 1993, price: '$10' },
+  njlnflx: { title: 'Nejilian Flux', company: AJ, price: '$15' },
+  octolrs: { title: 'Octolris', company: AJ, year: 1994, price: '$20' },
+  orb: { title: 'ORB - The Derelict Planet', author: 'Josh Turcotte', price: '$10 + $1 shipping' },
+  pac: { title: 'PAC', company: AJ, price: 'Freeware' },
+  paperair: { title: 'Paper Airplane', author: 'Matt Bell', year: 1993, price: '$15' },
+  parsec3d: { title: 'Parsec Man 3D', author: 'Mark Hadley', year: 1994, price: '$7–$15' },
+  signhdg: { title: 'Sign of the Hedgehog', author: 'Eric-Jon Waugh', company: AJ, price: '$20' },
+  zoom: { title: 'Zoom the Super Bear', company: AJ, price: '$20' },
 };
 
 function cString(bytes: Uint8Array): string {
@@ -153,7 +191,8 @@ function scan(cdRoot: string): Scan {
       const exe = readdirSync(from).find((n) => /\.exe$/i.test(n));
       const entry: CdCatalogEntry = {
         id,
-        title: (kind === 'shareware' && SHAREWARE_TITLES[id]) || (gamBytes && gameTitle(gamBytes)) || id,
+        title: GAME_INFO[id]?.title || (gamBytes && gameTitle(gamBytes)) || id,
+        ...(GAME_INFO[id] ? { author: GAME_INFO[id].author, company: GAME_INFO[id].company, year: GAME_INFO[id].year, price: GAME_INFO[id].price } : {}),
         kind,
         path,
         gam,
