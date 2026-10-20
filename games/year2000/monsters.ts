@@ -46,6 +46,8 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   ];
   // Zappable robots are tougher than a bump (power 100+) but weaker than a zap (150).
   const ROBOT = 120;
+  // Chasers short-circuit when they bump into Dex (power under 100): one hit and done.
+  const CHASER = 90;
 
   def(MON.zap, { pics: anim('zap', 2), power: 150, towards: 9, end: 12, becomes: MON.pop });
   def(MON.pop, { pics: anim('pop', 2), power: 100, end: 6 });
@@ -65,7 +67,7 @@ export function buildMonsters(mb: BlockSet): Monster[] {
       [0, 0, 2, 0],
     ],
   });
-  def(MON.dog, { pics: anim('dog', 3), power: ROBOT, towards: 2, becomes: MON.pop, score: 150 });
+  def(MON.dog, { pics: anim('dog', 3), power: CHASER, towards: 2, becomes: MON.pop, score: 150 });
   def(MON.paper, { pics: anim('paper', 2), power: 60, thru: false, end: -1, march: [[0, 9, 5, 0]] });
   def(MON.paperbot, { pics: anim('paperbot', 3), power: ROBOT, becomes: MON.pop, score: 150, march: back(6, 0, 3) });
   def(MON.alien, { pics: anim('alien', 6), power: 50, towards: RANDOM(1), becomes: MON.beam });
@@ -80,12 +82,12 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.fastL, { pics: anim('carT', 1), power: 250, thru: false, end: -1, march: lane(7, -1) });
   def(MON.truckR, { pics: anim('truck', 3), power: 250, thru: false, end: -1, march: lane(3, 1) });
   def(MON.truckL, { pics: anim('truck', 3), power: 250, thru: false, end: -1, march: lane(3, -1) });
-  def(MON.faxbot, { pics: anim('faxbot', 2), power: ROBOT, towards: RANDOM(2), becomes: MON.pop, score: 150 });
+  def(MON.faxbot, { pics: anim('faxbot', 2), power: CHASER, towards: RANDOM(2), becomes: MON.pop, score: 150 });
 
-  def(MON.secbot, { pics: anim('secbot', 4), power: ROBOT, towards: 2, end: 500, becomes: MON.pop, score: 200 });
+  def(MON.secbot, { pics: anim('secbot', 4), power: CHASER, towards: 2, end: 500, becomes: MON.pop, score: 200 });
   def(MON.secbotPatrol, {
     pics: anim('secbot', 4),
-    power: ROBOT,
+    power: CHASER,
     becomes: MON.pop,
     score: 200,
     march: [
@@ -97,20 +99,20 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   });
   def(MON.cart, { pics: anim('cart', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(7, 0, 4) });
   def(MON.cartV, { pics: anim('cart', 2), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 6, 4) });
-  def(MON.shopper, { pics: anim('shopper', 5), power: ROBOT, towards: RANDOM(1), becomes: MON.pop, score: 100 });
+  def(MON.shopper, { pics: anim('shopper', 5), power: CHASER, towards: RANDOM(1), becomes: MON.pop, score: 100 });
   def(MON.skater, { pics: anim('skater', 2), power: 250, march: back(8, 0, 5) });
   def(MON.skaterV, { pics: anim('skater', 2), power: 250, march: back(0, 6, 5) });
 
-  def(MON.telemarketer, { pics: anim('tele', 4), power: ROBOT, towards: 2, becomes: MON.pop, score: 200 });
-  def(MON.static, { pics: anim('static', 1), power: ROBOT, towards: RANDOM(2), becomes: MON.pop, score: 150 });
+  def(MON.telemarketer, { pics: anim('tele', 4), power: CHASER, towards: 2, becomes: MON.pop, score: 200 });
+  def(MON.static, { pics: anim('static', 1), power: CHASER, towards: RANDOM(2), becomes: MON.pop, score: 150 });
   def(MON.fish, { pics: anim('fish', 4), power: ROBOT, becomes: MON.pop, score: 100, march: back(5, 0, 2) });
   def(MON.fishV, { pics: anim('fish', 4), power: ROBOT, becomes: MON.pop, score: 100, march: back(0, 4, 2) });
   def(MON.dino, { pics: anim('dino', 4), power: 250, march: back(6, 0, 3) });
   def(MON.dinoV, { pics: anim('dino', 4), power: 250, march: back(0, 5, 3) });
   def(MON.grandma, { pics: anim('grandma', 8), power: 50, becomes: MON.beam });
 
-  def(MON.meteor, { pics: anim('meteor', 2), power: 250, thru: false, end: -1, becomes: MON.boom, march: [[-7, 10, 5, O.right]] });
-  def(MON.meteorL, { pics: anim('meteor', 2), power: 250, thru: false, end: -1, becomes: MON.boom, march: [[7, 10, 5, O.left]] });
+  def(MON.meteor, { pics: anim('meteor', 2), power: 90, thru: false, end: -1, becomes: MON.boom, march: [[-7, 10, 5, O.right]] });
+  def(MON.meteorL, { pics: anim('meteor', 2), power: 90, thru: false, end: -1, becomes: MON.boom, march: [[7, 10, 5, O.left]] });
   def(MON.boom, { pics: anim('boom', 3), power: 100, end: 8 });
   def(MON.buggy, { pics: anim('buggy', 2), power: 250, march: back(8, 0, 3) });
   def(MON.buggyV, { pics: anim('buggy', 2), power: 250, march: back(0, 6, 3) });

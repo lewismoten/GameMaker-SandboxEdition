@@ -1,6 +1,6 @@
 // DEX.CHR (Dex on Earth, and indoors at the Moon School) and MOON.CHR (Dex in his moon
-// suit, hop-gliding in one-sixth gravity: every hop is a push of momentum that the
-// next frames take back, so he floats along and drifts a little when he lets go).
+// suit, bounding along in one-sixth gravity: a big push off, then he floats in to land,
+// a whole block per bound).
 import { CHARBL, MONBL } from '../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
 import type { BlockSet } from './book';
@@ -33,7 +33,8 @@ export function buildCharacter(cb: BlockSet, moon: boolean): Character {
   const S = ch.sequences;
   set(S[SEQ.idle], [f('down0', 40), f('blink', 3), f('down0', 30), f('blink', 3), f('down0', 12), f('blink', 2)]);
   set(S[SEQ.die], [f('hurt', 2), f('die0', 3), f('die1', 3), f('die2', 6), f('die3', 24)], { sound: SND.die });
-  set(S[SEQ.hurt], [f('hurt', 2), f('hurt2', 2)], { sound: SND.hurt });
+  // One quick flash: a longer hurt would freeze Dex while a car (or a dinosaur) keeps hitting him.
+  set(S[SEQ.hurt], [f('hurt', 1)], { sound: SND.hurt });
   set(S[SEQ.pickup], [f('down0', 1)], { key: 0 });
   set(S[SEQ.drop], [f('down0', 1)], { key: 0 });
 
@@ -44,23 +45,22 @@ export function buildCharacter(cb: BlockSet, moon: boolean): Character {
     [SEQ.down, KEY.down, 0, 1, ['down1', 'down0', 'down2', 'down0'], false, JOY.down],
   ];
   for (const [n, key, dx, dy, pics, mirror, joy] of walks) {
-    // On Earth: 5 pixels a step. On the Moon: a big push, then the push fades.
-    const steps = moon ? [7, -2, -2, -3] : [5, 5, 5, 5];
+    // On Earth: 5 pixels a step. On the Moon: a big bound that slows as he floats down.
+    const steps = moon ? [8, 6, 4, 2] : [5, 5, 5, 5];
     set(
       S[n],
-      pics.map((p, i) => f(p, moon && i === 0 ? 2 : 1, dx * steps[i], dy * steps[i], mirror)),
-      { key, jstkMov: joy, jstkBut: 4, sound: SND.none, momentum: moon ? 1 : 0 },
+      pics.map((p, i) => f(p, 1, dx * steps[i], dy * steps[i], mirror)),
+      { key, jstkMov: joy, jstkBut: 4, sound: SND.none },
     );
   }
-  if (!moon)
-    set(S[SEQ.zap], [f('zap', 2), birth(MON.zap), f('zap2', 2), f('down0', 1)], {
-      key: KEY.space,
-      sound: SND.zap,
-      ground: 1,
-      norepeat: 1,
-      jstkMov: 9,
-      jstkBut: 1,
-    });
+  set(S[SEQ.zap], [f('zap', 2), birth(MON.zap), f('zap2', 2), f('down0', 1)], {
+    key: KEY.space,
+    sound: SND.zap,
+    ground: 1,
+    norepeat: 1,
+    jstkMov: 9,
+    jstkBut: 1,
+  });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100;

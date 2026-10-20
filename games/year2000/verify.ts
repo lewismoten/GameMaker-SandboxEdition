@@ -57,8 +57,9 @@ for (const [i, l] of LEVELS.entries()) {
   const scene: SimScene = { map, bbl, mbl, mon: mons, chr: chars[l.chr], cbl, links };
   const startAt = lm.marks.has('start') ? lm.at('start') : lm.at('hall');
   let sim = new Sim(scene, startAt, ci, 7 + i);
+  let arrival = startAt;
   const fresh = (at: { x: number; y: number }) => (sim = new Sim(scene, at, ci, 11 + i));
-  const opts = { god, moon: l.chr === 'moon.chr', zapAt: (n: number) => ROBOTS.has(n), avoid };
+  const opts = { god, zapAt: (n: number) => ROBOTS.has(n), avoid };
   let bot = new Bot(sim, opts);
   const pages0 = ci.meter[CTR.pages];
   const lives0 = ci.lives;
@@ -67,11 +68,15 @@ for (const [i, l] of LEVELS.entries()) {
   const run = async (): Promise<boolean> => {
     if (l.file === 'exchange') {
       // Dial around the exchange: 1 -> Florida -> the sea -> the TV -> the jungle -> the launch pad.
-      for (const door of ['hall1', 'floridaOut', 'seaOut', 'tvOut', 'jungleOut']) {
+      const DOOR: Record<string, string> = { hall: 'hall1', florida: 'floridaOut', sea: 'seaOut', tv: 'tvOut', jungle: 'jungleOut' };
+      const roomOf = (p: { x: number; y: number }) => [...lm.marks].find(([, [x, y]]) => x === p.x && y === p.y)?.[0] ?? 'hall';
+      for (let room = roomOf(arrival); room !== 'launch'; room = roomOf(arrival)) {
+        const door = DOOR[room];
         await bot.collect(names, (n) => /^quarter_/.test(n), 'quarters');
         if (!(await bot.goTo([[lm.at(door).x, lm.at(door).y]], door))) return false;
         if (sim.link < 0) return false;
         const to = links[sim.link].to;
+        arrival = to;
         fresh(to);
         bot = new Bot(sim, opts);
       }
@@ -82,10 +87,22 @@ for (const [i, l] of LEVELS.entries()) {
       // Catch Sparky: chase him until the cover page drops, then pick it up.
       for (let t = 0; t < 4000 && ci.meter[CTR.cover] <= 1; t++) {
         const w = sim.w;
-        const mm = w.mm.findIndex((m) => m.monnum === MON.sparky || m.monnum === MON.sparky2 || m.monnum === MON.sparky3 || m.monnum === MON.cover);
+        const mm = w.mm.findIndex(
+          (m) => m.monnum === MON.sparky || m.monnum === MON.sparky2 || m.monnum === MON.sparky3 || m.monnum === MON.sparkyDizzy || m.monnum === MON.cover,
+        );
         if (mm < 0) break;
-        const target: [number, number] = [w.mi[mm].curx[0], w.mi[mm].cury[0]];
-        await bot.goTo([target], 'Sparky');
+        const [sx, sy] = [w.mi[mm].curx[0], w.mi[mm].cury[0]];
+        // He may be half inside a table: any block next to him will do.
+        await bot.goTo(
+          [
+            [sx, sy],
+            [sx + 1, sy],
+            [sx - 1, sy],
+            [sx, sy + 1],
+            [sx, sy - 1],
+          ],
+          `Sparky at ${sx},${sy}`,
+        );
         if (sim.dead) return false;
         if (ci.meter[SEQ.zap] <= 0) await bot.collect(names, (n) => /^battery_/.test(n), 'batteries');
       }
@@ -100,14 +117,25 @@ for (const [i, l] of LEVELS.entries()) {
     const exit = lm.at('exit');
     return bot.goTo([[exit.x, exit.y]], 'exit');
   };
-  const ok = await run();
-  outcome = ok && sim.link >= 0 ? 'EXIT' : sim.dead ? 'DIED' : 'STUCK';
-  if (sim.dead) deaths++;
+  let ok = await run();
+  let levelDeaths = 0;
+  // Like PLAYGAME: a death costs a life and restarts the level (counters are kept).
+  while (sim.dead && ci.lives > 0 && levelDeaths < 8) {
+    levelDeaths++;
+    deaths++;
+    totalTicks += sim.ticks;
+    ci.lives--;
+    ci.hitpts = -1;
+    fresh(arrival);
+    bot = new Bot(sim, opts);
+    ok = await run();
+  }
+  outcome = (ok && sim.link >= 0 ? 'EXIT' : sim.dead ? 'DIED' : 'STUCK') + ` (${levelDeaths} deaths)`;
   totalTicks += sim.ticks;
   console.log(
     `${i + 1}. ${l.desc.padEnd(18)} ${outcome}  ${(sim.ticks / 18.2).toFixed(0)}s  pages ${pages0 - 1}->${ci.meter[CTR.pages] - 1}  quarters ${ci.meter[CTR.quarters] - 1}  zap ${ci.meter[SEQ.zap]}  hp ${ci.hitpts}  lives ${lives0}->${ci.lives}  score ${ci.score}`,
   );
   for (const s of bot.log) console.log('   ', s);
-  if (outcome !== 'EXIT') break;
+  if (!outcome.startsWith('EXIT')) break;
 }
 console.log(`${(totalTicks / 18.2 / 60).toFixed(1)} minutes; ${ci.meter[CTR.pages] - 1} pages (need ${PAGES_NEEDED}); deaths ${deaths}`);

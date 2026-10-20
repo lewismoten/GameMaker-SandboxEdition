@@ -48,6 +48,8 @@ export class Bot {
     const b = this.blockAt(x, y);
     if (b.grav && !goal && !((dx > 0 && b.grav & 2) || (dx < 0 && b.grav & 8) || (dy > 0 && b.grav & 4) || (dy < 0 && b.grav & 1))) return false;
     if (!goal && this.o.avoid?.has(this.w.map[y * MLEN + x])) return false;
+    // Always-hurting ground (tar pits): go around.
+    if (!goal && b.chHitPt < 0 && (this.w.bg[b.nextBl]?.chHitPt ?? 0) < 0) return false;
     if (!b.solid) return true;
     if (b.effect && b.eamt < 0 && !this.w.bg[b.touchBl]?.solid) {
       const m = this.w.ci.meter[b.effect];
@@ -86,7 +88,16 @@ export class Bot {
 
   async tick(): Promise<boolean> {
     if (this.o.god) this.w.ci.hitpts = 100;
+    const hp = this.w.ci.hitpts;
     await this.sim.tick();
+    if (process.env.HITS && this.w.ci.hitpts < hp) {
+      const p = this.sim.pos;
+      const near = this.w.mm
+        .map((m, i) => ({ n: m.monnum, x: this.w.mi[i].curx[0], y: this.w.mi[i].cury[0] }))
+        .filter((m) => m.n < 64 && Math.abs(m.x - p.bx) <= 1 && Math.abs(m.y - p.by) <= 2)
+        .map((m) => `${m.n}@${m.x},${m.y}`);
+      this.log.push(`t${this.sim.ticks} hp ${hp}->${this.w.ci.hitpts} at ${p.bx},${p.by} near ${near.join(' ')}`);
+    }
     this.zap();
     return !this.sim.dead && this.sim.link < 0 && this.sim.ticks < (this.o.maxTicks ?? 1e9);
   }
@@ -121,6 +132,11 @@ export class Bot {
     const dir = DIRS.find(([dx, dy]) => bx + dx === nx && by + dy === ny);
     if (!dir) return false;
     for (const [, , k] of DIRS) if (k !== dir[2]) sim.release(k);
+    // Look both ways: wait while unstoppable traffic is about to cross the next block.
+    for (let wait = 0; wait < 90 && ((this.danger(nx, ny) && !this.danger(bx, by)) || this.hazard(nx, ny)); wait++) {
+      sim.releaseAll();
+      if (!(await this.tick())) return false;
+    }
     sim.press(dir[2]);
     for (let t = 0; t < 40; t++) {
       if (!(await this.tick())) return false;
@@ -130,6 +146,30 @@ export class Bot {
       }
     }
     sim.release(dir[2]);
+    return false;
+  }
+
+  /** Does this block hurt now, or will it start to very soon (a laser fence)? */
+  hazard(x: number, y: number): boolean {
+    const w = this.w;
+    const n = w.map[y * MLEN + x];
+    const shown = w.bg[w.blkmap[n] ?? n];
+    if (shown.chHitPt < 0) return true;
+    const next = w.bg[shown.nextBl];
+    return next !== shown && next.chHitPt < 0 && w.nxtchg[n] - w.clock < 8;
+  }
+
+  /** Is an unzappable hazard (a car, a buggy, a dinosaur) within reach of this block? */
+  danger(x: number, y: number): boolean {
+    const w = this.w;
+    for (let mm = 0; mm < w.mm.length; mm++) {
+      const n = w.mm[mm].monnum;
+      if (n >= 64 || (w.mon[n]?.power ?? 0) < 200) continue;
+      const mi = w.mi[mm];
+      const mx = mi.curx[0] * 20 + mi.curx[1];
+      const my = mi.cury[0] * 20 + mi.cury[1];
+      if (Math.abs(mx - x * 20) < 70 && Math.abs(my - y * 20) < 30) return true;
+    }
     return false;
   }
 
@@ -146,6 +186,8 @@ export class Bot {
       sim.press(want);
       if (!(await this.tick())) return false;
     }
+    if (process.env.STEER)
+      this.log.push(`steer to ${nx},${ny} failed at ${sim.pos.x},${sim.pos.y} seq ${this.w.chr.cseq} grav ${this.w.ci.gravx},${this.w.ci.gravy}`);
     return false;
   }
 
@@ -174,7 +216,12 @@ export class Bot {
       this.sim.releaseAll();
       for (let i = 0; i < 4; i++) if (!(await this.tick())) return this.sim.link >= 0;
     }
-    this.log.push(`gave up on ${what}`);
+    this.log.push(
+      `gave up on ${what} at ${this.sim.pos.bx},${this.sim.pos.by} (${this.sim.pos.fx},${this.sim.pos.fy}) heading for ${cells
+        .slice(0, 3)
+        .map((c) => c.join(','))
+        .join(' ')}`,
+    );
     return false;
   }
 

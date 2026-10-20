@@ -117,7 +117,7 @@ function addLasers(set: BlockSet, floor: Floor, onTime: number, offTime: number)
       }
     return p;
   };
-  set.add('laser', post(true), { hp: -6, next: 'laser_off', ntime: onTime });
+  set.add('laser', post(true), { hp: -3, next: 'laser_off', ntime: onTime });
   set.add('laser_off', post(false), { next: 'laser', ntime: offTime });
 }
 
@@ -799,7 +799,7 @@ export function citySet(): BlockSet {
   addItems(s, 'jungle', ['quarter', 'pill']);
   addItems(s, 'static', ['quarter']);
   addBooths(s, 'sidewalk');
-  addLasers(s, 'tile', 14, 22);
+  addLasers(s, 'tile', 9, 27);
   addWalkways(s, 'tube');
   // Mega Mall 2000.
   s.add('mallTop', mallWall(true), { solid: SOLID });
@@ -870,7 +870,7 @@ export function moonSet(): BlockSet {
   addItems(s, 'metal', ['page', 'quarter', 'pill', 'battery']);
   addItems(s, 'gym', ['page', 'pill', 'battery', 'quarter']);
   addBooths(s, 'sidewalk');
-  addLasers(s, 'metal', 16, 20);
+  addLasers(s, 'metal', 9, 27);
   addWalkways(s, 'walk');
 
   addBig(s, 'crater', crater(FLOORS.moon));
@@ -883,8 +883,8 @@ export function moonSet(): BlockSet {
   addBig(s, 'bbMoon', billboard(["MCMOON'S", 'OVER 1 BILLION', 'PILLS SERVED'], 'gold', 'red', FLOORS.moon));
   addBig(s, 'bbWelcome', billboard(['WELCOME TO', 'THE MOON', 'POP. 2,000'], 'purple', 'gold', FLOORS.moon));
   const meteorHole = stars(5);
-  s.add('meteorgun', meteorHole, { solid: SOLID, birthMon: MON.meteor, birthTime: 22 });
-  s.add('meteorgunL', stars(6), { solid: SOLID, birthMon: MON.meteorL, birthTime: 29 });
+  s.add('meteorgun', meteorHole, { solid: SOLID, birthMon: MON.meteor, birthTime: 40 });
+  s.add('meteorgunL', stars(6), { solid: SOLID, birthMon: MON.meteorL, birthTime: 47 });
   s.add('buggydock', mowerDock('moon', 'GAS'), { solid: SOLID });
 
   // Moon School.
