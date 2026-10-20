@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours, ratingMark, seeded } from '../src/desk/boxFacts';
+import { backScore, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours, ratingMark, seeded } from '../src/desk/boxFacts';
 
 describe('box facts', () => {
   it('counts 1.44 MB disks with the DOS player added', () => {
@@ -45,12 +45,17 @@ describe('box facts', () => {
     expect(boxReviews('m', { reviews: [{ quote: 'q', source: 's' }] })[0].quote).toBe('q');
   });
 
-  it('fits the back by shrinking type, then dropping features, reviews and shots', () => {
+  it('fits the back with the best mix that fits', () => {
     const h = (p: { bodyPx: number; features: number; reviews: number; shots: number }) => p.bodyPx * 20 + p.features * 30 + p.reviews * 40 + p.shots * 200;
     expect(planBack(10_000, 7, 2, h)).toMatchObject({ bodyPx: 19, features: 7, reviews: 2, shots: 1 });
-    expect(planBack(19 * 20 + 7 * 30 + 80 + 200 - 1, 7, 2, h).bodyPx).toBe(18);
-    const tight = planBack(14 * 20 + 3 * 30 + 0 + 140, 7, 2, h);
-    expect(tight).toMatchObject({ features: 3, reviews: 0, shots: 0.7 });
-    expect(planBack(14 * 20, 7, 2, h)).toMatchObject({ features: 0, shots: 0 });
+    const tighter = planBack(19 * 20 + 7 * 30 + 80 + 200 - 1, 7, 2, h);
+    expect(tighter.height).toBeLessThan(19 * 20 + 7 * 30 + 80 + 200);
+    expect(backScore(tighter)).toBeLessThan(backScore({ bodyPx: 19, features: 7, reviews: 2, shots: 1 }));
+    // when space is short, a review and the screenshots stay before extra features
+    const tight = planBack(14 * 20 + 3 * 30 + 40 + 140, 7, 2, h);
+    expect(tight.reviews).toBeGreaterThan(0);
+    expect(tight.shots).toBeGreaterThan(0);
+    expect(planBack(14 * 20, 7, 2, h)).toMatchObject({ features: 0, reviews: 0, shots: 0 });
+    expect(planBack(10, 7, 2, h)).toMatchObject({ bodyPx: 14, features: 0 });
   });
 });

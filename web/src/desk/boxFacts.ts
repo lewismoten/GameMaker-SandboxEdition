@@ -112,25 +112,37 @@ export interface BackPlan {
   height: number;
 }
 
+/** How good a back cover plan looks: readable type, the reviews, screenshots and features, in that order. */
+export function backScore(p: Omit<BackPlan, 'height'>): number {
+  const shots = p.shots >= 1 ? 12 : p.shots >= 0.85 ? 10 : p.shots > 0 ? 8 : 0;
+  const reviews = p.reviews ? 6 + (p.reviews - 1) * 2 : 0;
+  return (p.bodyPx - 14) * 1.2 + p.features * 1.5 + reviews + shots;
+}
+
 /**
  * Fits the back cover: the story, reviews, feature bullets and a row of screenshots must
- * end above the requirements panel. Shrinks the type first, then drops features down to
- * three, then reviews, then shrinks and finally drops the screenshots.
- * `heightOf` measures the content laid out with a plan.
+ * end above the claims and requirements. Of every mix of type size, features, reviews and
+ * screenshot size that fits, picks the best looking (backScore); `heightOf` measures the
+ * content laid out with a plan.
  */
 export function planBack(available: number, featureCount: number, reviewCount: number, heightOf: (p: Omit<BackPlan, 'height'>) => number): BackPlan {
-  const tries: Omit<BackPlan, 'height'>[] = [];
-  const sizes = [19, 18, 17, 16, 15, 14];
-  const shotScales = [1, 0.85, 0.7];
-  for (const shots of shotScales) for (const bodyPx of sizes) tries.push({ bodyPx, features: featureCount, reviews: reviewCount, shots });
-  for (let features = featureCount - 1; features >= Math.min(3, featureCount); features--)
-    tries.push({ bodyPx: 14, features, reviews: reviewCount, shots: 0.7 });
-  for (let reviews = reviewCount - 1; reviews >= 0; reviews--) tries.push({ bodyPx: 14, features: Math.min(3, featureCount), reviews, shots: 0.7 });
-  for (let features = Math.min(3, featureCount); features >= 0; features--) tries.push({ bodyPx: 14, features, reviews: 0, shots: 0 });
-  for (const t of tries) {
-    const height = heightOf(t);
-    if (height <= available) return { ...t, height };
-  }
-  const last = tries[tries.length - 1];
+  let best: BackPlan | undefined;
+  let bestScore = -1;
+  for (const bodyPx of [19, 18, 17, 16, 15, 14])
+    for (const shots of [1, 0.85, 0.7, 0])
+      for (let reviews = reviewCount; reviews >= 0; reviews--)
+        for (let features = featureCount; features >= 0; features--) {
+          const p = { bodyPx, features, reviews, shots };
+          const score = backScore(p);
+          if (score <= bestScore) continue;
+          const height = heightOf(p);
+          if (height <= available) {
+            best = { ...p, height };
+            bestScore = score;
+            break; // fewer features would only score less
+          }
+        }
+  if (best) return best;
+  const last = { bodyPx: 14, features: 0, reviews: 0, shots: 0 };
   return { ...last, height: heightOf(last) };
 }
