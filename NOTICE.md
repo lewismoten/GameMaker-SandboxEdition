@@ -28,7 +28,7 @@ program, and the pieces it draws are its own:
   "Sandbox Edition", not photographs or copies of the original box and disc;
 - the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original.
 
-Refer to this project as *Game-Maker: Sandbox Edition* (https://github.com/lewismoten/GameMaker)
+Refer to this project as *Game-Maker: Sandbox Edition* (https://github.com/lewismoten/GameMaker-SandboxEdition)
 and to the original as *Game-Maker 3.0 by Recreational Software Designs*
 (https://github.com/gandrewstone/GameMaker).
 

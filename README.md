@@ -25,7 +25,7 @@ opens original game folders, plays the CD's games (the shareware ones play-only,
 their authors' notices), and exports your games as installable offline web apps or as
 DOS folders that run in DOSBox.
 
-It is published at https://lewismoten.github.io/GameMaker/ by the GitHub Actions
+It is published at https://lewismoten.github.io/GameMaker-SandboxEdition/ by the GitHub Actions
 workflow in `.github/workflows/pages.yml`. See [web/README.md](web/README.md) for
 details.
 
