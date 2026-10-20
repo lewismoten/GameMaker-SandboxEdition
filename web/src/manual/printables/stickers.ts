@@ -71,7 +71,15 @@ const RAINBOW = ['#ff5555', '#ffff55', '#55ff55', '#55ffff', '#5555ff', '#ff55ff
 const BLACK_FONT = '"Arial Black", "Arial Bold", Arial, sans-serif';
 
 /** Lines of text at the largest size (px) that fits maxW x maxH, splitting on spaces into up to 3 lines. */
-function fit(g: CanvasRenderingContext2D, text: string, maxW: number, maxH: number, weight: string, family: string, lh = 1.05): { lines: string[]; size: number } {
+function fit(
+  g: CanvasRenderingContext2D,
+  text: string,
+  maxW: number,
+  maxH: number,
+  weight: string,
+  family: string,
+  lh = 1.05,
+): { lines: string[]; size: number } {
   const words = text.split(/\s+/).filter(Boolean);
   let best = { lines: [text], size: 1 };
   for (let n = 1; n <= Math.min(3, words.length); n++) {
@@ -94,7 +102,15 @@ function fit(g: CanvasRenderingContext2D, text: string, maxW: number, maxH: numb
   return best;
 }
 
-function drawLines(g: CanvasRenderingContext2D, fitted: { lines: string[]; size: number }, cx: number, cy: number, weight: string, family: string, lh = 1.05): void {
+function drawLines(
+  g: CanvasRenderingContext2D,
+  fitted: { lines: string[]; size: number },
+  cx: number,
+  cy: number,
+  weight: string,
+  family: string,
+  lh = 1.05,
+): void {
   g.font = `${weight} ${fitted.size}px ${family}`;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
@@ -156,7 +172,14 @@ function drawSticker(g: CanvasRenderingContext2D, p: Placed, st: Sticker, S: num
     g.fillStyle = '#f2b632';
     drawLines(g, head, x + w / 2, y + hh * 0.46, '900', BLACK_FONT);
     g.fillStyle = '#fff';
-    drawLines(g, fit(g, PRODUCT.split(': ')[1].toUpperCase(), w * 0.7, hh * 0.13, '700', 'Arial, sans-serif'), x + w / 2, y + hh * 0.68, '700', 'Arial, sans-serif');
+    drawLines(
+      g,
+      fit(g, PRODUCT.split(': ')[1].toUpperCase(), w * 0.7, hh * 0.13, '700', 'Arial, sans-serif'),
+      x + w / 2,
+      y + hh * 0.68,
+      '700',
+      'Arial, sans-serif',
+    );
     g.fillStyle = '#55ffff';
     drawLines(g, fit(g, 'MAKE YOUR OWN GAMES', w * 0.6, hh * 0.08, '700', 'Arial, sans-serif'), x + w / 2, y + hh * 0.82, '700', 'Arial, sans-serif');
   } else if (st.kind === 'shot' && st.img) {
@@ -203,7 +226,14 @@ function drawSticker(g: CanvasRenderingContext2D, p: Placed, st: Sticker, S: num
       const inset = p.shape === 'star' ? 0.5 : round ? 0.62 : 0.86;
       const lift = p.shape === 'star' ? 0.1 : round ? 0.06 : 0;
       if (s.text)
-        drawLines(g, fit(g, s.text, w * inset, bandH * (s.sub ? 0.36 : 0.5), '900', BLACK_FONT), cx, bandTop + bandH * ((s.sub ? 0.28 : 0.4) - lift), '900', BLACK_FONT);
+        drawLines(
+          g,
+          fit(g, s.text, w * inset, bandH * (s.sub ? 0.36 : 0.5), '900', BLACK_FONT),
+          cx,
+          bandTop + bandH * ((s.sub ? 0.28 : 0.4) - lift),
+          '900',
+          BLACK_FONT,
+        );
       if (s.sub)
         drawLines(
           g,
@@ -261,7 +291,9 @@ async function stickerList(ctx: PrintContext): Promise<Sticker[]> {
   const specs: (StickerSpec & { special?: Special })[] = [
     { text: main.toUpperCase(), sub, shape: 'badge', color: box?.background, ink: box?.accent },
     ...(ctx.printables.stickers ?? []).filter((s) => s.sprite || s.hero),
-    ...(box?.shots ?? []).slice(0, 2).map(([map, x, y], i): StickerSpec => ({ text: '', shape: i ? 'circle' : 'rect', shot: { map, x: x + 4, y: y + 2, w: 8, h: 6 } })),
+    ...(box?.shots ?? [])
+      .slice(0, 2)
+      .map(([map, x, y], i): StickerSpec => ({ text: '', shape: i ? 'circle' : 'rect', shot: { map, x: x + 4, y: y + 2, w: 8, h: 6 } })),
     ...(ctx.printables.stickers ?? []).filter((s) => !s.sprite && !s.hero),
     { text: 'I ♥ SHAREWARE', shape: 'rect', color: '#d81e1e', ink: '#fff' },
     { text: 'REGISTERED', sub: 'PLAYER', shape: 'star', color: '#1f9a3a', ink: '#fff' },
@@ -294,7 +326,9 @@ export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
       return { w, h: h_, shape: s.shape };
     }),
   );
-  const names = list.map((s) => (s.special === 'bbs' ? 'Sandbox BBS' : s.special === 'gm' ? PRODUCT : [s.spec.text, s.spec.sub].filter(Boolean).join(' ') || 'Picture'));
+  const names = list.map((s) =>
+    s.special === 'bbs' ? 'Sandbox BBS' : s.special === 'gm' ? PRODUCT : [s.spec.text, s.spec.sub].filter(Boolean).join(' ') || 'Picture',
+  );
   const base = ctx.entry.id.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
   return pages.map((page, i) => {
     const art = drawPage(page, list, DPI_SCREEN, false);
@@ -321,7 +355,11 @@ export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
       cutSize: [cw, chh],
       name: `${base}-stickers${pages.length > 1 ? `-${i + 1}` : ''}`,
       svg: () => cutSvg(page, names),
-      png: async () => new Blob([pngWithDpi(new Uint8Array(await (await toBlob(drawPage(page, list, DPI_PRINT, true))).arrayBuffer()), DPI_PRINT) as Uint8Array<ArrayBuffer>], { type: 'image/png' }),
+      png: async () =>
+        new Blob(
+          [pngWithDpi(new Uint8Array(await (await toBlob(drawPage(page, list, DPI_PRINT, true))).arrayBuffer()), DPI_PRINT) as Uint8Array<ArrayBuffer>],
+          { type: 'image/png' },
+        ),
     });
     return s;
   });

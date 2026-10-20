@@ -14,7 +14,6 @@ import {
   splitTitle,
   html,
   hashString,
-
   BBS_PHONE,
   mapPicture,
   type PrintContext,
