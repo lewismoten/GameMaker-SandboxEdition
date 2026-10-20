@@ -300,12 +300,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
 /** The small menu of less-used actions on a card. */
 function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLElement {
-  return h(
+  const menu = h(
     'details',
     { class: 'card-more' },
     h('summary', { title: 'More', 'aria-label': 'More actions' }, '⋯'),
     h('div', { class: 'card-more-menu' }, ...items),
   );
+  // Close when something else is clicked, or after choosing an item.
+  const outside = (e: Event) => {
+    if (!menu.contains(e.target as Node) || (e.target as HTMLElement).closest('.card-more-menu button')) menu.open = false;
+  };
+  menu.addEventListener('toggle', () => {
+    if (menu.open) setTimeout(() => document.addEventListener('click', outside, true));
+    else document.removeEventListener('click', outside, true);
+  });
+  return menu;
 }
 
 function searchText(...parts: (string | number | null | undefined)[]): string {
