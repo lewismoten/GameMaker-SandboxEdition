@@ -3,6 +3,7 @@ import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal 
 import { Project } from './project';
 import { starterProject } from './starter';
 import { renderShot } from '../desk/boxArt';
+import { openGameManual } from '../manual/gameManual';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../project/files';
 import { deleteProject, listProjects, loadProject } from '../project/storage';
 import { createZip, crc32, isZip, readZip } from '../project/zip';
@@ -37,6 +38,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const projects = h('div', { class: 'cards' });
   const samples = h('div', { class: 'cards' }, h('p', { class: 'meta' }, 'Loading…'));
   const shareware = h('div', { class: 'cards' });
+  const originals = h('div', { class: 'cards' });
   const drop = h('div', { class: 'dropzone' }, 'Drop a game folder, its files, or a .zip here');
 
   clear(
@@ -80,6 +82,13 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h('section', { id: 'samples' }, h('h2', null, 'Sample games from the Game-Maker CD'), h('p', { class: 'lead' }, 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.'), samples),
       h(
         'section',
+        { id: 'originals' },
+        h('h2', null, 'New games from Sandbox Software'),
+        h('p', { class: 'lead' }, 'Our own games, made with Game-Maker in the original formats, so they also play in DOS. Play them, read their manuals, or edit a copy to see how they were made.'),
+        originals,
+      ),
+      h(
+        'section',
         null,
         h('h2', null, 'Shareware games from the Game-Maker CD'),
         h('p', { class: 'lead' }, 'Games other people made with Game-Maker, as distributed on the CD. They are copyrighted by their authors and can only be played here, exactly as released. If you enjoy one, read its notice to see how the author asked to be registered or thanked.'),
@@ -118,7 +127,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const rsd = ['sample', 'pipemare', 'nebula'];
     const gameware = catalog.filter((g) => g.kind !== 'shareware').sort((a, b) => (rsd.includes(b.id) ? 1 : 0) - (rsd.includes(a.id) ? 1 : 0) || rsd.indexOf(a.id) - rsd.indexOf(b.id));
     clear(samples, ...gameware.map((g) => sampleCard(g, nav)));
-    clear(shareware, ...catalog.filter((g) => g.kind === 'shareware' && g.gam).map(sharewareCard));
+    clear(originals, ...catalog.filter((g) => g.original && g.gam).map((g) => originalCard(g, nav)));
+    clear(shareware, ...catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam).map(sharewareCard));
     if (!gameware.length) clear(samples, h('p', { class: 'meta' }, 'No sample games were bundled with this build.'));
   } catch {
     clear(samples, h('p', { class: 'meta' }, 'Sample games are unavailable offline until they have been opened once.'));
@@ -202,13 +212,38 @@ function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
   );
 }
 
+/** One of our own games: playable and, unlike other shareware, open to edit. */
+function originalCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
+  const copy = async () => {
+    toast(`Copying ${g.title}…`);
+    const p = Project.fromFiles(await loadHostedGame(g), g.title);
+    if (g.gam) p.gam = g.gam;
+    await p.saveNow();
+    nav.openProject(p.id);
+  };
+  return h(
+    'div',
+    { class: 'card' },
+    cardShot(g),
+    h('h3', null, g.title),
+    h('div', { class: 'meta' }, `${g.company ?? 'Sandbox Software'} · ${g.files.length} files`),
+    h(
+      'div',
+      { class: 'actions' },
+      h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
+      h('button', { onclick: () => void copy() }, 'Edit a copy'),
+      g.original?.manual ? h('button', { onclick: () => void openGameManual(g) }, '📖 Manual') : null,
+    ),
+  );
+}
+
 function sharewareCard(g: CatalogEntry): HTMLElement {
   return h(
     'div',
     { class: 'card' },
     cardShot(g),
     h('h3', null, g.title),
-    h('div', { class: 'meta' }, `${g.original ? `${g.company ?? 'Sandbox Software'} · new ` : ''}Shareware · play only`),
+    h('div', { class: 'meta' }, 'Shareware · play only'),
     h(
       'div',
       { class: 'actions' },
@@ -262,7 +297,7 @@ async function filesFromList(list: File[]): Promise<GameFiles> {
 
 /** The CD shareware game these files are, if any (matched by the .gam file's CRC-32). */
 export async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
-  const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && g.gamCrc !== undefined);
+  const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && !g.original && g.gamCrc !== undefined);
   if (!shareware.length) return undefined;
   const crcs = new Set(files.byExtension('gam').map((n) => crc32(files.get(n)!)));
   return shareware.find((g) => crcs.has(g.gamCrc!));
