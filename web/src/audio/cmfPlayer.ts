@@ -122,7 +122,7 @@ export class CmfPlayer {
       if (a < 0x80) {
         const vel = this.byte(this.offset + 1);
         if (this.funct === 8 || vel === 0) this.noteOff(this.channel, a);
-        else this.noteOn(this.channel, a);
+        else this.noteOn(this.channel, a, vel);
         this.offset += 2;
       } else {
         switch (a & 0xf0) {
@@ -217,7 +217,34 @@ export class CmfPlayer {
     this.opl.write(0xb0 + ch, (key ? 0x20 : 0) | (block << 2) | (fnum >> 8));
   }
 
-  private noteOn(channel: number, note: number): void {
+  /**
+   * SBFMDRV's loudness by velocity: it scales the instrument's carrier level (TL is an
+   * attenuation, 0 loudest .. 63 silent) and keeps the key-scaling bits:
+   * TL = 63 - floor((velocity + 128) * (63 - instrumentTL) / 256). So velocity 127 plays
+   * the instrument almost as loud as written and velocity 1 about half as loud in TL steps.
+   */
+  private applyVelocity(channel: number, velocity: number): void {
+    const inst = this.instruments[this.programs[channel]];
+    if (!inst) return;
+    let reg: number;
+    let level: number;
+    const drum = this.rhythm ? RHYTHM_VOICE[channel] : undefined;
+    if (drum && drum.ops.length === 1) {
+      // single operator drums use the modulator half of the SBI record
+      reg = MODULATOR_OFFSET[drum.ch] + (drum.ops[0] === 'car' ? 3 : 0);
+      level = inst[2];
+    } else {
+      const ch = drum ? drum.ch : channel;
+      if (!drum && ch >= this.melodyVoices()) return;
+      reg = MODULATOR_OFFSET[ch] + 3;
+      level = inst[3];
+    }
+    const tl = 63 - Math.floor(((Math.min(127, velocity) + 128) * (63 - (level & 0x3f))) / 256);
+    this.opl.write(0x40 + reg, (level & 0xc0) | tl);
+  }
+
+  private noteOn(channel: number, note: number, velocity = 127): void {
+    this.applyVelocity(channel, velocity);
     if (this.rhythm && RHYTHM_BITS[channel]) {
       const bit = RHYTHM_BITS[channel];
       this.setPitch(RHYTHM_VOICE[channel].ch, note, false);
