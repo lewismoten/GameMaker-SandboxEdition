@@ -868,8 +868,9 @@ class Integrator {
       if (choice < items) {
         if (other && choice > n) await other(choice);
         else {
-          const ans = await this.getfname(qs[choice - 1], exts[choice - 1]);
-          if (ans) {
+          // Names are kept lower case, as Game-Maker's own games have them.
+          const ans = (await this.getfname(qs[choice - 1], exts[choice - 1])).toLowerCase();
+          if (ans && ans !== this.scns[scnum].files[choice - 1]) {
             this.scns[scnum].files[choice - 1] = ans;
             this.saved = false;
           }
