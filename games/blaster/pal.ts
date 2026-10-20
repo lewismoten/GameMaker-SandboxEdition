@@ -44,17 +44,17 @@ function common(p: Pal): void {
   p.ramp('tYellow', 1, [252, 252, 0], [252, 252, 0]);
 }
 
-export type Theme = 'floppy' | 'board' | 'ram' | 'sound' | 'cpu' | 'screen';
+export type Theme = 'disk' | 'board' | 'ram' | 'sound' | 'cpu' | 'screen';
 
 /** Stage-specific ramps. Each stage has 'base' (the floor), 'deep', 'trim' and 'glow'. */
 function themed(p: Pal, theme: Theme): void {
   switch (theme) {
-    case 'floppy':
-      p.ramp('base', 8, [24, 10, 4], [190, 120, 70], [100, 50, 22]);
-      p.ramp('deep', 5, [6, 4, 8], [70, 50, 60]);
-      p.ramp('trim', 7, [40, 44, 52], [250, 250, 255], [160, 166, 180]);
-      p.ramp('glow', 5, [60, 0, 30], [255, 200, 230], [255, 60, 120]);
-      p.ramp('label', 5, [120, 110, 90], [255, 252, 235]);
+    case 'disk':
+      p.ramp('base', 8, [20, 24, 36], [235, 240, 252], [112, 124, 150]);
+      p.ramp('deep', 5, [6, 6, 10], [70, 70, 84]);
+      p.ramp('trim', 7, [70, 40, 10], [255, 240, 170], [220, 160, 40]);
+      p.ramp('glow', 5, [60, 0, 10], [255, 210, 200], [255, 40, 40]);
+      p.ramp('label', 5, [110, 100, 80], [255, 250, 230]);
       break;
     case 'board':
       p.ramp('base', 8, [0, 30, 14], [120, 220, 130], [20, 110, 50]);

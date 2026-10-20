@@ -85,7 +85,7 @@ export function bossHowler(art: StageArt): Leg {
   g.set(7, 1, 'floor0').set(8, 1, 'floor0').set(7, 0, 'gate0').set(8, 0, 'gate2');
   for (let r = 0; r < 2; r++) for (let c = 0; c < 2; c++) g.mon(7 + c, 1 + r, `head${r}${c}`);
   g.link(7, 1).link(8, 1);
-  for (const c of [2, 4, 6, 8, 10, 12]) g.mon(c, 4, 'grille');
+  for (const c of [2, 5, 8, 11]) g.mon(c, 4, 'grille');
   g.turret(3, 2, 'flak').turret(12, 2, 'flak');
   g.turret(1, 3, 'seeker').turret(14, 3, 'seeker');
   g.hatch(5, 2, false).hatch(10, 2, false);
