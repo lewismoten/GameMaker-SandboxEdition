@@ -73,6 +73,19 @@
       "intro": "Stuck? Find your question, then slide the red film over the answer. Try one answer at a time; Teddy believes in you!",
       "sections": [
         {
+          "head": "Every Stop",
+          "hints": [
+            {
+              "q": "I found the costume piece. How do I get to the next stop?",
+              "a": "Bring it to Pockets at Doc Leo's little red CitiCar at the end of the stop. The door pops open: hop in and he drives you on."
+            },
+            {
+              "q": "What are the floating balloon dogs for?",
+              "a": "They're Doc Leo's balloon animals: three in every stop, up high and never on the way. 250 points and 10 energy each, so take the detour."
+            }
+          ]
+        },
+        {
           "head": "1. Doc Leo's Backyard",
           "hints": [
             {
