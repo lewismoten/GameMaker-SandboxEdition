@@ -637,7 +637,7 @@ for (let k = 0; k < 8; k++)
   bg.add(`surf${k}`, surf(k), {
     next: `surf${(k + 1) % 8}`,
     ntime: 5,
-    grav: k >= 3 && k <= 5 ? UP : 0,
+    grav: k === 4 ? UP : 0,
     hp: k === 4 ? -1 : 0,
   });
 // The tidal flat floods all at once on a long cycle: low, wet, flooded (the current shoves

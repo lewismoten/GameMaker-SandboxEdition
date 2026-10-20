@@ -294,6 +294,8 @@ export function lagoon(): LevelMap {
       s: 'sand',
     }),
   );
+  // The sea runs on past the bottom of the map.
+  m.rect(0, 29, 40, 8, 'water');
   return m;
 }
 
