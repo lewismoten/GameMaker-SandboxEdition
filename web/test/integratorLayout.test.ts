@@ -13,7 +13,7 @@ function chain(n: number): Game {
 }
 
 function checkNoOverlap(game: Game, pos: Map<number, { x: number; y: number }>): void {
-  const used = game.scenes.map((s, i) => i).filter((i) => game.scenes[i].gametype !== NOSCENE);
+  const used = game.scenes.map((_, i) => i).filter((i) => game.scenes[i].gametype !== NOSCENE);
   expect([...pos.keys()].sort((a, b) => a - b)).toEqual(used);
   for (const p of pos.values()) {
     expect(p.x).toBeGreaterThanOrEqual(POS_MIN.x);
