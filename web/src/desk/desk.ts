@@ -6,6 +6,7 @@ import { Computer, type MonitorMode } from '../retro/computer';
 import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
 import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './diskBox';
 import { openCatalog } from './catalog';
+import { openDosManual } from '../manual/dosManual';
 import { renderShot } from './boxArt';
 import { installCrtWarp } from './crtWarp';
 import { loadCatalog } from '../project/files';
@@ -88,6 +89,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h(
         'div',
         { class: 'desk-left' },
+        h(
+          'button',
+          { class: 'prop manual-prop', onclick: () => void openDosManual() },
+          h('div', { class: 'booklet-cover' }, h('strong', null, 'GAME-MAKER'), h('span', null, 'Owner’s Guide'), h('em', null, 'Version 3.0')),
+          h('span', { class: 'caption' }, 'Owner’s Guide'),
+        ),
         h('button', { class: 'prop disk-box', onclick: () => void flip() }, box, h('span', { class: 'caption' }, 'Disk box — pick a game')),
       ),
       h(

@@ -610,6 +610,49 @@
   box-shadow: 0 120px 0 #999;
 }
 
+/* the Owner's Guide, lying on the desk */
+.manual-prop {
+  --tilt: 5deg;
+  width: 96px;
+}
+
+.manual-prop .booklet-cover {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 124px;
+  padding: 0 0 8px;
+  overflow: hidden;
+  border-radius: 1px 3px 3px 1px;
+  background: #f0a090;
+  box-shadow:
+    inset 4px 0 0 rgba(0, 0, 0, 0.12),
+    2px 2px 0 #f4efdf,
+    3px 3px 0 #d9d2bc,
+    0 10px 16px rgba(0, 0, 0, 0.45);
+  color: #18150f;
+  text-align: left;
+}
+
+.manual-prop .booklet-cover strong {
+  padding: 8px 6px 6px;
+  background: #0b0b0b;
+  color: #f2e600;
+  font: italic 900 13px/1 'Arial Black', Arial, sans-serif;
+  text-shadow: 1px 1px 0 #1f9a3a;
+}
+
+.manual-prop .booklet-cover span {
+  margin-top: 14px;
+  padding: 0 6px;
+  font: 700 12px/1.1 Helvetica, Arial, sans-serif;
+}
+
+.manual-prop .booklet-cover em {
+  padding: 0 6px;
+  font: 10px 'Times New Roman', serif;
+}
+
 /* sticky note switching to today's web */
 .sticky {
   position: absolute;
