@@ -7,7 +7,7 @@ import { readLine } from './textInput';
 import { toCp437 } from './cp437';
 import { commas } from './vfs';
 import type { CatalogEntry } from '../project/files';
-import { sandboxLogin, sandBanner } from './ansiArt';
+import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';
 import { Term, boxBottom, boxRow, boxRule, boxTop, dial, modemSignal, sleep, statusLine } from './term';
 import { runSofa, SOFA_PHONE, sofaBusy } from './sofa';
 import { output } from '../audio/output';
@@ -112,7 +112,7 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
       t.line();
       if (!yes) continue;
       t.line();
-      t.line(`|07Thanks for playing in ${BBS_NAME}!`);
+      t.line(`|07Thanks for playing in THE ${SANDBOX_ANSI} |07BBS!`);
       t.line('|07Shake the sand out of your shoes, and register the shareware you enjoy.');
       await sleep(1200);
       return;
@@ -193,7 +193,7 @@ function mainMenu(t: Term, s: RetroHost['screen']): void {
 async function systemInfo(t: Term, files: number): Promise<void> {
   t.line();
   for (const l of [
-    `|15${BBS_NAME} |08─ |07Pittsburgh, PA |08─ |07Renegade`,
+    `|15THE ${SANDBOX_ANSI} |15BBS |08─ |07Pittsburgh, PA |08─ |07Renegade`,
     `|07Nodes: |142|07   Modem: |1414,400 bps V.32bis|07   Files online: |14${files}`,
     '|07Callers: |141,994|07   SysOp: |14Lewis',
     '|07Specialty: shareware made with |15Game-Maker|07 and tips for designers.',

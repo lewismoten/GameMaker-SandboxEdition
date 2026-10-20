@@ -120,12 +120,21 @@ const PAIL_COLORS = [
   '   4444     999',
 ];
 
+/** The board's name the way it was always shown: a different color for each letter, white and yellow ends. */
+const SANDBOX_COLORS = [12, 14, 10, 11, 9, 13, 6];
+
+export const SANDBOX_ANSI = '|15-|14= |12S |14A |10N |11D |09B |13O |06X |14=|15-';
+
 /** The logon screen of THE -= S A N D B O X =- BBS. Returns the first free row. */
 export function sandboxLogin(s: TextScreen): number {
   s.fill(0, 0, COLS - 1, 23, attr(7, 0));
   fadeBar(s, 0, 6);
-  bigText(s, Math.floor((COLS - bigTextWidth('SANDBOX', true)) / 2), 2, 'SANDBOX', [15, 14, 14, 6, 6], true);
-  centered(s, 8, '|06-=|14 T H E   S A N D B O X   B B S |06=-');
+  let lx = Math.floor((COLS - bigTextWidth('SANDBOX', true)) / 2);
+  [...'SANDBOX'].forEach((c, i) => {
+    bigText(s, lx, 2, c, Array(5).fill(SANDBOX_COLORS[i]), true);
+    lx += bigTextWidth(c, true) + 1;
+  });
+  centered(s, 8, `|07THE ${SANDBOX_ANSI} |07BBS`);
   centered(s, 9, '|07Pittsburgh, PA |08· |0714,400 bps |08· |07Running Renegade |08· |07SysOp: |14Lewis');
   centered(s, 10, '|14Grab a pail and play in the sand!');
   centered(s, 11, '|11Game-Maker shareware |08· |11Designer tips |08· |11Bulletins');
