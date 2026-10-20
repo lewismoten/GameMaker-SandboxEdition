@@ -176,9 +176,9 @@ function pages(): BookletPage[] {
       <p>The sample games in <code>C:\\GM</code> are yours to change. If you change your mind,
       <b>Utilities, Restore</b> puts a game back the way it came on the CD.</p>
       <h3>Today\u2019s tools</h3>
-      <p>While a designer is open, the <b>\u2922 Today\u2019s web</b> button switches to the modern
-      Game-Maker for the web, which edits the same files. See its own guide (the <b>?</b>
-      button) for details. <b>Quit (Esc)</b> returns to the menu.</p>`,
+      <p>Each designer has a <b>MENU</b> button (or <kbd>Esc</kbd>) that returns to its menu, and
+      a <b>HELP!</b> button. To work on the same files with the modern Game-Maker for the web,
+      use the yellow note on the monitor. See its own guide (the <b>?</b> link) for details.</p>`,
     ),
     page(
       '3. Designing Games',
