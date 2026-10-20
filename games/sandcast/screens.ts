@@ -157,9 +157,11 @@ export function titleScreen(): Pixels {
   logo(p, 64, 64, 'KNIGHT', 4);
   castleArt(p, 160, 176, 1, 5);
   // A small knight at the castle gate.
-  text(p, 4, 182, 'v1.0 (c) 1995', ANSI[8]);
-  text(p, 220, 182, 'Sandbox Soft', ANSI[8]);
-  return statusBar(p, ' ALT-Z FOR HELP | ANSI | 14400 N81 | ON-LINE');
+  text(p, 4, 150, 'v1.0', ANSI[8]);
+  text(p, 4, 160, '(c) 1995', ANSI[8]);
+  text(p, 252, 150, 'Sandbox', ANSI[8]);
+  text(p, 252, 160, 'Software', ANSI[8]);
+  return statusBar(p, ' ALT-Z HELP | ANSI | 14400 N81 | ONLINE');
 }
 
 /** The menu: the logo above, a framed panel where Game-Maker writes the menu. */
@@ -169,8 +171,8 @@ export function menuScreen(): Pixels {
   logo(p, 40, 16, 'SANDCASTLE', 3);
   logo(p, 64, 44, 'KNIGHT', 4);
   // Menu panel (Game-Maker writes the title at 96,104 and items at 80,120..160).
-  box(p, 56, 94, 192, 76, ANSI[9]);
-  text(p, 64, 172, 'Up/Down + ENTER to choose', ANSI[8]);
+  box(p, 56, 94, 192, 82, ANSI[9]);
+  text(p, 60, 179, 'Up/Down + ENTER to choose', ANSI[8]);
   // Castles on either side.
   castleArt(p, 286, 186, 0.36, 7);
   castleArt(p, 26, 186, 0.36, 8);

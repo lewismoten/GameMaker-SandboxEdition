@@ -18,7 +18,7 @@ let juiceArt: Pixels;
 /** Sand floor with an object drawn on top (clear pixels show sand). */
 function onSand(seed: number, obj: Pixels, shadow = true): Pixels {
   const p = sandTexture(seed);
-  if (shadow) shadowOnSand(p, (x, y) => obj.get(x - 1, y - 2) !== 255 && obj.get(x, y) === 255);
+  if (shadow) shadowOnSand(p, (x, y) => obj.get(x - 1, y - 2) >= 0 && obj.get(x - 1, y - 2) !== 255 && obj.get(x, y) === 255);
   return p.blit(obj, 0, 0, 255);
 }
 
@@ -32,7 +32,7 @@ bg.add('sand3', sand(14));
 // Packed courtyard sand inside the castles: pressed squares.
 bg.add(
   'court',
-  sandTexture(21, 4, SAND, 0.12).map((x, y, c) => (x % 10 === 0 || y % 10 === 0 ? SAND[2] : x % 10 === 1 || y % 10 === 1 ? SAND[5] : c)),
+  sandTexture(21, 6, SAND, 0.14).map((x, y, c) => (x % 10 === 0 || y % 10 === 0 ? SAND[5] : x % 10 === 1 || y % 10 === 1 ? SAND[7] : c)),
 );
 // Damp sand (dark): paths, beaches.
 bg.add('damp', sandTexture(22, 3, OCHRE, 0.2));
@@ -129,16 +129,24 @@ bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, t
 
 // ---------------------------------------------------------------- pickups
 {
+  // A bucketful of wet sand, turned out like a little turret: scoop it up.
   const p = sprite20();
-  for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 20; x++) {
-      const dx = (x - 10) / 8;
-      const dy = (y - 13) / 5.5;
-      const d = dx * dx + dy * dy;
-      if (y < 13 ? (x - 10) ** 2 / 49 + (y - 13) ** 2 / 64 <= 1 : d <= 1) p.set(x, y, shade(SAND, 7 - dx * 1.5 - dy * 1.2));
+  for (let y = 4; y < 18; y++)
+    for (let x = 4; x < 16; x++) {
+      const t = (x - 4) / 11;
+      const ridge = (x - 4) % 3 === 0 ? -0.8 : 0;
+      p.set(x, y, shade(OCHRE, 5.2 - t * 2.6 + ridge + (y > 15 ? -0.7 : 0)));
     }
-  p.set(8, 7, SAND[9]).set(7, 9, SAND[9]).set(12, 10, SAND[8]);
-  p.set(5, 3, STEEL[7]).set(5, 2, STEEL[5]).set(5, 4, STEEL[5]).set(4, 3, STEEL[5]).set(6, 3, STEEL[5]);
+  for (let x = 4; x < 16; x++) p.set(x, 18, OCHRE[2]);
+  // Top: an ellipse with notches.
+  for (let y = 2; y < 7; y++)
+    for (let x = 4; x < 16; x++) {
+      const dx = (x - 9.5) / 6;
+      const dy = (y - 4.5) / 2.5;
+      if (dx * dx + dy * dy <= 1) p.set(x, y, (x + 1) % 4 === 0 && y < 4 ? OCHRE[4] : shade(OCHRE, 6 - dy * 0.6));
+    }
+  p.set(6, 8, OCHRE[6]).set(7, 12, OCHRE[6]).set(5, 15, OCHRE[6]);
+  p.set(17, 3, STEEL[7]).set(17, 2, STEEL[5]).set(17, 4, STEEL[5]).set(16, 3, STEEL[5]).set(18, 3, STEEL[5]);
   bg.add('pile', onSand(71, p), { effect: CTR.sand, eamt: 1, score: 5, touch: 'sand0' });
 }
 {
@@ -591,7 +599,7 @@ function hose(vertical: boolean, nozzle: boolean): Pixels {
         if (b > 16 && a >= 7 && a <= 12) q.set(x, y, YELLOW[0]);
       }
   }
-  shadowOnSand(p, (x, y) => q.get(x - 1, y - 2) !== 255 && q.get(x, y) === 255);
+  shadowOnSand(p, (x, y) => q.get(x - 1, y - 2) >= 0 && q.get(x - 1, y - 2) !== 255 && q.get(x, y) === 255);
   return p.blit(q, 0, 0, 255);
 }
 bg.add('hoseH', hose(false, false), { solid: SOLID });
@@ -613,7 +621,7 @@ bg.add('nozzle', hose(false, true), { solid: SOLID, birthMon: MON.droplet, birth
 // Traveling waves: eight phases of one cycle. Rows of the beach start at different phases,
 // so a crest rolls up the sand; the surf pushes the knight inland (gravity up).
 function surf(phase: number): Pixels {
-  const p = sandTexture(121 + phase, [6, 4, 4, 0, 0, 0, 4, 4][phase], phase === 0 ? SAND : OCHRE, 0.18);
+  const p = sandTexture(121 + phase, [6, 4, 4, 3, 3, 3, 4, 4][phase], phase === 0 ? SAND : OCHRE, 0.18);
   const level = [0, 0, 0.35, 0.8, 1, 0.8, 0.35, 0][phase];
   if (phase === 0) return p;
   if (phase === 1 || phase === 7) return sandTexture(122, 3, OCHRE, 0.2);
@@ -630,7 +638,7 @@ for (let k = 0; k < 8; k++)
     next: `surf${(k + 1) % 8}`,
     ntime: 5,
     grav: k >= 3 && k <= 5 ? UP : 0,
-    hp: k === 4 ? -3 : 0,
+    hp: k === 4 ? -1 : 0,
   });
 // The tidal flat floods all at once on a long cycle: low, wet, flooded (the current shoves
 // you back to shore), ebbing.
@@ -717,7 +725,7 @@ bg.add('toyC', abc(GRASS, 'C'), { solid: SOLID });
       .set(x, y - 2, STEEL[7])
       .set(x + 1, y + 2, STEEL[6]);
   }
-  bg.add('burr', onSand(146, p), { solid: SOLID, hp: -8 });
+  bg.add('burr', onSand(146, p), { solid: SOLID, hp: -2 });
 }
 // Secret hole: looks like a little ant hole in the sand (a link to somewhere else).
 {
@@ -1009,14 +1017,14 @@ function drawCat(eyes: 'open' | 'shut'): Pixels {
       const mouth = bx === 1 && by === 3;
       bg.add(name, p, {
         solid: SOLID,
-        hp: -6,
+        hp: -3,
         ...(eyeBlock ? { next: 'catBlink', ntime: 70 } : {}),
         ...(mouth ? { birthMon: MON.hairball, birthTime: 64 } : {}),
       });
       if (eyeBlock)
         bg.add('catBlink', flagstone(180 + bx + by * CAT_W).blit(shut.crop(bx * 20, by * 20, 20, 20), 0, 0, 255), {
           solid: SOLID,
-          hp: -6,
+          hp: -3,
           next: name,
           ntime: 6,
         });

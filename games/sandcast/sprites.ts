@@ -122,8 +122,8 @@ function crab(frame: number, flipped = false): Pixels {
   } else p.line(6, 12, 14, 12, PINK[1]);
   return p;
 }
-mb.add('crab0', crab(0), { hp: -12 });
-mb.add('crab1', crab(1), { hp: -12 });
+mb.add('crab0', crab(0), { hp: -2 });
+mb.add('crab1', crab(1), { hp: -2 });
 mb.add('crabFlip', crab(0, true));
 function hairball(frame: number): Pixels {
   const p = sprite();
@@ -154,8 +154,8 @@ function yarn(frame: number): Pixels {
   p.line(16, 14, 19, 18 - frame * 2, PURPLE[2]);
   return p;
 }
-mb.add('yarn0', yarn(0), { hp: -10 });
-mb.add('yarn1', yarn(1), { hp: -10 });
+mb.add('yarn0', yarn(0), { hp: -2 });
+mb.add('yarn1', yarn(1), { hp: -2 });
 function paw(frame: number, angry: boolean, left: boolean): Pixels {
   const p = sprite();
   const ramp = angry ? RED : TABBY;
@@ -175,14 +175,14 @@ function paw(frame: number, angry: boolean, left: boolean): Pixels {
   p.disc(10, 10 + frame, 2.6, angry ? RED[6] : PINK[2]);
   return left ? p : p.flipX();
 }
-mb.add('pawL0', paw(0, false, true), { hp: -10, solid: SOLID });
-mb.add('pawL1', paw(1, false, true), { hp: -10, solid: SOLID });
-mb.add('pawLAngry0', paw(0, true, true), { hp: -14, solid: SOLID });
-mb.add('pawLAngry1', paw(1, true, true), { hp: -14, solid: SOLID });
-mb.add('pawR0', paw(0, false, false), { hp: -10, solid: SOLID });
-mb.add('pawR1', paw(1, false, false), { hp: -10, solid: SOLID });
-mb.add('pawRAngry0', paw(0, true, false), { hp: -14, solid: SOLID });
-mb.add('pawRAngry1', paw(1, true, false), { hp: -14, solid: SOLID });
+mb.add('pawL0', paw(0, false, true), { hp: -3, solid: SOLID });
+mb.add('pawL1', paw(1, false, true), { hp: -3, solid: SOLID });
+mb.add('pawLAngry0', paw(0, true, true), { hp: -4, solid: SOLID });
+mb.add('pawLAngry1', paw(1, true, true), { hp: -4, solid: SOLID });
+mb.add('pawR0', paw(0, false, false), { hp: -3, solid: SOLID });
+mb.add('pawR1', paw(1, false, false), { hp: -3, solid: SOLID });
+mb.add('pawRAngry0', paw(0, true, false), { hp: -4, solid: SOLID });
+mb.add('pawRAngry1', paw(1, true, false), { hp: -4, solid: SOLID });
 {
   // A soaked paw, dripping, pulled back.
   const p = paw(0, false, true).map((_x, _y, c) => (c === CLEAR ? c : TABBY.includes(c) ? shade(TABBY, TABBY.indexOf(c) - 1.5) : c));
@@ -203,8 +203,8 @@ function tail(frame: number): Pixels {
   }
   return p;
 }
-mb.add('tail0', tail(0), { hp: -8 });
-mb.add('tail1', tail(1), { hp: -8 });
+mb.add('tail0', tail(0), { hp: -2 });
+mb.add('tail1', tail(1), { hp: -2 });
 {
   const p = sprite();
   for (let y = 0; y < 20; y++)

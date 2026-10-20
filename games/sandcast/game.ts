@@ -73,7 +73,9 @@ export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'
   };
   const M = (k: (typeof order)[number]) => levels[k].map;
 
-  link(S.title, 0, null, null, S.hub, M('hub'), 'start');
+  // SANDCAST_START=keep (etc.) starts a play-test build in that level.
+  const start = (process.env.SANDCAST_START ?? 'hub') as (typeof order)[number];
+  link(S.title, 0, null, null, S[start], M(start), start === 'hub' ? 'start' : 'arrive');
   link(S.hub, 0, M('hub'), 'door1', S.keep, M('keep'), 'arrive');
   link(S.hub, 1, M('hub'), 'door2', S.moat, M('moat'), 'arrive');
   link(S.hub, 2, M('hub'), 'door3', S.lagoon, M('lagoon'), 'arrive');
