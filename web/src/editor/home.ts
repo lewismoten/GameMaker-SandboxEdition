@@ -3,7 +3,7 @@ import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal 
 import { Project } from './project';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../project/files';
 import { deleteProject, listProjects, loadProject } from '../project/storage';
-import { createZip, isZip, readZip } from '../project/zip';
+import { createZip, crc32, isZip, readZip } from '../project/zip';
 import { exportWebApp } from '../export/exportWebApp';
 import { exportDos } from '../export/exportDos';
 import { parseGame } from '../formats/game';
@@ -201,8 +201,31 @@ async function filesFromList(list: File[]): Promise<GameFiles> {
   return loadFileList(list);
 }
 
+/** The CD shareware game these files are, if any (matched by the .gam file's CRC-32). */
+export async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
+  const shareware = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.kind === 'shareware' && g.gamCrc !== undefined);
+  if (!shareware.length) return undefined;
+  const crcs = new Set(files.byExtension('gam').map((n) => crc32(files.get(n)!)));
+  return shareware.find((g) => crcs.has(g.gamCrc!));
+}
+
 async function importFiles(nav: HomeNav, files: GameFiles): Promise<void> {
   if (!files.size) return;
+  const shareware = await sharewareMatch(files);
+  if (shareware) {
+    // Shareware is copyrighted by its author: play it as released, but don't open it for editing.
+    await modal(`${shareware.title} is shareware`, (close) => [
+      h('p', null, `These files are the shareware game “${shareware.title}”. Shareware games can be played here exactly as their authors released them, but not edited or exported.`),
+      h(
+        'div',
+        { class: 'buttons' },
+        h('button', { onclick: () => (close(undefined), void showNotice(shareware)) }, 'Shareware notice'),
+        h('button', { onclick: () => close(undefined) }, 'Cancel'),
+        h('a', { href: `./play.html?game=${encodeURIComponent(shareware.id)}` }, h('button', { class: 'primary' }, '▶ Play it')),
+      ),
+    ]);
+    return;
+  }
   if (!files.mainGame()) toast('No .gam file found — a new one was created for these files.');
   const p = Project.fromFiles(files);
   await p.saveNow();
