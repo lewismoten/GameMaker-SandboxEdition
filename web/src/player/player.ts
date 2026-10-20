@@ -6,6 +6,7 @@ import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
 import { showKeyMap } from '../editor/keyMapView';
+import { exactScale } from './exactScale';
 
 export interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -22,6 +23,8 @@ export interface PlayerOptions extends RunOptions {
   autoStart?: boolean;
   /** Leave out the ⌨ Keys button (the 1994 desk's monitor has no such thing). */
   noKeysButton?: boolean;
+  /** Draw at exactly the device size shown so every pixel is the same size (player/exactScale.ts). */
+  exactPixels?: boolean;
 }
 
 export interface PlayerHandle {
@@ -38,6 +41,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   canvas.setAttribute('aria-label', `${opts.title ?? 'Game'} screen`);
   container.append(canvas);
   const machine = new Machine(canvas, files);
+  const unexact = opts.exactPixels ? exactScale(canvas) : undefined;
   const touch = (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard) : undefined;
   touch?.attach(container);
   const previousWrite = files.onChange;
@@ -111,6 +115,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
         }
       } finally {
         if (!stopped) machine.destroy();
+        unexact?.();
         touch?.detach();
         files.onChange = previousWrite;
         opts.onExit?.();
@@ -136,6 +141,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     stop() {
       stopped = true;
       machine.destroy();
+      unexact?.();
       touch?.detach();
       files.onChange = previousWrite;
     },

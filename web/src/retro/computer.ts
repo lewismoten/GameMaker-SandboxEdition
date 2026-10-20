@@ -416,6 +416,7 @@ export class Computer implements RetroHost {
         notice,
         autoStart: true,
         noKeysButton: true,
+        exactPixels: true, // the monitor's size is never a whole multiple of 320x200
         speed: this.opts.speed,
         onQuit: () => false, // back to DOS
         onExit: () => {
