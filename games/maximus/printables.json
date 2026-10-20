@@ -1151,12 +1151,12 @@
       "headline": "THE CORE GOES DARK",
       "deck": "Warp lanes failing sector by sector; ten star-shards scattered across the Hundred Worlds",
       "photo": {
-        "map": "heart.map",
-        "x": 64,
-        "y": 38,
+        "map": "w12.map",
+        "x": 36,
+        "y": 40,
         "w": 12,
         "h": 8,
-        "caption": "The Heart of Maximus, last photographed before the light went out."
+        "caption": "Verdance, where the sky went dark first."
       },
       "columns": [
         "<p>MAXIMA STATION - The Maximus Core, the forge-star that has lit the galaxy for ten thousand years, cracked at 0400 station time. Its light, held in ten star-shards, was flung across the Hundred Worlds.</p><p>Within the hour the lanes to Emberreach went quiet. By nightfall The Shallows had stopped answering.</p>",

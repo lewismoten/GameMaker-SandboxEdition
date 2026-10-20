@@ -16,11 +16,11 @@ export function redNoiseTile(): string {
   const g = c.getContext('2d')!;
   const r = rng(0x5a17d);
   // pink wash
-  g.fillStyle = 'rgb(255, 196, 206)';
+  g.fillStyle = 'rgb(255, 182, 196)';
   g.fillRect(0, 0, W, H);
   const colors = ['rgb(255,40,70)', 'rgb(255,90,150)', 'rgb(255,150,60)', 'rgb(255,120,200)', 'rgb(255,0,40)', 'rgb(255,170,230)', 'rgb(255,60,110)'];
   // specks
-  for (let i = 0; i < 2600; i++) {
+  for (let i = 0; i < 5200; i++) {
     g.fillStyle = colors[Math.floor(r() * colors.length)];
     const s = 1 + Math.floor(r() * 3);
     g.fillRect(Math.floor(r() * W), Math.floor(r() * H), s, s);
@@ -40,11 +40,13 @@ export function redNoiseTile(): string {
     }
     g.stroke();
   }
-  // letter-shaped decoys: fragments of strokes in the same weight as the answer text
-  g.font = '700 15px Arial, sans-serif';
-  for (let i = 0; i < 40; i++) {
-    g.fillStyle = colors[Math.floor(r() * colors.length)];
-    g.fillText(String.fromCharCode(65 + Math.floor(r() * 26)), r() * W, r() * H);
+  // letter-shaped decoys in the answer's weight: pink ones, and pale blue ones whose red is high
+  // enough that the film hides them too, so the eye can't pick the real words out
+  const decoys = ['rgb(215,160,255)', 'rgb(225,150,250)', 'rgb(205,170,255)', 'rgb(255,90,150)', 'rgb(235,120,230)'];
+  for (let i = 0; i < 260; i++) {
+    g.font = `${r() < 0.5 ? 700 : 400} ${12 + Math.floor(r() * 6)}px Arial, sans-serif`;
+    g.fillStyle = decoys[Math.floor(r() * decoys.length)];
+    g.fillText(String.fromCharCode((r() < 0.7 ? 97 : 65) + Math.floor(r() * 26)), r() * W, r() * H);
   }
   noiseUrl = c.toDataURL();
   return noiseUrl;

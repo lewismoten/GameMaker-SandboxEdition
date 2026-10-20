@@ -593,9 +593,9 @@
   position: relative;
   display: inline-block;
   padding: 0.3em 0.5em;
-  color: rgb(70, 140, 255);
+  color: rgb(105, 160, 255);
   font:
-    700 1em/1.35 Arial,
+    400 1em/1.35 Arial,
     Helvetica,
     sans-serif;
   isolation: auto;
