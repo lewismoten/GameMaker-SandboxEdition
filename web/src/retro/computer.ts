@@ -129,6 +129,10 @@ export class Computer implements RetroHost {
     return this.audioCtx;
   }
 
+  turbo(): boolean {
+    return !this.opts.speed.ticksPerSecond;
+  }
+
   /** Types a command at the prompt, as if on the keyboard. */
   typeCommand(cmd: string): boolean {
     if (!this.powered || this.busy) return false;

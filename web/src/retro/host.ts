@@ -44,6 +44,8 @@ export interface RetroHost extends Ui {
   downloads: Downloads;
   /** Unlocked Web Audio context for modem sounds. */
   audio(): AudioContext | undefined;
+  /** False when TURBO is off and the PC runs like a 286. */
+  turbo(): boolean;
   fs: FileSystem;
   /** The DOS prompt's current folder (Game-Maker's starting game area). */
   workDir(): { drive: string; parts: string[] };
