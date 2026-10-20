@@ -8,6 +8,7 @@ import { editors, fileInfo } from './editors';
 import { GameFiles, loadFileList, normalize } from '../project/files';
 import { createZip } from '../project/zip';
 import { exportWebApp } from '../export/exportWebApp';
+import { exportSinglePage } from '../export/exportSinglePage';
 import { exportDos } from '../export/exportDos';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 
@@ -85,7 +86,7 @@ export class Workspace {
         h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'),
         h('div', { class: 'toolbar' }, h('button', { onclick: () => void this.newFile() }, '+ Add a file…'), h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…')),
       ),
-      h('details', { class: 'export-menu' }, h('summary', null, 'Save & share'), h('div', { class: 'stack' }, h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'), h('button', { onclick: () => void this.exportApp() }, 'Export web app'), h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'))),
+      h('details', { class: 'export-menu' }, h('summary', null, 'Save & share'), h('div', { class: 'stack' }, h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'), h('button', { onclick: () => void this.exportApp() }, 'Export web app'), h('button', { onclick: () => void this.exportPage(), title: 'One .html file with the game and player inside: double-click to play, even offline' }, 'Export as one web page'), h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'))),
       ...sections.map((k) =>
         h(
           'section',
@@ -269,6 +270,18 @@ export class Workspace {
       const { name, zip, exe } = await exportDos(this.project.files, { title, gam: this.project.gam });
       download(name, zip, 'application/zip');
       toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
+    } catch (e) {
+      toast((e as Error).message, 'error');
+    }
+  }
+
+  private async exportPage(): Promise<void> {
+    try {
+      toast('Building web page…');
+      const title = this.project.game().scenes[0]?.desc || this.project.name;
+      const { name, html } = await exportSinglePage(this.project.files, { title, gam: this.project.gam });
+      download(name, html, 'text/html');
+      toast(`Saved ${name}. Open it in any browser to play — no internet needed.`);
     } catch (e) {
       toast((e as Error).message, 'error');
     }

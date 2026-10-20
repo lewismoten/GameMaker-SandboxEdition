@@ -7,6 +7,7 @@ import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, loadHostedGame, typ
 import { deleteProject, listProjects, loadProject } from '../project/storage';
 import { createZip, crc32, isZip, readZip } from '../project/zip';
 import { exportWebApp } from '../export/exportWebApp';
+import { exportSinglePage } from '../export/exportSinglePage';
 import { exportDos } from '../export/exportDos';
 import { parseGame } from '../formats/game';
 
@@ -145,6 +146,7 @@ async function renderProjects(host: HTMLElement, nav: HomeNav): Promise<void> {
           h('a', { href: `./play.html?project=${encodeURIComponent(p.id)}` }, h('button', null, 'Play')),
           h('button', { onclick: () => void downloadProject(p.id) }, 'Download .zip'),
           h('button', { onclick: () => void exportProject(p.id) }, 'Export web app'),
+          h('button', { onclick: () => void exportProjectPage(p.id), title: 'One .html file with the game and player inside' }, 'Export as one web page'),
           h('button', { onclick: () => void exportProjectForDos(p.id) }, 'Export for DOS'),
           h(
             'button',
@@ -330,6 +332,20 @@ export async function exportProject(id: string): Promise<void> {
     const { name, zip } = await exportWebApp(p.files, { title, gam: p.record.gam });
     download(name, zip, 'application/zip');
     toast(`Saved ${name}. Unzip it onto any static web host.`);
+  } catch (e) {
+    toast((e as Error).message, 'error');
+  }
+}
+
+export async function exportProjectPage(id: string): Promise<void> {
+  const p = await loadProject(id);
+  if (!p) return;
+  try {
+    toast('Building web page…');
+    const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
+    const { name, html } = await exportSinglePage(p.files, { title, gam: p.record.gam });
+    download(name, html, 'text/html');
+    toast(`Saved ${name}. Open it in any browser to play — no internet needed.`);
   } catch (e) {
     toast((e as Error).message, 'error');
   }

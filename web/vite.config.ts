@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { serviceWorkerSource, hashText } from './src/export/serviceWorker';
 import { cdGames } from './scripts/cdGames';
+import { singlePagePlayer } from './scripts/singlePageBuild';
 
 const publicDir = resolve(__dirname, 'public');
 
@@ -94,7 +95,7 @@ function manualReload(): Plugin {
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [cdGames(resolve(__dirname, '../cd')), offline(), manualReload()],
+  plugins: [cdGames(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), manualReload()],
   build: {
     target: 'es2022',
     rollupOptions: {
