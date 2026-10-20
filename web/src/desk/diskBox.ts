@@ -3,27 +3,34 @@ import './diskBox.css';
 import { h, clear } from '../editor/ui';
 import { diskCount, type Disk } from '../retro/disks';
 import { creditLine } from '../project/files';
+import { boxDisks } from './boxFacts';
+
+/** How many disks it takes: an original ships with the DOS player too (as its box says). */
+export function disksIn(d: Disk): number {
+  return d.kind === 'original' ? boxDisks(d.bytes) : diskCount(d.bytes);
+}
 
 export type DiskAction = 'play' | 'design' | 'modern';
 
 /** A printed label, as a shareware publisher had them made: logo band, title, details. */
-function printedLabel(d: Disk): HTMLElement {
+function printedLabel(d: Disk, n: number): HTMLElement {
   const g = d.catalog!;
   const l = g.original?.label;
-  const count = diskCount(d.bytes);
+  const count = disksIn(d);
   return h(
     'div',
     { class: 'label printed', style: `--lbg:${l?.background ?? '#fff'};--lband:${l?.band ?? '#c62828'};--link:${l?.ink ?? '#111'}` },
     h('span', { class: 'p-logo' }, l?.logo ?? (g.company ?? 'SANDBOX SOFTWARE').toUpperCase()),
     h('span', { class: 'p-title' }, g.title),
     h('span', { class: 'p-line' }, `Shareware${g.price ? ` · Register for ${g.price}` : ''}`),
-    h('span', { class: 'p-foot' }, `${count > 1 ? `Disk 1 of ${count}` : 'Disk 1 of 1'} · 3½" ${d.density} · © ${g.year ?? 1995}`),
+    h('span', { class: 'p-foot' }, `Disk ${n} of ${count} · 3½" ${d.density} · © ${g.year ?? 1995}`),
     d.note ? h('span', { class: 'marker-note' }, d.note) : null,
   );
 }
 
-export function floppyElement(d: Disk, small = false): HTMLElement {
-  const count = diskCount(d.bytes);
+/** A disk; `n` numbers the later disks of a game that takes more than one. */
+export function floppyElement(d: Disk, small = false, n = 1): HTMLElement {
+  const count = disksIn(d);
   const label = d.kind === 'blank' ? 'blank — for Utilities ▸ Transfer' : d.title;
   const g = d.catalog;
   // Hand-written like a real label: who made it, when, and what it cost.
@@ -42,13 +49,15 @@ export function floppyElement(d: Disk, small = false): HTMLElement {
       'aria-hidden': small ? 'true' : undefined,
     },
     h('div', { class: 'shutter' }),
-    d.kind === 'original' ? printedLabel(d) : h(
-      'div',
-      { class: 'label' },
-      label,
-      h('small', null, [sub, count > 1 ? `disk 1 of ${count}` : ''].filter(Boolean).join('\n')),
-      d.note ? h('span', { class: 'marker-note' }, d.note) : null,
-    ),
+    d.kind === 'original'
+      ? printedLabel(d, n)
+      : h(
+          'div',
+          { class: 'label' },
+          label,
+          h('small', null, [sub, count > 1 ? `disk ${n} of ${count}` : ''].filter(Boolean).join('\n')),
+          d.note ? h('span', { class: 'marker-note' }, d.note) : null,
+        ),
     h('div', { class: 'wp' }),
     d.density === 'HD' ? h('div', { class: 'density-hole' }) : null,
     d.density === 'HD' ? h('div', { class: 'hd' }, 'HD') : null,
@@ -64,9 +73,18 @@ function sizeText(bytes: number): string {
 /** A line about the disk: what it is, who made it, its size. */
 export function diskFacts(d: Disk): string {
   return [
-    d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'original' ? 'Shareware from Sandbox Software, our own games: play them or open them in Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
+    d.kind === 'rsd'
+      ? 'One of the games RSD made with Game-Maker'
+      : d.kind === 'original'
+        ? 'Shareware from Sandbox Software, our own games: play them or open them in Game-Maker'
+        : d.kind === 'gameware'
+          ? 'Free gameware from the Game-Maker CD'
+          : d.kind === 'project'
+            ? 'Your game (also in C:\\GM on the hard disk)'
+            : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
     d.catalog ? creditLine(d.catalog) : '',
     sizeText(d.bytes),
+    disksIn(d) > 1 ? `${disksIn(d)} disks: disk 1 goes in A:` : '',
     d.writeProtected ? 'write-protected' : '',
   ]
     .filter(Boolean)
@@ -80,7 +98,10 @@ export function diskFacts(d: Disk): string {
  */
 export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: (d: Disk) => void): Promise<void> {
   return new Promise((resolve) => {
-    let index = Math.max(0, disks.findIndex((d) => d.id === startId));
+    let index = Math.max(
+      0,
+      disks.findIndex((d) => d.id === startId),
+    );
     const row = h('div', { class: 'disk-row', role: 'listbox', 'aria-label': 'Floppy disks' });
     const info = h('div', { class: 'flip-info', 'aria-live': 'polite' });
     const items = disks.map((d, i) => {
@@ -90,6 +111,13 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       el.title = `Put ${d.kind === 'blank' ? 'a blank disk' : d.title} in drive A:`;
       el.addEventListener('pointerenter', () => select(i, false));
       el.addEventListener('click', () => pick(i));
+      // a game on several disks: the rest stand right behind disk 1 (it's the one you boot)
+      for (let n = disksIn(d); n > 1; n--) {
+        const spare = floppyElement(d, true, n);
+        spare.classList.add('spare');
+        spare.addEventListener('click', () => pick(i));
+        row.append(spare);
+      }
       row.append(el);
       return el;
     });
@@ -109,7 +137,12 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       items.forEach((el, j) => el.setAttribute('aria-selected', String(j === index)));
       if (scroll) items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       const d = disks[index];
-      clear(info, h('h2', null, d.kind === 'blank' ? 'Blank disk' : d.title), h('p', null, diskFacts(d)), h('p', { class: 'hint' }, 'Click a disk to put it in drive A:'));
+      clear(
+        info,
+        h('h2', null, d.kind === 'blank' ? 'Blank disk' : d.title),
+        h('p', null, diskFacts(d)),
+        h('p', { class: 'hint' }, 'Click a disk to put it in drive A:'),
+      );
     }
 
     const onKey = (e: KeyboardEvent) => {
