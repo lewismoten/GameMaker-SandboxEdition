@@ -35,7 +35,7 @@ export const PICKUP_FX: Record<PickupId, { effect?: number; eamt?: number; score
 
 export const horizon = (seed = 1) => {
   const sky = R('sky');
-  return tex((x, y) => (dither(x, y, 0.15 + ((seed * 7) % 3) * 0.02) ? sky[11] : sky[10]));
+  return tex((x, y) => (dither(x, y, 0.15 + ((seed * 7) % 3) * 0.02) ? sky[sky.length - 1] : sky[sky.length - 2]));
 };
 
 export const caveWall = (seed: number) => {
@@ -55,9 +55,9 @@ function skyBand(k: number, stars: number): Pixels {
   const r = rng(100 + k * 7 + stars * 31);
   const p = tex((x, y) => {
     const t = (k * 20 + y) / 160; // 0..1 over eight bands
-    const f = t * 10.99;
+    const f = t * (sky.length - 1.01);
     const i = Math.floor(f);
-    return dither(x, y, f - i) ? sky[Math.min(11, i + 1)] : sky[i];
+    return dither(x, y, f - i) ? sky[Math.min(sky.length - 1, i + 1)] : sky[i];
   });
   for (let s = 0; s < stars; s++) {
     const x = Math.floor(r() * 20);

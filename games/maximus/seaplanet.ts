@@ -6,6 +6,8 @@ import type { SetBuilder } from './blockset';
 import type { PlanetResult, PlanetSpec, Run, Spot } from './planet';
 
 const SURFACE = 12;
+/** First row of the even deep water (band 3). */
+const DEEP = SURFACE + 28;
 const FLOOR_BOTTOM = 85;
 
 export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
@@ -19,7 +21,7 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     [6, 1 + r() * 2],
     [11, r()],
   ]);
-  const floor = Array.from({ length: W }, (_, x) => Math.round(50 + n(x) * 1.4));
+  const floor = Array.from({ length: W }, (_, x) => Math.max(DEEP + 3, Math.round(52 + n(x) * 1.4)));
   // a trench or two plunging toward the abyss
   for (let k = 0; k < 2; k++) {
     const tx = Math.floor(r() * W);
@@ -53,7 +55,7 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       for (let y = top + (i === 0 || i === wdt - 1 ? 1 : 0); y < floor[x]; y++) g.set(x, y, pickOne([id('reef:0'), id('reef:1'), id('reef:3'), id('reef:4')]));
     }
     // ledges out from the tower every few rows
-    for (let y = top + 3; y < Math.min(...[0, 1].map((i) => floor[wx(tx + i)])) - 2; y += 5 + Math.floor(r() * 3)) {
+    for (let y = Math.max(top + 3, DEEP); y < Math.min(...[0, 1].map((i) => floor[wx(tx + i)])) - 2; y += 5 + Math.floor(r() * 3)) {
       const side = r() < 0.5 ? -1 : wdt;
       g.set(tx + side, y, id('reef:ledge'));
       g.set(tx + side + (side < 0 ? -1 : 1), y, id('reef:ledge'));
@@ -168,7 +170,7 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   }
   // currents and bubble columns
   for (let k = 0; k < 3; k++) {
-    const cy = SURFACE + 8 + Math.floor(r() * 30);
+    const cy = DEEP + Math.floor(r() * 8);
     const cx = Math.floor(r() * W);
     const dir = r() < 0.5 ? 'r' : 'l';
     for (let i = 0; i < 16; i++) if (g.get(cx + i, cy) === waterAt(cy) && !g.isLocked(cx + i, cy)) g.set(cx + i, cy, id(`current:${dir}`));
@@ -178,12 +180,13 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     if (Math.abs(bx - ax) < 6) continue;
     g.set(bx, floor[bx], id('vent'));
     const hot = r() < 0.4;
-    for (let y = floor[bx] - 1; y > SURFACE + 2; y--) if (!g.isLocked(bx, y)) g.set(bx, y, id(hot && y > floor[bx] - 4 ? 'hotwater' : 'bubbles'));
+    for (let y = floor[bx] - 1; y >= DEEP; y--) if (!g.isLocked(bx, y)) g.set(bx, y, id(hot && y > floor[bx] - 4 ? 'hotwater' : 'bubbles'));
   }
   // life in the open water: fish schools, plankton blooms, bubbles; old sea mines
   for (let k = 0; k < 40; k++) {
     const x = Math.floor(r() * W);
-    const y = SURFACE + 3 + Math.floor(r() * (floor[x] - SURFACE - 5));
+    // below the sunlit bands, where the water is one even shade
+    const y = DEEP + Math.floor(r() * Math.max(1, floor[x] - DEEP - 1));
     if (g.get(x, y) !== waterAt(y) || g.isLocked(x, y) || Math.abs(x - ax) < 5) continue;
     g.set(x, y, id(k < 14 ? 'fishschool' : k < 26 ? 'plankton:0' : k < 34 ? 'bubble' : 'seamine'));
   }
@@ -211,7 +214,7 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   const caveAir: Spot[] = [];
   for (let k = 0; k < 30; k++) {
     const x = Math.floor(r() * W);
-    const y = SURFACE + 3 + Math.floor(r() * (floor[x] - SURFACE - 4));
+    const y = DEEP + Math.floor(r() * Math.max(1, floor[x] - DEEP - 1));
     if (g.get(x, y) !== waterAt(y) || Math.abs(x - ax) < 4) continue;
     if (k < 14) g.set(x, y, id(`p:${pickOne(['credit', 'credit', 'gem', 'heart'])}`));
     else sky.push({ x, y });

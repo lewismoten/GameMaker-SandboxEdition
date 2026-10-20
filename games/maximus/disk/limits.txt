@@ -32,7 +32,7 @@ MAP SIZE
 
 MONSTERS PLACED ON A MAP
   Limit: 200
-  Used:  200 in the Maelstrom (every slot: not one left for a shot); 7319 in all
+  Used:  200 in the Maelstrom (every slot: not one left for a shot); 7317 in all
   Where: MAEL.MAP
 
 MONSTERS IN A .MON
@@ -87,7 +87,7 @@ SOUND EFFECTS IN A .SND
 
 PALETTE COLORS
   Limit: 256 (255 drawable; 255 is the sprite clear color)
-  Used:  86 shared + 149 per place = 235; 98 palettes, one per scene
+  Used:  86 shared + 169 per place = 255; 98 palettes, one per scene
   Where: *.PAL
 
 MONSTERS DRAWN AT ONCE

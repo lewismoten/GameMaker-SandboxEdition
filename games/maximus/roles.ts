@@ -7,7 +7,7 @@ import { hsl, hueRamp } from './palette';
 import { rng } from '../kit/pixels';
 
 export const ROLES: Role[] = [
-  { name: 'sky', n: 12 },
+  { name: 'sky', n: 21 },
   { name: 'cloud', n: 4 },
   { name: 'far', n: 5 },
   { name: 'top', n: 6 },
@@ -18,11 +18,11 @@ export const ROLES: Role[] = [
   { name: 'plant', n: 8 },
   { name: 'stem', n: 5 },
   { name: 'bloom', n: 5 },
-  { name: 'crystal', n: 6 },
-  { name: 'liquid', n: 7 },
+  { name: 'crystal', n: 8 },
+  { name: 'liquid', n: 10 },
   { name: 'ruin', n: 7 },
   { name: 'tech', n: 7 },
-  { name: 'glow', n: 5 },
+  { name: 'glow', n: 8 },
   { name: 'hideA', n: 7 },
   { name: 'hideB', n: 7 },
   { name: 'hideC', n: 6 },
@@ -30,7 +30,7 @@ export const ROLES: Role[] = [
   { name: 'eye', n: 4 },
   { name: 'hazard', n: 5 },
   { name: 'accent', n: 6 },
-  { name: 'star', n: 4 },
+  { name: 'star', n: 7 },
 ];
 
 export type Biome =

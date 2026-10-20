@@ -9,18 +9,25 @@ import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
 import { OUTLINE, WHITE } from './palette';
 import { PICKUP_FX, R } from './surface';
 
-/** Water at depth band k (0 = just below the surface .. 7 = abyss). */
+/**
+ * Water at depth band k (0 = just below the surface .. 7 = abyss). The light fades through
+ * the first three bands; from band 3 down the water is one even shade, so anything drawn on
+ * a deep-water background (kelp, pickups, wrecks) sits seamlessly at any depth below it.
+ */
 const water = (k: number, seed = 1) => {
   const sky = R('sky'); // ocean themes color "sky" as the water column, light..dark reversed
   const r = rng(seed * 13 + k);
+  const n = sky.length - 1;
+  const deep = Math.round(n * 0.42);
   const p = tex((x, y) => {
-    const t = 1 - (k * 20 + y) / 160;
-    const f = t * 10.99;
+    if (k >= 3) return dither(x, y, 0.25) ? sky[deep + 1] : sky[deep];
+    const t = (k * 20 + y) / 60; // 0 at the surface .. 1 at the top of band 3
+    const f = n - t * (n - deep);
     const i = Math.floor(f);
-    return dither(x, y, f - i) ? sky[Math.min(11, i + 1)] : sky[i];
+    return dither(x, y, f - i) ? sky[Math.min(n, i + 1)] : sky[i];
   });
   // motes drifting in the water
-  for (let i = 0; i < 3; i++) p.set(r() * 20, r() * 20, sky[Math.min(11, 11 - k + 2)]);
+  for (let i = 0; i < 3; i++) p.set(r() * 20, r() * 20, sky[k >= 3 ? deep + 3 : Math.min(n, n - k * 2 + 1)]);
   return p;
 };
 const deepWater = (seed: number) => water(7, seed);
