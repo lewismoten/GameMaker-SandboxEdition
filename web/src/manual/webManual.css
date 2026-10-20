@@ -1,0 +1,106 @@
+/* The guide for today's web Game-Maker (#/help). */
+
+.guide {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 32px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.guide nav {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.guide nav a {
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.guide nav a:hover {
+  background: var(--accent-soft);
+}
+
+.guide article {
+  max-width: 72ch;
+  line-height: 1.6;
+}
+
+.guide h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.guide h2 {
+  margin: 40px 0 8px;
+  padding-top: 8px;
+  font-size: 20px;
+  scroll-margin-top: 16px;
+}
+
+.guide h3 {
+  margin: 20px 0 6px;
+  font-size: 16px;
+}
+
+.guide p,
+.guide li {
+  color: var(--text);
+}
+
+.guide .lead {
+  font-size: 17px;
+}
+
+.guide kbd,
+.guide code {
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel-2);
+  font: 0.9em ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+.guide table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 16px;
+  font-size: 14px;
+}
+
+.guide th,
+.guide td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.guide .tip {
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent-soft);
+}
+
+@media (max-width: 760px) {
+  .guide {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .guide nav {
+    position: static;
+    flex-flow: row wrap;
+  }
+}
