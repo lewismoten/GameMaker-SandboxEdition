@@ -326,6 +326,10 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     do {
       if (await moveChars(w, async () => {
         const slot = await pickDropSlot(m, w);
+        // DropBloc gave the keyboard back to the BIOS while its screen was up, so keys
+        // pressed there (such as Esc to cancel) never reached the game.
+        m.flushKeys();
+        w.keydn.fill(0);
         resync();
         return slot;
       }))
