@@ -4,7 +4,7 @@ import './desk.css';
 import { h, clear, toast } from '../editor/ui';
 import { Computer, type MonitorMode } from '../retro/computer';
 import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
-import { openDiskBox, floppyElement, type DiskAction } from './diskBox';
+import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './diskBox';
 import { openCatalog } from './catalog';
 import { renderShot } from './boxArt';
 import { installCrtWarp } from './crtWarp';
@@ -50,6 +50,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   const crt = h('div', { class: 'crt', role: 'region', 'aria-label': 'Computer monitor' }, h('div', { class: 'power-hint' }, 'Press the power button ⏻'));
   const floppyDrive = h('div', { class: 'drive floppy', title: 'Drive A: (3.5" 1.44 MB)' }, h('span', null, 'A:'), h('span', { class: 'slot' }), h('button', { onclick: () => eject() }, 'EJECT'));
+  // What you can do with the disk in drive A: (shown only while there is one).
+  const driveActions = h('div', { class: 'drive-actions', hidden: true });
   const cdDrive = h('div', { class: 'drive cdrom', title: 'Drive D: (CD-ROM)' }, h('span', null, 'D:'), h('span', { class: 'slot' }), h('span', null, 'CD-ROM'));
   const powerLed = h('span', { class: 'led green' });
   const turboLed = h('span', { class: 'led amber' });
@@ -108,6 +110,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           h('div', { class: 'leds' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), mhz),
           h('span'),
           h('div', { class: 'drives' }, floppyDrive, cdDrive),
+          driveActions,
         ),
         h('div', { class: 'keyboard', title: 'Keyboard: click, then type', onclick: () => void power(true) }),
       ),
@@ -219,13 +222,26 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     }
   }
 
+  let inDrive: Disk | undefined;
+
   function showInDrive(d: Disk | undefined): void {
+    inDrive = d;
+    driveActions.hidden = !d;
     if (!d) {
       delete floppyDrive.dataset.disk;
+      clear(driveActions);
       return;
     }
-    floppyDrive.dataset.disk = d.title;
+    floppyDrive.dataset.disk = d.kind === 'blank' ? 'blank disk' : d.title;
     floppyDrive.style.setProperty('--disk-color', d.color);
+    const act = (a: DiskAction) => () => void onDisk(d, a);
+    clear(
+      driveActions,
+      h('span', { class: 'drive-actions-title', title: diskFacts(d) }, d.kind === 'blank' ? 'Blank disk in A:' : `${d.title} in A:`),
+      d.gam ? h('button', { class: 'primary', onclick: act('play') }, '▶ Play') : null,
+      h('button', { onclick: act('design') }, d.kind === 'blank' ? '✎ New game' : '✎ Design'),
+      d.kind !== 'blank' ? h('button', { onclick: act('modern'), title: 'Open it in today’s web Game-Maker' }, 'Today’s web →') : null,
+    );
   }
 
   async function insert(d: Disk): Promise<void> {
@@ -246,7 +262,17 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   async function flip(): Promise<void> {
     if (!disks.length) await refreshDisks();
-    await openDiskBox(disks, lastDisk, (d, a) => void onDisk(d, a));
+    await openDiskBox(disks, lastDisk, (d) => void insertFromBox(d));
+  }
+
+  /** Putting a disk in drive A: (the PC boots if it is off). */
+  async function insertFromBox(d: Disk): Promise<void> {
+    if (computer.busy) {
+      toast('The drive light is on — quit the running program first (Esc usually does it).');
+      return;
+    }
+    await insert(d);
+    await power(true);
   }
 
   async function onDisk(d: Disk, action: DiskAction): Promise<void> {
@@ -262,11 +288,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       toast('Quit the program that is running first (Esc usually does it).');
       return;
     }
-    await insert(d);
+    if (inDrive?.id !== d.id) await insert(d);
     if (action === 'play' && d.gam) await command(`A:\n${d.gam.replace(/\.gam$/i, '').toUpperCase()}`);
     // Game-Maker starts in the current folder: the disk, or C:\GM for a new game.
     else if (action === 'design') await command(d.kind === 'blank' ? 'C:\nCD \\GM\nGM' : 'A:\nGM');
-    else await power(true);
   }
 
   async function startGameMaker(): Promise<void> {

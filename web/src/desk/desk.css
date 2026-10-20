@@ -445,6 +445,61 @@
   cursor: pointer;
 }
 
+/* buttons for the disk in drive A:, hanging under the drive */
+.drive-actions {
+  position: absolute;
+  right: 14px;
+  top: calc(100% + 6px);
+  z-index: 6;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  max-width: calc(100% - 28px);
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(24, 20, 14, 0.88);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+  color: #f4ead2;
+  font: 600 12px/1.2 system-ui, sans-serif;
+}
+
+.drive-actions[hidden] {
+  display: none;
+}
+
+.drive-actions::before {
+  content: '';
+  position: absolute;
+  right: 90px;
+  bottom: 100%;
+  border: 6px solid transparent;
+  border-bottom-color: rgba(24, 20, 14, 0.88);
+}
+
+.drive-actions-title {
+  overflow: hidden;
+  max-width: 180px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drive-actions button {
+  flex: none;
+  padding: 4px 9px;
+  border: 1px solid #c9c1a6;
+  border-radius: 5px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font: 600 12px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.drive-actions button.primary {
+  border-color: #1b318a;
+  background: linear-gradient(#3e63e0, #2342b8);
+  color: #fff;
+}
+
 .keyboard {
   width: 96%;
   height: 46px;
