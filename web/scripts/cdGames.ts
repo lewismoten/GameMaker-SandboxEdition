@@ -6,6 +6,8 @@
 //   games/gameware/<id>/<file>   the free sample games that came with Game-Maker (editable)
 //   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
+//   gm/index.json, gm/<file>     the installed C:\GM folder (runtime/run/GM) for the retro
+//                                desk: a listing plus its text files (.HLP screens, .TXT)
 import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -85,7 +87,18 @@ function crc32(data: Uint8Array): number {
   return (c ^ 0xffffffff) >>> 0;
 }
 
+export interface GmInstallEntry {
+  name: string;
+  size: number;
+  dir: boolean;
+}
+
+// Text files of the installed Game-Maker the retro desk shows (help screens are raw
+// 80x25 text-mode dumps); programs are listed but never served.
+const GM_TEXT = /\.(hlp|txt)$/i;
+
 interface Scan {
+  gm: GmInstallEntry[];
   catalog: CdCatalogEntry[];
   /** Site path -> file on disk. */
   files: Map<string, string>;
@@ -143,7 +156,17 @@ function scan(cdRoot: string): Scan {
     const p = join(cdRoot, 'gm', name);
     if (existsSync(p)) files.set(`dos/${name}`, p);
   }
-  return { catalog, files };
+  // The installed Game-Maker (C:\GM) shown on the retro desk's PC.
+  const gm: GmInstallEntry[] = [];
+  const install = join(cdRoot, '../runtime/run/GM');
+  if (existsSync(install)) {
+    for (const name of readdirSync(install).sort()) {
+      const st = statSync(join(install, name));
+      gm.push({ name: name.toUpperCase(), size: st.isDirectory() ? 0 : st.size, dir: st.isDirectory() });
+      if (st.isFile() && GM_TEXT.test(name)) files.set(`gm/${name.toLowerCase()}`, join(install, name));
+    }
+  }
+  return { gm, catalog, files };
 }
 
 export function cdGames(cdRoot: string): Plugin {
@@ -156,9 +179,9 @@ export function cdGames(cdRoot: string): Plugin {
       server.watcher.on('change', (f) => f.startsWith(cdRoot) && (cache = undefined));
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
-        if (url === 'games/index.json') {
+        if (url === 'games/index.json' || url === 'gm/index.json') {
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(get().catalog));
+          res.end(JSON.stringify(url.startsWith('gm/') ? get().gm : get().catalog));
           return;
         }
         const file = get().files.get(url.toLowerCase());
@@ -168,8 +191,9 @@ export function cdGames(cdRoot: string): Plugin {
       });
     },
     generateBundle() {
-      const { catalog, files } = get();
+      const { gm, catalog, files } = get();
       this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog) });
+      this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
       for (const [site, disk] of files) this.emitFile({ type: 'asset', fileName: site, source: readFileSync(disk) });
     },
   };
