@@ -1,5 +1,5 @@
 // Home page: your projects, importing original game folders, and the CD's sample games.
-import { h, clear, download, pickFiles, toast, promptText, confirmDialog } from './ui';
+import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './ui';
 import { Project } from './project';
 import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../project/files';
 import { deleteProject, listProjects, loadProject } from '../project/storage';
@@ -15,6 +15,7 @@ export interface HomeNav {
 export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
   const projects = h('div', { class: 'cards' });
   const samples = h('div', { class: 'cards' }, h('p', { class: 'meta' }, 'Loading…'));
+  const shareware = h('div', { class: 'cards' });
   const drop = h('div', { class: 'dropzone' }, 'Drop a game folder, its files, or a .zip here');
 
   clear(
@@ -42,7 +43,14 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         h('div', { style: 'height:12px' }),
         projects,
       ),
-      h('section', null, h('h2', null, 'Games from the Game-Maker CD'), h('p', { class: 'lead' }, 'Free “gameware” that shipped with Game-Maker. Play them, or open a copy to see how they were made.'), samples),
+      h('section', null, h('h2', null, 'Sample games from the Game-Maker CD'), h('p', { class: 'lead' }, 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.'), samples),
+      h(
+        'section',
+        null,
+        h('h2', null, 'Shareware games from the Game-Maker CD'),
+        h('p', { class: 'lead' }, 'Games other people made with Game-Maker, as distributed on the CD. They are copyrighted by their authors and can only be played here, exactly as released. If you enjoy one, read its notice to see how the author asked to be registered or thanked.'),
+        shareware,
+      ),
       h(
         'section',
         null,
@@ -65,9 +73,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   await renderProjects(projects, nav);
   try {
-    const catalog = (await loadCatalog()).filter((g) => g.gam);
-    clear(samples, ...catalog.map((g) => sampleCard(g, nav)));
-    if (!catalog.length) clear(samples, h('p', { class: 'meta' }, 'No sample games were bundled with this build.'));
+    const catalog = await loadCatalog();
+    const gameware = catalog.filter((g) => g.kind !== 'shareware');
+    clear(samples, ...gameware.map((g) => sampleCard(g, nav)));
+    clear(shareware, ...catalog.filter((g) => g.kind === 'shareware' && g.gam).map(sharewareCard));
+    if (!gameware.length) clear(samples, h('p', { class: 'meta' }, 'No sample games were bundled with this build.'));
   } catch {
     clear(samples, h('p', { class: 'meta' }, 'Sample games are unavailable offline until they have been opened once.'));
   }
@@ -115,31 +125,60 @@ async function renderProjects(host: HTMLElement, nav: HomeNav): Promise<void> {
 }
 
 function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
+  const copy = async (name: string) => {
+    toast(`Copying ${g.title}…`);
+    const files = await loadHostedGame(g);
+    const p = Project.fromFiles(files, name);
+    if (g.gam) p.gam = g.gam;
+    await p.saveNow();
+    nav.openProject(p.id);
+  };
   return h(
     'div',
     { class: 'card' },
-    h('h3', null, g.title),
+    h('h3', null, g.gam ? g.title : `${g.id} (pictures, monsters and sounds)`),
     h('div', { class: 'meta' }, `${g.id}/ · ${g.files.length} files`),
     h(
       'div',
       { class: 'actions' },
-      h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
-      h(
-        'button',
-        {
-          onclick: async () => {
-            toast(`Copying ${g.title}…`);
-            const files = await loadHostedGame(g);
-            const p = Project.fromFiles(files, g.title);
-            p.gam = g.gam!;
-            await p.saveNow();
-            nav.openProject(p.id);
-          },
-        },
-        'Edit a copy',
-      ),
+      g.gam && h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
+      g.gam
+        ? h('button', { onclick: () => void copy(g.title) }, 'Edit a copy')
+        : h(
+            'button',
+            {
+              onclick: async () => {
+                const name = await promptText('New game', 'Title (shown on the menu screen)', 'My Game');
+                if (name) await copy(name);
+              },
+            },
+            'Start a game with these',
+          ),
     ),
   );
+}
+
+function sharewareCard(g: CatalogEntry): HTMLElement {
+  return h(
+    'div',
+    { class: 'card' },
+    h('h3', null, g.title),
+    h('div', { class: 'meta' }, 'Shareware · play only'),
+    h(
+      'div',
+      { class: 'actions' },
+      h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
+      h('button', { onclick: () => void showNotice(g) }, 'Shareware notice'),
+    ),
+  );
+}
+
+export function showNotice(g: CatalogEntry): Promise<unknown> {
+  return modal(`${g.title}: shareware notice`, (close) => [
+    h('pre', { style: 'white-space:pre-wrap;max-height:60vh;overflow:auto;font:13px/1.4 ui-monospace,monospace' }, g.notice || 'This game is shareware. It is copyrighted by its author.'),
+    h('p', { class: 'meta' }, 'These notices are from 1993–1994; the addresses and prices may no longer be current.'),
+    h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
+  ]);
 }
 
 async function newGame(nav: HomeNav): Promise<void> {
