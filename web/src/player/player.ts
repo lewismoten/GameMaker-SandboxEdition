@@ -39,10 +39,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   container.append(canvas);
   const machine = new Machine(canvas, files);
   const touch = (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard) : undefined;
-  if (touch) {
-    container.classList.add('has-touch');
-    container.append(touch.el);
-  }
+  touch?.attach(container);
   const previousWrite = files.onChange;
   files.onChange = (name) => {
     previousWrite?.(name);
@@ -114,6 +111,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
         }
       } finally {
         if (!stopped) machine.destroy();
+        touch?.detach();
         files.onChange = previousWrite;
         opts.onExit?.();
         resolve();
@@ -138,6 +136,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     stop() {
       stopped = true;
       machine.destroy();
+      touch?.detach();
       files.onChange = previousWrite;
     },
   };
