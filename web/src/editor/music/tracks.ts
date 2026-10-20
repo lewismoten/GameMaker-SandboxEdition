@@ -161,5 +161,6 @@ export class TrackList {
           '＋ Add track',
         );
     clear(this.el, ...rows, add);
+    if (this.adding) add.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 }

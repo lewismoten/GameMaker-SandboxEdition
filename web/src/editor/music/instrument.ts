@@ -93,9 +93,13 @@ function drawEnvelope(c: HTMLCanvasElement, inst: Uint8Array, half: Half, color:
   g.moveTo(0, bottom);
   g.lineTo(xa, ar === 0 ? bottom : y(1));
   if (ar !== 0) {
-    g.lineTo(xd, y(sl));
-    g.lineTo(xs, y(sustainEnd));
-    g.lineTo(rr === 0 ? W : xr, rr === 0 ? y(sustainEnd) : bottom);
+    if (dr === 0) g.lineTo(xs, y(1));
+    else {
+      g.lineTo(xd, y(sl));
+      g.lineTo(xs, y(sustainEnd));
+    }
+    const held = dr === 0 ? 1 : sustainEnd;
+    g.lineTo(rr === 0 ? W : xr, rr === 0 ? y(held) : bottom);
     if (rr !== 0) g.lineTo(W, bottom);
   }
   g.stroke();

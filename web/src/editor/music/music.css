@@ -404,6 +404,10 @@
   margin-top: 8px;
 }
 
+.mus-song-grid .field > span {
+  white-space: normal;
+}
+
 .mus-song-grid .hint {
   margin: 0;
   font-size: 12px;

@@ -189,7 +189,7 @@ export class PianoRoll {
       g.fillStyle = '#121640';
       for (let t = Math.ceil(t0 / sub) * sub; t < t1; t += sub) g.fillRect(Math.round(this.xOf(t)), HEAD, 1, H - HEAD);
     }
-    const beatStep = beat * this.zoom >= 5 ? beat : beat * 4 * this.zoom >= 5 ? beat * 4 : beat * 16;
+    const beatStep = beat * this.zoom >= 8 ? beat : beat * 4 * this.zoom >= 8 ? beat * 4 : beat * 16;
     for (let t = Math.ceil(t0 / beatStep) * beatStep; t < t1; t += beatStep) {
       const bar = Math.round(t / beat) % 4 === 0;
       g.fillStyle = bar ? '#2e3680' : '#1a1f55';
@@ -418,11 +418,13 @@ export class PianoRoll {
       g.fillStyle = '#000';
       g.fillText(label, x + 4, RULER + LANE / 2);
     }
+    // the drum kit switching on or off part way through (at the start it is a song setting)
     for (const e of doc.song.events) {
-      if (e.type !== 'mode' || e.tick < t0 || e.tick > t1) continue;
+      if (e.type !== 'mode' || e.tick === 0 || e.tick < t0 || e.tick > t1) continue;
       const x = this.xOf(e.tick);
       g.fillStyle = '#ffffff';
-      g.fillText(e.a ? '🥁' : '♫', x + 2, RULER - 9 + LANE);
+      g.fillRect(Math.round(x), RULER, 1, LANE);
+      g.fillText(e.a ? 'DRUMS ON' : 'DRUMS OFF', x + 3, RULER + LANE / 2);
     }
   }
 
