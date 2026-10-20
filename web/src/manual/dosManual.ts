@@ -243,7 +243,7 @@ function pages(): BookletPage[] {
       <p>Game-Maker owners shared their games as shareware on bulletin board systems. Type
       <code>TERMINAL</code> and pick <i>The -= S A N D B O X =- BBS</i> from the dialing
       directory. <i>The Sofa</i>, a multi-line board for chatting, is there too.</p>
-      ${figure(fig.bbs, 'Figure 5-1. Logging on to The Sandbox.', [0, 20])}
+      ${figure(fig.bbs, 'Figure 5-1. Logging on to The Sandbox.', [1, 11])}
       <p>Press <kbd>F</kbd> for the sand pile of files, then <kbd>D</kbd> and a game\u2019s number to download it. It is
       unpacked into <code>C:\\DOWNLOAD</code>. <kbd>G</kbd> says goodbye and hangs up.</p>
       <h3>What is shareware?</h3>
