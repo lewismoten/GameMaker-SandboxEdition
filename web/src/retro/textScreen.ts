@@ -36,6 +36,9 @@ export class TextScreen {
   private colors = new Uint32Array(16);
   /** Device pixels per VGA pixel: drawn sharper when the screen is shown larger. */
   private scale = 1;
+  /** The exact device size to resample to, when the scale isn't a whole number. */
+  private shrinkTo?: [number, number];
+  private full?: CanvasRenderingContext2D;
   private dirty = true;
   private raf = 0;
   cursorX = 0;
@@ -94,14 +97,33 @@ export class TextScreen {
     this.dirty = true;
   }
 
-  /** Draws each VGA pixel as scale x scale device pixels (1..4). */
+  /**
+   * Fits the picture to `scale` device pixels per VGA pixel. At a whole scale each VGA
+   * pixel is drawn as k x k device pixels; otherwise it is drawn at the next whole scale off
+   * screen and resampled to the exact size with high-quality smoothing, so strokes stay
+   * even (no doubled or dropped rows) and thin ones turn grey instead of vanishing.
+   */
   setScale(scale: number): void {
-    const k = Math.max(1, Math.min(4, Math.round(scale)));
-    if (k === this.scale) return;
+    if (!(scale > 0)) return;
+    const near = Math.round(scale);
+    const whole = near >= 1 && Math.abs(scale - near) < 0.04;
+    const k = Math.max(1, Math.min(4, whole ? near : Math.ceil(scale)));
+    const size: [number, number] | undefined = whole ? undefined : [Math.round(COLS * CW * scale), Math.round(ROWS * CH * scale)];
+    if (k === this.scale && size?.[0] === this.shrinkTo?.[0] && size?.[1] === this.shrinkTo?.[1]) return;
     this.scale = k;
-    this.canvas.width = COLS * CW * k;
-    this.canvas.height = ROWS * CH * k;
-    this.image = this.ctx.createImageData(this.canvas.width, this.canvas.height);
+    this.shrinkTo = size;
+    const [w, h] = [COLS * CW * k, ROWS * CH * k];
+    if (size) {
+      if (!this.full) this.full = document.createElement('canvas').getContext('2d', { alpha: false })!;
+      this.full.canvas.width = w;
+      this.full.canvas.height = h;
+      [this.canvas.width, this.canvas.height] = size;
+      this.image = this.full.createImageData(w, h);
+    } else {
+      this.canvas.width = w;
+      this.canvas.height = h;
+      this.image = this.ctx.createImageData(w, h);
+    }
     this.px = new Uint32Array(this.image.data.buffer);
     this.dirty = true;
   }
@@ -250,7 +272,12 @@ export class TextScreen {
           }
         }
       }
-    this.ctx.putImageData(this.image, 0, 0);
+    if (this.shrinkTo && this.full) {
+      this.full.putImageData(this.image, 0, 0);
+      this.ctx.imageSmoothingEnabled = true;
+      this.ctx.imageSmoothingQuality = 'high';
+      this.ctx.drawImage(this.full.canvas, 0, 0, this.shrinkTo[0], this.shrinkTo[1]);
+    } else this.ctx.putImageData(this.image, 0, 0);
     this.dirty = false;
   }
 }
