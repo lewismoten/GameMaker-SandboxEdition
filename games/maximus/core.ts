@@ -100,7 +100,8 @@ export function heartMap(s: SetBuilder, ms: MonsterSet): HeartResult {
   // the hall: rows 40..55, columns 10..90
   const top = 38;
   const floor = 56;
-  for (let y = top; y < floor; y++) for (let x = 10; x < 90; x++) g.set(x, y, (x + y) % 11 === 0 ? id('panel:3') : id('panel:dark'));
+  for (let y = top; y < floor; y++)
+    for (let x = 10; x < 90; x++) g.set(x, y, (x * 7 + y * 3) % 23 === 0 ? id('panel:grille') : (x * 5 + y) % 31 === 0 ? id('panel:3') : id('panel:dark'));
   for (let x = 9; x <= 90; x++) g.set(x, floor, id('deck:plate'));
   // platforms up the walls
   for (let k = 0; k < 8; k++) {

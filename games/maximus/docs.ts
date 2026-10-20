@@ -150,12 +150,31 @@ export function limitsTxt(b: Built): string {
   return out.join('\n') + '\n';
 }
 
+/** The most interesting 16x10 window of a map: many different blocks, monsters, few empty cells. */
+export function bestView(b: Built, file: string, w = 16, h = 10, near?: { x: number; y: number; r: number }): [number, number] {
+  const s = b.scenes.find((x) => x.file === file)!;
+  const g = s.map;
+  let best: [number, number] = [0, 0];
+  let bestScore = -Infinity;
+  for (let y0 = 0; y0 <= 100 - h; y0 += 2)
+    for (let x0 = 0; x0 < 100; x0 += 2) {
+      if (near && (Math.min(Math.abs(x0 + w / 2 - near.x), 100 - Math.abs(x0 + w / 2 - near.x)) > near.r || Math.abs(y0 + h / 2 - near.y) > near.r)) continue;
+      const counts = new Map<number, number>();
+      for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) counts.set(g.get(x, y), (counts.get(g.get(x, y)) ?? 0) + 1);
+      const most = Math.max(...counts.values());
+      const mons = g.monsters.filter((m) => (m.x - x0 + 100) % 100 < w && m.y >= y0 && m.y < y0 + h).length;
+      const score = counts.size * 2 + Math.min(mons, 6) * 4 - Math.max(0, most - w * h * 0.35) * 0.5;
+      if (score > bestScore) {
+        bestScore = score;
+        best = [x0, y0];
+      }
+    }
+  return best;
+}
+
 /** about.json for the catalog, the label and the box. */
 export function about(b: Built): object {
-  const shot = (file: string, dx = -8, dy = -6) => {
-    const s = b.scenes.find((x) => x.file === file)!;
-    return [`${file}.map`, (s.arrive.x + dx + 100) % 100, Math.max(0, Math.min(90, s.arrive.y + dy))];
-  };
+  const shot = (file: string, near?: { x: number; y: number; r: number }) => [`${file}.map`, ...bestView(b, file, 16, 10, near)];
   const named = (name: string) => b.scenes.find((x) => x.name === name)!.file;
   return {
     title: 'Maximus: The Hundred Worlds',
@@ -184,11 +203,11 @@ export function about(b: Built): object {
         'Pushes Game-Maker to every limit - see LIMITS.TXT',
       ],
       shots: [
-        shot(named('Verdance'), -6, -6),
-        shot(named('Coralline'), -8, 0),
-        shot('galaxy', 22, -32),
-        shot(named('Mushroom Moon'), -8, -5),
-        shot('heart', 48, -9),
+        shot(named('Verdance')),
+        shot(named('Coralline')),
+        shot('galaxy', { x: 50, y: 54, r: 5 }),
+        shot(named('Mushroom Moon')),
+        shot('heart', { x: 74, y: 47, r: 4 }),
       ],
       rating: 'Ages 8 and up',
     },
@@ -198,9 +217,14 @@ export function about(b: Built): object {
 /** manual.json: the printed manual. */
 export function manual(b: Built): object {
   const file = (name: string) => b.scenes.find((x) => x.name === name)!;
-  const at = (name: string, dx: number, dy: number, w = 16, h = 10, caption = '') => {
+  const at = (name: string, _dx: number, _dy: number, w = 16, h = 10, caption = '') => {
     const s = file(name);
-    return `<shot map="${s.file}.map" x="${(s.arrive.x + dx + 100) % 100}" y="${Math.max(0, Math.min(90, s.arrive.y + dy))}" w="${w}" h="${h}" caption="${caption}"></shot>`;
+    const [x, y] = bestView(b, s.file, w, h);
+    return `<shot map="${s.file}.map" x="${x}" y="${y}" w="${w}" h="${h}" caption="${caption}"></shot>`;
+  };
+  const landing = (name: string, caption: string) => {
+    const s = file(name);
+    return `<shot map="${s.file}.map" x="${(s.arrive.x - 8 + 100) % 100}" y="${Math.max(0, s.arrive.y - 7)}" w="16" h="9" caption="${caption}"></shot>`;
   };
   const vault = (name: string, caption: string) => {
     const s = file(name);
@@ -234,7 +258,7 @@ export function manual(b: Built): object {
       },
       {
         head: 'Four Ways to Travel',
-        html: `<h2>The courier pod</h2><p>Space charts are flown in the pod. The arrows fire its thrusters; let go and it brakes. Fly into the middle of a planet to land, into a warp ring to jump.</p><h2>On foot</h2><p>Max's suit has grav-jets: <kbd>Up</kbd> is a hop, and another tap in the air hops again. Hold <kbd>Right</kbd> while you tap <kbd>Up</kbd> to sail over gaps. Walk into the <b>uplink beacon</b> behind you to return to orbit.</p>${at('Little Hollow', -6, -5, 16, 8, 'The uplink beacon stands behind you when you land')}<h2>The diving bell</h2><p>On sea worlds Max takes the bell. It swims with the arrows and coasts when you let go. Bubble columns lift you, currents push you. Surface at the <b>buoy</b> to leave.</p><h2>The rover</h2><p>Rover worlds are fast and flat. The rover rides the lifts at every step; with the <b>Spring Shocks</b> module it can jump.</p>`,
+        html: `<h2>The courier pod</h2><p>Space charts are flown in the pod. The arrows fire its thrusters; let go and it brakes. Fly into the middle of a planet to land, into a warp ring to jump.</p><h2>On foot</h2><p>Max's suit has grav-jets: <kbd>Up</kbd> is a hop, and another tap in the air hops again. Hold <kbd>Right</kbd> while you tap <kbd>Up</kbd> to sail over gaps. Walk into the <b>uplink beacon</b> behind you to return to orbit.</p>${landing('Little Hollow', 'The uplink beacon stands behind you when you land')}<h2>The diving bell</h2><p>On sea worlds Max takes the bell. It swims with the arrows and coasts when you let go. Bubble columns lift you, currents push you. Surface at the <b>buoy</b> to leave.</p><h2>The rover</h2><p>Rover worlds are fast and flat. The rover rides the lifts at every step; with the <b>Spring Shocks</b> module it can jump.</p>`,
       },
       {
         head: 'The Galaxy and the Shards',
