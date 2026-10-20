@@ -27,10 +27,8 @@ disk.put('teddy.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
 
 const levels = LEVELS.map((make) => make());
-const times = new Set<string>();
 for (const l of levels) {
-  if (!times.has(l.time)) disk.put(`${l.time}.pal`, serializePalette(buildPalette(l.time).pal));
-  times.add(l.time);
+  disk.put(`${l.file}.pal`, serializePalette(buildPalette(l.time).pal));
   disk.put(`${l.file}.bbl`, serializeBlocks(l.bs.build()));
   disk.put(`${l.file}.mbl`, serializeBlocks(l.beasts.mb.build()));
   disk.put(`${l.file}.mon`, serializeMonsters(l.beasts.build()));

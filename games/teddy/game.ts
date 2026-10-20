@@ -39,7 +39,7 @@ export function buildGame(levels: Level[], startAt?: string): Game {
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 40 + i * 56, y: 110 };
     scene.files = [
-      `${l.time}.pal`,
+      `${l.file}.pal`,
       `${l.file}.map`,
       `${l.file}.bbl`,
       `${l.file}.mon`,
