@@ -127,8 +127,11 @@ export function titleScreen(): Pixels {
   logo(p, 6);
   leoBig(p, 136, 92, 2, undefined, true);
   teddyBig(p, 'frontBeg', 40, 108, 4);
-  gwinBig(p, 'gwin2', 214, 112, 4, true);
-  // Doc Leo's suitcase in Gwin's mouth, popping costume pieces
+  gwinBig(p, 'gwin1', 200, 112, 4);
+  // Doc Leo's suitcase in Gwin's mouth, a costume piece popping out
+  p.rect(272, 140, 34, 24, c('wood', 1)).rect(272, 140, 34, 3, c('wood', 3)).rect(272, 151, 34, 2, c('gold', 1)).rect(283, 135, 12, 5, c('wood', 0));
+  scaleBlit(p, propSprite('nose'), 276, 100, 2);
+  scaleBlit(p, propSprite('tie'), 290, 112, 2);
   centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
@@ -257,6 +260,7 @@ export function introFli(): Uint8Array {
     for (let i = 0; i < n; i++) frames.push(Uint8Array.from(p.px));
   };
   const props = ['hat', 'tie', 'shoes', 'horn', 'nose'];
+  const caption = (p: Pixels, words: string) => centered(p, 10, words, c('paint', 3), 1, c('ink', 0));
   // 1. Gwin runs across, props flying
   for (let f = 0; f < 26; f++) {
     const p = new Pixels(W, H);
@@ -273,6 +277,7 @@ export function introFli(): Uint8Array {
       if (py < H) scaleBlit(p, propSprite(name), px, py, 2);
     });
     if (f > 14) teddyBig(p, 'frontTilt', 28, 128, 3);
+    caption(p, f < 13 ? 'THE MORNING OF THE BIG SHOW...' : "GWIN! DOC LEO'S COSTUME!");
     add(p);
   }
   // 2. Teddy barks after her
@@ -281,6 +286,7 @@ export function introFli(): Uint8Array {
     p.px.set(bg.px);
     teddyBig(p, f % 4 < 2 ? 'frontBark' : 'front', 28, 128, 3);
     if (f % 4 < 2) outlined(p, 92, 120, 'WOOF!', c('yellow', 3), c('ink', 0), 2);
+    caption(p, 'NO NOSE, NO SHOW!');
     add(p);
   }
   // 3. ...and runs after her
@@ -288,6 +294,7 @@ export function introFli(): Uint8Array {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
     teddyBig(p, f % 2 ? 'walk1' : 'walk2', 28 + f * 18, 140, 3);
+    caption(p, 'TEDDY TO THE RESCUE!');
     add(p);
   }
   // 4. The logo drops in, bouncing
@@ -299,7 +306,7 @@ export function introFli(): Uint8Array {
     add(p);
   }
   add(title, 3);
-  return encodeFli(frames, SP.pal, { speed: 5 });
+  return encodeFli(frames, SP.pal, { speed: 6 });
 }
 
 export { CLEAR, rng };
