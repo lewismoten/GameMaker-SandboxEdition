@@ -119,8 +119,9 @@ export function laurel(ctx: CanvasRenderingContext2D, cx: number, cy: number, r:
 
 /** The "1 PLAYER" icon: a little figure with a joystick, in a box. Returns its width. */
 export function onePlayer(ctx: CanvasRenderingContext2D, x: number, y: number, h: number, ink = '#fff', bg = '#0b0b0b'): number {
-  const w = h * 2.3;
   ctx.save();
+  ctx.font = CONDENSED(h * 0.52);
+  const w = (27 * h) / 28 + ctx.measureText('1 PLAYER').width + h * 0.35;
   ctx.fillStyle = bg;
   ctx.fillRect(x, y, w, h);
   ctx.strokeStyle = ink;

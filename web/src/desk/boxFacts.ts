@@ -114,9 +114,9 @@ export interface BackPlan {
 
 /** How good a back cover plan looks: readable type, the reviews, screenshots and features, in that order. */
 export function backScore(p: Omit<BackPlan, 'height'>): number {
-  const shots = p.shots >= 1 ? 12 : p.shots >= 0.85 ? 10 : p.shots > 0 ? 8 : 0;
+  const shots = p.shots >= 1 ? 14 : p.shots >= 0.85 ? 12 : p.shots > 0 ? 10 : 0;
   const reviews = p.reviews ? 6 + (p.reviews - 1) * 2 : 0;
-  return (p.bodyPx - 14) * 1.2 + p.features * 1.5 + reviews + shots;
+  return (p.bodyPx - 14) * 1.2 + Math.min(p.features, 3) * 3 + Math.max(0, p.features - 3) * 1.5 + reviews + shots;
 }
 
 /**

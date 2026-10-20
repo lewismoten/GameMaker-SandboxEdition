@@ -6,7 +6,7 @@
 import './gameBox.css';
 import { h } from '../editor/ui';
 import type { CatalogEntry } from '../project/files';
-import { mapShot } from './boxArt';
+import { mapShot, renderShot } from './boxArt';
 import { parseGame, ADVTYPE } from '../formats/game';
 import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours, type BoxExtras } from './boxFacts';
 import { wear } from './boxWear';
@@ -204,6 +204,20 @@ async function countLevels(entry: CatalogEntry): Promise<number> {
   }
 }
 
+/**
+ * The box's screenshots: its about.json map views, or (when a map was renamed or
+ * removed) a view of where the hero arrives in one of its first levels.
+ */
+async function boxShots(entry: CatalogEntry, box: Box): Promise<(HTMLCanvasElement | undefined)[]> {
+  const shots = await Promise.all((box.shots ?? []).slice(0, 3).map(([m, x, y]) => mapShot(entry, m, x, y, 16, 10).catch(() => undefined)));
+  const good = shots.filter((s): s is HTMLCanvasElement => !!s);
+  if (!good.length) {
+    const c = document.createElement('canvas');
+    if (await renderShot(entry, c, 16, 10).catch(() => false)) good.push(c);
+  }
+  return [0, 1, 2].map((i) => good[i] ?? good[0]);
+}
+
 /** Everything a box says about its game beyond its art and copy. */
 export async function boxInfo(entry: CatalogEntry) {
   const box = entry.original!.box! as Box;
@@ -224,10 +238,7 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
 export async function drawBox(entry: CatalogEntry): Promise<BoxFaces | undefined> {
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
-  const [shots, info] = await Promise.all([
-    Promise.all((box.shots ?? []).slice(0, 3).map(([m, x, y]) => mapShot(entry, m, x, y, 16, 10).catch(() => undefined))),
-    boxInfo(entry),
-  ]);
+  const [shots, info] = await Promise.all([boxShots(entry, box), boxInfo(entry)]);
   const sb = entry.original?.sound === 'sb';
   const title = entry.title;
   const company = entry.company ?? 'Sandbox Software';
@@ -396,9 +407,9 @@ export async function drawBox(entry: CatalogEntry): Promise<BoxFaces | undefined
   const shotsY = layout(plan, true) + top - shotRowH * plan.shots + 10;
   if (plan.shots) {
     const sw = smallW * plan.shots;
-    const gap = bw - 80 - sw * 2;
-    framedShot(b, shots[1] ?? shots[0], 40, shotsY, sw, 0.02);
-    framedShot(b, shots[2] ?? shots[0], 40 + sw + gap, shotsY + 6, sw, -0.03);
+    const x0 = (bw - sw * 2 - 20) / 2;
+    framedShot(b, shots[1] ?? shots[0], x0, shotsY, sw, 0.02);
+    framedShot(b, shots[2] ?? shots[0], x0 + sw + 20, shotsY + 6, sw, -0.03);
   }
   // what the box promises, every bit of it true
   b.fillStyle = BACK_TEXT;
