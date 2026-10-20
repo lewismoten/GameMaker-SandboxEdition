@@ -18,7 +18,7 @@ const PORTED: Record<string, Program['run']> = Object.fromEntries(
     .flatMap((m) => (m.program ? [[m.program.exe, m.program.run]] : [])),
 );
 
-const GMTOPBAR = '                            G A M E  -  M A K E R  V3.00                        ';
+const GMTOPBAR = '                           G A M E  -  M A K E R  SE 3.00                       ';
 const MAIN_BAR = '     Play        Design      Utilities      About        Quit         Help      ';
 const MAIN_XS = [0, 14, 27, 40, 53, 66, 80];
 const DESIGN_BAR = '  Palette  Block  Monster  Map  Character  Image  Sound  Integrator  Main  Help ';
@@ -197,7 +197,7 @@ export async function playgame(h: RetroHost): Promise<void> {
     drawDesktop(h);
     const saved = s.window(30, 5, 20, 7, MENUATTR, SHADATTR);
     const title = 47;
-    s.write(30, 5, title, ' PLAYGAME     V3.00 ');
+    s.write(30, 5, title, ' PLAYGAME   SE 3.00 ');
     s.write(30, 6, title, '  By Gregory Stone  ');
     s.write(30, 7, title, ' Copyright(C) 1994  ');
     s.write(31, 9, MENUATTR, ' Play a Game!');
