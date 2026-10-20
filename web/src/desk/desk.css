@@ -344,18 +344,20 @@
   background: #1c1a15;
 }
 
-.drive.floppy[data-disk]::before {
+.drive.floppy[data-disk]::before,
+.drive.cdrom[data-disk]::before {
   content: attr(data-disk);
   position: absolute;
-  left: 40px;
-  right: 40px;
-  top: -9px;
-  height: 10px;
+  left: 28px;
+  right: 58px;
+  top: 4px;
+  height: 14px;
   overflow: hidden;
-  border-radius: 2px 2px 0 0;
+  border-radius: 2px;
   background: var(--disk-color, #222);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35);
   color: #fff;
-  font: 600 7px/10px system-ui, sans-serif;
+  font: 600 9px/12px system-ui, sans-serif;
   text-align: center;
   white-space: nowrap;
 }
@@ -555,7 +557,11 @@
 
 /* ---- zoomed screen (graphic designers, full screen games) ----------------------------- */
 
-.desk[data-zoom='true'] .crt {
+.desk:not([data-zoom='false']) .desk-scene {
+  z-index: 60;
+}
+
+.desk:not([data-zoom='false']) .crt {
   position: fixed;
   inset: 0;
   z-index: 60;
@@ -563,7 +569,7 @@
   border-radius: 0;
 }
 
-.desk[data-zoom='true'] .crt::after {
+.desk:not([data-zoom='false']) .crt::after {
   display: none;
 }
 
@@ -571,7 +577,7 @@
   display: none;
 }
 
-.desk[data-zoom='true'] .zoom-exit {
+.desk[data-zoom='manual'] .zoom-exit {
   position: fixed;
   right: 12px;
   bottom: 12px;
@@ -725,4 +731,12 @@
   .drive {
     width: auto;
   }
+}
+
+.drive.cdrom[data-disk] {
+  --disk-color: linear-gradient(90deg, #c9d3e6, #fbe3f7, #e2f6da, #c9d3e6);
+}
+
+.drive.cdrom[data-disk]::before {
+  color: #000080;
 }

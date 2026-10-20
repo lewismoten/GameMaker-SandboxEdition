@@ -107,13 +107,14 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const computer = new Computer(crt, {
     speed,
     openModern: (projectId, file) => nav.toModern(projectId, file),
-    onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx'),
+    onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
   });
   crt.addEventListener('click', () => void power(true));
 
-  function setZoom(on: boolean): void {
-    desk.dataset.zoom = String(on);
+  /** 'gfx': the designers need the whole window; 'manual': the user enlarged the screen. */
+  function setZoom(zoom: 'gfx' | 'manual' | false): void {
+    desk.dataset.zoom = zoom || 'false';
   }
 
   function setTurbo(on: boolean): void {
