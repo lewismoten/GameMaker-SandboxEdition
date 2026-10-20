@@ -55,6 +55,10 @@ export class Vga {
   private raf = 0;
   private dirty = true;
   private observer: ResizeObserver;
+  /** When resampling: the whole multiple drawn first (0 = draw straight to the canvas). */
+  private upscale = 0;
+  private onResize: () => void;
+  private big?: HTMLCanvasElement;
   private started = performance.now();
   // the mouse, in screen pixels
   private mx = 160;
@@ -82,6 +86,8 @@ export class Vga {
     holder.append(this.canvas);
     this.observer = new ResizeObserver(() => this.fit());
     this.observer.observe(holder);
+    this.onResize = () => requestAnimationFrame(() => this.fit());
+    addEventListener('resize', this.onResize);
     this.fit();
 
     const on = (t: EventTarget, type: string, f: EventListener) => {
@@ -118,18 +124,28 @@ export class Vga {
     cancelAnimationFrame(this.raf);
     clearTimeout(this.attachTimer);
     this.observer.disconnect();
+    removeEventListener('resize', this.onResize);
     this.keyboard.detach();
     for (const [t, type, f] of this.listeners) t.removeEventListener(type, f);
     this.canvas.remove();
   }
 
-  /** Backing store: the smallest whole multiple of 320x200 at least as big as the box. */
+  /**
+   * Backing store. Shown large (3x or more), the smallest whole multiple of 320x200 at least
+   * as big as the box: crisp pixels for editing. Shown small (the desk's monitor), the exact
+   * device size, resampled smoothly from the next whole multiple so pixels stay even.
+   */
   private fit(): void {
     const dpr = devicePixelRatio || 1;
-    const k = Math.max(1, Math.min(6, Math.ceil(Math.max((this.holder.clientWidth * dpr) / SIZEX, (this.holder.clientHeight * dpr) / SIZEY))));
-    if (this.canvas.width === SIZEX * k) return;
-    this.canvas.width = SIZEX * k;
-    this.canvas.height = SIZEY * k;
+    const r = this.holder.getBoundingClientRect(); // as shown, after any scaling around it
+    const scale = Math.max((r.width * dpr) / SIZEX, (r.height * dpr) / SIZEY);
+    const k = Math.max(1, Math.min(6, Math.ceil(scale)));
+    const exact = scale < 3 && Math.abs(scale - Math.round(scale)) > 0.04;
+    const [w, h] = exact ? [Math.round(SIZEX * scale), Math.round(SIZEY * scale)] : [SIZEX * k, SIZEY * k];
+    this.upscale = exact ? k : 0;
+    if (this.canvas.width === w && this.canvas.height === h) return;
+    this.canvas.width = w;
+    this.canvas.height = h;
     this.dirty = true;
   }
 
@@ -152,8 +168,20 @@ export class Vga {
       );
     }
     this.scaled.getContext('2d')!.putImageData(this.frame, 0, 0);
-    this.ctx.imageSmoothingEnabled = false;
-    this.ctx.drawImage(this.scaled, 0, 0, this.canvas.width, this.canvas.height);
+    if (this.upscale) {
+      // blow the pixels up evenly, then shrink to the exact size smoothly
+      const big = (this.big ??= document.createElement('canvas'));
+      if (big.width !== SIZEX * this.upscale) [big.width, big.height] = [SIZEX * this.upscale, SIZEY * this.upscale];
+      const b = big.getContext('2d')!;
+      b.imageSmoothingEnabled = false;
+      b.drawImage(this.scaled, 0, 0, big.width, big.height);
+      this.ctx.imageSmoothingEnabled = true;
+      this.ctx.imageSmoothingQuality = 'high';
+      this.ctx.drawImage(big, 0, 0, this.canvas.width, this.canvas.height);
+    } else {
+      this.ctx.imageSmoothingEnabled = false;
+      this.ctx.drawImage(this.scaled, 0, 0, this.canvas.width, this.canvas.height);
+    }
     this.dirty = false;
   }
 
