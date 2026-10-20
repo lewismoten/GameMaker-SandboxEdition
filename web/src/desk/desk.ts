@@ -23,6 +23,7 @@ import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './snowWindow';
 import { drawGmBox, gmBoxContents } from './gmBox';
 import { fitStage } from './stage';
+import { deskCapture } from './capture';
 import { EDITION, FORK_NOTE } from '../edition';
 import { loadCatalog, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/project';
@@ -181,6 +182,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     onDisksChanged: (insert) => void refreshDisks(insert),
   });
   pc = computer;
+  const capture = deskCapture(computer);
+  desk.querySelector('.monitor')?.append(capture.el);
   const removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);
   crt.addEventListener('click', () => void power(true));
 
@@ -406,6 +409,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     lamp.dispose();
     shelf?.dispose();
     removeWarp();
+    capture.dispose();
     computer.screen.destroy();
     computer.keys.detach();
   };
