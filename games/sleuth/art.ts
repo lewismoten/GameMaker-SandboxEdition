@@ -4,7 +4,7 @@ import { Pixels, rng } from '../kit/pixels';
 import { CLEAR, blob, centered, gradient, micro, microC, outlined, pool, shadeAt, speckle, text } from './draw';
 import { c, ink, ramp as r } from './pal';
 import { portrait, PEOPLE, type Who } from './people';
-import { backdrop, symbol } from './tiles';
+import { symbol } from './tiles';
 
 export const W = 320;
 export const H = 200;
@@ -92,10 +92,24 @@ export function facade(chase = 0, lit = 1): Pixels {
 /** The proscenium with the castle backdrop, red curtains drawn back and the footlights. `open` 0..1 closes the main curtain. */
 export function stageView(curtain = 0, lights = 1): Pixels {
   const p = new Pixels(W, H);
-  // backdrop: the castle flat, stretched
-  for (let i = 0; i < 16; i++) {
-    const b = backdrop(i % 3);
-    for (let y = 0; y < 120; y++) for (let x = 0; x < 20; x++) p.set(i * 20 + x, 20 + y, b.get(x, Math.floor(y / 6)));
+  // backdrop: the castle flat, painted big
+  gradient(p, 0, 20, W, 100, r('navy'), 0, 2);
+  const R = rng(17);
+  for (let i = 0; i < 40; i++) p.set(40 + R() * 240, 22 + R() * 50, c('paper', 5));
+  blob(p, 236, 46, 14, 14, r('paper'), 3, 5);
+  p.disc(242, 42, 12, c('navy', 1));
+  for (let x = 40; x < 280; x++) {
+    const h = 96 + (x % 16 < 8 ? -6 : 0) + Math.round(Math.sin(x / 23) * 4);
+    for (let y = h; y < 120; y++) p.set(x, y, c('black', 1));
+  }
+  for (const [tx, tw, th] of [
+    [70, 26, 50],
+    [150, 34, 70],
+    [210, 22, 44],
+  ]) {
+    p.rect(tx, 120 - th, tw, th, c('black', 1));
+    for (let x = tx - 2; x < tx + tw + 2; x += 6) p.rect(x, 116 - th, 4, 5, c('black', 1));
+    p.rect(tx + Math.floor(tw / 2) - 2, 128 - th, 4, 6, c('glow', 2));
   }
   // stage floor
   for (let y = 120; y < 180; y++)

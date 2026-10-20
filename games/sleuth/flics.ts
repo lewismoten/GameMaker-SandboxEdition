@@ -4,7 +4,7 @@
 // told in Game-Maker.
 import { encodeFli } from '../../web/src/formats/fli';
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, centered, microC, outlined, pool, shadeAt } from './draw';
+import { CLEAR, blob, centered, microC, outlined, pool, scaleBlit, shadeAt } from './draw';
 import { P, c, ramp as r } from './pal';
 import { W, H, actor, dagger, facade, rain, stageView } from './art';
 import { symbol } from './tiles';
@@ -145,23 +145,26 @@ export function swapFli(): Uint8Array {
   const frames: Pixels[] = [];
   for (let i = 0; i < 40; i++) {
     const p = theoryFrame();
-    // the prop table
-    p.rect(40, 150, 240, 12, c('wood', 2)).rect(40, 150, 240, 2, c('wood', 4)).rect(48, 162, 6, 30, c('wood', 1)).rect(266, 162, 6, 30, c('wood', 1));
-    pool(p, 160, 150, 120, 30, r('ghost'), 0, 0);
-    symbol(p, 70, 136, 'mask', c('gold', 3), c('black', 0));
-    // the trick dagger leaves, the real one arrives, by a gloved hand
+    // drawn at half size, then doubled: the prop table in the dark wing
+    const q = new Pixels(160, 50, CLEAR);
+    q.rect(10, 34, 140, 5, c('wood', 2)).rect(10, 34, 140, 1, c('wood', 4)).rect(14, 39, 3, 11, c('wood', 1)).rect(143, 39, 3, 11, c('wood', 1));
+    symbol(q, 20, 22, 'mask', c('gold', 3), c('black', 0));
+    q.rect(118, 28, 6, 6, c('gold', 2)); // a goblet
+    q.disc(132, 31, 2, c('velvet', 4)); // a rose
+    // the trick dagger leaves, the real one arrives, in a gloved hand
     const t = i / 39;
     const out = Math.min(1, t * 2);
     const inn = Math.max(0, t * 2 - 1);
-    const hand = (x: number, y: number) => blob(p, x, y, 8, 6, r('black'), 0, 2);
+    const hand = (x: number, y: number) => blob(q, x, y, 5, 4, r('black'), 1, 2);
     if (t < 0.5) {
-      dagger(p, 160 + Math.round(out * 60), 146 - Math.round(out * 30), false);
-      hand(162 + out * 60, 138 - out * 30);
+      dagger(q, 80 + Math.round(out * 50), 32 - Math.round(out * 20), false);
+      if (out > 0.1) hand(82 + out * 50, 26 - out * 20);
     } else {
-      dagger(p, 100 + Math.round(inn * 60), 116 + Math.round(inn * 30), true);
-      hand(102 + inn * 60, 108 + inn * 30);
+      dagger(q, 30 + Math.round(inn * 50), 12 + Math.round(inn * 20), true);
+      if (inn < 0.9) hand(32 + inn * 50, 6 + inn * 20);
     }
-    microC(p, 160, 190, 'STAGE RIGHT, 9:00 - 9:20', c('ghost', 2));
+    scaleBlit(p, q, 0, 100, 2);
+    microC(p, 160, 104, 'STAGE RIGHT, 9:00 - 9:20', c('ghost', 2));
     frames.push(p);
   }
   return fli(frames, 6);
@@ -172,7 +175,6 @@ export function poisonFli(): Uint8Array {
   const frames: Pixels[] = [];
   for (let i = 0; i < 36; i++) {
     const p = theoryFrame();
-    pool(p, 160, 160, 90, 40, r('glow'), 0, 0);
     // the goblet
     p.rect(140, 120, 40, 30, c('gold', 3)).rect(142, 122, 36, 8, c('wood', 1));
     p.rect(156, 150, 8, 24, c('gold', 2)).rect(144, 174, 32, 6, c('gold', 3));
