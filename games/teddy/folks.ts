@@ -1,7 +1,7 @@
 // Townsfolk and their things (monster and block art): kids who want a high five or a
 // "sit!", the mail carrier and his truck, balloons tied to boxes.
 import { Pixels } from '../kit/pixels';
-import { blob, sprite } from './draw';
+import { blob, micro, sprite } from './draw';
 import { CK } from './klown';
 import { P } from './pal';
 
@@ -175,4 +175,35 @@ export function mailCarrier(): Pixels {
     20,
     40,
   );
+}
+
+/** A speech bubble asking for a trick ("SIT?"), maybe showing what you get for it. */
+export function askBubble(word: string, icon?: Pixels, phase = 0): Pixels {
+  const p = new Pixels(20, 20, 255);
+  const y0 = phase ? 1 : 0;
+  p.rect(1, y0, 18, icon ? 15 : 9, P.c('fur', 2)).frame(1, y0, 18, icon ? 15 : 9, P.c('ink', 0));
+  p.set(1, y0, 255).set(18, y0, 255);
+  micro(p, 10 - Math.floor((word.length * 4 - 1) / 2), y0 + 2, word, P.c('red', 1));
+  if (icon) p.blit(icon.crop(3, 11, 14, 9), 3, y0 + 7, 255);
+  const tail = y0 + (icon ? 15 : 9);
+  p.set(8, tail, P.c('fur', 2))
+    .set(9, tail, P.c('fur', 2))
+    .set(8, tail + 1, P.c('fur', 2))
+    .set(7, tail + 2, P.c('ink', 0));
+  p.set(7, tail, P.c('ink', 0))
+    .set(10, tail, P.c('ink', 0))
+    .set(7, tail + 1, P.c('ink', 0))
+    .set(9, tail + 1, P.c('ink', 0));
+  return p;
+}
+
+/** A frisbee, spinning (flies at Teddy's head height: play dead or hop). */
+export function frisbee(phase: number): Pixels {
+  const p = new Pixels(20, 20, 255);
+  if (phase) {
+    p.rect(3, 6, 14, 3, P.c('pink', 2)).rect(5, 5, 10, 1, P.c('pink', 3)).rect(4, 9, 12, 1, P.c('pink', 0));
+  } else {
+    p.rect(5, 5, 10, 4, P.c('pink', 2)).rect(3, 6, 14, 2, P.c('pink', 2)).rect(7, 5, 6, 1, P.c('pink', 3)).rect(5, 9, 10, 1, P.c('pink', 0));
+  }
+  return p;
 }
