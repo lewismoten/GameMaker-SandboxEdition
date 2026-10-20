@@ -66,6 +66,20 @@ export class WorkArea {
     return true;
   }
 
+  /** Writes a file by name into the current game folder (fopen/fwrite). */
+  async write(name: string, bytes: Uint8Array): Promise<boolean> {
+    const project = await this.writable(this.folder);
+    if (!project) return false;
+    project.files.set(name.toLowerCase(), bytes);
+    await project.saveNow();
+    return true;
+  }
+
+  /** A file in the current game folder, if it is there. */
+  async read(name: string): Promise<Uint8Array | undefined> {
+    return (await this.h.gameIn(this.folder.drive, this.folder.parts))?.files.get(name);
+  }
+
   /** delany */
   async remove(question: string, ext: string): Promise<boolean> {
     const picked = await this.pick(question, ext, false);
