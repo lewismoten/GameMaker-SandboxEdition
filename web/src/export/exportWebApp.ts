@@ -1,9 +1,11 @@
-// Builds a stand-alone web app for one game: the player (from the deployed build),
-// the game's files, a web app manifest and an offline service worker, zipped up and
-// ready to unpack onto any static web host (GitHub Pages, Netlify, an S3 bucket…).
+// Builds a stand-alone web app for one game: the one-page player with the game inside
+// (index.html), icons, a web app manifest and an offline service worker, plus a copy of the
+// game's files, zipped up and ready to unpack onto any static web host (GitHub Pages,
+// Netlify, an S3 bucket…). index.html also plays straight from disk.
 import { createZip, type ZipEntry } from '../project/zip';
 import type { GameFiles } from '../project/files';
 import { hashText, serviceWorkerSource } from './serviceWorker';
+import { encodeGame, fillPage, GAME_MARK } from './singlePage';
 
 export interface ExportOptions {
   title: string;
@@ -11,7 +13,7 @@ export interface ExportOptions {
   /** Short name for the home screen / dock (defaults to the title). */
   shortName?: string;
   themeColor?: string;
-  /** Where the built Game-Maker Web app is served from (its player is copied). */
+  /** Where the Game-Maker Web app is served from (its standalone.html player is used). */
   appBase?: string;
 }
 
@@ -36,24 +38,26 @@ export function slug(text: string): string {
 
 export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promise<{ name: string; zip: Uint8Array }> {
   const base = opts.appBase ?? new URL('./', location.href).href;
-  const listRes = await fetch(new URL('player-files.json', base)).catch(() => undefined);
-  if (!listRes?.ok) {
-    throw new Error('Exporting needs the built app (run "npm run build" and "npm run preview", or use the GitHub Pages site).');
+  // The player is the one-page player (standalone.html): one file with the engine, styles
+  // and music worklet inside, built by the production build and served on demand by the
+  // dev server. (Older versions copied the hashed build files listed in player-files.json,
+  // which the dev server does not have: it answered with index.html, hence
+  // "Unexpected token '<'" when that was read as JSON.)
+  const res = await fetch(new URL('standalone.html', base)).catch(() => undefined);
+  const template = res?.ok ? await res.text() : '';
+  if (!template.includes(GAME_MARK)) {
+    throw new Error('Could not load the game player (standalone.html). Reload Game-Maker: Sandbox Edition while online and try again.');
   }
-  const { files: playerFiles }: { files: string[] } = await listRes.json();
 
   const entries: ZipEntry[] = [];
   const enc = new TextEncoder();
   const id = slug(opts.title);
   const theme = opts.themeColor ?? '#000000';
 
-  for (const f of playerFiles) {
-    let data = await fetchBytes(new URL(f, base).href);
-    if (f === 'play.html') {
-      data = enc.encode(customizePage(new TextDecoder().decode(data), opts.title, theme));
-      entries.push({ name: 'index.html', data });
-    } else entries.push({ name: f, data });
-  }
+  const gameEntries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
+  const game = await encodeGame({ id, title: opts.title, gam: opts.gam }, gameEntries);
+  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game), theme)) });
+
   for (const icon of ICONS) {
     try {
       entries.push({ name: icon, data: await fetchBytes(new URL(icon, base).href) });
@@ -61,19 +65,17 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
       /* optional */
     }
   }
-
-  const gameFiles = files.names().filter((n) => !SAVE_DATA.test(n));
-  for (const name of gameFiles) entries.push({ name: `game/${name}`, data: files.get(name)! });
-  entries.push({ name: 'game/manifest.json', data: enc.encode(JSON.stringify({ id, title: opts.title, gam: opts.gam, files: gameFiles }, null, 1)) });
+  // The game's own files too, as a DOS-ready copy (index.html carries its own).
+  for (const [name, data] of gameEntries) entries.push({ name: `game/${name.toUpperCase()}`, data });
 
   const manifest = {
     name: opts.title,
     short_name: (opts.shortName ?? opts.title).slice(0, 12),
-    description: `${opts.title} — a Game-Maker game.`,
+    description: `${opts.title}: a Game-Maker game.`,
     start_url: './',
     scope: './',
     display: 'fullscreen',
-    orientation: 'landscape',
+    orientation: 'any',
     background_color: '#000000',
     theme_color: theme,
     icons: [
@@ -84,7 +86,7 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   };
   entries.push({ name: 'manifest.webmanifest', data: enc.encode(JSON.stringify(manifest, null, 2)) });
 
-  const precache = ['./', ...entries.map((e) => e.name)];
+  const precache = ['./', ...entries.filter((e) => !e.name.startsWith('game/')).map((e) => e.name)];
   const version = hashText(entries.map((e) => `${e.name}:${e.data.length}`).join('|') + Date.now());
   entries.push({ name: 'sw.js', data: enc.encode(serviceWorkerSource(version, precache)) });
   entries.push({ name: 'README.txt', data: enc.encode(readme(opts.title)) });
@@ -92,16 +94,17 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   return { name: `${id}-webapp.zip`, zip: await createZip(entries) };
 }
 
-function customizePage(html: string, title: string, theme: string): string {
+function customizePage(html: string, theme: string): string {
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
   const head = [
     '<link rel="manifest" href="./manifest.webmanifest" />',
     '<link rel="icon" href="./icon.svg" type="image/svg+xml" />',
     '<link rel="apple-touch-icon" href="./apple-touch-icon.png" />',
     '<meta name="apple-mobile-web-app-capable" content="yes" />',
+    // Offline: only over http(s); a page opened from disk has no service worker.
+    "<script>if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('./sw.js').catch(function(){});</script>",
   ].join('\n    ');
   return html
-    .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
     .replace(/<meta name="theme-color" content="[^"]*"\s*\/?>/, `<meta name="theme-color" content="${esc(theme)}" />`)
     .replace('</head>', `    ${head}\n  </head>`);
 }
@@ -128,6 +131,11 @@ Install it
 Controls
   Use the keys listed in the game's instructions. F1 help, F2 status,
   F3 music on/off, F4 sound on/off, F5 save, F6 load, Esc leaves a level.
-  Game controllers work through the browser's Gamepad API.
+  Game controllers work through the browser's Gamepad API. On phones and
+  tablets on-screen buttons appear; turn the device either way.
+
+The game folder
+  game/ holds the game's original files, which also play in the DOS
+  Game-Maker / PLAYGAME. index.html carries its own copy of them.
 `;
 }
