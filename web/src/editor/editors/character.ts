@@ -1,6 +1,7 @@
 // Character editor (CHAREDIT.EXE): the player's sequences (idle, die, hurt, pick up,
 // drop and up to 15 of your own), each a series of two-block-high frames.
 import { registerEditor } from './index';
+import { fileField } from '../filePicker';
 import { h, clear, numberField, selectField, checkField, debounce } from '../ui';
 import { blockCanvas, drawBlockTo } from '../draw';
 import { paletteChooser } from './blocks';
@@ -264,11 +265,12 @@ registerEditor(['chr'], (host, project, file) => {
     h(
       'div',
       { class: 'toolbar', style: 'margin-bottom:8px' },
-      selectField('Character blocks', project.files.byExtension('cbl').map((f) => [f, f] as [string, string]), () => cblName, (v) => {
+      fileField(project, 'Character blocks', ['cbl'], () => cblName, (v) => {
+        if (!v) return;
         cblName = v;
         cbl = parseBlocks(project.files.get(v)!, CHARBL);
         render();
-      }),
+      }, { allowNone: false }),
       chooser.el,
     ),
     top,

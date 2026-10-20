@@ -1,5 +1,6 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
 import { registerEditor } from './index';
+import { fileField } from '../filePicker';
 import { h, clear, numberField, checkField, selectField, debounce } from '../ui';
 import { blockCanvas, paintBlock, lut } from '../draw';
 import type { Project } from '../project';
@@ -26,14 +27,13 @@ type Tool = 'draw' | 'fill' | 'pick' | 'line' | 'rect';
 
 export function paletteChooser(project: Project, file: string, onChange: (p: Palette) => void): { el: HTMLElement; palette: Palette } {
   const found = project.paletteFor(file);
-  const options: [string, string][] = [['', `Scene palette (${found.source})`], ...project.files.byExtension('pal').map((p) => [p, p] as [string, string])];
   let choice = '';
   const state = { palette: found.palette };
-  const el = selectField('Show with palette', options, () => choice, (v) => {
+  const el = fileField(project, 'Show with palette', ['pal'], () => choice, (v) => {
     choice = v;
     state.palette = v ? parsePalette(project.files.get(v)!) : project.paletteFor(file).palette;
     onChange(state.palette);
-  });
+  }, { noneLabel: ['Scene palette', `the palette of the scene that uses it (${found.source})`] });
   return { el, get palette() {
     return state.palette;
   } };

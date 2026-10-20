@@ -3,7 +3,8 @@ import { registerEditor } from './index';
 import { h, clear, selectField, toast, debounce } from '../ui';
 import { blockCanvas, blockImages } from '../draw';
 import { paletteChooser } from './blocks';
-import type { Project } from '../project';
+import type { FileKind, Project } from '../project';
+import { fileField } from '../filePicker';
 import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../../formats/map';
 import { LASTMON, parseMonsters, type Monster } from '../../formats/monster';
@@ -234,11 +235,12 @@ registerEditor(['map'], (host, project, file) => {
   }
   setMode('paint');
 
-  const fileSelect = (label: string, ext: string, get: () => string, setv: (v: string) => void) =>
-    selectField(label, project.files.byExtension(ext).map((f) => [f, f] as [string, string]), get, (v) => {
+  const fileSelect = (label: string, ext: FileKind, get: () => string, setv: (v: string) => void) =>
+    fileField(project, label, [ext], get, (v) => {
+      if (!v) return;
       setv(normalize(v));
       rebuild();
-    });
+    }, { allowNone: false, title: `Which ${label.toLowerCase()} to paint this map with` });
 
   clear(
     host,
