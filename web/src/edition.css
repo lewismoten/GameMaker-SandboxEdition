@@ -1,0 +1,12 @@
+/* "Sandbox Edition" beside the GAME-MAKER logo in today's web header (src/edition.ts) */
+h1 .edition {
+  margin-left: 0.6em;
+  padding: 1px 6px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font: 600 10px/1.4 system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  opacity: 0.85;
+}

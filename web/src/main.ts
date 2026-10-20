@@ -9,6 +9,8 @@ import { loadProject } from './project/storage';
 import { renderDesk } from './desk/desk';
 import { watchForUpdates } from './devReload';
 import { renderWebManual } from './manual/webManual';
+import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
+import './edition.css';
 
 type Ui = 'desk' | 'modern';
 const UI_KEY = 'gm-ui';
@@ -64,10 +66,10 @@ function startModern(hash?: string): void {
     h(
       'header',
       { class: 'topbar' },
-      h('a', { href: '#/' }, h('h1', null, 'GAME-MAKER')),
+      h('a', { href: '#/', title: FORK_NOTE }, h('h1', null, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
       titleSlot,
       h('span', { class: 'spacer' }),
-      h('a', { href: '#/help', title: 'How to use Game-Maker Web' }, '? Guide'),
+      h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
       h('button', { onclick: () => startDesk(), title: 'Go back to the mid-90s desk' }, '💾 1994 desk'),
       h('a', { href: 'https://github.com/lewismoten/GameMaker', target: '_blank', rel: 'noopener' }, 'Source'),
     ),
@@ -101,7 +103,7 @@ async function route(): Promise<void> {
     const project = Project.fromFiles(stored.files, stored.record.name, id);
     project.gam = stored.record.gam;
     clear(titleSlot, ` · ${project.name}`);
-    document.title = `${project.name} · Game-Maker Web`;
+    document.title = `${project.name} · ${SHORT}`;
     workspace = new Workspace(content, project, file ? decodeURIComponent(file) : undefined);
     return;
   }
@@ -109,11 +111,11 @@ async function route(): Promise<void> {
   workspace = undefined;
   clear(titleSlot);
   if (kind === 'help') {
-    document.title = 'Guide · Game-Maker Web';
+    document.title = `Guide · ${PRODUCT}`;
     renderWebManual(content);
     return;
   }
-  document.title = 'Game-Maker Web';
+  document.title = PRODUCT;
   await renderHome(content, nav);
 }
 

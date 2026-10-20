@@ -1,6 +1,6 @@
 {
-  "name": "Game-Maker Web",
-  "short_name": "Game-Maker",
+  "name": "Game-Maker: Sandbox Edition",
+  "short_name": "Game-Maker SE",
   "description": "Design, play and publish games made with Recreational Software Designs' Game-Maker 3.0 — in the browser, online or offline.",
   "start_url": "./",
   "scope": "./",
