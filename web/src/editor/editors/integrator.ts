@@ -4,6 +4,8 @@ import { h, clear, selectField, textField, numberField, modal, confirmDialog } f
 import { blockImages } from '../draw';
 import type { FileKind, Project } from '../project';
 import { fileField } from '../filePicker';
+import { GameFiles } from '../../project/files';
+import { mountPlayer, type PlayerHandle } from '../../player/player';
 import {
   ADVTYPE,
   ENDTYPE,
@@ -13,6 +15,7 @@ import {
   SCENEDESCLEN,
   STARTTYPE,
   emptyScene,
+  serializeGame,
   fileSlotsFor,
   sceneKind,
   slotExtensions,
@@ -191,6 +194,23 @@ registerEditor(['gam'], (host, project) => {
     renderPanel();
   }
 
+  /** Plays a copy of the game whose start link goes straight to this level. */
+  function playFrom(scene: number): void {
+    const copy = structuredClone(game);
+    // where the hero arrives: a link into this level, else where the game starts, else the middle
+    const into = game.scenes.flatMap((x) => x.links).find((l) => l.toScene === scene);
+    const start = copy.scenes[0].links[0];
+    copy.scenes[0].links[0] = { toScene: scene, from: start?.from ?? { x: 0, y: 0 }, to: into?.to ?? (start?.toScene === scene ? start.to : { x: 50, y: 50 }) };
+    const files = new GameFiles(project.files.entries());
+    files.set(project.gam, serializeGame(copy));
+    let player: PlayerHandle | undefined;
+    void modal<void>(`Playing ${game.scenes[scene].desc || `level ${scene}`}`, (close) => {
+      const host = h('div', { class: 'player-host rec-player' });
+      queueMicrotask(() => (player = mountPlayer(host, files, project.gam, { title: project.name, record: true, onExit: () => close(undefined) })));
+      return h('div', { class: 'stack rec-dialog' }, host, h('p', { class: 'hint' }, 'Click the screen to start. Esc ends the level.'));
+    }).then(() => player?.stop());
+  }
+
   function sceneOptions(): [number, string][] {
     return [[NOSCENE, '— no link —'], ...game.scenes.map((s, i) => [i, `${i}: ${s.desc || '(untitled)'}`] as [number, string]).filter(([i]) => game.scenes[i].gametype !== NOSCENE)];
   }
@@ -245,6 +265,7 @@ registerEditor(['gam'], (host, project) => {
           ? h(
               'div',
               { class: 'toolbar' },
+              kind === 'adventure' ? h('button', { class: 'primary', onclick: () => playFrom(selected), title: 'Play this level straight away, without the title and menu' }, '▶ Play from here') : null,
               h(
                 'button',
                 {
