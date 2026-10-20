@@ -95,16 +95,38 @@ export function page(heading: string, seed = 3): Pixels {
   // polka-dot border
   const R = rng(seed);
   for (let i = 0; i < 40; i++) blob(p, R() * W, R() * H, 3, 3, SP.r(['red', 'yellow', 'blue', 'green', 'purple'][i % 5]), 1, 3);
-  p.rect(28, 30, 264, 148, c('ink', 0));
-  p.rect(30, 32, 260, 144, c('cream', 3));
+  // the panel reaches below Game-Maker's MORE... (written at y 168-175) so the red dashes
+  // along its bottom stay clear of it
+  p.rect(28, 30, 264, 158, c('ink', 0));
+  p.rect(30, 32, 260, 154, c('cream', 3));
   p.rect(30, 32, 260, 2, c('paint', 3));
-  for (let x = 30; x < 290; x += 8) p.rect(x, 174, 4, 2, c('red', 2));
+  for (let x = 30; x < 290; x += 8) p.rect(x, 182, 4, 2, c('red', 2));
   // bunting
   for (let x = 0; x < W; x += 16) {
     for (let k = 0; k < 7; k++) p.rect(x + k, 2 + k, 15 - k * 2, 1, c(['red', 'yellow', 'blue', 'green'][(x / 16) % 4], 2));
   }
   p.rect(0, 1, W, 1, c('ink', 1));
   centered(p, 14, heading, c('yellow', 3), 2, c('ink', 0));
+  return p;
+}
+
+/**
+ * The high scores: Game-Maker writes "Top Ten Scores" in red at the top, the scores in
+ * blue from x 20, and "Hit any key" in red at the bottom (x 116..203, y 192..199), so
+ * each sits on a cream plate rather than the bunting or the grass.
+ */
+export function scoresScreen(): Pixels {
+  const p = landscape(11, false);
+  const R = rng(11);
+  for (let i = 0; i < 40; i++) blob(p, R() * W, R() * H, 3, 3, SP.r(['red', 'yellow', 'blue', 'green', 'purple'][i % 5]), 1, 3);
+  const plate = (x: number, y: number, w: number, h: number) => {
+    p.rect(x - 2, y - 2, w + 4, h + 4, c('ink', 0));
+    p.rect(x, y, w, h, c('cream', 3));
+  };
+  plate(96, 0, 128, 10);
+  plate(12, 22, 296, 160);
+  plate(108, 190, 104, 10);
+  p.rect(12, 22, 296, 2, c('paint', 3));
   return p;
 }
 
@@ -172,7 +194,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   textPage('story', 'THE STORY', STORY);
   textPage('help', 'HOW TO PLAY', HELP);
   textPage('credits', 'CREDITS', CREDITS);
-  put('scores.gif', gif(page('TOP DOGS', 11)));
+  put('scores.gif', gif(scoresScreen()));
   put('loadgame.gif', gif(page('LOAD A GAME', 13)));
   put('savegame.gif', gif(page('SAVE THIS GAME', 17)));
   put('won.gif', gif(wonScreen()));
