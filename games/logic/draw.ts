@@ -1,0 +1,192 @@
+// Drawing helpers for blocks, sprites and screens: dithered shading, bevelled boxes,
+// ASCII sprites, the PC's 8x8 font (at any scale) and a 3x5 font for silkscreen labels.
+import { FONT8X8 } from '../../web/src/gfx/font8x8';
+import { Pixels, dither } from '../kit/pixels';
+
+export const CLEAR = 255;
+
+/** A shade between ramp[lo] and ramp[hi] for level 0..1, ordered-dithered at (x, y). */
+export function shadeAt(ramp: number[], lo: number, hi: number, level: number, x: number, y: number): number {
+  const v = lo + Math.max(0, Math.min(1, level)) * (hi - lo);
+  const base = Math.floor(v);
+  const idx = dither(x, y, v - base) ? base + 1 : base;
+  return ramp[Math.max(0, Math.min(ramp.length - 1, idx))];
+}
+
+/** A lit ellipsoid lump, light from the upper left. */
+export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, ramp: number[], lo: number, hi: number): Pixels {
+  for (let y = Math.floor(cy - ry); y <= cy + ry; y++)
+    for (let x = Math.floor(cx - rx); x <= cx + rx; x++) {
+      const nx = (x + 0.5 - cx) / rx;
+      const ny = (y + 0.5 - cy) / ry;
+      const d = nx * nx + ny * ny;
+      if (d > 1) continue;
+      const z = Math.sqrt(1 - d);
+      const l = 0.62 * z - 0.42 * nx - 0.52 * ny;
+      p.set(x, y, shadeAt(ramp, lo, hi, (l + 0.35) / 1.2, x, y));
+    }
+  return p;
+}
+
+/** A vertical gradient across a rectangle. */
+export function gradient(p: Pixels, x0: number, y0: number, w: number, h: number, ramp: number[], lo: number, hi: number): Pixels {
+  for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) p.set(x, y, shadeAt(ramp, lo, hi, (y - y0) / Math.max(1, h - 1), x, y));
+  return p;
+}
+
+/** A raised box: light top/left edge, dark bottom/right edge. */
+export function bevel(p: Pixels, x: number, y: number, w: number, h: number, ramp: number[], face: number, depth = 1): Pixels {
+  p.rect(x, y, w, h, ramp[face]);
+  const hi = ramp[Math.min(ramp.length - 1, face + 1)];
+  const lo = ramp[Math.max(0, face - 2)];
+  for (let d = 0; d < depth; d++) {
+    p.rect(x + d, y + d, w - 2 * d, 1, hi).rect(x + d, y + d, 1, h - 2 * d, hi);
+    p.rect(x + d, y + h - 1 - d, w - 2 * d, 1, lo).rect(x + w - 1 - d, y + d, 1, h - 2 * d, lo);
+  }
+  return p;
+}
+
+/** ASCII art → a transparent sprite; each character maps to a color through `key`. */
+export function sprite(rows: string[], key: Record<string, number>, dx = 0, dy = 0, w = 20, h = 20): Pixels {
+  return new Pixels(w, h, CLEAR).draw(dx, dy, rows, key);
+}
+
+/** Adds a 1 pixel outline in `ink` around every opaque pixel. */
+export function outline(src: Pixels, ink: number): Pixels {
+  const p = new Pixels(src.w, src.h, CLEAR);
+  p.px.set(src.px);
+  for (let y = 0; y < src.h; y++)
+    for (let x = 0; x < src.w; x++) {
+      if (src.get(x, y) !== CLEAR) continue;
+      const n = [src.get(x - 1, y), src.get(x + 1, y), src.get(x, y - 1), src.get(x, y + 1)];
+      if (n.some((v) => v !== CLEAR && v !== -1)) p.set(x, y, ink);
+    }
+  return p;
+}
+
+/** Copies src over dst, skipping clear pixels. */
+export function over(dst: Pixels, src: Pixels, x = 0, y = 0): Pixels {
+  return dst.blit(src, x, y, CLEAR);
+}
+
+/** Recolors every pixel through a lookup. */
+export function recolor(src: Pixels, fn: (c: number) => number): Pixels {
+  const p = new Pixels(src.w, src.h, CLEAR);
+  p.px.set(src.px.map((v) => (v === CLEAR ? CLEAR : fn(v))));
+  return p;
+}
+
+/** Text in the PC font; returns the width drawn. */
+export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+  [...s].forEach((ch, i) => {
+    const g = ch.charCodeAt(0) & 255;
+    for (let row = 0; row < 8; row++) {
+      const bits = FONT8X8[g * 8 + row];
+      for (let b = 0; b < 8; b++) if (bits & (1 << b)) p.rect(x + (i * 8 + b) * scale, y + row * scale, scale, scale, col);
+    }
+  });
+  return s.length * 8 * scale;
+}
+
+export const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
+
+/** Text with an outline (and an optional drop shadow). */
+export function outlined(p: Pixels, x: number, y: number, s: string, col: number, edge: number, scale = 1, shadow?: number): void {
+  if (shadow !== undefined)
+    for (const [dx, dy] of [
+      [2, 2],
+      [1, 2],
+      [2, 1],
+    ])
+      text(p, x + dx * scale, y + dy * scale, s, shadow, scale);
+  for (const [dx, dy] of [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+    [-1, -1],
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+  ])
+    text(p, x + dx, y + dy, s, edge, scale);
+  text(p, x, y, s, col, scale);
+}
+
+/** Centered text (outlined when `edge` is given). */
+export function centered(p: Pixels, y: number, s: string, col: number, scale = 1, edge?: number, cx = p.w / 2, shadow?: number): void {
+  const x = Math.round(cx - textWidth(s, scale) / 2);
+  if (edge === undefined) text(p, x, y, s, col, scale);
+  else outlined(p, x, y, s, col, edge, scale, shadow);
+}
+
+// A 3x5 font for silkscreen labels on the boards (R1, C4, U2, +5V...).
+const MICRO: Record<string, string> = {
+  A: '111101111101101',
+  B: '110101110101110',
+  C: '111100100100111',
+  D: '110101101101110',
+  E: '111100110100111',
+  F: '111100110100100',
+  G: '111100101101111',
+  H: '101101111101101',
+  I: '111010010010111',
+  J: '001001001101111',
+  K: '101101110101101',
+  L: '100100100100111',
+  M: '101111111101101',
+  N: '110101101101101',
+  O: '111101101101111',
+  P: '111101111100100',
+  Q: '111101101111001',
+  R: '110101110101101',
+  S: '111100111001111',
+  T: '111010010010010',
+  U: '101101101101111',
+  V: '101101101101010',
+  W: '101101111111101',
+  X: '101101010101101',
+  Y: '101101010010010',
+  Z: '111001010100111',
+  '0': '111101101101111',
+  '1': '010110010010111',
+  '2': '111001111100111',
+  '3': '111001111001111',
+  '4': '101101111001001',
+  '5': '111100111001111',
+  '6': '111100111101111',
+  '7': '111001001010010',
+  '8': '111101111101111',
+  '9': '111101111001111',
+  '+': '000010111010000',
+  '-': '000000111000000',
+  '.': '000000000000010',
+  '/': '001001010100100',
+  ':': '000010000010000',
+  ' ': '000000000000000',
+  '!': '010010010000010',
+  '?': '111001011000010',
+  "'": '010010000000000',
+  '=': '000111000111000',
+  '>': '100010001010100',
+  '<': '001010100010001',
+};
+
+export function micro(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
+  let cx = x;
+  for (const ch of s.toUpperCase()) {
+    const g = MICRO[ch] ?? MICRO['?'];
+    for (let i = 0; i < 15; i++) if (g[i] === '1') p.rect(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale, col);
+    cx += 4 * scale;
+  }
+  return cx - x;
+}
+
+/** Nearest-neighbor scaled copy (for big sprites on screens). */
+export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: number, flip = false): void {
+  for (let yy = 0; yy < src.h; yy++)
+    for (let xx = 0; xx < src.w; xx++) {
+      const v = src.get(flip ? src.w - 1 - xx : xx, yy);
+      if (v !== CLEAR && v >= 0) dst.rect(x + xx * s, y + yy * s, s, s, v);
+    }
+}
