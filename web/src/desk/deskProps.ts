@@ -1,0 +1,152 @@
+// Small things around the desk: a Sandbox BBS mug full of pencils and pens, a beige wall
+// telephone (lift the handset for a dial tone), and a swing-arm lamp that is on when it
+// is dark outside (click it to switch it yourself).
+import './deskProps.css';
+import { h } from '../editor/ui';
+import { output } from '../audio/output';
+import { watchDaylight } from './daylight';
+
+const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
+  const el = h('div', { class: cls });
+  el.innerHTML = `<svg viewBox="${viewBox}" aria-hidden="true">${body}</svg>`;
+  return el;
+};
+
+export function mug(): HTMLElement {
+  return svg(
+    'desk-mug',
+    '0 0 90 150',
+    `<g stroke="#1a1a1a" stroke-width="0.6">
+      <!-- pencils and pens standing in it -->
+      <g transform="rotate(-14 30 70)"><rect x="24" y="8" width="7" height="70" fill="#f2c200"/><polygon points="24,8 31,8 27.5,0" fill="#e8c9a0"/><polygon points="26.5,2.5 28.5,2.5 27.5,0" fill="#333"/><rect x="24" y="72" width="7" height="6" fill="#d33"/></g>
+      <g transform="rotate(8 50 70)"><rect x="46" y="4" width="6" height="74" fill="#1f4fbf"/><rect x="46" y="4" width="6" height="12" fill="#e9e9e9"/><rect x="51" y="8" width="1.6" height="16" fill="#c0c0c0"/></g>
+      <g transform="rotate(-3 40 70)"><rect x="37" y="14" width="6" height="64" fill="#c22"/><rect x="37" y="14" width="6" height="8" fill="#222"/></g>
+      <g transform="rotate(18 62 70)"><rect x="58" y="12" width="7" height="66" fill="#2c8a3c"/><polygon points="58,12 65,12 61.5,4" fill="#e8c9a0"/><polygon points="60.5,6.5 62.5,6.5 61.5,4" fill="#333"/></g>
+    </g>
+    <!-- the mug -->
+    <path d="M70 84 q18 0 18 18 q0 18 -18 18" fill="none" stroke="#e9e3d0" stroke-width="7"/>
+    <path d="M70 84 q18 0 18 18 q0 18 -18 18" fill="none" stroke="#b9b29c" stroke-width="2"/>
+    <rect x="10" y="70" width="62" height="74" rx="5" fill="#f2eee2"/>
+    <rect x="10" y="70" width="62" height="74" rx="5" fill="url(#mug-shade)"/>
+    <ellipse cx="41" cy="71" rx="31" ry="4" fill="#2a2621"/>
+    <defs><linearGradient id="mug-shade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity="0.15"/><stop offset="0.35" stop-color="#fff" stop-opacity="0.2"/><stop offset="1" stop-color="#000" stop-opacity="0.25"/></linearGradient></defs>
+    <text x="41" y="96" text-anchor="middle" font-family="ui-monospace, Courier New, monospace" font-weight="700" font-size="9"><tspan fill="#d33">S</tspan><tspan fill="#c8a000">A</tspan><tspan fill="#1a9a3a">N</tspan><tspan fill="#0aa">D</tspan><tspan fill="#2346c8">B</tspan><tspan fill="#a3a">O</tspan><tspan fill="#a65a00">X</tspan></text>
+    <text x="41" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="7" fill="#333">BBS</text>
+    <text x="41" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="5" fill="#555">412-555-SAND</text>`,
+  );
+}
+
+/** A dial tone for as long as the handset is off the hook. */
+function dialTone(): () => void {
+  let ctx: AudioContext | undefined;
+  try {
+    ctx = new AudioContext();
+  } catch {
+    return () => undefined;
+  }
+  const g = ctx.createGain();
+  g.gain.value = 0.05;
+  g.connect(output(ctx));
+  const oscs = [350, 440].map((f) => {
+    const o = ctx!.createOscillator();
+    o.frequency.value = f;
+    o.connect(g);
+    o.start();
+    return o;
+  });
+  return () => {
+    oscs.forEach((o) => o.stop());
+    void ctx!.close();
+  };
+}
+
+export function wallPhone(): HTMLElement {
+  const el = svg(
+    'wall-phone',
+    '0 0 80 210',
+    `<!-- the base on the wall -->
+    <rect x="8" y="4" width="64" height="120" rx="9" fill="url(#ph-body)" stroke="#8f8770"/>
+    <defs>
+      <linearGradient id="ph-body" x1="0" x2="1"><stop offset="0" stop-color="#ece6d3"/><stop offset="0.6" stop-color="#d8d0b8"/><stop offset="1" stop-color="#b3aa90"/></linearGradient>
+    </defs>
+    <!-- the cradle and keypad -->
+    <rect x="18" y="12" width="44" height="8" rx="3" fill="#b3aa90"/>
+    ${Array.from({ length: 12 }, (_, i) => `<rect x="${22 + (i % 3) * 13}" y="${66 + Math.floor(i / 3) * 12}" width="10" height="8" rx="2" fill="#f4f1e6" stroke="#9e967c" stroke-width="0.6"/><text x="${27 + (i % 3) * 13}" y="${72 + Math.floor(i / 3) * 12}" text-anchor="middle" font-size="5" font-family="Arial" fill="#444">${'123456789*0#'[i]}</text>`).join('')}
+    <!-- the handset, hanging on the base -->
+    <g class="handset">
+      <rect x="14" y="16" width="52" height="44" rx="8" fill="url(#ph-body)" stroke="#8f8770"/>
+      <rect x="28" y="22" width="24" height="32" rx="4" fill="#cbc3aa"/>
+      <circle cx="40" cy="27" r="2" fill="#8f8770"/><circle cx="40" cy="49" r="2" fill="#8f8770"/>
+    </g>
+    <!-- the coiled cord -->
+    <path class="cord" d="M40 122 ${Array.from({ length: 14 }, (_, i) => `q ${i % 2 ? -7 : 7} 3 0 6`).join(' ')} q 0 6 -6 2" fill="none" stroke="#c9c1a6" stroke-width="2.4"/>`,
+  );
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('aria-label', 'Wall telephone: lift the handset');
+  el.title = 'The phone: lift the handset';
+  let hangUp: (() => void) | undefined;
+  const toggle = () => {
+    if (hangUp) {
+      hangUp();
+      hangUp = undefined;
+      el.classList.remove('off-hook');
+    } else {
+      hangUp = dialTone();
+      el.classList.add('off-hook');
+    }
+    el.setAttribute('aria-pressed', String(!!hangUp));
+  };
+  el.addEventListener('click', toggle);
+  el.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), toggle()));
+  return el;
+}
+
+/** The lamp, and the pool of light it throws on the desk. */
+export function deskLamp(): { lamp: HTMLElement; glow: HTMLElement; dispose(): void } {
+  const glow = h('div', { class: 'lamp-glow', 'aria-hidden': 'true' });
+  const lamp = svg(
+    'desk-lamp',
+    '0 0 220 300',
+    `<!-- base -->
+    <ellipse cx="170" cy="286" rx="40" ry="10" fill="#1d1f24"/>
+    <rect x="132" y="272" width="76" height="14" rx="6" fill="#2b2e35"/>
+    <!-- lower arm, elbow and upper arm -->
+    <line x1="170" y1="276" x2="150" y2="118" stroke="#2b2e35" stroke-width="7" stroke-linecap="round"/>
+    <line x1="162" y1="270" x2="143" y2="124" stroke="#8a8d96" stroke-width="1.4"/>
+    <path d="M156 210 q6 -4 0 -8 q-6 -4 0 -8 q6 -4 0 -8 q-6 -4 0 -8" fill="none" stroke="#9aa0aa" stroke-width="1.4"/>
+    <circle cx="150" cy="118" r="7" fill="#3a3e47"/>
+    <line x1="150" y1="118" x2="78" y2="70" stroke="#2b2e35" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="78" cy="70" r="6" fill="#3a3e47"/>
+    <!-- the shade, tipped down toward the desk -->
+    <g transform="rotate(32 70 78)">
+      <path d="M58 56 L74 62 L76 72 L72 74 L64 112 Q46 118 28 104 L44 74 L48 70 Z" fill="url(#lamp-shade)" stroke="#1a1c20"/>
+      <ellipse class="bulb" cx="46" cy="109" rx="17" ry="4.5" fill="#fff6c8"/>
+      <defs><linearGradient id="lamp-shade" x1="0" x2="1"><stop offset="0" stop-color="#1f5a35"/><stop offset="0.45" stop-color="#2f8a52"/><stop offset="1" stop-color="#14402a"/></linearGradient></defs>
+    </g>`,
+  );
+  lamp.setAttribute('role', 'switch');
+  lamp.setAttribute('tabindex', '0');
+  lamp.setAttribute('aria-label', 'Desk lamp');
+  let manual: boolean | undefined;
+  let dark = false;
+  const show = () => {
+    const on = manual ?? dark;
+    lamp.classList.toggle('on', on);
+    glow.classList.toggle('on', on);
+    lamp.setAttribute('aria-checked', String(on));
+    lamp.title = on ? 'Desk lamp: on (click to switch off)' : 'Desk lamp: off (click to switch on)';
+  };
+  const toggle = () => {
+    manual = !(manual ?? dark);
+    show();
+  };
+  lamp.addEventListener('click', toggle);
+  lamp.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), toggle()));
+  const stop = watchDaylight((light) => {
+    dark = light < 0.5;
+    manual = undefined; // the light outside changed: back to the lamp's habits
+    show();
+  });
+  return { lamp, glow, dispose: stop };
+}

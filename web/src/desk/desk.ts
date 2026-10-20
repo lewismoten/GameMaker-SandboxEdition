@@ -15,6 +15,7 @@ import { sevenSegment, floppyDrive, cdDrive, openTray } from './caseParts';
 import { keyboard } from './keyboard';
 import { keyboardTray } from './tray';
 import { speakers } from './speakers';
+import { mug, wallPhone, deskLamp } from './deskProps';
 import { deskModem } from './modem';
 import { drawBox, boxModel, openBoxViewer } from './gameBox';
 import { openGameManual } from '../manual/gameManual';
@@ -59,6 +60,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) });
   const box = h('div', { class: 'box' });
   const spk = speakers();
+  const lamp = deskLamp();
   const modem = deskModem(() => void command('C:\nTERMINAL'));
   // Captions from the real box; pictures from the sample games' own maps.
   const BOX_TILES: [string, string][] = [
@@ -101,9 +103,13 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       snowyWindow(),
       spk.left,
       spk.right,
+      wallPhone(),
+      lamp.lamp,
+      lamp.glow,
       h(
         'div',
         { class: 'desk-left' },
+        mug(),
         h('button', { class: 'prop disk-box', onclick: () => void flip() }, box, h('span', { class: 'caption' }, 'Disk box — pick a game')),
       ),
       h(
@@ -413,6 +419,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   return () => {
     window.removeEventListener('keydown', onKey);
     unfit();
+    lamp.dispose();
     removeWarp();
     computer.screen.destroy();
     computer.keys.detach();
