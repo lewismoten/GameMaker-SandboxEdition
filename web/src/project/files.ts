@@ -73,6 +73,12 @@ export interface CatalogEntry {
   notice?: string;
   /** Shareware: CRC-32 of the .gam file. */
   gamCrc?: number;
+  /** Total size of the game's files. */
+  bytes?: number;
+  /** Shareware: its DOS program name, e.g. ORB.EXE (shown, never served). */
+  exe?: string;
+  /** A few lines from the game's story or instructions. */
+  blurb?: string;
   gam: string | null;
   files: string[];
 }
