@@ -53,3 +53,24 @@ export function pageOfLine(layout: TextLayout, index: number): number {
   if (!l) return 0;
   return Math.min(layout.pages - 1, Math.floor(l.start / PAGE_LINES));
 }
+
+/** Breaks lines longer than fit at word boundaries, at most 30 characters (31 adds a blank line). */
+export function wrapLongLines(text: string): string {
+  const max = LINE_CHARS - 1;
+  return text
+    .split('\n')
+    .flatMap((line) => {
+      if (line.length <= LINE_CHARS - 1) return [line];
+      const out: string[] = [];
+      let rest = line;
+      while (rest.length > max) {
+        let cut = rest.lastIndexOf(' ', max);
+        if (cut <= 0) cut = max;
+        out.push(rest.slice(0, cut).trimEnd());
+        rest = rest.slice(cut).trimStart();
+      }
+      out.push(rest);
+      return out;
+    })
+    .join('\n');
+}
