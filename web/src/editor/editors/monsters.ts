@@ -6,18 +6,8 @@ import { paletteChooser } from './blocks';
 import { blockButton } from '../blockChooser';
 import { fileField } from '../filePicker';
 import { MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
-import { LASTMON, LASTSL, MAXMARCH, parseMonsters, serializeMonsters, type Monster } from '../../formats/monster';
-
-const ORIENTS: [number, string][] = [
-  [0, 'Normal'],
-  [1, 'Rotate ↻ 90°'],
-  [2, 'Rotate 180°'],
-  [3, 'Rotate ↺ 90°'],
-  [4, 'Mirror ↔'],
-  [5, 'Rotate + mirror'],
-  [6, 'Mirror ↕'],
-  [7, 'Rotate + mirror ↕'],
-];
+import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '../../formats/monster';
+import { monsterPathEditor } from './monsterPathEditor';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
 
@@ -52,6 +42,15 @@ registerEditor(['mon'], (host, project, file) => {
   const list = h('div', { class: 'block-picker', style: 'max-height:none;grid-template-columns:repeat(auto-fill,44px)' });
   const detail = h('div', { class: 'stack', style: 'flex:1 1 520px;min-width:0' });
   const preview = h('canvas', { class: 'pixel checker', style: 'width:80px;height:80px;border:1px solid var(--border)' });
+  const paths = monsterPathEditor({
+    project,
+    monFile: file,
+    monsters: mons,
+    index: () => current,
+    mblk: () => mblk,
+    palette: () => chooser.palette,
+    onEdit: () => edit(() => renderList()),
+  });
   let anim = 0;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -96,34 +95,6 @@ registerEditor(['mon'], (host, project, file) => {
     const shown = count < 0 ? LASTSL : count;
     const endKind = m.end === -2 ? -2 : m.end === -1 ? -1 : m.end === 0 ? 0 : 1;
 
-    const pathTable = (p: 0 | 1, title: string, hint: string) =>
-      h(
-        'div',
-        { class: 'panel' },
-        h('h4', { style: 'margin:0 0 4px' }, title),
-        h('p', { class: 'hint' }, hint),
-        h(
-          'table',
-          { class: 'data' },
-          h('thead', null, h('tr', null, h('th', null, '#'), h('th', null, 'x (blocks)'), h('th', null, 'y (blocks)'), h('th', null, 'Speed (0 = end)'), h('th', null, 'Picture'))),
-          h(
-            'tbody',
-            null,
-            ...m.march[p].map((c, i) =>
-              h(
-                'tr',
-                null,
-                h('td', null, i + 1),
-                h('td', null, numberField('', () => c.x, (v) => edit(() => (c.x = v)), { min: -99, max: 99 })),
-                h('td', null, numberField('', () => c.y, (v) => edit(() => (c.y = v)), { min: -99, max: 99 })),
-                h('td', null, numberField('', () => c.pic, (v) => edit(() => (c.pic = v)), { min: 0, max: 40 })),
-                h('td', null, selectField('', ORIENTS, () => c.orient, (v) => edit(() => (c.orient = v)))),
-              ),
-            ),
-          ),
-        ),
-      );
-
     clear(
       detail,
       h(
@@ -148,8 +119,27 @@ registerEditor(['mon'], (host, project, file) => {
                 'tr',
                 null,
                 h('td', null, i + 1),
-                h('td', null, blockButton(() => mblk, () => chooser.palette, () => f[0], (v) => edit(() => ((f[0] = v), renderDetail(), renderList())), { title: `Frame ${i + 1}: a monster block` })),
-                h('td', null, numberField('', () => f[1], (v) => edit(() => (f[1] = v)), { min: 1, max: 32767 })),
+                h(
+                  'td',
+                  null,
+                  blockButton(
+                    () => mblk,
+                    () => chooser.palette,
+                    () => f[0],
+                    (v) => edit(() => ((f[0] = v), renderDetail(), renderList())),
+                    { title: `Frame ${i + 1}: a monster block` },
+                  ),
+                ),
+                h(
+                  'td',
+                  null,
+                  numberField(
+                    '',
+                    () => f[1],
+                    (v) => edit(() => (f[1] = v)),
+                    { min: 1, max: 32767 },
+                  ),
+                ),
               ),
             ),
           ),
@@ -189,17 +179,33 @@ registerEditor(['mon'], (host, project, file) => {
       h(
         'div',
         { class: 'panel grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr))' },
-        numberField('Power', () => m.power, (v) => edit(() => (m.power = v)), { min: 0, max: 255, title: 'Stronger monsters destroy weaker ones they touch. 100 or more cannot be destroyed by touching the character.' }),
-        numberField('Score when destroyed by a weapon', () => m.upscore, (v) => edit(() => (m.upscore = v)), { min: -32768, max: 32767 }),
+        numberField(
+          'Power',
+          () => m.power,
+          (v) => edit(() => (m.power = v)),
+          { min: 0, max: 255, title: 'Stronger monsters destroy weaker ones they touch. 100 or more cannot be destroyed by touching the character.' },
+        ),
+        numberField(
+          'Score when destroyed by a weapon',
+          () => m.upscore,
+          (v) => edit(() => (m.upscore = v)),
+          { min: -32768, max: 32767 },
+        ),
         h(
           'label',
           { class: 'field' },
           h('span', null, 'When destroyed it becomes'),
-          blockButton(monsterPictures, () => chooser.palette, () => (m.newmon < 0 ? LASTMON : m.newmon), (v) => edit(() => (m.newmon = v)), {
-            title: 'The monster it turns into when destroyed',
-            extras: [{ value: LASTMON, label: 'nothing', icon: '∅' }],
-            only: (_, i) => !!mons[i]?.used,
-          }),
+          blockButton(
+            monsterPictures,
+            () => chooser.palette,
+            () => (m.newmon < 0 ? LASTMON : m.newmon),
+            (v) => edit(() => (m.newmon = v)),
+            {
+              title: 'The monster it turns into when destroyed',
+              extras: [{ value: LASTMON, label: 'nothing', icon: '∅' }],
+              only: (_, i) => !!mons[i]?.used,
+            },
+          ),
         ),
         selectField(
           'Lives',
@@ -212,8 +218,19 @@ registerEditor(['mon'], (host, project, file) => {
           () => endKind,
           (v) => edit(() => ((m.end = v === 1 ? Math.max(1, m.end) || 100 : v), renderDetail())),
         ),
-        endKind === 1 ? numberField('Lifetime (ticks)', () => m.end, (v) => edit(() => (m.end = v)), { min: 1, max: 32767 }) : null,
-        checkField('Stopped by solid blocks', () => !!m.thru, (v) => edit(() => (m.thru = v ? 1 : 0))),
+        endKind === 1
+          ? numberField(
+              'Lifetime (ticks)',
+              () => m.end,
+              (v) => edit(() => (m.end = v)),
+              { min: 1, max: 32767 },
+            )
+          : null,
+        checkField(
+          'Stopped by solid blocks',
+          () => !!m.thru,
+          (v) => edit(() => (m.thru = v ? 1 : 0)),
+        ),
       ),
       h(
         'div',
@@ -229,21 +246,18 @@ registerEditor(['mon'], (host, project, file) => {
           () => motionOf(m),
           (v) => edit(() => (setMotion(m, v, speedOf(m) || 1), renderDetail())),
         ),
-        motionOf(m) !== 'path' ? numberField('Speed (pixels per tick)', () => speedOf(m), (v) => edit(() => setMotion(m, motionOf(m), v)), { min: 1, max: 63 }) : null,
-        selectField(
-          'Near the character (8×5 blocks)',
-          [
-            [0, 'Keep moving normally'],
-            [1, 'Follow the attack path'],
-            [2, 'Follow the attack path, relative to the character'],
-          ] as [number, string][],
-          () => m.activate,
-          (v) => edit(() => (m.activate = v)),
-        ),
+        motionOf(m) !== 'path'
+          ? numberField(
+              'Speed (pixels per tick)',
+              () => speedOf(m),
+              (v) => edit(() => setMotion(m, motionOf(m), v)),
+              { min: 1, max: 63 },
+            )
+          : null,
       ),
-      pathTable(0, 'Path', `Up to ${MAXMARCH} corners, as block offsets from where the monster starts. A speed of 0 ends the path; it then repeats (or the monster dies, if it lives until the end of its path).`),
-      m.activate ? pathTable(1, 'Attack path', 'Used while the character is near. Starts at corner 2.') : null,
+      paths.el,
     );
+    paths.refresh();
     anim = 0;
     animate();
   }
@@ -255,20 +269,34 @@ registerEditor(['mon'], (host, project, file) => {
 
   clear(
     host,
-    h('p', { class: 'hint' }, 'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.'),
+    h(
+      'p',
+      { class: 'hint' },
+      'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.',
+    ),
     h(
       'div',
       { class: 'toolbar', style: 'margin-bottom:8px' },
-      fileField(project, 'Monster blocks', ['mbl'], () => mblName, (v) => {
-        if (!v) return;
-        mblName = v;
-        mblk = parseBlocks(project.files.get(v)!, MONBL);
-        render();
-      }, { allowNone: false }),
+      fileField(
+        project,
+        'Monster blocks',
+        ['mbl'],
+        () => mblName,
+        (v) => {
+          if (!v) return;
+          mblName = v;
+          mblk = parseBlocks(project.files.get(v)!, MONBL);
+          render();
+        },
+        { allowNone: false },
+      ),
       chooser.el,
     ),
     h('div', { class: 'row' }, h('div', { style: 'flex:0 1 240px' }, list), detail),
   );
   render();
-  return () => clearTimeout(timer);
+  return () => {
+    clearTimeout(timer);
+    paths.destroy();
+  };
 });
