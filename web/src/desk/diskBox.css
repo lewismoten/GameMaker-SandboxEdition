@@ -1,4 +1,4 @@
-/* 3.5" floppy disks and the flip-through disk box */
+/* 3.5" floppy disks, drawn the way they stand in a disk box: shutter down, label up */
 
 .floppy {
   --body: #2b2b2b;
@@ -7,7 +7,7 @@
   aspect-ratio: 9 / 9.4;
   border-radius: 6px;
   background: linear-gradient(160deg, color-mix(in srgb, var(--body) 85%, #fff), var(--body) 45%, color-mix(in srgb, var(--body) 80%, #000));
-  clip-path: polygon(0 0, 92% 0, 100% 6%, 100% 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 8% 100%, 0 94%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   color: #1a1a1a;
 }
@@ -15,19 +15,19 @@
 .floppy .shutter {
   position: absolute;
   left: 22%;
-  top: 0;
+  bottom: 0;
   width: 56%;
   height: 33%;
-  border-radius: 0 0 3px 3px;
+  border-radius: 3px 3px 0 0;
   background: linear-gradient(90deg, #8d939a, #e3e7ea 40%, #a7adb3 70%, #e3e7ea);
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .floppy .shutter::after {
   content: '';
   position: absolute;
-  left: 58%;
-  top: 14%;
+  left: 24%;
+  top: 24%;
   width: 18%;
   height: 62%;
   border-radius: 2px;
@@ -36,13 +36,13 @@
 
 .floppy .label {
   position: absolute;
-  left: 9%;
-  right: 9%;
-  bottom: 4%;
+  left: 11%;
+  right: 11%;
+  top: 4%;
   height: 54%;
   padding: 6px 8px;
   overflow: hidden;
-  border-radius: 2px 2px 0 0;
+  border-radius: 0 0 2px 2px;
   background: repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px), #fbf8ee;
   font: 15px/14px 'Comic Sans MS', 'Marker Felt', 'Segoe Print', cursive;
   color: #1c2a6b;
@@ -82,8 +82,8 @@
 /* write-protect tab: open hole = protected */
 .floppy .wp {
   position: absolute;
-  left: 3%;
-  bottom: 2%;
+  right: 2.5%;
+  top: 2%;
   width: 7%;
   height: 7%;
   background: #111;
@@ -102,8 +102,8 @@
 
 .floppy .hd {
   position: absolute;
-  right: 3%;
-  bottom: 2%;
+  left: 2.5%;
+  top: 3%;
   font: 700 8px/1 system-ui, sans-serif;
   color: rgba(255, 255, 255, 0.55);
 }
@@ -115,24 +115,52 @@
   width: 104px;
 }
 
-/* ---- flip-through view --------------------------------------------------------------- */
+/* ---- the open disk box: a row of disks seen from the front, scrolling top to bottom --- */
 
-.flipper {
-  position: relative;
-  width: min(900px, 100%);
-  height: 300px;
-  perspective: 1100px;
-  touch-action: pan-y;
+.disk-case {
+  width: min(340px, 100%);
+  height: min(64vh, 600px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px 26px 40px;
+  border: 10px solid #2a2b30;
+  border-top-width: 6px;
+  border-radius: 6px 6px 12px 12px;
+  background: linear-gradient(90deg, #15161a, #24262c 50%, #15161a);
+  box-shadow:
+    inset 0 12px 18px rgba(0, 0, 0, 0.6),
+    0 18px 30px rgba(0, 0, 0, 0.55);
+  scrollbar-color: #555 transparent;
 }
 
-.flipper .floppy {
-  position: absolute;
-  left: 50%;
-  top: 30px;
-  width: 220px;
-  margin-left: -110px;
-  transition: transform 0.35s ease, opacity 0.35s ease, filter 0.35s ease;
+.disk-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* each disk hides all but the top of the one behind it */
+.disk-row .floppy {
+  flex: none;
+  width: 260px;
+  margin-bottom: -170px;
+  transition: transform 0.18s ease, filter 0.18s ease;
+  filter: brightness(0.82);
   cursor: pointer;
+}
+
+.disk-row .floppy:last-child {
+  margin-bottom: 0;
+}
+
+.disk-row .floppy[aria-selected='true'] {
+  transform: translateY(-24px);
+  filter: none;
+}
+
+.flip-info .hint {
+  font-size: 12px;
+  opacity: 0.75;
 }
 
 .flip-info {
@@ -151,17 +179,4 @@
   color: #d8ccb0;
 }
 
-.flip-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
 
-.flip-nav {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  color: #d8ccb0;
-  font-size: 13px;
-}

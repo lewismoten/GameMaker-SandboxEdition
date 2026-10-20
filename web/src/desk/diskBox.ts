@@ -1,10 +1,10 @@
-// The disk box: flip through 3.5" floppies and pick one to play or design.
+// The disk box: flip through 3.5" floppies and put one in drive A:.
 import './diskBox.css';
 import { h, clear } from '../editor/ui';
 import { diskCount, type Disk } from '../retro/disks';
 import { creditLine } from '../project/files';
 
-export type DiskAction = 'play' | 'design' | 'insert' | 'modern';
+export type DiskAction = 'play' | 'design' | 'modern';
 
 export function floppyElement(d: Disk, small = false): HTMLElement {
   const count = diskCount(d.bytes);
@@ -33,18 +33,36 @@ function sizeText(bytes: number): string {
   return mb >= 1 ? `${mb.toFixed(2)} MB` : `${Math.round(bytes / 1024)} KB`;
 }
 
-/** Opens the flip-through view. Resolves when closed. */
-export function openDiskBox(disks: Disk[], startId: string | undefined, onAction: (d: Disk, a: DiskAction) => void): Promise<void> {
+/** A line about the disk: what it is, who made it, its size. */
+export function diskFacts(d: Disk): string {
+  return [
+    d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
+    d.catalog ? creditLine(d.catalog) : '',
+    sizeText(d.bytes),
+    d.writeProtected ? 'write-protected' : '',
+  ]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+/**
+ * Opens the disk box: disks stand in a row, shutters down and labels up, and you look
+ * down the row from the front. Scroll to flip through; click one to put it in drive A:.
+ * Resolves when closed.
+ */
+export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: (d: Disk) => void): Promise<void> {
   return new Promise((resolve) => {
     let index = Math.max(0, disks.findIndex((d) => d.id === startId));
-    const flipper = h('div', { class: 'flipper', role: 'listbox', 'aria-label': 'Floppy disks' });
+    const row = h('div', { class: 'disk-row', role: 'listbox', 'aria-label': 'Floppy disks' });
     const info = h('div', { class: 'flip-info', 'aria-live': 'polite' });
-    const position = h('span');
     const items = disks.map((d, i) => {
       const el = floppyElement(d);
       el.setAttribute('role', 'option');
-      el.addEventListener('click', () => (i === index ? undefined : select(i)));
-      flipper.append(el);
+      el.tabIndex = -1;
+      el.title = `Put ${d.kind === 'blank' ? 'a blank disk' : d.title} in drive A:`;
+      el.addEventListener('pointerenter', () => select(i, false));
+      el.addEventListener('click', () => pick(i));
+      row.append(el);
       return el;
     });
 
@@ -53,81 +71,38 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onAction
       overlay.remove();
       resolve();
     };
-    const act = (a: DiskAction) => {
+    const pick = (i: number) => {
       close();
-      onAction(disks[index], a);
+      onPick(disks[i]);
     };
 
-    function select(i: number): void {
-      index = (i + disks.length) % disks.length;
-      items.forEach((el, j) => {
-        const off = j - index;
-        const abs = Math.abs(off);
-        el.style.transform = `translateX(${off * 130}px) translateZ(${-abs * 80}px) rotateY(${off * -28}deg)`;
-        el.style.zIndex = String(100 - abs);
-        el.style.opacity = abs > 4 ? '0' : '1';
-        el.style.filter = abs ? 'brightness(0.65)' : 'none';
-        el.setAttribute('aria-selected', String(abs === 0));
-      });
+    function select(i: number, scroll = true): void {
+      index = Math.max(0, Math.min(disks.length - 1, i));
+      items.forEach((el, j) => el.setAttribute('aria-selected', String(j === index)));
+      if (scroll) items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       const d = disks[index];
-      position.textContent = `${index + 1} of ${disks.length}`;
-      const facts = [
-        d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
-        d.catalog ? creditLine(d.catalog) : '',
-        sizeText(d.bytes),
-        d.writeProtected ? 'write-protected (Game-Maker will make you a copy to change it)' : '',
-      ].filter(Boolean);
-      clear(
-        info,
-        h('h2', null, d.kind === 'blank' ? 'Blank disk' : d.title),
-        h('p', null, facts.join(' · ')),
-        h(
-          'div',
-          { class: 'flip-actions' },
-          d.gam ? h('button', { class: 'primary', onclick: () => act('play') }, '▶ Play it') : null,
-          h('button', { class: d.gam ? '' : 'primary', onclick: () => act('design') }, d.kind === 'blank' ? 'Start a new game on the hard disk' : 'Design it in Game-Maker'),
-          h('button', { onclick: () => act('insert') }, 'Just put it in drive A:'),
-          d.kind !== 'blank' ? h('button', { onclick: () => act('modern') }, 'Open in today’s web') : null,
-        ),
-      );
+      clear(info, h('h2', null, d.kind === 'blank' ? 'Blank disk' : d.title), h('p', null, diskFacts(d)), h('p', { class: 'hint' }, 'Click a disk to put it in drive A:'));
     }
 
     const onKey = (e: KeyboardEvent) => {
       e.stopImmediatePropagation(); // not for the PC underneath
-      if (e.key === 'ArrowLeft') select(index - 1);
-      else if (e.key === 'ArrowRight') select(index + 1);
+      if (e.key === 'ArrowUp') select(index - 1);
+      else if (e.key === 'ArrowDown') select(index + 1);
+      else if (e.key === 'Enter') pick(index);
       else if (e.key === 'Escape') close();
       else return;
       e.preventDefault();
     };
     window.addEventListener('keydown', onKey, true);
-    let wheelAt = 0;
-    flipper.addEventListener(
-      'wheel',
-      (e) => {
-        e.preventDefault();
-        const now = performance.now();
-        if (now - wheelAt < 120) return;
-        wheelAt = now;
-        select(index + Math.sign(e.deltaY || e.deltaX));
-      },
-      { passive: false },
-    );
-    let startX = 0;
-    flipper.addEventListener('pointerdown', (e) => (startX = e.clientX));
-    flipper.addEventListener('pointerup', (e) => {
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 40) select(index - Math.sign(dx));
-    });
 
     const overlay = h(
       'div',
       { class: 'desk-overlay', role: 'dialog', 'aria-label': 'Disk box' },
       h('button', { class: 'close', onclick: close }, 'Close (Esc)'),
-      flipper,
-      h('div', { class: 'flip-nav' }, h('button', { onclick: () => select(index - 1), 'aria-label': 'Previous disk' }, '◀'), position, h('button', { onclick: () => select(index + 1), 'aria-label': 'Next disk' }, '▶')),
+      h('div', { class: 'disk-case' }, row),
       info,
     );
+    overlay.addEventListener('click', (e) => e.target === overlay && close());
     document.body.append(overlay);
     select(index);
   });
