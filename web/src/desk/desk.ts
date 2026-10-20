@@ -165,7 +165,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         { class: 'desk-right' },
         h(
           'button',
-          { class: 'prop gm-box', onclick: () => void openGmBox(), 'aria-label': 'Game-Maker 3.0 box: look inside' },
+          { class: 'prop gm-box', onclick: () => void openGmBox(), 'aria-label': 'Game-Maker SE 3.0 box: look inside' },
           h(
             'div',
             { class: 'retail' },
@@ -175,7 +175,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
             boxTiles,
             h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
           ),
-          h('span', { class: 'caption' }, 'Game-Maker 3.0 — open the box'),
+          h('span', { class: 'caption' }, 'Game-Maker SE 3.0 — open the box'),
         ),
         h(
           'button',
@@ -368,7 +368,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     const tiles = [...boxTiles.querySelectorAll<HTMLElement>('.tile')].map(
       (t) => [t.querySelector('canvas')!, t.querySelector('span')!.textContent ?? ''] as [HTMLCanvasElement, string],
     );
-    await openBoxViewer({ title: 'Game-Maker 3.0' }, drawGmBox(tiles), {
+    await openBoxViewer({ title: 'Game-Maker SE 3.0' }, drawGmBox(tiles), {
       insert: () => void startGameMaker(),
       insertLabel: 'Put the CD in and start Game-Maker',
       manual: () => void openDosManual(),
@@ -383,7 +383,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     if (!computer.cdInserted) {
       await openTray(cd);
       computer.insertCd();
-      cd.setDisc('Game-Maker 3.0');
+      cd.setDisc('Game-Maker SE 3.0');
       desk.querySelector('.gm-box')?.classList.add('cd-in');
     }
     cd.busy();
