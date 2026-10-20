@@ -209,6 +209,11 @@ export class TextScreen {
     }
   }
 
+  /** Draws immediately (for capturing the screen as a picture). */
+  renderNow(): void {
+    this.render();
+  }
+
   private render(): void {
     const { px, colors } = this;
     const W = COLS * CW;
