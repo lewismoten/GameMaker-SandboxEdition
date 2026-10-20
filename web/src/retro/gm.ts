@@ -42,7 +42,7 @@ export const TOOLS: Tool[] = [
 const pathText = (p: { drive: string; parts: string[] }) => `${p.drive}:\\${p.parts.join('\\')}`;
 
 /** Game-Maker worked in the current game area; start pickers there or in C:\GM. */
-function gameArea(h: RetroHost): { drive: string; parts: string[] } {
+export function gameArea(h: RetroHost): { drive: string; parts: string[] } {
   const w = h.workDir();
   if (w.drive === 'A' || (w.parts[0] === 'GM' && w.parts.length >= 1) || (w.parts[0] === 'DOWNLOAD' && w.parts.length === 2)) return w;
   if (w.drive === 'D' && w.parts.length === 2) return w;
