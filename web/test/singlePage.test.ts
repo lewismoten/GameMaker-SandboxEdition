@@ -67,3 +67,15 @@ describe('reading a one-page export back', () => {
     expect(() => readSinglePage('<script type="application/json" id="gm-game">{oops</script>')).toThrow(/damaged/);
   });
 });
+
+describe('importing a one-page export as a project', () => {
+  it('turns the page back into game files', async () => {
+    const { gameFromPageHtml } = await import('../src/project/importPage');
+    const game = await encodeGame({ id: 'x', title: 'My Game', gam: 'GAME.GAM' }, files);
+    const got = (await gameFromPageHtml(fillPage(`<title>${TITLE_MARK}</title>${GAME_MARK}`, game)))!;
+    expect(got.title).toBe('My Game');
+    expect(got.gam).toBe('game.gam');
+    expect(got.files.names()).toEqual(['big.pal', 'empty.snd', 'game.gam']);
+    expect(await gameFromPageHtml('<p>hi</p>')).toBeUndefined();
+  });
+});
