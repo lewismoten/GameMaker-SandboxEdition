@@ -95,7 +95,7 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
         'div',
         { class: 'order' },
         h('strong', null, 'HOW TO GET THEM'),
-        h('p', { style: 'margin:6px 0' }, 'Call THE GAME-MAKER EXCHANGE BBS at 555-0144 (14,400 baud, 8-N-1). Pick Files, then D and the file number to download. Unzipped games land in C:\\DOWNLOAD.'),
+        h('p', { style: 'margin:6px 0' }, 'Call THE -= S A N D B O X =- BBS in Pittsburgh at 412-555-0144 (14,400 baud, 8-N-1). Pick File Areas, then D and the file number to download. Unzipped games land in C:\\DOWNLOAD.'),
         h(
           'button',
           {

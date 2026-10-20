@@ -199,7 +199,7 @@ export class Computer implements RetroHost {
       root: async () => [
         folder('DOS', () => ['COMMAND.COM', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) => file(n, 20_000 + n.length * 1357))),
         liveFolder('GM', () => this.gmFolder(true)),
-        folder('COMM', () => [file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }), textFile('PHONE.LST', 'THE GAME-MAKER EXCHANGE BBS  555-0144  14400 N81\n')]),
+        folder('COMM', () => [file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }), textFile('PHONE.LST', 'THE -= S A N D B O X =- BBS  412-555-0144  14400 N81  Renegade\nTHE SOFA                     412-555-0177  14400 N81  Major BBS, 8 lines\n')]),
         liveFolder('DOWNLOAD', async () => {
           const cat = await this.catalog();
           return this.downloads.list().flatMap((id) => {
