@@ -45,7 +45,7 @@ export async function loadDisks(): Promise<Disk[]> {
       id: `cd:${g.id}`,
       kind: rsd ? 'rsd' : 'gameware',
       title: g.gam ? g.title : `${g.id} art & sounds`,
-      label: g.gam ? (rsd ? `${g.title}\nRecreational Software Designs` : g.title) : `${g.id.toUpperCase()}\npictures, monsters, sounds`,
+      label: g.gam ? g.title : `${g.id.toUpperCase()}\npictures, monsters, sounds`,
       color: rsd ? '#1d3b8a' : COLORS[i % COLORS.length],
       gam: g.gam ?? undefined,
       bytes: g.bytes ?? 0,

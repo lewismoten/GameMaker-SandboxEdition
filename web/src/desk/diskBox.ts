@@ -2,18 +2,26 @@
 import './diskBox.css';
 import { h, clear } from '../editor/ui';
 import { diskCount, type Disk } from '../retro/disks';
+import { creditLine } from '../project/files';
 
 export type DiskAction = 'play' | 'design' | 'insert' | 'modern';
 
 export function floppyElement(d: Disk, small = false): HTMLElement {
   const count = diskCount(d.bytes);
-  const label = d.kind === 'blank' ? 'blank — formats as a new game' : d.label.split('\n')[0];
-  const sub = d.kind === 'rsd' ? 'Recreational Software Designs' : d.kind === 'project' ? 'my game' : d.kind === 'gameware' ? 'Game-Maker gameware' : '';
+  const label = d.kind === 'blank' ? 'blank — formats as a new game' : d.title;
+  const g = d.catalog;
+  // Hand-written like a real label: who made it, when, and what it cost.
+  const sub =
+    d.kind === 'project'
+      ? 'my game'
+      : d.kind === 'blank'
+        ? ''
+        : [g?.author ?? g?.company, [g?.year, g?.price].filter(Boolean).join('  ')].filter(Boolean).join('\n');
   return h(
     'div',
     { class: 'floppy', style: `--body:${d.color}`, dataset: { kind: d.kind, protected: String(d.writeProtected) }, 'aria-hidden': small ? 'true' : undefined },
     h('div', { class: 'shutter' }),
-    h('div', { class: 'label' }, label, h('small', null, [sub, count > 1 ? `disk 1 of ${count}` : ''].filter(Boolean).join(' · '))),
+    h('div', { class: 'label' }, label, h('small', null, [sub, count > 1 ? `disk 1 of ${count}` : ''].filter(Boolean).join('\n'))),
     h('div', { class: 'wp' }),
     h('div', { class: 'hd' }, 'HD'),
   );
@@ -65,6 +73,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onAction
       position.textContent = `${index + 1} of ${disks.length}`;
       const facts = [
         d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game' : 'A blank, unformatted disk',
+        d.catalog ? creditLine(d.catalog) : '',
         sizeText(d.bytes),
         d.writeProtected ? 'write-protected (Game-Maker will make you a copy to change it)' : '',
       ].filter(Boolean);
