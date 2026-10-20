@@ -20,6 +20,8 @@ export interface PlayerOptions extends RunOptions {
   notice?: string;
   /** Start immediately, without the click-to-play overlay (audio must already be unlocked). */
   autoStart?: boolean;
+  /** Leave out the ⌨ Keys button (the 1994 desk's monitor has no such thing). */
+  noKeysButton?: boolean;
 }
 
 export interface PlayerHandle {
@@ -84,7 +86,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     keys.blur();
     showKeyMap(files, gamFile, opts.title ?? 'Game', () => canvas.focus());
   });
-  container.append(keys);
+  if (!opts.noKeysButton) container.append(keys);
 
   let stopped = false;
   const done = new Promise<void>((resolve) => {

@@ -409,6 +409,7 @@ export class Computer implements RetroHost {
         title,
         notice,
         autoStart: true,
+        noKeysButton: true,
         speed: this.opts.speed,
         onQuit: () => false, // back to DOS
         onExit: () => {
