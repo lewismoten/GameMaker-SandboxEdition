@@ -19,8 +19,10 @@ import {
   type PrintContext,
   type Sheet,
 } from './kit';
-import { cardKeys, manualKeyText } from './keys';
+import { CHARBL } from '../../formats/blocks';
+import { DIR_ARROW, DIR_PAD, PLAYGAME_KEYS, manualKeyText, splitKeys, type BoundKey, type Dir } from './keys';
 import { redCode } from './redFilm';
+import { paginate } from './paginate';
 
 const ISSUE_DATE = 'Fall 1995';
 
@@ -46,16 +48,26 @@ function price(g: CatalogEntry): string {
   return g.price ?? '$10';
 }
 
-/** The keys bound in the game's .CHR files, as PLAYGAME names them. */
-async function boundKeys(entry: CatalogEntry): Promise<string[]> {
+/** The keys bound in the game's .CHR files, as PLAYGAME names them, with the moves they run. */
+async function boundKeys(entry: CatalogEntry): Promise<BoundKey[]> {
   const names = entry.files.filter((f) => f.endsWith('.chr'));
-  const keys: string[] = [];
+  const keys: BoundKey[] = [];
   for (const n of names) {
     const r = await fetch(`./${entry.path}${n}`).catch(() => undefined);
     if (!r?.ok) continue;
     try {
       const chr = parseCharacter(new Uint8Array(await r.arrayBuffer()));
-      for (const s of chr.sequences) if (s.key >> 8) keys.push(scanName(s.key >> 8));
+      for (const s of chr.sequences) {
+        if (!(s.key >> 8)) continue;
+        const end = s.frames.findIndex((f) => f.pic2 === CHARBL + 1);
+        const frames = end < 0 ? s.frames : s.frames.slice(0, end);
+        keys.push({
+          name: scanName(s.key >> 8),
+          dx: frames.reduce((t, f) => t + f.x, 0),
+          dy: frames.reduce((t, f) => t + f.y, 0),
+          sig: frames.map((f) => [f.x, f.y, f.orient, f.pic1, f.pic2, f.pause].join(',')).join(';'),
+        });
+      }
     } catch {
       // not a character file after all
     }
@@ -110,51 +122,136 @@ export async function postcard(ctx: PrintContext): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ key card
-const KEY_ROWS = [
-  ['Esc', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10'],
-  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-  ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Enter'],
-  ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.'],
-  ['Ctrl', 'Alt', 'Space', 'Left', 'Up', 'Down', 'Right'],
-];
-const ARROWS: Record<string, string> = { Left: '←', Up: '↑', Down: '↓', Right: '→' };
+const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
-export async function keycard(ctx: PrintContext): Promise<Sheet[]> {
-  const bound = await boundKeys(ctx.entry);
-  const rows = cardKeys(bound, manualKeyText(ctx.manual.pages.map((p) => p.html)), ctx.printables.keys);
-  const used = new Set(rows.map((r) => r.key));
-  const pad = h(
-    'div',
-    { class: 'kc-keys', 'aria-hidden': 'true' },
-    ...KEY_ROWS.map((row) =>
-      h(
-        'div',
-        { class: 'kc-row' },
-        ...row.map((k) =>
-          h(
-            'span',
-            { class: `kc-key ${used.has(k) ? 'on' : ''} ${k === 'Space' ? 'wide' : ''} ${k.length > 2 && k !== 'Space' ? 'mid' : ''}` },
-            ARROWS[k] ?? k,
+/** A little keyboard diagram: rows of [label, direction or undefined]; lit when bound. */
+function keyDiagram(cls: string, caption: string, rows: (readonly [string, Dir | undefined, boolean])[][]): HTMLElement {
+  return h(
+    'figure',
+    { class: `kc-dia ${cls}` },
+    h(
+      'div',
+      { class: 'kc-dia-keys' },
+      ...rows.map((row) =>
+        h(
+          'div',
+          { class: 'kc-dia-row' },
+          ...row.map(([label, dir, on]) =>
+            label
+              ? h('span', { class: `kc-cap ${on ? 'on' : ''}` }, h('b', null, label), dir ? h('i', null, DIR_ARROW[dir]) : null)
+              : h('span', { class: 'kc-cap gap' }),
           ),
         ),
       ),
     ),
+    h('figcaption', null, caption),
   );
-  const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
-  const list = h(
+}
+
+export async function keycard(ctx: PrintContext): Promise<Sheet[]> {
+  const bound = await boundKeys(ctx.entry);
+  const { moves, actions } = splitKeys(bound, manualKeyText(ctx.manual.pages.map((p) => p.html)), ctx.printables.keys);
+  const dirKeys = new Map<string, Dir>();
+  for (const m of moves) for (const k of m.keys) dirKeys.set(k, m.dir);
+  const padOn = new Set(moves.filter((m) => m.pad || m.keys.some((k) => ['Up', 'Down', 'Left', 'Right'].includes(k))).map((m) => m.dir));
+  const lit = (k: string) => dirKeys.has(k);
+  const arrowRows = [
+    [
+      ['', undefined, false],
+      ['↑', undefined, lit('Up')],
+      ['', undefined, false],
+    ],
+    [
+      ['←', undefined, lit('Left')],
+      ['↓', undefined, lit('Down')],
+      ['→', undefined, lit('Right')],
+    ],
+  ] as const;
+  const letter = (k: string) => [k, dirKeys.get(k), lit(k)] as const;
+  const letters = ['Q', 'W', 'E', 'A', 'S', 'D', 'Z', 'C'].filter(lit);
+  const pad = (n: string, d: Dir | undefined) => [n, d, !!d && padOn.has(d)] as const;
+  const diagrams = [
+    keyDiagram(
+      'arrows',
+      'Arrow keys',
+      arrowRows.map((r) => [...r]),
+    ),
+    letters.length
+      ? keyDiagram('letters', 'Letter keys', [
+          ['Q', 'W', 'E'].map(letter),
+          ['A', 'S', 'D'].map(letter),
+          ...(lit('Z') || lit('C') ? [['Z', '', 'C'].map((k) => (k ? letter(k) : (['', undefined, false] as const)))] : []),
+        ])
+      : null,
+    keyDiagram('pad', padOn.size > 4 ? 'Number pad: the corners go diagonally' : 'Number pad', [
+      [pad('7', 'up-left'), pad('8', 'up'), pad('9', 'up-right')],
+      [pad('4', 'left'), pad('5', undefined), pad('6', 'right')],
+      [pad('1', 'down-left'), pad('2', 'down'), pad('3', 'down-right')],
+    ]),
+  ];
+  // directions that do the same thing share a line
+  const merged: { arrows: string; keys: string[]; does: string }[] = [];
+  for (const m of moves) {
+    const same = merged.find((x) => x.does === m.does);
+    const keys = m.keys.filter((k) => !['Up', 'Down', 'Left', 'Right', 'Home', 'PgUp', 'End', 'PgDn'].includes(k));
+    if (m.pad && !m.keys.some((k) => ['Up', 'Down', 'Left', 'Right'].includes(k))) keys.unshift(`Pad ${DIR_PAD[m.dir]}`);
+    if (same) {
+      same.arrows += DIR_ARROW[m.dir];
+      same.keys.push(...keys);
+    } else merged.push({ arrows: DIR_ARROW[m.dir], keys, does: m.does });
+  }
+  const moveList = h(
     'div',
-    { class: 'kc-list' },
-    ...rows.map((r) => h('div', { class: 'kc-item' }, h('kbd', null, ARROWS[r.key] ? `${ARROWS[r.key]} ${r.key}` : r.key), h('span', null, cap(r.does)))),
+    { class: 'kc-moves' },
+    ...merged.map((m) =>
+      h(
+        'div',
+        { class: 'kc-item' },
+        h('kbd', { class: 'kc-arrows' }, m.arrows),
+        m.keys.length ? h('kbd', null, m.keys.join(' ')) : null,
+        h('span', null, cap(m.does)),
+      ),
+    ),
   );
+  const own = actions.filter((a) => !PLAYGAME_KEYS.some(([k]) => k === a.key));
+  // number keys in number order, in the places the number keys already hold
+  const digits = own.filter((a) => /^\d$/.test(a.key)).sort((a, b) => a.key.localeCompare(b.key));
+  own.forEach((a, i) => /^\d$/.test(a.key) && (own[i] = digits.shift()!));
+  const always = actions.filter((a) => PLAYGAME_KEYS.some(([k]) => k === a.key));
   return [
     sheet(
       8.5,
-      5.5,
+      4.75,
       'kc',
-      h('div', { class: 'kc-head' }, h('b', null, splitTitle(ctx.entry.title)[0].toUpperCase()), h('span', null, 'QUICK REFERENCE CARD')),
-      h('div', { class: 'kc-body' }, pad, list),
-      h('p', { class: 'kc-foot' }, 'Keys read from the game’s own character files. A joystick works too. Keep this card by your keyboard.'),
+      h(
+        'div',
+        { class: 'kc-head' },
+        h('b', { class: splitTitle(ctx.entry.title)[0].length > 16 ? 'long' : '' }, splitTitle(ctx.entry.title)[0].toUpperCase()),
+        h('span', null, 'QUICK REFERENCE CARD'),
+      ),
+      h(
+        'div',
+        { class: 'kc-body' },
+        h('section', { class: 'kc-move' }, h('h3', null, 'MOVING'), h('div', { class: 'kc-dias' }, ...diagrams)),
+        moveList,
+        h(
+          'section',
+          { class: `kc-act ${own.length > 9 ? 'two' : ''}` },
+          h('h3', null, 'ACTIONS'),
+          h('div', { class: 'kc-list' }, ...own.map((r) => h('div', { class: 'kc-item' }, h('kbd', null, r.key), h('span', null, cap(r.does))))),
+        ),
+      ),
+      h(
+        'div',
+        { class: 'kc-always' },
+        h('h3', null, 'EVERY GAME'),
+        ...always.map((r) => h('div', { class: 'kc-chip' }, h('kbd', null, r.key), h('span', null, cap(r.does)))),
+      ),
+      h(
+        'p',
+        { class: 'kc-foot' },
+        'Read from the game’s own character files. One key at a time: Game-Maker follows the last key pressed. A joystick works too.',
+      ),
     ),
   ];
 }
@@ -206,32 +303,39 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
       sandboxLogo('cat-logo'),
       h('div', null, h('b', null, 'GAMES CATALOG'), h('span', null, `${ISSUE_DATE} · Pittsburgh, PA · ${page}`)),
     );
-  return [
-    sheet(
-      8.5,
-      11,
-      'cat',
-      head('page 1'),
-      h('p', { class: 'cat-lead' }, 'Every Sandbox Software game is shareware: try it free, share it with friends, and register the ones you love.'),
-      h('div', { class: 'cat-games' }, ...entries),
+  const blocks: HTMLElement[] = [
+    h('p', { class: 'cat-lead' }, 'Every Sandbox Software game is shareware: try it free, share it with friends, and register the ones you love.'),
+    ...entries,
+    ...(coming.length
+      ? [h('div', { class: 'cat-coming' }, h('h3', null, 'COMING SOON'), ...coming.map((c) => h('p', null, h('b', null, c.title), ` (${c.when}). ${c.blurb}`)))]
+      : []),
+    h(
+      'div',
+      { class: 'cat-bbs' },
+      h('h3', null, 'GET THEM FIRST ON THE BBS'),
+      h('p', null, 'New games and updates go up on ', sandboxBanner(), ` before anywhere else. Call ${BBS_PHONE}, 14,400 baud.`),
     ),
-    sheet(
-      8.5,
-      11,
-      'cat',
-      head('page 2'),
-      coming.length
-        ? h('div', { class: 'cat-coming' }, h('h3', null, 'COMING SOON'), ...coming.map((c) => h('p', null, h('b', null, c.title), ` (${c.when}). ${c.blurb}`)))
-        : null,
-      h(
-        'div',
-        { class: 'cat-bbs' },
-        h('h3', null, 'GET THEM FIRST ON THE BBS'),
-        h('p', null, 'New games and updates go up on ', sandboxBanner(), ` before anywhere else. Call ${BBS_PHONE}, 14,400 baud.`),
-      ),
-      order,
-    ),
+    order,
   ];
+  // as many pages as the games need, measured on a real catalog page
+  const host = h('div', { class: 'gmb-measure' });
+  document.body.append(host);
+  let pages: HTMLElement[][];
+  try {
+    pages = paginate(blocks, () => {
+      const flow = h('div', { class: 'cat-flow' });
+      const page = sheet(8.5, 11, 'cat', head('page 1'), flow);
+      page.el.style.width = '850px';
+      host.replaceChildren(page.el);
+      const inner = page.el.firstElementChild as HTMLElement;
+      const cs = getComputedStyle(inner);
+      const top = flow.getBoundingClientRect().top - inner.getBoundingClientRect().top;
+      return { flow, limit: (inner.clientHeight - top - parseFloat(cs.paddingBottom)) * 0.97 };
+    });
+  } finally {
+    host.remove();
+  }
+  return pages.map((els, i) => sheet(8.5, 11, 'cat', head(`page ${i + 1} of ${pages.length}`), h('div', { class: 'cat-flow' }, ...els)));
 }
 
 // ------------------------------------------------------------------ BBS ad
@@ -250,7 +354,7 @@ export async function bbsAd(): Promise<Sheet[]> {
         ans('c-gray', '└──────────────────────────────────────────┘'),
         ans('c-cyan', 'CALL NOW!  ', h('b', { class: 'c-yellow' }, BBS_PHONE)),
         ans('c-white', '14,400 baud · 8-N-1 · open 24 hours'),
-        ans('c-green', '► Shareware files: the newest Sandbox games first'),
+        ans('c-green', '► Shareware files: new Sandbox games first'),
         ans('c-green', '► Message bases: hints, maps, high scores'),
         ans('c-green', '► Door games & online Game-Maker help'),
         ans('c-magenta', '► Upload your own Game-Maker games!'),

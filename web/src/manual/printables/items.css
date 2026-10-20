@@ -183,7 +183,9 @@
 
 /* ---------------------------------------------------------------- key card */
 .pp-sheet.pp-kc {
-  padding: 3.2cqw 3.6cqw;
+  display: flex;
+  flex-direction: column;
+  padding: 3.2cqw 3.6cqw 2cqw;
   background: var(--grain, none), linear-gradient(#fbf6e6, #efe5c8);
   font:
     1.75cqw/1.3 Helvetica,
@@ -219,57 +221,125 @@
 
 .kc-body {
   display: grid;
-  grid-template-columns: 0.9fr 1.3fr;
-  gap: 2.4cqw;
+  grid-template-columns: 1.05fr 1fr;
+  grid-template-areas: 'move act' 'list list';
+  gap: 1.4cqw 2.6cqw;
 }
 
-.kc-keys {
+.kc-move {
+  grid-area: move;
+}
+
+.kc-act {
+  grid-area: act;
+}
+
+.kc-head b.long {
+  font-size: 2.8cqw;
+}
+
+.kc-head span {
+  white-space: nowrap;
+}
+
+.kc-body h3,
+.kc-always h3 {
+  margin: 0 0 1cqw;
+  padding-bottom: 0.4cqw;
+  border-bottom: 0.3cqw solid #18150f;
+  font:
+    900 1.7cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.14em;
+}
+
+.kc-dias {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.6cqw;
+  margin-bottom: 1.2cqw;
+}
+
+.kc-dia {
+  margin: 0;
+  text-align: center;
+}
+
+.kc-dia-keys {
+  display: inline-flex;
   flex-direction: column;
-  gap: 0.6cqw;
+  gap: 0.45cqw;
 }
 
-.kc-row {
+.kc-dia-row {
   display: flex;
-  gap: 0.5cqw;
+  gap: 0.45cqw;
+  justify-content: center;
 }
 
-.kc-key {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 0.7cqw 0;
-  border: 0.15cqw solid #6b6250;
+.kc-cap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3.8cqw;
+  height: 3.8cqw;
+  box-sizing: border-box;
+  border: 0.15cqw solid #8a8270;
   border-bottom-width: 0.45cqw;
   border-radius: 0.5cqw;
   background: #fffdf4;
   color: #8a8270;
   font:
-    700 1.35cqw/1 Helvetica,
+    700 1.7cqw/1 Helvetica,
     Arial,
     sans-serif;
-  text-align: center;
-  overflow: hidden;
 }
 
-.kc-key.mid {
-  flex-grow: 1.5;
+.kc-cap.gap {
+  visibility: hidden;
 }
 
-.kc-key.wide {
-  flex-grow: 5;
-}
-
-.kc-key.on {
+.kc-cap.on {
   border-color: #18150f;
   background: #f2b632;
   color: #18150f;
 }
 
+.kc-cap i {
+  position: absolute;
+  right: 0.3cqw;
+  bottom: 0.1cqw;
+  font:
+    700 1.3cqw/1 Arial,
+    sans-serif;
+  font-style: normal;
+}
+
+.kc-dia figcaption {
+  margin-top: 0.6cqw;
+  font:
+    italic 1.2cqw/1.2 Georgia,
+    serif;
+  max-width: 15cqw;
+}
+
 .kc-list {
-  columns: 2;
-  column-gap: 2cqw;
-  font-size: 1.3cqw;
+  font-size: 1.35cqw;
   line-height: 1.25;
+}
+
+.kc-act.two .kc-list {
+  columns: 2;
+  column-gap: 1.6cqw;
+}
+
+.kc-moves {
+  grid-area: list;
+  columns: 2;
+  column-gap: 2.6cqw;
+  font-size: 1.35cqw;
 }
 
 .kc-item {
@@ -281,28 +351,52 @@
   border-bottom: 0.12cqw solid #c9bd9c;
 }
 
-.kc-list kbd {
+.kc-item kbd,
+.kc-chip kbd {
   flex: none;
-  min-width: 4.5cqw;
+  min-width: 3.4cqw;
   padding: 0 0.5cqw;
   border: 0.15cqw solid #18150f;
   border-bottom-width: 0.35cqw;
   border-radius: 0.4cqw;
   background: #fff;
   font:
-    700 1.25cqw/1.4 'Courier New',
+    700 1.3cqw/1.4 'Courier New',
     monospace;
   text-align: center;
   white-space: nowrap;
 }
 
+.kc-item kbd.kc-arrows {
+  background: #f2b632;
+  font-family: Arial, sans-serif;
+}
+
+.kc-always {
+  margin-top: auto;
+  padding-top: 1.6cqw;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6cqw 1.6cqw;
+  align-items: baseline;
+  font-size: 1.3cqw;
+}
+
+.kc-always h3 {
+  width: 100%;
+  margin-bottom: 0.4cqw;
+}
+
+.kc-chip {
+  display: flex;
+  gap: 0.5cqw;
+  align-items: baseline;
+}
+
 .kc-foot {
-  position: absolute;
-  left: 3.6cqw;
-  bottom: 1.6cqw;
-  margin: 0;
+  margin: 1cqw 0 0;
   font:
-    italic 1.5cqw Georgia,
+    italic 1.4cqw Georgia,
     serif;
   opacity: 0.8;
 }
@@ -347,10 +441,10 @@
 
 .cat-game {
   display: grid;
-  grid-template-columns: 30% 1fr;
+  grid-template-columns: 26% 1fr;
   gap: 2.4cqw;
-  margin: 0 0 2.4cqw;
-  padding-bottom: 2cqw;
+  margin: 0 0 1.8cqw;
+  padding-bottom: 1.6cqw;
   border-bottom: 0.2cqw dashed #6b6250;
 }
 
@@ -468,7 +562,8 @@
     'Lucida Console',
     monospace;
   text-align: center;
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .ansi.big {

@@ -6,7 +6,15 @@
     "Down": "Walk down / push off on the sled",
     "Left": "Walk left / lean left on the sled",
     "Right": "Walk right / lean right on the sled",
-    "F2": "Count the coffee can (money, warmth, lives)"
+    "F2": "Count the coffee can (money, warmth, lives)",
+    "Q": "Walk up-left (sled: brake and steer left)",
+    "E": "Walk up-right (sled: brake and steer right)",
+    "Home": "Walk up-left",
+    "PgUp": "Walk up-right",
+    "End": "Walk down-left",
+    "PgDn": "Walk down-right",
+    "F3": "Music on / off",
+    "F4": "Sound effects on / off"
   },
   "items": [
     {

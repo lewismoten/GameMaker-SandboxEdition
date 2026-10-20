@@ -165,7 +165,7 @@ export function splitKeys(
     if (!dir && LETTER_DIR[key]) {
       const same = dirSig.get(b.sig);
       if (same) dir = same;
-      else if (dirOfMotion(Math.sign(b.dx), Math.sign(b.dy)) === LETTER_DIR[key] && !overrides[key]) dir = LETTER_DIR[key];
+      else if (dirOfMotion(Math.sign(b.dx), Math.sign(b.dy)) === LETTER_DIR[key]) dir = LETTER_DIR[key];
     }
     if (!dir) {
       other.push(b.name);
