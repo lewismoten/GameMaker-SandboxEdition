@@ -71,7 +71,7 @@ export const ROUTES: Record<string, Order[]> = {
     { until: 'has the shoes', check: (s) => s.w.ci.meter[CTR.props] > 1 },
     { walk: 44 },
     { trick: 'space', after: 20 },
-    { walk: 49 },
+    { walk: 50 },
     { trick: 'space', after: 20 },
     { walk: 84 },
   ],

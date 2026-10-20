@@ -144,6 +144,14 @@ export function parkTiles(): Tiles {
     })(),
   );
   t.wall(
+    'rock',
+    (() => {
+      const p = water(true, 0, sky(3));
+      blob(p, 10, 13, 10, 8, r('stone'), 0, 4);
+      return p;
+    })(),
+  );
+  t.wall(
     'bankTop',
     (() => {
       const p = copy(t.pic('bank'));
@@ -455,25 +463,25 @@ export function park(): Level {
   m.mon(34, 37, 'askSit');
   m.set(32, 38, 'lampTop').set(32, 39, 'lamp');
 
-  // The duck pond and the covered bridge.
-  const p0 = 42;
+  // The duck pond and the covered bridge. A rock by the near bank lets a wet dog out of
+  // the water; the far bank is too high to climb out of it, so the geese must be faced.
+  const p0 = 43;
   const p1 = 56;
   m.rect(p0, 39, p1 - p0 + 1, 1, (x) => `surface_${x % 2}`);
   m.rect(p0, G, p1 - p0 + 1, 4, (x, y) => `pond_${(x + y) % 2}`);
   m.rect(p0, G + 4, p1 - p0 + 1, 1, 'pondBed');
-  m.set(p0 - 1, G, 'bankTop').rect(p0 - 1, G + 1, 1, 4, 'bank');
-  // the far bank is too high to climb out of the water
+  m.set(p0 - 1, 39, 'rock').rect(p0 - 1, G, 1, 5, 'bank');
   m.rect(p1 + 1, 37, 2, 3, 'bank');
   m.rect(p1 + 1, 36, 2, 1, 'bankTop');
   m.rect(p1 + 1, G, 2, 5, 'bank');
   // stairs up, the bridge (its walkway is one block high), stairs down
-  for (let i = 0; i < 4; i++) m.rect(p0 - 4 + i, 39 - i, 1, i + 1, 'stair');
-  m.rect(p0, 36, p1 - p0 + 1, 1, 'bridge');
-  m.rect(p0, 35, p1 - p0 + 1, 1, 'bridgeInside');
-  m.rect(p0, 34, p1 - p0 + 3, 1, 'bridgeRoof');
+  for (let i = 0; i < 3; i++) m.rect(p0 - 4 + i, 39 - i, 1, i + 1, 'stair');
+  m.rect(p0 - 1, 37, p1 - p0 + 2, 1, 'bridge');
+  m.rect(p0 - 1, 36, p1 - p0 + 2, 1, 'bridgeInside');
+  m.rect(p0 - 1, 35, p1 - p0 + 1, 1, 'bridgeRoof');
   for (let i = 0; i < 4; i++) m.rect(p1 + 3 + i, 36 + i, 1, 4 - i, 'stair');
-  m.mon(p0 + 4, 35, 'goose');
-  m.mon(p0 + 9, 35, 'goose');
+  m.mon(p0 + 4, 36, 'goose');
+  m.mon(p0 + 9, 36, 'goose');
   m.mon(p0 + 2, 39, 'duck');
   m.mon(p0 + 8, 39, 'duck');
 
@@ -518,11 +526,11 @@ export function park(): Level {
     [29, 30],
     [30, 30],
     [33, 38],
-    [p0 + 2, 35],
-    [p0 + 6, 35],
-    [p0 + 7, 35],
-    [p0 + 11, 35],
-    [p0 + 12, 35],
+    [p0 + 2, 36],
+    [p0 + 6, 36],
+    [p0 + 7, 36],
+    [p0 + 11, 36],
+    [p0 + 12, 36],
     [p1 + 1, 35],
     [p1 + 2, 35],
     [63, 38],
