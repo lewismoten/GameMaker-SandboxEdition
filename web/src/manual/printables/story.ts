@@ -18,7 +18,7 @@ async function mapPanel(ctx: PrintContext, p: MapPanel, start: number): Promise<
   });
   return h(
     'figure',
-    { class: 'map-panel' },
+    { class: 'map-panel', style: `--ar:${(p.w / p.h).toFixed(4)}` },
     h('div', { class: 'map-pic' }, src ? h('img', { src, alt: p.caption ?? p.map, width: p.w * 20, height: p.h * 20 }) : null, ...marks),
     p.caption ? h('figcaption', null, p.caption) : null,
   );
@@ -44,7 +44,7 @@ async function mapItem(ctx: PrintContext, it: MapItem): Promise<Sheet[]> {
       hh,
       `map ${it.landscape ? 'land' : ''}`,
       h('header', { class: 'map-head' }, h('h2', null, it.heading ?? it.title), it.intro ? h('p', null, it.intro) : null),
-      h('div', { class: `map-panels n${it.panels.length}` }, ...panels),
+      h('div', { class: `map-panels n${it.panels.length} c${it.columns ?? 2}` }, ...panels),
       key.length ? h('ol', { class: 'map-key' }, ...key) : null,
       it.legend?.length ? h('div', { class: 'map-legend' }, ...it.legend.map((l) => h('p', null, l))) : null,
       h('div', { class: 'map-compass', 'aria-hidden': 'true' }, 'N'),

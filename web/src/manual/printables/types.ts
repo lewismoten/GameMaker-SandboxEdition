@@ -47,7 +47,9 @@ export interface MapItem extends ItemBase {
   kind: 'map';
   heading?: string;
   intro?: string;
+  /** The first panel spans the sheet; the rest sit `columns` to a row (default 2). */
   panels: MapPanel[];
+  columns?: 1 | 2;
   /** Footnotes under the map. */
   legend?: string[];
   landscape?: boolean;

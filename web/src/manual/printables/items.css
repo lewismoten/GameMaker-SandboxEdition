@@ -903,14 +903,18 @@
   gap: 2cqw;
 }
 
-.map-panels.n2,
-.map-panels.n3,
-.map-panels.n4 {
+.map-panels.c2:not(.n1) {
   grid-template-columns: 1fr 1fr;
 }
 
-.map-panels.n3 > :first-child {
+.map-panels.c2:not(.n1):not(.n2) > :first-child {
   grid-column: span 2;
+}
+
+/* a tall map never runs off the sheet */
+.map-panels.n1 .map-panel {
+  width: min(100%, calc(var(--ar) * 100cqw));
+  margin: 0 auto;
 }
 
 .map-panel {
