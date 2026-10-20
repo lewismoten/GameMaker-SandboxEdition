@@ -10,6 +10,7 @@ import { openDosManual } from '../manual/dosManual';
 import { renderShot } from './boxArt';
 import { installCrtWarp } from './crtWarp';
 import { sevenSegment, floppyDrive, cdDrive, openTray } from './caseParts';
+import { keyboard } from './keyboard';
 import { snowyWindow } from './snowWindow';
 import { loadCatalog } from '../project/files';
 import { Project } from '../editor/project';
@@ -134,7 +135,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
-        h('div', { class: 'keyboard', title: 'Keyboard: click, then type', onclick: () => void power(true) }),
+        keyboard(() => void power(true)),
       ),
       h(
         'div',
