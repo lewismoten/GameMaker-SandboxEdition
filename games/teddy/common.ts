@@ -4,6 +4,9 @@ import { CTR, MON, POWER } from './ids';
 import { Bestiary, FLIP } from './mons';
 import { FX } from './fx';
 import { GWIN } from './gwin';
+import { Pixels } from '../kit/pixels';
+import { over, shadeAt, sprite } from './draw';
+import { c, dirt, r } from './tiles';
 
 export function commonMonsters(b: Bestiary): void {
   for (const [name, px] of Object.entries(FX)) {
@@ -203,5 +206,25 @@ export function commonMonsters(b: Bestiary): void {
     },
     MON.gwinGone,
   );
+  // Soft dirt with paw prints (dig it out), and bones buried with one end sticking out.
+  const soft = new Pixels(20, 20);
+  over(soft, dirt(31));
+  for (let y = 0; y < 6; y++) for (let x = 0; x < 20; x++) soft.set(x, y, shadeAt(r('dirt'), 2, 4, 1 - y / 6, x, y));
+  for (const [x, y] of [
+    [4, 9],
+    [13, 12],
+  ])
+    soft
+      .rect(x, y, 3, 2, c('dirt', 0))
+      .set(x - 1, y - 2, c('dirt', 0))
+      .set(x + 1, y - 3, c('dirt', 0))
+      .set(x + 3, y - 2, c('dirt', 0));
+  b.pic('soft', soft, { solid: 15 });
+  // A bone sticking out of the lawn.
+  b.pic('buried', sprite(['oo.....', 'owwo...', 'owwwo..', '.owwwo.', '..owwwo', '...owwo', '....oo.'], { o: c('ink', 0), w: c('fur', 2) }, 7, 0));
+  b.pic('bonePop', b.mb.pic('bone1'));
+  b.add('plug', { pics: [['soft', 50]], power: POWER.plug, becomes: 'puff', upscore: 10 });
+  b.add('buried', { pics: [['buried', 50]], power: POWER.plug, becomes: 'bonePop', upscore: 10 });
+  b.add('bonePop', { pics: [['bonePop', 2]], power: POWER.pickup, path: [[0, -1, 4]], end: -1, becomes: 'bone' });
   void FLIP;
 }

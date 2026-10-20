@@ -2,7 +2,7 @@
 // fetching: up the garden boxes, along the clothesline, past the squirrel and Gwin's
 // garbage-can mess, up the old oak for Doc Leo's hat, and under the back fence.
 import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, over, shadeAt, sprite } from './draw';
+import { blob, micro } from './draw';
 import { CRITTERS } from './critters';
 import { FLIP } from './mons';
 import { POWER } from './ids';
@@ -304,23 +304,6 @@ export function backyardTiles(): Tiles {
 export function backyardBeasts() {
   const b = newBestiary();
   for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('squirrel')) b.pic(name, px, { hp: -8 });
-  // Soft dirt by the fence, with paw prints: dig it out.
-  const soft = new Pixels(20, 20);
-  over(soft, dirt(31));
-  for (let y = 0; y < 6; y++) for (let x = 0; x < 20; x++) soft.set(x, y, shadeAt(r('dirt'), 2, 4, 1 - y / 6, x, y));
-  for (const [x, y] of [
-    [4, 9],
-    [13, 12],
-  ])
-    soft
-      .rect(x, y, 3, 2, c('dirt', 0))
-      .set(x - 1, y - 2, c('dirt', 0))
-      .set(x + 1, y - 3, c('dirt', 0))
-      .set(x + 3, y - 2, c('dirt', 0));
-  b.pic('soft', soft, { solid: 15 });
-  // A bone sticking out of the lawn.
-  b.pic('buried', sprite(['oo.....', 'owwo...', 'owwwo..', '.owwwo.', '..owwwo', '...owwo', '....oo.'], { o: c('ink', 0), w: c('fur', 2) }, 7, 0));
-  b.pic('bonePop', b.mb.pic('bone1'));
   b.add('squirrel', {
     pics: [
       ['squirrel1', 3],
@@ -343,9 +326,6 @@ export function backyardBeasts() {
     ],
     end: -1,
   });
-  b.add('plug', { pics: [['soft', 50]], power: POWER.plug, becomes: 'puff', upscore: 10 });
-  b.add('buried', { pics: [['buried', 50]], power: POWER.plug, becomes: 'bonePop', upscore: 10 });
-  b.add('bonePop', { pics: [['bonePop', 2]], power: POWER.pickup, path: [[0, -1, 4]], end: -1, becomes: 'bone' });
   b.add('gwinMess', {
     pics: [
       ['gwin1', 3],
@@ -487,7 +467,7 @@ export function backyard(): Level {
     [70, 41],
     [72, 39],
   ];
-  for (const [x, y] of treats) m.mon(x, y, 'treat');
+  for (const [x, y] of treats) m.treat(x, y);
   m.mon(21, GROUND, 'buried');
   m.mon(40, GROUND, 'buried');
   m.mon(61, GROUND, 'buried');

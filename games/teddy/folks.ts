@@ -86,6 +86,18 @@ export function balloonBox(phase: number): Pixels {
   return p;
 }
 
+/** A costume piece caught on a bunch of balloons. */
+export function balloonProp(prop: Pixels, phase: number): Pixels {
+  const p = new Pixels(20, 20, 255);
+  const bob = phase ? 1 : 0;
+  p.line(6, 8 + bob, 9, 12, P.c('ink', 1)).line(14, 8 + bob, 11, 12, P.c('ink', 1));
+  blob(p, 5, 4 + bob, 3.4, 4, P.r('pink'), 1, 3);
+  blob(p, 15, 4 + bob, 3.4, 4, P.r('green'), 0, 2);
+  blob(p, 10, 3 + bob, 3.4, 4, P.r('purple'), 1, 3);
+  p.blit(prop.crop(0, 9, 20, 11), 0, 9 + bob, 255);
+  return p;
+}
+
 /** A cardboard box sitting on the ground (or falling). */
 export function crate(): Pixels {
   const p = new Pixels(20, 20, 255);

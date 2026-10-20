@@ -3,6 +3,9 @@
 import { newMap, reindexMonsters, MLEN, LASTMM, type GameMap } from '../../web/src/formats/map';
 import type { BlockSet } from './blockset';
 import type { Bestiary } from './mons';
+import { Pixels } from '../kit/pixels';
+import { FX } from './fx';
+import { CTR } from './ids';
 
 export type Cell = string | { tile?: string; mon?: string; mark?: string };
 export type Legend = Record<string, Cell>;
@@ -39,6 +42,30 @@ export class LevelMap {
     if (this.monCount >= LASTMM) throw new Error('Too many monsters');
     this.map.monsters[this.monCount++] = { monnum: this.beasts.id(name), status: 0, xtra: 0, curx: x, cury: y, extra: 0 };
     return this;
+  }
+
+  /**
+   * A treat lying in front of whatever block is at (x, y): treats are background blocks
+   * (so barks and paws fly past them), made on demand for each block they sit on.
+   */
+  treat(x: number, y: number, kind: 'treat' | 'bone' = 'treat'): this {
+    const base = this.get(x, y);
+    const name = `${kind}~${base}`;
+    if (!this.bs.has(name)) {
+      const p = new Pixels(20, 20);
+      p.px.set(this.bs.pic(base).px);
+      p.blit(FX[`${kind}1`], 0, 0, 255);
+      const d = this.bs.def(base);
+      if (d.solid) throw new Error(`A ${kind} inside solid ${base} at ${x},${y}`);
+      this.bs.add(name, p, {
+        ...d,
+        ...(kind === 'treat' ? { effect: CTR.treats, eamt: 1, score: 10 } : { hp: 25, score: 50 }),
+        touch: base,
+        next: undefined,
+        ntime: 0,
+      });
+    }
+    return this.set(x, y, name);
   }
 
   get monsters(): number {

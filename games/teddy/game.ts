@@ -3,8 +3,9 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../web/src/formats/game';
 import type { Level } from './level';
 import { backyard } from './level1';
+import { street } from './level2';
 
-export const LEVELS: (() => Level)[] = [backyard];
+export const LEVELS: (() => Level)[] = [backyard, street];
 
 /** Songs per level (CMF file names), in level order. */
 export const LEVEL_SONGS = ['backyard.cmf', 'street.cmf', 'park.cmf', 'city.cmf', 'klub.cmf'];
