@@ -17,6 +17,8 @@ export interface RunOptions {
   joystick?: Session['joystick'];
   /** Play a .rec demo immediately instead of showing the menu. */
   playback?: Uint8Array;
+  /** Called every frame while a level is being played. */
+  onFrame?: Session['onFrame'];
 }
 
 export function gameNameOf(gamFile: string): string {
@@ -45,6 +47,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     musicOn: m.audio.musicEnabled,
     speakerOnly: !!opts.speakerOnly,
     joystick: opts.joystick,
+    onFrame: opts.onFrame,
   };
   m.keyboard.attach();
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
