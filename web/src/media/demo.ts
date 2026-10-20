@@ -179,7 +179,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
 }
 
 /** "▶ Watch demo" for a game card: plays the title screen's demo with its music and sounds. */
-export function demoButton(title: string, load: () => Promise<GameFiles>, gam: string | undefined): HTMLElement | null {
+export function demoButton(title: string, load: () => Promise<GameFiles>, gam: string | null | undefined): HTMLElement | null {
   if (!gam) return null;
   return h(
     'button',
