@@ -36,6 +36,17 @@ export function output(ctx: BaseAudioContext): AudioNode {
     g.gain.value = volume;
     g.connect(ctx.destination);
     outputs.set(ctx, g);
+    for (const f of taps) f(ctx, g);
   }
   return g;
+}
+
+type Tap = (ctx: BaseAudioContext, node: AudioNode) => void;
+const taps = new Set<Tap>();
+
+/** Calls `f` for every context's output, now and as new ones appear (for recording the sound). */
+export function tapOutputs(f: Tap): () => void {
+  for (const [ctx, g] of outputs) f(ctx, g);
+  taps.add(f);
+  return () => taps.delete(f);
 }
