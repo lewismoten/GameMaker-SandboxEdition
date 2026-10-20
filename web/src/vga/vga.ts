@@ -63,6 +63,7 @@ export class Vga {
   private limit = [0, 0, SIZEX - 1, SIZEY - 1];
   private cursorShown = false;
   private listeners: [EventTarget, string, EventListener][] = [];
+  private attachTimer: ReturnType<typeof setTimeout>;
 
   constructor(readonly holder: HTMLElement) {
     this.canvas = document.createElement('canvas');
@@ -98,7 +99,8 @@ export class Vga {
     });
     on(this.canvas, 'pointerup', move);
     on(this.canvas, 'contextmenu', (e) => e.preventDefault());
-    this.keyboard.attach(window);
+    // Not during the key press that started the graphics (it would be read twice).
+    this.attachTimer = setTimeout(() => this.keyboard.attach(window));
     const loop = () => {
       if (this.dirty) this.render();
       this.raf = requestAnimationFrame(loop);
@@ -108,6 +110,7 @@ export class Vga {
 
   destroy(): void {
     cancelAnimationFrame(this.raf);
+    clearTimeout(this.attachTimer);
     this.observer.disconnect();
     this.keyboard.detach();
     for (const [t, type, f] of this.listeners) t.removeEventListener(type, f);
