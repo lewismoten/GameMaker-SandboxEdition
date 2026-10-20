@@ -324,7 +324,7 @@ export function jamieHill(book: BlockBook) {
   );
   const finishY = y0 + rows.findIndex((r) => r.includes('X'));
   // the corner signs at the top and the bottom of the run
-  m.street(x0 + 2, y0 + 1, 'stLeonJamie');
+  m.street(x0 + 7, y0 + 1, 'stLeonJamie');
   m.street(x0 + 18, finishY - 2, 'stJamieBowden');
   for (let x = x0 + 2; x < x0 + 22; x++) m.link(x, finishY, 'next', 0, 0);
   // kids on toboggans cutting across

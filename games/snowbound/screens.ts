@@ -227,8 +227,8 @@ export function buildScreens(
 
   const n2 = paper('MOUNTAIN COURIER', 'PAGE 6       CLASSIFIEDS');
   n2.rect(10, 42, 196, 148, c('paper', 4)).frame(10, 42, 196, 148, c('newsink', 0)).frame(12, 44, 192, 144, c('newsink', 0));
-  text(n2, 22, 52, 'MAKE YOUR OWN', c('newsink', 0), 2);
-  text(n2, 22, 70, 'VIDEO GAMES!', c('newsink', 0), 2);
+  text(n2, 22, 52, 'DESIGN YOUR', c('newsink', 0), 2);
+  text(n2, 22, 70, 'OWN GAMES!', c('newsink', 0), 2);
   // the pink box
   const box = (p: Pixels, x: number, y: number, s: number) => {
     p.rect(x, y, 40 * s, 52 * s, c('pink', 3))
@@ -260,12 +260,11 @@ export function buildScreens(
     'ON LEOTA ST.',
     '',
     'LOST: ONE MITTEN,',
-    'BLUE. BOTTOM OF',
-    'JAMIE ST HILL.',
+    'BLUE. JAMIE ST.',
     '',
-    'TIMEOUT ARCADE',
-    'LAVALE MALL: NEW',
-    'GAMES THIS WEEK!',
+    'TIMEOUT ARCADE,',
+    'LAVALE MALL:',
+    'NEW GAMES IN!',
   ]);
   n2.rect(212, 122, 98, 68, c('paper', 4)).frame(212, 122, 98, 68, c('coat', 2));
   body(n2, 216, 126, 92, ['NOTICE:', 'THE PRICE OF', 'GAME-MAKER GOES', 'UP TO $129 IN', 'JANUARY.', '', 'BUY BEFORE', 'CHRISTMAS!']);

@@ -391,7 +391,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   streetSign('stGaleLeon', 'GALE ST', 'LEON DR');
   streetSign('stLeonJamie', 'LEON DR', 'JAMIE ST');
   streetSign('stJamieBowden', 'JAMIE ST', 'BOWDEN DR');
-  streetSign('stBowdenLaVale', 'BOWDEN DR', 'LAVALE >', 'siding');
+  streetSign('stBowdenLaVale', 'BOWDEN DR', 'TO LAVALE', 'siding');
 
   // Parked cars buried in the mall lot (two blocks: rear, front).
   const parked = (front: boolean) => {
@@ -617,7 +617,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   micro(arcadeDoor, 6, 7, '25', c('gold', 3));
   arcadeDoor.rect(11, 8, 2, 3, c('grey', 4));
   arcadeDoor.rect(15, 11, 1, 4, c('concrete', 3));
-  book.add('arcadeDoor', arcadeDoor, { solid: SOLID, effect: MONEY, eamt: -1, hp: 5, score: 250 });
+  book.add('arcadeDoor', arcadeDoor, { solid: SOLID, effect: MONEY, eamt: -1, hp: 5, score: 100 });
 
   // ---------- the Jamie Street sled run ----------
   const slope = (seed: number, tracks: boolean, steep = 0) => {
