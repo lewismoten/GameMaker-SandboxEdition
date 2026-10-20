@@ -236,6 +236,7 @@ export function buildGame(): Built {
           level: sec.level,
           shard: world.shard,
           module: world.module,
+          biome: world.biome,
           features: world.kind === 'rover' ? { rover: true } : undefined,
         };
         let p: PlanetResult;

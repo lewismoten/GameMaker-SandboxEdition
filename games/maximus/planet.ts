@@ -26,6 +26,8 @@ export interface PlanetSpec {
   shard?: number;
   module?: number;
   /** Extra hazards etc. */
+  /** The world's biome: decides what grows on it. */
+  biome?: string;
   features?: { lakes?: boolean; islands?: number; winds?: boolean; fields?: boolean; caves?: number; ruins?: boolean; rover?: boolean };
 }
 
@@ -354,7 +356,8 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   const ground: Run[] = [];
   if (f.lakes) {
     const dips: number[] = [];
-    for (let i = 0; i < W; i++) if (h[i] >= Math.max(...h) - 1 && Math.abs(i - ax) > 8 && Math.abs(i - ax) < W - 8) dips.push(i);
+    const depth = spec.biome === 'lava' || spec.biome === 'toxic' ? 3 : 1;
+    for (let i = 0; i < W; i++) if (h[i] >= Math.max(...h) - depth && Math.abs(i - ax) > 8 && Math.abs(i - ax) < W - 8) dips.push(i);
     for (const i of dips) {
       if (g.isLocked(i, h[i])) continue;
       g.set(i, h[i], id('liquid:top'));
@@ -363,6 +366,19 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   }
 
   // --- surface dressing
+  const FLORA: Record<string, [string, number][]> = {
+    verdant: [['tree', 8], ['bush:0', 5], ['bush:1', 4], ['grass:0', 5], ['grass:1', 4], ['flowers', 5], ['sapling', 3], ['boulder', 2], ['pillar', 1]],
+    autumn: [['tree', 9], ['bush:0', 4], ['stump', 4], ['grass:1', 4], ['mushroom', 3], ['sapling', 2], ['boulder', 2], ['pillar', 2]],
+    jungle: [['tree', 14], ['bush:0', 6], ['bush:1', 6], ['flowers', 4], ['grass:0', 5], ['thorns', 2], ['totem', 1]],
+    desert: [['cactus', 7], ['boulder', 4], ['skulls', 3], ['totem', 2], ['pillar', 3], ['grass:1', 2], ['thorns', 2]],
+    ice: [['crystals', 6], ['boulder', 4], ['sapling', 3], ['tree', 2], ['totem', 1], ['skulls', 1]],
+    lava: [['boulder', 6], ['crystals', 4], ['skulls', 3], ['totem', 2], ['stump', 2], ['thorns', 2]],
+    toxic: [['mushroom', 5], ['thorns', 4], ['flowers', 4], ['bush:1', 4], ['grass:0', 3], ['skulls', 1]],
+    crystal: [['crystals', 10], ['totem', 3], ['boulder', 3], ['pillar', 2], ['sapling', 1]],
+    fungal: [['mushroom', 10], ['sapling', 3], ['bush:1', 3], ['flowers', 2], ['stump', 2]],
+    ash: [['stump', 5], ['skulls', 4], ['boulder', 4], ['totem', 2], ['pillar', 2], ['thorns', 2]],
+  };
+  const flora = FLORA[spec.biome ?? 'verdant'] ?? FLORA.verdant;
   const sky: Spot[] = [];
   const treasure: Spot[] = [];
   for (let xx = 0; xx < W; xx++) {
@@ -370,24 +386,32 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     const dist = Math.min(Math.abs(xx - ax), W - Math.abs(xx - ax));
     if (dist < 5 || g.get(xx, h[xx]) === id('liquid:top')) continue;
     if (fam('cave').includes(g.get(xx, y)) || g.get(xx, y) !== id('air')) continue;
-    const k = r();
     const flatRight = h[(xx + 1) % W] === h[xx] && g.get(xx + 1, y) === id('air');
-    if (k < 0.07 && flatRight && dist > 6) {
+    // what grows here depends on the world: a weighted pick from its flora
+    const roll = r() * 100;
+    let acc = 0;
+    let what = '';
+    for (const [name, wgt] of flora) {
+      acc += wgt;
+      if (roll < acc) {
+        what = name;
+        break;
+      }
+    }
+    if (what === 'tree' && flatRight && dist > 6) {
       g.set(xx, y, id('tree:trunk'));
       g.set(xx, y - 1, id('tree:bl'));
       g.set(xx + 1, y - 1, id('tree:br'));
       g.set(xx, y - 2, id('tree:tl'));
       g.set(xx + 1, y - 2, id('tree:tr'));
       xx++;
-    } else if (k < 0.2) g.set(xx, y, pickOne([id('bush:0'), id('bush:1'), id('grass:0'), id('grass:1'), id('flowers'), id('sapling')]));
-    else if (k < 0.215) g.set(xx, y, pickOne([id('cactus'), id('stump'), id('skulls'), id('mushroom'), id('totem')]));
-    else if (k < 0.24) g.set(xx, y, id('boulder'));
-    else if (k < 0.27) g.set(xx, y, id('crystals'));
-    else if (k < 0.29 && f.ruins) {
+    } else if (what === 'pillar' && f.ruins) {
       g.set(xx, y, id('pillar:base'));
       g.set(xx, y - 1, id('pillar:mid'));
       g.set(xx, y - 2, id('pillar:top'));
-    } else if (k < 0.31 && !f.rover) g.set(xx, y, id('thorns'));
+    } else if (what === 'thorns') {
+      if (!f.rover) g.set(xx, y, id('thorns'));
+    } else if (what && what !== 'tree' && what !== 'pillar') g.set(xx, y, id(what));
   }
   // ground runs (for walkers): flat stretches with air above
   {
