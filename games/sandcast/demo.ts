@@ -1,10 +1,10 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. Teddy picks
 // up his shovel, digs into the ring of dunes around Anthill Keep, flings sand at the ants
-// and scoops up some sand. Recorded from a real run (ticks of 1/18.2 s between key events;
+// scoops up some sand, then does his tricks. Recorded from a real run (ticks of 1/18.2 s between key events;
 // a ^ marks a key being let go).
 import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
 
-const SCAN: Record<string, number> = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, p: 0x19, enter: 0x1c, esc: 0x01 };
+const SCAN: Record<string, number> = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, p: 0x19, enter: 0x1c, esc: 0x01, s: 0x1f, t: 0x14, r: 0x13, j: 0x24, d: 0x20 };
 
 const EVENTS: [number, string][] = [
   [20, 'up'],
@@ -59,7 +59,18 @@ const EVENTS: [number, string][] = [
   [1, 'left^'],
   [0, 'space'],
   [2, 'space^'],
-  [40, 'esc'],
+  // Then he shows off his tricks.
+  [12, 't'],
+  [1, 't^'],
+  [26, 's'],
+  [1, 's^'],
+  [44, 'r'],
+  [1, 'r^'],
+  [30, 'j'],
+  [1, 'j^'],
+  [20, 'd'],
+  [1, 'd^'],
+  [70, 'esc'],
   [2, 'esc^'],
 ];
 
