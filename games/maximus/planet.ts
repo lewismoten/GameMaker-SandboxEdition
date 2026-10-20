@@ -56,17 +56,26 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   const fam = (n: string) => (n === 'cave' ? [s.id('cave:0'), s.id('cave:1'), s.id('cave:2')] : s.family(n));
   const g = new Grid();
   const bbl = s.blocks;
-  const f = { lakes: true, islands: 4, winds: false, fields: true, caves: 8, ruins: true, rover: false, ...spec.features };
+  // every world draws its own character: plains, highlands, sky-islands or hollow worlds
+  const styles = [
+    { name: 'rolling', hills: 1, base: 36, islands: 4, caves: 8 },
+    { name: 'plains', hills: 0.35, base: 38, islands: 3, caves: 7 },
+    { name: 'highlands', hills: 1.7, base: 34, islands: 2, caves: 8 },
+    { name: 'skyislands', hills: 0.8, base: 44, islands: 9, caves: 5 },
+    { name: 'hollow', hills: 0.9, base: 32, islands: 2, caves: 13 },
+  ];
+  const style = styles[Math.floor(r() * styles.length)];
+  const f = { lakes: true, islands: style.islands, winds: false, fields: true, caves: style.caves, ruins: true, rover: false, ...spec.features };
   if (f.rover) Object.assign(f, { lakes: false, islands: 0, caves: 0 });
 
   // --- surface height: smooth periodic noise, flattened into walkable steps
   const n = wave1d(spec.seed, [
-    [1, 4 + r() * 3],
-    [2, 2 + r() * 3],
-    [4, 1 + r() * 2],
-    [7, r() * 1.5],
+    [1, (4 + r() * 3) * style.hills],
+    [2, (2 + r() * 3) * style.hills],
+    [4, (1 + r() * 2) * style.hills],
+    [7, r() * 1.5 * style.hills],
   ]);
-  const raw = Array.from({ length: W }, (_, x) => 36 + n(x));
+  const raw = Array.from({ length: W }, (_, x) => style.base + n(x));
   const h: number[] = new Array(W);
   let x = 0;
   while (x < W) {
