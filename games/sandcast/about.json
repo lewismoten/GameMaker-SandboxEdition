@@ -4,7 +4,7 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$10",
-  "blurb": "A thumb-sized tin knight takes back a backyard sandbox from ants, crabs, beetles, a running hose, the tide, and one very large tabby cat. Build towers of sand to raise the gates!",
+  "blurb": "Teddy, a Pembroke Welsh Corgi in a tin helmet, takes back the backyard sandbox after his big sister Gwin's zoomies flattened every castle. Build towers of sand, toss tennis balls, show off your tricks!",
   "exe": "SANDCAST.EXE",
   "sound": "speaker",
   "label": {
@@ -17,15 +17,16 @@
     "background": "#0b1630",
     "accent": "#f2c84b",
     "ink": "#fff6dc",
-    "tagline": "Hold the sandbox. Build the towers. Beware the cat.",
-    "back": "Summer, 1995. Lady Whiskerbane, the tabby from next door, has flattened every castle in the backyard sandbox. Ants dig through Anthill Keep, the hose floods the moat, crabs rule the tide pool and beetles hold the burrow beneath it all.\n\nSir Grit is a tin knight no taller than your thumb, with a red plume and a toy shovel. Scoop sand, dig through dunes, plug anthills, fill fords and build tower after tower until the gates rise. Ride the hose currents, outrun crumbling bridges, time the tide, and splash the biggest cat you have ever seen.",
+    "tagline": "Build the towers. Toss the ball. Good boy!",
+    "back": "Summer, 1995. Teddy is a Pembroke Welsh Corgi and the knight of the backyard sandbox: tin helmet, red plume, short legs, big heart. He knows lots of tricks, he loves his toys, and everybody loves him.\n\nThen his big sister Gwin, a brown pit-lab mix twice his size, came through with the zoomies. Every castle flattened. Hose on, kiddie pool tipped, a hole dug under the whole sandbox, and Teddy's toys scattered everywhere. Now she's snoring on the patio, right on top of the Crown of the Sandbox.\n\nScoop sand, dig dunes, plug anthills and build tower after tower until the gates rise. Ride the hose currents, time the tide, and when Gwin's in the way, toss her a tennis ball. She can't resist one.",
     "features": [
       "Five castles and a whole sandbox to roam, plus a secret dial-up to THE -= S A N D B O X =- BBS",
-      "Sand is everything: dig it, carry it, build towers with it, fill moats and plug anthills",
+      "Teddy knows tricks: sit, spin, roll over, jump and play dead, each on its own key (spinning even bowls over ants)",
+      "Gwin naps in doorways and galumphs about: toss her a tennis ball and off she trots",
+      "Squeaky bones, flying discs, dog biscuits and peanut butter scattered all over the sandbox",
       "Hose currents, crumbling bridges, rolling waves and a tidal flat that floods",
-      "Pack walls of wet sand to trap patrolling crabs",
-      "A boss cat six blocks wide, with paws you must splash back",
-      "VGA graphics and PC speaker sound effects - no sound card needed"
+      "A sleeping big sister six blocks wide, with paws you must splash back",
+      "Animated FLI intro and story, VGA graphics and PC speaker sound - no sound card needed"
     ],
     "shots": [
       [
