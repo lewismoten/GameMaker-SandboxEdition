@@ -1,0 +1,21 @@
+{
+  "title": "Virus Blaster",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1995,
+  "price": "$15",
+  "blurb": "A virus is eating the family 486. Shrink down, launch the BLASTER nano-fighter off the floppy and blast your way up the motherboard, through memory, the sound card and the hard disk to the CPU.",
+  "exe": "BLASTER.EXE",
+  "sound": "sb",
+  "label": { "background": "#0b1a10", "band": "#36e07a", "ink": "#ffffff", "logo": "SANDBOX SOFTWARE" },
+  "box": {
+    "background": "#0a0f24",
+    "accent": "#ff3cc8",
+    "ink": "#ffffff",
+    "tagline": "Your PC has a virus. Shrink down and blast it.",
+    "back": "",
+    "features": [],
+    "shots": [["s1a.map", 2, 50]],
+    "rating": "Ages 8 and up"
+  }
+}

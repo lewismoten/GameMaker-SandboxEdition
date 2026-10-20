@@ -23,6 +23,8 @@ export class Grid {
   readonly map: GameMap = newMap();
   private count = 0;
   readonly links: { x: number; y: number }[] = [];
+  /** Distance shown on the leg's card. */
+  cardAt?: number;
   readonly rnd: () => number;
 
   constructor(
