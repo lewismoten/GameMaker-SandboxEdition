@@ -54,3 +54,16 @@ describe('one-page export', () => {
     expect(() => fillPage('<html></html>', game)).toThrow(/game slot/);
   });
 });
+
+describe('reading a one-page export back', () => {
+  it('finds the embedded game in a filled page', async () => {
+    const { readSinglePage } = await import('../src/export/singlePage');
+    const game = await encodeGame({ id: 'x', title: 'A </script> title', gam: 'game.gam' }, files);
+    const page = fillPage(`<html><head><title>${TITLE_MARK}</title></head><body>${GAME_MARK}<script>var a=1</script></body></html>`, game);
+    const back = readSinglePage(page)!;
+    expect(back.title).toBe('A </script> title');
+    expect(await decodeGame(back)).toEqual(files);
+    expect(readSinglePage('<html><body>nothing</body></html>')).toBeUndefined();
+    expect(() => readSinglePage('<script type="application/json" id="gm-game">{oops</script>')).toThrow(/damaged/);
+  });
+});

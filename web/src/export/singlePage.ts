@@ -94,3 +94,29 @@ export function fillPage(template: string, game: SinglePageGame): string {
   const data = `<script type="application/json" id="${GAME_ELEMENT_ID}">${scriptJson(game)}</script>`;
   return template.split(TITLE_MARK).join(escapeHtml(game.title)).split(GAME_MARK).join(data);
 }
+
+/**
+ * The game inside a page made by "Export as one web page" (or an exported web app's
+ * index.html), or undefined when the HTML holds none.
+ */
+export function readSinglePage(html: string): SinglePageGame | undefined {
+  const open = html.match(new RegExp(`<script[^>]*\\bid=["']?${GAME_ELEMENT_ID}["']?[^>]*>`, 'i'));
+  if (!open || open.index === undefined) return undefined;
+  const start = open.index + open[0].length;
+  const end = html.indexOf('</script>', start);
+  if (end < 0) return undefined;
+  let game: SinglePageGame;
+  try {
+    game = JSON.parse(html.slice(start, end)) as SinglePageGame;
+  } catch {
+    throw new Error('The game inside this web page is damaged (its data is not valid JSON).');
+  }
+  if (!game || game.v !== 1 || !Array.isArray(game.files) || typeof game.data !== 'string')
+    throw new Error('This web page holds a game in a format this version cannot read.');
+  return game;
+}
+
+/** Does this look like an HTML page holding a Game-Maker game? (cheap check before reading it all) */
+export function isSinglePageName(name: string): boolean {
+  return /\.html?$/i.test(name);
+}
