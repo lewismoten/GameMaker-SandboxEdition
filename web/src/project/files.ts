@@ -54,9 +54,14 @@ export class GameFiles {
   }
 }
 
+/**
+ * File names as DOS saw them: lower case, without folders, and cut to 8.3. DOS dropped the
+ * extra letters silently, so games could name "nejillian.gif" and open NEJILLIA.GIF.
+ */
 export function normalize(name: string): string {
-  const base = name.replace(/\\/g, '/').split('/').pop() ?? name;
-  return base.trim().toLowerCase();
+  const base = (name.replace(/\\/g, '/').split('/').pop() ?? name).trim().toLowerCase();
+  const dot = base.indexOf('.');
+  return dot < 0 ? base.slice(0, 8) : `${base.slice(0, Math.min(dot, 8))}.${base.slice(dot + 1, dot + 4)}`;
 }
 
 /** Files only meaningful to DOS. */
