@@ -9,6 +9,7 @@ import { openCatalog } from './catalog';
 import { openDosManual } from '../manual/dosManual';
 import { renderShot } from './boxArt';
 import { installCrtWarp } from './crtWarp';
+import { snowyWindow } from './snowWindow';
 import { loadCatalog } from '../project/files';
 import { Project } from '../editor/project';
 import type { SpeedSetting } from '../engine/scene';
@@ -97,8 +98,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           title: 'Moten Snow-to-Software Operations: shoveling snow in the winter of 1992 to buy Game-Maker',
         },
         h('img', { src: './desk/moten-snow-to-software.jpg', alt: 'Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel', loading: 'lazy' }),
-        h('span', { class: 'poster-plaque' }, 'Winter 1992 · Fort Ashby, WV — shoveled snow to buy Game-Maker'),
       ),
+      snowyWindow(),
       h(
         'div',
         { class: 'desk-left' },
