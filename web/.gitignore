@@ -1,0 +1,4 @@
+node_modules/
+dist/
+# generated from ../cd/gameware by scripts/copy-games.mjs
+public/games/
