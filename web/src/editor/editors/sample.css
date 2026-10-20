@@ -7,11 +7,8 @@
 }
 
 .voc-edit-info {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
   color: var(--muted);
+  line-height: 1.8;
 }
 
 .voc-edit-info strong {
