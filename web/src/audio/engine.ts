@@ -7,6 +7,7 @@ import type { MusicMessage } from './music.worklet';
 import { CMF_GAMEMAKER_CLOCK, isCmf, parseCmf } from '../formats/cmf';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { TICK_RATE } from './cmfPlayer';
+import { output } from './output';
 
 export class AudioEngine {
   private ctx?: AudioContext;
@@ -25,7 +26,7 @@ export class AudioEngine {
       this.ctx = new AudioContext();
       this.master = this.ctx.createGain();
       this.master.gain.value = 0.8;
-      this.master.connect(this.ctx.destination);
+      this.master.connect(output(this.ctx));
       this.musicReady = this.ctx.audioWorklet
         .addModule(workletUrl)
         .then(() => {

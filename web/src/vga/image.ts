@@ -14,6 +14,7 @@ import { type RGBdata, type Vga, SIZEX, SIZEY } from './vga';
 import { BLEN, Face, LEFT, NONE, RED1, RED2, RIGHT, initStartCols } from './facelift';
 import { BACKBL, type Block, emptyBlock, parseBlocks, serializeBlocks } from '../formats/blocks';
 import { decodeGif, type IndexedImage } from '../formats/gif';
+import { output } from '../audio/output';
 
 const LOLEN = 12;
 const LOX = 15;
@@ -616,7 +617,7 @@ class ImageReader {
       gain.gain.setValueAtTime(0, t0 + 0.05);
       gain.gain.setValueAtTime(0.08, t0 + 0.075);
       gain.gain.setValueAtTime(0, t0 + 0.175);
-      osc.connect(gain).connect(ctx.destination);
+      osc.connect(gain).connect(output(ctx));
       osc.start(t0);
       osc.stop(t0 + 0.18);
     }

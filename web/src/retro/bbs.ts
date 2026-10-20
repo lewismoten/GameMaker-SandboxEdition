@@ -10,6 +10,7 @@ import type { CatalogEntry } from '../project/files';
 import { sandboxLogin, sandBanner } from './ansiArt';
 import { Term, boxBottom, boxRow, boxRule, boxTop, dial, modemSignal, sleep, statusLine } from './term';
 import { runSofa, SOFA_PHONE, sofaBusy } from './sofa';
+import { output } from '../audio/output';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';
@@ -218,7 +219,7 @@ async function pageSysop(t: Term, h: RetroHost): Promise<void> {
       g.gain.value = 0.05;
       o.type = 'square';
       o.frequency.value = i % 2 ? 1200 : 900;
-      o.connect(g).connect(ctx.destination);
+      o.connect(g).connect(output(ctx));
       o.start();
       o.stop(ctx.currentTime + 0.15);
     }

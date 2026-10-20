@@ -12,6 +12,7 @@ import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED2, initStartCols } f
 import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
 import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, serializeSoundSet, type SoundSet } from '../formats/sound';
 import { decodeVoc, isVoc } from '../formats/voc';
+import { output } from '../audio/output';
 
 const ROOTN = 25;
 const FREQL = 6; // 2^6 = 64 Hz
@@ -299,7 +300,7 @@ class SoundDesigner {
           buf.copyToChannel(voc.samples as Float32Array<ArrayBuffer>, 0);
           const src = ctx.createBufferSource();
           src.buffer = buf;
-          src.connect(ctx.destination);
+          src.connect(output(ctx));
           src.start();
           return;
         }
@@ -310,7 +311,7 @@ class SoundDesigner {
     const gain = ctx.createGain();
     osc.type = 'square';
     gain.gain.value = 0;
-    osc.connect(gain).connect(ctx.destination);
+    osc.connect(gain).connect(output(ctx));
     const t0 = ctx.currentTime + 0.005;
     this.s.freqs[i].forEach((f, j) => {
       const t = t0 + (j * DELAY) / 1000;

@@ -31,6 +31,7 @@ import { LASTMON, newMonsterSet, parseMonsters, type Monster } from '../formats/
 import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, type SoundSet } from '../formats/sound';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { SCAN } from '../input/scancodes';
+import { output } from '../audio/output';
 
 const GL = 6; // L-Left, T-Top, G-Grid
 const BLLIST = 14; // BL-Area to show blocks
@@ -535,7 +536,7 @@ class CharacterMaker {
           buf.copyToChannel(voc.samples as Float32Array<ArrayBuffer>, 0);
           const src = ctx.createBufferSource();
           src.buffer = buf;
-          src.connect(ctx.destination);
+          src.connect(output(ctx));
           src.start();
         }
       }
@@ -545,7 +546,7 @@ class CharacterMaker {
     const gain = ctx.createGain();
     osc.type = 'square';
     gain.gain.value = 0;
-    osc.connect(gain).connect(ctx.destination);
+    osc.connect(gain).connect(output(ctx));
     const t0 = ctx.currentTime + 0.005;
     this.s.freqs[n].forEach((f, j) => {
       const t = t0 + (j * DELAY) / 1000;
