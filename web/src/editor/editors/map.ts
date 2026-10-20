@@ -4,7 +4,7 @@ import { h, clear, selectField, toast, debounce } from '../ui';
 import { blockCanvas, blockImages } from '../draw';
 import { paletteChooser } from './blocks';
 import type { FileKind, Project } from '../project';
-import { fileField } from '../filePicker';
+import { fileField, pickFile } from '../filePicker';
 import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../../formats/map';
 import { LASTMON, parseMonsters, type Monster } from '../../formats/monster';
@@ -245,6 +245,43 @@ registerEditor(['map'], (host, project, file) => {
   clear(
     host,
     h('p', { class: 'hint' }, 'Drag to paint blocks. In “Place monsters” mode, click to place the chosen monster and right-click to remove one. Yellow squares are links to other scenes; blue squares are where the character starts.'),
+    // Nothing to paint with yet: say so, and offer the quickest ways to get blocks.
+    !bblName || !project.files.has(bblName)
+      ? h(
+          'div',
+          { class: 'callout' },
+          h('strong', null, 'This map has no background blocks to paint with yet. '),
+          'Take a set from the CD library, or draw your own.',
+          h(
+            'div',
+            { class: 'toolbar' },
+            h(
+              'button',
+              {
+                class: 'primary',
+                onclick: async () => {
+                  const v = await pickFile(project, 'bbl', { adding: true, title: 'Background blocks for this map' });
+                  if (!v) return;
+                  // reopen the map with the new blocks (saved first: saving is otherwise delayed)
+                  await project.saveNow();
+                  location.reload();
+                },
+              },
+              '📀 Take blocks from the library',
+            ),
+            h(
+              'button',
+              {
+                onclick: async () => {
+                  const v = await pickFile(project, 'bbl', { title: 'Background blocks for this map' });
+                  if (v) location.hash = `#/p/${project.id}/${encodeURIComponent(v)}`;
+                },
+              },
+              '✎ Draw my own',
+            ),
+          ),
+        )
+      : null,
     h(
       'div',
       { class: 'toolbar', style: 'margin-bottom:8px' },

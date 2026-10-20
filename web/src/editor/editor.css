@@ -1017,3 +1017,29 @@ button.big {
   touch-action: none;
   image-rendering: pixelated;
 }
+
+/* a suggestion when something needed is missing */
+.callout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border: 1px solid #e0b100;
+  border-radius: 8px;
+  background: #fff6cc;
+  color: #4a3b00;
+}
+
+.callout .toolbar {
+  width: 100%;
+  margin-top: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .callout {
+    background: #3a3205;
+    color: #ffe9a3;
+  }
+}
