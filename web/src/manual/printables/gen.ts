@@ -1,6 +1,6 @@
 // The paper every Sandbox Software box has, made from the game's catalog entry, manual and
 // disk: registration postcard, key card, catalog, BBS ad, warranty card, newsletter, hint
-// book offer and a sticker sheet.
+// book offer (the sticker sheet is in stickers.ts).
 import { h } from '../../editor/ui';
 import { parseCharacter } from '../../formats/character';
 import { scanName } from '../../input/scancodes';
@@ -14,7 +14,7 @@ import {
   splitTitle,
   html,
   hashString,
-  rng,
+
   BBS_PHONE,
   mapPicture,
   type PrintContext,
@@ -22,7 +22,6 @@ import {
 } from './kit';
 import { cardKeys, manualKeyText } from './keys';
 import { redCode } from './redFilm';
-import type { StickerSpec } from './types';
 
 const ISSUE_DATE = 'Fall 1995';
 
@@ -422,54 +421,6 @@ export async function hintOffer(ctx: PrintContext, bookTitle: string): Promise<S
       h('p', { class: 'ho-price' }, h('s', null, '$5.95'), ' ', h('b', null, 'FREE with registration')),
       h('p', { class: 'ho-in' }, `It’s already in this box: look for “${bookTitle}”.`),
       fictionalNote(),
-    ),
-  ];
-}
-
-// ------------------------------------------------------------------ stickers
-export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
-  const g = ctx.entry;
-  const box = g.original?.box;
-  const [main] = splitTitle(g.title);
-  const r = rng(hashString(g.id));
-  const specs: StickerSpec[] = [
-    { text: main.toUpperCase(), sub: splitTitle(g.title)[1], shape: 'badge', color: box?.background, ink: box?.accent },
-    ...(box?.shots ?? [])
-      .slice(0, 3)
-      .map(([map, x, y], i): StickerSpec => ({ text: '', shape: i === 1 ? 'circle' : 'rect', shot: { map, x: x + 4, y: y + 2, w: 8, h: 6 } })),
-    { text: 'I ♥ SHAREWARE', shape: 'rect', color: '#d81e1e', ink: '#fff' },
-    { text: 'SANDBOX', sub: 'SOFTWARE', shape: 'circle', color: '#f2b632', ink: '#1a1208' },
-    { text: 'REGISTERED', sub: 'PLAYER', shape: 'star', color: '#1f9a3a', ink: '#fff' },
-    { text: '14,400', sub: 'BAUD', shape: 'circle', color: '#111', ink: '#55ffff' },
-    ...(ctx.printables.stickers ?? []),
-  ];
-  const els = await Promise.all(
-    specs.map(async (s) => {
-      const tilt = (r() - 0.5) * 8;
-      const style = `--c:${s.color ?? '#fff'};--ink:${s.ink ?? '#111'};--tilt:${tilt.toFixed(1)}deg`;
-      const pic = s.shot ? await ctx.shot(s.shot) : undefined;
-      return h(
-        'div',
-        { class: `pp-st st-${s.shape ?? 'rect'} ${pic ? 'st-pic' : ''}`, style },
-        pic ? h('img', { src: pic, alt: '' }) : null,
-        s.text ? h('b', null, s.text) : null,
-        s.sub ? h('small', null, s.sub) : null,
-      );
-    }),
-  );
-  return [
-    sheet(
-      8.5,
-      11,
-      'stk',
-      h(
-        'header',
-        { class: 'stk-head' },
-        h('b', null, 'STICKERS'),
-        h('span', null, 'Cut along the dotted lines. Stick on your disk box, your folder, your little brother.'),
-      ),
-      h('div', { class: 'stk-grid' }, ...els),
-      h('p', { class: 'stk-foot' }, 'Printed on plain paper here; use a glue stick, or print on label paper.'),
     ),
   ];
 }

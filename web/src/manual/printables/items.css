@@ -767,7 +767,7 @@
 
 /* ---------------------------------------------------------------- stickers */
 .pp-sheet.pp-stk {
-  padding: 5cqw;
+  padding: 3.5cqw 5cqw;
   background: var(--grain, none), #fbfbf7;
 }
 
@@ -785,84 +785,60 @@
     serif;
 }
 
-.stk-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5cqw 4cqw;
-  margin-top: 5cqw;
-}
-
-.pp-st {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 4 / 3;
-  padding: 1.6cqw;
-  overflow: hidden;
-  background: var(--c);
-  color: var(--ink);
+.stk-head em {
+  float: right;
   font:
-    900 3.4cqw/1.05 'Arial Black',
-    Impact,
+    700 1.8cqw Arial,
     sans-serif;
-  text-align: center;
-  transform: rotate(var(--tilt));
-  box-shadow:
-    0 0 0 0.8cqw #fff,
-    0 0 0 1cqw #bbb,
-    0.6cqw 0.8cqw 1.4cqw rgba(0, 0, 0, 0.25);
-  outline: 0.3cqw dashed #777;
-  outline-offset: 1.8cqw;
 }
 
-/* a glossy highlight */
-.pp-st::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(140deg, rgba(255, 255, 255, 0.55), transparent 35%, transparent 70%, rgba(255, 255, 255, 0.15));
-  pointer-events: none;
-}
-
-.pp-st small {
+/* the Print Then Cut area, 6.75 x 9.25 in, centered on the letter page */
+.stk-art {
   display: block;
-  margin-top: 0.6cqw;
-  font:
-    700 1.8cqw/1.1 Arial,
-    sans-serif;
-  letter-spacing: 0.1em;
+  width: 79.41%;
+  margin: 1.6cqw auto 0;
 }
 
-.st-circle {
-  aspect-ratio: 1;
-  border-radius: 50%;
+.stk-cut {
+  width: min(100%, 980px);
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid #b9ad8c;
+  border-radius: 8px;
+  background: #fffaf0;
+  color: #222;
+  font: 14px/1.4 system-ui, sans-serif;
 }
 
-.st-star {
-  aspect-ratio: 1;
-  clip-path: polygon(50% 0, 63% 32%, 98% 35%, 71% 57%, 80% 92%, 50% 73%, 20% 92%, 29% 57%, 2% 35%, 37% 32%);
-  box-shadow: none;
-  outline: none;
-  font-size: 2.4cqw;
-  padding-top: 4cqw;
+.stk-cut summary {
+  cursor: pointer;
+  font-weight: 700;
 }
 
-.st-badge {
-  border-radius: 2cqw;
-  border: 0.8cqw solid var(--ink);
+.stk-cut-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
 }
 
-.st-pic {
-  padding: 0;
+.stk-cut-row button {
+  padding: 4px 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
 }
 
-.st-pic img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  image-rendering: pixelated;
+.stk-cut-row small {
+  color: #555;
+}
+
+.stk-cut ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
 }
 
 .stk-foot {

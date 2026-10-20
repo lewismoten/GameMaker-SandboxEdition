@@ -5,7 +5,8 @@ import type { PrintContext } from './kit';
 import type { BoxItem } from './viewer';
 import type { GeneratedKind, PrintableItem } from './types';
 import { foldOut, renderItem } from './story';
-import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, stickers, warranty } from './gen';
+import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, warranty } from './gen';
+import { stickerScreen, stickers } from './stickers';
 
 const ICONS: Record<PrintableItem['kind'], string> = {
   map: '🗺️',
@@ -50,7 +51,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     ...(book
       ? [{ kind: 'hintoffer' as const, id: 'hintoffer', title: 'Hint book offer', note: 'Order slip', icon: '💡', render: () => hintOffer(ctx, book.title) }]
       : []),
-    { kind: 'stickers', id: 'stickers', title: 'Sticker sheet', note: 'Cut them out', icon: '⭐', render: () => stickers(ctx) },
+    { kind: 'stickers', id: 'stickers', title: 'Sticker sheet', note: 'Cut them out', icon: '⭐', render: () => stickers(ctx), screen: stickerScreen },
   ];
   return [...items, ...gen.filter((g) => !skip.has(g.kind))];
 }

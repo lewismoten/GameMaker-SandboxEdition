@@ -11,7 +11,7 @@ export const CUT_H = 9.25;
 export const BLEED = 1 / 16;
 /** Space between cut lines (enough for the bleed and the blade). */
 export const GAP = 0.25;
-const MARGIN = 0.15;
+const MARGIN = 0.1;
 
 export interface Placed {
   /** Which sticker (index into the list given to layout). */
@@ -24,12 +24,12 @@ export interface Placed {
   shape: StickerShape;
 }
 
-/** Size of a sticker by shape: [w, h] in inches. Tall rects hold a character. */
+/** Size of a sticker by shape: [w, h] in inches. Tall rects and badges hold a character. */
 export function stickerSize(shape: StickerShape, tall = false): [number, number] {
-  if (shape === 'circle') return [1.9, 1.9];
-  if (shape === 'star') return [2, 2];
-  if (shape === 'badge') return [2, 1.4];
-  return tall ? [1.6, 2] : [2, 1.5];
+  if (shape === 'circle' || shape === 'star') return [1.6, 1.6];
+  if (tall) return [1.35, 1.6];
+  if (shape === 'badge') return [1.9, 1.3];
+  return [1.9, 1.4];
 }
 
 /** Shelf packing: rows left to right, centered, new sheet when the area is full. */
