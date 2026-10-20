@@ -55,3 +55,69 @@
   font: 14px/1.4 system-ui, sans-serif;
   border-radius: 6px;
 }
+
+/* ---- touch controls ------------------------------------------------------ */
+
+.gm-player.has-touch {
+  flex-direction: column;
+}
+
+.gm-touch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+}
+
+.gm-touch button {
+  min-width: 52px;
+  min-height: 52px;
+  padding: 0 10px;
+  border: 1px solid #556;
+  border-radius: 12px;
+  background: rgba(60, 70, 110, 0.6);
+  color: #fff;
+  font: 600 16px/1 system-ui, sans-serif;
+  touch-action: none;
+}
+
+.gm-touch button.down {
+  background: rgba(255, 212, 0, 0.6);
+  color: #000;
+}
+
+.gm-pad {
+  display: grid;
+  grid-template-areas: '. up .' 'left . right' '. down .';
+  gap: 4px;
+}
+
+.gm-keys,
+.gm-sys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.gm-sys button {
+  min-height: 40px;
+  font-size: 13px;
+}
+
+@media (orientation: landscape) and (max-height: 560px) {
+  .gm-player.has-touch {
+    flex-direction: row;
+  }
+  .gm-touch {
+    position: absolute;
+    inset: auto 0 0 0;
+    pointer-events: none;
+  }
+  .gm-touch button {
+    pointer-events: auto;
+    opacity: 0.75;
+  }
+}
