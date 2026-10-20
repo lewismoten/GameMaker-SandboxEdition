@@ -126,3 +126,11 @@
   max-height: calc(100% - 150px);
   width: auto;
 }
+
+@media (orientation: landscape) and (max-height: 560px) {
+  .gm-player.has-touch canvas {
+    max-height: 100%;
+    height: 100%;
+    width: auto;
+  }
+}
