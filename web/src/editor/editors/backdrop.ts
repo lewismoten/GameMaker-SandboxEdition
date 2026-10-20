@@ -4,7 +4,7 @@
 import './backdrop.css';
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
-import { h, clear, numberField, toast } from '../ui';
+import { h, clear, download, numberField, toast } from '../ui';
 import type { Project } from '../project';
 import { libraryGame, libraryItems, type LibraryItem } from '../library';
 import { parseBackdrop, serializeBackdrop } from '../../formats/graphicScripts';
@@ -12,7 +12,31 @@ import { cdName, normalize } from '../../project/files';
 import { SIZEX, SIZEY } from '../../gfx/screen';
 import { gamePreview } from './mediaShared';
 import { backdropInfo, blankScreen, pictureScreen, screenCanvas } from './mediaPictures';
-import { lut } from '../draw';
+import { lut, paintIndexed } from '../draw';
+import { encodeAnimatedGif, type GifFrame } from '../../media/gifEncode';
+import { pngOf } from '../../media/screenCapture';
+import { createZip } from '../../project/zip';
+import type { ScreenPicture } from './mediaPictures';
+
+const base = (name: string) => name.replace(/\.[^.]*$/, '');
+
+/** A screen (or any indexed picture) as PNG bytes. */
+function pngBytes(pixels: Uint8Array, w: number, hgt: number, palette: Uint8Array): Promise<Uint8Array> {
+  const c = document.createElement('canvas');
+  paintIndexed(c, pixels, w, hgt, palette);
+  return pngOf(c);
+}
+
+/** FadeTo from black: 65 steps over 65/70 s, as the game brings a backdrop in; then it holds. */
+function fadeInFrames(pic: ScreenPicture, holdMs = 2000): GifFrame[] {
+  const steps = 65;
+  const frames: GifFrame[] = [];
+  for (let step = 0; step <= steps; step++) {
+    const palette = pic.palette.map((v) => Math.trunc((v * step) / steps));
+    frames.push({ pixels: pic.pixels, palette, ms: step === steps ? holdMs : 1000 / 70 });
+  }
+  return frames;
+}
 
 /** Library pictures with the name a backdrop gives; the ones from a game that has this backdrop first. */
 async function libraryMatches(gif: string, bkdName: string): Promise<LibraryItem[]> {
@@ -210,6 +234,57 @@ registerEditor(['bkd'], (host, project, file) => {
     drawWhole();
   });
 
+  // ---- downloads -------------------------------------------------------------------
+  const screenNow = () => pictureScreen(project.files, file);
+  const exportScreen = async () => {
+    const pic = screenNow();
+    if (!pic) return toast('The picture is missing, so there is nothing to save.', 'error');
+    download(`${base(file)}.png`, await pngBytes(pic.pixels, SIZEX, SIZEY, pic.palette), 'image/png');
+  };
+  const exportWhole = async () => {
+    const img = backdropInfo(project.files, project.files.get(file) ?? serializeBackdrop(bkd)).image;
+    if (!img) return toast('The picture is missing, so there is nothing to save.', 'error');
+    download(`${base(bkd.gif.toLowerCase()) || base(file)}-whole.png`, await pngBytes(img.pixels, img.width, img.height, img.palette), 'image/png');
+  };
+  const exportFade = () => {
+    const pic = screenNow();
+    if (!pic) return toast('The picture is missing, so there is nothing to save.', 'error');
+    download(`${base(file)}-fade-in.gif`, encodeAnimatedGif(SIZEX, SIZEY, fadeInFrames(pic)), 'image/gif');
+  };
+  /** Every backdrop in the game that can be drawn, in name order. */
+  const allScreens = () =>
+    project.files
+      .byExtension('bkd')
+      .sort()
+      .flatMap((name) => {
+        const pic = pictureScreen(project.files, name);
+        return pic ? [{ name, pic }] : [];
+      });
+  const exportAllPngs = async () => {
+    const all = allScreens();
+    if (!all.length) return toast('No backdrop here can be drawn.', 'error');
+    const entries = await Promise.all(
+      all.map(async ({ name, pic }) => ({ name: `${base(name)}.png`, data: await pngBytes(pic.pixels, SIZEX, SIZEY, pic.palette) })),
+    );
+    download(`${project.name.replace(/[^\w-]+/g, '-').toLowerCase() || 'game'}-backdrops.zip`, await createZip(entries), 'application/zip');
+  };
+  const exportAllGif = () => {
+    const all = allScreens();
+    if (!all.length) return toast('No backdrop here can be drawn.', 'error');
+    const frames = all.flatMap(({ pic }) => fadeInFrames(pic, 2500));
+    download(`${project.name.replace(/[^\w-]+/g, '-').toLowerCase() || 'game'}-backdrops.gif`, encodeAnimatedGif(SIZEX, SIZEY, frames), 'image/gif');
+  };
+  const exports = h(
+    'div',
+    { class: 'toolbar bkd-exports' },
+    h('span', { class: 'meta' }, 'Download:'),
+    h('button', { title: 'The 320×200 screen this backdrop shows, as a PNG', onclick: () => void exportScreen() }, '⬇ Screen (PNG)'),
+    h('button', { title: 'The whole picture the window looks into, as a PNG', onclick: () => void exportWhole() }, '⬇ Whole picture (PNG)'),
+    h('button', { title: 'The screen fading in from black the way the game shows it, as an animated GIF', onclick: exportFade }, '⬇ Fade-in (GIF)'),
+    h('button', { title: 'Every backdrop in this game as 320×200 PNGs in a .zip', onclick: () => void exportAllPngs() }, '⬇ All backdrops (.zip)'),
+    h('button', { title: 'Every backdrop in this game, one after another, as an animated GIF', onclick: exportAllGif }, '⬇ All backdrops (GIF)'),
+  );
+
   clear(
     host,
     h(
@@ -224,6 +299,7 @@ registerEditor(['bkd'], (host, project, file) => {
       h('div', { class: 'bkd-pane' }, h('h3', null, 'The whole picture'), whole, size),
       h('div', { class: 'bkd-pane' }, h('h3', null, 'On the game screen'), preview.el),
     ),
+    exports,
   );
   refresh();
   return preview.stop;

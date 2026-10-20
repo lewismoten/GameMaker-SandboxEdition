@@ -76,3 +76,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* downloads */
+.bkd-exports {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}
