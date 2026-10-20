@@ -616,6 +616,8 @@ export class Computer implements RetroHost {
         title: project.name,
         label: project.name,
         color: '#d8d2c0',
+        stripe: '#1565c0',
+        density: 'HD',
         gam: project.gam,
         bytes: 0,
         writeProtected: false,
