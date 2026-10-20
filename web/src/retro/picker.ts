@@ -28,15 +28,26 @@ export async function browseFile(
   let drive = start.drive;
   let parts = [...start.parts];
   const want = exts.map((e) => `.${e.toUpperCase()}`);
+  /** A file name typed with its path (D:\GAMES\SHIP.GIF): picked once its folder is listed. */
+  let typedFile = '';
   for (;;) {
     const list = await fs.listDir(drive, parts);
     if (list === null) {
+      typedFile = '';
       const r = await errorBox(ui, `I can't access drive ${drive}:!  Did you remember to insert a disk?`, '(R)etry (A)bort');
       if (r === 'R') continue;
       if (drive === 'C') return null;
       drive = 'C';
       parts = ['GM'];
       continue;
+    }
+    if (typedFile) {
+      const name = typedFile;
+      typedFile = '';
+      const node = list?.find((n) => n.name === name);
+      if (node && !node.dir) return { drive, parts, name, exists: true };
+      if (!node && opts.allowNew) return { drive, parts, name, exists: false };
+      await errorBox(ui, 'Sorry, the file does not exist!', '(C)ontinue');
     }
     const entries = [
       ...(parts.length ? ['..\\'] : []),
@@ -78,11 +89,23 @@ export async function browseFile(
           if (num < top) top--;
           typed = '';
         } else if (k.key === 'Backspace') typed = typed.slice(0, -1);
-        else if (k.key.length === 1 && typed.length < 12 && /[\w.~!@#$%^&()-]/.test(k.key)) typed += k.key.toUpperCase();
+        else if (k.key.length === 1 && typed.length < 40 && /[\w.~!@#$%^&()\\:-]/.test(k.key)) typed += k.key.toUpperCase();
         else if (k.key === 'Enter') {
           const choice = typed || entries[num] || '';
           if (!choice) continue;
-          if (choice === '..\\') next = { drive, parts: parts.slice(0, -1) };
+          if (typed.includes(':') || typed.includes('\\')) {
+            // A drive or path typed in full, as DOS allowed: D:  D:\GAMEWARE\  A:\SHIP.GIF
+            const m = /^(?:([A-Z]):)?(\\)?(.*)$/.exec(typed)!;
+            const segs = m[3].split('\\').filter(Boolean);
+            const last = segs[segs.length - 1] ?? '';
+            if (last.includes('.')) typedFile = segs.pop()!;
+            // A drive or a leading \ starts at the root; otherwise the path is below this folder.
+            const to = m[1] || m[2] ? [] : [...parts];
+            for (const seg of segs)
+              if (seg === '..') to.pop();
+              else if (seg !== '.') to.push(seg);
+            next = { drive: m[1] ?? drive, parts: to };
+          } else if (choice === '..\\') next = { drive, parts: parts.slice(0, -1) };
           else if (choice.endsWith('\\')) next = { drive, parts: [...parts, choice.slice(0, -1)] };
           else {
             let name = choice;
