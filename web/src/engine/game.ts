@@ -17,6 +17,10 @@ export interface RunOptions {
   joystick?: Session['joystick'];
   /** Play a .rec demo immediately instead of showing the menu. */
   playback?: Uint8Array;
+  /** Start playing at once, recording the keys (for making a demo); the menu is skipped. */
+  record?: boolean;
+  /** Receives the game session as it starts (e.g. to read the recording so far). */
+  onSession?: (s: Session) => void;
   /** Called every frame while a level is being played. */
   onFrame?: Session['onFrame'];
   /** Emulated PC speed (shared object: change ticksPerSecond at any time). */
@@ -53,6 +57,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     speed: opts.speed ?? {},
   };
   m.keyboard.attach();
+  opts.onSession?.(s);
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors });
 
@@ -62,6 +67,12 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
 
   if (opts.playback && s.rec.initPlayback(opts.playback)) {
     m.audio.stopSong();
+    await play(s, 0);
+    return;
+  }
+  if (opts.record) {
+    m.audio.stopSong();
+    s.rec.initRecord();
     await play(s, 0);
     return;
   }
