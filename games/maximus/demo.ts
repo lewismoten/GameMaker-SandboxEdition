@@ -92,6 +92,7 @@ export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: num
  * one thrust key (Game-Maker reads one at a time) for at least a third of a second, lets
  * go when the pod is moving the right way, and only then reaches for another.
  */
+/** Returns whether the pod got there. */
 async function fly(sim: Sim, goal: { x: number; y: number }, maxTicks: number): Promise<boolean> {
   const bbl = sim.scene.bbl;
   const map = sim.w.map;
@@ -116,6 +117,7 @@ async function fly(sim: Sim, goal: { x: number; y: number }, maxTicks: number): 
       q.push(j);
     }
   }
+  let arrived = false;
   let cur = 0;
   let heldFor = 0;
   let rest = 0;
@@ -126,7 +128,10 @@ async function fly(sim: Sim, goal: { x: number; y: number }, maxTicks: number): 
     const py = c.y[0] * 20 + c.y[1] + 10;
     const cx = Math.floor(px / 20) % 100;
     const cy = Math.floor(py / 20) % 100;
-    if ((cx === goal.x && cy === goal.y) || sim.link >= 0) break;
+    if ((cx === goal.x && cy === goal.y) || sim.link >= 0) {
+      arrived = true;
+      break;
+    }
     // aim down the route as far as it runs straight (a person sees the open lane ahead)
     let tx = cx;
     let ty = cy;
@@ -182,5 +187,5 @@ async function fly(sim: Sim, goal: { x: number; y: number }, maxTicks: number): 
     if (sim.dead) return false;
   }
   if (cur) sim.release(cur);
-  return sim.link >= 0;
+  return arrived;
 }
