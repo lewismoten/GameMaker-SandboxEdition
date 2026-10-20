@@ -1,6 +1,6 @@
 // The piano roll: one track's notes (time across, pitch up) with a ruler for the play
 // position, loop region and song end, a lane of instrument changes, and a keyboard to try notes.
-import { h } from '../ui';
+import { h, toast } from '../ui';
 import {
   addNote,
   channelNotes,
@@ -295,7 +295,10 @@ export class PianoRoll {
     }
     g.restore();
 
-    if (silent) {
+    if (!doc.tracks().includes(doc.track)) {
+      g.fillStyle = '#ffd400';
+      g.fillText('No tracks yet: press ＋ Add track to start a melody or a drum part.', KEYW + 14, HEAD + 19);
+    } else if (silent) {
       g.fillStyle = 'rgba(5,6,26,0.75)';
       g.fillRect(KEYW + 8, HEAD + 8, Math.min(W - KEYW - 16, 520), 22);
       g.fillStyle = '#ff8888';
@@ -503,6 +506,10 @@ export class PianoRoll {
     if (x < KEYW) {
       const k = this.keyOf(y);
       void doc.audition(doc.track, k);
+      return;
+    }
+    if (!doc.tracks().includes(doc.track)) {
+      toast('Add a track first (＋ Add track).');
       return;
     }
     this.canvas.setPointerCapture(e.pointerId);
