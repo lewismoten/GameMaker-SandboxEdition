@@ -40,7 +40,7 @@ export interface BoardSpec {
 
 const PARTS: Record<string, string> = {
   o: 'switchOff',
-  O: 'switchOn',
+  i: 'switchOn',
   t: 'timerOff',
   g: 'gate',
   f: 'fuse',
@@ -74,14 +74,15 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
   if (rows.length !== ROWS || rows.some((r) => r.length !== COLS)) throw new Error(`${spec.file}: board must be ${COLS}x${ROWS}`);
   if (rows[5][8] !== '@') throw new Error(`${spec.file}: Watt starts at column 8, row 5`);
   const at = (x: number, y: number) => rows[y]?.[x] ?? ' ';
-  const isWall = (ch: string) => ch === '#' || ch === ' ' || ch in DECOR || /[a-p]/.test(ch);
+  const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
+  const isWall = (ch: string) => ch === '#' || ch === ' ' || ch in DECOR || isBattery(ch);
   const traceBits = new Map<string, number>();
   const bit = (x: number, y: number, b: number) => traceBits.set(`${x},${y}`, (traceBits.get(`${x},${y}`) ?? 0) | b);
 
   const wires: (Wire | undefined)[] = [];
   const wireCells = new Map<string, [number, number][]>();
   for (const [letter, w] of Object.entries(spec.wires)) {
-    const k = letter.charCodeAt(0) - 97;
+    const k = parseInt(letter, 16);
     let bx = -1;
     let by = -1;
     rows.forEach((row, y) => [...row].forEach((ch, x) => ch === letter && ((bx = x), (by = y))));
@@ -130,8 +131,8 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
           put(x, y, `wall${m}`);
         }
       } else if (ch in DECOR) put(x, y, DECOR[ch]);
-      else if (/[a-p]/.test(ch)) {
-        const k = ch.charCodeAt(0) - 97;
+      else if (isBattery(ch)) {
+        const k = parseInt(ch, 16);
         const kind = spec.wires[ch]?.kind ?? 'steady';
         put(x, y, kind === 'steady' ? `bat${k}` : kind === 'dead' ? `dead${k}` : `pulse${k}`);
       } else if (ch === 'X') {
