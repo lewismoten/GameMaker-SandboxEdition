@@ -74,7 +74,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   await renderProjects(projects, nav);
   try {
     const catalog = await loadCatalog();
-    const gameware = catalog.filter((g) => g.kind !== 'shareware');
+    // Recreational Software Designs' own games first.
+    const rsd = ['sample', 'pipemare', 'nebula'];
+    const gameware = catalog.filter((g) => g.kind !== 'shareware').sort((a, b) => (rsd.includes(b.id) ? 1 : 0) - (rsd.includes(a.id) ? 1 : 0) || rsd.indexOf(a.id) - rsd.indexOf(b.id));
     clear(samples, ...gameware.map((g) => sampleCard(g, nav)));
     clear(shareware, ...catalog.filter((g) => g.kind === 'shareware' && g.gam).map(sharewareCard));
     if (!gameware.length) clear(samples, h('p', { class: 'meta' }, 'No sample games were bundled with this build.'));
@@ -137,7 +139,7 @@ function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
     'div',
     { class: 'card' },
     h('h3', null, g.gam ? g.title : `${g.id} (pictures, monsters and sounds)`),
-    h('div', { class: 'meta' }, `${g.id}/ · ${g.files.length} files`),
+    h('div', { class: 'meta' }, `${['sample', 'pipemare', 'nebula'].includes(g.id) ? 'By Recreational Software Designs · ' : ''}${g.id}/ · ${g.files.length} files`),
     h(
       'div',
       { class: 'actions' },
