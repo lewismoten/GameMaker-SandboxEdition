@@ -200,8 +200,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     else if (c === 'sandbox') cards = catalog.filter((g) => g.original && g.gam).map((g) => originalCard(g, nav));
     else cards = catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam).map(sharewareCard);
     if (!cards.length && c !== 'mine') cards = [h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.')];
+    // Keep the page from jumping while the tiles are swapped.
+    tiles.style.minHeight = `${tiles.offsetHeight}px`;
     clear(tiles, ...cards);
     filterTiles();
+    requestAnimationFrame(() => (tiles.style.minHeight = ''));
   };
 
   const refreshProjects = async () => {

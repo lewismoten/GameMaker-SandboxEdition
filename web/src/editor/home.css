@@ -116,9 +116,11 @@
 }
 
 .lib-tiles .card h3 {
+  display: -webkit-box;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.25;
 }
 
 .card .card-shot-none {
@@ -130,7 +132,7 @@
 /* ⋯ more actions */
 .card-title {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   min-width: 0;
 }
@@ -267,6 +269,11 @@
 }
 
 @media (max-width: 720px) {
+  /* phones: a shorter banner, so the games are one swipe away */
+  .home .hero-screen {
+    display: none;
+  }
+
   .home .library {
     grid-template-columns: 1fr;
     gap: 12px;
