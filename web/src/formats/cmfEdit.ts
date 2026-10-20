@@ -1,7 +1,10 @@
 // An editable model of a Creative Music File, read the way Game-Maker plays it.
 //
 // PLAYGAME's PlayIt() (code/GM/SBMUSIC.C, ported in audio/cmfPlayer.ts) only acts on:
-//  - note on / note off (0x9n / 0x8n, or 0x9n with velocity 0); velocity is otherwise ignored,
+//  - note on / note off (0x9n / 0x8n, or 0x9n with velocity 0). The note-on velocity goes to
+//    Creative's SBFMDRV (sbfd_note_on), which scales the instrument's carrier level by it, so
+//    it sets how loud each note plays (1 quietest .. 127 as loud as the instrument; see
+//    velocityLevel), and is edited like any other note property,
 //  - program change (0xCn): loads an SBI instrument into the channel's FM voice,
 //  - controller 0x67 (0xBn 67 v): melody mode (9 voices) or rhythm mode (6 voices + 5 drums
 //    on MIDI channels 11..15),
@@ -29,7 +32,7 @@ export interface Ev {
   ch: number;
   /** on/off: note number; program: instrument number; mode: 0 = melody, otherwise rhythm. */
   a: number;
-  /** on/off: velocity byte. */
+  /** on: velocity 1..127 (how loud; 0 would be a note off); off: the release byte (kept as read). */
   b: number;
   /** off: written as 0x8n (8) or as 0x9n with velocity 0 (9). */
   fn?: 8 | 9;
@@ -339,9 +342,10 @@ export function writeSong(song: CmfSong): Uint8Array {
 
 /**
  * The driver calls PlayIt() makes over `ticks` timer ticks, as "tick:call" strings
- * (on/off/program/mode/restart). Two songs that give the same trace sound the same.
+ * (on/off/program/mode/restart). With `velocity`, note-ons end in "@velocity" (how loud
+ * SBFMDRV plays them). Two songs that give the same trace with velocities sound the same.
  */
-export function traceMusic(music: Uint8Array, ticks: number): string[] {
+export function traceMusic(music: Uint8Array, ticks: number, velocity = false): string[] {
   const out: string[] = [];
   let offset = 0;
   let wait = 0;
@@ -379,7 +383,8 @@ export function traceMusic(music: Uint8Array, ticks: number): string[] {
       const a = at(offset);
       if (a < 0x80) {
         const vel = at(offset + 1);
-        out.push(`${t}:${funct === 8 || vel === 0 ? 'off' : 'on'} ${channel} ${a}`);
+        const off = funct === 8 || vel === 0;
+        out.push(`${t}:${off ? 'off' : 'on'} ${channel} ${a}${velocity && !off ? `@${vel}` : ''}`);
         offset += 2;
       } else {
         const hi = a & 0xf0;
@@ -430,13 +435,46 @@ export function channelNotes(song: CmfSong, ch: number): Note[] {
   return song.notes.filter((n) => n.on.ch === ch).sort((x, y) => x.on.tick - y.on.tick || x.on.seq - y.on.seq);
 }
 
-export function addNote(song: CmfSong, ch: number, key: number, start: number, len: number, vel = 100): Note {
-  const on: Ev = { type: 'on', tick: Math.max(0, Math.round(start)), seq: newSeq(song, 'on'), ch, a: key, b: Math.max(1, Math.min(127, vel)) };
+export function addNote(song: CmfSong, ch: number, key: number, start: number, len: number, vel = DEFAULT_VELOCITY): Note {
+  const on: Ev = { type: 'on', tick: Math.max(0, Math.round(start)), seq: newSeq(song, 'on'), ch, a: key, b: clampVelocity(vel) };
   const off: Ev = { type: 'off', tick: on.tick + Math.max(1, Math.round(len)), seq: newSeq(song, 'off'), ch, a: key, b: 0 };
   const n = { on, off };
   song.notes.push(n);
   extendEnd(song);
   return n;
+}
+
+export const DEFAULT_VELOCITY = 100;
+
+/** Clamps a velocity to what a note-on can carry (0 would turn the note off). */
+export function clampVelocity(v: number): number {
+  return Math.max(1, Math.min(127, Math.round(Number.isFinite(v) ? v : DEFAULT_VELOCITY)));
+}
+
+/** Sets how loud notes play (1..127). Unchanged notes keep their bytes. */
+export function setVelocity(notes: Iterable<Note>, v: number): void {
+  const vel = clampVelocity(v);
+  for (const n of notes) n.on.b = vel;
+}
+
+/** Scales velocities by a factor (and/or adds an offset), clamped to 1..127. */
+export function scaleVelocities(notes: Iterable<Note>, factor: number, add = 0): number {
+  let changed = 0;
+  for (const n of notes) {
+    const vel = clampVelocity(n.on.b * factor + add);
+    if (vel !== n.on.b) changed++;
+    n.on.b = vel;
+  }
+  return changed;
+}
+
+/**
+ * The carrier's total level (TL, 0 loudest .. 63 silent) SBFMDRV plays a note at, for the
+ * instrument's own TL: 63 - floor((velocity + 128) * (63 - TL) / 256). Velocity 127 keeps
+ * the level nearly as written; velocity 1 is about half as loud in TL steps.
+ */
+export function velocityLevel(velocity: number, tl: number): number {
+  return 63 - Math.floor(((Math.min(127, velocity) + 128) * (63 - (tl & 0x3f))) / 256);
 }
 
 /** Moves and/or resizes a note (start, length in ticks, note number). */
@@ -733,7 +771,7 @@ export function buildPreview(song: CmfSong, opts: { muted?: Set<number>; from?: 
 }
 
 /** A tiny song that plays one note with an instrument (for "try it"). */
-export function auditionSong(song: CmfSong, ch: number, program: number, key: number, ticks = 70): Uint8Array {
+export function auditionSong(song: CmfSong, ch: number, program: number, key: number, ticks = 70, vel = DEFAULT_VELOCITY): Uint8Array {
   const rhythm = RHYTHM_CHANNELS.includes(ch);
   const s: CmfSong = {
     ...song,
@@ -747,7 +785,7 @@ export function auditionSong(song: CmfSong, ch: number, program: number, key: nu
   };
   s.events.push({ type: 'mode', tick: 0, seq: 0, ch: 0, a: rhythm ? 1 : 0, b: 0 });
   s.events.push({ type: 'program', tick: 0, seq: 1, ch, a: program, b: 0 });
-  s.events.push({ type: 'on', tick: 0, seq: 2, ch, a: key, b: 100 });
+  s.events.push({ type: 'on', tick: 0, seq: 2, ch, a: key, b: clampVelocity(vel) });
   s.events.push({ type: 'off', tick: ticks, seq: 3, ch, a: key, b: 0 });
   return writeSong(s);
 }

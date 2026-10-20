@@ -10,7 +10,10 @@ import {
   readSong,
   removeChannel,
   scaleTime,
+  scaleVelocities,
   setNote,
+  setVelocity,
+  velocityLevel,
   setStartMode,
   setStartProgram,
   startMode,
@@ -75,7 +78,7 @@ describe('CMF editing model', () => {
       for (const e of song.events) e.delta = undefined;
       const out = writeSong(song);
       const ticks = span(bytes);
-      expect(traceMusic(musicOf(out), ticks), f).toEqual(traceMusic(musicOf(bytes), ticks));
+      expect(traceMusic(musicOf(out), ticks, true), f).toEqual(traceMusic(musicOf(bytes), ticks, true));
     }
   });
 
@@ -87,7 +90,7 @@ describe('CMF editing model', () => {
       const out = writeSong(song);
       const ticks = span(bytes);
       const effective = (t: string[]) => t.filter((x) => !/:off /.test(x));
-      expect(effective(traceMusic(musicOf(out), ticks)), f).toEqual(effective(traceMusic(musicOf(bytes), ticks)));
+      expect(effective(traceMusic(musicOf(out), ticks, true)), f).toEqual(effective(traceMusic(musicOf(bytes), ticks, true)));
     }
   });
 
@@ -114,6 +117,34 @@ describe('CMF editing model', () => {
     deleteNotes(song, [n]);
     trace = traceMusic(musicOf(writeSong(song)), 400);
     expect(trace.join()).not.toContain(' 2 50');
+  });
+
+  it('edits velocities (how loud SBFMDRV plays each note)', () => {
+    const song = readSong(small());
+    const n = addNote(song, 2, 48, 10, 20, 64);
+    expect(traceMusic(musicOf(writeSong(song)), 400, true)).toContain('10:on 2 48@64');
+    setVelocity([n], 0);
+    expect(n.on.b).toBe(1);
+    setVelocity([n], 300);
+    expect(n.on.b).toBe(127);
+    const lead = channelNotes(song, 0);
+    const before = lead.map((x) => x.on.b);
+    scaleVelocities(lead, 0.5);
+    expect(lead.map((x) => x.on.b)).toEqual(before.map((v) => Math.max(1, Math.round(v * 0.5))));
+    const again = readSong(writeSong(song));
+    expect(channelNotes(again, 0).map((x) => x.on.b)).toEqual(lead.map((x) => x.on.b));
+    // an untouched velocity keeps the file byte for byte
+    const bytes = small();
+    const same = readSong(bytes);
+    setVelocity(channelNotes(same, 0), channelNotes(same, 0)[0].on.b);
+    expect(writeSong(same)).toEqual(bytes);
+  });
+
+  it('turns velocity into the carrier level the way SBFMDRV does', () => {
+    expect(velocityLevel(127, 0)).toBe(1);
+    expect(velocityLevel(1, 0)).toBe(32);
+    expect(velocityLevel(64, 20)).toBe(31);
+    expect(velocityLevel(100, 63)).toBe(63);
   });
 
   it('plays a note that ends where the next one starts', () => {
