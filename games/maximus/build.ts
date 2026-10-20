@@ -7,7 +7,7 @@ import { README } from './text';
 
 const t0 = Date.now();
 const built = buildGame();
-present(built);
+await present(built);
 const disk = new Disk(new URL('./disk', import.meta.url).pathname);
 for (const [name, bytes] of built.files) disk.put(name, bytes);
 disk.put('readme.txt', README('$15'));

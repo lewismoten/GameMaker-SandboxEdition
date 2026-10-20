@@ -11,11 +11,12 @@ import { buildSounds } from './sounds';
 import { hiscoreScreen, menuScreen, pageScreen, placeCards, sectorCards, slotScreen, storySlides, titleScreen, wonScreens, planetArt } from './screens';
 import { descentFli, introFli, launchFli, warpFli, wonFli } from './flics';
 import { CREDITS, INSTRUCTIONS } from './text';
+import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
 import { drawCourier } from './courier';
 import { drawShard } from './items';
 
-export function present(b: Built): void {
+export async function present(b: Built): Promise<void> {
   const put = (name: string, bytes: Uint8Array) => b.files.set(name.toLowerCase(), bytes);
   const putAll = (m: Map<string, Uint8Array>) => m.forEach((v, k) => put(k, v));
   const g = b.game;
@@ -66,6 +67,11 @@ export function present(b: Built): void {
   put('load.gif', slotScreen('LOAD GAME', 91));
   put('save.gif', slotScreen('SAVE GAME', 92));
   putAll(wonScreens());
+
+  // the attract-mode demo, played by the headless engine
+  const demo = await buildDemo(b);
+  put('demo.rec', demo.rec);
+  if (!demo.reached) b.problems.push('demo: the autopilot did not reach the airlock');
 
   const s0 = g.scenes[SCENE.start];
   s0.files = [
