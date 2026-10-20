@@ -95,8 +95,8 @@ export function leoFli(): Uint8Array {
     teddy(p, 'frontBeg');
     caption(p, "TONIGHT IS THE KLOWN KLUB'S");
     caption(p, 'BIG SHOW, AND HE IS THE STAR!', 22);
-  }, 8);
-  return r.fli(6);
+  }, 14);
+  return r.fli(9);
 }
 
 /** Clip 2: Doc Leo goes ahead to the Klub in his CitiCar; his costume suitcase waits on the step. */
@@ -125,9 +125,9 @@ export function carFli(): Uint8Array {
         caption(p, 'THE BACK STEP FOR LATER...', 22);
       }
       if (f >= 20 && f % 4 < 2) outlined(p, 100, 120, 'BYE!', c('yellow', 3), c('ink', 0), 1);
-    });
+    }, f < 12 ? 2 : f === 33 ? 8 : 1);
   }
-  return r.fli(6);
+  return r.fli(9);
 }
 
 /** The finale: the Klown Klub parade down Main Street at night, Teddy riding on the CitiCar. */
