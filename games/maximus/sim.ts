@@ -47,6 +47,10 @@ export class Sim {
   private held = new Set<number>();
   private doScroll = false;
   sounds: number[] = [];
+  /** Ticks played so far. */
+  ticks = 0;
+  /** Called with every key event (scan, bit 7 = released), e.g. to record a demo. */
+  onKey?: (key: number) => void;
   /** Link index reached (-1 = none yet). */
   link = -1;
   dead = false;
@@ -90,11 +94,13 @@ export class Sim {
   private pending: number[] = [];
   private event(k: number): void {
     this.pending.push(k);
+    this.onKey?.(k);
   }
 
   /** One 18.2 Hz game tick (8 scroll steps + tick()). */
   async tick(): Promise<void> {
     const w = this.w;
+    this.ticks++;
     for (let i = 0; i < 8; i++) if (this.doScroll) drawScroll(w);
     w.clock++;
     if (!w.noMons) {

@@ -1,10 +1,11 @@
 // DEMO.REC: the attract-mode recording the menu plays when nobody touches the keys. It
-// is made by playing the training deck in the headless engine with a little autopilot
-// and writing down every key press and release with its game tick, Game-Maker style.
+// is made by playing in the headless engine with a little autopilot - across the training
+// deck, out of the airlock and over the galaxy chart in the pod - writing down every key
+// press and release with its game tick, Game-Maker style.
 import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
 import { SCAN } from './common';
 import type { Built } from './game';
-import { simFor } from './verify';
+import { navigate, simFor } from './verify';
 
 export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: number; reached: boolean }> {
   const home = b.scenes.find((s) => s.file === 'home')!;
@@ -61,10 +62,23 @@ export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: num
   }
   const reached = sim.link >= 0;
   ev(SCAN.right, false);
-  // stop just short of leaving: Esc ends the demo and returns to the menu
-  await step(10);
+  // then the pod: out across the galaxy chart to the warp ring of The Cradle
+  const galaxy = b.scenes.find((s) => s.file === 'galaxy')!;
+  const pod = simFor(b, galaxy, 2, sim.w.ci);
+  const before = pod.ticks;
+  const tBase = t;
+  pod.onKey = (k) => {
+    const now = tBase + (pod.ticks - before) + 1;
+    keys.push({ delta: now - last, key: k });
+    last = now;
+  };
+  const warp = b.game.scenes[galaxy.scene].links[1].from;
+  await navigate(pod, { x: warp.x, y: warp.y + 2 }, 700);
+  t += pod.ticks - before;
+  // hold still a moment in front of the ring, then Esc ends the demo
+  pod.onKey = undefined;
   ev(SCAN.esc, true);
-  await step(1);
+  t += 1;
   ev(SCAN.esc, false);
   return { rec: serializeRecording(keys), ticks: t, reached };
 }
