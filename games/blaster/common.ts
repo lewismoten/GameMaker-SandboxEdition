@@ -106,7 +106,7 @@ function burstPic(p: Pal, k: number): Pixels {
 }
 
 /** Bullet damage, enemy contact damage. */
-export const HURT = { bullet: -10, enemy: -10, core: -20, hazard: -5 } as const;
+export const HURT = { bullet: -10, enemy: -10, core: -20, hazard: -6 } as const;
 
 export function addCommon(b: Bestiary, p: Pal): void {
   const mb = b.mb;

@@ -103,6 +103,14 @@ function beam(a: StageArt, on: boolean, phase: number): Pixels {
   return t;
 }
 
+function gap(a: StageArt): Pixels {
+  const p = a.pal;
+  const t = copy(a.floor(2));
+  for (let x = 0; x < 20; x++) if (x < 4 || x > 15) t.set(x, 10, p.c('glow', 1));
+  for (let i = 0; i < 6; i++) t.set(4 + ((i * 7) % 12), 8 + ((i * 3) % 5), p.c('grey', 2));
+  return t;
+}
+
 function pad(a: StageArt): Pixels {
   const p = a.pal;
   const t = copy(a.floor(0));
@@ -224,11 +232,13 @@ export function addStageTiles(bs: BlockSet, a: StageArt, o: TileOpts): void {
   const off = o.fenceOff ?? 24;
   bs.add('postL', post(a, 'L'));
   bs.add('postR', post(a, 'R'));
-  bs.add('beamA', beam(a, true, 0), { next: 'beamA1', ntime: on, chHitPt: HURT.hazard });
+  // flying into a live beam burns a hole in it (and some of the ship's energy)
+  bs.add('beamGap', gap(a));
+  bs.add('beamA', beam(a, true, 0), { next: 'beamA1', ntime: on, chHitPt: HURT.hazard, touch: 'beamGap' });
   bs.add('beamA1', beam(a, false, 0), { next: 'beamA', ntime: off });
   bs.add('beamB', beam(a, false, 2), { next: 'beamB1', ntime: off });
-  bs.add('beamB1', beam(a, true, 2), { next: 'beamB', ntime: on, chHitPt: HURT.hazard });
-  bs.add('beamOn', beam(a, true, 1), { chHitPt: HURT.hazard });
+  bs.add('beamB1', beam(a, true, 2), { next: 'beamB', ntime: on, chHitPt: HURT.hazard, touch: 'beamGap' });
+  bs.add('beamOn', beam(a, true, 1), { chHitPt: HURT.hazard, touch: 'beamGap' });
   // pickups
   bs.add('pad', pad(a));
   const pk = (kind: PickupKind, props: object) => {

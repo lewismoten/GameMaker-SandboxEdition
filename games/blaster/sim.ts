@@ -79,6 +79,42 @@ export class Sim {
     w.joyOldTime = w.clock;
   }
 
+  /** A copy that can be played ahead without touching this one (for a bot looking ahead). */
+  fork(): Sim {
+    const f = Object.create(Sim.prototype) as Sim;
+    const w = this.w;
+    const copy: World = {
+      ...w,
+      map: w.map.slice(),
+      mapMon: w.mapMon.slice(),
+      ci: structuredClone(w.ci),
+      mi: structuredClone(w.mi),
+      mm: w.mm.map((m) => ({ ...m })),
+      blkMon: w.blkMon.map((b) => ({ ...b })),
+      birthFlag: w.birthFlag.slice(),
+      nxtchg: w.nxtchg.slice(),
+      blkmap: w.blkmap.slice(),
+      scroll: structuredClone(w.scroll),
+      keydn: w.keydn.slice(),
+      keystack: w.keystack.map((k) => ({ ...k })),
+      chr: { ...w.chr, x: [...w.chr.x], y: [...w.chr.y] },
+      sound: { play: () => true },
+      rand: () => 0.5,
+    };
+    Object.assign(f, {
+      scene: this.scene,
+      w: copy,
+      held: new Set(this.held),
+      doScroll: this.doScroll,
+      sounds: [],
+      ticks: this.ticks,
+      link: this.link,
+      dead: this.dead,
+      pending: [...this.pending],
+    });
+    return f;
+  }
+
   press(scan: number): void {
     if (this.held.has(scan)) return;
     this.held.add(scan);
