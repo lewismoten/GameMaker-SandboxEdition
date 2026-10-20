@@ -15,6 +15,23 @@ that history and that license. Everything added here (the browser version in `we
 License; see [LICENSE](LICENSE), whose original copyright notice is kept unchanged as the
 license requires.
 
+## The name: Game-Maker: Sandbox Edition
+
+To keep this fork from being mistaken for RSD's own release, it goes by **Game-Maker:
+Sandbox Edition** (short: *Game-Maker SE*), after the Sandbox BBS Lewis ran in Pittsburgh in
+the 1990s. It is based on Game-Maker 3.0 and keeps its file formats, but it is not the same
+program, and the pieces it draws are its own:
+
+- the **Owner's Guide** on the desk is a new guide written for this edition, not the manual
+  RSD shipped;
+- the **Game-Maker box** and **CD** on the desk are this edition's own designs, marked
+  "Sandbox Edition", not photographs or copies of the original box and disc;
+- the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original.
+
+Refer to this project as *Game-Maker: Sandbox Edition* (https://github.com/lewismoten/GameMaker)
+and to the original as *Game-Maker 3.0 by Recreational Software Designs*
+(https://github.com/gandrewstone/GameMaker).
+
 ## Why a web version
 
 When he released the code, Andy Stone said that people were free to use it as they liked,
