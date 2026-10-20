@@ -32,6 +32,25 @@
       ["bowden.map", 26, 23],
       ["lavale.map", 24, 10]
     ],
-    "rating": "Ages 6 and up"
+    "rating": "Ages 6 and up",
+    "hours": 3,
+    "reviews": [
+      {
+        "quote": "The funniest $89 we ever spent. Watch out for Biscuit!",
+        "source": "Modem Morning News"
+      },
+      {
+        "quote": "Snow so deep you can shovel it.",
+        "source": "Megapixel Monthly"
+      }
+    ],
+    "award": {
+      "title": "Editors' Choice",
+      "from": "Diskette Digest"
+    },
+    "poster": {
+      "gif": "title.gif",
+      "caption": "Every driveway is a dollar. Every dollar is a pixel."
+    }
   }
 }
