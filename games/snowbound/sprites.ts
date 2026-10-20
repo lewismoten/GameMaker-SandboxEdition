@@ -207,12 +207,13 @@ export function buildMonsterBlocks(pal: Pal) {
   const ball = (spin: number) => {
     const p = new Pixels(20, 20, T);
     blob(p, 10, 14, 3, 1, pal.r('ink'), 0, 1);
+    p.disc(10, 10, 4.4, c('ink', 1));
     blob(p, 10, 10, 3.6, 3.6, snow, 2, 6);
     p.set(9 + spin, 8, c('snow', 6));
     return p;
   };
-  book.add('ball0', ball(0), hurtBy(-7));
-  book.add('ball1', ball(1), hurtBy(-7));
+  book.add('ball0', ball(0), hurtBy(-5));
+  book.add('ball1', ball(1), hurtBy(-5));
   book.add('myBall0', ball(0));
   book.add('myBall1', ball(1));
   const poof = (r: number) => {

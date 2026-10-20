@@ -164,13 +164,13 @@ export function buildScreens(
   snowfall(title, pal, 11);
   snowTitle(title, pal, 22, 'SNOWBOUND', 4, 'siding');
   outlined(title, 160 - textWidth('The $89 Shovel', 2) / 2, 66, 'The $89 Shovel', c('gold', 3), c('ink', 0), 2);
-  scaleBlit(title, kid, 20, 136, 3);
+  scaleBlit(title, kid, 20, 128, 3);
   // a big pile of snow and a tin can of money
   blob(title, 106, 192, 26, 10, pal.r('snow'), 2, 6);
   title.rect(92, 168, 14, 16, c('grey', 3)).rect(92, 168, 14, 2, c('grey', 4)).rect(94, 172, 10, 6, c('money', 2));
   micro(title, 95, 173, '$', c('money', 0));
-  centered(title, 186, 'Sandbox Software  (c) 1995', c('ink', 0));
-  centered(title, 185, 'Sandbox Software  (c) 1995', c('snow', 6));
+  title.rect(0, 188, W, 12, c('ink', 0));
+  centered(title, 190, 'Sandbox Software  (c) 1995', c('snow', 6));
   save('title.gif', title);
 
   // ---------------- menu: a painted shop sign holds the menu
@@ -179,10 +179,10 @@ export function buildScreens(
   town(menu, pal, 120, 17, true);
   snowfall(menu, pal, 13, 120);
   snowTitle(menu, pal, 10, 'SNOWBOUND', 3, 'siding');
-  menu.rect(56, 92, 208, 82, c('wood', 0)).rect(58, 94, 204, 78, c('wood', 2));
-  menu.rect(62, 98, 196, 70, c('paper', 4)).frame(62, 98, 196, 70, c('wood', 1));
+  menu.rect(56, 92, 208, 90, c('wood', 0)).rect(58, 94, 204, 86, c('wood', 2));
+  menu.rect(62, 98, 196, 78, c('paper', 4)).frame(62, 98, 196, 78, c('wood', 1));
   for (let x = 58; x < 262; x++) menu.set(x, 92 + ((x * 3) % 4 === 0 ? 1 : 0), c('snow', 6)).set(x, 91, c('snow', 5));
-  menu.rect(80, 174, 4, 26, c('wood', 1)).rect(236, 174, 4, 26, c('wood', 1));
+  menu.rect(80, 182, 4, 18, c('wood', 1)).rect(236, 182, 4, 18, c('wood', 1));
   scaleBlit(menu, kid, 266, 146, 2);
   scaleBlit(menu, spr.get('dog0')!, 8, 162, 2);
   save('menu.gif', menu);
@@ -201,9 +201,9 @@ export function buildScreens(
   const body = (p: Pixels, x: number, y: number, w: number, lines: string[]) => {
     lines.forEach((l, i) => micro(p, x, y + i * 7, l.slice(0, Math.floor(w / 4)), c('newsink', 1)));
   };
-  const n1 = paper('MINERAL COUNTY COURIER', 'FRIDAY  DECEMBER 11  1992');
-  centered(n1, 42, 'AREA SNOWBOUND!', c('newsink', 0), 3);
-  centered(n1, 70, 'Schools closed, plows run all night', c('newsink', 0));
+  const n1 = paper('MINERAL COURIER', 'FRIDAY  DECEMBER 11  1992');
+  centered(n1, 40, 'SNOWBOUND!', c('newsink', 0), 3);
+  centered(n1, 66, 'Area buried; schools closed; plows out', c('newsink', 0));
   scaleBlit(n1, extras.shot, 10, 84, 1);
   n1.frame(9, 83, 162, 82, c('newsink', 0));
   micro(n1, 10, 168, 'PINE STREET  FORT ASHBY  THIS MORNING', c('newsink', 1));
@@ -225,9 +225,8 @@ export function buildScreens(
   ]);
   save('news1.gif', n1);
 
-  const n2 = paper('MINERAL COUNTY COURIER', 'PAGE 6       CLASSIFIEDS');
+  const n2 = paper('MINERAL COURIER', 'PAGE 6       CLASSIFIEDS');
   n2.rect(10, 42, 196, 148, c('paper', 4)).frame(10, 42, 196, 148, c('newsink', 0)).frame(12, 44, 192, 144, c('newsink', 0));
-  centered(n2, 0, '', 0);
   text(n2, 22, 52, 'MAKE YOUR OWN', c('newsink', 0), 2);
   text(n2, 22, 70, 'VIDEO GAMES!', c('newsink', 0), 2);
   // the pink box
@@ -272,13 +271,14 @@ export function buildScreens(
   body(n2, 216, 126, 92, ['NOTICE:', 'THE PRICE OF', 'GAME-MAKER GOES', 'UP TO $129 IN', 'JANUARY.', '', 'BUY BEFORE', 'CHRISTMAS!']);
   save('news2.gif', n2);
 
-  const n3 = paper('MINERAL COUNTY COURIER', 'PAGE 2        LOCAL NEWS');
-  centered(n3, 42, 'KID OPENS SNOW BUSINESS', c('newsink', 0), 2);
-  centered(n3, 62, '"Moten Snow-to-Software Operations"', c('newsink', 0));
-  scaleBlit(n3, kid, 16, 80, 4);
-  n3.frame(12, 78, 88, 88, c('newsink', 0));
-  micro(n3, 14, 170, 'THE FOUNDER AND OPERATOR', c('newsink', 1));
-  body(n3, 110, 80, 200, [
+  const n3 = paper('MINERAL COURIER', 'PAGE 2        LOCAL NEWS');
+  centered(n3, 40, 'KID SHOVELS FOR', c('newsink', 0), 2);
+  centered(n3, 56, 'GAME-MAKER', c('newsink', 0), 2);
+  centered(n3, 72, '"Moten Snow-to-Software Operations"', c('newsink', 0));
+  scaleBlit(n3, kid, 16, 88, 4);
+  n3.frame(12, 86, 88, 86, c('newsink', 0));
+  micro(n3, 14, 176, 'OUR FOUNDER', c('newsink', 1));
+  body(n3, 110, 88, 200, [
     'A FORT ASHBY TEEN HAS A PLAN FOR ALL',
     'THIS SNOW. HE WILL SHOVEL ANY DRIVEWAY',
     'OR SIDEWALK IN TOWN FOR ONE DOLLAR A',
@@ -303,7 +303,6 @@ export function buildScreens(
     gradient(p, 0, 0, W, H, pal.r('nightsky'), 2, 6);
     snowfall(p, pal, 21, 90);
     p.rect(24, 6, 272, 190, c('paper', 4)).frame(24, 6, 272, 190, c('paper', 1));
-    for (let y = 39; y < 190; y += 8) p.rect(26, y, 268, 1, c('siding', 4));
     p.rect(34, 8, 1, 186, c('coat', 3));
     for (let y = 14; y < 196; y += 18) p.rect(27, y, 4, 4, c('nightsky', 3));
     centered(p, 14, heading, c('menublue', 1), 2);
@@ -334,10 +333,11 @@ export function buildScreens(
   // a coffee can full of crumpled dollars
   won1.rect(70, 82, 26, 30, c('grey', 3)).rect(70, 82, 26, 3, c('grey', 4));
   for (let k = 0; k < 9; k++) blob(won1, 74 + (k % 3) * 9, 80 - Math.floor(k / 3) * 3, 4, 3, pal.r('money'), 0, 2);
-  scaleBlit(won1, kid, 14, 120, 3);
+  scaleBlit(won1, kid, 14, 106, 3);
+  won1.rect(0, 166, W, 34, c('ink', 0));
   outlined(won1, 160 - textWidth('SOLD!', 4) / 2, 130, 'SOLD!', c('gold', 3), c('ink', 0), 4);
-  centered(won1, 170, 'One GAME-MAKER, $89.00 cash -', c('snow', 6));
-  centered(won1, 180, 'in ones, still a little damp.', c('snow', 6));
+  centered(won1, 172, 'One GAME-MAKER, $89.00 cash -', c('snow', 6));
+  centered(won1, 184, 'in ones, still a little damp.', c('snow', 6));
   save('won1.gif', won1);
 
   const won2 = new Pixels(W, H);
@@ -355,12 +355,13 @@ export function buildScreens(
   scaleBlit(won2, extras.shot.crop(20, 0, 128, 84), 51, 41, 1);
   won2.rect(60, 142, 110, 14, c('concrete', 2)).rect(150, 146, 14, 3, c('money', 2));
   box(won2, 196, 98, 1);
-  scaleBlit(won2, spr.get('up0')!, 92, 140, 3);
+  scaleBlit(won2, spr.get('up0')!, 92, 112, 3);
+  won2.rect(0, 170, W, 30, c('ink', 0));
   centered(won2, 176, 'That night, Moten Snow-to-Software', c('snow', 6));
   centered(won2, 186, 'Operations became a game company.', c('snow', 6));
   save('won2.gif', won2);
 
-  const won3 = paper('MINERAL COUNTY COURIER', 'MONDAY  JANUARY 4  1993');
+  const won3 = paper('MINERAL COURIER', 'MONDAY  JANUARY 4  1993');
   centered(won3, 44, 'GAME-MAKER NOW $129', c('newsink', 0), 2);
   centered(won3, 64, 'Local kid: "Glad I shoveled fast."', c('newsink', 0));
   box(won3, 30, 84, 1);
@@ -381,6 +382,7 @@ export function buildScreens(
 
   const lost = new Pixels(W, H);
   gradient(lost, 0, 0, W, 130, pal.r('wall'), 1, 0);
+  lost.rect(0, 130, W, 16, c('wood', 2));
   lost.rect(30, 20, 90, 70, c('wood', 3));
   gradient(lost, 34, 24, 82, 62, pal.r('nightsky'), 0, 3);
   const rl = rng(8);

@@ -6,10 +6,10 @@ ARROW KEYS walk. Walk into a
 heap of deep snow to shovel
 it: every scoop pays $1.
 
-SPACE throws a snowball the way
-you last walked. Scoop the
-plow banks by the road to pack
-more snowballs.
+SPACE throws a snowball the
+way you last walked. Scoop the
+plow banks along the road to
+pack more snowballs.
 
 Press F2 any time to count the
 money in your coffee can.
@@ -17,18 +17,23 @@ money in your coffee can.
 HOT COCOA warms you back up.
 Plows, cars, shopping carts,
 snowballs, Biscuit the dog and
-Big Pete wear you down. Bonk a
-snow fort to knock it flat,
-then shovel what is left.
+Big Pete wear you down. Only a
+snowball stops Big Pete.
+
+Bonk a snow fort to knock it
+flat, then shovel what is left
+for $2.
 
 ICE slides you the way its
-arrows point. The creek on
-Main Street runs east!
+arrows point. Patterson Creek
+on Main Street runs east!
 
-THE SLED: LEFT and RIGHT steer,
-UP digs in your heels, DOWN
-pushes off. Grab the dollars
-blowing down Knobley Hill.
+
+
+THE SLED: LEFT and RIGHT
+steer, UP digs in your heels,
+DOWN pushes off. Grab the
+dollars blowing down the hill.
 
 THE MALL LOT snows back over
 every half minute. Shovel it
@@ -40,8 +45,3 @@ F1 help      F2 coffee can
 F3 music     F4 sound
 F5 save      F6 load
 ESC quit
-
-
-
-
-

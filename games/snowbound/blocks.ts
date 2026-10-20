@@ -293,8 +293,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(1, 19, 18, 1, c('snow', 1));
     return p;
   };
-  book.add('fort', fort(false), { solid: SOLID, birthMon: MON.snowball, birthTime: 44, touch: 'pile', score: 100, next: 'fortUp', ntime: 18 });
-  book.add('fortUp', fort(true), { solid: SOLID, birthMon: MON.snowball, birthTime: 44, touch: 'pile', score: 100, next: 'fort', ntime: 9 });
+  book.add('fort', fort(false), { solid: SOLID, birthMon: MON.snowball, birthTime: 66, touch: 'pile', score: 100, next: 'fortUp', ntime: 18 });
+  book.add('fortUp', fort(true), { solid: SOLID, birthMon: MON.snowball, birthTime: 66, touch: 'pile', score: 100, next: 'fort', ntime: 9 });
   const pile = yardBase(105);
   blob(pile, 10, 12, 9, 7, snow, 2, 6);
   blob(pile, 5, 14, 4, 4, snow, 2, 6);
@@ -503,7 +503,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const shopDoor = brickWall(3);
   shopDoor.rect(4, 2, 12, 18, c('wood', 1)).rect(6, 4, 8, 12, c('ice', 2));
   gradient(shopDoor, 6, 4, 8, 12, R('glow'), 2, 0);
-  micro(shopDoor, 6, 6, 'OPEN', c('pink', 4));
+  shopDoor.rect(7, 6, 6, 3, c('pink', 4)).rect(8, 7, 4, 1, c('pink', 2));
   shopDoor.set(13, 14, c('gold', 3));
   book.add('shopDoor', shopDoor, { solid: SOLID });
 
@@ -596,7 +596,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = P();
     const r = rng(seed);
     for (let y = 0; y < 20; y++)
-      for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(snow, 3 - steep, 6, 0.75 + Math.sin((x + y * 0.3 + seed) * 0.35) * 0.18 + (r() - 0.5) * 0.1, x, y));
+      for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(snow, 3 - steep, 6, 0.78 + Math.sin((x + y * 0.3 + seed) * 0.314) * 0.06 + (r() - 0.5) * 0.16, x, y));
     if (tracks)
       for (let y = 0; y < 20; y++)
         p.set(6 + Math.round(Math.sin(y * 0.3 + seed) * 1.2), y, c('snow', 3)).set(13 + Math.round(Math.sin(y * 0.3 + seed) * 1.2), y, c('snow', 3));

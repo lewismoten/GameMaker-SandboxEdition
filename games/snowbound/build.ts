@@ -79,7 +79,7 @@ const LEVELS: Level[] = [
       title: '2. KNOBLEY HILL',
       time: 'Noon. The fast way to town.',
       lines: ['Steer LEFT/RIGHT, UP to brake,', 'DOWN to push. Catch the loose', 'dollars blowing down the run!'],
-      view: [34, 14],
+      view: [33, 4],
     },
   },
   {
