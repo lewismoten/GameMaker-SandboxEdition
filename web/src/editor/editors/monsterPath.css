@@ -317,3 +317,7 @@
   line-height: 1;
   padding: 0 4px;
 }
+
+.mpath-numbers {
+  overflow-x: auto;
+}

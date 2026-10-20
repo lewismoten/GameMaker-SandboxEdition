@@ -361,7 +361,9 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
       const x = cx(c.x) - CELL / 2;
       const y = cy(c.y) - CELL / 2;
       const s = sprite(firstPic(), c.orient);
-      ctx.globalAlpha = c.i === selected ? 0.95 : 0.6;
+      ctx.fillStyle = c.i === selected ? 'rgba(0,224,255,0.25)' : 'rgba(255,255,255,0.18)';
+      ctx.fillRect(x, y, CELL, CELL);
+      ctx.globalAlpha = c.i === selected ? 0.95 : 0.7;
       if (s) ctx.drawImage(s, x, y, CELL, CELL);
       ctx.globalAlpha = 1;
       ctx.save();

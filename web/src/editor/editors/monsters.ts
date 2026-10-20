@@ -105,7 +105,7 @@ registerEditor(['mon'], (host, project, file) => {
       ),
       h(
         'div',
-        { class: 'panel' },
+        { class: 'panel', style: 'overflow-x:auto' },
         h('h4', { style: 'margin:0 0 6px' }, 'Animation'),
         h(
           'table',
