@@ -241,9 +241,10 @@ function pages(): BookletPage[] {
       `<span class="chapter">5</span>
       <h1>The Game-Maker BBS</h1>
       <p>Game-Maker owners shared their games as shareware on bulletin board systems. Type
-      <code>TERMINAL</code> to dial <i>The Game-Maker Exchange</i>.</p>
-      ${figure(fig.bbs, 'Figure 5-1. Logged on to The Game-Maker Exchange.', [5, 17])}
-      <p>Press <kbd>F</kbd> for the file area, then the number of a game to download it. It is
+      <code>TERMINAL</code> and pick <i>The -= S A N D B O X =- BBS</i> from the dialing
+      directory. <i>The Sofa</i>, a multi-line board for chatting, is there too.</p>
+      ${figure(fig.bbs, 'Figure 5-1. Logging on to The Sandbox.', [0, 20])}
+      <p>Press <kbd>F</kbd> for the sand pile of files, then <kbd>D</kbd> and a game\u2019s number to download it. It is
       unpacked into <code>C:\\DOWNLOAD</code>. <kbd>G</kbd> says goodbye and hangs up.</p>
       <h3>What is shareware?</h3>
       <p>Shareware is try-before-you-buy. You may play a shareware game and share copies of it.

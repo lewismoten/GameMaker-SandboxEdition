@@ -2,6 +2,7 @@
 import { TextScreen, attr } from '../retro/textScreen';
 import { toCp437 } from '../retro/cp437';
 import { paintMenuScreen } from '../retro/gm';
+import { sandboxLogin } from '../retro/ansiArt';
 import { MENUATTR, SHADATTR, ERRORATTR, CURATTR } from '../retro/textUi';
 
 type Draw = (s: TextScreen) => void;
@@ -86,28 +87,8 @@ export const errorBox: Draw = (s) => {
   text(s, x + 1, 9, ERRORATTR, l2);
 };
 
-/** The BBS main menu, as TERMINAL shows it after logging on. */
+/** The Sandbox BBS logon screen, as TERMINAL shows it after CONNECT. */
 export const bbs: Draw = (s) => {
-  const blue = attr(9, 0);
-  const lines: [number, string][] = [
-    [attr(15, 0), 'TERMINAL 2.1  Modem on COM2 ready.'],
-    [attr(7, 0), ''],
-    [attr(7, 0), 'ATDT'],
-    [attr(14, 0), 'CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS'],
-    [attr(7, 0), ''],
-    [blue, '╔══════════════════════════════════════════════════════════════════════════╗'],
-    [blue, '║              THE GAME-MAKER EXCHANGE              Node 1 of 2             ║'],
-    [blue, '║     Shareware made with Game-Maker · Help for Game-Maker designers       ║'],
-    [blue, '╚══════════════════════════════════════════════════════════════════════════╝'],
-    [attr(7, 0), ''],
-    [attr(7, 0), 'Welcome, PLAYER ONE! You are caller #1,994. Time allowed today: 60 minutes.'],
-    [attr(7, 0), ''],
-    [blue, '── Main Menu ──────────────────────────────'],
-    [attr(7, 0), '[F] Files: Game-Maker shareware games'],
-    [attr(7, 0), '[B] Bulletins'],
-    [attr(7, 0), '[G] Goodbye (log off)'],
-    [attr(7, 0), ''],
-    [attr(14, 0), 'Your choice? '],
-  ];
-  lines.forEach(([a, t], y) => text(s, 0, y, a, t));
+  s.cursorY = sandboxLogin(s);
+  text(s, 0, s.cursorY, attr(14, 0), 'Enter your handle, or GUEST: ');
 };
