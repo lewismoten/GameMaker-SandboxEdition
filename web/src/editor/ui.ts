@@ -75,7 +75,10 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
       e.preventDefault();
       close(undefined);
     });
-    append(dlg, [h('h2', null, title), build(close)]);
+    append(dlg, [
+      h('header', { class: 'modal-head' }, h('h2', null, title), h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => close(undefined) }, '×')),
+      build(close),
+    ]);
     document.body.append(dlg);
     dlg.showModal();
   });

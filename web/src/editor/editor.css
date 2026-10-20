@@ -453,8 +453,43 @@ dialog.modal::backdrop {
 }
 
 dialog.modal h2 {
-  margin: 0 0 12px;
+  margin: 0;
   font-size: 17px;
+}
+
+dialog.modal .modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -4px 0 12px;
+}
+
+dialog.modal .modal-close {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* file thumbnails (editor/thumbs.ts) */
+.thumb {
+  display: block;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  background: repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 12px 12px;
+  border-radius: 4px;
+}
+
+.thumb.icon {
+  display: grid;
+  place-items: center;
+  background: var(--panel-2);
+  font-size: 30px;
 }
 
 dialog.modal label {
