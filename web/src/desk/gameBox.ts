@@ -326,10 +326,14 @@ export function boxModel(faces: BoxFaces): HTMLElement {
 export interface BoxViewerActions {
   manual?: () => void;
   insert?: () => void;
+  /** What the insert button says (the disk by default). */
+  insertLabel?: string;
+  /** Things that came in the box, shown beside it. */
+  extras?: HTMLElement;
 }
 
 /** Brings a box to the middle of the screen to turn, zoom and read. */
-export function openBoxViewer(entry: CatalogEntry, faces: BoxFaces, actions: BoxViewerActions): Promise<void> {
+export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFaces, actions: BoxViewerActions): Promise<void> {
   return new Promise((resolve) => {
     const model = boxModel(faces);
     const stage = h('div', { class: 'box-stage' }, model);
@@ -376,6 +380,7 @@ export function openBoxViewer(entry: CatalogEntry, faces: BoxFaces, actions: Box
     const pointers = new Map<number, { x: number; y: number }>();
     let pinch = 0;
     stage.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); // turn the box, don't drag its picture away
       stage.setPointerCapture(e.pointerId);
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       auto = false;
@@ -431,12 +436,13 @@ export function openBoxViewer(entry: CatalogEntry, faces: BoxFaces, actions: Box
       'div',
       { class: 'box-viewer', role: 'dialog', 'aria-label': `${entry.title} box` },
       stage,
+      actions.extras ?? null,
       h(
         'div',
         { class: 'box-viewer-bar' },
         h('strong', null, entry.title),
         h('span', { class: 'hint' }, 'Drag to turn · scroll to zoom · shift-drag to pan · double-click to reset'),
-        actions.insert ? h('button', { class: 'primary', onclick: () => (close(), actions.insert!()) }, 'Put the disk in drive A:') : null,
+        actions.insert ? h('button', { class: 'primary', onclick: () => (close(), actions.insert!()) }, actions.insertLabel ?? 'Put the disk in drive A:') : null,
         actions.manual ? h('button', { onclick: () => (close(), actions.manual!()) }, 'Read the manual') : null,
         h('button', { onclick: close }, 'Close (Esc)'),
       ),
