@@ -540,3 +540,76 @@ dialog.modal .buttons {
     border-bottom: 1px solid var(--border);
   }
 }
+
+/* the visual file picker (editor/filePicker.ts) */
+.file-picker {
+  width: min(860px, 86vw);
+}
+
+.pick-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.pick-bar .spacer {
+  flex: 1;
+}
+
+.pick-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+
+.pick-tabs button {
+  border: 0;
+  background: transparent;
+}
+
+.pick-tabs button[aria-selected='true'] {
+  background: var(--panel);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.pick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 2px;
+}
+
+.pick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.pick-card .thumb {
+  width: 96px;
+  height: 72px;
+}
+
+.pick-card strong {
+  font-size: 12px;
+}
+
+.pick-card small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.pick-card.selected {
+  outline: 3px solid var(--accent);
+}
