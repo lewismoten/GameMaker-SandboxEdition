@@ -179,6 +179,9 @@ export interface World {
 
   sound: SoundHooks;
   rand: () => number;
+  /** GetJoyPos: position 0 (center) or 1..8 clockwise from up, buttons bit 0/1. */
+  joystick?: () => { pos: number; buttons: number } | null;
+  jstickOn: boolean;
 }
 
 export function newCharInfo(): CharInfo {
@@ -329,6 +332,7 @@ export function createWorld(map: GameMap, sound: SoundHooks, rand = Math.random)
     joyOldBut: 0,
     sound,
     rand,
+    jstickOn: true,
   };
 }
 
