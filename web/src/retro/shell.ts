@@ -11,6 +11,8 @@ export interface ShellHost {
   fs: FileSystem;
   /** Runs a program; the shell waits until it returns. */
   run(ref: ProgramRef, args: string[], at: { drive: string; parts: string[] }): Promise<void>;
+  /** MD: returns an error message, or undefined when the folder was made. */
+  makeDir?(drive: string, parts: string[]): Promise<string | undefined>;
 }
 
 const PATH = ['C:\\DOS', 'C:\\GM', 'C:\\COMM'];
@@ -64,7 +66,7 @@ export class Shell {
     if (!trimmed) return;
     if (/^[A-Za-z]:$/.test(trimmed)) return this.changeDrive(trimmed[0].toUpperCase());
     // Built-ins may be followed directly by a path or switch: "CD..", "DIR/W", "CD\GM".
-    const b = /^(dir|cd|chdir|cls|ver|vol|type|echo|mem|date|time|help|path|\?)(?=$|[\s.\\/])(.*)$/i.exec(trimmed);
+    const b = /^(dir|cd|chdir|md|mkdir|cls|ver|vol|type|echo|mem|date|time|help|path|\?)(?=$|[\s.\\/])(.*)$/i.exec(trimmed);
     const cmd = b ? b[1].toUpperCase() : '';
     const rest = b ? b[2].trim() : trimmed.split(/\s+/).slice(1).join(' ');
     const args = rest ? rest.split(/\s+/) : [];
@@ -74,6 +76,9 @@ export class Shell {
       case 'CD':
       case 'CHDIR':
         return this.cd(rest);
+      case 'MD':
+      case 'MKDIR':
+        return this.md(rest);
       case 'CLS':
         this.screen.clear();
         return;
@@ -195,6 +200,20 @@ export class Shell {
     else this.cwd.set(drive, parts);
   }
 
+  private async md(arg: string): Promise<void> {
+    if (!arg) {
+      this.out('Required parameter missing');
+      return;
+    }
+    const { drive, parts } = resolvePath(arg, this.drive, this.cwdOf);
+    if (await this.host.fs.find(drive, parts)) {
+      this.out('Directory already exists');
+      return;
+    }
+    const err = this.host.makeDir ? await this.host.makeDir(drive, parts) : 'Unable to create directory';
+    if (err) this.out(err);
+  }
+
   private async type(arg: string): Promise<void> {
     if (!arg) {
       this.out('Required parameter missing');
@@ -218,6 +237,7 @@ export class Shell {
   private help(): void {
     for (const l of [
       'DIR [path] [/W] [/P]   List files          CD [path]   Change folder',
+      'MD C:\\GM\\name        Make a folder for a new game',
       'A:  C:  D:             Change drive         TYPE file   Show a text file',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
       '',
