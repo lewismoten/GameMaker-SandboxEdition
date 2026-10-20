@@ -486,12 +486,16 @@ export function lostScreen(a: Art): Pixels {
 
 export function hiscoreScreen(a: Art): Pixels {
   const p = new Pixels(W, H);
+  // PLAYGAME writes 'Top Ten Scores' on rows 0-7 and 'Hit any key' on rows 192-199 in the
+  // palette's nearest red, so both sit on plain dark bands with the frame kept between them.
   gradient(p, 0, 0, W, H, R('chrome'), 7, 5);
-  p.frame(4, 4, W - 8, H - 8, C('pink', 3)).frame(6, 6, W - 12, H - 12, C('teal', 4));
-  scaleBlit(p, a.quarter, 8, 8, 1);
-  scaleBlit(p, a.quarter, 292, 8, 1);
-  scaleBlit(p, a.page, 8, 172, 1);
-  scaleBlit(p, a.pill, 292, 172, 1);
+  p.rect(0, 0, W, 11, C('night', 0)).rect(0, 189, W, 11, C('night', 0));
+  p.rect(0, 11, W, 1, C('pink', 3)).rect(0, 188, W, 1, C('pink', 3));
+  p.frame(4, 14, W - 8, 172, C('pink', 3)).frame(6, 16, W - 12, 168, C('teal', 4));
+  scaleBlit(p, a.quarter, 8, 18, 1);
+  scaleBlit(p, a.quarter, 292, 18, 1);
+  scaleBlit(p, a.page, 8, 163, 1);
+  scaleBlit(p, a.pill, 292, 163, 1);
   return p;
 }
 
