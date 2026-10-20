@@ -97,6 +97,8 @@ function gatePic(frame: number, fade = 0): Pixels {
 /** A glass cartridge fuse across the wire. */
 function fusePic(blown: boolean): Pixels {
   const p = blank();
+  // a holder that fills the block, so a bump is felt at its very edge
+  bevel(p, 0, 0, 20, 20, r('plastic'), 1, 2);
   bevel(p, 0, 4, 20, 12, r('ink'), 1);
   p.rect(0, 6, 4, 8, c('metal', 4)).rect(16, 6, 4, 8, c('metal', 4));
   for (let x = 4; x < 16; x++) for (let y = 6; y < 14; y++) p.set(x, y, blown ? c('ink', 1) : shadeAt(r('teal'), 2, 4, 1 - (y - 6) / 8, x, y));

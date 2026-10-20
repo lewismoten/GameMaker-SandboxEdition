@@ -143,4 +143,27 @@ export const BOARDS: BoardSpec[] = [
     answer:
       'Those batteries pulse: on for a moment, off for a moment, and the two take turns. Wait next to a wire until the current has just gone by, then roll across. Stop between the two wires and do it again.',
   },
+  {
+    file: 'lamp',
+    title: 'The Floor Lamp',
+    room: 'living',
+    card: ['Three-way bulb. Two settings', 'work. Nobody touches the third.'],
+    rows: [
+      '################',
+      '#......#..X....#',
+      '#......#.......#',
+      '#......####g####',
+      '#..............#',
+      '#.......@......#',
+      '#..............#',
+      '#.......o......#',
+      '#.$...f.f......#',
+      '######0#1#######',
+    ],
+    wires: { 0: { path: 'U1 U2 R3 U2 R5 U1' }, 1: { path: 'U1 U1 U4 R3' } },
+    solution: 'LLLDDD R .. URR R www R www URRUURRUUUL',
+    hint: 'One wire is always live, and there is no switch for it!',
+    answer:
+      'Bump a fuse and it blows for good, and its wire goes dead. Follow the copper: the LEFT fuse feeds the wire in front of the gate. Blow that one, never the right one (it feeds the gate). Then turn on the switch.',
+  },
 ];

@@ -65,7 +65,11 @@ function trace(p: Pixels, mask: number, ramp = r('copper')): Pixels {
   if (mask & (N | S)) for (let y = 0; y < 20; y++) if ((y < 10 && mask & N) || (y >= 10 && mask & S)) p.set(8, y, ramp[3]).set(11, y, ramp[1]);
   if (mask & (E | W)) for (let x = 0; x < 20; x++) if ((x < 10 && mask & W) || (x >= 10 && mask & E)) p.set(x, 8, ramp[3]).set(x, 11, ramp[1]);
   const straight = mask === (N | S) || mask === (E | W);
-  if (!straight) blob(p, 9.5, 9.5, 3.6, 3.6, ramp, 1, 4);
+  if (mask === 15) {
+    // two wires crossing: the up-and-down one hops over on a little bridge
+    p.rect(7, 6, 6, 8, c('ink', 0));
+    p.rect(8, 5, 4, 10, ramp[3]).rect(8, 5, 4, 1, ramp[4]).rect(8, 14, 4, 1, ramp[1]);
+  } else if (!straight) blob(p, 9.5, 9.5, 3.6, 3.6, ramp, 1, 4);
   if (mask === N || mask === E || mask === S || mask === W) p.disc(9.5, 9.5, 1.2, c('ink', 0));
   return p;
 }
