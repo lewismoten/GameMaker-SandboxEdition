@@ -3,6 +3,12 @@ GameMaker
 
 This is the source code and executables for Recreational Software Design's GameMaker product, released in 1994.
 
+**This repository is a modified fork.** Andy Stone released Game-Maker's source under the
+MIT License in 2014; this fork by Lewis Moten adds a browser version (written with Claude
+Opus 5.5) that reads and writes the original file formats, a recreated "1994 desk", and
+new Sandbox Software games. See [NOTICE.md](NOTICE.md) for the credits, the history and
+third-party trademarks, and [LICENSE](LICENSE) for the license.
+
 You can learn more about this product here:
 
 [http://en.wikipedia.org/wiki/Game-Maker]
