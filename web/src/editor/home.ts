@@ -12,6 +12,7 @@ import { exportSinglePage } from '../export/exportSinglePage';
 import { exportDos } from '../export/exportDos';
 import { parseGame } from '../formats/game';
 import { showKeyMap } from './keyMapView';
+import { FORK_NOTE, NOTICE_URL } from '../edition';
 
 /** “⌨ Keys”: a keyboard map of what each key does in the game, worked out from its files. */
 function keysButton(title: string, files: () => Promise<GameFiles>, gam?: string | null): HTMLElement {
@@ -60,7 +61,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           { class: 'hero-text' },
           h('em', null, 'Computer-aided design tools'),
           h('h1', { class: 'hero-logo' }, 'GAME-MAKER'),
+          h('strong', { class: 'hero-edition' }, 'Sandbox Edition'),
           h('p', null, 'Make your own arcade and adventure games — blocks, monsters, heroes, maps, music and sound — in the original 1994 file formats. No programming.'),
+          h('p', { class: 'hero-fork' }, h('a', { href: NOTICE_URL, target: '_blank', rel: 'noopener' }, FORK_NOTE), '.'),
           h(
             'div',
             { class: 'hero-actions' },

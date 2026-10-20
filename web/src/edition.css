@@ -10,3 +10,22 @@ h1 .edition {
   vertical-align: middle;
   opacity: 0.85;
 }
+
+/* under the logo on the home page banner */
+.hero-edition {
+  display: block;
+  margin: -4px 0 6px;
+  color: #ffd400;
+  font: 800 14px/1.2 system-ui, sans-serif;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.hero-fork {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.hero-fork a {
+  color: inherit;
+}
