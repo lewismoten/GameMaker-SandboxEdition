@@ -1,7 +1,7 @@
 // The paper shareware catalog on the desk: every shareware game made with Game-Maker,
 // with how to get it (the BBS) and the author's registration notice.
 import { h, clear } from '../editor/ui';
-import type { CatalogEntry } from '../project/files';
+import { creditLine, type CatalogEntry } from '../project/files';
 
 const STYLE = `
 .paper-catalog { width: min(760px, 100%); max-height: 86vh; overflow: auto; padding: 28px 34px;
@@ -58,7 +58,8 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
             'div',
             null,
             h('div', { class: 'title' }, g.title, actions.downloaded(g.id) ? h('span', { class: 'got' }, '  ✓ on your hard disk') : null),
-            h('div', { class: 'meta' }, `${(g.exe ?? g.id).replace(/\.EXE$/i, '')}.ZIP  ·  ${kb(g.bytes)}  ·  needs VGA, Sound Blaster optional`),
+            h('div', { class: 'meta' }, creditLine(g) || 'Author unknown'),
+            h('div', { class: 'meta' }, `${(g.exe ?? g.id).replace(/\.EXE$/i, '')}.ZIP  ·  ${kb(g.bytes)}  ·  ${g.price === 'Freeware' ? 'FREEWARE' : g.price ? `Register: ${g.price}` : 'Shareware'}  ·  VGA, Sound Blaster optional`),
             g.blurb ? h('p', { style: 'margin:6px 0 0' }, g.blurb) : null,
             h(
               'button',
