@@ -74,7 +74,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     ['zark', 'IMPORT GRAPHICS'],
     ['terrain', 'DRAW BLOCKS'],
   ];
-  const boxTiles = h('div', { class: 'tiles', 'aria-hidden': 'true' }, ...BOX_TILES.map(([id, caption]) => h('div', { class: 'tile', dataset: { game: id } }, h('canvas'), h('span', null, caption))));
+  const boxTiles = h(
+    'div',
+    { class: 'tiles', 'aria-hidden': 'true' },
+    ...BOX_TILES.map(([id, caption]) => h('div', { class: 'tile', dataset: { game: id } }, h('canvas'), h('span', null, caption))),
+  );
 
   const desk = h(
     'div',
@@ -101,7 +105,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           rel: 'noopener',
           title: 'Moten Snow-to-Software Operations: shoveling snow in the winter of 1992 to buy Game-Maker',
         },
-        h('img', { src: './desk/moten-snow-to-software.jpg', alt: 'Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel', loading: 'lazy' }),
+        h('img', {
+          src: './desk/moten-snow-to-software.jpg',
+          alt: 'Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel',
+          loading: 'lazy',
+        }),
       ),
       snowyWindow(),
       spk.left,
@@ -134,13 +142,20 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           // the modem sits on top of the case, beside the monitor stand
           modem.el,
           h('div', { class: 'case-buttons' }, h('label', null, powerBtn, 'POWER'), h('label', null, turboBtn, 'TURBO')),
-          h('div', { class: 'leds' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz'))),
+          h(
+            'div',
+            { class: 'leds' },
+            h('span', null, powerLed, 'POWER'),
+            h('span', null, turboLed, 'TURBO'),
+            h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')),
+          ),
           h('span'),
           h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
         keyboardTray(keyboard(() => void power(true))),
       ),
+      h('div', { class: 'desk-edge', 'aria-hidden': 'true' }),
       h(
         'div',
         { class: 'desk-right' },
@@ -220,8 +235,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         powerLed.classList.remove('on');
         spk.power(false);
         setTimeout(() => location.reload(), 1700);
-      }
-      else computer.focus();
+      } else computer.focus();
       return;
     }
     desk.dataset.power = 'on';
@@ -336,7 +350,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** The Game-Maker box: turn it over, read the Owner's Guide, or put the CD in and start it. */
   async function openGmBox(): Promise<void> {
-    const tiles = [...boxTiles.querySelectorAll<HTMLElement>('.tile')].map((t) => [t.querySelector('canvas')!, t.querySelector('span')!.textContent ?? ''] as [HTMLCanvasElement, string]);
+    const tiles = [...boxTiles.querySelectorAll<HTMLElement>('.tile')].map(
+      (t) => [t.querySelector('canvas')!, t.querySelector('span')!.textContent ?? ''] as [HTMLCanvasElement, string],
+    );
     await openBoxViewer({ title: 'Game-Maker 3.0' }, drawGmBox(tiles), {
       insert: () => void startGameMaker(),
       insertLabel: 'Put the CD in and start Game-Maker',

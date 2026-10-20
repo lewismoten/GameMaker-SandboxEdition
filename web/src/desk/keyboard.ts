@@ -19,27 +19,68 @@ const MAIN: Key[][] = [
 ];
 
 const NAV: Key[][] = [
-  [['PrSc', 1, 'PrintScreen'], ['Scrl', 1, 'ScrollLock'], ['Brk', 1, 'Pause']],
-  [['Ins', 1, 'Insert'], ['Home', 1, 'Home'], ['PgUp', 1, 'PageUp']],
-  [['Del', 1, 'Delete'], ['End', 1, 'End'], ['PgDn', 1, 'PageDown']],
+  [
+    ['PrSc', 1, 'PrintScreen'],
+    ['Scrl', 1, 'ScrollLock'],
+    ['Brk', 1, 'Pause'],
+  ],
+  [
+    ['Ins', 1, 'Insert'],
+    ['Home', 1, 'Home'],
+    ['PgUp', 1, 'PageUp'],
+  ],
+  [
+    ['Del', 1, 'Delete'],
+    ['End', 1, 'End'],
+    ['PgDn', 1, 'PageDown'],
+  ],
   [],
   [1, ['↑', 1, 'ArrowUp']],
-  [['←', 1, 'ArrowLeft'], ['↓', 1, 'ArrowDown'], ['→', 1, 'ArrowRight']],
+  [
+    ['←', 1, 'ArrowLeft'],
+    ['↓', 1, 'ArrowDown'],
+    ['→', 1, 'ArrowRight'],
+  ],
 ];
 
 const PAD: Key[][] = [
   [],
-  [['Num', 1, 'NumLock'], ['/', 1, 'NumpadDivide'], ['*', 1, 'NumpadMultiply'], ['-', 1, 'NumpadSubtract']],
-  [['7', 1, 'Numpad7'], ['8', 1, 'Numpad8'], ['9', 1, 'Numpad9'], ['+', 1, 'NumpadAdd']],
-  [['4', 1, 'Numpad4'], ['5', 1, 'Numpad5'], ['6', 1, 'Numpad6']],
-  [['1', 1, 'Numpad1'], ['2', 1, 'Numpad2'], ['3', 1, 'Numpad3'], ['Ent', 1, 'NumpadEnter']],
-  [['0', 2, 'Numpad0'], ['.', 1, 'NumpadDecimal']],
+  [
+    ['Num', 1, 'NumLock'],
+    ['/', 1, 'NumpadDivide'],
+    ['*', 1, 'NumpadMultiply'],
+    ['-', 1, 'NumpadSubtract'],
+  ],
+  [
+    ['7', 1, 'Numpad7'],
+    ['8', 1, 'Numpad8'],
+    ['9', 1, 'Numpad9'],
+    ['+', 1, 'NumpadAdd'],
+  ],
+  [
+    ['4', 1, 'Numpad4'],
+    ['5', 1, 'Numpad5'],
+    ['6', 1, 'Numpad6'],
+  ],
+  [
+    ['1', 1, 'Numpad1'],
+    ['2', 1, 'Numpad2'],
+    ['3', 1, 'Numpad3'],
+    ['Ent', 1, 'NumpadEnter'],
+  ],
+  [
+    ['0', 2, 'Numpad0'],
+    ['.', 1, 'NumpadDecimal'],
+  ],
 ];
 
 /** Keys that are two rows tall on the keypad. */
 const TALL = new Set(['NumpadAdd', 'NumpadEnter']);
 
 const UNIT = 100 / 23.5; // the board is 15 + 0.5 + 3 + 0.5 + 4 = 23 units wide, plus margins
+/** The board is 6.9 units deep: a margin, the function row, a gap, five rows and a front edge. */
+const DEPTH = 6.9;
+const TOP = 0.3;
 
 export function keyboard(onClick: () => void): HTMLElement {
   const board = h('div', { class: 'keyboard', title: 'Keyboard: click, then type', onclick: onClick });
@@ -56,9 +97,10 @@ export function keyboard(onClick: () => void): HTMLElement {
         const [label, w, code] = k;
         const el = h('span', { class: `key ${label.length > 2 ? 'small' : ''}` }, label);
         el.style.left = `${(x + 0.25) * UNIT}%`;
-        el.style.top = `${(y / 6.35) * 100}%`;
+        // every key stays on the board: the last row ends 0.25 units short of its front edge
+        el.style.top = `${((TOP + y) / DEPTH) * 100}%`;
         el.style.width = `${w * UNIT - 0.45}%`;
-        el.style.height = `${((TALL.has(code) ? 2 : 1) / 6.35) * 100 - 2.6}%`;
+        el.style.height = `${(((TALL.has(code) ? 2 : 1) - 0.14) / DEPTH) * 100}%`;
         board.append(el);
         keys.set(code, [...(keys.get(code) ?? []), el]);
         x += w;

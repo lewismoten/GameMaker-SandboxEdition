@@ -727,7 +727,6 @@
 /* each key: a raised cap with a lighter top and darker sides */
 .keyboard .key {
   position: absolute;
-  margin-top: 1.2%;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;

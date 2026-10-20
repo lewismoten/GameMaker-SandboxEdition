@@ -1,10 +1,16 @@
 /* The desk as a stage scaled to fit the window (desk/stage.ts); phones stack instead. */
+.desk-edge {
+  display: none;
+}
+
 @media (min-width: 961px) {
   .desk {
     height: 100vh;
     height: 100dvh;
     min-height: 0;
     overflow: hidden;
+    /* clip, not just hide: focusing something near the bottom must not scroll the stage */
+    overflow: clip;
   }
 
   /* the desk top belongs to the stage, so it lines up with what sits on it */
@@ -55,15 +61,11 @@
     bottom: -8000px;
     z-index: 2;
     pointer-events: none;
-    background:
-      linear-gradient(#8a5c34, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px, #0d0b09 200px, #0d0b09);
+    background: linear-gradient(#8a5c34, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px, #0d0b09 200px, #0d0b09);
   }
 
   .desk {
-    background:
-      linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%),
-      repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px),
-      #465063;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%), repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
   }
 
   .desk-left,
@@ -89,8 +91,18 @@
     align-items: center;
   }
 
-  .kb-tray {
-    margin-top: 40px;
+  /* the desk's front edge again, drawn over the back of the keyboard tray (desk/tray.css) */
+  .desk-edge {
+    display: block;
+    position: absolute;
+    left: -2000px;
+    right: -2000px;
+    top: calc(var(--edge) - 1px);
+    height: 23px;
+    z-index: 4;
+    pointer-events: none;
+    background: linear-gradient(#8a5c34, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
   }
 
   /* a fixed screen can't sit inside a scaled box: drop the scale while the screen fills the window */

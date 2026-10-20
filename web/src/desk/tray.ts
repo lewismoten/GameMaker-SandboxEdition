@@ -34,11 +34,21 @@ export function keyboardTray(keyboard: HTMLElement): HTMLElement {
       handle.setAttribute('aria-pressed', String(out));
     },
   });
+  // tray-move slides; tray-plane is the board itself, tilted away from the chair, so the
+  // keyboard and the mouse pad share one perspective.
   tray.append(
-    h('div', { class: 'tray-slab', 'aria-hidden': 'true' }),
-    keyboard,
-    h('div', { class: 'mouse-pad' }, h('span', { class: 'pad-print' }, 'SANDBOX', h('br'), 'BBS'), h('span', { class: 'mouse-cord' }), ballMouse()),
-    handle,
+    h(
+      'div',
+      { class: 'tray-move' },
+      h(
+        'div',
+        { class: 'tray-plane' },
+        h('div', { class: 'tray-slab', 'aria-hidden': 'true' }),
+        keyboard,
+        h('div', { class: 'mouse-pad' }, h('span', { class: 'pad-print' }, 'SANDBOX', h('br'), 'BBS'), h('span', { class: 'mouse-cord' }), ballMouse()),
+      ),
+      handle,
+    ),
   );
   return tray;
 }
