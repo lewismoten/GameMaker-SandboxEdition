@@ -5,7 +5,7 @@ import { Pixels } from '../kit/pixels';
 import { CLEAR, blob, shadeAt } from './draw';
 import { c, ramp as r } from './pal';
 
-export type Who = 'lila' | 'edgar' | 'agatha' | 'felix' | 'pike' | 'dobbs' | 'ada';
+export type Who = 'lila' | 'edgar' | 'agatha' | 'felix' | 'pike' | 'dobbs' | 'ada' | 'victor' | 'commish';
 
 interface Look {
   name: string;
@@ -99,6 +99,32 @@ export const PEOPLE: Record<Who, Look> = {
     coatHi: 2,
     shirt: 'navy',
     extras: ['mustache', 'badge'],
+  },
+  victor: {
+    name: 'VICTOR CRANE',
+    role: 'The victim',
+    hair: 'black',
+    hairLo: 0,
+    hairHi: 2,
+    style: 'slick',
+    coat: 'velvet',
+    coatLo: 0,
+    coatHi: 2,
+    shirt: 'black',
+    extras: ['mustache'],
+  },
+  commish: {
+    name: 'COMMISSIONER HALE',
+    role: 'Port Ellery Police',
+    hair: 'grey',
+    hairLo: 4,
+    hairHi: 6,
+    style: 'cap',
+    coat: 'navy',
+    coatLo: 1,
+    coatHi: 3,
+    shirt: 'paper',
+    extras: ['mustache', 'badge', 'halfmoons'],
   },
   ada: {
     name: 'INSPECTOR ADA PENN',

@@ -1,7 +1,6 @@
 // The words: what everyone says, what the evidence shows, and the pages PLAYGAME writes
 // over the pictures. Display_File shows 16 lines a page, 31 columns wide; the answer
 // screens keep to 20 columns so the speaker's portrait stays clear on the right.
-import type { Who } from './people';
 
 /** Word-wraps paragraphs ("\n\n" between them, "\f" forces a new page) into 16-line pages. */
 export function pages(text: string, width: number): string {
@@ -226,7 +225,7 @@ export interface Talk {
   r2: [string, string, string];
 }
 
-export const TALK: Record<Exclude<Who, 'dobbs' | 'ada'>, Talk> = {
+export const TALK: Record<'lila' | 'edgar' | 'agatha' | 'felix' | 'pike', Talk> = {
   lila: {
     hello: `Lila Fontaine, the Raven's Bride. Still in her Act III gown.
 

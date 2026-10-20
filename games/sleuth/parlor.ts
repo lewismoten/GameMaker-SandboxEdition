@@ -25,7 +25,7 @@ export const CARDS = {
 } as const;
 
 /** What each suspect is asked in the second round: an item to show, or a topic. */
-export const ROUND2: Record<Who, (string | { item: string })[]> = {
+export const ROUND2: Partial<Record<Who, (string | { item: string })[]>> = {
   lila: ['LETTER?', { item: 'umbrella' }, { item: 'safe_ms' }],
   edgar: [{ item: 'umbrella' }, { item: 'ledger' }, 'ROLE?'],
   agatha: [{ item: 'policy' }, { item: 'chart' }, { item: 'safe_ms' }],
@@ -559,7 +559,7 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
     SUSPECTS.forEach((who, i) => {
       const o = ROOM[round](i);
       const cards: { x: number; y: number }[][] = [[], [], []];
-      const r2 = ROUND2[who];
+      const r2 = ROUND2[who]!;
       stamp(o, IV, (ch, x, y) => {
         const wf = wallOrFloor(ch, x, y, 'rug');
         if (wf) return wf;
