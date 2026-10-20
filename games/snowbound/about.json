@@ -1,0 +1,32 @@
+{
+  "title": "Snowbound: The $89 Shovel",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1995,
+  "price": "$12",
+  "blurb": "Fort Ashby, WV, December 1992: shovel driveways at $1 a scoop, sled down Knobley Hill, dodge plows and snowball forts, and get $89 to the mall before the price of Game-Maker goes up.",
+  "exe": "SNOWBND.EXE",
+  "sound": "sb",
+  "label": { "background": "#f4f8ff", "band": "#1d4f91", "ink": "#10183a", "logo": "SANDBOX SOFTWARE" },
+  "box": {
+    "background": "#1a2a5c",
+    "accent": "#ff8fc8",
+    "ink": "#ffffff",
+    "tagline": "Every driveway is a dollar. Every dollar is a pixel.",
+    "back": "December 1992. Eighteen inches of snow, school is closed, and the pink box at Bits & Bytes Software costs $89 - until January, when it goes up to $129.\n\nGrab your shovel and open for business. Scoop the neighbors out on Pine Street, ride a sled down Knobley Hill grabbing the dollars that blow loose, work the shops on Main Street while the plows roar by, and dig out the Mill Creek Mall parking lot as the squall keeps burying it again. Bonk snow forts flat, outrun Biscuit the dog, make Big Pete cry with a well-aimed snowball - and get that coffee can to the register before closing.",
+    "features": [
+      "Four levels from a pink winter sunrise to a snowy night, with day turning to dusk in real time",
+      "Deep snow you shovel by walking into it - every scoop pays $1",
+      "A sled run with real momentum: steer, brake and push off",
+      "Snowball fights with forts, a bully and a very friendly dog",
+      "A parking lot that snows back over while you work",
+      "Nine original Sound Blaster FM songs and digitized sound effects"
+    ],
+    "shots": [
+      ["pine.map", 16, 13],
+      ["main.map", 26, 23],
+      ["mall.map", 40, 10]
+    ],
+    "rating": "Ages 6 and up"
+  }
+}
