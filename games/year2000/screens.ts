@@ -403,28 +403,37 @@ export function wonScreen1(a: Art): Pixels {
   // Banner.
   p.rect(40, 6, 240, 18, C('denim', 2)).frame(40, 6, 240, 18, C('chrome', 6));
   centeredText(p, 11, 'MOON SCHOOL SCIENCE FAIR 2000', C('gold', 5), C('grey', 0));
-  // Podium with Dex on the second step.
-  p.rect(110, 120, 100, 50, C('gold', 3)).rect(110, 120, 100, 4, C('gold', 5));
-  p.rect(140, 100, 40, 20, C('gold', 4)).rect(140, 100, 40, 3, C('gold', 5));
-  micro(p, 156, 106, '1', C('gold', 1), 2);
-  micro(p, 124, 132, '2', C('gold', 1), 2);
-  scaleBlit(p, a.dex, 110, 60, 3);
-  // First place: a robot that folds laundry.
-  p.rect(150, 70, 20, 30, C('chrome', 4)).rect(152, 62, 16, 10, C('chrome', 5));
-  p.set(156, 66, C('red', 4)).set(163, 66, C('red', 4));
-  p.rect(140, 82, 10, 6, C('pink', 3)).rect(170, 82, 10, 6, C('teal', 4));
-  // Ribbon for Dex.
-  oval(p, 133, 98, 6, 6, C('red', 3));
-  micro(p, 130, 96, '2', C('grey', 7));
-  scaleBlit(p, a.sparky, 220, 140, 2, true);
-  scaleBlit(p, a.cover, 252, 150, 1);
+  // The podium: Dex on the second step, first place goes to a robot that folds laundry.
+  const step = (x: number, y: number, n: string) => {
+    p.rect(x, y, 56, 170 - y, C('gold', 3))
+      .rect(x, y, 56, 4, C('gold', 5))
+      .frame(x, y, 56, 170 - y, C('gold', 1));
+    micro(p, x + 24, y + 12, n, C('gold', 1), 2);
+  };
+  step(84, 124, '2');
+  step(140, 104, '1');
+  step(196, 134, '3');
+  scaleBlit(p, a.dex, 82, 64, 3);
+  // The robot: chrome box, red eyes, a folded shirt in each hand.
+  p.rect(156, 54, 24, 50, C('chrome', 4)).rect(156, 54, 24, 3, C('chrome', 6)).frame(156, 54, 24, 50, C('chrome', 1));
+  p.rect(158, 36, 20, 16, C('chrome', 5)).frame(158, 36, 20, 16, C('chrome', 1));
+  p.rect(162, 42, 3, 3, C('red', 4)).rect(171, 42, 3, 3, C('red', 4));
+  p.line(168, 36, 168, 28, C('chrome', 3)).set(168, 27, C('red', 4));
+  p.rect(140, 70, 16, 4, C('chrome', 3)).rect(132, 66, 12, 8, C('pink', 3));
+  p.rect(180, 70, 16, 4, C('chrome', 3)).rect(192, 66, 12, 8, C('teal', 4));
+  // Dex's ribbon.
+  oval(p, 104, 100, 6, 6, C('red', 3));
+  p.rect(101, 105, 3, 8, C('red', 2)).rect(105, 105, 3, 8, C('red', 2));
+  micro(p, 103, 98, '2', C('grey', 7));
+  scaleBlit(p, a.sparky, 244, 124, 2, true);
+  scaleBlit(p, a.cover, 276, 140, 1);
   // The judges' verdict.
-  p.rect(8, 32, 150, 40, C('paper', 2)).frame(8, 32, 150, 40, C('grey', 0));
-  p.line(100, 72, 120, 84, C('grey', 0));
-  micro(p, 14, 37, 'A TELEPHONE IN YOUR', C('denim', 1));
-  micro(p, 14, 45, 'POCKET? WHO WOULD', C('denim', 1));
-  micro(p, 14, 53, 'EVER WANT THAT?', C('denim', 1));
-  micro(p, 14, 61, 'SECOND PLACE!', C('red', 2));
+  p.rect(4, 26, 84, 38, C('paper', 2)).frame(4, 26, 84, 38, C('grey', 0));
+  p.line(70, 64, 86, 74, C('grey', 0));
+  micro(p, 8, 30, 'A PHONE IN YOUR', C('denim', 1));
+  micro(p, 8, 38, 'POCKET? WHO', C('denim', 1));
+  micro(p, 8, 46, 'WOULD WANT THAT?', C('denim', 1));
+  micro(p, 8, 55, 'SECOND PLACE!', C('red', 2));
   caption(
     p,
     ['YOU MADE IT! SECOND PLACE IN THE WHOLE', 'SOLAR SYSTEM. FIRST PLACE: A ROBOT THAT', 'FOLDS LAUNDRY. THE FUTURE IS AMAZING!'],
