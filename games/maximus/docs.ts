@@ -73,7 +73,7 @@ export function limits(b: Built): Limit[] {
     {
       what: 'Monsters in a .MON',
       max: String(LASTMON),
-      used: `64 in each of 8 files (${8 * 64} monsters, 352 creatures + the courier's own shots and loot)`,
+      used: `64 in each of 8 files (${8 * 64} monsters: 4 families of 44 creatures, each in an easy and a hard edition, plus the courier's own shots and loot)`,
       where: '*.MON',
     },
     {
@@ -208,7 +208,7 @@ export function about(b: Built): object {
         '100 scenes: a galaxy chart, 5 sector charts and 88 explorable worlds',
         'Four ways to travel - courier pod, jet-hopping on foot, the diving bell and the rover',
         'Every planet wraps around: a real little world with caves, ruins, lakes and floating islands',
-        '352 creatures in four families, each with its own behavior',
+        '176 creatures in four families - land, sea, space and machine - each with its own behavior',
         '10 courier modules to find: plasma lance, nova burst, shields, mines, hover pack and more',
         'Sound Blaster music and 30 digitized sound effects',
         'Pushes Game-Maker to every limit - see LIMITS.TXT',

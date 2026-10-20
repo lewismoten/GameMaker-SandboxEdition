@@ -37,7 +37,7 @@ MONSTERS PLACED ON A MAP
 
 MONSTERS IN A .MON
   Limit: 64
-  Used:  64 in each of 8 files (512 monsters, 352 creatures + the courier's own shots and loot)
+  Used:  64 in each of 8 files (512 monsters: 4 families of 44 creatures, each in an easy and a hard edition, plus the courier's own shots and loot)
   Where: *.MON
 
 ANIMATION STEPS PER MONSTER
