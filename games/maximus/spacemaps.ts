@@ -20,8 +20,12 @@ function starfield(g: Grid, s: SetBuilder, seed: number, nebulaAmount = 0.3): vo
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
       const v = n(x, y);
-      if (v > 1 - nebulaAmount && r() < 0.85) g.set(x, y, nebs[Math.floor(r() * nebs.length)]);
-      else {
+      const edge = 1 - nebulaAmount;
+      if (v > edge) {
+        // density rises toward the heart of each cloud, with a little dithered jitter
+        const lvl = Math.min(5, Math.floor(((v - edge) / nebulaAmount) * 9 + (r() - 0.5) * 0.8));
+        g.set(x, y, nebs[Math.max(0, lvl)]);
+      } else {
         const k = r();
         g.set(x, y, voids[k < 0.45 ? 0 : k < 0.7 ? 1 : k < 0.85 ? 2 : k < 0.94 ? 3 : k < 0.98 ? 4 : 5]);
       }

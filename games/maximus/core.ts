@@ -20,7 +20,7 @@ export function maelstromMap(s: SetBuilder, ms: MonsterSet): MaelstromResult {
   const g = new Grid();
   const voids = [0, 1, 2, 3].map((k) => s.id(`void:${k}`));
   const nebs = [0, 1, 2, 3, 4, 5].map((k) => s.id(`neb:${k}`));
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) g.set(x, y, (x * 7 + y * 13) % 17 < 5 ? nebs[(x + y) % 6] : voids[Math.floor(r() * 4)]);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) g.set(x, y, (x * 7 + y * 13) % 17 < 5 ? nebs[(x + y) % 3] : voids[Math.floor(r() * 4)]);
   // the route: from the warp at the bottom to the Citadel dock at the top; walls of rock
   // on both sides make a winding canyon the storm pours through
   const path: P[] = [];

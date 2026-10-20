@@ -32,20 +32,28 @@ const voidBg = (seed: number, stars: number) => {
   return p;
 };
 
-function nebula(seed: number): Pixels {
-  const n = tileNoise(seed, 20, 4);
-  const n2 = tileNoise(seed + 3, 20, 8);
-  const c = R('cloud');
+/**
+ * Nebula density level k (0 faint .. 5 dense): a uniform dither with a few stars, so
+ * blocks of any level sit seamlessly beside each other; the map paints the clouds by
+ * choosing levels from a smooth noise field.
+ */
+function nebula(k: number): Pixels {
   const f = R('far');
-  const bg = voidBg(seed, 2);
-  return tex((x, y) => {
-    const v = n(x, y) * 0.7 + n2(x, y) * 0.3;
-    if (v < 0.35) return bg.get(x, y);
-    if (v < 0.45) return dither(x, y, (v - 0.35) * 10) ? f[1] : bg.get(x, y);
-    if (v < 0.6) return f[2];
-    if (v < 0.72) return dither(x, y, (v - 0.6) * 8) ? c[1] : f[3];
-    return c[v > 0.8 ? 2 : 1];
-  });
+  const c = R('cloud');
+  const sky = R('sky');
+  const r = rng(300 + k);
+  const levels: [number, number, number][] = [
+    [sky[0], f[0], 0.35],
+    [f[0], f[1], 0.3],
+    [f[1], f[1], 0],
+    [f[1], f[2], 0.4],
+    [f[2], f[3], 0.35],
+    [f[3], f[4], 0.25],
+  ];
+  const [a, b2, t] = levels[k];
+  const p = tex((x, y) => (dither(x, y, t) ? b2 : a));
+  for (let i = 0; i < 3; i++) p.set(r() * 20, r() * 20, R('star')[1 + Math.floor(r() * 3)]);
+  return p;
 }
 
 /** A 40x40 planet picture. */
@@ -300,7 +308,7 @@ export const WARES: Ware[] = [
 export function spaceSet(): SetBuilder {
   const s = new SetBuilder('SPACE', G.none);
   for (let k = 0; k < 6; k++) s.add(`void:${k}`, voidBg(k + 1, [0, 1, 2, 3, 5, 7][k]));
-  for (let k = 0; k < 6; k++) s.add(`neb:${k}`, nebula(20 + k));
+  for (let k = 0; k < 6; k++) s.add(`neb:${k}`, nebula(k));
   // nine planet designs, 2x2 each
   for (let k = 0; k < 9; k++) {
     const pic = planet(k, 100 + k * 7);
