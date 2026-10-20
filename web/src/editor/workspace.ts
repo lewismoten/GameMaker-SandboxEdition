@@ -30,7 +30,7 @@ const TEMPLATES: { kind: FileKind; label: string; make: (p: Project) => Uint8Arr
 ];
 
 export class Workspace {
-  private project: Project;
+  readonly project: Project;
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('section', { class: 'editor' });
   private current?: string;
