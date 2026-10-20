@@ -59,6 +59,8 @@ export class Computer implements RetroHost {
     // .crt-picture: what the tube shows, which the desk curves like the glass
     monitor.append(h('div', { class: 'crt-picture' }, this.textEl, this.layer));
     this.screen = new TextScreen(this.textEl);
+    // Draw the text as large as it is shown, so it stays sharp at any size.
+    new ResizeObserver(() => this.screen.setScale((this.textEl.clientWidth * devicePixelRatio) / 640)).observe(this.textEl);
     this.screen.clear(0);
     this.screen.cursorVisible = false;
     this.keys.attach(this.textEl);
