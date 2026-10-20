@@ -24,7 +24,7 @@ describe('encoders', () => {
   });
 
   it('writes FLI animations frame for frame', () => {
-    const frames = [0, 1, 2].map((f) => Uint8Array.from({ length: 320 * 200 }, (_, i) => ((i % 320) >> 4) * 3 + f + ((i / 320) | 0 % 7 === 0 ? 9 : 0)));
+    const frames = [0, 1, 2].map((f) => Uint8Array.from({ length: 320 * 200 }, (_, i) => ((i % 320) >> 4) * 3 + f + (((i / 320) | 0) % 7 === 0 ? 9 : 0)));
     const pal = Uint8Array.from({ length: 768 }, (_, i) => i & 63);
     const anim = parseFli(encodeFli(frames, pal, { speed: 4 }));
     expect(anim.frameCount).toBe(3);
