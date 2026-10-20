@@ -5,11 +5,15 @@
 Teddy is a Pembroke Welsh Corgi
 who knows a ton of tricks. His
 person, Doc Leo, is a friendly
-hobo clown, and tonight he is
-the star of the Klown Klub's
-Big Show. But Teddy's big
-sister Gwin (younger, bigger, a
-brown pit-lab mix who ruins
+hobo clown who twists balloon
+animals, does magic tricks and
+marches in every parade, and
+tonight he is the star of the
+Klown Klub's Big Show. He drove
+ahead in his red 1976 CitiCar.
+Then Teddy's big sister Gwin
+(younger, bigger, a brown
+pit-lab mix who ruins
 everything) ran off with Doc
 Leo's costume suitcase and
 scattered it all over town.
@@ -23,7 +27,10 @@ Klub, and get every piece of
 the costume - the hat, the bow
 tie, the shoes, the horn and
 the red nose - to the show on
-time.
+time. Catch his loose balloon
+dogs on the way, watch Presto
+the magician downtown, and
+lead the Klown Klub parade.
 
 STARTING THE GAME
   Type TEDDY and press Enter.

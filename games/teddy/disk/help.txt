@@ -31,17 +31,17 @@ TRICKS ON THE NUMBER KEYS
 
 
 TREATS are worth points. A
-BONE gives energy back.
+BONE gives energy back. A
+BALLOON DOG is worth 250.
 Gwin eats your treats when
 she bumps into you!
 
 Bring the costume piece to
-the Klown Car to go on.
+Doc Leo's red CitiCar.
 
 F1 help      F2 your stuff
 F3 music     F4 sounds
 F5 save      F6 load
 ESC quit
-
 F2 shows treats as "Money"
 and energy as "Hitpoints".

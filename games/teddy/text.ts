@@ -20,47 +20,52 @@ export const STORY = pages(
     'His person is Doc Leo, a',
     'friendly hobo clown and a',
     'proud member of the Klown',
-    "Klub. Tonight is the Klub's",
-    'Big Show, and Doc Leo is the',
-    'star.',
+    'Klub. Doc Leo twists balloon',
+    'animals, does magic tricks,',
+    'and marches in every parade',
+    'in town. Tonight is the',
+    "Klub's Big Show, and Doc Leo",
+    'is the star.',
     '',
+    '',
+  ],
+  [
     'Teddy also has a big sister:',
     'Gwin, a brown pit-lab mix.',
     'She is younger, but bigger.',
     'She ruins everything.',
+    '',
+    'Doc Leo drove ahead to the',
+    'Klub in his little red 1976',
+    'CitiCar. Then Gwin found his',
+    'costume suitcase on the back',
+    'step, and ran all over town',
+    'with it. The costume went',
+    'everywhere: the HAT, the BOW',
+    'TIE, the SHOES, the HORN and',
+    'the RED NOSE. His balloon',
+    'dogs floated off too.',
+    '',
   ],
   [
-    'This morning Gwin found Doc',
-    "Leo's costume suitcase. She",
-    'ran out the back door with it',
-    'and all over town, and the',
-    'costume went everywhere:',
-    '',
-    '  the HAT,  the BOW TIE,',
-    '  the SHOES, the HORN,',
-    '  and the RED NOSE.',
-    '',
-    'No nose, no show!',
-    '',
-    'Doc Leo is already at the',
-    'Klub getting ready. Only a',
+    'No nose, no show! Only a',
     'little dog can save the Big',
     'Show. A little dog...',
-  ],
-  [
     '...with a big adventure.',
     '',
     "Fetch each piece of Doc Leo's",
     'costume. His friend Pockets',
-    'waits with the Klown Car at',
+    "waits in Doc Leo's CitiCar at",
     'the end of every stop and',
     'drives Teddy on to the next',
     'one, once he has the piece.',
     '',
     'Backyard. Maple Street. The',
-    'park. Downtown. And at last,',
-    'the Klown Klub itself.',
-    '',
+    'park. Downtown, where the',
+    'parade is lining up. And at',
+    'last, the Klown Klub itself.',
+  ],
+  [
     'Good luck, Teddy.',
     "Who's a good boy?",
   ],
@@ -105,18 +110,18 @@ export const HELP = pages(
   ],
   [
     'TREATS are worth points. A',
-    'BONE gives energy back.',
+    'BONE gives energy back. A',
+    'BALLOON DOG is worth 250.',
     'Gwin eats your treats when',
     'she bumps into you!',
     '',
     'Bring the costume piece to',
-    'the Klown Car to go on.',
+    "Doc Leo's red CitiCar.",
     '',
     'F1 help      F2 your stuff',
     'F3 music     F4 sounds',
     'F5 save      F6 load',
     'ESC quit',
-    '',
     'F2 shows treats as "Money"',
     'and energy as "Hitpoints".',
   ],
@@ -133,7 +138,8 @@ export const CREDITS = pages(
     'Starring Teddy as himself.',
     'With Gwin as herself (sorry).',
     'And Doc Leo, the friendliest',
-    'hobo clown in the Klown Klub.',
+    'hobo clown in the Klown Klub,',
+    'and his red 1976 CitiCar.',
     '',
     'Made with GAME-MAKER 3.0 by',
     'Recreational Software',
@@ -168,13 +174,13 @@ export const WON = pages([
   'tie, wiggles his big shoes,',
   'and puts on his RED NOSE.',
   '',
-  'The crowd roars. The Klown',
-  'Klub cheers. And Teddy',
-  'takes a bow.',
-  '',
-  'Gwin is covered in confetti,',
-  'frosting and sawdust. She',
-  'has never been happier.',
+  'He twists a balloon dog,',
+  'pulls a dove out of his hat,',
+  'and the crowd roars. Then the',
+  'whole Klown Klub parades out',
+  'into the night, and Teddy',
+  'rides on the CitiCar roof.',
+  'Gwin chases the confetti.',
   '',
   "Who's a good boy? TEDDY IS.",
 ]);
@@ -215,11 +221,15 @@ export function readme(price: string): string {
 Teddy is a Pembroke Welsh Corgi
 who knows a ton of tricks. His
 person, Doc Leo, is a friendly
-hobo clown, and tonight he is
-the star of the Klown Klub's
-Big Show. But Teddy's big
-sister Gwin (younger, bigger, a
-brown pit-lab mix who ruins
+hobo clown who twists balloon
+animals, does magic tricks and
+marches in every parade, and
+tonight he is the star of the
+Klown Klub's Big Show. He drove
+ahead in his red 1976 CitiCar.
+Then Teddy's big sister Gwin
+(younger, bigger, a brown
+pit-lab mix who ruins
 everything) ran off with Doc
 Leo's costume suitcase and
 scattered it all over town.
@@ -233,7 +243,10 @@ Klub, and get every piece of
 the costume - the hat, the bow
 tie, the shoes, the horn and
 the red nose - to the show on
-time.
+time. Catch his loose balloon
+dogs on the way, watch Presto
+the magician downtown, and
+lead the Klown Klub parade.
 
 STARTING THE GAME
   Type TEDDY and press Enter.
