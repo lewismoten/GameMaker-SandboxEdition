@@ -134,3 +134,34 @@
     width: auto;
   }
 }
+
+.gm-player .gm-notice-link {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 1;
+  padding: 6px 12px;
+  border: 1px solid #889;
+  border-radius: 6px;
+  background: transparent;
+  color: #ffd400;
+  font: 14px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.gm-player .gm-notice {
+  max-width: min(640px, 92vw);
+  padding: 16px;
+  border: 1px solid #556;
+  border-radius: 10px;
+  background: #11131a;
+  color: #e6e8ef;
+}
+
+.gm-player .gm-notice pre {
+  max-height: 65vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  font: 13px/1.4 ui-monospace, monospace;
+}

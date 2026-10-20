@@ -15,6 +15,8 @@ export interface PlayerOptions extends RunOptions {
   onFileWrite?: (name: string, bytes: Uint8Array) => void;
   /** Show on-screen controls (defaults to touch screens only). */
   touch?: boolean;
+  /** Shareware: the author's notice, linked from the start screen. */
+  notice?: string;
 }
 
 export interface PlayerHandle {
@@ -47,11 +49,33 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   start.className = 'gm-start';
   start.innerHTML = `<span>▶ Play ${escapeHtml(opts.title ?? '')}</span><small>Click or press a key to start · F1 help · Esc to leave a level</small>`;
   container.append(start);
+  if (opts.notice) {
+    const link = document.createElement('button');
+    link.className = 'gm-notice-link';
+    link.textContent = 'Shareware · read the author’s notice';
+    const dialog = document.createElement('dialog');
+    dialog.className = 'gm-notice';
+    const pre = document.createElement('pre');
+    pre.textContent = opts.notice;
+    const close = document.createElement('button');
+    close.textContent = 'Close';
+    close.addEventListener('click', () => dialog.close());
+    dialog.append(pre, close);
+    link.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dialog.showModal();
+    });
+    // Keys pressed while reading must not start the game.
+    dialog.addEventListener('keydown', (e) => e.stopPropagation());
+    container.append(link, dialog);
+    start.addEventListener('click', () => link.remove(), { once: true });
+  }
 
   let stopped = false;
   const done = new Promise<void>((resolve) => {
     const begin = async () => {
       start.remove();
+      container.querySelector('.gm-notice-link')?.remove();
       window.removeEventListener('keydown', onKey);
       canvas.focus();
       await machine.audio.resume();
@@ -79,7 +103,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey) return;
+      if (e.metaKey || e.ctrlKey || container.querySelector('dialog[open]')) return;
       e.preventDefault();
       void begin();
     };
