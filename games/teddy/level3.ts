@@ -11,7 +11,7 @@ import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { askBubble, frisbee, kid } from './folks';
 import { propSprite } from './klown';
 import { bandOf, sign } from './level1';
-import { branch, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from './tiles';
+import { branch, buried, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from './tiles';
 
 const G = 40;
 
@@ -37,6 +37,9 @@ export function parkTiles(): Tiles {
   t.wall('grass2', grassTop(42));
   t.wall('dirt', dirt(43));
   t.wall('deep', dirt(44, true));
+  t.wall('dirtRock', buried('rock', 61));
+  t.wall('dirtRoots', buried('roots', 62));
+  t.wall('dirtWorm', buried('worm', 63));
   // a line of trees far off behind the lawn
   const far = (top: boolean, seed: number) => {
     const p = top ? sky(3) : new Pixels(20, 20, c('leaf', 2));
@@ -420,7 +423,7 @@ export function park(): Level {
   m.rect(0, 38, 100, 1, 'far');
   m.rect(0, 39, 100, 1, () => pick('lawn', 'lawn', 'lawnFlower', 'lawnFlower2'));
   m.rect(0, G, 100, 1, () => pick('grass', 'grass2'));
-  m.rect(0, G + 1, 100, 3, 'dirt');
+  m.rect(0, G + 1, 100, 3, () => pick('dirt', 'dirt', 'dirt', 'dirt', 'dirtRock', 'dirtRoots', 'dirtWorm'));
   m.rect(0, G + 4, 100, 100 - G - 4, 'deep');
   // park walls at both ends (the map wraps)
   m.rect(0, 30, 4, 10, 'hedgeWall');

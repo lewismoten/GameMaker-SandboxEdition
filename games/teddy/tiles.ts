@@ -270,3 +270,28 @@ export function copy(base: Pixels): Pixels {
   p.px.set(base.px);
   return p;
 }
+
+/** Things buried in the dirt, for the screenful of ground under Teddy's feet. */
+export function buried(kind: 'rock' | 'roots' | 'fossil' | 'ball' | 'worm', seed: number, deep = false): Pixels {
+  const p = dirt(seed, deep);
+  if (kind === 'rock') {
+    blob(p, 8, 10, 6, 4, r('stone'), 0, 3);
+    blob(p, 15, 14, 3, 2, r('stone'), 0, 2);
+  } else if (kind === 'roots') {
+    p.line(4, 0, 7, 8, c('wood', 1)).line(7, 8, 5, 15, c('wood', 1)).line(7, 8, 13, 13, c('wood', 1)).line(13, 13, 17, 19, c('wood', 0));
+    p.line(12, 0, 13, 6, c('wood', 1));
+  } else if (kind === 'fossil') {
+    p.rect(4, 9, 12, 2, c('stone', 4));
+    blob(p, 4, 9, 2, 2, r('stone'), 3, 4);
+    blob(p, 4, 11, 2, 2, r('stone'), 3, 4);
+    blob(p, 16, 9, 2, 2, r('stone'), 3, 4);
+    blob(p, 16, 11, 2, 2, r('stone'), 3, 4);
+  } else if (kind === 'ball') {
+    blob(p, 10, 10, 4, 4, r('red'), 0, 3);
+    p.line(7, 8, 13, 12, c('paint', 3));
+  } else {
+    for (let i = 0; i < 9; i++)
+      p.set(5 + i, 10 + Math.round(Math.sin(i / 1.5) * 2), c('pink', 1)).set(5 + i, 11 + Math.round(Math.sin(i / 1.5) * 2), c('pink', 0));
+  }
+  return p;
+}

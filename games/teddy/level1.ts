@@ -12,6 +12,7 @@ import {
   bricks,
   boxFace,
   branch,
+  buried,
   c,
   canvas,
   cloud,
@@ -69,6 +70,11 @@ export function backyardTiles(): Tiles {
   t.wall('dirt', dirt(3));
   t.wall('dirt2', dirt(4));
   t.wall('deep', dirt(5, true));
+  t.wall('dirtRock', buried('rock', 51));
+  t.wall('dirtRoots', buried('roots', 52));
+  t.wall('dirtFossil', buried('fossil', 53, true));
+  t.wall('dirtBall', buried('ball', 54));
+  t.wall('dirtWorm', buried('worm', 55));
   t.air('tuft', tuft(sky(3), 11));
   t.air('tuft2', tuft(sky(3), 12));
   t.air('flowerP', tuft(sky(3), 13, 'pink'));
@@ -364,7 +370,13 @@ export function backyard(): Level {
   ])
     for (let part = 0; part < 3; part++) m.set(cx + part, cy, `cloud${bandOf(cy)}${part}`);
   m.rect(0, GROUND, 100, 1, () => pick('grass', 'grass2'));
-  m.rect(0, GROUND + 1, 100, 4, () => pick('dirt', 'dirt2'));
+  m.rect(0, GROUND + 1, 100, 4, () => pick('dirt', 'dirt2', 'dirt', 'dirt2', 'dirt', 'dirt2', 'dirtRock', 'dirtRoots', 'dirtWorm'));
+  for (const [x, y, k] of [
+    [12, 43, 'dirtFossil'],
+    [37, 42, 'dirtBall'],
+    [58, 43, 'dirtFossil'],
+  ] as [number, number, string][])
+    m.set(x, y, k);
   m.rect(0, GROUND + 5, 100, 100 - GROUND - 5, 'deep');
   m.rect(0, 37, 100, 1, () => pick('hedgeTop', 'hedgeTop2'));
   m.rect(0, 38, 100, 1, () => pick('hedge', 'hedge2'));
