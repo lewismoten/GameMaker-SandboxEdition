@@ -6,6 +6,22 @@ import { creditLine } from '../project/files';
 
 export type DiskAction = 'play' | 'design' | 'modern';
 
+/** A printed label, as a shareware publisher had them made: logo band, title, details. */
+function printedLabel(d: Disk): HTMLElement {
+  const g = d.catalog!;
+  const l = g.original?.label;
+  const count = diskCount(d.bytes);
+  return h(
+    'div',
+    { class: 'label printed', style: `--lbg:${l?.background ?? '#fff'};--lband:${l?.band ?? '#c62828'};--link:${l?.ink ?? '#111'}` },
+    h('span', { class: 'p-logo' }, l?.logo ?? (g.company ?? 'SANDBOX SOFTWARE').toUpperCase()),
+    h('span', { class: 'p-title' }, g.title),
+    h('span', { class: 'p-line' }, `Shareware${g.price ? ` · Register for ${g.price}` : ''}`),
+    h('span', { class: 'p-foot' }, `${count > 1 ? `Disk 1 of ${count}` : 'Disk 1 of 1'} · 3½" ${d.density} · © ${g.year ?? 1995}`),
+    d.note ? h('span', { class: 'marker-note' }, d.note) : null,
+  );
+}
+
 export function floppyElement(d: Disk, small = false): HTMLElement {
   const count = diskCount(d.bytes);
   const label = d.kind === 'blank' ? 'blank — for Utilities ▸ Transfer' : d.title;
@@ -26,7 +42,7 @@ export function floppyElement(d: Disk, small = false): HTMLElement {
       'aria-hidden': small ? 'true' : undefined,
     },
     h('div', { class: 'shutter' }),
-    h(
+    d.kind === 'original' ? printedLabel(d) : h(
       'div',
       { class: 'label' },
       label,
@@ -48,7 +64,7 @@ function sizeText(bytes: number): string {
 /** A line about the disk: what it is, who made it, its size. */
 export function diskFacts(d: Disk): string {
   return [
-    d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
+    d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'original' ? 'Shareware from Sandbox Software (play only — register to support the author)' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
     d.catalog ? creditLine(d.catalog) : '',
     sizeText(d.bytes),
     d.writeProtected ? 'write-protected' : '',

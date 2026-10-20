@@ -205,3 +205,41 @@
 }
 
 
+
+/* a professionally printed label (original games) */
+.floppy .label.printed {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 0 6px;
+  background: var(--lbg);
+  color: var(--link);
+  font: 12px/1.15 Arial, Helvetica, sans-serif;
+  white-space: normal;
+}
+
+.floppy .label.printed .p-logo {
+  padding: 3px 8px;
+  background: var(--lband);
+  color: #fff;
+  font: 900 8px/1 Arial, sans-serif;
+  letter-spacing: 0.18em;
+}
+
+.floppy .label.printed .p-title {
+  padding: 4px 8px 0;
+  font: italic 900 17px/1 'Arial Black', Impact, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.floppy .label.printed .p-line,
+.floppy .label.printed .p-foot {
+  padding: 0 8px;
+  font-size: 9px;
+}
+
+.floppy .label.printed .p-foot {
+  margin-top: auto;
+  border-top: 1px solid var(--lband);
+  padding-top: 3px;
+}
