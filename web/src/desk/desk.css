@@ -281,14 +281,45 @@
   align-items: center;
   gap: 18px;
   width: 100%;
-  padding: 14px 20px;
-  border-radius: 8px;
-  background: linear-gradient(180deg, var(--plastic-hi), var(--plastic) 50%, var(--plastic-lo));
+  min-height: 112px;
+  margin-top: 12px;
+  padding: 26px 22px 34px;
+  border-radius: 6px;
+  background:
+    /* a seam between the front bezel and the cover */
+    linear-gradient(180deg, transparent 10px, rgba(0, 0, 0, 0.18) 10px 11px, rgba(255, 255, 255, 0.5) 11px 12px, transparent 12px),
+    linear-gradient(180deg, var(--plastic-hi), var(--plastic) 45%, var(--plastic-lo));
   box-shadow:
     inset 0 2px 0 #fff8,
-    inset 0 -3px 0 var(--plastic-edge),
-    0 14px 22px rgba(0, 0, 0, 0.5);
+    inset 0 -5px 0 var(--plastic-edge),
+    0 6px 0 #8f8670,
+    0 18px 26px rgba(0, 0, 0, 0.5);
   color: #3c372b;
+}
+
+/* the top of the case, seen from slightly above */
+.case::before {
+  content: '';
+  position: absolute;
+  left: 1.5%;
+  right: 1.5%;
+  bottom: 100%;
+  height: 12px;
+  background: linear-gradient(180deg, #cfc6ad, var(--plastic-hi));
+  clip-path: polygon(2% 0, 98% 0, 100% 100%, 0 100%);
+}
+
+/* air vents along the bottom */
+.case::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  bottom: 10px;
+  width: 38%;
+  height: 12px;
+  background: repeating-linear-gradient(90deg, #6f6855 0 3px, transparent 3px 8px);
+  border-radius: 2px;
+  opacity: 0.55;
 }
 
 .case-buttons {
@@ -368,12 +399,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 210px;
-  height: 22px;
+  width: 220px;
+  height: 28px;
   padding: 0 8px;
+  border: 1px solid #a99f86;
   border-radius: 3px;
   background: linear-gradient(#c7bfa5, #e2dbc6);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.35),
+    0 1px 0 #fff8;
   font: 600 9px/1 system-ui, sans-serif;
 }
 
@@ -390,7 +424,7 @@
   position: absolute;
   left: 28px;
   right: 58px;
-  top: 4px;
+  top: 7px;
   height: 14px;
   overflow: hidden;
   border-radius: 2px;
