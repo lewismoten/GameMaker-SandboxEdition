@@ -1728,3 +1728,11 @@
 .fo-btn {
   font-size: 15px !important;
 }
+
+.pp-sheet .mp-flow {
+  display: flow-root;
+}
+
+.pp-sheet .mp-flow > :first-child {
+  margin-top: 0;
+}

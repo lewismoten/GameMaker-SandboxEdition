@@ -3,6 +3,7 @@
 import { h } from '../../editor/ui';
 import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
 import { redCode } from './redFilm';
+import { paginate } from './paginate';
 import type { ChartItem, HintBookItem, IdCardItem, JournalItem, LetterItem, MapItem, MapPanel, NewspaperItem, PrintableItem, StarChartItem } from './types';
 
 // ------------------------------------------------------------------ maps
@@ -71,26 +72,29 @@ async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
     ),
     h('p', { class: 'hb-foot' }, 'SANDBOX SOFTWARE · RED FILM INCLUDED'),
   );
-  // a page per section, or two short ones together
+  // flow the questions onto pages, measured in a real hint book page off screen
+  const blocks: HTMLElement[] = it.sections.flatMap((s) => [
+    h('h3', null, s.head),
+    ...s.hints.map((q) => h('div', { class: 'hb-q' }, h('p', null, h('b', null, 'Q. '), q.q), h('p', { class: 'hb-a' }, redCode(q.a)))),
+  ]);
+  const host = h('div', { class: 'gmb-measure' });
+  document.body.append(host);
   const pages: Sheet[] = [cover];
-  let body: HTMLElement[] = [];
-  let weight = 0;
-  const flush = () => {
-    if (!body.length) return;
-    pages.push(sheet(5.5, 8.5, 'hb hb-page', ...body, h('div', { class: 'hb-folio' }, String(pages.length))));
-    body = [];
-    weight = 0;
-  };
-  for (const s of it.sections) {
-    const w = s.hints.reduce((n, q) => n + 1 + (q.q.length + q.a.length) / 90, 1);
-    if (weight && weight + w > 11) flush();
-    body.push(
-      h('h3', null, s.head),
-      ...s.hints.map((q) => h('div', { class: 'hb-q' }, h('p', null, h('b', null, 'Q. '), q.q), h('p', { class: 'hb-a' }, redCode(q.a)))),
-    );
-    weight += w;
+  try {
+    const flowed = paginate(blocks, () => {
+      const flow = h('div', { class: 'mp-flow' });
+      const page = sheet(5.5, 8.5, 'hb hb-page', flow);
+      page.el.style.width = '550px';
+      host.replaceChildren(page.el);
+      const inner = page.el.firstElementChild as HTMLElement;
+      const cs = getComputedStyle(inner);
+      return { flow, limit: (inner.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)) * 0.93 };
+    });
+    for (const els of flowed)
+      pages.push(sheet(5.5, 8.5, 'hb hb-page', h('div', { class: 'mp-flow' }, ...els), h('div', { class: 'hb-folio' }, String(pages.length))));
+  } finally {
+    host.remove();
   }
-  flush();
   return pages;
 }
 
