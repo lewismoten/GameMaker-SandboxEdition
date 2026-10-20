@@ -39,7 +39,6 @@ const voidBg = (seed: number, stars: number) => {
  */
 function nebula(k: number): Pixels {
   const f = R('far');
-  const c = R('cloud');
   const sky = R('sky');
   const r = rng(300 + k);
   const levels: [number, number, number][] = [
