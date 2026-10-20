@@ -3,3 +3,4 @@ export {};
 import './palette';
 import './blocks';
 import './map';
+import './integrator';
