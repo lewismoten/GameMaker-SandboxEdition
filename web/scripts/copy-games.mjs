@@ -1,4 +1,4 @@
-// Copies the free "gameware" sample games from the original GameMaker CD image
+// Copies the free "gameware" sample games and the DOS game player from the CD image
 // into public/games so the web app can offer them, and writes an index.json catalog.
 import { readdirSync, mkdirSync, copyFileSync, readFileSync, writeFileSync, statSync, existsSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
@@ -20,6 +20,17 @@ function gameTitle(gam) {
   const isV3 = gam[0] === 0x47 && gam[1] === 0x4d; // "GM" header
   // v3: 256 byte header + 6 byte grator header + scene0 { type 2, pos 4, scroll 16, links 1 } -> desc[20]
   return isV3 ? cString(gam.subarray(285, 305)) : cString(gam.subarray(6, 21));
+}
+
+// The DOS runtime used by "Export for DOS": XFERPLAY.EXE is the stand-alone PLAYGAME
+// build (renamed to GAME.EXE it plays GAME.GAM from its folder); SNDBLAST.DRV is the
+// Sound Blaster voice driver it loads for .voc sounds.
+const dosSource = resolve(here, '../../cd/gm');
+const dosTarget = resolve(here, '../public/dos');
+mkdirSync(dosTarget, { recursive: true });
+for (const name of ['xferplay.exe', 'sndblast.drv']) {
+  if (existsSync(join(dosSource, name))) copyFileSync(join(dosSource, name), join(dosTarget, name));
+  else console.warn(`copy-games: ${name} not found, "Export for DOS" will be unavailable`);
 }
 
 if (!existsSync(source)) {
