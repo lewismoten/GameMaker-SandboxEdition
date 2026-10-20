@@ -34,7 +34,7 @@ async function main(): Promise<void> {
   root.textContent = 'Loading…';
   const el = document.getElementById(GAME_ELEMENT_ID);
   if (!el) {
-    root.textContent = 'This page has no game in it. Export one from Game-Maker Web (Save & share → Export as one web page).';
+    root.textContent = 'This page has no game in it. Export one from Game-Maker: Sandbox Edition (Save & share → Export as one web page).';
     return;
   }
   const game = JSON.parse(el.textContent ?? '') as SinglePageGame;

@@ -19,7 +19,7 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   const res = await fetch(new URL('standalone.html', base)).catch(() => undefined);
   const template = res?.ok ? await res.text() : '';
   if (!template.includes('<!--GM:GAME-->')) {
-    throw new Error('Could not load the one-page player (standalone.html). Reload Game-Maker Web while online and try again.');
+    throw new Error('Could not load the one-page player (standalone.html). Reload Game-Maker: Sandbox Edition while online and try again.');
   }
   const id = slug(opts.title);
   const entries = files.entries().filter(([n]) => !SAVE_DATA.test(n));

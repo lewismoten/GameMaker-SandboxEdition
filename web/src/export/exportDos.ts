@@ -118,6 +118,7 @@ Keys
   F1 help, F2 status, F3 music on/off, F4 sound on/off, F5 save, F6 load,
   Esc leaves a level. The game's own keys are in its instructions.
 
-Made with Game-Maker by Recreational Software Designs, exported by Game-Maker Web.
+Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: Sandbox Edition
+(a modified fork of Game-Maker 3.0: https://github.com/lewismoten/GameMaker).
 `;
 }
