@@ -15,6 +15,10 @@ export interface PickOptions {
   allowNone?: boolean;
   /** Extra kinds that also fit (graphic slots take gif/fli/bkd/txt/lst). */
   kinds?: FileKind[];
+  /** Adding a file: start on the library and leave out this game's own files. */
+  adding?: boolean;
+  /** More ways to make a file (convert an image, record a sound...); each resolves with the new file's name. */
+  actions?: { label: string; run: () => Promise<string | undefined> }[];
 }
 
 /** Resolves with the chosen file name, '' for none, or undefined if cancelled. */
@@ -100,15 +104,15 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
 
     const setTab = (t: typeof tab) => {
       tab = t;
-      [...tabs.children].forEach((b, i) => b.setAttribute('aria-selected', String((i === 0) === (t === 'mine'))));
+      [...tabs.children].forEach((b) => b.setAttribute('aria-selected', String(b.textContent === 'This game' ? t === 'mine' : t === 'library')));
       if (t === 'mine') showMine();
       else void showLibrary();
     };
+    if (!opts.adding) tabs.append(h('button', { role: 'tab', onclick: () => setTab('mine') }, 'This game'));
     tabs.append(
-      h('button', { role: 'tab', onclick: () => setTab('mine') }, 'This game'),
       h('button', { role: 'tab', onclick: () => setTab('library') }, '📀 Library (CD samples)'),
     );
-    setTab('mine');
+    setTab(opts.adding ? 'library' : 'mine');
     return h(
       'div',
       { class: 'file-picker' },
@@ -119,6 +123,14 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         h('span', { class: 'spacer' }),
         templateFor(kind) ? h('button', { class: 'primary', onclick: makeNew }, `+ New ${KIND_LABELS[kind].toLowerCase().replace(/s$/, '')}`) : null,
         h('button', { onclick: () => void upload() }, '⬆ From my computer…'),
+        ...(opts.actions ?? []).map((a) =>
+          h('button', {
+            onclick: async () => {
+              const name = await a.run();
+              if (name) close(name);
+            },
+          }, a.label),
+        ),
       ),
       grid,
     );
