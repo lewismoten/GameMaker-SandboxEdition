@@ -2,3 +2,4 @@
 export {};
 import './palette';
 import './blocks';
+import './map';
