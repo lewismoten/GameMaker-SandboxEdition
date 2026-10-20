@@ -46,17 +46,23 @@
   aspect-ratio: 8.5 / 11;
   max-width: calc((100vw - 24px) / var(--pages, 2));
   overflow: hidden;
-  padding: 7cqw 8cqw 9cqw;
   background:
     radial-gradient(120% 100% at 50% 0%, rgba(255, 255, 255, 0.35), transparent 60%),
     #f4efdf;
+  cursor: pointer;
+}
+
+/* sizes in cqw are fractions of the page width (.mpage is the container) */
+.mpage-in {
+  position: absolute;
+  inset: 0;
+  padding: 7cqw 8cqw 9cqw;
   color: #18150f;
   font: 2.55cqw/1.42 'Times New Roman', Times, serif;
   text-align: justify;
   hyphens: auto;
   /* a touch of toner spread */
   text-shadow: 0 0 0.04cqw rgba(0, 0, 0, 0.55);
-  cursor: pointer;
 }
 
 .mpage.left {
@@ -98,6 +104,7 @@
 }
 
 .mpage h1 {
+  margin-top: 2.5cqw;
   font-size: 5.2cqw;
   font-weight: 700;
 }
@@ -206,8 +213,11 @@
 
 /* cover: the pink box art */
 .mpage.cover {
-  padding: 0;
   background: #f0a090;
+}
+
+.mpage.cover .mpage-in {
+  padding: 0;
   text-align: left;
 }
 
@@ -226,7 +236,7 @@
   display: block;
   margin-top: 1cqw;
   color: #f2e600;
-  font: italic 900 13cqw/1 'Arial Black', Arial, sans-serif;
+  font: italic 900 10.5cqw/1 'Arial Black', Arial, sans-serif;
   transform: skewX(-8deg);
   text-shadow: 0.8cqw 0.8cqw 0 #1f9a3a;
   white-space: nowrap;

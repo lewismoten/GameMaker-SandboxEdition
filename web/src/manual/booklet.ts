@@ -12,11 +12,11 @@ export interface BookletPage {
 }
 
 function pageElement(p: BookletPage, index: number): HTMLElement {
-  const el = h('section', { class: `mpage ${p.cover ? 'cover' : ''}` });
-  if (p.head) el.append(h('div', { class: 'runhead' }, h('span', null, p.head[0]), h('span', null, p.head[1])));
-  el.append(...(Array.isArray(p.body) ? p.body : [p.body]));
-  if (!p.cover) el.append(h('div', { class: 'folio' }, String(index)));
-  return el;
+  const inner = h('div', { class: 'mpage-in' });
+  if (p.head) inner.append(h('div', { class: 'runhead' }, h('span', null, p.head[0]), h('span', null, p.head[1])));
+  inner.append(...(Array.isArray(p.body) ? p.body : [p.body]));
+  if (!p.cover) inner.append(h('div', { class: 'folio' }, String(index)));
+  return h('section', { class: `mpage ${p.cover ? 'cover' : ''}` }, inner);
 }
 
 export function openBooklet(pages: BookletPage[], title: string): Promise<void> {
