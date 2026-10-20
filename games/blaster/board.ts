@@ -6,7 +6,7 @@ import { pics } from './enemies';
 import { biter, bomb, claw, cluster, keyOf, mite, moth } from './sprites';
 import type { Bestiary } from './mons';
 import type { Pal } from './pal';
-import type { StageArt } from './tiles';
+import { onFloor, slices, type StageArt } from './tiles';
 
 export function boardArt(p: Pal): StageArt {
   const weave = (seed: number) => {
@@ -104,17 +104,6 @@ function chip(a: StageArt, r: number, c: number, label?: string): Pixels {
   if (r === 0 && c === 1) blob(t, 10, 3, 3, 3, p.r('deep'), 0, 0);
   if (label) micro(t, 10 - label.length * 2, 8, label, p.c('label', 3));
   return t;
-}
-
-/** A big stamped picture sliced into w x h blocks. */
-function slices(bs: BlockSet, prefix: string, big: Pixels, props: object = {}): void {
-  for (let r = 0; r < big.h / 20; r++) for (let c = 0; c < big.w / 20; c++) bs.add(`${prefix}${r}${c}`, big.crop(c * 20, r * 20, 20, 20), props);
-}
-
-function onFloor(a: StageArt, w: number, h: number): Pixels {
-  const big = new Pixels(w * 20, h * 20);
-  for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) big.blit(a.floor(0), c * 20, r * 20);
-  return big;
 }
 
 /** An electrolytic capacitor seen from above (2x2). */

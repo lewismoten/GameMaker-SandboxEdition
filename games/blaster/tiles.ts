@@ -264,3 +264,15 @@ export function addStageTiles(bs: BlockSet, a: StageArt, o: TileOpts): void {
 }
 
 export const PICKUPS = ['nova', 'repair', 'life', 'bit'] as const;
+
+/** A big picture sliced into blocks named `${prefix}${row}${col}`. */
+export function slices(bs: BlockSet, prefix: string, big: Pixels, props: object = {}): void {
+  for (let r = 0; r < big.h / 20; r++) for (let c = 0; c < big.w / 20; c++) bs.add(`${prefix}${r}${c}`, big.crop(c * 20, r * 20, 20, 20), props);
+}
+
+/** A canvas w x h blocks covered in plain floor. */
+export function onFloor(a: StageArt, w: number, h: number, v = 0): Pixels {
+  const big = new Pixels(w * 20, h * 20);
+  for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) big.blit(a.floor(v), c * 20, r * 20);
+  return big;
+}
