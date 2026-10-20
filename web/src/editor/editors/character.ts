@@ -242,11 +242,16 @@ registerEditor(['chr'], (host, project, file) => {
         'div',
         { class: 'row', style: 'gap:6px' },
         ...Array.from({ length: MAXINV }, (_, i) =>
-          selectField(
-            `Slot ${i + 1}`,
-            [[BACKBL, '— empty —'], ...bbl.map((b, j) => [j, `Block ${j}${b.obj ? ' (object)' : ''}`] as [number, string]).filter(([j]) => bbl[j].obj)] as [number, string][],
-            () => chr.inv[i],
-            (v) => edit(() => (chr.inv[i] = v)),
+          h(
+            'label',
+            { class: 'field' },
+            h('span', null, `Slot ${i + 1}`),
+            blockButton(() => bbl, () => chooser.palette, () => chr.inv[i], (v) => edit(() => (chr.inv[i] = v)), {
+              title: `Inventory slot ${i + 1}: an object block`,
+              extras: [{ value: BACKBL, label: 'empty', icon: '∅' }],
+              transparent: false,
+              only: (b) => !!b.obj,
+            }),
           ),
         ),
       ),
