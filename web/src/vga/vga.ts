@@ -60,6 +60,9 @@ export class Vga {
   private mx = 160;
   private my = 100;
   private buttons = 0;
+  /** Buttons pressed since the last moustats(), so a click shorter than a frame still counts. */
+  private pressed = 0;
+  private destroyed = false;
   private limit = [0, 0, SIZEX - 1, SIZEY - 1];
   private cursorShown = false;
   private listeners: [EventTarget, string, EventListener][] = [];
@@ -90,6 +93,7 @@ export class Vga {
       const r = this.canvas.getBoundingClientRect();
       this.goto(((p.clientX - r.left) / r.width) * SIZEX, ((p.clientY - r.top) / r.height) * SIZEY);
       this.buttons = (p.buttons & 1 ? 1 : 0) | (p.buttons & 2 ? 2 : 0);
+      this.pressed |= this.buttons;
     };
     on(this.canvas, 'pointermove', move);
     on(this.canvas, 'pointerdown', (e) => {
@@ -109,6 +113,8 @@ export class Vga {
   }
 
   destroy(): void {
+    this.destroyed = true;
+    this.buttons = this.pressed = 0;
     cancelAnimationFrame(this.raf);
     clearTimeout(this.attachTimer);
     this.observer.disconnect();
@@ -178,7 +184,9 @@ export class Vga {
 
   /** moustats: x, y and buttons (1 = left, 2 = right). */
   moustats(): { x: number; y: number; but: number } {
-    return { x: this.mx, y: this.my, but: this.buttons };
+    const but = this.buttons | this.pressed;
+    this.pressed = 0;
+    return { x: this.mx, y: this.my, but };
   }
 
   moucur(show: boolean): void {
@@ -197,7 +205,8 @@ export class Vga {
 
   /** mouclearbut: waits until the buttons are up. */
   async mouclearbut(): Promise<void> {
-    while (this.buttons) await this.tick();
+    while (this.buttons && !this.destroyed) await this.tick();
+    this.pressed = 0;
   }
 
   // ---- keyboard (bioskey) -------------------------------------------------------------
