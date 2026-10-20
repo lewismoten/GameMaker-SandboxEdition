@@ -67,6 +67,8 @@ export function normalize(name: string): string {
 /** Files only meaningful to DOS. */
 export const IGNORED_FILE = /\.(exe|com|bat|drv|ico|bak|obj|map\.bak)$/i;
 
+import type { OriginalExtras } from '../../scripts/cdGames';
+
 export interface CatalogEntry {
   id: string;
   title: string;
@@ -94,6 +96,8 @@ export interface CatalogEntry {
   files: string[];
   /** Size of each file in `files`, in bytes (missing from older catalogs). */
   sizes?: number[];
+  /** Original games made for this project: label, box art, manual, sound card. */
+  original?: OriginalExtras;
 }
 
 export async function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {

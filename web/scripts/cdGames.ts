@@ -5,6 +5,8 @@
 //   games/index.json             catalog of every playable game
 //   games/gameware/<id>/<file>   the free sample games that came with Game-Maker (editable)
 //   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
+//   games/originals/<id>/<file>  new games made for this project (../games/<id>/disk),
+//                                published as shareware, with box, label and manual data
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
 //   gm/index.json, gm/<file>     the installed C:\GM folder (runtime/run/GM) for the retro
 //                                desk: a listing plus its text files (.HLP screens, .TXT)
@@ -36,6 +38,30 @@ export interface CdCatalogEntry {
   company?: string;
   year?: number;
   price?: string;
+  /** Original games (../games): the disk label, box art and manual, from about.json. */
+  original?: OriginalExtras;
+}
+
+/** What ../games/<id>/about.json and manual.json add for an original game. */
+export interface OriginalExtras {
+  /** Printed disk label: background, band and text colors, and a small logo line. */
+  label?: { background: string; band: string; ink: string; logo?: string };
+  /** Box art: colors, tagline, back-cover copy, feature bullets and screenshot spots. */
+  box?: {
+    background: string;
+    accent: string;
+    ink: string;
+    tagline: string;
+    back: string;
+    features: string[];
+    /** Map views for screenshots: [map file, x, y] in blocks. */
+    shots?: [string, number, number][];
+    rating?: string;
+  };
+  /** The manual: pages of simple HTML, with <shot map="x.map" x="1" y="2"> screenshots. */
+  manual?: { title: string; pages: { head: string; html: string }[] };
+  /** 'sb' games use the Sound Blaster; 'speaker' ones only the PC speaker. */
+  sound?: 'sb' | 'speaker';
 }
 
 // Files that only matter to DOS (executables, batch files, icons, archives).
@@ -218,6 +244,7 @@ function scan(cdRoot: string): Scan {
       catalog.push(entry);
     }
   }
+  scanOriginals(join(cdRoot, '../games'), catalog, files);
   // The DOS player used by "Export for DOS".
   for (const name of ['xferplay.exe', 'sndblast.drv']) {
     const p = join(cdRoot, 'gm', name);
@@ -236,14 +263,66 @@ function scan(cdRoot: string): Scan {
   return { gm, catalog, files };
 }
 
+/**
+ * ../games/<id>/: original games made for this project. disk/ holds the game as it would
+ * be on its floppy; about.json its credits, label and box; manual.json its manual.
+ */
+function scanOriginals(root: string, catalog: CdCatalogEntry[], files: Map<string, string>): void {
+  if (!existsSync(root)) return;
+  for (const dir of readdirSync(root).sort()) {
+    const base = join(root, dir);
+    const diskDir = join(base, 'disk');
+    if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
+    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string };
+    const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
+    const id = dir.toLowerCase();
+    const path = `games/originals/${id}/`;
+    const names: string[] = [];
+    const disk = new Map<string, string>();
+    for (const name of readdirSync(diskDir).sort()) {
+      if (SKIP.test(name) || !statSync(join(diskDir, name)).isFile()) continue;
+      disk.set(name.toLowerCase(), join(diskDir, name));
+      names.push(name.toLowerCase());
+    }
+    const gam = names.find((f) => f.endsWith('.gam')) ?? null;
+    if (!gam) continue;
+    const gamBytes = readFileSync(disk.get(gam)!);
+    const notice = NOTICES.map((n) => disk.get(n)).filter((p): p is string => !!p);
+    catalog.push({
+      id,
+      title: about.title,
+      author: about.author,
+      company: about.company,
+      year: about.year,
+      price: about.price,
+      kind: 'shareware',
+      path,
+      gam,
+      files: names,
+      sizes: names.map((n) => statSync(disk.get(n)!).size),
+      bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
+      blurb: about.blurb ?? blurbFor(names, disk),
+      exe: about.exe ?? `${id.slice(0, 8).toUpperCase()}.EXE`,
+      notice: notice.map((p) => dosText(readFileSync(p))).join('\n\n----\n\n'),
+      gamCrc: crc32(gamBytes),
+      original: { label: about.label, box: about.box, sound: about.sound, manual },
+    });
+    for (const [name, p] of disk) files.set(`${path}${name}`, p);
+  }
+}
+
 export function cdGames(cdRoot: string): Plugin {
   let cache: Scan | undefined;
   const get = () => (cache ??= scan(cdRoot));
   return {
     name: 'gamemaker-cd-games',
     configureServer(server) {
-      server.watcher.add(cdRoot);
-      server.watcher.on('change', (f) => f.startsWith(cdRoot) && (cache = undefined));
+      const gamesRoot = join(cdRoot, '../games');
+      server.watcher.add([cdRoot, gamesRoot]);
+      const forget = (f: string) => (f.startsWith(cdRoot) || f.startsWith(gamesRoot)) && (cache = undefined);
+      server.watcher.on('change', forget);
+      server.watcher.on('add', forget);
+      server.watcher.on('unlink', forget);
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
         if (url === 'games/index.json' || url === 'gm/index.json') {
