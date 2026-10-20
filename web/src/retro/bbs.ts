@@ -242,7 +242,8 @@ async function files(t: Term, h: RetroHost, catalog: CatalogEntry[]): Promise<vo
   let lines = 3;
   for (const [i, g] of catalog.entries()) {
     const got = h.downloads.has(g.id) ? '|10*' : ' ';
-    const desc = wrap(`${g.title}. ${g.blurb ?? ''}`, 52);
+    const by = g.author ?? g.company;
+    const desc = wrap(`${g.title}${by ? ` by ${by}` : ''}${g.year ? ` (${g.year})` : ''}. ${g.price ? `${g.price === 'Freeware' ? 'Freeware' : `Reg. ${g.price}`}. ` : ''}${g.blurb ?? ''}`, 52);
     t.line(`|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${desc[0] ?? ''}`);
     if (desc[1]) t.line(`${' '.repeat(25)}|07${desc[1]}`);
     lines += desc[1] ? 2 : 1;
