@@ -5,6 +5,7 @@ import { runGame, type RunOptions } from '../engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
+import { showKeyMap } from '../editor/keyMapView';
 
 export interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -72,6 +73,18 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     container.append(link, dialog);
     start.addEventListener('click', () => link.remove(), { once: true });
   }
+
+  // ⌨ Keys: what each key does in this game, worked out from its characters.
+  const keys = document.createElement('button');
+  keys.className = 'gm-keys';
+  keys.textContent = '⌨ Keys';
+  keys.title = 'What each key does in this game';
+  keys.addEventListener('click', (e) => {
+    e.stopPropagation();
+    keys.blur();
+    showKeyMap(files, gamFile, opts.title ?? 'Game', () => canvas.focus());
+  });
+  container.append(keys);
 
   let stopped = false;
   const done = new Promise<void>((resolve) => {

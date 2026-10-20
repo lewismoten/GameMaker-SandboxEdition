@@ -27,6 +27,8 @@ export interface SeqAction {
   uses?: number;
   /** Monster numbers the sequence fires. */
   fires: number[];
+  /** Background blocks that give a limited sequence more uses when touched. */
+  refills?: number[];
   /** Joystick binding in words ("← Left + button 1"), when it has one. */
   joystick?: string;
 }
@@ -217,7 +219,9 @@ export function describeSequence(chr: Character, i: number, carriesAtStart?: (bl
   if (i >= 5 && chr.meter[i] !== INF_REPEAT && chr.meter[i] !== undefined) {
     uses = chr.meter[i];
     details.push(
-      uses > 0 ? `Limited: ${uses} use${uses === 1 ? '' : 's'} at the start; some blocks can give more.` : 'Can’t be used until a block gives it uses.',
+      uses > 0
+        ? `Limited: ${uses} use${uses === 1 ? '' : 's'} at the start; some blocks can give more.`
+        : 'Starts with no uses: touching certain blocks gives it some.',
     );
   }
   let joystick: string | undefined;
@@ -283,7 +287,6 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
   const byKey = new Map<number, KeyUse[]>();
   const joy = new Map<string, JoystickUse>();
   const chrs = [...new Set(levels.map((l) => l.chr))];
-  const blockSets = new Map<string, ReturnType<typeof parseBlocks>>();
   for (const name of chrs) {
     const bytes = files.get(name);
     let chr: Character;
@@ -296,22 +299,24 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
     }
     const mine = levels.filter((l) => l.chr === name);
     const levelNames = mine.map((l) => l.name);
-    // Blocks that refill a limited sequence (block effect = sequence number).
-    const bblNames = levels.filter((l) => l.chr === name && l.scene >= 0).map((l) => game!.scenes[l.scene].files[2]);
-    const refills = new Set<number>();
-    for (const b of bblNames) {
-      if (!b || !files.get(b)) continue;
-      if (!blockSets.has(b)) {
-        try {
-          blockSets.set(b, parseBlocks(files.get(b)!, BACKBL));
-        } catch {
-          continue;
-        }
-      }
-      for (const blk of blockSets.get(b)!) if (blk.effect >= 5 && blk.effect < MAXSEQ && blk.eamt > 0) refills.add(blk.effect);
+    // The level whose files picture this character's objects and monsters.
+    const shown = mine.find((l) => l.bbl && l.mon && l.mbl) ?? mine.find((l) => l.bbl) ?? mine[0];
+    // Blocks that give a limited sequence more uses (block effect = sequence number).
+    const refills = new Map<number, number[]>();
+    let bbl: ReturnType<typeof parseBlocks> | undefined;
+    try {
+      if (shown.bbl && files.get(shown.bbl)) bbl = parseBlocks(files.get(shown.bbl)!, BACKBL);
+    } catch {
+      bbl = undefined;
     }
+    bbl?.forEach((blk, n) => {
+      if (blk.effect >= 5 && blk.effect < MAXSEQ && blk.eamt > 0) refills.set(blk.effect, [...(refills.get(blk.effect) ?? []), n]);
+    });
     for (const { scan, action } of characterActions(chr)) {
-      if (action.uses !== undefined && !refills.has(action.seq)) action.details = action.details.map((d) => d.replace('; some blocks can give more', ''));
+      if (action.uses !== undefined) {
+        action.refills = refills.get(action.seq) ?? [];
+        if (!action.refills.length) action.details = action.details.map((d) => d.replace('; some blocks can give more', ''));
+      }
       if (scan) {
         const list = byKey.get(scan) ?? [];
         const same = list.find((u) => u.action.title === action.title && u.action.details.join('|') === action.details.join('|'));
@@ -320,7 +325,7 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
             same.chrs.push(name);
             same.levels.push(...levelNames);
           }
-        } else list.push({ action, chrs: [name], levels: [...levelNames], level: mine[0] });
+        } else list.push({ action, chrs: [name], levels: [...levelNames], level: shown });
         byKey.set(scan, list);
       }
       if (action.joystick) {

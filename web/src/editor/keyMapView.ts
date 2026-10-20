@@ -161,7 +161,7 @@ function drawKeyboard(rows: Row[], info: (scan: number) => CapInfo | undefined, 
       tl.textContent = text;
       g.append(tl);
       if (i) {
-        const act = svg('text', { x: x + (w * U) / 2, y: ROW_Y(r) + hh * U - 9, class: 'km-cap-act', 'text-anchor': 'middle' });
+        const act = svg('text', { x: x + (w * U) / 2, y: ROW_Y(r) + hh * U - 9, class: `km-cap-act${w === 1 && i.short.length > 4 ? ' tight' : ''}`, 'text-anchor': 'middle' });
         const s = i.short.length > 6 ? `${i.short.slice(0, 5)}…` : i.short;
         act.textContent = i.more ? `${s}+` : s;
         g.append(act);
@@ -267,6 +267,10 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
       const c = pics.monster(u.level, m);
       if (c) pictures.push(el('span', 'km-thumb', c, el('small', null, `monster ${m}`)));
     }
+    for (const b of (a.refills ?? []).slice(0, 3)) {
+      const c = pics.object(u.level, b);
+      if (c) pictures.push(el('span', 'km-thumb', c, el('small', null, `object ${b} gives uses`)));
+    }
     if (a.needsBlock !== undefined) {
       const c = pics.object(u.level, a.needsBlock);
       pictures.push(el('span', 'km-thumb need', c ?? '', el('small', null, `needs object ${a.needsBlock}`)));
@@ -278,7 +282,7 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
         'div',
         'km-use-head',
         el('strong', null, a.title),
-        a.uses !== undefined ? el('span', 'km-badge', `${a.uses} uses`) : null,
+        a.uses !== undefined ? el('span', 'km-badge', a.uses > 0 ? `${a.uses} uses` : 'no uses yet') : null,
         levelsText(u) ? el('span', 'km-where', levelsText(u)) : null,
       ),
       el('ul', null, ...a.details.map((d) => el('li', null, d))),
@@ -405,7 +409,7 @@ export function showKeyMap(files: GameFiles | Promise<GameFiles>, gamFile: strin
   const close = el('button', 'km-close', '×');
   close.title = 'Close (Esc)';
   close.setAttribute('aria-label', 'Close');
-  const dlg = el('dialog', 'km-dialog', el('header', 'km-head', el('h2', null, `⌨ Keys · ${title}`), close), body);
+  const dlg = el('dialog', 'km-dialog', el('header', 'km-head', el('h2', null, el('span', 'km-icon', '⌨'), ` Keys · ${title}`), close), body);
   const done = () => {
     dlg.close();
     dlg.remove();

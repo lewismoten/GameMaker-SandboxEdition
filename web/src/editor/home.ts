@@ -11,6 +11,12 @@ import { exportWebApp } from '../export/exportWebApp';
 import { exportSinglePage } from '../export/exportSinglePage';
 import { exportDos } from '../export/exportDos';
 import { parseGame } from '../formats/game';
+import { showKeyMap } from './keyMapView';
+
+/** “⌨ Keys”: a keyboard map of what each key does in the game, worked out from its files. */
+function keysButton(title: string, files: () => Promise<GameFiles>, gam?: string | null): HTMLElement {
+  return h('button', { title: 'What each key does in this game', onclick: () => void showKeyMap(files(), gam ?? undefined, title) }, '⌨ Keys');
+}
 
 export interface HomeNav {
   openProject(id: string): void;
@@ -154,6 +160,7 @@ async function renderProjects(host: HTMLElement, nav: HomeNav): Promise<void> {
           { class: 'actions' },
           h('button', { class: 'primary', onclick: () => nav.openProject(p.id) }, 'Open'),
           h('a', { href: `./play.html?project=${encodeURIComponent(p.id)}` }, h('button', null, 'Play')),
+          keysButton(p.name, async () => (await loadProject(p.id))!.files, p.gam),
           h('button', { onclick: () => void downloadProject(p.id) }, 'Download .zip'),
           h('button', { onclick: () => void exportProject(p.id) }, 'Export web app'),
           h('button', { onclick: () => void exportProjectPage(p.id), title: 'One .html file with the game and player inside' }, 'Export as one web page'),
@@ -196,6 +203,7 @@ function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
       'div',
       { class: 'actions' },
       g.gam && h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
+      g.gam && keysButton(g.title, () => loadHostedGame(g), g.gam),
       g.gam
         ? h('button', { onclick: () => void copy(g.title) }, 'Edit a copy')
         : h(
@@ -232,6 +240,7 @@ function originalCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
       { class: 'actions' },
       h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
       h('button', { onclick: () => void copy() }, 'Edit a copy'),
+      keysButton(g.title, () => loadHostedGame(g), g.gam),
       g.original?.manual ? h('button', { onclick: () => void openGameManual(g) }, '📖 Manual') : null,
     ),
   );
@@ -249,6 +258,7 @@ function sharewareCard(g: CatalogEntry): HTMLElement {
       { class: 'actions' },
       h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
       h('button', { onclick: () => void showNotice(g) }, 'Shareware notice'),
+      keysButton(g.title, () => loadHostedGame(g), g.gam),
     ),
   );
 }

@@ -165,3 +165,26 @@
   white-space: pre-wrap;
   font: 13px/1.4 ui-monospace, monospace;
 }
+
+/* ---- ⌨ Keys button ------------------------------------------------------- */
+
+.gm-player .gm-keys {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  padding: 4px 10px;
+  border: 1px solid #ffd400;
+  border-radius: 6px;
+  background: rgba(0, 0, 128, 0.7);
+  color: #ffd400;
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+
+.gm-player .gm-keys:hover,
+.gm-player .gm-keys:focus-visible {
+  opacity: 1;
+}

@@ -135,6 +135,13 @@
   font: 700 12px system-ui, sans-serif;
   fill: #000080;
 }
+.km-cap .km-cap-act.tight {
+  font-size: 9.5px;
+  letter-spacing: -0.02em;
+}
+.km-icon {
+  font-family: 'Segoe UI Symbol', 'Apple Symbols', system-ui, sans-serif;
+}
 .km-cap.game,
 .km-cap.global {
   cursor: pointer;
