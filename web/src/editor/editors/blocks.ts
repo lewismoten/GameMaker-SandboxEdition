@@ -1,6 +1,7 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
+import { TEXTURES, paintTexture } from '../tools/textures';
 import { h, clear, numberField, checkField, selectField, debounce } from '../ui';
 import { blockCanvas, paintBlock, lut } from '../draw';
 import type { Project } from '../project';
@@ -252,6 +253,33 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     ),
   );
 
+  // ---- textures (background blocks): a new take each click, in this palette ----
+  let textureSeed = 1;
+  const textures = h(
+    'details',
+    { class: 'textures' },
+    h('summary', null, 'Make a texture'),
+    h(
+      'div',
+      { class: 'sfx-grid' },
+      ...TEXTURES.map((t) =>
+        h(
+          'button',
+          {
+            title: `Fill this block with ${t.name.toLowerCase()} (click again for another)`,
+            onclick: () => {
+              pushUndo();
+              blocks[current].pixels.set(paintTexture(t, textureSeed++ * 7919, pal()));
+              changed();
+            },
+          },
+          h('span', { class: 'sfx-icon' }, t.icon),
+          t.name,
+        ),
+      ),
+    ),
+  );
+
   // ---- colors ---------------------------------------------------------------
   const swatches = h('div', { class: 'swatches' });
   const colorLabel = h('div', { class: 'meta' });
@@ -332,7 +360,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     host,
     h('p', { class: 'hint' }, sprites ? 'Color 255 is transparent. ' : '', 'Pick a block on the left, paint it in the middle, and set how it behaves below.'),
     h('div', { class: 'toolbar', style: 'margin-bottom:8px' }, chooser.el),
-    h('div', { class: 'row' }, h('div', { style: 'flex:0 1 260px;min-width:200px' }, picker), h('div', { class: 'stack' }, tools, canvas, actions), h('div', { class: 'stack', style: 'flex:1 1 220px;max-width:340px' }, swatches, colorLabel)),
+    h('div', { class: 'row' }, h('div', { style: 'flex:0 1 260px;min-width:200px' }, picker), h('div', { class: 'stack' }, tools, canvas, actions, sprites ? null : textures), h('div', { class: 'stack', style: 'flex:1 1 220px;max-width:340px' }, swatches, colorLabel)),
     h('div', { style: 'height:12px' }),
     props,
   );
