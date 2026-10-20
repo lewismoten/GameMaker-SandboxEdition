@@ -270,4 +270,12 @@ registerEditor(['map'], (host, project, file) => {
     ),
   );
   rebuild();
+  // Open where the action is: where the character starts, else the first placed monster.
+  requestAnimationFrame(() => {
+    const start = linkMarks().find((m) => m.kind === 'to') ?? map.monsters.find((m) => m.monnum < LASTMON) ?? undefined;
+    const at = start ? ('curx' in start ? { x: start.curx, y: start.cury } : start) : undefined;
+    if (!at) return;
+    const s = BLEN * zoom;
+    scroller.scrollTo({ left: at.x * s - scroller.clientWidth / 2, top: at.y * s - scroller.clientHeight / 2 });
+  });
 });
