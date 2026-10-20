@@ -17,6 +17,8 @@ export interface PlayerOptions extends RunOptions {
   touch?: boolean;
   /** Shareware: the author's notice, linked from the start screen. */
   notice?: string;
+  /** Start immediately, without the click-to-play overlay (audio must already be unlocked). */
+  autoStart?: boolean;
 }
 
 export interface PlayerHandle {
@@ -107,6 +109,10 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       e.preventDefault();
       void begin();
     };
+    if (opts.autoStart) {
+      void begin();
+      return;
+    }
     start.addEventListener('click', () => void begin(), { once: true });
     window.addEventListener('keydown', onKey, { once: true });
   });
