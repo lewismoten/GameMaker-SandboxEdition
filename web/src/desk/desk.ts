@@ -2,6 +2,7 @@
 // Game-Maker CD and a paper shareware catalog.
 import './desk.css';
 import './deskStage.css';
+import './crtOff.css';
 import { h, clear, toast } from '../editor/ui';
 import { Computer, type MonitorMode } from '../retro/computer';
 import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
@@ -221,7 +222,13 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   async function power(onlyOn = false): Promise<void> {
     if (computer.powered) {
-      if (!onlyOn) location.reload(); // switching off: the simplest honest "reset"
+      if (!onlyOn) {
+        // switching off: the tube collapses to a line, then a dot; then the simplest honest "reset"
+        crt.classList.add('switching-off');
+        powerLed.classList.remove('on');
+        spk.power(false);
+        setTimeout(() => location.reload(), 1700);
+      }
       else computer.focus();
       return;
     }
