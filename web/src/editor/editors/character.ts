@@ -93,7 +93,7 @@ registerEditor(['chr'], (host, project, file) => {
   const chooser = paletteChooser(project, cblName || file, () => render());
   const pal = () => chooser.palette;
 
-  const seqName = (i: number) => SEQUENCE_NAMES[i] ?? (chr.sequences[i].key ? `Key ${scanName(chr.sequences[i].key >> 8)}` : `Unused ${i}`);
+  const seqName = (i: number) => SEQUENCE_NAMES[i] ?? (chr.sequences[i].key ? `Key ${scanName(chr.sequences[i].key >> 8)}` : 'No key yet');
   const help = (text: string) => h('p', { class: 'chr-help' }, text);
   const group = (title: string, icon: string, ...body: (Node | null)[]) =>
     h('section', { class: 'chr-group' }, h('h4', null, h('span', { class: 'chr-icon' }, icon), title), ...body);
