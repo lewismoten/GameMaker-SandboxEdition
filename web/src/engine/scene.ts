@@ -318,6 +318,9 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         s.rec.doRecord(k);
         simKeyPress(w, k);
       }
+      // A tap shorter than a game tick would press and release Esc/F-keys before the
+      // loop looks at them; keep such presses latched until handled.
+      for (const k of pending) if (k === 1 || (k >= 59 && k <= 68)) w.keydn[k] = 1;
     } else if (pending.length) m.keyboard.events.unshift(...pending);
     let guard = 0;
     do {
