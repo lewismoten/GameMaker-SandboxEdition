@@ -429,6 +429,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     }
     renderWorld(m.screen, w);
     s.onFrame?.(w);
+    // Development aid for timing checks from the browser console / tests.
+    if (import.meta.env?.DEV) (globalThis as { __gm?: unknown }).__gm = { session: s, world: w };
   }
 
   m.audio.stopSong();
