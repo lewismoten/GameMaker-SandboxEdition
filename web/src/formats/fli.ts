@@ -193,3 +193,75 @@ function ss2Chunk(b: Uint8Array, p: number, end: number, w: number, h: number, p
     lines--;
   }
 }
+
+/** BRUN: each line as runs of one value or stretches of literal pixels. */
+function brun(px: Uint8Array, w: number, h: number): number[] {
+  const out: number[] = [];
+  for (let y = 0; y < h; y++) {
+    const row = px.subarray(y * w, y * w + w);
+    const line: number[] = [];
+    let packets = 0;
+    let x = 0;
+    while (x < w) {
+      let run = 1;
+      while (x + run < w && run < 127 && row[x + run] === row[x]) run++;
+      if (run >= 3 || x + run >= w) {
+        line.push(run, row[x]);
+        x += run;
+      } else {
+        let n = 0;
+        while (x + n < w && n < 128 && !(x + n + 2 < w && row[x + n] === row[x + n + 1] && row[x + n] === row[x + n + 2])) n++;
+        line.push((256 - n) & 255, ...row.subarray(x, x + n));
+        x += n;
+      }
+      packets++;
+    }
+    out.push(Math.min(255, packets), ...line);
+  }
+  return out;
+}
+
+function fliChunk(type: number, data: number[]): number[] {
+  let size = data.length + 6;
+  const pad = size & 1;
+  size += pad;
+  return [size & 255, (size >> 8) & 255, (size >> 16) & 255, size >>> 24, type & 255, type >> 8, ...data, ...(pad ? [0] : [])];
+}
+
+/**
+ * Writes an Autodesk Animator .FLI (Game-Maker shows 320x200): every frame run-length
+ * coded, the 6-bit palette in the first frame, and a closing "ring" frame that leads back
+ * to the start. `speed` is the delay after each frame in 1/70 s.
+ */
+export function encodeFli(frames: Uint8Array[], palette: Uint8Array, opts: { width?: number; height?: number; speed?: number } = {}): Uint8Array {
+  const w = opts.width ?? 320;
+  const h = opts.height ?? 200;
+  const records = [...frames, frames[0]].map((px, i) => {
+    const chunks: number[][] = [];
+    if (i === 0) {
+      const colors: number[] = [1, 0, 0, 0]; // one packet: skip 0, count 0 = 256 colors
+      for (let c = 0; c < 768; c++) colors.push(palette[c] & 63);
+      chunks.push(fliChunk(11, colors));
+    }
+    chunks.push(fliChunk(15, brun(px, w, h)));
+    const body = chunks.flat();
+    const size = body.length + 16;
+    return [size & 255, (size >> 8) & 255, (size >> 16) & 255, size >>> 24, 0xfa, 0xf1, chunks.length, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...body];
+  });
+  const total = 128 + records.reduce((n, r) => n + r.length, 0);
+  const out = new Uint8Array(total);
+  const dv = new DataView(out.buffer);
+  dv.setUint32(0, total, true);
+  dv.setUint16(4, 0xaf11, true);
+  dv.setUint16(6, frames.length, true);
+  dv.setUint16(8, w, true);
+  dv.setUint16(10, h, true);
+  dv.setUint16(12, 8, true);
+  dv.setUint16(16, opts.speed ?? 5, true);
+  let p = 128;
+  for (const r of records) {
+    out.set(r, p);
+    p += r.length;
+  }
+  return out;
+}
