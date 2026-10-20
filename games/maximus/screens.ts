@@ -346,82 +346,69 @@ export interface Scan {
   vault?: { x: number; y: number };
 }
 
-function scanPage(name: string, scan: Scan, kind: string): Canvas {
-  const c = new Canvas();
-  c.rect(0, 0, 320, 200, C('space')[0]);
-  c.text(10, 6, 'LONG-RANGE SCAN', C('cyan')[6]);
-  c.text(310 - Canvas.width(name.toUpperCase()), 6, name.toUpperCase(), C('yellow')[6]);
+/** Draws a world's scan, each map cell 1.5 pixels square (150x150), with its markers. */
+function drawScan(c: Canvas, scan: Scan, kind: string, ox: number, oy: number): void {
   const col = [C('space')[1], C('brown')[3], C('brown')[1], C('red')[5], C('cyan')[4], C('blue')[2], C('yellow')[6]];
   if (kind === 'ocean') col[0] = C('blue')[3];
   if (kind === 'station') {
     col[1] = C('grey')[3];
     col[2] = C('grey')[2];
   }
-  const ox = 10;
-  const oy = 20;
-  for (let y = 0; y < 100; y++)
-    for (let x = 0; x < 100; x++) {
-      const v = scan.cls[y * 100 + x];
-      const y0 = oy + Math.floor(y * 1.5);
-      const y1 = oy + Math.floor((y + 1) * 1.5);
-      c.rect(ox + x * 3, y0, 3, y1 - y0, col[v]);
-    }
-  c.frame(ox - 1, oy - 1, 302, 152, C('cyan')[2]);
+  const at = (v: number) => Math.floor(v * 1.5);
+  for (let y = 0; y < 100; y++) for (let x = 0; x < 100; x++) c.rect(ox + at(x), oy + at(y), at(x + 1) - at(x), at(y + 1) - at(y), col[scan.cls[y * 100 + x]]);
+  c.frame(ox - 1, oy - 1, 152, 152, C('cyan')[2]);
   const mark = (p: { x: number; y: number }, color: number, r: number) => {
-    const cx = ox + p.x * 3 + 1;
-    const cy = oy + Math.floor(p.y * 1.5);
+    const cx = ox + at(p.x) + 1;
+    const cy = oy + at(p.y);
     for (let a = 0; a < 24; a++) c.set(cx + Math.cos((a / 24) * Math.PI * 2) * r, cy + Math.sin((a / 24) * Math.PI * 2) * r, color);
     c.rect(cx - 1, cy - 1, 3, 3, color);
   };
-  mark(scan.arrive, C('green')[6], 5);
-  if (scan.vault) mark(scan.vault, C('yellow')[7], 6);
-  const ly = 178;
-  c.rect(10, ly, 6, 6, C('green')[6]);
-  c.text(20, ly, 'YOU / UPLINK', C('grey')[5]);
-  c.rect(130, ly, 6, 6, C('yellow')[7]);
-  c.text(140, ly, 'VAULT', C('grey')[5]);
-  c.rect(196, ly, 6, 6, C('red')[5]);
-  c.text(206, ly, 'DANGER', C('grey')[5]);
-  c.text(10, 190, 'The world wraps: east leads home.', C('grey')[3]);
-  return c;
+  mark(scan.arrive, C('green')[6], 4);
+  if (scan.vault) mark(scan.vault, C('yellow')[7], 5);
 }
 
 export function sectorCards(k: number, worlds: { world: World; scene: number; scan?: Scan }[]): Map<string, Uint8Array> {
   const out = new Map<string, Uint8Array>();
   const sec = SECTORS[k];
-  const c = new Canvas(640, 200 * worlds.length);
-  worlds.forEach(({ world, scene }, i) => {
+  const c = new Canvas(320, 200 * worlds.length);
+  worlds.forEach(({ world, scene, scan }, i) => {
     const card = new Canvas();
     spaceBg(card, 500 + scene);
-    planetArt(card, 92, 104, 64, world.biome, scene, { rings: scene % 5 === 0 });
-    const x = 172;
-    card.text(x, 20, `SECTOR ${k + 1}`, C('grey')[4]);
-    card.text(x, 30, sec.name.toUpperCase(), C('cyan')[6]);
+    // left: the planet and what the courier knows about it
+    planetArt(card, 26, 30, 20, world.biome, scene, { rings: scene % 5 === 0 });
+    card.text(54, 12, `SECTOR ${k + 1}`, C('grey')[4]);
+    card.text(54, 22, sec.name.toUpperCase(), C('cyan')[6]);
     const name = world.name.toUpperCase();
-    const scale = Canvas.width(name, 2) <= 140 ? 2 : 1;
-    card.text(x, 48, name, C('yellow').slice(3).reverse(), { scale, outline: 0 });
-    card.text(x, 74, KIND_TEXT[world.kind], C('orange')[6]);
-    const danger = '*'.repeat(sec.level) + '.'.repeat(5 - sec.level);
-    card.text(x, 86, `DANGER ${danger}`, C('red')[6]);
-    let y = card.para(x, 104, 140, world.blurb, C('ice')[6], 10);
+    const scale = Canvas.width(name, 2) <= 150 ? 2 : 1;
+    card.text(6, 58, name, C('yellow').slice(3).reverse(), { scale, outline: 0 });
+    card.text(6, 80, KIND_TEXT[world.kind], C('orange')[6]);
+    card.text(6, 90, `DANGER ${'*'.repeat(sec.level)}${'.'.repeat(5 - sec.level)}`, C('red')[6]);
+    let y = card.para(6, 106, 150, world.blurb, C('ice')[6], 10);
     if (world.shard !== undefined) {
-      card.sprite(drawShard(world.shard), x, y + 4, 1);
-      card.para(x + 24, y + 6, 116, `SHARD SIGNAL: ${SHARDS[world.shard].toUpperCase()}`, C('yellow')[6], 10);
-      y += 26;
+      card.sprite(drawShard(world.shard), 4, y + 2, 1);
+      card.para(26, y + 6, 130, `SHARD: ${SHARDS[world.shard].toUpperCase()}`, C('yellow')[6], 10);
+      y += 24;
     }
     if (world.module !== undefined) {
-      card.sprite(drawModule(world.module), x, y + 4, 1);
-      card.para(x + 24, y + 6, 116, `MODULE: ${MODULES[world.module].name.toUpperCase()}`, C('green')[6], 10);
+      card.sprite(drawModule(world.module), 4, y + 2, 1);
+      card.para(26, y + 6, 130, MODULES[world.module].name.toUpperCase(), C('green')[6], 10);
     }
-    card.text(x, 184, 'ANY KEY TO LAND', C('grey')[3]);
+    card.text(6, 188, 'ANY KEY TO LAND', C('grey')[3]);
+    // right: the long-range scan of the whole world
+    if (scan) {
+      card.rect(160, 0, 160, 200, C('space')[0]);
+      card.text(164, 8, 'LONG-RANGE SCAN', C('cyan')[6]);
+      drawScan(card, scan, world.kind, 165, 22);
+      card.rect(165, 180, 5, 5, C('green')[6]);
+      card.text(173, 178, 'YOU', C('grey')[5]);
+      card.rect(203, 180, 5, 5, C('yellow')[7]);
+      card.text(211, 178, 'VAULT', C('grey')[5]);
+      card.rect(257, 180, 5, 5, C('red')[5]);
+      card.text(265, 178, 'HOT', C('grey')[5]);
+      card.text(164, 190, 'east leads home', C('grey')[3]);
+    }
     c.blit(card, 0, i * 200);
     out.set(`w${scene}.bkd`, serializeBackdrop({ x: 0, y: i * 200, gif: `cards${k + 1}.gif` }));
-    // the scan sits beside the card in the same picture: a second window, 320 pixels over
-    const scan = worlds[i].scan;
-    if (scan) {
-      c.blit(scanPage(world.name, scan, world.kind), 320, i * 200);
-      out.set(`s${scene}.bkd`, serializeBackdrop({ x: 320, y: i * 200, gif: `cards${k + 1}.gif` }));
-    }
   });
   out.set(`cards${k + 1}.gif`, gif(c));
   return out;

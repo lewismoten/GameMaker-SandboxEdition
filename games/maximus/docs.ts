@@ -118,7 +118,7 @@ export function limits(b: Built): Limit[] {
     {
       what: 'Pictures between scenes',
       max: 'any GIF, FLI, BKD, TXT or LST',
-      used: `${gifs} GIFs, ${flis} FLIs, ${bkds} BKD windows into 6 big GIFs (each holds a sector's planet cards and scans side by side), ${lsts} slide shows`,
+      used: `${gifs} GIFs, ${flis} FLIs, ${bkds} BKD windows into 6 tall GIFs (a sector's planet cards, each with its world's scan), ${lsts} slide shows`,
       where: 'CARDS1..5.GIF, PLACES.GIF',
     },
   ];
@@ -273,7 +273,7 @@ export function manual(b: Built): object {
       },
       {
         head: 'The Galaxy and the Shards',
-        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Jump rings</h2><p>Every sector chart also holds a <b>jump ring</b>, walled in behind the next sector's crystal gates: carry those shards and it takes you straight on. The ring in The Deep Black leads to the Maelstrom itself.</p><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing names the shard, and the <b>long-range scan</b> after it shows the whole world: where you land (green) and where the vault lies (gold).</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
+        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Jump rings</h2><p>Every sector chart also holds a <b>jump ring</b>, walled in behind the next sector's crystal gates: carry those shards and it takes you straight on. The ring in The Deep Black leads to the Maelstrom itself.</p><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing names the shard, and its <b>long-range scan</b> shows the whole world: where you land (green) and where the vault lies (gold).</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
       },
       {
         head: 'Worlds and Vaults',

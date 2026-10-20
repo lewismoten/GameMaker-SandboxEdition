@@ -114,7 +114,7 @@ export async function present(b: Built): Promise<void> {
   // planet cards: each sector's cards in one tall GIF, a .BKD window per world, and a
   // little slide show per world: the descent film, then its card
   const worlds = allWorlds();
-  // and beside each card, in the same picture, the world's long-range scan
+  // and on each card, the world's long-range scan
   const scanOf = (scene: number): Scan | undefined => {
     const info = b.scenes.find((x) => x.scene === scene);
     if (!info) return undefined;
@@ -140,8 +140,7 @@ export async function present(b: Built): Promise<void> {
       ),
     ),
   );
-  for (const w of worlds)
-    put(`w${w.scene}.lst`, serializeSlideList([{ name: 'descent.fli', pause: 0 }, { name: `w${w.scene}.bkd` }, { name: `s${w.scene}.bkd` }]));
+  for (const w of worlds) put(`w${w.scene}.lst`, serializeSlideList([{ name: 'descent.fli', pause: 0 }, { name: `w${w.scene}.bkd` }]));
   putAll(
     placeCards([
       {

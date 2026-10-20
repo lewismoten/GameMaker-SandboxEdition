@@ -16,14 +16,14 @@ SECTOR CHARTS
 Fly into the middle of a
 planet to land. Planets with a
 gold signal beside them hold a
-shard. After the planet card
-comes a long-range scan: green
-is you, gold is the vault.
-Trading posts sell supplies:
-nudge a pad to buy, one of
-each per visit. A jump ring
-behind gates takes you on to
-the next sector.
+shard. The planet card shows a
+long-range scan: green is you,
+gold is the vault. Trading
+posts sell supplies: nudge a
+pad to buy, one of each per
+visit. A jump ring behind
+gates takes you on to the next
+sector.
 
 ON FOOT
 Left/Right walk. Up fires your
