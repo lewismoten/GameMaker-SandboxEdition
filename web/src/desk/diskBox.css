@@ -43,7 +43,12 @@
   padding: 6px 8px;
   overflow: hidden;
   border-radius: 0 0 2px 2px;
-  background: repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px), #fbf8ee;
+  padding-top: 13px;
+  /* a printed band across the top, then the ruled lines to write on */
+  background:
+    linear-gradient(180deg, var(--stripe, #1565c0) 0 8px, transparent 8px),
+    repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px),
+    #fbf8ee;
   font: 15px/14px 'Comic Sans MS', 'Marker Felt', 'Segoe Print', cursive;
   color: #1c2a6b;
   white-space: pre-line;
@@ -100,10 +105,30 @@
   inset: 50% 0 0 0;
 }
 
+.floppy .density-hole {
+  position: absolute;
+  left: 2.5%;
+  top: 2%;
+  width: 7%;
+  height: 7%;
+  background: #111;
+}
+
+/* written on later, in red marker */
+.floppy .marker-note {
+  position: absolute;
+  right: 6px;
+  top: 10px;
+  color: #d0141b;
+  font: 700 12px/1 'Marker Felt', 'Comic Sans MS', cursive;
+  transform: rotate(-7deg);
+  white-space: nowrap;
+}
+
 .floppy .hd {
   position: absolute;
   left: 2.5%;
-  top: 3%;
+  top: 11%;
   font: 700 8px/1 system-ui, sans-serif;
   color: rgba(255, 255, 255, 0.55);
 }

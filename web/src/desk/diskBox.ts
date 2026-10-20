@@ -19,11 +19,23 @@ export function floppyElement(d: Disk, small = false): HTMLElement {
         : [g?.author ?? g?.company, [g?.year, g?.price].filter(Boolean).join('  ')].filter(Boolean).join('\n');
   return h(
     'div',
-    { class: 'floppy', style: `--body:${d.color}`, dataset: { kind: d.kind, protected: String(d.writeProtected) }, 'aria-hidden': small ? 'true' : undefined },
+    {
+      class: 'floppy',
+      style: `--body:${d.color};--stripe:${d.stripe}`,
+      dataset: { kind: d.kind, protected: String(d.writeProtected), density: d.density },
+      'aria-hidden': small ? 'true' : undefined,
+    },
     h('div', { class: 'shutter' }),
-    h('div', { class: 'label' }, label, h('small', null, [sub, count > 1 ? `disk 1 of ${count}` : ''].filter(Boolean).join('\n'))),
+    h(
+      'div',
+      { class: 'label' },
+      label,
+      h('small', null, [sub, count > 1 ? `disk 1 of ${count}` : ''].filter(Boolean).join('\n')),
+      d.note ? h('span', { class: 'marker-note' }, d.note) : null,
+    ),
     h('div', { class: 'wp' }),
-    h('div', { class: 'hd' }, 'HD'),
+    d.density === 'HD' ? h('div', { class: 'density-hole' }) : null,
+    d.density === 'HD' ? h('div', { class: 'hd' }, 'HD') : null,
   );
 }
 
