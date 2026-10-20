@@ -8,7 +8,7 @@ import { toCp437 } from './cp437';
 import { commas } from './vfs';
 import type { CatalogEntry } from '../project/files';
 import { sandboxLogin, sandBanner } from './ansiArt';
-import { Term, boxBottom, boxRow, boxRule, boxTop, dial, sleep, statusLine } from './term';
+import { Term, boxBottom, boxRow, boxRule, boxTop, dial, modemSignal, sleep, statusLine } from './term';
 import { runSofa, SOFA_PHONE } from './sofa';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
@@ -42,6 +42,7 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     t.line(k.length === 1 ? k : '');
     const entry = DIRECTORY[Number(k) - 1];
     if (k === 'Escape' || k === 'Q') {
+      modemSignal('off');
       s.clear();
       return;
     }
@@ -53,6 +54,7 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     await entry.run(t, h);
     t.line();
     t.line('|12NO CARRIER');
+    modemSignal('hangup');
     t.status(statusLine('Offline'));
     await sleep(1200);
   }

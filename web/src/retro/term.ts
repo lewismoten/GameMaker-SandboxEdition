@@ -5,6 +5,13 @@ import { attr, COLS, ROWS } from './textScreen';
 import { toCp437 } from './cp437';
 import { dialSounds } from './modem';
 
+/** What the modem's front lights show; the desk's modem listens for these (desk/modem.ts). */
+export type ModemSignal = 'ready' | 'offhook' | 'carrier' | 'receive' | 'send' | 'hangup' | 'off';
+
+export function modemSignal(signal: ModemSignal): void {
+  window.dispatchEvent(new CustomEvent<ModemSignal>('gm-modem', { detail: signal }));
+}
+
 export class Term {
   private fg = 7;
   constructor(private h: RetroHost) {}
@@ -16,6 +23,7 @@ export class Term {
   /** Prints with |XX color codes, keeping the bottom status line. */
   print(text: string): void {
     const s = this.h.screen;
+    if (text.length > 1) modemSignal('receive');
     const parts = toCp437(text).split(/\|(\d\d)/);
     parts.forEach((p, i) => {
       if (i % 2) this.fg = Number(p) & 15;
@@ -55,6 +63,7 @@ export class Term {
 
   async key(): Promise<string> {
     const k = await this.h.keys.next();
+    modemSignal('send');
     return k.key.length === 1 ? k.key.toUpperCase() : k.key;
   }
 
@@ -102,6 +111,7 @@ export const statusLine = (online: string) => ` TERMINAL 2.1 │ COM2 │ 14400 
 export async function dial(t: Term, h: RetroHost, number: string): Promise<void> {
   t.line('|15TERMINAL 2.1  |07Modem on COM2 ready.');
   t.line();
+  modemSignal('ready');
   await t.typeSlowly('ATZ');
   t.line();
   await sleep(300);
@@ -112,6 +122,7 @@ export async function dial(t: Term, h: RetroHost, number: string): Promise<void>
   t.line('OK');
   await t.typeSlowly(`ATDT${number}`);
   t.line();
+  modemSignal('offhook');
   const call = dialSounds(h.audio(), number);
   const start = performance.now();
   const until = (sec: number) => sleep(Math.max(0, start + sec * 1000 - performance.now()));
@@ -123,4 +134,5 @@ export async function dial(t: Term, h: RetroHost, number: string): Promise<void>
   t.line('|08(carrier detected, negotiating...)');
   await until(call.connect);
   t.line('|14CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS');
+  modemSignal('carrier');
 }
