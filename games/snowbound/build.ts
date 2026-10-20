@@ -196,11 +196,17 @@ disk.put('snowbnd.gam', serializeGame(game));
 const sprites = new Map([...cb.pics, ...mb.pics]);
 const screens = buildScreens(sprites, { cards, shot, shotPal });
 for (const [name, bytes] of Object.entries(screens)) disk.put(name, bytes);
-disk.put('title.lst', serializeSlideList([{ name: 'title.gif', pause: 12 }]));
+disk.put(
+  'title.lst',
+  serializeSlideList([
+    { name: 'intro.fli', pause: 0 },
+    { name: 'title.gif', pause: 12 },
+  ]),
+);
 disk.put('story.lst', serializeSlideList([{ name: 'news1.gif' }, { name: 'news2.gif' }, { name: 'news3.gif' }]));
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
-disk.put('won.lst', serializeSlideList([{ name: 'won1.gif' }, { name: 'won2.gif' }, { name: 'won3.gif' }]));
+disk.put('won.lst', serializeSlideList([{ name: 'won1.gif' }, { name: 'arcade.gif' }, { name: 'won2.gif' }, { name: 'won3.gif' }]));
 disk.put('howto.txt', INSTRUCTIONS);
 disk.put('credits.txt', CREDITS);
 disk.put('title.cmf', titleSong());

@@ -1,5 +1,6 @@
 // The 320x200 pictures: title, menu, the newspaper storyline, level cards, the notepad
 // behind text pages, and the endings. All drawn in code with the same ramps as the blocks.
+import { encodeFli } from '../../web/src/formats/fli';
 import { encodeGif } from '../../web/src/formats/gif';
 import { Pixels, rng } from '../kit/pixels';
 import { blob, gradient, shadeAt } from './draw';
@@ -201,31 +202,30 @@ export function buildScreens(
   const body = (p: Pixels, x: number, y: number, w: number, lines: string[]) => {
     lines.forEach((l, i) => micro(p, x, y + i * 7, l.slice(0, Math.floor(w / 4)), c('newsink', 1)));
   };
-  const n1 = paper('MINERAL COURIER', 'FRIDAY  DECEMBER 11  1992');
+  const n1 = paper('MOUNTAIN COURIER', 'FRIDAY  DECEMBER 11  1992');
   centered(n1, 40, 'SNOWBOUND!', c('newsink', 0), 3);
   centered(n1, 66, 'Area buried; schools closed; plows out', c('newsink', 0));
   scaleBlit(n1, extras.shot, 10, 84, 1);
   n1.frame(9, 83, 162, 82, c('newsink', 0));
-  micro(n1, 10, 168, 'PINE STREET  FORT ASHBY  THIS MORNING', c('newsink', 1));
+  micro(n1, 10, 168, 'GALE ST AT DUNN DR  THIS MORNING', c('newsink', 1));
   body(n1, 180, 84, 130, [
-    'FORT ASHBY - THE STORM THAT',
-    'ROLLED OVER KNOBLEY MOUNTAIN',
-    'LEFT A FOOT AND A HALF OF',
-    'SNOW ON MINERAL COUNTY.',
+    'DOWDEN ADDITIONS - THE STORM',
+    'THAT CAME IN OVERNIGHT LEFT',
+    'A FOOT AND A HALF OF SNOW.',
     '',
-    'ROUTE 28 IS OPEN BUT SLICK.',
-    'THE STATE ROAD CREWS ASK',
-    'DRIVERS TO WATCH FOR PLOWS',
-    'AND FOR CHILDREN ON SLEDS',
-    'ON KNOBLEY HILL.',
+    'PLOWS ARE OUT ON GALE STREET',
+    'AND BOWDEN DRIVE. DRIVERS:',
+    'WATCH FOR SLEDS ON JAMIE ST.',
     '',
-    'MORE SNOW IS EXPECTED BY',
-    'EVENING. PATTERSON CREEK',
-    'IS FROZEN SOLID.',
+    'THERE ARE NO MAILBOXES TO',
+    'DIG OUT HERE - THE CARRIER',
+    'WALKS THE MAIL TO EVERY',
+    'DOOR SLOT. SO PLEASE CLEAR',
+    'YOUR FRONT WALK TOO!',
   ]);
   save('news1.gif', n1);
 
-  const n2 = paper('MINERAL COURIER', 'PAGE 6       CLASSIFIEDS');
+  const n2 = paper('MOUNTAIN COURIER', 'PAGE 6       CLASSIFIEDS');
   n2.rect(10, 42, 196, 148, c('paper', 4)).frame(10, 42, 196, 148, c('newsink', 0)).frame(12, 44, 192, 144, c('newsink', 0));
   text(n2, 22, 52, 'MAKE YOUR OWN', c('newsink', 0), 2);
   text(n2, 22, 70, 'VIDEO GAMES!', c('newsink', 0), 2);
@@ -250,28 +250,28 @@ export function buildScreens(
     'MOUSE  JOYSTICK',
     '',
     'BITS & BYTES SOFTWARE',
-    'MILL CREEK MALL',
+    'LAVALE MALL',
   ]);
   outlined(n2, 82, 162, 'ONLY $89', c('coat', 3), c('newsink', 0), 2);
   n2.rect(212, 42, 98, 74, c('paper', 4)).frame(212, 42, 98, 74, c('newsink', 0));
   body(n2, 216, 46, 92, [
     'FOR SALE: SLED,',
     'RED, FAST. ASK',
-    'AT THE HARDWARE',
-    'STORE.',
+    'ON LEOTA ST.',
     '',
     'LOST: ONE MITTEN,',
-    'BLUE. MAIN ST.',
-    'NEAR THE DINER.',
+    'BLUE. BOTTOM OF',
+    'JAMIE ST HILL.',
     '',
-    'BISCUIT THE DOG',
-    'IS LOOSE AGAIN.',
+    'TIMEOUT ARCADE',
+    'LAVALE MALL: NEW',
+    'GAMES THIS WEEK!',
   ]);
   n2.rect(212, 122, 98, 68, c('paper', 4)).frame(212, 122, 98, 68, c('coat', 2));
   body(n2, 216, 126, 92, ['NOTICE:', 'THE PRICE OF', 'GAME-MAKER GOES', 'UP TO $129 IN', 'JANUARY.', '', 'BUY BEFORE', 'CHRISTMAS!']);
   save('news2.gif', n2);
 
-  const n3 = paper('MINERAL COURIER', 'PAGE 2        LOCAL NEWS');
+  const n3 = paper('MOUNTAIN COURIER', 'PAGE 2        LOCAL NEWS');
   centered(n3, 40, 'KID SHOVELS FOR', c('newsink', 0), 2);
   centered(n3, 56, 'GAME-MAKER', c('newsink', 0), 2);
   centered(n3, 72, '"Moten Snow-to-Software Operations"', c('newsink', 0));
@@ -279,9 +279,9 @@ export function buildScreens(
   n3.frame(12, 86, 88, 86, c('newsink', 0));
   micro(n3, 14, 176, 'OUR FOUNDER', c('newsink', 1));
   body(n3, 110, 88, 200, [
-    'A FORT ASHBY TEEN HAS A PLAN FOR ALL',
-    'THIS SNOW. HE WILL SHOVEL ANY DRIVEWAY',
-    'OR SIDEWALK IN TOWN FOR ONE DOLLAR A',
+    'A DOWDEN ADDITIONS TEEN HAS A PLAN FOR',
+    'ALL THIS SNOW. HE WILL SHOVEL ANY',
+    'DRIVEWAY OR WALK AROUND FOR ONE DOLLAR A',
     'SCOOP - AND EVERY DOLLAR GOES INTO A',
     'COFFEE CAN UNTIL IT HOLDS $89.',
     '',
@@ -290,10 +290,10 @@ export function buildScreens(
     'DRIVEWAY IS LIKE ONE PIXEL OF THE GAME',
     'I AM GOING TO MAKE."',
     '',
-    'HE SAYS HE WILL START ON PINE STREET',
-    'AT 7 AM, SLED DOWN KNOBLEY HILL TO',
-    'MAIN STREET, AND TAKE ROUTE 28 TO THE',
-    'MALL BY NIGHT. WATCH FOR THE PLOWS!',
+    'HE STARTS AT HOME ON GALE STREET AT',
+    '7 AM, SLEDS DOWN JAMIE STREET TO',
+    'BOWDEN DRIVE, AND HOPES TO REACH',
+    'LAVALE MALL BY NIGHT. WATCH OUT, PLOWS!',
   ]);
   save('news3.gif', n3);
 
@@ -336,9 +336,45 @@ export function buildScreens(
   scaleBlit(won1, kid, 14, 106, 3);
   won1.rect(0, 166, W, 34, c('ink', 0));
   outlined(won1, 160 - textWidth('SOLD!', 4) / 2, 130, 'SOLD!', c('gold', 3), c('ink', 0), 4);
-  centered(won1, 172, 'One GAME-MAKER, $89.00 cash -', c('snow', 6));
+  centered(won1, 172, 'LaVale Mall: one GAME-MAKER, $89', c('snow', 6));
   centered(won1, 184, 'in ones, still a little damp.', c('snow', 6));
   save('won1.gif', won1);
+
+  // ---------------- Timeout: the change from the mall lot, in quarters
+  const arc = new Pixels(W, H, c('ink', 0));
+  gradient(arc, 0, 0, W, 40, pal.r('nightsky'), 0, 2);
+  // the marquee
+  arc.rect(70, 6, 180, 30, c('ink', 1)).frame(70, 6, 180, 30, c('gold', 2));
+  for (let x = 72; x < 248; x += 4) arc.set(x, 8, pal.r('bulbs')[(x >> 2) % 4]).set(x + 2, 33, pal.r('bulbs')[((x >> 2) + 2) % 4]);
+  outlined(arc, 160 - textWidth('TIMEOUT', 2) / 2, 13, 'TIMEOUT', c('orange', 3), c('coat', 0), 2);
+  // a row of cabinets, screens glowing
+  for (let k = 0; k < 5; k++) {
+    const x = 14 + k * 62;
+    const hue = ['siding', 'coat', 'money', 'pink', 'butter'][k];
+    arc
+      .rect(x, 48, 44, 112, c(hue, 1))
+      .rect(x, 48, 44, 10, c(hue, 3))
+      .rect(x + 2, 50, 40, 6, c('ink', 0));
+    for (let i = 0; i < 6; i++) arc.set(x + 6 + i * 6, 52, c('gold', (i + k) % 4));
+    arc.rect(x + 5, 62, 34, 28, c('ink', 0));
+    gradient(arc, x + 7, 64, 30, 24, pal.r(hue), 0, 3);
+    const rr = rng(k + 40);
+    for (let i = 0; i < 8; i++) arc.rect(x + 8 + Math.floor(rr() * 26), 66 + Math.floor(rr() * 18), 2, 2, c(['gold', 'snow', 'coat'][i % 3], 3));
+    arc
+      .rect(x + 2, 94, 40, 14, c('grey', 1))
+      .rect(x + 10, 98, 2, 6, c('ink', 0))
+      .rect(x + 9, 96, 4, 3, c('coat', 3));
+    arc.rect(x + 24, 99, 4, 4, c('gold', 3)).rect(x + 31, 99, 4, 4, c('siding', 3));
+    arc.rect(x + 16, 118, 12, 14, c('grey', 2)).rect(x + 21, 121, 2, 6, c('ink', 0));
+    micro(arc, x + 17, 134, '25', c('gold', 3));
+  }
+  arc.rect(0, 160, W, 40, c('wall', 0));
+  for (let x = 0; x < W; x += 16) arc.rect(x, 160, 8, 4, c('wall', 1));
+  scaleBlit(arc, spr.get('up0')!, 140, 110, 3);
+  arc.rect(0, 170, W, 30, c('ink', 0));
+  centered(arc, 175, 'The change from the lot went to', c('snow', 6));
+  centered(arc, 186, 'Timeout, one quarter at a time.', c('snow', 6));
+  save('arcade.gif', arc);
 
   const won2 = new Pixels(W, H);
   gradient(won2, 0, 0, W, 140, pal.r('wall'), 1, 0);
@@ -356,12 +392,13 @@ export function buildScreens(
   won2.rect(60, 142, 110, 14, c('concrete', 2)).rect(150, 146, 14, 3, c('money', 2));
   box(won2, 196, 98, 1);
   scaleBlit(won2, spr.get('up0')!, 92, 112, 3);
-  won2.rect(0, 170, W, 30, c('ink', 0));
-  centered(won2, 176, 'That night, Moten Snow-to-Software', c('snow', 6));
-  centered(won2, 186, 'Operations became a game company.', c('snow', 6));
+  won2.rect(0, 164, W, 36, c('ink', 0));
+  centered(won2, 167, 'That night, at Gale St & Dunn Dr,', c('snow', 6));
+  centered(won2, 177, 'Moten Snow-to-Software Operations', c('snow', 6));
+  centered(won2, 187, 'became a game company.', c('snow', 6));
   save('won2.gif', won2);
 
-  const won3 = paper('MINERAL COURIER', 'MONDAY  JANUARY 4  1993');
+  const won3 = paper('MOUNTAIN COURIER', 'MONDAY  JANUARY 4  1993');
   centered(won3, 44, 'GAME-MAKER NOW $129', c('newsink', 0), 2);
   centered(won3, 64, 'Local kid: "Glad I shoveled fast."', c('newsink', 0));
   box(won3, 30, 84, 1);
@@ -369,9 +406,10 @@ export function buildScreens(
     'THE PRICE OF THE POPULAR GAME DESIGN',
     'KIT JUMPED FORTY DOLLARS THIS WEEK.',
     '',
-    'ONE FORT ASHBY STUDENT BOUGHT HIS',
-    'COPY IN DECEMBER WITH MONEY FROM',
-    'SHOVELING DRIVEWAYS ALL OVER TOWN.',
+    'ONE DOWDEN ADDITIONS STUDENT BOUGHT',
+    'HIS COPY IN DECEMBER AT LAVALE MALL',
+    'WITH MONEY FROM SHOVELING GALE, DUNN,',
+    'LEOTA, LEON, JAMIE AND BOWDEN.',
     '',
     'HIS FIRST GAME IS ABOUT, OF COURSE,',
     'SHOVELING SNOW.',
@@ -398,6 +436,79 @@ export function buildScreens(
   centered(lost, 178, 'A cold, a quilt, and a coffee can', c('snow', 6));
   centered(lost, 188, 'that is not full yet. Next winter!', c('snow', 6));
   save('lost.gif', lost);
+
+  // ---------------- intro.fli: dawn at the corner of Gale Street and Dunn Drive. Snow
+  // falls on the street sign and piles up on its blades, the porch light of home comes
+  // on, and the date types itself out.
+  {
+    const frames: Uint8Array[] = [];
+    const N = 64;
+    const rf = rng(77);
+    const flakes = Array.from({ length: 140 }, () => ({ x: rf() * W, y: rf() * H, v: 1.5 + rf() * 2.5, d: rf() * 6, big: rf() < 0.3 }));
+    const caption1 = 'DECEMBER 11, 1992  7:00 AM';
+    const caption2 = 'DOWDEN ADDITIONS';
+    for (let f = 0; f < N; f++) {
+      const p = new Pixels(W, H);
+      gradient(p, 0, 0, W, 150, pal.r('dusksky'), 0, 15);
+      // home: the corner house, Christmas lights on, the porch light coming on at f 20
+      const hx = 150;
+      const base = 150;
+      p.rect(hx, base - 46, 150, 46, c('brick', 2)).rect(hx, base - 46, 4, 46, c('brick', 3));
+      for (let y = 0; y < 30; y++) {
+        const inset = Math.round(((30 - y) / 30) * 78);
+        for (let x = hx - 6 + inset; x < hx + 156 - inset; x++) p.set(x, base - 76 + y, y < 27 ? c('snow', x < hx + 75 ? 6 : 4) : c('ink', 0));
+      }
+      p.rect(hx + 104, base - 84, 12, 14, c('brick', 1)).rect(hx + 104, base - 86, 12, 3, c('snow', 6));
+      for (let k = 0; k < 4; k++) blob(p, hx + 110 + k * 3 + Math.sin((f + k * 5) / 4) * 2, base - 92 - k * 8 - (f % 8), 3 + k, 3, pal.r('grey'), 3, 5);
+      for (const wx of [hx + 14, hx + 44, hx + 104])
+        p.rect(wx, base - 36, 22, 18, c('wood', 4))
+          .rect(wx + 2, base - 34, 18, 14, c('glow', f > 8 ? 3 : 1))
+          .rect(wx + 10, base - 34, 2, 14, c('wood', 4));
+      p.rect(hx + 72, base - 38, 18, 38, c('siding', 1)).rect(hx + 85, base - 20, 2, 2, c('gold', 3));
+      if (f >= 20) blob(p, hx + 66, base - 40, 4, 4, pal.r('glow'), 2, 3);
+      const bulbs = pal.r('bulbs');
+      for (let x = hx; x < hx + 150; x += 5) p.set(x, base - 46, bulbs[(Math.floor(x / 5) + (f >> 2)) % 4]);
+      // the snowy ground and the plowed edge of Dunn Drive
+      const ground = 150 - Math.min(6, Math.floor(f / 10));
+      for (let y = ground; y < H; y++)
+        for (let x = 0; x < W; x++) p.set(x, y, shadeAt(pal.r('snow'), 3, 6, 0.4 + (y - ground) / 50 + Math.sin(x / 17 + y / 9) * 0.08, x, y));
+      p.rect(0, 176, W, 24, c('asphalt', 1)).rect(0, 176, W, 2, c('snow', 4));
+      for (let x = (f * 3) % 24; x < W; x += 24) p.rect(x, 188, 12, 2, c('gold', 2));
+      // the sign: two green blades on a post
+      const sx = 70;
+      p.rect(sx - 2, 38, 5, 140, c('grey', 3)).rect(sx - 2, 38, 2, 140, c('grey', 4));
+      const pile = Math.min(5, Math.floor(f / 9));
+      const blade = (y: number, label: string, dx: number) => {
+        const w = textWidth(label, 2) + 12;
+        const x = sx - Math.floor(w / 2) + dx;
+        p.rect(x, y, w, 22, c('pine', 3))
+          .frame(x + 2, y + 2, w - 4, 18, c('snow', 6))
+          .rect(x, y + 22, w, 2, c('ink', 0));
+        text(p, x + 6, y + 4, label, c('snow', 6), 2);
+        for (let xx = x; xx < x + w; xx++) {
+          const h = pile - ((xx * 5) % 3 === 0 ? 1 : 0);
+          for (let k = 0; k < h; k++) p.set(xx, y - 1 - k, c('snow', k === h - 1 ? 5 : 6));
+        }
+      };
+      blade(40, 'GALE ST', 6);
+      blade(72, 'DUNN DR', -6);
+      // falling snow
+      for (const fl of flakes) {
+        const y = (fl.y + f * fl.v) % H;
+        const x = (fl.x + Math.sin((f + fl.d * 10) / 6) * 3 + W) % W;
+        p.set(x | 0, y | 0, c('snow', 6));
+        if (fl.big) p.set((x | 0) + 1, y | 0, c('snow', 5)).set(x | 0, (y | 0) + 1, c('snow', 5));
+      }
+      // the date types itself out
+      const t1 = Math.max(0, Math.min(caption1.length, (f - 16) * 2));
+      const t2 = Math.max(0, Math.min(caption2.length, (f - 16) * 2 - caption1.length - 4));
+      if (t1) outlined(p, 160 - textWidth(caption1) / 2, 8, caption1.slice(0, t1), c('snow', 6), c('ink', 0));
+      if (t2) outlined(p, 160 - textWidth(caption2) / 2, 20, caption2.slice(0, t2), c('gold', 3), c('ink', 0));
+      frames.push(Uint8Array.from(p.px));
+    }
+    for (let k = 0; k < 12; k++) frames.push(frames[frames.length - 1]);
+    files['intro.fli'] = encodeFli(frames, pal.pal, { speed: 6 });
+  }
 
   // ---------------- level cards (in each level's own palette)
   for (const card of extras.cards) {

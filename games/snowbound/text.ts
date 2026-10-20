@@ -1,16 +1,18 @@
 // The words: text pages shown over the notepad (31 columns, 16 lines a page) and the
 // readme on the disk.
-const page = (lines: string[]) => {
+const page = (lines: string[], pages = 1) => {
   for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
+  if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
   while (lines.length % 16) lines.push('');
   return lines.join('\n');
 };
 
 export const INSTRUCTIONS = [
   page([
-    'Shovel Fort Ashby out, earn',
-    '$89, and buy GAME-MAKER at the',
-    'mall before the price goes up.',
+    'Shovel out Dowden Additions,',
+    'earn $89, and buy GAME-MAKER',
+    'at LaVale Mall before the',
+    'price goes up.',
     '',
     'ARROW KEYS walk. Walk into a',
     'heap of deep snow to shovel',
@@ -21,8 +23,7 @@ export const INSTRUCTIONS = [
     'plow banks along the road to',
     'pack more snowballs.',
     '',
-    'Press F2 any time to count the',
-    'money in your coffee can.',
+    'F2 counts your coffee can.',
   ]),
   page([
     'HOT COCOA warms you back up.',
@@ -32,12 +33,15 @@ export const INSTRUCTIONS = [
     'snowball stops Big Pete.',
     '',
     'Bonk a snow fort to knock it',
-    'flat, then shovel what is left',
-    'for $2.',
+    'flat; shovel the pile for $2.',
     '',
     'ICE slides you the way its',
-    'arrows point. Patterson Creek',
-    'on Main Street runs east!',
+    'arrows point. The creek by',
+    'Bowden Drive runs east!',
+    '',
+    'No mailboxes in Dowden: the',
+    'carrier walks to every door',
+    'slot, so the walks pay too.',
   ]),
   page([
     'THE SLED: LEFT and RIGHT',
@@ -45,12 +49,12 @@ export const INSTRUCTIONS = [
     'DOWN pushes off. Grab the',
     'dollars blowing down the hill.',
     '',
-    'THE MALL LOT snows back over',
-    'every half minute. Shovel it',
-    'again for more money. The',
+    'THE MALL LOT snows back over.',
+    'Shovel it again for more. The',
     'register at Bits & Bytes only',
     'opens with $89 in your can.',
-    '',
+    'TIMEOUT, the arcade, eats $1',
+    'a push - but warms you up.',
     'F1 help      F2 coffee can',
     'F3 music     F4 sound',
     'F5 save      F6 load',
@@ -58,30 +62,33 @@ export const INSTRUCTIONS = [
   ]),
 ].join('\n');
 
-export const CREDITS = page([
-  'SNOWBOUND: THE $89 SHOVEL',
-  'Sandbox Software, 1995',
-  '',
-  'Design, pixels, music, sound',
-  'and levels by Claude - every',
-  'block, monster and song built',
-  'as Game-Maker 3.0 files.',
-  '',
-  'For the founder and operator',
-  'of Moten Snow-to-Software',
-  'Operations, Fort Ashby, West',
-  'Virginia, winter of 1992, who',
-  'shoveled his way to a copy of',
-  'Game-Maker. Each driveway was',
-  'one pixel of the game.',
-  '',
-  'Made with GAME-MAKER by',
-  'Recreational Software Designs.',
-  '',
-  'Thanks to everyone who ever',
-  'left a kid a five dollar tip',
-  'on the porch.',
-]);
+export const CREDITS = page(
+  [
+    'SNOWBOUND: THE $89 SHOVEL',
+    'Sandbox Software, 1995',
+    '',
+    'Design, pixels, music, sound',
+    'and levels by Claude - every',
+    'block, monster and song built',
+    'as Game-Maker 3.0 files.',
+    '',
+    'For the founder and operator',
+    'of Moten Snow-to-Software',
+    'Operations, Gale St & Dunn Dr,',
+    'Dowden Additions, winter of',
+    '1992, who shoveled his way to',
+    'a copy of Game-Maker. Each',
+    'driveway was one pixel.',
+    '',
+    'Made with GAME-MAKER by',
+    'Recreational Software Designs.',
+    '',
+    'Thanks to everyone who ever',
+    'left a kid a five dollar tip',
+    'on the porch.',
+  ],
+  2,
+);
 
 export function readme(price: string): string {
   return `
@@ -90,9 +97,12 @@ export function readme(price: string): string {
                     Version 1.0 - December 1995
                     (c) 1995 Sandbox Software
 
-  Fort Ashby, West Virginia, December 1992. A foot and a half of snow,
-  school is closed, and GAME-MAKER is $89 at the mall - until January,
+  Dowden Additions, December 1992. A foot and a half of snow, school
+  is closed, and GAME-MAKER is $89 at LaVale Mall - until January,
   when it goes up to $129. Grab your shovel. Every scoop is a dollar.
+  Start at home on the corner of Gale Street and Dunn Drive, dig out
+  Leota Street and Leon Drive, sled down Jamie Street, work your way
+  along Bowden Drive, and get to the mall before closing.
 
   STARTING THE GAME
     Type SNOWBND and press Enter. A VGA display is required. A Sound
@@ -112,13 +122,16 @@ export function readme(price: string): string {
 
     If you enjoy it, please register for ${price} with Sandbox Software.
     Registered players receive the next adventure, "SNOWBOUND II:
-    Spring Thaw", a printed map of Fort Ashby, and our thanks. Send a
-    check or money order (US funds) to:
+    Spring Thaw", a printed map of Dowden Additions, and our thanks.
+    Send a check or money order (US funds) to:
 
         Sandbox Software
         Dept. SNOW
         P.O. Box 1992
         Pittsburgh, PA 15213
+
+    (This is a fictional address for this game - there is no real
+    Sandbox Software to mail. Please do not send money anywhere.)
 
     Please tell us where you found your copy and which BBS you call.
 
