@@ -56,7 +56,8 @@ export class Computer implements RetroHost {
   ) {
     this.textEl = h('canvas', { class: 'crt-text', tabIndex: 0, 'aria-label': 'Computer screen' });
     this.layer = h('div', { class: 'crt-layer' });
-    monitor.append(this.textEl, this.layer);
+    // .crt-picture: what the tube shows, which the desk curves like the glass
+    monitor.append(h('div', { class: 'crt-picture' }, this.textEl, this.layer));
     this.screen = new TextScreen(this.textEl);
     this.screen.clear(0);
     this.screen.cursorVisible = false;
