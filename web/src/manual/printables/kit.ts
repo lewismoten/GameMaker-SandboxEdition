@@ -3,10 +3,10 @@
 import { h } from '../../editor/ui';
 import { mapShot } from '../../desk/boxArt';
 import type { CatalogEntry } from '../../project/files';
-import type { MapPanel, PrintablesFile, Portrait } from './types';
+import type { MapPanel, PrintablesFile, Portrait, SpriteArt } from './types';
 import { cdName } from '../../project/files';
 import { parseCharacter } from '../../formats/character';
-import { BLEN, CHARBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
+import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
 import { parsePalette } from '../../formats/palette';
 import { paintIndexed } from '../../editor/draw';
 
@@ -150,6 +150,31 @@ export async function portrait(entry: CatalogEntry, p: Portrait): Promise<string
       if (blocks[pic]) px.set(blocks[pic].pixels, y0 * BLEN);
     const c = document.createElement('canvas');
     paintIndexed(c, px, BLEN, BLEN * 2, parsePalette(palB), true);
+    return c.toDataURL();
+  } catch {
+    return undefined;
+  }
+}
+
+/** Blocks from one of the game's block files, laid out in a grid, as a PNG data URL (transparent background). */
+export async function spriteArt(entry: CatalogEntry, s: SpriteArt): Promise<string | undefined> {
+  const [blB, palB] = await Promise.all([s.blocks, s.pal].map((f) => fetchFile(entry, f)));
+  if (!blB || !palB) return undefined;
+  try {
+    const ext = s.blocks.toLowerCase().slice(-3);
+    const blocks = parseBlocks(blB, ext === 'cbl' ? CHARBL : ext === 'bbl' ? BACKBL : MONBL);
+    const cols = Math.max(1, ...s.grid.map((r) => r.length));
+    const rows = s.grid.length;
+    const px = new Uint8Array(cols * BLEN * rows * BLEN).fill(TRANSPARENT);
+    s.grid.forEach((row, gy) =>
+      row.forEach((n, gx) => {
+        const b = n >= 0 ? blocks[n] : undefined;
+        if (!b) return;
+        for (let y = 0; y < BLEN; y++) for (let x = 0; x < BLEN; x++) px[(gy * BLEN + y) * cols * BLEN + gx * BLEN + x] = b.pixels[y * BLEN + x];
+      }),
+    );
+    const c = document.createElement('canvas');
+    paintIndexed(c, px, cols * BLEN, rows * BLEN, parsePalette(palB), true);
     return c.toDataURL();
   } catch {
     return undefined;

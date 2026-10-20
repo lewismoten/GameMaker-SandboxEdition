@@ -163,6 +163,17 @@ export interface StickerSpec {
   ink?: string;
   /** A picture from a map (a few blocks). */
   shot?: MapPanel;
+  /** A monster or thing drawn from the game's own block file. */
+  sprite?: SpriteArt;
+  /** A character from his .CHR file, standing (drawn instead of `sprite`). */
+  hero?: Portrait;
+}
+
+/** Blocks from a .mbl, .cbl or .bbl file laid out in a grid: rows of block numbers (-1 = empty). */
+export interface SpriteArt {
+  blocks: string;
+  pal: string;
+  grid: number[][];
 }
 
 /** A story for The Sandbox Scoop newsletter. */
