@@ -86,6 +86,19 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     h(
       'div',
       { class: 'desk-scene' },
+      // Homage: the winter of 1992-93, shoveling snow to buy Game-Maker.
+      h(
+        'a',
+        {
+          class: 'poster',
+          href: 'https://lewismoten.com/1992/12/11/moten-snow-to-software-operations-founder-operator/',
+          target: '_blank',
+          rel: 'noopener',
+          title: 'Moten Snow-to-Software Operations: shoveling snow in the winter of 1992 to buy Game-Maker',
+        },
+        h('img', { src: './desk/moten-snow-to-software.jpg', alt: 'Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel', loading: 'lazy' }),
+        h('span', { class: 'poster-plaque' }, 'Winter 1992 · Fort Ashby, WV — shoveled snow to buy Game-Maker'),
+      ),
       h(
         'div',
         { class: 'desk-left' },
