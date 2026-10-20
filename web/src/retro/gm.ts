@@ -10,6 +10,12 @@ import { templateFor } from '../editor/templates';
 import type { FileKind } from '../editor/project';
 import { createZip } from '../project/zip';
 import { download } from '../editor/ui';
+import { runPaletteDesigner } from '../vga/palchos';
+
+/** Designers ported to VGA graphics: they run their own menus, as the .EXEs did. */
+const PORTED: Record<string, (h: RetroHost) => Promise<void>> = {
+  'PALCHOS.EXE': runPaletteDesigner,
+};
 
 const GMTOPBAR = '                            G A M E  -  M A K E R  V3.00                        ';
 const MAIN_BAR = '     Play        Design      Utilities      About        Quit         Help      ';
@@ -121,6 +127,15 @@ async function design(h: RetroHost): Promise<void> {
 /** Picks a file in a game folder (or makes a new one), then shows the designer. */
 export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
   drawDesktop(h);
+  const ported = PORTED[tool.exe];
+  if (ported) {
+    const close = messageLoading(h, tool.exe);
+    await new Promise((r) => setTimeout(r, 400));
+    close();
+    h.screen.clear(attr(7, 0));
+    await ported(h);
+    return;
+  }
   const integrator = tool.kinds[0] === 'gam';
   const picked = await browseFile(h, h.fs, tool.question, tool.kinds, gameArea(h), { allowNew: true });
   if (!picked) return;
