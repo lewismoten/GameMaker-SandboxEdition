@@ -1,5 +1,5 @@
 // Autodesk Animator .FLI films: the opening, the warp jump out of the galaxy chart, the
-// descent onto a planet, the launch back to orbit, and the Core lighting up at the end.
+// launch back to orbit, and the Core lighting up at the end.
 import { encodeFli } from '../../web/src/formats/fli';
 import { rng } from '../kit/pixels';
 import { Canvas } from './canvas';
@@ -49,31 +49,6 @@ export function warpFli(): Uint8Array {
     frames.push(c);
   }
   return film(frames, 4);
-}
-
-/** Dropping toward a planet: it swells until clouds fill the screen. */
-export function descentFli(): Uint8Array {
-  const frames: Canvas[] = [];
-  const N = 16;
-  const r = rng(9);
-  const clouds = Array.from({ length: 40 }, () => ({ x: r() * 320, y: r() * 200, s: 6 + r() * 20 }));
-  for (let f = 0; f < N; f++) {
-    const c = new Canvas();
-    c.stars(77, 300, C('star'));
-    const rad = 20 + (f / N) ** 2.2 * 420;
-    planetArt(c, 160, 110 + rad * 0.3, rad, 'verdant', 4);
-    if (f > N / 2) {
-      const t = (f - N / 2) / (N / 2);
-      for (const cl of clouds) {
-        const x = 160 + (cl.x - 160) * (1 + t * 2);
-        const y = 100 + (cl.y - 100) * (1 + t * 2);
-        c.sphere(x, y, cl.s * (0.5 + t), [C('ice')[5], C('ice')[6], C('ice')[7], WHITE]);
-      }
-    }
-    c.sprite(drawPod('d', { flicker: f % 3 }), 150, 90, 1);
-    frames.push(c);
-  }
-  return film(frames, 5);
 }
 
 /** Lifting off: the ground drops away, the sky darkens to space. */

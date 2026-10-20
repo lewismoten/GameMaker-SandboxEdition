@@ -21,7 +21,8 @@ import {
   wonScreens,
   planetArt,
 } from './screens';
-import { descentFli, introFli, launchFli, warpFli, wonFli } from './flics';
+import { introFli, launchFli, warpFli, wonFli } from './flics';
+import { DESCENT_BIOMES, descentFile, descentFli } from './descent';
 import { CREDITS, INSTRUCTIONS } from './text';
 import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
@@ -42,7 +43,7 @@ export async function present(b: Built): Promise<void> {
   // films
   put('intro.fli', introFli());
   put('warp.fli', warpFli());
-  put('descent.fli', descentFli());
+  for (const biome of DESCENT_BIOMES) put(descentFile(biome), descentFli(biome));
   put('launch.fli', launchFli());
   put('won.fli', wonFli());
 
@@ -140,7 +141,7 @@ export async function present(b: Built): Promise<void> {
       ),
     ),
   );
-  for (const w of worlds) put(`w${w.scene}.lst`, serializeSlideList([{ name: 'descent.fli', pause: 0 }, { name: `w${w.scene}.bkd` }]));
+  for (const w of worlds) put(`w${w.scene}.lst`, serializeSlideList([{ name: descentFile(w.world.biome), pause: 0 }, { name: `w${w.scene}.bkd` }]));
   putAll(
     placeCards([
       {

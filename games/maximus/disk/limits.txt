@@ -187,7 +187,7 @@ CMF INSTRUMENTS / FM VOICES
 PICTURES BETWEEN SCENES
   Limit: any GIF, FLI, BKD,
          TXT or LST
-  Used:  23 GIFs, 5 FLIs, 91
+  Used:  23 GIFs, 17 FLIs, 91
          BKD windows into 6
          tall GIFs (a sector's
          planet cards, each
