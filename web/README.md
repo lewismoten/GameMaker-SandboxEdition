@@ -10,6 +10,11 @@ the original source in [`code/GM`](../code/GM). It can:
 - **Run the original games**: the sample "gameware" from the CD, the shareware games
   (`cd/sharware`, which shipped as compiled `.exe` + data files) or any game folder.
   The player is a TypeScript port of `PLAYGAME.C`, not an emulator.
+- **Respect shareware**: the gameware samples that came with Game-Maker can be edited
+  and reused. The shareware games are copyrighted by their authors, so they are
+  play-only, exactly as distributed on the CD, with each author's shareware notice
+  shown beside the game. Importing a shareware game's folder (recognized by its
+  `.gam` file) offers to play it rather than opening it in the editor.
 - **Publish games as web apps**: "Export web app" builds a ZIP with the player, the
   game's files, a web app manifest and a service worker. Unzipped onto any static host,
   the game can be installed on the desktop or home screen and played offline.
@@ -35,9 +40,16 @@ npm run build     # static site in web/dist
 npm run preview   # serve the build (needed to try "Export web app")
 ```
 
-`npm run dev` and `npm run build` first run `scripts/copy-games.mjs`, which copies
-`cd/gameware` into `public/games`, writes a catalog (`public/games/index.json`), and
-copies the DOS player and sound driver from `cd/gm` into `public/dos`.
+The games are never copied into `web/`. The Vite plugin in `scripts/cdGames.ts` serves
+them straight from `../cd` while developing, and only the production build (for
+example the GitHub Actions run) writes them into `dist`:
+
+| Site path | Source |
+| --- | --- |
+| `games/index.json` | catalog generated from the folders below |
+| `games/gameware/<id>/` | `cd/gameware/<id>/` (editable samples) |
+| `games/shareware/<id>/` | `cd/sharware/<id>/` (play only; `.exe`/`.bat`/`.com` files left out) |
+| `dos/xferplay.exe`, `dos/sndblast.drv` | `cd/gm/`, for "Export for DOS" |
 
 The GitHub Actions workflow in [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)
 tests and builds on every push and pull request, and deploys `web/dist` to GitHub Pages
@@ -97,5 +109,6 @@ time animate every tick). Differences:
 
 Some files in `cd/gameware/bcuda` were cut off at 16 KiB in this copy of the CD, so
 parts of *Barracuda* are incomplete; two `cd/gameware/pipemare/*.gif` files are not
-GIF pictures (the original ignores them too). The shareware games are copyrighted by
-their authors and are not bundled into the site; open their folders to play them.
+GIF pictures (the original ignores them too). Shareware titles come from each game's
+own credit and story screens, because older `.gam` files name the title scene things
+like "Title Screen" or "V1.0".
