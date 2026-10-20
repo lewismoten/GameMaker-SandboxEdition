@@ -1,6 +1,7 @@
 // The bulge of a curved CRT tube: an SVG barrel-distortion filter, applied with CSS
 // `filter: url(#crt-warp)`. Away from the center, each output pixel samples the picture a
-// little closer to the center, which pushes the picture outward: its edges bow out.
+// little further out, which squeezes the picture toward the middle the way a tube's glass
+// does: the edges bow and the corners round off into the dark.
 
 const ID = 'crt-warp';
 const SIZE = 512;
@@ -20,8 +21,8 @@ function displacementMap(aspect: number): string {
       const u = (x / (SIZE - 1)) * 2 - 1;
       const v = (y / (SIZE - 1)) * 2 - 1;
       const r2 = u * u + v * v;
-      const dx = (-u * BULGE * r2) / 2;
-      const dy = ((-v * BULGE * r2) / 2) * aspect;
+      const dx = (u * BULGE * r2) / 2;
+      const dy = ((v * BULGE * r2) / 2) * aspect;
       const o = (y * SIZE + x) * 4;
       img.data[o] = Math.round(255 * (0.5 + dx / SCALE));
       img.data[o + 1] = Math.round(255 * (0.5 + dy / SCALE));

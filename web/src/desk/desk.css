@@ -211,9 +211,9 @@
    dropping rows of them, so text stays readable. A wider black border leaves room for
    the bulge of the glass. */
 .desk[data-zoom='false'] .crt canvas.crt-text {
-  inset: 6% 6.5%;
-  width: 87%;
-  height: 88%;
+  inset: 4% 4.5%;
+  width: 91%;
+  height: 92%;
   image-rendering: auto;
 }
 
@@ -238,7 +238,7 @@
     repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 4px),
     radial-gradient(120% 90% at 30% 15%, rgba(255, 255, 255, 0.09), transparent 45%),
     /* the tube curves away from you: darker toward the corners */
-    radial-gradient(farthest-corner at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.35) 75%, rgba(0, 0, 0, 0.85) 100%);
+    radial-gradient(farthest-corner at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.18) 85%, rgba(0, 0, 0, 0.45) 100%);
   box-shadow:
     inset 0 0 30px 6px rgba(0, 0, 0, 0.55),
     inset 0 0 2px 1px rgba(255, 255, 255, 0.08);
