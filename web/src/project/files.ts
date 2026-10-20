@@ -92,6 +92,8 @@ export interface CatalogEntry {
   price?: string;
   gam: string | null;
   files: string[];
+  /** Size of each file in `files`, in bytes (missing from older catalogs). */
+  sizes?: number[];
 }
 
 export async function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {

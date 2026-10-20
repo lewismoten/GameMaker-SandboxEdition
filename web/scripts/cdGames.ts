@@ -20,6 +20,8 @@ export interface CdCatalogEntry {
   path: string;
   gam: string | null;
   files: string[];
+  /** Size of each file in `files`, in bytes. */
+  sizes: number[];
   /** Shareware: the author's notice (readme / order form), as text. */
   notice?: string;
   /** Shareware: CRC-32 of the .gam file, to recognize the game when imported. */
@@ -197,6 +199,7 @@ function scan(cdRoot: string): Scan {
         path,
         gam,
         files: names,
+        sizes: names.map((n) => statSync(disk.get(n)!).size),
         bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
         blurb: blurbFor(names, disk),
       };
