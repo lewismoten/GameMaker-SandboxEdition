@@ -138,7 +138,7 @@ export function castleArt(p: Pixels, cx: number, base: number, s = 1, seed = 5):
   return p;
 }
 
-/** A blue terminal status bar along the bottom (Telix style). */
+/** A blue terminal status bar along the bottom (terminal program style). */
 function statusBar(p: Pixels, s: string, y = 192): Pixels {
   p.rect(0, y, W, 8, ANSI[1]);
   return text(p, 0, y, s.padEnd(40).slice(0, 40), ANSI[15]);
@@ -270,7 +270,7 @@ export function introFli(): Uint8Array {
   const term = screen();
   const lines = ['ATZ', 'OK', 'ATDT 555-0142', ''];
   let y = 8;
-  text(term, 0, 0, 'Telix 3.22  -  Dialing Directory', ANSI[8]);
+  text(term, 0, 0, 'SANDTERM 1.0  -  Dialing Directory', ANSI[8]);
   add(term, 2);
   for (const line of lines.slice(0, 2)) {
     text(term, 0, y, line, ANSI[7]);

@@ -234,6 +234,8 @@ export function moat(): LevelMap {
     L({
       '!': { tile: 'door', mark: 'exit' },
       '@': { tile: 'sand', mark: 'arrive' },
+      F: 'found2',
+      P: 'gate2',
       j: { tile: 'sand', mon: MON.beetleH },
       J: { tile: 'sand', mon: MON.beetleLoop },
     }),

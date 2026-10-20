@@ -370,6 +370,7 @@ bg.add('merlon', bricks(92, true), { solid: SOLID });
   }
   p.line(10, 4, 10, 11, WOOD[4]).rect(11, 4, 4, 3, RED[4]).set(11, 4, RED[6]);
   bg.add('found', p, { solid: SOLID, effect: CTR.sand, eamt: -1, touch: 'scaffold' });
+  bg.add('found2', p, { solid: SOLID, effect: CTR.sand, eamt: -1, touch: 'scaffold2' });
 }
 function tower(flagFrame: number, built: number): Pixels {
   const p = tile(SAND[2]);
@@ -409,6 +410,7 @@ function tower(flagFrame: number, built: number): Pixels {
   return p;
 }
 bg.add('scaffold', tower(0, 0), { solid: SOLID, effect: CTR.flags, eamt: 1, score: 300, touch: 'tower' });
+bg.add('scaffold2', tower(0, 0), { solid: SOLID, effect: CTR.flags2, eamt: 1, score: 300, touch: 'tower' });
 bg.add('tower', tower(0, 1), { solid: SOLID, next: 'towerB', ntime: 6 });
 bg.add('towerB', tower(1, 1), { solid: SOLID, next: 'tower', ntime: 6 });
 function portcullis(open: boolean): Pixels {
@@ -427,6 +429,7 @@ function portcullis(open: boolean): Pixels {
   return p;
 }
 bg.add('gate', portcullis(false), { solid: SOLID, effect: CTR.flags, eamt: -4, score: 500, touch: 'gateOpen' });
+bg.add('gate2', portcullis(false), { solid: SOLID, effect: CTR.flags2, eamt: -4, score: 500, touch: 'gateOpen' });
 bg.add('gateOpen', portcullis(true));
 {
   // The lagoon's sea gate opens for three golden shells (its emblem shows one).

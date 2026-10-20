@@ -33,12 +33,14 @@ export const CTR = {
   bucket: 20,
   /** 1 + digs left in your shovel. */
   shovel: 21,
-  /** Tower flags planted in the current castle (the gate takes 4). */
+  /** Tower flags planted in Anthill Keep (its gate takes 4). */
   flags: 22,
   /** Golden shells (the lagoon's sea gate takes 3). */
   shells: 23,
   /** Acorn keys for root doors underground. */
   acorns: 24,
+  /** Tower flags planted in the Hosewater Moat (its own count, so Anthill Keep's leftovers don't open it). */
+  flags2: 25,
 } as const;
 
 /** Sound effects in the .SND set (0-8 are played by Game-Maker for counter changes). */
