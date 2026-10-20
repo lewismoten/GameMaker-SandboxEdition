@@ -326,7 +326,8 @@
   "news": [
     {
       "head": "Teddy's next adventure",
-      "html": "<p>Registered Sandcastle Knight players were promised the next Teddy adventure on disk, and here it comes: <b>Teddy's Little Big Adventure</b> is on our workbench now. Your copy is on the house; watch the BBS for it.</p>"
+      "html": "<p>Registered Sandcastle Knight players were promised the next Teddy adventure on disk, and here it comes: <b>Teddy's Little Big Adventure</b> is on our workbench now. Your copy is on the house; watch the BBS for it.</p>",
+      "everywhere": true
     }
   ]
 }

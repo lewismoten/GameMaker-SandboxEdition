@@ -348,7 +348,8 @@
   "news": [
     {
       "head": "SNOWBOUND II: Spring Thaw",
-      "html": "<p>The snow is melting in Dowden Additions, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>"
+      "html": "<p>The snow is melting in Dowden Additions, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>",
+      "everywhere": true
     }
   ]
 }

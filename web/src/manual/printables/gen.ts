@@ -322,11 +322,16 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
       );
     }),
   );
+  const waiting = COMING.filter((c) => !family.some((g) => g.id === c.id)).length;
+  const nextHead = waiting === 2 ? 'TWO NEW GAMES ON THE WAY' : waiting === 1 ? 'ONE NEW GAME OUT, ONE ON THE WAY' : 'TWO NEW GAMES OUT NOW';
   const own = (ctx.printables.news ?? []).map((n) => h('article', { class: 'nl-story' }, h('h3', null, n.head), html('div', '', n.html)));
   const others = family
     .filter((g) => g.id !== ctx.entry.id && !COMING.some((c) => c.id === g.id))
     .flatMap((g) =>
-      (g.original?.printables?.news ?? []).slice(0, 1).map((n) => h('article', { class: 'nl-story small' }, h('h3', null, n.head), html('div', '', n.html))),
+      (g.original?.printables?.news ?? [])
+        .filter((n) => n.everywhere)
+        .slice(0, 1)
+        .map((n) => h('article', { class: 'nl-story small' }, h('h3', null, n.head), html('div', '', n.html))),
     );
   const issue = 3 + (hashString(ctx.entry.id) % 5);
   const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
@@ -352,11 +357,11 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
       h(
         'div',
         { class: 'nl-cols' },
-        h('h2', { class: 'nl-lead' }, 'TWO NEW GAMES ON THE WAY'),
+        h('h2', { class: 'nl-lead' }, nextHead),
         h(
           'p',
           { class: 'nl-intro' },
-          'The sandbox is busy this year. Two new Game-Maker games are coming together on our workbench, and as a registered player you get to hear about them first.',
+          'The sandbox is busy this year. Here is what is new on our workbench, and as a registered player you get to hear about it first.',
         ),
         ...next,
         ...own,

@@ -169,6 +169,8 @@ export interface StickerSpec {
 export interface NewsStory {
   head: string;
   html: string;
+  /** Also run it in the other games' newsletters (it doesn't talk about this box). */
+  everywhere?: boolean;
 }
 
 /** games/<id>/printables.json */
