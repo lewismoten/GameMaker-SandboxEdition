@@ -4,7 +4,21 @@
 // a ^ marks a key being let go).
 import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
 
-const SCAN: Record<string, number> = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, p: 0x19, enter: 0x1c, esc: 0x01, s: 0x1f, t: 0x14, r: 0x13, j: 0x24, d: 0x20 };
+const SCAN: Record<string, number> = {
+  up: 0x48,
+  down: 0x50,
+  left: 0x4b,
+  right: 0x4d,
+  space: 0x39,
+  p: 0x19,
+  enter: 0x1c,
+  esc: 0x01,
+  s: 0x1f,
+  t: 0x14,
+  r: 0x13,
+  j: 0x24,
+  d: 0x20,
+};
 
 const EVENTS: [number, string][] = [
   [20, 'up'],
