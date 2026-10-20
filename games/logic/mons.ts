@@ -68,13 +68,18 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
     );
   });
   // Knife switches: off stops current, on lets it by. A bump flips one. Parts named with
-  // a V sit on wires running up and down (their pictures are turned a quarter).
-  for (const v of ['', 'V']) {
-    b.add(`switchOff${v}`, { pics: [[`swOff${v}`, 50]], power: POWER.switchOff, becomes: `switchOnHot${v}` }, v ? undefined : ROUTES);
-    b.add(`switchOnHot${v}`, { pics: [[`swOnHot${v}`, 50]], power: POWER.hot, end: HOT_TICKS, becomes: `switchOn${v}` });
-    b.add(`switchOn${v}`, { pics: [[`swOn${v}`, 50]], power: POWER.switchOn, becomes: `switchOffHot${v}` });
-    b.add(`switchOffHot${v}`, { pics: [[`swOffHot${v}`, 50]], power: POWER.hot, end: HOT_TICKS, becomes: `switchOff${v}` });
-  }
+  // a V sit on wires running up and down (their pictures are turned a quarter); with a C,
+  // on pink control wires (on matches control current's power, so it passes too).
+  let first = true;
+  for (const v of ['', 'V'])
+    for (const k of ['', 'C']) {
+      const n = `${v}${k}`;
+      b.add(`switchOff${n}`, { pics: [[`swOff${v}`, 50]], power: POWER.switchOff, becomes: `switchOnHot${n}` }, first ? ROUTES : undefined);
+      first = false;
+      b.add(`switchOnHot${n}`, { pics: [[`swOnHot${v}`, 50]], power: POWER.hot, end: HOT_TICKS, becomes: `switchOn${n}` });
+      b.add(`switchOn${n}`, { pics: [[`swOn${v}`, 50]], power: k ? POWER.ctrl : POWER.switchOn, becomes: `switchOffHot${n}` });
+      b.add(`switchOffHot${n}`, { pics: [[`swOffHot${v}`, 50]], power: POWER.hot, end: HOT_TICKS, becomes: `switchOff${n}` });
+    }
   // Timer buttons: on for a while, then off by themselves (or at a second bump).
   b.add('timerOff', { pics: [['timerOff', 50]], power: POWER.switchOff, becomes: 'timerHot' });
   b.add('timerHot', { pics: [['timer0', 50]], power: POWER.hot, end: HOT_TICKS, becomes: 'timerOn' });

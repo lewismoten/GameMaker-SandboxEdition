@@ -83,6 +83,7 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
   const wires: (Wire | undefined)[] = [];
   const wireCells = new Map<string, [number, number][]>();
   const sideGates = new Set<string>();
+  const ctrlCells = new Set<string>();
   for (const [letter, w] of Object.entries(spec.wires)) {
     const k = parseInt(letter, 16);
     let bx = -1;
@@ -112,6 +113,7 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
     if (at(x, y) === 'g' && last !== 'D') sideGates.add(`${x},${y}`);
     wires[k] = { corners, ctrl: w.ctrl };
     wireCells.set(letter, cells);
+    if (w.ctrl) for (const [cx, cy] of cells) ctrlCells.add(`${cx},${cy}`);
   }
 
   const mons = buildMonsters(mb, wires);
@@ -120,7 +122,10 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
     const tb = traceBits.get(`${x},${y}`) ?? 0;
     if (ch === 'g') return sideGates.has(`${x},${y}`) ? 'gateV' : 'gate';
     const vertical = tb & (N | S) && !(tb & (E | W));
-    return 'oif'.includes(ch) && vertical ? `${PARTS[ch]}V` : PARTS[ch];
+    const name = 'oif'.includes(ch) && vertical ? `${PARTS[ch]}V` : PARTS[ch];
+    if ('oi'.includes(ch) && ctrlCells.has(`${x},${y}`)) return `${name}C`;
+    if (ctrlCells.has(`${x},${y}`) && 'tf'.includes(ch)) throw new Error(`${spec.file}: no ${name} on a control wire at ${x},${y}`);
+    return name;
   };
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
