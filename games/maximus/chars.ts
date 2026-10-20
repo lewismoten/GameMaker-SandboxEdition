@@ -165,7 +165,8 @@ export function courier(): CharSet {
       { top: NONE, bottom: NONE, pause: 10 },
     ],
   });
-  setSeq(c, SEQ.hurt, { sound: SND.hurt, frames: [F('hurt', { pause: 2 }), F('stand', { pause: 1 }), F('hurt', { pause: 1 })] });
+  // a short flinch with a little recoil hop (it lifts you out of lava and off spikes)
+  setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [F('hurt', { y: -5, pause: 1 }), F('stand', { pause: 1 })] });
   setSeq(c, SEQ.pickup, { key: 'p', sound: SND.pickup, joy: [5, 2], frames: [F('kneel', { pause: 3 }), F('kneelItem', { pause: 3 })] });
   setSeq(c, SEQ.drop, { key: 'd', sound: SND.drop, frames: [F('kneelItem', { pause: 3 }), F('kneel', { pause: 2 })] });
   const steps = [5, 5, 4, 5, 5, 4];
@@ -270,7 +271,7 @@ export function vehicle(kind: VehicleKind): CharSet {
     const fire = one(drawPod('idle', { glow: 1 }));
     setSeq(c, SEQ.idle, { frames: [B(idle[0], { pause: 9 }), B(idle[1], { pause: 9 })] });
     setSeq(c, SEQ.die, { sound: SND.die, frames: [B(hurt, { pause: 2 }), ...boom.map((b) => B(b, { pause: 3 })), B(NONE, { pause: 10 })] });
-    setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [B(hurt, { pause: 2 }), B(idle[0]), B(hurt)] });
+    setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [B(hurt, { pause: 1 }), B(idle[0])] });
     setSeq(c, SEQ.pickup, { key: 'p', sound: SND.pickup, frames: [B(fire, { pause: 3 }), B(idle[1], { pause: 2 })] });
     setSeq(c, SEQ.drop, { key: 'd', sound: SND.drop, frames: [B(fire, { pause: 3 })] });
     const move = (d: (typeof dirs)[number], x: number, y: number, joy: number) => ({
@@ -316,7 +317,7 @@ export function vehicle(kind: VehicleKind): CharSet {
     const hurt = one(drawDiver({ hurt: true }));
     setSeq(c, SEQ.idle, { frames: [B(idle[0], { pause: 12 }), B(idle[1], { pause: 6 }), B(idle[2], { pause: 6 })] });
     setSeq(c, SEQ.die, { sound: SND.die, frames: [B(hurt, { pause: 2 }), ...boom.map((b) => B(b, { pause: 3 })), B(NONE, { pause: 10 })] });
-    setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [B(hurt, { pause: 2 }), B(idle[0]), B(hurt)] });
+    setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [B(hurt, { pause: 1 }), B(idle[0])] });
     setSeq(c, SEQ.pickup, { key: 'p', sound: SND.pickup, frames: [B(lamp, { pause: 3 }), B(idle[0], { pause: 2 })] });
     setSeq(c, SEQ.drop, { key: 'd', sound: SND.drop, frames: [B(lamp, { pause: 3 })] });
     setSeq(c, SEQ.right, { key: 'right', momentum: true, sound: SND.swim, joy: [3, 0], frames: R.map((b) => B(b, { x: 1, pause: 2 })) });
@@ -356,7 +357,7 @@ export function vehicle(kind: VehicleKind): CharSet {
     const hurt = one(drawRover({ hurt: true }));
     setSeq(c, SEQ.idle, { frames: [B(idle[0], { pause: 20 }), B(idle[1], { pause: 3 })] });
     setSeq(c, SEQ.die, { sound: SND.die, frames: [B(hurt, { pause: 2 }), ...boom.map((b) => B(b, { pause: 3 })), B(NONE, { pause: 10 })] });
-    setSeq(c, SEQ.hurt, { sound: SND.hurt, frames: [B(hurt, { pause: 2 }), B(idle[0]), B(hurt)] });
+    setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [B(hurt, { y: -5, pause: 1 }), B(idle[0])] });
     setSeq(c, SEQ.pickup, { key: 'p', sound: SND.pickup, frames: [B(idle[1], { pause: 3 }), B(idle[0], { pause: 2 })] });
     setSeq(c, SEQ.drop, { key: 'd', sound: SND.drop, frames: [B(idle[1], { pause: 3 })] });
     setSeq(c, SEQ.right, { key: 'right', sound: SND.rover, joy: [3, 0], frames: W.map((b) => B(b, { x: 7 })) });

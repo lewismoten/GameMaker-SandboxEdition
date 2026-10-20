@@ -322,9 +322,9 @@ export function stationSet(): SetBuilder {
   s.add('fan:l', arrowsOn('l', 0, panel(82), 'cloud'), { grav: G.left | G.down, next: 'fan:l2', ntime: 2 });
   s.add('fan:l2', arrowsOn('l', 1, panel(82), 'cloud'), { grav: G.left | G.down, next: 'fan:l', ntime: 2 });
   // timed hazards, all on the deck's one clock
-  s.add('laser:v', laser(true, true, bg), { chHitPt: -6, next: 'laser:v0', ntime: 20 });
+  s.add('laser:v', laser(true, true, bg), { chHitPt: -3, next: 'laser:v0', ntime: 20 });
   s.add('laser:v0', laser(false, true, bg), { next: 'laser:v', ntime: 25 });
-  s.add('laser:h', laser(true, false, bg), { chHitPt: -6, next: 'laser:h0', ntime: 16 });
+  s.add('laser:h', laser(true, false, bg), { chHitPt: -3, next: 'laser:h0', ntime: 16 });
   s.add('laser:h0', laser(false, false, bg), { next: 'laser:h', ntime: 30 });
   s.add(
     'zap',
@@ -336,7 +336,7 @@ export function stationSet(): SetBuilder {
         return p;
       })(),
     ),
-    { solid: SOLID, chHitPt: -3, next: 'zap0', ntime: 10 },
+    { solid: SOLID, chHitPt: -2, next: 'zap0', ntime: 10 },
   );
   s.add(
     'zap0',
@@ -369,7 +369,7 @@ export function stationSet(): SetBuilder {
         return p;
       })(),
     ),
-    { solid: SOLID, chHitPt: -4 },
+    { solid: SOLID, chHitPt: -3 },
   );
   s.add(
     'acid',
@@ -379,12 +379,12 @@ export function stationSet(): SetBuilder {
       if (y === 5) return l[6];
       return (x * 3 + y * 7) % 11 === 0 ? l[5] : l[2 + ((x + y) % 2)];
     }),
-    { chHitPt: -3 },
+    { chHitPt: -2 },
   );
   s.add(
     'acid:deep',
     tex((x, y) => R('liquid')[(x * 3 + y * 7) % 11 === 0 ? 4 : 1 + ((x + y) % 2)]),
-    { chHitPt: -3 },
+    { chHitPt: -2 },
   );
   // doors
   s.add(
@@ -404,7 +404,7 @@ export function stationSet(): SetBuilder {
   s.add(
     'field:on',
     tex((x, y) => ((x + y * 3) % 5 === 0 ? WHITE : (x * 7 + y) % 3 ? R('glow')[3] : R('glow')[4])),
-    { solid: SOLID, chHitPt: -5, next: 'field:off', ntime: 24 },
+    { solid: SOLID, chHitPt: -3, next: 'field:off', ntime: 24 },
   );
   s.add(
     'field:off',

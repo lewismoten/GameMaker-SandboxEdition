@@ -30,15 +30,22 @@ export function maelstromMap(s: SetBuilder, ms: MonsterSet): MaelstromResult {
     path.push({ x: wx(cx), y });
   }
   const rocks = [0, 1, 2, 3, 4].map((k) => s.id(`rock:${k}`));
+  // everything outside the canyon is solid rock: the storm is the only way through
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
       const p = path.find((q) => q.y === y);
-      if (!p) continue;
-      let d = Math.abs(x - p.x);
-      d = Math.min(d, W - d);
-      const half = 9 + Math.round(Math.sin(y * 0.3) * 3);
-      if (d > half && d < half + 3) g.set(x, y, r() < 0.5 ? s.id('rock:big') : rocks[Math.floor(r() * 5)], true);
+      let d = 99;
+      let half = 0;
+      if (p) {
+        d = Math.abs(x - p.x);
+        d = Math.min(d, W - d);
+        half = 9 + Math.round(Math.sin(y * 0.3) * 3);
+      }
+      if (d > half + 2) g.set(x, y, s.id('rock:big'));
+      else if (d > half) g.set(x, y, r() < 0.5 ? s.id('rock:big') : rocks[Math.floor(r() * 5)], true);
     }
+  // open the start bay around the warp and the arrival point
+  for (let y = 86; y <= 93; y++) for (let x = path[0].x - 8; x <= path[0].x + 8; x++) g.set(x, y, voids[(x + y) & 3]);
   const start = path[0];
   const end = path[path.length - 1];
   const exitWarp = { x: wx(start.x - 4), y: 90 };
@@ -59,7 +66,7 @@ export function maelstromMap(s: SetBuilder, ms: MonsterSet): MaelstromResult {
   // the storm: all 200 monster slots, indestructible rocks and lightning (weapons are
   // useless here - there is no free slot left for a single bolt)
   const storm = ['Pebble', 'Asteroid', 'Boulder', 'Space Urchin', 'Ion Storm', 'Debris', 'Ice Comet', 'Star Whale'].map((n) => ms.index.get(n)!);
-  const weights = [30, 40, 12, 20, 14, 60, 8, 2];
+  const weights = [34, 40, 12, 12, 8, 66, 8, 2];
   const bag: number[] = [];
   storm.forEach((m, i) => {
     for (let k = 0; k < weights[i]; k++) bag.push(m);

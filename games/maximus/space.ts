@@ -320,7 +320,7 @@ export function spaceSet(): SetBuilder {
     ['bl', 0, 20],
     ['br', 20, 20],
   ] as const)
-    s.add(`sun:${part}`, over(voidBg(40, 0), sunPic.crop(dx, dy, 20, 20)), { chHitPt: -8, solid: SOLID });
+    s.add(`sun:${part}`, over(voidBg(40, 0), sunPic.crop(dx, dy, 20, 20)), { chHitPt: -4, solid: SOLID });
   const bh = blackHole();
   for (let by = 0; by < 3; by++) for (let bx = 0; bx < 3; bx++) s.add(`core:${bx}${by}`, over(voidBg(41, 1), bh.crop(bx * 20, by * 20, 20, 20)));
   for (const f of [0, 1]) {

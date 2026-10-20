@@ -603,22 +603,22 @@ export function surfaceSet(): SetBuilder {
   D('sign:left', sign('left'));
   D('sign:up', sign('up'));
   // hazards
-  s.add('spikes', spikes(hz), { solid: SOLID, chHitPt: -4 });
-  s.add('spikes:cave', spikes(caveWall(64)), { solid: SOLID, chHitPt: -4 });
-  s.add('spikes:down', spikes(caveWall(65), true), { solid: SOLID, chHitPt: -4 });
+  s.add('spikes', spikes(hz), { solid: SOLID, chHitPt: -3 });
+  s.add('spikes:cave', spikes(caveWall(64)), { solid: SOLID, chHitPt: -3 });
+  s.add('spikes:down', spikes(caveWall(65), true), { solid: SOLID, chHitPt: -3 });
   s.add(
     'thorns',
     over(
       hz,
       bush(10, false).map((_x, _y, c) => (c !== CLEAR && c !== OUTLINE && (_x + _y) % 3 === 0 ? R('hazard')[3] : c)),
     ),
-    { chHitPt: -2 },
+    { chHitPt: -1 },
   );
   // liquid (hurts: acid, lava, brine...)
-  s.add('liquid:top', liquidTex(0, true), { chHitPt: -3, next: 'liquid:top2', ntime: 5 });
-  s.add('liquid:top2', liquidTex(1, true), { chHitPt: -3, next: 'liquid:top', ntime: 5 });
-  s.add('liquid', liquidTex(0, false), { chHitPt: -3, next: 'liquid2', ntime: 6 });
-  s.add('liquid2', liquidTex(1, false), { chHitPt: -3, next: 'liquid', ntime: 6 });
+  s.add('liquid:top', liquidTex(0, true), { chHitPt: -2, next: 'liquid:top2', ntime: 5 });
+  s.add('liquid:top2', liquidTex(1, true), { chHitPt: -2, next: 'liquid:top', ntime: 5 });
+  s.add('liquid', liquidTex(0, false), { chHitPt: -2, next: 'liquid2', ntime: 6 });
+  s.add('liquid2', liquidTex(1, false), { chHitPt: -2, next: 'liquid', ntime: 6 });
   s.add('fall:0', waterfall(0), { next: 'fall:1', ntime: 2 });
   s.add('fall:1', waterfall(1), { next: 'fall:2', ntime: 2 });
   s.add('fall:2', waterfall(2), { next: 'fall:0', ntime: 2 });
@@ -637,8 +637,8 @@ export function surfaceSet(): SetBuilder {
     { grav: G.none },
   ); // zero-g pocket
   // timed things (every copy switches together: Game-Maker animates block types)
-  s.add('field:on', forceField(true, 0), { solid: SOLID, chHitPt: -5, next: 'field:on2', ntime: 12 });
-  s.add('field:on2', forceField(true, 1), { solid: SOLID, chHitPt: -5, next: 'field:off', ntime: 12 });
+  s.add('field:on', forceField(true, 0), { solid: SOLID, chHitPt: -3, next: 'field:on2', ntime: 12 });
+  s.add('field:on2', forceField(true, 1), { solid: SOLID, chHitPt: -3, next: 'field:off', ntime: 12 });
   s.add('field:off', forceField(false), { next: 'field:on', ntime: 30 });
   s.add('plat:on', timedPlatform(true), { solid: TOP, next: 'plat:off', ntime: 45 });
   s.add('plat:off', timedPlatform(false), { next: 'plat:on', ntime: 35 });

@@ -4,21 +4,17 @@
 import { SCAN } from './common';
 import type { Built, SceneInfo } from './game';
 import { Sim } from './sim';
+import type { CharInfo } from '../../web/src/engine/world';
 
 const key = SCAN;
 
-export function simFor(b: Built, info: SceneInfo, seed = 1): Sim {
+export function simFor(b: Built, info: SceneInfo, seed = 1, ci?: CharInfo): Sim {
   const sets = b.sets as Record<string, { blocks: import('../../web/src/formats/blocks').Block[] }>;
   const famFile = b.game.scenes[info.scene].files[3];
   const ms = Object.values(b.monsters).find((m) => `${m.name}.mon` === famFile);
   const chr = b.chars[info.chr];
   const links = b.game.scenes[info.scene].links.filter((l) => l.toScene !== 0xffff).map((l) => ({ from: l.from, to: l.to }));
-  return new Sim(
-    { map: info.map.toMap(), bbl: sets[info.bbl].blocks, mbl: ms?.mbl, mon: ms?.mon, chr: chr.chr, cbl: chr.cbl, links },
-    info.arrive,
-    undefined,
-    seed,
-  );
+  return new Sim({ map: info.map.toMap(), bbl: sets[info.bbl].blocks, mbl: ms?.mbl, mon: ms?.mon, chr: chr.chr, cbl: chr.cbl, links }, info.arrive, ci, seed);
 }
 
 /** Holds a direction, hopping whenever stuck. Returns the link reached (or -1) and why it stopped. */

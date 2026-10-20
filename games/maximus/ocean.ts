@@ -333,8 +333,8 @@ export function oceanSet(): SetBuilder {
   // wrecks (solid hull, open portholes and bow)
   for (let k = 0; k < 5; k++) s.add(`wreck:${k}`, wreck(k), { solid: k >= 3 ? 0 : SOLID });
   // hazards and currents
-  s.add('anemone', over(water(6, 80), anemone(0)), { chHitPt: -3, next: 'anemone2', ntime: 7 });
-  s.add('anemone2', over(water(6, 80), anemone(1)), { chHitPt: -3, next: 'anemone', ntime: 7 });
+  s.add('anemone', over(water(6, 80), anemone(0)), { chHitPt: -2, next: 'anemone2', ntime: 7 });
+  s.add('anemone2', over(water(6, 80), anemone(1)), { chHitPt: -2, next: 'anemone', ntime: 7 });
   s.add(
     'urchins',
     over(
@@ -346,7 +346,7 @@ export function oceanSet(): SetBuilder {
         return p;
       })(),
     ),
-    { solid: SOLID, chHitPt: -4 },
+    { solid: SOLID, chHitPt: -3 },
   );
   s.add(
     'vent',
@@ -364,12 +364,12 @@ export function oceanSet(): SetBuilder {
   s.add(
     'hotwater',
     bubbles(0, water(7, 82), true).map((x, y, c) => ((x + y) % 5 === 0 ? R('hazard')[2] : c)),
-    { chHitPt: -2, grav: G.up, next: 'hotwater2', ntime: 2 },
+    { chHitPt: -1, grav: G.up, next: 'hotwater2', ntime: 2 },
   );
   s.add(
     'hotwater2',
     bubbles(1, water(7, 82), true).map((x, y, c) => ((x * 2 + y) % 5 === 0 ? R('hazard')[2] : c)),
-    { chHitPt: -2, grav: G.up, next: 'hotwater', ntime: 2 },
+    { chHitPt: -1, grav: G.up, next: 'hotwater', ntime: 2 },
   );
   s.add('bubbles', bubbles(0, water(5, 83), false), { grav: G.up, next: 'bubbles2', ntime: 2 });
   s.add('bubbles2', bubbles(1, water(5, 83), false), { grav: G.up, next: 'bubbles', ntime: 2 });
@@ -410,7 +410,7 @@ export function oceanSet(): SetBuilder {
   s.add(
     'field:on',
     tex((x, y) => ((x + y * 3) % 5 === 0 ? WHITE : (x * 7 + y) % 3 ? R('glow')[3] : R('glow')[4])),
-    { solid: SOLID, chHitPt: -5, next: 'field:off', ntime: 24 },
+    { solid: SOLID, chHitPt: -3, next: 'field:off', ntime: 24 },
   );
   s.add(
     'field:off',

@@ -4,7 +4,9 @@
 //   and the uplink back to orbit is reachable;
 // - rover worlds: the rover can drive all the way around the planet;
 // - the training deck can be crossed by "hold right, hop when stuck".
-import { SCAN } from './common';
+import { ITEM_BASE, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './common';
+import { newCharInfo } from '../../web/src/engine/world';
+import { reachable } from './mapkit';
 import { buildGame } from './game';
 import { autoWalk, simFor, standStill } from './verify';
 
@@ -52,6 +54,109 @@ for (const info of b.scenes) {
     const r = await autoWalk(sim, 'right', 1500);
     if (r.link !== 0) report.push(`${info.name}: the training deck bot did not reach the airlock (x ${r.x})`);
   }
+}
+// the galaxy: which warps can the pod reach with which shards?
+if (!only.length) {
+  const gal = b.scenes.find((s) => s.file === 'galaxy')!;
+  const space = b.sets.space;
+  const links = b.game.scenes[gal.scene].links;
+  const gateOf = (blk: number) => (blk >= SHARD_BASE && blk < SHARD_BASE + 10 ? blk - SHARD_BASE : -1);
+  const reach = (have: number[]) => reachable(gal.map, space.blocks, gal.arrive.x, gal.arrive.y, { tall: false, pass: (blk) => have.includes(gateOf(blk)) });
+  const can = (have: number[], link: number) => {
+    const seen = reach(have);
+    const f = links[link].from;
+    return (
+      seen[f.y * 100 + f.x] === 1 ||
+      [
+        [1, 0],
+        [0, 1],
+        [1, 1],
+      ].some(([dx, dy]) => seen[(f.y + dy) * 100 + f.x + dx] === 1)
+    );
+  };
+  const expect = (have: number[], link: number, want: boolean, what: string) => {
+    if (can(have, link) !== want) report.push(`galaxy: ${what} should ${want ? '' : 'not '}be reachable with shards [${have.join(',')}]`);
+  };
+  expect([], 1, true, 'sector 1');
+  expect([], 2, false, 'sector 2');
+  expect([0, 1], 2, true, 'sector 2');
+  expect([0, 1], 3, false, 'sector 3');
+  expect([0, 1, 2, 3], 3, true, 'sector 3');
+  expect([0, 1, 2, 3, 4, 5], 4, true, 'sector 4');
+  expect([0, 1, 2, 3, 4, 5, 6, 7], 5, true, 'sector 5');
+  expect([0, 1, 2, 3, 4, 5, 6, 7, 8], 6, false, 'the Core');
+  expect([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 6, true, 'the Core');
+  expect([], 0, true, 'home');
+  // and the engine agrees: a pod carrying shard 0 and 1 opens sector 2's gates
+  const sim = simFor(b, gal, 1);
+  sim.w.ci.meter[SHARD_COUNTER] = 1;
+  sim.w.ci.meter[SHARD_COUNTER + 1] = 1;
+  const before = [...sim.w.map].filter((c) => gateOf(c) === 0 || gateOf(c) === 1).length;
+  // drop the pod beside a gate cell and thrust into it from each side
+  const gi = [...sim.w.map].findIndex((c) => gateOf(c) === 0);
+  for (const [dx, dy, k] of [
+    [-1, 0, SCAN.right],
+    [1, 0, SCAN.left],
+    [0, -1, SCAN.down],
+    [0, 1, SCAN.up],
+  ] as const) {
+    const gx = (gi % 100) + dx;
+    const gy = Math.floor(gi / 100) + dy;
+    if (!space.blocks[sim.w.map[gy * 100 + gx]] || space.blocks[sim.w.map[gy * 100 + gx]].solid) continue;
+    sim.w.chr.x[0] = gx;
+    sim.w.chr.y[0] = gy;
+    sim.w.chr.x[1] = sim.w.chr.y[1] = 0;
+    // (the engine only changes blocks that are on screen: bring the view along)
+    sim.w.mx = (gx - 8 + 100) % 100;
+    sim.w.my = (gy - 5 + 100) % 100;
+    sim.press(k);
+    await sim.run(12);
+    sim.release(k);
+    break;
+  }
+  const after = [...sim.w.map].filter((c) => gateOf(c) === 0 || gateOf(c) === 1).length;
+  if (after >= before) report.push(`galaxy: a pod carrying the Ruby shard did not open a Ruby gate (${before} -> ${after})`);
+}
+// the Heart: can a courier with the Plasma Lance break through the Guardian?
+if (!only.length || only.includes('heart')) {
+  const heart = b.scenes.find((s) => s.file === 'heart')!;
+  let best = 0;
+  let won = false;
+  for (const seed of [1, 2, 3, 4]) {
+    const ci = newCharInfo();
+    ci.inv.fill(150);
+    ci.inv[0] = ITEM_BASE; // the Plasma Lance
+    ci.inv[1] = ITEM_BASE + 3; // the Shield Emitter
+    const sim = simFor(b, heart, seed, ci);
+    sim.w.ci.meter[SEQ.plasma] = 60;
+    await sim.run(3);
+    sim.press(SCAN.right);
+    let lastX = 0;
+    let stuck = 0;
+    for (let t = 0; t < 3000 && !sim.dead && sim.link < 0; t++) {
+      await sim.tick();
+      if (sim.w.ci.hitpts < 40) sim.w.ci.hitpts = 100; // a player would use med kits and pickups
+      stuck = sim.pos.x === lastX ? stuck + 1 : 0;
+      lastX = sim.pos.x;
+      if (stuck > 2) {
+        // blocked: fire the lance at the wall, and hop over anything low
+        sim.release(SCAN.right);
+        sim.press(SCAN.z);
+        await sim.run(6);
+        sim.release(SCAN.z);
+        if (t % 5 === 0) {
+          sim.press(SCAN.up);
+          await sim.tick();
+          sim.release(SCAN.up);
+        }
+        sim.press(SCAN.right);
+        stuck = 0;
+      }
+      best = Math.max(best, sim.pos.bx);
+    }
+    if (sim.link === 0) won = true;
+  }
+  if (!won) report.push(`heart: the lance bot never reached the exit (best x ${best})`);
 }
 console.log(`checked ${checked} scenes`);
 for (const line of [...b.problems, ...report]) console.log(line);
