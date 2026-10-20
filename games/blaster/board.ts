@@ -1,8 +1,10 @@
 // Stage 1: THE MOTHERBOARD. Green fiberglass, copper bus lines running up the board,
 // chips, capacitors, resistors and blinking LEDs. Its blocks and its virus.
 import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, CLEAR, bevel, blob, micro, shadeAt, text } from './art';
-import { sym, pics } from './enemies';
+import { BlockSet, bevel, blob, micro, shadeAt, text } from './art';
+import { pics } from './enemies';
+import { biter, bomb, claw, cluster, keyOf, mite, moth } from './sprites';
+import type { Bestiary } from './mons';
 import type { Pal } from './pal';
 import type { StageArt } from './tiles';
 
@@ -18,15 +20,15 @@ export function boardArt(p: Pal): StageArt {
   };
   const floor = (v: number): Pixels => {
     const t = weave(v + 1);
-    const silk = p.c('label', 4);
+    const silk = p.c('base', 5);
     if (v === 1) {
       // a via
       blob(t, 9.5, 9.5, 3, 3, p.r('trim'), 2, 5);
       t.rect(9, 9, 2, 2, p.c('deep', 0));
     } else if (v === 2) {
       // silkscreen part markings
-      text(t, 2, 6, 'R', silk);
-      t.rect(11, 9, 6, 1, silk).rect(13, 7, 1, 5, silk);
+      micro(t, 3, 4, 'R12', silk);
+      t.frame(3, 11, 13, 5, silk);
     } else if (v === 3) {
       // two tiny vias
       for (const [x, y] of [
@@ -204,188 +206,13 @@ export function boardTiles(bs: BlockSet, a: StageArt): void {
 
 // ------------------------------------------------------------------ the virus, stage 1
 
-import type { Bestiary } from './mons';
-
 export function boardVirus(b: Bestiary, p: Pal): void {
-  const k = (o: Record<string, string>) => {
-    const m: Record<string, number> = {};
-    for (const [ch, spec] of Object.entries(o)) {
-      const [ramp, sh] = spec.split(':');
-      m[ch] = p.c(ramp, Number(sh));
-    }
-    return m;
-  };
-  // Bit Mite: a little purple spider, born in the hatches
-  const mk = k({ o: 'ink:0', v: 'virus:2', V: 'virus:4', e: 'slime:5', l: 'virus:1' });
-  pics(
-    b,
-    'mite',
-    sym(
-      [
-        '..........',
-        '...l......',
-        '....l.....',
-        '.....l.ooo',
-        '......ovvV',
-        'lll..ovVVV',
-        '...lovvvve',
-        '...lovvvvv',
-        'lll..ovvvv',
-        '......ovvv',
-        '.....l.ooo',
-        '....l.....',
-        '...l......',
-      ],
-      mk,
-    ),
-    sym(
-      [
-        '..........',
-        '..........',
-        '..l.......',
-        '...ll.looo',
-        '......ovvV',
-        '.lll.ovVVV',
-        '....ovvvve',
-        '....ovvvvv',
-        '.lll.ovvvv',
-        '......ovvv',
-        '...ll.looo',
-        '..l.......',
-        '..........',
-      ],
-      mk,
-    ),
-  );
-  // Byte Biter: a chomping ball with teeth
-  const bk = k({ o: 'ink:0', g: 'slime:2', G: 'slime:4', w: 'grey:7', r: 'red:1', e: 'virus:5' });
-  const biter0 = [
-    '......oooo',
-    '....ooGGGG',
-    '...oGGGGGG',
-    '..oGGGgGGG',
-    '..oGGgeeGG',
-    '.oGGgeoeGg',
-    '.oGgggggGg',
-    '.ogggggggg',
-    '.owwwowwwo',
-    '.orrrrrrrr',
-    '.orrrrrrrr',
-    '.owwwowwwo',
-    '.ogggggggg',
-    '..oggggggg',
-    '..ooggggg',
-  ].map((s) => s.padEnd(10, 'o'));
-  const biter1 = [...biter0.slice(0, 8), '.owowowowo', '.orrrrrrrr', '.owowowowo', ...biter0.slice(12)];
-  pics(b, 'biter', sym(biter0.slice(0, 15), bk), sym(biter1, bk));
-  // Glitch Moth: flickering wings
-  const gk = k({ o: 'ink:0', p: 'pink:2', P: 'pink:4', b: 'virus:1', y: 'gold:4', w: 'grey:6' });
-  pics(
-    b,
-    'moth',
-    sym(
-      [
-        '.......oo.',
-        'oooo...ob.',
-        'oPPPoo.ob.',
-        'oPpppPoobb',
-        'oPpyppPobb',
-        '.oPpppPobb',
-        '..oPPPobbb',
-        '..oPppobbb',
-        '.oPpppPobb',
-        '.oPpyPPob.',
-        '..ooooo.o.',
-      ],
-      gk,
-    ),
-    sym(
-      [
-        '.......oo.',
-        '.......ob.',
-        '..oooo.ob.',
-        '.oPPPPoobb',
-        'oPppyPPobb',
-        'oPpppppobb',
-        '.oPPPPPbbb',
-        '..oPppobbb',
-        '..oPppPobb',
-        '...oooob..',
-        '.......o..',
-      ],
-      gk,
-    ),
-  );
-  // Logic Bomb: a heavy, slow crawler (left claw, body, right claw)
-  const hk = k({ o: 'ink:0', s: 'steel:2', S: 'steel:4', v: 'virus:2', V: 'virus:4', r: 'red:2', y: 'gold:4' });
-  const body = [
-    '.ooooooooo',
-    'osSSSSSSSS',
-    'osvvvvvvvv',
-    'osvVVVVVVV',
-    'osvVrrrVVV',
-    'osvVryyrVV',
-    'osvVrrrVVV',
-    'osvVVVVVVV',
-    'osvvvvvvvv',
-    'osSSSSSSSS',
-    'osooosooos',
-    '.oo.ooo.oo',
-  ];
-  pics(b, 'bomb', sym(body, hk), sym([...body.slice(0, 4), 'osvVyyyVVV', 'osvVyrryVV', 'osvVyyyVVV', ...body.slice(7)], hk));
-  const claw = (open: boolean) => {
-    const t = new Pixels(20, 20, CLEAR);
-    const rows = open
-      ? [
-          '.......ooooooooo....',
-          '.....ooSSSSSSSSSoo..',
-          '....oSSssssssssSSSo.',
-          '...oSsoooooooosssSoo',
-          '..oSso.......ooosSSo',
-          '.oSso..........ooSSo',
-          '.oSo............oSSo',
-          '.oSso..........ooSSo',
-          '..oSso.......ooosSSo',
-          '...oSsoooooooosssSoo',
-          '....oSSssssssssSSSo.',
-          '.....ooSSSSSSSSSoo..',
-          '.......ooooooooo....',
-        ]
-      : [
-          '.......ooooooooo....',
-          '.....ooSSSSSSSSSoo..',
-          '....oSSssssssssSSSo.',
-          '...oSsoooooooosssSoo',
-          '...oSSso.....ooosSSo',
-          '....oSSso......ooSSo',
-          '.....oSSo.......oSSo',
-          '....oSSso......ooSSo',
-          '...oSSso.....ooosSSo',
-          '...oSsoooooooosssSoo',
-          '....oSSssssssssSSSo.',
-          '.....ooSSSSSSSSSoo..',
-          '.......ooooooooo....',
-        ];
-    return t.draw(0, 4, rows, { o: hk.o, s: hk.s, S: hk.S });
-  };
-  pics(b, 'clawL', claw(true), claw(false));
-  pics(b, 'clawR', claw(true).flipX(), claw(false).flipX());
-  // Corrupt Cluster: a mine of broken bits
-  const ck = k({ o: 'ink:0', c: 'cyan:2', C: 'cyan:4', v: 'virus:3', V: 'virus:5' });
-  const junk = (k2: number) => {
-    const t = new Pixels(20, 20, CLEAR);
-    const r = rng(7 + k2);
-    blob(t, 10, 10, 7, 7, p.r('virus'), 1, 4);
-    for (let i = 0; i < 9; i++) {
-      const x = 3 + Math.floor(r() * 12);
-      const y = 3 + Math.floor(r() * 12);
-      t.rect(x, y, 3, 2, i % 2 ? ck.c : ck.C).rect(x, y + 2, 3, 1, ck.o);
-    }
-    for (let i = 0; i < 4; i++) {
-      const a2 = i * 1.57 + k2 * 0.4;
-      t.rect(10 + Math.cos(a2) * 8, 10 + Math.sin(a2) * 8, 2, 2, ck.V);
-    }
-    return t;
-  };
-  pics(b, 'cluster', junk(0), junk(1));
+  const v = keyOf(p, { main: 'virus', accent: 'slime' });
+  pics(b, 'mite', ...mite(v));
+  pics(b, 'biter', ...biter(keyOf(p, { main: 'slime', accent: 'virus' })));
+  pics(b, 'moth', ...moth(keyOf(p, { main: 'pink', accent: 'virus' })));
+  pics(b, 'bomb', ...bomb(v));
+  pics(b, 'clawL', claw(v, true), claw(v, false));
+  pics(b, 'clawR', claw(v, true).flipX(), claw(v, false).flipX());
+  pics(b, 'cluster', ...cluster(p, { main: 'virus', accent: 'cyan' }));
 }

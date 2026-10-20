@@ -48,7 +48,7 @@ export class Grid {
     // mostly plain floor, now and then a detailed one
     const r = this.rnd();
     const n = this.art.floors;
-    return `floor${r < 0.55 ? 0 : 1 + Math.floor(this.rnd() * (n - 1))}`;
+    return `floor${r < 0.8 ? 0 : 1 + Math.floor(this.rnd() * (n - 1))}`;
   }
 
   y(d: number): number {
