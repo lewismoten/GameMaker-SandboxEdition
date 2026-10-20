@@ -6,6 +6,8 @@ import { level1 } from './level1';
 import { level2 } from './level2';
 import { level3 } from './level3';
 import { level4 } from './level4';
+import { level5 } from './level5';
+import { level6 } from './level6';
 import { renderMap } from './render';
 import { PAL } from './pal';
 import { writePng } from './png';
@@ -20,6 +22,8 @@ const list: [string, (s: BlockSet) => LevelMap, number, number, keyof typeof set
   ['l2', level2, 32, 30, 'suburb'],
   ['l3', level3, 44, 33, 'city'],
   ['l4', level4, 74, 31, 'city'],
+  ['l5', level5, 40, 29, 'moon'],
+  ['l6', level6, 30, 22, 'moon'],
 ];
 const only = process.env.ONLY;
 for (const [n, f, w, h, sn] of list) {

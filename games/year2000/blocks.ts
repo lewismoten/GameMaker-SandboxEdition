@@ -699,12 +699,12 @@ function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone'): Pixels 
   return p;
 }
 
-function judgeTable(done: boolean): Pixels {
+function judgeTable(done: boolean, label = 'PAGES'): Pixels {
   const p = on('gym');
   p.rect(0, 4, 20, 14, C('denim', 2)).rect(0, 4, 20, 3, C('denim', 4));
   p.rect(2, 9, 16, 6, C('paper', 2));
-  micro(p, 3, 10, done ? 'OK!' : 'TURN', done ? C('green', 2) : C('red', 3));
-  if (!done) micro(p, 3, 14, 'IN', C('red', 3));
+  micro(p, 2, 10, done ? 'OK!' : label, done ? C('green', 2) : C('red', 3));
+  if (!done) micro(p, 2, 14, 'HERE', C('denim', 1));
   void PAGES_NEEDED;
   return p;
 }
@@ -899,7 +899,7 @@ export function moonSet(): BlockSet {
   s.add('phoneproj', project('phone'), { solid: SOLID });
   s.add('judgetable', judgeTable(false), { solid: SOLID, effect: CTR.pages, eamt: -PAGES_NEEDED, score: 5000, touch: 'judgedone' });
   s.add('judgedone', judgeTable(true));
-  s.add('covertable', judgeTable(false), { solid: SOLID, effect: CTR.cover, eamt: -1, score: 5000, touch: 'judgedone' });
+  s.add('covertable', judgeTable(false, 'COVER'), { solid: SOLID, effect: CTR.cover, eamt: -1, score: 5000, touch: 'judgedone' });
   s.add('podium', podium());
   addBig(s, 'banner', banner('SCIENCE FAIR 2000', 8, 1, 'denim', 'gold'));
   return s;
