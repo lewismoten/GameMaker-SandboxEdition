@@ -60,6 +60,11 @@
   flex: 1;
 }
 
+.desk-bar .touch-tip {
+  font-size: 12px;
+  color: #d8ccb0;
+}
+
 .desk-bar button,
 .desk-overlay button {
   padding: 7px 12px;

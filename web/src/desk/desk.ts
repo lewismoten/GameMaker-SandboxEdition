@@ -51,6 +51,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h('h1', null, 'GAME-MAKER'),
       h('span', null, '1994 edition'),
       h('span', { class: 'spacer' }),
+      matchMedia('(pointer: coarse)').matches ? h('span', { class: 'touch-tip' }, 'No keyboard? The disk box, CD and catalog type for you.') : null,
       h('button', { onclick: () => nav.toModern() }, 'Switch to today’s web →'),
     ),
     h(
