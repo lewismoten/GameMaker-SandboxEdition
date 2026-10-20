@@ -27,7 +27,14 @@ async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLEleme
       const hh = num('h', 10);
       const shot = await mapShot(entry, s.getAttribute('map') ?? '', num('x', 0), num('y', 0), w, hh).catch(() => undefined);
       const fig = document.createElement('figure');
-      if (shot) fig.append(h('img', { src: shot.toDataURL(), alt: s.getAttribute('caption') ?? 'Screenshot', width: shot.width, height: shot.height }));
+      if (shot)
+        fig.append(
+          h(
+            'span',
+            { class: 'mp-shot' },
+            h('img', { src: shot.toDataURL(), alt: s.getAttribute('caption') ?? 'Screenshot', width: shot.width, height: shot.height }),
+          ),
+        );
       const caption = s.getAttribute('caption');
       if (caption) fig.append(h('figcaption', null, caption));
       s.replaceWith(fig);
@@ -39,7 +46,9 @@ async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLEleme
 /** After any paragraph giving a P.O. Box, a printed note that it is made up. */
 export function markFictionalAddresses(root: HTMLElement): number {
   let n = 0;
-  const blocks = [...root.querySelectorAll('p, li, td, div')].filter((b) => /P\.?\s?O\.?\s+Box/i.test(b.textContent ?? '') && !b.querySelector('p, li, td, div'));
+  const blocks = [...root.querySelectorAll('p, li, td, div')].filter(
+    (b) => /P\.?\s?O\.?\s+Box/i.test(b.textContent ?? '') && !b.querySelector('p, li, td, div'),
+  );
   for (const b of blocks) {
     const at = b.closest('p, li, table, div') ?? b;
     at.after(h('p', { class: 'pp-fictional' }, `(${FICTIONAL_NOTE})`));
@@ -81,7 +90,7 @@ function scoresPage(title: string): HTMLElement[] {
 
 function backCover(entry: CatalogEntry): HTMLElement[] {
   const n = hashString(entry.id);
-  const bars = Array.from({ length: 46 }, (_, i) => h('i', { style: `width:${1 + ((n >> i % 24) & 1) + (i % 3 === 0 ? 1 : 0)}px` }));
+  const bars = Array.from({ length: 46 }, (_, i) => h('i', { style: `width:${1 + ((n >> (i % 24)) & 1) + (i % 3 === 0 ? 1 : 0)}px` }));
   return [
     h(
       'div',
@@ -104,7 +113,12 @@ export async function buildBooklet(entry: CatalogEntry, cover: string | undefine
   const shortTitle = title.replace(/\s+-\s+.*$/, '');
   const chapters = await Promise.all(manual.pages.map(async (p) => ({ head: p.head, el: await fillShots(entry, p.html) })));
   await Promise.all(chapters.flatMap((c) => [...c.el.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined))));
-  const pages: BookPage[] = [{ kind: 'cover', body: [cover ? h('div', { class: 'game-cover' }, h('img', { src: cover, alt: `${entry.title} cover` })) : h('div', { class: 'game-cover' })] }];
+  const pages: BookPage[] = [
+    {
+      kind: 'cover',
+      body: [cover ? h('div', { class: 'game-cover' }, h('img', { src: cover, alt: `${entry.title} cover` })) : h('div', { class: 'game-cover' })],
+    },
+  ];
   const next = measurer(host);
   for (const c of chapters) {
     markFictionalAddresses(c.el);
@@ -113,7 +127,12 @@ export async function buildBooklet(entry: CatalogEntry, cover: string | undefine
   host.replaceChildren();
   const total = bookletPageCount(pages.length + 1);
   const pads = total - pages.length - 1;
-  for (let i = 0; i < pads; i++) pages.push(i === 0 && pads > 1 ? { kind: 'scores', head: [shortTitle, 'Hall of Fame'], body: scoresPage(entry.title) } : { kind: 'notes', head: [shortTitle, 'Notes'], body: notesPage() });
+  for (let i = 0; i < pads; i++)
+    pages.push(
+      i === 0 && pads > 1
+        ? { kind: 'scores', head: [shortTitle, 'Hall of Fame'], body: scoresPage(entry.title) }
+        : { kind: 'notes', head: [shortTitle, 'Notes'], body: notesPage() },
+    );
   pages.push({ kind: 'back', body: backCover(entry) });
   return pages;
 }

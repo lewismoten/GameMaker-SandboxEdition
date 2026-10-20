@@ -33,7 +33,11 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
     const stage = h('div', { class: 'gmb-stage' });
     const tray = h('ul', { class: 'gmb-tray-list' });
     const counter = h('span', { class: 'gmb-counter' });
-    const filmBtn = h('button', { class: 'gmb-film-btn', onclick: () => film.toggle(), title: 'Lay the red film over the page; drag it around' }, '🟥 Red film');
+    const filmBtn = h(
+      'button',
+      { class: 'gmb-film-btn', onclick: () => film.toggle(), title: 'Lay the red film over the page; drag it around' },
+      '🟥 Red film',
+    );
     const film = new RedFilm();
     const two = () => stage.clientWidth >= 760;
 
@@ -67,7 +71,11 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       spread.classList.toggle('alone-right', shown.length === 1 && isTwo && shown[0] === 0);
       if (shown.length === 2 && shown[0] === stapled[0]) spread.append(h('i', { class: 'gmb-staple top' }), h('i', { class: 'gmb-staple bottom' }));
       counter.textContent =
-        shown[0] === 0 ? `Cover · ${total} pages` : shown[0] === total - 1 ? 'Back cover' : `Page ${shown.join('–')} of ${total - 2}${shown[0] === stapled[0] ? ' · center' : ''}`;
+        shown[0] === 0
+          ? `Cover · ${total} pages`
+          : shown[0] === total - 1
+            ? 'Back cover'
+            : `Page ${shown.join('–')} of ${total - 2}${shown[0] === stapled[0] ? ' · center' : ''}`;
       stage.replaceChildren(spread, nav);
     };
     const go = (dir: 1 | -1) => {
@@ -157,7 +165,12 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       await Promise.all([...printRoot.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined)));
       window.print();
     };
-    const afterPrint = () => document.documentElement.classList.remove('gmb-printing');
+    // the browser's own Print command prints the manual, page by page
+    const afterPrint = () => {
+      document.documentElement.classList.remove('gmb-printing');
+      printRoot.replaceChildren(...manualSingle());
+    };
+    printRoot.replaceChildren(...manualSingle());
     window.addEventListener('afterprint', afterPrint);
 
     const menu = h(
@@ -183,7 +196,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       e.stopImmediatePropagation(); // not for the PC underneath
       if (e.key === 'ArrowRight' || e.key === 'PageDown') go(1);
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(-1);
-      else if (e.key === 'Home') (at = 0), current === 'manual' && showManual();
+      else if (e.key === 'Home') ((at = 0), current === 'manual' && showManual());
       else if (e.key === 'Escape') menu.hidden ? close() : (menu.hidden = true);
       else return;
       e.preventDefault();

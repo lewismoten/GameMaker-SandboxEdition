@@ -80,7 +80,7 @@ export function html(tag: keyof HTMLElementTagNameMap, cls: string, markup: stri
 export async function mapPicture(ctx: PrintContext, p: MapPanel, cls = ''): Promise<HTMLElement> {
   const src = await ctx.shot(p);
   const fig = h('figure', { class: `pp-photo ${cls}` });
-  if (src) fig.append(h('img', { src, alt: p.caption ?? 'Picture', width: p.w * 20, height: p.h * 20 }));
+  if (src) fig.append(h('span', { class: 'pp-shot' }, h('img', { src, alt: p.caption ?? 'Picture', width: p.w * 20, height: p.h * 20 })));
   else fig.append(h('div', { class: 'pp-photo-missing', style: `aspect-ratio: ${p.w} / ${p.h}` }));
   if (p.caption) fig.append(h('figcaption', null, p.caption));
   return fig;
@@ -94,13 +94,7 @@ export function sandboxLogo(cls = ''): HTMLElement {
 /** THE -= S A N D B O X =- with each letter in its own color. */
 export function sandboxBanner(): HTMLElement {
   const colors = ['#ff5555', '#ffff55', '#55ff55', '#55ffff', '#5555ff', '#ff55ff', '#ffaa00'];
-  return h(
-    'span',
-    { class: 'pp-sandbox-banner' },
-    'THE -= ',
-    ...'SANDBOX'.split('').map((c, i) => h('b', { style: `color:${colors[i]}` }, c)),
-    ' =- BBS',
-  );
+  return h('span', { class: 'pp-sandbox-banner' }, 'THE -= ', ...'SANDBOX'.split('').map((c, i) => h('b', { style: `color:${colors[i]}` }, c)), ' =- BBS');
 }
 
 export function fictionalNote(): HTMLElement {

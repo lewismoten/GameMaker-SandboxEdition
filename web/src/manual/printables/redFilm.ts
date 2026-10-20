@@ -52,7 +52,12 @@ export function redNoiseTile(): string {
 
 /** An answer hidden in red noise. */
 export function redCode(text: string): HTMLElement {
-  return h('span', { class: 'rf-code' }, h('span', { class: 'rf-text' }, text), h('span', { class: 'rf-noise', style: `background-image:url(${redNoiseTile()})`, 'aria-hidden': 'true' }));
+  return h(
+    'span',
+    { class: 'rf-code' },
+    h('span', { class: 'rf-text' }, text),
+    h('span', { class: 'rf-noise', style: `background-image:url(${redNoiseTile()})`, 'aria-hidden': 'true' }),
+  );
 }
 
 /** The draggable red cellophane. */
