@@ -201,8 +201,9 @@ export function commonMonsters(b: Bestiary): void {
         ['gwinRun1', 2],
         ['gwinRun2', 2],
       ],
-      power: POWER.friend - 1,
-      end: 40,
+      power: 90,
+      towards: -8,
+      end: 30,
     },
     MON.gwinGone,
   );

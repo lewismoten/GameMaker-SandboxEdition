@@ -16,7 +16,16 @@ for (const make of LEVELS) {
   const l = make();
   if (only.length && !only.includes(l.file)) continue;
   const sim = new Sim(
-    { map: l.map.done(), bbl: l.bs.build(), mbl: l.beasts.mb.build(), mon: l.beasts.build(), chr, cbl, links: [{ from: l.exit, to: l.exit }] },
+    {
+      map: l.map.done(),
+      bbl: l.bs.build(),
+      mbl: l.beasts.mb.build(),
+      mon: l.beasts.build(),
+      chr,
+      cbl,
+      links: [{ from: l.exit, to: l.exit }],
+      names: l.beasts.names,
+    },
     l.start,
     newCharInfo(),
   );

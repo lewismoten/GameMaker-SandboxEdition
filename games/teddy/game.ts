@@ -5,8 +5,9 @@ import type { Level } from './level';
 import { backyard } from './level1';
 import { street } from './level2';
 import { park } from './level3';
+import { city } from './level4';
 
-export const LEVELS: (() => Level)[] = [backyard, street, park];
+export const LEVELS: (() => Level)[] = [backyard, street, park, city];
 
 /** Songs per level (CMF file names), in level order. */
 export const LEVEL_SONGS = ['backyard.cmf', 'street.cmf', 'park.cmf', 'city.cmf', 'klub.cmf'];

@@ -207,3 +207,75 @@ export function frisbee(phase: number): Pixels {
   }
   return p;
 }
+
+/** A juggling busker from the Klown Klub (20x40): Juggles, tossing bowling pins. */
+export function juggler(phase: number): Pixels {
+  return S(
+    [
+      phase ? '...........W........' : '..W.................',
+      phase ? '..........WRW.......' : '.WRW..........W.....',
+      phase ? '...W.......W........' : '..W..........WRW....',
+      phase ? '..WRW...ooooo.......' : '........ooooo.W.....',
+      phase ? '...W...oGGGGGo......' : '.......oGGGGGo......',
+      '......oGGGGGGGo.....',
+      '......ooooooooo.....',
+      '.......owwwwwo......',
+      '.......owkwkwo......',
+      '.......owwRwwo......',
+      '.......owrrrwo......',
+      '........owwwo.......',
+      phase ? '.oSo..oVVVVVo.......' : '......oVVVVVo..oSo..',
+      phase ? '..oSooVVyVVVVo......' : '.....oVVVyVVVooSo...',
+      phase ? '....oVVVVyVVVVoSo...' : '...oSoVVVyVVVVo.....',
+      '.....oVVVVyVVVVoo...',
+      '.....oVVVVVVVVVo....',
+      '.....oYYYYYYYYYo....',
+      '.....obbbbbbbbbo....',
+      '.....obbbbobbbbo....',
+      '.....obbbbobbbbo....',
+      '.....obbbo.obbbo....',
+      '.....obbbo.obbbo....',
+      '....oooooo.oooooo...',
+      '...oRRRRRo.oRRRRRo..',
+      '...oooooo...ooooooo.',
+    ],
+    0,
+    14,
+    20,
+    40,
+  );
+}
+
+/** A bowling pin, tumbling through the air at head height. */
+export function pin(phase: number): Pixels {
+  const p = new Pixels(20, 20, 255);
+  const rows = phase
+    ? ['..........', '.ooo..oo..', 'oWWWooWWo.', 'oWRWWWWWWo', 'oWWWooWWo.', '.ooo..oo..']
+    : ['...oo.....', '..oWWo....', '..oWWo....', '...oRo....', '..oWWWo...', '.oWWWWWo..', '.oWWWWWo..', '..ooooo...'];
+  p.draw(5, phase ? 4 : 2, rows, { o: P.c('ink', 0), W: P.c('fur', 2), R: P.c('red', 2) });
+  return p;
+}
+
+/** A yellow taxi, two blocks long: [back, front], facing left. */
+export function taxi(phase: number): [Pixels, Pixels] {
+  const big = S(
+    [
+      '..........oooooooooooo..........',
+      '.........oBBBoyyyoBBBBo.........',
+      '........oBBBBoyyyoBBBBBo........',
+      '..ooooooooooooooooooooooooooooo.',
+      '.oyyyyyyyyyyyyyyyyyyyyyyyyyyyyyo',
+      'oWyyyyyyyyyyyyoyyyyyyyyyyyyyyyRo',
+      'oyyyyyyyyyyyyyoyyyyyyyyyyyyyyyyo',
+      'ooooooooooooooooooooooooooooooo.',
+      phase ? '...ooo.................ooo.....' : '..ooooo...............ooooo....',
+      phase ? '..omMmo...............omMmo....' : '..oMmMo...............oMmMo....',
+      '...ooo.................ooo.....',
+    ],
+    4,
+    9,
+    40,
+    20,
+  );
+  return [big.crop(0, 0, 20, 20), big.crop(20, 0, 20, 20)];
+}

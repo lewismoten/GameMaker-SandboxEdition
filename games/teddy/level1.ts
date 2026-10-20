@@ -340,6 +340,7 @@ export function backyardBeasts() {
       [0, 0, 4, FLIP],
       [0, 0, 1, FLIP],
     ],
+    becomes: 'gwinGone',
   });
   return b;
 }

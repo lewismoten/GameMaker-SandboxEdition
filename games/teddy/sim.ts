@@ -40,6 +40,8 @@ export interface SimScene {
   chr: Character;
   cbl: Block[];
   links?: { from: { x: number; y: number }; to: { x: number; y: number } }[];
+  /** Monster names by number (for bots that look for one). */
+  names?: string[];
 }
 
 export class Sim {
@@ -134,6 +136,12 @@ export class Sim {
       if (each?.(t) === true) break;
       if (this.dead || this.link >= 0) break;
     }
+  }
+
+  /** Live monsters called `name`, with their block positions. */
+  monsters(name: string): { x: number; y: number }[] {
+    const n = this.scene.names?.indexOf(name) ?? -1;
+    return this.w.mm.flatMap((m, i) => (m.monnum === n ? [{ x: this.w.mi[i].curx[0], y: this.w.mi[i].cury[0] }] : []));
   }
 
   /** Character position in pixels (x of its column, y of its bottom block). */
