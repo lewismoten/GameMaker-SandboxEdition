@@ -18,6 +18,7 @@ import { Project } from '../editor/project';
 import { editors, fileInfo } from '../editor/editors';
 import { kindOf } from '../editor/project';
 import { Vga } from '../vga/vga';
+import { output } from '../audio/output';
 import { h, clear, download } from '../editor/ui';
 import type { SpeedSetting } from '../engine/scene';
 import type { GmInstallEntry } from '../../scripts/cdGames';
@@ -128,6 +129,7 @@ export class Computer implements RetroHost {
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
       await sleep(30);
     }
+    this.postBeep(); // one short beep: the power-on self test passed
     s.print('\n\nStarting MS-DOS...\n\n');
     await sleep(500);
     // CONFIG.SYS
@@ -150,6 +152,24 @@ export class Computer implements RetroHost {
     s.print('\nType HELP for commands, GM to start Game-Maker, TERMINAL to call the BBS.\n\n');
     s.cursorVisible = true;
     void this.shell.loop();
+  }
+
+  /** The BIOS's single beep through the PC speaker: a short square wave. */
+  private postBeep(): void {
+    const ctx = this.audioCtx;
+    if (!ctx) return;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'square';
+    o.frequency.value = 1046;
+    const t = ctx.currentTime + 0.02;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.06, t + 0.005);
+    g.gain.setValueAtTime(0.06, t + 0.2);
+    g.gain.linearRampToValueAtTime(0, t + 0.21);
+    o.connect(g).connect(output(ctx));
+    o.start(t);
+    o.stop(t + 0.22);
   }
 
   unlockAudio(): void {
