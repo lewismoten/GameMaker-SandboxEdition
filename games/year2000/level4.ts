@@ -77,8 +77,8 @@ const FLORIDA = [
   'X...SSS......G...X',
   'X...SSS..........X',
   'X..........P...B.X',
-  'X.q..f.........d.X',
-  'X.@.......*......X',
+  'X.q..f..@......d.X',
+  'X.........*......X',
   'XXXXXXXXXXXXXXXXXX',
 ];
 const FLORIDA_LEGEND: Legend = {
@@ -105,7 +105,7 @@ const SEA = [
   'Q.w..........C...Q',
   'Q...F.....f....B.Q',
   'Q.q.......w....g.Q',
-  'Q.@...C..........Q',
+  'Q.....C..@.......Q',
   'QQQQQQQQQQQQQQQQQQ',
 ];
 const SEA_LEGEND: Legend = {
@@ -131,7 +131,7 @@ const TV = [
   'Z,,,,,,,,,,,,,,Z',
   'Z,q,,,,ZZ,,,,B,Z',
   'Z,,,s,,ZZ,,,,e,Z',
-  'Z,@,,,,,,,s,,,,Z',
+  'Z,,,,,,@,,s,,,,Z',
   'ZZZZZZZZZZZZZZZZ',
 ];
 const TV_LEGEND: Legend = {
@@ -156,7 +156,7 @@ const JUNGLE = [
   'R.q...........ttt..B.R',
   'R....D.....Y.......h.R',
   'R..Y.....tt......*...R',
-  'R.@.....ttt....Y.....R',
+  'R.......ttt.@..Y.....R',
   'RRRRRRRRRRRRRRRRRRRRRR',
 ];
 const JUNGLE_LEGEND: Legend = {

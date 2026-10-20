@@ -179,11 +179,19 @@ function chromeFence(floor: Floor, dir: 'h' | 'v' | 'post'): Pixels {
 
 function hedgeCube(floor: Floor): Pixels {
   const p = on(floor);
-  oval(p, 10, 17, 9, 2.5, C('grey', 1));
-  p.rect(2, 2, 16, 15, C('green', 1));
-  speckle(p, 2, 2, 16, 5, R('green'), 4, 1, 4, 0.4);
-  speckle(p, 2, 7, 16, 10, R('green'), 2, 1, 5, 0.4);
-  p.rect(2, 7, 16, 1, C('green', 1));
+  // A hedge trimmed into a perfect cube by the robot gardener: bright top, shaded front.
+  oval(p, 11, 18, 9, 2, C('grey', 1));
+  p.rect(1, 1, 18, 17, C('green', 0));
+  speckle(p, 2, 2, 16, 6, R('green'), 4, 1, 4, 0.5);
+  speckle(p, 2, 8, 16, 9, R('green'), 1, 1, 5, 0.5);
+  p.rect(2, 8, 16, 1, C('green', 5));
+  for (const [x, y] of [
+    [4, 11],
+    [9, 13],
+    [14, 10],
+    [6, 15],
+  ])
+    p.set(x, y, C('green', 3));
   return p;
 }
 
