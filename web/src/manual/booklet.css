@@ -289,3 +289,17 @@
     text-shadow: none;
   }
 }
+
+/* an original game's manual: the box front as its cover */
+.mpage.cover .game-cover {
+  position: absolute;
+  inset: 0;
+  background: #111;
+}
+
+.mpage.cover .game-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
