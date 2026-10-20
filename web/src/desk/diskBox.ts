@@ -8,7 +8,7 @@ export type DiskAction = 'play' | 'design' | 'insert' | 'modern';
 
 export function floppyElement(d: Disk, small = false): HTMLElement {
   const count = diskCount(d.bytes);
-  const label = d.kind === 'blank' ? 'blank — formats as a new game' : d.title;
+  const label = d.kind === 'blank' ? 'blank — for Utilities ▸ Transfer' : d.title;
   const g = d.catalog;
   // Hand-written like a real label: who made it, when, and what it cost.
   const sub =
@@ -72,7 +72,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onAction
       const d = disks[index];
       position.textContent = `${index + 1} of ${disks.length}`;
       const facts = [
-        d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game' : 'A blank, unformatted disk',
+        d.kind === 'rsd' ? 'One of the games RSD made with Game-Maker' : d.kind === 'gameware' ? 'Free gameware from the Game-Maker CD' : d.kind === 'project' ? 'Your game (also in C:\\GM on the hard disk)' : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
         d.catalog ? creditLine(d.catalog) : '',
         sizeText(d.bytes),
         d.writeProtected ? 'write-protected (Game-Maker will make you a copy to change it)' : '',
@@ -85,7 +85,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onAction
           'div',
           { class: 'flip-actions' },
           d.gam ? h('button', { class: 'primary', onclick: () => act('play') }, '▶ Play it') : null,
-          h('button', { class: d.gam ? '' : 'primary', onclick: () => act('design') }, d.kind === 'blank' ? 'Start a new game in Game-Maker' : 'Design it in Game-Maker'),
+          h('button', { class: d.gam ? '' : 'primary', onclick: () => act('design') }, d.kind === 'blank' ? 'Start a new game on the hard disk' : 'Design it in Game-Maker'),
           h('button', { onclick: () => act('insert') }, 'Just put it in drive A:'),
           d.kind !== 'blank' ? h('button', { onclick: () => act('modern') }, 'Open in today’s web') : null,
         ),

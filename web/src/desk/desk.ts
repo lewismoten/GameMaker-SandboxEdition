@@ -226,7 +226,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     }
     await insert(d);
     if (action === 'play' && d.gam) await command(`A:\n${d.gam.replace(/\.gam$/i, '').toUpperCase()}`);
-    else if (action === 'design') await command('C:\nGM');
+    // Game-Maker starts in the current folder: the disk, or C:\GM for a new game.
+    else if (action === 'design') await command(d.kind === 'blank' ? 'C:\nCD \\GM\nGM' : 'A:\nGM');
     else await power(true);
   }
 
