@@ -21,3 +21,9 @@ if (process.env.PREVIEW_DIR) {
   for (const st of Object.values(STYLES)) writePng(join(dir, `tiles-${st.id}.png`), sheet(buildTiles(st)), PAL.pal, 3);
   console.log('written to', dir);
 }
+
+if (process.env.PREVIEW_DIR) {
+  const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
+  writePng(join(dir, 'mbl.png'), sheet(buildMonsterBlocks(), 10), PAL.pal, 4);
+  writePng(join(dir, 'cbl.png'), sheet(buildWattBlocks(), 11), PAL.pal, 4);
+}
