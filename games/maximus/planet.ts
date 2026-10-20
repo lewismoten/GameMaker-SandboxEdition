@@ -273,6 +273,13 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       }
     }
     joinAll();
+    // a threshold: a ledge level with each entrance, so you can stand and wait for the field
+    for (const dir of [-1, 1])
+      for (let i = 7; i <= 10; i++) {
+        const tx = wx(vx + dir * i);
+        if (!g.isLocked(tx, vy + 1) && isOpen(g.get(tx, vy + 1)) && isOpen(g.get(tx, vy)) && isOpen(g.get(tx, vy - 1)))
+          g.set(tx, vy + 1, id('ledge:cave'), true);
+      }
     const prize = spec.shard !== undefined ? id(`shard:${spec.shard}`) : spec.module !== undefined ? id(`module:${spec.module}`) : id('pc:oneup');
     g.set(vx, vy, prize, true);
     g.set(vx - 2, vy, id('pc:gem'), true);
