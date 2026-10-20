@@ -10,6 +10,7 @@ import { parseRecording, serializeRecording, RECLEN, type RecordedKey } from '..
 import { scanName } from '../../input/scancodes';
 import type { Session } from '../../engine/scene';
 import { watchTimeline, editTimeline } from './recTimeline';
+import { playDemo } from '../../media/demo';
 import { toEvents, toKeys, toNotes, duration, clock, EXT } from './recTimelineModel';
 
 /** Plays the game, recording the keys; resolves with the .REC bytes, or undefined. */
@@ -59,31 +60,16 @@ function recordByPlaying(project: Project, title = 'Record a demo'): Promise<Uin
   });
 }
 
-/** Watches a recording played back in the game, its keys scrolling past a playhead below. */
-function watch(project: Project, bytes: Uint8Array): void {
-  let player: PlayerHandle | undefined;
-  let session: Session | undefined;
-  const timeline = watchTimeline(toEvents(parseRecording(bytes)), () => (session?.rec.playing ? session.rec.tick : 0));
-  void modal<void>('Watch the demo', (close) => {
-    const host = h('div', { class: 'player-host rec-player' });
-    queueMicrotask(() => {
-      player = mountPlayer(host, new GameFiles(project.files.entries()), project.gam, {
-        title: project.name,
-        playback: bytes,
-        onSession: (s) => (session = s),
-        onExit: () => close(undefined),
-      });
-    });
-    return h(
-      'div',
-      { class: 'stack rec-dialog rec-watch' },
-      host,
-      timeline.el,
-      h('p', { class: 'hint' }, 'Click the screen to start the playback. The game keeps going after the last key; press Esc to leave.'),
-    );
-  }).then(() => {
-    timeline.destroy();
-    player?.stop();
+/** Watches a recording played back in the game, its keys scrolling past a playhead below; it can be saved as a video. */
+function watch(project: Project, bytes: Uint8Array, record = false): void {
+  void playDemo({
+    title: project.name,
+    files: project.files,
+    gam: project.gam,
+    rec: bytes,
+    record,
+    heading: record ? 'Save the demo as a video' : 'Watch the demo',
+    below: (tick) => watchTimeline(toEvents(parseRecording(bytes)), tick),
   });
 }
 
@@ -141,6 +127,11 @@ registerEditor(['rec'], (host, project, file) => {
       'div',
       { class: 'toolbar', style: 'margin-bottom:10px' },
       h('button', { class: 'primary', onclick: () => watch(project, serializeRecording(keys)) }, '▶ Watch it'),
+      h(
+        'button',
+        { title: 'Play it back in the game and save the screen and sound as a video (320×200)', onclick: () => watch(project, serializeRecording(keys), true) },
+        '⬇ Save as video',
+      ),
       h(
         'button',
         {
