@@ -38,16 +38,21 @@ function meters(c: Character): void {
   c.meter[SEQ.flak] = 10;
 }
 
-/** The weapon sequences every vehicle has (the frames that fire are the same). */
+/**
+ * The weapon sequences every vehicle has (the frames that fire are the same). Each starts
+ * with a picture frame that lasts a tick: these sequences are uninterruptible, and PLAYGAME
+ * only reads waiting keys when such a sequence stands on its first frame - a sequence
+ * whose first frame fires (and so takes no time) would never let go of a held key.
+ */
 function weapons(c: Character, pose: (name: string) => F, extra: { fireY?: number } = {}): void {
   const fy = extra.fireY ?? 0;
-  setSeq(c, SEQ.fire, { key: 'space', sound: SND.fire, joy: [9, 1], frames: [{ birth: MON.bolt, y: fy }, pose('fire'), { ...pose('fire2'), pause: 3 }] });
+  setSeq(c, SEQ.fire, { key: 'space', sound: SND.fire, joy: [9, 1], frames: [pose('fire'), { birth: MON.bolt, y: fy }, { ...pose('fire2'), pause: 3 }] });
   setSeq(c, SEQ.plasma, {
     key: 'z',
     sound: SND.plasma,
     bloc: itemBlock('plasma'),
     joy: [9, 2],
-    frames: [{ birth: MON.plasma, y: fy }, pose('lance'), { ...pose('lance2'), pause: 5 }],
+    frames: [pose('lance'), { birth: MON.plasma, y: fy }, { ...pose('lance2'), pause: 5 }],
   });
   setSeq(c, SEQ.nova, {
     key: 'x',
@@ -93,12 +98,7 @@ function weapons(c: Character, pose: (name: string) => F, extra: { fireY?: numbe
     key: 'w',
     sound: SND.flak,
     bloc: itemBlock('flak'),
-    frames: [
-      { birth: MON.flakL, y: fy },
-      { birth: MON.nova, y: fy },
-      { birth: MON.flakR, y: fy },
-      { ...pose('flak'), pause: 4 },
-    ],
+    frames: [pose('flak'), { birth: MON.flakL, y: fy }, { birth: MON.nova, y: fy }, { birth: MON.flakR, y: fy }, { ...pose('flak'), pause: 4 }],
   });
 }
 

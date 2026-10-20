@@ -32,8 +32,8 @@ for (const info of b.scenes) {
     sim.press(SCAN.right);
     let stuck = 0;
     for (let t = 0; t < 2400 && travelled < 2000 && !sim.dead; t++) {
-      if (t % 8 === 0) sim.press(SCAN.space);
-      if (t % 8 === 1) sim.release(SCAN.space);
+      if (t % 16 === 0) sim.press(SCAN.space);
+      if (t % 16 === 1) sim.release(SCAN.space);
       await sim.tick();
       let dx = sim.pos.x - last;
       if (dx < -1000) dx += 2000;
@@ -228,6 +228,32 @@ if (!only.length || only.includes('mechanics')) {
     sim.release(SCAN.right);
     console.log(`mechanics: door left ${sim.w.ci.meter[MONEY] - 1} of 15 credits`);
     if (sim.w.ci.meter[MONEY] !== 6) report.push(`door: 15 credits became ${sim.w.ci.meter[MONEY] - 1} after the credit door (expected 5)`);
+  }
+  // a held fire key, then released: the courier must walk again afterwards
+  {
+    const home = b.scenes.find((s) => s.file === 'home')!;
+    const sim = simFor(b, home, 1);
+    await sim.run(3);
+    sim.press(SCAN.space);
+    await sim.run(20);
+    sim.release(SCAN.space);
+    await sim.run(6);
+    const x0 = sim.pos.x;
+    sim.press(SCAN.right);
+    await sim.run(10);
+    sim.release(SCAN.right);
+    if (sim.pos.x <= x0) report.push('controls: after holding fire, the courier would not walk');
+    for (const k of [SCAN.z, SCAN.x, SCAN.c, SCAN.v, SCAN.h, SCAN.w, SCAN.t, SCAN.p, SCAN.up]) {
+      sim.press(k);
+      await sim.run(12);
+      sim.release(k);
+      await sim.run(10);
+    }
+    const x1 = sim.pos.x;
+    sim.press(SCAN.left);
+    await sim.run(10);
+    sim.release(SCAN.left);
+    if (sim.pos.x >= x1) report.push('controls: after the module keys, the courier would not walk');
   }
   // trading post: nudge the 1-Up pad with 120 credits
   {
