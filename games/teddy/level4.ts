@@ -4,7 +4,7 @@
 // sidewalk shed where Juggles the busker's pins come flying (play dead!), the plaza, a
 // fruit stand Gwin already knocked over, and the Odeon, where the Klown Car waits.
 import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, scaleBlit, speckle, sprite } from './draw';
+import { blob, klubArt, micro, scaleBlit, speckle, sprite } from './draw';
 import { FULL, docLeo } from './people';
 import { CRITTERS } from './critters';
 import { FLIP, type Bestiary } from './mons';
@@ -324,7 +324,7 @@ export function cityTiles(): Tiles {
   const bb = new Pixels(60, 60, c('blue', 2));
   bb.frame(0, 0, 60, 60, c('paint', 3)).frame(1, 1, 58, 58, c('gold', 1));
   scaleBlit(bb, docLeo(FULL).crop(0, 0, 20, 16), 10, 6, 2);
-  micro(bb, 6, 40, 'KLOWN KLUB', c('yellow', 3));
+  micro(bb, 6, 40, klubArt('KLOWN KLUB'), c('yellow', 3));
   micro(bb, 8, 48, 'BIG SHOW!', c('paint', 3));
   cut(bb).forEach((row, y) => row.forEach((px, x) => t.air(`bb${x}${y}`, px)));
   t.wall(

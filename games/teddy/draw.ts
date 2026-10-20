@@ -90,12 +90,30 @@ export function over(dst: Pixels, src: Pixels, x = 0, y = 0): Pixels {
   return dst.blit(src, x, y, CLEAR);
 }
 
+/**
+ * The Klown Klub spells itself with backwards K's. In art (signs, titles, cartoons) a
+ * MIRROR_K draws a mirrored K; plain text (the .TXT pages) keeps ordinary K's.
+ */
+export const MIRROR_K = '\ua4d8';
+
+/** The backwards K in the PC font's style (the font's own K mirrored keeps its serifs and reads as an X). */
+const BACKWARDS_K = ['##...##.', '.##..##.', '..##.##.', '...####.', '..##.##.', '.##..##.', '##...##.', '........'];
+
+/** Turns every "KLOWN KLUB" (any case) into its sign spelling, backwards K's and all. */
+export function klubArt(s: string): string {
+  return s.replace(/k(lown)/gi, (_, rest: string) => MIRROR_K + rest).replace(/k(lub)/gi, (_, rest: string) => MIRROR_K + rest);
+}
+
 /** Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. */
 export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
   let cx = x;
   for (const ch of s) {
     const base = (ch.charCodeAt(0) & 0xff) * 8;
     for (let row = 0; row < 8; row++) {
+      if (ch === MIRROR_K) {
+        for (let b = 0; b < 8; b++) if (BACKWARDS_K[row][b] === '#') p.rect(cx + b * scale, y + row * scale, scale, scale, col);
+        continue;
+      }
       const bits = FONT8X8[base + row];
       for (let b = 0; b < 8; b++) if (bits & (1 << b)) p.rect(cx + b * scale, y + row * scale, scale, scale, col);
     }
@@ -141,6 +159,7 @@ const MICRO: Record<string, string> = {
   I: '111010010010111',
   J: '001001001101010',
   K: '101101110101101',
+  [MIRROR_K]: '101101011101101',
   L: '100100100100111',
   M: '101111111101101',
   N: '110101101101101',

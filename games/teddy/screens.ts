@@ -5,7 +5,7 @@ import { encodeGif } from '../../web/src/formats/gif';
 import { encodeFli } from '../../web/src/formats/fli';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from './draw';
+import { CLEAR, blob, centered, gradient, klubArt, micro, outlined, scaleBlit, text, textWidth } from './draw';
 import { buildPalette, buildScreenPalette, type Pal } from './pal';
 import { POSES } from './teddy';
 import { GWIN } from './gwin';
@@ -169,7 +169,7 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   p.rect(8, 8, 304, 104, cc('paint', 3));
   p.blit(view, 10, 10);
   outlined(p, 16, 120, `LEVEL ${n}`, cc('yellow', 3), cc('red', 1), 1);
-  outlined(p, 16, 132, l.title.toUpperCase(), cc('paint', 3), cc('ink', 1), 2);
+  outlined(p, 16, 132, klubArt(l.title.toUpperCase()), cc('paint', 3), cc('ink', 1), 2);
   lines.forEach((s, i) => text(p, 16, 154 + i * 10, s, cc(s.startsWith('NEW') ? 'yellow' : 'paint', 3)));
   return p;
 }
