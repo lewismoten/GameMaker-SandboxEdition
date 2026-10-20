@@ -446,31 +446,6 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
     return here[(at + 1) % here.length];
   }
 
-  function segmentAt(e: PointerEvent): Corner | undefined {
-    const r = canvas.getBoundingClientRect();
-    const b = view();
-    const bx = ((e.clientX - r.left) / r.width) * b.w + b.x0 - 0.5;
-    const by = ((e.clientY - r.top) / r.height) * b.h + b.y0 - 0.5;
-    let best: Corner | undefined;
-    let bestD = 0.3;
-    let p = { x: 0, y: 0 };
-    const cell = { x: Math.round(bx), y: Math.round(by) };
-    const on = (q: { x: number; y: number }) => q.x === cell.x && q.y === cell.y;
-    corners(path(), kind()).forEach((c, n) => {
-      // Clicking a segment's end block adds a corner there (closing a loop, say) instead.
-      if (!(n === 0 && kind() === 'chase') && !on(p) && !on(c)) {
-        const vx = c.x - p.x;
-        const vy = c.y - p.y;
-        const l2 = vx * vx + vy * vy || 1;
-        const t = Math.max(0, Math.min(1, ((bx - p.x) * vx + (by - p.y) * vy) / l2));
-        const d = Math.hypot(bx - (p.x + t * vx), by - (p.y + t * vy));
-        if (d < bestD) ((bestD = d), (best = c));
-      }
-      p = c;
-    });
-    return best;
-  }
-
   let drag: { i: number; moved: boolean; added: boolean; from: { x: number; y: number } } | undefined;
 
   canvas.addEventListener('pointerdown', (e) => {
@@ -479,12 +454,10 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
     canvas.focus();
     hidePop();
     const spot = cellAt(e);
-    const hit = cornerAt(spot) ?? segmentAt(e);
+    const hit = cornerAt(spot);
     if (hit) {
       selected = hit.i;
       drag = { i: hit.i, moved: false, added: false, from: spot };
-      // Segments select without dragging.
-      if (hit.x !== spot.x || hit.y !== spot.y) drag = undefined;
       renderSide();
       dirty = true;
     } else {
