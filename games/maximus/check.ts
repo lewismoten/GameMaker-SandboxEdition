@@ -243,7 +243,8 @@ if (!only.length || only.includes('mechanics')) {
     await sim.run(10);
     sim.release(SCAN.up);
     console.log(`mechanics: shop lives ${lives} -> ${sim.w.ci.lives}, credits 120 -> ${sim.w.ci.meter[MONEY] - 1}`);
-    if (sim.w.ci.lives !== lives + 1 || sim.w.ci.meter[MONEY] !== 21) report.push(`shop: buying a 1-Up gave lives ${lives} -> ${sim.w.ci.lives}, credits 120 -> ${sim.w.ci.meter[MONEY] - 1}`);
+    if (sim.w.ci.lives !== lives + 1 || sim.w.ci.meter[MONEY] !== 21)
+      report.push(`shop: buying a 1-Up gave lives ${lives} -> ${sim.w.ci.lives}, credits 120 -> ${sim.w.ci.meter[MONEY] - 1}`);
   }
 }
 console.log(`checked ${checked} scenes`);

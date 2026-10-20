@@ -41,6 +41,24 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       else b = id('bedrock');
       g.set(x, y, b);
     }
+  // reef towers: pillars of rock rising from the floor toward the light, with ledges
+  const trench = floor.indexOf(Math.max(...floor));
+  for (let k = 0; k < 5; k++) {
+    const tx = Math.floor(r() * W);
+    const top = SURFACE + 7 + Math.floor(r() * 12);
+    if (Math.min(Math.abs(tx - trench), W - Math.abs(tx - trench)) < 10) continue;
+    const wdt = 2 + Math.floor(r() * 2);
+    for (let i = 0; i < wdt; i++) {
+      const x = wx(tx + i);
+      for (let y = top + (i === 0 || i === wdt - 1 ? 1 : 0); y < floor[x]; y++) g.set(x, y, pickOne([id('reef:0'), id('reef:1'), id('reef:3'), id('reef:4')]));
+    }
+    // ledges out from the tower every few rows
+    for (let y = top + 3; y < Math.min(...[0, 1].map((i) => floor[wx(tx + i)])) - 2; y += 5 + Math.floor(r() * 3)) {
+      const side = r() < 0.5 ? -1 : wdt;
+      g.set(tx + side, y, id('reef:ledge'));
+      g.set(tx + side + (side < 0 ? -1 : 1), y, id('reef:ledge'));
+    }
+  }
   // clouds and an island or two
   for (let k = 0; k < 6; k++) g.set(Math.floor(r() * W), 3 + Math.floor(r() * 6), id('air:cloud'));
   const islandX = Math.floor(r() * W);

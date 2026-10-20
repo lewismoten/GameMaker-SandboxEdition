@@ -32,7 +32,7 @@ MAP SIZE
 
 MONSTERS PLACED ON A MAP
   Limit: 200
-  Used:  200 in the Maelstrom (every slot: not one left for a shot); 7344 in all
+  Used:  200 in the Maelstrom (every slot: not one left for a shot); 7319 in all
   Where: MAEL.MAP
 
 MONSTERS IN A .MON

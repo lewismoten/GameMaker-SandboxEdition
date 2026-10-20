@@ -293,6 +293,12 @@ export function buildGame(): Built {
   // the Core: maelstrom, citadel, heart
   const citadel = stationPlanet({ seed: 7777, level: 5 }, sets.station);
   populate(citadel.grid, bbl.station, monsters.mech2, spotsOf(citadel), { seed: 77, level: 5, count: 190, species: 6 });
+  {
+    const bad = checkPlanet(citadel, bbl.station, (blk) =>
+      ['door', 'field:on', 'field:off', 'laser:v', 'laser:v0', 'glass', 'plat:off'].some((nm) => sets.station.id(nm) === blk),
+    );
+    if (bad.length) problems.push(`Citadel: ${bad.join(', ')}`);
+  }
   // the citadel's vault holds the way to the Heart instead of a prize
   citadel.grid.set(citadel.vault!.x, citadel.vault!.y, sets.station.id('teleport'), true);
   const heart = heartMap(sets.station, monsters.mech2);
