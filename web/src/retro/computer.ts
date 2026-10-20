@@ -32,7 +32,25 @@ export interface ComputerOptions {
   openModern: (projectId: string, file?: string) => void;
 }
 
-const AUTOEXEC = ['@ECHO OFF', 'PROMPT $P$G', 'PATH C:\\DOS;C:\\GM;C:\\COMM', 'LH C:\\DOS\\DOSKEY', 'LH C:\\DOS\\MOUSE', 'SET BLASTER=A220 I7 D1 T4', 'CD \\'];
+const AUTOEXEC = [
+  '@ECHO OFF',
+  'PROMPT $P$G',
+  'PATH C:\\DOS;C:\\GM;C:\\COMM',
+  'LH C:\\DOS\\MSCDEX.EXE /D:MSCD001 /L:D',
+  'LH C:\\DOS\\DOSKEY',
+  'LH C:\\DOS\\MOUSE',
+  'SET BLASTER=A220 I7 D1 T4',
+  'CD \\',
+];
+const CONFIG_SYS = [
+  'DEVICE=C:\\DOS\\HIMEM.SYS',
+  'DEVICE=C:\\DOS\\EMM386.EXE NOEMS',
+  'DOS=HIGH,UMB',
+  'DEVICEHIGH=C:\\CDROM\\CDROM.SYS /D:MSCD001',
+  'FILES=40',
+  'BUFFERS=20',
+  'STACKS=9,256',
+];
 
 export class Computer implements RetroHost {
   readonly screen: TextScreen;
@@ -110,10 +128,23 @@ export class Computer implements RetroHost {
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
       await sleep(30);
     }
-    s.print('\n\nStarting DOS...\n\n');
+    s.print('\n\nStarting MS-DOS...\n\n');
     await sleep(500);
+    // CONFIG.SYS
+    s.print('HIMEM is testing extended memory...');
+    await sleep(turbo ? 350 : 1100);
+    s.print('done.\n');
+    await sleep(150);
+    s.print('EMM386 successfully installed.\n  Available Upper Memory     :  91 KB\n\n');
+    await sleep(250);
+    s.print('  ATAPI CD-ROM Device Driver  Version 2.14\n  Drive 0: CD-ROM 2X (MSCD001)\n\n');
+    await sleep(turbo ? 400 : 900);
+    // AUTOEXEC.BAT
     for (const l of AUTOEXEC.slice(1)) {
-      if (l.includes('DOSKEY')) s.print('DOSKEY installed.\n');
+      if (l.includes('MSCDEX')) {
+        s.print('MSCDEX Version 2.23\n        Drive D: = Driver MSCD001 unit 0\n');
+        await sleep(300);
+      } else if (l.includes('DOSKEY')) s.print('DOSKEY installed.\n');
       else if (l.includes('MOUSE')) s.print('Mouse driver installed\n');
     }
     s.print('\nType HELP for commands, GM to start Game-Maker, TERMINAL to call the BBS.\n\n');
@@ -205,7 +236,10 @@ export class Computer implements RetroHost {
       label: 'GAMEMAKER',
       free: 48_234_496,
       root: async () => [
-        folder('DOS', () => ['COMMAND.COM', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) => file(n, 20_000 + n.length * 1357))),
+        folder('DOS', () =>
+          ['COMMAND.COM', 'HIMEM.SYS', 'EMM386.EXE', 'MSCDEX.EXE', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) => file(n, 20_000 + n.length * 1357)),
+        ),
+        folder('CDROM', () => [file('CDROM.SYS', 18_432)]),
         liveFolder('GM', () => this.gmFolder(true)),
         folder('COMM', () => [file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }), textFile('PHONE.LST', 'THE -= S A N D B O X =- BBS  412-555-0144  14400 N81  Renegade\nTHE SOFA                     412-555-0177  14400 N81  Major BBS, 8 lines\n')]),
         liveFolder('DOWNLOAD', async () => {
@@ -224,7 +258,7 @@ export class Computer implements RetroHost {
           });
         }),
         textFile('AUTOEXEC.BAT', AUTOEXEC.join('\n') + '\n'),
-        textFile('CONFIG.SYS', 'DEVICE=C:\\DOS\\HIMEM.SYS\nDOS=HIGH,UMB\nFILES=30\nBUFFERS=20\n'),
+        textFile('CONFIG.SYS', CONFIG_SYS.join('\n') + '\n'),
         file('COMMAND.COM', 54_645),
       ],
     });
