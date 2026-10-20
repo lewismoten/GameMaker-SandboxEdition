@@ -183,7 +183,15 @@ export function courier(): CharSet {
   const steps = [5, 5, 4, 5, 5, 4];
   setSeq(c, SEQ.right, { key: 'right', joy: [3, 0], frames: walkPics.map(([t, b], k) => ({ top: t, bottom: b, x: steps[k] })) });
   setSeq(c, SEQ.left, { key: 'left', joy: [7, 0], frames: walkPics.map(([t, b], k) => ({ top: t, bottom: b, x: -steps[k], o: L })) });
-  setSeq(c, SEQ.up, { key: 'up', sound: SND.jump, momentum: true, norepeat: true, joy: [1, 0], frames: [F('jet', { y: -12 }), F('jet2', { pause: 1 })] });
+  setSeq(c, SEQ.up, {
+    key: 'up',
+    sound: SND.jump,
+    momentum: true,
+    norepeat: true,
+    ground: true,
+    joy: [1, 0],
+    frames: [F('jet', { y: -12 }), F('jet2', { pause: 1 })],
+  });
   setSeq(c, SEQ.down, { key: 'down', sound: SND.crouch, momentum: true, joy: [5, 4], frames: ball.map((b) => ({ top: NONE, bottom: b, y: 2, pause: 2 })) });
   weapons(c, (n) => F(poses[n] ? n : n.replace(/2$/, '')));
   setSeq(c, SEQ.dashR, {
@@ -507,6 +515,7 @@ export function vehicle(kind: VehicleKind): CharSet {
     const air = [0, 1, 2].map((k) => one(drawRover({ wheel: k, bounce: -1, spring: k === 1 })));
     setSeq(c, SEQ.up, {
       key: 'up',
+      ground: true,
       sound: SND.jump,
       bloc: itemBlock('spring'),
       momentum: true,

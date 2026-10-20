@@ -71,7 +71,15 @@ export interface SeqSpec {
   uses?: number;
 }
 
+/**
+ * Sequences a key starts and that must finish even if the key is already up: a quick tap
+ * delivers press and release in the same game tick, and PLAYGAME would pop the sequence
+ * again before its first frame. Marking them "ground" (uninterruptible) makes taps count.
+ */
+const TAPS = new Set([3, 4, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19]);
+
 export function setSeq(c: Character, i: number, s: SeqSpec): void {
+  if (s.ground === undefined && TAPS.has(i)) s = { ...s, ground: true };
   if (s.frames.length > MAXFRAME) throw new Error(`Sequence ${i} has ${s.frames.length} frames`);
   const frames = Array.from({ length: MAXFRAME }, (_, k) => (k < s.frames.length ? frame(s.frames[k]) : emptyFrame(true)));
   const seq: Sequence = {
