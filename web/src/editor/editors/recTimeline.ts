@@ -172,6 +172,7 @@ function draw(f: Frame): CapBox[] {
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
   const visibleSegs = map.segs.filter((s) => s.t1 > t0 && s.t0 < t1);
+  let lastLabel = -Infinity;
   for (const s of visibleSegs) {
     if (s.fold) continue;
     const a = Math.max(s.t0, t0);
@@ -182,7 +183,8 @@ function draw(f: Frame): CapBox[] {
       const major = k % 2 === 0;
       ctx.fillStyle = major ? '#6f7bd0' : '#3a4387';
       ctx.fillRect(x, major ? 9 : 14, 1, RULER - (major ? 9 : 14));
-      if (major) {
+      if (major && x > lastLabel + 44 && (f.trimT === undefined || x < X(f.trimT) - 40 || x > X(f.trimT) + 44)) {
+        lastLabel = x;
         ctx.fillStyle = '#9aa6ff';
         ctx.fillText(clock(t, step < 1), x + 3, 7);
         ctx.fillStyle = 'rgba(111,123,208,0.10)';
@@ -208,7 +210,12 @@ function draw(f: Frame): CapBox[] {
     ctx.save();
     ctx.fillStyle = hot ? PLAYHEAD : '#9aa6ff';
     ctx.textAlign = 'center';
-    ctx.fillText(clock(s.t1 - s.t0, false), (xa + xb) / 2, 7);
+    const span = clock(s.t1 - s.t0, false);
+    const tw = ctx.measureText(span).width + 8;
+    ctx.fillStyle = '#151a3d';
+    ctx.fillRect((xa + xb) / 2 - tw / 2, 0, tw, RULER - 1);
+    ctx.fillStyle = hot ? PLAYHEAD : '#9aa6ff';
+    ctx.fillText(span, (xa + xb) / 2, 7);
     ctx.translate((xa + xb) / 2, RULER + (height - RULER) / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText('folded', 0, 0);

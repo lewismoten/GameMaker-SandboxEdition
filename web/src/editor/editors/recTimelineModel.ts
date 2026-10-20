@@ -234,7 +234,10 @@ export function capLabel(scan: number, name: (scan: number) => string): string {
 /** m:ss.s for a tick count. */
 export function clock(ticks: number, tenths = true): string {
   const s = Math.max(0, ticks) / 18.2;
-  const m = Math.floor(s / 60);
-  const r = s - m * 60;
-  return `${m}:${(tenths ? r.toFixed(1) : Math.floor(r).toString()).padStart(tenths ? 4 : 2, '0')}`;
+  if (!tenths) {
+    const r = Math.round(s);
+    return `${Math.floor(r / 60)}:${String(r % 60).padStart(2, '0')}`;
+  }
+  const d = Math.round(s * 10);
+  return `${Math.floor(d / 600)}:${((d % 600) / 10).toFixed(1).padStart(4, '0')}`;
 }
