@@ -1,10 +1,11 @@
 // Sound set editor (SNDEDIT.EXE): 30 effects, each 36 PC speaker frequencies played
 // 1/145.6 s apart, or a Sound Blaster .voc file.
 import { registerEditor } from './index';
-import { h, clear, selectField, numberField, debounce } from '../ui';
+import { h, clear, numberField, debounce } from '../ui';
 import { AudioEngine } from '../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../tools/speakerFx';
+import { fileField } from '../filePicker';
 
 const MAXF = 8192;
 const MINF = 64;
@@ -83,7 +84,6 @@ registerEditor(['snd'], (host, project, file) => {
     canvas.addEventListener('pointerup', () => renderList());
     draw();
 
-    const vocs = project.files.byExtension('voc').map((v) => v.replace(/\.voc$/, ''));
     const digital = snd.digital[current];
     const shape = (fn: (i: number) => number) => {
       for (let i = 0; i < NUMFREQ; i++) f[i] = Math.max(0, Math.min(MAXF, Math.round(fn(i))));
@@ -104,15 +104,18 @@ registerEditor(['snd'], (host, project, file) => {
       h(
         'div',
         { class: 'panel stack' },
-        selectField(
+        fileField(
+          project,
           'Sound Blaster sample (.voc)',
-          [['', 'None — use the PC speaker'], ...vocs.map((v) => [v, `${v}.voc`] as [string, string]), ...(digital && !vocs.includes(digital) ? [[digital, `${digital}.voc (missing)`] as [string, string]] : [])],
-          () => digital,
+          ['voc'],
+          () => (digital ? `${digital.trim().toLowerCase()}.voc` : ''),
           (v) => {
-            snd.digital[current] = v.slice(0, 8);
+            snd.digital[current] = v.replace(/\.voc$/, '').slice(0, 8);
             save();
             renderList();
+            renderDetail();
           },
+          { noneLabel: ['PC speaker only', 'play the PC speaker sound below'] },
         ),
         h('div', { class: 'toolbar' }, h('button', { class: 'primary', onclick: () => void play(current) }, '▶ Play')),
       ),
