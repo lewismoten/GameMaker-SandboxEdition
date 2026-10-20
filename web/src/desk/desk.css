@@ -1,0 +1,727 @@
+/* The mid-90s desk: wall, desk top, PC, disk box, Game-Maker CD and shareware catalog. */
+
+.desk {
+  --plastic: #d8d0b8;
+  --plastic-hi: #ece6d3;
+  --plastic-lo: #b3aa90;
+  --plastic-edge: #8f8770;
+  --wood-a: #6b4626;
+  --wood-b: #7d5530;
+  --glass: #0a0d0b;
+  --led-green: #43ff6a;
+  --led-amber: #ffb000;
+  --led-red: #ff3b30;
+  --paper: #f3eedc;
+  --ink: #1d1a14;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #f4f1e6;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%),
+    repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px),
+    #465063;
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+/* the desk top */
+.desk::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38%;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(176deg, rgba(0, 0, 0, 0.08) 0 3px, transparent 3px 11px),
+    linear-gradient(180deg, #5a3a1f 0, var(--wood-b) 6px, var(--wood-a) 100%);
+  box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.45);
+}
+
+.desk-bar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.desk-bar h1 {
+  margin: 0;
+  font: 700 16px/1 ui-monospace, 'Courier New', monospace;
+  letter-spacing: 0.25em;
+  color: #ffd400;
+  text-shadow: 0 2px 0 #000;
+}
+
+.desk-bar .spacer {
+  flex: 1;
+}
+
+.desk-bar button,
+.desk-overlay button {
+  padding: 7px 12px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.desk-bar button.primary,
+.desk-overlay button.primary {
+  background: linear-gradient(#3e63e0, #2342b8);
+  border-color: #1b318a;
+  color: #fff;
+}
+
+.desk-scene {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 16px 48px;
+}
+
+.desk-left,
+.desk-right {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  padding-bottom: 28px;
+}
+
+.desk-left {
+  justify-content: flex-end;
+}
+
+.desk-right {
+  justify-content: flex-start;
+}
+
+/* ---- the PC ----------------------------------------------------------------------- */
+
+.pc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(680px, 92vw);
+}
+
+.monitor {
+  position: relative;
+  width: 92%;
+  padding: 5.5% 5.5% 9%;
+  border-radius: 22px 22px 16px 16px;
+  background: linear-gradient(160deg, var(--plastic-hi), var(--plastic) 40%, var(--plastic-lo));
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -4px 0 var(--plastic-edge),
+    0 18px 30px rgba(0, 0, 0, 0.45);
+}
+
+.monitor .brand {
+  position: absolute;
+  left: 7%;
+  bottom: 3%;
+  font: 700 11px/1 ui-monospace, monospace;
+  letter-spacing: 0.3em;
+  color: #6d6553;
+}
+
+.monitor .monitor-led {
+  position: absolute;
+  right: 8%;
+  bottom: 3.6%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #253;
+}
+
+.desk[data-power='on'] .monitor .monitor-led {
+  background: var(--led-green);
+  box-shadow: 0 0 8px var(--led-green);
+}
+
+.screen-bezel {
+  position: relative;
+  padding: 3.5%;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #4c473c, #2e2a22);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+
+.crt {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 18px / 22px;
+  background: var(--glass);
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px #000;
+  cursor: text;
+}
+
+.crt canvas.crt-text {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  outline: none;
+  filter: saturate(1.15) contrast(1.05);
+}
+
+.desk[data-power='off'] .crt canvas.crt-text {
+  opacity: 0;
+}
+
+.crt .crt-layer {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+/* scanlines and glass glare */
+.crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 90% at 30% 15%, rgba(255, 255, 255, 0.09), transparent 45%);
+  z-index: 3;
+}
+
+.crt .power-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c7d70;
+  font: 15px ui-monospace, monospace;
+  z-index: 2;
+}
+
+.desk[data-power='on'] .crt .power-hint {
+  display: none;
+}
+
+.crt-game {
+  width: 100%;
+  height: 100%;
+}
+
+.monitor-stand {
+  width: 30%;
+  height: 22px;
+  margin-top: -2px;
+  background: linear-gradient(var(--plastic-lo), var(--plastic-edge));
+  clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+}
+
+/* desktop case under the monitor */
+.case {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--plastic-hi), var(--plastic) 50%, var(--plastic-lo));
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -3px 0 var(--plastic-edge),
+    0 14px 22px rgba(0, 0, 0, 0.5);
+  color: #3c372b;
+}
+
+.case-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.case button.case-btn {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 4px;
+  background: linear-gradient(#f1ecdc, #c9c0a5);
+  box-shadow: 0 2px 0 var(--plastic-edge);
+  font: 700 9px/1 system-ui, sans-serif;
+  color: #3c372b;
+  cursor: pointer;
+}
+
+.case button.case-btn:active,
+.case button.case-btn[aria-pressed='true'] {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 var(--plastic-edge);
+}
+
+.leds {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font: 600 9px/1 system-ui, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.led {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: #333;
+  vertical-align: middle;
+}
+
+.led.on.green {
+  background: var(--led-green);
+  box-shadow: 0 0 6px var(--led-green);
+}
+
+.led.on.amber {
+  background: var(--led-amber);
+  box-shadow: 0 0 6px var(--led-amber);
+}
+
+.mhz {
+  padding: 3px 6px;
+  border-radius: 3px;
+  background: #160404;
+  color: var(--led-red);
+  font: 700 18px/1 ui-monospace, 'Courier New', monospace;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 6px var(--led-red);
+  min-width: 2.6em;
+  text-align: center;
+}
+
+.drives {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-self: end;
+}
+
+.drive {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 210px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 3px;
+  background: linear-gradient(#c7bfa5, #e2dbc6);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+  font: 600 9px/1 system-ui, sans-serif;
+}
+
+.drive .slot {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: #1c1a15;
+}
+
+.drive.floppy[data-disk]::before {
+  content: attr(data-disk);
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: -9px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 2px 2px 0 0;
+  background: var(--disk-color, #222);
+  color: #fff;
+  font: 600 7px/10px system-ui, sans-serif;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.drive button {
+  padding: 2px 5px;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 2px;
+  background: #e7e0cb;
+  font: 600 8px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.keyboard {
+  width: 96%;
+  height: 46px;
+  margin-top: 16px;
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 4px, rgba(0, 0, 0, 0.18) 4px 5px, transparent 5px 26px),
+    repeating-linear-gradient(180deg, var(--plastic-hi) 0 9px, var(--plastic-lo) 9px 11px),
+    var(--plastic);
+  box-shadow: 0 10px 16px rgba(0, 0, 0, 0.45);
+  transform: perspective(500px) rotateX(38deg);
+  cursor: pointer;
+}
+
+/* ---- props on the desk -------------------------------------------------------------- */
+
+.prop {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.prop:hover,
+.prop:focus-visible {
+  transform: translateY(-6px) rotate(var(--tilt, 0deg));
+}
+
+.prop .caption {
+  display: block;
+  margin-top: 8px;
+  font: 600 12px/1.2 system-ui, sans-serif;
+  color: #f4ead2;
+  text-shadow: 0 1px 2px #000;
+  text-align: center;
+}
+
+/* smoked plastic floppy box */
+.disk-box {
+  --tilt: -2deg;
+  width: 170px;
+}
+
+.disk-box .box {
+  position: relative;
+  height: 150px;
+  border-radius: 6px;
+  background: linear-gradient(160deg, rgba(60, 60, 70, 0.75), rgba(25, 25, 30, 0.85));
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.15),
+    0 12px 18px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.disk-box .box .peek {
+  position: absolute;
+  bottom: 8px;
+  width: 112px;
+  height: 118px;
+  border-radius: 4px 12px 4px 4px;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.disk-box .lid {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 36px;
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* the Game-Maker CD jewel case */
+.cd-case {
+  --tilt: 3deg;
+  width: 150px;
+}
+
+.cd-case .jewel {
+  position: relative;
+  height: 140px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: linear-gradient(140deg, #000080, #1d1d9a 55%, #000050);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.35),
+    inset 10px 0 0 rgba(255, 255, 255, 0.08),
+    0 12px 18px rgba(0, 0, 0, 0.5);
+}
+
+.cd-case .jewel .art {
+  position: absolute;
+  inset: 12px 10px 10px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #ffd400;
+  text-align: center;
+}
+
+.cd-case .jewel .art strong {
+  font: 700 17px/1 ui-monospace, 'Courier New', monospace;
+  letter-spacing: 0.12em;
+  text-shadow: 2px 2px 0 #b00000;
+}
+
+.cd-case .jewel .art small {
+  color: #fff;
+  font: 600 9px/1.3 system-ui, sans-serif;
+}
+
+.cd-case .jewel .disc {
+  position: absolute;
+  right: -40px;
+  bottom: -40px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: conic-gradient(from 30deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
+  opacity: 0.55;
+}
+
+/* stapled shareware catalog */
+.catalog-prop {
+  --tilt: -4deg;
+  width: 140px;
+}
+
+.catalog-prop .paper {
+  height: 170px;
+  padding: 14px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    4px 4px 0 #ddd6bf,
+    8px 8px 0 #cfc8af,
+    0 12px 18px rgba(0, 0, 0, 0.45);
+  font: 700 13px/1.15 'Courier New', ui-monospace, monospace;
+  text-align: left;
+}
+
+.catalog-prop .paper em {
+  display: block;
+  margin-top: 8px;
+  font: 400 10px/1.3 'Courier New', monospace;
+}
+
+.catalog-prop .paper::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  width: 14px;
+  height: 3px;
+  background: #999;
+  box-shadow: 0 120px 0 #999;
+}
+
+/* sticky note switching to today's web */
+.sticky {
+  position: absolute;
+  right: -46px;
+  top: 30px;
+  z-index: 4;
+  width: 110px;
+  padding: 10px;
+  border: 0;
+  background: #ffe86b;
+  color: #3a3100;
+  box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.35);
+  transform: rotate(6deg);
+  font: 700 13px/1.2 'Comic Sans MS', 'Marker Felt', cursive;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sticky:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+/* ---- zoomed screen (graphic designers, full screen games) ----------------------------- */
+
+.desk[data-zoom='true'] .crt {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+.desk[data-zoom='true'] .crt::after {
+  display: none;
+}
+
+.desk .zoom-exit {
+  display: none;
+}
+
+.desk[data-zoom='true'] .zoom-exit {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 61;
+  display: block;
+}
+
+/* graphic designers shown "in VGA" on the PC */
+.vga-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #000;
+  color: #c8c8c8;
+}
+
+.vga-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: #840000;
+  color: #fff;
+  font: 700 13px/1.4 ui-monospace, 'Courier New', monospace;
+  letter-spacing: 0.06em;
+}
+
+.vga-titlebar .spacer {
+  flex: 1;
+}
+
+.vga-titlebar button {
+  padding: 2px 8px;
+  border: 2px outset #d0d0d0;
+  border-radius: 0;
+  background: #b8b8b8;
+  color: #000;
+  font: 700 12px ui-monospace, monospace;
+  cursor: pointer;
+}
+
+.vga-body {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  /* Game-Maker's FACELIFT greys for the designers' surfaces */
+  --bg: #000;
+  --panel: #858585;
+  --panel-2: #707070;
+  --text: #000;
+  --muted: #1d1d1d;
+  --border: #4a4a4a;
+  --accent: #ae0000;
+  --accent-text: #fff;
+  --accent-soft: #b9b9b9;
+  --focus: #ffd400;
+  background: #000;
+  color: #000;
+  font: 13px/1.35 ui-monospace, 'Courier New', monospace;
+}
+
+.vga-body .hint {
+  color: #c8c8c8;
+}
+
+.vga-body .panel,
+.vga-body .block-picker,
+.vga-body .swatches {
+  border: 3px outset #b0b0b0;
+  border-radius: 0;
+  background: var(--panel);
+}
+
+.vga-body button {
+  border: 2px outset #d0d0d0;
+  border-radius: 0;
+  background: #b4b4b4;
+  color: #000;
+}
+
+.vga-body button.primary {
+  background: #ae0000;
+  color: #fff;
+}
+
+.vga-body input,
+.vga-body select,
+.vga-body textarea {
+  border: 2px inset #9a9a9a;
+  border-radius: 0;
+  background: #d8d8d8;
+  color: #000;
+}
+
+/* ---- overlays (disk box, catalog) --------------------------------------------------- */
+
+.desk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px;
+  background: rgba(10, 8, 6, 0.82);
+  color: #f4ead2;
+}
+
+.desk-overlay .close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+@media (max-width: 960px) {
+  .desk-scene {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .desk-left,
+  .desk-right {
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
+  .desk-left {
+    order: 2;
+  }
+  .desk-right {
+    order: 3;
+  }
+  .sticky {
+    right: 0;
+    top: -12px;
+  }
+  .drive {
+    width: 150px;
+  }
+}
+
+@media (max-width: 560px) {
+  .case {
+    grid-template-columns: 1fr 1fr;
+  }
+  .drives {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+  .drive {
+    width: auto;
+  }
+}
