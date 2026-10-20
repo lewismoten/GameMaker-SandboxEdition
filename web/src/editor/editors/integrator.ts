@@ -2,7 +2,8 @@
 import { registerEditor } from './index';
 import { h, clear, selectField, textField, numberField, modal, confirmDialog } from '../ui';
 import { blockImages } from '../draw';
-import type { Project } from '../project';
+import type { FileKind, Project } from '../project';
+import { fileField } from '../filePicker';
 import {
   ADVTYPE,
   ENDTYPE,
@@ -178,11 +179,7 @@ registerEditor(['gam'], (host, project) => {
     return [[NOSCENE, '— no link —'], ...game.scenes.map((s, i) => [i, `${i}: ${s.desc || '(untitled)'}`] as [number, string]).filter(([i]) => game.scenes[i].gametype !== NOSCENE)];
   }
 
-  function fileOptions(ext: string): [string, string][] {
-    const exts = ext === 'graphic' ? GRAPHIC_EXTS : [ext];
-    const names = project.files.names().filter((n) => exts.some((e) => n.endsWith(`.${e}`)));
-    return [['', '— none —'], ...names.map((n) => [n, n] as [string, string])];
-  }
+
 
   function renderPanel(): void {
     const s = game.scenes[selected];
@@ -255,7 +252,9 @@ registerEditor(['gam'], (host, project) => {
         'div',
         { class: 'panel' },
         h('h3', { style: 'margin-top:0' }, 'Files'),
-        h('div', { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(190px,1fr))' }, ...slots.map((label, i) => selectField(label, fileOptions(exts[i]), () => s.files[i] ?? '', (v) => ((s.files[i] = v), save())))),
+        h('div', { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(190px,1fr))' }, ...slots.map((label, i) =>
+          fileField(project, label, (exts[i] === 'graphic' ? GRAPHIC_EXTS : [exts[i]]) as FileKind[], () => s.files[i] ?? '', (v) => ((s.files[i] = v), save())),
+        )),
       ),
       kind === 'adventure'
         ? h(
