@@ -343,44 +343,63 @@
 
 .case-buttons {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* a button with its name printed on the case under it */
+.case-buttons label {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 4px;
+  font: 700 7.5px/1 system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  color: #5a5240;
 }
 
 .case button.case-btn {
   position: relative;
-  width: 44px;
-  height: 26px;
+  width: 34px;
+  height: 22px;
+  padding: 0;
   border: 1px solid var(--plastic-edge);
-  border-radius: 4px;
-  background: linear-gradient(#f1ecdc, #c9c0a5);
-  box-shadow: 0 2px 0 var(--plastic-edge);
-  font: 700 9px/1 system-ui, sans-serif;
-  color: #3c372b;
+  border-radius: 3px;
+  background: linear-gradient(#f4efe0, #cbc2a8);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 3px 0 var(--plastic-edge),
+    0 4px 3px rgba(0, 0, 0, 0.25);
+  font: 700 12px/1 system-ui, sans-serif;
+  color: #6a624e;
   cursor: pointer;
 }
 
 .case button.case-btn:active,
 .case button.case-btn[aria-pressed='true'] {
   transform: translateY(2px);
-  box-shadow: 0 0 0 var(--plastic-edge);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 1px 0 var(--plastic-edge);
 }
 
 .leds {
   display: flex;
   gap: 12px;
   align-items: center;
-  font: 600 9px/1 system-ui, sans-serif;
+  font: 600 8px/1 system-ui, sans-serif;
   letter-spacing: 0.05em;
+  color: #5a5240;
 }
 
 .led {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   margin-right: 4px;
   border-radius: 50%;
-  background: #333;
+  background: #3b3a31;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
   vertical-align: middle;
 }
 
@@ -394,74 +413,241 @@
   box-shadow: 0 0 6px var(--led-amber);
 }
 
+/* the MHz readout: a seven-segment LED behind a dark red window */
 .mhz {
-  padding: 3px 6px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 4px 5px 3px;
   border-radius: 3px;
-  background: #160404;
-  color: var(--led-red);
-  font: 700 18px/1 ui-monospace, 'Courier New', monospace;
-  letter-spacing: 0.08em;
-  text-shadow: 0 0 6px var(--led-red);
-  min-width: 2.6em;
-  text-align: center;
+  background: linear-gradient(#1a0503, #0d0201);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.mhz small {
+  font: 700 6px/1 system-ui, sans-serif;
+  color: #5c1610;
+}
+
+.seg-display {
+  display: block;
+  height: 22px;
+}
+
+.seg-display svg {
+  display: block;
+  height: 100%;
+}
+
+.seg-display polygon {
+  fill: #2e0805;
+}
+
+.seg-display.lit polygon {
+  fill: #3a0b07;
+}
+
+.seg-display.lit polygon.on {
+  fill: #ff3b2b;
+}
+
+.seg-display.lit svg {
+  filter: drop-shadow(0 0 2px rgba(255, 50, 30, 0.9)) drop-shadow(0 0 5px rgba(255, 40, 20, 0.5));
 }
 
 .drives {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   justify-self: end;
 }
 
 .drive {
   position: relative;
-  display: flex;
+  width: 230px;
+  border: 1px solid #a99f86;
+  border-radius: 2px;
+  background: linear-gradient(#e6dfca, #cfc7ae);
+  box-shadow:
+    inset 0 1px 0 #fff9,
+    0 1px 0 #fff8,
+    inset 0 -1px 0 #9d947b;
+  font: 700 7px/1 system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  color: #5a5240;
+}
+
+.drive .bay-label {
+  font-size: 8px;
+}
+
+.drive-led {
+  width: 8px;
+  height: 3px;
+  border-radius: 1px;
+  background: #24331f;
+}
+
+.drive-led.on {
+  background: var(--led-green);
+  box-shadow: 0 0 5px var(--led-green);
+}
+
+.drive-led.amber.on {
+  background: var(--led-amber);
+  box-shadow: 0 0 5px var(--led-amber);
+}
+
+.eject-btn {
+  width: 16px;
+  height: 7px;
+  padding: 0;
+  border: 1px solid #9d947b;
+  border-radius: 2px;
+  background: linear-gradient(#f2ecdb, #c8bfa5);
+  box-shadow: 0 1px 0 #8f8770;
+  cursor: pointer;
+}
+
+.eject-btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.eject-btn.wide {
+  width: 26px;
+}
+
+/* 3.5" floppy: a dark slot behind a spring flap, the light at left, eject at right */
+.drive.fdd {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto;
   align-items: center;
   gap: 8px;
-  width: 220px;
-  height: 28px;
-  padding: 0 8px;
-  border: 1px solid #a99f86;
-  border-radius: 3px;
-  background: linear-gradient(#c7bfa5, #e2dbc6);
-  box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.35),
-    0 1px 0 #fff8;
-  font: 600 9px/1 system-ui, sans-serif;
+  height: 26px;
+  padding: 0 10px;
 }
 
-.drive .slot {
-  flex: 1;
-  height: 4px;
+.drive.fdd .slot {
+  position: relative;
+  height: 9px;
   border-radius: 2px;
-  background: #1c1a15;
-}
-
-.drive.floppy[data-disk]::before,
-.drive.cdrom[data-disk]::before {
-  content: attr(data-disk);
-  position: absolute;
-  left: 28px;
-  right: 58px;
-  top: 7px;
-  height: 14px;
+  background: #15130f;
+  box-shadow: inset 0 2px 2px #000;
   overflow: hidden;
-  border-radius: 2px;
-  background: var(--disk-color, #222);
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35);
-  color: #fff;
-  font: 600 9px/12px system-ui, sans-serif;
-  text-align: center;
-  white-space: nowrap;
 }
 
-.drive button {
-  padding: 2px 5px;
-  border: 1px solid var(--plastic-edge);
-  border-radius: 2px;
-  background: #e7e0cb;
-  font: 600 8px/1 system-ui, sans-serif;
-  cursor: pointer;
+.drive.fdd .flap {
+  position: absolute;
+  inset: 1px 2px 2px;
+  border-radius: 1px;
+  background: linear-gradient(#3d3a32, #24221d);
+  transition: transform 0.2s;
+  transform-origin: top;
+}
+
+/* a disk in the drive: the flap is pushed in, showing the disk's edge */
+.drive.fdd[data-disk] .flap {
+  transform: scaleY(0.25);
+}
+
+.drive.fdd[data-disk] .slot {
+  background: linear-gradient(transparent 55%, var(--disk-color, #222) 55%);
+}
+
+.drive.fdd .eject-btn {
+  align-self: end;
+  margin-bottom: 5px;
+}
+
+.drive.fdd .capacity {
+  font-size: 6px;
+}
+
+/* CD-ROM: a tray across the front; the controls and the eject button under it */
+.drive.cdrom {
+  height: 38px;
+  padding: 5px 8px 4px;
+}
+
+.drive.cdrom .tray {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 14px;
+  padding: 0 8px;
+  border-radius: 1px;
+  background: linear-gradient(#d9d1ba, #c3bba1);
+  box-shadow:
+    inset 0 1px 0 #f4efe0,
+    inset 0 -1px 0 #8f8770,
+    0 1px 0 #8f8770;
+  transition: transform 0.6s ease;
+}
+
+.cd-logo {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font: italic 700 5px/1 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  color: #3f392c;
+}
+
+.cd-logo b {
+  font: italic 900 8px/1 Georgia, serif;
+}
+
+.cd-logo small {
+  font-size: 4px;
+}
+
+/* the tray slides out toward you */
+.drive.cdrom.open .tray {
+  transform: translateY(5px) scaleX(0.97);
+  box-shadow:
+    inset 0 1px 0 #f4efe0,
+    0 8px 0 #b7af95,
+    0 9px 4px rgba(0, 0, 0, 0.35);
+}
+
+.cd-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.cd-controls .spacer {
+  flex: 1;
+}
+
+.cd-controls .jack {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #111 35%, #8a826b 40%, #c9c0a5 70%);
+}
+
+.cd-controls .volume {
+  width: 18px;
+  height: 7px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #6b6450 0 1px, #b8af95 1px 3px);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* the CD rests in its box until it is in the drive */
+.gm-box.cd-in .cd-disc {
+  opacity: 0;
+  transform: translateX(30px) scale(0.6);
+}
+
+.gm-box .cd-disc {
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
 }
 
 /* buttons for the disk in drive A:, hanging under the drive */

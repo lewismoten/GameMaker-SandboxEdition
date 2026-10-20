@@ -9,6 +9,7 @@ import { openCatalog } from './catalog';
 import { openDosManual } from '../manual/dosManual';
 import { renderShot } from './boxArt';
 import { installCrtWarp } from './crtWarp';
+import { sevenSegment, floppyDrive, cdDrive, openTray } from './caseParts';
 import { snowyWindow } from './snowWindow';
 import { loadCatalog } from '../project/files';
 import { Project } from '../editor/project';
@@ -51,15 +52,15 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   let lastDisk: string | undefined;
 
   const crt = h('div', { class: 'crt', role: 'region', 'aria-label': 'Computer monitor' }, h('div', { class: 'power-hint' }, 'Press the power button ⏻'));
-  const floppyDrive = h('div', { class: 'drive floppy', title: 'Drive A: (3.5" 1.44 MB)' }, h('span', null, 'A:'), h('span', { class: 'slot' }), h('button', { onclick: () => eject() }, 'EJECT'));
+  const floppy = floppyDrive(() => eject());
   // What you can do with the disk in drive A: (shown only while there is one).
   const driveActions = h('div', { class: 'drive-actions', hidden: true });
-  const cdDrive = h('div', { class: 'drive cdrom', title: 'Drive D: (CD-ROM)' }, h('span', null, 'D:'), h('span', { class: 'slot' }), h('span', null, 'CD-ROM'));
+  const cd = cdDrive(() => void ejectCd());
   const powerLed = h('span', { class: 'led green' });
   const turboLed = h('span', { class: 'led amber' });
-  const mhz = h('span', { class: 'mhz' });
-  const powerBtn = h('button', { class: 'case-btn', 'aria-label': 'Power', 'aria-pressed': 'false', onclick: () => void power() }, 'POWER');
-  const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) }, 'TURBO');
+  const mhz = sevenSegment(2);
+  const powerBtn = h('button', { class: 'case-btn power', 'aria-label': 'Power', 'aria-pressed': 'false', onclick: () => void power() }, '⏻');
+  const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) });
   const box = h('div', { class: 'box' });
   // Captions from the real box; pictures from the sample games' own maps.
   const BOX_TILES: [string, string][] = [
@@ -127,10 +128,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         h(
           'div',
           { class: 'case' },
-          h('div', { class: 'case-buttons' }, powerBtn, turboBtn),
-          h('div', { class: 'leds' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), mhz),
+          h('div', { class: 'case-buttons' }, h('label', null, powerBtn, 'POWER'), h('label', null, turboBtn, 'TURBO')),
+          h('div', { class: 'leds' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz'))),
           h('span'),
-          h('div', { class: 'drives' }, floppyDrive, cdDrive),
+          h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
         h('div', { class: 'keyboard', title: 'Keyboard: click, then type', onclick: () => void power(true) }),
@@ -200,7 +201,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     }
     turboBtn.setAttribute('aria-pressed', String(on));
     turboLed.classList.toggle('on', on && computer.powered);
-    mhz.textContent = computer.powered ? (on ? '66' : '8') : '';
+    mhz.show(computer.powered ? (on ? '66' : '8') : '');
   }
 
   async function power(onlyOn = false): Promise<void> {
@@ -250,12 +251,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     inDrive = d;
     driveActions.hidden = !d;
     if (!d) {
-      delete floppyDrive.dataset.disk;
+      floppy.setDisk(undefined);
       clear(driveActions);
       return;
     }
-    floppyDrive.dataset.disk = d.kind === 'blank' ? 'blank disk' : d.title;
-    floppyDrive.style.setProperty('--disk-color', d.color);
+    floppy.setDisk(d.kind === 'blank' ? 'blank disk' : d.title, d.color);
+    floppy.busy();
     const act = (a: DiskAction) => () => void onDisk(d, a);
     clear(
       driveActions,
@@ -317,9 +318,26 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   async function startGameMaker(): Promise<void> {
-    computer.insertCd();
-    cdDrive.dataset.disk = 'Game-Maker 3.0';
+    if (!computer.cdInserted) {
+      await openTray(cd);
+      computer.insertCd();
+      cd.setDisc('Game-Maker 3.0');
+      desk.querySelector('.gm-box')?.classList.add('cd-in');
+    }
+    cd.busy();
     await command('GM');
+  }
+
+  /** The CD-ROM's eject button: out comes the tray (and the Game-Maker CD, back to its box). */
+  async function ejectCd(): Promise<void> {
+    if (computer.busy && computer.cdInserted) {
+      toast('The CD-ROM is in use — quit the running program first.');
+      return;
+    }
+    computer.ejectCd();
+    cd.setDisc(undefined);
+    desk.querySelector('.gm-box')?.classList.remove('cd-in');
+    await openTray(cd);
   }
 
   async function catalog(): Promise<void> {
