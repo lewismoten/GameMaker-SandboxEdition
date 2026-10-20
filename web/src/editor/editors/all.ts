@@ -5,3 +5,4 @@ import './blocks';
 import './map';
 import './integrator';
 import './monsters';
+import './character';
