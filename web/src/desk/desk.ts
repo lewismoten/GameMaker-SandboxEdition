@@ -156,6 +156,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     speed,
     openModern: (projectId, file) => nav.toModern(projectId, file),
     // The designers take the whole window; afterwards, go back to how the user had it.
+    // vga stays in the monitor like the real thing.
     onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
   });

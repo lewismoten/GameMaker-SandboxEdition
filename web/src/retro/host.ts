@@ -1,4 +1,5 @@
 // What programs running on the retro PC (Game-Maker, the BBS terminal, games) can use.
+import type { Vga } from '../vga/vga';
 import type { Ui } from './textUi';
 import type { Disk } from './disks';
 import type { GameFiles, CatalogEntry } from '../project/files';
@@ -31,6 +32,10 @@ export interface RetroHost extends Ui {
    * and offers to copy write-protected originals. Undefined if the user declined.
    */
   writableProject(): Promise<Project | undefined>;
+  /** Switches to 320x200 VGA graphics (mode 13h) for a designer. */
+  graphMode(): Vga;
+  /** Back to text mode, with a blank screen. */
+  textMode(): void;
   /** Shows a graphic editor on the monitor; resolves when the user leaves it. */
   openEditor(project: Project, file: string, program: string): Promise<void>;
   /** Plays a game on the monitor; resolves when the player quits. */

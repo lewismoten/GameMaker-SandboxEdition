@@ -17,11 +17,13 @@ import { loadProject } from '../project/storage';
 import { Project } from '../editor/project';
 import { editors, fileInfo } from '../editor/editors';
 import { kindOf } from '../editor/project';
+import { Vga } from '../vga/vga';
 import { h, clear, download } from '../editor/ui';
 import type { SpeedSetting } from '../engine/scene';
 import type { GmInstallEntry } from '../../scripts/cdGames';
 
-export type MonitorMode = 'off' | 'text' | 'game' | 'gfx';
+/** gfx: today's editors full screen; vga: the designers' own 320x200 graphics. */
+export type MonitorMode = 'off' | 'text' | 'game' | 'gfx' | 'vga';
 
 export interface ComputerOptions {
   speed: SpeedSetting;
@@ -42,6 +44,7 @@ export class Computer implements RetroHost {
   private cdIn = false;
   private textEl: HTMLCanvasElement;
   private layer: HTMLElement;
+  private vgaScreen?: Vga;
   private mode: MonitorMode = 'off';
   private catalogCache?: Promise<CatalogEntry[]>;
   private gmIndex?: Promise<GmInstallEntry[]>;
@@ -394,6 +397,32 @@ export class Computer implements RetroHost {
       const editor = editors[kindOf(fileName)] ?? fileInfo;
       cleanup = editor(body, project, fileName);
     });
+  }
+
+  /** Switches the monitor to VGA mode 13h (clearing video memory, as setting the mode did). */
+  graphMode(): Vga {
+    this.keys.enabled = false;
+    if (this.vgaScreen) this.vgaScreen.mem.fill(0);
+    else {
+      const holder = h('div', { class: 'crt-vga' });
+      clear(this.layer, holder);
+      this.vgaScreen = new Vga(holder);
+    }
+    this.setMode('vga');
+    this.vgaScreen.canvas.focus();
+    return this.vgaScreen;
+  }
+
+  /** Back to 80x25 text mode: a blank screen in Game-Maker's text colors. */
+  textMode(): void {
+    this.vgaScreen?.destroy();
+    this.vgaScreen = undefined;
+    clear(this.layer);
+    this.screen.gameMakerColors();
+    this.screen.clear(attr(7, 0));
+    this.keys.enabled = true;
+    this.keys.clear();
+    this.setMode('text');
   }
 
   openModern(projectId: string, fileName?: string): void {
