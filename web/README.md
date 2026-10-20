@@ -81,6 +81,23 @@ to look the way they did, from the original source and files.
   with screen shots drawn by the same text-mode screen (`src/manual`). It can be
   printed. Today's web interface has its own guide at `#/help`.
 
+## Original games
+
+`../games` holds three new games made with Game-Maker's formats, published as shareware
+by "Sandbox Software" (1995). Each is built in code by its `build.ts` with the format
+encoders and `games/kit`, into a `disk/` folder that the site serves like the CD's
+shareware, with box art, a printed label and a manual from `about.json`/`manual.json`.
+
+- **Snowbound: The $89 Shovel** (Sound Blaster): shovel driveways in Fort Ashby, WV,
+  in the winter of 1992 to earn the $89 for Game-Maker.
+- **Sandcastle Knight** (PC speaker only): a tin knight rebuilds the sandcastles a cat
+  flattened, with a secret THE -= S A N D B O X =- BBS room.
+- **Maximus: The Hundred Worlds** (Sound Blaster): the limits test — 100 scenes, every
+  block and monster slot, 200 monsters on a map, all 20 character sequences and 30
+  sounds; `LIMITS.TXT` on its disk lists each limit and how close it gets.
+
+Rebuild one with `cd web && npx vite-node ../games/<id>/build.ts`.
+
 ## Running it
 
 ```sh
