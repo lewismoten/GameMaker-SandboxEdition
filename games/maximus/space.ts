@@ -369,6 +369,54 @@ export function spaceSet(): SetBuilder {
   s.add('signal:1', signal(1), { next: 'signal:0', ntime: 6 });
   for (let k = 0; k < 3; k++) s.add(`debris:${k}`, debris(900 + k));
   s.add('comet', comet());
+  const buoy = (f: number) => {
+    const p = voidBg(820, 1);
+    shade(p, new Mask().rect(8, 6, 4, 10).ellipse(10, 6, 3, 2), shared.get('metal')!.slice(1, 6));
+    p.line(10, 6, 10, 1, shared.get('metal')![4]);
+    fill(p, new Mask().ellipse(10, 1.5, 1.5 + f, 1.5 + f), f ? S('heart', 3) : S('heart', 1));
+    p.rect(6, 15, 8, 2, shared.get('metal')![2]);
+    return p;
+  };
+  s.add('buoy:0', buoy(0), { next: 'buoy:1', ntime: 9 });
+  s.add('buoy:1', buoy(1), { next: 'buoy:0', ntime: 9 });
+  s.add(
+    'satellite',
+    over(
+      voidBg(821, 2),
+      (() => {
+        const p = sprite();
+        shade(p, new Mask().rect(8, 7, 4, 6), shared.get('metal')!.slice(2));
+        for (const x of [1, 13]) {
+          p.rect(x, 8, 6, 4, R('glow')[1]);
+          for (let i = 0; i < 6; i += 2) p.rect(x + i, 8, 1, 4, OUTLINE);
+        }
+        p.line(10, 7, 12, 3, shared.get('metal')![4]);
+        return outline(p, OUTLINE);
+      })(),
+    ),
+  );
+  s.add(
+    'wreck',
+    over(
+      voidBg(822, 1),
+      (() => {
+        const p = sprite();
+        shade(
+          p,
+          new Mask().poly([
+            [2, 12],
+            [12, 6],
+            [18, 9],
+            [9, 16],
+          ]),
+          R('tech').slice(1),
+        );
+        p.line(12, 6, 15, 2, R('tech')[4]);
+        for (let i = 0; i < 4; i++) p.set(6 + i * 3, 11, R('glow')[i % 2 ? 1 : 3]);
+        return outline(p, OUTLINE);
+      })(),
+    ),
+  );
   s.add('barrier:open', gate(-1));
   // drifting currents (gravity in space: solar wind pushes the pod)
   s.add(

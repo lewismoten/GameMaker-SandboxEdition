@@ -110,6 +110,8 @@ export function galaxyMap(s: SetBuilder): GalaxyResult {
   const dock = { x: hx, y: hy - 2 };
   const arriveHome = { x: hx, y: hy - 5 };
   g.set(hx + 1, hy - 2, s.id('hull:2'), true);
+  g.set(hx - 4, hy - 3, s.id('buoy:0'), true);
+  g.set(hx + 4, hy - 3, s.id('buoy:0'), true);
   // a trading post beside it
   WARES.forEach((w, k) => g.set(hx - 3 + k, hy + 3, s.id(`buy:${w.id}`), true));
 
@@ -249,9 +251,13 @@ export function sectorMap(s: SetBuilder, seed: number, count: number, designs: n
   }
   for (const p of open.slice(26, 40)) g.set(p.x, p.y, s.id('mine'));
   for (const p of open.slice(40, 48)) g.set(p.x, p.y, s.id(`debris:${p.x % 3}`));
+  for (const p of open.slice(48, 52)) g.set(p.x, p.y, s.id('satellite'));
+  for (const p of open.slice(52, 55)) g.set(p.x, p.y, s.id('wreck'));
+  g.set(warp.x - 1, warp.y + 2, s.id('buoy:0'), true);
+  g.set(warp.x + 2, warp.y + 2, s.id('buoy:0'), true);
   // everything reachable?
   const seen = reachable(g, s.blocks, arrive.x, arrive.y, { tall: false });
   for (const p of planets)
     if (!seen[p.at.y * W + p.at.x] && !seen[p.back.y * W + p.back.x]) throw new Error(`sector ${seed}: planet at ${p.at.x},${p.at.y} cut off`);
-  return { grid: g, arrive, warp, planets, open: open.slice(48) };
+  return { grid: g, arrive, warp, planets, open: open.slice(56) };
 }

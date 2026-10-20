@@ -11,7 +11,7 @@ interface Room {
   y: number;
   w: number;
   h: number;
-  kind: 'hall' | 'lab' | 'reactor' | 'cargo' | 'garden' | 'window' | 'sump' | 'vault' | 'dock';
+  kind: 'hall' | 'lab' | 'reactor' | 'cargo' | 'garden' | 'window' | 'sump' | 'vault' | 'dock' | 'quarters' | 'medbay';
 }
 
 export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: boolean } = {}): PlanetResult {
@@ -29,7 +29,7 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
   const ox = 2;
   const oy = 6;
   const rooms: Room[][] = [];
-  const kinds: Room['kind'][] = ['hall', 'hall', 'lab', 'cargo', 'garden', 'window', 'sump', 'reactor'];
+  const kinds: Room['kind'][] = ['hall', 'hall', 'lab', 'cargo', 'garden', 'window', 'sump', 'reactor', 'quarters', 'medbay'];
   for (let cy = 0; cy < rows; cy++) {
     rooms.push([]);
     for (let cx = 0; cx < cols; cx++) {
@@ -78,7 +78,7 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
         // a two-wide shaft: a lift up one side, an open drop down the other
         const sx = Math.max(a.x, b.x) + 1 + Math.floor(r() * 2);
         for (let y = a.y; y <= b.y + b.h - 1; y++) {
-          g.set(sx, y, id('lift'));
+          g.set(sx, y, id((cx + cy) % 2 ? 'lift' : y === a.y ? 'ladder:top' : 'ladder'));
           if (y >= a.y + a.h) g.set(sx + 1, y, pickOne(panels));
         }
       }
@@ -90,17 +90,26 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
     const free = (x: number) => panels.includes(g.get(x, fy)) && panels.includes(g.get(x, fy - 1));
     switch (rm.kind) {
       case 'lab':
-        for (const x of cells) if (free(x) && r() < 0.35) g.set(x, fy, id(`console:${x % 3}`));
+        for (const x of cells) if (free(x) && r() < 0.45) g.set(x, fy, id(pickOne([`console:${x % 3}`, 'monitor:0', 'rack:0', 'tank', 'tank:full', 'holo:0'])));
+        g.set(rm.x + rm.w - 2, rm.y + 1, id('alert:0'));
+        break;
+      case 'quarters':
+        for (const x of cells) if (free(x) && r() < 0.5) g.set(x, fy, id(pickOne(['bunk', 'locker', 'table', 'chair', 'locker'])));
+        g.set(rm.x + 2, rm.y + 1, id('panel:emblem'));
+        break;
+      case 'medbay':
+        for (const x of cells) if (free(x) && r() < 0.3) g.set(x, fy, id(pickOne(['medbay', 'tank', 'monitor:0'])));
+        for (let x = rm.x; x < rm.x + rm.w; x++) if (g.get(x, rm.y) !== id('lift') && r() < 0.5) g.set(x, rm.y, id('panel:stripe'));
         break;
       case 'cargo':
         for (const x of cells)
           if (free(x) && r() < 0.3) {
-            g.set(x, fy, id(`crate:${x & 1}`));
+            g.set(x, fy, id(r() < 0.4 ? `barrel:${x & 1}` : `crate:${x & 1}`));
             if (r() < 0.4 && free(x)) g.set(x, fy - 1, id('crate:0'));
           }
         break;
       case 'garden':
-        for (const x of cells) if (free(x) && r() < 0.4) g.set(x, fy, id('plant'));
+        for (const x of cells) if (free(x) && r() < 0.4) g.set(x, fy, id(r() < 0.5 ? 'plant' : 'plant:2'));
         g.set(rm.x + 1, rm.y, id('light'));
         break;
       case 'reactor': {
@@ -127,11 +136,15 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
         if (r() < 0.5) {
           const lx = rm.x + Math.floor(rm.w / 2);
           for (let y = rm.y; y < rm.y + rm.h; y++) g.set(lx, y, id('laser:v'));
+          g.set(lx, rm.y + rm.h, id('deck:stripe'));
         }
+        g.set(rm.x + 1, rm.y + 1, id(pickOne(['fan:0', 'panel:cables', 'cables', 'robotarm', 'sign:exit'])));
+        if (rm.w > 8) for (let y = rm.y; y < rm.y + rm.h - 1; y++) g.set(rm.x + rm.w - 3, y, id(y === rm.y ? 'pipe:c3' : 'conduit:0'));
         break;
       }
       case 'window':
-        if (r() < 0.6) for (let x = rm.x + 1; x < rm.x + rm.w - 1; x += 3) g.set(x, fy - 2, id('deck:girder'));
+        if (r() < 0.6) for (let x = rm.x + 1; x < rm.x + rm.w - 1; x += 3) g.set(x, fy - 2, id(r() < 0.5 ? 'deck:girder' : 'catwalk'));
+        for (let x = rm.x + 1; x < rm.x + rm.w - 1; x += 4) g.set(x, rm.y, id(x % 8 ? 'window:wide0' : 'window:wide1'));
         break;
       default:
         break;
@@ -143,6 +156,18 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
       if (r() < 0.3) g.set(rm.x + rm.w - 2, rm.y + 1, id('vent'));
       if (r() < 0.25) g.set(rm.x + 1, rm.y + 1, id('pipe:v'));
     }
+  }
+  // floor lamps, grilles and girders here and there
+  for (let k = 0; k < 60; k++) {
+    const rm = rooms[Math.floor(r() * rows)][Math.floor(r() * cols)];
+    const x = rm.x + Math.floor(r() * rm.w);
+    if (g.get(x, rm.y + rm.h) === id('deck:plate')) g.set(x, rm.y + rm.h, id('deck:lamp'));
+    if (panels.includes(g.get(x, rm.y + 1))) g.set(x, rm.y + 1, id(pickOne(['panel:grille', 'pipe:c0', 'pipe:c1', 'pipe:c2', 'sign:up'])));
+  }
+  for (let cy = 0; cy < rows; cy++) {
+    const rm = rooms[cy][(cy * 3) % cols];
+    if (rm.kind === 'hall' && rm.w >= 9)
+      for (let y = rm.y; y < rm.y + rm.h - 2; y++) if (panels.includes(g.get(rm.x + 1, y))) g.set(rm.x + 1, y, id('girder:v'));
   }
   // the dock: airlock out, arrival point, and on the training deck, the info panels
   const fy = dock.y + dock.h - 1;

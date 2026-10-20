@@ -34,9 +34,9 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       else if (y < SURFACE) b = id('air');
       else if (y === SURFACE) b = id('surf:0');
       else if (y < floor[x]) b = waterAt(y);
-      else if (y === floor[x]) b = pickOne([id('sand:top0'), id('sand:top1'), id('sand:top2')]);
-      else if (y < floor[x] + 4) b = pickOne([id('sand:0'), id('sand:1'), id('sand:2')]);
-      else if (y < FLOOR_BOTTOM - 6) b = pickOne([id('reef:0'), id('reef:1'), id('reef:2')]);
+      else if (y === floor[x]) b = pickOne([id('sand:top0'), id('sand:top1'), id('sand:top2'), id('sand:top3')]);
+      else if (y < floor[x] + 4) b = pickOne([id('sand:0'), id('sand:1'), id('sand:2'), id('sand:3')]);
+      else if (y < FLOOR_BOTTOM - 6) b = pickOne([id('reef:0'), id('reef:1'), id('reef:2'), id('reef:3'), id('reef:4')]);
       else if (y < FLOOR_BOTTOM + 4) b = pickOne([id('abyss:0'), id('abyss:1')]);
       else b = id('bedrock');
       g.set(x, y, b);
@@ -86,7 +86,7 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   for (let yy = vy - 5; yy <= vy + 1; yy++)
     for (let xx = vx - 6; xx <= vx + 6; xx++) {
       const edge = yy === vy - 5 || yy === vy + 1 || Math.abs(xx - vx) === 6;
-      g.set(xx, yy, edge ? id('reef:2') : id('water:dark'), true);
+      g.set(xx, yy, edge ? id('ruin:wall') : id('water:dark'), true);
     }
   // its entrance shaft from the trench floor
   for (let yy = floor[deepest]; yy <= vy - 5; yy++) {
@@ -121,10 +121,13 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     const k = r();
     if (k < 0.12) {
       const h = 2 + Math.floor(r() * 5);
-      for (let i = 0; i < h; i++) g.set(fx, y - i, id(i === h - 1 ? (i % 2 ? 'kelp:top2' : 'kelp:top') : 'kelp:mid'));
-    } else if (k < 0.24) g.set(fx, y, id(`coral:${Math.floor(r() * 4)}`));
-    else if (k < 0.28) g.set(fx, y, id(y > 70 ? 'coral:deep' : 'shell'));
-    else if (k < 0.31) g.set(fx, y, id('rocks'));
+      const red = r() < 0.25;
+      for (let i = 0; i < h; i++) g.set(fx, y - i, id(i === h - 1 ? (red ? 'kelp:top3' : i % 2 ? 'kelp:top2' : 'kelp:top') : red ? 'kelp:mid3' : 'kelp:mid'));
+    } else if (k < 0.24) g.set(fx, y, id(`coral:${Math.floor(r() * 10)}`));
+    else if (k < 0.28)
+      g.set(fx, y, id(y > 70 ? pickOne(['coral:deep', 'glowstone:0', 'glowstone:1', 'chimney:0']) : pickOne(['shell', 'bigshell', 'weed:0', 'weed:1'])));
+    else if (k < 0.31) g.set(fx, y, id(pickOne(['rocks', 'skullrock', 'rocks'])));
+    else if (k < 0.315) g.set(fx, y, id(pickOne(['anchor', 'lamp', 'obelisk', 'statue:2', 'chest'])));
     else if (k < 0.31 + 0.015 * spec.level) g.set(fx, y, id('anemone'));
     else if (k < 0.35 + 0.01 * spec.level) g.set(fx, y, id('urchins'));
     else if (k < 0.37) g.set(fx, y, id('bones'));
@@ -141,6 +144,8 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       for (let y = base + 1; y < floor[wx(wxp + i)]; y++) g.set(wxp + i, y, id('wreck:0'));
     }
     g.set(wxp + 2, base, id('p:credit'));
+    g.set(wxp + 4, base - 2, id('cannon'));
+    g.set(wxp + 1, base - 2, id('grate'));
     g.set(wxp + 3, base - 1, id('p:gem'));
   }
   // currents and bubble columns
@@ -156,6 +161,31 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     g.set(bx, floor[bx], id('vent'));
     const hot = r() < 0.4;
     for (let y = floor[bx] - 1; y > SURFACE + 2; y--) if (!g.isLocked(bx, y)) g.set(bx, y, id(hot && y > floor[bx] - 4 ? 'hotwater' : 'bubbles'));
+  }
+  // life in the open water: fish schools, plankton blooms, bubbles; old sea mines
+  for (let k = 0; k < 40; k++) {
+    const x = Math.floor(r() * W);
+    const y = SURFACE + 3 + Math.floor(r() * (floor[x] - SURFACE - 5));
+    if (g.get(x, y) !== waterAt(y) || g.isLocked(x, y) || Math.abs(x - ax) < 5) continue;
+    g.set(x, y, id(k < 14 ? 'fishschool' : k < 26 ? 'plankton:0' : k < 34 ? 'bubble' : 'seamine'));
+  }
+  // an old pipeline across the floor and a sunken arch
+  {
+    const px = Math.floor(r() * W);
+    for (let i = 0; i < 18; i++) {
+      const x = wx(px + i);
+      if (g.isLocked(x, floor[x] - 1)) continue;
+      g.set(x, floor[x] - 1, id('pipe:h'));
+    }
+    const ax2 = wx(px + 30);
+    const fy = floor[ax2] - 1;
+    if (!g.isLocked(ax2, fy) && floor[wx(ax2 + 2)] - 1 === fy) {
+      g.set(ax2, fy, id('arch:l'));
+      g.set(ax2, fy - 1, id('arch:l'));
+      g.set(ax2 + 1, fy - 1, id('arch:m'));
+      g.set(ax2 + 2, fy, id('arch:r'));
+      g.set(ax2 + 2, fy - 1, id('arch:r'));
+    }
   }
   // treasure scattered in the water and the caves
   const treasure: Spot[] = [];

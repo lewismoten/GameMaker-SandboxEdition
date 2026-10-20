@@ -580,6 +580,73 @@ export function surfaceSet(): SetBuilder {
   D('grass:1', grassTuft(4));
   D('boulder', boulder(5));
   D('crystals', crystals(6));
+  D(
+    'sapling',
+    (() => {
+      const p = sprite();
+      p.line(10, 19, 10, 9, R('stem')[2]);
+      shade(p, new Mask().ellipse(10, 8, 5, 4).ellipse(7, 10, 3, 2.5).ellipse(13, 10, 3, 2.5), R('plant').slice(1, 7));
+      return outline(p, OUTLINE);
+    })(),
+  );
+  D(
+    'cactus',
+    (() => {
+      const p = sprite();
+      const m = new Mask().rect(8, 4, 4, 16).ellipse(10, 4, 2, 2).rect(3, 9, 2, 6).rect(3, 13, 6, 2).rect(15, 6, 2, 6).rect(11, 10, 6, 2);
+      shade(p, m, R('plant').slice(1, 7), { light: [-1, 0] });
+      for (let y = 6; y < 19; y += 3) p.set(9, y, R('bloom')[4]);
+      return outline(p, OUTLINE);
+    })(),
+  );
+  D(
+    'flowers',
+    (() => {
+      const p = sprite();
+      const r = rng(33);
+      for (let i = 0; i < 6; i++) {
+        const x = 2 + i * 3 + r() * 2;
+        const hh = 5 + r() * 6;
+        p.line(x, 19, x, 19 - hh, R('plant')[3]);
+        fill(p, new Mask().ellipse(x, 19 - hh, 1.6, 1.6), R('bloom')[2 + (i % 3)]);
+        p.set(x, 19 - hh, R('accent')[4]);
+      }
+      return p;
+    })(),
+  );
+  D(
+    'stump',
+    (() => {
+      const p = sprite();
+      shade(p, new Mask().rect(5, 11, 10, 9).ellipse(10, 11, 5, 2), R('stem'));
+      fill(p, new Mask().ellipse(10, 11, 3.5, 1.2), R('stem')[4]);
+      p.line(3, 19, 6, 16, R('stem')[1]).line(17, 19, 14, 16, R('stem')[1]);
+      return outline(p, OUTLINE);
+    })(),
+  );
+  D(
+    'skulls',
+    (() => {
+      const p = sprite();
+      shade(p, new Mask().ellipse(7, 15, 4, 3.5).ellipse(14, 16, 3.5, 3), R('ruin').slice(2));
+      p.set(6, 14, OUTLINE).set(8, 14, OUTLINE).set(13, 15, OUTLINE).set(15, 15, OUTLINE);
+      p.line(2, 19, 18, 18, R('ruin')[5]);
+      return outline(p, OUTLINE);
+    })(),
+  );
+  D('mushroom', mushroom(7, false));
+  D(
+    'totem',
+    (() => {
+      const p = sprite();
+      shade(p, new Mask().rect(6, 2, 8, 18), R('ruin').slice(1), { light: [-1, 0] });
+      for (const y of [5, 11, 17]) {
+        p.set(8, y, R('glow')[4]).set(11, y, R('glow')[4]);
+        p.line(8, y + 2, 11, y + 2, OUTLINE);
+      }
+      return outline(p, OUTLINE);
+    })(),
+  );
   D('mushroom:cave', mushroom(8, true), caveWall(60));
   D('crystals:cave', crystals(9), caveWall(61));
   for (const part of ['tl', 'tr', 'bl', 'br', 'trunk'] as const) D(`tree:${part}`, tree(part));

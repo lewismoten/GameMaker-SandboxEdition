@@ -375,7 +375,8 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       g.set(xx, y - 2, id('tree:tl'));
       g.set(xx + 1, y - 2, id('tree:tr'));
       xx++;
-    } else if (k < 0.2) g.set(xx, y, pickOne([id('bush:0'), id('bush:1'), id('grass:0'), id('grass:1')]));
+    } else if (k < 0.2) g.set(xx, y, pickOne([id('bush:0'), id('bush:1'), id('grass:0'), id('grass:1'), id('flowers'), id('sapling')]));
+    else if (k < 0.215) g.set(xx, y, pickOne([id('cactus'), id('stump'), id('skulls'), id('mushroom'), id('totem')]));
     else if (k < 0.24) g.set(xx, y, id('boulder'));
     else if (k < 0.27) g.set(xx, y, id('crystals'));
     else if (k < 0.29 && f.ruins) {
