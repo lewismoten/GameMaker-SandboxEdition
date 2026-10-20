@@ -78,7 +78,7 @@ const LEVELS: Level[] = [
     card: {
       title: '2. JAMIE STREET',
       time: 'Noon. Closed for sledding!',
-      lines: ['Steer LEFT/RIGHT, UP to brake,', 'DOWN to push. Catch the loose', 'dollars on the way down.'],
+      lines: ['Steer LEFT/RIGHT (A/D), UP (W)', 'brakes, DOWN (S) pushes. Grab', 'the dollars on the way down.'],
       view: [30, 4],
     },
   },

@@ -3,9 +3,10 @@ in Fort Ashby, earn $89, and
 buy GAME-MAKER at LaVale Mall
 before the price goes up.
 
-ARROW KEYS walk. Walk into a
-heap of deep snow to shovel
-it: every scoop pays $1.
+ARROWS or W A S D walk; Q/E
+and the keypad corners go
+diagonally. Walk into deep
+snow to shovel it: $1 a scoop.
 
 SPACE throws a snowball the
 way you last walked. Scoop the
@@ -13,7 +14,6 @@ plow banks along the road to
 pack more snowballs.
 
 F2 counts your coffee can.
-
 HOT COCOA warms you back up.
 Plows, cars, shopping carts,
 snowballs, Biscuit the dog and
@@ -30,10 +30,10 @@ Bowden Drive runs east!
 No mailboxes in Dowden: the
 carrier walks to every door
 slot, so the walks pay too.
-THE SLED: LEFT and RIGHT
-steer, UP digs in your heels,
-DOWN pushes off. Grab the
-dollars blowing down the hill.
+THE SLED: LEFT/RIGHT (A/D)
+steer, UP (W) digs in your
+heels, DOWN (S) pushes off,
+Q/E brake and steer at once.
 
 THE MALL LOT snows back over.
 Shovel it again for more. The
