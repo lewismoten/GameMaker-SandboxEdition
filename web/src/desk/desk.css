@@ -265,6 +265,25 @@
   height: 100%;
 }
 
+/* the designers' 320x200 VGA picture, at a whole multiple of its size (vga/vga.ts) */
+.crt .crt-vga {
+  position: absolute;
+  inset: 3.5% 4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.desk[data-zoom='false'] .crt .crt-vga {
+  inset: 6% 6.5%;
+}
+
+.crt-vga .vga-screen {
+  outline: none;
+  cursor: none;
+  touch-action: none;
+}
+
 .monitor-stand {
   width: 30%;
   height: 22px;
