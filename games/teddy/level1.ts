@@ -8,14 +8,34 @@ import { FLIP } from './mons';
 import { POWER } from './ids';
 import { P } from './pal';
 import { LevelMap, Tiles, newBestiary, type Level } from './level';
-import { bricks, boxFace, c, canvas, cloud, cut, dirt, grassTop, plankFence, r, siding, sky, tuft, tunnel, windowOn } from './tiles';
+import {
+  bricks,
+  boxFace,
+  branch,
+  c,
+  canvas,
+  cloud,
+  cut,
+  dirt,
+  grassTop,
+  hedge,
+  leaves,
+  plankFence,
+  r,
+  siding,
+  sky,
+  trunk,
+  tuft,
+  tunnel,
+  windowOn,
+} from './tiles';
 
 export const GROUND = 40;
 
 /** Sky band for map row y. */
 export const bandOf = (y: number) => (y <= 30 ? 0 : y <= 33 ? 1 : y <= 36 ? 2 : 3);
 
-function sign(base: Pixels, words: string, arrow?: 'up' | 'down'): Pixels {
+export function sign(base: Pixels, words: string, arrow?: 'up' | 'down'): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(base.px);
   p.rect(9, 12, 2, 8, c('wood', 1));
@@ -57,12 +77,6 @@ export function backyardTiles(): Tiles {
   t.air('tunnel2', tunnel(7));
   t.air('hole', tunnel(8));
   // A hedge across the back of the yard (scenery).
-  const hedge = (top: boolean, seed: number) => {
-    const p = top ? sky(3) : new Pixels(20, 20, c('leaf', 1));
-    const R = rng(seed);
-    for (let i = 0; i < 9; i++) blob(p, R() * 20, (top ? 12 : 4) + R() * 10, 4 + R() * 3, 4 + R() * 2, r('leaf'), 0, 3, 0.8);
-    return p;
-  };
   t.air('hedgeTop', hedge(true, 21));
   t.air('hedgeTop2', hedge(true, 22));
   t.air('hedge', hedge(false, 23));
@@ -241,20 +255,6 @@ export function backyardTiles(): Tiles {
   );
 
   // The old oak: trunk, branches to stand on, leaves all around.
-  const leaves = (seed: number, base: Pixels) => {
-    const p = new Pixels(20, 20);
-    p.px.set(base.px);
-    const R = rng(seed);
-    for (let i = 0; i < 8; i++) blob(p, R() * 20, R() * 20, 4 + R() * 3, 3 + R() * 3, r('leaf'), 0, 3, 0.9);
-    for (let i = 0; i < 6; i++) p.set(Math.floor(R() * 20), Math.floor(R() * 20), c('grass', 3));
-    return p;
-  };
-  const trunk = (base: Pixels) => {
-    const p = new Pixels(20, 20);
-    p.px.set(base.px);
-    for (let y = 0; y < 20; y++) for (let x = 5; x < 15; x++) p.set(x, y, shadeAt(r('wood'), 0, 2, (x - 5) / 10 + ((y * 7 + x) % 5 === 0 ? 0.3 : 0), x, y));
-    return p;
-  };
   for (let k = 0; k < 4; k++) t.air(`leaf${k}`, leaves(60 + k, sky(k)));
   t.air('leafDark', leaves(65, new Pixels(20, 20, c('leaf', 0))));
   t.air('trunk', trunk(sky(3)));
@@ -267,13 +267,6 @@ export function backyardTiles(): Tiles {
       return p;
     })(),
   );
-  const branch = (base: Pixels) => {
-    const p = new Pixels(20, 20);
-    p.px.set(base.px);
-    p.rect(0, 0, 20, 5, c('wood', 2)).rect(0, 0, 20, 1, c('wood', 3)).rect(0, 4, 20, 1, c('wood', 0));
-    p.set(6, 5, c('wood', 1)).set(14, 5, c('wood', 1));
-    return p;
-  };
   for (let k = 1; k < 4; k++) t.ledge(`branch${k}`, branch(leaves(70 + k, sky(k))));
   t.wall(
     'stump',

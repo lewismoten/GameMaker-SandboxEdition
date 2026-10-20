@@ -231,3 +231,42 @@ export function canvas(wide: number, high: number, base: Pixels | ((bx: number, 
 }
 
 export { CLEAR };
+
+/** Hedge leaves: `top` puts the bushy top edge over the horizon sky. */
+export function hedge(top: boolean, seed: number, base?: Pixels): Pixels {
+  const p = top ? (base ? copy(base) : sky(3)) : new Pixels(20, 20, c('leaf', 1));
+  const R = rng(seed);
+  for (let i = 0; i < 9; i++) blob(p, R() * 20, (top ? 12 : 4) + R() * 10, 4 + R() * 3, 4 + R() * 2, r('leaf'), 0, 3, 0.8);
+  return p;
+}
+
+/** Tree leaves over a background block. */
+export function leaves(seed: number, base: Pixels): Pixels {
+  const p = copy(base);
+  const R = rng(seed);
+  for (let i = 0; i < 8; i++) blob(p, R() * 20, R() * 20, 4 + R() * 3, 3 + R() * 3, r('leaf'), 0, 3, 0.9);
+  for (let i = 0; i < 6; i++) p.set(Math.floor(R() * 20), Math.floor(R() * 20), c('grass', 3));
+  return p;
+}
+
+/** A tree trunk over a background block. */
+export function trunk(base: Pixels): Pixels {
+  const p = copy(base);
+  for (let y = 0; y < 20; y++) for (let x = 5; x < 15; x++) p.set(x, y, shadeAt(r('wood'), 0, 2, (x - 5) / 10 + ((y * 7 + x) % 5 === 0 ? 0.3 : 0), x, y));
+  return p;
+}
+
+/** A branch to stand on, over a background block. */
+export function branch(base: Pixels): Pixels {
+  const p = copy(base);
+  p.rect(0, 0, 20, 5, c('wood', 2)).rect(0, 0, 20, 1, c('wood', 3)).rect(0, 4, 20, 1, c('wood', 0));
+  p.set(6, 5, c('wood', 1)).set(14, 5, c('wood', 1));
+  return p;
+}
+
+/** A copy of a block picture. */
+export function copy(base: Pixels): Pixels {
+  const p = new Pixels(base.w, base.h);
+  p.px.set(base.px);
+  return p;
+}
