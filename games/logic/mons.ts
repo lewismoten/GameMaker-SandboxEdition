@@ -83,24 +83,18 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
     becomes: 'timerOffHot',
   });
   b.add('timerOffHot', { pics: [['timerOff', 50]], power: POWER.hot, end: HOT_TICKS, becomes: 'timerOff' });
-  // Force-field gates: deadly to touch; current reaching one shuts it down for good.
-  b.add('gate', {
-    pics: [
-      ['gate0', 2],
-      ['gate1', 2],
-      ['gate2', 2],
-    ],
-    power: POWER.gate,
-    becomes: 'gateOpening',
-  });
-  b.add('gateOpening', {
-    pics: [
-      ['gateFade1', 4],
-      ['gateFade2', 6],
-    ],
-    power: POWER.open,
-    end: 10,
-  });
+  // Force-field gates: deadly to touch; current reaching one shuts it down for good, and
+  // the open gate's posts swallow any current that follows (so the doorway stays safe).
+  // "gateV" is the same gate turned a quarter (for a wire coming in from the side).
+  for (const [name, orient] of [
+    ['gate', 0],
+    ['gateV', 1],
+  ] as const) {
+    const still: [number, number, number, number][] = [[0, 0, 0, orient]];
+    b.add(`${name}Open`, { pics: [['gateFade2', 50]], power: POWER.open, end: -2, path: still });
+    b.add(`${name}Opening`, { pics: [['gateFade1', 4], ['gateFade2', 6]], power: POWER.open, end: 10, becomes: `${name}Open`, path: still });
+    b.add(name, { pics: [['gate0', 2], ['gate1', 2], ['gate2', 2]], power: POWER.gate, becomes: `${name}Opening`, path: still });
+  }
   // Fuses carry current until Watt bumps one (or control current hits it): then never again.
   b.add('fuse', { pics: [['fuse', 50]], power: POWER.current, becomes: 'fuseBlown' });
   b.add('fuseBlown', { pics: [['fuseBlown', 50]], power: POWER.fuseBlown, end: -2 });

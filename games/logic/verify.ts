@@ -46,7 +46,7 @@ export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: 
       await run(1);
     } else throw new Error(`Bad move ${ch}`);
   }
-  await run(10);
+  await run(60);
   const p = sim.pos;
   const why = sim.dead ? `zapped at ${p.bx - 10},${p.by - 10}` : sim.link >= 0 ? 'reached the outlet' : `stopped at ${p.bx - 10},${p.by - 10}`;
   return { ok: sim.link >= 0 && !sim.dead, ticks: sim.ticks, peak, why, keys };
