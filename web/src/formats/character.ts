@@ -139,6 +139,9 @@ export function newCharacter(): Character {
   const meter = new Array(METERS).fill(INF_REPEAT);
   meter[0] = 100; // hit points
   meter[1] = 3; // lives
+  // the ten special counters start at 0 (stored +1), as in every character on the CD;
+  // left at INF_REPEAT the game would never count them
+  for (let i = MAXSEQ; i < METERS; i++) meter[i] = 1;
   return { sequences, x: [0, 0, 0], y: [0, 0, 0], cframe: 0, cseq: 0, inv: new Uint8Array(MAXINV).fill(150), meter, rest: new Uint8Array(CHR_RECORD_SIZE) };
 }
 
