@@ -7,12 +7,15 @@ import { registerMaker } from '../makers';
 import { encodeVoc } from '../../formats/voc';
 import { validDosName, type Project } from '../project';
 import { normalize } from '../../project/files';
+import { applyEffect as effectAt, EFFECTS, tidy as tidyAt, type Effect } from '../../audio/sampleEdit';
 
 const RATE = 11025;
+const tidy = (s: Float32Array, rate = RATE) => tidyAt(s, rate);
+const applyEffect = (s: Float32Array, e: Effect) => effectAt(s, e, RATE);
 
-/** Resamples any AudioBuffer to mono 11025 Hz. */
-async function toMono11k(buf: AudioBuffer): Promise<Float32Array> {
-  const ctx = new OfflineAudioContext(1, Math.max(1, Math.ceil(buf.duration * RATE)), RATE);
+/** Resamples any AudioBuffer to mono at the given rate. */
+export async function toMono(buf: AudioBuffer, rate = RATE): Promise<Float32Array> {
+  const ctx = new OfflineAudioContext(1, Math.max(1, Math.ceil(buf.duration * rate)), rate);
   const src = ctx.createBufferSource();
   src.buffer = buf;
   src.connect(ctx.destination);
@@ -20,61 +23,31 @@ async function toMono11k(buf: AudioBuffer): Promise<Float32Array> {
   return (await ctx.startRendering()).getChannelData(0).slice();
 }
 
-/** Cuts quiet ends and scales the loudest point to 90%. */
-function tidy(s: Float32Array): Float32Array {
-  let peak = 0;
-  for (const v of s) peak = Math.max(peak, Math.abs(v));
-  if (!peak) return s;
-  const gate = peak * 0.06;
-  let a = 0;
-  let b = s.length;
-  while (a < b && Math.abs(s[a]) < gate) a++;
-  while (b > a && Math.abs(s[b - 1]) < gate) b--;
-  a = Math.max(0, a - RATE * 0.02);
-  b = Math.min(s.length, b + RATE * 0.05);
-  const out = s.slice(a, b);
-  for (let i = 0; i < out.length; i++) out[i] = (out[i] / peak) * 0.9;
-  return out;
-}
-
-type Effect = 'none' | 'robot' | 'chipmunk' | 'deep' | 'radio' | 'echo';
-const EFFECTS: [Effect, string][] = [
-  ['none', 'Plain'],
-  ['robot', 'Robot'],
-  ['chipmunk', 'Chipmunk'],
-  ['deep', 'Deep'],
-  ['radio', 'Radio'],
-  ['echo', 'Echo'],
-];
-
-function applyEffect(s: Float32Array, e: Effect): Float32Array {
-  switch (e) {
-    case 'robot':
-      return s.map((v, i) => v * Math.sign(Math.sin((2 * Math.PI * 70 * i) / RATE)));
-    case 'chipmunk':
-      return Float32Array.from({ length: Math.floor(s.length / 1.6) }, (_, i) => s[Math.floor(i * 1.6)]);
-    case 'deep':
-      return Float32Array.from({ length: Math.floor(s.length * 1.45) }, (_, i) => s[Math.floor(i / 1.45)]);
-    case 'radio': {
-      // band-limited and crunchy
-      let lp = 0;
-      let hp = 0;
-      return s.map((v) => {
-        lp += (v - lp) * 0.45;
-        hp = lp - hp * 0.0 - (lp - hp) * 0.08;
-        return Math.max(-0.6, Math.min(0.6, (lp - hp) * 2.2));
-      });
-    }
-    case 'echo': {
-      const d = Math.floor(RATE * 0.18);
-      const out = new Float32Array(s.length + d * 3);
-      out.set(s);
-      for (let i = d; i < out.length; i++) out[i] = Math.max(-1, Math.min(1, out[i] + out[i - d] * 0.45));
-      return out;
-    }
-    default:
-      return s;
-  }
+/**
+ * Starts recording from the microphone (asks for permission). stop() resolves with the
+ * recording as mono samples at `rate`, quiet ends trimmed and levelled.
+ */
+export async function startRecording(rate = RATE): Promise<{ stop: () => Promise<Float32Array> }> {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+  const chunks: Blob[] = [];
+  const recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = (e) => chunks.push(e.data);
+  const stopped = new Promise<void>((resolve) => (recorder.onstop = () => resolve()));
+  recorder.start();
+  return {
+    stop: async () => {
+      recorder.stop();
+      await stopped;
+      stream.getTracks().forEach((t) => t.stop());
+      const ctx = new AudioContext();
+      try {
+        const buf = await ctx.decodeAudioData(await new Blob(chunks).arrayBuffer());
+        return tidy(await toMono(buf, rate), rate);
+      } finally {
+        void ctx.close();
+      }
+    },
+  };
 }
 
 /** A few synthesized effects, each a little different every time. */
@@ -83,7 +56,11 @@ const SYNTHS: { name: string; seconds: number; make: (t: number, rnd: () => numb
   { name: 'Boom', seconds: 0.9, make: (t, r) => (r() * 2 - 1) * Math.exp(-t * 4) * (0.6 + 0.4 * Math.sin(t * 40)) },
   { name: 'Coin', seconds: 0.35, make: (t) => Math.sin(2 * Math.PI * (t < 0.07 ? 988 : 1319) * t) * Math.exp(-t * 6) },
   { name: 'Splash', seconds: 0.7, make: (t, r) => (r() * 2 - 1) * Math.exp(-t * 5) * Math.abs(Math.sin(t * 60)) },
-  { name: 'Door', seconds: 0.6, make: (t) => Math.sin(2 * Math.PI * (90 + 40 * Math.sin(t * 18)) * t) * Math.exp(-t * 3) + Math.sin(2 * Math.PI * 300 * t) * Math.exp(-t * 30) },
+  {
+    name: 'Door',
+    seconds: 0.6,
+    make: (t) => Math.sin(2 * Math.PI * (90 + 40 * Math.sin(t * 18)) * t) * Math.exp(-t * 3) + Math.sin(2 * Math.PI * 300 * t) * Math.exp(-t * 30),
+  },
   { name: 'Power up', seconds: 0.8, make: (t) => Math.sign(Math.sin(2 * Math.PI * (200 * 2 ** (t * 4)) * t)) * 0.6 * (1 - t / 0.8) },
   { name: 'Footstep', seconds: 0.15, make: (t, r) => (r() * 2 - 1) * Math.exp(-t * 40) },
   { name: 'Whoosh', seconds: 0.6, make: (t, r) => (r() * 2 - 1) * Math.sin((Math.PI * t) / 0.6) * 0.8 },
@@ -143,7 +120,11 @@ export function makeVoc(project: Project, start: 'record' | 'synth'): Promise<st
     let seed = 1;
     const result = () => applyEffect(raw, effect);
     const wave = h('canvas', { class: 'voc-wave', width: 640, height: 120 });
-    const info = h('p', { class: 'hint' }, start === 'record' ? 'Press Record and speak; press Stop when you are done.' : 'Pick a sound; click it again for a new variation.');
+    const info = h(
+      'p',
+      { class: 'hint' },
+      start === 'record' ? 'Press Record and speak; press Stop when you are done.' : 'Pick a sound; click it again for a new variation.',
+    );
     const nameInput = h('input', { type: 'text', value: project.freeName(start === 'record' ? 'voice' : 'effect', 'voc'), required: true });
     const refresh = () => {
       const s = result();
@@ -156,30 +137,22 @@ export function makeVoc(project: Project, start: 'record' | 'synth'): Promise<st
       play(ctx, result());
     };
 
-    let recorder: MediaRecorder | undefined;
+    let recording: { stop: () => Promise<Float32Array> } | undefined;
     const recBtn = h('button', { type: 'button', class: 'primary' }, '⏺ Record');
     recBtn.addEventListener('click', async () => {
-      if (recorder) {
-        recorder.stop();
+      if (recording) {
+        const r = recording;
+        recording = undefined;
+        recBtn.textContent = '⏺ Record again';
+        try {
+          setRaw(await r.stop());
+        } catch {
+          toast('That recording could not be read.', 'error');
+        }
         return;
       }
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-        const chunks: Blob[] = [];
-        recorder = new MediaRecorder(stream);
-        recorder.ondataavailable = (e) => chunks.push(e.data);
-        recorder.onstop = async () => {
-          stream.getTracks().forEach((t) => t.stop());
-          recorder = undefined;
-          recBtn.textContent = '⏺ Record again';
-          try {
-            const buf = await ctx.decodeAudioData(await new Blob(chunks).arrayBuffer());
-            setRaw(tidy(await toMono11k(buf)));
-          } catch {
-            toast('That recording could not be read.', 'error');
-          }
-        };
-        recorder.start();
+        recording = await startRecording();
         recBtn.textContent = '⏹ Stop';
         info.textContent = 'Recording… speak now.';
       } catch {
@@ -187,9 +160,7 @@ export function makeVoc(project: Project, start: 'record' | 'synth'): Promise<st
       }
     });
 
-    const synthButtons = SYNTHS.map((s, i) =>
-      h('button', { type: 'button', onclick: () => setRaw(tidy(synthesize(i, seed++))) }, s.name),
-    );
+    const synthButtons = SYNTHS.map((s, i) => h('button', { type: 'button', onclick: () => setRaw(tidy(synthesize(i, seed++))) }, s.name));
 
     const save = () => {
       if (!raw.length) {
