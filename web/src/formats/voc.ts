@@ -174,7 +174,7 @@ function pcm16(data: Uint8Array): Float32Array {
 /**
  * Encodes mono samples (-1..1) as an 8-bit unsigned PCM Creative Voice File, the kind a
  * Sound Blaster plays. The rate is stored as a time constant, so it is rounded the way
- * the card did (11025 Hz is stored as 11111 Hz).
+ * the card did (11025 Hz is stored as 10,989 Hz: time constant 165, 1,000,000 / 91).
  */
 export function encodeVoc(samples: Float32Array, sampleRate = 11025): Uint8Array {
   const timeConstant = Math.max(0, Math.min(255, Math.round(256 - 1_000_000 / sampleRate)));
