@@ -70,8 +70,11 @@ async function drawPoster(entry: CatalogEntry, poster: Poster): Promise<HTMLCanv
   }
   if (!pic) return undefined;
   const fold = !!map;
-  const picW = W - 24;
-  const picH = Math.round((picW * ph) / pw);
+  // fit the picture in the space a poster has on the wall
+  const scale = Math.min((W - 24) / pw, (W * 1.05) / ph);
+  const picW = Math.round(pw * scale);
+  const picH = Math.round(ph * scale);
+  const picX = (W - picW) / 2;
   const head = 58;
   const H = Math.max(Math.round(W * 1.42), head + picH + 90);
   const c = document.createElement('canvas');
@@ -93,11 +96,11 @@ async function drawPoster(entry: CatalogEntry, poster: Poster): Promise<HTMLCanv
   ctx.fillText(titleText, W / 2, 16 + px);
   ctx.imageSmoothingEnabled = false;
   const picY = head;
-  ctx.drawImage(pic, 12, picY, picW, picH);
+  ctx.drawImage(pic, picX, picY, picW, picH);
   if (fold) {
     ctx.strokeStyle = '#5a4630';
     ctx.lineWidth = 2;
-    ctx.strokeRect(12, picY, picW, picH);
+    ctx.strokeRect(picX, picY, picW, picH);
   }
   ctx.font = `700 15px Arial, sans-serif`;
   ctx.fillStyle = fold ? '#3a2a18' : (box?.ink ?? '#fff');
