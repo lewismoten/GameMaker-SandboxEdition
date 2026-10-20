@@ -7,6 +7,7 @@ import {
   auditionSong,
   buildPreview,
   channelSounds,
+  DEFAULT_VELOCITY,
   extendEnd,
   readSong,
   RHYTHM_CHANNELS,
@@ -68,10 +69,12 @@ export class MusicDoc {
   playhead: number | null = null;
   snapBeats = 0.25;
   noteLen: number;
+  /** Velocity for new notes and for trying notes (the last one set). */
+  velocity = DEFAULT_VELOCITY;
   tool: 'draw' | 'select' | 'erase' | 'pan' = 'draw';
   follow = true;
   ghosts = true;
-  clipboard: { dt: number; len: number; key: number }[] = [];
+  clipboard: { dt: number; len: number; key: number; vel: number }[] = [];
 
   private undoStack: Uint8Array[] = [];
   private redoStack: Uint8Array[] = [];
@@ -287,10 +290,10 @@ export class MusicDoc {
   }
 
   /** Plays one note (only while the song is not playing). */
-  async audition(ch: number, key: number, program = startProgram(this.song, ch), ticks = 60): Promise<void> {
+  async audition(ch: number, key: number, program = startProgram(this.song, ch), ticks = 60, vel = this.velocity): Promise<void> {
     if (this.preview) return;
     await audio.resume();
-    await audio.playSong(auditionSong(this.song, ch, program, key, ticks));
+    await audio.playSong(auditionSong(this.song, ch, program, key, ticks, vel));
     clearTimeout(this.auditionTimer);
     this.auditionTimer = setTimeout(() => !this.preview && audio.stopSong(), (ticks / TICK_RATE) * 1000 + 1500);
   }

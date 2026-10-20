@@ -1,5 +1,7 @@
 // The piano roll: one track's notes (time across, pitch up) with a ruler for the play
-// position, loop region and song end, a lane of instrument changes, and a keyboard to try notes.
+// position, loop region and song end, a lane of instrument changes, a keyboard to try notes,
+// and a velocity lane under the notes (how loud each note plays: SBFMDRV scales the
+// instrument's carrier level by it).
 import { h, toast } from '../ui';
 import {
   addNote,
@@ -11,6 +13,8 @@ import {
   setEnd,
   setNote,
   setProgramAt,
+  setVelocity,
+  clampVelocity,
   type Ev,
   type Note,
 } from '../../formats/cmfEdit';
@@ -20,6 +24,8 @@ const KEYW = 46;
 const RULER = 18;
 const LANE = 16;
 const HEAD = RULER + LANE;
+/** Height of the velocity lane at the bottom. */
+const VEL = 64;
 const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const BLACK = [1, 3, 6, 8, 10];
 
@@ -32,7 +38,8 @@ type Drag =
   | { kind: 'erase'; changed: boolean }
   | { kind: 'pan'; x0: number; y0: number; sx: number; top: number }
   | { kind: 'ruler'; t0: number; moved: boolean }
-  | { kind: 'end'; changed: boolean };
+  | { kind: 'end'; changed: boolean }
+  | { kind: 'vel'; notes: Note[]; orig: Map<Note, number>; y0: number; grab?: Note; relative: boolean; lastX: number; changed: boolean };
 
 export class PianoRoll {
   readonly el: HTMLElement;
@@ -47,7 +54,7 @@ export class PianoRoll {
   rowH = 10;
   private drag?: Drag;
   private lastMove?: string;
-  private hover?: { note?: Note; edge?: boolean };
+  private hover?: { note?: Note; edge?: boolean; vel?: boolean };
   private ro: ResizeObserver;
 
   constructor(private doc: MusicDoc) {
@@ -83,7 +90,7 @@ export class PianoRoll {
   // ---- geometry ----
 
   private get visibleRows(): number {
-    return Math.max(1, Math.floor((this.hgt - HEAD) / this.rowH));
+    return Math.max(1, Math.floor((this.hgt - HEAD - VEL) / this.rowH));
   }
 
   xOf(t: number): number {
@@ -100,6 +107,20 @@ export class PianoRoll {
 
   keyOf(y: number): number {
     return Math.max(0, Math.min(127, this.topKey - Math.floor((y - HEAD) / this.rowH)));
+  }
+
+  /** Top of the velocity lane. */
+  private get velTop(): number {
+    return this.hgt - VEL;
+  }
+
+  /** y of a velocity's bar top in the lane. */
+  private velY(v: number): number {
+    return this.hgt - 4 - (v / 127) * (VEL - 12);
+  }
+
+  private velOf(y: number): number {
+    return clampVelocity(((this.hgt - 4 - y) / (VEL - 12)) * 127);
   }
 
   /** Visible span in ticks. */
@@ -141,7 +162,7 @@ export class PianoRoll {
   private resize(): void {
     const r = this.el.getBoundingClientRect();
     this.w = Math.max(200, Math.floor(r.width));
-    this.hgt = Math.max(160, Math.floor(r.height));
+    this.hgt = Math.max(160 + VEL, Math.floor(r.height));
     const dpr = window.devicePixelRatio || 1;
     this.canvas.width = Math.floor(this.w * dpr);
     this.canvas.height = Math.floor(this.hgt * dpr);
@@ -213,7 +234,7 @@ export class PianoRoll {
 
     g.save();
     g.beginPath();
-    g.rect(KEYW, HEAD, W - KEYW, H - HEAD);
+    g.rect(KEYW, HEAD, W - KEYW, this.velTop - HEAD);
     g.clip();
 
     // other tracks, faint
@@ -253,6 +274,8 @@ export class PianoRoll {
       const wAll = Math.max(2, (e - s) * this.zoom);
       const wHeard = Math.max(2, (cut - s) * this.zoom);
       const sel = doc.selection.has(n);
+      // shaded by velocity: soft notes are dim, loud ones bright
+      const shade = 0.3 + (0.7 * n.on.b) / 127;
       g.globalAlpha = silent ? 0.35 : 1;
       if (cut < e) {
         g.strokeStyle = color;
@@ -261,7 +284,10 @@ export class PianoRoll {
         g.globalAlpha = silent ? 0.35 : 1;
       }
       g.fillStyle = color;
+      g.globalAlpha *= shade;
       g.fillRect(x, y + 1, wHeard, this.rowH - 2);
+      g.globalAlpha = silent ? 0.35 : 1;
+      g.fillRect(x, y + 1, 2, this.rowH - 2);
       g.fillStyle = 'rgba(0,0,0,0.35)';
       g.fillRect(x, y + this.rowH - 3, wHeard, 2);
       if (!n.off) {
@@ -279,7 +305,7 @@ export class PianoRoll {
         g.strokeRect(x + 0.5, y + 0.5, wAll - 1, this.rowH - 1);
       }
       if (this.rowH >= 10 && wHeard > 28) {
-        g.fillStyle = '#000';
+        g.fillStyle = shade < 0.6 ? '#fff' : '#000';
         g.fillText(noteName(k), x + 3, y + this.rowH / 2);
       }
       g.globalAlpha = 1;
@@ -316,6 +342,7 @@ export class PianoRoll {
     this.drawKeys(rows);
     this.drawRuler(t0, t1);
     this.drawLane(t0, t1);
+    this.drawVelocity(notes, t0, t1, silent);
 
     // cursor (where play starts) and playhead
     const cx = this.xOf(doc.cursor);
@@ -431,6 +458,69 @@ export class PianoRoll {
     }
   }
 
+  private drawVelocity(notes: Note[], t0: number, t1: number, silent: boolean): void {
+    const { g, doc } = this;
+    const W = this.w;
+    const H = this.hgt;
+    const top = this.velTop;
+    const color = TRACK_COLORS[doc.track];
+    g.fillStyle = '#000';
+    g.fillRect(0, top, W, VEL);
+    g.fillStyle = '#070920';
+    g.fillRect(KEYW, top + 2, W - KEYW, VEL - 2);
+    g.fillStyle = '#2e3680';
+    g.fillRect(0, top, W, 2);
+    // guides at 127, 64 and 1
+    for (const v of [127, 64]) {
+      g.fillStyle = v === 127 ? '#1c2050' : '#141838';
+      g.fillRect(KEYW, Math.round(this.velY(v)), W - KEYW, 1);
+    }
+    const beat = doc.beat;
+    const beatStep = beat * this.zoom >= 8 ? beat : beat * 4 * this.zoom >= 8 ? beat * 4 : beat * 16;
+    g.fillStyle = '#12163a';
+    for (let t = Math.ceil(t0 / beatStep) * beatStep; t < t1; t += beatStep) g.fillRect(Math.round(this.xOf(t)), top + 2, 1, VEL - 2);
+    g.fillStyle = '#9aa2d8';
+    g.fillText('VEL', 6, top + 12);
+    g.fillStyle = '#5c64a0';
+    g.fillText('127', 6, Math.round(this.velY(127)));
+    g.fillText('1', 6, Math.round(this.velY(1)));
+    g.save();
+    g.beginPath();
+    g.rect(KEYW, top + 2, W - KEYW, VEL - 2);
+    g.clip();
+    const d = this.drag?.kind === 'vel' ? this.drag : undefined;
+    let label: { x: number; y: number; v: number } | undefined;
+    // selected bars on top
+    const order = [...notes].sort((a, b) => Number(doc.selection.has(a)) - Number(doc.selection.has(b)));
+    for (const n of order) {
+      const s = n.on.tick;
+      if (s < t0 - 4 / this.zoom || s > t1) continue;
+      const x = Math.round(this.xOf(s));
+      const y = Math.round(this.velY(n.on.b));
+      const sel = doc.selection.has(n);
+      const hot = this.hover?.vel && this.hover.note === n;
+      g.globalAlpha = silent ? 0.4 : 1;
+      g.fillStyle = sel ? '#ffffff' : color;
+      g.globalAlpha *= sel || hot ? 1 : 0.4 + (0.6 * n.on.b) / 127;
+      g.fillRect(x, y, 2, H - 4 - y);
+      g.fillRect(x - 2, y - 1, 7, 3);
+      g.globalAlpha = 1;
+      if (hot || (d && (d.grab === n || (d.changed && d.notes.includes(n) && d.notes.length === 1)))) label = { x, y, v: n.on.b };
+    }
+    if (d?.grab && d.relative) label = { x: Math.round(this.xOf(d.grab.on.tick)), y: Math.round(this.velY(d.grab.on.b)), v: d.grab.on.b };
+    if (label) {
+      const text = String(label.v);
+      const tw = g.measureText(text).width + 6;
+      const lx = Math.min(W - tw - 2, label.x + 6);
+      const ly = Math.max(top + 4, label.y - 14);
+      g.fillStyle = '#ffd400';
+      g.fillRect(lx, ly, tw, 12);
+      g.fillStyle = '#000';
+      g.fillText(text, lx + 3, ly + 6);
+    }
+    g.restore();
+  }
+
   // ---- hit testing ----
 
   private pos(e: PointerEvent | MouseEvent | WheelEvent): { x: number; y: number } {
@@ -439,7 +529,7 @@ export class PianoRoll {
   }
 
   private noteAt(x: number, y: number): { note: Note; edge: boolean } | undefined {
-    if (x < KEYW || y < HEAD) return undefined;
+    if (x < KEYW || y < HEAD || y >= this.velTop) return undefined;
     const t = this.tOf(x);
     const k = this.keyOf(y);
     const notes = channelNotes(this.doc.song, this.doc.track);
@@ -452,6 +542,20 @@ export class PianoRoll {
       if (t >= s && (t <= e || x <= ex + 2)) return { note: n, edge: x >= ex - Math.min(6, (e - s) * this.zoom * 0.35) };
     }
     return undefined;
+  }
+
+  /** The velocity bar nearest x (within a few pixels), selected bars first. */
+  private velAt(x: number): Note | undefined {
+    let best: Note | undefined;
+    let dist = 5;
+    for (const n of channelNotes(this.doc.song, this.doc.track)) {
+      const dx = Math.abs(this.xOf(n.on.tick) + 1 - x);
+      if (dx < dist || (dx === dist && best && !this.doc.selection.has(best) && this.doc.selection.has(n))) {
+        best = n;
+        dist = dx;
+      }
+    }
+    return best;
   }
 
   private programAt(x: number): Ev | undefined {
@@ -503,6 +607,12 @@ export class PianoRoll {
       }
       return;
     }
+    if (y >= this.velTop) {
+      if (x < KEYW || !doc.tracks().includes(doc.track)) return;
+      this.canvas.setPointerCapture(e.pointerId);
+      this.velDown(x, y, e.shiftKey || e.metaKey || e.ctrlKey);
+      return;
+    }
     if (x < KEYW) {
       const k = this.keyOf(y);
       void doc.audition(doc.track, k);
@@ -550,7 +660,7 @@ export class PianoRoll {
     const start = doc.snapBeats ? Math.floor(this.tOf(x) / doc.snap) * doc.snap : Math.round(this.tOf(x));
     const key = this.keyOf(y);
     doc.begin();
-    const n = addNote(song, doc.track, key, Math.max(0, start), doc.noteLen);
+    const n = addNote(song, doc.track, key, Math.max(0, start), doc.noteLen, doc.velocity);
     doc.selection.clear();
     doc.selection.add(n);
     this.drag = { kind: 'resize', notes: [n], orig: new Map([[n, { start: n.on.tick, len: doc.noteLen, key }]]), t0: this.tOf(x), grab: n, changed: true };
@@ -563,15 +673,26 @@ export class PianoRoll {
     const doc = this.doc;
     const d = this.drag;
     if (!d) {
-      const hit = this.noteAt(x, y);
-      const k = x < KEYW && y >= HEAD ? this.keyOf(y) : -1;
-      if (hit?.note !== this.hover?.note || hit?.edge !== this.hover?.edge || k !== this.hoverKey) {
+      const inVel = y >= this.velTop;
+      const velNote = inVel && x >= KEYW ? this.velAt(x) : undefined;
+      const hit: { note: Note; edge: boolean; vel?: boolean } | undefined = inVel
+        ? velNote
+          ? { note: velNote, edge: false, vel: true }
+          : undefined
+        : this.noteAt(x, y);
+      const k = x < KEYW && y >= HEAD && !inVel ? this.keyOf(y) : -1;
+      if (hit?.note !== this.hover?.note || hit?.edge !== this.hover?.edge || !!hit?.vel !== !!this.hover?.vel || k !== this.hoverKey) {
         this.hover = hit;
         this.hoverKey = k;
         this.draw();
       }
-      this.canvas.style.cursor =
-        y < RULER
+      this.canvas.style.cursor = inVel
+        ? x < KEYW
+          ? 'default'
+          : velNote
+            ? 'ns-resize'
+            : 'crosshair'
+        : y < RULER
           ? 'col-resize'
           : y < HEAD
             ? 'pointer'
@@ -609,6 +730,9 @@ export class PianoRoll {
         setEnd(song, doc.quantize(this.tOf(x)));
         d.changed = true;
         doc.emit('view');
+        return;
+      case 'vel':
+        this.velMove(d, x, y);
         return;
       case 'erase':
         this.eraseAt(x, y);
@@ -678,6 +802,16 @@ export class PianoRoll {
         } else if (doc.playing) doc.remix();
         doc.emit('view');
         return;
+      case 'vel':
+        if (d.changed) {
+          const n = d.grab ?? d.notes[d.notes.length - 1];
+          if (n) {
+            doc.velocity = n.on.b;
+            if (d.grab) void doc.audition(doc.track, n.on.a, programAtTick(doc, n.on.tick), 50, n.on.b);
+          }
+          doc.commit();
+        } else doc.undoDiscard();
+        return;
       case 'move':
       case 'resize':
       case 'erase':
@@ -691,6 +825,57 @@ export class PianoRoll {
         doc.emit('view');
         return;
     }
+  }
+
+  // ---- velocity lane ----
+
+  private velDown(x: number, y: number, add: boolean): void {
+    const doc = this.doc;
+    const hit = this.velAt(x);
+    doc.begin();
+    if (hit) {
+      if (add) {
+        if (!doc.selection.has(hit)) doc.selection.add(hit);
+      } else if (!doc.selection.has(hit)) {
+        doc.selection.clear();
+        doc.selection.add(hit);
+      }
+      // several selected: drag them all up or down together; one: set it where the pointer is
+      const notes = doc.selection.size > 1 ? [...doc.selection] : [hit];
+      const relative = notes.length > 1;
+      this.drag = { kind: 'vel', notes, orig: new Map(notes.map((n) => [n, n.on.b])), y0: y, grab: hit, relative, lastX: x, changed: false };
+      if (!relative) this.velMove(this.drag, x, y);
+      doc.emit('view');
+      return;
+    }
+    // empty space: paint the bars the pointer passes over (only selected ones, if any)
+    this.drag = { kind: 'vel', notes: [], orig: new Map(), y0: y, relative: false, lastX: x, changed: false };
+    this.velMove(this.drag, x, y);
+  }
+
+  private velMove(d: Extract<Drag, { kind: 'vel' }>, x: number, y: number): void {
+    const doc = this.doc;
+    if (d.grab) {
+      if (d.relative) {
+        const dv = Math.round(((d.y0 - y) / (VEL - 12)) * 127);
+        for (const n of d.notes) setVelocity([n], d.orig.get(n)! + dv);
+      } else setVelocity(d.notes, this.velOf(y));
+      d.changed = true;
+      doc.emit('view');
+      return;
+    }
+    const ta = this.tOf(Math.min(d.lastX, x) - 3);
+    const tb = this.tOf(Math.max(d.lastX, x) + 3);
+    d.lastX = x;
+    const v = this.velOf(y);
+    const only = doc.selection.size ? doc.selection : undefined;
+    for (const n of channelNotes(doc.song, doc.track)) {
+      if (n.on.tick < ta || n.on.tick > tb || (only && !only.has(n))) continue;
+      setVelocity([n], v);
+      if (!d.notes.includes(n)) d.notes.push(n);
+      d.changed = true;
+    }
+    doc.emit('view');
   }
 
   private eraseAt(x: number, y: number): void {
@@ -781,6 +966,17 @@ export class PianoRoll {
       doc.emit('view');
       return;
     }
+    if (e.altKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && sel.length) {
+      // Alt+Up/Down: louder or softer (Shift: by 10)
+      e.preventDefault();
+      const dv = (e.key === 'ArrowUp' ? 1 : -1) * (e.shiftKey ? 10 : 1);
+      doc.edit(() => {
+        for (const n of sel) setVelocity([n], n.on.b + dv);
+      });
+      doc.velocity = sel[0].on.b;
+      doc.emit('view');
+      return;
+    }
     const arrows: Record<string, [number, number]> = { ArrowUp: [0, 1], ArrowDown: [0, -1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
     const a = arrows[e.key];
     if (a && sel.length) {
@@ -812,7 +1008,7 @@ export class PianoRoll {
     const sel = [...this.doc.selection];
     if (!sel.length) return;
     const start = Math.min(...sel.map((n) => n.on.tick));
-    this.doc.clipboard = sel.map((n) => ({ dt: n.on.tick - start, len: noteEnd(this.doc.song, n) - n.on.tick, key: n.on.a }));
+    this.doc.clipboard = sel.map((n) => ({ dt: n.on.tick - start, len: noteEnd(this.doc.song, n) - n.on.tick, key: n.on.a, vel: n.on.b }));
   }
 
   paste(at: number): void {
@@ -820,7 +1016,7 @@ export class PianoRoll {
     if (!doc.clipboard.length) return;
     doc.edit(() => {
       doc.selection.clear();
-      for (const c of doc.clipboard) doc.selection.add(addNote(doc.song, doc.track, c.key, at + c.dt, c.len));
+      for (const c of doc.clipboard) doc.selection.add(addNote(doc.song, doc.track, c.key, at + c.dt, c.len, c.vel));
     });
     this.reveal([...doc.selection]);
   }
