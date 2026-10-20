@@ -8,6 +8,7 @@ import { Project } from './editor/project';
 import { loadProject } from './project/storage';
 import { renderDesk } from './desk/desk';
 import { watchForUpdates } from './devReload';
+import { renderWebManual } from './manual/webManual';
 
 type Ui = 'desk' | 'modern';
 const UI_KEY = 'gm-ui';
@@ -66,6 +67,7 @@ function startModern(hash?: string): void {
       h('a', { href: '#/' }, h('h1', null, 'GAME-MAKER')),
       titleSlot,
       h('span', { class: 'spacer' }),
+      h('a', { href: '#/help', title: 'How to use Game-Maker Web' }, '? Guide'),
       h('button', { onclick: () => startDesk(), title: 'Go back to the mid-90s desk' }, '💾 1994 desk'),
       h('a', { href: 'https://github.com/lewismoten/GameMaker', target: '_blank', rel: 'noopener' }, 'Source'),
     ),
@@ -106,6 +108,11 @@ async function route(): Promise<void> {
   workspace?.dispose();
   workspace = undefined;
   clear(titleSlot);
+  if (kind === 'help') {
+    document.title = 'Guide · Game-Maker Web';
+    renderWebManual(content);
+    return;
+  }
   document.title = 'Game-Maker Web';
   await renderHome(content, nav);
 }
