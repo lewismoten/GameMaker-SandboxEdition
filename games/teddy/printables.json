@@ -5,11 +5,13 @@
     "Space": "Speak: WOOF! Clears out pests",
     "Down": "Dig (bones, soft dirt, sawdust)",
     "F": "Fetch a costume piece",
-    "H": "High five (hands, balloons)",
-    "S": "Sit pretty (for SIT? bubbles)",
-    "T": "Spin (revolving doors, SPIN bubbles)",
-    "R": "Roll over: a fluff ball knocks stacks down",
-    "D": "Play dead (hold): things fly over"
+    "1": "High five (hands, balloons)",
+    "2": "Sit pretty (for SIT? bubbles)",
+    "3": "Spin (revolving doors, SPIN bubbles)",
+    "4": "Play dead (hold): things fly over",
+    "5": "Roll over: a fluff ball knocks stacks down",
+    "Q": "Hop up and to the left",
+    "E": "Hop up and to the right"
   },
   "items": [
     {
@@ -29,10 +31,38 @@
           "h": 14,
           "caption": "Showtime at the Klown Klub: Gwin in the spotlight, Doc Leo waiting for his nose."
         },
-        { "map": "backyard.map", "x": 44, "y": 29, "w": 16, "h": 11, "caption": "Doc Leo's backyard: the old oak and the back fence" },
-        { "map": "street.map", "x": 23, "y": 30, "w": 16, "h": 10, "caption": "Maple Street: the yard sale" },
-        { "map": "park.map", "x": 36, "y": 30, "w": 16, "h": 10, "caption": "Puddlewick Park: the covered bridge" },
-        { "map": "city.map", "x": 36, "y": 30, "w": 16, "h": 10, "caption": "Downtown at sunset" }
+        {
+          "map": "backyard.map",
+          "x": 44,
+          "y": 29,
+          "w": 16,
+          "h": 11,
+          "caption": "Doc Leo's backyard: the old oak and the back fence"
+        },
+        {
+          "map": "street.map",
+          "x": 23,
+          "y": 30,
+          "w": 16,
+          "h": 10,
+          "caption": "Maple Street: the yard sale"
+        },
+        {
+          "map": "park.map",
+          "x": 36,
+          "y": 30,
+          "w": 16,
+          "h": 10,
+          "caption": "Puddlewick Park: the covered bridge"
+        },
+        {
+          "map": "city.map",
+          "x": 36,
+          "y": 30,
+          "w": 16,
+          "h": 10,
+          "caption": "Downtown at sunset"
+        }
       ],
       "columns": 2
     },
@@ -49,7 +79,10 @@
               "q": "Where is Doc Leo's top hat?",
               "a": "Up in the top branches of the old oak. Hop up through the branches one at a time, then stand on the hat and press F."
             },
-            { "q": "The squirrel keeps nipping me.", "a": "Bark first! Press Space while facing it and it scampers off." },
+            {
+              "q": "The squirrel keeps nipping me.",
+              "a": "Bark first! Press Space while facing it and it scampers off."
+            },
             {
               "q": "The back fence is way too tall.",
               "a": "Look for the soft dirt with paw prints at its foot. Stand on it and press Down to dig a tunnel under the fence."
@@ -63,19 +96,31 @@
         {
           "head": "2. Maple Street",
           "hints": [
-            { "q": "A cat is napping in the hedge arch and won't move.", "a": "Cats only respect a bark. Face the cat and press Space." },
-            { "q": "The sprinkler keeps blasting me back.", "a": "It only sprays for a while. Wait until it rests, then trot right across." },
+            {
+              "q": "A cat is napping in the hedge arch and won't move.",
+              "a": "Cats only respect a bark. Face the cat and press Space."
+            },
+            {
+              "q": "The sprinkler keeps blasting me back.",
+              "a": "It only sprays for a while. Wait until it rests, then trot right across."
+            },
             {
               "q": "How do I get the bow tie?",
               "a": "It's caught on yard-sale balloons by the white house's porch. Stand under them and press H to high five; the bow tie drops down."
             },
-            { "q": "The kids on the porches hold out a hand.", "a": "That's a high five waiting to happen! Press H under the hand and they toss you a treat." }
+            {
+              "q": "The kids on the porches hold out a hand.",
+              "a": "That's a high five waiting to happen! Press H under the hand and they toss you a treat."
+            }
           ]
         },
         {
           "head": "3. Puddlewick Park",
           "hints": [
-            { "q": "How do I get over the tall hedge?", "a": "Walk into the fountain's jet. It lifts Teddy up; steer off the top and over the hedge." },
+            {
+              "q": "How do I get over the tall hedge?",
+              "a": "Walk into the fountain's jet. It lifts Teddy up; steer off the top and over the hedge."
+            },
             {
               "q": "Which kid has Doc Leo's shoes?",
               "a": "One of the kids on the bench. Stand near the SIT? bubble and press S to sit pretty, and the heart wins them over. The shoes drop right down."
@@ -114,7 +159,10 @@
               "q": "The turnstile won't let me in.",
               "a": "It takes three tickets. Honker wants a high five (H), Bubbles wants a sit (S) and Twirly wants a spin (T)."
             },
-            { "q": "Bowling pins block the tunnel under the bleachers.", "a": "Press R to roll over. The fluff ball rolls ahead and knocks the stack down." },
+            {
+              "q": "Bowling pins block the tunnel under the bleachers.",
+              "a": "Press R to roll over. The fluff ball rolls ahead and knocks the stack down."
+            },
             {
               "q": "How do I get up on the stage?",
               "a": "Spin through the stage door, dig through the sawdust, crawl along to the stage lift and ride it up."
@@ -142,7 +190,11 @@
       ],
       "color": "#1d5fb8",
       "ink": "#ffffff",
-      "portrait": { "chr": "teddy.chr", "cbl": "teddy.cbl", "pal": "backyard.pal" },
+      "portrait": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "backyard.pal"
+      },
       "back": "The bearer saved the Big Show and is welcome at every Klown Klub show, free of charge, forever. Honk twice at the turnstile. No pies in the face (unless asked)."
     }
   ],
@@ -153,7 +205,11 @@
       "shape": "badge",
       "color": "#1d5fb8",
       "ink": "#ffffff",
-      "hero": { "chr": "teddy.chr", "cbl": "teddy.cbl", "pal": "backyard.pal" }
+      "hero": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "backyard.pal"
+      }
     },
     {
       "text": "HONK!",
@@ -161,7 +217,11 @@
       "shape": "circle",
       "color": "#ffd23f",
       "ink": "#2a1408",
-      "sprite": { "blocks": "park.mbl", "pal": "park.pal", "grid": [[31]] }
+      "sprite": {
+        "blocks": "park.mbl",
+        "pal": "park.pal",
+        "grid": [[31]]
+      }
     },
     {
       "text": "NO NOSE, NO SHOW",
@@ -169,7 +229,11 @@
       "shape": "star",
       "color": "#d9381e",
       "ink": "#ffffff",
-      "sprite": { "blocks": "klub.mbl", "pal": "klub.pal", "grid": [[44]] }
+      "sprite": {
+        "blocks": "klub.mbl",
+        "pal": "klub.pal",
+        "grid": [[44]]
+      }
     },
     {
       "text": "BARK FIRST",
@@ -177,7 +241,11 @@
       "shape": "rect",
       "color": "#fff6e0",
       "ink": "#2a1408",
-      "sprite": { "blocks": "backyard.mbl", "pal": "backyard.pal", "grid": [[28]] }
+      "sprite": {
+        "blocks": "backyard.mbl",
+        "pal": "backyard.pal",
+        "grid": [[28]]
+      }
     },
     {
       "text": "NOT MOVING",
@@ -185,7 +253,11 @@
       "shape": "rect",
       "color": "#ffd23f",
       "ink": "#2a1408",
-      "sprite": { "blocks": "street.mbl", "pal": "street.pal", "grid": [[28]] }
+      "sprite": {
+        "blocks": "street.mbl",
+        "pal": "street.pal",
+        "grid": [[28]]
+      }
     },
     {
       "text": "HIGH FIVE!",
@@ -193,7 +265,11 @@
       "shape": "circle",
       "color": "#1d5fb8",
       "ink": "#ffd23f",
-      "sprite": { "blocks": "street.mbl", "pal": "street.pal", "grid": [[35]] }
+      "sprite": {
+        "blocks": "street.mbl",
+        "pal": "street.pal",
+        "grid": [[35]]
+      }
     }
   ],
   "news": [

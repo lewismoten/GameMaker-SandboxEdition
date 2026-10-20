@@ -1,11 +1,10 @@
 {
   "pitch": "Teddy the corgi wins back four sandcastles, his toys and his crown from his big sister Gwin, one tower and one trick at a time.",
   "keys": {
-    "S": "Sit (and offer a paw)",
-    "T": "Spin trick: bowls over ants and beetles",
-    "R": "Roll over",
-    "J": "Jump (with a bark)",
-    "D": "Play dead",
+    "2": "Sit (and offer a paw)",
+    "3": "Spin: bowls over ants and beetles",
+    "4": "Play dead",
+    "5": "Roll over",
     "F": "Toss a tennis ball",
     "B": "Throw a splash of water",
     "Space": "Fling a clod of sand",
