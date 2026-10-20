@@ -234,7 +234,8 @@ function pages(): BookletPage[] {
         <tr><td>Bad command or file name</td><td>DOS doesn\u2019t know that command. Check the spelling, or <code>CD</code> into the game\u2019s folder first.</td></tr>
       </table>
       <p>Shareware games are play-only. To change one, ask its author for permission and
-      the files, as its <code>README</code> explains.</p>`,
+      the files, as its <code>README</code> explains. Sandbox Software\u2019s own games are the
+      exception: open them in Game-Maker and see how they work.</p>`,
     ),
     page(
       '5. The Game-Maker BBS',
@@ -306,8 +307,12 @@ function pages(): BookletPage[] {
       or on a real PC.</p>
       <p>The shareware on the BBS and in the disk box belongs to its authors and is shown in
       its shareware state only. Please honor the authors\u2019 registration terms.</p>
-      <div class="note"><strong>Good news!</strong> The original license let you give games you
-      made to up to ten friends free of royalties, and distribute them as shareware.</div>`,
+      <p>In 2014 Game-Maker\u2019s author, Andy Stone, released its source code under the
+      <b>MIT License</b>. This edition is a modified fork of it by Lewis Moten, ported to the
+      browser with Claude Opus 5.5, and it is MIT licensed too: the games you make are yours to
+      share however you like.</p>
+      <div class="note"><strong>Make-believe:</strong> Sandbox Software, its address, the BBS
+      phone numbers and the brands on this desk are made up.</div>`,
     ),
     {
       cover: true,
