@@ -18,6 +18,8 @@ export interface Kit {
 export interface Leg {
   /** File name base (8.3): s1a, s1b, s1c... */
   file: string;
+  /** File name base of its .pal/.bbl/.mon/.mbl (shared by the scrolling legs of a stage). */
+  kitFile: string;
   title: string;
   kind: 'scroll' | 'boss';
   grid: Grid;
