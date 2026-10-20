@@ -1,48 +1,21 @@
-// DEMO.REC: what plays on the title screen when nobody touches the keyboard. A script
-// of key presses (in 18.2 Hz game ticks) on Pine Street, ending with Esc.
+// DEMO.REC: what plays on the title screen when nobody touches the keyboard. Recorded
+// from a real game on Pine Street (pairs of [ticks since the last key, PC scan code;
+// +128 = released]), ending with Esc.
 import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
 
-const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
-type Step = [keyof typeof SCAN | 'wait', number];
-
-/** Hold each key for n ticks (or wait n ticks). */
-const SCRIPT: Step[] = [
-  ['wait', 20],
-  ['down', 6],
-  ['right', 52],
-  ['up', 12],
-  ['wait', 4],
-  ['down', 12],
-  ['right', 20],
-  ['up', 14],
-  ['wait', 3],
-  ['left', 5],
-  ['down', 14],
-  ['wait', 6],
-  ['space', 2],
-  ['wait', 10],
-  ['right', 20],
-  ['up', 14],
-  ['right', 5],
-  ['down', 14],
-  ['wait', 4],
-  ['right', 28],
-  ['wait', 30],
+const RECORDED = [
+  16, 80, 4, 208, 0, 80, 4, 208, 0, 72, 1, 200, 0, 72, 2, 200, 0, 77, 7, 205, 0, 77, 7, 205, 0, 77, 8, 205, 0, 77, 7, 205, 0, 77, 8, 205, 0, 77, 7, 205, 0, 77,
+  7, 205, 0, 77, 4, 205, 0, 72, 13, 200, 0, 80, 8, 208, 0, 80, 4, 208, 0, 80, 4, 208, 0, 72, 1, 200, 0, 72, 1, 200, 0, 75, 8, 203, 0, 75, 1, 203, 0, 75, 1, 203,
+  0, 72, 16, 200, 0, 75, 5, 203, 0, 80, 16, 208, 0, 75, 3, 203, 0, 57, 0, 185, 9, 77, 7, 205, 0, 77, 7, 205, 1, 77, 7, 205, 0, 77, 7, 205, 0, 77, 94, 205, 0,
+  75, 8, 203, 0, 75, 7, 203, 0, 75, 7, 203, 1, 75, 7, 203, 0, 75, 7, 203, 0, 75, 7, 203, 0, 75, 8, 203, 0, 75, 7, 203, 0, 75, 8, 203, 0, 75, 7, 203, 0, 75, 7,
+  203, 0, 75, 4, 203, 0, 75, 5, 203, 0, 80, 5, 208, 0, 72, 1, 200, 1, 72, 1, 200, 0, 72, 1, 200, 0, 72, 1, 200, 0, 77, 8, 205, 0, 77, 7, 205, 0, 77, 4, 205, 0,
+  77, 4, 205, 0, 75, 2, 203, 0, 75, 1, 203, 0, 72, 13, 200, 0, 80, 7, 208, 0, 80, 7, 208, 0, 77, 8, 205, 0, 77, 4, 205, 0, 75, 1, 203, 0, 75, 1, 203, 0, 72, 16,
+  200, 0, 77, 5, 205, 0, 80, 16, 208, 0, 77, 7, 205, 0, 77, 5, 205, 0, 75, 1, 203, 0, 75, 1, 203, 0, 77, 27, 205,
 ];
 
 export function demoRecording(): Uint8Array {
   const keys: RecordedKey[] = [];
-  let since = 0;
-  for (const [key, ticks] of SCRIPT) {
-    if (key === 'wait') {
-      since += ticks;
-      continue;
-    }
-    keys.push({ delta: since, key: SCAN[key] });
-    keys.push({ delta: ticks, key: SCAN[key] | 0x80 });
-    since = 0;
-  }
-  keys.push({ delta: since, key: SCAN.esc });
-  keys.push({ delta: 2, key: SCAN.esc | 0x80 });
+  for (let i = 0; i < RECORDED.length; i += 2) keys.push({ delta: RECORDED[i], key: RECORDED[i + 1] });
+  keys.push({ delta: 25, key: 0x01 }, { delta: 2, key: 0x81 });
   return serializeRecording(keys);
 }
