@@ -480,10 +480,12 @@ export class PianoRoll {
     g.fillStyle = '#12163a';
     for (let t = Math.ceil(t0 / beatStep) * beatStep; t < t1; t += beatStep) g.fillRect(Math.round(this.xOf(t)), top + 2, 1, VEL - 2);
     g.fillStyle = '#9aa2d8';
-    g.fillText('VEL', 6, top + 12);
+    g.fillText('VEL', 6, top + VEL / 2);
     g.fillStyle = '#5c64a0';
-    g.fillText('127', 6, Math.round(this.velY(127)));
-    g.fillText('1', 6, Math.round(this.velY(1)));
+    g.textAlign = 'right';
+    g.fillText('127', KEYW - 4, top + 9);
+    g.fillText('1', KEYW - 4, H - 8);
+    g.textAlign = 'left';
     g.save();
     g.beginPath();
     g.rect(KEYW, top + 2, W - KEYW, VEL - 2);

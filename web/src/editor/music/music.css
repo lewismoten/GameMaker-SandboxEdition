@@ -136,10 +136,10 @@
   border: 1px solid #2e3680;
   border-radius: 6px;
   background: #0a0c26;
-  color: #c8ceff;
 }
 
 .mus-vel-label {
+  color: #c8ceff;
   font-family: ui-monospace, Menlo, Consolas, monospace;
   white-space: nowrap;
 }
