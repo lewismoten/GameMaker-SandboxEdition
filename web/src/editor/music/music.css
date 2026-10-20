@@ -89,7 +89,7 @@
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
   gap: 8px;
-  height: clamp(320px, 56vh, 680px);
+  height: clamp(380px, 62vh, 740px);
 }
 
 .mus-roll-col {
@@ -126,6 +126,27 @@
   gap: 4px 14px;
   align-items: center;
   font-size: 12px;
+}
+
+.mus-vel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid #2e3680;
+  border-radius: 6px;
+  background: #0a0c26;
+  color: #c8ceff;
+}
+
+.mus-vel-label {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  white-space: nowrap;
+}
+
+.mus-vel input[type='range'] {
+  width: 110px;
+  accent-color: #ffd400;
 }
 
 .mus-options .hint {
@@ -449,6 +470,14 @@
 
   .mus-roll {
     flex: none;
-    height: 340px;
+    height: 400px;
   }
+}
+
+/* Loudness tools in Song settings */
+.mus-loud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
 }

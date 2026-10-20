@@ -1,6 +1,7 @@
 // Sound Blaster music (.CMF): tracks, a piano roll per track, FM instruments, and playback
 // through the same PlayIt code the games use. Only what Game-Maker plays can be edited:
-// notes, instruments (program changes and SBI settings), the drum kit (rhythm mode), timing.
+// notes and their velocities (loudness), instruments (program changes and SBI settings), the
+// drum kit (rhythm mode), timing.
 import { registerEditor } from './index';
 import { h, clear, toast } from '../ui';
 import { MusicDoc, SNAPS } from '../music/doc';
@@ -9,6 +10,7 @@ import { Overview } from '../music/overview';
 import { TrackList } from '../music/tracks';
 import { InstrumentPanel } from '../music/instrument';
 import { SongPanel } from '../music/songPanel';
+import { VelocityField } from '../music/velocity';
 import '../music/music.css';
 
 registerEditor(['cmf'], (host, project, file) => {
@@ -27,6 +29,7 @@ registerEditor(['cmf'], (host, project, file) => {
   });
   const instrument = new InstrumentPanel(doc);
   const songPanel = new SongPanel(doc);
+  const velocity = new VelocityField(doc);
 
   // ---- transport and tools ----
   const playBtn = h('button', { class: 'primary mus-play', title: 'Play from the cursor (Space)' }, '▶ Play');
@@ -124,9 +127,14 @@ registerEditor(['cmf'], (host, project, file) => {
   const options = h(
     'div',
     { class: 'mus-options' },
+    velocity.el,
     h('label', { class: 'check', title: 'Show the other tracks faintly behind this one' }, ghosts, h('span', null, 'Show other tracks')),
     h('label', { class: 'check', title: 'Keep the playhead in view' }, follow, h('span', null, 'Follow playback')),
-    h('span', { class: 'hint' }, 'Click the ruler to set where playing starts; drag on it to mark a loop. Drag END to change where the song repeats.'),
+    h(
+      'span',
+      { class: 'hint' },
+      'Click the ruler to set where playing starts; drag on it to mark a loop. Drag END to change where the song repeats. Drag the bars in VEL to make notes louder or softer.',
+    ),
   );
 
   const refresh = () => {
