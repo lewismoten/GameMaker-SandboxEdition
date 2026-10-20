@@ -10,7 +10,8 @@ import { CRITTERS } from './critters';
 import { FLIP, type Bestiary } from './mons';
 import { POWER } from './ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { askBubble, juggler, kid, pin, taxi } from './folks';
+import { askBubble, juggler, kid, pin } from './folks';
+import { dove, marcher, presto, split } from './magic';
 import { CK } from './klown';
 import { bandOf } from './level1';
 import { bricks, c, copy, cut, dirt, r, sky } from './tiles';
@@ -289,6 +290,10 @@ export function cityTiles(): Tiles {
   const jug = juggler(0);
   t.on('jugTop', jug.crop(0, 0, 20, 20), 'brick');
   t.on('jugBot', jug.crop(0, 20, 20, 20), 'brick', 'air', { birthMon: 0, birthTime: 0 });
+  // Presto the magician on the plaza: doves flutter out of his hat (a magic trick for the crowd).
+  const [pt, pb] = split(presto());
+  t.on('prestoTop', pt, 'skyline');
+  t.on('prestoBot', pb, 'skyline', 'air', { birthMon: 0, birthTime: 0 });
 
   // The plaza: a hot dog cart, a billboard, a kid on a bench.
   t.wall(
@@ -497,9 +502,13 @@ export function cityBeasts() {
   for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -8 });
   revolvingDoor(b);
   b.pic('pin1', pin(0), { hp: -8 }).pic('pin2', pin(1), { hp: -8 });
-  const [ta0, tb0] = taxi(0);
-  const [ta1, tb1] = taxi(1);
-  b.pic('taxiA0', ta0).pic('taxiB0', tb0).pic('taxiA1', ta1).pic('taxiB1', tb1);
+  b.pic('dove1', dove(0)).pic('dove2', dove(1));
+  // Main Street is closed to traffic: the Klown Klub parade is marching to the Big Show.
+  for (const kind of ['drum', 'banner', 'balloons'] as const)
+    for (const step of [0, 1]) {
+      const [top, bottom] = split(marcher(kind, step));
+      b.pic(`${kind}T${step}`, top).pic(`${kind}B${step}`, bottom);
+    }
   b.pic('askSit1', askBubble('SIT?', undefined, 0)).pic('askSit2', askBubble('SIT?', undefined, 1));
 
   b.add('pin', {
@@ -536,24 +545,29 @@ export function cityBeasts() {
     ],
     end: -1,
   });
-  b.add('taxiBack', {
+  b.add('dove', {
     pics: [
-      ['taxiB0', 2],
-      ['taxiB1', 2],
+      ['dove1', 2],
+      ['dove2', 2],
     ],
-    power: POWER.friend + 50,
-    path: [[-100, 0, 4]],
-    end: -2,
-  });
-  b.add('taxiFront', {
-    pics: [
-      ['taxiA0', 2],
-      ['taxiA1', 2],
+    power: 0,
+    path: [
+      [1, -3, 3],
+      [4, -9, 5],
     ],
-    power: POWER.friend + 50,
-    path: [[-100, 0, 4]],
-    end: -2,
+    end: -1,
   });
+  for (const kind of ['drum', 'banner', 'balloons'])
+    for (const half of ['T', 'B'])
+      b.add(`${kind}${half}`, {
+        pics: [
+          [`${kind}${half}0`, 4],
+          [`${kind}${half}1`, 4],
+        ],
+        power: POWER.friend + 50,
+        path: [[100, 0, 1]],
+        end: -2,
+      });
   b.add('askSit', {
     pics: [
       ['askSit1', 10],
@@ -597,6 +611,9 @@ export function city(): Level {
   const jb = bs.def('jugBot');
   jb.birthMon = beasts.id('pin');
   jb.birthTime = 44;
+  const pb = bs.def('prestoBot');
+  pb.birthMon = beasts.id('dove');
+  pb.birthTime = 36;
   const m = new LevelMap(bs, beasts, 'sky0');
   const R = rng(17);
   const pick = (...names: string[]) => names[Math.floor(R() * names.length)];
@@ -681,6 +698,7 @@ export function city(): Level {
   m.rect(56, 31, 3, 1, 'billboard');
   for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) m.set(56 + x, 28 + y, `bb${x}${y}`);
   m.set(58, 39, 'cart').set(58, 38, 'umbrella');
+  m.set(60, 38, 'prestoTop').set(60, 39, 'prestoBot');
   m.set(61, 39, 'bench').set(61, 38, 'kidPlaza');
   m.mon(62, 37, 'askSit');
   m.mon(53, 39, 'pigeon');
@@ -703,9 +721,11 @@ export function city(): Level {
     .set(car, 39, 'carDoor')
     .set(car + 1, 39, 'carBack');
 
-  // Taxis going by.
-  m.mon(30, G + 1, 'taxiBack').mon(29, G + 1, 'taxiFront');
-  m.mon(80, G + 1, 'taxiBack').mon(79, G + 1, 'taxiFront');
+  // The parade marching down the street, two blocks tall, in the near lanes.
+  [6, 10, 14, 56, 60, 64].forEach((x, i) => {
+    const kind = ['drum', 'banner', 'balloons'][i % 3];
+    m.mon(x, G + 1, `${kind}T`).mon(x, G + 2, `${kind}B`);
+  });
 
   const treats: [number, number][] = [
     [6, 39],
@@ -732,7 +752,7 @@ export function city(): Level {
     [56, 30],
     [57, 30],
     [58, 30],
-    [60, 39],
+    [59, 39],
     [63, 39],
     [67, 39],
     [70, 39],
@@ -741,7 +761,12 @@ export function city(): Level {
   ];
   for (const [x, y] of treats) m.treat(x, y);
   // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
-  for (const [x, y] of [[13, 35], [22, 30], [58, 30]]) m.mon(x, y, 'poodle');
+  for (const [x, y] of [
+    [13, 35],
+    [22, 30],
+    [58, 30],
+  ])
+    m.mon(x, y, 'poodle');
   m.mon(66, G, 'buried');
   m.mark('start', 4, 39);
   m.mark('exit', car, 39);
