@@ -162,6 +162,14 @@ export class Computer implements RetroHost {
     this.cdIn = true;
   }
 
+  ejectCd(): void {
+    this.cdIn = false;
+  }
+
+  get cdInserted(): boolean {
+    return this.cdIn;
+  }
+
   disk(): InsertedDisk | undefined {
     return this.inserted;
   }
