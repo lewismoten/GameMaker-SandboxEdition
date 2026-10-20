@@ -5,7 +5,7 @@ import { h } from '../../editor/ui';
 import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition';
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
-import { RedFilm } from './redFilm';
+import { RedFilm, RedLens } from './redFilm';
 
 /** A thing in the box. */
 export interface BoxItem {
@@ -35,10 +35,13 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
     const counter = h('span', { class: 'gmb-counter' });
     const filmBtn = h(
       'button',
-      { class: 'gmb-film-btn', onclick: () => film.toggle(), title: 'Lay the red film over the page; drag it around' },
+      { class: 'gmb-film-btn', onclick: () => film.toggle(), title: 'A whole sheet of red film to drag over the page (or just point at an answer)' },
       '🟥 Red film',
     );
     const film = new RedFilm();
+    // over a page with hidden answers the pointer carries a circle of red film
+    const lens = new RedLens();
+    lens.follow(stage, () => !!items.find((i) => i.id === current)?.redFilm);
     const two = () => stage.clientWidth >= 760;
 
     // ---- the manual
@@ -107,7 +110,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       for (const li of tray.children) li.classList.toggle('on', (li as HTMLElement).dataset.id === id);
       const item = items.find((i) => i.id === id);
       filmBtn.hidden = !item?.redFilm;
-      if (!item?.redFilm) film.hide();
+      if (!item?.redFilm) (film.hide(), lens.hide());
       if (id === 'manual') showManual();
       else if (item) void showItem(item);
     };
@@ -220,6 +223,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       h('div', { class: 'gmb-main' }, h('nav', { class: 'gmb-tray', 'aria-label': 'What’s in the box' }, h('h2', null, 'What’s in the box'), tray), stage),
     );
     film.mount(overlay);
+    lens.mount(overlay);
     document.body.append(overlay, printRoot);
     select('manual');
   });

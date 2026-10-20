@@ -7,7 +7,12 @@ import { rng } from './kit';
 
 let noiseUrl: string | undefined;
 
-/** A tile of red noise: every speck has full red, so the film swallows it. */
+/**
+ * A tile of red noise. Every mark has full red (R = 255), so under red film the whole tile
+ * turns the film's own red and disappears, while the light blue answer (almost no red) turns
+ * black. Without the film the marks are loud: magenta letter-shaped decoys at the answer's
+ * size and weight, yellow and crimson scribbles, so the eye can't pick the real words out.
+ */
 export function redNoiseTile(): string {
   if (noiseUrl) return noiseUrl;
   const W = 240;
@@ -15,41 +20,64 @@ export function redNoiseTile(): string {
   const c = h('canvas', { width: W, height: H });
   const g = c.getContext('2d')!;
   const r = rng(0x5a17d);
+  const pick = (list: string[]) => list[Math.floor(r() * list.length)];
   // pink wash
-  g.fillStyle = 'rgb(255, 182, 196)';
+  g.fillStyle = 'rgb(255, 130, 170)';
   g.fillRect(0, 0, W, H);
-  const colors = ['rgb(255,40,70)', 'rgb(255,90,150)', 'rgb(255,150,60)', 'rgb(255,120,200)', 'rgb(255,0,40)', 'rgb(255,170,230)', 'rgb(255,60,110)'];
-  // specks
-  for (let i = 0; i < 5200; i++) {
-    g.fillStyle = colors[Math.floor(r() * colors.length)];
+  const specks = ['rgb(255,40,80)', 'rgb(255,0,140)', 'rgb(255,190,40)', 'rgb(255,170,255)', 'rgb(255,0,40)', 'rgb(255,210,230)', 'rgb(255,70,180)'];
+  for (let i = 0; i < 7000; i++) {
+    g.fillStyle = pick(specks);
     const s = 1 + Math.floor(r() * 3);
     g.fillRect(Math.floor(r() * W), Math.floor(r() * H), s, s);
   }
-  // squiggles like the real thing
-  g.lineWidth = 1.6;
-  for (let i = 0; i < 90; i++) {
-    g.strokeStyle = colors[Math.floor(r() * colors.length)];
+  // scribbles at the size of letter strokes
+  for (let i = 0; i < 160; i++) {
+    g.strokeStyle = pick(['rgb(255,0,120)', 'rgb(255,60,255)', 'rgb(255,210,60)', 'rgb(255,30,60)', 'rgb(255,110,240)']);
+    g.lineWidth = 1 + r() * 1.4;
     g.beginPath();
     let x = r() * W;
     let y = r() * H;
     g.moveTo(x, y);
-    for (let k = 0; k < 4; k++) {
-      x += (r() - 0.5) * 26;
+    for (let k = 0; k < 5; k++) {
+      x += (r() - 0.5) * 22;
       y += (r() - 0.5) * 14;
-      g.lineTo(x, y);
+      g.quadraticCurveTo(x + (r() - 0.5) * 10, y + (r() - 0.5) * 10, x, y);
     }
     g.stroke();
   }
-  // letter-shaped decoys in the answer's weight: pink ones, and pale blue ones whose red is high
-  // enough that the film hides them too, so the eye can't pick the real words out
-  const decoys = ['rgb(215,160,255)', 'rgb(225,150,250)', 'rgb(205,170,255)', 'rgb(255,90,150)', 'rgb(235,120,230)'];
-  for (let i = 0; i < 260; i++) {
-    g.font = `${r() < 0.5 ? 700 : 400} ${12 + Math.floor(r() * 6)}px Arial, sans-serif`;
-    g.fillStyle = decoys[Math.floor(r() * decoys.length)];
+  // letter-shaped decoys in the answer's size and weight, in colors the film swallows
+  const decoys = ['rgb(255,0,80)', 'rgb(255,20,130)', 'rgb(255,0,170)', 'rgb(255,60,220)', 'rgb(255,30,100)'];
+  for (let i = 0; i < 900; i++) {
+    g.font = `${r() < 0.6 ? 700 : 400} ${12 + Math.floor(r() * 7)}px Arial, sans-serif`;
+    g.fillStyle = pick(decoys);
     g.fillText(String.fromCharCode((r() < 0.7 ? 97 : 65) + Math.floor(r() * 26)), r() * W, r() * H);
   }
   noiseUrl = c.toDataURL();
   return noiseUrl;
+}
+
+let inkUrl: string | undefined;
+
+/**
+ * The answer's ink: light blues, all with little red so the film turns every one of them
+ * black, but mottled from cyan to violet so the letters break up into the noise around them.
+ */
+export function blueInkTile(): string {
+  if (inkUrl) return inkUrl;
+  const W = 96;
+  const c = h('canvas', { width: W, height: W });
+  const g = c.getContext('2d')!;
+  const r = rng(0xb1e);
+  g.fillStyle = 'rgb(110,200,245)';
+  g.fillRect(0, 0, W, W);
+  const inks = ['rgb(100,215,250)', 'rgb(120,170,255)', 'rgb(90,120,235)', 'rgb(125,220,235)', 'rgb(115,150,250)', 'rgb(105,90,215)'];
+  for (let i = 0; i < 900; i++) {
+    g.fillStyle = inks[Math.floor(r() * inks.length)];
+    const s = 1 + Math.floor(r() * 3);
+    g.fillRect(Math.floor(r() * W), Math.floor(r() * W), s, s);
+  }
+  inkUrl = c.toDataURL();
+  return inkUrl;
 }
 
 /** An answer hidden in red noise. */
@@ -57,9 +85,39 @@ export function redCode(text: string): HTMLElement {
   return h(
     'span',
     { class: 'rf-code' },
-    h('span', { class: 'rf-text' }, text),
+    h('span', { class: 'rf-text', style: `background-image:url(${blueInkTile()})` }, text),
     h('span', { class: 'rf-noise', style: `background-image:url(${redNoiseTile()})`, 'aria-hidden': 'true' }),
   );
+}
+
+/**
+ * A circle of red film that follows the pointer over a page with hidden answers, like
+ * holding the hint book's red lens up to it.
+ */
+export class RedLens {
+  private el = h('div', { class: 'rf-lens', hidden: true, 'aria-hidden': 'true' });
+
+  mount(parent: HTMLElement): void {
+    parent.append(this.el);
+  }
+
+  /** Follows the pointer over `area` while `active()` says this page has answers to hide. */
+  follow(area: HTMLElement, active: () => boolean): void {
+    const move = (e: PointerEvent) => {
+      const over = active() && (e.target as Element | null)?.closest?.('.pp-sheet');
+      if (!over) return this.hide();
+      this.el.hidden = false;
+      this.el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    };
+    area.addEventListener('pointermove', move);
+    area.addEventListener('pointerdown', move);
+    area.addEventListener('pointerleave', () => this.hide());
+    area.addEventListener('scroll', () => this.hide(), { passive: true });
+  }
+
+  hide(): void {
+    this.el.hidden = true;
+  }
 }
 
 /** The draggable red cellophane. */
