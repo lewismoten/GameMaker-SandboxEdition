@@ -159,7 +159,7 @@ function ss2Chunk(b: Uint8Array, p: number, end: number, w: number, h: number, p
   p += 2;
   let y = 0;
   while (lines > 0 && p < end && y < h) {
-    let word = (b[p] | (b[p + 1] << 8)) << 16 >> 16;
+    let word = ((b[p] | (b[p + 1] << 8)) << 16) >> 16;
     p += 2;
     if ((word & 0xc000) === 0xc000) {
       y -= word; // skip lines (word is negative)
@@ -167,7 +167,7 @@ function ss2Chunk(b: Uint8Array, p: number, end: number, w: number, h: number, p
     }
     if ((word & 0xc000) === 0x8000) {
       px[y * w + w - 1] = word & 0xff;
-      word = (b[p] | (b[p + 1] << 8)) << 16 >> 16;
+      word = ((b[p] | (b[p + 1] << 8)) << 16) >> 16;
       p += 2;
     }
     let x = 0;
@@ -284,15 +284,26 @@ function fliChunk(type: number, data: number[]): number[] {
  * coded, the 6-bit palette in the first frame, and a closing "ring" frame that leads back
  * to the start. `speed` is the delay after each frame in 1/70 s.
  */
-export function encodeFli(frames: Uint8Array[], palette: Uint8Array, opts: { width?: number; height?: number; speed?: number } = {}): Uint8Array {
+export function encodeFli(
+  frames: Uint8Array[],
+  palette: Uint8Array,
+  opts: {
+    width?: number;
+    height?: number;
+    speed?: number;
+    /** A palette per frame (fades, flashes); changes are stored where they happen. */ palettes?: Uint8Array[];
+  } = {},
+): Uint8Array {
   const w = opts.width ?? 320;
   const h = opts.height ?? 200;
   const all = [...frames, frames[0]];
+  const pals = opts.palettes ? [...frames.map((_, i) => opts.palettes![i] ?? palette), opts.palettes[0] ?? palette] : undefined;
   const records = all.map((px, i) => {
     const chunks: number[][] = [];
-    if (i === 0) {
+    const pal = pals?.[i] ?? palette;
+    if (i === 0 || (pals && pals[i - 1].some((v, c) => c < 768 && (v & 63) !== (pal[c] & 63)))) {
       const colors: number[] = [1, 0, 0, 0]; // one packet: skip 0, count 0 = 256 colors
-      for (let c = 0; c < 768; c++) colors.push(palette[c] & 63);
+      for (let c = 0; c < 768; c++) colors.push(pal[c] & 63);
       chunks.push(fliChunk(11, colors));
     }
     // After the first frame, store only what changed, when that is smaller.
