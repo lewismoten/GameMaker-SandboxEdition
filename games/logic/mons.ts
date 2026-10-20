@@ -85,9 +85,13 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
   b.add('timerOffHot', { pics: [['timerOff', 50]], power: POWER.hot, end: HOT_TICKS, becomes: 'timerOff' });
   // Force-field gates: deadly to touch; current reaching one shuts it down for good, and
   // the open gate's posts swallow any current that follows (so the doorway stays safe).
-  {
-    const name = 'gate';
-    b.add(`${name}Open`, { pics: [['gateFade2', 50]], power: POWER.open, end: -2 });
+  // "gateV" is the same gate turned a quarter, for current coming in from the side.
+  for (const [name, orient] of [
+    ['gate', 0],
+    ['gateV', 1],
+  ] as const) {
+    const path: [number, number, number, number][] = [[0, 0, 0, orient]];
+    b.add(`${name}Open`, { pics: [['gateFade2', 50]], power: POWER.open, end: -2, path });
     b.add(`${name}Opening`, {
       pics: [
         ['gateFade1', 4],
@@ -96,6 +100,7 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
       power: POWER.open,
       end: 10,
       becomes: `${name}Open`,
+      path,
     });
     b.add(name, {
       pics: [
@@ -105,6 +110,7 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
       ],
       power: POWER.gate,
       becomes: `${name}Opening`,
+      path,
     });
   }
   // Fuses carry current until Watt bumps one (or control current hits it): then never again.

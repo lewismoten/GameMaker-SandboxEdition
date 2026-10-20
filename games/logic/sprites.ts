@@ -179,7 +179,7 @@ function watt(view: View, step: number, mood: 'ok' | 'blink' | 'zapped' | 'toast
   const hx = view === 'side' ? 4 : 4;
   // Watt keeps out of the top four rows (outline included): current arriving at an
   // open gate runs four pixels into the doorway before its posts swallow it.
-  blob(p, hx + 6, 9.2, 6.4, 3.8, head, 0, head.length - 1);
+  blob(p, hx + 6, 9.2, 5.4, 3.8, head, 0, head.length - 1);
   // a short bent antenna
   const ax = view === 'side' ? 12 : 13;
   const droop = toast ? 2 : 0;
@@ -204,7 +204,7 @@ function watt(view: View, step: number, mood: 'ok' | 'blink' | 'zapped' | 'toast
     eye(12.5);
   } else if (view === 'side') {
     eye(6.5);
-    p.rect(4, 10, 3, 1, c('teal', 0));
+    p.rect(5, 11, 2, 1, c('teal', 0));
   } else {
     for (let y = 6; y < 11; y += 2) p.rect(7, y, 6, 1, c('teal', 1));
   }
