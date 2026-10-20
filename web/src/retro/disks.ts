@@ -42,7 +42,7 @@ const RSD_BLUE = '#1d3b8a';
 /** Publishers of the disks, so each gets a distinct color (filled in by loadDisks). */
 const PUBLISHERS: string[] = [];
 const STRIPES = ['#c62828', '#1565c0', '#2e7d32', '#f9a825', '#6a1b9a', '#00838f', '#ef6c00'];
-const NOTES = ['Do not erase!', 'BACKUP', 'keep!!', 'Mine - hands off', 'v2 - good one', 'DO NOT FORMAT', 'from Jeff', 'BEAT IT!'];
+const NOTES = ['Do not erase!', 'BACKUP', 'keep!!', 'Mine - hands off', 'v2 - good one', 'DO NOT FORMAT', 'from Doc Leo', 'BEAT IT!'];
 
 /** A small stable number from a string, to pick colors and notes. */
 function hash(s: string): number {
