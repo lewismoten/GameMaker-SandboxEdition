@@ -13,6 +13,8 @@ export interface PickOptions {
   current?: string;
   /** Offer "None" (an empty slot). */
   allowNone?: boolean;
+  /** What "None" means here, e.g. "Scene palette". */
+  noneLabel?: [string, string];
   /** Extra kinds that also fit (graphic slots take gif/fli/bkd/txt/lst). */
   kinds?: FileKind[];
   /** Adding a file: start on the library and leave out this game's own files. */
@@ -36,7 +38,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       const names = kinds.flatMap((k) => project.files.byExtension(k));
       clear(
         grid,
-        opts.allowNone ? card('None', h('span', { class: 'thumb icon' }, '∅'), 'leave the slot empty', () => close(''), opts.current === '') : null,
+        opts.allowNone ? card(opts.noneLabel?.[0] ?? 'None', h('span', { class: 'thumb icon' }, '∅'), opts.noneLabel?.[1] ?? 'leave the slot empty', () => close(''), opts.current === '') : null,
         ...names.map((n) =>
           card(
             n.toUpperCase(),
@@ -141,7 +143,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
  * A file slot shown as its thumbnail and name, with buttons to choose another (the
  * visual picker) and to edit it. Replaces drop-down lists of file names.
  */
-export function fileField(project: Project, label: string, kinds: FileKind[], get: () => string, set: (name: string) => void, opts: { allowNone?: boolean; title?: string } = {}): HTMLElement {
+export function fileField(project: Project, label: string, kinds: FileKind[], get: () => string, set: (name: string) => void, opts: { allowNone?: boolean; title?: string; noneLabel?: [string, string] } = {}): HTMLElement {
   const body = h('div', { class: 'file-field-body' });
   const render = () => {
     const name = get();
@@ -154,14 +156,14 @@ export function fileField(project: Project, label: string, kinds: FileKind[], ge
           class: 'file-field-choose',
           title: `Choose ${label.toLowerCase()}`,
           onclick: async () => {
-            const picked = await pickFile(project, kinds[0], { kinds, current: name, allowNone: opts.allowNone ?? true, title: label });
+            const picked = await pickFile(project, kinds[0], { kinds, current: name, allowNone: opts.allowNone ?? true, noneLabel: opts.noneLabel, title: label });
             if (picked === undefined) return;
             set(picked);
             render();
           },
         },
         exists ? fileThumb(name, project.files.get(name), { files: project.files, palette: project.paletteFor(name).palette }) : h('span', { class: 'thumb icon' }, name ? '⚠' : '＋'),
-        h('span', { class: 'file-field-name' }, name ? name.toUpperCase() : 'none', name && !exists ? h('small', null, ' (missing)') : null),
+        h('span', { class: 'file-field-name' }, name ? name.toUpperCase() : (opts.noneLabel?.[0] ?? 'none'), name && !exists ? h('small', null, ' (missing)') : null),
       ),
       exists ? h('a', { class: 'file-field-edit', href: `#/p/${project.id}/${encodeURIComponent(name)}`, title: `Edit ${name}`, 'aria-label': `Edit ${name}` }, '✎') : null,
     );
