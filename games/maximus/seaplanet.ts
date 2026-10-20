@@ -55,9 +55,9 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   let ax = wx(islandX + 40);
   const ay = SURFACE + 1;
   const arrive = { x: ax, y: ay };
-  const uplink = { x: wx(ax + 3), y: SURFACE };
+  const uplink = { x: wx(ax - 3), y: SURFACE };
   g.set(uplink.x, uplink.y, id('uplink'), true);
-  g.set(ax - 1, SURFACE, id('raft'), true);
+  g.set(ax + 1, SURFACE, id('raft'), true);
 
   // caves into the reef
   const carved: Spot[] = [];

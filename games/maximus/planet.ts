@@ -77,16 +77,20 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   for (let pass = 0; pass < 6; pass++) for (let i = 0; i < W; i++) h[i] = Math.max(h[i], Math.min(h[(i + 1) % W], h[(i + W - 1) % W]) - maxStep);
   // --- arrival: the first long flat stretch
   let ax = 8;
-  for (let i = 0; i < W; i++) {
+  let found = false;
+  for (let i = 0; i < W && !found; i++) {
     const xs = (i + 6) % W;
-    if ([0, 1, 2, 3, 4, 5].every((k) => h[(xs + k) % W] === h[xs])) {
-      ax = xs + 1;
-      break;
+    if ([0, 1, 2, 3, 4, 5, 6, 7].every((k) => h[(xs + k) % W] === h[xs])) {
+      ax = wx(xs + 4);
+      found = true;
     }
   }
+  // no stretch long enough: flatten one
+  if (!found) for (let k = -4; k <= 3; k++) h[wx(ax + k)] = h[ax];
   const ay = h[ax] - 1;
   const arrive = { x: ax, y: ay };
-  const uplink = { x: wx(ax + 3), y: ay };
+  // the uplink stands behind Max (players walk right, into the world, not back to orbit)
+  const uplink = { x: wx(ax - 3), y: ay };
 
   // rover worlds keep their prize in a ruin on the surface, on flattened ground, round the far side
   const surfaceVault = f.rover ? wx(ax + 50) : -1;
@@ -435,7 +439,9 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   g.set(ax, ay, id('air'), true);
   g.set(ax, ay - 1, id('air'), true);
   g.set(uplink.x, uplink.y, id('uplink'), true);
-  g.set(ax - 2, ay, id('sign:right'), true);
+  g.set(ax + 2, ay, id('sign:right'), true);
+  g.set(ax - 2, ay, id('air'), true);
+  g.set(ax - 1, ay, id('air'), true);
 
   // --- pickups: open air on islands and the surface, the rest in caves
   const pick = (ids: PickupId[]) => ids[Math.floor(r() * ids.length)];

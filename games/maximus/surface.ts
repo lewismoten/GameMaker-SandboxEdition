@@ -739,10 +739,12 @@ export function surfaceSet(): SetBuilder {
   s.add(
     'pad',
     tex((x, y) => {
+      // a landing plate flush with the ground: lit stripe on top, soil below
       const t = R('tech');
-      if (y < 14) return hz.get(x, y);
-      if (y === 14) return t[6];
-      return (x + y) % 4 === 0 ? R('glow')[3] : t[2 + (y & 1)];
+      if (y === 0) return t[6];
+      if (y < 5) return y === 2 && x % 4 === 1 ? R('glow')[4] : t[3 + (y & 1)];
+      if (y === 5) return t[1];
+      return soilTex(74).get(x, y);
     }),
     { solid: SOLID },
   );
