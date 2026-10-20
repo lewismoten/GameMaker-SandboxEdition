@@ -48,6 +48,11 @@ export function folder(name: string, list: () => Promise<DosNode[]> | DosNode[],
   };
 }
 
+/** A folder whose contents can change (re-listed every time). */
+export function liveFolder(name: string, list: () => Promise<DosNode[]> | DosNode[], date = DOS_DATE): DosNode {
+  return { name: name.toUpperCase(), dir: true, size: 0, date, list: async () => list() };
+}
+
 export function textFile(name: string, text: string): DosNode {
   const bytes = new Uint8Array([...text.replace(/\r?\n/g, '\r\n')].map((c) => c.charCodeAt(0) & 255));
   return file(name, bytes.length, { read: async () => bytes });
