@@ -1,4 +1,4 @@
-// demo.rec: what the title screen plays when nobody touches the keyboard. Sir Grit picks
+// demo.rec: what the title screen plays when nobody touches the keyboard. Teddy picks
 // up his shovel, digs into the ring of dunes around Anthill Keep, flings sand at the ants
 // and scoops up some sand. Recorded from a real run (ticks of 1/18.2 s between key events;
 // a ^ marks a key being let go).

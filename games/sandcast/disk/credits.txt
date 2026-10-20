@@ -1,4 +1,4 @@
-SANDCASTLE KNIGHT  v1.0
+SANDCASTLE KNIGHT  v1.1
 (c) 1995 Sandbox Software
 
 Design, pixels and beeps by
@@ -6,16 +6,17 @@ Claude. Made with GAME-MAKER
 3.0 from Recreational Software
 Designs.
 
-Dedicated to everyone who ever
-logged on to THE -= S A N D B
-O X =- BBS in Pittsburgh, PA.
+Starring Teddy, a very good
+boy, and his big sister Gwin,
+who is also a good girl,
+mostly.
 
 This is SHAREWARE. If you
-enjoy Sir Grit's adventure,
+enjoy Teddy's adventure,
 please register for $10. See
 README.TXT for details.
 
 Greetz to the SysOp, the 2
 a.m. door game crowd, and
-every cat that ever sat on a
+every dog who ever sat on a
 keyboard.

@@ -1,9 +1,11 @@
-ARROWS  walk
-P       pick up (stand on it)
+ARROWS  walk     P  pick up
 SPACE   fling sand (shovel)
 B       throw water (bucket)
-F1 help  F2 status  F4 sound
-F5 save  F6 load    ESC quit
+F       toss a tennis ball
+TRICKS: S sit  T spin
+R roll over  J jump
+D play dead
+F2 status F5 save F6 load
 
 SAND: scoop sand piles, and
 dig dunes by walking into them
@@ -18,24 +20,28 @@ walk into it again to plant
 your flag. Four flags lift a
 castle gate.
 
-WATER: water balloons and the
-cat's bowls fill your bucket.
-Only water flips a crab. With
-the bucket, walk into a dashed
-outline to pack a wall of wet
-sand. Crabs can't get past it.
+GWIN won't budge for sand or
+water. Toss her a tennis ball
+(F) and she trots off happy.
+Walk toward her first: things
+fly the way you last walked.
 
-CURRENTS carry you. Nobody
-walks upstream.
+SPIN (T) kicks up a whirl of
+sand that bowls over ants and
+beetles.
 
-CRUMBLY BRIDGES fall in behind
-you. Don't stop on them!
+WATER: balloons and Gwin's
+bowls fill your bucket. Only
+water (or a ball) flips a
+crab. With the bucket, walk
+into a dashed outline to pack
+a wall of wet sand.
 
-TIDES: waves push you up the
-beach, and the tidal flat
-floods now and then. Wait it
-out on a sandbar.
+CURRENTS carry you. CRUMBLY
+BRIDGES fall in behind you.
+The tidal flat floods: wait on
+a sandbar.
 
-ACORNS open root doors
-underground. A cracked wall
-may not be a wall at all.
+ACORNS open root doors. A
+cracked wall may not be a wall
+at all.

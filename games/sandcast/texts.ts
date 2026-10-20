@@ -1,4 +1,4 @@
-// Every word Sir Grit's players read: the story, the instructions, the level briefings
+// Every word Teddy's players read: the story, the instructions, the level briefings
 // (shown as BBS messages, 30 columns wide), and the shareware notice.
 
 /** Wraps paragraphs to Game-Maker's text screens (30 characters a line, so fgets never splits). */
@@ -27,69 +27,73 @@ export function wrap(text: string, width = 30): string {
 }
 
 export const STORY = wrap(`
-Pittsburgh, summer of 1995. Behind a brick house on a hill, past the tomato plants, sits a wooden sandbox. By day the kids build castles in it. By night, while the modem upstairs squeals, the castles belong to the toys.
+Pittsburgh, summer of 1995. Behind a brick house on a hill sits a wooden sandbox, and it has a knight: TEDDY, a Pembroke Welsh Corgi in a tin helmet with a red plume.
 
-Sir Grit is the smallest of them: a tin knight with a red plume, no taller than your thumb. He keeps four sandcastles and the toy chest he sleeps in.
+Teddy knows lots of tricks. He loves his toys. Everybody on the street loves him.
 
-This morning he woke to ruin. Lady Whiskerbane, the tabby from next door, has claimed the sandbox. Her kneading paws flattened every tower.
+He also has a big sister. GWIN is a brown pit-lab mix, twice his size, and she ruins everything. Not on purpose. She just has a lot of zoomies.
 
-Ants dug into the keep. The hose was left running into the moat. Crabs overran the tide pool, and beetles hold the old burrow.
+This morning she came through the sandbox at full speed. Every castle fell flat. She knocked the hose on into the moat, tipped the kiddie pool into the lagoon, dug a hole under it all, and scattered Teddy's toys from one end to the other.
 
-Take up your shovel, Sir Grit. Rebuild the towers, raise the gates, and win back the Crown of the Sandbox from the cat who sleeps on it.
+Then she flopped down on the patio for a nap, right on top of the Crown of the Sandbox.
 
 Your shovel lies by the toy chest. Stand on it and press P, then dig through the dunes to Anthill Keep.
 `);
 
 export const HELP = wrap(`
-|ARROWS  walk
-|P       pick up (stand on it)
+|ARROWS  walk     P  pick up
 |SPACE   fling sand (shovel)
 |B       throw water (bucket)
-|F1 help  F2 status  F4 sound
-|F5 save  F6 load    ESC quit
+|F       toss a tennis ball
+|TRICKS: S sit  T spin
+|R roll over  J jump
+|D play dead
+|F2 status F5 save F6 load
 
 SAND: scoop sand piles, and dig dunes by walking into them with the shovel. F2 shows your sand as Money. Sand plugs anthills, fills fords and builds towers.
 
 TOWERS: walk into a tower ring with sand to build it, then walk into it again to plant your flag. Four flags lift a castle gate.
 
-WATER: water balloons and the cat's bowls fill your bucket. Only water flips a crab. With the bucket, walk into a dashed outline to pack a wall of wet sand. Crabs can't get past it.
+GWIN won't budge for sand or water. Toss her a tennis ball (F) and she trots off happy. Walk toward her first: things fly the way you last walked.
 
-CURRENTS carry you. Nobody walks upstream.
+SPIN (T) kicks up a whirl of sand that bowls over ants and beetles.
 
-CRUMBLY BRIDGES fall in behind you. Don't stop on them!
+WATER: balloons and Gwin's bowls fill your bucket. Only water (or a ball) flips a crab. With the bucket, walk into a dashed outline to pack a wall of wet sand.
 
-TIDES: waves push you up the beach, and the tidal flat floods now and then. Wait it out on a sandbar.
+CURRENTS carry you. CRUMBLY BRIDGES fall in behind you. The tidal flat floods: wait on a sandbar.
 
-ACORNS open root doors underground. A cracked wall may not be a wall at all.
+ACORNS open root doors. A cracked wall may not be a wall at all.
 `);
 
 export const CREDITS = wrap(`
-|SANDCASTLE KNIGHT  v1.0
+|SANDCASTLE KNIGHT  v1.1
 |(c) 1995 Sandbox Software
 
 Design, pixels and beeps by Claude. Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
-Dedicated to everyone who ever logged on to THE -= S A N D B O X =- BBS in Pittsburgh, PA.
+Starring Teddy, a very good boy, and his big sister Gwin, who is also a good girl, mostly.
 
-This is SHAREWARE. If you enjoy Sir Grit's adventure, please register for $10. See README.TXT for details.
+This is SHAREWARE. If you enjoy Teddy's adventure, please register for $10. See README.TXT for details.
 
-Greetz to the SysOp, the 2 a.m. door game crowd, and every cat that ever sat on a keyboard.
+Greetz to the SysOp, the 2 a.m. door game crowd, and every dog who ever sat on a keyboard.
 `);
 
 export const INTRO = {
   keep: wrap(`
 |1. ANTHILL KEEP
 
-Ants have moved into the keep.
+Gwin's zoomies knocked the keep flat, and ants moved in.
 
 Bring sand to each of the four tower rings (walk into the ring), then touch it again to plant your flag. Four flags lift the gate.
 
 Plug anthills with sand. SPACE flings sand at ants.
+
+Gwin is asleep in the doorway. Find a tennis ball!
 `),
   moat: wrap(`
 |2. HOSEWATER MOAT
 
-Somebody left the hose on, and the keep is an island now.
+Gwin stepped on the hose, and now the keep is an island.
 
 Fill the staked ford with sand, or run across the sand bridge. It crumbles behind you!
 
@@ -98,16 +102,16 @@ The hose current flows one way only. Ride it.
   lagoon: wrap(`
 |3. LOW TIDE LAGOON
 
-The kiddie pool spilled over into a beach with real tides.
+Gwin tipped the kiddie pool over, and now the beach has real tides.
 
-Find the bucket (P). Balloons fill it; B throws water. Crabs flip only for water. With the bucket, walk into a dashed outline to pack a wall.
+Find the bucket (P). Balloons fill it; B throws water. Crabs flip for water. With the bucket, walk into a dashed outline to pack a wall.
 
-Bring 3 golden shells from the sandbars to the sea gate. Mind the tide!
+Bring 3 golden shells to the sea gate. Mind the tide!
 `),
   burrows: wrap(`
 |4. BEETLE BURROWS
 
-Under the sandbox the old burrow runs dark and deep.
+Gwin dug a hole under the sandbox. A BIG one. The beetles love it.
 
 Root doors open for acorns. Plug beetle nests with sand.
 
@@ -116,13 +120,13 @@ Some cracked walls are only cracks...
 The far ladder climbs to the patio.
 `),
   patio: wrap(`
-|5. LADY WHISKERBANE
+|5. GWIN'S NAP
 
-The patio, at sunset. The cat sleeps on the Crown of the Sandbox.
+The patio, at sunset. Gwin is snoring on the Crown of the Sandbox.
 
-Her paws guard the ways around her. Splash a paw twice and she pulls it back.
+Her paws twitch to guard it. Splash a paw twice and she tucks it in.
 
-Fill your bucket at her water bowls. Mind the hairballs and the yarn!
+Fill your bucket at her water bowls. Mind the slobbery balls and her flying rope toys!
 `),
   bbs: wrap(`
 |CONNECT 2400
@@ -136,13 +140,13 @@ Leave by the door of static.
 };
 
 export const WON = wrap(`
-|*** YOU WON! ***
+|*** GOOD BOY! ***
 
 The Crown of the Sandbox sits on the tallest tower of the keep again.
 
-Lady Whiskerbane has gone home to nap on a warm car hood.
+Gwin woke up, gave Teddy a big sloppy lick, and helped carry his toys home. (She dropped most of them.)
 
-Long live Sir Grit!
+Everyone loves Teddy. Everyone loves Gwin too.
 
 Thanks for playing. Please register: see README.TXT.
 `);
@@ -150,14 +154,14 @@ Thanks for playing. Please register: see README.TXT.
 export const LOST = wrap(`
 |NO CARRIER
 
-The tide came in, and Sir Grit is a little heap of sand with a helmet on top.
+Teddy is all tuckered out, flat on his back in the sand.
 
-But sand can always be built again.
+Gwin came over and licked his ear, which helped a little.
 
-Try again, brave knight!
+Shake it off and try again, brave knight!
 `);
 
-export const README = `SANDCASTLE KNIGHT  v1.0
+export const README = `SANDCASTLE KNIGHT  v1.1
 Copyright (c) 1995 Sandbox Software.  All rights reserved.
 =====================================================================
 
@@ -167,7 +171,7 @@ library, as long as all of the files stay together and unchanged.
 
 If you enjoy it, register for $10 with Sandbox Software.  You'll get:
 
-  * the next Sir Grit adventure on disk as soon as it is done,
+  * the next Teddy adventure on disk as soon as it is done,
   * a printed map of the sandbox, with every secret marked,
   * our thanks, and a clear conscience.
 
@@ -177,21 +181,28 @@ Send a check or money order for $10 (US funds) to:
       P.O. Box 4215
       Pittsburgh, PA 15213
 
+  (This address is fictional, made up for this game.  Please don't
+   mail anything to it!)
+
 Include your name, your address, and the disk size you want
 (3.5" or 5.25").
 
 ---------------------------------------------------------------------
 THE GAME
 
-Lady Whiskerbane, the tabby from next door, has taken over the
-sandbox.  Help Sir Grit, a thumb-sized tin knight, rebuild four
-sandcastles, beat the ants, the hose, the tide and the beetles, and
-take back the Crown of the Sandbox.
+Teddy is a Pembroke Welsh Corgi, the knight of the backyard sandbox.
+His big sister Gwin, a brown pit-lab mix twice his size, just ran
+through it with the zoomies: castles flattened, hose running, kiddie
+pool tipped, toys everywhere.  Help Teddy rebuild four sandcastles,
+beat the ants, the hose, the tide and the beetles, and get the Crown
+of the Sandbox back from under his snoring sister.
 
 To play, run SANDCAST.EXE.  Press F1 while playing for help.
 
   Arrow keys .... walk          P ........ pick up
   SPACE ......... fling sand    B ........ throw water
+  F ............. toss a tennis ball (Gwin can't resist one)
+  Tricks ........ S sit, T spin, R roll over, J jump, D play dead
   F2 ............ status (your sand is shown as "Money")
   F5 / F6 ....... save / load   ESC ...... quit
 

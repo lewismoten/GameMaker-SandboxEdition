@@ -17,7 +17,7 @@ import { buildSounds } from './sounds';
 import { BURROW, DAY, DUSK } from './palette';
 import * as levels from './levels';
 import { buildGame } from './game';
-import { filesScreen, gif, introFli, lostScreen, menuScreen, messageScreen, scoreScreen, titleScreen, wonScreen } from './screens';
+import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, titleScreen, wonScreen } from './screens';
 import { CREDITS, HELP, INTRO, LOST, README, STORY, WON } from './texts';
 import { buildDemo } from './demo';
 
@@ -57,13 +57,16 @@ const message = (base: string, subject: string, body: string, from?: string) => 
   lst(`${base}.lst`, [[`${base}.gif`, 0], [`${base}.txt`]]);
   return `${base}.lst`;
 };
-const story = message('story', 'The Siege of the Sandbox', STORY);
+const story = message('story', 'The Zoomies of 1995', STORY);
+// The story opens with Gwin's zoomies, animated.
+disk.put('zoomies.fli', zoomiesFli());
+lst('story.lst', [['zoomies.fli', 0], ['story.gif', 0], ['story.txt']]);
 const help = message('help', 'How to play', HELP, 'SYSOP');
 const credits = message('credits', 'Credits & registering', CREDITS, 'SYSOP');
-disk.put('wontxt.gif', gif(messageScreen('Victory!', 'SIR GRIT')));
+disk.put('wontxt.gif', gif(messageScreen('Good boy!', 'TEDDY')));
 disk.put('won.txt', WON);
 lst('won.lst', [['won.gif', 6], ['wontxt.gif', 0], ['won.txt']]);
-disk.put('losttxt.gif', gif(messageScreen('Washed away', 'THE TIDE')));
+disk.put('losttxt.gif', gif(messageScreen('Tuckered out', 'GWIN')));
 disk.put('lost.txt', LOST);
 lst('lost.lst', [['lost.gif', 6], ['losttxt.gif', 0], ['lost.txt']]);
 
@@ -74,7 +77,7 @@ const L = {
   moat: { name: 'moat.map', desc: 'Hosewater Moat', map: levels.moat(), pal: 'sandcast.pal', pos: { x: 240, y: 120 } },
   lagoon: { name: 'lagoon.map', desc: 'Low Tide Lagoon', map: levels.lagoon(), pal: 'sandcast.pal', pos: { x: 240, y: 40 } },
   burrows: { name: 'burrows.map', desc: 'Beetle Burrows', map: levels.burrows(), pal: 'burrow.pal', pos: { x: 60, y: 40 } },
-  patio: { name: 'patio.map', desc: 'Lady Whiskerbane', map: levels.patio(), pal: 'dusk.pal', pos: { x: 60, y: 160 } },
+  patio: { name: 'patio.map', desc: "Gwin's Nap", map: levels.patio(), pal: 'dusk.pal', pos: { x: 60, y: 160 } },
   bbs: { name: 'bbs.map', desc: 'SANDBOX BBS', map: levels.bbs(), pal: 'sandcast.pal', pos: { x: 240, y: 160 } },
 };
 const subjects: Record<keyof typeof L, string> = {
@@ -83,7 +86,7 @@ const subjects: Record<keyof typeof L, string> = {
   moat: 'Level 2: Hosewater Moat',
   lagoon: 'Level 3: Low Tide Lagoon',
   burrows: 'Level 4: Beetle Burrows',
-  patio: 'Level 5: The cat',
+  patio: "Level 5: Gwin's nap",
   bbs: 'Secret dial-up!',
 };
 for (const key of Object.keys(L) as (keyof typeof L)[]) {
@@ -92,7 +95,7 @@ for (const key of Object.keys(L) as (keyof typeof L)[]) {
   // The sandbox is visited between every castle, so it has no briefing of its own (and the
   // title demo starts there without waiting for a key).
   if (key === 'hub') continue;
-  (lv as { intro?: string }).intro = message(key === 'bbs' ? 'bbsintro' : key, subjects[key], INTRO[key], key === 'bbs' ? 'SYSOP' : 'SIR GRIT');
+  (lv as { intro?: string }).intro = message(key === 'bbs' ? 'bbsintro' : key, subjects[key], INTRO[key], key === 'bbs' ? 'SYSOP' : 'TEDDY');
 }
 
 const demo = buildDemo();

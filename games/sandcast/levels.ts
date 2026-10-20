@@ -77,7 +77,12 @@ export function hub(): LevelMap {
       '..h....................',
       '...x...................',
     ],
-    L({ '!': { tile: 'door', mark: 'door3' }, '@': { tile: 'sand', mark: 'arrive3' }, r: { tile: 'sand', mon: MON.crabH }, q: { tile: 'sand', mon: MON.gwinRoam }, }),
+    L({
+      '!': { tile: 'door', mark: 'door3' },
+      '@': { tile: 'sand', mark: 'arrive3' },
+      r: { tile: 'sand', mon: MON.crabH },
+      q: { tile: 'sand', mon: MON.gwinRoam },
+    }),
   );
   // Southeast: the garden hose, its lazy loop, and the Hosewater Moat. A little hole
   // in the corner is not an ant's.

@@ -5,8 +5,9 @@ import { FONT8X8 } from '../../web/src/gfx/font8x8';
 import { encodeGif } from '../../web/src/formats/gif';
 import { encodeFli } from '../../web/src/formats/fli';
 import { Pixels, dither, rng } from '../kit/pixels';
-import { ANSI, DAY, GRASS, OCHRE, RED, SAND, STEEL, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from './palette';
-import { ball, shade } from './art';
+import { ANSI, DAY, GRASS, OCHRE, RED, SAND, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from './palette';
+import { CLEAR, ball, shade } from './art';
+import { CB, MB } from './sprites';
 
 export const W = 320;
 export const H = 200;
@@ -156,11 +157,13 @@ export function titleScreen(): Pixels {
   logo(p, 40, 36, 'SANDCASTLE', 3);
   logo(p, 64, 64, 'KNIGHT', 4);
   castleArt(p, 160, 176, 1, 5);
-  // A small knight at the castle gate.
-  text(p, 4, 150, 'v1.0', ANSI[8]);
-  text(p, 4, 160, '(c) 1995', ANSI[8]);
-  text(p, 252, 150, 'Sandbox', ANSI[8]);
-  text(p, 252, 160, 'Software', ANSI[8]);
+  // Teddy at the castle gate, and Gwin peeking in from the side, up to no good.
+  stamp(p, CB.pic('sit0'), 3, 226, 128);
+  stamp(p, MB.pic('gwin0'), 3, 34, 124);
+  text(p, 4, 100, 'v1.1', ANSI[8]);
+  text(p, 4, 110, '(c) 1995', ANSI[8]);
+  text(p, 252, 100, 'Sandbox', ANSI[8]);
+  text(p, 252, 110, 'Software', ANSI[8]);
   return statusBar(p, ' ALT-Z HELP | ANSI | 14400 N81 | ONLINE');
 }
 
@@ -181,7 +184,7 @@ export function menuScreen(): Pixels {
 }
 
 /** A message-base page: the BBS's header bars around an empty text area (40..288, 40..168). */
-export function messageScreen(subject: string, from = 'SIR GRIT', to = 'ALL'): Pixels {
+export function messageScreen(subject: string, from = 'TEDDY', to = 'ALL'): Pixels {
   const p = screen();
   p.rect(0, 0, W, 8, ANSI[1]);
   text(p, 0, 0, ' THE -= S A N D B O X =- BBS  Msg Base', ANSI[15]);
@@ -218,7 +221,7 @@ export function filesScreen(title: string): Pixels {
   return p;
 }
 
-/** Victory: the knight's flag over a finished castle, at sunrise. */
+/** Victory: Teddy's flag over a finished castle, at sunrise, Gwin at his side. */
 export function wonScreen(): Pixels {
   const p = screen();
   for (let y = 0; y < 150; y++)
@@ -229,11 +232,33 @@ export function wonScreen(): Pixels {
   ball(p, 250, 120, 22, YELLOW, 3);
   p.rect(0, 150, W, 50, SAND[5]);
   castleArt(p, 140, 176, 1.1, 11);
+  // Teddy, crowned, and Gwin with the ball she finally gave back.
+  stamp(p, CB.pic('sit1'), 3, 214, 140);
+  crown(p, 238, 134);
+  stamp(p, MB.pic('gwinHappy0'), 3, 6, 140);
   text(p, 0, 0, 'NO CARRIER'.padEnd(40), ANSI[15]);
   return p;
 }
 
-/** Defeat: a wave has flattened the castle; a lonely helmet on the sand. */
+/** A sprite scaled up `s` times at (x, y); clear pixels stay clear. */
+export function stamp(p: Pixels, spr: Pixels, s: number, x: number, y: number, flip = false): Pixels {
+  for (let yy = 0; yy < spr.h; yy++)
+    for (let xx = 0; xx < spr.w; xx++) {
+      const c = spr.get(flip ? spr.w - 1 - xx : xx, yy);
+      if (c !== CLEAR && c >= 0) p.rect(x + xx * s, y + yy * s, s, s, c);
+    }
+  return p;
+}
+
+/** The little golden Crown of the Sandbox. */
+function crown(p: Pixels, x: number, y: number): Pixels {
+  p.rect(x, y + 4, 14, 6, YELLOW[3]).rect(x, y + 9, 14, 1, YELLOW[1]);
+  for (const k of [0, 5, 10]) p.rect(x + k, y, 4, 4, YELLOW[4]);
+  p.rect(x + 6, y + 5, 2, 2, RED[4]);
+  return p;
+}
+
+/** Defeat: the castle slumped into the tide, Teddy tuckered out beside it. */
 export function lostScreen(): Pixels {
   const p = screen();
   for (let y = 0; y < 120; y++) for (let x = 0; x < W; x++) p.set(x, y, dither(x, y, y / 120) ? WATER[2] : WATER[1]);
@@ -249,10 +274,9 @@ export function lostScreen(): Pixels {
       const top = 175 - 30 * (1 - dx * dx);
       if (y >= top) p.set(x, y, dither(x, y, (y - top) / 30) ? SAND[4] : SAND[6]);
     }
-  // The helmet with its red plume.
-  ball(p, 160, 142, 8, STEEL, 4);
-  p.rect(153, 143, 15, 2, STEEL[0]);
-  p.line(160, 134, 164, 126, RED[4]).line(161, 134, 166, 127, RED[3]);
+  // Teddy, flat on his back in the sand; Gwin sits by to lick his ear.
+  stamp(p, CB.pic('die3'), 3, 136, 116);
+  stamp(p, MB.pic('gwin1'), 3, 70, 112);
   text(p, 0, 0, 'NO CARRIER'.padEnd(40), ANSI[15]);
   return p;
 }
@@ -300,6 +324,89 @@ export function introFli(): Uint8Array {
   }
   add(title, 2);
   return encodeFli(frames, DAY, { speed: 7 });
+}
+
+/** The backyard sandbox seen from the side: grass and sky, the board edge, sand in front. */
+function yard(): Pixels {
+  const p = screen();
+  for (let y = 0; y < 90; y++) for (let x = 0; x < W; x++) p.set(x, y, dither(x, y, y / 90) ? WATER[6] : WATER[7]);
+  for (let y = 90; y < 120; y++) for (let x = 0; x < W; x++) p.set(x, y, dither(x, y, 0.5 + Math.sin(x / 5) * 0.2) ? GRASS[4] : GRASS[3]);
+  p.rect(0, 120, W, 8, WOOD[4]).rect(0, 120, W, 2, WOOD[6]).rect(0, 127, W, 1, WOOD[1]);
+  for (let y = 128; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, dither(x, y, 0.45 + ((x * 7 + y * 13) % 11) / 40) ? SAND[6] : SAND[5]);
+  return p;
+}
+
+/** A sand heap where a castle stood. */
+function heap(p: Pixels, cx: number, base: number, w: number, h: number): Pixels {
+  for (let y = base - h; y < base; y++)
+    for (let x = cx - w; x < cx + w; x++) {
+      const dx = (x - cx) / w;
+      const top = base - h * (1 - dx * dx);
+      if (y >= top) p.set(x, y, dither(x, y, (y - top) / h) ? SAND[4] : SAND[7]);
+    }
+  return p;
+}
+
+/** The story opens: Teddy admires his castle; Gwin arrives at full zoomies; the castle doesn't survive it. */
+export function zoomiesFli(): Uint8Array {
+  const frames: Uint8Array[] = [];
+  const add = (p: Pixels, n = 1) => {
+    for (let i = 0; i < n; i++) frames.push(Uint8Array.from(p.px));
+  };
+  const scene = (castle: boolean) => {
+    const p = yard();
+    if (castle) castleArt(p, 150, 170, 0.75, 21);
+    else heap(p, 150, 172, 70, 26);
+    return p;
+  };
+  const caption = (p: Pixels, s: string, color = ANSI[15]) => {
+    const x = Math.floor((W - s.length * 8) / 2);
+    p.rect(x - 4, 4, s.length * 8 + 8, 14, 0);
+    return text(p, x, 7, s, color);
+  };
+  // 1. Teddy and his castle.
+  for (let k = 0; k < 4; k++) {
+    const p = scene(true);
+    stamp(p, CB.pic(k % 2 ? 'idle_sway' : 'down_stand'), 3, 236, 132);
+    add(caption(p, 'TEDDY, KNIGHT OF THE SANDBOX'), 2);
+  }
+  for (const pic of ['sit0', 'sit1', 'sit1', 'sit0']) {
+    const p = scene(true);
+    stamp(p, CB.pic(pic), 3, 236, 132);
+    add(caption(p, 'Good boy!', YELLOW[4]), 2);
+  }
+  // 2. Here comes Gwin.
+  for (let k = 0; k <= 8; k++) {
+    const p = scene(true);
+    stamp(p, CB.pic(k > 4 ? 'hurt_white' : 'down_stand'), 3, 236, 132);
+    const x = -90 + k * 22;
+    stamp(p, MB.pic(k % 2 ? 'gwin1' : 'gwin0'), 4, x, 112);
+    for (let d = 1; d <= 3; d++) stamp(p, MB.pic(`puff${(d + k) % 3}`), 2, x - d * 22, 152 + (d % 2) * 6);
+    add(caption(p, 'ZOOMIES INCOMING!', ANSI[12]));
+  }
+  // 3. Crash.
+  for (let k = 0; k < 4; k++) {
+    const p = scene(k > 1);
+    if (k > 1) heap(p, 150, 172, 40 + k * 10, 10 + k * 6);
+    for (let d = 0; d < 6; d++) stamp(p, MB.pic(`puff${(d + k) % 3}`), 3, 80 + d * 24 - k * 4, 92 + ((d * 37) % 50) - k * 6);
+    stamp(p, MB.pic('gwin0'), 4, 104 + k * 6, 112);
+    stamp(p, CB.pic('hurt_red'), 3, 236, 132);
+    logo(p, 96, 30, 'CRASH!', 3);
+    add(p);
+  }
+  // 4. Gwin, delighted, gallops off with a toy; Teddy looks at the wreck.
+  for (let k = 0; k < 8; k++) {
+    const p = scene(false);
+    stamp(p, MB.pic(k % 2 ? 'gwinHappy1' : 'gwinHappy0'), 4, 140 + k * 26, 104 - (k % 2) * 4);
+    stamp(p, CB.pic(k < 4 ? 'dead' : 'down_stand'), 3, 236 - (k < 4 ? 0 : 160), 132);
+    add(caption(p, k < 4 ? 'GWIN!!!' : '...and she took the crown.', k < 4 ? ANSI[12] : ANSI[15]));
+  }
+  // 5. Teddy puts his helmet straight.
+  const end = scene(false);
+  stamp(end, CB.pic('right_stand'), 3, 60, 132);
+  caption(end, 'Teddy straightens his helmet.', YELLOW[4]);
+  add(end, 6);
+  return encodeFli(frames, DAY, { speed: 8 });
 }
 
 /** The colors Game-Maker picks for text over these screens, for checking. */
