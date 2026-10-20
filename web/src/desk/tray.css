@@ -1,0 +1,171 @@
+/* the slide-out keyboard tray (desk/tray.ts) */
+.kb-tray {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 26px;
+  transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.kb-tray .keyboard {
+  margin-top: 6px;
+}
+
+/* the tray itself: a dark board on rails, seen from above and in front */
+.tray-slab {
+  position: absolute;
+  left: -6%;
+  right: -26%;
+  top: -4px;
+  height: 128px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 30%),
+    linear-gradient(#3c3a37, #2a2826 70%, #1c1b19);
+  clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+}
+
+.tray-slab::after {
+  /* the front lip */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: linear-gradient(#4a4744, #1a1917);
+}
+
+/* slid in: mostly under the desk top, a strip of keyboard showing */
+.kb-tray[data-out='false'] {
+  transform: translateY(-70px);
+}
+
+.tray-handle {
+  position: absolute;
+  left: 50%;
+  bottom: -26px;
+  width: 90px;
+  height: 12px;
+  margin-left: -45px;
+  padding: 0;
+  border: 0;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(#55524d, #2e2c29);
+  box-shadow: inset 0 -2px 0 #1a1917;
+  cursor: pointer;
+}
+
+.tray-handle:hover,
+.tray-handle:focus-visible {
+  background: linear-gradient(#6a665f, #3a3834);
+}
+
+/* the mouse pad on the right of the tray */
+.mouse-pad {
+  position: absolute;
+  left: calc(100% + 1%);
+  top: 6px;
+  width: 21%;
+  height: 92px;
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 60%),
+    #1d3f7a;
+  box-shadow:
+    inset 0 0 0 2px #15305e,
+    0 3px 4px rgba(0, 0, 0, 0.5);
+  transform: perspective(600px) rotateX(40deg);
+  transform-origin: 50% 0;
+}
+
+.pad-print {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  color: #ffd400;
+  font: 700 10px/1 ui-monospace, 'Courier New', monospace;
+  letter-spacing: 0.12em;
+  opacity: 0.85;
+}
+
+/* the cord runs back over the tray to the PC */
+.mouse-cord {
+  position: absolute;
+  left: 46%;
+  top: -40px;
+  width: 30px;
+  height: 52px;
+  border: 2px solid #c9c1a6;
+  border-color: transparent transparent transparent #c9c1a6;
+  border-radius: 40% 0 0 60%;
+}
+
+.ball-mouse {
+  position: absolute;
+  left: 38%;
+  top: 12px;
+  width: 38px;
+  height: 56px;
+  border-radius: 18px 18px 20px 20px / 16px 16px 28px 28px;
+  background: linear-gradient(110deg, var(--plastic-hi), var(--plastic) 50%, var(--plastic-lo));
+  box-shadow:
+    inset 0 -3px 0 var(--plastic-edge),
+    2px 6px 6px rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+}
+
+.ball-mouse .mouse-btn {
+  position: absolute;
+  top: 2px;
+  width: 16px;
+  height: 18px;
+  background: linear-gradient(#e9e3d0, #cfc7ad);
+  box-shadow: inset 0 -1px 0 #9e967c;
+}
+
+.ball-mouse .mouse-btn.left {
+  left: 2px;
+  border-radius: 16px 2px 2px 3px;
+}
+
+.ball-mouse .mouse-btn.right {
+  right: 2px;
+  border-radius: 2px 16px 3px 2px;
+}
+
+.ball-mouse .mouse-logo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9px;
+  color: #8f8770;
+  font: 700 7px/1 system-ui, sans-serif;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+.ball-mouse.nudge {
+  animation: mouse-nudge 0.5s ease-out;
+}
+
+@keyframes mouse-nudge {
+  30% {
+    translate: 6px -3px;
+    rotate: 6deg;
+  }
+  70% {
+    translate: -3px 1px;
+    rotate: -2deg;
+  }
+}
+
+@media (max-width: 960px) {
+  .mouse-pad,
+  .tray-slab,
+  .tray-handle {
+    display: none;
+  }
+}

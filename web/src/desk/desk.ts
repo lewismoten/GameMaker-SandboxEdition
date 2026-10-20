@@ -1,6 +1,7 @@
 // The mid-90s desk: a PC running a DOS look-alike, a box of floppy disks, the
 // Game-Maker CD and a paper shareware catalog.
 import './desk.css';
+import './deskStage.css';
 import { h, clear, toast } from '../editor/ui';
 import { Computer, type MonitorMode } from '../retro/computer';
 import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
@@ -11,10 +12,12 @@ import { renderShot } from './boxArt';
 import { installCrtWarp } from './crtWarp';
 import { sevenSegment, floppyDrive, cdDrive, openTray } from './caseParts';
 import { keyboard } from './keyboard';
+import { keyboardTray } from './tray';
 import { deskModem } from './modem';
 import { drawBox, boxModel, openBoxViewer } from './gameBox';
 import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './snowWindow';
+import { fitStage } from './stage';
 import { loadCatalog, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/project';
 import type { SpeedSetting } from '../engine/scene';
@@ -141,7 +144,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
-        keyboard(() => void power(true)),
+        keyboardTray(keyboard(() => void power(true))),
       ),
       h(
         'div',
@@ -171,6 +174,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     h('button', { class: 'zoom-exit primary', onclick: () => setZoom(false) }, 'Back to the desk'),
   );
   clear(root, desk);
+  const unfit = fitStage(desk);
 
   let pc: Computer | undefined;
   let enlarged = false; // the user pressed the enlarge button
@@ -402,6 +406,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     .catch(() => undefined);
   return () => {
     window.removeEventListener('keydown', onKey);
+    unfit();
     removeWarp();
     computer.screen.destroy();
     computer.keys.detach();
