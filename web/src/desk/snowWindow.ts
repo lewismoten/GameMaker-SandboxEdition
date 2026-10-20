@@ -1,6 +1,11 @@
 // A window on the wall where it is snowing outside, as it was in the winter of 1992:
-// a dusky sky, the neighbors' roofs, and flakes drifting down past the panes.
+// a sky as light or dark as it is outside the visitor's own window right now, the
+// neighbors' roofs, and flakes drifting down past the panes.
 import { h } from '../editor/ui';
+import { daylight } from './daylight';
+
+type RGB = [number, number, number];
+const mix = (night: RGB, day: RGB, t: number) => `rgb(${night.map((n, i) => Math.round(n + (day[i] - n) * t)).join(',')})`;
 
 interface Flake {
   x: number;
@@ -25,16 +30,17 @@ export function snowyWindow(): HTMLElement {
   }));
 
   const scenery = () => {
+    const d = light;
     const sky = ctx.createLinearGradient(0, 0, 0, H);
-    sky.addColorStop(0, '#2b3550');
-    sky.addColorStop(1, '#7d8aa6');
+    sky.addColorStop(0, mix([18, 22, 40], [150, 172, 198], d));
+    sky.addColorStop(1, mix([62, 70, 98], [222, 228, 236], d));
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, W, H);
     // the neighbors' houses, roofs white with snow, one window lit
-    ctx.fillStyle = '#3a3346';
+    ctx.fillStyle = mix([42, 36, 52], [120, 104, 112], d);
     ctx.fillRect(18, 170, 70, 60);
     ctx.fillRect(122, 182, 84, 50);
-    ctx.fillStyle = '#eef2f8';
+    ctx.fillStyle = mix([170, 180, 200], [250, 252, 255], d);
     ctx.beginPath();
     ctx.moveTo(10, 172);
     ctx.lineTo(53, 140);
@@ -45,10 +51,12 @@ export function snowyWindow(): HTMLElement {
     ctx.lineTo(164, 150);
     ctx.lineTo(214, 184);
     ctx.fill();
-    ctx.fillStyle = '#ffd77a';
+    // a neighbor's window, lit once it gets dark
+    ctx.fillStyle = d < 0.6 ? '#ffd77a' : mix([60, 60, 70], [90, 100, 120], d);
     ctx.fillRect(40, 192, 14, 14);
+    if (d < 0.6) ctx.fillRect(150, 196, 12, 12);
     // drifts on the ground
-    ctx.fillStyle = '#e8edf5';
+    ctx.fillStyle = mix([150, 160, 182], [244, 247, 252], d);
     ctx.beginPath();
     ctx.moveTo(0, H);
     ctx.quadraticCurveTo(60, 222, 120, 236);
@@ -57,11 +65,13 @@ export function snowyWindow(): HTMLElement {
     ctx.fill();
   };
 
+  let light = daylight();
   let raf = 0;
   let t = 0;
   const frame = () => {
     if (!el.isConnected) return;
     t += 1;
+    if (t % 600 === 0) light = daylight();
     scenery();
     ctx.fillStyle = '#fff';
     for (const f of flakes) {
