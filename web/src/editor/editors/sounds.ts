@@ -4,6 +4,7 @@ import { registerEditor } from './index';
 import { h, clear, selectField, numberField, debounce } from '../ui';
 import { AudioEngine } from '../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../formats/sound';
+import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../tools/speakerFx';
 
 const MAXF = 8192;
 const MINF = 64;
@@ -89,6 +90,14 @@ registerEditor(['snd'], (host, project, file) => {
       save();
       renderDetail();
     };
+    // Sets the whole sound, plays it and redraws.
+    const apply = (next: ArrayLike<number>) => {
+      for (let i = 0; i < NUMFREQ; i++) f[i] = next[i] ?? 0;
+      save();
+      renderDetail();
+      renderList();
+      void play(current);
+    };
     clear(
       detail,
       h('div', { class: 'panel stack' }, h('h3', { style: 'margin:0' }, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`), h('p', { class: 'hint', style: 'margin:0' }, current < SOUND_NAMES.length ? 'Played automatically by the game.' : 'Use it from a character sequence.')),
@@ -113,14 +122,32 @@ registerEditor(['snd'], (host, project, file) => {
         h('strong', null, 'PC speaker'),
         h('p', { class: 'hint', style: 'margin:0' }, 'Draw the pitch of each step (about 1/146 of a second each). Drag to the bottom for silence.'),
         canvas,
+        h('strong', null, 'Make one'),
+        h(
+          'div',
+          { class: 'sfx-grid' },
+          ...RECIPES.map((rec) =>
+            h(
+              'button',
+              {
+                class: rec.name === SLOT_RECIPE[current] ? 'primary' : '',
+                title: `A new ${rec.name.toLowerCase()} sound (click again for another)`,
+                onclick: () => {
+                  const made = rec.make();
+                  apply(made);
+                },
+              },
+              h('span', { class: 'sfx-icon' }, rec.icon),
+              rec.name,
+            ),
+          ),
+        ),
+        h('strong', null, 'Change it'),
         h(
           'div',
           { class: 'toolbar' },
-          h('button', { onclick: () => shape(() => 0) }, 'Silence'),
-          h('button', { onclick: () => shape((i) => 200 * Math.pow(2, i / 9)) }, 'Rising'),
-          h('button', { onclick: () => shape((i) => 3000 * Math.pow(2, -i / 9)) }, 'Falling'),
-          h('button', { onclick: () => shape((i) => (i % 4 < 2 ? 800 : 1200)) }, 'Warble'),
-          h('button', { onclick: () => shape(() => MINF + Math.random() * 3000) }, 'Noise'),
+          ...TRANSFORMS.map((t) => h('button', { title: t.title, onclick: () => apply(t.run(Uint16Array.from(f))) }, t.name)),
+          h('button', { onclick: () => shape(() => 0), title: 'Clear every step' }, 'Silence'),
         ),
         h('details', null, h('summary', null, 'Exact values (Hz)'), h('div', { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(80px,1fr))' }, ...Array.from(f).map((_, i) => numberField(`${i + 1}`, () => f[i], (v) => ((f[i] = v), save(), draw()), { min: 0, max: MAXF })))),
       ),
