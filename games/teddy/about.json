@@ -1,0 +1,21 @@
+{
+  "title": "Teddy's Little Big Adventure",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1995,
+  "price": "$12",
+  "blurb": "Gwin ran off with Doc Leo's clown costume and tonight is the Klown Klub's Big Show. Hop, bark, dig, high five, sit, spin, roll over and play dead across town as Teddy, a little corgi with a ton of tricks.",
+  "exe": "TEDDY.EXE",
+  "sound": "sb",
+  "label": { "background": "#fff6e0", "band": "#d9381e", "ink": "#2a1408", "logo": "SANDBOX SOFTWARE" },
+  "box": {
+    "background": "#1d5fb8",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "A little dog. A big town. A ton of tricks.",
+    "back": "Teddy is a Pembroke Welsh Corgi. He is short, he is fluffy, and he knows a ton of tricks.",
+    "features": ["Five levels from Doc Leo's backyard to the Klown Klub's Big Top"],
+    "shots": [["backyard.map", 22, 31]],
+    "rating": "Ages 6 and up"
+  }
+}

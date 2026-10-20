@@ -1,0 +1,47 @@
+MOVING
+ LEFT/RIGHT  walk
+ UP          hop (hold it to
+             hop higher, let
+             go to steer)
+
+TEDDY'S TRICKS
+ SPACE  speak: WOOF! scares
+        squirrels, cats,
+        pigeons and geese
+ DOWN   dig: unearths bones,
+        digs through soft
+        dirt and sand
+ F      fetch: pick up Doc
+        Leo's costume
+
+ H      high five: pops
+        balloons, slaps the
+        hands held out above
+ S      sit pretty: sends up
+        a heart for anybody
+        asking "SIT!"
+ T      spin: turns
+        revolving doors and
+        turnstiles
+ R      roll over: shakes
+        loose a fluff ball
+        that knocks stacks
+        over
+ D      play dead (hold):
+        flat as a rug, so
+        things fly over you
+TREATS are worth points. A
+BONE gives energy back.
+Gwin eats your treats when
+she bumps into you!
+
+Bring the costume piece to
+the Klown Car to go on.
+
+F1 help      F2 your stuff
+F3 music     F4 sounds
+F5 save      F6 load
+ESC quit
+
+F2 shows treats as "Money"
+and energy as "Hitpoints".
