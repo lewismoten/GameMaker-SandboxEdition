@@ -16,6 +16,7 @@ import { catalogTarget, healthBadge, projectTarget } from './gameHealth';
 import './home.css';
 import { gameFromPageFiles } from '../project/importPage';
 import { showKeyMap } from './keyMapView';
+import { demoButton } from '../media/demo';
 import { FORK_NOTE, NOTICE_URL } from '../edition';
 
 /** “⌨ Keys”: a keyboard map of what each key does in the game, worked out from its files. */
@@ -377,7 +378,16 @@ function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
     { class: 'card', dataset: { search: searchText(title, g.id, g.author, g.company) } },
     g.gam ? cardShot(g) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨'),
     g.gam ? healthBadge(catalogTarget(g)) : null,
-    h('div', { class: 'card-title' }, h('h3', null, title), g.gam && moreMenu(keysButton(g.title, () => loadHostedGame(g), g.gam))),
+    h(
+      'div',
+      { class: 'card-title' },
+      h('h3', null, title),
+      g.gam &&
+        moreMenu(
+          keysButton(g.title, () => loadHostedGame(g), g.gam),
+          demoButton(g.title, () => loadHostedGame(g), g.gam),
+        ),
+    ),
     h('div', { class: 'meta' }, `${rsdGame(g) ? 'By Recreational Software Designs · ' : ''}${g.files.length} files`),
     h(
       'div',
@@ -421,6 +431,7 @@ function originalCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
       h('h3', null, g.title),
       moreMenu(
         keysButton(g.title, () => loadHostedGame(g), g.gam),
+        demoButton(g.title, () => loadHostedGame(g), g.gam),
         g.original?.manual ? h('button', { onclick: () => void openGameManual(g) }, '📖 Manual') : null,
       ),
     ),
@@ -440,7 +451,15 @@ function sharewareCard(g: CatalogEntry): HTMLElement {
     { class: 'card', dataset: { search: searchText(g.title, g.id, g.author, g.company, g.year) } },
     cardShot(g),
     healthBadge(catalogTarget(g)),
-    h('div', { class: 'card-title' }, h('h3', null, g.title), moreMenu(keysButton(g.title, () => loadHostedGame(g), g.gam))),
+    h(
+      'div',
+      { class: 'card-title' },
+      h('h3', null, g.title),
+      moreMenu(
+        keysButton(g.title, () => loadHostedGame(g), g.gam),
+        demoButton(g.title, () => loadHostedGame(g), g.gam),
+      ),
+    ),
     h('div', { class: 'meta' }, creditLine(g) || 'Shareware · play only'),
     h(
       'div',
