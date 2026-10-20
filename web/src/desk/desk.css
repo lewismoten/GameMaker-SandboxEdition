@@ -883,10 +883,21 @@
     radial-gradient(circle, transparent 0 30%, rgba(255, 255, 255, 0.95) 30% 97%, #aab 97%),
     conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
   box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
-  color: #000080;
-  font: 900 6.5px/1 'Arial Black', Arial, sans-serif;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 11px;
+}
+
+.gm-box .cd-disc svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gm-box .cd-disc .cd-title {
+  fill: #000080;
+  font: 900 11px 'Arial Black', Arial, sans-serif;
+}
+
+.gm-box .cd-disc .cd-small {
+  fill: #b0103a;
+  font: 700 5.4px Arial, Helvetica, sans-serif;
+  letter-spacing: 0.02em;
 }

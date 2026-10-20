@@ -28,6 +28,20 @@ function loadTurbo(): boolean {
   }
 }
 
+/** The CD, with its label printed around the hole. */
+function cdDisc(): HTMLElement {
+  const disc = h('div', { class: 'cd-disc', 'aria-hidden': 'true' });
+  disc.innerHTML = `<svg viewBox="0 0 100 100">
+    <defs>
+      <path id="cd-top" d="M 16 50 A 34 34 0 0 1 84 50"/>
+      <path id="cd-bottom" d="M 13 50 A 37 37 0 0 0 87 50"/>
+    </defs>
+    <text class="cd-title"><textPath href="#cd-top" startOffset="50%" text-anchor="middle">GAME-MAKER 3.0</textPath></text>
+    <text class="cd-small"><textPath href="#cd-bottom" startOffset="50%" text-anchor="middle">RECREATIONAL SOFTWARE DESIGNS</textPath></text>
+  </svg>`;
+  return disc;
+}
+
 export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   let turbo = loadTurbo();
   const speed: SpeedSetting = { ticksPerSecond: turbo ? undefined : SLOW_TICKS };
@@ -111,7 +125,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
             boxTiles,
             h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
           ),
-          h('div', { class: 'cd-disc' }, 'GAME-MAKER'),
+          cdDisc(),
           h('span', { class: 'caption' }, 'Game-Maker 3.0 — start the editor'),
         ),
         h(
