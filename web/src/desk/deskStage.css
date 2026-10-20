@@ -52,11 +52,11 @@
     left: -2000px;
     right: -2000px;
     top: var(--edge);
-    bottom: -2000px;
+    bottom: -8000px;
     z-index: 2;
     pointer-events: none;
     background:
-      linear-gradient(#8a5c34, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px, #0d0b09 200px);
+      linear-gradient(#8a5c34, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px, #0d0b09 200px, #0d0b09);
   }
 
   .desk {
