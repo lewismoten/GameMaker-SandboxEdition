@@ -391,7 +391,7 @@ export function watchTimeline(events: RecEvent[], getTick: () => number | undefi
       ctx.textAlign = 'right';
       ctx.fillText(`next key in ${clock(next.start - shown, false)} →`, width - 8, RULER + 14);
     }
-    readout.textContent = `${clock(Math.min(shown, Math.max(end, shown)))} / ${clock(end)}`;
+    readout.textContent = shown > end ? `${clock(shown)} · all keys played` : `${clock(shown)} / ${clock(end)}`;
   };
   raf = requestAnimationFrame(frame);
   return { el, destroy: () => cancelAnimationFrame(raf) };
