@@ -37,7 +37,7 @@ export function populate(
   bbl: Block[],
   ms: MonsterSet,
   spots: Spots,
-  opts: { seed: number; level: number; count: number; species?: number; spacing?: number },
+  opts: { seed: number; level: number; count: number; species?: number; spacing?: number; rover?: boolean },
 ): number {
   const r = rng(opts.seed);
   const spacing = opts.spacing ?? 3;
@@ -55,6 +55,8 @@ export function populate(
   const byPlace = new Map<Placement, number[]>();
   ms.creatures.forEach((c, i) => {
     if (tierOf(c) > opts.level + 1) return;
+    // a rover cannot hop over things that sit on the road and cannot be shot
+    if (opts.rover && (c.place === 'ground' || c.place === 'cave' || c.place === 'rare') && (c.move.kind === 'still' || c.power >= 100)) return;
     const list = byPlace.get(c.place) ?? [];
     list.push(i);
     byPlace.set(c.place, list);

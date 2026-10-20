@@ -75,8 +75,21 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   // never a step of more than 3 between neighbours (hop height); 1 for rover worlds
   const maxStep = f.rover ? 1 : 3;
   for (let pass = 0; pass < 6; pass++) for (let i = 0; i < W; i++) h[i] = Math.max(h[i], Math.min(h[(i + 1) % W], h[(i + W - 1) % W]) - maxStep);
-  // rover worlds keep their prize in a ruin on the surface, on flattened ground
-  const surfaceVault = f.rover ? wx(Math.floor(r() * W)) : -1;
+  // --- arrival: the first long flat stretch
+  let ax = 8;
+  for (let i = 0; i < W; i++) {
+    const xs = (i + 6) % W;
+    if ([0, 1, 2, 3, 4, 5].every((k) => h[(xs + k) % W] === h[xs])) {
+      ax = xs + 1;
+      break;
+    }
+  }
+  const ay = h[ax] - 1;
+  const arrive = { x: ax, y: ay };
+  const uplink = { x: wx(ax + 3), y: ay };
+
+  // rover worlds keep their prize in a ruin on the surface, on flattened ground, round the far side
+  const surfaceVault = f.rover ? wx(ax + 50) : -1;
   if (f.rover) for (let i = -6; i <= 6; i++) h[wx(surfaceVault + i)] = h[surfaceVault];
 
   // --- sky and ground
@@ -96,24 +109,11 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
               ? id('top:right')
               : pickOne(fam('top').filter((i) => i !== id('top:left') && i !== id('top:right') && i !== id('top:cave')));
       } else if (y < h[xx] + 4 + (xx % 3 === 0 ? 1 : 0)) b = pickOne(fam('soil'));
-      else if (y < 70) b = r() < 0.04 ? pickOne([id('ore:0'), id('ore:1')]) : pickOne(fam('rock'));
+      else if (y < 70) b = r() < 0.015 ? pickOne([id('ore:0'), id('ore:1')]) : pickOne(fam('rock'));
       else if (y < BEDROCK) b = pickOne(fam('deep'));
       else b = id('bedrock');
       g.set(xx, y, b);
     }
-
-  // --- arrival: the first long flat stretch
-  let ax = 8;
-  for (let i = 0; i < W; i++) {
-    const xs = (i + 6) % W;
-    if ([0, 1, 2, 3, 4, 5].every((k) => h[(xs + k) % W] === h[xs])) {
-      ax = xs + 1;
-      break;
-    }
-  }
-  const ay = h[ax] - 1;
-  const arrive = { x: ax, y: ay };
-  const uplink = { x: wx(ax + 3), y: ay };
 
   // --- caves: worms and chambers, all joined to the surface
   const carved = new Uint8Array(W * H);
@@ -288,6 +288,11 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     }
     g.set(vx - 2, vy - 2, id('pillar:top'), true);
     g.set(vx + 2, vy - 2, id('pillar:top'), true);
+    // lifts on both sides carry the rover over the roof (the vault is a side trip)
+    for (let yy = vy - 5; yy <= vy; yy++) {
+      g.set(vx - 5, yy, id('lift'), true);
+      g.set(vx + 5, yy, id('lift'), true);
+    }
     const prize = spec.shard !== undefined ? id(`shard:${spec.shard}`) : spec.module !== undefined ? id(`module:${spec.module}`) : id('p:oneup');
     g.set(vx, vy, prize, true);
     g.set(vx - 2, vy, id('p:gem'), true);
@@ -377,7 +382,7 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       g.set(xx, y, id('pillar:base'));
       g.set(xx, y - 1, id('pillar:mid'));
       g.set(xx, y - 2, id('pillar:top'));
-    } else if (k < 0.31) g.set(xx, y, id('thorns'));
+    } else if (k < 0.31 && !f.rover) g.set(xx, y, id('thorns'));
   }
   // ground runs (for walkers): flat stretches with air above
   {
@@ -453,6 +458,79 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   if (r() < 0.5 && caveFloor.length) {
     const run = caveFloor[Math.floor(r() * caveFloor.length)];
     g.set(run.x0, run.y, id('pc:oneup'));
+  }
+
+  // --- features: nests, secret pockets, waterfalls, healing springs, sky winds, bridges
+  const caveIds = fam('cave');
+  const isCave = (xx: number, yy: number) => caveIds.includes(g.get(xx, yy));
+  const plainRock = (xx: number, yy: number) =>
+    !g.isLocked(xx, yy) && (fam('rock').includes(g.get(xx, yy)) || fam('deep').includes(g.get(xx, yy)) || fam('soil').includes(g.get(xx, yy)));
+  // monster nests in cave walls, more on harder worlds
+  let nests = 0;
+  for (let t = 0; t < 4000 && nests < 2 + spec.level; t++) {
+    const xx = Math.floor(r() * W);
+    const yy = 50 + Math.floor(r() * 36);
+    if (!plainRock(xx, yy)) continue;
+    const side = isCave(xx - 1, yy) && isCave(xx - 1, yy - 1) ? -1 : isCave(xx + 1, yy) && isCave(xx + 1, yy - 1) ? 1 : 0;
+    if (!side) continue;
+    if (Math.min(Math.abs(xx - ax), W - Math.abs(xx - ax)) < 12) continue;
+    g.set(xx, yy, id(`nest:${nests % 4}`), true);
+    nests++;
+  }
+  // secret pockets behind fake rock or crystal glass, with a treasure inside
+  let secrets = 0;
+  for (let t = 0; t < 4000 && secrets < 3; t++) {
+    const xx = Math.floor(r() * W);
+    const yy = 48 + Math.floor(r() * 36);
+    if (!isCave(xx, yy) || !isCave(xx, yy - 1) || !plainRock(xx, yy + 1)) continue;
+    const dir = r() < 0.5 ? -1 : 1;
+    // room for a 3x2 pocket in solid rock beside this cave cell
+    const cells: [number, number][] = [];
+    for (let i = 1; i <= 4; i++) for (const oy of [0, -1]) cells.push([xx + dir * i, yy + oy]);
+    if (!cells.every(([cx, cy]) => plainRock(cx, cy) && plainRock(cx, cy - 1) && plainRock(cx, cy + 1))) continue;
+    const seal = secrets % 2 === 0 ? id('fake') : id('glass');
+    for (const oy of [0, -1]) g.set(xx + dir, yy + oy, seal, true);
+    for (let i = 2; i <= 4; i++) for (const oy of [0, -1]) g.set(xx + dir * i, yy + oy, id('cave:0'), true);
+    g.set(xx + dir * 3, yy, id(spec.level >= 3 && secrets === 0 ? 'pc:oneup' : 'pc:gem'), true);
+    g.set(xx + dir * 4, yy, id('pc:credit'), true);
+    g.set(xx + dir * 2, yy, id(['pc:plasma', 'pc:nova', 'pc:shield', 'pc:mines', 'pc:medkit', 'pc:flak'][Math.floor(r() * 6)]), true);
+    secrets++;
+  }
+  // waterfalls from cave ceilings
+  for (let t = 0, falls = 0; t < 3000 && falls < 3; t++) {
+    const xx = Math.floor(r() * W);
+    const yy = 48 + Math.floor(r() * 36);
+    if (!plainRock(xx, yy - 1) || !isCave(xx, yy)) continue;
+    let len = 0;
+    while (isCave(xx, yy + len) && len < 8) len++;
+    if (len < 3) continue;
+    for (let i = 0; i < len; i++) g.set(xx, yy + i, id(`fall:${i % 3}`));
+    falls++;
+  }
+  // a healing spring on a cave floor
+  for (let t = 0; t < 2000; t++) {
+    const run = caveFloor[Math.floor(r() * caveFloor.length)];
+    if (!run) break;
+    const xx = run.x0 + Math.floor(r() * (run.x1 - run.x0 + 1));
+    if (!isCave(xx, run.y) || g.isLocked(xx, run.y)) continue;
+    g.set(xx, run.y, id('heal'), true);
+    break;
+  }
+  // high winds: bands of current across the upper sky
+  if (!f.rover)
+    for (let k = 0; k < 2; k++) {
+      const wy0 = 12 + Math.floor(r() * 8);
+      const wx0 = Math.floor(r() * W);
+      const dir = r() < 0.5 ? 'wind:r' : 'wind:l';
+      for (let i = 0; i < 14 + Math.floor(r() * 12); i++) if (g.get(wx0 + i, wy0) === id('air')) g.set(wx0 + i, wy0, id(dir));
+    }
+  // bridges over some lakes
+  for (let xx = 0; xx < W; xx++) {
+    if (g.get(xx, h[xx]) !== id('liquid:top') || r() < 0.5) continue;
+    let e = xx;
+    while (g.get(e, h[wx(e)]) === id('liquid:top') && e - xx < 12) e++;
+    for (let i = xx - 1; i <= e; i++) if (g.get(i, h[wx(i)] - 1) === id('air')) g.set(i, h[wx(xx)] - 1, id('bridge'));
+    xx = e;
   }
 
   return { grid: g, arrive, uplink, vault, ground, caveFloor, sky, caveAir, ceilings, surfaceH: h, treasure };

@@ -86,7 +86,9 @@ export function monsterSet(name: string, creatures: Creature[]): MonsterSet {
     return next++;
   };
   creatures.forEach((c, i) => {
-    const props: Partial<Block> = { chHitPt: -c.dmg, ...c.block };
+    // monsters nothing can kill keep hurting every tick you touch them: they bite softly
+    const dmg = c.power >= 100 ? Math.min(c.dmg, 5) : c.dmg;
+    const props: Partial<Block> = { chHitPt: -dmg, ...c.block };
     let pics: number[];
     if (c.artOf && art.has(c.artOf) && !c.block && creatures[index.get(c.artOf)!].dmg === c.dmg) pics = art.get(c.artOf)!;
     else {

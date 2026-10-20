@@ -3,6 +3,7 @@
 // planet cards before each landing, the films between places, won and lost).
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeGame } from '../../web/src/formats/game';
+import { serializeHighScores } from '../../web/src/formats/highscore';
 import { dosText } from '../kit/disk';
 import type { Built } from './game';
 import { buildSongs } from './music';
@@ -61,6 +62,7 @@ export function present(b: Built): void {
   put('credits.txt', dosText(CREDITS));
   put('credits.lst', serializeSlideList([{ name: 'credbg.gif', pause: 0 }, { name: 'credits.txt' }]));
   put('hiscore.gif', hiscoreScreen());
+  put('maximus.his', startingScores());
   put('load.gif', slotScreen('LOAD GAME', 91));
   put('save.gif', slotScreen('SAVE GAME', 92));
   putAll(wonScreens());
@@ -154,4 +156,10 @@ export function present(b: Built): void {
     }
   }
   put('maximus.gam', serializeGame(g));
+}
+
+/** A starting top ten, so the high score screen is not empty on a fresh disk. */
+export function startingScores(): Uint8Array {
+  const names = ['Max', 'Ada Starling', 'Captain Rook', 'Juno Vale', 'The Night Shift', 'Pip', 'Old Hendricks', 'Tamsin', 'Courier 9', 'Sandbox Crew'];
+  return serializeHighScores(names.map((name, i) => ({ score: Math.round(250000 / (i + 1) / 10) * 10, name })));
 }

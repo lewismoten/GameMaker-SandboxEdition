@@ -3,7 +3,8 @@
 import { MODULES, SHARDS } from './common';
 import { SECTORS } from './universe';
 
-/** Wraps text to Game-Maker's 31 column text screens (blank line = paragraph). */
+/** Wraps text for Game-Maker's text screens: fgets reads 31 characters, so a full
+ * 31-character line would leave its newline for the next read (a blank line); keep to 30. */
 export function wrap31(text: string): string {
   const out: string[] = [];
   for (const para of text.split('\n')) {
@@ -13,7 +14,7 @@ export function wrap31(text: string): string {
     }
     let line = '';
     for (const w of para.split(/\s+/)) {
-      if ((line ? line + ' ' + w : w).length > 31) {
+      if ((line ? line + ' ' + w : w).length > 30) {
         out.push(line);
         line = w;
       } else line = line ? line + ' ' + w : w;

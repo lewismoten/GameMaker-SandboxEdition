@@ -254,8 +254,9 @@ export function buildGame(): Built {
         populate(p.grid, bbl[setName], ms, spotsOf(p), {
           seed: w.scene,
           level: sec.level,
-          count: Math.min(190, 70 + sec.level * 24 + (world.shard !== undefined ? 20 : 0)),
+          count: Math.round(Math.min(190, 70 + sec.level * 24 + (world.shard !== undefined ? 20 : 0)) * (world.kind === 'rover' ? 0.5 : 1)),
           species: 2 + Math.min(3, sec.level),
+          rover: world.kind === 'rover',
         });
         const file = `w${w.scene}`;
         const wsc = setup(w.scene, world.name, {
