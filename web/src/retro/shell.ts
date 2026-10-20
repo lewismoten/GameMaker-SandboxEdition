@@ -172,7 +172,7 @@ export class Shell {
     if (parts.length) lines.push(...(['.', '..'].map((n) => (wide ? `[${n}]`.padEnd(16) : dirLine({ name: n, dir: true, size: 0, date: new Date(1994, 9, 20, 11, 42) })))));
     if (wide) {
       const cells = [...lines.splice(0), ...items.map(dirWide)];
-      for (let i = 0; i < cells.length; i += 5) lines.push(cells.slice(i, i + 5).join(''));
+      for (let i = 0; i < cells.length; i += 5) lines.push(cells.slice(i, i + 5).join('').trimEnd());
     } else lines.push(...items.map(dirLine));
     let shown = 0;
     for (const l of lines) {
