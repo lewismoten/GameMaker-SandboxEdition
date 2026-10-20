@@ -60,7 +60,25 @@ export interface Session {
   joystick?: () => { pos: number; buttons: number } | null;
   /** Called every rendered frame with the live world (for HUD overlays, touch controls…). */
   onFrame?: (w: World) => void;
+  /** Emulated PC speed; read every tick so it can change while playing. */
+  speed: SpeedSetting;
 }
+
+/**
+ * How fast the emulated PC is. The game clock always runs at 18.2 Hz, but playgame
+ * skips (rather than catches up) ticks its main loop was too slow to handle, so on
+ * slower PCs animation, character moves and gravity ran slower while monsters kept
+ * their distance-per-second. `ticksPerSecond` caps how many game ticks are processed.
+ */
+export interface SpeedSetting {
+  ticksPerSecond?: number;
+}
+
+export const SPEED_PRESETS: { id: string; label: string; ticksPerSecond?: number }[] = [
+  { id: 'turbo', label: 'Turbo (full 18.2 ticks/s)' },
+  { id: '386', label: '386-class PC (about 12 ticks/s)', ticksPerSecond: 12 },
+  { id: '286', label: '286-class PC (about 8 ticks/s)', ticksPerSecond: 8 },
+];
 
 export function sceneFile(game: Game, scene: number, slot: number): string | undefined {
   return game.scenes[scene]?.files[slot] || undefined;
@@ -295,6 +313,15 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   let newlink = MAXSCENELINKS;
   let doScroll = false;
   let oldClock = s.timerCounter;
+  let lastTickAt = 0;
+  const cpuReady = () => {
+    const tps = s.speed.ticksPerSecond;
+    if (!tps) return true;
+    const now = performance.now();
+    if (now - lastTickAt < 1000 / tps) return false;
+    lastTickAt = now;
+    return true;
+  };
   const tickMs = 1000 / TICK_RATE;
   let last = performance.now();
   let acc = 0;
@@ -429,7 +456,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         else if (f === 8) w.jstickOn = !w.jstickOn;
         else if (f !== 7) await funcKey(f);
       }
-      if (oldClock < s.timerCounter) await tick();
+      if (oldClock < s.timerCounter && cpuReady()) await tick();
     }
     renderWorld(m.screen, w);
     s.onFrame?.(w);
