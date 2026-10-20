@@ -26,14 +26,16 @@ gates takes you on to the next
 sector.
 
 ON FOOT
-Left/Right walk. Up fires your
-jets: tap it again in the air
-to climb higher. Down curls
-into a ball. Space fires your
-blaster the way you last
-moved. P picks things up. To
-go back to orbit, walk into
-the uplink beacon.
+Left/Right walk (the number
+pad's 4/6/8/2 work as arrows
+too). Up fires your jets: tap
+it again in the air to climb
+higher. Down curls into a
+ball. Space fires your blaster
+the way you last moved. P
+picks things up. To go back to
+orbit, walk into the uplink
+beacon.
 
 UNDER THE SEA
 The diving bell swims with the
