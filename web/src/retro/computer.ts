@@ -32,6 +32,8 @@ export interface ComputerOptions {
   onDisksChanged?: (insert?: string) => void;
   /** A drive is being read (DIR, loading a game or Game-Maker, ...): light its LED. */
   onDriveAccess?: (drive: string) => void;
+  /** A game starts on the monitor (its files), or stops (undefined): the desk sets out its key card. */
+  onGame?: (game?: { files: GameFiles; gam: string; title: string }) => void;
   openModern: (projectId: string, file?: string) => void;
 }
 
@@ -410,6 +412,7 @@ export class Computer implements RetroHost {
     this.setMode('game');
     const host = h('div', { class: 'crt-game' });
     clear(this.layer, host);
+    this.opts.onGame?.({ files, gam, title });
     return new Promise<void>((resolve) => {
       mountPlayer(host, files, gam, {
         title,
@@ -420,6 +423,7 @@ export class Computer implements RetroHost {
         speed: this.opts.speed,
         onQuit: () => false, // back to DOS
         onExit: () => {
+          this.opts.onGame?.(undefined);
           clear(this.layer);
           this.keys.enabled = true;
           this.keys.clear();
