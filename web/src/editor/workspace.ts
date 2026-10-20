@@ -5,6 +5,7 @@ import { editors, fileInfo } from './editors';
 import { GameFiles, loadFileList, normalize } from '../project/files';
 import { createZip } from '../project/zip';
 import { exportWebApp } from '../export/exportWebApp';
+import { exportDos } from '../export/exportDos';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import { newBlockSet, serializeBlocks, type BlockKind } from '../formats/blocks';
 import { defaultPalette, serializePalette } from '../formats/palette';
@@ -72,7 +73,7 @@ export class Workspace {
     clear(
       this.sidebar,
       h('div', { class: 'stack' }, h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'), h('div', { class: 'toolbar' }, h('button', { onclick: () => void this.newFile() }, '+ New'), h('button', { onclick: () => void this.addFiles() }, 'Add files…'))),
-      h('div', { class: 'toolbar', style: 'margin-top:8px' }, h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'), h('button', { onclick: () => void this.exportApp() }, 'Export web app')),
+      h('div', { class: 'toolbar', style: 'margin-top:8px' }, h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'), h('button', { onclick: () => void this.exportApp() }, 'Export web app'), h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS')),
       ...ORDER.filter((k) => groups.has(k)).map((k) => [
         h('h4', null, KIND_LABELS[k]),
         ...groups.get(k)!.map((n) => h('button', { class: `file ${n === this.current ? 'active' : ''}`, onclick: () => this.open(n), title: n }, n)),
@@ -212,6 +213,17 @@ export class Workspace {
   private async downloadZip(): Promise<void> {
     const zip = await createZip(this.project.files.entries().map(([name, data]) => ({ name: name.toUpperCase(), data })));
     download(`${this.project.gam.replace(/\.gam$/, '')}.zip`, zip, 'application/zip');
+  }
+
+  private async exportForDos(): Promise<void> {
+    try {
+      const title = this.project.game().scenes[0]?.desc || this.project.name;
+      const { name, zip, exe } = await exportDos(this.project.files, { title, gam: this.project.gam });
+      download(name, zip, 'application/zip');
+      toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
+    } catch (e) {
+      toast((e as Error).message, 'error');
+    }
   }
 
   private async exportApp(): Promise<void> {
