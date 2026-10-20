@@ -108,7 +108,7 @@ export function limits(b: Built): Limit[] {
     {
       what: 'Pictures between scenes',
       max: 'any GIF, FLI, BKD, TXT or LST',
-      used: `${gifs} GIFs, ${flis} FLIs, ${bkds} BKD windows into 6 tall card GIFs, ${lsts} slide shows`,
+      used: `${gifs} GIFs, ${flis} FLIs, ${bkds} BKD windows into 6 big GIFs (each holds a sector's planet cards and scans side by side), ${lsts} slide shows`,
       where: 'CARDS1..5.GIF, PLACES.GIF',
     },
   ];
@@ -145,8 +145,9 @@ export function limitsTxt(b: Built): string {
   out.push('   slot left for a single shot: in the storm, weapons jam.');
   out.push(' * Every map wraps, so every planet is a little globe: walk');
   out.push('   east long enough and you come home.');
-  out.push(' * One tall GIF per sector holds every planet card; each');
-  out.push("   planet's .BKD file shows its own 320x200 window of it.");
+  out.push(' * One big GIF per sector holds every planet card and every');
+  out.push('   long-range scan; each .BKD file shows its own 320x200');
+  out.push('   window of it, so 176 pictures load from 5 files.');
   return out.join('\n') + '\n';
 }
 
@@ -262,7 +263,7 @@ export function manual(b: Built): object {
       },
       {
         head: 'The Galaxy and the Shards',
-        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing names the shard.</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
+        html: `<h2>Sector gates</h2><p>The galaxy chart holds five sector warps around the dead Core. The Cradle is open; every other sector is sealed by crystal gates, two to a sector. A gate opens when you touch it carrying its shard, and the shards stay with you for good.</p><table><tr><th>Sector</th><th>Gate needs</th><th>Worlds</th></tr>${SECTORS.map((s, k) => `<tr><td>${k + 1}. ${s.name}</td><td>${k === 0 ? 'open' : `${SHARDS[k * 2 - 2]} + ${SHARDS[k * 2 - 1]}`}</td><td>${s.worlds.length}</td></tr>`).join('')}<tr><td>The Core</td><td>all ten</td><td>3</td></tr></table><h2>Finding shards</h2><p>Planets with a <b>gold signal</b> beside them on the sector chart hold a shard, deep in a vault. The planet card you see on landing names the shard, and the <b>long-range scan</b> after it shows the whole world: where you land (green) and where the vault lies (gold).</p><h2>Trading posts</h2><p>Each chart has a trading post. Nudge a pad to buy: an extra life (100 credits), repairs (20), plasma cells (30), nova charges (40), shield charges (30) and med kits (50). One of each per visit.</p>`,
       },
       {
         head: 'Worlds and Vaults',

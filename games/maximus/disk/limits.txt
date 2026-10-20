@@ -112,7 +112,7 @@ CMF INSTRUMENTS / FM VOICES
 
 PICTURES BETWEEN SCENES
   Limit: any GIF, FLI, BKD, TXT or LST
-  Used:  23 GIFs, 5 FLIs, 91 BKD windows into 6 tall card GIFs, 93 slide shows
+  Used:  23 GIFs, 5 FLIs, 179 BKD windows into 6 big GIFs (each holds a sector's planet cards and scans side by side), 93 slide shows
   Where: CARDS1..5.GIF, PLACES.GIF
 
 Some limits shaped the game:
@@ -128,5 +128,6 @@ Some limits shaped the game:
    slot left for a single shot: in the storm, weapons jam.
  * Every map wraps, so every planet is a little globe: walk
    east long enough and you come home.
- * One tall GIF per sector holds every planet card; each
-   planet's .BKD file shows its own 320x200 window of it.
+ * One big GIF per sector holds every planet card and every
+   long-range scan; each .BKD file shows its own 320x200
+   window of it, so 176 pictures load from 5 files.

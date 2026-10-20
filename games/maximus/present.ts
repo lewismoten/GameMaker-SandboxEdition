@@ -8,7 +8,19 @@ import { dosText } from '../kit/disk';
 import type { Built } from './game';
 import { buildSongs } from './music';
 import { buildSounds } from './sounds';
-import { hiscoreScreen, menuScreen, pageScreen, placeCards, sectorCards, slotScreen, storySlides, titleScreen, wonScreens, planetArt } from './screens';
+import {
+  type Scan,
+  hiscoreScreen,
+  menuScreen,
+  pageScreen,
+  placeCards,
+  sectorCards,
+  slotScreen,
+  storySlides,
+  titleScreen,
+  wonScreens,
+  planetArt,
+} from './screens';
 import { descentFli, introFli, launchFli, warpFli, wonFli } from './flics';
 import { CREDITS, INSTRUCTIONS } from './text';
 import { buildDemo } from './demo';
@@ -102,15 +114,34 @@ export async function present(b: Built): Promise<void> {
   // planet cards: each sector's cards in one tall GIF, a .BKD window per world, and a
   // little slide show per world: the descent film, then its card
   const worlds = allWorlds();
+  // and beside each card, in the same picture, the world's long-range scan
+  const scanOf = (scene: number): Scan | undefined => {
+    const info = b.scenes.find((x) => x.scene === scene);
+    if (!info) return undefined;
+    const blocks = b.sets[info.bbl].blocks;
+    const cls = new Uint8Array(10000);
+    const def = blocks[0].grav;
+    for (let i = 0; i < 10000; i++) {
+      const blk = blocks[info.map.cells[i]];
+      const y = Math.floor(i / 100);
+      if (blk.chHitPt < 0) cls[i] = 3;
+      else if (blk.solid & 14) cls[i] = y > 70 ? 2 : 1;
+      else if (blk.grav !== def && blk.grav !== 0) cls[i] = 4;
+      else if (info.kind === 'ocean' && blk.grav === 0) cls[i] = 5;
+      else cls[i] = 0;
+    }
+    return { cls, arrive: info.arrive, uplink: g.scenes[scene].links[0].from, vault: info.vault };
+  };
   SECTORS.forEach((_, k) =>
     putAll(
       sectorCards(
         k,
-        worlds.filter((w) => w.sector === k),
+        worlds.filter((w) => w.sector === k).map((w) => ({ ...w, scan: scanOf(w.scene) })),
       ),
     ),
   );
-  for (const w of worlds) put(`w${w.scene}.lst`, serializeSlideList([{ name: 'descent.fli', pause: 0 }, { name: `w${w.scene}.bkd` }]));
+  for (const w of worlds)
+    put(`w${w.scene}.lst`, serializeSlideList([{ name: 'descent.fli', pause: 0 }, { name: `w${w.scene}.bkd` }, { name: `s${w.scene}.bkd` }]));
   putAll(
     placeCards([
       {

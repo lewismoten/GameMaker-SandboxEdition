@@ -32,7 +32,7 @@ THE GALAXY
 You fly the courier pod. Thrust with the arrow keys. Fly into a warp ring to jump to a sector. Gates of colored crystal bar the outer sectors: touch a gate while you carry its shard and it opens.
 
 SECTOR CHARTS
-Fly into the middle of a planet to land. Planets with a gold signal beside them hold a shard. Trading posts sell supplies: nudge a pad to buy, one of each per visit.
+Fly into the middle of a planet to land. Planets with a gold signal beside them hold a shard. After the planet card comes a long-range scan: green is you, gold is the vault. Trading posts sell supplies: nudge a pad to buy, one of each per visit.
 
 ON FOOT
 Left/Right walk. Up fires your jets: tap it again in the air to climb higher. Down curls into a ball. Space fires your blaster the way you last moved. P picks things up. To go back to orbit, walk into the uplink beacon.

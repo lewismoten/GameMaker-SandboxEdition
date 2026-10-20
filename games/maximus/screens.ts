@@ -337,10 +337,59 @@ export function wonScreens(): Map<string, Uint8Array> {
 const KIND_TEXT: Record<string, string> = { surface: 'ON FOOT', rover: 'BY ROVER', ocean: 'DIVING BELL', station: 'STATION DECKS' };
 
 /** All cards of a sector in one tall GIF, and a .BKD per world pointing into it. */
-export function sectorCards(k: number, worlds: { world: World; scene: number }[]): Map<string, Uint8Array> {
+/** A world's long-range scan: one class per map cell. */
+export interface Scan {
+  /** 0 open, 1 rock, 2 deep rock, 3 hazard, 4 current/lift, 5 water, 6 treasure */
+  cls: Uint8Array;
+  arrive: { x: number; y: number };
+  uplink: { x: number; y: number };
+  vault?: { x: number; y: number };
+}
+
+function scanPage(name: string, scan: Scan, kind: string): Canvas {
+  const c = new Canvas();
+  c.rect(0, 0, 320, 200, C('space')[0]);
+  c.text(10, 6, 'LONG-RANGE SCAN', C('cyan')[6]);
+  c.text(310 - Canvas.width(name.toUpperCase()), 6, name.toUpperCase(), C('yellow')[6]);
+  const col = [C('space')[1], C('brown')[3], C('brown')[1], C('red')[5], C('cyan')[4], C('blue')[2], C('yellow')[6]];
+  if (kind === 'ocean') col[0] = C('blue')[3];
+  if (kind === 'station') {
+    col[1] = C('grey')[3];
+    col[2] = C('grey')[2];
+  }
+  const ox = 10;
+  const oy = 20;
+  for (let y = 0; y < 100; y++)
+    for (let x = 0; x < 100; x++) {
+      const v = scan.cls[y * 100 + x];
+      const y0 = oy + Math.floor(y * 1.5);
+      const y1 = oy + Math.floor((y + 1) * 1.5);
+      c.rect(ox + x * 3, y0, 3, y1 - y0, col[v]);
+    }
+  c.frame(ox - 1, oy - 1, 302, 152, C('cyan')[2]);
+  const mark = (p: { x: number; y: number }, color: number, r: number) => {
+    const cx = ox + p.x * 3 + 1;
+    const cy = oy + Math.floor(p.y * 1.5);
+    for (let a = 0; a < 24; a++) c.set(cx + Math.cos((a / 24) * Math.PI * 2) * r, cy + Math.sin((a / 24) * Math.PI * 2) * r, color);
+    c.rect(cx - 1, cy - 1, 3, 3, color);
+  };
+  mark(scan.arrive, C('green')[6], 5);
+  if (scan.vault) mark(scan.vault, C('yellow')[7], 6);
+  const ly = 178;
+  c.rect(10, ly, 6, 6, C('green')[6]);
+  c.text(20, ly, 'YOU / UPLINK', C('grey')[5]);
+  c.rect(130, ly, 6, 6, C('yellow')[7]);
+  c.text(140, ly, 'VAULT', C('grey')[5]);
+  c.rect(196, ly, 6, 6, C('red')[5]);
+  c.text(206, ly, 'DANGER', C('grey')[5]);
+  c.text(10, 190, 'The world wraps: east leads home.', C('grey')[3]);
+  return c;
+}
+
+export function sectorCards(k: number, worlds: { world: World; scene: number; scan?: Scan }[]): Map<string, Uint8Array> {
   const out = new Map<string, Uint8Array>();
   const sec = SECTORS[k];
-  const c = new Canvas(320, 200 * worlds.length);
+  const c = new Canvas(640, 200 * worlds.length);
   worlds.forEach(({ world, scene }, i) => {
     const card = new Canvas();
     spaceBg(card, 500 + scene);
@@ -367,6 +416,12 @@ export function sectorCards(k: number, worlds: { world: World; scene: number }[]
     card.text(x, 184, 'ANY KEY TO LAND', C('grey')[3]);
     c.blit(card, 0, i * 200);
     out.set(`w${scene}.bkd`, serializeBackdrop({ x: 0, y: i * 200, gif: `cards${k + 1}.gif` }));
+    // the scan sits beside the card in the same picture: a second window, 320 pixels over
+    const scan = worlds[i].scan;
+    if (scan) {
+      c.blit(scanPage(world.name, scan, world.kind), 320, i * 200);
+      out.set(`s${scene}.bkd`, serializeBackdrop({ x: 320, y: i * 200, gif: `cards${k + 1}.gif` }));
+    }
   });
   out.set(`cards${k + 1}.gif`, gif(c));
   return out;
