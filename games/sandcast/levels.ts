@@ -348,7 +348,28 @@ export function burrows(): LevelMap {
       J: { tile: 'sand', mon: MON.beetleV },
     }),
   );
+  roughen(m, 51);
   return m;
+}
+
+/** Makes straight galleries look dug: lumps of earth and roots along their edges, glowworms in the walls. */
+function roughen(m: LevelMap, seed: number): void {
+  let s = seed;
+  const rand = () => (s = (s * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+  const plain = (x: number, y: number) => /^sand\d$/.test(m.get(x, y));
+  const wall = (x: number, y: number) => ['earth', 'roots'].includes(m.get(x, y));
+  const quiet = (x: number, y: number) => [-1, 0, 1].every((dy) => [-1, 0, 1].every((dx) => plain(x + dx, y + dy) || wall(x + dx, y + dy)));
+  const marked = new Set([...m.marks.values()].map(([x, y]) => y * 100 + x));
+  const occupied = new Set(m.map.monsters.filter((p) => p.monnum < 64).map((p) => p.cury * 100 + p.curx));
+  for (let y = 1; y < 40; y++)
+    for (let x = 1; x < 50; x++) {
+      if (!plain(x, y) || !quiet(x, y) || marked.has(y * 100 + x) || occupied.has(y * 100 + x)) continue;
+      const top = wall(x, y - 1) && plain(x, y + 1) && plain(x, y + 2);
+      const bottom = wall(x, y + 1) && plain(x, y - 1) && plain(x, y - 2);
+      if ((top || bottom) && wall(x - 1, y) === false && rand() < 0.22) m.set(x, y, rand() < 0.5 ? 'roots' : 'earth');
+    }
+  for (let y = 1; y < 40; y++)
+    for (let x = 1; x < 50; x++) if (m.get(x, y) === 'earth' && (plain(x, y + 1) || plain(x, y - 1)) && rand() < 0.07) m.set(x, y, 'glow');
 }
 
 // ================================================================= 5. Lady Whiskerbane's patio

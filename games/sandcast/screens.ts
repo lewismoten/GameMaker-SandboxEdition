@@ -201,7 +201,6 @@ export function scoreScreen(): Pixels {
     shadeRect(p, x0, 0, 20, H, SAND[6], 3, SAND[4]);
     for (let y = 0; y < H; y += 24) p.rect(x0, y, 20, 3, SAND[8]);
   }
-  text(p, 24, 10, 'Bulletin #3: KNIGHTS OF THE SANDBOX', ANSI[14]);
   return p;
 }
 

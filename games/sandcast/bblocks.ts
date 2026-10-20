@@ -863,13 +863,17 @@ function flagstone(seed: number): Pixels {
 bg.add('patio', flagstone(171));
 bg.add('patio2', flagstone(172));
 {
-  const p = tile(RED[0]);
+  // Old garden bricks, weathered and mossy.
+  const p = tile(GREY[1]);
+  const r = rng(176);
   for (let row = 0; row < 5; row++) {
     const off = row % 2 ? 5 : 0;
     for (let bx = -1; bx < 3; bx++) {
       const x = bx * 10 + off;
-      p.rect(x + 1, row * 4 + 1, 9, 3, RED[2 + ((row + bx) & 1)]);
-      p.rect(x + 1, row * 4 + 1, 9, 1, RED[4]);
+      const c = r() > 0.5 ? WOOD : OCHRE;
+      p.rect(x + 1, row * 4 + 1, 9, 3, c[2 + ((row + bx) & 1)]);
+      p.rect(x + 1, row * 4 + 1, 9, 1, c[4]);
+      if (r() > 0.75) p.rect(x + 2 + Math.floor(r() * 5), row * 4 + 3, 3, 1, GRASS[2]);
     }
   }
   bg.add('brick', p, { solid: SOLID });

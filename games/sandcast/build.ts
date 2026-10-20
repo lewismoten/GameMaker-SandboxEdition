@@ -89,6 +89,9 @@ const subjects: Record<keyof typeof L, string> = {
 for (const key of Object.keys(L) as (keyof typeof L)[]) {
   const lv = L[key];
   disk.put(lv.name, serializeMap(lv.map.done()));
+  // The sandbox is visited between every castle, so it has no briefing of its own (and the
+  // title demo starts there without waiting for a key).
+  if (key === 'hub') continue;
   (lv as { intro?: string }).intro = message(key === 'bbs' ? 'bbsintro' : key, subjects[key], INTRO[key], key === 'bbs' ? 'SYSOP' : 'SIR GRIT');
 }
 

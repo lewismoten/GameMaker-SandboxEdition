@@ -36,6 +36,8 @@ This morning he woke to ruin. Lady Whiskerbane, the tabby from next door, has cl
 Ants dug into the keep. The hose was left running into the moat. Crabs overran the tide pool, and beetles hold the old burrow.
 
 Take up your shovel, Sir Grit. Rebuild the towers, raise the gates, and win back the Crown of the Sandbox from the cat who sleeps on it.
+
+Your shovel lies by the toy chest. Stand on it and press P, then dig through the dunes to Anthill Keep.
 `);
 
 export const HELP = wrap(`
@@ -75,17 +77,6 @@ Greetz to the SysOp, the 2 a.m. door game crowd, and every cat that ever sat on 
 `);
 
 export const INTRO = {
-  hub: wrap(`
-|THE SANDBOX
-
-Morning. The castles are flat.
-
-Your shovel lies by the toy chest. Stand on it and press P.
-
-Walk into a dune to dig it. Anthill Keep waits behind the dunes.
-
-Each castle you win back sets you down in a new corner of the sandbox.
-`),
   keep: wrap(`
 |1. ANTHILL KEEP
 
