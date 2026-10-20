@@ -1211,8 +1211,8 @@ class CharacterMaker {
           }
           if (mx > HX && mx < HX + 36) {
             v.moucur(false);
+            await v.mouclearbut(); // (C cleared the buttons after TextMode; this Vga is gone by then)
             this.h.textMode();
-            await v.mouclearbut();
             const bytes = await this.h.gmFile(HELPFILE);
             if (bytes) await showHelpScreen(this.h, bytes);
             this.h.keys.clear();
