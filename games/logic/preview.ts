@@ -27,3 +27,17 @@ if (process.env.PREVIEW_DIR) {
   writePng(join(dir, 'mbl.png'), sheet(buildMonsterBlocks(), 10), PAL.pal, 4);
   writePng(join(dir, 'cbl.png'), sheet(buildWattBlocks(), 11), PAL.pal, 4);
 }
+
+if (process.env.PREVIEW_DIR) {
+  const { BOARDS } = await import('./boards');
+  const { compileBoard } = await import('./board');
+  const { renderBoard } = await import('./render');
+  const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
+  const mb = buildMonsterBlocks();
+  const cb = buildWattBlocks();
+  for (const spec of BOARDS) {
+    if (process.env.BOARD && process.env.BOARD !== spec.file) continue;
+    const tiles = buildTiles(STYLES[spec.room]);
+    writePng(join(dir, `board-${spec.file}.png`), renderBoard(compileBoard(spec, tiles, mb), tiles, mb, cb.pic('down0')), PAL.pal, 2);
+  }
+}
