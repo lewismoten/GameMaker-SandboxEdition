@@ -9,7 +9,7 @@ export const POS_MIN = { x: WORLD.x + 1, y: WORLD.y + 1 };
 export const POS_MAX = { x: WORLD.x + WORLD.w - 8, y: WORLD.y + WORLD.h - 8 };
 
 /** The room a scene card needs, in integrator units, so cards never touch after Auto-arrange. */
-export const CARD_UNITS = { w: 23, h: 17 };
+export const CARD_UNITS = { w: 23, h: 19 };
 
 export function clampPos(p: Point): Point {
   return {
