@@ -13,6 +13,7 @@
 import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import type { PrintablesFile } from '../src/manual/printables/types';
 
 export interface CdCatalogEntry {
   id: string;
@@ -60,6 +61,8 @@ export interface OriginalExtras {
   };
   /** The manual: pages of simple HTML, with <shot map="x.map" x="1" y="2"> screenshots. */
   manual?: { title: string; pages: { head: string; html: string }[] };
+  /** The paper extras in the box (games/<id>/printables.json, see src/manual/printables). */
+  printables?: PrintablesFile;
   /** 'sb' games use the Sound Blaster; 'speaker' ones only the PC speaker. */
   sound?: 'sb' | 'speaker';
 }
@@ -237,7 +240,10 @@ function scan(cdRoot: string): Scan {
           .filter((n) => n.endsWith('.txt') && !NOTICES.includes(n) && n !== 'gmhelp.txt')
           .map((n) => disk.get(n)!)
           .filter((p) => NOTICE_WORDS.test(readFileSync(p, 'latin1')));
-        entry.notice = [...own, ...screens].map((p) => dosText(readFileSync(p))).concat(cdNotice ? [cdNotice] : []).join('\n\n----\n\n');
+        entry.notice = [...own, ...screens]
+          .map((p) => dosText(readFileSync(p)))
+          .concat(cdNotice ? [cdNotice] : [])
+          .join('\n\n----\n\n');
         entry.gamCrc = crc32(gamBytes!);
       }
       for (const [name, p] of disk) files.set(`${path}${name}`, p);
@@ -275,6 +281,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], files: Map<strin
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
     const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
+    const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     const id = dir.toLowerCase();
     const path = `games/originals/${id}/`;
     const names: string[] = [];
@@ -305,7 +312,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], files: Map<strin
       exe: about.exe ?? `${id.slice(0, 8).toUpperCase()}.EXE`,
       notice: notice.map((p) => dosText(readFileSync(p))).join('\n\n----\n\n'),
       gamCrc: crc32(gamBytes),
-      original: { label: about.label, box: about.box, sound: about.sound, manual },
+      original: { label: about.label, box: about.box, sound: about.sound, manual, printables },
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
   }
