@@ -860,3 +860,13 @@ dialog.modal .buttons {
   aspect-ratio: 8 / 5;
   max-height: 64vh;
 }
+
+/* the song maker (editor/tools/songMaker.ts) */
+.song-maker {
+  width: min(720px, 86vw);
+}
+
+.song-maker textarea {
+  width: 100%;
+  font: 12px/1.4 ui-monospace, monospace;
+}

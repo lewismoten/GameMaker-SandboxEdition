@@ -2,3 +2,4 @@
 export {};
 import './importPicture';
 import './vocMaker';
+import './songMaker';
