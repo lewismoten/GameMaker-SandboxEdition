@@ -30,14 +30,14 @@ Made from the catalog entry, the manual and the disk. Turn any off with `"skip"`
 
 ## games/&lt;id&gt;/printables.json
 
-All fields are optional. Types: `types.ts` (`PrintablesFile`).
+`everywhere: true` runs a news story in every game's newsletter, not just this one's. All fields are optional. Types: `types.ts` (`PrintablesFile`).
 
 ```json
 {
   "pitch": "One line for the catalog.",
   "skip": ["bbs"],
   "keys": { "Space": "Fire", "Z": "Plasma Lance" },
-  "news": [{ "head": "A story for The Sandbox Scoop", "html": "<p>Simple HTML.</p>" }],
+  "news": [{ "head": "A story for The Sandbox Scoop", "html": "<p>Simple HTML.</p>", "everywhere": true }],
   "stickers": [{ "text": "GOOD DOG", "sub": "small line", "shape": "badge", "color": "#b3121a", "ink": "#fff" }],
   "items": [ ...in tray order, see below... ]
 }
