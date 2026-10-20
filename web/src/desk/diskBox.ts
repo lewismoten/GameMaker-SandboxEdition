@@ -4,6 +4,7 @@ import { h, clear } from '../editor/ui';
 import { diskCount, type Disk } from '../retro/disks';
 import { creditLine } from '../project/files';
 import { boxDisks } from './boxFacts';
+import { printedDiskLabel } from './diskLabel';
 
 /** How many disks it takes: an original ships with the DOS player too (as its box says). */
 export function disksIn(d: Disk): number {
@@ -12,20 +13,10 @@ export function disksIn(d: Disk): number {
 
 export type DiskAction = 'play' | 'design' | 'modern';
 
-/** A printed label, as a shareware publisher had them made: logo band, title, details. */
+/** A printed label, as a shareware publisher had them made (see diskLabel.ts). */
 function printedLabel(d: Disk, n: number): HTMLElement {
   const g = d.catalog!;
-  const l = g.original?.label;
-  const count = disksIn(d);
-  return h(
-    'div',
-    { class: 'label printed', style: `--lbg:${l?.background ?? '#fff'};--lband:${l?.band ?? '#c62828'};--link:${l?.ink ?? '#111'}` },
-    h('span', { class: 'p-logo' }, l?.logo ?? (g.company ?? 'SANDBOX SOFTWARE').toUpperCase()),
-    h('span', { class: 'p-title' }, g.title),
-    h('span', { class: 'p-line' }, `Shareware${g.price ? ` · Register for ${g.price}` : ''}`),
-    h('span', { class: 'p-foot' }, `Disk ${n} of ${count} · 3½" ${d.density} · © ${g.year ?? 1995}`),
-    d.note ? h('span', { class: 'marker-note' }, d.note) : null,
-  );
+  return printedDiskLabel(g, `Disk ${n} of ${disksIn(d)} · 3½" ${d.density} · © ${g.year ?? 1995}`, d.note);
 }
 
 /** A disk; `n` numbers the later disks of a game that takes more than one. */
