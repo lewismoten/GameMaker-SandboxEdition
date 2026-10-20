@@ -12,6 +12,8 @@ import { decodeFrames, remap, rgbaOf } from '../convert';
 import { decodeGif, isGif } from '../../formats/gif';
 import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFrames } from '../../formats/fliFrames';
 import { createZip } from '../../project/zip';
+import { encodeAnimatedGif } from '../../media/gifEncode';
+import { framesToVideo } from '../../media/frames';
 
 const RETRACE = 70;
 const SPEEDS: [number, string][] = [
@@ -258,6 +260,60 @@ registerEditor(['fli'], (host, project, file) => {
     download(`${base}-frames.zip`, await createZip(entries), 'application/zip');
   };
 
+  /** Runs an export, showing its progress on the button. */
+  const busy = async (btn: HTMLButtonElement, work: (progress: (f: number) => void) => Promise<void>) => {
+    if (btn.disabled) return;
+    const label = btn.textContent;
+    btn.disabled = true;
+    try {
+      await work((f) => (btn.textContent = `${label} ${Math.round(f * 100)}%`));
+    } catch (e) {
+      toast(`That didn’t work: ${(e as Error).message}`, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  };
+  const gifBtn: HTMLButtonElement = h(
+    'button',
+    { title: `The whole animation as an animated GIF at ${anim.width}×${anim.height}, looping, at its speed` },
+    '⬇ Animated GIF',
+  );
+  gifBtn.addEventListener('click', () =>
+    busy(gifBtn, async () => {
+      const ms = frameSeconds() * 1000;
+      const gif = encodeAnimatedGif(
+        anim.width,
+        anim.height,
+        anim.frames.map((f) => ({ pixels: f.pixels, palette: f.palette, ms })),
+      );
+      download(`${base}.gif`, gif, 'image/gif');
+    }),
+  );
+  const mp4Btn: HTMLButtonElement = h(
+    'button',
+    { title: `The whole animation as a video at ${anim.width}×${anim.height}, frame times exact to 1/70 s` },
+    '⬇ MP4 video',
+  );
+  mp4Btn.addEventListener('click', () =>
+    busy(mp4Btn, async (progress) => {
+      const a = anim;
+      const { blob, ext } = await framesToVideo(
+        {
+          width: a.width,
+          height: a.height,
+          count: a.frames.length,
+          timescale: RETRACE,
+          duration: () => Math.max(1, a.speed),
+          paint: (i, c) => paintIndexed(c, a.frames[i].pixels, a.width, a.height, a.frames[i].palette),
+        },
+        progress,
+      );
+      download(`${base}.${ext}`, new Uint8Array(await blob.arrayBuffer()), blob.type);
+      if (ext !== 'mp4') toast('This browser can’t make MP4 video, so it is a WebM.');
+    }),
+  );
+
   const keys = (e: KeyboardEvent) => {
     const t = e.target as HTMLElement;
     if (t.tagName === 'INPUT') return;
@@ -326,6 +382,8 @@ registerEditor(['fli'], (host, project, file) => {
         { class: 'toolbar fli-actions' },
         h('button', { onclick: () => void exportFrame() }, '⬇ This frame as PNG'),
         h('button', { onclick: () => void exportAll() }, '⬇ All frames (.zip of PNGs)'),
+        gifBtn,
+        mp4Btn,
         h('span', { class: 'spacer' }),
         undoBtn,
         redoBtn,
