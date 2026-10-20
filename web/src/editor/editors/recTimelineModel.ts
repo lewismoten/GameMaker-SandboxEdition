@@ -49,9 +49,10 @@ const isPrefix = (key: number) => key === EXT || key === 0xe1;
 /**
  * Pairs presses with releases. A press of a key that is already down (typematic repeat)
  * and a release of a key that is not down change nothing in the game, so they make no
- * note. Lanes are handed out first-free, keeping minGap ticks between notes in a lane.
+ * note. Lanes are handed out first-free, keeping minGap ticks between notes in a lane;
+ * capTicks says how long a key's keycap is (in ticks), so a short tap still claims room.
  */
-export function toNotes(events: RecEvent[], minGap = 0): { notes: Note[]; lanes: number } {
+export function toNotes(events: RecEvent[], minGap = 0, capTicks: (scan: number) => number = () => 0): { notes: Note[]; lanes: number } {
   const notes: Note[] = [];
   const open = new Map<number, Note>();
   events.forEach((e, i) => {
@@ -73,7 +74,7 @@ export function toNotes(events: RecEvent[], minGap = 0): { notes: Note[]; lanes:
   for (const n of notes) {
     let lane = laneEnds.findIndex((end) => end + minGap <= n.start);
     if (lane < 0) lane = laneEnds.length;
-    laneEnds[lane] = n.end ?? Infinity;
+    laneEnds[lane] = Math.max(n.end ?? Infinity, n.start + capTicks(n.scan));
     n.lane = lane;
   }
   return { notes, lanes: Math.max(1, laneEnds.length) };
@@ -136,29 +137,24 @@ export function moveNote(events: RecEvent[], notes: Note[], index: number, grip:
   return out;
 }
 
-/** A pause where no key is down and nothing happens. */
+/** A stretch of time in which no key goes down or up. */
 export interface Gap {
   from: number;
   to: number;
 }
 
-/** The pauses of at least minLen ticks (including one before the first key). */
+/** The stretches of at least minLen ticks in which no key goes down or up (including the one before the first key). */
 export function idleGaps(events: RecEvent[], minLen: number): Gap[] {
-  const { notes } = toNotes(events);
-  const end = duration(events);
-  const busy: Gap[] = [...notes.map((n) => ({ from: n.start, to: n.end ?? end })), ...events.map((e) => ({ from: e.t, to: e.t }))].sort(
-    (a, b) => a.from - b.from,
-  );
   const gaps: Gap[] = [];
-  let reach = 0;
-  for (const b of busy) {
-    if (b.from - reach >= minLen) gaps.push({ from: reach, to: b.from });
-    reach = Math.max(reach, b.to);
+  let last = 0;
+  for (const e of events) {
+    if (e.t - last >= minLen) gaps.push({ from: last, to: e.t });
+    last = e.t;
   }
   return gaps;
 }
 
-/** Shortens the pause [from, to] to len ticks by moving every later event earlier. */
+/** Shortens the stretch [from, to] to len ticks by moving every later event earlier. */
 export function shortenGap(events: RecEvent[], gap: Gap, len: number): RecEvent[] {
   const cut = Math.max(0, gap.to - gap.from - len);
   return events.map((e) => (e.t >= gap.to ? { t: e.t - cut, key: e.key } : e));

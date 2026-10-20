@@ -30,6 +30,7 @@ const LANE = 32;
 const CAP_H = 22;
 const TAIL_H = 10;
 const FONT = 'bold 11px ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+const ARROW_FONT = 'bold 15px system-ui, sans-serif';
 const BG = '#0a0c1c';
 const PLAYHEAD = '#ff9d00';
 /** Pauses longer than this (ticks) fold up in the editor. */
@@ -41,8 +42,12 @@ interface Layout {
   colors: Map<number, string>;
 }
 
-function layout(events: RecEvent[], minGap: number): Layout {
-  const { notes, lanes } = toNotes(events, minGap);
+let measurer: CanvasRenderingContext2D | undefined;
+
+/** Hands out tracks at ppt pixels per tick, so keycaps and bars in a track never touch. */
+function layout(events: RecEvent[], ppt: number): Layout {
+  const ctx = (measurer ??= document.createElement('canvas').getContext('2d')!);
+  const { notes, lanes } = toNotes(events, 6 / ppt, (scan) => (capWidth(ctx, scan) + 2) / ppt);
   const colors = new Map<number, string>();
   for (const n of notes) if (!colors.has(n.scan)) colors.set(n.scan, PALETTE[colors.size % PALETTE.length]);
   return { notes, lanes, colors };
@@ -50,13 +55,13 @@ function layout(events: RecEvent[], minGap: number): Layout {
 
 const label = (scan: number) => capLabel(scan, scanName);
 
+/** Arrows are drawn bigger than letters, as on a real keyboard. */
+const capFont = (scan: number) => (/^[←↑→↓]$/.test(label(scan)) ? ARROW_FONT : FONT);
+
 function capWidth(ctx: CanvasRenderingContext2D, scan: number): number {
-  ctx.font = FONT;
+  ctx.font = capFont(scan);
   return Math.max(24, Math.ceil(ctx.measureText(label(scan)).width) + 14);
 }
-
-/** Widest keycap in px, for spacing notes that share a track. */
-const WIDE = 52;
 
 type CapState = 'up' | 'down' | 'past' | 'hot';
 
@@ -100,7 +105,7 @@ function drawKeycap(ctx: CanvasRenderingContext2D, x: number, y: number, w: numb
     ctx.fillRect(x + 4, y + CAP_H - 7, w - 8, 2);
   }
   ctx.fillStyle = down ? '#10121f' : '#262630';
-  ctx.font = FONT;
+  ctx.font = capFont(scan);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(label(scan), x + w / 2, y + travel + (CAP_H - 4) / 2 + 0.5);
@@ -206,7 +211,7 @@ function draw(f: Frame): CapBox[] {
     ctx.fillText(clock(s.t1 - s.t0, false), (xa + xb) / 2, 7);
     ctx.translate((xa + xb) / 2, RULER + (height - RULER) / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('pause', 0, 0);
+    ctx.fillText('folded', 0, 0);
     ctx.restore();
   }
   // Watching: shade the past and draw the playhead under the keys.
@@ -232,9 +237,10 @@ function draw(f: Frame): CapBox[] {
     const color = lay.colors.get(n.scan)!;
     const down = pos !== undefined && isDown({ ...n, start, end }, pos);
     const past = pos !== undefined && end !== null && end <= pos;
-    // Sticky: a key still down when its cap would scroll off stays at the left edge,
-    // until the end of its bar pushes it away.
-    const cx = xs >= 0 ? xs : Math.min(0, xe - w);
+    // Sticky: a key still down when its cap would scroll off stays at the left edge.
+    // Watching, it lets go when the game releases the key; in the editor (where the
+    // left edge is the moment in question) the end of its bar pushes it away.
+    const cx = xs >= 0 ? xs : pos === undefined ? Math.min(0, xe - w) : down ? 0 : xs;
     // The bar (tail) for as long as the key is held.
     const ty = y + (CAP_H - TAIL_H) / 2 - 1;
     const tailFrom = Math.max(cx + w / 2, xs + w / 2);
@@ -364,7 +370,7 @@ export function watchTimeline(events: RecEvent[], getTick: () => number | undefi
     const want = Math.min(10, Math.max(4, canvas.clientWidth / 110));
     if (!lay || want !== ppt) {
       ppt = want;
-      lay = layout(events, Math.ceil((WIDE + 6) / ppt));
+      lay = layout(events, ppt);
     }
     const { ctx, width } = fitCanvas(canvas, stripHeight(lay.lanes));
     const playX = Math.round(width * 0.28);
@@ -399,7 +405,7 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
   let ppt = 6;
   let scroll = 0;
   let fitted = false;
-  let lay = layout(events, 0);
+  let lay = layout(events, ppt);
   let map = new TimeMap(ppt);
   let boxes: CapBox[] = [];
   let hover: Frame['hover'];
@@ -450,7 +456,7 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
   );
 
   function rebuild(): void {
-    lay = layout(events, Math.ceil((WIDE + 6) / ppt));
+    lay = layout(events, ppt);
     map = new TimeMap(ppt, idleGaps(events, FOLD));
   }
 
@@ -502,7 +508,7 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
     } else if (hover?.grip === 'trim') status.textContent = 'Drag the END flag left to cut off the rest of the demo.';
     else if (hover?.grip === 'fold') {
       const s = map.segs[hover.note];
-      status.textContent = `A ${clock(s.t1 - s.t0, false)} pause with no keys down (folded up). Click to shorten it.`;
+      status.textContent = `${clock(s.t1 - s.t0, false)} with no key pressed or let go, folded up. Click to shorten it.`;
     } else status.textContent = `${lay.notes.length} key presses · ${clock(total)} · drag keys to retime them, the END flag to trim`;
   }
 
@@ -616,7 +622,7 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
         h(
           'p',
           { class: 'hint' },
-          `Nobody presses a key for ${clock(gap.to - gap.from, false)} here. Make the wait shorter? Monsters and timers keep going during a pause, so the rest of the demo may play out differently.`,
+          `No key goes down or up for ${clock(gap.to - gap.from, false)} here. Make it shorter? Keys held down stay held, and monsters and timers keep going, so the rest of the demo may play out differently.`,
         ),
         h(
           'div',

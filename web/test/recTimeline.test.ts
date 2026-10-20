@@ -48,6 +48,8 @@ describe('demo recording timeline', () => {
     const events = ev([0, 30], [2, 30 | 0x80], [3, 31], [5, 31 | 0x80]);
     expect(toNotes(events, 0).lanes).toBe(1);
     expect(toNotes(events, 2).lanes).toBe(2);
+    // A tap shorter than its keycap still claims the keycap's room.
+    expect(toNotes(events, 0, () => 4).lanes).toBe(2);
   });
 
   it('trims the end, releasing keys held across the cut', () => {
