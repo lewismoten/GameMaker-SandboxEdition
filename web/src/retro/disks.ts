@@ -37,7 +37,6 @@ export function diskCount(bytes: number): number {
 export async function loadDisks(): Promise<Disk[]> {
   const catalog = await loadCatalog().catch(() => [] as CatalogEntry[]);
   const gameware = catalog.filter((g) => g.kind === 'gameware');
-  const sizes = new Map<string, number>();
   const disks: Disk[] = [];
   const order = [...RSD_GAMES.map((id) => gameware.find((g) => g.id === id)).filter((g): g is CatalogEntry => !!g), ...gameware.filter((g) => !RSD_GAMES.includes(g.id))];
   order.forEach((g, i) => {
@@ -49,7 +48,7 @@ export async function loadDisks(): Promise<Disk[]> {
       label: g.gam ? (rsd ? `${g.title}\nRecreational Software Designs` : g.title) : `${g.id.toUpperCase()}\npictures, monsters, sounds`,
       color: rsd ? '#1d3b8a' : COLORS[i % COLORS.length],
       gam: g.gam ?? undefined,
-      bytes: sizes.get(g.id) ?? 0,
+      bytes: g.bytes ?? 0,
       writeProtected: true,
       catalog: g,
       load: () => loadHostedGame(g),
