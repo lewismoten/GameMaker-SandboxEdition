@@ -221,6 +221,18 @@ export function about(b: Built): object {
         shot('heart', { x: 74, y: 47, r: 4 }),
       ],
       rating: 'Ages 8 and up',
+      // the desk's box and shelf (web/src/desk/boxFacts.ts, wallPoster.ts)
+      hours: 20,
+      reviews: [
+        { quote: 'A whole galaxy on four floppies. We lost a long weekend to the Hundred Worlds and want it back.', source: 'VGA Voyager, March 1995' },
+        { quote: 'The most ambitious Game-Maker game we have seen.', source: 'Diskette Digest' },
+      ],
+      award: { title: 'Shareware Game of the Month', from: 'Megapixel Monthly' },
+      poster: {
+        map: ['sector1.map', 0, 0, 40, 40],
+        title: 'Sector 1 Chart',
+        caption: "Courier's chart of the first sector: the gate, the station and the asteroid belt",
+      },
     },
   };
 }
