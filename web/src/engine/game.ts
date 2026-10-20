@@ -2,7 +2,7 @@
 // loop that walks the scene graph from the start scene to "Game Won".
 import { Machine } from './machine';
 import { Recorder } from './recorder';
-import { playScene, sceneFile, startGameInits, type Session } from './scene';
+import { playScene, sceneFile, startGameInits, type Session, type SpeedSetting } from './scene';
 import { checkHighScores, drawDefaultScreen, gVertMenu, showHighScores } from './menus';
 import { match, RGB_BLUE, RGB_RED, showGraphic } from './showGraphic';
 import { newCharInfo } from './world';
@@ -19,6 +19,8 @@ export interface RunOptions {
   playback?: Uint8Array;
   /** Called every frame while a level is being played. */
   onFrame?: Session['onFrame'];
+  /** Emulated PC speed (shared object: change ticksPerSecond at any time). */
+  speed?: SpeedSetting;
 }
 
 export function gameNameOf(gamFile: string): string {
@@ -48,6 +50,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     speakerOnly: !!opts.speakerOnly,
     joystick: opts.joystick,
     onFrame: opts.onFrame,
+    speed: opts.speed ?? {},
   };
   m.keyboard.attach();
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
