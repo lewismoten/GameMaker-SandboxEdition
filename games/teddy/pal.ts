@@ -109,7 +109,7 @@ export function buildScreenPalette(): Pal {
   b.ramp('cream', 4, [200, 180, 140], [255, 248, 230]);
   // Display_File writes text in the color nearest (50,10,50)*4 and "MORE..." in the red
   // nearest (63,10,10)*4: give it a deep plum ink and a clown red.
-  b.ramp('plum', 1, [120, 30, 120], [120, 30, 120]);
+  b.ramp('plum', 1, [170, 24, 140], [170, 24, 140]);
   b.ramp('menublue', 2, [24, 24, 150], [44, 44, 252]);
   b.ramp('menured', 1, [252, 40, 40], [252, 40, 40]);
   return wrap(b);
