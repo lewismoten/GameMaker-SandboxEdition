@@ -44,7 +44,8 @@ export type Archetype =
   | 'skull'
   | 'mimic'
   | 'egg'
-  | 'comet';
+  | 'comet'
+  | 'plate';
 
 export interface Look {
   arch: Archetype;
@@ -521,6 +522,23 @@ export function drawCreature(look: Look): Pixels[] {
           for (let x = 5; x < 15; x += 2) p.set(x, 8, WHITE).set(x + 1, 10, WHITE);
           p.set(8, 6, pt.eye[3]).set(12, 6, pt.eye[3]);
         } else p.set(8, 6, WHITE);
+      });
+      break;
+    case 'plate':
+      F((p, k) => {
+        // a full block of armor (solid monsters collide by their pixels, so no gaps)
+        shade(p, new Mask().rect(0, 0, 20, 20), pt.hide, { light: [-1, -1] });
+        p.rect(0, 0, 20, 1, pt.hide[pt.hide.length - 1]).rect(0, 0, 1, 20, pt.hide[pt.hide.length - 1]);
+        for (const [x, y] of [
+          [3, 3],
+          [16, 3],
+          [3, 16],
+          [16, 16],
+        ])
+          p.set(x, y, pt.accent[3]);
+        const crack = new Mask().line(10, 2, 8, 9, 1).line(8, 9, 12, 13, 1).line(12, 13, 9, 18, 1);
+        if (look.spikes) fill(p, crack, pt.accent[k ? 4 : 2]);
+        else fill(p, new Mask().rect(7, 7, 6, 6), pt.eye[k ? 3 : 1]);
       });
       break;
     case 'egg':

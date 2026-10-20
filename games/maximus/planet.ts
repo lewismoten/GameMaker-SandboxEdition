@@ -26,7 +26,7 @@ export interface PlanetSpec {
   shard?: number;
   module?: number;
   /** Extra hazards etc. */
-  features?: { lakes?: boolean; islands?: number; winds?: boolean; fields?: boolean; caves?: number; ruins?: boolean };
+  features?: { lakes?: boolean; islands?: number; winds?: boolean; fields?: boolean; caves?: number; ruins?: boolean; rover?: boolean };
 }
 
 export interface PlanetResult {
@@ -54,7 +54,8 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   const fam = (n: string) => (n === 'cave' ? [s.id('cave:0'), s.id('cave:1'), s.id('cave:2')] : s.family(n));
   const g = new Grid();
   const bbl = s.blocks;
-  const f = { lakes: true, islands: 4, winds: false, fields: true, caves: 8, ruins: true, ...spec.features };
+  const f = { lakes: true, islands: 4, winds: false, fields: true, caves: 8, ruins: true, rover: false, ...spec.features };
+  if (f.rover) Object.assign(f, { lakes: false, islands: 0, caves: 0 });
 
   // --- surface height: smooth periodic noise, flattened into walkable steps
   const n = wave1d(spec.seed, [
@@ -71,8 +72,12 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     const level = Math.round(raw[x]);
     for (let k = 0; k < len && x < W; k++, x++) h[x] = level;
   }
-  // never a step of more than 3 between neighbours (hop height)
-  for (let pass = 0; pass < 3; pass++) for (let i = 0; i < W; i++) h[i] = Math.max(h[i], Math.min(h[(i + 1) % W], h[(i + W - 1) % W]) - 3);
+  // never a step of more than 3 between neighbours (hop height); 1 for rover worlds
+  const maxStep = f.rover ? 1 : 3;
+  for (let pass = 0; pass < 6; pass++) for (let i = 0; i < W; i++) h[i] = Math.max(h[i], Math.min(h[(i + 1) % W], h[(i + W - 1) % W]) - maxStep);
+  // rover worlds keep their prize in a ruin on the surface, on flattened ground
+  const surfaceVault = f.rover ? wx(Math.floor(r() * W)) : -1;
+  if (f.rover) for (let i = -6; i <= 6; i++) h[wx(surfaceVault + i)] = h[surfaceVault];
 
   // --- sky and ground
   for (let y = 0; y < H; y++)
@@ -138,7 +143,7 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     }
   }
   const chambers: { x: number; y: number }[] = [];
-  for (let k = 0; k < 3 + Math.floor(r() * 4); k++) {
+  for (let k = 0; k < (f.rover ? 0 : 3 + Math.floor(r() * 4)); k++) {
     const cx = r() * W;
     const cy = 56 + r() * 24;
     carve(cx, cy, 4 + r() * 4, 2.5 + r() * 2);
@@ -146,7 +151,7 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   }
   // shafts from the surface (well away from the landing site)
   const shafts: number[] = [];
-  for (let k = 0; k < 3; k++) {
+  for (let k = 0; k < (f.rover ? 0 : 3); k++) {
     let sx = wx(ax + 15 + k * 28 + Math.floor(r() * 10));
     shafts.push(sx);
     for (let yy = h[sx]; yy < 80; yy++) {
@@ -156,7 +161,7 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   }
   // the vault room (ruins, the shard or module waits inside)
   let vault: Spot | undefined;
-  {
+  if (!f.rover) {
     const vx = wx(ax + 45 + Math.floor(r() * 10));
     const vy = 70 + Math.floor(r() * 8);
     vault = { x: vx, y: vy };
@@ -170,9 +175,10 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
   }
   // join every pocket of open space to the landing site
   const isOpen = (b: number) => b === id('air') || fam('cave').includes(b);
+  const gatePass = (b: number) => b === id('door') || b === id('field:on') || b === id('field:on2') || b === id('field:off');
   const joinAll = () => {
     for (let guard = 0; guard < 40; guard++) {
-      const seen = reachable(g, bbl, arrive.x, arrive.y);
+      const seen = reachable(g, bbl, arrive.x, arrive.y, { pass: gatePass });
       let best: { i: number; d: number } | undefined;
       for (let i = 0; i < W * H; i++) {
         if (seen[i] || !carved[i]) continue;
@@ -251,8 +257,11 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
       let cx = ex;
       for (let step = 0; step < 30; step++) {
         const seen = g.get(cx, vy);
-        const done = step > 3 && reachable(g, bbl, arrive.x, arrive.y)[vy * W + wx(cx)];
-        for (const oy of [0, -1]) if (!isOpen(g.get(cx, vy + oy))) g.set(cx, vy + oy, pickOne(fam('cave')));
+        const done = step > 3 && reachable(g, bbl, arrive.x, arrive.y, { pass: gatePass })[vy * W + wx(cx)];
+        for (const oy of [0, -1]) {
+          if (!isOpen(g.get(cx, vy + oy))) g.set(cx, vy + oy, pickOne(fam('cave')), true);
+          carved[wy(vy + oy) * W + wx(cx)] = 1;
+        }
         if (done && seen !== undefined) break;
         cx = wx(cx + dir);
       }
@@ -262,6 +271,31 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     g.set(vx, vy, prize, true);
     g.set(vx - 2, vy, id('pc:gem'), true);
     g.set(vx + 2, vy, id('pc:credit'), true);
+  }
+
+  // --- rover worlds: the prize sits in a ruin on the surface; lifts climb every step
+  if (f.rover) {
+    const vx = surfaceVault;
+    const vy = h[vx] - 1;
+    vault = { x: vx, y: vy };
+    for (let xx = vx - 4; xx <= vx + 4; xx++) {
+      g.set(xx, vy - 3, id('ruin:block'), true);
+      for (let yy = vy - 2; yy <= vy; yy++) g.set(xx, yy, id('air'), true);
+    }
+    for (const yy of [vy, vy - 1, vy - 2]) {
+      g.set(vx - 4, yy, yy === vy - 2 ? id('ruin:block') : id('door'), true);
+      g.set(vx + 4, yy, yy === vy - 2 ? id('ruin:block') : id('field:on'), true);
+    }
+    g.set(vx - 2, vy - 2, id('pillar:top'), true);
+    g.set(vx + 2, vy - 2, id('pillar:top'), true);
+    const prize = spec.shard !== undefined ? id(`shard:${spec.shard}`) : spec.module !== undefined ? id(`module:${spec.module}`) : id('p:oneup');
+    g.set(vx, vy, prize, true);
+    g.set(vx - 2, vy, id('p:gem'), true);
+    g.set(vx + 2, vy, id('p:credit'), true);
+    for (let xx = 0; xx < W; xx++) {
+      const up = Math.min(h[(xx + 1) % W], h[(xx + W - 1) % W]);
+      if (up < h[xx] && !g.isLocked(xx, h[xx] - 1)) for (let yy = up - 2; yy <= h[xx] - 1; yy++) if (!g.isLocked(xx, yy)) g.set(xx, yy, id('lift'));
+    }
   }
 
   // --- cave dressing: stalactites, crystals, mushrooms, pools, spikes
@@ -280,7 +314,7 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
         if (k < 0.06) g.set(xx, yy, id('stal:up'));
         else if (k < 0.1) g.set(xx, yy, id('mushroom:cave'));
         else if (k < 0.13) g.set(xx, yy, id('crystals:cave'));
-        else if (k < 0.13 + 0.02 * spec.level) g.set(xx, yy, id('spikes:cave'));
+        else if (k < 0.13 + 0.02 * spec.level && !solidAt(xx, yy - 1) && !solidAt(xx, yy - 2) && !solidAt(xx, yy - 3)) g.set(xx, yy, id('spikes:cave'));
       } else if (above && !g.isLocked(xx, yy - 1)) {
         const k = r();
         if (k < 0.12 && !solidAt(xx, yy + 1) && !solidAt(xx, yy + 2)) g.set(xx, yy, id('stal:down'));
@@ -425,8 +459,8 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
 }
 
 /** True if every cell the prize needs is reachable from the landing site. */
-export function checkPlanet(p: PlanetResult, bbl: Block[], passable: (b: number) => boolean): string[] {
-  const seen = reachable(p.grid, bbl, p.arrive.x, p.arrive.y, { pass: passable });
+export function checkPlanet(p: PlanetResult, bbl: Block[], passable: (b: number) => boolean, tall = true): string[] {
+  const seen = reachable(p.grid, bbl, p.arrive.x, p.arrive.y, { pass: passable, tall });
   const problems: string[] = [];
   if (!seen[p.uplink.y * W + p.uplink.x]) problems.push('uplink unreachable');
   if (p.vault && !seen[p.vault.y * W + p.vault.x]) problems.push('vault unreachable');

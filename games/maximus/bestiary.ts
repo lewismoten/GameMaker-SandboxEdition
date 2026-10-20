@@ -47,7 +47,8 @@ export interface Creature {
   score: number;
   /** Lifetime in ticks (0 = until killed, -1 = dies when its path ends, -2 never dies). */
   end?: number;
-  becomes?: string;
+  /** Creature (by name) or shared monster slot (by number) it turns into when killed. */
+  becomes?: string | number;
   /** Walls stop it (default true). */
   walls?: boolean;
   place: Placement;
@@ -96,7 +97,7 @@ export function monsterSet(name: string, creatures: Creature[]): MonsterSet {
       pics = frames.map((f) => addBlock(f, props));
     }
     art.set(c.name, pics);
-    mon[i] = makeMonster(c, pics, c.becomes ? index.get(c.becomes) : undefined);
+    mon[i] = makeMonster(c, pics, c.becomes === undefined ? undefined : typeof c.becomes === 'number' ? c.becomes : index.get(c.becomes));
   });
   const blocksUsed = next;
   // fill any spare creature slots with alternate frames so every block holds art
