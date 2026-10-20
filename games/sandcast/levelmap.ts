@@ -151,4 +151,5 @@ export const LEGEND: Legend = {
   l: 'glow',
   m: 'mushroom',
   g: 'goldShell',
+  y: 'tennis',
 };

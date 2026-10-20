@@ -69,15 +69,15 @@ export function hub(): LevelMap {
       '...........r...........',
       '..o....................',
       '.......d.......$.......',
-      '...r...........o...x...',
+      '...r...y.......o...x...',
       '......*................',
-      '..x.........A..........',
+      '..x.........A....q.....',
       '...........w...........',
       '........o.........@....',
       '..h....................',
       '...x...................',
     ],
-    L({ '!': { tile: 'door', mark: 'door3' }, '@': { tile: 'sand', mark: 'arrive3' }, r: { tile: 'sand', mon: MON.crabH } }),
+    L({ '!': { tile: 'door', mark: 'door3' }, '@': { tile: 'sand', mark: 'arrive3' }, r: { tile: 'sand', mon: MON.crabH }, q: { tile: 'sand', mon: MON.gwinRoam }, }),
   );
   // Southeast: the garden hose, its lazy loop, and the Hosewater Moat. A little hole
   // in the corner is not an ant's.
@@ -114,7 +114,7 @@ export function hub(): LevelMap {
   );
   // Hose banks on the outside corners of the lazy loop, so it carries you round and round.
   m.set(37, 24, 'hoseV').set(36, 28, 'hoseH').set(26, 27, 'hoseV').set(27, 23, 'hoseH');
-  // Southwest: Sir Grit's toy chest, his shovel, and Anthill Keep behind the dunes.
+  // Southwest: Teddy's toy chest, his shovel, a tennis ball, and Anthill Keep behind the dunes.
   m.stamp(
     1,
     19,
@@ -129,11 +129,11 @@ export function hub(): LevelMap {
       '...DDDDDDDDD.....j......',
       '........................',
       '..o.......x.........o...',
-      '.....*..........A.......',
+      '.....*....q.....A.......',
       '........................',
       '...a.B.c.........*......',
       '............o..........h',
-      '..S.....................',
+      '..S..y..................',
       '.@......*.....[]........',
       'C.......................',
     ],
@@ -142,6 +142,7 @@ export function hub(): LevelMap {
       '@': { tile: 'sand', mark: 'start' },
       S: 'shovel',
       j: { tile: 'sand', mon: MON.antRow },
+      q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
   return m;
@@ -160,12 +161,12 @@ export function keep(): LevelMap {
       'GD....F..MMMMMMMMMMMMMMMMMM..F....DG',
       'G........#______MMMM______#........G',
       'GD.......#______#!##______#.......DG',
-      'G........#________________#........G',
+      'G........#_______9________#........G',
       'G..o.....#__*__________*__#.....o..G',
       'G........#________h_____O_#........G',
       'G........#____V___________#........G',
       'GD....F..########P#########..F....DG',
-      'G..................................G',
+      'G....y.............................G',
       'G...D......o..........o.......D....G',
       'G.......A..................A.......G',
       'G..*...............................G',
@@ -175,7 +176,7 @@ export function keep(): LevelMap {
       'GD......DDD.......A.......DDD.....DG',
       'G.......DoD...............DoD......G',
       'G........D.................D.......G',
-      'G..h..........*.......*........$...G',
+      'G..h..........*...y...*........$...G',
       'GD...............................DDG',
       'GDD..............@..............DDDG',
       'GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG',
@@ -186,6 +187,7 @@ export function keep(): LevelMap {
       O: { tile: 'hole', mark: 'secret' },
       V: { tile: 'court', mark: 'back' },
       j: { tile: 'sand', mon: MON.antRow },
+      '9': { tile: 'court', mon: MON.gwinNap },
     }),
   );
   return m;
@@ -223,7 +225,7 @@ export function moat(): LevelMap {
       'G..o.....~~~~~~~~~~z~~~~~~~~~~~.......vG',
       'G........~~~~~~~~~~z~~~~~~~~~~~.o.....vG',
       'G....D.......o.........o.........D....vG',
-      'G..j..........................J.......vG',
+      'G..j......y..........q........J.......vG',
       'G.....................................vG',
       'GN....................................vG',
       'G.....o.............*..........o......vG',
@@ -238,6 +240,7 @@ export function moat(): LevelMap {
       P: 'gate2',
       j: { tile: 'sand', mon: MON.beetleH },
       J: { tile: 'sand', mon: MON.beetleLoop },
+      q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
   return m;
@@ -248,7 +251,7 @@ export function moat(): LevelMap {
 // sandbars, crabs patrol the gullies, and the bucket packs walls of wet sand.
 export function lagoon(): LevelMap {
   const m = new LevelMap('grass', 4);
-  const barrierA = 'QQdQQaQQBQQcQQQ.QQcQQQaQQQQdQQBQQQQaQQ';
+  const barrierA = 'QQdQQaQQBQQcQQQ9QQcQQQaQQQQdQQBQQQQaQQ';
   const barrierB = 'QaQQcQQdQQQBQQQ.QQQdQQcQQaQQQQBQQdQQQQ';
   m.stamp(
     0,
@@ -257,14 +260,14 @@ export function lagoon(): LevelMap {
       'GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG',
       'G...*..............U...w..........*....G',
       'G.MMMMMMMMMMMM.....@...........Q.......G',
-      'G.#__________#.............X.......w...G',
+      'G.#__________#....y........X.......w...G',
       'G.#__MMMM____#..d......................G',
       'G.#__#!##____#.........Q......*........G',
       'G.#__________#....r....................G',
       'G.#_*______*_#..........w.......d......G',
       'G.######S#####.....Q.........R.........G',
       'G..*...h..........................*....G',
-      'G......w.........Q.......*.............G',
+      'G......w.........Q.......*.....y.......G',
       'G......................................G',
       `G${barrierA}G`,
       'G.........r....ere.....................G',
@@ -296,6 +299,7 @@ export function lagoon(): LevelMap {
       '3': 'surf3',
       t: 'flat',
       s: 'sand',
+      '9': { tile: 'sand', mon: MON.gwinNap },
     }),
   );
   // The sea runs on past the bottom of the map.
@@ -332,7 +336,7 @@ export function burrows(): LevelMap {
       'WW.l' + W(25) + '.%.' + W(12),
       'WW.' + W(9) + 'n' + W(17) + 'k' + W(13),
       'W' + '..' + '........' + 'm' + '....' + '>>>>>>' + '........' + '.' + '...........' + '.' + 'W',
-      'W' + '....j' + '.'.repeat(17) + '%' + '.'.repeat(9) + 'j' + '.'.repeat(9) + 'W',
+      'W' + '....j' + '.'.repeat(5) + 'q' + '.'.repeat(11) + '%' + '.'.repeat(9) + 'j' + '.'.repeat(4) + 'y' + '.'.repeat(4) + 'W',
       'Wo' + '.'.repeat(15) + '>>>>>>' + '.'.repeat(10) + 'm' + '.'.repeat(9) + 'W',
       W(12) + 'n' + W(27) + '.' + W(3),
       W(40) + 'r' + W(3),
@@ -352,6 +356,7 @@ export function burrows(): LevelMap {
       L: 'juice',
       j: { tile: 'sand', mon: MON.beetleH },
       J: { tile: 'sand', mon: MON.beetleV },
+      q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
   roughen(m, 51);
@@ -378,7 +383,7 @@ function roughen(m: LevelMap, seed: number): void {
     for (let x = 1; x < 50; x++) if (m.get(x, y) === 'earth' && (plain(x, y + 1) || plain(x, y - 1)) && rand() < 0.07) m.set(x, y, 'glow');
 }
 
-// ================================================================= 5. Lady Whiskerbane's patio
+// ================================================================= 5. Gwin's patio
 export const CAT_AT = { x: 13, y: 3 };
 export function patio(): LevelMap {
   const m = new LevelMap('grass', 6);
@@ -405,10 +410,10 @@ export function patio(): LevelMap {
       '.....#....................#...',
       '.....##..................##...',
       '..............@...............',
-      '.P............u.............P.',
+      '.P...y........u.........y...P.',
       '..............................',
     ],
-    L({ '.': 'patio', u: 'bowl', P: 'post2', '#': 'brick', '@': { tile: 'patio', mark: 'arrive' } }),
+    L({ '.': 'patio', u: 'bowl', P: 'post2', '#': 'brick', y: 'tennis', '@': { tile: 'patio', mark: 'arrive' } }),
   );
   m.mon(12, 7, MON.pawL).mon(19, 7, MON.pawR).mon(14, 8, MON.tail);
   return m;
