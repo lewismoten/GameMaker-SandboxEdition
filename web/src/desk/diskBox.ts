@@ -49,7 +49,7 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onAction
     });
 
     const close = () => {
-      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keydown', onKey, true);
       overlay.remove();
       resolve();
     };
@@ -93,13 +93,14 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onAction
     }
 
     const onKey = (e: KeyboardEvent) => {
+      e.stopImmediatePropagation(); // not for the PC underneath
       if (e.key === 'ArrowLeft') select(index - 1);
       else if (e.key === 'ArrowRight') select(index + 1);
       else if (e.key === 'Escape') close();
       else return;
       e.preventDefault();
     };
-    window.addEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey, true);
     let wheelAt = 0;
     flipper.addEventListener(
       'wheel',

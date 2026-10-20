@@ -30,12 +30,16 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
   return new Promise((resolve) => {
     const games = entries.filter((g) => g.kind === 'shareware' && g.gam);
     const close = () => {
-      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keydown', onKey, true);
       overlay.remove();
       resolve();
     };
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
-    window.addEventListener('keydown', onKey);
+    // The catalog is on top: keys must not also reach the PC (Esc would quit the program).
+    const onKey = (e: KeyboardEvent) => {
+      e.stopImmediatePropagation();
+      if (e.key === 'Escape') close();
+    };
+    window.addEventListener('keydown', onKey, true);
     const kb = (n?: number) => (n ? `${Math.round((n * 0.58) / 1024)}K` : '');
     const paper = h(
       'article',
