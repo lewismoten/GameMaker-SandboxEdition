@@ -6,7 +6,7 @@
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
-import { PGMTITLECOL, drawDesignBars } from './designer';
+import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
 import { WorkArea } from '../retro/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './vga';
 import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, MAXFACECOL, initStartCols } from './facelift';
@@ -461,7 +461,5 @@ class PaletteDesigner {
   }
 }
 
-/** Runs PALCHOS.EXE until the user quits back to Game-Maker's menu. */
-export function runPaletteDesigner(h: RetroHost): Promise<void> {
-  return new PaletteDesigner(h).main();
-}
+/** PALCHOS.EXE: runs until the user quits back to Game-Maker's menu. */
+export const program: Program = { exe: 'PALCHOS.EXE', run: (h) => new PaletteDesigner(h).main() };

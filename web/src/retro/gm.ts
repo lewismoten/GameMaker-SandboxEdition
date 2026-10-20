@@ -10,14 +10,13 @@ import { templateFor } from '../editor/templates';
 import type { FileKind } from '../editor/project';
 import { createZip } from '../project/zip';
 import { download } from '../editor/ui';
-import { runPaletteDesigner } from '../vga/palchos';
-import { runSoundDesigner } from '../vga/sndedit';
+import type { Program } from '../vga/designer';
 
 /** Designers ported to VGA graphics: they run their own menus, as the .EXEs did. */
-const PORTED: Record<string, (h: RetroHost) => Promise<void>> = {
-  'PALCHOS.EXE': runPaletteDesigner,
-  'SNDEDIT.EXE': runSoundDesigner,
-};
+const PORTED: Record<string, Program['run']> = Object.fromEntries(
+  Object.values(import.meta.glob<{ program?: Program }>('../vga/*.ts', { eager: true }))
+    .flatMap((m) => (m.program ? [[m.program.exe, m.program.run]] : [])),
+);
 
 const GMTOPBAR = '                            G A M E  -  M A K E R  V3.00                        ';
 const MAIN_BAR = '     Play        Design      Utilities      About        Quit         Help      ';

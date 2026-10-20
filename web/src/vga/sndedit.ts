@@ -9,7 +9,7 @@ import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from 
 import { WorkArea } from '../retro/workArea';
 import { type Vga } from './vga';
 import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED2, initStartCols } from './facelift';
-import { PGMTITLECOL, drawDesignBars } from './designer';
+import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
 import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, serializeSoundSet, type SoundSet } from '../formats/sound';
 import { decodeVoc, isVoc } from '../formats/voc';
 
@@ -490,7 +490,5 @@ class SoundDesigner {
   }
 }
 
-/** Runs SNDEDIT.EXE until the user quits back to Game-Maker's menu. */
-export function runSoundDesigner(h: RetroHost): Promise<void> {
-  return new SoundDesigner(h).main();
-}
+/** SNDEDIT.EXE: runs until the user quits back to Game-Maker's menu. */
+export const program: Program = { exe: 'SNDEDIT.EXE', run: (h) => new SoundDesigner(h).main() };
