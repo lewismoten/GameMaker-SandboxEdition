@@ -7,8 +7,26 @@ import type { BlockSet } from './book';
 import { CTR, MON, SEQ, SND } from './ids';
 
 export const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920 };
+/**
+ * Alternate keys (scan code << 8 | ASCII). Game-Maker can't read two arrows at once, so the
+ * diagonals get keys of their own: Q/E and the number pad's 7/9/1/3. W/A/S/D copy the arrows.
+ */
+export const ALT = {
+  w: 0x1177,
+  a: 0x1e61,
+  s: 0x1f73,
+  d: 0x2064,
+  q: 0x1071,
+  e: 0x1265,
+  pad7: 0x4700,
+  pad9: 0x4900,
+  pad1: 0x4f00,
+  pad3: 0x5100,
+};
 /** Joystick directions, clockwise from up. */
-const JOY = { up: 1, right: 3, down: 5, left: 7 };
+const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8 };
+/** Sequences 10-19: the alternate keys (none of those slots is a counter). */
+const EXTRA = 10;
 
 function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
   frames.forEach((fr, i) => (s.frames[i] = fr));
@@ -38,14 +56,28 @@ export function buildCharacter(cb: BlockSet, moon: boolean): Character {
   set(S[SEQ.pickup], [f('down0', 1)], { key: 0 });
   set(S[SEQ.drop], [f('down0', 1)], { key: 0 });
 
+  const side = ['side1', 'side0', 'side1', 'side0'];
   const walks: [number, number, number, number, string[], boolean, number][] = [
-    [SEQ.right, KEY.right, 1, 0, ['side1', 'side0', 'side1', 'side0'], false, JOY.right],
-    [SEQ.left, KEY.left, -1, 0, ['side1', 'side0', 'side1', 'side0'], true, JOY.left],
+    [SEQ.right, KEY.right, 1, 0, side, false, JOY.right],
+    [SEQ.left, KEY.left, -1, 0, side, true, JOY.left],
     [SEQ.up, KEY.up, 0, -1, ['up1', 'up0', 'up2', 'up0'], false, JOY.up],
     [SEQ.down, KEY.down, 0, 1, ['down1', 'down0', 'down2', 'down0'], false, JOY.down],
+    // W/A/S/D: the same four walks (no joystick; the arrows' copies already answer it).
+    [EXTRA + 0, ALT.d, 1, 0, side, false, 0],
+    [EXTRA + 1, ALT.a, -1, 0, side, true, 0],
+    [EXTRA + 2, ALT.w, 0, -1, ['up1', 'up0', 'up2', 'up0'], false, 0],
+    [EXTRA + 3, ALT.s, 0, 1, ['down1', 'down0', 'down2', 'down0'], false, 0],
+    // Diagonals: Q and E (up-left, up-right), then the number pad's 7, 9, 1 and 3.
+    [EXTRA + 4, ALT.q, -1, -1, side, true, JOY.upLeft],
+    [EXTRA + 5, ALT.e, 1, -1, side, false, JOY.upRight],
+    [EXTRA + 6, ALT.pad7, -1, -1, side, true, 0],
+    [EXTRA + 7, ALT.pad9, 1, -1, side, false, 0],
+    [EXTRA + 8, ALT.pad1, -1, 1, side, true, JOY.downLeft],
+    [EXTRA + 9, ALT.pad3, 1, 1, side, false, JOY.downRight],
   ];
   for (const [n, key, dx, dy, pics, mirror, joy] of walks) {
     // On Earth: 5 pixels a step. On the Moon: a big bound that slows as he floats down.
+    // Diagonals move a full step on both axes, so Dex stays lined up with the 20-pixel grid.
     const steps = moon ? [8, 6, 4, 2] : [5, 5, 5, 5];
     set(
       S[n],
