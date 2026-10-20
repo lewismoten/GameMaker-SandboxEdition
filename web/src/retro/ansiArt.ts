@@ -164,6 +164,7 @@ export function sofaLogin(s: TextScreen, line: number, lines: number): number {
   fadeBar(s, 0, 5);
   bigText(s, Math.floor((COLS - bigTextWidth('THE SOFA')) / 2), 2, 'THE SOFA', [13, 13, 5, 5, 5]);
   art(s, 27, 8, SOFA, SOFA_COLORS);
+  centered(s, 14, '|06>>|14  The Home of the GOAT  |06<<');
   centered(s, 15, `|15Pittsburgh's place to kick back |08· |13${lines} lines |08· |07The Major BBS`);
   centered(s, 16, `|07You are connected on line |14${String(line).padStart(2, '0')}`);
   fadeBar(s, 17, 5);
