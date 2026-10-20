@@ -2,9 +2,9 @@
 // game's files of one kind, a tab with the CD library's, and buttons to make a new one or
 // add one from your computer. Library files are copied into the game when chosen.
 import { h, clear, modal, pickFiles, toast } from './ui';
-import { KIND_LABELS, type FileKind, type Project } from './project';
+import { KIND_LABELS, Project, type FileKind } from './project';
 import { fileThumb, KIND_ICON } from './thumbs';
-import { libraryFile, libraryItems, libraryThumbSource, type LibraryItem } from './library';
+import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type LibraryItem } from './library';
 import { templateFor } from './templates';
 import { normalize } from '../project/files';
 
@@ -83,7 +83,17 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       let name = item.name;
       if (existing && (existing.length !== bytes.length || existing.some((b, i) => b !== bytes[i]))) name = project.freeName(item.name.replace(/\..*$/, ''), item.name.split('.').pop()!);
       if (!existing || name !== item.name) project.files.set(name, bytes.slice());
-      toast(`Copied ${name.toUpperCase()} from ${item.game.title}.`);
+      // Pictures of blocks need their colors: a game with no palette gets the one they came with.
+      let extra = '';
+      if (['bbl', 'mbl', 'cbl', 'mon', 'chr', 'map'].includes(kind) && !project.files.byExtension('pal').length) {
+        const files = await libraryGame(item.game);
+        const src = Project.fromFiles(files, item.game.title, `lib-${item.game.id}`).paletteFor(item.name).source;
+        if (files.has(src)) {
+          project.files.set(src, files.get(src)!.slice());
+          extra = ` and its palette ${src.toUpperCase()}`;
+        }
+      }
+      toast(`Copied ${name.toUpperCase()}${extra} from ${item.game.title}.`);
       close(name);
     };
 
