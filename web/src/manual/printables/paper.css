@@ -194,7 +194,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: safe center;
   padding: 12px;
 }
 
@@ -523,10 +523,15 @@
   padding: 8px 0 24px;
 }
 
-.pp-sheet {
+.pp-paper {
   position: relative;
   container-type: inline-size;
   flex: none;
+}
+
+.pp-sheet {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   color: #18150f;
   background: var(--grain, none), radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.35), transparent 60%), #f6f1e2;

@@ -1,7 +1,7 @@
 /* The paper extras. Sizes are in cqw: hundredths of the sheet's width. */
 
 /* ---------------------------------------------------------------- postcard */
-.pp-sheet.pc {
+.pp-sheet.pp-pc {
   padding: 4cqw 5cqw;
   background: var(--grain, none), #efe6cf;
   font:
@@ -75,8 +75,8 @@
 
 .pc-stamp-free {
   position: absolute;
-  right: 4cqw;
-  bottom: 5cqw;
+  right: 3cqw;
+  top: 13cqw;
   padding: 1cqw 2cqw;
   border: 0.7cqw double #b3121a;
   border-radius: 1.4cqw;
@@ -98,14 +98,14 @@
     sans-serif;
 }
 
-.pc-front .pc-from {
+.pp-pc-front .pc-from {
   display: flex;
   flex-direction: column;
   gap: 2.6cqw;
   width: 40%;
 }
 
-.pc-front .pc-from i {
+.pp-pc-front .pc-from i {
   border-bottom: 0.25cqw solid #4b4436;
   height: 1cqw;
 }
@@ -172,7 +172,7 @@
   height: 100%;
 }
 
-.pc-front .pp-fictional {
+.pp-pc-front .pp-fictional {
   position: absolute;
   left: 5cqw;
   right: 5cqw;
@@ -182,7 +182,7 @@
 }
 
 /* ---------------------------------------------------------------- key card */
-.pp-sheet.kc {
+.pp-sheet.pp-kc {
   padding: 3.2cqw 3.6cqw;
   background: var(--grain, none), linear-gradient(#fbf6e6, #efe5c8);
   font:
@@ -219,8 +219,8 @@
 
 .kc-body {
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 3cqw;
+  grid-template-columns: 0.9fr 1.3fr;
+  gap: 2.4cqw;
 }
 
 .kc-keys {
@@ -266,26 +266,33 @@
 }
 
 .kc-list {
-  width: 100%;
-  border-collapse: collapse;
+  columns: 2;
+  column-gap: 2cqw;
+  font-size: 1.3cqw;
+  line-height: 1.25;
 }
 
-.kc-list td {
-  padding: 0.35cqw 0.6cqw;
+.kc-item {
+  display: flex;
+  gap: 0.8cqw;
+  align-items: baseline;
+  break-inside: avoid;
+  padding: 0.3cqw 0;
   border-bottom: 0.12cqw solid #c9bd9c;
-  vertical-align: top;
 }
 
 .kc-list kbd {
-  display: inline-block;
-  padding: 0 0.6cqw;
+  flex: none;
+  min-width: 4.5cqw;
+  padding: 0 0.5cqw;
   border: 0.15cqw solid #18150f;
   border-bottom-width: 0.35cqw;
   border-radius: 0.4cqw;
   background: #fff;
   font:
-    700 1.5cqw/1.4 'Courier New',
+    700 1.25cqw/1.4 'Courier New',
     monospace;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -301,9 +308,9 @@
 }
 
 /* ---------------------------------------------------------------- catalog */
-.pp-sheet.cat {
+.pp-sheet.pp-cat {
   padding: 5cqw 6cqw;
-  font-size: 1.75cqw;
+  font-size: 2cqw;
 }
 
 .cat-head {
@@ -381,7 +388,29 @@
   border: 0.3cqw solid #18150f;
 }
 
+.cat-bbs {
+  margin-bottom: 2.4cqw;
+}
+
+.cat-bbs h3 {
+  margin: 0 0 1cqw;
+  font:
+    900 2.4cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.cat-bbs .pp-sandbox-banner {
+  padding: 0 0.4em;
+  background: #000;
+  color: #ccc;
+  font:
+    700 0.95em 'Courier New',
+    monospace;
+}
+
 .cat-coming {
+  margin-top: 3cqw;
   padding: 1.6cqw 2.2cqw;
   margin-bottom: 2.4cqw;
   background: #18150f;
@@ -424,7 +453,7 @@
 }
 
 /* ---------------------------------------------------------------- BBS ad */
-.pp-sheet.bbs {
+.pp-sheet.pp-bbs {
   padding: 3cqw;
   background: #0b0b0b;
   color: #aaa;
@@ -486,7 +515,7 @@
 }
 
 /* ---------------------------------------------------------------- warranty */
-.pp-sheet.war {
+.pp-sheet.pp-war {
   padding: 4cqw 5cqw;
   border: 1.6cqw solid transparent;
   background: var(--grain, none), #f8f2df;
@@ -535,14 +564,14 @@
     monospace;
 }
 
-.war .pp-fictional {
+.pp-war .pp-fictional {
   font-size: 1.8cqw;
 }
 
 /* ---------------------------------------------------------------- newsletter */
-.pp-sheet.nl {
+.pp-sheet.pp-nl {
   padding: 4.5cqw 5.5cqw;
-  font-size: 1.75cqw;
+  font-size: 2.05cqw;
   line-height: 1.38;
 }
 
@@ -653,7 +682,7 @@
   font-size: 1.5cqw;
 }
 
-.nl .pp-sandbox-banner {
+.pp-nl .pp-sandbox-banner {
   padding: 0 0.4em;
   background: #000;
   color: #ccc;
@@ -663,7 +692,7 @@
 }
 
 /* ---------------------------------------------------------------- hint book offer */
-.pp-sheet.ho {
+.pp-sheet.pp-ho {
   padding: 5cqw 6cqw;
   background: var(--grain, none), #fff4a8;
   font:
@@ -708,7 +737,7 @@
   transform: rotate(10deg);
 }
 
-.ho h3 {
+.pp-ho h3 {
   margin: 0 22cqw 2cqw 0;
   font:
     900 4.4cqw/1.1 'Arial Black',
@@ -732,12 +761,12 @@
   font-style: italic;
 }
 
-.ho .pp-fictional {
+.pp-ho .pp-fictional {
   font-size: 2cqw;
 }
 
 /* ---------------------------------------------------------------- stickers */
-.pp-sheet.stk {
+.pp-sheet.pp-stk {
   padding: 5cqw;
   background: var(--grain, none), #fbfbf7;
 }
@@ -763,7 +792,7 @@
   margin-top: 5cqw;
 }
 
-.st {
+.pp-st {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -789,7 +818,7 @@
 }
 
 /* a glossy highlight */
-.st::after {
+.pp-st::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -797,7 +826,7 @@
   pointer-events: none;
 }
 
-.st small {
+.pp-st small {
   display: block;
   margin-top: 0.6cqw;
   font:
@@ -847,7 +876,7 @@
 }
 
 /* ---------------------------------------------------------------- maps */
-.pp-sheet.map {
+.pp-sheet.pp-map {
   padding: 4cqw 4.5cqw;
   background: var(--grain, none), linear-gradient(#f3ead0, #e9dcb8);
   font-size: 1.6cqw;
@@ -989,7 +1018,7 @@
 }
 
 /* ---------------------------------------------------------------- hint book */
-.pp-sheet.hb {
+.pp-sheet.pp-hb {
   padding: 7cqw 8cqw;
   font:
     3cqw/1.4 'Times New Roman',
@@ -997,7 +1026,7 @@
     serif;
 }
 
-.hb-cover {
+.pp-hb-cover {
   background: var(--grain, none), linear-gradient(160deg, #1d2b52, #0b1020) !important;
   color: #fff;
   text-align: center;
@@ -1014,7 +1043,7 @@
   letter-spacing: 0.3em;
 }
 
-.hb-cover h2 {
+.pp-hb-cover h2 {
   margin: 0;
   color: #f2b632;
   font:
@@ -1048,7 +1077,7 @@
   letter-spacing: 0.2em;
 }
 
-.hb-page h3 {
+.pp-hb-page h3 {
   margin: 0 0 2cqw;
   padding-bottom: 0.8cqw;
   border-bottom: 0.4cqw solid #18150f;
@@ -1083,7 +1112,7 @@
 }
 
 /* ---------------------------------------------------------------- letter */
-.pp-sheet.let {
+.pp-sheet.pp-let {
   padding: 8cqw 10cqw;
   font:
     2.2cqw/1.55 'Times New Roman',
@@ -1129,15 +1158,15 @@
     cursive;
 }
 
-.let-type {
+.pp-let-type {
   font-family: 'Courier New', Courier, monospace;
 }
 
-.let-type .let-body {
+.pp-let-type .let-body {
   text-shadow: 0 0 0.08cqw rgba(0, 0, 0, 0.7);
 }
 
-.let-hand {
+.pp-let-hand {
   background: repeating-linear-gradient(transparent 0 3.35cqw, #a9bfd8 3.35cqw 3.45cqw), #fbf9f0 !important;
   font:
     2.5cqw/3.45cqw 'Bradley Hand',
@@ -1147,12 +1176,12 @@
   color: #1b2d6b;
 }
 
-.let-hand .let-body p {
+.pp-let-hand .let-body p {
   margin: 0 0 3.45cqw;
 }
 
 /* ---------------------------------------------------------------- newspaper */
-.pp-sheet.np {
+.pp-sheet.pp-np {
   padding: 4cqw 5cqw;
   background: var(--grain, none), #ece6d4;
   font:
@@ -1261,7 +1290,7 @@
 }
 
 /* ---------------------------------------------------------------- journal */
-.pp-sheet.jr {
+.pp-sheet.pp-jr {
   padding: 7cqw 8cqw 7cqw 12cqw;
   background:
     linear-gradient(90deg, transparent 9cqw, #e79a9a 9cqw 9.3cqw, transparent 9.3cqw), repeating-linear-gradient(transparent 0 4.6cqw, #a9bfd8 4.6cqw 4.75cqw),
@@ -1274,7 +1303,7 @@
   color: #1b2d6b;
 }
 
-.jr h2 {
+.pp-jr h2 {
   margin: 0 0 4.75cqw;
   font:
     700 4.4cqw/4.75cqw 'Bradley Hand',
@@ -1293,7 +1322,7 @@
 }
 
 /* ---------------------------------------------------------------- ID card */
-.pp-sheet.id {
+.pp-sheet.pp-id {
   border-radius: 4cqw;
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.6), transparent 50%), #f2f2ec;
   font:
@@ -1374,7 +1403,7 @@
   mix-blend-mode: multiply;
 }
 
-.id-back {
+.pp-id-back {
   padding: 0 5cqw;
   font-size: 3cqw;
 }
@@ -1401,7 +1430,7 @@
 }
 
 /* ---------------------------------------------------------------- charts */
-.pp-sheet.ch {
+.pp-sheet.pp-ch {
   padding: 5cqw 5.5cqw;
   font:
     1.45cqw/1.3 Helvetica,
@@ -1409,7 +1438,7 @@
     sans-serif;
 }
 
-.ch h2 {
+.pp-ch h2 {
   margin: 0;
   font:
     900 3.6cqw 'Arial Black',
@@ -1434,7 +1463,7 @@
   margin-bottom: 2cqw;
 }
 
-.ch h3 {
+.pp-ch h3 {
   margin: 0 0 0.6cqw;
   padding: 0.5cqw 1cqw;
   background: #18150f;
@@ -1450,29 +1479,29 @@
   font-style: italic;
 }
 
-.ch table {
+.pp-ch table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.ch th,
-.ch td {
+.pp-ch th,
+.pp-ch td {
   padding: 0.25cqw 0.5cqw;
   border-bottom: 0.1cqw solid #b8ad91;
   text-align: left;
 }
 
-.ch th {
+.pp-ch th {
   font-size: 1.3cqw;
   text-transform: uppercase;
 }
 
-.ch tr:nth-child(even) td {
+.pp-ch tr:nth-child(even) td {
   background: rgba(0, 0, 0, 0.04);
 }
 
 /* ---------------------------------------------------------------- star chart */
-.pp-sheet.sc {
+.pp-sheet.pp-sc {
   background: #0a0d1f;
   color: #e8e6ff;
   font:
@@ -1611,7 +1640,7 @@
 }
 
 /* folded on the table, then opened out panel by panel */
-.fo {
+.pp-fo {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1641,7 +1670,7 @@
   transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--i) * 0.12s);
 }
 
-.fo-panel > .pp-sheet {
+.fo-panel > .pp-paper {
   position: absolute;
   top: 0;
   left: calc(var(--i) * -100%);
@@ -1649,11 +1678,11 @@
   box-shadow: none;
 }
 
-.fo.open .fo-panel {
+.pp-fo.open .fo-panel {
   transform: translateX(0) rotateY(0);
 }
 
-.fo:not(.open) .fo-panel:not(:first-child) {
+.pp-fo:not(.open) .fo-panel:not(:first-child) {
   transform: translateX(calc(var(--i) * -100% + 150%)) rotateY(-100deg);
 }
 

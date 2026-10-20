@@ -306,7 +306,7 @@ async function starChart(ctx: PrintContext, it: StarChartItem): Promise<Sheet[]>
 export function foldOut(sheets: Sheet[]): HTMLElement {
   const s = sheets[0];
   const panels = 4;
-  const holder = h('div', { class: 'fo' });
+  const holder = h('div', { class: 'pp-fo' });
   const folded = h('div', { class: 'fo-folded' });
   for (let i = 0; i < panels; i++) {
     const clone = s.el.cloneNode(true) as HTMLElement;

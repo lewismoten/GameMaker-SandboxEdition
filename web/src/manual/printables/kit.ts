@@ -45,7 +45,22 @@ export interface Sheet {
 }
 
 export function sheet(w: number, h_: number, cls: string, ...children: (Node | string | null | undefined | false)[]): Sheet {
-  const el = h('div', { class: `pp-sheet ${cls}`, style: `aspect-ratio: ${w} / ${h_}` }, ...children);
+  // the outer box is the size container, so the sheet's own font sizes in cqw work too
+  const el = h(
+    'div',
+    { class: 'pp-paper', style: `aspect-ratio: ${w} / ${h_}` },
+    h(
+      'div',
+      {
+        class: `pp-sheet ${cls
+          .split(/\s+/)
+          .filter(Boolean)
+          .map((c) => `pp-${c}`)
+          .join(' ')}`,
+      },
+      ...children,
+    ),
+  );
   el.dataset.w = String(w);
   el.dataset.h = String(h_);
   return { el, w, h: h_ };

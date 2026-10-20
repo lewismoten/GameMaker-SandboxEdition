@@ -36,7 +36,15 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     { kind: 'keycard', id: 'keycard', title: 'Key card', note: 'Quick reference for your keyboard', icon: '⌨️', render: () => keycard(ctx) },
     { kind: 'postcard', id: 'postcard', title: 'Registration card', note: 'Postcard, already marked paid', icon: '📮', render: () => postcard(ctx) },
     { kind: 'warranty', id: 'warranty', title: 'License & warranty', note: 'Keep this card', icon: '📜', render: () => warranty(ctx) },
-    { kind: 'newsletter', id: 'newsletter', title: 'The Sandbox Scoop', note: 'Newsletter: our next games', icon: '🗞️', render: () => newsletter(ctx) },
+    {
+      kind: 'newsletter',
+      id: 'newsletter',
+      title: 'The Sandbox Scoop',
+      note: 'Newsletter: our next games',
+      icon: '🗞️',
+      render: () => newsletter(ctx),
+      redFilm: !!book,
+    },
     { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every game we make', icon: '🗂️', render: () => catalog(ctx) },
     { kind: 'bbs', id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     ...(book

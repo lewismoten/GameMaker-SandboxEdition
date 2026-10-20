@@ -21,6 +21,7 @@ import {
   type Sheet,
 } from './kit';
 import { cardKeys, manualKeyText } from './keys';
+import { redCode } from './redFilm';
 import type { StickerSpec } from './types';
 
 const ISSUE_DATE = 'Fall 1995';
@@ -31,14 +32,15 @@ const COMING: { id: string; title: string; blurb: string; when: string }[] = [
     id: 'year2000',
     title: 'In The Year 2000',
     blurb:
-      'The future, as seen from 1995: flying cars, robot butlers and a computer bug that might stop every clock at midnight. Somebody has to fix it before the ball drops.',
-    when: 'Coming 1996',
+      'Our kids’ guess at the far-off future: flying cars, robots everywhere, teleporters and friendly aliens next door. And of course there will still be phone booths on every corner, pinball in every arcade and a big TV in every living room.',
+    when: 'Coming soon',
   },
   {
     id: 'teddy',
     title: "Teddy's Little Big Adventure",
-    blurb: 'A teddy bear left behind at the park has one night to find his way home: across the playground, through the storm drain and over the garden fence.',
-    when: 'Coming 1996',
+    blurb:
+      'Teddy the Pembroke Welsh Corgi knows a ton of tricks. Literally: he will need every one of them on his biggest adventure yet, with his big sister Gwin making a mess of everything along the way.',
+    when: 'Coming soon',
   },
 ];
 
@@ -141,12 +143,11 @@ export async function keycard(ctx: PrintContext): Promise<Sheet[]> {
       ),
     ),
   );
+  const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
   const list = h(
-    'table',
+    'div',
     { class: 'kc-list' },
-    ...rows.map((r) =>
-      h('tr', { class: used.has(r.key) ? '' : '' }, h('td', null, h('kbd', null, ARROWS[r.key] ? `${ARROWS[r.key]} ${r.key}` : r.key)), h('td', null, r.does)),
-    ),
+    ...rows.map((r) => h('div', { class: 'kc-item' }, h('kbd', null, ARROWS[r.key] ? `${ARROWS[r.key]} ${r.key}` : r.key), h('span', null, cap(r.does)))),
   );
   return [
     sheet(
@@ -200,22 +201,36 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
     ),
     fictionalNote(),
   );
+  const head = (page: string) =>
+    h(
+      'header',
+      { class: 'cat-head' },
+      sandboxLogo('cat-logo'),
+      h('div', null, h('b', null, 'GAMES CATALOG'), h('span', null, `${ISSUE_DATE} · Pittsburgh, PA · ${page}`)),
+    );
   return [
     sheet(
       8.5,
       11,
       'cat',
-      h(
-        'header',
-        { class: 'cat-head' },
-        sandboxLogo('cat-logo'),
-        h('div', null, h('b', null, 'GAMES CATALOG'), h('span', null, `${ISSUE_DATE} · Pittsburgh, PA`)),
-      ),
+      head('page 1'),
       h('p', { class: 'cat-lead' }, 'Every Sandbox Software game is shareware: try it free, share it with friends, and register the ones you love.'),
       h('div', { class: 'cat-games' }, ...entries),
+    ),
+    sheet(
+      8.5,
+      11,
+      'cat',
+      head('page 2'),
       coming.length
         ? h('div', { class: 'cat-coming' }, h('h3', null, 'COMING SOON'), ...coming.map((c) => h('p', null, h('b', null, c.title), ` (${c.when}). ${c.blurb}`)))
         : null,
+      h(
+        'div',
+        { class: 'cat-bbs' },
+        h('h3', null, 'GET THEM FIRST ON THE BBS'),
+        h('p', null, 'New games and updates go up on ', sandboxBanner(), ` before anywhere else. Call ${BBS_PHONE}, 14,400 baud.`),
+      ),
       order,
     ),
   ];
@@ -314,6 +329,9 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
       (g.original?.printables?.news ?? []).slice(0, 1).map((n) => h('article', { class: 'nl-story small' }, h('h3', null, n.head), html('div', '', n.html))),
     );
   const issue = 3 + (hashString(ctx.entry.id) % 5);
+  const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
+  const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
+  const tip = tips.length ? tips[hashString(ctx.entry.id) % tips.length] : undefined;
   return [
     sheet(
       8.5,
@@ -343,6 +361,27 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
         ...next,
         ...own,
         ...others,
+        tip
+          ? h(
+              'article',
+              { class: 'nl-story small' },
+              h('h3', null, 'Tip of the month'),
+              h('p', null, h('b', null, 'Q. '), tip.q),
+              h('p', null, redCode(tip.a)),
+              h('p', { class: 'nl-when' }, 'Use the red film from your hint book.'),
+            )
+          : null,
+        h(
+          'article',
+          { class: 'nl-story small' },
+          h('h3', null, 'Letters'),
+          h(
+            'p',
+            null,
+            h('i', null, '“I beat every Sandbox game on my dad’s 286 with the sound turned down so nobody would know I was still up. When is the next one?”'),
+          ),
+          h('p', null, '— A loyal player, by modem. ', h('b', null, 'The Scoop replies:'), ' Read the front page! And go to bed.'),
+        ),
         h(
           'article',
           { class: 'nl-story small' },
@@ -406,7 +445,7 @@ export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
       const pic = s.shot ? await ctx.shot(s.shot) : undefined;
       return h(
         'div',
-        { class: `st st-${s.shape ?? 'rect'} ${pic ? 'st-pic' : ''}`, style },
+        { class: `pp-st st-${s.shape ?? 'rect'} ${pic ? 'st-pic' : ''}`, style },
         pic ? h('img', { src: pic, alt: '' }) : null,
         s.text ? h('b', null, s.text) : null,
         s.sub ? h('small', null, s.sub) : null,
