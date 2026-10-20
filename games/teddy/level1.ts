@@ -15,15 +15,25 @@ export const GROUND = 40;
 /** Sky band for map row y. */
 export const bandOf = (y: number) => (y <= 30 ? 0 : y <= 33 ? 1 : y <= 36 ? 2 : 3);
 
-function sign(base: Pixels, words: string, arrow?: 'up' | 'down' | 'right'): Pixels {
+function sign(base: Pixels, words: string, arrow?: 'up' | 'down'): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(base.px);
   p.rect(9, 12, 2, 8, c('wood', 1));
-  p.rect(1, 2, 18, 11, c('wood', 3)).frame(1, 2, 18, 11, c('wood', 0));
-  p.rect(2, 3, 16, 1, c('wood', 4));
-  const lines = words.split('|');
-  lines.forEach((w, i) => micro(p, 10 - Math.floor((w.length * 4 - 1) / 2), lines.length === 1 ? 5 : 3 + i * 5, w, c('ink', 0)));
-  if (arrow === 'down') p.line(15, 4, 15, 10, c('red', 2)).line(13, 8, 15, 10, c('red', 2)).line(17, 8, 15, 10, c('red', 2));
+  p.rect(0, 1, 20, 12, c('wood', 3)).frame(0, 1, 20, 12, c('wood', 0));
+  p.rect(1, 2, 18, 1, c('wood', 4));
+  const w = words.length * 4 - 1 + (arrow ? 4 : 0);
+  const x = 10 - Math.floor(w / 2);
+  micro(p, x, 5, words, c('ink', 0));
+  if (arrow) {
+    const ax = x + w - 2;
+    p.rect(ax, 4, 1, 7, c('red', 2));
+    const tip = arrow === 'up' ? 4 : 10;
+    const dir = arrow === 'up' ? 1 : -1;
+    p.set(ax - 1, tip + dir, c('red', 2))
+      .set(ax + 1, tip + dir, c('red', 2))
+      .set(ax - 2, tip + 2 * dir, c('red', 2))
+      .set(ax + 2, tip + 2 * dir, c('red', 2));
+  }
   return p;
 }
 
@@ -82,7 +92,7 @@ export function backyardTiles(): Tiles {
   t.wall('chimney', bricks(9));
 
   // Teddy's doghouse: a red roof (stand on it) over a little wall with a door.
-  const dog = canvas(2, 2, (bx, by) => (by === 0 ? sky(3) : tuft(sky(3), 30 + bx)));
+  const dog = canvas(2, 2, (bx, by) => (by === 0 ? t.pic('hedge') : tuft(sky(3), 30 + bx)));
   for (let y = 0; y < 20; y++) {
     const half = Math.floor(y * 1.0);
     dog.rect(20 - half - 2, 4 + y, half * 2 + 4, 1, y % 3 === 0 ? c('red', 1) : c('red', 2));
@@ -282,11 +292,11 @@ export function backyardTiles(): Tiles {
   t.wall('fenceTop', plankFence(true));
 
   // Hint signs on stakes.
-  t.air('signHop', sign(tuft(sky(3), 80), 'HOP|UP'));
-  t.air('signWoof', sign(tuft(sky(3), 81), 'WOOF|SPACE'));
-  t.air('signDig', sign(tuft(sky(3), 82), 'DIG|DOWN'));
-  t.air('signFetch', sign(tuft(sky(3), 83), 'FETCH|F'));
-  t.air('signCar', sign(tuft(sky(3), 84), 'TO|TOWN'));
+  t.air('signHop', sign(tuft(sky(3), 80), 'HOP', 'up'));
+  t.air('signWoof', sign(tuft(sky(3), 81), 'WOOF!'));
+  t.air('signDig', sign(tuft(sky(3), 82), 'DIG', 'down'));
+  t.air('signFetch', sign(tuft(sky(3), 83), 'F!'));
+  t.air('signCar', sign(tuft(sky(3), 84), 'TOWN'));
 
   // The alley: a gravel lane and the Klown Car.
   t.klownCar(
@@ -317,6 +327,7 @@ export function backyardBeasts() {
   b.pic('soft', soft, { solid: 15 });
   // A bone sticking out of the lawn.
   b.pic('buried', sprite(['oo.....', 'owwo...', 'owwwo..', '.owwwo.', '..owwwo', '...owwo', '....oo.'], { o: c('ink', 0), w: c('fur', 2) }, 7, 0));
+  b.pic('bonePop', b.mb.pic('bone1'));
   b.add('squirrel', {
     pics: [
       ['squirrel1', 3],
@@ -341,7 +352,7 @@ export function backyardBeasts() {
   });
   b.add('plug', { pics: [['soft', 50]], power: POWER.plug, becomes: 'puff', upscore: 10 });
   b.add('buried', { pics: [['buried', 50]], power: POWER.plug, becomes: 'bonePop', upscore: 10 });
-  b.add('bonePop', { pics: [['bone1', 2]], power: POWER.pickup, path: [[0, -1, 4]], end: -1, becomes: 'bone' });
+  b.add('bonePop', { pics: [['bonePop', 2]], power: POWER.pickup, path: [[0, -1, 4]], end: -1, becomes: 'bone' });
   b.add('gwinMess', {
     pics: [
       ['gwin1', 3],
@@ -432,9 +443,9 @@ export function backyard(): Level {
   m.set(oak - 4, 39, 'stump');
   m.set(oak - 5, 39, 'signFetch');
   m.rect(oak - 3, 37, 3, 1, 'branch3');
-  m.rect(oak + 1, 35, 3, 1, 'branch2');
-  m.rect(oak - 2, 33, 3, 1, 'branch1');
-  m.set(oak - 1, 32, 'hat');
+  m.rect(oak - 1, 35, 3, 1, 'branch2');
+  m.rect(oak - 3, 33, 3, 1, 'branch1');
+  m.set(oak - 2, 32, 'hat');
 
   // The back fence: four boards high. Soft dirt at its foot leads under it.
   const fence = 66;
@@ -474,10 +485,9 @@ export function backyard(): Level {
     [38, 38],
     [39, 38],
     [53, 36],
+    [56, 34],
     [57, 34],
-    [58, 34],
-    [54, 32],
-    [55, 32],
+    [53, 32],
     [61, 39],
     [66, 41],
     [68, 41],
@@ -489,7 +499,7 @@ export function backyard(): Level {
   m.mon(40, GROUND, 'buried');
   m.mon(61, GROUND, 'buried');
   m.mon(35, 39, 'squirrel');
-  m.mon(oak + 1, 34, 'squirrel');
+  m.mon(oak, 34, 'squirrel');
   m.mon(43, 39, 'gwinMess');
   m.mon(fence - 2, GROUND, 'plug');
   m.mon(fence - 1, GROUND, 'plug');
