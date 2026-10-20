@@ -48,13 +48,14 @@ export function openBooklet(pages: BookletPage[], title: string): Promise<void> 
       show();
     };
     const close = () => {
-      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keydown', onKey, true);
       window.removeEventListener('resize', show);
       overlay.remove();
       printCopy.remove();
       resolve();
     };
     const onKey = (e: KeyboardEvent) => {
+      e.stopImmediatePropagation(); // not for the PC underneath
       if (e.key === 'ArrowRight' || e.key === 'PageDown') go(1);
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(-1);
       else if (e.key === 'Home') (at = 0), show();
@@ -62,7 +63,7 @@ export function openBooklet(pages: BookletPage[], title: string): Promise<void> 
       else return;
       e.preventDefault();
     };
-    window.addEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey, true);
     window.addEventListener('resize', show);
 
     const printCopy = h('div', { class: 'booklet-print', 'aria-hidden': 'true' }, ...pages.map((p, i) => pageElement(p, i)));
