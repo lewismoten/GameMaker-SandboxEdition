@@ -136,8 +136,8 @@
 /* small disks peeking out of the box on the desk */
 .disk-box .floppy {
   position: absolute;
-  bottom: 6px;
-  width: 104px;
+  width: 100px;
+  transform-origin: 50% 100%;
 }
 
 /* ---- the open disk box: a row of disks seen from the front, scrolling top to bottom --- */

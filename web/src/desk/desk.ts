@@ -257,16 +257,21 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   async function refreshDisks(insertId?: string): Promise<void> {
     disks = await loadDisks();
     const peek = [...disks.filter((d) => RSD_GAMES.some((id) => d.id === `cd:${id}`)), ...disks.filter((d) => d.kind === 'project')].slice(0, 4);
+    // back to front: the lid and back wall, the disks standing in a row, the walls around them
     clear(
       box,
+      h('div', { class: 'lid' }),
+      h('div', { class: 'bx-back' }),
       ...peek.map((d, i) => {
         const el = floppyElement(d, true);
-        el.style.left = `${8 + i * 14}px`;
-        el.style.bottom = `${4 + (i % 2) * 6}px`;
-        el.style.transform = `rotate(${(i - 1.5) * 4}deg)`;
+        el.style.left = `${24 + i * 8}px`;
+        el.style.bottom = `${28 - i * 5}px`;
+        el.style.transform = `rotate(${(i - 1.5) * 3}deg) scale(${0.9 + i * 0.04})`;
         return el;
       }),
-      h('div', { class: 'lid' }),
+      h('div', { class: 'bx-side l' }),
+      h('div', { class: 'bx-side r' }),
+      h('div', { class: 'bx-front' }),
     );
     if (insertId) {
       const d = disks.find((x) => x.id === insertId);
