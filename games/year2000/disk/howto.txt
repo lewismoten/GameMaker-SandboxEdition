@@ -30,7 +30,7 @@ STAFF ONLY keycard and the
 Moon Pass open their doors.
 
 LASER FENCES blink on and off.
-Walk through while they're off!
+Walk through when they're off!
 
 GLASS TUBES and MOONWALK BELTS
 carry you along - fast.
@@ -44,6 +44,6 @@ On the Moon, your moon suit
 makes you hop and glide. Let
 go early to stop on a dime.
 
-F1 Help   F2 Status (quarters!)
+F1 Help   F2 Status (quarters)
 F3 Music  F4 Sound
 F5 Save   F6 Load   ESC Quit
