@@ -1,0 +1,170 @@
+/* what came in a Sandbox Software box, beside it in the box viewer (desk/gameBoxContents.ts) */
+.box-contents .bc-left,
+.box-contents .bc-right {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4vh;
+  transform: translateY(-55%);
+}
+
+.box-contents .bc-left {
+  left: calc(max(10px, 3vw) + 70px);
+}
+
+.box-contents .bc-right {
+  right: calc(max(10px, 3vw) + 70px);
+}
+
+.box-contents button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.box-contents .bc-label {
+  display: block;
+  margin-top: 8px;
+  color: #efe5cc;
+  font:
+    600 13px/1.2 system-ui,
+    sans-serif;
+  text-align: center;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* the disk set */
+.bc-disks {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.5));
+}
+
+.bc-disks .floppy {
+  grid-area: 1 / 1;
+  width: min(150px, 18vh);
+  transition: translate 0.15s;
+}
+
+.bc-disks .bc-label {
+  grid-area: 2 / 1;
+}
+
+.bc-disks:hover .floppy:last-of-type,
+.bc-disks:focus-visible .floppy:last-of-type {
+  translate: 0 -8px;
+}
+
+/* the manual: the box front on a stapled booklet */
+.bc-manual {
+  position: relative;
+  width: min(150px, 20vh);
+  transform: rotate(-3deg);
+  transition: transform 0.15s;
+}
+
+.bc-manual img,
+.bc-manual b {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5.5 / 8.5;
+  object-fit: cover;
+  border-radius: 1px 4px 4px 1px;
+  background: #f6f1e2;
+  box-shadow:
+    inset 5px 0 0 rgba(0, 0, 0, 0.15),
+    6px 10px 18px rgba(0, 0, 0, 0.55);
+}
+
+.bc-manual b {
+  padding: 12px;
+  box-sizing: border-box;
+  color: #18150f;
+}
+
+.bc-manual .bc-staples {
+  position: absolute;
+  left: 3px;
+  top: 25%;
+  width: 3px;
+  height: 50%;
+  background: linear-gradient(#c8c8c8 0 8%, transparent 8% 92%, #c8c8c8 92%);
+}
+
+.bc-manual:hover,
+.bc-manual:focus-visible {
+  transform: rotate(0deg) scale(1.04);
+}
+
+/* the printed extras, fanned out */
+.bc-fan {
+  position: relative;
+  width: min(230px, 24vw);
+  height: min(300px, 40vh);
+}
+
+.bc-piece {
+  position: absolute;
+  left: 0;
+  top: calc(var(--i) * 18%);
+  width: 100%;
+  transform: rotate(calc((var(--i) - 1) * 7deg)) translateX(calc(var(--i) * 6%));
+  transition: transform 0.2s;
+}
+
+.bc-piece .pp-paper {
+  width: 100%;
+}
+
+.bc-fan:hover .bc-piece,
+.bc-fan:focus-visible .bc-piece {
+  transform: rotate(calc((var(--i) - 1) * 10deg)) translateX(calc(var(--i) * 10%));
+}
+
+.box-contents .bc-all {
+  padding: 8px 14px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+}
+
+@media (max-width: 760px) {
+  .box-contents .bc-right .bc-fan {
+    display: none;
+  }
+
+  .box-contents .bc-left,
+  .box-contents .bc-right {
+    top: auto;
+    bottom: 80px;
+    transform: none;
+  }
+
+  .box-contents .bc-left {
+    left: 10px;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .box-contents .bc-right {
+    right: 10px;
+  }
+
+  .bc-disks .floppy {
+    width: 70px;
+  }
+
+  .bc-manual {
+    width: 60px;
+  }
+}
