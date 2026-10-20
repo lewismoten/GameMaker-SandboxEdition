@@ -4,7 +4,7 @@
 import { PaletteBuilder } from '../kit/palette';
 
 type RGB = [number, number, number];
-export type TimeOfDay = 'morning' | 'noon' | 'afternoon' | 'sunset' | 'night';
+export type TimeOfDay = 'morning' | 'noon' | 'afternoon' | 'sunset' | 'night' | 'show';
 
 /** [name, shades, dark, light, mid?, glows at night?] */
 const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
@@ -45,6 +45,8 @@ const LIGHT: Record<TimeOfDay, { mul: RGB; add: RGB }> = {
   afternoon: { mul: [1.02, 0.96, 0.86], add: [8, 4, 0] },
   sunset: { mul: [0.9, 0.7, 0.74], add: [30, 10, 16] },
   night: { mul: [0.46, 0.5, 0.78], add: [8, 8, 30] },
+  // Under the big top at night: warm show lights on everything.
+  show: { mul: [1.0, 0.9, 0.86], add: [12, 4, 6] },
 };
 
 /** Sky gradients per time of day (top to bottom of the 8 shades are dark to light). */
@@ -72,6 +74,10 @@ const SKY: Record<TimeOfDay, [RGB, RGB, RGB?]> = {
     [8, 8, 30],
     [40, 40, 96],
   ],
+  show: [
+    [6, 6, 28],
+    [60, 40, 110],
+  ],
 };
 
 export interface Pal {
@@ -93,7 +99,9 @@ export function buildPalette(time: TimeOfDay): Pal {
       continue;
     }
     const lit = (c: RGB): RGB =>
-      glows && (time === 'night' || time === 'sunset') ? c : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB);
+      glows && (time === 'night' || time === 'sunset' || time === 'show')
+        ? c
+        : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB);
     b.ramp(name, n, lit(from), lit(to), mid ? lit(mid) : undefined);
   }
   return wrap(b);

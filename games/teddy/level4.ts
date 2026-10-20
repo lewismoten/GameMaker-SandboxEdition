@@ -7,7 +7,7 @@ import { Pixels, rng } from '../kit/pixels';
 import { blob, micro, scaleBlit, speckle, sprite } from './draw';
 import { FULL, docLeo } from './people';
 import { CRITTERS } from './critters';
-import { FLIP } from './mons';
+import { FLIP, type Bestiary } from './mons';
 import { POWER } from './ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { askBubble, juggler, kid, pin, taxi } from './folks';
@@ -399,9 +399,8 @@ export function cityTiles(): Tiles {
   return t;
 }
 
-export function cityBeasts() {
-  const b = newBestiary();
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -8 });
+/** Revolving doors: solid until a spin sets one turning for a while; then it stops again. */
+export function revolvingDoor(b: Bestiary): void {
   const K: Record<string, number> = { ...CK, g: c('glow', 2), G: c('glow', 3) };
   const doorPic = (phase: number) =>
     sprite(
@@ -478,12 +477,6 @@ export function cityBeasts() {
   b.pic('door', doorPic(0), { solid: 15 });
   b.pic('door1', doorPic(1));
   b.pic('door2', doorPic(2));
-  b.pic('pin1', pin(0), { hp: -8 }).pic('pin2', pin(1), { hp: -8 });
-  const [ta0, tb0] = taxi(0);
-  const [ta1, tb1] = taxi(1);
-  b.pic('taxiA0', ta0).pic('taxiB0', tb0).pic('taxiA1', ta1).pic('taxiB1', tb1);
-  b.pic('askSit1', askBubble('SIT?', undefined, 0)).pic('askSit2', askBubble('SIT?', undefined, 1));
-
   // Revolving doors: a spin sets one turning for a while, then it stops again.
   b.add('revolve', { pics: [['door', 50]], power: POWER.door, becomes: 'revolving', upscore: 25 });
   b.add('revolving', {
@@ -497,6 +490,18 @@ export function cityBeasts() {
     end: 60,
     becomes: 'revolve',
   });
+}
+
+export function cityBeasts() {
+  const b = newBestiary();
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -8 });
+  revolvingDoor(b);
+  b.pic('pin1', pin(0), { hp: -8 }).pic('pin2', pin(1), { hp: -8 });
+  const [ta0, tb0] = taxi(0);
+  const [ta1, tb1] = taxi(1);
+  b.pic('taxiA0', ta0).pic('taxiB0', tb0).pic('taxiA1', ta1).pic('taxiB1', tb1);
+  b.pic('askSit1', askBubble('SIT?', undefined, 0)).pic('askSit2', askBubble('SIT?', undefined, 1));
+
   b.add('pin', {
     pics: [
       ['pin1', 2],
