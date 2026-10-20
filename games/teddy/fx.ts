@@ -1,0 +1,204 @@
+// The little things Teddy's tricks send out (a bark, a spray of dirt, a paw, whirls, a
+// tumbleweed of corgi fluff, a heart) and the goodies he collects, as monster block art.
+import { Pixels } from '../kit/pixels';
+import { CLEAR, blob, sprite } from './draw';
+import { P } from './pal';
+
+const K: Record<string, number> = {
+  o: P.c('ink', 0),
+  w: P.c('fur', 2),
+  W: P.c('fur', 0),
+  s: P.c('cloud', 1),
+  y: P.c('yellow', 3),
+  Y: P.c('yellow', 1),
+  d: P.c('dirt', 1),
+  D: P.c('dirt', 3),
+  E: P.c('dirt', 4),
+  t: P.c('corgi', 3),
+  T: P.c('corgi', 4),
+  c: P.c('corgi', 1),
+  p: P.c('pink', 2),
+  P: P.c('pink', 3),
+  r: P.c('red', 2),
+  R: P.c('red', 3),
+  b: P.c('wood', 3),
+  B: P.c('wood', 4),
+  n: P.c('wood', 1),
+  g: P.c('gold', 1),
+  G: P.c('gold', 2),
+  h: P.c('blue', 3),
+  H: P.c('blue', 2),
+  v: P.c('purple', 3),
+  V: P.c('purple', 1),
+  l: P.c('green', 2),
+};
+const S = (rows: string[], dx?: number, dy?: number) => sprite(rows, K, dx, dy);
+
+export const FX: Record<string, Pixels> = {
+  // "WOOF!" as sound rings rolling to the right (mirrored for left).
+  woof1: S(
+    [
+      '....yy..............',
+      '.....yy.....y.......',
+      '......y......y......',
+      '...o..yy......y.....',
+      '..ooo..y.......y....',
+      '..ooo..y.......y....',
+      '...o..yy......y.....',
+      '......y......y......',
+      '.....yy.....y.......',
+      '....yy..............',
+    ],
+    0,
+    5,
+  ),
+  woof2: S(
+    [
+      '......yy............',
+      '.......yy.....Y.....',
+      '........y......Y....',
+      '........yy......Y...',
+      '.........y.......Y..',
+      '.........y.......Y..',
+      '........yy......Y...',
+      '........y......Y....',
+      '.......yy.....Y.....',
+      '......yy............',
+    ],
+    0,
+    5,
+  ),
+  dig1: S(
+    [
+      '....E......D.....',
+      '..D....E.....E...',
+      '.....D.....D..E..',
+      '.E..DDD..DDDD....',
+      '...DDdDDDDddDD...',
+      '..DdddDDDdddddD..',
+      '.DddddddddddddDD.',
+      'DdddddddddddddddD',
+    ],
+    undefined,
+    0,
+  ),
+  dig2: S(
+    [
+      '..E.......E....D.',
+      '.....D..E...D....',
+      'D......D....E....',
+      '...E.DDD.DDD..E..',
+      '..DDDdDDDDddDD...',
+      '.DddddDDDdddddDD.',
+      'DddddddddddddddDD',
+      'DdddddddddddddddD',
+    ],
+    undefined,
+    0,
+  ),
+  paw: S(
+    [
+      '....ww..ww....',
+      '...wwww.wwww...',
+      '...wwww.wwww...',
+      '....ww..ww.....',
+      '..ww.wwwww.ww..',
+      '.wwwwwwwwwwwww.',
+      '.wwww.www.wwww.',
+      '..ww.wwwww.ww..',
+      '.....wwwww.....',
+      '......www......',
+    ],
+    3,
+    10,
+  ),
+  whirl1: S(
+    [
+      '......ssss.........',
+      '....ss....ss.......',
+      '...s........s......',
+      '..s...ww.....s.....',
+      '..s..w..w....s.....',
+      '..s...w......s.....',
+      '...s........s......',
+      '....ss....ss.......',
+      '......ssss.........',
+    ],
+    0,
+    6,
+  ),
+  whirl2: S(
+    [
+      '.........ssss......',
+      '.......ss....ss....',
+      '......s........s...',
+      '.....s...ww.....s..',
+      '.....s..w..w....s..',
+      '.....s....w.....s..',
+      '......s........s...',
+      '.......ss....ss....',
+      '.........ssss......',
+    ],
+    0,
+    6,
+  ),
+  fluff1: S(
+    ['....wWw.tw...', '..wtwwWwwtww.', '.wwtTwwwwwTw.', 'wtwwwtwwwwwtw', 'wwwTwwwwtwwww', '.wtwwwtwwwTw.', '..wwtwwwtww..', '....wwTww....'],
+    undefined,
+    11,
+  ),
+  fluff2: S(
+    ['....wtw.Ww...', '..wwtwwwtWww.', '.wTwwwwwwtww.', 'wwwwtwwwTwwww', 'wtwwwwTwwwwtw', '.wwtwwwwwtww.', '..wTwwwtwww..', '....wtwww....'],
+    undefined,
+    11,
+  ),
+  heart1: S(['.pp...pp.', 'pPPp.pPPp', 'pPwPpPPPp', 'pPPPPPPPp', '.pPPPPPp.', '..pPPPp..', '...pPp...', '....p....'], undefined, 4),
+  heart2: S(['..........', '.pp..pp...', 'pPPppPPp..', 'pwPPPPPp..', '.pPPPPp...', '..pPPp....', '...pp.....'], undefined, 6),
+  puff1: S(['.....ss.....', '...ssssss...', '..ssWsssss..', '.sssssssWss.', '.ssWsssssss.', '..sssssWss..', '...ssssss...', '.....ss.....'], undefined, 6),
+  puff2: S(['..s.....s...', 's....s.....s', '...s.....s..', '.s....s.....', '....s....s..', 's.....s....s', '...s.....s..'], undefined, 6),
+  // A dog biscuit, bobbing.
+  treat1: S(['.nn......nn.', 'nBBn....nBBn', 'nBbbnnnnbbBn', '.nbbBBBBbbn.', '.nbbbbbbbbn.', 'nBbbnnnnbbbn', 'nbbn....nbbn', '.nn......nn.'], undefined, 8),
+  treat2: S(['.nn......nn.', 'nBBn....nBBn', 'nBbbnnnnbbBn', '.nbbBBBBbbn.', '.nbbbbbbbbn.', 'nBbbnnnnbbbn', 'nbbn....nbbn', '.nn......nn.'], undefined, 6),
+  // A big soup bone: restores energy.
+  bone1: S(
+    [
+      '.oo..........oo.',
+      'owwo........owwo',
+      'owwwoooooooowwwo',
+      '.owwwwwwwwwwwwo.',
+      '.owwwwwwwwwwWwo.',
+      'owwwoooooooowWwo',
+      'owwo........owWo',
+      '.oo..........oo.',
+    ],
+    undefined,
+    7,
+  ),
+  bone2: S(
+    [
+      '.oo..........oo.',
+      'owwo........owwo',
+      'owwwoooooooowwwo',
+      '.owwwwwwwwwwwwo.',
+      '.owwwwwwwwwwWwo.',
+      'owwwoooooooowWwo',
+      'owwo........owWo',
+      '.oo..........oo.',
+    ],
+    undefined,
+    5,
+  ),
+  // A Klown Klub ticket.
+  ticket1: S(['oooooooooooooo', 'ovvvvvvvvvvvvo', 'ov.oo....oo.vo', 'ovvvvvvvvvvvvo', 'ovGGGGGGGGGGvo', 'ovvvvvvvvvvvvo', 'oooooooooooooo'], undefined, 8),
+  ticket2: S(
+    ['.oooooooooooooo', '.ovvvvvvvvvvvvo', 'ov.oo....oo.vo.', 'ovvvvvvvvvvvvo.', 'ovGGGGGGGGGGvo.', 'ovvvvvvvvvvvvo.', 'oooooooooooooo.'],
+    undefined,
+    7,
+  ),
+};
+
+/** A rubber ball (for the park). */
+export function ball(): Pixels {
+  const p = new Pixels(20, 20, CLEAR);
+  return blob(p, 10, 13, 6, 6, P.r('red'), 0, 3);
+}
