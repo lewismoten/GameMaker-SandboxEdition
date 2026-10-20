@@ -535,5 +535,16 @@ export function park(): Level {
   for (const [x, y] of treats) m.treat(x, y);
   m.mark('start', 5, 39);
   m.mark('exit', car, 39);
-  return { file: 'park', title: 'Puddlewick Park', time: 'afternoon', bs, beasts, map: m, start: m.at('start'), exit: m.at('exit'), view: [36, 30] };
+  return {
+    file: 'park',
+    title: 'Puddlewick Park',
+    time: 'afternoon',
+    bs,
+    beasts,
+    map: m,
+    start: m.at('start'),
+    exit: m.at('exit'),
+    view: [31, 35],
+    pose: [37, 39, 'frontBeg'],
+  };
 }

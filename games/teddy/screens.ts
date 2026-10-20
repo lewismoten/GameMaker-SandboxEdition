@@ -134,12 +134,13 @@ export function titleScreen(): Pixels {
 }
 
 /** A level card: a framed view of the level and what is new there. */
-function card(l: Level, n: number, lines: string[]): Pixels {
+export function card(l: Level, n: number, lines: string[]): Pixels {
   const pal = buildPalette(l.time);
   const cc = (name: string, k: number) => pal.c(name, k);
   const p = new Pixels(W, H, cc('ink', 0));
   const map = l.map.done();
-  const view = renderRegion(map, l.bs.build(), l.beasts.mb.build(), l.beasts.build(), l.view[0], l.view[1], 15, 5);
+  const extra = l.pose ? [{ pixels: POSES[l.pose[2]].px, x: l.pose[0], y: l.pose[1] }] : [];
+  const view = renderRegion(map, l.bs.build(), l.beasts.mb.build(), l.beasts.build(), l.view[0], l.view[1], 15, 5, extra);
   p.rect(8, 8, 304, 104, cc('paint', 3));
   p.blit(view, 10, 10);
   outlined(p, 16, 120, `LEVEL ${n}`, cc('yellow', 3), cc('red', 1), 1);

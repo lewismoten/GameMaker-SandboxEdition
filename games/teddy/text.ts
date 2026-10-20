@@ -198,7 +198,7 @@ export const CARDS: Record<string, string[]> = {
   backyard: ["Fetch Doc Leo's hat, then dig", 'under the fence to the car.', 'NEW: HOP SPEAK DIG FETCH'],
   street: ['Bow tie. Watch the sprinklers', 'and the mail truck.', 'NEW: HIGH FIVE (H)'],
   park: ['Big shoes. Geese guard the', 'bridge; kids want a sit!', 'NEW: SIT PRETTY (S)'],
-  city: ['The horn. Spin the revolving', 'doors; duck the hot dogs!', 'NEW: SPIN (T)  PLAY DEAD (D)'],
+  city: ['The horn. Spin the revolving', 'doors; play dead under pins!', 'NEW: SPIN (T)  PLAY DEAD (D)'],
   klub: ['The red nose! Earn tickets', 'with tricks. Showtime!', 'NEW: ROLL OVER (R)'],
 };
 

@@ -485,5 +485,16 @@ export function street(): Level {
   m.mark('exit', car, 39);
   void over;
   void cut;
-  return { file: 'street', title: 'Maple Street', time: 'noon', bs, beasts, map: m, start: m.at('start'), exit: m.at('exit'), view: [20, 30] };
+  return {
+    file: 'street',
+    title: 'Maple Street',
+    time: 'noon',
+    bs,
+    beasts,
+    map: m,
+    start: m.at('start'),
+    exit: m.at('exit'),
+    view: [23, 35],
+    pose: [30, 38, 'frontReach'],
+  };
 }

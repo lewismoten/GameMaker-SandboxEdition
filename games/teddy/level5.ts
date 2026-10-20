@@ -23,7 +23,7 @@ const G = 40;
 function canvasStripes(seed: number, dark = false): Pixels {
   const p = new Pixels(20, 20);
   for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 20; x++) p.set(x, y, Math.floor((x + seed * 10) / 10) % 2 ? c('red', dark ? 1 : 2) : c('paint', dark ? 1 : 2));
+    for (let x = 0; x < 20; x++) p.set(x, y, Math.floor((x + seed * 10) / 10) % 2 ? c('red', dark ? 0 : 2) : dark ? c('red', 1) : c('paint', 2));
   return p;
 }
 
@@ -31,10 +31,11 @@ export function klubTiles(): Tiles {
   const t = new Tiles();
   // The night sky and stars outside; the midway.
   for (let k = 0; k < 4; k++) {
+    t.air(`sky${k}`, sky(k));
     const p = sky(k);
     const R = rng(k + 5);
-    for (let i = 0; i < 5; i++) p.set(Math.floor(R() * 20), Math.floor(R() * 20), c('glow', 3));
-    t.air(`sky${k}`, p);
+    for (let i = 0; i < 2; i++) p.set(1 + Math.floor(R() * 18), 1 + Math.floor(R() * 18), c('glow', 3));
+    t.air(`star${k}`, p);
   }
   t.air('tentOut', canvasStripes(0));
   t.air('tentOut2', canvasStripes(1));
@@ -242,7 +243,7 @@ export function klubTiles(): Tiles {
     })(),
   );
   t.air(
-    'star',
+    'starSign',
     (() => {
       const p = copy(t.pic('stageWall'));
       const R = (a: number) => [10 + Math.cos(a) * 8, 10 + Math.sin(a) * 8];
@@ -304,16 +305,16 @@ export function klubTiles(): Tiles {
       return p;
     })(),
   );
-  for (const ph of [0, 1])
-    t.air(
-      `spot_${ph}`,
-      (() => {
-        const p = new Pixels(20, 20, c('purple', 0));
-        for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y + ph) % 2 === 0 && Math.abs(x - 10) < 3 + y / 2) p.set(x, y, c('glow', 3));
-        return p;
-      })(),
-      { next: `spot_${1 - ph}`, ntime: 5 },
-    );
+  // A spotlight cone, three blocks wide and six high, from the rigging to the stage.
+  const cone = new Pixels(60, 120, c('purple', 0));
+  for (let y = 0; y < 120; y++) {
+    const half = 4 + y * 0.22;
+    for (let x = 0; x < 60; x++) {
+      const d = Math.abs(x - 30);
+      if (d < half && ((x + y) % 2 === 0 || d < half * 0.5)) cone.set(x, y, d < half * 0.5 ? c('glow', 3) : c('glow', 2));
+    }
+  }
+  cut(cone).forEach((row, y) => row.forEach((px, x) => t.air(`cone${x}${y}`, px)));
   t.air('stageBack', new Pixels(20, 20, c('purple', 0)));
 
   // The klown klub members (two blocks tall, over the midway's tent canvas).
@@ -446,7 +447,7 @@ export function klub(): Level {
     const R = rng(23);
     return (...names: string[]) => names[Math.floor(R() * names.length)];
   })();
-  m.rect(0, 0, 100, G, (_x, y) => `sky${bandOf(y)}`);
+  m.rect(0, 0, 100, G, (x, y) => `${(x * 7 + y * 13) % 5 === 0 ? 'star' : 'sky'}${bandOf(y)}`);
   m.rect(0, G, 100, 1, 'midway');
   m.rect(0, G + 1, 100, 100 - G - 1, 'deep');
   // the map's ends are tent canvas (the map wraps)
@@ -519,16 +520,17 @@ export function klub(): Level {
   m.rect(st0, 20, st1 - st0 + 1, 16, 'stageBack');
   m.rect(st0, 20, 2, 16, 'curtain');
   m.rect(st1 - 1, 20, 2, 16, 'curtain');
-  for (let x = st0 + 4; x < st1 - 2; x += 6) for (let y = 21; y < 34; y++) m.set(x, y, `spot_${(y + x) % 2}`);
-  m.set(st0 + 7, 27, 'star')
-    .set(st0 + 13, 26, 'star')
-    .set(st0 + 19, 27, 'star');
+  for (const sx of [71, 77]) for (let y = 0; y < 6; y++) for (let x = 0; x < 3; x++) m.set(sx + x, 29 + y, `cone${x}${y}`);
+  m.set(st0 + 9, 26, 'starSign')
+    .set(st0 + 18, 25, 'starSign')
+    .set(st0 + 21, 31, 'starSign');
   // the lift shaft from the tunnel up through the stage floor
   const lift = sd + 12;
   m.rect(lift, 36, 1, 6, 'lift_0');
   m.rect(sd + 1, G, lift - sd - 1, 1, (x) => (x === sd + 2 || x === sd + 3 ? 'under' : 'sawdust'));
   m.set(lift, G, 'lift_0').set(lift, G + 1, 'lift_0');
   m.rect(lift + 1, G + 1, 1, 1, 'under');
+  m.rect(st1 + 1, 20, 86 - st1 - 1, 20, 'canvas');
   // Gwin in the spotlight with the nose; Doc Leo waiting.
   m.mon(72, 35, 'gwinNose');
   const leoX = 78;
@@ -567,5 +569,16 @@ export function klub(): Level {
   m.mark('exit', leoX, 35);
   void pick;
   void cut;
-  return { file: 'klub', title: 'The Klown Klub', time: 'show', bs, beasts, map: m, start: m.at('start'), exit: m.at('exit'), view: [in0 - 4, 30] };
+  return {
+    file: 'klub',
+    title: 'The Klown Klub',
+    time: 'show',
+    bs,
+    beasts,
+    map: m,
+    start: m.at('start'),
+    exit: m.at('exit'),
+    view: [5, 35],
+    pose: [16, 39, 'back'],
+  };
 }

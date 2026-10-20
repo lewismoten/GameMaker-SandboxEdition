@@ -744,5 +744,16 @@ export function city(): Level {
   m.mark('start', 4, 39);
   m.mark('exit', car, 39);
   void blob;
-  return { file: 'city', title: 'Downtown', time: 'sunset', bs, beasts, map: m, start: m.at('start'), exit: m.at('exit'), view: [16, 29] };
+  return {
+    file: 'city',
+    title: 'Downtown',
+    time: 'sunset',
+    bs,
+    beasts,
+    map: m,
+    start: m.at('start'),
+    exit: m.at('exit'),
+    view: [36, 35],
+    pose: [42, 39, 'dead'],
+  };
 }

@@ -480,5 +480,16 @@ export function backyard(): Level {
   m.mark('start', 6, 39);
   m.mark('exit', car, 39);
   void P;
-  return { file: 'backyard', title: "Doc Leo's Backyard", time: 'morning', bs, beasts, map: m, start: m.at('start'), exit: m.at('exit'), view: [2, 31] };
+  return {
+    file: 'backyard',
+    title: "Doc Leo's Backyard",
+    time: 'morning',
+    bs,
+    beasts,
+    map: m,
+    start: m.at('start'),
+    exit: m.at('exit'),
+    view: [13, 35],
+    pose: [19, 39, 'walk1'],
+  };
 }

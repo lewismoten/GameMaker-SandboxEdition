@@ -21,8 +21,10 @@ export interface Level {
   start: { x: number; y: number };
   /** The link cell that leaves the level. */
   exit: { x: number; y: number };
-  /** For the level card and the box: a region [x, y] of 16x10 blocks to show. */
+  /** For the level card: the top-left block [x, y] of a 15x5 view. */
   view: [number, number];
+  /** Teddy drawn into the card: block [x, y] and his pose. */
+  pose?: [number, number, string];
 }
 
 /** A level's block set: non-solid blocks fall (gravity down) unless they say otherwise. */
