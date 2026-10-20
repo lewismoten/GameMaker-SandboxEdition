@@ -18,8 +18,18 @@ const STYLE = `
 .paper-catalog .order { margin-top: 16px; padding: 12px; border: 2px solid #1d1a14; }
 .paper-catalog button { font: 700 12px 'Courier New', monospace; padding: 4px 8px; margin: 6px 6px 0 0;
   border: 1px solid #1d1a14; background: #fff9e6; color: #1d1a14; border-radius: 0; cursor: pointer; }
-.paper-catalog pre { white-space: pre-wrap; background: #fff9e6; padding: 10px; border: 1px solid #c8bfa4; font-size: 12px; }
+.paper-catalog pre { white-space: pre-wrap; max-height: 260px; overflow: auto; background: #fff9e6; padding: 10px; border: 1px solid #c8bfa4; font-size: 12px; }
 `;
+
+/** What the game needs for sound: Sound Blaster only if it has .voc samples or .cmf music. */
+function soundLine(g: CatalogEntry): string {
+  const voc = g.files.some((f) => f.endsWith('.voc'));
+  const cmf = g.files.some((f) => f.endsWith('.cmf'));
+  if (voc && cmf) return 'VGA · Sound Blaster sound & music optional';
+  if (voc) return 'VGA · Sound Blaster sound optional';
+  if (cmf) return 'VGA · Sound Blaster music optional';
+  return 'VGA · PC speaker sound';
+}
 
 export interface CatalogActions {
   callBbs(): void;
@@ -63,7 +73,7 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
             null,
             h('div', { class: 'title' }, g.title, actions.downloaded(g.id) ? h('span', { class: 'got' }, '  ✓ on your hard disk') : null),
             h('div', { class: 'meta' }, creditLine(g) || 'Author unknown'),
-            h('div', { class: 'meta' }, `${(g.exe ?? g.id).replace(/\.EXE$/i, '')}.ZIP  ·  ${kb(g.bytes)}  ·  ${g.price === 'Freeware' ? 'FREEWARE' : g.price ? `Register: ${g.price}` : 'Shareware'}  ·  VGA, Sound Blaster optional`),
+            h('div', { class: 'meta' }, `${(g.exe ?? g.id).replace(/\.EXE$/i, '')}.ZIP  ·  ${kb(g.bytes)}  ·  ${g.price === 'Freeware' ? 'FREEWARE' : g.price ? `Register: ${g.price}` : 'Shareware'}  ·  ${soundLine(g)}`),
             g.blurb ? h('p', { style: 'margin:6px 0 0' }, g.blurb) : null,
             h(
               'button',
