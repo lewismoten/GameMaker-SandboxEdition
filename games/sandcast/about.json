@@ -7,7 +7,12 @@
   "blurb": "A thumb-sized tin knight takes back a backyard sandbox from ants, crabs, beetles, a running hose, the tide, and one very large tabby cat. Build towers of sand to raise the gates!",
   "exe": "SANDCAST.EXE",
   "sound": "speaker",
-  "label": { "background": "#f4dfa8", "band": "#1f4fa0", "ink": "#2a1a08", "logo": "SANDBOX SOFTWARE" },
+  "label": {
+    "background": "#f4dfa8",
+    "band": "#1f4fa0",
+    "ink": "#2a1a08",
+    "logo": "SANDBOX SOFTWARE"
+  },
   "box": {
     "background": "#0b1630",
     "accent": "#f2c84b",
@@ -23,11 +28,31 @@
       "VGA graphics and PC speaker sound effects - no sound card needed"
     ],
     "shots": [
-      ["sandbox.map", 0, 20],
-      ["keep.map", 10, 0],
-      ["moat.map", 10, 4],
-      ["lagoon.map", 0, 14],
-      ["patio.map", 8, 0]
+      [
+        "patio.map",
+        8,
+        0
+      ],
+      [
+        "keep.map",
+        9,
+        0
+      ],
+      [
+        "lagoon.map",
+        0,
+        12
+      ],
+      [
+        "moat.map",
+        10,
+        4
+      ],
+      [
+        "sandbox.map",
+        26,
+        19
+      ]
     ],
     "rating": "Ages 6 and up"
   }
