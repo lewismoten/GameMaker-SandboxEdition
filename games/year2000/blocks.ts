@@ -259,11 +259,11 @@ function parkedCar(color: string): Pixels {
   return p;
 }
 
-function mowerDock(floor: Floor): Pixels {
+function mowerDock(floor: Floor, label = 'MOW'): Pixels {
   const p = on(floor);
   p.rect(3, 4, 14, 13, C('chrome', 2)).rect(3, 4, 14, 2, C('chrome', 5));
   p.rect(5, 8, 10, 7, C('night', 1));
-  micro(p, 6, 9, 'MOW', C('neon', 3));
+  micro(p, 6, 9, label, C('neon', 3));
   p.rect(16, 6, 2, 2, C('red', 4));
   return p;
 }
@@ -582,6 +582,23 @@ function launchSign(): Pixels {
   return p;
 }
 
+function boardRamp(): Pixels {
+  const p = on('concrete');
+  p.rect(2, 0, 16, 20, C('gold', 3));
+  for (let y = 0; y < 20; y += 4) p.rect(2, y, 16, 2, C('grey', 1));
+  p.rect(5, 6, 10, 8, C('night', 0));
+  micro(p, 6, 8, 'GO', C('gold', 5));
+  return p;
+}
+
+function numberSign(n: number): Pixels {
+  const p = on('marble');
+  p.rect(5, 1, 10, 13, C('chrome', 6)).rect(6, 2, 8, 11, C('denim', 2));
+  micro(p, 7, 3, String(n), C('grey', 7), 2);
+  p.rect(9, 14, 2, 5, C('chrome', 3));
+  return p;
+}
+
 // Moon pieces.
 function stars(seed: number, earth = false): Pixels {
   const p = blank(C('night', 0));
@@ -802,7 +819,7 @@ export function citySet(): BlockSet {
   s.add('palm', palm('tile'), { solid: SOLID });
   s.add('foodtable', foodTable(), { solid: SOLID });
   s.add('staffdoor', staffDoor('keycard', 'tile'), { solid: SOLID, effect: CTR.keycard, eamt: -1, touch: 'tile' });
-  s.add('secdock', mowerDock('tile'), { solid: SOLID, birthMon: MON.secbot, birthTime: 150 });
+  s.add('secdock', mowerDock('tile', 'SEC'), { solid: SOLID, birthMon: MON.secbot, birthTime: 150 });
   addBig(
     s,
     'nArcade',
@@ -838,6 +855,8 @@ export function citySet(): BlockSet {
   s.add('tar2', tar(1), { hp: -3, next: 'tar', ntime: 5 });
   addBig(s, 'rocket', rocket(FLOORS.concrete));
   s.add('launchsign', launchSign(), { solid: SOLID });
+  s.add('board', boardRamp());
+  for (const n of [1, 2, 3, 4]) s.add(`num${n}`, numberSign(n), { solid: SOLID });
   return s;
 }
 
@@ -866,7 +885,7 @@ export function moonSet(): BlockSet {
   const meteorHole = stars(5);
   s.add('meteorgun', meteorHole, { solid: SOLID, birthMon: MON.meteor, birthTime: 22 });
   s.add('meteorgunL', stars(6), { solid: SOLID, birthMon: MON.meteorL, birthTime: 29 });
-  s.add('buggydock', mowerDock('moon'), { solid: SOLID });
+  s.add('buggydock', mowerDock('moon', 'GAS'), { solid: SOLID });
 
   // Moon School.
   s.add('lockers', lockers(), { solid: SOLID });

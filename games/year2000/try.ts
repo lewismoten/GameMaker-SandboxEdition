@@ -1,18 +1,30 @@
-import { suburbSet } from './blocks';
+// Development aid: renders each level's map (with its monsters) to OUT.
+import { citySet, moonSet, suburbSet } from './blocks';
+import type { BlockSet } from './book';
+import type { LevelMap } from './mapkit';
 import { level1 } from './level1';
 import { level2 } from './level2';
+import { level3 } from './level3';
+import { level4 } from './level4';
 import { renderMap } from './render';
 import { PAL } from './pal';
 import { writePng } from './png';
 import { buildMonsterBlocks } from './sprites';
 import { buildMonsters } from './monsters';
-const set = suburbSet();
+
 const mb = buildMonsterBlocks();
 const mons = buildMonsters(mb);
-for (const [n, f, w, h] of [
-  ['l1', level1, 48, 32],
-  ['l2', level2, 32, 30],
-] as const) {
+const sets = { suburb: suburbSet(), city: citySet(), moon: moonSet() };
+const list: [string, (s: BlockSet) => LevelMap, number, number, keyof typeof sets][] = [
+  ['l1', level1, 48, 32, 'suburb'],
+  ['l2', level2, 32, 30, 'suburb'],
+  ['l3', level3, 44, 33, 'city'],
+  ['l4', level4, 74, 31, 'city'],
+];
+const only = process.env.ONLY;
+for (const [n, f, w, h, sn] of list) {
+  if (only && only !== n) continue;
+  const set = sets[sn];
   const m = f(set);
   console.log(n, 'pages', m.count('page'), 'quarters', m.count('quarter'), 'mons', m.monsters);
   writePng(`${process.env.OUT}/y2k-${n}.png`, renderMap(m.done(), set.build(), 0, 0, w, h, mb.build(), mons), PAL.pal, 1);
