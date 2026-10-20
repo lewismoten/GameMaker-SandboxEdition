@@ -1,5 +1,5 @@
 // DEMO.REC: what plays on the title screen when nobody touches the keyboard. Recorded
-// from a real game on Pine Street (pairs of [ticks since the last key, PC scan code;
+// from a real game on Gale Street (pairs of [ticks since the last key, PC scan code;
 // +128 = released]), ending with Esc.
 import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
 

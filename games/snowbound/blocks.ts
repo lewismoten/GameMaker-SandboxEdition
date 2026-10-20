@@ -619,7 +619,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   arcadeDoor.rect(15, 11, 1, 4, c('concrete', 3));
   book.add('arcadeDoor', arcadeDoor, { solid: SOLID, effect: MONEY, eamt: -1, hp: 5, score: 250 });
 
-  // ---------- Knobley Hill ----------
+  // ---------- the Jamie Street sled run ----------
   const slope = (seed: number, tracks: boolean, steep = 0) => {
     const p = P();
     const r = rng(seed);

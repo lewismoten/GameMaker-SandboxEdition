@@ -8,11 +8,11 @@ as Game-Maker 3.0 files.
 
 For the founder and operator
 of Moten Snow-to-Software
-Operations, Fort Ashby, West
-Virginia, winter of 1992, who
-shoveled his way to a copy of
-Game-Maker. Each driveway was
-one pixel of the game.
+Operations, Gale St & Dunn Dr,
+Dowden Additions, winter of
+1992, who shoveled his way to
+a copy of Game-Maker. Each
+driveway was one pixel.
 
 Made with GAME-MAKER by
 Recreational Software Designs.

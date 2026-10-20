@@ -167,7 +167,7 @@ export function storySong(): Uint8Array {
   ]);
 }
 
-/** Pine Street, 7 AM: plucked and cheerful, a kid with a plan. */
+/** Gale Street, 7 AM: plucked and cheerful, a kid with a plan. */
 export function pineSong(): Uint8Array {
   const melody = [
     'G4 e, C5 e, E5 e, G5 e, E5 q, C5 q',
@@ -190,7 +190,7 @@ export function pineSong(): Uint8Array {
   ]);
 }
 
-/** Knobley Hill: a galop at full tilt. */
+/** Jamie Street sled run: a galop at full tilt. */
 export function hillSong(): Uint8Array {
   const melody = [
     'G5 e, G5 e, G5 e, E5 e, C5 q, C5 q',
@@ -212,7 +212,7 @@ export function hillSong(): Uint8Array {
   ]);
 }
 
-/** Main Street at dusk: strolling, a little jazzy. */
+/** Bowden Drive at dusk: strolling, a little jazzy. */
 export function mainSong(): Uint8Array {
   const melody = [
     'E5 q, D5 e, C5 e, D5 q, E5 q',
@@ -233,7 +233,7 @@ export function mainSong(): Uint8Array {
   ]);
 }
 
-/** Mill Creek Mall at night: snow under the lamps, minor and hushed. */
+/** LaVale Mall at night: snow under the lamps, minor and hushed. */
 export function mallSong(): Uint8Array {
   const melody = [
     'A4 q, C5 q, E5 q, A5 q',
