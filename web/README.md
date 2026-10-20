@@ -36,18 +36,25 @@ goes to the modern interface and its "💾 1994 desk" button comes back. Nothing
 desk is emulated: the DOS prompt, Game-Maker's menus and the BBS are drawn by this app
 to look the way they did, from the original source and files.
 
-- **The PC** boots to a `C:\>` prompt (`DIR`, `CD`, `TYPE`, `HELP`, …). `GM` starts
-  Game-Maker's text-mode menus (from `MENU.C`, with the original `.HLP` help screens
-  from `runtime/run/GM`); its Design bar opens the graphic designers full screen in a
+- **The PC** boots to a `C:\>` prompt (`DIR`, `CD`, `MD`, `TYPE`, `HELP`, …). Drive
+  C: holds Game-Maker in `C:\GM`, with a folder per installed game (changes to them
+  are kept, and Utilities ▸ Restore puts them back) and `C:\DOWNLOAD` for BBS
+  downloads; D: is the CD as shipped; A: is the floppy drive. `GM` starts Game-Maker's
+  text-mode menus (from `MENU.C`, with the original `.HLP` help screens from
+  `runtime/run/GM`); its Design bar opens the graphic designers full screen in a
   VGA-style skin, each with a button to continue in today's web editor. `PLAYGAME`
-  and `A:\<game>` play games on the monitor.
+  and a game's `.EXE` play games on the monitor, whose picture bulges like CRT glass
+  (an SVG displacement filter; full screen stays flat).
 - **TURBO** on the case switches between full speed and a 286-class PC (see below).
-- **The disk box** holds 3.5" disks: RSD's own Sample, Pipemare and Nebula, the other
-  gameware, your games, and a blank disk. Originals are write-protected, so designing
-  one first copies it to a new disk; a blank disk is formatted as a new game.
-- **The Game-Maker CD** starts Game-Maker. **The shareware catalog** lists the
-  shareware games, and **`TERMINAL`** dials a fictional BBS where they can be read
-  about and "downloaded" (time-compressed) into `C:\DOWNLOAD`, then run from DOS.
+- **The disk box** holds 3.5" disks standing shutter-down: RSD's own Sample, Pipemare
+  and Nebula, the other gameware, your games, and a blank disk. Scroll through them and
+  click one to put it in drive A:; the drive then offers Play, Design and today's web.
+- **The pink Game-Maker box** and its CD start Game-Maker. **The shareware catalog**
+  lists the shareware games, and **`TERMINAL`** dials a fictional BBS where they can be
+  read about and "downloaded" (time-compressed) into `C:\DOWNLOAD`, then run from DOS.
+- **The Owner's Guide** is a manual for the desk, typeset like a 1994 printed manual,
+  with screen shots drawn by the same text-mode screen (`src/manual`). It can be
+  printed. Today's web interface has its own guide at `#/help`.
 
 ## Running it
 
