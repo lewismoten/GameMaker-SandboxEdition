@@ -188,7 +188,6 @@ export function courier(): CharSet {
     sound: SND.jump,
     momentum: true,
     norepeat: true,
-    ground: true,
     joy: [1, 0],
     frames: [F('jet', { y: -12 }), F('jet2', { pause: 1 })],
   });
@@ -515,7 +514,6 @@ export function vehicle(kind: VehicleKind): CharSet {
     const air = [0, 1, 2].map((k) => one(drawRover({ wheel: k, bounce: -1, spring: k === 1 })));
     setSeq(c, SEQ.up, {
       key: 'up',
-      ground: true,
       sound: SND.jump,
       bloc: itemBlock('spring'),
       momentum: true,

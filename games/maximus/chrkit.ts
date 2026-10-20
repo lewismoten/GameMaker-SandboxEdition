@@ -74,9 +74,11 @@ export interface SeqSpec {
 /**
  * Sequences a key starts and that must finish even if the key is already up: a quick tap
  * delivers press and release in the same game tick, and PLAYGAME would pop the sequence
- * again before its first frame. Marking them "ground" (uninterruptible) makes taps count.
+ * again before its first frame. Marking a sequence "ground" (uninterruptible) makes taps
+ * count - but while it runs, a direction key pressed in the same tick is swallowed. So
+ * only the stand-still actions are ground; moving and shooting stay responsive.
  */
-const TAPS = new Set([3, 4, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19]);
+const TAPS = new Set([3, 4, 11, 14, 16, 17, 19]);
 
 export function setSeq(c: Character, i: number, s: SeqSpec): void {
   if (s.ground === undefined && TAPS.has(i)) s = { ...s, ground: true };
