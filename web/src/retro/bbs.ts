@@ -52,7 +52,7 @@ class Term {
   }
 
   status(text: string): void {
-    this.h.screen.write(0, ROWS - 1, attr(0, 3), text.padEnd(COLS).slice(0, COLS));
+    this.h.screen.write(0, ROWS - 1, attr(0, 3), toCp437(text).padEnd(COLS).slice(0, COLS));
   }
 
   async key(): Promise<string> {
@@ -63,8 +63,10 @@ class Term {
   async more(): Promise<boolean> {
     this.print('|15[|11More|15] |07Press a key, Q to stop');
     const k = await this.key();
-    this.print('\r' + ' '.repeat(30) + '\r');
-    this.h.screen.cursorX = 0;
+    // Erase the prompt line and write over it.
+    const s = this.h.screen;
+    s.fill(0, s.cursorY, COLS - 1, s.cursorY, attr(7, 0));
+    s.cursorX = 0;
     return k !== 'Q' && k !== 'Escape';
   }
 
