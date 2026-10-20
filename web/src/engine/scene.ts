@@ -154,7 +154,7 @@ export function startGameInits(s: Session): void {
 }
 
 /** StartSceneInits */
-function startSceneInits(w: World, start: Coord): void {
+export function startSceneInits(w: World, start: Coord): void {
   const { ci, chr } = w;
   if (ci.inv[0] === BACKBL + 1) for (let i = 0; i < MAXINV; i++) ci.inv[i] = chr.inv[i];
   for (let i = 0; i < MAXSEQ; i++) {
@@ -211,7 +211,7 @@ function startSceneInits(w: World, start: Coord): void {
 }
 
 /** changeblks: animate background blocks. */
-function changeBlocks(w: World): void {
+export function changeBlocks(w: World): void {
   for (let lp = 0; lp < BACKBL; lp++) {
     const tmap = w.blkmap[lp];
     const b = bgBlock(w, tmap);
