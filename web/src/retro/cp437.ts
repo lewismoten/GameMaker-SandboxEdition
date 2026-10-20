@@ -83,8 +83,9 @@ export const FONT_CP437: Uint8Array = (() => {
   return f;
 })();
 
-const UNICODE = '─│┌┐└┘├┤┬┴┼═║╔╗╚╝╠╣╦╩╬░▒▓█▄▀▌▐■·►◄▲▼↑↓→←';
-const CODES = [196, 179, 218, 191, 192, 217, 195, 180, 194, 193, 197, 205, 186, 201, 187, 200, 188, 204, 185, 203, 202, 206, 176, 177, 178, 219, 220, 223, 221, 222, 254, 250, 16, 17, 30, 31, 24, 25, 26, 27];
+// CP437 176..223 (shades, box drawing, blocks), then a few others.
+const UNICODE = '░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀■·∙►◄▲▼↑↓→←↕';
+const CODES = [...Array.from({ length: 48 }, (_, i) => 176 + i), 254, 250, 249, 16, 17, 30, 31, 24, 25, 26, 27, 18];
 
 /** Converts a string written with Unicode box characters to CP437 byte codes. */
 export function toCp437(s: string): string {
