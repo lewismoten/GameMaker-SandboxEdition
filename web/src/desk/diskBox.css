@@ -1,0 +1,167 @@
+/* 3.5" floppy disks and the flip-through disk box */
+
+.floppy {
+  --body: #2b2b2b;
+  position: relative;
+  width: 180px;
+  aspect-ratio: 9 / 9.4;
+  border-radius: 6px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--body) 85%, #fff), var(--body) 45%, color-mix(in srgb, var(--body) 80%, #000));
+  clip-path: polygon(0 0, 92% 0, 100% 6%, 100% 100%, 0 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: #1a1a1a;
+}
+
+.floppy .shutter {
+  position: absolute;
+  left: 22%;
+  top: 0;
+  width: 56%;
+  height: 33%;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(90deg, #8d939a, #e3e7ea 40%, #a7adb3 70%, #e3e7ea);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.floppy .shutter::after {
+  content: '';
+  position: absolute;
+  left: 58%;
+  top: 14%;
+  width: 18%;
+  height: 62%;
+  border-radius: 2px;
+  background: #3c3f42;
+}
+
+.floppy .label {
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  bottom: 4%;
+  height: 54%;
+  padding: 6px 8px;
+  overflow: hidden;
+  border-radius: 2px 2px 0 0;
+  background: repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px), #fbf8ee;
+  font: 15px/14px 'Comic Sans MS', 'Marker Felt', 'Segoe Print', cursive;
+  color: #1c2a6b;
+  white-space: pre-line;
+  text-align: left;
+}
+
+.floppy .label small {
+  display: block;
+  margin-top: 2px;
+  color: #6b1c1c;
+  font-size: 11px;
+}
+
+.floppy[data-kind='rsd'] .label {
+  background:
+    linear-gradient(180deg, #000080 0 15px, transparent 15px),
+    repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px),
+    #fbf8ee;
+  padding-top: 18px;
+}
+
+.floppy[data-kind='rsd'] .label::before {
+  content: 'GAME-MAKER  ·  RSD';
+  position: absolute;
+  left: 8px;
+  top: 2px;
+  color: #ffd400;
+  font: 700 9px/11px ui-monospace, monospace;
+  letter-spacing: 0.1em;
+}
+
+.floppy[data-kind='blank'] .label {
+  color: #999;
+}
+
+/* write-protect tab: open hole = protected */
+.floppy .wp {
+  position: absolute;
+  left: 3%;
+  bottom: 2%;
+  width: 7%;
+  height: 7%;
+  background: #111;
+}
+
+.floppy .wp::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 50% 0;
+  background: #555;
+}
+
+.floppy[data-protected='true'] .wp::after {
+  inset: 50% 0 0 0;
+}
+
+.floppy .hd {
+  position: absolute;
+  right: 3%;
+  bottom: 2%;
+  font: 700 8px/1 system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* small disks peeking out of the box on the desk */
+.disk-box .floppy {
+  position: absolute;
+  bottom: 6px;
+  width: 104px;
+}
+
+/* ---- flip-through view --------------------------------------------------------------- */
+
+.flipper {
+  position: relative;
+  width: min(900px, 100%);
+  height: 300px;
+  perspective: 1100px;
+  touch-action: pan-y;
+}
+
+.flipper .floppy {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  width: 220px;
+  margin-left: -110px;
+  transition: transform 0.35s ease, opacity 0.35s ease, filter 0.35s ease;
+  cursor: pointer;
+}
+
+.flip-info {
+  max-width: 560px;
+  min-height: 110px;
+  text-align: center;
+}
+
+.flip-info h2 {
+  margin: 0 0 4px;
+  font: 700 20px/1.2 system-ui, sans-serif;
+}
+
+.flip-info p {
+  margin: 0 0 10px;
+  color: #d8ccb0;
+}
+
+.flip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.flip-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #d8ccb0;
+  font-size: 13px;
+}
