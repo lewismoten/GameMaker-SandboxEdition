@@ -50,3 +50,101 @@ export async function standStill(sim: Sim, ticks: number): Promise<{ hp: number;
   await sim.run(ticks);
   return { hp: sim.w.ci.hitpts, dead: sim.dead };
 }
+
+/**
+ * Flies a pod (or swims a diving bell) to a map cell along a breadth-first route around
+ * solid blocks, steering its momentum like a player would. Returns the damage taken.
+ */
+export async function navigate(
+  sim: Sim,
+  goal: { x: number; y: number },
+  maxTicks = 3000,
+): Promise<{ arrived: boolean; damage: number; ticks: number; deaths: number }> {
+  const bbl = sim.scene.bbl;
+  const map = sim.w.map;
+  const dist = new Int32Array(10000).fill(-1);
+  const q = [goal.y * 100 + goal.x];
+  dist[q[0]] = 0;
+  for (let h = 0; h < q.length; h++) {
+    const i = q[h];
+    const x = i % 100;
+    const y = Math.floor(i / 100);
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
+      const j = ((y + dy + 100) % 100) * 100 + ((x + dx + 100) % 100);
+      const blk = bbl[map[j]];
+      // solid blocks stop the pod; currents (solar wind) push it about, so route around them
+      if (dist[j] >= 0 || (blk && (blk.solid || blk.grav))) continue;
+      dist[j] = dist[i] + 1;
+      q.push(j);
+    }
+  }
+  const held = new Set<number>();
+  const hold = (k: number, on: boolean) => {
+    if (on && !held.has(k)) {
+      sim.press(k);
+      held.add(k);
+    }
+    if (!on && held.has(k)) {
+      sim.release(k);
+      held.delete(k);
+    }
+  };
+  let damage = 0;
+  let deaths = 0;
+  let hp = sim.w.ci.hitpts;
+  let t = 0;
+  let arrived = false;
+  for (; t < maxTicks; t++) {
+    const c = sim.w.chr;
+    const px = c.x[0] * 20 + c.x[1] + 10;
+    const py = c.y[0] * 20 + c.y[1] + 10;
+    const cx = Math.floor(px / 20) % 100;
+    const cy = Math.floor(py / 20) % 100;
+    if ((cx === goal.x && cy === goal.y) || sim.link >= 0) {
+      arrived = true;
+      break;
+    }
+    let best = [0, 0];
+    let bd = dist[cy * 100 + cx];
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
+      const d = dist[((cy + dy + 100) % 100) * 100 + ((cx + dx + 100) % 100)];
+      if (d >= 0 && (bd < 0 || d < bd)) {
+        bd = d;
+        best = [dx, dy];
+      }
+    }
+    const ex = (cx + best[0]) * 20 + 10 - px;
+    const ey = (cy + best[1]) * 20 + 10 - py;
+    const wantX = Math.max(-5, Math.min(5, ex / 3));
+    const wantY = Math.max(-5, Math.min(5, ey / 3));
+    const vx = sim.w.ci.gravx;
+    const vy = sim.w.ci.gravy;
+    const phase = t % 2;
+    hold(SCAN.right, phase === 0 && vx < wantX - 0.5);
+    hold(SCAN.left, phase === 0 && vx > wantX + 0.5);
+    hold(SCAN.down, phase === 1 && vy < wantY - 0.5);
+    hold(SCAN.up, phase === 1 && vy > wantY + 0.5);
+    await sim.tick();
+    if (sim.w.ci.hitpts < hp) damage += hp - sim.w.ci.hitpts;
+    if (sim.dead) {
+      deaths++;
+      sim.dead = false;
+      sim.w.chr.cseq = 0;
+      sim.w.chr.cframe = 0;
+      sim.w.ci.hitpts = 100;
+    }
+    hp = sim.w.ci.hitpts;
+  }
+  for (const k of [...held]) hold(k, false);
+  return { arrived, damage, ticks: t, deaths };
+}

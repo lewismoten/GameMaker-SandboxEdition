@@ -123,11 +123,13 @@ export function stationPlanet(spec: PlanetSpec, s: SetBuilder, opts: { home?: bo
         break;
       }
       case 'sump':
+        // an acid pit in the floor, a timed bridge over it
         for (let x = rm.x + 1; x < rm.x + rm.w - 1; x++) {
-          g.set(x, fy, id('acid'));
+          if (g.get(x, fy + 1) !== id('deck:plate')) continue;
+          g.set(x, fy + 1, id('acid'));
+          g.set(x, fy + 2, id('acid:deep'));
+          g.set(x, fy, id('plat:on'));
         }
-        // a timed bridge over the sump
-        for (let x = rm.x + 1; x < rm.x + rm.w - 1; x++) g.set(x, fy - 2, id('plat:on'));
         break;
       case 'hall': {
         // conveyor decks and a laser gate

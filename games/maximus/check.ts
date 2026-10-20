@@ -8,7 +8,7 @@ import { ITEM_BASE, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './common';
 import { newCharInfo } from '../../web/src/engine/world';
 import { reachable } from './mapkit';
 import { buildGame } from './game';
-import { autoWalk, simFor, standStill } from './verify';
+import { autoWalk, navigate, simFor, standStill } from './verify';
 
 const only = process.argv.slice(2);
 const b = buildGame();
@@ -157,6 +157,22 @@ if (!only.length || only.includes('heart')) {
     if (sim.link === 0) won = true;
   }
   if (!won) report.push(`heart: the lance bot never reached the exit (best x ${best})`);
+}
+// sector charts: fly the pod from the warp to a few planets and see what it costs
+if (!only.length || only.includes('sectors')) {
+  for (const info of b.scenes.filter((s) => s.kind === 'space' && s.sector !== undefined)) {
+    const links = b.game.scenes[info.scene].links.filter((l) => l.toScene !== 0xffff);
+    let worst = 0;
+    for (const li of [1, Math.floor(links.length / 2), links.length - 1]) {
+      const sim = simFor(b, info, li);
+      sim.scene.links = undefined; // fly through other planets without landing
+      await sim.run(3);
+      const r = await navigate(sim, links[li].from, 4000);
+      worst = Math.max(worst, r.damage);
+      if (!r.arrived) report.push(`${info.name}: the pod could not reach planet link ${li}`);
+    }
+    if (worst > 150) report.push(`${info.name}: flying to a planet cost up to ${worst} HP`);
+  }
 }
 console.log(`checked ${checked} scenes`);
 for (const line of [...b.problems, ...report]) console.log(line);

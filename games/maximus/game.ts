@@ -154,7 +154,7 @@ export function buildGame(): Built {
     populate(m.grid, bbl.space, sec.level <= 2 ? monsters.space1 : monsters.space2, spaceSpots(m.grid, bbl.space, m.arrive), {
       seed: 30 + k,
       level: sec.level,
-      count: 90 + sec.level * 20,
+      count: 50 + sec.level * 15,
       species: 5,
     });
     return m;

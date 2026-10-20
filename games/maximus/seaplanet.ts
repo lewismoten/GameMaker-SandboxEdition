@@ -19,7 +19,7 @@ export function oceanPlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     [6, 1 + r() * 2],
     [11, r()],
   ]);
-  const floor = Array.from({ length: W }, (_, x) => Math.round(62 + n(x)));
+  const floor = Array.from({ length: W }, (_, x) => Math.round(50 + n(x) * 1.4));
   // a trench or two plunging toward the abyss
   for (let k = 0; k < 2; k++) {
     const tx = Math.floor(r() * W);

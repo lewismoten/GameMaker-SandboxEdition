@@ -429,12 +429,13 @@ export function vehicle(kind: VehicleKind): CharSet {
       sound: SND.drop,
       frames: [B(claw[2], { pause: 3 }), B(splashes[0], { pause: 2 }), B(splashes[2], { pause: 2 }), B(one(splash(drawDiver({ prop: 2 }), 3)), { pause: 2 })],
     });
-    setSeq(c, SEQ.right, { key: 'right', momentum: true, sound: SND.swim, joy: [3, 0], frames: R.map((b) => B(b, { x: 1, pause: 2 })) });
-    setSeq(c, SEQ.left, { key: 'left', momentum: true, sound: SND.swim, joy: [7, 0], frames: R.map((b) => B(b, { x: -1, pause: 2, o: L })) });
+    // the bell swims at a steady pace (water drags: no build-up of speed as in space)
+    setSeq(c, SEQ.right, { key: 'right', sound: SND.swim, joy: [3, 0], frames: R.map((b) => B(b, { x: 4 })) });
+    setSeq(c, SEQ.left, { key: 'left', sound: SND.swim, joy: [7, 0], frames: R.map((b) => B(b, { x: -4, o: L })) });
     const upLamp = one(drawDiver({ tilt: -1, lamp: true, prop: 1, bubbles: 3 }));
     const downLamp = one(drawDiver({ tilt: 1, lamp: true, prop: 2, bubbles: 4 }));
-    setSeq(c, SEQ.up, { key: 'up', momentum: true, joy: [1, 0], frames: [...up, upLamp].map((b) => B(b, { y: -1, pause: 2 })) });
-    setSeq(c, SEQ.down, { key: 'down', momentum: true, joy: [5, 0], frames: [...down, downLamp].map((b) => B(b, { y: 1, pause: 2 })) });
+    setSeq(c, SEQ.up, { key: 'up', joy: [1, 0], frames: [...up, upLamp].map((b) => B(b, { y: -4 })) });
+    setSeq(c, SEQ.down, { key: 'down', joy: [5, 0], frames: [...down, downLamp].map((b) => B(b, { y: 4 })) });
     weapons(c, pose, { fireY: 20 });
     setSeq(c, SEQ.dashR, {
       key: 'e',
