@@ -24,6 +24,7 @@ import { snowyWindow } from './snowWindow';
 import { drawGmBox, gmBoxContents } from './gmBox';
 import { fitStage } from './stage';
 import { keyCardSpot } from './keyCard';
+import { newsClipping } from './newsClipping';
 import { deskCapture } from './capture';
 import { EDITION, FORK_NOTE } from '../edition';
 import { loadCatalog, type CatalogEntry } from '../project/files';
@@ -115,6 +116,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         }),
       ),
       snowyWindow(),
+      newsClipping(),
       spk.left,
       spk.right,
       wallPhone(),
