@@ -15,10 +15,8 @@ import { latin1Text, textBytes } from '../../formats/binary';
 import { matchColor, parsePalette, type Palette } from '../../formats/palette';
 import { parseCmf, CMF_GAMEMAKER_CLOCK } from '../../formats/cmf';
 import { decodeVoc } from '../../formats/voc';
-import { parseRecording } from '../../formats/recording';
 import { parseHighScores, serializeHighScores } from '../../formats/highscore';
 import { BLEN, BACKBL, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type BlockKind } from '../../formats/blocks';
-import { scanName } from '../../input/scancodes';
 import { GRAPHIC_EXTS } from '../../formats/game';
 
 const audio = new AudioEngine();
@@ -331,21 +329,6 @@ registerEditor(['voc'], (host, project, file) => {
     h('button', { class: 'primary', onclick: async () => (await audio.resume(), audio.playVoc(bytes)) }, '▶ Play'),
   );
   return () => audio.stopVoc();
-});
-
-registerEditor(['rec'], (host, project, file) => {
-  const keys = parseRecording(project.files.get(file)!);
-  const ticks = keys.reduce((n, k) => n + k.delta, 0);
-  clear(
-    host,
-    h('p', { class: 'hint' }, `A recorded game: ${keys.length} key events over about ${(ticks / 18.2).toFixed(0)} seconds. Set it as the start scene’s demo recording to play it when the menu sits idle.`),
-    h(
-      'table',
-      { class: 'data' },
-      h('thead', null, h('tr', null, h('th', null, 'After (ticks)'), h('th', null, 'Key'))),
-      h('tbody', null, ...keys.slice(0, 200).map((k) => h('tr', null, h('td', null, k.delta), h('td', null, `${scanName(k.key & 0x7f)} ${k.key & 0x80 ? 'up' : 'down'}`)))),
-    ),
-  );
 });
 
 registerEditor(['his'], (host, project, file) => {

@@ -9,3 +9,4 @@ import './character';
 import './sounds';
 import './media';
 import '../tools/all';
+import './recording';

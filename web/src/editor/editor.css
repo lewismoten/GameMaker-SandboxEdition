@@ -850,3 +850,13 @@ dialog.modal .buttons {
   height: 120px;
   border-radius: 6px;
 }
+
+/* recording and watching demos (editor/editors/recording.ts) */
+.rec-dialog {
+  width: min(900px, 86vw);
+}
+
+.rec-player {
+  aspect-ratio: 8 / 5;
+  max-height: 64vh;
+}
