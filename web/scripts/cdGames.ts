@@ -27,6 +27,26 @@ export interface CdCatalogEntry {
 // Files that only matter to DOS (executables, batch files, icons, archives).
 const SKIP = /\.(exe|bat|com|ico|bak|drv|zip|lzh)$/i;
 const NOTICES = ['readme.txt', 'order.doc', 'register.txt', 'order.txt'];
+const NOTICE_WORDS = /shareware|freeware|regist/i;
+
+// Old .gam files often name the title scene "Title Screen" or a version number, so
+// shareware titles come from each game's own credits and story screens.
+const SHAREWARE_TITLES: Record<string, string> = {
+  ajqst2: "A-J's Quest 2 (demo)",
+  ajquest: "A-J's Quest",
+  bounerm: 'Bounerim',
+  congress: 'Progress or Congress?',
+  fluffyr: 'Fluffy Ralf',
+  gridlin: 'Gridline',
+  njlnflx: 'Nejilian Flux',
+  octolrs: 'Octolris',
+  orb: 'ORB - The Derelict Planet',
+  pac: 'PAC',
+  paperair: 'Paper Airplane',
+  parsec3d: 'Parsec Man 3D',
+  signhdg: 'Sign',
+  zoom: 'Zoom',
+};
 
 function cString(bytes: Uint8Array): string {
   const end = bytes.indexOf(0);
@@ -98,15 +118,20 @@ function scan(cdRoot: string): Scan {
       const gamBytes = gam ? readFileSync(disk.get(gam)!) : undefined;
       const entry: CdCatalogEntry = {
         id,
-        title: (gamBytes && gameTitle(gamBytes)) || id,
+        title: (kind === 'shareware' && SHAREWARE_TITLES[id]) || (gamBytes && gameTitle(gamBytes)) || id,
         kind,
         path,
         gam,
         files: names,
       };
       if (kind === 'shareware') {
-        const own = NOTICES.map((n) => disk.get(n)).find(Boolean);
-        entry.notice = [own ? dosText(readFileSync(own)) : '', cdNotice].filter(Boolean).join('\n\n----\n\n');
+        // The author's readme/order form, plus any screen that talks about shareware or registering.
+        const own = NOTICES.map((n) => disk.get(n)).filter((p): p is string => !!p);
+        const screens = names
+          .filter((n) => n.endsWith('.txt') && !NOTICES.includes(n) && n !== 'gmhelp.txt')
+          .map((n) => disk.get(n)!)
+          .filter((p) => NOTICE_WORDS.test(readFileSync(p, 'latin1')));
+        entry.notice = [...own, ...screens].map((p) => dosText(readFileSync(p))).concat(cdNotice ? [cdNotice] : []).join('\n\n----\n\n');
         entry.gamCrc = crc32(gamBytes!);
       }
       for (const [name, p] of disk) files.set(`${path}${name}`, p);
