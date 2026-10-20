@@ -511,19 +511,60 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
   ];
 }
 
-// ------------------------------------------------------------------ hint book offer
+// ------------------------------------------------------------------ hint book postcard
+/** A promotional postcard for the hint book: a picture side and a mailing side. */
 export async function hintOffer(ctx: PrintContext, bookTitle: string): Promise<Sheet[]> {
-  return [
-    sheet(
-      6,
-      4,
-      'ho',
-      h('div', { class: 'ho-burst' }, 'STUCK?'),
-      h('h3', null, `The Official ${splitTitle(ctx.entry.title)[0]} Hint Book`),
-      h('p', null, 'Every secret, every vault and every shortcut, with answers hidden under red noise so you only see the hint you need. Red film included!'),
+  const g = ctx.entry;
+  const box = g.original?.box;
+  const [main] = splitTitle(g.title);
+  const shot = box?.shots?.[1] ?? box?.shots?.[0];
+  const bg = shot ? await ctx.shot({ map: shot[0], x: shot[1], y: shot[2], w: 16, h: 10 }) : undefined;
+  const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
+  const hints = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
+  const sample = hints[hashString(g.id + 'card') % Math.max(1, hints.length)];
+  const style = `--ho-bg:${box?.background ?? '#18150f'};--ho-accent:${box?.accent ?? '#f2b632'};--ho-ink:${box?.ink ?? '#fff'}`;
+  const front = sheet(
+    6,
+    4,
+    'ho ho-front',
+    h('div', { class: 'ho-shot', style: `${style};${bg ? `background-image:url(${bg})` : ''}` }),
+    h(
+      'div',
+      { class: 'ho-book', style, 'aria-hidden': 'true' },
+      h('span', { class: 'ho-book-band' }, 'OFFICIAL'),
+      h('b', null, main),
+      h('span', null, 'HINT BOOK'),
+      h('i', { class: 'ho-book-film' }),
+    ),
+    h('div', { class: 'ho-burst' }, 'STUCK?'),
+    h(
+      'div',
+      { class: 'ho-pitch', style },
+      h('h3', null, `The Official ${main} Hint Book`),
+      h('p', null, 'Every secret. Every shortcut. Every answer hidden under red noise, so you only see the one you need.'),
+      h('p', { class: 'ho-film-note' }, 'RED FILM INCLUDED!'),
+    ),
+  );
+  const back = sheet(
+    6,
+    4,
+    'ho ho-back',
+    h(
+      'div',
+      { class: 'ho-msg' },
+      h('h3', null, 'Can’t get past it?'),
+      h('p', null, `Our ${main} hint book answers your questions without spoiling the rest. Try it on this one:`),
+      sample ? h('p', { class: 'ho-sample' }, h('b', null, 'Q. '), sample.q, h('br'), redCode(sample.a)) : null,
       h('p', { class: 'ho-price' }, h('s', null, '$5.95'), ' ', h('b', null, 'FREE with registration')),
       h('p', { class: 'ho-in' }, `It’s already in this box: look for “${bookTitle}”.`),
+    ),
+    h(
+      'div',
+      { class: 'ho-mail' },
+      h('div', { class: 'ho-indicia' }, 'BULK RATE', h('br'), 'U.S. POSTAGE', h('br'), 'PAID', h('br'), h('small', null, 'Sandbox Software')),
+      h('div', { class: 'ho-to' }, h('b', null, 'TO A REGISTERED PLAYER'), h('i'), h('i'), h('i')),
       fictionalNote(),
     ),
-  ];
+  );
+  return [front, back];
 }

@@ -49,7 +49,16 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every game we make', icon: '🗂️', render: () => catalog(ctx) },
     { kind: 'bbs', id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     ...(book
-      ? [{ kind: 'hintoffer' as const, id: 'hintoffer', title: 'Hint book offer', note: 'Order slip', icon: '💡', render: () => hintOffer(ctx, book.title) }]
+      ? [
+          {
+            kind: 'hintoffer' as const,
+            id: 'hintoffer',
+            title: 'Hint book postcard',
+            note: 'Stuck? Get the hint book',
+            icon: '💡',
+            render: () => hintOffer(ctx, book.title),
+          },
+        ]
       : []),
     { kind: 'stickers', id: 'stickers', title: 'Sticker sheet', note: 'Cut them out', icon: '⭐', render: () => stickers(ctx), screen: stickerScreen },
   ];
