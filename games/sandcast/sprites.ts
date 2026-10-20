@@ -196,12 +196,22 @@ mb.add('pawRAngry1', paw(1, true, false), { hp: -4, solid: SOLID });
   mb.add('pawWet', p);
 }
 function tail(frame: number): Pixels {
+  // A fluffy tabby tail swishing across the flagstones, darker at the tip.
   const p = sprite();
-  for (let x = 0; x < 20; x++) {
-    const y = 10 + Math.sin(x / 3 + frame * 1.5) * 4;
-    for (let k = -3; k <= 3; k++) p.set(x, y + k, shade(TABBY, (Math.sin(x / 2) > 0.3 ? 2 : 4.5) + (k < 0 ? 1 : -0.5)));
+  for (let i = 0; i <= 60; i++) {
+    const t = i / 60;
+    const x = 2 + t * 16;
+    const y = 13 - Math.sin(t * Math.PI) * (frame ? 9 : 5) + (frame ? 0 : t * 3);
+    const r = 3.4 - t * 1.4;
+    const stripe = Math.sin(t * 18) > 0.3;
+    for (let dy = -r; dy <= r; dy += 0.5)
+      for (let dx = -r; dx <= r; dx += 0.5) {
+        if (dx * dx + dy * dy > r * r) continue;
+        const lit = (-dx - dy) / (r * 2);
+        p.set(x + dx, y + dy, t > 0.85 ? shade(TABBY, 1 + lit * 2) : shade(TABBY, (stripe ? 2.6 : 4.4) + lit * 2));
+      }
   }
-  return p;
+  return outline(p, TABBY[0]);
 }
 mb.add('tail0', tail(0), { hp: -2 });
 mb.add('tail1', tail(1), { hp: -2 });

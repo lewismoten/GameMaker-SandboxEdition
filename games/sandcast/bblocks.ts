@@ -135,17 +135,17 @@ bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, t
     for (let x = 4; x < 16; x++) {
       const t = (x - 4) / 11;
       const ridge = (x - 4) % 3 === 0 ? -0.8 : 0;
-      p.set(x, y, shade(OCHRE, 5.2 - t * 2.6 + ridge + (y > 15 ? -0.7 : 0)));
+      p.set(x, y, shade(SAND, 7.4 - t * 3.4 + ridge + (y > 15 ? -0.8 : 0)));
     }
-  for (let x = 4; x < 16; x++) p.set(x, 18, OCHRE[2]);
+  for (let x = 4; x < 16; x++) p.set(x, 18, SAND[2]);
   // Top: an ellipse with notches.
   for (let y = 2; y < 7; y++)
     for (let x = 4; x < 16; x++) {
       const dx = (x - 9.5) / 6;
       const dy = (y - 4.5) / 2.5;
-      if (dx * dx + dy * dy <= 1) p.set(x, y, (x + 1) % 4 === 0 && y < 4 ? OCHRE[4] : shade(OCHRE, 6 - dy * 0.6));
+      if (dx * dx + dy * dy <= 1) p.set(x, y, (x + 1) % 4 === 0 && y < 4 ? SAND[5] : shade(SAND, 8.6 - dy * 0.6));
     }
-  p.set(6, 8, OCHRE[6]).set(7, 12, OCHRE[6]).set(5, 15, OCHRE[6]);
+  p.set(6, 8, SAND[9]).set(7, 12, SAND[9]).set(5, 15, SAND[8]);
   p.set(17, 3, STEEL[7]).set(17, 2, STEEL[5]).set(17, 4, STEEL[5]).set(16, 3, STEEL[5]).set(18, 3, STEEL[5]);
   bg.add('pile', onSand(71, p), { effect: CTR.sand, eamt: 1, score: 5, touch: 'sand0' });
 }

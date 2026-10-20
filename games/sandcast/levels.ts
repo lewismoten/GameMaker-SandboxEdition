@@ -91,8 +91,8 @@ export function hub(): LevelMap {
       '.......................',
       '...j........o..........',
       '.>>>>>>>>>v.....*......',
-      '.^.......v.......J.....',
-      '.^..$....v.............',
+      '.^........v......J.....',
+      '.^..$.....v............',
       '.^<<<<<<<<<....o.......',
       '...........A...........',
       '..@............x.......',
@@ -112,6 +112,8 @@ export function hub(): LevelMap {
       J: { tile: 'sand', mon: MON.beetleV },
     }),
   );
+  // Hose banks on the outside corners of the lazy loop, so it carries you round and round.
+  m.set(37, 24, 'hoseV').set(36, 28, 'hoseH').set(26, 27, 'hoseV').set(27, 23, 'hoseH');
   // Southwest: Sir Grit's toy chest, his shovel, and Anthill Keep behind the dunes.
   m.stamp(
     1,
