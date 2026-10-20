@@ -47,8 +47,7 @@ export function outline(p: Pixels, c: number, transparent = CLEAR): Pixels {
   for (let y = 0; y < p.h; y++)
     for (let x = 0; x < p.w; x++) {
       if (at(x, y) !== transparent) continue;
-      if (at(x - 1, y) !== transparent || at(x + 1, y) !== transparent || at(x, y - 1) !== transparent || at(x, y + 1) !== transparent)
-        p.set(x, y, c);
+      if (at(x - 1, y) !== transparent || at(x + 1, y) !== transparent || at(x, y - 1) !== transparent || at(x, y + 1) !== transparent) p.set(x, y, c);
     }
   return p;
 }
