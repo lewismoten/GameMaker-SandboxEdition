@@ -9,18 +9,18 @@ import { commas } from './vfs';
 import type { CatalogEntry } from '../project/files';
 import { sandboxLogin, sandBanner } from './ansiArt';
 import { Term, boxBottom, boxRow, boxRule, boxTop, dial, modemSignal, sleep, statusLine } from './term';
-import { runSofa, SOFA_PHONE } from './sofa';
+import { runSofa, SOFA_PHONE, sofaBusy } from './sofa';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
-const PHONE = '412-555-0144';
+const PHONE = '1-412-555-SAND';
 const CPS = 1650; // 14,400 bps with V.42bis, in characters per second
 const TIME_COMPRESSION = 25; // nobody wants to wait ten minutes
 
 // ---- the dialing directory -----------------------------------------------------------
 
 const DIRECTORY = [
-  { name: BBS_NAME, number: PHONE, software: 'Renegade', run: runSandbox },
-  { name: 'The Sofa', number: SOFA_PHONE, software: 'Major BBS, 8 lines', run: runSofa },
+  { name: BBS_NAME, number: PHONE, software: 'Renegade', run: runSandbox, busy: () => false },
+  { name: 'The Sofa', number: SOFA_PHONE, software: 'Major BBS, 8 lines', run: runSofa, busy: sofaBusy },
 ];
 
 export async function runTerminal(h: RetroHost): Promise<void> {
@@ -32,9 +32,9 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     s.cursorVisible = true;
     t.status(statusLine('Offline'));
     t.line(boxTop('TERMINAL 2.1 Dialing Directory', '03', '15'));
-    t.line(boxRow('|11 #  Name                         Number        Baud   Software', '03'));
+    t.line(boxRow('|11 #  Name                         Number          Baud   Software', '03'));
     t.line(boxRule('03'));
-    DIRECTORY.forEach((d, i) => t.line(boxRow(`|14 ${i + 1}  |15${d.name.padEnd(28)} |07${d.number.padEnd(13)} |1014400  |07${d.software}`, '03')));
+    DIRECTORY.forEach((d, i) => t.line(boxRow(`|14 ${i + 1}  |15${d.name.padEnd(28)} |07${d.number.padEnd(15)} |1014400  |07${d.software}`, '03')));
     t.line(boxBottom('03'));
     t.line();
     t.print('|11Dial which entry? |07(|151|07-|15' + DIRECTORY.length + '|07, |15Esc|07 to quit) |15');
@@ -48,7 +48,13 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     }
     if (!entry) continue;
     s.clear(attr(7, 0));
-    await dial(t, h, entry.number);
+    if (!(await dial(t, h, entry.number, entry.busy()))) {
+      t.line('|07All lines are busy. Try again in a little while.');
+      t.status(statusLine('Offline'));
+      t.print('|07Press a key… ');
+      await t.key();
+      continue;
+    }
     t.status(statusLine('Online'));
     await sleep(700);
     await entry.run(t, h);
@@ -89,10 +95,11 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     if (k === 'F' || k === 'N') {
-      await files(t, h, catalog);
+      // N: a new files scan, just the newest uploads (the Sandbox Software games)
+      await files(t, h, k === 'N' ? catalog.filter((g) => g.original) : catalog, k === 'N' ? 'New Files Scan' : 'The Sand Pile: Game-Maker Shareware');
       show = true;
     } else if (k === 'B') {
-      await bulletins(t);
+      await bulletins(t, catalog);
       show = true;
     } else if (k === 'S') await systemInfo(t, catalog.length);
     else if (k === 'Y') yourStats(t, name, h, minutesLeft());
@@ -223,34 +230,67 @@ async function pageSysop(t: Term, h: RetroHost): Promise<void> {
   t.line();
 }
 
-async function bulletins(t: Term): Promise<void> {
-  t.line();
-  for (const l of [
-    '|14Bulletin #1: |15About shareware',
-    '|07Shareware is try-before-you-buy. Play these games for free; if you',
-    '|07enjoy one, send the author the registration fee listed in its',
-    '|07readme. Many authors send a full version with more levels.',
-    '',
-    '|14Bulletin #2: |15Made with Game-Maker',
-    '|07Every game in the sand pile was built with Game-Maker by',
-    '|07Recreational Software Designs. No programming needed!',
-    '',
-    '|14Bulletin #3: |15Other boards in the 412',
-    '|07Feel like kicking back? Call |13The Sofa|07, a multi-line Major BBS',
-    '|07with teleconference. It is in TERMINAL\'s dialing directory.',
-  ])
-    t.line(l);
-  t.line();
-  t.print('|07Press |15[Enter]|07 to continue');
-  await t.key();
+/** The bulletins: news from the SysOp, picked by number. */
+async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
+  const newest = catalog.filter((g) => g.original);
+  const items: [string, string[]][] = [
+    [
+      'New in the sand pile',
+      [
+        '|07Fresh uploads from |15Sandbox Software|07, made with Game-Maker:',
+        ...newest.map((g) => `|14  ${g.title.padEnd(34)}|07${g.price ? `Reg. ${g.price}` : 'Shareware'}`),
+        '|07Press |15N|07 at the main menu to scan just the new files.',
+      ],
+    ],
+    [
+      'About shareware',
+      [
+        '|07Shareware is try-before-you-buy. Play these games for free; if you',
+        '|07enjoy one, send the author the registration fee listed in its',
+        '|07readme. Many authors send a full version with more levels.',
+      ],
+    ],
+    [
+      'Game-Maker is open source',
+      [
+        '|07A note the SysOp found tucked in the future: Game-Maker\'s source',
+        '|07code was released under the |15MIT License|07, so anyone may use, copy,',
+        '|07change and share it. This board runs on a fork of it that works in',
+        '|07a web browser and still saves games DOS Game-Maker can load.',
+        '|07Source: |11https://github.com/lewismoten/GameMaker',
+      ],
+    ],
+    [
+      'Made with Game-Maker',
+      ['|07Every game in the sand pile was built with Game-Maker by', '|07Recreational Software Designs. No programming needed!'],
+    ],
+    [
+      'Other boards in the 412',
+      ['|07Feel like kicking back? Call |13The Sofa|07, a multi-line Major BBS', "|07with teleconference. It is in TERMINAL's dialing directory.", '|07Its lines are often busy; keep trying!'],
+    ],
+  ];
+  for (;;) {
+    t.line();
+    t.line(boxTop('Bulletins'));
+    items.forEach(([title], i) => t.line(boxRow(`  |14${i + 1}|06) |07${title}`)));
+    t.line(boxBottom());
+    t.print(`|14Read which bulletin? |07(|151|07-|15${items.length}|07, |15Q|07 to quit) |15`);
+    const k = await t.key();
+    t.line(k.length === 1 ? k : '');
+    const item = items[Number(k) - 1];
+    if (!item) return;
+    t.line();
+    t.line(`|14Bulletin #${k}: |15${item[0]}`);
+    for (const l of item[1]) t.line(l);
+  }
 }
 
-async function files(t: Term, h: RetroHost, catalog: CatalogEntry[]): Promise<void> {
+async function files(t: Term, h: RetroHost, catalog: CatalogEntry[], title: string): Promise<void> {
   const s = h.screen;
   s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
   s.cursorX = 0;
   s.cursorY = 0;
-  t.line(boxTop('The Sand Pile: Game-Maker Shareware'));
+  t.line(boxTop(title));
   t.line(boxRow('|11  #  File name        Size  Description'));
   t.line(boxBottom());
   let lines = 4;

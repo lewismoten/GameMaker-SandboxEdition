@@ -8,6 +8,8 @@ import { sofaLogin } from './ansiArt';
 import { Term, sleep } from './term';
 
 export const SOFA_PHONE = '412-555-0177';
+/** All eight lines are often in use: about one call in three gets a busy signal. */
+export const sofaBusy = () => Math.random() < 0.35;
 const LINES = 8;
 
 /** Who else is on, and where. */
