@@ -31,7 +31,7 @@ import {
 import { BACKBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../formats/map';
 import { defaultPalette, parsePalette } from '../../formats/palette';
-import { WORLD, CARD_UNITS, autoArrange, clampPos, spreadOut } from '../integratorLayout';
+import { WORLD, CARD_UNITS, arrangements, clampPos, spreadOut, type Arrangement } from '../integratorLayout';
 import { graphicShot, levelShot } from '../integratorArt';
 import { audio } from './mediaShared';
 
@@ -142,6 +142,8 @@ registerEditor(['gam'], (host, project) => {
   let selected = 0;
   let playing: string | undefined;
   let undoPositions: Map<number, Point> | undefined;
+  /** Auto-arrange's layouts, best first, while the user steps through them. */
+  let arranged: { list: Arrangement[]; k: number } | undefined;
   const save = () => project.saveGame(game);
 
   // ---- pictures --------------------------------------------------------------------
@@ -376,7 +378,7 @@ registerEditor(['gam'], (host, project) => {
       const rb = cardRect(b);
       const out = a === selected && !forExport;
       const inn = b === selected && !forExport;
-      const color = out ? '#ffd400' : inn ? '#6cf28a' : busy ? 'rgba(143,170,255,.28)' : 'rgba(143,170,255,.75)';
+      const color = out ? '#ffd400' : inn ? '#6cf28a' : busy ? 'rgba(143,170,255,.45)' : 'rgba(143,170,255,.75)';
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
       ctx.lineWidth = out || inn ? 2.5 : 1.5;
@@ -579,6 +581,7 @@ registerEditor(['gam'], (host, project) => {
     pointers.delete(e.pointerId);
     if (gesture?.type === 'card' && gesture.moved) {
       undoPositions = undefined;
+      arranged = undefined;
       renderTools();
       save();
     }
@@ -666,8 +669,9 @@ registerEditor(['gam'], (host, project) => {
     });
     return n;
   };
-  function relayout(positions: Map<number, Point>): void {
-    undoPositions = new Map(used().map((i) => [i, { ...game.scenes[i].pos }]));
+  function relayout(positions: Map<number, Point>, keepArranged = false): void {
+    if (!keepArranged) arranged = undefined;
+    if (!undoPositions || !keepArranged) undoPositions = new Map(used().map((i) => [i, { ...game.scenes[i].pos }]));
     for (const [i, p] of positions) game.scenes[i].pos = p;
     save();
     renderTools();
@@ -690,10 +694,16 @@ registerEditor(['gam'], (host, project) => {
       h(
         'button',
         {
-          title: 'Lay the scenes out as a graph: the start first, then each level after the ones that lead to it, the end last',
-          onclick: () => relayout(autoArrange(game)),
+          title: arranged
+            ? 'Try the next best layout'
+            : 'Lay the scenes out as a map of the game: the start first, each scene next to the one that leads there, the end last (press again for other layouts)',
+          onclick: () => {
+            if (arranged) arranged.k = (arranged.k + 1) % arranged.list.length;
+            else arranged = { list: arrangements(game), k: 0 };
+            relayout(arranged.list[arranged.k].positions, true);
+          },
         },
-        '⇄ Auto-arrange',
+        arranged && arranged.list.length > 1 ? `⇄ Another layout ${arranged.k + 1}/${arranged.list.length}` : '⇄ Auto-arrange',
       ),
       undoPositions
         ? h(
@@ -703,6 +713,7 @@ registerEditor(['gam'], (host, project) => {
               onclick: () => {
                 for (const [i, p] of undoPositions!) if (game.scenes[i]) game.scenes[i].pos = p;
                 undoPositions = undefined;
+                arranged = undefined;
                 save();
                 renderTools();
                 fit();
@@ -721,7 +732,69 @@ registerEditor(['gam'], (host, project) => {
   }
 
   // ---- side panel: screens and music ---------------------------------------------------
-  const side = h('aside', { class: 'grator-side' });
+  const store = {
+    get: (k: string) => {
+      try {
+        return localStorage.getItem(k);
+      } catch {
+        return null;
+      }
+    },
+    set: (k: string, v: string) => {
+      try {
+        localStorage.setItem(k, v);
+      } catch {
+        /* private mode: just don't remember */
+      }
+    },
+  };
+  let sideTab: 'screens' | 'music' = store.get('gm-grator-tab') === 'music' ? 'music' : 'screens';
+  const side = h('aside', { class: 'grator-side', 'aria-label': 'Screens and music' });
+  const sideBody = h('div', { class: 'grator-side-body' });
+  const grator = h('div', { class: 'grator' });
+  /** The side panel folds away so the board gets the whole width (remembered; folded by default on phones). */
+  const setCollapsed = (on: boolean, remember = true) => {
+    grator.classList.toggle('side-collapsed', on);
+    if (remember) store.set('gm-grator-side-collapsed', on ? '1' : '0');
+    renderSide();
+    requestAnimationFrame(fit);
+  };
+  const savedCollapsed = store.get('gm-grator-side-collapsed');
+  grator.classList.toggle('side-collapsed', savedCollapsed ? savedCollapsed === '1' : window.matchMedia?.('(max-width: 820px)').matches);
+  const savedWidth = Number(store.get('gm-grator-side-w'));
+  if (savedWidth >= 160 && savedWidth <= 640) grator.style.setProperty('--grator-side-w', `${savedWidth}px`);
+  // drag the bar between the board and the panel to make the panel wider or narrower
+  const handle = h('div', {
+    class: 'grator-resize',
+    role: 'separator',
+    'aria-orientation': 'vertical',
+    'aria-label': 'Drag to resize the screens and music panel',
+    title: 'Drag to resize the panel',
+    tabIndex: 0,
+  });
+  handle.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    handle.setPointerCapture(e.pointerId);
+    const x0 = e.clientX;
+    const w0 = side.getBoundingClientRect().width;
+    const move = (ev: PointerEvent) => {
+      const w = Math.round(Math.max(160, Math.min(640, w0 - (ev.clientX - x0))));
+      grator.style.setProperty('--grator-side-w', `${w}px`);
+      store.set('gm-grator-side-w', String(w));
+      draw();
+    };
+    const up = () => (handle.removeEventListener('pointermove', move), handle.removeEventListener('pointerup', up));
+    handle.addEventListener('pointermove', move);
+    handle.addEventListener('pointerup', up);
+  });
+  handle.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const w = Math.max(160, Math.min(640, side.getBoundingClientRect().width + (e.key === 'ArrowLeft' ? 20 : -20)));
+    grator.style.setProperty('--grator-side-w', `${w}px`);
+    store.set('gm-grator-side-w', String(w));
+    draw();
+  });
   function renderSide(): void {
     const screens: { label: string; file: string; scene: number }[] = [];
     const songs: { label: string; file: string; scene: number }[] = [];
@@ -759,43 +832,101 @@ registerEditor(['gam'], (host, project) => {
             '✎',
           )
         : h('span', { class: 'grator-missing', title: 'This file is not in the game' }, 'missing');
+    const collapsed = grator.classList.contains('side-collapsed');
+    if (collapsed) {
+      clear(
+        side,
+        h(
+          'button',
+          { class: 'grator-side-open', title: 'Show the screens and music panel', 'aria-expanded': 'false', onclick: () => setCollapsed(false) },
+          h('span', { 'aria-hidden': 'true' }, '‹'),
+          h('span', { class: 'grator-side-open-label' }, `Screens ${screens.length} · Music ${songs.length}`),
+        ),
+      );
+      return;
+    }
+    const tab = (id: typeof sideTab, label: string, n: number) =>
+      h(
+        'button',
+        {
+          role: 'tab',
+          id: `grator-tab-${id}`,
+          class: `grator-tab${sideTab === id ? ' on' : ''}`,
+          'aria-selected': String(sideTab === id),
+          'aria-controls': 'grator-side-body',
+          onclick: () => {
+            sideTab = id;
+            store.set('gm-grator-tab', id);
+            renderSide();
+          },
+        },
+        label,
+        h('span', { class: 'grator-count' }, String(n)),
+      );
+    sideBody.id = 'grator-side-body';
+    sideBody.setAttribute('role', 'tabpanel');
+    sideBody.setAttribute('aria-labelledby', `grator-tab-${sideTab}`);
+    clear(
+      sideBody,
+      sideTab === 'screens'
+        ? screens.length
+          ? h(
+              'div',
+              { class: 'grator-screens' },
+              ...screens.map((g) => {
+                const shot = screenOf(g.file);
+                const fig = h('figure', { class: 'grator-screen', title: `${g.label}: ${g.file}` });
+                const pic = h('button', { class: 'grator-screen-pic', 'aria-label': `Show the scene that uses ${g.file}`, onclick: () => pick(g.scene) });
+                if (shot) {
+                  const c = h('canvas', { class: 'pixel', width: shot.width, height: shot.height });
+                  c.getContext('2d')!.drawImage(shot, 0, 0);
+                  pic.append(c);
+                } else pic.append(h('span', { class: 'grator-noshot' }, g.file));
+                fig.append(pic, h('figcaption', null, h('b', null, g.label), h('span', null, g.file.toLowerCase(), ' ', edit(g.file))));
+                return fig;
+              }),
+            )
+          : h('p', { class: 'hint' }, 'No title, menu or between-level screens yet.')
+        : songs.length
+          ? h(
+              'ul',
+              { class: 'grator-songs' },
+              ...songs.map((m) =>
+                h(
+                  'li',
+                  null,
+                  project.files.has(m.file) ? songButton(m.file) : h('span', { class: 'grator-play' }, '·'),
+                  h('button', { class: 'linklike', onclick: () => pick(m.scene), title: 'Show the scene' }, h('b', null, m.label)),
+                  h('span', { class: 'meta' }, m.file.toLowerCase()),
+                ),
+              ),
+            )
+          : h('p', { class: 'hint' }, 'No Sound Blaster music yet.'),
+    );
     clear(
       side,
-      h('h3', null, 'Screens'),
-      screens.length
-        ? h(
-            'div',
-            { class: 'grator-screens' },
-            ...screens.map((g) => {
-              const shot = screenOf(g.file);
-              const fig = h('figure', { class: 'grator-screen', title: `${g.label}: ${g.file}` });
-              const pic = h('button', { class: 'grator-screen-pic', 'aria-label': `Show the scene that uses ${g.file}`, onclick: () => pick(g.scene) });
-              if (shot) {
-                const c = h('canvas', { class: 'pixel', width: shot.width, height: shot.height });
-                c.getContext('2d')!.drawImage(shot, 0, 0);
-                pic.append(c);
-              } else pic.append(h('span', { class: 'grator-noshot' }, g.file));
-              fig.append(pic, h('figcaption', null, h('b', null, g.label), h('span', null, g.file.toLowerCase(), ' ', edit(g.file))));
-              return fig;
-            }),
-          )
-        : h('p', { class: 'hint' }, 'No title, menu or between-level screens yet.'),
-      h('h3', null, 'Music'),
-      songs.length
-        ? h(
-            'ul',
-            { class: 'grator-songs' },
-            ...songs.map((m) =>
-              h(
-                'li',
-                null,
-                project.files.has(m.file) ? songButton(m.file) : h('span', { class: 'grator-play' }, '·'),
-                h('button', { class: 'linklike', onclick: () => pick(m.scene), title: 'Show the scene' }, h('b', null, m.label)),
-                h('span', { class: 'meta' }, m.file.toLowerCase()),
-              ),
-            ),
-          )
-        : h('p', { class: 'hint' }, 'No Sound Blaster music yet.'),
+      h(
+        'div',
+        { class: 'grator-side-head' },
+        h(
+          'div',
+          { class: 'grator-tabs', role: 'tablist', 'aria-label': 'Side panel' },
+          tab('screens', 'Screens', screens.length),
+          tab('music', 'Music', songs.length),
+        ),
+        h(
+          'button',
+          {
+            class: 'grator-side-close',
+            title: 'Hide this panel (more room for the board)',
+            'aria-label': 'Hide the screens and music panel',
+            'aria-expanded': 'true',
+            onclick: () => setCollapsed(true),
+          },
+          '›',
+        ),
+      ),
+      sideBody,
     );
   }
 
@@ -1082,7 +1213,7 @@ registerEditor(['gam'], (host, project) => {
         ? 'This game is missing its start or end scene.'
         : 'Each card is a scene, showing what the player sees on arriving. Drag cards to arrange them, drag the background to pan, scroll or pinch to zoom. Click a card to edit it; double-click a level to play it. Arrows are links (gold: from the selected scene, green: into it).',
     ),
-    h('div', { class: 'grator' }, h('div', { class: 'grator-main' }, tools, h('div', { class: 'grator-board-wrap' }, board)), side),
+    (grator.append(h('div', { class: 'grator-main' }, tools, h('div', { class: 'grator-board-wrap' }, board)), handle, side), grator),
     panel,
   );
   renderTools();
