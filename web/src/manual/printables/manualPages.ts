@@ -116,7 +116,13 @@ export async function buildBooklet(entry: CatalogEntry, cover: string | undefine
   const pages: BookPage[] = [
     {
       kind: 'cover',
-      body: [cover ? h('div', { class: 'game-cover' }, h('img', { src: cover, alt: `${entry.title} cover` })) : h('div', { class: 'game-cover' })],
+      body: [
+        h(
+          'div',
+          { class: 'game-cover', style: `background:${entry.original?.box?.background ?? '#111'}` },
+          cover ? h('img', { src: cover, alt: `${entry.title} cover` }) : null,
+        ),
+      ],
     },
   ];
   const next = measurer(host);

@@ -882,6 +882,10 @@
   font-size: 1.6cqw;
 }
 
+.map-head {
+  padding-right: 8cqw;
+}
+
 .map-head h2 {
   margin: 0;
   font:
@@ -909,6 +913,8 @@
 
 .map-panels.c2:not(.n1):not(.n2) > :first-child {
   grid-column: span 2;
+  width: min(100%, calc(var(--ar) * 58cqw));
+  margin: 0 auto;
 }
 
 /* a tall map never runs off the sheet */
@@ -989,6 +995,7 @@
 
 .map-key {
   columns: 2;
+  font-size: 1.5cqw;
   column-gap: 3cqw;
   margin: 2cqw 0 0;
   padding: 0;
@@ -1189,7 +1196,7 @@
   padding: 4cqw 5cqw;
   background: var(--grain, none), #ece6d4;
   font:
-    1.6cqw/1.35 'Times New Roman',
+    1.85cqw/1.35 'Times New Roman',
     Times,
     serif;
 }
