@@ -329,6 +329,47 @@ export const ITEM = {
     }),
 };
 
+/**
+ * The things Ada can carry, first in every block set: PLAYGAME keeps the inventory as block
+ * numbers, so the green room's blocks put the same pictures at the same numbers and F2
+ * shows the right things wherever she is.
+ */
+export const ITEMS = ['lens', 'checklist', 'stub', 'chart', 'policy', 'lantern', 'ledger', 'cuesheet', 'umbrella', 'safe_ms'] as const;
+
+export function itemPictures(): Pixels[] {
+  const B = boards(1);
+  return [
+    ITEM.lens(B),
+    ITEM.checklist(B),
+    ITEM.stub(B),
+    ITEM.chart(B),
+    ITEM.policy(rug('plum')),
+    ITEM.lantern(B),
+    ITEM.ledger(B),
+    ITEM.cuesheet(B),
+    ITEM.umbrella(flagstones(5)),
+    safeDoor(true, true),
+  ];
+}
+
+export function addItems(bs: BlockSet, live: boolean): void {
+  const pics = itemPictures();
+  const ev = (score: number, touch: string): BlockDef => ({ obj: true, effect: CTR.evidence, eamt: 1, score, touch });
+  const defs: BlockDef[] = [
+    { obj: true, effect: CTR.lens, eamt: 40, score: 50, touch: 'boards' },
+    ev(100, 'boards'),
+    ev(250, 'boards'),
+    ev(100, 'boards'),
+    ev(100, 'rug'),
+    { obj: true, effect: CTR.lantern, eamt: 400, score: 50, touch: 'boards' },
+    ev(100, 'boards'),
+    ev(100, 'boards'),
+    ev(250, 'litfloor'),
+    ev(100, 'safe_empty'),
+  ];
+  ITEMS.forEach((name, i) => bs.add(name, pics[i], live ? defs[i] : {}));
+}
+
 // ---------------------------------------------------------------- the safe's dials
 
 export const SYMBOLS = ['mask', 'raven', 'rose', 'moon'] as const;
@@ -399,6 +440,7 @@ export function buildTheatreBlocks(): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, p: Pixels, d: BlockDef = {}) => bs.add(name, p, d);
   const S = { solid: SOLID };
+  addItems(bs, true);
 
   // Floors
   const B = boards(1);
@@ -743,7 +785,6 @@ export function buildTheatreBlocks(): BlockSet {
       add(`dial${d}${s}`, dial(SYMBOLS[s]), { ...S, touch: `dial${d}${next}`, effect: eamt ? CTR.dials : 0, eamt });
     }
   add('safe_empty', safeDoor(true));
-  add('safe_ms', safeDoor(true, true), { obj: true, effect: CTR.evidence, eamt: 1, score: 100, touch: 'safe_empty' });
   add('safe', safeDoor(false), { ...S, effect: CTR.dials, eamt: -3, touch: 'safe_ms', score: 200 });
   add(
     'cot',
@@ -868,26 +909,13 @@ export function buildTheatreBlocks(): BlockSet {
     S,
   );
 
-  // Evidence and tools (picked up with Space)
-  const ev = (score = 100): BlockDef => ({ obj: true, effect: CTR.evidence, eamt: 1, score });
-  add('lens', ITEM.lens(B), { obj: true, effect: CTR.lens, eamt: 40, score: 50, touch: 'boards' });
-  add('checklist', ITEM.checklist(B), { ...ev(), touch: 'boards' });
-  add('stub', ITEM.stub(B), { ...ev(250), touch: 'boards' });
-  // Under the prop table: plain boards, unless Ada carries the lens.
+  const LF = flagstones(5);
+  add('key', ITEM.key(B), { effect: CTR.keys, eamt: 1, score: 25, touch: 'boards' });
   add(
     'stub_hidden',
     on(B, (p) => p.rect(0, 0, 20, 3, c('wood', 0))),
     { effect: CTR.lens, eamt: -1, touch: 'stub' },
   );
-  add('chart', ITEM.chart(B), { ...ev(), touch: 'boards' });
-  add('policy', ITEM.policy(RG), { ...ev(), touch: 'rug' });
-  add('key', ITEM.key(B), { effect: CTR.keys, eamt: 1, score: 25, touch: 'boards' });
-  add('lantern', ITEM.lantern(B), { obj: true, effect: CTR.lantern, eamt: 400, score: 50, touch: 'boards' });
-  add('ledger', ITEM.ledger(B), { ...ev(), touch: 'boards' });
-  add('cuesheet', ITEM.cuesheet(B), { ...ev(), touch: 'boards' });
-  const LF = flagstones(5);
-  add('umbrella', ITEM.umbrella(LF), { ...ev(250), touch: 'litfloor' });
-
   // Under the stage: black until the lantern has been there.
   add('dark', T(0), { effect: CTR.lantern, eamt: -1, touch: 'litfloor' });
   add('dark2', T(0), { effect: CTR.lantern, eamt: -1, touch: 'litfloor2' });

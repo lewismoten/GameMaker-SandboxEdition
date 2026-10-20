@@ -1,0 +1,36 @@
+// FINAL CURTAIN: builds every file of the game into games/sleuth/disk/.
+//   cd web && npx vite-node ../games/sleuth/build.ts
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { serializeBlocks } from '../../web/src/formats/blocks';
+import { serializeCharacter } from '../../web/src/formats/character';
+import { serializeMap } from '../../web/src/formats/map';
+import { serializeMonsters } from '../../web/src/formats/monster';
+import { serializePalette } from '../../web/src/formats/palette';
+import { serializeGame } from '../../web/src/formats/game';
+import { Disk } from '../kit/disk';
+import { buildPalette } from './pal';
+import { buildTheatreBlocks } from './tiles';
+import { buildCritters } from './critters';
+import { buildAdaBlocks, buildCharacter } from './character';
+import { buildActs } from './acts';
+import { buildGame } from './game';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const disk = new Disk(join(here, 'disk'));
+
+disk.put('house.pal', serializePalette(buildPalette('house').pal));
+disk.put('night.pal', serializePalette(buildPalette('night').pal));
+disk.put('dawn.pal', serializePalette(buildPalette('dawn').pal));
+const tbs = buildTheatreBlocks();
+disk.put('paragon.bbl', serializeBlocks(tbs.build()));
+const critters = buildCritters();
+disk.put('paragon.mbl', serializeBlocks(critters.mb.build()));
+disk.put('paragon.mon', serializeMonsters(critters.mon));
+disk.put('ada.chr', serializeCharacter(buildCharacter()));
+disk.put('ada.cbl', serializeBlocks(buildAdaBlocks().build()));
+const acts = buildActs(tbs);
+disk.put('act1.map', serializeMap(acts[0].map));
+disk.put('act2.map', serializeMap(acts[1].map));
+disk.put('final.gam', serializeGame(buildGame(acts)));
+disk.write();
