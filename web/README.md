@@ -5,6 +5,16 @@ the original source in [`code/GM`](../code/GM). It can:
 
 - **Design games** with editors for every Game-Maker file type, saving in the original
   binary formats, so files work in both DOS Game-Maker and the web version.
+- **Start quickly**: a new game can be "ready to play" (a first level with scenery,
+  monsters, a hero and sounds from the CD's free gameware), every kind of file is listed
+  with a + to add one, and files are chosen visually — thumbnails of your own and of
+  the CD library — instead of from drop-down lists.
+- **Make media today**: convert any picture to a 320×200, 256-color GIF (median cut,
+  dithering, or a game palette); build FLI animations from an animated GIF or several
+  pictures; compose Sound Blaster `.CMF` songs by mood, key and speed; record `.VOC`
+  samples with the microphone or synthesize them; generate and transform PC speaker
+  effects; and record demo `.REC` files by playing. (`src/editor/tools`, encoders in
+  `src/formats`.)
 - **Read original projects**: open a game folder, loose files or a `.zip`, including
   pre-3.00 `.gam` files (they are converted the same way the 3.00 integrator did).
 - **Run the original games**: the sample "gameware" from the CD, the shareware games
@@ -56,6 +66,15 @@ to look the way they did, from the original source and files.
   where the games can be read about and "downloaded" (time-compressed) into
   `C:\DOWNLOAD` and run from DOS, and The Sofa (a multi-line Major BBS with a live
   teleconference). The modem rings and handshakes, and PKUNZIP runs as fast as the PC.
+- **The case** has a seven-segment MHz display, a 3.5" floppy drive (the drive offers
+  Play, Design or today's web for the disk in it) and a CD-ROM drive whose tray slides
+  out; the PC boots through HIMEM, EMM386, the CD-ROM driver and MSCDEX. A 101-key
+  keyboard presses its keys as you type, and an external modem on top of the case
+  dials the BBS when clicked, its lights following the call.
+- **The window** shows snow falling on the neighbors' houses.
+- **The shelf** holds the boxes of the original games in `../games`: click one to bring
+  it forward and turn it (drag, scroll to zoom, shift-drag to pan), read its manual or
+  put its disk in drive A:.
 - **The poster** on the wall, Moten Snow-to-Software Operations, is an homage to
   shoveling snow in the winter of 1992 to buy Game-Maker.
 - **The Owner's Guide** is a manual for the desk, typeset like a 1994 printed manual,
