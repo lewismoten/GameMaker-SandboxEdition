@@ -303,7 +303,7 @@ export class Computer implements RetroHost {
           folder('GM', () => this.gmFolder(false)),
           folder('GAMEWARE', () => cat.filter((g) => g.kind === 'gameware').map(gameFolder)),
           file('INSTALL.EXE', 61_421, { run: { kind: 'install' } }),
-          textFile('README.TXT', 'Game-Maker 3.00\nRecreational Software Designs, 1994\n\nGame-Maker is already installed in C:\\GM. Type GM to start it.\n'),
+          textFile('README.TXT', 'Game-Maker: Sandbox Edition 3.00\nBased on Game-Maker 3.00 by\nRecreational Software Designs, 1994\n\nGame-Maker is already installed in C:\\GM. Type GM to start it.\n'),
         ];
       },
     });
@@ -387,7 +387,7 @@ export class Computer implements RetroHost {
           await runTerminal(this);
           break;
         case 'install':
-          this.screen.print('Game-Maker 3.00 is already installed in C:\\GM.\nType GM to start it.\n');
+          this.screen.print('Game-Maker SE 3.00 is already installed in C:\\GM.\nType GM to start it.\n');
           break;
         case 'game': {
           this.opts.onDriveAccess?.(ref.diskId ? 'A' : this.shell.drive);
