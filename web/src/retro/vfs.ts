@@ -53,17 +53,19 @@ export function textFile(name: string, text: string): DosNode {
   return file(name, bytes.length, { read: async () => bytes });
 }
 
-/** Splits "C:\GM\SAMPLE" style paths into a drive letter and parts, relative to cwd. */
-export function resolvePath(input: string, drive: string, cwd: string[]): { drive: string; parts: string[] } {
-  let d = drive;
+/**
+ * Resolves a DOS path ("C:\GM\SAMPLE", "..\FOO", "D:BAR") to a drive and folder
+ * parts. Each drive has its own current folder, given by cwdOf.
+ */
+export function resolvePath(input: string, drive: string, cwdOf: (drive: string) => string[]): { drive: string; parts: string[] } {
   let rest = input.trim().toUpperCase().replace(/\//g, '\\');
+  let d = drive;
   const m = /^([A-Z]):/.exec(rest);
   if (m) {
     d = m[1];
     rest = rest.slice(2);
   }
-  const parts = rest.startsWith('\\') || (m && d !== drive) ? [] : [...cwd];
-  if (m && d === drive && !rest.startsWith('\\')) parts.splice(0, parts.length, ...cwd);
+  const parts = rest.startsWith('\\') ? [] : [...cwdOf(d)];
   for (const p of rest.split('\\')) {
     if (!p || p === '.') continue;
     if (p === '..') parts.pop();
