@@ -47,6 +47,7 @@ const PARTS: Record<string, string> = {
   n: 'relayNO',
   c: 'relayNC',
 };
+const DIODES: Record<string, string> = { '>': 'diodeE', '<': 'diodeW', '^': 'diodeN', v: 'diodeS' };
 const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 'led', '~': 'xtal' };
 const DIRS: Record<string, [number, number, number, number]> = { U: [0, -1, N, S], D: [0, 1, S, N], L: [-1, 0, W, E], R: [1, 0, E, W] };
 
@@ -151,6 +152,7 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
         put(x, y, 'outlet');
         exit = { x: OX + x, y: OY + y };
       } else if (ch === '$') put(x, y, 'screw');
+      else if (ch in DIODES) put(x, y, DIODES[ch]);
       else if (ch === '@') put(x, y, tb ? `trace${tb}` : 'pad');
       else if (ch === '.' || ch in PARTS) put(x, y, tb ? `trace${tb}` : floor(x, y));
       else throw new Error(`${spec.file}: what is '${ch}' at ${x},${y}?`);

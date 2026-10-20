@@ -1,7 +1,7 @@
 // The boards, in order. Every board is one screen; Watt drops onto the GND pad in the
 // middle and has to reach the outlet. Legend: # housing, (space) outside, . board,
 // @ Watt's pad, X outlet, $ gold screw, 0..9 A..F batteries (each with its wire below),
-// o switch (off) i switch (on), t timer button, g gate, f fuse, n/c relays (normally
+// > < ^ v one-way diodes, o switch (off) i switch (on), t timer button, g gate, f fuse, n/c relays (normally
 // open / closed), % = & * ~ parts soldered to the board.
 import type { BoardSpec } from './board';
 
@@ -73,5 +73,28 @@ export const BOARDS: BoardSpec[] = [
     hint: 'I turned the top switch on and now I am stuck down by the bottom switch!',
     answer:
       'Two switches in a row both have to be on. Turn on the bottom one FIRST, while the wire is still dead, then the top one. When the gate opens, turn the top switch off again so you can step over the wire.',
+  },
+  {
+    file: 'fridge',
+    title: 'The Fridge',
+    room: 'kitchen',
+    card: ['Does the light stay on when', 'the door is shut? Find out!'],
+    rows: [
+      '######0#########',
+      '#.....o.#......#',
+      '#.......#..X...#',
+      '#.......#......#',
+      '#.......#####g##',
+      '#.......@>.....#',
+      '#........#.....#',
+      '#........#######',
+      '#.$......#######',
+      '################',
+    ],
+    wires: { 0: { path: 'D6 R6 U2 R1' } },
+    solution: 'L UUUU L www L www DDDD RRRRRR UUU LL',
+    hint: 'I rolled through the arrow and now I cannot get back to the switch.',
+    answer:
+      'The arrow is a diode: you can only go through it the way it points. Before you go through, turn the switch on, wait for the gate to open, and turn the switch OFF again.',
   },
 ];

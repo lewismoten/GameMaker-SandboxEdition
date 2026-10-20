@@ -6,7 +6,7 @@
 import { Pixels, rng } from '../kit/pixels';
 import { bevel, blob, micro, shadeAt } from './draw';
 import { c, r } from './pal';
-import { BlockSet, SOLID, type BlockDef } from './sets';
+import { BlockSet, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP, type BlockDef } from './sets';
 
 export interface Style {
   id: string;
@@ -127,6 +127,28 @@ function padPic(st: Style): Pixels {
   return p;
 }
 
+/** A one-way diode laid in the board: Watt may roll through only the way it points. */
+function diodePic(st: Style, dir: number): Pixels {
+  const p = floorPic(st, 1);
+  // drawn pointing east, then turned
+  const d = new Pixels(20, 20, 255);
+  d.rect(1, 6, 18, 8, c('ink', 0));
+  d.rect(2, 7, 16, 6, c('metal', 1));
+  for (let i = 0; i < 6; i++) d.rect(4 + i, 7 + Math.floor(i / 2), 1, 6 - 2 * Math.floor(i / 2), c('yellow', 3));
+  d.rect(10, 7, 2, 6, c('paper', 3));
+  for (let x = 13; x < 17; x++) d.set(x, 10 - (x - 13), c('metal', 4)).set(x, 9 + (x - 13), c('metal', 4));
+  const turn = dir === E ? 0 : dir === S ? 1 : dir === W ? 2 : 3;
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      let sx = x;
+      let sy = y;
+      for (let t = 0; t < turn; t++) [sx, sy] = [sy, 19 - sx];
+      const v = d.get(sx, sy);
+      if (v !== 255) p.set(x, y, v);
+    }
+  return p;
+}
+
 function decorPic(st: Style, kind: string, frame = 0): Pixels {
   const p = wallPic(st, 15);
   if (kind === 'cap') {
@@ -176,6 +198,11 @@ export function buildTiles(st: Style): BlockSet {
     trace(p, m, r('copper'));
     add(`conduit${m}`, p, { solid: SOLID });
   }
+  // Diodes: one way only. A block's solid sides stop Watt rolling INTO it from that side.
+  add('diodeE', diodePic(st, E), { solid: SOLRIG | SOLTOP | SOLBOT });
+  add('diodeW', diodePic(st, W), { solid: SOLLEF | SOLTOP | SOLBOT });
+  add('diodeN', diodePic(st, N), { solid: SOLTOP | SOLLEF | SOLRIG });
+  add('diodeS', diodePic(st, S), { solid: SOLBOT | SOLLEF | SOLRIG });
   for (const k of ['cap', 'res', 'ic', 'xtal']) add(k, decorPic(st, k), { solid: SOLID });
   add('led', decorPic(st, 'led', 1), { solid: SOLID, next: 'ledOff', ntime: 9 });
   add('ledOff', decorPic(st, 'led', 0), { solid: SOLID, next: 'led', ntime: 9 });
