@@ -1,0 +1,97 @@
+/* The shelf on the wall, boxes standing on it spine out (desk/shelf.ts). --shelf-u is pixels per inch of box. */
+.game-shelf {
+  --shelf-u: 16px;
+  position: absolute;
+  left: max(16px, 3%);
+  top: calc(460px - 9.25 * var(--shelf-u));
+  z-index: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 318px;
+  height: calc(9.25 * var(--shelf-u));
+  padding: 0 4px;
+  box-sizing: content-box;
+  perspective: 1100px;
+  perspective-origin: 50% 30%;
+}
+
+/* the plank, with a shadow on the wall under it */
+.game-shelf::after {
+  content: '';
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  bottom: -12px;
+  height: 12px;
+  border-radius: 2px;
+  background:
+    linear-gradient(rgba(255, 230, 190, 0.25), transparent 30%), repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 3px, transparent 3px 11px),
+    linear-gradient(#8a5a33, #5a3a1f);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* a box's slot is as wide as what shows: the spine, or the front when it stands face out */
+.game-shelf .shelf-box {
+  position: relative;
+  flex: none;
+  width: calc(2 * var(--shelf-u));
+  height: calc(9.25 * var(--shelf-u));
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition:
+    width 0.45s cubic-bezier(0.3, 0.7, 0.3, 1),
+    translate 0.2s;
+}
+
+.game-shelf .shelf-box.face-out {
+  width: calc(7.5 * var(--shelf-u));
+  margin: 0 3px;
+}
+
+.game-shelf .shelf-box .box3d {
+  --u: var(--shelf-u);
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin-left: calc(-3.75 * var(--shelf-u));
+  /* turned so the left spine faces out, pushed back so it stands flush with a face-out box */
+  transform: translateZ(calc(1 * var(--shelf-u) - 3.75 * var(--shelf-u))) rotateY(90deg);
+  transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.game-shelf .shelf-box.face-out .box3d {
+  transform: none;
+}
+
+/* a little shading between the spines */
+.game-shelf .shelf-box:not(.face-out)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 2px 0 2px rgba(0, 0, 0, 0.35),
+    inset -1px 0 0 rgba(255, 255, 255, 0.08);
+  transform: translateZ(calc(1 * var(--shelf-u) + 1px));
+}
+
+/* reach for it: the box slides up off the shelf a little */
+.game-shelf .shelf-box:hover,
+.game-shelf .shelf-box:focus-visible {
+  translate: 0 -6px;
+  outline: none;
+}
+
+.game-shelf .shelf-box:focus-visible .box3d {
+  filter: drop-shadow(0 0 3px #ffe082);
+}
+
+@media (max-width: 960px) {
+  .game-shelf {
+    display: none;
+  }
+}
