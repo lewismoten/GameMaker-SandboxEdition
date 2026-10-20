@@ -67,6 +67,10 @@ export class LevelMap {
 
   /** Stamps ASCII rows at (x, y). Spaces are left alone; unknown characters are errors. */
   stamp(x: number, y: number, rows: string[], legend: Legend): this {
+    const w = rows[0].length;
+    rows.forEach((row, i) => {
+      if (row.length !== w) throw new Error(`Map row ${i} is ${row.length} wide, not ${w}: ${row}`);
+    });
     rows.forEach((row, dy) =>
       [...row].forEach((ch, dx) => {
         if (ch === ' ') return;

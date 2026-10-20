@@ -1,0 +1,41 @@
+ARROWS  walk
+P       pick up (stand on it)
+SPACE   fling sand (shovel)
+B       throw water (bucket)
+F1 help  F2 status  F4 sound
+F5 save  F6 load    ESC quit
+
+SAND: scoop sand piles, and
+dig dunes by walking into them
+with the shovel. F2 shows your
+sand as Money. Sand plugs
+anthills, fills fords and
+builds towers.
+
+TOWERS: walk into a tower ring
+with sand to build it, then
+walk into it again to plant
+your flag. Four flags lift a
+castle gate.
+
+WATER: water balloons and the
+cat's bowls fill your bucket.
+Only water flips a crab. With
+the bucket, walk into a dashed
+outline to pack a wall of wet
+sand. Crabs can't get past it.
+
+CURRENTS carry you. Nobody
+walks upstream.
+
+CRUMBLY BRIDGES fall in behind
+you. Don't stop on them!
+
+TIDES: waves push you up the
+beach, and the tidal flat
+floods now and then. Wait it
+out on a sandbar.
+
+ACORNS open root doors
+underground. A cracked wall
+may not be a wall at all.

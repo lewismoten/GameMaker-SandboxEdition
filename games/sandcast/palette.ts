@@ -45,6 +45,8 @@ export const ANSI: number[] = [
 ].map(([r, g, b]) => pb.color(r, g, b));
 
 pb.designerColors();
+// Game-Maker writes story and instruction text in the color nearest (50, 10, 50) (6-bit).
+export const TEXT_MAGENTA = pb.color(202, 42, 202);
 
 export const BLACK = 0;
 export const WHITE = ANSI[15];
@@ -63,7 +65,7 @@ export function tint(pal: Uint8Array, mul: [number, number, number], add: [numbe
 }
 
 /** Underground: dim, cool and a little green, as if lit by glowworms. */
-export const BURROW = tint(DAY, [0.5, 0.52, 0.66], [1, 2, 4]);
+export const BURROW = tint(DAY, [0.66, 0.58, 0.6], [1, 1, 3]);
 /** The patio at sunset: warm orange light, long purple shadows. */
 export const DUSK = tint(DAY, [1.0, 0.72, 0.62], [3, 0, 4]);
 /** The BBS: the game's palette as-is (ANSI colors live in it). */

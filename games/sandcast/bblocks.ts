@@ -13,6 +13,7 @@ const DOWN = 4;
 const LEFT = 8;
 
 export const bg = new BlockSet(BACKBL, false);
+let juiceArt: Pixels;
 
 /** Sand floor with an object drawn on top (clear pixels show sand). */
 function onSand(seed: number, obj: Pixels, shadow = true): Pixels {
@@ -189,7 +190,7 @@ bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, t
   p.rect(14, 12, 4, 5, YELLOW[1]).rect(15, 13, 2, 3, PINK[2]);
   p.set(4, 4, STEEL[7]).set(3, 4, YELLOW[4]).set(5, 4, YELLOW[4]).set(4, 3, YELLOW[4]).set(4, 5, YELLOW[4]);
   p.set(15, 3, STEEL[7]).set(16, 3, YELLOW[4]).set(15, 2, YELLOW[4]);
-  bg.add('goldShell', onSand(74, p), { effect: CTR.shells, eamt: 1, score: 250, touch: 'damp' });
+  bg.add('goldShell', onSand(74, p), { effect: CTR.shells, eamt: 1, score: 250, touch: 'sand0' });
 }
 {
   // Popsicle (health).
@@ -244,6 +245,7 @@ bg.add('dune1', dune(1), { solid: SOLID, effect: CTR.sand, eamt: 1, score: 10, t
     { k: GRASS[0], G: GRASS[5], g: GRASS[3], W: STEEL[7], r: RED[4], y: STEEL[6] },
   );
   bg.add('juice', onSand(76, p), { effect: CTR.lives, eamt: 1, score: 200, touch: 'sand0' });
+  juiceArt = p;
 }
 {
   // Water balloon: three splashes for the bucket.
@@ -1091,6 +1093,7 @@ bg.add('ltrEqDash', letterBlock('=-', ANSI[12], ANSI[4]), { solid: SOLID });
   );
   const q = tile(0).blit(bg.pic('ansiFloor'), 0, 0).blit(p, 0, 0, 255);
   bg.add('floppy', q, { score: 300, touch: 'ansiFloor' });
+  bg.add('juiceBBS', tile(0).blit(bg.pic('ansiFloor'), 0, 0).blit(juiceArt, 0, 0, 255), { effect: CTR.lives, eamt: 1, score: 200, touch: 'ansiFloor' });
 }
 {
   // The SysOp's terminal, glowing green.
