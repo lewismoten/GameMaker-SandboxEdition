@@ -71,7 +71,7 @@ function startModern(hash?: string): void {
       h('span', { class: 'spacer' }),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
       h('button', { onclick: () => startDesk(), title: 'Go back to the mid-90s desk' }, '💾 1994 desk'),
-      h('a', { href: 'https://github.com/lewismoten/GameMaker', target: '_blank', rel: 'noopener' }, 'Source'),
+      h('a', { href: 'https://github.com/lewismoten/GameMaker-SandboxEdition', target: '_blank', rel: 'noopener' }, 'Source'),
     ),
     content,
   );

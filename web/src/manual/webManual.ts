@@ -138,8 +138,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     sample and shareware games belong to their authors. Sandbox Software, its BBS and the
     desk's hardware brands are made up.</p>
     <p>The full credits, history and license are in
-    <a href="https://github.com/lewismoten/GameMaker/blob/master/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
-    and <a href="https://github.com/lewismoten/GameMaker/blob/master/LICENSE" target="_blank" rel="noopener">LICENSE</a>.</p>`,
+    <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
+    and <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE" target="_blank" rel="noopener">LICENSE</a>.</p>`,
   ],
 ];
 

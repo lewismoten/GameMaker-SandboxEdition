@@ -258,7 +258,7 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
         '|07code was released under the |15MIT License|07, so anyone may use, copy,',
         '|07change and share it. This board runs on a fork of it that works in',
         '|07a web browser and still saves games DOS Game-Maker can load.',
-        '|07Source: |11https://github.com/lewismoten/GameMaker',
+        '|07Source: |11https://github.com/lewismoten/GameMaker-SandboxEdition',
       ],
     ],
     [

@@ -6,4 +6,4 @@ export const PRODUCT = `Game-Maker: ${EDITION}`;
 export const SHORT = 'Game-Maker SE';
 /** One line saying what it is, for footers and notes. */
 export const FORK_NOTE = 'A modified fork of RSD’s Game-Maker 3.0 — not an original RSD release';
-export const NOTICE_URL = 'https://github.com/lewismoten/GameMaker/blob/master/NOTICE.md';
+export const NOTICE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md';

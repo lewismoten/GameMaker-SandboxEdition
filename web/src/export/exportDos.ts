@@ -119,6 +119,6 @@ Keys
   Esc leaves a level. The game's own keys are in its instructions.
 
 Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: Sandbox Edition
-(a modified fork of Game-Maker 3.0: https://github.com/lewismoten/GameMaker).
+(a modified fork of Game-Maker 3.0: https://github.com/lewismoten/GameMaker-SandboxEdition).
 `;
 }
