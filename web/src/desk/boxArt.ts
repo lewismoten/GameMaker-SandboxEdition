@@ -1,6 +1,6 @@
 // "Screenshots" for the Game-Maker box on the desk, drawn from the free sample games'
 // real maps: the area where each game's first level starts.
-import { GameFiles, type CatalogEntry } from '../project/files';
+import { GameFiles, cdName, type CatalogEntry } from '../project/files';
 import { parseGame, NOSCENE, type Point } from '../formats/game';
 import { levelShot } from '../editor/integratorArt';
 import { parseMap, MLEN, MWID } from '../formats/map';
@@ -10,8 +10,9 @@ import { parsePalette } from '../formats/palette';
 import { paintIndexed } from '../editor/draw';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
-  const n = name.toLowerCase();
-  if (!entry.files.includes(n)) return undefined;
+  // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names)
+  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
+  if (!n) return undefined;
   const r = await fetch(`./${entry.path}${n}`).catch(() => undefined);
   return r?.ok ? new Uint8Array(await r.arrayBuffer()) : undefined;
 }
