@@ -18,21 +18,25 @@ const CALLERS: [string, string][] = [
   ['STEEL CITY KID', 'Forums'],
   ['INCLINE RIDER', 'Teleconference'],
   ['NIGHT OWL', 'Downloading'],
+  ['LUNCHMEAT', 'Teleconference'],
 ];
 
-/** What the others say in the teleconference, in turn. */
-const CHATTER: [string, string][] = [
-  ['COUCH POTATO', 'hey all, anybody beat Zoom the Super Bear yet?'],
-  ['REMOTE CONTROL', 'got stuck on level 3, those bees are brutal'],
-  ['CUSHION KING', 'I made a level in Game-Maker last night, a castle made of sand :)'],
-  ['INCLINE RIDER', 'the Sandbox BBS has a pile of Game-Maker shareware btw'],
-  ['COUCH POTATO', 'is the Sandbox the one in the 412? I can never get through, always busy'],
-  ['REMOTE CONTROL', 'busy signal = 2 nodes and everybody downloading lol'],
-  ['CUSHION KING', 'did anybody see the Steelers game'],
-  ['INCLINE RIDER', 'my mom keeps picking up the phone and killing my connection'],
-  ['COUCH POTATO', 'get a second line! that is what I did'],
-  ['REMOTE CONTROL', 'brb, pizza'],
+/** The teleconference regular who will not stop flooding the channel. */
+const SPAMMER = 'LUNCHMEAT';
+
+/** The others, trying to get a word in. */
+const PLEAS: [string, string][] = [
+  ['COUCH POTATO', `${SPAMMER}, knock it off!`],
+  ['REMOTE CONTROL', 'can somebody page the SysOp? he is flooding again'],
+  ['CUSHION KING', 'I was trying to ask about Zoom the Super Bear...'],
+  ['INCLINE RIDER', `${SPAMMER} PLEASE. my screen is all spam`],
+  ['COUCH POTATO', '/squelch lunchmeat ... why is that not a command'],
+  ['REMOTE CONTROL', 'my 2400 baud modem cannot keep up with this'],
+  ['CUSHION KING', 'ok I give up, see you guys in the forums'],
+  ['INCLINE RIDER', 'is anyone else even reading this?'],
 ];
+
+const spamLine = () => Array.from({ length: 6 + Math.floor(Math.random() * 6) }, () => (Math.random() < 0.12 ? 'spam' : 'SPAM')).join(' ');
 
 function menu(t: Term): void {
   t.line();
@@ -118,25 +122,35 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
   t.line('|07Type a message and press ENTER to talk. Type |15X|07 on a line by itself to leave.');
   t.line();
   let typed = '';
-  let next = performance.now() + 2500;
-  let said = Math.floor(Math.random() * CHATTER.length);
+  let spamAt = performance.now() + 600;
+  let pleaAt = performance.now() + 3000;
+  let plea = Math.floor(Math.random() * PLEAS.length);
   const prompt = () => t.print(`|11: |15${typed}`);
   const eraseLine = () => {
     s.fill(0, s.cursorY, COLS - 1, s.cursorY, attr(7, 0));
     s.cursorX = 0;
   };
+  const say = (text: string) => {
+    eraseLine();
+    t.line(text);
+    prompt();
+  };
   prompt();
   for (;;) {
-    if (performance.now() > next) {
-      const [who, text] = CHATTER[said++ % CHATTER.length];
-      eraseLine();
-      t.line(`|14From ${who}: |07${text}`);
-      prompt();
-      next = performance.now() + 3500 + Math.random() * 4000;
+    const now = performance.now();
+    // The flood: far too fast to read.
+    while (now > spamAt) {
+      say(`|12From ${SPAMMER}: |15${spamLine()}`);
+      spamAt += 70 + Math.random() * 90;
+    }
+    if (now > pleaAt) {
+      const [who, text] = PLEAS[plea++ % PLEAS.length];
+      say(`|14From ${who}: |07${text}`);
+      pleaAt = now + 2200 + Math.random() * 3000;
     }
     const k = h.keys.poll();
     if (!k) {
-      await sleep(60);
+      await sleep(30);
       continue;
     }
     if (k.key === 'Enter') {
@@ -148,6 +162,7 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
         return;
       }
       if (msg) t.line(`|10From ${name}: |07${msg}`);
+      if (/stop|quit|knock|enough|please/i.test(msg)) pleaAt = performance.now() + 900;
       prompt();
     } else if (k.key === 'Backspace') {
       if (typed) {
