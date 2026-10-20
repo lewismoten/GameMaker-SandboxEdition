@@ -2,8 +2,8 @@
 // (code/GM/MENU.C), help screens, the PLAYGAME menu, UTILITY.EXE's menu, and file
 // pickers that open the graphic designers on a game folder (C:\GM\<GAME>, or a disk).
 import type { RetroHost } from './host';
-import { attr } from './textScreen';
-import { BARATTR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './textUi';
+import { attr, type TextScreen } from './textScreen';
+import { BARATTR, BARCURSOR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './textUi';
 import { browseFile, type Picked } from './picker';
 import { isModified } from './hardDisk';
 import { templateFor } from '../editor/templates';
@@ -259,4 +259,16 @@ async function utilities(h: RetroHost): Promise<void> {
       await h.transferToFloppy(game);
     }
   }
+}
+
+/** Draws a Game-Maker menu screen without running it (for the printed manual's figures). */
+export function paintMenuScreen(s: TextScreen, bar: 'main' | 'design' | 'utilities', item: number, area = 'C:\\GM\\SAMPLE'): void {
+  const [text, xs] = bar === 'main' ? [MAIN_BAR, MAIN_XS] : bar === 'design' ? [DESIGN_BAR, DESIGN_XS] : [UTIL_BAR, UTIL_XS];
+  s.cursorVisible = false;
+  s.gameMakerColors();
+  s.fill(0, 2, 79, 24, attr(7, 0));
+  s.write(0, 24, attr(8, 0), ` Game area: ${area} `.padEnd(80));
+  s.write(0, 0, TITLEATTR, GMTOPBAR);
+  s.write(0, 1, BARATTR, text);
+  s.paint(xs[item - 1], 1, xs[item] - 1, 1, BARCURSOR);
 }
