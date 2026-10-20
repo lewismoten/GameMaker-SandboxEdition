@@ -112,7 +112,7 @@ REQUIREMENTS
   Sound Blaster (or compatible) for music and digitized sound;
   the PC speaker works too.
 
-  To play, copy all the files to one directory and type Y2K.
+  To play, copy all the files to one directory and type YEAR2000.
 
 CONTROLS
 --------

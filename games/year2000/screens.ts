@@ -573,7 +573,7 @@ export function launchFli(a: Art): Uint8Array {
   const frames: Pixels[] = [];
   const scene = (rocketY: number, flame: number, sky: number, moonR: number, count?: string) => {
     const p = new Pixels(W, H);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, shadeAt(R('sky'), 0, 6, (1 - sky) * (y / H) * 1.2, x, y));
+    for (let y = 0; y < H; y++) p.rect(0, y, W, 1, sky >= 1 ? C('night', 0) : C('sky', Math.min(7, Math.floor((1 - sky) * (y / H) * 8))));
     if (sky > 0.3) {
       const r = rng(5);
       for (let i = 0; i < 80 * sky; i++) p.set(Math.floor(r() * W), Math.floor(r() * H), C('grey', 6));
