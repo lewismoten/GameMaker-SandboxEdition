@@ -18,6 +18,7 @@ import { buildGame } from './game';
 import { buildParlorBlocks, buildParlorMap, buildParlorMonsters } from './parlor';
 import { buildScreens } from './screens';
 import { buildFlics } from './flics';
+import { buildMusic } from './music';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -47,4 +48,5 @@ disk.put('final.gam', serializeGame(game));
 const view = (i: number) => ({ map: acts[i].map, bbl: tbs.build(), mbl: critters.mb.build(), mon: critters.mon });
 for (const [name, bytes] of Object.entries(buildScreens({ act1: view(0), act2: view(1) }))) disk.put(name, bytes);
 for (const [name, bytes] of Object.entries(buildFlics())) disk.put(name, bytes);
+for (const [name, bytes] of Object.entries(buildMusic())) disk.put(name, bytes);
 disk.write();
