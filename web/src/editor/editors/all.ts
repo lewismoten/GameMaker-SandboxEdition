@@ -8,3 +8,4 @@ import './monsters';
 import './character';
 import './sounds';
 import './media';
+import '../tools/all';

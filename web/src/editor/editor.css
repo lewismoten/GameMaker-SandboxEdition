@@ -778,3 +778,45 @@ dialog.modal .buttons {
   color: var(--text);
   text-decoration: none;
 }
+
+/* picture and animation import (editor/tools/importPicture.ts) */
+.convert {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(220px, 1fr);
+  gap: 16px;
+  width: min(940px, 88vw);
+}
+
+@media (max-width: 760px) {
+  .convert {
+    grid-template-columns: 1fr;
+  }
+}
+
+.convert-preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: 6px;
+  image-rendering: pixelated;
+}
+
+.seg {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.seg > span {
+  width: 100%;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.seg button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
