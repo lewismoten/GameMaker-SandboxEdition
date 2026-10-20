@@ -125,11 +125,23 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         return blocksMosaic(parseBlocks(bytes, CHARBL), pal, 9, 3, true);
       case 'map': {
         const m = parseMap(bytes);
-        const bbl = src.files.byExtension('bbl')[0];
+        // the block set of the scene that uses this map, else the first one
+        let bbl = src.files.byExtension('bbl')[0];
+        const gam = src.files.byExtension('gam')[0];
+        if (gam) {
+          const scene = parseGame(src.files.get(gam)!).scenes.find((sc) => sc.files[1]?.toLowerCase() === name.toLowerCase());
+          if (scene?.files[2] && src.files.has(scene.files[2])) bbl = scene.files[2].toLowerCase();
+        }
         const blocks = bbl ? parseBlocks(src.files.get(bbl)!, BACKBL) : undefined;
-        // one pixel per block: each block's middle pixel
+        // one pixel per block: the block's most common color
+        const color = blocks?.map((b) => {
+          const n = new Uint16Array(256);
+          let best = 0;
+          for (const c of b.pixels) if (++n[c] > n[best]) best = c;
+          return best;
+        });
         const px = new Uint8Array(MLEN * MWID);
-        for (let i = 0; i < px.length; i++) px[i] = blocks ? (blocks[m.blocks[i]]?.pixels[BLEN * 10 + 10] ?? 0) : m.blocks[i];
+        for (let i = 0; i < px.length; i++) px[i] = color ? (color[m.blocks[i]] ?? 0) : m.blocks[i];
         const [c] = canvas(MLEN, MWID);
         paintIndexed(c, px, MLEN, MWID, pal);
         return c;
