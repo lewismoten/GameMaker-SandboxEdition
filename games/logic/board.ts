@@ -81,7 +81,6 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
 
   const wires: (Wire | undefined)[] = [];
   const wireCells = new Map<string, [number, number][]>();
-  const sideGates = new Set<string>();
   for (const [letter, w] of Object.entries(spec.wires)) {
     const k = parseInt(letter, 16);
     let bx = -1;
@@ -105,7 +104,8 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
     }
     for (const [cx, cy] of cells.slice(1, -1)) if (at(cx, cy) === 'g') throw new Error(`${spec.file}: wire ${letter} runs through a gate at ${cx},${cy}`);
     corners.push([x - bx, y - by]);
-    if (at(x, y) === 'g' && (last === 'L' || last === 'R')) sideGates.add(`${x},${y}`);
+    // Current must come down into a gate from above: Watt keeps out of a block's top rows.
+    if (at(x, y) === 'g' && last !== 'D') throw new Error(`${spec.file}: wire ${letter} must reach its gate from above`);
     wires[k] = { corners, ctrl: w.ctrl };
     wireCells.set(letter, cells);
   }
@@ -144,7 +144,7 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
       else if (ch === '@') put(x, y, tb ? `trace${tb}` : 'pad');
       else if (ch === '.' || ch in PARTS) put(x, y, tb ? `trace${tb}` : floor(x, y));
       else throw new Error(`${spec.file}: what is '${ch}' at ${x},${y}?`);
-      if (ch in PARTS) map.monsters[placed++] = { monnum: mons.id(ch === 'g' && sideGates.has(`${x},${y}`) ? 'gateV' : PARTS[ch]), status: 0, xtra: 0, curx: OX + x, cury: OY + y, extra: 0 };
+      if (ch in PARTS) map.monsters[placed++] = { monnum: mons.id(PARTS[ch]), status: 0, xtra: 0, curx: OX + x, cury: OY + y, extra: 0 };
     }
   reindexMonsters(map);
   if (!exit.x) throw new Error(`${spec.file}: no outlet`);

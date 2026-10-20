@@ -1,5 +1,5 @@
-// watt.chr: Watt the repair robot. He rolls exactly one block per key press (four frames
-// of five pixels, which can't be interrupted), so he always stands squarely on the grid
+// watt.chr: Watt the repair robot. He rolls exactly one block per key press (five frames
+// of four pixels, which can't be interrupted), so he always stands squarely on the grid
 // and bumps switches cleanly. Arrows, W A S D and the number pad all steer; R reboots.
 import { CHARBL, MONBL } from '../../web/src/formats/blocks';
 import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
@@ -7,7 +7,9 @@ import { KEY, SND } from './ids';
 import type { BlockSet } from './sets';
 
 const MIRROR = 0x40;
-export const STEP = 5;
+/** Pixels a frame: five frames a block. A bump then reaches 8 pixels into a switch, short
+ * of the wire running through its middle (rows/columns 8..11). */
+export const STEP = 4;
 
 export const SEQ = { idle: 0, die: 1, hurt: 2, up: 5, down: 6, left: 7, right: 8, w: 9, s: 10, a: 11, d: 12, reboot: 13 } as const;
 
@@ -39,7 +41,7 @@ export function buildWatt(cb: BlockSet, bombMonster: number): Character {
   set(S[3], [f('down0', 1)], { key: 0 });
   set(S[4], [f('down0', 1)], { key: 0 });
 
-  const roll = (dx: number, dy: number, a: string, b: string, mirror = false) => [a, b, a, b].map((p) => f(p, 1, { x: dx * STEP, y: dy * STEP, mirror }));
+  const roll = (dx: number, dy: number, a: string, b: string, mirror = false) => [a, b, a, b, a].map((p) => f(p, 1, { x: dx * STEP, y: dy * STEP, mirror }));
   const move = { ground: 1 };
   set(S[SEQ.up], roll(0, -1, 'up0', 'up1'), { key: KEY.up, jstkMov: 1, ...move });
   set(S[SEQ.down], roll(0, 1, 'down0', 'down1'), { key: KEY.down, jstkMov: 5, ...move });

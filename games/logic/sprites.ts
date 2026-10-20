@@ -12,21 +12,19 @@ export const ZAP = -100;
 
 /** A segment of live current running left to right through the middle of a block. */
 function spark(frame: number, ramp: string): Pixels {
+  // Everything stays in rows 8..11: Watt may bump a switch up to 8 pixels deep, and
+  // must not touch current running through its middle.
   const p = blank();
   const R = rng(frame * 31 + ramp.length);
   const k = r(ramp);
   for (let x = 0; x < 20; x++) {
-    const wob = Math.round(Math.sin((x + frame * 5) / 2.2) * 1);
-    p.set(x, 8 + wob, k[2]).set(x, 11 + wob, k[2]);
-    p.set(x, 9 + wob, k[4]).set(x, 10 + wob, k[4]);
-    if (R() < 0.3) p.set(x, 7 + wob, k[1]);
-    if (R() < 0.3) p.set(x, 12 + wob, k[1]);
+    const wob = Math.sin((x + frame * 5) / 2.2);
+    p.set(x, 8, wob > 0.3 ? k[3] : k[1]).set(x, 11, wob < -0.3 ? k[3] : k[1]);
+    p.set(x, 9, R() < 0.2 ? k[3] : k[4]).set(x, 10, R() < 0.2 ? k[3] : k[4]);
   }
   // a bright bead travels along the wire
   const bx = (frame * 10 + 4) % 20;
-  p.rect(bx - 1, 8, 3, 4, k[4])
-    .set(bx, 7, k[3])
-    .set(bx, 12, k[3]);
+  p.rect(bx - 1, 8, 3, 4, k[4]);
   return p;
 }
 
@@ -174,35 +172,36 @@ function watt(view: View, step: number, mood: 'ok' | 'blink' | 'zapped' | 'toast
   for (let x = tx + ((step + 1) % 2); x < tx + tw; x += 2) p.set(x, 17, c('metal', 2)).set(x, 19, c('metal', 1));
   if (view === 'side') for (const wx of [6, 10, 14]) p.disc(wx, 18, 1.2, c('metal', 3));
   // body
-  bevel(p, 5, 11, 10, 6, body, toast ? 1 : 2);
+  bevel(p, 5, 12, 10, 5, body, toast ? 1 : 2);
   if (view === 'down') p.rect(9, 13, 2, 2, toast ? c('ink', 0) : c('yellow', 3));
-  if (view === 'up') p.rect(7, 12, 6, 1, c('orange', 0)).rect(7, 14, 6, 1, c('orange', 0));
+  if (view === 'up') p.rect(7, 13, 6, 1, c('orange', 0)).rect(7, 15, 6, 1, c('orange', 0));
   // head
   const hx = view === 'side' ? 4 : 4;
-  blob(p, hx + 6, 8, 6.4, 4.6, head, 0, head.length - 1);
-  // antenna
-  const ax = view === 'side' ? 12 : 10;
+  // Watt keeps out of the top four rows (outline included): current arriving at an
+  // open gate runs four pixels into the doorway before its posts swallow it.
+  blob(p, hx + 6, 9.2, 6.4, 3.8, head, 0, head.length - 1);
+  // a short bent antenna
+  const ax = view === 'side' ? 12 : 13;
   const droop = toast ? 2 : 0;
-  p.line(ax, 4, ax + droop, 1 + droop, c('metal', 4));
-  p.disc(ax + droop, 1 + droop, 1.3, zapped ? c('paper', 3) : toast ? c('ink', 2) : c('red', 3));
+  p.line(ax - 1, 6, ax, 6, c('metal', 4));
+  p.rect(ax + 1, 5 + droop, 2, 2, zapped ? c('paper', 3) : toast ? c('ink', 2) : c('red', 3));
   // face
   const eye = (x: number) => {
     if (toast) {
-      p.line(x - 1, 7, x + 1, 9, c('paper', 1)).line(x + 1, 7, x - 1, 9, c('paper', 1));
+      p.line(x - 1, 8, x + 1, 10, c('paper', 1)).line(x + 1, 8, x - 1, 10, c('paper', 1));
       return;
     }
     if (mood === 'blink') {
-      p.rect(x - 2, 8, 4, 1, c('ink', 0));
+      p.rect(x - 2, 9, 4, 1, c('ink', 0));
       return;
     }
-    p.disc(x, 8, 2.1, c('paper', 3));
-    if (zapped) p.rect(x - 2, 8, 4, 1, c('ink', 0)).rect(x - 1, 6, 2, 4, c('ink', 0));
-    else p.rect(x - (view === 'side' ? 1 : 0), 8, 2, 2, c('ink', 0));
+    p.disc(x, 9, 2.1, c('paper', 3));
+    if (zapped) p.rect(x - 2, 9, 4, 1, c('ink', 0)).rect(x - 1, 7, 2, 4, c('ink', 0));
+    else p.rect(x - (view === 'side' ? 1 : 0), 9, 2, 2, c('ink', 0));
   };
   if (view === 'down') {
     eye(7.5);
     eye(12.5);
-    if (!toast) p.rect(8, 11, 4, 1, c('teal', 0));
   } else if (view === 'side') {
     eye(6.5);
     p.rect(4, 10, 3, 1, c('teal', 0));

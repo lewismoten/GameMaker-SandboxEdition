@@ -29,15 +29,23 @@ const show = (t: number) =>
   );
 const moves = (process.env.M ?? 'UUULLU').split('');
 await sim.run(10);
+const step = Number(process.env.STEP ?? 10);
 for (const ch of moves) {
-  const sc = { U: 72, D: 80, L: 75, R: 77 }[ch]!;
+  if (ch === '.') {
+    await sim.run(30);
+    continue;
+  }
+  const sc = { U: 72, D: 80, L: 75, R: 77, r: 19 }[ch]!;
   sim.press(sc);
   await sim.tick();
   sim.release(sc);
-  for (let i = 0; i < 8; i++) await sim.tick();
+  for (let i = 0; i < 8; i++) {
+    await sim.tick();
+    if (step === 1) show(sim.ticks);
+  }
   show(sim.ticks);
 }
-for (let t = 0; t < 120; t += 10) {
-  await sim.run(10);
+for (let t = 0; t < 120; t += step) {
+  await sim.run(step);
   show(sim.ticks);
 }

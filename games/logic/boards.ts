@@ -28,4 +28,27 @@ export const BOARDS: BoardSpec[] = [
     hint: 'How do I get past the crackling gate?',
     answer: 'Bump the switch from below to turn it on. Current runs along the wire to the gate and shuts it down. Keep off the wire while it glows!',
   },
+  {
+    file: 'blender',
+    title: 'The Blender',
+    room: 'kitchen',
+    card: ['Puree, frappe, liquefy,', 'and one button marked "UH-OH".'],
+    rows: [
+      '##########0#####',
+      '#.........o#####',
+      '#..........#####',
+      '#..........#...#',
+      '#.$........#.X.#',
+      '#.......@..#...#',
+      '#..........g...#',
+      '#..........#...#',
+      '#..........#####',
+      '################',
+    ],
+    wires: { 0: { path: 'D7 R1 U1' } },
+    solution: 'UUUUR R ww R www DDDDD RRRR UU R',
+    hint: 'The gate is open, but the wire next to it is live!',
+    answer:
+      'A gate stays open once current has reached it. Bump the switch again to turn the power off, wait for the last spark to drain away, then walk through.',
+  },
 ];

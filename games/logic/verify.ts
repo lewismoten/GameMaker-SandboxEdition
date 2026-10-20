@@ -26,11 +26,18 @@ export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: 
   const keys: Played['keys'] = [];
   sim.onKey = (key) => keys.push({ tick: sim.ticks, key });
   let peak = 0;
+  let dying = false;
   const count = () => (peak = Math.max(peak, sim.w.mm.filter((m) => m.monnum < LASTMON).length));
   const run = async (n: number) => {
     for (let i = 0; i < n && !sim.dead && sim.link < 0; i++) {
       await sim.tick();
       count();
+      if (process.env.DEBUG && sim.w.chr.cseq === 1 && !dying) {
+        dying = true;
+        const w = sim.w;
+        console.log('dies at tick', sim.ticks, 'watt', w.chr.x, w.chr.y, 'scr', w.ci.scrx, w.ci.scry);
+        w.mm.forEach((m, i) => m.monnum < LASTMON && console.log('  ', b.mons.names[m.monnum], w.mi[i].curx, w.mi[i].cury, w.mi[i].scrPos, w.mi[i].fromchar));
+      }
     }
   };
   await run(10);

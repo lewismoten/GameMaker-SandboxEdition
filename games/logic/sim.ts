@@ -75,7 +75,7 @@ export class Sim {
     w.clock = 1;
     this.w = w;
     startSceneInits(w, start);
-    initScroll(w, { up: 0xff, down: 0xff, left: 0xff, right: 0xff });
+    initScroll(w, { up: 0, down: 0, left: 0, right: 0 }); // boards never scroll
     // moveCharGrav(reset) and handleJoystick(reset)
     w.gclk = w.clock;
     w.joyOldTime = w.clock;
