@@ -224,7 +224,7 @@ function drawSticker(g: CanvasRenderingContext2D, p: Placed, st: Sticker, S: num
       const bandH = y + hh - bandTop;
       // round stickers narrow toward the bottom, so their words sit higher and narrower
       const inset = p.shape === 'star' ? 0.5 : round ? 0.62 : 0.86;
-      const lift = p.shape === 'star' ? 0.14 : round ? 0.06 : 0;
+      const lift = round ? 0.06 : 0;
       if (s.text)
         drawLines(
           g,
