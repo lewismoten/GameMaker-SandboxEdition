@@ -3,6 +3,20 @@ import type { Ui } from './textUi';
 import type { Disk } from './disks';
 import type { GameFiles, CatalogEntry } from '../project/files';
 import type { Project } from '../editor/project';
+import type { FileSystem } from './vfs';
+import type { HdGame } from './hardDisk';
+
+/** A game found in a folder on one of the PC's drives. */
+export interface FolderGame {
+  title: string;
+  files: GameFiles;
+  /** e.g. C:\GM\SAMPLE */
+  where: string;
+  kind: 'disk' | 'hd' | 'cd' | 'shareware';
+  hd?: HdGame;
+  catalogId?: string;
+  notice?: string;
+}
 
 export interface InsertedDisk {
   disk: Disk;
@@ -30,6 +44,15 @@ export interface RetroHost extends Ui {
   downloads: Downloads;
   /** Unlocked Web Audio context for modem sounds. */
   audio(): AudioContext | undefined;
+  fs: FileSystem;
+  /** The DOS prompt's current folder (Game-Maker's starting game area). */
+  workDir(): { drive: string; parts: string[] };
+  gameIn(drive: string, parts: string[]): Promise<FolderGame | undefined>;
+  editableGameIn(drive: string, parts: string[]): Promise<Project | undefined>;
+  newGameFolder(dir: string, title?: string): Promise<Project>;
+  hdGames(): Promise<HdGame[]>;
+  restoreGame(g: HdGame): Promise<void>;
+  transferToFloppy(game: FolderGame): Promise<boolean>;
 }
 
 const KEY = 'gm-bbs-downloads';

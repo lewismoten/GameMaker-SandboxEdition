@@ -3,8 +3,10 @@
 import { TextScreen, attr } from './textScreen';
 import { TextKeys } from './textInput';
 import { Shell } from './shell';
-import { FileSystem, file, folder, textFile, type DosNode, type ProgramRef } from './vfs';
-import { Downloads, type InsertedDisk, type RetroHost } from './host';
+import { FileSystem, file, folder, liveFolder, textFile, type DosNode, type ProgramRef } from './vfs';
+import { dosDirName, hardDiskGames, hdFiles, hdProject, makeGameFolder, restoreInstalled, type HdGame } from './hardDisk';
+import { exportDos } from '../export/exportDos';
+import { Downloads, type FolderGame, type InsertedDisk, type RetroHost } from './host';
 import { errorBox, askText } from './textUi';
 import { runGameMaker, playgame } from './gm';
 import { runTerminal } from './bbs';
@@ -15,7 +17,7 @@ import { loadProject } from '../project/storage';
 import { Project } from '../editor/project';
 import { editors, fileInfo } from '../editor/editors';
 import { kindOf } from '../editor/project';
-import { h, clear } from '../editor/ui';
+import { h, clear, download } from '../editor/ui';
 import type { SpeedSetting } from '../engine/scene';
 import type { GmInstallEntry } from '../../scripts/cdGames';
 
@@ -59,7 +61,13 @@ export class Computer implements RetroHost {
     this.screen.clear(0);
     this.screen.cursorVisible = false;
     this.keys.attach(this.textEl);
-    this.shell = new Shell({ screen: this.screen, keys: this.keys, fs: this.fs, run: (ref, args) => this.run(ref, args) });
+    this.shell = new Shell({
+      screen: this.screen,
+      keys: this.keys,
+      fs: this.fs,
+      run: (ref, args) => this.run(ref, args),
+      makeDir: (drive, parts) => this.makeDir(drive, parts),
+    });
     this.downloads.onChange = () => this.opts.onDisksChanged?.();
     this.buildDrives();
     this.setMode('off');
@@ -180,9 +188,9 @@ export class Computer implements RetroHost {
       free: 48_234_496,
       root: async () => [
         folder('DOS', () => ['COMMAND.COM', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) => file(n, 20_000 + n.length * 1357))),
-        folder('GM', () => this.gmFolder()),
+        liveFolder('GM', () => this.gmFolder(true)),
         folder('COMM', () => [file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }), textFile('PHONE.LST', 'THE GAME-MAKER EXCHANGE BBS  555-0144  14400 N81\n')]),
-        folder('DOWNLOAD', async () => {
+        liveFolder('DOWNLOAD', async () => {
           const cat = await this.catalog();
           return this.downloads.list().flatMap((id) => {
             const g = cat.find((c) => c.id === id);
@@ -211,7 +219,7 @@ export class Computer implements RetroHost {
         if (!this.cdIn) return null;
         const cat = await this.catalog();
         return [
-          folder('GM', () => this.gmFolder()),
+          folder('GM', () => this.gmFolder(false)),
           folder('GAMEWARE', () => cat.filter((g) => g.kind === 'gameware').map(gameFolder)),
           file('INSTALL.EXE', 61_421, { run: { kind: 'install' } }),
           textFile('README.TXT', 'Game-Maker 3.00\nRecreational Software Designs, 1994\n\nGame-Maker is already installed in C:\\GM. Type GM to start it.\n'),
@@ -220,21 +228,36 @@ export class Computer implements RetroHost {
     });
   }
 
-  private async gmFolder(): Promise<DosNode[]> {
-    this.gmIndex ??= fetch('./gm/index.json')
+  private gmIndexList(): Promise<GmInstallEntry[]> {
+    return (this.gmIndex ??= fetch('./gm/index.json')
       .then((r) => (r.ok ? r.json() : []))
-      .catch(() => []);
-    const index = await this.gmIndex!;
-    const cat = await this.catalog();
+      .catch(() => []));
+  }
+
+  /** The game folders in C:\GM: installed with Game-Maker, plus yours. */
+  async hdGames(): Promise<HdGame[]> {
+    const index = await this.gmIndexList();
+    return hardDiskGames(await this.catalog(), index.filter((e) => e.dir).map((e) => e.name));
+  }
+
+  /** C:\GM (hard disk, with your games and changes) or D:\GM (the CD, as shipped). */
+  private async gmFolder(hardDisk: boolean): Promise<DosNode[]> {
+    const index = await this.gmIndexList();
     const runs: Record<string, ProgramRef> = { 'GM.EXE': { kind: 'gm' }, 'MENU.EXE': { kind: 'gm' }, 'PLAYGAME.EXE': { kind: 'playgame' } };
-    return index.map((e) => {
-      if (e.dir) {
-        const g = cat.find((c) => c.id === e.name.toLowerCase());
-        return g ? folder(e.name, () => this.catalogFiles(g).then((m) => [...m].map(([n, b]) => file(n, b.length, { read: async () => b })))) : folder(e.name, () => []);
-      }
-      const text = /\.(hlp|txt)$/i.test(e.name);
-      return file(e.name, e.size, { run: runs[e.name], read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
-    });
+    const programs = index
+      .filter((e) => !e.dir)
+      .map((e) => {
+        const text = /\.(hlp|txt)$/i.test(e.name);
+        return file(e.name, e.size, { run: runs[e.name], read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
+      });
+    const games = hardDisk ? await this.hdGames() : (await this.hdGames()).filter((g) => g.source === 'installed');
+    const folders = games.map((g) =>
+      liveFolder(g.dir, async () => {
+        const files = hardDisk ? await hdFiles(g) : new GameFiles(await this.catalogFiles(g.catalog!));
+        return files.entries().map(([n, b]) => file(n, b.length, { read: async () => b }));
+      }),
+    );
+    return [...folders, ...programs];
   }
 
   private catalogFileCache = new Map<string, Promise<Map<string, Uint8Array>>>();
@@ -387,21 +410,124 @@ export class Computer implements RetroHost {
       await this.swapInProject(project);
       return project;
     }
-    if (d.disk.writeProtected) {
-      const r = await errorBox(this, `${d.disk.title}: the disk is write-protected.`, '(C)opy it to a new disk to change it   (E)xit');
-      if (r !== 'C' && r !== 'Enter') return undefined;
-      const project = Project.fromFiles(new GameFiles(d.files.entries()), `${d.disk.title} (my copy)`);
-      if (d.disk.gam) project.gam = d.disk.gam;
-      await project.saveNow();
-      await this.swapInProject(project);
-      return project;
-    }
+    if (d.disk.writeProtected) return this.copyToHardDisk(d.disk.title, d.files, d.disk.gam, d.disk.catalog?.id, `${d.disk.title}: the disk is write-protected.`);
     const stored = d.disk.projectId ? await loadProject(d.disk.projectId) : undefined;
     if (!stored) return undefined;
     const project = Project.fromFiles(stored.files, stored.record.name, d.disk.projectId);
     project.gam = stored.record.gam;
     d.files = project.files;
     return project;
+  }
+
+  // ---- game folders -----------------------------------------------------------------
+
+  workDir(): { drive: string; parts: string[] } {
+    return { drive: this.shell.drive, parts: this.shell.cwdOf(this.shell.drive) };
+  }
+
+  /** The game in a folder (A:\, C:\GM\X, C:\DOWNLOAD\X, D:\GM\X, D:\GAMEWARE\X). */
+  async gameIn(drive: string, parts: string[]): Promise<FolderGame | undefined> {
+    const path = `${drive}:\\${parts.join('\\')}`;
+    if (drive === 'A' && !parts.length) {
+      const d = this.inserted;
+      if (!d || d.disk.kind === 'blank') return undefined;
+      return { title: d.disk.title, files: d.files, where: path, kind: 'disk' };
+    }
+    const [top, dir] = parts;
+    if (parts.length !== 2 || !dir) return undefined;
+    const cat = await this.catalog();
+    if (drive === 'C' && top === 'GM') {
+      const g = (await this.hdGames()).find((x) => x.dir === dir);
+      return g ? { title: g.title, files: await hdFiles(g), where: path, kind: 'hd', hd: g } : undefined;
+    }
+    if (drive === 'C' && top === 'DOWNLOAD') {
+      const g = cat.find((c) => c.id.toUpperCase() === dir && this.downloads.has(c.id));
+      return g ? { title: g.title, files: new GameFiles(await this.catalogFiles(g)), where: path, kind: 'shareware', notice: g.notice } : undefined;
+    }
+    if (drive === 'D' && this.cdIn && (top === 'GAMEWARE' || top === 'GM')) {
+      const g = cat.find((c) => c.kind === 'gameware' && c.id.toUpperCase() === dir);
+      return g ? { title: g.title, files: new GameFiles(await this.catalogFiles(g)), where: path, kind: 'cd', catalogId: g.id } : undefined;
+    }
+    return undefined;
+  }
+
+  /** A project for editing the game in a folder: copies read-only games to the hard disk first. */
+  async editableGameIn(drive: string, parts: string[]): Promise<Project | undefined> {
+    if (drive === 'A') return this.writableProject();
+    const g = await this.gameIn(drive, parts);
+    if (!g) {
+      await errorBox(this, `There is no game in ${drive}:\\${parts.join('\\')}.`, 'Type MD C:\\GM\\NAME at the DOS prompt to make one.  (C)ontinue');
+      return undefined;
+    }
+    if (g.kind === 'hd') return hdProject(g.hd!);
+    if (g.kind === 'shareware') {
+      await errorBox(this, `${g.title} is shareware: it can be played, not changed.`, 'Register it with its author!  (C)ontinue');
+      return undefined;
+    }
+    const gam = g.files.mainGame();
+    return this.copyToHardDisk(g.title, g.files, gam, g.catalogId, `${g.where} is on the CD-ROM, which can't be changed.`);
+  }
+
+  /** Copies a game into C:\GM (or into its installed folder, if it is one of those). */
+  private async copyToHardDisk(title: string, files: GameFiles, gam: string | undefined, catalogId: string | undefined, why: string): Promise<Project | undefined> {
+    const installed = catalogId ? (await this.hdGames()).find((x) => x.source === 'installed' && x.catalog?.id === catalogId) : undefined;
+    const dir = installed?.dir ?? dosDirName(gam ?? title);
+    const r = await errorBox(this, why, `(C)opy it to C:\\GM\\${dir} on the hard disk   (E)xit`);
+    if (r !== 'C' && r !== 'Enter') return undefined;
+    if (installed) return hdProject(installed);
+    const project = Project.fromFiles(new GameFiles(files.entries()), title);
+    if (gam) project.gam = gam;
+    await project.saveNow();
+    this.opts.onDisksChanged?.();
+    return project;
+  }
+
+  /** MD C:\GM\NAME makes a new game folder; nothing else can be created here. */
+  async makeDir(drive: string, parts: string[]): Promise<string | undefined> {
+    if (drive !== 'C' || parts.length !== 2 || parts[0] !== 'GM' || !/^[A-Z0-9_]{1,8}$/.test(parts[1])) {
+      return 'Unable to create directory (make game folders as C:\\GM\\NAME, up to 8 letters)';
+    }
+    if ((await this.hdGames()).some((g) => g.dir === parts[1])) return 'Directory already exists';
+    await this.newGameFolder(parts[1]);
+    return undefined;
+  }
+
+  async newGameFolder(dir: string, title?: string): Promise<Project> {
+    const p = await makeGameFolder(dir, title ?? dir);
+    this.opts.onDisksChanged?.();
+    return p;
+  }
+
+  async restoreGame(g: HdGame): Promise<void> {
+    await restoreInstalled(g);
+  }
+
+  /** Utilities > Transfer: puts a stand-alone copy of a game on the blank disk in A:. */
+  async transferToFloppy(game: FolderGame): Promise<boolean> {
+    const d = this.inserted;
+    if (!d) {
+      await errorBox(this, "I can't access the disk!  Did you remember to insert one?", 'Put a blank disk from the disk box in drive A:.  (C)ontinue');
+      return false;
+    }
+    if (d.disk.kind !== 'blank') {
+      await errorBox(this, `The disk in drive A: (${d.disk.title}) isn't blank.`, 'Put a blank disk from the disk box in drive A:.  (C)ontinue');
+      return false;
+    }
+    const project = Project.fromFiles(new GameFiles(game.files.entries()), game.title);
+    const gam = game.files.mainGame();
+    if (gam) project.gam = gam;
+    await project.saveNow();
+    await this.swapInProject(project);
+    const r = await errorBox(this, 'Transfer Done!', '(D)ownload it too, to run in DOSBox   (C)ontinue');
+    if (r === 'D' && gam) {
+      try {
+        const { name, zip } = await exportDos(project.files, { title: game.title, gam });
+        download(name, zip, 'application/zip');
+      } catch (e) {
+        await errorBox(this, (e as Error).message.slice(0, 70), '(C)ontinue');
+      }
+    }
+    return true;
   }
 
   private async swapInProject(project: Project): Promise<void> {
