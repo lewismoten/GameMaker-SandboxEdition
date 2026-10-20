@@ -4,7 +4,8 @@
 // the Sound Blaster (and PLAYGAME) plays; the original bytes are kept until you change it.
 import './sample.css';
 import { registerEditor } from './index';
-import { h, clear, toast } from '../ui';
+import { h, clear, download, toast } from '../ui';
+import { encodeWav, toPcm8 } from '../../media/wav';
 import { decodeVoc, encodeVoc } from '../../formats/voc';
 import { audio } from './mediaShared';
 import { drawWave } from '../waveform';
@@ -285,6 +286,14 @@ registerEditor(['voc'], (host, project, file) => {
         undoBtn,
         redoBtn,
         h('button', { title: 'Back to the sound as it was when you opened it', onclick: () => commit(original.samples.slice()) }, 'Revert'),
+        h(
+          'button',
+          {
+            title: `Download the sound as a WAV file (8-bit mono at ${rate} Hz, exactly as the Sound Blaster plays it)`,
+            onclick: () => download(`${file.replace(/\.voc$/i, '')}.wav`, encodeWav(toPcm8(samples), rate), 'audio/wav'),
+          },
+          '⬇ WAV',
+        ),
       ),
       h(
         'div',
