@@ -19,21 +19,35 @@ export interface RunResult {
   keys: RecordedKey[];
 }
 
-/** Records key events with the tick gaps between them (as demo.rec stores them). */
+/**
+ * Records key events with the tick gaps between them, as demo.rec stores them: a key
+ * pressed between ticks t and t+1 is played back on tick t+1 (PLAYGAME's recorder counts
+ * from 1). `offset` carries the tick count over from earlier levels.
+ */
 export class Recorder {
   keys: RecordedKey[] = [];
-  private last = 0;
-  constructor(private sim: Sim) {
+  private last: number;
+  constructor(
+    private sim: Sim,
+    private offset = 0,
+    last = 0,
+  ) {
+    this.last = last;
     sim.onKey = (k) => {
-      this.keys.push({ delta: this.sim.ticks - this.last, key: k });
-      this.last = this.sim.ticks;
+      const at = this.offset + this.sim.ticks + 1;
+      this.keys.push({ delta: at - this.last, key: k });
+      this.last = at;
     };
+  }
+
+  /** The tick of the last recorded key (to continue on the next level). */
+  get lastTick(): number {
+    return this.last;
   }
 }
 
-export async function runRoute(sim: Sim, route: Order[], label = ''): Promise<RunResult> {
+export async function runRoute(sim: Sim, route: Order[], label = '', rec = new Recorder(sim)): Promise<RunResult> {
   const log: string[] = [];
-  const rec = new Recorder(sim);
   const say = (s: string) => log.push(`${label}${s} @${sim.pos.bx},${sim.pos.by} t${sim.ticks} hp${sim.w.ci.hitpts}`);
   const tick = async (n = 1) => {
     for (let i = 0; i < n && !sim.dead && sim.link < 0; i++) await sim.tick();

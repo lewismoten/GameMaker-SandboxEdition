@@ -15,7 +15,6 @@ import { renderRegion } from './render';
 import type { Level } from './level';
 import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from './music';
 import { CREDITS, HELP, LOST, README, STORY, WON, CARDS } from './text';
-import { demoRecording } from './demo';
 import { dosText } from '../kit/disk';
 
 export const SP: Pal = buildScreenPalette();
@@ -195,7 +194,6 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('won.cmf', wonSong());
   put('lost.cmf', lostSong());
   put('readme.txt', README);
-  put('demo.rec', demoRecording());
   return out;
 }
 

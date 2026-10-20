@@ -1,16 +1,25 @@
-// Plays every level headlessly with the bot and reports how it went:
+// Plays every level headlessly with the bot, one after another the way the game does
+// (Teddy's energy, treats and counters carry over), and reports how it went:
 //   cd web && npx vite-node ../games/teddy/check.ts [level file...]
+// TEDDY_WALK=<file> also writes the whole run as a .rec recording (for play-testing the
+// real engine: it plays the game from start to finish).
+import { writeFileSync } from 'node:fs';
+import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
 import { buildCharacter, CB } from './character';
 import { newCharInfo } from '../../web/src/engine/world';
 import { LEVELS } from './game';
 import { ROUTES } from './routes';
-import { runRoute } from './bot';
+import { Recorder, runRoute } from './bot';
 import { Sim } from './sim';
 import { CTR } from './ids';
 
 const only = process.argv.slice(2);
 const chr = buildCharacter();
 const cbl = CB.build();
+const ci = newCharInfo();
+const keys: RecordedKey[] = [];
+let offset = 0;
+let last = 0;
 let failed = 0;
 for (const make of LEVELS) {
   const l = make();
@@ -27,14 +36,19 @@ for (const make of LEVELS) {
       names: l.beasts.names,
     },
     l.start,
-    newCharInfo(),
+    ci,
   );
-  const r = await runRoute(sim, ROUTES[l.file] ?? [], `${l.file}: `);
-  console.log(r.log.join('\n'));
-  const ci = sim.w.ci;
+  const rec = new Recorder(sim, offset, last);
+  const r = await runRoute(sim, ROUTES[l.file] ?? [], `${l.file}: `, rec);
+  if (process.env.VERBOSE) console.log(r.log.join('\n'));
+  keys.push(...rec.keys);
+  offset += sim.ticks;
+  last = rec.lastTick;
   console.log(
-    `${l.file}: ${r.ok ? 'REACHED THE EXIT' : 'did not finish'} in ${sim.ticks} ticks (${(sim.ticks / 18.2).toFixed(0)}s), score ${ci.score}, treats ${ci.meter[CTR.treats] - 1}, energy ${ci.hitpts}, ${r.keys.length} key events`,
+    `${l.file}: ${r.ok ? 'REACHED THE EXIT' : 'did not finish: ' + r.log.slice(-1)[0]} in ${sim.ticks} ticks (${(sim.ticks / 18.2).toFixed(0)}s), score ${ci.score}, treats ${ci.meter[CTR.treats] - 1}, energy ${ci.hitpts}, lives ${ci.lives}`,
   );
   if (!r.ok) failed++;
 }
+console.log(`${keys.length} key events in all`);
+if (process.env.TEDDY_WALK) writeFileSync(process.env.TEDDY_WALK, serializeRecording(keys));
 process.exit(failed ? 1 : 0);

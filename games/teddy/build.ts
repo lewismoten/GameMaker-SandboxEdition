@@ -16,6 +16,7 @@ import { buildPalette } from './pal';
 import { buildSounds } from './sounds';
 import { LEVELS, buildGame } from './game';
 import { buildScreens } from './screens';
+import { demoRecording } from './demo';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -39,5 +40,6 @@ for (const l of levels) {
 }
 
 for (const [name, bytes] of Object.entries(buildScreens(levels))) disk.put(name, bytes);
+disk.put('demo.rec', await demoRecording(levels[0]));
 disk.put('teddy.gam', serializeGame(buildGame(levels, process.env.TEDDY_START)));
 disk.write();
