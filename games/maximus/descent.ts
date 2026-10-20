@@ -37,7 +37,7 @@ interface Look {
 }
 
 const LOOKS: Partial<Record<Biome, Look>> = {
-  verdant: { label: 'GREEN WORLD', sky: ['blue', 3, 6], cloud: ['ice', 7], ground: ['green', 3, 5], accent: ['blue', 5], shape: 'hills', burn: 'orange' },
+  verdant: { label: 'GREEN WORLD', sky: ['blue', 3, 6], cloud: ['ice', 7], ground: ['green', 3, 5], accent: ['green', 1], shape: 'hills', burn: 'orange' },
   autumn: { label: 'AUTUMN WORLD', sky: ['orange', 4, 6], cloud: ['sand', 7], ground: ['brown', 3, 5], accent: ['orange', 5], shape: 'hills', burn: 'red' },
   desert: { label: 'DESERT WORLD', sky: ['yellow', 5, 7], cloud: ['sand', 7], ground: ['sand', 4, 6], accent: ['orange', 4], shape: 'dunes', burn: 'orange' },
   ice: {
@@ -122,9 +122,9 @@ function cockpit(c: Canvas, look: Look): void {
     c.rect(x, y, 4, 4, hull[5]).set(x + 1, y + 1, WHITE);
   // dashboard
   c.panel(20, 140, 280, 54, C('space')[1], hull[4], hull[5]);
-  c.text(30, 146, 'DESCENT', C('cyan')[6]);
+  c.text(30, 146, look.shape === 'dock' ? 'APPROACH' : 'DESCENT', C('cyan')[6]);
   c.text(30, 158, look.label, C('yellow')[6]);
-  c.text(196, 146, 'ALTITUDE', C('cyan')[5]);
+  c.text(196, 146, look.shape === 'dock' ? 'RANGE' : 'ALTITUDE', C('cyan')[5]);
   // gauge lamps (static)
   for (let i = 0; i < 6; i++) c.rect(30 + i * 14, 174, 10, 6, [C('green')[5], C('green')[5], C('yellow')[6], C('green')[5], C('red')[5], C('green')[4]][i]);
   c.text(126, 174, 'MAXIMUS', C('grey')[4]);
