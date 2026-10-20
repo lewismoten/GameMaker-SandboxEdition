@@ -55,6 +55,32 @@
         19
       ]
     ],
-    "rating": "Ages 6 and up"
+    "rating": "Ages 6 and up",
+    "hours": 5,
+    "reviews": [
+      {
+        "quote": "Sir Grit is the bravest thumb-sized hero of 1995. Bring a towel.",
+        "source": "The Boot Sector"
+      },
+      {
+        "quote": "Runs on any old PC - and the kids would not give it back.",
+        "source": "Joyport Gazette"
+      }
+    ],
+    "award": {
+      "title": "Best Kids' Shareware",
+      "from": "Joyport Gazette"
+    },
+    "poster": {
+      "map": [
+        "sandbox.map",
+        0,
+        0,
+        50,
+        37
+      ],
+      "title": "Map of the Sandbox",
+      "caption": "Five castles, the tide pool and the hose: the whole backyard"
+    }
   }
 }
