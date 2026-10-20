@@ -109,7 +109,7 @@ function pages(): BookletPage[] {
       <h1>The Main Menu</h1>
       <p>Type <code>GM</code> at the prompt, or click the Game-Maker box on the desk. The main
       menu appears across the top of the screen.</p>
-      ${figure(fig.mainMenu, 'Figure 2-1. The main menu.', [0, 4])}
+      ${figure(fig.mainMenu, 'Figure 2-1. The main menu.', [0, 2])}
       <p>Use <kbd>\u2190</kbd> and <kbd>\u2192</kbd> to move the bar, then press <kbd>Enter</kbd>.
       You can also press the first letter of an item, or click it with the mouse.
       <kbd>Esc</kbd> backs out of any menu.</p>
@@ -152,7 +152,7 @@ function pages(): BookletPage[] {
       <h1>Designing Games</h1>
       <p>Choose <b>Design</b> from the main menu to see the design tools. Each one is its own
       program with full color graphical screens; a mouse is needed.</p>
-      ${figure(fig.designMenu, 'Figure 3-1. The Design menu with the Integrator chosen.', [0, 4])}
+      ${figure(fig.designMenu, 'Figure 3-1. The Design menu with the Integrator chosen.', [0, 2])}
       <table>
         <tr><td><b>Palette</b></td><td>Sets of 256 colors to paint with.</td></tr>
         <tr><td><b>Block</b></td><td>Draw 20\u00d720 picture blocks for backgrounds, monsters and characters.</td></tr>
@@ -205,7 +205,7 @@ function pages(): BookletPage[] {
       '4. Utilities',
       `<span class="chapter">4</span>
       <h1>Utilities</h1>
-      ${figure(fig.utilityMenu, 'Figure 4-1. The Utilities menu.', [0, 4])}
+      ${figure(fig.utilityMenu, 'Figure 4-1. The Utilities menu.', [0, 2])}
       <h3>Backup</h3>
       <p>Copies every file of a game into a <code>.ZIP</code> archive, saved in the Downloads
       folder of the computer you are using today.</p>
@@ -242,7 +242,7 @@ function pages(): BookletPage[] {
       <h1>The Game-Maker BBS</h1>
       <p>Game-Maker owners shared their games as shareware on bulletin board systems. Type
       <code>TERMINAL</code> to dial <i>The Game-Maker Exchange</i>.</p>
-      ${figure(fig.bbs, 'Figure 5-1. Logged on to The Game-Maker Exchange.', [0, 17])}
+      ${figure(fig.bbs, 'Figure 5-1. Logged on to The Game-Maker Exchange.', [5, 17])}
       <p>Press <kbd>F</kbd> for the file area, then the number of a game to download it. It is
       unpacked into <code>C:\\DOWNLOAD</code>. <kbd>G</kbd> says goodbye and hangs up.</p>
       <h3>What is shareware?</h3>
@@ -308,6 +308,14 @@ function pages(): BookletPage[] {
       <div class="note"><strong>Good news!</strong> The original license let you give games you
       made to up to ten friends free of royalties, and distribute them as shareware.</div>`,
     ),
+    {
+      cover: true,
+      body: div(`
+        <div class="cover-banner"><em>It’s as much fun to create computer games as it is to play them.</em></div>
+        <div class="cover-title">Notes</div>
+        <div class="cover-sub">Game name: ____________________<br><br>Folder: C:\\GM\\____________<br><br>Registration code: ______________</div>
+        <div class="cover-foot">GAME-MAKER · Recreational Software Designs</div>`),
+    },
   ];
 }
 
