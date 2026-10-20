@@ -1,0 +1,735 @@
+/* The open box on the table: the manual booklet and the paper extras, on screen and printed. */
+
+.gmb {
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .32  0 0 0 0 .27  0 0 0 0 .18  0 0 0 .11 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  color: #f1e7cf;
+  font: 14px system-ui, sans-serif;
+  background:
+    radial-gradient(120% 90% at 50% 40%, rgba(255, 210, 150, 0.12), transparent 70%),
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.09) 0 3px, transparent 3px 11px, rgba(255, 255, 255, 0.03) 11px 13px, transparent 13px 29px),
+    linear-gradient(#3b2617, #24170d);
+}
+
+.gmb-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(10, 6, 3, 0.55);
+  border-bottom: 1px solid rgba(255, 230, 190, 0.15);
+}
+
+.gmb-bar strong {
+  font: 700 15px Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.02em;
+}
+
+.gmb-spacer {
+  flex: 1;
+}
+
+.gmb button {
+  padding: 6px 12px;
+  border: 1px solid #c9b994;
+  border-radius: 6px;
+  background: linear-gradient(#f3ead2, #d2c39f);
+  color: #1d1a14;
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.gmb button:hover {
+  background: linear-gradient(#fff6dd, #e2d3ad);
+}
+
+.gmb button[hidden] {
+  display: none;
+}
+
+.gmb-print-wrap {
+  position: relative;
+}
+
+.gmb-print-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 250px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f3ead2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.gmb-print-menu[hidden] {
+  display: none;
+}
+
+.gmb-print-menu button {
+  text-align: left;
+}
+
+.gmb-print-menu small {
+  display: block;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.gmb-main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* the tray: the open box, its contents standing up like files */
+.gmb-tray {
+  flex: none;
+  width: 230px;
+  overflow-y: auto;
+  padding: 10px 10px 16px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.25), transparent 12px),
+    repeating-linear-gradient(0deg, rgba(120, 80, 40, 0.18) 0 1px, transparent 1px 5px),
+    #b98d5a;
+  box-shadow: inset -6px 0 14px rgba(0, 0, 0, 0.35);
+  color: #2a1b0c;
+}
+
+.gmb-tray h2 {
+  margin: 2px 4px 8px;
+  font: 900 13px/1.2 'Arial Black', Arial, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gmb-tray-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.gmb .gmb-tray-list button {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid rgba(60, 40, 20, 0.35);
+  border-radius: 2px;
+  background: var(--grain), #f6f0de;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  transition: transform 0.12s;
+}
+
+.gmb .gmb-tray-list li.on button {
+  transform: translateX(6px);
+  background: var(--grain), #fff9e6;
+  box-shadow:
+    -4px 0 0 #d81e1e,
+    0 3px 8px rgba(0, 0, 0, 0.35);
+}
+
+.gmb-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.gmb-item-name {
+  flex: 1;
+  font: 600 13px/1.2 Georgia, 'Times New Roman', serif;
+}
+
+.gmb-item-name small {
+  display: block;
+  font: 11px/1.25 system-ui, sans-serif;
+  opacity: 0.7;
+}
+
+.gmb-seal {
+  flex: none;
+  padding: 2px 4px;
+  border: 1.5px solid #b3121a;
+  border-radius: 3px;
+  color: #b3121a;
+  font: 900 9px/1 'Arial Black', Arial, sans-serif;
+  transform: rotate(-8deg);
+}
+
+.gmb-stage {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.gmb-loading {
+  font: italic 15px Georgia, serif;
+  opacity: 0.8;
+}
+
+.gmb-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* ---------------------------------------------------------------- the booklet */
+
+.gmb-spread {
+  position: relative;
+  display: flex;
+  flex: none;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.6));
+}
+
+.gmb-pages .mpage {
+  width: var(--pw, 550px);
+  height: auto;
+  max-width: none;
+  aspect-ratio: 5.5 / 8.5;
+  flex: none;
+  background:
+    var(--grain, none),
+    radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.4), transparent 60%),
+    #f5f0e0;
+}
+
+.gmb-print .mpage,
+.gmb-measure .mpage {
+  --grain: none;
+}
+
+.gmb-pages .mpage-in {
+  padding: 8cqw 8.5cqw 10cqw;
+  font-size: 3.05cqw;
+  line-height: 1.38;
+}
+
+.gmb-pages .mpage .runhead {
+  top: 4cqw;
+  left: 8.5cqw;
+  right: 8.5cqw;
+  font-size: 2.4cqw;
+}
+
+.gmb-pages .mpage .folio {
+  bottom: 4.2cqw;
+  font-size: 2.5cqw;
+}
+
+.gmb-pages .mpage h1 {
+  font-size: 6.4cqw;
+}
+
+.gmb-pages .mpage h2 {
+  font-size: 4.2cqw;
+}
+
+.gmb-pages .mpage h3 {
+  font-size: 3.5cqw;
+}
+
+.gmb-pages .mpage code,
+.gmb-pages .mpage kbd,
+.gmb-pages .mpage pre,
+.gmb-pages .mpage table {
+  font-size: 2.75cqw;
+}
+
+.gmb-pages .mpage kbd {
+  display: inline-block;
+  padding: 0 0.8cqw;
+  border: 0.2cqw solid #18150f;
+  border-bottom-width: 0.5cqw;
+  border-radius: 0.6cqw;
+  background: #fffdf4;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.gmb-pages .mpage figure {
+  position: relative;
+  margin: 1.8cqw 0 2.2cqw;
+}
+
+.gmb-pages .mpage figure img {
+  display: block;
+  height: auto;
+}
+
+/* screen shots printed through a coarse halftone screen */
+.gmb-pages .mpage figure:has(img)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  aspect-ratio: 16 / 10;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.22) 0.28cqw, transparent 0.42cqw) 0 0 / 1.1cqw 1.1cqw;
+  mix-blend-mode: multiply;
+}
+
+.gmb-pages .mp-flow {
+  display: flow-root;
+}
+
+.gmb-pages .mp-flow > :first-child {
+  margin-top: 0;
+}
+
+.gmb-pages .cont-prev {
+  text-indent: 0;
+}
+
+.gmb-pages .cont-next {
+  text-align-last: justify;
+}
+
+.pp-fictional {
+  margin: 1.2cqw 0 1.6cqw;
+  padding: 1cqw 1.6cqw;
+  border: 0.25cqw dashed #6b6250;
+  font: italic 2.45cqw/1.35 'Times New Roman', Times, serif;
+  text-align: left;
+  color: #3a342a;
+}
+
+/* notes and scores pages */
+.mp-ruled {
+  height: 112cqw;
+  background: repeating-linear-gradient(transparent 0 6.6cqw, #9aa7b8 6.6cqw 6.8cqw);
+}
+
+.gmb-pages .mp-scores td {
+  height: 5.6cqw;
+}
+
+/* back cover */
+.mpage.mp-back {
+  background:
+    var(--grain, none),
+    linear-gradient(160deg, #1a2440, #0b0f1d);
+  color: #f3ead2;
+}
+
+.mp-back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 128cqw;
+  text-align: center;
+}
+
+.mpage.mp-back .mpage-in {
+  color: #f3ead2;
+  text-shadow: none;
+}
+
+.mp-back-line {
+  margin: 4cqw 0 8cqw;
+  font: italic 4cqw/1.3 Georgia, 'Times New Roman', serif;
+}
+
+.mp-back-small {
+  margin: 0 0 2cqw;
+  font: 2.3cqw/1.35 Helvetica, Arial, sans-serif;
+}
+
+.mp-back .pp-fictional {
+  border-color: rgba(243, 234, 210, 0.5);
+  color: #e8dcc0;
+}
+
+.mp-barcode {
+  display: flex;
+  gap: 0.35cqw;
+  height: 10cqw;
+  margin: 3cqw 0 1cqw;
+  padding: 1.4cqw 2cqw;
+  background: #fff;
+}
+
+.mp-barcode i {
+  display: block;
+  background: #000;
+}
+
+.pp-logo {
+  display: inline-flex;
+  gap: 0.6em;
+  align-items: center;
+  font: 900 1em/0.95 'Arial Black', Arial, sans-serif;
+  letter-spacing: 0.06em;
+  text-align: left;
+}
+
+.pp-logo-mark {
+  position: relative;
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 0 0 0.5em 0.5em;
+  background: linear-gradient(#f2b632 0 38%, #d97f17 38%);
+  clip-path: polygon(0 18%, 100% 18%, 86% 100%, 14% 100%);
+}
+
+.mp-back-logo {
+  font-size: 6cqw;
+  color: #f2b632;
+}
+
+.mpage.cover .game-cover {
+  position: absolute;
+  inset: 0;
+  background: #111;
+}
+
+.mpage.cover .game-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gmb-spread .mpage.left::after,
+.gmb-spread .mpage.right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 7cqw;
+  pointer-events: none;
+}
+
+.gmb-spread .mpage.left::after {
+  right: 0;
+  background: linear-gradient(90deg, transparent, rgba(60, 40, 10, 0.18));
+}
+
+.gmb-spread .mpage.right::after {
+  left: 0;
+  background: linear-gradient(270deg, transparent, rgba(60, 40, 10, 0.22));
+}
+
+/* two staples through the fold of the center spread */
+.gmb-staple {
+  position: absolute;
+  left: 50%;
+  z-index: 2;
+  width: calc(var(--pw) * 0.014);
+  height: calc(var(--pw) * 0.17);
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: linear-gradient(90deg, #6f757c, #eef1f4 35%, #b7bcc2 55%, #5b6066);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.5),
+    calc(var(--pw) * 0.004) calc(var(--pw) * 0.003) calc(var(--pw) * 0.006) rgba(0, 0, 0, 0.35);
+}
+
+.gmb-staple::before,
+.gmb-staple::after {
+  content: '';
+  position: absolute;
+  left: -40%;
+  right: -40%;
+  height: calc(var(--pw) * 0.012);
+  border-radius: 50%;
+  background: rgba(40, 30, 10, 0.35);
+}
+
+.gmb-staple::before {
+  top: calc(var(--pw) * -0.004);
+}
+
+.gmb-staple::after {
+  bottom: calc(var(--pw) * -0.004);
+}
+
+.gmb-staple.top {
+  top: 18%;
+}
+
+.gmb-staple.bottom {
+  bottom: 18%;
+}
+
+/* measuring pages off screen */
+.gmb-measure {
+  position: fixed;
+  left: -12000px;
+  top: 0;
+  --pw: 550px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- other paper */
+
+.gmb-sheets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  margin: auto;
+  padding: 8px 0 24px;
+}
+
+.pp-sheet {
+  position: relative;
+  container-type: inline-size;
+  flex: none;
+  overflow: hidden;
+  color: #18150f;
+  background:
+    var(--grain, none),
+    radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.35), transparent 60%),
+    #f6f1e2;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
+  font: 2.2cqw/1.4 'Times New Roman', Times, serif;
+}
+
+.pp-sheet * {
+  box-sizing: border-box;
+}
+
+.pp-photo {
+  position: relative;
+  margin: 0;
+}
+
+.pp-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  filter: contrast(1.05) saturate(0.9);
+}
+
+.pp-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.25) 30%, transparent 46%) 0 0 / 4px 4px;
+  mix-blend-mode: multiply;
+}
+
+.pp-photo:has(figcaption)::after {
+  bottom: auto;
+  aspect-ratio: var(--ar, auto);
+}
+
+.pp-photo figcaption {
+  margin-top: 0.6em;
+  font-style: italic;
+  font-size: 0.85em;
+}
+
+.pp-photo-missing {
+  background: #ccc;
+}
+
+.pp-sandbox-banner {
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- red film */
+
+.rf-code {
+  position: relative;
+  display: inline-block;
+  padding: 0.3em 0.5em;
+  color: rgb(70, 140, 255);
+  font: 700 1em/1.35 Arial, Helvetica, sans-serif;
+  isolation: auto;
+}
+
+.rf-noise {
+  position: absolute;
+  inset: 0;
+  background-size: 18em auto;
+  mix-blend-mode: multiply;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.rf-film {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  width: min(360px, 80vw);
+  height: 200px;
+  border-radius: 6px;
+  background: #ff0000;
+  mix-blend-mode: multiply;
+  cursor: grab;
+  touch-action: none;
+  box-shadow: 0 0 0 2px rgba(120, 0, 0, 0.6);
+}
+
+.rf-film[hidden] {
+  display: none;
+}
+
+.rf-film:active {
+  cursor: grabbing;
+}
+
+.rf-film-label {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  color: #000;
+  font: 900 11px 'Arial Black', Arial, sans-serif;
+  letter-spacing: 0.1em;
+  opacity: 0.55;
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------- narrow screens */
+
+@media (max-width: 720px) {
+  .gmb-main {
+    flex-direction: column;
+  }
+  .gmb-tray {
+    width: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 6px 8px;
+  }
+  .gmb-tray h2 {
+    display: none;
+  }
+  .gmb-tray-list {
+    flex-direction: row;
+  }
+  .gmb .gmb-tray-list button {
+    width: max-content;
+    max-width: 170px;
+  }
+  .gmb .gmb-tray-list li.on button {
+    transform: translateY(3px);
+  }
+  .gmb-item-name small {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- printing */
+
+.gmb-print {
+  display: none;
+}
+
+@page gmb {
+  size: 8.5in 11in;
+  margin: 0;
+}
+
+@page gmbland {
+  size: 11in 8.5in;
+  margin: 0;
+}
+
+@media print {
+  body > *:not(.gmb-print) {
+    display: none !important;
+  }
+  html,
+  body {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+  .gmb-print {
+    display: block !important;
+    position: static !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .gmb-print * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .gmb-print .pp-print-page {
+    page: gmb;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 8.5in;
+    height: 11in;
+    overflow: hidden;
+    break-after: page;
+    break-inside: avoid;
+  }
+  .gmb-print .pp-print-page.land {
+    page: gmbland;
+    width: 11in;
+    height: 8.5in;
+  }
+  .gmb-print .pp-print-page:last-child {
+    break-after: auto;
+  }
+  .gmb-print .mpage {
+    --pw: 7in;
+    width: 7in !important;
+    height: auto !important;
+    max-width: none !important;
+    aspect-ratio: 5.5 / 8.5 !important;
+    box-shadow: none !important;
+    break-after: auto !important;
+    cursor: default;
+  }
+  .gmb-print .booklet-side .mpage {
+    --pw: 5.5in;
+    width: 5.5in !important;
+  }
+  .gmb-print .pp-sheet {
+    box-shadow: none;
+    --grain: none;
+  }
+  .gmb-print .pp-cut {
+    position: relative;
+    padding: 0.12in;
+    border: 1px dashed #888;
+  }
+  .gmb-print .pp-cut::before {
+    content: '✂';
+    position: absolute;
+    top: -0.11in;
+    left: 0.3in;
+    padding: 0 3px;
+    background: #fff;
+    color: #555;
+    font-size: 12pt;
+    line-height: 1;
+  }
+}
