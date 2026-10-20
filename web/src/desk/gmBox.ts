@@ -1,0 +1,256 @@
+// The Game-Maker 3.0 retail box (after the real pink 1994 box) as six faces for the box
+// viewer, and what comes out of it: the Owner's Guide and the CD, whose rainbow sheen
+// shifts as it turns.
+import './gmBox.css';
+import { h } from '../editor/ui';
+import type { BoxFaces } from './gameBox';
+
+const PPI = 80;
+const W = 7.5 * PPI;
+const H = 9.25 * PPI;
+const D = 2 * PPI;
+
+const PINK = '#f0a090';
+const YELLOW = '#f2e600';
+const GREEN = '#1f9a3a';
+const RED = '#d81e1e';
+const LOGO = (px: number) => `italic 900 ${px}px 'Arial Black', Impact, sans-serif`;
+const SANS = (px: number, weight = 700, italic = false) => `${italic ? 'italic ' : ''}${weight} ${px}px Arial, Helvetica, sans-serif`;
+
+function canvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  return [c, c.getContext('2d')!];
+}
+
+/** "GAME-MAKER" in yellow with its green drop shadow, slanted, fitted to a width. */
+function logo(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, max: number, align: CanvasTextAlign = 'left'): void {
+  let px = max;
+  ctx.font = LOGO(px);
+  while (ctx.measureText('GAME-MAKER').width > width && px > 8) ctx.font = LOGO(--px);
+  ctx.save();
+  ctx.textAlign = align;
+  ctx.translate(x, y);
+  ctx.transform(1, 0, -0.14, 1, 0, 0);
+  ctx.fillStyle = GREEN;
+  ctx.fillText('GAME-MAKER', px * 0.06, px * 0.06);
+  ctx.fillStyle = YELLOW;
+  ctx.fillText('GAME-MAKER', 0, 0);
+  ctx.restore();
+}
+
+function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, lh: number): number {
+  let line = '';
+  for (const word of text.split(' ')) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > width && line) {
+      ctx.fillText(line, x, y);
+      y += lh;
+      line = word;
+    } else line = test;
+  }
+  if (line) ctx.fillText(line, x, y);
+  return y + lh;
+}
+
+function badge(ctx: CanvasRenderingContext2D, x: number, y: number, w: number): void {
+  ctx.fillStyle = '#0f6e2c';
+  ctx.fillRect(x, y, w, 96);
+  ctx.strokeStyle = YELLOW;
+  ctx.lineWidth = 6;
+  ctx.strokeRect(x + 3, y + 3, w - 6, 90);
+  ctx.fillStyle = '#fff';
+  ctx.font = SANS(15);
+  ctx.textAlign = 'center';
+  ['CREATED BY', 'RECREATIONAL', 'SOFTWARE', 'DESIGNS'].forEach((l, i) => ctx.fillText(l, x + w / 2, y + 24 + i * 19));
+  ctx.textAlign = 'left';
+}
+
+/** tiles: the screenshots from the desk box, each with its caption. */
+export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
+  // ---- front
+  const [front, f] = canvas(W, H);
+  f.fillStyle = PINK;
+  f.fillRect(0, 0, W, H);
+  // the tilted grid of screenshots
+  f.save();
+  f.beginPath();
+  f.rect(0, 150, W, H - 150);
+  f.clip();
+  f.translate(-80, 170);
+  f.rotate((-14 * Math.PI) / 180);
+  tiles.forEach(([shot, caption], i) => {
+    const tw = 330;
+    const th = 248;
+    const x = (i % 2) * (tw + 26) - 10;
+    const y = Math.floor(i / 2) * (th + 60) + 60;
+    f.fillStyle = 'rgba(0,0,0,0.35)';
+    f.fillRect(x + 6, y + 10, tw, th + 30);
+    f.fillStyle = '#111';
+    f.fillRect(x, y, tw, th + 30);
+    f.imageSmoothingEnabled = false;
+    f.drawImage(shot, x, y, tw, th);
+    f.fillStyle = '#fff';
+    f.font = SANS(19);
+    f.fillText(caption, x + 8, y + th + 22);
+  });
+  f.restore();
+  // banner and tagline
+  f.fillStyle = '#0b0b0b';
+  f.fillRect(0, 0, W, 120);
+  f.fillStyle = '#fff';
+  f.font = SANS(22, 700, true);
+  f.fillText('COMPUTER-AIDED DESIGN TOOLS', 24, 36);
+  logo(f, 24, 104, W - 48, 86);
+  f.fillStyle = RED;
+  f.fillRect(0, 120, W, 34);
+  f.fillStyle = '#fff';
+  f.font = SANS(20, 700, true);
+  f.fillText('CREATE YOUR OWN COMPUTER GAMES', 18, 145);
+  badge(f, W - 186, H - 120, 168);
+  // version flash
+  f.save();
+  f.translate(110, H - 80);
+  f.rotate(-0.2);
+  f.fillStyle = YELLOW;
+  f.beginPath();
+  for (let i = 0; i < 24; i++) {
+    const r = i % 2 ? 50 : 66;
+    const a = (i / 24) * Math.PI * 2;
+    f.lineTo(Math.cos(a) * r * 1.3, Math.sin(a) * r);
+  }
+  f.fill();
+  f.fillStyle = '#000';
+  f.textAlign = 'center';
+  f.font = SANS(18, 900);
+  f.fillText('VERSION', 0, -4);
+  f.font = SANS(34, 900);
+  f.fillText('3.0', 0, 30);
+  f.restore();
+
+  // ---- back
+  const [back, b] = canvas(W, H);
+  b.fillStyle = PINK;
+  b.fillRect(0, 0, W, H);
+  b.fillStyle = '#0b0b0b';
+  b.fillRect(0, 0, W, 96);
+  logo(b, 24, 76, 380, 64);
+  b.fillStyle = '#fff';
+  b.font = SANS(26, 900, true);
+  b.fillText('3.0', 440, 76);
+  b.fillStyle = '#1d1a14';
+  b.font = SANS(23, 900, true);
+  b.fillText('Design your own arcade adventures!', 30, 140);
+  b.font = `19px Georgia, 'Times New Roman', serif`;
+  let y = wrap(
+    b,
+    'Game-Maker is a complete set of computer-aided design tools for building your own action games in 256-color VGA. No programming needed: draw the scenery, animate the monsters, paint the maps and link the scenes together, then play your game or give it to your friends.',
+    30,
+    176,
+    W - 60,
+    25,
+  );
+  b.font = SANS(18);
+  for (const line of [
+    'Draw 20x20 blocks with a full paint program',
+    'Animate monsters and give them paths to follow',
+    'Paint 100x100 block maps that scroll',
+    'Design your hero: moves, jumps, shots, inventory',
+    'Import GIF pictures and FLI animations',
+    'Sound Blaster music and digitized sound',
+    'Link title screens, levels and endings into a game',
+  ]) {
+    b.fillStyle = RED;
+    b.fillRect(34, y - 13, 10, 10);
+    b.fillStyle = '#1d1a14';
+    b.fillText(line, 56, y);
+    y += 28;
+  }
+  // a screenshot or two
+  tiles.slice(0, 2).forEach(([shot], i) => {
+    b.fillStyle = '#111';
+    b.fillRect(30 + i * 276, y + 4, 262, 198);
+    b.imageSmoothingEnabled = false;
+    b.drawImage(shot, 34 + i * 276, y + 8, 254, 190);
+  });
+  y += 230;
+  // system requirements
+  b.fillStyle = '#fff6ee';
+  b.fillRect(30, y, W - 60, 118);
+  b.strokeStyle = '#1d1a14';
+  b.lineWidth = 2;
+  b.strokeRect(30, y, W - 60, 118);
+  b.fillStyle = '#1d1a14';
+  b.font = SANS(15, 900);
+  b.fillText('SYSTEM REQUIREMENTS', 44, y + 24);
+  b.font = SANS(14, 400);
+  ['IBM PC/AT or compatible (386 or better recommended)', '640K RAM · VGA graphics · hard disk · DOS 3.3 or later', 'Mouse required · Sound Blaster optional · CD-ROM or 1.44 MB floppy'].forEach((l, i) =>
+    b.fillText(l, 44, y + 50 + i * 22),
+  );
+  b.font = SANS(12, 400);
+  b.fillText('© 1991–1994 Recreational Software Designs. All rights reserved.', 30, H - 22);
+
+  // ---- sides and ends
+  const spine = (): string => {
+    const [c, s] = canvas(D, H);
+    s.fillStyle = '#0b0b0b';
+    s.fillRect(0, 0, D, H);
+    s.fillStyle = RED;
+    s.fillRect(0, H - 120, D, 34);
+    s.save();
+    s.translate(D / 2 + 26, H / 2 - 60);
+    s.rotate(Math.PI / 2);
+    logo(s, 0, 0, H - 260, 80, 'center');
+    s.restore();
+    s.fillStyle = '#fff';
+    s.textAlign = 'center';
+    s.font = SANS(16, 900);
+    s.fillText('RSD', D / 2, 52);
+    s.font = SANS(14, 700, true);
+    s.fillText('VERSION 3.0', D / 2, H - 98);
+    return c.toDataURL();
+  };
+  const end = (): string => {
+    const [c, s] = canvas(W, D);
+    s.fillStyle = PINK;
+    s.fillRect(0, 0, W, D);
+    s.fillStyle = '#0b0b0b';
+    s.fillRect(0, 30, W, 100);
+    logo(s, W / 2, 104, W - 80, 72, 'center');
+    return c.toDataURL();
+  };
+  return { front: front.toDataURL(), back: back.toDataURL(), left: spine(), right: spine(), top: end(), bottom: end() };
+}
+
+/** The Owner's Guide and the CD, laid beside the box in the viewer. */
+export function gmBoxContents(openGuide: () => void): HTMLElement {
+  const disc = h('div', { class: 'holo-cd', 'aria-hidden': 'true' }, h('div', { class: 'holo-spin' }, h('div', { class: 'holo-label' })));
+  disc.querySelector('.holo-label')!.innerHTML = `<svg viewBox="0 0 100 100">
+    <defs>
+      <path id="holo-top" d="M 16 50 A 34 34 0 0 1 84 50"/>
+      <path id="holo-bottom" d="M 13 50 A 37 37 0 0 0 87 50"/>
+    </defs>
+    <text class="cd-title"><textPath href="#holo-top" startOffset="50%" text-anchor="middle">GAME-MAKER 3.0</textPath></text>
+    <text class="cd-small"><textPath href="#holo-bottom" startOffset="50%" text-anchor="middle">RECREATIONAL SOFTWARE DESIGNS</textPath></text>
+  </svg>`;
+  // the sheen follows the light: move the pointer over the disc to tilt it
+  disc.addEventListener('pointermove', (e) => {
+    const r = disc.getBoundingClientRect();
+    disc.style.setProperty('--lx', `${((e.clientX - r.left) / r.width) * 100}%`);
+    disc.style.setProperty('--ly', `${((e.clientY - r.top) / r.height) * 100}%`);
+  });
+  return h(
+    'div',
+    { class: 'gm-contents' },
+    h(
+      'button',
+      { class: 'guide-book', onclick: openGuide, title: 'Read the Owner’s Guide' },
+      h('strong', null, 'GAME-MAKER'),
+      h('span', null, 'Owner’s Guide'),
+      h('em', null, 'Version 3.0'),
+      h('small', null, 'Recreational Software Designs'),
+    ),
+    disc,
+  );
+}

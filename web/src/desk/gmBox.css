@@ -1,0 +1,183 @@
+/* what comes out of the Game-Maker box in the box viewer (desk/gmBox.ts) */
+.gm-contents {
+  position: absolute;
+  left: 3vw;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4vh;
+  transform: translateY(-55%);
+}
+
+.guide-book {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(190px, 22vh);
+  aspect-ratio: 5.5 / 8.5;
+  padding: 0 0 12px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 2px 5px 5px 2px;
+  background: #f0a090;
+  box-shadow:
+    inset 6px 0 0 rgba(0, 0, 0, 0.12),
+    3px 3px 0 #f4efdf,
+    5px 5px 0 #d9d2bc,
+    0 18px 26px rgba(0, 0, 0, 0.55);
+  color: #18150f;
+  text-align: left;
+  cursor: pointer;
+  transform: rotate(-4deg);
+  transition: transform 0.2s;
+}
+
+.guide-book:hover,
+.guide-book:focus-visible {
+  transform: rotate(0deg) scale(1.04);
+}
+
+.guide-book strong {
+  padding: 14px 10px 10px;
+  background: #0b0b0b;
+  color: #f2e600;
+  font: italic 900 24px/1 'Arial Black', Arial, sans-serif;
+  text-shadow: 2px 2px 0 #1f9a3a;
+}
+
+.guide-book span {
+  margin-top: 18px;
+  padding: 0 12px;
+  font: 700 20px/1.1 Helvetica, Arial, sans-serif;
+}
+
+.guide-book em {
+  padding: 0 12px;
+  font: 15px 'Times New Roman', serif;
+}
+
+.guide-book small {
+  margin-top: auto;
+  padding: 0 12px;
+  font: 700 10px Arial, sans-serif;
+}
+
+/* the CD: a silver disc with a rainbow diffraction sheen that shifts as it turns */
+.holo-cd {
+  --lx: 30%;
+  --ly: 25%;
+  position: relative;
+  width: min(200px, 24vh);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.55);
+}
+
+.holo-spin {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 6.5%, #e9ecf1 6.5% 15%, #9aa3ad 15% 16%, transparent 16%),
+    radial-gradient(circle, #cfd5dd, #f4f6f8 40%, #b9c0c9 70%, #e8ebef);
+  animation: holo-turn 6s linear infinite;
+}
+
+/* the rainbow: a conic band that stays put relative to the light while the disc turns */
+.holo-cd::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at var(--lx) var(--ly), rgba(255, 255, 255, 0.9), transparent 22%),
+    conic-gradient(
+      from 0deg,
+      rgba(255, 0, 80, 0.55),
+      rgba(255, 200, 0, 0.55),
+      rgba(0, 255, 120, 0.55),
+      rgba(0, 160, 255, 0.55),
+      rgba(170, 0, 255, 0.55),
+      rgba(255, 0, 80, 0.55),
+      rgba(255, 200, 0, 0.55),
+      rgba(0, 255, 120, 0.55),
+      rgba(0, 160, 255, 0.55),
+      rgba(170, 0, 255, 0.55),
+      rgba(255, 0, 80, 0.55)
+    );
+  mask: radial-gradient(circle, transparent 0 16%, #000 17% 97%, transparent 98%);
+  mix-blend-mode: color-dodge;
+  animation: holo-shimmer 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* the hole */
+.holo-cd::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 13%;
+  height: 13%;
+  border-radius: 50%;
+  background: #1a1612;
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* the printed label: covers most of the disc, the sheen shows through at its edge */
+.holo-label {
+  position: absolute;
+  inset: 3%;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 22%, rgba(255, 255, 255, 0.82) 22.5% 100%);
+}
+
+.holo-label svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.holo-label .cd-title {
+  fill: #000080;
+  font: 900 11px 'Arial Black', Arial, sans-serif;
+}
+
+.holo-label .cd-small {
+  fill: #b0103a;
+  font: 700 5.4px Arial, Helvetica, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+@keyframes holo-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes holo-shimmer {
+  0%,
+  100% {
+    transform: rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: rotate(40deg);
+    filter: hue-rotate(60deg);
+  }
+}
+
+@media (max-width: 700px) {
+  .gm-contents {
+    top: auto;
+    bottom: 80px;
+    flex-direction: row;
+    transform: none;
+  }
+}
