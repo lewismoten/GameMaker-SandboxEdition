@@ -107,8 +107,33 @@ class Line {
 }
 
 /** Plays the call (if there is audio) and returns when things happen in it. */
+/** Phone keypad letters: 1-412-555-SAND dials 7263. */
+const KEYPAD: Record<string, string> = { A: '2', B: '2', C: '2', D: '3', E: '3', F: '3', G: '4', H: '4', I: '4', J: '5', K: '5', L: '5', M: '6', N: '6', O: '6', P: '7', Q: '7', R: '7', S: '7', T: '8', U: '8', V: '8', W: '9', X: '9', Y: '9', Z: '9' };
+
+export function keypadDigits(number: string): string {
+  return number
+    .toUpperCase()
+    .replace(/[A-Z]/g, (c) => KEYPAD[c])
+    .replace(/\D/g, '');
+}
+
+/** Dial tone, touch-tones, then the busy signal: returns when it has played (seconds). */
+export function busySounds(ctx: AudioContext | undefined, number: string): number {
+  const digits = keypadDigits(number);
+  const start = 1.1 + digits.length * 0.17 + 0.7;
+  const end = start + 4.5;
+  if (ctx) {
+    const line = new Line(ctx);
+    const t0 = ctx.currentTime + 0.05;
+    line.tones([350, 440], t0, 1.0, 0.1);
+    digits.split('').forEach((d, i) => line.tones(DTMF[d], t0 + 1.1 + i * 0.17, 0.1, 0.12));
+    for (let t = start; t < end; t += 1) line.tones([480, 620], t0 + t, 0.5, 0.1);
+  }
+  return end;
+}
+
 export function dialSounds(ctx: AudioContext | undefined, number: string): CallTimeline {
-  const digits = number.replace(/\D/g, '');
+  const digits = keypadDigits(number);
   // The same timeline drives the screen when there is no sound.
   let t = 0;
   const at: { tone: number; digits: number[]; rings: number[]; answer: number; v8: number; v32: number; train: number; connect: number } = {

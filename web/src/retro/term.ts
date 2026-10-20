@@ -3,7 +3,7 @@
 import type { RetroHost } from './host';
 import { attr, COLS, ROWS } from './textScreen';
 import { toCp437 } from './cp437';
-import { dialSounds } from './modem';
+import { busySounds, dialSounds } from './modem';
 
 /** What the modem's front lights show; the desk's modem listens for these (desk/modem.ts). */
 export type ModemSignal = 'ready' | 'offhook' | 'carrier' | 'receive' | 'send' | 'hangup' | 'off';
@@ -108,7 +108,8 @@ export const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 export const statusLine = (online: string) => ` TERMINAL 2.1 │ COM2 │ 14400 N81 │ ANSI │ ${online}`;
 
 /** Dials, waits through the handshake, and prints what the modem says. */
-export async function dial(t: Term, h: RetroHost, number: string): Promise<void> {
+/** Dials; resolves false if the line was busy. */
+export async function dial(t: Term, h: RetroHost, number: string, busy = false): Promise<boolean> {
   t.line('|15TERMINAL 2.1  |07Modem on COM2 ready.');
   t.line();
   modemSignal('ready');
@@ -123,6 +124,12 @@ export async function dial(t: Term, h: RetroHost, number: string): Promise<void>
   await t.typeSlowly(`ATDT${number}`);
   t.line();
   modemSignal('offhook');
+  if (busy) {
+    await sleep(busySounds(h.audio(), number) * 1000);
+    t.line('|12BUSY');
+    modemSignal('hangup');
+    return false;
+  }
   const call = dialSounds(h.audio(), number);
   const start = performance.now();
   const until = (sec: number) => sleep(Math.max(0, start + sec * 1000 - performance.now()));
@@ -135,4 +142,5 @@ export async function dial(t: Term, h: RetroHost, number: string): Promise<void>
   await until(call.connect);
   t.line('|14CONNECT 14400/ARQ/V32BIS/LAPM/V42BIS');
   modemSignal('carrier');
+  return true;
 }
