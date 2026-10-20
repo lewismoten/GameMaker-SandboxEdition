@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, type Game } from '../src/formats/game';
-import { CARD_UNITS, POS_MAX, POS_MIN, autoArrange, clampPos, sceneLayers } from '../src/editor/integratorLayout';
+import { CARD_UNITS, POS_MAX, POS_MIN, autoArrange, clampPos, sceneLayers, spreadOut } from '../src/editor/integratorLayout';
 
 function chain(n: number): Game {
   const g = newGame('Test');
@@ -58,5 +58,17 @@ describe('integrator layout', () => {
     if (!existsSync(file)) return;
     const g = parseGame(new Uint8Array(readFileSync(file)));
     checkNoOverlap(g, autoArrange(g));
+    checkNoOverlap(g, spreadOut(g));
+  });
+
+  it('spreads out piled-up scenes, keeping left and right', () => {
+    const g = chain(6);
+    g.scenes.forEach((s, i) => (s.pos = { x: 100 + (i % 2), y: 100 }));
+    g.scenes[0].pos = { x: 10, y: 100 };
+    g.scenes[1].pos = { x: 300, y: 100 };
+    const pos = spreadOut(g);
+    checkNoOverlap(g, pos);
+    expect(pos.get(0)!.x).toBeLessThan(pos.get(3)!.x);
+    expect(pos.get(1)!.x).toBeGreaterThan(pos.get(3)!.x);
   });
 });

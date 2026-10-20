@@ -103,15 +103,80 @@ export function autoArrange(game: Game): Map<number, Point> {
     });
     return out;
   }
-  const order = layers.flat();
-  const n = order.length;
-  // The grid shape whose cells are roomiest for the card's shape.
-  let best = { cols: maxCols, rows: Math.ceil(n / maxCols), room: -1 };
-  for (let cols = 1; cols <= maxCols; cols++) {
-    const rows = Math.ceil(n / cols);
-    const room = Math.min((x1 - x0) / Math.max(1, cols - 1) / CARD_UNITS.w, (y1 - y0) / Math.max(1, rows - 1) / CARD_UNITS.h);
-    if (rows <= maxRows && room > best.room) best = { cols, rows, room };
+  // Too big for columns: each step of the game in rows of its own, top to bottom (small
+  // steps share a row when there isn't room for one row each).
+  const rowsFor = (share: boolean) => {
+    const rows: number[][] = [];
+    let cur: number[] = [];
+    for (const layer of layers) {
+      if (cur.length && !(share && cur.length + 1 + layer.length <= maxCols)) rows.push((cur = []));
+      else if (cur.length) cur.push(-1); // a gap between steps
+      if (!rows.length) rows.push(cur);
+      for (const s of layer) {
+        if (cur.length >= maxCols) rows.push((cur = []));
+        cur.push(s);
+      }
+    }
+    return rows;
+  };
+  let rows = rowsFor(false);
+  if (rows.length > maxRows) rows = rowsFor(true);
+  if (rows.length > maxRows) {
+    // still too many: plain reading order on the roomiest grid
+    const order = layers.flat();
+    let best = { cols: maxCols, rows: Math.ceil(order.length / maxCols), room: -1 };
+    for (let cols = 1; cols <= maxCols; cols++) {
+      const r = Math.ceil(order.length / cols);
+      const room = Math.min((x1 - x0) / Math.max(1, cols - 1) / CARD_UNITS.w, (y1 - y0) / Math.max(1, r - 1) / CARD_UNITS.h);
+      if (r <= maxRows && room > best.room) best = { cols, rows: r, room };
+    }
+    rows = [];
+    order.forEach((s, k) => (k % best.cols ? rows[rows.length - 1].push(s) : rows.push([s])));
   }
-  order.forEach((s, k) => put(s, spread(best.cols, k % best.cols, x0, x1), spread(best.rows, Math.floor(k / best.cols), y0, y1)));
+  const cols = Math.max(...rows.map((r) => r.length));
+  const dx = cols > 1 ? Math.min((x1 - x0) / (cols - 1), CARD_UNITS.w * 1.6) : 0;
+  const h = Math.min(y1 - y0, (rows.length - 1) * CARD_UNITS.h * 1.5);
+  const cx = (x0 + x1) / 2;
+  const cy = (y0 + y1) / 2;
+  rows.forEach((row, ri) => {
+    const y = spread(rows.length, ri, cy - h / 2, cy + h / 2);
+    row.forEach((s, k) => s >= 0 && put(s, cx + (k - (row.length - 1) / 2) * dx, y));
+  });
+  return out;
+}
+
+/**
+ * Keeps the author's arrangement but moves cards apart so none hides another: the
+ * layout is stretched over the world and each scene takes the nearest free spot on a
+ * grid of card-sized cells.
+ */
+export function spreadOut(game: Game): Map<number, Point> {
+  const used = game.scenes.map((s, i) => (s.gametype === NOSCENE ? -1 : i)).filter((i) => i >= 0);
+  const x0 = POS_MIN.x + 2;
+  const x1 = POS_MAX.x - 2;
+  const y0 = POS_MIN.y + 2;
+  const y1 = POS_MAX.y - 2;
+  const cols = Math.floor((x1 - x0) / CARD_UNITS.w) + 1;
+  const rows = Math.floor((y1 - y0) / CARD_UNITS.h) + 1;
+  if (used.length > cols * rows) return autoArrange(game);
+  const ps = used.map((i) => game.scenes[i].pos);
+  const bx0 = Math.min(...ps.map((p) => p.x));
+  const by0 = Math.min(...ps.map((p) => p.y));
+  const bw = Math.max(...ps.map((p) => p.x)) - bx0 || 1;
+  const bh = Math.max(...ps.map((p) => p.y)) - by0 || 1;
+  const pairs: [number, number, number][] = [];
+  used.forEach((s, k) => {
+    const tx = ((ps[k].x - bx0) / bw) * (cols - 1);
+    const ty = ((ps[k].y - by0) / bh) * (rows - 1);
+    for (let c = 0; c < cols * rows; c++) pairs.push([(tx - (c % cols)) ** 2 + (ty - Math.floor(c / cols)) ** 2, s, c]);
+  });
+  pairs.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);
+  const out = new Map<number, Point>();
+  const taken = new Set<number>();
+  for (const [, s, c] of pairs) {
+    if (out.has(s) || taken.has(c)) continue;
+    taken.add(c);
+    out.set(s, clampPos({ x: spread(cols, c % cols, x0, x1) - 2, y: spread(rows, Math.floor(c / cols), y0, y1) - 2 }));
+  }
   return out;
 }

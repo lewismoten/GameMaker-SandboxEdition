@@ -31,7 +31,7 @@ import {
 import { BACKBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../formats/map';
 import { defaultPalette, parsePalette } from '../../formats/palette';
-import { WORLD, CARD_UNITS, autoArrange, clampPos } from '../integratorLayout';
+import { WORLD, CARD_UNITS, autoArrange, clampPos, spreadOut } from '../integratorLayout';
 import { graphicShot, levelShot } from '../integratorArt';
 import { audio } from './mediaShared';
 
@@ -368,13 +368,15 @@ registerEditor(['gam'], (host, project) => {
         if (p) p.n++;
         else pairs.set(k, { a: i, b: t, n: 1 });
       }
+    // with lots of links, the selected scene's stand out and the rest fade back
+    const busy = pairs.size > 40 && !forExport;
     const ordered = [...pairs.values()].sort((p, q) => Number(p.a === selected || p.b === selected) - Number(q.a === selected || q.b === selected));
     for (const { a, b, n } of ordered) {
       const ra = cardRect(a);
       const rb = cardRect(b);
       const out = a === selected && !forExport;
       const inn = b === selected && !forExport;
-      const color = out ? '#ffd400' : inn ? '#6cf28a' : 'rgba(143,170,255,.75)';
+      const color = out ? '#ffd400' : inn ? '#6cf28a' : busy ? 'rgba(143,170,255,.28)' : 'rgba(143,170,255,.75)';
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
       ctx.lineWidth = out || inn ? 2.5 : 1.5;
@@ -664,6 +666,13 @@ registerEditor(['gam'], (host, project) => {
     });
     return n;
   };
+  function relayout(positions: Map<number, Point>): void {
+    undoPositions = new Map(used().map((i) => [i, { ...game.scenes[i].pos }]));
+    for (const [i, p] of positions) game.scenes[i].pos = p;
+    save();
+    renderTools();
+    fit();
+  }
   function renderTools(): void {
     const crowded = overlapping();
     clear(
@@ -673,14 +682,16 @@ registerEditor(['gam'], (host, project) => {
         'button',
         {
           class: crowded ? 'grator-attention' : undefined,
-          title: `${crowded ? `${crowded} scenes are hiding one another. ` : ''}Lay the scenes out as a graph: the start on the left, each level after the ones that lead to it, the end on the right`,
-          onclick: () => {
-            undoPositions = new Map(used().map((i) => [i, { ...game.scenes[i].pos }]));
-            for (const [i, p] of autoArrange(game)) game.scenes[i].pos = p;
-            save();
-            renderTools();
-            fit();
-          },
+          title: `${crowded ? `${crowded} scenes are hiding one another. ` : ''}Move the cards apart so none hides another, keeping your arrangement`,
+          onclick: () => relayout(spreadOut(game)),
+        },
+        '✥ Spread out',
+      ),
+      h(
+        'button',
+        {
+          title: 'Lay the scenes out as a graph: the start first, then each level after the ones that lead to it, the end last',
+          onclick: () => relayout(autoArrange(game)),
         },
         '⇄ Auto-arrange',
       ),
@@ -697,7 +708,7 @@ registerEditor(['gam'], (host, project) => {
                 fit();
               },
             },
-            '↶ Undo arrange',
+            '↶ Undo',
           )
         : null,
       h('span', { class: 'grator-spacer' }),
