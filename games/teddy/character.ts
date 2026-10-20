@@ -111,7 +111,7 @@ export function buildCharacter(): Character {
       norepeat: 1,
     },
   );
-  set(S[SEQ.dead], [f('dead', 2)], { key: KEY.p, sound: SND.flop });
+  set(S[SEQ.dead], [f('dead', 2)], { key: KEY.d, sound: SND.flop });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // energy

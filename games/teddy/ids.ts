@@ -24,7 +24,7 @@ export const SEQ = {
   spin: 12,
   /** R: roll over. */
   roll: 13,
-  /** P: play dead (hold). */
+  /** D: play dead (hold). */
   dead: 14,
 } as const;
 
@@ -39,7 +39,7 @@ export const KEY = {
   s: 0x1f73,
   t: 0x1474,
   r: 0x1372,
-  p: 0x1970,
+  d: 0x2064,
   f: 0x2166,
 } as const;
 
