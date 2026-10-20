@@ -24,6 +24,25 @@ import {
 } from '../src/formats/cmfEdit';
 import { ENVELOPE, FLAGS, getOp, setOp, setFeedback, getFeedback, presetName, MULT } from '../src/editor/music/sbi';
 import { INSTRUMENTS, song as composeSong } from '../src/audio/compose';
+import { CmfPlayer, TICK_RATE } from '../src/audio/cmfPlayer';
+import { Opl2 } from '../src/audio/opl';
+
+/** Root-mean-square level of a song played through the app's PlayIt port for `ticks` ticks. */
+function rms(bytes: Uint8Array, ticks: number): number {
+  const opl = new Opl2(22050);
+  const player = new CmfPlayer(opl);
+  player.load(musicOf(bytes), readSong(bytes).instruments);
+  const buf = new Float32Array(Math.round(22050 / TICK_RATE));
+  let sum = 0;
+  let count = 0;
+  for (let t = 0; t < ticks; t++) {
+    player.tick();
+    opl.render(buf);
+    for (const v of buf) sum += v * v;
+    count += buf.length;
+  }
+  return Math.sqrt(sum / count);
+}
 
 const root = resolve(__dirname, '../../cd/gameware');
 
@@ -138,6 +157,16 @@ describe('CMF editing model', () => {
     const same = readSong(bytes);
     setVelocity(channelNotes(same, 0), channelNotes(same, 0)[0].on.b);
     expect(writeSong(same)).toEqual(bytes);
+  });
+
+  it('plays softer after scaling velocities down', () => {
+    const bytes = small();
+    const song = readSong(bytes);
+    scaleVelocities(song.notes, 0.2);
+    const loud = rms(bytes, 200);
+    const soft = rms(writeSong(song), 200);
+    expect(loud).toBeGreaterThan(0);
+    expect(soft).toBeLessThan(loud * 0.8);
   });
 
   it('turns velocity into the carrier level the way SBFMDRV does', () => {
