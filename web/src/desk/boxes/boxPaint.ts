@@ -177,20 +177,36 @@ export function badge(ctx: CanvasRenderingContext2D, text: string, x: number, y:
   return w;
 }
 
+/** A UPC-A barcode filling the white label: 95 modules, guard bars, a real check digit. */
 export function barcode(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, seed: string): void {
   ctx.fillStyle = '#fff';
   ctx.fillRect(x, y, w, h);
+  // 0 (number system) · 51136 (Sandbox Software) · 5 digits from the game · check digit
+  const n = [...seed].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 100000, 7);
+  const d = `051136${String(n).padStart(5, '0')}`.split('').map(Number);
+  const odd = d.reduce((t, v, i) => t + (i % 2 ? 0 : v), 0);
+  const even = d.reduce((t, v, i) => t + (i % 2 ? v : 0), 0);
+  d.push((10 - ((odd * 3 + even) % 10)) % 10);
+  const L = ['0001101', '0011001', '0010011', '0111101', '0100011', '0110001', '0101111', '0111011', '0110111', '0001011'];
+  const R = L.map((c) => [...c].map((b) => (b === '0' ? '1' : '0')).join(''));
+  const bits = `101${d.slice(0, 6).map((v) => L[v]).join('')}01010${d.slice(6).map((v) => R[v]).join('')}101`;
+  // guard bars (and the first and last digit's) run down past the others
+  const guard = (i: number) => i < 10 || (i >= 45 && i < 50) || i >= 85;
+  const quiet = 9;
+  const mod = w / (95 + quiet * 2);
+  const left = x + quiet * mod;
+  const top = y + 5;
+  const barH = h - 20;
   ctx.fillStyle = '#000';
-  let n = [...seed].reduce((a, c) => a * 31 + c.charCodeAt(0), 7);
-  for (let bx = x + 8; bx < x + w - 8;) {
-    n = (n * 1103515245 + 12345) & 0x7fffffff;
-    const bw = 1 + (n % 3);
-    if ((n >> 8) % 2) ctx.fillRect(bx, y + 6, bw, h - 22);
-    bx += bw + 1;
-  }
-  ctx.font = SANS(11, 400);
+  for (let i = 0; i < 95; i++) if (bits[i] === '1') ctx.fillRect(left + i * mod, top, mod + 0.15, barH + (guard(i) ? 7 : 0));
+  ctx.font = SANS(Math.max(8, mod * 7.5), 400);
+  ctx.textAlign = 'center';
+  const base = y + h - 3;
+  ctx.fillText(String(d[0]), x + (quiet * mod) / 2, base);
+  ctx.fillText(d.slice(1, 6).join(''), left + 28 * mod, base);
+  ctx.fillText(d.slice(6, 11).join(''), left + 67 * mod, base);
+  ctx.fillText(String(d[11]), x + w - (quiet * mod) / 2, base);
   ctx.textAlign = 'left';
-  ctx.fillText(`0 ${String(Math.abs(n) % 100000).padStart(5, '0')} ${String(Math.abs(n >> 5) % 100000).padStart(5, '0')} 5`, x + 10, y + h - 4);
 }
 
 /** How many lines text wraps to (the same breaks wrap() makes), counting paragraph gaps as 0.4 line. */
