@@ -143,7 +143,7 @@ export function introFli(): Uint8Array {
   for (let f = 0; f < 10; f++) {
     const p = desk((g) => {
       glitchFace(g, 20 + f, 1);
-      if (f % 2) text(g, 10, 70, 'YOUR PC IS MINE', c('slime', 5));
+      if (f % 2) text(g, 16, 70, 'PC IS MINE!', c('slime', 5));
     });
     caption(p, 'IT WAS GLITCH, A VIRUS!');
     frames.push(frame(p));
@@ -180,7 +180,7 @@ export function introFli(): Uint8Array {
     frames.push(frame(p));
   }
   for (let i = 0; i < 3; i++) frames.push(frame(title));
-  return encodeFli(frames, SP.pal, { speed: 5 });
+  return encodeFli(frames, SP.pal, { speed: 9 });
 }
 
 /** Between stages: down the data bus to the next part of the machine. */
