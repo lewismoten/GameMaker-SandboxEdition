@@ -1,5 +1,6 @@
 // play.html: full-window player.
-//   play.html?game=<id>   a sample game from ./games/ (the CD's gameware)
+//   play.html?game=<id>   a game from ./games/ (the CD's gameware and shareware, the new games)
+//   play-<id>.html         the same, the game named by the page (<meta name="gm:game">)
 //   play.html?project=<id> a project from the editor (IndexedDB)
 //   exported web apps     ./game/manifest.json lists the bundled game files
 import { mountPlayer } from './player/player';
@@ -16,6 +17,8 @@ interface BundleManifest {
 }
 
 const root = document.querySelector<HTMLElement>('#player')!;
+/** A game's own page (play-<id>.html) names its game; its title is already the right one. */
+const pageGame = document.querySelector<HTMLMetaElement>('meta[name="gm:game"]')?.content || null;
 document.documentElement.style.cssText = 'height:100%;background:#000';
 document.body.style.cssText = 'margin:0;height:100%;background:#000';
 root.style.cssText = 'width:100%;height:100%';
@@ -37,7 +40,7 @@ async function loadBundle(): Promise<{ id: string; title: string; gam: string; f
 
 async function choose(): Promise<{ id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string } | undefined> {
   const params = new URLSearchParams(location.search);
-  const gameId = params.get('game');
+  const gameId = params.get('game') ?? pageGame;
   const projectId = params.get('project');
   if (projectId) {
     const p = await loadProject(projectId);
@@ -67,7 +70,7 @@ async function main(): Promise<void> {
     location.replace('./');
     return;
   }
-  document.title = game.title;
+  if (!pageGame) document.title = game.title;
   for (const [name, bytes] of Object.entries(await loadSaveData(game.id))) game.files.set(name, bytes);
   const start = () =>
     mountPlayer(root, game.files, game.gam, {
