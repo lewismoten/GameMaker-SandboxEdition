@@ -9,6 +9,7 @@ import { serializeCharacter } from '../../web/src/formats/character';
 import { serializeGame } from '../../web/src/formats/game';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { Disk } from '../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { BG } from './src/blocks/bblocks';
 import { MB, CB } from './src/sprites/sprites';
 import { buildMonsters } from './src/characters/monsters';
@@ -36,6 +37,7 @@ disk.put('burrow.pal', BURROW);
 disk.put('dusk.pal', DUSK);
 
 // Screens.
+disk.put(SANDLOGO, sandLogoFli());
 disk.put('intro.fli', introFli());
 disk.put('title.gif', gif(titleScreen()));
 disk.put('menu.gif', gif(menuScreen()));
@@ -45,7 +47,9 @@ disk.put('savegame.gif', gif(filesScreen('SAVE THIS GAME')));
 disk.put('won.gif', gif(wonScreen()));
 disk.put('lost.gif', gif(lostScreen()));
 const lst = (name: string, entries: [string, number?][]) => disk.put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
+// the Sandbox Software logo first, then the game's own intro
 lst('title.lst', [
+  [SANDLOGO, 0],
   ['intro.fli', 0],
   ['title.gif', 12],
 ]);
