@@ -1,4 +1,4 @@
-// SNOW.BBL: every background block of Dowden Additions and LaVale Mall, drawn in code. Index assignments are
+// SNOW.BBL: every background block of Fort Ashby and LaVale Mall, drawn in code. Index assignments are
 // by name; attributes (solid sides, money, gravity, what a block turns into when touched
 // or after time) are what make the game: deep snow is solid and pays $1 when you push
 // into it, parking-lot asphalt quietly snows back over, ice slides you, forts throw.

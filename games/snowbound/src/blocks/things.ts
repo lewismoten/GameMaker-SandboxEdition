@@ -53,7 +53,7 @@ export function addThings(k: Ctx, { yardBase, sidewalk, lot }: Painters) {
   lamp.rect(6, 1, 8, 1, c('ink', 1)).rect(7, 2, 6, 4, c('glow', 3)).rect(8, 3, 4, 2, c('glow', 3)).rect(6, 6, 8, 1, c('ink', 1));
   lamp.rect(7, 0, 6, 1, c('snow', 6));
   book.add('lamp', lamp, { solid: SOLID });
-  // No mailboxes in Dowden Additions (the carrier walks the mail to every door slot), so
+  // No mailboxes in the neighborhood (the carrier walks the mail to every door slot), so
   // the plows have only the fire hydrants to bury.
   const hydrant = yardBase(99);
   hydrant.rect(6, 7, 8, 11, c('coat', 2)).rect(6, 7, 2, 11, c('coat', 3)).rect(12, 7, 2, 11, c('coat', 1));

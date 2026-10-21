@@ -95,7 +95,7 @@ one touch at a time, hose streams are gravity currents, and the tide rolls up th
 next/ntime chains started at different phases. The same blocks are re-lit for the burrows and
 the dusk by tinted palettes, and the screens are a dial-up BBS session. PC speaker only.
 
-**Snowbound: The $89 Shovel** (`snowbound`). Shovel the real streets of Dowden Additions at $1
+**Snowbound: The $89 Shovel** (`snowbound`). Shovel the real streets of Fort Ashby at $1
 a scoop: deep snow is solid and pays money when pushed, the mall lot snows back over on a
 timer, ice slides you by gravity, and the sled run's glide blocks pull up and down at once so
 the sled keeps its speed. Plows and cars are two monsters side by side that die into their

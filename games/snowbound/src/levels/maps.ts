@@ -1,6 +1,6 @@
 // The four levels, laid out with a little builder: fills, ASCII patches for parks and the
 // sled run, and stamps for houses, street-name signs and LaVale Mall. The streets are the
-// real ones of Dowden Additions, winter of 1992: Gale Street, Dunn Drive, Leota Street,
+// real ones of Fort Ashby, winter of 1992: Gale Street, Dunn Drive, Leota Street,
 // Leon Drive, Jamie Street and Bowden Drive.
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockBook } from '../blocks/blocks';
