@@ -1,21 +1,23 @@
 // Small things around the desk: a Sandbox BBS mug full of pencils and pens, a beige wall
 // telephone (lift the handset for a dial tone), and a swing-arm lamp that is on when it
 // is dark outside (click it to switch it yourself).
-import './deskProps.css';
-import { h } from '../../editor/core/ui';
-import { output } from '../../audio/output';
-import { watchDaylight } from './daylight';
-import { deskMug } from '../mug/mug';
+import "./deskProps.css";
+import { h } from "../../editor/core/ui";
+import { output } from "../../audio/output";
+import { watchDaylight } from "./daylight";
+import { deskMug } from "../mug/mug";
 
 const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
-  const el = h('div', { class: cls });
+  const el = h("div", { class: cls });
   el.innerHTML = `<svg viewBox="${viewBox}" aria-hidden="true">${body}</svg>`;
   return el;
 };
 
 export function mug(): HTMLElement {
   // the mug lives in mug.ts: printed with the picture chosen in its viewer
-  return deskMug(() => void import('../mug/mugViewer').then((m) => m.openMugViewer()));
+  return deskMug(
+    () => void import("../mug/mugViewer").then((m) => m.openMugViewer()),
+  );
 }
 
 /** A dial tone for as long as the handset is off the hook. */
@@ -43,11 +45,15 @@ function dialTone(): () => void {
 }
 
 /** A coiled cord down a vertical run, as SVG path commands: little loops side to side. */
-const coil = (dy: number, turns: number) => Array.from({ length: turns }, (_, i) => `q ${i % 2 ? -7 : 7} ${dy / turns / 2} 0 ${dy / turns}`).join(' ');
+const coil = (dy: number, turns: number) =>
+  Array.from(
+    { length: turns },
+    (_, i) => `q ${i % 2 ? -7 : 7} ${dy / turns / 2} 0 ${dy / turns}`,
+  ).join(" ");
 
 /** The handset's outline: earpiece cup, handle and mouthpiece cup. */
 const HANDSET =
-  'M22 16 q0 -8 9 -8 h18 q9 0 9 8 v18 q0 7 -8 9 q-3 1 -3 6 v40 q0 5 3 6 q8 2 8 9 v18 q0 8 -9 8 h-18 q-9 0 -9 -8 v-18 q0 -7 8 -9 q3 -1 3 -6 v-40 q0 -5 -3 -6 q-8 -2 -8 -9 z';
+  "M22 16 q0 -8 9 -8 h18 q9 0 9 8 v18 q0 7 -8 9 q-3 1 -3 6 v40 q0 5 3 6 q8 2 8 9 v18 q0 8 -9 8 h-18 q-9 0 -9 -8 v-18 q0 -7 8 -9 q3 -1 3 -6 v-40 q0 -5 -3 -6 q-8 -2 -8 -9 z";
 
 export function wallPhone(): HTMLElement {
   // A beige touch-tone wall phone, about 6" x 11": the handset hangs straight down the front
@@ -58,8 +64,8 @@ export function wallPhone(): HTMLElement {
   const keys = Array.from({ length: 12 }, (_, i) => {
     const x = 23 + (i % 3) * 12;
     const y = 134 + Math.floor(i / 3) * 10;
-    return `<rect x="${x}" y="${y}" width="10" height="8" rx="2" fill="#f4f1e6" stroke="#9e967c" stroke-width="0.6"/><text x="${x + 5}" y="${y + 6}" text-anchor="middle" font-size="5" font-family="Arial" fill="#444">${'123456789*0#'[i]}</text>`;
-  }).join('');
+    return `<rect x="${x}" y="${y}" width="10" height="8" rx="2" fill="#f4f1e6" stroke="#9e967c" stroke-width="0.6"/><text x="${x + 5}" y="${y + 6}" text-anchor="middle" font-size="5" font-family="Arial" fill="#444">${"123456789*0#"[i]}</text>`;
+  }).join("");
   const holes = (cx: number, cy: number) =>
     [
       [0, 0],
@@ -72,11 +78,14 @@ export function wallPhone(): HTMLElement {
       [-3, 3],
       [3, -3],
     ]
-      .map(([dx, dy]) => `<circle cx="${cx + dx}" cy="${cy + dy}" r="0.9" fill="#7d755f"/>`)
-      .join('');
+      .map(
+        ([dx, dy]) =>
+          `<circle cx="${cx + dx}" cy="${cy + dy}" r="0.9" fill="#7d755f"/>`,
+      )
+      .join("");
   const el = svg(
-    'wall-phone',
-    '0 0 80 260',
+    "wall-phone",
+    "0 0 80 260",
     `<defs>
       <linearGradient id="ph-body" x1="0" x2="1"><stop offset="0" stop-color="#ece6d3"/><stop offset="0.6" stop-color="#d8d0b8"/><stop offset="1" stop-color="#b3aa90"/></linearGradient>
       <linearGradient id="ph-hand" x1="0" x2="1"><stop offset="0" stop-color="#f3eedf"/><stop offset="0.5" stop-color="#e0d8c2"/><stop offset="1" stop-color="#b9b097"/></linearGradient>
@@ -89,6 +98,20 @@ export function wallPhone(): HTMLElement {
     <rect x="36" y="12" width="8" height="7" rx="2" fill="#8f8770"/>
     <rect x="20" y="130" width="40" height="44" rx="4" fill="#cdc5ab"/>
     ${keys}
+    <!-- stickers on the base, half behind the handset: a green poison-warning face, tongue
+         out, and a red 911 (both in full view with the handset lifted) -->
+    <g transform="rotate(-8 24 64)">
+      <circle cx="24" cy="64" r="9" fill="#7cc243" stroke="#1d2b12" stroke-width="0.8"/>
+      <path d="M18.5 60 l4 1.8 M29.5 60 l-4 1.8" stroke="#1d2b12" stroke-width="1.1" stroke-linecap="round"/>
+      <circle cx="21" cy="62.6" r="1" fill="#1d2b12"/>
+      <circle cx="27" cy="62.6" r="1" fill="#1d2b12"/>
+      <path d="M19.5 68.5 q4.5 -3 9 0" fill="none" stroke="#1d2b12" stroke-width="1.1" stroke-linecap="round"/>
+      <path d="M22.2 67.6 q1.8 4.6 3.6 0" fill="#e0525e" stroke="#1d2b12" stroke-width="0.6"/>
+    </g>
+    <g transform="rotate(6 55 84)">
+      <rect x="46" y="78" width="18" height="12" rx="2" fill="#d3141c" stroke="#fff" stroke-width="0.8"/>
+      <text x="55" y="87.2" text-anchor="middle" font-size="8" font-weight="900" font-family="Arial Black, Arial, sans-serif" fill="#fff">911</text>
+    </g>
     <!-- the coiled cord: out of the base, down in a loop and up into the mouthpiece -->
     <path class="cord" d="M54 180 ${coil(56, 12)} q 0 12 -13 12 q -13 0 -13 -12 ${coil(-104, 22)} q 0 -4 6 -6" fill="none" stroke="#c9c1a6" stroke-width="2.2"/>
     <!-- the handset, hanging on the hook: earpiece, handle, mouthpiece -->
@@ -114,33 +137,41 @@ export function wallPhone(): HTMLElement {
       </g>
     </g>`,
   );
-  el.setAttribute('role', 'button');
-  el.setAttribute('tabindex', '0');
-  el.setAttribute('aria-label', 'Wall telephone: lift the handset');
-  el.title = 'The phone: lift the handset';
+  el.setAttribute("role", "button");
+  el.setAttribute("tabindex", "0");
+  el.setAttribute("aria-label", "Wall telephone: lift the handset");
+  el.title = "The phone: lift the handset";
   let hangUp: (() => void) | undefined;
   const toggle = () => {
     if (hangUp) {
       hangUp();
       hangUp = undefined;
-      el.classList.remove('off-hook');
+      el.classList.remove("off-hook");
     } else {
       hangUp = dialTone();
-      el.classList.add('off-hook');
+      el.classList.add("off-hook");
     }
-    el.setAttribute('aria-pressed', String(!!hangUp));
+    el.setAttribute("aria-pressed", String(!!hangUp));
   };
-  el.addEventListener('click', toggle);
-  el.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), toggle()));
+  el.addEventListener("click", toggle);
+  el.addEventListener(
+    "keydown",
+    (e) =>
+      (e.key === "Enter" || e.key === " ") && (e.preventDefault(), toggle()),
+  );
   return el;
 }
 
 /** The lamp, and the pool of light it throws on the desk. */
-export function deskLamp(): { lamp: HTMLElement; glow: HTMLElement; dispose(): void } {
-  const glow = h('div', { class: 'lamp-glow', 'aria-hidden': 'true' });
+export function deskLamp(): {
+  lamp: HTMLElement;
+  glow: HTMLElement;
+  dispose(): void;
+} {
+  const glow = h("div", { class: "lamp-glow", "aria-hidden": "true" });
   const lamp = svg(
-    'desk-lamp',
-    '0 0 220 300',
+    "desk-lamp",
+    "0 0 220 300",
     `<!-- base -->
     <ellipse cx="170" cy="286" rx="40" ry="10" fill="#1d1f24"/>
     <rect x="132" y="272" width="76" height="14" rx="6" fill="#2b2e35"/>
@@ -158,24 +189,30 @@ export function deskLamp(): { lamp: HTMLElement; glow: HTMLElement; dispose(): v
       <defs><linearGradient id="lamp-shade" x1="0" x2="1"><stop offset="0" stop-color="#1f5a35"/><stop offset="0.45" stop-color="#2f8a52"/><stop offset="1" stop-color="#14402a"/></linearGradient></defs>
     </g>`,
   );
-  lamp.setAttribute('role', 'switch');
-  lamp.setAttribute('tabindex', '0');
-  lamp.setAttribute('aria-label', 'Desk lamp');
+  lamp.setAttribute("role", "switch");
+  lamp.setAttribute("tabindex", "0");
+  lamp.setAttribute("aria-label", "Desk lamp");
   let manual: boolean | undefined;
   let dark = false;
   const show = () => {
     const on = manual ?? dark;
-    lamp.classList.toggle('on', on);
-    glow.classList.toggle('on', on);
-    lamp.setAttribute('aria-checked', String(on));
-    lamp.title = on ? 'Desk lamp: on (click to switch off)' : 'Desk lamp: off (click to switch on)';
+    lamp.classList.toggle("on", on);
+    glow.classList.toggle("on", on);
+    lamp.setAttribute("aria-checked", String(on));
+    lamp.title = on
+      ? "Desk lamp: on (click to switch off)"
+      : "Desk lamp: off (click to switch on)";
   };
   const toggle = () => {
     manual = !(manual ?? dark);
     show();
   };
-  lamp.addEventListener('click', toggle);
-  lamp.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), toggle()));
+  lamp.addEventListener("click", toggle);
+  lamp.addEventListener(
+    "keydown",
+    (e) =>
+      (e.key === "Enter" || e.key === " ") && (e.preventDefault(), toggle()),
+  );
   const stop = watchDaylight((light) => {
     dark = light < 0.5;
     manual = undefined; // the light outside changed: back to the lamp's habits
