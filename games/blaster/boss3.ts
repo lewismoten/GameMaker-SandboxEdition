@@ -57,7 +57,7 @@ function bossVirus(b: Bestiary, p: Pal): void {
   const hurt = (q: Pixels) => tint(q, (c) => (p.r('gold').includes(c) ? p.c('red', 1 + (p.r('gold').indexOf(c) >> 1)) : c));
   for (let r = 0; r < 2; r++)
     for (let c = 0; c < 2; c++)
-      weakPoint(b, `head${r}${c}`, r === 0 ? 6 : 9, (h) => (h <= 3 ? [hurt(f0[r][c]), hurt(f1[r][c])] : [f0[r][c], f1[r][c]]), { score: 1500, anim: 4 });
+      weakPoint(b, `head${r}${c}`, r === 0 ? 7 : 11, (h) => (h <= 3 ? [hurt(f0[r][c]), hurt(f1[r][c])] : [f0[r][c], f1[r][c]]), { score: 1500, anim: 4 });
   armor(b, 'grilleArt', bar(p));
   // the grille bars: armor sliding two blocks each way
   b.add('grille', {

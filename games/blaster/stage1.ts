@@ -144,10 +144,32 @@ export function stage1(): Stage {
   const kb = ka;
   const a = strip(ka.bs, ka.beasts, art, 101);
   legA(a);
-  a.sprinkle([['capB', 2, 2], ['capG', 2, 2], ['resH', 1, 1], ['resV', 1, 1], ['ledR', 1, 1], ['ledG', 1, 1], ['xtal', 2, 1]], 14);
+  a.sprinkle(
+    [
+      ['capB', 2, 2],
+      ['capG', 2, 2],
+      ['resH', 1, 1],
+      ['resV', 1, 1],
+      ['ledR', 1, 1],
+      ['ledG', 1, 1],
+      ['xtal', 2, 1],
+    ],
+    14,
+  );
   const b = strip(kb.bs, kb.beasts, art, 102);
   legB(b);
-  b.sprinkle([['capB', 2, 2], ['capG', 2, 2], ['resH', 1, 1], ['resV', 1, 1], ['ledR', 1, 1], ['ledG', 1, 1], ['xtal', 2, 1]], 14);
+  b.sprinkle(
+    [
+      ['capB', 2, 2],
+      ['capG', 2, 2],
+      ['resH', 1, 1],
+      ['resV', 1, 1],
+      ['ledR', 1, 1],
+      ['ledG', 1, 1],
+      ['xtal', 2, 1],
+    ],
+    14,
+  );
   return {
     n: 1,
     id: 'board',

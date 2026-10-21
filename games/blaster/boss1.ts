@@ -116,7 +116,7 @@ function bossVirus(b: Bestiary, p: Pal): void {
   const hurt = (q: Pixels) => tint(q, (c) => (p.r('virus').includes(c) ? p.c('red', 1 + (p.r('virus').indexOf(c) >> 1)) : c));
   for (let r = 0; r < 2; r++)
     for (let c = 0; c < 2; c++)
-      weakPoint(b, `head${r}${c}`, r === 0 ? 5 : 8, (h) => (h <= 3 ? [hurt(h0[r][c]), hurt(h1[r][c])] : [h0[r][c], h1[r][c]]), {
+      weakPoint(b, `head${r}${c}`, r === 0 ? 6 : 9, (h) => (h <= 3 ? [hurt(h0[r][c]), hurt(h1[r][c])] : [h0[r][c], h1[r][c]]), {
         score: 1000,
         anim: r === 1 ? 7 : 50,
       });
@@ -127,7 +127,7 @@ export function bossBIOS(art: StageArt): Leg {
     art,
     (bs) => bossTiles(bs, art),
     (b) => bossVirus(b, art.pal),
-    { mite: 'mite', turretEvery: 10, seekerEvery: 45, hatchShut: 40, hatchOpen: 30, hatchEvery: 9 },
+    { mite: 'mite', turretEvery: 15, seekerEvery: 70, hatchShut: 60, hatchOpen: 24, hatchEvery: 12 },
   );
   const g = arena(k.bs, k.beasts, art, 7);
   g.rect(1, 0, 14, 10, (c, d) => ((c + d) % 7 === 0 ? 'floor1' : 'floor0'));

@@ -11,7 +11,8 @@ for (const make of STAGES) {
     if (only.length && !only.includes(l.file)) continue;
     const sim = simOf(l);
     const t0 = Date.now();
-    const r = await fly(sim, { maxTicks: l.kind === 'boss' ? 2400 : 1600, goal: l.kind === 'boss' ? arenaGoal : undefined });
+    const human = process.env.HUMAN ? { horizon: 5, every: 5 } : {};
+    const r = await fly(sim, { maxTicks: l.kind === 'boss' ? 2400 : 1600, goal: l.kind === 'boss' ? arenaGoal : undefined, ...human });
     console.log(
       `${l.file} ${l.title}: ${r.ok ? 'CLEARED' : r.dead ? 'DIED' : 'TIMED OUT'} in ${r.ticks} ticks (${(r.ticks / 18.2).toFixed(0)}s), lost ${r.hpLost} energy, score ${r.score}, ${((Date.now() - t0) / 1000).toFixed(1)}s`,
     );
