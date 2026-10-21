@@ -2,7 +2,7 @@
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
 import { pickFile } from '../widgets/filePicker';
-import { MAKERS } from '../makers';
+import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
 import { editors, fileInfo } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';

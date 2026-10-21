@@ -2,7 +2,7 @@
 // back when the menu sits idle. Record one by playing, watch it, and trim it.
 import { registerEditor } from '../registry';
 import { h, clear, modal, toast } from '../../core/ui';
-import { registerMaker } from '../../makers';
+import { registerMaker } from '../../tools/makers';
 import type { Project } from '../../core/project';
 import { GameFiles } from '../../../project/files';
 import { mountPlayer, type PlayerHandle } from '../../../player/player';

@@ -2,7 +2,7 @@
 // speed and press Compose for a new tune (melody, bass and chords on FM instruments);
 // listen, compose again, or edit the notes by hand, then save.
 import { h, modal, toast } from '../core/ui';
-import { registerMaker } from '../makers';
+import { registerMaker } from './makers';
 import { INSTRUMENTS, song, type Voice } from '../../audio/compose';
 import { AudioEngine } from '../../audio/engine';
 import { validDosName, type Project } from '../core/project';

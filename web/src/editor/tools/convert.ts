@@ -1,7 +1,7 @@
 // Turning today's pictures into Game-Maker's: scale to 320x200, reduce to a 256-color VGA
 // palette (median cut, or an existing game palette), with optional Floyd–Steinberg
 // dithering. Used for importing pictures as GIFs and frames into FLI animations.
-import type { Palette } from '../formats/palette';
+import type { Palette } from '../../formats/palette';
 
 export type Fit = 'fit' | 'fill' | 'stretch';
 

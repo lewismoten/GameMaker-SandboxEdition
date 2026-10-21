@@ -3,9 +3,9 @@
 // the result before saving, and can fit, fill or stretch it, dither it, and keep the
 // colors of one of the game's palettes so it matches the rest of the game.
 import { h, modal, pickFiles, toast } from '../core/ui';
-import { registerMaker } from '../makers';
+import { registerMaker } from './makers';
 import { paintIndexed } from '../core/draw';
-import { decodeFrames, rgbaOf, toIndexed, type Fit, type Indexed } from '../convert';
+import { decodeFrames, rgbaOf, toIndexed, type Fit, type Indexed } from './convert';
 import { encodeGif } from '../../formats/gif';
 import { encodeFli } from '../../formats/fli';
 import { parsePalette } from '../../formats/palette';

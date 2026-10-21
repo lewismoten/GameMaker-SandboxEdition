@@ -3,7 +3,7 @@
 // effect (robot, chipmunk, deep, radio) and saved as 8-bit 11 kHz mono, as the card
 // played it.
 import { h, modal, toast } from '../core/ui';
-import { registerMaker } from '../makers';
+import { registerMaker } from './makers';
 import { encodeVoc } from '../../formats/voc';
 import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';

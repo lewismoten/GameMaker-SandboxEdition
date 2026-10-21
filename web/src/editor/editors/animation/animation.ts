@@ -8,7 +8,7 @@ import { registerEditor } from '../registry';
 import { h, clear, download, pickFiles, toast } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
 import { pickFile } from '../../widgets/filePicker';
-import { decodeFrames, remap, rgbaOf } from '../../convert';
+import { decodeFrames, remap, rgbaOf } from '../../tools/convert';
 import { decodeGif, isGif } from '../../../formats/gif';
 import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFrames } from '../../../formats/fliFrames';
 import { createZip } from '../../../project/zip';

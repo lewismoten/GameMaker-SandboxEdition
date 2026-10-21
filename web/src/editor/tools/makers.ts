@@ -1,7 +1,7 @@
 // Extra ways to make files beyond "new" and "from the library": converting a picture,
 // building an animation, recording a sound... Tools register themselves here and the
 // file picker offers them as buttons.
-import type { FileKind, Project } from './core/project';
+import type { FileKind, Project } from '../core/project';
 
 export interface Maker {
   label: string;
