@@ -18,12 +18,12 @@
     "accent": "#f0a020",
     "ink": "#ffffff",
     "tagline": "One courier. A hundred worlds. Ten shards of light.",
-    "back": "The Maximus Core, the forge-star at the heart of the galaxy, has gone dark. Its light was held in ten star-shards, and they are scattered across the Hundred Worlds.\n\nMax is a courier. Couriers deliver. Fly the pod between five sectors of planets - grasslands, glaciers, lava fields, crystal caverns, drowned temples and derelict stations - then land and explore every one on foot, by rover or in the diving bell. Every planet is a little globe: walk east long enough and you come home. Find the ten modules hidden in the vaults, earn credits for the trading posts, open the shard gates sector by sector, and fly through the Maelstrom to the Heart of Maximus.",
+    "back": "The Maximus Core, the forge-star at the heart of the galaxy, has gone dark. Its light is scattered in ten star-shards across the Hundred Worlds.\n\nYou're Max, and couriers deliver. Fly your pod from world to world, then land and explore on foot, by rover or in the diving bell: grasslands, glaciers, lava fields, drowned temples and derelict stations. Walk east long enough and you come home! Raid the vaults, stock up at the trading posts, open the shard gates sector by sector, and brave the Maelstrom to the Heart of Maximus.",
     "features": [
       "100 scenes: a galaxy chart, 5 sector charts and 88 explorable worlds",
       "Four ways to travel - courier pod, jet-hopping on foot, the diving bell and the rover",
       "Every planet wraps around: a real little world with caves, ruins, lakes and floating islands",
-      "176 creatures in four families - land, sea, space and machine - each with its own behavior",
+      "176 creatures on land, at sea, in space and aboard the stations",
       "10 courier modules to find: plasma lance, nova burst, shields, mines, hover pack and more",
       "Sound Blaster music and 30 digitized sound effects",
       "Pushes Game-Maker to every limit - see LIMITS.TXT"
