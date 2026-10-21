@@ -19,5 +19,5 @@ for leaving their toaster
 unplugged during testing.
 
 No robots were harmed in the
-making of this game. A few were
-mildly fizzled.
+making of this game. A few
+were mildly fizzled.

@@ -7,8 +7,8 @@ compatibles with VGA. Sound
 Blaster recommended.
 
 TO PLAY
-Type OHMSWEET at the DOS prompt
-(it runs PLAYGAME with
+Type OHMSWEET at the DOS
+prompt (it runs PLAYGAME with
 OHMSWEET.GAM).
 
 WHAT IS IT?
@@ -23,12 +23,12 @@ force-field gates... without
 touching a live wire yourself.
 
 THIS IS SHAREWARE
-You may copy this disk and give
-it to your friends, upload it
-to bulletin boards and share it
-with user groups, as long as
-all the files stay together and
-unchanged.
+You may copy this disk and
+give it to your friends,
+upload it to bulletin boards
+and share it with user groups,
+as long as all the files stay
+together and unchanged.
 
 If you enjoy OHM SWEET OHM,
 please register for $12 with
@@ -39,8 +39,8 @@ wiring poster of all fifteen
 boards, and the next Sandbox
 Software game at a discount.
 
-SEND $12 (check or money order)
-TO:
+SEND $12 (check or money
+order) TO:
  Sandbox Software
  P.O. Box 1995
  Pittsburgh, PA 15213
@@ -49,7 +49,8 @@ and so is this address.)
 
 FILES ON THIS DISK
  OHMSWEET.GAM the game
- *.MAP *.MON the fifteen boards
+ *.MAP *.MON the fifteen
+ boards
  *.BBL *.MBL board and parts
  art
  WATT.CHR Watt himself

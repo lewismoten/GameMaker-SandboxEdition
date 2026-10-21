@@ -1,8 +1,9 @@
 // The words: storyline, instructions, credits, the endings and README.TXT. PLAYGAME shows
-// .TXT pages 31 characters wide and 16 lines a page, so every page here is wrapped to fit.
+// .TXT pages 31 characters wide and 16 lines a page. Lines are wrapped to 30: a line of
+// exactly 31 leaves its line break for the next read, which shows as an extra blank line.
 
 /** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent. */
-export function wrap(text: string, width = 31): string {
+export function wrap(text: string, width = 30): string {
   const out: string[] = [];
   for (const para of text.split('\n')) {
     if (para.trim() === '') {
