@@ -7,6 +7,15 @@
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <title>Play · Game-Maker SE</title>
+    <script>
+      // The readable text in #player is for crawlers and browsers without JavaScript:
+      // keep it out of sight while the player starts.
+      document.documentElement.className += ' js';
+    </script>
+    <style>
+      html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      html.js body { margin: 0; background: #000; }
+    </style>
     <!--SEO:HEAD-->
   </head>
   <body class="player-page">

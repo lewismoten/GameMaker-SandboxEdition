@@ -44,6 +44,7 @@ function rememberUi(next: Ui): void {
 async function startDesk(): Promise<void> {
   ui = 'desk';
   rememberUi('desk');
+  document.documentElement.dataset.ui = 'desk'; // the page background (index.html)
   app.classList.remove('modern');
   workspace?.dispose();
   workspace = undefined;
@@ -65,6 +66,7 @@ async function startDesk(): Promise<void> {
 function startModern(hash?: string): void {
   ui = 'modern';
   rememberUi('modern');
+  document.documentElement.dataset.ui = 'modern';
   app.classList.add('modern');
   clear(
     app,
