@@ -21,6 +21,7 @@ import { buildGame } from './src/game';
 import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, titleScreen, wonScreen } from './src/screens/screens';
 import { CREDITS, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
 import { buildDemo } from './src/demo';
+import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -120,4 +121,5 @@ const game = buildGame(L, {
 });
 disk.put('sandcast.gam', serializeGame(game));
 disk.put('readme.txt', README);
+disk.put('license.txt', licenseText("Sandcastle Knight"));
 disk.write();
