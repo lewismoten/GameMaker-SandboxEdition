@@ -116,7 +116,9 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
     key: `my:${p.id}`,
     kind: 'mine',
     title: p.name,
-    byline: `${editedWhen(p.updated)} · ${p.gam}`,
+    // the game it began as, when it is a copy
+    byline: [editedWhen(p.updated), original?.gam ? `copy of ${original.title}` : null, p.gam].filter(Boolean).join(' · '),
+    tileByline: original?.gam ? `${editedWhen(p.updated)} · from ${original.title}` : undefined,
     gam: p.gam,
     search: searchText(p.name, p.gam),
     project: p,

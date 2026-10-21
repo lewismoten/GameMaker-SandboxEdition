@@ -29,3 +29,12 @@ describe('findOriginal', () => {
     expect(findOriginal({ id: 'p3', gam: 'SW.GAM' }, catalog)).toBeUndefined();
   });
 });
+
+describe('copyName', async () => {
+  const { copyName } = await import('../src/editor/shell/homeProjectActions');
+  it('names a duplicate that no game has yet', () => {
+    expect(copyName('Nebula', ['Nebula'])).toBe('Nebula copy');
+    expect(copyName('Nebula', ['Nebula', 'nebula copy'])).toBe('Nebula copy 2');
+    expect(copyName('Nebula copy 2', ['Nebula', 'Nebula copy', 'Nebula copy 2'])).toBe('Nebula copy 3');
+  });
+});
