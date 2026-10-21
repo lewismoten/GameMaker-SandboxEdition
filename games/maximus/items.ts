@@ -3,7 +3,7 @@
 import { Pixels } from '../kit/pixels';
 import { CLEAR, Mask, fill, outline, shade, sprite } from './art';
 import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from './palette';
-import { MODULES } from './common';
+import { MODULES } from './src/ids';
 
 const R = (n: string) => shared.get(n)!;
 

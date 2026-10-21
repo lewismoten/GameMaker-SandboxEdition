@@ -4,7 +4,7 @@
 import { Pixels, rng, dither } from '../kit/pixels';
 import { CLEAR, Mask, fill, outline, pick, shade, sprite, tileNoise } from './art';
 import { G, SOLID, SetBuilder, over, tex } from './blockset';
-import { ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from './common';
+import { ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from './src/ids';
 import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
 import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from './palette';
 import { PICKUP_FX, R } from './surface';

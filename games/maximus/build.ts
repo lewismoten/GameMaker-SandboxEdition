@@ -1,10 +1,10 @@
 // Builds every file of Maximus: The Hundred Worlds into games/maximus/disk/.
 //   cd web && npx vite-node ../games/maximus/build.ts
 import { Disk } from '../kit/disk';
-import { buildGame } from './game';
-import { present } from './present';
+import { buildGame } from './src/game';
+import { present } from './src/present';
 import { README } from './text';
-import { about, limitsTxt, manual } from './docs';
+import { about, limitsTxt, manual } from './src/docs';
 import { writeFileSync } from 'node:fs';
 
 const t0 = Date.now();

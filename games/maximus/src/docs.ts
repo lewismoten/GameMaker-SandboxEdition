@@ -1,20 +1,20 @@
 // The paper side of the box: LIMITS.TXT on the disk, about.json (label, box, catalog)
 // and manual.json (the printed manual), written from the built game so every number in
 // them is the real one.
-import { BACKBL, CHARBL, MONBL } from '../../web/src/formats/blocks';
-import { MAXFRAME, MAXINV, MAXSEQ } from '../../web/src/formats/character';
-import { MAXSCENELINKS, SCENEFILES, serializeGame } from '../../web/src/formats/game';
-import { LASTMM, MLEN, MWID } from '../../web/src/formats/map';
-import { LASTMON, LASTSL, MAXMARCH } from '../../web/src/formats/monster';
-import { RECLEN } from '../../web/src/formats/recording';
-import { LASTSND } from '../../web/src/formats/sound';
-import { MODULES, SHARDS } from './common';
+import { BACKBL, CHARBL, MONBL } from '../../../web/src/formats/blocks';
+import { MAXFRAME, MAXINV, MAXSEQ } from '../../../web/src/formats/character';
+import { MAXSCENELINKS, SCENEFILES, serializeGame } from '../../../web/src/formats/game';
+import { LASTMM, MLEN, MWID } from '../../../web/src/formats/map';
+import { LASTMON, LASTSL, MAXMARCH } from '../../../web/src/formats/monster';
+import { RECLEN } from '../../../web/src/formats/recording';
+import { LASTSND } from '../../../web/src/formats/sound';
+import { MODULES, SHARDS } from './ids';
 import type { Built } from './game';
-import { SHARED_END } from './palette';
-import { ROLES } from './roles';
+import { SHARED_END } from '../palette';
+import { ROLES } from '../roles';
 import { SECTORS, SCENE, allWorlds } from './universe';
-import { SONGS } from './music';
-import { wrapDoc } from './text';
+import { SONGS } from '../music';
+import { wrapDoc } from '../text';
 
 export interface Limit {
   what: string;

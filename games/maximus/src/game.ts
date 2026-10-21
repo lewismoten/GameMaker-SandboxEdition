@@ -1,29 +1,29 @@
 // Assembles the hundred scenes of Maximus: block sets, monster files, characters, every
 // map and palette, and the .GAM scene graph that links them.
-import { serializeBlocks, type Block } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeMonsters } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame, type Game, type Link, type Scene } from '../../web/src/formats/game';
-import { monsterSet, type MonsterSet } from './bestiary';
-import type { SetBuilder } from './blockset';
-import { courier, vehicle, type CharSet } from './chars';
-import { heartMap, maelstromMap } from './core';
-import { homeMap } from './home';
-import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from './fauna';
-import { Grid, W, reachable } from './mapkit';
-import { oceanSet } from './ocean';
-import { buildPalette } from './palette';
-import { checkPlanet, surfacePlanet, type PlanetResult } from './planet';
-import { populate, type Spots } from './populate';
-import { ROLES, themeFor, type Biome } from './roles';
-import { oceanPlanet } from './seaplanet';
-import { spaceSet } from './space';
-import { galaxyMap, sectorMap } from './spacemaps';
-import { stationSet } from './station';
-import { stationPlanet } from './stationmap';
-import { surfaceSet } from './surface';
+import { serializeBlocks, type Block } from '../../../web/src/formats/blocks';
+import { serializeCharacter } from '../../../web/src/formats/character';
+import { serializeMap } from '../../../web/src/formats/map';
+import { serializeMonsters } from '../../../web/src/formats/monster';
+import { serializePalette } from '../../../web/src/formats/palette';
+import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
+import { monsterSet, type MonsterSet } from '../bestiary';
+import type { SetBuilder } from '../blockset';
+import { courier, vehicle, type CharSet } from '../chars';
+import { heartMap, maelstromMap } from '../core';
+import { homeMap } from '../home';
+import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from '../fauna';
+import { Grid, W, reachable } from '../mapkit';
+import { oceanSet } from '../ocean';
+import { buildPalette } from '../palette';
+import { checkPlanet, surfacePlanet, type PlanetResult } from '../planet';
+import { populate, type Spots } from '../populate';
+import { ROLES, themeFor, type Biome } from '../roles';
+import { oceanPlanet } from '../seaplanet';
+import { spaceSet } from '../space';
+import { galaxyMap, sectorMap } from '../spacemaps';
+import { stationSet } from '../station';
+import { stationPlanet } from '../stationmap';
+import { surfaceSet } from '../surface';
 import { SCENE, SECTORS, allWorlds, type WorldKind } from './universe';
 
 export interface SceneInfo {

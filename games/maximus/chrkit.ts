@@ -4,7 +4,7 @@ import { Pixels } from '../kit/pixels';
 import { CHARBL, emptyBlock, type Block } from '../../web/src/formats/blocks';
 import { MONBL } from '../../web/src/formats/blocks';
 import { MAXFRAME, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
-import { keyOf, SCAN } from './common';
+import { keyOf, SCAN } from './src/ids';
 
 export const NONE = CHARBL;
 export const END = CHARBL + 1;

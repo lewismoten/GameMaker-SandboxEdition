@@ -1,7 +1,7 @@
 // The words on the disk: instructions and credits pages (shown 31 columns wide by
 // Game-Maker), the shareware README.TXT and LIMITS.TXT.
-import { MODULES, SHARDS } from './common';
-import { SECTORS } from './universe';
+import { MODULES, SHARDS } from './src/ids';
+import { SECTORS } from './src/universe';
 
 /** Wraps text for Game-Maker's text screens: fgets reads 31 characters, so a full
  * 31-character line would leave its newline for the next read (a blank line); keep to 30. */

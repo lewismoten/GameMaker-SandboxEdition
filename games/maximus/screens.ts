@@ -11,8 +11,8 @@ import { drawCourier } from './courier';
 import { drawModule, drawShard } from './items';
 import { buildPalette, hsl, type RGB, type Role, type Theme, S, WHITE, shared } from './palette';
 import { drawDiver, drawPod, drawRover } from './vehicles';
-import { MODULES, SHARDS } from './common';
-import { SECTORS, type World } from './universe';
+import { MODULES, SHARDS } from './src/ids';
+import { SECTORS, type World } from './src/universe';
 
 // ------------------------------------------------------------------ the screen palette
 

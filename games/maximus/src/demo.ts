@@ -4,11 +4,11 @@
 // press and release with its game tick, Game-Maker style. The pilot flies like a person:
 // one thrust key held down for a while (one press, one release, as a keyboard with the
 // typematic repeat off sends them), never a drumroll of taps.
-import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
-import { SCAN } from './common';
+import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { SCAN } from './ids';
 import type { Built } from './game';
-import { simFor } from './verify';
-import type { Sim } from './sim';
+import { simFor } from '../verify';
+import type { Sim } from '../sim';
 
 export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: number; reached: boolean }> {
   const home = b.scenes.find((s) => s.file === 'home')!;

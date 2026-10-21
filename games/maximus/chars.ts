@@ -8,7 +8,7 @@ import { CHARBL } from '../../web/src/formats/blocks';
 import type { Character } from '../../web/src/formats/character';
 import { INF_REPEAT } from '../../web/src/formats/character';
 import { BlockList, NONE, character, setSeq, type F } from './chrkit';
-import { MON, SEQ, SND, itemBlock } from './common';
+import { MON, SEQ, SND, itemBlock } from './src/ids';
 import { drawCourier, split, type Pose } from './courier';
 import { drawDiver, drawPod, drawRover } from './vehicles';
 import { beam, blink, charge, dropping, dust, shielded, smoke, sonar, sparkles, splash, streak, turn } from './fx';

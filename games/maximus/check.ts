@@ -4,10 +4,10 @@
 //   and the uplink back to orbit is reachable;
 // - rover worlds: the rover can drive all the way around the planet;
 // - the training deck can be crossed by "hold right, hop when stuck".
-import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './common';
+import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './src/ids';
 import { newCharInfo } from '../../web/src/engine/world';
 import { reachable } from './mapkit';
-import { buildGame } from './game';
+import { buildGame } from './src/game';
 import { autoWalk, navigate, simFor, standStill } from './verify';
 
 const only = process.argv.slice(2);

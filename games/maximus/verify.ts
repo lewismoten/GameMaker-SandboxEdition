@@ -1,8 +1,8 @@
 // Plays parts of the built game headlessly (the engine's own movement, touch and monster
 // code via sim.ts) to check that they work: the training deck can be crossed, rovers can
 // drive around their worlds, and nothing kills the courier the moment it lands.
-import { SCAN } from './common';
-import type { Built, SceneInfo } from './game';
+import { SCAN } from './src/ids';
+import type { Built, SceneInfo } from './src/game';
 import { Sim } from './sim';
 import type { CharInfo } from '../../web/src/engine/world';
 
