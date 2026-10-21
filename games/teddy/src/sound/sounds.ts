@@ -1,5 +1,5 @@
 // teddy.snd: thirty PC speaker effects, and digitized .VOC samples for a Sound Blaster
-// (a woof, a yip, a clown horn honk...) made with the kit's little synthesizer.
+// (a woof, a yip, a car horn honk, the wobble ball's giggle...) made with the kit's little synthesizer.
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
 import { rng } from '../../../kit/pixels';
@@ -96,6 +96,24 @@ function chomp(): Uint8Array {
   });
 }
 
+/**
+ * The wobble ball's giggle: roll it and the tube inside goes "hee-hee-hee-hoo-hoo", each
+ * syllable a reedy chirp that falls in pitch, the whole laugh sliding down and wobbling.
+ */
+function giggle(): Uint8Array {
+  const syl = 0.1;
+  const n = 6;
+  const v: Synth = (t) => {
+    const k = Math.floor(t / syl);
+    const u = (t - k * syl) / syl;
+    if (k >= n || u > 0.75) return 0;
+    const f = (980 - k * 70) * (1.15 - u * 0.4) * (1 + 0.04 * Math.sin(t * 2 * Math.PI * 28));
+    const ph = 2 * Math.PI * f * t;
+    return (Math.sin(ph) * 0.7 + Math.sign(Math.sin(ph)) * 0.15) * Math.sin((u / 0.75) * Math.PI);
+  };
+  return sample(n * syl + 0.05, v, { envelope: (u) => 1 - u * 0.4, gain: 0.9 });
+}
+
 export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array> } {
   const set = newSoundSet();
   const vocs: Record<string, Uint8Array> = {};
@@ -110,7 +128,13 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
   put(SND.kill, SPEAKER.fall(1600, 400), 'pop', pop());
   put(SND.treat, SPEAKER.coin(), 'crunch', crunch());
   put(SND.gobble, SPEAKER.hurt(), 'chomp', chomp());
-  put(SND.life, SPEAKER.arpeggio([523, 659, 784, 1047, 1319]), 'fanfare', chime([523, 659, 784, 1047, 1319], 0.08));
+  // A new nap (life) only comes from the wobble ball, so its sound is the ball's giggle.
+  put(
+    SND.life,
+    speaker((i) => (i < 30 && i % 5 < 4 ? 1100 - Math.floor(i / 5) * 80 - (i % 5) * 60 : 0)),
+    'giggle',
+    giggle(),
+  );
   put(
     SND.score,
     speaker((i) => (i < 6 ? 1568 : 0)),
