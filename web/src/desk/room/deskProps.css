@@ -31,9 +31,43 @@
   transform-origin: 40px 16px;
 }
 
-/* off the hook: the handset swings out toward you */
+/* hung up you see the handset's back; its earpiece and mouthpiece face the wall */
+.wall-phone .hs-front {
+  visibility: hidden;
+}
+
+/* hanging up, it turns back over halfway down */
+.wall-phone .hs-front,
+.wall-phone .hs-back {
+  transition: visibility 0s 0.15s;
+}
+
+/* off the hook: the handset swings out toward you, turning over (edge-on halfway) to show its front */
 .wall-phone.off-hook .handset {
+  animation: phone-lift 0.36s ease-out;
   transform: translate(-34px, 40px) rotate(24deg) scale(1.08);
+}
+
+.wall-phone.off-hook .hs-front {
+  visibility: visible;
+  transition: visibility 0s 0.16s;
+}
+
+.wall-phone.off-hook .hs-back {
+  visibility: hidden;
+  transition: visibility 0s 0.16s;
+}
+
+@keyframes phone-lift {
+  0% {
+    transform: none;
+  }
+  45% {
+    transform: translate(-16px, 18px) rotate(11deg) scale(0.08, 1.04);
+  }
+  100% {
+    transform: translate(-34px, 40px) rotate(24deg) scale(1.08);
+  }
 }
 
 .wall-phone:focus-visible,

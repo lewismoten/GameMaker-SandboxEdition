@@ -45,10 +45,16 @@ function dialTone(): () => void {
 /** A coiled cord down a vertical run, as SVG path commands: little loops side to side. */
 const coil = (dy: number, turns: number) => Array.from({ length: turns }, (_, i) => `q ${i % 2 ? -7 : 7} ${dy / turns / 2} 0 ${dy / turns}`).join(' ');
 
+/** The handset's outline: earpiece cup, handle and mouthpiece cup. */
+const HANDSET =
+  'M22 16 q0 -8 9 -8 h18 q9 0 9 8 v18 q0 7 -8 9 q-3 1 -3 6 v40 q0 5 3 6 q8 2 8 9 v18 q0 8 -9 8 h-18 q-9 0 -9 -8 v-18 q0 -7 8 -9 q3 -1 3 -6 v-40 q0 -5 -3 -6 q-8 -2 -8 -9 z';
+
 export function wallPhone(): HTMLElement {
   // A beige touch-tone wall phone, about 6" x 11": the handset hangs straight down the front
   // of the base on its hook, earpiece up, with the keypad below it and the coiled cord
-  // hanging in a loop from the mouthpiece back up into the bottom of the base.
+  // hanging in a loop from the mouthpiece back up into the bottom of the base. Hung up, the
+  // earpiece and mouthpiece face the wall, so what you see is the handset's smooth back;
+  // lifted off the hook it turns round to show their holes.
   const keys = Array.from({ length: 12 }, (_, i) => {
     const x = 23 + (i % 3) * 12;
     const y = 134 + Math.floor(i / 3) * 10;
@@ -74,6 +80,8 @@ export function wallPhone(): HTMLElement {
     `<defs>
       <linearGradient id="ph-body" x1="0" x2="1"><stop offset="0" stop-color="#ece6d3"/><stop offset="0.6" stop-color="#d8d0b8"/><stop offset="1" stop-color="#b3aa90"/></linearGradient>
       <linearGradient id="ph-hand" x1="0" x2="1"><stop offset="0" stop-color="#f3eedf"/><stop offset="0.5" stop-color="#e0d8c2"/><stop offset="1" stop-color="#b9b097"/></linearGradient>
+      <radialGradient id="ph-dome" cx="0.35" cy="0.35" r="0.7"><stop offset="0" stop-color="#fffbef" stop-opacity="0.9"/><stop offset="0.55" stop-color="#e6dec8" stop-opacity="0.35"/><stop offset="1" stop-color="#9e967c" stop-opacity="0.35"/></radialGradient>
+      <linearGradient id="ph-ridge" x1="0" x2="1"><stop offset="0" stop-color="#fffbef" stop-opacity="0.7"/><stop offset="1" stop-color="#9e967c" stop-opacity="0.45"/></linearGradient>
     </defs>
     <!-- the base on the wall, with the hook the handset hangs on and the keypad below it -->
     <rect x="8" y="4" width="64" height="176" rx="9" fill="url(#ph-body)" stroke="#8f8770"/>
@@ -85,12 +93,25 @@ export function wallPhone(): HTMLElement {
     <path class="cord" d="M54 180 ${coil(56, 12)} q 0 12 -13 12 q -13 0 -13 -12 ${coil(-104, 22)} q 0 -4 6 -6" fill="none" stroke="#c9c1a6" stroke-width="2.2"/>
     <!-- the handset, hanging on the hook: earpiece, handle, mouthpiece -->
     <g class="handset">
-      <path d="M22 16 q0 -8 9 -8 h18 q9 0 9 8 v18 q0 7 -8 9 q-3 1 -3 6 v40 q0 5 3 6 q8 2 8 9 v18 q0 8 -9 8 h-18 q-9 0 -9 -8 v-18 q0 -7 8 -9 q3 -1 3 -6 v-40 q0 -5 -3 -6 q-8 -2 -8 -9 z" fill="url(#ph-hand)" stroke="#8f8770"/>
-      <ellipse cx="40" cy="24" rx="12" ry="11" fill="#d9d1b9" stroke="#a99f86" stroke-width="0.6"/>
-      ${holes(40, 24)}
-      <ellipse cx="40" cy="110" rx="12" ry="11" fill="#d9d1b9" stroke="#a99f86" stroke-width="0.6"/>
-      ${holes(40, 110)}
-      <rect x="37" y="50" width="6" height="34" rx="3" fill="#000" opacity="0.06"/>
+      <path d="${HANDSET}" fill="url(#ph-hand)" stroke="#8f8770"/>
+      <!-- its back (hung up, the side you see): domed ends, a seam round the edge, a ridge down the handle -->
+      <g class="hs-back">
+        <path d="${HANDSET}" transform="translate(40 66) scale(0.88 0.95) translate(-40 -66)" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="0.8"/>
+        <ellipse cx="38" cy="25" rx="13" ry="12" fill="url(#ph-dome)"/>
+        <ellipse cx="38" cy="107" rx="13" ry="12" fill="url(#ph-dome)"/>
+        <rect x="35" y="44" width="6" height="44" rx="3" fill="url(#ph-ridge)"/>
+        <rect x="34" y="60" width="12" height="10" rx="1.5" fill="#d2c9ae" stroke="#a99f86" stroke-width="0.5"/>
+        <line x1="36" y1="63" x2="44" y2="63" stroke="#a99f86" stroke-width="0.6"/>
+        <line x1="36" y1="66" x2="42" y2="66" stroke="#a99f86" stroke-width="0.6"/>
+      </g>
+      <!-- its front (off the hook, turned toward you): the earpiece and mouthpiece holes -->
+      <g class="hs-front">
+        <ellipse cx="40" cy="24" rx="12" ry="11" fill="#d9d1b9" stroke="#a99f86" stroke-width="0.6"/>
+        ${holes(40, 24)}
+        <ellipse cx="40" cy="110" rx="12" ry="11" fill="#d9d1b9" stroke="#a99f86" stroke-width="0.6"/>
+        ${holes(40, 110)}
+        <rect x="37" y="50" width="6" height="34" rx="3" fill="#000" opacity="0.06"/>
+      </g>
     </g>`,
   );
   el.setAttribute('role', 'button');
