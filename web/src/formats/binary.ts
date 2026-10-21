@@ -3,6 +3,8 @@
 //
 // Reading past the end yields zeros instead of throwing, because several files on
 // the original CD image are truncated and DOS GameMaker happily fread()s short files.
+// The format modules (game.ts and others) read and write their C structs field by field
+// with these, in declaration order.
 
 const latin1 = new TextDecoder('latin1');
 
@@ -53,6 +55,7 @@ export class Reader {
   }
 
   i32(): number {
+    // `|` already yields a signed 32-bit result, so no sign fix-up is needed.
     return this.u16() | (this.u16() << 16);
   }
 
@@ -94,6 +97,7 @@ export class Writer {
     return this;
   }
 
+  // Signed writes store the same two's complement bytes as the unsigned ones.
   i8(v: number): this {
     return this.u8(v);
   }
@@ -120,7 +124,7 @@ export class Writer {
     return this;
   }
 
-  /** Writes a string into a fixed size NUL padded field. */
+  /** Writes a string into a fixed size NUL padded field (truncated to leave room for the NUL). */
   cstr(s: string, length: number): this {
     const out = new Uint8Array(length);
     for (let i = 0; i < Math.min(s.length, length - 1); i++) out[i] = s.charCodeAt(i) & 0xff;
@@ -141,6 +145,7 @@ export class Writer {
   }
 }
 
+/** Decodes a NUL terminated string; the whole array when there is no NUL. */
 export function cString(bytes: Uint8Array): string {
   const end = bytes.indexOf(0);
   return latin1.decode(end < 0 ? bytes : bytes.subarray(0, end));
@@ -150,6 +155,7 @@ export function latin1Text(bytes: Uint8Array): string {
   return latin1.decode(bytes);
 }
 
+/** One byte per character (low 8 bits of each UTF-16 code unit). */
 export function textBytes(text: string): Uint8Array {
   const out = new Uint8Array(text.length);
   for (let i = 0; i < text.length; i++) out[i] = text.charCodeAt(i) & 0xff;
