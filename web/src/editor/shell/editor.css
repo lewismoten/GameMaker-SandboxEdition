@@ -1249,3 +1249,69 @@ main:focus,
   text-shadow: none;
   line-height: 1.2;
 }
+
+/* The keyboard shortcuts list (widgets/shortcuts.ts), opened with ? or the ⌨ button. */
+.editor .keys-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding-inline: 8px;
+}
+.keys-list {
+  width: min(560px, 82vw);
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+}
+.keys-list .hint {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+.keys-group h3 {
+  margin: 14px 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.keys-group dl {
+  display: grid;
+  grid-template-columns: 12.5em minmax(0, 1fr);
+  gap: 6px 14px;
+  align-items: baseline;
+  margin: 0;
+}
+.keys-group dt {
+  line-height: 1.9;
+}
+.keys-group dd {
+  margin: 0;
+}
+.keys-group .keys-or {
+  color: var(--muted);
+  font-size: 12px;
+}
+.keys-group kbd {
+  display: inline-block;
+  min-width: 1.4em;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--panel-2);
+  color: var(--text);
+  font:
+    600 12px/1.5 ui-monospace,
+    monospace;
+  text-align: center;
+}
+@media (max-width: 520px) {
+  .keys-group dl {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .keys-group dd {
+    margin-bottom: 6px;
+    color: var(--muted);
+  }
+}

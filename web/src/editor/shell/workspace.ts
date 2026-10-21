@@ -4,6 +4,7 @@ import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../co
 import { pickFile } from '../widgets/filePicker';
 import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
+import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
 import { editors, fileInfo } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { createZip } from '../../project/zip';
@@ -127,7 +128,14 @@ export class Workspace {
     };
     this.sidebar.addEventListener('keydown', onKey);
     document.addEventListener('pointerdown', onDown);
-    this.unbind = () => document.removeEventListener('pointerdown', onDown);
+    // ? lists the open editor's keyboard shortcuts (not while typing or play testing)
+    const onHelpKey = (e: KeyboardEvent) => {
+      if (this.player || !wantsShortcuts(e)) return;
+      e.preventDefault();
+      void showShortcuts(this.current ? kindOf(this.current) : undefined);
+    };
+    document.addEventListener('keydown', onHelpKey);
+    this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey));
   }
 
   private unbind?: () => void;
@@ -353,6 +361,11 @@ export class Workspace {
         h(
           'div',
           { class: 'toolbar' },
+          h(
+            'button',
+            { class: 'keys-btn', title: 'Keyboard shortcuts (?)', 'aria-label': 'Keyboard shortcuts', 'aria-keyshortcuts': 'Shift+?', onclick: () => void showShortcuts(kindOf(file)) },
+            keyboardIcon(),
+          ),
           !isGam && h('button', { onclick: () => void this.rename(file) }, 'Rename'),
           h('button', { onclick: () => void this.duplicate(file) }, 'Duplicate'),
           h('button', { onclick: () => download(file.toUpperCase(), this.project.files.get(file)!) }, 'Download'),
