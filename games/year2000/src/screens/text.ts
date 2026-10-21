@@ -178,4 +178,3 @@ Please make checks payable to Sandbox Software. Allow 4 to 6 weeks for delivery,
 Made with GAME-MAKER 3.0 by Recreational Software Designs.
 `);
 }
-

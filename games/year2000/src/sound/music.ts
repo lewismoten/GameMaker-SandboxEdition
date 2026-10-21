@@ -1,6 +1,6 @@
 // The soundtrack: ten FM songs for the Sound Blaster, written as note strings. The
 // future, as it sounded in 1992: arpeggiators, pumping octave bass, and a lot of bells.
-import { INSTRUMENTS, sbi, song, type Voice } from '../kit/music';
+import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const CHORDS: Record<string, string[]> = {
   C: ['C4', 'E4', 'G4'],

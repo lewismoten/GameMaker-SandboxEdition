@@ -18,13 +18,13 @@ import { LEVELS, SETS } from './src/levels/levels';
 import { DIALS } from './src/levels/level4';
 import type { LevelMap } from './src/levels/mapkit';
 import { buildMonsters } from './src/characters/monsters';
-import { lostSong, menuSong, storySong, titleSong, wonSong } from './music';
+import { lostSong, menuSong, storySong, titleSong, wonSong } from './src/sound/music';
 import { PAL } from './src/art/pal';
 import { renderMap } from './src/art/render';
-import * as S from './screens';
-import { buildSounds } from './sounds';
+import * as S from './src/screens/screens';
+import { buildSounds } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
-import { CREDITS, INSTRUCTIONS, readme } from './text';
+import { CREDITS, INSTRUCTIONS, readme } from './src/screens/text';
 import { ITEM_PICS } from './src/blocks/items';
 import { PAGES_NEEDED } from './src/ids';
 

@@ -8,7 +8,7 @@ import { level3 } from './level3';
 import { level4 } from './level4';
 import { level5 } from './level5';
 import { level6 } from './level6';
-import { exchangeSong, fairSong, highwaySong, mallSong, moonSong, suburbSong } from '../../music';
+import { exchangeSong, fairSong, highwaySong, mallSong, moonSong, suburbSong } from '../sound/music';
 
 export const SETS = { suburb: suburbSet, city: citySet, moon: moonSet };
 

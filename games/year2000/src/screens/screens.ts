@@ -1,12 +1,12 @@
 // The 320x200 pictures: the title, the menu (on a TV, of course), the illustrated
 // storyline, notebook-paper text pages, level cards, the endings, and the FLI
 // animations: the intro counting from 1992 up to 2000, the teleporter, and the rocket.
-import { encodeFli } from '../../web/src/formats/fli';
-import { encodeGif } from '../../web/src/formats/gif';
-import { Pixels, dither, rng } from '../kit/pixels';
-import { T, blob, gradient, oval, shadeAt } from './src/art/draw';
-import { micro, microWidth, outlined, text, textWidth } from './src/art/font';
-import { C, PAL } from './src/art/pal';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeGif } from '../../../../web/src/formats/gif';
+import { Pixels, dither, rng } from '../../../kit/pixels';
+import { T, blob, gradient, oval, shadeAt } from '../art/draw';
+import { micro, microWidth, outlined, text, textWidth } from '../art/font';
+import { C, PAL } from '../art/pal';
 
 const R = PAL.r;
 export const W = 320;
