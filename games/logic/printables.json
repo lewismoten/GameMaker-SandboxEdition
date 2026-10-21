@@ -171,7 +171,11 @@
           ]
         }
       ],
-      "legend": ["NO: normally open relay", "NC: normally closed relay", "Copper bridges mark wires that cross without touching"],
+      "legend": [
+        "NO: normally open relay",
+        "NC: normally closed relay",
+        "Copper bridges mark wires that cross without touching"
+      ],
       "landscape": true
     },
     {
@@ -182,10 +186,22 @@
       "name": "WATT",
       "role": "Repair robot, fuse box division",
       "fields": [
-        ["Height", "6 in. (antenna up)"],
-        ["Rated", "9 volts, 1 smile"],
-        ["Lives at", "Main fuse box, Juniper Lane"],
-        ["Do not", "touch live current"]
+        [
+          "Height",
+          "6 in. (antenna up)"
+        ],
+        [
+          "Rated",
+          "9 volts, 1 smile"
+        ],
+        [
+          "Lives at",
+          "Main fuse box, Juniper Lane"
+        ],
+        [
+          "Do not",
+          "touch live current"
+        ]
       ],
       "color": "#0d3a24",
       "ink": "#ffd23c",

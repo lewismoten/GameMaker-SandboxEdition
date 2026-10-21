@@ -276,7 +276,7 @@ export function introFli(art: Art): Uint8Array {
     const sx = d < 0.4 ? 130 : d < 0.8 ? 130 + ((d - 0.4) / 0.4) * 66 : 196;
     const sy = d < 0.4 ? 60 + (d / 0.4) * 60 : d < 0.8 ? 120 : 120 + ((d - 0.8) / 0.2) * 30;
     blob(p, sx, sy, 5, 5, r('spark'), 1, 4);
-    centered(p, 12, 'The lightning runs down the wires...', c('paper', 3), 1, c('ink', 0));
+    centered(p, 12, 'It runs down the wires to the fuse box...', c('paper', 3), 1, c('ink', 0));
     frames.push(p);
   }
   // BOING: Watt flies out of the fuse box in an arc
@@ -289,7 +289,7 @@ export function introFli(art: Art): Uint8Array {
     const y = 150 - Math.sin(u * Math.PI) * 120;
     scaleBlit(p, art.watt.pic(t % 4 < 2 ? 'zapped' : 'down0'), Math.round(x - 20), Math.round(y - 30), 2);
     if (t < 6) centered(p, 140, 'BOING!', c('yellow', 3), 2, c('red', 1), 220);
-    centered(p, 12, '...and right into the fuse box.', c('paper', 3), 1, c('ink', 0));
+    centered(p, 12, '...and bounces Watt out of his fuse box!', c('paper', 3), 1, c('ink', 0));
     frames.push(p);
   }
   // into the kitchen: the toaster
