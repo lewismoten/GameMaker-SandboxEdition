@@ -9,7 +9,7 @@ const NUMBERS: [string, string][] = [
   ["Dad at work", "555-0187"],
   ["Dad’s pager", "555-0199"],
   ["Grandma", "555-0123"],
-  ["Jenny (sitter)", "555-0164"],
+  ["Jenny (sitter)", "867-5309"],
 ];
 
 function notes(): HTMLElement {
