@@ -161,25 +161,50 @@ export function shortenGap(events: RecEvent[], gap: Gap, len: number): RecEvent[
 }
 
 /**
+ * PLAYGAME's recorder counted a tick per game tick while playing, but one per GetKey
+ * poll while a between-scene screen (an animation, picture or text page) waited for a
+ * key — thousands a second. A recording made in DOS therefore stores a key pressed
+ * during such a screen after a gap of many thousands; no game-tick gap is this long.
+ */
+export const SCREEN_POLLS = 4096;
+
+/** The gaps that are a screen's GetKey polls rather than time in play (DOS recordings). */
+export function screenGaps(events: RecEvent[]): Gap[] {
+  return idleGaps(events, SCREEN_POLLS + 1);
+}
+
+/**
  * Maps ticks to pixels at pxPerTick, squeezing each folded gap into foldPx pixels so a
- * twenty-minute wait does not push the rest of the demo off into the distance.
+ * long wait does not push the rest of the demo off into the distance. Screen gaps
+ * (screenGaps) are always folded and marked, and play() leaves them out of times.
  */
 export class TimeMap {
-  readonly segs: { t0: number; t1: number; x0: number; x1: number; fold: boolean }[] = [];
+  readonly segs: { t0: number; t1: number; x0: number; x1: number; fold: boolean; screen: boolean }[] = [];
   constructor(
     readonly pxPerTick: number,
     folds: Gap[] = [],
+    readonly screens: Gap[] = [],
     readonly foldPx = 56,
   ) {
     let t = 0;
     let x = 0;
-    for (const g of folds) {
-      if ((g.to - g.from) * pxPerTick <= foldPx) continue;
-      if (g.from > t) this.segs.push({ t0: t, t1: g.from, x0: x, x1: (x += (g.from - t) * pxPerTick), fold: false });
-      this.segs.push({ t0: g.from, t1: g.to, x0: x, x1: (x += foldPx), fold: true });
+    const all = [...folds.filter((g) => !screens.some((c) => c.from === g.from && c.to === g.to)), ...screens].sort((a, b) => a.from - b.from);
+    for (const g of all) {
+      const screen = screens.includes(g);
+      if (!screen && (g.to - g.from) * pxPerTick <= foldPx) continue;
+      if (g.from < t) continue;
+      if (g.from > t) this.segs.push({ t0: t, t1: g.from, x0: x, x1: (x += (g.from - t) * pxPerTick), fold: false, screen: false });
+      this.segs.push({ t0: g.from, t1: g.to, x0: x, x1: (x += foldPx), fold: true, screen });
       t = g.to;
     }
-    this.segs.push({ t0: t, t1: Infinity, x0: x, x1: Infinity, fold: false });
+    this.segs.push({ t0: t, t1: Infinity, x0: x, x1: Infinity, fold: false, screen: false });
+  }
+
+  /** Game ticks of play up to t: a screen's GetKey polls count as no time. */
+  play(t: number): number {
+    let p = t;
+    for (const g of this.screens) if (t > g.from) p -= Math.min(t, g.to) - g.from;
+    return p;
   }
 
   x(t: number): number {

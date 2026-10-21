@@ -12,6 +12,7 @@ import {
   idleGaps,
   shortenGap,
   TimeMap,
+  screenGaps,
   isDown,
   capLabel,
   clock,
@@ -91,7 +92,7 @@ describe('demo recording timeline', () => {
   });
 
   it('maps ticks to pixels through folded gaps and back', () => {
-    const map = new TimeMap(2, [{ from: 100, to: 1100 }], 50);
+    const map = new TimeMap(2, [{ from: 100, to: 1100 }], [], 50);
     expect(map.x(50)).toBe(100);
     expect(map.x(100)).toBe(200);
     expect(map.x(600)).toBe(225);
@@ -112,5 +113,22 @@ describe('demo recording timeline', () => {
   it.skipIf(!existsSync(nebula))('round-trips a real demo byte for byte', () => {
     const bytes = new Uint8Array(readFileSync(nebula));
     expect(serializeRecording(toKeys(toEvents(parseRecording(bytes))))).toEqual(bytes);
+  });
+});
+
+describe('screen gaps (DOS recordings)', () => {
+  it('finds GetKey-poll gaps and leaves them out of play time', () => {
+    const events = [
+      { t: 8, key: 71 },
+      { t: 21, key: 199 },
+      { t: 26079, key: 28 },
+      { t: 26091, key: 79 },
+    ];
+    const screens = screenGaps(events);
+    expect(screens).toEqual([{ from: 21, to: 26079 }]);
+    const map = new TimeMap(1, [], screens);
+    expect(map.play(21)).toBe(21);
+    expect(map.play(26091)).toBe(33);
+    expect(map.segs.some((s) => s.screen)).toBe(true);
   });
 });
