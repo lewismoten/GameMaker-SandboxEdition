@@ -401,7 +401,7 @@ export const BOARDS: BoardSpec[] = [
     file: 'citicar',
     title: 'The CitiCar',
     room: 'garage',
-    card: ['1976 1/2 CitiCar. Top speed: brisk.', 'Charges at about a mile an hour.'],
+    card: ['A 1976 1/2 CitiCar, built for the', 'Bicentennial. Top speed: brisk.'],
     rows: [
       '################',
       '#.$......#...X.#',
