@@ -5,6 +5,7 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import { serviceWorkerSource, hashText } from './src/export/serviceWorker';
 import { cdGames } from './scripts/cdGames';
 import { singlePagePlayer } from './scripts/singlePageBuild';
+import { seoPages } from './scripts/seoBuild';
 
 const publicDir = resolve(__dirname, 'public');
 
@@ -15,7 +16,7 @@ function publicFiles(): string[] {
 }
 
 /** Game folders are cached when a game is first played, not at install. */
-const precacheable = (f: string) => f !== 'sw.js' && (!f.startsWith('games/') || f === 'games/index.json');
+const precacheable = (f: string) => f !== 'sw.js' && f !== 'og-image.png' && (!f.startsWith('games/') || f === 'games/index.json');
 
 type Bundle = Rollup.OutputBundle;
 
@@ -95,7 +96,7 @@ function manualReload(): Plugin {
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [cdGames(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), manualReload()],
+  plugins: [cdGames(resolve(__dirname, '../cd')), seoPages(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), manualReload()],
   build: {
     target: 'es2022',
     rollupOptions: {
