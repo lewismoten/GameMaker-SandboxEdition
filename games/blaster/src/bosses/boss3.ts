@@ -1,19 +1,19 @@
 // Boss 3: THE FEEDBACK HOWLER. A screaming face jammed into the line-out jack. In front of
 // it a speaker grille of armored bars slides back and forth (every bar the same monster on
 // the same path): shots only get through the gaps, and so does the ship.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, bevel, blob } from './src/art/draw';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, bevel, blob } from '../art/draw';
 import { armor, slicesOf, tint, weakPoint } from './boss';
-import { mite, pics } from './src/characters/enemies';
-import { arena } from './src/stages/mapkit';
-import type { Bestiary } from './src/characters/mons';
-import type { Pal } from './src/art/pal';
-import { keyOf, wasp } from './src/sprites/sprites';
-import { kit, type Leg } from './src/stages/stage';
-import type { BlockSet } from './src/art/draw';
-import type { StageArt } from './src/blocks/tiles';
-import { POWER } from './src/ids';
-import { soundTiles } from './src/blocks/sound3';
+import { mite, pics } from '../characters/enemies';
+import { arena } from '../stages/mapkit';
+import type { Bestiary } from '../characters/mons';
+import type { Pal } from '../art/pal';
+import { keyOf, wasp } from '../sprites/sprites';
+import { kit, type Leg } from '../stages/stage';
+import type { BlockSet } from '../art/draw';
+import type { StageArt } from '../blocks/tiles';
+import { POWER } from '../ids';
+import { soundTiles } from '../blocks/sound3';
 
 function face(p: Pal, loud: boolean): Pixels {
   const big = new Pixels(40, 40, CLEAR);

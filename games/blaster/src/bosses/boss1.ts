@@ -1,19 +1,19 @@
 // Boss 1: THE BIOS BUG, a beetle the size of a chip, clamped onto the BIOS. Its shell is
 // the arena's back wall; its jaws are turrets, its sides spit seekers and mites, and its
 // head (four monsters: a crown over two great eyes) plugs the only way out.
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, micro, shadeAt } from './src/art/draw';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, blob, micro, shadeAt } from '../art/draw';
 import { opaque, slicesOf, tint, weakPoint } from './boss';
-import { pics } from './src/characters/enemies';
-import { keyOf, mite as miteArt } from './src/sprites/sprites';
-import { mite } from './src/characters/enemies';
-import { arena } from './src/stages/mapkit';
-import type { Bestiary } from './src/characters/mons';
-import type { Pal } from './src/art/pal';
-import { kit, type Leg } from './src/stages/stage';
-import type { StageArt } from './src/blocks/tiles';
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
-import type { BlockSet } from './src/art/draw';
+import { pics } from '../characters/enemies';
+import { keyOf, mite as miteArt } from '../sprites/sprites';
+import { mite } from '../characters/enemies';
+import { arena } from '../stages/mapkit';
+import type { Bestiary } from '../characters/mons';
+import type { Pal } from '../art/pal';
+import { kit, type Leg } from '../stages/stage';
+import type { StageArt } from '../blocks/tiles';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import type { BlockSet } from '../art/draw';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 

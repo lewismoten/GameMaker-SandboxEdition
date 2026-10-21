@@ -5,7 +5,7 @@ import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper }
 import { LENGTH, strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { kit, type Stage } from './stage';
-import { bossBIOS } from '../../boss1';
+import { bossBIOS } from '../bosses/boss1';
 
 function virus1(b: Parameters<typeof boardVirus>[0], p: Parameters<typeof boardVirus>[1]): void {
   boardVirus(b, p);

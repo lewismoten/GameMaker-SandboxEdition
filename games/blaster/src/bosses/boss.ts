@@ -5,11 +5,11 @@
 //
 // The arena's way out sits right behind the boss's weak points: the parts burn the ship
 // badly enough that the only way through is to shoot them away first.
-import { Pixels } from '../kit/pixels';
-import { BlockSet, CLEAR } from './src/art/draw';
-import { HURT } from './src/characters/sharedMonsters';
-import { POWER } from './src/ids';
-import type { Bestiary } from './src/characters/mons';
+import { Pixels } from '../../../kit/pixels';
+import { BlockSet, CLEAR } from '../art/draw';
+import { HURT } from '../characters/sharedMonsters';
+import { POWER } from '../ids';
+import type { Bestiary } from '../characters/mons';
 
 /** Slices a big picture into 20x20 pieces named `${prefix}${row}${col}`. */
 export function slicesOf(big: Pixels, w: number, h: number): Pixels[][] {

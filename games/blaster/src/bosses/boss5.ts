@@ -1,19 +1,19 @@
 // Boss 5: GLITCH, the virus itself, a skull of corrupted pixels the width of the die. Its
 // face is the arena's wall, its eye sockets and cheeks are turrets, its brain plugs the way
 // out behind a sliding grille, and its leak slugs hunt the ship around the arena.
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, bevel, blob, micro, shadeAt } from './src/art/draw';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, bevel, blob, micro, shadeAt } from '../art/draw';
 import { armor, opaque, slicesOf, tint, weakPoint } from './boss';
-import { mite, pics, stalker } from './src/characters/enemies';
-import { arena } from './src/stages/mapkit';
-import type { Bestiary } from './src/characters/mons';
-import type { Pal } from './src/art/pal';
-import { keyOf, mite as miteArt, slug } from './src/sprites/sprites';
-import { kit, type Leg } from './src/stages/stage';
-import type { BlockSet } from './src/art/draw';
-import type { StageArt } from './src/blocks/tiles';
-import { POWER } from './src/ids';
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
+import { mite, pics, stalker } from '../characters/enemies';
+import { arena } from '../stages/mapkit';
+import type { Bestiary } from '../characters/mons';
+import type { Pal } from '../art/pal';
+import { keyOf, mite as miteArt, slug } from '../sprites/sprites';
+import { kit, type Leg } from '../stages/stage';
+import type { BlockSet } from '../art/draw';
+import type { StageArt } from '../blocks/tiles';
+import { POWER } from '../ids';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 

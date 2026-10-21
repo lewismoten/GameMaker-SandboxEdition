@@ -5,7 +5,7 @@ import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { diskArt, diskTiles, diskVirus } from '../blocks/disk4';
 import { kit, type Stage } from './stage';
-import { bossCrash } from '../../boss4';
+import { bossCrash } from '../bosses/boss4';
 
 function virus4(b: Parameters<typeof diskVirus>[0], p: Parameters<typeof diskVirus>[1]): void {
   diskVirus(b, p);

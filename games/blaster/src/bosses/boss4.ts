@@ -1,19 +1,19 @@
 // Boss 4: THE HEAD CRASH. The read/write head has gone rogue and dug into the platter right
 // over the way out. Two rings of platter shards orbit in front of it (two snakes on small
 // loops), turrets on its arm sweep the arena and the platter's spin shoves the ship.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, bevel, blob, micro } from './src/art/draw';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { slicesOf, snake, tint, weakPoint } from './boss';
-import { mite, pics } from './src/characters/enemies';
-import { arena } from './src/stages/mapkit';
-import type { Bestiary } from './src/characters/mons';
-import type { Pal } from './src/art/pal';
-import { disc, keyOf, skull } from './src/sprites/sprites';
-import { kit, type Leg } from './src/stages/stage';
-import type { BlockSet } from './src/art/draw';
-import type { StageArt } from './src/blocks/tiles';
-import { HURT } from './src/characters/sharedMonsters';
-import { diskTiles } from './src/blocks/disk4';
+import { mite, pics } from '../characters/enemies';
+import { arena } from '../stages/mapkit';
+import type { Bestiary } from '../characters/mons';
+import type { Pal } from '../art/pal';
+import { disc, keyOf, skull } from '../sprites/sprites';
+import { kit, type Leg } from '../stages/stage';
+import type { BlockSet } from '../art/draw';
+import type { StageArt } from '../blocks/tiles';
+import { HURT } from '../characters/sharedMonsters';
+import { diskTiles } from '../blocks/disk4';
 
 function headPic(p: Pal, hot: boolean): Pixels {
   const big = new Pixels(40, 40, CLEAR);

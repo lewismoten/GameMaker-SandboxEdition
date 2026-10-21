@@ -5,7 +5,7 @@ import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { soundArt, soundTiles, soundVirus } from '../blocks/sound3';
 import { kit, type Stage } from './stage';
-import { bossHowler } from '../../boss3';
+import { bossHowler } from '../bosses/boss3';
 
 function virus3(b: Parameters<typeof soundVirus>[0], p: Parameters<typeof soundVirus>[1]): void {
   soundVirus(b, p);

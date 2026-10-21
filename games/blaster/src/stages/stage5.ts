@@ -5,7 +5,7 @@ import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { cpuArt, cpuTiles, cpuVirus } from '../blocks/cpu5';
 import { kit, type Stage } from './stage';
-import { bossGlitch } from '../../boss5';
+import { bossGlitch } from '../bosses/boss5';
 
 function virus5(b: Parameters<typeof cpuVirus>[0], p: Parameters<typeof cpuVirus>[1]): void {
   cpuVirus(b, p);

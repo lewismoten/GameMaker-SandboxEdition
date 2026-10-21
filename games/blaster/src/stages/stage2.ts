@@ -6,7 +6,7 @@ import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
 import { ramArt, ramTiles, ramVirus } from '../blocks/ram';
 import { kit, type Stage } from './stage';
-import { bossLeech } from '../../boss2';
+import { bossLeech } from '../bosses/boss2';
 
 function virus2(b: Parameters<typeof ramVirus>[0], p: Parameters<typeof ramVirus>[1]): void {
   ramVirus(b, p);

@@ -1,19 +1,19 @@
 // Boss 2: THE MEMORY LEECH. Its sucker mouth is clamped over the way out, draining the
 // memory; its body, twelve monsters long, coils around the arena in a loop (one path, each
 // segment starting at its own point on it), soaking up shots meant for the mouth.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, blob, micro } from './src/art/draw';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, blob, micro } from '../art/draw';
 import { slicesOf, snake, tint, weakPoint } from './boss';
-import { mite, pics } from './src/characters/enemies';
-import { arena } from './src/stages/mapkit';
-import type { Bestiary } from './src/characters/mons';
-import type { Pal } from './src/art/pal';
-import { keyOf, mite as miteArt } from './src/sprites/sprites';
-import { kit, type Leg } from './src/stages/stage';
-import type { BlockSet } from './src/art/draw';
-import type { StageArt } from './src/blocks/tiles';
-import { HURT } from './src/characters/sharedMonsters';
-import { ramTiles } from './src/blocks/ram';
+import { mite, pics } from '../characters/enemies';
+import { arena } from '../stages/mapkit';
+import type { Bestiary } from '../characters/mons';
+import type { Pal } from '../art/pal';
+import { keyOf, mite as miteArt } from '../sprites/sprites';
+import { kit, type Leg } from '../stages/stage';
+import type { BlockSet } from '../art/draw';
+import type { StageArt } from '../blocks/tiles';
+import { HURT } from '../characters/sharedMonsters';
+import { ramTiles } from '../blocks/ram';
 
 /** The sucker, 2 x 2: two eyes on top, a ring of teeth below. */
 function mouth(p: Pal, open: boolean): Pixels {
