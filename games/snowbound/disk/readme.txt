@@ -51,7 +51,7 @@ THIS IS SHAREWARE
   players receive the next
   adventure, "SNOWBOUND II:
   Spring Thaw", a printed map
-  of Dowden Additions, and our
+  of Fort Ashby, and our
   thanks. Send a check or money
   order (US funds) to:
 

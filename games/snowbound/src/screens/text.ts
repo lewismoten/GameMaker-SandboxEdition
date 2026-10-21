@@ -9,7 +9,7 @@ const page = (lines: string[], pages = 1) => {
 
 export const INSTRUCTIONS = [
   page([
-    'Shovel out Dowden Additions',
+    'Shovel out the neighborhood',
     'in Fort Ashby, earn $89, and',
     'buy GAME-MAKER at LaVale Mall',
     'before the price goes up.',
@@ -146,7 +146,7 @@ THIS IS SHAREWARE
   players receive the next
   adventure, "SNOWBOUND II:
   Spring Thaw", a printed map
-  of Dowden Additions, and our
+  of Fort Ashby, and our
   thanks. Send a check or money
   order (US funds) to:
 
