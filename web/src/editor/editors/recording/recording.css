@@ -85,3 +85,10 @@
 .rec-watch .rec-player {
   max-height: 52vh;
 }
+
+.rec-tl-viewport {
+  max-height: max(220px, calc(100dvh - 330px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 6px;
+}

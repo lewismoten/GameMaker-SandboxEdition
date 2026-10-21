@@ -149,7 +149,8 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
       h('button', { title: 'Show the whole demo', onclick: fit }, 'Fit'),
       range,
     ),
-    canvas,
+    // a demo with many keys held at once is tall: it scrolls in its own box
+    h('div', { class: 'rec-tl-viewport' }, canvas),
     h('div', { class: 'rec-tl-foot' }, status),
   );
 
