@@ -12,7 +12,8 @@
 // screen positions and tables.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, vertMenu } from '../retro/text/textUi';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
 import { BACKBL } from '../formats/blocks';
 import { INF_REPEAT, MAXSEQ, parseCharacter, serializeCharacter, type Sequence } from '../formats/character';
 import { LASTSND, NUMFREQ, parseSoundSet } from '../formats/sound';
@@ -22,6 +23,11 @@ import { DELAY, MATTR, sleep, pad, scan, initalldata, bytes2pal, biosKey, keyNam
 import { CharacterInventory } from './charedit/inventory';
 
 class CharacterMaker extends CharacterInventory {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Character Designer', this.work, () => this.saved, () => [{ ext: 'chr', bytes: serializeCharacter(this.p) }]);
+  }
+
   async main(): Promise<void> {
     const h = this.h;
     const sc = h.screen;
@@ -428,4 +434,11 @@ class CharacterMaker extends CharacterInventory {
 }
 
 /** CHAREDIT.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'CHAREDIT.EXE', run: (h) => new CharacterMaker(h).main() };
+export const program: Program = {
+  exe: 'CHAREDIT.EXE',
+  run: (h) => {
+    const d = new CharacterMaker(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};

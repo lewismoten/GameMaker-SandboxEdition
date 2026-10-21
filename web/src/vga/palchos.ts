@@ -6,7 +6,8 @@
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
 import { WorkArea } from '../retro/dos/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';
 import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, MAXFACECOL, initStartCols } from './shared/facelift';
@@ -58,6 +59,11 @@ const bytes2pal = (b: Uint8Array): RGBdata[] =>
   Array.from({ length: 256 }, (_, i) => ({ red: b[i * 3] & 63, green: b[i * 3 + 1] & 63, blue: b[i * 3 + 2] & 63 }));
 
 class PaletteDesigner {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Palette Designer', this.work, () => this.saved, () => [{ ext: 'pal', bytes: pal2bytes(this.colors) }]);
+  }
+
   colors: RGBdata[] = initStartCols();
   saved = true;
   curcol = 1;
@@ -462,4 +468,11 @@ class PaletteDesigner {
 }
 
 /** PALCHOS.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'PALCHOS.EXE', run: (h) => new PaletteDesigner(h).main() };
+export const program: Program = {
+  exe: 'PALCHOS.EXE',
+  run: (h) => {
+    const d = new PaletteDesigner(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};

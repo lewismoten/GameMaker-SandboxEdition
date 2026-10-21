@@ -3,6 +3,8 @@
 import type { TextScreen } from '../../retro/text/textScreen';
 import type { RetroHost } from '../../retro/host';
 import { BARATTR, TITLEATTR } from '../../retro/text/textUi';
+import type { OpenDesigner } from '../../retro/host';
+import type { WorkArea } from '../../retro/dos/workArea';
 
 /**
  * A designer .EXE ported to VGA graphics. Each module in src/vga that exports `program`
@@ -23,4 +25,16 @@ export const PGMTITLECOL = 47;
 export function drawDesignBars(s: TextScreen): void {
   s.write(0, 0, TITLEATTR, GMTOPBAR);
   s.write(0, 1, BARATTR, DESIGN_BAR);
+}
+
+/** What a designer tells the desk about its open work (RetroHost.designer). */
+export function openWork(title: string, work: WorkArea, saved: () => boolean, contents: () => { ext: string; bytes: Uint8Array }[]): OpenDesigner {
+  return {
+    title,
+    work,
+    get saved() {
+      return saved();
+    },
+    contents,
+  };
 }

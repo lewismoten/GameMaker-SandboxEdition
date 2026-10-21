@@ -11,7 +11,8 @@
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, vertMenu } from '../retro/text/textUi';
 import { BLACK, BLEN, GREEN, GREY2, LEFT, NONE, RIGHT } from './shared/facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
 import { LASTMON, LASTSL, serializeMonsters } from '../formats/monster';
 import { MONBL } from '../formats/blocks';
 import {
@@ -45,6 +46,11 @@ import {
 import { MonsterMovement } from './monedit/movement';
 
 class MonsterMaker extends MonsterMovement {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Monster Designer', this.work, () => this.saved, () => [{ ext: 'mon', bytes: serializeMonsters(this.mon) }]);
+  }
+
   async main(): Promise<void> {
     const h = this.h;
     const sc = h.screen;
@@ -428,4 +434,11 @@ class MonsterMaker extends MonsterMovement {
 }
 
 /** MONEDIT.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'MONEDIT.EXE', run: (h) => new MonsterMaker(h).main() };
+export const program: Program = {
+  exe: 'MONEDIT.EXE',
+  run: (h) => {
+    const d = new MonsterMaker(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};

@@ -14,8 +14,10 @@ import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { BLEN } from '../formats/blocks';
 import { GREY1, LEFT, NONE, RIGHT } from './shared/facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
-import { BLK_COUNT, drawblk, getblk, getblktype, loadblks, saveblks, scrollList } from './shared/blocc';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
+import { serializeBlocks } from '../formats/blocks';
+import { BLK_COUNT, BLK_EXT, drawblk, getblk, getblktype, loadblks, saveblks, scrollList } from './shared/blocc';
 import {
   GLEN,
   BX,
@@ -66,6 +68,11 @@ import { BlockTransfer } from './blocedit/transfer';
 
 /** The whole Block Designer: the text menu, then the VGA edit screen. */
 class BlockDesigner extends BlockTransfer {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Block Designer', this.work, () => this.saved, () => this.btype >= 1 && this.btype <= 3 ? [{ ext: BLK_EXT[this.btype - 1], bytes: serializeBlocks(this.blk.slice(0, BLK_COUNT[this.btype - 1])) }] : []);
+  }
+
   async main(): Promise<void> {
     const h = this.h;
     const s = h.screen;
@@ -603,4 +610,11 @@ class BlockDesigner extends BlockTransfer {
 }
 
 /** BLOCEDIT.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'BLOCEDIT.EXE', run: (h) => new BlockDesigner(h).main() };
+export const program: Program = {
+  exe: 'BLOCEDIT.EXE',
+  run: (h) => {
+    const d = new BlockDesigner(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};
