@@ -80,7 +80,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   const title = g.gam ? g.title : 'Parts library';
   const byline =
     kind === 'sandbox'
-      ? (g.company ?? 'Sandbox Software')
+      ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
       : kind === 'shareware'
         ? creditLine(g) || 'Shareware · play only'
         : !g.gam
@@ -91,7 +91,8 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
     kind,
     title,
     byline,
-    tileByline: g.gam && kind !== 'sandbox' ? g.company || g.author || byline : undefined,
+    // a tile names just the maker (the year is in the panel)
+    tileByline: g.gam ? g.company || g.author || byline : undefined,
     blurb: readableBlurb(g.id, g.blurb),
     gam: g.gam,
     search: searchText(title, g.id, g.author, g.company, g.year),
@@ -270,7 +271,7 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
     'button',
     { class: 'tile-select', type: 'button', onclick: () => o.onSelect(game) },
     h('span', { class: 'tile-title' }, game.title),
-    h('span', { class: 'tile-meta', title: game.byline }, game.tileByline ?? game.byline),
+    h('span', { class: 'tile-meta', title: game.tileByline ?? game.byline }, game.tileByline ?? game.byline),
   );
   const tile = h('article', { class: 'card game-tile', dataset: { search: game.search, key: game.key } }, picture, select);
   // the picture selects too (the buttons over it do their own thing)
