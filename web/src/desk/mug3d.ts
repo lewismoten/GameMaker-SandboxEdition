@@ -22,7 +22,9 @@ export function wrapCanvas(id: MugDesignId, size: Pick<MugSize, 'wrapW' | 'wrapH
     g.translate(c.width, 0);
     g.scale(-1, 1);
   }
-  g.drawImage(art, (c.width - w) / 2, (c.height - h) / 2, w, h);
+  // a tall wrap (a tumbler) gets the picture as many times as fit, evenly spaced
+  const n = Math.max(1, Math.floor((c.height * 0.94) / h));
+  for (let i = 0; i < n; i++) g.drawImage(art, (c.width - w) / 2, ((i + 0.5) * c.height) / n - h / 2, w, h);
   return c;
 }
 
