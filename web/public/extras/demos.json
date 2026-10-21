@@ -193,16 +193,6 @@
       "recCrc": 2169380729
     },
     {
-      "id": "pac",
-      "file": "pac.rec",
-      "gam": "pac.gam",
-      "gamCrc": 3957180877,
-      "ticks": 831,
-      "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
-      "date": "2026-10-21",
-      "recCrc": 3709229185
-    },
-    {
       "id": "paperair",
       "file": "paperair.rec",
       "gam": "spap.gam",

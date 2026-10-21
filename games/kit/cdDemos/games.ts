@@ -38,7 +38,6 @@ export const CD_DEMO_GAMES: CdDemoGame[] = [
   { id: 'njlnflx', kind: 'shareware', gam: 'nejilian.gam' },
   { id: 'octolrs', kind: 'shareware', gam: 'octolris.gam' },
   { id: 'orb', kind: 'shareware', gam: 'orb.gam', bot: { links: { 6: 'any' } } },
-  { id: 'pac', kind: 'shareware', gam: 'pac.gam', bot: { dice: 4, horizon: 28 } },
   { id: 'paperair', kind: 'shareware', gam: 'spap.gam' },
   { id: 'parsec3d', kind: 'shareware', gam: 'parsec3d.gam', bot: { links: { 2: [0] } } },
   { id: 'signhdg', kind: 'shareware', gam: 'sign.gam', bot: { links: 'any', every: 2 } },
@@ -48,4 +47,7 @@ export const CD_DEMO_GAMES: CdDemoGame[] = [
 /** CD entries with no demo that get none, and why. */
 export const SKIPPED: Record<string, string> = {
   library: 'a parts library: no game file to play',
+  // PAC's ghosts roll new dice in every playback, and a .REC only replays keys: no bot run
+  // (eight tries, 400 to 820 ticks) kept PAC alive in more than 3 of 5 replays.
+  pac: 'its ghosts chase at random, so a recorded route dies in most playbacks',
 };
