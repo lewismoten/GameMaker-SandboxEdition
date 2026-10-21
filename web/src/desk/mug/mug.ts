@@ -1,10 +1,11 @@
 // The Sandbox BBS mug on the desk, full of pencils and pens: printed with the design chosen in
-// the mug viewer (click it to turn it round, pick another picture, or print your own).
+// the mug viewer (click it to turn it round, pick another picture, or print your own). It
+// stands with its handle round to the right, the picture on its side facing the room.
 import './mug.css';
 import { h } from '../../editor/core/ui';
-import { isDesign, type MugDesignId } from './mugArt';
-import { MUG_SIZES, type MugSize } from './mugSizes';
-import { MUG_COLORS, drawMug, wrapCanvas, type MugColors } from './mug3d';
+import { designCanvas, isDesign, loadDesign, type MugDesignId } from './mugArt';
+import { MUG_SIZES, printPlacement, type MugSize } from './mugSizes';
+import { MUG_COLORS, drawMug, wrapAngle, wrapCanvas, type MugColors } from './mug3d';
 
 export interface MugChoice {
   design: MugDesignId;
@@ -63,6 +64,10 @@ export function deskMug(open: () => void): HTMLElement {
     const size = sizeOf(choice.size);
     const k = Math.min(3, Math.max(2, window.devicePixelRatio || 1));
     const texture = wrapCanvas(choice.design, size, 60);
+    // turned so the back copy of the picture faces the room
+    const art = designCanvas(choice.design);
+    const at = printPlacement(size, art.width / art.height);
+    const rot = -wrapAngle(size, at.centers[1]);
     // the body fills the same space whatever the size: a taller mug is drawn a little narrower
     const radius = Math.min(31, (70 * size.diameter) / (2 * size.height));
     for (const [c, layer] of [
@@ -77,7 +82,7 @@ export function deskMug(open: () => void): HTMLElement {
         texture,
         size,
         colors: colorsOf(choice.color),
-        rot: (-60 * Math.PI) / 180,
+        rot,
         cx: 41,
         top: 144 - (radius * 2 * size.height) / size.diameter,
         radius,
@@ -88,6 +93,8 @@ export function deskMug(open: () => void): HTMLElement {
     el.title = 'The Sandbox BBS mug: click to turn it round';
   };
   paint();
+  // a game's picture comes from its files: paint again once it's here
+  void loadDesign(loadMug().design).then(() => el.isConnected && paint());
   const changed = () => (el.isConnected ? paint() : window.removeEventListener(CHANGED, changed));
   window.addEventListener(CHANGED, changed);
   el.addEventListener('click', open);

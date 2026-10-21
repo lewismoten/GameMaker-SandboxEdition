@@ -1,20 +1,23 @@
 // A sublimation mug drawn in 3D on a 2D canvas: the printed wrap around a glazed cylinder,
 // one column of pixels at a time, with the rim and the inside, a handle that swings round
 // in front of or behind the body, and a band of glaze shine where the light catches it.
-import type { MugSize } from './mugSizes';
-import { DESIGN_BG, designCanvas, type MugDesignId } from './mugArt';
+import { printPlacement, type MugSize } from './mugSizes';
+import { designCanvas, type MugDesignId } from './mugArt';
 
-/** The printed wrap: the design centered on its background, at `ppi` pixels an inch. */
-export function wrapCanvas(id: MugDesignId, size: Pick<MugSize, 'wrapW' | 'wrapH'>, ppi: number, mirrored = false): HTMLCanvasElement {
+/**
+ * The printed wrap at `ppi` pixels an inch: the design on the front and the same on the back
+ * (mugSizes.ts printPlacement), the rest left clear (the mug's own glaze shows through).
+ * Pixel art is scaled by whole pixels where it is drawn large enough for that to matter.
+ */
+export function wrapCanvas(id: MugDesignId, size: Pick<MugSize, 'wrapW' | 'wrapH' | 'diameter'>, ppi: number, mirrored = false): HTMLCanvasElement {
   const art = designCanvas(id);
   const c = document.createElement('canvas');
   c.width = Math.round(size.wrapW * ppi);
   c.height = Math.round(size.wrapH * ppi);
   const g = c.getContext('2d')!;
-  g.fillStyle = DESIGN_BG;
-  g.fillRect(0, 0, c.width, c.height);
-  // as large as fits, with a little breathing room top and bottom
-  const k = Math.min(c.width / art.width, (c.height * 0.94) / art.height);
+  const at = printPlacement(size, art.width / art.height);
+  let k = (at.w * ppi) / art.width;
+  if (k >= 2) k = Math.floor(k);
   const w = art.width * k;
   const h = art.height * k;
   g.imageSmoothingEnabled = false;
@@ -22,10 +25,15 @@ export function wrapCanvas(id: MugDesignId, size: Pick<MugSize, 'wrapW' | 'wrapH
     g.translate(c.width, 0);
     g.scale(-1, 1);
   }
-  // a tall wrap (a tumbler) gets the picture as many times as fit, evenly spaced
-  const n = Math.max(1, Math.floor((c.height * 0.94) / h));
-  for (let i = 0; i < n; i++) g.drawImage(art, (c.width - w) / 2, ((i + 0.5) * c.height) / n - h / 2, w, h);
+  for (const x of at.centers) g.drawImage(art, Math.round(x * ppi - w / 2), Math.round((size.wrapH * ppi - h) / 2), w, h);
   return c;
+}
+
+/** Where a point `x` inches along the wrap ends up round the mug: radians from its front (the handle is at ±π). */
+export function wrapAngle(size: Pick<MugSize, 'wrapW' | 'diameter'>, x: number): number {
+  const circumference = Math.PI * size.diameter;
+  const half = (Math.PI * Math.min(size.wrapW, circumference)) / circumference; // half the print's angle
+  return ((x / size.wrapW) * 2 - 1) * half;
 }
 
 export interface MugColors {

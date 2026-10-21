@@ -1,10 +1,10 @@
 // A closer look at the Sandbox BBS mug: it turns slowly (drag to turn it yourself), and you
-// choose the picture printed on it, the size and the color inside. "Make your own" opens the
-// sublimation print sheet.
+// choose the picture printed on it (the BBS's ANSI art, or a Sandbox Software game's title
+// screen), the size and the color inside. "Make your own" opens the sublimation order form.
 import { h } from '../../editor/core/ui';
-import { MUG_DESIGNS, designCanvas } from './mugArt';
-import { MUG_SIZES } from './mugSizes';
-import { MUG_COLORS, drawMug, wrapCanvas } from './mug3d';
+import { MUG_DESIGNS, designCanvas, loadDesign, type MugDesign } from './mugArt';
+import { MUG_SIZES, printPlacement } from './mugSizes';
+import { MUG_COLORS, drawMug, wrapAngle, wrapCanvas } from './mug3d';
 import { colorsOf, loadMug, saveMug, sizeOf, type MugChoice } from './mug';
 import { openSublimation } from './mugPrint';
 
@@ -12,7 +12,12 @@ export function openMugViewer(): Promise<void> {
   return new Promise((resolve) => {
     let choice: MugChoice = loadMug();
     let texture = wrapCanvas(choice.design, sizeOf(choice.size), 120);
-    let rot = 0;
+    /** Turned so the picture's front copy faces us, the handle round to the left. */
+    const facing = () => {
+      const art = designCanvas(choice.design);
+      return -wrapAngle(sizeOf(choice.size), printPlacement(sizeOf(choice.size), art.width / art.height).centers[0]);
+    };
+    let rot = facing();
     let spin = 0.5; // radians a second
     let drag: { x: number; rot: number } | undefined;
     let raf = 0;
@@ -68,22 +73,35 @@ export function openMugViewer(): Promise<void> {
     canvas.addEventListener('pointerup', endDrag);
     canvas.addEventListener('pointercancel', endDrag);
 
+    const retexture = () => (texture = wrapCanvas(choice.design, sizeOf(choice.size), 120));
     const update = (patch: Partial<MugChoice>) => {
+      const newDesign = patch.design && patch.design !== choice.design;
       choice = { ...choice, ...patch };
-      texture = wrapCanvas(choice.design, sizeOf(choice.size), 120);
+      retexture();
+      if (newDesign) rot = facing(); // show off the new picture
       saveMug(choice);
       paintPicks();
     };
 
-    const designPicks = MUG_DESIGNS.map((d) => {
+    const designPick = (d: MugDesign) => {
       const art = designCanvas(d.id);
+      const img = h('img', { src: art.toDataURL(), alt: '', width: art.width, height: art.height });
+      // a game's picture comes from its files on the CD
+      void loadDesign(d.id).then((c) => {
+        if (c === art) return;
+        img.src = c.toDataURL();
+        img.width = c.width;
+        img.height = c.height;
+        if (d.id === choice.design) retexture();
+      });
       return h(
         'button',
-        { type: 'button', class: 'mugv-design', dataset: { id: d.id }, onclick: () => update({ design: d.id }), title: d.note },
-        h('img', { src: art.toDataURL(), alt: '', width: art.width, height: art.height }),
+        { type: 'button', class: 'mugv-design', dataset: { id: d.id, group: d.group }, onclick: () => update({ design: d.id }), title: d.note },
+        img,
         h('span', null, d.name),
       );
-    });
+    };
+    const designPicks = MUG_DESIGNS.map(designPick);
     const sizePicks = MUG_SIZES.map((s) =>
       h('button', { type: 'button', class: 'mugv-chip', dataset: { id: s.id }, onclick: () => update({ size: s.id }) }, s.name),
     );
@@ -137,8 +155,10 @@ export function openMugViewer(): Promise<void> {
           'aside',
           { class: 'mugv-side' },
           h('h3', null, 'Picture'),
-          h('p', { class: 'mugv-note' }, 'ANSI art from the board itself, in the VGA text font and its 16 colors.'),
-          h('div', { class: 'mugv-designs' }, ...designPicks),
+          h('p', { class: 'mugv-note' }, 'The same picture on the front and the back. ANSI art from the board itself, in the VGA text font and its 16 colors:'),
+          h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'bbs')),
+          h('p', { class: 'mugv-note' }, 'Or a Sandbox Software game: its title screen and its hero, from the game’s own files:'),
+          h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'game')),
           h('h3', null, 'Mug'),
           h('div', { class: 'mugv-chips' }, ...sizePicks),
           h('h3', null, 'Inside and handle'),
