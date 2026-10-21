@@ -137,5 +137,17 @@
   }
   .mon-detail .mpath-side {
     flex: 1 1 150px;
+    /* as tall as the map beside it; a long corner inspector scrolls by itself */
+    contain: size;
+    min-height: 220px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .mon-detail .mpath-body {
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+  .mon-detail .mpath-toolbar select {
+    max-width: 190px;
   }
 }
