@@ -32,9 +32,9 @@ export const STORY = pages(
   ],
   [
     'Teddy also has a big sister:',
-    'Gwin, a brown pit-lab mix.',
-    'She is younger, but bigger.',
-    'She ruins everything.',
+    'Gwin, a chocolate pit-lab mix.',
+    'Adopted, younger, bigger, and',
+    'still learning. (SIT? Nope.)',
     '',
     'Doc Leo drove ahead to the',
     'Klub in his little red 1976',
@@ -110,12 +110,12 @@ export const HELP = pages(
     'TREATS are worth points. A',
     'BONE gives energy back. A',
     'BALLOON DOG is worth 250.',
-    'Gwin eats your treats when',
-    'she bumps into you!',
-    '',
+    'Gwin bumps you: one treat',
+    "gone. She has Teddy's green",
+    'WOBBLE BALL too: WOOF and she',
+    "drops it. It's an extra nap!",
     'Bring the costume piece to',
     "Doc Leo's red CitiCar.",
-    '',
     'F1 help      F2 your stuff',
     'F3 music     F4 sounds',
     'F5 save      F6 load',
@@ -200,11 +200,11 @@ export const LOST = pages([
 
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
-  backyard: ["Fetch Doc Leo's hat, then dig", 'under the fence to the car.', 'NEW: HOP SPEAK DIG FETCH'],
-  street: ['Green tie. Watch sprinklers', 'and the mail truck.', 'NEW: HIGH FIVE (1)'],
+  backyard: ["Fetch Doc Leo's fedora, dig", 'under the fence. WOOF at Gwin!', 'NEW: HOP SPEAK DIG FETCH'],
+  street: ['Green tie. Watch sprinklers;', 'borrow a book at the Dog House.', 'NEW: HIGH FIVE (1)'],
   park: ['Red sneakers. Geese guard the', 'bridge; kids want a sit!', 'NEW: SIT PRETTY (2)'],
   city: ['Rubber chicken! Spin the', 'revolving doors; play dead!', 'NEW: SPIN (3)  PLAY DEAD (4)'],
-  klub: ['The red nose! Earn tickets', 'with tricks. Showtime!', 'NEW: ROLL OVER (5)'],
+  klub: ['The red nose! Earn tickets', 'with tricks. Root beer, too.', 'NEW: ROLL OVER (5)'],
 };
 
 /** Lines on the disk's text files: 31 columns at most. */
