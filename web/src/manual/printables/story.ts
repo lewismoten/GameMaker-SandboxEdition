@@ -70,6 +70,14 @@ async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
       h('p', null, it.intro ?? 'Find your question, then lay the red film over the answer below it. Only read what you need!'),
       redCode('Like this: you found it!'),
     ),
+    ctx.printables.skip?.includes('worldmap')
+      ? null
+      : h(
+          'p',
+          { class: 'hb-mapref' },
+          h('b', null, 'LOST? '),
+          'Unfold the World Map that came in your box: it shows every scene, numbered, and every way from one to the next.',
+        ),
     h('p', { class: 'hb-foot' }, 'SANDBOX SOFTWARE · RED FILM INCLUDED'),
   );
   // flow the questions onto pages, measured in a real hint book page off screen

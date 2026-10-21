@@ -1322,6 +1322,16 @@
   text-align: left;
 }
 
+.hb-mapref {
+  margin: 4cqw 0 0;
+  padding: 2.4cqw 4cqw;
+  border: 0.5cqw dashed currentColor;
+  font:
+    2.9cqw/1.35 Arial,
+    sans-serif;
+  text-align: left;
+}
+
 .hb-foot {
   position: absolute;
   left: 0;
