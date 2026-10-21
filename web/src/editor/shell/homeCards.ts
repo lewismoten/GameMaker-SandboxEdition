@@ -21,6 +21,7 @@ import { downloadProject, exportProject, exportProjectPage, exportProjectForDos 
 import { gamePage } from '../../seo/site';
 import { icon as svgIcon, type IconName } from './homeIcons';
 import { editedWhen } from './homeTime';
+import { readableBlurb } from './homeBlurb';
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -87,7 +88,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
     kind,
     title,
     byline,
-    blurb: g.blurb,
+    blurb: readableBlurb(g.id, g.blurb),
     gam: g.gam,
     search: searchText(title, g.id, g.author, g.company, g.year),
     entry: g,
