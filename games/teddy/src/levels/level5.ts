@@ -41,6 +41,8 @@ export function klub(): Level {
   m.rect(3, 33, door - 3, 1, (x) => `lights_${x % 2}`);
   m.set(8, 38, 'honkerTop').set(8, 39, 'honkerBot');
   m.mon(9, 38, 'hand');
+  // The root beer stand.
+  m.set(10, 38, 'beerSignL').set(11, 38, 'beerSignR').set(10, 39, 'beerMug').set(11, 39, 'beerKeg');
   m.set(13, 38, 'bubblesTop').set(13, 39, 'bubblesBot');
   m.mon(14, 37, 'askTix');
   m.set(18, 38, 'twirlyTop').set(18, 39, 'twirlyBot');
@@ -119,7 +121,6 @@ export function klub(): Level {
   const treats: [number, number][] = [
     [5, 39],
     [6, 39],
-    [11, 39],
     [16, 39],
     [21, 39],
     [in0 + 3, 32],

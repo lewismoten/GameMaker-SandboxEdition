@@ -9,7 +9,8 @@ import { CTR } from '../ids';
 import { GRAV, Tiles } from './level';
 import { KLUB } from '../sprites/klubfolk';
 import { FULL, docLeo } from '../sprites/people';
-import { c, copy, cut, dirt, r, sky } from '../blocks/tiles';
+import { c, canvas, copy, cut, dirt, r, sky } from '../blocks/tiles';
+import { rootBeer } from '../sprites/toys';
 
 export const G = 40;
 
@@ -335,5 +336,32 @@ export function klubTiles(): Tiles {
   t.air('leoTopHappy', half(leoHappy, 0));
   t.air('leoBotHappy', half(leoHappy, 20));
   t.wall('leoBot', half(leo, 20), { effect: CTR.props, eamt: -1, touch: 'leoBotHappy', score: 1000 });
+
+  // The root beer stand on the midway: a frosty mug on the counter, fizzing. Doc Leo always
+  // asks for root beer; fetch (F) him one, his usual.
+  const stand = (mug: boolean, fizz: number) => {
+    const p = canvas(2, 2, (bx) => t.pic(bx ? 'tentOut' : 'tentOut2'));
+    // the sign on two posts
+    p.rect(0, 1, 40, 11, c('wood', 1)).rect(1, 2, 38, 9, c('wood', 3)).rect(1, 2, 38, 1, c('wood', 4));
+    micro(p, 3, 4, 'ROOT BEER', c('red', 1));
+    p.rect(2, 12, 2, 16, c('wood', 1)).rect(36, 12, 2, 16, c('wood', 1));
+    // the tap and the counter
+    p.rect(27, 14, 5, 3, c('red', 1)).rect(28, 17, 3, 7, c('metal', 3)).rect(28, 17, 1, 7, c('metal', 4)).rect(29, 24, 1, 2, c('metal', 2));
+    p.rect(0, 28, 40, 3, c('red', 3)).rect(0, 31, 40, 9, c('red', 2)).rect(0, 28, 40, 1, c('paint', 3));
+    for (let x = 2; x < 40; x += 6) p.rect(x, 32, 3, 8, c('paint', 3));
+    if (mug) over(p, rootBeer(fizz).crop(2, 6, 16, 14), 4, 14);
+    else p.rect(7, 28, 8, 1, c('wood', 3));
+    return cut(p);
+  };
+  const [top, bot] = stand(true, 0);
+  t.air('beerSignL', top[0]);
+  t.air('beerSignR', top[1]);
+  const fizz = stand(true, 3)[1][0];
+  const gone = stand(false, 0)[1][0];
+  t.air('beerGone', gone);
+  // the mug fizzes: two pictures that take turns (a next/ntime pair, both fetchable)
+  t.add('beerMug', bot[0], { obj: true, score: 500, touch: 'beerGone', next: 'beerMug2', ntime: 5, grav: GRAV.down });
+  t.add('beerMug2', fizz, { obj: true, score: 500, touch: 'beerGone', next: 'beerMug', ntime: 5, grav: GRAV.down });
+  t.air('beerKeg', bot[1]);
   return t;
 }

@@ -113,6 +113,9 @@ export const ROUTES: Record<string, Order[]> = {
   klub: [
     { walk: 9 },
     { trick: 'five', after: 20 },
+    { walk: 10 },
+    { trick: 'f', after: 10 },
+    { until: 'has a root beer for Doc Leo', maxTicks: 1, check: (s) => !s.w.bg[s.w.map[39 * 100 + 10]].obj },
     { walk: 14 },
     { trick: 'sit', after: 40 },
     { walk: 18 },
