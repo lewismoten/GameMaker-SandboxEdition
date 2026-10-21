@@ -3,8 +3,8 @@
 // the blender, then presses Esc.
 import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
 import type { Character } from '../../../web/src/formats/character';
-import type { Board } from '../board';
-import type { BlockSet } from '../sets';
+import type { Board } from './levels/board';
+import type { BlockSet } from './blocks/sets';
 import { playSolution } from '../verify';
 
 export async function demoRecording(b: Board, tiles: BlockSet, mb: BlockSet, cb: BlockSet, chr: Character): Promise<Uint8Array> {

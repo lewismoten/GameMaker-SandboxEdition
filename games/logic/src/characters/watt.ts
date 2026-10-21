@@ -1,10 +1,10 @@
 // watt.chr: Watt the repair robot. He rolls exactly one block per key press (five frames
 // of four pixels, which can't be interrupted), so he always stands squarely on the grid
 // and bumps switches cleanly. Arrows, W A S D and the number pad all steer; R reboots.
-import { CHARBL, MONBL } from '../../web/src/formats/blocks';
-import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
-import { KEY, SND } from './src/ids';
-import type { BlockSet } from './sets';
+import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
+import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { KEY, SND } from '../ids';
+import type { BlockSet } from '../blocks/sets';
 
 const MIRROR = 0x40;
 /** Pixels a frame: five frames a block. A bump then reaches 8 pixels into a switch, short

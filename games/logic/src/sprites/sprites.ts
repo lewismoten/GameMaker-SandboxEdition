@@ -1,10 +1,10 @@
 // Sprites: Watt the repair robot (.CBL) and the moving parts of the boards (.MBL): the
 // current itself, switches, timer buttons, force-field gates, fuses and relays.
-import { orientIndex } from '../../web/src/formats/blocks';
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, bevel, blob, micro, outline, shadeAt } from './src/art/draw';
-import { c, r } from './src/art/pal';
-import { BlockSet, SOLID, type BlockDef } from './sets';
+import { orientIndex } from '../../../../web/src/formats/blocks';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, bevel, blob, micro, outline, shadeAt } from '../art/draw';
+import { c, r } from '../art/pal';
+import { BlockSet, SOLID, type BlockDef } from '../blocks/sets';
 
 const blank = () => new Pixels(20, 20, CLEAR);
 

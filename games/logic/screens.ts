@@ -10,9 +10,9 @@ import { Pixels, rng } from '../kit/pixels';
 import { dosText } from '../kit/disk';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from './src/art/draw';
 import { PAL, c, r } from './src/art/pal';
-import type { Board } from './board';
+import type { Board } from './src/levels/board';
 import { renderBoard } from './src/art/render';
-import type { BlockSet } from './sets';
+import type { BlockSet } from './src/blocks/sets';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
 
 const W = 320;

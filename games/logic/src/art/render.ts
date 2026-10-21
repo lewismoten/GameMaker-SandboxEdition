@@ -4,8 +4,8 @@ import { orientIndex } from '../../../../web/src/formats/blocks';
 import { MLEN } from '../../../../web/src/formats/map';
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR } from './draw';
-import { COLS, ROWS, type Board } from '../../board';
-import type { BlockSet } from '../../sets';
+import { COLS, ROWS, type Board } from '../levels/board';
+import type { BlockSet } from '../blocks/sets';
 
 export function sprite20(src: Pixels, orient: number): Pixels {
   const p = new Pixels(20, 20, CLEAR);

@@ -3,8 +3,8 @@
 import { newCharInfo } from '../../web/src/engine/world';
 import { LASTMON } from '../../web/src/formats/monster';
 import { Sim } from './sim';
-import type { Board } from './board';
-import type { BlockSet } from './sets';
+import type { Board } from './src/levels/board';
+import type { BlockSet } from './src/blocks/sets';
 import type { Character } from '../../web/src/formats/character';
 
 const SCAN: Record<string, number> = { U: 72, D: 80, L: 75, R: 77, r: 19 };

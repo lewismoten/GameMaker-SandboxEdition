@@ -5,8 +5,8 @@ import { join } from 'node:path';
 import { Pixels } from '../kit/pixels';
 import { writePng } from './png';
 import { PAL } from './src/art/pal';
-import { STYLES, buildTiles } from './tiles';
-import type { BlockSet } from './sets';
+import { STYLES, buildTiles } from './src/blocks/tiles';
+import type { BlockSet } from './src/blocks/sets';
 
 const dir = process.env.PREVIEW_DIR ?? '.';
 
@@ -23,16 +23,16 @@ if (process.env.PREVIEW_DIR) {
 }
 
 if (process.env.PREVIEW_DIR) {
-  const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
+  const { buildMonsterBlocks, buildWattBlocks } = await import('./src/sprites/sprites');
   writePng(join(dir, 'mbl.png'), sheet(buildMonsterBlocks(), 10), PAL.pal, 4);
   writePng(join(dir, 'cbl.png'), sheet(buildWattBlocks(), 11), PAL.pal, 4);
 }
 
 if (process.env.PREVIEW_DIR) {
-  const { BOARDS } = await import('./boards');
-  const { compileHouse } = await import('./board');
+  const { BOARDS } = await import('./src/levels/boards');
+  const { compileHouse } = await import('./src/levels/board');
   const { renderBoard } = await import('./src/art/render');
-  const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
+  const { buildMonsterBlocks, buildWattBlocks } = await import('./src/sprites/sprites');
   const S = await import('./screens');
   const mb = buildMonsterBlocks();
   const cb = buildWattBlocks();

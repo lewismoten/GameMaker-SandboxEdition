@@ -8,7 +8,7 @@
 // powers pass through each other; anything under 100 is beaten when Watt touches it):
 //   gate 40 < current 60 = switch on < relay NO 65 < control current 70 < switch off 80
 //   < relay NC off 75 ... and the "hot" states (120) that Watt can't flip twice in a row.
-import { Bestiary, type BlockSet } from './sets';
+import { Bestiary, type BlockSet } from '../blocks/sets';
 
 export const POWER = {
   gate: 40,

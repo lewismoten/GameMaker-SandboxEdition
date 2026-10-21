@@ -3,9 +3,9 @@
 // .BBL drawn from one list of names: floors, autotiled walls, copper traces, conduits
 // (traces running over a wall), batteries (the blocks that give birth to current) and the
 // outlet that leads to the next board.
-import { Pixels, rng } from '../kit/pixels';
-import { bevel, blob, micro, shadeAt } from './src/art/draw';
-import { c, r } from './src/art/pal';
+import { Pixels, rng } from '../../../kit/pixels';
+import { bevel, blob, micro, shadeAt } from '../art/draw';
+import { c, r } from '../art/pal';
 import { BlockSet, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP, type BlockDef } from './sets';
 
 export interface Style {

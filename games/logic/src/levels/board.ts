@@ -6,10 +6,10 @@
 // own 16x10 window, far enough from the others that their batteries (which only give birth
 // near the screen) stay quiet while Watt works on another board. Each board's outlet is a
 // link back into the same scene, landing on the next board's pad.
-import { newMap, reindexMonsters, LASTMM, MLEN, type GameMap } from '../../web/src/formats/map';
-import { buildMonsters, type Wire } from './mons';
-import { E, N, S, W, STYLES, buildTiles, type Battery, type BatteryKind } from './tiles';
-import type { Bestiary, BlockSet } from './sets';
+import { newMap, reindexMonsters, LASTMM, MLEN, type GameMap } from '../../../../web/src/formats/map';
+import { buildMonsters, type Wire } from '../characters/mons';
+import { E, N, S, W, STYLES, buildTiles, type Battery, type BatteryKind } from '../blocks/tiles';
+import type { Bestiary, BlockSet } from '../blocks/sets';
 
 export const COLS = 16;
 export const ROWS = 10;

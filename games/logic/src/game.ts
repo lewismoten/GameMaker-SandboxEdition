@@ -9,7 +9,7 @@
 // into the room scene, onto the same pad. A reboot then restarts the board at once, with
 // no card, and every board still gets its own card on the way in.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '../../../web/src/formats/game';
-import type { CompiledRoom } from '../board';
+import type { CompiledRoom } from './levels/board';
 
 export const TITLE = 'OHM SWEET OHM';
 

@@ -1,8 +1,8 @@
 // Named blocks and monsters, resolved into Game-Maker block sets (.BBL/.MBL/.CBL) and
 // monster lists (.MON), so boards can say "switchOff" instead of a raw number.
-import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../web/src/formats/blocks';
-import { emptyMonster, newMonsterSet, type Monster } from '../../web/src/formats/monster';
-import type { Pixels } from '../kit/pixels';
+import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../../../web/src/formats/blocks';
+import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
+import type { Pixels } from '../../../kit/pixels';
 
 export const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 export { SOLTOP, SOLRIG, SOLBOT, SOLLEF };

@@ -3,8 +3,8 @@
 // hint book's promo postcard itself), Watt's repair license and the wiring poster promised
 // to registered players.
 import { writeFileSync } from 'node:fs';
-import { BOARDS } from '../boards';
-import { SLOTS } from '../board';
+import { BOARDS } from './levels/boards';
+import { SLOTS } from './levels/board';
 
 const ROOMS: Record<string, string> = { kitchen: 'The Kitchen', living: 'The Living Room', garage: 'The Garage', attic: 'The Attic' };
 
