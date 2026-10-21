@@ -411,6 +411,7 @@ main.home {
   padding: 16px;
 }
 
+.editor h1.file-title,
 .editor h2 {
   margin: 0 0 4px;
   font:

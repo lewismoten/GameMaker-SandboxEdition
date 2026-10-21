@@ -107,7 +107,27 @@ export class Workspace {
     });
     this.renderSidebar();
     this.open(file && project.files.has(file) ? file : project.gam);
+    // Phones: the dropped-down file list closes on Escape or a tap outside it.
+    const close = () => {
+      if (!this.sidebar.classList.contains('open')) return;
+      this.sidebar.classList.remove('open');
+      this.sidebar.querySelector('.files-toggle')?.setAttribute('aria-expanded', 'false');
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && this.sidebar.classList.contains('open')) {
+        close();
+        this.sidebar.querySelector<HTMLElement>('.files-toggle')?.focus();
+      }
+    };
+    const onDown = (e: PointerEvent) => {
+      if (!this.sidebar.contains(e.target as Node)) close();
+    };
+    this.sidebar.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onDown);
+    this.unbind = () => document.removeEventListener('pointerdown', onDown);
   }
+
+  private unbind?: () => void;
 
   private listed = new Set<string>();
 
@@ -119,6 +139,7 @@ export class Workspace {
     this.cleanup?.();
     this.player?.stop();
     this.unlisten();
+    this.unbind?.();
   }
 
   private renderSidebar(): void {
@@ -136,49 +157,54 @@ export class Workspace {
     clear(
       this.sidebar,
       h(
-        'button',
-        {
-          class: 'files-toggle',
-          'aria-expanded': String(open),
-          onclick: () => {
-            const now = this.sidebar.classList.toggle('open');
-            this.sidebar.querySelector('.files-toggle')?.setAttribute('aria-expanded', String(now));
+        'div',
+        { class: 'side-top' },
+        h(
+          'button',
+          {
+            class: 'files-toggle',
+            'aria-expanded': String(open),
+            'aria-controls': 'side-files',
+            onclick: () => {
+              const now = this.sidebar.classList.toggle('open');
+              this.sidebar.querySelector('.files-toggle')?.setAttribute('aria-expanded', String(now));
+            },
           },
-        },
-        h('span', { 'aria-hidden': 'true' }, '☰ '),
-        `Files (${names.length})`,
-        this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
+          h('span', { 'aria-hidden': 'true' }, '☰ '),
+          `Files (${names.length})`,
+          this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
+        ),
+        h('button', { class: 'primary side-play', onclick: () => this.play(), title: 'Play the game from its title screen' }, '▶ Play test'),
       ),
       h(
         'div',
-        { class: 'stack' },
-        h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'),
+        { class: 'side-files', id: 'side-files' },
         h(
           'div',
-          { class: 'toolbar' },
+          { class: 'toolbar side-actions' },
           h('button', { onclick: () => void this.newFile() }, '+ Add a file…'),
           h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
         ),
-      ),
-      h(
-        'details',
-        { class: 'export-menu' },
-        h('summary', null, 'Save & share'),
         h(
-          'div',
-          { class: 'stack' },
-          h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'),
-          h('button', { onclick: () => void this.exportApp() }, 'Export web app'),
+          'details',
+          { class: 'export-menu' },
+          h('summary', null, 'Save & share'),
           h(
-            'button',
-            { onclick: () => void this.exportPage(), title: 'One .html file with the game and player inside: double-click to play, even offline' },
-            'Export as one web page',
+            'div',
+            { class: 'stack' },
+            h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'),
+            h('button', { onclick: () => void this.exportApp() }, 'Export web app'),
+            h(
+              'button',
+              { onclick: () => void this.exportPage(), title: 'One .html file with the game and player inside: double-click to play, even offline' },
+              'Export as one web page',
+            ),
+            h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'),
           ),
-          h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'),
         ),
+        this.search,
+        ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
       ),
-      this.search,
-      ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
     );
     this.filter();
   }
@@ -212,7 +238,10 @@ export class Workspace {
     const p = this.project;
     const foldable = files.length > FOLD_AT;
     const folded = foldable && isFolded(k, files.length);
-    const sec = h('section', { class: `file-section${foldable ? ' foldable' : ''}${folded ? ' folded' : ''}`, 'data-kind': k });
+    const sec = h('section', {
+      class: `file-section${foldable ? ' foldable' : ''}${folded ? ' folded' : ''}${files.length ? '' : ' none'}`,
+      'data-kind': k,
+    });
     const toggle = () => {
       const now = !sec.classList.contains('folded');
       sec.classList.toggle('folded', now);
@@ -227,7 +256,7 @@ export class Workspace {
           h('span', null, KIND_LABELS[k]),
           h('span', { class: 'count' }, String(files.length)),
         )
-      : h('span', null, KIND_LABELS[k]);
+      : h('span', null, KIND_LABELS[k], files.length ? null : h('span', { class: 'none-yet' }, ' · none yet'));
     const parts: (HTMLElement | null)[] = [
       h(
         'h2',
@@ -257,7 +286,6 @@ export class Workspace {
             : h('button', { class: 'icon-btn danger', title: `Delete ${n}`, 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) }, '🗑'),
         ),
       ),
-      files.length ? null : h('p', { class: 'empty' }, 'none yet'),
     ];
     sec.append(...parts.filter((x): x is HTMLElement => !!x));
     return sec;
@@ -313,7 +341,7 @@ export class Workspace {
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },
-        h('h2', null, file),
+        h('h1', { class: 'file-title' }, file),
         h(
           'div',
           { class: 'toolbar' },
@@ -354,7 +382,6 @@ export class Workspace {
       'nav',
       { class: 'next-steps', 'aria-label': 'Make it yours' },
       h('strong', null, 'Make it yours:'),
-      h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'),
       ...steps.map(([kind, icon, label, addLabel]) => {
         const first = this.project.files.byExtension(kind)[0];
         return first
@@ -413,7 +440,7 @@ export class Workspace {
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },
-        h('h2', null, `Playing ${this.project.name}`),
+        h('h1', { class: 'file-title' }, `Playing ${this.project.name}`),
         h('button', { onclick: () => this.open(this.project.gam) }, 'Stop'),
       ),
       host,

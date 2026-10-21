@@ -84,23 +84,52 @@
   display: none;
 }
 
-/* Phones: the file list folds into one "Files" button above the editor. */
+/* The top of the file list: Play test (and on phones the "Files" button beside it). */
+.sidebar .side-top {
+  display: flex;
+  gap: 6px;
+}
+
+.sidebar .side-play {
+  flex: 1;
+}
+
+.sidebar .side-actions {
+  flex-wrap: nowrap;
+  margin-top: 8px;
+}
+
+.sidebar .side-actions button {
+  flex: 1 1 auto;
+  padding-inline: 8px;
+  white-space: nowrap;
+}
+
+/* Phones: the file list folds into one "Files" button, kept at the top of the screen. */
 .sidebar .files-toggle {
   display: none;
 }
 
 @media (max-width: 900px) {
   .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     max-height: none;
+    overflow: visible;
   }
   .sidebar .files-toggle {
     display: flex;
+    flex: 1 1 auto;
     gap: 4px;
-    width: 100%;
+    min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-weight: 600;
+  }
+  .sidebar .side-play {
+    flex: none;
   }
   .sidebar .files-toggle-current {
     overflow: hidden;
@@ -109,11 +138,24 @@
     font-weight: 400;
     text-overflow: ellipsis;
   }
-  .sidebar:not(.open) > :not(.files-toggle, .stack) {
+  .sidebar:not(.open) > .side-files {
     display: none;
   }
-  .sidebar.open > .files-toggle {
-    margin-bottom: 8px;
+  /* Open, the list drops down over the editor and scrolls by itself. */
+  .sidebar.open > .side-files {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    max-height: min(70vh, calc(100dvh - 120px));
+    overflow: auto;
+    padding: 8px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  }
+  .sidebar .side-actions {
+    margin-top: 0;
   }
 }
 
@@ -160,4 +202,20 @@
     position: sticky;
     right: 0;
   }
+}
+
+/* A kind with no files yet is just its heading, quieter (its + still adds one). */
+.sidebar .file-section.none h2.file-kind {
+  margin-top: 6px;
+}
+
+.sidebar .file-section.none h2.file-kind > span:first-child {
+  opacity: 0.75;
+}
+
+.sidebar .none-yet {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
 }
