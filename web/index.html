@@ -17,6 +17,11 @@
         try {
           ui = /^#\/(p\/|game\/|help$|$)/.test(h) || (h !== '#/desk' && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
         } catch (e) {}
+        var t = 'dark';
+        try {
+          t = /^(dark|light|auto)$/.test(localStorage.getItem('gm-theme')) ? localStorage.getItem('gm-theme') : 'dark';
+        } catch (e) {}
+        d.setAttribute('data-theme', t);
         d.className += ' js';
         d.setAttribute('data-ui', ui);
       })(document.documentElement, location.hash);
@@ -25,7 +30,9 @@
       html.js .seo-static { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
       html.js body { margin: 0; }
       html[data-ui='desk'] body { background: #465063; }
-      html[data-ui='modern'] body { background: #e9ecf3; }
+      html[data-ui='modern'] body { background: #d5d9e2; }
+      html[data-ui='modern'][data-theme='dark'] body { background: #11131a; }
+      @media (prefers-color-scheme: dark) { html[data-ui='modern'][data-theme='auto'] body { background: #11131a; } }
     </style>
     <!--SEO:HEAD-->
   </head>
