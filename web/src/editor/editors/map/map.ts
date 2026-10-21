@@ -2,6 +2,7 @@
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { h, clear, selectField, toast, debounce, modal, download } from '../../core/ui';
 import { blockCanvas, blockImages } from '../../core/draw';
 import { paletteChooser } from '../blocks/blocks';
@@ -46,7 +47,11 @@ registerEditor(['map'], (host, project, file) => {
   let mode: Mode = 'paint';
   let brush = 0;
   let monBrush = 0;
-  let zoom = 1;
+  // the address keeps where the map is scrolled to (the block at the middle) and the zoom
+  // (…/PLANET1.MAP?x=40&y=12&zoom=2)
+  const view = viewState(['p', project.id, file]);
+  const urlZoom = Number(view.get('zoom'));
+  let zoom = [0.5, 1, 2].includes(urlZoom) ? urlZoom : 1;
   let bgImgs: HTMLCanvasElement[] = [];
   let monImgs: HTMLCanvasElement[] = [];
   const save = debounce(() => project.files.set(file, serializeMap(map)), 300);
@@ -569,7 +574,7 @@ registerEditor(['map'], (host, project, file) => {
           [2, '200%'],
         ] as [number, string][],
         () => zoom,
-        (v) => ((zoom = v), draw()),
+        (v) => ((zoom = v), view.set({ zoom: v === 1 ? undefined : v }), draw()),
       ),
       h('button', { onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' }, '🖼 Download map picture'),
     ),
@@ -590,13 +595,25 @@ registerEditor(['map'], (host, project, file) => {
     }
   };
   window.addEventListener('keydown', onKey);
-  // Open where the action is: where the character starts, else the first placed monster.
+  // Open where the address says, else where the action is: where the character starts, else the first placed monster.
   requestAnimationFrame(() => {
+    const urlX = view.num('x');
+    const urlY = view.num('y');
     const start = linkMarks().find((m) => m.kind === 'to') ?? map.monsters.find((m) => m.monnum < LASTMON) ?? undefined;
-    const at = start ? ('curx' in start ? { x: start.curx, y: start.cury } : start) : undefined;
-    if (!at) return;
-    const s = BLEN * zoom;
-    scroller.scrollTo({ left: at.x * s - scroller.clientWidth / 2, top: at.y * s - scroller.clientHeight / 2 });
+    const at = urlX !== undefined && urlY !== undefined ? { x: urlX, y: urlY } : start ? ('curx' in start ? { x: start.curx, y: start.cury } : start) : undefined;
+    if (at) {
+      const s = BLEN * zoom;
+      scroller.scrollTo({ left: at.x * s - scroller.clientWidth / 2, top: at.y * s - scroller.clientHeight / 2 });
+    }
+    // from now on, scrolling updates the address (once it settles)
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    scroller.addEventListener('scroll', () => {
+      clearTimeout(settle);
+      settle = setTimeout(() => {
+        const s = BLEN * zoom;
+        view.set({ x: Math.round((scroller.scrollLeft + scroller.clientWidth / 2) / s), y: Math.round((scroller.scrollTop + scroller.clientHeight / 2) / s) });
+      }, 300);
+    });
   });
   return () => window.removeEventListener('keydown', onKey);
 });
