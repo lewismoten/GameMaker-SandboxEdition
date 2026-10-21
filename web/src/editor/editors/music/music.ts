@@ -31,15 +31,16 @@ registerEditor(['cmf'], (host, project, file) => {
     roll.focus();
   });
   const instrument = new InstrumentPanel(doc);
-  // the address keeps the tab, the track and the instrument shown (…/SONG.CMF?tab=instruments&track=2&instrument=5)
+  // the address keeps the tab, the track and the instrument shown, counted from 1 as they are
+  // labeled (…/SONG.CMF?tab=instruments&track=2&instrument=5)
   const view = viewState(['p', project.id, file]);
   const TAB_NAMES: Record<MusTab, string> = { song: 'song', inst: 'instruments', set: 'settings' };
   const urlTrack = view.num('track');
-  if (urlTrack !== undefined && doc.tracks().includes(urlTrack)) doc.selectTrack(urlTrack);
+  if (urlTrack !== undefined && doc.tracks().includes(urlTrack - 1)) doc.selectTrack(urlTrack - 1);
   const urlInstrument = view.num('instrument');
-  if (urlInstrument !== undefined && urlInstrument >= 0 && urlInstrument < doc.song.instruments.length) instrument.show(urlInstrument);
-  doc.on((c) => c === 'track' && view.set({ track: doc.track }));
-  instrument.onShow = (i) => view.set({ instrument: i });
+  if (urlInstrument !== undefined && urlInstrument >= 1 && urlInstrument <= doc.song.instruments.length) instrument.show(urlInstrument - 1);
+  doc.on((c) => c === 'track' && view.set({ track: doc.track + 1 }));
+  instrument.onShow = (i) => view.set({ instrument: i + 1 });
   const songPanel = new SongPanel(doc);
   const velocity = new VelocityField(doc);
 
