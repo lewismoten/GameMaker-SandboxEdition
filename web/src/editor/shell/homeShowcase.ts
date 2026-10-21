@@ -20,6 +20,22 @@ const KIND_LABEL: Record<GameKind, string> = {
 const mayAutoplay = () =>
   !matchMedia('(prefers-reduced-motion: reduce)').matches && !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
+/** A featured game plays by itself only when its files are this small (a demo needs them all). */
+const AUTOPLAY_BYTES = 1.2e6;
+
+/** Runs `f` once the page is idle after loading and `el` is on screen (so a demo waits for the page). */
+function whenIdleAndSeen(el: Element, f: () => void): void {
+  const idle = (cb: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(cb, { timeout: 3000 }) : setTimeout(cb, 1500));
+  const io = new IntersectionObserver((entries) => {
+    if (!entries.some((e) => e.isIntersecting)) return;
+    io.disconnect();
+    idle(f);
+  });
+  const start = () => io.observe(el);
+  if (document.readyState === 'complete') start();
+  else addEventListener('load', start, { once: true });
+}
+
 export interface Showcase {
   el: HTMLElement;
   /** Shows a game; `featured` when nobody chose it. */
@@ -88,7 +104,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       setPlaying(false);
       const dialog = demoDialogButton(game);
       if (dialog) actions.insertBefore(dialog, actions.querySelector('.card-more'));
-      if (mayAutoplay()) play();
+      if (mayAutoplay() && (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, () => gen === generation && !demo && play());
     });
   };
 
