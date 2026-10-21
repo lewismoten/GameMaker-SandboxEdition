@@ -1,0 +1,262 @@
+{
+  "pitch": "GLITCH is eating the family 486: shrink down and blast your way up the motherboard, through memory, the sound card and the hard disk to the CPU in a real scrolling shoot-'em-up.",
+  "keys": {
+    "Up": "Speed ahead (W too)",
+    "Down": "Brake (S too)",
+    "Left": "Strafe left (A too)",
+    "Right": "Strafe right (D too)",
+    "W": "Speed ahead",
+    "S": "Brake",
+    "A": "Strafe left",
+    "D": "Strafe right",
+    "Q": "Up and to the left",
+    "E": "Up and to the right",
+    "Home": "Pad 7: up-left",
+    "PgUp": "Pad 9: up-right",
+    "End": "Pad 1: down-left (braking)",
+    "PgDn": "Pad 3: down-right (braking)",
+    "Space": "Nova Bomb: five plasma bolts (one charge)"
+  },
+  "items": [
+    {
+      "kind": "hintbook",
+      "title": "BLASTER Hint Book",
+      "note": "Answers hidden: use the red film",
+      "promised": true,
+      "intro": "Stuck on a stage? Find your question, lay the red film over the answer, and read only as much as you need. GLITCH is counting on you giving up. Don't!",
+      "sections": [
+        {
+          "head": "Flying the BLASTER",
+          "hints": [
+            {
+              "q": "How do I shoot?",
+              "a": "You already are! The twin guns fire every third tick whenever the BLASTER moves, and it is always moving forward. Just steer under the virus."
+            },
+            {
+              "q": "The screen won't scroll backward.",
+              "a": "It never does. Down only brakes. Dodge sideways, and push Up to rush past trouble."
+            },
+            {
+              "q": "When should I use a Nova Bomb?",
+              "a": "On bosses, and on a heavy that is about to run you over. The big middle bolt hits hardest, so fire it from right under the target."
+            },
+            {
+              "q": "How do I see my energy?",
+              "a": "Press F2. Hitpoints is your energy (40 when you start), Lives is your spare ships, and counter 5 is your Nova charges."
+            }
+          ]
+        },
+        {
+          "head": "1. The Motherboard",
+          "hints": [
+            {
+              "q": "Turrets keep shooting me no matter what.",
+              "a": "Shoot the armored collar off: three hits. The turret burns out into a smoking wreck that never fires again, and you get 250 points."
+            },
+            {
+              "q": "How do I get past a firewall?",
+              "a": "Wait until it blinks off and fly through. If you must go through a live one, you burn a hole in it but lose 6 energy for each block you touch."
+            },
+            {
+              "q": "The BIOS Bug's head won't break.",
+              "a": "Shoot its two eyes (the bottom half of the head) first; they take 9 hits each. Then the crown (6 each). Fly up through the hole where the head was."
+            }
+          ]
+        },
+        {
+          "head": "2. Memory Lane",
+          "hints": [
+            {
+              "q": "Something keeps pushing me sideways.",
+              "a": "Data streams: the rows of flowing arrows. Steer the other way while you cross, or hold Up to cross faster."
+            },
+            {
+              "q": "The slugs follow me everywhere.",
+              "a": "Leak Slugs never give up. They take three hits; shoot them as they come at you from ahead, because they are slower than you and can't catch up from behind."
+            },
+            {
+              "q": "I can't reach the Memory Leech's mouth.",
+              "a": "Its coils soak up your shots. Each segment pops with one hit, so clear a few, then fire up through the gap at the mouth."
+            }
+          ]
+        },
+        {
+          "head": "3. The Sound Card",
+          "hints": [
+            {
+              "q": "What do the big speakers do?",
+              "a": "When a speaker thumps out, the middle of the cone kicks the BLASTER forward. Use it to rush past a crowd."
+            },
+            {
+              "q": "The Feedback Howler's grille blocks everything.",
+              "a": "The bars slide two blocks each way. Fire when a gap lines up with the face, and slip through a gap the same way when the face is gone."
+            }
+          ]
+        },
+        {
+          "head": "4. The Hard Disk",
+          "hints": [
+            {
+              "q": "The platter keeps throwing me around.",
+              "a": "The wide streams of The Platter push hard. Hug the side the stream pushes you toward so you can't be shoved into a turret."
+            },
+            {
+              "q": "How do I stop a Tank?",
+              "a": "Six hits. They drive straight, so get out of the way first and shoot from the side as they pass."
+            },
+            {
+              "q": "The Head Crash's shards are everywhere.",
+              "a": "They orbit in two rings at different speeds. Wait between the rings, and fire straight up when the middle is clear."
+            }
+          ]
+        },
+        {
+          "head": "5. The CPU",
+          "hints": [
+            {
+              "q": "How do I beat GLITCH?",
+              "a": "Its brain sits behind a sliding grille in its face. Stay in the middle, fire through the gaps, and watch out for the Leak Slugs that hunt you from the bottom corners. Grab the repairs in the corners when you need them."
+            },
+            {
+              "q": "Is there a secret ending?",
+              "a": "Reboot the PC clean and you'll see it. Then try for a better score!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "letter",
+      "title": "Hint book postcard",
+      "note": "A promo postcard for the hint book",
+      "style": "print",
+      "letterhead": "SANDBOX SOFTWARE - FIELD REPORT",
+      "address": "P.O. Box 1995, Pittsburgh, PA 15213 (a fictional address)",
+      "date": "Summer 1995",
+      "to": "Dear BLASTER pilot,",
+      "body": "<p><b>STUCK BEHIND THE HOWLER'S GRILLE?</b> Leech got your number? GLITCH grinning at you from every corner of the screen?</p><p>Get the official <b>BLASTER Hint Book</b>: every stage, every boss, every turret, with the answers hidden under red noise so you only spoil what you have to. Red film included!</p><p>FREE with registration ($15), or $5 on its own from Sandbox Software.</p><p><i>Our address is made up for this game - please don't mail anything.</i></p>",
+      "signature": "Lt. Byte, Chief Test Pilot"
+    },
+    {
+      "kind": "map",
+      "title": "GLITCH poster",
+      "note": "Full color, as promised",
+      "promised": true,
+      "landscape": true,
+      "heading": "VIRUS BLASTER: THE FIVE BOSSES",
+      "intro": "Know your enemy. Pin this over your computer, and scan every download!",
+      "panels": [
+        {
+          "map": "s5c.map",
+          "x": 2,
+          "y": 45,
+          "w": 16,
+          "h": 10,
+          "caption": "GLITCH, the virus itself, at the heart of the CPU"
+        },
+        {
+          "map": "s1c.map",
+          "x": 2,
+          "y": 45,
+          "w": 16,
+          "h": 8,
+          "caption": "The BIOS Bug"
+        },
+        {
+          "map": "s2c.map",
+          "x": 2,
+          "y": 45,
+          "w": 16,
+          "h": 8,
+          "caption": "The Memory Leech"
+        },
+        {
+          "map": "s3c.map",
+          "x": 2,
+          "y": 45,
+          "w": 16,
+          "h": 8,
+          "caption": "The Feedback Howler"
+        },
+        {
+          "map": "s4c.map",
+          "x": 2,
+          "y": 45,
+          "w": 16,
+          "h": 8,
+          "caption": "The Head Crash"
+        }
+      ],
+      "columns": 2
+    },
+    {
+      "kind": "idcard",
+      "title": "BLASTER pilot's license",
+      "org": "VACCINE.EXE NANO-FLIGHT SCHOOL",
+      "name": "Registered Pilot",
+      "role": "BLASTER Pilot, Class 1",
+      "fields": [
+        ["Craft", "BLASTER nano-fighter"],
+        ["Size", "1 byte"],
+        ["Rating", "Motherboard to CPU"],
+        ["Clearance", "Ring 0"]
+      ],
+      "color": "#0a0f24",
+      "ink": "#ffffff",
+      "photo": {
+        "map": "s1a.map",
+        "x": 2,
+        "y": 84,
+        "w": 16,
+        "h": 8,
+        "caption": "The launch pad"
+      },
+      "back": "If found, please return to the nearest floppy drive. Scan every download!",
+      "portrait": {
+        "chr": "ship.chr",
+        "cbl": "ship.cbl",
+        "pal": "s1.pal"
+      }
+    }
+  ],
+  "stickers": [
+    {
+      "text": "VIRUS BLASTER",
+      "sub": "Sandbox Software",
+      "shape": "badge",
+      "color": "#ff7a1a",
+      "ink": "#0a0f24"
+    },
+    {
+      "text": "SCAN EVERY DOWNLOAD",
+      "shape": "rect",
+      "color": "#36e07a",
+      "ink": "#0a0f24"
+    },
+    {
+      "text": "GLITCH",
+      "sub": "WANTED",
+      "shape": "badge",
+      "color": "#b03cd0",
+      "ink": "#ffffff"
+    },
+    {
+      "text": "BLASTER",
+      "sub": "nano-fighter",
+      "shape": "circle",
+      "color": "#0a0f24",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "ship.chr",
+        "cbl": "ship.cbl",
+        "pal": "s1.pal"
+      }
+    }
+  ],
+  "news": [
+    {
+      "head": "Game-Maker learns to scroll",
+      "html": "<p>Sandbox Software's <b>Virus Blaster</b> is a real vertically scrolling shoot-'em-up, built entirely in Game-Maker. The trick? The BLASTER drifts forward two pixels on every frame of every move, so the screen has no choice but to follow it up the map.</p>"
+    }
+  ]
+}
