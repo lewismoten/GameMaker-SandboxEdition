@@ -20,20 +20,20 @@
   left: 1172px;
   top: 70px;
   z-index: 0;
-  width: 72px;
-  height: 189px;
+  width: 56px;
+  height: 182px;
   cursor: pointer;
   filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.45));
 }
 
 .wall-phone .handset {
   transition: transform 0.3s;
-  transform-origin: 40px 60px;
+  transform-origin: 40px 16px;
 }
 
 /* off the hook: the handset swings out toward you */
 .wall-phone.off-hook .handset {
-  transform: translate(30px, 70px) rotate(-28deg) scale(1.08);
+  transform: translate(-34px, 40px) rotate(24deg) scale(1.08);
 }
 
 .wall-phone:focus-visible,

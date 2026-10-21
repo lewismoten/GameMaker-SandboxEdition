@@ -230,9 +230,11 @@
     left: 1026px;
   }
 
+  /* on the wall past the window and the desk's end, where you can stand at it: its
+     earpiece about 5 feet up */
   .desk-scene .wall-phone {
-    left: 1044px;
-    top: 176px;
+    left: 1350px;
+    top: 168px;
   }
 
   .desk-scene .news-clipping {

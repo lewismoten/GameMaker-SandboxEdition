@@ -42,26 +42,56 @@ function dialTone(): () => void {
   };
 }
 
+/** A coiled cord down a vertical run, as SVG path commands: little loops side to side. */
+const coil = (dy: number, turns: number) => Array.from({ length: turns }, (_, i) => `q ${i % 2 ? -7 : 7} ${dy / turns / 2} 0 ${dy / turns}`).join(' ');
+
 export function wallPhone(): HTMLElement {
+  // A beige touch-tone wall phone, about 6" x 11": the handset hangs straight down the front
+  // of the base on its hook, earpiece up, with the keypad below it and the coiled cord
+  // hanging in a loop from the mouthpiece back up into the bottom of the base.
+  const keys = Array.from({ length: 12 }, (_, i) => {
+    const x = 23 + (i % 3) * 12;
+    const y = 134 + Math.floor(i / 3) * 10;
+    return `<rect x="${x}" y="${y}" width="10" height="8" rx="2" fill="#f4f1e6" stroke="#9e967c" stroke-width="0.6"/><text x="${x + 5}" y="${y + 6}" text-anchor="middle" font-size="5" font-family="Arial" fill="#444">${'123456789*0#'[i]}</text>`;
+  }).join('');
+  const holes = (cx: number, cy: number) =>
+    [
+      [0, 0],
+      [-4, 0],
+      [4, 0],
+      [0, -4],
+      [0, 4],
+      [-3, -3],
+      [3, 3],
+      [-3, 3],
+      [3, -3],
+    ]
+      .map(([dx, dy]) => `<circle cx="${cx + dx}" cy="${cy + dy}" r="0.9" fill="#7d755f"/>`)
+      .join('');
   const el = svg(
     'wall-phone',
-    '0 0 80 210',
-    `<!-- the base on the wall -->
-    <rect x="8" y="4" width="64" height="120" rx="9" fill="url(#ph-body)" stroke="#8f8770"/>
-    <defs>
+    '0 0 80 260',
+    `<defs>
       <linearGradient id="ph-body" x1="0" x2="1"><stop offset="0" stop-color="#ece6d3"/><stop offset="0.6" stop-color="#d8d0b8"/><stop offset="1" stop-color="#b3aa90"/></linearGradient>
+      <linearGradient id="ph-hand" x1="0" x2="1"><stop offset="0" stop-color="#f3eedf"/><stop offset="0.5" stop-color="#e0d8c2"/><stop offset="1" stop-color="#b9b097"/></linearGradient>
     </defs>
-    <!-- the cradle and keypad -->
-    <rect x="18" y="12" width="44" height="8" rx="3" fill="#b3aa90"/>
-    ${Array.from({ length: 12 }, (_, i) => `<rect x="${22 + (i % 3) * 13}" y="${66 + Math.floor(i / 3) * 12}" width="10" height="8" rx="2" fill="#f4f1e6" stroke="#9e967c" stroke-width="0.6"/><text x="${27 + (i % 3) * 13}" y="${72 + Math.floor(i / 3) * 12}" text-anchor="middle" font-size="5" font-family="Arial" fill="#444">${'123456789*0#'[i]}</text>`).join('')}
-    <!-- the handset, hanging on the base -->
+    <!-- the base on the wall, with the hook the handset hangs on and the keypad below it -->
+    <rect x="8" y="4" width="64" height="176" rx="9" fill="url(#ph-body)" stroke="#8f8770"/>
+    <rect x="14" y="10" width="52" height="116" rx="12" fill="#c9c0a6"/>
+    <rect x="36" y="12" width="8" height="7" rx="2" fill="#8f8770"/>
+    <rect x="20" y="130" width="40" height="44" rx="4" fill="#cdc5ab"/>
+    ${keys}
+    <!-- the coiled cord: out of the base, down in a loop and up into the mouthpiece -->
+    <path class="cord" d="M54 180 ${coil(56, 12)} q 0 12 -13 12 q -13 0 -13 -12 ${coil(-104, 22)} q 0 -4 6 -6" fill="none" stroke="#c9c1a6" stroke-width="2.2"/>
+    <!-- the handset, hanging on the hook: earpiece, handle, mouthpiece -->
     <g class="handset">
-      <rect x="14" y="16" width="52" height="44" rx="8" fill="url(#ph-body)" stroke="#8f8770"/>
-      <rect x="28" y="22" width="24" height="32" rx="4" fill="#cbc3aa"/>
-      <circle cx="40" cy="27" r="2" fill="#8f8770"/><circle cx="40" cy="49" r="2" fill="#8f8770"/>
-    </g>
-    <!-- the coiled cord -->
-    <path class="cord" d="M40 122 ${Array.from({ length: 14 }, (_, i) => `q ${i % 2 ? -7 : 7} 3 0 6`).join(' ')} q 0 6 -6 2" fill="none" stroke="#c9c1a6" stroke-width="2.4"/>`,
+      <path d="M22 16 q0 -8 9 -8 h18 q9 0 9 8 v18 q0 7 -8 9 q-3 1 -3 6 v40 q0 5 3 6 q8 2 8 9 v18 q0 8 -9 8 h-18 q-9 0 -9 -8 v-18 q0 -7 8 -9 q3 -1 3 -6 v-40 q0 -5 -3 -6 q-8 -2 -8 -9 z" fill="url(#ph-hand)" stroke="#8f8770"/>
+      <ellipse cx="40" cy="24" rx="12" ry="11" fill="#d9d1b9" stroke="#a99f86" stroke-width="0.6"/>
+      ${holes(40, 24)}
+      <ellipse cx="40" cy="110" rx="12" ry="11" fill="#d9d1b9" stroke="#a99f86" stroke-width="0.6"/>
+      ${holes(40, 110)}
+      <rect x="37" y="50" width="6" height="34" rx="3" fill="#000" opacity="0.06"/>
+    </g>`,
   );
   el.setAttribute('role', 'button');
   el.setAttribute('tabindex', '0');
