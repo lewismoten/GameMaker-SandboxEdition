@@ -1,6 +1,6 @@
 // The soundtrack: nine short FM songs for the Sound Blaster, written as note strings.
 // Each voice is its own OPL2 channel, so chords are spread across three channels.
-import { INSTRUMENTS, sbi, song, type Voice } from '../kit/music';
+import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const CHORDS: Record<string, string[]> = {
   C: ['C4', 'E4', 'G4'],

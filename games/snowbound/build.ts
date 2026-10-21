@@ -14,13 +14,13 @@ import { Disk } from '../kit/disk';
 import { buildBlocks } from './src/blocks/blocks';
 import { MON } from './src/ids';
 import { bowdenDrive, galeStreet, jamieHill, lavaleMall, type MapBuilder } from './src/levels/maps';
-import { hillSong, lostSong, mainSong, mallSong, menuSong, pineSong, storySong, titleSong, wonSong } from './music';
+import { hillSong, lostSong, mainSong, mallSong, menuSong, pineSong, storySong, titleSong, wonSong } from './src/sound/music';
 import { buildPalette, type TimeOfDay } from './src/art/pal';
 import { renderRegion } from './src/art/render';
-import { buildScreens } from './screens';
-import { buildSounds } from './sounds';
+import { buildScreens } from './src/screens/screens';
+import { buildSounds } from './src/sound/sounds';
 import { buildCharBlocks, buildKid, buildMonsterBlocks, buildMonsters, buildSledder, type MonsterOptions } from './src/sprites/sprites';
-import { CREDITS, INSTRUCTIONS, readme } from './text';
+import { CREDITS, INSTRUCTIONS, readme } from './src/screens/text';
 import { demoRecording } from './src/demo';
 
 const here = dirname(fileURLToPath(import.meta.url));

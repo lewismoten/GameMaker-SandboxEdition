@@ -1,9 +1,9 @@
 // SNOW.SND: PC speaker effects, each backed by a digitized Sound Blaster .VOC that is
 // synthesized here (shovel scrapes, the cash register, snowball whooshes...).
-import { newSoundSet, type SoundSet } from '../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../kit/sound';
-import { rng } from '../kit/pixels';
-import { SND } from './src/ids';
+import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { rng } from '../../../kit/pixels';
+import { SND } from '../ids';
 
 /** White noise through a one-pole low-pass (0..1: how much of the new sample passes). */
 function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {
