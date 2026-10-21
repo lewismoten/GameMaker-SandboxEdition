@@ -3,6 +3,7 @@
 // publisher band, tilted screenshots in frames, badges and a barcode.
 import type { CatalogEntry } from '../../project/files';
 import { type BoxExtras } from './boxFacts';
+import { bbsNameWidth, paintBbsName } from '../../retro/bbs/bbsName';
 
 export type Box = NonNullable<NonNullable<CatalogEntry['original']>['box']> & BoxExtras;
 
@@ -18,20 +19,59 @@ export function canvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderin
   return [c, c.getContext('2d')!];
 }
 
+// THE -= S A N D B O X =- BBS stays one word in box text and is drawn in its colors.
+const BBS_NAME = /(THE\s+)?-=\s*S\s*A\s*N\s*D\s*B\s*O\s*X\s*=-(\s+BBS)?/gi;
+const NAME_MARK = '\u0001'; // stands for the name while wrapping; F = with THE and BBS
+const marked = (text: string) => text.replace(BBS_NAME, (_m, the, bbs) => `${NAME_MARK}${the || bbs ? 'F' : 'S'}`);
+const fontPx = (ctx: CanvasRenderingContext2D) => Number(/([\d.]+)px/.exec(ctx.font)?.[1] ?? 14);
+
+/** Width of text that may hold the marked name. */
+function measure(ctx: CanvasRenderingContext2D, text: string): number {
+  if (!text.includes(NAME_MARK)) return ctx.measureText(text).width;
+  let w = 0;
+  for (const [i, part] of text.split(NAME_MARK).entries()) {
+    if (i === 0) w += ctx.measureText(part).width;
+    else w += bbsNameWidth(ctx, fontPx(ctx), part[0] === 'F') + ctx.measureText(part.slice(1)).width;
+  }
+  return w;
+}
+
+/** Draws a line that may hold the marked name, honoring the text alignment. */
+function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: number): void {
+  if (!line.includes(NAME_MARK)) return ctx.fillText(line, x, y);
+  const align = ctx.textAlign;
+  const total = measure(ctx, line);
+  let at = align === 'center' ? x - total / 2 : align === 'right' || align === 'end' ? x - total : x;
+  ctx.textAlign = 'left';
+  for (const [i, part] of line.split(NAME_MARK).entries()) {
+    let rest = part;
+    if (i > 0) {
+      const full = part[0] === 'F';
+      const fill = ctx.fillStyle;
+      at += paintBbsName(ctx, at + fontPx(ctx) * 0.35, y, fontPx(ctx), { full }) ;
+      ctx.fillStyle = fill;
+      rest = part.slice(1);
+    }
+    ctx.fillText(rest, at, y);
+    at += ctx.measureText(rest).width;
+  }
+  ctx.textAlign = align;
+}
+
 /** Word-wraps text to a width; returns the y after the last line. */
 export function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, lineHeight: number): number {
-  for (const para of text.split(/\n+/)) {
+  for (const para of marked(text).split(/\n+/)) {
     let line = '';
     for (const word of para.split(/\s+/)) {
       const test = line ? `${line} ${word}` : word;
-      if (ctx.measureText(test).width > width && line) {
-        ctx.fillText(line, x, y);
+      if (measure(ctx, test) > width && line) {
+        drawLine(ctx, line, x, y);
         y += lineHeight;
         line = word;
       } else line = test;
     }
     if (line) {
-      ctx.fillText(line, x, y);
+      drawLine(ctx, line, x, y);
       y += lineHeight;
     }
     y += lineHeight * 0.4;
@@ -156,11 +196,11 @@ export function barcode(ctx: CanvasRenderingContext2D, x: number, y: number, w: 
 /** How many lines text wraps to (the same breaks wrap() makes), counting paragraph gaps as 0.4 line. */
 export function wrapLines(ctx: CanvasRenderingContext2D, text: string, width: number): number {
   let n = 0;
-  for (const para of text.split(/\n+/)) {
+  for (const para of marked(text).split(/\n+/)) {
     let line = '';
     for (const word of para.split(/\s+/)) {
       const test = line ? `${line} ${word}` : word;
-      if (ctx.measureText(test).width > width && line) (n++, (line = word));
+      if (measure(ctx, test) > width && line) (n++, (line = word));
       else line = test;
     }
     if (line) n++;

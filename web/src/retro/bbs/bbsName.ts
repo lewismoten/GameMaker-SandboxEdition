@@ -53,6 +53,16 @@ export function decorateBbsName(root: HTMLElement): number {
   return count;
 }
 
+/** How wide paintBbsName draws the name at a size, black strip included. */
+export function bbsNameWidth(ctx: CanvasRenderingContext2D, size: number, full = true): number {
+  ctx.save();
+  ctx.font = `bold ${size}px "Courier New", ui-monospace, monospace`;
+  const text = `${full ? 'THE ' : ''}-= S A N D B O X =-${full ? ' BBS' : ''}`;
+  const w = ctx.measureText(text).width + size * 0.7;
+  ctx.restore();
+  return w;
+}
+
 /**
  * Paints the name on a canvas, on a black strip, its left (or center) at x and its
  * baseline at y. Returns the width it took.
