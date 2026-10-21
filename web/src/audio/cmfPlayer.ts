@@ -1,12 +1,18 @@
 // CMF sequencer: a port of PlayIt() from code/GM/SBMUSIC.C plus the parts of
 // Creative's SBFMDRV driver it calls (sbfd_note_on/off, program change, rhythm mode).
 // PlayIt was called on every 1/145.6 s timer tick; tick() does the same.
+// Game-Maker only accepts CMF files whose header says 146 clock ticks per second
+// (HDRCLK in SOUND.H), so each delta time in the song is counted in these ticks.
 import { MODULATOR_OFFSET, Opl2 } from './opl';
 
-/** Timer ticks per second: 1193180 / (65535 / 8). */
+/**
+ * Timer ticks per second: 1193180 / (65535 / 8). PLAYGAME.C reprograms PIT channel 0 with
+ * divisor 65535/8 (8 times the normal 18.2 Hz), giving about 145.67 ticks per second.
+ */
 export const TICK_RATE = 1193180 / Math.floor(65535 / 8);
 
-// Rhythm mode: MIDI channels 11..15 drive the percussion section.
+// Rhythm mode: MIDI channels 11..15 drive the percussion section. The values are the
+// key bits of OPL register 0xBD: bass drum, snare, tom-tom, cymbal, hi-hat.
 const RHYTHM_BITS: Record<number, number> = { 11: 0x10, 12: 0x08, 13: 0x04, 14: 0x02, 15: 0x01 };
 // Which FM channel's pitch and which operator(s) each percussion channel uses.
 const RHYTHM_VOICE: Record<number, { ch: number; ops: ('mod' | 'car')[] }> = {
@@ -21,12 +27,15 @@ export class CmfPlayer {
   private opl: Opl2;
   private music: Uint8Array = new Uint8Array(0);
   private instruments: Uint8Array[] = [];
+  // PlayIt's statics: read position in the music block, ticks left before the next
+  // event, and the running status (channel and 8 = note off / 9 = note on).
   private offset = 0;
   private wait = 0;
   private channel = 0;
   private funct = 8;
   private rhythm = false;
   private rhythmKeys = 0;
+  // Note sounding on each MIDI channel (-1 none), so a note off only releases its own note.
   private notes = new Int16Array(16).fill(-1);
   private programs = new Uint8Array(16);
   playing = false;
@@ -36,7 +45,7 @@ export class CmfPlayer {
     this.init();
   }
 
-  /** sbfd_init: enable waveform select, melody mode. */
+  /** sbfd_init: enable waveform select, melody mode (0xBD = deep tremolo and vibrato, rhythm off). */
   private init(): void {
     this.opl.reset();
     this.opl.write(0x01, 0x20);
@@ -75,6 +84,10 @@ export class CmfPlayer {
     return this.music[i] ?? 0xff;
   }
 
+  /**
+   * getpaws() in SBMUSIC.C: reads a MIDI variable length number (7 bits per byte, high bit
+   * set on every byte but the last). The guard caps it at five bytes; the C loop had no cap.
+   */
   private getPaws(): number {
     let value = this.byte(this.offset);
     if (value & 0x80) {
@@ -99,12 +112,16 @@ export class CmfPlayer {
       this.getPaws(); // skip the beginning silence
     }
     this.wait--;
+    // Run every event that is due this tick; each event is followed by the delta to the next.
     let guard = 0;
     while (this.wait <= 0 && guard++ < 1000) {
+      // Past the end of the data (the C read on): loop the song.
       if (this.offset >= this.music.length) {
         this.allNotesOff();
         this.offset = 0;
       }
+      // A note on/off status byte sets the running status; other bytes fall through to the
+      // data check below (only 0x8n and 0x9n are kept as running status, as in PlayIt).
       const b = this.byte(this.offset);
       switch (b & 0xf0) {
         case 0x90:
@@ -119,6 +136,7 @@ export class CmfPlayer {
           break;
       }
       const a = this.byte(this.offset);
+      // A data byte is a note number: note, velocity. Note on with velocity 0 is a note off.
       if (a < 0x80) {
         const vel = this.byte(this.offset + 1);
         if (this.funct === 8 || vel === 0) this.noteOff(this.channel, a);
@@ -130,6 +148,7 @@ export class CmfPlayer {
             this.offset += 3;
             break;
           case 0xb0:
+            // Controller 0x67 is CMF's melody/rhythm mode switch; others (0x68/0x69 pitch) are skipped.
             if (this.byte(this.offset + 1) === 0x67) this.setMode(this.byte(this.offset + 2));
             this.offset += 3;
             break;
@@ -145,6 +164,7 @@ export class CmfPlayer {
             break;
           case 0xf0:
             if (a === 0xf7 || a === 0xf0) {
+              // System exclusive: skip a length-prefixed block.
               this.offset++;
               this.offset += this.getPaws();
               this.offset++;
@@ -163,6 +183,7 @@ export class CmfPlayer {
     }
   }
 
+  /** sbfd_setmode: switch melody/rhythm mode and reload the drum channels' instruments. */
   private setMode(rhythm: number): void {
     this.allNotesOff();
     this.rhythm = rhythm !== 0;
@@ -188,6 +209,10 @@ export class CmfPlayer {
     return this.rhythm ? 6 : 9;
   }
 
+  /**
+   * Writes one operator from a 16 byte SBI instrument record, whose bytes alternate
+   * modulator/carrier: 0/1 AM-VIB-EG-KSR-MULT, 2/3 KSL-TL, 4/5 AR-DR, 6/7 SL-RR, 8/9 waveform.
+   */
   private loadOperator(reg: number, inst: Uint8Array, half: 0 | 1): void {
     this.opl.write(0x20 + reg, inst[0 + half]);
     this.opl.write(0x40 + reg, inst[2 + half]);
@@ -200,9 +225,14 @@ export class CmfPlayer {
     const m = MODULATOR_OFFSET[ch];
     this.loadOperator(m, inst, 0);
     this.loadOperator(m + 3, inst, 1);
+    // SBI byte 10: feedback / connection.
     this.opl.write(0xc0 + ch, inst[10]);
   }
 
+  /**
+   * MIDI note -> OPL frequency: picks the lowest block (octave) whose F-number fits in 10 bits,
+   * which keeps the most pitch resolution (Hz = fnum * 49716 / 2^(20 - block)).
+   */
   private setPitch(ch: number, note: number, key: boolean): void {
     const freq = 440 * Math.pow(2, (note - 69) / 12);
     let block = 0;
@@ -257,6 +287,7 @@ export class CmfPlayer {
       return;
     }
     if (channel >= this.melodyVoices()) return;
+    // One voice per MIDI channel: release any note already playing so the new key on retriggers.
     if (this.notes[channel] >= 0) this.opl.write(0xb0 + channel, this.opl.read(0xb0 + channel) & ~0x20);
     this.setPitch(channel, note, true);
     this.notes[channel] = note;
