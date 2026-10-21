@@ -296,7 +296,7 @@ export function introFli(): Uint8Array {
   const add = (p: Pixels, n = 1) => {
     for (let i = 0; i < n; i++) frames.push(Uint8Array.from(p.px));
   };
-  const props = ['hat', 'tie', 'shoes', 'horn', 'nose'];
+  const props = ['hat', 'tie', 'shoes', 'chicken', 'nose'];
   const caption = (p: Pixels, words: string) => centered(p, 10, words, c('paint', 3), 1, c('ink', 0));
   // 1. Gwin runs across, props flying
   for (let f = 0; f < 26; f++) {

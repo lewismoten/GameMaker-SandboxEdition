@@ -40,27 +40,38 @@ export const CK: Record<string, number> = {
   e: c('gold', 2),
 };
 
-/** Doc Leo's costume pieces, Gwin scattered them all over town. */
+/** Doc Leo's costume pieces: Gwin scattered them all over town. */
 export const PROPS: Record<string, string[]> = {
-  // Doc Leo's battered top hat with a daisy.
+  // His felt fedora, chewed at the brim (Gwin again).
   hat: [
     '....oooooo....',
-    '...oOOOOOOo...',
-    '...oOOOOOOo.G.',
-    '...oOOOOOOoGYG',
-    '...oqqqqqqo.G.',
-    '...oOOOOOOo...',
-    'oooOOOOOOOOooo',
-    'oOOOOOOOOOOOOo',
-    '.oooooooooooo.',
+    '...okkOkkko...',
+    '...okkkkkko...',
+    '...oooooooo...',
+    '..okkkkkkkko..',
+    'ooOkkkkkkkkOoo',
+    'okkkkkkkkkk.oo',
+    '.ooooooooo....',
   ],
-  // A polka-dot bow tie.
-  tie: ['oo........oo', 'oRRo....oRRo', 'oRwRo..oRwRo', 'oRRRRooRRRwo', 'oRwRRrrRRRRo', 'oRRRRooRwRRo', 'oRRwo..oRRRo', 'oRRo....oRwo', 'oo........oo'],
-  // Enormous red clown shoes.
-  shoes: ['....ooo.......', '...oRRRo......', '..oRRRRRooo...', '.oRRwRRRRRRoo.', 'oRRRRRRRRRRRRo', 'oqqqqqqqqqqqqo', '.oooooooooooo.'],
-  // A bulb horn: honk!
-  horn: ['.oo...........', 'oRRo.....ooooo', 'oRRRooooooyYYo', 'oRRRRoyyyyyyYo', 'oRRRooooooyyYo', 'oRRo.....ooooo', '.oo...........'],
-  // The red nose.
+  // His green tie, with a little pattern.
+  tie: ['.ooooo.', 'oGgGgGo', '.oGGGo.', '..oGo..', '.oGgGo.', '.oGGGo.', 'oGGgGGo', 'oGGGGgo', 'ogGGGGo', 'oGGgGGo', '.oGGGo.', '..oGo..', '...o...'],
+  // Red sneakers, white laces, white soles.
+  shoes: ['..oooo........', '.oRwRwo.......', '.oRRwRwoooo...', 'oRRRRRRRRRRo..', 'oRRRRRRRRRRRo.', 'owwwwwwwwwwwwo', '.oooooooooooo.'],
+  // The rubber chicken in its red harness, leash and all.
+  chicken: [
+    '.r.r..........',
+    '.rrr..........',
+    'oYYYo.......q.',
+    'oYoYYee....q..',
+    'oYYYo.....q...',
+    '.oYo.....q....',
+    '.oYYo...q.....',
+    '..oYYoooqoo...',
+    '..oYrrrrYYYYo.',
+    '...oYYYYYYYo..',
+    '....ooooooo...',
+  ],
+  // The red nose (on means showtime).
   nose: ['..oooo..', '.oRRRRo.', 'oRwRRRRo', 'oRRRRRRo', 'oRRRRRqo', 'oqRRRqqo', '.oqqqqo.', '..oooo..'],
 };
 

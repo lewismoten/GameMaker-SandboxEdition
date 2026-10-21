@@ -1,6 +1,6 @@
-// Gwin, Teddy's (younger) big sister: a brown pit-lab mix, all muscle, floppy ears, a
-// whip of a tail and a tongue that never goes back in. She is taller than Teddy and fills
-// her whole block. Drawn facing right; she is mirrored when running left.
+// Gwin, Teddy's (younger) big sister: a chocolate-brown pit-lab mix, all muscle, floppy
+// ears, a pink collar, a whip of a tail and a tongue that never goes back in. She is
+// taller than Teddy and fills her whole block. Drawn facing right; she is mirrored when running left.
 import type { Pixels } from '../../../kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
@@ -14,7 +14,7 @@ const K: Record<string, number> = {
   w: P.c('fur', 2),
   k: P.c('ink', 0),
   p: P.c('tongue', 1),
-  r: P.c('red', 2),
+  r: P.c('pink', 2),
   y: P.c('yellow', 3),
   s: P.c('cloud', 1),
 };

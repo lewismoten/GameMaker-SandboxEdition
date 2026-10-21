@@ -1,6 +1,8 @@
-// Doc Leo, the friendly hobo clown, two blocks tall (Teddy is one). His costume is the
-// story: Gwin scattered his hat, bow tie, shoes, horn and nose across town. `wearing`
-// says which pieces he has on.
+// Doc Leo, the friendly hobo clown, two blocks tall (Teddy is one): a chewed-up felt
+// fedora, wire glasses, an ash-gray painted beard round a white mouth, a purple shirt with
+// a green tie and blue suspenders, a navy corduroy jacket, red sneakers, and a rubber
+// chicken on a dog leash. Gwin scattered the costume across town; `wearing` says which
+// pieces he has on.
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, over, sprite } from '../art/draw';
 import { CK } from './klown';
@@ -8,69 +10,97 @@ import { P } from '../art/pal';
 
 const K: Record<string, number> = {
   ...CK,
-  // stubble paint, coat, patches
-  u: P.c('stone', 2),
+  // ash beard paint, the felt hat, the corduroy, the shirt, cheeks
+  u: P.c('stone', 1),
   U: P.c('stone', 3),
-  c: P.c('gwin', 2),
-  C: P.c('gwin', 3),
+  m: P.c('metal', 2),
+  k: P.c('stone', 1),
+  x: P.c('blue', 0),
+  X: P.c('blue', 1),
+  c: P.c('blue', 2),
+  v: P.c('purple', 2),
+  V: P.c('purple', 3),
   d: P.c('gwin', 1),
-  x: P.c('blue', 1),
-  X: P.c('blue', 2),
-  z: P.c('purple', 1),
+  a: P.c('pink', 2),
+  t: P.c('asphalt', 1),
+  T: P.c('asphalt', 2),
 };
 
 export interface Costume {
   hat?: boolean;
   tie?: boolean;
   shoes?: boolean;
-  horn?: boolean;
+  chicken?: boolean;
   nose?: boolean;
 }
 
-export const FULL: Costume = { hat: true, tie: true, shoes: true, horn: true, nose: true };
+export const FULL: Costume = { hat: true, tie: true, shoes: true, chicken: true, nose: true };
+
+/** Overwrites part of an ASCII row. */
+const patch = (row: string, x: number, s: string) => row.slice(0, x) + s + row.slice(x + s.length);
 
 /** Doc Leo as a 20x40 picture (clear background). `wave` raises his hand. */
 export function docLeo(wearing: Costume = FULL, wave = false): Pixels {
+  const R = wearing.nose ? 'R' : 's';
   const rows = [
-    // hat
-    wearing.hat ? '.....oooooooo.......' : '....................',
-    wearing.hat ? '.....oOOOOOOo.......' : '....................',
-    wearing.hat ? '.....oOOOOOOoGYG....' : '....................',
-    wearing.hat ? '.....oqqqqqqo.G.....' : '.......oo..oo.......',
-    wearing.hat ? '...ooOOOOOOOOoo.....' : '......odoooodo......',
-    // face: white eyes and mouth, painted stubble, the nose
-    '....osswwsswwsso....',
-    '....oswkwswkwsso....',
-    '....osswwsswwsso....',
-    wearing.nose ? '....ossssRRssss.o...' : '....osssssssssso....',
-    wearing.nose ? '....osssRRRRssso....' : '....ossssooosssso...',
-    '....ouwwwwwwwwuo....',
-    '....ouwrrrrrrwuo....',
-    '....ouuwwwwwwuuo....',
-    '.....ouuuuuuuuo.....',
-    // collar and bow tie
-    wearing.tie ? '...ooooRRooRRooo....' : '...oooooooooooo.....',
-    wearing.tie ? (wave ? '..ocCCoRwRRwRoCCo.oSo' : '..ocCCoRwRRwRoCCo...') : wave ? '..ocCCCCwwwwCCCCo.oSo' : '..ocCCCCwwwwCCCCo...',
-    // the patched coat
-    wave ? '.ocCCCCCwwwwCCCCCooo.' : '.ocCCCCCwwwwCCCCCo..',
-    wave ? 'ocCCyyCCwwwwCCxxCo...' : 'ocCCyyCCwwwwCCxxCCo.',
-    'ocCCyyCCwwwwCCxxCCo.',
-    'ocCo.CCCwwwwCCC.oCCo',
-    wearing.horn ? 'oCoyYoCCwwwwCCC.oCo.' : 'oCo..oCCwwwwCCC.oCo.',
-    wearing.horn ? 'oSoyyoCCCCCCCCC.oSo.' : 'oSo..oCCCCCCCCC.oSo.',
-    wearing.horn ? '.ooqqRoCCCCCCCo..o..' : '.o...oCCCCCCCCo..o..',
-    '.....oxxxxxxxxxo....',
-    '.....oxXxxxxzzxo....',
-    '.....oxxxxxxzzxo....',
-    '.....oxxxx.xxxxo....',
-    '.....oxxxx.xxxxo....',
-    '.....oxxxo.oxxxo....',
-    '.....oXxxo.oxxXo....',
-    '.....oxxxo.oxxxo....',
+    // the fedora, chewed at the brim (or his own shaggy gray hair)
+    ...(wearing.hat
+      ? ['......oooooo........', '.....okkOkkko.......', '.....okkkkkko.......', '.....oooooooo.......', '..ooOkkkkkkkkOoo....']
+      : ['....................', '....................', '.....ooooooo........', '....okuukkuuko......', '....okkuukkkuo......']),
+    // the face: thick brows, glasses, rosy cheeks, the nose, a sad white mouth in an ash beard
+    '....osSSSSSSSSso....',
+    '....oooosSSsoooo....',
+    '....omwowmmmwowmo...',
+    '....oammmssmmmao....',
+    `....oaas${R}${R}ssaaso....`.slice(0, 20),
+    `....ous${R}${R}${R}${R}ssuo....`,
+    '....ouuuwwwwuuuo....',
+    '....ouuwoooowuuo....',
+    '....ouuowwwwouuo....',
+    '.....ouuuwwuuuo.....',
+    '......ouuuuuuo......',
+    // collar and tie, suspenders, the corduroy jacket
+    wearing.tie ? '..oxxxowvGGvwoxxxo..' : '..oxxxowvvvvwoxxxo..',
+    wearing.tie ? '.oxXxxocvGGvcoxxXxo.' : '.oxXxxocvvvvcoxxXxo.',
+    wearing.tie ? 'oxxxxxocvgGvcoxxxxxo' : 'oxxxxxocvvvvcoxxxxxo',
+    wearing.tie ? 'oxXxxxocvGgvcoxxxXxo' : 'oxXxxxocvvvvcoxxxXxo',
+    wearing.tie ? 'oxxoxxocvgGvcoxxoxxo' : 'oxxoxxocvvvvcoxxoxxo',
+    wearing.tie ? 'oxXoxxocvvGvcoxxoXxo' : 'oxXoxxocvvvvcoxxoXxo',
+    'oxxoxxocvvvvcoxxoxxo',
+    'oxxoXxxxxxxxxxXxoxxo',
+    'oSSoxxxxxxxxxxxxoSSo',
+    '.oo.oxxxxxxxxxxo.oo.',
+    // patched trousers
+    '.....otttttttttto...',
+    '.....otttttottTto...',
+    '.....otUUttottttto..',
+    '.....otUUttotttto...',
+    '.....ottttootttto...',
+    '.....otttto.otttto..',
+    '.....ottTto.otttto..',
+    '.....otttto.ottTto..',
+    '.....otttto.otttto..',
+    '.....ooooo...ooooo..',
+    // red sneakers (or his darned socks)
     ...(wearing.shoes
-      ? ['...ooooooo.ooooooo..', '..oRRRRRRo.oRRRRRRo.', '.oRRwRRRRo.oRRRRwRRo', '.ooooooooo.ooooooooo']
-      : ['....ooooo...ooooo...', '....oddddo..oddddo..', '....odoodo..odoodo..', '....ooooo...ooooo...']),
+      ? ['...oRRwRo..oRwRRo...', '..oRRRRRRo.oRRRRRRo.', '..owwwwwwo.owwwwwwo.', '..oooooooo.oooooooo.']
+      : ['....oddddo..oddddo..', '....odoodo..odoodo..', '....oddddo..oddddo..', '....oooooo..oooooo..']),
   ];
+  if (wearing.chicken) {
+    // the rubber chicken out for a walk on its leash
+    const hen = ['.r.', 'orr', 'oYoe', 'oYo', 'oYYo', 'orro', 'oYYo', '.oo'];
+    for (let i = 25; i < 30; i++) rows[i] = patch(rows[i], 1, 'q');
+    hen.forEach((h, i) => (rows[29 + i] = patch(rows[29 + i], 0, h)));
+  }
+  if (wave) {
+    // the right hand up: hello!
+    rows[12] = patch(rows[12], 17, 'oSo');
+    rows[13] = patch(rows[13], 17, 'oSo');
+    rows[14] = patch(rows[14], 16, 'oxxo');
+    rows[15] = patch(rows[15], 16, 'oxxo');
+    rows[16] = patch(rows[16], 16, 'xxo.');
+    for (let i = 21; i < 26; i++) rows[i] = patch(rows[i], 16, i < 25 ? 'o...' : '....');
+  }
   return sprite(rows, K, 0, 40 - rows.length, 20, 40);
 }
 

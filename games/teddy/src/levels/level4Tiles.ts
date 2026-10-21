@@ -189,7 +189,7 @@ export function cityTiles(): Tiles {
       return p;
     })(),
   );
-  t.prop('horn', 'horn', 'brick');
+  t.prop('chicken', 'chicken', 'brick');
 
   // Inside the store: the lobby, Gwin's shoe-department mess, revolving doors.
   t.air(
@@ -392,7 +392,7 @@ export function cityTiles(): Tiles {
   );
   t.klownCar(
     (_bx, by) => (by === 0 ? t.pic('brick') : t.pic('brick')),
-    'horn',
+    'chicken',
     t.pic('brick'),
     () => t.pic('brick'),
   );

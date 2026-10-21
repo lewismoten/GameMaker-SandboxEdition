@@ -81,12 +81,12 @@ export function leoFli(): Uint8Array {
       caption(p, 'DOC LEO IS A HOBO CLOWN.');
       caption(p, '...DOES MAGIC TRICKS...', 22);
     });
-  // the parade strut: marching on the spot, horn up, Teddy marching along
+  // the parade strut: marching on the spot, the rubber chicken squawking, Teddy marching along
   for (let f = 0; f < 18; f++)
     r.frame((p) => {
       leo(p, f % 4 < 2, 150, 92 - (f % 2) * 2);
       scaleBlit(p, POSES[f % 2 ? 'walk1' : 'walk2'], 100, 134 - (f % 2) * 2, 2);
-      if (f % 4 < 2) outlined(p, 200, 76, 'HONK!', c('yellow', 3), c('ink', 0), 1);
+      if (f % 4 < 2) outlined(p, 200, 76, 'BAWK!', c('yellow', 3), c('ink', 0), 1);
       caption(p, 'DOC LEO IS A HOBO CLOWN.');
       caption(p, '...AND MARCHES IN EVERY PARADE.', 22);
     });
@@ -108,7 +108,7 @@ export function carFli(): Uint8Array {
   const r = new Reel(bg);
   const car = new Pixels(40, 40, CLEAR);
   citiCar(car, 0, 0);
-  const head = docLeo({ hat: true, tie: true }).crop(0, 0, 20, 14);
+  const head = docLeo({ hat: true, tie: true }).crop(0, 0, 20, 16);
   for (let f = 0; f < 34; f++) {
     const x = f < 12 ? 176 : 176 + (f - 12) * (f - 12);
     r.frame(
@@ -144,7 +144,7 @@ export function paradeFli(): Uint8Array {
   const r = new Reel(bg);
   const car = new Pixels(40, 40, CLEAR);
   citiCar(car, 0, 0);
-  const head = docLeo(FULL).crop(0, 0, 20, 14);
+  const head = docLeo(FULL).crop(0, 0, 20, 16);
   const confetti = (p: Pixels, f: number) => {
     for (let i = 0; i < 30; i++) {
       const x = (i * 53 + f * (3 + (i % 4))) % W;

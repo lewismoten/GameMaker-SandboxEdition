@@ -324,7 +324,7 @@ export function klubTiles(): Tiles {
     t.air(`${name}Bot`, bot, name === 'bubbles' ? { birthMon: 0, birthTime: 0 } : name === 'pratfall' ? { birthMon: 0, birthTime: 0 } : {});
   }
   // Doc Leo on stage, without his nose; happy once he has it (the way out).
-  const leo = docLeo({ hat: true, tie: true, shoes: true, horn: true, nose: false });
+  const leo = docLeo({ hat: true, tie: true, shoes: true, chicken: true, nose: false });
   const leoHappy = docLeo(FULL, true);
   const half = (fig: Pixels, y: number) => {
     const p = copy(t.pic('stageBack'));

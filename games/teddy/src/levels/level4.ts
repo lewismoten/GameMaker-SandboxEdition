@@ -54,7 +54,7 @@ export function city(): Level {
   m.mon(9, 39, 'pigeon');
   m.mon(12, 35, 'pigeon');
 
-  // The subway steam vent and the fire escape with the horn.
+  // The subway steam vent and the fire escape with the rubber chicken.
   building(16, 8, 26);
   m.set(16, 38, 'subway').set(16, 39, 'subwayRail');
   for (const x of [17, 18]) {
@@ -63,7 +63,7 @@ export function city(): Level {
   }
   m.rect(19, 31, 4, 1, 'fireEscape');
   m.rect(19, 30, 4, 1, 'railing');
-  m.set(21, 30, 'horn');
+  m.set(21, 30, 'chicken');
   m.rect(19, 34, 4, 1, 'fireEscape');
 
   // Biggles Department Store: solid, tall, and the only way on is through it.
