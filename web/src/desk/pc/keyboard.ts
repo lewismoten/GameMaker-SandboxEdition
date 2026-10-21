@@ -1,6 +1,9 @@
 // The PC's keyboard: a 101-key layout of raised keycaps (function row, main block,
 // arrows and keypad). Keys go down when the matching key is pressed on the real keyboard.
+// Behind the function keys lies Game-Maker's printed key template, as software of the
+// day shipped: what Esc and the F-keys do while a game plays.
 import { h } from '../../editor/core/ui';
+import { GLOBAL_KEYS } from '../../editor/keymap/keyMap';
 
 /** [label, width in key units, KeyboardEvent.code] or a number for a gap. */
 type Key = [string, number, string] | number;
@@ -78,9 +81,12 @@ const PAD: Key[][] = [
 const TALL = new Set(['NumpadAdd', 'NumpadEnter']);
 
 const UNIT = 100 / 23.5; // the board is 15 + 0.5 + 3 + 0.5 + 4 = 23 units wide, plus margins
-/** The board is 6.9 units deep: a margin, the function row, a gap, five rows and a front edge. */
-const DEPTH = 6.9;
-const TOP = 0.3;
+/** The board is 7.6 units deep: the template's strip, the function row, a gap, five rows and a front edge. */
+const DEPTH = 7.6;
+const TOP = 1;
+
+/** The template's word for each key: PLAYGAME's own (GLOBAL_KEYS), spelled out a little. */
+const TEMPLATE: Record<string, string> = { F8: 'Joy', F9: 'Setup' };
 
 export function keyboard(onClick: () => void): HTMLElement {
   const board = h('div', { class: 'keyboard', title: 'Keyboard: click, then type', onclick: onClick });
@@ -109,6 +115,31 @@ export function keyboard(onClick: () => void): HTMLElement {
   place(MAIN, 0);
   place(NAV, 15.5);
   place(PAD, 19);
+
+  // the template: a printed strip on the board behind Esc and F1-F12, a word over each key
+  const template = h('div', { class: 'key-template', 'aria-label': 'Game-Maker key template' });
+  template.style.left = `${0.15 * UNIT}%`;
+  template.style.width = `${14.95 * UNIT}%`;
+  template.style.top = `${(0.06 / DEPTH) * 100}%`;
+  template.style.height = `${((TOP - 0.1) / DEPTH) * 100}%`;
+  let x = 0;
+  for (const k of MAIN[0]) {
+    if (typeof k === 'number') {
+      x += k;
+      continue;
+    }
+    const name = k[0];
+    const g = GLOBAL_KEYS.find((gk) => gk.name === name);
+    if (g) {
+      const label = h('span', { class: `kt-label kt-${name.toLowerCase()}`, title: `${name}: ${g.title}` }, TEMPLATE[name] ?? g.short);
+      label.style.left = `${((x + 0.1 + k[1] / 2) / 14.95) * 100}%`;
+      template.append(label);
+    }
+    x += k[1];
+  }
+  // the maker's name on the blank stretch over F11 and F12
+  template.append(h('span', { class: 'kt-brand' }, 'GAME-MAKER SE'));
+  board.prepend(template);
 
   const press = (e: KeyboardEvent, down: boolean) => keys.get(e.code)?.forEach((el) => el.classList.toggle('down', down));
   const onDown = (e: KeyboardEvent) => press(e, true);

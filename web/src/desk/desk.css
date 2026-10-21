@@ -794,7 +794,7 @@
 .keyboard {
   position: relative;
   width: 88%;
-  aspect-ratio: 23.5 / 6.9;
+  aspect-ratio: 23.5 / 7.6;
   margin-top: 14px;
   /* tilting it back doesn't shrink its box: give back the space it no longer covers */
   margin-bottom: -11%;
@@ -812,6 +812,71 @@
   transform: perspective(700px) rotateX(52deg);
   transform-origin: 50% 0;
   cursor: pointer;
+}
+
+/* Game-Maker's key template behind the function keys (desk/pc/keyboard.ts): a glossy black
+   printed strip, each key's word in the color of its group, the way the boxed software did it */
+.keyboard .key-template {
+  position: absolute;
+  border-radius: 2px;
+  background: linear-gradient(#2a2a2e, #111114);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 1px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.keyboard .kt-label {
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  /* condensed type, tall enough to read on the tilted board */
+  scale: 0.7 1;
+  color: #fff;
+  font:
+    800 7.5px/1 Arial,
+    Helvetica,
+    sans-serif;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.keyboard .kt-esc {
+  color: #ff6b6b;
+}
+
+.keyboard :is(.kt-f1, .kt-f2) {
+  color: #ffd84a;
+}
+
+.keyboard :is(.kt-f3, .kt-f4) {
+  color: #6be3ff;
+}
+
+.keyboard :is(.kt-f5, .kt-f6) {
+  color: #7dff8a;
+}
+
+.keyboard :is(.kt-f8, .kt-f9, .kt-f10) {
+  color: #ff9ae6;
+}
+
+/* the maker's name on the blank stretch over F11 and F12 */
+.keyboard .kt-brand {
+  position: absolute;
+  right: 0.5%;
+  top: 50%;
+  translate: 0 -50%;
+  color: #c9a24a;
+  scale: 0.75 1;
+  transform-origin: 100% 50%;
+  font:
+    italic 900 5.5px/1 'Arial Black',
+    Arial,
+    sans-serif;
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* each key: a raised cap with a lighter top and darker sides */
