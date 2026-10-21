@@ -1,6 +1,6 @@
 // Level 4's monsters: the revolving doors (Level 5 uses them too), Juggles' pins, pigeons
 // on the awnings, Presto's doves, the Klown Klub parade marching down Main Street, a kid
-// who asks for a sit, and Gwin (in the store, and chasing pigeons).
+// who asks for a sit, and Gwinn (in the store, and chasing pigeons).
 import { sprite } from '../art/draw';
 import { CRITTERS } from '../sprites/critters';
 import { FLIP, type Bestiary } from '../characters/mons';
@@ -185,29 +185,29 @@ export function cityBeasts() {
     upscore: 25,
   });
   b.add('treatFall2', { pics: [['treat1', 2]], power: POWER.pickup, path: [[0, 2, 3]], end: -1, becomes: 'treat' });
-  b.add('gwinStore', {
+  b.add('gwinnStore', {
     pics: [
-      ['gwinRun1', 2],
-      ['gwinRun2', 2],
+      ['gwinnRun1', 2],
+      ['gwinnRun2', 2],
     ],
     power: 90,
     path: [
       [6, 0, 5, 0],
       [0, 0, 5, FLIP],
     ],
-    becomes: 'gwinGone',
+    becomes: 'gwinnGone',
   });
-  b.add('gwinPigeons', {
+  b.add('gwinnPigeons', {
     pics: [
-      ['gwinRun1', 2],
-      ['gwinRun2', 2],
+      ['gwinnRun1', 2],
+      ['gwinnRun2', 2],
     ],
     power: 90,
     path: [
       [4, 0, 4, 0],
       [0, 0, 4, FLIP],
     ],
-    becomes: 'gwinGone',
+    becomes: 'gwinnGone',
   });
   return b;
 }

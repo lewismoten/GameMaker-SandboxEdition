@@ -15,5 +15,5 @@ export function sheet(pics: Pixels[], cols = 8, bg = 255): Pixels {
 writePng(`${out}/teddy.png`, sheet([...Object.values(POSES), PAW_UP]), P.pal, 6);
 import { FX } from '../src/sprites/fx';
 writePng(`${out}/fx.png`, sheet(Object.values(FX)), P.pal, 6);
-import { GWIN } from '../src/sprites/gwin';
-writePng(`${out}/gwin.png`, sheet([...Object.values(GWIN), POSES.stand]), P.pal, 6);
+import { GWINN } from '../src/sprites/gwinn';
+writePng(`${out}/gwinn.png`, sheet([...Object.values(GWINN), POSES.stand]), P.pal, 6);

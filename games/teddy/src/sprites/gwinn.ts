@@ -1,4 +1,4 @@
-// Gwin, Teddy's (younger) big sister: a chocolate-brown pit-lab mix, all muscle, floppy
+// Gwinn, Teddy's (younger) big sister: a chocolate-brown pit-lab mix, all muscle, floppy
 // ears, a pink collar, a whip of a tail and a tongue that never goes back in. She is
 // taller than Teddy and fills her whole block. Drawn facing right; she is mirrored when running left.
 import type { Pixels } from '../../../kit/pixels';
@@ -6,11 +6,11 @@ import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 
 const K: Record<string, number> = {
-  o: P.c('gwin', 0),
-  d: P.c('gwin', 1),
-  g: P.c('gwin', 2),
-  G: P.c('gwin', 3),
-  h: P.c('gwin', 4),
+  o: P.c('gwinn', 0),
+  d: P.c('gwinn', 1),
+  g: P.c('gwinn', 2),
+  G: P.c('gwinn', 3),
+  h: P.c('gwinn', 4),
   w: P.c('fur', 2),
   k: P.c('ink', 0),
   p: P.c('tongue', 1),
@@ -31,8 +31,8 @@ const HEAD = [
   '..........ogGopp....',
 ];
 
-export const GWIN: Record<string, Pixels> = {
-  gwin1: S([
+export const GWINN: Record<string, Pixels> = {
+  gwinn1: S([
     ...HEAD,
     '..o......oggGo.p....',
     '...o..ooorrryo......',
@@ -46,7 +46,7 @@ export const GWIN: Record<string, Pixels> = {
     '...ogo....ogo.......',
     '...ooo....ooo.......',
   ]),
-  gwin2: S([
+  gwinn2: S([
     ...HEAD,
     '.........oggGo.p....',
     '.ooo..ooorrryo......',
@@ -60,7 +60,7 @@ export const GWIN: Record<string, Pixels> = {
     '.ogo.........ogo....',
     '.oo..........ooo....',
   ]),
-  gwin3: S([
+  gwinn3: S([
     ...HEAD,
     '.o.......oggGo.p....',
     '..o...ooorrryo......',
@@ -75,7 +75,7 @@ export const GWIN: Record<string, Pixels> = {
     '....ooo..ooo........',
   ]),
   // Bounding off with her ears flapping.
-  gwinRun1: S([
+  gwinnRun1: S([
     '.........ooooo......',
     '..o.....oGhhGGoo....',
     '...o...odoGGGGGGo...',
@@ -92,7 +92,7 @@ export const GWIN: Record<string, Pixels> = {
     'ogo............ogo..',
     'oo..............oo..',
   ]),
-  gwinRun2: S([
+  gwinnRun2: S([
     '.........ooooo......',
     '........oGhhGGoo....',
     '.......odoGGGGGGo...',
@@ -110,7 +110,7 @@ export const GWIN: Record<string, Pixels> = {
     '.....oo.oo..........',
   ]),
   // Rolling in something she should not be rolling in.
-  gwinRoll: S([
+  gwinnRoll: S([
     '...o..o.......o..o..',
     '..ogoogo.....ogoogo.',
     '..ogo.ogo...ogo.ogo.',

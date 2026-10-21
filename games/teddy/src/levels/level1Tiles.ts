@@ -1,5 +1,5 @@
 // Level 1's background blocks, Doc Leo's backyard: the lawn, the hedge, Doc Leo's house,
-// Teddy's doghouse, the garden boxes, the clothesline, Gwin's garbage-can mess, the old oak,
+// Teddy's doghouse, the garden boxes, the clothesline, Gwinn's garbage-can mess, the old oak,
 // the back fence with soft dirt under it, hint signs and the alley where the Klown Car
 // waits. Also the helpers every level uses: GROUND (the map row the lawn starts on), the
 // sky band for a row (bandOf) and a hint sign on a stake.
@@ -220,7 +220,7 @@ export function backyardTiles(): Tiles {
     })(),
   );
 
-  // Gwin's mess: garbage cans, one standing, two on their sides, trash everywhere.
+  // Gwinn's mess: garbage cans, one standing, two on their sides, trash everywhere.
   const can = (tipped: boolean) => {
     const p = tuft(sky(3), tipped ? 51 : 52);
     if (tipped) {

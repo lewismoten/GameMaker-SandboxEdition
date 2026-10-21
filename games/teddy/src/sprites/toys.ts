@@ -1,10 +1,10 @@
-// Teddy's things: his green wobble ball (his favorite toy: it giggles when it rolls), Gwin
+// Teddy's things: his green wobble ball (his favorite toy: it giggles when it rolls), Gwinn
 // zooming off with it in her mouth, a book from the tiny little library on Maple Street,
 // and a frosty mug of root beer (Doc Leo always asks for root beer).
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, blob, outline, sprite } from '../art/draw';
 import { P } from '../art/pal';
-import { GWIN } from './gwin';
+import { GWINN } from './gwinn';
 
 const c = (n: string, k: number) => P.c(n, k);
 /** Lime green plastic, from the shadowed underside to the shine. */
@@ -75,27 +75,27 @@ TOYS.wobble4 = onGround(wobbleBall(0.3, 0));
 TOYS.ballAir1 = onGround(wobbleBall(1), -6);
 TOYS.ballAir2 = onGround(wobbleBall(2), -6);
 
-/** Gwin's zoomies, with Teddy's ball in her mouth (she faces right). */
-function withBall(gwin: Pixels): Pixels {
+/** Gwinn's zoomies, with Teddy's ball in her mouth (she faces right). */
+function withBall(gwinn: Pixels): Pixels {
   const p = new Pixels(20, 20);
-  p.px.set(gwin.px);
+  p.px.set(gwinn.px);
   // close her mouth over the tongue, then the ball in front of it
   for (let y = 6; y < 9; y++) for (let x = 13; x < 20; x++) if (p.get(x, y) === c('tongue', 1)) p.set(x, y, CLEAR);
   p.blit(wobbleBall(0.5, 0, 2.6), 13, 4, CLEAR);
   return p;
 }
-TOYS.zoomBall1 = withBall(GWIN.gwinRun1);
-TOYS.zoomBall2 = withBall(GWIN.gwinRun2);
+TOYS.zoomBall1 = withBall(GWINN.gwinnRun1);
+TOYS.zoomBall2 = withBall(GWINN.gwinnRun2);
 
 const K: Record<string, number> = {
   o: c('ink', 0),
   w: c('fur', 2),
   W: c('cloud', 1),
   s: c('cloud', 0),
-  b: c('gwin', 1),
-  B: c('gwin', 2),
-  h: c('gwin', 3),
-  H: c('gwin', 4),
+  b: c('gwinn', 1),
+  B: c('gwinn', 2),
+  h: c('gwinn', 3),
+  H: c('gwinn', 4),
   m: c('metal', 4),
   M: c('metal', 3),
   r: c('red', 2),
@@ -127,7 +127,7 @@ export function rootBeer(fizz = 0): Pixels {
   ];
   const p = sprite(rows, K, 4, 6);
   // bubbles rising through the root beer, and frost on the glass
-  for (let k = 0; k < 3; k++) p.set(6 + k * 2, 16 - ((fizz + k * 2) % 6), c('gwin', 4));
+  for (let k = 0; k < 3; k++) p.set(6 + k * 2, 16 - ((fizz + k * 2) % 6), c('gwinn', 4));
   p.set(5, 12, c('fur', 2)).set(13, 14, c('fur', 2));
   return p;
 }

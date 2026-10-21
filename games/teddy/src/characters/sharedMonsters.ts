@@ -1,9 +1,9 @@
 // The monsters every level shares, at the same numbers in every .MON: what Teddy's tricks
-// send out, treats and bones, tickets, and Gwin.
+// send out, treats and bones, tickets, and Gwinn.
 import { CTR, MON, POWER } from '../ids';
 import { Bestiary, FLIP } from './mons';
 import { FX } from '../sprites/fx';
-import { GWIN } from '../sprites/gwin';
+import { GWINN } from '../sprites/gwinn';
 import { Pixels } from '../../../kit/pixels';
 import { over, shadeAt, sprite } from '../art/draw';
 import { c, dirt, r } from '../blocks/tiles';
@@ -16,7 +16,7 @@ export function commonMonsters(b: Bestiary): void {
     else if (name.startsWith('poodle')) b.pic(name, px, { hp: 10, score: 250 });
     else b.pic(name, px);
   }
-  for (const [name, px] of Object.entries(GWIN)) b.pic(name, px, name.startsWith('gwin') ? { effect: CTR.treats, eamt: -1 } : {});
+  for (const [name, px] of Object.entries(GWINN)) b.pic(name, px, name.startsWith('gwinn') ? { effect: CTR.treats, eamt: -1 } : {});
 
   // Teddy's tricks. A bark rolls forward and scares off pests and critters.
   b.add(
@@ -191,33 +191,33 @@ export function commonMonsters(b: Bestiary): void {
     MON.treatFall,
   );
 
-  // Gwin, Teddy's big sister: she gobbles a treat when she bumps into him, then runs off
+  // Gwinn, Teddy's big sister: she gobbles a treat when she bumps into him, then runs off
   // giggling for a while before coming back for more.
   b.add(
-    'gwin',
+    'gwinn',
     {
       pics: [
-        ['gwin1', 3],
-        ['gwin2', 3],
-        ['gwin3', 3],
-        ['gwin2', 3],
+        ['gwinn1', 3],
+        ['gwinn2', 3],
+        ['gwinn3', 3],
+        ['gwinn2', 3],
       ],
       power: POWER.friend - 1,
     },
-    MON.gwin,
+    MON.gwinn,
   );
   b.add(
-    'gwinGone',
+    'gwinnGone',
     {
       pics: [
-        ['gwinRun1', 2],
-        ['gwinRun2', 2],
+        ['gwinnRun1', 2],
+        ['gwinnRun2', 2],
       ],
       power: 90,
       towards: -8,
       end: 30,
     },
-    MON.gwinGone,
+    MON.gwinnGone,
   );
   // Soft dirt with paw prints (dig it out), and bones buried with one end sticking out.
   const soft = new Pixels(20, 20);

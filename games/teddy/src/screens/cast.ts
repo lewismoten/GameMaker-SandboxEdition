@@ -1,5 +1,5 @@
 // cast.fli: "Starring...", the cast in close-up before the credits, painted big in the
-// screens' palette: Teddy grinning (his right ear always a little taller), Teddy and Gwin in
+// screens' palette: Teddy grinning (his right ear always a little taller), Teddy and Gwinn in
 // the grass, Doc Leo the hobo clown and his rubber chicken, the CitiCar plugged in at a
 // charging station, and the Dog House library at dusk.
 //
@@ -10,7 +10,7 @@ import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, gradient, klubArt, outline, outlined, scaleBlit, shadeAt, speckle } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
-import { GWIN } from '../sprites/gwin';
+import { GWINN } from '../sprites/gwinn';
 import { dogHouseLibrary } from '../sprites/library';
 import { POSES } from '../sprites/teddy';
 
@@ -59,7 +59,7 @@ export interface Face {
   blink?: boolean;
   /** Mouth open, panting (or shut). */
   pant?: boolean;
-  /** Tongue up licking his nose (Teddy) / hanging out (Gwin). */
+  /** Tongue up licking his nose (Teddy) / hanging out (Gwinn). */
   lick?: boolean;
   /** The tall ear twitches. */
   twitch?: boolean;
@@ -99,7 +99,7 @@ export function teddyHead(p: Pixels, cx: number, cy: number, s: number, f: Face 
       p.rect(Math.round(ex - 5 * s), Math.round(ey), Math.round(10 * s), Math.max(1, Math.round(s)), c('ink', 0));
       continue;
     }
-    blob(p, ex, ey, 5 * s, 6 * s, [c('ink', 0), c('gwin', 0), c('gwin', 1)], 0, 2);
+    blob(p, ex, ey, 5 * s, 6 * s, [c('ink', 0), c('gwinn', 0), c('gwinn', 1)], 0, 2);
     p.rect(Math.round(ex - 2 * s), Math.round(ey - 3 * s), Math.max(1, Math.round(1.5 * s)), Math.max(1, Math.round(1.5 * s)), c('fur', 2));
   }
   // the mouth: open in a grin with one fang, or shut
@@ -114,12 +114,12 @@ export function teddyHead(p: Pixels, cx: number, cy: number, s: number, f: Face 
 }
 
 /**
- * Gwin's head: chocolate brown, soft floppy ears, amber eyes, a liver nose, a big grin with
+ * Gwinn's head: chocolate brown, soft floppy ears, amber eyes, a liver nose, a big grin with
  * her tongue out, and her pink collar.
  */
-export function gwinHead(p: Pixels, cx: number, cy: number, s: number, f: Face = {}): void {
+export function gwinnHead(p: Pixels, cx: number, cy: number, s: number, f: Face = {}): void {
   const T = (u: number, v: number): Pt => [cx + u * s, cy + v * s];
-  const coat = r('gwin');
+  const coat = r('gwinn');
   // sitting up: shoulders, a little white chest patch, front legs
   blob(p, cx, cy + 62 * s, 38 * s, 34 * s, coat, 0, 3);
   shadedPoly(p, [T(-24, 70), T(-12, 70), T(-12, 104), T(-24, 104)], coat, 1, 3);
@@ -153,7 +153,7 @@ export function gwinHead(p: Pixels, cx: number, cy: number, s: number, f: Face =
   if (f.lick !== false) blob(p, cx + 3 * s, cy + 29 * s, 6 * s, 6 * s, [c('pink', 1), c('pink', 2), c('pink', 3)], 0, 2);
   shadedPoly(p, [T(-12, 21), T(12, 21), T(10, 23), T(-10, 23)], r('fur'), 2, 2);
   // the liver nose
-  blob(p, cx, cy + 9 * s, 8 * s, 6 * s, [c('gwin', 0), c('gwin', 1), c('pink', 1)], 0, 2);
+  blob(p, cx, cy + 9 * s, 8 * s, 6 * s, [c('gwinn', 0), c('gwinn', 1), c('pink', 1)], 0, 2);
 }
 
 /** A sheet of frames (all on one palette unless a frame brings its own). */
@@ -210,8 +210,8 @@ function leash(p: Pixels, x0: number, y0: number, x1: number, ramp: string): voi
   }
 }
 
-/** Scene 2: Teddy and Gwin in the grass. Gwin was adopted, and she is still learning. */
-function gwinScene(reel: Reel): void {
+/** Scene 2: Teddy and Gwinn in the grass. Gwinn was adopted, and she is still learning. */
+function gwinnScene(reel: Reel): void {
   const bg = new Pixels(W, H);
   speckle(bg, 0, 0, W, H, r('grass'), 2, 1, 9, 0.35);
   for (let i = 0; i < 900; i++) {
@@ -230,20 +230,20 @@ function gwinScene(reel: Reel): void {
     leash(p, 104, 132, 150, 'purple');
     if (f < 34) {
       const g = new Pixels(W, H, CLEAR);
-      gwinHead(g, 222, 84 + (f >= 24 && f % 2 ? 1 : 0), 0.95, { blink: f === 17, twitch: f >= 24 && f % 4 < 2 });
+      gwinnHead(g, 222, 84 + (f >= 24 && f % 2 ? 1 : 0), 0.95, { blink: f === 17, twitch: f >= 24 && f % 4 < 2 });
       p.blit(outline(g, c('ink', 0)), 0, 0, CLEAR);
       leash(p, 222, 126, 170, 'pink');
     } else {
       // gone: zoomies, trailing her pink leash
       const x = 150 + (f - 34) * 14;
-      scaleBlit(p, GWIN[f % 2 ? 'gwinRun1' : 'gwinRun2'], x, 96, 4);
+      scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x, 96, 4);
       for (let k = 0; k < 3; k++) p.rect(x - 16 - k * 14 - (f % 2) * 4, 130 + k * 10, 10 - k * 2, 2, c('paint', 3));
     }
-    big(p, 'GWIN', 8, 222);
+    big(p, 'GWINN', 8, 222);
     if (f < 24) {
       say(p, 'BIG SISTER. ADOPTED.', 182);
     } else if (f < 34) {
-      say(p, 'SIT, GWIN! SIT!', 170, c('yellow', 3));
+      say(p, 'SIT, GWINN! SIT!', 170, c('yellow', 3));
       if (f >= 29) say(p, '...NOPE.', 182);
     } else {
       say(p, 'SHE KNOWS ONE TRICK:', 170);
@@ -515,7 +515,7 @@ function libraryScene(reel: Reel): void {
 export function castFli(): Uint8Array {
   const reel = new Reel();
   teddyScene(reel);
-  gwinScene(reel);
+  gwinnScene(reel);
   leoScene(reel);
   carScene(reel);
   libraryScene(reel);

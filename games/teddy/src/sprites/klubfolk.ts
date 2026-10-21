@@ -177,14 +177,14 @@ export function bubble(phase: number): Pixels {
   return p;
 }
 
-/** Gwin sitting nicely (as Teddy showed her), the red nose at her feet when `nose`. */
-export function gwinSits(nose: boolean, wag: number): Pixels {
+/** Gwinn sitting nicely (as Teddy showed her), the red nose at her feet when `nose`. */
+export function gwinnSits(nose: boolean, wag: number): Pixels {
   const K2: Record<string, number> = {
-    o: P.c('gwin', 0),
-    d: P.c('gwin', 1),
-    g: P.c('gwin', 2),
-    G: P.c('gwin', 3),
-    h: P.c('gwin', 4),
+    o: P.c('gwinn', 0),
+    d: P.c('gwinn', 1),
+    g: P.c('gwinn', 2),
+    G: P.c('gwinn', 3),
+    h: P.c('gwinn', 4),
     w: P.c('fur', 2),
     k: P.c('ink', 0),
     p: P.c('tongue', 1),

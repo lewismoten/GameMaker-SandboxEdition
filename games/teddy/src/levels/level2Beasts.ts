@@ -6,7 +6,7 @@
 //   them, and they die into a falling treat, a falling crate (that lands as a crate that
 //   never dies: something to stand on) or Doc Leo's bow tie;
 // - the mail truck is two monsters side by side driving around the wrapping map;
-// - Gwin splashes in the sprinkler (90: bumping into Teddy sends her off as 'gwinGone').
+// - Gwinn splashes in the sprinkler (90: bumping into Teddy sends her off as 'gwinnGone').
 import { CRITTERS } from '../sprites/critters';
 import { FLIP } from '../characters/mons';
 import { CTR, POWER } from '../ids';
@@ -89,19 +89,19 @@ export function streetBeasts() {
     path: [[100, 0, 3]],
     end: -2,
   });
-  b.add('gwinSplash', {
+  b.add('gwinnSplash', {
     pics: [
-      ['gwin1', 3],
-      ['gwin2', 3],
-      ['gwin3', 3],
-      ['gwin2', 3],
+      ['gwinn1', 3],
+      ['gwinn2', 3],
+      ['gwinn3', 3],
+      ['gwinn2', 3],
     ],
     power: 90,
     path: [
       [4, 0, 4, 0],
       [0, 0, 4, FLIP],
     ],
-    becomes: 'gwinGone',
+    becomes: 'gwinnGone',
   });
   return b;
 }

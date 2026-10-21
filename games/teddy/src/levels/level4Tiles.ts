@@ -1,6 +1,6 @@
 // Level 4's background blocks, downtown at sunset: sidewalks, a far-off skyline band with
 // lit windows, brick and stone facades and shop fronts, the subway steam vent and fire
-// escape, the inside of Biggles Department Store (Gwin's shoe-department mess), the
+// escape, the inside of Biggles Department Store (Gwinn's shoe-department mess), the
 // construction site's sidewalk shed, Juggles and Presto (blocks that give birth to pins and
 // doves), the plaza and its billboard, and the Odeon's blinking marquee.
 import { Pixels, rng } from '../../../kit/pixels';
@@ -191,7 +191,7 @@ export function cityTiles(): Tiles {
   );
   t.prop('chicken', 'chicken', 'brick');
 
-  // Inside the store: the lobby, Gwin's shoe-department mess, revolving doors.
+  // Inside the store: the lobby, Gwinn's shoe-department mess, revolving doors.
   t.air(
     'lobby',
     (() => {

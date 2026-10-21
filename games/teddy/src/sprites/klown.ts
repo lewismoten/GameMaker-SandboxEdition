@@ -40,9 +40,9 @@ export const CK: Record<string, number> = {
   e: c('gold', 2),
 };
 
-/** Doc Leo's costume pieces: Gwin scattered them all over town. */
+/** Doc Leo's costume pieces: Gwinn scattered them all over town. */
 export const PROPS: Record<string, string[]> = {
-  // His felt fedora, chewed at the brim (Gwin again).
+  // His felt fedora, chewed at the brim (Gwinn again).
   hat: [
     '....oooooo....',
     '...okkOkkko...',

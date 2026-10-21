@@ -253,7 +253,7 @@ export function parkTiles(): Tiles {
     'mud',
     (() => {
       const p = grassTop(71);
-      blob(p, 10, 2, 11, 4, r('gwin'), 0, 2);
+      blob(p, 10, 2, 11, 4, r('gwinn'), 0, 2);
       return p;
     })(),
   );

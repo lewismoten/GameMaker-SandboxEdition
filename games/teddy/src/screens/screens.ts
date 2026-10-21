@@ -8,7 +8,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, gradient, klubArt, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
-import { GWIN } from '../sprites/gwin';
+import { GWINN } from '../sprites/gwinn';
 import { docLeo, type Costume } from '../sprites/people';
 import { citiCar, propSprite } from '../sprites/klown';
 import { renderRegion } from '../art/render';
@@ -83,8 +83,8 @@ export function logo(p: Pixels, y: number, cx = W / 2): void {
 function teddyBig(p: Pixels, pose: string, x: number, y: number, s: number, flip = false): void {
   scaleBlit(p, POSES[pose], x, y, s, flip);
 }
-function gwinBig(p: Pixels, pose: string, x: number, y: number, s: number, flip = false): void {
-  scaleBlit(p, GWIN[pose], x, y, s, flip);
+function gwinnBig(p: Pixels, pose: string, x: number, y: number, s: number, flip = false): void {
+  scaleBlit(p, GWINN[pose], x, y, s, flip);
 }
 function leoBig(p: Pixels, x: number, y: number, s: number, wearing?: Costume, wave = false): void {
   scaleBlit(p, docLeo(wearing, wave), x, y, s);
@@ -139,7 +139,7 @@ export function menuScreen(): Pixels {
   p.rect(60, 98, 200, 74, c('cream', 3));
   p.rect(60, 98, 200, 2, c('paint', 3));
   teddyBig(p, 'frontBeg', 0, 112, 4);
-  gwinBig(p, 'gwin1', 252, 108, 3, true);
+  gwinnBig(p, 'gwinn1', 252, 108, 3, true);
   micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1995', c('paint', 3));
   return p;
 }
@@ -150,8 +150,8 @@ export function titleScreen(): Pixels {
   logo(p, 6);
   leoBig(p, 136, 92, 2, undefined, true);
   teddyBig(p, 'frontBeg', 40, 108, 4);
-  gwinBig(p, 'gwin1', 200, 112, 4);
-  // Doc Leo's suitcase in Gwin's mouth, a costume piece popping out
+  gwinnBig(p, 'gwinn1', 200, 112, 4);
+  // Doc Leo's suitcase in Gwinn's mouth, a costume piece popping out
   p.rect(272, 140, 34, 24, c('wood', 1)).rect(272, 140, 34, 3, c('wood', 3)).rect(272, 151, 34, 2, c('gold', 1)).rect(283, 135, 12, 5, c('wood', 0));
   scaleBlit(p, propSprite('nose'), 276, 100, 2);
   scaleBlit(p, propSprite('tie'), 290, 112, 2);
@@ -193,7 +193,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('title.gif', gif(titleScreen()));
   put(SANDLOGO, sandLogoFli());
   put('intro.fli', introFli());
-  // The story told as a slide show of cartoons: Doc Leo's clown act, his CitiCar, then Gwin.
+  // The story told as a slide show of cartoons: Doc Leo's clown act, his CitiCar, then Gwinn.
   // (after the Sandbox Software logo)
   lst('title.lst', [
     [SANDLOGO, 0],
@@ -255,7 +255,7 @@ export function wonScreen(): Pixels {
   blob(p, 160, 152, 60, 8, SP.r('glow'), 1, 3);
   leoBig(p, 176, 70, 2, undefined, true);
   teddyBig(p, 'frontReach', 104, 92, 3);
-  gwinBig(p, 'gwinRoll', 220, 126, 2);
+  gwinnBig(p, 'gwinnRoll', 220, 126, 2);
   const R = rng(4);
   for (let i = 0; i < 90; i++) p.rect(Math.floor(R() * W), Math.floor(R() * 150), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
   outlined(p, 64, 166, 'TA-DAAA!', c('yellow', 3), c('ink', 0), 3);
@@ -284,7 +284,7 @@ export function lostScreen(): Pixels {
 }
 
 /**
- * The intro cartoon (FLI): the backyard at dawn; Gwin bounds across with Doc Leo's
+ * The intro cartoon (FLI): the backyard at dawn; Gwinn bounds across with Doc Leo's
  * suitcase, costume pieces flying out; Teddy pops out of his doghouse and gives chase;
  * then the logo drops in.
  */
@@ -301,12 +301,12 @@ export function introFli(): Uint8Array {
   };
   const props = ['hat', 'tie', 'shoes', 'chicken', 'nose'];
   const caption = (p: Pixels, words: string) => centered(p, 10, words, c('paint', 3), 1, c('ink', 0));
-  // 1. Gwin runs across, props flying
+  // 1. Gwinn runs across, props flying
   for (let f = 0; f < 26; f++) {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
     const gx = -60 + f * 16;
-    gwinBig(p, f % 2 ? 'gwinRun1' : 'gwinRun2', gx, 128, 3);
+    gwinnBig(p, f % 2 ? 'gwinnRun1' : 'gwinnRun2', gx, 128, 3);
     // the suitcase in her mouth
     p.rect(gx + 50, 150, 16, 12, c('wood', 1)).rect(gx + 54, 147, 8, 3, c('wood', 0));
     props.forEach((name, i) => {
@@ -317,7 +317,7 @@ export function introFli(): Uint8Array {
       if (py < H) scaleBlit(p, propSprite(name), px, py, 2);
     });
     if (f > 14) teddyBig(p, 'frontTilt', 28, 128, 3);
-    caption(p, f < 13 ? 'THE MORNING OF THE BIG SHOW...' : "GWIN! DOC LEO'S COSTUME!");
+    caption(p, f < 13 ? 'THE MORNING OF THE BIG SHOW...' : "GWINN! DOC LEO'S COSTUME!");
     add(p);
   }
   // 2. Teddy barks after her

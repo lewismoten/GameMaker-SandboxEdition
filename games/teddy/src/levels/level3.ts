@@ -1,7 +1,7 @@
 // Level 3: Puddlewick Park, in the afternoon. A hill with a squirrel tree, a sandbox to
 // dig through, a fountain whose jet lifts Teddy over the tall hedge, kids who give out
 // treats (and Doc Leo's shoes) for a good sit, geese guarding the covered bridge over the
-// duck pond, frisbees flying, and Gwin rolling in the mud by the picnic tables.
+// duck pond, frisbees flying, and Gwinn rolling in the mud by the picnic tables.
 //
 // The blocks are in level3Tiles.ts, the monsters in level3Beasts.ts; this file lays out the map.
 import { rng } from '../../../kit/pixels';
@@ -98,9 +98,9 @@ export function park(): Level {
   m.mon(p0 + 2, 39, 'duck');
   m.mon(p0 + 8, 39, 'duck');
 
-  // The picnic, the frisbee girl, Gwin in the mud.
+  // The picnic, the frisbee girl, Gwinn in the mud.
   m.set(65, 39, 'picnic').set(66, 39, 'basket').set(68, G, 'mud').set(69, G, 'mud').set(70, G, 'mud');
-  m.mon(67, 39, 'gwinMud');
+  m.mon(67, 39, 'gwinnMud');
   m.set(76, 39, 'frisbeeKid');
   m.set(74, 38, 'lampTop').set(74, 39, 'lamp');
 

@@ -1,6 +1,6 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The bot plays
 // the first part of Doc Leo's backyard (hop the garden boxes, walk the clothesline, bark
-// at the squirrel, dig up a bone, bark the wobble ball out of Gwin's mouth, climb the old
+// at the squirrel, dig up a bone, bark the wobble ball out of Gwinn's mouth, climb the old
 // oak and fetch the fedora), then Esc.
 import { serializeRecording } from '../../../web/src/formats/recording';
 import { newCharInfo } from '../../../web/src/engine/world';

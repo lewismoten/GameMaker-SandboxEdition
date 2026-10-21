@@ -1,8 +1,8 @@
 // Level 4: Downtown at sunset. Pigeons on the awnings, a subway steam vent that blows
 // Teddy up to the fire escape where Doc Leo's horn landed, Biggles Department Store
-// (spin the revolving doors to get through; Gwin is inside, in the shoe department), a
+// (spin the revolving doors to get through; Gwinn is inside, in the shoe department), a
 // sidewalk shed where Juggles the busker's pins come flying (play dead!), the plaza, a
-// fruit stand Gwin already knocked over, and the Odeon, where the Klown Car waits.
+// fruit stand Gwinn already knocked over, and the Odeon, where the Klown Car waits.
 //
 // The blocks are in level4Tiles.ts, the monsters in level4Beasts.ts; this file lays out the map.
 import { rng } from '../../../kit/pixels';
@@ -87,7 +87,7 @@ export function city(): Level {
   m.set(s0 + 6, 39, 'shoes')
     .set(s0 + 7, 39, 'shoes')
     .set(s0 + 11, 39, 'shoes');
-  m.mon(s0 + 5, 39, 'gwinStore');
+  m.mon(s0 + 5, 39, 'gwinnStore');
 
   // The construction site: the sidewalk shed, and Juggles at the far end.
   const c0 = 40;
@@ -110,9 +110,9 @@ export function city(): Level {
   m.mon(62, 37, 'askSit');
   m.mon(53, 39, 'pigeon');
 
-  // The fruit stand Gwin knocked over, and Gwin still chasing pigeons.
+  // The fruit stand Gwinn knocked over, and Gwinn still chasing pigeons.
   m.set(64, 39, 'fruitCrate').set(65, 39, 'apples').set(66, 39, 'apples').set(68, 39, 'fruitCrate').set(68, 38, 'fruitCrate');
-  m.mon(69, 39, 'gwinPigeons');
+  m.mon(69, 39, 'gwinnPigeons');
 
   // The Odeon.
   building(71, 13, 28);

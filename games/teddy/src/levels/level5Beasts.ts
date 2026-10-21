@@ -6,16 +6,16 @@
 // - the bowling pins (117) fall only to a rolling fluff ball (120), into pins lying down
 //   that never die and nothing can beat (end -2, power 210);
 // - Professor Pratfall's pies are projectiles (play dead to let them pass);
-// - Gwin holds the nose at 124: the heart beats her too, and she becomes Gwin sitting
-//   with the nose at her feet, then (touched, at power 2) a happy Gwin.
+// - Gwinn holds the nose at 124: the heart beats her too, and she becomes Gwinn sitting
+//   with the nose at her feet, then (touched, at power 2) a happy Gwinn.
 import { Pixels } from '../../../kit/pixels';
 import { sprite } from '../art/draw';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';
 import { askBubble, hand } from '../sprites/folks';
 import { CK, propSprite } from '../sprites/klown';
-import { bubble, gwinSits, pie, pinStack, pinsDown } from '../sprites/klubfolk';
-import { GWIN } from '../sprites/gwin';
+import { bubble, gwinnSits, pie, pinStack, pinsDown } from '../sprites/klubfolk';
+import { GWINN } from '../sprites/gwinn';
 import { revolvingDoor } from './level4Beasts';
 import { P_ } from './level5';
 
@@ -31,16 +31,16 @@ export function klubBeasts() {
   b.pic('pinsDown', pinsDown());
   b.pic('pie1', pie(0), { hp: -8 }).pic('pie2', pie(1), { hp: -8 });
   b.pic('bubble1', bubble(0)).pic('bubble2', bubble(1));
-  // Gwin with the nose in her mouth, then sitting nicely with it at her feet.
+  // Gwinn with the nose in her mouth, then sitting nicely with it at her feet.
   const gn = (pose: string) => {
     const p = new Pixels(20, 20, 255);
-    p.blit(GWIN[pose], 0, 0, 255);
+    p.blit(GWINN[pose], 0, 0, 255);
     p.blit(sprite(['.oo.', 'oRRo', 'oRRo', '.oo.'], CK, 17, 5), 0, 0, 255);
     return p;
   };
-  b.pic('gwinNose1', gn('gwin1')).pic('gwinNose2', gn('gwin3'));
-  b.pic('gwinSitNose', gwinSits(true, 0), { effect: CTR.props, eamt: 1, score: 500 });
-  b.pic('gwinSit1', gwinSits(false, 0)).pic('gwinSit2', gwinSits(false, 1));
+  b.pic('gwinnNose1', gn('gwinn1')).pic('gwinnNose2', gn('gwinn3'));
+  b.pic('gwinnSitNose', gwinnSits(true, 0), { effect: CTR.props, eamt: 1, score: 500 });
+  b.pic('gwinnSit1', gwinnSits(false, 0)).pic('gwinnSit2', gwinnSits(false, 1));
 
   b.add('hand', { pics: [['hand', 50]], power: POWER.balloon, becomes: 'ticketFall', upscore: 50 });
   b.add('askTix', {
@@ -86,21 +86,21 @@ export function klubBeasts() {
     ],
     end: -1,
   });
-  // Gwin will not give back the nose... until Teddy sits pretty, and she sits too.
-  b.add('gwinNose', {
+  // Gwinn will not give back the nose... until Teddy sits pretty, and she sits too.
+  b.add('gwinnNose', {
     pics: [
-      ['gwinNose1', 6],
-      ['gwinNose2', 6],
+      ['gwinnNose1', 6],
+      ['gwinnNose2', 6],
     ],
     power: POWER.sitAsk - 1,
-    becomes: 'gwinSitNose',
+    becomes: 'gwinnSitNose',
     upscore: 200,
   });
-  b.add('gwinSitNose', { pics: [['gwinSitNose', 50]], power: 2, becomes: 'gwinGood' });
-  b.add('gwinGood', {
+  b.add('gwinnSitNose', { pics: [['gwinnSitNose', 50]], power: 2, becomes: 'gwinnGood' });
+  b.add('gwinnGood', {
     pics: [
-      ['gwinSit1', 5],
-      ['gwinSit2', 5],
+      ['gwinnSit1', 5],
+      ['gwinnSit2', 5],
     ],
     power: POWER.friend + 10,
     end: -2,

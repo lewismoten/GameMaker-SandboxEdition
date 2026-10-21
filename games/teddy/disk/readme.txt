@@ -8,7 +8,7 @@ person, Doc Leo, is a friendly
 hobo clown, and tonight he is
 the star of the Klown Klub's
 Big Show. But Teddy's big
-sister Gwin just ran off with
+sister Gwinn just ran off with
 Doc Leo's costume suitcase and
 scattered it all over town.
 No nose, no show!
@@ -91,9 +91,10 @@ THIS IS SHAREWARE
 SAYING THANKS
   Built with GAME-MAKER 3.0 by
   Recreational Software
-  Designs. For Teddy, for Gwin
-  (yes, even Gwin), and for Doc
-  Leo and every friendly clown
-  in every Klown Klub.
+  Designs. For Teddy, for
+  Gwinn (yes, even Gwinn), and
+  for Doc Leo and every
+  friendly clown in every Klown
+  Klub.
 
 Woof!

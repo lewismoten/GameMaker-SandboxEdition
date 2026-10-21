@@ -2,7 +2,7 @@
 // tricks (a high five for Honker, a sit for Bubbles, a spin for Twirly), get through the
 // turnstile, roll a fluff ball into the bowling pins under the bleachers, play dead under
 // Professor Pratfall's practice pies, spin through the stage door, dig under the stage
-// and ride the stage lift up. Gwin is in the spotlight with the red nose in her mouth:
+// and ride the stage lift up. Gwinn is in the spotlight with the red nose in her mouth:
 // sit pretty and she sits too, and drops it. Then give it to Doc Leo. Ta-daaa!
 //
 // The blocks are in level5Tiles.ts, the monsters in level5Beasts.ts; this file lays out the map.
@@ -113,8 +113,8 @@ export function klub(): Level {
   m.set(lift, G, 'lift_0').set(lift, G + 1, 'lift_0');
   m.rect(lift + 1, G + 1, 1, 1, 'under');
   m.rect(st1 + 1, 20, 86 - st1 - 1, 20, 'canvas');
-  // Gwin in the spotlight with the nose; Doc Leo waiting.
-  m.mon(72, 35, 'gwinNose');
+  // Gwinn in the spotlight with the nose; Doc Leo waiting.
+  m.mon(72, 35, 'gwinnNose');
   const leoX = 78;
   m.set(leoX, 34, 'leoTop').set(leoX, 35, 'leoBot');
 

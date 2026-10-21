@@ -2,7 +2,7 @@
 // beats them, and they die into geese running off), friendly ducks, the squirrel, kids who
 // ask for a sit (125: only the heart that sitting pretty sends up, 130, beats them; they die
 // into Doc Leo's falling shoes or a falling treat that lands as a treat to pick up),
-// frisbees flying past (projectiles), and Gwin rolling in the mud.
+// frisbees flying past (projectiles), and Gwinn rolling in the mud.
 import { CRITTERS } from '../sprites/critters';
 import { FLIP } from '../characters/mons';
 import { CTR, POWER } from '../ids';
@@ -104,19 +104,19 @@ export function parkBeasts() {
     path: [[-12, 0, 6]],
     end: -1,
   });
-  b.add('gwinMud', {
+  b.add('gwinnMud', {
     pics: [
-      ['gwinRoll', 6],
-      ['gwin1', 4],
-      ['gwin2', 4],
-      ['gwin3', 4],
+      ['gwinnRoll', 6],
+      ['gwinn1', 4],
+      ['gwinn2', 4],
+      ['gwinn3', 4],
     ],
     power: 90,
     path: [
       [3, 0, 2, 0],
       [0, 0, 2, FLIP],
     ],
-    becomes: 'gwinGone',
+    becomes: 'gwinnGone',
   });
   return b;
 }

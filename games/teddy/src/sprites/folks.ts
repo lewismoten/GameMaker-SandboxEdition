@@ -10,7 +10,7 @@ const K: Record<string, number> = {
   a: P.c('skin', 1),
   A: P.c('skin', 2),
   f: P.c('wood', 0),
-  F: P.c('gwin', 1),
+  F: P.c('gwinn', 1),
   l: P.c('blue', 0),
   L: P.c('blue', 1),
 };

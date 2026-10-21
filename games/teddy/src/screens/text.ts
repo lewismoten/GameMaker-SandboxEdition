@@ -31,14 +31,14 @@ export const STORY = pages(
     '',
   ],
   [
-    'Teddy also has a big sister:',
-    'Gwin, a chocolate pit-lab mix.',
-    'Adopted, younger, bigger, and',
+    'Teddy also has a big sister,',
+    'Gwinn: a chocolate pit-lab',
+    'mix. Adopted, younger, bigger,',
     'still learning. (SIT? Nope.)',
     '',
     'Doc Leo drove ahead to the',
     'Klub in his little red 1976',
-    'CitiCar. Then Gwin found his',
+    'CitiCar. Then Gwinn found his',
     'costume suitcase on the back',
     'step, and ran all over town',
     'with it. Out flew the FEDORA,',
@@ -110,7 +110,7 @@ export const HELP = pages(
     'TREATS are worth points. A',
     'BONE gives energy back. A',
     'BALLOON DOG is worth 250.',
-    'Gwin bumps you: one treat',
+    'Gwinn bumps you: one treat',
     "gone. She has Teddy's green",
     'WOBBLE BALL too: WOOF and she',
     "drops it. It's an extra nap!",
@@ -134,7 +134,7 @@ const CREDITS_TEXT = pages(
     'programming: Claude',
     '',
     'Starring Teddy as himself.',
-    'With Gwin as herself (sorry).',
+    'With Gwinn as herself (sorry).',
     'And Doc Leo, the friendliest',
     'hobo clown in the Klown Klub,',
     'and his red 1976 CitiCar.',
@@ -178,7 +178,7 @@ export const WON = pages([
   'The crowd roars, the Klown',
   'Klub parades out into the',
   'night with Teddy up on the',
-  'CitiCar roof, and Gwin chases',
+  'CitiCar roof, and Gwinn chases',
   'the confetti.',
   "Who's a good boy? TEDDY IS.",
 ]);
@@ -200,7 +200,7 @@ export const LOST = pages([
 
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
-  backyard: ["Fetch Doc Leo's fedora, dig", 'under the fence. WOOF at Gwin!', 'NEW: HOP SPEAK DIG FETCH'],
+  backyard: ["Fetch Doc Leo's fedora, dig", 'under the fence. WOOF at Gwinn!', 'NEW: HOP SPEAK DIG FETCH'],
   street: ['Green tie. Watch sprinklers;', 'borrow a book at the Dog House.', 'NEW: HIGH FIVE (1)'],
   park: ['Red sneakers. Geese guard the', 'bridge; kids want a sit!', 'NEW: SIT PRETTY (2)'],
   city: ['Rubber chicken! Spin the', 'revolving doors; play dead!', 'NEW: SPIN (3)  PLAY DEAD (4)'],
@@ -222,7 +222,7 @@ person, Doc Leo, is a friendly
 hobo clown, and tonight he is
 the star of the Klown Klub's
 Big Show. But Teddy's big
-sister Gwin just ran off with
+sister Gwinn just ran off with
 Doc Leo's costume suitcase and
 scattered it all over town.
 No nose, no show!
@@ -305,10 +305,11 @@ THIS IS SHAREWARE
 SAYING THANKS
   Built with GAME-MAKER 3.0 by
   Recreational Software
-  Designs. For Teddy, for Gwin
-  (yes, even Gwin), and for Doc
-  Leo and every friendly clown
-  in every Klown Klub.
+  Designs. For Teddy, for
+  Gwinn (yes, even Gwinn), and
+  for Doc Leo and every
+  friendly clown in every Klown
+  Klub.
 
 Woof!
 `.replace(/^\n/, '');

@@ -1,10 +1,10 @@
 // Level 1's monsters: the squirrel (a pest: beaten by one of Teddy's tricks it becomes a
-// squirrel running off up the tree, gone at the end of its path) and Gwin pacing in her
+// squirrel running off up the tree, gone at the end of its path) and Gwinn pacing in her
 // garbage-can mess. Her power is 90, under the 100 that Game-Maker lets the character
-// beat by touching, so when she bumps into Teddy she "dies" into 'gwinGone': Gwin
+// beat by touching, so when she bumps into Teddy she "dies" into 'gwinnGone': Gwinn
 // running off for 30 ticks (the shared monster in characters/sharedMonsters.ts).
 //
-// This morning Gwin also has Teddy's green wobble ball, and she has the zoomies with it
+// This morning Gwinn also has Teddy's green wobble ball, and she has the zoomies with it
 // round her mess. She is adopted and still learning: she ignores SIT, but a WOOF (106)
 // beats her 105, and she spits the ball out and is gone in a cloud of dust. The ball pops
 // up, lands, and wobbles there giggling: Teddy's favorite toy, worth an extra nap.
@@ -46,7 +46,7 @@ export function backyardBeasts() {
   // Zoomies: zig-zag laps of the lawn between the garbage cans and the squirrel's patch,
   // flat out (a squirrel in her way gets chased up the oak). She stays on the ground, so
   // the ball she drops lands on the lawn.
-  b.add('gwinBall', {
+  b.add('gwinnBall', {
     pics: [
       ['zoomBall1', 2],
       ['zoomBall2', 2],
@@ -63,7 +63,7 @@ export function backyardBeasts() {
     becomes: 'ballPop',
     upscore: 50,
   });
-  // Ptoo! A puff of dust where Gwin was, and the ball flies up and lands two steps back
+  // Ptoo! A puff of dust where Gwinn was, and the ball flies up and lands two steps back
   // (away from the garbage cans).
   b.add('ballPop', {
     pics: [

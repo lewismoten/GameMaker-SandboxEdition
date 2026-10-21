@@ -90,11 +90,11 @@ export function street(): Level {
   house(38, 9, 'brick', [40, 43]);
   m.set(41, 38, 'kidBoy');
   m.mon(41, 37, 'hand');
-  // Lawn sprinkler B, with Gwin playing in it.
+  // Lawn sprinkler B, with Gwinn playing in it.
   m.set(48, 38, 'sprayBhOff').set(49, 38, 'sprayBhOff').set(50, 38, 'sprayBhOff').set(51, 38, 'sprayBhOff');
   m.set(48, 39, 'sprayBlOff').set(49, 39, 'sprayBlOff').set(50, 39, 'sprayBheadOff').set(51, 39, 'sprayBlOff');
-  m.mon(47, 39, 'gwinSplash');
-  // Gwin's mess: the recycling bins.
+  m.mon(47, 39, 'gwinnSplash');
+  // Gwinn's mess: the recycling bins.
   m.set(53, 39, 'binTipped').set(54, 39, 'litter').set(56, 39, 'bin').set(57, 39, 'litter').set(58, 39, 'binTipped');
 
   // The mail carrier, a maple tree and a garden bed with bones buried in it.

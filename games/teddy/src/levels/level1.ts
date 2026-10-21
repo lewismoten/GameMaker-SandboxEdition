@@ -1,5 +1,5 @@
 // Level 1: Doc Leo's Backyard. A morning lesson in hopping, barking, digging and
-// fetching: up the garden boxes, along the clothesline, past the squirrel and Gwin's
+// fetching: up the garden boxes, along the clothesline, past the squirrel and Gwinn's
 // garbage-can mess, up the old oak for Doc Leo's hat, and under the back fence.
 //
 // The blocks are in level1Tiles.ts, the monsters in level1Beasts.ts; this file lays out the map.
@@ -75,7 +75,7 @@ export function backyard(): Level {
   // The squirrel's stretch, and a hint.
   m.set(34, 39, 'signWoof');
 
-  // Gwin's garbage-can mess.
+  // Gwinn's garbage-can mess.
   m.set(42, 39, 'canTipped').set(44, 39, 'trash').set(46, 39, 'can').set(47, 39, 'trash').set(49, 39, 'canTipped').set(46, 38, 'canStack');
 
   // The old oak, with Doc Leo's hat in the top branches.
@@ -113,7 +113,7 @@ export function backyard(): Level {
   m.rect(car + 3, 30, 5, 10, 'hedgeWall');
   m.rect(car + 3, 29, 5, 1, () => pick('hedgeTop', 'hedgeTop2'));
 
-  // Monsters: treats along the way, buried bones, the squirrel, Gwin with Teddy's wobble
+  // Monsters: treats along the way, buried bones, the squirrel, Gwinn with Teddy's wobble
   // ball, the soft dirt.
   const treats: [number, number][] = [
     [11, 39],
@@ -152,7 +152,7 @@ export function backyard(): Level {
   m.mon(61, GROUND, 'buried');
   m.mon(35, 39, 'squirrel');
   m.mon(oak, 34, 'squirrel');
-  m.mon(41, 39, 'gwinBall');
+  m.mon(41, 39, 'gwinnBall');
   m.mon(fence - 2, GROUND, 'plug');
   m.mon(fence - 1, GROUND, 'plug');
   m.mark('start', 6, 39);

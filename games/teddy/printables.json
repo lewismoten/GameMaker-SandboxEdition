@@ -1,5 +1,5 @@
 {
-  "pitch": "Gwin scattered Doc Leo's clown costume all over town; hop, bark, dig and play dead across five stops as Teddy the corgi to get it back before the Big Show.",
+  "pitch": "Gwinn scattered Doc Leo's clown costume all over town; hop, bark, dig and play dead across five stops as Teddy the corgi to get it back before the Big Show.",
   "keys": {
     "Up": "Hop (hold for a higher hop)",
     "Space": "Speak: WOOF! Clears out pests",
@@ -29,7 +29,7 @@
           "y": 26,
           "w": 24,
           "h": 14,
-          "caption": "Showtime at the Klown Klub: Gwin in the spotlight, Doc Leo waiting for his nose."
+          "caption": "Showtime at the Klown Klub: Gwinn in the spotlight, Doc Leo waiting for his nose."
         },
         {
           "map": "backyard.map",
@@ -93,7 +93,7 @@
               "a": "Up in the top branches of the old oak. Hop up through the branches one at a time, then stand on the fedora and press F."
             },
             {
-              "q": "Gwin is running laps with a green ball!",
+              "q": "Gwinn is running laps with a green ball!",
               "a": "That's Teddy's wobble ball. She won't sit, but she does listen to a bark: face her and press Space as she zooms by. Grab the ball while it wobbles for an extra nap."
             },
             {
@@ -189,7 +189,7 @@
               "a": "Spin through the stage door, dig through the sawdust, crawl along to the stage lift and ride it up."
             },
             {
-              "q": "Gwin won't give back the red nose!",
+              "q": "Gwinn won't give back the red nose!",
               "a": "Show her how it's done: sit pretty (2) near her. She sits too and drops the nose at her feet. Grab it and bring it to Doc Leo."
             }
           ]
@@ -246,7 +246,7 @@
     },
     {
       "text": "NO NOSE, NO SHOW",
-      "sub": "GWIN",
+      "sub": "GWINN",
       "shape": "star",
       "color": "#d9381e",
       "ink": "#ffffff",
@@ -296,7 +296,7 @@
   "news": [
     {
       "head": "A corgi joins the Sandbox family",
-      "html": "<p>Teddy the corgi is back, and this time he's left the sandbox for the big town! <b>Teddy's Little Big Adventure</b> sends him from Doc Leo's backyard to the Klown Klub's Big Show with nine tricks on nine keys. Our testers' favorite trick? Play dead. Our testers' favorite dog? Don't ask Gwin.</p>"
+      "html": "<p>Teddy the corgi is back, and this time he's left the sandbox for the big town! <b>Teddy's Little Big Adventure</b> sends him from Doc Leo's backyard to the Klown Klub's Big Show with nine tricks on nine keys. Our testers' favorite trick? Play dead. Our testers' favorite dog? Don't ask Gwinn.</p>"
     },
     {
       "head": "Ask the Sandbox: why so many dogs?",

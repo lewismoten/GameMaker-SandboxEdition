@@ -1,7 +1,7 @@
 // Doc Leo, the friendly hobo clown, two blocks tall (Teddy is one): a chewed-up felt
 // fedora, wire glasses, an ash-gray painted beard round a white mouth, a purple shirt with
 // a green tie and blue suspenders, a navy corduroy jacket, red sneakers, and a rubber
-// chicken on a dog leash. Gwin scattered the costume across town; `wearing` says which
+// chicken on a dog leash. Gwinn scattered the costume across town; `wearing` says which
 // pieces he has on.
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, over, sprite } from '../art/draw';
@@ -20,7 +20,7 @@ const K: Record<string, number> = {
   c: P.c('blue', 2),
   v: P.c('purple', 2),
   V: P.c('purple', 3),
-  d: P.c('gwin', 1),
+  d: P.c('gwinn', 1),
   a: P.c('pink', 2),
   t: P.c('asphalt', 1),
   T: P.c('asphalt', 2),

@@ -1,12 +1,12 @@
 // The cartoons (FLIs) that tell the story as a slide show, before the title poster and the
 // story pages: Doc Leo at home practicing his clown act (balloon animals, a magic trick, a
-// parade strut), then off to the Klown Klub in his red CitiCar; then intro.fli (Gwin and
+// parade strut), then off to the Klown Klub in his red CitiCar; then intro.fli (Gwinn and
 // the suitcase). And at the end, the Klown Klub parade with Teddy riding on top.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from '../art/draw';
 import { FX } from '../sprites/fx';
-import { GWIN } from '../sprites/gwin';
+import { GWINN } from '../sprites/gwinn';
 import { citiCar } from '../sprites/klown';
 import { dove, marcher } from '../sprites/magic';
 import { docLeo, FULL } from '../sprites/people';
@@ -161,7 +161,7 @@ export function paradeFli(): Uint8Array {
       scaleBlit(p, car, x0 + 90, 72, 3);
       scaleBlit(p, head, x0 + 124, 92 - (f % 2), 2);
       scaleBlit(p, POSES[f % 6 < 3 ? 'frontBeg' : 'frontReach'], x0 + 100, 52 - (f % 2), 2);
-      scaleBlit(p, GWIN[f % 2 ? 'gwinRun1' : 'gwinRun2'], x0 + 20, 150, 2);
+      scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 + 20, 150, 2);
       caption(p, f < 30 ? 'AND AFTER THE BIG SHOW...' : 'THE KLOWN KLUB PARADE!', 8);
       if (f >= 30) caption(p, 'TEDDY RIDES UP FRONT.', 20);
     });
