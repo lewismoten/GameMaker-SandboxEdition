@@ -2,6 +2,7 @@
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { fileField } from '../../widgets/filePicker';
 import { h, clear } from '../../core/ui';
 import { parsePalette, paletteCss, serializePalette, defaultPalette } from '../../../formats/palette';
@@ -9,7 +10,10 @@ import { decodeGif, isGif } from '../../../formats/gif';
 
 registerEditor(['pal'], (host, project, file) => {
   const pal = parsePalette(project.files.get(file)!);
-  let selected = 1;
+  // the address keeps the color selected (…/SHADES.PAL?color=200)
+  const view = viewState(['p', project.id, file]);
+  const urlColor = view.num('color');
+  let selected = urlColor !== undefined && urlColor >= 0 && urlColor <= 255 ? urlColor : 1;
   let rangeEnd: number | undefined;
   const save = () => project.files.set(file, serializePalette(pal));
   const history = new History<Uint8Array>();
@@ -81,6 +85,7 @@ registerEditor(['pal'], (host, project, file) => {
       b.classList.toggle('selected', i === selected || inRange);
     });
     preview.style.background = paletteCss(pal, selected);
+    view.set({ color: selected });
     const hex = '#' + [0, 1, 2].map((c) => Math.round((pal[selected * 3 + c] * 255) / 63).toString(16).padStart(2, '0')).join('');
     clear(
       label,
