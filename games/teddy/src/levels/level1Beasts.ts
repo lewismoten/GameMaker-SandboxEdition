@@ -3,9 +3,15 @@
 // garbage-can mess. Her power is 90, under the 100 that Game-Maker lets the character
 // beat by touching, so when she bumps into Teddy she "dies" into 'gwinGone': Gwin
 // running off for 30 ticks (the shared monster in characters/sharedMonsters.ts).
+//
+// This morning Gwin also has Teddy's green wobble ball, and she has the zoomies with it
+// round her mess. She is adopted and still learning: she ignores SIT, but a WOOF (106)
+// beats her 105, and she spits the ball out and is gone in a cloud of dust. The ball pops
+// up, lands, and wobbles there giggling: Teddy's favorite toy, worth an extra nap.
 import { CRITTERS } from '../sprites/critters';
 import { FLIP } from '../characters/mons';
-import { POWER } from '../ids';
+import { CTR, POWER } from '../ids';
+import { TOYS } from '../sprites/toys';
 import { newBestiary } from './level';
 
 export function backyardBeasts() {
@@ -33,21 +39,55 @@ export function backyardBeasts() {
     ],
     end: -1,
   });
-  b.add('gwinMess', {
+  for (const [name, px] of Object.entries(TOYS)) {
+    if (name.startsWith('wobble')) b.pic(name, px, { effect: CTR.lives, eamt: 1, score: 500 });
+    else if (name.startsWith('ballAir') || name.startsWith('zoomBall')) b.pic(name, px);
+  }
+  // Zoomies: laps of the lawn between the garbage cans and the squirrel's patch, hopping
+  // as she goes, flat out (a squirrel in her way gets chased up the oak).
+  b.add('gwinBall', {
     pics: [
-      ['gwin1', 3],
-      ['gwin2', 3],
-      ['gwin3', 3],
-      ['gwin2', 3],
+      ['zoomBall1', 2],
+      ['zoomBall2', 2],
     ],
-    power: 90,
+    power: POWER.dig,
     path: [
-      [5, 0, 4, 0],
-      [5, 0, 1, 0],
-      [0, 0, 4, FLIP],
-      [0, 0, 1, FLIP],
+      [-2, -1, 7, FLIP],
+      [-4, 0, 7, FLIP],
+      [-5, 0, 8, FLIP],
+      [-3, -1, 7, 0],
+      [-1, 0, 7, 0],
+      [0, 0, 8, 0],
     ],
-    becomes: 'gwinGone',
+    becomes: 'ballPop',
+    upscore: 50,
+  });
+  // Ptoo! A puff of dust where Gwin was, and the ball flies up and lands.
+  b.add('ballPop', {
+    pics: [
+      ['puff1', 3],
+      ['puff2', 3],
+      ['ballAir1', 3],
+      ['ballAir2', 3],
+      ['ballAir1', 3],
+      ['ballAir2', 9],
+    ],
+    power: 2,
+    path: [
+      [1, -2, 5],
+      [2, 0, 5],
+    ],
+    end: -1,
+    becomes: 'wobble',
+  });
+  b.add('wobble', {
+    pics: [
+      ['wobble1', 4],
+      ['wobble2', 3],
+      ['wobble3', 4],
+      ['wobble4', 3],
+    ],
+    power: POWER.pickup,
   });
   return b;
 }

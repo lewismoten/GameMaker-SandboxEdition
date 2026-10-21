@@ -1,6 +1,7 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The bot plays
 // the first part of Doc Leo's backyard (hop the garden boxes, walk the clothesline, bark
-// at the squirrel, dig up a bone, climb the old oak and fetch the hat), then Esc.
+// at the squirrel, dig up a bone, bark the wobble ball out of Gwin's mouth, climb the old
+// oak and fetch the fedora), then Esc.
 import { serializeRecording } from '../../../web/src/formats/recording';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { buildCharacter, CB } from './characters/character';
@@ -17,7 +18,7 @@ export async function demoRecording(l: Level): Promise<Uint8Array> {
   );
   const rec = new Recorder(sim);
   const route = ROUTES[l.file];
-  const upto = route.findIndex((o) => 'until' in o) + 1;
+  const upto = route.findIndex((o) => 'until' in o && o.until === 'has the hat') + 1;
   await runRoute(sim, route.slice(0, upto), '', rec);
   // a little victory spin, then Esc back to the menu
   const at = rec.lastTick;

@@ -113,7 +113,8 @@ export function backyard(): Level {
   m.rect(car + 3, 30, 5, 10, 'hedgeWall');
   m.rect(car + 3, 29, 5, 1, () => pick('hedgeTop', 'hedgeTop2'));
 
-  // Monsters: treats along the way, buried bones, the squirrel, Gwin, the soft dirt.
+  // Monsters: treats along the way, buried bones, the squirrel, Gwin with Teddy's wobble
+  // ball, the soft dirt.
   const treats: [number, number][] = [
     [11, 39],
     [12, 39],
@@ -151,7 +152,7 @@ export function backyard(): Level {
   m.mon(61, GROUND, 'buried');
   m.mon(35, 39, 'squirrel');
   m.mon(oak, 34, 'squirrel');
-  m.mon(43, 39, 'gwinMess');
+  m.mon(41, 39, 'gwinBall');
   m.mon(fence - 2, GROUND, 'plug');
   m.mon(fence - 1, GROUND, 'plug');
   m.mark('start', 6, 39);
