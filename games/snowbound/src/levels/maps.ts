@@ -185,7 +185,7 @@ export function galeStreet(book: BlockBook) {
   m.fill(10, 14, 2, 3, 'b').fill(18, 14, 2, 1, 'T').fill(27, 14, 2, 1, 'n').fill(36, 14, 2, 1, 'T').fill(45, 14, 3, 1, 'b').fill(55, 14, 9, 1, 'T');
   m.set(58, 15, 'n').set(61, 16, 'c');
   m.set(26, 14, 'n');
-  m.set(42, 14, '5'); // a tip on Mrs. Haines' porch
+  m.set(43, 14, '5'); // a tip by Mrs. Haines' porch (her mat is at 42)
   // The News-Tribune bundle, dropped by the porch at home before dawn: papers first.
   m.set(12, 16, 'bundle');
   // sidewalk, plow banks, the road, banks, the south sidewalk
