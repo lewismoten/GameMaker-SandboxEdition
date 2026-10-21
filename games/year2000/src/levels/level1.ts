@@ -2,6 +2,7 @@
 // mow the lawns and the newspaper is fired from a cannon. Sparky has scattered Dex's
 // report all over the neighborhood. The garage remote is lost in the hedge garden, the
 // Zapper is in the backyard, and the Teleport-A-Phone on the corner goes to the Skyway.
+// Grandpa's 1976½ CitiCar sits on its charger by the house: honk it for 1976 points.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from '../blocks/book';
 import { MON } from '../ids';
@@ -41,7 +42,8 @@ const LEGEND: Legend = {
   R: 'remote_grass',
   D: { big: 'dome', w: 4, h: 3 },
   E: { big: 'domeB', w: 4, h: 3 },
-  C: { big: 'car', w: 2, h: 1 },
+  C: { big: 'citi', w: 2, h: 2 },
+  c: 'charger',
   H: { big: 'bbHome', w: 3, h: 2 },
   '@': { tile: 'grass', mark: 'start' },
   '1': { mon: MON.mowerH },
@@ -68,8 +70,8 @@ const ROWS = [
   'I............I||.....hhhh.......||:............I', // 8
   'ggggggGggggggo||.....h..h...q...||:.....5......I', // 9
   'I.DDDD...K...:||..p..h.Lh.......||:...T....q...I', // 10
-  'I.DDDD.......:||.....h..h...6...||N.........,,.I', // 11
-  'I.DDDD...CC..:||..EEEE.........,||:..1.........I', // 12
+  'I.DDDD...CC..:||.....h..h...6...||N.........,,.I', // 11
+  'I.DDDD..cCC..:||..EEEE.........,||:..1.........I', // 12
   'I...@..q.....:||..EEEE...1......||:......B..B..I', // 13
   'I.M.....,....:||..EEEE..........||:......x..r..I', // 14
   'I............:||.....q.......3..||:..*.........I', // 15

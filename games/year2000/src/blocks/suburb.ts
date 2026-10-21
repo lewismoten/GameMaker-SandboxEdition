@@ -1,6 +1,6 @@
 // EARTH.BBL's suburb half and the set for Dome Sweet Dome and the Information Superhighway:
 // chrome fences, hedge cubes, chrome trees, mailboxes, dishes, doghouses, pools, parked
-// cars, mower docks, newspaper cannons, Skyway rails, clouds, tunnels, toll bots and the
+// cars, the CitiCar and its charger, mower docks, newspaper cannons, Skyway rails, clouds, tunnels, toll bots and the
 // pill drive-thru.
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, SOLID } from './book';
@@ -9,8 +9,9 @@ import { FLOORS } from './floors';
 import { micro } from '../art/font';
 import { CTR, MON } from '../ids';
 import { C } from '../art/pal';
-import { billboard, domeHome, tiled } from '../art/bigart';
+import { billboard, domeHome } from '../art/bigart';
 import { addTicker } from './ticker';
+import { chargerPost, citicar } from '../art/citicar';
 import { R, addBig, addBooths, addFloors, addItems, addWalkways, blank, on, staffDoor, type Floor } from './shared';
 
 // ------------------------------------------------------------------ walls and things
@@ -97,25 +98,6 @@ export function pool(phase: number): Pixels {
   const p = blank();
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('sky'), 3, 6, 0.5 + 0.5 * Math.sin((x + y * 0.5 + phase * 3) / 3), x, y));
   for (let x = 0; x < 20; x += 5) p.set(x + phase, 6 + ((x / 5) % 2) * 7, C('grey', 7));
-  return p;
-}
-
-function parkedCar(color: string): Pixels {
-  const p = new Pixels(40, 20);
-  tiled(p, () => on('road'));
-  oval(p, 20, 17, 18, 2.5, C('grey', 1));
-  // A flying car from above: swept body, bubble canopy, tail fins.
-  for (let y = 3; y < 16; y++)
-    for (let x = 2; x < 38; x++) {
-      const nx = (x - 20) / 18;
-      const ny = (y - 9.5) / 6.5;
-      if (nx * nx * nx * nx + ny * ny <= 1) p.set(x, y, shadeAt(R(color), 1, 5, 0.6 - ny * 0.35, x, y));
-    }
-  oval(p, 17, 9, 7, 4.5, C('glass', 1));
-  oval(p, 16, 8, 5, 3, C('glass', 3));
-  p.line(13, 6, 16, 6, C('grey', 7));
-  p.rect(34, 2, 4, 3, C(color, 2)).rect(34, 15, 4, 3, C(color, 2));
-  p.rect(37, 7, 2, 6, C('orange', 4)).rect(38, 8, 2, 4, C('gold', 5));
   return p;
 }
 
@@ -216,7 +198,12 @@ export function suburbSet(): BlockSet {
   s.add('doghouse', doghouse('grass'), { solid: SOLID });
   s.add('pool', pool(0), { solid: SOLID, next: 'pool2', ntime: 6 });
   s.add('pool2', pool(1), { solid: SOLID, next: 'pool', ntime: 6 });
-  addBig(s, 'car', parkedCar('red'));
+  // The CitiCar on its charger: honk it (touch the front) and the headlights flash.
+  addBig(s, 'citi', citicar(false), (col, row) => (col === 1 && row === 1 ? { solid: SOLID, score: 1976, touch: 'citiLit' } : { solid: SOLID }));
+  s.add('citiLit', citicar(true).crop(20, 20, 20, 20), { solid: SOLID, next: 'citiLit2', ntime: 4 });
+  s.add('citiLit2', citicar(false).crop(20, 20, 20, 20), { solid: SOLID, next: 'citiLit', ntime: 4 });
+  s.add('charger', chargerPost('1MI'), { solid: SOLID, next: 'charger2', ntime: 12 });
+  s.add('charger2', chargerPost('/HR'), { solid: SOLID, next: 'charger', ntime: 12 });
   s.add('mowdock', mowerDock('grass'), { solid: SOLID, birthMon: MON.mowerBox, birthTime: 260 });
   s.add('newscannon', paperCannon('sidewalk'), { solid: SOLID, birthMon: MON.paper, birthTime: 34 });
   s.add('garagedoor', staffDoor('remote', 'grass'), { solid: SOLID, effect: CTR.remote, eamt: -1, touch: 'concrete' });
@@ -237,6 +224,7 @@ export function suburbSet(): BlockSet {
   s.add('tunnelFL', tunnel('L'), { solid: SOLID, birthMon: MON.fastL, birthTime: 62 });
   s.add('tunnelTR', tunnel('R'), { solid: SOLID, birthMon: MON.truckR, birthTime: 70 });
   s.add('tunnelTL', tunnel('L'), { solid: SOLID, birthMon: MON.truckL, birthTime: 66 });
+  s.add('tunnelCR', tunnel('R'), { solid: SOLID, birthMon: MON.citicar, birthTime: 90 });
   s.add('tollbot', tollBot('deck'), { solid: SOLID });
   s.add('pillstand', pillStand('deck', 0), { solid: SOLID });
   s.add('pillstand2', pillStand('deck', 1), { solid: SOLID });

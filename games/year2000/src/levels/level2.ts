@@ -25,6 +25,7 @@ const LEGEND: Legend = {
   d: 'tunnelFL',
   e: 'tunnelTR',
   f: 'tunnelTL',
+  g: 'tunnelCR',
   T: 'tollbot',
   P: 'pillstand',
   Q: 'pillstand2',
@@ -64,7 +65,7 @@ const ROWS = [
   plat('__q___________T________p____'), // 11
   lane('e', '~', true), // 12
   lane('~', 'd'), // 13
-  lane('a', '~'), // 14
+  lane('g', '~'), // 14
   lane('~', 'b'), // 15
   lane('c', '~'), // 16
   plat('__*_______q_______________p_'), // 17
