@@ -199,6 +199,12 @@
     width: 660px;
   }
 
+  /* the case stands over the desk's front edge (z-index 4), so the buttons for the disk in
+     drive A:, hanging below it, aren't cut off by the edge */
+  .pc > .case {
+    z-index: 5;
+  }
+
   /* the props stand on the stage itself, at their own depth on the desk */
   .desk-left,
   .desk-right {
