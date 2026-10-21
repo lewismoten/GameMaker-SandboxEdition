@@ -58,6 +58,10 @@
               "a": "Wait until it blinks off and fly through. If you must go through a live one, you burn a hole in it but lose 6 energy for each block you touch."
             },
             {
+              "q": "What is the red light on the breadboard?",
+              "a": "The clock LED on a 555 timer. It keeps time for the homemade 6502 and for the firewall right past it. LED on, beam on. LED off: go!"
+            },
+            {
               "q": "The BIOS Bug's head won't break.",
               "a": "Shoot its two eyes (the bottom half of the head) first; they take 9 hits each. Then the crown (6 each). Fly up through the hole where the head was."
             }
@@ -69,6 +73,10 @@
             {
               "q": "Something keeps pushing me sideways.",
               "a": "Data streams: the rows of flowing arrows. Steer the other way while you cross, or hold Up to cross faster."
+            },
+            {
+              "q": "A row of bytes keeps closing across the lane.",
+              "a": "That's the 6502's stack in page one. It fills from $01FF on the right, then overflows and empties all at once. Hug the left side and slip through, or wait for the pop."
             },
             {
               "q": "The slugs follow me everywhere.",
