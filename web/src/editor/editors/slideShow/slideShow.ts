@@ -288,6 +288,8 @@ registerEditor(['lst'], (host, project, file) => {
         : h('div', { class: 'sl-empty' }, 'Drag pictures, animations and text screens here from the media below.'),
     );
     length.textContent = entries.length ? `${entries.length} slide${entries.length === 1 ? '' : 's'} · ${showLength(entries.map(timing))}` : '';
+    // nothing to play until a slide is added
+    if (!preview.running()) playBtn.disabled = !entries.length;
   };
 
   const render = () => {
@@ -435,7 +437,13 @@ registerEditor(['lst'], (host, project, file) => {
         h(
           'p',
           { class: 'meta' },
-          'Drag pictures (.GIF), backdrops (.BKD), animations (.FLI) and text screens (.TXT) from the media below onto the timeline, or tap one to add it.',
+          'Drag pictures (.GIF), backdrops (.BKD), animations (.FLI) and text screens (.TXT) from the media below onto the timeline, or tap one to add it. Nothing there yet? Start with one of these:',
+        ),
+        h(
+          'div',
+          { class: 'toolbar' },
+          h('button', { onclick: () => void addFromPicker('gif', true) }, '📀 A picture from the library…'),
+          h('button', { onclick: () => newText() }, '+ New text screen'),
         ),
       );
       return;
@@ -541,7 +549,7 @@ registerEditor(['lst'], (host, project, file) => {
           used.get(n) ? h('span', { class: 'sl-media-used' }, `×${used.get(n)}`) : null,
         );
       }),
-      names.length ? null : h('p', { class: 'meta' }, 'This game has no pictures, animations or text screens yet.'),
+      names.length ? null : h('p', { class: 'meta sl-bin-empty' }, 'This game has no pictures, animations or text screens yet. Add one with the buttons above: from the CD’s library, from your computer, or a new text screen.'),
     );
   };
 
