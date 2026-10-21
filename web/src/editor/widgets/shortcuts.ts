@@ -38,9 +38,9 @@ export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
     },
   ],
   pal: [{ title: 'Palette', rows: UNDO }],
-  bbl: [{ title: 'Blocks', rows: [[[`${MOD}+Z`], 'Undo the last paint on this block'], GRID] }],
-  mbl: [{ title: 'Blocks', rows: [[[`${MOD}+Z`], 'Undo the last paint on this block'], GRID] }],
-  cbl: [{ title: 'Blocks', rows: [[[`${MOD}+Z`], 'Undo the last paint on this block'], GRID] }],
+  bbl: [{ title: 'Blocks', rows: [...UNDO, GRID] }],
+  mbl: [{ title: 'Blocks', rows: [...UNDO, GRID] }],
+  cbl: [{ title: 'Blocks', rows: [...UNDO, GRID] }],
   mon: [
     { title: 'Monsters', rows: [...UNDO, GRID] },
     {

@@ -73,7 +73,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   let current = 0;
   let color = sprites ? 0 : 1;
   let tool: Tool = 'draw';
+  // each block keeps its own undo and redo (its pixels), so switching blocks never undoes another's paint
   const undo: Uint8Array[][] = blocks.map(() => []);
+  const redo: Uint8Array[][] = blocks.map(() => []);
   let clipboard: Block | undefined;
   const save = debounce(() => project.files.set(file, serializeBlocks(blocks)), 250);
 
@@ -108,6 +110,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     [...picker.children].forEach((b, j) => b.classList.toggle('selected', j === i));
     renderBlock();
     renderProps();
+    refreshUndo();
   }
 
   // ---- pixel canvas -------------------------------------------------------
@@ -189,11 +192,29 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   function pushUndo(): void {
     undo[current].push(blocks[current].pixels.slice());
     if (undo[current].length > 50) undo[current].shift();
+    redo[current].length = 0;
   }
 
   function changed(): void {
     renderBlock();
     save();
+    refreshUndo();
+  }
+
+  /** Undo (back) or redo (forward) the last paint on this block. */
+  function step(back: boolean): void {
+    const [from, to] = back ? [undo[current], redo[current]] : [redo[current], undo[current]];
+    const snap = from.pop();
+    if (!snap) return;
+    to.push(blocks[current].pixels.slice());
+    blocks[current].pixels.set(snap);
+    changed();
+  }
+  const undoBtn = h('button', { title: 'Undo the last paint on this block (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Shift+Z or Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  function refreshUndo(): void {
+    undoBtn.disabled = !undo[current]?.length;
+    redoBtn.disabled = !redo[current]?.length;
   }
 
   canvas.addEventListener('pointerdown', (e) => {
@@ -281,19 +302,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       'Paste picture',
     ),
     h('button', { onclick: () => transform(() => (sprites ? TRANSPARENT : color)) }, 'Clear'),
-    h(
-      'button',
-      {
-        onclick: () => {
-          const prev = undo[current].pop();
-          if (prev) {
-            blocks[current].pixels.set(prev);
-            changed();
-          }
-        },
-      },
-      'Undo',
-    ),
+    undoBtn,
+    redoBtn,
   );
 
   // ---- textures (background blocks): a new take each click, in this palette ----
@@ -508,13 +518,11 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   renderProps();
 
   const onKey = (e: KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !(e.target instanceof HTMLInputElement)) {
+    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' || k === 'y') {
       e.preventDefault();
-      const prev = undo[current].pop();
-      if (prev) {
-        blocks[current].pixels.set(prev);
-        changed();
-      }
+      step(k === 'z' && !e.shiftKey);
     }
   };
   window.addEventListener('keydown', onKey);
