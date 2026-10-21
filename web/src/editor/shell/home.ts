@@ -124,7 +124,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       if (hit) shown++;
     }
     tiles.querySelector('.lib-none')?.remove();
-    if (q && !shown) tiles.append(h('p', { class: 'meta lib-none' }, `No game here matches “${search.value.trim()}”.`));
+    if (!q || shown) return;
+    // nothing here: point to the collections that have it
+    const elsewhere = CATEGORIES.filter((c) => c.id !== current)
+      .map((c) => ({ c, n: gamesOf(c.id).filter((g) => g.search.includes(q)).length }))
+      .filter((x) => x.n);
+    tiles.append(
+      h(
+        'div',
+        { class: 'meta lib-none', role: 'status' },
+        `No game in ${CATEGORIES.find((c) => c.id === current)!.name} matches “${search.value.trim()}”.`,
+        ...elsewhere.map(({ c, n }) =>
+          h('button', { type: 'button', class: 'lib-elsewhere', onclick: () => void select(c.id, true).then(() => document.getElementById(`lib-tab-${c.id}`)?.focus()) }, `${c.name} has ${n} →`),
+        ),
+      ),
+    );
   };
 
   const markSelected = () => {

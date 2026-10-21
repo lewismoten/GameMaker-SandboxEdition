@@ -192,6 +192,18 @@
   margin: 8px 0;
 }
 
+.lib-none {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.lib-elsewhere {
+  padding: 3px 10px;
+  border-radius: 14px;
+}
+
 /* Getting started: under the library when the page stacks, under the game on a wide window */
 .home-start {
   margin: 24px 0 0;
