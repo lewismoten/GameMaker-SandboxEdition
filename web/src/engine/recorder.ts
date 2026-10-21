@@ -72,6 +72,11 @@ export class Recorder {
     return this.mode === PLAYBACK;
   }
 
+  /** Paused: play has left the levels (the won/lost pictures and score table follow). */
+  get halted(): boolean {
+    return this.paused;
+  }
+
   /** DoPlayBack: advance one tick; returns the keys that become pending now. */
   doPlayback(): number[] {
     const out: number[] = [];
