@@ -1,5 +1,5 @@
 {
-  "pitch": "Shovel Dowden Additions in Fort Ashby, West Virginia, one dollar a scoop and get to LaVale Mall with $89 before the price of Game-Maker goes up.",
+  "pitch": "Shovel Fort Ashby at a dollar a scoop and get $89 to LaVale Mall before the price of Game-Maker goes up.",
   "keys": {
     "Space": "Throw a snowball",
     "Up": "Walk up / dig in your heels on the sled",
@@ -23,7 +23,7 @@
       "note": "Printed map for registered players",
       "promised": true,
       "heading": "DOWDEN ADDITIONS & LAVALE MALL",
-      "intro": "Every street from home to the register, with the best-paying driveways marked. Distances not to scale. Mailboxes not included (there aren't any).",
+      "intro": "Every street from home to the register, with the best-paying driveways marked. Distances not to scale. Mailboxes not included.",
       "panels": [
         {
           "map": "bowden.map",
