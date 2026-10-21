@@ -1097,6 +1097,7 @@ button.big {
 
 #app.modern > .content > * {
   flex: 1 0 auto;
+  width: 100%;
 }
 
 /* With the workspace open the window never scrolls: the file list and the editor do. */
