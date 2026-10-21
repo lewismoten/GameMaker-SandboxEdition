@@ -94,12 +94,7 @@ function bossTiles(bs: BlockSet, a: StageArt): void {
       t.blit(s[r][c], 0, 0, CLEAR);
       bs.add(`shell${r}${c}`, t, { solid: SOLID });
     }
-  // a big BIOS chip under the beetle's belly
-  const plate = new Pixels(20, 20);
-  plate.px.set(a.floor(0).px);
-  plate.rect(0, 0, 20, 20, p.c('deep', 1));
-  for (let x = 1; x < 20; x += 4) plate.set(x, 10, p.c('deep', 3));
-  bs.add('biosChip', plate);
+
 }
 
 function bossVirus(b: Bestiary, p: Pal): void {
@@ -131,7 +126,7 @@ export function bossBIOS(art: StageArt): Leg {
   );
   const g = arena(k.bs, k.beasts, art, 7);
   g.rect(1, 0, 14, 10, (c, d) => ((c + d) % 7 === 0 ? 'floor1' : 'floor0'));
-  g.rect(3, 4, 10, 2, 'biosChip');
+  g.plate(3, 6, 10, 2);
   for (let r = 0; r < 4; r++) for (let c = 0; c < 12; c++) if (k.bs.has(`shell${r}${c}`)) g.set(2 + c, r, `shell${r}${c}`);
   // the head plugs the way out
   for (let r = 0; r < 2; r++) for (let c = 0; c < 2; c++) g.mon(7 + c, 1 + r, `head${r}${c}`);
