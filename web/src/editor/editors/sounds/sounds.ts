@@ -2,6 +2,7 @@
 // 1/145.6 s apart, or a Sound Blaster .voc file.
 import './sounds.css';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { h, clear, numberField, debounce } from '../../core/ui';
 import { AudioEngine } from '../../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../../formats/sound';
@@ -19,7 +20,10 @@ const fromY = (y: number, hgt: number) => (y >= hgt - 2 ? 0 : Math.round(MINF * 
 
 registerEditor(['snd'], (host, project, file) => {
   const snd = parseSoundSet(project.files.get(file)!);
-  let current = 0;
+  // the address keeps the sound shown (…/NEBULA.SND?sound=7)
+  const view = viewState(['p', project.id, file]);
+  const urlSound = view.num('sound');
+  let current = urlSound !== undefined && urlSound >= 0 && urlSound < snd.freqs.length ? urlSound : 0;
   const save = debounce(() => project.files.set(file, serializeSoundSet(snd)), 250);
   const history = new History<Uint8Array>();
   const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
@@ -245,6 +249,7 @@ registerEditor(['snd'], (host, project, file) => {
   }
 
   function render(): void {
+    view.set({ sound: current });
     renderList();
     renderDetail();
   }

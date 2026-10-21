@@ -5,6 +5,7 @@
 // back as an .FLI with only what changed between frames, as Animator did.
 import './animation.css';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { h, clear, download, pickFiles, toast } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
 import { pickFile } from '../../widgets/filePicker';
@@ -39,7 +40,12 @@ registerEditor(['fli'], (host, project, file) => {
   const base = file.replace(/\.fli$/, '');
   const undo: FliFrames[] = [];
   const redo: FliFrames[] = [];
-  let cur = 0;
+  // the address keeps the frame shown once paused, counted from 1 (…/INTRO.FLI?frame=12); a
+  // link to a frame opens paused on it, otherwise the animation plays
+  const view = viewState(['p', project.id, file]);
+  const urlFrame = view.num('frame');
+  let paused = urlFrame !== undefined;
+  let cur = Math.max(0, Math.min(anim.frames.length - 1, (urlFrame ?? 1) - 1));
   let timer: ReturnType<typeof setTimeout> | undefined;
   let playing = false;
   let loop = false;
@@ -62,6 +68,7 @@ registerEditor(['fli'], (host, project, file) => {
     const f = anim.frames[cur];
     paintIndexed(stage, f.pixels, anim.width, anim.height, f.palette);
     counter.textContent = `Frame ${cur + 1} / ${anim.frames.length}`;
+    if (!playing && paused) view.set({ frame: cur + 1 });
     scrub.max = String(anim.frames.length - 1);
     scrub.value = String(cur);
     const hadFocus = strip.contains(document.activeElement);
@@ -81,12 +88,16 @@ registerEditor(['fli'], (host, project, file) => {
 
   const pause = () => {
     playing = false;
+    paused = true;
+    view.set({ frame: cur + 1 });
     clearTimeout(timer);
     playBtn.textContent = '▶ Play';
   };
   const play = () => {
     clearTimeout(timer);
     playing = true;
+    paused = false;
+    view.set({ frame: undefined });
     playBtn.textContent = '⏸ Pause';
     // starting on the last frame of a played animation starts it over
     if (cur >= anim.frames.length - 1) show(0);
@@ -399,6 +410,6 @@ registerEditor(['fli'], (host, project, file) => {
     ),
   );
   render();
-  play();
+  if (urlFrame === undefined) play();
   return () => pause();
 });

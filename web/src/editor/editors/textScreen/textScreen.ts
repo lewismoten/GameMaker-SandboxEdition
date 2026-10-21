@@ -3,6 +3,7 @@
 // redrawn as you type, page by page, exactly as Display_File draws it.
 import './textScreen.css';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { h, clear, debounce } from '../../core/ui';
 import { kindOf, type Project } from '../../core/project';
 import { latin1Text, textBytes } from '../../../formats/binary';
@@ -60,8 +61,11 @@ registerEditor(['txt'], (host, project, file) => {
   const nextBtn = h('button', { title: 'Next page', 'aria-label': 'Next page' }, '▶');
 
   let layout: TextLayout = layoutText(area.value);
-  let page = 0;
-  let follow = true;
+  // the address keeps the page shown, counted from 1 (…/HELP.TXT?page=2)
+  const view = viewState(['p', project.id, file]);
+  const urlPage = view.num('page');
+  let page = urlPage !== undefined && urlPage > 1 ? urlPage - 1 : 0;
+  let follow = page === 0;
   let background = usualBackground(project, file);
 
   const gamePalette = () => project.paletteFor(file).palette;
@@ -85,6 +89,7 @@ registerEditor(['txt'], (host, project, file) => {
     const lines = layout.lines.length ? linesForScreen() : [];
     const pages = textPages(lines, over(), gamePalette());
     page = Math.max(0, Math.min(page, pages.length - 1));
+    view.set({ page: page + 1 });
     screenCanvas(pages[page], 'pixel', preview.canvas);
     pageLabel.textContent = `Page ${page + 1} of ${pages.length}`;
     prevBtn.disabled = page === 0;
