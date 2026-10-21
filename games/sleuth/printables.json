@@ -32,126 +32,39 @@
       "tables": [
         {
           "head": "Timeline, opening night",
-          "columns": [
-            "Time",
-            "What happened"
-          ],
+          "columns": ["Time", "What happened"],
           "rows": [
-            [
-              "7:30",
-              "Felix Morrow latches the pit door, as every night"
-            ],
-            [
-              "7:45",
-              "Doors open. Coats and umbrellas checked."
-            ],
-            [
-              "8:00",
-              "Curtain up on Act I"
-            ],
-            [
-              "9:00",
-              "Interval begins. Prop check, stage right."
-            ],
-            [
-              "9:00-9:20",
-              "The interval. Where was everyone?"
-            ],
-            [
-              "9:20",
-              "Act III begins"
-            ],
-            [
-              "9:45",
-              "Lila Fontaine takes the dagger from the prop table"
-            ],
-            [
-              "9:48",
-              "Count Corvin is stabbed. Victor Crane dies."
-            ]
+            ["7:30", "Felix Morrow latches the pit door, as every night"],
+            ["7:45", "Doors open. Coats and umbrellas checked."],
+            ["8:00", "Curtain up on Act I"],
+            ["9:00", "Interval begins. Prop check, stage right."],
+            ["9:00-9:20", "The interval. Where was everyone?"],
+            ["9:20", "Act III begins"],
+            ["9:45", "Lila Fontaine takes the dagger from the prop table"],
+            ["9:48", "Count Corvin is stabbed. Victor Crane dies."]
           ]
         },
         {
           "head": "Evidence",
           "note": "Tick it off when you find it.",
-          "columns": [
-            "",
-            "Item",
-            "Where",
-            "What it tells you"
-          ],
+          "columns": ["", "Item", "Where", "What it tells you"],
           "rows": [
-            [
-              "[ ]",
-              "Coroner's note",
-              "Doc Avery",
-              ""
-            ],
-            [
-              "[ ]",
-              "Prop checklist",
-              "",
-              ""
-            ],
-            [
-              "[ ]",
-              "Ticket stub",
-              "",
-              ""
-            ],
-            [
-              "[ ]",
-              "Seating chart",
-              "",
-              ""
-            ],
-            [
-              "[ ]",
-              "Insurance policy",
-              "",
-              ""
-            ],
-            [
-              "[ ]",
-              "Cloakroom ledger",
-              "",
-              ""
-            ],
-            [
-              "[ ]",
-              "Umbrella #13",
-              "",
-              ""
-            ],
-            [
-              "[ ]",
-              "Manuscript",
-              "",
-              ""
-            ],
-            [
-              "[ ]",
-              "Light cue sheet",
-              "",
-              ""
-            ]
+            ["[ ]", "Coroner's note", "Doc Avery", ""],
+            ["[ ]", "Prop checklist", "", ""],
+            ["[ ]", "Ticket stub", "", ""],
+            ["[ ]", "Seating chart", "", ""],
+            ["[ ]", "Insurance policy", "", ""],
+            ["[ ]", "Cloakroom ledger", "", ""],
+            ["[ ]", "Umbrella #13", "", ""],
+            ["[ ]", "Manuscript", "", ""],
+            ["[ ]", "Light cue sheet", "", ""]
           ]
         },
         {
           "head": "The solution",
           "note": "Write it in pencil.",
-          "columns": [
-            "Who?",
-            "How?",
-            "Why?"
-          ],
-          "rows": [
-            [
-              "",
-              "",
-              ""
-            ]
-          ]
+          "columns": ["Who?", "How?", "Why?"],
+          "rows": [["", "", ""]]
         }
       ]
     },
@@ -178,18 +91,9 @@
         "caption": "The stage of the Paragon after the house was cleared. Police photograph."
       },
       "briefs": [
-        [
-          "Rain to continue",
-          "The weather bureau promises rain through Tuesday."
-        ],
-        [
-          "Ghost light burns on",
-          "Theater custom keeps one bulb lit on an empty stage all night."
-        ],
-        [
-          "Lost: black umbrella",
-          "Tag no. 13, Paragon cloakroom. Owner may claim it at Police HQ."
-        ]
+        ["Rain to continue", "The weather bureau promises rain through Tuesday."],
+        ["Ghost light burns on", "Theater custom keeps one bulb lit on an empty stage all night."],
+        ["Lost: black umbrella", "Tag no. 13, Paragon cloakroom. Owner may claim it at Police HQ."]
       ]
     },
     {
@@ -201,22 +105,10 @@
       "name": "Lila Fontaine",
       "role": "Leading lady",
       "fields": [
-        [
-          "Case",
-          "36-1031"
-        ],
-        [
-          "At the Paragon",
-          "The Raven's Bride"
-        ],
-        [
-          "Says, 9:00-9:20",
-          "In her dressing room with Mrs. Hobbs"
-        ],
-        [
-          "Motive?",
-          "Victor's blackmail letter"
-        ]
+        ["Case", "36-1031"],
+        ["At the Paragon", "The Raven's Bride"],
+        ["Says, 9:00-9:20", "In her dressing room with Mrs. Hobbs"],
+        ["Motive?", "Victor's blackmail letter"]
       ],
       "color": "#1f5a3a",
       "ink": "#f6ead2",
@@ -238,22 +130,10 @@
       "name": "Edgar Bliss",
       "role": "Understudy",
       "fields": [
-        [
-          "Case",
-          "36-1031"
-        ],
-        [
-          "At the Paragon",
-          "The Herald (Act I only)"
-        ],
-        [
-          "Says, 9:00-9:20",
-          "At the lobby bar"
-        ],
-        [
-          "Motive?",
-          "He gets Victor's part"
-        ]
+        ["Case", "36-1031"],
+        ["At the Paragon", "The Herald (Act I only)"],
+        ["Says, 9:00-9:20", "At the lobby bar"],
+        ["Motive?", "He gets Victor's part"]
       ],
       "color": "#4a4a52",
       "ink": "#f6ead2",
@@ -275,22 +155,10 @@
       "name": "Agatha Crane",
       "role": "Co-owner",
       "fields": [
-        [
-          "Case",
-          "36-1031"
-        ],
-        [
-          "At the Paragon",
-          "The box office"
-        ],
-        [
-          "Says, 9:00-9:20",
-          "Counting the house with Nell"
-        ],
-        [
-          "Motive?",
-          "A $50,000 policy"
-        ]
+        ["Case", "36-1031"],
+        ["At the Paragon", "The box office"],
+        ["Says, 9:00-9:20", "Counting the house with Nell"],
+        ["Motive?", "A $50,000 policy"]
       ],
       "color": "#5a2a5a",
       "ink": "#f6ead2",
@@ -312,22 +180,10 @@
       "name": "Felix Morrow",
       "role": "Stage manager",
       "fields": [
-        [
-          "Case",
-          "36-1031"
-        ],
-        [
-          "At the Paragon",
-          "Props and the stage"
-        ],
-        [
-          "Says, 9:00-9:20",
-          "Prop check at 9, then on stage with the crew"
-        ],
-        [
-          "Motive?",
-          "Victor meant to sack him"
-        ]
+        ["Case", "36-1031"],
+        ["At the Paragon", "Props and the stage"],
+        ["Says, 9:00-9:20", "Prop check at 9, then on stage with the crew"],
+        ["Motive?", "Victor meant to sack him"]
       ],
       "color": "#7a6234",
       "ink": "#f6ead2",
@@ -349,22 +205,10 @@
       "name": "Oliver Pike",
       "role": "Drama critic",
       "fields": [
-        [
-          "Case",
-          "36-1031"
-        ],
-        [
-          "At the Paragon",
-          "Seat F-9, the Courier"
-        ],
-        [
-          "Says, 9:00-9:20",
-          "In seat F-9, never left it"
-        ],
-        [
-          "Motive?",
-          "?"
-        ]
+        ["Case", "36-1031"],
+        ["At the Paragon", "Seat F-9, the Courier"],
+        ["Says, 9:00-9:20", "In seat F-9, never left it"],
+        ["Motive?", "?"]
       ],
       "color": "#1a1a1e",
       "ink": "#f6ead2",
@@ -449,10 +293,7 @@
           ]
         }
       ],
-      "legend": [
-        "Dressing rooms along the north corridor: STAR (Victor Crane), LILA, CAST.",
-        "The lighting booth and the cloakroom are off the lobby."
-      ],
+      "legend": ["Dressing rooms along the north corridor: STAR (Victor Crane), LILA, CAST.", "The lighting booth and the cloakroom are off the lobby."],
       "landscape": false,
       "columns": 1
     },
