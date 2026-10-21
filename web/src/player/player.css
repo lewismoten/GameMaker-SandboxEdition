@@ -316,3 +316,9 @@
 .gm-player .gm-keys:focus-visible {
   opacity: 1;
 }
+
+/* the pointer hides after a second without moving over the game (cursorHide.ts) */
+.gm-player.gm-cursor-hidden,
+.gm-player.gm-cursor-hidden * {
+  cursor: none;
+}

@@ -7,6 +7,7 @@ import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
 import { showKeyMap } from '../editor/keymap/keyMapView';
 import { exactScale } from './exactScale';
+import { hideIdleCursor } from './cursorHide';
 
 export interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -92,11 +93,13 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   if (!opts.noKeysButton) container.append(keys);
 
   let stopped = false;
+  let unhide: (() => void) | undefined;
   const done = new Promise<void>((resolve) => {
     const begin = async () => {
       start.remove();
       container.querySelector('.gm-notice-link')?.remove();
       window.removeEventListener('keydown', onKey);
+      unhide = hideIdleCursor(container);
       canvas.focus();
       await machine.audio.resume();
       try {
@@ -118,6 +121,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       } finally {
         if (!stopped) machine.destroy();
         unexact?.();
+        unhide?.();
         touch?.detach();
         files.onChange = previousWrite;
         opts.onExit?.();
@@ -144,6 +148,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       stopped = true;
       machine.destroy();
       unexact?.();
+      unhide?.();
       touch?.detach();
       files.onChange = previousWrite;
     },
