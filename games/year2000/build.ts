@@ -12,6 +12,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildCharacter } from './src/characters/character';
 import { demoRecording } from './src/demo';
 import { LEVELS, SETS } from './src/levels/levels';
@@ -77,6 +78,7 @@ const art: S.Art = {
   booth: sets.suburb.pic('booth_door'),
   boothTop: sets.suburb.pic('booth_top'),
 };
+disk.put(SANDLOGO, sandLogoFli());
 disk.put('intro.fli', S.introFli(art));
 disk.put('tele.fli', S.teleFli(art));
 disk.put('launch.fli', S.launchFli(art));
@@ -92,7 +94,9 @@ disk.put('lost.gif', S.gif(S.lostScreen(art)));
 disk.put('hiscore.gif', S.gif(S.hiscoreScreen(art)));
 disk.put('load.gif', S.gif(S.filesScreen('LOAD A FUTURE', art)));
 disk.put('save.gif', S.gif(S.filesScreen('SAVE THE FUTURE', art)));
+// the Sandbox Software logo first, then the game's own intro
 lst('title.lst', [
+  [SANDLOGO, 0],
   ['intro.fli', 0],
   ['title.gif', 12],
 ]);
