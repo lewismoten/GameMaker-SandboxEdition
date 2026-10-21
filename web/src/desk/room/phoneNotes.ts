@@ -19,7 +19,7 @@ function notes(): HTMLElement {
     h(
       "div",
       { class: "pn-card" },
-      h("div", { class: "pn-head" }, "IMPORTANT #s"),
+      h("div", { class: "pn-head" }, "IMPORTANT NUMBERS"),
       h(
         "ul",
         null,
@@ -30,7 +30,7 @@ function notes(): HTMLElement {
       h(
         "p",
         { class: "pn-pager" },
-        "Page Dad: dial, wait for the beeps, punch in our # then #",
+        "Page Dad: dial, wait for the beeps, punch in our number, then press #",
       ),
       h(
         "p",
