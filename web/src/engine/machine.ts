@@ -8,6 +8,9 @@ import { AudioEngine } from '../audio/engine';
 import { GameFiles } from '../project/files';
 import { PALETTE_SIZE } from '../formats/palette';
 
+/** GetKey polls a second on a 1994 PC waiting for a key (~6000; sets how long demo screens stay up). */
+const POLLS_PER_MS = 6;
+
 /** Thrown to unwind the game when the player is closed. */
 export class GameAborted extends Error {
   constructor() {
@@ -81,6 +84,7 @@ export class Machine {
   /** Waits for the next animation frame (the screen is presented every frame). */
   frame(): Promise<void> {
     this.checkAbort();
+    this.pollKeys();
     return new Promise<void>((resolve) => this.frameWaiters.push(resolve)).then(() => this.checkAbort());
   }
 
@@ -103,14 +107,50 @@ export class Machine {
   async pauseTimeKey(seconds = Infinity): Promise<TypedKey | undefined> {
     const end = performance.now() + seconds * 1000;
     this.takeClick();
-    for (;;) {
-      const k = this.keyboard.readKey();
-      if (k) return k;
-      if (this.takeClick()) return { scan: 28, ascii: 1, key: '' };
-      if (performance.now() >= end) return undefined;
-      await this.frame();
+    return this.waiting(async () => {
+      for (;;) {
+        const k = this.keyboard.readKey();
+        if (k) return k;
+        if (this.takeClick()) return { scan: 28, ascii: 1, key: '' };
+        if (performance.now() >= end) return undefined;
+        await this.frame();
+      }
+    });
+  }
+
+  private waitDepth = 0;
+  private polledAt = 0;
+
+  /**
+   * Runs `fn` as PLAYGAME code that read keys through GetKey (key waits, pictures,
+   * animations, text pages): while it runs, each frame hands the demo recorder the polls
+   * the DOS PC would have made meanwhile (keyPoll). Gameplay itself stole the keyboard
+   * interrupt and never called GetKey, so it does not count.
+   */
+  async waiting<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.waitDepth++ === 0) this.polledAt = performance.now();
+    try {
+      return await fn();
+    } finally {
+      if (--this.waitDepth === 0 && this.keyPollEnd) for (const key of this.keyPollEnd()) this.keyboard.feed(key);
     }
   }
+
+  private pollKeys(): void {
+    if (!this.keyPoll || this.waitDepth === 0) return;
+    const now = performance.now();
+    const polls = Math.max(1, Math.round((now - this.polledAt) * POLLS_PER_MS));
+    this.polledAt = now;
+    for (const key of this.keyPoll(polls)) this.keyboard.feed(key);
+  }
+
+  /**
+   * Demo playback: called while a screen waits for a key with how many GetKey polls the
+   * DOS PC would have made meanwhile; returns recorded keys that become pending.
+   */
+  keyPoll?: (polls: number) => number[];
+  /** Demo playback: a key-reading screen ended; returns recorded keys it must have taken. */
+  keyPollEnd?: () => number[];
 
   /** Clears keyboard input (while (GetKey(1)) GetKey(0)). */
   flushKeys(): void {

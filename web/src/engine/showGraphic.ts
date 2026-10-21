@@ -30,6 +30,12 @@ export interface GraphicOptions {
 
 /** Returns false when the player pressed Esc (which aborts slide shows). */
 export async function showGraphic(m: Machine, file: string, opts: GraphicOptions): Promise<boolean> {
+  // ShowGraphic's pictures, animations and text pages read keys through GetKey, which
+  // kept a demo's recorder running (see Machine.keyPoll).
+  return m.waiting(() => showGraphicNow(m, file, opts));
+}
+
+async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): Promise<boolean> {
   m.audio.stopVoc(); // FreeSoundSample
   const e = ext(file);
   let pause = opts.pause ?? -1;
