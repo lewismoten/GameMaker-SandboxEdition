@@ -5,7 +5,7 @@
 import type { Project } from '../../core/project';
 import { NOSCENE, sceneKind, type Game, type Point } from '../../../formats/game';
 import { MLEN, MWID } from '../../../formats/map';
-import { WORLD, CARD_UNITS } from './integratorLayout';
+import { WORLD, CARD_UNITS } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
 
 /** Board pixels per integrator unit, and the card size on the board. */

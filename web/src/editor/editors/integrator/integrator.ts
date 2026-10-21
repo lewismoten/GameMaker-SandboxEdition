@@ -27,7 +27,8 @@ import {
   type Scene,
 } from '../../../formats/game';
 import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../../formats/map';
-import { WORLD, CARD_UNITS, arrangements, clampPos, spreadOut, type Arrangement } from './integratorLayout';
+import { WORLD, CARD_UNITS, clampPos } from './layoutCells';
+import { arrangements, spreadOut, type Arrangement } from './integratorLayout';
 import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
 import { pickOnMap } from './pickOnMap';
