@@ -43,8 +43,9 @@ export function backyardBeasts() {
     if (name.startsWith('wobble')) b.pic(name, px, { effect: CTR.lives, eamt: 1, score: 500 });
     else if (name.startsWith('ballAir') || name.startsWith('zoomBall')) b.pic(name, px);
   }
-  // Zoomies: laps of the lawn between the garbage cans and the squirrel's patch, hopping
-  // as she goes, flat out (a squirrel in her way gets chased up the oak).
+  // Zoomies: zig-zag laps of the lawn between the garbage cans and the squirrel's patch,
+  // flat out (a squirrel in her way gets chased up the oak). She stays on the ground, so
+  // the ball she drops lands on the lawn.
   b.add('gwinBall', {
     pics: [
       ['zoomBall1', 2],
@@ -52,17 +53,18 @@ export function backyardBeasts() {
     ],
     power: POWER.dig,
     path: [
-      [-2, -1, 7, FLIP],
-      [-4, 0, 7, FLIP],
-      [-5, 0, 8, FLIP],
-      [-3, -1, 7, 0],
+      [-3, 0, 8, FLIP],
       [-1, 0, 7, 0],
+      [-5, 0, 8, FLIP],
+      [-3, 0, 7, 0],
+      [-4, 0, 7, FLIP],
       [0, 0, 8, 0],
     ],
     becomes: 'ballPop',
     upscore: 50,
   });
-  // Ptoo! A puff of dust where Gwin was, and the ball flies up and lands.
+  // Ptoo! A puff of dust where Gwin was, and the ball flies up and lands two steps back
+  // (away from the garbage cans).
   b.add('ballPop', {
     pics: [
       ['puff1', 3],
@@ -74,8 +76,8 @@ export function backyardBeasts() {
     ],
     power: 2,
     path: [
-      [1, -2, 5],
-      [2, 0, 5],
+      [-1, -2, 5],
+      [-2, 0, 5],
     ],
     end: -1,
     becomes: 'wobble',
