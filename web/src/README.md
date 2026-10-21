@@ -45,7 +45,13 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 
 ## Main flows
 
-**Desk or modern UI.** `main.ts` starts one or the other and switches between them;
+**Desk or modern UI.** `main.ts` is a tiny entry: it loads `desk/desk.ts` or
+`modernUi.ts` (today's home, guide and workspace) only for the interface being shown, and the
+editors (`editor/editors/all.ts`) only when a game is opened, so each interface is its own
+download. `offline.ts` registers the service worker, which precaches only the app shell and
+caches games as they are used. Game files go through `fetchGameFile` (`project/files.ts`),
+which shares each request, and `games/index.json` is fetched once. `main.ts` starts one or
+the other and switches between them;
 the desk's PC can also open today's editors full screen on its monitor
 (`retro/computer.ts` `openEditor`, through the same editor registry).
 
@@ -79,5 +85,5 @@ and recordings of the PC's screen with `screenCapture.ts` and the live recorder.
 [`../scripts`](../scripts) holds Vite plugins: `cdGames.ts` serves the CD's games and
 `../games` (and writes them into the build), `singlePageBuild.ts` builds
 `standalone.html`, `seoBuild.ts` puts tags, JSON-LD and readable text into the pages and
-writes `robots.txt` and `sitemap.xml`. `../vite.config.ts` also emits the
+writes (and serves in dev) `robots.txt`, `sitemap.xml` and `llms.txt`. `../vite.config.ts` also emits the
 service worker and `player-files.json`.
