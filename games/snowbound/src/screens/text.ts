@@ -40,9 +40,9 @@ export const INSTRUCTIONS = [
     'arrows point. The creek by',
     'Bowden Drive runs east!',
     '',
-    'No mailboxes in Dowden: the',
-    'carrier walks to every door',
-    'slot, so the walks pay too.',
+    'Shovel the front walks too:',
+    'they pay just like the',
+    'driveways do.',
   ]),
   page([
     'THE SLED: LEFT/RIGHT (A/D)',
@@ -75,12 +75,11 @@ export const CREDITS = page(
     '',
     'For the founder and operator',
     'of Moten Snow-to-Software',
-    'Operations, Gale St & Dunn Dr,',
-    'Dowden Additions, Fort Ashby,',
-    'Mineral County, W.Va., winter',
-    'of 1992, who shoveled his way',
-    'to a copy of Game-Maker. Each',
-    'driveway was one pixel.',
+    'Operations, Fort Ashby, W.Va.,',
+    'winter of 1992, who shoveled',
+    'his way to a copy of',
+    'Game-Maker. Each driveway was',
+    'one pixel.',
     '',
     'Made with GAME-MAKER by',
     'Recreational Software Designs.',
@@ -99,23 +98,19 @@ export function readme(price: string): string {
     Version 1.0 - December 1995
     (c) 1995 Sandbox Software
 
-Dowden Additions, Fort Ashby,
-Mineral County, West Virginia.
+Fort Ashby, West Virginia,
 December 1992. A foot and a
 half of snow, school is closed,
 and GAME-MAKER is $89 at LaVale
-Mall in Cumberland, Maryland -
-until January, when it goes up
-to $129. Grab your shovel.
-Every scoop is a dollar.
+Mall - until January, when it
+goes up to $129. Grab your
+shovel. Every scoop is a
+dollar!
 
-Start at home on the corner of
-Gale Street and Dunn Drive, dig
-out Leota Street and Leon
-Drive, sled down Jamie Street,
-work your way along Bowden
-Drive, and get to the mall
-before closing.
+Dig out the neighborhood, sled
+down Jamie Street, work your
+way along Bowden Drive, and get
+to the mall before closing.
 
 STARTING THE GAME
   Type SNOWBND and press Enter.
