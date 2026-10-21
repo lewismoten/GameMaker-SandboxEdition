@@ -490,7 +490,11 @@ export function buildTheatreBlocks(): BlockSet {
     [1, 4],
     [2, 8],
   ]) {
-    add(`green_ajar${act}`, closedDoor('GREEN', 'green'), { ...S, effect: CTR.evidence, eamt: need, touch: 'green_open' });
+    add(
+      `green_ajar${act}`,
+      on(closedDoor('GREEN', 'green'), (p) => p.rect(15, 9, 3, 11, c('glow', 3)).rect(16, 9, 1, 11, c('glow', 4))),
+      { ...S, effect: CTR.evidence, eamt: need, touch: 'green_open' },
+    );
     add(`green_shut${act}`, closedDoor('GREEN', 'green'), { ...S, effect: CTR.evidence, eamt: -need, touch: `green_ajar${act}` });
   }
   add('pitdoor_shut', closedDoor('PIT', 'panel'), S);
