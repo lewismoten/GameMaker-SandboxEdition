@@ -139,6 +139,7 @@ export abstract class RollView {
 
   protected resize(): void {
     const r = this.el.getBoundingClientRect();
+    if (!r.width) return; // hidden (another tab is open)
     this.w = Math.max(200, Math.floor(r.width));
     this.hgt = Math.max(160 + VEL, Math.floor(r.height));
     const dpr = window.devicePixelRatio || 1;

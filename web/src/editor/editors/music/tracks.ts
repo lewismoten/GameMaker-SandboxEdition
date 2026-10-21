@@ -10,6 +10,8 @@ import { PRESETS } from './sbi';
 export class TrackList {
   readonly el = h('div', { class: 'mus-tracks', role: 'list', 'aria-label': 'Tracks' });
   private adding = false;
+  /** Opens the instrument track ch starts with in the Instruments tab. */
+  onEditInstrument?: (ch: number) => void;
 
   constructor(
     private doc: MusicDoc,
@@ -112,6 +114,21 @@ export class TrackList {
           'div',
           { class: 'mus-track-tools' },
           bank,
+          this.onEditInstrument
+            ? h(
+                'button',
+                {
+                  class: 'mus-ms',
+                  title: `Shape this instrument (Instruments tab)`,
+                  'aria-label': `Edit the instrument of ${doc.trackName(ch)}`,
+                  onclick: () => {
+                    doc.selectTrack(ch);
+                    this.onEditInstrument?.(ch);
+                  },
+                },
+                '🎛',
+              )
+            : null,
           h(
             'button',
             {

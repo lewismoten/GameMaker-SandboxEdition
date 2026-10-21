@@ -7,17 +7,29 @@
 // rest is in roll/, a chain of classes each extending the one before: view -> draw ->
 // pointer -> PianoRoll; layout.ts has the measurements.
 import { h } from '../../core/ui';
-import { addNote, channelNotes, deleteNotes, removeEvent, setNote, setVelocity } from '../../../formats/cmfEdit';
+import { addNote, channelNotes, deleteNotes, programChanges, removeEvent, setNote, setVelocity, startProgram } from '../../../formats/cmfEdit';
 import { noteEnd, type Ev, type Note } from '../../../formats/cmfSong';
 import { HEAD } from './roll/layout';
 import { RollPointer } from './roll/pointer';
 
 export class PianoRoll extends RollPointer {
+  /** Opens instrument i in the Instruments tab. */
+  onEditInstrument?: (i: number) => void;
+
   protected key(e: KeyboardEvent): void {
     const doc = this.doc;
     const song = doc.song;
     const mod = e.ctrlKey || e.metaKey;
     const sel = [...doc.selection];
+    if (e.key.toLowerCase() === 'i' && !mod && !e.altKey && this.onEditInstrument) {
+      // I: the instrument of the selected note (or the one playing at the cursor)
+      e.preventDefault();
+      const at = sel.length ? Math.min(...sel.map((n) => n.on.tick)) : doc.cursor;
+      let p = startProgram(song, doc.track);
+      for (const ev of programChanges(song, doc.track)) if (ev.tick <= at) p = ev.a;
+      this.onEditInstrument(p);
+      return;
+    }
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (!sel.length) return;
       e.preventDefault();
@@ -155,6 +167,19 @@ export class PianoRoll extends RollPointer {
           },
           'Remove',
         ),
+        this.onEditInstrument
+          ? h(
+              'button',
+              {
+                title: 'Shape this instrument in the Instruments tab',
+                onclick: () => {
+                  this.closePopup();
+                  this.onEditInstrument?.(ev.a);
+                },
+              },
+              'Edit sound',
+            )
+          : null,
         h('button', { onclick: () => this.closePopup() }, 'Done'),
       ),
     );
