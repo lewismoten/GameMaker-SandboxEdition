@@ -6,7 +6,12 @@
   width: 180px;
   aspect-ratio: 9 / 9.4;
   border-radius: 6px;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--body) 85%, #fff), var(--body) 45%, color-mix(in srgb, var(--body) 80%, #000));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--body) 85%, #fff),
+    var(--body) 45%,
+    color-mix(in srgb, var(--body) 80%, #000)
+  );
   /* the cut corner; the clip reaches above the top so the edge's shadow can fall on the disk behind */
   clip-path: polygon(0 -16px, 100% -16px, 100% 100%, 8% 100%, 0 94%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
@@ -22,12 +27,18 @@
   width: 56%;
   height: 33%;
   border-radius: 3px 3px 0 0;
-  background: linear-gradient(90deg, #8d939a, #e3e7ea 40%, #a7adb3 70%, #e3e7ea);
+  background: linear-gradient(
+    90deg,
+    #8d939a,
+    #e3e7ea 40%,
+    #a7adb3 70%,
+    #e3e7ea
+  );
   box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .floppy .shutter::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 24%;
   top: 24%;
@@ -49,11 +60,13 @@
   padding-top: 13px;
   /* a printed band across the top, then the ruled lines to write on */
   background:
-    linear-gradient(180deg, var(--stripe, #1565c0) 0 8px, transparent 8px), repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px), #fbf8ee;
+    linear-gradient(180deg, var(--stripe, #1565c0) 0 8px, transparent 8px),
+    repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px),
+    #fbf8ee;
   font:
-    15px/14px 'Comic Sans MS',
-    'Marker Felt',
-    'Segoe Print',
+    15px/14px "Comic Sans MS",
+    "Marker Felt",
+    "Segoe Print",
     cursive;
   color: #1c2a6b;
   white-space: pre-line;
@@ -69,7 +82,7 @@
 
 /* RSD's own disks have a printed label: desk/disks/rsdLabel.css */
 
-.floppy[data-kind='blank'] .label {
+.floppy[data-kind="blank"] .label {
   color: #999;
 }
 
@@ -84,13 +97,13 @@
 }
 
 .floppy .wp::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0 0 50% 0;
   background: #555;
 }
 
-.floppy[data-protected='true'] .wp::after {
+.floppy[data-protected="true"] .wp::after {
   inset: 50% 0 0 0;
 }
 
@@ -112,8 +125,8 @@
   z-index: 2;
   color: #d0141b;
   font:
-    700 12px/1 'Marker Felt',
-    'Comic Sans MS',
+    700 12px/1 "Marker Felt",
+    "Comic Sans MS",
     cursive;
   transform: rotate(-7deg);
   white-space: nowrap;
@@ -183,7 +196,7 @@
   margin-bottom: 0;
 }
 
-.disk-row .floppy[aria-selected='true'] {
+.disk-row .floppy[aria-selected="true"] {
   transform: translateY(-24px);
   filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.6));
 }
@@ -240,7 +253,7 @@
 .floppy .label.printed .p-title {
   padding: 2cqw 4.4cqw 0;
   font:
-    italic 900 9.4cqw/1 'Arial Black',
+    italic 900 9.4cqw/1 "Arial Black",
     Impact,
     sans-serif;
   letter-spacing: -0.02em;
@@ -271,4 +284,43 @@
 .floppy .label .hand-disk {
   flex: none;
   font-size: 12px;
+}
+
+/* two windows side by side: the site's disks and the user's own (desk/disks/diskBox.ts) */
+.disk-cases {
+  display: flex;
+  gap: 18px;
+  max-width: 100%;
+}
+
+.disk-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.disk-col h3 {
+  margin: 0;
+  color: #f4ead2;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 720px) {
+  .disk-cases {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .disk-cases .disk-case {
+    height: min(36vh, 360px);
+  }
+}
+
+/* the two small stacks standing in the desk's disk box */
+.disk-box .floppy.peek {
+  width: 70px;
 }
