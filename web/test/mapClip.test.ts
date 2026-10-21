@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MLEN, MWID } from '../src/formats/map';
-import { WHOLE_MAP, clampRect, contentBounds, dragRect, gameView } from '../src/editor/mapClip';
+import { WHOLE_MAP, clampRect, contentBounds, dragRect, gameView } from '../src/editor/editors/map/mapClip';
 
 function mapWith(fill: number, cells: [number, number, number][]): Uint8Array {
   const b = new Uint8Array(MLEN * MWID).fill(fill);

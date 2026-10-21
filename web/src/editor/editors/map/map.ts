@@ -11,7 +11,7 @@ import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../../formats/
 import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../../../formats/map';
 import { LASTMON, parseMonsters, type Monster } from '../../../formats/monster';
 import { normalize } from '../../../project/files';
-import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from '../../mapClip';
+import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from './mapClip';
 import './mapExport.css';
 
 type Mode = 'paint' | 'rect' | 'fill' | 'pick' | 'monster';
