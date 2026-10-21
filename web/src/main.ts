@@ -1,4 +1,4 @@
-// Game-Maker Web (index.html): the mid-90s desk, or today's web interface.
+// Game-Maker: Sandbox Edition (index.html): the mid-90s desk, or today's web interface.
 //
 // Each is its own download: this entry holds only the switch between them, and the desk
 // (desk/, retro/, vga/) or today's web (editor/shell, the editors) is imported when it is

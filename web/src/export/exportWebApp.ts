@@ -16,7 +16,7 @@ export interface ExportOptions {
   /** Short name for the home screen / dock (defaults to the title). */
   shortName?: string;
   themeColor?: string;
-  /** Where the Game-Maker Web app is served from (its standalone.html player is used). */
+  /** Where the Game-Maker: Sandbox Edition app is served from (its standalone.html player is used). */
   appBase?: string;
 }
 

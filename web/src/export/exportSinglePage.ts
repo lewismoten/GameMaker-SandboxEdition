@@ -11,7 +11,7 @@ const SAVE_DATA = /^(game\d\.sav|savnames\.dat|data\d+\.rec)$/;
 export interface SinglePageOptions {
   title: string;
   gam: string;
-  /** Where the Game-Maker Web app is served from (its standalone.html is the template). */
+  /** Where the Game-Maker: Sandbox Edition app is served from (its standalone.html is the template). */
   appBase?: string;
 }
 

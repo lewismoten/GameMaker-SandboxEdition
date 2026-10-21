@@ -11,7 +11,7 @@ import { parseSoundSet } from '../formats/sound';
 export interface DosExportOptions {
   title: string;
   gam: string;
-  /** Where the built Game-Maker Web app is served from (its dos/ folder is used). */
+  /** Where the built Game-Maker: Sandbox Edition app is served from (its dos/ folder is used). */
   appBase?: string;
 }
 
