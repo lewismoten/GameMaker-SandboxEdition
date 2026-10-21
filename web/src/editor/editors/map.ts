@@ -1,5 +1,6 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
 import { rovingGrid } from '../rovingGrid';
+import { History } from '../history';
 import { registerEditor } from './index';
 import { h, clear, selectField, toast, debounce, modal, download } from '../ui';
 import { blockCanvas, blockImages } from '../draw';
@@ -49,6 +50,27 @@ registerEditor(['map'], (host, project, file) => {
   let bgImgs: HTMLCanvasElement[] = [];
   let monImgs: HTMLCanvasElement[] = [];
   const save = debounce(() => project.files.set(file, serializeMap(map)), 300);
+  // undo: a snapshot of the whole map (about 22 KB) before each stroke, fill or monster change
+  const history = new History<Uint8Array>();
+  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const syncHistory = () => {
+    undoBtn.disabled = !history.canUndo;
+    redoBtn.disabled = !history.canRedo;
+  };
+  const remember = () => {
+    history.record(serializeMap(map));
+    syncHistory();
+  };
+  function step(back: boolean): void {
+    const now = serializeMap(map);
+    const to = back ? history.undo(now) : history.redo(now);
+    if (!to) return;
+    Object.assign(map, parseMap(to));
+    syncHistory();
+    draw();
+    save();
+  }
 
   const chooser = paletteChooser(project, set.bbl ?? file, () => rebuild());
 
@@ -389,6 +411,7 @@ registerEditor(['map'], (host, project, file) => {
 
   canvas.addEventListener('pointerdown', (e) => {
     const p = cell(e);
+    if (mode !== 'pick') remember();
     if (mode === 'monster') {
       placeMonster(p.x, p.y, e.button === 2);
       return;
@@ -448,7 +471,12 @@ registerEditor(['map'], (host, project, file) => {
           ['pick', 'Pick block'],
           ['monster', 'Place monsters'],
         ] as [Mode, string][]
-      ).map(([k, label]) => h('button', { class: k === mode ? 'primary' : '', onclick: () => (setMode(k), rebuildMonsters()) }, label)),
+      ).map(([k, label]) =>
+        h('button', { class: k === mode ? 'primary' : '', 'aria-pressed': String(k === mode), onclick: () => (setMode(k), rebuildMonsters()) }, label),
+      ),
+      h('span', { style: 'flex:1' }),
+      undoBtn,
+      redoBtn,
     );
   }
   setMode('paint');
@@ -553,6 +581,15 @@ registerEditor(['map'], (host, project, file) => {
     ),
   );
   rebuild();
+  const onKey = (e: KeyboardEvent) => {
+    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' || k === 'y') {
+      e.preventDefault();
+      step(k === 'z' && !e.shiftKey);
+    }
+  };
+  window.addEventListener('keydown', onKey);
   // Open where the action is: where the character starts, else the first placed monster.
   requestAnimationFrame(() => {
     const start = linkMarks().find((m) => m.kind === 'to') ?? map.monsters.find((m) => m.monnum < LASTMON) ?? undefined;
@@ -561,4 +598,5 @@ registerEditor(['map'], (host, project, file) => {
     const s = BLEN * zoom;
     scroller.scrollTo({ left: at.x * s - scroller.clientWidth / 2, top: at.y * s - scroller.clientHeight / 2 });
   });
+  return () => window.removeEventListener('keydown', onKey);
 });
