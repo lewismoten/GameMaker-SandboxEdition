@@ -399,3 +399,64 @@ button.grator-play.playing {
   margin: 0;
   padding-left: 18px;
 }
+
+/* wide windows: the selected scene's panel is the side panel's Scene tab */
+@media (min-width: 1180px) {
+  .grator {
+    --grator-side-w: clamp(320px, 27vw, 440px);
+  }
+}
+.grator-side-scene {
+  container-type: inline-size;
+  padding: 0;
+}
+.grator-side-scene .grator-panel {
+  gap: 0;
+}
+.grator-side-scene .grator-panel > .panel {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 10px 12px 12px;
+}
+.grator-side-scene .grator-panel > .panel + .panel {
+  border-top: 1px solid var(--border);
+}
+.grator-side-scene .grator-panel h3 {
+  font-size: 15px;
+}
+.grator-side-scene .grid-fields {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+}
+/* a narrow panel shows each link as a small block instead of a wide table row */
+@container (max-width: 520px) {
+  .grator-links table,
+  .grator-links tbody,
+  .grator-links td {
+    display: block;
+  }
+  .grator-links thead {
+    display: none;
+  }
+  .grator-links tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 8px;
+    row-gap: 4px;
+    align-items: end;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .grator-links td {
+    padding: 0;
+    border: 0;
+  }
+  .grator-links td:first-child {
+    grid-row: span 3;
+    align-self: start;
+    font-weight: bold;
+  }
+  .grator-links td:empty {
+    display: none;
+  }
+}

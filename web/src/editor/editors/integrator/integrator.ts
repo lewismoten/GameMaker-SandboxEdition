@@ -239,6 +239,10 @@ registerEditor(['gam'], (host, project) => {
         selected = i;
         renderPanel();
       }
+      if (panelInSide() && sideTab !== 'scene') {
+        sideTab = 'scene';
+        renderSide();
+      }
       draw();
     } else gesture = { type: 'pan', sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y };
   });
@@ -444,10 +448,18 @@ registerEditor(['gam'], (host, project) => {
       }
     },
   };
-  let sideTab: 'screens' | 'music' = store.get('gm-grator-tab') === 'music' ? 'music' : 'screens';
-  const side = h('aside', { class: 'grator-side', 'aria-label': 'Screens and music' });
+  const savedTab = store.get('gm-grator-tab');
+  let sideTab: 'scene' | 'screens' | 'music' = savedTab === 'music' || savedTab === 'screens' ? savedTab : 'scene';
+  const side = h('aside', { class: 'grator-side', 'aria-label': 'Scene, screens and music' });
+  const sideHead = h('div', { class: 'grator-side-head' });
   const sideBody = h('div', { class: 'grator-side-body' });
   const grator = h('div', { class: 'grator' });
+  /** On wide windows the selected scene's panel is the side panel's first tab, beside the board, so the editor fits the window. */
+  const wide = window.matchMedia?.('(min-width: 1180px)');
+  const panelInSide = () => !!wide?.matches && !grator.classList.contains('side-collapsed');
+  const shownTab = () => (sideTab === 'scene' && !panelInSide() ? 'screens' : sideTab);
+  const onWide = () => (renderSide(), requestAnimationFrame(fit));
+  wide?.addEventListener?.('change', onWide);
   /** The side panel folds away so the board gets the whole width (remembered; folded by default on phones). */
   const setCollapsed = (on: boolean, remember = true) => {
     grator.classList.toggle('side-collapsed', on);
@@ -532,26 +544,31 @@ registerEditor(['gam'], (host, project) => {
           )
         : h('span', { class: 'grator-missing', title: 'This file is not in the game' }, 'missing');
     const collapsed = grator.classList.contains('side-collapsed');
+    // the selected scene's panel: in the side panel's Scene tab, or under the board
+    if (panelInSide()) {
+      if (sideTab !== 'scene' && panel.parentElement) panel.remove();
+    } else if (panel.parentElement !== host || panel.previousElementSibling !== grator) grator.after(panel);
     if (collapsed) {
       clear(
         side,
         h(
           'button',
-          { class: 'grator-side-open', title: 'Show the screens and music panel', 'aria-expanded': 'false', onclick: () => setCollapsed(false) },
+          { class: 'grator-side-open', title: 'Show the side panel', 'aria-expanded': 'false', onclick: () => setCollapsed(false) },
           h('span', { 'aria-hidden': 'true' }, '‹'),
-          h('span', { class: 'grator-side-open-label' }, `Screens ${screens.length} · Music ${songs.length}`),
+          h('span', { class: 'grator-side-open-label' }, `${wide?.matches ? 'Scene · ' : ''}Screens ${screens.length} · Music ${songs.length}`),
         ),
       );
       return;
     }
-    const tab = (id: typeof sideTab, label: string, n: number) =>
+    const now = shownTab();
+    const tab = (id: typeof sideTab, label: string, n?: number) =>
       h(
         'button',
         {
           role: 'tab',
           id: `grator-tab-${id}`,
-          class: `grator-tab${sideTab === id ? ' on' : ''}`,
-          'aria-selected': String(sideTab === id),
+          class: `grator-tab${now === id ? ' on' : ''}`,
+          'aria-selected': String(now === id),
           'aria-controls': 'grator-side-body',
           onclick: () => {
             sideTab = id;
@@ -560,14 +577,42 @@ registerEditor(['gam'], (host, project) => {
           },
         },
         label,
-        h('span', { class: 'grator-count' }, String(n)),
+        n === undefined ? null : h('span', { class: 'grator-count' }, String(n)),
       );
     sideBody.id = 'grator-side-body';
     sideBody.setAttribute('role', 'tabpanel');
-    sideBody.setAttribute('aria-labelledby', `grator-tab-${sideTab}`);
+    sideBody.setAttribute('aria-labelledby', `grator-tab-${now}`);
+    clear(
+      sideHead,
+      h(
+        'div',
+        { class: 'grator-tabs', role: 'tablist', 'aria-label': 'Side panel' },
+        panelInSide() ? tab('scene', 'Scene') : null,
+        tab('screens', 'Screens', screens.length),
+        tab('music', 'Music', songs.length),
+      ),
+      h(
+        'button',
+        {
+          class: 'grator-side-close',
+          title: 'Hide this panel (more room for the board)',
+          'aria-label': 'Hide the side panel',
+          'aria-expanded': 'true',
+          onclick: () => setCollapsed(true),
+        },
+        '›',
+      ),
+    );
+    // moving a focused field out of the page would drop the focus, so the panel and body stay put
+    if (side.firstChild !== sideHead || sideBody.parentElement !== side) clear(side, sideHead, sideBody);
+    sideBody.classList.toggle('grator-side-scene', now === 'scene');
+    if (now === 'scene') {
+      if (sideBody.firstChild !== panel || sideBody.childNodes.length !== 1) clear(sideBody, panel);
+      return;
+    }
     clear(
       sideBody,
-      sideTab === 'screens'
+      now === 'screens'
         ? screens.length
           ? h(
               'div',
@@ -601,31 +646,6 @@ registerEditor(['gam'], (host, project) => {
               ),
             )
           : h('p', { class: 'hint' }, 'No Sound Blaster music yet.'),
-    );
-    clear(
-      side,
-      h(
-        'div',
-        { class: 'grator-side-head' },
-        h(
-          'div',
-          { class: 'grator-tabs', role: 'tablist', 'aria-label': 'Side panel' },
-          tab('screens', 'Screens', screens.length),
-          tab('music', 'Music', songs.length),
-        ),
-        h(
-          'button',
-          {
-            class: 'grator-side-close',
-            title: 'Hide this panel (more room for the board)',
-            'aria-label': 'Hide the screens and music panel',
-            'aria-expanded': 'true',
-            onclick: () => setCollapsed(true),
-          },
-          '›',
-        ),
-      ),
-      sideBody,
     );
   }
 
@@ -927,7 +947,6 @@ registerEditor(['gam'], (host, project) => {
     host,
     missing ? h('p', { class: 'hint grator-missing' }, 'This game is missing its start or end scene.') : null,
     (grator.append(h('div', { class: 'grator-main' }, tools, h('div', { class: 'grator-board-wrap' }, board, zoomBar, tips)), handle, side), grator),
-    panel,
   );
   renderTools();
   renderSide();
@@ -936,6 +955,7 @@ registerEditor(['gam'], (host, project) => {
   return () => {
     stopWatching();
     resize.disconnect();
+    wide?.removeEventListener?.('change', onWide);
     if (raf) cancelAnimationFrame(raf);
     audio.stopSong();
   };
