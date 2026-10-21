@@ -2,7 +2,7 @@
 // of the game disk).
 import { deflateSync } from 'node:zlib';
 import { writeFileSync } from 'node:fs';
-import { Pixels, Pixels as PixelsCtor } from '../kit/pixels';
+import { Pixels, Pixels as PixelsCtor } from '../../kit/pixels';
 
 const CRC = (() => {
   const t = new Uint32Array(256);

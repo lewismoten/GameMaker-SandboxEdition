@@ -2,7 +2,7 @@
 // stick position (and the Nova Bomb) on a copy of the game a few ticks ahead and keeps the
 // one that loses the least energy and scores the most. It plays every leg in the checks
 // and flies the title-screen demo.
-import { SCAN, SEQ } from './src/ids';
+import { SCAN, SEQ } from '../src/ids';
 import type { Sim } from './sim';
 
 const MOVES: (number | undefined)[] = [undefined, SCAN.left, SCAN.right, SCAN.up, SCAN.down, SCAN.kp7, SCAN.kp9, SCAN.kp1, SCAN.kp3];

@@ -1,7 +1,7 @@
 // Play-tests every leg with the bot in the headless simulator:
-//   cd web && npx vite-node ../games/blaster/check.ts [leg file...]
+//   cd web && npx vite-node ../games/blaster/tools/check.ts [leg file...]
 import { fly } from './bot';
-import { STAGES } from './src/stages/stages';
+import { STAGES } from '../src/stages/stages';
 import { arenaGoal, simOf } from './testkit';
 
 const only = process.argv.slice(2);

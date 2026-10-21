@@ -2,10 +2,10 @@
 // flies the first leg of the motherboard for a while (every key it presses is recorded the
 // way PLAYGAME records a game), then presses Esc.
 import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
-import { fly } from '../bot';
+import { fly } from '../tools/bot';
 import { SCAN } from './ids';
 import type { Stage } from './stages/stage';
-import { simOf } from '../testkit';
+import { simOf } from '../tools/testkit';
 
 export const DEMO_TICKS = 560;
 
