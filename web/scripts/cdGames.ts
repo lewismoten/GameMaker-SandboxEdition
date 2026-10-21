@@ -43,6 +43,8 @@ export interface CdCatalogEntry {
   price?: string;
   /** Original games (../games): the disk label, box art and manual, from about.json. */
   original?: OriginalExtras;
+  /** games/catalog.json: the entry has a games/details/<id>.json (see slimCatalog). */
+  details?: boolean;
 }
 
 /** What ../games/<id>/about.json and manual.json add for an original game. */
@@ -301,6 +303,25 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], files: Map<strin
   }
 }
 
+/**
+ * The catalog without what only some pages read (games/catalog.json): a shareware notice,
+ * an original game's manual and printables. Those are in games/details/<id>.json. The play
+ * page needs only this (and, for shareware, its game's details); games/index.json has it all.
+ */
+export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
+  return catalog.map(({ notice: _notice, original, ...e }, i) => ({
+    ...e,
+    ...(original ? { original: { label: original.label, box: original.box, sound: original.sound } } : {}),
+    ...(catalogDetails(catalog[i]) ? { details: true } : {}),
+  }));
+}
+
+/** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */
+export function catalogDetails(e: CdCatalogEntry): { notice?: string; original?: OriginalExtras } | undefined {
+  const original = e.original && (e.original.manual || e.original.printables) ? { manual: e.original.manual, printables: e.original.printables } : undefined;
+  return e.notice || original ? { notice: e.notice, original } : undefined;
+}
+
 /** Every playable game on the CD and in ../games (what games/index.json lists). */
 export function cdCatalog(cdRoot: string): CdCatalogEntry[] {
   return scan(cdRoot).catalog;
@@ -325,9 +346,16 @@ export function cdGames(cdRoot: string): Plugin {
       server.watcher.on('unlink', forget);
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
-        if (url === 'games/index.json' || url === 'gm/index.json') {
+        if (url === 'games/index.json' || url === 'gm/index.json' || url === 'games/catalog.json') {
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(url.startsWith('gm/') ? get().gm : get().catalog));
+          res.end(JSON.stringify(url.startsWith('gm/') ? get().gm : url.endsWith('catalog.json') ? slimCatalog(get().catalog) : get().catalog));
+          return;
+        }
+        const details = /^games\/details\/([a-z0-9_-]+)\.json$/.exec(url);
+        const detailed = details && get().catalog.find((e) => e.id === details[1]);
+        if (detailed && catalogDetails(detailed)) {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(catalogDetails(detailed)));
           return;
         }
         const file = get().files.get(url.toLowerCase());
@@ -343,6 +371,11 @@ export function cdGames(cdRoot: string): Plugin {
       // the site fetches and unpacks instead (src/project/files.ts, fetchSiteFile). The
       // files themselves stay too, for exports and links.
       this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog.map((e) => ({ ...e, gz: true }))) });
+      this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(slimCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
+      for (const e of catalog) {
+        const details = catalogDetails(e);
+        if (details) this.emitFile({ type: 'asset', fileName: `games/details/${e.id}.json`, source: JSON.stringify(details) });
+      }
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
       for (const [site, disk] of files) {
         const bytes = readFileSync(disk);

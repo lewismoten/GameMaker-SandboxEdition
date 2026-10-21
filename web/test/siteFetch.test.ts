@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchGameFile, loadCatalog, loadHostedGame } from '../src/project/files';
+import { fetchGameFile, loadCatalog, loadCatalogList, loadHostedGame, withDetails } from '../src/project/files';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -67,5 +67,29 @@ describe('hosted file fetching', () => {
     const calls = stubFetch(() => new Uint8Array([5]));
     expect([...(await fetchGameFile({ path: 'games/t5/', files: ['m.map'] }, 'm.map'))!]).toEqual([5]);
     expect(calls).toEqual(['./games/t5/m.map']);
+  });
+
+  it('reads the short catalog, and a game’s details on their own', async () => {
+    const json = (body: unknown) => new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json' } });
+    const calls: string[] = [];
+    vi.stubGlobal('fetch', async (url: string) => {
+      calls.push(url);
+      if (url === './t6/catalog.json') return json([{ id: 's', kind: 'shareware', details: true, original: { sound: 'sb' } }, { id: 'g', kind: 'gameware' }]);
+      if (url === './t6/details/s.json') return json({ notice: 'Register!', original: { manual: { title: 'M', pages: [] } } });
+      return new Response('nf', { status: 404 });
+    });
+    const [s, g] = await loadCatalogList('./t6/');
+    expect(await withDetails(g, './t6/')).toBe(g); // nothing left out
+    const full = await withDetails(s, './t6/');
+    expect(full.notice).toBe('Register!');
+    expect(full.original).toEqual({ sound: 'sb', manual: { title: 'M', pages: [] } });
+    expect(calls).toEqual(['./t6/catalog.json', './t6/details/s.json']);
+  });
+
+  it('uses the full catalog where there is no short one', async () => {
+    vi.stubGlobal('fetch', async (url: string) =>
+      url.endsWith('index.json') ? new Response('[{"id":"x","notice":"N"}]', { headers: { 'content-type': 'application/json' } }) : new Response('<html>', { headers: { 'content-type': 'text/html' } }),
+    );
+    expect(await loadCatalogList('./t7/')).toEqual([{ id: 'x', notice: 'N' }]);
   });
 });

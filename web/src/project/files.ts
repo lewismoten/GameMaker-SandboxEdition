@@ -157,6 +157,8 @@ export interface CatalogEntry {
   original?: OriginalExtras;
   /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
   gz?: boolean;
+  /** From games/catalog.json: its notice, manual and printables are in games/details/<id>.json (withDetails). */
+  details?: boolean;
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
@@ -173,6 +175,38 @@ export function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
     catalogs.set(base, p);
   }
   return p;
+}
+
+/** A JSON file, or undefined when it isn't there (a dev server answers a missing file with index.html). */
+async function fetchJson<T>(url: string): Promise<T | undefined> {
+  const res = await fetch(url);
+  return res.ok && res.headers.get('content-type')?.includes('json') ? ((await res.json()) as T) : undefined;
+}
+
+/**
+ * The games without their shareware notices, manuals and printables (games/catalog.json,
+ * an eighth of index.json): for a page that only needs the list, such as the play page.
+ * The full catalog when it is loaded already, or there is no short one.
+ */
+export function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
+  const full = catalogs.get(base);
+  if (full) return full;
+  const key = `${base}catalog.json`;
+  let p = catalogs.get(key);
+  if (!p) {
+    p = fetchJson<CatalogEntry[]>(key).then((list) => list ?? loadCatalog(base));
+    p.catch(() => catalogs.delete(key));
+    catalogs.set(key, p);
+  }
+  return p;
+}
+
+/** An entry with its shareware notice, manual and printables (games/details/<id>.json), for one from loadCatalogList. */
+export async function withDetails(entry: CatalogEntry, base = './games/'): Promise<CatalogEntry> {
+  if (!entry.details) return entry; // nothing left out, or a full entry
+  const details = await fetchJson<Pick<CatalogEntry, 'notice' | 'original'>>(`${base}details/${entry.id}.json`).catch(() => undefined);
+  if (!details) return (await loadCatalog(base)).find((g) => g.id === entry.id) ?? entry;
+  return { ...entry, notice: details.notice, original: entry.original || details.original ? { ...entry.original, ...details.original } : undefined };
 }
 
 // Hosted game files fetched this session, shared by everything that asks for the same
