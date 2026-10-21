@@ -273,6 +273,12 @@
     }
   }
 
+  @media (min-width: 1700px) {
+    .home .lib-tiles {
+      grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+    }
+  }
+
   /* the tiles scroll by themselves; the padding leaves room for the selected tile's ring */
   .lib-tiles {
     grid-template-columns: repeat(auto-fill, minmax(131px, 1fr));
