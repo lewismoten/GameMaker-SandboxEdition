@@ -1,11 +1,20 @@
-// Map scrolling from code/GM/PLAYGAME.C. The original scrolled VGA memory in 4 pixel
-// steps plus 0..3 pixel hardware panning (LittleShift); this port keeps the same
-// bookkeeping and simply redraws the view from it.
+// Map scrolling from code/GM/PLAYGAME.C (ChangeScroll, DrawScroll, BresenhamScroll,
+// ShiftEverything; the setup is in playscene). The original scrolled VGA memory in 4
+// pixel steps plus 0..3 pixel hardware panning (LittleShift), drawing only the newly
+// exposed edge strips; this port keeps the same bookkeeping and simply redraws the
+// view from it.
+//
+// Timing: ChangeScroll runs once per 18.2 Hz game tick and picks a speed; DrawScroll
+// runs on every 145.6 Hz timer interrupt and moves the view a little each time.
 import { inScreenBounds } from './touch';
 import { BLEN, LASTMM, LASTMON, MLEN, MWID, OFFSCRN, SCROLLPERMOVE, SCRSPDX, SCRSPDY, SIZEX, SIZEY, sign, type BresScroll, type Coord, type World } from './world';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../formats/blocks';
 
-/** Scene setup: Scroll.up/down/left/right are stored mirrored in the .gam file. */
+/**
+ * Scene setup: Scroll.up/down/left/right are stored mirrored in the .gam file (the
+ * flags here name the way the map moves, e.g. `left` lets the map slide left as the
+ * character walks right). 0xff means that direction is allowed.
+ */
 export function initScroll(w: World, s: { up: number; down: number; left: number; right: number }): void {
   const sc = w.scroll;
   Object.assign(sc, {
@@ -27,6 +36,9 @@ export function initScroll(w: World, s: { up: number; down: number; left: number
   sc.down = s.up;
   sc.left = s.right;
   sc.right = s.left;
+  // Scrolling starts once the character is past maxX/minX (maxY/minY) from the center,
+  // and stops only after it has come back past the opposite stop line, so the view
+  // keeps moving until the character is a little beyond center the other way.
   sc.maxX = SIZEX / 3;
   sc.minX = -SIZEX / 3;
   sc.maxY = 60;
@@ -41,6 +53,7 @@ export function initScroll(w: World, s: { up: number; down: number; left: number
 export function changeScroll(w: World): number {
   const sc = w.scroll;
   sc.totalx = sc.totaly = 0;
+  // Distance of the character's center from the screen center.
   const tmx = w.ci.nextx + BLEN / 2 - SIZEX / 2;
   const tmy = w.ci.nexty + BLEN / 2 - SIZEY / 2;
   sc.distx = tmx;
@@ -50,6 +63,8 @@ export function changeScroll(w: World): number {
   if (sc.up === 0xff && tmy > sc.maxY) sc.inMotion |= SOLTOP;
   if (sc.down === 0xff && tmy < sc.minY) sc.inMotion |= SOLBOT;
 
+  // Speed grows linearly from 0 at the stop line to SCRSPDX at maxX (the C's comment:
+  // "really (X*MAXSPEED)/MAXX"), then is capped at 28 below.
   if (sc.inMotion & SOLLEF) {
     if (tmx < sc.leftStop) sc.inMotion &= ~SOLLEF;
     else sc.totalx = Math.trunc(((tmx - sc.leftStop) * SCRSPDX) / (sc.maxX - sc.leftStop));
@@ -68,11 +83,16 @@ export function changeScroll(w: World): number {
   }
   sc.totalx = Math.max(-28, Math.min(28, sc.totalx));
   sc.totaly = Math.max(-28, Math.min(28, sc.totaly));
+  // Spread `totalx` pixels over SCROLLPERMOVE DrawScroll calls (Bresenham style).
   sc.bx = { dscroll: sc.totalx, ctr: 0, iters: SCROLLPERMOVE };
   sc.by = { dscroll: sc.totaly, ctr: 0, iters: SCROLLPERMOVE };
   return sc.inMotion;
 }
 
+/**
+ * BresenhamScroll with speed 1 (DrawScroll passes 1; its `speed` argument is commented
+ * out in the C). Returns the pixels to move this call, |dscroll|/iters on average.
+ */
 function bresenhamScroll(b: BresScroll): number {
   let amt = 0;
   const a = Math.abs(b.dscroll);
@@ -92,7 +112,10 @@ function bresenhamScroll(b: BresScroll): number {
   return amt;
 }
 
-/** ShiftEverything: keep sprite screen positions in step with the scrolled map. */
+/**
+ * ShiftEverything: keep sprite screen positions in step with the scrolled map. The C
+ * also returned whether the character had to be redrawn; this port redraws every frame.
+ */
 function shiftEverything(w: World, shift: Coord): void {
   for (let l = 0; l < LASTMM; l++) {
     if (w.mm[l].monnum >= LASTMON) continue;
@@ -108,6 +131,9 @@ function shiftEverything(w: World, shift: Coord): void {
     }
   }
   const ci = w.ci;
+  // A character standing still or moving with the shift rides along with the background.
+  // One moving against it gets only small (< 4 pixel) moves folded in here; larger ones
+  // are left to the character's own movement.
   if (ci.nexty - ci.oldy === 0 || sign(shift.y) === sign(ci.nexty - ci.oldy)) {
     if (ci.scry !== OFFSCRN) ci.scry += shift.y;
   } else if (Math.abs(ci.nexty - ci.oldy) < 4) ci.scry += ci.nexty - ci.oldy + shift.y;
@@ -129,6 +155,9 @@ export function drawScroll(w: World): void {
   const sc = w.scroll;
   sc.movx += bresenhamScroll(sc.bx);
   sc.movy += bresenhamScroll(sc.by);
+  // movx/movy collect pixels until whole 4 pixel steps can be taken (the VGA start
+  // address moves in 4 pixel units); the loops always leave them in 0..3, which is the
+  // hardware pan. A positive movx moves the map left, so sprites shift by -4.
   const shift = { x: 0, y: 0 };
   if (sc.movx < 0) {
     while (sc.movx < 0) {
@@ -158,6 +187,8 @@ export function drawScroll(w: World): void {
   }
   sc.littleShiftx = sc.movx & 3;
   sc.littleShifty = sc.movy & 3;
+  // nx/ny are the pixel offsets into the top-left map block (mx, my); carry whole
+  // blocks into mx/my with map wrap-around.
   if (sc.nx >= BLEN) {
     sc.nx -= BLEN;
     w.mx = (w.mx + 1) % MLEN;
