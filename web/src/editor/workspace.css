@@ -116,3 +116,34 @@
     margin-bottom: 8px;
   }
 }
+
+/* "Make it yours": shortcuts on the game's page into the files that shape it */
+.next-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.next-steps strong {
+  margin-right: 2px;
+  font-size: 13px;
+}
+
+.next-steps button {
+  padding: 3px 10px;
+  font-size: 13px;
+}
+
+.next-steps .next-steps-hide {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+}

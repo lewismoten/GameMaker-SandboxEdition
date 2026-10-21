@@ -323,6 +323,7 @@ export class Workspace {
           !isGam && h('button', { class: 'danger', onclick: () => void this.remove(file) }, 'Delete'),
         ),
       ),
+      isGam ? this.nextSteps() : null,
       body,
     );
     const editor = editors[kindOf(file)] ?? fileInfo;
@@ -332,6 +333,73 @@ export class Workspace {
       console.error(e);
       clear(body, h('p', { class: 'hint' }, `This file could not be opened: ${(e as Error).message}`));
     }
+  }
+
+  /** On the game's own page: one-click ways into the files that make the game its own (can be hidden). */
+  private nextSteps(): HTMLElement | null {
+    const key = `gm-next-hidden-${this.project.id}`;
+    try {
+      if (localStorage.getItem(key)) return null;
+    } catch {
+      /* private mode: always shown */
+    }
+    const steps: [FileKind, string, string][] = [
+      ['map', '🗺', 'Change the level'],
+      ['bbl', '🧱', 'Paint the scenery'],
+      ['chr', '🦸', 'The hero'],
+      ['mon', '👾', 'Monsters'],
+      ['snd', '🔊', 'Sounds'],
+    ];
+    const strip = h(
+      'nav',
+      { class: 'next-steps', 'aria-label': 'Make it yours' },
+      h('strong', null, 'Make it yours:'),
+      h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'),
+      ...steps.map(([kind, icon, label]) => {
+        const first = this.project.files.byExtension(kind)[0];
+        return first
+          ? h('button', { title: `Edit ${first}`, onclick: () => this.open(first) }, h('span', { 'aria-hidden': 'true' }, `${icon} `), label)
+          : h(
+              'button',
+              { title: `This game has no ${KIND_LABELS[kind].toLowerCase()} yet`, onclick: () => void this.addOfKind(kind) },
+              h('span', { 'aria-hidden': 'true' }, '＋ '),
+              `Add ${KIND_LABELS[kind].toLowerCase()}`,
+            );
+      }),
+      h(
+        'button',
+        {
+          title: 'Download it, or export it to play on the web or in DOS',
+          onclick: () => {
+            const menu = this.sidebar.querySelector<HTMLDetailsElement>('.export-menu');
+            if (!menu) return;
+            this.sidebar.classList.add('open');
+            menu.open = true;
+            menu.querySelector('button')?.focus();
+          },
+        },
+        h('span', { 'aria-hidden': 'true' }, '💾 '),
+        'Save & share',
+      ),
+      h(
+        'button',
+        {
+          class: 'next-steps-hide',
+          title: 'Hide these shortcuts for this game',
+          'aria-label': 'Hide these shortcuts',
+          onclick: () => {
+            try {
+              localStorage.setItem(key, '1');
+            } catch {
+              /* private mode */
+            }
+            strip.remove();
+          },
+        },
+        '×',
+      ),
+    );
+    return strip;
   }
 
   private play(): void {
