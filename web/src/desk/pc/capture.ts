@@ -6,7 +6,7 @@ import { h, toast } from '../../editor/core/ui';
 import type { Computer } from '../../retro/computer';
 import type { Vga } from '../../vga/shared/vga';
 import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
-import { LiveRecorder, recorderFormat } from '../../media/video';
+import type { LiveRecorder } from '../../media/video';
 import { AudioMix } from '../../media/audioTap';
 
 /** What a recording keeps: everything (graphics letterboxed into 720x400) or one mode. */
@@ -66,7 +66,7 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
   const el = h('div', { class: 'desk-capture' }, shotBtn, recBtn, menu);
 
   shotBtn.addEventListener('click', () => void screenshot());
-  recBtn.addEventListener('click', () => (rec ? void stop() : toggleMenu()));
+  recBtn.addEventListener('click', () => (rec ? void stop() : void toggleMenu()));
 
   async function screenshot(): Promise<void> {
     if (!pc.powered) return toast('Switch the PC on first.');
@@ -78,9 +78,13 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
     setTimeout(() => el.classList.remove('flash'), 300);
   }
 
-  function toggleMenu(): void {
+  /** The recorder, loaded when the record menu is first opened. */
+  let video: typeof import('../../media/video') | undefined;
+
+  async function toggleMenu(): Promise<void> {
     if (!menu.hidden) return void (menu.hidden = true);
-    const fmt = recorderFormat(true);
+    video ??= await import('../../media/video');
+    const fmt = video.recorderFormat(true);
     menu.replaceChildren(
       h('strong', null, `Record the screen and sound (${fmt ? fmt.ext.toUpperCase() : 'not available in this browser'})`),
       ...(
@@ -106,7 +110,7 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
     const mix = new AudioMix();
     let recorder: LiveRecorder;
     try {
-      recorder = new LiveRecorder(out, mix.track, 70);
+      recorder = new video!.LiveRecorder(out, mix.track, 70);
     } catch (e) {
       mix.dispose();
       return toast((e as Error).message, 'error');

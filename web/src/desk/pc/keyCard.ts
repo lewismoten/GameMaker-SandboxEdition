@@ -5,11 +5,9 @@
 import './keyCard.css';
 import '../../manual/printables/paper.css';
 import { h, clear } from '../../editor/core/ui';
-import { boxItems } from '../../manual/printables/items';
 import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../../editor/keymap/keyMap';
 import { cardRows } from './keyCardRows';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
-import { printContext } from '../boxes/printContext';
 
 export interface PlayingGame {
   files: GameFiles;
@@ -94,11 +92,17 @@ export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLE
  * printed card from a Sandbox Software box when there is one; taped to the monitor it is
  * always the handwritten card, which stays legible that small.
  */
+/** The keycard printed for a Sandbox Software box (its printables load only when one is read up close). */
+async function printedCard(entry: CatalogEntry) {
+  const [{ printContext }, { boxItems }] = await Promise.all([import('../boxes/printContext'), import('../../manual/printables/items')]);
+  const ctx = await printContext(entry);
+  return ctx ? boxItems(ctx).find((i) => i.id === 'keycard') : undefined;
+}
+
 async function makeCard(game: PlayingGame, compact = false): Promise<HTMLElement> {
   if (!compact) {
     const entry = await originalOf(game);
-    const ctx = entry ? await printContext(entry) : undefined;
-    const item = ctx ? boxItems(ctx).find((i) => i.id === 'keycard') : undefined;
+    const item = entry ? await printedCard(entry) : undefined;
     if (item) {
       const [sheet] = await item.render();
       if (sheet) return h('div', { class: 'kc-printed' }, sheet.el);
