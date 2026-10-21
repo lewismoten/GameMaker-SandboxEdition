@@ -6,7 +6,7 @@ import './map/map';
 import './integrator/integrator';
 import './monsters/monsters';
 import './character/character';
-import './sounds';
+import './sounds/sounds';
 import './picture';
 import './animation';
 import './backdrop';
