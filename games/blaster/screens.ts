@@ -93,7 +93,6 @@ export function page(heading: string, seed: number): Pixels {
 export function scoresScreen(): Pixels {
   const p = circuit(21);
   panel(p, 8, 0, 311, 199);
-  for (let y = 0; y < H; y += 22) p.rect(10, y + 18, 300, 1, c('label', 2));
   scaleBlit(p, SHIP, 268, 4, 2);
   return p;
 }
