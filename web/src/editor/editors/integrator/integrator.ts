@@ -470,7 +470,7 @@ registerEditor(['gam'], (host, project) => {
   const sideBody = h('div', { class: 'grator-side-body' });
   const grator = h('div', { class: 'grator' });
   /** On wide windows the selected scene's panel is the side panel's first tab, beside the board, so the editor fits the window. */
-  const wide = window.matchMedia?.('(min-width: 1180px)');
+  const wide = window.matchMedia?.('(min-width: 1000px)');
   const panelInSide = () => !!wide?.matches && !grator.classList.contains('side-collapsed');
   const shownTab = () => (sideTab === 'scene' && !panelInSide() ? 'screens' : sideTab);
   const onWide = () => (renderSide(), requestAnimationFrame(fit));

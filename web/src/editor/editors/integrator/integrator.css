@@ -401,7 +401,7 @@ button.grator-play.playing {
 }
 
 /* wide windows: the selected scene's panel is the side panel's Scene tab */
-@media (min-width: 1180px) {
+@media (min-width: 1000px) {
   .grator {
     --grator-side-w: clamp(320px, 27vw, 440px);
   }
