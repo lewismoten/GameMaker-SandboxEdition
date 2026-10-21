@@ -379,7 +379,10 @@ function spineTitle(s: CanvasRenderingContext2D, box: Box, main: string, sub: st
     px = Math.min(...lines.map((l) => fit(s, l, TITLE_FONT, length, 62)));
   }
   const subPx = sub ? 20 : 0;
-  const block = lines.length * px * 0.95 + (sub ? subPx + 6 : 0);
+  // centered on the letters themselves: capital height, line spacing, then the subtitle
+  const cap = px * 0.74;
+  const gap = 10;
+  const block = cap + (lines.length - 1) * px * 0.95 + (sub ? gap + subPx * 0.72 : 0);
   s.save();
   s.translate(width / 2, startY + length / 2);
   s.rotate(Math.PI / 2);
@@ -390,19 +393,17 @@ function spineTitle(s: CanvasRenderingContext2D, box: Box, main: string, sub: st
   s.lineWidth = px * 0.12;
   s.lineJoin = 'round';
   // in the rotated frame "down" runs from the spine's right edge to its left
-  let y = -block / 2 + px * 0.78;
-  for (const l of lines) {
+  let y = -block / 2 + cap;
+  lines.forEach((l, i) => {
+    if (i) y += px * 0.95;
     s.strokeText(l, 0, y);
     s.fillText(l, 0, y);
-    y += px * 0.95;
-  }
+  });
   if (sub) {
-    s.font = SANS(
-      fit(s, sub, (p) => SANS(p, 900), length, subPx),
-      900,
-    );
+    const sp = fit(s, sub, (p) => SANS(p, 900), length, subPx);
+    s.font = SANS(sp, 900);
     s.fillStyle = box.ink;
-    s.fillText(sub, 0, y - px * 0.1 + 4);
+    s.fillText(sub, 0, y + gap + sp * 0.72);
   }
   s.restore();
 }
