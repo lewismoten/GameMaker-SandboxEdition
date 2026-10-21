@@ -135,9 +135,9 @@ function layout(act: 1 | 2): string[] {
   };
   rows.push('#.......#' + lobby(40) + '#' + 'XXXXXXXX' + '#');
   rows.push('#.QQQ...#' + lobby(41) + '#' + '........' + '#');
-  rows.push('#.......#' + lobby(42) + '#' + '........' + '#');
+  rows.push('#.......#' + lobby(42) + '9' + '........' + '#');
   rows.push('#.......#' + lobby(43) + '#' + '........' + '#');
-  rows.push('#NNNdHHH#' + lobby(44) + '####9#####');
+  rows.push('#NNNdHHH#' + lobby(44) + '##########');
   rows.push('#aaa=====' + lobby(45) + '#' + 'VVVV.jj.' + '#');
   rows.push('#========' + lobby(46) + '0' + '........' + '#');
   rows.push(rep('#', 20) + rep('^', 10) + rep('#', 20));
