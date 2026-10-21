@@ -160,6 +160,8 @@ HINTS
 * Wait for the laser fences to blink off.
 * You can't zap a car. Don't try. Seriously.
 * In the Teleport-A-Phone Exchange, booth number 4 is out of order. Try another number - you'll get there eventually.
+* Read the teletype in the exchange hall. It knows a thing or two.
+* Grandpa's CitiCar likes a honk.
 * The judges want 20 pages. There are lots more than that.
 
 THIS IS SHAREWARE
