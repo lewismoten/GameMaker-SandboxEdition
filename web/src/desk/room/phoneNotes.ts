@@ -12,7 +12,8 @@ const NUMBERS: [string, string][] = [
   ["Jenny (sitter)", "867-5309"],
 ];
 
-function notes(): HTMLElement {
+/** The card and the sticky note (also shown beside the phone's keypad: phone/dialPad.ts). */
+export function notes(): HTMLElement {
   return h(
     "div",
     { class: "pn-notes" },

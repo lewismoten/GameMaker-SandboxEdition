@@ -5,6 +5,7 @@ import "./dialPad.css";
 import { h, clear } from "../../../editor/core/ui";
 import { keypadDigits } from "../../../retro/bbs/modem";
 import { SPEED_DIAL } from "./calls";
+import { notes } from "../phoneNotes";
 
 const KEYS: [string, string][] = [
   ["1", ""],
@@ -92,7 +93,16 @@ export function openDialPad(
     e.preventDefault();
   };
   window.addEventListener("keydown", onKey, true);
-  document.body.append(el);
+  // Mom's notes from under the phone, beside the keypad, so the numbers are at hand
+  const card = h(
+    "aside",
+    {
+      class: "pn-small pp-notes",
+      "aria-label": "Mom’s notes from under the phone",
+    },
+    notes(),
+  );
+  document.body.append(el, card);
   el.querySelector<HTMLButtonElement>(".pp-key")?.focus({
     preventScroll: true,
   });
@@ -106,6 +116,7 @@ export function openDialPad(
     close() {
       window.removeEventListener("keydown", onKey, true);
       el.remove();
+      card.remove();
     },
   };
 }

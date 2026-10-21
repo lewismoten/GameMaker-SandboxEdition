@@ -21,6 +21,17 @@
     sans-serif;
 }
 
+/* Mom's notes, beside the keypad */
+.pp-notes {
+  position: fixed;
+  left: 292px;
+  top: 76px;
+  z-index: 60;
+  width: 240px;
+  transform: rotate(1.5deg);
+  filter: drop-shadow(2px 6px 8px rgba(0, 0, 0, 0.5));
+}
+
 .pp-lcd {
   padding: 8px 10px;
   border-radius: 6px;
