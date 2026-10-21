@@ -7,9 +7,11 @@ import { PALETTE_SIZE } from '../formats/palette';
 
 /**
  * GVertMenu: a marker box left of `count` rows (`dy` pixels apart starting at y).
- * Returns 1..count, 0 for Esc, count+1 when idle for `idleSeconds`.
+ * Returns 1..count, 0 for Esc, count+1 when idle for `idleSeconds`. The C timed the
+ * idle wait in game ticks (IdleTime*18 of TimerCounter); this uses wall-clock time.
  */
 export async function gVertMenu(m: Machine, x: number, y: number, dy: number, count: number, color: number, idleSeconds = Infinity, choice = 1): Promise<number> {
+  // Rows are 1-based, so the marker for row c sits at y - 8 + c*dy, as in the C.
   const rowY = (c: number) => y - 8 + c * dy;
   let prev = m.screen.getCol(x, rowY(choice));
   m.flushKeys();
@@ -20,6 +22,7 @@ export async function gVertMenu(m: Machine, x: number, y: number, dy: number, co
     let move = 0;
     if (m.takeClick()) {
       // Pointer: pick the row that was clicked (rows span dy pixels around the text).
+      // A port addition; the C mouse only acted as up/down arrows and Enter.
       const row = Math.floor((m.pointer.y - (y - 8) + dy / 2) / dy);
       if (row >= 1 && row <= count) {
         m.screen.boxFill(x, rowY(choice), x + 5, rowY(choice) + 4, prev);
@@ -55,6 +58,7 @@ export async function gGet(m: Machine, x: number, y: number, col: number, bcol: 
     else m.screen.line(x + n * 8 - 1, y, x + n * 8 - 1, y + 7, c);
   };
   for (;;) {
+    // GGet blinked by counting delay(1) calls; a fixed 450 ms phase stands in for it.
     const blinkOn = Math.floor(performance.now() / 450) % 2 === 0;
     cursor(blinkOn ? col : bcol);
     const k = m.keyboard.readKey();
@@ -77,7 +81,11 @@ export async function gGet(m: Machine, x: number, y: number, col: number, bcol: 
   }
 }
 
-/** RandCols: random smooth color ramps for the default menu screen. */
+/**
+ * RandCols (PALC.C): random smooth color ramps for the default menu screen. Each
+ * channel steps by 2 per entry; every 32 entries a stopped channel may start rising
+ * (random(2) only gives 0 or 1). A channel that reaches 63 falls back to 0 and waits there.
+ */
 export function randCols(rand = Math.random): Uint8Array {
   const pal = new Uint8Array(PALETTE_SIZE);
   const add = 2;
@@ -114,6 +122,7 @@ export function drawDefaultScreen(m: Machine, colors: Uint8Array): void {
   m.screen.clear();
   colors.set(randCols());
   m.screen.setPalette(colors);
+  // Box l uses color l, so the random ramps in palette entries 0..100 form the frames.
   for (let l = 0; l <= 100; l++) m.screen.box(40 - Math.trunc((l * 4) / 10), 100 - l, 280 + Math.trunc((l * 4) / 10), 180 + Math.trunc((l * 2) / 10), l);
 }
 
@@ -126,13 +135,14 @@ export function readHighScores(m: Machine, gamename: string): HighScore[] {
   return bytes ? parseHighScores(bytes) : Array.from({ length: 10 }, () => ({ score: 0, name: '' }));
 }
 
-/** ShowHighScores */
+/** ShowHighScores (HISCOREL.C): the table rows get closer together further down. */
 export async function showHighScores(m: Machine, gamename: string, colors: Uint8Array, score = -1): Promise<void> {
   const top = readHighScores(m, gamename);
   const red = match(colors, RGB_RED);
   const blue = match(colors, RGB_BLUE);
   m.screen.setPalette(colors);
   m.screen.write(104, 0, red, 'Top Ten Scores');
+  // Row gaps shrink 2, 1, 2, 1... pixels: 22, 20, 19, 17, ...
   let space = 22;
   let ypos = 27;
   for (let j = 0; j < 10; j++) {
