@@ -31,7 +31,7 @@ async function make(ids: string[]): Promise<void> {
     // Monsters roll their own dice in every playback, so a recording must hold up under
     // other dice too: try a few bot runs and keep the first that never dies or stalls in
     // five replays (else the one that fails least).
-    let best: { rec: Uint8Array; fails: number; cells: number; played: number } | undefined;
+    let best: { rec: Uint8Array; fails: number; cells: number; played: number; loads: number } | undefined;
     for (let attempt = 1; attempt <= (g.attempts ?? 4) && (g.mayDie || best?.fails !== 0); attempt++) {
       const t0 = Date.now();
       const { rec, bot } = await recordDemo(files, g.gam, ticks, { ...g.bot, seed: attempt * 101 });
@@ -39,6 +39,7 @@ async function make(ids: string[]): Promise<void> {
       let fails = 0;
       let cells = Infinity;
       let played = 0;
+      let loads = 0;
       // how far the bot got (its own dice): other dice must get as far, through as many scenes
       const own = await replay(files, g.gam, rec, attempt * 101);
       for (const seed of [1, 2, 3, 4, 5]) {
@@ -48,11 +49,16 @@ async function make(ids: string[]): Promise<void> {
         if (!ok) fails++;
         cells = Math.min(cells, r.cells);
         played += r.played / 5;
+        loads += r.loads / 5;
         console.log(`  replay ${seed}: ${ok ? 'ok ' : 'BAD'} ${JSON.stringify(r)}`);
       }
       // a game whose monsters will catch the hero sooner or later: keep the one that lasts longest
-      const better = g.mayDie ? !best || played > best.played : !best || fails < best.fails || (fails === best.fails && cells > best.cells);
-      if (better) best = { rec, fails, cells, played };
+      // (among ones that fail as often: the one that gets through the most scenes, then covers the most ground)
+      const better = g.mayDie
+        ? !best || played > best.played
+        : !best || fails < best.fails || (fails === best.fails && (loads > best.loads || (loads === best.loads && cells > best.cells)));
+      if (better) best = { rec, fails, cells, played, loads };
+      if (process.env.SHOTS) writeFileSync(join(process.env.SHOTS, `${g.id}-${attempt}.rec`), rec);
     }
     const rec = best!.rec;
     console.log(`${g.id}: kept a recording that failed ${best!.fails} of 5 replays (${best!.played.toFixed(0)} ticks played on average)`);
