@@ -184,10 +184,12 @@
   font-size: 14px;
 }
 
-/* Copy link, after who made it */
-.showcase .sc-link {
-  margin-left: 10px;
-  vertical-align: 1px;
+/* Copy link, after who made it (on a line of its own when there is no room) */
+.showcase .sc-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
 }
 
 .sc-blurb {

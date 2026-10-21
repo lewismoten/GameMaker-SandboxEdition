@@ -134,7 +134,10 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       setPlaying(false);
       const dialog = demoDialogButton(game);
       if (dialog) actions.insertBefore(dialog, actions.querySelector('.card-more'));
-      if (mayAutoplay() && (game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, () => gen === generation && !demo && play());
+      if (!mayAutoplay()) return;
+      // a game the visitor chose plays straight away; one shown by itself waits for the page, and only when small
+      if (!how.featured && !how.resume) play();
+      else if ((game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, () => gen === generation && !demo && play());
     });
   };
 
