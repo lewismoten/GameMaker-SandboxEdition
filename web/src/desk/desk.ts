@@ -512,7 +512,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     await openDiskBox(disks, lastDisk, (d) => void insertFromBox(d));
   }
 
-  /** Putting a disk in drive A: (the PC boots if it is off). */
+  /** Putting a disk in drive A: the PC boots if it is off, and the disk's game starts
+   * (typed at the DOS prompt, as you would); a disk without one leaves you at A:. */
   async function insertFromBox(d: Disk): Promise<void> {
     if (computer.busy) {
       toast(
@@ -521,7 +522,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       return;
     }
     await insert(d);
-    await power(true);
+    if (d.gam) await onDisk(d, "play");
+    else await power(true);
   }
 
   async function onDisk(d: Disk, action: DiskAction): Promise<void> {
