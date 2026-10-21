@@ -357,5 +357,5 @@ export function buildTheatre(act: 1 | 2, bs: BlockSet, monsters: Placed[]): Thea
     map.monsters[i] = { monnum: m.mon, status: 0, xtra: 0, curx: p.x, cury: p.y, extra: 0 };
   });
   reindexMonsters(map);
-  return { map, start: act === 1 ? at(24, 46) : at(27, 7), exit: at(27, 2), rows };
+  return { map, start: act === 1 ? at(24, 43) : at(27, 7), exit: at(27, 2), rows };
 }
