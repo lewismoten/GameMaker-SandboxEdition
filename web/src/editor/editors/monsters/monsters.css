@@ -151,3 +151,16 @@
     max-width: 190px;
   }
 }
+
+/* tablets in landscape: a narrower map choice keeps the path toolbar on one row */
+@media (min-width: 1000px) and (max-width: 1199px) and (min-height: 640px) {
+  .mon-detail .mpath-toolbar select {
+    max-width: 140px;
+  }
+  .mon-detail .mpath-left {
+    width: clamp(170px, calc(var(--ws-vh, 100dvh) - 600px), 760px);
+  }
+  .mon-detail .mpath-side {
+    min-height: 170px;
+  }
+}
