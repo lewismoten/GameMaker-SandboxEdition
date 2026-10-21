@@ -1,7 +1,7 @@
 // Where scenes sit in the Game Integrator. Positions are the .GAM's own integrator
 // coordinates (GRATOR.C: a scene is a 5x5 box at Pos, inside the 310x165 world at 5,29),
 // so whatever the web editor arranges still loads in the DOS integrator.
-import { NOSCENE, STARTTYPE, ENDTYPE, type Game, type Point } from '../formats/game';
+import { NOSCENE, STARTTYPE, ENDTYPE, type Game, type Point } from '../../../formats/game';
 
 /** The integrator world (WX, WORLDTOP, WLEN, WWID) and the range movescene() lets Pos take. */
 export const WORLD = { x: 5, y: 29, w: 310, h: 165 };

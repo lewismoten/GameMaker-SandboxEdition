@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, type Game } from '../src/formats/game';
-import { CARD_UNITS, POS_MAX, POS_MIN, arrangements, autoArrange, clampPos, layoutCost, sceneLayers, settle, spreadOut } from '../src/editor/integratorLayout';
+import { CARD_UNITS, POS_MAX, POS_MIN, arrangements, autoArrange, clampPos, layoutCost, sceneLayers, settle, spreadOut } from '../src/editor/editors/integrator/integratorLayout';
 
 function chain(n: number): Game {
   const g = newGame('Test');

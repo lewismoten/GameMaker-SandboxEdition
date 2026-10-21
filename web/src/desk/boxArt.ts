@@ -2,7 +2,7 @@
 // real maps: the area where each game's first level starts.
 import { GameFiles, cdName, type CatalogEntry } from '../project/files';
 import { parseGame, NOSCENE, type Point } from '../formats/game';
-import { levelShot } from '../editor/integratorArt';
+import { levelShot } from '../editor/editors/integrator/integratorArt';
 import { parseMap, MLEN, MWID } from '../formats/map';
 import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks } from '../formats/blocks';
 import { parseMonsters } from '../formats/monster';

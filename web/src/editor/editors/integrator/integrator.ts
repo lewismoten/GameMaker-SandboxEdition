@@ -4,13 +4,13 @@
 // screens). Card positions are the .GAM's integrator coordinates, so the DOS integrator
 // shows the same arrangement.
 import './integrator.css';
-import { registerEditor } from './index';
-import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../core/ui';
-import { blockImages } from '../core/draw';
-import type { FileKind, Project } from '../core/project';
-import { fileField } from '../widgets/filePicker';
-import { GameFiles } from '../../project/files';
-import { mountPlayer, type PlayerHandle } from '../../player/player';
+import { registerEditor } from '../index';
+import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../../core/ui';
+import { blockImages } from '../../core/draw';
+import type { FileKind, Project } from '../../core/project';
+import { fileField } from '../../widgets/filePicker';
+import { GameFiles } from '../../../project/files';
+import { mountPlayer, type PlayerHandle } from '../../../player/player';
 import {
   ADVTYPE,
   ENDTYPE,
@@ -27,13 +27,13 @@ import {
   type Game,
   type Point,
   type Scene,
-} from '../../formats/game';
-import { BACKBL, newBlockSet, parseBlocks } from '../../formats/blocks';
-import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../formats/map';
-import { defaultPalette, parsePalette } from '../../formats/palette';
-import { WORLD, CARD_UNITS, arrangements, clampPos, spreadOut, type Arrangement } from '../integratorLayout';
-import { graphicShot, levelShot } from '../integratorArt';
-import { audio } from '../widgets/mediaShared';
+} from '../../../formats/game';
+import { BACKBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
+import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../../formats/map';
+import { defaultPalette, parsePalette } from '../../../formats/palette';
+import { WORLD, CARD_UNITS, arrangements, clampPos, spreadOut, type Arrangement } from './integratorLayout';
+import { graphicShot, levelShot } from './integratorArt';
+import { audio } from '../../widgets/mediaShared';
 
 /** Board pixels per integrator unit, and the card size on the board. */
 const S = 8;

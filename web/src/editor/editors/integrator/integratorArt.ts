@@ -1,17 +1,17 @@
 // Pictures for the Game Integrator: a level as the player first sees it (the map around
 // the block the hero arrives on, with its monsters and the hero), and the between-scene
 // graphics (.gif, .bkd, .fli, .lst, .txt) as a 320x200 screen.
-import { paintIndexed } from './core/draw';
-import type { GameFiles } from '../project/files';
-import type { Point, Scene } from '../formats/game';
-import { parseMap, MLEN, MWID } from '../formats/map';
-import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../formats/blocks';
-import { parseMonsters } from '../formats/monster';
-import { parseCharacter } from '../formats/character';
-import { defaultPalette, parsePalette } from '../formats/palette';
-import { decodeGif, isGif } from '../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../formats/fli';
-import { parseBackdrop, parseSlideList, textLines } from '../formats/graphicScripts';
+import { paintIndexed } from '../../core/draw';
+import type { GameFiles } from '../../../project/files';
+import type { Point, Scene } from '../../../formats/game';
+import { parseMap, MLEN, MWID } from '../../../formats/map';
+import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../../../formats/blocks';
+import { parseMonsters } from '../../../formats/monster';
+import { parseCharacter } from '../../../formats/character';
+import { defaultPalette, parsePalette } from '../../../formats/palette';
+import { decodeGif, isGif } from '../../../formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../../formats/fli';
+import { parseBackdrop, parseSlideList, textLines } from '../../../formats/graphicScripts';
 
 /**
  * `cols` x `rows` blocks of a level's map centred on `at`, drawn the way the game draws

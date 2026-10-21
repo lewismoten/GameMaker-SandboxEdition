@@ -11,7 +11,7 @@ import { exportWebApp } from '../export/exportWebApp';
 import { exportSinglePage } from '../export/exportSinglePage';
 import { exportDos } from '../export/exportDos';
 import { ADVTYPE, NOSCENE, parseGame } from '../formats/game';
-import { levelShot } from './integratorArt';
+import { levelShot } from './editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget } from './gameHealth';
 import './home.css';
 import { gameFromPageFiles } from '../project/importPage';

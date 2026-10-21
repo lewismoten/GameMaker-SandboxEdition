@@ -3,7 +3,7 @@ export {};
 import './palette';
 import './blocks';
 import './map';
-import './integrator';
+import './integrator/integrator';
 import './monsters';
 import './character';
 import './sounds';
