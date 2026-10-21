@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, type Game } from '../src/formats/game';
 import { CARD_UNITS, POS_MAX, POS_MIN, clampPos, sceneLayers, settle } from '../src/editor/editors/integrator/layoutCells';
-import { arrangements, autoArrange, layoutCost, spreadOut } from '../src/editor/editors/integrator/integratorLayout';
+import { SNUG_GAP, arrangements, autoArrange, closeGaps, gapSavings, layoutCost, spreadOut } from '../src/editor/editors/integrator/integratorLayout';
 
 function chain(n: number): Game {
   const g = newGame('Test');
@@ -120,5 +120,24 @@ describe('integrator layout', () => {
     // a scene you can ask the next question from), so its graph cannot be drawn flat.
     if (!DENSE.has(_)) expect(layoutCost(pairs, centres, { w: 22, h: 18 }).cross).toBe(0);
     checkNoOverlap(g, spreadOut(g));
+  });
+});
+
+describe('closeGaps', () => {
+  it('closes the wide gaps of the DOS default column (title, level, end) but keeps it a column in order', () => {
+    const g = newGame('Gaps');
+    const lvl = emptyScene(ADVTYPE);
+    lvl.pos = { x: 157, y: 110 };
+    g.scenes.push(lvl);
+    const out = closeGaps(g);
+    const ys = [0, 1, 2].map((i) => out.get(i)!.y);
+    const order = [ys[0], ys[2], ys[1]];
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    expect(ys[2] - ys[0]).toBe(CARD_UNITS.h + SNUG_GAP.y);
+    expect(ys[1] - ys[2]).toBe(CARD_UNITS.h + SNUG_GAP.y);
+    expect(new Set([0, 1, 2].map((i) => out.get(i)!.x)).size).toBe(1);
+    expect(gapSavings(g).y).toBeGreaterThan(0.4);
+    for (const [i, p] of out) g.scenes[i].pos = p;
+    expect(gapSavings(g)).toEqual({ x: 0, y: 0 });
   });
 });

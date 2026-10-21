@@ -34,7 +34,7 @@ import {
 } from '../../../formats/game';
 import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../../formats/map';
 import { WORLD, CARD_UNITS, clampPos } from './layoutCells';
-import { arrangements, spreadOut, type Arrangement } from './integratorLayout';
+import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from './integratorLayout';
 import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
 import { pickOnMap } from './pickOnMap';
@@ -187,7 +187,8 @@ registerEditor(['gam'], (host, project) => {
     const hh = board.clientHeight || 500;
     const pad = 30;
     fitted = true;
-    cam.z = Math.max(0.15, Math.min(2, Math.min((w - pad * 2) / b.w, (hh - pad * 2) / b.h)));
+    // no bigger than 125%: a game of one or two scenes shouldn't fill the board with giant cards
+    cam.z = Math.max(0.15, Math.min(1.25, Math.min((w - pad * 2) / b.w, (hh - pad * 2) / b.h)));
     cam.x = b.x - (w / cam.z - b.w) / 2;
     cam.y = b.y - (hh / cam.z - b.h) / 2;
     draw();
@@ -374,6 +375,8 @@ registerEditor(['gam'], (host, project) => {
   }
   function renderTools(): void {
     const crowded = overlapping();
+    const saved = gapSavings(game);
+    const roomy = Math.max(saved.x, saved.y);
     clear(
       tools,
       h('button', { class: 'primary', onclick: addScene }, '+ Add level scene'),
@@ -400,6 +403,18 @@ registerEditor(['gam'], (host, project) => {
         },
         arranged && arranged.list.length > 1 ? `⇄ Another layout ${arranged.k + 1}/${arranged.list.length}` : '⇄ Auto-arrange',
       ),
+      // only when the cards sit far apart (e.g. the DOS layout: title at the top, the end at the bottom)
+      roomy >= 0.15
+        ? h(
+            'button',
+            {
+              class: roomy >= 0.3 ? 'grator-attention' : undefined,
+              title: 'Bring the cards closer together, keeping your arrangement, so the board can show them bigger',
+              onclick: () => relayout(closeGaps(game)),
+            },
+            '⇲ Close gaps',
+          )
+        : null,
       undoPositions
         ? h(
             'button',

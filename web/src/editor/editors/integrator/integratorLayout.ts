@@ -281,3 +281,51 @@ export function spreadOut(game: Game): Map<number, Point> {
   }
   return out;
 }
+
+/** The empty room Close gaps leaves between neighbouring cards, in integrator units. */
+export const SNUG_GAP = { x: Math.round(CARD_UNITS.w * 0.5), y: Math.round(CARD_UNITS.h * 0.6) };
+
+/** Where values (card starts, each `size` long) go when every empty band wider than `gap` shrinks to `gap`. */
+function closeAxis(starts: number[], size: number, gap: number): number[] {
+  const order = [...new Set(starts)].sort((a, b) => a - b);
+  const shift = new Map<number, number>();
+  let cut = 0;
+  let end = order[0] + size;
+  for (const v of order) {
+    if (v > end + gap) cut += v - end - gap;
+    shift.set(v, cut);
+    end = Math.max(end, v + size);
+  }
+  return starts.map((v) => v - shift.get(v)!);
+}
+
+const span = (vs: number[], size: number) => Math.max(...vs) - Math.min(...vs) + size;
+
+/**
+ * Keeps the arrangement (every card's order across and down, rows stay rows) but closes up
+ * wide empty space between cards, then centres the whole set in the world. Small games laid
+ * out the DOS way (title at the top, the end at the bottom) then fit the board at a size
+ * where the cards can be read.
+ */
+export function closeGaps(game: Game): Map<number, Point> {
+  const used = game.scenes.map((s, i) => (s.gametype === NOSCENE ? -1 : i)).filter((i) => i >= 0);
+  if (!used.length) return new Map();
+  const ps = used.map((i) => game.scenes[i].pos);
+  const xs = closeAxis(ps.map((p) => p.x), CARD_UNITS.w, SNUG_GAP.x);
+  const ys = closeAxis(ps.map((p) => p.y), CARD_UNITS.h, SNUG_GAP.y);
+  const dx = Math.round((POS_MIN.x + POS_MAX.x) / 2 - (Math.min(...xs) + Math.max(...xs)) / 2);
+  const dy = Math.round((POS_MIN.y + POS_MAX.y) / 2 - (Math.min(...ys) + Math.max(...ys)) / 2);
+  return new Map(used.map((s, k) => [s, clampPos({ x: xs[k] + dx, y: ys[k] + dy })]));
+}
+
+/** How much (0–1) Close gaps would shrink the cards' spread across and down; 0 when it changes nothing. */
+export function gapSavings(game: Game): { x: number; y: number } {
+  const before = game.scenes.filter((s) => s.gametype !== NOSCENE).map((s) => s.pos);
+  if (before.length < 2) return { x: 0, y: 0 };
+  const after = [...closeGaps(game).values()];
+  const less = (a: number[], b: number[], size: number) => Math.max(0, 1 - span(b, size) / span(a, size));
+  return {
+    x: less(before.map((p) => p.x), after.map((p) => p.x), CARD_UNITS.w),
+    y: less(before.map((p) => p.y), after.map((p) => p.y), CARD_UNITS.h),
+  };
+}
