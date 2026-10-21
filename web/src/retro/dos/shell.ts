@@ -269,12 +269,13 @@ export class Shell {
     const { drive, parts } = resolvePath(word, this.drive, this.cwdOf);
     const name = parts.pop() ?? '';
     const [base, ext] = splitName(name);
-    // Within one folder the first matching entry in listing order wins, not the EXTS order.
+    // Like COMMAND.COM: within one folder FOO.COM beats FOO.EXE beats FOO.BAT (EXTS order),
+    // and the current folder is searched before each PATH entry.
     const names = ext ? [name] : EXTS.map((e) => `${base}.${e}`);
     const where = word.includes('\\') || word.includes(':') ? [{ drive, parts }] : [{ drive, parts }, ...PATH.map((p) => resolvePath(p, 'C', this.cwdOf))];
     for (const w of where) {
       const list = await this.host.fs.listDir(w.drive, w.parts).catch(() => undefined);
-      const node = list?.find((n) => names.includes(n.name) && n.run);
+      const node = names.map((want) => list?.find((n) => n.name === want && n.run)).find(Boolean);
       if (node) return { node, at: w };
     }
     return undefined;
