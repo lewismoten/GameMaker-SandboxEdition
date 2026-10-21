@@ -127,23 +127,48 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h(
         'div',
         { class: 'desk-left' },
+        h(
+          'button',
+          { class: 'prop catalog-prop', onclick: () => void catalog(), 'aria-label': 'Shareware catalog: games made with Game-Maker' },
+          h(
+            'div',
+            { class: 'paper', 'aria-hidden': 'true' },
+            'SHAREWARE',
+            h('br'),
+            'CATALOG',
+            h('em', null, 'Games made with Game-Maker · Fall 1994 · call our BBS!'),
+          ),
+          h('span', { class: 'caption' }, 'Shareware catalog'),
+        ),
+        h(
+          'button',
+          { class: 'prop disk-box', onclick: () => void flip(), 'aria-label': 'Disk box: pick a game to put in drive A' },
+          box,
+          h('span', { class: 'caption', 'aria-hidden': 'true' }, 'Disk box — pick a game'),
+        ),
         mug(),
-        h('button', { class: 'prop disk-box', onclick: () => void flip() }, box, h('span', { class: 'caption' }, 'Disk box — pick a game')),
+      ),
+      h(
+        'div',
+        { class: 'desk-right' },
+        h(
+          'button',
+          { class: 'prop gm-box', onclick: () => void openGmBox(), 'aria-label': 'Game-Maker SE 3.0 box: look inside' },
+          h(
+            'div',
+            { class: 'retail' },
+            h('div', { class: 'banner' }, h('em', null, 'COMPUTER-AIDED DESIGN TOOLS'), h('strong', null, 'GAME-MAKER')),
+            h('div', { class: 'tagline' }, 'CREATE YOUR OWN COMPUTER GAMES'),
+            h('div', { class: 'edition-ribbon' }, 'SANDBOX EDITION'),
+            boxTiles,
+            h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
+          ),
+          h('span', { class: 'caption' }, 'Game-Maker SE 3.0 — open the box'),
+        ),
       ),
       h(
         'div',
         { class: 'pc' },
-        h(
-          'div',
-          { class: 'monitor' },
-          h('button', { class: 'sticky', onclick: () => nav.toModern() }, 'Too retro? Use today’s web →'),
-          h('div', { class: 'screen-bezel' }, crt),
-          h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
-          h('button', { class: 'enlarge', title: 'Fill the window with the screen', 'aria-label': 'Enlarge screen', onclick: () => setZoom('manual') }, '⤢'),
-          h('span', { class: 'monitor-led' }),
-          keyCard.el,
-        ),
-        h('div', { class: 'monitor-stand' }),
         h(
           'div',
           { class: 'case' },
@@ -162,32 +187,21 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           driveActions,
         ),
         keyboardTray(keyboard(() => void power(true))),
+        // the screen takes every key (Tab too), so it comes last when tabbing: the case,
+        // tray and monitor buttons come first and CSS puts them back in their places
+        h(
+          'div',
+          { class: 'monitor' },
+          h('button', { class: 'sticky', onclick: () => nav.toModern() }, 'Too retro? Use today’s web →'),
+          h('button', { class: 'enlarge', title: 'Fill the window with the screen', 'aria-label': 'Enlarge screen', onclick: () => setZoom('manual') }, '⤢'),
+          keyCard.el,
+          h('div', { class: 'screen-bezel' }, crt),
+          h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
+          h('span', { class: 'monitor-led' }),
+        ),
+        h('div', { class: 'monitor-stand' }),
       ),
       h('div', { class: 'desk-edge', 'aria-hidden': 'true' }),
-      h(
-        'div',
-        { class: 'desk-right' },
-        h(
-          'button',
-          { class: 'prop gm-box', onclick: () => void openGmBox(), 'aria-label': 'Game-Maker SE 3.0 box: look inside' },
-          h(
-            'div',
-            { class: 'retail' },
-            h('div', { class: 'banner' }, h('em', null, 'COMPUTER-AIDED DESIGN TOOLS'), h('strong', null, 'GAME-MAKER')),
-            h('div', { class: 'tagline' }, 'CREATE YOUR OWN COMPUTER GAMES'),
-            h('div', { class: 'edition-ribbon' }, 'SANDBOX EDITION'),
-            boxTiles,
-            h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
-          ),
-          h('span', { class: 'caption' }, 'Game-Maker SE 3.0 — open the box'),
-        ),
-        h(
-          'button',
-          { class: 'prop catalog-prop', onclick: () => void catalog() },
-          h('div', { class: 'paper' }, 'SHAREWARE', h('br'), 'CATALOG', h('em', null, 'Games made with Game-Maker · Fall 1994 · call our BBS!')),
-          h('span', { class: 'caption' }, 'Shareware catalog'),
-        ),
-      ),
     ),
     h('button', { class: 'zoom-exit primary', onclick: () => setZoom(false) }, 'Back to the desk'),
   );
@@ -212,7 +226,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   pc = computer;
   const capture = deskCapture(computer);
-  desk.querySelector('.monitor')?.append(capture.el);
+  desk.querySelector('.monitor .screen-bezel')?.before(capture.el); // before the screen, for Tab
   const removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);
   crt.addEventListener('click', () => void power(true));
 
@@ -412,6 +426,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   async function fillShelf(games: CatalogEntry[]): Promise<void> {
     const scene = desk.querySelector<HTMLElement>('.desk-scene');
     if (scene) shelf = await gameShelf(scene, games, { insert: (id) => void insertOriginal(id), manual: (g, front) => void openGameManual(g, front) });
+    // on the wall under the poster, so it comes next when you Tab along the wall
+    const el = scene?.querySelector('.game-shelf');
+    if (el) desk.querySelector('.news-clipping')?.after(el);
   }
 
   async function insertOriginal(id: string): Promise<void> {

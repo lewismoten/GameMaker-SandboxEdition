@@ -124,6 +124,24 @@
   width: min(820px, 92vw, calc((100vh - 270px) * 1.12));
 }
 
+/* in the page the case comes before the monitor (see desk.ts); show them top to bottom */
+.pc > .monitor {
+  order: 0;
+}
+
+.pc > .monitor-stand {
+  order: 1;
+}
+
+.pc > .case {
+  order: 2;
+  z-index: 1; /* the modem on top of it stays in front of the monitor */
+}
+
+.pc > .kb-tray {
+  order: 3;
+}
+
 .monitor {
   position: relative;
   width: 92%;
