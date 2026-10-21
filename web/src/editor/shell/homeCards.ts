@@ -18,6 +18,7 @@ import { demoButton } from '../../media/demo';
 import { catalogHasDemo, filesHaveDemo, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
 import { downloadProject, exportProject, exportProjectPage, exportProjectForDos } from './projectExport';
+import { gamePage } from '../../seo/site';
 
 export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware';
 
@@ -352,7 +353,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
         '✎ Start a game with these',
       ),
     ];
-  const href = `./play.html?game=${encodeURIComponent(e.id)}`;
+  const href = `./${gamePage(e.id)}`;
   return (
     [
       play(href),
