@@ -713,13 +713,13 @@ registerEditor(['chr'], (host, project, file) => {
       'div',
       { class: 'chr-editor' },
       h(
-        'p',
-        { class: 'hint' },
-        `The hero: how it starts the game, and how it moves. Objects come from ${bblName || 'no block set'} and sounds from ${sndName || 'no sound set'}.`,
-      ),
-      h(
         'div',
-        { class: 'toolbar', style: 'margin-bottom:8px' },
+        { class: 'ed-head' },
+        h(
+          'p',
+          { class: 'hint' },
+          `The hero: how it starts the game, and how it moves. Objects come from ${bblName || 'no block set'} and sounds from ${sndName || 'no sound set'}.`,
+        ),
         fileField(
           project,
           'Character blocks',

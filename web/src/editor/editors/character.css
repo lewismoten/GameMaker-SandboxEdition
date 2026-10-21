@@ -190,7 +190,7 @@
     15px/1.5 ui-monospace,
     'Courier New',
     monospace;
-  color: var(--chr-blue);
+  color: #7f93ff;
   white-space: pre;
   filter: brightness(1.25);
 }
