@@ -107,6 +107,8 @@ export async function act2(bot: Bot): Promise<void> {
   await g(40, 46, 'booth door');
   await g(47, 46, 'the cue sheet');
   await bot.pickup('the cue sheet');
+  // the history wall: the lens reads the Courier's misprint right, and the plaque pays 1776
+  await readHistoryWall(bot);
   // through the pit gate and the pit door, into the dark under the stage
   await g(37, 24, 'the pit gate');
   await g(39, 23, 'the pit door');
@@ -121,6 +123,26 @@ export async function act2(bot: Bot): Promise<void> {
   if (evidence !== 8) throw new Error(`Act Two evidence ${evidence}`);
   await bot.through('up');
   bot.avoid.clear();
+}
+
+/** The lobby's history wall: both smudged words of the clipping under the lens, then the plaque. */
+export async function readHistoryWall(bot: Bot): Promise<void> {
+  const g = (x: number, y: number, label: string) => bot.goto(at(x, y).x, at(x, y).y, label);
+  const block = (x: number) => bot.sim.blockAt(at(x, 39).x, at(x, 39).y);
+  for (const x of [26, 28]) {
+    const before = block(x);
+    const lens = bot.sim.meter(CTR.lens);
+    await g(x, 40, `the clipping at ${x}`);
+    await bot.push('up', 2, 4);
+    if (block(x) === before || bot.sim.meter(CTR.lens) !== lens - 1) throw new Error(`The lens did not read the clipping at ${x}`);
+  }
+  const score = bot.sim.ci.score;
+  await g(23, 40, 'the plaque');
+  await bot.push('up', 2, 4);
+  if (bot.sim.ci.score !== score + 1776) throw new Error(`The plaque paid ${bot.sim.ci.score - score}`);
+  await bot.push('up', 2, 4);
+  if (bot.sim.ci.score !== score + 1776) throw new Error('The plaque paid twice');
+  bot.say('read the history wall: RAVEN BRIDE, and 1776 points');
 }
 
 /** Dawn: name the killer, how and why. `wrong` first tries the given wrong suspect. */

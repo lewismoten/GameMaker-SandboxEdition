@@ -122,6 +122,14 @@ function layout(act: 1 | 2): string[] {
     [31, 'y'],
     [15, '*'],
     [34, '*'],
+    // the Historical Society's wall: the crier's portrait, his plaque, the Courier clipping
+    [21, 'i'],
+    [22, 'B'],
+    [23, 'B'],
+    [24, 'B'],
+    [26, 'W'],
+    [27, 'W'],
+    [28, 'W'],
   ] as [number, string][])
     y39[x] = ch;
   rows.push(y39.join(''));
@@ -290,6 +298,12 @@ function blockFor(ch: string, act: 1 | 2, x: number, y: number, rows: string[]):
       return `poster${run('y') % 2}`;
     case 'u':
       return 'palm';
+    case 'i':
+      return 'portrait';
+    case 'B':
+      return `plaque${run('B')}`;
+    case 'W':
+      return ['clip0x', 'clip1', 'clip2x'][run('W')];
     case '^':
       return 'glassdoor';
     case '!':
