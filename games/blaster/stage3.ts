@@ -118,9 +118,11 @@ export function stage3(): Stage {
   );
   const a = strip(ks.bs, ks.beasts, art, 301);
   legA(a);
+  a.sprinkle([['knob', 2, 2], ['jackG', 1, 1], ['jackP', 1, 1], ['jackB', 1, 1], ['vu0', 1, 1], ['vu3', 1, 1]], 14);
   a.cardAt = 30;
   const b = strip(ks.bs, ks.beasts, art, 302);
   legB(b);
+  b.sprinkle([['knob', 2, 2], ['jackG', 1, 1], ['jackP', 1, 1], ['jackB', 1, 1], ['vu0', 1, 1], ['vu3', 1, 1]], 14);
   b.cardAt = 26;
   return {
     n: 3,

@@ -140,6 +140,34 @@ export class Grid {
     return this;
   }
 
+  /**
+   * Scatters decorations over bare floor: each item is [block or stamp prefix, w, h] (w x h
+   * stamps use `${prefix}${row}${col}` blocks; 1 x 1 items name a block). Leaves room
+   * around monsters and everything already built.
+   */
+  sprinkle(items: [string, number, number][], count: number, d0 = 2, d1 = LENGTH - 3): this {
+    const busy = new Set<string>();
+    for (const m of this.map.monsters) if (m.monnum < 64) for (let dy = -1; dy <= 1; dy++) busy.add(`${m.curx},${m.cury + dy}`);
+    for (let placed = 0, tries = 0; placed < count && tries < count * 60; tries++) {
+      const [name, w, h] = items[Math.floor(this.rnd() * items.length)];
+      const c = 1 + Math.floor(this.rnd() * (15 - w));
+      const d = d0 + Math.floor(this.rnd() * (d1 - d0 - h));
+      let ok = true;
+      for (let r = -1; r <= h && ok; r++)
+        for (let k = -1; k <= w && ok; k++) {
+          const cc = c + k;
+          const dd = d + r;
+          if (cc < 1 || cc > 14) continue;
+          if (!this.get(cc, dd).startsWith('floor') || busy.has(`${X0 + cc},${this.y(dd)}`)) ok = false;
+        }
+      if (!ok) continue;
+      if (w === 1 && h === 1) this.set(c, d, name);
+      else this.stamp(c, d, name, w, h);
+      placed++;
+    }
+    return this;
+  }
+
   done(): GameMap {
     reindexMonsters(this.map);
     return this.map;
