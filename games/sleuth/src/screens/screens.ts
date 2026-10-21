@@ -7,6 +7,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels } from '../../../kit/pixels';
 import { dosText } from '../../../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';
 import { W, H, actCard, caseFile, evidenceScreen, facade, portraitScreen, stageView, actor, rain } from './art';
@@ -126,7 +127,10 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
   put('hiscore.gif', gif(scoresScreen()));
   put('load.gif', gif(drawerScreen('LOAD A CASE')));
   put('save.gif', gif(drawerScreen('FILE THE CASE')));
+  // the Sandbox Software logo first, then the game's own intro
+  put(SANDLOGO, sandLogoFli());
   lst('title.lst', [
+    [SANDLOGO, 0],
     ['intro.fli', 0],
     ['title.gif', 10],
   ]);
