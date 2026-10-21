@@ -82,17 +82,37 @@ function startModern(hash?: string): void {
       themeButton(),
       h(
         'button',
-        { onclick: () => void startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
+        { class: 'hide-narrow', onclick: () => void startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
         h('span', { 'aria-hidden': 'true' }, '💾'),
-        h('span', { class: 'hide-narrow' }, ' 1994 desk'),
+        ' 1994 desk',
       ),
-      h('a', { class: 'hide-narrow', href: 'https://github.com/lewismoten/GameMaker-SandboxEdition', target: '_blank', rel: 'noopener' }, 'Source'),
+      h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
+      // phones: the desk and the source in a small menu, so the header stays one tidy row
+      h(
+        'details',
+        { class: 'topbar-more show-narrow' },
+        h('summary', { 'aria-label': 'More: the 1994 desk and the source code', title: 'More' }, '⋯'),
+        h(
+          'div',
+          { class: 'topbar-menu' },
+          h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
+          h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
+        ),
+      ),
     ),
     content,
   );
   if (hash !== undefined && location.hash !== hash) location.hash = hash;
   else void route();
 }
+
+const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
+
+// The header's ⋯ menu closes when something else is clicked or a choice is made.
+document.addEventListener('click', (e) => {
+  const open = document.querySelector<HTMLDetailsElement>('.topbar-more[open]');
+  if (open && (!open.contains(e.target as Node) || (e.target as Element).closest('.topbar-menu'))) open.open = false;
+});
 
 /** The skip link moves focus to the page's main area without changing the route. */
 function skipToContent(e: Event): void {
