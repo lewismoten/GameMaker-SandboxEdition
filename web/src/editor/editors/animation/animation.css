@@ -48,14 +48,16 @@
     width: min(680px, max(320px, calc((var(--ws-vh, 100dvh) - 470px) * 4 / 3 + 28px)));
     max-width: none;
   }
+  /* the downloads share rows; Undo and Redo start a row of their own */
   .fli-edit > .fli-export {
     grid-column: 2;
     grid-row: 2;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: flex-start;
   }
   .fli-edit > .fli-export .spacer {
-    display: none;
+    flex: 0 0 100%;
+    height: 0;
   }
   .fli-edit > .fli-help {
     grid-column: 2;
