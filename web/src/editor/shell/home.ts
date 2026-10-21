@@ -157,7 +157,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       ...CATEGORIES.map((c) =>
         h(
           'button',
-          { class: `lib-cat${c.id === current ? ' active' : ''}`, 'aria-pressed': String(c.id === current), onclick: () => void select(c.id) },
+          { class: `lib-cat${c.id === current ? ' active' : ''}`, 'aria-pressed': String(c.id === current), onclick: () => void select(c.id, true) },
           h('span', { class: 'lib-cat-icon', 'aria-hidden': 'true' }, c.icon),
           h('span', { class: 'lib-cat-name' }, c.name),
           h('span', { class: 'lib-cat-count' }, String(counts[c.id])),
@@ -166,13 +166,15 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     );
   };
 
-  const select = async (c: Category) => {
+  /** Shows a collection; remembered when the visitor picked it. */
+  const select = async (c: Category, picked = false) => {
     current = c;
-    try {
-      localStorage.setItem(CATEGORY_KEY, c);
-    } catch {
-      /* not remembered */
-    }
+    if (picked)
+      try {
+        localStorage.setItem(CATEGORY_KEY, c);
+      } catch {
+        /* not remembered */
+      }
     renderCats();
     const info = CATEGORIES.find((x) => x.id === c)!;
     libTitle.textContent = info.name;
