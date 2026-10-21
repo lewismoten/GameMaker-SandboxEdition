@@ -1,3 +1,4 @@
+// Tests: Undo and redo by snapshots (editor/core/history.ts).
 import { describe, expect, it } from 'vitest';
 import { History } from '../src/editor/core/history';
 

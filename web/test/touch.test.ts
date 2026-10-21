@@ -1,3 +1,4 @@
+// Tests: On-screen touch controls (player/touch.ts).
 import { describe, expect, it } from 'vitest';
 import { padKeys, touchLabel, touchLayout } from '../src/player/touch';
 

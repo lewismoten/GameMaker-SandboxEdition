@@ -1,3 +1,4 @@
+// Tests: Note velocity in the CMF player (audio/cmfPlayer.ts), following SBFMDRV's loudness formula.
 import { describe, expect, it } from 'vitest';
 import { CmfPlayer } from '../src/audio/cmfPlayer';
 import { Opl2 } from '../src/audio/opl';

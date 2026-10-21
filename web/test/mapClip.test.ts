@@ -1,3 +1,4 @@
+// Tests: Choosing the part of a map to save as a picture (editors/map/mapClip.ts).
 import { describe, expect, it } from 'vitest';
 import { MLEN, MWID } from '../src/formats/map';
 import { WHOLE_MAP, clampRect, contentBounds, dragRect, gameView } from '../src/editor/editors/map/mapClip';

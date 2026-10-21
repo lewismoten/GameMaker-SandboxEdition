@@ -1,3 +1,4 @@
+// Tests: The rows of a game's handwritten key card (desk/pc/keyCardRows.ts).
 import { describe, expect, it } from 'vitest';
 import { cardRows, shortKey } from '../src/desk/pc/keyCardRows';
 import type { GameKeyMap } from '../src/editor/keymap/keyMap';

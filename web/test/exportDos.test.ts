@@ -1,3 +1,4 @@
+// Tests: Exporting a game as a DOS folder with PLAYGAME (export/exportDos.ts).
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';

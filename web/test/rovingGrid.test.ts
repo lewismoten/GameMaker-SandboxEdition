@@ -1,3 +1,4 @@
+// Tests: Arrow-key movement in grids of picture buttons (editor/widgets/rovingGrid.ts).
 import { describe, expect, it } from 'vitest';
 import { gridMove } from '../src/editor/widgets/rovingGrid';
 

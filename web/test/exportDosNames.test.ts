@@ -1,3 +1,4 @@
+// Tests: DOS names for files the CD renamed with underscores (export/exportDos.ts dosNames).
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';

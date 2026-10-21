@@ -1,3 +1,4 @@
+// Tests: Slide show timing as ShowGraphic plays it (editors/slideShow/slideTimeline.ts).
 import { describe, expect, it } from 'vitest';
 import {
   clipKind,

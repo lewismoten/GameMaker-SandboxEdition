@@ -1,3 +1,4 @@
+// Tests: Playing CMF music through the OPL2 emulation (audio/cmfPlayer.ts, audio/opl.ts).
 import { describe, expect, it } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';

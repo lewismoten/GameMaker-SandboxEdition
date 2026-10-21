@@ -1,3 +1,4 @@
+// Tests: Editing FLI frames (formats/fliFrames.ts).
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';

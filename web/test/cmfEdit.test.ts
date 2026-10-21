@@ -1,3 +1,4 @@
+// Tests: The CMF editing model (formats/cmfSong.ts, cmfEdit.ts, cmfPreview.ts): reading and writing byte for byte, edits, previews.
 import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';

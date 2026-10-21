@@ -1,3 +1,4 @@
+// Tests: 8.3 file names and the CD's underscore names (project/files.ts).
 import { describe, expect, it } from 'vitest';
 import { GameFiles, cdName, normalize } from '../src/project/files';
 

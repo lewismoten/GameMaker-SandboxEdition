@@ -1,3 +1,4 @@
+// Tests: The game health check (project/health.ts): missing files, bad links and names.
 import { describe, expect, it } from 'vitest';
 import { checkGame, validDosName, worstSeverity } from '../src/project/health';
 import { GameFiles } from '../src/project/files';

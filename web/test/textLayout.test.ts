@@ -1,3 +1,4 @@
+// Tests: Where typed lines land on a text screen (editors/textScreen/textLayout.ts).
 import { describe, expect, it } from 'vitest';
 import { layoutText, pageOfLine, wrapLongLines } from '../src/editor/editors/textScreen/textLayout';
 import { textLines } from '../src/formats/graphicScripts';

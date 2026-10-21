@@ -1,3 +1,4 @@
+// Tests: The retro PC's DOS file system (retro/dos/vfs.ts).
 import { describe, expect, it } from 'vitest';
 import { dirLine, file, resolvePath } from '../src/retro/dos/vfs';
 

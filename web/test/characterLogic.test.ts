@@ -1,3 +1,4 @@
+// Tests: The character editor's pure helpers (editors/character/characterLogic.ts): turning blocks and editing frame lists.
 import { describe, expect, it } from 'vitest';
 import {
   composeOrient,

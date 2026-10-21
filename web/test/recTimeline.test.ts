@@ -1,3 +1,4 @@
+// Tests: The demo recording timeline model (editors/recording/recTimelineModel.ts).
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

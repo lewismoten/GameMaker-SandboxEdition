@@ -1,3 +1,4 @@
+// Tests: Monster path editing and walking a path as playgame does (editors/monsters/monsterPath.ts).
 import { describe, expect, it } from 'vitest';
 import { emptyMonster, MAXMARCH } from '../src/formats/monster';
 import { addCorner, clearPath, corners, insertCorner, moveCorner, pathLength, PathWalker, removeCorner } from '../src/editor/editors/monsters/monsterPath';

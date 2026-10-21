@@ -1,3 +1,4 @@
+// Tests: Reading and writing zip files (project/zip.ts).
 import { describe, expect, it } from 'vitest';
 import { createZip, readZip, crc32 } from '../src/project/zip';
 

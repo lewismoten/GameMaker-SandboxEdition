@@ -1,3 +1,4 @@
+// Tests: Auto-arrange and Spread out in the integrator (editors/integrator/layoutCells.ts, integratorLayout.ts), on the CD's games.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';

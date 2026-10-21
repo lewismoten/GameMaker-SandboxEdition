@@ -1,3 +1,4 @@
+// Tests: The song maker's composer (editor/tools/songMaker.ts).
 import { describe, expect, it } from 'vitest';
 import { compose } from '../src/editor/tools/songMaker';
 import { INSTRUMENTS, song } from '../src/audio/compose';

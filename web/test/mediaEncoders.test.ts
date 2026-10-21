@@ -1,3 +1,4 @@
+// Tests: Encoders for saving media (media/): WAV, animated GIF, MP4 boxes, screen text.
 import { describe, expect, it } from 'vitest';
 import { encodeWav, parseWav, toPcm8 } from '../src/media/wav';
 import { changedRect, encodeAnimatedGif, lzw } from '../src/media/gifEncode';

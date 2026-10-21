@@ -1,3 +1,4 @@
+// Tests: The printed key card in a game's box (manual/printables/keys.ts).
 import { describe, expect, it } from 'vitest';
 import { cardKeys, keyLabel, manualKeyText, splitKeys, type BoundKey } from '../src/manual/printables/keys';
 

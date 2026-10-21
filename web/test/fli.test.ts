@@ -1,3 +1,4 @@
+// Tests: Reading Autodesk Animator .FLI animations (formats/fli.ts).
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';

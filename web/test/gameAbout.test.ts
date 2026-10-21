@@ -1,3 +1,4 @@
+// Tests: A game's about text for exports (export/gameAbout.ts).
 import { describe, expect, it } from 'vitest';
 import { blurbOf, dosText, gameAbout } from '../src/export/gameAbout';
 

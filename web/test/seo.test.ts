@@ -1,3 +1,4 @@
+// Tests: search-engine tags, JSON-LD and play links for game pages (seo/site.ts).
 import { describe, expect, it } from 'vitest';
 import { gameDescription, gameJsonLd, jsonLdScript, metaTags, OG_IMAGE, playUrl, SITE_URL } from '../src/seo/site';
 

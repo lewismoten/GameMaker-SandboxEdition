@@ -1,3 +1,4 @@
+// Tests: What a retail box says about its game (desk/boxes/boxFacts.ts): disks, hours, claims.
 import { describe, expect, it } from 'vitest';
 import { backScore, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours, ratingMark, seeded } from '../src/desk/boxes/boxFacts';
 

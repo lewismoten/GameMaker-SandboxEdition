@@ -1,3 +1,4 @@
+// Tests: Red reveal inks for the hint book (manual/printables/redFilm.ts).
 import { describe, expect, it } from 'vitest';
 import { CYAN_INK, LINE_INKS, luma, overprint, redField, redLines, throughRedFilm } from '../src/manual/printables/redFilm';
 

@@ -1,3 +1,4 @@
+// Tests: The one-page game export and importing it back (export/singlePage.ts, project/importPage.ts).
 import { describe, expect, it } from 'vitest';
 import {
   decodeGame,

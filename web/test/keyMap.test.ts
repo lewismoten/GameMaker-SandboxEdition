@@ -1,3 +1,4 @@
+// Tests: Working out which keys a game uses from its files (editor/keymap/keyMap.ts).
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';

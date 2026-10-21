@@ -1,3 +1,4 @@
+// Tests: Printing the manual as a folded booklet (manual/printables/imposition.ts).
 import { describe, expect, it } from 'vitest';
 import { bookletPageCount, bookletSheets, centerSpread, spreadAt, stepSpread } from '../src/manual/printables/imposition';
 

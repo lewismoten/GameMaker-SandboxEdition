@@ -1,3 +1,4 @@
+// Tests: Whole-pixel scaling of the game screen (player/exactScale.ts).
 import { describe, expect, it } from 'vitest';
 import { exactSize } from '../src/player/exactScale';
 

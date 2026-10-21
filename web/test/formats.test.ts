@@ -1,3 +1,4 @@
+// Tests: Reading and writing Game-Maker's binary formats (formats/): blocks, characters, monsters, maps, sounds, games.
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';

@@ -1,3 +1,4 @@
+// Tests: Writing VOC, CMF and FLI files that the readers (formats/) read back.
 import { describe, expect, it } from 'vitest';
 import { decodeVoc, encodeVoc } from '../src/formats/voc';
 import { CMF_GAMEMAKER_CLOCK, encodeCmf, parseCmf } from '../src/formats/cmf';

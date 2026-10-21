@@ -1,3 +1,4 @@
+// Tests: Sticker sheets (manual/printables/stickerArt.ts).
 import { describe, expect, it } from 'vitest';
 import { CUT_H, CUT_W, GAP, cutSvg, layoutStickers, pngWithDpi, shapePath, sheetBounds, stickerSize } from '../src/manual/printables/stickerArt';
 

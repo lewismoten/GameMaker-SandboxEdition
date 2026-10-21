@@ -1,3 +1,4 @@
+// Tests: Mug wraps on sublimation paper (desk/mug/mugSizes.ts).
 import { describe, expect, it } from 'vitest';
 import { MARGIN, MUG_SIZES, PAPERS, layoutSheet, paginateWraps } from '../src/desk/mug/mugSizes';
 

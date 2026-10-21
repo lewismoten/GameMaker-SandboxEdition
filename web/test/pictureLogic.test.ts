@@ -1,3 +1,4 @@
+// Tests: The picture editor's pure helpers (editors/picture/pictureLogic.ts).
 import { describe, expect, it } from 'vitest';
 import { isBlankBlock } from '../src/editor/editors/picture/pictureLogic';
 import { newBlockSet } from '../src/formats/blocks';
