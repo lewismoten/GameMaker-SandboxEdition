@@ -2,7 +2,7 @@
 // laid out at one size (STAGE_W x STAGE_H) and scaled to fit, so nothing scrolls and the
 // props keep their places. Narrow (phone) screens stack the props instead (desk.css).
 export const STAGE_W = 1440;
-export const STAGE_H = 860;
+export const STAGE_H = 880;
 
 export function fitStage(desk: HTMLElement): () => void {
   const fit = () => {

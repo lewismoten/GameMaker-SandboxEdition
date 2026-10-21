@@ -1,5 +1,5 @@
 /* The desk as a stage scaled to fit the window (desk/stage.ts); phones stack instead.
-   Stage coordinates: 1440 x 860. The desk top runs from x 40 to 1400; its back meets the
+   Stage coordinates: 1440 x 880. The desk top runs from x 40 to 1400; its back meets the
    wall at y 470 and its front edge is at --edge. Past its ends you see the wall come down
    to the baseboard and the carpet. */
 .desk-edge,
@@ -34,7 +34,7 @@
     top: var(--bar-h, 50px);
     display: block;
     width: 1440px;
-    height: 860px;
+    height: 880px;
     max-width: none;
     margin: 0;
     padding: 0;
