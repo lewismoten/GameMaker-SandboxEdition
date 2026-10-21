@@ -149,7 +149,7 @@ async function route(): Promise<void> {
     }
     workspace = opened;
     clear(titleSlot, ` · ${opened.project.name}`);
-    document.title = `${opened.project.name} · ${SHORT}`;
+    document.title = `${opened.currentFile ? `${opened.currentFile} · ` : ''}${opened.project.name} · ${SHORT}`;
     return;
   }
   workspace?.dispose();
