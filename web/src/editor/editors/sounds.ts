@@ -1,5 +1,6 @@
 // Sound set editor (SNDEDIT.EXE): 30 effects, each 36 PC speaker frequencies played
 // 1/145.6 s apart, or a Sound Blaster .voc file.
+import './sounds.css';
 import { registerEditor } from './index';
 import { h, clear, numberField, debounce } from '../ui';
 import { AudioEngine } from '../../audio/engine';
@@ -19,8 +20,8 @@ registerEditor(['snd'], (host, project, file) => {
   const snd = parseSoundSet(project.files.get(file)!);
   let current = 0;
   const save = debounce(() => project.files.set(file, serializeSoundSet(snd)), 250);
-  const list = h('div', { class: 'stack', style: 'flex:0 0 230px' });
-  const detail = h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' });
+  const list = h('div', { class: 'snd-list', role: 'list', 'aria-label': 'Sound effects' });
+  const detail = h('div', { class: 'stack snd-detail' });
 
   const vocOf = (i: number) => {
     const name = snd.digital[i];
@@ -43,10 +44,15 @@ registerEditor(['snd'], (host, project, file) => {
       ...snd.freqs.map((_, i) =>
         h(
           'div',
-          { class: 'row', style: 'gap:4px;flex-wrap:nowrap' },
+          { class: 'snd-item', role: 'listitem' },
           h(
             'button',
-            { class: i === current ? 'primary' : '', style: 'flex:1;text-align:left', onclick: () => ((current = i), render()) },
+            {
+              class: `snd-name${i === current ? ' primary' : ''}`,
+              'aria-current': i === current ? 'true' : undefined,
+              title: snd.digital[i] ? `Uses ${snd.digital[i].trim()}.VOC on a Sound Blaster` : undefined,
+              onclick: () => ((current = i), render()),
+            },
             `${i}. ${SOUND_NAMES[i] ?? 'Effect'}${snd.digital[i] ? ' 🔊' : ''}`,
           ),
           h(
@@ -134,13 +140,14 @@ registerEditor(['snd'], (host, project, file) => {
       detail,
       h(
         'div',
-        { class: 'panel stack' },
-        h('h3', { style: 'margin:0' }, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`),
-        h('p', { class: 'hint', style: 'margin:0' }, current < SOUND_NAMES.length ? 'Played automatically by the game.' : 'Use it from a character sequence.'),
-      ),
-      h(
-        'div',
-        { class: 'panel stack' },
+        { class: 'panel snd-top' },
+        h(
+          'div',
+          { class: 'snd-title' },
+          h('h3', null, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`),
+          h('p', { class: 'hint' }, current < SOUND_NAMES.length ? 'Played automatically by the game.' : 'Use it from a character sequence.'),
+          playBtn,
+        ),
         fileField(
           project,
           'Sound Blaster sample (.voc)',
@@ -154,7 +161,6 @@ registerEditor(['snd'], (host, project, file) => {
           },
           { noneLabel: ['PC speaker only', 'play the PC speaker sound below'] },
         ),
-        h('div', { class: 'toolbar' }, playBtn),
       ),
       h(
         'div',
@@ -222,7 +228,7 @@ registerEditor(['snd'], (host, project, file) => {
       { class: 'hint' },
       `A sound set holds ${LASTSND} effects. The first nine are played by the game itself; the rest can be attached to character sequences.`,
     ),
-    h('div', { class: 'row' }, list, detail),
+    h('div', { class: 'snd-layout' }, list, detail),
   );
   render();
   return () => audio.stopAll();
