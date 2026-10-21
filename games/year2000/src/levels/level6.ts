@@ -1,7 +1,8 @@
 // Level 6: THE SCIENCE FAIR at Neil Armstrong Moon School. Artificial gravity, a gym
 // full of erupting volcanoes, and Sparky, zooming laps with the cover page in his mouth.
 // Zap him three times to calm him down, turn in 20 pages at the judges' table, hand
-// over the cover page, and step up to the podium.
+// over the cover page, and step up to the podium. Among the projects: a 6502 breadboard
+// computer, the 1802 that flew to Jupiter, and a time capsule for America's 250th in 2026.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from '../blocks/book';
 import { MON } from '../ids';
@@ -18,6 +19,9 @@ const LEGEND: Legend = {
   T: 'tvproj',
   O: 'potato',
   P: 'phoneproj',
+  c: 'proj6502',
+  g: 'proj1802',
+  u: 'capsule',
   J: 'judgetable',
   K: 'covertable',
   W: { tile: 'podium', mark: 'exit' },
@@ -42,13 +46,13 @@ const ROWS = [
   `S${'L'.repeat(13)}K${'L'.repeat(14)}S`, // 3
   `S${'H'.repeat(13)}J${'H'.repeat(14)}S`, // 4
   gym('............................'), // 5
-  gym('..V..R..T..O....V..R..T..P..'), // 6
+  gym('..V..R..T..c....V..R..T..P..'), // 6
   gym('.p....................z.....'), // 7
   gym('............................'), // 8
-  gym('...O..V.............V..T....'), // 9
+  gym('...g..V.............V..T....'), // 9
   gym('.............s..............'), // 10
   gym('.*......................p...'), // 11
-  gym('..T..R..V..O....O..V..R.....'), // 12
+  gym('..T..R..V..O....u..V..R.....'), // 12
   gym('----------------------------'), // 13
   gym('....z.......p.........*.....'), // 14
   gym('..V.....T..........R...V....'), // 15

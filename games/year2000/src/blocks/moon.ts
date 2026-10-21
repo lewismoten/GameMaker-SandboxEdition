@@ -83,7 +83,7 @@ function schoolWall(top: boolean): Pixels {
   return p;
 }
 
-function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone'): Pixels {
+function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone' | 'cpu6502' | 'cpu6502b' | 'cpu1802' | 'capsule'): Pixels {
   const p = on('gym');
   p.rect(0, 8, 20, 12, C('paper', 2)).rect(0, 8, 20, 2, C('chrome', 6)).rect(0, 18, 20, 2, C('paper', 0));
   if (kind === 'volcano') {
@@ -104,6 +104,29 @@ function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone'): Pixels 
   } else if (kind === 'tv') {
     p.blit(crtTv(1).crop(0, 2, 20, 16), 0, -2);
     p.rect(0, 14, 20, 6, C('paper', 2));
+  } else if (kind === 'cpu6502' || kind === 'cpu6502b') {
+    // A breadboard computer: a 6502, its jumper wires, and a clock LED that blinks.
+    p.rect(1, 1, 18, 12, C('paper', 2)).frame(1, 1, 18, 12, C('paper', 0));
+    for (let x = 2; x < 18; x += 2) p.set(x, 2, C('paper', 0)).set(x, 11, C('paper', 0));
+    p.line(3, 3, 5, 11, C('red', 4)).line(17, 3, 14, 11, C('teal', 4)).line(9, 10, 17, 11, C('gold', 4));
+    p.rect(2, 4, 16, 6, C('grey', 1));
+    micro(p, 3, 4, '6502', C('grey', 6));
+    p.disc(17, 11, 1, kind === 'cpu6502b' ? C('red', 4) : C('red', 1));
+    micro(p, 1, 14, '8-BIT', C('denim', 1));
+  } else if (kind === 'cpu1802') {
+    // The RCA 1802 on a little red card, and the planet it went to aboard Galileo.
+    oval(p, 15, 3, 3.5, 2.5, C('orange', 3));
+    p.rect(12, 2, 7, 1, C('orange', 1)).rect(12, 4, 7, 1, C('orange', 4));
+    p.line(6, 6, 12, 3, C('grey', 6));
+    p.rect(0, 6, 20, 7, C('red', 2)).rect(1, 7, 17, 5, C('grey', 1));
+    micro(p, 2, 7, '1802', C('grey', 6));
+    micro(p, 1, 14, 'SPACE', C('denim', 1));
+  } else if (kind === 'capsule') {
+    // A time capsule for America's 250th birthday: open on July 4, 2026.
+    p.rect(6, 1, 8, 13, C('chrome', 5)).rect(6, 1, 8, 2, C('chrome', 7));
+    for (let y = 4; y < 13; y += 2) p.rect(6, y, 8, 1, C('red', 4));
+    p.rect(6, 3, 4, 4, C('denim', 2)).set(7, 4, C('grey', 7)).set(8, 5, C('grey', 7));
+    micro(p, 3, 14, '2026', C('red', 3));
   } else {
     // Dex's own project: a "pocket telephone". The judges have their doubts.
     p.rect(8, 3, 4, 10, C('grey', 1)).rect(9, 4, 2, 2, C('neon', 2)).line(11, 3, 12, 0, C('grey', 2));
@@ -181,6 +204,10 @@ export function moonSet(): BlockSet {
   s.add('robotproj', project('robot'), { solid: SOLID });
   s.add('tvproj', project('tv'), { solid: SOLID });
   s.add('phoneproj', project('phone'), { solid: SOLID });
+  s.add('proj6502', project('cpu6502'), { solid: SOLID, next: 'proj6502b', ntime: 5 });
+  s.add('proj6502b', project('cpu6502b'), { solid: SOLID, next: 'proj6502', ntime: 5 });
+  s.add('proj1802', project('cpu1802'), { solid: SOLID });
+  s.add('capsule', project('capsule'), { solid: SOLID });
   s.add('judgetable', judgeTable(false), { solid: SOLID, effect: CTR.pages, eamt: -PAGES_NEEDED, score: 5000, touch: 'judgedone' });
   s.add('judgedone', judgeTable(true));
   s.add('covertable', judgeTable(false, 'COVER'), { solid: SOLID, effect: CTR.cover, eamt: -1, score: 5000, touch: 'judgedone' });
