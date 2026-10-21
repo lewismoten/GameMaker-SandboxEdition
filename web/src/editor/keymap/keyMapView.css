@@ -223,6 +223,17 @@
     monospace;
   text-align: center;
 }
+.km-keycol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.km-mac {
+  color: #c0ffff;
+  font-size: 0.8em;
+  line-height: 1.2;
+}
 .km-key.small {
   min-width: 34px;
   background: #55ffff;

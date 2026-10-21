@@ -8,6 +8,7 @@ import { parsePalette, defaultPalette, type Palette } from '../../formats/palett
 import { parseMonsters, type Monster } from '../../formats/monster';
 import { decodeGif, isGif } from '../../formats/gif';
 import { blockCanvas, paintIndexed } from '../core/draw';
+import { macHint } from '../../input/macKeys';
 import type { GameFiles } from '../../project/files';
 
 type Child = Node | string | null | undefined | false;
@@ -310,7 +311,7 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
           el(
             'div',
             'km-row',
-            el('kbd', 'km-key', k.name),
+            macHint(k.scan) ? el('div', 'km-keycol', el('kbd', 'km-key', k.name), el('small', 'km-mac', `Mac: ${macHint(k.scan)}`)) : el('kbd', 'km-key', k.name),
             el(
               'div',
               'km-uses',
