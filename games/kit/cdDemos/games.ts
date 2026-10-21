@@ -41,7 +41,7 @@ export const CD_DEMO_GAMES: CdDemoGame[] = [
   { id: 'pac', kind: 'shareware', gam: 'pac.gam', bot: { dice: 4, horizon: 28 } },
   { id: 'paperair', kind: 'shareware', gam: 'spap.gam' },
   { id: 'parsec3d', kind: 'shareware', gam: 'parsec3d.gam', bot: { links: { 2: [0] } } },
-  { id: 'signhdg', kind: 'shareware', gam: 'sign.gam', bot: { links: 'any' } },
+  { id: 'signhdg', kind: 'shareware', gam: 'sign.gam', bot: { links: 'any', every: 2 } },
   { id: 'zoom', kind: 'shareware', gam: 'zoom_.gam' },
 ];
 

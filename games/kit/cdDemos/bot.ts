@@ -130,6 +130,36 @@ export class Bot {
     return this.o.goals?.[this.scene] ?? (s.game.scenes[this.scene]?.links ?? []).filter((l, i) => l.toScene < s.game.scenes.length && this.allowed(i)).map((l) => l.from);
   }
 
+  private fields = new Map<string, Int32Array>();
+
+  /** Steps from every map cell to the nearest goal through blocks with no solid side (-1: no path). */
+  private goalField(w: World, goals: { x: number; y: number }[]): Int32Array {
+    const key = `${this.scene}:${goals.map((g) => `${g.x},${g.y}`).join(' ')}`;
+    let f = this.fields.get(key);
+    if (f) return f;
+    f = new Int32Array(MAP_W * MAP_W).fill(-1);
+    const open = (x: number, y: number) => x >= 0 && y >= 0 && x < MAP_W && y < MAP_W && !w.bg[w.map[y * MAP_W + x]]?.solid;
+    const queue: number[] = [];
+    for (const g of goals) {
+      f[g.y * MAP_W + g.x] = 0;
+      queue.push(g.y * MAP_W + g.x);
+    }
+    for (let i = 0; i < queue.length; i++) {
+      const c = queue[i];
+      const x = c % MAP_W;
+      const y = (c - x) / MAP_W;
+      for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) {
+        const n = ny * MAP_W + nx;
+        if (open(nx, ny) && f[n] < 0) {
+          f[n] = f[c] + 1;
+          queue.push(n);
+        }
+      }
+    }
+    this.fields.set(key, f);
+    return f;
+  }
+
   private hasGoals(s: Session): boolean {
     return this.goals(s).length > 0;
   }
@@ -176,8 +206,13 @@ export class Bot {
     if (process.env.BOT_DEBUG === '2' && dice === 0)
       this.log.push(`    key ${opt?.key} from ${pos(w).x},${pos(w).y} to ${end.x},${end.y} back ${back?.x},${back?.y} hp ${before.hp}->${ci.hitpts} score +${ci.score - before.score} cells ${seenHere.size}`);
     const goals = this.goals(s);
-    if (goals?.length) {
-      const d = (q: { x: number; y: number }) => Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
+    if (goals.length) {
+      // steps along open blocks to the nearest goal, or as the crow flies where no path is known
+      const field = this.goalField(w, goals);
+      const d = (q: { x: number; y: number }) => {
+        const steps = field[Math.floor(q.y / 20) * MAP_W + Math.floor(q.x / 20)];
+        return steps >= 0 ? steps + (Math.abs((q.x % 20) - 10) + Math.abs((q.y % 20) - 10)) / 20 : 2 * Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
+      };
       value += (d(pos(w)) - d(end)) * 15;
     }
     return value;
