@@ -9,7 +9,7 @@ import {
   secondsForWidth,
   showLength,
   thenOf,
-} from '../src/editor/editors/slideTimeline';
+} from '../src/editor/editors/slideShow/slideTimeline';
 import { parseSlideList, serializeSlideList } from '../src/formats/graphicScripts';
 import { textBytes } from '../src/formats/binary';
 

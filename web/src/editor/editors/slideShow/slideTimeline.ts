@@ -8,7 +8,7 @@
 // Pictures (.gif/.bkd) first fade in from black (65 retraces); animations (.fli) play once
 // first; text screens (.txt) wait that long on every page; a slide show inside a slide show
 // plays its own timing and the number after it is not used.
-import type { SlideEntry } from '../../formats/graphicScripts';
+import type { SlideEntry } from '../../../formats/graphicScripts';
 
 export type ClipKind = 'gif' | 'bkd' | 'fli' | 'txt' | 'lst' | 'other';
 export type Then = 'key' | 'none' | 'seconds';

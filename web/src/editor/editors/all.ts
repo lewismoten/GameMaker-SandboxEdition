@@ -11,7 +11,7 @@ import './picture/picture';
 import './animation/animation';
 import './backdrop/backdrop';
 import './textScreen/textScreen';
-import './slideShow';
+import './slideShow/slideShow';
 import './music';
 import './sample';
 import './highScores';
