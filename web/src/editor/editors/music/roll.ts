@@ -2,7 +2,7 @@
 // position, loop region and song end, a lane of instrument changes, a keyboard to try notes,
 // and a velocity lane under the notes (how loud each note plays: SBFMDRV scales the
 // instrument's carrier level by it).
-import { h, toast } from '../core/ui';
+import { h, toast } from '../../core/ui';
 import {
   addNote,
   channelNotes,
@@ -17,7 +17,7 @@ import {
   clampVelocity,
   type Ev,
   type Note,
-} from '../../formats/cmfEdit';
+} from '../../../formats/cmfEdit';
 import { TRACK_COLORS, type MusicDoc } from './doc';
 
 const KEYW = 46;

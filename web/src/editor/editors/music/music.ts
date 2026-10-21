@@ -2,16 +2,16 @@
 // through the same PlayIt code the games use. Only what Game-Maker plays can be edited:
 // notes and their velocities (loudness), instruments (program changes and SBI settings), the
 // drum kit (rhythm mode), timing.
-import { registerEditor } from './registry';
-import { h, clear, toast } from '../core/ui';
-import { MusicDoc, SNAPS } from '../music/doc';
-import { PianoRoll } from '../music/roll';
-import { Overview } from '../music/overview';
-import { TrackList } from '../music/tracks';
-import { InstrumentPanel } from '../music/instrument';
-import { SongPanel } from '../music/songPanel';
-import { VelocityField } from '../music/velocity';
-import '../music/music.css';
+import { registerEditor } from '../registry';
+import { h, clear, toast } from '../../core/ui';
+import { MusicDoc, SNAPS } from './doc';
+import { PianoRoll } from './roll';
+import { Overview } from './overview';
+import { TrackList } from './tracks';
+import { InstrumentPanel } from './instrument';
+import { SongPanel } from './songPanel';
+import { VelocityField } from './velocity';
+import './music.css';
 
 registerEditor(['cmf'], (host, project, file) => {
   let doc: MusicDoc;

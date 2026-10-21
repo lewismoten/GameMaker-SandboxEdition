@@ -1,8 +1,8 @@
 // The music editor's document: the song being edited, what is selected, undo, and
 // playback through the app's own OPL2 emulation (the same PlayIt code the games use).
-import type { Project } from '../core/project';
-import { audio } from '../widgets/mediaShared';
-import { TICK_RATE } from '../../audio/cmfPlayer';
+import type { Project } from '../../core/project';
+import { audio } from '../../widgets/mediaShared';
+import { TICK_RATE } from '../../../audio/cmfPlayer';
 import {
   auditionSong,
   buildPreview,
@@ -19,7 +19,7 @@ import {
   type Note,
   type Preview,
   DRUM_NAMES,
-} from '../../formats/cmfEdit';
+} from '../../../formats/cmfEdit';
 import { presetName } from './sbi';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */

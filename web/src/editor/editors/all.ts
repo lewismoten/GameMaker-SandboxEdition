@@ -12,7 +12,7 @@ import './animation/animation';
 import './backdrop/backdrop';
 import './textScreen/textScreen';
 import './slideShow/slideShow';
-import './music';
+import './music/music';
 import './sample/sample';
 import './highScores/highScores';
 import '../tools/all';

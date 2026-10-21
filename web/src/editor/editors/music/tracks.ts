@@ -1,7 +1,7 @@
 // The track list: one track per MIDI channel, with its instrument, mute and solo, and
 // buttons to add and remove tracks.
-import { h, clear, confirmDialog } from '../core/ui';
-import { channelNotes, RHYTHM_CHANNELS, DRUM_NAMES, removeChannel, setStartProgram, startProgram } from '../../formats/cmfEdit';
+import { h, clear, confirmDialog } from '../../core/ui';
+import { channelNotes, RHYTHM_CHANNELS, DRUM_NAMES, removeChannel, setStartProgram, startProgram } from '../../../formats/cmfEdit';
 import { TRACK_COLORS, type MusicDoc } from './doc';
 import { instLabel } from './instrument';
 import { PRESETS } from './sbi';

@@ -1,7 +1,7 @@
 // The settings in an SBI instrument record that SBFMDRV loads into the OPL2 chip
 // (bytes 0..10: two operators and the feedback/connection byte). Bytes 11..15 are unused
 // by the driver and kept as they are.
-import { INSTRUMENTS } from '../../audio/compose';
+import { INSTRUMENTS } from '../../../audio/compose';
 
 /** 0 = modulator (first operator), 1 = carrier (second operator). */
 export type Half = 0 | 1;

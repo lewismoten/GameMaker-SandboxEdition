@@ -22,7 +22,7 @@ import {
   traceMusic,
   writeSong,
 } from '../src/formats/cmfEdit';
-import { ENVELOPE, FLAGS, getOp, setOp, setFeedback, getFeedback, presetName, MULT } from '../src/editor/music/sbi';
+import { ENVELOPE, FLAGS, getOp, setOp, setFeedback, getFeedback, presetName, MULT } from '../src/editor/editors/music/sbi';
 import { INSTRUMENTS, song as composeSong } from '../src/audio/compose';
 import { CmfPlayer, TICK_RATE } from '../src/audio/cmfPlayer';
 import { Opl2 } from '../src/audio/opl';

@@ -1,8 +1,8 @@
 // Settings for the whole song: the drum kit (rhythm mode), beat length and speed, where it
 // repeats, Game-Maker's clock, loudness (scaling note velocities), and clearing out events
 // the game ignores.
-import { h, clear, toast } from '../core/ui';
-import { CMF_GAMEMAKER_CLOCK } from '../../formats/cmf';
+import { h, clear, toast } from '../../core/ui';
+import { CMF_GAMEMAKER_CLOCK } from '../../../formats/cmf';
 import {
   channelNotes,
   clampVelocity,
@@ -17,8 +17,8 @@ import {
   stripIgnored,
   writeSong,
   type Note,
-} from '../../formats/cmfEdit';
-import { TICK_RATE } from '../../audio/cmfPlayer';
+} from '../../../formats/cmfEdit';
+import { TICK_RATE } from '../../../audio/cmfPlayer';
 import type { MusicDoc } from './doc';
 
 export class SongPanel {
