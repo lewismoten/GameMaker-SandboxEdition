@@ -82,7 +82,7 @@ and the free, open license here are the version of Game-Maker he wishes he'd had
 
 ## Third-party formats, trademarks and code
 
-Game-Maker Web contains no third-party code except as listed. It reimplements file
+Game-Maker: Sandbox Edition contains no third-party code except as listed. It reimplements file
 formats from their published descriptions and from Game-Maker's own source.
 
 - **GIF**: "The Graphics Interchange Format© is the Copyright property of CompuServe

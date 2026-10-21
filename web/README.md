@@ -1,4 +1,4 @@
-# Game-Maker Web
+# Game-Maker: Sandbox Edition
 
 A browser version of Recreational Software Designs' Game-Maker 3.0 (1994), built from
 the original source in [`code/GM`](../code/GM). It can:
