@@ -1,7 +1,7 @@
 // Development aid: writes indexed pictures as PNG files for looking at the art.
 import { deflateSync } from 'node:zlib';
 import { writeFileSync } from 'node:fs';
-import type { Pixels } from '../kit/pixels';
+import type { Pixels } from '../../kit/pixels';
 
 const CRC = Array.from({ length: 256 }, (_, n) => {
   let c = n;

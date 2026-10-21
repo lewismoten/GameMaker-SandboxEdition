@@ -1,18 +1,18 @@
 // Development aid: renders each level's map (with its monsters) to OUT.
-import { citySet, moonSet, suburbSet } from './src/blocks/blocks';
-import type { BlockSet } from './src/blocks/book';
-import type { LevelMap } from './src/levels/mapkit';
-import { level1 } from './src/levels/level1';
-import { level2 } from './src/levels/level2';
-import { level3 } from './src/levels/level3';
-import { level4 } from './src/levels/level4';
-import { level5 } from './src/levels/level5';
-import { level6 } from './src/levels/level6';
-import { renderMap } from './src/art/render';
-import { PAL } from './src/art/pal';
+import { citySet, moonSet, suburbSet } from '../src/blocks/blocks';
+import type { BlockSet } from '../src/blocks/book';
+import type { LevelMap } from '../src/levels/mapkit';
+import { level1 } from '../src/levels/level1';
+import { level2 } from '../src/levels/level2';
+import { level3 } from '../src/levels/level3';
+import { level4 } from '../src/levels/level4';
+import { level5 } from '../src/levels/level5';
+import { level6 } from '../src/levels/level6';
+import { renderMap } from '../src/art/render';
+import { PAL } from '../src/art/pal';
 import { writePng } from './png';
-import { buildMonsterBlocks } from './src/sprites/sprites';
-import { buildMonsters } from './src/characters/monsters';
+import { buildMonsterBlocks } from '../src/sprites/sprites';
+import { buildMonsters } from '../src/characters/monsters';
 
 const mb = buildMonsterBlocks();
 const mons = buildMonsters(mb);
