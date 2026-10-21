@@ -4,7 +4,7 @@
 // once the speaker turns off at CONNECT. Everything is band-limited like a phone line.
 import { output } from "../../audio/output";
 
-const DTMF: Record<string, [number, number]> = {
+export const DTMF: Record<string, [number, number]> = {
   "1": [697, 1209],
   "2": [697, 1336],
   "3": [697, 1477],
@@ -15,6 +15,8 @@ const DTMF: Record<string, [number, number]> = {
   "8": [852, 1336],
   "9": [852, 1477],
   "0": [941, 1336],
+  "*": [941, 1209],
+  "#": [941, 1477],
 };
 
 /** Moments in the call (seconds from the start) the terminal can show. */
@@ -26,7 +28,8 @@ export interface CallTimeline {
   connect: number;
 }
 
-class Line {
+/** A phone line: band-limited to 300..3400 Hz, with tones, the answer tone, FSK and hiss. */
+export class Line {
   readonly out: GainNode;
   constructor(readonly ctx: AudioContext) {
     // The phone line: 300..3400 Hz.
