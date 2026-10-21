@@ -6,7 +6,7 @@ import { attr, type TextScreen } from './textScreen';
 import { BARATTR, BARCURSOR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './textUi';
 import { browseFile, type Picked } from './picker';
 import { isModified } from './hardDisk';
-import { templateFor } from '../editor/templates';
+import { templateFor } from '../editor/shell/templates';
 import type { FileKind } from '../editor/core/project';
 import { createZip } from '../project/zip';
 import { download } from '../editor/core/ui';

@@ -1,16 +1,16 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
-import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './core/ui';
-import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from './core/project';
-import { pickFile } from './widgets/filePicker';
-import { MAKERS } from './makers';
-import { KIND_ICON } from './widgets/thumbs';
-import { editors, fileInfo } from './editors/registry';
-import { GameFiles, loadFileList, normalize } from '../project/files';
-import { createZip } from '../project/zip';
-import { exportWebApp } from '../export/exportWebApp';
-import { exportSinglePage } from '../export/exportSinglePage';
-import { exportDos } from '../export/exportDos';
-import { mountPlayer, type PlayerHandle } from '../player/player';
+import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
+import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
+import { pickFile } from '../widgets/filePicker';
+import { MAKERS } from '../makers';
+import { KIND_ICON } from '../widgets/thumbs';
+import { editors, fileInfo } from '../editors/registry';
+import { GameFiles, loadFileList, normalize } from '../../project/files';
+import { createZip } from '../../project/zip';
+import { exportWebApp } from '../../export/exportWebApp';
+import { exportSinglePage } from '../../export/exportSinglePage';
+import { exportDos } from '../../export/exportDos';
+import { mountPlayer, type PlayerHandle } from '../../player/player';
 import './workspace.css';
 
 const ORDER: FileKind[] = [

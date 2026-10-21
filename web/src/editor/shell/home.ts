@@ -1,23 +1,23 @@
 // Home page: your projects, importing original game folders, and the CD's sample games.
-import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './core/ui';
-import { Project } from './core/project';
+import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
+import { Project } from '../core/project';
 import { starterProject } from './starter';
-import { renderShot } from '../desk/boxArt';
-import { openGameManual } from '../manual/gameManual';
-import { GameFiles, IGNORED_FILE, creditLine, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../project/files';
-import { deleteProject, listProjects, loadProject } from '../project/storage';
-import { createZip, crc32, isZip, readZip } from '../project/zip';
-import { exportWebApp } from '../export/exportWebApp';
-import { exportSinglePage } from '../export/exportSinglePage';
-import { exportDos } from '../export/exportDos';
-import { ADVTYPE, NOSCENE, parseGame } from '../formats/game';
-import { levelShot } from './editors/integrator/integratorArt';
+import { renderShot } from '../../desk/boxArt';
+import { openGameManual } from '../../manual/gameManual';
+import { GameFiles, IGNORED_FILE, creditLine, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../../project/files';
+import { deleteProject, listProjects, loadProject } from '../../project/storage';
+import { createZip, crc32, isZip, readZip } from '../../project/zip';
+import { exportWebApp } from '../../export/exportWebApp';
+import { exportSinglePage } from '../../export/exportSinglePage';
+import { exportDos } from '../../export/exportDos';
+import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
+import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget } from './gameHealth';
 import './home.css';
-import { gameFromPageFiles } from '../project/importPage';
-import { showKeyMap } from './keymap/keyMapView';
-import { demoButton } from '../media/demo';
-import { FORK_NOTE, NOTICE_URL } from '../edition';
+import { gameFromPageFiles } from '../../project/importPage';
+import { showKeyMap } from '../keymap/keyMapView';
+import { demoButton } from '../../media/demo';
+import { FORK_NOTE, NOTICE_URL } from '../../edition';
 
 /** “⌨ Keys”: a keyboard map of what each key does in the game, worked out from its files. */
 function keysButton(title: string, files: () => Promise<GameFiles>, gam?: string | null): HTMLElement {

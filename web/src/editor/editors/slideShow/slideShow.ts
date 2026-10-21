@@ -8,7 +8,7 @@ import './slideShow.css';
 import { registerEditor } from '../registry';
 import { h, clear, toast } from '../../core/ui';
 import { pickFile } from '../../widgets/filePicker';
-import { templateFor } from '../../templates';
+import { templateFor } from '../../shell/templates';
 import type { FileKind } from '../../core/project';
 import { parseSlideList, serializeSlideList, textLines, type SlideEntry } from '../../../formats/graphicScripts';
 import { isFli, parseFli } from '../../../formats/fli';

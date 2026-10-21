@@ -6,7 +6,7 @@ import { h, clear, modal, pickFiles, toast } from '../core/ui';
 import { KIND_LABELS, Project, kindOf, type FileKind } from '../core/project';
 import { fileThumb, KIND_ICON } from './thumbs';
 import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type LibraryItem } from '../library';
-import { templateFor } from '../templates';
+import { templateFor } from '../shell/templates';
 import { GameFiles, normalize } from '../../project/files';
 import { previewButton, stopPreview } from './preview';
 import { parseBackdrop } from '../../formats/graphicScripts';

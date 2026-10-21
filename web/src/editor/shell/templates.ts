@@ -1,13 +1,13 @@
 // Starting contents for new files, shared by the web workspace and the DOS-look Game-Maker.
-import { KIND_LABELS, type FileKind, type Project } from './core/project';
-import { newBlockSet, serializeBlocks, type BlockKind } from '../formats/blocks';
-import { defaultPalette, serializePalette } from '../formats/palette';
-import { newMonsterSet, serializeMonsters } from '../formats/monster';
-import { newCharacter, serializeCharacter } from '../formats/character';
-import { newMap, serializeMap } from '../formats/map';
-import { newSoundSet, serializeSoundSet } from '../formats/sound';
-import { serializeBackdrop, serializeSlideList } from '../formats/graphicScripts';
-import { textBytes } from '../formats/binary';
+import { KIND_LABELS, type FileKind, type Project } from '../core/project';
+import { newBlockSet, serializeBlocks, type BlockKind } from '../../formats/blocks';
+import { defaultPalette, serializePalette } from '../../formats/palette';
+import { newMonsterSet, serializeMonsters } from '../../formats/monster';
+import { newCharacter, serializeCharacter } from '../../formats/character';
+import { newMap, serializeMap } from '../../formats/map';
+import { newSoundSet, serializeSoundSet } from '../../formats/sound';
+import { serializeBackdrop, serializeSlideList } from '../../formats/graphicScripts';
+import { textBytes } from '../../formats/binary';
 
 export interface FileTemplate {
   kind: FileKind;

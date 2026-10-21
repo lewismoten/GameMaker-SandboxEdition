@@ -1,10 +1,10 @@
 // The ⚠ badge on a game in the home page's list, and the report it opens. The checking
 // itself is in ../project/health.ts; this loads the files it needs (just the .gam and
 // graphic scripts for the badge, everything for the report) and shows the result.
-import { h, modal } from './core/ui';
-import { checkGame, QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue } from '../project/health';
-import { loadHostedGame, type CatalogEntry } from '../project/files';
-import { loadProject } from '../project/storage';
+import { h, modal } from '../core/ui';
+import { checkGame, QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue } from '../../project/health';
+import { loadHostedGame, type CatalogEntry } from '../../project/files';
+import { loadProject } from '../../project/storage';
 
 export interface HealthTarget {
   title: string;
