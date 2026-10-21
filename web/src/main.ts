@@ -1,16 +1,16 @@
 // Game-Maker Web (index.html): the mid-90s desk, or today's web interface.
+//
+// Each is its own download: this entry holds only the switch between them, and the desk
+// (desk/, retro/, vga/) or today's web (editor/shell, the editors) is imported when it is
+// first shown. The editors themselves load when a game is opened (or the desk's PC opens one).
 import './editor/shell/editor.css';
-import './editor/editors/all';
 import { h, clear, toast } from './editor/core/ui';
-import { renderHome } from './editor/shell/home';
-import { Workspace } from './editor/shell/workspace';
-import { Project } from './editor/core/project';
-import { loadProject } from './project/storage';
-import { renderDesk } from './desk/desk';
+import type { Workspace } from './editor/shell/workspace';
 import { watchForUpdates } from './devReload';
-import { renderWebManual } from './manual/webManual';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
+
+const modernUi = () => import('./modernUi');
 
 type Ui = 'desk' | 'modern';
 const UI_KEY = 'gm-ui';
@@ -40,7 +40,7 @@ function rememberUi(next: Ui): void {
 
 // ---- the 90s desk ---------------------------------------------------------------------
 
-function startDesk(): void {
+async function startDesk(): Promise<void> {
   ui = 'desk';
   rememberUi('desk');
   app.classList.remove('modern');
@@ -48,6 +48,8 @@ function startDesk(): void {
   workspace = undefined;
   document.title = 'Game-Maker 1994';
   history.replaceState(null, '', location.pathname + location.search);
+  const { renderDesk } = await import('./desk/desk');
+  if (ui !== 'desk') return;
   disposeDesk = renderDesk(app, {
     toModern: (projectId, file) => {
       disposeDesk?.();
@@ -75,7 +77,7 @@ function startModern(hash?: string): void {
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
       h(
         'button',
-        { onclick: () => startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
+        { onclick: () => void startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
         h('span', { 'aria-hidden': 'true' }, '💾'),
         h('span', { class: 'hide-narrow' }, ' 1994 desk'),
       ),
@@ -105,23 +107,24 @@ async function route(): Promise<void> {
   if (ui !== 'modern') return;
   const [, kind, id, file] = location.hash.split('/');
   content.removeAttribute('role');
+  const { renderHome, renderWebManual, openStored } = await modernUi();
+  if (ui !== 'modern') return;
   if (kind === 'p' && id) {
     if (workspace?.project.id === id) {
       if (file && decodeURIComponent(file) !== workspace.currentFile) workspace.open(decodeURIComponent(file));
       return;
     }
     workspace?.dispose();
-    const stored = await loadProject(id);
-    if (!stored) {
+    workspace = undefined;
+    const opened = await openStored(id, content, file ? decodeURIComponent(file) : undefined);
+    if (!opened) {
       toast('That game is not in this browser any more.', 'error');
       location.hash = '#/';
       return;
     }
-    const project = Project.fromFiles(stored.files, stored.record.name, id);
-    project.gam = stored.record.gam;
-    clear(titleSlot, ` · ${project.name}`);
-    document.title = `${project.name} · ${SHORT}`;
-    workspace = new Workspace(content, project, file ? decodeURIComponent(file) : undefined);
+    workspace = opened;
+    clear(titleSlot, ` · ${opened.project.name}`);
+    document.title = `${opened.project.name} · ${SHORT}`;
     return;
   }
   workspace?.dispose();
@@ -139,9 +142,11 @@ async function route(): Promise<void> {
 
 window.addEventListener('hashchange', () => void route());
 
-// Links into a project (#/p/…) always open today's web; otherwise use the last choice.
-if (location.hash.startsWith('#/p/') || savedUi() === 'modern') startModern();
-else startDesk();
+// Links into a project (#/p/…) or the guide always open today's web, #/desk the desk;
+// otherwise use the last choice.
+const startHash = location.hash;
+if (startHash !== '#/desk' && (startHash.startsWith('#/p/') || startHash === '#/help' || savedUi() === 'modern')) startModern();
+else void startDesk();
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   void navigator.serviceWorker.register('./sw.js').catch(() => undefined);
