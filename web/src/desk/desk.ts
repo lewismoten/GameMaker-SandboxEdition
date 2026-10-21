@@ -783,6 +783,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   void refreshDisks().then(restore);
   // what is likely next: Game-Maker and the BBS on the PC, then what opens on the desk
   prefetchWhenIdle([
+    () => import("../player/player"),
     () => import("../retro/gm"),
     () => fetch("./gm/index.json"), // C:\GM's listing, so GM starts offline too
     lazy.gmBox,

@@ -8,7 +8,7 @@ import { type ProgramRef } from "./dos/vfs";
 import { ProgramAborted } from "./text/textInput";
 import type { OpenDesigner } from "./host";
 import { errorBox, askText } from "./text/textUi";
-import { mountPlayer, type PlayerHandle } from "../player/player";
+import type { PlayerHandle } from "../player/player";
 import { GameFiles } from "../project/files";
 import { loadProject } from "../project/storage";
 import { Project } from "../editor/core/project";
@@ -226,8 +226,9 @@ export class Computer extends ComputerFolders {
     const host = h("div", { class: "crt-game" });
     clear(this.layer, host);
     this.opts.onGame?.({ files, gam, title });
+    // the game player (the engine) loads with the first game played (the desk fetches it ahead)
     return new Promise<void>((resolve) => {
-      this.player = mountPlayer(host, files, gam, {
+      void import("../player/player").then(({ mountPlayer }) => (this.player = mountPlayer(host, files, gam, {
         title,
         notice,
         autoStart: true,
@@ -243,7 +244,7 @@ export class Computer extends ComputerFolders {
           this.keys.clear();
           resolve();
         },
-      });
+      })));
     });
   }
 
