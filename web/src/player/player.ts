@@ -67,6 +67,14 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       Keyboard.prototype.attach.call(this, inert);
     };
   }
+  // a game whose files are still arriving may have to wait for one (engine/machine.ts, need)
+  const loading = document.createElement('div');
+  loading.className = 'gm-loading';
+  loading.setAttribute('role', 'status');
+  loading.hidden = true;
+  loading.textContent = 'Loading…';
+  container.append(loading);
+  machine.onLoading = (on) => (loading.hidden = !on);
   const unexact = opts.exactPixels ? exactScale(canvas) : undefined;
   const touch = !opts.preview && (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard) : undefined;
   touch?.attach(container);

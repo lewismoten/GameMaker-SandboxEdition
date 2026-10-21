@@ -381,3 +381,23 @@
   height: 100%;
   aspect-ratio: auto;
 }
+
+/* a game still loading a file it needs next (player.ts): a small note in the corner */
+.gm-player .gm-loading {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 3;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffd400;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  pointer-events: none;
+}
+
+.gm-player .gm-loading[hidden] {
+  display: none;
+}

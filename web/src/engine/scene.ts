@@ -141,6 +141,27 @@ function loadScene(s: Session, scnum: number, prev?: World): LoadedScene | strin
   return { world, sounds: sndBytes ? parseSoundSet(sndBytes) : undefined, song: songName ? m.files.get(songName) : undefined };
 }
 
+/**
+ * A hosted game may still be loading (project/streamGame.ts): waits for a scene's files and
+ * its sound set's samples if they are on their way, and asks for what can come after it
+ * (the picture after the level, the scenes its links lead to) to be fetched next.
+ */
+async function sceneReady(s: Session, scnum: number): Promise<void> {
+  const { m, game } = s;
+  const files = game.scenes[scnum]?.files ?? [];
+  await m.need(...files.slice(0, 9));
+  const snd = files[7] ? m.files.get(files[7]) : undefined;
+  let samples: string[] = [];
+  try {
+    samples = snd ? parseSoundSet(snd).digital.filter((d) => d && d[0] !== ' ').map((d) => `${d}.voc`) : [];
+  } catch {
+    /* loadScene reports it */
+  }
+  await m.need(...samples);
+  const next = (game.scenes[scnum]?.links ?? []).flatMap((l) => game.scenes[l.toScene]?.files.slice(0, 10) ?? []);
+  m.want(files[10], ...next);
+}
+
 function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
   w.sound = {
     play: (n) => {
@@ -321,6 +342,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   let linkin = linkIn;
 
   m.screen.setPaletteTo(0, 0, 0);
+  await sceneReady(s, doscene);
   const loaded = loadScene(s, doscene, s.lastWorld);
   if (Array.isArray(loaded)) {
     await missingFiles(s, loaded);
@@ -610,6 +632,7 @@ async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: nu
     await m.pauseTimeKey(2);
     return undefined;
   }
+  await sceneReady(s, data.doscene);
   const loaded = loadScene(s, data.doscene, w);
   if (Array.isArray(loaded)) return undefined;
   const nw = loaded.world;
