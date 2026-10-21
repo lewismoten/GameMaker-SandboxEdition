@@ -764,3 +764,35 @@ a.button.with-ico {
     margin-left: auto;
   }
 }
+
+/* “Deleted … Undo” after deleting a game of yours */
+.home-undo {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 8px 8px 14px;
+  transform: translateX(-50%);
+  border-radius: 8px;
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.home-undo button {
+  padding: 4px 12px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-weight: 700;
+}
+
+.home-undo .home-undo-close {
+  padding: 4px 8px;
+  border-color: transparent;
+  font-weight: 400;
+}

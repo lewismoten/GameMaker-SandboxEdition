@@ -167,7 +167,7 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
   const errors = issues.filter((i) => i.severity === 'error').length;
   const from = target.original?.title ?? 'the original';
   const came = inherited.length
-    ? ` ${inherited.length} more note${inherited.length === 1 ? '' : 's'} came with ${from} as it was released (it plays the same), listed last.`
+    ? ` ${inherited.length} more note${inherited.length === 1 ? '' : 's'} came with ${from} as it was released (it plays the same), listed below.`
     : '';
   // a released game is as it was: its notes are facts about its files, not alarms
   const summary = target.released

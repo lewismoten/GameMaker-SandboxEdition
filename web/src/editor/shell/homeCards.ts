@@ -4,12 +4,12 @@
 // for the keys, the manual and the demo (which plays right there in the picture), and its
 // title. Choosing a tile shows the game in the panel at the top (homeShowcase.ts), which
 // offers everything else with gameActions().
-import { h, toast, promptText, confirmDialog, modal } from '../core/ui';
+import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot } from '../../desk/boxes/boxArt';
 import { openGameManual } from '../../manual/gameManual';
 import { GameFiles, creditLine, loadHostedGame, type CatalogEntry } from '../../project/files';
-import { deleteProject, listProjects, loadProject } from '../../project/storage';
+import { listProjects, loadProject } from '../../project/storage';
 import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
 import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
@@ -17,12 +17,12 @@ import { showKeyMap } from '../keymap/keyMapView';
 import { demoButton } from '../../media/demo';
 import { catalogHasDemo, filesHaveDemo, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
-import { downloadProject, exportProject, exportProjectPage, exportProjectForDos } from './projectExport';
 import { gamePage } from '../../seo/site';
 import { icon as svgIcon, type IconName } from './homeIcons';
 import { editedWhen } from './homeTime';
 import { readableBlurb } from './homeBlurb';
-import { forgetOrigin, rememberOrigin } from './homeOrigin';
+import { rememberOrigin } from './homeOrigin';
+import { projectMenuItems } from './homeProjectActions';
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -358,26 +358,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
       h('button', { class: 'primary with-ico', onclick: () => nav.openProject(p.id) }, svgIcon('edit'), 'Open'),
       h('a', { class: 'button with-ico', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
       keys,
-      moreMenu(
-        h('button', { onclick: () => void downloadProject(p.id) }, 'Download .zip'),
-        h('button', { onclick: () => void exportProject(p.id) }, 'Export web app'),
-        h('button', { onclick: () => void exportProjectPage(p.id), title: 'One .html file with the game and player inside' }, 'Export as one web page'),
-        h('button', { onclick: () => void exportProjectForDos(p.id) }, 'Export for DOS'),
-        h(
-          'button',
-          {
-            class: 'danger',
-            onclick: async () => {
-              if (await confirmDialog('Delete game', `Delete “${p.name}” from this browser? Download it first if you want to keep it.`, 'Delete')) {
-                await deleteProject(p.id);
-                forgetOrigin(p.id);
-                await refresh();
-              }
-            },
-          },
-          'Delete',
-        ),
-      ),
+      moreMenu(...projectMenuItems(p, refresh)),
     ].filter((x): x is HTMLElement => !!x);
   }
   if (!e) return [];
