@@ -10,7 +10,6 @@ import { loadDisks, RSD_GAMES, type Disk } from '../retro/dos/disks';
 import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './disks/diskBox';
 import { openCatalog } from './room/catalog';
 import { openDosManual } from '../manual/dosManual';
-import { renderShot } from './boxes/boxArt';
 import { installCrtWarp } from './pc/crtWarp';
 import { sevenSegment, floppyDrive, cdDrive, openTray } from './pc/caseParts';
 import { keyboard } from './pc/keyboard';
@@ -23,6 +22,7 @@ import { gameShelf, type Shelf } from './boxes/shelf';
 import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './room/snowWindow';
 import { drawGmBox, gmBoxContents } from './boxes/gmBox';
+import { SANDBOX_SHOTS, sandboxShots } from './boxes/gmShots';
 import { fitStage } from './stage';
 import { keyCardSpot } from './pc/keyCard';
 import { newsClipping } from './room/newsClipping';
@@ -70,15 +70,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const spk = speakers();
   const lamp = deskLamp();
   const modem = deskModem(() => void command('C:\nTERMINAL'));
-  // Captions from the real box; pictures from the sample games' own maps.
-  const BOX_TILES: [string, string][] = [
-    ['pipemare', 'EXPLORE MAZES'],
-    ['nebula', 'DESIGN WORLDS'],
-    ['sample', '256 COLOR VGA'],
-    ['peach', 'ANIMATE MONSTERS'],
-    ['zark', 'IMPORT GRAPHICS'],
-    ['terrain', 'DRAW BLOCKS'],
-  ];
+  // The same Sandbox games as the box's 3D front (boxes/gmShots.ts), each with what it shows off.
+  const BOX_TILES = SANDBOX_SHOTS.slice(0, 6).map(([id, feature]) => [id, feature] as [string, string]);
   const boxTiles = h(
     'div',
     { class: 'tiles', 'aria-hidden': 'true' },
@@ -446,16 +439,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   setTurbo(turbo);
   void refreshDisks();
   void loadCatalog().then((cat) => fillShelf(cat.filter((g) => g.original?.box)));
-  void loadCatalog()
-    .then((cat) =>
-      Promise.all(
-        [...boxTiles.querySelectorAll<HTMLElement>('.tile')].map((t) => {
-          const g = cat.find((c) => c.id === t.dataset.game);
-          return g ? renderShot(g, t.querySelector('canvas')!) : false;
-        }),
-      ),
-    )
-    .catch(() => undefined);
+  void sandboxShots().then((shots) => {
+    for (const t of boxTiles.querySelectorAll<HTMLElement>('.tile')) {
+      const shot = shots.find((s) => s.id === t.dataset.game);
+      const c = t.querySelector('canvas')!;
+      if (!shot) continue;
+      c.width = shot.canvas.width;
+      c.height = shot.canvas.height;
+      c.getContext('2d')!.drawImage(shot.canvas, 0, 0);
+    }
+  });
   return () => {
     window.removeEventListener('keydown', onKey);
     unfit();

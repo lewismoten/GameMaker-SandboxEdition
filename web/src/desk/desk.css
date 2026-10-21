@@ -1377,7 +1377,7 @@
 .gm-box .tile canvas {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 10; /* a VGA screen of 320 x 200 */
   image-rendering: pixelated;
   background: #223;
 }
