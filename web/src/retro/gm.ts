@@ -2,8 +2,8 @@
 // (code/GM/MENU.C), help screens, the PLAYGAME menu, UTILITY.EXE's menu, and file
 // pickers that open the graphic designers on a game folder (C:\GM\<GAME>, or a disk).
 import type { RetroHost } from './host';
-import { attr, type TextScreen } from './textScreen';
-import { BARATTR, BARCURSOR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './textUi';
+import { attr, type TextScreen } from './text/textScreen';
+import { BARATTR, BARCURSOR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './text/textUi';
 import { browseFile, type Picked } from './picker';
 import { isModified } from './hardDisk';
 import { templateFor } from '../editor/shell/templates';

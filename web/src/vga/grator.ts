@@ -6,8 +6,8 @@
 // then drag from it to another scene to link them; click a link to place it on the two
 // maps (gramap.ts). DELETE removes the next scene or link clicked.
 import type { RetroHost } from '../retro/host';
-import { attr } from '../retro/textScreen';
-import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import { attr } from '../retro/text/textScreen';
+import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { browseFile } from '../retro/picker';
 import { WorkArea } from '../retro/workArea';
 import {

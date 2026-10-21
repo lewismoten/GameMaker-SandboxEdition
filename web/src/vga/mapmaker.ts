@@ -6,8 +6,8 @@
 // circle, fill, pattern copy, zoom), a compass to scroll, and a list of blocks or
 // animated monsters to choose from.
 import type { RetroHost } from '../retro/host';
-import { attr } from '../retro/textScreen';
-import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import { attr } from '../retro/text/textScreen';
+import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { WorkArea } from '../retro/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';
 import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED1, RED2, RED3, initStartCols } from './shared/facelift';

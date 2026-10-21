@@ -1,13 +1,13 @@
 // The 90s PC on the desk: boots to a DOS prompt, runs the DOS-look Game-Maker, the BBS
 // terminal and games, with drive A: (floppy), C: (hard disk) and D: (the CD).
-import { TextScreen, attr } from './textScreen';
-import { TextKeys } from './textInput';
+import { TextScreen, attr } from './text/textScreen';
+import { TextKeys } from './text/textInput';
 import { Shell } from './shell';
 import { FileSystem, file, folder, liveFolder, textFile, type DosNode, type ProgramRef } from './vfs';
 import { dosDirName, hardDiskGames, hdFiles, hdProject, makeGameFolder, restoreInstalled, type HdGame } from './hardDisk';
 import { exportDos } from '../export/exportDos';
 import { Downloads, type FolderGame, type InsertedDisk, type RetroHost } from './host';
-import { errorBox, askText } from './textUi';
+import { errorBox, askText } from './text/textUi';
 import { runGameMaker, playgame } from './gm';
 import { runTerminal } from './bbs';
 import type { Disk } from './disks';

@@ -3,8 +3,8 @@
 // choosing a block set type, loading and saving block sets, and the scrolling block
 // bars ("lists") drawn along the bottom of the designers' screens.
 import type { RetroHost } from '../../retro/host';
-import { attr } from '../../retro/textScreen';
-import { MENUATTR, SHADATTR, vertMenu } from '../../retro/textUi';
+import { attr } from '../../retro/text/textScreen';
+import { MENUATTR, SHADATTR, vertMenu } from '../../retro/text/textUi';
 import type { WorkArea } from '../../retro/workArea';
 import { BACKBL, BLEN, CHARBL, MONBL, parseBlocks, serializeBlocks, type Block } from '../../formats/blocks';
 import type { Vga } from './vga';

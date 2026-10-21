@@ -1,6 +1,6 @@
 // What programs running on the retro PC (Game-Maker, the BBS terminal, games) can use.
 import type { Vga } from '../vga/shared/vga';
-import type { Ui } from './textUi';
+import type { Ui } from './text/textUi';
 import type { Disk } from './disks';
 import type { GameFiles, CatalogEntry } from '../project/files';
 import type { Project } from '../editor/core/project';

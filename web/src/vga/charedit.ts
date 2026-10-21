@@ -6,9 +6,9 @@
 // button), drag the frame across the grid to place it relative to the previous frame,
 // rotate and flip each block, set the pause, and watch the sequence animate.
 import type { RetroHost } from '../retro/host';
-import type { Key } from '../retro/textInput';
-import { attr } from '../retro/textScreen';
-import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import type { Key } from '../retro/text/textInput';
+import { attr } from '../retro/text/textScreen';
+import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { WorkArea } from '../retro/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';
 import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RED2, RED3, RIGHT, initStartCols } from './shared/facelift';

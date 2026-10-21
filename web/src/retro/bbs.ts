@@ -2,9 +2,9 @@
 // BBS, a Renegade board, has the CD's shareware games to read about and "download" into
 // C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/sofa.ts).
 import type { RetroHost } from './host';
-import { attr, COLS, ROWS } from './textScreen';
-import { readLine } from './textInput';
-import { toCp437 } from './cp437';
+import { attr, COLS, ROWS } from './text/textScreen';
+import { readLine } from './text/textInput';
+import { toCp437 } from './text/cp437';
 import { commas } from './vfs';
 import type { CatalogEntry } from '../project/files';
 import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';

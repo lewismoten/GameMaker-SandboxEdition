@@ -125,7 +125,7 @@ describe('mp4 mux', () => {
 describe('720x400 text capture', () => {
   it('draws 9-dot cells, repeating the eighth column only for line drawing characters', async () => {
     const { textPixels, TEXT_W, TEXT_H } = await import('../src/media/screenCapture');
-    const { FONT_CP437 } = await import('../src/retro/cp437');
+    const { FONT_CP437 } = await import('../src/retro/text/cp437');
     expect([TEXT_W, TEXT_H]).toEqual([720, 400]);
     const chars = new Uint8Array(80 * 25).fill(0xdb); // full block everywhere
     chars[0] = 0xc4; // ─ joins its neighbor

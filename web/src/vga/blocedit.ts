@@ -6,8 +6,8 @@
 // drag blocks between the 6x6 viewing grid and the block bar, and set what a block
 // does in the game on its info screen.
 import type { RetroHost } from '../retro/host';
-import { attr } from '../retro/textScreen';
-import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import { attr } from '../retro/text/textScreen';
+import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { WorkArea } from '../retro/workArea';
 import { BACKBL, BLEN, CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../formats/blocks';
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters, type Monster } from '../formats/monster';

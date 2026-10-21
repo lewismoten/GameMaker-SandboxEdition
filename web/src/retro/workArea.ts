@@ -2,7 +2,7 @@
 // files are read from and written to the game area, a game folder such as C:\GM\SAMPLE.
 import type { RetroHost } from './host';
 import { browseFile, type Picked } from './picker';
-import { errorBox } from './textUi';
+import { errorBox } from './text/textUi';
 import { gameArea } from './gm';
 import type { Project } from '../editor/core/project';
 

@@ -1,9 +1,9 @@
 // Screen shots for the printed manual, drawn by the same text-mode screen the desk PC uses.
-import { TextScreen, attr } from '../retro/textScreen';
-import { toCp437 } from '../retro/cp437';
+import { TextScreen, attr } from '../retro/text/textScreen';
+import { toCp437 } from '../retro/text/cp437';
 import { paintMenuScreen } from '../retro/gm';
 import { sandboxLogin } from '../retro/ansiArt';
-import { MENUATTR, SHADATTR, ERRORATTR, CURATTR } from '../retro/textUi';
+import { MENUATTR, SHADATTR, ERRORATTR, CURATTR } from '../retro/text/textUi';
 
 type Draw = (s: TextScreen) => void;
 

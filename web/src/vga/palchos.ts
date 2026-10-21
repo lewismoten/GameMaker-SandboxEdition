@@ -4,8 +4,8 @@
 // red/green/blue buttons step it (hold to repeat); click a value to type it; drag with
 // the right button to move a color along the chart (M) or copy it (C).
 import type { RetroHost } from '../retro/host';
-import { attr } from '../retro/textScreen';
-import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import { attr } from '../retro/text/textScreen';
+import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
 import { WorkArea } from '../retro/workArea';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';

@@ -2,7 +2,7 @@
 // font, so DOS text screens and Game-Maker's .HLP files draw as they did.
 // Rows are given most-significant-bit-left, as in the IBM ROM font, and stored in
 // FONT8X8's least-significant-bit-left order.
-import { FONT8X8 } from '../gfx/font8x8';
+import { FONT8X8 } from '../../gfx/font8x8';
 
 const GLYPHS: Record<number, string> = {
   16: '80e0f8fef8e08000', // ►

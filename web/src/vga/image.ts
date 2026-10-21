@@ -6,8 +6,8 @@
 // Below the picture is the block set's list. The palette and blocks are saved together;
 // "Get Backdrop" saves a .BKD pointing at a 320x200 window of the GIF.
 import type { RetroHost } from '../retro/host';
-import { attr } from '../retro/textScreen';
-import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
+import { attr } from '../retro/text/textScreen';
+import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { WorkArea } from '../retro/workArea';
 import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';

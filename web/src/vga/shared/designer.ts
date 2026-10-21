@@ -1,8 +1,8 @@
 // What every designer .EXE shares in text mode: Game-Maker's title bar and Design menu
 // bar across the top, and the white-on-green program title color.
-import type { TextScreen } from '../../retro/textScreen';
+import type { TextScreen } from '../../retro/text/textScreen';
 import type { RetroHost } from '../../retro/host';
-import { BARATTR, TITLEATTR } from '../../retro/textUi';
+import { BARATTR, TITLEATTR } from '../../retro/text/textUi';
 
 /**
  * A designer .EXE ported to VGA graphics. Each module in src/vga that exports `program`

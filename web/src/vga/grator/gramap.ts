@@ -4,7 +4,7 @@
 // one in the right map for where it arrives. Arrow keys scroll the map under the mouse;
 // Prev and Next step through the other links between the same two scenes.
 import type { RetroHost } from '../../retro/host';
-import { showHelpScreen } from '../../retro/textUi';
+import { showHelpScreen } from '../../retro/text/textUi';
 import type { WorkArea } from '../../retro/workArea';
 import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '../../formats/game';
 import { BACKBL, BLOCK_SIZE } from '../../formats/blocks';
