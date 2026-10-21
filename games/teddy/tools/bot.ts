@@ -1,8 +1,8 @@
 // A play-testing bot for the headless simulator: walks Teddy along a route of simple
 // orders (walk to a column hopping over whatever is in the way, hop, do a trick, wait) and
 // records every key it presses, so a finished route is also a demo recording.
-import type { RecordedKey } from '../../web/src/formats/recording';
-import { SCAN } from './src/ids';
+import type { RecordedKey } from '../../../web/src/formats/recording';
+import { SCAN } from '../src/ids';
 import { Sim } from './sim';
 
 export type Order =

@@ -1,6 +1,6 @@
 // The bot's way through each level (also the source of the title demo).
 import type { Order } from './bot';
-import { CTR } from './src/ids';
+import { CTR } from '../src/ids';
 
 export const ROUTES: Record<string, Order[]> = {
   backyard: [

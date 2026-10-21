@@ -1,17 +1,17 @@
 // Plays every level headlessly with the bot, one after another the way the game does
 // (Teddy's energy, treats and counters carry over), and reports how it went:
-//   cd web && npx vite-node ../games/teddy/check.ts [level file...]
+//   cd web && npx vite-node ../games/teddy/tools/check.ts [level file...]
 // TEDDY_WALK=<file> also writes the whole run as a .rec recording (for play-testing the
 // real engine: it plays the game from start to finish).
 import { writeFileSync } from 'node:fs';
-import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
-import { buildCharacter, CB } from './src/characters/character';
-import { newCharInfo } from '../../web/src/engine/world';
-import { LEVELS } from './src/game';
+import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { buildCharacter, CB } from '../src/characters/character';
+import { newCharInfo } from '../../../web/src/engine/world';
+import { LEVELS } from '../src/game';
 import { ROUTES } from './routes';
 import { Recorder, runRoute } from './bot';
 import { Sim } from './sim';
-import { CTR } from './src/ids';
+import { CTR } from '../src/ids';
 
 const only = process.argv.slice(2);
 const chr = buildCharacter();

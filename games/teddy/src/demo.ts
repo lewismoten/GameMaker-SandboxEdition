@@ -4,9 +4,9 @@
 import { serializeRecording } from '../../../web/src/formats/recording';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { buildCharacter, CB } from './characters/character';
-import { Recorder, runRoute } from '../bot';
-import { ROUTES } from '../routes';
-import { Sim } from '../sim';
+import { Recorder, runRoute } from '../tools/bot';
+import { ROUTES } from '../tools/routes';
+import { Sim } from '../tools/sim';
 import type { Level } from './levels/level';
 
 export async function demoRecording(l: Level): Promise<Uint8Array> {
