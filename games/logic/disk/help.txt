@@ -1,0 +1,62 @@
+KEYS
+ Arrows, W A S D or the
+ number pad: roll one block
+ R: reboot the board (costs
+    one spare battery)
+ F1 help F2 batteries left
+ F5 save F6 load
+ Esc quit to the menu
+
+Bump into a switch, button or
+fuse to work it.
+
+
+
+
+
+CURRENT
+ Batteries pump current
+ along their copper wires.
+ Glowing beads are LIVE:
+ touch one and you fizzle.
+ Current takes time to run
+ down a wire, and drains
+ out when cut off.
+
+ Force-field GATES are
+ deadly until current
+ reaches them. Then they
+ shut down for good.
+
+
+
+PARTS
+ SWITCH: bump to flip it.
+  Off stops current.
+ TIMER BUTTON: on for a few
+  seconds, then off again.
+ FUSE: bump to blow it. Its
+  wire is dead for good.
+ ARROWS (diodes): roll
+  through one way only.
+ "~" batteries pulse on and
+  off; "!" batteries start
+  when bumped, and never
+  stop.
+
+
+
+RELAYS
+ Pink CONTROL current
+ throws relays, and they
+ stay thrown.
+ NO (normally open): lets
+  current through once
+  thrown.
+ NC (normally closed): cuts
+  current once thrown.
+
+Roll onto the outlet to go on
+to the next board. Gold screws
+and outlets give you a spare
+battery.
