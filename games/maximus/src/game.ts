@@ -13,6 +13,7 @@ import { heartMap, maelstromMap } from './levels/core';
 import { homeMap } from './levels/home';
 import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from './characters/fauna';
 import { Grid, W, reachable } from './levels/mapkit';
+import { clearAround, placeFormation, ringCells, wordCells } from './levels/flock';
 import { oceanSet } from './blocks/ocean';
 import { buildPalette } from './art/palette';
 import { checkPlanet, surfacePlanet, type PlanetResult } from './levels/planet';
@@ -143,7 +144,22 @@ export function buildGame(): Built {
   const home = homeMap(sets.station, monsters.mech1);
   // galaxy
   const galaxy = galaxyMap(sets.space);
-  populate(galaxy.grid, bbl.space, monsters.space1, spaceSpots(galaxy.grid, bbl.space, galaxy.arriveHome), { seed: 2, level: 1, count: 70, species: 4 });
+  // star whales: thirteen in a ring on the galaxy chart, and a pod in The Cradle that spells a name
+  const whale = (ms: MonsterSet) => {
+    const mon = ms.index.get('Star Whale')!;
+    const mv = ms.creatures[mon].move;
+    const corners = mv.kind === 'path' ? mv.corners : [];
+    return { mon, reach: { x: Math.max(0, ...corners.map((c) => c[0])), y: Math.max(0, ...corners.map((c) => c[1])) } };
+  };
+  const formation = (g: Grid, ms: MonsterSet, shape: ReturnType<typeof wordCells>, near: { x: number; y: number }, what: string) => {
+    const wh = whale(ms);
+    const box = placeFormation(g, bbl.space, wh.mon, shape, near, wh.reach);
+    if (!box) problems.push(`no room for ${what}`);
+    return () => box && clearAround(g, box, wh.mon);
+  };
+  const ring = formation(galaxy.grid, monsters.space1, ringCells(), { x: galaxy.arriveHome.x + 8, y: galaxy.arriveHome.y - 10 }, 'the thirteen stars');
+  populate(galaxy.grid, bbl.space, monsters.space1, spaceSpots(galaxy.grid, bbl.space, galaxy.arriveHome), { seed: 2, level: 1, count: 83, species: 4 });
+  ring();
   // sectors
   const worlds = allWorlds();
   const sectorMaps = SECTORS.map((sec, k) => {
@@ -151,12 +167,15 @@ export function buildGame(): Built {
     const designs = list.map((w) => designFor(w.world.kind, w.world.biome, w.index));
     const shards = list.map((w, i) => (w.world.shard !== undefined ? i : -1)).filter((i) => i >= 0);
     const m = sectorMap(sets.space, 1000 + k * 77, list.length, designs, shards, [k * 2, k * 2 + 1]);
-    populate(m.grid, bbl.space, sec.level <= 2 ? monsters.space1 : monsters.space2, spaceSpots(m.grid, bbl.space, m.arrive), {
+    const ms = sec.level <= 2 ? monsters.space1 : monsters.space2;
+    const name = k === 0 ? formation(m.grid, ms, wordCells('LEWIS'), { x: m.arrive.x + 14, y: m.arrive.y + 12 }, 'the whales that spell LEWIS') : undefined;
+    populate(m.grid, bbl.space, ms, spaceSpots(m.grid, bbl.space, m.arrive), {
       seed: 30 + k,
       level: sec.level,
-      count: 50 + sec.level * 15,
+      count: 50 + sec.level * 15 + (name ? wordCells('LEWIS').cells.length : 0),
       species: 5,
     });
+    name?.();
     return m;
   });
 

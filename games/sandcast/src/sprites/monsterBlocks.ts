@@ -296,8 +296,9 @@ for (let k = 0; k < 2; k++) {
 }
 
 // ================================================================= Gwin
-// Teddy's big sister: a brown pit-lab mix, twice his size, with a white blaze, floppy ears,
-// a big happy head and a tongue that never stays in. She fills a whole block; Teddy doesn't.
+// Teddy's big sister: a chocolate-brown pit-lab mix, twice his size, with amber eyes, a liver
+// nose, soft floppy ears, a little white patch on her chest, a pink collar and a tongue that
+// never stays in. She fills a whole block; Teddy doesn't.
 const G = {
   k: WOOD[0],
   B: WOOD[3],
@@ -306,32 +307,35 @@ const G = {
   l: WOOD[5],
   W: STEEL[7],
   w: STEEL[5],
-  e: STEEL[0],
-  E: STEEL[7],
-  n: STEEL[1],
+  e: WOOD[0],
+  a: YELLOW[2],
+  E: YELLOW[4],
+  n: WOOD[1],
+  N: PINK[0],
   t: PINK[2],
   T: PINK[1],
-  c: RED[4],
-  y: YELLOW[3],
+  c: PINK[3],
+  C: PINK[1],
+  y: STEEL[6],
 };
 const GWIN_FACE = [
   '     kkkkkkkkkk     ',
   '   kkbBBLLLLBBbkk   ',
   '  kbbBBLLlLLLBBbbk  ',
   ' kbbkBBLLLLLLBBkbbk ',
-  ' kbbkBBEeBBEeBBkbbk ',
-  'kbbbkBBeeBBeeBBBkbbk',
-  'kbbk kBBBBWBBBBk kbk',
-  'kbk  kBBBWWWBBBk  kk',
-  ' k   kBBWnnnWBBk    ',
-  '      kBWnnnWBk     ',
-  '      kWWkTkWWk     ',
+  ' kbbkBBEaBBEaBBkbbk ',
+  'kbbbkBBaeBBaeBBBkbbk',
+  'kbbk kBBBBLBBBBk kbk',
+  'kbk  kBBBLLLBBBk  kk',
+  ' k   kBBLnnnLBBk    ',
+  '      kBLnNnLBk     ',
+  '      kLLkTkLLk     ',
   '      kcckttkcck    ',
-  '     kBccyttccBk    ',
-  '    kBBBWktkWBBBk   ',
-  '   kBBBBWWkWWBBBBk  ',
-  '   kBBBBWWWWWBBBBk  ',
-  '   kbBBBBWWWBBBBbk  ',
+  '     kBCcyttcCBk    ',
+  '    kBBBBktkBBBBk   ',
+  '   kBBBBBWkWBBBBBk  ',
+  '   kBBBBBWWWBBBBBk  ',
+  '   kbBBBBBWBBBBBbk  ',
 ];
 function gwin(legs: number, tongue: number): Pixels {
   const rows = GWIN_FACE.slice();
@@ -354,11 +358,11 @@ function gwinNap(breath: number): Pixels {
     }
   // Head resting on her paws at the left.
   ball(p, 4.5, 12, 4.5, WOOD, 3);
-  p.rect(1, 15, 7, 2, WOOD[2]).rect(1, 16, 3, 2, STEEL[7]).rect(5, 16, 3, 2, STEEL[7]);
+  p.rect(1, 15, 7, 2, WOOD[2]).rect(1, 16, 3, 2, WOOD[4]).rect(5, 16, 3, 2, WOOD[4]);
   p.line(3, 9, 7, 9, WOOD[1]).rect(5, 8, 3, 6, WOOD[2]); // floppy ear
   p.line(1, 12, 3, 12, WOOD[0]); // shut eye
-  p.set(0, 13, STEEL[1]).set(0, 14, STEEL[1]); // nose
-  p.rect(9, 14, 3, 2, STEEL[7]); // the white blaze, peeking
+  p.set(0, 13, WOOD[1]).set(0, 14, WOOD[1]); // liver nose
+  p.rect(8, 9, 1, 7, PINK[3]).set(8, 15, PINK[1]); // her pink collar, peeking
   // Zzz.
   const z = (x: number, y: number) =>
     p
@@ -378,7 +382,7 @@ function gwinHappy(wag: number): Pixels {
   rows[10] = '      kWyyyyyWk     ';
   rows[11] = '     kcyyGyyycck    ';
   rows[12] = '     kByyyyyyyBk    ';
-  const p = art([...rows, '   kBBk kBBk kBk    ', '   kWWk kWWk kWWk   ', '   kkk  kkkk  kkk   '], { ...G, G: GRASS[5] });
+  const p = art([...rows, '   kBBk kBBk kBk    ', '   kWWk kWWk kWWk   ', '   kkk  kkkk  kkk   '], { ...G, G: GRASS[5], y: YELLOW[3] });
   // Wag lines.
   const x = wag ? 17 : 16;
   p.line(x, 13, x + 2, 11, STEEL[6]).line(x, 16, x + 2, 17, STEEL[6]);

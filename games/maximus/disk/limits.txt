@@ -68,7 +68,7 @@ MONSTERS PLACED ON A MAP
   Used:  200 in the Maelstrom
          (every slot: not one
          left for a shot);
-         7269 in all
+         7327 in all
   Where: MAEL.MAP
 
 MONSTERS IN A .MON
