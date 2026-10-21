@@ -4,7 +4,7 @@
 import { h } from '../../editor/core/ui';
 import { parseCharacter } from '../../formats/character';
 import { scanName } from '../../input/scancodes';
-import type { CatalogEntry } from '../../project/files';
+import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import {
   shotCache,
   sheet,
@@ -53,10 +53,10 @@ async function boundKeys(entry: CatalogEntry): Promise<BoundKey[]> {
   const names = entry.files.filter((f) => f.endsWith('.chr'));
   const keys: BoundKey[] = [];
   for (const n of names) {
-    const r = await fetch(`./${entry.path}${n}`).catch(() => undefined);
-    if (!r?.ok) continue;
+    const bytes = await fetchGameFile(entry, n);
+    if (!bytes) continue;
     try {
-      const chr = parseCharacter(new Uint8Array(await r.arrayBuffer()));
+      const chr = parseCharacter(bytes);
       for (const s of chr.sequences) {
         if (!(s.key >> 8)) continue;
         const end = s.frames.findIndex((f) => f.pic2 === CHARBL + 1);
