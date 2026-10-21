@@ -284,6 +284,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   projects = await listProjects().catch(() => []);
   if (!savedCategory() && projects.length) current = 'mine';
+  // Once there are games of your own, the banner steps back so they show without scrolling.
+  root.querySelector('.hero')?.classList.toggle('hero-compact', projects.length > 0);
   renderCats();
   try {
     catalog = await loadCatalog();
