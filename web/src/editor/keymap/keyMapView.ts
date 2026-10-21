@@ -3,12 +3,12 @@
 // instructions. Self-contained (no editor.css), so the player can show it too.
 import './keyMapView.css';
 import { gameKeyMap, type GameKeyMap, type KeyUse, type Level } from './keyMap';
-import { parseBlocks, BACKBL, MONBL, type Block } from '../formats/blocks';
-import { parsePalette, defaultPalette, type Palette } from '../formats/palette';
-import { parseMonsters, type Monster } from '../formats/monster';
-import { decodeGif, isGif } from '../formats/gif';
-import { blockCanvas, paintIndexed } from './core/draw';
-import type { GameFiles } from '../project/files';
+import { parseBlocks, BACKBL, MONBL, type Block } from '../../formats/blocks';
+import { parsePalette, defaultPalette, type Palette } from '../../formats/palette';
+import { parseMonsters, type Monster } from '../../formats/monster';
+import { decodeGif, isGif } from '../../formats/gif';
+import { blockCanvas, paintIndexed } from '../core/draw';
+import type { GameFiles } from '../../project/files';
 
 type Child = Node | string | null | undefined | false;
 

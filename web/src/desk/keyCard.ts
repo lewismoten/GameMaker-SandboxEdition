@@ -6,7 +6,7 @@ import './keyCard.css';
 import '../manual/printables/paper.css';
 import { h, clear } from '../editor/core/ui';
 import { boxItems } from '../manual/printables/items';
-import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../editor/keyMap';
+import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../editor/keymap/keyMap';
 import { cardRows } from './keyCardRows';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../project/files';
 import { printContext } from './printContext';

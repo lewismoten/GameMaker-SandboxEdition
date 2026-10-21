@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
-import { describeSequence, direction, gameKeyMap } from '../src/editor/keyMap';
+import { describeSequence, direction, gameKeyMap } from '../src/editor/keymap/keyMap';
 import { emptyFrame, newCharacter, serializeCharacter } from '../src/formats/character';
 import { MONBL } from '../src/formats/blocks';
 

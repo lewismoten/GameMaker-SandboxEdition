@@ -15,7 +15,7 @@ import { levelShot } from './integratorArt';
 import { catalogTarget, healthBadge, projectTarget } from './gameHealth';
 import './home.css';
 import { gameFromPageFiles } from '../project/importPage';
-import { showKeyMap } from './keyMapView';
+import { showKeyMap } from './keymap/keyMapView';
 import { demoButton } from '../media/demo';
 import { FORK_NOTE, NOTICE_URL } from '../edition';
 

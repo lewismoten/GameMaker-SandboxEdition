@@ -5,7 +5,7 @@ import { runGame, type RunOptions } from '../engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
-import { showKeyMap } from '../editor/keyMapView';
+import { showKeyMap } from '../editor/keymap/keyMapView';
 import { exactScale } from './exactScale';
 
 export interface PlayerOptions extends RunOptions {
