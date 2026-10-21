@@ -118,10 +118,76 @@ export interface CatalogEntry {
   original?: OriginalExtras;
 }
 
-export async function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
-  const res = await fetch(`${base}index.json`);
-  if (!res.ok) return [];
-  return res.json();
+const catalogs = new Map<string, Promise<CatalogEntry[]>>();
+
+/**
+ * The games catalog (games/index.json, about 300 kB). Many parts of the page ask for it;
+ * it is fetched once and shared. A failed fetch is forgotten so a later call retries.
+ */
+export function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
+  let p = catalogs.get(base);
+  if (!p) {
+    p = fetch(`${base}index.json`).then((res) => (res.ok ? (res.json() as Promise<CatalogEntry[]>) : []));
+    p.catch(() => catalogs.delete(base));
+    catalogs.set(base, p);
+  }
+  return p;
+}
+
+// Hosted game files fetched this session, shared by everything that asks for the same
+// file at once (box art, thumbnails, health checks, the player). Settled files are kept
+// up to a budget, then the oldest are dropped (the browser's HTTP cache still has them).
+const fileCache = new Map<string, { p: Promise<Uint8Array | undefined>; size: number }>();
+const FILE_CACHE_BYTES = 24 << 20;
+let cachedBytes = 0;
+
+function trimFileCache(): void {
+  for (const [url, e] of fileCache) {
+    if (cachedBytes <= FILE_CACHE_BYTES) return;
+    if (!e.size) continue; // still loading
+    fileCache.delete(url);
+    cachedBytes -= e.size;
+  }
+}
+
+/** Bytes of one file at a site-relative URL (e.g. games/gameware/sample/sample.gam), fetched once. Shared: do not modify them. */
+export function fetchSiteFile(url: string): Promise<Uint8Array | undefined> {
+  const hit = fileCache.get(url);
+  if (hit) {
+    // most recently used last
+    fileCache.delete(url);
+    fileCache.set(url, hit);
+    return hit.p;
+  }
+  const entry = { p: Promise.resolve<Uint8Array | undefined>(undefined), size: 0 };
+  entry.p = fetch(url)
+    .then(async (res) => (res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined))
+    .then(
+      (bytes) => {
+        if (!bytes) fileCache.delete(url);
+        else if (fileCache.get(url) === entry) {
+          entry.size = bytes.length || 1;
+          cachedBytes += entry.size;
+          trimFileCache();
+        }
+        return bytes;
+      },
+      () => {
+        fileCache.delete(url);
+        return undefined;
+      },
+    );
+  fileCache.set(url, entry);
+  return entry.p;
+}
+
+/**
+ * One file of a hosted game, by the name a game uses for it (A-J.BKD finds the CD's
+ * a_j.bkd); undefined when the game has no such file or it could not be fetched.
+ */
+export function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files'>, name: string, base = './'): Promise<Uint8Array | undefined> {
+  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
+  return n ? fetchSiteFile(`${base}${entry.path}${n}`) : Promise.resolve(undefined);
 }
 
 export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
@@ -129,8 +195,9 @@ export async function loadHostedGame(entry: CatalogEntry, base = './', onProgres
   let done = 0;
   await Promise.all(
     entry.files.map(async (name) => {
-      const res = await fetch(`${base}${entry.path}${name}`);
-      if (res.ok) files.set(name, new Uint8Array(await res.arrayBuffer()));
+      const bytes = await fetchSiteFile(`${base}${entry.path}${name}`);
+      // a copy: callers may edit their files
+      if (bytes) files.set(name, bytes.slice());
       onProgress?.(++done, entry.files.length);
     }),
   );
