@@ -347,6 +347,7 @@ export class Computer extends ComputerFolders {
   async writableProject(): Promise<Project | undefined> {
     const d = this.inserted;
     if (!d) {
+      if (this.quiet) return undefined;
       await errorBox(
         this,
         "Drive A: is empty.",
@@ -355,6 +356,7 @@ export class Computer extends ComputerFolders {
       return undefined;
     }
     if (d.disk.kind === "blank") {
+      if (this.quiet) return undefined;
       const r = await errorBox(
         this,
         "The disk in drive A: is not formatted.",

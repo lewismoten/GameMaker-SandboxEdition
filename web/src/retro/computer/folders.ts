@@ -11,6 +11,15 @@ import { download } from '../../editor/core/ui';
 import { ComputerDrives } from './drives';
 
 export abstract class ComputerFolders extends ComputerDrives {
+  /**
+   * Set while the desk saves a designer's work for you: nobody is at the keyboard, so a
+   * read-only game is copied to the hard disk without asking, and anything else that would
+   * ask a question fails instead.
+   */
+  quiet = false;
+  /** Where the last copy to the hard disk went (C:\GM\NAME). */
+  copiedTo?: string;
+
   // Defined by a later layer (see the chain in the header comment).
   abstract writableProject(): Promise<Project | undefined>;
 
@@ -50,11 +59,13 @@ export abstract class ComputerFolders extends ComputerDrives {
     if (drive === 'A') return this.writableProject();
     const g = await this.gameIn(drive, parts);
     if (!g) {
+      if (this.quiet) return undefined;
       await errorBox(this, `There is no game in ${drive}:\\${parts.join('\\')}.`, 'Type MD C:\\GM\\NAME at the DOS prompt to make one.  (C)ontinue');
       return undefined;
     }
     if (g.kind === 'hd') return hdProject(g.hd!);
     if (g.kind === 'shareware') {
+      if (this.quiet) return undefined;
       await errorBox(this, `${g.title} is shareware: it can be played, not changed.`, 'Register it with its author!  (C)ontinue');
       return undefined;
     }
@@ -72,8 +83,9 @@ export abstract class ComputerFolders extends ComputerDrives {
   ): Promise<Project | undefined> {
     const installed = catalogId ? (await this.hdGames()).find((x) => x.source === 'installed' && x.catalog?.id === catalogId) : undefined;
     const dir = installed?.dir ?? dosDirName(gam ?? title);
-    const r = await errorBox(this, why, `(C)opy it to C:\\GM\\${dir} on the hard disk   (E)xit`);
+    const r = this.quiet ? 'C' : await errorBox(this, why, `(C)opy it to C:\\GM\\${dir} on the hard disk   (E)xit`);
     if (r !== 'C' && r !== 'Enter') return undefined;
+    this.copiedTo = `C:\\GM\\${dir}`;
     if (installed) return hdProject(installed);
     const project = Project.fromFiles(new GameFiles(files.entries()), title);
     if (gam) project.gam = gam;
