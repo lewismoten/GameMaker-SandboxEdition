@@ -784,6 +784,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   // what is likely next: Game-Maker and the BBS on the PC, then what opens on the desk
   prefetchWhenIdle([
     () => import("../retro/gm"),
+    () => fetch("./gm/index.json"), // C:\GM's listing, so GM starts offline too
     lazy.gmBox,
     lazy.boxViewer,
     lazy.catalog,
@@ -792,6 +793,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     lazy.gameManual,
     () => import("../retro/bbs/bbs"),
     lazy.saveFirst,
+    // last, Game-Maker's eight designers (so a later visit can design offline too)
+    () => import("../retro/gm").then((m) => m.loadDesigners()),
   ]);
   void loadCatalog().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),

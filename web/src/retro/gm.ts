@@ -56,6 +56,9 @@ export const TOOLS: Tool[] = [
 
 const pathText = (p: { drive: string; parts: string[] }) => `${p.drive}:\\${p.parts.join('\\')}`;
 
+/** Loads every designer (fetched ahead, so they work offline later). */
+export const loadDesigners = () => Promise.all(Object.values(PORTED).map((load) => load()));
+
 /** Game-Maker worked in the current game area; start pickers there or in C:\GM. */
 export function gameArea(h: RetroHost): { drive: string; parts: string[] } {
   const w = h.workDir();
@@ -141,8 +144,13 @@ export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
   const ported = PORTED[tool.exe];
   if (ported) {
     const close = messageLoading(h, tool.exe);
-    const [loaded] = await Promise.all([ported(), new Promise((r) => setTimeout(r, 400))]);
+    // offline, a designer never opened before can't be read: say so, as DOS would of a bad disk
+    const [loaded] = await Promise.all([ported().catch(() => undefined), new Promise((r) => setTimeout(r, 400))]);
     close();
+    if (!loaded) {
+      await errorBox(h, `Can't load ${tool.exe} (offline?).`, '(C)ontinue');
+      return;
+    }
     h.screen.clear(attr(7, 0));
     try {
       await loaded.program?.run(h);
