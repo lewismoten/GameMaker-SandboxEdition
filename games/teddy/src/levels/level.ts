@@ -1,13 +1,13 @@
 // What every level is made of: its blocks, monsters, map, and the place it starts and
 // ends. Each level file fills one of these in.
-import type { TimeOfDay } from './src/art/pal';
-import { BlockSet, GRAV, SOLID, type BlockDef } from './src/blocks/blockset';
-import { Bestiary } from './src/characters/mons';
-import { commonMonsters } from './src/characters/sharedMonsters';
+import type { TimeOfDay } from '../art/pal';
+import { BlockSet, GRAV, SOLID, type BlockDef } from '../blocks/blockset';
+import { Bestiary } from '../characters/mons';
+import { commonMonsters } from '../characters/sharedMonsters';
 import { LevelMap } from './levelmap';
-import { Pixels } from '../kit/pixels';
-import { CTR } from './src/ids';
-import { klownCar, pockets, propOn, wantBubble } from './src/sprites/klown';
+import { Pixels } from '../../../kit/pixels';
+import { CTR } from '../ids';
+import { klownCar, pockets, propOn, wantBubble } from '../sprites/klown';
 
 export interface Level {
   /** File name stem (8.3). */

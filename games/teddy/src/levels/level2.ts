@@ -1,17 +1,17 @@
 // Level 2: Maple Street, late morning. Sidewalk, porches, sprinklers that come and go,
 // a cat who will not move until somebody barks, kids who want a high five, a yard sale
 // with boxes floating on balloons, and Doc Leo's bow tie up on a porch roof.
-import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, over, speckle } from './src/art/draw';
-import { CRITTERS } from './src/sprites/critters';
-import { FLIP } from './src/characters/mons';
-import { POWER } from './src/ids';
+import { Pixels, rng } from '../../../kit/pixels';
+import { blob, micro, over, speckle } from '../art/draw';
+import { CRITTERS } from '../sprites/critters';
+import { FLIP } from '../characters/mons';
+import { POWER } from '../ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { balloonBox, balloonProp, crate, hand, kid, mailCarrier, mailTruck } from './src/sprites/folks';
-import { propSprite } from './src/sprites/klown';
-import { CTR } from './src/ids';
+import { balloonBox, balloonProp, crate, hand, kid, mailCarrier, mailTruck } from '../sprites/folks';
+import { propSprite } from '../sprites/klown';
+import { CTR } from '../ids';
 import { bandOf, sign } from './level1';
-import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from './src/blocks/tiles';
+import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from '../blocks/tiles';
 
 const G = 40;
 

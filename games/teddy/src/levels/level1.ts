@@ -1,12 +1,12 @@
 // Level 1: Doc Leo's Backyard. A morning lesson in hopping, barking, digging and
 // fetching: up the garden boxes, along the clothesline, past the squirrel and Gwin's
 // garbage-can mess, up the old oak for Doc Leo's hat, and under the back fence.
-import { Pixels, rng } from '../kit/pixels';
-import { blob, micro } from './src/art/draw';
-import { CRITTERS } from './src/sprites/critters';
-import { FLIP } from './src/characters/mons';
-import { POWER } from './src/ids';
-import { P } from './src/art/pal';
+import { Pixels, rng } from '../../../kit/pixels';
+import { blob, micro } from '../art/draw';
+import { CRITTERS } from '../sprites/critters';
+import { FLIP } from '../characters/mons';
+import { POWER } from '../ids';
+import { P } from '../art/pal';
 import { LevelMap, Tiles, newBestiary, type Level } from './level';
 import {
   bricks,
@@ -29,7 +29,7 @@ import {
   tuft,
   tunnel,
   windowOn,
-} from './src/blocks/tiles';
+} from '../blocks/tiles';
 
 export const GROUND = 40;
 

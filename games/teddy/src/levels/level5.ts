@@ -4,18 +4,18 @@
 // Professor Pratfall's practice pies, spin through the stage door, dig under the stage
 // and ride the stage lift up. Gwin is in the spotlight with the red nose in her mouth:
 // sit pretty and she sits too, and drops it. Then give it to Doc Leo. Ta-daaa!
-import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, over, speckle, sprite } from './src/art/draw';
-import { CTR, POWER } from './src/ids';
+import { Pixels, rng } from '../../../kit/pixels';
+import { blob, micro, over, speckle, sprite } from '../art/draw';
+import { CTR, POWER } from '../ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { askBubble, hand } from './src/sprites/folks';
-import { CK, propSprite } from './src/sprites/klown';
-import { KLUB, bubble, gwinSits, pie, pinStack, pinsDown } from './src/sprites/klubfolk';
-import { GWIN } from './src/sprites/gwin';
-import { FULL, docLeo } from './src/sprites/people';
+import { askBubble, hand } from '../sprites/folks';
+import { CK, propSprite } from '../sprites/klown';
+import { KLUB, bubble, gwinSits, pie, pinStack, pinsDown } from '../sprites/klubfolk';
+import { GWIN } from '../sprites/gwin';
+import { FULL, docLeo } from '../sprites/people';
 import { bandOf } from './level1';
 import { revolvingDoor } from './level4';
-import { c, copy, cut, dirt, r, sky } from './src/blocks/tiles';
+import { c, copy, cut, dirt, r, sky } from '../blocks/tiles';
 
 const G = 40;
 

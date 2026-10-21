@@ -7,7 +7,7 @@ import { buildCharacter, CB } from './characters/character';
 import { Recorder, runRoute } from '../bot';
 import { ROUTES } from '../routes';
 import { Sim } from '../sim';
-import type { Level } from '../level';
+import type { Level } from './levels/level';
 
 export async function demoRecording(l: Level): Promise<Uint8Array> {
   const sim = new Sim(

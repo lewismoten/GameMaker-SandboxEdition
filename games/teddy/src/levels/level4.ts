@@ -3,18 +3,18 @@
 // (spin the revolving doors to get through; Gwin is inside, in the shoe department), a
 // sidewalk shed where Juggles the busker's pins come flying (play dead!), the plaza, a
 // fruit stand Gwin already knocked over, and the Odeon, where the Klown Car waits.
-import { Pixels, rng } from '../kit/pixels';
-import { blob, klubArt, micro, scaleBlit, speckle, sprite } from './src/art/draw';
-import { FULL, docLeo } from './src/sprites/people';
-import { CRITTERS } from './src/sprites/critters';
-import { FLIP, type Bestiary } from './src/characters/mons';
-import { POWER } from './src/ids';
+import { Pixels, rng } from '../../../kit/pixels';
+import { blob, klubArt, micro, scaleBlit, speckle, sprite } from '../art/draw';
+import { FULL, docLeo } from '../sprites/people';
+import { CRITTERS } from '../sprites/critters';
+import { FLIP, type Bestiary } from '../characters/mons';
+import { POWER } from '../ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { askBubble, juggler, kid, pin } from './src/sprites/folks';
-import { dove, marcher, presto, split } from './src/sprites/magic';
-import { CK } from './src/sprites/klown';
+import { askBubble, juggler, kid, pin } from '../sprites/folks';
+import { dove, marcher, presto, split } from '../sprites/magic';
+import { CK } from '../sprites/klown';
 import { bandOf } from './level1';
-import { bricks, c, copy, cut, dirt, r, sky } from './src/blocks/tiles';
+import { bricks, c, copy, cut, dirt, r, sky } from '../blocks/tiles';
 
 const G = 40;
 

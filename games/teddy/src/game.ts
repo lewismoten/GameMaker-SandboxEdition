@@ -1,12 +1,12 @@
 // teddy.gam: the title scene, the ending, and the levels in order, each one's Klown Car
 // door linked to the start of the next.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
-import type { Level } from '../level';
-import { backyard } from '../level1';
-import { street } from '../level2';
-import { park } from '../level3';
-import { city } from '../level4';
-import { klub } from '../level5';
+import type { Level } from './levels/level';
+import { backyard } from './levels/level1';
+import { street } from './levels/level2';
+import { park } from './levels/level3';
+import { city } from './levels/level4';
+import { klub } from './levels/level5';
 
 export const LEVELS: (() => Level)[] = [backyard, street, park, city, klub];
 

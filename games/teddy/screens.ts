@@ -12,7 +12,7 @@ import { GWIN } from './src/sprites/gwin';
 import { docLeo, type Costume } from './src/sprites/people';
 import { citiCar, propSprite } from './src/sprites/klown';
 import { renderRegion } from './src/art/render';
-import type { Level } from './level';
+import type { Level } from './src/levels/level';
 import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from './music';
 import { CREDITS, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { dosText } from '../kit/disk';

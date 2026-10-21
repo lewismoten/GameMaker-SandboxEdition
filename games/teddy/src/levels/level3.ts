@@ -2,16 +2,16 @@
 // dig through, a fountain whose jet lifts Teddy over the tall hedge, kids who give out
 // treats (and Doc Leo's shoes) for a good sit, geese guarding the covered bridge over the
 // duck pond, frisbees flying, and Gwin rolling in the mud by the picnic tables.
-import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, speckle } from './src/art/draw';
-import { CRITTERS } from './src/sprites/critters';
-import { FLIP } from './src/characters/mons';
-import { CTR, POWER } from './src/ids';
+import { Pixels, rng } from '../../../kit/pixels';
+import { blob, micro, speckle } from '../art/draw';
+import { CRITTERS } from '../sprites/critters';
+import { FLIP } from '../characters/mons';
+import { CTR, POWER } from '../ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { askBubble, frisbee, kid } from './src/sprites/folks';
-import { propSprite } from './src/sprites/klown';
+import { askBubble, frisbee, kid } from '../sprites/folks';
+import { propSprite } from '../sprites/klown';
 import { bandOf, sign } from './level1';
-import { branch, buried, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from './src/blocks/tiles';
+import { branch, buried, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from '../blocks/tiles';
 
 const G = 40;
 

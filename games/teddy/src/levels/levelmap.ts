@@ -1,11 +1,11 @@
 // Building a 100x100 Game-Maker map in code from ASCII rows: each character names a
 // block (and maybe a monster or a named spot) through the level's legend.
-import { newMap, reindexMonsters, MLEN, LASTMM, type GameMap } from '../../web/src/formats/map';
-import type { BlockSet } from './src/blocks/blockset';
-import type { Bestiary } from './src/characters/mons';
-import { Pixels } from '../kit/pixels';
-import { FX } from './src/sprites/fx';
-import { CTR } from './src/ids';
+import { newMap, reindexMonsters, MLEN, LASTMM, type GameMap } from '../../../../web/src/formats/map';
+import type { BlockSet } from '../blocks/blockset';
+import type { Bestiary } from '../characters/mons';
+import { Pixels } from '../../../kit/pixels';
+import { FX } from '../sprites/fx';
+import { CTR } from '../ids';
 
 export type Cell = string | { tile?: string; mon?: string; mark?: string };
 export type Legend = Record<string, Cell>;
