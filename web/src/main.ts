@@ -4,13 +4,14 @@
 // (desk/, retro/, vga/) or today's web (editor/shell, the editors) is imported when it is
 // first shown. The editors themselves load when a game is opened (or the desk's PC opens one).
 import './editor/shell/editor.css';
-import { h, clear, toast } from './editor/core/ui';
+import { h, clear } from './editor/core/ui';
 import type { Workspace } from './editor/shell/workspace';
 import { watchForUpdates } from './devReload';
 import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
 import { themeButton } from './theme';
+import { parseHash } from './urlState';
 
 const modernUi = () => import('./modernUi');
 
@@ -130,21 +131,23 @@ const nav = {
 
 async function route(): Promise<void> {
   if (ui !== 'modern') return;
-  const [, kind, id, file] = location.hash.split('/');
+  // #/p/<project>/<file>?<the part being edited>, #/game/<key>?…, #/help/<section>, #/?tab=…
+  const {
+    path: [kind, id, file],
+  } = parseHash(location.hash);
   content.removeAttribute('role');
   const { renderHome, renderWebManual, openStored } = await modernUi();
   if (ui !== 'modern') return;
   if (kind === 'p' && id) {
     if (workspace?.project.id === id) {
-      if (file && decodeURIComponent(file) !== workspace.currentFile) workspace.open(decodeURIComponent(file));
+      if (file && file !== workspace.currentFile) workspace.open(file);
       return;
     }
     workspace?.dispose();
     workspace = undefined;
-    const opened = await openStored(id, content, file ? decodeURIComponent(file) : undefined);
+    const opened = await openStored(id, content, file);
     if (!opened) {
-      toast('That game is not in this browser any more.', 'error');
-      location.hash = '#/';
+      notHere();
       return;
     }
     workspace = opened;
@@ -166,14 +169,39 @@ async function route(): Promise<void> {
   await renderHome(content, nav);
 }
 
+/**
+ * A link to a game being made in someone else's browser (or one deleted since): games of your
+ * own live only in the browser that made them, so say so kindly and offer the way home.
+ */
+function notHere(): void {
+  clear(titleSlot);
+  document.title = `Game not in this browser · ${SHORT}`;
+  clear(
+    content,
+    h(
+      'main',
+      { class: 'not-here', style: 'max-width:42rem;margin:48px auto;padding:0 16px' },
+      h('h1', null, 'That game is not in this browser'),
+      h(
+        'p',
+        null,
+        'Games you make are kept in the browser that made them, so a link to one only opens there. If someone shared this link, ask them to send the game itself: in the editor, “Save & share” downloads it as a .zip or a one-page .html you can open here.',
+      ),
+      h('p', null, 'Links to the finished games on the home page work everywhere.'),
+      h('p', null, h('a', { class: 'button primary', href: '#/' }, 'See all games')),
+    ),
+  );
+}
+
 window.addEventListener('hashchange', () => void route());
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
 // #/help, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
-const modernLink = /^#\/(p\/|game\/|help(\/[\w-]+)?$|$)/.test(startHash);
-if (modernLink || (startHash !== '#/desk' && savedUi() === 'modern')) startModern();
+const startPath = parseHash(startHash).path;
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help'].includes(startPath[0] ?? '');
+if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 
 registerServiceWorker();

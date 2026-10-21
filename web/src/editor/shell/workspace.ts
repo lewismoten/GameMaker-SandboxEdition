@@ -1,4 +1,5 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
+import { currentRoute, formatHash, setHashParams } from '../../urlState';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
 import { pickFile } from '../widgets/filePicker';
@@ -110,7 +111,10 @@ export class Workspace {
       if (!this.listed.has(name)) this.renderSidebar();
     });
     this.renderSidebar();
+    // a reload while play testing (…?play) starts the play test again
+    const playing = currentRoute().params.play;
     this.open(file && project.files.has(file) ? file : project.gam);
+    if (playing !== undefined) this.play(playing === 'title');
     // Phones: the dropped-down file list closes on Escape or a tap outside it.
     const close = () => {
       if (!this.sidebar.classList.contains('open')) return;
@@ -346,7 +350,15 @@ export class Workspace {
     // a new file starts at its top (phones scroll the window, wide screens the editor)
     window.scrollTo(0, 0);
     this.main.scrollTop = 0;
-    location.replace(`#/p/${this.project.id}/${encodeURIComponent(file)}`);
+    // the address names the file: a new history entry when moving to it, and the settings after
+    // the ? (the editor's tab, selection…) kept when the address already names it (a reload, Back)
+    const at = currentRoute();
+    if (at.path[0] !== 'p' || at.path[1] !== this.project.id || at.path[2] !== file) {
+      const next = `${location.pathname}${location.search}${formatHash(['p', this.project.id, file])}`;
+      if (at.path[0] === 'p' && at.path[1] === this.project.id && at.path[2]) history.pushState(null, '', next);
+      else history.replaceState(null, '', next);
+    }
+    setHashParams({ play: undefined });
     // the tab names the open file first (phones show little of a tab's title)
     document.title = `${file} · ${this.project.name} · ${SHORT}`;
     this.renderSidebar();
@@ -473,6 +485,7 @@ export class Workspace {
   /** Play tests the game: from the level being edited when a level's map is open, else from the title screen. Stop goes back to that file. */
   private play(fromTitle = false, back = this.current): void {
     const level = fromTitle ? undefined : this.levelHere(back);
+    setHashParams({ play: fromTitle ? 'title' : true });
     this.cleanup?.();
     this.cleanup = undefined;
     this.player?.stop();
