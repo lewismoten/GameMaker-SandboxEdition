@@ -22,7 +22,7 @@ import {
   WAVE,
   type Half,
 } from './sbi';
-import { noteName } from './roll';
+import { noteName } from './roll/layout';
 
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
