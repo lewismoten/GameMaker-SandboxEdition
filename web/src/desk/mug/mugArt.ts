@@ -1,33 +1,50 @@
-// The pictures that can go on the Sandbox BBS mug, drawn the way the board drew them: real
-// CP437 characters in the 16 text-mode colors, from the BBS's own ANSI art (retro/bbs/ansiArt.ts).
-// Each design is a block of 80-column text rendered with the VGA font, 8 x 16 pixels a cell.
+// The pictures that can go on the mug. The BBS's are drawn the way the board drew them: real
+// CP437 characters in the 16 text-mode colors, from its own ANSI art (retro/bbs/ansiArt.ts),
+// each a block of 80-column text rendered with the VGA font, 8 x 16 pixels a cell. Each
+// Sandbox Software game's is its title screen and hero, from the game's files (gameMugArt.ts).
 import { TextScreen, attr, COLS } from '../../retro/text/textScreen';
 import { SANDBOX_ANSI, bigText, bigTextWidth, centered, fadeBar, sandboxLogin } from '../../retro/bbs/ansiArt';
 import { toCp437 } from '../../retro/text/cp437';
+import { GAME_ART_H, GAME_ART_W, GAME_MUGS, gameMugArt } from './gameMugArt';
 
-export type MugDesignId = 'logo' | 'scene' | 'banner' | 'gm';
+type BbsDesignId = 'logo' | 'scene' | 'banner' | 'gm';
+/** A BBS design, or `game-<id>` for a Sandbox Software game's. */
+export type MugDesignId = BbsDesignId | `game-${string}`;
 
 export interface MugDesign {
   id: MugDesignId;
   name: string;
   note: string;
+  group: 'bbs' | 'game';
 }
 
-export const MUG_DESIGNS: MugDesign[] = [
-  { id: 'scene', name: 'Logon screen', note: 'The sand castle, the pail and the dunes' },
-  { id: 'logo', name: 'SANDBOX logo', note: 'Big block letters, a color for each' },
-  { id: 'banner', name: 'BBS banner', note: 'THE -= S A N D B O X =- BBS 1-412-555-SAND' },
-  { id: 'gm', name: 'Game-Maker SE', note: 'The Game-Maker title in text mode' },
-];
+const GAME_NAMES: Record<string, [name: string, hero: string]> = {
+  maximus: ['Maximus', 'Courier Max'],
+  teddy: ['Teddy’s Little Big Adventure', 'Teddy the corgi'],
+  year2000: ['In The Year 2000!', 'Dex Dynamo'],
+  blaster: ['Virus Blaster', 'the BLASTER nano-fighter'],
+  logic: ['Ohm Sweet Ohm', 'Watt the repair robot'],
+  sleuth: ['Final Curtain', 'Inspector Ada Penn'],
+  snowbound: ['Snowbound', 'the kid with the shovel'],
+  sandcast: ['Sandcastle Knight', 'Teddy in his tin helmet'],
+};
 
-/** The background every design sits on (text-mode black), for the parts of the wrap it doesn't cover. */
-export const DESIGN_BG = '#000000';
+export const MUG_DESIGNS: MugDesign[] = [
+  { id: 'scene', name: 'Logon screen', note: 'The sand castle, the pail and the dunes', group: 'bbs' },
+  { id: 'logo', name: 'SANDBOX logo', note: 'Big block letters, a color for each', group: 'bbs' },
+  { id: 'banner', name: 'BBS banner', note: 'THE -= S A N D B O X =- BBS 1-412-555-SAND', group: 'bbs' },
+  { id: 'gm', name: 'Game-Maker SE', note: 'The Game-Maker title in text mode', group: 'bbs' },
+  ...GAME_MUGS.map(([game]): MugDesign => {
+    const [name, hero] = GAME_NAMES[game] ?? [game, 'its hero'];
+    return { id: `game-${game}`, name, note: `Its title screen, with ${hero}`, group: 'game' };
+  }),
+];
 
 const CW = 8;
 const CH = 16;
 
 /** Rows of the 80-column screen each design takes, top to bottom. */
-function compose(s: TextScreen, id: MugDesignId): number {
+function compose(s: TextScreen, id: BbsDesignId): number {
   s.clear(attr(7, 0));
   s.cursorVisible = false;
   if (id === 'scene' || id === 'logo') {
@@ -81,14 +98,36 @@ function compose(s: TextScreen, id: MugDesignId): number {
 }
 
 const cache = new Map<MugDesignId, HTMLCanvasElement>();
+const loading = new Map<MugDesignId, Promise<HTMLCanvasElement>>();
 
-/** A design at the VGA font's own size: 640 pixels wide, 16 pixels a row. */
+const gameOf = (id: MugDesignId): [string, string] | undefined => GAME_MUGS.find(([g]) => `game-${g}` === id);
+
+/** A game's picture while its files load (or if they can't): its name on black. */
+function placeholder(id: MugDesignId): HTMLCanvasElement {
+  const c = document.createElement('canvas');
+  c.width = GAME_ART_W;
+  c.height = GAME_ART_H;
+  const g = c.getContext('2d')!;
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, c.width, c.height);
+  g.fillStyle = '#ffd23f';
+  g.font = 'bold 22px Arial, sans-serif';
+  g.textAlign = 'center';
+  g.fillText(MUG_DESIGNS.find((d) => d.id === id)?.name ?? id, c.width / 2, c.height / 2);
+  return c;
+}
+
+/**
+ * A design's picture: a BBS design at the VGA font's own size (640 pixels wide, 16 a row), a
+ * game's 320 x 248. A game's is a stand-in until loadDesign() has fetched its files.
+ */
 export function designCanvas(id: MugDesignId): HTMLCanvasElement {
   const hit = cache.get(id);
   if (hit) return hit;
+  if (gameOf(id)) return placeholder(id);
   const s = new TextScreen(document.createElement('canvas'));
   s.destroy();
-  const rows = compose(s, id);
+  const rows = compose(s, id as BbsDesignId);
   s.renderNow();
   const out = document.createElement('canvas');
   out.width = COLS * CW;
@@ -96,6 +135,29 @@ export function designCanvas(id: MugDesignId): HTMLCanvasElement {
   out.getContext('2d')!.drawImage(s.canvas, 0, 0, out.width, out.height, 0, 0, out.width, out.height);
   cache.set(id, out);
   return out;
+}
+
+/** A design's picture once it is ready (a game's comes from its files on the CD). */
+export function loadDesign(id: MugDesignId): Promise<HTMLCanvasElement> {
+  const game = gameOf(id);
+  if (!game || cache.has(id)) return Promise.resolve(designCanvas(id));
+  let p = loading.get(id);
+  if (!p) {
+    p = gameMugArt(...game)
+      .catch(() => undefined)
+      .then((art) => {
+        if (!art) return (loading.delete(id), placeholder(id)); // try again next time
+        cache.set(id, art);
+        return art;
+      });
+    loading.set(id, p);
+  }
+  return p;
+}
+
+/** Every design's picture, ready. */
+export function loadDesigns(): Promise<HTMLCanvasElement[]> {
+  return Promise.all(MUG_DESIGNS.map((d) => loadDesign(d.id)));
 }
 
 export function isDesign(id: string | null | undefined): id is MugDesignId {
