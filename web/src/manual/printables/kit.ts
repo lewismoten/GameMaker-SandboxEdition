@@ -4,7 +4,7 @@ import { h } from '../../editor/core/ui';
 import { mapShot } from '../../desk/boxes/boxArt';
 import type { CatalogEntry } from '../../project/files';
 import type { MapPanel, PrintablesFile, Portrait, SpriteArt } from './types';
-import { cdName } from '../../project/files';
+import { fetchGameFile } from '../../project/files';
 import { parseCharacter } from '../../formats/character';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
 import { parsePalette } from '../../formats/palette';
@@ -128,10 +128,7 @@ export function splitTitle(title: string): [string, string] {
 }
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
-  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
-  if (!n) return undefined;
-  const r = await fetch(`./${entry.path}${n}`).catch(() => undefined);
-  return r?.ok ? new Uint8Array(await r.arrayBuffer()) : undefined;
+  return fetchGameFile(entry, name); // fetched once, shared
 }
 
 /** The hero as he stands in his first character sequence: top and bottom block, 20 x 40. */
