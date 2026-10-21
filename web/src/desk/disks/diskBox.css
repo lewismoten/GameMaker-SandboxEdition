@@ -67,7 +67,8 @@
 }
 
 .floppy[data-kind='rsd'] .label {
-  background: linear-gradient(180deg, #000080 0 15px, transparent 15px), repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px), #fbf8ee;
+  /* the box's black banner with yellow GAME-MAKER lettering */
+  background: linear-gradient(180deg, #0b0b0b 0 15px, transparent 15px), repeating-linear-gradient(180deg, #fbf8ee 0 13px, #f3c9bd 13px 14px), #fbf8ee;
   padding-top: 18px;
 }
 
@@ -76,7 +77,7 @@
   position: absolute;
   left: 8px;
   top: 2px;
-  color: #ffd400;
+  color: #f2e600;
   font:
     700 9px/11px ui-monospace,
     monospace;

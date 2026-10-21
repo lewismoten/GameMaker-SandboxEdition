@@ -38,7 +38,8 @@ export interface Disk {
 }
 
 const COLORS = ['#2b2b2b', '#8a1d1d', '#1d6b3a', '#5a3a8a', '#9a7a10', '#1c6f7a', '#444b55', '#a4471b'];
-const RSD_BLUE = '#1d3b8a';
+/** RSD's own disks: the pink of the Game-Maker box (gmBox.ts PINK). */
+const RSD_PINK = '#f0a090';
 /** Publishers of the disks, so each gets a distinct color (filled in by loadDisks). */
 const PUBLISHERS: string[] = [];
 const STRIPES = ['#c62828', '#1565c0', '#2e7d32', '#f9a825', '#6a1b9a', '#00838f', '#ef6c00'];
@@ -51,7 +52,7 @@ function hash(s: string): number {
   return n >>> 0;
 }
 
-/** Disks from one author or company share a color; RSD's own are blue. */
+/** Disks from one author or company share a color; RSD's own are the Game-Maker box's pink. */
 function looks(g: CatalogEntry): Pick<Disk, 'color' | 'stripe' | 'note' | 'density'> {
   const group = g.company ?? g.author;
   const rsd = RSD_GAMES.includes(g.id);
@@ -59,8 +60,8 @@ function looks(g: CatalogEntry): Pick<Disk, 'color' | 'stripe' | 'note' | 'densi
   // Each publisher gets its own color, in the order they appear; others are light grey.
   const groupIndex = group ? [...new Set(PUBLISHERS)].indexOf(group) : -1;
   return {
-    color: rsd ? RSD_BLUE : groupIndex >= 0 ? COLORS[groupIndex % COLORS.length] : '#bdb8ad',
-    stripe: rsd ? '#000080' : STRIPES[hash(`${group ?? g.id}*`) % STRIPES.length],
+    color: rsd ? RSD_PINK : groupIndex >= 0 ? COLORS[groupIndex % COLORS.length] : '#bdb8ad',
+    stripe: rsd ? '#0b0b0b' : STRIPES[hash(`${group ?? g.id}*`) % STRIPES.length],
     note: h % 10 < 4 ? NOTES[(h >>> 4) % NOTES.length] : undefined,
     density: (g.bytes ?? 0) > DD_BYTES ? 'HD' : 'DD',
   };
