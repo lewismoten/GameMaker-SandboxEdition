@@ -286,8 +286,118 @@ function crystal(a: StageArt): Pixels {
   return big;
 }
 
+// ------------------------------------------------------------------ the breadboard computer
+// Somebody's homemade 6502 computer, pressed into a solderless breadboard plugged into the
+// motherboard: a 40-pin 6502, a 555 clock with its LED and RUN/STEP switch, and jumper wires.
+
+/** Breadboard plastic: 'H' holes, 'C' the channel down the middle, 'R' power rails. */
+function breadboard(a: StageArt, kind: 'H' | 'C' | 'R'): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.map((x, y) => shadeAt(p.r('grey'), 5, 6, 0.55 + ((x * 3 + y * 5) % 7) * 0.03, x, y));
+  const hole = (x: number, y: number) => t.rect(x, y, 2, 2, p.c('grey', 2)).set(x + 1, y + 1, p.c('grey', 4));
+  if (kind === 'R') {
+    t.rect(1, 0, 1, 20, p.c('red', 2)).rect(18, 0, 1, 20, p.c('blue', 2));
+    for (let y = 1; y < 20; y += 4) if (y % 20 !== 17) hole(5, y), hole(12, y);
+  } else
+    for (let y = 1; y < 20; y += 4)
+      for (let x = 1; x < 20; x += 4) {
+        if (kind === 'C' && x >= 8 && x <= 12) continue;
+        hole(x, y);
+      }
+  if (kind === 'C') t.rect(8, 0, 4, 20, p.c('grey', 4)).rect(9, 0, 2, 20, p.c('grey', 3));
+  return t;
+}
+
+/** A DIP chip drawn over the breadboard: w x h pixels of body, pins down both sides. */
+function dip(a: StageArt, w: number, h: number, bodyX: number, bodyW: number, pinsAt: number[], top: number, bottom: number): Pixels {
+  const p = a.pal;
+  const big = new Pixels(w, h);
+  for (let y = 0; y < h; y += 20) for (let x = 0; x < w; x += 20) big.blit(breadboard(a, x === 20 && w === 60 ? 'C' : 'H'), x, y);
+  for (const y of pinsAt) {
+    big.rect(bodyX - 5, y, 5, 3, p.c('steel', 4)).rect(bodyX - 5, y + 2, 5, 1, p.c('steel', 1));
+    big.rect(bodyX + bodyW, y, 5, 3, p.c('steel', 4)).rect(bodyX + bodyW, y + 2, 5, 1, p.c('steel', 1));
+  }
+  for (let y = top; y < h - bottom; y++) for (let x = bodyX; x < bodyX + bodyW; x++) big.set(x, y, shadeAt(p.r('deep'), 0, 2, 0.45 + (y - top) * 0.002, x, y));
+  big.rect(bodyX, top, bodyW, 1, p.c('deep', 3)).rect(bodyX, top, 1, h - bottom - top, p.c('deep', 3));
+  big.rect(bodyX + bodyW - 1, top, 1, h - bottom - top, p.c('ink', 0)).rect(bodyX, h - bottom - 1, bodyW, 1, p.c('ink', 0));
+  blob(big, bodyX + bodyW / 2, top, 3.5, 3.5, p.r('deep'), 0, 0);
+  big.rect(bodyX + 3, top + 3, 2, 2, p.c('grey', 5)).set(bodyX + 3, top + 3, p.c('grey', 7));
+  return big;
+}
+
+/**
+ * The 6502, 3 x 4 blocks drawn (top, label, middle, bottom); the map repeats the middle row
+ * five times, so the chip is eight blocks long with all 20 pins a side (1 + 3 + 3x5 + 1).
+ */
+function cpu6502(a: StageArt): Pixels {
+  const p = a.pal;
+  const pins = [14, 21, 28, 34, 41, 48, 54, 61];
+  const big = dip(a, 60, 80, 6, 48, pins, 3, 3);
+  text(big, 14, 22, '6502', p.c('grey', 6));
+  micro(big, 22, 33, '8501', p.c('grey', 4));
+  return big;
+}
+
+/** The 555 timer, 2 x 2 blocks: 8 pins. */
+function timer555(a: StageArt): Pixels {
+  const p = a.pal;
+  const big = dip(a, 40, 40, 7, 26, [6, 14, 22, 30], 3, 3);
+  text(big, 8, 12, '555', p.c('grey', 6));
+  micro(big, 10, 23, 'NE555', p.c('grey', 4));
+  return big;
+}
+
+function bbLed(a: StageArt, on: boolean): Pixels {
+  const p = a.pal;
+  const t = breadboard(a, 'H');
+  t.rect(7, 14, 1, 6, p.c('steel', 5)).rect(12, 14, 1, 6, p.c('steel', 5));
+  if (on) blob(t, 10, 9, 8, 8, p.r('red'), 0, 2, 0.4);
+  blob(t, 10, 9, 5, 6, p.r('red'), on ? 2 : 0, on ? 4 : 1);
+  t.set(8, 6, on ? p.c('grey', 7) : p.c('red', 2));
+  return t;
+}
+
+/** The clock module's slide switch, set to RUN. */
+function runStep(a: StageArt): Pixels {
+  const p = a.pal;
+  const t = breadboard(a, 'H');
+  bevel(t, 2, 6, 16, 8, p.r('deep'), 1, 1);
+  t.rect(4, 8, 6, 4, p.c('steel', 5)).rect(4, 8, 6, 1, p.c('steel', 6));
+  micro(t, 0, 0, 'RUN', p.c('red', 1));
+  micro(t, 3, 15, 'STEP', p.c('ink', 0));
+  return t;
+}
+
+/** A jumper wire across (H) or along (V) the breadboard. */
+function jumper(a: StageArt, vertical: boolean, ramp: string): Pixels {
+  const p = a.pal;
+  const t = breadboard(a, 'H');
+  for (let k = 0; k < 20; k++) {
+    const [x, y] = vertical ? [9, k] : [k, 9];
+    t.rect(x, y, vertical ? 3 : 1, vertical ? 1 : 3, p.c(ramp, 2));
+    t.set(vertical ? x : x, vertical ? y : y, p.c(ramp, 4));
+    t.set(vertical ? x + 2 : x, vertical ? y : y + 2, p.c(ramp, 0));
+  }
+  return t;
+}
+
+/** The breadboard computer's blocks. The 555's LED blinks in step with the A firewalls. */
+function breadboardTiles(bs: BlockSet, a: StageArt, clock: { on: number; off: number }): void {
+  bs.add('bbH', breadboard(a, 'H'));
+  bs.add('bbC', breadboard(a, 'C'));
+  bs.add('bbR', breadboard(a, 'R'));
+  slices(bs, 'm65', cpu6502(a));
+  slices(bs, 't555', timer555(a));
+  bs.add('clkOn', bbLed(a, true), { next: 'clkOff', ntime: clock.on });
+  bs.add('clkOff', bbLed(a, false), { next: 'clkOn', ntime: clock.off });
+  bs.add('runStep', runStep(a));
+  bs.add('jwH', jumper(a, false, 'red'));
+  bs.add('jwV', jumper(a, true, 'gold'));
+}
+
 /** Stage 1 landmark blocks. */
-export function boardTiles(bs: BlockSet, a: StageArt): void {
+export function boardTiles(bs: BlockSet, a: StageArt, clock: { on: number; off: number }): void {
   for (const s of ['ns', 'ew', 'ne', 'nw', 'se', 'sw', 'nse', 'nsw']) bs.add(`tr_${s}`, trace(a, s));
   for (const s of 'nsew') bs.add(`tr_${s}V`, trace(a, s, true));
   for (const s of ['ns', 'ew', 'se', 'sw', 'ne', 'nw']) bs.add(`bus_${s}`, busTrace(a, s));
@@ -307,6 +417,7 @@ export function boardTiles(bs: BlockSet, a: StageArt): void {
   bs.add('ledG', led(a, true, 'slime'), { next: 'ledG1', ntime: 4 });
   bs.add('ledG1', led(a, false, 'slime'), { next: 'ledG', ntime: 13 });
   slices(bs, 'xtal', crystal(a));
+  breadboardTiles(bs, a, clock);
 }
 
 // ------------------------------------------------------------------ the virus, stage 1

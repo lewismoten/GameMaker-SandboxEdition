@@ -137,10 +137,25 @@ function legA(g: Grid): void {
   bus(g, 7, 76, LENGTH - 1);
 }
 
+/**
+ * Somebody's breadboard 6502 computer, plugged in between the bus lines: the 6502 straddles
+ * the channel, a jumper runs to the 555 clock, and the clock LED blinks with the A firewalls
+ * (both are ntime chains of the same length that start together, so they never drift).
+ */
+function breadboard(g: Grid, c: number, d: number): void {
+  g.rect(c, d, 10, 14, (cc) => (cc === c || cc === c + 9 ? 'bbR' : cc === c + 3 ? 'bbC' : 'bbH'));
+  // top, label, five middles, bottom
+  [0, 1, 2, 2, 2, 2, 2, 3].forEach((r, i) => {
+    for (let k = 0; k < 3; k++) g.set(c + 2 + k, d + 10 - i, `m65${r}${k}`);
+  });
+  g.stamp(c + 6, d + 7, 't555', 2, 2);
+  g.set(c + 5, d + 7, 'jwH').set(c + 7, d + 6, 'jwV').set(c + 7, d + 5, 'clkOn').set(c + 6, d + 5, 'runStep');
+}
+
 function legB(g: Grid): void {
-  bus(g, 4, 1, 20);
-  bus(g, 11, 1, 20);
-  g.stamp(6, 3, 'capG', 2, 2);
+  bus(g, 1, 1, 20);
+  bus(g, 14, 1, 20);
+  breadboard(g, 3, 3);
   g.turret(8, 9, 'sweep');
   conga(g, 8, 13, 5, 'mothSL');
   g.fence(2, 13, 18, 'A');
@@ -181,7 +196,7 @@ export function stage1(): Stage {
   const scroll = () =>
     kit(
       art,
-      (bs) => boardTiles(bs, art),
+      (bs) => boardTiles(bs, art, { on: opts.fenceOn, off: opts.fenceOff }),
       (b) => virus1(b, pal),
       opts,
     );
