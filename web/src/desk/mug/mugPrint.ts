@@ -1,8 +1,8 @@
 // The sublimation print sheet: make your own Sandbox BBS mug. The wraps are printed mirrored
 // (the ink faces the mug in the press), at the real size of a blank's printable area, as many
 // to a page as fit. Print it from the browser at actual size, or download 300 dpi PNGs.
-import { h } from '../editor/core/ui';
-import { pngWithDpi } from '../manual/printables/stickerArt';
+import { h } from '../../editor/core/ui';
+import { pngWithDpi } from '../../manual/printables/stickerArt';
 import { MUG_DESIGNS, designCanvas, type MugDesignId } from './mugArt';
 import { MUG_SIZES, PAPERS, layoutSheet, paginateWraps, type MugSize, type Paper, type SheetLayout } from './mugSizes';
 import { wrapCanvas } from './mug3d';

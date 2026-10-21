@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MARGIN, MUG_SIZES, PAPERS, layoutSheet, paginateWraps } from '../src/desk/mugSizes';
+import { MARGIN, MUG_SIZES, PAPERS, layoutSheet, paginateWraps } from '../src/desk/mug/mugSizes';
 
 const size = (id: string) => MUG_SIZES.find((s) => s.id === id)!;
 const paper = (id: string) => PAPERS.find((p) => p.id === id)!;
