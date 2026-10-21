@@ -1,0 +1,26 @@
+/* the waste basket on the floor under the wall clock, left of the desk
+   (desk/room/wasteBasket.ts): like the clock, only where the window has wall to spare,
+   tucked against the desk's end, and a little smaller when the clock is */
+.waste-basket {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .desk.wide-wall .waste-basket {
+    --bw: calc(92px * min(1, var(--clock-size, 1) * 1.6));
+    display: block;
+    position: absolute;
+    /* beside the desk's left end (x 40), under the clock's desk side */
+    left: calc(34px - var(--bw));
+    bottom: 12px;
+    z-index: 1;
+    width: var(--bw);
+    filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.55));
+  }
+
+  .waste-basket svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
