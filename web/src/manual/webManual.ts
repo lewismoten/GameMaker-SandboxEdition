@@ -1,6 +1,7 @@
 // The guide for today's web Game-Maker, shown at #/help.
 import './webManual.css';
 import { h, clear } from '../editor/core/ui';
+import { decorateBbsName } from '../retro/bbs/bbsName';
 
 const SECTIONS: [id: string, title: string, html: string][] = [
   [
@@ -167,5 +168,6 @@ export function renderWebManual(el: HTMLElement): void {
       ),
     ),
   );
+  decorateBbsName(article);
   clear(el, h('div', { class: 'guide' }, nav, article));
 }

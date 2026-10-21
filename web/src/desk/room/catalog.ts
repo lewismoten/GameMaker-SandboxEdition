@@ -2,6 +2,7 @@
 // with how to get it (the BBS) and the author's registration notice.
 import { h, clear } from '../../editor/core/ui';
 import { creditLine, type CatalogEntry } from '../../project/files';
+import { decorateBbsName } from '../../retro/bbs/bbsName';
 
 const STYLE = `
 .paper-catalog { width: min(760px, 100%); max-height: 86vh; overflow: auto; padding: 28px 34px;
@@ -108,6 +109,7 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
         ),
       ),
     );
+    decorateBbsName(paper);
     const overlay = h('div', { class: 'desk-overlay', role: 'dialog', 'aria-label': 'Shareware catalog' }, h('button', { class: 'close', onclick: close }, 'Close (Esc)'), paper);
     document.body.append(overlay);
   });
