@@ -212,6 +212,12 @@ export class Bot {
     value += Math.min(300, Math.max(0, ci.score - before.score) * 2);
     value += (carried(copy) - before.inv) * 250;
     value += Math.max(0, ci.meter[3] - before.money) * 20;
+    // blocks changed by touching them (dots eaten, doors opened, things collected) and
+    // the game's extra counters going up
+    let changed = 0;
+    for (let i = 0; i < copy.map.length; i++) if (copy.map[i] !== w.map[i]) changed++;
+    value += Math.min(10, changed) * 25;
+    for (let i = 20; i < 30; i++) value += Math.min(10, Math.max(0, ci.meter[i] - w.ci.meter[i])) * 15;
     // keep going somewhere rather than pacing on the spot
     const back = this.trail[Math.max(0, this.trail.length - 12)];
     if (back) value += Math.min(60, Math.hypot(end.x - back.x, end.y - back.y) / 4) * this.o.explore;
