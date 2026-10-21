@@ -111,6 +111,10 @@
 }
 
 @media (max-width: 900px) {
+  /* editors' own sticky parts stay below the Files bar */
+  .workspace {
+    --ws-sticky-top: 52px;
+  }
   .sidebar {
     position: sticky;
     top: 0;
