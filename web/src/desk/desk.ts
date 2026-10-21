@@ -507,7 +507,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   /** Putting a disk in drive A: the PC boots if it is off, and the disk's game starts
    * (typed at the DOS prompt, as you would); a disk without one leaves you at A:. */
   async function insertFromBox(d: Disk): Promise<void> {
-    if (computer.busy) {
+    // a game playing is quit for the new disk; anything else has to be left first
+    if (computer.busy && !(await computer.stopGame())) {
       toast(
         "The drive light is on — quit the running program first (Esc usually does it).",
       );
@@ -527,7 +528,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       await p.saveNow();
       return nav.toModern(p.id);
     }
-    if (computer.busy) {
+    // Design (or Play) while a game is playing quits the game first
+    if (computer.busy && !(await computer.stopGame())) {
       toast("Quit the program that is running first (Esc usually does it).");
       return;
     }
