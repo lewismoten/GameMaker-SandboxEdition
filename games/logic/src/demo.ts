@@ -5,7 +5,7 @@ import { serializeRecording, type RecordedKey } from '../../../web/src/formats/r
 import type { Character } from '../../../web/src/formats/character';
 import type { Board } from './levels/board';
 import type { BlockSet } from './blocks/sets';
-import { playSolution } from '../verify';
+import { playSolution } from '../tools/verify';
 
 export async function demoRecording(b: Board, tiles: BlockSet, mb: BlockSet, cb: BlockSet, chr: Character): Promise<Uint8Array> {
   const run = await playSolution(b, tiles, mb, cb, chr);

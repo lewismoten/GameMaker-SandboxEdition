@@ -1,12 +1,12 @@
 // A headless copy of PLAYGAME's main loop (web/src/engine/scene.ts playScene/tick) so the
 // build can play its own boards: a bot presses the solution keys and must reach the
 // outlet alive.
-import { moveChars } from '../../web/src/engine/character';
-import { simKeyPress, resetKeys } from '../../web/src/engine/keys';
-import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '../../web/src/engine/monsters';
-import { updateCharDrawState } from '../../web/src/engine/render';
-import { changeScroll, drawScroll, initScroll } from '../../web/src/engine/scroll';
-import { getTouchBlocks } from '../../web/src/engine/touch';
+import { moveChars } from '../../../web/src/engine/character';
+import { simKeyPress, resetKeys } from '../../../web/src/engine/keys';
+import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '../../../web/src/engine/monsters';
+import { updateCharDrawState } from '../../../web/src/engine/render';
+import { changeScroll, drawScroll, initScroll } from '../../../web/src/engine/scroll';
+import { getTouchBlocks } from '../../../web/src/engine/touch';
 import {
   BACKBL,
   CHARBL,
@@ -25,12 +25,12 @@ import {
   padBlocks,
   type CharInfo,
   type World,
-} from '../../web/src/engine/world';
-import { MONBL, type Block } from '../../web/src/formats/blocks';
-import type { Character } from '../../web/src/formats/character';
-import type { GameMap } from '../../web/src/formats/map';
-import type { Monster } from '../../web/src/formats/monster';
-import { rng } from '../kit/pixels';
+} from '../../../web/src/engine/world';
+import { MONBL, type Block } from '../../../web/src/formats/blocks';
+import type { Character } from '../../../web/src/formats/character';
+import type { GameMap } from '../../../web/src/formats/map';
+import type { Monster } from '../../../web/src/formats/monster';
+import { rng } from '../../kit/pixels';
 
 export interface SimScene {
   map: GameMap;

@@ -1,10 +1,10 @@
 // Design aid: plays a few moves (M=UUL...) on board B (its file name) and prints what the parts are doing.
-import { newCharInfo } from '../../web/src/engine/world';
-import { BOARDS } from './src/levels/boards';
-import { compileHouse } from './src/levels/board';
-import { isWire } from './src/characters/mons';
-import { buildMonsterBlocks, buildWattBlocks } from './src/sprites/sprites';
-import { buildWatt } from './src/characters/watt';
+import { newCharInfo } from '../../../web/src/engine/world';
+import { BOARDS } from '../src/levels/boards';
+import { compileHouse } from '../src/levels/board';
+import { isWire } from '../src/characters/mons';
+import { buildMonsterBlocks, buildWattBlocks } from '../src/sprites/sprites';
+import { buildWatt } from '../src/characters/watt';
 import { Sim } from './sim';
 const mb = buildMonsterBlocks(),
   cb = buildWattBlocks();

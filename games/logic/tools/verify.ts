@@ -1,11 +1,11 @@
 // Plays every board's solution in the headless sim: Watt has to reach the outlet alive.
 // Also checks that reboot (R) works and counts the most monsters alive at once.
-import { newCharInfo } from '../../web/src/engine/world';
-import { LASTMON } from '../../web/src/formats/monster';
+import { newCharInfo } from '../../../web/src/engine/world';
+import { LASTMON } from '../../../web/src/formats/monster';
 import { Sim } from './sim';
-import type { Board } from './src/levels/board';
-import type { BlockSet } from './src/blocks/sets';
-import type { Character } from '../../web/src/formats/character';
+import type { Board } from '../src/levels/board';
+import type { BlockSet } from '../src/blocks/sets';
+import type { Character } from '../../../web/src/formats/character';
 
 const SCAN: Record<string, number> = { U: 72, D: 80, L: 75, R: 77, r: 19 };
 
@@ -45,8 +45,8 @@ export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: 
     for (let i = 0; i < n && !sim.dead && sim.link < 0; i++) {
       if (process.env.DEBUG === '3') {
         const w = sim.w;
-        const { picChkTouch, monPicNum } = await import('../../web/src/engine/monsters');
-        const { chrFrame } = await import('../../web/src/engine/keys');
+        const { picChkTouch, monPicNum } = await import('../../../web/src/engine/monsters');
+        const { chrFrame } = await import('../../../web/src/engine/keys');
         w.mm.forEach((m, i) => {
           const mi = w.mi[i];
           if (m.monnum >= LASTMON || mi.scrPos.x === -100) return;

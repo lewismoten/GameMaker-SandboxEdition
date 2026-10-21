@@ -1,8 +1,8 @@
-// Play-tests every board headlessly:  cd web && npx vite-node ../games/logic/check.ts [file]
-import { BOARDS } from './src/levels/boards';
-import { compileHouse } from './src/levels/board';
-import { buildMonsterBlocks, buildWattBlocks } from './src/sprites/sprites';
-import { buildWatt } from './src/characters/watt';
+// Play-tests every board headlessly:  cd web && npx vite-node ../games/logic/tools/check.ts [file]
+import { BOARDS } from '../src/levels/boards';
+import { compileHouse } from '../src/levels/board';
+import { buildMonsterBlocks, buildWattBlocks } from '../src/sprites/sprites';
+import { buildWatt } from '../src/characters/watt';
 import { playSolution } from './verify';
 
 const only = process.argv[2];
