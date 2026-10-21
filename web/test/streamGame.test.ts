@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { emptyScene, newGame, serializeGame } from '../src/formats/game';
-import { filesNamedBy, playOrder, streamHostedGame } from '../src/project/streamGame';
+import { demoNeeds, filesNamedBy, playOrder, streamHostedGame } from '../src/project/streamGame';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -98,5 +98,30 @@ describe('progressive game loading', () => {
     await g.done;
     expect(g.files.get('h.his')).toEqual(new Uint8Array([9]));
     expect(writes).toEqual(['h.his']); // arriving files are not reported as written
+  });
+
+  it('gives a copy of a streaming game the files it needs as they arrive', async () => {
+    const release = new Map<string, () => void>();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: string) => new Promise<Response>((r) => release.set(url.replace('./games/c/', ''), () => r(new Response(new Uint8Array([3])))))),
+    );
+    const entry = { id: 'c', title: 'C', kind: 'gameware' as const, path: 'games/c/', gam: null, files: ['a.map', 'b.map'] };
+    const g = streamHostedGame(entry);
+    const copy = g.files.copy();
+    copy.set('a.map', new Uint8Array([5])); // the copy's own change
+    const wait = copy.stream!.need(['a.map', 'b.map']);
+    release.get('a.map')!();
+    release.get('b.map')!();
+    await wait;
+    expect(copy.get('a.map')).toEqual(new Uint8Array([5]));
+    expect(copy.get('b.map')).toEqual(new Uint8Array([3]));
+    await g.done;
+    expect(copy.stream!.need(['b.map'])).toBeUndefined();
+  });
+
+  it('names what a demo preview reads first', () => {
+    expect(demoNeeds(sampleGame())).toEqual(['demo.rec']);
+    expect(demoNeeds(undefined)).toEqual([]);
   });
 });

@@ -90,6 +90,17 @@ export function filesNamedBy(name: string, bytes: Uint8Array): string[] {
   return [];
 }
 
+/** What a demo preview reads before it starts: the title demo, and the first level's character (attract mode). */
+export function demoNeeds(gam: Uint8Array | undefined): string[] {
+  try {
+    const scenes = gam ? parseGame(gam).scenes : [];
+    const first = scenes[scenes[0]?.links[0]?.toScene ?? -1];
+    return [scenes[0]?.files[11], first?.files[5]].filter((n): n is string => !!n);
+  } catch {
+    return [];
+  }
+}
+
 export interface StreamedGame {
   files: GameFiles;
   /** The .gam is in: the game can be shown (its other files keep coming). */

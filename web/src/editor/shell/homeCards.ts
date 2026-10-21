@@ -8,6 +8,7 @@ import { Project } from '../core/project';
 import { renderShot } from '../../desk/boxes/boxArt';
 import { openGameManual } from '../../manual/gameManual';
 import { GameFiles, creditLine, loadHostedGame, type CatalogEntry } from '../../project/files';
+import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
 import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
 import { levelShot } from '../editors/integrator/integratorArt';
@@ -58,6 +59,8 @@ export interface HomeGame {
   drawShot(canvas: HTMLCanvasElement): Promise<unknown>;
   /** All the game's files (loaded once). */
   files(): Promise<GameFiles>;
+  /** Enough of its files to start the demo preview, the rest arriving as it plays (hosted games). */
+  previewFiles?(): Promise<GameFiles>;
   hasDemo(): Promise<boolean>;
 }
 
@@ -102,6 +105,12 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
     health: g.gam ? catalogTarget(g) : undefined,
     drawShot: (c) => renderShot(g, c, Math.round(c.width / 20), Math.round(c.height / 20)),
     files: once(() => loadHostedGame(g)),
+    previewFiles: once(async () => {
+      const s = streamHostedGame(g);
+      await s.started;
+      await s.files.stream?.need(demoNeeds(s.files.get(g.gam ?? '')));
+      return s.files;
+    }),
     hasDemo: () => catalogHasDemo(g),
   };
 }
@@ -222,7 +231,7 @@ export function demoInPicture(
   const ready = (async () => {
     screen.classList.add('demo-loading');
     try {
-      const files = await game.files();
+      const files = await (game.previewFiles ?? game.files)();
       if (stopped || !game.gam) return false;
       screen.append(host, sound);
       preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop });
