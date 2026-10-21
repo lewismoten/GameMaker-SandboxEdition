@@ -1,4 +1,5 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
+import { rovingGrid } from '../rovingGrid';
 import { registerEditor } from './index';
 import { h, clear, selectField, toast, debounce, modal, download } from '../ui';
 import { blockCanvas, blockImages } from '../draw';
@@ -52,11 +53,20 @@ registerEditor(['map'], (host, project, file) => {
   const chooser = paletteChooser(project, set.bbl ?? file, () => rebuild());
 
   const canvas = h('canvas', { class: 'pixel', style: 'cursor:crosshair;display:block' });
-  const scroller = h('div', { style: 'overflow:auto;max-height:70vh;max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000' }, canvas);
+  const scroller = h(
+    'div',
+    {
+      tabindex: 0,
+      role: 'region',
+      'aria-label': 'The map (scroll with the arrow keys)',
+      style: 'overflow:auto;max-height:max(280px, calc(100dvh - 290px));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
+    },
+    canvas,
+  );
   const ctx = canvas.getContext('2d')!;
   const status = h('div', { class: 'meta' });
-  const picker = h('div', { class: 'block-picker', style: 'max-height:260px' });
-  const monPicker = h('div', { class: 'block-picker', style: 'max-height:200px' });
+  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:260px' }), 'Blocks to paint with');
+  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:200px' }), 'Monsters to place');
   const monCount = h('div', { class: 'meta' });
 
   // Links touching this map: where the character starts (to) and where scenes change (from).
