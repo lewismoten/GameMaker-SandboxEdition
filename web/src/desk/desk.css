@@ -1009,6 +1009,44 @@
   background: #3a3c40;
 }
 
+/* label-maker tape: glossy plastic with raised white letters, cut and stuck on a bit crooked */
+.disk-box .dymo {
+  position: absolute;
+  top: 16px;
+  padding: 2px 5px 1px;
+  border-radius: 1px;
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.28),
+      transparent 45%,
+      rgba(0, 0, 0, 0.25)
+    ),
+    var(--tape, #17181c);
+  color: #f4f4f0;
+  font:
+    700 8px/1 "Courier New",
+    monospace;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 -0.5px 0 rgba(255, 255, 255, 0.9),
+    0 1px 0.5px rgba(0, 0, 0, 0.8);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
+}
+
+.disk-box .dymo.l {
+  left: 22px;
+  transform: rotate(-2deg);
+}
+
+.disk-box .dymo.r {
+  right: 18px;
+  --tape: #b3191e;
+  transform: rotate(1.5deg);
+}
+
 /* stapled shareware catalog */
 .catalog-prop {
   --tilt: -4deg;

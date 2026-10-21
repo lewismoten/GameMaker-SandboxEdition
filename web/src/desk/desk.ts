@@ -420,7 +420,13 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       ...stack(mine, 99),
       h("div", { class: "bx-side l" }),
       h("div", { class: "bx-side r" }),
-      h("div", { class: "bx-front" }),
+      // embossed label-maker tape stuck on the front, one over each compartment
+      h(
+        "div",
+        { class: "bx-front" },
+        h("span", { class: "dymo l" }, "GAMES"),
+        h("span", { class: "dymo r" }, "MY DISKS"),
+      ),
     );
     if (insertId) {
       const d = disks.find((x) => x.id === insertId);
