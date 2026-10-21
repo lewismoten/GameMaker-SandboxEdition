@@ -48,4 +48,24 @@ describe('hosted file fetching', () => {
     expect(files.get('a_j.bkd')).not.toBe(x); // a copy the caller may edit
     expect(calls.filter((c) => c.endsWith('a_j.bkd'))).toHaveLength(1);
   });
+
+  it('fetches the gzip copy of a game file and unpacks it, else the file itself', async () => {
+    const { gzipSync } = await import('node:zlib');
+    const bytes = new Uint8Array(4000).map((_, i) => i % 7);
+    const packed = new Uint8Array(gzipSync(bytes));
+    const calls = stubFetch((u) => (u.endsWith('b.bbl.gz') ? packed : u.endsWith('.bbl') || u.endsWith('t.gif') ? new Uint8Array([9]) : null));
+    const entry = { path: 'games/t4/', files: ['b.bbl', 'c.bbl', 't.gif'], gz: true };
+    expect([...(await fetchGameFile(entry, 'b.bbl'))!]).toEqual([...bytes]);
+    // no copy there (or a broken one): the file itself
+    expect([...(await fetchGameFile(entry, 'c.bbl'))!]).toEqual([9]);
+    // GIFs are compressed already, so they have no copy
+    expect([...(await fetchGameFile(entry, 't.gif'))!]).toEqual([9]);
+    expect(calls).toEqual(['./games/t4/b.bbl.gz', './games/t4/c.bbl.gz', './games/t4/c.bbl', './games/t4/t.gif']);
+  });
+
+  it('fetches the plain file for catalogs without gzip copies', async () => {
+    const calls = stubFetch(() => new Uint8Array([5]));
+    expect([...(await fetchGameFile({ path: 'games/t5/', files: ['m.map'] }, 'm.map'))!]).toEqual([5]);
+    expect(calls).toEqual(['./games/t5/m.map']);
+  });
 });

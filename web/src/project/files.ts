@@ -116,6 +116,8 @@ export interface CatalogEntry {
   sizes?: number[];
   /** Original games made for this project: label, box art, manual, sound card. */
   original?: OriginalExtras;
+  /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
+  gz?: boolean;
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
@@ -150,8 +152,36 @@ function trimFileCache(): void {
   }
 }
 
-/** Bytes of one file at a site-relative URL (e.g. games/gameware/sample/sample.gam), fetched once. Shared: do not modify them. */
-export function fetchSiteFile(url: string): Promise<Uint8Array | undefined> {
+/**
+ * GitHub Pages compresses text but sends game files (.bbl, .map, .fli…) as they are, and
+ * they shrink 3 to 20 times; so the build keeps a gzip copy of each beside it. The copy to
+ * fetch for a file, or undefined when there is none (GIFs are compressed already) or this
+ * browser cannot unpack it.
+ */
+export function packedUrl(url: string, gz: boolean | undefined): string | undefined {
+  return gz && !/\.gif$/i.test(url) && typeof DecompressionStream !== 'undefined' ? `${url}.gz` : undefined;
+}
+
+/** A file's bytes, from its gzip copy when there is one (else, or if that fails, the file itself). */
+async function fetchBytes(url: string, gz: boolean | undefined): Promise<Uint8Array | undefined> {
+  const packed = packedUrl(url, gz);
+  if (packed) {
+    try {
+      const res = await fetch(packed);
+      if (res.ok && res.body) return new Uint8Array(await new Response(res.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
+    } catch {
+      /* fall back to the file itself */
+    }
+  }
+  const res = await fetch(url);
+  return res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined;
+}
+
+/**
+ * Bytes of one file at a site-relative URL (e.g. games/gameware/sample/sample.gam), fetched once. Shared: do not modify them.
+ * `gz`: the file has a gzip copy beside it (a catalog entry's `gz`).
+ */
+export function fetchSiteFile(url: string, gz?: boolean): Promise<Uint8Array | undefined> {
   const hit = fileCache.get(url);
   if (hit) {
     // most recently used last
@@ -160,23 +190,21 @@ export function fetchSiteFile(url: string): Promise<Uint8Array | undefined> {
     return hit.p;
   }
   const entry = { p: Promise.resolve<Uint8Array | undefined>(undefined), size: 0 };
-  entry.p = fetch(url)
-    .then(async (res) => (res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined))
-    .then(
-      (bytes) => {
-        if (!bytes) fileCache.delete(url);
-        else if (fileCache.get(url) === entry) {
-          entry.size = bytes.length || 1;
-          cachedBytes += entry.size;
-          trimFileCache();
-        }
-        return bytes;
-      },
-      () => {
-        fileCache.delete(url);
-        return undefined;
-      },
-    );
+  entry.p = fetchBytes(url, gz).then(
+    (bytes) => {
+      if (!bytes) fileCache.delete(url);
+      else if (fileCache.get(url) === entry) {
+        entry.size = bytes.length || 1;
+        cachedBytes += entry.size;
+        trimFileCache();
+      }
+      return bytes;
+    },
+    () => {
+      fileCache.delete(url);
+      return undefined;
+    },
+  );
   fileCache.set(url, entry);
   return entry.p;
 }
@@ -185,9 +213,9 @@ export function fetchSiteFile(url: string): Promise<Uint8Array | undefined> {
  * One file of a hosted game, by the name a game uses for it (A-J.BKD finds the CD's
  * a_j.bkd); undefined when the game has no such file or it could not be fetched.
  */
-export function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files'>, name: string, base = './'): Promise<Uint8Array | undefined> {
+export function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz'>, name: string, base = './'): Promise<Uint8Array | undefined> {
   const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
-  return n ? fetchSiteFile(`${base}${entry.path}${n}`) : Promise.resolve(undefined);
+  return n ? fetchSiteFile(`${base}${entry.path}${n}`, entry.gz) : Promise.resolve(undefined);
 }
 
 export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
@@ -195,7 +223,7 @@ export async function loadHostedGame(entry: CatalogEntry, base = './', onProgres
   let done = 0;
   await Promise.all(
     entry.files.map(async (name) => {
-      const bytes = await fetchSiteFile(`${base}${entry.path}${name}`);
+      const bytes = await fetchSiteFile(`${base}${entry.path}${name}`, entry.gz);
       // a copy: callers may edit their files
       if (bytes) files.set(name, bytes.slice());
       onProgress?.(++done, entry.files.length);

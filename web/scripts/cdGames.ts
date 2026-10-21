@@ -13,6 +13,7 @@
 import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { gzipSync } from 'node:zlib';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
 
@@ -337,9 +338,17 @@ export function cdGames(cdRoot: string): Plugin {
     },
     generateBundle() {
       const { gm, catalog, files } = get();
-      this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog) });
+      // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
+      // files shrink 3-20x: each game file but a GIF also gets a gzip copy, <file>.gz, which
+      // the site fetches and unpacks instead (src/project/files.ts, fetchSiteFile). The
+      // files themselves stay too, for exports and links.
+      this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog.map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
-      for (const [site, disk] of files) this.emitFile({ type: 'asset', fileName: site, source: readFileSync(disk) });
+      for (const [site, disk] of files) {
+        const bytes = readFileSync(disk);
+        this.emitFile({ type: 'asset', fileName: site, source: bytes });
+        if (site.startsWith('games/') && !/\.gif$/i.test(site)) this.emitFile({ type: 'asset', fileName: `${site}.gz`, source: gzipSync(bytes, { level: 9 }) });
+      }
     },
   };
 }
