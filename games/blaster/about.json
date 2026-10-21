@@ -18,15 +18,15 @@
     "accent": "#ff7a1a",
     "ink": "#ffffff",
     "tagline": "Your PC has a virus. Shrink down and blast it.",
-    "back": "Late one night you downloaded COOLGAME.ZIP from a BBS you had never called before. It was not a cool game. It was GLITCH, a virus that eats a PC from the inside out - Mom's tax return, Dad's novel, your homework, YOUR HIGH SCORES.\n\nLoad VACCINE.EXE, shrink to the size of a byte and climb into the BLASTER, the fastest nano-fighter ever to fit through a floppy drive. Scream up the data bus of the motherboard, dodge the data streams of Memory Lane, ride the thumping speakers of the Sound Card, fight the spin of the Hard Disk platter and burn into the CPU itself. Five stages, ten scrolling runs, five towering bosses built out of dozens of monsters each - and GLITCH waiting at the core.",
+    "back": "Late one night you downloaded COOLGAME.ZIP from a BBS you had never called before. It was not a cool game. It was GLITCH, a virus that eats a PC from the inside out. Mom's taxes. Your homework. YOUR HIGH SCORES.\n\nTime for VACCINE.EXE. Shrink to the size of a byte, climb into the BLASTER nano-fighter and blast your way up through the family 486 - motherboard, memory, sound card, hard disk and into the CPU itself. Five stages. Ten scrolling runs. Five towering bosses. And GLITCH waiting at the core.",
     "features": [
       "A real vertically scrolling shoot-'em-up made with Game-Maker - no programming",
       "Auto-fire twin blasters, plus Nova Bombs that fan out five plasma bolts",
       "Five stages inside a 486: the motherboard, memory, the sound card, the hard disk and the CPU",
-      "Five bosses, each built from dozens of monsters, plugging the only way out",
+      "Five towering bosses blocking the only way out",
       "Turrets that sweep and fire, virus hatches, firewalls, data streams and thumping speakers",
       "Twelve Sound Blaster songs and digitized explosions",
-      "An animated FLI intro cartoon and a self-playing demo"
+      "An animated intro cartoon and a self-playing demo"
     ],
     "shots": [
       ["s1a.map", 2, 50],
