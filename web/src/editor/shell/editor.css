@@ -1258,6 +1258,12 @@ main:focus,
   min-width: 36px;
   padding-inline: 8px;
 }
+/* phones and touch screens rarely have a keyboard: no shortcuts button there */
+@media (max-width: 480px), (hover: none) and (pointer: coarse) {
+  .editor .keys-btn {
+    display: none;
+  }
+}
 .keys-list {
   width: min(560px, 82vw);
   max-height: min(70vh, 640px);
