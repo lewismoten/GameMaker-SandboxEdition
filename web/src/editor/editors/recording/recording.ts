@@ -1,16 +1,16 @@
 // Demo recordings (.REC): the keys of a game played earlier, which the title screen plays
 // back when the menu sits idle. Record one by playing, watch it, and trim it.
-import { registerEditor } from './registry';
-import { h, clear, modal, toast } from '../core/ui';
-import { registerMaker } from '../makers';
-import type { Project } from '../core/project';
-import { GameFiles } from '../../project/files';
-import { mountPlayer, type PlayerHandle } from '../../player/player';
-import { parseRecording, serializeRecording, RECLEN, type RecordedKey } from '../../formats/recording';
-import { scanName } from '../../input/scancodes';
-import type { Session } from '../../engine/scene';
+import { registerEditor } from '../registry';
+import { h, clear, modal, toast } from '../../core/ui';
+import { registerMaker } from '../../makers';
+import type { Project } from '../../core/project';
+import { GameFiles } from '../../../project/files';
+import { mountPlayer, type PlayerHandle } from '../../../player/player';
+import { parseRecording, serializeRecording, RECLEN, type RecordedKey } from '../../../formats/recording';
+import { scanName } from '../../../input/scancodes';
+import type { Session } from '../../../engine/scene';
 import { watchTimeline, editTimeline } from './recTimeline';
-import { playDemo } from '../../media/demo';
+import { playDemo } from '../../../media/demo';
 import { toEvents, toKeys, toNotes, duration, clock, EXT } from './recTimelineModel';
 
 /** Plays the game, recording the keys; resolves with the .REC bytes, or undefined. */

@@ -15,7 +15,7 @@ import {
   capLabel,
   clock,
   EXT,
-} from '../src/editor/editors/recTimelineModel';
+} from '../src/editor/editors/recording/recTimelineModel';
 
 const ev = (...pairs: [number, number][]) => pairs.map(([t, key]) => ({ t, key }));
 

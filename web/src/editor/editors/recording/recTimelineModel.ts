@@ -2,7 +2,7 @@
 // they form (a key going down until it comes back up), lanes so keys held together
 // stack, and the edits the timeline makes (retime a press, trim the end, shorten a
 // long pause). Everything here is pure, so it is tested in web/test/recTimeline.test.ts.
-import { RECLEN, type RecordedKey } from '../../formats/recording';
+import { RECLEN, type RecordedKey } from '../../../formats/recording';
 
 /** The keyboard's 0xE0 "extended key" prefix: DOS recordings keep it before gray-key codes. */
 export const EXT = 0xe0;

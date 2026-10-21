@@ -16,4 +16,4 @@ import './music';
 import './sample/sample';
 import './highScores/highScores';
 import '../tools/all';
-import './recording';
+import './recording/recording';
