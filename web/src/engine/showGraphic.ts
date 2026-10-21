@@ -98,10 +98,27 @@ export function drawGifFile(m: Machine, file: string, cols: Uint8Array, backdrop
   }
 }
 
+/** Yields to the event loop without waiting for a frame (a MessageChannel task is not clamped like setTimeout). */
+function yieldTask(): Promise<void> {
+  return new Promise((resolve) => {
+    const ch = new MessageChannel();
+    ch.port1.onmessage = () => resolve();
+    ch.port2.postMessage(0);
+  });
+}
+
 /**
  * FLI::View: every frame once, `speed` vertical retraces (1/70 s) apart. The C drew
- * straight onto the VGA screen, so the animation starts over whatever is shown. A
- * speed of 0 meant no wait in the C; here it is treated as 1 retrace.
+ * straight onto the VGA screen, so the animation starts over whatever is shown.
+ *
+ * A speed of 0 waits no retrace at all: the C's delay loop is
+ *   for (uint Delay=0;Delay<Head.FrameSpd;Delay++) { wait out retrace; wait for retrace; }
+ * so with FrameSpd 0 the next frame was decoded into video memory straight away, as fast
+ * as the PC could read and draw it, and the monitor showed whatever was in video memory at
+ * each refresh (frames in between were never seen). The port does the same: it draws the
+ * next frame at once, only yielding to the event loop (no frame wait) so the page stays
+ * responsive, and each browser repaint shows the frame that is current then. Speed 0 FLIs
+ * on the CD (black.fli, menubkg.fli, textbkg.fli, ...) are one or two frame backgrounds.
  */
 export async function playFli(m: Machine, file: string): Promise<boolean> {
   const bytes = m.files.get(file);
@@ -114,7 +131,12 @@ export async function playFli(m: Machine, file: string): Promise<boolean> {
   for (let f = 0; f < anim.frameCount; f++) {
     if (applyFliFrame(anim, f, canvas)) m.screen.setPalette(canvas.palette);
     m.screen.drawImage(canvas.pixels, anim.width, anim.height);
-    due += (Math.max(1, anim.speed) * 1000) / 70;
+    if (anim.speed === 0) {
+      await yieldTask();
+      m.checkAbort();
+      continue;
+    }
+    due += (anim.speed * 1000) / 70;
     do await m.frame();
     while (performance.now() < due);
   }
