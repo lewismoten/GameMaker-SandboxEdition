@@ -16,6 +16,7 @@ import type { Level } from '../levels/level';
 import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from '../sound/music';
 import { CREDITS, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { dosText } from '../../../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 
 export const SP: Pal = buildScreenPalette();
 const c = (n: string, k: number) => SP.c(n, k);
@@ -187,9 +188,12 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   const lst = (name: string, entries: [string, number?][]) => put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
 
   put('title.gif', gif(titleScreen()));
+  put(SANDLOGO, sandLogoFli());
   put('intro.fli', introFli());
   // The story told as a slide show of cartoons: Doc Leo's clown act, his CitiCar, then Gwin.
+  // (after the Sandbox Software logo)
   lst('title.lst', [
+    [SANDLOGO, 0],
     ['leo.fli', 0],
     ['car.fli', 0],
     ['intro.fli', 0],
