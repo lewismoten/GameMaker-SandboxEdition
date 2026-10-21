@@ -61,9 +61,10 @@ gm
 ```
 
 To build the DOS source you also need the Borland C++ compiler, which this fork doesn't
-include (it isn't covered by the MIT License). Copy the `tools/` folder from the
-[original 2014 repository](https://github.com/gandrewstone/GameMaker) into the root of
-this one, then, following Andy Stone's original notes, in DOSBox:
+include, nor the Borland and Creative library files it links (none are covered by the
+MIT License; NOTICE.md lists them). Copy the `tools/` folder and those files from the
+[original 2014 repository](https://github.com/gandrewstone/GameMaker) into this one, then,
+following Andy Stone's original notes, in DOSBox:
 
 ```
 c:

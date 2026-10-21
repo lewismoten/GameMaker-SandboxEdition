@@ -103,6 +103,13 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
   DOS source; it is Borland's (now Embarcadero's) software and is not covered by the MIT
   License, so this fork leaves it out. The README says where to get it.
+- **Borland's runtime library** files that Game-Maker's source was built with (`CL.LIB`,
+  `EMU.LIB`, `MATHL.LIB`, the startup code `STARTUP.ASM`, `SETARGV.ASM`, `SETENVP.ASM`,
+  `FULLPATH.C`, `RULES.ASI`, and the `EGAVGA.BGI` graphics driver) and **Creative's Sound
+  Blaster library** `SBCL.LIB` were in `code/` in the original repository. They belong to
+  Borland and Creative Technology, not the MIT License, so this fork leaves them out (also
+  from `code/GM/GM.ZIP`). The web port uses none of them: its sound and graphics are
+  written from the formats and from how the DOS programs behaved.
 - The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its BBSes
   and phone numbers are made up, as are the magazines and awards on the game boxes.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
