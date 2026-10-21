@@ -52,12 +52,18 @@ export async function offerAddedDemo(entry: CatalogEntry | undefined, files: Gam
       {
         class: 'stack',
         method: 'dialog',
+        style: 'text-align:left;max-width:36rem',
         onsubmit: (e: Event) => {
           e.preventDefault();
           close(box.checked);
         },
       },
-      h('label', { class: 'check', for: 'added-demo-include' }, box, ' Include the added demo recording (not part of the original game)'),
+      h(
+        'label',
+        { for: 'added-demo-include', style: 'display:flex;gap:.6em;align-items:center;justify-content:flex-start;font-weight:600;cursor:pointer' },
+        box,
+        'Include the added demo recording (not part of the original game)',
+      ),
       h(
         'p',
         { class: 'hint' },
