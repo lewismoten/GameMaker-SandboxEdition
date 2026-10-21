@@ -55,18 +55,6 @@ function shadedPoly(p: Pixels, pts: Pt[], ramp: number[], lo: number, hi: number
   poly(p, pts, (x, y) => shadeAt(ramp, lo, hi, 1 - (y - top) / h, x, y));
 }
 
-/** Outlines whatever differs from `bg` in a picture's region with ink. */
-function inkEdges(p: Pixels, x0: number, y0: number, w: number, h: number, bg: (x: number, y: number) => boolean): void {
-  const ink = c('ink', 0);
-  const marks: Pt[] = [];
-  for (let y = y0; y < y0 + h; y++)
-    for (let x = x0; x < x0 + w; x++) {
-      if (!bg(x, y)) continue;
-      if ([bg(x - 1, y), bg(x + 1, y), bg(x, y - 1), bg(x, y + 1)].some((b) => !b)) marks.push([x, y]);
-    }
-  for (const [x, y] of marks) p.set(x, y, ink);
-}
-
 export interface Face {
   blink?: boolean;
   /** Mouth open, panting (or shut). */
@@ -534,5 +522,3 @@ export function castFli(): Uint8Array {
   return encodeFli(reel.frames, CP.pal, { speed: 7, palettes: reel.pals });
 }
 
-void inkEdges;
-void outlined;
