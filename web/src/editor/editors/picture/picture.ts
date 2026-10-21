@@ -1,14 +1,14 @@
 // Pictures (.GIF): view, import, and copy 20x20 areas into blocks (IMAGE.EXE).
-import { registerEditor } from './registry';
-import { fileField } from '../widgets/filePicker';
-import { h, clear, selectField, pickFiles, toast, download, confirmDialog } from '../core/ui';
-import { blockCanvas, paintBlock, paintIndexed } from '../core/draw';
+import { registerEditor } from '../registry';
+import { fileField } from '../../widgets/filePicker';
+import { h, clear, selectField, pickFiles, toast, download, confirmDialog } from '../../core/ui';
+import { blockCanvas, paintBlock, paintIndexed } from '../../core/draw';
 import './picture.css';
 import { isBlankBlock } from './pictureLogic';
-import { decodeGif, encodeGif, isGif, type IndexedImage } from '../../formats/gif';
-import { matchColor, parsePalette, type Palette } from '../../formats/palette';
-import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../formats/blocks';
-import { gamePreview } from '../widgets/mediaShared';
+import { decodeGif, encodeGif, isGif, type IndexedImage } from '../../../formats/gif';
+import { matchColor, parsePalette, type Palette } from '../../../formats/palette';
+import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../../formats/blocks';
+import { gamePreview } from '../../widgets/mediaShared';
 
 // ---- pictures -----------------------------------------------------------------
 

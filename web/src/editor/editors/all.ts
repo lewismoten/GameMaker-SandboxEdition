@@ -7,7 +7,7 @@ import './integrator/integrator';
 import './monsters/monsters';
 import './character/character';
 import './sounds/sounds';
-import './picture';
+import './picture/picture';
 import './animation';
 import './backdrop';
 import './textScreen';
