@@ -542,6 +542,29 @@ export function buildScreens(
       };
       blade(40, 'GALE ST', 6);
       blade(72, 'DUNN DR', -6);
+      // the morning paper: thrown from off screen, it tumbles over the yard and lands on
+      // the porch with a puff of snow (the carrier this morning is the founder)
+      const paperAt = (x: number, y: number, flat: boolean) => {
+        if (flat) {
+          p.rect(x - 9, y - 4, 19, 6, c('snow', 6)).rect(x - 9, y + 1, 19, 1, c('grey', 3)).rect(x - 10, y - 4, 1, 6, c('grey', 4));
+          for (let k = -6; k < 8; k += 3) p.rect(x + k, y - 2, 2, 1, c('grey', 4));
+          p.rect(x - 1, y - 4, 3, 6, c('coat', 3));
+        } else {
+          for (let i = -6; i <= 6; i++) p.rect(x + i, y + i, 4, 4, c('snow', 6)).set(x + i + 3, y + i + 3, c('grey', 3));
+          p.rect(x - 1, y - 1, 4, 4, c('coat', 3));
+        }
+      };
+      const land = ground + 6;
+      if (f >= 24 && f < 38) {
+        const t = (f - 24) / 14;
+        const px = -10 + t * (hx + 82 + 10);
+        const py = 118 + (land - 118) * t - Math.sin(t * Math.PI) * 50;
+        if (f % 2) paperAt(Math.round(px), Math.round(py), true);
+        else paperAt(Math.round(px), Math.round(py), false);
+      } else if (f >= 38) {
+        paperAt(hx + 82, land, true);
+        if (f < 44) for (let k = 0; k < 3; k++) blob(p, hx + 74 + k * 8, land - 2 - (f - 38) - k, 2 + (f - 38) * 0.5, 1.5, pal.r('snow'), 4, 6);
+      }
       // falling snow
       for (const fl of flakes) {
         const y = (fl.y + f * fl.v) % H;
