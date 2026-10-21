@@ -89,8 +89,8 @@ export function deskMug(open: () => void): HTMLElement {
         layer,
       });
     }
-    el.setAttribute('aria-label', 'The Sandbox BBS mug: look closer, choose its picture, print your own');
-    el.title = 'The Sandbox BBS mug: click to turn it round';
+    el.setAttribute('aria-label', 'The Sandbox mug: look closer, choose its picture (the BBS or a Sandbox game), print your own');
+    el.title = 'The Sandbox mug: click to turn it round';
   };
   paint();
   // a game's picture comes from its files: paint again once it's here

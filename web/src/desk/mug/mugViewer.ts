@@ -139,11 +139,11 @@ export function openMugViewer(): Promise<void> {
 
     const overlay = h(
       'div',
-      { class: 'mugv', role: 'dialog', 'aria-label': 'The Sandbox BBS mug' },
+      { class: 'mugv', role: 'dialog', 'aria-label': 'The Sandbox mug' },
       h(
         'header',
         { class: 'mugv-bar' },
-        h('strong', null, 'The Sandbox BBS mug'),
+        h('strong', null, 'The Sandbox mug'),
         h('span', { class: 'mugv-spacer' }),
         h('button', { type: 'button', onclick: close }, 'Close (Esc)'),
       ),
