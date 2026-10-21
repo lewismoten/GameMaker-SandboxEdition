@@ -1,9 +1,9 @@
 // Small things around the desk: a Sandbox BBS mug full of pencils and pens, a beige wall
-// telephone (lift the handset for a dial tone), and a swing-arm lamp that is on when it
+// telephone (lift the handset to make a call: phone/), and a swing-arm lamp that is on when it
 // is dark outside (click it to switch it yourself).
 import "./deskProps.css";
 import { h } from "../../editor/core/ui";
-import { output } from "../../audio/output";
+import { phoneLineFor } from "./phone/phone";
 import { watchDaylight } from "./daylight";
 import { deskMug } from "../mug/mug";
 
@@ -18,30 +18,6 @@ export function mug(): HTMLElement {
   return deskMug(
     () => void import("../mug/mugViewer").then((m) => m.openMugViewer()),
   );
-}
-
-/** A dial tone for as long as the handset is off the hook. */
-function dialTone(): () => void {
-  let ctx: AudioContext | undefined;
-  try {
-    ctx = new AudioContext();
-  } catch {
-    return () => undefined;
-  }
-  const g = ctx.createGain();
-  g.gain.value = 0.05;
-  g.connect(output(ctx));
-  const oscs = [350, 440].map((f) => {
-    const o = ctx!.createOscillator();
-    o.frequency.value = f;
-    o.connect(g);
-    o.start();
-    return o;
-  });
-  return () => {
-    oscs.forEach((o) => o.stop());
-    void ctx!.close();
-  };
 }
 
 /** A coiled cord down a vertical run, as SVG path commands: little loops side to side. */
@@ -141,18 +117,8 @@ export function wallPhone(): HTMLElement {
   el.setAttribute("tabindex", "0");
   el.setAttribute("aria-label", "Wall telephone: lift the handset");
   el.title = "The phone: lift the handset";
-  let hangUp: (() => void) | undefined;
-  const toggle = () => {
-    if (hangUp) {
-      hangUp();
-      hangUp = undefined;
-      el.classList.remove("off-hook");
-    } else {
-      hangUp = dialTone();
-      el.classList.add("off-hook");
-    }
-    el.setAttribute("aria-pressed", String(!!hangUp));
-  };
+  // the line, the keypad and whoever answers (phone/phone.ts)
+  const { toggle } = phoneLineFor(el);
   el.addEventListener("click", toggle);
   el.addEventListener(
     "keydown",
