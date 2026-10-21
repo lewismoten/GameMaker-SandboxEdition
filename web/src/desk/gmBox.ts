@@ -4,6 +4,9 @@
 import './gmBox.css';
 import { h } from '../editor/ui';
 import type { BoxFaces } from './gameBox';
+import { loadedShots, preloadShots } from './gmShots';
+
+preloadShots();
 
 const PPI = 80;
 const W = 7.5 * PPI;
@@ -68,7 +71,11 @@ function badge(ctx: CanvasRenderingContext2D, x: number, y: number, w: number): 
 }
 
 /** tiles: the screenshots from the desk box, each with its caption. */
-export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
+export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces {
+  // the front shows games made with Game-Maker: Sandbox Software's, once they have loaded
+  const games = loadedShots();
+  const tiles: [HTMLCanvasElement, string, string?][] =
+    games.length >= 6 ? games.slice(0, 6).map((g) => [g.canvas, g.feature, g.title.toUpperCase()]) : sampleTiles;
   // ---- front
   const [front, f] = canvas(W, H);
   f.fillStyle = PINK;
@@ -80,20 +87,25 @@ export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
   f.clip();
   f.translate(-80, 170);
   f.rotate((-14 * Math.PI) / 180);
-  tiles.forEach(([shot, caption], i) => {
+  tiles.forEach(([shot, caption, game], i) => {
     const tw = 330;
     const th = 248;
     const x = (i % 2) * (tw + 26) - 10;
     const y = Math.floor(i / 2) * (th + 60) + 60;
     f.fillStyle = 'rgba(0,0,0,0.35)';
-    f.fillRect(x + 6, y + 10, tw, th + 30);
+    f.fillRect(x + 6, y + 10, tw, th + (game ? 44 : 30));
     f.fillStyle = '#111';
-    f.fillRect(x, y, tw, th + 30);
+    f.fillRect(x, y, tw, th + (game ? 44 : 30));
     f.imageSmoothingEnabled = false;
     f.drawImage(shot, x, y, tw, th);
     f.fillStyle = '#fff';
-    f.font = SANS(19);
-    f.fillText(caption, x + 8, y + th + 22);
+    f.font = SANS(game ? 17 : 19);
+    f.fillText(caption, x + 8, y + th + 21);
+    if (game) {
+      f.fillStyle = YELLOW;
+      f.font = SANS(12, 900, true);
+      f.fillText(`MADE WITH GAME-MAKER: ${game}`, x + 8, y + th + 37);
+    }
   });
   f.restore();
   // banner and tagline
@@ -159,9 +171,9 @@ export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
     b,
     'Game-Maker is a complete set of computer-aided design tools for building your own action games in 256-color VGA. No programming needed: draw the scenery, animate the monsters, paint the maps and link the scenes together, then play your game or give it to your friends.',
     30,
-    176,
+    174,
     W - 60,
-    25,
+    23,
   );
   b.font = SANS(18);
   for (const line of [
@@ -177,31 +189,43 @@ export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
     b.fillRect(34, y - 13, 10, 10);
     b.fillStyle = '#1d1a14';
     b.fillText(line, 56, y);
-    y += 28;
+    y += 23;
   }
-  // a screenshot or two
-  tiles.slice(0, 2).forEach(([shot], i) => {
-    b.fillStyle = '#111';
-    b.fillRect(30 + i * 276, y + 4, 262, 198);
+  // a strip of games made with it
+  const strip: [HTMLCanvasElement, string][] = games.length
+    ? games.slice(0, 4).map((g) => [g.canvas, g.title])
+    : sampleTiles.slice(0, 4).map(([c, t]) => [c, t]);
+  b.fillStyle = '#0b0b0b';
+  b.fillRect(30, y - 4, W - 60, 128);
+  b.fillStyle = YELLOW;
+  b.font = SANS(13, 900, true);
+  b.fillText(games.length ? 'GAMES MADE WITH GAME-MAKER BY SANDBOX SOFTWARE' : 'SCREENS FROM THE SAMPLE GAMES', 40, y + 14);
+  const sw = (W - 60 - 20 - 3 * 10) / 4;
+  strip.forEach(([shot, name], i) => {
+    const sx = 40 + i * (sw + 10);
     b.imageSmoothingEnabled = false;
-    b.drawImage(shot, 34 + i * 276, y + 8, 254, 190);
+    b.drawImage(shot, sx, y + 22, sw, (sw * 10) / 16);
+    b.fillStyle = '#fff';
+    b.font = SANS(11, 700);
+    while (b.measureText(name).width > sw && name.length > 4) name = `${name.slice(0, -2)}…`;
+    b.fillText(name, sx, y + 22 + (sw * 10) / 16 + 14);
   });
-  y += 230;
+  y += 132;
   // system requirements
   b.fillStyle = '#fff6ee';
-  b.fillRect(30, y, W - 60, 118);
+  b.fillRect(30, y, W - 60, 82);
   b.strokeStyle = '#1d1a14';
   b.lineWidth = 2;
-  b.strokeRect(30, y, W - 60, 118);
+  b.strokeRect(30, y, W - 60, 82);
   b.fillStyle = '#1d1a14';
-  b.font = SANS(15, 900);
-  b.fillText('SYSTEM REQUIREMENTS', 44, y + 24);
-  b.font = SANS(14, 400);
+  b.font = SANS(13, 900);
+  b.fillText('SYSTEM REQUIREMENTS', 44, y + 20);
+  b.font = SANS(13, 400);
   [
     'IBM PC/AT or compatible (386 or better recommended)',
     '640K RAM · VGA graphics · hard disk · DOS 3.3 or later',
     'Mouse required · Sound Blaster optional · CD-ROM or 1.44 MB floppy',
-  ].forEach((l, i) => b.fillText(l, 44, y + 50 + i * 22));
+  ].forEach((l, i) => b.fillText(l, 44, y + 38 + i * 17));
   b.font = SANS(12, 400);
   b.fillText('Game-Maker © 1991–1994 Recreational Software Designs; released under the MIT License in 2014.', 30, H - 40);
   b.fillText('Sandbox Edition box art, made for this modified fork. Not the original RSD box.', 30, H - 22);
