@@ -3,9 +3,9 @@ import { newBlockSet, type Block } from '../../web/src/formats/blocks';
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../web/src/formats/monster';
 import { emptyFrame, newCharacter, type Character, type Frame } from '../../web/src/formats/character';
 import { Pixels } from '../kit/pixels';
-import { blob, recolor, rotate, sprite } from './draw';
-import { MON, SND, THROWSEQ } from './ids';
-import type { Pal } from './pal';
+import { blob, recolor, rotate, sprite } from './src/art/draw';
+import { MON, SND, THROWSEQ } from './src/ids';
+import type { Pal } from './src/art/pal';
 
 const T = 255;
 

@@ -1,7 +1,7 @@
 // Lettering for screens and signs: the PC's 8x8 font (scaled, outlined) and a 3x5 font
 // small enough to paint "BAKERY" across three 20x20 blocks.
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import type { Pixels } from '../kit/pixels';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import type { Pixels } from '../../../kit/pixels';
 
 /** Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. */
 export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {

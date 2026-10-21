@@ -4,7 +4,7 @@
 // Leon Drive, Jamie Street and Bowden Drive.
 import { newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
 import type { BlockBook } from './blocks';
-import { MON } from './ids';
+import { MON } from './src/ids';
 
 /** ASCII legend → block name ('.' picks a yard variant). */
 const LEGEND: Record<string, string> = {

@@ -3,7 +3,7 @@
 import { newSoundSet, type SoundSet } from '../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../kit/sound';
 import { rng } from '../kit/pixels';
-import { SND } from './ids';
+import { SND } from './src/ids';
 
 /** White noise through a one-pole low-pass (0..1: how much of the new sample passes). */
 function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {

@@ -1,7 +1,7 @@
 // Snowbound's colors: one set of named ramps shared by every block, and a palette per
 // time of day. The block art never changes between scenes; the .PAL does, so the same
 // street goes from a pink winter morning to a blue night with glowing windows.
-import { PaletteBuilder } from '../kit/palette';
+import { PaletteBuilder } from '../../../kit/palette';
 
 type RGB = [number, number, number];
 export type TimeOfDay = 'morning' | 'noon' | 'dusk' | 'night';

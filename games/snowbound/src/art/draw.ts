@@ -1,5 +1,5 @@
 // Drawing helpers shared by the block, sprite and screen art.
-import { Pixels, dither, rng } from '../kit/pixels';
+import { Pixels, dither, rng } from '../../../kit/pixels';
 
 /** A shade between ramp[lo] and ramp[hi] for level 0..1, ordered-dithered at (x, y). */
 export function shadeAt(ramp: number[], lo: number, hi: number, level: number, x: number, y: number): number {

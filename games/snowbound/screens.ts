@@ -3,9 +3,9 @@
 import { encodeFli } from '../../web/src/formats/fli';
 import { encodeGif } from '../../web/src/formats/gif';
 import { Pixels, rng } from '../kit/pixels';
-import { blob, gradient, shadeAt } from './draw';
-import { centered, micro, outlined, text, textWidth } from './font';
-import { buildScreenPalette, type Pal } from './pal';
+import { blob, gradient, shadeAt } from './src/art/draw';
+import { centered, micro, outlined, text, textWidth } from './src/art/font';
+import { buildScreenPalette, type Pal } from './src/art/pal';
 
 export type Spr = Map<string, Pixels>;
 

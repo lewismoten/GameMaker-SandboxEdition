@@ -4,10 +4,10 @@
 // into it, parking-lot asphalt quietly snows back over, ice slides you, forts throw.
 import { newBlockSet, type Block } from '../../web/src/formats/blocks';
 import { Pixels, rng } from '../kit/pixels';
-import { blob, gradient, shadeAt, speckle } from './draw';
-import { micro, microWidth } from './font';
-import { MON, THROWSEQ } from './ids';
-import type { Pal } from './pal';
+import { blob, gradient, shadeAt, speckle } from './src/art/draw';
+import { micro, microWidth } from './src/art/font';
+import { MON, THROWSEQ } from './src/ids';
+import type { Pal } from './src/art/pal';
 
 interface Attrs {
   solid?: number;
