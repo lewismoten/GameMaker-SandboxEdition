@@ -2,6 +2,10 @@
 // each shown for its own time, looping forever. A frame only stores the rectangle that
 // changed since the one before; a frame whose palette changed carries its own color table
 // and is stored whole (on a real VGA a palette change recolors the whole screen at once).
+// Block layout follows the GIF89a specification: header, logical screen descriptor and
+// global color table, the NETSCAPE2.0 loop extension, then per frame a graphic control
+// extension, an image descriptor (with an optional local color table) and LZW data in
+// sub-blocks of up to 255 bytes, ending with the 0x3B trailer.
 
 export interface GifFrame {
   /** width * height palette indexes */
@@ -20,6 +24,7 @@ export interface GifOptions {
 /** The shortest delay browsers honor, in 1/100 s. */
 const MIN_DELAY = 2;
 
+// 6-bit DAC component to 8 bits, copying the top bits into the low ones so 63 becomes 255.
 const vga8 = (v: number) => ((v & 63) << 2) | ((v & 63) >> 4);
 
 function samePalette(a: Uint8Array, b: Uint8Array): boolean {
@@ -91,6 +96,7 @@ export function lzw(pixels: Uint8Array): Uint8Array {
   let next = eoi + 1;
   let bitBuf = 0;
   let bits = 0;
+  // Codes are packed least significant bit first, as GIF requires.
   const emit = (code: number) => {
     bitBuf |= code << bits;
     bits += codeSize;
@@ -100,6 +106,7 @@ export function lzw(pixels: Uint8Array): Uint8Array {
       bits -= 8;
     }
   };
+  // String table: key is (prefix code << 8) | next byte, value is that string's code.
   let dict = new Map<number, number>();
   emit(clear);
   if (pixels.length) {
@@ -108,6 +115,7 @@ export function lzw(pixels: Uint8Array): Uint8Array {
       const k = pixels[i];
       const key = (cur << 8) | k;
       const found = dict.get(key);
+      // Extend the current string while the table has it; otherwise output it and add the new one.
       if (found !== undefined) {
         cur = found;
         continue;
@@ -115,8 +123,11 @@ export function lzw(pixels: Uint8Array): Uint8Array {
       emit(cur);
       if (next < 4096) {
         dict.set(key, next++);
+        // Widen once the code just added needs another bit. The decoder adds its entries one
+        // code later than the encoder, so widening after code 2^codeSize keeps both in step.
         if (next > 1 << codeSize && codeSize < 12) codeSize++;
       } else {
+        // The table holds 4096 codes (12 bits) at most: start over with a clear code.
         emit(clear);
         dict = new Map();
         codeSize = minCodeSize + 1;
@@ -139,6 +150,7 @@ export function encodeAnimatedGif(width: number, height: number, frames: GifFram
   out.push(0x47, 0x49, 0x46, 0x38, 0x39, 0x61); // GIF89a
   out.u16(width);
   out.u16(height);
+  // Packed byte: table present, 8-bit color resolution, size 2^(7+1); background 0, no aspect ratio.
   out.push(0xf7, 0, 0); // a global table of 256 colors
   colorTable(out, global);
   if (frames.length > 1) {
@@ -164,7 +176,7 @@ export function encodeAnimatedGif(width: number, height: number, frames: GifFram
     let rect: [number, number, number, number] | undefined = [0, 0, width, height];
     if (prev && !newPalette) rect = changedRect(prev.pixels, f.pixels, width, height) ?? [0, 0, 1, 1];
     const [x, y, w, h] = rect;
-    // graphic control: no disposal (frames build on each other), delay
+    // graphic control: disposal method 1, do not dispose (frames build on each other), delay
     out.push(0x21, 0xf9, 4, 0x04);
     out.u16(Math.min(0xffff, delay));
     out.push(0, 0);
@@ -174,10 +186,13 @@ export function encodeAnimatedGif(width: number, height: number, frames: GifFram
     out.u16(w);
     out.u16(h);
     const local = !samePalette(f.palette, global);
+    // Image descriptor packed byte: local table of 256 colors, or none.
     out.push(local ? 0x87 : 0);
     if (local) colorTable(out, f.palette);
+    // Copy the frame's changed rectangle out row by row.
     const sub = new Uint8Array(w * h);
     for (let yy = 0; yy < h; yy++) sub.set(f.pixels.subarray((y + yy) * width + x, (y + yy) * width + x + w), yy * w);
+    // LZW minimum code size, then the data in length-prefixed sub-blocks and a 0 terminator.
     out.push(8);
     const data = lzw(sub);
     for (let i = 0; i < data.length; i += 255) {
