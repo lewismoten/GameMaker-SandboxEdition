@@ -7,6 +7,7 @@ import '../manual/printables/paper.css';
 import { h, clear } from '../editor/ui';
 import { boxItems } from '../manual/printables/items';
 import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../editor/keyMap';
+import { cardRows } from './keyCardRows';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../project/files';
 import { printContext } from './printContext';
 
@@ -23,47 +24,75 @@ async function originalOf(game: PlayingGame): Promise<CatalogEntry | undefined> 
   return cat.find((g) => g.original?.manual && g.gam?.toLowerCase() === gam && g.title === game.title);
 }
 
-/** What a key does, in a few words: the first way it is used, plus "…" when levels differ. */
-function keyDoes(k: GameKeyMap['keys'][number]): string {
-  const titles = [...new Set(k.uses.map((u) => u.action.title))];
-  return titles.length > 2 ? `${titles.slice(0, 2).join(' / ')} …` : titles.join(' / ');
+/** As many keys as fit in `room` letters (a key cap takes one more), then "…". */
+function fitKeys(keys: string[], room: number): string[] {
+  const out: string[] = [];
+  for (const k of keys) {
+    room -= k.length + 1;
+    if (room < 0 && out.length) return [...out, '…'];
+    out.push(k);
+  }
+  return out;
 }
 
-/** An index card with the keys written out, for games without a printed one. */
-export function indexCard(title: string, km: GameKeyMap): HTMLElement {
-  const keys = km.keys.filter((k) => k.uses.some((u) => u.action.kind !== 'nothing'));
-  // the writing gets smaller to fit every key on the card's ruled lines
-  const rows = Math.ceil((keys.length + (km.joystick.length ? 1 : 0)) / (keys.length > 8 ? 2 : 1)) + 1;
-  const line = Math.min(5.8, 38 / Math.max(1, rows));
+/**
+ * An index card with the keys written out, for games without a printed one. `compact` is the
+ * small card taped to the monitor: fewer, larger lines, so it reads at a glance.
+ */
+export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
+  const rows = cardRows(km.keys, compact);
+  const joy = km.joystick.length > 0;
+  const always = GLOBAL_KEYS.filter((g) => (compact ? g.scan <= 59 : g.scan <= 64));
+  const two = !compact && rows.length + (joy ? 1 : 0) > 9;
+  // the writing gets smaller to fit every line on the card's ruled lines
+  const lines = Math.ceil((rows.length + (joy && !compact ? 1 : 0)) / (two ? 2 : 1)) + 1;
+  const line = Math.min(compact ? 9.5 : 6.4, 43 / Math.max(1, lines));
   return h(
     'div',
-    { class: 'idx-card', style: `--line:${line.toFixed(2)}cqw` },
+    { class: `idx-card${compact ? ' compact' : ''}`, style: `--line:${line.toFixed(2)}cqw` },
     h(
       'div',
       { class: 'idx-sheet' },
       h('div', { class: 'idx-head' }, h('b', null, title), h('span', null, 'KEYS')),
       h(
         'div',
-        { class: `idx-list ${keys.length > 8 ? 'two' : ''}` },
-        ...keys.map((k) => h('div', { class: 'idx-row' }, h('kbd', null, k.name), h('span', null, keyDoes(k)))),
-        keys.length ? null : h('div', { class: 'idx-row' }, h('span', null, 'No keys: this game plays itself.')),
-        km.joystick.length ? h('div', { class: 'idx-row joy' }, h('kbd', null, 'Joy'), h('span', null, 'a joystick (or gamepad) works too')) : null,
+        { class: `idx-list ${two ? 'two' : ''}` },
+        ...rows.map((r) => {
+          // the small card has room for a dozen letters of keys a line
+          const keys = compact ? fitKeys(r.keys, 12) : r.keys;
+          return h(
+            'div',
+            { class: 'idx-row' },
+            h('span', { class: 'idx-keys' }, ...keys.map((k) => (k === '…' ? h('span', null, k) : h('kbd', null, k)))),
+            h('span', null, r.does),
+          );
+        }),
+        rows.length ? null : h('div', { class: 'idx-row' }, h('span', null, 'No keys: this game plays itself.')),
+        joy && !compact
+          ? h('div', { class: 'idx-row joy' }, h('span', { class: 'idx-keys' }, h('kbd', null, 'Joy')), h('span', null, 'a joystick or gamepad works too'))
+          : null,
       ),
-      h('div', { class: 'idx-always' }, ...GLOBAL_KEYS.filter((g) => g.scan <= 64).map((g) => h('span', null, h('kbd', null, g.name), ` ${g.short}`))),
+      h('div', { class: 'idx-always' }, ...always.map((g) => h('span', null, h('kbd', null, g.name), ` ${g.short}`))),
     ),
   );
 }
 
-/** The card, freshly made (each place it is shown gets its own copy). */
-async function makeCard(game: PlayingGame): Promise<HTMLElement> {
-  const entry = await originalOf(game);
-  const ctx = entry ? await printContext(entry) : undefined;
-  const item = ctx ? boxItems(ctx).find((i) => i.id === 'keycard') : undefined;
-  if (item) {
-    const [sheet] = await item.render();
-    if (sheet) return h('div', { class: 'kc-printed' }, sheet.el);
+/**
+ * The card, freshly made (each place it is shown gets its own copy). Read up close it is the
+ * printed card from a Sandbox Software box when there is one; taped to the monitor it is
+ * always the handwritten card, which stays legible that small.
+ */
+async function makeCard(game: PlayingGame, compact = false): Promise<HTMLElement> {
+  if (!compact) {
+    const entry = await originalOf(game);
+    const ctx = entry ? await printContext(entry) : undefined;
+    const item = ctx ? boxItems(ctx).find((i) => i.id === 'keycard') : undefined;
+    if (item) {
+      const [sheet] = await item.render();
+      if (sheet) return h('div', { class: 'kc-printed' }, sheet.el);
+    }
   }
-  return indexCard(game.title, gameKeyMap(game.files, game.gam));
+  return indexCard(game.title, gameKeyMap(game.files, game.gam), compact);
 }
 
 function enlarge(game: PlayingGame, onClose: () => void): void {
@@ -110,7 +139,11 @@ export function keyCardSpot(refocus: () => void): { el: HTMLElement; show(game?:
         e.stopPropagation();
         if (current) enlarge(current, refocus);
       };
-      void makeCard(game).then((card) => current === game && el.append(card, h('span', { class: 'tape', 'aria-hidden': 'true' })));
+      void makeCard(game, true).then(
+        (card) =>
+          current === game &&
+          el.append(card, h('span', { class: 'tape', 'aria-hidden': 'true' }), h('span', { class: 'kc-hint', 'aria-hidden': 'true' }, 'Click to read')),
+      );
     },
   };
 }
