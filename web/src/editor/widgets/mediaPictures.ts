@@ -5,7 +5,7 @@ import type { GameFiles } from '../../project/files';
 import { decodeGif, isGif, type IndexedImage } from '../../formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../formats/fli';
 import { parseBackdrop, parseSlideList, textLines } from '../../formats/graphicScripts';
-import { defaultPalette, type Palette } from '../../formats/palette';
+import { defaultPalette, matchColor, type Palette } from '../../formats/palette';
 import { Screen, SIZEX, SIZEY } from '../../gfx/screen';
 import { match, RGB_PURPLE, RGB_RED } from '../../engine/showGraphic';
 import { paintIndexed } from '../core/draw';
@@ -90,7 +90,8 @@ export function pictureScreen(files: GameFiles, name: string): ScreenPicture | u
 
 /** A black screen in a palette. */
 export function blankScreen(palette: Palette = defaultPalette()): ScreenPicture {
-  return { pixels: new Uint8Array(SIZEX * SIZEY), palette };
+  // "Black": the palette's closest color to black, not color 0 (some palettes start with gray).
+  return { pixels: new Uint8Array(SIZEX * SIZEY).fill(matchColor(palette, 0, 0, 0)), palette };
 }
 
 /** Paints a screen picture into a (new) canvas. */
