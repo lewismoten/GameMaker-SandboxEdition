@@ -7,10 +7,12 @@
 // only the colors move (current running down the charging cable, fireflies blinking), so
 // those frames are nothing but a color chunk each and cost the file almost nothing.
 import { encodeFli } from '../../../../web/src/formats/fli';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, gradient, klubArt, outline, outlined, scaleBlit, shadeAt, speckle } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { GWIN } from '../sprites/gwin';
+import { dogHouseLibrary } from '../sprites/library';
+import { POSES } from '../sprites/teddy';
 
 const W = 320;
 const H = 200;
@@ -21,7 +23,7 @@ export const CP: Pal = (() => {
   pal.b.ramp('amber', 3, [150, 90, 10], [255, 200, 60]);
   pal.b.ramp('denim', 3, [50, 70, 110], [140, 170, 210]);
   pal.b.ramp('volt', 6, [40, 60, 90], [140, 255, 255]);
-  pal.b.ramp('fly', 6, [30, 40, 30], [255, 255, 140]);
+  pal.b.ramp('fly', 6, [90, 70, 110], [255, 255, 140]);
   return pal;
 })();
 const c = (n: string, k: number) => CP.c(n, k);
@@ -481,12 +483,54 @@ function carScene(reel: Reel): void {
   }
 }
 
+/** Scene 5: the Dog House at dusk, its solar light on, fireflies blinking (palette cycling). */
+function libraryScene(reel: Reel): void {
+  const p = new Pixels(W, H);
+  gradient(p, 0, 0, W, 150, r('dusk'), 1, 10);
+  // the blue house behind, its porch light on
+  p.rect(0, 70, 190, 80, c('siding', 1));
+  for (let y = 72; y < 150; y += 5) p.rect(0, y, 190, 1, c('siding', 0));
+  p.rect(150, 90, 22, 30, c('glow', 2)).frame(150, 90, 22, 30, c('paint', 3)).rect(160, 90, 1, 30, c('paint', 3));
+  p.rect(0, 60, 196, 10, c('roof', 1));
+  // the lawn, autumn leaves on it
+  p.rect(0, 150, W, 50, c('grass', 1));
+  speckle(p, 0, 150, W, 50, r('grass'), 1, 1, 17, 0.3);
+  const R = rng(19);
+  for (let i = 0; i < 70; i++) p.rect(Math.floor(R() * W), 152 + Math.floor(R() * 48), 2, 1, c(['amber', 'dirt', 'red', 'yellow'][i % 4], 1 + (i % 2)));
+  // the library itself, as it stands on Maple Street, three times as big
+  const lib = new Pixels(40, 60, CLEAR);
+  dogHouseLibrary(lib);
+  scaleBlit(p, lib, 40, 12, 3);
+  p.rect(94, 192, 12, 8, c('wood', 0));
+  // the solar light on the roof and the fireflies, all in the cycling colors
+  const fly = r('fly');
+  p.rect(97, 14, 6, 6, c('ink', 0)).rect(98, 15, 4, 4, fly[5]);
+  for (let i = 0; i < 26; i++) {
+    const x = Math.floor(R() * W);
+    const y = 40 + Math.floor(R() * 140);
+    p.rect(x, y, 2, 2, fly[i % fly.length]);
+  }
+  big(p, 'THE DOG', 10, 250);
+  big(p, 'HOUSE', 28, 250);
+  for (let f = 0; f < 44; f++) {
+    const q = new Pixels(W, H);
+    q.px.set(p.px);
+    scaleBlit(q, POSES[f % 10 < 5 ? 'front' : 'frontTilt'], 196, 120, 4);
+    say(q, 'TAKE A BOOK.', 54, undefined, 250);
+    if (f >= 10) say(q, 'SHARE A BOOK.', 66, undefined, 250);
+    if (f >= 22) say(q, 'SNACKS IN THE', 84, c('yellow', 3), 250);
+    if (f >= 22) say(q, 'DRAWER. WOOF!', 96, c('yellow', 3), 250);
+    reel.add(q, 1, cycled('fly', f % fly.length));
+  }
+}
+
 export function castFli(): Uint8Array {
   const reel = new Reel();
   teddyScene(reel);
   gwinScene(reel);
   leoScene(reel);
   carScene(reel);
+  libraryScene(reel);
   return encodeFli(reel.frames, CP.pal, { speed: 7, palettes: reel.pals });
 }
 
