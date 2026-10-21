@@ -1,0 +1,165 @@
+/* the phone's keypad, shown while the handset is off the hook (phone/dialPad.ts): beige
+   plastic like the phone, a green LCD, and memory buttons with paper labels */
+.phone-pad {
+  position: fixed;
+  left: 16px;
+  top: 64px;
+  z-index: 60;
+  width: min(260px, calc(100vw - 32px));
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  padding: 14px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #f1ecdd, #d9d1b9 60%, #c2b99e);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.7),
+    0 18px 40px rgba(0, 0, 0, 0.55);
+  color: #2a261c;
+  font:
+    14px/1.3 system-ui,
+    sans-serif;
+}
+
+.pp-lcd {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: linear-gradient(#a9bf8e, #c4d6a6);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  color: #1d2a14;
+  font-family: "Courier New", monospace;
+}
+
+.pp-number {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pp-status {
+  min-height: 2.6em;
+  font-size: 13px;
+}
+
+.pp-caption {
+  margin: 8px 0 0;
+  max-height: 7.5em;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+.pp-caption:empty {
+  display: none;
+}
+
+.pp-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pp-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0 4px;
+  border: 1px solid #9e967c;
+  border-radius: 8px;
+  background: linear-gradient(#fbf8ef, #e2dbc6);
+  box-shadow: 0 2px 0 #9e967c;
+  color: #2a261c;
+  cursor: pointer;
+}
+
+.pp-key b {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.pp-key small {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: #6d6550;
+}
+
+.pp-key:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.pp-key:focus-visible,
+.pp-mem:focus-visible,
+.pp-hang:focus-visible {
+  outline: 3px solid #1565c0;
+  outline-offset: 2px;
+}
+
+.pp-memory {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.pp-memory span {
+  width: 100%;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #6d6550;
+}
+
+/* a paper label under clear plastic, written in Mom's ballpoint */
+.pp-mem {
+  flex: 1 1 auto;
+  padding: 3px 8px;
+  border: 1px solid #9e967c;
+  border-radius: 4px;
+  background: #fbf8ee;
+  color: #1d3b8f;
+  font:
+    15px/1.2 "Bradley Hand",
+    "Segoe Print",
+    "Comic Sans MS",
+    cursive;
+  cursor: pointer;
+}
+
+.pp-hang {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: #b3191e;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* the wall phone shakes on its hook while it rings */
+.wall-phone.ringing {
+  animation: phone-ring 0.12s linear infinite alternate;
+}
+
+@keyframes phone-ring {
+  from {
+    transform: rotate(-2deg);
+  }
+  to {
+    transform: rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall-phone.ringing {
+    animation: none;
+    outline: 3px solid #ffd400;
+    outline-offset: 4px;
+  }
+}
