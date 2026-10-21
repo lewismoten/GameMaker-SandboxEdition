@@ -262,8 +262,9 @@
     padding: 8px;
   }
 
+  /* the descriptions are a sentence or two (homeBlurb.ts): room for all of most */
   .sc-blurb {
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 4;
   }
 }
 
