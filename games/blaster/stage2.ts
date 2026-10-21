@@ -4,7 +4,7 @@
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from './enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from './src/art/pal';
-import { ramArt, ramTiles, ramVirus } from './ram';
+import { ramArt, ramTiles, ramVirus } from './src/blocks/ram';
 import { kit, type Stage } from './stage';
 import { bossLeech } from './boss2';
 

@@ -3,7 +3,7 @@
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from './enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from './src/art/pal';
-import { cpuArt, cpuTiles, cpuVirus } from './cpu5';
+import { cpuArt, cpuTiles, cpuVirus } from './src/blocks/cpu5';
 import { kit, type Stage } from './stage';
 import { bossGlitch } from './boss5';
 

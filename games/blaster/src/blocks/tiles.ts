@@ -2,12 +2,12 @@
 // turret mounts (which secretly give birth to the bullets), virus hatches, firewall
 // fences, pickups on their pads, data-stream currents (gravity blocks), raised panels,
 // and the gate at the end of the stage.
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
-import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, bevel, blob, shadeAt } from './src/art/draw';
-import { HURT } from './common';
-import { SEQ } from './src/ids';
-import type { Pal } from './src/art/pal';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import { Pixels, rng } from '../../../kit/pixels';
+import { BlockSet, bevel, blob, shadeAt } from '../art/draw';
+import { HURT } from '../../common';
+import { SEQ } from '../ids';
+import type { Pal } from '../art/pal';
 
 export interface StageArt {
   pal: Pal;

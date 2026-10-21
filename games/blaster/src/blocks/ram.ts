@@ -1,12 +1,12 @@
 // Stage 2: MEMORY LANE. Deep blue SIMM boards gridded with memory cells (the lit ones are
 // data), rows of DRAM chips, gold contact fingers, and the address bus whose data streams
 // shove the ship sideways.
-import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, bevel, blob, micro, shadeAt } from './src/art/draw';
-import { pics } from './enemies';
-import type { Bestiary } from './mons';
-import type { Pal } from './src/art/pal';
-import { bat, crawler, eye, keyOf, mite, slug, cluster } from './sprites';
+import { Pixels, rng } from '../../../kit/pixels';
+import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
+import { pics } from '../../enemies';
+import type { Bestiary } from '../../mons';
+import type { Pal } from '../art/pal';
+import { bat, crawler, eye, keyOf, mite, slug, cluster } from '../../sprites';
 import { onFloor, slices, type StageArt } from './tiles';
 
 export function ramArt(p: Pal): StageArt {

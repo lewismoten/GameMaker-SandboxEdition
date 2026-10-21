@@ -6,7 +6,7 @@ import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../..
 import { rng } from '../kit/pixels';
 import type { BlockSet } from './src/art/draw';
 import type { Bestiary } from './mons';
-import type { StageArt } from './tiles';
+import type { StageArt } from './src/blocks/tiles';
 
 export const X0 = 2;
 export const START_ROW = 94;

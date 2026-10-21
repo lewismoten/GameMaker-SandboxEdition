@@ -11,9 +11,9 @@ import type { Pal } from './src/art/pal';
 import { disc, keyOf, skull } from './sprites';
 import { kit, type Leg } from './stage';
 import type { BlockSet } from './src/art/draw';
-import type { StageArt } from './tiles';
+import type { StageArt } from './src/blocks/tiles';
 import { HURT } from './common';
-import { diskTiles } from './disk4';
+import { diskTiles } from './src/blocks/disk4';
 
 function headPic(p: Pal, hot: boolean): Pixels {
   const big = new Pixels(40, 40, CLEAR);

@@ -3,7 +3,7 @@
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from './enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from './src/art/pal';
-import { soundArt, soundTiles, soundVirus } from './sound3';
+import { soundArt, soundTiles, soundVirus } from './src/blocks/sound3';
 import { kit, type Stage } from './stage';
 import { bossHowler } from './boss3';
 

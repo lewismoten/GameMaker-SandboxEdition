@@ -3,7 +3,7 @@
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from './enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from './src/art/pal';
-import { diskArt, diskTiles, diskVirus } from './disk4';
+import { diskArt, diskTiles, diskVirus } from './src/blocks/disk4';
 import { kit, type Stage } from './stage';
 import { bossCrash } from './boss4';
 

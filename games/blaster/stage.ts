@@ -8,7 +8,7 @@ import { addCommon } from './common';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';
 import { Bestiary } from './mons';
 import type { Pal, Theme } from './src/art/pal';
-import { addStageTiles, type StageArt, type TileOpts } from './tiles';
+import { addStageTiles, type StageArt, type TileOpts } from './src/blocks/tiles';
 
 export interface Kit {
   bs: BlockSet;

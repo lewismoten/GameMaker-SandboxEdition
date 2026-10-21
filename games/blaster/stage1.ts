@@ -1,6 +1,6 @@
 // Stage 1: THE MOTHERBOARD. Leg A "The Data Bus" teaches everything gently; leg B "The
 // Chipset" brings sweeping turrets, hatches and firewalls; then the BIOS Bug.
-import { boardArt, boardTiles, boardVirus } from './board';
+import { boardArt, boardTiles, boardVirus } from './src/blocks/board';
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from './enemies';
 import { LENGTH, strip, type Grid } from './mapkit';
 import { buildPalette } from './src/art/pal';

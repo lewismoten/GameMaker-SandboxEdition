@@ -11,7 +11,7 @@ import { arena } from './mapkit';
 import type { Bestiary } from './mons';
 import type { Pal } from './src/art/pal';
 import { kit, type Leg } from './stage';
-import type { StageArt } from './tiles';
+import type { StageArt } from './src/blocks/tiles';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
 import type { BlockSet } from './src/art/draw';
 

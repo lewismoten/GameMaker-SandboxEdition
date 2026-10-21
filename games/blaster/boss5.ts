@@ -11,7 +11,7 @@ import type { Pal } from './src/art/pal';
 import { keyOf, mite as miteArt, slug } from './sprites';
 import { kit, type Leg } from './stage';
 import type { BlockSet } from './src/art/draw';
-import type { StageArt } from './tiles';
+import type { StageArt } from './src/blocks/tiles';
 import { POWER } from './src/ids';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
 
