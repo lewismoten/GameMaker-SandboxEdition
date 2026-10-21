@@ -8,15 +8,16 @@ import { getVolume, output } from '../audio/output';
 import { parseGame } from '../formats/game';
 import type { Session } from '../engine/scene';
 import { mountPlayer, type PlayerHandle } from '../player/player';
-import type { CatalogEntry, GameFiles } from '../project/files';
+import { cdName, fetchGameFile, type CatalogEntry, type GameFiles } from '../project/files';
 import { recordingTicks, titleDemo, withoutOpening } from './demo';
 
-/** The demo file the title scene names, when it is one of the game's files (any case). */
+/** The demo file the title scene names, when it is one of the game's files (any case, or its CD name). */
 export function demoFileName(gam: Uint8Array, files: readonly string[]): string | undefined {
   try {
     const name = parseGame(gam).scenes[0]?.files[11]?.trim();
     if (!name) return undefined;
-    return files.find((f) => f.toLowerCase() === name.toLowerCase());
+    const wanted = [name.toLowerCase(), cdName(name)];
+    return files.find((f) => wanted.includes(f.toLowerCase()));
   } catch {
     return undefined;
   }
@@ -24,13 +25,13 @@ export function demoFileName(gam: Uint8Array, files: readonly string[]): string 
 
 const catalogDemos = new Map<string, Promise<boolean>>();
 
-/** Whether a CD game has a title demo: reads only its .gam (once per game). */
+/** Whether a CD game has a title demo: reads only its .gam (through the shared file cache). */
 export function catalogHasDemo(g: CatalogEntry, base = './'): Promise<boolean> {
   if (!g.gam) return Promise.resolve(false);
   let known = catalogDemos.get(g.id);
   if (!known) {
-    known = fetch(`${base}${g.path}${g.gam}`)
-      .then(async (res) => (res.ok ? !!demoFileName(new Uint8Array(await res.arrayBuffer()), g.files) : false))
+    known = fetchGameFile(g, g.gam, base)
+      .then((gam) => !!gam && !!demoFileName(gam, g.files))
       .catch(() => false);
     catalogDemos.set(g.id, known);
   }
