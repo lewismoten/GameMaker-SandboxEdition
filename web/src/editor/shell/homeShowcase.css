@@ -264,11 +264,6 @@
   .sc-screen {
     padding: 8px;
   }
-
-  /* the descriptions are a sentence or two (homeBlurb.ts): room for all of most */
-  .sc-blurb {
-    -webkit-line-clamp: 4;
-  }
 }
 
 /* Wide and tall enough (see home.css): the game is a column beside the library. */
