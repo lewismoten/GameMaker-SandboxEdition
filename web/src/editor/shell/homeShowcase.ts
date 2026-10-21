@@ -6,7 +6,7 @@
 import './homeShowcase.css';
 import { h, clear } from '../core/ui';
 import { demoDialogButton, demoInPicture, gameActions, type HomeGame, type GameKind } from './homeCards';
-import { healthBadge } from './gameHealth';
+import { healthBadge, healthNote } from './gameHealth';
 import type { HomeNav } from './home';
 
 const KIND_LABEL: Record<GameKind, string> = {
@@ -51,11 +51,12 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
   const byline = h('p', { class: 'sc-byline' });
   const blurb = h('p', { class: 'sc-blurb' });
   const actions = h('div', { class: 'sc-actions' });
+  const notes = h('div', { class: 'sc-notes' });
   const el = h(
     'section',
     { class: 'showcase', 'aria-label': 'Selected game' },
     h('div', { class: 'sc-screen' }, screen),
-    h('div', { class: 'sc-info' }, label, title, byline, blurb, actions),
+    h('div', { class: 'sc-info' }, label, title, byline, blurb, actions, notes),
   );
   let current: HomeGame | undefined;
   let demo: { stop(): void } | undefined;
@@ -82,7 +83,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
 
     const canvas = h('canvas', { class: 'sc-shot pixel', width: 320, height: 200, 'aria-hidden': 'true' }) as HTMLCanvasElement;
     const playBtn = h('button', { class: 'sc-demo-btn', type: 'button', hidden: true });
-    clear(screen, canvas, playBtn, game.health ? healthBadge(game.health, true) : null);
+    clear(screen, canvas, playBtn, game.health && !game.health.released ? healthBadge(game.health, true) : null);
     if (game.gam || game.kind === 'mine') void game.drawShot(canvas).catch(() => undefined);
     else screen.append(h('div', { class: 'sc-none', 'aria-hidden': 'true' }, '🎨'));
 
@@ -98,6 +99,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     playBtn.addEventListener('click', () => (demo ? demo.stop() : play()));
 
     clear(actions, ...gameActions(game, nav, refresh));
+    clear(notes, game.health?.released ? healthNote(game.health) : null);
     void game.hasDemo().then((yes) => {
       if (gen !== generation || !yes) return;
       playBtn.hidden = false;

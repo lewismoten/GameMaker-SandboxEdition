@@ -1,4 +1,5 @@
-// The ⚠ badge on a game in the home page's list, and the report it opens. The checking
+// The ⚠ badge on a game of your own in the home page's list, a quiet note for a finished
+// game as it was released (problems there are no call to action), and the report both open. The checking
 // itself is in ../project/health.ts; this loads the files it needs (just the .gam and
 // graphic scripts for the badge, everything for the report) and shows the result.
 import { h, modal } from '../core/ui';
@@ -14,6 +15,8 @@ export interface HealthTarget {
   deep(): Promise<Issue[]>;
   /** Where clicking a file name in the report goes (projects: that file's editor). */
   fileHref?(file: string): string | undefined;
+  /** A finished game exactly as it was released (the CD's or ours): only playable or copied, not fixed here. */
+  released?: boolean;
 }
 
 const cache = new Map<string, Promise<Issue[]>>();
@@ -47,6 +50,7 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
   };
   return {
     title: g.title,
+    released: true,
     quick: () => cached(`game:${g.id}`, quick),
     deep: async () => {
       const files = await loadHostedGame(g);
@@ -97,14 +101,35 @@ export function healthBadge(target: HealthTarget, focusable = false): HTMLElemen
       badge.classList.remove('unknown');
       if (focusable) badge.tabIndex = 0;
       badge.classList.add(worst);
-      const errors = issues.filter((i) => i.severity === 'error').length;
-      const label = errors ? `${errors} problem${errors === 1 ? '' : 's'}` : `${issues.length} warning${issues.length === 1 ? '' : 's'}`;
+      const label = countLabel(issues);
       // the tip names how many; the report (a click away) says what
       badge.dataset.tip = `${label[0].toUpperCase()}${label.slice(1)} found: click for the report`;
       badge.setAttribute('aria-label', `${target.title}: ${label}. Show the report.`);
     });
   seen.observe(badge);
   return badge;
+}
+
+/** How the issues found add up, in a few words ("2 problems", "1 warning"). */
+function countLabel(issues: Issue[]): string {
+  const errors = issues.filter((i) => i.severity === 'error').length;
+  return errors ? `${errors} problem${errors === 1 ? '' : 's'}` : `${issues.length} warning${issues.length === 1 ? '' : 's'}`;
+}
+
+/**
+ * For a released game: a small line under its buttons, shown only when its files have
+ * something worth knowing, that opens the report. Nothing to fix there: it plays as it did.
+ */
+export function healthNote(target: HealthTarget): HTMLElement {
+  const note = h('button', { class: 'health-note', type: 'button', hidden: true, onclick: () => void showHealthReport(target) }) as HTMLButtonElement;
+  // checked straight away: the panel shows one game at a time
+  void target.quick().then((issues) => {
+    if (!issues.length) return;
+    note.textContent = `ⓘ Notes on its files (${issues.length})`;
+    note.setAttribute('aria-label', `${target.title}: notes on its files, ${countLabel(issues)}. Show them.`);
+    note.hidden = false;
+  });
+  return note;
 }
 
 const KIND_TITLES: Record<Issue['kind'], string> = {
@@ -118,7 +143,7 @@ const KIND_TITLES: Record<Issue['kind'], string> = {
 
 export async function showHealthReport(target: HealthTarget): Promise<void> {
   const body = h('div', { class: 'health-report' }, h('p', { class: 'meta' }, 'Checking every file…'));
-  const shown = modal(`${target.title}: health check`, (close) => [
+  const shown = modal(target.released ? `${target.title}: notes on its files` : `${target.title}: health check`, (close) => [
     body,
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
   ]);
@@ -126,16 +151,18 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
   const groups = new Map<Issue['kind'], Issue[]>();
   for (const i of issues) groups.set(i.kind, [...(groups.get(i.kind) ?? []), i]);
   const errors = issues.filter((i) => i.severity === 'error').length;
+  // a released game is as it was: its notes are facts about its files, not alarms
+  const summary = target.released
+    ? issues.length
+      ? `This is the game exactly as it was released, and it plays here as it did in DOS: where it names a file that isn’t there, it does without. ${issues.length} note${issues.length === 1 ? '' : 's'} on its files, worth knowing if you edit a copy:`
+      : '✓ Every file the game names is there and every file can be read.'
+    : !issues.length
+      ? '✓ No problems found: every file the game names is there and every file can be read.'
+      : errors
+        ? `${errors} problem${errors === 1 ? '' : 's'} may stop parts of this game from showing or playing as intended${issues.length > errors ? `, and ${issues.length - errors} smaller warning${issues.length - errors === 1 ? '' : 's'}` : ''}.`
+        : `${issues.length} warning${issues.length === 1 ? '' : 's'}; the game should still play.`;
   body.replaceChildren(
-    h(
-      'p',
-      { class: `health-summary ${worstSeverity(issues) ?? 'ok'}` },
-      !issues.length
-        ? '✓ No problems found: every file the game names is there and every file can be read.'
-        : errors
-          ? `${errors} problem${errors === 1 ? '' : 's'} may stop parts of this game from showing or playing as intended${issues.length > errors ? `, and ${issues.length - errors} smaller warning${issues.length - errors === 1 ? '' : 's'}` : ''}.`
-          : `${issues.length} warning${issues.length === 1 ? '' : 's'}; the game should still play.`,
-    ),
+    h('p', { class: `health-summary ${target.released ? (issues.length ? 'warning' : 'ok') : (worstSeverity(issues) ?? 'ok')}` }, summary),
     ...[...groups].map(([kind, list]) =>
       h(
         'section',
@@ -148,8 +175,8 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
             const href = i.file ? target.fileHref?.(i.file) : undefined;
             return h(
               'li',
-              { class: i.severity },
-              h('span', { class: 'sev', 'aria-label': i.severity }, i.severity === 'error' ? '⚠' : 'ⓘ'),
+              { class: target.released ? 'warning' : i.severity },
+              h('span', { class: 'sev', 'aria-label': target.released ? 'note' : i.severity }, i.severity === 'error' && !target.released ? '⚠' : 'ⓘ'),
               ' ',
               href ? h('a', { href }, i.message) : i.message,
             );

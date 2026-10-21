@@ -330,3 +330,28 @@
     font-size: 14px;
   }
 }
+
+/* ⓘ Notes on its files: a released game's health report, quietly (gameHealth.ts) */
+.sc-notes:not(:has(.health-note:not([hidden]))) {
+  display: none;
+}
+
+.sc-notes {
+  margin-top: 8px;
+}
+
+.showcase .health-note {
+  min-height: 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: #c9c2ee;
+  font-size: 12px;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.showcase .health-note:hover {
+  color: #fff;
+}

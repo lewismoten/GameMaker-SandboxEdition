@@ -273,7 +273,8 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   picture.addEventListener('click', (e) => {
     if (!(e.target as HTMLElement).closest('button')) o.onSelect(game);
   });
-  if (game.health) picture.append(healthBadge(game.health));
+  // ⚠ only on your own games: a finished game's files are as released, nothing to fix
+  if (game.health && !game.health.released) picture.append(healthBadge(game.health));
   if (!game.gam) return tile;
 
   // each button says what it does in a tip (on hover and keyboard focus) and to screen readers
