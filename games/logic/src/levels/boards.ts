@@ -2,7 +2,7 @@
 // middle and has to reach the outlet. Legend: # housing, (space) outside, . board,
 // @ Watt's pad, X outlet, $ gold screw, 0..9 A..F batteries (each with its wire below),
 // > < ^ v one-way diodes, o switch (off) i switch (on), t timer button, g gate, f fuse, n/c relays (normally
-// open / closed), % = & * ~ parts soldered to the board.
+// open / closed), % = & * ~ parts soldered to the board, : the LED on a 555's output.
 import type { BoardSpec } from './board';
 
 export const BOARDS: BoardSpec[] = [
@@ -257,6 +257,29 @@ export const BOARDS: BoardSpec[] = [
     hint: 'I bumped the battery with the red "!" and now I am stuck.',
     answer:
       'A dead battery starts when you bump it, and it never stops. That one feeds the wire in front of the gate. Use the switch at the top instead: its wire stays inside the housing.',
+  },
+  {
+    file: 'nightlt',
+    title: 'The Night-Light',
+    room: 'living',
+    card: ['One 555, two resistors, one cap.', 'It blinks. That is the whole toy.'],
+    rows: [
+      '################',
+      '#..............#',
+      '#.$....%.......#',
+      '#..............#',
+      '#..=......=....#',
+      '#.......@......#',
+      '#:##.###########',
+      '#0...........gX#',
+      '#######.##.#####',
+      '################',
+    ],
+    wires: { 0: { path: 'R12', kind: 'astable' } },
+    solution: 'LLLL D $D RRR D $U RRR D $U RRR R',
+    hint: 'The corridor is wired end to end, and the current never stops!',
+    answer:
+      'It does stop, for a moment: a 555 is high twice as long as it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one.',
   },
   {
     file: 'opener',

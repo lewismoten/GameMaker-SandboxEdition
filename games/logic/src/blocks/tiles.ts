@@ -34,12 +34,16 @@ export const E = 2;
 export const S = 4;
 export const W = 8;
 
-/** Battery kinds: steady current, pulsed current (antipulse: off while pulse is on), or a
- * dead cell you bump to start. */
-export type BatteryKind = 'steady' | 'pulse' | 'antipulse' | 'dead';
+/** Battery kinds: steady current, pulsed current (antipulse: off while pulse is on), a
+ * dead cell you bump to start, or a 555 timer chip wired astable. */
+export type BatteryKind = 'steady' | 'pulse' | 'antipulse' | 'dead' | 'astable';
 /** Ticks a pulse battery stays on and off. */
 export const PULSE_ON = 27;
 export const PULSE_OFF = 27;
+/** A 555 wired astable with R1 = R2: high for 0.693(R1+R2)C, low for 0.693(R2)C, so its
+ * output is high twice as long as it is low (it can never get under half). */
+export const ASTABLE_HIGH = 72;
+export const ASTABLE_LOW = 36;
 /** Ticks between sparks: one every 5 ticks at 4 pixels a tick leaves no gap. */
 export const SPARK_EVERY = 5;
 
@@ -106,6 +110,31 @@ function batteryPic(st: Style, kind: BatteryKind, lit: boolean): Pixels {
   p.rect(13, 13, 3, 3, lamp);
   if (kind === 'pulse') micro(p, 4, 13, '~', lit ? c('yellow', 3) : c('ink', 2));
   if (kind === 'dead') micro(p, 5, 12, '!', c('red', 3));
+  return p;
+}
+
+/** A 555 timer chip sunk in the housing: eight legs, the notch, and its output LED. Every
+ * block of one number changes on the same tick, so this LED and the ':' LEDs on the board
+ * blink exactly in step with the chip's output. */
+function chip555Pic(st: Style, high: boolean): Pixels {
+  const p = wallPic(st, 15);
+  for (let i = 0; i < 4; i++) p.rect(4 + i * 4, 1, 2, 3, c('metal', 4)).rect(4 + i * 4, 16, 2, 3, c('metal', 4));
+  bevel(p, 2, 4, 16, 12, r('ink'), 1);
+  p.disc(3.5, 9.5, 1.3, c('ink', 0));
+  micro(p, 5, 6, '555', c('paper', 2));
+  p.rect(8, 12, 4, 2, high ? c('red', 4) : c('red', 0));
+  if (high) p.set(8, 12, c('paper', 3));
+  return p;
+}
+
+/** The 555's output LED on the board, in step with the chip. */
+function led555Pic(st: Style, high: boolean): Pixels {
+  const p = wallPic(st, 15);
+  p.rect(3, 9, 14, 2, c('metal', 3));
+  blob(p, 9.5, 9.5, 5, 5, high ? r('red') : r('red').slice(0, 2), 0, high ? 4 : 1);
+  if (high) p.set(7, 7, c('paper', 3)).set(8, 7, c('paper', 3));
+  else p.set(8, 8, c('red', 1));
+  micro(p, 1, 15, 'OUT', st.silk);
   return p;
 }
 
@@ -229,6 +258,14 @@ export function buildTiles(st: Style, batteries: Battery[] = []): BlockSet {
       add(`pulse${k}`, batteryPic(st, 'pulse', true), { solid: SOLID, birthMon: b.mon, birthTime: SPARK_EVERY, next: `pulseOff${k}`, ntime: PULSE_ON });
       add(`pulseOff${k}`, batteryPic(st, 'pulse', false), { solid: SOLID, next: `pulse${k}`, ntime: PULSE_OFF });
     }
+    if (b.kind === 'astable') {
+      add(`chip${k}`, chip555Pic(st, true), { solid: SOLID, birthMon: b.mon, birthTime: SPARK_EVERY, next: `chipLow${k}`, ntime: ASTABLE_HIGH });
+      add(`chipLow${k}`, chip555Pic(st, false), { solid: SOLID, next: `chip${k}`, ntime: ASTABLE_LOW });
+    }
+  }
+  if (batteries.some((b) => b.kind === 'astable')) {
+    add('out555', led555Pic(st, true), { solid: SOLID, next: 'out555Low', ntime: ASTABLE_HIGH });
+    add('out555Low', led555Pic(st, false), { solid: SOLID, next: 'out555', ntime: ASTABLE_LOW });
   }
   return bs;
 }

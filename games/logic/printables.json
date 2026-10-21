@@ -85,6 +85,10 @@
             {
               "q": "The Stereo: I bumped the battery with the red \"!\" and now I am stuck.",
               "a": "A dead battery starts when you bump it, and it never stops. That one feeds the wire in front of the gate. Use the switch at the top instead: its wire stays inside the housing."
+            },
+            {
+              "q": "The Night-Light: The corridor is wired end to end, and the current never stops!",
+              "a": "It does stop, for a moment: a 555 is high twice as long as it is low. Watch the red LED. When it goes out, the last spark races off down the wire: roll in right behind it and keep rolling. Duck into a nook to wait for the next one."
             }
           ]
         },

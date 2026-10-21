@@ -167,7 +167,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     const { spec, ox, oy, traceBits, sideGates, ctrlCells } = p;
     const at = (x: number, y: number) => spec.rows[y]?.[x] ?? ' ';
     const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
-    const isWall = (ch: string) => ch === '#' || ch === ' ' || ch in DECOR || isBattery(ch);
+    const isWall = (ch: string) => ch === '#' || ch === ' ' || ch === ':' || ch in DECOR || isBattery(ch);
     /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
     const partName = (ch: string, x: number, y: number) => {
       const tb = traceBits.get(`${x},${y}`) ?? 0;
@@ -197,11 +197,13 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
             put(x, y, `wall${m}`);
           }
         } else if (ch in DECOR) put(x, y, DECOR[ch]);
+        else if (ch === ':') put(x, y, 'out555');
         else if (isBattery(ch)) {
           const k = p.wireOf.get(ch);
           if (k === undefined) throw new Error(`${spec.file}: battery ${ch} has no wire`);
           const kind = kinds[k];
-          put(x, y, kind === 'steady' ? `bat${k}` : kind === 'dead' ? `dead${k}` : kind === 'antipulse' ? `pulseOff${k}` : `pulse${k}`);
+          const names = { steady: 'bat', dead: 'dead', antipulse: 'pulseOff', pulse: 'pulse', astable: 'chip' };
+          put(x, y, `${names[kind]}${k}`);
         } else if (ch === 'X') {
           put(x, y, 'outlet');
           exit = { x: ox + x, y: oy + y };
