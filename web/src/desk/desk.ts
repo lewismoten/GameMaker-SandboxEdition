@@ -384,10 +384,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       insert: () => void startGameMaker(),
       insertLabel: 'Put the CD in and start Game-Maker',
       manual: () => void openDosManual(),
-      extras: gmBoxContents(() => {
-        document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
-        void openDosManual();
-      }),
+      extras: gmBoxContents(
+        () => {
+          document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
+          void openDosManual();
+        },
+        () => {
+          document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
+          void startGameMaker();
+        },
+      ),
     });
   }
 
