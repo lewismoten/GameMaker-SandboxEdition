@@ -5,14 +5,26 @@
 // llms.txt (https://llmstxt.org), which the dev server serves too.
 //
 // index.html and play.html mark where it goes with <!--SEO:HEAD--> and <!--SEO:BODY-->.
-import type { Plugin } from 'vite';
-import { cdCatalog, type CdCatalogEntry } from './cdGames';
+//
+// Every bundled game also gets its own play page, play-<id>.html next to play.html (made
+// from the built play.html, so it loads the same player), with the game's title,
+// description, canonical address, tags, JSON-LD and text baked in, and a preview picture
+// og/<id>.png (scripts/ogImage.ts): link previews (Slack, Discord, X, Facebook) don't run
+// scripts, so play.html?game=<id> can only show the generic player's tags.
+import type { IndexHtmlTransformContext, Plugin } from 'vite';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
+import { gameCardPng } from './ogImage';
 import {
   appJsonLd,
   clip,
   escapeHtml,
+  GAME_IMAGE_SIZE,
   gameDescription,
+  gameImagePath,
   gameJsonLd,
+  gamePage,
   jsonLdScript,
   metaTags,
   OG_IMAGE,
@@ -29,9 +41,17 @@ import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
 
 export const HEAD_MARK = '<!--SEO:HEAD-->';
 export const BODY_MARK = '<!--SEO:BODY-->';
+// Around what the marks became in play.html, so a game's page can swap in its own.
+const HEAD_START = '<!--seo:head-->';
+const HEAD_END = '<!--/seo:head-->';
+const BODY_START = '<!--seo:body-->';
+const BODY_END = '<!--/seo:body-->';
 
 const playable = (catalog: CdCatalogEntry[]) => catalog.filter((g) => g.gam);
 const credit = (g: CdCatalogEntry) => [g.author ?? g.company, g.year].filter(Boolean).join(', ');
+const imageUrl = (g: CdCatalogEntry) => `${SITE_URL}${gameImagePath(g.id)}`;
+const pageTitle = (g: CdCatalogEntry) => `${g.title} · play in your browser · ${PRODUCT}`;
+const pageHref = (g: CdCatalogEntry) => `./${gamePage(g.id)}`;
 
 function groups(catalog: CdCatalogEntry[]): [string, string, CdCatalogEntry[]][] {
   const games = playable(catalog);
@@ -81,7 +101,7 @@ const STYLE = `<style>
     </style>`;
 
 function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
-  const games = playable(catalog).map((g) => gameJsonLd(g, playUrl(g.id)));
+  const games = playable(catalog).map((g) => gameJsonLd(g, playUrl(g.id), imageUrl(g)));
   return [
     appJsonLd(),
     repoJsonLd(),
@@ -113,7 +133,7 @@ function indexBody(catalog: CdCatalogEntry[]): string {
         <li>Share your game as one web page, an installable offline web app, or a folder that runs in DOS (PLAYGAME).</li>
         <li>Everything stays in your browser and works offline. Files stay compatible with the original DOS Game-Maker 3.0.</li>
       </ul>
-      ${gameList(catalog, (g) => `./play.html?game=${encodeURIComponent(g.id)}`)}
+      ${gameList(catalog, pageHref)}
       <h2>Source code</h2>
       <p>${escapeHtml(PRODUCT)} is free and open source: <a href="${REPO_URL}">${REPO_URL.replace('https://', '')}</a>. <span class="seo-note">${escapeHtml(FORK_NOTE)}.</span></p>
     </main>`;
@@ -122,15 +142,21 @@ function indexBody(catalog: CdCatalogEntry[]): string {
 /** play.html: what each game is, so the page can name itself before the game loads. */
 function playHead(catalog: CdCatalogEntry[]): string {
   const meta = metaTags({ ...ROUTES.player, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
-  const games = Object.fromEntries(playable(catalog).map((g) => [g.id, { title: g.title, description: gameDescription(g), ld: gameJsonLd(g, playUrl(g.id)) }]));
-  // Runs before the app: the page's title, description, canonical address and the game's
-  // JSON-LD for ?game=<id> (search engines that run scripts see them; previews see the defaults).
+  const games = Object.fromEntries(
+    playable(catalog).map((g) => [
+      g.id,
+      { title: g.title, description: gameDescription(g), url: playUrl(g.id), image: imageUrl(g), ld: gameJsonLd(g, playUrl(g.id), imageUrl(g)) },
+    ]),
+  );
+  // Runs before the app: the page's title, description, picture, canonical address (the
+  // game's own page) and JSON-LD for ?game=<id> (search engines that run scripts see them;
+  // link previews see the defaults, which is why each game has its own page).
   const script = `<script>
       (function () {
         var games = ${scriptJson(games)};
         var id = new URLSearchParams(location.search).get('game');
         var g = id && Object.prototype.hasOwnProperty.call(games, id) ? games[id] : null;
-        var url = g ? ${JSON.stringify(SITE_URL)} + 'play.html?game=' + encodeURIComponent(id) : null;
+        var url = g ? g.url : null;
         var title = g ? g.title + ${JSON.stringify(` · play in your browser · ${PRODUCT}`)} : null;
         function set(sel, attr, value) { var el = document.head.querySelector(sel); if (el) el.setAttribute(attr, value); }
         if (g) {
@@ -139,6 +165,8 @@ function playHead(catalog: CdCatalogEntry[]): string {
           new MutationObserver(function () { if (document.title === g.title) document.title = title; }).observe(document.querySelector('title'), { childList: true });
           ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]'].forEach(function (s) { set(s, 'content', g.description); });
           ['meta[property="og:title"]', 'meta[name="twitter:title"]'].forEach(function (s) { set(s, 'content', title); });
+          ['meta[property="og:image"]', 'meta[name="twitter:image"]'].forEach(function (s) { set(s, 'content', g.image); });
+          ['meta[property="og:image:alt"]', 'meta[name="twitter:image:alt"]'].forEach(function (s) { set(s, 'content', g.title + ': its title screen'); });
           var link = document.createElement('link'); link.rel = 'canonical'; link.href = url; document.head.appendChild(link);
           var og = document.createElement('meta'); og.setAttribute('property', 'og:url'); og.content = url; document.head.appendChild(og);
           var ld = document.createElement('script'); ld.type = 'application/ld+json';
@@ -146,17 +174,93 @@ function playHead(catalog: CdCatalogEntry[]): string {
         }
       })();
     </script>`;
-  return `${meta}\n    ${script}\n    ${STYLE}`;
+  return `${HEAD_START}${meta}\n    ${script}\n    ${STYLE}${HEAD_END}`;
 }
 
 function playBody(catalog: CdCatalogEntry[]): string {
-  return `<main class="seo-static">
+  return `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(PRODUCT)} — Player</h1>
       <p>${escapeHtml(ROUTES.player.description)} Pick a game below; it starts here in the page. Back to <a href="./">${escapeHtml(PRODUCT)}</a> to make your own.</p>
       <noscript><p><strong>The games run in your browser: please turn on JavaScript to play.</strong></p></noscript>
-      ${gameList(catalog, (g) => `./play.html?game=${encodeURIComponent(g.id)}`)}
+      ${gameList(catalog, pageHref)}
       <p class="seo-note">Made with <a href="./">${escapeHtml(PRODUCT)}</a> · <a href="${REPO_URL}">source code</a> · ${escapeHtml(FORK_NOTE)}.</p>
-    </main>`;
+    </main>${BODY_END}`;
+}
+
+/** play-<id>.html: the game's own tags, with <meta name="gm:game"> telling play.ts which game. */
+export function gameHead(g: CdCatalogEntry): string {
+  const meta = metaTags({
+    title: pageTitle(g),
+    description: gameDescription(g),
+    url: playUrl(g.id),
+    image: imageUrl(g),
+    imageSize: GAME_IMAGE_SIZE,
+    imageAlt: `${g.title}: its title screen, with “Play in your browser · ${PRODUCT}”`,
+  });
+  const ld = [
+    gameJsonLd(g, playUrl(g.id), imageUrl(g)),
+    {
+      '@type': 'WebPage',
+      '@id': playUrl(g.id),
+      url: playUrl(g.id),
+      name: pageTitle(g),
+      description: gameDescription(g),
+      primaryImageOfPage: imageUrl(g),
+      about: { '@id': `${playUrl(g.id)}#game` },
+      isPartOf: { '@type': 'WebSite', name: PRODUCT, url: SITE_URL },
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: PRODUCT, item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Play', item: `${SITE_URL}play.html` },
+          { '@type': 'ListItem', position: 3, name: g.title, item: playUrl(g.id) },
+        ],
+      },
+    },
+  ];
+  return `${HEAD_START}<meta name="gm:game" content="${escapeHtml(g.id)}" />\n    ${meta}\n    ${jsonLdScript(ld)}\n    ${STYLE}${HEAD_END}`;
+}
+
+export function gameBody(g: CdCatalogEntry): string {
+  const what = g.original ? 'A new shareware game' : g.kind === 'shareware' ? 'Shareware from the 90s' : 'A sample game that came with Game-Maker 3.0';
+  return `${BODY_START}<main class="seo-static">
+      <h1>${escapeHtml(g.title)}</h1>
+      <p>${escapeHtml(what)}${credit(g) ? ` · ${escapeHtml(credit(g))}` : ''}${g.price ? ` · registration ${escapeHtml(g.price)}` : ''}</p>
+      <p><img src="./${gameImagePath(g.id)}" width="600" height="315" alt="${escapeHtml(g.title)}: its title screen" style="max-width:100%;height:auto;image-rendering:pixelated" /></p>
+      ${readable(g.blurb) ? `<p>${escapeHtml(g.blurb!)}</p>` : ''}
+      <p>Play ${escapeHtml(g.title)} right here in your browser — nothing to download or install — with a keyboard, a game controller or touch controls.</p>
+      <noscript><p><strong>The game runs in your browser: please turn on JavaScript to play.</strong></p></noscript>
+      ${g.kind === 'shareware' && g.notice ? `<details><summary>Shareware: the author’s notice</summary><pre style="white-space:pre-wrap;font:13px monospace">${escapeHtml(g.notice)}</pre></details>` : ''}
+      <p><a href="./play.html">More games to play</a> · <a href="./">${escapeHtml(PRODUCT)}</a>: make your own game in your browser.</p>
+      <p class="seo-note">Made with <a href="./">${escapeHtml(PRODUCT)}</a> · <a href="${REPO_URL}">source code</a> · ${escapeHtml(FORK_NOTE)}.</p>
+    </main>${BODY_END}`;
+}
+
+/** A game's page from play.html (as built, or as served in dev): its own title, tags and text. */
+export function gamePageHtml(playHtml: string, g: CdCatalogEntry): string {
+  const swap = (html: string, start: string, end: string, part: string) => {
+    const a = html.indexOf(start);
+    const b = html.indexOf(end, a);
+    if (a < 0 || b < 0) throw new Error(`play.html has no ${start}…${end}`);
+    return html.slice(0, a) + part + html.slice(b + end.length);
+  };
+  const html = playHtml.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(pageTitle(g))}</title>`);
+  return swap(swap(html, HEAD_START, HEAD_END, gameHead(g)), BODY_START, BODY_END, gameBody(g));
+}
+
+/** The game whose page this is (play-<id>.html), if any. */
+function pageGame(catalog: CdCatalogEntry[], path: string): CdCatalogEntry | undefined {
+  const m = /(?:^|\/)play-([^/]+)\.html$/.exec(path.split('?')[0]);
+  const id = m && decodeURIComponent(m[1]);
+  return id ? playable(catalog).find((g) => g.id === id) : undefined;
+}
+
+/** A game's preview picture, from its files on disk. */
+function gameImage(cdRoot: string, g: CdCatalogEntry, files = cdFiles(cdRoot)): Uint8Array {
+  return gameCardPng(g, (name) => {
+    const p = files.get(`${g.path}${name}`.toLowerCase());
+    return p ? readFileSync(p) : undefined;
+  });
 }
 
 export function sitemapXml(catalog: CdCatalogEntry[], lastmod: string): string {
@@ -211,7 +315,11 @@ ${md(FORK_NOTE)}. It runs entirely in the browser (no account, no server): games
 ${[
   mdLink(PRODUCT, SITE_URL, 'opens on the 1994 desk or today’s web editor, whichever the visitor used last'),
   mdLink('Guide', `${SITE_URL}#/help`, 'how to use the editor: blocks, monsters, characters, maps and scenes, sounds and music, testing and exporting'),
-  mdLink('Player', `${SITE_URL}play.html`, 'plays one game full-window; ?game=<id> picks a game from the list below'),
+  mdLink(
+    'Player',
+    `${SITE_URL}play.html`,
+    'plays one game full-window; each game below has its own page (play-<id>.html), and play.html?game=<id> plays it too',
+  ),
   mdLink('Sitemap', `${SITE_URL}sitemap.xml`),
 ].join('\n')}
 
@@ -256,20 +364,56 @@ export function seoPages(cdRoot: string): Plugin {
     configureServer(server) {
       const files = generated(cdRoot);
       server.middlewares.use((req, res, next) => {
-        const file = files[(req.url ?? '').split('?')[0].replace(/^\/+/, '')];
-        if (!file || (req.method !== 'GET' && req.method !== 'HEAD')) return next();
-        res.setHeader('Content-Type', file.type);
-        res.end(file.body());
+        if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+        const path = (req.url ?? '').split('?')[0].replace(/^\/+/, '');
+        const file = files[path];
+        if (file) {
+          res.setHeader('Content-Type', file.type);
+          res.end(file.body());
+          return;
+        }
+        // A game's page: play.html as the dev server serves it, then made the game's own.
+        const image = /^og\/([^/]+)\.png$/.exec(path);
+        const catalog = image || /^play-[^/]+\.html$/.test(path) ? cdCatalog(cdRoot) : [];
+        const imageGame = image && playable(catalog).find((g) => g.id === decodeURIComponent(image[1]));
+        if (imageGame) {
+          res.setHeader('Content-Type', 'image/png');
+          res.end(gameImage(cdRoot, imageGame));
+          return;
+        }
+        const g = pageGame(catalog, path);
+        if (!g) return next();
+        server
+          .transformIndexHtml(`/${path}`, readFileSync(join(server.config.root, 'play.html'), 'utf8'), req.originalUrl)
+          .then((html) => {
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.end(html);
+          })
+          .catch(next);
       });
     },
-    transformIndexHtml(html, ctx) {
+    transformIndexHtml(html, ctx: IndexHtmlTransformContext) {
       if (!html.includes(HEAD_MARK)) return html;
       const catalog = cdCatalog(cdRoot);
-      const play = /play\.html$/.test(ctx.filename) || ctx.path.endsWith('play.html');
-      return html.replace(HEAD_MARK, play ? playHead(catalog) : indexHead(catalog)).replace(BODY_MARK, play ? playBody(catalog) : indexBody(catalog));
+      const g = pageGame(catalog, ctx.path);
+      const play = !!g || /play\.html$/.test(ctx.filename) || ctx.path.endsWith('play.html');
+      const out = html.replace(HEAD_MARK, play ? playHead(catalog) : indexHead(catalog)).replace(BODY_MARK, play ? playBody(catalog) : indexBody(catalog));
+      return g ? gamePageHtml(out, g) : out;
     },
-    generateBundle() {
-      for (const [fileName, file] of Object.entries(generated(cdRoot))) this.emitFile({ type: 'asset', fileName, source: file.body() });
+    generateBundle: {
+      // After Vite has written play.html (with its script and stylesheet links), so each
+      // game's page loads the same player.
+      order: 'post',
+      handler(_options, bundle) {
+        for (const [fileName, file] of Object.entries(generated(cdRoot))) this.emitFile({ type: 'asset', fileName, source: file.body() });
+        const play = bundle['play.html'];
+        if (play?.type !== 'asset') return;
+        const files = cdFiles(cdRoot);
+        for (const g of playable(cdCatalog(cdRoot))) {
+          this.emitFile({ type: 'asset', fileName: gamePage(g.id), source: gamePageHtml(String(play.source), g) });
+          this.emitFile({ type: 'asset', fileName: gameImagePath(g.id), source: gameImage(cdRoot, g, files) });
+        }
+      },
     },
   };
 }
