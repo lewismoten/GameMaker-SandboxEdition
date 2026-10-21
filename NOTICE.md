@@ -1,11 +1,13 @@
 # Notice and credits
 
-## A derivative work of Game-Maker
+## A derivative work of RSD Game-Maker
 
 This repository is a **modified fork** of the source code of *Game-Maker*, the game
 construction kit produced from 1991 to 1995 by Recreational Software Designs (RSD) of
 Amherst, New Hampshire, and sold in the US by KD Software. Game-Maker was created by
-G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone.
+G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Today it is
+usually called **RSD Game-Maker**, to tell it apart from later, unrelated products with
+similar names; this repository does the same.
 
 On 12 July 2014 Andy Stone, Game-Maker's original programmer, published the source code,
 the CD image and an installed copy on GitHub under the **MIT License**
@@ -19,7 +21,7 @@ license requires.
 
 To keep this fork from being mistaken for RSD's own release, it goes by **Game-Maker:
 Sandbox Edition** (short: *Game-Maker SE*), after the Sandbox BBS Lewis ran in Pittsburgh in
-the 1990s. It is based on Game-Maker 3.0 and keeps its file formats, but it is not the same
+the 1990s. It is based on RSD Game-Maker 3.0 and keeps its file formats, but it is not the same
 program, and the pieces it draws are its own:
 
 - the **Owner's Guide** on the desk is a new guide written for this edition, not the manual
@@ -29,7 +31,7 @@ program, and the pieces it draws are its own:
 - the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original.
 
 Refer to this project as *Game-Maker: Sandbox Edition* (https://github.com/lewismoten/GameMaker-SandboxEdition)
-and to the original as *Game-Maker 3.0 by Recreational Software Designs*
+and to the original as *RSD Game-Maker 3.0* (Game-Maker 3.0 by Recreational Software Designs)
 (https://github.com/gandrewstone/GameMaker).
 
 ## Why a web version
@@ -41,21 +43,23 @@ Game-Maker to modern OSes is the first step"
 browser seemed the simplest way to reach every modern operating system at once: Windows,
 macOS, Linux, Chromebooks, tablets and phones, with nothing to install.
 
-The port's focus is **the original file formats**. Game-Maker Web reads and writes
+The port's focus is **the original file formats**. Game-Maker: Sandbox Edition reads and writes
 `.GAM`, `.MAP`, `.BBL`/`.MBL`/`.CBL`, `.MON`, `.CHR`, `.PAL`, `.SND`, `.REC` and the rest
 byte for byte, so a game made in the browser today still loads in the original DOS
-Game-Maker and plays on original hardware or in a DOS emulator such as DOSBox, and an old
+RSD Game-Maker and plays on original hardware or in a DOS emulator such as DOSBox, and an old
 game folder opens in the browser unchanged.
 
 ## Credits
 
-- **Game-Maker 1.0–3.0** (1991–1995): Recreational Software Designs: G. Andrew Stone,
+- **RSD Game-Maker 1.0–3.0** (1991–1995): Recreational Software Designs: G. Andrew Stone,
   G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Source released under the MIT License
   by Andy Stone in 2014.
 - **This fork**: Lewis Moten.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
   *1994 desk* (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
-  *modern web* editor and player.
+  *modern web* editor and player. AI assistance did most of the porting and code
+  generation: reading the original C source, writing the TypeScript, building the Sandbox
+  Software games in code, and testing them, directed and reviewed by Lewis.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
