@@ -118,12 +118,13 @@ export function projectGame(p: ProjectSummary): HomeGame {
       const game = parseGame(files.get(p.gam)!);
       const link = game.scenes[0]?.links.find((l) => l.toScene !== NOSCENE && game.scenes[l.toScene]?.gametype === ADVTYPE);
       const i = link ? link.toScene : game.scenes.findIndex((s) => s.gametype === ADVTYPE);
-      if (i < 0) return;
+      if (i < 0) return false;
       const shot = levelShot(files, game.scenes[i], link?.to ?? { x: 50, y: 50 }, Math.round(c.width / 20), Math.round(c.height / 20));
-      if (!shot) return;
+      if (!shot) return false;
       const ctx = c.getContext('2d')!;
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(shot, 0, 0, c.width, c.height);
+      return true;
     },
     files: load,
     hasDemo: async () => filesHaveDemo(await load(), p.gam),
@@ -335,7 +336,7 @@ export function moreMenu(...items: (HTMLElement | null | false | undefined)[]): 
 /** Everything that can be done with a game, for the panel at the top. */
 export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise<void>): HTMLElement[] {
   const play = (href: string) => h('a', { class: 'button primary', href, 'aria-label': `Play ${game.title}` }, '▶ Play');
-  const keys = h('button', { title: 'What each key does in this game', onclick: () => openKeys(game) }, '⌨ Keys');
+  const keys = h('button', { class: 'with-ico', title: 'What each key does in this game', onclick: () => openKeys(game) }, svgIcon('keys'), 'Keys');
   const e = game.entry;
   if (game.project) {
     const p = game.project;

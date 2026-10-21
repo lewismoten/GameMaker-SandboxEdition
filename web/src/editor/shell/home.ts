@@ -173,7 +173,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           },
           h('span', { class: 'lib-cat-icon', 'aria-hidden': 'true' }, c.icon),
           h('span', { class: 'lib-cat-name' }, c.name),
-          h('span', { class: 'lib-cat-count', 'aria-label': `(${counts[c.id]} game${counts[c.id] === 1 ? '' : 's'})` }, String(counts[c.id])),
+          h('span', { class: 'lib-cat-count' }, String(counts[c.id]), h('span', { class: 'vh' }, ` game${counts[c.id] === 1 ? '' : 's'}`)),
         ),
       ),
     );
