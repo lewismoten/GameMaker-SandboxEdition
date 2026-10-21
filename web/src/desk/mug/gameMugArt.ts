@@ -41,7 +41,11 @@ function text(g: CanvasRenderingContext2D, s: string, x: number, y: number, colo
 
 /** The hero, 20 x 40 (top and bottom block), or undefined. */
 async function hero(entry: CatalogEntry, name: string): Promise<HTMLCanvasElement | undefined> {
-  const [gam, chrB, cblB] = await Promise.all([entry.gam ? fetchGameFile(entry, entry.gam) : undefined, fetchGameFile(entry, `${name}.chr`), fetchGameFile(entry, `${name}.cbl`)]);
+  const [gam, chrB, cblB] = await Promise.all([
+    entry.gam ? fetchGameFile(entry, entry.gam) : undefined,
+    fetchGameFile(entry, `${name}.chr`),
+    fetchGameFile(entry, `${name}.cbl`),
+  ]);
   if (!gam || !chrB || !cblB) return undefined;
   // the palette of a level the hero plays in
   const scenes = parseGame(gam).scenes.filter((s) => s.gametype === 10);
