@@ -30,7 +30,7 @@ function notes(): HTMLElement {
       h(
         "p",
         { class: "pn-pager" },
-        "Page Dad: dial, wait for the beeps, punch in our number, then press #",
+        "Page Dad: dial, wait for the beeps, punch in the house phone number, then press #",
       ),
       h(
         "p",
