@@ -47,7 +47,6 @@ Pushes to `master` are published to GitHub Pages by
 | `cd/` | The original Game-Maker CD image, with its sample and shareware games. |
 | `code/` | The original DOS C/C++ source. |
 | `runtime/` | A DOS `C:` drive with Game-Maker installed, for DOSBox. |
-| `tools/` | The Borland compiler used to build the DOS source. |
 
 ## The original DOS version
 
@@ -61,7 +60,10 @@ cd c:\gm
 gm
 ```
 
-To build the DOS source (from Andy Stone's original notes), also in DOSBox:
+To build the DOS source you also need the Borland C++ compiler, which this fork doesn't
+include (it isn't covered by the MIT License). Copy the `tools/` folder from the
+[original 2014 repository](https://github.com/gandrewstone/GameMaker) into the root of
+this one, then, following Andy Stone's original notes, in DOSBox:
 
 ```
 c:

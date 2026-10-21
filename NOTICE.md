@@ -100,9 +100,9 @@ formats from their published descriptions and from Game-Maker's own source.
   the IBM PC BIOS font.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
-- **Borland C++** in `tools/` was included in the original 2014 repository to build the
+- **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
   DOS source; it is Borland's (now Embarcadero's) software and is not covered by the MIT
-  License.
+  License, so this fork leaves it out. The README says where to get it.
 - The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its BBSes
   and phone numbers are made up, as are the magazines and awards on the game boxes.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
