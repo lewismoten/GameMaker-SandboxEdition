@@ -1,0 +1,86 @@
+/* Monster editor: the monsters on the left stay in view while the chosen one is edited on the right. */
+.mon-layout {
+  display: grid;
+  grid-template-columns: minmax(150px, 240px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.mon-side {
+  position: sticky;
+  top: 0;
+}
+.mon-side .mon-list {
+  max-height: max(240px, calc(100dvh - 210px));
+  grid-template-columns: repeat(auto-fill, 44px);
+}
+.mon-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: flex-start;
+}
+.mon-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mon-who h3 {
+  margin: 0;
+}
+.mon-anim {
+  flex: 1 1 300px;
+  min-width: 0;
+}
+.mon-anim h4 {
+  margin: 0 0 6px;
+}
+.mon-anim h4 small {
+  font-weight: 400;
+}
+.mon-frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: frame;
+}
+.mon-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  counter-increment: frame;
+}
+.mon-frame::before {
+  content: counter(frame);
+  color: var(--muted);
+  font-size: 11px;
+}
+.mon-frame input[type='number'] {
+  width: 5em;
+}
+.mon-frame-tools {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+@media (max-width: 640px) {
+  .mon-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mon-side {
+    position: static;
+  }
+  .mon-side .mon-list {
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, 44px);
+    grid-template-columns: none;
+    grid-auto-columns: 44px;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}

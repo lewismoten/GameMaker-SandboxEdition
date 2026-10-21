@@ -1,4 +1,6 @@
 // Monster editor (MONEDIT.EXE): 64 monsters with animation, strength and movement.
+import './monsters.css';
+import { rovingGrid } from '../rovingGrid';
 import { registerEditor } from './index';
 import { h, clear, numberField, selectField, checkField, debounce } from '../ui';
 import { blockCanvas, paintBlock } from '../draw';
@@ -39,8 +41,8 @@ registerEditor(['mon'], (host, project, file) => {
   /** Each monster as its first animation frame, for choosing monsters by picture. */
   const monsterPictures = () => mons.map((mon) => mblk[mon.pic[0]?.[0] ?? -1] ?? newBlockSet('mbl')[0]);
 
-  const list = h('div', { class: 'block-picker', style: 'max-height:none;grid-template-columns:repeat(auto-fill,44px)' });
-  const detail = h('div', { class: 'stack', style: 'flex:1 1 520px;min-width:0' });
+  const list = rovingGrid(h('div', { class: 'block-picker mon-list' }), 'Monsters');
+  const detail = h('div', { class: 'stack mon-detail' });
   const preview = h('canvas', { class: 'pixel checker', style: 'width:80px;height:80px;border:1px solid var(--border)' });
   const paths = monsterPathEditor({
     project,
@@ -99,81 +101,72 @@ registerEditor(['mon'], (host, project, file) => {
       detail,
       h(
         'div',
-        { class: 'panel row', style: 'align-items:center' },
-        preview,
-        h('div', { class: 'stack' }, h('h3', { style: 'margin:0' }, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot')),
-      ),
-      h(
-        'div',
-        { class: 'panel', style: 'overflow-x:auto' },
-        h('h4', { style: 'margin:0 0 6px' }, 'Animation'),
+        { class: 'panel mon-top' },
         h(
-          'table',
-          { class: 'data' },
-          h('thead', null, h('tr', null, h('th', null, 'Frame'), h('th', null, 'Picture'), h('th', null, 'Ticks (1/18 s)'))),
-          h(
-            'tbody',
-            null,
-            ...frames.slice(0, shown).map((f, i) =>
-              h(
-                'tr',
-                null,
-                h('td', null, i + 1),
-                h(
-                  'td',
-                  null,
-                  blockButton(
-                    () => mblk,
-                    () => chooser.palette,
-                    () => f[0],
-                    (v) => edit(() => ((f[0] = v), renderDetail(), renderList())),
-                    { title: `Frame ${i + 1}: a monster block` },
-                  ),
-                ),
-                h(
-                  'td',
-                  null,
-                  numberField(
-                    '',
-                    () => f[1],
-                    (v) => edit(() => (f[1] = v)),
-                    { min: 1, max: 32767 },
-                  ),
-                ),
-              ),
-            ),
-          ),
+          'div',
+          { class: 'mon-who' },
+          preview,
+          h('div', null, h('h3', null, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot')),
         ),
         h(
           'div',
-          { class: 'toolbar', style: 'margin-top:6px' },
-          shown < LASTSL &&
-            h(
-              'button',
-              {
-                onclick: () =>
-                  edit(() => {
-                    m.pic[shown] = [shown > 0 ? m.pic[shown - 1][0] : 0, shown > 0 ? m.pic[shown - 1][1] : 4];
-                    if (shown + 1 <= LASTSL) m.pic[shown + 1] = [MONBL, 1];
-                    renderDetail();
-                    renderList();
-                  }),
-              },
-              '+ Frame',
+          { class: 'mon-anim' },
+          h('h4', { id: 'mon-anim-head' }, 'Animation ', h('small', { class: 'meta' }, 'picture and ticks (1/18 s) of each frame')),
+          h(
+            'ol',
+            { class: 'mon-frames', 'aria-labelledby': 'mon-anim-head' },
+            ...frames.slice(0, shown).map((f, i) =>
+              h(
+                'li',
+                { class: 'mon-frame' },
+                blockButton(
+                  () => mblk,
+                  () => chooser.palette,
+                  () => f[0],
+                  (v) => edit(() => ((f[0] = v), renderDetail(), renderList())),
+                  { title: `Frame ${i + 1}: a monster block` },
+                ),
+                numberField(
+                  '',
+                  () => f[1],
+                  (v) => edit(() => (f[1] = v)),
+                  { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)` },
+                ),
+              ),
             ),
-          shown > 0 &&
             h(
-              'button',
-              {
-                onclick: () =>
-                  edit(() => {
-                    m.pic[shown - 1] = [MONBL, 1];
-                    renderDetail();
-                    renderList();
-                  }),
-              },
-              '− Last frame',
+              'li',
+              { class: 'mon-frame-tools' },
+              shown < LASTSL &&
+                h(
+                  'button',
+                  {
+                    title: 'Add a frame (a copy of the last one)',
+                    onclick: () =>
+                      edit(() => {
+                        m.pic[shown] = [shown > 0 ? m.pic[shown - 1][0] : 0, shown > 0 ? m.pic[shown - 1][1] : 4];
+                        if (shown + 1 <= LASTSL) m.pic[shown + 1] = [MONBL, 1];
+                        renderDetail();
+                        renderList();
+                      }),
+                  },
+                  '+ Frame',
+                ),
+              shown > 0 &&
+                h(
+                  'button',
+                  {
+                    onclick: () =>
+                      edit(() => {
+                        m.pic[shown - 1] = [MONBL, 1];
+                        renderDetail();
+                        renderList();
+                      }),
+                  },
+                  '− Last frame',
+                ),
             ),
+          ),
         ),
       ),
       h(
@@ -231,10 +224,6 @@ registerEditor(['mon'], (host, project, file) => {
           () => !!m.thru,
           (v) => edit(() => (m.thru = v ? 1 : 0)),
         ),
-      ),
-      h(
-        'div',
-        { class: 'panel grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr))' },
         selectField(
           'Movement',
           [
@@ -270,13 +259,13 @@ registerEditor(['mon'], (host, project, file) => {
   clear(
     host,
     h(
-      'p',
-      { class: 'hint' },
-      'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.',
-    ),
-    h(
       'div',
-      { class: 'toolbar', style: 'margin-bottom:8px' },
+      { class: 'ed-head' },
+      h(
+        'p',
+        { class: 'hint' },
+        'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.',
+      ),
       fileField(
         project,
         'Monster blocks',
@@ -292,7 +281,7 @@ registerEditor(['mon'], (host, project, file) => {
       ),
       chooser.el,
     ),
-    h('div', { class: 'row' }, h('div', { style: 'flex:0 1 240px' }, list), detail),
+    h('div', { class: 'mon-layout' }, h('div', { class: 'mon-side' }, list), detail),
   );
   render();
   return () => {

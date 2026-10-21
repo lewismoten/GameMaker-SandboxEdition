@@ -1138,3 +1138,25 @@ main:focus,
     scroll-behavior: auto !important;
   }
 }
+
+/* An editor's opening line: the hint, with the file slots it depends on beside it. */
+.ed-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  margin-bottom: 8px;
+}
+.editor .ed-head .hint {
+  flex: 1 1 320px;
+  margin: 0;
+}
+
+/* block numbers stay readable on any picture */
+.block-picker button small {
+  padding: 0 2px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.72);
+  text-shadow: none;
+  line-height: 1.2;
+}
