@@ -3,7 +3,7 @@
 // graphic scripts for the badge, everything for the report) and shows the result.
 import { h, modal } from '../core/ui';
 import { checkGame, QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue } from '../../project/health';
-import { loadHostedGame, type CatalogEntry } from '../../project/files';
+import { fetchGameFile, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { loadProject } from '../../project/storage';
 
 export interface HealthTarget {
@@ -34,8 +34,8 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
     const loaded = new Map<string, Uint8Array>();
     await Promise.all(
       wanted.map(async (n) => {
-        const r = await fetch(`./${g.path}${n}`).catch(() => undefined);
-        if (r?.ok) loaded.set(n, new Uint8Array(await r.arrayBuffer()));
+        const bytes = await fetchGameFile(g, n);
+        if (bytes) loaded.set(n, bytes);
       }),
     );
     const src: FileSource = {
