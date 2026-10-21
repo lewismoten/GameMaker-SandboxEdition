@@ -26,7 +26,7 @@ import { DESCENT_BIOMES, descentFile, descentFli } from '../descent';
 import { CREDITS, INSTRUCTIONS } from '../text';
 import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
-import { drawCourier } from '../courier';
+import { drawCourier } from './sprites/courier';
 import { drawShard } from './blocks/items';
 
 export async function present(b: Built): Promise<void> {

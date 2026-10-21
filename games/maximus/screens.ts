@@ -7,10 +7,10 @@ import { serializeBackdrop, serializeSlideList } from '../../web/src/formats/gra
 import { Pixels, rng } from '../kit/pixels';
 import { tileNoise } from './src/art/draw';
 import { Canvas } from './src/art/canvas';
-import { drawCourier } from './courier';
+import { drawCourier } from './src/sprites/courier';
 import { drawModule, drawShard } from './src/blocks/items';
 import { buildPalette, hsl, type RGB, type Role, type Theme, S, WHITE, shared } from './src/art/palette';
-import { drawDiver, drawPod, drawRover } from './vehicles';
+import { drawDiver, drawPod, drawRover } from './src/sprites/vehicles';
 import { MODULES, SHARDS } from './src/ids';
 import { SECTORS, type World } from './src/universe';
 

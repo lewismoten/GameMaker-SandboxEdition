@@ -1,9 +1,9 @@
 // Effects painted over a vehicle or courier block: shield bubbles, tractor beams, speed
 // streaks, charging sparkles, sonar rings, dust and splashes. They turn a handful of
 // vehicle drawings into the full fifty character blocks of a .CBL.
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, Mask, fill, outline, shade } from './src/art/draw';
-import { OUTLINE, S, WHITE, shared } from './src/art/palette';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, Mask, fill, outline, shade } from '../art/draw';
+import { OUTLINE, S, WHITE, shared } from '../art/palette';
 
 const copy = (p: Pixels) => {
   const q = new Pixels(p.w, p.h, CLEAR);

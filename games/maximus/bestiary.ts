@@ -6,7 +6,7 @@ import { MONBL, SOLTOP, emptyBlock, type Block } from '../../web/src/formats/blo
 import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '../../web/src/formats/monster';
 import { CLEAR, Mask, fill, outline, shade, sprite } from './src/art/draw';
 import { MBL_SHARED_BASE, MON, MONEY } from './src/ids';
-import { drawCreature, type Archetype, type Paint } from './creatures';
+import { drawCreature, type Archetype, type Paint } from './src/sprites/creatures';
 import { drawPickup } from './src/blocks/items';
 import { OUTLINE, S, WHITE, shared } from './src/art/palette';
 import { R } from './src/blocks/surface';
