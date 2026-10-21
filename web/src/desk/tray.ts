@@ -22,20 +22,28 @@ function ballMouse(): HTMLElement {
 }
 
 export function keyboardTray(keyboard: HTMLElement): HTMLElement {
-  const tray = h('div', { class: 'kb-tray', dataset: { out: 'true' } });
-  const handle = h('button', {
-    class: 'tray-handle',
-    title: 'Slide the keyboard tray in or out',
-    'aria-label': 'Keyboard tray',
-    'aria-pressed': 'true',
-    onclick: () => {
-      const out = tray.dataset.out !== 'true';
-      tray.dataset.out = String(out);
-      handle.setAttribute('aria-pressed', String(out));
+  // It starts pushed in under the desk and slides out once the desk is on the screen, so
+  // you can see it is a tray (straight away without motion).
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tray = h('div', { class: 'kb-tray', dataset: { out: String(still) } });
+  const handle = h(
+    'button',
+    {
+      class: 'tray-handle',
+      title: 'Slide the keyboard tray in or out',
+      'aria-label': 'Keyboard tray pulled out',
+      'aria-pressed': String(still),
+      onclick: () => setOut(tray.dataset.out !== 'true'),
     },
-  });
+    h('span', { class: 'tray-pull', 'aria-hidden': 'true' }),
+  );
+  const setOut = (out: boolean) => {
+    tray.dataset.out = String(out);
+    handle.setAttribute('aria-pressed', String(out));
+  };
+  if (!still) setTimeout(() => setOut(true), 900);
   // tray-move slides; tray-plane is the board itself, tilted away from the chair, so the
-  // keyboard and the mouse pad share one perspective.
+  // keyboard and the mouse pad share one perspective. The rails stay put under the desk.
   tray.append(
     h(
       'div',
@@ -43,7 +51,7 @@ export function keyboardTray(keyboard: HTMLElement): HTMLElement {
       h(
         'div',
         { class: 'tray-plane' },
-        h('div', { class: 'tray-slab', 'aria-hidden': 'true' }),
+        h('div', { class: 'tray-slab', 'aria-hidden': 'true' }, h('span', { class: 'tray-runner l' }), h('span', { class: 'tray-runner r' })),
         keyboard,
         h('div', { class: 'mouse-pad' }, h('span', { class: 'pad-print' }, 'SANDBOX', h('br'), 'BBS'), h('span', { class: 'mouse-cord' }), ballMouse()),
       ),
