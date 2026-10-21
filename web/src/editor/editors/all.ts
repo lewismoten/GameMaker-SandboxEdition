@@ -1,7 +1,7 @@
 // Imports every editor so it registers itself.
 export {};
 import './palette/palette';
-import './blocks';
+import './blocks/blocks';
 import './map';
 import './integrator/integrator';
 import './monsters';

@@ -5,7 +5,7 @@ import { History } from '../core/history';
 import { registerEditor } from './registry';
 import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
 import { blockCanvas, paintBlock } from '../core/draw';
-import { paletteChooser } from './blocks';
+import { paletteChooser } from './blocks/blocks';
 import { blockButton } from '../widgets/blockChooser';
 import { fileField } from '../widgets/filePicker';
 import { MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';

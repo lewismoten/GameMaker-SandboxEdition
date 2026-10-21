@@ -4,7 +4,7 @@ import { History } from '../core/history';
 import { registerEditor } from './registry';
 import { h, clear, selectField, toast, debounce, modal, download } from '../core/ui';
 import { blockCanvas, blockImages } from '../core/draw';
-import { paletteChooser } from './blocks';
+import { paletteChooser } from './blocks/blocks';
 import type { FileKind, Project } from '../core/project';
 import { fileField, pickFile } from '../widgets/filePicker';
 import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';

@@ -1,12 +1,12 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
-import { rovingGrid } from '../widgets/rovingGrid';
+import { rovingGrid } from '../../widgets/rovingGrid';
 import './blocks.css';
-import { registerEditor } from './registry';
-import { fileField } from '../widgets/filePicker';
-import { TEXTURES, paintTexture } from '../tools/textures';
-import { h, clear, numberField, checkField, selectField, debounce } from '../core/ui';
-import { blockCanvas, paintBlock, lut } from '../core/draw';
-import type { Project } from '../core/project';
+import { registerEditor } from '../registry';
+import { fileField } from '../../widgets/filePicker';
+import { TEXTURES, paintTexture } from '../../tools/textures';
+import { h, clear, numberField, checkField, selectField, debounce } from '../../core/ui';
+import { blockCanvas, paintBlock, lut } from '../../core/draw';
+import type { Project } from '../../core/project';
 import {
   BLEN,
   BLOCK_COUNTS,
@@ -20,9 +20,9 @@ import {
   serializeBlocks,
   type Block,
   type BlockKind,
-} from '../../formats/blocks';
-import { paletteCss, parsePalette, type Palette } from '../../formats/palette';
-import { LASTMON } from '../../formats/monster';
+} from '../../../formats/blocks';
+import { paletteCss, parsePalette, type Palette } from '../../../formats/palette';
+import { LASTMON } from '../../../formats/monster';
 
 export const EFFECTS: [number, string][] = [
   [0, 'Nothing'],

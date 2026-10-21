@@ -7,7 +7,7 @@ import { fileField } from '../widgets/filePicker';
 import { blockButton, chooseBlock, type BlockExtra } from '../widgets/blockChooser';
 import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
 import { drawBlockTo, paintBlock } from '../core/draw';
-import { paletteChooser } from './blocks';
+import { paletteChooser } from './blocks/blocks';
 import { audio } from '../widgets/mediaShared';
 import { BACKBL, BLEN, CHARBL, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import {
