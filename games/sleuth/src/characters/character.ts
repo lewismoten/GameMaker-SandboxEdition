@@ -6,7 +6,7 @@ import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type 
 import { BlockSet } from '../blocks/blockset';
 import { ADA, strikeFrames } from '../sprites/ada';
 import { CTR, KEY, SEQ, SND } from '../ids';
-import { ITEMS } from '../blocks/tiles';
+import { ITEMS } from '../blocks/items';
 
 export function buildAdaBlocks(): BlockSet {
   const cb = new BlockSet(50, true);

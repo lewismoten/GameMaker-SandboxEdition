@@ -7,7 +7,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, microC, outlined, pool, scaleBlit, shadeAt } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';
 import { W, H, actor, dagger, facade, rain, stageView } from './art';
-import { symbol } from '../blocks/tiles';
+import { symbol } from '../blocks/items';
 
 const fli = (frames: Pixels[], speed: number, palettes?: Uint8Array[]) =>
   encodeFli(

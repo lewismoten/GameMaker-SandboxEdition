@@ -10,7 +10,8 @@ import { dosText } from '../../../kit/disk';
 import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';
 import { W, H, actCard, caseFile, evidenceScreen, facade, portraitScreen, stageView, actor, rain } from './art';
-import { itemPictures, ITEMS, ITEM, boards, symbol } from '../blocks/tiles';
+import { boards } from '../blocks/painters';
+import { itemPictures, ITEMS, ITEM, symbol } from '../blocks/items';
 import {
   ACC_INTRO,
   ACT_CARDS,

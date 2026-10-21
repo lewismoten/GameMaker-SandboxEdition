@@ -9,7 +9,8 @@ import { Pixels } from '../../../kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from '../blocks/blockset';
 import { CLEAR, blob, microC, pool, speckle } from '../art/draw';
 import { c, ramp as r } from '../art/pal';
-import { addItems, boards, clone, footlight, stageBoards, symbol, wallFace, wallTop, T, ITEMS, ITEM } from '../blocks/tiles';
+import { boards, clone, footlight, stageBoards, wallFace, wallTop, T } from '../blocks/painters';
+import { addItems, symbol, ITEMS, ITEM } from '../blocks/items';
 import { figure, portrait, type Who } from '../art/people';
 import { CTR } from '../ids';
 
