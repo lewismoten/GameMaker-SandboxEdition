@@ -20,6 +20,10 @@ export interface PlayerOptions extends RunOptions {
   onFileWrite?: (name: string, bytes: Uint8Array) => void;
   /** Show on-screen controls (defaults to touch screens only). */
   touch?: boolean;
+  /** A picture of the game (an image URL), shown dimmed behind "Play" on the start screen. */
+  poster?: string | Promise<string | undefined>;
+  /** A link back (to the catalog), on the start screen. */
+  back?: { href: string; label: string };
   /** Shareware: the author's notice, linked from the start screen. */
   notice?: string;
   /** Start immediately, without the click-to-play overlay (audio must already be unlocked). */
@@ -75,8 +79,22 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
 
   const start = document.createElement('button');
   start.className = 'gm-start';
-  start.innerHTML = `<span>▶ Play ${escapeHtml(opts.title ?? '')}</span><small>Click or press a key to start · F1 help · Esc to leave a level</small>`;
+  // a touch screen has no keys to press: say what works there
+  const how = matchMedia('(pointer: coarse)').matches ? 'Tap to start' : 'Click or press a key to start · F1 help · Esc to leave a level';
+  start.innerHTML = `<span>▶ Play ${escapeHtml(opts.title ?? '')}</span><small>${how}</small>`;
   container.append(start);
+  // the game's picture behind the button, dimmed so the words stay readable
+  void Promise.resolve(opts.poster).then((url) => {
+    if (url && start.isConnected) {
+      start.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.8)), url("${url}")`;
+      start.classList.add('has-poster');
+    }
+  });
+  const back = opts.back ? Object.assign(document.createElement('a'), { className: 'gm-back', href: opts.back.href, textContent: opts.back.label }) : undefined;
+  if (back) {
+    back.addEventListener('click', (e) => e.stopPropagation());
+    container.append(back);
+  }
   if (opts.notice) {
     const link = document.createElement('button');
     link.className = 'gm-notice-link';
@@ -116,6 +134,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   const done = new Promise<void>((resolve) => {
     const begin = async () => {
       start.remove();
+      back?.remove();
       container.querySelector('.gm-notice-link')?.remove();
       window.removeEventListener('keydown', onKey);
       if (!opts.preview) {

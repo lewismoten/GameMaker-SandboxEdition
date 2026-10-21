@@ -44,6 +44,53 @@
   cursor: pointer;
 }
 
+.gm-player .gm-start.has-poster {
+  background-position: center;
+  background-size: cover;
+  image-rendering: pixelated;
+  text-shadow: 0 2px 6px #000;
+}
+
+/* the words on a dark plate, so they read over any game's picture */
+.gm-player .gm-start.has-poster > span,
+.gm-player .gm-start.has-poster > small {
+  padding: 6px 14px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.gm-player .gm-start.has-poster > small {
+  opacity: 1;
+  color: #ddd;
+}
+
+.gm-player .gm-start:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: -6px;
+}
+
+/* back to the catalog, on the start screen */
+.gm-player .gm-back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 10px;
+  border: 1px solid #ffd40088;
+  border-radius: 8px;
+  background: #000a;
+  color: #ffd400;
+  font:
+    600 14px/1 system-ui,
+    sans-serif;
+  text-decoration: none;
+}
+
+.gm-player .gm-back:hover,
+.gm-player .gm-back:focus-visible {
+  background: #000;
+  outline: 2px solid #ffd400;
+}
+
 .gm-player .gm-start small {
   font-weight: 400;
   font-size: 14px;
