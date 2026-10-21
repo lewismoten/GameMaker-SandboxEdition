@@ -16,7 +16,7 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
     'story.lst',
     'story.cmf',
     'help.lst',
-    'credits.lst',
+    'credit.lst',
     'scores.gif',
     'load.gif',
     'save.gif',

@@ -257,7 +257,7 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
   };
   textPage('story', 'THE STORY', STORY, 3);
   textPage('help', 'HOW TO FLY', HELP, 4);
-  textPage('credits', 'CREDITS', CREDITS, 6);
+  textPage('credit', 'CREDITS', CREDITS, 6);
   put('scores.gif', gif(scoresScreen()));
   put('load.gif', gif(slotScreen('LOAD A GAME')));
   put('save.gif', gif(slotScreen('SAVE THIS GAME')));
