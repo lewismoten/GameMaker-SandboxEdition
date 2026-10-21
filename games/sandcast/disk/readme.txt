@@ -45,7 +45,7 @@ THE GAME
 Teddy is a Pembroke Welsh
 Corgi, the knight of the
 backyard sandbox. His big
-sister Gwin, a brown pit-lab
+sister Gwinn, a brown pit-lab
 mix twice his size, just ran
 through it with the zoomies:
 castles flattened, hose
@@ -66,7 +66,7 @@ help.
   SPACE ... fling sand
   B ....... throw water
   F ....... toss a tennis ball
-            (Gwin can't resist
+            (Gwinn can't resist
             one)
   Tricks .. 2 sit, 3 spin,
             4 play dead,

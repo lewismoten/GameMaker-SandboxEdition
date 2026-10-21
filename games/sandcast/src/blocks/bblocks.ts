@@ -1,5 +1,5 @@
 // The background blocks (sandcast.bbl): the sandbox, castles, moats, hose streams, tide,
-// tunnels, Gwin's patio and the BBS room, with every block's rules.
+// tunnels, Gwinn's patio and the BBS room, with every block's rules.
 //
 // Each area's blocks live in their own module and are added to one shared BlockSet. A block's
 // number in the .BBL is the order it was added, so the calls below must stay in this order

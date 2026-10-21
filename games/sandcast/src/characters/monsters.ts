@@ -182,7 +182,7 @@ export function buildMonsters(): Monster[] {
   });
   def(MON.crabFlip, { pics: [['crabFlip', 50]], power: 150, end: 45 });
 
-  // Gwin's patio: slobbery tennis balls roll out of her mouth as she snores, and
+  // Gwinn's patio: slobbery tennis balls roll out of her mouth as she snores, and
   // rope toys fly out of her toy box.
   def(MON.slobber, {
     pics: [
@@ -251,7 +251,7 @@ export function buildMonsters(): Monster[] {
     ],
   });
 
-  // Teddy's tennis ball: strong enough to flip anything, and Gwin can never resist one.
+  // Teddy's tennis ball: strong enough to flip anything, and Gwinn can never resist one.
   def(MON.ball, {
     pics: [
       ['ball0', 2],
@@ -271,7 +271,7 @@ export function buildMonsters(): Monster[] {
     end: 12,
   });
 
-  // Gwin: too big to bowl over with sand or water, but a tennis ball... she has to have it.
+  // Gwinn: too big to bowl over with sand or water, but a tennis ball... she has to have it.
   // Then she trots off, ball in mouth, to bury it somewhere.
   def(MON.gwinRoam, {
     pics: [

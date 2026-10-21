@@ -33,7 +33,7 @@ export function addPickups(): Pixels {
     bg.add('pile', onSand(71, p), { effect: CTR.sand, eamt: 1, score: 5, touch: 'sand0' });
   }
   {
-    // A squeaky rubber bone: one of Teddy's toys, scattered by Gwin. Points.
+    // A squeaky rubber bone: one of Teddy's toys, scattered by Gwinn. Points.
     const p = sprite20();
     const bone = (x0: number, y0: number, x1: number, y1: number) => {
       for (let t = 0; t <= 1; t += 0.05) p.disc(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, 2.2, PINK[2]);
@@ -68,7 +68,7 @@ export function addPickups(): Pixels {
     bg.add('starfish', onSand(73, p), { score: 500, effect: CTR.toys, eamt: 1, touch: 'sand0' });
   }
   {
-    // A tennis ball: P picks it up, F tosses it. Gwin will drop anything for one.
+    // A tennis ball: P picks it up, F tosses it. Gwinn will drop anything for one.
     const p = sprite20();
     ball(p, 10, 11, 5, YELLOW, 3);
     for (let y = 5; y < 17; y++) for (let x = 4; x < 16; x++) if (Math.hypot(x - 10, y - 11) <= 5 && dither(x, y, 0.35)) p.set(x, y, GRASS[5]);

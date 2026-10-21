@@ -23,7 +23,7 @@ export const SEQ = {
   fling: 13,
   /** B: throw a water splash (needs the bucket; its counter is the water supply). */
   splash: 14,
-  /** F: toss a tennis ball (its counter is the balls you carry). Gwin can't resist one. */
+  /** F: toss a tennis ball (its counter is the balls you carry). Gwinn can't resist one. */
   fetch: 15,
   // Teddy's tricks, on the number keys (the same numbers as in Teddy's Little Big Adventure).
   /** 2: sit. */
@@ -95,9 +95,9 @@ export const MON = {
   crabH: 9,
   crabV: 10,
   crabFlip: 11,
-  /** Slobbery tennis balls Gwin drops in her sleep; they roll after you. */
+  /** Slobbery tennis balls Gwinn drops in her sleep; they roll after you. */
   slobber: 12,
-  /** Rope toys flung out of Gwin's toy box. */
+  /** Rope toys flung out of Gwinn's toy box. */
   rope: 13,
   pawL: 14,
   pawLAngry: 15,
@@ -116,11 +116,11 @@ export const MON = {
   ball: 27,
   /** The sand whirl from Teddy's spin. */
   whirl: 28,
-  /** Gwin on the loose, galumphing about. */
+  /** Gwinn on the loose, galumphing about. */
   gwinRoam: 29,
-  /** Gwin flopped across a doorway, fast asleep. */
+  /** Gwinn flopped across a doorway, fast asleep. */
   gwinNap: 30,
-  /** Gwin with a ball in her mouth, too pleased to bother anyone (for a while). */
+  /** Gwinn with a ball in her mouth, too pleased to bother anyone (for a while). */
   gwinHappy: 31,
   none: 64,
 } as const;

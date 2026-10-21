@@ -388,7 +388,7 @@ function roughen(m: LevelMap, seed: number): void {
     for (let x = 1; x < 50; x++) if (m.get(x, y) === 'earth' && (plain(x, y + 1) || plain(x, y - 1)) && rand() < 0.07) m.set(x, y, 'glow');
 }
 
-// ================================================================= 5. Gwin's patio
+// ================================================================= 5. Gwinn's patio
 export const CAT_AT = { x: 13, y: 3 };
 export function patio(): LevelMap {
   const m = new LevelMap('grass', 6);

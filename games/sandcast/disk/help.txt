@@ -20,7 +20,7 @@ walk into it again to plant
 your flag. Four flags lift a
 castle gate.
 
-GWIN won't budge for sand or
+GWINN won't budge for sand or
 water. Toss her a tennis ball
 (F) and she trots off happy.
 Walk toward her first: things
@@ -30,7 +30,7 @@ SPIN (3) kicks up a whirl of
 sand that bowls over ants and
 beetles.
 
-WATER: balloons and Gwin's
+WATER: balloons and Gwinn's
 bowls fill your bucket. Only
 water (or a ball) flips a
 crab. With the bucket, walk

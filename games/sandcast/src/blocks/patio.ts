@@ -1,6 +1,6 @@
-// The patio where Gwin naps: flagstones, garden bricks, her water bowl (refills the bucket),
+// The patio where Gwinn naps: flagstones, garden bricks, her water bowl (refills the bucket),
 // her toy box (a block that gives birth to a flying rope toy now and then), the Crown of the
-// Sandbox, and Gwin herself: one 120x80 picture cut into 6 x 4 blocks. She blinks by a
+// Sandbox, and Gwinn herself: one 120x80 picture cut into 6 x 4 blocks. She blinks by a
 // next/ntime chain (the eye block becomes 'catBlink' after 70 ticks, and back after 6), and
 // her mouth block gives birth to slobbery tennis balls.
 import { GRASS, GREY, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
@@ -9,7 +9,7 @@ import { Pixels, art, ball, bevel, dither, rng, shade, tile } from '../art/draw'
 import { SOLID, bg, onSand, sprite20 } from './common';
 
 export function addPatio(): void {
-  // ---------------------------------------------------------------- the patio, where Gwin naps
+  // ---------------------------------------------------------------- the patio, where Gwinn naps
   function flagstone(seed: number): Pixels {
     const p = tile(GREY[1]);
     const r = rng(seed);
@@ -48,7 +48,7 @@ export function addPatio(): void {
     bg.add('brick', p, { solid: SOLID });
   }
   {
-    // Gwin's water bowl (her name in red on the side): fills your bucket three splashes' worth.
+    // Gwinn's water bowl (her name in red on the side): fills your bucket three splashes' worth.
     const mk = (full: boolean) => {
       const p = sprite20();
       ball(p, 10, 10, 9, STEEL, 4);
@@ -62,7 +62,7 @@ export function addPatio(): void {
     bg.add('bowlDry', mk(false), { solid: SOLID });
   }
   {
-    // Gwin's toy box, overflowing: every so often a rope toy comes flying out.
+    // Gwinn's toy box, overflowing: every so often a rope toy comes flying out.
     const p = tile(GREY[3]);
     p.blit(flagstone(174), 0, 0);
     bevel(p, 2, 6, 16, 12, WOOD, 3, 1);
@@ -97,12 +97,12 @@ export function addPatio(): void {
     );
     bg.add('crown', p, { score: 5000 });
   }
-  // Gwin herself, asleep across the top of the patio on Teddy's crown: 6 x 4 blocks of
+  // Gwinn herself, asleep across the top of the patio on Teddy's crown: 6 x 4 blocks of
   // brown pit-lab. Her eye opens now and then; slobbery tennis balls roll out of her mouth.
   const CAT_W = 6;
   const CAT_H = 4;
   function drawCat(eyes: 'open' | 'shut'): Pixels {
-    // (Named for the slot it fills: this is Gwin, a brown pit-lab mix, sprawled asleep.)
+    // (Named for the slot it fills: this is Gwinn, a brown pit-lab mix, sprawled asleep.)
     const c = new Pixels(CAT_W * 20, CAT_H * 20, 255);
     const body = (x: number, y: number) => {
       const bx = (x - 76) / 42;

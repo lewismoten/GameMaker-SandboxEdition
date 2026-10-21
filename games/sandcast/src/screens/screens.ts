@@ -165,7 +165,7 @@ export function titleScreen(): Pixels {
   logo(p, 40, 36, 'SANDCASTLE', 3);
   logo(p, 64, 64, 'KNIGHT', 4);
   castleArt(p, 160, 176, 1, 5);
-  // Teddy at the castle gate, and Gwin peeking in from the side, up to no good.
+  // Teddy at the castle gate, and Gwinn peeking in from the side, up to no good.
   stamp(p, CB.pic('sit0'), 3, 226, 128);
   stamp(p, MB.pic('gwin0'), 3, 34, 124);
   text(p, 4, 100, 'v1.1', ANSI[8]);
@@ -256,7 +256,7 @@ interface Spark {
   sky: number;
 }
 
-/** Victory: the Fourth of July at dusk, flags on every tower, Teddy crowned, Gwin with her ball. */
+/** Victory: the Fourth of July at dusk, flags on every tower, Teddy crowned, Gwinn with her ball. */
 function wonPicture(): { p: Pixels; sparks: Spark[] } {
   const p = screen();
   const sparks: Spark[] = [];
@@ -297,7 +297,7 @@ function wonPicture(): { p: Pixels; sparks: Spark[] } {
   });
   p.rect(0, 150, W, 50, SAND[5]);
   castleArt(p, 140, 176, 1.1, 11);
-  // Teddy, crowned, and Gwin with the ball she finally gave back.
+  // Teddy, crowned, and Gwinn with the ball she finally gave back.
   stamp(p, CB.pic('sit1'), 3, 214, 140);
   crown(p, 238, 134);
   stamp(p, MB.pic('gwinHappy0'), 3, 6, 140);
@@ -367,7 +367,7 @@ export function lostScreen(): Pixels {
       const top = 175 - 30 * (1 - dx * dx);
       if (y >= top) p.set(x, y, dither(x, y, (y - top) / 30) ? SAND[4] : SAND[6]);
     }
-  // Teddy, flat on his back in the sand; Gwin sits by to lick his ear.
+  // Teddy, flat on his back in the sand; Gwinn sits by to lick his ear.
   stamp(p, CB.pic('die3'), 3, 136, 116);
   stamp(p, MB.pic('gwin1'), 3, 70, 112);
   text(p, 0, 0, 'NO CARRIER'.padEnd(40), ANSI[15]);
@@ -440,7 +440,7 @@ function heap(p: Pixels, cx: number, base: number, w: number, h: number): Pixels
   return p;
 }
 
-/** The story opens: Teddy admires his castle; Gwin arrives at full zoomies; the castle doesn't survive it. */
+/** The story opens: Teddy admires his castle; Gwinn arrives at full zoomies; the castle doesn't survive it. */
 export function zoomiesFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const add = (p: Pixels, n = 1) => {
@@ -468,7 +468,7 @@ export function zoomiesFli(): Uint8Array {
     stamp(p, CB.pic(pic), 3, 236, 132);
     add(caption(p, 'Good boy!', YELLOW[4]), 2);
   }
-  // 2. Here comes Gwin.
+  // 2. Here comes Gwinn.
   for (let k = 0; k <= 8; k++) {
     const p = scene(true);
     stamp(p, CB.pic(k > 4 ? 'hurt_white' : 'down_stand'), 3, 236, 132);
@@ -487,12 +487,12 @@ export function zoomiesFli(): Uint8Array {
     logo(p, 96, 30, 'CRASH!', 3);
     add(p);
   }
-  // 4. Gwin, delighted, gallops off with a toy; Teddy looks at the wreck.
+  // 4. Gwinn, delighted, gallops off with a toy; Teddy looks at the wreck.
   for (let k = 0; k < 8; k++) {
     const p = scene(false);
     stamp(p, MB.pic(k % 2 ? 'gwinHappy1' : 'gwinHappy0'), 4, 140 + k * 26, 104 - (k % 2) * 4);
     stamp(p, CB.pic(k < 4 ? 'dead' : 'down_stand'), 3, 236 - (k < 4 ? 0 : 160), 132);
-    add(caption(p, k < 4 ? 'GWIN!!!' : '...and she took the crown.', k < 4 ? ANSI[12] : ANSI[15]));
+    add(caption(p, k < 4 ? 'GWINN!!!' : '...and she took the crown.', k < 4 ? ANSI[12] : ANSI[15]));
   }
   // 5. Teddy puts his helmet straight.
   const end = scene(false);

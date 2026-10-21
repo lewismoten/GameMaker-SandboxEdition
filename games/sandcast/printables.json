@@ -1,5 +1,5 @@
 {
-  "pitch": "Teddy the corgi wins back four sandcastles, his toys and his crown from his big sister Gwin, one tower and one trick at a time.",
+  "pitch": "Teddy the corgi wins back four sandcastles, his toys and his crown from his big sister Gwinn, one tower and one trick at a time.",
   "keys": {
     "2": "Sit (and offer a paw)",
     "3": "Spin: bowls over ants and beetles",
@@ -167,7 +167,7 @@
             },
             {
               "q": "What is the tennis ball for?",
-              "a": "Gwin moves for it. Walk toward her and press F, and she trots off happy to bury it."
+              "a": "Gwinn moves for it. Walk toward her and press F, and she trots off happy to bury it."
             }
           ]
         },
@@ -201,7 +201,7 @@
           ]
         },
         {
-          "head": "Gwin's Nap",
+          "head": "Gwinn's Nap",
           "hints": [
             {
               "q": "How do I get the crown back?",
@@ -217,13 +217,13 @@
     },
     {
       "kind": "letter",
-      "title": "A note from Gwin",
+      "title": "A note from Gwinn",
       "note": "Pawprints included",
       "style": "hand",
       "date": "Saturday",
       "to": "Dear Teddy,",
       "body": "<p>i am sorry about the castles. And the hose. And the kiddie pool. And the hole. The beetles were already there i think.</p><p>i did not mean to sit on your crown. it was warm and the patio was sunny and i was so tired from the zoomies.</p><p>You can have the tennis ball back. It is under the tomato plants. It is a little wet.</p><p>You are the best brother and the best knight.</p>",
-      "signature": "love, Gwin 🐾"
+      "signature": "love, Gwinn 🐾"
     },
     {
       "kind": "newspaper",
@@ -244,7 +244,7 @@
       },
       "columns": [
         "<p>THE SANDBOX - Residents woke this morning to find every sandcastle in the backyard sandbox flattened. Witnesses describe a brown blur moving \"very, very fast\" shortly after breakfast.</p><p>The hose was left running into the moat. The kiddie pool is now a lagoon.</p>",
-        "<p>The suspect, Gwin, a brown pit-lab mix, was later found asleep on the patio. She is believed to be lying on the Crown of the Sandbox.</p><p>\"She's not a bad dog,\" said one neighbor. \"She's a good girl who knocks things over.\"</p>",
+        "<p>The suspect, Gwinn, a brown pit-lab mix, was later found asleep on the patio. She is believed to be lying on the Crown of the Sandbox.</p><p>\"She's not a bad dog,\" said one neighbor. \"She's a good girl who knocks things over.\"</p>",
         "<p>Teddy, a Pembroke Welsh Corgi and the sandbox's only knight, has picked up his shovel. Asked about his plans, he sat, offered a paw, and rolled over.</p><p>Ants, beetles and crabs are said to be moving into the ruins.</p>"
       ],
       "briefs": [
@@ -264,7 +264,7 @@
         ["Breed", "Pembroke Welsh Corgi"],
         ["Tricks", "Sit, spin, play dead, roll over"],
         ["Best toy", "Flying disc"],
-        ["Sister", "Gwin (it's fine)"]
+        ["Sister", "Gwinn (it's fine)"]
       ],
       "color": "#b3121a",
       "ink": "#fff",
@@ -347,7 +347,7 @@
       }
     },
     {
-      "text": "GWIN",
+      "text": "GWINN",
       "sub": "BIG SISTER",
       "shape": "circle",
       "color": "#b3121a",

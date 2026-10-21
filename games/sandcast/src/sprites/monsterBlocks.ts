@@ -1,7 +1,7 @@
 // Monster blocks (sandcast.mbl): the sand clods, splashes and puffs Teddy throws, ants,
-// beetles, crabs, Gwin's slobbery balls and rope toys, her paws (which get angry once
+// beetles, crabs, Gwinn's slobbery balls and rope toys, her paws (which get angry once
 // splashed) and wagging tail, water droplets, the BBS's line-noise gremlins, Teddy's tossed
-// tennis ball and spin whirl, and Gwin herself (standing, napping across a doorway, happy
+// tennis ball and spin whirl, and Gwinn herself (standing, napping across a doorway, happy
 // with a ball).
 import { MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
 import { ANSI, BEETLE, GRASS, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
@@ -130,7 +130,7 @@ mb.add('crab0', crab(0), { hp: -2 });
 mb.add('crab1', crab(1), { hp: -2 });
 mb.add('crabFlip', crab(0, true));
 function slobberBall(frame: number): Pixels {
-  // One of Gwin's tennis balls, soggy with slobber, rolling (the seam turns).
+  // One of Gwinn's tennis balls, soggy with slobber, rolling (the seam turns).
   const p = sprite();
   ball(p, 10, 10, 6.5, YELLOW, 3);
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (Math.hypot(x - 10, y - 10) <= 6.5 && dither(x, y, 0.3)) p.set(x, y, shade(GRASS, 5));
@@ -170,7 +170,7 @@ mb.add('rope0', ropeToy(0), { hp: -2 });
 mb.add('rope1', ropeToy(1), { hp: -2 });
 function paw(frame: number, angry: boolean, left: boolean): Pixels {
   const p = sprite();
-  // Gwin's big brown paws. Splashed once, she starts scrabbling in her sleep (muddy, claws out).
+  // Gwinn's big brown paws. Splashed once, she starts scrabbling in her sleep (muddy, claws out).
   const ramp = angry ? OCHRE : WOOD;
   const r = rng(260 + frame + (angry ? 2 : 0));
   for (let y = 0; y < 20; y++)
@@ -219,7 +219,7 @@ mb.add('pawRAngry1', paw(1, true, false), { hp: -4, solid: SOLID });
   mb.add('pawWet', p);
 }
 function tail(frame: number): Pixels {
-  // Gwin's tail, an otter tail as thick as a rope toy, wagging across the flagstones.
+  // Gwinn's tail, an otter tail as thick as a rope toy, wagging across the flagstones.
   const p = sprite();
   for (let i = 0; i <= 60; i++) {
     const t = i / 60;
@@ -295,7 +295,7 @@ for (let k = 0; k < 2; k++) {
   mb.add(`whirl${k}`, p);
 }
 
-// ================================================================= Gwin
+// ================================================================= Gwinn
 // Teddy's big sister: a chocolate-brown pit-lab mix, twice his size, with amber eyes, a liver
 // nose, soft floppy ears, a little white patch on her chest, a pink collar and a tongue that
 // never stays in. She fills a whole block; Teddy doesn't.
@@ -337,7 +337,7 @@ const GWIN_FACE = [
   '   kBBBBBWWWBBBBBk  ',
   '   kbBBBBBWBBBBBbk  ',
 ];
-function gwin(legs: number, tongue: number): Pixels {
+function gwinn(legs: number, tongue: number): Pixels {
   const rows = GWIN_FACE.slice();
   if (!tongue) rows[11] = '      kcckTTkcck    ';
   const feet = legs
@@ -345,8 +345,8 @@ function gwin(legs: number, tongue: number): Pixels {
     : ['    kBk kBBk kBBk   ', '   kWWk kWWk kWWk   ', '   kkk  kkkk  kkk   '];
   return art([...rows, ...feet], G);
 }
-mb.add('gwin0', gwin(0, 1), { hp: -3, solid: SOLID });
-mb.add('gwin1', gwin(1, 0), { hp: -3, solid: SOLID });
+mb.add('gwin0', gwinn(0, 1), { hp: -3, solid: SOLID });
+mb.add('gwin1', gwinn(1, 0), { hp: -3, solid: SOLID });
 // Asleep across a doorway: a long brown loaf, ears flopped, belly rising and falling.
 function gwinNap(breath: number): Pixels {
   const p = sprite();

@@ -64,7 +64,7 @@ const message = (base: string, subject: string, body: string, from?: string) => 
   return `${base}.lst`;
 };
 const story = message('story', 'The Zoomies of 1995', STORY);
-// The story opens with Gwin's zoomies, animated.
+// The story opens with Gwinn's zoomies, animated.
 disk.put('zoomies.fli', zoomiesFli());
 lst('story.lst', [['zoomies.fli', 0], ['story.gif', 0], ['story.txt']]);
 const help = message('help', 'How to play', HELP, 'SYSOP');
@@ -73,7 +73,7 @@ disk.put('wontxt.gif', gif(messageScreen('Good boy!', 'TEDDY')));
 disk.put('won.txt', WON);
 // The Fourth of July: fireworks go off by palette cycling alone, then Teddy's last message.
 lst('won.lst', [['won.fli', 2], ['wontxt.gif', 0], ['won.txt']]);
-disk.put('losttxt.gif', gif(messageScreen('Tuckered out', 'GWIN')));
+disk.put('losttxt.gif', gif(messageScreen('Tuckered out', 'GWINN')));
 disk.put('lost.txt', LOST);
 lst('lost.lst', [['lost.gif', 6], ['losttxt.gif', 0], ['lost.txt']]);
 
@@ -84,7 +84,7 @@ const L = {
   moat: { name: 'moat.map', desc: 'Hosewater Moat', map: levels.moat(), pal: 'sandcast.pal', pos: { x: 240, y: 120 } },
   lagoon: { name: 'lagoon.map', desc: 'Low Tide Lagoon', map: levels.lagoon(), pal: 'sandcast.pal', pos: { x: 240, y: 40 } },
   burrows: { name: 'burrows.map', desc: 'Beetle Burrows', map: levels.burrows(), pal: 'burrow.pal', pos: { x: 60, y: 40 } },
-  patio: { name: 'patio.map', desc: "Gwin's Nap", map: levels.patio(), pal: 'dusk.pal', pos: { x: 60, y: 160 } },
+  patio: { name: 'patio.map', desc: "Gwinn's Nap", map: levels.patio(), pal: 'dusk.pal', pos: { x: 60, y: 160 } },
   bbs: { name: 'bbs.map', desc: 'SANDBOX BBS', map: levels.bbs(), pal: 'sandcast.pal', pos: { x: 240, y: 160 } },
 };
 const subjects: Record<keyof typeof L, string> = {
@@ -93,7 +93,7 @@ const subjects: Record<keyof typeof L, string> = {
   moat: 'Level 2: Hosewater Moat',
   lagoon: 'Level 3: Low Tide Lagoon',
   burrows: 'Level 4: Beetle Burrows',
-  patio: "Level 5: Gwin's nap",
+  patio: "Level 5: Gwinn's nap",
   bbs: 'Secret dial-up!',
 };
 for (const key of Object.keys(L) as (keyof typeof L)[]) {

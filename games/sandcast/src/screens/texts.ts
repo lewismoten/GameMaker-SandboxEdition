@@ -37,7 +37,7 @@ Pittsburgh, the Fourth of July, 1995. Behind a brick house on a hill sits a wood
 
 Teddy knows lots of tricks. He loves his toys. Everybody on the street loves him.
 
-He also has a big sister. GWIN is a brown pit-lab mix, twice his size, and she ruins everything. Not on purpose. She just has a lot of zoomies.
+He also has a big sister. GWINN is a brown pit-lab mix, twice his size, and she ruins everything. Not on purpose. She just has a lot of zoomies.
 
 This morning she came through the sandbox at full speed. Every castle fell flat. She knocked the hose on into the moat, tipped the kiddie pool into the lagoon, dug a hole under it all, and scattered Teddy's toys from one end to the other.
 
@@ -60,11 +60,11 @@ SAND: scoop sand piles, and dig dunes by walking into them with the shovel. F2 s
 
 TOWERS: walk into a tower ring with sand to build it, then walk into it again to plant your flag. Four flags lift a castle gate.
 
-GWIN won't budge for sand or water. Toss her a tennis ball (F) and she trots off happy. Walk toward her first: things fly the way you last walked.
+GWINN won't budge for sand or water. Toss her a tennis ball (F) and she trots off happy. Walk toward her first: things fly the way you last walked.
 
 SPIN (3) kicks up a whirl of sand that bowls over ants and beetles.
 
-WATER: balloons and Gwin's bowls fill your bucket. Only water (or a ball) flips a crab. With the bucket, walk into a dashed outline to pack a wall of wet sand.
+WATER: balloons and Gwinn's bowls fill your bucket. Only water (or a ball) flips a crab. With the bucket, walk into a dashed outline to pack a wall of wet sand.
 
 CURRENTS carry you. CRUMBLY BRIDGES fall in behind you. The tidal flat floods: wait on a sandbar.
 
@@ -77,7 +77,7 @@ const CREDITS_TEXT = wrap(`
 
 Design, pixels and beeps by Claude. Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
-Starring Teddy, a very good boy, and his big sister Gwin, who is also a good girl, mostly.
+Starring Teddy, a very good boy, and his big sister Gwinn, who is also a good girl, mostly.
 
 This is SHAREWARE. If you enjoy Teddy's adventure, please register for $10. See README.TXT for details.
 
@@ -88,18 +88,18 @@ export const INTRO = {
   keep: wrap(`
 |1. ANTHILL KEEP
 
-Gwin's zoomies knocked the keep flat, and ants moved in.
+Gwinn's zoomies knocked the keep flat, and ants moved in.
 
 Bring sand to each of the four tower rings (walk into the ring), then touch it again to plant your flag. Four flags lift the gate.
 
 Plug anthills with sand. SPACE flings sand at ants.
 
-Gwin is asleep in the doorway. Find a tennis ball!
+Gwinn is asleep in the doorway. Find a tennis ball!
 `),
   moat: wrap(`
 |2. HOSEWATER MOAT
 
-Gwin stepped on the hose, and now the keep is an island.
+Gwinn stepped on the hose, and now the keep is an island.
 
 Fill the staked ford with sand, or run across the sand bridge. It crumbles behind you!
 
@@ -108,7 +108,7 @@ The hose current flows one way only. Ride it.
   lagoon: wrap(`
 |3. LOW TIDE LAGOON
 
-Gwin tipped the kiddie pool over, and now the beach has real tides.
+Gwinn tipped the kiddie pool over, and now the beach has real tides.
 
 Find the bucket (P). Balloons fill it; B throws water. Crabs flip for water. With the bucket, walk into a dashed outline to pack a wall.
 
@@ -117,7 +117,7 @@ Bring 3 golden shells to the sea gate. Mind the tide!
   burrows: wrap(`
 |4. BEETLE BURROWS
 
-Gwin dug a hole under the sandbox. A BIG one. The beetles love it.
+Gwinn dug a hole under the sandbox. A BIG one. The beetles love it.
 
 Root doors open for acorns. Plug beetle nests with sand.
 
@@ -126,9 +126,9 @@ Some cracked walls are only cracks...
 The far ladder climbs to the patio.
 `),
   patio: wrap(`
-|5. GWIN'S NAP
+|5. GWINN'S NAP
 
-The patio, at sunset. Gwin is snoring on the Crown of the Sandbox.
+The patio, at sunset. Gwinn is snoring on the Crown of the Sandbox.
 
 Her paws twitch to guard it. Splash a paw twice and she tucks it in.
 
@@ -152,7 +152,7 @@ export const WON = wrap(`
 
 The Crown of the Sandbox is back on the tallest tower, under a thirteen-star flag.
 
-Fireworks went up for the Fourth. Teddy sat, like a good boy. Gwin barked at every one.
+Fireworks went up for the Fourth. Teddy sat, like a good boy. Gwinn barked at every one.
 
 She gave Teddy a big sloppy lick and helped carry his toys home. (Most of them.)
 
@@ -164,7 +164,7 @@ export const LOST = wrap(`
 
 Teddy is all tuckered out, flat on his back in the sand.
 
-Gwin came over and licked his ear, which helped a little.
+Gwinn came over and licked his ear, which helped a little.
 
 Shake it off and try again, brave knight!
 `);
@@ -202,7 +202,7 @@ Include your name, your address, and the disk size you want (3.5" or 5.25").
 |-------------------------------
 |THE GAME
 
-Teddy is a Pembroke Welsh Corgi, the knight of the backyard sandbox. His big sister Gwin, a brown pit-lab mix twice his size, just ran through it with the zoomies: castles flattened, hose running, kiddie pool tipped, toys everywhere. Help Teddy rebuild four sandcastles, beat the ants, the hose, the tide and the beetles, and get the Crown of the Sandbox back from under his snoring sister.
+Teddy is a Pembroke Welsh Corgi, the knight of the backyard sandbox. His big sister Gwinn, a brown pit-lab mix twice his size, just ran through it with the zoomies: castles flattened, hose running, kiddie pool tipped, toys everywhere. Help Teddy rebuild four sandcastles, beat the ants, the hose, the tide and the beetles, and get the Crown of the Sandbox back from under his snoring sister.
 
 To play, run SANDCAST.EXE. Press F1 while playing for help.
 
@@ -211,7 +211,7 @@ To play, run SANDCAST.EXE. Press F1 while playing for help.
 |  SPACE ... fling sand
 |  B ....... throw water
 |  F ....... toss a tennis ball
-|            (Gwin can't resist
+|            (Gwinn can't resist
 |            one)
 |  Tricks .. 2 sit, 3 spin,
 |            4 play dead,
