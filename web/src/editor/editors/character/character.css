@@ -16,6 +16,55 @@
   color: var(--muted);
 }
 
+/* the two halves of the editor, as tabs */
+.chr-tabs {
+  display: flex;
+  gap: 2px;
+  margin: 4px 0 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chr-tab {
+  margin-bottom: -1px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: none;
+  color: var(--muted);
+  font:
+    700 13px/1 ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.chr-tab:hover {
+  color: var(--text);
+}
+
+.chr-tab[aria-selected='true'] {
+  border-color: var(--border);
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: inset 0 3px 0 var(--chr-gold);
+}
+
+.chr-panel[hidden] {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .chr-tab {
+    flex: 1;
+    padding: 8px 6px;
+    letter-spacing: 0.04em;
+    font-size: 12px;
+  }
+}
+
 .chr-help {
   margin: 6px 0 0;
   font-size: 12px;
@@ -217,6 +266,9 @@
   border-radius: 8px;
   position: sticky;
   top: 8px;
+  max-height: max(320px, calc(100dvh - 230px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .chr-list-head {
@@ -569,6 +621,7 @@
   }
   .chr-list {
     position: static;
+    max-height: none;
     flex-direction: row;
     overflow-x: auto;
   }

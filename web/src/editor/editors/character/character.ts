@@ -712,6 +712,61 @@ registerEditor(['chr'], (host, project, file) => {
     renderDetail();
   }
 
+  // Two tabs, so each half gets the screen: how the hero starts, and its sequences (remembered per browser).
+  const TAB_KEY = 'gm-chr-tab';
+  let tab: 'start' | 'seqs' = 'start';
+  try {
+    if (localStorage.getItem(TAB_KEY) === 'seqs') tab = 'seqs';
+  } catch {
+    /* private mode */
+  }
+  const startPanel = h('section', { class: 'chr-panel', id: 'chr-start', role: 'tabpanel', 'aria-labelledby': 'chr-tab-start' }, sheet);
+  const seqPanel = h(
+    'section',
+    { class: 'chr-panel', id: 'chr-seqs', role: 'tabpanel', 'aria-labelledby': 'chr-tab-seqs' },
+    h('div', { class: 'chr-seqs' }, list, detail),
+  );
+  const tabButton = (key: 'start' | 'seqs', label: string) =>
+    h(
+      'button',
+      {
+        class: 'chr-tab',
+        id: `chr-tab-${key}`,
+        role: 'tab',
+        'aria-controls': `chr-${key}`,
+        onclick: () => showTab(key, true),
+        onkeydown: (e: KeyboardEvent) => {
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+          e.preventDefault();
+          showTab(key === 'start' ? 'seqs' : 'start', true);
+          tabBar.querySelector<HTMLElement>('[aria-selected="true"]')?.focus();
+        },
+      },
+      label,
+    );
+  const tabBar = h(
+    'div',
+    { class: 'chr-tabs', role: 'tablist', 'aria-label': 'Character' },
+    tabButton('start', 'At the start'),
+    tabButton('seqs', 'Sequences (moves)'),
+  );
+  function showTab(key: 'start' | 'seqs', remember = false): void {
+    tab = key;
+    startPanel.hidden = key !== 'start';
+    seqPanel.hidden = key !== 'seqs';
+    for (const b of tabBar.querySelectorAll<HTMLElement>('.chr-tab')) {
+      const on = b.id === `chr-tab-${key}`;
+      b.setAttribute('aria-selected', String(on));
+      b.tabIndex = on ? 0 : -1;
+    }
+    if (remember)
+      try {
+        localStorage.setItem(TAB_KEY, key);
+      } catch {
+        /* private mode */
+      }
+  }
+
   clear(
     host,
     h(
@@ -740,12 +795,12 @@ registerEditor(['chr'], (host, project, file) => {
         ),
         chooser.el,
       ),
-      h('h3', { class: 'chr-title' }, 'At the start of the game'),
-      sheet,
-      h('h3', { class: 'chr-title' }, 'Sequences'),
-      h('div', { class: 'chr-seqs' }, list, detail),
+      tabBar,
+      startPanel,
+      seqPanel,
     ),
   );
+  showTab(tab);
   render();
   return () => {
     clearTimeout(timer);
