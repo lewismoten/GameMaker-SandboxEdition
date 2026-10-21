@@ -4,8 +4,26 @@
 // GratorHeader, NumScenes Scene records (283 bytes) and a string pool of file names.
 // Older files (used by most shareware games) are 20 fixed 330 byte records; they are
 // converted on load exactly like GameClass::Load did, and saved back as version 3.00.
+// Like PLAYGAME.C's GameClass::Load, a file is version 3.00 when it starts with "GM".
+//
+// Version 3.00 layout (all integers little-endian, structs byte-packed):
+//   DataFileHeader (GMGEN.H), 256 bytes: "GM", Ver i16, Encrypt u8, FileType u8,
+//     250 filler bytes ("RSDRSD...").
+//   GratorHeader, 6 bytes: NumScenes, FilesPerScene (always 20), LinksPerScene (always 20).
+//   Scene x NumScenes, 283 bytes each (class Scene in GRATOR.H):
+//     +0 gametype u16, +2 Pos x,y i16, +6 ScrollInfo (up, down, left, right, Style u8,
+//     Xtra[11]), +22 NumLinks u8, +23 desc[20], +43 Files[20] u16 (offsets into the
+//     string pool, 0 = none), +83 links[20] (ToScene u16, From x,y i16, To x,y i16).
+//   SceneFiles pool: length u16 (FreePtr), then NUL terminated names; byte 0 is an empty
+//     string so offset 0 means "no file".
+//
+// Pre-3.00 layout (OLDintegratorstruct in GRATOR.H), 330 bytes per scene: gametype u16,
+// x,y i16, desc[15], fnames[9][10] (names without extension), links[20] (fx, fy, tnum,
+// tx, ty, all i16; tnum 20 = unused), red, green, blue i8, ssup, ssdown, ssleft, ssright,
+// PinChar u8, extra[11].
 import { Reader, Writer, cString } from './binary';
 
+// Constants from GRATOR.H.
 export const NOSCENE = 0xffff;
 export const STARTTYPE = 1;
 export const ENDTYPE = 2;
@@ -52,6 +70,7 @@ export const ADV_FILES = [
   'Level exit graphic',
 ] as const;
 
+// Default extension per file slot; 'graphic' slots accept any of GRAPHIC_EXTS.
 export const ADV_EXTS = ['pal', 'map', 'bbl', 'mon', 'mbl', 'chr', 'cbl', 'snd', 'cmf', 'graphic', 'graphic'] as const;
 export const START_EXTS = ['graphic', 'cmf', 'graphic', 'cmf', 'graphic', 'cmf', 'graphic', 'graphic', 'graphic', 'graphic', 'graphic', 'rec'] as const;
 export const END_EXTS = ['graphic', 'cmf', 'graphic', 'cmf'] as const;
@@ -128,6 +147,7 @@ export function emptyScene(gametype = NOSCENE): Scene {
   };
 }
 
+// Same bytes as the DataFileHeader constructor in GMGEN.H, with FileType = GamFile (8).
 export function defaultHeader(): Uint8Array {
   const h = new Uint8Array(HEADER_SIZE);
   for (let i = 0; i < HEADER_SIZE - 6; i++) h[6 + i] = 'RSD'.charCodeAt(i % 3);
@@ -158,6 +178,7 @@ function parseV3(bytes: Uint8Array): Game {
   const r = new Reader(bytes);
   const header = r.bytesOf(HEADER_SIZE);
   const version = header[2] | (header[3] << 8);
+  // GratorHeader
   const numScenes = r.i16();
   const filesPerScene = r.i16();
   const linksPerScene = r.i16();
@@ -174,6 +195,7 @@ function parseV3(bytes: Uint8Array): Game {
     for (let i = 0; i < MAXSCENELINKS; i++) links.push({ toScene: r.u16(), from: { x: r.i16(), y: r.i16() }, to: { x: r.i16(), y: r.i16() } });
     raw.push({ scene: { gametype, pos, scroll, numLinks, desc: cString(descRaw), descRaw, files: [], links }, offsets });
   }
+  // SceneFiles::Load: the pool's length, then the pool.
   const poolLen = r.u16();
   const pool = r.bytesOf(poolLen);
   for (const { scene, offsets } of raw) {
@@ -200,6 +222,7 @@ function parseOld(bytes: Uint8Array): Game {
   const scenes: Scene[] = [];
   for (let s = 0; s < count; s++) {
     const r = new Reader(bytes, s * OLD_SCENE_SIZE);
+    // Fields in OLDintegratorstruct order (see the layout at the top of this file).
     const gametypeRaw = r.u16();
     const x = r.i16();
     const y = r.i16();
@@ -220,6 +243,7 @@ function parseOld(bytes: Uint8Array): Game {
     const ssdown = r.u8();
     const ssleft = r.u8();
     const ssright = r.u8();
+    // PinChar and extra[11] are not read: Scene::operator= in GRATOR.H sets Style to FALSE.
     const scene = emptyScene();
     scene.gametype = gametypeRaw === STARTTYPE || gametypeRaw === ENDTYPE || gametypeRaw === ADVTYPE ? gametypeRaw : NOSCENE;
     // Integrator positions are 320x200 screen pixels in both versions.
@@ -227,6 +251,8 @@ function parseOld(bytes: Uint8Array): Game {
     scene.scroll = { up: ssup, down: ssdown, left: ssleft, right: ssright, style: 0, xtra: new Uint8Array(11) };
     scene.desc = desc.slice(0, SCENEDESCLEN);
     scene.links = links;
+    // Old names were stored without an extension; the slot decides which one to add. The
+    // start and end scenes reused the 9 name fields for different files than levels did.
     const file = (oldIdx: number, newIdx: number, ext: string) => {
       scene.files[newIdx] = fnames[oldIdx] ? fnames[oldIdx] + ext : '';
     };
