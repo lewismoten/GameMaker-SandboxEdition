@@ -750,3 +750,30 @@
     margin-top: 4px;
   }
 }
+/* short wide windows (landscape tablets): a more compact F2 screen and counters, so the hero's
+   starting sheet fits */
+@media (min-width: 1000px) and (max-height: 800px) {
+  .chr-f2 {
+    padding: 10px 16px;
+  }
+  .chr-inv {
+    grid-template-columns: repeat(5, 46px);
+    gap: 4px;
+  }
+  .chr-inv .block-button {
+    width: 46px;
+    height: 46px;
+  }
+  .chr-inv .block-button canvas,
+  .chr-inv .block-button .extra {
+    width: 34px;
+    height: 34px;
+  }
+  .chr-counters {
+    gap: 3px;
+  }
+  .chr-counter input,
+  .chr-counter select {
+    padding-block: 3px;
+  }
+}
