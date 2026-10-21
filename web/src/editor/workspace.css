@@ -83,3 +83,36 @@
 .sidebar.searching .file-section .empty {
   display: none;
 }
+
+/* Phones: the file list folds into one "Files" button above the editor. */
+.sidebar .files-toggle {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .sidebar {
+    max-height: none;
+  }
+  .sidebar .files-toggle {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+  .sidebar .files-toggle-current {
+    overflow: hidden;
+    color: var(--muted);
+    font-family: ui-monospace, monospace;
+    font-weight: 400;
+    text-overflow: ellipsis;
+  }
+  .sidebar:not(.open) > :not(.files-toggle, .stack) {
+    display: none;
+  }
+  .sidebar.open > .files-toggle {
+    margin-bottom: 8px;
+  }
+}

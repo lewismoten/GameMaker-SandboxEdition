@@ -657,7 +657,6 @@ dialog.modal .buttons {
     height: auto;
   }
   .sidebar {
-    max-height: 30vh;
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }

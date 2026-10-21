@@ -132,8 +132,23 @@ export class Workspace {
     }
     // Every kind of file a game can use is listed, even with nothing in it yet.
     const sections = ORDER.filter((k) => k === 'gam' || SECTIONS.includes(k) || groups.has(k));
+    const open = this.sidebar.classList.contains('open');
     clear(
       this.sidebar,
+      h(
+        'button',
+        {
+          class: 'files-toggle',
+          'aria-expanded': String(open),
+          onclick: () => {
+            const now = this.sidebar.classList.toggle('open');
+            this.sidebar.querySelector('.files-toggle')?.setAttribute('aria-expanded', String(now));
+          },
+        },
+        h('span', { 'aria-hidden': 'true' }, '☰ '),
+        `Files (${names.length})`,
+        this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
+      ),
       h(
         'div',
         { class: 'stack' },
@@ -288,6 +303,7 @@ export class Workspace {
     this.player?.stop();
     this.player = undefined;
     this.current = file;
+    this.sidebar.classList.remove('open');
     location.replace(`#/p/${this.project.id}/${encodeURIComponent(file)}`);
     this.renderSidebar();
     const body = h('div');
