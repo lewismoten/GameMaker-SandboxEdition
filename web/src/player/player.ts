@@ -1,6 +1,8 @@
 // A self-contained game player: canvas, input and audio around runGame().
 import './player.css';
 import { Machine, GameAborted } from '../engine/machine';
+import type { AudioEngine } from '../audio/engine';
+import { Keyboard } from '../input/keyboard';
 import { runGame, type RunOptions } from '../engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
@@ -26,6 +28,13 @@ export interface PlayerOptions extends RunOptions {
   noKeysButton?: boolean;
   /** Draw at exactly the device size shown so every pixel is the same size (player/exactScale.ts). */
   exactPixels?: boolean;
+  /** Where the sound goes (a demo preview passes a quieter engine; media/demoPreview.ts). */
+  audio?: AudioEngine;
+  /**
+   * A preview to watch, not to play: it starts at once and never takes the keyboard,
+   * the focus or the pointer, so the page around it keeps scrolling and typing as usual.
+   */
+  preview?: boolean;
 }
 
 export interface PlayerHandle {
@@ -38,14 +47,24 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   container.classList.add('gm-player');
   container.replaceChildren();
   const canvas = document.createElement('canvas');
-  canvas.tabIndex = 0;
+  canvas.tabIndex = opts.preview ? -1 : 0;
   canvas.setAttribute('aria-label', `${opts.title ?? 'Game'} screen`);
   // the game takes the keyboard (arrows, Space, letters) while it has focus
   canvas.setAttribute('role', 'application');
   container.append(canvas);
-  const machine = new Machine(canvas, files);
+  const machine = new Machine(canvas, files, opts.audio);
+  if (opts.preview) {
+    container.classList.add('gm-preview');
+    canvas.setAttribute('role', 'img');
+    // The engine attaches the keyboard to the window as each scene starts; a preview's
+    // keyboard listens to nothing, so the page's own keys (arrows, Space, Tab) still work.
+    const inert = new EventTarget();
+    machine.keyboard.attach = function (this: Keyboard) {
+      Keyboard.prototype.attach.call(this, inert);
+    };
+  }
   const unexact = opts.exactPixels ? exactScale(canvas) : undefined;
-  const touch = (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard) : undefined;
+  const touch = !opts.preview && (opts.touch ?? wantsTouchControls()) ? new TouchControls(machine.keyboard) : undefined;
   touch?.attach(container);
   const previousWrite = files.onChange;
   files.onChange = (name) => {
@@ -90,7 +109,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     keys.blur();
     showKeyMap(files, gamFile, opts.title ?? 'Game', () => canvas.focus());
   });
-  if (!opts.noKeysButton) container.append(keys);
+  if (!opts.noKeysButton && !opts.preview) container.append(keys);
 
   let stopped = false;
   let unhide: (() => void) | undefined;
@@ -99,8 +118,10 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       start.remove();
       container.querySelector('.gm-notice-link')?.remove();
       window.removeEventListener('keydown', onKey);
-      unhide = hideIdleCursor(container);
-      canvas.focus();
+      if (!opts.preview) {
+        unhide = hideIdleCursor(container);
+        canvas.focus();
+      }
       await machine.audio.resume();
       try {
         // Without an onQuit handler, "Quit" just shows the game's menu again.
@@ -133,7 +154,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       e.preventDefault();
       void begin();
     };
-    if (opts.autoStart) {
+    if (opts.autoStart || opts.preview) {
       void begin();
       return;
     }

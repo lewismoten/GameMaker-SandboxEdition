@@ -322,3 +322,15 @@
 .gm-player.gm-cursor-hidden * {
   cursor: none;
 }
+
+/* a demo preview on a page (player.ts `preview`): only to watch, so touches scroll the page */
+.gm-player.gm-preview {
+  touch-action: auto;
+  pointer-events: none;
+}
+
+.gm-player.gm-preview canvas {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
