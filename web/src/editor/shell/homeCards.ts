@@ -22,6 +22,7 @@ import { gamePage } from '../../seo/site';
 import { icon as svgIcon, type IconName } from './homeIcons';
 import { editedWhen } from './homeTime';
 import { readableBlurb } from './homeBlurb';
+import { forgetOrigin, rememberOrigin } from './homeOrigin';
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -104,7 +105,8 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   };
 }
 
-export function projectGame(p: ProjectSummary): HomeGame {
+/** `original`: the finished game it was copied from, whose own problems its ⚠ leaves out. */
+export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGame {
   const load = once(async () => {
     const stored = await loadProject(p.id);
     if (!stored) throw new Error('That game is not in this browser any more.');
@@ -118,7 +120,7 @@ export function projectGame(p: ProjectSummary): HomeGame {
     gam: p.gam,
     search: searchText(p.name, p.gam),
     project: p,
-    health: projectTarget(p.id, p.name, p.updated),
+    health: projectTarget(p.id, p.name, p.updated, original?.gam ? catalogTarget(original) : undefined),
     // the first level the title scene leads to, where the hero arrives
     drawShot: async (c) => {
       const files = await load();
@@ -322,6 +324,7 @@ async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promis
   const p = Project.fromFiles(await game.files(), name);
   if (game.gam) p.gam = game.gam;
   await p.saveNow();
+  rememberOrigin(p.id, game.entry?.id);
   nav.openProject(p.id);
 }
 
@@ -367,6 +370,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
             onclick: async () => {
               if (await confirmDialog('Delete game', `Delete “${p.name}” from this browser? Download it first if you want to keep it.`, 'Delete')) {
                 await deleteProject(p.id);
+                forgetOrigin(p.id);
                 await refresh();
               }
             },

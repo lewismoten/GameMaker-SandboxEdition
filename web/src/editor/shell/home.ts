@@ -15,6 +15,7 @@ import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
 import { icon, type IconName } from './homeIcons';
 import { wantsTouchControls } from '../../player/touch';
+import { findOriginal } from './homeOrigin';
 
 export interface HomeNav {
   openProject(id: string): void;
@@ -106,7 +107,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const games = new Map<string, HomeGame>();
   const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
   const gamesOf = (c: Category): HomeGame[] =>
-    c === 'mine' ? projects.map((p) => remember(projectGame(p))) : entriesOf(c).map((e) => remember(catalogGame(e, c)));
+    c === 'mine' ? projects.map((p) => remember(projectGame(p, findOriginal(p, catalog)))) : entriesOf(c).map((e) => remember(catalogGame(e, c)));
   const findGame = (key: string): HomeGame | undefined => {
     for (const c of CATEGORIES) {
       const g = gamesOf(c.id).find((x) => x.key === key);
@@ -369,6 +370,6 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const chosen = findGame(hashKey());
   if (chosen) top.show(chosen, {});
   else feature();
-  if (!top.game && projects.length) top.show(remember(projectGame(projects[0])), {});
+  if (!top.game && projects.length) top.show(remember(projectGame(projects[0], findOriginal(projects[0], catalog))), {});
   await select(current);
 }
