@@ -81,11 +81,14 @@ export async function boxInfo(entry: CatalogEntry) {
 
 const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
 
-/** Draws all six sides. */
-export async function drawBox(entry: CatalogEntry): Promise<BoxFaces | undefined> {
+/**
+ * Draws all six sides. With `shots` false the screenshots are left blank, so nothing of
+ * the game but its .gam is downloaded (the shelf shows most boxes spine out).
+ */
+export async function drawBox(entry: CatalogEntry, { shots: withShots = true } = {}): Promise<BoxFaces | undefined> {
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
-  const [shots, info] = await Promise.all([boxShots(entry, box), boxInfo(entry)]);
+  const [shots, info] = await Promise.all([withShots ? boxShots(entry, box) : [], boxInfo(entry)]);
   const sb = entry.original?.sound === 'sb';
   const title = entry.title;
   const company = entry.company ?? 'Sandbox Software';
