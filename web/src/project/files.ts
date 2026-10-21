@@ -42,6 +42,29 @@ export class GameFiles {
     this.onChange?.(n);
   }
 
+  /**
+   * A copy of these files to change freely. While files are still arriving here, the copy
+   * gets them too as it needs them (its own changes stay).
+   */
+  copy(): GameFiles {
+    const copy = new GameFiles(this.entries());
+    if (!this.stream) return copy;
+    const fill = (names: string[]) => {
+      for (const n of names) {
+        const at = this.resolve(n);
+        if (at && !copy.has(at)) copy.put(at, this.get(at)!);
+      }
+    };
+    copy.stream = {
+      need: (names) => {
+        fill(names);
+        return this.stream?.need(names)?.then(() => fill(names));
+      },
+      want: (names) => this.stream?.want(names),
+    };
+    return copy;
+  }
+
   /** Adds a file that arrived (not one the game wrote): onChange is not told, and a file already here stays. */
   put(name: string, bytes: Uint8Array): void {
     const n = normalize(name);

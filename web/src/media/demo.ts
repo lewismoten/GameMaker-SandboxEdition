@@ -35,7 +35,7 @@ export function titleDemo(files: GameFiles, gam: string): Uint8Array | undefined
  * intro: the key that dismissed it would otherwise wait out in the level.
  */
 export function withoutOpening(files: GameFiles, gam: string, rec?: Uint8Array): GameFiles {
-  const copy = new GameFiles(files.entries());
+  const copy = files.copy();
   const bytes = files.get(gam);
   if (!bytes) return copy;
   const game = parseGame(bytes);
@@ -115,7 +115,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
     player?.stop();
     session = undefined;
     const gen = ++generation;
-    const files = skip ? withoutOpening(o.files, o.gam, o.rec) : new GameFiles(o.files.entries());
+    const files = skip ? withoutOpening(o.files, o.gam, o.rec) : o.files.copy();
     player = mountPlayer(host, files, o.gam, {
       title: o.title,
       playback: o.rec,
