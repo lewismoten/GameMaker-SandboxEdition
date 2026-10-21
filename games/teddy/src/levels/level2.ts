@@ -64,6 +64,10 @@ export function street(): Level {
   house(8, 8, 'siding', [10, 13]);
   m.set(11, 38, 'kidGirl');
   m.mon(11, 37, 'hand');
+  // The Dog House: a tiny little library on the lawn out front.
+  m.set(14, 37, 'libRoofL').set(15, 37, 'libRoofR');
+  m.set(14, 38, 'libBooks').set(15, 38, 'libDrawer');
+  m.set(14, 39, 'libRocksL').set(15, 39, 'libRocksR');
   // Lawn sprinkler A.
   m.set(17, 38, 'sprayAhOff').set(18, 38, 'sprayAhOff').set(19, 38, 'sprayAhOff').set(20, 38, 'sprayAhOff');
   m.set(17, 39, 'sprayAlOff').set(18, 39, 'sprayAheadOff').set(19, 39, 'sprayAlOff').set(20, 39, 'sprayAlOff');
@@ -125,7 +129,6 @@ export function street(): Level {
     [12, 38],
     [11, 35],
     [12, 35],
-    [15, 39],
     [18, 37],
     [19, 37],
     [24, 39],

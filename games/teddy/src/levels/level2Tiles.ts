@@ -7,8 +7,10 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { kid, mailCarrier } from '../sprites/folks';
+import { dogHouseLibrary } from '../sprites/library';
+import { CTR } from '../ids';
 import { sign } from './level1Tiles';
-import { bricks, c, canvas, cloud, copy, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from '../blocks/tiles';
+import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from '../blocks/tiles';
 
 export const G = 40;
 
@@ -233,6 +235,23 @@ export function streetTiles(): Tiles {
   const mc = mailCarrier();
   t.on('mailTop', mc.crop(0, 0, 20, 20), 'hedge');
   t.on('mailBot', mc.crop(0, 20, 20, 20), 'lawn');
+
+  // The Dog House, the tiny little library in front of the blue house: take a book (fetch
+  // it off the shelf), and the paw-knob drawer has snacks. The rock cubby's red roof is a
+  // ledge, so Teddy can hop up and browse.
+  const lib = (st: { gap?: boolean; open?: boolean }) => {
+    const p = canvas(2, 3, (_bx, by) => (by < 2 ? t.pic('wall_siding') : lawn));
+    return cut(dogHouseLibrary(p, st));
+  };
+  const shut = lib({});
+  t.air('libRoofL', shut[0][0]);
+  t.air('libRoofR', shut[0][1]);
+  t.air('libGap', lib({ gap: true })[1][0]);
+  t.add('libBooks', shut[1][0], { obj: true, score: 250, touch: 'libGap', grav: GRAV.down });
+  t.air('libDrawerOpen', lib({ open: true })[1][1]);
+  t.air('libDrawer', shut[1][1], { effect: CTR.treats, eamt: 3, score: 30, touch: 'libDrawerOpen' });
+  t.ledge('libRocksL', shut[2][0]);
+  t.ledge('libRocksR', shut[2][1]);
 
   t.klownCar(
     (_bx, by) => (by === 0 ? t.pic('hedge') : t.pic('lawn')),
