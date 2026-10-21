@@ -9,7 +9,7 @@ import './character/character';
 import './sounds/sounds';
 import './picture/picture';
 import './animation/animation';
-import './backdrop';
+import './backdrop/backdrop';
 import './textScreen';
 import './slideShow';
 import './music';

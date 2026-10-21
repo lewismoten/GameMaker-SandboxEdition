@@ -2,21 +2,21 @@
 // PLAYGAME's drawbkd opens it (the name up to a newline, any case, cut to 8.3, or under the
 // underscore name the CD gave it); a missing picture is brought in from the library.
 import './backdrop.css';
-import { registerEditor } from './registry';
-import { fileField } from '../widgets/filePicker';
-import { h, clear, download, numberField, toast } from '../core/ui';
-import type { Project } from '../core/project';
-import { libraryGame, libraryItems, type LibraryItem } from '../library';
-import { parseBackdrop, serializeBackdrop } from '../../formats/graphicScripts';
-import { cdName, normalize } from '../../project/files';
-import { SIZEX, SIZEY } from '../../gfx/screen';
-import { gamePreview } from '../widgets/mediaShared';
-import { backdropInfo, blankScreen, pictureScreen, screenCanvas } from '../widgets/mediaPictures';
-import { lut, paintIndexed } from '../core/draw';
-import { encodeAnimatedGif, type GifFrame } from '../../media/gifEncode';
-import { pngOf } from '../../media/screenCapture';
-import { createZip } from '../../project/zip';
-import type { ScreenPicture } from '../widgets/mediaPictures';
+import { registerEditor } from '../registry';
+import { fileField } from '../../widgets/filePicker';
+import { h, clear, download, numberField, toast } from '../../core/ui';
+import type { Project } from '../../core/project';
+import { libraryGame, libraryItems, type LibraryItem } from '../../library';
+import { parseBackdrop, serializeBackdrop } from '../../../formats/graphicScripts';
+import { cdName, normalize } from '../../../project/files';
+import { SIZEX, SIZEY } from '../../../gfx/screen';
+import { gamePreview } from '../../widgets/mediaShared';
+import { backdropInfo, blankScreen, pictureScreen, screenCanvas } from '../../widgets/mediaPictures';
+import { lut, paintIndexed } from '../../core/draw';
+import { encodeAnimatedGif, type GifFrame } from '../../../media/gifEncode';
+import { pngOf } from '../../../media/screenCapture';
+import { createZip } from '../../../project/zip';
+import type { ScreenPicture } from '../../widgets/mediaPictures';
 
 const base = (name: string) => name.replace(/\.[^.]*$/, '');
 
