@@ -138,7 +138,11 @@ export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
     await new Promise((r) => setTimeout(r, 400));
     close();
     h.screen.clear(attr(7, 0));
-    await ported(h);
+    try {
+      await ported(h);
+    } finally {
+      h.designer = undefined; // back at Game-Maker's menu: no designer open
+    }
     return;
   }
   const integrator = tool.kinds[0] === 'gam';
