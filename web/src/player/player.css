@@ -1,3 +1,5 @@
+/* The game player: the 320x200 screen scaled to fit, the press-to-start overlay, error
+   messages, and the on-screen controls for touch screens. */
 .gm-player {
   position: relative;
   display: flex;

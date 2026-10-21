@@ -1,3 +1,5 @@
+/* The modern editor's look: color tokens (light and dark), the app bar, buttons, fields,
+   panels, dialogs and toasts shared by the home page, the workspace and every editor. */
 :root {
   --bg: #e9ecf3;
   --panel: #ffffff;
