@@ -29,6 +29,7 @@ import {
 } from '../../../formats/character';
 import { LASTSND, parseSoundSet, SOUND_NAMES } from '../../../formats/sound';
 import { scanName, SCAN } from '../../../input/scancodes';
+import { viewState } from '../../../urlState';
 import {
   ORIENT_NAMES,
   bottomOrient,
@@ -89,7 +90,10 @@ registerEditor(['chr'], (host, project, file) => {
   let cbl = cblName ? parseBlocks(project.files.get(cblName)!, CHARBL) : newBlockSet('cbl');
   const bbl = bblName ? parseBlocks(project.files.get(bblName)!, BACKBL) : newBlockSet('bbl');
   const sounds = sndName ? parseSoundSet(project.files.get(sndName)!) : undefined;
-  let current = 0;
+  // the address keeps the tab and the sequence shown (…/HERO.CHR?tab=sequences&sequence=4)
+  const view = viewState(['p', project.id, file]);
+  const urlSeq = view.num('sequence');
+  let current = urlSeq !== undefined && urlSeq >= 0 && urlSeq < chr.sequences.length ? urlSeq : 0;
   let withSound = false;
   const save = debounce(() => project.files.set(file, serializeCharacter(chr)), 250);
   // Undo: each change records the state before it (changes less than half a second apart, like typing a number, are one step).
@@ -311,7 +315,7 @@ registerEditor(['chr'], (host, project, file) => {
         i === 5 ? h('div', { class: 'chr-list-head' }, 'Your moves') : null,
         h(
           'button',
-          { class: `chr-seq${i === current ? ' selected' : ''}${frameCount(s) ? '' : ' empty'}`, onclick: () => ((current = i), renderList(), renderDetail()) },
+          { class: `chr-seq${i === current ? ' selected' : ''}${frameCount(s) ? '' : ' empty'}`, onclick: () => ((current = i), view.set({ sequence: i }), renderList(), renderDetail()) },
           h('span', { class: 'chr-seq-thumb checker' }, spriteCanvas(s.frames[0] && frameCount(s) ? s.frames[0] : undefined, 1)),
           h('span', { class: 'chr-seq-name' }, h('b', null, `${i}`), ' ', seqName(i)),
           s.key && i < 5 ? h('kbd', null, scanName(s.key >> 8)) : null,
@@ -755,6 +759,7 @@ registerEditor(['chr'], (host, project, file) => {
   } catch {
     /* private mode */
   }
+  if (view.get('tab') === 'start' || view.get('tab') === 'sequences') tab = view.get('tab') === 'start' ? 'start' : 'seqs';
   const startPanel = h('section', { class: 'chr-panel', id: 'chr-start', role: 'tabpanel', 'aria-labelledby': 'chr-tab-start' }, sheet);
   const seqPanel = h(
     'section',
@@ -794,6 +799,7 @@ registerEditor(['chr'], (host, project, file) => {
       b.setAttribute('aria-selected', String(on));
       b.tabIndex = on ? 0 : -1;
     }
+    view.set({ tab: key === 'start' ? 'start' : 'sequences' });
     if (remember)
       try {
         localStorage.setItem(TAB_KEY, key);
