@@ -24,9 +24,20 @@ export class Recorder {
     this.restart();
   }
 
+  /**
+   * Whether waits for a key count toward playback time. PLAYGAME's GetKey called
+   * DoPlayBack on every poll, so while a "hit any key" screen waited the timer raced
+   * ahead (thousands of polls a second), and a demo recorded in DOS stores those polls
+   * as one huge DeltaTime before the key that dismissed the screen (Nebula's 26058).
+   * Demos recorded here count game ticks only, so for them waits must not count.
+   */
+  countsWaits = false;
+
   initPlayback(bytes: Uint8Array | undefined): boolean {
     if (!bytes) return false;
     this.keys = parseRecording(bytes);
+    // No tick-counted recording has a gap this long (4096 ticks = almost 4 minutes still).
+    this.countsWaits = this.keys.some((k) => k.delta > 4096);
     this.mode = PLAYBACK;
     this.restart();
     return true;
@@ -70,6 +81,46 @@ export class Recorder {
     while (this.index < this.keys.length && this.lastKeyPress + this.keys[this.index].delta <= this.timer) {
       out.push(this.keys[this.index].key);
       this.lastKeyPress += this.keys[this.index].delta;
+      this.index++;
+    }
+    return out;
+  }
+
+  /**
+   * GetKey polls while a screen waits for a key: `polls` calls to DoPlayBack at once.
+   * Returns the recorded keys that become pending (only for recordings made in DOS).
+   */
+  advanceWait(polls: number): number[] {
+    const out: number[] = [];
+    if (this.paused || this.mode !== PLAYBACK || !this.countsWaits) return out;
+    this.timer += polls;
+    while (this.index < this.keys.length && this.lastKeyPress + this.keys[this.index].delta <= this.timer) {
+      out.push(this.keys[this.index].key);
+      this.lastKeyPress += this.keys[this.index].delta;
+      this.index++;
+    }
+    return out;
+  }
+
+  /**
+   * A screen that read keys has finished. In DOS the next key may have come during it
+   * (the recording shows a gap of many thousands of polls), however fast that PC polled;
+   * catch up to it, and to keys a poll or two behind it (taken by the keyboard flush that
+   * follows every screen), so gameplay resumes in step. Only for DOS recordings.
+   */
+  finishWait(): number[] {
+    const out: number[] = [];
+    if (this.paused || this.mode !== PLAYBACK || !this.countsWaits) return out;
+    const next = this.keys[this.index];
+    if (!next || next.delta <= 1000) return out;
+    this.timer = Math.max(this.timer, this.lastKeyPress + next.delta);
+    while (this.index < this.keys.length) {
+      const k = this.keys[this.index];
+      const due = this.lastKeyPress + k.delta <= this.timer;
+      if (!due && k.delta > 2) break;
+      if (!due) this.timer = this.lastKeyPress + k.delta;
+      out.push(k.key);
+      this.lastKeyPress += k.delta;
       this.index++;
     }
     return out;
