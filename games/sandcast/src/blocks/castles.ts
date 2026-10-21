@@ -2,7 +2,7 @@
 // gives birth to a monster, and touching it spends sand and swaps in one that does not) and the sand
 // castles: brick walls, towers with waving flags, portcullises that open with the right
 // counter, and the dashed outlines where Teddy packs a new wall from his bucket.
-import { OCHRE, RED, SAND, STEEL, WOOD, YELLOW } from '../art/palette';
+import { OCHRE, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
 import { CTR, MON } from '../rules';
 import { Pixels, bevel, rng, sandTexture, shade, tile } from '../art/draw';
 import { SOLID, bg, sand } from './common';
@@ -90,19 +90,17 @@ export function addCastles(): void {
       p.line(10, 3, 10, 10, WOOD[4]).rect(11, 3, 4, 3, RED[4]);
       return p;
     }
-    // The flag on top flutters.
-    p.line(9, 2, 9, 10, WOOD[2]).line(10, 2, 10, 10, WOOD[5]);
-    const f = flagFrame
-      ? [
-          [11, 2, 5, 2],
-          [11, 4, 6, 2],
-        ]
-      : [
-          [11, 2, 6, 2],
-          [11, 4, 5, 2],
-        ];
-    for (const [x, y, w, h] of f) p.rect(x, y, w, h, RED[4]);
-    p.rect(11, 2, 1, 4, RED[6]).set(11 + (flagFrame ? 5 : 6) - 1, 3, RED[2]);
+    // The flag on top flutters: a little thirteen-star flag, red and white stripes and a
+    // blue canton, the kind every Fourth of July sandcastle flies.
+    p.line(9, 1, 9, 10, WOOD[2]).line(10, 1, 10, 10, WOOD[5]).set(9, 0, YELLOW[3]).set(10, 0, YELLOW[4]);
+    for (let col = 0; col < 7; col++) {
+      const dy = flagFrame ? (col >= 3 && col <= 5 ? 1 : 0) : col >= 5 ? 1 : 0;
+      for (let row = 0; row < 5; row++) {
+        const canton = col < 3 && row < 3;
+        const c = canton ? ((col + row) % 2 === 1 ? STEEL[7] : WATER[1]) : row % 2 === 0 ? RED[4] : STEEL[7];
+        p.set(11 + col, 2 + row + dy, c);
+      }
+    }
     return p;
   }
   bg.add('scaffold', tower(0, 0), { solid: SOLID, effect: CTR.flags, eamt: 1, score: 300, touch: 'tower' });
