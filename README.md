@@ -1,11 +1,15 @@
-GameMaker
-=========
+Game-Maker: Sandbox Edition
+===========================
 
-This is the source code and executables for Recreational Software Design's GameMaker product, released in 1994.
+**Play it:** https://lewismoten.github.io/GameMaker-SandboxEdition/
 
-**This repository is a modified fork, named Game-Maker: Sandbox Edition.** Andy Stone released Game-Maker's source under the
+This is the source code and executables for Recreational Software Designs' Game-Maker
+(today usually called **RSD Game-Maker**), released in 1994.
+
+**This repository is a modified fork, named Game-Maker: Sandbox Edition.** Andy Stone released RSD Game-Maker's source under the
 MIT License in 2014; this fork by Lewis Moten adds a browser version (written with Claude
-Opus 5.5) that reads and writes the original file formats, a recreated "1994 desk", and
+Opus 5.5, with AI assistance doing most of the porting and code generation) that reads and
+writes the original file formats, a recreated "1994 desk", and
 new Sandbox Software games. See [NOTICE.md](NOTICE.md) for the credits, the history and
 third-party trademarks, and [LICENSE](LICENSE) for the license.
 
@@ -19,7 +23,7 @@ You can learn more about this product here:
 Web Version
 ===========
 
-The [`web`](web) folder holds a browser version of Game-Maker written in TypeScript
+The [`web`](web) folder holds a browser version of RSD Game-Maker written in TypeScript
 (Vite, HTML canvas, Web Audio). It edits and saves games in the original file formats,
 opens original game folders, plays the CD's games (the shareware ones play-only, with
 their authors' notices), and exports your games as installable offline web apps or as

@@ -205,7 +205,7 @@ like "Title Screen" or "V1.0".
 
 ## Credits and license
 
-A modified fork of Game-Maker (Recreational Software Designs, 1991–1995), whose source Andy
+A modified fork of RSD Game-Maker (Recreational Software Designs, 1991–1995), whose source Andy
 Stone released under the MIT License in 2014. The web port, the 1994 desk and today's web
 editor, was written with Claude Opus 5.5. See [../NOTICE.md](../NOTICE.md) and
 [../LICENSE](../LICENSE).
