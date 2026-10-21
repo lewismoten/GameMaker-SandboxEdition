@@ -4,7 +4,7 @@
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
-import { ramArt, ramTiles, ramVirus } from '../blocks/ram';
+import { STACK_BYTES, ramArt, ramTiles, ramVirus, stackTiles } from '../blocks/ram';
 import { kit, type Stage } from './stage';
 import { bossLeech } from '../bosses/boss2';
 
@@ -45,10 +45,20 @@ function stream(g: Grid, c0: number, c1: number, d: number, dir: 'L' | 'R'): voi
   if (dir === 'L' && c1 < 14) g.set(c1 + 1, d, 'combEndR');
 }
 
+/**
+ * Page one: the 6502's stack across the lane, $01FF at the right. Bytes push in from the
+ * right one beat at a time, the gap on the left closes, then it overflows and all pop at once.
+ */
+function stack(g: Grid, d: number): void {
+  STACK_BYTES.forEach((_, k) => g.set(13 - k, d, `stk${k}`));
+  g.stamp(6, d - 1, 'lblStk', 3, 1).set(13, d - 1, 'lbl1FF');
+}
+
 function legA(g: Grid): void {
   dram(g, 1, 2);
   dram(g, 13, 4, 'B');
   for (let c = 4; c < 12; c++) g.set(c, 6, `ref${c % 4}`);
+  g.stamp(6, 5, 'lblZp', 3, 1);
   conga(g, 8, 10, 4, 'eyeR');
   g.pickup(8, 15, 'bit').pickup(7, 15, 'bit');
   stream(g, 2, 9, 18, 'R');
@@ -67,6 +77,7 @@ function legA(g: Grid): void {
   g.turret(2, 55, 'flak').turret(13, 55, 'flak');
   g.mon(8, 58, 'crawler');
   g.mon(5, 61, 'slug').mon(11, 63, 'slug');
+  stack(g, 64);
   for (let c = 3; c < 13; c++) g.set(c, 66, `ref${c % 4}`);
   g.pickup(12, 67, 'repair');
   stream(g, 3, 12, 69, 'R');
@@ -123,7 +134,10 @@ export function stage2(): Stage {
   const art = ramArt(pal);
   const ks = kit(
     art,
-    (bs) => ramTiles(bs, art),
+    (bs) => {
+      ramTiles(bs, art);
+      stackTiles(bs, art, 5);
+    },
     (b) => virus2(b, pal),
     { mite: 'mite', turretEvery: 12, seekerEvery: 45, flakEvery: 34, hatchShut: 45, hatchOpen: 30, hatchEvery: 8, fenceOn: 28, fenceOff: 28 },
   );

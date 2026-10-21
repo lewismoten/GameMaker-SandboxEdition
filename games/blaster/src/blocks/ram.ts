@@ -7,6 +7,7 @@ import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
 import { bat, crawler, eye, keyOf, mite, slug, cluster } from '../sprites/sprites';
+import { HURT } from '../characters/sharedMonsters';
 import { onFloor, slices, type StageArt } from './tiles';
 
 export function ramArt(p: Pal): StageArt {
@@ -97,6 +98,51 @@ export function ramTiles(bs: BlockSet, a: StageArt): void {
   bs.add('comb', comb(a, false));
   bs.add('combEnd', comb(a, true));
   bs.add('combEndR', comb(a, true).flipX());
+}
+
+// ------------------------------------------------------------------ page one: the stack
+// A 6502 keeps its stack in page one, $0100-$01FF, and it grows downward from $01FF. Here
+// it is a row of cells pushed one byte at a time from the right until the whole lane is
+// full, then it overflows and wraps, and every byte pops at once. No monsters and no
+// counters: cell k is a two-block chain, empty for (k+1) beats and full for (N-k) beats,
+// so every chain has the same period and they all start together.
+
+/** The bytes as they're pushed: LDA #$FF / STA $D020 / NOP / JMP ($FFFC), a reset! / RTS / BRK / NOP. */
+export const STACK_BYTES = ['A9', 'FF', '8D', '20', 'D0', 'EA', '6C', 'FC', 'FF', '60', '00', 'EA'];
+
+function stackCell(a: StageArt, byte: string | null): Pixels {
+  const p = a.pal;
+  const t = a.floor(0);
+  if (byte === null) {
+    t.frame(2, 4, 16, 12, p.c('base', 3));
+    micro(t, 7, 8, '--', p.c('base', 3));
+  } else {
+    bevel(t, 1, 3, 18, 14, p.r('trim'), 4, 1);
+    micro(t, 6, 8, byte, p.c('ink', 0));
+  }
+  return t;
+}
+
+/** A floor label in the 3x5 font, w blocks wide. */
+function label(a: StageArt, w: number, s: string, c: number): Pixels {
+  const big = onFloor(a, w, 1);
+  micro(big, Math.round((w * 20 - s.length * 4) / 2), 8, s, c);
+  return big;
+}
+
+/** The stack row's cells, a hole the ship burns in a full cell, and the page labels. */
+export function stackTiles(bs: BlockSet, a: StageArt, beat: number): void {
+  const N = STACK_BYTES.length;
+  STACK_BYTES.forEach((b, k) => {
+    bs.add(`stk${k}`, stackCell(a, null), { next: `stkF${k}`, ntime: (k + 1) * beat });
+    bs.add(`stkF${k}`, stackCell(a, b), { next: `stk${k}`, ntime: (N - k) * beat, chHitPt: HURT.hazard, touch: 'stkGap' });
+  });
+  const gap = stackCell(a, null);
+  for (let i = 0; i < 5; i++) gap.set(4 + i * 3, 6 + ((i * 7) % 8), a.pal.c('grey', 2));
+  bs.add('stkGap', gap);
+  slices(bs, 'lblStk', label(a, 3, 'PAGE 1: STACK', a.pal.c('glow', 3)));
+  bs.add('lbl1FF', label(a, 1, '$01FF', a.pal.c('base', 5)));
+  slices(bs, 'lblZp', label(a, 3, 'ZERO PAGE $00', a.pal.c('glow', 3)));
 }
 
 export function ramVirus(b: Bestiary, p: Pal): void {
