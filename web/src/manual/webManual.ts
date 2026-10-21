@@ -7,7 +7,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   [
     'start',
     'Getting started',
-    `<p>Game-Maker Web designs and plays games made with Recreational Software Designs’
+    `<p>Game-Maker: Sandbox Edition designs and plays games made with Recreational Software Designs’
     Game-Maker 3.0 (1991–1995). It reads and writes the original file formats, so a game
     made here also plays in DOS, and an old game folder opens here unchanged.</p>
     <p>Everything is kept in this browser. Nothing is uploaded. Use <b>Download .zip</b> to
@@ -108,7 +108,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   [
     'offline',
     'Offline and installing',
-    `<p>After your first visit, Game-Maker Web works without a connection. To install it
+    `<p>After your first visit, Game-Maker: Sandbox Edition works without a connection. To install it
     as an app, use your browser’s <b>Install</b> or <b>Add to Home Screen</b> command.
     Your games stay in the browser you made them in.</p>`,
   ],

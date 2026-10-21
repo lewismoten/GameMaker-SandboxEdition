@@ -149,7 +149,7 @@ export function appJsonLd(): Record<string, unknown> {
     '@type': ['WebApplication', 'SoftwareApplication'],
     '@id': `${SITE_URL}#app`,
     name: PRODUCT,
-    alternateName: [SHORT, 'Game-Maker Web'],
+    alternateName: [SHORT],
     url: SITE_URL,
     description: SITE_ABOUT,
     applicationCategory: 'GameApplication',
