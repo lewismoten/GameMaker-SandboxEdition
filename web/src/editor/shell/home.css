@@ -1,5 +1,6 @@
-/* Home page game library: collections on the left, the chosen collection's games as
-   picture tiles beside them. On a phone the collections become a row of tabs. */
+/* Home page: the selected game panel at the top (homeShowcase.ts), then the library:
+   collections on the left, the chosen collection's games as picture tiles beside them
+   (homeCards.ts). On a phone the panel stacks and the collections become a row of tabs. */
 
 .home .library {
   display: grid;
@@ -8,9 +9,21 @@
   align-items: start;
 }
 
-.lib-cats {
+.lib-side {
   position: sticky;
   top: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lib-new {
+  width: 100%;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+
+.lib-cats {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -103,83 +116,166 @@
 }
 
 .lib-tiles {
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
 }
 
-.lib-tiles .card {
+/* a game tile: its picture (with buttons over it) and its title */
+.game-tile {
   position: relative;
-  padding: 12px 12px 10px;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
-.lib-tiles .card[hidden] {
+.game-tile[hidden] {
   display: none;
 }
 
-.lib-tiles .card h3 {
+.game-tile:hover {
+  border-color: var(--accent);
+}
+
+.game-tile.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.tile-shot {
+  position: relative;
+  aspect-ratio: 8 / 5;
+  background: #000;
+  cursor: pointer;
+}
+
+.game-tile .card-shot {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+}
+
+.tile-select {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: 0;
+  padding: 7px 10px 9px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tile-select:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+.tile-title {
   display: -webkit-box;
   overflow: hidden;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  font-weight: 700;
+  font-size: 14px;
   line-height: 1.25;
 }
 
-.card .card-shot-none {
+.tile-meta {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ⌨ 📖 ▶ over a picture */
+.shot-icons {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 3;
+  display: flex;
+  gap: 5px;
+}
+
+.shot-icon {
   display: grid;
   place-items: center;
-  font-size: 32px;
-}
-
-/* ⋯ more actions */
-.card-title {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  min-width: 0;
-}
-
-.card-title h3 {
-  flex: 1;
-  min-width: 0;
-}
-
-.card-more {
-  position: relative;
-  flex: none;
-}
-
-.card-more > summary {
-  list-style: none;
-  padding: 0 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(10, 10, 40, 0.72);
+  color: #fff;
+  font:
+    15px/1 system-ui,
+    sans-serif;
   cursor: pointer;
-  font-weight: 700;
-  line-height: 1.2;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.1s,
+    background 0.1s;
 }
 
-.card-more > summary::-webkit-details-marker {
-  display: none;
+.shot-icon:hover {
+  background: var(--accent);
+  transform: scale(1.08);
 }
 
-.card-more-menu {
+.shot-icon:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* the demo's ▶ is the one to notice */
+.shot-icon.demo-toggle {
+  border-color: #ffd400;
+  background: #ffd400;
+  color: #000;
+}
+
+.shot-icon.demo-toggle:hover {
+  background: #ffe866;
+}
+
+.demo-loading .demo-toggle {
+  animation: demo-wait 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes demo-wait {
+  to {
+    opacity: 0.4;
+  }
+}
+
+/* a demo playing in a picture (demoInPicture in homeCards.ts) */
+.demo-screen {
   position: absolute;
-  right: 0;
-  top: calc(100% + 4px);
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 190px;
-  padding: 6px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  inset: 0;
+  z-index: 1;
+  background: #000;
 }
 
-.card-more-menu button {
-  width: 100%;
-  text-align: left;
+.shot-icon.demo-sound {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  z-index: 3;
+}
+
+.demo-playing .health-badge {
+  display: none;
 }
 
 /* ⚠ health badge on a tile's picture */
@@ -269,17 +365,18 @@
 }
 
 @media (max-width: 720px) {
-  /* phones: a shorter banner, so the games are one swipe away */
-  .home .hero-screen {
-    display: none;
-  }
-
   .home .library {
     grid-template-columns: 1fr;
     gap: 12px;
   }
 
+  /* the collections and the new game button sit straight in the column */
+  .lib-side {
+    display: contents;
+  }
+
   .lib-cats {
+    position: sticky;
     top: 44px;
     z-index: 4;
     flex-direction: row;
@@ -296,42 +393,11 @@
   }
 
   .lib-tiles {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 10px;
   }
 
   .lib-search {
     width: 100%;
-  }
-}
-
-/* the banner, smaller once you have games of your own (home.ts) */
-.home .hero.hero-compact {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
-  gap: 20px;
-  margin: 0 0 20px;
-  padding: 18px 24px;
-}
-.home .hero.hero-compact .hero-logo {
-  margin: 2px 0 6px;
-  font-size: clamp(30px, 4.5vw, 46px);
-}
-.home .hero.hero-compact .hero-text p {
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-.home .hero.hero-compact .hero-screen {
-  padding: 8px;
-}
-.home .hero.hero-compact button.big {
-  padding: 8px 14px;
-  font-size: 15px;
-}
-@media (max-width: 760px) {
-  .home .hero.hero-compact {
-    grid-template-columns: 1fr;
-  }
-  .home .hero.hero-compact .hero-screen {
-    display: none;
   }
 }
