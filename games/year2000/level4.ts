@@ -7,7 +7,7 @@
 // All the rooms share one map; each booth links back into this same scene at another
 // room, so the room you leave is reset (and its quarters come back) every time you dial.
 import { LevelMap, type Legend } from './mapkit';
-import type { BlockSet } from './book';
+import type { BlockSet } from './src/blocks/book';
 import { MON } from './src/ids';
 
 const BASE: Legend = {

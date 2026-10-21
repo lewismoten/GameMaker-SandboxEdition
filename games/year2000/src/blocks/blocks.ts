@@ -1,15 +1,15 @@
 // The two background block sets: EARTH.BBL (the suburbs, the Skyway, the mall and the
 // phone exchange) and MOON.BBL (the Moon and the Moon School). Both share the items,
 // the phone booths, the laser fences and the moving walkways.
-import { Pixels, rng } from '../kit/pixels';
+import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from './book';
-import { T, blob, gradient, oval, shadeAt, speckle } from './src/art/draw';
+import { T, blob, gradient, oval, shadeAt, speckle } from '../art/draw';
 import { FLOORS } from './floors';
-import { micro } from './src/art/font';
-import { CTR, MON, PAGES_NEEDED } from './src/ids';
+import { micro } from '../art/font';
+import { CTR, MON, PAGES_NEEDED } from '../ids';
 import { ITEM_PICS, type ItemName } from './items';
-import { C, PAL } from './src/art/pal';
-import { banner, billboard, crater, domeHome, neonSign, rocket, tiled } from './src/art/bigart';
+import { C, PAL } from '../art/pal';
+import { banner, billboard, crater, domeHome, neonSign, rocket, tiled } from '../art/bigart';
 
 const R = PAL.r;
 type Floor = keyof typeof FLOORS;

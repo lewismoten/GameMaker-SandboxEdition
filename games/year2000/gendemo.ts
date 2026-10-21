@@ -11,7 +11,7 @@ import { MON } from './src/ids';
 import { LEVELS, SETS } from './levels';
 import { buildMonsters } from './monsters';
 import { Sim } from './sim';
-import { buildCharBlocks, buildMonsterBlocks } from './sprites';
+import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
 
 const l = LEVELS[0];
 const set = SETS[l.set]();

@@ -23,9 +23,9 @@ import { PAL } from './src/art/pal';
 import { renderMap } from './src/art/render';
 import * as S from './screens';
 import { buildSounds } from './sounds';
-import { buildCharBlocks, buildMonsterBlocks } from './sprites';
+import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
 import { CREDITS, INSTRUCTIONS, readme } from './text';
-import { ITEM_PICS } from './items';
+import { ITEM_PICS } from './src/blocks/items';
 import { PAGES_NEEDED } from './src/ids';
 
 const here = dirname(fileURLToPath(import.meta.url));

@@ -2,7 +2,7 @@
 // with a legend for blocks, monsters standing on a floor, named spots (starts, booth
 // doors) and big pictures (domes, billboards) placed by their top-left corner.
 import { newMap, reindexMonsters, MLEN, type GameMap } from '../../web/src/formats/map';
-import type { BlockSet } from './book';
+import type { BlockSet } from './src/blocks/book';
 
 export type Cell = string | { tile?: string; mon?: number; mark?: string; big?: string; w?: number; h?: number };
 export type Legend = Record<string, Cell>;

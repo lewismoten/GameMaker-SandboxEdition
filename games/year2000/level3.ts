@@ -4,7 +4,7 @@
 // The Employees Only keycard is locked in a laser display case at TV-RAMA; the loading
 // dock behind the STAFF door has a Teleport-A-Phone. Security robots don't like running.
 import { LevelMap, type Legend } from './mapkit';
-import type { BlockSet } from './book';
+import type { BlockSet } from './src/blocks/book';
 import { MON } from './src/ids';
 
 const LEGEND: Legend = {

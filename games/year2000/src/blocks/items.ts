@@ -1,10 +1,10 @@
 // The things you pick up, drawn on transparent 20x20 squares so they can be laid over
 // any floor (and shown big on the screens). In the year 2000 everything hovers a little,
 // so each one floats over its own shadow.
-import { Pixels } from '../kit/pixels';
-import { T, blob, oval, outline } from './src/art/draw';
-import { micro } from './src/art/font';
-import { C } from './src/art/pal';
+import { Pixels } from '../../../kit/pixels';
+import { T, blob, oval, outline } from '../art/draw';
+import { micro } from '../art/font';
+import { C } from '../art/pal';
 
 const K = () => C('grey', 0);
 

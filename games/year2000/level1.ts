@@ -3,7 +3,7 @@
 // report all over the neighborhood. The garage remote is lost in the hedge garden, the
 // Zapper is in the backyard, and the Teleport-A-Phone on the corner goes to the Skyway.
 import { LevelMap, type Legend } from './mapkit';
-import type { BlockSet } from './book';
+import type { BlockSet } from './src/blocks/book';
 import { MON } from './src/ids';
 
 const LEGEND: Legend = {

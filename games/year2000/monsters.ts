@@ -1,6 +1,6 @@
 // Y2K.MON: who mows, chases, honks and hugs. One list for every level.
 import { emptyMonster, newMonsterSet, type Monster } from '../../web/src/formats/monster';
-import type { BlockSet } from './book';
+import type { BlockSet } from './src/blocks/book';
 import { MON } from './src/ids';
 
 /** Orientations: 0 as drawn (facing right), 4 mirrored (left). */

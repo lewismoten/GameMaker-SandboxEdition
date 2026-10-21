@@ -1,12 +1,12 @@
 // Y2K.CBL (Dex, in sneakers and in a fishbowl space helmet) and Y2K.MBL (everything else
 // that moves). Drawn as 20x20 sprites on transparent squares.
-import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, type BlockDef } from './book';
-import { T, blob, oval, outline, recolor, rotate, sprite } from './src/art/draw';
-import { micro } from './src/art/font';
-import { CTR } from './src/ids';
-import { coverPic } from './items';
-import { C, PAL } from './src/art/pal';
+import { Pixels, rng } from '../../../kit/pixels';
+import { BlockSet, type BlockDef } from '../blocks/book';
+import { T, blob, oval, outline, recolor, rotate, sprite } from '../art/draw';
+import { micro } from '../art/font';
+import { CTR } from '../ids';
+import { coverPic } from '../blocks/items';
+import { C, PAL } from '../art/pal';
 
 const R = PAL.r;
 const K = () => C('grey', 0);

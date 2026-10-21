@@ -1,6 +1,6 @@
 // The six levels in order, with the files each scene loads and what its card says.
-import { citySet, moonSet, suburbSet } from './blocks';
-import type { BlockSet } from './book';
+import { citySet, moonSet, suburbSet } from './src/blocks/blocks';
+import type { BlockSet } from './src/blocks/book';
 import type { LevelMap } from './mapkit';
 import { level1 } from './level1';
 import { level2 } from './level2';

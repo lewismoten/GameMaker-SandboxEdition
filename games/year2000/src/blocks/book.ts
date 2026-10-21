@@ -1,7 +1,7 @@
 // Named block sets: blocks are added by name with their attributes, and the names are
 // resolved into Game-Maker block numbers when the set is built.
-import { emptyBlock, type Block } from '../../web/src/formats/blocks';
-import type { Pixels } from '../kit/pixels';
+import { emptyBlock, type Block } from '../../../../web/src/formats/blocks';
+import type { Pixels } from '../../../kit/pixels';
 
 /** Block attributes by name; next/touch refer to other blocks by name. */
 export interface BlockDef {

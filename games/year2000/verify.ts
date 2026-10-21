@@ -10,7 +10,7 @@ import { DIALS } from './level4';
 import { buildMonsters } from './monsters';
 import { Sim, type SimScene } from './sim';
 import { Bot } from './bot';
-import { buildCharBlocks, buildMonsterBlocks } from './sprites';
+import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
 
 const god = !!process.env.GOD;
 const mb = buildMonsterBlocks();
