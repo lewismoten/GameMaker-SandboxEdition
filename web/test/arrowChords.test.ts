@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { ArrowChords, chordKeys } from '../src/input/chords';
 import { Keyboard } from '../src/input/keyboard';
+import { macHint, withMacHint } from '../src/input/macKeys';
+import { cardRows } from '../src/desk/pc/keyCardRows';
+import type { GameKeyMap } from '../src/editor/keymap/keyMap';
 
 const UP = 72, LEFT = 75, RIGHT = 77, DOWN = 80, HOME = 71, PGUP = 73, END = 79, PGDN = 81, PAD5 = 76;
 const all = () => true;
@@ -63,5 +66,28 @@ describe('arrow chords', () => {
     expect(k.events).toEqual([UP, UP | 0x80, HOME, RIGHT, RIGHT | 0x80, HOME | 0x80, UP, UP | 0x80, HOME, HOME | 0x80, END, END | 0x80]);
     expect(k.down.size).toBe(0);
     k.detach();
+  });
+});
+
+describe('Mac key names', () => {
+  it('says how to make keys a Mac lacks, only on a Mac', () => {
+    expect(macHint(71, true)).toBe('↑+← or fn ←');
+    expect(macHint(81, true)).toBe('↓+→ or fn ↓');
+    expect(macHint(57, true)).toBeUndefined();
+    expect(macHint(71, false)).toBeUndefined();
+    expect(withMacHint('End / Pad 1', 79, true)).toBe('End / Pad 1 (↓+← or fn →)');
+    expect(withMacHint('End / Pad 1', 79, false)).toBe('End / Pad 1');
+  });
+
+  it('key cards write the chord on a Mac', () => {
+    const b = (scan: number, name: string, title: string) =>
+      ({ scan, name, uses: [{ action: { title, kind: /^Move/.test(title) ? 'move' : 'action' } }] }) as unknown as GameKeyMap['keys'][number];
+    const keys = [b(71, 'Home / Pad 7', 'Move up-left'), b(73, 'PgUp / Pad 9', 'Move up-right'), b(57, 'Space', 'Jump')];
+    expect(cardRows(keys, true, true)).toEqual([
+      { keys: ['↑+←', '↑+→'], does: 'Move' },
+      { keys: ['Space'], does: 'Jump' },
+    ]);
+    expect(cardRows(keys, true, false)[0].keys).toEqual(['Home', 'PgUp']);
+    expect(cardRows(keys, false, true)[0].keys).toEqual(['Home / Pad 7 (↑+← or fn ←)']);
   });
 });
