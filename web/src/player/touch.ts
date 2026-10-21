@@ -8,6 +8,8 @@
 import type { Keyboard } from '../input/keyboard';
 import { scanName } from '../input/scancodes';
 
+// Scan codes the pad covers: the arrows plus the keypad's diagonals (Home, PgUp, End, PgDn),
+// so a character's diagonal keys don't also get action buttons.
 const ARROWS = new Set([72, 75, 77, 80, 71, 73, 79, 81]);
 const UP = 72;
 const LEFT = 75;
@@ -18,7 +20,8 @@ const DOWN = 80;
 export function padKeys(dx: number, dy: number, radius: number): number[] {
   const dist = Math.hypot(dx, dy);
   if (dist < radius * 0.25) return [];
-  // Eight 45° sectors: straight directions get one key, diagonals two.
+  // Eight 45° sectors: straight directions get one key, diagonals two. Screen y grows
+  // downward, so positive angles are below center; ±4 are both "left" (atan2 wraps at ±180°).
   const sector = Math.round(Math.atan2(dy, dx) / (Math.PI / 4));
   const byS: Record<number, number[]> = {
     0: [RIGHT],
@@ -35,6 +38,7 @@ export function padKeys(dx: number, dy: number, radius: number): number[] {
 }
 
 /** 'portrait' when the player is taller than (about) square. */
+// Up to 15% wider than tall still counts as portrait.
 export function touchLayout(width: number, height: number): 'portrait' | 'landscape' {
   return width < height * 1.15 ? 'portrait' : 'landscape';
 }
@@ -75,12 +79,14 @@ export class TouchControls {
       pad.append(s);
       arrows[scan] = s;
     }
+    // The thumb's offset from the pad's center, with the pad's half width as the radius.
     const steer = (e: PointerEvent) => {
       const r = pad.getBoundingClientRect();
       this.setPad(padKeys(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2), r.width / 2), arrows);
     };
     pad.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      // Capture keeps the thumb steering even when it slides off the pad.
       pad.setPointerCapture?.(e.pointerId);
       steer(e);
     });
@@ -122,6 +128,7 @@ export class TouchControls {
     this.padDown.clear();
   }
 
+  /** Releases the arrows no longer wanted, then presses the new ones; a key held in both stays down untouched. */
   private setPad(keys: number[], arrows: Record<number, HTMLElement>): void {
     const want = new Set(keys);
     for (const s of [...this.padDown])
@@ -164,6 +171,7 @@ export class TouchControls {
 
   /** Shows a button for each non-arrow key used by the character (scan codes). */
   setKeys(scans: number[]): void {
+    // Leaves out the pad's keys, Esc, Enter and F1-F10 (only F1 and F2 have buttons, in the fixed row); at most six.
     const list = [...new Set(scans.filter((s) => s && !ARROWS.has(s) && s !== 1 && s !== 28 && !(s >= 59 && s <= 68)))].slice(0, 6);
     const sig = list.join(',');
     if (sig === this.shown) return;
