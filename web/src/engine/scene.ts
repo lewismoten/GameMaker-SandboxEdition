@@ -226,8 +226,23 @@ export function startSceneInits(w: World, start: Coord): void {
     for (let l = 0; l < BACKBL; l++) if (w.bg[l].birthTime > 0) w.blkMon.push({ blnum: l, nexttime: w.clock + w.bg[l].birthTime });
   }
   resetKeys(w);
-  const k = chr.sequences[chr.cseq].key;
-  if (k < 128) w.keydn[k] = 1;
+  setStartKey(w.keydn, chr.sequences[chr.cseq].key);
+}
+
+/**
+ * keydn[CHRSEQ.key] = 1 at the end of the C's scene inits (PLAYGAME.C). keydn is a 128 byte
+ * array indexed by scan code, but a sequence's key is the whole 16 bit word (scan code in the
+ * high byte, ASCII in the low byte, CHAR.H), so the C only set a keydn entry when the key had
+ * no scan code: key 0 (no key, which every idle sequence on the CD has) sets keydn[0], and
+ * the idle sequence's "quit if key lifted" test (keydn[key>>8]==0) then reads it as held.
+ * For a real key the write landed key bytes past keydn (DGROUP:4C4E in PLAYGAME.MAP), never
+ * on another keydn entry: scan 1..4 in dirtrect.c's DirtyBoxes, scan 5 in the next modules'
+ * buffers, scan 5..0x48 in gifc.c's decoder tables, 0x49..0x4A in the atexit table and higher
+ * in the far end of the 15000 byte stack. Those are all written before they are read, so the
+ * stray byte had no effect: the key does not read as held (keydn[scan] stays 0).
+ */
+export function setStartKey(keydn: Uint8Array, key: number): void {
+  if (key >= 0 && key < 128) keydn[key] = 1;
 }
 
 /** changeblks: animate background blocks. */
