@@ -14,3 +14,4 @@ cd web && npx vite-node ../games/<id>/build.ts
 - `music.ts` — FM instruments and note strings → Sound Blaster `.CMF` songs.
 - `sound.ts` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
+- `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
