@@ -2,6 +2,7 @@
 // arrows/clicks, and printing every page.
 import './booklet.css';
 import { h } from '../editor/core/ui';
+import { decorateBbsName } from '../retro/bbs/bbsName';
 
 export interface BookletPage {
   /** Page content (inside the margins). */
@@ -16,6 +17,7 @@ function pageElement(p: BookletPage, index: number): HTMLElement {
   if (p.head) inner.append(h('div', { class: 'runhead' }, h('span', null, p.head[0]), h('span', null, p.head[1])));
   inner.append(...(Array.isArray(p.body) ? p.body : [p.body]));
   if (!p.cover) inner.append(h('div', { class: 'folio' }, String(index)));
+  decorateBbsName(inner);
   return h('section', { class: `mpage ${p.cover ? 'cover' : ''}` }, inner);
 }
 

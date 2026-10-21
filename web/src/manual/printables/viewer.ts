@@ -6,6 +6,7 @@ import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition'
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
 import { RedFilm, RedLens } from './redFilm';
+import { decorateBbsName } from '../../retro/bbs/bbsName';
 
 /** A thing in the box. */
 export interface BoxItem {
@@ -100,6 +101,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       if (current !== item.id) return;
       shownSheets = sheets;
       const wrap = item.screen ? item.screen(sheets) : h('div', { class: 'gmb-sheets' }, ...sheets.map((s) => s.el));
+      decorateBbsName(wrap);
       stage.replaceChildren(wrap);
       stage.scrollTop = 0;
       fitSheets();

@@ -8,6 +8,7 @@ import { bookletPageCount } from './imposition';
 import { paginate } from './paginate';
 import { FICTIONAL_NOTE, sandboxLogo, hashString } from './kit';
 import { manualCover } from './manualCover';
+import { decorateBbsName } from '../../retro/bbs/bbsName';
 
 export const PAGE_W = 5.5;
 export const PAGE_H = 8.5;
@@ -137,6 +138,7 @@ export async function buildBooklet(entry: CatalogEntry, cover: string | undefine
   const next = measurer(host);
   for (const c of chapters) {
     markFictionalAddresses(c.el);
+    decorateBbsName(c.el); // before pagination, so pages are measured with it
     for (const body of paginate([...c.el.children] as HTMLElement[], next)) pages.push({ kind: 'text', head: [shortTitle, c.head], body });
   }
   host.replaceChildren();
