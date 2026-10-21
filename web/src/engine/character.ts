@@ -1,6 +1,10 @@
-// Character movement from code/GM/PLAYGAME.C: movechars, gravity, solid block
-// checks (chkdowns/ups/lefts/rights), OnGround, screen/map bounds, joystick,
-// and picking up / dropping inventory blocks.
+// Character movement ported from code/GM/PLAYGAME.C: movechars (one tick of
+// sequence animation and movement), MoveCharGrav and OnGround (gravity),
+// chksolids with chkdowns/ups/lefts/rights (solid block checks),
+// chkscrnbounds / chkmapbounds, HandleJStick, and PickupBloc / DropBloc
+// (inventory). The character's position is chr.x/y: [0] the map block of its
+// bottom half, [1] the pixel offset 0..BLEN-1 inside it. Touch blocks come from
+// GetTouchbl (touch.ts): 0/1 top row, 2/3 middle row, 4/5 bottom row, left/right.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../formats/blocks';
 import { DIESEQ, DROPSEQ, HURTSEQ, IDLESEQ, MAXFRAME, PICKUPSEQ, type Frame } from '../formats/character';
 import { chrSeq, popKey, pushKey } from './keys';
@@ -109,6 +113,14 @@ function chkScrnBounds(w: World, d: { tx: number; ty: number }): void {
 
 const solid = (w: World, n: number) => bgBlock(w, n).solid;
 
+// The four chk* functions below follow chklefts/chkrights/chkups/chkdowns. Each
+// returns the side that is blocked. `twohigh` is 0 when the character IS two
+// blocks high (top cells filled in), else 2 so only the lower rows are used.
+// spots[] holds the solid bits of the cells in the way; a cell is skipped when a
+// neighbor's solid side already seals the corner. The chr.x/y[1] snaps ("moves
+// him into 1 wide corridors" in the C) slide the character into a one-block gap
+// when only one of the two cells it straddles is blocked.
+
 function chkLefts(w: World, t: TouchBlocks): number {
   const { chr } = w;
   const spots = [0, 0, 0, 0];
@@ -188,7 +200,7 @@ function chkSolids(w: World, dx: number, dy: number, t: TouchBlocks): number {
   return r;
 }
 
-/** The block whose gravity applies: the one the character is mostly on. */
+/** The block whose gravity applies: the one the character is mostly on (over half a block in). */
 function gravityBlock(w: World): number {
   const { chr } = w;
   let y = chr.y[0] + (chr.y[1] > BLEN / 2 ? 1 : 0);
@@ -198,6 +210,11 @@ function gravityBlock(w: World): number {
   return shownBlock(w, mapBlock(w, x, y)).grav;
 }
 
+/**
+ * OnGround: stops gravity momentum against a solid side (block or pushing
+ * monster). Without a momentum sequence, momentum on an axis the current block
+ * has no gravity on decays to 5/6 each call.
+ */
 function onGround(w: World, s: number): void {
   const { ci } = w;
   const gravdir = gravityBlock(w);
@@ -211,7 +228,11 @@ function onGround(w: World, s: number): void {
   }
 }
 
-/** MoveCharGrav: accelerate by the gravity of the block under the character. */
+/**
+ * MoveCharGrav: every GRAVSPEED ticks, accelerate by one pixel a tick in each
+ * direction the block's grav bits name (1 up, 2 right, 4 down, 8 left), capped at
+ * MAXGRAV * 4. Returns true while there is any gravity momentum.
+ */
 export function moveCharGrav(w: World, reset = false): boolean {
   if (reset) {
     w.gclk = w.clock;
@@ -249,6 +270,9 @@ export function handleJoystick(w: World, reset = false): boolean {
     return false;
   }
   if (chr.cseq === DIESEQ) return false;
+  // The first matching sequence wins. jstkMov 9 means any direction; jstkBut 0 is
+  // any button, 4 is no button, else a button that has just changed. The current
+  // sequence must be interruptible (not `ground`), enabled and have uses left.
   for (let loop = 3; loop < MAXSEQ; loop++) {
     const s = chr.sequences[loop];
     if (
@@ -275,6 +299,7 @@ export function handleJoystick(w: World, reset = false): boolean {
   return false;
 }
 
+/** PickupBloc: takes the first touched object block whose touch isn't refused into the next free slot. */
 function pickupBlock(w: World): boolean {
   const { ci } = w;
   if (ci.inv[MAXINV - 1] !== BACKBL) return false;
@@ -292,6 +317,7 @@ function pickupBlock(w: World): boolean {
   return false;
 }
 
+/** DropBloc: places the chosen inventory block at the character's cell and closes the gap in the list. */
 async function dropBlock(w: World, pick: DropPicker): Promise<boolean> {
   const { ci, chr } = w;
   w.ci.topthere = false;
@@ -327,6 +353,9 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
   if (w.clock >= ci.nextAni) {
     const oldframe = chr.cframe;
     const oldseq = chr.cseq;
+    // cframe -1: the sequence was just started. Sequences above 4 with a counter
+    // (meter below INF_REPEAT) use one up; drop and pickup fall back to idle
+    // when nothing happened, and the sound plays only after they succeed.
     if (chr.cframe === -1) {
       if (ci.meter[chr.cseq] < INF_REPEAT && chr.cseq > 4) ci.meter[chr.cseq]--;
       if (chr.cseq === DROPSEQ && !(await dropBlock(w, pickDrop))) {
@@ -342,6 +371,12 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
       const snd = chrSeq(w).sound;
       if (snd < LASTSND && snd >= 0) doSound(w, snd);
     }
+    // Advance a frame. pic2 === CHARBL + 1 marks the end of the frames: the
+    // sequence repeats from frame 0 or ends and pops back to the previous key's
+    // sequence. zeroBefore breaks out after wrapping twice (the C's infinite-loop
+    // guard); `guard` is this port's extra safety cap. The outer loop runs again
+    // while the frame has no picture (pic2 > CHARBL, e.g. a MONBL frame that fires
+    // a monster), so several monster frames can fire in one tick.
     let guard = 0;
     do {
       if (chr.cframe === 0) zeroBefore++;
@@ -381,6 +416,8 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
       } else {
         ci.curtop = f.pic1;
         ci.curbottom = f.pic2;
+        // A momentum sequence feeds its frame offsets into gravity instead of
+        // moving directly. netx/nety remember the last direction for CharBirthMon.
         if (chrSeq(w).momentum) {
           ci.gravx += f.x;
           ci.gravy += f.y;
@@ -414,7 +451,8 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
     tx = d.tx;
     ty = d.ty;
 
-    // Touch the blocks at the destination first (collecting, hurting…).
+    // Touch the blocks at the destination first (collecting, hurting…), then
+    // put the character back; the real move below can still be stopped by solids.
     chr.x[1] += tx;
     chr.y[1] += ty;
     normalizeChr(w);
@@ -425,6 +463,8 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
     chr.x[0] = old.x;
     chr.y[0] = old.y;
 
+    // A solid monster pushing from one side (ChkMonChr set monsolid) puts the
+    // character in the cell next to it and cancels movement on that axis.
     if (!w.noMons && w.mmSolid < LASTMM) {
       const m = w.mi[w.mmSolid];
       if (w.monsolid & SOLRIG && !(w.monsolid & SOLLEF)) {
@@ -484,7 +524,11 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
   return false;
 }
 
-/** Screen coordinates of the character's bottom block (nextx/nexty). */
+/**
+ * Screen coordinates of the character's bottom block (nextx/nexty), the tail of
+ * movechars. The strict < matches the C: column mx itself counts as MLEN blocks
+ * away; chkScrnBounds keeps the character from moving left into it.
+ */
 export function updateCharScreenPos(w: World): void {
   const { chr, ci } = w;
   let tx = w.mx < chr.x[0] ? (chr.x[0] - w.mx) * BLEN : (MLEN + (chr.x[0] - w.mx)) * BLEN;
