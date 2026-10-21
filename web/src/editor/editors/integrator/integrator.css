@@ -46,8 +46,8 @@
 .grator-board {
   display: block;
   width: 100%;
-  height: min(74vh, 780px);
-  min-height: 320px;
+  /* fills the window under the toolbar; the selected scene's panel follows below */
+  height: clamp(320px, calc(100dvh - 250px), 900px);
   touch-action: none;
   cursor: grab;
   outline: none;
@@ -76,7 +76,7 @@
 }
 .grator-side {
   min-width: 0;
-  max-height: calc(min(74vh, 780px) + 48px);
+  max-height: calc(clamp(320px, calc(100dvh - 250px), 900px) + 48px);
   display: flex;
   flex-direction: column;
   background: var(--panel);
@@ -306,7 +306,7 @@ button.grator-play.playing {
     max-height: 50vh;
   }
   .grator-board {
-    height: 62vh;
+    height: clamp(280px, calc(100dvh - 230px), 640px);
   }
   .grator-side-open {
     flex-direction: row;
@@ -329,4 +329,73 @@ button.grator-play.playing {
   50% {
     box-shadow: 0 0 0 5px rgba(255, 212, 0, 0.35);
   }
+}
+
+/* zoom controls and the ? tips, floating over the board's corners */
+.grator-zoombar {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #2b3bb0;
+  border-radius: 8px;
+  background: rgba(5, 6, 26, 0.85);
+}
+.grator-zoombar button {
+  min-width: 30px;
+  padding: 3px 8px;
+}
+.grator-zoombar .grator-zoom {
+  color: #c8cbe8;
+}
+.grator-tips {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  max-width: min(340px, calc(100% - 16px));
+  color: #e4e6ff;
+  font-size: 13px;
+}
+.grator-tips summary {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  border: 1px solid #2b3bb0;
+  border-radius: 50%;
+  background: rgba(5, 6, 26, 0.85);
+  color: #ffd400;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+.grator-tips summary::-webkit-details-marker {
+  display: none;
+}
+.grator-tips summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.grator-tips[open] summary {
+  background: #ffd400;
+  color: #000;
+}
+.grator-tips-body {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid #2b3bb0;
+  border-radius: 8px;
+  background: rgba(5, 6, 26, 0.94);
+  line-height: 1.4;
+}
+.grator-tips-body p {
+  margin: 0 0 6px;
+}
+.grator-tips-body ul {
+  margin: 0;
+  padding-left: 18px;
 }

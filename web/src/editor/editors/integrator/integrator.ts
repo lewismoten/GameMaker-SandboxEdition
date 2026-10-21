@@ -121,6 +121,8 @@ registerEditor(['gam'], (host, project) => {
   });
   const zoomLabel = h('span', { class: 'grator-zoom' }, '100%');
   const cam = { x: 0, y: 0, z: 1 };
+  /** True while the view is still the "show every scene" fit: resizing the board fits it again. */
+  let fitted = true;
   const used = () => usedScenes(game);
   const cardRect = (i: number): Rect => cardRectOf(game, i);
   const boardBounds = (): Rect => {
@@ -166,6 +168,7 @@ registerEditor(['gam'], (host, project) => {
     const cx = clientX ?? r.left + r.width / 2;
     const cy = clientY ?? r.top + r.height / 2;
     const before = toBoard(cx, cy);
+    fitted = false;
     cam.z = Math.max(0.15, Math.min(4, z));
     cam.x = before.x - (cx - r.left) / cam.z;
     cam.y = before.y - (cy - r.top) / cam.z;
@@ -183,6 +186,7 @@ registerEditor(['gam'], (host, project) => {
     const w = board.clientWidth || 800;
     const hh = board.clientHeight || 500;
     const pad = 30;
+    fitted = true;
     cam.z = Math.max(0.15, Math.min(2, Math.min((w - pad * 2) / b.w, (hh - pad * 2) / b.h)));
     cam.x = b.x - (w / cam.z - b.w) / 2;
     cam.y = b.y - (hh / cam.z - b.h) / 2;
@@ -193,6 +197,7 @@ registerEditor(['gam'], (host, project) => {
     const w = board.clientWidth / cam.z;
     const hh = board.clientHeight / cam.z;
     if (r.x >= cam.x && r.y >= cam.y && r.x + r.w <= cam.x + w && r.y + r.h <= cam.y + hh) return;
+    fitted = false;
     cam.x = r.x + r.w / 2 - w / 2;
     cam.y = r.y + r.h / 2 - hh / 2;
     draw();
@@ -249,6 +254,7 @@ registerEditor(['gam'], (host, project) => {
       const [a, b] = [...pointers.values()];
       if (a && b) zoomAt((gesture.z * Math.hypot(a.x - b.x, a.y - b.y)) / gesture.d, (a.x + b.x) / 2, (a.y + b.y) / 2);
     } else if (gesture.type === 'pan') {
+      fitted = false;
       cam.x = gesture.cx - (e.clientX - gesture.sx) / cam.z;
       cam.y = gesture.cy - (e.clientY - gesture.sy) / cam.z;
       board.style.cursor = 'grabbing';
@@ -284,6 +290,7 @@ registerEditor(['gam'], (host, project) => {
       e.preventDefault();
       if (e.ctrlKey || Math.abs(e.deltaY) >= Math.abs(e.deltaX)) zoomAt(cam.z * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX, e.clientY);
       else {
+        fitted = false;
         cam.x += e.deltaX / cam.z;
         draw();
       }
@@ -324,7 +331,7 @@ registerEditor(['gam'], (host, project) => {
     } else return;
     e.preventDefault();
   });
-  const resize = new ResizeObserver(() => draw());
+  const resize = new ResizeObserver(() => (fitted ? fit() : draw()));
   resize.observe(board);
 
   async function exportPng(): Promise<void> {
@@ -407,13 +414,18 @@ registerEditor(['gam'], (host, project) => {
           )
         : null,
       h('span', { class: 'grator-spacer' }),
-      h('button', { title: 'Zoom out (-)', 'aria-label': 'Zoom out', onclick: () => zoomAt(cam.z / 1.25) }, '−'),
-      zoomLabel,
-      h('button', { title: 'Zoom in (+)', 'aria-label': 'Zoom in', onclick: () => zoomAt(cam.z * 1.25) }, '+'),
-      h('button', { title: 'Show every scene (0)', onclick: fit }, '⤢ Fit'),
       h('button', { title: 'Download a picture of all the scenes and links', onclick: () => void exportPng() }, '⬇ PNG'),
     );
   }
+  /** Zoom controls float over the board's corner, like a map's. */
+  const zoomBar = h(
+    'div',
+    { class: 'grator-zoombar', role: 'group', 'aria-label': 'Zoom' },
+    h('button', { title: 'Zoom out (-)', 'aria-label': 'Zoom out', onclick: () => zoomAt(cam.z / 1.25) }, '−'),
+    zoomLabel,
+    h('button', { title: 'Zoom in (+)', 'aria-label': 'Zoom in', onclick: () => zoomAt(cam.z * 1.25) }, '+'),
+    h('button', { title: 'Show every scene (0)', onclick: fit }, '⤢ Fit'),
+  );
 
   // ---- side panel: screens and music ---------------------------------------------------
   const store = {
@@ -891,17 +903,30 @@ registerEditor(['gam'], (host, project) => {
     );
   }
 
+  /** How the board works, folded into a small ? in its corner. */
+  const tips = h(
+    'details',
+    { class: 'grator-tips' },
+    h('summary', { title: 'How the board works', 'aria-label': 'How the board works' }, '?'),
+    h(
+      'div',
+      { class: 'grator-tips-body' },
+      h('p', null, 'Each card is a scene, showing what the player sees on arriving.'),
+      h(
+        'ul',
+        null,
+        h('li', null, 'Click a card to edit it below; double-click a level to play it.'),
+        h('li', null, 'Drag cards to arrange them; drag the background to pan.'),
+        h('li', null, 'Scroll or pinch to zoom (keys: + − 0); arrow keys step between scenes.'),
+        h('li', null, 'Arrows are links: gold leave the selected scene, green lead into it.'),
+      ),
+    ),
+  );
   const missing = !game.scenes.some((s) => s.gametype === STARTTYPE) || !game.scenes.some((s) => s.gametype === ENDTYPE);
   clear(
     host,
-    h(
-      'p',
-      { class: 'hint' },
-      missing
-        ? 'This game is missing its start or end scene.'
-        : 'Each card is a scene, showing what the player sees on arriving. Drag cards to arrange them, drag the background to pan, scroll or pinch to zoom. Click a card to edit it; double-click a level to play it. Arrows are links (gold: from the selected scene, green: into it).',
-    ),
-    (grator.append(h('div', { class: 'grator-main' }, tools, h('div', { class: 'grator-board-wrap' }, board)), handle, side), grator),
+    missing ? h('p', { class: 'hint grator-missing' }, 'This game is missing its start or end scene.') : null,
+    (grator.append(h('div', { class: 'grator-main' }, tools, h('div', { class: 'grator-board-wrap' }, board, zoomBar, tips)), handle, side), grator),
     panel,
   );
   renderTools();
