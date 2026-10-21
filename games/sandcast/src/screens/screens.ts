@@ -5,8 +5,8 @@ import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels, dither, rng } from '../../../kit/pixels';
-import { ANSI, DAY, GRASS, OCHRE, RED, SAND, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from '../art/palette';
-import { CLEAR, ball, shade } from '../art/draw';
+import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from '../art/palette';
+import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
 
 export const W = 320;
@@ -108,18 +108,26 @@ export function castleArt(p: Pixels, cx: number, base: number, s = 1, seed = 5):
     // Crenellations.
     for (let k = 0; k < w; k += 4) p.rect(X(x0 + k), Y(y0 - 3), Math.max(1, 2 * s), Math.max(1, 3 * s), shade(SAND, light + 1));
   };
-  const flag = (x0: number, y0: number, c: number) => {
+  // Thirteen-star flags: stripes and a blue canton, as big as the castle's scale allows.
+  const flag = (x0: number, y0: number) => {
     p.line(X(x0), Y(y0), X(x0), Y(y0 - 12), WOOD[2]);
-    p.rect(X(x0) + 1, Y(y0 - 12), Math.max(2, 6 * s), Math.max(2, 4 * s), c);
-    p.set(X(x0) + 1, Y(y0 - 12), YELLOW[4]);
+    const w = Math.max(3, Math.round(7 * s));
+    const h = Math.max(3, Math.round(5 * s));
+    for (let yy = 0; yy < h; yy++)
+      for (let xx = 0; xx < w; xx++) {
+        const canton = xx < Math.ceil(w * 0.45) && yy < Math.ceil(h * 0.55);
+        const c = canton ? ((xx + yy) % 2 && h > 4 ? ANSI[15] : WATER[1]) : Math.floor((yy * 7) / h) % 2 === 0 ? RED[4] : ANSI[15];
+        p.set(X(x0) + 1 + xx, Y(y0 - 12) + yy, c);
+      }
+    p.set(X(x0), Y(y0 - 12), YELLOW[4]);
   };
   wall(-50, -30, 100, 34, 6); // curtain wall
   wall(-62, -48, 18, 52, 7); // towers
   wall(44, -48, 18, 52, 5);
   wall(-14, -64, 28, 68, 7); // keep
-  flag(-53, -51, RED[4]);
-  flag(53, -51, RED[4]);
-  flag(0, -67, WATER[5]);
+  flag(-53, -51);
+  flag(53, -51);
+  flag(0, -67);
   // Gate.
   for (let yy = Y(-14); yy <= Y(4); yy++)
     for (let xx = X(-8); xx <= X(8); xx++) {
@@ -221,15 +229,72 @@ export function filesScreen(title: string): Pixels {
   return p;
 }
 
-/** Victory: Teddy's flag over a finished castle, at sunrise, Gwin at his side. */
-export function wonScreen(): Pixels {
+/** Firework sparks are drawn in these spare palette entries, so a burst can go off by palette alone. */
+const SPARK = 128;
+interface Burst {
+  x: number;
+  y: number;
+  r: number;
+  /** The burst's color (8-bit RGB). */
+  rgb: [number, number, number];
+  /** The frame it goes off. */
+  at: number;
+}
+const BURSTS: Burst[] = [
+  { x: 70, y: 40, r: 30, rgb: [255, 70, 60], at: 4 },
+  { x: 250, y: 30, r: 34, rgb: [250, 250, 255], at: 12 },
+  { x: 160, y: 22, r: 26, rgb: [130, 180, 255], at: 19 },
+  { x: 40, y: 70, r: 22, rgb: [255, 220, 80], at: 27 },
+  { x: 282, y: 64, r: 24, rgb: [255, 70, 60], at: 33 },
+];
+const RINGS = 6;
+const TRAIL = 3;
+/** A spark's palette slot: one per burst, ring (or trail dot) and the sky color behind it, which it shows while unlit. */
+interface Spark {
+  burst: number;
+  k: number;
+  sky: number;
+}
+
+/** Victory: the Fourth of July at dusk, flags on every tower, Teddy crowned, Gwin with her ball. */
+function wonPicture(): { p: Pixels; sparks: Spark[] } {
   const p = screen();
+  const sparks: Spark[] = [];
+  let sky0: Pixels | null = null;
+  const slot = (burst: number, k: number, x: number, y: number) => {
+    sky0 ??= p.crop(0, 0, W, H);
+    const sky = sky0.get(x, y);
+    let i = sparks.findIndex((s) => s.burst === burst && s.k === k && s.sky === sky);
+    if (i < 0) i = sparks.push({ burst, k, sky }) - 1;
+    if (SPARK + i > 254) throw new Error('Out of firework palette slots');
+    return SPARK + i;
+  };
   for (let y = 0; y < 150; y++)
     for (let x = 0; x < W; x++) {
       const t = y / 150;
-      p.set(x, y, dither(x, y, t * 2 - Math.floor(t * 2)) ? (t < 0.5 ? WATER[2] : TABBY[5]) : t < 0.5 ? WATER[1] : TABBY[4]);
+      const lo = t < 0.45 ? PURPLE[0] : t < 0.8 ? PURPLE[1] : TABBY[3];
+      const hi = t < 0.45 ? PURPLE[1] : t < 0.8 ? TABBY[3] : TABBY[5];
+      const f = t < 0.45 ? t / 0.45 : t < 0.8 ? (t - 0.45) / 0.35 : (t - 0.8) / 0.2;
+      p.set(x, y, dither(x, y, f) ? hi : lo);
     }
-  ball(p, 250, 120, 22, YELLOW, 3);
+  // The sparks of every burst, each ring and each trail dot in a palette slot of its own.
+  BURSTS.forEach((b, i) => {
+    for (let k = 0; k < RINGS; k++) {
+      const d = (b.r * (k + 1)) / RINGS;
+      const n = 10 + k * 4;
+      for (let a = 0; a < n; a++) {
+        const t = (a / n) * Math.PI * 2 + i;
+        const x = Math.round(b.x + Math.cos(t) * d);
+        const y = Math.round(b.y + Math.sin(t) * d * 0.8 + (k * k) / 6);
+        const size = k < RINGS - 1 ? 2 : 1;
+        for (let dy = 0; dy < size; dy++) for (let dx = 0; dx < size; dx++) p.set(x + dx, y + dy, slot(i, k, x + dx, y + dy));
+      }
+    }
+    for (let k = 0; k < TRAIL; k++) {
+      const y0 = Math.round(150 - ((150 - b.y) * (k + 1)) / (TRAIL + 1));
+      for (let y = y0; y < y0 + 3; y++) p.set(b.x, y, slot(i, RINGS + k, b.x, y));
+    }
+  });
   p.rect(0, 150, W, 50, SAND[5]);
   castleArt(p, 140, 176, 1.1, 11);
   // Teddy, crowned, and Gwin with the ball she finally gave back.
@@ -237,7 +302,35 @@ export function wonScreen(): Pixels {
   crown(p, 238, 134);
   stamp(p, MB.pic('gwinHappy0'), 3, 6, 140);
   text(p, 0, 0, 'NO CARRIER'.padEnd(40), ANSI[15]);
-  return p;
+  return { p, sparks };
+}
+
+/** won.fli: fireworks over the castle. Every frame is the same picture; only the palette moves. */
+export function wonFli(): Uint8Array {
+  const { p, sparks } = wonPicture();
+  const pic = Uint8Array.from(p.px);
+  const frames: Uint8Array[] = [];
+  const pals: Uint8Array[] = [];
+  for (let f = 0; f < 52; f++) {
+    const pal = DAY.slice();
+    sparks.forEach(({ burst, k, sky }, i) => {
+      const b = BURSTS[burst];
+      // The trail climbs in the frames before the burst; then the rings flash outward, one a
+      // frame, and fade back into the sky (the outer ones slowest).
+      let level = 0;
+      let rgb: [number, number, number] = [255, 200, 120];
+      if (k >= RINGS) level = f === b.at - TRAIL + (k - RINGS) ? 0.85 : 0;
+      else {
+        const age = f - b.at - k;
+        level = age < 0 ? 0 : age === 0 ? 1 : Math.max(0, 1 - (age / (8 + k * 2)) ** 2);
+        rgb = age === 0 ? [255, 255, 255] : b.rgb;
+      }
+      for (let c = 0; c < 3; c++) pal[(SPARK + i) * 3 + c] = Math.round(DAY[sky * 3 + c] * (1 - level) + (rgb[c] >> 2) * level);
+    });
+    frames.push(pic);
+    pals.push(pal);
+  }
+  return encodeFli(frames, pals[0], { speed: 5, palettes: pals });
 }
 
 /** A sprite scaled up `s` times at (x, y); clear pixels stay clear. */

@@ -33,7 +33,7 @@ export function wrap(text: string, width = 30): string {
 }
 
 export const STORY = wrap(`
-Pittsburgh, summer of 1995. Behind a brick house on a hill sits a wooden sandbox, and it has a knight: TEDDY, a Pembroke Welsh Corgi in a tin helmet with a red plume.
+Pittsburgh, the Fourth of July, 1995. Behind a brick house on a hill sits a wooden sandbox, and it has a knight: TEDDY, a Pembroke Welsh Corgi in a tin helmet with a red plume.
 
 Teddy knows lots of tricks. He loves his toys. Everybody on the street loves him.
 
@@ -150,13 +150,13 @@ New upload: SYSOP.GIF!
 export const WON = wrap(`
 |*** GOOD BOY! ***
 
-The Crown of the Sandbox sits on the tallest tower of the keep again.
+The Crown of the Sandbox is back on the tallest tower, under a thirteen-star flag.
 
-Gwin woke up, gave Teddy a big sloppy lick, and helped carry his toys home. (She dropped most of them.)
+Fireworks went up for the Fourth. Teddy sat, like a good boy. Gwin barked at every one.
 
-Everyone loves Teddy. Everyone loves Gwin too.
+She gave Teddy a big sloppy lick and helped carry his toys home. (Most of them.)
 
-Thanks for playing. Please register: see README.TXT.
+Thanks for playing! Register: see README.TXT.
 `);
 
 export const LOST = wrap(`

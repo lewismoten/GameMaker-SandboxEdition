@@ -18,7 +18,7 @@ import { buildSounds } from './src/sound/sounds';
 import { BURROW, DAY, DUSK } from './src/art/palette';
 import * as levels from './src/levels/levels';
 import { buildGame } from './src/game';
-import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, titleScreen, wonScreen } from './src/screens/screens';
+import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, titleScreen, wonFli } from './src/screens/screens';
 import { sysopFli } from './src/screens/sysop';
 import { CREDITS, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
 import { buildDemo } from './src/demo';
@@ -46,7 +46,7 @@ disk.put('menu.gif', gif(menuScreen()));
 disk.put('scores.gif', gif(scoreScreen()));
 disk.put('loadgame.gif', gif(filesScreen('LOAD A SAVED GAME')));
 disk.put('savegame.gif', gif(filesScreen('SAVE THIS GAME')));
-disk.put('won.gif', gif(wonScreen()));
+disk.put('won.fli', wonFli());
 disk.put('lost.gif', gif(lostScreen()));
 const lst = (name: string, entries: [string, number?][]) => disk.put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
 // the Sandbox Software logo first, then the game's own intro
@@ -71,7 +71,8 @@ const help = message('help', 'How to play', HELP, 'SYSOP');
 const credits = message('credits', 'Credits & registering', CREDITS, 'SYSOP');
 disk.put('wontxt.gif', gif(messageScreen('Good boy!', 'TEDDY')));
 disk.put('won.txt', WON);
-lst('won.lst', [['won.gif', 6], ['wontxt.gif', 0], ['won.txt']]);
+// The Fourth of July: fireworks go off by palette cycling alone, then Teddy's last message.
+lst('won.lst', [['won.fli', 2], ['wontxt.gif', 0], ['won.txt']]);
 disk.put('losttxt.gif', gif(messageScreen('Tuckered out', 'GWIN')));
 disk.put('lost.txt', LOST);
 lst('lost.lst', [['lost.gif', 6], ['losttxt.gif', 0], ['lost.txt']]);
