@@ -193,8 +193,8 @@
   }
 
   .desk-scene .wall-phone {
-    left: 1064px;
-    top: 168px;
+    left: 1044px;
+    top: 176px;
   }
 
   .desk-scene .news-clipping {
@@ -203,21 +203,19 @@
   }
 
   .desk-scene .snow-window {
-    display: block;
-    left: 1150px;
-    right: auto;
-    top: 34px;
-    width: 266px;
+    left: 1146px;
+    top: 40px;
+    width: 270px;
   }
 
   .desk-scene .desk-lamp {
-    left: 1196px;
-    top: 186px;
+    left: 1178px;
+    top: 232px;
   }
 
   .desk-scene .lamp-glow {
     left: 1010px;
-    top: 300px;
+    top: 340px;
   }
 
   /* a fixed screen can't sit inside a scaled box: drop the scale while the screen fills the window */
