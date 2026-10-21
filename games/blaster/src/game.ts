@@ -31,6 +31,8 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
     const scene = emptyScene(ADVTYPE);
     scene.desc = `${s.n}${'abc'[s.legs.indexOf(l)]} ${l.title}`.slice(0, 19);
     scene.pos = { x: 24 + (i % 8) * 36, y: 90 + Math.floor(i / 8) * 50 };
+    // Scrolling legs may only scroll up (the ship's drift carries the screen along, see
+    // characters/ship.ts); boss arenas never scroll: one fixed screen.
     scene.scroll = { ...scene.scroll, up: l.kind === 'scroll' ? 0xff : 0, down: 0, left: 0, right: 0 };
     const last = s.legs[s.legs.length - 1] === l;
     scene.files = [
