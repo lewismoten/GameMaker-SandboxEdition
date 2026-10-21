@@ -4,7 +4,7 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$12",
-  "blurb": "A thunderstorm has scrambled the Bitmores' Smart Home, and Watt, a pocket-sized repair robot, must roll through fifteen haywire circuit boards to get home to his charging socket. Flip switches, blow fuses, throw relays and route live current to shut down the force fields, without touching a live wire yourself.",
+  "blurb": "A thunderstorm has scrambled the Bitmores' Smart Home, and Watt, a pocket-sized repair robot, must roll through eighteen haywire circuit boards to get home to his charging socket. Flip switches, blow fuses, throw relays and route live current to shut down the force fields, without touching a live wire yourself.",
   "exe": "OHMSWEET.EXE",
   "sound": "sb",
   "label": {
@@ -20,7 +20,7 @@
     "tagline": "There's no place like Ohm.",
     "back": "It was a dark and stormy night, and the lightning found the Bitmores' brand-new Smart Home. Now the toaster opens the garage door, the fridge changes the TV channel and the clock radio plays polka at three in the morning.\n\nWatt is the little repair robot who lives in the fuse box, and the bolt bounced him all the way into the toaster. To get home he must roll through the circuit board of every appliance in the house. Live current fizzles a robot in a blink, but it is also the only thing that shuts off the force-field gates. Follow the copper, flip the switches, blow the right fuse, throw the right relay, and think before you roll!",
     "features": [
-      "15 hand-wired circuit boards in four rooms: kitchen, living room, garage and attic",
+      "18 hand-wired circuit boards in four rooms: kitchen, living room, garage and attic",
       "Real live current you can watch race down the copper - and must never touch",
       "Knife switches, timer buttons, fuses, one-way diodes, pulsing and dead batteries, and relays thrown by control current",
       "A gentle climb from \"flip the switch\" to logic you have to plan three moves ahead",
@@ -29,11 +29,11 @@
       "Built entirely with Game-Maker 3.0 - no programming, just very clever wiring"
     ],
     "shots": [
-      ["coffee.map", 10, 10],
-      ["lights.map", 10, 10],
-      ["computer.map", 10, 10],
-      ["vcr.map", 10, 10],
-      ["mower.map", 10, 10]
+      ["kitchen.map", 2, 22],
+      ["garage.map", 2, 22],
+      ["attic.map", 2, 2],
+      ["living.map", 70, 2],
+      ["garage.map", 70, 2]
     ],
     "rating": "Ages 8 and up",
     "hours": 3,
@@ -52,9 +52,9 @@
       "from": "Diskette Digest Readers' Choice"
     },
     "poster": {
-      "map": ["computer.map", 10, 10, 16, 10],
+      "map": ["attic.map", 2, 2, 16, 10],
       "title": "The Home Computer",
-      "caption": "Board 13: two pink switches, four relays, and only one right answer"
+      "caption": "Board 16: two pink switches, four relays, and only one right answer"
     }
   }
 }

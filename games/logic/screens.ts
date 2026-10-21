@@ -151,7 +151,7 @@ export function titleScreen(art: Art): Pixels {
   bevel(p, 104, 112, 88, 22, r('paper'), 2);
   p.line(104, 126, 96, 132, c('paper', 1)).line(104, 127, 97, 132, c('paper', 1));
   text(p, 110, 119, 'ZZT! OW!', c('red', 2));
-  outlined(p, 30, 182, 'A logic puzzle in 15 circuit boards', c('yellow', 3), c('ink', 0));
+  outlined(p, 30, 182, 'A logic puzzle in 18 circuit boards', c('yellow', 3), c('ink', 0));
   micro(p, 4, 4, 'SANDBOX SOFTWARE PRESENTS', c('sky', 5));
   return p;
 }
