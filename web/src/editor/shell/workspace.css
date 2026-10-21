@@ -206,13 +206,9 @@
   }
 }
 
-/* A kind with no files yet is just its heading, quieter (its + still adds one). */
+/* A kind with no files yet is just its heading (its + still adds one). */
 .sidebar .file-section.none h2.file-kind {
   margin-top: 6px;
-}
-
-.sidebar .file-section.none h2.file-kind > span:first-child {
-  opacity: 0.75;
 }
 
 .sidebar .none-yet {
