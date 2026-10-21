@@ -10,7 +10,11 @@ export const REPO_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition'
 export const OG_IMAGE = `${SITE_URL}og-image.png`;
 export const OG_IMAGE_ALT = 'A mid-90s computer desk with Game-Maker: Sandbox Edition on the monitor, game boxes on the shelf and a disk box.';
 
+/** For description tags (search results show about 160 characters). */
 export const SITE_DESCRIPTION =
+  'Make DOS-style games in your browser with no programming: a free, open-source remake of Game-Maker 3.0 (1994). Play 90s shareware and export your own games.';
+/** The longer version, for text on the page. */
+export const SITE_ABOUT =
   'Make DOS-style games in your web browser with no programming: a free, open-source remake of Recreational Software Designs’ Game-Maker 3.0 (1994). Draw blocks and monsters, build maps, add music and sound, play the original sample and shareware games, and export your game as a web page, a web app or for DOS.';
 
 /** What each page of the site is about, for <title> and <meta name="description">. */
@@ -73,7 +77,7 @@ export function gameDescription(game: GameSeo): string {
         : 'A game made with Game-Maker';
   const head = `${game.title}${made ? ` ${made}` : ''}: ${what.charAt(0).toLowerCase()}${what.slice(1)}, playable in your browser.`;
   const text = game.blurb ? `${head} ${game.blurb}` : head;
-  return clip(text, 300);
+  return clip(text, 200);
 }
 
 export function clip(text: string, max: number): string {
@@ -128,7 +132,7 @@ export function appJsonLd(): Record<string, unknown> {
     name: PRODUCT,
     alternateName: [SHORT, 'Game-Maker Web'],
     url: SITE_URL,
-    description: SITE_DESCRIPTION,
+    description: SITE_ABOUT,
     applicationCategory: 'GameApplication',
     applicationSubCategory: 'Game creation tool',
     operatingSystem: 'Any (web browser)',

@@ -9,7 +9,7 @@ describe('seo', () => {
 
   it('clips long descriptions on a word', () => {
     const d = gameDescription({ title: 'X', blurb: 'word '.repeat(200) });
-    expect(d.length).toBeLessThanOrEqual(300);
+    expect(d.length).toBeLessThanOrEqual(200);
     expect(d.endsWith('word…')).toBe(true);
   });
 
