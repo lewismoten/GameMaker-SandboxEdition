@@ -47,7 +47,7 @@
   display: block;
   width: 100%;
   /* fills the window under the toolbar; the selected scene's panel follows below */
-  height: clamp(320px, calc(100dvh - 236px), 900px);
+  height: clamp(320px, calc(var(--ws-vh, 100dvh) - 236px), 900px);
   touch-action: none;
   cursor: grab;
   outline: none;
@@ -76,7 +76,7 @@
 }
 .grator-side {
   min-width: 0;
-  max-height: calc(clamp(320px, calc(100dvh - 236px), 900px) + 48px);
+  max-height: calc(clamp(320px, calc(var(--ws-vh, 100dvh) - 236px), 900px) + 48px);
   display: flex;
   flex-direction: column;
   background: var(--panel);
@@ -306,7 +306,7 @@ button.grator-play.playing {
     max-height: 50vh;
   }
   .grator-board {
-    height: clamp(280px, calc(100dvh - 236px), 640px);
+    height: clamp(280px, calc(var(--ws-vh, 100dvh) - 236px), 640px);
   }
   .grator-side-open {
     flex-direction: row;

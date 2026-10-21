@@ -87,7 +87,7 @@
 }
 
 .rec-tl-viewport {
-  max-height: max(220px, calc(100dvh - 330px));
+  max-height: max(220px, calc(var(--ws-vh, 100dvh) - 330px));
   overflow-y: auto;
   overscroll-behavior: contain;
   border-radius: 6px;

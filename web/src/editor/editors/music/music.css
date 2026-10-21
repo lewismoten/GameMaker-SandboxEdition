@@ -488,7 +488,7 @@
    room left by the instrument panel, which scrolls by itself when it doesn't all fit. */
 @media (min-width: 861px) and (min-height: 600px) {
   .mus {
-    height: calc(100dvh - 128px);
+    height: calc(var(--ws-vh, 100dvh) - 128px);
   }
   .mus-main {
     height: auto;

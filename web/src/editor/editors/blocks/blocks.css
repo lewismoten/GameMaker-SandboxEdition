@@ -28,7 +28,7 @@
   top: calc(8px + var(--ws-sticky-top, 0px));
 }
 .blk-picker .block-picker {
-  max-height: max(240px, calc(100dvh - 210px));
+  max-height: max(240px, calc(var(--ws-vh, 100dvh) - 210px));
   grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
 }
 .blk-picker .block-picker button {
@@ -47,7 +47,7 @@
 .blk-canvas {
   display: block;
   width: 100%;
-  max-width: min(520px, max(260px, calc(100dvh - 350px)));
+  max-width: min(520px, max(260px, calc(var(--ws-vh, 100dvh) - 350px)));
   height: auto;
   aspect-ratio: 1;
   border: 1px solid var(--border);
@@ -69,7 +69,7 @@
   .blk-side {
     position: sticky;
     top: 8px;
-    max-height: max(320px, calc(100dvh - 200px));
+    max-height: max(320px, calc(var(--ws-vh, 100dvh) - 200px));
     overflow: auto;
     overscroll-behavior: contain;
   }

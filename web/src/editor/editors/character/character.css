@@ -278,7 +278,7 @@
   border-radius: 8px;
   position: sticky;
   top: calc(8px + var(--ws-sticky-top, 0px));
-  max-height: max(320px, calc(100dvh - 230px));
+  max-height: max(320px, calc(var(--ws-vh, 100dvh) - 230px));
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -682,7 +682,7 @@
     align-items: stretch;
   }
   .chr-stage {
-    width: clamp(260px, calc((100dvh - 700px) * 2), 480px);
+    width: clamp(260px, calc((var(--ws-vh, 100dvh) - 700px) * 2), 480px);
   }
   .chr-stage-bar {
     flex: none;
