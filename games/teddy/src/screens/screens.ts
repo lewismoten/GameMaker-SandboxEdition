@@ -182,6 +182,9 @@ const STORY_REEL: [string, number][] = [
   ['intro.fli', 0],
 ];
 
+/** "Starring...": the cast in close-up before the credits (built in cast.ts). */
+const CAST_REEL: [string, number][] = [['cast.fli', 0]];
+
 export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   const out: Record<string, Uint8Array> = {};
   const put = (name: string, bytes: Uint8Array | string) => (out[name] = typeof bytes === 'string' ? dosText(bytes) : bytes);
@@ -203,7 +206,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   const textPage = (base: string, heading: string, body: string) => {
     put(`${base}.gif`, gif(page(heading, base.length * 7)));
     put(`${base}.txt`, body);
-    lst(`${base}.lst`, [...(base === 'story' ? STORY_REEL : []), [`${base}.gif`, 0], [`${base}.txt`]]);
+    lst(`${base}.lst`, [...(base === 'story' ? STORY_REEL : base === 'credits' ? CAST_REEL : []), [`${base}.gif`, 0], [`${base}.txt`]]);
   };
   textPage('story', 'THE STORY', STORY);
   textPage('help', 'HOW TO PLAY', HELP);

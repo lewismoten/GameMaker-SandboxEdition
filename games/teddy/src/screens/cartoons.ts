@@ -11,6 +11,7 @@ import { citiCar } from '../sprites/klown';
 import { dove, marcher } from '../sprites/magic';
 import { docLeo, FULL } from '../sprites/people';
 import { SP, landscape } from './screens';
+import { castFli } from './cast';
 import { POSES } from '../sprites/teddy';
 
 const c = (n: string, k: number) => SP.c(n, k);
@@ -168,5 +169,5 @@ export function paradeFli(): Uint8Array {
 }
 
 export function buildCartoons(): Record<string, Uint8Array> {
-  return { 'leo.fli': leoFli(), 'car.fli': carFli(), 'parade.fli': paradeFli() };
+  return { 'leo.fli': leoFli(), 'car.fli': carFli(), 'parade.fli': paradeFli(), 'cast.fli': castFli() };
 }
