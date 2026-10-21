@@ -1,6 +1,12 @@
 // The monster path editor: draw a monster's path (or attack path) with the mouse right on a
 // map of a scene that uses the monster set, pick the picture (orientation) and speed for each
 // stretch, and watch the monster walk it exactly as playgame moves it.
+//
+// One closure per editor. Its sections, in order: the view (zoom and fit), maps, the DOM,
+// drawing (map layer, path arrows, the walking monster, run by requestAnimationFrame at the
+// game's 18.2 Hz tick), editing with the pointer, the picture/speed popup for a corner,
+// and the panels (tabs, toolbar, notices, side list, the numbers table). The path math and
+// the walker are in monsterPath.ts; measurements and map choices in monsterPathView.ts.
 import './monsterPath.css';
 import { h, clear, modal, toast } from '../../core/ui';
 import { blockImages, paintBlock } from '../../core/draw';

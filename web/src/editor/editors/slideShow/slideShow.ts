@@ -3,6 +3,11 @@
 // one that waits for a key, or goes straight on, is a whole thumbnail with that "transition"
 // after it. Media from the game is dragged (or tapped) onto the timeline; the small screen
 // above plays the show as the game would, lighting up the clip it is on.
+//
+// One closure per editor. Its sections, in order: facts and thumbnails (cached by file
+// contents), the screen, layout, the timeline, changing clips (with undo), the inspector,
+// the media bin, dragging, and the page. Timing as PLAYGAME plays it is in
+// slideTimeline.ts.
 import { History } from '../../core/history';
 import './slideShow.css';
 import { registerEditor } from '../registry';

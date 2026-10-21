@@ -3,6 +3,12 @@
 // (a level's map around the block the hero arrives on, the title screen, the won/lost
 // screens). Card positions are the .GAM's integrator coordinates, so the DOS integrator
 // shows the same arrangement.
+//
+// The editor is one closure over the game. Its sections, in order: pictures (cached scene
+// shots), songs, the board (pan, zoom, dragging cards), the toolbar (Auto-arrange, Spread
+// out, zoom, PNG), the side panel (screens and music), scenes (adding, playing from one),
+// and the selected scene's panel. Drawing the board is in board.ts; the layout algorithms
+// are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
 import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../../core/ui';

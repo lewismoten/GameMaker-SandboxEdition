@@ -1,6 +1,11 @@
 // Character editor (CHAREDIT.EXE): the hero's starting health, money, counters and
 // inventory, and its sequences (idle, die, hurt, pick up, drop and up to 15 of your own),
 // each a series of 20x40 frames made of a top and a bottom block.
+//
+// One closure per editor. Its sections, in order: sounds, the hero sheet (health, money,
+// counters, inventory), the sequence list, the preview stage (each frame shown for its
+// pause in 18.2 Hz ticks), frames, the selected sequence's detail, and the page. Turning
+// blocks and editing frame lists are pure helpers in characterLogic.ts.
 import './character.css';
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
