@@ -11,6 +11,7 @@
 import { History } from '../../core/history';
 import './slideShow.css';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { h, clear, toast } from '../../core/ui';
 import { pickFile } from '../../widgets/filePicker';
 import { templateFor } from '../../shell/templates';
@@ -51,7 +52,10 @@ function loadZoom(): number {
 
 registerEditor(['lst'], (host, project, file) => {
   let entries: SlideEntry[] = parseSlideList(project.files.get(file)!);
-  let selected = entries.length ? 0 : -1;
+  // the address keeps the selected slide, counted from 1 (…/SHOW.LST?slide=4)
+  const view = viewState(['p', project.id, file]);
+  const urlSlide = view.num('slide');
+  let selected = urlSlide !== undefined && urlSlide >= 1 && urlSlide <= entries.length ? urlSlide - 1 : entries.length ? 0 : -1;
   let playing = -1;
   let playStart = 0;
   let pps = loadZoom();
@@ -429,6 +433,7 @@ registerEditor(['lst'], (host, project, file) => {
 
   // ---- inspector ----------------------------------------------------------------------
   const renderInspector = () => {
+    view.set({ slide: selected >= 0 ? selected + 1 : undefined });
     const e = entries[selected];
     if (!e) {
       clear(
