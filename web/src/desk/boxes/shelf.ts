@@ -48,7 +48,7 @@ export interface Shelf {
 export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks: ShelfHooks): Promise<Shelf | undefined> {
   if (!games.length) return undefined;
   setPosterWall(scene, games);
-  const shelf = h('div', { class: 'game-shelf', role: 'list', 'aria-label': 'Game boxes on the shelf' });
+  const shelf = h('div', { class: 'game-shelf', role: 'group', 'aria-label': 'Game boxes on the shelf' });
   // a spine is 2" wide and a box face 7.5": shrink them all when the shelf fills up
   const u = Math.min(16, SHELF_PX / ((games.length - 1) * 2.2 + 7.5));
   shelf.style.setProperty('--shelf-u', `${u.toFixed(2)}px`);
@@ -125,7 +125,6 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       'button',
       {
         class: `shelf-box${g.id === front ? ' face-out' : ''}`,
-        role: 'listitem',
         title: `${g.title} — take it off the shelf`,
         'aria-label': `${g.title} box`,
         onclick: () => void open(g),

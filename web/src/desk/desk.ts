@@ -134,8 +134,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h("button", { onclick: () => nav.toModern() }, "Switch to today’s web →"),
     ),
     h(
-      "div",
-      { class: "desk-scene" },
+      "main",
+      { class: "desk-scene", "aria-label": "The 1994 desk" },
       // Homage: the winter of 1992-93, shoveling snow to buy Game-Maker.
       h(
         "a",
