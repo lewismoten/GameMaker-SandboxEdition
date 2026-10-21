@@ -731,6 +731,19 @@ dialog.modal .buttons {
   }
 }
 
+/* Tablets (901-1199px): the Files bar sits over the editor, which fills the rest of the window. */
+@media (min-width: 901px) and (max-width: 1199px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .sidebar {
+    position: relative;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
 /* the visual file picker (editor/widgets/filePicker.ts) */
 .file-picker {
   width: min(860px, 86vw);
