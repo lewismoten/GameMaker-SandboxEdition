@@ -38,8 +38,8 @@ export interface Disk {
 }
 
 const COLORS = ['#2b2b2b', '#8a1d1d', '#1d6b3a', '#5a3a8a', '#9a7a10', '#1c6f7a', '#444b55', '#a4471b'];
-/** RSD's own disks: the pink of the Game-Maker box (gmBox.ts PINK). */
-const RSD_PINK = '#f0a090';
+/** RSD's own disks: a deeper pink than the label (the Game-Maker box's #f0a090), so they read apart. */
+const RSD_PINK = '#d9786a';
 /** Publishers of the disks, so each gets a distinct color (filled in by loadDisks). */
 const PUBLISHERS: string[] = [];
 const STRIPES = ['#c62828', '#1565c0', '#2e7d32', '#f9a825', '#6a1b9a', '#00838f', '#ef6c00'];
