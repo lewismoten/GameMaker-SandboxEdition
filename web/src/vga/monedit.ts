@@ -8,9 +8,9 @@ import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
 import { WorkArea } from '../retro/workArea';
-import { type RGBdata, type Vga } from './vga';
-import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RED2, RED3, RIGHT, initStartCols } from './facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
+import { type RGBdata, type Vga } from './shared/vga';
+import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RED2, RED3, RIGHT, initStartCols } from './shared/facelift';
+import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
 import { LASTMON, LASTSL, MONSTER_SIZE, emptyMonster, parseMonsters, serializeMonsters, type March, type Monster } from '../formats/monster';
 import { BLOCK_SIZE, MONBL, orientIndex, parseBlocks } from '../formats/blocks';
 

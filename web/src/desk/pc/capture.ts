@@ -4,7 +4,7 @@
 import './capture.css';
 import { h, toast } from '../../editor/core/ui';
 import type { Computer } from '../../retro/computer';
-import type { Vga } from '../../vga/vga';
+import type { Vga } from '../../vga/shared/vga';
 import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
 import { LiveRecorder, recorderFormat } from '../../media/video';
 import { AudioMix } from '../../media/audioTap';

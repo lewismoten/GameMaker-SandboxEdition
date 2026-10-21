@@ -26,9 +26,9 @@ import {
   type Game,
   type Scene,
 } from '../formats/game';
-import { type Vga, SIZEX, SIZEY } from './vga';
-import { BLACK, Face, GREEN, GREY2, GREY3, GREY4, RED1, initStartCols } from './facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
+import { type Vga, SIZEX, SIZEY } from './shared/vga';
+import { BLACK, Face, GREEN, GREY2, GREY3, GREY4, RED1, initStartCols } from './shared/facelift';
+import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
 import { expandlink } from './gramap';
 
 const NOTUSED = 0xffff; // Number in a scene variable when scene not used

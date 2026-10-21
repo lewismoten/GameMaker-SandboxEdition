@@ -10,9 +10,9 @@ import type { Key } from '../retro/textInput';
 import { attr } from '../retro/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
 import { WorkArea } from '../retro/workArea';
-import { type RGBdata, type Vga, SIZEX, SIZEY } from './vga';
-import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RED2, RED3, RIGHT, initStartCols } from './facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
+import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';
+import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RED2, RED3, RIGHT, initStartCols } from './shared/facelift';
+import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
 import { BACKBL, CHARBL, MONBL, emptyBlock, parseBlocks, type Block } from '../formats/blocks';
 import {
   CHR_RECORD_SIZE,

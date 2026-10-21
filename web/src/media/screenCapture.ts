@@ -5,7 +5,7 @@
 //  - mode 13h: 320x200, one pixel per palette index.
 import { FONT_CP437 } from '../retro/cp437';
 import { COLS, ROWS, type TextScreen } from '../retro/textScreen';
-import type { Vga } from '../vga/vga';
+import type { Vga } from '../vga/shared/vga';
 
 export const TEXT_W = COLS * 9; // 720
 export const TEXT_H = ROWS * 16; // 400

@@ -11,10 +11,10 @@ import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro
 import { WorkArea } from '../retro/workArea';
 import { BACKBL, BLEN, CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../formats/blocks';
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters, type Monster } from '../formats/monster';
-import { type RGBdata, type Vga, SIZEX, SIZEY } from './vga';
-import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RED2, RED3, RIGHT, initStartCols, palFindCol } from './facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
-import { BLK_COUNT, blocnum, drawblk, drawlist, getblk, getblktype, loadblks, pixelsOf, saveblks, scrollList, type ListPick } from './blocc';
+import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';
+import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, LEFT, NONE, RED1, RED2, RED3, RIGHT, initStartCols, palFindCol } from './shared/facelift';
+import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { BLK_COUNT, blocnum, drawblk, drawlist, getblk, getblktype, loadblks, pixelsOf, saveblks, scrollList, type ListPick } from './shared/blocc';
 
 const TRANSCOL = 255; // The value that is transparent in _pic fns
 const GLEN = 6; // Number of blocks in len in width of the grid

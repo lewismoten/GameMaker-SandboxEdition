@@ -3,8 +3,8 @@
 // reads and the 18.2 Hz clock. The drawing routines are ports of code/GM/GRAPHC.C.
 // Like a real monitor, the picture fills its box; it is drawn from a whole-number
 // upscale of 320x200 so pixels keep hard edges.
-import { FONT_CP437 } from '../retro/cp437';
-import { Keyboard, type TypedKey } from '../input/keyboard';
+import { FONT_CP437 } from '../../retro/cp437';
+import { Keyboard, type TypedKey } from '../../input/keyboard';
 
 export const SIZEX = 320;
 export const SIZEY = 200;

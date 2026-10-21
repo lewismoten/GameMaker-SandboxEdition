@@ -10,7 +10,7 @@ import { templateFor } from '../editor/shell/templates';
 import type { FileKind } from '../editor/core/project';
 import { createZip } from '../project/zip';
 import { download } from '../editor/core/ui';
-import type { Program } from '../vga/designer';
+import type { Program } from '../vga/shared/designer';
 
 /** Designers ported to VGA graphics: they run their own menus, as the .EXEs did. */
 const PORTED: Record<string, Program['run']> = Object.fromEntries(

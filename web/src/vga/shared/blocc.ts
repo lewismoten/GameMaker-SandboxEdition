@@ -2,11 +2,11 @@
 // code/GM/BLOCC.C (Andy Stone, 1991) and the drawblk/getblk routines of BLOCA.ASM:
 // choosing a block set type, loading and saving block sets, and the scrolling block
 // bars ("lists") drawn along the bottom of the designers' screens.
-import type { RetroHost } from '../retro/host';
-import { attr } from '../retro/textScreen';
-import { MENUATTR, SHADATTR, vertMenu } from '../retro/textUi';
-import type { WorkArea } from '../retro/workArea';
-import { BACKBL, BLEN, CHARBL, MONBL, parseBlocks, serializeBlocks, type Block } from '../formats/blocks';
+import type { RetroHost } from '../../retro/host';
+import { attr } from '../../retro/textScreen';
+import { MENUATTR, SHADATTR, vertMenu } from '../../retro/textUi';
+import type { WorkArea } from '../../retro/workArea';
+import { BACKBL, BLEN, CHARBL, MONBL, parseBlocks, serializeBlocks, type Block } from '../../formats/blocks';
 import type { Vga } from './vga';
 
 /** BlkExtensions: background, monster and character block sets (btype 1..3). */

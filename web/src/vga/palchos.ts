@@ -6,10 +6,10 @@
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/textUi';
-import { PGMTITLECOL, drawDesignBars, type Program } from './designer';
+import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
 import { WorkArea } from '../retro/workArea';
-import { type RGBdata, type Vga, SIZEX, SIZEY } from './vga';
-import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, MAXFACECOL, initStartCols } from './facelift';
+import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';
+import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, MAXFACECOL, initStartCols } from './shared/facelift';
 
 
 const TRANSCOL = 255;

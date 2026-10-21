@@ -17,7 +17,7 @@ import { loadProject } from '../project/storage';
 import { Project } from '../editor/core/project';
 import { editors, fileInfo } from '../editor/editors/registry';
 import { kindOf } from '../editor/core/project';
-import { Vga } from '../vga/vga';
+import { Vga } from '../vga/shared/vga';
 import { output } from '../audio/output';
 import { h, clear, download } from '../editor/core/ui';
 import type { SpeedSetting } from '../engine/scene';

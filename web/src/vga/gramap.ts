@@ -9,8 +9,8 @@ import type { WorkArea } from '../retro/workArea';
 import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '../formats/game';
 import { BACKBL, BLOCK_SIZE } from '../formats/blocks';
 import { MLEN, MWID } from '../formats/map';
-import type { RGBdata, Vga } from './vga';
-import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED1, RED2, palFindCol } from './facelift';
+import type { RGBdata, Vga } from './shared/vga';
+import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED1, RED2, palFindCol } from './shared/facelift';
 
 const MAP1X = 18;
 const MAP1Y = 5;
