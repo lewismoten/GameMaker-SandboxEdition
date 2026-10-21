@@ -39,10 +39,12 @@ async function make(ids: string[]): Promise<void> {
       let fails = 0;
       let cells = Infinity;
       let played = 0;
+      // how far the bot got (its own dice): other dice must get as far, through as many scenes
+      const own = await replay(files, g.gam, rec, attempt * 101);
       for (const seed of [1, 2, 3, 4, 5]) {
         const shots = process.env.SHOTS && seed === 1 ? { file: join(process.env.SHOTS, `${g.id}-${attempt}.png`), every: 70 } : undefined;
         const r = await replay(files, g.gam, rec, seed, shots);
-        const ok = r.deaths === 0 && r.ended >= ticks && r.ticks < ticks + 200;
+        const ok = r.deaths === 0 && r.ended >= ticks && r.ticks < ticks + 200 && r.loads >= own.loads;
         if (!ok) fails++;
         cells = Math.min(cells, r.cells);
         played += r.played / 5;

@@ -50,7 +50,7 @@ export const CD_DEMO_GAMES: CdDemoGame[] = [
   { id: 'paperair', kind: 'shareware', gam: 'spap.gam', ticks: 1000, attempts: 2, bot: { links: { 2: 'any', 3: 'any', 4: [0], 5: 'any', 6: 'any', 7: 'any' }, every: 2, searchRoute: true, route: { 2: [{ x: 40, y: 80 }, { x: 60, y: 80 }, { x: 86, y: 80 }, { x: 89, y: 78 }, { x: 89, y: 64 }, { x: 80, y: 65 }, { x: 77, y: 60 }, { x: 77, y: 47 }] } } },
   { id: 'parsec3d', kind: 'shareware', gam: 'parsec3d.gam', bot: { links: { 2: [0] } } },
   { id: 'signhdg', kind: 'shareware', gam: 'sign.gam', ticks: 1100, bot: { links: 'any', every: 2, searchRoute: true, route: { 5: [{ x: 18, y: 66 }, { x: 23, y: 61 }, { x: 23, y: 62 }] } } },
-  { id: 'zoom', kind: 'shareware', gam: 'zoom_.gam', ticks: 1800, attempts: 2, bot: { links: 'any', every: 2, goalWeight: 30, searchRoute: true, route: { 3: [{ x: 10, y: 43 }, { x: 14, y: 36 }, { x: 14, y: 25 }, { x: 15, y: 17 }, { x: 20, y: 12 }, { x: 30, y: 9 }, { x: 40, y: 10 }, { x: 45, y: 17 }, { x: 52, y: 21 }, { x: 57, y: 15 }, { x: 60, y: 7 }, { x: 66, y: 8 }, { x: 68, y: 14 }, { x: 76, y: 14 }, { x: 84, y: 12 }] } } },
+  { id: 'zoom', kind: 'shareware', gam: 'zoom_.gam', ticks: 1800, attempts: 5, bot: { links: 'any', every: 2, goalWeight: 30, searchRoute: true, route: { 3: [{ x: 10, y: 43 }, { x: 14, y: 36 }, { x: 14, y: 25 }, { x: 15, y: 17 }, { x: 20, y: 12 }, { x: 30, y: 9 }, { x: 40, y: 10 }, { x: 45, y: 17 }, { x: 52, y: 21 }, { x: 57, y: 15 }, { x: 60, y: 7 }, { x: 66, y: 8 }, { x: 68, y: 14 }, { x: 76, y: 14 }, { x: 84, y: 12 }] } } },
 ];
 
 /** CD entries with no demo that get none, and why. */
