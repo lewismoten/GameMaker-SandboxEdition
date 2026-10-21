@@ -64,9 +64,12 @@ registerEditor(['fli'], (host, project, file) => {
     counter.textContent = `Frame ${cur + 1} / ${anim.frames.length}`;
     scrub.max = String(anim.frames.length - 1);
     scrub.value = String(cur);
-    strip.querySelectorAll('.fli-frame').forEach((el, j) => {
+    const hadFocus = strip.contains(document.activeElement);
+    strip.querySelectorAll<HTMLElement>('.fli-frame').forEach((el, j) => {
       el.classList.toggle('current', j === cur);
       el.setAttribute('aria-selected', String(j === cur));
+      el.tabIndex = j === cur ? 0 : -1;
+      if (hadFocus && j === cur) el.focus({ preventScroll: true });
     });
     const el = strip.children[cur] as HTMLElement | undefined;
     if (el && strip.scrollWidth > strip.clientWidth) {

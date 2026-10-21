@@ -19,7 +19,8 @@
 .fli-monitor {
   align-self: flex-start;
   width: 100%;
-  max-width: 680px;
+  /* the whole editor (monitor, transport, strip) fits the window */
+  max-width: min(680px, max(320px, calc((100dvh - 420px) * 4 / 3 + 28px)));
   padding: 14px;
   border-radius: 14px;
   background: linear-gradient(#d8d2c0, #b9b29c);
