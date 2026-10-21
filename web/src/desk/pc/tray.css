@@ -223,26 +223,27 @@
   }
 }
 
-.pad-print {
+/* the pad's print (tray.ts padArt): the BBS's logon screen */
+.pad-art {
   position: absolute;
-  left: 10px;
-  bottom: 10px;
-  color: #ffd400;
-  font:
-    700 13px/1 ui-monospace,
-    'Courier New',
-    monospace;
-  letter-spacing: 0.12em;
-  opacity: 0.85;
+  inset: 3px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.pad-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* the cord runs back over the tray to the PC */
 .mouse-cord {
   position: absolute;
-  left: 46%;
+  left: 60%;
   top: -52px;
-  width: 30px;
-  height: 80px;
+  width: 34px;
+  height: 112px;
   border: 2px solid #c9c1a6;
   border-color: transparent transparent transparent #c9c1a6;
   border-radius: 40% 0 0 60%;
@@ -250,35 +251,59 @@
 
 .ball-mouse {
   position: absolute;
-  left: 58px;
-  top: 26px;
+  /* parked on the sand, clear of the print */
+  left: 98px;
+  top: 58px;
   width: 42px;
   height: 66px;
   border-radius: 20px 20px 22px 22px / 18px 18px 30px 30px;
-  background: linear-gradient(110deg, var(--plastic-hi), var(--plastic) 50%, var(--plastic-lo));
+  /* molded plastic: a soft highlight up top, darker toward the sides and the back */
+  background:
+    radial-gradient(ellipse 60% 40% at 38% 28%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(ellipse 90% 70% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.22)),
+    linear-gradient(110deg, var(--plastic-hi), var(--plastic) 50%, var(--plastic-lo));
   box-shadow:
-    inset 0 -3px 0 var(--plastic-edge),
-    3px 8px 6px rgba(0, 0, 0, 0.55);
+    inset 0 -4px 0 var(--plastic-edge),
+    inset 2px 0 2px rgba(255, 255, 255, 0.35),
+    inset -3px 0 3px rgba(0, 0, 0, 0.18),
+    4px 10px 8px rgba(0, 0, 0, 0.5),
+    1px 3px 2px rgba(0, 0, 0, 0.35);
   cursor: pointer;
 }
 
 .ball-mouse .mouse-btn {
   position: absolute;
-  top: 2px;
-  width: 18px;
-  height: 20px;
-  background: linear-gradient(#e9e3d0, #cfc7ad);
-  box-shadow: inset 0 -1px 0 #9e967c;
+  top: 3px;
+  width: 17px;
+  height: 21px;
+  background: linear-gradient(#f3eedf, #d6ceb5 70%, #bdb59b);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -2px 0 #9e967c,
+    0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .ball-mouse .mouse-btn.left {
-  left: 2px;
-  border-radius: 18px 2px 2px 3px;
+  left: 3px;
+  border-radius: 17px 2px 2px 4px;
 }
 
 .ball-mouse .mouse-btn.right {
-  right: 2px;
-  border-radius: 2px 18px 3px 2px;
+  right: 3px;
+  border-radius: 2px 17px 4px 2px;
+}
+
+/* the groove between the buttons */
+.ball-mouse::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  width: 2px;
+  height: 22px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: #8f8770;
 }
 
 .ball-mouse .mouse-logo {
