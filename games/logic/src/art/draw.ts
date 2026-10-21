@@ -122,7 +122,7 @@ export function centered(p: Pixels, y: number, s: string, col: number, scale = 1
 
 // A 3x5 font for silkscreen labels on the boards (R1, C4, U2, +5V...).
 const MICRO: Record<string, string> = {
-  A: '111101111101101',
+  A: '010101111101101',
   B: '110101110101110',
   C: '111100100100111',
   D: '110101101101110',
