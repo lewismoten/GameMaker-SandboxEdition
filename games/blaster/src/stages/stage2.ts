@@ -184,7 +184,7 @@ export function stage2(): Stage {
         kind: 'scroll',
         grid: a,
         kit: ks,
-        card: ['Data streams shove you', 'sideways. Leak Slugs never', 'stop coming: shoot them!'],
+        card: ['Data streams shove you', 'sideways. Leak Slugs never', 'stop coming: shoot them!', 'The stack fills. Slip by!'],
       },
       {
         file: 's2b',

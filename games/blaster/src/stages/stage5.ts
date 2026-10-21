@@ -57,7 +57,9 @@ function legA(g: Grid): void {
   g.mon(8, 32, 'slug');
   conga(g, 8, 34, 5, 'mothSL');
   conga(g, 7, 34, 5, 'mothSR');
+  // the registers, named like a 6502's: A, X, Y and the stack pointer
   for (let c = 2; c < 14; c++) if (c !== 8) g.set(c, 41, `reg${c % 4}`);
+  g.set(2, 41, 'rnA').set(5, 41, 'rnX').set(9, 41, 'rnY').set(12, 41, 'rnSP');
   for (const [c, d] of [
     [3, 43],
     [6, 44],
@@ -173,7 +175,7 @@ export function stage5(): Stage {
         kind: 'scroll',
         grid: a,
         kit: ks,
-        card: ['Inside the 486 itself.', 'Everything the virus knows', 'is waiting for you.'],
+        card: ['Inside the 486 itself.', 'Everything the virus knows', 'is waiting for you.', 'A, X, Y: just like a 6502!'],
       },
       {
         file: 's5b',

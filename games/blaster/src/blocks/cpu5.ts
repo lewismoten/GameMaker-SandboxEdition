@@ -78,6 +78,15 @@ function reg(a: StageArt, k: number): Pixels {
   return t;
 }
 
+/** A register's name plate, etched into the die beside its flickering bits. */
+function regName(a: StageArt, name: string): Pixels {
+  const p = a.pal;
+  const t = a.floor(0);
+  bevel(t, 0, 4, 20, 12, p.r('trim'), 3, 1);
+  micro(t, 10 - name.length * 2, 8, name, p.c('ink', 0));
+  return t;
+}
+
 function clockPulse(a: StageArt, k: number): Pixels {
   const p = a.pal;
   const t = a.floor(0);
@@ -91,6 +100,7 @@ export function cpuTiles(bs: BlockSet, a: StageArt): void {
   slices(bs, 'l1', cacheArray(a));
   slices(bs, 'fpu', fpu(a));
   for (let k = 0; k < 4; k++) bs.add(`reg${k}`, reg(a, k), { next: `reg${(k + 1) % 4}`, ntime: 2 });
+  for (const r of ['A', 'X', 'Y', 'SP']) bs.add(`rn${r}`, regName(a, r));
   for (let k = 0; k < 4; k++) bs.add(`clk${k}`, clockPulse(a, 3 - k), { next: `clk${(k + 1) % 4}`, ntime: 1 });
 }
 
