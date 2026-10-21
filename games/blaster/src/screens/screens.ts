@@ -7,6 +7,7 @@ import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
 import { dosText } from '../../../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, centered, outlined, text } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
@@ -242,9 +243,12 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
       lst(`${l.file}.lst`, [[`${l.file}.gif`, 4]]);
     });
   }
+  put(SANDLOGO, sandLogoFli());
   put('intro.fli', introFli());
   put('title.gif', gif(titleScreen()));
+  // the Sandbox Software logo first, then the game's own intro
   lst('title.lst', [
+    [SANDLOGO, 0],
     ['intro.fli', 0],
     ['title.gif', 12],
   ]);
