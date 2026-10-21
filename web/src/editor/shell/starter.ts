@@ -2,7 +2,7 @@
 // palette, blocks, monsters, a hero and sounds (borrowed from the CD library's SAMPLE),
 // on a fresh map with open ground inside a wall, so nothing starts out black and empty.
 import { Project } from '../core/project';
-import { libraryGame } from '../library';
+import { libraryGame } from '../core/library';
 import { loadCatalog } from '../../project/files';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame } from '../../formats/game';
 import { BACKBL, parseBlocks } from '../../formats/blocks';

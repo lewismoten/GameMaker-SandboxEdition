@@ -6,7 +6,7 @@ import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
 import { h, clear, download, numberField, toast } from '../../core/ui';
 import type { Project } from '../../core/project';
-import { libraryGame, libraryItems, type LibraryItem } from '../../library';
+import { libraryGame, libraryItems, type LibraryItem } from '../../core/library';
 import { parseBackdrop, serializeBackdrop } from '../../../formats/graphicScripts';
 import { cdName, normalize } from '../../../project/files';
 import { SIZEX, SIZEY } from '../../../gfx/screen';

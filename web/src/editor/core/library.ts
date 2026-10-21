@@ -1,8 +1,8 @@
 // The library: the free sample games ("gameware") from the Game-Maker CD, whose pictures,
 // blocks, monsters, sounds and music anyone may reuse in their own games.
-import { loadCatalog, loadHostedGame, type CatalogEntry, type GameFiles } from '../project/files';
-import { Project, kindOf, type FileKind } from './core/project';
-import type { ThumbSource } from './widgets/thumbs';
+import { loadCatalog, loadHostedGame, type CatalogEntry, type GameFiles } from '../../project/files';
+import { Project, kindOf, type FileKind } from './project';
+import type { ThumbSource } from '../widgets/thumbs';
 
 export interface LibraryItem {
   game: CatalogEntry;
