@@ -76,7 +76,12 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
       close(undefined);
     });
     append(dlg, [
-      h('header', { class: 'modal-head' }, h('h2', null, title), h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => close(undefined) }, '×')),
+      h(
+        'header',
+        { class: 'modal-head' },
+        h('h2', null, title),
+        h('button', { class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: () => close(undefined) }, '×'),
+      ),
       build(close),
     ]);
     document.body.append(dlg);
@@ -97,7 +102,12 @@ export async function promptText(title: string, label: string, value = '', patte
         },
       },
       h('label', null, label, input),
-      h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), h('button', { type: 'submit', class: 'primary' }, 'OK')),
+      h(
+        'div',
+        { class: 'buttons' },
+        h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
+        h('button', { type: 'submit', class: 'primary' }, 'OK'),
+      ),
     );
     return form;
   });
@@ -112,8 +122,20 @@ export async function confirmDialog(title: string, message: string, ok = 'OK'): 
 }
 
 /** Labeled number input bound to get/set. */
-export function numberField(label: string, get: () => number, set: (v: number) => void, opts: { min?: number; max?: number; step?: number; title?: string } = {}): HTMLLabelElement {
-  const input = h('input', { type: 'number', value: String(get()), min: opts.min, max: opts.max, step: opts.step ?? 1 });
+export function numberField(
+  label: string,
+  get: () => number,
+  set: (v: number) => void,
+  opts: { min?: number; max?: number; step?: number; title?: string } = {},
+): HTMLLabelElement {
+  const input = h('input', {
+    type: 'number',
+    value: String(get()),
+    min: opts.min,
+    max: opts.max,
+    step: opts.step ?? 1,
+    'aria-label': label ? undefined : opts.title,
+  });
   input.addEventListener('change', () => {
     let v = Math.round(Number(input.value) || 0);
     if (opts.min !== undefined) v = Math.max(opts.min, v);
@@ -130,8 +152,18 @@ export function checkField(label: string, get: () => boolean, set: (v: boolean) 
   return h('label', { class: 'check', title }, input, h('span', null, label));
 }
 
-export function selectField<T extends string | number>(label: string, options: [T, string][], get: () => T, set: (v: T) => void, title?: string): HTMLLabelElement {
-  const sel = h('select', null, ...options.map(([v, text]) => h('option', { value: String(v), selected: v === get() }, text)));
+export function selectField<T extends string | number>(
+  label: string,
+  options: [T, string][],
+  get: () => T,
+  set: (v: T) => void,
+  title?: string,
+): HTMLLabelElement {
+  const sel = h(
+    'select',
+    { 'aria-label': label ? undefined : title },
+    ...options.map(([v, text]) => h('option', { value: String(v), selected: v === get() }, text)),
+  );
   sel.addEventListener('change', () => {
     const opt = options.find(([v]) => String(v) === sel.value);
     if (opt) set(opt[0]);

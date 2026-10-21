@@ -769,19 +769,25 @@ registerEditor(['gam'], (host, project) => {
     role: 'separator',
     'aria-orientation': 'vertical',
     'aria-label': 'Drag to resize the screens and music panel',
-    title: 'Drag to resize the panel',
+    title: 'Drag to resize the panel (or use the arrow keys)',
     tabIndex: 0,
+    'aria-valuemin': 160,
+    'aria-valuemax': 640,
+    'aria-valuenow': savedWidth >= 160 && savedWidth <= 640 ? savedWidth : 250,
   });
+  const setSideW = (w: number) => {
+    grator.style.setProperty('--grator-side-w', `${w}px`);
+    store.set('gm-grator-side-w', String(w));
+    handle.setAttribute('aria-valuenow', String(Math.round(w)));
+    draw();
+  };
   handle.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     handle.setPointerCapture(e.pointerId);
     const x0 = e.clientX;
     const w0 = side.getBoundingClientRect().width;
     const move = (ev: PointerEvent) => {
-      const w = Math.round(Math.max(160, Math.min(640, w0 - (ev.clientX - x0))));
-      grator.style.setProperty('--grator-side-w', `${w}px`);
-      store.set('gm-grator-side-w', String(w));
-      draw();
+      setSideW(Math.round(Math.max(160, Math.min(640, w0 - (ev.clientX - x0)))));
     };
     const up = () => (handle.removeEventListener('pointermove', move), handle.removeEventListener('pointerup', up));
     handle.addEventListener('pointermove', move);
@@ -790,10 +796,7 @@ registerEditor(['gam'], (host, project) => {
   handle.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     e.preventDefault();
-    const w = Math.max(160, Math.min(640, side.getBoundingClientRect().width + (e.key === 'ArrowLeft' ? 20 : -20)));
-    grator.style.setProperty('--grator-side-w', `${w}px`);
-    store.set('gm-grator-side-w', String(w));
-    draw();
+    setSideW(Math.max(160, Math.min(640, side.getBoundingClientRect().width + (e.key === 'ArrowLeft' ? 20 : -20))));
   });
   function renderSide(): void {
     const screens: { label: string; file: string; scene: number }[] = [];
@@ -1190,6 +1193,7 @@ registerEditor(['gam'], (host, project) => {
                           sceneOptions(),
                           () => l.toScene,
                           (v) => ((l.toScene = v), save(), draw(), renderPanel()),
+                          `Link ${i + 1} goes to`,
                         ),
                       ),
                       kind === 'start' ? null : h('td', null, l.toScene === NOSCENE ? '' : pointField(l.from, 'From', selected)),
