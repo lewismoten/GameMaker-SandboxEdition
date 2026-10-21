@@ -2,7 +2,7 @@
 // released (NOTICE.md). Click it to read it larger. Nothing in it is made up: the facts and
 // the one quote are the ones NOTICE.md gives, with their source.
 import './newsClipping.css';
-import { h } from '../editor/core/ui';
+import { h } from '../../editor/core/ui';
 
 const QUOTE = 'if there is interest in preserving the old games you guys made then porting Game-Maker to modern OSes is the first step';
 

@@ -2,10 +2,10 @@
 // telephone (lift the handset for a dial tone), and a swing-arm lamp that is on when it
 // is dark outside (click it to switch it yourself).
 import './deskProps.css';
-import { h } from '../editor/core/ui';
-import { output } from '../audio/output';
+import { h } from '../../editor/core/ui';
+import { output } from '../../audio/output';
 import { watchDaylight } from './daylight';
-import { deskMug } from './mug/mug';
+import { deskMug } from '../mug/mug';
 
 const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
   const el = h('div', { class: cls });
@@ -15,7 +15,7 @@ const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
 
 export function mug(): HTMLElement {
   // the mug lives in mug.ts: printed with the picture chosen in its viewer
-  return deskMug(() => void import('./mug/mugViewer').then((m) => m.openMugViewer()));
+  return deskMug(() => void import('../mug/mugViewer').then((m) => m.openMugViewer()));
 }
 
 /** A dial tone for as long as the handset is off the hook. */

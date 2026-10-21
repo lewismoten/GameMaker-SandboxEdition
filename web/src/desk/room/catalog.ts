@@ -1,7 +1,7 @@
 // The paper shareware catalog on the desk: every shareware game made with Game-Maker,
 // with how to get it (the BBS) and the author's registration notice.
-import { h, clear } from '../editor/core/ui';
-import { creditLine, type CatalogEntry } from '../project/files';
+import { h, clear } from '../../editor/core/ui';
+import { creditLine, type CatalogEntry } from '../../project/files';
 
 const STYLE = `
 .paper-catalog { width: min(760px, 100%); max-height: 86vh; overflow: auto; padding: 28px 34px;
