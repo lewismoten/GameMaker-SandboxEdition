@@ -2,6 +2,8 @@
 //  - Sound Blaster music (.cmf) through the OPL2 AudioWorklet,
 //  - PC speaker effects (.snd) as a square wave stepping one frequency per timer tick,
 //  - Sound Blaster digital effects (.voc) as AudioBuffers.
+// The method names follow PLAYGAME.C (PlaySong, DoSound, PlaySbVocFile). Everything
+// passes through one master gain into the shared volume node from output.ts.
 import workletUrl from './music.worklet.ts?worker&url';
 import type { MusicMessage } from './music.worklet';
 import { CMF_GAMEMAKER_CLOCK, isCmf, parseCmf } from '../formats/cmf';
@@ -27,6 +29,8 @@ export class AudioEngine {
       this.master = this.ctx.createGain();
       this.master.gain.value = 0.8;
       this.master.connect(output(this.ctx));
+      // The OPL2 emulator and CMF sequencer run inside the worklet (audio thread); this
+      // side only posts load/stop/pause messages to it.
       this.musicReady = this.ctx.audioWorklet
         .addModule(workletUrl)
         .then(() => {
@@ -75,6 +79,7 @@ export class AudioEngine {
     osc.type = 'square';
     gain.gain.value = 0;
     osc.connect(gain).connect(this.master);
+    // The whole effect is scheduled up front on the audio clock, one step per timer tick.
     const t0 = this.ctx.currentTime + 0.005;
     const step = 1 / TICK_RATE;
     for (let i = 0; i < freqs.length; i++) {
