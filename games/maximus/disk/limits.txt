@@ -95,8 +95,14 @@ ANIMATION STEPS PER MONSTER
 PATH CORNERS PER MONSTER
   Limit: 10 (x 2 paths)
   Used:  10 (hopping slimes,
-         figure eights)
-  Where: *.MON
+         figure eights); every
+         star whale of a pod
+         swims the same
+         4-corner loop on the
+         same clock, so 45 of
+         them hold a word
+         together
+  Where: *.MON, SECTOR1.MAP
 
 MONSTER BLOCKS IN A .MBL
   Limit: 100
@@ -188,13 +194,15 @@ PICTURES BETWEEN SCENES
   Limit: any GIF, FLI, BKD,
          TXT or LST
   Used:  24 GIFs, 23 FLIs, 94
-         BKD windows into 6
+         BKD windows into 7
          tall GIFs (a sector's
          planet cards, each
          with its world's
-         scan), 93 slide shows
+         scan; the Core's
+         places; three hails),
+         93 slide shows
   Where: CARDS1..5.GIF,
-         PLACES.GIF
+         PLACES.GIF, HAILS.GIF
 
 Some limits shaped the game:
 
