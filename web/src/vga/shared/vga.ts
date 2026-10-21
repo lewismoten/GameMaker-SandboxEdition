@@ -4,6 +4,7 @@
 // Like a real monitor, the picture fills its box; it is drawn from a whole-number
 // upscale of 320x200 so pixels keep hard edges.
 import { FONT_CP437 } from '../../retro/text/cp437';
+import { ProgramAborted } from '../../retro/text/textInput';
 import { Keyboard, type TypedKey } from '../../input/keyboard';
 
 export const SIZEX = 320;
@@ -192,8 +193,17 @@ export class Vga {
     return Math.floor(((performance.now() - this.started) * 18.2065) / 1000);
   }
 
+  /** Set when the program is being stopped from outside: tick() throws from then on. */
+  private aborted = false;
+
+  /** Stops the designer running on this screen (Computer.stopProgram). */
+  abort(): void {
+    this.aborted = true;
+  }
+
   /** Lets the browser draw and take input; the designers' busy loops call this. */
   tick(): Promise<void> {
+    if (this.aborted) return Promise.reject(new ProgramAborted());
     return new Promise((r) => requestAnimationFrame(() => r()));
   }
 

@@ -10,9 +10,14 @@ export interface Key {
   alt: boolean;
 }
 
+/** Thrown into a program that is being stopped from outside (Computer.stopProgram). */
+export class ProgramAborted extends Error {}
+
 export class TextKeys {
   private queue: Key[] = [];
-  private waiters: ((k: Key) => void)[] = [];
+  private waiters: { resolve: (k: Key) => void; reject: (e: Error) => void }[] = [];
+  /** Set while a program is being stopped: every wait for a key throws ProgramAborted. */
+  private aborting = false;
   private target?: EventTarget;
   enabled = true;
 
@@ -38,7 +43,7 @@ export class TextKeys {
   /** Feeds a key as if typed (used by the desk to "type" commands). */
   push(k: Key): void {
     const w = this.waiters.shift();
-    if (w) w(k);
+    if (w) w.resolve(k);
     else this.queue.push(k);
   }
 
@@ -47,13 +52,28 @@ export class TextKeys {
   }
 
   next(): Promise<Key> {
+    if (this.aborting) return Promise.reject(new ProgramAborted());
     const k = this.queue.shift();
     if (k) return Promise.resolve(k);
-    return new Promise((resolve) => this.waiters.push(resolve));
+    return new Promise((resolve, reject) => this.waiters.push({ resolve, reject }));
+  }
+
+  /** Stops the program waiting for keys: its waits throw ProgramAborted until resume(). */
+  abort(): void {
+    this.aborting = true;
+    this.queue.length = 0;
+    const w = this.waiters;
+    this.waiters = [];
+    w.forEach((f) => f.reject(new ProgramAborted()));
+  }
+
+  resume(): void {
+    this.aborting = false;
   }
 
   /** A key if one is waiting, else undefined. */
   poll(): Key | undefined {
+    if (this.aborting) throw new ProgramAborted();
     return this.queue.shift();
   }
 
@@ -65,7 +85,7 @@ export class TextKeys {
   cancel(): void {
     const w = this.waiters;
     this.waiters = [];
-    w.forEach((f) => f(key('Escape')));
+    w.forEach((f) => f.resolve(key('Escape')));
   }
 }
 
