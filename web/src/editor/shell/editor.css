@@ -385,6 +385,19 @@ main.home {
 @media (max-width: 640px) {
   .kind-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  /* the file picker's actions share rows instead of one per row */
+  .pick-bar {
+    gap: 6px;
+  }
+  .pick-bar .spacer {
+    display: none;
+  }
+  .pick-bar > button {
+    flex: 1 1 auto;
+    padding: 6px 10px;
+    font-size: 13px;
   }
 }
 
@@ -404,6 +417,16 @@ main.home {
 .kind-card small {
   color: var(--muted);
   font-size: 11px;
+}
+
+@media (max-width: 640px) {
+  .kind-card {
+    gap: 2px;
+    padding: 8px 6px;
+  }
+  .kind-card .kind-icon {
+    font-size: 22px;
+  }
 }
 
 .editor {
