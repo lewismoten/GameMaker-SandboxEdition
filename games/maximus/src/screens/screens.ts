@@ -347,8 +347,11 @@ export function wonScreens(): Map<string, Uint8Array> {
     spaceBg(c, 73);
     logo(c, 50, 4);
     c.center(100, 'DELIVERED.', C('yellow')[6], { scale: 2, outline: 0 });
-    c.center(140, 'THANK YOU FOR PLAYING', C('cyan')[6], { shadow: 0 });
-    c.center(156, 'SANDBOX SOFTWARE 1995', C('grey')[4]);
+    // the couriers' creed, for the letter carriers this game is dedicated to
+    c.center(122, 'NEITHER SNOW NOR RAIN NOR HEAT', C('ice')[5], { shadow: 0 });
+    c.center(131, 'NOR GLOOM OF NIGHT...', C('ice')[5], { shadow: 0 });
+    c.center(150, 'THANK YOU FOR PLAYING', C('cyan')[6], { shadow: 0 });
+    c.center(166, 'SANDBOX SOFTWARE 1995', C('grey')[4]);
     out.set('won3.gif', gif(c));
   }
   out.set(
