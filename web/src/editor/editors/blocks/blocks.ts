@@ -490,7 +490,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         'p',
         { class: 'hint' },
         sprites ? 'Color 255 is transparent. ' : '',
-        'Pick a block on the left, paint it in the middle, and set how it behaves on the right.',
+        'Pick a block, paint it, then set how it behaves.',
       ),
       chooser.el,
     ),

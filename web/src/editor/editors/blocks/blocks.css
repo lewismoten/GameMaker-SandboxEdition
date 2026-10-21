@@ -47,7 +47,7 @@
 .blk-canvas {
   display: block;
   width: 100%;
-  max-width: min(520px, max(260px, calc(100dvh - 300px)));
+  max-width: min(520px, max(260px, calc(100dvh - 350px)));
   height: auto;
   aspect-ratio: 1;
   border: 1px solid var(--border);
@@ -63,6 +63,16 @@
 }
 .blk-side .swatches {
   max-width: none;
+}
+/* wide screens: colors and properties scroll by themselves, so the page never does */
+@media (min-width: 1181px) {
+  .blk-side {
+    position: sticky;
+    top: 8px;
+    max-height: max(320px, calc(100dvh - 200px));
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
 }
 .blk-side .panel {
   margin: 0;
