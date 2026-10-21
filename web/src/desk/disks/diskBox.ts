@@ -18,7 +18,7 @@ export type DiskAction = 'play' | 'design' | 'modern';
 function printedLabel(d: Disk, n: number): HTMLElement {
   const g = d.catalog!;
   // © and the year kept together (a no-break space), never split across lines
-  return printedDiskLabel(g, `©\u00a0${g.year ?? 1995}`, d.note, diskTag(d, n));
+  return printedDiskLabel(g, `©\u00a0${g.year ?? 1995}`, undefined, diskTag(d, n));
 }
 
 /** "Disk 2" in the title area of a game that takes more than one disk (empty otherwise). */
@@ -49,8 +49,9 @@ export function floppyElement(d: Disk, small = false, n = 1): HTMLElement {
     h('div', { class: 'shutter' }),
     d.kind === 'original'
       ? printedLabel(d, n)
-      : d.kind === 'rsd'
-        ? rsdDiskLabel(g, label, diskTag(d, n), d.note)
+      : d.kind === 'rsd' || d.kind === 'gameware'
+        ? // the CD's disks have printed labels; hand-written ones (with a scribbled note) are the user's
+          rsdDiskLabel(g, label, diskTag(d, n), d.kind === 'gameware' ? { name: g?.company ?? g?.author ?? 'CD Library', band: d.color } : undefined)
         : h(
             'div',
             { class: 'label' },

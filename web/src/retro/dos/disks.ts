@@ -56,13 +56,12 @@ function hash(s: string): number {
 function looks(g: CatalogEntry): Pick<Disk, 'color' | 'stripe' | 'note' | 'density'> {
   const group = g.company ?? g.author;
   const rsd = RSD_GAMES.includes(g.id);
-  const h = hash(g.id);
   // Each publisher gets its own color, in the order they appear; others are light grey.
   const groupIndex = group ? [...new Set(PUBLISHERS)].indexOf(group) : -1;
   return {
     color: rsd ? RSD_PINK : groupIndex >= 0 ? COLORS[groupIndex % COLORS.length] : '#bdb8ad',
     stripe: rsd ? '#0b0b0b' : STRIPES[hash(`${group ?? g.id}*`) % STRIPES.length],
-    note: h % 10 < 4 ? NOTES[(h >>> 4) % NOTES.length] : undefined,
+    // printed labels carry no scribbles; notes are for the user's own hand-written disks
     density: (g.bytes ?? 0) > DD_BYTES ? 'HD' : 'DD',
   };
 }
@@ -77,7 +76,10 @@ export async function loadDisks(): Promise<Disk[]> {
   PUBLISHERS.length = 0;
   for (const g of gameware) if (!RSD_GAMES.includes(g.id) && (g.company ?? g.author)) PUBLISHERS.push((g.company ?? g.author)!);
   const disks: Disk[] = [];
-  const order = [...RSD_GAMES.map((id) => gameware.find((g) => g.id === id)).filter((g): g is CatalogEntry => !!g), ...gameware.filter((g) => !RSD_GAMES.includes(g.id))];
+  const order = [
+    ...RSD_GAMES.map((id) => gameware.find((g) => g.id === id)).filter((g): g is CatalogEntry => !!g),
+    ...gameware.filter((g) => !RSD_GAMES.includes(g.id)),
+  ];
   order.forEach((g) => {
     const rsd = RSD_GAMES.includes(g.id);
     disks.push({
@@ -119,6 +121,8 @@ export async function loadDisks(): Promise<Disk[]> {
       label: p.name,
       color: '#d8d2c0',
       stripe: STRIPES[hash(p.id) % STRIPES.length],
+      // a scribbled note now and then, as on any kid's own disks
+      note: hash(p.id) % 10 < 4 ? NOTES[(hash(p.id) >>> 4) % NOTES.length] : undefined,
       density: 'HD',
       gam: p.gam,
       bytes: 0,
