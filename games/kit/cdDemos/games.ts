@@ -22,6 +22,8 @@ export const CD_DEMO_GAMES: CdDemoGame[] = [
   { id: 'donut', kind: 'gameware', gam: 'donut.gam' },
   { id: 'glub', kind: 'gameware', gam: 'glub.gam' },
   { id: 'heart', kind: 'gameware', gam: 'heart.gam' },
+  // its title scene names PEACH.REC, which the CD does not have; its DEMO.REC is the author's recording
+  { id: 'peach', kind: 'gameware', gam: 'peach.gam', inGame: 'demo.rec' },
   { id: 'outerlim', kind: 'gameware', gam: 'outerg.gam', bot: { links: 'any' } },
   { id: 'penguin', kind: 'gameware', gam: 'penguin.gam' },
   { id: 'rings5', kind: 'gameware', gam: 'quest.gam' },

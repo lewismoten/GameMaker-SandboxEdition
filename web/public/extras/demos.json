@@ -32,6 +32,17 @@
       "recCrc": 3900134381
     },
     {
+      "id": "peach",
+      "file": "demo.rec",
+      "inGame": true,
+      "gam": "peach.gam",
+      "gamCrc": 2495432776,
+      "ticks": 51889,
+      "made": "The game’s own recording, which its title screen never plays (it names no demo, or a file the game does not have); listed here so it can be watched.",
+      "date": "2026-10-21",
+      "recCrc": 3185604571
+    },
+    {
       "id": "outerlim",
       "file": "outerlim.rec",
       "gam": "outerg.gam",
@@ -98,7 +109,7 @@
       "gam": "houses.gam",
       "gamCrc": 2620926277,
       "ticks": 1049,
-      "made": "The game’s own recording, which its title screen never named; listed here so it can be watched.",
+      "made": "The game’s own recording, which its title screen never plays (it names no demo, or a file the game does not have); listed here so it can be watched.",
       "date": "2026-10-21",
       "recCrc": 717132542
     },
