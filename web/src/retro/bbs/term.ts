@@ -61,8 +61,9 @@ export class Term {
         modemSignal("receive");
         await sleep(60);
       }
-      // wake a board waiting for a key, so it runs into the dropped line
-      this.h.keys.push(typed("Escape"));
+      // wake a board waiting for a key (Enter ends a line being typed, too), so it runs
+      // into the dropped line
+      this.h.keys.push(typed("Enter"));
     })();
     return true;
   }
