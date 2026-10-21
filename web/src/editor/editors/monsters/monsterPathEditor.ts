@@ -668,14 +668,14 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
         'label',
         { class: 'field' },
         h('span', null, kind() === 'chase' ? 'Character at' : 'Starts at'),
-        h('div', { class: 'mpath-row' }, startSel, map && h('button', { onclick: pickStart, title: 'Pick the start block on the whole map' }, 'Pick on map…')),
+        h('div', { class: 'mpath-row' }, startSel, map && h('button', { onclick: pickStart, title: 'Pick the start block on the whole map' }, 'Pick…')),
       ),
       h(
         'button',
         { class: playing ? 'primary mpath-play' : 'mpath-play', onclick: togglePlay, title: 'Play or pause the preview (Space)' },
         playing ? '❚❚ Pause' : '▶ Play',
       ),
-      h('button', { onclick: restartWalker, title: 'Start the walk over' }, '↺ Restart'),
+      h('button', { onclick: restartWalker, title: 'Start the walk over', 'aria-label': 'Restart' }, '↺'),
     );
   }
 
