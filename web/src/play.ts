@@ -5,7 +5,7 @@
 //   exported web apps     ./game/manifest.json lists the bundled game files
 import { mountPlayer } from './player/player';
 import { watchForUpdates } from './devReload';
-import { GameFiles, loadCatalog, type CatalogEntry } from './project/files';
+import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
 import { registerServiceWorker } from './offline';
@@ -57,7 +57,9 @@ async function choose(): Promise<{ id: string; title: string; gam: string; files
     if (p) return { id: `project:${projectId}`, title: p.record.name, gam: p.record.gam, files: p.files, back: './' };
   }
   if (gameId) {
-    const entry = (await loadCatalog()).find((g) => g.id === gameId && g.gam);
+    // the short catalog: the play page needs no manuals; a shareware game's notice comes on its own
+    const listed = (await loadCatalogList()).find((g) => g.id === gameId && g.gam);
+    const entry = listed?.kind === 'shareware' ? await withDetails(listed) : listed;
     if (entry) {
       // the game starts once its .gam is in; the rest arrive while it plays, as needed (streamGame.ts)
       const streamed = streamHostedGame(entry);
