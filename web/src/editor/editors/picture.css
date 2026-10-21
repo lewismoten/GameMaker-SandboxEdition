@@ -2,7 +2,7 @@
 .pic-canvas {
   display: block;
   width: 100%;
-  max-width: min(960px, max(320px, calc((100dvh - 250px) * 1.6)));
+  max-width: min(960px, max(320px, calc((100dvh - 250px) * var(--ar, 1.6))));
   border-radius: 6px;
   cursor: crosshair;
   image-rendering: pixelated;

@@ -56,6 +56,7 @@ registerEditor(['gif'], (host, project, file) => {
   const info = h('div', { class: 'meta' });
   const draw = () => {
     paintIndexed(canvas, img.pixels, img.width, img.height, img.palette);
+    canvas.style.setProperty('--ar', String(img.width / Math.max(1, img.height)));
     const ctx = canvas.getContext('2d')!;
     ctx.strokeStyle = '#000';
     ctx.strokeRect(overlay.x - 0.5, overlay.y - 0.5, BLEN + 1, BLEN + 1);
