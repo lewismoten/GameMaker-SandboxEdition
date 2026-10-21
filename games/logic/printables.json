@@ -133,6 +133,10 @@
               "a": "One gate at a time. Switch on the top wire from above, wait for the left gate, switch it off and go through. Then start the dead battery from below, blow its fuse as soon as the top gate has opened, and walk around to the gate."
             },
             {
+              "q": "The Breadboard Computer: The clock never stops racing up the hall, and the screen is just a row of boxes.",
+              "a": "Run it like the real thing: HALT, then STEP. The pink switch at the bottom throws the relay that halts the 555 clock. Then bump the STEP button: one tick of current boots the LCD (READY!) and opens the gate. The hall is dark now."
+            },
+            {
               "q": "Home Sweet Ohm: I pressed the timer button, but nothing happened!",
               "a": "The timer only lets current through if it is already waiting there. First slip across the flashing wire and turn on the switch in the bottom wall, come back, THEN roll over the arrows and press the timer. Wait for the gate, wait for the wire to go dark, and go home."
             }

@@ -138,6 +138,36 @@ function led555Pic(st: Style, high: boolean): Pixels {
   return p;
 }
 
+/** A solderless breadboard: cream plastic and rows of holes on a tenth-inch grid. */
+function breadboardPic(seed: number): Pixels {
+  const p = new Pixels(20, 20);
+  const R = rng(seed * 5 + 1);
+  p.map((x, y) => shadeAt(r('paper'), 2, 3, 0.55 + (R() - 0.5) * 0.3, x, y));
+  for (const y of [2, 7, 12, 17])
+    for (const x of [2, 7, 12, 17]) {
+      p.rect(x - 1, y - 1, 3, 3, c('paper', 1)).set(x, y, c('ink', 1));
+      if (seed === 2 && x === 12 && y === 2) p.rect(x - 1, y - 1, 3, 3, c('metal', 4)); // a leg left in
+    }
+  return p;
+}
+
+/** A 40-pin chip across three blocks (part 0, 1, 2): the 6502, on the breadboard. */
+function cpuPic(st: Style, part: number): Pixels {
+  const w = new Pixels(60, 20);
+  const bb = breadboardPic(0);
+  for (let i = 0; i < 3; i++) w.blit(bb, i * 20, 0);
+  for (let i = 0; i < 20; i++) w.rect(1 + i * 3, 1, 2, 3, c('metal', 4)).rect(1 + i * 3, 16, 2, 3, c('metal', 4));
+  bevel(w, 0, 4, 60, 12, r('ink'), 1);
+  w.disc(2.5, 9.5, 1.6, c('ink', 0));
+  micro(w, 9, 5, 'MOS', c('paper', 1));
+  micro(w, 25, 8, '6502', c('paper', 3), 1);
+  micro(w, 44, 11, '1MHZ', c('metal', 2));
+  const p = new Pixels(20, 20);
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, w.get(x + part * 20, y));
+  void st;
+  return p;
+}
+
 function outletPic(st: Style): Pixels {
   const p = floorPic(st, 0);
   bevel(p, 3, 1, 14, 18, r('paper'), 2);
@@ -220,9 +250,11 @@ export interface Battery {
   kind: BatteryKind;
   /** The monster (spark) it gives birth to. */
   mon: number;
+  /** A 555's ticks high (it is low half as long). */
+  high?: number;
 }
 
-export function buildTiles(st: Style, batteries: Battery[] = []): BlockSet {
+export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadboard?: boolean } = {}): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, px: Pixels, def: BlockDef = {}) => bs.add(name, px, def);
   const vp = new Pixels(20, 20, c('night', 0));
@@ -259,13 +291,33 @@ export function buildTiles(st: Style, batteries: Battery[] = []): BlockSet {
       add(`pulseOff${k}`, batteryPic(st, 'pulse', false), { solid: SOLID, next: `pulse${k}`, ntime: PULSE_OFF });
     }
     if (b.kind === 'astable') {
-      add(`chip${k}`, chip555Pic(st, true), { solid: SOLID, birthMon: b.mon, birthTime: SPARK_EVERY, next: `chipLow${k}`, ntime: ASTABLE_HIGH });
-      add(`chipLow${k}`, chip555Pic(st, false), { solid: SOLID, next: `chip${k}`, ntime: ASTABLE_LOW });
+      const high = b.high ?? ASTABLE_HIGH;
+      add(`chip${k}`, chip555Pic(st, true), { solid: SOLID, birthMon: b.mon, birthTime: SPARK_EVERY, next: `chipLow${k}`, ntime: high });
+      add(`chipLow${k}`, chip555Pic(st, false), { solid: SOLID, next: `chip${k}`, ntime: high === ASTABLE_HIGH ? ASTABLE_LOW : high / 2 });
     }
   }
-  if (batteries.some((b) => b.kind === 'astable')) {
-    add('out555', led555Pic(st, true), { solid: SOLID, next: 'out555Low', ntime: ASTABLE_HIGH });
-    add('out555Low', led555Pic(st, false), { solid: SOLID, next: 'out555', ntime: ASTABLE_LOW });
+  // the ':' LEDs follow the room's first 555
+  const first555 = batteries.find((b) => b.kind === 'astable');
+  if (first555) {
+    const high = first555.high ?? ASTABLE_HIGH;
+    add('out555', led555Pic(st, true), { solid: SOLID, next: 'out555Low', ntime: high });
+    add('out555Low', led555Pic(st, false), { solid: SOLID, next: 'out555', ntime: high === ASTABLE_HIGH ? ASTABLE_LOW : high / 2 });
+  }
+  // A breadboard board: its floor is a solderless breadboard, its wires blue jumpers, and a
+  // 6502 sits across three blocks.
+  if (opts.breadboard) {
+    for (let k = 0; k < 3; k++) add(`bb${k}`, breadboardPic(k));
+    const pad = breadboardPic(1);
+    pad.ring(9.5, 9.5, 8, c('gold', 2)).ring(9.5, 9.5, 7, c('gold', 1));
+    micro(pad, 4, 8, 'GND', c('ink', 0));
+    add('bbPad', pad);
+    for (let m = 1; m < 16; m++) {
+      const p = trace(breadboardPic(m % 3), m, r('blue'));
+      // a stripped end where a jumper plugs in
+      if (m === N || m === E || m === S || m === W) p.disc(9.5, 9.5, 1.6, c('metal', 4));
+      add(`jumper${m}`, p);
+    }
+    for (let k = 0; k < 3; k++) add(`cpu${k}`, cpuPic(st, k), { solid: SOLID });
   }
   return bs;
 }

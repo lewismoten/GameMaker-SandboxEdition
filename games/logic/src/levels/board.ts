@@ -24,6 +24,8 @@ export interface WireSpec {
   kind?: BatteryKind;
   /** Pink control current (throws relays) instead of ordinary current. */
   ctrl?: boolean;
+  /** An astable 555's ticks high (low is half that). */
+  high?: number;
 }
 
 export interface BoardSpec {
@@ -33,6 +35,8 @@ export interface BoardSpec {
   /** Lines for the title card (a quip about the appliance). */
   card: string[];
   rows: string[];
+  /** 'breadboard': a solderless breadboard and jumper wires instead of a circuit board. */
+  look?: 'breadboard';
   wires: Record<string, WireSpec>;
   /** Watt's key presses that solve it: U D L R moves, "." waits a beat, "w" a long wait. */
   solution: string;
@@ -51,7 +55,9 @@ const PARTS: Record<string, string> = {
   c: 'relayNC',
 };
 const DIODES: Record<string, string> = { '>': 'diodeE', '<': 'diodeW', '^': 'diodeN', v: 'diodeS' };
-const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 'led', '~': 'xtal' };
+const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 'led', '~': 'xtal', '[': 'cpu0', '|': 'cpu1', ']': 'cpu2' };
+/** The two halves of a character LCD sunk in the housing, on a wire. */
+const LCD: Record<string, string> = { '{': 'lcd0', '}': 'lcd1' };
 const DIRS: Record<string, [number, number, number, number]> = { U: [0, -1, N, S], D: [0, 1, S, N], L: [-1, 0, W, E], R: [1, 0, E, W] };
 
 export interface Board {
@@ -103,6 +109,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
   if (specs.length > SLOTS.length) throw new Error(`${room}: ${specs.length} boards, room for ${SLOTS.length}`);
   const wires: Wire[] = [];
   const kinds: BatteryKind[] = [];
+  const highs: (number | undefined)[] = [];
   const parsed: Parsed[] = specs.map((spec, n) => {
     const [ox, oy] = SLOTS[n];
     const { rows } = spec;
@@ -144,6 +151,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
       wireOf.set(letter, wires.length);
       wires.push({ corners, ctrl: w.ctrl });
       kinds.push(w.kind ?? 'steady');
+      highs.push(w.high);
       wireCells.set(letter, cells);
       if (w.ctrl) for (const [cx, cy] of cells) ctrlCells.add(`${cx},${cy}`);
     }
@@ -158,8 +166,8 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
   });
 
   const mons = buildMonsters(mb, wires);
-  const batteries: Battery[] = kinds.map((kind, k) => ({ k, kind, mon: mons.id(`wire${k}`) }));
-  const tiles = buildTiles(STYLES[room], batteries);
+  const batteries: Battery[] = kinds.map((kind, k) => ({ k, kind, mon: mons.id(`wire${k}`), high: highs[k] }));
+  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard') });
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
   let placed = 0;
@@ -167,7 +175,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     const { spec, ox, oy, traceBits, sideGates, ctrlCells } = p;
     const at = (x: number, y: number) => spec.rows[y]?.[x] ?? ' ';
     const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
-    const isWall = (ch: string) => ch === '#' || ch === ' ' || ch === ':' || ch in DECOR || isBattery(ch);
+    const isWall = (ch: string) => ch === '#' || ch === ' ' || ch === ':' || ch in DECOR || ch in LCD || isBattery(ch);
     /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
     const partName = (ch: string, x: number, y: number) => {
       const tb = traceBits.get(`${x},${y}`) ?? 0;
@@ -180,13 +188,18 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     };
     let exit = { x: 0, y: 0 };
     const put = (x: number, y: number, name: string) => (map.blocks[(oy + y) * MLEN + ox + x] = tiles.id(name));
-    const floor = (x: number, y: number) => `floor${(x * 7 + y * 3 + ((x * y) % 5)) % 3}`;
+    const bb = spec.look === 'breadboard';
+    const floor = (x: number, y: number) => `${bb ? 'bb' : 'floor'}${(x * 7 + y * 3 + ((x * y) % 5)) % 3}`;
+    const traceName = (tb: number) => `${bb ? 'jumper' : 'trace'}${tb}`;
     for (let y = 0; y < ROWS; y++)
       for (let x = 0; x < COLS; x++) {
         const ch = at(x, y);
         const tb = traceBits.get(`${x},${y}`) ?? 0;
         if (ch === ' ') put(x, y, 'void');
-        else if (ch === '#') {
+        else if (ch in LCD) {
+          if (!tb) throw new Error(`${spec.file}: the LCD at ${x},${y} is on no wire`);
+          put(x, y, `conduit${tb}`);
+        } else if (ch === '#') {
           if (tb) put(x, y, `conduit${tb}`);
           else {
             let m = 0;
@@ -209,12 +222,12 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
           exit = { x: ox + x, y: oy + y };
         } else if (ch === '$') put(x, y, 'screw');
         else if (ch in DIODES) put(x, y, DIODES[ch]);
-        else if (ch === '@') put(x, y, tb ? `trace${tb}` : 'pad');
-        else if (ch === '.' || ch in PARTS) put(x, y, tb ? `trace${tb}` : floor(x, y));
+        else if (ch === '@') put(x, y, tb ? traceName(tb) : bb ? 'bbPad' : 'pad');
+        else if (ch === '.' || ch in PARTS) put(x, y, tb ? traceName(tb) : floor(x, y));
         else throw new Error(`${spec.file}: what is '${ch}' at ${x},${y}?`);
-        if (ch in PARTS) {
+        if (ch in PARTS || ch in LCD) {
           if (placed >= LASTMM) throw new Error(`${room}: too many parts`);
-          map.monsters[placed++] = { monnum: mons.id(partName(ch, x, y)), status: 0, xtra: 0, curx: ox + x, cury: oy + y, extra: 0 };
+          map.monsters[placed++] = { monnum: mons.id(ch in LCD ? LCD[ch] : partName(ch, x, y)), status: 0, xtra: 0, curx: ox + x, cury: oy + y, extra: 0 };
         }
       }
     if (!exit.x) throw new Error(`${spec.file}: no outlet`);
