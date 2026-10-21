@@ -14,11 +14,11 @@ import { Disk } from '../kit/disk';
 import { buildPalette } from './src/art/pal';
 import { buildShip, shipBlocks } from './src/characters/ship';
 import { DRIFT } from './src/ids';
-import { buildSounds } from './sounds';
+import { buildSounds } from './src/sound/sounds';
 import { buildGame } from './src/game';
 import { STAGES } from './src/stages/stages';
 import { buildLeg } from './src/stages/stage';
-import { buildScreens } from './screens';
+import { buildScreens } from './src/screens/screens';
 import { demoRecording } from './src/demo';
 
 const here = dirname(fileURLToPath(import.meta.url));

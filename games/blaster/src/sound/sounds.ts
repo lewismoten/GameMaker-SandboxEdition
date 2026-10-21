@@ -1,9 +1,9 @@
 // blaster.snd: PC speaker effects for every slot, and digitized Sound Blaster samples
 // (.voc) made with the kit's little synthesizer.
-import { newSoundSet, type SoundSet } from '../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker } from '../kit/sound';
-import { rng } from '../kit/pixels';
-import { SND } from './src/ids';
+import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker } from '../../../kit/sound';
+import { rng } from '../../../kit/pixels';
+import { SND } from '../ids';
 
 /** Noise through a simple one-pole low-pass whose cutoff falls over time. */
 function rumble(seed: number, from: number, to: number, seconds: number): (t: number) => number {

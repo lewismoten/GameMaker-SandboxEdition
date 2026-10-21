@@ -2,18 +2,18 @@
 // pages, a card before every leg, the warp between stages, and the endings. Every page
 // Game-Maker writes on has a pale panel where its text goes, so its purple, blue and red
 // letters stay readable over the art.
-import { encodeGif } from '../../web/src/formats/gif';
-import { encodeFli } from '../../web/src/formats/fli';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../kit/pixels';
-import { dosText } from '../kit/disk';
-import { CLEAR, centered, outlined, text } from './src/art/draw';
-import { X0 } from './src/stages/mapkit';
-import { renderRegion } from './src/art/render';
-import { buildLeg, type Stage } from './src/stages/stage';
+import { encodeGif } from '../../../../web/src/formats/gif';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { Pixels, rng } from '../../../kit/pixels';
+import { dosText } from '../../../kit/disk';
+import { CLEAR, centered, outlined, text } from '../art/draw';
+import { X0 } from '../stages/mapkit';
+import { renderRegion } from '../art/render';
+import { buildLeg, type Stage } from '../stages/stage';
 import { H, SHIP, SHIP_FLAME, SP, W, blob, c, circuit, dos, floppy, glitchFace, logo, monitor, panel, room, scaleBlit, speedLines, tower } from './cartoon';
 import { CREDITS, HELP, LOST, README, STORY, WON } from './text';
-import { SONGS } from './music';
+import { SONGS } from '../sound/music';
 
 export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });

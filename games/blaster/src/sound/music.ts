@@ -1,7 +1,7 @@
 // The soundtrack: driving FM songs for the Sound Blaster. Each song is a hand-written
 // lead over a chord progression, with a pumping bass, a sixteenth-note arpeggio, and drums
 // made from noisy FM patches (kick, snare and hi-hat on their own channels).
-import { INSTRUMENTS, sbi, song, type Voice } from '../kit/music';
+import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const CHORDS: Record<string, string[]> = {
   Am: ['A', 'C', 'E'],
