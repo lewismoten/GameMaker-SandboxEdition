@@ -1,5 +1,7 @@
 // The "PC" a game runs on: screen, keyboard, pointer, audio and the game directory,
-// plus the blocking BIOS/DOS style helpers playgame relied on, as async functions.
+// plus the blocking BIOS/DOS style helpers playgame relied on, as async functions:
+// PauseTimeKey (code/GM/GENC.C) and FadeTo/FadeAllTo (code/GM/PALC.C). Where the C
+// busy-waited, these await animation frames, so every wait is also a screen refresh.
 import { Screen } from '../gfx/screen';
 import { Keyboard, type TypedKey } from '../input/keyboard';
 import { AudioEngine } from '../audio/engine';
@@ -95,7 +97,8 @@ export class Machine {
 
   /**
    * PauseTimeKey: waits up to `seconds` (forever if omitted) for a key or click.
-   * Returns the key, a pseudo key with ascii 13 for a click, or undefined on time out.
+   * Returns the key, a pseudo key for a click (ascii 1, as the C returned 1 for a mouse
+   * button; scan 28 is Enter's), or undefined on time out (the C returned FALSE).
    */
   async pauseTimeKey(seconds = Infinity): Promise<TypedKey | undefined> {
     const end = performance.now() + seconds * 1000;
@@ -115,7 +118,12 @@ export class Machine {
     this.pointer.clicks = 0;
   }
 
-  /** FadeTo: 65 retrace-synchronized steps from the current palette to `dest`. */
+  /**
+   * FadeTo: 65 retrace-synchronized steps from the current palette to `dest`. The C
+   * waited for one VGA vertical retrace (70 Hz in mode 13h) per step, hence steps/70 s;
+   * it stepped each channel Bresenham-style, which the truncated d*step/steps matches
+   * at every step.
+   */
   async fadeTo(dest: ArrayLike<number>, steps = 65): Promise<void> {
     const from = this.screen.palette.slice();
     const start = performance.now();
