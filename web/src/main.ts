@@ -145,10 +145,12 @@ async function route(): Promise<void> {
 
 window.addEventListener('hashchange', () => void route());
 
-// Links into a project (#/p/…) or the guide always open today's web, #/desk the desk;
-// otherwise use the last choice.
+// Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
+// #/help, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
-if (startHash !== '#/desk' && (startHash.startsWith('#/p/') || startHash === '#/help' || savedUi() === 'modern')) startModern();
+const modernLink = /^#\/(p\/|game\/|help$|$)/.test(startHash);
+if (modernLink || (startHash !== '#/desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 
 registerServiceWorker();

@@ -15,7 +15,7 @@
       (function (d, h) {
         var ui = 'desk';
         try {
-          ui = h.indexOf('#/p/') === 0 || h === '#/help' || (h !== '#/desk' && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+          ui = /^#\/(p\/|game\/|help$|$)/.test(h) || (h !== '#/desk' && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
         } catch (e) {}
         d.className += ' js';
         d.setAttribute('data-ui', ui);
