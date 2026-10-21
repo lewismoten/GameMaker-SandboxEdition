@@ -198,8 +198,11 @@ export function stage1(): Stage {
       ['ledR', 1, 1],
       ['ledG', 1, 1],
       ['xtal', 2, 1],
+      ['capC', 1, 1],
+      ['q3', 1, 1],
+      ['q7', 1, 1],
     ],
-    14,
+    18,
   );
   wires(a, 111, 26);
   const b = strip(kb.bs, kb.beasts, art, 102);
@@ -213,8 +216,11 @@ export function stage1(): Stage {
       ['ledR', 1, 1],
       ['ledG', 1, 1],
       ['xtal', 2, 1],
+      ['capC', 1, 1],
+      ['q3', 1, 1],
+      ['q7', 1, 1],
     ],
-    14,
+    18,
   );
   wires(b, 112, 26);
   return {

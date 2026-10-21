@@ -170,22 +170,62 @@ function chip(a: StageArt, r: number, c: number, label?: string): Pixels {
   }
   if (r === 2) t.rect(x0, y1 - 1, x1 - x0, 1, p.c('ink', 0));
   if (r === 0 && c === 1) blob(t, 10, 3, 3, 3, p.r('deep'), 0, 0);
+  // pin 1
+  if (r === 0 && c === 0) t.rect(8, 5, 2, 2, p.c('label', 2)).set(8, 5, p.c('label', 4));
   if (label) micro(t, 10 - label.length * 2, 8, label, p.c('label', 3));
   return t;
 }
 
-/** An electrolytic capacitor seen from above (2x2). */
-function capacitor(a: StageArt, ramp: string): Pixels {
+/** An electrolytic capacitor seen from above (2x2): minus stripe, value on the sleeve, + and its name in silkscreen. */
+function capacitor(a: StageArt, ramp: string, name: string, value: string): Pixels {
   const p = a.pal;
   const big = onFloor(a, 2, 2);
-  blob(big, 20, 21, 17, 17, p.r('deep'), 0, 1, 0.3);
-  blob(big, 20, 20, 16, 16, p.r(ramp), 1, 4);
-  blob(big, 20, 20, 12, 12, p.r('steel'), 2, 6);
-  big.rect(19, 9, 2, 22, p.c('steel', 1)).rect(9, 19, 22, 2, p.c('steel', 1));
-  // the minus stripe
-  for (let y = 6; y < 34; y++)
-    for (let x = 4; x < 8; x++) if (big.get(x, y) !== big.get(0, 0) && Math.hypot(x - 20, y - 20) < 16) big.set(x, y, p.c('grey', 6));
+  const silk = p.c('grey', 5);
+  big.ring(20, 22, 17.5, silk);
+  micro(big, 1, 1, name, silk);
+  micro(big, 35, 1, '+', silk);
+  blob(big, 20, 23, 16, 16, p.r('deep'), 0, 1, 0.3);
+  blob(big, 20, 22, 15, 15, p.r(ramp), 1, 4);
+  blob(big, 20, 22, 8, 8, p.r('steel'), 2, 6);
+  // the vent, scored in a cross
+  big.rect(19, 16, 2, 13, p.c('steel', 1)).rect(14, 21, 13, 2, p.c('steel', 1));
+  // the minus stripe, with its minus signs
+  for (let y = 7; y < 38; y++)
+    for (let x = 5; x < 10; x++) if (Math.hypot(x - 20, y - 22) < 14.5) big.set(x, y, p.c('grey', 6));
+  for (const y of [14, 21, 28]) big.rect(6, y, 3, 1, p.c('ink', 0));
+  micro(big, 20 - value.length * 2, 31, value, ramp === 'slime' ? p.c('ink', 0) : p.c('grey', 7));
   return big;
+}
+
+/** A ceramic disc capacitor (its value code printed on it) and its name. */
+function ceramic(a: StageArt): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.px.set(a.floor(0).px);
+  t.rect(7, 13, 1, 5, p.c('steel', 5)).rect(14, 13, 1, 5, p.c('steel', 5));
+  blob(t, 11, 9, 7, 5.5, p.r('fire'), 2, 5);
+  micro(t, 5, 7, '104', p.c('fire', 0));
+  micro(t, 0, 0, 'C3', p.c('grey', 5));
+  return t;
+}
+
+/** A TO-92 transistor: a black half-round body, its legs and E B C in silkscreen. */
+function transistor(a: StageArt, name: string): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.px.set(a.floor(0).px);
+  const silk = p.c('grey', 5);
+  micro(t, 0, 0, name, silk);
+  for (const x of [6, 10, 14]) t.rect(x - 1, 12, 2, 3, p.c('steel', 5)).set(x - 1, 12, p.c('steel', 6));
+  for (let x = 4; x <= 16; x++) {
+    const top = Math.round(11 - Math.sqrt(Math.max(0, 36 - (x - 10) ** 2)) * 1.1);
+    for (let y = top; y <= 11; y++) t.set(x, y, shadeAt(p.r('deep'), 0, 3, 0.7 - (x - 4) / 16 - (y - top) * 0.04, x, y));
+  }
+  t.rect(4, 11, 13, 1, p.c('deep', 3));
+  micro(t, 5, 15, 'E', silk);
+  micro(t, 9, 15, 'B', silk);
+  micro(t, 13, 15, 'C', silk);
+  return t;
 }
 
 /** The chipset: a square chip with pins on all four sides (4x4). */
@@ -205,19 +245,23 @@ function chipset(a: StageArt): Pixels {
   return big;
 }
 
+/** A resistor with its color code: 4.7K lies across the board, 10K stands along it. */
 function resistor(a: StageArt, vertical: boolean): Pixels {
   const p = a.pal;
   const t = new Pixels(20, 20);
   t.px.set(a.floor(0).px);
-  const bands = [p.c('red', 2), p.c('ink', 0), p.c('gold', 3)];
+  // yellow violet red gold (4.7K) / brown black orange gold (10K)
+  const bands = vertical ? [p.c('trim', 1), p.c('ink', 0), p.c('fire', 4), p.c('trim', 5)] : [p.c('gold', 4), p.c('virus', 3), p.c('red', 2), p.c('trim', 5)];
+  const at = [0, 2, 4, 7];
   if (vertical) {
     t.rect(9, 0, 2, 20, p.c('steel', 5));
     bevel(t, 6, 4, 8, 12, p.r('label'), 2, 1);
-    bands.forEach((c, i) => t.rect(6, 6 + i * 3, 8, 1, c));
+    bands.forEach((c, i) => t.rect(6, 5 + at[i], 8, 1, c));
   } else {
     t.rect(0, 9, 20, 2, p.c('steel', 5));
     bevel(t, 4, 6, 12, 8, p.r('label'), 2, 1);
-    bands.forEach((c, i) => t.rect(6 + i * 3, 6, 1, 8, c));
+    bands.forEach((c, i) => t.rect(5 + at[i], 6, 1, 8, c));
+    micro(t, 1, 0, 'R7', p.c('grey', 5));
   }
   return t;
 }
@@ -247,11 +291,14 @@ export function boardTiles(bs: BlockSet, a: StageArt): void {
   for (const s of ['ns', 'ew', 'ne', 'nw', 'se', 'sw', 'nse', 'nsw']) bs.add(`tr_${s}`, trace(a, s));
   for (const s of 'nsew') bs.add(`tr_${s}V`, trace(a, s, true));
   for (const s of ['ns', 'ew', 'se', 'sw', 'ne', 'nw']) bs.add(`bus_${s}`, busTrace(a, s));
-  const labels = ['74LS', '138', 'BIOS', '1994', 'AMI', '8042'];
+  const labels = ['74LS', '138', 'BIOS', '1994', '1802', '8042'];
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) bs.add(`chip${r}${c}`, chip(a, r, c));
   labels.forEach((l, i) => bs.add(`chipL${i}`, chip(a, 1, 1, l)));
-  slices(bs, 'capB', capacitor(a, 'blue'));
-  slices(bs, 'capG', capacitor(a, 'slime'));
+  slices(bs, 'capB', capacitor(a, 'blue', 'C12', '100\u00b5F'));
+  slices(bs, 'capG', capacitor(a, 'slime', 'C7', '470\u00b5F'));
+  bs.add('capC', ceramic(a));
+  bs.add('q3', transistor(a, 'Q3'));
+  bs.add('q7', transistor(a, 'Q7'));
   slices(bs, 'cs', chipset(a));
   bs.add('resH', resistor(a, false));
   bs.add('resV', resistor(a, true));
