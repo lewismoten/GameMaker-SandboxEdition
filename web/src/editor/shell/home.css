@@ -249,8 +249,8 @@
   main.home {
     display: grid;
     grid-template-columns: minmax(320px, 28%) minmax(0, 1fr);
-    grid-template-rows: auto auto minmax(0, 1fr);
-    gap: 12px 24px;
+    grid-template-rows: auto minmax(0, max-content) minmax(0, 1fr);
+    gap: 0 24px;
     max-width: 1720px;
     padding: 14px 24px 16px;
   }
@@ -269,13 +269,13 @@
     grid-column: 1;
     grid-row: 3;
     align-self: start;
-    max-height: 100%;
-    margin: 0;
+    max-height: calc(100% - 12px);
+    margin: 12px 0 0;
     overflow: hidden;
   }
 
   .home-start.clipped {
-    visibility: hidden;
+    display: none;
   }
 
   /* bigger tiles where there is room for them */

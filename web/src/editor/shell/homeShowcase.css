@@ -274,7 +274,7 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: 2px 16px;
-    margin: 0;
+    margin: 0 0 12px;
   }
 
   .home-intro p {
