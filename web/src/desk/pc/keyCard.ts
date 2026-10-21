@@ -24,32 +24,35 @@ async function originalOf(game: PlayingGame): Promise<CatalogEntry | undefined> 
   return cat.find((g) => g.original?.manual && g.gam?.toLowerCase() === gam && g.title === game.title);
 }
 
-/** As many keys as fit in `room` letters (a key cap takes one more), then "…". */
-function fitKeys(keys: string[], room: number): string[] {
-  const out: string[] = [];
-  for (const k of keys) {
-    room -= k.length + 1;
-    if (room < 0 && out.length) return [...out, '…'];
-    out.push(k);
-  }
-  return out;
-}
+/** How many ruled lines a row's keys take when a line holds `room` letters (a key cap takes one more). */
+const keyLines = (keys: string[], room: number) => Math.max(1, Math.ceil(keys.reduce((n, k) => n + k.length + 1, 0) / room));
 
 /**
  * An index card with the keys written out, for games without a printed one. `compact` is the
  * small card taped to the monitor: fewer, larger lines, so it reads at a glance.
  */
 export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
-  const all = cardRows(km.keys, compact);
-  // the small card keeps to five lines, big enough to read from the chair; the rest are up close
-  const rows = compact && all.length > 5 ? all.slice(0, 4) : all;
-  const more = all.length - rows.length;
+  const rows = cardRows(km.keys, compact);
   const joy = km.joystick.length > 0;
   const always = GLOBAL_KEYS.filter((g) => (compact ? g.scan <= 59 : g.scan <= 64));
-  const two = !compact && rows.length + (joy ? 1 : 0) > 9;
+  // The small card shows every key: on one column, two if needed, and when even that won't
+  // fit, only the keys (click the card to read what they do).
+  let two = !compact && rows.length + (joy ? 1 : 0) > 9;
+  let keysOnly = false;
+  let used = rows.length + (joy && !compact ? 1 : 0);
+  if (compact) {
+    used = rows.reduce((n, r) => n + keyLines(r.keys, 12), 0);
+    if (used > 7) {
+      two = true;
+      used = Math.ceil(rows.reduce((n, r) => n + keyLines(r.keys, 6), 0) / 2);
+    }
+    if (used > 9) {
+      keysOnly = true;
+      used = Math.ceil(rows.reduce((n, r) => n + r.keys.length, 0) / 6) + 1;
+    }
+  } else if (two) used = Math.ceil(used / 2);
   // the writing gets smaller to fit every line on the card's ruled lines
-  const lines = Math.ceil((rows.length + (more ? 1 : 0) + (joy && !compact ? 1 : 0)) / (two ? 2 : 1)) + 1;
-  const line = Math.min(compact ? 9.5 : 6.4, 43 / Math.max(1, lines));
+  const line = Math.min(compact ? 9.5 : 6.4, 43 / Math.max(1, used + 1));
   return h(
     'div',
     { class: `idx-card${compact ? ' compact' : ''}`, style: `--line:${line.toFixed(2)}cqw` },
@@ -57,25 +60,29 @@ export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLE
       'div',
       { class: 'idx-sheet' },
       h('div', { class: 'idx-head' }, h('b', null, title), h('span', null, 'KEYS')),
-      h(
-        'div',
-        { class: `idx-list ${two ? 'two' : ''}` },
-        ...rows.map((r) => {
-          // the small card has room for a dozen letters of keys a line
-          const keys = compact ? fitKeys(r.keys, 12) : r.keys;
-          return h(
+      keysOnly
+        ? h(
             'div',
-            { class: 'idx-row' },
-            h('span', { class: 'idx-keys' }, ...keys.map((k) => (k === '…' ? h('span', null, k) : h('kbd', null, k)))),
-            h('span', null, r.does),
-          );
-        }),
-        rows.length ? null : h('div', { class: 'idx-row' }, h('span', null, 'No keys: this game plays itself.')),
-        more ? h('div', { class: 'idx-row more' }, h('span', null, `+ ${more} more — click to read them all`)) : null,
-        joy && !compact
-          ? h('div', { class: 'idx-row joy' }, h('span', { class: 'idx-keys' }, h('kbd', null, 'Joy')), h('span', null, 'a joystick or gamepad works too'))
-          : null,
-      ),
+            { class: 'idx-list keys-only' },
+            h('div', { class: 'idx-keys' }, ...rows.flatMap((r) => r.keys).map((k) => h('kbd', null, k))),
+            h('div', { class: 'idx-row more' }, h('span', null, 'Click to see what each key does')),
+          )
+        : h(
+            'div',
+            { class: `idx-list ${two ? 'two' : ''}` },
+            ...rows.map((r) =>
+              h(
+                'div',
+                { class: 'idx-row' },
+                h('span', { class: 'idx-keys' }, ...r.keys.map((k) => h('kbd', null, k))),
+                h('span', null, r.does),
+              ),
+            ),
+            rows.length ? null : h('div', { class: 'idx-row' }, h('span', null, 'No keys: this game plays itself.')),
+            joy && !compact
+              ? h('div', { class: 'idx-row joy' }, h('span', { class: 'idx-keys' }, h('kbd', null, 'Joy')), h('span', null, 'a joystick or gamepad works too'))
+              : null,
+          ),
       h('div', { class: 'idx-always' }, ...always.map((g) => h('span', null, h('kbd', null, g.name), ` ${g.short}`))),
     ),
   );

@@ -189,9 +189,13 @@
   padding: calc(var(--line, 5.8cqw) * 0.1) 0;
 }
 
-.idx-card.compact .idx-row {
-  height: var(--line, 5.8cqw);
-  overflow: hidden;
+.idx-card.compact .idx-keys {
+  max-width: 62%;
+}
+
+/* too many keys for their meanings: just the keys, flowing across the lines */
+.idx-list.keys-only > .idx-keys {
+  max-width: none;
 }
 
 .idx-row kbd,
