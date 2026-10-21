@@ -218,32 +218,20 @@ export function readme(price: string): string {
 Teddy is a Pembroke Welsh Corgi
 who knows a ton of tricks. His
 person, Doc Leo, is a friendly
-hobo clown who twists balloon
-animals, does magic tricks and
-marches in every parade, and
-tonight he is the star of the
-Klown Klub's Big Show. He drove
-ahead in his red 1976 CitiCar.
-Then Teddy's big sister Gwin
-(younger, bigger, a brown
-pit-lab mix who ruins
-everything) ran off with Doc
-Leo's costume suitcase and
+hobo clown, and tonight he is
+the star of the Klown Klub's
+Big Show. But Teddy's big
+sister Gwin just ran off with
+Doc Leo's costume suitcase and
 scattered it all over town.
+No nose, no show!
 
 Hop, bark, dig, high five, sit
 pretty, spin, play dead and
-roll over your way from the
-backyard to Maple Street, the
-park, downtown and the Klown
-Klub, and get every piece of
-the costume - the hat, the bow
-tie, the shoes, the horn and
-the red nose - to the show on
-time. Catch his loose balloon
-dogs on the way, watch Presto
-the magician downtown, and
-lead the Klown Klub parade.
+roll over your way across
+town. Find every piece of the
+costume and get it to the show
+on time!
 
 STARTING THE GAME
   Type TEDDY and press Enter.
