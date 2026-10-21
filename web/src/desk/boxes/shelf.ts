@@ -58,8 +58,29 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   let front = remembered() ?? games[0].id;
   if (!games.some((g) => g.id === front)) front = games[0].id;
 
+  // Boxes spine out are drawn without their screenshots (no game files to download);
+  // a box gets them when it is turned face out or taken down.
+  const complete = new Map<string, Promise<BoxFaces | undefined>>();
+  const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
+    let p = complete.get(g.id);
+    if (!p) {
+      p = drawBox(g)
+        .catch(() => undefined)
+        .then((f) => {
+          if (!f) return faces.get(g.id);
+          faces.set(g.id, f);
+          slots.get(g.id)?.replaceChildren(boxModel(f));
+          return f;
+        });
+      complete.set(g.id, p);
+    }
+    return p;
+  };
+
   const face = (id: string) => {
     if (!slots.has(id)) return;
+    const g = games.find((x) => x.id === id);
+    if (g) void completed(g);
     front = id;
     remember(id);
     for (const [gid, el] of slots) el.classList.toggle('face-out', gid === id);
@@ -82,20 +103,22 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
           const i = list.findIndex((x) => x.id === front);
           const next = list[(i + dir + list.length) % list.length];
           face(next.id);
+          await completed(next);
           return page(next);
         },
       },
     };
   };
-  const open = (g: CatalogEntry) => {
+  const open = async (g: CatalogEntry) => {
     face(g.id);
+    await completed(g);
     const p = page(g);
     void openBoxViewer(p.entry, p.faces, p.actions);
   };
 
   // draw the boxes one by one, so the first ones appear while the rest are drawn
   for (const g of games) {
-    const f = await drawBox(g).catch(() => undefined);
+    const f = await (g.id === front ? completed(g) : drawBox(g, { shots: false }).catch(() => undefined));
     if (!f) continue;
     faces.set(g.id, f);
     const slot = h(
@@ -105,7 +128,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
         role: 'listitem',
         title: `${g.title} — take it off the shelf`,
         'aria-label': `${g.title} box`,
-        onclick: () => open(g),
+        onclick: () => void open(g),
       },
       boxModel(f),
     );
