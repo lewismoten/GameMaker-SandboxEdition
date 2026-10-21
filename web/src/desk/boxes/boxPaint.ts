@@ -11,7 +11,7 @@ export type Box = NonNullable<NonNullable<CatalogEntry['original']>['box']> & Bo
 export const W = 7.5;
 export const H = 9.25;
 export const D = 2;
-const PPI = 80; // canvas pixels per inch
+export const PPI = 80; // canvas pixels per inch
 export function canvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
   const c = document.createElement('canvas');
   c.width = Math.round(w * PPI);

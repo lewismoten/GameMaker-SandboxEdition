@@ -1,16 +1,19 @@
 // Retail boxes for the original games (games/<id>/about.json "box"): all six sides are
-// drawn on canvases from the game's own data — its title, copy and screenshots of its
-// maps (drawBox). The drawing helpers are in boxPaint.ts; the 3D box and the viewer that
+// drawn on canvases from the game's own data — its title and copy, a painted cover on the
+// front (covers/<id>.ts, an artist's rendering like real 1995 box art), real screenshots of
+// its maps on the back, and the MS-DOS platform badge on the spines and bottom (drawBox). The drawing helpers are in boxPaint.ts; the 3D box and the viewer that
 // turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
 // it comes forward in the viewer.
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { mapShot, renderShot } from './boxArt';
-import { parseGame, ADVTYPE } from '../../formats/game';
+import { parseGame, ADVTYPE, type Game } from '../../formats/game';
 import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours } from './boxFacts';
 import { wear } from './boxWear';
-import { diskIcons, laurel, onePlayer, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
+import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
+import { coverArt, SEALS } from './covers';
 import {
   type Box,
+  PPI,
   W,
   H,
   D,
@@ -41,35 +44,50 @@ export interface BoxFaces {
   bottom: string;
 }
 
-async function countLevels(entry: CatalogEntry): Promise<number> {
-  if (!entry.gam) return 0;
-  const gam = await fetchGameFile(entry, entry.gam);
-  if (!gam) return 0;
+async function readGame(entry: CatalogEntry): Promise<Game | undefined> {
+  const gam = entry.gam ? await fetchGameFile(entry, entry.gam) : undefined;
   try {
-    return parseGame(gam).scenes.filter((s) => s.gametype === ADVTYPE).length;
+    return gam && parseGame(gam);
   } catch {
-    return 0;
+    return undefined;
   }
 }
 
+/** A screenshot's caption: the name of the level its map belongs to ("1a The Data Bus" -> "Stage 1: The Data Bus"). */
+export function shotCaption(game: Game | undefined, map: string): string {
+  const desc = game?.scenes.find((s) => s.files.some((f) => f.toLowerCase() === map.toLowerCase()))?.desc.trim() ?? '';
+  return desc.replace(/^(\d+)[a-z]\s+/i, 'Stage $1: ');
+}
+
+interface Shot {
+  shot?: HTMLCanvasElement;
+  caption: string;
+}
+
 /**
- * The box's screenshots: its about.json map views, or (when a map was renamed or
- * removed) a view of where the hero arrives in one of its first levels.
+ * The box's screenshots, captioned: its about.json map views, or (when a map was renamed
+ * or removed) a view of where the hero arrives in one of its first levels. Without
+ * `pictures` only the captions (the shelf shows most boxes spine out).
  */
-async function boxShots(entry: CatalogEntry, box: Box): Promise<(HTMLCanvasElement | undefined)[]> {
-  const shots = await Promise.all((box.shots ?? []).slice(0, 3).map(([m, x, y]) => mapShot(entry, m, x, y, 16, 10).catch(() => undefined)));
-  const good = shots.filter((s): s is HTMLCanvasElement => !!s);
-  if (!good.length) {
+async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promise<Shot[]> {
+  const game = await readGame(entry);
+  const views = (box.shots ?? []).slice(0, 3);
+  const shots: Shot[] = await Promise.all(
+    views.map(async ([m, x, y]) => ({ shot: pictures ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined, caption: shotCaption(game, m) })),
+  );
+  const good = shots.filter((s) => s.shot);
+  if (pictures && !good.length) {
     const c = document.createElement('canvas');
-    if (await renderShot(entry, c, 16, 10).catch(() => false)) good.push(c);
+    if (await renderShot(entry, c, 16, 10).catch(() => false)) good.push({ shot: c, caption: '' });
   }
-  return [0, 1, 2].map((i) => good[i] ?? good[0]);
+  if (!pictures) return shots.length ? shots : [{ caption: '' }];
+  return [0, 1, 2].slice(0, Math.max(1, Math.min(3, good.length))).map((i) => good[i] ?? good[0]);
 }
 
 /** Everything a box says about its game beyond its art and copy. */
 export async function boxInfo(entry: CatalogEntry) {
   const box = entry.original!.box! as Box;
-  const levels = await countLevels(entry);
+  const levels = (await readGame(entry))?.scenes.filter((s) => s.gametype === ADVTYPE).length ?? 0;
   return {
     levels,
     disks: boxDisks(entry.bytes),
@@ -89,32 +107,28 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
 export async function drawBox(entry: CatalogEntry, { shots: withShots = true } = {}): Promise<BoxFaces | undefined> {
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
-  const [shots, info] = await Promise.all([withShots ? boxShots(entry, box) : [], boxInfo(entry)]);
+  const [shots, info, art] = await Promise.all([boxShots(entry, box, withShots), boxInfo(entry), coverArt(entry.id, Math.round(W * PPI), Math.round(H * PPI) - 44)]);
   const sb = entry.original?.sound === 'sb';
   const title = entry.title;
   const company = entry.company ?? 'Sandbox Software';
 
-  // ---- front
+  // ---- front: the painted cover under the title, the selling points crowding its corners
   const [front, f] = canvas(W, H);
   const fw = front.width;
   const fh = front.height;
   background(f, box, fw, fh);
-  publisherBand(f, entry, fw, 0, 44, true); // left, clear of the price sticker
-  // a sunburst behind the title
-  f.save();
-  f.translate(fw / 2, 190);
-  f.globalAlpha = 0.18;
-  f.fillStyle = box.accent;
-  for (let a = 0; a < 24; a++) {
-    f.rotate((Math.PI * 2) / 24);
-    f.beginPath();
-    f.moveTo(0, 0);
-    f.lineTo(-30, -900);
-    f.lineTo(30, -900);
-    f.fill();
+  if (art) {
+    f.drawImage(art, 0, 44);
+    // shade the sky behind the title and the ground behind the badges, as box printers did
+    f.fillStyle = shadeFade(f, 44, 330, 0.55, 0);
+    f.fillRect(0, 44, fw, 290);
+    f.fillStyle = shadeFade(f, fh - 200, fh, 0, 0.8);
+    f.fillRect(0, fh - 200, fw, 200);
+  } else {
+    sunburst(f, box, fw / 2, 190);
+    framedShot(f, shots[0]?.shot, 100, 336, fw - 200, -0.02);
   }
-  f.restore();
-  // "Main: Subtitle" — a big name with its subtitle under it
+  publisherBand(f, entry, fw, 0, 44, true); // left, clear of the price sticker
   const [mainTitle, subTitle] = splitTitle(title);
   titleText(f, box, mainTitle.toUpperCase(), fw / 2, subTitle ? 170 : 190, fw - 60, 120);
   let tagY = 248;
@@ -140,21 +154,19 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   f.lineJoin = 'round';
   const tagEnd = wrap(f, box.tagline, fw / 2, tagY, balancedWidth(f, box.tagline, fw - 80), 28, true);
   f.textAlign = 'left';
-  const shotY = Math.max(316, tagEnd + 8);
-  const shotW = Math.min(fw - 110, ((fh - 150 - shotY) / 0.625) | 0);
-  const shotH = framedShot(f, shots[0], (fw - shotW) / 2, shotY, shotW, -0.02);
-  // selling points crowding the screenshot's corners
+  const seals = SEALS[entry.id] ?? { laurel: 'right', burst: 'left' };
+  const side = (at: 'left' | 'right', inset: number) => (at === 'left' ? inset : fw - inset);
   const hours = hoursLine(info.hours).toUpperCase();
+  laurel(f, side(seals.laurel, 72), Math.max(330, tagEnd + 50), 56, info.award.title, info.award.from);
   starburst(
     f,
-    (fw - shotW) / 2 + 22,
-    shotY + shotH - 44,
+    side(seals.burst, 76),
+    fh - 214,
     64,
     hours.startsWith('OVER') ? [hours.split(' HOURS')[0], 'HOURS OF', 'GAMEPLAY!'] : ['HOURS', 'OF PLAY!'],
   );
-  laurel(f, (fw + shotW) / 2 - 22, shotY + 26, 56, info.award.title, info.award.from);
-  let bx = 40;
-  const by = shotY + shotH + 26;
+  let bx = 24;
+  const by = fh - 136;
   bx += badge(f, 'VGA 256 COLORS', bx, by, '#0b0b0b', '#fff') + 8;
   bx += badge(f, sb ? 'SOUND BLASTER' : 'PC SPEAKER SOUND', bx, by, sb ? '#c62828' : '#2e7d32', '#fff') + 8;
   onePlayer(f, bx, by, 28);
@@ -169,41 +181,55 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   f.textAlign = 'center';
   f.fillText('SHAREWARE', 0, 7);
   f.restore();
-  ratingSeal(f, 22, fh - 82, 52, box.rating);
-  f.fillStyle = box.ink;
-  f.font = SANS(15, 700);
-  f.textAlign = 'left';
-  f.fillText('For IBM PC/AT & compatibles', 88, fh - 50);
-  diskIcons(f, 88, fh - 40, 26, info.disks, box.ink);
+  ratingSeal(f, 22, fh - 92, 52, box.rating);
+  platformBadge(f, 86, fh - 94, 178);
+  diskIcons(f, 276, fh - 62, 26, info.disks, box.ink);
   wear(f, fw, fh, `${entry.id}/front`, { creases: 2 });
   const sticker = box.sticker ?? {};
   priceSticker(f, fw - 134, 6, sticker.store ?? 'Bits & Bytes Software', sticker.price ?? '$4.99');
 
-  // ---- back
+  // ---- back: the story, and real screenshots of the game with captions
   const [back, b] = canvas(W, H);
   const bw = back.width;
   const bh = back.height;
   background(b, box, bw, bh);
-  // the first screenshot, big and dim behind the story
-  if (shots[0]) {
+  // the cover painting, faint behind the title and the screenshots
+  if (art) {
     b.save();
-    b.globalAlpha = 0.45;
-    b.imageSmoothingEnabled = false;
-    const heroH = (bw * shots[0].height) / shots[0].width;
-    b.drawImage(shots[0], 0, 34, bw, heroH);
-    b.globalAlpha = 1;
-    const fadeOut = b.createLinearGradient(0, 34 + heroH * 0.4, 0, 34 + heroH);
+    b.globalAlpha = 0.3;
+    b.drawImage(art, 0, 160, art.width, 300, 0, 34, bw, 300);
+    b.restore();
+    const fadeOut = b.createLinearGradient(0, 154, 0, 334);
     fadeOut.addColorStop(0, 'rgba(0,0,0,0)');
     fadeOut.addColorStop(1, shade(box.background, -0.2));
     b.fillStyle = fadeOut;
-    b.fillRect(0, 34 + heroH * 0.4, bw, heroH * 0.6 + 1);
-    b.restore();
+    b.fillRect(0, 154, bw, 181);
   }
   publisherBand(b, entry, bw, 0, 34);
   titleText(b, box, title.toUpperCase(), bw / 2, 96, bw - 60, 52);
+  // the screenshots in a row, each captioned with its level
+  const gap = 16;
+  const shotW = Math.min(210, (bw - 56 - gap * (shots.length - 1)) / shots.length);
+  const shotTop = 118;
+  const shotH = shotW * 0.625;
+  const shotX = (bw - shotW * shots.length - gap * (shots.length - 1)) / 2;
+  b.textAlign = 'center';
+  b.lineJoin = 'round';
+  shots.forEach((s, i) => {
+    const x = shotX + i * (shotW + gap);
+    framedShot(b, s.shot, x, shotTop + (i % 2) * 4, shotW, [-0.025, 0.02, -0.012][i]);
+    if (!s.caption) return;
+    b.font = SANS(fit(b, s.caption, (px) => SANS(px, 700), shotW + 8, 13), 700);
+    b.strokeStyle = 'rgba(0,0,0,0.7)';
+    b.lineWidth = 4;
+    b.strokeText(s.caption, x + shotW / 2, shotTop + shotH + 26);
+    b.fillStyle = box.ink;
+    b.fillText(s.caption, x + shotW / 2, shotTop + shotH + 26);
+  });
+  b.textAlign = 'left';
 
   // the bottom: claims checklist, requirements, barcode and rating, then the copyright
-  const claims = info.claims.slice(0, 10);
+  const claims = info.claims.slice(0, 8);
   const claimRows = Math.ceil(claims.length / 2);
   const claimH = 18;
   const reqH = 112;
@@ -212,12 +238,12 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   const claimsY = reqY - 12 - claimRows * claimH;
   const textX = 40;
   const textW = bw - 80;
-  const top = 118;
+  const top = shotTop + shotH + 40;
   const reviews = info.reviews;
   const features = box.features;
-  const smallW = (bw - 100) / 2;
-  const shotRowH = smallW * 0.625 + 22;
   const layout = (p: { bodyPx: number; features: number; reviews: number; shots: number }, draw: boolean): number => {
+    // the screenshots have their own row above: plans that make room for more don't fit
+    if (p.shots) return Infinity;
     let y = top + 12 + p.bodyPx;
     b.font = BODY_FONT(p.bodyPx);
     b.fillStyle = box.ink;
@@ -250,22 +276,14 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
         y = wrap(b, feat, textX + 24, y, textW - 30, flh) - flh * 0.4 + 2;
       } else y += (wrapLines(b, feat, textW - 30) - 0.4) * flh + 2;
     }
-    if (p.shots) y += 10 + shotRowH * p.shots - fpx;
     return y - top;
   };
   const plan = planBack(claimsY - 10 - top, features.length, reviews.length, (p) => layout(p, false));
-  // a dark panel so the story reads over the dim screenshot
+  // a dark panel so the story reads over the background
   b.fillStyle = BACK_TEXT;
-  const panelH = plan.shots ? plan.height - shotRowH * plan.shots + Math.round(plan.bodyPx * 0.88) : plan.height;
-  roundRect(b, textX - 14, top, textW + 28, panelH, 10);
+  roundRect(b, textX - 14, top, textW + 28, plan.height, 10);
   b.fill();
-  const shotsY = layout(plan, true) + top - shotRowH * plan.shots + 10;
-  if (plan.shots) {
-    const sw = smallW * plan.shots;
-    const x0 = (bw - sw * 2 - 20) / 2;
-    framedShot(b, shots[1] ?? shots[0], x0, shotsY, sw, 0.02);
-    framedShot(b, shots[2] ?? shots[0], x0 + sw + 20, shotsY + 6, sw, -0.03);
-  }
+  layout(plan, true);
   // what the box promises, every bit of it true
   b.fillStyle = BACK_TEXT;
   roundRect(b, textX - 14, claimsY - 15, textW + 28, claimRows * claimH + 8, 8);
@@ -320,7 +338,10 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     s.textAlign = 'center';
     s.fillText('SANDBOX', c.width / 2, 32);
     s.fillText('SOFTWARE', c.width / 2, 52);
-    spineTitle(s, box, mainTitle.toUpperCase(), subTitle.toUpperCase(), c.width, 90, c.height - 180);
+    // the platform badge near the foot, where a shopper's eye goes along a shelf
+    const badgeH = platformBadgeHeight(s, c.width - 24, info.disks);
+    platformBadge(s, 12, c.height - 50 - badgeH, c.width - 24, info.disks);
+    spineTitle(s, box, mainTitle.toUpperCase(), subTitle.toUpperCase(), c.width, 84, c.height - 150 - badgeH);
     s.fillStyle = box.ink;
     s.font = SANS(13, 700);
     s.textAlign = 'center';
@@ -328,17 +349,21 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     wear(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'left' ? 0.2 : 0.1, creases: 0 });
     return c.toDataURL();
   };
-  const end = (lines: string[], side: string): string => {
+  const end = (lines: string[], side: string, withBadge = false): string => {
     const [c, s] = canvas(W, D);
     background(s, box, c.width, c.height);
+    // the bottom carries the platform badge too, for a box lying flat on a store table
+    const left = withBadge ? 184 : 0;
+    if (withBadge) platformBadge(s, 16, (c.height - platformBadgeHeight(s, 152, info.disks)) / 2, 152, info.disks);
+    const mid = (left + c.width) / 2;
     s.textAlign = 'center';
-    const px = fit(s, lines[0], TITLE_FONT, c.width - 40, 54);
+    const px = fit(s, lines[0], TITLE_FONT, c.width - left - 40, 54);
     s.font = TITLE_FONT(px);
     s.fillStyle = box.accent;
-    s.fillText(lines[0], c.width / 2, c.height / 2 + px * 0.2);
+    s.fillText(lines[0], mid, c.height / 2 + px * 0.2);
     s.fillStyle = box.ink;
-    s.font = SANS(14, 700);
-    if (lines[1]) s.fillText(lines[1], c.width / 2, c.height - 16);
+    s.font = SANS(fit(s, lines[1] ?? '', (p) => SANS(p, 700), c.width - left - 24, 14), 700);
+    if (lines[1]) s.fillText(lines[1], mid, c.height - 16);
     wear(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'top' ? 0.2 : 0.05, creases: 0 });
     return c.toDataURL();
   };
@@ -348,8 +373,33 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     left: spine(entry.price ? `MSRP ${entry.price}` : 'SHAREWARE', 'left'),
     right: spine(sb ? 'SOUND BLASTER' : 'PC SPEAKER', 'right'),
     top: end([title.toUpperCase(), company.toUpperCase()], 'top'),
-    bottom: end([title.toUpperCase(), `VGA · ${sb ? 'SOUND BLASTER' : 'PC SPEAKER'} · 1 PLAYER · ${info.disks} DISK${info.disks === 1 ? '' : 'S'}`], 'bottom'),
+    bottom: end([title.toUpperCase(), `VGA · ${sb ? 'SOUND BLASTER' : 'PC SPEAKER'} · 1 PLAYER · ${info.disks} DISK${info.disks === 1 ? '' : 'S'}`], 'bottom', true),
   };
+}
+
+/** A black fade from alpha a0 at y0 to a1 at y1. */
+function shadeFade(ctx: CanvasRenderingContext2D, y0: number, y1: number, a0: number, a1: number): CanvasGradient {
+  const g = ctx.createLinearGradient(0, y0, 0, y1);
+  g.addColorStop(0, `rgba(0,0,0,${a0})`);
+  g.addColorStop(1, `rgba(0,0,0,${a1})`);
+  return g;
+}
+
+/** Rays behind the title, for a box without a painted cover. */
+function sunburst(ctx: CanvasRenderingContext2D, box: Box, x: number, y: number): void {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.globalAlpha = 0.18;
+  ctx.fillStyle = box.accent;
+  for (let a = 0; a < 24; a++) {
+    ctx.rotate((Math.PI * 2) / 24);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-30, -900);
+    ctx.lineTo(30, -900);
+    ctx.fill();
+  }
+  ctx.restore();
 }
 
 function copyright(entry: CatalogEntry): string {
