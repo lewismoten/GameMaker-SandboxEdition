@@ -79,6 +79,7 @@
   --lx: 30%;
   --ly: 25%;
   position: relative;
+  cursor: pointer;
   width: min(200px, 24vh);
   aspect-ratio: 1;
   border-radius: 50%;
@@ -220,4 +221,14 @@
     Helvetica,
     sans-serif;
   letter-spacing: 0.06em;
+}
+
+.holo-cd:hover,
+.holo-cd:focus-visible {
+  transform: scale(1.04);
+}
+
+.holo-cd:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 4px;
 }

@@ -275,8 +275,15 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
 }
 
 /** The Owner's Guide and the CD, laid beside the box in the viewer. */
-export function gmBoxContents(openGuide: () => void): HTMLElement {
-  const disc = h('div', { class: 'holo-cd', 'aria-hidden': 'true' }, h('div', { class: 'holo-spin' }, h('div', { class: 'holo-label' })));
+export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTMLElement {
+  // Click the CD to put it in the drive and start Game-Maker (same as the viewer's button).
+  const disc = h(
+    'div',
+    { class: 'holo-cd', role: 'button', tabindex: 0, title: 'Put the CD in and start Game-Maker', 'aria-label': 'Game-Maker CD: put it in and start Game-Maker' },
+    h('div', { class: 'holo-spin' }, h('div', { class: 'holo-label' })),
+  );
+  disc.addEventListener('click', insertCd);
+  disc.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), insertCd()));
   disc.querySelector('.holo-label')!.innerHTML = `<svg viewBox="0 0 100 100">
     <defs>
       <path id="holo-top" d="M 16 50 A 34 34 0 0 1 84 50"/>
