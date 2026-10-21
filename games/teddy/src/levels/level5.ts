@@ -14,7 +14,7 @@ import { KLUB, bubble, gwinSits, pie, pinStack, pinsDown } from '../sprites/klub
 import { GWIN } from '../sprites/gwin';
 import { FULL, docLeo } from '../sprites/people';
 import { bandOf } from './level1';
-import { revolvingDoor } from './level4';
+import { revolvingDoor } from './level4Beasts';
 import { c, copy, cut, dirt, r, sky } from '../blocks/tiles';
 
 const G = 40;
