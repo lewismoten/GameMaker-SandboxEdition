@@ -1,6 +1,6 @@
 // Monster sets: a .MBL of 100 monster blocks and a .MON of 64 monsters, built from a list
 // of creature designs. Slots 44..63 are the same in every set: the courier's shots, the
-// loot creatures drop and the sparks (see common.ts MON), drawn in shared colors.
+// loot creatures drop and the sparks (see ids.ts MON), drawn in shared colors.
 import { Pixels } from '../../../kit/pixels';
 import { MONBL, SOLTOP, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
 import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '../../../../web/src/formats/monster';
