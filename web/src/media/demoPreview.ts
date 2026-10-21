@@ -194,7 +194,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   let rec: Uint8Array = new Uint8Array(0);
   let kind: DemoKind = source instanceof Promise ? 'added' : source.kind;
   let lastTick = 0;
-  const game = withoutOpening(files, gam);
+  let game = files;
   let muted = o.muted ?? !soundOn;
   let audio: PreviewAudio | undefined;
   let player: PlayerHandle | undefined;
@@ -277,6 +277,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   const begin = (src: DemoSource) => {
     ({ kind, rec } = src);
     lastTick = recordingTicks(rec);
+    game = withoutOpening(files, gam, rec);
     start();
   };
   if (source instanceof Promise)

@@ -53,13 +53,16 @@ export interface Replay {
   stuck: number;
   /** Ticks at which play left the level (Esc, death, link). */
   ended: number;
+  /** Game ticks played (without the polls a DOS recording counts while a screen waits). */
+  played: number;
 }
 
 /** Plays a .REC through the engine with monster dice `seed`; `shots` saves a sheet of screenshots, one every `every` ticks. */
 export async function replay(files: GameFiles, gam: string, rec: Uint8Array, seed: number, shots?: { file: string; every: number }): Promise<Replay> {
   const frames: { px: Uint8Array; pal: Uint8Array }[] = [];
   let shotAt = -1;
-  const out: Replay = { ticks: 0, deaths: 0, loads: 0, cells: 0, score: 0, stuck: 0, ended: 0 };
+  let played = 0;
+  const out: Replay = { ticks: 0, deaths: 0, loads: 0, cells: 0, score: 0, stuck: 0, ended: 0, played: 0 };
   const cells = new Set<string>();
   let lastWorld: World | undefined;
   let lastCell = '';
@@ -70,6 +73,7 @@ export async function replay(files: GameFiles, gam: string, rec: Uint8Array, see
     seed,
     maxTicks: 6000,
     onTick: (w, s) => {
+      played++;
       out.ticks = s.rec.tick;
       if (!s.rec.playing) return true;
       if (w !== lastWorld) {
@@ -86,14 +90,16 @@ export async function replay(files: GameFiles, gam: string, rec: Uint8Array, see
       out.score = w.ci.score;
       out.ended = s.rec.tick;
     },
-    onFrame: (_w, s, m) => {
-      if (!shots || s.rec.tick % shots.every !== 0 || !s.rec.tick || s.rec.tick === shotAt) return;
-      shotAt = s.rec.tick;
+    onFrame: (_w, _s, m) => {
+      // by game ticks played (a DOS recording's tick also counts the polls of screens waiting for a key)
+      if (!shots || played % shots.every !== 0 || !played || played === shotAt) return;
+      shotAt = played;
       frames.push({ px: m.screen.pixels.slice(), pal: m.screen.palette.slice() });
     },
   });
   if (shots && frames.length) writeSheet(shots.file, frames);
   out.cells = cells.size;
+  out.played = played;
   return out;
 }
 

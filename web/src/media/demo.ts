@@ -28,8 +28,13 @@ export function titleDemo(files: GameFiles, gam: string): Uint8Array | undefined
   }
 }
 
-/** A copy of the game without the title graphic and song, or the first level's intro graphic. */
-export function withoutOpening(files: GameFiles, gam: string): GameFiles {
+/**
+ * A copy of the game without the title graphic and song, or the first level's intro graphic.
+ * Given the recording, a DOS one that begins by waiting on a screen (its first key comes
+ * after thousands of GetKey polls, as PEACH's does on the first level's picture) keeps that
+ * intro: the key that dismissed it would otherwise wait out in the level.
+ */
+export function withoutOpening(files: GameFiles, gam: string, rec?: Uint8Array): GameFiles {
   const copy = new GameFiles(files.entries());
   const bytes = files.get(gam);
   if (!bytes) return copy;
@@ -39,7 +44,8 @@ export function withoutOpening(files: GameFiles, gam: string): GameFiles {
   start.files[0] = '';
   start.files[1] = '';
   const first = game.scenes[start.links[0]?.toScene ?? -1];
-  if (first) first.files[9] = '';
+  const waitsFirst = !!rec && (parseRecording(rec)[0]?.delta ?? 0) > 4096;
+  if (first && !waitsFirst) first.files[9] = '';
   copy.set(gam, serializeGame(game));
   return copy;
 }
@@ -109,7 +115,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
     player?.stop();
     session = undefined;
     const gen = ++generation;
-    const files = skip ? withoutOpening(o.files, o.gam) : new GameFiles(o.files.entries());
+    const files = skip ? withoutOpening(o.files, o.gam, o.rec) : new GameFiles(o.files.entries());
     player = mountPlayer(host, files, o.gam, {
       title: o.title,
       playback: o.rec,
