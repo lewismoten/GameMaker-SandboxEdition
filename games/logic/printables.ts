@@ -1,6 +1,7 @@
 // printables.json (what's in the box besides the disk), written by the build so the hint
-// book always matches the boards: a hint and an answer for every board, the promo postcard
-// for it, Watt's repair license and the wiring poster promised to registered players.
+// book always matches the boards: a hint and an answer for every board (the viewer adds the
+// hint book's promo postcard itself), Watt's repair license and the wiring poster promised
+// to registered players.
 import { writeFileSync } from 'node:fs';
 import { BOARDS } from './boards';
 import { OX, OY } from './board';
@@ -34,18 +35,6 @@ export function printables(): unknown {
         intro:
           'Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them!',
         sections,
-      },
-      {
-        kind: 'letter',
-        title: 'Hint book postcard',
-        note: 'Stuck? Help is a stamp away',
-        letterhead: 'SANDBOX SOFTWARE HINT LINE (BY MAIL)',
-        address: 'P.O. Box 1995, Pittsburgh, PA 15213 (a make-believe address)',
-        date: 'Spring 1995',
-        to: 'Dear stuck electrician,',
-        body: "<p><b>Watt fizzled again?</b> The Christmas lights got you tangled? Is the home computer computing you right out of spare batteries?</p><p>The <b>Ohm Sweet Ohm Hint Book</b> has a gentle nudge and a full answer for all fifteen boards, printed under red so you only read as much as you want. Every registered copy comes with one, and with the hint book in hand, there is no board you can't solve.</p><p>Register for <b>$12</b> and it's in the mail to you!</p>",
-        signature: 'Watt (and the folks at Sandbox Software)',
-        style: 'print',
       },
       {
         kind: 'map',
