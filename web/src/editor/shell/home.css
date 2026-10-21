@@ -220,7 +220,8 @@
   font-size: 15px;
 }
 
-.home-start ul {
+.home-start ul,
+.home-start-dialog ul {
   margin: 0 0 6px;
   padding-left: 0;
   list-style: none;
@@ -230,7 +231,16 @@
   margin: 3px 0;
 }
 
-.home-start li .ico {
+.home-start-dialog {
+  max-width: 460px;
+}
+
+.home-start-dialog li {
+  margin: 6px 0;
+}
+
+.home-start li .ico,
+.home-start-dialog li .ico {
   width: 14px;
   height: 14px;
   margin-right: 4px;
@@ -240,6 +250,33 @@
 .home-start .meta {
   margin: 0 0 6px;
   color: var(--muted);
+}
+
+/* “How it works”: Getting started in a dialog, when the page has no room for it */
+.lib-how {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 0;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  color: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.lib-how[hidden] {
+  display: none;
+}
+
+.lib-about > .lib-how {
+  margin-left: auto;
+}
+
+.lib-sort:not([hidden]) + .lib-how {
+  margin-left: 0;
 }
 
 /* Wide and tall enough: the game in a column beside the library, the page fits the window. */
