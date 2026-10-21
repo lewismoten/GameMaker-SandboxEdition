@@ -1,5 +1,7 @@
 // playscene and its helpers from code/GM/PLAYGAME.C: loading a level, the main loop
 // (145.6 Hz scroll timer, 18.2 Hz game clock), function keys, scene links, death.
+// Also ports loadscene, StartGameInits, StartSceneInits, changeblks, chklnk and
+// DoFunKy, plus browser save/load in place of SaveGame/LoadGame.
 import type { Machine } from './machine';
 import type { Recorder } from './recorder';
 import { aboutScreen, helpScreen, pickDropSlot, pickSaveSlot, statusScreen } from './funcKeys';
@@ -90,7 +92,12 @@ interface LoadedScene {
   song?: Uint8Array;
 }
 
-/** loadscene: returns the names of missing files on failure. */
+/**
+ * loadscene: returns the names of missing files on failure. Scene file slots are
+ * 0 palette, 1 map, 2 background blocks, 3 monsters, 4 monster blocks, 5 character,
+ * 6 character blocks, 7 sound set, 8 song. In the C a slot left blank keeps whatever
+ * the previous scene loaded into the globals; `prev` stands in for those globals.
+ */
 function loadScene(s: Session, scnum: number, prev?: World): LoadedScene | string[] {
   const { m, game } = s;
   const file = (slot: number) => sceneFile(game, scnum, slot);
@@ -118,6 +125,7 @@ function loadScene(s: Session, scnum: number, prev?: World): LoadedScene | strin
   world.mblk = padBlocks(mbl ? parseBlocks(mbl, NMON) : prev?.mblk.slice(0, NMON), NMON);
   world.cblk = padBlocks(cbl ? parseBlocks(cbl, NCHR) : prev?.cblk.slice(0, NCHR), NCHR);
   world.mon = mon ? parseMonsters(mon) : (prev?.mon ?? []);
+  // loadscene sets NoMons when either the monster file or the monster blocks are absent.
   world.noMons = !file(3) || !file(4);
   world.chr = chr ? parseCharacter(chr) : prev!.chr;
   if (!world.chr) return [file(5) ?? 'character'];
@@ -146,6 +154,8 @@ export function startGameInits(s: Session): void {
   s.timerCounter = 1;
   s.sndClock = 1;
   const ci = s.ci;
+  // -1 hit points/lives/meters and inv[0] == BACKBL+1 mean "not set up yet":
+  // StartSceneInits fills them from the first scene's character.
   ci.hitpts = -1;
   ci.lives = -1;
   ci.score = 0;
@@ -157,11 +167,15 @@ export function startGameInits(s: Session): void {
 export function startSceneInits(w: World, start: Coord): void {
   const { ci, chr } = w;
   if (ci.inv[0] === BACKBL + 1) for (let i = 0; i < MAXINV; i++) ci.inv[i] = chr.inv[i];
+  // Sequences not tied to an inventory block start on. A meter of -20000 marks a
+  // sequence the previous character did not define, so this character's meter is used.
   for (let i = 0; i < MAXSEQ; i++) {
     ci.seqon[i] = chr.sequences[i].bloc === BACKBL;
     if (ci.meter[i] === -20000) ci.meter[i] = chr.meter[i];
   }
+  // checkseq_fortie: turn on the sequences tied to blocks already carried.
   for (let i = 0; i < MAXINV; i++) for (let q = 0; q < MAXSEQ; q++) if (chr.sequences[q].bloc === ci.inv[i]) ci.seqon[q] = true;
+  // meter[0] (hit points) can only be -1 before the first scene: copy the character's meters.
   if (ci.meter[0] === -1) {
     for (let i = 0; i < 5; i++) ci.meter[i] = chr.meter[i];
     for (let i = 5; i < MAXSEQ; i++) ci.meter[i] = chr.sequences[i].key > 0 ? chr.meter[i] : -20000;
@@ -187,6 +201,7 @@ export function startSceneInits(w: World, start: Coord): void {
   ci.curbottom = CHARBL;
   ci.nextAni = w.clock;
 
+  // Put the view's top-left block so the character starts mid-screen; the map wraps.
   w.mx = start.x - SCRNBLEN / 2;
   w.my = start.y - SCRNBWID / 2;
   if (w.mx < 0) w.mx += MLEN;
@@ -217,7 +232,8 @@ export function changeBlocks(w: World): void {
     const b = bgBlock(w, tmap);
     if (w.nxtchg[lp] <= w.clock && b.nextBl !== tmap) {
       w.blkmap[lp] = b.nextBl;
-      // A block with no change time is set to change on every tick ("0").
+      // A block with no change time is set to change on every tick ("0"); the C
+      // comments call this NEVER but 0 is always <= clock.
       w.nxtchg[lp] = b.ntime <= 0 ? 0 : w.nxtchg[lp] + bgBlock(w, w.blkmap[lp]).ntime;
     }
   }
@@ -309,11 +325,14 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   m.keyboard.attach();
   m.flushKeys();
 
+  // done: 0 playing, 1 Esc, DEAD. newlink stays MAXSCENELINKS until chklnk finds a link.
   let done = 0;
   let newlink = MAXSCENELINKS;
   let doScroll = false;
   let oldClock = s.timerCounter;
   let lastTickAt = 0;
+  // Emulated slow PC (SpeedSetting): game ticks that come too soon after the last
+  // processed one are skipped, not queued, as playgame's loop drops ticks it missed.
   const cpuReady = () => {
     const tps = s.speed.ticksPerSecond;
     if (!tps) return true;
@@ -322,6 +341,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     lastTickAt = now;
     return true;
   };
+  // One NewTimer interrupt: the PIT reprogrammed to 8x the BIOS rate, about 145.6 Hz.
   const tickMs = 1000 / TICK_RATE;
   let last = performance.now();
   let acc = 0;
@@ -330,6 +350,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     acc = 0;
   };
 
+  // The body of playscene's `if (OldClock<TimerCounter)` block: one 18.2 Hz game tick.
   const tick = async () => {
     w.clock = oldClock = s.timerCounter;
     if (!w.noMons) {
@@ -338,6 +359,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     }
     // While playing, the keyboard interrupt is replaced, so BIOS typed keys never pile up.
     m.keyboard.typed.length = 0;
+    // KeysPending are only applied when the current sequence can be interrupted
+    // (not a "ground" sequence) or is at its first frame; otherwise they wait.
     const pending = m.keyboard.events.splice(0);
     for (const k of s.rec.doPlayback()) pending.push(k);
     if (pending.length && (!w.chr.sequences[w.chr.cseq].ground || w.chr.cframe === 0)) {
@@ -349,6 +372,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
       // loop looks at them; keep such presses latched until handled.
       for (const k of pending) if (k === 1 || (k >= 59 && k <= 68)) w.keydn[k] = 1;
     } else if (pending.length) m.keyboard.events.unshift(...pending);
+    // movechars repeats while cframe is -1 (a new sequence was just chosen). The guard
+    // is a port safety net against looping forever; the C loop has none.
     let guard = 0;
     do {
       if (await moveChars(w, async () => {
@@ -370,6 +395,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     newlink = checkLinks(s, w, doscene);
   };
 
+  // DoFunKy: screens that take over the display. The clock is saved and restored so no
+  // game time passes while they are up (F6 instead takes the loaded game's clock).
   const funcKey = async (n: number) => {
     const clockPause = s.sndClock;
     m.audio.stopSpeaker();
@@ -414,6 +441,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     w.scroll.nx = w.scroll.ny = 0;
     w.scroll.movx = w.scroll.movy = 0;
     resetKeys(w);
+    // Sequence 0 is IDLESEQ.
     w.chr.cseq = 0;
     w.chr.cframe = 0;
     w.ci.topthere = w.ci.bottomthere = false;
@@ -423,6 +451,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     m.screen.setPalette(w.palette);
     s.colors = w.palette;
     if (n !== 6) s.sndClock = clockPause;
+    // TimerCounter counts every 8th SndClock tick, so it is rebuilt as SndClock >> 3.
     s.timerCounter = w.clock = s.sndClock >> 3;
     oldClock = s.timerCounter;
     m.flushKeys();
@@ -437,6 +466,9 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     let n = Math.floor(acc / tickMs);
     acc -= n * tickMs;
     if (n > 40) n = 40; // don't try to catch up after the tab was hidden
+    // Each pass is one NewTimer interrupt: every 8th one bumps TimerCounter (the
+    // 18.2 Hz game clock), then SndClock++. Scrolling is drawn every interrupt, while
+    // the game logic only runs when TimerCounter has moved past OldClock.
     for (let i = 0; i < n && !done && newlink === MAXSCENELINKS; i++) {
       if ((s.sndClock & 7) === 0) s.timerCounter++;
       s.sndClock++;
@@ -454,6 +486,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
           else m.audio.stopSong();
         } else if (f === 4) s.soundOn = !s.soundOn;
         else if (f === 8) w.jstickOn = !w.jstickOn;
+        // F7 is "reserved for future use" in the original.
         else if (f !== 7) await funcKey(f);
       }
       if (oldClock < s.timerCounter && cpuReady()) await tick();
@@ -469,6 +502,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   await m.fadeAllTo(0, 0, 0);
   m.keyboard.detach();
   m.keyboard.attach();
+  // Return codes as in playscene: MAXSCENELINKS restarts this scene, +1 quits (Esc),
+  // +2 means no lives left; anything lower is the link taken.
   if (w.keydn[1]) newlink = MAXSCENELINKS + 1;
   if (done === DEAD) {
     if (s.ci.lives > 0) {
@@ -480,6 +515,8 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   return { ok: true, link: newlink };
 }
 
+// Same game<n>.sav names as SaveGame/LoadGame, but the contents are this port's JSON,
+// not the original's binary records, so DOS save files cannot be loaded.
 const SAVE_FILE = (slot: number) => `game${slot}.sav`;
 
 async function saveGame(s: Session, w: World, where: { prevscene: number; doscene: number; linkin: number }): Promise<void> {
