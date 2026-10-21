@@ -12,6 +12,7 @@ import type { Session } from '../engine/scene';
 import { LiveRecorder, recorderFormat } from './video';
 import { AudioMix } from './audioTap';
 import { saveBlob } from './screenCapture';
+import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
 
 const SKIP_KEY = 'gm-demo-skip-intro';
 
@@ -66,6 +67,8 @@ export interface DemoOptions {
   below?: (tick: () => number) => { el: HTMLElement; destroy(): void };
   /** The dialog's heading. */
   heading?: string;
+  /** A line under the screen, e.g. that the recording was not in the original game. */
+  notice?: string;
 }
 
 /** Plays a demo recording in a dialog: watch it, or save it as a video (screen and sound). */
@@ -182,6 +185,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
         recBtn,
       ),
       status,
+      o.notice ? h('p', { class: 'meta demo-notice' }, o.notice) : null,
       h(
         'p',
         { class: 'hint' },
@@ -205,8 +209,12 @@ export function demoButton(title: string, load: () => Promise<GameFiles>, gam: s
       onclick: async () => {
         const files = await load();
         const rec = titleDemo(files, gam);
-        if (!rec) return toast(`${title} has no demo recording.`);
-        await playDemo({ title, files, gam, rec, heading: `${title}: the demo` });
+        if (rec) return playDemo({ title, files, gam, rec, heading: `${title}: the demo` });
+        // a CD game that shipped without one may have a demo added for this edition
+        const added = extraDemoForGam(await loadExtraDemos(), files.get(gam));
+        const bytes = added && (added.inGame ? files.get(added.file) : await fetchExtraDemo(added));
+        if (!added || !bytes) return toast(`${title} has no demo recording.`);
+        await playDemo({ title, files, gam, rec: bytes, heading: `${title}: the demo (added)`, notice: `${ADDED_DEMO_NOTICE}. ${added.made}` });
       },
     },
     '▶ Watch demo',
