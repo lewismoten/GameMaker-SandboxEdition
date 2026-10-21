@@ -145,29 +145,37 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   ],
 ];
 
-export function renderWebManual(el: HTMLElement): void {
-  const article = h('article');
-  article.innerHTML = `<h1>Game-Maker Web guide</h1>
-    <p class="lead">How to design, play and share games with today’s web version.</p>
-    ${SECTIONS.map(([id, title, html]) => `<h2 id="help-${id}">${title}</h2>${html}`).join('')}`;
-  const nav = h(
-    'nav',
-    { 'aria-label': 'Guide contents' },
-    h('a', { href: '#/' }, '← Home'),
-    ...SECTIONS.map(([id, title]) =>
-      h(
-        'a',
-        {
-          href: `#/help`,
-          onclick: (e: Event) => {
-            e.preventDefault();
-            article.querySelector(`#help-${id}`)?.scrollIntoView({ behavior: 'smooth' });
-          },
-        },
-        title,
-      ),
+/**
+ * The guide, one section at a time so it fits the window: the contents beside it (a
+ * "Contents" menu on a phone), the section at #/help/<id>, and Previous / Next under it.
+ */
+export function renderWebManual(el: HTMLElement, sectionId?: string): void {
+  const at = Math.max(
+    0,
+    SECTIONS.findIndex(([id]) => id === sectionId),
+  );
+  const [id, title, html] = SECTIONS[at];
+  const article = h('article', { 'aria-labelledby': `help-${id}` });
+  article.innerHTML = `${at === 0 ? '<p class="guide-kicker">Game-Maker: Sandbox Edition guide</p>' : '<p class="guide-kicker">Guide</p>'}
+    <h1 id="help-${id}">${title}</h1>
+    ${at === 0 ? '<p class="lead">How to design, play and share games with today’s web version.</p>' : ''}
+    ${html.replace(/<(\/?)h3\b/g, '<$1h2')}`;
+  const link = (i: number, label: string, cls = '') =>
+    h('a', { href: `#/help/${SECTIONS[i][0]}`, class: cls, 'aria-current': i === at ? 'page' : undefined }, label);
+  article.append(
+    h(
+      'nav',
+      { class: 'guide-pager', 'aria-label': 'Previous and next section' },
+      at > 0 ? link(at - 1, `← ${SECTIONS[at - 1][1]}`, 'prev') : h('span'),
+      at < SECTIONS.length - 1 ? link(at + 1, `${SECTIONS[at + 1][1]} →`, 'next') : h('span'),
     ),
   );
+  const toc = h(
+    'details',
+    { class: 'guide-toc', open: matchMedia('(min-width: 761px)').matches },
+    h('summary', null, h('span', null, 'Contents: '), title),
+    h('nav', { 'aria-label': 'Guide contents' }, h('a', { href: '#/' }, '← Home'), ...SECTIONS.map(([, t], i) => link(i, t))),
+  );
   decorateBbsName(article);
-  clear(el, h('div', { class: 'guide' }, nav, article));
+  clear(el, h('div', { class: 'guide' }, toc, article));
 }

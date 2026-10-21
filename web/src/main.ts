@@ -137,8 +137,9 @@ async function route(): Promise<void> {
   clear(titleSlot);
   if (kind === 'help') {
     content.setAttribute('role', 'main');
-    document.title = `Guide · ${PRODUCT}`;
-    renderWebManual(content);
+    const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
+    document.title = `${title ? `${title[0].toUpperCase()}${title.slice(1)} · ` : ''}Guide · ${PRODUCT}`;
+    renderWebManual(content, id);
     return;
   }
   document.title = PRODUCT;
@@ -151,7 +152,7 @@ window.addEventListener('hashchange', () => void route());
 // #/help, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
-const modernLink = /^#\/(p\/|game\/|help$|$)/.test(startHash);
+const modernLink = /^#\/(p\/|game\/|help(\/[\w-]+)?$|$)/.test(startHash);
 if (modernLink || (startHash !== '#/desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 

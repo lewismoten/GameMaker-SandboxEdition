@@ -9,24 +9,70 @@
   padding: 24px 16px 64px;
 }
 
-.guide nav {
+.guide-toc {
   position: sticky;
   top: 16px;
   align-self: start;
+}
+
+/* on a wide screen the contents are always out: no menu to open */
+.guide-toc > summary {
+  display: none;
+}
+
+.guide-toc nav {
   display: flex;
   flex-direction: column;
   gap: 2px;
   font-size: 14px;
 }
 
-.guide nav a {
+.guide-toc nav a {
   padding: 5px 10px;
   border-radius: 6px;
   color: var(--text);
   text-decoration: none;
 }
 
-.guide nav a:hover {
+.guide-toc nav a:hover {
+  background: var(--accent-soft);
+}
+
+.guide-toc nav a[aria-current='page'] {
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+  font-weight: 700;
+}
+
+.guide-kicker {
+  margin: 0 0 4px;
+  color: var(--muted, var(--text));
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.guide-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.guide-pager a {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.guide-pager a:hover,
+.guide-pager a:focus-visible {
+  border-color: var(--accent);
   background: var(--accent-soft);
 }
 
@@ -41,7 +87,7 @@
 }
 
 .guide h2 {
-  margin: 40px 0 8px;
+  margin: 28px 0 8px;
   padding-top: 8px;
   font-size: 20px;
   scroll-margin-top: 16px;
@@ -97,10 +143,30 @@
   .guide {
     grid-template-columns: minmax(0, 1fr);
     gap: 8px;
+    padding-top: 12px;
   }
 
-  .guide nav {
+  /* on a phone the contents are a menu at the top */
+  .guide-toc {
     position: static;
-    flex-flow: row wrap;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel-2);
+  }
+
+  .guide-toc > summary {
+    display: block;
+    padding: 10px 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .guide-toc > summary span {
+    color: var(--muted, var(--text));
+    font-weight: 500;
+  }
+
+  .guide-toc nav {
+    padding: 0 6px 8px;
   }
 }
