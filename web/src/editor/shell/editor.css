@@ -736,6 +736,8 @@ dialog.modal .buttons {
   .workspace {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
+    /* the window height editors size themselves by, less the Files bar */
+    --ws-vh: calc(100dvh - 52px);
   }
   .sidebar {
     position: relative;
