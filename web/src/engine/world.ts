@@ -1,5 +1,7 @@
 // Runtime state of a scene being played: a TypeScript rendering of playgame's globals
-// (ci, chr, mi[], mm[], map[][], blks[], blkmap[], nxtchg[], BlkMon[], scroll…).
+// (ci, chr, mi[], mm[], map[][], blks[], blkmap[], nxtchg[], BlkMon[], scroll…) and
+// the cinfo, minfo and ScrollStruct types and #defines from code/GM/PLAYGAME.C.
+// Field notes below are taken from the comments in those C declarations.
 import { BACKBL, BLEN, CHARBL, MONBL, emptyBlock, type Block } from '../formats/blocks';
 import type { Character } from '../formats/character';
 import { INF_REPEAT, MAXINV, MAXSEQ, METERS } from '../formats/character';
@@ -13,6 +15,7 @@ export const SIZEX = 320;
 export const SIZEY = 200;
 export const MAXKEYS = 20;
 export const MAXGRAV = 11;
+// The view is SCRNBLEN x SCRNBWID blocks of BLEN (20) pixels: 320x200.
 export const SCRNBLEN = 16;
 export const SCRNBWID = 10;
 export const GRAVSPEED = 1;
@@ -20,12 +23,14 @@ export const MONMOVESPEED = 1;
 export const JSTICKKEY = 1;
 export const ATTACKX = 8;
 export const ATTACKY = 5;
+// Screen coordinate meaning "not on screen" (nothing to draw or erase).
 export const OFFSCRN = -100;
 export const SCRSPDX = 40;
 export const SCRSPDY = 40;
 export const SCROLLPERMOVE = 6;
 export const MAXMONSSHOWN = 50;
 export const CHARPOWER = 100;
+// The C's 0xFFFFFFFF ulong "infinite" time for nxtchg[] and BlkMon[].nexttime.
 export const NEVER = 0xffffffff;
 
 export interface Coord {
@@ -41,40 +46,57 @@ export interface CharInfo {
   bottomthere: boolean;
   curtop: number;
   curbottom: number;
+  /** Where the character will be on screen next; scrx/scry where it is drawn; oldx/oldy where it is erased. */
   nextx: number;
   nexty: number;
   scrx: number;
   scry: number;
   oldx: number;
   oldy: number;
+  /** Delta of the character's last 2 moves. */
   netx: number;
   nety: number;
+  /** Current velocity due to gravity. */
   gravx: number;
   gravy: number;
   hitpts: number;
+  /** Lives left; -1 before the first scene sets it from the character's meter. */
   lives: number;
+  /** Game clock tick at which the character next moves. */
   nextAni: number;
+  /** Inventory block numbers (BACKBL+1 in inv[0] = not filled in yet). */
   inv: number[];
+  /** Repetition counters, MAXSEQ + 10 of them; meter[0] is hit points, meter[1] lives. */
   meter: number[];
   seqon: boolean[];
 }
 
 /** minfo: one live monster. */
 export interface MonInfo {
+  /** Born from the character, so it can't hurt the character. */
   fromchar: number;
+  /** Bresenham's algorithm: dx = (curpos - dest). */
   delta: Coord;
+  /** [0] map block, [1] pixel position within the block. */
   curx: [number, number];
   cury: [number, number];
+  /** Where the monster is going when on a path. */
   target: Coord;
+  /** xy ratios in Bresenham's line algorithm. */
   offl: number;
   offs: number;
+  /** 0 normal, 1 attack pattern. */
   curMarch: number;
+  /** Index into mon[].pic. */
   curPic: number;
+  /** How to flip and rotate the picture. */
   orient: number;
   picDrawn: boolean;
   scrPos: Coord;
   oldPos: Coord;
+  /** Index of the next position in the monster's path. */
   dest: number;
+  /** Game clock ticks of the next animation frame, next move, and when it was born. */
   nextAni: number;
   nextMove: number;
   birthTime: number;
@@ -100,12 +122,16 @@ export interface BresScroll {
 }
 
 export interface ScrollState {
+  /** Pixel offset of the screen edge within the edge block (mx, my). */
   nx: number;
   ny: number;
+  /** How far to move the screen this game tick; negative is up or left. */
   totalx: number;
   totaly: number;
+  /** Character's offset from the screen center (pixels; the C comment says blocks). */
   distx: number;
   disty: number;
+  /** SOLLEF/SOLRIG/SOLTOP/SOLBOT flags of the directions currently scrolling. */
   inMotion: number;
   maxX: number;
   maxY: number;
@@ -115,10 +141,13 @@ export interface ScrollState {
   rightStop: number;
   upStop: number;
   downStop: number;
+  /** Pixels waiting to be scrolled; whole 4 pixel steps are taken, 0..3 remain as the pan. */
   movx: number;
   movy: number;
+  /** 0..3 pixel hardware pan (an absolute position, not a delta). */
   littleShiftx: number;
   littleShifty: number;
+  /** 0xff where the scene allows scrolling that way (mirrored from the .gam file). */
   up: number;
   down: number;
   left: number;
@@ -270,7 +299,10 @@ export function padBlocks(list: Block[] | undefined, count: number): Block[] {
   return out;
 }
 
-/** map[y][x] with C's flat layout: x may run one past the row into the next row. */
+/**
+ * map[y][x] with C's flat layout: x may run one past the row into the next row. Out
+ * of range reads in the helpers below return 0 / LASTMM instead of stray memory.
+ */
 export function cellIndex(x: number, y: number): number {
   return y * MLEN + x;
 }
@@ -300,6 +332,7 @@ export function bgBlock(w: World, n: number): Block {
 
 export function createWorld(map: GameMap, sound: SoundHooks, rand = Math.random): World {
   return {
+    // 256 VGA colors x 3 (r, g, b), each 0..63.
     palette: new Uint8Array(768),
     map: map.blocks.slice(),
     mapMon: map.mons.slice(),
