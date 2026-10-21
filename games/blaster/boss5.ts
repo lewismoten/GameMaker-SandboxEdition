@@ -24,6 +24,7 @@ function face(p: Pal): Pixels {
   for (let y = 0; y < 80; y++)
     for (let x = 0; x < 280; x++) {
       const nx = (x - 140) / 138;
+      if (x >= 120 && x < 160) continue;
       const ny = (y + 10) / 84;
       if (nx * nx + ny * ny * ny > 1) continue;
       let c = shadeAt(p.r('grey'), 3, 6, 0.6 - Math.abs(nx) * 0.4 - ny * 0.2, x, y);
@@ -47,8 +48,8 @@ function face(p: Pal): Pixels {
   micro(big, 30, 8, 'GLITCH', p.c('virus', 5));
   micro(big, 222, 8, 'V1.0', p.c('virus', 5));
   // the brain's hole
-  big.rect(100, 0, 40, 80, CLEAR);
-  big.rect(98, 0, 2, 76, p.c('ink', 0)).rect(140, 0, 2, 76, p.c('ink', 0));
+  big.rect(120, 0, 40, 80, CLEAR);
+  big.rect(118, 0, 2, 76, p.c('ink', 0)).rect(160, 0, 2, 76, p.c('ink', 0));
   return big;
 }
 
