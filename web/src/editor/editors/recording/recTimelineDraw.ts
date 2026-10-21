@@ -178,6 +178,7 @@ export function draw(f: Frame): CapBox[] {
     }
   }
   // Folded pauses.
+  const marks: { key: ScreenKey; xa: number; xb: number; hot: boolean }[] = [];
   for (const s of visibleSegs) {
     if (!s.fold) continue;
     const xa = X(s.t0);
@@ -205,22 +206,8 @@ export function draw(f: Frame): CapBox[] {
     const key = s.screen ? lay.screenKeys.find((k) => k.t === s.t1) : undefined;
     let top = RULER;
     if (key) {
-      ctx.font = SCREEN_KEY_FONT;
-      const text = label(key.scan);
-      const w = Math.min(xb - xa - 14, Math.ceil(ctx.measureText(text).width) + 8);
-      const kx = (xa + xb) / 2 - w / 2;
-      const ky = RULER + 4;
-      ctx.globalAlpha = f.pos !== undefined && f.pos >= key.t ? 0.55 : 1;
-      roundRect(ctx, kx, ky, w, SCREEN_KEY_H, 3);
-      ctx.fillStyle = '#e8e2d2';
-      ctx.fill();
-      ctx.strokeStyle = hot ? PLAYHEAD : '#9aa6ff';
-      ctx.stroke();
-      ctx.fillStyle = '#262630';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(text, (xa + xb) / 2, ky + SCREEN_KEY_H / 2 + 0.5, w - 4);
-      ctx.globalAlpha = 1;
-      top = ky + SCREEN_KEY_H + 2;
+      marks.push({ key, xa, xb, hot });
+      top = RULER + 4 + SCREEN_KEY_H + 2;
     }
     ctx.font = '10px ui-monospace, Menlo, Consolas, monospace';
     const word = s.screen ? 'screen' : 'folded';
@@ -299,6 +286,27 @@ export function draw(f: Frame): CapBox[] {
     }
     boxes.push({ note: i, x: cx, y, w, xs, xe });
   });
+  // Screen keys over the band (and any keycap reaching into it): the screen used them up.
+  for (const { key, xa, xb, hot } of marks) {
+    ctx.save();
+    ctx.font = SCREEN_KEY_FONT;
+    const text = label(key.scan);
+    const w = Math.min(xb - xa - 14, Math.ceil(ctx.measureText(text).width) + 8);
+    const kx = (xa + xb) / 2 - w / 2;
+    const ky = RULER + 4;
+    if (f.pos !== undefined && f.pos >= key.t) ctx.globalAlpha = 0.55;
+    roundRect(ctx, kx, ky, w, SCREEN_KEY_H, 3);
+    ctx.fillStyle = '#e8e2d2';
+    ctx.fill();
+    ctx.strokeStyle = hot ? PLAYHEAD : '#9aa6ff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = '#262630';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, (xa + xb) / 2, ky + SCREEN_KEY_H / 2 + 0.5, w - 4);
+    ctx.restore();
+  }
   if (f.playX !== undefined) {
     const x = Math.round(f.playX) + 0.5;
     ctx.fillStyle = PLAYHEAD;
