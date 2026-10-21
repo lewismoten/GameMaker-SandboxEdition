@@ -391,9 +391,9 @@ Then, hearing the crew, he left the umbrella in the dark under the stage and was
 
 At 9:48 Lila Fontaine did the rest without knowing it.
 \f
-The Paragon opens again on Tuesday with Edgar Bliss as Count Corvin. The program says the play is by Oliver Pike.
+The Paragon opens again on Tuesday with Edgar Bliss as Count Corvin. The program, and a Courier correction, say the play is by Oliver Pike.
 
-Lila Fontaine's contract is torn up. Felix Morrow keeps his job. Agatha Crane pays the bank.
+Lila Fontaine's contract is torn up. Felix Morrow keeps his job. Agatha pays the bank.
 
 And Inspector Ada Penn goes home, as the sun comes up over Port Ellery, to sleep until the evening papers.
 
