@@ -1,13 +1,13 @@
 // Plays the built game headlessly and reports problems:
-//   cd web && npx vite-node ../games/maximus/check.ts [scene name...]
+//   cd web && npx vite-node ../games/maximus/tools/check.ts [scene name...]
 // - every world: land, wait three seconds (nothing should kill you at the landing site),
 //   and the uplink back to orbit is reachable;
 // - rover worlds: the rover can drive all the way around the planet;
 // - the training deck can be crossed by "hold right, hop when stuck".
-import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './src/ids';
-import { newCharInfo } from '../../web/src/engine/world';
-import { reachable } from './src/levels/mapkit';
-import { buildGame } from './src/game';
+import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from '../src/ids';
+import { newCharInfo } from '../../../web/src/engine/world';
+import { reachable } from '../src/levels/mapkit';
+import { buildGame } from '../src/game';
 import { autoWalk, navigate, simFor, standStill } from './verify';
 
 const only = process.argv.slice(2);

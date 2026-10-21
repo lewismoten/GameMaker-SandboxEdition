@@ -1,15 +1,15 @@
 // Plays parts of the built game headlessly (the engine's own movement, touch and monster
 // code via sim.ts) to check that they work: the training deck can be crossed, rovers can
 // drive around their worlds, and nothing kills the courier the moment it lands.
-import { SCAN } from './src/ids';
-import type { Built, SceneInfo } from './src/game';
+import { SCAN } from '../src/ids';
+import type { Built, SceneInfo } from '../src/game';
 import { Sim } from './sim';
-import type { CharInfo } from '../../web/src/engine/world';
+import type { CharInfo } from '../../../web/src/engine/world';
 
 const key = SCAN;
 
 export function simFor(b: Built, info: SceneInfo, seed = 1, ci?: CharInfo): Sim {
-  const sets = b.sets as Record<string, { blocks: import('../../web/src/formats/blocks').Block[] }>;
+  const sets = b.sets as Record<string, { blocks: import('../../../web/src/formats/blocks').Block[] }>;
   const famFile = b.game.scenes[info.scene].files[3];
   const ms = Object.values(b.monsters).find((m) => `${m.name}.mon` === famFile);
   const chr = b.chars[info.chr];
