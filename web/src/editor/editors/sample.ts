@@ -3,7 +3,7 @@
 // over it. Each change is saved as an 8-bit PCM .VOC at the sample's own rate, the kind
 // the Sound Blaster (and PLAYGAME) plays; the original bytes are kept until you change it.
 import './sample.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { h, clear, download, toast } from '../core/ui';
 import { encodeWav, toPcm8 } from '../../media/wav';
 import { decodeVoc, encodeVoc } from '../../formats/voc';

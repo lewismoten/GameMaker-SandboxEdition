@@ -4,7 +4,7 @@
 // screens). Card positions are the .GAM's integrator coordinates, so the DOS integrator
 // shows the same arrangement.
 import './integrator.css';
-import { registerEditor } from '../index';
+import { registerEditor } from '../registry';
 import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../../core/ui';
 import { blockImages } from '../../core/draw';
 import type { FileKind, Project } from '../../core/project';

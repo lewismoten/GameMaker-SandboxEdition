@@ -2,7 +2,7 @@
 // The text box marks each screen page and the 31 character edge; the screen beside it is
 // redrawn as you type, page by page, exactly as Display_File draws it.
 import './textScreen.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { h, clear, debounce } from '../core/ui';
 import { kindOf, type Project } from '../core/project';
 import { latin1Text, textBytes } from '../../formats/binary';

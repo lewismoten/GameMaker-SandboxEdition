@@ -2,7 +2,7 @@
 // through the same PlayIt code the games use. Only what Game-Maker plays can be edited:
 // notes and their velocities (loudness), instruments (program changes and SBI settings), the
 // drum kit (rhythm mode), timing.
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { h, clear, toast } from '../core/ui';
 import { MusicDoc, SNAPS } from '../music/doc';
 import { PianoRoll } from '../music/roll';

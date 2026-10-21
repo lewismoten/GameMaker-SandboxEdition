@@ -1,5 +1,5 @@
 // Pictures (.GIF): view, import, and copy 20x20 areas into blocks (IMAGE.EXE).
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { fileField } from '../widgets/filePicker';
 import { h, clear, selectField, pickFiles, toast, download, confirmDialog } from '../core/ui';
 import { blockCanvas, paintBlock, paintIndexed } from '../core/draw';

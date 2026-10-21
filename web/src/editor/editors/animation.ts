@@ -4,7 +4,7 @@
 // the speed, add frames from pictures, and export frames as PNG. Every change is written
 // back as an .FLI with only what changed between frames, as Animator did.
 import './animation.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { h, clear, download, pickFiles, toast } from '../core/ui';
 import { paintIndexed } from '../core/draw';
 import { pickFile } from '../widgets/filePicker';

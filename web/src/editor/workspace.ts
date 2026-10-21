@@ -4,7 +4,7 @@ import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from './cor
 import { pickFile } from './widgets/filePicker';
 import { MAKERS } from './makers';
 import { KIND_ICON } from './widgets/thumbs';
-import { editors, fileInfo } from './editors';
+import { editors, fileInfo } from './editors/registry';
 import { GameFiles, loadFileList, normalize } from '../project/files';
 import { createZip } from '../project/zip';
 import { exportWebApp } from '../export/exportWebApp';

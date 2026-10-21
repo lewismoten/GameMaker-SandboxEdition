@@ -5,7 +5,7 @@
 // above plays the show as the game would, lighting up the clip it is on.
 import { History } from '../core/history';
 import './slideShow.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { h, clear, toast } from '../core/ui';
 import { pickFile } from '../widgets/filePicker';
 import { templateFor } from '../templates';

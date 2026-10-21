@@ -2,7 +2,7 @@
 // inventory, and its sequences (idle, die, hurt, pick up, drop and up to 15 of your own),
 // each a series of 20x40 frames made of a top and a bottom block.
 import './character.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { fileField } from '../widgets/filePicker';
 import { blockButton, chooseBlock, type BlockExtra } from '../widgets/blockChooser';
 import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';

@@ -1,7 +1,7 @@
 // Sound set editor (SNDEDIT.EXE): 30 effects, each 36 PC speaker frequencies played
 // 1/145.6 s apart, or a Sound Blaster .voc file.
 import './sounds.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { h, clear, numberField, debounce } from '../core/ui';
 import { AudioEngine } from '../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../formats/sound';

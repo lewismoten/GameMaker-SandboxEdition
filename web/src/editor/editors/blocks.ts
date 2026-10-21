@@ -1,7 +1,7 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
 import { rovingGrid } from '../widgets/rovingGrid';
 import './blocks.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { fileField } from '../widgets/filePicker';
 import { TEXTURES, paintTexture } from '../tools/textures';
 import { h, clear, numberField, checkField, selectField, debounce } from '../core/ui';

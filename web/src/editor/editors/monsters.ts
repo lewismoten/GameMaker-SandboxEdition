@@ -2,7 +2,7 @@
 import './monsters.css';
 import { rovingGrid } from '../widgets/rovingGrid';
 import { History } from '../core/history';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
 import { blockCanvas, paintBlock } from '../core/draw';
 import { paletteChooser } from './blocks';

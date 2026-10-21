@@ -2,7 +2,7 @@
 // PLAYGAME's drawbkd opens it (the name up to a newline, any case, cut to 8.3, or under the
 // underscore name the CD gave it); a missing picture is brought in from the library.
 import './backdrop.css';
-import { registerEditor } from './index';
+import { registerEditor } from './registry';
 import { fileField } from '../widgets/filePicker';
 import { h, clear, download, numberField, toast } from '../core/ui';
 import type { Project } from '../core/project';
