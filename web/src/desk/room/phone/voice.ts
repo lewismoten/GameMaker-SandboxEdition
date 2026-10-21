@@ -31,7 +31,16 @@ export const VOICES = {
   receptionist: { who: "Receptionist", pitch: 1.25, rate: 1.1, prefer: WOMAN },
   mom: { who: "Mom", pitch: 1.15, rate: 1.1, prefer: WOMAN },
   dad: { who: "Dad", pitch: 0.7, rate: 1.15, prefer: MAN },
-  dadMachine: { who: "Dad’s voicemail", pitch: 0.75, rate: 1, prefer: MAN },
+  shop: { who: "Maintenance shop", pitch: 0.85, rate: 1.05, prefer: MAN },
+  jenny: { who: "Jenny", pitch: 1.3, rate: 1.25, prefer: WOMAN },
+  timeLady: {
+    who: "Time & temperature",
+    pitch: 1.05,
+    rate: 0.95,
+    prefer: WOMAN,
+  },
+  weather: { who: "Weather line", pitch: 0.9, rate: 1, prefer: MAN },
+  movies: { who: "Movie Line", pitch: 0.75, rate: 1.05, prefer: MAN },
   grandma: {
     who: "Grandma",
     pitch: 1.35,

@@ -123,6 +123,26 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
           signal.addEventListener("abort", stop, { once: true });
           later();
         }),
+      nextKey: (seconds) =>
+        new Promise((resolve, reject) => {
+          const done = (k: string) => {
+            clearTimeout(t);
+            onKey = undefined;
+            signal.removeEventListener("abort", stop);
+            resolve(k);
+          };
+          const stop = () => {
+            clearTimeout(t);
+            onKey = undefined;
+            reject(new HungUp());
+          };
+          const t = setTimeout(() => done(""), seconds * 1000);
+          onKey = done;
+          signal.addEventListener("abort", stop, { once: true });
+        }),
+      hush() {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+      },
       ended(why) {
         if (signal.aborted) return;
         state = "ended";
