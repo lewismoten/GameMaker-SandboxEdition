@@ -168,8 +168,8 @@ function cpuPic(st: Style, part: number): Pixels {
   return p;
 }
 
-function outletPic(st: Style): Pixels {
-  const p = floorPic(st, 0);
+function outletPic(st: Style, under = floorPic(st, 0)): Pixels {
+  const p = under;
   bevel(p, 3, 1, 14, 18, r('paper'), 2);
   p.rect(6, 5, 2, 5, c('ink', 0)).rect(12, 5, 2, 5, c('ink', 0));
   p.disc(9.5, 13.5, 2, c('ink', 0));
@@ -177,8 +177,8 @@ function outletPic(st: Style): Pixels {
   return p;
 }
 
-function screwPic(st: Style): Pixels {
-  const p = floorPic(st, 2);
+function screwPic(st: Style, under = floorPic(st, 2)): Pixels {
+  const p = under;
   blob(p, 9.5, 10, 5.5, 5.5, r('gold'), 0, 3);
   p.line(6, 13, 13, 7, c('gold', 0)).line(7, 13, 13, 8, c('gold', 0));
   return p;
@@ -311,6 +311,8 @@ export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadbo
     pad.ring(9.5, 9.5, 8, c('gold', 2)).ring(9.5, 9.5, 7, c('gold', 1));
     micro(pad, 4, 8, 'GND', c('ink', 0));
     add('bbPad', pad);
+    add('bbOutlet', outletPic(st, breadboardPic(0)), { score: 1000, effect: 1, eamt: 1 });
+    add('bbScrew', screwPic(st, breadboardPic(2)), { score: 500, effect: 1, eamt: 1, touch: 'bb0' });
     for (let m = 1; m < 16; m++) {
       const p = trace(breadboardPic(m % 3), m, r('blue'));
       // a stripped end where a jumper plugs in

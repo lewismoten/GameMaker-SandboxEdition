@@ -218,9 +218,9 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
           const names = { steady: 'bat', dead: 'dead', antipulse: 'pulseOff', pulse: 'pulse', astable: 'chip' };
           put(x, y, `${names[kind]}${k}`);
         } else if (ch === 'X') {
-          put(x, y, 'outlet');
+          put(x, y, bb ? 'bbOutlet' : 'outlet');
           exit = { x: ox + x, y: oy + y };
-        } else if (ch === '$') put(x, y, 'screw');
+        } else if (ch === '$') put(x, y, bb ? 'bbScrew' : 'screw');
         else if (ch in DIODES) put(x, y, DIODES[ch]);
         else if (ch === '@') put(x, y, tb ? traceName(tb) : bb ? 'bbPad' : 'pad');
         else if (ch === '.' || ch in PARTS) put(x, y, tb ? traceName(tb) : floor(x, y));
