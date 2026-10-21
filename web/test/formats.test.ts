@@ -37,7 +37,8 @@ const roundTrip = (ext: string, parse: (b: Uint8Array) => Uint8Array) => {
       expect(out.subarray(0, bytes.length), f).toEqual(bytes);
       expect(out.subarray(bytes.length).every((v) => v === 0), f).toBe(true);
     }
-  });
+    // reads every such file on the CD: give it room on a busy machine
+  }, 30_000);
 };
 
 describe('binary formats', () => {
