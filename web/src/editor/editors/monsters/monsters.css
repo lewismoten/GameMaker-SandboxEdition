@@ -32,7 +32,7 @@
   min-width: 0;
 }
 .mon-anim h4 {
-  margin: 0 0 6px;
+  margin: 0;
 }
 .mon-anim h4 small {
   font-weight: 400;
@@ -61,11 +61,22 @@
 .mon-frame input[type='number'] {
   width: 5em;
 }
+.mon-anim-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-bottom: 6px;
+}
+.mon-anim-head h4 {
+  margin: 0;
+}
 .mon-frame-tools {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   gap: 6px;
+}
+.mon-frame-tools button {
+  padding: 3px 10px;
 }
 @media (max-width: 640px) {
   .mon-layout {
@@ -82,5 +93,49 @@
     max-height: none;
     overflow-x: auto;
     overflow-y: hidden;
+  }
+}
+
+/* Wide windows: strength and movement in a column beside the path, whose map is sized to the
+   window's height, so a monster fits without scrolling. */
+@media (min-width: 1180px) and (min-height: 640px) {
+  .mon-detail {
+    display: grid;
+    grid-template-columns: clamp(240px, 30%, 320px) minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+  .mon-detail > .mon-top {
+    grid-column: 1 / -1;
+  }
+  .mon-detail > .mon-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px 10px;
+    align-items: end;
+  }
+  /* the monster it becomes and the solid-blocks switch take a whole row */
+  .mon-detail > .mon-stats > :nth-child(3),
+  .mon-detail > .mon-stats > .check,
+  .mon-detail > .mon-stats > label:has(input[type='checkbox']) {
+    grid-column: 1 / -1;
+  }
+  .mon-detail > .mon-stats input[type='number'],
+  .mon-detail > .mon-stats select {
+    width: 100%;
+    min-width: 0;
+  }
+  .mon-detail > .mon-stats .field > span {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .mon-frame input[type='number'] {
+    width: 4.2em;
+  }
+  .mon-detail .mpath-left {
+    flex: 0 1 auto;
+    width: clamp(200px, calc(100dvh - 600px), 760px);
+  }
+  .mon-detail .mpath-side {
+    flex: 1 1 150px;
   }
 }

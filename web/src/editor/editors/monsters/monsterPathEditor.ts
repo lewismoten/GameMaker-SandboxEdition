@@ -133,7 +133,15 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   });
   const ctx = canvas.getContext('2d')!;
   const pop = h('div', { class: 'mpath-pop', hidden: true });
-  const stage = h('div', { class: 'mpath-stage' }, canvas, pop);
+  // zoom floats over the map's corner, like a map's, so the toolbar keeps to one row
+  const zoomBar = h(
+    'div',
+    { class: 'mpath-zoom', role: 'group', 'aria-label': 'Zoom' },
+    h('button', { onclick: () => zoom(1.5), title: 'Zoom out', 'aria-label': 'Zoom out' }, '−'),
+    h('button', { onclick: () => fitView(), title: 'Fit the path' }, 'Fit'),
+    h('button', { onclick: () => zoom(1 / 1.5), title: 'Zoom in', 'aria-label': 'Zoom in' }, '+'),
+  );
+  const stage = h('div', { class: 'mpath-stage' }, canvas, zoomBar, pop);
   const readout = h('div', { class: 'mpath-readout' });
   const tabsEl = h('div', { class: 'mpath-tabs', role: 'tablist' });
   const toolbar = h('div', { class: 'mpath-toolbar' });
@@ -668,13 +676,6 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
         playing ? '❚❚ Pause' : '▶ Play',
       ),
       h('button', { onclick: restartWalker, title: 'Start the walk over' }, '↺ Restart'),
-      h(
-        'div',
-        { class: 'mpath-zoom', role: 'group', 'aria-label': 'Zoom' },
-        h('button', { onclick: () => zoom(1.5), title: 'Zoom out', 'aria-label': 'Zoom out' }, '−'),
-        h('button', { onclick: () => fitView(), title: 'Fit the path' }, 'Fit'),
-        h('button', { onclick: () => zoom(1 / 1.5), title: 'Zoom in', 'aria-label': 'Zoom in' }, '+'),
-      ),
     );
   }
 

@@ -141,31 +141,13 @@ registerEditor(['mon'], (host, project, file) => {
         h(
           'div',
           { class: 'mon-anim' },
-          h('h4', { id: 'mon-anim-head' }, 'Animation ', h('small', { class: 'meta' }, 'picture and ticks (1/18 s) of each frame')),
+          // the frame buttons share the heading's line, so six frames fit on one row
           h(
-            'ol',
-            { class: 'mon-frames', 'aria-labelledby': 'mon-anim-head' },
-            ...frames.slice(0, shown).map((f, i) =>
-              h(
-                'li',
-                { class: 'mon-frame' },
-                blockButton(
-                  () => mblk,
-                  () => chooser.palette,
-                  () => f[0],
-                  (v) => edit(() => ((f[0] = v), renderDetail(), renderList())),
-                  { title: `Frame ${i + 1}: a monster block` },
-                ),
-                numberField(
-                  '',
-                  () => f[1],
-                  (v) => edit(() => (f[1] = v)),
-                  { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)` },
-                ),
-              ),
-            ),
+            'div',
+            { class: 'mon-anim-head' },
+            h('h4', { id: 'mon-anim-head' }, 'Animation ', h('small', { class: 'meta' }, 'picture and ticks (1/18 s) of each frame')),
             h(
-              'li',
+              'div',
               { class: 'mon-frame-tools' },
               shown < LASTSL &&
                 h(
@@ -197,11 +179,34 @@ registerEditor(['mon'], (host, project, file) => {
                 ),
             ),
           ),
+          h(
+            'ol',
+            { class: 'mon-frames', 'aria-labelledby': 'mon-anim-head' },
+            ...frames.slice(0, shown).map((f, i) =>
+              h(
+                'li',
+                { class: 'mon-frame' },
+                blockButton(
+                  () => mblk,
+                  () => chooser.palette,
+                  () => f[0],
+                  (v) => edit(() => ((f[0] = v), renderDetail(), renderList())),
+                  { title: `Frame ${i + 1}: a monster block` },
+                ),
+                numberField(
+                  '',
+                  () => f[1],
+                  (v) => edit(() => (f[1] = v)),
+                  { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)` },
+                ),
+              ),
+            ),
+          ),
         ),
       ),
       h(
         'div',
-        { class: 'panel grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr))' },
+        { class: 'panel grid-fields mon-stats', style: 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr))' },
         numberField(
           'Power',
           () => m.power,
