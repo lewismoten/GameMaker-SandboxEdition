@@ -124,7 +124,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
   stroke(c, '#fff', 2, [108, 592, 118, 600, 130, 606]);
   // Gwin peeking from the fence corner, Teddy the knight front and center
   dog(c, 70, 470, 0.62, GWIN);
-  dog(c, 320, 630, 1.3, { ...TEDDY, helmet: true });
+  dog(c, 250, 630, 1.3, { ...TEDDY, helmet: true });
   // his toy shovel, planted like a sword
   stroke(c, '#d81e1e', 9, [490, 640, 520, 470]);
   poly(c, [508, 476, 534, 470, 548, 420, 522, 404, 500, 444]);

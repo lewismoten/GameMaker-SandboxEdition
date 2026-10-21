@@ -213,7 +213,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
   c.fillText('PHONE', 538, 432);
   c.fillText('25¢', 538, 470);
   glow(c, 538, 530, 80, '#3fe0d0', 0.5);
-  sparky(c, 330, 620, 1.05);
+  sparky(c, 280, 624, 1.05);
   dex(c, 150, 640, 1.08);
   // pages of the report whirling between them
   for (let i = 0; i < 6; i++) {
