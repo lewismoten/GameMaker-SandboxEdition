@@ -124,6 +124,12 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
+  server: {
+    // Editing this config or the build-time plugins in scripts/ would restart the dev
+    // server, and Vite's client then reloads every open page (switching off the desk PC
+    // mid-session). Don't watch them: restart the dev server by hand to pick them up.
+    watch: { ignored: ['**/vite.config.ts', '**/scripts/**'] },
+  },
   test: {
     environment: 'node',
   },
