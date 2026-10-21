@@ -174,11 +174,25 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           title:
             "Moten Snow-to-Software Operations: shoveling snow in the winter of 1992 to buy Game-Maker",
         },
-        h("img", {
-          src: "./desk/moten-snow-to-software.jpg",
-          alt: "Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel",
-          loading: "lazy",
-        }),
+        // AVIF or WebP at the size it hangs (256 or 512 px across), the JPEG for older browsers
+        h(
+          "picture",
+          { style: "display:block;width:100%" },
+          ...(["avif", "webp"] as const).map((type) =>
+            h("source", {
+              type: `image/${type}`,
+              srcset: `./desk/moten-snow-to-software-256.${type} 256w, ./desk/moten-snow-to-software-512.${type} 512w`,
+              sizes: "(min-width: 1350px) 230px, 17vw",
+            }),
+          ),
+          h("img", {
+            src: "./desk/moten-snow-to-software.jpg",
+            alt: "Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel",
+            loading: "lazy",
+            decoding: "async",
+            fetchpriority: "low",
+          }),
+        ),
       ),
       h("div", { class: "desk-top", "aria-hidden": "true" }),
       h("div", { class: "desk-legs", "aria-hidden": "true" }),
