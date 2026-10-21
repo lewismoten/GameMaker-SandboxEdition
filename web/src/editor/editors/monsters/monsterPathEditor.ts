@@ -4,12 +4,10 @@
 import './monsterPath.css';
 import { h, clear, modal, toast } from '../../core/ui';
 import { blockImages, paintBlock } from '../../core/draw';
-import type { Project } from '../../core/project';
 import { BACKBL, BLEN, MONBL, parseBlocks, type Block } from '../../../formats/blocks';
 import { MLEN, MWID, parseMap, type GameMap } from '../../../formats/map';
-import { MAXMARCH, type Monster } from '../../../formats/monster';
+import { MAXMARCH } from '../../../formats/monster';
 import { parsePalette, type Palette } from '../../../formats/palette';
-import { normalize } from '../../../project/files';
 import {
   addCorner,
   clearPath,
@@ -27,40 +25,7 @@ import {
   type Corner,
   type PathKind,
 } from './monsterPath';
-
-export const ORIENTS: [number, string][] = [
-  [0, 'Normal'],
-  [1, 'Turned right'],
-  [2, 'Upside down'],
-  [3, 'Turned left'],
-  [4, 'Mirrored'],
-  [5, 'Mirrored, turned right'],
-  [6, 'Flipped'],
-  [7, 'Mirrored, turned left'],
-];
-
-const SCALE = 2; // canvas pixels per block pixel
-const CELL = BLEN * SCALE;
-const MAX_SPEED = 50;
-const TICK_MS = 1000 / 18.2;
-
-interface MapChoice {
-  label: string;
-  map?: string;
-  bbl?: string;
-  pal?: string;
-}
-
-export interface PathEditorOptions {
-  project: Project;
-  monFile: string;
-  monsters: Monster[];
-  index: () => number;
-  mblk: () => Block[];
-  palette: () => Palette;
-  /** Called after every change to the monster (marks it used and saves). */
-  onEdit: () => void;
-}
+import { CELL, MAX_SPEED, ORIENTS, SCALE, TICK_MS, mapChoices, type PathEditorOptions } from './monsterPathView';
 
 export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refresh: () => void; destroy: () => void } {
   const { project } = o;
@@ -117,23 +82,8 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
     hidePop();
   }
 
-  // ---- Maps: the scenes that use this monster set -------------------------------------
-  function mapChoices(): MapChoice[] {
-    const game = project.game();
-    const out: MapChoice[] = [];
-    const n = normalize(o.monFile);
-    game.scenes.forEach((s, i) => {
-      if (normalize(s.files[3] || '') !== n || !s.files[1] || !project.files.has(s.files[1])) return;
-      out.push({ label: `${s.desc || `Scene ${i + 1}`} — ${s.files[1].toUpperCase()}`, map: s.files[1], bbl: s.files[2], pal: s.files[0] });
-    });
-    if (!out.length) {
-      const bbl = project.files.byExtension('bbl')[0];
-      for (const m of project.files.byExtension('map')) out.push({ label: m.toUpperCase(), map: m, bbl });
-    }
-    out.push({ label: 'No map (plain grid)' });
-    return out;
-  }
-  let choices = mapChoices();
+  // ---- Maps: the scenes that use this monster set (mapChoices, in monsterPathView.ts) ------
+  let choices = mapChoices(project, o.monFile);
 
   function loadMap(): void {
     const c = choices[mapIdx] ?? choices[0];
@@ -969,7 +919,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   let lastIndex = -1;
   function refresh(): void {
     spriteCache = new Map();
-    choices = mapChoices();
+    choices = mapChoices(project, o.monFile);
     if (mapIdx >= choices.length) mapIdx = 0;
     if (!map && choices[mapIdx]?.map) loadMap();
     defaultStart();
