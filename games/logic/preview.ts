@@ -4,7 +4,7 @@
 import { join } from 'node:path';
 import { Pixels } from '../kit/pixels';
 import { writePng } from './png';
-import { PAL } from './pal';
+import { PAL } from './src/art/pal';
 import { STYLES, buildTiles } from './tiles';
 import type { BlockSet } from './sets';
 
@@ -31,7 +31,7 @@ if (process.env.PREVIEW_DIR) {
 if (process.env.PREVIEW_DIR) {
   const { BOARDS } = await import('./boards');
   const { compileHouse } = await import('./board');
-  const { renderBoard } = await import('./render');
+  const { renderBoard } = await import('./src/art/render');
   const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
   const S = await import('./screens');
   const mb = buildMonsterBlocks();

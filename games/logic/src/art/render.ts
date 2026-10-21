@@ -1,11 +1,11 @@
 // Draws a board the way PLAYGAME shows it (blocks, then the placed parts, then Watt on
 // his pad): for previews, the title cards and the screens.
-import { orientIndex } from '../../web/src/formats/blocks';
-import { MLEN } from '../../web/src/formats/map';
-import { Pixels } from '../kit/pixels';
+import { orientIndex } from '../../../../web/src/formats/blocks';
+import { MLEN } from '../../../../web/src/formats/map';
+import { Pixels } from '../../../kit/pixels';
 import { CLEAR } from './draw';
-import { COLS, ROWS, type Board } from './board';
-import type { BlockSet } from './sets';
+import { COLS, ROWS, type Board } from '../../board';
+import type { BlockSet } from '../../sets';
 
 export function sprite20(src: Pixels, orient: number): Pixels {
   const p = new Pixels(20, 20, CLEAR);

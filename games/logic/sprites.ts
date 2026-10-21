@@ -2,8 +2,8 @@
 // current itself, switches, timer buttons, force-field gates, fuses and relays.
 import { orientIndex } from '../../web/src/formats/blocks';
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, bevel, blob, micro, outline, shadeAt } from './draw';
-import { c, r } from './pal';
+import { CLEAR, bevel, blob, micro, outline, shadeAt } from './src/art/draw';
+import { c, r } from './src/art/pal';
 import { BlockSet, SOLID, type BlockDef } from './sets';
 
 const blank = () => new Pixels(20, 20, CLEAR);

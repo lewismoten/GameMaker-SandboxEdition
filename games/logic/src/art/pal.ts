@@ -2,7 +2,7 @@
 // screen. Named ramps keep the art readable ("copper at shade 3"), and the inks that
 // PLAYGAME looks up by color (menu blue, warning red, text purple) are exact matches so
 // its own words come out crisp on our screens.
-import { PaletteBuilder } from '../kit/palette';
+import { PaletteBuilder } from '../../../kit/palette';
 
 type RGB = [number, number, number];
 

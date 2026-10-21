@@ -8,10 +8,10 @@ import { encodeFli } from '../../web/src/formats/fli';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../kit/pixels';
 import { dosText } from '../kit/disk';
-import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from './draw';
-import { PAL, c, r } from './pal';
+import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from './src/art/draw';
+import { PAL, c, r } from './src/art/pal';
 import type { Board } from './board';
-import { renderBoard } from './render';
+import { renderBoard } from './src/art/render';
 import type { BlockSet } from './sets';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
 

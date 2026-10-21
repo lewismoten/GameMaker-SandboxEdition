@@ -3,7 +3,7 @@
 // and bumps switches cleanly. Arrows, W A S D and the number pad all steer; R reboots.
 import { CHARBL, MONBL } from '../../web/src/formats/blocks';
 import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
-import { KEY, SND } from './ids';
+import { KEY, SND } from './src/ids';
 import type { BlockSet } from './sets';
 
 const MIRROR = 0x40;

@@ -1,7 +1,7 @@
 // Drawing helpers for blocks, sprites and screens: dithered shading, bevelled boxes,
 // ASCII sprites, the PC's 8x8 font (at any scale) and a 3x5 font for silkscreen labels.
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { Pixels, dither } from '../kit/pixels';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { Pixels, dither } from '../../../kit/pixels';
 
 export const CLEAR = 255;
 
