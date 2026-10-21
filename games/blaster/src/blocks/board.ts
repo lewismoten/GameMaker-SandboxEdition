@@ -20,15 +20,16 @@ export function boardArt(p: Pal): StageArt {
   };
   const floor = (v: number): Pixels => {
     const t = weave(v + 1);
-    const silk = p.c('base', 5);
+    const silk = p.c('grey', 5);
     if (v === 1) {
       // a via
       blob(t, 9.5, 9.5, 3, 3, p.r('trim'), 2, 5);
       t.rect(9, 9, 2, 2, p.c('deep', 0));
     } else if (v === 2) {
-      // silkscreen part markings
-      micro(t, 3, 4, 'R12', silk);
-      t.frame(3, 11, 13, 5, silk);
+      // an empty resistor footprint
+      micro(t, 3, 3, 'R12', silk);
+      t.frame(3, 10, 14, 6, silk);
+      t.rect(1, 12, 2, 2, p.c('trim', 4)).rect(17, 12, 2, 2, p.c('trim', 4));
     } else if (v === 3) {
       // two tiny vias
       for (const [x, y] of [
@@ -42,6 +43,27 @@ export function boardArt(p: Pal): StageArt {
       // a solder pad pair
       t.rect(4, 8, 4, 4, p.c('steel', 4)).rect(12, 8, 4, 4, p.c('steel', 4));
       t.rect(4, 8, 4, 1, p.c('steel', 6)).rect(12, 8, 4, 1, p.c('steel', 6));
+    } else if (v === 5) {
+      // where a capacitor goes: its ring, the + side and its name
+      t.ring(11, 12, 6.5, silk);
+      for (let y = 6; y < 19; y++) for (let x = 5; x < 10; x++) if ((x + y) % 3 === 0 && Math.hypot(x - 11, y - 12) < 6) t.set(x, y, silk);
+      micro(t, 1, 1, 'C9', silk);
+      micro(t, 16, 1, '+', silk);
+      t.rect(13, 11, 3, 3, p.c('trim', 4)).set(14, 12, p.c('deep', 0));
+    } else if (v === 6) {
+      // where a transistor goes: the flat-sided TO-92 outline and its legs
+      micro(t, 1, 1, 'Q5', silk);
+      t.line(5, 11, 15, 11, silk);
+      for (let x = 5; x <= 15; x++) t.set(x, 11 - Math.round(Math.sqrt(Math.max(0, 25 - (x - 10) ** 2))), silk);
+      for (const x of [6, 10, 14]) t.rect(x - 1, 13, 2, 2, p.c('trim', 4));
+      micro(t, 5, 15, 'E', silk);
+      micro(t, 9, 15, 'B', silk);
+      micro(t, 13, 15, 'C', silk);
+    } else if (v === 7) {
+      // a test point
+      t.ring(12, 12, 3.5, silk);
+      t.rect(11, 11, 3, 3, p.c('trim', 5)).set(12, 12, p.c('trim', 3));
+      micro(t, 1, 2, 'TP3', silk);
     }
     return t;
   };
@@ -57,27 +79,73 @@ export function boardArt(p: Pal): StageArt {
     }
     return t;
   };
-  return { pal: p, floor, edge, floors: 5, edges: 2 };
+  return { pal: p, floor, edge, floors: 8, edges: 2 };
 }
 
-/** Copper traces: V, H and corners (named by the sides they join: ns, ew, ne, nw, se, sw). */
-function trace(a: StageArt, sides: string, bus = false): Pixels {
+/** The copper data bus (4 lanes): V, H and corners (named by the sides they join: ns, ew, ne, nw, se, sw). */
+function busTrace(a: StageArt, sides: string): Pixels {
   const p = a.pal;
   const t = new Pixels(20, 20);
   t.px.set(a.floor(0).px);
-  const lanes = bus ? [3, 7, 11, 15] : [9];
-  const w = bus ? 2 : 3;
-  for (const l of lanes) {
+  for (const l of [3, 7, 11, 15]) {
     const draw = (x: number, y: number, ww: number, hh: number) => {
       t.rect(x, y, ww, hh, p.c('trim', 3));
     };
-    if (sides.includes('n')) draw(l, 0, w, l + w);
-    if (sides.includes('s')) draw(l, l, w, 20 - l);
-    if (sides.includes('w')) draw(0, l, l + w, w);
-    if (sides.includes('e')) draw(l, l, 20 - l, w);
+    if (sides.includes('n')) draw(l, 0, 2, l + 2);
+    if (sides.includes('s')) draw(l, l, 2, 20 - l);
+    if (sides.includes('w')) draw(0, l, l + 2, 2);
+    if (sides.includes('e')) draw(l, l, 20 - l, 2);
   }
   // a highlight down the middle of each lane
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (t.get(x, y) === p.c('trim', 3) && (x + y) % 5 === 0) t.set(x, y, p.c('trim', 5));
+  return t;
+}
+
+const SIDE: Record<string, [number, number]> = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0] };
+
+/**
+ * A light green signal trace under the solder mask, two pixels wide, from the middle of each
+ * side named to the middle of the block. Two sides make a run or a 45-degree corner; one side
+ * and `via` end it in a plated hole.
+ */
+function trace(a: StageArt, sides: string, via = false): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.px.set(a.floor(0).px);
+  const ink = p.c('base', 5);
+  const mask = new Uint8Array(400);
+  const pen = (x: number, y: number) => {
+    for (let yy = 0; yy < 2; yy++)
+      for (let xx = 0; xx < 2; xx++) {
+        const px = Math.round(x) + xx;
+        const py = Math.round(y) + yy;
+        if (px >= 0 && py >= 0 && px < 20 && py < 20) mask[py * 20 + px] = 1;
+      }
+  };
+  const stroke = (pts: [number, number][]) => {
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1];
+      const [x1, y1] = pts[i];
+      const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0), 1);
+      for (let k = 0; k <= n; k++) pen(x0 + ((x1 - x0) * k) / n, y0 + ((y1 - y0) * k) / n);
+    }
+  };
+  const ends = [...sides];
+  const edge = (d: string): [number, number] => [9 + SIDE[d][0] * 10, 9 + SIDE[d][1] * 10];
+  const near = (d: string): [number, number] => [9 + SIDE[d][0] * 4, 9 + SIDE[d][1] * 4];
+  if (ends.length === 2 && !via) stroke([edge(ends[0]), near(ends[0]), near(ends[1]), edge(ends[1])]);
+  else for (const d of ends) stroke([edge(d), [9, 9]]);
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      if (!mask[y * 20 + x]) continue;
+      const lit = (y > 0 && !mask[(y - 1) * 20 + x]) || (x > 0 && !mask[y * 20 + x - 1]);
+      t.set(x, y, lit ? p.c('base', 6) : ink);
+    }
+  if (via) {
+    t.disc(9.5, 9.5, 3.4, p.c('base', 6));
+    t.disc(9.5, 9.5, 2.2, p.c('trim', 4));
+    t.rect(9, 9, 2, 2, p.c('deep', 0));
+  }
   return t;
 }
 
@@ -177,7 +245,8 @@ function crystal(a: StageArt): Pixels {
 /** Stage 1 landmark blocks. */
 export function boardTiles(bs: BlockSet, a: StageArt): void {
   for (const s of ['ns', 'ew', 'ne', 'nw', 'se', 'sw', 'nse', 'nsw']) bs.add(`tr_${s}`, trace(a, s));
-  for (const s of ['ns', 'ew', 'se', 'sw', 'ne', 'nw']) bs.add(`bus_${s}`, trace(a, s, true));
+  for (const s of 'nsew') bs.add(`tr_${s}V`, trace(a, s, true));
+  for (const s of ['ns', 'ew', 'se', 'sw', 'ne', 'nw']) bs.add(`bus_${s}`, busTrace(a, s));
   const labels = ['74LS', '138', 'BIOS', '1994', 'AMI', '8042'];
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) bs.add(`chip${r}${c}`, chip(a, r, c));
   labels.forEach((l, i) => bs.add(`chipL${i}`, chip(a, 1, 1, l)));

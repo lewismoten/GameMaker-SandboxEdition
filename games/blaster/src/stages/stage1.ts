@@ -3,6 +3,7 @@
 import { boardArt, boardTiles, boardVirus } from '../blocks/board';
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from '../characters/enemies';
 import { LENGTH, strip, type Grid } from './mapkit';
+import { rng } from '../../../kit/pixels';
 import { buildPalette } from '../art/pal';
 import { kit, type Stage } from './stage';
 import { bossBIOS } from '../bosses/boss1';
@@ -26,6 +27,50 @@ function virus1(b: Parameters<typeof boardVirus>[0], p: Parameters<typeof boardV
   heavy(b, 'clawL', { score: 100 });
   heavy(b, 'clawR', { score: 100 });
   mine(b, 'cluster');
+}
+
+/**
+ * Light green signal traces over the bare board: each runs north from a via, may jog east or
+ * west round a 45-degree bend, and ends in another via. A run only crosses plain floor.
+ * Half the empty part footprints are wiped first, so the silkscreen doesn't get noisy.
+ */
+function wires(g: Grid, seed: number, count: number): void {
+  const r = rng(seed);
+  const n = (k: number) => Math.floor(r() * k);
+  for (let d = 0; d < LENGTH; d++)
+    for (let c = 1; c < 15; c++) if (['floor2', 'floor5', 'floor6', 'floor7'].includes(g.get(c, d)) && r() < 0.6) g.set(c, d, 'floor0');
+  for (let made = 0, tries = 0; made < count && tries < count * 40; tries++) {
+    const c0 = 1 + n(14);
+    const d0 = 2 + n(LENGTH - 16);
+    const up1 = 1 + n(6);
+    const jog = n(3) === 0 ? 0 : (n(2) ? 1 : -1) * (1 + n(3));
+    const up2 = jog ? 1 + n(5) : 0;
+    // two or three side by side, as a little bundle
+    const wide = n(3) === 0 ? 1 : 1 + n(3);
+    const lanes: [number, number, string][][] = [];
+    for (let k = 0; k < wide; k++) {
+      // the inside lane of a bend turns sooner, so the bundle keeps its spacing
+      const inner = jog > 0 ? wide - 1 - k : k;
+      const cells: [number, number, string][] = [[c0 + k, d0, 'tr_nV']];
+      let d = d0;
+      for (let i = 0; i < up1 + inner; i++) cells.push([c0 + k, ++d, 'tr_ns']);
+      let c = c0 + k;
+      if (jog) {
+        const dir = Math.sign(jog);
+        cells.push([c, ++d, dir > 0 ? 'tr_se' : 'tr_sw']);
+        for (let i = 1; i < Math.abs(jog); i++) cells.push([(c += dir), d, 'tr_ew']);
+        cells.push([(c += dir), d, dir > 0 ? 'tr_nw' : 'tr_ne']);
+        for (let i = 0; i < up2 + (wide - 1 - inner); i++) cells.push([c, ++d, 'tr_ns']);
+      }
+      cells.push([c, ++d, 'tr_sV']);
+      lanes.push(cells);
+    }
+    const all = lanes.flat();
+    if (!all.every(([cc, dd]) => cc >= 1 && cc <= 14 && g.get(cc, dd).startsWith('floor'))) continue;
+    if (new Set(all.map(([cc, dd]) => `${cc},${dd}`)).size !== all.length) continue;
+    for (const [cc, dd, name] of all) g.set(cc, dd, name);
+    made++;
+  }
 }
 
 /** A vertical run of the data bus from d0 to d1 at column c (4 lanes). */
@@ -67,7 +112,7 @@ function legA(g: Grid): void {
   g.stamp(10, 33, 'xtal', 2, 1);
   conga(g, 7, 35, 4, 'mothL');
   g.pickup(8, 41, 'nova');
-  for (let c = 8; c < 15; c++) g.set(c, 31, c === 14 ? 'tr_nw' : 'bus_ew');
+  for (let c = 8; c < 15; c++) g.set(c, 31, c === 14 ? 'bus_nw' : 'bus_ew');
   bus(g, 14, 32, 40);
   g.stamp(2, 44, 'cs', 4, 4);
   g.hatch(7, 46);
@@ -156,6 +201,7 @@ export function stage1(): Stage {
     ],
     14,
   );
+  wires(a, 111, 26);
   const b = strip(kb.bs, kb.beasts, art, 102);
   legB(b);
   b.sprinkle(
@@ -170,6 +216,7 @@ export function stage1(): Stage {
     ],
     14,
   );
+  wires(b, 112, 26);
   return {
     n: 1,
     id: 'board',

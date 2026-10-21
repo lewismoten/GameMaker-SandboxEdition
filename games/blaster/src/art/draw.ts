@@ -250,11 +250,17 @@ const MICRO: Record<string, string> = {
   '?': '110001010000010',
   $: '011110010011110',
   '&': '010101010101011',
+  '#': '101111101111101',
+  '\u00b5': '000101101111100',
+  '=': '000111000111000',
+  '>': '100010001010100',
+  '<': '001010100010001',
+  '_': '000000000000111',
 };
 
 export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pixels {
-  [...s.toUpperCase()].forEach((ch, i) => {
-    const g = MICRO[ch] ?? MICRO['?'];
+  [...s].forEach((ch, i) => {
+    const g = MICRO[ch] ?? MICRO[ch.toUpperCase()] ?? MICRO['?'];
     for (let k = 0; k < 15; k++) if (g[k] === '1') p.set(x + i * 4 + (k % 3), y + Math.floor(k / 3), c);
   });
   return p;
