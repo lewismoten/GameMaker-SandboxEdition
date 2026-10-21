@@ -9,10 +9,19 @@ import { latin1Text, textBytes } from '../../../formats/binary';
 import { parseSlideList } from '../../../formats/graphicScripts';
 import { displayFile, match, RGB_PURPLE } from '../../../engine/showGraphic';
 import { gamePreview } from '../../widgets/mediaShared';
+import type { Palette } from '../../../formats/palette';
 import { blankScreen, pictureScreen, screenCanvas, textPages, type ScreenPicture } from '../../widgets/mediaPictures';
 import { layoutText, pageOfLine, wrapLongLines, LINE_CHARS, PAGE_LINES, type TextLayout } from './textLayout';
 
 const BACKGROUND_KINDS = ['gif', 'bkd', 'fli'];
+
+/** A black screen in the game's palette. Color 0 is not always black (Snowbound's dusk
+ *  palette starts with gray), so the screen is filled with the palette's closest to black. */
+function blackScreen(palette: Palette): ScreenPicture {
+  const pic = blankScreen(palette);
+  pic.pixels.fill(match(palette, [0, 0, 0]));
+  return pic;
+}
 
 /** The picture a text screen is usually shown over: the menu screen for the story,
  *  instructions and credits, or the slide before it in a slide show. */
@@ -56,7 +65,7 @@ registerEditor(['txt'], (host, project, file) => {
   let background = usualBackground(project, file);
 
   const gamePalette = () => project.paletteFor(file).palette;
-  const over = (): ScreenPicture => (background && pictureScreen(project.files, background)) || blankScreen(gamePalette());
+  const over = (): ScreenPicture => (background && pictureScreen(project.files, background)) || blackScreen(gamePalette());
 
   const preview = gamePreview(project, file, {
     label: '▶ Play as in the game',
