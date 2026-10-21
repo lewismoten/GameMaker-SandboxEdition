@@ -4,16 +4,16 @@
 // the speed, add frames from pictures, and export frames as PNG. Every change is written
 // back as an .FLI with only what changed between frames, as Animator did.
 import './animation.css';
-import { registerEditor } from './registry';
-import { h, clear, download, pickFiles, toast } from '../core/ui';
-import { paintIndexed } from '../core/draw';
-import { pickFile } from '../widgets/filePicker';
-import { decodeFrames, remap, rgbaOf } from '../convert';
-import { decodeGif, isGif } from '../../formats/gif';
-import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFrames } from '../../formats/fliFrames';
-import { createZip } from '../../project/zip';
-import { encodeAnimatedGif } from '../../media/gifEncode';
-import { framesToVideo } from '../../media/frames';
+import { registerEditor } from '../registry';
+import { h, clear, download, pickFiles, toast } from '../../core/ui';
+import { paintIndexed } from '../../core/draw';
+import { pickFile } from '../../widgets/filePicker';
+import { decodeFrames, remap, rgbaOf } from '../../convert';
+import { decodeGif, isGif } from '../../../formats/gif';
+import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFrames } from '../../../formats/fliFrames';
+import { createZip } from '../../../project/zip';
+import { encodeAnimatedGif } from '../../../media/gifEncode';
+import { framesToVideo } from '../../../media/frames';
 
 const RETRACE = 70;
 const SPEEDS: [number, string][] = [

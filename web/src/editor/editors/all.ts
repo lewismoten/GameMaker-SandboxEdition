@@ -8,7 +8,7 @@ import './monsters/monsters';
 import './character/character';
 import './sounds/sounds';
 import './picture/picture';
-import './animation';
+import './animation/animation';
 import './backdrop';
 import './textScreen';
 import './slideShow';
