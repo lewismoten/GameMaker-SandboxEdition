@@ -1,0 +1,204 @@
+// A curious player for any Game-Maker game: every few game ticks it tries each key the
+// character answers to (from the game's own key map) on copies of the level, a few ticks
+// ahead and with a few different monster dice, and presses the one that explores the
+// most new ground, picks things up, scores, and does not get hurt. It plays the real
+// engine through headless.ts, so the keys it presses become a real .REC recording.
+import { characterActions, type ActionKind } from '../../../web/src/editor/keymap/keyMap';
+import type { Machine } from '../../../web/src/engine/machine';
+import type { Session } from '../../../web/src/engine/scene';
+import { BACKBL, LASTMON, type World } from '../../../web/src/engine/world';
+import { parseMap } from '../../../web/src/formats/map';
+import { rng } from '../pixels';
+import { Probe, cloneWorld } from './probe';
+
+export interface BotOptions {
+  /** Decide every this many game ticks. */
+  every?: number;
+  /** Ticks each try is played ahead. */
+  horizon?: number;
+  /** Monster dice per try (the worst one counts for getting hurt). */
+  dice?: number;
+  /** Scene links the bot may take, by scene: link indices, or 'any'. Others are avoided. */
+  links?: Record<number, number[] | 'any'>;
+  /** Keys never to press (scan codes), e.g. a drop key. */
+  never?: number[];
+  /** Action kinds to try (default move, jump, fire, pickup). */
+  kinds?: ActionKind[];
+  /** How much new ground counts against other rewards (default 1). */
+  explore?: number;
+  /** How much firing near monsters counts (default 1). */
+  fight?: number;
+  /** A place to head for in a scene, in blocks: rewards getting closer. */
+  goals?: Record<number, { x: number; y: number }[]>;
+  seed?: number;
+}
+
+interface Option {
+  key: number;
+  kind: ActionKind;
+}
+
+const MAP_W = 100;
+
+/** Where the character is, in pixels on the map. */
+const pos = (w: World) => ({ x: w.chr.x[0] * 20 + w.chr.x[1], y: w.chr.y[0] * 20 + w.chr.y[1] });
+const carried = (w: World) => w.ci.inv.filter((b) => b !== BACKBL + 1 && b < BACKBL).length;
+const liveMonsters = (w: World) => w.mm.filter((m) => m.monnum < LASTMON).length;
+
+export class Bot {
+  private o: Required<Omit<BotOptions, 'links' | 'goals' | 'seed'>> & Pick<BotOptions, 'links' | 'goals'>;
+  private visits = new Map<number, Uint16Array>();
+  private held: number | undefined;
+  private scene = -1;
+  private world?: World;
+  private rand: () => number;
+  private trail: { x: number; y: number }[] = [];
+  /** Moments worth a look: deaths, links taken, pick ups. */
+  readonly log: string[] = [];
+  deaths = 0;
+
+  constructor(o: BotOptions = {}) {
+    this.o = {
+      every: o.every ?? 4,
+      horizon: o.horizon ?? 20,
+      dice: o.dice ?? 2,
+      never: o.never ?? [],
+      kinds: o.kinds ?? ['move', 'jump', 'fire', 'pickup'],
+      explore: o.explore ?? 1,
+      fight: o.fight ?? 1,
+      links: o.links,
+      goals: o.goals,
+    };
+    this.rand = rng(o.seed ?? 7);
+  }
+
+  /** The scene a newly loaded world belongs to: the scene whose map it matches best. */
+  private sceneOf(w: World, s: Session): number {
+    let best = -1;
+    let bestDiff = Infinity;
+    s.game.scenes.forEach((sc, i) => {
+      const f = sc.files[1];
+      const bytes = i > 1 && f ? s.m.files.get(f) : undefined;
+      if (!bytes) return;
+      const map = parseMap(bytes).blocks;
+      let diff = 0;
+      for (let k = 0; k < map.length; k += 7) if (map[k] !== w.map[k]) diff++;
+      if (diff < bestDiff) [best, bestDiff] = [i, diff];
+    });
+    return best;
+  }
+
+  private visited(scene: number): Uint16Array {
+    let v = this.visits.get(scene);
+    if (!v) this.visits.set(scene, (v = new Uint16Array(MAP_W * MAP_W)));
+    return v;
+  }
+
+  private options(w: World): Option[] {
+    const seen = new Set<number>();
+    const out: Option[] = [];
+    for (const { scan, action } of characterActions(w.chr)) {
+      if (!scan || seen.has(scan) || this.o.never.includes(scan) || !this.o.kinds.includes(action.kind)) continue;
+      if (!w.ci.seqon[action.seq] || w.ci.meter[action.seq] <= 0) continue;
+      seen.add(scan);
+      out.push({ key: scan, kind: action.kind });
+    }
+    return out;
+  }
+
+  private allowed(link: number): boolean {
+    const l = this.o.links?.[this.scene];
+    return l === 'any' || (!!l && l.includes(link));
+  }
+
+  /** Plays one option ahead on a copy; higher is better. */
+  private async tryOption(w: World, s: Session, opt: Option | undefined, dice: number): Promise<number> {
+    const copy = cloneWorld(w, rng(dice * 7919 + w.clock));
+    const p = new Probe(copy, s.game.scenes[this.scene]?.links ?? []);
+    const before = { hp: w.ci.hitpts, lives: w.ci.lives, score: w.ci.score, inv: carried(w), money: w.ci.meter[3], mons: liveMonsters(w) };
+    // the key held now is let go first unless it is the one tried
+    if (this.held !== undefined && this.held !== opt?.key) p.key(this.held | 0x80);
+    if (opt && this.held !== opt.key) p.key(opt.key);
+    const v = this.visited(this.scene);
+    const seenHere = new Set<number>();
+    let value = 0;
+    const tapped = opt && opt.kind !== 'move';
+    for (let t = 0; t < this.o.horizon; t++) {
+      // jumps, shots and pick ups are taps: let go after a decision's worth of ticks
+      if (tapped && t === this.o.every) p.key(opt.key | 0x80);
+      await p.tick();
+      if (p.dead) return -2000 + t * 20;
+      if (p.link >= 0) return this.allowed(p.link) ? 3000 - t : -3000;
+      const at = pos(copy);
+      const cell = Math.floor(at.y / 20) * MAP_W + Math.floor(at.x / 20);
+      if (!seenHere.has(cell)) {
+        seenHere.add(cell);
+        value += (this.o.explore * 12) / (1 + v[cell]);
+      }
+    }
+    const end = pos(copy);
+    const ci = copy.ci;
+    value -= (Math.max(0, before.hp - ci.hitpts) / Math.max(1, w.ci.meter[0] || before.hp || 1)) * 400;
+    if (ci.lives < before.lives) value -= 1500;
+    value += Math.min(300, Math.max(0, ci.score - before.score) * 2);
+    value += (carried(copy) - before.inv) * 250;
+    value += Math.max(0, ci.meter[3] - before.money) * 20;
+    value += Math.max(0, before.mons - liveMonsters(copy)) * 40 * this.o.fight;
+    // keep going somewhere rather than pacing on the spot
+    const back = this.trail[Math.max(0, this.trail.length - 12)];
+    if (back) value += Math.min(60, Math.hypot(end.x - back.x, end.y - back.y) / 4) * this.o.explore;
+    const goals = this.o.goals?.[this.scene];
+    if (goals?.length) {
+      const d = (q: { x: number; y: number }) => Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
+      value += (d(pos(w)) - d(end)) * 15;
+    }
+    return value;
+  }
+
+  /** Thinks about the next keys and presses them on the real keyboard. */
+  async decide(w: World, s: Session, m: Machine): Promise<void> {
+    if (w !== this.world) {
+      this.world = w;
+      const scene = this.sceneOf(w, s);
+      if (scene !== this.scene) this.log.push(`tick ${s.rec.tick}: scene ${scene} ${s.game.scenes[scene]?.desc ?? ''}`);
+      else this.log.push(`tick ${s.rec.tick}: scene ${scene} again (died?)`);
+      this.scene = scene;
+      this.held = undefined;
+    }
+    const at = pos(w);
+    this.trail.push(at);
+    const v = this.visited(this.scene);
+    const cell = Math.floor(at.y / 20) * MAP_W + Math.floor(at.x / 20);
+    if (v[cell] < 60000) v[cell]++;
+    const options: (Option | undefined)[] = [undefined, ...this.options(w)];
+    let best: Option | undefined;
+    let bestValue = -Infinity;
+    for (const opt of options) {
+      let worst = Infinity;
+      let sum = 0;
+      for (let d = 0; d < this.o.dice; d++) {
+        const value = await this.tryOption(w, s, opt, d);
+        worst = Math.min(worst, value);
+        sum += value;
+      }
+      // being hurt with any dice counts in full; otherwise the average, plus a little noise
+      const value = (worst < -500 ? worst : sum / this.o.dice) + this.rand() * 8 + (opt?.key === this.held ? 6 : 0);
+      if (value > bestValue) [best, bestValue] = [opt, value];
+    }
+    if (best?.key !== this.held) {
+      if (this.held !== undefined) m.keyboard.feed(this.held | 0x80);
+      if (best) m.keyboard.feed(best.key);
+      this.held = best?.key;
+    } else if (best && best.kind !== 'move') {
+      // a tap again: let go and press once more next time
+      m.keyboard.feed(best.key | 0x80);
+      this.held = undefined;
+    }
+  }
+
+  /** Lets go of every key (at the end of the demo). */
+  release(m: Machine): void {
+    if (this.held !== undefined) m.keyboard.feed(this.held | 0x80);
+    this.held = undefined;
+  }
+}
