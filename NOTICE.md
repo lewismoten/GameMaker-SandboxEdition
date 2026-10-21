@@ -105,6 +105,9 @@ formats from their published descriptions and from Game-Maker's own source.
   License.
 - The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its BBSes
   and phone numbers are made up, as are the magazines and awards on the game boxes.
+- **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
+  poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
+  original artwork.
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/) and [Vitest](https://vitest.dev/) (MIT), used only to build
