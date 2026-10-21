@@ -11,6 +11,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { Disk } from '../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildBlocks } from './src/blocks/blocks';
 import { MON } from './src/ids';
 import { bowdenDrive, galeStreet, jamieHill, lavaleMall, type MapBuilder } from './src/levels/maps';
@@ -199,9 +200,12 @@ disk.put('snowbnd.gam', serializeGame(game));
 const sprites = new Map([...cb.pics, ...mb.pics]);
 const screens = buildScreens(sprites, { cards, shot, shotPal });
 for (const [name, bytes] of Object.entries(screens)) disk.put(name, bytes);
+// the Sandbox Software logo first, then the game's own intro
+disk.put(SANDLOGO, sandLogoFli());
 disk.put(
   'title.lst',
   serializeSlideList([
+    { name: SANDLOGO, pause: 0 },
     { name: 'intro.fli', pause: 0 },
     { name: 'title.gif', pause: 12 },
   ]),
