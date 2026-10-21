@@ -12,6 +12,7 @@ import { exportSinglePage } from '../../export/exportSinglePage';
 import { exportDos } from '../../export/exportDos';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import './workspace.css';
+import { SHORT } from '../../edition';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -336,6 +337,8 @@ export class Workspace {
     window.scrollTo(0, 0);
     this.main.scrollTop = 0;
     location.replace(`#/p/${this.project.id}/${encodeURIComponent(file)}`);
+    // the tab names the open file first (phones show little of a tab's title)
+    document.title = `${file} · ${this.project.name} · ${SHORT}`;
     this.renderSidebar();
     const body = h('div');
     const isGam = file === this.project.gam;
