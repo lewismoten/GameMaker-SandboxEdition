@@ -1,8 +1,8 @@
 // Building 100x100 Game-Maker maps in code: rectangles, rings, ASCII stamps, monsters,
 // and named spots (start points and doorways) for the scene links.
-import { newMap, reindexMonsters, MLEN, type GameMap } from '../../web/src/formats/map';
-import { rng } from '../kit/pixels';
-import { BG } from './bblocks';
+import { newMap, reindexMonsters, MLEN, type GameMap } from '../../../../web/src/formats/map';
+import { rng } from '../../../kit/pixels';
+import { BG } from '../blocks/bblocks';
 
 export type Cell = string | { tile?: string; mon?: number; mark?: string };
 export type Legend = Record<string, Cell>;

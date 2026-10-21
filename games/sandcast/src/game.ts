@@ -1,6 +1,6 @@
 // sandcast.gam: the title scene, the ending, and the seven playfields, linked.
-import { ADVTYPE, emptyScene, newGame, type Game, type Link, type Point } from '../../web/src/formats/game';
-import type { LevelMap } from './levelmap';
+import { ADVTYPE, emptyScene, newGame, type Game, type Link, type Point } from '../../../web/src/formats/game';
+import type { LevelMap } from './levels/levelmap';
 
 export interface Level {
   name: string;

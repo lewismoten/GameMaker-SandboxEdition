@@ -1,10 +1,10 @@
 // sandcast.chr: Teddy, a one-block corgi knight. He walks on the arrows and on W/A/S/D;
 // the last four sequences are his tricks, on the number keys.
-import { CHARBL, MONBL } from '../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
-import { BG } from './bblocks';
-import { CB } from './sprites';
-import { CTR, MON, SEQ, SND } from './rules';
+import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { BG } from '../blocks/bblocks';
+import { CB } from '../sprites/sprites';
+import { CTR, MON, SEQ, SND } from '../rules';
 
 const c = (name: string) => CB.id(name);
 

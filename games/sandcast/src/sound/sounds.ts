@@ -1,9 +1,9 @@
 // sandcast.snd: every effect is a hand-made PC speaker tune of 36 steps (1/145.6 s each,
 // about a quarter second). No Sound Blaster samples: this game is for the beeper.
-import { newSoundSet, serializeSoundSet } from '../../web/src/formats/sound';
-import { rng } from '../kit/pixels';
-import { speaker } from '../kit/sound';
-import { SND } from './rules';
+import { newSoundSet, serializeSoundSet } from '../../../../web/src/formats/sound';
+import { rng } from '../../../kit/pixels';
+import { speaker } from '../../../kit/sound';
+import { SND } from '../rules';
 
 const NOTE: Record<string, number> = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 };
 /** "E5" -> Hz. */

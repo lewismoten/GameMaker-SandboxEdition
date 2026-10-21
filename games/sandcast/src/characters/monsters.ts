@@ -1,7 +1,7 @@
 // sandcast.mon: who walks, chases, scuttles and rolls, and what each becomes when beaten.
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../web/src/formats/monster';
-import { MB } from './sprites';
-import { MON } from './rules';
+import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
+import { MB } from '../sprites/sprites';
+import { MON } from '../rules';
 
 const m = (name: string) => MB.id(name);
 

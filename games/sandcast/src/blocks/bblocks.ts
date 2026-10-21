@@ -1,10 +1,10 @@
 // The background blocks (sandcast.bbl): the sandbox, castles, moats, hose streams, tide,
 // tunnels, Gwin's patio and the BBS room, with every block's rules.
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { BACKBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
-import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, PURPLE, RED, SAND, STEEL, WATER, WOOD, YELLOW } from './palette';
-import { BlockSet, CTR, MON, SEQ } from './rules';
-import { Pixels, art, ball, bevel, dither, pebbles, ripples, rng, sandTexture, shade, shadowOnSand, tile } from './art';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { BACKBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, PURPLE, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
+import { BlockSet, CTR, MON, SEQ } from '../rules';
+import { Pixels, art, ball, bevel, dither, pebbles, ripples, rng, sandTexture, shade, shadowOnSand, tile } from '../art/draw';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 const UP = 1;

@@ -1,8 +1,8 @@
 // Monster blocks (sandcast.mbl) and character blocks (sandcast.cbl).
-import { CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
-import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, RED, SAND, STEEL, TABBY, WATER, WOOD, YELLOW } from './palette';
-import { BlockSet } from './rules';
-import { CLEAR, Pixels, art, ball, dither, outline, rng, shade, sprite } from './art';
+import { CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import { ANSI, BEETLE, GRASS, GREY, OCHRE, PINK, RED, SAND, STEEL, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
+import { BlockSet } from '../rules';
+import { CLEAR, Pixels, art, ball, dither, outline, rng, shade, sprite } from '../art/draw';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 

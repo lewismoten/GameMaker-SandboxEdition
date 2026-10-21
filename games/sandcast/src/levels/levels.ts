@@ -1,6 +1,6 @@
 // The seven playfields of Sandcastle Knight.
 import { LEGEND, LevelMap, type Legend } from './levelmap';
-import { MON } from './rules';
+import { MON } from '../rules';
 
 const L = (extra: Legend): Legend => ({ ...LEGEND, ...extra });
 

@@ -1,13 +1,13 @@
 // The screens between the playfields, drawn as a dial-up BBS session: the title is an
 // ANSI logon screen, the stories are messages in a message base, and the intro FLI dials
 // THE -= S A N D B O X =- BBS and lets the logo arrive line by line, like it did at 2400 baud.
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { encodeGif } from '../../web/src/formats/gif';
-import { encodeFli } from '../../web/src/formats/fli';
-import { Pixels, dither, rng } from '../kit/pixels';
-import { ANSI, DAY, GRASS, OCHRE, RED, SAND, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from './palette';
-import { CLEAR, ball, shade } from './art';
-import { CB, MB } from './sprites';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { encodeGif } from '../../../../web/src/formats/gif';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { Pixels, dither, rng } from '../../../kit/pixels';
+import { ANSI, DAY, GRASS, OCHRE, RED, SAND, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from '../art/palette';
+import { CLEAR, ball, shade } from '../art/draw';
+import { CB, MB } from '../sprites/sprites';
 
 export const W = 320;
 export const H = 200;

@@ -2,7 +2,7 @@
 // up his shovel, digs into the ring of dunes around Anthill Keep, flings sand at the ants
 // scoops up some sand, then does his tricks. Recorded from a real run (ticks of 1/18.2 s between key events;
 // a ^ marks a key being let go).
-import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
 
 const SCAN: Record<string, number> = {
   up: 0x48,

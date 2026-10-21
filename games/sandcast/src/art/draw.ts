@@ -1,5 +1,5 @@
 // Drawing helpers shared by the block, monster and character art.
-import { Pixels, rng, dither } from '../kit/pixels';
+import { Pixels, rng, dither } from '../../../kit/pixels';
 import { SAND, OCHRE, STEEL } from './palette';
 
 export const CLEAR = 255;

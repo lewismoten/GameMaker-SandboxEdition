@@ -1,6 +1,6 @@
 // The numbers that tie Sandcastle Knight's blocks, monsters, character and maps together.
-import { emptyBlock, type Block } from '../../web/src/formats/blocks';
-import type { Pixels } from '../kit/pixels';
+import { emptyBlock, type Block } from '../../../web/src/formats/blocks';
+import type { Pixels } from '../../kit/pixels';
 
 /** Character sequences (0-4 are Game-Maker's fixed ones). */
 export const SEQ = {
