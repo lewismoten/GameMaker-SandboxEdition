@@ -127,6 +127,7 @@
   padding: 0 4px;
   border-radius: 8px;
   background: rgba(127, 140, 200, 0.2);
+  color: var(--text);
   font-size: 10px;
   letter-spacing: 0;
 }
