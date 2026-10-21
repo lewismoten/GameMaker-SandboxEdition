@@ -1,10 +1,12 @@
 // Screens reached from function keys during play (code/GM/PLAYGAME.C: HelpFiles,
-// Display_Invent, GMabout, DropBloc's picker, SelectGameToLoad/Save).
+// Display_Invent, GMabout, DropBloc's picker, SelectGameToLoad/Save). playscene's
+// DoFunKy clears the screen before calling these and restores play afterwards.
 import type { Machine } from './machine';
 import { gGet, gVertMenu } from './menus';
 import { displayFile, match, RGB_BLUE, RGB_RED, RGB_YELLOW, showGraphic } from './showGraphic';
 import { BACKBL, BLEN, INF_REPEAT, type World } from './world';
 
+// SavNames.dat: 10 save names of 21 bytes each (20 characters plus a NUL).
 const SAVNAMES = 'savnames.dat';
 
 function frame2(m: Machine, col: number): void {
@@ -12,6 +14,7 @@ function frame2(m: Machine, col: number): void {
   m.screen.box(15, 15, 305, 185, col);
 }
 
+// The 2 x 5 inventory grid shared by Display_Invent and DropBloc; cells are BLEN+5 apart.
 function drawInventory(m: Machine, w: World, col: number): void {
   m.screen.box(30, 30, 35 + 5 * (BLEN + 5), 35 + 2 * (BLEN + 5), col);
   for (let k = 0; k < 2; k++)
@@ -26,6 +29,8 @@ function drawInventory(m: Machine, w: World, col: number): void {
 export async function helpScreen(m: Machine, w: World, instructions: string | undefined): Promise<void> {
   const yellow = match(w.palette, RGB_YELLOW);
   const blue = match(w.palette, RGB_BLUE);
+  // gmhelp.txt is Game-Maker's general help (left out of TRANSFER builds); the game's
+  // own instructions follow.
   if (m.files.has('gmhelp.txt')) {
     frame2(m, blue);
     await displayFile(m, 'gmhelp.txt', yellow, 30, w.palette);
@@ -47,6 +52,8 @@ export async function statusScreen(m: Machine, w: World): Promise<void> {
   if (ci.meter[3] !== INF_REPEAT) m.screen.write(40, 96, blue, `Money:     ${ci.meter[3] - 1}`);
   m.screen.write(40, 112, blue, `Hitpoints: ${ci.hitpts}`);
   m.screen.write(40, 120, blue, `Lives:     ${ci.lives}`);
+  // clock counts 18.2 Hz ticks. clock/18 - clock/1818 is the C's integer stand-in
+  // for clock/18.2 (1/18 - 1/1818 = 1/18.18); the hundredths use the same trick.
   const clock = w.clock;
   const time = Math.trunc(clock / 18) - Math.trunc(clock / 1818);
   const two = (n: number) => String(Math.trunc(n)).padStart(2, '0');
@@ -89,6 +96,7 @@ export async function aboutScreen(m: Machine, w: World): Promise<void> {
 
 /** DropBloc's picker: arrows choose a slot, Enter drops, Esc cancels (-1). */
 export async function pickDropSlot(m: Machine, w: World): Promise<number> {
+  // Named after the C's `Yellow`, which DropBloc also set to RGBRed.Match(colors).
   const yellow = match(w.palette, RGB_RED);
   const blue = match(w.palette, RGB_BLUE);
   m.screen.clear();
@@ -105,6 +113,7 @@ export async function pickDropSlot(m: Machine, w: World): Promise<number> {
   m.flushKeys();
   for (;;) {
     const key = m.keyboard.readKey();
+    // Pointer picking is a port addition; the C took arrow keys only.
     if (m.takeClick()) {
       const cj = Math.floor((m.pointer.x - 34) / (BLEN + 5));
       const ck = Math.floor((m.pointer.y - 34) / (BLEN + 5));
@@ -161,10 +170,13 @@ export async function pickSaveSlot(m: Machine, pal: Uint8Array, saving: boolean)
   const col1 = match(pal, RGB_RED);
   const names = readSaveNames(m);
   names.forEach((n, i) => m.screen.write(80, 40 + i * 14, col, n));
+  // No idle timeout here, so 0 (Esc) is the only way out without a slot.
   const choice = await gVertMenu(m, 60, 35, 14, 10, col1);
   if (!choice || choice > 10) return -1;
   const slot = choice - 1;
   if (!saving) return slot;
+  // The name is edited in place over the background picture, so its color at the
+  // left of the row is used to erase.
   const back = m.screen.getCol(79, 40 + slot * 14);
   const name = await gGet(m, 80, 40 + slot * 14, col, back, names[slot], 20);
   if (name === null) return -1;
