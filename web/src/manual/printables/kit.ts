@@ -9,6 +9,7 @@ import { parseCharacter } from '../../formats/character';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
 import { parsePalette } from '../../formats/palette';
 import { paintIndexed } from '../../editor/core/draw';
+import { bbsName } from '../../retro/bbs/bbsName';
 
 /** Printed on everything with an address on it. */
 export const FICTIONAL_NOTE =
@@ -111,10 +112,11 @@ export function sandboxLogo(cls = ''): HTMLElement {
   return h('div', { class: `pp-logo ${cls}` }, h('span', { class: 'pp-logo-mark', 'aria-hidden': 'true' }), h('span', null, 'SANDBOX', h('br'), 'SOFTWARE'));
 }
 
-/** THE -= S A N D B O X =- with each letter in its own color. */
+/** THE -= S A N D B O X =- BBS in its colors, as everywhere (retro/bbs/bbsName.ts). */
 export function sandboxBanner(): HTMLElement {
-  const colors = ['#ff5555', '#ffff55', '#55ff55', '#55ffff', '#5555ff', '#ff55ff', '#ffaa00'];
-  return h('span', { class: 'pp-sandbox-banner' }, 'THE -= ', ...'SANDBOX'.split('').map((c, i) => h('b', { style: `color:${colors[i]}` }, c)), ' =- BBS');
+  const el = bbsName();
+  el.classList.add('pp-sandbox-banner');
+  return el;
 }
 
 export function fictionalNote(): HTMLElement {
