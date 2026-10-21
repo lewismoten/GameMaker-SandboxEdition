@@ -309,6 +309,20 @@
     font-size: 13px;
   }
 
+  /* the panel scrolls by itself here, so ⋯ More opens in place instead of over the edge */
+  .showcase .card-more[open] {
+    flex-basis: 100%;
+  }
+
+  .showcase .card-more > summary {
+    width: fit-content;
+  }
+
+  .showcase .card-more-menu {
+    position: static;
+    margin-top: 6px;
+  }
+
   .sc-actions > .button,
   .sc-actions > button,
   .sc-actions > .card-more > summary {
