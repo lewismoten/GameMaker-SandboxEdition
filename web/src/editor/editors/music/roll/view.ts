@@ -11,7 +11,7 @@ import { KEYW, HEAD, VEL, Drag } from './layout';
 
 export abstract class RollView {
   // Defined by a later layer (see the chain in the header comment).
-  protected abstract draw(): void;
+  abstract draw(): void;
   protected abstract down(e: PointerEvent): void;
   protected abstract move(e: PointerEvent): void;
   protected abstract up(e: PointerEvent): void;
