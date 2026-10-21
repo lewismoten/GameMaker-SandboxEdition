@@ -1,15 +1,16 @@
 // Tests: Mug wraps on sublimation paper (desk/mug/mugSizes.ts).
 import { describe, expect, it } from 'vitest';
-import { MARGIN, MUG_SIZES, PAPERS, layoutSheet, packWraps, paginateWraps, printPlacement } from '../src/desk/mug/mugSizes';
+import { MARGIN, MUG_SIZES, PAPERS, packWraps, printPlacement } from '../src/desk/mug/mugSizes';
 
 const size = (id: string) => MUG_SIZES.find((s) => s.id === id)!;
 const paper = (id: string) => PAPERS.find((p) => p.id === id)!;
 
 describe('sublimation sheets', () => {
-  it('puts two 11 oz wraps on a letter page, inside the margins and apart', () => {
-    const l = layoutSheet(paper('letter'), size('11oz'))!;
-    expect(l.slots.length).toBe(2);
-    for (const s of l.slots) {
+  const one = (p: string, s: string, n = 1) => packWraps(paper(p), Array(n).fill(size(s)), (x: (typeof MUG_SIZES)[number]) => x);
+  it('puts two 11 oz wraps on a letter page, inside the margins', () => {
+    const l = one('letter', '11oz', 2)!;
+    expect(l.pages.length).toBe(1);
+    for (const s of l.pages[0]) {
       const [w, h] = s.rotated ? [3.5, 8.5] : [8.5, 3.5];
       expect(s.x).toBeGreaterThanOrEqual(MARGIN - 1e-9);
       expect(s.y).toBeGreaterThanOrEqual(MARGIN - 1e-9);
@@ -18,17 +19,17 @@ describe('sublimation sheets', () => {
     }
   });
   it('fits 15 oz wraps on A4 and letter', () => {
-    expect(layoutSheet(paper('a4'), size('15oz'))?.slots.length).toBeGreaterThanOrEqual(1);
-    expect(layoutSheet(paper('letter'), size('15oz'))?.slots.length).toBeGreaterThanOrEqual(1);
+    expect(one('a4', '15oz')).toBeDefined();
+    expect(one('letter', '15oz')).toBeDefined();
   });
   it('fits a 20 oz tumbler on letter turned sideways, but not on A4', () => {
-    const l = layoutSheet(paper('letter'), size('20oz'))!;
+    const l = one('letter', '20oz')!;
     expect(l.landscape).toBe(true);
-    expect(l.slots.length).toBe(1);
-    expect(layoutSheet(paper('a4'), size('20oz'))).toBeUndefined();
+    expect(l.pages[0].length).toBe(1);
+    expect(one('a4', '20oz')).toBeUndefined();
   });
-  it('splits mugs into pages', () => {
-    expect(paginateWraps([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
+  it('splits five 11 oz mugs into three pages', () => {
+    expect(one('letter', '11oz', 5)!.pages.map((p) => p.length)).toEqual([2, 2, 1]);
   });
 });
 
