@@ -53,7 +53,7 @@ function shell(p: Pal): Pixels {
     if (Math.abs(x - 120) < 26) continue;
     blob(big, x, y, 3 + r() * 3, 2 + r() * 2, p.r('slime'), 1, 4);
   }
-  micro(big, 52, 30, 'AMI', p.c('gold', 4));
+  micro(big, 46, 30, '$FFFC', p.c('gold', 4));
   micro(big, 168, 30, 'BIOS', p.c('gold', 4));
   for (let k = 0; k < 5; k++) big.rect(40 + k * 6, 46, 3, 1, p.c('gold', 2)).rect(176 + k * 6, 46, 3, 1, p.c('gold', 2));
   // the head's hole
@@ -142,6 +142,6 @@ export function bossBIOS(art: StageArt): Leg {
     kind: 'boss',
     grid: g,
     kit: k,
-    card: ['Shoot out its eyes, then', 'its crown, and fly out', 'through the hole.'],
+    card: ['Shoot out its eyes, then', 'its crown, and fly out', 'through the hole.', "It's squatting on $FFFC!"],
   };
 }

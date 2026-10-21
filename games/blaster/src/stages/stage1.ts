@@ -238,6 +238,7 @@ export function stage1(): Stage {
     18,
   );
   wires(b, 112, 26);
+  b.cardAt = 9;
   return {
     n: 1,
     id: 'board',
@@ -264,7 +265,7 @@ export function stage1(): Stage {
         kind: 'scroll',
         grid: b,
         kit: kb,
-        card: ['Turrets sweep, firewalls', 'blink. Shoot the collars', 'off the turrets!'],
+        card: ['Turrets sweep, firewalls', 'blink. Shoot the collars', 'off the turrets!', 'Red 555 LED? Beam is ON.'],
       },
       bossBIOS(art),
     ],
