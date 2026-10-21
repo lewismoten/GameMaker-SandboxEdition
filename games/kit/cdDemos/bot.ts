@@ -6,7 +6,7 @@
 import { characterActions, type ActionKind } from '../../../web/src/editor/keymap/keyMap';
 import type { Machine } from '../../../web/src/engine/machine';
 import type { Session } from '../../../web/src/engine/scene';
-import { BACKBL, LASTMON, type World } from '../../../web/src/engine/world';
+import { BACKBL, type World } from '../../../web/src/engine/world';
 import { parseMap } from '../../../web/src/formats/map';
 import { rng } from '../pixels';
 import { Probe, cloneWorld } from './probe';
@@ -26,8 +26,6 @@ export interface BotOptions {
   kinds?: ActionKind[];
   /** How much new ground counts against other rewards (default 1). */
   explore?: number;
-  /** How much firing near monsters counts (default 1). */
-  fight?: number;
   /** A place to head for in a scene, in blocks: rewards getting closer. */
   goals?: Record<number, { x: number; y: number }[]>;
   seed?: number;
@@ -43,7 +41,6 @@ const MAP_W = 100;
 /** Where the character is, in pixels on the map. */
 const pos = (w: World) => ({ x: w.chr.x[0] * 20 + w.chr.x[1], y: w.chr.y[0] * 20 + w.chr.y[1] });
 const carried = (w: World) => w.ci.inv.filter((b) => b !== BACKBL + 1 && b < BACKBL).length;
-const liveMonsters = (w: World) => w.mm.filter((m) => m.monnum < LASTMON).length;
 
 export class Bot {
   private o: Required<Omit<BotOptions, 'links' | 'goals' | 'seed'>> & Pick<BotOptions, 'links' | 'goals'>;
@@ -53,6 +50,8 @@ export class Bot {
   private world?: World;
   private rand: () => number;
   private trail: { x: number; y: number }[] = [];
+  /** Decisions left to keep the current choice. */
+  private locked = 0;
   /** Moments worth a look: deaths, links taken, pick ups. */
   readonly log: string[] = [];
   deaths = 0;
@@ -61,11 +60,10 @@ export class Bot {
     this.o = {
       every: o.every ?? 4,
       horizon: o.horizon ?? 20,
-      dice: o.dice ?? 2,
+      dice: o.dice ?? 3,
       never: o.never ?? [],
       kinds: o.kinds ?? ['move', 'jump', 'fire', 'pickup'],
       explore: o.explore ?? 1,
-      fight: o.fight ?? 1,
       links: o.links,
       goals: o.goals,
     };
@@ -129,7 +127,7 @@ export class Bot {
   private async tryOption(w: World, s: Session, opt: Option | undefined, dice: number): Promise<number> {
     const copy = cloneWorld(w, rng(dice * 7919 + w.clock));
     const p = new Probe(copy, s.game.scenes[this.scene]?.links ?? []);
-    const before = { hp: w.ci.hitpts, lives: w.ci.lives, score: w.ci.score, inv: carried(w), money: w.ci.meter[3], mons: liveMonsters(w) };
+    const before = { hp: w.ci.hitpts, lives: w.ci.lives, score: w.ci.score, inv: carried(w), money: w.ci.meter[3] };
     // the key held now is let go first unless it is the one tried
     if (this.held !== undefined && this.held !== opt?.key) p.key(this.held | 0x80);
     if (opt && this.held !== opt.key) p.key(opt.key);
@@ -157,10 +155,11 @@ export class Bot {
     value += Math.min(300, Math.max(0, ci.score - before.score) * 2);
     value += (carried(copy) - before.inv) * 250;
     value += Math.max(0, ci.meter[3] - before.money) * 20;
-    value += Math.max(0, before.mons - liveMonsters(copy)) * 40 * this.o.fight;
     // keep going somewhere rather than pacing on the spot
     const back = this.trail[Math.max(0, this.trail.length - 12)];
     if (back) value += Math.min(60, Math.hypot(end.x - back.x, end.y - back.y) / 4) * this.o.explore;
+    if (process.env.BOT_DEBUG === '2' && dice === 0)
+      this.log.push(`    key ${opt?.key} from ${pos(w).x},${pos(w).y} to ${end.x},${end.y} back ${back?.x},${back?.y} hp ${before.hp}->${ci.hitpts} score +${ci.score - before.score} cells ${seenHere.size}`);
     const goals = this.o.goals?.[this.scene];
     if (goals?.length) {
       const d = (q: { x: number; y: number }) => Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
@@ -185,6 +184,7 @@ export class Bot {
     const cell = Math.floor(at.y / 20) * MAP_W + Math.floor(at.x / 20);
     if (v[cell] < 60000) v[cell]++;
     const options: (Option | undefined)[] = [undefined, ...this.options(w)];
+    const values = new Map<Option | undefined, number>();
     let best: Option | undefined;
     let bestValue = -Infinity;
     for (const opt of options) {
@@ -196,10 +196,27 @@ export class Bot {
         sum += value;
       }
       // being hurt with any dice counts in full; otherwise the average, plus a little noise
-      const value = (worst < -500 ? worst : sum / this.o.dice) + this.rand() * 8 + (opt?.key === this.held ? 6 : 0);
+      const value = (worst < -100 ? worst : sum / this.o.dice) + this.rand() * 8 + (opt?.key === this.held ? 6 : 0);
+      values.set(opt, value);
       if (process.env.BOT_DEBUG) this.log.push(`  t${s.rec.tick} key ${opt?.key ?? '-'} worst ${worst.toFixed(0)} avg ${(sum / this.o.dice).toFixed(0)}`);
       if (value > bestValue) [best, bestValue] = [opt, value];
     }
+    const current = options.find((x) => x?.key === this.held);
+    // Hold on to a choice for a few decisions (unless it hurts), so the hero does not dither
+    // at the edge of danger; and when the hero has hardly moved for a while, set off
+    // somewhere at random that does not hurt.
+    const recent = this.trail.slice(-16);
+    const moved = recent.length < 16 ? Infinity : Math.max(...recent.map((p) => Math.hypot(p.x - at.x, p.y - at.y)));
+    if (this.locked > 0 && (values.get(current) ?? -Infinity) > -100) {
+      best = current;
+      this.locked--;
+    } else if (moved < 30) {
+      const safe = options.filter((x) => x?.kind === 'move' && (values.get(x) ?? -Infinity) > -100);
+      if (safe.length) best = safe[Math.floor(this.rand() * safe.length)];
+      this.locked = 5;
+      this.trail.length = 0;
+    } else if (best?.key !== this.held) this.locked = 2;
+    if (process.env.BOT_DEBUG) this.log.push(`  t${s.rec.tick} chose ${best?.key} held ${this.held}`);
     if (best?.key !== this.held) {
       if (this.held !== undefined) m.keyboard.feed(this.held | 0x80);
       if (best) m.keyboard.feed(best.key);

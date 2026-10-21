@@ -42,9 +42,9 @@ export class Probe {
   constructor(
     readonly w: World,
     private links: Link[],
-    doScroll = false,
   ) {
-    this.doScroll = doScroll;
+    // playscene's DoScroll: whether the last ChangeScroll left the view moving
+    this.doScroll = w.scroll.inMotion !== 0;
   }
 
   key(scan: number): void {
