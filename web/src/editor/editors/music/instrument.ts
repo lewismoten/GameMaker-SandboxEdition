@@ -3,7 +3,7 @@
 import { h, clear } from '../../core/ui';
 import { channelNotes, programChanges, setStartProgram, startProgram } from '../../../formats/cmfEdit';
 import { RHYTHM_CHANNELS } from '../../../formats/cmfSong';
-import type { MusicDoc } from './doc';
+import { TRACK_COLORS, type MusicDoc } from './doc';
 import {
   ENVELOPE,
   FLAGS,
@@ -111,23 +111,46 @@ function drawEnvelope(c: HTMLCanvasElement, inst: Uint8Array, half: Half, color:
 }
 
 export class InstrumentPanel {
-  readonly el = h('section', { class: 'mus-inst panel', 'aria-label': 'Instrument' });
+  readonly el = h('section', { class: 'mus-inst', 'aria-label': 'Instruments' });
+  private list = h('nav', { class: 'mus-inst-list', 'aria-label': "The song's instruments" });
+  private editor = h('div', { class: 'mus-inst-edit panel' });
   private pending = false;
   private quiet = false;
+  /** The instrument being edited: the selected track's, until another one is picked. */
+  private sel: number;
+  private keepSel = false;
 
   constructor(private doc: MusicDoc) {
+    this.sel = this.program;
+    this.el.append(this.list, this.editor);
     doc.on((c) => {
-      if (c === 'track' || (c === 'song' && !this.quiet)) this.render();
+      if (c === 'track') {
+        if (!this.keepSel) this.sel = this.program;
+        this.render();
+      } else if (c === 'song' && !this.quiet) this.render();
     });
     this.render();
   }
 
+  /** The instrument the selected track starts with. */
   private get program(): number {
     return startProgram(this.doc.song, this.doc.track);
   }
 
+  /** Shows instrument i (or the selected track's) in the editor. */
+  show(i = this.program): void {
+    this.sel = i;
+    this.render();
+  }
+
+  /** The track to try the instrument on: the selected one if it uses it, else the first that does. */
+  private get tryTrack(): number {
+    const users = usersOf(this.doc, this.sel);
+    return users.includes(this.doc.track) || !users.length ? this.doc.track : users[0];
+  }
+
   private tryKey(): number {
-    const n = channelNotes(this.doc.song, this.doc.track);
+    const n = channelNotes(this.doc.song, this.tryTrack);
     if (!n.length) return 60;
     const counts = new Map<number, number>();
     for (const x of n) counts.set(x.on.a, (counts.get(x.on.a) ?? 0) + 1);
@@ -135,7 +158,7 @@ export class InstrumentPanel {
   }
 
   private tryIt(): void {
-    void this.doc.audition(this.doc.track, this.tryKey(), this.program, 90);
+    void this.doc.audition(this.tryTrack, this.tryKey(), this.sel, 90);
   }
 
   /** Live change (slider moving): one undo step per gesture, saved when released. */
@@ -154,41 +177,72 @@ export class InstrumentPanel {
     }
   }
 
-  render(): void {
+  /** The list of the song's instruments, each with the tracks that use it. */
+  private renderList(): void {
     const doc = this.doc;
     const song = doc.song;
-    const ch = doc.track;
-    const p = this.program;
-    const inst = song.instruments[p];
-    const drum = doc.rhythm && RHYTHM_CHANNELS.includes(ch);
-    const singleOp = drum && ch !== 11;
-    const users = usersOf(doc, p).filter((c) => c !== ch);
-
-    const bank = h(
-      'select',
-      { 'aria-label': 'Instrument for this track' },
-      ...song.instruments.map((_, i) => h('option', { value: String(i), selected: i === p }, instLabel(doc, i))),
-      inst ? null : h('option', { value: String(p), selected: true }, instLabel(doc, p)),
-    );
-    bank.addEventListener('change', () => {
-      doc.edit(() => setStartProgram(song, ch, Number(bank.value)));
-      this.tryIt();
+    const items = song.instruments.map((inst, i) => {
+      const users = usersOf(doc, i);
+      const p = presetName(inst);
+      return h(
+        'li',
+        null,
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'mus-inst-item',
+            'aria-current': i === this.sel ? 'true' : undefined,
+            title: users.length ? `Used by ${users.map((c) => doc.trackName(c)).join(', ')}` : 'No track uses this instrument',
+            onclick: () => {
+              this.show(i);
+              this.list.querySelector<HTMLElement>('[aria-current="true"]')?.focus();
+            },
+          },
+          h('span', { class: 'mus-inst-num' }, String(i + 1)),
+          h(
+            'span',
+            { class: 'mus-track-text' },
+            h('b', null, p ? cap(p) : `Instrument ${i + 1}`),
+            h('small', null, users.length ? users.map((c) => doc.trackName(c)).join(', ') : 'not used'),
+          ),
+          h('span', { class: 'mus-inst-dots', 'aria-hidden': 'true' }, ...users.map((c) => h('i', { style: `--track:${TRACK_COLORS[c]}` }))),
+        ),
+      );
     });
-    const addPreset = h(
+    const add = h(
       'select',
-      { 'aria-label': 'Add an instrument from the presets', disabled: song.instruments.length >= 128 },
+      { 'aria-label': `Add an instrument for ${doc.trackName(doc.track)} from the presets`, disabled: song.instruments.length >= 128 },
       h('option', { value: '' }, '＋ New instrument…'),
       ...Object.keys(PRESETS).map((k) => h('option', { value: k }, cap(k))),
     );
-    addPreset.addEventListener('change', () => {
-      const preset = PRESETS[addPreset.value];
+    add.addEventListener('change', () => {
+      const preset = PRESETS[add.value];
       if (!preset) return;
       doc.edit(() => {
         song.instruments.push(preset.slice());
-        setStartProgram(song, ch, song.instruments.length - 1);
+        setStartProgram(song, doc.track, song.instruments.length - 1);
       });
+      this.show(song.instruments.length - 1);
       this.tryIt();
     });
+    clear(this.list, h('ul', null, ...items), add);
+  }
+
+  render(): void {
+    this.renderList();
+    const doc = this.doc;
+    const song = doc.song;
+    const ch = doc.track;
+    const p = this.sel;
+    const inst = song.instruments[p];
+    const allUsers = usersOf(doc, p);
+    const tryCh = this.tryTrack;
+    const drum = doc.rhythm && RHYTHM_CHANNELS.includes(tryCh);
+    const singleOp = drum && tryCh !== 11;
+    const users = allUsers.filter((c) => c !== ch);
+    const mine = this.program === p;
+
     const loadPreset = h(
       'select',
       { 'aria-label': 'Replace this instrument with a preset', disabled: !inst },
@@ -201,53 +255,88 @@ export class InstrumentPanel {
       doc.edit(() => inst.set(preset.subarray(0, 11)));
       this.tryIt();
     });
+    const pickTrack = (c: number) => {
+      this.keepSel = true;
+      doc.selectTrack(c);
+      this.keepSel = false;
+    };
 
     const head = h(
       'div',
       { class: 'mus-inst-head' },
-      h('h3', null, `Track ${ch + 1} instrument${drum ? ` · ${doc.trackName(ch)}` : ''}`),
+      h('h3', null, instLabel(doc, p)),
       h(
         'div',
         { class: 'toolbar' },
-        bank,
-        addPreset,
         inst ? loadPreset : null,
-        inst && users.length
+        !mine
           ? h(
               'button',
               {
-                title: 'Give this track its own copy, so changes here leave the other tracks alone',
+                title: `${doc.trackName(ch)} starts with this instrument`,
+                onclick: () => doc.edit(() => setStartProgram(song, ch, p)),
+              },
+              `Use for ${doc.trackName(ch)}`,
+            )
+          : null,
+        inst && mine && users.length
+          ? h(
+              'button',
+              {
+                title: `Give ${doc.trackName(ch)} its own copy, so changes here leave the other tracks alone`,
                 disabled: song.instruments.length >= 128,
-                onclick: () =>
+                onclick: () => {
                   doc.edit(() => {
                     song.instruments.push(inst.slice());
                     setStartProgram(song, ch, song.instruments.length - 1);
-                  }),
+                  });
+                  this.show();
+                },
               },
-              '⧉ Own copy',
+              `⧉ Own copy for ${doc.trackName(ch)}`,
             )
           : null,
         h('button', { class: 'primary', onclick: () => this.tryIt(), title: `Play ${noteName(this.tryKey())} with this instrument` }, '♪ Try it'),
       ),
     );
+    const usedBy = h(
+      'div',
+      { class: 'mus-inst-users' },
+      h('span', null, allUsers.length ? 'Used by' : 'No track uses this instrument yet.'),
+      ...allUsers.map((c) =>
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'mus-chip',
+            style: `--track:${TRACK_COLORS[c]}`,
+            'aria-pressed': String(c === ch),
+            title: `Select ${doc.trackName(c)}`,
+            onclick: () => pickTrack(c),
+          },
+          doc.trackName(c),
+        ),
+      ),
+    );
 
     if (!inst) {
       clear(
-        this.el,
+        this.editor,
         head,
+        usedBy,
         h(
           'p',
           { class: 'hint' },
-          `This track asks for instrument ${p + 1}, which the song does not have, so Game-Maker plays it with whatever sound was there before. Pick one above or add one.`,
+          `${doc.trackName(ch)} asks for instrument ${p + 1}, which the song does not have, so Game-Maker plays it with whatever sound was there before. Pick one from the list or add one.`,
         ),
       );
       return;
     }
 
     const notes: (string | null)[] = [];
-    if (users.length) notes.push(`Shared with ${users.map((c) => doc.trackName(c)).join(', ')}: changes here change those too.`);
-    if (programChanges(song, ch).length > 1 || (programChanges(song, ch).length === 1 && programChanges(song, ch)[0].a !== p))
-      notes.push('This track changes instrument later on (♪ marks above the notes); this is the one it starts with.');
+    if (allUsers.length > 1) notes.push('Changes here change every track that uses it.');
+    if (mine && (programChanges(song, ch).length > 1 || (programChanges(song, ch).length === 1 && programChanges(song, ch)[0].a !== p)))
+      notes.push(`${doc.trackName(ch)} changes instrument later on (♪ marks above the notes); this is the one it starts with.`);
     if (singleOp) notes.push('In the drum kit this drum uses only the first operator; the second one and the feedback do nothing here.');
     else if (drum) notes.push('The bass drum uses both operators.');
 
@@ -351,8 +440,9 @@ export class InstrumentPanel {
     );
 
     clear(
-      this.el,
+      this.editor,
       head,
+      usedBy,
       notes.length ? h('p', { class: 'hint' }, notes.join(' ')) : null,
       h('div', { class: 'mus-ops' }, op(0), op(1)),
       h(
