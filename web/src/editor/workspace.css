@@ -147,3 +147,17 @@
   padding: 0;
   border-radius: 50%;
 }
+
+@media (max-width: 640px) {
+  .next-steps {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .next-steps > * {
+    flex: none;
+  }
+  .next-steps .next-steps-hide {
+    position: sticky;
+    right: 0;
+  }
+}
