@@ -32,6 +32,7 @@ import { fitStage } from "./stage";
 import { keyCardSpot } from "./pc/keyCard";
 import { newsClipping } from "./room/newsClipping";
 import { phoneNotes } from "./room/phoneNotes";
+import { wallClock } from "./room/wallClock";
 import { deskCapture } from "./pc/capture";
 import { EDITION, FORK_NOTE } from "../edition";
 import { loadCatalog, type CatalogEntry } from "../project/files";
@@ -156,6 +157,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       h("div", { class: "desk-legs", "aria-hidden": "true" }),
       snowyWindow(),
       newsClipping(),
+      wallClock(),
       spk.left,
       spk.right,
       phoneNotes(),
