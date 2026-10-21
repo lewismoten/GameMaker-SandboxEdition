@@ -11,7 +11,7 @@ import {
   travel,
   withBottomOrient,
   withTopOrient,
-} from '../src/editor/editors/characterLogic';
+} from '../src/editor/editors/character/characterLogic';
 import { MAXFRAME, emptyFrame, frameCount, newCharacter } from '../src/formats/character';
 
 describe('orientation buttons', () => {

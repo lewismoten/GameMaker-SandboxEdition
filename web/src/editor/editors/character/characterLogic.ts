@@ -1,7 +1,7 @@
 // Pure helpers for the character editor: turning a block's orientation with rotate/flip
 // buttons, and editing a sequence's list of frames without breaking its end marker.
-import { BLEN, CHARBL, MONBL, orientIndex } from '../../formats/blocks';
-import { MAXFRAME, emptyFrame, frameCount, type Frame, type Sequence } from '../../formats/character';
+import { BLEN, CHARBL, MONBL, orientIndex } from '../../../formats/blocks';
+import { MAXFRAME, emptyFrame, frameCount, type Frame, type Sequence } from '../../../formats/character';
 
 /** The orientation playgame actually draws (MEMBLOCA.ASM treats anything above 7 as 7). */
 export const normalOrient = (o: number): number => Math.min(o & 15, 7);

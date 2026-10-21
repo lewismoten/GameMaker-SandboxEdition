@@ -5,7 +5,7 @@ import './blocks/blocks';
 import './map/map';
 import './integrator/integrator';
 import './monsters/monsters';
-import './character';
+import './character/character';
 import './sounds';
 import './picture';
 import './animation';

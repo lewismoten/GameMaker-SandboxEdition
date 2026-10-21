@@ -2,14 +2,14 @@
 // inventory, and its sequences (idle, die, hurt, pick up, drop and up to 15 of your own),
 // each a series of 20x40 frames made of a top and a bottom block.
 import './character.css';
-import { registerEditor } from './registry';
-import { fileField } from '../widgets/filePicker';
-import { blockButton, chooseBlock, type BlockExtra } from '../widgets/blockChooser';
-import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
-import { drawBlockTo, paintBlock } from '../core/draw';
-import { paletteChooser } from './blocks/blocks';
-import { audio } from '../widgets/mediaShared';
-import { BACKBL, BLEN, CHARBL, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
+import { registerEditor } from '../registry';
+import { fileField } from '../../widgets/filePicker';
+import { blockButton, chooseBlock, type BlockExtra } from '../../widgets/blockChooser';
+import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
+import { drawBlockTo, paintBlock } from '../../core/draw';
+import { paletteChooser } from '../blocks/blocks';
+import { audio } from '../../widgets/mediaShared';
+import { BACKBL, BLEN, CHARBL, MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
 import {
   INF_REPEAT,
   MAXFRAME,
@@ -20,9 +20,9 @@ import {
   serializeCharacter,
   type Frame,
   type Sequence,
-} from '../../formats/character';
-import { LASTSND, parseSoundSet, SOUND_NAMES } from '../../formats/sound';
-import { scanName, SCAN } from '../../input/scancodes';
+} from '../../../formats/character';
+import { LASTSND, parseSoundSet, SOUND_NAMES } from '../../../formats/sound';
+import { scanName, SCAN } from '../../../input/scancodes';
 import {
   ORIENT_NAMES,
   bottomOrient,
