@@ -21,6 +21,7 @@ import { buildFlics } from './flics';
 import { buildMusic } from './music';
 import { buildSounds } from './sounds';
 import { serializeSoundSet } from '../../web/src/formats/sound';
+import { demoRecording } from './demo';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -54,4 +55,5 @@ for (const [name, bytes] of Object.entries(buildMusic())) disk.put(name, bytes);
 const sounds = buildSounds();
 disk.put('final.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
+disk.put('demo.rec', await demoRecording(disk.files));
 disk.write();
