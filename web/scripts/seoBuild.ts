@@ -1,7 +1,8 @@
 // Search engines and link previews mostly don't run the app, so the pages carry what they
 // need as static HTML: meta/Open Graph/Twitter tags, schema.org JSON-LD for the app and
 // every bundled game, and readable text with links (shown until the app starts, and to
-// browsers without JavaScript). The build also writes robots.txt and sitemap.xml.
+// browsers without JavaScript). The build also writes robots.txt, sitemap.xml and
+// llms.txt (https://llmstxt.org), which the dev server serves too.
 //
 // index.html and play.html mark where it goes with <!--SEO:HEAD--> and <!--SEO:BODY-->.
 import type { Plugin } from 'vite';
@@ -24,7 +25,7 @@ import {
   SITE_ABOUT,
   SITE_URL,
 } from '../src/seo/site';
-import { FORK_NOTE, PRODUCT } from '../src/edition';
+import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
 
 export const HEAD_MARK = '<!--SEO:HEAD-->';
 export const BODY_MARK = '<!--SEO:BODY-->';
@@ -178,9 +179,89 @@ Sitemap: ${SITE_URL}sitemap.xml
 `;
 }
 
+const md = (s: string) =>
+  s
+    .replace(/\s+/g, ' ')
+    .replace(/([[\]])/g, '\\$1')
+    .trim();
+const mdLink = (text: string, url: string, about?: string) => `- [${md(text)}](${url})${about ? `: ${md(about)}` : ''}`;
+/** Prose, not a text-mode drawing (Zark's blurb is its keypad chart). */
+const readable = (s?: string) => !!s && (s.match(/[a-z ]/gi)?.length ?? 0) / s.length > 0.85;
+const repoFile = (path: string) => `${REPO_URL}/blob/master/${path}`;
+const repoDir = (path: string) => `${REPO_URL}/tree/master/${path}`;
+
+/** /llms.txt, following the llmstxt.org proposal: a title, a summary, then sections of links. */
+export function llmsTxt(catalog: CdCatalogEntry[]): string {
+  const games = groups(catalog)
+    .filter(([, , list]) => list.length)
+    .map(
+      ([head, about, list]) =>
+        `## ${head}\n\n${md(about)}\n\n${list
+          .map((g) => mdLink(g.title, playUrl(g.id), [credit(g), readable(g.blurb) ? clip(g.blurb!, 160) : ''].filter(Boolean).join(' — ')))
+          .join('\n')}`,
+    );
+  return `# ${PRODUCT}
+
+> ${md(SITE_ABOUT)}
+
+${md(FORK_NOTE)}. It runs entirely in the browser (no account, no server): games are kept in the browser's storage and the site works offline. Every file it writes is in the original Game-Maker 3.0 / PLAYGAME formats (.gam, .pal, .bbl/.mbl/.cbl, .chr, .mon, .map, .snd and the standard .gif, .fli, .cmf, .voc), so games run in DOS (or DOSBox) as well. The site opens on a recreated 1994 desk with a DOS PC running the original designers; today's web interface is one click away.
+
+## The app
+
+${[
+  mdLink(PRODUCT, SITE_URL, 'opens on the 1994 desk or today’s web editor, whichever the visitor used last'),
+  mdLink('Guide', `${SITE_URL}#/help`, 'how to use the editor: blocks, monsters, characters, maps and scenes, sounds and music, testing and exporting'),
+  mdLink('Player', `${SITE_URL}play.html`, 'plays one game full-window; ?game=<id> picks a game from the list below'),
+  mdLink('Sitemap', `${SITE_URL}sitemap.xml`),
+].join('\n')}
+
+${games.join('\n\n')}
+
+## Source code and file formats
+
+${[
+  mdLink('Source code', REPO_URL, 'the repository on GitHub: the web app (TypeScript, Vite), the new games, and the original 1994 release'),
+  mdLink('Repository README', repoFile('README.md'), 'what is in the repository and how it is published'),
+  mdLink('Web app README', repoFile('web/README.md'), 'building, running and testing the web app'),
+  mdLink('Source map', repoFile('web/src/README.md'), 'what each folder of the web app holds and how the pieces fit'),
+  mdLink(
+    'File formats',
+    repoDir('web/src/formats'),
+    'readers and writers for every Game-Maker file, byte for byte (Borland C++ 16-bit layout: int is 2 bytes, structs are packed)',
+  ),
+  mdLink('Game engine', repoDir('web/src/engine'), 'a TypeScript port of PLAYGAME.C'),
+  mdLink('Original DOS source', repoDir('code/GM'), 'the C source of Game-Maker 3.0, released under the MIT License in 2014'),
+  mdLink('Making the new games', repoFile('games/README.md'), 'the Sandbox Software games, each built in code into real Game-Maker files'),
+].join('\n')}
+
+## License
+
+${[mdLink('NOTICE', NOTICE_URL, 'credits, history and third-party trademarks'), mdLink('LICENSE', repoFile('LICENSE'), 'MIT License')].join('\n')}
+`;
+}
+
+/** The files that are generated rather than kept in public/, by their path on the site. */
+function generated(cdRoot: string): Record<string, { type: string; body: () => string }> {
+  return {
+    'robots.txt': { type: 'text/plain; charset=utf-8', body: robotsTxt },
+    'sitemap.xml': { type: 'application/xml; charset=utf-8', body: () => sitemapXml(cdCatalog(cdRoot), new Date().toISOString().slice(0, 10)) },
+    'llms.txt': { type: 'text/plain; charset=utf-8', body: () => llmsTxt(cdCatalog(cdRoot)) },
+  };
+}
+
 export function seoPages(cdRoot: string): Plugin {
   return {
     name: 'gamemaker-seo',
+    // The dev server would answer these with index.html (its single-page fallback).
+    configureServer(server) {
+      const files = generated(cdRoot);
+      server.middlewares.use((req, res, next) => {
+        const file = files[(req.url ?? '').split('?')[0].replace(/^\/+/, '')];
+        if (!file || (req.method !== 'GET' && req.method !== 'HEAD')) return next();
+        res.setHeader('Content-Type', file.type);
+        res.end(file.body());
+      });
+    },
     transformIndexHtml(html, ctx) {
       if (!html.includes(HEAD_MARK)) return html;
       const catalog = cdCatalog(cdRoot);
@@ -188,9 +269,7 @@ export function seoPages(cdRoot: string): Plugin {
       return html.replace(HEAD_MARK, play ? playHead(catalog) : indexHead(catalog)).replace(BODY_MARK, play ? playBody(catalog) : indexBody(catalog));
     },
     generateBundle() {
-      const catalog = cdCatalog(cdRoot);
-      this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml(catalog, new Date().toISOString().slice(0, 10)) });
-      this.emitFile({ type: 'asset', fileName: 'robots.txt', source: robotsTxt() });
+      for (const [fileName, file] of Object.entries(generated(cdRoot))) this.emitFile({ type: 'asset', fileName, source: file.body() });
     },
   };
 }
