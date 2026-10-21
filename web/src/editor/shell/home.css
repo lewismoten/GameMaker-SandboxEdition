@@ -151,6 +151,12 @@
   cursor: pointer;
 }
 
+.game-tile .card-shot-none {
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+}
+
 .game-tile .card-shot {
   width: 100%;
   height: 100%;
@@ -259,8 +265,9 @@
   }
 }
 
-/* a demo playing in a picture (demoInPicture in homeCards.ts) */
-.demo-screen {
+/* a demo playing in a picture (demoInPicture in homeCards.ts), over the player's own layout */
+.demo-screen,
+.demo-screen.gm-player {
   position: absolute;
   inset: 0;
   z-index: 1;

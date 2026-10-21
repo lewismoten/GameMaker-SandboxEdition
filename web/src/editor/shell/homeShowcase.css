@@ -26,7 +26,7 @@
   color: inherit;
 }
 
-.showcase {
+.home .showcase {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 26px;
@@ -142,10 +142,21 @@
 }
 
 .showcase .sc-another {
-  color: #c9c2ff;
+  min-height: 0;
+  padding: 2px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  background: transparent;
+  color: #e7e2ff;
+  font-size: 12px;
+  cursor: pointer;
 }
 
-.sc-title {
+.showcase .sc-another:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.showcase .sc-title {
   margin: 0 0 4px;
   color: #f5e600;
   font:

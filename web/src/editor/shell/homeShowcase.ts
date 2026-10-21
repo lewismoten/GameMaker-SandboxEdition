@@ -57,7 +57,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       label,
       h('span', { class: `sc-chip kind-${game.kind}` }, KIND_LABEL[game.kind]),
       how.featured ? h('span', { class: 'sc-featured' }, '★ Featured · picked at random') : null,
-      how.featured && how.onAnother ? h('button', { class: 'linkish sc-another', onclick: how.onAnother, title: 'Feature another game' }, '🎲 Another') : null,
+      how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, '🎲 Another') : null,
     );
     title.textContent = game.title;
     byline.textContent = game.byline;
