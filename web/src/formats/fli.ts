@@ -1,6 +1,15 @@
 // Autodesk Animator .fli (and .flc) decoder.
 // GameMaker's FLI::View plays the first NumFrames frames once, waiting `speed`
 // vertical retraces (70 Hz) after each frame (see code/Image/FLI/FLI.CPP).
+//
+// Layout (FLIHeader in code/Image/FLI/FLI.HPP): a 128-byte header of file size u32,
+// magic u16 (0xAF11 FLI, 0xAF12 FLC), frame count u16, width u16, height u16, depth u16 (8),
+// flags u16, speed (u16 jiffies for FLI; u32 milliseconds for FLC), ... Frames follow,
+// each a 16-byte header (size u32, magic 0xF1FA, chunk count u16, 8 reserved) and its
+// chunks, each a 6-byte header (size u32 including the header, type u16) and data.
+// Chunk types FLI.CPP handles: 11 COLOR (64-level palette), 12 LC (line delta),
+// 13 BLACK, 15 BRUN (run-length full frame), 16 COPY (raw pixels). This decoder also reads
+// the FLC chunks 4 COLOR_256 and 7 SS2 (word-oriented delta), which FLI.CPP does not.
 import { PALETTE_SIZE } from './palette';
 
 export interface FliAnimation {
@@ -38,6 +47,7 @@ export function parseFli(bytes: Uint8Array): FliAnimation {
   const height = view.getUint16(10, true) || 200;
   let speed = view.getUint16(16, true);
   if (magic === FLC_MAGIC) speed = Math.round((view.getUint32(16, true) * 70) / 1000);
+  // FLC stores the offset of frame 1 at byte 80; FLI frames always start after the header.
   let offset = magic === FLC_MAGIC ? view.getUint32(80, true) || 128 : 128;
   const frames: number[] = [];
   // Include the trailing loop frame if present (callers decide how many to play).
@@ -45,6 +55,7 @@ export function parseFli(bytes: Uint8Array): FliAnimation {
     const size = view.getUint32(offset, true);
     const type = view.getUint16(offset + 4, true);
     if (size < 16) break;
+    // Records with another magic (such as FLC prefix chunks, 0xF100) are skipped.
     if (type === FRAME_MAGIC) frames.push(offset);
     offset += size;
   }
@@ -99,6 +110,8 @@ export function applyFliFrame(anim: FliAnimation, n: number, c: FliCanvas): bool
   return paletteChanged;
 }
 
+// COLOR: packet count u16, then per packet a skip u8 (palette entries to leave alone) and
+// a count u8 (0 means 256) followed by that many RGB triples (DoColorChange in FLI.CPP).
 function colorChunk(b: Uint8Array, p: number, pal: Uint8Array, eightBit: boolean): void {
   const packets = b[p] | (b[p + 1] << 8);
   p += 2;
@@ -116,6 +129,8 @@ function colorChunk(b: Uint8Array, p: number, pal: Uint8Array, eightBit: boolean
   }
 }
 
+// BRUN: every line is a packet count u8, then packets of a signed count: positive = repeat
+// the next byte that many times, negative = copy that many literal bytes.
 function brunChunk(b: Uint8Array, p: number, end: number, w: number, h: number, px: Uint8Array): void {
   for (let y = 0; y < h && p < end; y++) {
     p++; // packet count (unreliable for wide images; decode by width)
@@ -133,6 +148,9 @@ function brunChunk(b: Uint8Array, p: number, end: number, w: number, h: number, 
   }
 }
 
+// LC: first changed line u16, line count u16; each line has a packet count u8 and packets
+// of skip u8 (pixels left unchanged) then a signed count: positive = that many literal
+// bytes, negative = repeat the next byte. Note the signs are the reverse of BRUN.
 function lcChunk(b: Uint8Array, p: number, end: number, w: number, px: Uint8Array): void {
   let y = b[p] | (b[p + 1] << 8);
   const lines = b[p + 2] | (b[p + 3] << 8);
@@ -154,6 +172,10 @@ function lcChunk(b: Uint8Array, p: number, end: number, w: number, px: Uint8Arra
   }
 }
 
+// SS2 (FLC delta): line count u16, then per line one or more i16 words. Top bits 11 = a
+// negative count of lines to skip; 10 = the low byte is the line's last pixel (odd widths), and a packet count
+// word follows; 00 = the packet count. Packets are skip u8 then a signed count of pixel
+// pairs: positive = that many literal pairs, negative = repeat the next pair.
 function ss2Chunk(b: Uint8Array, p: number, end: number, w: number, h: number, px: Uint8Array): void {
   let lines = b[p] | (b[p + 1] << 8);
   p += 2;
@@ -198,6 +220,8 @@ function ss2Chunk(b: Uint8Array, p: number, end: number, w: number, h: number, p
 function brun(px: Uint8Array, w: number, h: number): number[] {
   const out: number[] = [];
   for (let y = 0; y < h; y++) {
+    // Runs of 3 or more equal pixels become run packets (count 1..127, value); anything
+    // else goes in literal packets (count -1..-128) that stop where a 3-run begins.
     const row = px.subarray(y * w, y * w + w);
     const line: number[] = [];
     let packets = 0;
@@ -216,6 +240,7 @@ function brun(px: Uint8Array, w: number, h: number): number[] {
       }
       packets++;
     }
+    // The packet count byte is capped; readers (brunChunk here) decode by width instead.
     out.push(Math.min(255, packets), ...line);
   }
   return out;
@@ -231,6 +256,8 @@ function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number): numb
   if (first === h) return [0, 0, 0, 0]; // an empty change: same picture
   let last = h - 1;
   while (last > first && rowSame(prev, px, last, w)) last--;
+  // LC header: first changed line, then how many lines follow (unchanged lines inside the
+  // range get a packet count of 0).
   const out = [first & 255, first >> 8, (last - first + 1) & 255, (last - first + 1) >> 8];
   for (let y = first; y <= last; y++) {
     const row = y * w;
@@ -261,6 +288,7 @@ function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number): numb
       lastEnd = end;
       x = end;
     }
+    // The per-line packet count is one byte; more packets means use BRUN instead.
     if (count > 255) return undefined;
     out.push(count, ...packets);
   }
@@ -272,6 +300,8 @@ function rowSame(a: Uint8Array, b: Uint8Array, y: number, w: number): boolean {
   return true;
 }
 
+// Wraps data in a chunk header (size u32 including the 6 header bytes, type u16), padded
+// to an even size.
 function fliChunk(type: number, data: number[]): number[] {
   let size = data.length + 6;
   const pad = size & 1;
@@ -309,16 +339,20 @@ export function encodeFli(
     // After the first frame, store only what changed, when that is smaller.
     const prev = i > 0 ? all[i - 1] : undefined;
     const delta = prev ? lineDelta(prev, px, w, h) : undefined;
+    // BRUN is only built to compare against when the delta is 64000 bytes (a raw frame) or more.
     const full = delta && delta.length < 64000 ? undefined : brun(px, w, h);
     if (delta && (!full || delta.length < full.length)) chunks.push(fliChunk(12, delta));
     else chunks.push(fliChunk(15, full ?? brun(px, w, h)));
     const body = chunks.flat();
+    // Frame header: size u32, magic 0xF1FA, chunk count u16, 8 reserved bytes.
     const size = body.length + 16;
     return [size & 255, (size >> 8) & 255, (size >> 16) & 255, size >>> 24, 0xfa, 0xf1, chunks.length, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...body];
   });
   const total = 128 + records.reduce((n, r) => n + r.length, 0);
   const out = new Uint8Array(total);
   const dv = new DataView(out.buffer);
+  // FLIHeader: size, magic, frame count (not counting the ring frame), width, height,
+  // depth 8, speed; the rest of the 128 bytes stay 0.
   dv.setUint32(0, total, true);
   dv.setUint16(4, 0xaf11, true);
   dv.setUint16(6, frames.length, true);
