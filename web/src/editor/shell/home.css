@@ -230,6 +230,13 @@
   margin: 3px 0;
 }
 
+.home-start li .ico {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: -2px;
+}
+
 .home-start .meta {
   margin: 0 0 6px;
   color: var(--muted);
