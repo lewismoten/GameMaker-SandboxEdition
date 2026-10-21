@@ -1,14 +1,14 @@
 // Builds standalone.html: the template for "Export as one web page". It is the game player
 // (src/export/standalonePlayer.ts) compiled into a single classic <script>, with its styles
 // in a <style> and the OPL music AudioWorklet bundled into a data: URL,
-// so the page needs no other file and runs from file://. The exporter fills in the title and
-// the game (see src/export/singlePage.ts).
+// so the page needs no other file and runs from file://. The exporter fills in the title, the
+// game, and its description tags and text (see src/export/singlePage.ts).
 //
 // The production build emits it as dist/standalone.html; the dev server builds it on demand
 // at /standalone.html (and rebuilds after a source change).
 import { build, type Plugin, type Rollup } from 'vite';
 import { resolve } from 'node:path';
-import { GAME_MARK, TITLE_MARK } from '../src/export/singlePage';
+import { ABOUT_MARK, GAME_MARK, HEAD_MARK, TEMPLATE_ONLY, TITLE_MARK } from '../src/export/singlePage';
 
 const root = resolve(__dirname, '..');
 const ENTRY = resolve(root, 'src/export/standalonePlayer.ts');
@@ -74,12 +74,13 @@ export async function buildSinglePageTemplate(): Promise<string> {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#000000" />
-<meta name="generator" content="Game-Maker Web" />
+${TEMPLATE_ONLY}
 <title>${TITLE_MARK}</title>
+${HEAD_MARK}
 <style>${safeStyle(css)}</style>
 </head>
 <body class="player-page">
-<div id="player"></div>
+<div id="player">${ABOUT_MARK}</div>
 ${GAME_MARK}
 <script>${safeScript(js)}</script>
 </body>
