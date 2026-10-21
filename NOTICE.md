@@ -115,8 +115,10 @@ formats from their published descriptions and from Game-Maker's own source.
   All rights reserved") and is not covered by the MIT License. It is included as it came
   on the original Game-Maker CD, and "Export for DOS" adds it to exported games the way
   Game-Maker's own Transfer utility did. It will be removed if Creative asks.
-- The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its BBSes
-  and phone numbers are made up, as are the magazines and awards on the game boxes.
+- The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
+  numbers are made up, as are the magazines and awards on the game boxes. Its two BBSes
+  are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
+  look, what's on them and their numbers are made up.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
