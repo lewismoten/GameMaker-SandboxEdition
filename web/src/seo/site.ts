@@ -12,7 +12,7 @@ export const OG_IMAGE_ALT = 'A mid-90s computer desk with Game-Maker: Sandbox Ed
 
 /** For description tags (search results show about 160 characters). */
 export const SITE_DESCRIPTION =
-  'Make DOS-style games in your browser with no programming: a free, open-source remake of Game-Maker 3.0 (1994). Play 90s shareware and export your own games.';
+  'Make DOS-style games in your browser with no programming: a free, open-source remake of RSD Game-Maker 3.0 (1994). Play 90s shareware and export your own games.';
 /** The longer version, for text on the page. */
 export const SITE_ABOUT =
   'Make DOS-style games in your web browser with no programming: a free, open-source remake of Recreational Software Designs’ Game-Maker 3.0 (1994). Draw blocks and monsters, build maps, add music and sound, play the original sample and shareware games, and export your game as a web page, a web app or for DOS.';
@@ -31,7 +31,7 @@ export const ROUTES = {
   },
   editor: {
     title: `Editor · ${PRODUCT}`,
-    description: `Designing a game in ${PRODUCT}, the browser remake of Game-Maker 3.0.`,
+    description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,
   },
   player: {
     title: `Play · ${SHORT}`,

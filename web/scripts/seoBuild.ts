@@ -230,7 +230,7 @@ ${[
     'readers and writers for every Game-Maker file, byte for byte (Borland C++ 16-bit layout: int is 2 bytes, structs are packed)',
   ),
   mdLink('Game engine', repoDir('web/src/engine'), 'a TypeScript port of PLAYGAME.C'),
-  mdLink('Original DOS source', repoDir('code/GM'), 'the C source of Game-Maker 3.0, released under the MIT License in 2014'),
+  mdLink('Original DOS source', repoDir('code/GM'), 'the C source of RSD Game-Maker 3.0, released under the MIT License in 2014'),
   mdLink('Making the new games', repoFile('games/README.md'), 'the Sandbox Software games, each built in code into real Game-Maker files'),
 ].join('\n')}
 
