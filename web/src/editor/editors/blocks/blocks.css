@@ -25,7 +25,7 @@
   grid-area: picker;
   min-width: 0;
   position: sticky;
-  top: 8px;
+  top: calc(8px + var(--ws-sticky-top, 0px));
 }
 .blk-picker .block-picker {
   max-height: max(240px, calc(100dvh - 210px));

@@ -7,7 +7,7 @@
 }
 .snd-list {
   position: sticky;
-  top: 0;
+  top: var(--ws-sticky-top, 0px);
   display: flex;
   flex-direction: column;
   gap: 3px;

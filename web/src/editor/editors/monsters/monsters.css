@@ -7,7 +7,7 @@
 }
 .mon-side {
   position: sticky;
-  top: 0;
+  top: var(--ws-sticky-top, 0px);
 }
 .mon-side .mon-list {
   max-height: max(240px, calc(100dvh - 210px));

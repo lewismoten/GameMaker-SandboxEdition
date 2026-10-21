@@ -265,7 +265,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   position: sticky;
-  top: 8px;
+  top: calc(8px + var(--ws-sticky-top, 0px));
   max-height: max(320px, calc(100dvh - 230px));
   overflow-y: auto;
   overscroll-behavior: contain;
