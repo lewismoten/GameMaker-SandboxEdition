@@ -1,6 +1,9 @@
-// The cards on the home page: your projects, the CD's sample games, our own games and the
-// shareware, each with its picture (the first level, drawn when the card scrolls into view),
-// play, keys, demo and manual buttons, and a small menu of less-used actions.
+// The games on the home page. One model (HomeGame) covers your projects, the CD's sample
+// games, our own games and the shareware. The grid shows each as a compact tile: its
+// picture (the first level, drawn when the tile scrolls into view) with buttons over it
+// for the keys, the manual and the demo (which plays right there in the picture), and its
+// title. Choosing a tile shows the game in the panel at the top (homeShowcase.ts), which
+// offers everything else with gameActions().
 import { h, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot } from '../../desk/boxes/boxArt';
@@ -9,59 +12,286 @@ import { GameFiles, creditLine, loadHostedGame, type CatalogEntry } from '../../
 import { deleteProject, listProjects, loadProject } from '../../project/storage';
 import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
 import { levelShot } from '../editors/integrator/integratorArt';
-import { catalogTarget, healthBadge, projectTarget } from './gameHealth';
+import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
 import { showKeyMap } from '../keymap/keyMapView';
 import { demoButton } from '../../media/demo';
+import { catalogHasDemo, filesHaveDemo, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
 import { downloadProject, exportProject, exportProjectPage, exportProjectForDos } from './projectExport';
 
-/** “⌨ Keys”: a keyboard map of what each key does in the game, worked out from its files. */
-function keysButton(title: string, files: () => Promise<GameFiles>, gam?: string | null): HTMLElement {
-  return h('button', { title: 'What each key does in this game', onclick: () => void showKeyMap(files(), gam ?? undefined, title) }, '⌨ Keys');
+export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware';
+
+type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
+
+export interface HomeGame {
+  /** `cd:<catalog id>` or `my:<project id>`: kept in the address (#/game/…). */
+  key: string;
+  kind: GameKind;
+  title: string;
+  /** Who made it, or when you last edited it. */
+  byline: string;
+  blurb?: string;
+  gam: string | null;
+  /** Lower-case words the library's search box looks in. */
+  search: string;
+  entry?: CatalogEntry;
+  project?: ProjectSummary;
+  health?: HealthTarget;
+  /** Draws the game's picture (its first level) into a canvas of any size. */
+  drawShot(canvas: HTMLCanvasElement): Promise<unknown>;
+  /** All the game's files (loaded once). */
+  files(): Promise<GameFiles>;
+  hasDemo(): Promise<boolean>;
 }
-/** Draws a game's first level into a card's picture when the card scrolls into view. */
+
+/** Recreational Software Designs' own games. */
+export const RSD_GAMES = ['sample', 'pipemare', 'nebula'];
+
+function searchText(...parts: (string | number | null | undefined)[]): string {
+  return parts.filter(Boolean).join(' ').toLowerCase();
+}
+
+function once<T>(f: () => Promise<T>): () => Promise<T> {
+  let p: Promise<T> | undefined;
+  return () => {
+    p ??= f();
+    p.catch(() => (p = undefined));
+    return p;
+  };
+}
+
+export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
+  const title = g.gam ? g.title : `${g.id} (pictures, monsters and sounds)`;
+  const byline =
+    kind === 'sandbox'
+      ? (g.company ?? 'Sandbox Software')
+      : kind === 'shareware'
+        ? creditLine(g) || 'Shareware · play only'
+        : RSD_GAMES.includes(g.id)
+          ? 'By Recreational Software Designs'
+          : g.gam
+            ? 'Gameware from the Game-Maker CD'
+            : 'Pictures, monsters and sounds to build with';
+  return {
+    key: `cd:${g.id}`,
+    kind,
+    title,
+    byline,
+    blurb: g.blurb,
+    gam: g.gam,
+    search: searchText(title, g.id, g.author, g.company, g.year),
+    entry: g,
+    health: g.gam ? catalogTarget(g) : undefined,
+    drawShot: (c) => renderShot(g, c, Math.round(c.width / 20), Math.round(c.height / 20)),
+    files: once(() => loadHostedGame(g)),
+    hasDemo: () => catalogHasDemo(g),
+  };
+}
+
+export function projectGame(p: ProjectSummary): HomeGame {
+  const load = once(async () => {
+    const stored = await loadProject(p.id);
+    if (!stored) throw new Error('That game is not in this browser any more.');
+    return stored.files;
+  });
+  return {
+    key: `my:${p.id}`,
+    kind: 'mine',
+    title: p.name,
+    byline: `${p.gam} · edited ${new Date(p.updated).toLocaleDateString()}`,
+    gam: p.gam,
+    search: searchText(p.name, p.gam),
+    project: p,
+    health: projectTarget(p.id, p.name, p.updated),
+    // the first level the title scene leads to, where the hero arrives
+    drawShot: async (c) => {
+      const files = await load();
+      const game = parseGame(files.get(p.gam)!);
+      const link = game.scenes[0]?.links.find((l) => l.toScene !== NOSCENE && game.scenes[l.toScene]?.gametype === ADVTYPE);
+      const i = link ? link.toScene : game.scenes.findIndex((s) => s.gametype === ADVTYPE);
+      if (i < 0) return;
+      const shot = levelShot(files, game.scenes[i], link?.to ?? { x: 50, y: 50 }, Math.round(c.width / 20), Math.round(c.height / 20));
+      if (!shot) return;
+      const ctx = c.getContext('2d')!;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(shot, 0, 0, c.width, c.height);
+    },
+    files: load,
+    hasDemo: async () => filesHaveDemo(await load(), p.gam),
+  };
+}
+
+/** Draws a game's picture into a canvas when it scrolls into view. */
 export const shotObserver = new IntersectionObserver((entries) => {
   for (const e of entries) {
     if (!e.isIntersecting) continue;
     shotObserver.unobserve(e.target);
-    const el = e.target as HTMLCanvasElement & { game?: CatalogEntry; draw?: () => Promise<unknown> };
-    if (el.draw) void el.draw().catch(() => undefined);
-    else if (el.game) void renderShot(el.game, el, el.width / 20, el.height / 20).catch(() => undefined);
+    const el = e.target as HTMLCanvasElement & { draw?: () => Promise<unknown> };
+    void el.draw?.().catch(() => undefined);
   }
 });
 
-function cardShot(g: CatalogEntry): HTMLCanvasElement {
-  const c = h('canvas', { class: 'card-shot pixel', width: 160, height: 100 }) as HTMLCanvasElement & { game?: CatalogEntry };
-  c.game = g;
+/** A canvas showing the game's picture once it is in view. */
+export function gameShot(game: HomeGame, width: number, height: number, className = 'card-shot pixel'): HTMLCanvasElement {
+  const c = h('canvas', { class: className, width, height, 'aria-hidden': 'true' }) as HTMLCanvasElement & { draw?: () => Promise<unknown> };
+  c.draw = () => game.drawShot(c);
   shotObserver.observe(c);
   return c;
 }
 
-/** A project's picture: the first level its title scene leads to, where the hero arrives. */
-function projectShot(id: string): HTMLCanvasElement {
-  const c = h('canvas', { class: 'card-shot pixel', width: 160, height: 100 }) as HTMLCanvasElement & { draw?: () => Promise<unknown> };
-  c.draw = async () => {
-    const p = await loadProject(id);
-    if (!p) return;
-    const game = parseGame(p.files.get(p.record.gam)!);
-    const link = game.scenes[0]?.links.find((l) => l.toScene !== NOSCENE && game.scenes[l.toScene]?.gametype === ADVTYPE);
-    const i = link ? link.toScene : game.scenes.findIndex((s) => s.gametype === ADVTYPE);
-    if (i < 0) return;
-    const shot = levelShot(p.files, game.scenes[i], link?.to ?? { x: 50, y: 50 }, 8, 5);
-    if (!shot) return;
-    c.width = shot.width;
-    c.height = shot.height;
-    c.getContext('2d')!.drawImage(shot, 0, 0);
+/** Calls `f` once the element has scrolled into view. */
+const whenSeen = (() => {
+  const waiting = new WeakMap<Element, () => void>();
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      io.unobserve(e.target);
+      waiting.get(e.target)?.();
+    }
+  });
+  return (el: Element, f: () => void) => {
+    waiting.set(el, f);
+    io.observe(el);
   };
-  shotObserver.observe(c);
-  return c;
+})();
+
+/** ⌨ Keys: a keyboard map of what each key does in the game, worked out from its files. */
+export function openKeys(game: HomeGame): void {
+  showKeyMap(game.files(), game.gam ?? undefined, game.title);
 }
-/** The small menu of less-used actions on a card. */
-function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLElement {
+
+/** The manual, for games that have one printed. */
+export function hasManual(game: HomeGame): boolean {
+  return !!game.entry?.original?.manual;
+}
+
+/**
+ * Plays the game's demo inside `screen` (an element holding the picture), with a stop and a
+ * sound button over it; returns a function that stops it. `onState` hears when it plays and stops.
+ */
+export function demoInPicture(
+  game: HomeGame,
+  screen: HTMLElement,
+  o: { loop?: boolean; onState?: (playing: boolean) => void } = {},
+): { stop(): void; ready: Promise<boolean> } {
+  let preview: DemoPreview | undefined;
+  let stopped = false;
+  const host = h('div', { class: 'demo-screen', 'aria-hidden': 'true' });
+  const sound = h('button', { class: 'shot-icon demo-sound', type: 'button' });
+  const showSound = () => {
+    const muted = preview?.muted ?? true;
+    sound.textContent = muted ? '🔇' : '🔊';
+    sound.title = muted ? 'Turn the sound on' : 'Turn the sound off';
+    sound.setAttribute('aria-label', `${sound.title} (${game.title} demo)`);
+  };
+  sound.addEventListener('click', (e) => {
+    e.stopPropagation();
+    preview?.setMuted(!preview.muted);
+    showSound();
+  });
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    preview?.stop();
+    host.remove();
+    sound.remove();
+    screen.classList.remove('demo-playing');
+    o.onState?.(false);
+  };
+  const ready = (async () => {
+    screen.classList.add('demo-loading');
+    try {
+      const files = await game.files();
+      if (stopped || !game.gam) return false;
+      screen.append(host, sound);
+      preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop });
+      if (!preview) {
+        stop();
+        return false;
+      }
+      showSound();
+      screen.classList.add('demo-playing');
+      o.onState?.(true);
+      return true;
+    } catch (e) {
+      toast((e as Error).message, 'error');
+      stop();
+      return false;
+    } finally {
+      screen.classList.remove('demo-loading');
+    }
+  })();
+  return { stop, ready };
+}
+
+export interface TileOptions {
+  /** Shows the game in the panel at the top. */
+  onSelect(game: HomeGame): void;
+}
+
+/** A game in the grid: its picture with ⌨ 📖 ▶ over it, and its title. */
+export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
+  const shot = game.gam || game.kind === 'mine' ? gameShot(game, 160, 100) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
+  const icons = h('div', { class: 'shot-icons' });
+  const picture = h('div', { class: 'tile-shot' }, shot, icons);
+  const select = h(
+    'button',
+    { class: 'tile-select', type: 'button', 'aria-label': `${game.title}: show it at the top`, onclick: () => o.onSelect(game) },
+    h('span', { class: 'tile-title' }, game.title),
+    h('span', { class: 'tile-meta' }, game.byline),
+  );
+  const tile = h('article', { class: 'card game-tile', dataset: { search: game.search, key: game.key } }, picture, select);
+  // the picture selects too (the buttons over it do their own thing)
+  picture.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('button')) o.onSelect(game);
+  });
+  if (game.health) picture.append(healthBadge(game.health));
+  if (!game.gam) return tile;
+
+  const icon = (glyph: string, label: string, onclick: () => void) =>
+    h(
+      'button',
+      { class: 'shot-icon', type: 'button', title: label, 'aria-label': `${label}: ${game.title}`, onclick: (e: Event) => (e.stopPropagation(), onclick()) },
+      glyph,
+    );
+  icons.append(icon('⌨', 'Keys', () => openKeys(game)));
+  if (hasManual(game)) icons.append(icon('📖', 'Manual', () => void openGameManual(game.entry!)));
+
+  // ▶ only once we know there is a demo to play
+  let playing: { stop(): void } | undefined;
+  const demo = icon('▶', 'Play the demo here', () => {
+    if (playing) return playing.stop();
+    playing = demoInPicture(game, picture, {
+      onState: (on) => {
+        demo.textContent = on ? '■' : '▶';
+        demo.title = on ? 'Stop the demo' : 'Play the demo here';
+        demo.setAttribute('aria-label', `${demo.title}: ${game.title}`);
+        demo.setAttribute('aria-pressed', String(on));
+        if (!on) playing = undefined;
+      },
+    });
+  });
+  demo.classList.add('demo-toggle');
+  demo.setAttribute('aria-pressed', 'false');
+  whenSeen(tile, () => void game.hasDemo().then((yes) => yes && icons.prepend(demo)));
+  return tile;
+}
+
+/** Makes an editable copy of a CD game and opens it. */
+async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promise<void> {
+  toast(`Copying ${game.title}…`);
+  const p = Project.fromFiles(await game.files(), name);
+  if (game.gam) p.gam = game.gam;
+  await p.saveNow();
+  nav.openProject(p.id);
+}
+
+/** The small menu of less-used actions. */
+export function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLElement {
   const menu = h(
     'details',
     { class: 'card-more' },
-    h('summary', { title: 'More', 'aria-label': 'More actions' }, '⋯'),
+    h('summary', { title: 'More', 'aria-label': 'More actions' }, '⋯ More'),
     h('div', { class: 'card-more-menu' }, ...items),
   );
   // Close when something else is clicked, or after choosing an item.
@@ -75,22 +305,18 @@ function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLEle
   return menu;
 }
 
-function searchText(...parts: (string | number | null | undefined)[]): string {
-  return parts.filter(Boolean).join(' ').toLowerCase();
-}
-
-export function projectCard(p: Awaited<ReturnType<typeof listProjects>>[number], nav: HomeNav, refresh: () => Promise<void>): HTMLElement {
-  return h(
-    'div',
-    { class: 'card', dataset: { search: searchText(p.name, p.gam) } },
-    projectShot(p.id),
-    healthBadge(projectTarget(p.id, p.name, p.updated)),
-    h(
-      'div',
-      { class: 'card-title' },
-      h('h3', null, p.name),
+/** Everything that can be done with a game, for the panel at the top. */
+export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise<void>): HTMLElement[] {
+  const play = (href: string) => h('a', { class: 'button primary', href, 'aria-label': `Play ${game.title}` }, '▶ Play');
+  const keys = h('button', { title: 'What each key does in this game', onclick: () => openKeys(game) }, '⌨ Keys');
+  const e = game.entry;
+  if (game.project) {
+    const p = game.project;
+    return [
+      h('button', { class: 'primary', onclick: () => nav.openProject(p.id) }, '✎ Open'),
+      h('a', { class: 'button', href: `./play.html?project=${encodeURIComponent(p.id)}` }, '▶ Play'),
+      keys,
       moreMenu(
-        keysButton(p.name, async () => (await loadProject(p.id))!.files, p.gam),
         h('button', { onclick: () => void downloadProject(p.id) }, 'Download .zip'),
         h('button', { onclick: () => void exportProject(p.id) }, 'Export web app'),
         h('button', { onclick: () => void exportProjectPage(p.id), title: 'One .html file with the game and player inside' }, 'Export as one web page'),
@@ -109,122 +335,43 @@ export function projectCard(p: Awaited<ReturnType<typeof listProjects>>[number],
           'Delete',
         ),
       ),
-    ),
-    h('div', { class: 'meta' }, `${p.gam} · edited ${new Date(p.updated).toLocaleDateString()}`),
-    h(
-      'div',
-      { class: 'actions' },
-      h('button', { class: 'primary', onclick: () => nav.openProject(p.id) }, 'Open'),
-      h('a', { class: 'button', href: `./play.html?project=${encodeURIComponent(p.id)}` }, '▶ Play'),
-    ),
-  );
-}
-
-export function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
-  const copy = async (name: string) => {
-    toast(`Copying ${g.title}…`);
-    const files = await loadHostedGame(g);
-    const p = Project.fromFiles(files, name);
-    if (g.gam) p.gam = g.gam;
-    await p.saveNow();
-    nav.openProject(p.id);
-  };
-  const title = g.gam ? g.title : `${g.id} (pictures, monsters and sounds)`;
-  return h(
-    'div',
-    { class: 'card', dataset: { search: searchText(title, g.id, g.author, g.company) } },
-    g.gam ? cardShot(g) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨'),
-    g.gam ? healthBadge(catalogTarget(g)) : null,
-    h(
-      'div',
-      { class: 'card-title' },
-      h('h3', null, title),
-      g.gam &&
-        moreMenu(
-          keysButton(g.title, () => loadHostedGame(g), g.gam),
-          demoButton(g.title, () => loadHostedGame(g), g.gam),
-        ),
-    ),
-    h('div', { class: 'meta' }, `${rsdGame(g) ? 'By Recreational Software Designs · ' : ''}${g.files.length} files`),
-    h(
-      'div',
-      { class: 'actions' },
-      g.gam && h('a', { class: 'button primary', href: `./play.html?game=${encodeURIComponent(g.id)}`, 'aria-label': `Play ${g.title}` }, '▶ Play'),
-      g.gam
-        ? h('button', { onclick: () => void copy(g.title), 'aria-label': `Edit a copy of ${g.title}` }, 'Edit a copy')
-        : h(
-            'button',
-            {
-              onclick: async () => {
-                const name = await promptText('New game', 'Title (shown on the menu screen)', 'My Game');
-                if (name) await copy(name);
-              },
-            },
-            'Start a game with these',
-          ),
-    ),
-  );
-}
-
-const rsdGame = (g: CatalogEntry) => ['sample', 'pipemare', 'nebula'].includes(g.id);
-
-/** One of our own games: playable and, unlike other shareware, open to edit. */
-export function originalCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
-  const copy = async () => {
-    toast(`Copying ${g.title}…`);
-    const p = Project.fromFiles(await loadHostedGame(g), g.title);
-    if (g.gam) p.gam = g.gam;
-    await p.saveNow();
-    nav.openProject(p.id);
-  };
-  return h(
-    'div',
-    { class: 'card', dataset: { search: searchText(g.title, g.id, g.company) } },
-    cardShot(g),
-    healthBadge(catalogTarget(g)),
-    h(
-      'div',
-      { class: 'card-title' },
-      h('h3', null, g.title),
-      moreMenu(
-        keysButton(g.title, () => loadHostedGame(g), g.gam),
-        demoButton(g.title, () => loadHostedGame(g), g.gam),
-        g.original?.manual ? h('button', { onclick: () => void openGameManual(g) }, '📖 Manual') : null,
+    ].filter((x): x is HTMLElement => !!x);
+  }
+  if (!e) return [];
+  if (!e.gam)
+    return [
+      h(
+        'button',
+        {
+          class: 'primary',
+          onclick: async () => {
+            const name = await promptText('New game', 'Title (shown on the menu screen)', 'My Game');
+            if (name) await copyGame(game, nav, name);
+          },
+        },
+        '✎ Start a game with these',
       ),
-    ),
-    h('div', { class: 'meta' }, `${g.company ?? 'Sandbox Software'} · ${g.files.length} files`),
-    h(
-      'div',
-      { class: 'actions' },
-      h('a', { class: 'button primary', href: `./play.html?game=${encodeURIComponent(g.id)}`, 'aria-label': `Play ${g.title}` }, '▶ Play'),
-      h('button', { onclick: () => void copy(), 'aria-label': `Edit a copy of ${g.title}` }, 'Edit a copy'),
-    ),
-  );
+    ];
+  const href = `./play.html?game=${encodeURIComponent(e.id)}`;
+  return (
+    [
+      play(href),
+      game.kind === 'shareware'
+        ? h('button', { onclick: () => void showNotice(e) }, '📜 Notice')
+        : h('button', { onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, '✎ Edit a copy'),
+      keys,
+      hasManual(game) ? h('button', { onclick: () => void openGameManual(e) }, '📖 Manual') : null,
+    ] as (HTMLElement | null)[]
+  ).filter((x): x is HTMLElement => !!x);
 }
 
-export function sharewareCard(g: CatalogEntry): HTMLElement {
-  return h(
-    'div',
-    { class: 'card', dataset: { search: searchText(g.title, g.id, g.author, g.company, g.year) } },
-    cardShot(g),
-    healthBadge(catalogTarget(g)),
-    h(
-      'div',
-      { class: 'card-title' },
-      h('h3', null, g.title),
-      moreMenu(
-        keysButton(g.title, () => loadHostedGame(g), g.gam),
-        demoButton(g.title, () => loadHostedGame(g), g.gam),
-      ),
-    ),
-    h('div', { class: 'meta' }, creditLine(g) || 'Shareware · play only'),
-    h(
-      'div',
-      { class: 'actions' },
-      h('a', { class: 'button primary', href: `./play.html?game=${encodeURIComponent(g.id)}`, 'aria-label': `Play ${g.title}` }, '▶ Play'),
-      h('button', { onclick: () => void showNotice(g) }, 'Notice'),
-    ),
-  );
+/** “🎬 Demo…”: the demo in a dialog, where it can also be saved as a video. */
+export function demoDialogButton(game: HomeGame): HTMLElement | null {
+  const b = demoButton(game.title, () => game.files(), game.gam);
+  if (!b) return null;
+  b.textContent = '🎬 Demo video';
+  b.title = 'Watch the demo with its music and sounds, or save it as a video';
+  return b;
 }
 
 export function showNotice(g: CatalogEntry): Promise<unknown> {

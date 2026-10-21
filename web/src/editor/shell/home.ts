@@ -1,17 +1,22 @@
-// Home page: your projects, importing original game folders, and the CD's sample games.
+// Home page: one game shown large at the top (a featured one, or the one you chose; see
+// homeShowcase.ts), and below it the library: collections on the left (your games, the
+// CD's gameware, our Sandbox games, the shareware) with "Make a new game" under them, and
+// the chosen collection's games as small picture tiles (homeCards.ts). A chosen game is
+// kept in the address (#/game/cd:<id> or #/game/my:<id>) so a reload or a link shows it.
 import { h, clear } from '../core/ui';
 import { loadCatalog, type CatalogEntry } from '../../project/files';
 import { listProjects } from '../../project/storage';
 import './home.css';
-import { FORK_NOTE, NOTICE_URL } from '../../edition';
-import { shotObserver, projectCard, sampleCard, originalCard, sharewareCard } from './homeCards';
+import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../../edition';
+import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type HomeGame } from './homeCards';
+import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
 
 export interface HomeNav {
   openProject(id: string): void;
 }
 
-type Category = 'mine' | 'gameware' | 'sandbox' | 'shareware';
+type Category = GameKind;
 
 const CATEGORIES: { id: Category; icon: string; name: string; lead: string }[] = [
   {
@@ -41,17 +46,21 @@ const CATEGORIES: { id: Category; icon: string; name: string; lead: string }[] =
 ];
 
 const CATEGORY_KEY = 'gm-home-category';
+const GAME_HASH = '#/game/';
 
 function savedCategory(): Category | undefined {
   try {
-    return (localStorage.getItem(CATEGORY_KEY) as Category | null) ?? undefined;
+    const c = localStorage.getItem(CATEGORY_KEY) as Category | null;
+    return c && CATEGORIES.some((x) => x.id === c) ? c : undefined;
   } catch {
     return undefined;
   }
 }
 
+/** The game named in the address, if any. */
+const hashKey = () => (location.hash.startsWith(GAME_HASH) ? decodeURIComponent(location.hash.slice(GAME_HASH.length)) : '');
+
 export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
-  const heroShot = h('canvas', { class: 'pixel', width: 320, height: 200 });
   const catNav = h('nav', { class: 'lib-cats', 'aria-label': 'Game collections' });
   const libTitle = h('h2', null);
   const libLead = h('p', { class: 'lead' });
@@ -69,18 +78,31 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   let catalog: CatalogEntry[] = [];
   let catalogError = '';
   let projects: Awaited<ReturnType<typeof listProjects>> = [];
-  const lists = (): Record<Category, number> => ({
-    mine: projects.length,
-    gameware: gameware().length,
-    sandbox: catalog.filter((g) => g.original && g.gam).length,
-    shareware: catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam).length,
-  });
-  // Recreational Software Designs' own games first.
-  const rsd = ['sample', 'pipemare', 'nebula'];
+  // RSD's own games first
   const gameware = () =>
     catalog
       .filter((g) => g.kind !== 'shareware' && !g.original)
-      .sort((a, b) => (rsd.includes(b.id) ? 1 : 0) - (rsd.includes(a.id) ? 1 : 0) || rsd.indexOf(a.id) - rsd.indexOf(b.id));
+      .sort((a, b) => (RSD_GAMES.includes(b.id) ? 1 : 0) - (RSD_GAMES.includes(a.id) ? 1 : 0) || RSD_GAMES.indexOf(a.id) - RSD_GAMES.indexOf(b.id));
+  const entriesOf = (c: Category): CatalogEntry[] =>
+    c === 'gameware'
+      ? gameware()
+      : c === 'sandbox'
+        ? catalog.filter((g) => g.original && g.gam)
+        : c === 'shareware'
+          ? catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam)
+          : [];
+  // one HomeGame per game for the page's life, so files load once
+  const games = new Map<string, HomeGame>();
+  const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
+  const gamesOf = (c: Category): HomeGame[] =>
+    c === 'mine' ? projects.map((p) => remember(projectGame(p))) : entriesOf(c).map((e) => remember(catalogGame(e, c)));
+  const findGame = (key: string): HomeGame | undefined => {
+    for (const c of CATEGORIES) {
+      const g = gamesOf(c.id).find((x) => x.key === key);
+      if (g) return g;
+    }
+    return undefined;
+  };
 
   let current: Category = savedCategory() ?? 'gameware';
 
@@ -96,8 +118,40 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     if (q && !shown) tiles.append(h('p', { class: 'meta lib-none' }, `No game here matches “${search.value.trim()}”.`));
   };
 
+  const markSelected = () => {
+    const key = top.game?.key;
+    for (const t of tiles.querySelectorAll<HTMLElement>('.game-tile')) {
+      const on = t.dataset.key === key;
+      t.classList.toggle('selected', on);
+      t.querySelector('.tile-select')?.setAttribute('aria-current', on ? 'true' : 'false');
+    }
+  };
+
+  /** Shows a game at the top because the visitor chose it. */
+  const choose = (game: HomeGame) => {
+    top.show(game, {});
+    history.replaceState(null, '', `${GAME_HASH}${game.key}`);
+    markSelected();
+    const r = top.el.getBoundingClientRect();
+    if (r.top < 0 || r.top > innerHeight * 0.5)
+      top.el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    top.el.querySelector<HTMLElement>('.sc-title')?.focus({ preventScroll: true });
+  };
+
+  /** Shows a game picked at random, one with a demo when there are some. */
+  const feature = () => {
+    const pool = [...gamesOf('sandbox'), ...gamesOf('gameware').filter((g) => g.entry && RSD_GAMES.includes(g.entry.id))].filter((g) => g.gam);
+    const withDemo = pool.filter((g) => g.entry?.files.some((f) => f.endsWith('.rec')));
+    const choices = (withDemo.length ? withDemo : pool).filter((g) => g.key !== top.game?.key);
+    const pick = choices[Math.floor(Math.random() * choices.length)];
+    if (!pick) return;
+    top.show(pick, { featured: true, onAnother: feature });
+    if (location.hash.startsWith(GAME_HASH)) history.replaceState(null, '', '#/');
+    markSelected();
+  };
+
   const renderCats = () => {
-    const counts = lists();
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.id === 'mine' ? projects.length : entriesOf(c.id).length]));
     clear(
       catNav,
       ...CATEGORIES.map((c) =>
@@ -129,7 +183,6 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         ? h(
             'div',
             { class: 'toolbar' },
-            h('button', { class: 'primary', onclick: () => void newGame(nav) }, '+ New game'),
             h('button', { onclick: () => void importPicked(nav, { directory: true }) }, 'Open game folder…'),
             h('button', { onclick: () => void importPicked(nav, {}) }, 'Open files, .zip or .html…'),
           )
@@ -137,26 +190,34 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       c === 'mine' ? drop : null,
     );
     let cards: HTMLElement[];
-    if (c === 'mine') {
-      cards = projects.map((p) => projectCard(p, nav, refreshProjects));
-      if (!cards.length)
-        cards = [h('p', { class: 'meta' }, 'No games yet. Create one, open an original game folder, or copy a game from Gameware or Sandbox.')];
-    } else if (catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
-    else if (c === 'gameware') cards = gameware().map((g) => sampleCard(g, nav));
-    else if (c === 'sandbox') cards = catalog.filter((g) => g.original && g.gam).map((g) => originalCard(g, nav));
-    else cards = catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam).map(sharewareCard);
-    if (!cards.length && c !== 'mine') cards = [h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.')];
+    if (c !== 'mine' && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
+    else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose }));
+    if (!cards.length)
+      cards = [
+        h(
+          'p',
+          { class: 'meta' },
+          c === 'mine'
+            ? 'No games yet. Make a new one, open an original game folder, or edit a copy of a game from Gameware or Sandbox.'
+            : 'No games of this kind were bundled with this build.',
+        ),
+      ];
     // Keep the page from jumping while the tiles are swapped.
     tiles.style.minHeight = `${tiles.offsetHeight}px`;
     clear(tiles, ...cards);
     filterTiles();
+    markSelected();
     requestAnimationFrame(() => (tiles.style.minHeight = ''));
   };
 
   const refreshProjects = async () => {
     projects = await listProjects().catch(() => []);
+    const key = top.game?.key;
+    if (key && !findGame(key)) feature();
     await select(current);
   };
+
+  const top = showcase(nav, refreshProjects);
 
   clear(
     root,
@@ -164,43 +225,22 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       'main',
       { class: 'home' },
       h(
-        'section',
-        { class: 'hero' },
+        'header',
+        { class: 'home-intro' },
+        h('h1', null, PRODUCT),
         h(
-          'div',
-          { class: 'hero-text' },
-          h('em', null, 'Computer-aided design tools'),
-          h('h1', { class: 'hero-logo' }, 'GAME-MAKER'),
-          h('strong', { class: 'hero-edition' }, 'Sandbox Edition'),
-          h(
-            'p',
-            null,
-            'Make your own arcade and adventure games — blocks, monsters, heroes, maps, music and sound — in the original 1994 file formats. No programming.',
-          ),
-          h('p', { class: 'hero-fork' }, h('a', { href: NOTICE_URL, target: '_blank', rel: 'noopener' }, FORK_NOTE), '.'),
-          h(
-            'div',
-            { class: 'hero-actions' },
-            h('button', { class: 'primary big', onclick: () => void newGame(nav) }, '+ Make a new game'),
-            h(
-              'button',
-              {
-                class: 'big',
-                onclick: () => {
-                  if (current === 'mine') void select('gameware');
-                  document.getElementById('library')?.scrollIntoView({ behavior: 'smooth' });
-                },
-              },
-              '▶ Play a game',
-            ),
-          ),
+          'p',
+          null,
+          'Make your own arcade and adventure games — blocks, monsters, heroes, maps, music and sound — in the original 1994 file formats. No programming. ',
+          h('a', { href: NOTICE_URL, target: '_blank', rel: 'noopener', class: 'home-fork' }, FORK_NOTE),
+          '.',
         ),
-        h('div', { class: 'hero-screen', 'aria-hidden': 'true' }, heroShot),
       ),
+      top.el,
       h(
         'section',
-        { id: 'library', class: 'library' },
-        catNav,
+        { id: 'library', class: 'library', 'aria-label': 'Games' },
+        h('div', { class: 'lib-side' }, catNav, h('button', { class: 'primary lib-new', onclick: () => void newGame(nav) }, '+ Make a new game')),
         h('div', { class: 'lib-main' }, h('div', { class: 'lib-head' }, libTitle, search), libLead, libTools, tiles),
       ),
       h(
@@ -210,7 +250,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         h(
           'p',
           { class: 'lead' },
-          'Each game defines its own keys (usually the arrows plus a few others). F1 help · F2 status · F3 music · F4 sound · F5 save · F6 load · Esc leaves a level. Gamepads work as joysticks.',
+          'Each game defines its own keys (usually the arrows plus a few others; ⌨ on a game shows them). F1 help · F2 status · F3 music · F4 sound · F5 save · F6 load · Esc leaves a level. Gamepads work as joysticks.',
         ),
       ),
     ),
@@ -229,19 +269,15 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   projects = await listProjects().catch(() => []);
   if (!savedCategory() && projects.length) current = 'mine';
-  // Once there are games of your own, the banner steps back so they show without scrolling.
-  root.querySelector('.hero')?.classList.toggle('hero-compact', projects.length > 0);
   renderCats();
   try {
     catalog = await loadCatalog();
-    // the banner's screen: a level from one of RSD's own games
-    const show = catalog.find((g) => g.id === ['pipemare', 'sample', 'houses'][Math.floor(Math.random() * 3)]);
-    if (show) {
-      (heroShot as HTMLCanvasElement & { game?: CatalogEntry }).game = show;
-      shotObserver.observe(heroShot);
-    }
   } catch {
     catalogError = 'These games are unavailable offline until they have been opened once.';
   }
+  const chosen = findGame(hashKey());
+  if (chosen) top.show(chosen, {});
+  else feature();
+  if (!top.game && projects.length) top.show(remember(projectGame(projects[0])), {});
   await select(current);
 }
