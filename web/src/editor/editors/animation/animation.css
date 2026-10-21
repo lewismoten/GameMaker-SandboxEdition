@@ -20,7 +20,7 @@
   align-self: flex-start;
   width: 100%;
   /* the whole editor (monitor, transport, strip) fits the window */
-  max-width: min(680px, max(320px, calc((100dvh - 525px) * 4 / 3 + 28px)));
+  max-width: min(680px, max(320px, calc((var(--ws-vh, 100dvh) - 525px) * 4 / 3 + 28px)));
   padding: 14px;
   border-radius: 14px;
   background: linear-gradient(#d8d2c0, #b9b29c);
@@ -45,7 +45,7 @@
   .fli-edit > .fli-monitor {
     grid-column: 1;
     grid-row: 2 / span 2;
-    width: min(680px, max(320px, calc((100dvh - 470px) * 4 / 3 + 28px)));
+    width: min(680px, max(320px, calc((var(--ws-vh, 100dvh) - 470px) * 4 / 3 + 28px)));
     max-width: none;
   }
   .fli-edit > .fli-export {

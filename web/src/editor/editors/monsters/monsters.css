@@ -10,7 +10,7 @@
   top: var(--ws-sticky-top, 0px);
 }
 .mon-side .mon-list {
-  max-height: max(240px, calc(100dvh - 210px));
+  max-height: max(240px, calc(var(--ws-vh, 100dvh) - 210px));
   grid-template-columns: repeat(auto-fill, 44px);
 }
 .mon-top {
@@ -133,7 +133,7 @@
   }
   .mon-detail .mpath-left {
     flex: 0 1 auto;
-    width: clamp(200px, calc(100dvh - 600px), 760px);
+    width: clamp(200px, calc(var(--ws-vh, 100dvh) - 600px), 760px);
   }
   .mon-detail .mpath-side {
     flex: 1 1 150px;
