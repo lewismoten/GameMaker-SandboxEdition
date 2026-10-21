@@ -38,6 +38,7 @@ import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from
 import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
 import { pickOnMap } from './pickOnMap';
+import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
 import { END_SCREENS, END_SONGS, START_SCREENS, START_SONGS } from './sceneSlots';
 import {
@@ -51,9 +52,12 @@ import {
   type Rect,
 } from './board';
 
-registerEditor(['gam'], (host, project) => {
+registerEditor(['gam'], (host, project, file) => {
   const game = project.game();
-  let selected = 0;
+  // the address keeps the selected scene and the side panel's tab (…/GAME.GAM?scene=3&side=music)
+  const view = viewState(['p', project.id, file]);
+  const urlScene = view.num('scene');
+  let selected = urlScene !== undefined && usedScenes(game).includes(urlScene) ? urlScene : 0;
   let playing: string | undefined;
   let undoPositions: Map<number, Point> | undefined;
   /** Auto-arrange's layouts, best first, while the user steps through them. */
@@ -243,6 +247,7 @@ registerEditor(['gam'], (host, project) => {
       }
       if (panelInSide() && sideTab !== 'scene') {
         sideTab = 'scene';
+        view.set({ side: 'scene' });
         renderSide();
       }
       draw();
@@ -465,7 +470,9 @@ registerEditor(['gam'], (host, project) => {
     },
   };
   const savedTab = store.get('gm-grator-tab');
-  let sideTab: 'scene' | 'screens' | 'music' = savedTab === 'music' || savedTab === 'screens' ? savedTab : 'scene';
+  const urlSide = view.get('side');
+  let sideTab: 'scene' | 'screens' | 'music' =
+    urlSide === 'scene' || urlSide === 'music' || urlSide === 'screens' ? urlSide : savedTab === 'music' || savedTab === 'screens' ? savedTab : 'scene';
   const side = h('aside', { class: 'grator-side', 'aria-label': 'Scene, screens and music' });
   const sideHead = h('div', { class: 'grator-side-head' });
   const sideBody = h('div', { class: 'grator-side-body' });
@@ -599,6 +606,7 @@ registerEditor(['gam'], (host, project) => {
           onclick: () => {
             sideTab = id;
             store.set('gm-grator-tab', id);
+            view.set({ side: id });
             renderSide();
           },
         },
@@ -741,6 +749,7 @@ registerEditor(['gam'], (host, project) => {
   // ---- the selected scene ------------------------------------------------------------------
   const panel = h('div', { class: 'stack grator-panel' });
   function renderPanel(): void {
+    view.set({ scene: selected });
     const s: Scene | undefined = game.scenes[selected];
     if (!s) {
       clear(panel);
