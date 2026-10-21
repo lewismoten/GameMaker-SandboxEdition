@@ -99,7 +99,7 @@ Story, design, art, music and programming: Claude
 
 Made with GAME-MAKER 3.0 by Recreational Software Designs. No programming needed!
 
-For everyone who ever stayed in the theater after the lights went down, and heard the ghost light hum.
+For everyone who ever stayed in the theater after the lights went down, and heard the ghost light hum. And for archivists who fix old papers a letter at a time.
 \f
 THIS IS SHAREWARE
 
@@ -120,7 +120,9 @@ export const GR1_INTRO = `Sergeant Dobbs holds the green room door for you.
 
 "Your evidence is pinned up on the board. Step up to a card to read it again.
 
-"When you've heard enough, the EXIT door takes you back into the theater. The power goes off at two."`;
+"When you've heard enough, the EXIT door takes you back into the theater. The power goes off at two.
+
+"And the Historical Society ladies want you to read their plaque in the lobby. I said you were busy."`;
 
 export const GR2_INTRO = `Two in the morning. The coffee is cold and the suspects are not talking to each other.
 
@@ -262,7 +264,7 @@ She will not look at the vanity mirror in her dressing room.`,
       `"A great actor and a very small man. I'm his understudy, so now I'll play Corvin. Write that down; I know how it looks."`,
       `"Around five past nine, a fellow in evening dress came past the bar carrying a wet umbrella, heading back into the house.
 
-"Who carries an umbrella indoors?"`,
+"Who carries an umbrella indoors? He stopped to squint at the Historical Society's clippings on the lobby wall, too. Nobody reads those."`,
     ],
     hello2: `Edgar is pacing.
 
@@ -323,7 +325,9 @@ She will not look at the vanity mirror in her dressing room.`,
       `"In my seat, F-9, writing notes for my review. I never left it. I never do."`,
       `"A ham. But he knew how to fill a house.
 
-"And the play was rather good. Surprisingly good, for Victor."`,
+"And the play was rather good. Surprisingly good, for Victor.
+
+"The Courier misprinted its title once, you know. I've spent my life correcting other people's mistakes."`,
       `"Nothing at all, Inspector. I was writing."`,
     ],
     hello2: `Pike is writing in his notebook. He does not look up.
