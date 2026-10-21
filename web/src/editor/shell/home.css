@@ -221,9 +221,16 @@
     min-height: 0;
   }
 
+  /* bigger tiles where there is room for them */
+  @media (min-width: 1360px) {
+    .home .lib-tiles {
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    }
+  }
+
   /* the tiles scroll by themselves; the padding leaves room for the selected tile's ring */
   .lib-tiles {
-    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(131px, 1fr));
     flex: 1 1 auto;
     min-height: 0;
     margin: -4px;
