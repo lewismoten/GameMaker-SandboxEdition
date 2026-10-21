@@ -35,12 +35,12 @@ registerEditor(['pal'], (host, project, file) => {
     refresh();
   }
 
-  const swatches = rovingGrid(h('div', { class: 'swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
+  const swatches = rovingGrid(h('div', { class: 'swatches pal-swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
   const preview = h('div', { style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px' });
   const label = h('div', { class: 'meta' });
   const sliders = ['Red', 'Green', 'Blue'].map((name, c) => {
-    const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name });
-    const num = h('input', { type: 'number', min: 0, max: 63 });
+    const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name, style: 'flex:1;min-width:0' });
+    const num = h('input', { type: 'number', min: 0, max: 63, 'aria-label': `${name} (0 to 63)`, style: 'width:64px' });
     const set = (v: number) => {
       remember(true);
       pal[selected * 3 + c] = Math.max(0, Math.min(63, v | 0));
@@ -52,7 +52,7 @@ registerEditor(['pal'], (host, project, file) => {
     return {
       range,
       num,
-      row: h('label', { class: 'field' }, h('span', null, name), h('div', { class: 'row', style: 'align-items:center;gap:6px' }, range, num)),
+      row: h('label', { class: 'field' }, h('span', null, name), h('div', { class: 'row', style: 'align-items:center;gap:6px;flex-wrap:nowrap' }, range, num)),
     };
   });
 
@@ -81,7 +81,14 @@ registerEditor(['pal'], (host, project, file) => {
       b.classList.toggle('selected', i === selected || inRange);
     });
     preview.style.background = paletteCss(pal, selected);
-    label.textContent = `Color ${selected}${rangeEnd !== undefined ? ` to ${rangeEnd}` : ''}`;
+    const hex = '#' + [0, 1, 2].map((c) => Math.round((pal[selected * 3 + c] * 255) / 63).toString(16).padStart(2, '0')).join('');
+    clear(
+      label,
+      h('strong', null, `Color ${selected}${rangeEnd !== undefined ? ` to ${rangeEnd}` : ''}`),
+      h('br'),
+      h('span', { style: 'font-family:ui-monospace,monospace' }, hex),
+      selected === 255 ? h('span', null, ' · see-through in monster and character blocks') : null,
+    );
     sliders.forEach((s, c) => {
       s.range.value = String(pal[selected * 3 + c]);
       s.num.value = String(pal[selected * 3 + c]);
@@ -110,10 +117,10 @@ registerEditor(['pal'], (host, project, file) => {
     h(
       'div',
       { class: 'row' },
-      h('div', { class: 'panel', style: 'flex:1 1 320px;max-width:360px' }, swatches),
+      h('div', { class: 'panel', style: 'flex:0 1 auto' }, swatches),
       h(
         'div',
-        { class: 'panel stack', style: 'flex:1 1 260px' },
+        { class: 'panel stack', style: 'flex:1 1 260px;max-width:420px' },
         h('div', { class: 'row', style: 'align-items:center' }, preview, label),
         ...sliders.map((s) => s.row),
         h('div', { class: 'toolbar' }, h('button', { onclick: spread }, 'Spread range'), undoBtn, redoBtn),

@@ -501,6 +501,13 @@ canvas.pixel {
   border: 1px solid var(--border);
 }
 
+/* the palette editor's own grid: as big as fits the window */
+.swatches.pal-swatches {
+  width: min(512px, calc(100dvh - 250px), calc(100vw - 64px));
+  min-width: 256px;
+  max-width: none;
+}
+
 .swatches button {
   aspect-ratio: 1;
   padding: 0;
