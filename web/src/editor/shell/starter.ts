@@ -5,6 +5,7 @@ import { Project } from '../core/project';
 import { libraryGame } from '../core/library';
 import { loadCatalog } from '../../project/files';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame } from '../../formats/game';
+import { closeGaps } from '../editors/integrator/integratorLayout';
 import { BACKBL, parseBlocks } from '../../formats/blocks';
 import { parseSoundSet } from '../../formats/sound';
 import { MLEN, MWID, newMap, parseMap, reindexMonsters, serializeMap } from '../../formats/map';
@@ -77,6 +78,8 @@ export async function starterProject(title: string, from = 'sample'): Promise<Pr
   game.scenes[0].links[0] = { toScene: game.scenes.length - 1, from: { x: 0, y: 0 }, to: { x: x0 + W / 2, y: y0 + H / 2 } };
   // Scene 1 is "game won": nothing links there yet.
   if (game.scenes[1].links[0]) game.scenes[1].links[0].toScene = NOSCENE;
+  // the scenes snug together, so the scene board opens at a readable size
+  for (const [i, pos] of closeGaps(game)) game.scenes[i].pos = pos;
   p.files.set(p.gam, serializeGame(game));
   return p;
 }
