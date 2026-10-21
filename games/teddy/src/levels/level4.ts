@@ -8,7 +8,7 @@
 import { rng } from '../../../kit/pixels';
 import { blob } from '../art/draw';
 import { LevelMap, type Level } from './level';
-import { bandOf } from './level1';
+import { bandOf } from './level1Tiles';
 import { G, cityTiles } from './level4Tiles';
 import { cityBeasts } from './level4Beasts';
 

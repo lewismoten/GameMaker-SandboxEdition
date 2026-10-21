@@ -10,7 +10,7 @@ import { CTR, POWER } from '../ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { askBubble, frisbee, kid } from '../sprites/folks';
 import { propSprite } from '../sprites/klown';
-import { bandOf, sign } from './level1';
+import { bandOf, sign } from './level1Tiles';
 import { branch, buried, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from '../blocks/tiles';
 
 const G = 40;

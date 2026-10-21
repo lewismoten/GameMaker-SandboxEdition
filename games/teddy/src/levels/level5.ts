@@ -13,7 +13,7 @@ import { CK, propSprite } from '../sprites/klown';
 import { KLUB, bubble, gwinSits, pie, pinStack, pinsDown } from '../sprites/klubfolk';
 import { GWIN } from '../sprites/gwin';
 import { FULL, docLeo } from '../sprites/people';
-import { bandOf } from './level1';
+import { bandOf } from './level1Tiles';
 import { revolvingDoor } from './level4Beasts';
 import { c, copy, cut, dirt, r, sky } from '../blocks/tiles';
 

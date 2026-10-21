@@ -10,7 +10,7 @@ import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { balloonBox, balloonProp, crate, hand, kid, mailCarrier, mailTruck } from '../sprites/folks';
 import { propSprite } from '../sprites/klown';
 import { CTR } from '../ids';
-import { bandOf, sign } from './level1';
+import { bandOf, sign } from './level1Tiles';
 import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from '../blocks/tiles';
 
 const G = 40;
