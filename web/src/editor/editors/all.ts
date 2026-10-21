@@ -4,7 +4,7 @@ import './palette/palette';
 import './blocks/blocks';
 import './map/map';
 import './integrator/integrator';
-import './monsters';
+import './monsters/monsters';
 import './character';
 import './sounds';
 import './picture';

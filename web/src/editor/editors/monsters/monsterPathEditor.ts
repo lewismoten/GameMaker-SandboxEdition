@@ -2,14 +2,14 @@
 // map of a scene that uses the monster set, pick the picture (orientation) and speed for each
 // stretch, and watch the monster walk it exactly as playgame moves it.
 import './monsterPath.css';
-import { h, clear, modal, toast } from '../core/ui';
-import { blockImages, paintBlock } from '../core/draw';
-import type { Project } from '../core/project';
-import { BACKBL, BLEN, MONBL, parseBlocks, type Block } from '../../formats/blocks';
-import { MLEN, MWID, parseMap, type GameMap } from '../../formats/map';
-import { MAXMARCH, type Monster } from '../../formats/monster';
-import { parsePalette, type Palette } from '../../formats/palette';
-import { normalize } from '../../project/files';
+import { h, clear, modal, toast } from '../../core/ui';
+import { blockImages, paintBlock } from '../../core/draw';
+import type { Project } from '../../core/project';
+import { BACKBL, BLEN, MONBL, parseBlocks, type Block } from '../../../formats/blocks';
+import { MLEN, MWID, parseMap, type GameMap } from '../../../formats/map';
+import { MAXMARCH, type Monster } from '../../../formats/monster';
+import { parsePalette, type Palette } from '../../../formats/palette';
+import { normalize } from '../../../project/files';
 import {
   addCorner,
   clearPath,

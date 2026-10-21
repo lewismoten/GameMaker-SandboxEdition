@@ -5,7 +5,7 @@ import { parseMonsters } from '../src/formats/monster';
 import { newMap } from '../src/formats/map';
 import { createWorld, padBlocks } from '../src/engine/world';
 import { birthMon, moveAllMonsters, resetMonInfo } from '../src/engine/monsters';
-import { PathWalker } from '../src/editor/editors/monsterPath';
+import { PathWalker } from '../src/editor/editors/monsters/monsterPath';
 import type { Character } from '../src/formats/character';
 
 const SETS = ['../cd/gameware/nebula/monshad.mon', '../cd/gameware/pipemare/pipes.mon'].map((f) => new URL(`../${f}`, import.meta.url));

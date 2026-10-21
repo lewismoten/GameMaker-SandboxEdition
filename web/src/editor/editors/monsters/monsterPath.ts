@@ -8,9 +8,9 @@
 //                                character comes near); the walk starts toward corner 2.
 //  - attack path, activate = 2:  origin = the character, followed live; corner 1 is skipped.
 // The values beyond the end of a path are left untouched so files round-trip byte for byte.
-import { BLEN, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../formats/blocks';
-import { LASTSL, MAXMARCH, type March, type Monster } from '../../formats/monster';
-import { MLEN, MWID } from '../../formats/map';
+import { BLEN, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../formats/blocks';
+import { LASTSL, MAXMARCH, type March, type Monster } from '../../../formats/monster';
+import { MLEN, MWID } from '../../../formats/map';
 
 export type PathKind = 'normal' | 'attack' | 'chase';
 

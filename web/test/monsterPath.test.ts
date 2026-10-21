@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emptyMonster, MAXMARCH } from '../src/formats/monster';
-import { addCorner, clearPath, corners, insertCorner, moveCorner, pathLength, PathWalker, removeCorner } from '../src/editor/editors/monsterPath';
+import { addCorner, clearPath, corners, insertCorner, moveCorner, pathLength, PathWalker, removeCorner } from '../src/editor/editors/monsters/monsterPath';
 
 const walkerSpot = (w: PathWalker) => ({ x: w.bx, y: w.by, px: w.px, py: w.py });
 

@@ -1,15 +1,15 @@
 // Monster editor (MONEDIT.EXE): 64 monsters with animation, strength and movement.
 import './monsters.css';
-import { rovingGrid } from '../widgets/rovingGrid';
-import { History } from '../core/history';
-import { registerEditor } from './registry';
-import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
-import { blockCanvas, paintBlock } from '../core/draw';
-import { paletteChooser } from './blocks/blocks';
-import { blockButton } from '../widgets/blockChooser';
-import { fileField } from '../widgets/filePicker';
-import { MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
-import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '../../formats/monster';
+import { rovingGrid } from '../../widgets/rovingGrid';
+import { History } from '../../core/history';
+import { registerEditor } from '../registry';
+import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
+import { blockCanvas, paintBlock } from '../../core/draw';
+import { paletteChooser } from '../blocks/blocks';
+import { blockButton } from '../../widgets/blockChooser';
+import { fileField } from '../../widgets/filePicker';
+import { MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
+import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '../../../formats/monster';
 import { monsterPathEditor } from './monsterPathEditor';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
