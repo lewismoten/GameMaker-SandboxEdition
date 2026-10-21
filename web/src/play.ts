@@ -6,6 +6,7 @@ import { mountPlayer } from './player/player';
 import { watchForUpdates } from './devReload';
 import { GameFiles, loadCatalog, loadHostedGame } from './project/files';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
+import { registerServiceWorker } from './offline';
 
 interface BundleManifest {
   id: string;
@@ -84,8 +85,6 @@ async function main(): Promise<void> {
 
 void main();
 
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  void navigator.serviceWorker.register('./sw.js').catch(() => undefined);
-}
+registerServiceWorker();
 
 watchForUpdates();
