@@ -5,7 +5,8 @@
 //   exported web apps     ./game/manifest.json lists the bundled game files
 import { mountPlayer } from './player/player';
 import { watchForUpdates } from './devReload';
-import { GameFiles, loadCatalog, loadHostedGame, type CatalogEntry } from './project/files';
+import { GameFiles, loadCatalog, type CatalogEntry } from './project/files';
+import { streamHostedGame } from './project/streamGame';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
 import { registerServiceWorker } from './offline';
 
@@ -57,16 +58,20 @@ async function choose(): Promise<{ id: string; title: string; gam: string; files
   }
   if (gameId) {
     const entry = (await loadCatalog()).find((g) => g.id === gameId && g.gam);
-    if (entry)
+    if (entry) {
+      // the game starts once its .gam is in; the rest arrive while it plays, as needed (streamGame.ts)
+      const streamed = streamHostedGame(entry);
+      await streamed.started;
       return {
         id: `game:${entry.id}`,
         title: entry.title,
         gam: entry.gam!,
-        files: await loadHostedGame(entry),
+        files: streamed.files,
         back: './',
         poster: posterOf(entry).catch(() => undefined),
         notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
       };
+    }
   }
   return loadBundle();
 }

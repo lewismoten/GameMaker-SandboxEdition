@@ -10,6 +10,7 @@ import { TouchControls, wantsTouchControls } from './touch';
 import { showKeyMap } from '../editor/keymap/keyMapView';
 import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
+import { parseGame } from '../formats/game';
 
 export interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -133,7 +134,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   keys.addEventListener('click', (e) => {
     e.stopPropagation();
     keys.blur();
-    showKeyMap(files, gamFile, opts.title ?? 'Game', () => canvas.focus());
+    showKeyMap(files.stream ? withCharacters(files, gamFile) : files, gamFile, opts.title ?? 'Game', () => canvas.focus());
   });
   if (!opts.noKeysButton && !opts.preview) container.append(keys);
 
@@ -201,6 +202,19 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       files.onChange = previousWrite;
     },
   };
+}
+
+/** The files once the characters' keys can be read from them (a game still loading may not have them yet). */
+async function withCharacters(files: GameFiles, gamFile: string): Promise<GameFiles> {
+  const gam = files.get(gamFile);
+  let chars: string[] = [];
+  try {
+    chars = gam ? parseGame(gam).scenes.flatMap((s) => (s.files[5] ? [s.files[5]] : [])) : [];
+  } catch {
+    /* the key map says what it can */
+  }
+  await files.stream?.need(chars);
+  return files;
 }
 
 function escapeHtml(s: string): string {
