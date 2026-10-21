@@ -22,22 +22,36 @@ function levelStrip(g: CatalogEntry): Promise<string | undefined> {
   return hit;
 }
 
-/** `disk` is "Disk 2" for later disks of a set (empty for a single disk). */
-export function rsdDiskLabel(g: CatalogEntry | undefined, title: string, disk: string, note?: string): HTMLElement {
+/**
+ * `disk` is "Disk 2" for later disks of a set (empty for a single disk). RSD's own disks
+ * carry the GAME-MAKER logo; other publishers' gameware gets their name on a band in
+ * `band` (the disk's publisher color).
+ */
+export function rsdDiskLabel(g: CatalogEntry | undefined, title: string, disk: string, publisher?: { name: string; band: string }): HTMLElement {
   const strip = h('div', { class: 'r-strip' });
   const label = h(
     'div',
-    { class: 'label printed rsd' },
-    h('span', { class: 'r-band' }, h('span', { class: 'r-logo' }, 'GAME-MAKER'), h('span', { class: 'r-rsd' }, 'RSD')),
-    h('span', { class: 'r-title' }, h('span', { class: 'r-name' }, title), disk ? h('span', { class: 'r-disk' }, disk) : null),
+    { class: `label printed rsd${publisher ? ' gw' : ''}`, style: publisher ? `--gw-band:${publisher.band}` : undefined },
+    publisher
+      ? h('span', { class: 'r-band' }, h('span', { class: 'r-pub' }, publisher.name.toUpperCase()), h('span', { class: 'r-rsd' }, 'GAMEWARE'))
+      : h('span', { class: 'r-band' }, h('span', { class: 'r-logo' }, 'GAME-MAKER'), h('span', { class: 'r-rsd' }, 'RSD')),
+    // long titles (the two Woman Warrior games) wrap to two smaller lines instead of being cut off
+    h(
+      'span',
+      { class: 'r-title' },
+      h('span', { class: `r-name${title.length > 15 ? ' long' : ''}` }, title),
+      disk ? h('span', { class: 'r-disk' }, disk) : null,
+    ),
     strip,
     h(
       'span',
       { class: 'r-foot' },
-      [g?.author ? `by ${g.author}` : '', 'Recreational Software Designs', g?.year ? `© ${g.year}` : ''].filter(Boolean).join(' · '),
+      [g?.author ? `by ${g.author}` : '', publisher ? (g?.author ? '' : publisher.name) : 'Recreational Software Designs', g?.year ? `©\u00a0${g.year}` : '']
+        .filter(Boolean)
+        .join(' · '),
     ),
-    note ? h('span', { class: 'marker-note' }, note) : null,
   );
   if (g?.gam) void levelStrip(g).then((url) => url && (strip.style.backgroundImage = `url(${url})`));
+  else strip.classList.add('none');
   return label;
 }

@@ -81,7 +81,41 @@
   text-overflow: ellipsis;
 }
 
-/* a marker note goes on the picture, just under the title, where it shows when disks overlap */
-.floppy .label.printed.rsd .marker-note {
-  top: 40%;
+/* other publishers' gameware: their name on a band in the publisher's color, on paper */
+.floppy .label.printed.rsd.gw {
+  background: #fbf8ee;
+}
+
+.floppy .label.printed.rsd.gw .r-band {
+  background: var(--gw-band, #2b2b2b);
+}
+
+.floppy .label.printed.rsd.gw .r-pub {
+  overflow: hidden;
+  color: #fff;
+  font:
+    900 5cqw/1 Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-shadow: 0.4cqw 0.4cqw 0 rgba(0, 0, 0, 0.5);
+}
+
+.floppy .label.printed.rsd.gw .r-title {
+  border-bottom-color: var(--gw-band, #2b2b2b);
+}
+
+/* a disk of pictures and sounds (no game to show): a pattern instead of a level */
+.floppy .label.printed.rsd .r-strip.none {
+  background: repeating-linear-gradient(45deg, #d9d2bc 0 6px, #ece6d3 6px 12px);
+}
+
+.floppy .label.printed.rsd .r-name.long {
+  display: -webkit-box;
+  font-size: 5.4cqw;
+  line-height: 1.05;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
