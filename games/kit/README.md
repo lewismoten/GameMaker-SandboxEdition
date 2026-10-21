@@ -14,4 +14,6 @@ cd web && npx vite-node ../games/<id>/build.ts
 - `music.ts` — FM instruments and note strings → Sound Blaster `.CMF` songs.
 - `sound.ts` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
+- `sandlogo.ts` — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`), ray traced
+  with `sdftext.ts` (extruded, beveled 3D lettering) and reduced to 256 colors with `quantize.ts` (median cut, ordered dither).
 - `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).

@@ -73,6 +73,11 @@ seeded randomness and dithering (`pixels.ts`), named VGA color ramps (`palette.t
 instruments and note strings to `.CMF` (`music.ts`), PC speaker and synthesized `.VOC` sounds
 (`sound.ts`), DOS 8.3 file writing (`disk.ts`), and a PNG writer for design previews (`png.ts`).
 
+Every game opens with the same Sandbox Software logo: `kit/sandlogo.ts` ray traces gold chrome
+"SANDBOX SOFTWARE" lettering spinning in over a mirrored sandstone floor, with a highlight sweep and a
+lens flare, and writes it as `SANDLOGO.FLI` (its own palette, delta frames). Each build puts it on the
+disk and lists it first in `title.lst`, ahead of the game's own intro.
+
 ## The games
 
 **Maximus: The Hundred Worlds** (`maximus`). Courier Max crosses a galaxy of planets by pod,
