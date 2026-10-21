@@ -198,10 +198,10 @@ export function suburbSet(): BlockSet {
   s.add('doghouse', doghouse('grass'), { solid: SOLID });
   s.add('pool', pool(0), { solid: SOLID, next: 'pool2', ntime: 6 });
   s.add('pool2', pool(1), { solid: SOLID, next: 'pool', ntime: 6 });
-  // The CitiCar on its charger: honk it (touch the front) and the headlights flash.
-  addBig(s, 'citi', citicar(false), (col, row) => (col === 1 && row === 1 ? { solid: SOLID, score: 1976, touch: 'citiLit' } : { solid: SOLID }));
-  s.add('citiLit', citicar(true).crop(20, 20, 20, 20), { solid: SOLID, next: 'citiLit2', ntime: 4 });
-  s.add('citiLit2', citicar(false).crop(20, 20, 20, 20), { solid: SOLID, next: 'citiLit', ntime: 4 });
+  // The CitiCar on its charger: honk it (touch the front, on the left) and the headlights flash.
+  addBig(s, 'citi', citicar(false), (col, row) => (col === 0 && row === 1 ? { solid: SOLID, score: 1976, touch: 'citiLit' } : { solid: SOLID }));
+  s.add('citiLit', citicar(true).crop(0, 20, 20, 20), { solid: SOLID, next: 'citiLit2', ntime: 4 });
+  s.add('citiLit2', citicar(false).crop(0, 20, 20, 20), { solid: SOLID, next: 'citiLit', ntime: 4 });
   s.add('charger', chargerPost('1MI'), { solid: SOLID, next: 'charger2', ntime: 12 });
   s.add('charger2', chargerPost('/HR'), { solid: SOLID, next: 'charger', ntime: 12 });
   s.add('mowdock', mowerDock('grass'), { solid: SOLID, birthMon: MON.mowerBox, birthTime: 260 });
