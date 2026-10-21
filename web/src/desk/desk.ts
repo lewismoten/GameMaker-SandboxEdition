@@ -115,6 +115,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           loading: 'lazy',
         }),
       ),
+      h('div', { class: 'desk-top', 'aria-hidden': 'true' }),
+      h('div', { class: 'desk-legs', 'aria-hidden': 'true' }),
       snowyWindow(),
       newsClipping(),
       spk.left,

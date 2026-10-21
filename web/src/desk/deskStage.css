@@ -1,5 +1,10 @@
-/* The desk as a stage scaled to fit the window (desk/stage.ts); phones stack instead. */
-.desk-edge {
+/* The desk as a stage scaled to fit the window (desk/stage.ts); phones stack instead.
+   Stage coordinates: 1440 x 860. The desk top runs from x 40 to 1400; its back meets the
+   wall at y 470 and its front edge is at --edge. Past its ends you see the wall come down
+   to the baseboard and the carpet. */
+.desk-edge,
+.desk-top,
+.desk-legs {
   display: none;
 }
 
@@ -11,6 +16,10 @@
     overflow: hidden;
     /* clip, not just hide: focusing something near the bottom must not scroll the stage */
     overflow: clip;
+    background:
+      /* light from the window, falling on the wall to its left */
+      radial-gradient(ellipse 40% 55% at 85% 22%, rgba(190, 205, 235, var(--window-light, 0.1)), transparent 70%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 30%), repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
   }
 
   /* the desk top belongs to the stage, so it lines up with what sits on it */
@@ -19,107 +28,200 @@
   }
 
   .desk-scene {
+    --edge: 712px;
     position: absolute;
     left: 50%;
     top: var(--bar-h, 50px);
-    width: 1560px;
+    display: block;
+    width: 1440px;
     height: 860px;
     max-width: none;
     margin: 0;
-    padding: 8px 16px 0;
+    padding: 0;
     box-sizing: border-box;
     transform: translateX(-50%) scale(var(--stage-scale, 1));
     transform-origin: 50% 0;
   }
 
-  /* the desk top, from the wall back to its front edge (--edge) */
-  .desk-scene {
-    --edge: 712px;
-  }
-
+  /* the baseboard and the carpet, seen past the ends of the desk */
   .desk-scene::before {
     content: '';
     position: absolute;
-    left: -2000px;
-    right: -2000px;
+    left: -3000px;
+    right: -3000px;
+    top: 676px;
+    bottom: -8000px;
+    z-index: -3;
+    background:
+      linear-gradient(#e6dfcc, #c8bfa6 10px, #8f8670 13px, #1c1a18 14px, #2c2824 40px, transparent 160px),
+      radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.04) 0 1px, transparent 1.5px) 0 0 / 5px 5px,
+      linear-gradient(#2c2824, #3b342d 260px);
+  }
+
+  /* the desk top, a little narrower at the back than at the front */
+  .desk-top {
+    display: block;
+    position: absolute;
+    left: 40px;
+    right: 40px;
     top: 470px;
     height: calc(var(--edge) - 470px);
     z-index: -1;
+    clip-path: polygon(20px 0, calc(100% - 20px) 0, 100% 100%, 0 100%);
     background:
+      radial-gradient(ellipse 30% 70% at 50% 30%, rgba(255, 235, 200, 0.08), transparent 70%),
       repeating-linear-gradient(176deg, rgba(0, 0, 0, 0.08) 0 3px, transparent 3px 11px),
-      linear-gradient(180deg, #5a3a1f 0, var(--wood-b) 6px, var(--wood-a) 100%);
+      linear-gradient(180deg, #3f2915 0, #5a3a1f 5px, var(--wood-b) 16px, var(--wood-a) 100%);
     box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.45);
   }
 
-  /* the desk's front edge, and the dark knee space under it */
-  .desk-scene::after {
-    content: '';
+  /* the dark knee space under the desk, between its two end panels */
+  .desk-legs {
+    display: block;
     position: absolute;
-    left: -2000px;
-    right: -2000px;
+    left: 40px;
+    right: 40px;
     top: var(--edge);
     bottom: -8000px;
     z-index: 2;
     pointer-events: none;
-    background: linear-gradient(#8a5c34, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px, #0d0b09 200px, #0d0b09);
+    background:
+      linear-gradient(90deg, #4a2f18, #6b4626 6px, #3d2714 34px, transparent 34px) left / 34px 100% no-repeat,
+      linear-gradient(270deg, #4a2f18, #6b4626 6px, #3d2714 34px, transparent 34px) right / 34px 100% no-repeat,
+      linear-gradient(#17110c, #0d0b09 200px, #0d0b09);
   }
 
-  .desk {
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%), repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
-  }
-
-  .desk-left,
-  .desk-right {
-    align-self: start;
-    position: absolute;
-    top: 500px;
-    height: calc(var(--edge) - 500px - 14px);
-    padding: 0;
-  }
-
-  .desk-left {
-    right: calc(50% + 330px + 100px);
-  }
-
-  .desk-right {
-    left: calc(50% + 330px + 100px);
-  }
-
-  .desk-scene {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* the desk's front edge again, drawn over the back of the keyboard tray (desk/tray.css) */
+  /* the desk's front edge, drawn over the back of the keyboard tray (desk/tray.css) */
   .desk-edge {
     display: block;
     position: absolute;
-    left: -2000px;
-    right: -2000px;
+    left: 40px;
+    right: 40px;
     top: calc(var(--edge) - 1px);
     height: 23px;
     z-index: 4;
+    border-radius: 0 0 3px 3px;
     pointer-events: none;
-    background: linear-gradient(#8a5c34, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px);
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(rgba(255, 230, 190, 0.35), transparent 2px), linear-gradient(#8a5c34, #6e4828 10px, #5e3c1f 18px, #2a1a0d 20px, #17110c 22px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  /* --- where everything stands ----------------------------------------------------- */
+
+  .pc {
+    position: absolute;
+    left: 390px;
+    top: 8px;
+    width: 660px;
+  }
+
+  /* the props stand on the stage itself, at their own depth on the desk */
+  .desk-left,
+  .desk-right {
+    display: contents;
+  }
+
+  .desk-scene .prop .caption {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: max-content;
+    max-width: 200px;
+    margin-top: 6px;
+    transform: translateX(-50%);
+    padding: 2px 8px;
+    border-radius: 9px;
+    background: rgba(20, 14, 8, 0.55);
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+
+  .desk-scene .prop:hover .caption,
+  .desk-scene .prop:focus-visible .caption {
+    opacity: 1;
+    background: rgba(20, 14, 8, 0.85);
+  }
+
+  .desk-scene .prop:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 6px;
+    border-radius: 4px;
+  }
+
+  .catalog-prop {
+    position: absolute;
+    left: 44px;
+    top: 506px;
+    z-index: 1;
+  }
+
+  .disk-box {
+    position: absolute;
+    left: 178px;
+    top: 504px;
+    z-index: 1;
+  }
+
+  .desk-mug {
+    position: absolute;
+    left: 1040px;
+    top: 548px;
+    z-index: 1;
+    margin: 0;
+  }
+
+  .gm-box {
+    position: absolute;
+    left: 1168px;
+    top: 412px;
+    z-index: 1;
+  }
+
+  .desk-scene .poster {
+    left: 30px;
+    top: 30px;
+    width: 206px;
+  }
+
+  .desk-scene .speaker.left {
+    right: auto;
+    left: 336px;
+  }
+
+  .desk-scene .speaker.right {
+    left: 1026px;
+  }
+
+  .desk-scene .wall-phone {
+    left: 1064px;
+    top: 168px;
+  }
+
+  .desk-scene .news-clipping {
+    left: 256px;
+    top: 44px;
+  }
+
+  .desk-scene .snow-window {
+    display: block;
+    left: 1150px;
+    right: auto;
+    top: 34px;
+    width: 266px;
+  }
+
+  .desk-scene .desk-lamp {
+    left: 1196px;
+    top: 186px;
+  }
+
+  .desk-scene .lamp-glow {
+    left: 1010px;
+    top: 300px;
   }
 
   /* a fixed screen can't sit inside a scaled box: drop the scale while the screen fills the window */
   .desk:not([data-zoom='false']) .desk-scene {
     transform: none;
-  }
-
-  .pc {
-    width: 660px;
-  }
-
-  .poster {
-    width: 220px;
-  }
-
-  .snow-window {
-    display: block;
-    width: 180px;
   }
 }
