@@ -44,22 +44,22 @@ export function drawSheet(layout: SheetLayout, size: MugSize, wraps: MugDesignId
     g.textBaseline = 'top';
     const name = MUG_DESIGNS.find((d) => d.id === id)?.name ?? id;
     g.fillText(`${size.name} · ${size.wrapW} × ${size.wrapH} in · ${name} · MIRRORED: printed side against the mug`, 0, hh + ppi * 0.08);
-    g.restore();
-  });
-  // a one inch square to check the printer kept the size, where there's room for it
-  const sq = { x: layout.pageW - 0.125 - 1.15, y: layout.pageH - 0.125 - 1.15, w: 1.15, h: 1.15 };
-  const clear = layout.slots.every((s) => {
-    const [w, hh] = s.rotated ? [size.wrapH, size.wrapW] : [size.wrapW, size.wrapH];
-    return sq.x > s.x + w + 0.3 || sq.x + sq.w < s.x || sq.y > s.y + hh + 0.3 || sq.y + sq.h < s.y;
-  });
-  if (clear) {
+    // a one inch ruler at the end of the label, to check the printer kept the size
     g.strokeStyle = '#555';
     g.lineWidth = Math.max(1, ppi / 150);
-    g.strokeRect((sq.x + 0.15) * ppi, (sq.y + 0.15) * ppi, ppi, ppi);
-    g.fillStyle = '#555';
-    g.font = `${Math.round(ppi * 0.1)}px Arial, sans-serif`;
-    g.fillText('1 inch', (sq.x + 0.2) * ppi, (sq.y + 0.3) * ppi);
-  }
+    g.beginPath();
+    g.moveTo(w - ppi, hh + ppi * 0.08);
+    g.lineTo(w - ppi, hh + ppi * 0.2);
+    g.moveTo(w - ppi, hh + ppi * 0.14);
+    g.lineTo(w, hh + ppi * 0.14);
+    g.moveTo(w, hh + ppi * 0.08);
+    g.lineTo(w, hh + ppi * 0.2);
+    g.stroke();
+    g.textAlign = 'right';
+    g.fillText('1 inch', w - ppi - ppi * 0.05, hh + ppi * 0.08);
+    g.textAlign = 'left';
+    g.restore();
+  });
   return c;
 }
 
@@ -91,8 +91,8 @@ export async function preparePrint(layout: SheetLayout, pages: HTMLCanvasElement
 @media print {
   html.mug-printing body > :not(.mug-print-root) { display: none !important; }
   html.mug-printing, html.mug-printing body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
-  .mug-print-root { display: block !important; }
-  .mug-print-root img { display: block; width: ${layout.pageW}in; height: ${layout.pageH}in; break-after: page; }
+  html.mug-printing body > .mug-print-root.mug-print-root { display: block !important; position: static !important; }
+  html.mug-printing .mug-print-root img { display: block; max-width: none; width: ${layout.pageW}in; height: ${layout.pageH}in; break-after: page; }
   .mug-print-root img:last-child { break-after: auto; }
 }`;
   const urls = await Promise.all(pages.map(async (p) => URL.createObjectURL(await toBlob(p))));
@@ -263,7 +263,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
                 null,
                 'Load sublimation ink and paper. Print with scaling at ',
                 h('b', null, '100% / Actual size'),
-                ' (not “Fit to page”). Check the 1 inch square with a ruler.',
+                ' (not “Fit to page”). Check the 1 inch mark under each picture with a ruler.',
               ),
               h('li', null, 'The pictures are already mirrored: don’t mirror them again in the print dialog.'),
               h(

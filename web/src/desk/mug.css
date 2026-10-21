@@ -254,6 +254,8 @@
 
 .subl-row select {
   padding: 5px;
+  color: #2a1d14;
+  background: #f3ead6;
   border-radius: 5px;
   font:
     13px system-ui,
