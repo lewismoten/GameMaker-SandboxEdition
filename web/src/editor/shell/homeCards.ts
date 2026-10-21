@@ -256,8 +256,10 @@ export interface TileOptions {
 /** A game in the grid: its picture with ⌨ 📖 ▶ over it, and its title. */
 export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   const shot = game.gam || game.kind === 'mine' ? gameShot(game, 160, 100) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
+  // Keys and Manual at the top left, the Demo at the bottom right (⚠ takes the top right)
+  const tools = h('div', { class: 'shot-icons shot-tools' });
   const icons = h('div', { class: 'shot-icons' });
-  const picture = h('div', { class: 'tile-shot' }, shot, icons);
+  const picture = h('div', { class: 'tile-shot' }, shot, tools, icons);
   const select = h(
     'button',
     { class: 'tile-select', type: 'button', 'aria-label': `${game.title}: show it at the top`, onclick: () => o.onSelect(game) },
@@ -279,8 +281,8 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
       { class: 'shot-icon', type: 'button', dataset: { tip }, 'aria-label': `${tip}: ${game.title}`, onclick: (e: Event) => (e.stopPropagation(), onclick()) },
       svgIcon(name),
     );
-  icons.append(icon('keys', 'Keys: what each key does', () => openKeys(game)));
-  if (hasManual(game)) icons.append(icon('manual', 'Read the manual', () => void openGameManual(game.entry!)));
+  tools.append(icon('keys', 'Keys: what each key does', () => openKeys(game)));
+  if (hasManual(game)) tools.append(icon('manual', 'Read the manual', () => void openGameManual(game.entry!)));
 
   // ▶ Demo only once we know there is a demo to play
   let playing: { stop(): void } | undefined;

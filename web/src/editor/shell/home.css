@@ -210,7 +210,6 @@
   position: relative;
   gap: 0;
   padding: 0;
-  overflow: hidden;
   transition:
     border-color 0.15s,
     box-shadow 0.15s;
@@ -229,8 +228,14 @@
   box-shadow: 0 0 0 2px var(--accent);
 }
 
+.game-tile:hover,
+.game-tile:focus-within {
+  z-index: 2;
+}
+
 .tile-shot {
   position: relative;
+  border-radius: 9px 9px 0 0;
   aspect-ratio: 8 / 5;
   background: #000;
   cursor: pointer;
@@ -246,7 +251,13 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  border-radius: 0;
+  border-radius: 9px 9px 0 0;
+}
+
+/* the picture is rounded rather than clipped, so the buttons' tips can reach past it */
+.tile-shot > .demo-screen {
+  overflow: hidden;
+  border-radius: 9px 9px 0 0;
 }
 
 /* a picture still being drawn: a soft shimmer; one that can't be drawn: a plain screen */
@@ -351,6 +362,14 @@
     opacity 0.15s;
 }
 
+.shot-icons.shot-tools {
+  z-index: 4;
+  top: 6px;
+  right: auto;
+  bottom: auto;
+  left: 6px;
+}
+
 .shot-icon .ico {
   flex: none;
 }
@@ -388,6 +407,13 @@ button.with-ico {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.12s;
+}
+
+.shot-tools .shot-icon[data-tip]::after {
+  top: calc(100% + 6px);
+  right: auto;
+  bottom: auto;
+  left: 0;
 }
 
 .shot-icon[data-tip]:hover::after,
