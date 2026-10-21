@@ -4,7 +4,7 @@
 // void in space and the water column in the seas.
 import type { Role, Theme, RGB } from './palette';
 import { hsl, hueRamp } from './palette';
-import { rng } from '../kit/pixels';
+import { rng } from '../../../kit/pixels';
 
 export const ROLES: Role[] = [
   { name: 'sky', n: 21 },

@@ -2,8 +2,8 @@
 // space (POD), the diving bell under the seas (DIVER) and the rover (ROVER). They share
 // sequence numbers, so ammunition counted in one carries over to the others.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, Mask, fill, shade } from './art';
-import { S, WHITE, shared } from './palette';
+import { CLEAR, Mask, fill, shade } from './src/art/draw';
+import { S, WHITE, shared } from './src/art/palette';
 import { CHARBL } from '../../web/src/formats/blocks';
 import type { Character } from '../../web/src/formats/character';
 import { INF_REPEAT } from '../../web/src/formats/character';

@@ -2,11 +2,11 @@
 // 2x2 block pictures (fly into the middle to land), shard gates bar the way to sectors
 // and to the Core, and trading posts sell supplies by the credit.
 import { Pixels, rng, dither } from '../kit/pixels';
-import { CLEAR, Mask, fill, outline, pick, shade, sprite, tileNoise } from './art';
+import { CLEAR, Mask, fill, outline, pick, shade, sprite, tileNoise } from './src/art/draw';
 import { G, SOLID, SetBuilder, over, tex } from './blockset';
 import { ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from './src/ids';
 import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
-import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from './palette';
+import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from './src/art/palette';
 import { PICKUP_FX, R } from './surface';
 
 const voidBg = (seed: number, stars: number) => {

@@ -3,7 +3,7 @@
 // ten shard colors. The rest are "roles" (sky, soil, foliage, creature hide...) that each
 // planet colors its own way, so one block set drawn in role shades becomes an ice world,
 // a lava world or a jungle just by loading a different .PAL: palette swapping.
-import { PaletteBuilder } from '../kit/palette';
+import { PaletteBuilder } from '../../../kit/palette';
 
 export type RGB = [number, number, number];
 

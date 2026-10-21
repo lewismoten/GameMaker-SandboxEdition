@@ -2,8 +2,8 @@
 // streaks, charging sparkles, sonar rings, dust and splashes. They turn a handful of
 // vehicle drawings into the full fifty character blocks of a .CBL.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, Mask, fill, outline, shade } from './art';
-import { OUTLINE, S, WHITE, shared } from './palette';
+import { CLEAR, Mask, fill, outline, shade } from './src/art/draw';
+import { OUTLINE, S, WHITE, shared } from './src/art/palette';
 
 const copy = (p: Pixels) => {
   const q = new Pixels(p.w, p.h, CLEAR);

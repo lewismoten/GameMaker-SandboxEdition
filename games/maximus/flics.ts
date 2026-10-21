@@ -2,11 +2,11 @@
 // launch back to orbit, and the Core lighting up at the end.
 import { encodeFli } from '../../web/src/formats/fli';
 import { rng } from '../kit/pixels';
-import { Canvas } from './canvas';
+import { Canvas } from './src/art/canvas';
 import { drawPod } from './vehicles';
 import { drawShard } from './items';
 import { SCREEN, planetArt } from './screens';
-import { WHITE, shared } from './palette';
+import { WHITE, shared } from './src/art/palette';
 
 const C = (n: string) => SCREEN.ramps.get(n) ?? shared.get(n)!;
 const film = (frames: Canvas[], speed: number) =>

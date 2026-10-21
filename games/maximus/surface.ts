@@ -3,12 +3,12 @@
 // Air near the ground is the uniform "horizon" color so decorations can sit anywhere on
 // it; the sky above fades through eight bands to starry space.
 import { Pixels, rng, dither } from '../kit/pixels';
-import { CLEAR, Mask, fbm, fill, outline, pick, shade, sprite, tileNoise } from './art';
+import { CLEAR, Mask, fbm, fill, outline, pick, shade, sprite, tileNoise } from './src/art/draw';
 import { G, SOLID, TOP, SetBuilder, over, tex } from './blockset';
 import { ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from './src/ids';
 import { PICKUPS, drawModule, drawPickup, drawShard, type PickupId } from './items';
-import { OUTLINE, WHITE, roleIndex } from './palette';
-import { ROLES } from './roles';
+import { OUTLINE, WHITE, roleIndex } from './src/art/palette';
+import { ROLES } from './src/art/roles';
 
 export const RI = roleIndex(ROLES);
 export const R = (name: string) => {

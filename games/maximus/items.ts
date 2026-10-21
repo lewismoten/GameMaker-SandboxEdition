@@ -1,8 +1,8 @@
 // Pickups, courier modules and star-shards: transparent 20x20 sprites in shared colors,
 // pasted over each block set's own backgrounds (and used as monster loot).
 import { Pixels } from '../kit/pixels';
-import { CLEAR, Mask, fill, outline, shade, sprite } from './art';
-import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from './palette';
+import { CLEAR, Mask, fill, outline, shade, sprite } from './src/art/draw';
+import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from './src/art/palette';
 import { MODULES } from './src/ids';
 
 const R = (n: string) => shared.get(n)!;

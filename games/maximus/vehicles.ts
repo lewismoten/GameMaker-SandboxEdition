@@ -1,8 +1,8 @@
 // The courier's vehicles, one block each: the pod (space), the diving bell (seas) and the
 // rover (rough ground). Drawn from masks so their animation frames stay in register.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, Mask, fill, outline, shade } from './art';
-import { OUTLINE, S, WHITE, shared } from './palette';
+import { CLEAR, Mask, fill, outline, shade } from './src/art/draw';
+import { OUTLINE, S, WHITE, shared } from './src/art/palette';
 
 export type Dir = 'idle' | 'r' | 'l' | 'u' | 'd' | 'ur' | 'ul' | 'dr' | 'dl';
 const VEC: Record<Dir, [number, number]> = {

@@ -5,10 +5,10 @@
 // Only the canopy changes from frame to frame, so each film stays small.
 import { encodeFli } from '../../web/src/formats/fli';
 import { rng } from '../kit/pixels';
-import { Canvas } from './canvas';
+import { Canvas } from './src/art/canvas';
 import { SCREEN, planetArt } from './screens';
-import { WHITE, shared } from './palette';
-import type { Biome } from './roles';
+import { WHITE, shared } from './src/art/palette';
+import type { Biome } from './src/art/roles';
 
 const C = (n: string) => SCREEN.ramps.get(n) ?? shared.get(n)!;
 

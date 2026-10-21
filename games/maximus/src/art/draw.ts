@@ -1,7 +1,7 @@
 // Drawing tools for Maximus: ASCII sprites, masks shaded like lit volumes, automatic
 // outlines, and textures for terrain. Everything is 20x20 palette indices; 255 is clear.
-import { Pixels, rng } from '../kit/pixels';
-import { TRANSPARENT, emptyBlock, type Block } from '../../web/src/formats/blocks';
+import { Pixels, rng } from '../../../kit/pixels';
+import { TRANSPARENT, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
 
 export const CLEAR = TRANSPARENT;
 export const N = 20;

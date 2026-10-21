@@ -1,9 +1,9 @@
 // A 320x200 painting surface for title screens, story panels, planet cards and FLI
 // frames: text in the PC's 8x8 font (scaled, outlined, gradient-filled), starfields,
 // lit spheres, and sprites blown up from the game's own 20x20 art.
-import { Pixels, rng, dither } from '../kit/pixels';
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { CLEAR } from './art';
+import { Pixels, rng, dither } from '../../../kit/pixels';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { CLEAR } from './draw';
 
 export class Canvas extends Pixels {
   constructor(w = 320, h = 200, fill = 0) {

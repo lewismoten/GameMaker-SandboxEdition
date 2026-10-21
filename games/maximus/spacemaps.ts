@@ -5,7 +5,7 @@ import { rng } from '../kit/pixels';
 import { Grid, W, H, reachable, wx, wy } from './mapkit';
 import type { SetBuilder } from './blockset';
 import { WARES } from './space';
-import { tileNoise } from './art';
+import { tileNoise } from './src/art/draw';
 
 export interface P {
   x: number;

@@ -4,11 +4,11 @@
 import { Pixels } from '../kit/pixels';
 import { MONBL, SOLTOP, emptyBlock, type Block } from '../../web/src/formats/blocks';
 import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '../../web/src/formats/monster';
-import { CLEAR, Mask, fill, outline, shade, sprite } from './art';
+import { CLEAR, Mask, fill, outline, shade, sprite } from './src/art/draw';
 import { MBL_SHARED_BASE, MON, MONEY } from './src/ids';
 import { drawCreature, type Archetype, type Paint } from './creatures';
 import { drawPickup } from './items';
-import { OUTLINE, S, WHITE, shared } from './palette';
+import { OUTLINE, S, WHITE, shared } from './src/art/palette';
 import { R } from './surface';
 
 export type Corner = [dx: number, dy: number, speed: number, orient?: number];

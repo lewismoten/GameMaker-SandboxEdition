@@ -2,11 +2,11 @@
 // the air above has gravity (leap out and splash back). Currents push, bubble columns
 // lift, anemones sting, and the uplink is a buoy bobbing on the surface.
 import { Pixels, rng, dither } from '../kit/pixels';
-import { CLEAR, Mask, fill, outline, pick, shade, sprite, tileNoise, fbm } from './art';
+import { CLEAR, Mask, fill, outline, pick, shade, sprite, tileNoise, fbm } from './src/art/draw';
 import { G, SOLID, TOP, SetBuilder, over, tex } from './blockset';
 import { ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from './src/ids';
 import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
-import { OUTLINE, WHITE } from './palette';
+import { OUTLINE, WHITE } from './src/art/palette';
 import { PICKUP_FX, R } from './surface';
 
 /**

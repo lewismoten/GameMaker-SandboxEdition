@@ -3,7 +3,7 @@
 // 150 numbered slots Game-Maker uses.
 import { Pixels } from '../kit/pixels';
 import { BACKBL, emptyBlock, type Block } from '../../web/src/formats/blocks';
-import { CLEAR } from './art';
+import { CLEAR } from './src/art/draw';
 
 export interface BlockProps extends Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl'>> {
   /** Block this one becomes after `ntime` ticks (by name). */

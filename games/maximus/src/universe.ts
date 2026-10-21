@@ -1,6 +1,6 @@
 // The Hundred Worlds: five sectors of planets, which of them hold the ten star-shards and
 // the ten courier modules, and what each planet is like. Scene numbers follow from here.
-import type { Biome } from '../roles';
+import type { Biome } from './art/roles';
 
 export type WorldKind = 'surface' | 'rover' | 'ocean' | 'station';
 

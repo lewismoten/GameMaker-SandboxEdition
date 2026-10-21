@@ -2,8 +2,8 @@
 // crab, drone, walker, ghost, plant, golem, saucer, asteroid...), each with animation
 // frames, in whichever "hide" ramp a monster set gives them. 20x20, transparent.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, Mask, fill, outline, shade, sprite } from './art';
-import { OUTLINE, WHITE } from './palette';
+import { CLEAR, Mask, fill, outline, shade, sprite } from './src/art/draw';
+import { OUTLINE, WHITE } from './src/art/palette';
 
 export interface Paint {
   hide: number[];

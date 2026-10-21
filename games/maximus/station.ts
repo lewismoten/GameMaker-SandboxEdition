@@ -2,11 +2,11 @@
 // windows behind, girders and deck plates to stand on, lifts, conveyors, laser grids
 // that blink on a shared clock, airlocks, and the info panels of the training deck.
 import { Pixels, rng, dither } from '../kit/pixels';
-import { Mask, fill, outline, pick, shade, sprite, tileNoise } from './art';
+import { Mask, fill, outline, pick, shade, sprite, tileNoise } from './src/art/draw';
 import { G, SOLID, TOP, SetBuilder, over, tex } from './blockset';
 import { ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from './src/ids';
 import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
-import { OUTLINE, S, WHITE } from './palette';
+import { OUTLINE, S, WHITE } from './src/art/palette';
 import { PICKUP_FX, R } from './surface';
 
 const panel = (seed: number, kind = 0) => {
