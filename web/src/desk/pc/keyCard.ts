@@ -34,7 +34,7 @@ const keyLines = (keys: string[], room: number) => Math.max(1, Math.ceil(keys.re
 export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
   const rows = cardRows(km.keys, compact);
   const joy = km.joystick.length > 0;
-  const always = GLOBAL_KEYS.filter((g) => (compact ? g.scan <= 59 : g.scan <= 64));
+  const always = GLOBAL_KEYS.filter((g) => g.scan <= 64);
   // The small card shows every key: on one column, two if needed, and when even that won't
   // fit, only the keys (click the card to read what they do).
   let two = !compact && rows.length + (joy ? 1 : 0) > 9;
@@ -83,7 +83,8 @@ export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLE
               ? h('div', { class: 'idx-row joy' }, h('span', { class: 'idx-keys' }, h('kbd', null, 'Joy')), h('span', null, 'a joystick or gamepad works too'))
               : null,
           ),
-      h('div', { class: 'idx-always' }, ...always.map((g) => h('span', null, h('kbd', null, g.name), ` ${g.short}`))),
+      // Esc and the F-keys are on the keyboard's template (keyboard.ts): the big card still lists them
+      compact ? null : h('div', { class: 'idx-always' }, ...always.map((g) => h('span', null, h('kbd', null, g.name), ` ${g.short}`))),
     ),
   );
 }
