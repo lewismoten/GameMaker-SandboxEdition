@@ -10,6 +10,7 @@ import { watchForUpdates } from './devReload';
 import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
+import { themeButton } from './theme';
 
 const modernUi = () => import('./modernUi');
 
@@ -78,6 +79,7 @@ function startModern(hash?: string): void {
       titleSlot,
       h('span', { class: 'spacer' }),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
+      themeButton(),
       h(
         'button',
         { onclick: () => void startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
