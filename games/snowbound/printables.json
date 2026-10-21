@@ -86,9 +86,15 @@
               "kind": "note"
             },
             {
-              "x": 42,
+              "x": 12,
+              "y": 16,
+              "label": "The News-Tribune bundle: one paper for every door mat",
+              "kind": "note"
+            },
+            {
+              "x": 43,
               "y": 14,
-              "label": "A $5 tip on Mrs. Haines' porch",
+              "label": "A $5 tip by Mrs. Haines' porch",
               "kind": "shop"
             },
             {
@@ -124,6 +130,18 @@
               "y": 13,
               "label": "Bits & Bytes Software: the pink box, $89",
               "kind": "goal"
+            },
+            {
+              "x": 26,
+              "y": 14,
+              "label": "Root beer: the whole Timeout menu",
+              "kind": "shop"
+            },
+            {
+              "x": 38,
+              "y": 14,
+              "label": "History Fair: ring the bell for 1776",
+              "kind": "note"
             },
             {
               "x": 40,
@@ -172,7 +190,11 @@
             },
             {
               "q": "Where are the tips?",
-              "a": "A $5 envelope on Mrs. Haines' porch on Gale Street, and another on the Kellers' walk on Bowden Drive."
+              "a": "A $5 envelope beside Mrs. Haines' porch on Gale Street, and another on the Kellers' walk on Bowden Drive."
+            },
+            {
+              "q": "What are the door mats on Gale Street for?",
+              "a": "The morning paper. Grab the bundle by the porch at home, dig out each walk, and step on the mat: 250 points a paper."
             },
             {
               "q": "What is a snow fort worth?",
@@ -205,12 +227,16 @@
               "a": "Only a snowball makes him cry and go home. Scoop a plow bank for more snowballs."
             },
             {
+              "q": "What does the bell at the mall do?",
+              "a": "Push it. It rings for 1776 points, once, and swings the rest of the night."
+            },
+            {
               "q": "Homing snowballs keep hitting me.",
               "a": "Throw one of your own at them: yours always wins."
             },
             {
               "q": "I'm freezing.",
-              "a": "Grab hot cocoa (35 warmth). If you go home cold, the street starts over with fresh snow, and your coffee can stays full."
+              "a": "Grab hot cocoa, or the root beer outside Timeout (35 warmth each). If you go home cold, the street starts over with fresh snow, and your coffee can stays full."
             }
           ]
         }
@@ -252,7 +278,7 @@
       "entries": [
         {
           "date": "Fri., Dec. 11, 7:00 AM",
-          "html": "<p>Sign is up. Coffee can is empty. Goal: $89 before the mall closes.</p>"
+          "html": "<p>Papers out (subbing on the route again). Sign is up. Coffee can is empty. Goal: $89 before the mall closes.</p>"
         },
         {
           "date": "9:30 AM",
