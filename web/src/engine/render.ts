@@ -1,5 +1,7 @@
 // Draws a playing scene: drawmap + changeblks, minfo::Draw and drawchars from
-// code/GM/PLAYGAME.C, redrawn in full each frame instead of via dirty rectangles.
+// code/GM/PLAYGAME.C (in playscene's draw order: map, monsters, character),
+// redrawn in full each frame instead of via dirty rectangles and saved
+// backgrounds (erasechars / minfo::Erase are not needed).
 import type { Screen } from '../gfx/screen';
 import { currentFrame } from './character';
 import { monPicNum } from './monsters';
@@ -11,7 +13,7 @@ import { LASTSL } from '../formats/monster';
 export const VISIBLE_W = 312;
 export const VISIBLE_H = 196;
 
-/** drawchars' bookkeeping: whether top/bottom blocks are shown (used by GetTouchbl). */
+/** drawchars' bookkeeping without the drawing: whether top/bottom blocks are shown (used by GetTouchbl). */
 export function updateCharDrawState(w: World): void {
   const { ci } = w;
   ci.update = false;
@@ -24,11 +26,16 @@ export function updateCharDrawState(w: World): void {
 }
 
 export function renderWorld(screen: Screen, w: World): void {
+  // littleShift is the 0..3 pixel part of the scroll (movx & 3 / movy & 3) that the
+  // original applied by moving the VGA view start (MoveViewScreen). Here every
+  // layer is drawn shifted by it instead.
   const lsx = w.scroll.littleShiftx;
   const lsy = w.scroll.littleShifty;
   const ox = w.scroll.nx + lsx;
   const oy = w.scroll.ny + lsy;
 
+  // One extra row and column so the partly scrolled edge is covered. blkmap
+  // (via shownBlock) gives each block's current animation frame (changeblks).
   for (let by = 0; by <= SCRNBWID; by++) {
     for (let bx = 0; bx <= SCRNBLEN; bx++) {
       const x = (w.mx + bx) % MLEN;
@@ -38,6 +45,7 @@ export function renderWorld(screen: Screen, w: World): void {
   }
 
   if (!w.noMons) {
+    // Like playscene, stop after MAXMONSSHOWN sprites (the size of the saved-background buffer).
     let shown = 0;
     for (let mm = 0; mm < LASTMM && shown < MAXMONSSHOWN; mm++) {
       const mi = w.mi[mm];
@@ -56,11 +64,14 @@ export function renderWorld(screen: Screen, w: World): void {
 
   const { ci } = w;
   if (ci.scrx > OFFSCRN) {
+    // The frame's orient packs both halves: low nibble the top block, high nibble the bottom.
     const orient = currentFrame(w).orient;
     if (ci.curtop < CHARBL) screen.drawSprite(ci.scrx - lsx, ci.scry - BLEN - lsy, orient & 15, w.cblk[ci.curtop].pixels);
     if (ci.curbottom < CHARBL) screen.drawSprite(ci.scrx - lsx, ci.scry - lsy, orient >> 4, w.cblk[ci.curbottom].pixels);
   }
 
+  // Black out what CropScreen hid (so the scroll's wrap-around painting stays
+  // invisible): the right 8 columns and bottom 4 rows.
   screen.boxFill(VISIBLE_W, 0, 319, 199, 0);
   screen.boxFill(0, VISIBLE_H, 319, 199, 0);
 }
