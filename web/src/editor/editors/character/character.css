@@ -664,7 +664,7 @@
 
 /* Wide windows: the stage with its settings beside it and the frames as one strip below, so a
    sequence fits the window. Settings taller than the stage scroll by themselves; so do the frames. */
-@media (min-width: 1180px) and (min-height: 640px) {
+@media (min-width: 1000px) and (min-height: 640px) {
   .chr-detail {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -729,7 +729,7 @@
   }
 }
 /* short wide windows: slightly smaller frame blocks so the strip still fits */
-@media (min-width: 1180px) and (min-height: 640px) and (max-height: 860px) {
+@media (min-width: 1000px) and (min-height: 640px) and (max-height: 860px) {
   .chr-frames .chr-cell,
   .chr-frames .chr-cell canvas {
     width: 50px;

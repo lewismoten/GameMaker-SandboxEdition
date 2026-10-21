@@ -65,7 +65,7 @@
   max-width: none;
 }
 /* wide screens: colors and properties scroll by themselves, so the page never does */
-@media (min-width: 1181px) {
+@media (min-width: 1000px) {
   .blk-side {
     position: sticky;
     top: 8px;
@@ -82,7 +82,7 @@
 }
 
 /* tablets / narrow desktops: blocks and paint side by side, colors and properties underneath, side by side */
-@media (max-width: 1180px) {
+@media (max-width: 999px) {
   .blk {
     grid-template-columns: minmax(150px, 1fr) minmax(260px, 460px);
     grid-template-areas: 'picker paint' 'side side';

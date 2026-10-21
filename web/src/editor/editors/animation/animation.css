@@ -30,7 +30,7 @@
 }
 
 /* wide windows: downloads and help sit beside the monitor, so it can be bigger and still fit */
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .fli-edit {
     display: grid;
     grid-template-columns: auto minmax(200px, 1fr);

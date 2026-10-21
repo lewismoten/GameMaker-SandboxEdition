@@ -12,7 +12,7 @@
   min-width: 0;
 }
 /* wide screens: the picture on the left, copying into blocks on the right */
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .pic-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.5fr) minmax(340px, 1fr);

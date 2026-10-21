@@ -98,7 +98,7 @@
 
 /* Wide windows: strength and movement in a column beside the path, whose map is sized to the
    window's height, so a monster fits without scrolling. */
-@media (min-width: 1180px) and (min-height: 640px) {
+@media (min-width: 1000px) and (min-height: 640px) {
   .mon-detail {
     display: grid;
     grid-template-columns: clamp(240px, 30%, 320px) minmax(0, 1fr);
