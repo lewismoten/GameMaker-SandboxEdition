@@ -11,6 +11,8 @@ import { exportWebApp } from '../../export/exportWebApp';
 import { exportSinglePage } from '../../export/exportSinglePage';
 import { exportDos } from '../../export/exportDos';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
+import { parseGame, serializeGame, type Game } from '../../formats/game';
+import { levelForMap, startingAt } from '../editors/integrator/startAt';
 import './workspace.css';
 import { SHORT } from '../../edition';
 
@@ -175,7 +177,7 @@ export class Workspace {
           `Files (${names.length})`,
           this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
         ),
-        h('button', { class: 'primary side-play', onclick: () => this.play(), title: 'Play the game from its title screen' }, '▶ Play test'),
+        this.playButton(),
       ),
       h(
         'div',
@@ -435,24 +437,60 @@ export class Workspace {
     return strip;
   }
 
-  private play(): void {
+  /** The level whose map is open (play testing starts there), if any. */
+  private levelHere(file = this.current): { game: Game; scene: number } | undefined {
+    if (!file || kindOf(file) !== 'map') return undefined;
+    try {
+      const game = parseGame(this.project.files.get(this.project.gam)!);
+      const scene = levelForMap(game, file);
+      return scene >= 0 ? { game, scene } : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  private playButton(): HTMLButtonElement {
+    const level = this.levelHere();
+    const name = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
+    return level
+      ? h('button', { class: 'primary side-play', onclick: () => this.play(), title: `Play test from ${name}, the level that uses this map` }, '▶ Play this level')
+      : h('button', { class: 'primary side-play', onclick: () => this.play(), title: 'Play the game from its title screen' }, '▶ Play test');
+  }
+
+  /** Play tests the game: from the level being edited when a level's map is open, else from the title screen. Stop goes back to that file. */
+  private play(fromTitle = false, back = this.current): void {
+    const level = fromTitle ? undefined : this.levelHere(back);
     this.cleanup?.();
     this.cleanup = undefined;
+    this.player?.stop();
+    this.player = undefined;
     this.current = undefined;
     this.renderSidebar();
     const host = h('div', { class: 'player-host' });
+    const levelName = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
     clear(
       this.main,
       h(
         'div',
-        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px' },
-        h('h1', { class: 'file-title' }, `Playing ${this.project.name}`),
-        h('button', { onclick: () => this.open(this.project.gam) }, 'Stop'),
+        { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
+        h('h1', { class: 'file-title' }, level ? `Playing ${levelName}` : `Playing ${this.project.name}`),
+        h(
+          'div',
+          { class: 'toolbar' },
+          level && h('button', { onclick: () => this.play(true, back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
+          h('button', { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' }, 'Stop'),
+        ),
       ),
       host,
-      h('p', { class: 'hint' }, 'Play testing uses a copy of the files: high scores and saved games are not added to your project.'),
+      h(
+        'p',
+        { class: 'hint' },
+        level ? `Starts at ${levelName}, the level that uses ${back}. ` : '',
+        'Play testing uses a copy of the files: high scores and saved games are not added to your project.',
+      ),
     );
     const copy = new GameFiles(this.project.files.entries());
+    if (level) copy.set(this.project.gam, serializeGame(startingAt(level.game, level.scene)));
     this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
   }
 
