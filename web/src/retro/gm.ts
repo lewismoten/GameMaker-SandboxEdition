@@ -17,9 +17,12 @@ import type { Program } from '../vga/shared/designer';
  * one file at the top of vga/ that exports `program` (its parts live in a folder of the same
  * name, and shared code in vga/shared/, which this glob does not pick up).
  */
-const PORTED: Record<string, Program['run']> = Object.fromEntries(
-  Object.values(import.meta.glob<{ program?: Program }>('../vga/*.ts', { eager: true }))
-    .flatMap((m) => (m.program ? [[m.program.exe, m.program.run]] : [])),
+/** Each loads when it is first run (as each .EXE was read from disk), keyed GRATOR.EXE etc. */
+const PORTED: Record<string, () => Promise<{ program?: Program }>> = Object.fromEntries(
+  Object.entries(import.meta.glob<{ program?: Program }>('../vga/*.ts')).map(([path, load]) => [
+    `${path.slice(path.lastIndexOf('/') + 1, -3).toUpperCase()}.EXE`,
+    load,
+  ]),
 );
 
 const GMTOPBAR = '                           G A M E  -  M A K E R  SE 3.00                       ';
@@ -135,11 +138,11 @@ export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
   const ported = PORTED[tool.exe];
   if (ported) {
     const close = messageLoading(h, tool.exe);
-    await new Promise((r) => setTimeout(r, 400));
+    const [loaded] = await Promise.all([ported(), new Promise((r) => setTimeout(r, 400))]);
     close();
     h.screen.clear(attr(7, 0));
     try {
-      await ported(h);
+      await loaded.program?.run(h);
     } finally {
       h.designer = undefined; // back at Game-Maker's menu: no designer open
     }

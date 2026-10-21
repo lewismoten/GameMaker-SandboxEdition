@@ -8,8 +8,6 @@ import { type ProgramRef } from "./dos/vfs";
 import { ProgramAborted } from "./text/textInput";
 import type { OpenDesigner } from "./host";
 import { errorBox, askText } from "./text/textUi";
-import { runGameMaker, playgame } from "./gm";
-import { runTerminal } from "./bbs/bbs";
 import { mountPlayer, type PlayerHandle } from "../player/player";
 import { GameFiles } from "../project/files";
 import { loadProject } from "../project/storage";
@@ -129,16 +127,17 @@ export class Computer extends ComputerFolders {
       switch (ref.kind) {
         case "gm":
           this.opts.onDriveAccess?.(this.shell.drive);
-          await runGameMaker(this);
+          // Game-Maker and its designers, the BBS: each loads when first run (see gm.ts)
+          await (await import("./gm")).runGameMaker(this);
           break;
         case "playgame":
           this.screen.gameMakerColors();
-          await playgame(this);
+          await (await import("./gm")).playgame(this);
           this.screen.resetPalette();
           this.screen.clear();
           break;
         case "terminal":
-          await runTerminal(this);
+          await (await import("./bbs/bbs")).runTerminal(this);
           break;
         case "install":
           this.screen.print(
