@@ -209,8 +209,12 @@ export class Computer extends ComputerFolders {
           body,
         ),
       );
-      const editor = editors[kindOf(fileName)] ?? fileInfo;
-      cleanup = editor(body, project, fileName);
+      // The editors are their own download, fetched the first time the PC opens one.
+      void import('../editor/editors/all').then(() => {
+        if (!body.isConnected) return;
+        const editor = editors[kindOf(fileName)] ?? fileInfo;
+        cleanup = editor(body, project, fileName);
+      });
     });
   }
 
