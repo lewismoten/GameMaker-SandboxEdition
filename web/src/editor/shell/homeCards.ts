@@ -20,6 +20,15 @@ import type { HomeNav } from './home';
 import { downloadProject, exportProject, exportProjectPage, exportProjectForDos } from './projectExport';
 import { gamePage } from '../../seo/site';
 
+/**
+ * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
+ * preview). The dev server only learns of those pages when restarted, so in development
+ * the shared player page is used instead, which plays the same.
+ */
+export function playLink(id: string): string {
+  return import.meta.env?.DEV ? `./play.html?game=${encodeURIComponent(id)}` : `./${gamePage(id)}`;
+}
+
 export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
@@ -353,7 +362,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
         '✎ Start a game with these',
       ),
     ];
-  const href = `./${gamePage(e.id)}`;
+  const href = playLink(e.id);
   return (
     [
       play(href),

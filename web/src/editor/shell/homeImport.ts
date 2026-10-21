@@ -8,8 +8,7 @@ import { GameFiles, IGNORED_FILE, loadCatalog, loadFileList, type CatalogEntry }
 import { crc32, isZip, readZip } from '../../project/zip';
 import { gameFromPageFiles } from '../../project/importPage';
 import type { HomeNav } from './home';
-import { showNotice } from './homeCards';
-import { gamePage } from '../../seo/site';
+import { playLink, showNotice } from './homeCards';
 
 export async function newGame(nav: HomeNav): Promise<void> {
   const choice = await modal<{ name: string; starter: boolean }>('New game', (close) => {
@@ -99,7 +98,7 @@ async function importFiles(nav: HomeNav, { files, name, gam }: Imported): Promis
         { class: 'buttons' },
         h('button', { onclick: () => (close(undefined), void showNotice(shareware)) }, 'Shareware notice'),
         h('button', { onclick: () => close(undefined) }, 'Cancel'),
-        h('a', { href: `./${gamePage(shareware.id)}` }, h('button', { class: 'primary' }, '▶ Play it')),
+        h('a', { href: playLink(shareware.id) }, h('button', { class: 'primary' }, '▶ Play it')),
       ),
     ]);
     return;
