@@ -56,8 +56,9 @@ const PARTS: Record<string, string> = {
 };
 const DIODES: Record<string, string> = { '>': 'diodeE', '<': 'diodeW', '^': 'diodeN', v: 'diodeS' };
 const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 'led', '~': 'xtal', '[': 'cpu0', '|': 'cpu1', ']': 'cpu2' };
-/** The two halves of a character LCD sunk in the housing, on a wire. */
-const LCD: Record<string, string> = { '{': 'lcd0', '}': 'lcd1' };
+/** Parts sunk in the housing over a wire that current lights up: the two halves of a
+ * character LCD, and the CitiCar (tail, middle, nose). */
+const LCD: Record<string, string> = { '{': 'lcd0', '}': 'lcd1', K: 'car0', M: 'car1', N: 'car2' };
 const DIRS: Record<string, [number, number, number, number]> = { U: [0, -1, N, S], D: [0, 1, S, N], L: [-1, 0, W, E], R: [1, 0, E, W] };
 
 export interface Board {

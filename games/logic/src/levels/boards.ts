@@ -2,7 +2,8 @@
 // middle and has to reach the outlet. Legend: # housing, (space) outside, . board,
 // @ Watt's pad, X outlet, $ gold screw, 0..9 A..F batteries (each with its wire below),
 // > < ^ v one-way diodes, o switch (off) i switch (on), t timer button, g gate, f fuse, n/c relays (normally
-// open / closed), % = & * ~ parts soldered to the board, : the LED on a 555's output.
+// open / closed), % = & * ~ parts soldered to the board, : the LED on a 555's output,
+// [ | ] a 6502, { } a character LCD and K M N the CitiCar (both lit up by current).
 import type { BoardSpec } from './board';
 
 export const BOARDS: BoardSpec[] = [
@@ -395,6 +396,29 @@ export const BOARDS: BoardSpec[] = [
     hint: 'Every switch has to be on at once, but then I am fenced in!',
     answer:
       'Switches in a row: current gets as far as the first one that is off. Work so the live wire never fences you in: turn the switch just above you OFF first, cross over and turn the top one on, come back, turn the middle one on again, then the bottom one. When the gate opens, turn the bottom one off and walk around.',
+  },
+  {
+    file: 'citicar',
+    title: 'The CitiCar',
+    room: 'garage',
+    card: ['1976 1/2 CitiCar. Top speed: brisk.', 'Charges at about a mile an hour.'],
+    rows: [
+      '################',
+      '#.$......#...X.#',
+      '#...%....#.....#',
+      '#........#KMNg##',
+      '#..............#',
+      '#.......@......#',
+      '#.....=.....####',
+      '#...........fn#0',
+      '1o...........###',
+      '################',
+    ],
+    wires: { 0: { path: 'L6 U4 R4' }, 1: { path: 'R1 D1 R12 U2', ctrl: true } },
+    solution: 'LLLLLLL DD D wwwwwwwww RRR D RRRRRRRR U ww L UU UU RR UUU',
+    hint: 'I plugged it in and the headlights came on. Now the charging cord is in my way!',
+    answer:
+      'A charger will not send a single volt until the car answers on the pink pilot wire, and then it does not stop until the car is full. Turn on the pilot, wait for the headlights, then roll around below the charger and pop its breaker (the fuse).',
   },
   {
     file: 'computer',

@@ -114,6 +114,10 @@
             {
               "q": "The Christmas Lights: Every switch has to be on at once, but then I am fenced in!",
               "a": "Switches in a row: current gets as far as the first one that is off. Work so the live wire never fences you in: turn the switch just above you OFF first, cross over and turn the top one on, come back, turn the middle one on again, then the bottom one. When the gate opens, turn the bottom one off and walk around."
+            },
+            {
+              "q": "The CitiCar: I plugged it in and the headlights came on. Now the charging cord is in my way!",
+              "a": "A charger will not send a single volt until the car answers on the pink pilot wire, and then it does not stop until the car is full. Turn on the pilot, wait for the headlights, then roll around below the charger and pop its breaker (the fuse)."
             }
           ]
         },

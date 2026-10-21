@@ -141,6 +141,46 @@ function lcdPic(half: number, booted: boolean, cursor = true): Pixels {
   return p;
 }
 
+/** The Bitmores' 1976½ CitiCar (the Bicentennial year: it still flies a little flag), in
+ * profile across three blocks (part 0 the tail with its charge port, 2 the nose). A wedge
+ * of tomato red with a tall, nearly upright windshield, a grey roof and little whitewalls.
+ * Charging current turns its headlights on; `flash` is the brighter of their two frames. */
+function citiCarPic(part: number, lit: boolean, flash = false): Pixels {
+  const w = new Pixels(60, 20, c('ink', 1));
+  for (let x = 0; x < 60; x += 4) w.rect(x, 18, 2, 2, c('ink', 2)); // the garage floor
+  const red = r('red');
+  // body: tail at x=3, roof to x=30, windshield down to the flat hood, nose at x=56
+  for (let x = 3; x <= 56; x++) {
+    const top = x < 31 ? 6 : x < 39 ? 6 + Math.round((x - 31) * 0.6) : 11;
+    for (let y = top; y <= 15; y++) w.set(x, y, shadeAt(red, 1, 4, 1 - (y - top) / 10 - (x > 52 ? 0.15 : 0), x, y));
+  }
+  w.rect(5, 3, 26, 3, c('metal', 2)).rect(5, 3, 26, 1, c('metal', 4)); // grey roof
+  for (let x = 31; x < 39; x++) w.rect(x, 3, 1, 3 + Math.round((x - 31) * 0.6), c('sky', 4)); // windshield
+  w.rect(18, 7, 11, 4, c('sky', 3)).rect(18, 7, 11, 1, c('sky', 5)); // door window
+  w.rect(17, 6, 1, 9, c('red', 0)).rect(30, 6, 1, 9, c('red', 0)); // the tall narrow door
+  w.rect(27, 11, 2, 1, c('metal', 4)); // handle
+  w.rect(3, 12, 54, 1, c('paper', 3)); // pinstripe
+  w.rect(1, 14, 4, 2, c('ink', 0)).rect(54, 14, 5, 2, c('ink', 0)); // bumpers
+  for (const wx of [12, 46]) {
+    w.disc(wx, 16, 3.6, c('ink', 0));
+    w.ring(wx, 16, 2, c('paper', 3));
+    w.set(wx, 16, c('metal', 3));
+  }
+  // the J1772 charge port on the tail, and the parade flag on its whip antenna
+  w.disc(6, 9, 1.6, c('ink', 0)).set(6, 9, c('gold', 3));
+  w.line(4, 6, 4, 0, c('metal', 4));
+  w.rect(5, 0, 4, 1, c('red', 3)).rect(5, 1, 4, 1, c('paper', 3)).rect(5, 2, 4, 1, c('red', 3)).rect(5, 0, 2, 2, c('blue', 3));
+  // the headlight pod on the hood
+  w.disc(54, 10, 2, lit ? c('yellow', 3) : c('metal', 2));
+  if (lit) {
+    w.set(53, 9, c('paper', 3));
+    for (let i = 0; i < (flash ? 3 : 2); i++) w.line(57 + i, 9 - i, 57 + i, 11 + i, c('yellow', flash ? 3 : 2));
+  }
+  const p = blank();
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, w.get(x + part * 20, y));
+  return p;
+}
+
 /** Watt's reset: a cartoon "boing" burst. */
 function boomPic(big: boolean): Pixels {
   const p = blank();
@@ -187,6 +227,11 @@ export function buildMonsterBlocks(): BlockSet {
     add(`lcdReady${h}`, lcdPic(h, true));
   }
   add('lcdBlank1', lcdPic(1, true, false));
+  for (const k of [0, 1, 2]) {
+    add(`car${k}`, citiCarPic(k, false));
+    add(`carOn${k}`, citiCarPic(k, true));
+  }
+  add('carFlash2', citiCarPic(2, true, true));
   add('boom1', boomPic(false));
   add('boom2', boomPic(true), { hp: -999 });
   return mb;
