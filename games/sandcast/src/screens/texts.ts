@@ -1,8 +1,13 @@
 // Every word Teddy's players read: the story, the instructions, the level briefings
 // (shown as BBS messages, 30 columns wide), and the shareware notice.
 
+/** The BBS's name, which a line break must never split. */
+const BBS_NAME = 'THE -= S A N D B O X =- BBS';
+const KEEP = '\u0001'; // stands in for the name's spaces while wrapping
+
 /** Wraps paragraphs to Game-Maker's text screens (30 characters a line, so fgets never splits). */
 export function wrap(text: string, width = 30): string {
+  text = text.split(BBS_NAME).join(BBS_NAME.replace(/ /g, KEEP));
   const out: string[] = [];
   for (const para of text.trim().split('\n')) {
     if (para.trim() === '') {
@@ -23,7 +28,7 @@ export function wrap(text: string, width = 30): string {
     if (line) out.push(line);
   }
   for (const l of out) if (l.length > width) throw new Error(`Line too long: "${l}"`);
-  return out.join('\n') + '\n';
+  return out.join('\n').split(KEEP).join(' ') + '\n';
 }
 
 export const STORY = wrap(`

@@ -85,5 +85,5 @@ speaker; no sound card needed.
 Made with GAME-MAKER 3.0 by
 Recreational Software Designs.
 Greetings to everyone who ever
-called THE -= S A N D B O X =-
-BBS.
+called
+THE -= S A N D B O X =- BBS.
