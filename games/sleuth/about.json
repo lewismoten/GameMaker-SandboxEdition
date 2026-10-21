@@ -4,7 +4,58 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$15",
-  "blurb": "Opening night at the Paragon Theatre, 1936: the star dies on stage in Act III. Inspector Ada Penn has until dawn to find out who swapped the prop dagger for a real one.",
+  "blurb": "Opening night at the Paragon Theatre, 1936: the star dies on stage in Act III, stabbed with a trick dagger that wasn't. Inspector Ada Penn has until dawn to search the empty theater, question five suspects and name the killer.",
   "exe": "FINAL.EXE",
-  "sound": "sb"
+  "sound": "sb",
+  "label": {
+    "background": "#1a0608",
+    "band": "#d4a62a",
+    "ink": "#f6ead2",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "background": "#2a0a10",
+    "accent": "#e8b830",
+    "ink": "#f6ead2",
+    "tagline": "The dagger was real. The killer is still in the theater.",
+    "back": "Port Ellery, Halloween night, 1936. Six hundred people watched Victor Crane die in Act III of THE RAVEN'S BRIDE. They thought it was acting. The trick dagger in Lila Fontaine's hand had been swapped for a real one.\n\nYou are Inspector Ada Penn of Homicide, and you have until dawn. Search the Paragon with the house lights up, then again at 2 AM when only the ghost light burns and the dark under the stage shows only where your lantern has been. Question the leading lady, the understudy, the widow, the stage manager and the critic, and show them what you found. Then gather them on the stage and name the killer, and say how, and why. You get three chances.",
+    "features": [
+      "A real whodunit: every clue is in the game, and the solution has three parts",
+      "Question five suspects twice: step on a question card and the answer is a whole new scene",
+      "A prop magnifying glass that shows what nobody else can see, and a lantern for the pitch-dark trap room",
+      "Read the notes on the walls: the bar tab, the box office count, the blackmail letter on the mirror",
+      "Crack Victor Crane's safe: three dials, one playbill, no numbers",
+      "Animated FLI flashbacks and Ada's three theories as cartoon slide shows",
+      "Sound Blaster music on one haunting theme, and 12 digitized sound effects",
+      "The theater in two palettes: house lights at 10:30 PM, the ghost light at 2 AM"
+    ],
+    "shots": [
+      ["act1.map", 26, 20],
+      ["act2.map", 50, 9],
+      ["green.map", 0, 0],
+      ["act1.map", 10, 49],
+      ["green.map", 16, 20]
+    ],
+    "rating": "Ages 10 and up",
+    "hours": 3,
+    "reviews": [
+      {
+        "quote": "We solved it at 2 AM with the lights off, which is exactly how it should be played. The best mystery on shareware.",
+        "source": "The Boot Sector"
+      },
+      {
+        "quote": "Who knew Game-Maker could hold an interrogation? Fair, clever and properly spooky.",
+        "source": "PC Gumshoe Monthly, November 1995"
+      }
+    ],
+    "award": {
+      "title": "Best Shareware Mystery 1995",
+      "from": "The Pixel Press Club"
+    },
+    "poster": {
+      "map": ["act1.map", 10, 10, 50, 48],
+      "title": "The Paragon Theatre",
+      "caption": "Floor plan of the Paragon at 10:30 PM: dressing rooms, the stage, the house and the lobby"
+    }
+  }
 }
