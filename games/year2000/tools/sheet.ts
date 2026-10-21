@@ -4,7 +4,7 @@ import { Pixels } from '../../kit/pixels';
 import type { BlockSet } from '../src/blocks/book';
 import { citySet, moonSet, suburbSet } from '../src/blocks/blocks';
 import { PAL } from '../src/art/pal';
-import { writePng } from './png';
+import { writePng } from '../../kit/png';
 
 const out = process.env.OUT ?? '/tmp';
 

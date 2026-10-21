@@ -10,7 +10,7 @@ import { level5 } from '../src/levels/level5';
 import { level6 } from '../src/levels/level6';
 import { renderMap } from '../src/art/render';
 import { PAL } from '../src/art/pal';
-import { writePng } from './png';
+import { writePng } from '../../kit/png';
 import { buildMonsterBlocks } from '../src/sprites/sprites';
 import { buildMonsters } from '../src/characters/monsters';
 
