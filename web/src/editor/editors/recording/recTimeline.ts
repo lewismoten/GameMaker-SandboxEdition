@@ -72,13 +72,15 @@ export function watchTimeline(events: RecEvent[], getTick: () => number | undefi
     const map = new TimeMap(ppt, [], screens);
     draw({ ctx, width, height: stripHeight(lay.lanes), map, ox: playX - map.x(shown), lay, endT: Infinity, pos: shown, playX });
     // A long wait before the next key: say how long (a screen's polls are no time in play).
-    const next = lay.notes.find((n) => n.start > shown);
-    if (next && map.x(next.start) - map.x(shown) > width - playX) {
+    const nextNote = lay.notes.find((n) => n.start > shown)?.start ?? Infinity;
+    const nextScreen = lay.screenKeys.find((k) => k.t > shown)?.t ?? Infinity;
+    const next = Math.min(nextNote, nextScreen);
+    if (next < Infinity && map.x(next) - map.x(shown) > width - playX) {
       ctx.font = '11px ui-monospace, Menlo, Consolas, monospace';
       ctx.fillStyle = '#9aa6ff';
       ctx.textAlign = 'right';
-      const during = screens.some((g) => g.to === next.start && shown >= g.from);
-      ctx.fillText(during ? 'next key: during the screen →' : `next key in ${clock(map.play(next.start) - map.play(shown), false)} →`, width - 8, RULER + 14);
+      const during = next === nextScreen && screens.some((g) => g.to === next && shown >= g.from);
+      ctx.fillText(during ? 'next key: during the screen →' : `next key in ${clock(map.play(next) - map.play(shown), false)} →`, width - 8, RULER + 14);
     }
     readout.textContent = shown > end ? `${clock(map.play(shown))} · all keys played` : `${clock(map.play(shown))} / ${clock(map.play(end))}`;
   };
@@ -204,8 +206,13 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
     } else if (hover?.grip === 'trim') status.textContent = 'Drag the END flag left to cut off the rest of the demo.';
     else if (hover?.grip === 'fold') {
       const s = map.segs[hover.note];
+      const key = s.screen ? lay.screenKeys.find((k) => k.t === s.t1) : undefined;
       status.textContent = s.screen
-        ? `A between-scene screen (an animation, picture or text page). In DOS the next key was pressed while it showed, after ${(s.t1 - s.t0).toLocaleString()} key checks — not time in play.`
+        ? `A between-scene screen (an animation, picture or text page), ${(s.t1 - s.t0).toLocaleString()} key checks — not time in play.${
+            key
+              ? ` ${scanName(key.scan)} was pressed to go on: a screen key. The screen read it (recorded ${key.events.length === 1 ? 'once' : `${key.events.length} times, once per check that saw it`}) and the game never saw it go down or up, so it is not held.`
+              : ''
+          }`
         : `${clock(s.t1 - s.t0, false)} with no key pressed or let go, folded up. Click to shorten it.`;
     } else status.textContent = `${lay.notes.length} key presses · ${clock(map.play(total))} · drag keys to retime them, the END flag to trim`;
   }

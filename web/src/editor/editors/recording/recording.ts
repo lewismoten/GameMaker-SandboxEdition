@@ -11,7 +11,7 @@ import { scanName } from '../../../input/scancodes';
 import type { Session } from '../../../engine/scene';
 import { watchTimeline, editTimeline } from './recTimeline';
 import { playDemo } from '../../../media/demo';
-import { toEvents, toKeys, toNotes, duration, clock, EXT, SCREEN_POLLS, screenGaps, TimeMap } from './recTimelineModel';
+import { toEvents, toKeys, toNotes, duration, clock, EXT, screenGaps, screenKeys, TimeMap } from './recTimelineModel';
 
 /** Plays the game, recording the keys; resolves with the .REC bytes, or undefined. */
 function recordByPlaying(project: Project, title = 'Record a demo'): Promise<Uint8Array | undefined> {
@@ -110,8 +110,9 @@ registerEditor(['rec'], (host, project, file) => {
     const events = toEvents(keys);
     const presses = toNotes(events).notes.length;
     const screens = screenGaps(events);
-    const during = screens.length
-      ? ` (plus ${screens.length} key${screens.length === 1 ? '' : 's'} pressed during between-scene screens, timed in DOS by key checks)`
+    const read = screenKeys(events).length;
+    const during = read
+      ? ` (plus ${read} screen key${read === 1 ? '' : 's'}: pressed during a between-scene screen, timed in DOS by key checks, and used up by the screen, so the game never saw ${read === 1 ? 'it' : 'them'})`
       : '';
     summary.textContent = `${presses} key presses (${keys.length} of ${RECLEN} key events) over ${clock(new TimeMap(1, [], screens).play(duration(events)))} of play${during}. ${
       uses ? 'This is the title screen’s demo.' : 'Choose it as the start scene’s “Demo recording” to show it on the title screen.'
@@ -157,7 +158,11 @@ registerEditor(['rec'], (host, project, file) => {
 
 /** Every event as recorded, with the time it happens and a way to end the demo there. */
 function rawTable(keys: RecordedKey[], endAt: (index: number) => void): HTMLElement {
-  const play = (x: number) => new TimeMap(1, [], screenGaps(toEvents(keys))).play(x);
+  const events = toEvents(keys);
+  const play = (x: number) => new TimeMap(1, [], screenGaps(events)).play(x);
+  // Which screen key each screen-read event belongs to: 0 = the press that ended the wait, 1+ = the checks that saw it again.
+  const read = new Map<number, number>();
+  for (const k of screenKeys(events)) k.events.forEach((e, n) => read.set(e, n));
   let t = 0;
   return h(
     'table',
@@ -171,8 +176,20 @@ function rawTable(keys: RecordedKey[], endAt: (index: number) => void): HTMLElem
         return h(
           'tr',
           null,
-          h('td', null, k.delta > SCREEN_POLLS ? `during a screen (${k.delta.toLocaleString()} key checks)` : clock(play(t))),
-          h('td', null, k.key === EXT ? '(extended key prefix)' : `${scanName(k.key & 0x7f)} ${k.key & 0x80 ? 'up' : 'down'}`),
+          h(
+            'td',
+            null,
+            read.get(i) === 0 ? `during a screen (${k.delta.toLocaleString()} key checks)` : read.has(i) ? 'during the screen (next check)' : clock(play(t)),
+          ),
+          h(
+            'td',
+            null,
+            k.key === EXT
+              ? '(extended key prefix)'
+              : read.has(i)
+                ? `${scanName(k.key)}: screen key${read.get(i) ? ', seen again' : ''} (the screen read it; the game never saw it)`
+                : `${scanName(k.key & 0x7f)} ${k.key & 0x80 ? 'up' : 'down'}`,
+          ),
           h('td', null, h('button', { title: 'End the demo here: drop this and every later key', onclick: () => endAt(i) }, '✂ End here')),
         );
       }),

@@ -2,7 +2,7 @@
 // held at the same time, each press a keycap (arrows drawn bigger, as on a keyboard) with a
 // bar for as long as it is held, folded pauses, the END flag and the play head.
 import { scanName } from '../../../input/scancodes';
-import { toNotes, isDown, capLabel, clock, TimeMap, type RecEvent, type Note, type Grip } from './recTimelineModel';
+import { toNotes, screenKeys, isDown, capLabel, clock, TimeMap, type RecEvent, type Note, type Grip, type ScreenKey } from './recTimelineModel';
 
 export const TICK = 18.2;
 const PALETTE = ['#55ffff', '#ff55ff', '#ffff55', '#55ff55', '#ff7f6a', '#8c9cff', '#ffaa00', '#d0d0d0'];
@@ -13,12 +13,16 @@ const TAIL_H = 10;
 const FONT = 'bold 11px ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 const ARROW_FONT = 'bold 15px system-ui, sans-serif';
 const BG = '#0a0c1c';
+const SCREEN_KEY_FONT = 'bold 9px ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+const SCREEN_KEY_H = 14;
 const PLAYHEAD = '#ff9d00';
 /** Pauses longer than this (ticks) fold up in the editor. */
 export const FOLD = Math.round(TICK * 8);
 
 export interface Layout {
   notes: Note[];
+  /** Keys a between-scene screen read (DOS recordings): marks on the screen band, not notes. */
+  screenKeys: ScreenKey[];
   lanes: number;
   colors: Map<number, string>;
 }
@@ -31,7 +35,7 @@ export function layout(events: RecEvent[], ppt: number): Layout {
   const { notes, lanes } = toNotes(events, 6 / ppt, (scan) => (capWidth(ctx, scan) + 2) / ppt);
   const colors = new Map<number, string>();
   for (const n of notes) if (!colors.has(n.scan)) colors.set(n.scan, PALETTE[colors.size % PALETTE.length]);
-  return { notes, lanes, colors };
+  return { notes, screenKeys: screenKeys(events), lanes, colors };
 }
 
 const label = (scan: number) => capLabel(scan, scanName);
@@ -197,9 +201,35 @@ export function draw(f: Frame): CapBox[] {
     ctx.fillRect((xa + xb) / 2 - tw / 2, 0, tw, RULER - 1);
     ctx.fillStyle = hot ? PLAYHEAD : '#9aa6ff';
     ctx.fillText(span, (xa + xb) / 2, 7);
-    ctx.translate((xa + xb) / 2, RULER + (height - RULER) / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText(s.screen ? 'screen' : 'folded', 0, 0);
+    // The key the screen read: a small mark under the ruler (it never reached the game).
+    const key = s.screen ? lay.screenKeys.find((k) => k.t === s.t1) : undefined;
+    let top = RULER;
+    if (key) {
+      ctx.font = SCREEN_KEY_FONT;
+      const text = label(key.scan);
+      const w = Math.min(xb - xa - 14, Math.ceil(ctx.measureText(text).width) + 8);
+      const kx = (xa + xb) / 2 - w / 2;
+      const ky = RULER + 4;
+      ctx.globalAlpha = f.pos !== undefined && f.pos >= key.t ? 0.55 : 1;
+      roundRect(ctx, kx, ky, w, SCREEN_KEY_H, 3);
+      ctx.fillStyle = '#e8e2d2';
+      ctx.fill();
+      ctx.strokeStyle = hot ? PLAYHEAD : '#9aa6ff';
+      ctx.stroke();
+      ctx.fillStyle = '#262630';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, (xa + xb) / 2, ky + SCREEN_KEY_H / 2 + 0.5, w - 4);
+      ctx.globalAlpha = 1;
+      top = ky + SCREEN_KEY_H + 2;
+    }
+    ctx.font = '10px ui-monospace, Menlo, Consolas, monospace';
+    const word = s.screen ? 'screen' : 'folded';
+    if (height - top >= ctx.measureText(word).width + 4) {
+      ctx.fillStyle = hot ? PLAYHEAD : '#9aa6ff';
+      ctx.translate((xa + xb) / 2, top + (height - top) / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(word, 0, 0);
+    }
     ctx.restore();
   }
   // Watching: shade the past and draw the playhead under the keys.
