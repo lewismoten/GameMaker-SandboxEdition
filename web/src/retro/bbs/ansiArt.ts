@@ -1,6 +1,7 @@
 // ANSI art for the BBSes, drawn straight into the text screen with CP437 block
 // characters: big shaded letters, fade bars, sand dunes, a sand castle, a pail and
 // shovel, and a sofa, the way 1990s BBS screens looked.
+import { SANDBOX_COLORS } from './bbsName';
 import { attr, COLS, type TextScreen } from '../text/textScreen';
 import { toCp437 } from '../text/cp437';
 
@@ -120,10 +121,8 @@ const PAIL_COLORS = [
   '   4444     999',
 ];
 
-/** The board's name the way it was always shown: a different color for each letter, white and yellow ends. */
-const SANDBOX_COLORS = [12, 14, 10, 11, 9, 13, 6];
-
-export const SANDBOX_ANSI = '|15-|14= |12S |14A |10N |11D |09B |13O |06X |14=|15-';
+/** The board's name the way it was always shown: a different color for each letter, yellow ends (bbsName.ts). */
+export const SANDBOX_ANSI = '|14-= |12S |14A |10N |11D |09B |13O |06X |14=-';
 
 /** The logon screen of THE -= S A N D B O X =- BBS. Returns the first free row. */
 export function sandboxLogin(s: TextScreen): number {
