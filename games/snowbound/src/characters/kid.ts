@@ -2,7 +2,7 @@
 // snowball, the starting meters: health, lives, money and snowballs) and the sled, whose
 // steering, braking and pushing all add momentum so it drifts and keeps its speed.
 import { emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
-import { SND, THROWSEQ } from '../ids';
+import { PAPERS, SND, THROWSEQ } from '../ids';
 import { buildCharBlocks } from '../sprites/charBlocks';
 
 // ---------------------------------------------------------------- characters
@@ -109,6 +109,7 @@ export function buildKid(cb: ReturnType<typeof buildCharBlocks>, myBallMon: numb
   ch.meter[1] = 3; // lives
   ch.meter[3] = 1; // money: shown as meter - 1, so $0
   ch.meter[THROWSEQ] = 6; // snowballs in your pockets
+  ch.meter[PAPERS] = 1; // newspapers: shown as meter - 1, so none until the bundle
   return ch;
 }
 

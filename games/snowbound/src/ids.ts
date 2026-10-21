@@ -31,6 +31,11 @@ export const MON = {
 /** Character sequence that throws snowballs; its counter is the snowball supply. */
 export const THROWSEQ = 9;
 
+/** The paper route's counter: no sequence uses it, and at 20 and up Game-Maker refuses a
+ * touch that would empty it, so a porch only takes a paper when you have one. Starts at 1
+ * (like money) so a full bundle of six leaves 7 and the sixth porch leaves 1. */
+export const PAPERS = 20;
+
 /** Sound effect numbers in SNOW.SND. */
 export const SND = {
   help: 0,

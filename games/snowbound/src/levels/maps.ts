@@ -155,7 +155,8 @@ function bankRow(m: MapBuilder, x: number, y: number, w: number, gaps: number[])
  * Gale Street, 7 AM: home is the corner house at Gale Street and Dunn Drive. Leota Street
  * runs north between the neighbors, Leon Drive crosses the east end (and leads to the
  * top of Jamie Street). One plow, Biscuit the dog, and no mailboxes anywhere: the carrier
- * walks to every door, so every front walk needs digging out too.
+ * walks to every door, so every front walk needs digging out too. And the carrier is you:
+ * the paper bundle by the porch at home holds one paper for each customer's door mat.
  */
 export function galeStreet(book: BlockBook) {
   const m = new MapBuilder(book);
@@ -176,7 +177,8 @@ export function galeStreet(book: BlockBook) {
       // Home, on the corner of Gale and Dunn: Dad already shoveled it before work.
       m.fill(garage, 14, 2, 3, 'a').fill(door, 14, 1, 3, 's');
     } else {
-      m.fill(garage, 14, 2, 3, 'D').set(door, 14, 's').fill(door, 15, 1, 2, 'S');
+      // a porch mat under every customer's door: the paper goes there, once it's dug out
+      m.fill(garage, 14, 2, 3, 'D').set(door, 14, 'stoop').fill(door, 15, 1, 2, 'S');
       if (i % 2) m.set(left ? garage + 2 : garage - 1, 16, 'y');
     }
   });
@@ -184,6 +186,8 @@ export function galeStreet(book: BlockBook) {
   m.set(58, 15, 'n').set(61, 16, 'c');
   m.set(26, 14, 'n');
   m.set(42, 14, '5'); // a tip on Mrs. Haines' porch
+  // The News-Tribune bundle, dropped by the porch at home before dawn: papers first.
+  m.set(12, 16, 'bundle');
   // sidewalk, plow banks, the road, banks, the south sidewalk
   m.fill(10, 17, 55, 1, 's');
   m.patch(11, 18, ['BB_BBBB_B_BBBBBBB_BB_BBBBB_BBBBBB_B_BBBBBBBB_BBBBBBB_B']);
@@ -210,7 +214,7 @@ export function galeStreet(book: BlockBook) {
   m.fill(28, 4, 19, 7, '.').fill(28, 4, 19, 1, 'T');
   m.fill(36, 4, 2, 15, 'a');
   const lh = [m.house(29, 5, 'blue', true), m.house(40, 5, 'yellow', false, false)];
-  for (const h of lh) m.fill(h.garage, 8, 2, 2, 'D').fill(h.door, 8, 1, 2, 'S');
+  for (const h of lh) m.fill(h.garage, 8, 2, 2, 'D').set(h.door, 8, 'stoop').set(h.door, 9, 'S');
   m.fill(28, 10, 19, 1, 's').fill(36, 10, 2, 1, 'a');
   m.set(28, 9, 'b').set(46, 8, 'T').set(34, 8, 'n').set(46, 10, 'c');
   m.street(38, 18, 'stGaleLeota');

@@ -41,9 +41,9 @@ export const INSTRUCTIONS = [
     'arrows point. The creek by',
     'Bowden Drive runs east!',
     '',
-    'Shovel the front walks too:',
-    'they pay just like the',
-    'driveways do.',
+    'PAPER ROUTE: grab the bundle',
+    'at home, then dig out each',
+    'front walk to its door mat.',
   ]),
   page([
     'THE SLED: LEFT/RIGHT (A/D)',
