@@ -49,7 +49,7 @@ describe('progressive game loading', () => {
       'fetch',
       vi.fn((url: string) => {
         calls.push(url.replace('./games/s/', ''));
-        const body = url.endsWith('.gam') ? gam : new Uint8Array([1]);
+        const body = (url.endsWith('.gam') ? gam : new Uint8Array([1])) as Uint8Array<ArrayBuffer>;
         // the .gam comes at once; everything else when released
         if (url.endsWith('.gam')) return Promise.resolve(new Response(body));
         return new Promise<Response>((r) => release.set(url.replace('./games/s/', ''), () => r(new Response(body))));
