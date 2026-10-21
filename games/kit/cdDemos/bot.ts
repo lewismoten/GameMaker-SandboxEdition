@@ -33,6 +33,8 @@ export interface BotOptions {
    * within two blocks); after the last one the scene's goals or links apply.
    */
   route?: Record<number, { x: number; y: number }[]>;
+  /** Follow the route by searching key sequences toward each waypoint (for jumps and ledges). */
+  searchRoute?: boolean;
   /** How much each block closer to a goal counts (default 15). */
   goalWeight?: number;
   /** A place to head for in a scene, in blocks: rewards getting closer. */
@@ -56,7 +58,7 @@ const pos = (w: World) => ({ x: w.chr.x[0] * 20 + w.chr.x[1], y: w.chr.y[0] * 20
 const carried = (w: World) => w.ci.inv.filter((b) => b !== BACKBL + 1 && b < BACKBL).length;
 
 export class Bot {
-  private o: Required<Omit<BotOptions, 'links' | 'goals' | 'route' | 'seed'>> & Pick<BotOptions, 'links' | 'goals' | 'route'>;
+  private o: Required<Omit<BotOptions, 'links' | 'goals' | 'route' | 'seed' | 'searchRoute'>> & Pick<BotOptions, 'links' | 'goals' | 'route'> & { searchRoute: boolean };
   /** The next waypoint of the scene's route. */
   private leg = 0;
   private visits = new Map<number, Uint16Array>();
@@ -86,6 +88,7 @@ export class Bot {
       links: o.links,
       goals: o.goals,
       route: o.route,
+      searchRoute: o.searchRoute ?? false,
     };
     this.rand = rng(o.seed ?? 7);
   }
@@ -265,6 +268,9 @@ export class Bot {
       this.scene = scene;
       this.held = undefined;
       this.tapLeft = 0;
+      this.plan = [];
+      this.planKey = undefined;
+      this.planLeft = 0;
     }
     // a tap is held for TAP ticks, then let go before choosing again
     if (this.tapLeft > 0) {
@@ -280,11 +286,16 @@ export class Bot {
     if (leg && Math.hypot(wrap(at.x / 20 - leg.x), wrap(at.y / 20 - leg.y)) < 2) {
       this.log.push(`tick ${s.rec.tick}: reached waypoint ${this.leg} (${leg.x},${leg.y})`);
       this.leg++;
+      this.plans = 0;
+      this.plan = [];
       this.trail.length = 0;
     }
     const v = this.visited(this.scene);
     const cell = Math.floor(at.y / 20) * MAP_W + Math.floor(at.x / 20);
     if (v[cell] < 60000) v[cell]++;
+    // on a hand-planned route: plan a few key presses at a time that get closest to the waypoint
+    const next = this.o.route?.[this.scene]?.[this.leg];
+    if (next && this.o.searchRoute) return this.followRoute(w, s, m, next);
     const single = this.options(w);
     const options: (Option | undefined)[] = [undefined, ...single];
     // with somewhere to go, also look at turning: one move now, another after it
@@ -333,6 +344,85 @@ export class Bot {
       this.held = best?.key;
       if (best && best.kind !== 'move') this.tapLeft = TAP;
     }
+  }
+
+  private plan: { key: number; ticks: number }[] = [];
+  private planKey?: number;
+  private planLeft = 0;
+  private plans = 0;
+
+  /** Route mode: carries out a planned key sequence, planning the next when it is done. */
+  private async followRoute(w: World, s: Session, m: Machine, leg: { x: number; y: number }): Promise<void> {
+    if (this.held !== undefined) {
+      m.keyboard.feed(this.held | 0x80);
+      this.held = undefined;
+    }
+    if (this.planLeft > 0) {
+      this.planLeft -= this.o.every;
+      if (this.planLeft > 0) return;
+    }
+    if (this.planKey !== undefined) m.keyboard.feed(this.planKey | 0x80);
+    this.planKey = undefined;
+    if (!this.plan.length) {
+      // a waypoint that will not come: skip it after a while
+      if (++this.plans > 40) {
+        this.log.push(`tick ${s.rec.tick}: gave up on waypoint ${this.leg} (${leg.x},${leg.y})`);
+        this.leg++;
+        this.plans = 0;
+        return;
+      }
+      this.plan = await this.searchRoute(w, s, leg);
+    }
+    const step = this.plan.shift();
+    if (!step) return;
+    if (step.key) m.keyboard.feed(step.key);
+    this.planKey = step.key || undefined;
+    this.planLeft = step.ticks;
+  }
+
+  /** Two presses (key and how long), tried on copies: the pair that comes nearest the waypoint without getting hurt. */
+  private async searchRoute(w: World, s: Session, leg: { x: number; y: number }): Promise<{ key: number; ticks: number }[]> {
+    const keys = [0, ...this.options(w).filter((o) => o.kind === 'move' || o.kind === 'jump').map((o) => o.key)];
+    const durs = [2, 4, 8, 14];
+    const wrap = (d: number) => ((d % MAP_W) + MAP_W * 1.5) % MAP_W - MAP_W / 2;
+    const dist = (x: World) => Math.hypot(wrap(pos(x).x / 20 - leg.x), wrap(pos(x).y / 20 - leg.y));
+    let best: { key: number; ticks: number }[] = [];
+    let bestValue = Infinity;
+    for (const a of keys)
+      for (const da of durs)
+        for (const b of keys)
+          for (const db of durs) {
+            if (a === b && db !== durs[0]) continue;
+            const copy = cloneWorld(w, rng(w.clock));
+            const p = new Probe(copy, s.game.scenes[this.scene]?.links ?? []);
+            let near = Infinity;
+            let bad = false;
+            const hp = w.ci.hitpts;
+            for (const [k, d] of [[a, da], [b, db]] as const) {
+              if (k) p.key(k);
+              for (let t = 0; t < d && !bad; t++) {
+                await p.tick();
+                if (p.dead || (p.link >= 0 && !this.allowed(p.link))) bad = true;
+                near = Math.min(near, dist(copy));
+              }
+              if (k) p.key(k | 0x80);
+            }
+            // and where it comes to rest
+            for (let t = 0; t < 8 && !bad; t++) {
+              await p.tick();
+              if (p.dead) bad = true;
+            }
+            if (bad) continue;
+            const value = near + dist(copy) * 0.5 + Math.max(0, hp - copy.ci.hitpts) * 0.5 + (da + db) / 60;
+            if (value < bestValue) [best, bestValue] = [
+              [
+                { key: a, ticks: da },
+                { key: b, ticks: db },
+              ],
+              value,
+            ];
+          }
+    return best;
   }
 
   /** Lets go of every key (at the end of the demo). */
