@@ -5,17 +5,17 @@ import { fileURLToPath } from 'node:url';
 import { GameSim } from './sim';
 import { Bot } from './bot';
 import { act1, act2, accuse, greenRoom } from './walkthrough';
-import { buildGame } from './src/game';
-import { buildActs } from './src/levels/acts';
-import { buildTheatreBlocks } from './src/blocks/tiles';
-import { buildParlorBlocks, buildParlorMap } from './src/levels/parlor';
+import { buildGame } from '../src/game';
+import { buildActs } from '../src/levels/acts';
+import { buildTheatreBlocks } from '../src/blocks/tiles';
+import { buildParlorBlocks, buildParlorMap } from '../src/levels/parlor';
 
 export function sceneIndex() {
   return buildGame(buildActs(buildTheatreBlocks()), buildParlorMap(buildParlorBlocks()).links).ix;
 }
 
 export function loadDisk(): Map<string, Uint8Array> {
-  const dir = join(dirname(fileURLToPath(import.meta.url)), 'disk');
+  const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'disk');
   return new Map(readdirSync(dir).map((n) => [n, new Uint8Array(readFileSync(join(dir, n)))]));
 }
 

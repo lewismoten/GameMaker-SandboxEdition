@@ -2,12 +2,12 @@
 // scene.ts) that plays the finished disk files, so the build can walk the whole case
 // itself: every act, every question, every accusation. Keys it presses are recorded the
 // way PLAYGAME records them, which makes the demo and the full walkthrough recordings.
-import { moveChars } from '../../web/src/engine/character';
-import { simKeyPress, resetKeys } from '../../web/src/engine/keys';
-import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '../../web/src/engine/monsters';
-import { updateCharDrawState } from '../../web/src/engine/render';
-import { changeScroll, drawScroll, initScroll } from '../../web/src/engine/scroll';
-import { getTouchBlocks } from '../../web/src/engine/touch';
+import { moveChars } from '../../../web/src/engine/character';
+import { simKeyPress, resetKeys } from '../../../web/src/engine/keys';
+import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '../../../web/src/engine/monsters';
+import { updateCharDrawState } from '../../../web/src/engine/render';
+import { changeScroll, drawScroll, initScroll } from '../../../web/src/engine/scroll';
+import { getTouchBlocks } from '../../../web/src/engine/touch';
 import {
   BACKBL,
   CHARBL,
@@ -26,14 +26,14 @@ import {
   padBlocks,
   type CharInfo,
   type World,
-} from '../../web/src/engine/world';
-import { parseBlocks, BACKBL as NBACK, MONBL as NMON, CHARBL as NCHR } from '../../web/src/formats/blocks';
-import { parseCharacter } from '../../web/src/formats/character';
-import { parseMonsters } from '../../web/src/formats/monster';
-import { parseMap } from '../../web/src/formats/map';
-import { MAXSCENELINKS, NOSCENE, parseGame, type Game } from '../../web/src/formats/game';
-import type { RecordedKey } from '../../web/src/formats/recording';
-import { rng } from '../kit/pixels';
+} from '../../../web/src/engine/world';
+import { parseBlocks, BACKBL as NBACK, MONBL as NMON, CHARBL as NCHR } from '../../../web/src/formats/blocks';
+import { parseCharacter } from '../../../web/src/formats/character';
+import { parseMonsters } from '../../../web/src/formats/monster';
+import { parseMap } from '../../../web/src/formats/map';
+import { MAXSCENELINKS, NOSCENE, parseGame, type Game } from '../../../web/src/formats/game';
+import type { RecordedKey } from '../../../web/src/formats/recording';
+import { rng } from '../../kit/pixels';
 
 export class GameSim {
   readonly game: Game;

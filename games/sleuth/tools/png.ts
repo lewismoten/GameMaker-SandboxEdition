@@ -2,7 +2,7 @@
 
 import { deflateSync } from 'node:zlib';
 import { writeFileSync } from 'node:fs';
-import type { Pixels } from '../kit/pixels';
+import type { Pixels } from '../../kit/pixels';
 
 const CRC = (() => {
   const t = new Uint32Array(256);

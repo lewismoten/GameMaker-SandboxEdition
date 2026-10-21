@@ -1,10 +1,10 @@
 // Plays the whole case headlessly on the built disk and reports how it went:
-//   cd web && npx vite-node ../games/sleuth/check.ts [--quick] [--wrong lila] [--walk out.rec] [-v]
+//   cd web && npx vite-node ../games/sleuth/tools/check.ts [--quick] [--wrong lila] [--walk out.rec] [-v]
 // --quick skips the questions and the board; --wrong first accuses the wrong suspect;
 // --walk writes the run as a .rec recording (replayed in the real engine as a demo, it
 // plays the game from start to finish).
 import { writeFileSync } from 'node:fs';
-import { serializeRecording } from '../../web/src/formats/recording';
+import { serializeRecording } from '../../../web/src/formats/recording';
 import { loadDisk, playWhole } from './whole';
 const args = process.argv.slice(2);
 const opt = (name: string) => {

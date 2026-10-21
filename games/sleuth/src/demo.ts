@@ -3,9 +3,9 @@
 // house to the wings, the lens from the props room, the ticket stub it reveals under the
 // prop table and Felix's checklist), then presses Esc.
 import { serializeRecording } from '../../../web/src/formats/recording';
-import { GameSim } from '../sim';
-import { Bot } from '../bot';
-import { act1 } from '../walkthrough';
+import { GameSim } from '../tools/sim';
+import { Bot } from '../tools/bot';
+import { act1 } from '../tools/walkthrough';
 import { SCAN } from './ids';
 
 export async function demoRecording(files: Map<string, Uint8Array>): Promise<Uint8Array> {
