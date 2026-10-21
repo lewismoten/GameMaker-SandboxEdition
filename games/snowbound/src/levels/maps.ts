@@ -2,9 +2,9 @@
 // sled run, and stamps for houses, street-name signs and LaVale Mall. The streets are the
 // real ones of Dowden Additions, winter of 1992: Gale Street, Dunn Drive, Leota Street,
 // Leon Drive, Jamie Street and Bowden Drive.
-import { newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
-import type { BlockBook } from './blocks';
-import { MON } from './src/ids';
+import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import type { BlockBook } from '../blocks/blocks';
+import { MON } from '../ids';
 
 /** ASCII legend → block name ('.' picks a yard variant). */
 const LEGEND: Record<string, string> = {

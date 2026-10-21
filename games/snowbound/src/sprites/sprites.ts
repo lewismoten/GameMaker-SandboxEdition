@@ -1,11 +1,11 @@
 // SNOW.MBL / SNOW.MON and KID.CBL / KID.CHR / SLED.CHR: everything that moves.
-import { newBlockSet, type Block } from '../../web/src/formats/blocks';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../web/src/formats/monster';
-import { emptyFrame, newCharacter, type Character, type Frame } from '../../web/src/formats/character';
-import { Pixels } from '../kit/pixels';
-import { blob, recolor, rotate, sprite } from './src/art/draw';
-import { MON, SND, THROWSEQ } from './src/ids';
-import type { Pal } from './src/art/pal';
+import { newBlockSet, type Block } from '../../../../web/src/formats/blocks';
+import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
+import { emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
+import { Pixels } from '../../../kit/pixels';
+import { blob, recolor, rotate, sprite } from '../art/draw';
+import { MON, SND, THROWSEQ } from '../ids';
+import type { Pal } from '../art/pal';
 
 const T = 255;
 

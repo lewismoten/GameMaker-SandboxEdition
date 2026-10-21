@@ -2,12 +2,12 @@
 // by name; attributes (solid sides, money, gravity, what a block turns into when touched
 // or after time) are what make the game: deep snow is solid and pays $1 when you push
 // into it, parking-lot asphalt quietly snows back over, ice slides you, forts throw.
-import { newBlockSet, type Block } from '../../web/src/formats/blocks';
-import { Pixels, rng } from '../kit/pixels';
-import { blob, gradient, shadeAt, speckle } from './src/art/draw';
-import { micro, microWidth } from './src/art/font';
-import { MON, THROWSEQ } from './src/ids';
-import type { Pal } from './src/art/pal';
+import { newBlockSet, type Block } from '../../../../web/src/formats/blocks';
+import { Pixels, rng } from '../../../kit/pixels';
+import { blob, gradient, shadeAt, speckle } from '../art/draw';
+import { micro, microWidth } from '../art/font';
+import { MON, THROWSEQ } from '../ids';
+import type { Pal } from '../art/pal';
 
 interface Attrs {
   solid?: number;

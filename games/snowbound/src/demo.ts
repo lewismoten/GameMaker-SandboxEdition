@@ -1,7 +1,7 @@
 // DEMO.REC: what plays on the title screen when nobody touches the keyboard. Recorded
 // from a real game on Gale Street (pairs of [ticks since the last key, PC scan code;
 // +128 = released]), ending with Esc.
-import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
 
 const RECORDED = [
   16, 80, 4, 208, 0, 80, 4, 208, 0, 72, 1, 200, 0, 72, 2, 200, 0, 77, 7, 205, 0, 77, 7, 205, 0, 77, 8, 205, 0, 77, 7, 205, 0, 77, 8, 205, 0, 77, 7, 205, 0, 77,
