@@ -1,8 +1,9 @@
-// A tiny PNG writer for previews of block sheets and screens while designing (not part
-// of the game disk).
+// A tiny PNG writer for design previews of block sheets, maps and screens (never part of a
+// game disk): indexed pixels through a 6-bit VGA palette, scaled up by whole pixels, with
+// clear pixels (255) shown as a gray checkerboard. Used by the games' tools/ scripts.
 import { deflateSync } from 'node:zlib';
 import { writeFileSync } from 'node:fs';
-import type { Pixels } from '../../kit/pixels';
+import { Pixels } from './pixels';
 
 const CRC = (() => {
   const t = new Uint32Array(256);
@@ -61,4 +62,14 @@ export function writePng(file: string, p: Pixels, pal: Uint8Array, s = 1): void 
     o += x.length;
   }
   writeFileSync(file, out);
+}
+
+/** A sheet of 20x20 blocks, `cols` across, with a 2 pixel gap. */
+export function blockSheet(blocks: { pixels: Uint8Array }[], cols = 16, bg = 0): Pixels {
+  const rows = Math.ceil(blocks.length / cols);
+  const sheet = new Pixels(cols * 22, rows * 22, bg);
+  blocks.forEach((b, i) => {
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) sheet.set((i % cols) * 22 + x, Math.floor(i / cols) * 22 + y, b.pixels[y * 20 + x]);
+  });
+  return sheet;
 }
