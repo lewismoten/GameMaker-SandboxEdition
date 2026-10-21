@@ -11,7 +11,8 @@ export type GeneratedKind =
   | 'warranty' // warranty / shareware license card
   | 'newsletter' // The Sandbox Scoop
   | 'hintoffer' // the hint book order slip (only when the game has a hint book)
-  | 'stickers'; // a sheet of stickers to cut out
+  | 'stickers' // a sheet of stickers to cut out
+  | 'worldmap'; // the fold-out World Map: every scene and the ways between them, from the .GAM
 
 /** A spot on a map, in blocks (0-99), with a label. */
 export interface MapMark {

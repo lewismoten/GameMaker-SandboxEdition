@@ -7,6 +7,7 @@ import type { GeneratedKind, PrintableItem } from './types';
 import { foldOut, renderItem } from './story';
 import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, warranty } from './gen';
 import { stickerScreen, stickers } from './stickers';
+import { worldMap, worldMapScreen } from './worldMap';
 
 const ICONS: Record<PrintableItem['kind'], string> = {
   map: '🗺️',
@@ -34,6 +35,15 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
   }));
   const book = own.find((i) => i.kind === 'hintbook');
   const gen: (BoxItem & { kind: GeneratedKind })[] = [
+    {
+      kind: 'worldmap',
+      id: 'worldmap',
+      title: 'World Map',
+      note: 'Fold-out: every scene and the ways between them',
+      icon: '🗺️',
+      render: () => worldMap(ctx),
+      screen: worldMapScreen,
+    },
     { kind: 'keycard', id: 'keycard', title: 'Key card', note: 'Quick reference for your keyboard', icon: '⌨️', render: () => keycard(ctx) },
     { kind: 'postcard', id: 'postcard', title: 'Registration card', note: 'Postcard, already marked paid', icon: '📮', render: () => postcard(ctx) },
     { kind: 'warranty', id: 'warranty', title: 'License & warranty', note: 'Keep this card', icon: '📜', render: () => warranty(ctx) },
