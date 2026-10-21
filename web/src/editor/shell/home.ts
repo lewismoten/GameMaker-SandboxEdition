@@ -4,7 +4,8 @@
 // the chosen collection's games as small picture tiles (homeCards.ts). On a wide window
 // the game sits in a column beside the library and the page fits the window, the tiles
 // scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
-// kept in the address (#/game/cd:<id> or #/game/my:<id>) so a reload or a link shows it.
+// kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
+// (?tab=sandbox&q=snow), so a reload or a link shows the same.
 import { h, clear, modal } from '../core/ui';
 import { loadCatalog, type CatalogEntry } from '../../project/files';
 import { listProjects } from '../../project/storage';
@@ -16,6 +17,7 @@ import { newGame, importPicked, importDropped } from './homeImport';
 import { icon, type IconName } from './homeIcons';
 import { wantsTouchControls } from '../../player/touch';
 import { findOriginal } from './homeOrigin';
+import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
 
 export interface HomeNav {
   openProject(id: string): void;
@@ -61,7 +63,6 @@ function savedSort(): MySort {
     return 'edited';
   }
 }
-const GAME_HASH = '#/game/';
 
 function savedCategory(): Category | undefined {
   try {
@@ -72,8 +73,25 @@ function savedCategory(): Category | undefined {
   }
 }
 
-/** The game named in the address, if any. */
-const hashKey = () => (location.hash.startsWith(GAME_HASH) ? decodeURIComponent(location.hash.slice(GAME_HASH.length)) : '');
+/** The game named in the address (#/game/<key>), if any. */
+const hashKey = () => {
+  const { path } = currentRoute();
+  return path[0] === 'game' ? (path[1] ?? '') : '';
+};
+
+/** Still on the home page (#/ or #/game/…): a late change must not touch another page's address. */
+const onHome = () => [undefined, 'game'].includes(currentRoute().path[0]);
+
+/** Keeps the home page's choices (collection, search) in the address, as #/…?tab=…&q=…. */
+const keep = (changes: Record<string, ParamValue>) => onHome() && setHashParams(changes);
+
+/** Shows `path` (a game, or none) in the address, keeping the settings. */
+function showPath(path: string[]): void {
+  if (!onHome()) return;
+  const { params } = currentRoute();
+  const next = formatHash(path, params);
+  if (next !== location.hash) history.replaceState(history.state, '', `${location.pathname}${location.search}${next}`);
+}
 
 export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
@@ -86,7 +104,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     class: 'lib-search',
     placeholder: 'Find a game…',
     'aria-label': 'Find a game',
-    oninput: () => filterTiles(),
+    oninput: () => {
+      filterTiles();
+      keep({ q: search.value.trim() });
+    },
   }) as HTMLInputElement;
   // where games come in: drop them, or pick them
   const drop = h(
@@ -190,7 +211,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   /** Shows a game at the top because the visitor chose it. */
   const choose = (game: HomeGame) => {
     top.show(game, {});
-    history.replaceState(null, '', `${GAME_HASH}${game.key}`);
+    showPath(['game', game.key]);
     markSelected();
     const r = top.el.getBoundingClientRect();
     if (r.top < 0 || r.top > innerHeight * 0.5)
@@ -206,7 +227,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const pick = choices[Math.floor(Math.random() * choices.length)];
     if (!pick) return;
     top.show(pick, { featured: true, onAnother: feature });
-    if (location.hash.startsWith(GAME_HASH)) history.replaceState(null, '', '#/');
+    showPath([]);
     markSelected();
   };
 
@@ -214,7 +235,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const showStart = () => {
     if (!projects.length) return feature();
     top.show(mine(projects[0]), { resume: true });
-    if (location.hash.startsWith(GAME_HASH)) history.replaceState(null, '', '#/');
+    showPath([]);
     markSelected();
   };
 
@@ -271,12 +292,14 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   /** Shows a collection; remembered when the visitor picked it. */
   const select = async (c: Category, picked = false) => {
     current = c;
-    if (picked)
+    if (picked) {
+      keep({ tab: c });
       try {
         localStorage.setItem(CATEGORY_KEY, c);
       } catch {
         /* not remembered */
       }
+    }
     renderCats();
     tiles.setAttribute('aria-labelledby', `lib-tab-${c}`);
     const info = CATEGORIES.find((x) => x.id === c)!;
@@ -441,5 +464,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     top.show(chosen, {});
     current = chosen.kind;
   } else showStart();
+  // …and the collection and search in the address (#/?tab=sandbox&q=snow) come back too
+  const { tab, q } = currentRoute().params;
+  if (CATEGORIES.some((c) => c.id === tab)) current = tab as Category;
+  if (q) search.value = q;
   await select(current);
 }
