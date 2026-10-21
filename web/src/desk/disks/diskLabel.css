@@ -51,6 +51,7 @@
 
 .floppy .label.printed.graphic .p-title {
   position: relative;
+  padding-right: 1.4cqw;
   padding: 0;
   color: var(--bacc);
   font:

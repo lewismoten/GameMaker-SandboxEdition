@@ -46,6 +46,8 @@
 
 .floppy .label.printed.rsd .r-name {
   overflow: hidden;
+  /* room for the slanted italic's last letter, which leans past its box */
+  padding-right: 1.4cqw;
   font:
     italic 900 7.4cqw/1.05 'Arial Black',
     Impact,
