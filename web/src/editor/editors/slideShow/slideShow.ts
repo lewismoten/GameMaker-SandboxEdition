@@ -742,11 +742,6 @@ registerEditor(['lst'], (host, project, file) => {
 
   clear(
     host,
-    h(
-      'p',
-      { class: 'hint' },
-      'A slide show plays pictures, backdrops, animations and text screens in order. After each one it waits for a key, goes straight on, or waits a number of seconds — drag the edges of a timed slide to change how long. Esc in the game skips the rest.',
-    ),
     h('div', { class: 'sl-top' }, preview.el, inspector),
     h(
       'div',
@@ -763,7 +758,7 @@ registerEditor(['lst'], (host, project, file) => {
     h(
       'div',
       { class: 'sl-legend meta' },
-      `${THEN_ICON.key} waits for a key · ${THEN_ICON.none} goes straight on · ${THEN_ICON.seconds} waits seconds (or a key)`,
+      `Slides play in order; after each: ${THEN_ICON.key} waits for a key · ${THEN_ICON.none} goes straight on · ${THEN_ICON.seconds} waits seconds or a key (drag a timed slide’s edges to change how long). Esc in the game skips the rest.`,
     ),
     binBox,
   );

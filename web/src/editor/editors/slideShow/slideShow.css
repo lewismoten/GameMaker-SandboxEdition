@@ -6,7 +6,8 @@
   align-items: start;
 }
 .sl-preview canvas {
-  max-width: 400px !important;
+  /* smaller on short windows, so the timeline and media fit too */
+  max-width: clamp(260px, calc((100dvh - 560px) * 4 / 3), 400px) !important;
 }
 
 .sl-inspector {
@@ -429,7 +430,7 @@
   grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: 8px;
   /* fills what is left of the window, so the page itself doesn't scroll */
-  max-height: clamp(150px, calc(100dvh - 740px), 340px);
+  max-height: clamp(110px, calc(100dvh - 685px), 340px);
   overflow-y: auto;
 }
 .sl-media {
