@@ -1,11 +1,15 @@
 // Ports of ShowGraphic and Display_File from code/GM/PLAYGAME.C: the title screens,
 // storylines, credits, level intros/exits and slide shows shown between scenes.
+// The file extension picks the kind: .gif picture, .bkd backdrop (a GIF placed at an
+// offset), .fli animation (FLI::View, code/Image/FLI/FLI.CPP), .txt text pages and
+// .lst slide lists. A pause of 0 returns at once; PauseTimeKey(0) did not wait either.
 import type { Machine } from './machine';
 import { decodeGif, isGif } from '../formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../formats/fli';
 import { parseBackdrop, parseSlideList, textLines } from '../formats/graphicScripts';
 import { matchColor, PALETTE_SIZE } from '../formats/palette';
 
+// The fixed RGBdata colors the C matches against whatever palette is up (RGBRed.Match…).
 export const RGB_RED: [number, number, number] = [63, 10, 10];
 export const RGB_BLUE: [number, number, number] = [10, 10, 63];
 export const RGB_YELLOW: [number, number, number] = [63, 63, 0];
@@ -53,7 +57,9 @@ export async function showGraphic(m: Machine, file: string, opts: GraphicOptions
     const bytes = m.files.get(file);
     if (!bytes) return true;
     for (const entry of parseSlideList(bytes)) {
-      // An entry without a pause keeps 0xFFFF seconds: wait for a key.
+      // An entry without a pause keeps 0xFFFF seconds: wait for a key. FileListClass
+      // meant to give such entries the list's own pause, but after MaxFiles++ it tests
+      // the next, still empty entry, so the 0xFFFF always stayed.
       const ok = await showGraphic(m, entry.name, { cols, pause: entry.pause ?? 0xffff, gamePalette: opts.gamePalette });
       if (!ok) return false;
     }
@@ -86,7 +92,11 @@ export function drawGifFile(m: Machine, file: string, cols: Uint8Array, backdrop
   }
 }
 
-/** FLI::View: every frame once, `speed` vertical retraces (1/70 s) apart. */
+/**
+ * FLI::View: every frame once, `speed` vertical retraces (1/70 s) apart. The C drew
+ * straight onto the VGA screen, so the animation starts over whatever is shown. A
+ * speed of 0 meant no wait in the C; here it is treated as 1 retrace.
+ */
 export async function playFli(m: Machine, file: string): Promise<boolean> {
   const bytes = m.files.get(file);
   if (!bytes || !isFli(bytes)) return false;
@@ -105,7 +115,10 @@ export async function playFli(m: Machine, file: string): Promise<boolean> {
   return true;
 }
 
-/** Display_File: 32 column text pages over the current picture. */
+/**
+ * Display_File: text pages over the current picture, 16 lines (rows 5..20 of 8 pixels)
+ * per page. fgets(…, 32) read at most 31 characters at a time, so long lines wrap.
+ */
 export async function displayFile(m: Machine, file: string, col: number, pause: number, gamePalette: Uint8Array): Promise<boolean> {
   const saved = m.screen.snapshot();
   const red = match(gamePalette, RGB_RED);
