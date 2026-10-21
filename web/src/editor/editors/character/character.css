@@ -33,7 +33,24 @@
   display: flex;
   gap: 2px;
   margin: 0;
+}
+/* the tabs, with Undo and Redo at the row's end, over one line */
+.chr-tabrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
   border-bottom: 1px solid var(--border);
+}
+.chr-tabrow .chr-tabs {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.chr-tabrow .chr-undo {
+  margin-left: auto;
+  padding-bottom: 4px;
+}
+.chr-tabrow .chr-undo button {
+  padding: 3px 10px;
 }
 
 .chr-tab {
@@ -744,10 +761,21 @@
   .editor .chr-head-main .hint {
     flex: 1 1 100%;
   }
-  .chr-tabs {
+  .chr-tabrow {
     order: 9;
     flex-basis: 100%;
+    flex-wrap: wrap;
     margin-top: 4px;
+  }
+  /* Undo and Redo get their own row above the tabs, which share the width */
+  .chr-tabrow .chr-undo {
+    order: -1;
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+  .chr-tabrow .chr-tabs {
+    flex: 1 1 100%;
   }
 }
 /* short wide windows (landscape tablets): a more compact F2 screen and counters, so the hero's

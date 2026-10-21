@@ -11,6 +11,7 @@ import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
 import { blockButton, chooseBlock, type BlockExtra } from '../../widgets/blockChooser';
 import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
+import { History } from '../../core/history';
 import { drawBlockTo, paintBlock } from '../../core/draw';
 import { paletteChooser } from '../blocks/blocks';
 import { audio } from '../../widgets/mediaShared';
@@ -91,10 +92,44 @@ registerEditor(['chr'], (host, project, file) => {
   let current = 0;
   let withSound = false;
   const save = debounce(() => project.files.set(file, serializeCharacter(chr)), 250);
+  // Undo: each change records the state before it (changes less than half a second apart, like typing a number, are one step).
+  const history = new History<Uint8Array>();
+  let base = serializeCharacter(chr);
+  let lastChange = 0;
+  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const syncHistory = () => {
+    undoBtn.disabled = !history.canUndo;
+    redoBtn.disabled = !history.canRedo;
+  };
   const edit = (fn: () => void) => {
     fn();
+    const now = Date.now();
+    if (now - lastChange > 500) history.record(base);
+    lastChange = now;
+    base = serializeCharacter(chr);
+    syncHistory();
     save();
   };
+  function step(back: boolean): void {
+    const to = back ? history.undo(base) : history.redo(base);
+    if (!to) return;
+    Object.assign(chr, parseCharacter(to));
+    base = to;
+    lastChange = 0;
+    syncHistory();
+    save();
+    render();
+  }
+  const onKey = (e: KeyboardEvent) => {
+    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' || k === 'y') {
+      e.preventDefault();
+      step(k === 'z' && !e.shiftKey);
+    }
+  };
+  window.addEventListener('keydown', onKey);
   const chooser = paletteChooser(project, cblName || file, () => render());
   const pal = () => chooser.palette;
 
@@ -784,7 +819,7 @@ registerEditor(['chr'], (host, project, file) => {
             { class: 'hint' },
             `The hero: how it starts the game, and how it moves. Objects come from ${bblName || 'no block set'} and sounds from ${sndName || 'no sound set'}.`,
           ),
-          tabBar,
+          h('div', { class: 'chr-tabrow' }, tabBar, h('div', { class: 'toolbar chr-undo' }, undoBtn, redoBtn)),
         ),
         fileField(
           project,
@@ -808,6 +843,7 @@ registerEditor(['chr'], (host, project, file) => {
   showTab(tab);
   render();
   return () => {
+    window.removeEventListener('keydown', onKey);
     clearTimeout(timer);
     audio.stopSpeaker();
     audio.stopVoc();

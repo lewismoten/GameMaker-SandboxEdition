@@ -58,7 +58,7 @@ export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
     },
   ],
   chr: [
-    { title: 'Characters', rows: [[['←', '→'], 'Switch between At the start and Sequences (on the tabs)'], GRID] },
+    { title: 'Characters', rows: [...UNDO, [['←', '→'], 'Switch between At the start and Sequences (on the tabs)'], GRID] },
     { title: 'A sequence’s key', rows: [[['Click', 'any key'], 'Click the key button, then press the key that runs the sequence']] },
   ],
   map: [{ title: 'Map', rows: [...UNDO, GRID] }],
