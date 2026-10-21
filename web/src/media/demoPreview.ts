@@ -3,6 +3,11 @@
 // at a time: it stops when another starts, when it scrolls out of view, or when the
 // recording runs out. It starts silent; the sound can be turned on (and stays on for the
 // next preview until it is turned off).
+//
+// A game without a title demo can still show one: a CD game may have a demo added for this
+// edition (extraDemos.ts, kept apart from its files), and any other game an "attract
+// mode" (attractDemo.ts) that walks its hero back and forth. `kind` tells them apart so the
+// page can say which it is.
 import { AudioEngine } from '../audio/engine';
 import { getVolume, output } from '../audio/output';
 import { parseGame } from '../formats/game';
@@ -10,6 +15,21 @@ import type { Session } from '../engine/scene';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import { cdName, fetchGameFile, type CatalogEntry, type GameFiles } from '../project/files';
 import { recordingTicks, titleDemo, withoutOpening } from './demo';
+import { attractRecording } from './attractDemo';
+import { ADDED_DEMO_NOTICE, extraDemoFor, extraDemoForGam, extraDemosLoaded, fetchExtraDemo, loadExtraDemos, type ExtraDemo } from './extraDemos';
+
+/** The game's own title demo, one added for this edition, or a made-up walk about. */
+export type DemoKind = 'recorded' | 'added' | 'attract';
+
+/** What the page can say about each kind of preview. */
+export const DEMO_KIND_LABEL: Record<DemoKind, string> = {
+  recorded: 'Demo',
+  added: ADDED_DEMO_NOTICE,
+  attract: 'Preview — not a recorded demo',
+};
+
+// the index is small: fetched early, so a preview can tell at once whether a demo was added
+if (typeof window !== 'undefined') void loadExtraDemos();
 
 /** The demo file the title scene names, when it is one of the game's files (any case, or its CD name). */
 export function demoFileName(gam: Uint8Array, files: readonly string[]): string | undefined {
@@ -23,24 +43,81 @@ export function demoFileName(gam: Uint8Array, files: readonly string[]): string 
   }
 }
 
-const catalogDemos = new Map<string, Promise<boolean>>();
+const catalogDemos = new Map<string, Promise<DemoKind | undefined>>();
 
-/** Whether a CD game has a title demo: reads only its .gam (through the shared file cache). */
-export function catalogHasDemo(g: CatalogEntry, base = './'): Promise<boolean> {
-  if (!g.gam) return Promise.resolve(false);
+/**
+ * What a CD game's preview plays: its own title demo, one added for this edition, or the
+ * attract mode (undefined without a game file). Reads only its .gam (through the shared
+ * file cache); an added demo's recording is fetched ahead, ready to play.
+ */
+export function catalogDemoKind(g: CatalogEntry, base = './'): Promise<DemoKind | undefined> {
+  if (!g.gam) return Promise.resolve(undefined);
   let known = catalogDemos.get(g.id);
   if (!known) {
     known = fetchGameFile(g, g.gam, base)
-      .then((gam) => !!gam && !!demoFileName(gam, g.files))
-      .catch(() => false);
+      .then(async (gam): Promise<DemoKind | undefined> => {
+        if (!gam) return undefined;
+        if (demoFileName(gam, g.files)) return 'recorded';
+        const extra = extraDemoForGam(await loadExtraDemos(base), gam);
+        if (extra && (await fetchExtraDemo(extra, g, base))) return 'added';
+        return 'attract';
+      })
+      .catch(() => undefined);
     catalogDemos.set(g.id, known);
   }
   return known;
 }
 
+/** Whether a CD game has a demo recording to play: its own title demo, or one added for this edition. */
+export async function catalogHasDemo(g: CatalogEntry, base = './'): Promise<boolean> {
+  const kind = await catalogDemoKind(g, base);
+  return kind === 'recorded' || kind === 'added';
+}
+
+/** The demo added for this edition for a CD game, if any (whatever its files are now). */
+export async function catalogExtraDemo(g: Pick<CatalogEntry, 'id'>, base = './'): Promise<ExtraDemo | undefined> {
+  return extraDemoFor(await loadExtraDemos(base), g.id);
+}
+
 /** Whether a game's files hold a title demo. */
 export function filesHaveDemo(files: GameFiles, gam: string | null | undefined): boolean {
   return !!gam && !!titleDemo(files, gam);
+}
+
+/**
+ * What a preview of these files plays: their title demo, a demo added for the CD game they
+ * still are (same .gam), or the attract mode when the hero has keys to walk with.
+ */
+export async function filesDemoKind(files: GameFiles, gam: string | null | undefined): Promise<DemoKind | undefined> {
+  if (!gam) return undefined;
+  if (titleDemo(files, gam)) return 'recorded';
+  if (extraDemoForGam(await loadExtraDemos(), files.get(gam))) return 'added';
+  return attractRecording(files, gam) ? 'attract' : undefined;
+}
+
+interface DemoSource {
+  kind: DemoKind;
+  rec: Uint8Array;
+}
+
+/** The recording a preview plays; a promise while an added demo is still being fetched. */
+function demoSource(files: GameFiles, gam: string, attract: boolean): DemoSource | Promise<DemoSource | undefined> | undefined {
+  const own = titleDemo(files, gam);
+  if (own) return { kind: 'recorded', rec: own };
+  const fallback = (): DemoSource | undefined => {
+    const rec = attract ? attractRecording(files, gam) : undefined;
+    return rec && { kind: 'attract', rec };
+  };
+  const added = (extra: ExtraDemo | undefined): DemoSource | Promise<DemoSource | undefined> | undefined => {
+    if (!extra) return fallback();
+    // one the game had all along (named nowhere) is in its files already
+    const inFiles = extra.inGame ? files.get(extra.file) : undefined;
+    if (inFiles) return { kind: 'added', rec: inFiles };
+    return fetchExtraDemo(extra).then((rec) => (rec ? { kind: 'added' as const, rec } : fallback()));
+  };
+  const index = extraDemosLoaded();
+  if (index) return added(extraDemoForGam(index, files.get(gam)));
+  return loadExtraDemos().then((i) => added(extraDemoForGam(i, files.get(gam))));
 }
 
 /** True once the visitor has clicked or typed on the page: sound may start without asking. */
@@ -67,6 +144,10 @@ class PreviewAudio extends AudioEngine {
 }
 
 export interface DemoPreview {
+  /** What is playing: the game's own demo, one added for this edition, or the attract mode (see DEMO_KIND_LABEL). */
+  readonly kind: DemoKind;
+  /** Resolves with `kind` once known (at once, unless an added demo is still being fetched). */
+  readonly ready: Promise<DemoKind | undefined>;
   readonly muted: boolean;
   /** Turns the sound on or off (starting over, with its music, if no sound was allowed when it began). */
   setMuted(muted: boolean): void;
@@ -81,6 +162,8 @@ export interface DemoPreviewOptions {
   loop?: boolean;
   /** Called once when it stops: ended, scrolled away, replaced by another or stopped. */
   onStop?: () => void;
+  /** Walk the hero about when the game has no demo recording (default true). */
+  attract?: boolean;
 }
 
 let current: { stop(): void } | undefined;
@@ -90,15 +173,21 @@ export function stopDemoPreview(): void {
   current?.stop();
 }
 
-/** Plays the title demo in `host` (sized by the page); returns undefined when the game has none. */
+/**
+ * Plays the title demo in `host` (sized by the page): the game's own, else one added for
+ * this edition, else (unless `attract` is false) the attract mode. Returns undefined when
+ * there is nothing to play; `kind` says which it is.
+ */
 export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string, o: DemoPreviewOptions): DemoPreview | undefined {
-  const rec = titleDemo(files, gam);
-  if (!rec) return undefined;
+  const source = demoSource(files, gam, o.attract !== false);
+  if (!source) return undefined;
   current?.stop();
-  const lastTick = recordingTicks(rec);
+  let rec: Uint8Array = new Uint8Array(0);
+  let kind: DemoKind = source instanceof Promise ? 'added' : source.kind;
+  let lastTick = 0;
   const game = withoutOpening(files, gam);
   let muted = o.muted ?? !soundOn;
-  let audio: PreviewAudio;
+  let audio: PreviewAudio | undefined;
   let player: PlayerHandle | undefined;
   let session: Session | undefined;
   let stopped = false;
@@ -107,10 +196,10 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   const start = () => {
     player?.stop();
     session = undefined;
-    audio = new PreviewAudio(muted);
+    const sound = (audio = new PreviewAudio(muted));
     let played = false;
     let endedAt = 0;
-    const p = mountPlayer(host, game, gam, { title: o.title, playback: rec, preview: true, audio, onSession: (s) => (session = s) });
+    const p = mountPlayer(host, game, gam, { title: o.title, playback: rec, preview: true, audio: sound, onSession: (s) => (session = s) });
     player = p;
     clearInterval(timer);
     // A second after the last recorded key (or once the playback is over) the demo is done.
@@ -137,12 +226,18 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   });
 
   const handle: DemoPreview = {
+    get kind() {
+      return kind;
+    },
+    ready: Promise.resolve(source).then((src) => src?.kind),
     get muted() {
       return muted;
     },
     setMuted(m: boolean) {
       muted = m;
       soundOn = !m;
+      // (still fetching an added demo: it starts with this choice)
+      if (!audio) return;
       audio.muted = m;
       // Sound held back until the visitor used the page: start over so the music plays too.
       if (!m && !audio.context) start();
@@ -162,7 +257,18 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   };
   const entry = { stop: () => handle.stop() };
   current = entry;
-  start();
+  const begin = (src: DemoSource) => {
+    ({ kind, rec } = src);
+    lastTick = recordingTicks(rec);
+    start();
+  };
+  if (source instanceof Promise)
+    void source.then((src) => {
+      if (stopped) return;
+      if (src) begin(src);
+      else handle.stop();
+    });
+  else begin(source);
   // after the first layout, so a preview just placed counts as in view
   requestAnimationFrame(() => !stopped && seen.observe(host));
   return handle;
