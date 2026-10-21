@@ -4,7 +4,7 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$12",
-  "blurb": "Gwin ran off with Doc Leo's clown costume, and tonight is the Klown Klub's Big Show. Hop, bark, dig, high five, sit, spin, roll over and play dead across town as Teddy, a little corgi with a ton of tricks, then lead the Klown Klub parade.",
+  "blurb": "Gwin ran off with Doc Leo's clown costume, and tonight is the Klown Klub's Big Show! Hop, bark, dig, sit, spin and play dead across town as Teddy, a little corgi with a ton of tricks.",
   "exe": "TEDDY.EXE",
   "sound": "sb",
   "label": {
@@ -18,17 +18,17 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "A little dog. A big town. A ton of tricks.",
-    "back": "Teddy is a Pembroke Welsh Corgi. He is short, he is fluffy, and he knows a ton of tricks. His person, Doc Leo, is a friendly hobo clown - balloon animals, magic tricks, every parade in town - and the star of tonight's Big Show at the Klown Klub. He drove ahead in his little red 1976 CitiCar, and Teddy's big sister Gwin galloped off with his costume suitcase and scattered it all over town.\n\nNo nose, no show! Dig under the back fence, high five the bow tie off the yard-sale balloons, sit pretty for the kids in the park, spin through the revolving doors downtown and play dead under the flying pies, then win over the whole Klown Klub with every trick in the book and ride the CitiCar at the head of the parade. Every trick opens a way forward.",
+    "back": "Teddy is short. Teddy is fluffy. And Teddy knows a TON of tricks.\n\nTonight his person, Doc Leo the hobo clown, is the star of the Klown Klub's Big Show. But Teddy's big sister Gwin just ran off with Doc Leo's costume suitcase and scattered it all over town. No nose, no show!\n\nDig under the back fence. High five the balloons. Sit pretty for the kids in the park, spin through the revolving doors downtown, and play dead under the flying pies. Every trick opens a way forward - and only a little dog can save the Big Show!",
     "features": [
-      "Nine tricks: hop, speak, dig, fetch, and high five, sit pretty, spin, play dead and roll over on the number keys - plus W/A/D and Q/E diagonal hops for keyboards without a number pad",
-      "Five levels from Doc Leo's backyard to the Big Top, morning to showtime",
+      "Nine tricks to master: hop, speak, dig, fetch, high five, sit pretty, spin, play dead and roll over",
+      "Five levels from the backyard to the Big Top, morning to showtime",
       "Fountains, steam vents and trampolines that launch you skyward",
       "Revolving doors, sprinklers, frisbees, geese and a custard-pie barrage",
-      "Doc Leo's balloon dogs to catch, Presto the magician's doves, and the Klown Klub parade marching down Main Street",
-      "The story told in a slide show of FLI cartoons, starring Doc Leo's red 1976 CitiCar",
+      "Balloon dogs to catch, a magician's doves and the Klown Klub parade",
+      "The story told in animated cartoons, starring Doc Leo's little red car",
       "Doc Leo and his kind, funny Klown Klub friends",
-      "Gwin, who ruins everything (and learns one trick)",
-      "Ten original Sound Blaster FM songs and digitized woofs"
+      "Gwin, who ruins everything - and learns one trick",
+      "Ten original Sound Blaster songs and digitized woofs"
     ],
     "shots": [
       ["backyard.map", 44, 29],
