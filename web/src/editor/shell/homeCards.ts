@@ -15,7 +15,7 @@ import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './
 import { showKeyMap } from '../keymap/keyMapView';
 import { demoButton } from '../../media/demo';
 import { offerAddedDemo } from '../../media/addedDemo';
-import { catalogHasDemo, filesHaveDemo, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
+import { catalogHasDemo, filesDemoKind, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
 import { gamePage } from '../../seo/site';
 import { icon as svgIcon, type IconName } from './homeIcons';
@@ -139,7 +139,8 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
       return true;
     },
     files: load,
-    hasDemo: async () => filesHaveDemo(await load(), p.gam),
+    // its own demo, one added for the CD game it still is, or the attract mode (demoPreview.ts)
+    hasDemo: async () => !!(await filesDemoKind(await load(), p.gam)),
   };
 }
 
