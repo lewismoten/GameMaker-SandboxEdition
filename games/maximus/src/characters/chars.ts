@@ -1,17 +1,17 @@
 // The four ways Max gets around, as .CHR/.CBL pairs: on foot (COURIER), the courier pod in
 // space (POD), the diving bell under the seas (DIVER) and the rover (ROVER). They share
 // sequence numbers, so ammunition counted in one carries over to the others.
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, Mask, fill, shade } from './src/art/draw';
-import { S, WHITE, shared } from './src/art/palette';
-import { CHARBL } from '../../web/src/formats/blocks';
-import type { Character } from '../../web/src/formats/character';
-import { INF_REPEAT } from '../../web/src/formats/character';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, Mask, fill, shade } from '../art/draw';
+import { S, WHITE, shared } from '../art/palette';
+import { CHARBL } from '../../../../web/src/formats/blocks';
+import type { Character } from '../../../../web/src/formats/character';
+import { INF_REPEAT } from '../../../../web/src/formats/character';
 import { BlockList, NONE, character, setSeq, type F } from './chrkit';
-import { MON, SEQ, SND, itemBlock } from './src/ids';
-import { drawCourier, split, type Pose } from './src/sprites/courier';
-import { drawDiver, drawPod, drawRover } from './src/sprites/vehicles';
-import { beam, blink, charge, dropping, dust, shielded, smoke, sonar, sparkles, splash, streak, turn } from './src/sprites/fx';
+import { MON, SEQ, SND, itemBlock } from '../ids';
+import { drawCourier, split, type Pose } from '../sprites/courier';
+import { drawDiver, drawPod, drawRover } from '../sprites/vehicles';
+import { beam, blink, charge, dropping, dust, shielded, smoke, sonar, sparkles, splash, streak, turn } from '../sprites/fx';
 
 export interface CharSet {
   name: string;

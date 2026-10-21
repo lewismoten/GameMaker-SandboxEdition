@@ -6,7 +6,7 @@ import { rng } from '../kit/pixels';
 import { LASTMM } from '../../web/src/formats/map';
 import type { Block } from '../../web/src/formats/blocks';
 import { Grid, W, H, wx, wy } from './mapkit';
-import type { Creature, MonsterSet, Placement } from './bestiary';
+import type { Creature, MonsterSet, Placement } from './src/characters/bestiary';
 
 export interface Spots {
   ground: { x0: number; x1: number; y: number }[];

@@ -3,7 +3,7 @@
 // the credit door, ride the lift, and walk into the airlock to reach the pod.
 import { Grid, H, W } from './mapkit';
 import type { SetBuilder } from './src/blocks/blockset';
-import type { MonsterSet } from './bestiary';
+import type { MonsterSet } from './src/characters/bestiary';
 import type { PlanetResult } from './planet';
 
 export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {

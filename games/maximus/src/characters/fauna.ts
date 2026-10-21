@@ -2,7 +2,7 @@
 // its .MON, and each has an "easy" and a "hard" edition (the outer sectors' creatures
 // move faster, hit harder and take more to kill) - 64 monsters per file, every slot used.
 import { bob, eight, hops, loop, pace, type Creature } from './bestiary';
-import { MONEY } from './src/ids';
+import { MONEY } from '../ids';
 
 /** Shorthand for a creature definition. */
 const C = (c: Creature): Creature => c;

@@ -1,15 +1,15 @@
 // Monster sets: a .MBL of 100 monster blocks and a .MON of 64 monsters, built from a list
 // of creature designs. Slots 44..63 are the same in every set: the courier's shots, the
 // loot creatures drop and the sparks (see common.ts MON), drawn in shared colors.
-import { Pixels } from '../kit/pixels';
-import { MONBL, SOLTOP, emptyBlock, type Block } from '../../web/src/formats/blocks';
-import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '../../web/src/formats/monster';
-import { CLEAR, Mask, fill, outline, shade, sprite } from './src/art/draw';
-import { MBL_SHARED_BASE, MON, MONEY } from './src/ids';
-import { drawCreature, type Archetype, type Paint } from './src/sprites/creatures';
-import { drawPickup } from './src/blocks/items';
-import { OUTLINE, S, WHITE, shared } from './src/art/palette';
-import { R } from './src/blocks/surface';
+import { Pixels } from '../../../kit/pixels';
+import { MONBL, SOLTOP, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
+import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '../../../../web/src/formats/monster';
+import { CLEAR, Mask, fill, outline, shade, sprite } from '../art/draw';
+import { MBL_SHARED_BASE, MON, MONEY } from '../ids';
+import { drawCreature, type Archetype, type Paint } from '../sprites/creatures';
+import { drawPickup } from '../blocks/items';
+import { OUTLINE, S, WHITE, shared } from '../art/palette';
+import { R } from '../blocks/surface';
 
 export type Corner = [dx: number, dy: number, speed: number, orient?: number];
 

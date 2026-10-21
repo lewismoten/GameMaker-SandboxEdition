@@ -3,7 +3,7 @@
 import { rng } from '../kit/pixels';
 import { Grid, W, H, wx, wy } from './mapkit';
 import type { SetBuilder } from './src/blocks/blockset';
-import type { MonsterSet } from './bestiary';
+import type { MonsterSet } from './src/characters/bestiary';
 import type { P } from './spacemaps';
 
 export interface MaelstromResult {
