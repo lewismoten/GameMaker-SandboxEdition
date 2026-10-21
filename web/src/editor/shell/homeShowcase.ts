@@ -72,7 +72,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     clear(
       label,
       h('span', { class: `sc-chip kind-${game.kind}` }, KIND_LABEL[game.kind]),
-      how.featured ? h('span', { class: 'sc-featured' }, '★ Featured · picked at random') : null,
+      how.featured ? h('span', { class: 'sc-featured', title: 'Picked at random' }, '★ Featured') : null,
       how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, '🎲 Another') : null,
     );
     title.textContent = game.title;

@@ -265,3 +265,53 @@
     -webkit-line-clamp: 3;
   }
 }
+
+/* Wide and tall enough (see home.css): the game is a column beside the library. */
+@media (min-width: 1000px) and (min-height: 600px) {
+  .home-intro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 16px;
+    margin: 0;
+  }
+
+  .home-intro p {
+    flex: 1 1 40ch;
+    max-width: none;
+    font-size: 13px;
+  }
+
+  .home .showcase {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    align-self: start;
+    align-content: start;
+    gap: 14px;
+    max-height: 100%;
+    margin: 0;
+    padding: 14px;
+    overflow-y: auto;
+  }
+
+  .sc-screen {
+    padding: 9px;
+  }
+
+  .showcase .sc-title {
+    font-size: clamp(22px, 2vw, 32px);
+  }
+
+  .sc-blurb {
+    -webkit-line-clamp: 4;
+    font-size: 13px;
+  }
+
+  .sc-actions > .button,
+  .sc-actions > button,
+  .sc-actions > .card-more > summary {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}

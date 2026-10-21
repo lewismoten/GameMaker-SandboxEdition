@@ -1,7 +1,9 @@
-// Home page: one game shown large at the top (a featured one, or the one you chose; see
-// homeShowcase.ts), and below it the library: collections on the left (your games, the
-// CD's gameware, our Sandbox games, the shareware) with "Make a new game" under them, and
-// the chosen collection's games as small picture tiles (homeCards.ts). A chosen game is
+// Home page: one game shown large (a featured one, or the one you chose; see
+// homeShowcase.ts) and the library: tabs for the collections (your games, the CD's
+// gameware, our Sandbox games, the shareware) with search and "New game" beside them, and
+// the chosen collection's games as small picture tiles (homeCards.ts). On a wide window
+// the game sits in a column beside the library and the page fits the window, the tiles
+// scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
 // kept in the address (#/game/cd:<id> or #/game/my:<id>) so a reload or a link shows it.
 import { h, clear } from '../core/ui';
 import { loadCatalog, type CatalogEntry } from '../../project/files';
@@ -61,11 +63,11 @@ function savedCategory(): Category | undefined {
 const hashKey = () => (location.hash.startsWith(GAME_HASH) ? decodeURIComponent(location.hash.slice(GAME_HASH.length)) : '');
 
 export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
-  const catNav = h('nav', { class: 'lib-cats', 'aria-label': 'Game collections' });
-  const libTitle = h('h2', null);
+  const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
+  const libTitle = h('h2', { id: 'lib-title' });
   const libLead = h('p', { class: 'lead' });
   const libTools = h('div', { class: 'lib-tools' });
-  const tiles = h('div', { class: 'cards lib-tiles' }, h('p', { class: 'meta' }, 'Loading…'));
+  const tiles = h('div', { id: 'lib-panel', class: 'cards lib-tiles', role: 'tabpanel' }, h('p', { class: 'meta' }, 'Loading…'));
   const search = h('input', {
     type: 'search',
     class: 'lib-search',
@@ -150,6 +152,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     markSelected();
   };
 
+  // The collections are tabs: arrow keys move between them, Tab goes on to the games.
   const renderCats = () => {
     const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.id === 'mine' ? projects.length : entriesOf(c.id).length]));
     clear(
@@ -157,14 +160,32 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       ...CATEGORIES.map((c) =>
         h(
           'button',
-          { class: `lib-cat${c.id === current ? ' active' : ''}`, 'aria-pressed': String(c.id === current), onclick: () => void select(c.id, true) },
+          {
+            id: `lib-tab-${c.id}`,
+            class: `lib-cat${c.id === current ? ' active' : ''}`,
+            type: 'button',
+            role: 'tab',
+            'aria-selected': String(c.id === current),
+            'aria-controls': 'lib-panel',
+            tabindex: c.id === current ? 0 : -1,
+            title: c.lead,
+            onclick: () => void select(c.id, true),
+          },
           h('span', { class: 'lib-cat-icon', 'aria-hidden': 'true' }, c.icon),
           h('span', { class: 'lib-cat-name' }, c.name),
-          h('span', { class: 'lib-cat-count' }, String(counts[c.id])),
+          h('span', { class: 'lib-cat-count', 'aria-label': `(${counts[c.id]} game${counts[c.id] === 1 ? '' : 's'})` }, String(counts[c.id])),
         ),
       ),
     );
   };
+  catNav.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -99, End: 99 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    const i = CATEGORIES.findIndex((c) => c.id === current);
+    const next = CATEGORIES[Math.max(0, Math.min(CATEGORIES.length - 1, Math.abs(step) > 1 ? (step < 0 ? 0 : 99) : (i + step + CATEGORIES.length) % CATEGORIES.length))];
+    void select(next.id, true).then(() => catNav.querySelector<HTMLElement>(`#lib-tab-${next.id}`)?.focus());
+  });
 
   /** Shows a collection; remembered when the visitor picked it. */
   const select = async (c: Category, picked = false) => {
@@ -176,6 +197,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         /* not remembered */
       }
     renderCats();
+    tiles.setAttribute('aria-labelledby', `lib-tab-${c}`);
     const info = CATEGORIES.find((x) => x.id === c)!;
     libTitle.textContent = info.name;
     libLead.textContent = info.lead;
@@ -241,19 +263,16 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       top.el,
       h(
         'section',
-        { id: 'library', class: 'library', 'aria-label': 'Games' },
-        h('div', { class: 'lib-side' }, catNav, h('button', { class: 'primary lib-new', onclick: () => void newGame(nav) }, '+ Make a new game')),
-        h('div', { class: 'lib-main' }, h('div', { class: 'lib-head' }, libTitle, search), libLead, libTools, tiles),
-      ),
-      h(
-        'section',
-        null,
-        h('h2', null, 'Keys while playing'),
+        { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h(
-          'p',
-          { class: 'lead' },
-          'Each game defines its own keys (usually the arrows plus a few others; ⌨ on a game shows them). F1 help · F2 status · F3 music · F4 sound · F5 save · F6 load · Esc leaves a level. Gamepads work as joysticks.',
+          'div',
+          { class: 'lib-bar' },
+          catNav,
+          h('div', { class: 'lib-find' }, search, h('button', { class: 'primary lib-new', type: 'button', onclick: () => void newGame(nav) }, '+ New game')),
         ),
+        h('div', { class: 'lib-about' }, libTitle, libLead),
+        libTools,
+        tiles,
       ),
     ),
   );

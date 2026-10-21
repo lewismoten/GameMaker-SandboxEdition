@@ -1,123 +1,196 @@
-/* Home page: the selected game panel at the top (homeShowcase.ts), then the library:
-   collections on the left, the chosen collection's games as picture tiles beside them
-   (homeCards.ts). On a phone the panel stacks and the collections become a row of tabs. */
+/* Home page: the selected game (homeShowcase.ts) and the library: collection tabs with
+   search and "New game", a line about the collection, and its games as picture tiles
+   (homeCards.ts). Wide windows put the game in a column beside the library and fit the
+   page to the window (the tiles scroll by themselves if they must); narrower, it stacks. */
 
 .home .library {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 20px;
-  align-items: start;
-}
-
-.lib-side {
-  position: sticky;
-  top: 56px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
+  margin: 0;
 }
 
-.lib-new {
-  width: 100%;
-  padding: 10px 12px;
-  font-weight: 700;
+.lib-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
 }
 
 .lib-cats {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 8px;
+  gap: 2px;
+  padding: 3px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
 }
 
 .lib-cat {
-  display: grid;
-  grid-template-columns: 22px 1fr auto;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 9px 10px;
+  gap: 7px;
+  min-height: 34px;
+  padding: 5px 11px;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: 7px;
   background: none;
   color: inherit;
   font: inherit;
   font-weight: 600;
-  text-align: left;
+  white-space: nowrap;
   cursor: pointer;
 }
 
 .lib-cat:hover {
   background: var(--panel-2);
+  border-color: transparent;
 }
 
 .lib-cat.active {
-  background: var(--accent-soft);
+  background: var(--accent);
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--accent-text);
+}
+
+.lib-cat:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
 }
 
 .lib-cat-icon {
+  width: 1.2em;
   text-align: center;
 }
 
 .lib-cat-count {
-  min-width: 22px;
-  padding: 1px 7px;
-  border-radius: 10px;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 9px;
   background: var(--panel-2);
   color: var(--muted);
   font-size: 11px;
+  line-height: 18px;
   text-align: center;
 }
 
-.lib-main {
+.lib-cat.active .lib-cat-count {
+  background: rgba(0, 0, 0, 0.18);
+  color: inherit;
+}
+
+.lib-find {
+  display: flex;
+  flex: 1 1 200px;
+  justify-content: flex-end;
+  gap: 8px;
   min-width: 0;
 }
 
-.lib-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
-}
-
-.lib-head h2 {
-  margin: 0;
-}
-
 .lib-search {
-  width: min(260px, 100%);
+  flex: 0 1 240px;
+  min-width: 110px;
   padding: 6px 12px;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 17px;
   background: var(--panel);
   color: inherit;
   font: inherit;
 }
 
-.lib-main > .lead {
-  margin: 6px 0 14px;
+.lib-new {
+  flex: none;
+  padding: 6px 14px;
+  border-radius: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lib-about {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+}
+
+.home .lib-about h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.lib-about .lead {
+  flex: 1 1 30ch;
+  max-width: 100ch;
+  margin: 0;
+  font-size: 13px;
 }
 
 .lib-tools {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 14px;
 }
 
 .lib-tools:empty {
   display: none;
 }
 
+.lib-tools .dropzone {
+  padding: 10px;
+}
+
 .lib-tiles {
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 10px;
+}
+
+.lib-tiles > .meta {
+  grid-column: 1 / -1;
+  margin: 8px 0;
+}
+
+/* Wide and tall enough: the game in a column beside the library, the page fits the window. */
+@media (min-width: 1000px) and (min-height: 600px) {
+  #app.modern:has(> .content > main.home) {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  #app.modern > .content > main.home {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  main.home {
+    display: grid;
+    grid-template-columns: minmax(320px, 28%) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 12px 24px;
+    max-width: 1720px;
+    padding: 14px 24px 16px;
+  }
+
+  .home-intro {
+    grid-column: 1 / -1;
+  }
+
+  .home .library {
+    min-height: 0;
+  }
+
+  /* the tiles scroll by themselves; the padding leaves room for the selected tile's ring */
+  .lib-tiles {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: -4px;
+    padding: 4px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
 }
 
 /* a game tile: its picture (with buttons over it) and its title */
@@ -372,39 +445,34 @@
 }
 
 @media (max-width: 720px) {
-  .home .library {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .lib-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  /* the collections and the new game button sit straight in the column */
-  .lib-side {
-    display: contents;
-  }
-
+  /* four tabs as a 2 x 2 grid */
   .lib-cats {
-    position: sticky;
-    top: 44px;
-    z-index: 4;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 6px;
-    scrollbar-width: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   .lib-cat {
+    justify-content: flex-start;
+  }
+
+  .lib-cat-count {
+    margin-left: auto;
+  }
+
+  .lib-find {
     flex: none;
-    width: auto;
-    grid-template-columns: auto auto auto;
-    padding: 7px 10px;
+  }
+
+  .lib-search {
+    flex: 1 1 auto;
   }
 
   .lib-tiles {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-  }
-
-  .lib-search {
-    width: 100%;
   }
 }
