@@ -142,6 +142,11 @@
   font-weight: 700;
 }
 
+.sc-resume {
+  color: #8ff0b4;
+  font-weight: 700;
+}
+
 .showcase .sc-another {
   display: inline-flex;
   align-items: center;

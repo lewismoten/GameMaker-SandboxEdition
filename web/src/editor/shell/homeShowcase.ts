@@ -39,8 +39,10 @@ function whenIdleAndSeen(el: Element, f: () => void): void {
 
 export interface Showcase {
   el: HTMLElement;
-  /** Shows a game; `featured` when nobody chose it. */
-  show(game: HomeGame, how: { featured?: boolean; onAnother?: () => void }): void;
+  /** Shows a game; `featured` when nobody chose it, `resume` for the game of yours edited last. */
+  show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;
+  /** Opens the ⋯ More menu of the game shown and puts the keyboard on its first item. */
+  openMore(): void;
   readonly game: HomeGame | undefined;
 }
 
@@ -75,6 +77,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       label,
       h('span', { class: `sc-chip kind-${game.kind}` }, KIND_LABEL[game.kind]),
       how.featured ? h('span', { class: 'sc-featured', title: 'Picked at random' }, '★ Featured') : null,
+      how.resume ? h('span', { class: 'sc-resume' }, 'Continue where you left off') : null,
       how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, icon('dice'), 'Another') : null,
     );
     title.textContent = game.title;
@@ -111,9 +114,18 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     });
   };
 
+  const openMore = () => {
+    const more = actions.querySelector<HTMLDetailsElement>('.card-more');
+    if (!more) return;
+    more.open = true;
+    more.querySelector<HTMLElement>('.card-more-menu button')?.focus({ preventScroll: true });
+    more.scrollIntoView({ block: 'nearest' });
+  };
+
   return {
     el,
     show,
+    openMore,
     get game() {
       return current;
     },
