@@ -382,7 +382,7 @@ registerEditor(['fli'], (host, project, file) => {
       ),
       h(
         'div',
-        { class: 'toolbar fli-actions' },
+        { class: 'toolbar fli-actions fli-export' },
         h('button', { onclick: () => void exportFrame() }, '⬇ This frame as PNG'),
         h('button', { onclick: () => void exportAll() }, '⬇ All frames (.zip of PNGs)'),
         gifBtn,
@@ -393,7 +393,7 @@ registerEditor(['fli'], (host, project, file) => {
       ),
       h(
         'p',
-        { class: 'hint' },
+        { class: 'hint fli-help' },
         'Every frame of an .FLI is shown for the same time. To hold a picture longer, duplicate its frame. In the game an animation plays once, then the slide show waits for its pause. Keys: Space play/pause, ← → step, Home/End.',
       ),
     ),
