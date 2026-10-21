@@ -83,3 +83,20 @@
 .snd-speaker > .toolbar button {
   padding: 4px 10px;
 }
+/* short windows (landscape tablets): smaller recipe buttons, more to a row, and a shorter
+   pitch drawing, so the effect still fits */
+@media (min-width: 641px) and (max-height: 800px) {
+  .snd-speaker .sfx-grid {
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 4px;
+  }
+  .snd-speaker .sfx-grid button {
+    padding: 3px 6px;
+  }
+  .snd-speaker > .toolbar button {
+    padding: 3px 8px;
+  }
+  .snd-pitch {
+    max-height: clamp(100px, calc(var(--ws-vh, 100dvh) - 650px), 220px);
+  }
+}
