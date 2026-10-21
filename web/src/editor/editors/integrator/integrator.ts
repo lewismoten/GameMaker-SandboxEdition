@@ -38,6 +38,7 @@ import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from
 import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
 import { pickOnMap } from './pickOnMap';
+import { startingAt } from './startAt';
 import { END_SCREENS, END_SONGS, START_SCREENS, START_SONGS } from './sceneSlots';
 import {
   S,
@@ -719,15 +720,7 @@ registerEditor(['gam'], (host, project) => {
   function playFrom(scene: number): void {
     audio.stopSong();
     playing = undefined;
-    const copy = structuredClone(game);
-    // where the hero arrives: a link into this level, else where the game starts, else the middle
-    const into = game.scenes.flatMap((x) => x.links).find((l) => l.toScene === scene);
-    const start = copy.scenes[0].links[0];
-    copy.scenes[0].links[0] = {
-      toScene: scene,
-      from: start?.from ?? { x: 0, y: 0 },
-      to: into?.to ?? (start?.toScene === scene ? start.to : { x: 50, y: 50 }),
-    };
+    const copy = startingAt(game, scene);
     const files = new GameFiles(project.files.entries());
     files.set(project.gam, serializeGame(copy));
     let player: PlayerHandle | undefined;
