@@ -6,7 +6,8 @@ import { sandboxBoxContents } from './gameBoxContents';
 import './shelf.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { boxModel, drawBox, openBoxViewer, type BoxFaces, type BoxViewerPage } from './gameBox';
+import { boxModel, openBoxViewer, type BoxViewerPage } from './boxViewer';
+import { drawBox, type BoxFaces } from './gameBox';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
 
 export interface ShelfHooks {

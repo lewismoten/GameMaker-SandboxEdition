@@ -17,7 +17,7 @@ import { keyboardTray } from './pc/tray';
 import { speakers } from './pc/speakers';
 import { mug, wallPhone, deskLamp } from './room/deskProps';
 import { deskModem } from './pc/modem';
-import { openBoxViewer } from './boxes/gameBox';
+import { openBoxViewer } from './boxes/boxViewer';
 import { gameShelf, type Shelf } from './boxes/shelf';
 import { openGameManual } from '../manual/gameManual';
 import { snowyWindow } from './room/snowWindow';

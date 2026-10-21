@@ -66,7 +66,7 @@ export async function renderShot(entry: CatalogEntry, canvas: HTMLCanvasElement,
     const shot = levelShot(files, scene, at, cols, rows);
     if (!shot) continue;
     const score = busyness(shot);
-    if (score > bestScore) (best = shot), (bestScore = score);
+    if (score > bestScore) ((best = shot), (bestScore = score));
   }
   if (!best) return false;
   canvas.width = best.width;

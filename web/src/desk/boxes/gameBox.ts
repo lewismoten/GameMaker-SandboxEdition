@@ -1,24 +1,35 @@
 // Retail boxes for the original games (games/<id>/about.json "box"): all six sides are
 // drawn on canvases from the game's own data — its title, copy and screenshots of its
-// maps — then folded into a 3D box. On the shelf the boxes lean against the wall; click
-// one and it comes forward, turning slowly; drag to turn it, scroll or pinch to zoom,
-// shift-drag (or two fingers) to pan, double-click to reset.
-import './gameBox.css';
-import { h } from '../../editor/core/ui';
+// maps (drawBox). The drawing helpers are in boxPaint.ts; the 3D box and the viewer that
+// turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
+// it comes forward in the viewer.
 import type { CatalogEntry } from '../../project/files';
 import { mapShot, renderShot } from './boxArt';
 import { parseGame, ADVTYPE } from '../../formats/game';
-import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours, type BoxExtras } from './boxFacts';
+import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours } from './boxFacts';
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
-
-type Box = NonNullable<NonNullable<CatalogEntry['original']>['box']> & BoxExtras;
-
-/** Box proportions (inches, like a 1995 shelf box): width, height, depth. */
-const W = 7.5;
-const H = 9.25;
-const D = 2;
-const PPI = 80; // canvas pixels per inch
+import {
+  type Box,
+  W,
+  H,
+  D,
+  canvas,
+  wrap,
+  fit,
+  TITLE_FONT,
+  BODY_FONT,
+  SANS,
+  background,
+  shade,
+  titleText,
+  publisherBand,
+  framedShot,
+  badge,
+  barcode,
+  wrapLines,
+  roundRect,
+} from './boxPaint';
 
 export interface BoxFaces {
   front: string;
@@ -29,170 +40,6 @@ export interface BoxFaces {
   bottom: string;
 }
 
-function canvas(w: number, h: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
-  const c = document.createElement('canvas');
-  c.width = Math.round(w * PPI);
-  c.height = Math.round(h * PPI);
-  return [c, c.getContext('2d')!];
-}
-
-/** Word-wraps text to a width; returns the y after the last line. */
-function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, lineHeight: number): number {
-  for (const para of text.split(/\n+/)) {
-    let line = '';
-    for (const word of para.split(/\s+/)) {
-      const test = line ? `${line} ${word}` : word;
-      if (ctx.measureText(test).width > width && line) {
-        ctx.fillText(line, x, y);
-        y += lineHeight;
-        line = word;
-      } else line = test;
-    }
-    if (line) {
-      ctx.fillText(line, x, y);
-      y += lineHeight;
-    }
-    y += lineHeight * 0.4;
-  }
-  return y;
-}
-
-/** The biggest font size (up to max) at which text fits the width. */
-function fit(ctx: CanvasRenderingContext2D, text: string, font: (px: number) => string, width: number, max: number): number {
-  let px = max;
-  for (; px > 8; px -= 2) {
-    ctx.font = font(px);
-    if (ctx.measureText(text).width <= width) break;
-  }
-  return px;
-}
-
-const TITLE_FONT = (px: number) => `italic 900 ${px}px 'Arial Black', Impact, sans-serif`;
-const BODY_FONT = (px: number) => `${px}px Georgia, 'Times New Roman', serif`;
-const SANS = (px: number, weight = 700) => `${weight} ${px}px Arial, Helvetica, sans-serif`;
-
-function background(ctx: CanvasRenderingContext2D, box: Box, w: number, h: number): void {
-  const g = ctx.createLinearGradient(0, 0, w * 0.3, h);
-  g.addColorStop(0, box.background);
-  g.addColorStop(1, shade(box.background, -0.35));
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, w, h);
-  // a little print grain
-  ctx.globalAlpha = 0.05;
-  for (let i = 0; i < (w * h) / 60; i++) {
-    ctx.fillStyle = i % 2 ? '#fff' : '#000';
-    ctx.fillRect((i * 7919) % w, (i * 104729) % h, 1, 1);
-  }
-  ctx.globalAlpha = 1;
-}
-
-/** Lightens (amount > 0) or darkens a #rrggbb color. */
-function shade(hex: string, amount: number): string {
-  const n = parseInt(hex.replace('#', '').padEnd(6, '0').slice(0, 6), 16);
-  const ch = (v: number) => Math.max(0, Math.min(255, Math.round(amount > 0 ? v + (255 - v) * amount : v * (1 + amount))));
-  return `rgb(${ch(n >> 16)}, ${ch((n >> 8) & 255)}, ${ch(n & 255)})`;
-}
-
-function titleText(ctx: CanvasRenderingContext2D, box: Box, title: string, cx: number, y: number, width: number, max: number): void {
-  const px = fit(ctx, title, TITLE_FONT, width, max);
-  ctx.font = TITLE_FONT(px);
-  ctx.textAlign = 'center';
-  ctx.lineJoin = 'round';
-  ctx.lineWidth = px * 0.16;
-  ctx.strokeStyle = '#000';
-  ctx.fillStyle = shade(box.accent, -0.45);
-  ctx.strokeText(title, cx + px * 0.06, y + px * 0.06);
-  ctx.fillText(title, cx + px * 0.06, y + px * 0.06);
-  ctx.strokeText(title, cx, y);
-  const g = ctx.createLinearGradient(0, y - px, 0, y);
-  g.addColorStop(0, shade(box.accent, 0.5));
-  g.addColorStop(1, box.accent);
-  ctx.fillStyle = g;
-  ctx.fillText(title, cx, y);
-  ctx.textAlign = 'left';
-}
-
-function publisherBand(ctx: CanvasRenderingContext2D, entry: CatalogEntry, w: number, y: number, hgt: number, left = false): void {
-  ctx.fillStyle = '#0b0b0b';
-  ctx.fillRect(0, y, w, hgt);
-  ctx.fillStyle = '#f5d000';
-  ctx.font = SANS(hgt * 0.5, 900);
-  ctx.textAlign = left ? 'left' : 'center';
-  ctx.fillText((entry.company ?? 'SANDBOX SOFTWARE').toUpperCase().split('').join(' '), left ? 28 : w / 2, y + hgt * 0.68);
-  ctx.textAlign = 'left';
-}
-
-function framedShot(ctx: CanvasRenderingContext2D, shot: HTMLCanvasElement | undefined, x: number, y: number, w: number, tilt = 0): number {
-  const h = shot ? (w * shot.height) / shot.width : w * 0.625;
-  ctx.save();
-  ctx.translate(x + w / 2, y + h / 2);
-  ctx.rotate(tilt);
-  ctx.fillStyle = '#fff';
-  ctx.shadowColor = 'rgba(0,0,0,0.5)';
-  ctx.shadowBlur = 12;
-  ctx.shadowOffsetY = 5;
-  ctx.fillRect(-w / 2 - 6, -h / 2 - 6, w + 12, h + 12);
-  ctx.shadowColor = 'transparent';
-  if (shot) {
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(shot, -w / 2, -h / 2, w, h);
-  } else {
-    ctx.fillStyle = '#222';
-    ctx.fillRect(-w / 2, -h / 2, w, h);
-  }
-  ctx.restore();
-  return h;
-}
-
-function badge(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, bg: string, fg: string, hgt = 28): number {
-  ctx.font = SANS(hgt * 0.6, 900);
-  ctx.textAlign = 'left';
-  const w = ctx.measureText(text).width + 20;
-  ctx.fillStyle = bg;
-  ctx.fillRect(x, y, w, hgt);
-  ctx.fillStyle = fg;
-  ctx.fillText(text, x + 10, y + hgt * 0.71);
-  return w;
-}
-
-function barcode(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, seed: string): void {
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(x, y, w, h);
-  ctx.fillStyle = '#000';
-  let n = [...seed].reduce((a, c) => a * 31 + c.charCodeAt(0), 7);
-  for (let bx = x + 8; bx < x + w - 8;) {
-    n = (n * 1103515245 + 12345) & 0x7fffffff;
-    const bw = 1 + (n % 3);
-    if ((n >> 8) % 2) ctx.fillRect(bx, y + 6, bw, h - 22);
-    bx += bw + 1;
-  }
-  ctx.font = SANS(11, 400);
-  ctx.textAlign = 'left';
-  ctx.fillText(`0 ${String(Math.abs(n) % 100000).padStart(5, '0')} ${String(Math.abs(n >> 5) % 100000).padStart(5, '0')} 5`, x + 10, y + h - 4);
-}
-
-/** How many lines text wraps to (the same breaks wrap() makes), counting paragraph gaps as 0.4 line. */
-function wrapLines(ctx: CanvasRenderingContext2D, text: string, width: number): number {
-  let n = 0;
-  for (const para of text.split(/\n+/)) {
-    let line = '';
-    for (const word of para.split(/\s+/)) {
-      const test = line ? `${line} ${word}` : word;
-      if (ctx.measureText(test).width > width && line) (n++, (line = word));
-      else line = test;
-    }
-    if (line) n++;
-    n += 0.4;
-  }
-  return n;
-}
-
-function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r);
-}
-
-/** The game's levels (adventure scenes in its .gam), for the hours of play and the claims. */
 async function countLevels(entry: CatalogEntry): Promise<number> {
   if (!entry.gam) return 0;
   const res = await fetch(`./${entry.path}${entry.gam}`).catch(() => undefined);
@@ -555,197 +402,4 @@ function spineTitle(s: CanvasRenderingContext2D, box: Box, main: string, sub: st
     s.fillText(sub, 0, y - px * 0.1 + 4);
   }
   s.restore();
-}
-
-/** The box as six faces, sized by the --u custom property (pixels per inch). */
-export function boxModel(faces: BoxFaces): HTMLElement {
-  const face = (name: keyof BoxFaces) => h('div', { class: `bface ${name}` }, h('img', { src: faces[name], alt: '', draggable: false }));
-  return h('div', { class: 'box3d' }, face('front'), face('back'), face('left'), face('right'), face('top'), face('bottom'));
-}
-
-export interface BoxViewerActions {
-  manual?: () => void;
-  insert?: () => void;
-  /** What the insert button says (the disk by default). */
-  insertLabel?: string;
-  /** Things that came in the box, shown beside it. */
-  extras?: HTMLElement;
-  /** The previous (-1) or next (1) box on the shelf, to look at without closing the viewer. */
-  step?: (dir: 1 | -1) => Promise<BoxViewerPage | undefined>;
-}
-
-export interface BoxViewerPage {
-  entry: Pick<CatalogEntry, 'title'>;
-  faces: BoxFaces;
-  actions: BoxViewerActions;
-}
-
-/**
- * Brings a box to the middle of the screen to turn, zoom and read. With actions.step,
- * ◀ ▶ (or PageUp/PageDown, [ and ]) go along the shelf to the other boxes.
- */
-export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFaces, actions: BoxViewerActions): Promise<void> {
-  return new Promise((resolve) => {
-    let model = boxModel(faces);
-    let current: BoxViewerPage = { entry, faces, actions };
-    const stage = h('div', { class: 'box-stage' }, model);
-    let rx = -12;
-    let ry = 32;
-    let zoom = 1;
-    let px = 0;
-    let py = 0;
-    let auto = true;
-    let raf = 0;
-    let stepping = false;
-    const apply = () => {
-      model.style.transform = `translate(${px}px, ${py}px) scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
-    };
-    const spin = () => {
-      if (auto) {
-        ry += 0.25;
-        apply();
-      }
-      raf = requestAnimationFrame(spin);
-    };
-    const close = () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('keydown', onKey, true);
-      overlay.remove();
-      resolve();
-    };
-    /** Puts the shelf's next or previous box in place of this one. */
-    const step = async (dir: 1 | -1) => {
-      if (stepping || !current.actions.step) return;
-      stepping = true;
-      const page = await current.actions.step(dir).catch(() => undefined);
-      stepping = false;
-      if (!page || !overlay.isConnected) return;
-      current = page;
-      const next = boxModel(page.faces);
-      next.classList.add(dir > 0 ? 'from-right' : 'from-left');
-      model.replaceWith(next);
-      model = next;
-      rx = -12;
-      ry = 32;
-      zoom = 1;
-      px = py = 0;
-      auto = true;
-      apply();
-      fill();
-    };
-    const onKey = (e: KeyboardEvent) => {
-      e.stopImmediatePropagation();
-      if (e.key === 'Escape') close();
-      else if (e.key === 'PageDown' || e.key === ']') void step(1);
-      else if (e.key === 'PageUp' || e.key === '[') void step(-1);
-      else if (e.key === 'ArrowLeft') ry -= 15;
-      else if (e.key === 'ArrowRight') ry += 15;
-      else if (e.key === 'ArrowUp') rx += 10;
-      else if (e.key === 'ArrowDown') rx -= 10;
-      else if (e.key === '+' || e.key === '=') zoom = Math.min(4, zoom * 1.2);
-      else if (e.key === '-') zoom = Math.max(0.4, zoom / 1.2);
-      else return;
-      e.preventDefault();
-      if (['PageDown', 'PageUp', '[', ']', 'Escape'].includes(e.key)) return;
-      auto = false;
-      apply();
-    };
-    window.addEventListener('keydown', onKey, true);
-
-    // drag to turn; shift-drag or a second finger to pan; wheel or pinch to zoom
-    const pointers = new Map<number, { x: number; y: number }>();
-    let pinch = 0;
-    stage.addEventListener('pointerdown', (e) => {
-      e.preventDefault(); // turn the box, don't drag its picture away
-      stage.setPointerCapture(e.pointerId);
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      auto = false;
-    });
-    stage.addEventListener('pointermove', (e) => {
-      const prev = pointers.get(e.pointerId);
-      if (!prev) return;
-      const dx = e.clientX - prev.x;
-      const dy = e.clientY - prev.y;
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        const dist = Math.hypot(a.x - b.x, a.y - b.y);
-        if (pinch) zoom = Math.max(0.4, Math.min(4, zoom * (dist / pinch)));
-        pinch = dist;
-        px += dx / 2;
-        py += dy / 2;
-      } else if (e.shiftKey || e.buttons === 4 || zoom > 1.6) {
-        px += dx;
-        py += dy;
-      } else {
-        ry += dx * 0.4;
-        rx = Math.max(-80, Math.min(80, rx - dy * 0.4));
-      }
-      apply();
-    });
-    const up = (e: PointerEvent) => {
-      pointers.delete(e.pointerId);
-      if (pointers.size < 2) pinch = 0;
-    };
-    stage.addEventListener('pointerup', up);
-    stage.addEventListener('pointercancel', up);
-    stage.addEventListener(
-      'wheel',
-      (e) => {
-        e.preventDefault();
-        auto = false;
-        zoom = Math.max(0.4, Math.min(4, zoom * Math.exp(-e.deltaY / 400)));
-        apply();
-      },
-      { passive: false },
-    );
-    stage.addEventListener('dblclick', () => {
-      rx = -12;
-      ry = 32;
-      zoom = 1;
-      px = py = 0;
-      auto = true;
-      apply();
-    });
-
-    const arrow = (dir: 1 | -1) =>
-      h(
-        'button',
-        {
-          class: `box-nav ${dir > 0 ? 'next' : 'prev'}`,
-          title: dir > 0 ? 'Next box on the shelf (PageDown or ])' : 'Previous box on the shelf (PageUp or [)',
-          'aria-label': dir > 0 ? 'Next box' : 'Previous box',
-          onclick: () => void step(dir),
-        },
-        dir > 0 ? '▶' : '◀',
-      );
-    const extrasSlot = h('div', { class: 'box-extras-slot' });
-    const bar = h('div', { class: 'box-viewer-bar' });
-    const overlay = h('div', { class: 'box-viewer', role: 'dialog' }, stage, extrasSlot, bar);
-    /** The title, buttons and extras for the box being shown. */
-    const fill = () => {
-      const { entry: e, actions: a } = current;
-      overlay.setAttribute('aria-label', `${e.title} box`);
-      extrasSlot.replaceChildren(...(a.extras ? [a.extras] : []));
-      bar.replaceChildren(
-        h('strong', null, e.title),
-        h(
-          'span',
-          { class: 'hint' },
-          `Drag to turn · scroll to zoom · shift-drag to pan · double-click to reset${a.step ? ' · PageUp/PageDown for other boxes' : ''}`,
-        ),
-        ...[
-          a.insert ? h('button', { class: 'primary', onclick: () => (close(), a.insert!()) }, a.insertLabel ?? 'Put the disk in drive A:') : null,
-          a.manual ? h('button', { onclick: () => (close(), a.manual!()) }, 'Read the manual') : null,
-          h('button', { onclick: close }, 'Close (Esc)'),
-        ].filter((x): x is HTMLButtonElement => !!x),
-      );
-      overlay.querySelectorAll('.box-nav').forEach((n) => n.remove());
-      if (a.step) overlay.append(arrow(-1), arrow(1));
-    };
-    fill();
-    document.body.append(overlay);
-    apply();
-    raf = requestAnimationFrame(spin);
-  });
 }
