@@ -74,7 +74,7 @@ export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLE
               h(
                 'div',
                 { class: 'idx-row' },
-                h('span', { class: 'idx-keys' }, ...r.keys.map((k) => h('kbd', null, k))),
+                h('span', { class: 'idx-keys' }, ...r.keys.map((k) => h('kbd', /^[↑↓]\+/.test(k) ? { class: 'chord' } : null, k))),
                 h('span', null, r.does),
               ),
             ),

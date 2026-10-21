@@ -180,7 +180,7 @@
 /* keys that don't fit on one line wrap onto the next ruled line */
 .idx-keys {
   display: flex;
-  flex: 0 1 auto;
+  flex: 0 0 auto; /* keys keep their width (up to max-width); the meaning is what gets cut short */
   flex-wrap: wrap;
   align-items: center;
   gap: calc(var(--line, 5.8cqw) * 0.2) 0.8cqw;
@@ -228,6 +228,11 @@
   line-height: var(--line, 5.8cqw);
 }
 
+.idx-row kbd.chord {
+  /* a Mac's arrow chord (↑+← for Home): two arrows on one key, kept as narrow as the key name */
+  padding: 0 0.4cqw;
+  letter-spacing: -0.04em;
+}
 .idx-always kbd {
   height: auto;
   min-width: 0;
