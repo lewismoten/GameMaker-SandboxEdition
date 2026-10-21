@@ -14,6 +14,7 @@ import { VelocityField } from './velocity';
 import { startProgram } from '../../../formats/cmfEdit';
 import { MUS_TABS, loadTab, saveTab, stepTab, type MusTab } from './tabs';
 import './music.css';
+import { viewState } from '../../../urlState';
 
 registerEditor(['cmf'], (host, project, file) => {
   let doc: MusicDoc;
@@ -30,6 +31,15 @@ registerEditor(['cmf'], (host, project, file) => {
     roll.focus();
   });
   const instrument = new InstrumentPanel(doc);
+  // the address keeps the tab, the track and the instrument shown (…/SONG.CMF?tab=instruments&track=2&instrument=5)
+  const view = viewState(['p', project.id, file]);
+  const TAB_NAMES: Record<MusTab, string> = { song: 'song', inst: 'instruments', set: 'settings' };
+  const urlTrack = view.num('track');
+  if (urlTrack !== undefined && doc.tracks().includes(urlTrack)) doc.selectTrack(urlTrack);
+  const urlInstrument = view.num('instrument');
+  if (urlInstrument !== undefined && urlInstrument >= 0 && urlInstrument < doc.song.instruments.length) instrument.show(urlInstrument);
+  doc.on((c) => c === 'track' && view.set({ track: doc.track }));
+  instrument.onShow = (i) => view.set({ instrument: i });
   const songPanel = new SongPanel(doc);
   const velocity = new VelocityField(doc);
 
@@ -204,7 +214,8 @@ registerEditor(['cmf'], (host, project, file) => {
       ),
     ),
   );
-  let tab = loadTab();
+  const urlTab = (Object.keys(TAB_NAMES) as MusTab[]).find((k) => TAB_NAMES[k] === view.get('tab'));
+  let tab = urlTab ?? loadTab();
   function showTab(key: MusTab, remember = false): void {
     tab = key;
     for (const [k, el] of Object.entries(panels)) el.hidden = k !== key;
@@ -215,6 +226,7 @@ registerEditor(['cmf'], (host, project, file) => {
       b.tabIndex = on ? 0 : -1;
     }
     if (remember) saveTab(key);
+    view.set({ tab: TAB_NAMES[key] });
     if (key === 'song') roll.draw();
   }
   /** Opens the Instruments tab on instrument i (the selected track's when not given). */

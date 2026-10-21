@@ -119,6 +119,8 @@ export class InstrumentPanel {
   /** The instrument being edited: the selected track's, until another one is picked. */
   private sel: number;
   private keepSel = false;
+  /** Hears which instrument is shown when one is picked. */
+  onShow?: (i: number) => void;
 
   constructor(private doc: MusicDoc) {
     this.sel = this.program;
@@ -140,6 +142,7 @@ export class InstrumentPanel {
   /** Shows instrument i (or the selected track's) in the editor. */
   show(i = this.program): void {
     this.sel = i;
+    this.onShow?.(i);
     this.render();
   }
 
