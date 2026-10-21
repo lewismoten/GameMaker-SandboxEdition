@@ -33,7 +33,7 @@ export interface Played {
 export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: BlockSet, chr: Character, moves = b.spec.solution): Promise<Played> {
   const sim = new Sim(
     { map: b.map, bbl: tiles.build(), mbl: mb.build(), mon: b.mons.build(), chr, cbl: cb.build(), links: [{ from: b.exit, to: b.exit }] },
-    { x: 18, y: 15 },
+    b.start,
     newCharInfo(),
   );
   const keys: Played['keys'] = [];
@@ -119,6 +119,6 @@ export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: 
   }
   await run(60);
   const p = sim.pos;
-  const why = sim.dead ? `zapped at ${p.bx - 10},${p.by - 10}` : sim.link >= 0 ? 'reached the outlet' : `stopped at ${p.bx - 10},${p.by - 10}`;
+  const why = sim.dead ? `zapped at ${p.bx - b.ox},${p.by - b.oy}` : sim.link >= 0 ? 'reached the outlet' : `stopped at ${p.bx - b.ox},${p.by - b.oy}`;
   return { ok: sim.link >= 0 && !sim.dead, ticks: sim.ticks, peak, why, keys };
 }

@@ -4,11 +4,14 @@
 // to registered players.
 import { writeFileSync } from 'node:fs';
 import { BOARDS } from './boards';
-import { OX, OY } from './board';
+import { SLOTS } from './board';
 
 const ROOMS: Record<string, string> = { kitchen: 'The Kitchen', living: 'The Living Room', garage: 'The Garage', attic: 'The Attic' };
 
 export function printables(): unknown {
+  // the home computer's corner of the attic map
+  const n = BOARDS.filter((b) => b.room === 'attic').findIndex((b) => b.file === 'computer');
+  const [OX, OY] = SLOTS[n];
   const sections = Object.entries(ROOMS).map(([room, head]) => ({
     head,
     hints: BOARDS.filter((b) => b.room === room).map((b) => ({ q: `${b.title}: ${b.hint}`, a: b.answer })),

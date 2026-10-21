@@ -1,7 +1,6 @@
 // Play-tests every board headlessly:  cd web && npx vite-node ../games/logic/check.ts [file]
 import { BOARDS } from './boards';
-import { compileBoard } from './board';
-import { STYLES, buildTiles } from './tiles';
+import { compileHouse } from './board';
 import { buildMonsterBlocks, buildWattBlocks } from './sprites';
 import { buildWatt } from './watt';
 import { playSolution } from './verify';
@@ -41,17 +40,18 @@ for (const name of ['down0', 'down1', 'blink', 'up0', 'up1', 'side0', 'side1']) 
       }
     }
 }
-for (const spec of BOARDS) {
-  if (only && spec.file !== only) continue;
-  const tiles = buildTiles(STYLES[spec.room]);
-  const b = compileBoard(spec, tiles, mb);
-  const chr = buildWatt(cb, b.mons.id('boom'));
-  const r = await playSolution(b, tiles, mb, cb, chr);
-  if (!r.ok) bad++;
-  console.log(`${r.ok ? 'ok  ' : 'FAIL'} ${spec.file.padEnd(10)} ${r.why}, ${(r.ticks / 18.2).toFixed(1)}s, peak ${r.peak} monsters`);
-  if (process.env.SHORTCUT) {
-    const s = await playSolution(b, tiles, mb, cb, chr, process.env.SHORTCUT);
-    console.log(`     shortcut: ${s.why}`);
+for (const room of compileHouse(BOARDS, mb)) {
+  console.log(`${room.room}: ${room.boards.length} boards, ${room.tiles.names.length} blocks, ${room.mons.names.length} monsters`);
+  for (const b of room.boards) {
+    if (only && b.spec.file !== only) continue;
+    const chr = buildWatt(cb, b.mons.id('boom'));
+    const r = await playSolution(b, room.tiles, mb, cb, chr);
+    if (!r.ok) bad++;
+    console.log(`${r.ok ? 'ok  ' : 'FAIL'} ${b.spec.file.padEnd(10)} ${r.why}, ${(r.ticks / 18.2).toFixed(1)}s, peak ${r.peak} monsters`);
+    if (process.env.SHORTCUT) {
+      const s = await playSolution(b, room.tiles, mb, cb, chr, process.env.SHORTCUT);
+      console.log(`     shortcut: ${s.why}`);
+    }
   }
 }
 if (bad) process.exitCode = 1;

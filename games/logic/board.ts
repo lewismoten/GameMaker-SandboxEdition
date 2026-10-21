@@ -1,17 +1,20 @@
-// A board from ASCII: walls, floor, batteries, the parts on the wires and the outlet,
-// plus each battery's wire as a list of moves. The wires are drawn as copper traces (or
-// conduits where they run over the housing) and become the paths of the board's sparks.
-import { newMap, reindexMonsters, MLEN, type GameMap } from '../../web/src/formats/map';
+// Boards from ASCII: walls, floor, batteries, the parts on the wires and the outlet, plus
+// each battery's wire as a list of moves. The wires are drawn as copper traces (or conduits
+// where they run over the housing) and become the paths of the sparks.
+//
+// All the boards of a room share one 100x100 map (one Game-Maker scene): each sits in its
+// own 16x10 window, far enough from the others that their batteries (which only give birth
+// near the screen) stay quiet while Watt works on another board. Each board's outlet is a
+// link back into the same scene, landing on the next board's pad.
+import { newMap, reindexMonsters, LASTMM, MLEN, type GameMap } from '../../web/src/formats/map';
 import { buildMonsters, type Wire } from './mons';
-import { E, N, S, W, type BatteryKind } from './tiles';
+import { E, N, S, W, STYLES, buildTiles, type Battery, type BatteryKind } from './tiles';
 import type { Bestiary, BlockSet } from './sets';
 
 export const COLS = 16;
 export const ROWS = 10;
-/** Where every board sits on the 100x100 map; Watt always starts in its middle. */
-export const OX = 10;
-export const OY = 10;
-export const START = { x: OX + 8, y: OY + 5 };
+/** Where the boards of a room sit on its map (top-left corners); Watt starts in the middle. */
+export const SLOTS: [number, number][] = [2, 22, 42, 62, 82].flatMap((y) => [2, 36, 70].map((x) => [x, y] as [number, number]));
 
 export type Room = 'kitchen' | 'living' | 'garage' | 'attic';
 
@@ -53,8 +56,13 @@ const DIRS: Record<string, [number, number, number, number]> = { U: [0, -1, N, S
 
 export interface Board {
   spec: BoardSpec;
+  /** The room's shared map and monsters. */
   map: GameMap;
   mons: Bestiary;
+  /** Top-left corner of the board on the map, Watt's pad and the outlet (map blocks). */
+  ox: number;
+  oy: number;
+  start: { x: number; y: number };
   exit: { x: number; y: number };
   /** Cells each wire runs through, in board coordinates. */
   wireCells: Map<string, [number, number][]>;
@@ -70,115 +78,159 @@ function parseMoves(path: string): string[] {
   return out;
 }
 
-export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Board {
-  const { rows } = spec;
-  if (rows.length !== ROWS || rows.some((r) => r.length !== COLS)) throw new Error(`${spec.file}: board must be ${COLS}x${ROWS}`);
-  if (rows[5][8] !== '@') throw new Error(`${spec.file}: Watt starts at column 8, row 5`);
-  const at = (x: number, y: number) => rows[y]?.[x] ?? ' ';
-  const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
-  const isWall = (ch: string) => ch === '#' || ch === ' ' || ch in DECOR || isBattery(ch);
-  const traceBits = new Map<string, number>();
-  const bit = (x: number, y: number, b: number) => traceBits.set(`${x},${y}`, (traceBits.get(`${x},${y}`) ?? 0) | b);
+export interface CompiledRoom {
+  room: Room;
+  tiles: BlockSet;
+  map: GameMap;
+  mons: Bestiary;
+  boards: Board[];
+}
 
-  const wires: (Wire | undefined)[] = [];
-  const wireCells = new Map<string, [number, number][]>();
-  const sideGates = new Set<string>();
-  const ctrlCells = new Set<string>();
-  for (const [letter, w] of Object.entries(spec.wires)) {
-    const k = parseInt(letter, 16);
-    let bx = -1;
-    let by = -1;
-    rows.forEach((row, y) => [...row].forEach((ch, x) => ch === letter && ((bx = x), (by = y))));
-    if (bx < 0) throw new Error(`${spec.file}: no battery ${letter}`);
-    let x = bx;
-    let y = by;
-    const cells: [number, number][] = [[x, y]];
-    const corners: [number, number][] = [];
-    let last = '';
-    for (const mv of parseMoves(w.path)) {
-      const [dx, dy, out, into] = DIRS[mv];
-      if (last && mv !== last) corners.push([x - bx, y - by]);
-      bit(x, y, out);
-      x += dx;
-      y += dy;
-      bit(x, y, into);
-      cells.push([x, y]);
-      last = mv;
+interface Parsed {
+  spec: BoardSpec;
+  ox: number;
+  oy: number;
+  traceBits: Map<string, number>;
+  sideGates: Set<string>;
+  ctrlCells: Set<string>;
+  wireCells: Map<string, [number, number][]>;
+  /** Room wire number of each battery character. */
+  wireOf: Map<string, number>;
+}
+
+/** Compiles the boards of one room onto one map, with one monster list and block set. */
+export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): CompiledRoom {
+  if (specs.length > SLOTS.length) throw new Error(`${room}: ${specs.length} boards, room for ${SLOTS.length}`);
+  const wires: Wire[] = [];
+  const kinds: BatteryKind[] = [];
+  const parsed: Parsed[] = specs.map((spec, n) => {
+    const [ox, oy] = SLOTS[n];
+    const { rows } = spec;
+    if (rows.length !== ROWS || rows.some((r) => r.length !== COLS)) throw new Error(`${spec.file}: board must be ${COLS}x${ROWS}`);
+    if (rows[5][8] !== '@') throw new Error(`${spec.file}: Watt starts at column 8, row 5`);
+    const at = (x: number, y: number) => rows[y]?.[x] ?? ' ';
+    const traceBits = new Map<string, number>();
+    const bit = (x: number, y: number, b: number) => traceBits.set(`${x},${y}`, (traceBits.get(`${x},${y}`) ?? 0) | b);
+    const wireCells = new Map<string, [number, number][]>();
+    const sideGates = new Set<string>();
+    const ctrlCells = new Set<string>();
+    const wireOf = new Map<string, number>();
+    for (const [letter, w] of Object.entries(spec.wires)) {
+      let bx = -1;
+      let by = -1;
+      rows.forEach((row, y) => [...row].forEach((ch, x) => ch === letter && ((bx = x), (by = y))));
+      if (bx < 0) throw new Error(`${spec.file}: no battery ${letter}`);
+      let x = bx;
+      let y = by;
+      const cells: [number, number][] = [[x, y]];
+      const corners: [number, number][] = [];
+      let last = '';
+      for (const mv of parseMoves(w.path)) {
+        const [dx, dy, out, into] = DIRS[mv];
+        if (last && mv !== last) corners.push([x - bx, y - by]);
+        bit(x, y, out);
+        x += dx;
+        y += dy;
+        bit(x, y, into);
+        cells.push([x, y]);
+        last = mv;
+      }
+      for (const [cx, cy] of cells.slice(1, -1)) if (at(cx, cy) === 'g') throw new Error(`${spec.file}: wire ${letter} runs through a gate at ${cx},${cy}`);
+      corners.push([x - bx, y - by]);
+      // Current runs four pixels into an open gate's doorway before the posts swallow it; Watt
+      // keeps clear of the top rows and middle sides of his block, but not the bottom (treads).
+      if (at(x, y) === 'g' && last === 'U') throw new Error(`${spec.file}: wire ${letter} can't reach its gate from below`);
+      if (at(x, y) === 'g' && last !== 'D') sideGates.add(`${x},${y}`);
+      wireOf.set(letter, wires.length);
+      wires.push({ corners, ctrl: w.ctrl });
+      kinds.push(w.kind ?? 'steady');
+      wireCells.set(letter, cells);
+      if (w.ctrl) for (const [cx, cy] of cells) ctrlCells.add(`${cx},${cy}`);
     }
-    for (const [cx, cy] of cells.slice(1, -1)) if (at(cx, cy) === 'g') throw new Error(`${spec.file}: wire ${letter} runs through a gate at ${cx},${cy}`);
-    corners.push([x - bx, y - by]);
-    // Current runs four pixels into an open gate's doorway before the posts swallow it; Watt
-    // keeps clear of the top rows and middle sides of his block, but not the bottom (treads).
-    if (at(x, y) === 'g' && last === 'U') throw new Error(`${spec.file}: wire ${letter} can't reach its gate from below`);
-    if (at(x, y) === 'g' && last !== 'D') sideGates.add(`${x},${y}`);
-    wires[k] = { corners, ctrl: w.ctrl };
-    wireCells.set(letter, cells);
-    if (w.ctrl) for (const [cx, cy] of cells) ctrlCells.add(`${cx},${cy}`);
-  }
+    // Red current dies where it crosses live control current: don't let them cross.
+    for (const [a, ca] of wireCells)
+      for (const [b2, cb] of wireCells)
+        if (spec.wires[a].ctrl && !spec.wires[b2].ctrl)
+          for (const [x1, y1] of ca)
+            if (cb.some(([x2, y2]) => x1 === x2 && y1 === y2) && !'nc'.includes(at(x1, y1)))
+              throw new Error(`${spec.file}: control wire ${a} crosses wire ${b2} at ${x1},${y1}`);
+    return { spec, ox, oy, traceBits, sideGates, ctrlCells, wireCells, wireOf };
+  });
 
-  // Red current dies where it crosses live control current: don't let them cross.
-  for (const [a, ca] of wireCells)
-    for (const [b2, cb] of wireCells)
-      if (spec.wires[a].ctrl && !spec.wires[b2].ctrl)
-        for (const [x1, y1] of ca)
-          if (cb.some(([x2, y2]) => x1 === x2 && y1 === y2) && !'nc'.includes(at(x1, y1)))
-            throw new Error(`${spec.file}: control wire ${a} crosses wire ${b2} at ${x1},${y1}`);
   const mons = buildMonsters(mb, wires);
-  /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
-  const partName = (ch: string, x: number, y: number) => {
-    const tb = traceBits.get(`${x},${y}`) ?? 0;
-    if (ch === 'g') return sideGates.has(`${x},${y}`) ? 'gateV' : 'gate';
-    const vertical = tb & (N | S) && !(tb & (E | W));
-    const name = 'oif'.includes(ch) && vertical ? `${PARTS[ch]}V` : PARTS[ch];
-    if ('oi'.includes(ch) && ctrlCells.has(`${x},${y}`)) return `${name}C`;
-    if (ctrlCells.has(`${x},${y}`) && 'tf'.includes(ch)) throw new Error(`${spec.file}: no ${name} on a control wire at ${x},${y}`);
-    return name;
-  };
+  const batteries: Battery[] = kinds.map((kind, k) => ({ k, kind, mon: mons.id(`wire${k}`) }));
+  const tiles = buildTiles(STYLES[room], batteries);
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
   let placed = 0;
-  let exit = { x: 0, y: 0 };
-  const put = (x: number, y: number, name: string) => (map.blocks[(OY + y) * MLEN + OX + x] = tiles.id(name));
-  const floor = (x: number, y: number) => `floor${(x * 7 + y * 3 + ((x * y) % 5)) % 3}`;
-  for (let y = 0; y < ROWS; y++)
-    for (let x = 0; x < COLS; x++) {
-      const ch = at(x, y);
+  const boards = parsed.map((p) => {
+    const { spec, ox, oy, traceBits, sideGates, ctrlCells } = p;
+    const at = (x: number, y: number) => spec.rows[y]?.[x] ?? ' ';
+    const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
+    const isWall = (ch: string) => ch === '#' || ch === ' ' || ch in DECOR || isBattery(ch);
+    /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
+    const partName = (ch: string, x: number, y: number) => {
       const tb = traceBits.get(`${x},${y}`) ?? 0;
-      if (ch === ' ') put(x, y, 'void');
-      else if (ch === '#') {
-        if (tb) put(x, y, `conduit${tb}`);
-        else {
-          let m = 0;
-          if (isWall(at(x, y - 1))) m |= N;
-          if (isWall(at(x + 1, y))) m |= E;
-          if (isWall(at(x, y + 1))) m |= S;
-          if (isWall(at(x - 1, y))) m |= W;
-          put(x, y, `wall${m}`);
+      if (ch === 'g') return sideGates.has(`${x},${y}`) ? 'gateV' : 'gate';
+      const vertical = tb & (N | S) && !(tb & (E | W));
+      const name = 'oif'.includes(ch) && vertical ? `${PARTS[ch]}V` : PARTS[ch];
+      if ('oi'.includes(ch) && ctrlCells.has(`${x},${y}`)) return `${name}C`;
+      if (ctrlCells.has(`${x},${y}`) && 'tf'.includes(ch)) throw new Error(`${spec.file}: no ${name} on a control wire at ${x},${y}`);
+      return name;
+    };
+    let exit = { x: 0, y: 0 };
+    const put = (x: number, y: number, name: string) => (map.blocks[(oy + y) * MLEN + ox + x] = tiles.id(name));
+    const floor = (x: number, y: number) => `floor${(x * 7 + y * 3 + ((x * y) % 5)) % 3}`;
+    for (let y = 0; y < ROWS; y++)
+      for (let x = 0; x < COLS; x++) {
+        const ch = at(x, y);
+        const tb = traceBits.get(`${x},${y}`) ?? 0;
+        if (ch === ' ') put(x, y, 'void');
+        else if (ch === '#') {
+          if (tb) put(x, y, `conduit${tb}`);
+          else {
+            let m = 0;
+            if (isWall(at(x, y - 1))) m |= N;
+            if (isWall(at(x + 1, y))) m |= E;
+            if (isWall(at(x, y + 1))) m |= S;
+            if (isWall(at(x - 1, y))) m |= W;
+            put(x, y, `wall${m}`);
+          }
+        } else if (ch in DECOR) put(x, y, DECOR[ch]);
+        else if (isBattery(ch)) {
+          const k = p.wireOf.get(ch);
+          if (k === undefined) throw new Error(`${spec.file}: battery ${ch} has no wire`);
+          const kind = kinds[k];
+          put(x, y, kind === 'steady' ? `bat${k}` : kind === 'dead' ? `dead${k}` : kind === 'antipulse' ? `pulseOff${k}` : `pulse${k}`);
+        } else if (ch === 'X') {
+          put(x, y, 'outlet');
+          exit = { x: ox + x, y: oy + y };
+        } else if (ch === '$') put(x, y, 'screw');
+        else if (ch in DIODES) put(x, y, DIODES[ch]);
+        else if (ch === '@') put(x, y, tb ? `trace${tb}` : 'pad');
+        else if (ch === '.' || ch in PARTS) put(x, y, tb ? `trace${tb}` : floor(x, y));
+        else throw new Error(`${spec.file}: what is '${ch}' at ${x},${y}?`);
+        if (ch in PARTS) {
+          if (placed >= LASTMM) throw new Error(`${room}: too many parts`);
+          map.monsters[placed++] = { monnum: mons.id(partName(ch, x, y)), status: 0, xtra: 0, curx: ox + x, cury: oy + y, extra: 0 };
         }
-      } else if (ch in DECOR) put(x, y, DECOR[ch]);
-      else if (isBattery(ch)) {
-        const k = parseInt(ch, 16);
-        const kind = spec.wires[ch]?.kind ?? 'steady';
-        put(x, y, kind === 'steady' ? `bat${k}` : kind === 'dead' ? `dead${k}` : kind === 'antipulse' ? `pulseOff${k}` : `pulse${k}`);
-      } else if (ch === 'X') {
-        put(x, y, 'outlet');
-        exit = { x: OX + x, y: OY + y };
-      } else if (ch === '$') put(x, y, 'screw');
-      else if (ch in DIODES) put(x, y, DIODES[ch]);
-      else if (ch === '@') put(x, y, tb ? `trace${tb}` : 'pad');
-      else if (ch === '.' || ch in PARTS) put(x, y, tb ? `trace${tb}` : floor(x, y));
-      else throw new Error(`${spec.file}: what is '${ch}' at ${x},${y}?`);
-      if (ch in PARTS)
-        map.monsters[placed++] = {
-          monnum: mons.id(partName(ch, x, y)),
-          status: 0,
-          xtra: 0,
-          curx: OX + x,
-          cury: OY + y,
-          extra: 0,
-        };
-    }
+      }
+    if (!exit.x) throw new Error(`${spec.file}: no outlet`);
+    return { spec, map, mons, ox, oy, start: { x: ox + 8, y: oy + 5 }, exit, wireCells: p.wireCells };
+  });
   reindexMonsters(map);
-  if (!exit.x) throw new Error(`${spec.file}: no outlet`);
-  return { spec, map, mons, exit, wireCells };
+  return { room, tiles, map, mons, boards };
+}
+
+export const ROOMS: Room[] = ['kitchen', 'living', 'garage', 'attic'];
+
+/** Every room, its boards in order. */
+export function compileHouse(specs: BoardSpec[], mb: BlockSet): CompiledRoom[] {
+  return ROOMS.map((room) =>
+    compileRoom(
+      room,
+      specs.filter((s) => s.room === room),
+      mb,
+    ),
+  ).filter((r) => r.boards.length);
 }

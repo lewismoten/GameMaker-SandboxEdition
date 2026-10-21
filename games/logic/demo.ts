@@ -13,7 +13,7 @@ export async function demoRecording(b: Board, tiles: BlockSet, mb: BlockSet, cb:
   const keys: RecordedKey[] = [];
   let last = 0;
   for (const k of run.keys) {
-    const at = k.tick + 1;
+    const at = k.tick + 2; // +1: the board's card scene plays one tick before handing over
     keys.push({ delta: at - last, key: k.key });
     last = at;
   }

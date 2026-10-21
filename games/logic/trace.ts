@@ -1,33 +1,34 @@
-// Design aid: plays a few moves (M=UUL...) on board B and prints what the parts are doing.
+// Design aid: plays a few moves (M=UUL...) on board B (its file name) and prints what the parts are doing.
 import { newCharInfo } from '../../web/src/engine/world';
 import { BOARDS } from './boards';
-import { compileBoard } from './board';
-import { STYLES, buildTiles } from './tiles';
+import { compileHouse } from './board';
+import { isWire } from './mons';
 import { buildMonsterBlocks, buildWattBlocks } from './sprites';
 import { buildWatt } from './watt';
 import { Sim } from './sim';
 const mb = buildMonsterBlocks(),
   cb = buildWattBlocks();
-const spec = BOARDS[Number(process.env.B ?? 0)];
-const tiles = buildTiles(STYLES[spec.room]);
-const b = compileBoard(spec, tiles, mb);
+const rooms = compileHouse(BOARDS, mb);
+const room = rooms.find((r) => r.boards.some((x) => x.spec.file === process.env.B))!;
+const b = room.boards.find((x) => x.spec.file === process.env.B)!;
+const tiles = room.tiles;
 const sim = new Sim(
   { map: b.map, bbl: tiles.build(), mbl: mb.build(), mon: b.mons.build(), chr: buildWatt(cb, b.mons.id('boom')), cbl: cb.build() },
-  { x: 18, y: 15 },
+  b.start,
   newCharInfo(),
 );
 const show = (t: number) =>
   console.log(
     t,
-    `watt ${sim.pos.bx - 10},${sim.pos.by - 10}+${sim.w.chr.x[1]},${sim.w.chr.y[1]} seq${sim.w.chr.cseq}`,
+    `watt ${sim.pos.bx - b.ox},${sim.pos.by - b.oy}+${sim.w.chr.x[1]},${sim.w.chr.y[1]} seq${sim.w.chr.cseq}`,
     sim.w.mm
-      .map((m, i) => (m.monnum < 64 && m.monnum >= 16 ? `${b.mons.names[m.monnum]}@${sim.w.mi[i].curx[0] - 10},${sim.w.mi[i].cury[0] - 10}` : ''))
+      .map((m, i) => (m.monnum < 64 && !isWire(m.monnum) ? `${b.mons.names[m.monnum]}@${sim.w.mi[i].curx[0] - b.ox},${sim.w.mi[i].cury[0] - b.oy}` : ''))
       .filter(Boolean)
       .join(' '),
     'sparks',
     process.env.SPARKS
       ? sim.w.mm
-          .map((m, i) => (m.monnum < 16 ? `${m.monnum}@${sim.w.mi[i].curx[0] - 10},${sim.w.mi[i].cury[0] - 10}` : ''))
+          .map((m, i) => (isWire(m.monnum) ? `${m.monnum}@${sim.w.mi[i].curx[0] - b.ox},${sim.w.mi[i].cury[0] - b.oy}` : ''))
           .filter(Boolean)
           .join(' ')
       : '',

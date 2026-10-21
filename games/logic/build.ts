@@ -12,11 +12,10 @@ import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { PAL } from './pal';
-import { STYLES, buildTiles } from './tiles';
 import { buildMonsterBlocks, buildWattBlocks } from './sprites';
 import { buildWatt } from './watt';
 import { BOARDS } from './boards';
-import { compileBoard } from './board';
+import { compileHouse } from './board';
 import { buildSounds } from './sounds';
 import * as M from './music';
 import { buildScreens } from './screens';
@@ -30,21 +29,20 @@ const disk = new Disk(join(here, 'disk'));
 
 const mb = buildMonsterBlocks();
 const cb = buildWattBlocks();
-const tiles = Object.fromEntries(Object.values(STYLES).map((st) => [st.id, buildTiles(st)]));
+const rooms = compileHouse(BOARDS, mb);
+const boards = rooms.flatMap((r) => r.boards);
+// every room's .MON has the reboot burst at the same number, so one .CHR serves them all
+const boom = rooms[0].mons.id('boom');
+if (rooms.some((r) => r.mons.id('boom') !== boom)) throw new Error('The reboot monster moved');
+const chr = buildWatt(cb, boom);
+disk.put('watt.chr', serializeCharacter(chr));
 disk.put('watt.pal', serializePalette(PAL.pal));
 disk.put('parts.mbl', serializeBlocks(mb.build()));
 disk.put('watt.cbl', serializeBlocks(cb.build()));
-for (const [room, bs] of Object.entries(tiles)) disk.put(`${room}.bbl`, serializeBlocks(bs.build()));
-
-const boards = BOARDS.map((spec) => compileBoard(spec, tiles[spec.room], mb));
-// every board's .MON has the reboot burst at the same number, so one .CHR serves them all
-const boom = boards[0].mons.id('boom');
-if (boards.some((b) => b.mons.id('boom') !== boom)) throw new Error('The reboot monster moved');
-const chr = buildWatt(cb, boom);
-disk.put('watt.chr', serializeCharacter(chr));
-for (const b of boards) {
-  disk.put(`${b.spec.file}.map`, serializeMap(b.map));
-  disk.put(`${b.spec.file}.mon`, serializeMonsters(b.mons.build()));
+for (const r of rooms) {
+  disk.put(`${r.room}.bbl`, serializeBlocks(r.tiles.build()));
+  disk.put(`${r.room}.map`, serializeMap(r.map));
+  disk.put(`${r.room}.mon`, serializeMonsters(r.mons.build()));
 }
 
 const sounds = buildSounds();
@@ -68,16 +66,17 @@ const art = { watt: cb, parts: mb };
 for (const [name, bytes] of Object.entries(
   buildScreens(
     art,
-    boards.map((b) => ({ b, tiles: tiles[b.spec.room] })),
+    rooms.flatMap((r) => r.boards.map((b) => ({ b, tiles: r.tiles }))),
   ),
 ))
   disk.put(name, bytes);
-disk.put('demo.rec', await demoRecording(boards[0], tiles[boards[0].spec.room], mb, cb, chr));
+disk.put('demo.rec', await demoRecording(boards[0], rooms[0].tiles, mb, cb, chr));
 disk.put('readme.txt', readme('$12'));
 const start = process.env.OHM_START ? BOARDS.findIndex((s) => s.file === process.env.OHM_START) : 0;
-disk.put('ohmsweet.gam', serializeGame(buildGame(boards, Math.max(0, start))));
+disk.put('ohmsweet.gam', serializeGame(buildGame(rooms, Math.max(0, start))));
 disk.write();
-console.log(
-  `${boards.length} boards; ${tiles.kitchen.names.length} board blocks, ${mb.names.length} part blocks, ${cb.names.length} Watt blocks, ${boards[0].mons.names.filter(Boolean).length - 1}+ monsters a board`,
-);
+for (const r of rooms)
+  console.log(
+    `${r.room}: ${r.boards.length} boards, ${r.tiles.names.length} blocks, ${r.mons.names.length} monsters, ${r.map.monsters.filter((m) => m.monnum < 64).length} parts placed`,
+  );
 writePrintables(join(here, 'printables.json'));

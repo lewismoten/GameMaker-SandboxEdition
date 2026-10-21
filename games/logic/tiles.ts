@@ -184,8 +184,16 @@ function decorPic(st: Style, kind: string, frame = 0): Pixels {
   return p;
 }
 
-/** Every block the boards use, drawn in one room's style. Names fix the numbering. */
-export function buildTiles(st: Style): BlockSet {
+/** Every block a room's boards use, drawn in its style. */
+export interface Battery {
+  /** The wire's number in its room. */
+  k: number;
+  kind: BatteryKind;
+  /** The monster (spark) it gives birth to. */
+  mon: number;
+}
+
+export function buildTiles(st: Style, batteries: Battery[] = []): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, px: Pixels, def: BlockDef = {}) => bs.add(name, px, def);
   const vp = new Pixels(20, 20, c('night', 0));
@@ -211,16 +219,16 @@ export function buildTiles(st: Style): BlockSet {
   for (const k of ['cap', 'res', 'ic', 'xtal']) add(k, decorPic(st, k), { solid: SOLID });
   add('led', decorPic(st, 'led', 1), { solid: SOLID, next: 'ledOff', ntime: 9 });
   add('ledOff', decorPic(st, 'led', 0), { solid: SOLID, next: 'led', ntime: 9 });
-  // Batteries: battery k gives birth to monster k (its own wire) every SPARK_EVERY ticks.
-  for (let k = 0; k < 16; k++) {
-    add(`bat${k}`, batteryPic(st, 'steady', true), { solid: SOLID, birthMon: k, birthTime: SPARK_EVERY });
-  }
-  for (let k = 0; k < 16; k++) {
-    add(`dead${k}`, batteryPic(st, 'dead', false), { solid: SOLID, touch: `bat${k}` });
-  }
-  for (let k = 0; k < 8; k++) {
-    add(`pulse${k}`, batteryPic(st, 'pulse', true), { solid: SOLID, birthMon: k, birthTime: SPARK_EVERY, next: `pulseOff${k}`, ntime: PULSE_ON });
-    add(`pulseOff${k}`, batteryPic(st, 'pulse', false), { solid: SOLID, next: `pulse${k}`, ntime: PULSE_OFF });
+  // Batteries: each wire's battery gives birth to that wire's spark every SPARK_EVERY ticks
+  // (only the batteries a room uses are drawn into its block set).
+  for (const b of batteries) {
+    const k = b.k;
+    if (b.kind === 'steady' || b.kind === 'dead') add(`bat${k}`, batteryPic(st, 'steady', true), { solid: SOLID, birthMon: b.mon, birthTime: SPARK_EVERY });
+    if (b.kind === 'dead') add(`dead${k}`, batteryPic(st, 'dead', false), { solid: SOLID, touch: `bat${k}` });
+    if (b.kind === 'pulse' || b.kind === 'antipulse') {
+      add(`pulse${k}`, batteryPic(st, 'pulse', true), { solid: SOLID, birthMon: b.mon, birthTime: SPARK_EVERY, next: `pulseOff${k}`, ntime: PULSE_ON });
+      add(`pulseOff${k}`, batteryPic(st, 'pulse', false), { solid: SOLID, next: `pulse${k}`, ntime: PULSE_OFF });
+    }
   }
   return bs;
 }

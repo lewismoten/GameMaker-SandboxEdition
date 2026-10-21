@@ -30,32 +30,27 @@ if (process.env.PREVIEW_DIR) {
 
 if (process.env.PREVIEW_DIR) {
   const { BOARDS } = await import('./boards');
-  const { compileBoard } = await import('./board');
+  const { compileHouse } = await import('./board');
   const { renderBoard } = await import('./render');
   const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
+  const S = await import('./screens');
   const mb = buildMonsterBlocks();
   const cb = buildWattBlocks();
-  for (const spec of BOARDS) {
-    if (process.env.BOARD && process.env.BOARD !== spec.file) continue;
-    const tiles = buildTiles(STYLES[spec.room]);
-    writePng(join(dir, `board-${spec.file}.png`), renderBoard(compileBoard(spec, tiles, mb), tiles, mb, cb.pic('down0')), PAL.pal, 2);
-  }
-}
-
-if (process.env.PREVIEW_DIR && process.env.SCREENS) {
-  const { BOARDS } = await import('./boards');
-  const { compileBoard } = await import('./board');
-  const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
-  const S = await import('./screens');
-  const art = { watt: buildWattBlocks(), parts: buildMonsterBlocks() };
-  const shots: [string, Pixels][] = [
-    ['title', S.titleScreen(art)],
-    ['menu', S.menuScreen(art)],
-    ['page', S.pageScreen(art, 'THE STORY', 51)],
-    ['scores', S.scoresScreen(art)],
-    ['slots', S.slotsScreen(art)],
-  ];
-  const tiles = buildTiles(STYLES[BOARDS[2].room]);
-  shots.push(['card', S.cardScreen(compileBoard(BOARDS[2], tiles, art.parts), 3, BOARDS.length, tiles, art)]);
-  for (const [name, p] of shots) writePng(join(dir, `screen-${name}.png`), p, PAL.pal, 2);
+  const art = { watt: cb, parts: mb };
+  for (const room of compileHouse(BOARDS, mb))
+    for (const b of room.boards) {
+      if (process.env.BOARD && process.env.BOARD !== b.spec.file) continue;
+      writePng(join(dir, `board-${b.spec.file}.png`), renderBoard(b, room.tiles, mb, cb.pic('down0')), PAL.pal, 2);
+      if (process.env.SCREENS && b.spec.file === 'coffee')
+        writePng(join(dir, 'screen-card.png'), S.cardScreen(b, 3, BOARDS.length, room.tiles, art), PAL.pal, 2);
+    }
+  if (process.env.SCREENS)
+    for (const [name, p] of [
+      ['title', S.titleScreen(art)],
+      ['menu', S.menuScreen(art)],
+      ['page', S.pageScreen(art, 'THE STORY', 51)],
+      ['scores', S.scoresScreen(art)],
+      ['slots', S.slotsScreen(art)],
+    ] as [string, Pixels][])
+      writePng(join(dir, `screen-${name}.png`), p, PAL.pal, 2);
 }

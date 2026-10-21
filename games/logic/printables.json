@@ -126,33 +126,33 @@
       "panels": [
         {
           "map": "computer.map",
-          "x": 10,
-          "y": 10,
+          "x": 2,
+          "y": 2,
           "w": 16,
           "h": 10,
           "caption": "Follow each pink wire up through the chip: which relays does it throw?",
           "marks": [
             {
-              "x": 18,
-              "y": 15,
+              "x": 10,
+              "y": 7,
               "label": "Watt drops onto the GND pad here",
               "kind": "start"
             },
             {
-              "x": 23,
-              "y": 12,
+              "x": 15,
+              "y": 4,
               "label": "The outlet home",
               "kind": "goal"
             },
             {
-              "x": 16,
-              "y": 17,
+              "x": 8,
+              "y": 9,
               "label": "Left pink switch",
               "kind": "note"
             },
             {
-              "x": 19,
-              "y": 17,
+              "x": 11,
+              "y": 9,
               "label": "Right pink switch",
               "kind": "note"
             }

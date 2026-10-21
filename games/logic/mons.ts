@@ -1,13 +1,13 @@
-// The monsters of a board (.MON). Slots 0..15 are the board's currents: battery k gives
-// birth to a spark of monster k every few ticks, and the spark runs along that wire's
-// path, four pixels a tick, until the path ends. Sparks back to back make a solid, deadly
-// line of current. From slot 16 on come the parts every board shares.
+// The monsters of a room (.MON). First come the parts every board shares (always at the
+// same numbers, so Watt's reboot burst is the same monster in every room); then the room's
+// currents, one per wire: a battery gives birth to a spark of its wire every few ticks, and
+// the spark runs along that wire's path, four pixels a tick, until the path ends. Sparks
+// back to back make a solid, deadly line of current.
 //
 // Who beats whom is all done with power (the stronger monster survives a touch; equal
 // powers pass through each other; anything under 100 is beaten when Watt touches it):
 //   gate 40 < current 60 = switch on < relay NO 65 < control current 70 < switch off 80
 //   < relay NC off 75 ... and the "hot" states (120) that Watt can't flip twice in a row.
-import { ROUTES } from './ids';
 import { Bestiary, type BlockSet } from './sets';
 
 export const POWER = {
@@ -36,37 +36,13 @@ export interface Wire {
   ctrl?: boolean;
 }
 
-/** One board's monster list: its wires in slots 0..15, then the shared parts. */
+/** Monsters 0..COMMON_PARTS-1 are the shared parts; wire k is monster COMMON_PARTS + k. */
+export const COMMON_PARTS = 36;
+export const isWire = (monnum: number) => monnum >= COMMON_PARTS && monnum < 64;
+
+/** One room's monster list: the shared parts, then its wires. */
 export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestiary {
   const b = new Bestiary(mb);
-  wires.forEach((w, k) => {
-    if (!w) return;
-    if (k >= ROUTES) throw new Error('Too many wires');
-    if (w.corners.length > 10) throw new Error(`Wire ${k} has ${w.corners.length} corners (10 at most)`);
-    let px = 0;
-    let py = 0;
-    const path = w.corners.map(([x, y]) => {
-      const vertical = x === px;
-      px = x;
-      py = y;
-      return [x, y, SPARK_SPEED, vertical ? 1 : 0] as [number, number, number, number];
-    });
-    void py;
-    const pics = w.ctrl ? ['ctrlA', 'ctrlB'] : ['sparkA', 'sparkB'];
-    b.add(
-      `wire${k}`,
-      {
-        pics: [
-          [pics[0], 2],
-          [pics[1], 2],
-        ],
-        power: w.ctrl ? POWER.ctrl : POWER.current,
-        path,
-        end: -1,
-      },
-      k,
-    );
-  });
   // Knife switches: off stops current, on lets it by. A bump flips one. Parts named with
   // a V sit on wires running up and down (their pictures are turned a quarter); with a C,
   // on pink control wires (on matches control current's power, so it passes too).
@@ -74,7 +50,7 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
   for (const v of ['', 'V'])
     for (const k of ['', 'C']) {
       const n = `${v}${k}`;
-      b.add(`switchOff${n}`, { pics: [[`swOff${v}`, 50]], power: POWER.switchOff, becomes: `switchOnHot${n}` }, first ? ROUTES : undefined);
+      b.add(`switchOff${n}`, { pics: [[`swOff${v}`, 50]], power: POWER.switchOff, becomes: `switchOnHot${n}` }, first ? 0 : undefined);
       first = false;
       b.add(`switchOnHot${n}`, { pics: [[`swOnHot${v}`, 50]], power: POWER.hot, end: HOT_TICKS, becomes: `switchOn${n}` });
       b.add(`switchOn${n}`, { pics: [[`swOn${v}`, 50]], power: k ? POWER.ctrl : POWER.switchOn, becomes: `switchOffHot${n}` });
@@ -125,5 +101,29 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
   // Watt's reboot: a little burst that turns into a big one a tick later.
   b.add('boom', { pics: [['boom1', 9]], power: 1, end: 1, becomes: 'boomBig' });
   b.add('boomBig', { pics: [['boom2', 9]], power: 1, end: 4 });
+  if (b.names.length !== COMMON_PARTS) throw new Error(`The shared parts take ${b.names.length} monsters, not ${COMMON_PARTS}`);
+  wires.forEach((w, k) => {
+    if (!w) return;
+    if (w.corners.length > 10) throw new Error(`Wire ${k} has ${w.corners.length} corners (10 at most)`);
+    let px = 0;
+    let py = 0;
+    const path = w.corners.map(([x, y]) => {
+      const vertical = x === px;
+      px = x;
+      py = y;
+      return [x, y, SPARK_SPEED, vertical ? 1 : 0] as [number, number, number, number];
+    });
+    void py;
+    const pics = w.ctrl ? ['ctrlA', 'ctrlB'] : ['sparkA', 'sparkB'];
+    b.add(`wire${k}`, {
+      pics: [
+        [pics[0], 2],
+        [pics[1], 2],
+      ],
+      power: w.ctrl ? POWER.ctrl : POWER.current,
+      path,
+      end: -1,
+    });
+  });
   return b;
 }

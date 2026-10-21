@@ -4,7 +4,7 @@ import { orientIndex } from '../../web/src/formats/blocks';
 import { MLEN } from '../../web/src/formats/map';
 import { Pixels } from '../kit/pixels';
 import { CLEAR } from './draw';
-import { COLS, OX, OY, ROWS, type Board } from './board';
+import { COLS, ROWS, type Board } from './board';
 import type { BlockSet } from './sets';
 
 export function sprite20(src: Pixels, orient: number): Pixels {
@@ -16,14 +16,14 @@ export function sprite20(src: Pixels, orient: number): Pixels {
 /** The board's 16x10 blocks with its parts; `watt` draws Watt on the pad. */
 export function renderBoard(b: Board, tiles: BlockSet, mb: BlockSet, watt?: Pixels, cols = COLS, rows = ROWS): Pixels {
   const p = new Pixels(cols * 20, rows * 20);
-  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) p.blit(tiles.pics[b.map.blocks[(OY + y) * MLEN + OX + x]], x * 20, y * 20);
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) p.blit(tiles.pics[b.map.blocks[(b.oy + y) * MLEN + b.ox + x]], x * 20, y * 20);
   const mons = b.mons.build();
   for (const m of b.map.monsters) {
-    if (m.monnum >= 64) continue;
+    if (m.monnum >= 64 || m.curx < b.ox || m.cury < b.oy || m.curx >= b.ox + cols || m.cury >= b.oy + rows) continue;
     const mon = mons[m.monnum];
     const pic = mb.pics[mon.pic[0][0]];
     if (!pic) continue;
-    p.blit(sprite20(pic, mon.march[0][0].orient), (m.curx - OX) * 20, (m.cury - OY) * 20, CLEAR);
+    p.blit(sprite20(pic, mon.march[0][0].orient), (m.curx - b.ox) * 20, (m.cury - b.oy) * 20, CLEAR);
   }
   if (watt) p.blit(watt, 8 * 20, 5 * 20, CLEAR);
   return p;

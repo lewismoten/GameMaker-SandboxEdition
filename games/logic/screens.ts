@@ -379,12 +379,20 @@ export function buildScreens(art: Art, boards: { b: Board; tiles: BlockSet }[]):
   out['lost.gif'] = gif(pageScreen(art, 'OUT OF BATTERIES', 55, 'toast'));
   out['lost.txt'] = dosText(LOST);
   out['lost.lst'] = serializeSlideList([{ name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]);
+  // Each board's card (its card scene's intro graphic); a new room starts with Watt riding
+  // the house wiring to it.
+  let rides = 0;
   boards.forEach(({ b, tiles }, i) => {
     out[`${b.spec.file}.gif`] = gif(cardScreen(b, i + 1, boards.length, tiles, art));
-    out[`${b.spec.file}.lst`] = serializeSlideList([{ name: `${b.spec.file}.gif`, pause: 4 }]);
+    const prev = boards[i - 1]?.b.spec.room;
+    const list = [{ name: `${b.spec.file}.gif`, pause: 4 }];
+    if (prev && prev !== b.spec.room) {
+      const ride = `ride${++rides}.fli`;
+      out[ride] = travelFli(art, ROOM_NAMES[prev], ROOM_NAMES[b.spec.room]);
+      list.unshift({ name: ride, pause: 0 });
+    }
+    out[`${b.spec.file}.lst`] = serializeSlideList(list);
   });
-  const rooms = ['THE KITCHEN', 'THE LIVING ROOM', 'THE GARAGE', 'THE ATTIC'];
-  for (let k = 0; k < 3; k++) out[`ride${k + 1}.fli`] = travelFli(art, rooms[k], rooms[k + 1]);
   return out;
 }
 
