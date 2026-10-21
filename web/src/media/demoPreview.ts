@@ -231,8 +231,11 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     timer = setInterval(() => {
       const playing = !!session?.rec.playing;
       if (playing) played = true;
+      // the recording ran out, the playback ended, or play left the levels (the hero was
+      // caught for good: the score table that follows is not worth waiting for)
+      const left = playing && session!.rec.halted;
       const over =
-        (playing && session!.rec.tick >= lastTick + 18) || (played && !playing && (endedAt ||= performance.now()) && performance.now() - endedAt > 1000);
+        (playing && session!.rec.tick >= lastTick + 18) || ((left || (played && !playing)) && (endedAt ||= performance.now()) && performance.now() - endedAt > 1500);
       if (!over) return;
       if (o.loop) start();
       else handle.stop();
