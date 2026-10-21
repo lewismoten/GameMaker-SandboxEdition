@@ -33,6 +33,8 @@ import { keyCardSpot } from "./pc/keyCard";
 import { newsClipping } from "./room/newsClipping";
 import { phoneNotes } from "./room/phoneNotes";
 import { wallClock } from "./room/wallClock";
+import { wasteBasket } from "./room/wasteBasket";
+import { roomDoor } from "./room/roomDoor";
 import { deskCapture } from "./pc/capture";
 import { EDITION, FORK_NOTE } from "../edition";
 import { loadCatalog, type CatalogEntry } from "../project/files";
@@ -158,6 +160,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       snowyWindow(),
       newsClipping(),
       wallClock(),
+      roomDoor(),
+      wasteBasket(),
       spk.left,
       spk.right,
       phoneNotes(),
