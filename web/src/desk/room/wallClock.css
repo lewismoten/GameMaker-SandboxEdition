@@ -1,0 +1,22 @@
+/* the giant wristwatch on the wall left of the desk (desk/room/wallClock.ts): on the
+   stage, past its left edge, so it shows only where the window has wall to spare */
+.wall-clock {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .desk.wide-wall .wall-clock {
+    display: block;
+    position: absolute;
+    left: -232px;
+    top: 40px;
+    width: 180px;
+    filter: drop-shadow(5px 9px 8px rgba(0, 0, 0, 0.45));
+  }
+
+  .wall-clock svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
