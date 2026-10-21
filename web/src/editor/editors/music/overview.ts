@@ -38,7 +38,7 @@ export class Overview {
 
   private get rowH(): number {
     const n = Math.max(1, this.doc.tracks().length);
-    return Math.max(5, Math.min(12, Math.floor(96 / n)));
+    return Math.max(5, Math.min(10, Math.floor(64 / n)));
   }
 
   private get height(): number {

@@ -316,16 +316,20 @@ export class InstrumentPanel {
         'div',
         { class: `mus-op${half === 1 && singleOp ? ' off' : ''}` },
         h('h4', null, title),
-        env,
-        ...sliders,
+        // two halves, side by side when the card is wide: the envelope, and the tone
+        h('div', { class: 'mus-op-half' }, env, ...sliders),
         h(
           'div',
-          { class: 'mus-op-row' },
-          h('label', { class: 'field', title: MULT.title }, h('span', null, 'Harmonic'), mult),
-          h('label', { class: 'field', title: KSL.title }, h('span', null, 'Softer high notes'), ksl),
+          { class: 'mus-op-half' },
+          h(
+            'div',
+            { class: 'mus-op-row' },
+            h('label', { class: 'field', title: MULT.title }, h('span', null, 'Harmonic'), mult),
+            h('label', { class: 'field', title: KSL.title }, h('span', null, 'Softer high notes'), ksl),
+          ),
+          h('div', { class: 'field' }, h('span', null, 'Wave'), waves),
+          h('div', { class: 'mus-flags' }, ...flags),
         ),
-        h('div', { class: 'field' }, h('span', null, 'Wave'), waves),
-        h('div', { class: 'mus-flags' }, ...flags),
       );
     };
 

@@ -130,10 +130,16 @@ registerEditor(['cmf'], (host, project, file) => {
     velocity.el,
     h('label', { class: 'check', title: 'Show the other tracks faintly behind this one' }, ghosts, h('span', null, 'Show other tracks')),
     h('label', { class: 'check', title: 'Keep the playhead in view' }, follow, h('span', null, 'Follow playback')),
+    // the how-to folds into a small ? so the roll keeps its height
     h(
-      'span',
-      { class: 'hint' },
-      'Click the ruler to set where playing starts; drag on it to mark a loop. Drag END to change where the song repeats. Drag the bars in VEL to make notes louder or softer.',
+      'details',
+      { class: 'mus-tips' },
+      h('summary', { title: 'How the ruler, END and VEL work', 'aria-label': 'Tips: the ruler, END and VEL' }, '?'),
+      h(
+        'p',
+        { class: 'hint' },
+        'Click the ruler to set where playing starts; drag on it to mark a loop. Drag END to change where the song repeats. Drag the bars in VEL to make notes louder or softer.',
+      ),
     ),
   );
 

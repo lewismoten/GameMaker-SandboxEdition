@@ -483,3 +483,87 @@
   gap: 6px;
   align-items: center;
 }
+
+/* Wide, tall-enough windows: the editor is as tall as the window; the piano roll takes the
+   room left by the instrument panel, which scrolls by itself when it doesn't all fit. */
+@media (min-width: 861px) and (min-height: 600px) {
+  .mus {
+    height: calc(100dvh - 128px);
+  }
+  .mus-main {
+    height: auto;
+    flex: 1 1 0;
+    min-height: 330px;
+  }
+  .mus-lower {
+    flex: 0 1 auto;
+    min-height: 140px;
+    max-height: 42%;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border-radius: 8px;
+  }
+}
+.mus-tips {
+  position: relative;
+  margin-left: auto;
+}
+.mus-tips summary {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-weight: 700;
+  color: var(--text);
+  list-style: none;
+  cursor: pointer;
+}
+.mus-tips summary::-webkit-details-marker {
+  display: none;
+}
+.mus-tips summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.mus-tips[open] > .hint {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 5;
+  width: min(420px, 80vw);
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+/* folded Song settings takes only the room its heading needs */
+@media (min-width: 861px) {
+  .mus-lower:has(> .mus-song-box:not([open])) {
+    grid-template-columns: minmax(0, 1fr) max-content;
+  }
+}
+
+/* wide operator cards: the envelope and its sliders on the left, harmonic, wave and switches on the right */
+.mus-op-half {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.mus-ops {
+  container-type: inline-size;
+}
+@container (min-width: 900px) {
+  .mus-op {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) fit-content(230px);
+    column-gap: 14px;
+    align-content: start;
+  }
+  .mus-op > h4 {
+    grid-column: 1 / -1;
+  }
+}
