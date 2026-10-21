@@ -130,12 +130,15 @@ export function teddyHead(p: Pixels, cx: number, cy: number, s: number, f: Face 
 export function gwinHead(p: Pixels, cx: number, cy: number, s: number, f: Face = {}): void {
   const T = (u: number, v: number): Pt => [cx + u * s, cy + v * s];
   const coat = r('gwin');
-  blob(p, cx, cy + 48 * s, 30 * s, 22 * s, coat, 1, 3);
-  blob(p, cx, cy + 50 * s, 8 * s, 10 * s, r('fur'), 0, 2);
+  // sitting up: shoulders, a little white chest patch, front legs
+  blob(p, cx, cy + 62 * s, 38 * s, 34 * s, coat, 0, 3);
+  shadedPoly(p, [T(-24, 70), T(-12, 70), T(-12, 104), T(-24, 104)], coat, 1, 3);
+  shadedPoly(p, [T(12, 70), T(24, 70), T(24, 104), T(12, 104)], coat, 1, 3);
+  blob(p, cx, cy + 56 * s, 7 * s, 9 * s, r('fur'), 0, 2);
   // the pink collar
-  p.rect(Math.round(cx - 22 * s), Math.round(cy + 30 * s), Math.round(44 * s), Math.round(5 * s), c('pink', 2));
-  p.rect(Math.round(cx - 22 * s), Math.round(cy + 30 * s), Math.round(44 * s), Math.max(1, Math.round(s)), c('pink', 3));
-  blob(p, cx + 2 * s, cy + 37 * s, 3 * s, 3 * s, r('gold'), 0, 2);
+  p.rect(Math.round(cx - 24 * s), Math.round(cy + 34 * s), Math.round(48 * s), Math.round(6 * s), c('pink', 2));
+  p.rect(Math.round(cx - 24 * s), Math.round(cy + 34 * s), Math.round(48 * s), Math.max(1, Math.round(s)), c('pink', 3));
+  blob(p, cx + 2 * s, cy + 43 * s, 3 * s, 3 * s, r('gold'), 0, 2);
   blob(p, cx, cy, 32 * s, 32 * s, coat, 0, 4);
   // floppy ears
   const flop = f.twitch ? 4 : 0;
@@ -157,7 +160,7 @@ export function gwinHead(p: Pixels, cx: number, cy: number, s: number, f: Face =
   }
   // the big grin, tongue out
   blob(p, cx, cy + 24 * s, 15 * s, 7 * s, [c('red', 0), c('tent', 0)], 0, 1);
-  if (f.lick !== false) blob(p, cx + 3 * s, cy + 31 * s, 7 * s, 8 * s, [c('pink', 1), c('pink', 2), c('pink', 3)], 0, 2);
+  if (f.lick !== false) blob(p, cx + 3 * s, cy + 29 * s, 6 * s, 6 * s, [c('pink', 1), c('pink', 2), c('pink', 3)], 0, 2);
   shadedPoly(p, [T(-12, 21), T(12, 21), T(10, 23), T(-10, 23)], r('fur'), 2, 2);
   // the liver nose
   blob(p, cx, cy + 9 * s, 8 * s, 6 * s, [c('gwin', 0), c('gwin', 1), c('pink', 1)], 0, 2);
@@ -207,14 +210,65 @@ function teddyScene(reel: Reel): void {
   }
 }
 
+/** A rope leash running from (x0, y0) off the bottom of the screen, two-tone twisted. */
+function leash(p: Pixels, x0: number, y0: number, x1: number, ramp: string): void {
+  const n = H - y0;
+  for (let i = 0; i <= n; i++) {
+    const y = y0 + i;
+    const x = Math.round(x0 + ((x1 - x0) * i) / n + Math.sin(i / 9) * 4);
+    p.rect(x - 1, y, 3, 1, c('ink', 0)).set(x, y, c(ramp, (i >> 1) % 2 ? 2 : 3));
+  }
+}
+
+/** Scene 2: Teddy and Gwin in the grass. Gwin was adopted, and she is still learning. */
+function gwinScene(reel: Reel): void {
+  const bg = new Pixels(W, H);
+  speckle(bg, 0, 0, W, H, r('grass'), 2, 1, 9, 0.35);
+  for (let i = 0; i < 900; i++) {
+    const x = (i * 97) % W;
+    const y = (i * 61) % H;
+    bg.line(x, y, x + ((i % 3) - 1), y - 3, c('grass', i % 2 ? 4 : 1));
+  }
+  // the person on the end of the leashes: a jeans knee at the bottom
+  blob(bg, 150, 214, 70, 30, r('denim'), 0, 2);
+  for (let f = 0; f < 52; f++) {
+    const p = new Pixels(W, H);
+    p.px.set(bg.px);
+    const t = new Pixels(W, H, CLEAR);
+    teddyHead(t, 98, 96, 0.85, { lick: f % 6 < 3 && f < 40, pant: f % 6 >= 3 || f >= 40, blink: f === 9 });
+    p.blit(outline(t, c('ink', 0)), 0, 0, CLEAR);
+    leash(p, 104, 132, 150, 'purple');
+    if (f < 34) {
+      const g = new Pixels(W, H, CLEAR);
+      gwinHead(g, 222, 84 + (f >= 24 && f % 2 ? 1 : 0), 0.95, { blink: f === 17, twitch: f >= 24 && f % 4 < 2 });
+      p.blit(outline(g, c('ink', 0)), 0, 0, CLEAR);
+      leash(p, 222, 126, 170, 'pink');
+    } else {
+      // gone: zoomies, trailing her pink leash
+      const x = 150 + (f - 34) * 14;
+      scaleBlit(p, GWIN[f % 2 ? 'gwinRun1' : 'gwinRun2'], x, 96, 4);
+      for (let k = 0; k < 3; k++) p.rect(x - 16 - k * 14 - (f % 2) * 4, 130 + k * 10, 10 - k * 2, 2, c('paint', 3));
+    }
+    big(p, 'GWIN', 8, 222);
+    if (f < 24) {
+      say(p, 'BIG SISTER. ADOPTED.', 182);
+    } else if (f < 34) {
+      say(p, 'SIT, GWIN! SIT!', 170, c('yellow', 3));
+      if (f >= 29) say(p, '...NOPE.', 182);
+    } else {
+      say(p, 'SHE KNOWS ONE TRICK:', 170);
+      say(p, 'ZOOMIES!', 182, c('yellow', 3));
+    }
+    reel.add(p);
+  }
+}
+
 export function castFli(): Uint8Array {
   const reel = new Reel();
   teddyScene(reel);
+  gwinScene(reel);
   return encodeFli(reel.frames, CP.pal, { speed: 7, palettes: reel.pals });
 }
 
 void inkEdges;
 void outlined;
-void scaleBlit;
-void GWIN;
-void gwinHead;
