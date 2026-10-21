@@ -2,10 +2,10 @@
 // 90s: the company band, the title in the box's colors over a picture from the game, its
 // hero standing in front, and the small print. Pictures come from the game's own files.
 import './diskLabel.css';
-import { h } from '../editor/core/ui';
-import type { CatalogEntry } from '../project/files';
-import { mapShot } from './boxArt';
-import { portrait } from '../manual/printables/kit';
+import { h } from '../../editor/core/ui';
+import type { CatalogEntry } from '../../project/files';
+import { mapShot } from '../boxArt';
+import { portrait } from '../../manual/printables/kit';
 
 interface LabelArt {
   shot?: string;

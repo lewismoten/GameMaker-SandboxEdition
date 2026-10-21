@@ -8,7 +8,7 @@ import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { loadDisks, type Disk } from '../retro/disks';
 import { boxItems } from '../manual/printables/items';
-import { floppyElement, disksIn } from './diskBox';
+import { floppyElement, disksIn } from './disks/diskBox';
 import { printContext } from './printContext';
 
 let disks: Promise<Disk[]> | undefined;

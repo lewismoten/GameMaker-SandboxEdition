@@ -6,7 +6,7 @@ import './crtOff.css';
 import { h, clear, toast } from '../editor/core/ui';
 import { Computer, type MonitorMode } from '../retro/computer';
 import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
-import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './diskBox';
+import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './disks/diskBox';
 import { openCatalog } from './catalog';
 import { openDosManual } from '../manual/dosManual';
 import { renderShot } from './boxArt';

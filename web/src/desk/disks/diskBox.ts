@@ -1,9 +1,9 @@
 // The disk box: flip through 3.5" floppies and put one in drive A:.
 import './diskBox.css';
-import { h, clear } from '../editor/core/ui';
-import { diskCount, type Disk } from '../retro/disks';
-import { creditLine } from '../project/files';
-import { boxDisks } from './boxFacts';
+import { h, clear } from '../../editor/core/ui';
+import { diskCount, type Disk } from '../../retro/disks';
+import { creditLine } from '../../project/files';
+import { boxDisks } from '../boxFacts';
 import { printedDiskLabel } from './diskLabel';
 
 /** How many disks it takes: an original ships with the DOS player too (as its box says). */
