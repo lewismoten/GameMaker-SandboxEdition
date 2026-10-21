@@ -148,8 +148,36 @@
   display: none;
 }
 
-.lib-tools .dropzone {
-  padding: 10px;
+.lib-drop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 10px;
+  padding: 10px 12px;
+}
+
+.lib-empty {
+  grid-column: 1 / -1;
+  padding: 28px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  text-align: center;
+}
+
+.lib-empty p {
+  margin: 0 0 6px;
+}
+
+.lib-empty-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.lib-empty .toolbar {
+  justify-content: center;
+  margin-top: 12px;
 }
 
 .lib-tiles {
@@ -250,6 +278,7 @@
 .game-tile .card-shot {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   margin: 0;
   border-radius: 9px 9px 0 0;
 }

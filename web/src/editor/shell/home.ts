@@ -75,7 +75,14 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     'aria-label': 'Find a game',
     oninput: () => filterTiles(),
   }) as HTMLInputElement;
-  const drop = h('div', { class: 'dropzone' }, 'Drop a game folder, its files, a .zip, or a game exported as one web page (.html) here');
+  // where games come in: drop them, or pick them
+  const drop = h(
+    'div',
+    { class: 'dropzone lib-drop' },
+    h('span', null, 'Drop a game folder, its files, a .zip or a one-page .html export here, or'),
+    h('button', { type: 'button', onclick: () => void importPicked(nav, { directory: true }) }, 'Open a game folder…'),
+    h('button', { type: 'button', onclick: () => void importPicked(nav, {}) }, 'Open files, .zip or .html…'),
+  );
 
   let catalog: CatalogEntry[] = [];
   let catalogError = '';
@@ -203,14 +210,6 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     libLead.textContent = info.lead;
     clear(
       libTools,
-      c === 'mine'
-        ? h(
-            'div',
-            { class: 'toolbar' },
-            h('button', { onclick: () => void importPicked(nav, { directory: true }) }, 'Open game folder…'),
-            h('button', { onclick: () => void importPicked(nav, {}) }, 'Open files, .zip or .html…'),
-          )
-        : null,
       c === 'mine' ? drop : null,
     );
     let cards: HTMLElement[];
@@ -218,13 +217,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose }));
     if (!cards.length)
       cards = [
-        h(
-          'p',
-          { class: 'meta' },
-          c === 'mine'
-            ? 'No games yet. Make a new one, open an original game folder, or edit a copy of a game from Gameware or Sandbox.'
-            : 'No games of this kind were bundled with this build.',
-        ),
+        c === 'mine'
+          ? h(
+              'div',
+              { class: 'lib-empty' },
+              h('p', { class: 'lib-empty-title' }, 'No games here yet'),
+              h('p', { class: 'meta' }, 'Start a new one, or edit a copy of a finished game to see how it was made.'),
+              h(
+                'div',
+                { class: 'toolbar' },
+                h('button', { class: 'primary', type: 'button', onclick: () => void newGame(nav) }, '+ Make a new game'),
+                h('button', { type: 'button', onclick: () => void select('gameware', true).then(() => document.getElementById('lib-tab-gameware')?.focus()) }, 'Browse Gameware'),
+                h('button', { type: 'button', onclick: () => void select('sandbox', true).then(() => document.getElementById('lib-tab-sandbox')?.focus()) }, 'Browse Sandbox'),
+              ),
+            )
+          : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
       ];
     // Keep the page from jumping while the tiles are swapped.
     tiles.style.minHeight = `${tiles.offsetHeight}px`;
