@@ -6,7 +6,7 @@ import { gradient, shadeAt, speckle } from '../art/draw';
 import { micro, microWidth } from '../art/font';
 import { Ctx, MONEY, SOLID } from './book';
 
-export function addMall(k: Ctx): void {
+export function addMall(k: Ctx) {
   const { book, R, c, snow, P } = k;
   // ---------- LaVale Mall ----------
   const flat = P();
@@ -118,4 +118,5 @@ export function addMall(k: Ctx): void {
   arcadeDoor.rect(11, 8, 2, 3, c('grey', 4));
   arcadeDoor.rect(15, 11, 1, 4, c('concrete', 3));
   book.add('arcadeDoor', arcadeDoor, { solid: SOLID, effect: MONEY, eamt: -1, hp: 5, score: 100 });
+  return { mallWall };
 }
