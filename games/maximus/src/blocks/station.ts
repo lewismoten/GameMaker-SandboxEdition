@@ -7,7 +7,7 @@ import { G, SOLID, TOP, SetBuilder, over, tex } from './blockset';
 import { ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
 import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
 import { OUTLINE, S, WHITE } from '../art/palette';
-import { PICKUP_FX, R } from './surface';
+import { PICKUP_FX, R } from './common';
 
 const panel = (seed: number, kind = 0) => {
   const t = R('cave'); // station themes color "cave" as the back wall

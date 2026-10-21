@@ -7,7 +7,7 @@ import { G, SOLID, TOP, SetBuilder, over, tex } from './blockset';
 import { ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
 import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
 import { OUTLINE, WHITE } from '../art/palette';
-import { PICKUP_FX, R } from './surface';
+import { PICKUP_FX, R } from './common';
 
 /**
  * Water at depth band k (0 = just below the surface .. 7 = abyss). The light fades through

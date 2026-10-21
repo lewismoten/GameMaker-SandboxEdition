@@ -9,7 +9,7 @@ import { MBL_SHARED_BASE, MON, MONEY } from '../ids';
 import { drawCreature, type Archetype, type Paint } from '../sprites/creatures';
 import { drawPickup } from '../blocks/items';
 import { OUTLINE, S, WHITE, shared } from '../art/palette';
-import { R } from '../blocks/surface';
+import { R } from '../blocks/common';
 
 export type Corner = [dx: number, dy: number, speed: number, orient?: number];
 
