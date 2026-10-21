@@ -15,9 +15,8 @@ import {
   setStartMode,
   setVelocity,
   stripIgnored,
-  writeSong,
-  type Note,
 } from '../../../formats/cmfEdit';
+import { writeSong, type Note } from '../../../formats/cmfSong';
 import { TICK_RATE } from '../../../audio/cmfPlayer';
 import type { MusicDoc } from './doc';
 

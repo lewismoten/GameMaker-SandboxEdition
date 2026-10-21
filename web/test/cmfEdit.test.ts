@@ -3,11 +3,8 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import {
   addNote,
-  buildPreview,
   channelNotes,
   deleteNotes,
-  musicOf,
-  readSong,
   removeChannel,
   scaleTime,
   scaleVelocities,
@@ -19,9 +16,9 @@ import {
   startMode,
   startProgram,
   stripIgnored,
-  traceMusic,
-  writeSong,
 } from '../src/formats/cmfEdit';
+import { buildPreview } from '../src/formats/cmfPreview';
+import { musicOf, readSong, traceMusic, writeSong } from '../src/formats/cmfSong';
 import { ENVELOPE, FLAGS, getOp, setOp, setFeedback, getFeedback, presetName, MULT } from '../src/editor/editors/music/sbi';
 import { INSTRUMENTS, song as composeSong } from '../src/audio/compose';
 import { CmfPlayer, TICK_RATE } from '../src/audio/cmfPlayer';

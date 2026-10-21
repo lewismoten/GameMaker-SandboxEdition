@@ -2,7 +2,8 @@
 // marquee selection, panning, setting the play position and song end on the ruler, and
 // dragging velocities; plus double-click, the context menu and the wheel.
 import { toast } from '../../../core/ui';
-import { addNote, channelNotes, deleteNotes, noteEnd, setEnd, setNote, setProgramAt, setVelocity, type Ev, type Note } from '../../../../formats/cmfEdit';
+import { addNote, channelNotes, deleteNotes, setEnd, setNote, setProgramAt, setVelocity } from '../../../../formats/cmfEdit';
+import { noteEnd, type Ev, type Note } from '../../../../formats/cmfSong';
 import { KEYW, RULER, HEAD, VEL, programAtTick, type Drag } from './layout';
 import { RollDraw } from './draw';
 

@@ -1,7 +1,8 @@
 // Painting the piano roll: the grid and notes of the selected track (other tracks faint
 // behind), the keyboard, the ruler with loop region, song end and play head, the lane of
 // instrument changes, and the velocity bars.
-import { channelNotes, noteEnd, programChanges, type Note } from '../../../../formats/cmfEdit';
+import { channelNotes, programChanges } from '../../../../formats/cmfEdit';
+import { noteEnd, type Note } from '../../../../formats/cmfSong';
 import { TRACK_COLORS } from '../doc';
 import { KEYW, RULER, LANE, HEAD, VEL, BLACK, noteName } from './layout';
 import { RollView } from './view';

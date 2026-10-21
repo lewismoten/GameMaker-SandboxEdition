@@ -1,6 +1,7 @@
 // The piano roll's measurements (keyboard width, ruler, instrument lane, velocity lane), note
 // names, and the kinds of drag a pointer can be doing.
-import { programChanges, type Note } from '../../../../formats/cmfEdit';
+import { programChanges } from '../../../../formats/cmfEdit';
+import { type Note } from '../../../../formats/cmfSong';
 import type { MusicDoc } from '../doc';
 
 export const KEYW = 46;

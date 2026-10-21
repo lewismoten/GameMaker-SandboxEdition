@@ -4,7 +4,8 @@
 //   view -> draw (painting the roll) -> pointer (mouse and touch editing) -> PianoRoll
 //   (keys, clipboard and the instrument popup, in roll.ts).
 import { h } from '../../../core/ui';
-import { channelNotes, noteEnd, programChanges, clampVelocity, type Ev, type Note } from '../../../../formats/cmfEdit';
+import { channelNotes, programChanges, clampVelocity } from '../../../../formats/cmfEdit';
+import { noteEnd, type Ev, type Note } from '../../../../formats/cmfSong';
 import { type MusicDoc } from '../doc';
 import { KEYW, HEAD, VEL, Drag } from './layout';
 

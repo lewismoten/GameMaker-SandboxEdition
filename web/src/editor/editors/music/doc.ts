@@ -3,23 +3,9 @@
 import type { Project } from '../../core/project';
 import { audio } from '../../widgets/mediaShared';
 import { TICK_RATE } from '../../../audio/cmfPlayer';
-import {
-  auditionSong,
-  buildPreview,
-  channelSounds,
-  DEFAULT_VELOCITY,
-  extendEnd,
-  readSong,
-  RHYTHM_CHANNELS,
-  startMode,
-  startProgram,
-  usedChannels,
-  writeSong,
-  type CmfSong,
-  type Note,
-  type Preview,
-  DRUM_NAMES,
-} from '../../../formats/cmfEdit';
+import { auditionSong, buildPreview, type Preview } from '../../../formats/cmfPreview';
+import { channelSounds, DEFAULT_VELOCITY, extendEnd, startMode, startProgram, usedChannels } from '../../../formats/cmfEdit';
+import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAMES } from '../../../formats/cmfSong';
 import { presetName } from './sbi';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */
