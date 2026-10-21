@@ -2,6 +2,9 @@
    Stage coordinates: 1440 x 880. The desk top runs from x 40 to 1400 at its front edge
    (--edge); its back meets the wall at y 470. Past its ends you see the wall come down to
    the baseboard and the carpet.
+   Things on the wall are drawn about 10px to the inch: the desk top, 30" up, meets the wall
+   at y 470, so the floor meets it at y 770; the window's sill is 36" up and the wall phone
+   hangs at a standing person's height.
    One perspective for the whole desk: lines running straight back (the desk top's ends, the
    end panels, the keyboard tray's runners) all head for one vanishing point, (720, -784),
    high above the stage. So the desk top is 110px narrower at each end of its back edge,
@@ -53,7 +56,7 @@
     position: absolute;
     left: -3000px;
     right: -3000px;
-    top: 676px;
+    top: 770px;
     bottom: -8000px;
     z-index: -3;
     background:
@@ -96,26 +99,26 @@
   }
 
   /* the end panels' inner faces, running back under the desk toward the vanishing point:
-     each is cut off below by the line where it meets the floor (back at the wall's
-     baseboard, coming forward to the panel's front foot just below the stage) */
+     each is cut off below by the line where it meets the floor (back at the wall, 58px
+     below the desk's front edge, coming forward to the panel's front foot well below the stage) */
   .desk-legs::before,
   .desk-legs::after {
     content: '';
     position: absolute;
     top: 0;
-    width: 92px;
-    height: 232px;
+    width: 104px;
+    height: 356px;
     background: linear-gradient(90deg, #3a2513, #24170c 60%, #120c07);
   }
 
   .desk-legs::before {
     left: 34px;
-    clip-path: polygon(0 0, 100% 0, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 58px, 0 100%);
   }
 
   .desk-legs::after {
     right: 34px;
-    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 58px);
     background: linear-gradient(270deg, #3a2513, #24170c 60%, #120c07);
   }
 
