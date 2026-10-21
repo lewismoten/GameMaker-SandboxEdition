@@ -63,9 +63,7 @@ At half past ten, a police car pulls up under the marquee and Inspector Ada Penn
 
 She has until dawn.`;
 
-export const HELP = `HOW TO PLAY
-
-Search the Paragon for evidence, question the suspects, then name the killer.
+export const HELP = `Search the Paragon for evidence, question the suspects, then name the killer.
 
 ARROWS or W A S D: walk
 Q and E: walk up and left / up and right

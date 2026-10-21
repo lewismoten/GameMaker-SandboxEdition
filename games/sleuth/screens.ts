@@ -76,6 +76,7 @@ export function menuScreen(): Pixels {
   const v = actor('victor', 74);
   p.blit(v, 60, 104, CLEAR);
   p.blit(a, 216, 102, CLEAR);
+  for (let y = 4; y < 62; y++) for (let x = 40; x < 280; x++) if ((x + y) % 2 === 0) p.set(x, y, c('navy', 0));
   logo(p, 6);
   // the program card
   p.rect(58, 92, 206, 84, c('black', 0));
