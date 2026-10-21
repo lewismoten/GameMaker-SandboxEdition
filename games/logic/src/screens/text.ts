@@ -1,6 +1,7 @@
 // The words: storyline, instructions, credits, the endings and README.TXT. PLAYGAME shows
 // .TXT pages 31 characters wide and 16 lines a page. Lines are wrapped to 30: a line of
 // exactly 31 leaves its line break for the next read, which shows as an extra blank line.
+import { withCreditPage } from '../../../kit/license';
 
 /** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent. */
 export function wrap(text: string, width = 30): string {
@@ -104,7 +105,7 @@ Bump into a switch, button or fuse to work it.`,
 Roll onto the outlet to go on to the next board. Gold screws and outlets give you a spare battery.`,
 ]);
 
-export const CREDITS = pages([
+const CREDITS_TEXT = pages([
   `OHM SWEET OHM
 A logic puzzle in twenty circuit boards
 
@@ -176,3 +177,6 @@ FILES ON THIS DISK
 Thanks for playing!
 `);
 }
+
+/** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
+export const CREDITS = withCreditPage(CREDITS_TEXT);

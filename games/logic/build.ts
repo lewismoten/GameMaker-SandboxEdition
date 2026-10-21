@@ -23,6 +23,7 @@ import { buildGame } from './src/game';
 import { demoRecording } from './src/demo';
 import { readme } from './src/screens/text';
 import { writePrintables } from './src/printables';
+import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -74,6 +75,7 @@ disk.put('demo.rec', await demoRecording(boards[0], rooms[0].tiles, mb, cb, chr)
 disk.put('readme.txt', readme('$12'));
 const start = process.env.OHM_START ? BOARDS.findIndex((s) => s.file === process.env.OHM_START) : 0;
 disk.put('ohmsweet.gam', serializeGame(buildGame(rooms, Math.max(0, start))));
+disk.put('license.txt', licenseText("Ohm Sweet Ohm"));
 disk.write();
 for (const r of rooms)
   console.log(
