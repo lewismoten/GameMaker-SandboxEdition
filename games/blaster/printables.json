@@ -127,15 +127,15 @@
     },
     {
       "kind": "letter",
-      "title": "Hint book postcard",
-      "note": "A promo postcard for the hint book",
-      "style": "print",
-      "letterhead": "SANDBOX SOFTWARE - FIELD REPORT",
-      "address": "P.O. Box 1995, Pittsburgh, PA 15213 (a fictional address)",
-      "date": "Summer 1995",
-      "to": "Dear BLASTER pilot,",
-      "body": "<p><b>STUCK BEHIND THE HOWLER'S GRILLE?</b> Leech got your number? GLITCH grinning at you from every corner of the screen?</p><p>Get the official <b>BLASTER Hint Book</b>: every stage, every boss, every turret, with the answers hidden under red noise so you only spoil what you have to. Red film included!</p><p>FREE with registration ($15), or $5 on its own from Sandbox Software.</p><p><i>Our address is made up for this game - please don't mail anything.</i></p>",
-      "signature": "Lt. Byte, Chief Test Pilot"
+      "title": "A letter from the SysOp",
+      "note": "Found in the box, typed on a dot matrix",
+      "style": "type",
+      "letterhead": "THE BIT BUCKET BBS - 300/1200/2400 BAUD - SYSOP: \"DIALTONE\"",
+      "address": "(A made-up BBS; the number on our ads is fictional too.)",
+      "date": "June 3, 1995",
+      "to": "To every caller who downloaded COOLGAME.ZIP last week:",
+      "body": "<p>I owe you all an apology. Somebody uploaded COOLGAME.ZIP to the Games area on Tuesday, and I posted it without scanning it. It was not a cool game. It was GLITCH.</p><p>If your hard disk light hasn't stopped blinking, if your homework is full of little purple skulls, or if your high scores have turned into gibberish: <b>you have it too</b>.</p><p>I'm told the only cure is VACCINE.EXE and a pilot with steady hands. I have neither. I hear you do.</p><p>From now on every upload gets scanned. Every one. Good luck in there.</p>",
+      "signature": "Dialtone, SysOp"
     },
     {
       "kind": "map",
