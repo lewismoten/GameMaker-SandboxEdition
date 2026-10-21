@@ -5,7 +5,7 @@
 import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
 import { rng } from '../kit/pixels';
 import type { BlockSet } from './src/art/draw';
-import type { Bestiary } from './mons';
+import type { Bestiary } from './src/characters/mons';
 import type { StageArt } from './src/blocks/tiles';
 
 export const X0 = 2;

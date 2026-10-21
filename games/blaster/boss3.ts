@@ -4,11 +4,11 @@
 import { Pixels } from '../kit/pixels';
 import { CLEAR, bevel, blob } from './src/art/draw';
 import { armor, slicesOf, tint, weakPoint } from './boss';
-import { mite, pics } from './enemies';
+import { mite, pics } from './src/characters/enemies';
 import { arena } from './mapkit';
-import type { Bestiary } from './mons';
+import type { Bestiary } from './src/characters/mons';
 import type { Pal } from './src/art/pal';
-import { keyOf, wasp } from './sprites';
+import { keyOf, wasp } from './src/sprites/sprites';
 import { kit, type Leg } from './stage';
 import type { BlockSet } from './src/art/draw';
 import type { StageArt } from './src/blocks/tiles';

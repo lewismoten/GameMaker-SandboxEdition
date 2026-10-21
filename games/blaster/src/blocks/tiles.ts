@@ -5,7 +5,7 @@
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, bevel, blob, shadeAt } from '../art/draw';
-import { HURT } from '../../common';
+import { HURT } from '../characters/sharedMonsters';
 import { SEQ } from '../ids';
 import type { Pal } from '../art/pal';
 

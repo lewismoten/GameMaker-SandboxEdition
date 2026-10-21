@@ -1,6 +1,6 @@
 // Stage 3: THE SOUND CARD. Leg A "The Mixer" brings note-heads in conga lines and wasps;
 // leg B "The Woofer" has the speakers that thump the ship forward. Then the Feedback Howler.
-import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from './enemies';
+import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from './src/characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from './src/art/pal';
 import { soundArt, soundTiles, soundVirus } from './src/blocks/sound3';

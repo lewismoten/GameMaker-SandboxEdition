@@ -3,10 +3,10 @@
 // edge, and patches of glitch where the virus has eaten in.
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, bevel, micro, shadeAt } from '../art/draw';
-import { pics } from '../../enemies';
-import type { Bestiary } from '../../mons';
+import { pics } from '../characters/enemies';
+import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
-import { bomb, claw, cluster, eye, keyOf, mite, moth, slug, wasp } from '../../sprites';
+import { bomb, claw, cluster, eye, keyOf, mite, moth, slug, wasp } from '../sprites/sprites';
 import { onFloor, slices, type StageArt } from './tiles';
 
 export function cpuArt(p: Pal): StageArt {

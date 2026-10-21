@@ -12,7 +12,7 @@ import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { buildPalette } from './src/art/pal';
-import { buildShip, shipBlocks } from './ship';
+import { buildShip, shipBlocks } from './src/characters/ship';
 import { DRIFT } from './src/ids';
 import { buildSounds } from './sounds';
 import { buildGame } from './src/game';

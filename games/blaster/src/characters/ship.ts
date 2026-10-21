@@ -7,12 +7,12 @@
 // never stops. Every move also fires: a twin shot leaves the guns every third tick.
 //
 // shipfree.chr is the same ship without the drift, for the boss arenas.
-import { CHARBL, MONBL } from '../../web/src/formats/blocks';
-import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
-import { Pixels } from '../kit/pixels';
-import { BlockSet, CLEAR, blob } from './src/art/draw';
-import { DRIFT, KEY, SEQ, SND, START } from './src/ids';
-import type { Pal } from './src/art/pal';
+import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
+import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { Pixels } from '../../../kit/pixels';
+import { BlockSet, CLEAR, blob } from '../art/draw';
+import { DRIFT, KEY, SEQ, SND, START } from '../ids';
+import type { Pal } from '../art/pal';
 
 /** Monster numbers the ship fires (the same in every stage's .mon: see common.ts). */
 export const SHOT_MON = { shot: 0, novaL2: 1, novaL1: 2, novaC: 3, novaR1: 4, novaR2: 5 } as const;

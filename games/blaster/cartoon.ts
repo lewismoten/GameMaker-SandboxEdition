@@ -3,7 +3,7 @@
 import { Pixels, rng } from '../kit/pixels';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, shadeAt, text, textWidth } from './src/art/draw';
 import { buildPalette, type Pal } from './src/art/pal';
-import { shipBlocks } from './ship';
+import { shipBlocks } from './src/characters/ship';
 
 export const SP: Pal = buildPalette('screen');
 export const c = (n: string, k: number) => SP.c(n, k);

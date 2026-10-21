@@ -4,9 +4,9 @@ import type { Block } from '../../web/src/formats/blocks';
 import type { GameMap } from '../../web/src/formats/map';
 import type { Monster } from '../../web/src/formats/monster';
 import { BlockSet } from './src/art/draw';
-import { addCommon } from './common';
+import { addCommon } from './src/characters/sharedMonsters';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';
-import { Bestiary } from './mons';
+import { Bestiary } from './src/characters/mons';
 import type { Pal, Theme } from './src/art/pal';
 import { addStageTiles, type StageArt, type TileOpts } from './src/blocks/tiles';
 

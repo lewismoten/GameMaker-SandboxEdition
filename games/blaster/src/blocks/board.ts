@@ -2,9 +2,9 @@
 // chips, capacitors, resistors and blinking LEDs. Its blocks and its virus.
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt, text } from '../art/draw';
-import { pics } from '../../enemies';
-import { biter, bomb, claw, cluster, keyOf, mite, moth } from '../../sprites';
-import type { Bestiary } from '../../mons';
+import { pics } from '../characters/enemies';
+import { biter, bomb, claw, cluster, keyOf, mite, moth } from '../sprites/sprites';
+import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
 import { onFloor, slices, type StageArt } from './tiles';
 

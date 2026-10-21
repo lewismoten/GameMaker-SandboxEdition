@@ -4,15 +4,15 @@
 import { Pixels } from '../kit/pixels';
 import { CLEAR, blob, micro } from './src/art/draw';
 import { slicesOf, snake, tint, weakPoint } from './boss';
-import { mite, pics } from './enemies';
+import { mite, pics } from './src/characters/enemies';
 import { arena } from './mapkit';
-import type { Bestiary } from './mons';
+import type { Bestiary } from './src/characters/mons';
 import type { Pal } from './src/art/pal';
-import { keyOf, mite as miteArt } from './sprites';
+import { keyOf, mite as miteArt } from './src/sprites/sprites';
 import { kit, type Leg } from './stage';
 import type { BlockSet } from './src/art/draw';
 import type { StageArt } from './src/blocks/tiles';
-import { HURT } from './common';
+import { HURT } from './src/characters/sharedMonsters';
 import { ramTiles } from './src/blocks/ram';
 
 /** The sucker, 2 x 2: two eyes on top, a ring of teeth below. */

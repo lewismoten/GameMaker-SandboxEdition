@@ -3,10 +3,10 @@
 // have: monsters that wait until the ship comes near and then run an attack path (relative
 // to themselves, or to the ship), monsters that turn into other monsters when they die or
 // when their time runs out, and blocks that give birth to monsters.
-import { Pixels } from '../kit/pixels';
-import { CLEAR } from './src/art/draw';
-import { HURT } from './common';
-import { POWER } from './src/ids';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR } from '../art/draw';
+import { HURT } from './sharedMonsters';
+import { POWER } from '../ids';
 import type { Bestiary, Leg } from './mons';
 
 /** Symmetric ASCII sprite from left halves (each 10 characters). */

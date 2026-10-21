@@ -3,10 +3,10 @@
 // push out (a gravity block that is only there on the beat).
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
-import { pics } from '../../enemies';
-import type { Bestiary } from '../../mons';
+import { pics } from '../characters/enemies';
+import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
-import { bomb, cluster, disc, keyOf, mite, note, wasp } from '../../sprites';
+import { bomb, cluster, disc, keyOf, mite, note, wasp } from '../sprites/sprites';
 import { onFloor, slices, type StageArt } from './tiles';
 
 export function soundArt(p: Pal): StageArt {

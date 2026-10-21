@@ -2,10 +2,10 @@
 // data streams), the spindle hub, the read/write arm, and bad sectors crawling with virus.
 import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
-import { pics } from '../../enemies';
-import type { Bestiary } from '../../mons';
+import { pics } from '../characters/enemies';
+import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
-import { bomb, disc, keyOf, mite, skull, slug } from '../../sprites';
+import { bomb, disc, keyOf, mite, skull, slug } from '../sprites/sprites';
 import { onFloor, slices, type StageArt } from './tiles';
 
 export function diskArt(p: Pal): StageArt {

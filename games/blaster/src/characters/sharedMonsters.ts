@@ -1,11 +1,11 @@
 // The monsters every stage shares, always first in its .mon/.mbl so their numbers never
 // change: the ship's shots and Nova bolts, sparks and explosions, the wreck that a dead
 // turret leaves behind, and the virus's bullets.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, blob } from './src/art/draw';
-import { POWER } from './src/ids';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, blob } from '../art/draw';
+import { POWER } from '../ids';
 import type { Bestiary } from './mons';
-import type { Pal } from './src/art/pal';
+import type { Pal } from '../art/pal';
 import { SHOT_MON } from './ship';
 
 const pic = () => new Pixels(20, 20, CLEAR);

@@ -7,9 +7,9 @@
 // badly enough that the only way through is to shoot them away first.
 import { Pixels } from '../kit/pixels';
 import { BlockSet, CLEAR } from './src/art/draw';
-import { HURT } from './common';
+import { HURT } from './src/characters/sharedMonsters';
 import { POWER } from './src/ids';
-import type { Bestiary } from './mons';
+import type { Bestiary } from './src/characters/mons';
 
 /** Slices a big picture into 20x20 pieces named `${prefix}${row}${col}`. */
 export function slicesOf(big: Pixels, w: number, h: number): Pixels[][] {

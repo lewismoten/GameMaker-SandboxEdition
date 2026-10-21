@@ -4,11 +4,11 @@
 import { Pixels, rng } from '../kit/pixels';
 import { CLEAR, bevel, blob, micro, shadeAt } from './src/art/draw';
 import { armor, opaque, slicesOf, tint, weakPoint } from './boss';
-import { mite, pics, stalker } from './enemies';
+import { mite, pics, stalker } from './src/characters/enemies';
 import { arena } from './mapkit';
-import type { Bestiary } from './mons';
+import type { Bestiary } from './src/characters/mons';
 import type { Pal } from './src/art/pal';
-import { keyOf, mite as miteArt, slug } from './sprites';
+import { keyOf, mite as miteArt, slug } from './src/sprites/sprites';
 import { kit, type Leg } from './stage';
 import type { BlockSet } from './src/art/draw';
 import type { StageArt } from './src/blocks/tiles';
