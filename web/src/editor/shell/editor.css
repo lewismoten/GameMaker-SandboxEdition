@@ -154,7 +154,7 @@ a {
   color: var(--title-text);
 }
 
-.topbar h1 {
+.topbar .brand-title {
   margin: 0;
   font:
     700 18px/1 ui-monospace,

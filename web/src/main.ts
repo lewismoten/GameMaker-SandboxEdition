@@ -75,7 +75,7 @@ function startModern(hash?: string): void {
     h(
       'header',
       { class: 'topbar' },
-      h('a', { href: '#/', title: FORK_NOTE }, h('h1', null, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
+      h('a', { href: '#/', title: FORK_NOTE }, h('span', { class: 'brand-title' }, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
       titleSlot,
       h('span', { class: 'spacer' }),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),

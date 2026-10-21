@@ -1,5 +1,5 @@
 /* "Sandbox Edition" beside the GAME-MAKER logo in today's web header (src/edition.ts) */
-h1 .edition {
+.brand-title .edition {
   margin-left: 0.6em;
   padding: 1px 6px;
   border: 1px solid currentColor;
@@ -45,10 +45,10 @@ h1 .edition {
     flex-wrap: wrap;
     row-gap: 4px;
   }
-  .topbar h1 {
+  .topbar .brand-title {
     white-space: nowrap;
   }
-  h1 .edition {
+  .brand-title .edition {
     margin-left: 0.4em;
     font-size: 8px;
   }
