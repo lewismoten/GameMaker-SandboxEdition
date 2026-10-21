@@ -1,100 +1,60 @@
 // Hint book answers hidden the way 90s hint books (and Daniel C. Wilson's "red reveal",
-// danielcwilson.com/blog/2018/02/optical-fun-red-reveal/) hid them: the answer is printed
-// in cyan, the color opposite red, over a field of letter-shaped decoys and under three
-// layers of red stitching. Everything but the answer has full red (R = 255), so through red
-// film (mix-blend-mode: multiply with pure red) it all turns the film's own red and
-// vanishes, while the cyan, which has almost no red, turns dark. Without the film the decoys
-// sit at the answer's own size and lightness and the stitching cuts every letter apart.
+// danielcwilson.com/blog/2018/02/optical-fun-red-reveal/) hid them, with just two inks as a
+// printer would use: the answer in cyan, the ink opposite red, on a field of crossing red
+// lines about as dark as the cyan, with fine red lines printed over the letters too.
+// Every red has full red (R = 255), so through red film it turns the film's own red, just as
+// the white paper does, and vanishes; the cyan has no red at all, so it turns dark. Where a
+// fine line crosses a letter the inks overprint (multiply, as ink on paper does) into a dark
+// cyan or black, which the film keeps dark, so the letters come through whole. That holds
+// for real red cellophane over a printed page too.
 import { h } from '../../editor/ui';
-import { rng } from './kit';
 
-/** Colors with full red, at about the lightness of the answer's cyan (luma ~ 200). */
-export const DECOY_INKS = [
-  'rgb(255,170,205)',
-  'rgb(255,180,140)',
-  'rgb(255,165,240)',
-  'rgb(255,192,120)',
-  'rgb(255,172,172)',
-  'rgb(255,186,224)',
-  'rgb(255,200,255)',
-];
-/** The answer's pale cyans: half red at most, so the film turns them dark red; luma ~ 195. */
-export const CYAN_INKS = ['rgb(118,222,236)', 'rgb(128,214,242)', 'rgb(112,226,222)', 'rgb(136,210,246)', 'rgb(108,224,232)'];
+/** The answer's ink: process cyan, no red at all. */
+export const CYAN_INK = 'rgb(0,174,239)';
+/** The red lines, from pure red to a light red; every one has full red. */
+export const LINE_INKS = ['rgb(255,0,0)', 'rgb(255,80,80)', 'rgb(255,140,140)'];
+
+const rgb = (color: string) => (color.match(/\d+/g) ?? []).map(Number);
 
 /** Rec. 601 luma of an "rgb(r,g,b)" color, 0-255. */
 export function luma(color: string): number {
-  const [r, g, b] = (color.match(/\d+/g) ?? []).map(Number);
+  const [r, g, b] = rgb(color);
   return 0.299 * r + 0.587 * g + 0.114 * b;
 }
 
-let noiseUrl: string | undefined;
-
-/**
- * The field the answer sits on: a pale pink wash crowded with decoy letters and specks in
- * full-red colors as light as the answer, so the eye can't tell which letters are real.
- */
-export function redNoiseTile(): string {
-  if (noiseUrl) return noiseUrl;
-  const W = 240;
-  const H = 120;
-  const c = h('canvas', { width: W, height: H });
-  const g = c.getContext('2d')!;
-  const r = rng(0x5a17d);
-  const pick = (list: string[]) => list[Math.floor(r() * list.length)];
-  g.fillStyle = 'rgb(255,214,226)';
-  g.fillRect(0, 0, W, H);
-  for (let i = 0; i < 5000; i++) {
-    g.fillStyle = pick(DECOY_INKS);
-    const s = 1 + Math.floor(r() * 2);
-    g.fillRect(Math.floor(r() * W), Math.floor(r() * H), s, s);
-  }
-  // decoy letters in the answer's size and weight, drawn across the tile's edges too so it repeats seamlessly
-  for (let i = 0; i < 700; i++) {
-    g.font = `${r() < 0.6 ? 700 : 400} ${11 + Math.floor(r() * 6)}px Arial, sans-serif`;
-    g.fillStyle = pick(DECOY_INKS);
-    const ch = String.fromCharCode((r() < 0.7 ? 97 : 65) + Math.floor(r() * 26));
-    const x = r() * W;
-    const y = r() * H;
-    for (const [dx, dy] of [
-      [0, 0],
-      [-W, 0],
-      [0, -H],
-      [-W, -H],
-    ])
-      g.fillText(ch, x + dx, y + dy + 12);
-  }
-  noiseUrl = c.toDataURL();
-  return noiseUrl;
+/** Two inks printed over each other (multiply), as "rgb(r,g,b)". */
+export function overprint(a: string, b: string): string {
+  const x = rgb(a);
+  const y = rgb(b);
+  return `rgb(${x.map((v, i) => Math.round((v * y[i]) / 255)).join(',')})`;
 }
 
-let inkUrl: string | undefined;
-
-/** The answer's ink: cyan mottled with its neighbors, all low in red. */
-export function blueInkTile(): string {
-  if (inkUrl) return inkUrl;
-  const W = 96;
-  const c = h('canvas', { width: W, height: W });
-  const g = c.getContext('2d')!;
-  const r = rng(0xb1e);
-  g.fillStyle = CYAN_INKS[0];
-  g.fillRect(0, 0, W, W);
-  for (let i = 0; i < 900; i++) {
-    g.fillStyle = CYAN_INKS[Math.floor(r() * CYAN_INKS.length)];
-    const s = 1 + Math.floor(r() * 3);
-    g.fillRect(Math.floor(r() * W), Math.floor(r() * W), s, s);
-  }
-  inkUrl = c.toDataURL();
-  return inkUrl;
+/** How light a color looks through pure red film, 0-255: only its red gets through. */
+export function throughRedFilm(color: string): number {
+  return rgb(color)[0];
 }
 
-/** An answer hidden in red noise. */
+const layer = (deg: number, gap: number, line: number, ink: string) =>
+  `repeating-linear-gradient(${deg}deg, transparent 0 ${gap}em, ${ink} ${gap}em ${gap + line}em)`;
+
+/** The red lines under the answer: crossing hatching about as dark as the cyan, as CSS backgrounds. */
+export function redField(): string {
+  return [layer(152, 0.11, 0.07, LINE_INKS[1]), layer(112, 0.13, 0.06, LINE_INKS[0]), layer(38, 0.09, 0.08, LINE_INKS[2])].join(',');
+}
+
+/** The fine red lines printed over the answer, cutting its letters. */
+export function redLines(): string {
+  return [layer(152, 0.22, 0.045, LINE_INKS[0]), layer(64, 0.29, 0.04, LINE_INKS[1])].join(',');
+}
+
+/** An answer hidden among red lines. */
 export function redCode(text: string): HTMLElement {
   return h(
     'span',
-    { class: 'rf-code', style: `background-image:url(${redNoiseTile()})` },
-    h('span', { class: 'rf-text', style: `background-image:url(${blueInkTile()})` }, text),
-    // the red stitching over the top: three layers of fine lines (see .rf-noise in paper.css)
-    h('span', { class: 'rf-noise', 'aria-hidden': 'true' }),
+    { class: 'rf-code', style: `background:${redField()}, #fff` },
+    h('span', { class: 'rf-text', style: `color:${CYAN_INK}` }, text),
+    // fine red lines over the top, overprinting the cyan (see .rf-noise in paper.css)
+    h('span', { class: 'rf-noise', 'aria-hidden': 'true', style: `background:${redLines()}` }),
   );
 }
 
