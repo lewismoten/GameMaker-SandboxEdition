@@ -1,0 +1,87 @@
+/* RSD's gameware disk label (desk/disks/rsdLabel.ts), after the pink Game-Maker box */
+
+.floppy .label.printed.rsd {
+  gap: 0;
+  padding: 0;
+  background: #f0a090;
+  color: #18150f;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.floppy .label.printed.rsd .r-band {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 1.4cqw 3.4cqw 1cqw;
+  background: #0b0b0b;
+}
+
+.floppy .label.printed.rsd .r-logo {
+  color: #f2e600;
+  font:
+    italic 900 6.4cqw/1 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: -0.02em;
+  text-shadow: 0.5cqw 0.5cqw 0 #1f9a3a;
+  transform: skewX(-8deg);
+}
+
+.floppy .label.printed.rsd .r-rsd {
+  color: #fff;
+  font:
+    700 3.6cqw/1 Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.floppy .label.printed.rsd .r-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 1.6cqw 3.4cqw 1.2cqw;
+  border-bottom: 0.6cqw solid #d81e1e;
+}
+
+.floppy .label.printed.rsd .r-name {
+  overflow: hidden;
+  font:
+    italic 900 7.4cqw/1.05 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.floppy .label.printed.rsd .r-disk {
+  flex: none;
+  font:
+    700 4.4cqw/1 Arial,
+    sans-serif;
+  white-space: nowrap;
+}
+
+/* the game's first level, with its hero */
+.floppy .label.printed.rsd .r-strip {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #223 center / cover no-repeat;
+  image-rendering: pixelated;
+}
+
+.floppy .label.printed.rsd .r-foot {
+  padding: 1.2cqw 3.4cqw 1.6cqw;
+  overflow: hidden;
+  font:
+    700 3.8cqw/1.1 Arial,
+    sans-serif;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* a marker note goes on the picture, just under the title, where it shows when disks overlap */
+.floppy .label.printed.rsd .marker-note {
+  top: 40%;
+}
