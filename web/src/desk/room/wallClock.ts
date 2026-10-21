@@ -1,5 +1,5 @@
 // A giant wristwatch hung on the wall as a clock, as everybody's big sister had in the 90s:
-// a hot pink strap hanging from a nail, a chrome case and a white face, keeping the
+// a black sport strap hanging from a nail, a chrome case and a white face, keeping the
 // visitor's own time (ticking each second, the date in its window). It hangs on the wall
 // left of the desk, so it only shows when the window is wide enough to have wall there
 // (stage.ts sets .wide-wall).
@@ -36,12 +36,12 @@ export function wallClock(): HTMLElement {
   const holes = Array.from(
     { length: 6 },
     (_, i) =>
-      `<ellipse cx="${CX}" cy="${372 + i * 22}" rx="4" ry="5" fill="#7a1840"/>`,
+      `<ellipse cx="${CX}" cy="${372 + i * 22}" rx="4" ry="5" fill="#050506"/>`,
   ).join("");
   const el = h("div", { class: "wall-clock", role: "img" });
   el.innerHTML = `<svg viewBox="0 0 180 540" aria-hidden="true">
     <defs>
-      <linearGradient id="wc-strap" x1="0" x2="1"><stop offset="0" stop-color="#c42d68"/><stop offset="0.45" stop-color="#ee4a8a"/><stop offset="1" stop-color="#b52660"/></linearGradient>
+      <linearGradient id="wc-strap" x1="0" x2="1"><stop offset="0" stop-color="#141517"/><stop offset="0.45" stop-color="#3a3d42"/><stop offset="1" stop-color="#101113"/></linearGradient>
       <linearGradient id="wc-chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfbfb"/><stop offset="0.45" stop-color="#a8adb4"/><stop offset="0.55" stop-color="#e6e8ea"/><stop offset="1" stop-color="#7d838a"/></linearGradient>
       <radialGradient id="wc-face" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e9e9e4"/></radialGradient>
     </defs>
@@ -51,12 +51,12 @@ export function wallClock(): HTMLElement {
     <rect x="${CX - 2}" y="12" width="4" height="30" rx="2" fill="url(#wc-chrome)"/>
     <!-- the strap above the case, with its keeper loop -->
     <rect x="${CX - 28}" y="30" width="56" height="170" rx="6" fill="url(#wc-strap)"/>
-    <rect x="${CX - 31}" y="62" width="62" height="12" rx="3" fill="#b52660"/>
+    <rect x="${CX - 31}" y="62" width="62" height="12" rx="3" fill="#1b1c1f"/>
     <!-- and below, with its holes and a rounded tip -->
     <path d="M${CX - 28} 320 h56 v180 q0 28 -28 28 q-28 0 -28 -28 z" fill="url(#wc-strap)"/>
     ${holes}
     <!-- stitching down both straps -->
-    <g stroke="#ffc1d9" stroke-width="1.2" stroke-dasharray="4 4" fill="none">
+    <g stroke="#6b6f76" stroke-width="1.2" stroke-dasharray="4 4" fill="none">
       <path d="M${CX - 22} 48 v150 M${CX + 22} 48 v150"/>
       <path d="M${CX - 22} 322 v178 M${CX + 22} 322 v178"/>
     </g>
@@ -68,7 +68,7 @@ export function wallClock(): HTMLElement {
     <circle cx="${CX}" cy="${CY}" r="72" fill="url(#wc-face)" stroke="#8a8f96" stroke-width="1.5"/>
     ${ticks}
     ${numbers}
-    <text x="${CX}" y="${CY - 20}" text-anchor="middle" font-size="7" font-weight="700" letter-spacing="2" font-family="Arial, sans-serif" fill="#c42d68">QUARTZ</text>
+    <text x="${CX}" y="${CY - 20}" text-anchor="middle" font-size="7" font-weight="700" letter-spacing="2" font-family="Arial, sans-serif" fill="#139c93">QUARTZ</text>
     <text x="${CX}" y="${CY + 30}" text-anchor="middle" font-size="5.5" letter-spacing="1" font-family="Arial, sans-serif" fill="#777">WATER RESISTANT</text>
     <rect x="${CX + 22}" y="${CY - 7}" width="18" height="14" fill="#fff" stroke="#888" stroke-width="1"/>
     <text class="wc-date" x="${CX + 31}" y="${CY + 4}" text-anchor="middle" font-size="10" font-weight="700" font-family="Arial, sans-serif" fill="#222"></text>
