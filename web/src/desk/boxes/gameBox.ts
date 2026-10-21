@@ -340,7 +340,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   return {
     front: front.toDataURL(),
     back: back.toDataURL(),
-    left: spine(entry.price ? `REG. ${entry.price}` : 'SHAREWARE', 'left'),
+    left: spine(entry.price ? `MSRP ${entry.price}` : 'SHAREWARE', 'left'),
     right: spine(sb ? 'SOUND BLASTER' : 'PC SPEAKER', 'right'),
     top: end([title.toUpperCase(), company.toUpperCase()], 'top'),
     bottom: end([title.toUpperCase(), `VGA · ${sb ? 'SOUND BLASTER' : 'PC SPEAKER'} · 1 PLAYER · ${info.disks} DISK${info.disks === 1 ? '' : 'S'}`], 'bottom'),
