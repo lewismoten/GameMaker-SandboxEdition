@@ -775,10 +775,16 @@ registerEditor(['chr'], (host, project, file) => {
       h(
         'div',
         { class: 'ed-head' },
+        // the tabs sit under the hint, beside the files, so the sequences get the height
         h(
-          'p',
-          { class: 'hint' },
-          `The hero: how it starts the game, and how it moves. Objects come from ${bblName || 'no block set'} and sounds from ${sndName || 'no sound set'}.`,
+          'div',
+          { class: 'chr-head-main' },
+          h(
+            'p',
+            { class: 'hint' },
+            `The hero: how it starts the game, and how it moves. Objects come from ${bblName || 'no block set'} and sounds from ${sndName || 'no sound set'}.`,
+          ),
+          tabBar,
         ),
         fileField(
           project,
@@ -795,7 +801,6 @@ registerEditor(['chr'], (host, project, file) => {
         ),
         chooser.el,
       ),
-      tabBar,
       startPanel,
       seqPanel,
     ),

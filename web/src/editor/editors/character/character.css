@@ -17,10 +17,22 @@
 }
 
 /* the two halves of the editor, as tabs */
+.chr-head-main {
+  flex: 1 1 420px;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+.editor .chr-head-main .hint {
+  flex: none;
+}
 .chr-tabs {
   display: flex;
   gap: 2px;
-  margin: 4px 0 12px;
+  margin: 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -647,5 +659,94 @@
   .chr-inv .block-button .extra {
     width: 36px;
     height: 36px;
+  }
+}
+
+/* Wide windows: the stage with its settings beside it and the frames as one strip below, so a
+   sequence fits the window. Settings taller than the stage scroll by themselves; so do the frames. */
+@media (min-width: 1180px) and (min-height: 640px) {
+  .chr-detail {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+  }
+  .chr-detail-head,
+  .chr-frames-wrap {
+    grid-column: 1 / -1;
+  }
+  .chr-stage-wrap {
+    grid-row: 2;
+    grid-column: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+  .chr-stage {
+    width: clamp(260px, calc((100dvh - 700px) * 2), 480px);
+  }
+  .chr-stage-bar {
+    flex: none;
+    width: 0;
+    min-width: 100%;
+  }
+  .chr-groups {
+    grid-row: 2;
+    grid-column: 2;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 8px;
+    contain: size;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .chr-groups .chr-group {
+    padding: 8px 12px;
+  }
+  .chr-groups .chr-group > h4 {
+    margin-bottom: 6px;
+  }
+  .chr-frames-wrap {
+    grid-row: 3;
+    padding: 8px 12px;
+  }
+  .chr-frames-wrap > h4 {
+    margin-bottom: 6px;
+  }
+  /* the sequence's name and what it does share a line */
+  .chr-detail-head > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 12px;
+  }
+  .chr-detail-head .chr-help {
+    margin: 0;
+  }
+  .chr-frames {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+}
+/* short wide windows: slightly smaller frame blocks so the strip still fits */
+@media (min-width: 1180px) and (min-height: 640px) and (max-height: 860px) {
+  .chr-frames .chr-cell,
+  .chr-frames .chr-cell canvas {
+    width: 50px;
+    height: 50px;
+  }
+}
+/* narrow windows: the tabs come after the files, just above what they switch */
+@media (max-width: 760px) {
+  .chr-head-main {
+    display: contents;
+  }
+  .editor .chr-head-main .hint {
+    flex: 1 1 100%;
+  }
+  .chr-tabs {
+    order: 9;
+    flex-basis: 100%;
+    margin-top: 4px;
   }
 }
