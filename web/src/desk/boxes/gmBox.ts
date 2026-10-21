@@ -64,9 +64,10 @@ function badge(ctx: CanvasRenderingContext2D, x: number, y: number, w: number): 
   ctx.lineWidth = 6;
   ctx.strokeRect(x + 3, y + 3, w - 6, 90);
   ctx.fillStyle = '#fff';
-  ctx.font = SANS(15);
+  ctx.font = SANS(13);
   ctx.textAlign = 'center';
-  ['CREATED BY', 'RECREATIONAL', 'SOFTWARE', 'DESIGNS'].forEach((l, i) => ctx.fillText(l, x + w / 2, y + 24 + i * 19));
+  // this edition is a port: RSD made the original
+  ['ORIGINALLY', 'CREATED BY', 'RECREATIONAL', 'SOFTWARE', 'DESIGNS'].forEach((l, i) => ctx.fillText(l, x + w / 2, y + 21 + i * 16));
   ctx.textAlign = 'left';
 }
 
