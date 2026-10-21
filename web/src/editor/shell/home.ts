@@ -14,6 +14,7 @@ import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type Home
 import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
 import { icon, type IconName } from './homeIcons';
+import { wantsTouchControls } from '../../player/touch';
 
 export interface HomeNav {
   openProject(id: string): void;
@@ -279,6 +280,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   };
 
   const top = showcase(nav, refreshProjects);
+  const touch = wantsTouchControls();
 
   clear(
     root,
@@ -318,11 +320,19 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         h(
           'ul',
           null,
-          h('li', null, h('b', null, '▶ Play'), ' right here, with keyboard or gamepad'),
+          h('li', null, h('b', null, '▶ Play'), touch ? ' right here, with on-screen controls or a gamepad' : ' right here, with keyboard or gamepad'),
           h('li', null, h('b', null, '✎ Edit a copy'), ' to see how a game was made'),
           h('li', null, h('b', null, '+ New game'), ' to start your own'),
         ),
-        h('p', { class: 'meta' }, 'Playing: F1 help · F2 status · F3 music · F4 sound · F5 save · F6 load · Esc leaves a level. ', h('a', { href: '#/help' }, 'Read the Guide →')),
+        h(
+          'p',
+          { class: 'meta' },
+          // a touch screen has no F-keys: the player's on-screen pad has the ones that matter
+          touch
+            ? 'Playing: slide a thumb around the pad to move and tap the buttons to act; Esc, F1 help and F2 status have buttons too. '
+            : 'Playing: F1 help · F2 status · F3 music · F4 sound · F5 save · F6 load · Esc leaves a level. ',
+          h('a', { href: '#/help' }, 'Read the Guide →'),
+        ),
       ),
     ),
   );
