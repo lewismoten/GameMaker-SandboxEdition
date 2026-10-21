@@ -1,6 +1,7 @@
 // The words: what everyone says, what the evidence shows, and the pages PLAYGAME writes
 // over the pictures. Display_File shows 16 lines a page, 31 columns wide; the answer
 // screens keep to 20 columns so the speaker's portrait stays clear on the right.
+import { withCreditPage } from '../../../kit/license';
 
 /** Word-wraps paragraphs ("\n\n" between them, "\f" forces a new page) into 16-line pages. */
 export function pages(text: string, width: number): string {
@@ -91,7 +92,7 @@ The evidence board holds your notes on everything you have found. Step up to a c
 
 At dawn you name the killer, then say HOW and WHY. You have three chances. The Commissioner will not wait for a fourth.`;
 
-export const CREDITS = `FINAL CURTAIN
+const CREDITS_TEXT = `FINAL CURTAIN
 Version 1.0, 1995
 
 Story, design, art, music and programming: Claude
@@ -518,3 +519,6 @@ There are three ways it could have been done.`,
 
 Take what you have found to the green room.`,
 };
+
+/** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
+export const CREDITS = withCreditPage(CREDITS_TEXT);

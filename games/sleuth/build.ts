@@ -22,6 +22,7 @@ import { buildMusic } from './src/sound/music';
 import { buildSounds } from './src/sound/sounds';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { demoRecording } from './src/demo';
+import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -56,4 +57,5 @@ const sounds = buildSounds();
 disk.put('final.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
 disk.put('demo.rec', await demoRecording(disk.files));
+disk.put('license.txt', licenseText("Final Curtain"));
 disk.write();
