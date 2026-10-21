@@ -372,10 +372,8 @@ export function traceMusic(music: Uint8Array, ticks: number, velocity = false): 
         out.push(`${t}:hang`);
         return out;
       }
-      if (offset >= music.length) {
-        out.push(`${t}:restart`);
-        offset = 0;
-      }
+      // No position check: PlayIt repeats only at an end marker. Past the end of the data the
+      // read gives 0xFF (as in audio/cmfPlayer.ts), which restarts like the marker does.
       const s = at(offset);
       if ((s & 0xf0) === 0x90 || (s & 0xf0) === 0x80) {
         channel = s & 0x0f;

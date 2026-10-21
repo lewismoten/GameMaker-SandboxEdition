@@ -80,25 +80,34 @@ export class CmfPlayer {
     this.notes.fill(-1);
   }
 
+  /**
+   * *(APOS) in SBMUSIC.C. PlayIt read sbmusic+offset with no bounds check, so past the end of
+   * the farmalloc'd music block it read whatever heap memory followed. Every CMF ends with the
+   * FF 2F 00 end marker, which restarts the song before the read gets there; only a truncated
+   * file runs off the end, and for that the port reads 0xFF, which takes the same path as the
+   * end marker (sbfd_music_off, offset = 0).
+   */
   private byte(i: number): number {
     return this.music[i] ?? 0xff;
   }
 
   /**
    * getpaws() in SBMUSIC.C: reads a MIDI variable length number (7 bits per byte, high bit
-   * set on every byte but the last). The guard caps it at five bytes; the C loop had no cap.
+   * set on every byte but the last), with no limit on the number of bytes:
+   *   do { offset++; value = (value << 7) | ((c=*(APOS)) & 0x07F); } while (c & 0x80);
+   * value is an unsigned long, so bits shifted past 32 are lost (>>> 0). The one difference:
+   * the loop stops at the end of the data, where DOS read on into unknown memory.
    */
   private getPaws(): number {
     let value = this.byte(this.offset);
     if (value & 0x80) {
       value &= 0x7f;
       let c: number;
-      let guard = 0;
       do {
         this.offset++;
         c = this.byte(this.offset);
-        value = (value << 7) | (c & 0x7f);
-      } while (c & 0x80 && guard++ < 4);
+        value = ((value << 7) | (c & 0x7f)) >>> 0;
+      } while (c & 0x80 && this.offset < this.music.length);
     }
     this.offset++;
     return value;
@@ -113,13 +122,11 @@ export class CmfPlayer {
     }
     this.wait--;
     // Run every event that is due this tick; each event is followed by the delta to the next.
+    // (while (wait==0) in the C; the guard only stops a song of endless zero deltas from
+    // hanging the audio thread, where DOS would have hung.) The song repeats only where PlayIt
+    // repeated it: at the end marker (any 0xF1..0xFF status) below, never by position.
     let guard = 0;
-    while (this.wait <= 0 && guard++ < 1000) {
-      // Past the end of the data (the C read on): loop the song.
-      if (this.offset >= this.music.length) {
-        this.allNotesOff();
-        this.offset = 0;
-      }
+    while (this.wait <= 0 && guard++ < 100000) {
       // A note on/off status byte sets the running status; other bytes fall through to the
       // data check below (only 0x8n and 0x9n are kept as running status, as in PlayIt).
       const b = this.byte(this.offset);
