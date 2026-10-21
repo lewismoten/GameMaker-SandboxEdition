@@ -1,26 +1,44 @@
 /* The modern editor's look: color tokens (light and dark), the app bar, buttons, fields,
    panels, dialogs and toasts shared by the home page, the workspace and every editor. */
 :root {
-  --bg: #e9ecf3;
-  --panel: #ffffff;
-  --panel-2: #f3f5fa;
+  /* light: soft grays rather than paper white, easier on the eyes */
+  --bg: #d5d9e2;
+  --panel: #e9ecf2;
+  --panel-2: #dfe3eb;
   --text: #1a1d29;
-  --muted: #5b6275;
-  --border: #c9cfdd;
+  --muted: #4f566a;
+  --border: #b6bdcc;
   --accent: #1f3fbf;
   --accent-text: #ffffff;
-  --accent-soft: #dfe5fb;
-  --danger: #b3261e;
+  --accent-soft: #cfd8f5;
+  --danger: #a3221b;
   --title-bg: #000080;
   --title-text: #ffd400;
   --focus: #ff9d00;
-  --checker-a: #c8c8c8;
-  --checker-b: #e8e8e8;
+  --checker-a: #bdbdbd;
+  --checker-b: #dadada;
   color-scheme: light;
 }
 
+/* dark: the default (theme.ts); 'auto' follows the system */
+:root[data-theme='dark'] {
+  --bg: #11131a;
+  --panel: #1b1e28;
+  --panel-2: #232736;
+  --text: #e6e8ef;
+  --muted: #9aa2b8;
+  --border: #343a4f;
+  --accent: #6d8bff;
+  --accent-text: #0b0d14;
+  --accent-soft: #1f2748;
+  --danger: #ff6b61;
+  --checker-a: #3a3a3a;
+  --checker-b: #2a2a2a;
+  color-scheme: dark;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root[data-theme='auto'] {
     --bg: #11131a;
     --panel: #1b1e28;
     --panel-2: #232736;
@@ -1074,8 +1092,13 @@ button.big {
   margin-top: 6px;
 }
 
+:root[data-theme='dark'] .callout {
+  background: #3a3205;
+  color: #ffe9a3;
+}
+
 @media (prefers-color-scheme: dark) {
-  .callout {
+  :root[data-theme='auto'] .callout {
     background: #3a3205;
     color: #ffe9a3;
   }
