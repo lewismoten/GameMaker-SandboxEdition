@@ -1,9 +1,9 @@
 // Gwin, Teddy's (younger) big sister: a brown pit-lab mix, all muscle, floppy ears, a
 // whip of a tail and a tongue that never goes back in. She is taller than Teddy and fills
 // her whole block. Drawn facing right; she is mirrored when running left.
-import type { Pixels } from '../kit/pixels';
-import { sprite } from './src/art/draw';
-import { P } from './src/art/pal';
+import type { Pixels } from '../../../kit/pixels';
+import { sprite } from '../art/draw';
+import { P } from '../art/pal';
 
 const K: Record<string, number> = {
   o: P.c('gwin', 0),

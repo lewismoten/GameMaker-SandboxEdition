@@ -1,10 +1,10 @@
 // Doc Leo, the friendly hobo clown, two blocks tall (Teddy is one). His costume is the
 // story: Gwin scattered his hat, bow tie, shoes, horn and nose across town. `wearing`
 // says which pieces he has on.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, over, sprite } from './src/art/draw';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, over, sprite } from '../art/draw';
 import { CK } from './klown';
-import { P } from './src/art/pal';
+import { P } from '../art/pal';
 
 const K: Record<string, number> = {
   ...CK,

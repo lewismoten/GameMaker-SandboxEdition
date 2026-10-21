@@ -5,13 +5,13 @@
 import { encodeFli } from '../../web/src/formats/fli';
 import { Pixels } from '../kit/pixels';
 import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from './src/art/draw';
-import { FX } from './fx';
-import { GWIN } from './gwin';
-import { citiCar } from './klown';
-import { dove, marcher } from './magic';
-import { docLeo, FULL } from './people';
+import { FX } from './src/sprites/fx';
+import { GWIN } from './src/sprites/gwin';
+import { citiCar } from './src/sprites/klown';
+import { dove, marcher } from './src/sprites/magic';
+import { docLeo, FULL } from './src/sprites/people';
 import { SP, landscape } from './screens';
-import { POSES } from './teddy';
+import { POSES } from './src/sprites/teddy';
 
 const c = (n: string, k: number) => SP.c(n, k);
 const W = 320;

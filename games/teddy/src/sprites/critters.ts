@@ -1,8 +1,8 @@
 // Critters and pests (monster block art): squirrels, cats, pigeons, geese, ducks, rats...
 // all drawn facing right; they are mirrored by their path orientation.
-import type { Pixels } from '../kit/pixels';
-import { sprite } from './src/art/draw';
-import { P } from './src/art/pal';
+import type { Pixels } from '../../../kit/pixels';
+import { sprite } from '../art/draw';
+import { P } from '../art/pal';
 
 const K: Record<string, number> = {
   o: P.c('ink', 0),

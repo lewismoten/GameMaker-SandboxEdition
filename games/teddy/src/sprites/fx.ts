@@ -1,8 +1,8 @@
 // The little things Teddy's tricks send out (a bark, a spray of dirt, a paw, whirls, a
 // tumbleweed of corgi fluff, a heart) and the goodies he collects, as monster block art.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, blob, sprite } from './src/art/draw';
-import { P } from './src/art/pal';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, blob, sprite } from '../art/draw';
+import { P } from '../art/pal';
 
 const K: Record<string, number> = {
   o: P.c('ink', 0),

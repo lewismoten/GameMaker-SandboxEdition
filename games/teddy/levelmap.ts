@@ -4,7 +4,7 @@ import { newMap, reindexMonsters, MLEN, LASTMM, type GameMap } from '../../web/s
 import type { BlockSet } from './src/blocks/blockset';
 import type { Bestiary } from './src/characters/mons';
 import { Pixels } from '../kit/pixels';
-import { FX } from './fx';
+import { FX } from './src/sprites/fx';
 import { CTR } from './src/ids';
 
 export type Cell = string | { tile?: string; mon?: string; mark?: string };

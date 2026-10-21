@@ -7,7 +7,7 @@ import { commonMonsters } from './src/characters/sharedMonsters';
 import { LevelMap } from './levelmap';
 import { Pixels } from '../kit/pixels';
 import { CTR } from './src/ids';
-import { klownCar, pockets, propOn, wantBubble } from './klown';
+import { klownCar, pockets, propOn, wantBubble } from './src/sprites/klown';
 
 export interface Level {
   /** File name stem (8.3). */

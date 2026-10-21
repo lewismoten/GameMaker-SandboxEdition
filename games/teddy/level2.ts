@@ -3,12 +3,12 @@
 // with boxes floating on balloons, and Doc Leo's bow tie up on a porch roof.
 import { Pixels, rng } from '../kit/pixels';
 import { blob, micro, over, speckle } from './src/art/draw';
-import { CRITTERS } from './critters';
+import { CRITTERS } from './src/sprites/critters';
 import { FLIP } from './src/characters/mons';
 import { POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { balloonBox, balloonProp, crate, hand, kid, mailCarrier, mailTruck } from './folks';
-import { propSprite } from './klown';
+import { balloonBox, balloonProp, crate, hand, kid, mailCarrier, mailTruck } from './src/sprites/folks';
+import { propSprite } from './src/sprites/klown';
 import { CTR } from './src/ids';
 import { bandOf, sign } from './level1';
 import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from './src/blocks/tiles';

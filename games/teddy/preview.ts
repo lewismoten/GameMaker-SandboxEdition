@@ -3,7 +3,7 @@
 import { Pixels } from '../kit/pixels';
 import { writePng } from './png';
 import { P } from './src/art/pal';
-import { POSES, PAW_UP } from './teddy';
+import { POSES, PAW_UP } from './src/sprites/teddy';
 
 const out = process.argv[2] ?? '.';
 export function sheet(pics: Pixels[], cols = 8, bg = 255): Pixels {
@@ -13,7 +13,7 @@ export function sheet(pics: Pixels[], cols = 8, bg = 255): Pixels {
   return p;
 }
 writePng(`${out}/teddy.png`, sheet([...Object.values(POSES), PAW_UP]), P.pal, 6);
-import { FX } from './fx';
+import { FX } from './src/sprites/fx';
 writePng(`${out}/fx.png`, sheet(Object.values(FX)), P.pal, 6);
-import { GWIN } from './gwin';
+import { GWIN } from './src/sprites/gwin';
 writePng(`${out}/gwin.png`, sheet([...Object.values(GWIN), POSES.stand]), P.pal, 6);

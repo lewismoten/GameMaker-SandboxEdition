@@ -1,10 +1,10 @@
 // The Klown Klub's people and things that turn up in every level: Doc Leo's red CitiCar
 // waiting at each level's end (it only opens for the piece of Doc Leo's costume Teddy
 // fetched), Pockets who drives it for him today, and the costume pieces themselves.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, blob, over, sprite } from './src/art/draw';
-import { P } from './src/art/pal';
-import { canvas, cut } from './src/blocks/tiles';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, blob, over, sprite } from '../art/draw';
+import { P } from '../art/pal';
+import { canvas, cut } from '../blocks/tiles';
 
 const c = (n: string, k: number) => P.c(n, k);
 

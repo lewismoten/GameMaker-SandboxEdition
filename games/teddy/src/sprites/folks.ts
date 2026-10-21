@@ -1,9 +1,9 @@
 // Townsfolk and their things (monster and block art): kids who want a high five or a
 // "sit!", the mail carrier and his truck, balloons tied to boxes.
-import { Pixels } from '../kit/pixels';
-import { blob, micro, sprite } from './src/art/draw';
+import { Pixels } from '../../../kit/pixels';
+import { blob, micro, sprite } from '../art/draw';
 import { CK } from './klown';
-import { P } from './src/art/pal';
+import { P } from '../art/pal';
 
 const K: Record<string, number> = {
   ...CK,

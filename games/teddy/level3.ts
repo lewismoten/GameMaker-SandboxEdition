@@ -4,12 +4,12 @@
 // duck pond, frisbees flying, and Gwin rolling in the mud by the picnic tables.
 import { Pixels, rng } from '../kit/pixels';
 import { blob, micro, speckle } from './src/art/draw';
-import { CRITTERS } from './critters';
+import { CRITTERS } from './src/sprites/critters';
 import { FLIP } from './src/characters/mons';
 import { CTR, POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { askBubble, frisbee, kid } from './folks';
-import { propSprite } from './klown';
+import { askBubble, frisbee, kid } from './src/sprites/folks';
+import { propSprite } from './src/sprites/klown';
 import { bandOf, sign } from './level1';
 import { branch, buried, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from './src/blocks/tiles';
 

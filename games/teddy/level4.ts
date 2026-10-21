@@ -5,14 +5,14 @@
 // fruit stand Gwin already knocked over, and the Odeon, where the Klown Car waits.
 import { Pixels, rng } from '../kit/pixels';
 import { blob, klubArt, micro, scaleBlit, speckle, sprite } from './src/art/draw';
-import { FULL, docLeo } from './people';
-import { CRITTERS } from './critters';
+import { FULL, docLeo } from './src/sprites/people';
+import { CRITTERS } from './src/sprites/critters';
 import { FLIP, type Bestiary } from './src/characters/mons';
 import { POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
-import { askBubble, juggler, kid, pin } from './folks';
-import { dove, marcher, presto, split } from './magic';
-import { CK } from './klown';
+import { askBubble, juggler, kid, pin } from './src/sprites/folks';
+import { dove, marcher, presto, split } from './src/sprites/magic';
+import { CK } from './src/sprites/klown';
 import { bandOf } from './level1';
 import { bricks, c, copy, cut, dirt, r, sky } from './src/blocks/tiles';
 

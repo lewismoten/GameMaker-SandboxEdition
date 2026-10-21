@@ -3,7 +3,7 @@
 // garbage-can mess, up the old oak for Doc Leo's hat, and under the back fence.
 import { Pixels, rng } from '../kit/pixels';
 import { blob, micro } from './src/art/draw';
-import { CRITTERS } from './critters';
+import { CRITTERS } from './src/sprites/critters';
 import { FLIP } from './src/characters/mons';
 import { POWER } from './src/ids';
 import { P } from './src/art/pal';
