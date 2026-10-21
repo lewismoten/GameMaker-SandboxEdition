@@ -6,7 +6,7 @@
 import { characterActions, type ActionKind } from '../../../web/src/editor/keymap/keyMap';
 import type { Machine } from '../../../web/src/engine/machine';
 import type { Session } from '../../../web/src/engine/scene';
-import { BACKBL, type World } from '../../../web/src/engine/world';
+import { BACKBL, LASTMON, type World } from '../../../web/src/engine/world';
 import { parseMap } from '../../../web/src/formats/map';
 import { rng } from '../pixels';
 import { Probe, cloneWorld } from './probe';
@@ -26,6 +26,8 @@ export interface BotOptions {
   kinds?: ActionKind[];
   /** How much new ground counts against other rewards (default 1). */
   explore?: number;
+  /** Keep at least this many blocks from every monster (for games whose monsters roam at random). */
+  keepAway?: number;
   /** A place to head for in a scene, in blocks: rewards getting closer. */
   goals?: Record<number, { x: number; y: number }[]>;
   seed?: number;
@@ -66,6 +68,7 @@ export class Bot {
       never: o.never ?? [],
       kinds: o.kinds ?? ['move', 'jump', 'fire', 'pickup'],
       explore: o.explore ?? 1,
+      keepAway: o.keepAway ?? 0,
       links: o.links,
       goals: o.goals,
     };
@@ -187,6 +190,15 @@ export class Bot {
       if (p.dead) return -2000 + t * 20;
       if (p.link >= 0) return this.allowed(p.link) ? 3000 - t : -3000;
       const at = pos(copy);
+      if (this.o.keepAway) {
+        // every monster could be anywhere near where it is now: stay clear of all of them
+        for (let i = 0; i < copy.mm.length; i++) {
+          if (copy.mm[i].monnum >= LASTMON) continue;
+          const mi = copy.mi[i];
+          const d = Math.hypot(mi.curx[0] - at.x / 20, mi.cury[0] - at.y / 20);
+          if (d < this.o.keepAway) value -= ((this.o.keepAway - d) * 40) / (1 + t / 8);
+        }
+      }
       const cell = Math.floor(at.y / 20) * MAP_W + Math.floor(at.x / 20);
       if (!seenHere.has(cell)) {
         seenHere.add(cell);
