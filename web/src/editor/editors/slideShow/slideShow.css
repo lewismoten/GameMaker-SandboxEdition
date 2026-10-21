@@ -393,7 +393,7 @@
 
 /* media bin */
 .sl-bin {
-  margin-top: 16px;
+  margin-top: 10px;
   padding: 12px;
   border-radius: 10px;
   border: 1px solid var(--border);
@@ -421,6 +421,11 @@
 }
 .sl-bin-head .spacer {
   flex: 1;
+}
+/* the how-to wraps beside the buttons, so they keep to the heading's row */
+.sl-bin-head .meta {
+  flex: 1 1 240px;
+  min-width: 0;
 }
 .sl-bin-head button {
   padding: 4px 10px;

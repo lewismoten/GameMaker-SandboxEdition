@@ -758,7 +758,7 @@ registerEditor(['lst'], (host, project, file) => {
     h(
       'div',
       { class: 'sl-legend meta' },
-      `Slides play in order; after each: ${THEN_ICON.key} waits for a key · ${THEN_ICON.none} goes straight on · ${THEN_ICON.seconds} waits seconds or a key (drag a timed slide’s edges to change how long). Esc in the game skips the rest.`,
+      `Slides play in order; after each: ${THEN_ICON.key} waits for a key · ${THEN_ICON.none} goes straight on · ${THEN_ICON.seconds} waits seconds or a key (drag its edges for longer or shorter). Esc skips the rest.`,
     ),
     binBox,
   );
