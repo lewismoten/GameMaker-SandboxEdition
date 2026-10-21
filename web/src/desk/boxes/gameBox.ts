@@ -3,7 +3,7 @@
 // maps (drawBox). The drawing helpers are in boxPaint.ts; the 3D box and the viewer that
 // turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
 // it comes forward in the viewer.
-import type { CatalogEntry } from '../../project/files';
+import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { mapShot, renderShot } from './boxArt';
 import { parseGame, ADVTYPE } from '../../formats/game';
 import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours } from './boxFacts';
@@ -42,10 +42,10 @@ export interface BoxFaces {
 
 async function countLevels(entry: CatalogEntry): Promise<number> {
   if (!entry.gam) return 0;
-  const res = await fetch(`./${entry.path}${entry.gam}`).catch(() => undefined);
-  if (!res?.ok) return 0;
+  const gam = await fetchGameFile(entry, entry.gam);
+  if (!gam) return 0;
   try {
-    return parseGame(new Uint8Array(await res.arrayBuffer())).scenes.filter((s) => s.gametype === ADVTYPE).length;
+    return parseGame(gam).scenes.filter((s) => s.gametype === ADVTYPE).length;
   } catch {
     return 0;
   }
