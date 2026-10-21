@@ -3,13 +3,13 @@
 // over it. Each change is saved as an 8-bit PCM .VOC at the sample's own rate, the kind
 // the Sound Blaster (and PLAYGAME) plays; the original bytes are kept until you change it.
 import './sample.css';
-import { registerEditor } from './registry';
-import { h, clear, download, toast } from '../core/ui';
-import { encodeWav, toPcm8 } from '../../media/wav';
-import { decodeVoc, encodeVoc } from '../../formats/voc';
-import { audio } from '../widgets/mediaShared';
-import { drawWave } from '../widgets/waveform';
-import { startRecording } from '../tools/vocMaker';
+import { registerEditor } from '../registry';
+import { h, clear, download, toast } from '../../core/ui';
+import { encodeWav, toPcm8 } from '../../../media/wav';
+import { decodeVoc, encodeVoc } from '../../../formats/voc';
+import { audio } from '../../widgets/mediaShared';
+import { drawWave } from '../../widgets/waveform';
+import { startRecording } from '../../tools/vocMaker';
 import {
   applyEffect,
   cut,
@@ -27,8 +27,8 @@ import {
   trim,
   type Effect,
   type Span,
-} from '../../audio/sampleEdit';
-import { classifySound, SOUND_GROUPS } from '../../audio/soundProfile';
+} from '../../../audio/sampleEdit';
+import { classifySound, SOUND_GROUPS } from '../../../audio/soundProfile';
 
 registerEditor(['voc'], (host, project, file) => {
   const original = decodeVoc(project.files.get(file)!);

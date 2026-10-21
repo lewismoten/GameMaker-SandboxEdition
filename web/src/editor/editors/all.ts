@@ -13,7 +13,7 @@ import './backdrop/backdrop';
 import './textScreen/textScreen';
 import './slideShow/slideShow';
 import './music';
-import './sample';
+import './sample/sample';
 import './highScores';
 import '../tools/all';
 import './recording';
