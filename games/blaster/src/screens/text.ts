@@ -1,5 +1,6 @@
 // The words: text pages Game-Maker writes over the screens (31 columns, 16 lines a page)
 // and the readme on the disk (also 31 columns, for the same little windows).
+import { withCreditPage } from '../../../kit/license';
 
 const page = (lines: string[]) => {
   for (const l of lines) if (l.length > 31) throw new Error(`Text line over 31 columns: "${l}"`);
@@ -103,7 +104,7 @@ export const HELP = pages(
   ],
 );
 
-export const CREDITS = pages(
+const CREDITS_TEXT = pages(
   [
     'VIRUS BLASTER',
     'Version 1.0, 1995',
@@ -274,3 +275,6 @@ export function readme(price: string): string {
 }
 
 export const README = readme('$15');
+
+/** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
+export const CREDITS = withCreditPage(CREDITS_TEXT);

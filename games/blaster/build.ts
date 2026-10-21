@@ -20,6 +20,7 @@ import { STAGES } from './src/stages/stages';
 import { buildLeg } from './src/stages/stage';
 import { buildScreens } from './src/screens/screens';
 import { demoRecording } from './src/demo';
+import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -50,4 +51,5 @@ for (const s of stages) {
 for (const [name, bytes] of Object.entries(buildScreens(stages))) disk.put(name, bytes);
 disk.put('demo.rec', await demoRecording(stages[0]));
 disk.put('blaster.gam', serializeGame(buildGame(stages, process.env.BLASTER_START)));
+disk.put('license.txt', licenseText("Virus Blaster"));
 disk.write();
