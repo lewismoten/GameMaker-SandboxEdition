@@ -2,12 +2,12 @@
 // and you are home again (Game-Maker maps wrap; Maximus makes every planet a little
 // globe). Sky on top, a crust of soil and rock, worm-eaten caves, floating islands,
 // lakes of whatever the palette says the liquid is, ruins and a vault deep down.
-import { rng } from '../kit/pixels';
-import type { Block } from '../../web/src/formats/blocks';
+import { rng } from '../../../kit/pixels';
+import type { Block } from '../../../../web/src/formats/blocks';
 import { Grid, H, W, reachable, wave1d, wx, wy } from './mapkit';
-import type { SetBuilder } from './src/blocks/blockset';
-import { OPEN_AIR_PICKUPS } from './src/blocks/surface';
-import type { PickupId } from './src/blocks/items';
+import type { SetBuilder } from '../blocks/blockset';
+import { OPEN_AIR_PICKUPS } from '../blocks/surface';
+import type { PickupId } from '../blocks/items';
 
 export interface Spot {
   x: number;

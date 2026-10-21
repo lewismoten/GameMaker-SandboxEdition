@@ -1,11 +1,11 @@
 // The space charts: the galaxy (home dock, five sector warps behind shard gates, and the
 // Core sealed behind all ten) and the sector charts (a sun, its planets, a trading post,
 // an asteroid belt, and the warp home).
-import { rng } from '../kit/pixels';
+import { rng } from '../../../kit/pixels';
 import { Grid, W, H, reachable, wx, wy } from './mapkit';
-import type { SetBuilder } from './src/blocks/blockset';
-import { WARES } from './src/blocks/space';
-import { tileNoise } from './src/art/draw';
+import type { SetBuilder } from '../blocks/blockset';
+import { WARES } from '../blocks/space';
+import { tileNoise } from '../art/draw';
 
 export interface P {
   x: number;

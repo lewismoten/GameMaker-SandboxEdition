@@ -2,8 +2,8 @@
 // walk, hop the crates, climb the ledges, shoot the practice drones, grab credits, pay
 // the credit door, ride the lift, and walk into the airlock to reach the pod.
 import { Grid, H, W } from './mapkit';
-import type { SetBuilder } from './src/blocks/blockset';
-import type { MonsterSet } from './src/characters/bestiary';
+import type { SetBuilder } from '../blocks/blockset';
+import type { MonsterSet } from '../characters/bestiary';
 import type { PlanetResult } from './planet';
 
 export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {

@@ -1,8 +1,8 @@
 // Map building helpers: a wrapping 100x100 grid of block numbers plus placed monsters,
 // and the reachability check (flood fill over cells a two-block-tall courier fits in).
-import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
-import type { Block } from '../../web/src/formats/blocks';
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
+import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import type { Block } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
 
 export const W = MLEN;
 export const H = MWID;

@@ -9,20 +9,20 @@ import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame, type Game, type L
 import { monsterSet, type MonsterSet } from './characters/bestiary';
 import type { SetBuilder } from './blocks/blockset';
 import { courier, vehicle, type CharSet } from './characters/chars';
-import { heartMap, maelstromMap } from '../core';
-import { homeMap } from '../home';
+import { heartMap, maelstromMap } from './levels/core';
+import { homeMap } from './levels/home';
 import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from './characters/fauna';
-import { Grid, W, reachable } from '../mapkit';
+import { Grid, W, reachable } from './levels/mapkit';
 import { oceanSet } from './blocks/ocean';
 import { buildPalette } from './art/palette';
-import { checkPlanet, surfacePlanet, type PlanetResult } from '../planet';
-import { populate, type Spots } from '../populate';
+import { checkPlanet, surfacePlanet, type PlanetResult } from './levels/planet';
+import { populate, type Spots } from './levels/populate';
 import { ROLES, themeFor, type Biome } from './art/roles';
-import { oceanPlanet } from '../seaplanet';
+import { oceanPlanet } from './levels/seaplanet';
 import { spaceSet } from './blocks/space';
-import { galaxyMap, sectorMap } from '../spacemaps';
+import { galaxyMap, sectorMap } from './levels/spacemaps';
 import { stationSet } from './blocks/station';
-import { stationPlanet } from '../stationmap';
+import { stationPlanet } from './levels/stationmap';
 import { surfaceSet } from './blocks/surface';
 import { SCENE, SECTORS, allWorlds, type WorldKind } from './universe';
 

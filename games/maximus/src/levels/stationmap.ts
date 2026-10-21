@@ -1,9 +1,9 @@
 // Derelict stations for STATION.BBL: a lattice of rooms joined by doorways, lift shafts
 // and crawl corridors, with conveyor decks, laser gates on a shared clock, acid sumps,
 // reactor halls, a vault, and the airlock you came in by.
-import { rng } from '../kit/pixels';
+import { rng } from '../../../kit/pixels';
 import { Grid, H, W, reachable, wx } from './mapkit';
-import type { SetBuilder } from './src/blocks/blockset';
+import type { SetBuilder } from '../blocks/blockset';
 import type { PlanetResult, PlanetSpec, Run, Spot } from './planet';
 
 interface Room {

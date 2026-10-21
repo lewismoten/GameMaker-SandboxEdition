@@ -6,7 +6,7 @@
 // - the training deck can be crossed by "hold right, hop when stuck".
 import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from './src/ids';
 import { newCharInfo } from '../../web/src/engine/world';
-import { reachable } from './mapkit';
+import { reachable } from './src/levels/mapkit';
 import { buildGame } from './src/game';
 import { autoWalk, navigate, simFor, standStill } from './verify';
 
