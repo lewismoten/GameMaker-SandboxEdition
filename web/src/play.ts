@@ -5,7 +5,7 @@
 //   exported web apps     ./game/manifest.json lists the bundled game files
 import { mountPlayer } from './player/player';
 import { watchForUpdates } from './devReload';
-import { GameFiles, loadCatalog, loadHostedGame } from './project/files';
+import { GameFiles, loadCatalog, loadHostedGame, type CatalogEntry } from './project/files';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
 import { registerServiceWorker } from './offline';
 
@@ -38,7 +38,16 @@ async function loadBundle(): Promise<{ id: string; title: string; gam: string; f
   return { id: `bundle:${m.id}`, title: m.title, gam: m.gam, files };
 }
 
-async function choose(): Promise<{ id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string } | undefined> {
+/** A shot of the game's first level, for the start screen (drawn while you read it). */
+async function posterOf(entry: CatalogEntry): Promise<string | undefined> {
+  const { renderShot } = await import('./desk/boxes/boxArt');
+  const c = document.createElement('canvas');
+  c.width = 320;
+  c.height = 200;
+  return (await renderShot(entry, c, 16, 10)) ? c.toDataURL() : undefined;
+}
+
+async function choose(): Promise<{ id: string; title: string; gam: string; files: GameFiles; back?: string; notice?: string; poster?: Promise<string | undefined> } | undefined> {
   const params = new URLSearchParams(location.search);
   const gameId = params.get('game') ?? pageGame;
   const projectId = params.get('project');
@@ -55,6 +64,7 @@ async function choose(): Promise<{ id: string; title: string; gam: string; files
         gam: entry.gam!,
         files: await loadHostedGame(entry),
         back: './',
+        poster: posterOf(entry).catch(() => undefined),
         notice: entry.kind === 'shareware' ? entry.notice || 'This game is shareware, copyrighted by its author.' : undefined,
       };
   }
@@ -76,6 +86,8 @@ async function main(): Promise<void> {
     mountPlayer(root, game.files, game.gam, {
       title: game.title,
       notice: game.notice,
+      poster: game.poster,
+      back: game.back ? { href: game.back, label: '← All games' } : undefined,
       onFileWrite: (name, bytes) => void writeSaveFile(game.id, name, bytes),
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {
