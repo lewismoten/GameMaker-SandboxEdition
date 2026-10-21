@@ -258,4 +258,26 @@ export const BOARDS: BoardSpec[] = [
     answer:
       'The box marked NC is a relay, Normally Closed: red current runs through it until pink control current hits it, then it opens for good. Turn the red switch on as you roll by (you will not get another chance), then use the pink switch to cut the red wire in front of the gate.',
   },
+  {
+    file: 'lights',
+    title: 'The Christmas Lights',
+    room: 'garage',
+    card: ['One bulb goes out and the', 'whole string goes dark.'],
+    rows: [
+      '################',
+      '#*...*...*...*##',
+      '0....o........##',
+      '#............i##',
+      '#.....i.......##',
+      '#.......@.....##',
+      '#.........o....#',
+      '#.............g#',
+      '#..$.........#X#',
+      '################',
+    ],
+    wires: { 0: { path: 'R13 D2 L12 D2 R12 D1 R1' } },
+    solution: 'LL U L UU U DD R U RRRR D wwwwwwww D www RRR D R DD',
+    hint: 'Every switch has to be on at once, but then I am fenced in!',
+    answer: 'Switches in a row: current gets as far as the first one that is off. Work so the live wire never fences you in: turn the switch just above you OFF first, cross over and turn the top one on, come back, turn the middle one on again, then the bottom one. When the gate opens, turn the bottom one off and walk around.',
+  },
 ];
