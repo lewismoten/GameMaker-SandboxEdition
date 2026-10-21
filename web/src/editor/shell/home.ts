@@ -296,8 +296,30 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         libTools,
         tiles,
       ),
+      h(
+        'section',
+        { class: 'home-start', 'aria-labelledby': 'home-start-title' },
+        h('h2', { id: 'home-start-title' }, 'Getting started'),
+        h(
+          'ul',
+          null,
+          h('li', null, h('b', null, '▶ Play'), ' right here, with keyboard or gamepad'),
+          h('li', null, h('b', null, '✎ Edit a copy'), ' to see how a game was made'),
+          h('li', null, h('b', null, '+ New game'), ' to start your own'),
+        ),
+        h('p', { class: 'meta' }, 'Playing: F1 help · F2 status · F3 music · F4 sound · F5 save · F6 load · Esc leaves a level. ', h('a', { href: '#/help' }, 'Read the Guide →')),
+      ),
     ),
   );
+
+  // On a wide window Getting started fills the space under the game only when it fits there.
+  const start = root.querySelector<HTMLElement>('.home-start')!;
+  const fitStart = () => {
+    start.classList.remove('clipped');
+    start.classList.toggle('clipped', start.scrollHeight > start.clientHeight + 1);
+  };
+  new ResizeObserver(fitStart).observe(start.parentElement!);
+  new ResizeObserver(fitStart).observe(top.el);
 
   drop.addEventListener('dragover', (e) => {
     e.preventDefault();

@@ -192,6 +192,36 @@
   margin: 8px 0;
 }
 
+/* Getting started: under the library when the page stacks, under the game on a wide window */
+.home-start {
+  margin: 24px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  font-size: 13px;
+}
+
+.home .home-start h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.home-start ul {
+  margin: 0 0 6px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.home-start li {
+  margin: 3px 0;
+}
+
+.home-start .meta {
+  margin: 0 0 6px;
+  color: var(--muted);
+}
+
 /* Wide and tall enough: the game in a column beside the library, the page fits the window. */
 @media (min-width: 1000px) and (min-height: 600px) {
   #app.modern:has(> .content > main.home) {
@@ -207,7 +237,7 @@
   main.home {
     display: grid;
     grid-template-columns: minmax(320px, 28%) minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
     gap: 12px 24px;
     max-width: 1720px;
     padding: 14px 24px 16px;
@@ -218,7 +248,22 @@
   }
 
   .home .library {
+    grid-column: 2;
+    grid-row: 2 / 4;
     min-height: 0;
+  }
+
+  .home-start {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    max-height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .home-start.clipped {
+    visibility: hidden;
   }
 
   /* bigger tiles where there is room for them */
