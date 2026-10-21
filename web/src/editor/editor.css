@@ -651,7 +651,7 @@ dialog.modal .buttons {
   color: #fff;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .workspace {
     grid-template-columns: 1fr;
     height: auto;
@@ -1089,7 +1089,7 @@ button.big {
 }
 
 /* With the workspace open the window never scrolls: the file list and the editor do. */
-@media (min-width: 721px) {
+@media (min-width: 901px) {
   #app.modern:has(.workspace) {
     height: 100vh;
     height: 100dvh;
