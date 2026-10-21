@@ -7,7 +7,7 @@ import { SCAN } from './ids';
 import type { Stage } from './stage';
 import { simOf } from './testkit';
 
-export const DEMO_TICKS = 700;
+export const DEMO_TICKS = 560;
 
 export async function demoRecording(s: Stage): Promise<Uint8Array> {
   const sim = simOf(s.legs[0]);
