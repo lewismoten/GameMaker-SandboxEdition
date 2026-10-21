@@ -2,7 +2,7 @@
 // leg B "The Woofer" has the speakers that thump the ship forward. Then the Feedback Howler.
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from './enemies';
 import { strip, type Grid } from './mapkit';
-import { buildPalette } from './pal';
+import { buildPalette } from './src/art/pal';
 import { soundArt, soundTiles, soundVirus } from './sound3';
 import { kit, type Stage } from './stage';
 import { bossHowler } from './boss3';

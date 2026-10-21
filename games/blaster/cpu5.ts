@@ -2,10 +2,10 @@
 // the on-chip cache, registers flickering and the clock pulsing, the bond pads around the
 // edge, and patches of glitch where the virus has eaten in.
 import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, bevel, micro, shadeAt } from './art';
+import { BlockSet, bevel, micro, shadeAt } from './src/art/draw';
 import { pics } from './enemies';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { bomb, claw, cluster, eye, keyOf, mite, moth, slug, wasp } from './sprites';
 import { onFloor, slices, type StageArt } from './tiles';
 

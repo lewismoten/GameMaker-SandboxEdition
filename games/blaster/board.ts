@@ -1,11 +1,11 @@
 // Stage 1: THE MOTHERBOARD. Green fiberglass, copper bus lines running up the board,
 // chips, capacitors, resistors and blinking LEDs. Its blocks and its virus.
 import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, bevel, blob, micro, shadeAt, text } from './art';
+import { BlockSet, bevel, blob, micro, shadeAt, text } from './src/art/draw';
 import { pics } from './enemies';
 import { biter, bomb, claw, cluster, keyOf, mite, moth } from './sprites';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { onFloor, slices, type StageArt } from './tiles';
 
 export function boardArt(p: Pal): StageArt {

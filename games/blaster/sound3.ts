@@ -2,10 +2,10 @@
 // knobs, VU meters dancing, and big speaker cones that thump the ship forward when they
 // push out (a gravity block that is only there on the beat).
 import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, bevel, blob, micro, shadeAt } from './art';
+import { BlockSet, bevel, blob, micro, shadeAt } from './src/art/draw';
 import { pics } from './enemies';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { bomb, cluster, disc, keyOf, mite, note, wasp } from './sprites';
 import { onFloor, slices, type StageArt } from './tiles';
 

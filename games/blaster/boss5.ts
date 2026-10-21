@@ -2,17 +2,17 @@
 // face is the arena's wall, its eye sockets and cheeks are turrets, its brain plugs the way
 // out behind a sliding grille, and its leak slugs hunt the ship around the arena.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, bevel, blob, micro, shadeAt } from './art';
+import { CLEAR, bevel, blob, micro, shadeAt } from './src/art/draw';
 import { armor, opaque, slicesOf, tint, weakPoint } from './boss';
 import { mite, pics, stalker } from './enemies';
 import { arena } from './mapkit';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { keyOf, mite as miteArt, slug } from './sprites';
 import { kit, type Leg } from './stage';
-import type { BlockSet } from './art';
+import type { BlockSet } from './src/art/draw';
 import type { StageArt } from './tiles';
-import { POWER } from './ids';
+import { POWER } from './src/ids';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;

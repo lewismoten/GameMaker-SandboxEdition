@@ -4,10 +4,10 @@
 // and the gate at the end of the stage.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
 import { Pixels, rng } from '../kit/pixels';
-import { BlockSet, bevel, blob, shadeAt } from './art';
+import { BlockSet, bevel, blob, shadeAt } from './src/art/draw';
 import { HURT } from './common';
-import { SEQ } from './ids';
-import type { Pal } from './pal';
+import { SEQ } from './src/ids';
+import type { Pal } from './src/art/pal';
 
 export interface StageArt {
   pal: Pal;

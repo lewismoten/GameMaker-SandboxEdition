@@ -3,7 +3,7 @@
 import { boardArt, boardTiles, boardVirus } from './board';
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from './enemies';
 import { LENGTH, strip, type Grid } from './mapkit';
-import { buildPalette } from './pal';
+import { buildPalette } from './src/art/pal';
 import { kit, type Stage } from './stage';
 import { bossBIOS } from './boss1';
 

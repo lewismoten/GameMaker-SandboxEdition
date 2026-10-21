@@ -2,10 +2,10 @@
 // change: the ship's shots and Nova bolts, sparks and explosions, the wreck that a dead
 // turret leaves behind, and the virus's bullets.
 import { Pixels } from '../kit/pixels';
-import { CLEAR, blob } from './art';
-import { POWER } from './ids';
+import { CLEAR, blob } from './src/art/draw';
+import { POWER } from './src/ids';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { SHOT_MON } from './ship';
 
 const pic = () => new Pixels(20, 20, CLEAR);

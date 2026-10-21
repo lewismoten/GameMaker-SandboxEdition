@@ -1,7 +1,7 @@
 // Monsters by name: their pictures (in the stage's .mbl), powers, paths and what they turn
 // into, built into a 64-monster .mon file.
 import { LASTMON, MAXMARCH, emptyMonster, type March, type Monster } from '../../web/src/formats/monster';
-import { BlockSet } from './art';
+import { BlockSet } from './src/art/draw';
 
 /** One leg of a path: move (x, y) blocks at `speed` pixels a tick. */
 export type Leg = [x: number, y: number, speed: number];

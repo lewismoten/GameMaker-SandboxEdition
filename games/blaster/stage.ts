@@ -3,11 +3,11 @@
 import type { Block } from '../../web/src/formats/blocks';
 import type { GameMap } from '../../web/src/formats/map';
 import type { Monster } from '../../web/src/formats/monster';
-import { BlockSet } from './art';
+import { BlockSet } from './src/art/draw';
 import { addCommon } from './common';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';
 import { Bestiary } from './mons';
-import type { Pal, Theme } from './pal';
+import type { Pal, Theme } from './src/art/pal';
 import { addStageTiles, type StageArt, type TileOpts } from './tiles';
 
 export interface Kit {

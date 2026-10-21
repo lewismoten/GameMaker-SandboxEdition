@@ -2,18 +2,18 @@
 // the arena's back wall; its jaws are turrets, its sides spit seekers and mites, and its
 // head (four monsters: a crown over two great eyes) plugs the only way out.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, micro, shadeAt } from './art';
+import { CLEAR, blob, micro, shadeAt } from './src/art/draw';
 import { opaque, slicesOf, tint, weakPoint } from './boss';
 import { pics } from './enemies';
 import { keyOf, mite as miteArt } from './sprites';
 import { mite } from './enemies';
 import { arena } from './mapkit';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { kit, type Leg } from './stage';
 import type { StageArt } from './tiles';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../web/src/formats/blocks';
-import type { BlockSet } from './art';
+import type { BlockSet } from './src/art/draw';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 

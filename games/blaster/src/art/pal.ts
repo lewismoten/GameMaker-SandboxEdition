@@ -1,7 +1,7 @@
 // Palettes. Every stage palette starts with the same "common" ramps at the same indexes
 // (the ship, shots, explosions, bullets, pickups and the virus's colors are drawn once
 // and used in every stage), followed by that stage's own ramps.
-import { PaletteBuilder } from '../kit/palette';
+import { PaletteBuilder } from '../../../kit/palette';
 
 type RGB = [number, number, number];
 

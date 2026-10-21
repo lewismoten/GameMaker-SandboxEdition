@@ -3,9 +3,9 @@
 //   o outline   1-5 main color (dark to light)   a b c accent (dark, mid, light)
 //   w white     k dark grey   r red   y yellow   s S h steel (dark, mid, light)
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob } from './art';
+import { CLEAR, blob } from './src/art/draw';
 import { sym } from './enemies';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 
 export interface Scheme {
   main: string;

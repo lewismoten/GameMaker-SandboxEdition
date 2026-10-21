@@ -2,17 +2,17 @@
 // it a speaker grille of armored bars slides back and forth (every bar the same monster on
 // the same path): shots only get through the gaps, and so does the ship.
 import { Pixels } from '../kit/pixels';
-import { CLEAR, bevel, blob } from './art';
+import { CLEAR, bevel, blob } from './src/art/draw';
 import { armor, slicesOf, tint, weakPoint } from './boss';
 import { mite, pics } from './enemies';
 import { arena } from './mapkit';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { keyOf, wasp } from './sprites';
 import { kit, type Leg } from './stage';
-import type { BlockSet } from './art';
+import type { BlockSet } from './src/art/draw';
 import type { StageArt } from './tiles';
-import { POWER } from './ids';
+import { POWER } from './src/ids';
 import { soundTiles } from './sound3';
 
 function face(p: Pal, loud: boolean): Pixels {

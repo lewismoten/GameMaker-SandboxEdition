@@ -1,7 +1,7 @@
 // Drawing helpers for blocks, sprites and screens, and a named block-set builder.
-import { emptyBlock, type Block } from '../../web/src/formats/blocks';
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { Pixels, dither } from '../kit/pixels';
+import { emptyBlock, type Block } from '../../../../web/src/formats/blocks';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { Pixels, dither } from '../../../kit/pixels';
 
 export const CLEAR = 255;
 

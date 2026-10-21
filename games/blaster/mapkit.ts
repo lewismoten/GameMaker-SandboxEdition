@@ -4,7 +4,7 @@
 // launch pad). A boss arena is one fixed screen, positioned (column, row 0..9).
 import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
 import { rng } from '../kit/pixels';
-import type { BlockSet } from './art';
+import type { BlockSet } from './src/art/draw';
 import type { Bestiary } from './mons';
 import type { StageArt } from './tiles';
 

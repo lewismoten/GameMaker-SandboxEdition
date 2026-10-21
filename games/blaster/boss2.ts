@@ -2,15 +2,15 @@
 // memory; its body, twelve monsters long, coils around the arena in a loop (one path, each
 // segment starting at its own point on it), soaking up shots meant for the mouth.
 import { Pixels } from '../kit/pixels';
-import { CLEAR, blob, micro } from './art';
+import { CLEAR, blob, micro } from './src/art/draw';
 import { slicesOf, snake, tint, weakPoint } from './boss';
 import { mite, pics } from './enemies';
 import { arena } from './mapkit';
 import type { Bestiary } from './mons';
-import type { Pal } from './pal';
+import type { Pal } from './src/art/pal';
 import { keyOf, mite as miteArt } from './sprites';
 import { kit, type Leg } from './stage';
-import type { BlockSet } from './art';
+import type { BlockSet } from './src/art/draw';
 import type { StageArt } from './tiles';
 import { HURT } from './common';
 import { ramTiles } from './ram';

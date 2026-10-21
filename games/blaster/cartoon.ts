@@ -1,8 +1,8 @@
 // Pictures for the screens and cartoons: the family room at night, the beige 486 and its
 // monitor, the floppy, GLITCH grinning on the screen, the BLASTER, and the logo.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, shadeAt, text, textWidth } from './art';
-import { buildPalette, type Pal } from './pal';
+import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, shadeAt, text, textWidth } from './src/art/draw';
+import { buildPalette, type Pal } from './src/art/pal';
 import { shipBlocks } from './ship';
 
 export const SP: Pal = buildPalette('screen');

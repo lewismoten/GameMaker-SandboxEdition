@@ -6,9 +6,9 @@
 // The arena's way out sits right behind the boss's weak points: the parts burn the ship
 // badly enough that the only way through is to shoot them away first.
 import { Pixels } from '../kit/pixels';
-import { BlockSet, CLEAR } from './art';
+import { BlockSet, CLEAR } from './src/art/draw';
 import { HURT } from './common';
-import { POWER } from './ids';
+import { POWER } from './src/ids';
 import type { Bestiary } from './mons';
 
 /** Slices a big picture into 20x20 pieces named `${prefix}${row}${col}`. */
