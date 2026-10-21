@@ -36,9 +36,17 @@ export function pics(b: Bestiary, name: string, a: Pixels, c: Pixels, hurt: numb
  * Only for monsters that don't follow a path (a hit restarts the path from where it is).
  */
 function chain(b: Bestiary, name: string, hp: number, def: Parameters<Bestiary['add']>[1], killScore: number, boom = 'boom'): void {
+  // Ramming a chain knocks off a link a tick (each one hurting), so each link hurts a share:
+  // a full-strength one costs about one enemy's worth of energy in all.
+  const share = -Math.ceil(-HURT.enemy / hp);
+  const pics = def.pics.map(([pic, t]) => {
+    const copy = `${pic}~${-share}`;
+    if (!b.mb.has(copy)) b.mb.add(copy, b.mb.pic(pic), { chHitPt: share });
+    return [copy, t] as [string, number];
+  });
   for (let h = hp; h >= 1; h--) {
     const n = h === hp ? name : `${name}_${h}`;
-    b.add(n, { ...def, becomes: h === 1 ? boom : `${name}_${h - 1}`, score: h === 1 ? killScore : 10 });
+    b.add(n, { ...def, pics, becomes: h === 1 ? boom : `${name}_${h - 1}`, score: h === 1 ? killScore : 10 });
   }
 }
 

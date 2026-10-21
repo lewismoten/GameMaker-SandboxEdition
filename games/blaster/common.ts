@@ -148,7 +148,7 @@ export function addCommon(b: Bestiary, p: Pal): void {
     ],
   });
   // the dying flash of a turret, then its wreck (which smothers the bullets its mount keeps making)
-  for (let hp = 3; hp >= 1; hp--) mb.add(`ring${hp}`, ringPic(p, hp), { chHitPt: HURT.enemy });
+  for (let hp = 3; hp >= 1; hp--) mb.add(`ring${hp}`, ringPic(p, hp), { chHitPt: -4 });
   b.add('ring3', { power: POWER.enemy, becomes: 'ring2', score: 10, pics: [['ring3', 50]] });
   b.add('ring2', { power: POWER.enemy, becomes: 'ring1', score: 10, pics: [['ring2', 50]] });
   b.add('ring1', { power: POWER.enemy, becomes: 'turretBoom', score: 250, pics: [['ring1', 50]] });
