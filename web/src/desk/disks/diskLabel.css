@@ -87,3 +87,19 @@
   padding-top: 1cqw;
   font-size: 4.6cqw;
 }
+
+/* "Disk 1" at the right of the title, for a game on more than one disk */
+.floppy .label.printed.graphic .p-disk {
+  position: absolute;
+  top: 1.2cqw;
+  right: 3cqw;
+  z-index: 1;
+  padding: 0.4cqw 1.2cqw;
+  border-radius: 0.6cqw;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--bacc);
+  font:
+    700 4cqw/1 Arial,
+    sans-serif;
+  white-space: nowrap;
+}

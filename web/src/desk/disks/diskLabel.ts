@@ -40,8 +40,8 @@ function logoText(g: CatalogEntry): string {
   return name.replace(/\s+SOFTWARE$/, '');
 }
 
-/** The label. `foot` is the disk's small print ("Disk 1 of 2 · © 1995"). */
-export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string): HTMLElement {
+/** The label. `foot` is the disk's small print ("© 1995"); `disk` is "Disk 1" for a set of disks. */
+export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string, disk = ''): HTMLElement {
   const l = g.original?.label;
   const box = g.original?.box;
   const [main, sub] = (() => {
@@ -63,6 +63,7 @@ export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string): 
       { class: 'p-banner' },
       art,
       h('span', { class: `p-title ${main.length > 14 ? 'long' : ''}` }, main),
+      disk ? h('span', { class: 'p-disk' }, disk) : null,
       sub ? h('span', { class: 'p-sub' }, sub) : null,
     ),
     h('span', { class: 'p-line' }, `Shareware${g.price ? ` · ${g.price}\u00a0Registration` : ''}`),
