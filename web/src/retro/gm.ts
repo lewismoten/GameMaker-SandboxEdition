@@ -10,6 +10,7 @@ import { templateFor } from '../editor/shell/templates';
 import type { FileKind } from '../editor/core/project';
 import { createZip } from '../project/zip';
 import { download } from '../editor/core/ui';
+import { prefetchWhenIdle } from '../prefetch';
 import type { Program } from '../vga/shared/designer';
 
 /**
@@ -85,6 +86,8 @@ async function help(h: RetroHost, name: string): Promise<void> {
 
 /** GM: runs until Quit. */
 export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'main'): Promise<void> {
+  // the designers, in Design-bar order, fetched ahead while the menu waits
+  prefetchWhenIdle(TOOLS.map((t) => PORTED[t.exe]).filter((load) => !!load), 1500);
   h.screen.cursorVisible = false;
   drawDesktop(h);
   let ch = start === 'design' ? 2 : 1;

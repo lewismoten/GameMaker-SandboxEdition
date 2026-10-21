@@ -38,9 +38,10 @@ import { loadCatalog, type CatalogEntry } from "../project/files";
 import { Project } from "../editor/core/project";
 import type { SpeedSetting } from "../engine/scene";
 import { viewState } from "../urlState";
+import { prefetchWhenIdle } from "../prefetch";
 
 // What is opened, looked into or picked up on the desk loads when it first is (and is fetched
-// ahead once the desk is idle, see prefetchDesk): the manuals, the catalog, the boxes' insides.
+// ahead once the desk is idle, see the end of renderDesk): the manuals, the catalog, the boxes' insides.
 const lazy = {
   catalog: () => import("./room/catalog"),
   dosManual: () => import("../manual/dosManual"),
@@ -780,6 +781,18 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   setTurbo(turbo);
   void refreshDisks().then(restore);
+  // what is likely next: Game-Maker and the BBS on the PC, then what opens on the desk
+  prefetchWhenIdle([
+    () => import("../retro/gm"),
+    lazy.gmBox,
+    lazy.boxViewer,
+    lazy.catalog,
+    () => import("./room/phone/phone"),
+    lazy.dosManual,
+    lazy.gameManual,
+    () => import("../retro/bbs/bbs"),
+    lazy.saveFirst,
+  ]);
   void loadCatalog().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
   );
