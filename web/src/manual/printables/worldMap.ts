@@ -89,6 +89,11 @@ async function loadWorld(entry: CatalogEntry): Promise<{ game: Game; files: Game
 /** Text cut to fit about `max` characters. */
 const fit = (s: string, max: number) => (s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s);
 
+/** A line of text no wider than `width`: squeezed a little if it would run over (bold Arial is about 0.62 em a letter). */
+function squeeze(attrs: Record<string, string | number>, text: string, size: number, width: number): Record<string, string | number> {
+  return text.length * size * 0.62 > width ? { ...attrs, textLength: width, lengthAdjust: 'spacingAndGlyphs' } : attrs;
+}
+
 interface World {
   W: number;
   H: number;
@@ -101,8 +106,8 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
   const graph = graphOf(game);
   const rects = cardRects(autoArrange(game), { x: M, y: HEAD + 2 });
   const b = bounds(rects.values());
-  const W = Math.max(110, b.x + b.w + M);
-  const H = Math.max(85, b.y + b.h + FOOT + M);
+  const W = Math.max(PAGE.w, b.x + b.w + M);
+  const H = Math.max(PAGE.h, b.y + b.h + FOOT + M);
   // a narrow map's cards stand in the middle
   const dx = (W - (b.x + b.w + M)) / 2;
   for (const r of rects.values()) r.x += dx;
@@ -186,7 +191,11 @@ function drawWorld(entry: CatalogEntry, game: Game, files: GameFiles): World {
       el('rect', { x: r.x + 0.5, y: r.y + 0.6, width: r.w, height: r.h, rx: 0.8, fill: '#00000030' }),
       el('rect', { x: r.x, y: r.y, width: r.w, height: r.h, rx: 0.8, fill: '#fffdf6', stroke: INK, 'stroke-width': 0.22 }),
       el('path', { d: `M${r.x},${r.y + 2.6} v-1.8 a0.8,0.8 0 0 1 0.8,-0.8 h${r.w - 1.6} a0.8,0.8 0 0 1 0.8,0.8 v1.8 z`, fill: color }),
-      el('text', { x: r.x + 0.8, y: r.y + 1.95, fill: '#fff', 'font-size': 1.45, 'font-weight': 700 }, fit(title, 24)),
+      el(
+        'text',
+        squeeze({ x: r.x + 0.8, y: r.y + 1.95, fill: '#fff', 'font-size': 1.45, 'font-weight': 700 }, fit(title, 26), 1.45, r.w - 1.6),
+        fit(title, 26),
+      ),
     );
     // the picture: where you arrive, or the title / end screen
     const pic = kind === 'scene' ? levelShot(files, s, arrival(game, i), 8, 5) : (graphicShot(files, s.files[0]) ?? graphicShot(files, s.files[2]));

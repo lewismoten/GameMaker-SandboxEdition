@@ -7,7 +7,7 @@ import { CARD_UNITS } from '../../editor/editors/integrator/layoutCells';
 /** The map's unit is a tenth of an inch. A card's cell (card plus the gap round it). */
 export const CELL = { w: 23, h: 19 };
 /** A card inside its cell, the rest is room for arrows. */
-export const CARD = { w: 18, h: 14.5 };
+export const CARD = { w: 18, h: 16 };
 
 export interface Rect {
   x: number;
