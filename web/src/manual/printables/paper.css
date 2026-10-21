@@ -593,13 +593,17 @@
   position: relative;
   display: inline-block;
   padding: 0.3em 0.5em;
-  color: rgb(115, 205, 245);
+  color: rgb(118, 222, 236);
   text-align: left;
   font:
-    400 1em/1.35 Arial,
+    700 1em/1.35 Arial,
     Helvetica,
     sans-serif;
-  isolation: auto;
+  background-color: rgb(255, 214, 226);
+  background-size: 18em auto;
+  isolation: isolate;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }
 
 .rf-text {
@@ -611,11 +615,17 @@
   -webkit-print-color-adjust: exact;
 }
 
+/* red stitching (after danielcwilson.com's red reveal): three crossing layers of fine lines,
+   every one with full red so the film swallows them, cutting each letter of the answer apart */
 .rf-noise {
+  --s: 0.3em;
+  --e: 0.38em;
   position: absolute;
   inset: 0;
-  background-size: 18em auto;
-  mix-blend-mode: multiply;
+  background:
+    repeating-linear-gradient(155deg, transparent 0 var(--s), rgb(255, 70, 110) var(--s) var(--e)),
+    repeating-linear-gradient(115deg, transparent 0 calc(var(--s) * 1.2), rgb(255, 120, 150) calc(var(--s) * 1.2) calc(var(--e) * 1.2)),
+    repeating-linear-gradient(45deg, transparent 0 calc(var(--s) * 0.9), rgb(255, 150, 90) calc(var(--s) * 0.9) calc(var(--e) * 0.9));
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }

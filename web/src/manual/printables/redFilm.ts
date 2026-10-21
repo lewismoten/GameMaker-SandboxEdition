@@ -1,17 +1,37 @@
-// Hint book answers printed in blue under red and pink noise, the way 90s hint books hid
-// them: look through red film and the red noise vanishes into the red, while the blue
-// letters turn black. On screen the film is a sheet of red cellophane you drag around
-// (mix-blend-mode: multiply does what the film does); on paper it prints as the noise.
+// Hint book answers hidden the way 90s hint books (and Daniel C. Wilson's "red reveal",
+// danielcwilson.com/blog/2018/02/optical-fun-red-reveal/) hid them: the answer is printed
+// in cyan, the color opposite red, over a field of letter-shaped decoys and under three
+// layers of red stitching. Everything but the answer has full red (R = 255), so through red
+// film (mix-blend-mode: multiply with pure red) it all turns the film's own red and
+// vanishes, while the cyan, which has almost no red, turns dark. Without the film the decoys
+// sit at the answer's own size and lightness and the stitching cuts every letter apart.
 import { h } from '../../editor/ui';
 import { rng } from './kit';
+
+/** Colors with full red, at about the lightness of the answer's cyan (luma ~ 200). */
+export const DECOY_INKS = [
+  'rgb(255,170,205)',
+  'rgb(255,180,140)',
+  'rgb(255,165,240)',
+  'rgb(255,192,120)',
+  'rgb(255,172,172)',
+  'rgb(255,186,224)',
+  'rgb(255,200,255)',
+];
+/** The answer's pale cyans: half red at most, so the film turns them dark red; luma ~ 195. */
+export const CYAN_INKS = ['rgb(118,222,236)', 'rgb(128,214,242)', 'rgb(112,226,222)', 'rgb(136,210,246)', 'rgb(108,224,232)'];
+
+/** Rec. 601 luma of an "rgb(r,g,b)" color, 0-255. */
+export function luma(color: string): number {
+  const [r, g, b] = (color.match(/\d+/g) ?? []).map(Number);
+  return 0.299 * r + 0.587 * g + 0.114 * b;
+}
 
 let noiseUrl: string | undefined;
 
 /**
- * A tile of red noise. Every mark has full red (R = 255), so under red film the whole tile
- * turns the film's own red and disappears, while the light blue answer (almost no red) turns
- * black. Without the film the marks are loud: magenta letter-shaped decoys at the answer's
- * size and weight, yellow and crimson scribbles, so the eye can't pick the real words out.
+ * The field the answer sits on: a pale pink wash crowded with decoy letters and specks in
+ * full-red colors as light as the answer, so the eye can't tell which letters are real.
  */
 export function redNoiseTile(): string {
   if (noiseUrl) return noiseUrl;
@@ -21,36 +41,27 @@ export function redNoiseTile(): string {
   const g = c.getContext('2d')!;
   const r = rng(0x5a17d);
   const pick = (list: string[]) => list[Math.floor(r() * list.length)];
-  // pink wash
-  g.fillStyle = 'rgb(255, 130, 170)';
+  g.fillStyle = 'rgb(255,214,226)';
   g.fillRect(0, 0, W, H);
-  const specks = ['rgb(255,40,80)', 'rgb(255,0,140)', 'rgb(255,190,40)', 'rgb(255,170,255)', 'rgb(255,0,40)', 'rgb(255,210,230)', 'rgb(255,70,180)'];
-  for (let i = 0; i < 7000; i++) {
-    g.fillStyle = pick(specks);
-    const s = 1 + Math.floor(r() * 3);
+  for (let i = 0; i < 5000; i++) {
+    g.fillStyle = pick(DECOY_INKS);
+    const s = 1 + Math.floor(r() * 2);
     g.fillRect(Math.floor(r() * W), Math.floor(r() * H), s, s);
   }
-  // scribbles at the size of letter strokes
-  for (let i = 0; i < 160; i++) {
-    g.strokeStyle = pick(['rgb(255,0,120)', 'rgb(255,60,255)', 'rgb(255,210,60)', 'rgb(255,30,60)', 'rgb(255,110,240)']);
-    g.lineWidth = 1 + r() * 1.4;
-    g.beginPath();
-    let x = r() * W;
-    let y = r() * H;
-    g.moveTo(x, y);
-    for (let k = 0; k < 5; k++) {
-      x += (r() - 0.5) * 22;
-      y += (r() - 0.5) * 14;
-      g.quadraticCurveTo(x + (r() - 0.5) * 10, y + (r() - 0.5) * 10, x, y);
-    }
-    g.stroke();
-  }
-  // letter-shaped decoys in the answer's size and weight, in colors the film swallows
-  const decoys = ['rgb(255,0,80)', 'rgb(255,20,130)', 'rgb(255,0,170)', 'rgb(255,60,220)', 'rgb(255,30,100)'];
-  for (let i = 0; i < 900; i++) {
-    g.font = `${r() < 0.6 ? 700 : 400} ${12 + Math.floor(r() * 7)}px Arial, sans-serif`;
-    g.fillStyle = pick(decoys);
-    g.fillText(String.fromCharCode((r() < 0.7 ? 97 : 65) + Math.floor(r() * 26)), r() * W, r() * H);
+  // decoy letters in the answer's size and weight, drawn across the tile's edges too so it repeats seamlessly
+  for (let i = 0; i < 700; i++) {
+    g.font = `${r() < 0.6 ? 700 : 400} ${11 + Math.floor(r() * 6)}px Arial, sans-serif`;
+    g.fillStyle = pick(DECOY_INKS);
+    const ch = String.fromCharCode((r() < 0.7 ? 97 : 65) + Math.floor(r() * 26));
+    const x = r() * W;
+    const y = r() * H;
+    for (const [dx, dy] of [
+      [0, 0],
+      [-W, 0],
+      [0, -H],
+      [-W, -H],
+    ])
+      g.fillText(ch, x + dx, y + dy + 12);
   }
   noiseUrl = c.toDataURL();
   return noiseUrl;
@@ -58,21 +69,17 @@ export function redNoiseTile(): string {
 
 let inkUrl: string | undefined;
 
-/**
- * The answer's ink: light blues, all with little red so the film turns every one of them
- * black, but mottled from cyan to violet so the letters break up into the noise around them.
- */
+/** The answer's ink: cyan mottled with its neighbors, all low in red. */
 export function blueInkTile(): string {
   if (inkUrl) return inkUrl;
   const W = 96;
   const c = h('canvas', { width: W, height: W });
   const g = c.getContext('2d')!;
   const r = rng(0xb1e);
-  g.fillStyle = 'rgb(110,200,245)';
+  g.fillStyle = CYAN_INKS[0];
   g.fillRect(0, 0, W, W);
-  const inks = ['rgb(100,215,250)', 'rgb(120,170,255)', 'rgb(90,120,235)', 'rgb(125,220,235)', 'rgb(115,150,250)', 'rgb(105,90,215)'];
   for (let i = 0; i < 900; i++) {
-    g.fillStyle = inks[Math.floor(r() * inks.length)];
+    g.fillStyle = CYAN_INKS[Math.floor(r() * CYAN_INKS.length)];
     const s = 1 + Math.floor(r() * 3);
     g.fillRect(Math.floor(r() * W), Math.floor(r() * W), s, s);
   }
@@ -84,9 +91,10 @@ export function blueInkTile(): string {
 export function redCode(text: string): HTMLElement {
   return h(
     'span',
-    { class: 'rf-code' },
+    { class: 'rf-code', style: `background-image:url(${redNoiseTile()})` },
     h('span', { class: 'rf-text', style: `background-image:url(${blueInkTile()})` }, text),
-    h('span', { class: 'rf-noise', style: `background-image:url(${redNoiseTile()})`, 'aria-hidden': 'true' }),
+    // the red stitching over the top: three layers of fine lines (see .rf-noise in paper.css)
+    h('span', { class: 'rf-noise', 'aria-hidden': 'true' }),
   );
 }
 
