@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cardRows, shortKey } from '../src/desk/keyCardRows';
+import { cardRows, shortKey } from '../src/desk/pc/keyCardRows';
 import type { GameKeyMap } from '../src/editor/keymap/keyMap';
 
 type Binding = GameKeyMap['keys'][number];

@@ -1,6 +1,6 @@
 // The PC's keyboard: a 101-key layout of raised keycaps (function row, main block,
 // arrows and keypad). Keys go down when the matching key is pressed on the real keyboard.
-import { h } from '../editor/core/ui';
+import { h } from '../../editor/core/ui';
 
 /** [label, width in key units, KeyboardEvent.code] or a number for a gap. */
 type Key = [string, number, string] | number;

@@ -2,7 +2,7 @@
 // its mouse pad, a two-button ball mouse with its cord running back under the desk.
 // The handle slides the tray in under the desk and out again.
 import './tray.css';
-import { h } from '../editor/core/ui';
+import { h } from '../../editor/core/ui';
 
 function ballMouse(): HTMLElement {
   const mouse = h(

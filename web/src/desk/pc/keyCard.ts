@@ -3,13 +3,13 @@
 // game an index card written out from its character files (editor/keyMap.ts). Click it to
 // read it larger.
 import './keyCard.css';
-import '../manual/printables/paper.css';
-import { h, clear } from '../editor/core/ui';
-import { boxItems } from '../manual/printables/items';
-import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../editor/keymap/keyMap';
+import '../../manual/printables/paper.css';
+import { h, clear } from '../../editor/core/ui';
+import { boxItems } from '../../manual/printables/items';
+import { gameKeyMap, GLOBAL_KEYS, type GameKeyMap } from '../../editor/keymap/keyMap';
 import { cardRows } from './keyCardRows';
-import { loadCatalog, type CatalogEntry, type GameFiles } from '../project/files';
-import { printContext } from './boxes/printContext';
+import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
+import { printContext } from '../boxes/printContext';
 
 export interface PlayingGame {
   files: GameFiles;

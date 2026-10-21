@@ -2,12 +2,12 @@
 // the VGA card put out (720x400 text, 320x200 mode 13h), and a recording of the screen
 // with everything the PC plays (OPL music, Sound Blaster samples, the PC speaker).
 import './capture.css';
-import { h, toast } from '../editor/core/ui';
-import type { Computer } from '../retro/computer';
-import type { Vga } from '../vga/vga';
-import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../media/screenCapture';
-import { LiveRecorder, recorderFormat } from '../media/video';
-import { AudioMix } from '../media/audioTap';
+import { h, toast } from '../../editor/core/ui';
+import type { Computer } from '../../retro/computer';
+import type { Vga } from '../../vga/vga';
+import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
+import { LiveRecorder, recorderFormat } from '../../media/video';
+import { AudioMix } from '../../media/audioTap';
 
 /** What a recording keeps: everything (graphics letterboxed into 720x400) or one mode. */
 export type RecordMode = 'all' | 'graphics' | 'text';

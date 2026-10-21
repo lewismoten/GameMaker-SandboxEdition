@@ -2,8 +2,8 @@
 // the controls: a volume knob (drag it, scroll it or use the arrow keys), a power LED
 // that lights with the PC, and a headphone jack.
 import './speakers.css';
-import { h } from '../editor/core/ui';
-import { getVolume, setVolume } from '../audio/output';
+import { h } from '../../editor/core/ui';
+import { getVolume, setVolume } from '../../audio/output';
 
 const TURN = 270; // degrees from silent to full
 
