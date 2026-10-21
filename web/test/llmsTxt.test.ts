@@ -34,8 +34,8 @@ describe('llms.txt', () => {
   });
 
   it('lists playable games with their play pages, escaping link text', () => {
-    expect(text).toContain(`- [Nebula \\[demo\\]](${SITE_URL}play.html?game=nebula): Andy Stone, 1991 — Fly through space and save the planets.`);
-    expect(text).toContain(`- [Zark](${SITE_URL}play.html?game=zark): `.slice(0, -2)); // no keypad chart
+    expect(text).toContain(`- [Nebula \\[demo\\]](${SITE_URL}play-nebula.html): Andy Stone, 1991 — Fly through space and save the planets.`);
+    expect(text).toContain(`- [Zark](${SITE_URL}play-zark.html): `.slice(0, -2)); // no keypad chart
     expect(text).not.toContain('|~~~|');
     expect(text).not.toContain('game=art');
   });

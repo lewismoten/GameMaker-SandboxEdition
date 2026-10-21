@@ -1,6 +1,6 @@
 // Tests: search-engine tags, JSON-LD and play links for game pages (seo/site.ts).
 import { describe, expect, it } from 'vitest';
-import { gameDescription, gameJsonLd, jsonLdScript, metaTags, OG_IMAGE, playUrl, SITE_URL } from '../src/seo/site';
+import { gameDescription, gameImagePath, gameJsonLd, jsonLdScript, metaTags, OG_IMAGE, playUrl, SITE_URL } from '../src/seo/site';
 
 describe('seo', () => {
   it('describes a game with its author and year', () => {
@@ -18,9 +18,17 @@ describe('seo', () => {
     const tags = metaTags({ title: 'A "quoted" <game>', description: 'Tom & Jerry', url: playUrl('a b'), image: OG_IMAGE, imageAlt: 'desk' });
     expect(tags).toContain('content="A &#34;quoted&#34; &#60;game&#62;"');
     expect(tags).toContain('content="Tom &#38; Jerry"');
-    expect(tags).toContain(`<link rel="canonical" href="${SITE_URL}play.html?game=a%20b" />`);
+    expect(tags).toContain(`<link rel="canonical" href="${SITE_URL}play-a%20b.html" />`);
     expect(tags).toContain('<meta name="twitter:card" content="summary_large_image" />');
     expect(tags).toContain('<meta property="og:image:width" content="1200" />');
+  });
+
+  it('gives a game its own page, picture and picture size', () => {
+    expect(playUrl('nebula')).toBe(`${SITE_URL}play-nebula.html`);
+    expect(gameImagePath('nebula')).toBe('og/nebula.png');
+    const tags = metaTags({ title: 't', description: 'd', image: `${SITE_URL}og/x.png`, imageSize: [1200, 630] });
+    expect(tags).toContain('<meta property="og:image:height" content="630" />');
+    expect(metaTags({ title: 't', description: 'd', image: `${SITE_URL}x.png` })).not.toContain('og:image:width');
   });
 
   it('uses a small card and no canonical without an image or address', () => {

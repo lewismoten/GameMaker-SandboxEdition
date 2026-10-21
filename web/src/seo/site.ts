@@ -60,9 +60,25 @@ export const escapeHtml = (s: string): string => s.replace(/[&<>"']/g, (c) => `&
 /** JSON that is safe inside a <script> element. */
 export const scriptJson = (value: unknown): string => JSON.stringify(value).replace(/</g, '\\u003c');
 
-export function playUrl(id: string): string {
-  return `${SITE_URL}play.html?game=${encodeURIComponent(id)}`;
+/**
+ * A bundled game's own play page, next to play.html (play.html?game=<id> plays it too, but
+ * link previews don't run scripts, so each game has a page with its tags baked in).
+ */
+export function gamePage(id: string): string {
+  return `play-${encodeURIComponent(id)}.html`;
 }
+
+/** The address of a bundled game's play page (its canonical address). */
+export function playUrl(id: string): string {
+  return `${SITE_URL}${gamePage(id)}`;
+}
+
+/** A bundled game's link preview picture (scripts/ogImage.ts), by its path on the site. */
+export function gameImagePath(id: string): string {
+  return `og/${encodeURIComponent(id)}.png`;
+}
+
+export const GAME_IMAGE_SIZE = [1200, 630] as const;
 
 /** A sentence or two about a game, for its description tag. */
 export function gameDescription(game: GameSeo): string {
@@ -92,6 +108,8 @@ export interface PageMeta {
   url?: string;
   /** Absolute image address for link previews. */
   image?: string;
+  /** Its width and height in pixels (known for the site's picture). */
+  imageSize?: readonly [number, number];
   imageAlt?: string;
   type?: 'website' | 'article';
   siteName?: string;
@@ -100,6 +118,7 @@ export interface PageMeta {
 /** <meta>/<link> tags for a page head (no <title>; the page has its own). */
 export function metaTags(m: PageMeta): string {
   const tags: string[] = [`<meta name="description" content="${escapeHtml(m.description)}" />`];
+  const size = m.image && (m.imageSize ?? (m.image === OG_IMAGE ? ([1200, 630] as const) : undefined));
   if (m.url) tags.push(`<link rel="canonical" href="${escapeHtml(m.url)}" />`);
   const og: [string, string | undefined][] = [
     ['og:type', m.type ?? 'website'],
@@ -108,8 +127,8 @@ export function metaTags(m: PageMeta): string {
     ['og:description', m.description],
     ['og:url', m.url],
     ['og:image', m.image],
-    ['og:image:width', m.image === OG_IMAGE ? '1200' : undefined],
-    ['og:image:height', m.image === OG_IMAGE ? '630' : undefined],
+    ['og:image:width', size && String(size[0])],
+    ['og:image:height', size && String(size[1])],
     ['og:image:alt', m.image ? m.imageAlt : undefined],
   ];
   for (const [p, v] of og) if (v) tags.push(`<meta property="${p}" content="${escapeHtml(v)}" />`);
