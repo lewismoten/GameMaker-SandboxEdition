@@ -263,10 +263,137 @@ function gwinScene(reel: Reel): void {
   }
 }
 
+/**
+ * Doc Leo from the chest up: chewed felt fedora, wire glasses, thick painted brows, an
+ * ash-gray painted beard round a white mouth, rosy cheeks, purple shirt, green tie, blue
+ * suspenders and the navy corduroy jacket. `nose` puts the red nose on (and the smile).
+ */
+export function leoBust(p: Pixels, cx: number, cy: number, nose: boolean, blink = false): void {
+  const T = (u: number, v: number): Pt => [cx + u, cy + v];
+  const skin = r('skin');
+  // the jacket, cord lines and all, then shirt, suspenders, tie
+  shadedPoly(p, [T(-78, 106), T(-60, 52), T(-20, 40), T(20, 40), T(60, 52), T(78, 106)], [c('blue', 0), c('blue', 1)], 0, 1);
+  for (let x = -74; x < 76; x += 4) for (let y = 50; y < 106; y += 1) if (p.get(cx + x, cy + y) === c('blue', 1)) p.set(cx + x, cy + y, c('blue', 0));
+  shadedPoly(p, [T(-22, 42), T(22, 42), T(14, 106), T(-14, 106)], r('purple'), 1, 3);
+  for (const side of [-1, 1]) shadedPoly(p, [T(side * 18, 44), T(side * 24, 44), T(side * 16, 106), T(side * 10, 106)], [c('blue', 2), c('blue', 3)], 0, 1);
+  shadedPoly(p, [T(-6, 42), T(6, 42), T(4, 50), T(-4, 50)], r('green'), 1, 2);
+  shadedPoly(p, [T(-4, 50), T(4, 50), T(9, 92), T(0, 100), T(-9, 92)], r('green'), 0, 2);
+  for (let k = 0; k < 5; k++) p.set(cx - 3 + ((k * 5) % 7), cy + 56 + k * 8, c('yellow', 2));
+  // collar points
+  shadedPoly(p, [T(-22, 38), T(-6, 42), T(-14, 54)], r('purple'), 2, 3);
+  shadedPoly(p, [T(22, 38), T(6, 42), T(14, 54)], r('purple'), 2, 3);
+  // neck and head
+  p.rect(cx - 12, cy + 26, 24, 16, c('skin', 1));
+  blob(p, cx, cy, 34, 40, skin, 1, 3);
+  // shaggy gray-brown hair under the hat
+  for (const side of [-1, 1]) blob(p, cx + side * 30, cy - 22, 9, 12, [c('stone', 0), c('dirt', 1), c('stone', 2)], 0, 2);
+  // ears
+  blob(p, cx - 34, cy + 2, 6, 9, skin, 0, 2);
+  blob(p, cx + 34, cy + 2, 6, 9, skin, 0, 2);
+  // the ash beard: jaw and chin, dithered gray-blue, with the white mouth patch inside
+  for (let y = cy + 2; y < cy + 42; y++)
+    for (let x = cx - 34; x <= cx + 34; x++) {
+      const nx = (x - cx) / 34;
+      const ny = (y - cy) / 40;
+      if (nx * nx + ny * ny > 1) continue;
+      const jaw = (y - cy - 2) / 40 + Math.abs(nx) * 0.35;
+      if (jaw > 0.18) p.set(x, y, shadeAt([c('stone', 0), c('stone', 1), c('stone', 2), c('blue', 1)], 0, 3, 0.75 - jaw * 0.6, x, y));
+    }
+  blob(p, cx, cy + 24, 15, 10, [c('paint', 1), c('paint', 2), c('paint', 3)], 0, 2);
+  // the mouth: turned down sad, or a big smile once the nose is on
+  for (let x = -9; x <= 9; x++) {
+    const dy = nose ? Math.round((x * x) / 18) : -Math.round((x * x) / 22);
+    p.set(cx + x, cy + 24 + (nose ? -dy + 3 : -dy - 1), c('ink', 0));
+    if (nose && Math.abs(x) < 7) p.set(cx + x, cy + 25 - dy + 3, c('red', 0));
+  }
+  // rosy cheeks, white round the eyes, thick black brows
+  blob(p, cx - 20, cy + 8, 8, 6, [c('red', 2), c('pink', 1), c('pink', 2)], 0, 2);
+  blob(p, cx + 20, cy + 8, 8, 6, [c('red', 2), c('pink', 1), c('pink', 2)], 0, 2);
+  for (const side of [-1, 1]) {
+    blob(p, cx + side * 13, cy - 6, 9, 7, [c('paint', 2), c('paint', 3)], 0, 1);
+    if (blink) p.rect(cx + side * 13 - 4, cy - 6, 9, 1, c('ink', 0));
+    else p.rect(cx + side * 13 - 2, cy - 8, 4, 4, c('ink', 0)).set(cx + side * 13 - 1, cy - 8, c('fur', 2));
+    shadedPoly(p, [T(side * 4, -21), T(side * 22, -16), T(side * 23, -12), T(side * 5, -17)], [c('ink', 0), c('ink', 1)], 0, 1);
+    // wire glasses
+    p.frame(cx + side * 13 - 9, cy - 13, 19, 14, c('metal', 2));
+  }
+  p.rect(cx - 4, cy - 8, 8, 1, c('metal', 2));
+  // the nose: his own, or the red one
+  if (nose) blob(p, cx, cy + 8, 8, 7, r('red'), 0, 3);
+  else blob(p, cx, cy + 6, 5, 7, [c('red', 1), c('skin', 1), c('skin', 2)], 0, 2);
+  // the fedora: pinched crown, dark band, a wide brim with a chew mark
+  shadedPoly(p, [T(-26, -36), T(-22, -66), T(-6, -72), T(0, -64), T(6, -72), T(22, -66), T(26, -36)], [c('stone', 0), c('stone', 1), c('stone', 2)], 0, 2);
+  p.rect(cx - 26, cy - 44, 52, 8, c('ink', 0));
+  shadedPoly(p, [T(-54, -30), T(-40, -40), T(40, -40), T(54, -30), T(48, -26), T(-48, -26)], [c('stone', 0), c('stone', 1), c('stone', 2)], 0, 2);
+  for (const [x, y] of [
+    [42, -32],
+    [45, -30],
+    [48, -31],
+  ] as Pt[])
+    p.rect(cx + x, cy + y, 3, 3, CLEAR);
+}
+
+/** The rubber chicken in its red harness, held up by the leash; `bawk` opens its beak. */
+function chicken(p: Pixels, x: number, y: number, bawk: boolean): void {
+  const yel = r('yellow');
+  blob(p, x, y + 30, 16, 11, yel, 0, 3);
+  shadedPoly(p, [[x + 8, y + 26], [x + 14, y + 2], [x + 20, y + 2], [x + 18, y + 28]], yel, 1, 3);
+  blob(p, x + 18, y, 7, 7, yel, 1, 3);
+  for (let k = 0; k < 3; k++) blob(p, x + 14 + k * 3, y - 8 + (k % 2), 2.5, 3, r('red'), 1, 3);
+  p.set(x + 19, y - 2, c('ink', 0));
+  const beak = r('gold');
+  if (bawk) {
+    shadedPoly(p, [[x + 24, y - 2], [x + 34, y - 6], [x + 25, y + 1]], beak, 0, 2);
+    shadedPoly(p, [[x + 24, y + 2], [x + 33, y + 6], [x + 24, y + 4]], beak, 0, 2);
+  } else shadedPoly(p, [[x + 24, y - 1], [x + 32, y + 1], [x + 24, y + 3]], beak, 0, 2);
+  p.rect(x - 10, y + 26, 22, 4, c('red', 2)).rect(x + 2, y + 22, 4, 16, c('red', 2));
+  p.line(x + 4, y + 22, x - 6, y - 40, c('red', 1)).line(x + 5, y + 22, x - 5, y - 40, c('red', 2));
+}
+
+/** Scene 3: Doc Leo on Main Street, flags out. Nose on: showtime. */
+function leoScene(reel: Reel): void {
+  const bg = new Pixels(W, H);
+  gradient(bg, 0, 0, W, 90, r('sky'), 2, 7);
+  // brick storefronts and an awning, flags along the street
+  bg.rect(0, 40, 70, 160, c('brick', 2)).rect(250, 30, 70, 170, c('brick', 1));
+  for (let y = 40; y < H; y += 5) for (let x = (y / 5) % 2 ? 0 : 6; x < 70; x += 12) bg.rect(x, y, 1, 5, c('brick', 0));
+  for (let y = 30; y < H; y += 5) for (let x = 250 + ((y / 5) % 2 ? 0 : 6); x < W; x += 12) bg.rect(x, y, 1, 5, c('brick', 0));
+  bg.rect(8, 60, 50, 40, c('sky', 6)).frame(8, 60, 50, 40, c('paint', 3));
+  bg.rect(262, 52, 46, 44, c('sky', 5)).frame(262, 52, 46, 44, c('paint', 3));
+  for (const [fx, fy] of [
+    [60, 50],
+    [258, 40],
+  ] as Pt[]) {
+    bg.line(fx, fy, fx, fy + 70, c('metal', 2));
+    for (let k = 0; k < 7; k++) bg.rect(fx + 1, fy + k * 2, 24, 2, k % 2 ? c('paint', 3) : c('red', 2));
+    bg.rect(fx + 1, fy, 10, 8, c('blue', 1));
+    for (let k = 0; k < 6; k++) bg.set(fx + 2 + (k % 3) * 3, fy + 2 + Math.floor(k / 3) * 3, c('paint', 3));
+  }
+  bg.rect(0, 180, W, 20, c('stone', 2));
+  for (let f = 0; f < 50; f++) {
+    const p = new Pixels(W, H);
+    p.px.set(bg.px);
+    const on = f >= 22;
+    const l = new Pixels(W, H, CLEAR);
+    leoBust(l, 150, 98 + (on && f % 2 ? 1 : 0), on, f === 8 || f === 40);
+    chicken(l, 240, 132, f % 6 < 2 && f > 4);
+    p.blit(outline(l, c('ink', 0)), 0, 0, CLEAR);
+    if (f > 4 && f % 6 < 2) outlined(p, 266, 104, 'BAWK!', c('yellow', 3), c('ink', 0), 1);
+    big(p, 'DOC LEO', 6);
+    if (!on) say(p, 'A HOBO CLOWN, AND HIS', 170);
+    if (!on) say(p, 'RUBBER CHICKEN ON A LEASH.', 182);
+    if (on) say(p, 'NOSE ON: SHOWTIME!', 170, c('yellow', 3));
+    if (f >= 32) say(p, '(HE ALWAYS ORDERS ROOT BEER.)', 182);
+    if (f === 22 || f === 23) for (let k = 0; k < 8; k++) p.set(150 + Math.round(Math.cos(k) * 16), 104 + Math.round(Math.sin(k) * 14), c('yellow', 3));
+    reel.add(p);
+  }
+}
+
 export function castFli(): Uint8Array {
   const reel = new Reel();
   teddyScene(reel);
   gwinScene(reel);
+  leoScene(reel);
   return encodeFli(reel.frames, CP.pal, { speed: 7, palettes: reel.pals });
 }
 
