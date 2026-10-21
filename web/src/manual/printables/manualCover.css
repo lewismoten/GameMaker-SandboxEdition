@@ -1,0 +1,132 @@
+/* The front cover of a game's manual (manualCover.ts). Sizes in cqw: the page is the container. */
+.manual-cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 5cqw;
+  overflow: hidden;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 62%, color-mix(in srgb, var(--mc-acc) 9%, transparent) 0 5deg, transparent 5deg 15deg),
+    radial-gradient(90% 60% at 50% 62%, color-mix(in srgb, var(--mc-acc) 22%, var(--mc-bg)), var(--mc-bg) 70%);
+  color: var(--mc-ink);
+  text-align: center;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* a thin printed frame inside the trim */
+.manual-cover::after {
+  content: '';
+  position: absolute;
+  inset: 3cqw;
+  border: 0.5cqw solid var(--mc-acc);
+  pointer-events: none;
+}
+
+.mc-band {
+  display: flex;
+  align-self: stretch;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6cqw 7cqw 0;
+}
+
+.manual-cover .mc-logo {
+  color: var(--mc-acc);
+  font-size: 3.4cqw;
+}
+
+.mc-ver {
+  font:
+    700 2.6cqw Arial,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.mc-head {
+  margin-top: 9cqw;
+  padding: 0 7cqw;
+}
+
+.manual-cover .mc-title {
+  margin: 0;
+  color: var(--mc-acc);
+  font:
+    italic 900 15cqw/0.95 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: -0.02em;
+  text-shadow:
+    0.6cqw 0.6cqw 0 rgba(0, 0, 0, 0.6),
+    -0.3cqw -0.3cqw 0 rgba(255, 255, 255, 0.15);
+}
+
+.manual-cover .mc-sub {
+  margin: 2.4cqw 0 0;
+  font:
+    700 4.2cqw/1.15 Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.manual-cover .mc-kind {
+  margin: 6cqw 0 0;
+  padding: 1.6cqw 5cqw;
+  background: var(--mc-acc);
+  color: var(--mc-bg);
+  font:
+    900 4.4cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* one framed screenshot, the hero standing on its bottom edge */
+.mc-shot {
+  position: relative;
+  width: 72cqw;
+  aspect-ratio: 16 / 10;
+  margin: auto 0;
+  border: 1.2cqw solid #f4efdf;
+  background: #000;
+  box-shadow: 1.4cqw 1.6cqw 0 rgba(0, 0, 0, 0.45);
+  transform: rotate(-2deg);
+}
+
+.mc-shot.empty {
+  background: color-mix(in srgb, var(--mc-acc) 30%, #000);
+}
+
+.mc-pic {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.mc-hero {
+  position: absolute;
+  right: -7cqw;
+  bottom: -4cqw;
+  height: 70%;
+  image-rendering: pixelated;
+  filter: drop-shadow(0.8cqw 0.8cqw 0 rgba(0, 0, 0, 0.55));
+}
+
+.mc-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 1cqw;
+  font:
+    700 2.6cqw/1.2 Arial,
+    sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}

@@ -1,12 +1,13 @@
 // The printed manual: its chapters flowed onto booklet pages (5.5 x 8.5 inches, like the
 // stapled manuals in shareware boxes), padded with note pages to whole folded sheets, with
-// the box front as the cover and a back cover.
+// its own front cover (manualCover.ts) and a back cover.
 import { h } from '../../editor/core/ui';
 import { mapShot } from '../../desk/boxes/boxArt';
 import type { CatalogEntry } from '../../project/files';
 import { bookletPageCount } from './imposition';
 import { paginate } from './paginate';
 import { FICTIONAL_NOTE, sandboxLogo, hashString } from './kit';
+import { manualCover } from './manualCover';
 
 export const PAGE_W = 5.5;
 export const PAGE_H = 8.5;
@@ -97,7 +98,11 @@ function backCover(entry: CatalogEntry): HTMLElement[] {
       { class: 'mp-back' },
       sandboxLogo('mp-back-logo'),
       h('p', { class: 'mp-back-line' }, 'Games made in the sandbox, for everyone who ever logged on.'),
-      h('p', { class: 'mp-back-small' }, `${entry.title} © ${entry.year ?? 1995} Sandbox Software. Made with GAME-MAKER 3.0 by Recreational Software Designs.`),
+      h(
+        'p',
+        { class: 'mp-back-small' },
+        `${entry.title} ©\u00a0${entry.year ?? 1995} Sandbox Software. Made with GAME-MAKER 3.0 by Recreational Software Designs.`,
+      ),
       h('p', { class: 'mp-back-small' }, 'Shareware: copy it, share it, upload it. Keep all the files together.'),
       h('p', { class: 'mp-back-small pp-fictional' }, `(${FICTIONAL_NOTE})`),
       h('div', { class: 'mp-barcode', 'aria-hidden': 'true' }, ...bars),
@@ -113,15 +118,19 @@ export async function buildBooklet(entry: CatalogEntry, cover: string | undefine
   const shortTitle = title.replace(/\s+-\s+.*$/, '');
   const chapters = await Promise.all(manual.pages.map(async (p) => ({ head: p.head, el: await fillShots(entry, p.html) })));
   await Promise.all(chapters.flatMap((c) => [...c.el.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined))));
+  // the manual's own cover (manualCover.ts); the box front only if the game has no box colors
+  const own = entry.original?.box ? manualCover(entry) : undefined;
+  if (own) await own.ready;
   const pages: BookPage[] = [
     {
       kind: 'cover',
       body: [
-        h(
-          'div',
-          { class: 'game-cover', style: `background:${entry.original?.box?.background ?? '#111'}` },
-          cover ? h('img', { src: cover, alt: `${entry.title} cover` }) : null,
-        ),
+        own?.el ??
+          h(
+            'div',
+            { class: 'game-cover', style: `background:${entry.original?.box?.background ?? '#111'}` },
+            cover ? h('img', { src: cover, alt: `${entry.title} cover` }) : null,
+          ),
       ],
     },
   ];
