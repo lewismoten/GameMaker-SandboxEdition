@@ -4,7 +4,7 @@
 // ({ map: ['galaxy.map', x, y, w, h] } in blocks, drawn as a creased fold-out map);
 // without one the game's title screen becomes the poster.
 import './wallPoster.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { mapShot } from './boxArt';
 import type { BoxExtras } from './boxFacts';

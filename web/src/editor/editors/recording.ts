@@ -1,9 +1,9 @@
 // Demo recordings (.REC): the keys of a game played earlier, which the title screen plays
 // back when the menu sits idle. Record one by playing, watch it, and trim it.
 import { registerEditor } from './index';
-import { h, clear, modal, toast } from '../ui';
+import { h, clear, modal, toast } from '../core/ui';
 import { registerMaker } from '../makers';
-import type { Project } from '../project';
+import type { Project } from '../core/project';
 import { GameFiles } from '../../project/files';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseRecording, serializeRecording, RECLEN, type RecordedKey } from '../../formats/recording';

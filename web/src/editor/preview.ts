@@ -1,9 +1,9 @@
 // Hear or see a file before choosing it: a small play button for sounds (.VOC), PC speaker
 // sound sets (.SND), songs (.CMF) and animations (.FLI). Only one preview plays at a time.
-import { h, toast } from './ui';
-import { kindOf } from './project';
+import { h, toast } from './core/ui';
+import { kindOf } from './core/project';
 import { audio } from './editors/mediaShared';
-import { paintIndexed } from './draw';
+import { paintIndexed } from './core/draw';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { isCmf } from '../formats/cmf';
 import { parseSoundSet, NUMFREQ } from '../formats/sound';

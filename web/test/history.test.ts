@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { History } from '../src/editor/history';
+import { History } from '../src/editor/core/history';
 
 describe('History', () => {
   it('undoes and redoes in order', () => {

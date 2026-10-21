@@ -3,7 +3,7 @@
 // screens), Sandbox Software's catalog, the BBS ad, a poster of games made with Game-Maker,
 // a license card and a sticker sheet that mixes every Sandbox game's heroes.
 import './gmItems.css';
-import { h } from '../../editor/ui';
+import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
 import type { CatalogEntry } from '../../project/files';
 import { sandboxShots } from '../../desk/gmShots';

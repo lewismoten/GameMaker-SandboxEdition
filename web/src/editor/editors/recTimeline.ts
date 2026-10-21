@@ -3,7 +3,7 @@
 // playhead in step with the game's playback tick; editTimeline() is a static strip
 // you scroll and zoom, drag presses and releases on, and trim by its END flag.
 import './recording.css';
-import { h, modal } from '../ui';
+import { h, modal } from '../core/ui';
 import { scanName } from '../../input/scancodes';
 import {
   toNotes,

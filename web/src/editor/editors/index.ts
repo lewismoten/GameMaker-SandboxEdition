@@ -1,6 +1,6 @@
 // Which editor opens which kind of file.
-import type { Project, FileKind } from '../project';
-import { h, clear } from '../ui';
+import type { Project, FileKind } from '../core/project';
+import { h, clear } from '../core/ui';
 
 /** Renders an editor into host. May return a cleanup function. */
 export type EditorFn = (host: HTMLElement, project: Project, file: string) => void | (() => void);

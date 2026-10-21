@@ -3,7 +3,7 @@ import type { Vga } from '../vga/vga';
 import type { Ui } from './textUi';
 import type { Disk } from './disks';
 import type { GameFiles, CatalogEntry } from '../project/files';
-import type { Project } from '../editor/project';
+import type { Project } from '../editor/core/project';
 import type { FileSystem } from './vfs';
 import type { HdGame } from './hardDisk';
 

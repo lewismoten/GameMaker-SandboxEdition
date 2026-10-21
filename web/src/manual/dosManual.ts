@@ -3,7 +3,7 @@
 // of the original documentation, with specifications from GM_SPECS.TXT.
 import { type BookletPage } from './booklet';
 import './booklet.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import { loadCatalog, type CatalogEntry } from '../project/files';
 import { openBox } from './printables/viewer';
 import { bookletPageCount } from './printables/imposition';

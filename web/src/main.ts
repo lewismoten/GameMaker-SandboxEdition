@@ -1,10 +1,10 @@
 // Game-Maker Web (index.html): the mid-90s desk, or today's web interface.
 import './editor/editor.css';
 import './editor/editors/all';
-import { h, clear, toast } from './editor/ui';
+import { h, clear, toast } from './editor/core/ui';
 import { renderHome } from './editor/home';
 import { Workspace } from './editor/workspace';
-import { Project } from './editor/project';
+import { Project } from './editor/core/project';
 import { loadProject } from './project/storage';
 import { renderDesk } from './desk/desk';
 import { watchForUpdates } from './devReload';

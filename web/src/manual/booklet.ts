@@ -1,7 +1,7 @@
 // A paper manual viewer: two-page spreads (one page on narrow screens), flipping with
 // arrows/clicks, and printing every page.
 import './booklet.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 
 export interface BookletPage {
   /** Page content (inside the margins). */

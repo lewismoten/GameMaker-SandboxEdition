@@ -4,15 +4,15 @@
 import './backdrop.css';
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
-import { h, clear, download, numberField, toast } from '../ui';
-import type { Project } from '../project';
+import { h, clear, download, numberField, toast } from '../core/ui';
+import type { Project } from '../core/project';
 import { libraryGame, libraryItems, type LibraryItem } from '../library';
 import { parseBackdrop, serializeBackdrop } from '../../formats/graphicScripts';
 import { cdName, normalize } from '../../project/files';
 import { SIZEX, SIZEY } from '../../gfx/screen';
 import { gamePreview } from './mediaShared';
 import { backdropInfo, blankScreen, pictureScreen, screenCanvas } from './mediaPictures';
-import { lut, paintIndexed } from '../draw';
+import { lut, paintIndexed } from '../core/draw';
 import { encodeAnimatedGif, type GifFrame } from '../../media/gifEncode';
 import { pngOf } from '../../media/screenCapture';
 import { createZip } from '../../project/zip';

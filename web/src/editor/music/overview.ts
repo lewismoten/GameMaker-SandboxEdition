@@ -1,6 +1,6 @@
 // The whole song at a glance: one row per track, the part shown in the piano roll, the
 // loop region, the song end and the playhead. Click or drag to move around.
-import { h } from '../ui';
+import { h } from '../core/ui';
 import { noteEnd } from '../../formats/cmfEdit';
 import { TRACK_COLORS, type MusicDoc } from './doc';
 import type { PianoRoll } from './roll';

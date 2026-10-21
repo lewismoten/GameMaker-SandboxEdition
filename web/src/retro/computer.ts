@@ -14,12 +14,12 @@ import type { Disk } from './disks';
 import { mountPlayer } from '../player/player';
 import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../project/files';
 import { loadProject } from '../project/storage';
-import { Project } from '../editor/project';
+import { Project } from '../editor/core/project';
 import { editors, fileInfo } from '../editor/editors';
-import { kindOf } from '../editor/project';
+import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/vga';
 import { output } from '../audio/output';
-import { h, clear, download } from '../editor/ui';
+import { h, clear, download } from '../editor/core/ui';
 import type { SpeedSetting } from '../engine/scene';
 import type { GmInstallEntry } from '../../scripts/cdGames';
 

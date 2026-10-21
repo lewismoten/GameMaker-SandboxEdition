@@ -1,6 +1,6 @@
 // Shared bits for the paper in the box: sheets of a given size, map pictures, and the
 // note that says the addresses are made up.
-import { h } from '../../editor/ui';
+import { h } from '../../editor/core/ui';
 import { mapShot } from '../../desk/boxArt';
 import type { CatalogEntry } from '../../project/files';
 import type { MapPanel, PrintablesFile, Portrait, SpriteArt } from './types';
@@ -8,7 +8,7 @@ import { cdName } from '../../project/files';
 import { parseCharacter } from '../../formats/character';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
 import { parsePalette } from '../../formats/palette';
-import { paintIndexed } from '../../editor/draw';
+import { paintIndexed } from '../../editor/core/draw';
 
 /** Printed on everything with an address on it. */
 export const FICTIONAL_NOTE =

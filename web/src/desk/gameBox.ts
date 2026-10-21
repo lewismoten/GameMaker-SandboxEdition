@@ -4,7 +4,7 @@
 // one and it comes forward, turning slowly; drag to turn it, scroll or pinch to zoom,
 // shift-drag (or two fingers) to pan, double-click to reset.
 import './gameBox.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { mapShot, renderShot } from './boxArt';
 import { parseGame, ADVTYPE } from '../formats/game';

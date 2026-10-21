@@ -1,9 +1,9 @@
 // An open project: a game directory plus its .gam, autosaved to IndexedDB.
-import { GameFiles, normalize } from '../project/files';
-import { saveProject, newId } from '../project/storage';
-import { parseGame, serializeGame, newGame, type Game } from '../formats/game';
-import { defaultPalette, parsePalette, type Palette } from '../formats/palette';
-import { decodeGif, isGif } from '../formats/gif';
+import { GameFiles, normalize } from '../../project/files';
+import { saveProject, newId } from '../../project/storage';
+import { parseGame, serializeGame, newGame, type Game } from '../../formats/game';
+import { defaultPalette, parsePalette, type Palette } from '../../formats/palette';
+import { decodeGif, isGif } from '../../formats/gif';
 import { debounce } from './ui';
 
 export type FileKind = 'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';

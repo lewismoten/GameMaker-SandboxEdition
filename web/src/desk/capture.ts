@@ -2,7 +2,7 @@
 // the VGA card put out (720x400 text, 320x200 mode 13h), and a recording of the screen
 // with everything the PC plays (OPL music, Sound Blaster samples, the PC speaker).
 import './capture.css';
-import { h, toast } from '../editor/ui';
+import { h, toast } from '../editor/core/ui';
 import type { Computer } from '../retro/computer';
 import type { Vga } from '../vga/vga';
 import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../media/screenCapture';

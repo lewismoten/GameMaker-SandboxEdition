@@ -4,7 +4,7 @@
 // the shelf. While one of these games is in drive A: its poster hangs on the wall.
 import { sandboxBoxContents } from './gameBoxContents';
 import './shelf.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { boxModel, drawBox, openBoxViewer, type BoxFaces, type BoxViewerPage } from './gameBox';
 import { hideWallPoster, setPosterWall, showWallPoster } from './wallPoster';

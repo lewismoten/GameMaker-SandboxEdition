@@ -1,9 +1,9 @@
 // Palette editor (PALCHOS.EXE): 256 VGA colors with 0..63 red/green/blue.
 import { rovingGrid } from '../rovingGrid';
-import { History } from '../history';
+import { History } from '../core/history';
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
-import { h, clear } from '../ui';
+import { h, clear } from '../core/ui';
 import { parsePalette, paletteCss, serializePalette, defaultPalette } from '../../formats/palette';
 import { decodeGif, isGif } from '../../formats/gif';
 

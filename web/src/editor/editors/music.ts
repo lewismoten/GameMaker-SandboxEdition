@@ -3,7 +3,7 @@
 // notes and their velocities (loudness), instruments (program changes and SBI settings), the
 // drum kit (rhythm mode), timing.
 import { registerEditor } from './index';
-import { h, clear, toast } from '../ui';
+import { h, clear, toast } from '../core/ui';
 import { MusicDoc, SNAPS } from '../music/doc';
 import { PianoRoll } from '../music/roll';
 import { Overview } from '../music/overview';

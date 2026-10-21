@@ -1,7 +1,7 @@
 // Pictures for the Game Integrator: a level as the player first sees it (the map around
 // the block the hero arrives on, with its monsters and the hero), and the between-scene
 // graphics (.gif, .bkd, .fli, .lst, .txt) as a 320x200 screen.
-import { paintIndexed } from './draw';
+import { paintIndexed } from './core/draw';
 import type { GameFiles } from '../project/files';
 import type { Point, Scene } from '../formats/game';
 import { parseMap, MLEN, MWID } from '../formats/map';

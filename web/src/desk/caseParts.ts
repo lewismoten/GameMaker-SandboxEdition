@@ -1,7 +1,7 @@
 // The front of the PC case: a two-digit seven-segment MHz display, a 3.5" floppy drive
 // (slot with its spring flap, activity light and eject button) and a CD-ROM drive
 // (tray, headphone jack, volume wheel, busy light and the eject button under the tray).
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 
 const NS = 'http://www.w3.org/2000/svg';
 

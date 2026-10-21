@@ -1,6 +1,6 @@
 // High score tables (.HIS).
 import { registerEditor } from './index';
-import { h, clear, numberField } from '../ui';
+import { h, clear, numberField } from '../core/ui';
 import { parseHighScores, serializeHighScores } from '../../formats/highscore';
 
 registerEditor(['his'], (host, project, file) => {

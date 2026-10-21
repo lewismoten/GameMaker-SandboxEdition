@@ -3,8 +3,8 @@
 // redrawn as you type, page by page, exactly as Display_File draws it.
 import './textScreen.css';
 import { registerEditor } from './index';
-import { h, clear, debounce } from '../ui';
-import { kindOf, type Project } from '../project';
+import { h, clear, debounce } from '../core/ui';
+import { kindOf, type Project } from '../core/project';
 import { latin1Text, textBytes } from '../../formats/binary';
 import { parseSlideList } from '../../formats/graphicScripts';
 import { displayFile, match, RGB_PURPLE } from '../../engine/showGraphic';

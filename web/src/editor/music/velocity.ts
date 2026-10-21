@@ -1,6 +1,6 @@
 // The velocity field next to the piano roll: how loud the selected notes play, or, with
 // nothing selected, how loud new notes are drawn (and notes are tried) — the last one set.
-import { h } from '../ui';
+import { h } from '../core/ui';
 import { setVelocity, clampVelocity } from '../../formats/cmfEdit';
 import type { MusicDoc } from './doc';
 

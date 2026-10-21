@@ -2,12 +2,12 @@
 // 1/145.6 s apart, or a Sound Blaster .voc file.
 import './sounds.css';
 import { registerEditor } from './index';
-import { h, clear, numberField, debounce } from '../ui';
+import { h, clear, numberField, debounce } from '../core/ui';
 import { AudioEngine } from '../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../tools/speakerFx';
 import { fileField } from '../filePicker';
-import { History } from '../history';
+import { History } from '../core/history';
 
 const MAXF = 8192;
 const MINF = 64;

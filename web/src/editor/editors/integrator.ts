@@ -5,9 +5,9 @@
 // shows the same arrangement.
 import './integrator.css';
 import { registerEditor } from './index';
-import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../ui';
-import { blockImages } from '../draw';
-import type { FileKind, Project } from '../project';
+import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../core/ui';
+import { blockImages } from '../core/draw';
+import type { FileKind, Project } from '../core/project';
 import { fileField } from '../filePicker';
 import { GameFiles } from '../../project/files';
 import { mountPlayer, type PlayerHandle } from '../../player/player';

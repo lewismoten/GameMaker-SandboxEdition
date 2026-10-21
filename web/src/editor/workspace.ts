@@ -1,6 +1,6 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
-import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './ui';
-import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from './project';
+import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './core/ui';
+import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from './core/project';
 import { pickFile } from './filePicker';
 import { MAKERS } from './makers';
 import { KIND_ICON } from './thumbs';

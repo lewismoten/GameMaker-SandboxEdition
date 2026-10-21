@@ -4,7 +4,7 @@
 // way to look through all of it.
 import './gameBoxContents.css';
 import '../manual/printables/paper.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { loadDisks, type Disk } from '../retro/disks';
 import { boxItems } from '../manual/printables/items';

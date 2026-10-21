@@ -1,7 +1,7 @@
 // The paper every Sandbox Software box has, made from the game's catalog entry, manual and
 // disk: registration postcard, key card, catalog, BBS ad, warranty card, newsletter, hint
 // book offer (the sticker sheet is in stickers.ts).
-import { h } from '../../editor/ui';
+import { h } from '../../editor/core/ui';
 import { parseCharacter } from '../../formats/character';
 import { scanName } from '../../input/scancodes';
 import type { CatalogEntry } from '../../project/files';

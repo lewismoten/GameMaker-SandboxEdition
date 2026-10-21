@@ -1,7 +1,7 @@
 // A closer look at the Sandbox BBS mug: it turns slowly (drag to turn it yourself), and you
 // choose the picture printed on it, the size and the color inside. "Make your own" opens the
 // sublimation print sheet.
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import { MUG_DESIGNS, designCanvas } from './mugArt';
 import { MUG_SIZES } from './mugSizes';
 import { MUG_COLORS, drawMug, wrapCanvas } from './mug3d';

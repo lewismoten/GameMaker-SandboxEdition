@@ -2,7 +2,7 @@
 // position, loop region and song end, a lane of instrument changes, a keyboard to try notes,
 // and a velocity lane under the notes (how loud each note plays: SBFMDRV scales the
 // instrument's carrier level by it).
-import { h, toast } from '../ui';
+import { h, toast } from '../core/ui';
 import {
   addNote,
   channelNotes,

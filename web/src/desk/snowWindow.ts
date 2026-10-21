@@ -3,7 +3,7 @@
 // stars come out after dark), hills and pines, the neighbors' roofs, and flakes drifting
 // down past the panes. Curtains hang either side of it.
 import './snowWindow.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import { daylight } from './daylight';
 
 type RGB = [number, number, number];

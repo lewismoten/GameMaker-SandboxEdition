@@ -2,14 +2,14 @@
 // 320x200, 256-color GIF; an animated GIF (or several pictures) becomes an FLI. You see
 // the result before saving, and can fit, fill or stretch it, dither it, and keep the
 // colors of one of the game's palettes so it matches the rest of the game.
-import { h, modal, pickFiles, toast } from '../ui';
+import { h, modal, pickFiles, toast } from '../core/ui';
 import { registerMaker } from '../makers';
-import { paintIndexed } from '../draw';
+import { paintIndexed } from '../core/draw';
 import { decodeFrames, rgbaOf, toIndexed, type Fit, type Indexed } from '../convert';
 import { encodeGif } from '../../formats/gif';
 import { encodeFli } from '../../formats/fli';
 import { parsePalette } from '../../formats/palette';
-import { validDosName, type Project } from '../project';
+import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 
 async function convertDialog(project: Project, animate: boolean): Promise<string | undefined> {

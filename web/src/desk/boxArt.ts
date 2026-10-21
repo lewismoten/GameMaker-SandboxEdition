@@ -7,7 +7,7 @@ import { parseMap, MLEN, MWID } from '../formats/map';
 import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks } from '../formats/blocks';
 import { parseMonsters } from '../formats/monster';
 import { parsePalette } from '../formats/palette';
-import { paintIndexed } from '../editor/draw';
+import { paintIndexed } from '../editor/core/draw';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
   // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names)

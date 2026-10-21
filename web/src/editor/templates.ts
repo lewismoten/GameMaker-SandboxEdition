@@ -1,5 +1,5 @@
 // Starting contents for new files, shared by the web workspace and the DOS-look Game-Maker.
-import { KIND_LABELS, type FileKind, type Project } from './project';
+import { KIND_LABELS, type FileKind, type Project } from './core/project';
 import { newBlockSet, serializeBlocks, type BlockKind } from '../formats/blocks';
 import { defaultPalette, serializePalette } from '../formats/palette';
 import { newMonsterSet, serializeMonsters } from '../formats/monster';

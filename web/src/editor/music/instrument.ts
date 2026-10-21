@@ -1,6 +1,6 @@
 // The FM instrument of the selected track: pick one from the song's instrument bank, add
 // one from the presets, and shape its two operators (the SBI settings SBFMDRV loads).
-import { h, clear } from '../ui';
+import { h, clear } from '../core/ui';
 import { channelNotes, programChanges, RHYTHM_CHANNELS, setStartProgram, startProgram } from '../../formats/cmfEdit';
 import type { MusicDoc } from './doc';
 import {

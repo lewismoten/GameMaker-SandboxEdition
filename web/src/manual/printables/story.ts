@@ -1,6 +1,6 @@
 // The kinds of paper a game describes in its printables.json: maps and posters, hint books,
 // letters, newspapers, journals, ID cards, charts and fold-out star charts.
-import { h } from '../../editor/ui';
+import { h } from '../../editor/core/ui';
 import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
 import { redCode } from './redFilm';
 import { paginate } from './paginate';

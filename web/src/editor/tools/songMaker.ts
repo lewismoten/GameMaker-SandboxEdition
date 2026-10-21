@@ -1,11 +1,11 @@
 // Making Sound Blaster music (.CMF) without a MIDI keyboard: pick a mood, a key and a
 // speed and press Compose for a new tune (melody, bass and chords on FM instruments);
 // listen, compose again, or edit the notes by hand, then save.
-import { h, modal, toast } from '../ui';
+import { h, modal, toast } from '../core/ui';
 import { registerMaker } from '../makers';
 import { INSTRUMENTS, song, type Voice } from '../../audio/compose';
 import { AudioEngine } from '../../audio/engine';
-import { validDosName, type Project } from '../project';
+import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 
 type Mood = 'Adventure' | 'Happy' | 'Spooky' | 'Chase' | 'Space' | 'Victory' | 'Sad' | 'March';

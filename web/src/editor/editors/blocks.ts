@@ -4,9 +4,9 @@ import './blocks.css';
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
 import { TEXTURES, paintTexture } from '../tools/textures';
-import { h, clear, numberField, checkField, selectField, debounce } from '../ui';
-import { blockCanvas, paintBlock, lut } from '../draw';
-import type { Project } from '../project';
+import { h, clear, numberField, checkField, selectField, debounce } from '../core/ui';
+import { blockCanvas, paintBlock, lut } from '../core/draw';
+import type { Project } from '../core/project';
 import {
   BLEN,
   BLOCK_COUNTS,

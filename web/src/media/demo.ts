@@ -3,7 +3,7 @@
 // and the first level's intro can be skipped so the video starts with the playing; that
 // only changes a copy of the game in memory, never the game's own files.
 import './demo.css';
-import { h, modal, toast } from '../editor/ui';
+import { h, modal, toast } from '../editor/core/ui';
 import { GameFiles } from '../project/files';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import { parseGame, serializeGame } from '../formats/game';

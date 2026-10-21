@@ -2,7 +2,7 @@
 // viewer, and what comes out of it: the Owner's Guide and the CD, whose rainbow sheen
 // shifts as it turns.
 import './gmBox.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import type { BoxFaces } from './gameBox';
 import { loadedShots, preloadShots } from './gmShots';
 

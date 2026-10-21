@@ -1,6 +1,6 @@
 // The disk box: flip through 3.5" floppies and put one in drive A:.
 import './diskBox.css';
-import { h, clear } from '../editor/ui';
+import { h, clear } from '../editor/core/ui';
 import { diskCount, type Disk } from '../retro/disks';
 import { creditLine } from '../project/files';
 import { boxDisks } from './boxFacts';

@@ -5,8 +5,8 @@
 // back as an .FLI with only what changed between frames, as Animator did.
 import './animation.css';
 import { registerEditor } from './index';
-import { h, clear, download, pickFiles, toast } from '../ui';
-import { paintIndexed } from '../draw';
+import { h, clear, download, pickFiles, toast } from '../core/ui';
+import { paintIndexed } from '../core/draw';
 import { pickFile } from '../filePicker';
 import { decodeFrames, remap, rgbaOf } from '../convert';
 import { decodeGif, isGif } from '../../formats/gif';

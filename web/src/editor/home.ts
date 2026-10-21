@@ -1,6 +1,6 @@
 // Home page: your projects, importing original game folders, and the CD's sample games.
-import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './ui';
-import { Project } from './project';
+import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './core/ui';
+import { Project } from './core/project';
 import { starterProject } from './starter';
 import { renderShot } from '../desk/boxArt';
 import { openGameManual } from '../manual/gameManual';

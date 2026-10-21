@@ -1,6 +1,6 @@
 // The guide for today's web Game-Maker, shown at #/help.
 import './webManual.css';
-import { h, clear } from '../editor/ui';
+import { h, clear } from '../editor/core/ui';
 
 const SECTIONS: [id: string, title: string, html: string][] = [
   [

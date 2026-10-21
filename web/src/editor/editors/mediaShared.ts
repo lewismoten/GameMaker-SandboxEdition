@@ -1,7 +1,7 @@
 // Shared by the media editors: one audio engine, and previews that show a graphic file
 // exactly as the game would.
-import { h } from '../ui';
-import type { Project } from '../project';
+import { h } from '../core/ui';
+import type { Project } from '../core/project';
 import { Machine, GameAborted } from '../../engine/machine';
 import { showGraphic } from '../../engine/showGraphic';
 import { AudioEngine } from '../../audio/engine';

@@ -2,8 +2,8 @@
 // game's files of one kind, a tab with the CD library's, and buttons to make a new one or
 // add one from your computer. Library files are copied into the game when chosen.
 import './filePicker.css';
-import { h, clear, modal, pickFiles, toast } from './ui';
-import { KIND_LABELS, Project, kindOf, type FileKind } from './project';
+import { h, clear, modal, pickFiles, toast } from './core/ui';
+import { KIND_LABELS, Project, kindOf, type FileKind } from './core/project';
 import { fileThumb, KIND_ICON } from './thumbs';
 import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type LibraryItem } from './library';
 import { templateFor } from './templates';

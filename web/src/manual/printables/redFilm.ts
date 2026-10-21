@@ -7,7 +7,7 @@
 // fine line crosses a letter the inks overprint (multiply, as ink on paper does) into a dark
 // cyan or black, which the film keeps dark, so the letters come through whole. That holds
 // for real red cellophane over a printed page too.
-import { h } from '../../editor/ui';
+import { h } from '../../editor/core/ui';
 
 /** The answer's ink: process cyan, no red at all. */
 export const CYAN_INK = 'rgb(0,174,239)';

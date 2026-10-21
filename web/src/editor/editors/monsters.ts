@@ -1,10 +1,10 @@
 // Monster editor (MONEDIT.EXE): 64 monsters with animation, strength and movement.
 import './monsters.css';
 import { rovingGrid } from '../rovingGrid';
-import { History } from '../history';
+import { History } from '../core/history';
 import { registerEditor } from './index';
-import { h, clear, numberField, selectField, checkField, debounce } from '../ui';
-import { blockCanvas, paintBlock } from '../draw';
+import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
+import { blockCanvas, paintBlock } from '../core/draw';
 import { paletteChooser } from './blocks';
 import { blockButton } from '../blockChooser';
 import { fileField } from '../filePicker';

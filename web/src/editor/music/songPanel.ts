@@ -1,7 +1,7 @@
 // Settings for the whole song: the drum kit (rhythm mode), beat length and speed, where it
 // repeats, Game-Maker's clock, loudness (scaling note velocities), and clearing out events
 // the game ignores.
-import { h, clear, toast } from '../ui';
+import { h, clear, toast } from '../core/ui';
 import { CMF_GAMEMAKER_CLOCK } from '../../formats/cmf';
 import {
   channelNotes,

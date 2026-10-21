@@ -4,7 +4,7 @@ import type { RetroHost } from './host';
 import { browseFile, type Picked } from './picker';
 import { errorBox } from './textUi';
 import { gameArea } from './gm';
-import type { Project } from '../editor/project';
+import type { Project } from '../editor/core/project';
 
 type Folder = { drive: string; parts: string[] };
 

@@ -2,7 +2,7 @@
 // telephone (lift the handset for a dial tone), and a swing-arm lamp that is on when it
 // is dark outside (click it to switch it yourself).
 import './deskProps.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import { output } from '../audio/output';
 import { watchDaylight } from './daylight';
 import { deskMug } from './mug';

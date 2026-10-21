@@ -1,7 +1,7 @@
 // The open game box on the table: the stapled manual and the paper that came with it, listed
 // in a "What's in the box" tray. Each piece can be read on screen and printed.
 import './paper.css';
-import { h } from '../../editor/ui';
+import { h } from '../../editor/core/ui';
 import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition';
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';

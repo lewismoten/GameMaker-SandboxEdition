@@ -3,7 +3,7 @@
 import './desk.css';
 import './deskStage.css';
 import './crtOff.css';
-import { h, clear, toast } from '../editor/ui';
+import { h, clear, toast } from '../editor/core/ui';
 import { Computer, type MonitorMode } from '../retro/computer';
 import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
 import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './diskBox';
@@ -28,7 +28,7 @@ import { newsClipping } from './newsClipping';
 import { deskCapture } from './capture';
 import { EDITION, FORK_NOTE } from '../edition';
 import { loadCatalog, type CatalogEntry } from '../project/files';
-import { Project } from '../editor/project';
+import { Project } from '../editor/core/project';
 import type { SpeedSetting } from '../engine/scene';
 
 export interface DeskNav {

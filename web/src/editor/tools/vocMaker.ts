@@ -2,10 +2,10 @@
 // synthesize an effect. Either way it is trimmed, levelled, optionally given a period
 // effect (robot, chipmunk, deep, radio) and saved as 8-bit 11 kHz mono, as the card
 // played it.
-import { h, modal, toast } from '../ui';
+import { h, modal, toast } from '../core/ui';
 import { registerMaker } from '../makers';
 import { encodeVoc } from '../../formats/voc';
-import { validDosName, type Project } from '../project';
+import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 import { applyEffect as effectAt, EFFECTS, tidy as tidyAt, type Effect } from '../../audio/sampleEdit';
 

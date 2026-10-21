@@ -8,9 +8,9 @@ import { parseBackdrop, parseSlideList, textLines } from '../../formats/graphicS
 import { defaultPalette, type Palette } from '../../formats/palette';
 import { Screen, SIZEX, SIZEY } from '../../gfx/screen';
 import { match, RGB_PURPLE, RGB_RED } from '../../engine/showGraphic';
-import { paintIndexed } from '../draw';
+import { paintIndexed } from '../core/draw';
 import { fileThumb } from '../thumbs';
-import { kindOf } from '../project';
+import { kindOf } from '../core/project';
 
 /** A 320x200 screen of palette indices and the palette it is shown with. */
 export interface ScreenPicture {

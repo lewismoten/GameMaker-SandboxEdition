@@ -1,11 +1,11 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
 import { rovingGrid } from '../rovingGrid';
-import { History } from '../history';
+import { History } from '../core/history';
 import { registerEditor } from './index';
-import { h, clear, selectField, toast, debounce, modal, download } from '../ui';
-import { blockCanvas, blockImages } from '../draw';
+import { h, clear, selectField, toast, debounce, modal, download } from '../core/ui';
+import { blockCanvas, blockImages } from '../core/draw';
 import { paletteChooser } from './blocks';
-import type { FileKind, Project } from '../project';
+import type { FileKind, Project } from '../core/project';
 import { fileField, pickFile } from '../filePicker';
 import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../../formats/map';

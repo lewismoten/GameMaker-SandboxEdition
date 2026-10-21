@@ -2,7 +2,7 @@
 // in its box (games/<id>/printables.json plus generated extras; see printables/README.md):
 // the stapled booklet with the box front as its cover, and a "What's in the box" tray.
 import './booklet.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { loadCatalog } from '../project/files';
 import { drawBox } from '../desk/gameBox';

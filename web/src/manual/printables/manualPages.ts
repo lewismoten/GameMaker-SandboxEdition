@@ -1,7 +1,7 @@
 // The printed manual: its chapters flowed onto booklet pages (5.5 x 8.5 inches, like the
 // stapled manuals in shareware boxes), padded with note pages to whole folded sheets, with
 // the box front as the cover and a back cover.
-import { h } from '../../editor/ui';
+import { h } from '../../editor/core/ui';
 import { mapShot } from '../../desk/boxArt';
 import type { CatalogEntry } from '../../project/files';
 import { bookletPageCount } from './imposition';

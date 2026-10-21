@@ -3,13 +3,13 @@
 // one that waits for a key, or goes straight on, is a whole thumbnail with that "transition"
 // after it. Media from the game is dragged (or tapped) onto the timeline; the small screen
 // above plays the show as the game would, lighting up the clip it is on.
-import { History } from '../history';
+import { History } from '../core/history';
 import './slideShow.css';
 import { registerEditor } from './index';
-import { h, clear, toast } from '../ui';
+import { h, clear, toast } from '../core/ui';
 import { pickFile } from '../filePicker';
 import { templateFor } from '../templates';
-import type { FileKind } from '../project';
+import type { FileKind } from '../core/project';
 import { parseSlideList, serializeSlideList, textLines, type SlideEntry } from '../../formats/graphicScripts';
 import { isFli, parseFli } from '../../formats/fli';
 import { PALETTE_SIZE } from '../../formats/palette';

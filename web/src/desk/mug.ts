@@ -1,7 +1,7 @@
 // The Sandbox BBS mug on the desk, full of pencils and pens: printed with the design chosen in
 // the mug viewer (click it to turn it round, pick another picture, or print your own).
 import './mug.css';
-import { h } from '../editor/ui';
+import { h } from '../editor/core/ui';
 import { isDesign, type MugDesignId } from './mugArt';
 import { MUG_SIZES, type MugSize } from './mugSizes';
 import { MUG_COLORS, drawMug, wrapCanvas, type MugColors } from './mug3d';

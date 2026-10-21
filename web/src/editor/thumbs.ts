@@ -2,8 +2,8 @@
 // palettes as color grids, block sets as mosaics, maps as mini maps, monsters and
 // characters as their first frame, pictures and animations as themselves, sounds as
 // waveforms, music as a little score.
-import { kindOf, type FileKind } from './project';
-import { paintIndexed } from './draw';
+import { kindOf, type FileKind } from './core/project';
+import { paintIndexed } from './core/draw';
 import { drawWave } from './waveform';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } from '../formats/blocks';
 import { parsePalette, defaultPalette, type Palette } from '../formats/palette';
