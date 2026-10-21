@@ -7,6 +7,7 @@ import './homeShowcase.css';
 import { h, clear } from '../core/ui';
 import { demoDialogButton, demoInPicture, gameActions, type HomeGame, type GameKind } from './homeCards';
 import { healthBadge, healthNote } from './gameHealth';
+import { icon } from './homeIcons';
 import type { HomeNav } from './home';
 
 const KIND_LABEL: Record<GameKind, string> = {
@@ -74,7 +75,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       label,
       h('span', { class: `sc-chip kind-${game.kind}` }, KIND_LABEL[game.kind]),
       how.featured ? h('span', { class: 'sc-featured', title: 'Picked at random' }, '★ Featured') : null,
-      how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, '🎲 Another') : null,
+      how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, icon('dice'), 'Another') : null,
     );
     title.textContent = game.title;
     byline.textContent = game.byline;
