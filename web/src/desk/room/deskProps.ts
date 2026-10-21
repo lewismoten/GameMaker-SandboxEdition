@@ -3,7 +3,7 @@
 // is dark outside (click it to switch it yourself).
 import "./deskProps.css";
 import { h } from "../../editor/core/ui";
-import { phoneLineFor } from "./phone/phone";
+import type { WallPhoneLine } from "./phone/phone";
 import { watchDaylight } from "./daylight";
 import { deskMug } from "../mug/mug";
 
@@ -117,8 +117,12 @@ export function wallPhone(): HTMLElement {
   el.setAttribute("tabindex", "0");
   el.setAttribute("aria-label", "Wall telephone: lift the handset");
   el.title = "The phone: lift the handset";
-  // the line, the keypad and whoever answers (phone/phone.ts)
-  const { toggle } = phoneLineFor(el);
+  // the line, the keypad and whoever answers (phone/phone.ts), loaded when first lifted
+  let line: Promise<WallPhoneLine> | undefined;
+  const toggle = () =>
+    void (line ??= import("./phone/phone").then((m) => m.phoneLineFor(el))).then(
+      (l) => l.toggle(),
+    );
   el.addEventListener("click", toggle);
   el.addEventListener(
     "keydown",

@@ -13,8 +13,6 @@ import {
   diskFacts,
   type DiskAction,
 } from "./disks/diskBox";
-import { openCatalog } from "./room/catalog";
-import { openDosManual } from "../manual/dosManual";
 import { installCrtWarp } from "./pc/crtWarp";
 import { sevenSegment, floppyDrive, cdDrive, openTray } from "./pc/caseParts";
 import { keyboard } from "./pc/keyboard";
@@ -22,18 +20,16 @@ import { keyboardTray } from "./pc/tray";
 import { speakers } from "./pc/speakers";
 import { mug, wallPhone, deskLamp } from "./room/deskProps";
 import { deskModem } from "./pc/modem";
-import { openBoxViewer } from "./boxes/boxViewer";
-import { gameShelf, type Shelf } from "./boxes/shelf";
-import { openGameManual } from "../manual/gameManual";
+import type { Shelf } from "./boxes/shelf";
 import { snowyWindow } from "./room/snowWindow";
-import { drawGmBox, gmBoxContents } from "./boxes/gmBox";
+// the box on the desk wears gmBox.css's ribbon; the box's insides load when it is opened
+import "./boxes/gmBox.css";
 import { SANDBOX_SHOTS, sandboxShots } from "./boxes/gmShots";
 import { fitStage } from "./stage";
 import { keyCardSpot } from "./pc/keyCard";
 import { newsClipping } from "./room/newsClipping";
 import { phoneNotes } from "./room/phoneNotes";
 import { wallClock } from "./room/wallClock";
-import { askSaveFirst, folderText } from "./pc/saveFirst";
 import { wasteBasket } from "./room/wasteBasket";
 import { roomDoor } from "./room/roomDoor";
 import { deskCapture } from "./pc/capture";
@@ -43,6 +39,17 @@ import { Project } from "../editor/core/project";
 import type { SpeedSetting } from "../engine/scene";
 import { viewState } from "../urlState";
 
+// What is opened, looked into or picked up on the desk loads when it first is (and is fetched
+// ahead once the desk is idle, see prefetchDesk): the manuals, the catalog, the boxes' insides.
+const lazy = {
+  catalog: () => import("./room/catalog"),
+  dosManual: () => import("../manual/dosManual"),
+  gameManual: () => import("../manual/gameManual"),
+  boxViewer: () => import("./boxes/boxViewer"),
+  gmBox: () => import("./boxes/gmBox"),
+  shelf: () => import("./boxes/shelf"),
+  saveFirst: () => import("./pc/saveFirst"),
+};
 export interface DeskNav {
   /** Leave for today's web interface, optionally opening a project file. */
   toModern(projectId?: string, file?: string): void;
@@ -565,6 +572,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       // the disk in A: is write-protected, or the work is on the CD
       const at = open.work.folder.drive;
       const readOnly = at === "D" || (at === "A" && !!inDrive?.writeProtected);
+      const { askSaveFirst } = await lazy.saveFirst();
       const answer = await askSaveFirst(open, readOnly);
       if (answer === null) return false;
       saveAs = answer;
@@ -588,7 +596,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       const list = names.map((n) => n.toUpperCase()).join(" and ");
       const where = computer.copiedTo
         ? `${computer.copiedTo}, a copy of the game on the hard disk (the original can’t be changed)`
-        : folderText(open);
+        : (await lazy.saveFirst()).folderText(open);
       if (ok) toast(`Saved ${list} in ${where}.`);
       else toast(`Couldn’t save ${list}.`, "error");
     }
@@ -622,9 +630,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** A game's manual, kept in the address while it is open (open=manual:<game>). */
   const gameManual = (g: CatalogEntry, front?: string) =>
-    opened(`manual:${g.id}`, () => openGameManual(g, front));
+    opened(`manual:${g.id}`, async () =>
+      (await lazy.gameManual()).openGameManual(g, front),
+    );
   /** Game-Maker's own Owner's Guide (open=gm-manual). */
-  const dosManual = () => opened("gm-manual", openDosManual);
+  const dosManual = () =>
+    opened("gm-manual", async () => (await lazy.dosManual()).openDosManual());
 
   /** The Game-Maker box: turn it over, read the Owner's Guide, or put the CD in and start it. */
   function openGmBox(): Promise<void> {
@@ -637,6 +648,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
           t.querySelector("canvas")!,
           t.querySelector("span")!.textContent ?? "",
         ] as [HTMLCanvasElement, string],
+    );
+    const [{ openBoxViewer }, { drawGmBox, gmBoxContents }] = await Promise.all(
+      [lazy.boxViewer(), lazy.gmBox()],
     );
     await openBoxViewer({ title: "Game-Maker SE 3.0" }, drawGmBox(tiles), {
       insert: () => void startGameMaker(),
@@ -691,6 +705,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   /** The shelf on the wall: a box for each original game (desk/boxes/shelf.ts). */
   async function fillShelf(games: CatalogEntry[]): Promise<void> {
     const scene = desk.querySelector<HTMLElement>(".desk-scene");
+    const { gameShelf } = await lazy.shelf();
     if (scene)
       shelf = await gameShelf(scene, games, {
         insert: (id) => void insertOriginal(id),
@@ -709,6 +724,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   async function catalog(): Promise<void> {
     const entries = await loadCatalog().catch(() => []);
+    const { openCatalog } = await lazy.catalog();
     await opened("catalog", () =>
       openCatalog(entries, {
         callBbs: () => void command("C:\nTERMINAL"),
