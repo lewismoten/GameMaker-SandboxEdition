@@ -9,6 +9,19 @@ import type { Character } from '../../web/src/formats/character';
 
 const SCAN: Record<string, number> = { U: 72, D: 80, L: 75, R: 77, r: 19 };
 
+/** A copy of a running sim, to try a move without making it. */
+function cloneSim(sim: Sim): Sim {
+  const copy = Object.create(Sim.prototype) as Sim;
+  Object.assign(copy, sim);
+  const { sound, rand, joystick, ...rest } = sim.w;
+  Object.assign(copy, { w: { ...structuredClone(rest), sound, rand, joystick } });
+  const priv = copy as unknown as { held: Set<number>; pending: number[]; onKey?: unknown };
+  priv.held = new Set((sim as unknown as { held: Set<number> }).held);
+  priv.pending = [...(sim as unknown as { pending: number[] }).pending];
+  priv.onKey = undefined;
+  return copy;
+}
+
 export interface Played {
   ok: boolean;
   ticks: number;
@@ -78,18 +91,20 @@ export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: 
       continue;
     }
     if (waitSafe && ch in SCAN) {
-      // like a player: wait until no current is within three blocks of where Watt is going
+      // like a careful player: wait for the first moment the move can be made safely (tried
+      // on copies of the board, a few ticks ahead)
       waitSafe = false;
-      const [dx, dy] = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] }[ch as 'U'] ?? [0, 0];
-      const tx = (sim.w.chr.x[0] + dx) * 20;
-      const ty = (sim.w.chr.y[0] + dy) * 20;
-      for (let i = 0; i < 200; i++) {
-        const w = sim.w;
-        const near = w.mm.some(
-          (m, k) => m.monnum < 16 && Math.hypot(w.mi[k].curx[0] * 20 + w.mi[k].curx[1] - tx, w.mi[k].cury[0] * 20 + w.mi[k].cury[1] - ty) < 60,
-        );
-        if (!near) break;
-        await run(1);
+      for (let d = 0; d < 120; d++) {
+        const trial = cloneSim(sim);
+        for (let i = 0; i < d; i++) await trial.tick();
+        trial.press(SCAN[ch]);
+        await trial.tick();
+        trial.release(SCAN[ch]);
+        for (let i = 0; i < 14 && !trial.dead; i++) await trial.tick();
+        if (!trial.dead && trial.w.chr.cseq !== 1) {
+          await run(d);
+          break;
+        }
       }
     }
     if (ch === '.') await run(9);

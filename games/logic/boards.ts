@@ -278,7 +278,8 @@ export const BOARDS: BoardSpec[] = [
     wires: { 0: { path: 'R13 D2 L12 D2 R12 D1 R1' } },
     solution: 'LL U L UU U DD R U RRRR D wwwwwwww D www RRR D R DD',
     hint: 'Every switch has to be on at once, but then I am fenced in!',
-    answer: 'Switches in a row: current gets as far as the first one that is off. Work so the live wire never fences you in: turn the switch just above you OFF first, cross over and turn the top one on, come back, turn the middle one on again, then the bottom one. When the gate opens, turn the bottom one off and walk around.',
+    answer:
+      'Switches in a row: current gets as far as the first one that is off. Work so the live wire never fences you in: turn the switch just above you OFF first, cross over and turn the top one on, come back, turn the middle one on again, then the bottom one. When the gate opens, turn the bottom one off and walk around.',
   },
   {
     file: 'computer',
@@ -305,7 +306,8 @@ export const BOARDS: BoardSpec[] = [
     },
     solution: 'DD R www R ww U RRRRR UUUU',
     hint: 'Both pink switches open the gate. Why do I keep getting stuck?',
-    answer: 'Trace the wires through the chip. The left switch lets the TOP red wire through, and that one ends up running right in front of the gate, for good. The right switch lets the BOTTOM red wire through, inside the housing. Use only the right switch (and never both: each one shuts the other path).',
+    answer:
+      'Trace the wires through the chip. The left switch lets the TOP red wire through, and that one ends up running right in front of the gate, for good. The right switch lets the BOTTOM red wire through, inside the housing. Use only the right switch (and never both: each one shuts the other path).',
   },
   {
     file: 'radio',
@@ -327,6 +329,30 @@ export const BOARDS: BoardSpec[] = [
     wires: { 0: { path: 'R6 U6 R1', kind: 'pulse' }, 1: { path: 'L5', kind: 'antipulse' } },
     solution: 'DDD RR D wwwwww RR U $U UUUUU',
     hint: 'Snooze button, flashing wires, one-way arrows... where do I start?',
-    answer: 'Bump the timer button as you roll over the arrows. It lets the pulses through for a few seconds, long enough to open the gate. Then wait for it to go off, cross, and slip through the flashing wire between pulses.',
+    answer:
+      'Bump the timer button as you roll over the arrows. It lets the pulses through for a few seconds, long enough to open the gate. Then wait for it to go off, cross, and slip through the flashing wire between pulses.',
+  },
+  {
+    file: 'charger',
+    title: 'Home Sweet Ohm',
+    room: 'attic',
+    card: ['The fuse box. Behind it,', "Watt's own charging socket!"],
+    rows: [
+      '#####2##########',
+      '#........#..X..#',
+      '#........#.....#',
+      '#........###g###',
+      '#........#.....#',
+      '#.......@#.....#',
+      '#.$......#.....1',
+      '#........#.....#',
+      '#........>>....#',
+      '#0#o######t#####',
+    ],
+    wires: { 0: { path: 'R10 U6 R1' }, 1: { path: 'L6', kind: 'pulse' }, 2: { path: 'D9', kind: 'antipulse' } },
+    solution: 'DDD LL $L LL D R $R RRRR R D wwwwww RR U $U UUUUU',
+    hint: 'I pressed the timer button, but nothing happened!',
+    answer:
+      'The timer only lets current through if it is already waiting there. First slip across the flashing wire and turn on the switch in the bottom wall, come back, THEN roll over the arrows and press the timer. Wait for the gate, wait for the wire to go dark, and go home.',
   },
 ];
