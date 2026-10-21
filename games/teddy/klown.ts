@@ -4,7 +4,7 @@
 import { Pixels } from '../kit/pixels';
 import { CLEAR, blob, over, sprite } from './src/art/draw';
 import { P } from './src/art/pal';
-import { canvas, cut } from './tiles';
+import { canvas, cut } from './src/blocks/tiles';
 
 const c = (n: string, k: number) => P.c(n, k);
 

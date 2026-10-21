@@ -4,7 +4,7 @@
 import { Pixels, rng } from '../kit/pixels';
 import { blob, micro } from './src/art/draw';
 import { CRITTERS } from './critters';
-import { FLIP } from './mons';
+import { FLIP } from './src/characters/mons';
 import { POWER } from './src/ids';
 import { P } from './src/art/pal';
 import { LevelMap, Tiles, newBestiary, type Level } from './level';
@@ -29,7 +29,7 @@ import {
   tuft,
   tunnel,
   windowOn,
-} from './tiles';
+} from './src/blocks/tiles';
 
 export const GROUND = 40;
 

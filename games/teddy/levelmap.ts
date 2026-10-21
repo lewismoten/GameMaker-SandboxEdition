@@ -1,8 +1,8 @@
 // Building a 100x100 Game-Maker map in code from ASCII rows: each character names a
 // block (and maybe a monster or a named spot) through the level's legend.
 import { newMap, reindexMonsters, MLEN, LASTMM, type GameMap } from '../../web/src/formats/map';
-import type { BlockSet } from './blockset';
-import type { Bestiary } from './mons';
+import type { BlockSet } from './src/blocks/blockset';
+import type { Bestiary } from './src/characters/mons';
 import { Pixels } from '../kit/pixels';
 import { FX } from './fx';
 import { CTR } from './src/ids';

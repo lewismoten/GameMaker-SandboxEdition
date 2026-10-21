@@ -1,8 +1,8 @@
 // Building .MON monsters by name: a picture loop, a path or a pull toward/away from Teddy,
 // a power on the ladder of who scares whom, and what each becomes when beaten.
-import { emptyMonster, newMonsterSet, type Monster } from '../../web/src/formats/monster';
-import { BlockSet, type BlockDef } from './blockset';
-import type { Pixels } from '../kit/pixels';
+import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
+import { BlockSet, type BlockDef } from '../blocks/blockset';
+import type { Pixels } from '../../../kit/pixels';
 
 export interface MonDef {
   /** Monster block names and ticks to show each. */

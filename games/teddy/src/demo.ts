@@ -3,7 +3,7 @@
 // at the squirrel, dig up a bone, climb the old oak and fetch the hat), then Esc.
 import { serializeRecording } from '../../../web/src/formats/recording';
 import { newCharInfo } from '../../../web/src/engine/world';
-import { buildCharacter, CB } from '../character';
+import { buildCharacter, CB } from './characters/character';
 import { Recorder, runRoute } from '../bot';
 import { ROUTES } from '../routes';
 import { Sim } from '../sim';

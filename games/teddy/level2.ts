@@ -4,14 +4,14 @@
 import { Pixels, rng } from '../kit/pixels';
 import { blob, micro, over, speckle } from './src/art/draw';
 import { CRITTERS } from './critters';
-import { FLIP } from './mons';
+import { FLIP } from './src/characters/mons';
 import { POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { balloonBox, balloonProp, crate, hand, kid, mailCarrier, mailTruck } from './folks';
 import { propSprite } from './klown';
 import { CTR } from './src/ids';
 import { bandOf, sign } from './level1';
-import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from './tiles';
+import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from './src/blocks/tiles';
 
 const G = 40;
 

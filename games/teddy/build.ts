@@ -11,7 +11,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
-import { buildCharacter, CB } from './character';
+import { buildCharacter, CB } from './src/characters/character';
 import { buildPalette } from './src/art/pal';
 import { buildSounds } from './sounds';
 import { LEVELS, buildGame } from './src/game';

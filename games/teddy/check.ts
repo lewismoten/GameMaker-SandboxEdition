@@ -5,7 +5,7 @@
 // real engine: it plays the game from start to finish).
 import { writeFileSync } from 'node:fs';
 import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
-import { buildCharacter, CB } from './character';
+import { buildCharacter, CB } from './src/characters/character';
 import { newCharInfo } from '../../web/src/engine/world';
 import { LEVELS } from './src/game';
 import { ROUTES } from './routes';

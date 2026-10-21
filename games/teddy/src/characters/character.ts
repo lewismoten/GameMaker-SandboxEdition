@@ -1,11 +1,11 @@
 // teddy.chr and teddy.cbl: Teddy's poses and the tricks bound to keys. Walking left and
 // right are the only side views (mirrored by the frame orientation); every trick faces
 // the player, so Teddy never seems to turn around by himself.
-import { CHARBL, MONBL } from '../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
-import { BlockSet } from './blockset';
-import { CTR, KEY, MON, SEQ, SND } from './src/ids';
-import { PAW_UP, POSES, ZZZ } from './teddy';
+import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { BlockSet } from '../blocks/blockset';
+import { CTR, KEY, MON, SEQ, SND } from '../ids';
+import { PAW_UP, POSES, ZZZ } from '../../teddy';
 
 export const CB = new BlockSet(50, true);
 for (const [name, px] of Object.entries(POSES)) CB.add(name, px);

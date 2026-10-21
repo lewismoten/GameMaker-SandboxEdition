@@ -1,12 +1,12 @@
 // The monsters every level shares, at the same numbers in every .MON: what Teddy's tricks
 // send out, treats and bones, tickets, and Gwin.
-import { CTR, MON, POWER } from './src/ids';
+import { CTR, MON, POWER } from '../ids';
 import { Bestiary, FLIP } from './mons';
-import { FX } from './fx';
-import { GWIN } from './gwin';
-import { Pixels } from '../kit/pixels';
-import { over, shadeAt, sprite } from './src/art/draw';
-import { c, dirt, r } from './tiles';
+import { FX } from '../../fx';
+import { GWIN } from '../../gwin';
+import { Pixels } from '../../../kit/pixels';
+import { over, shadeAt, sprite } from '../art/draw';
+import { c, dirt, r } from '../blocks/tiles';
 
 export function commonMonsters(b: Bestiary): void {
   for (const [name, px] of Object.entries(FX)) {

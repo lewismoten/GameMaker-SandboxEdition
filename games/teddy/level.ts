@@ -1,9 +1,9 @@
 // What every level is made of: its blocks, monsters, map, and the place it starts and
 // ends. Each level file fills one of these in.
 import type { TimeOfDay } from './src/art/pal';
-import { BlockSet, GRAV, SOLID, type BlockDef } from './blockset';
-import { Bestiary } from './mons';
-import { commonMonsters } from './common';
+import { BlockSet, GRAV, SOLID, type BlockDef } from './src/blocks/blockset';
+import { Bestiary } from './src/characters/mons';
+import { commonMonsters } from './src/characters/sharedMonsters';
 import { LevelMap } from './levelmap';
 import { Pixels } from '../kit/pixels';
 import { CTR } from './src/ids';

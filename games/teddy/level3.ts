@@ -5,13 +5,13 @@
 import { Pixels, rng } from '../kit/pixels';
 import { blob, micro, speckle } from './src/art/draw';
 import { CRITTERS } from './critters';
-import { FLIP } from './mons';
+import { FLIP } from './src/characters/mons';
 import { CTR, POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { askBubble, frisbee, kid } from './folks';
 import { propSprite } from './klown';
 import { bandOf, sign } from './level1';
-import { branch, buried, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from './tiles';
+import { branch, buried, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from './src/blocks/tiles';
 
 const G = 40;
 

@@ -15,7 +15,7 @@ import { GWIN } from './gwin';
 import { FULL, docLeo } from './people';
 import { bandOf } from './level1';
 import { revolvingDoor } from './level4';
-import { c, copy, cut, dirt, r, sky } from './tiles';
+import { c, copy, cut, dirt, r, sky } from './src/blocks/tiles';
 
 const G = 40;
 

@@ -7,14 +7,14 @@ import { Pixels, rng } from '../kit/pixels';
 import { blob, klubArt, micro, scaleBlit, speckle, sprite } from './src/art/draw';
 import { FULL, docLeo } from './people';
 import { CRITTERS } from './critters';
-import { FLIP, type Bestiary } from './mons';
+import { FLIP, type Bestiary } from './src/characters/mons';
 import { POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { askBubble, juggler, kid, pin } from './folks';
 import { dove, marcher, presto, split } from './magic';
 import { CK } from './klown';
 import { bandOf } from './level1';
-import { bricks, c, copy, cut, dirt, r, sky } from './tiles';
+import { bricks, c, copy, cut, dirt, r, sky } from './src/blocks/tiles';
 
 const G = 40;
 
