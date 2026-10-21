@@ -305,6 +305,11 @@ export function cdCatalog(cdRoot: string): CdCatalogEntry[] {
   return scan(cdRoot).catalog;
 }
 
+/** Where each game file the site serves (e.g. games/gameware/nebula/nebula.gam) is on disk. */
+export function cdFiles(cdRoot: string): ReadonlyMap<string, string> {
+  return scan(cdRoot).files;
+}
+
 export function cdGames(cdRoot: string): Plugin {
   let cache: Scan | undefined;
   const get = () => (cache ??= scan(cdRoot));
