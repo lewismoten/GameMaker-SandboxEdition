@@ -318,6 +318,11 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], files: Map<strin
   }
 }
 
+/** Every playable game on the CD and in ../games (what games/index.json lists). */
+export function cdCatalog(cdRoot: string): CdCatalogEntry[] {
+  return scan(cdRoot).catalog;
+}
+
 export function cdGames(cdRoot: string): Plugin {
   let cache: Scan | undefined;
   const get = () => (cache ??= scan(cdRoot));
