@@ -5,8 +5,8 @@
 // and ride the stage lift up. Gwin is in the spotlight with the red nose in her mouth:
 // sit pretty and she sits too, and drops it. Then give it to Doc Leo. Ta-daaa!
 import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, over, speckle, sprite } from './draw';
-import { CTR, POWER } from './ids';
+import { blob, micro, over, speckle, sprite } from './src/art/draw';
+import { CTR, POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { askBubble, hand } from './folks';
 import { CK, propSprite } from './klown';
@@ -565,7 +565,12 @@ export function klub(): Level {
   ];
   for (const [x, y] of treats) m.treat(x, y);
   // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
-  for (const [x, y] of [[in0 + 15, 32], [b0 + 11, 39], [68, 35]]) m.mon(x, y, 'poodle');
+  for (const [x, y] of [
+    [in0 + 15, 32],
+    [b0 + 11, 39],
+    [68, 35],
+  ])
+    m.mon(x, y, 'poodle');
   m.treat(in0 + 13, 32, 'bone');
   m.mark('start', 4, 39);
   m.mark('exit', leoX, 35);

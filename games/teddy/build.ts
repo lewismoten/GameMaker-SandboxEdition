@@ -12,12 +12,12 @@ import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { buildCharacter, CB } from './character';
-import { buildPalette } from './pal';
+import { buildPalette } from './src/art/pal';
 import { buildSounds } from './sounds';
-import { LEVELS, buildGame } from './game';
+import { LEVELS, buildGame } from './src/game';
 import { buildScreens } from './screens';
 import { buildCartoons } from './cartoons';
-import { demoRecording } from './demo';
+import { demoRecording } from './src/demo';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));

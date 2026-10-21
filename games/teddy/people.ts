@@ -2,9 +2,9 @@
 // story: Gwin scattered his hat, bow tie, shoes, horn and nose across town. `wearing`
 // says which pieces he has on.
 import { Pixels } from '../kit/pixels';
-import { CLEAR, over, sprite } from './draw';
+import { CLEAR, over, sprite } from './src/art/draw';
 import { CK } from './klown';
-import { P } from './pal';
+import { P } from './src/art/pal';
 
 const K: Record<string, number> = {
   ...CK,

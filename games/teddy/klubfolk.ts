@@ -3,9 +3,9 @@
 // Twirly (a tutu; ask her about spinning), and Professor Pratfall (practicing pie throws,
 // for science). Plus the things around the ring: bowling pins, pies, bubbles.
 import { Pixels } from '../kit/pixels';
-import { blob, sprite } from './draw';
+import { blob, sprite } from './src/art/draw';
 import { CK } from './klown';
-import { P } from './pal';
+import { P } from './src/art/pal';
 
 const K: Record<string, number> = {
   ...CK,

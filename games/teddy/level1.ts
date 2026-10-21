@@ -2,11 +2,11 @@
 // fetching: up the garden boxes, along the clothesline, past the squirrel and Gwin's
 // garbage-can mess, up the old oak for Doc Leo's hat, and under the back fence.
 import { Pixels, rng } from '../kit/pixels';
-import { blob, micro } from './draw';
+import { blob, micro } from './src/art/draw';
 import { CRITTERS } from './critters';
 import { FLIP } from './mons';
-import { POWER } from './ids';
-import { P } from './pal';
+import { POWER } from './src/ids';
+import { P } from './src/art/pal';
 import { LevelMap, Tiles, newBestiary, type Level } from './level';
 import {
   bricks,
@@ -482,7 +482,12 @@ export function backyard(): Level {
   ];
   for (const [x, y] of treats) m.treat(x, y);
   // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
-  for (const [x, y] of [[16, 36], [30, 35], [57, 34]]) m.mon(x, y, 'poodle');
+  for (const [x, y] of [
+    [16, 36],
+    [30, 35],
+    [57, 34],
+  ])
+    m.mon(x, y, 'poodle');
   m.mon(21, GROUND, 'buried');
   m.mon(40, GROUND, 'buried');
   m.mon(61, GROUND, 'buried');

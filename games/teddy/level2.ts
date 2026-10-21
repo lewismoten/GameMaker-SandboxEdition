@@ -2,14 +2,14 @@
 // a cat who will not move until somebody barks, kids who want a high five, a yard sale
 // with boxes floating on balloons, and Doc Leo's bow tie up on a porch roof.
 import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, over, speckle } from './draw';
+import { blob, micro, over, speckle } from './src/art/draw';
 import { CRITTERS } from './critters';
 import { FLIP } from './mons';
-import { POWER } from './ids';
+import { POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { balloonBox, balloonProp, crate, hand, kid, mailCarrier, mailTruck } from './folks';
 import { propSprite } from './klown';
-import { CTR } from './ids';
+import { CTR } from './src/ids';
 import { bandOf, sign } from './level1';
 import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, leaves, picket, r, siding, sky, trunk, tuft, windowOn } from './tiles';
 
@@ -480,7 +480,12 @@ export function street(): Level {
   ];
   for (const [x, y] of treats) m.treat(x, y);
   // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
-  for (const [x, y] of [[11, 35], [31, 35], [72, 35]]) m.mon(x, y, 'poodle');
+  for (const [x, y] of [
+    [11, 35],
+    [31, 35],
+    [72, 35],
+  ])
+    m.mon(x, y, 'poodle');
   m.mon(64, G, 'buried');
   m.mon(66, G, 'buried');
   m.mark('start', 6, 39);

@@ -4,7 +4,7 @@
 // the suitcase). And at the end, the Klown Klub parade with Teddy riding on top.
 import { encodeFli } from '../../web/src/formats/fli';
 import { Pixels } from '../kit/pixels';
-import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from './draw';
+import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from './src/art/draw';
 import { FX } from './fx';
 import { GWIN } from './gwin';
 import { citiCar } from './klown';
@@ -111,21 +111,24 @@ export function carFli(): Uint8Array {
   const head = docLeo({ hat: true, tie: true }).crop(0, 0, 20, 14);
   for (let f = 0; f < 34; f++) {
     const x = f < 12 ? 176 : 176 + (f - 12) * (f - 12);
-    r.frame((p) => {
-      scaleBlit(p, car, x, 80, 3);
-      scaleBlit(p, head, x + 34, 100 - (f > 12 ? f % 2 : 0), 2);
-      scaleBlit(p, POSES[f < 12 ? 'front' : f < 20 ? 'frontTilt' : 'frontBark'], 60, 140, 2);
-      if (f >= 12) for (let k = 0; k < 3; k++) p.rect(x - 10 - k * 9 - (f % 2) * 3, 150 + k * 6, 7 - k * 2, 1, c('paint', 3));
-      if (f < 12) {
-        caption(p, 'HE DRIVES AHEAD IN HIS RED');
-        caption(p, '1976 CITICAR. "SEE YOU AT THE', 22);
-        caption(p, 'BIG SHOW, TEDDY!"', 34);
-      } else {
-        caption(p, 'HIS COSTUME SUITCASE WAITS ON');
-        caption(p, 'THE BACK STEP FOR LATER...', 22);
-      }
-      if (f >= 20 && f % 4 < 2) outlined(p, 100, 120, 'BYE!', c('yellow', 3), c('ink', 0), 1);
-    }, f < 12 ? 2 : f === 33 ? 8 : 1);
+    r.frame(
+      (p) => {
+        scaleBlit(p, car, x, 80, 3);
+        scaleBlit(p, head, x + 34, 100 - (f > 12 ? f % 2 : 0), 2);
+        scaleBlit(p, POSES[f < 12 ? 'front' : f < 20 ? 'frontTilt' : 'frontBark'], 60, 140, 2);
+        if (f >= 12) for (let k = 0; k < 3; k++) p.rect(x - 10 - k * 9 - (f % 2) * 3, 150 + k * 6, 7 - k * 2, 1, c('paint', 3));
+        if (f < 12) {
+          caption(p, 'HE DRIVES AHEAD IN HIS RED');
+          caption(p, '1976 CITICAR. "SEE YOU AT THE', 22);
+          caption(p, 'BIG SHOW, TEDDY!"', 34);
+        } else {
+          caption(p, 'HIS COSTUME SUITCASE WAITS ON');
+          caption(p, 'THE BACK STEP FOR LATER...', 22);
+        }
+        if (f >= 20 && f % 4 < 2) outlined(p, 100, 120, 'BYE!', c('yellow', 3), c('ink', 0), 1);
+      },
+      f < 12 ? 2 : f === 33 ? 8 : 1,
+    );
   }
   return r.fli(9);
 }

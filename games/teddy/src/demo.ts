@@ -1,13 +1,13 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The bot plays
 // the first part of Doc Leo's backyard (hop the garden boxes, walk the clothesline, bark
 // at the squirrel, dig up a bone, climb the old oak and fetch the hat), then Esc.
-import { serializeRecording } from '../../web/src/formats/recording';
-import { newCharInfo } from '../../web/src/engine/world';
-import { buildCharacter, CB } from './character';
-import { Recorder, runRoute } from './bot';
-import { ROUTES } from './routes';
-import { Sim } from './sim';
-import type { Level } from './level';
+import { serializeRecording } from '../../../web/src/formats/recording';
+import { newCharInfo } from '../../../web/src/engine/world';
+import { buildCharacter, CB } from '../character';
+import { Recorder, runRoute } from '../bot';
+import { ROUTES } from '../routes';
+import { Sim } from '../sim';
+import type { Level } from '../level';
 
 export async function demoRecording(l: Level): Promise<Uint8Array> {
   const sim = new Sim(

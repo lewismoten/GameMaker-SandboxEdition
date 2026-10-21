@@ -2,8 +2,8 @@
 // white blaze, socks and the famous fluffy white rump. Every pose of every trick is drawn
 // here as ASCII art; facing left is the same art mirrored by the frame orientation.
 import { Pixels } from '../kit/pixels';
-import { sprite } from './draw';
-import { P } from './pal';
+import { sprite } from './src/art/draw';
+import { P } from './src/art/pal';
 
 /** o outline, d/t/T tan shadow/main/light, W/w white fur, k black, e ear pink, p tongue. */
 export const KEY: Record<string, number> = {

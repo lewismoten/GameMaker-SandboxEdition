@@ -5,7 +5,7 @@ import type { BlockSet } from './blockset';
 import type { Bestiary } from './mons';
 import { Pixels } from '../kit/pixels';
 import { FX } from './fx';
-import { CTR } from './ids';
+import { CTR } from './src/ids';
 
 export type Cell = string | { tile?: string; mon?: string; mark?: string };
 export type Legend = Record<string, Cell>;

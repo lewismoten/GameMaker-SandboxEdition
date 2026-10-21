@@ -7,11 +7,11 @@ import { writeFileSync } from 'node:fs';
 import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
 import { buildCharacter, CB } from './character';
 import { newCharInfo } from '../../web/src/engine/world';
-import { LEVELS } from './game';
+import { LEVELS } from './src/game';
 import { ROUTES } from './routes';
 import { Recorder, runRoute } from './bot';
 import { Sim } from './sim';
-import { CTR } from './ids';
+import { CTR } from './src/ids';
 
 const only = process.argv.slice(2);
 const chr = buildCharacter();

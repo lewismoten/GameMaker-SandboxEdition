@@ -2,8 +2,8 @@
 // waiting at each level's end (it only opens for the piece of Doc Leo's costume Teddy
 // fetched), Pockets who drives it for him today, and the costume pieces themselves.
 import { Pixels } from '../kit/pixels';
-import { CLEAR, blob, over, sprite } from './draw';
-import { P } from './pal';
+import { CLEAR, blob, over, sprite } from './src/art/draw';
+import { P } from './src/art/pal';
 import { canvas, cut } from './tiles';
 
 const c = (n: string, k: number) => P.c(n, k);
@@ -106,8 +106,7 @@ export function citiCar(p: Pixels, x0: number, y0: number, open = false): void {
   for (let x = 4; x < noseX - 1; x++) p.set(x0 + x, y0 + top(x) + 1, c('red', 3));
   // windows: the back side window, the door window, and the windshield along the slope
   for (let y = roofY + 3; y <= 18; y++) for (let x = 4; x <= 8; x++) p.set(x0 + x, y0 + y, y < 12 ? c('sky', 7) : c('sky', 5));
-  for (let y = roofY + 3; y <= 18; y++)
-    for (let x = 11; x <= 24; x++) if (y >= top(x) + 3) p.set(x0 + x, y0 + y, x - y > 2 ? c('sky', 7) : c('sky', 5));
+  for (let y = roofY + 3; y <= 18; y++) for (let x = 11; x <= 24; x++) if (y >= top(x) + 3) p.set(x0 + x, y0 + y, x - y > 2 ? c('sky', 7) : c('sky', 5));
   // the door: a seam round it and a little handle
   const dx0 = 10;
   const dx1 = 19;

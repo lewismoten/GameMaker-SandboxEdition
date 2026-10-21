@@ -2,7 +2,7 @@
 //   cd web && npx vite-node ../games/teddy/preview.ts <outdir>
 import { Pixels } from '../kit/pixels';
 import { writePng } from './png';
-import { P } from './pal';
+import { P } from './src/art/pal';
 import { POSES, PAW_UP } from './teddy';
 
 const out = process.argv[2] ?? '.';

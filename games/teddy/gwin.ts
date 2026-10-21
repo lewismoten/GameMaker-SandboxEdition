@@ -2,8 +2,8 @@
 // whip of a tail and a tongue that never goes back in. She is taller than Teddy and fills
 // her whole block. Drawn facing right; she is mirrored when running left.
 import type { Pixels } from '../kit/pixels';
-import { sprite } from './draw';
-import { P } from './pal';
+import { sprite } from './src/art/draw';
+import { P } from './src/art/pal';
 
 const K: Record<string, number> = {
   o: P.c('gwin', 0),

@@ -3,10 +3,10 @@
 // treats (and Doc Leo's shoes) for a good sit, geese guarding the covered bridge over the
 // duck pond, frisbees flying, and Gwin rolling in the mud by the picnic tables.
 import { Pixels, rng } from '../kit/pixels';
-import { blob, micro, speckle } from './draw';
+import { blob, micro, speckle } from './src/art/draw';
 import { CRITTERS } from './critters';
 import { FLIP } from './mons';
-import { CTR, POWER } from './ids';
+import { CTR, POWER } from './src/ids';
 import { GRAV, LevelMap, Tiles, newBestiary, type Level } from './level';
 import { askBubble, frisbee, kid } from './folks';
 import { propSprite } from './klown';
@@ -545,7 +545,12 @@ export function park(): Level {
   ];
   for (const [x, y] of treats) m.treat(x, y);
   // Doc Leo's balloon dogs, floated loose from the suitcase: up high, worth a detour.
-  for (const [x, y] of [[12, 32], [30, 30], [p1 + 2, 35]]) m.mon(x, y, 'poodle');
+  for (const [x, y] of [
+    [12, 32],
+    [30, 30],
+    [p1 + 2, 35],
+  ])
+    m.mon(x, y, 'poodle');
   m.mark('start', 5, 39);
   m.mark('exit', car, 39);
   return {

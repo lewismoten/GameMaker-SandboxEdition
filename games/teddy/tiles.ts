@@ -1,8 +1,8 @@
 // Background block art shared by the levels: skies, ground, wood, brick, fences, and the
 // Klown Car that waits at the end of every level.
 import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, gradient, over, shadeAt, speckle, sprite } from './draw';
-import { P } from './pal';
+import { CLEAR, blob, gradient, over, shadeAt, speckle, sprite } from './src/art/draw';
+import { P } from './src/art/pal';
 
 export const r = (name: string) => P.r(name);
 export const c = (name: string, k: number) => P.c(name, k);

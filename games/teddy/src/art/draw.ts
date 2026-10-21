@@ -1,7 +1,7 @@
 // Drawing helpers shared by the blocks, sprites and screens: dithered shading, lumps,
 // textures, ASCII sprites, the PC's 8x8 font and a 3x5 font for tiny signs.
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { Pixels, dither, rng } from '../kit/pixels';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { Pixels, dither, rng } from '../../../kit/pixels';
 
 export const CLEAR = 255;
 

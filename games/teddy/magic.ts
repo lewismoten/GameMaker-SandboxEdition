@@ -2,9 +2,9 @@
 // (two blocks tall, doves flutter out of his top hat), the doves themselves, and the
 // Klown Klub parade marching down Main Street (each marcher two monsters, top and bottom).
 import { Pixels } from '../kit/pixels';
-import { CLEAR, klubArt, micro, sprite } from './draw';
+import { CLEAR, klubArt, micro, sprite } from './src/art/draw';
 import { CK } from './klown';
-import { P } from './pal';
+import { P } from './src/art/pal';
 
 const K: Record<string, number> = {
   ...CK,

@@ -4,7 +4,7 @@
 import { CHARBL, MONBL } from '../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
 import { BlockSet } from './blockset';
-import { CTR, KEY, MON, SEQ, SND } from './ids';
+import { CTR, KEY, MON, SEQ, SND } from './src/ids';
 import { PAW_UP, POSES, ZZZ } from './teddy';
 
 export const CB = new BlockSet(50, true);
