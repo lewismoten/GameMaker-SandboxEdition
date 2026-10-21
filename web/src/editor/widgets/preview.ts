@@ -110,7 +110,7 @@ export function previewButton(name: string, bytes: () => Promise<Uint8Array | un
           paintIndexed(c, fr.pixels, a.width, a.height, fr.palette);
           f++;
           // play through, hold the last frame a moment, and go round again
-          timer = setTimeout(f < a.frames.length ? step : () => ((f = 0), step()), f < a.frames.length ? (Math.max(1, a.speed) * 1000) / 70 : 900);
+          timer = setTimeout(f < a.frames.length ? step : () => ((f = 0), step()), f < a.frames.length ? (a.speed * 1000) / 70 /* speed 0: no wait between frames, as FLI::View */ : 900);
         };
         step();
       }

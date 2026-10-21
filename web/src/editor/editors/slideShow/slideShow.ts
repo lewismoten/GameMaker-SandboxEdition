@@ -100,7 +100,7 @@ registerEditor(['lst'], (host, project, file) => {
     try {
       if (bytes && kind === 'fli' && isFli(bytes)) {
         const a = parseFli(bytes);
-        f.playSeconds = (a.frameCount * Math.max(1, a.speed)) / 70;
+        f.playSeconds = (a.frameCount * a.speed) / 70; // speed 0 plays with no wait between frames (FLI::View)
       }
       if (bytes && kind === 'txt') f.pages = Math.max(1, Math.ceil(textLines(bytes).length / TEXT_PAGE_LINES));
     } catch {
