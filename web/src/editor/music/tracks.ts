@@ -160,7 +160,7 @@ export class TrackList {
           },
           '＋ Add track',
         );
-    clear(this.el, ...rows, add);
+    clear(this.el, ...rows, h('div', { role: 'listitem', style: 'display:contents' }, add));
     if (this.adding) add.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 }
