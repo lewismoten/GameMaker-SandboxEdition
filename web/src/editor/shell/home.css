@@ -383,6 +383,12 @@
     animation: none;
     background-position: 50% 0;
   }
+
+  .shot-icon,
+  .shot-icon:hover {
+    transform: none;
+    transition: none;
+  }
 }
 
 .tile-select {
