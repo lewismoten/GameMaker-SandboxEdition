@@ -81,14 +81,14 @@ registerEditor(['map'], (host, project, file) => {
       tabindex: 0,
       role: 'region',
       'aria-label': 'The map (scroll with the arrow keys)',
-      style: 'overflow:auto;max-height:max(280px, calc(100dvh - 290px));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
+      style: 'overflow:auto;max-height:max(280px, calc(100dvh - 300px));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
     },
     canvas,
   );
   const ctx = canvas.getContext('2d')!;
   const status = h('div', { class: 'meta' });
-  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:260px' }), 'Blocks to paint with');
-  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:200px' }), 'Monsters to place');
+  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(180px, calc((100dvh - 340px) * 0.55))' }), 'Blocks to paint with');
+  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(140px, calc((100dvh - 340px) * 0.4))' }), 'Monsters to place');
   const monCount = h('div', { class: 'meta' });
 
   // Links touching this map: where the character starts (to) and where scenes change (from).
