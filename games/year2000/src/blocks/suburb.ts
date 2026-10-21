@@ -10,6 +10,7 @@ import { micro } from '../art/font';
 import { CTR, MON } from '../ids';
 import { C } from '../art/pal';
 import { billboard, domeHome, tiled } from '../art/bigart';
+import { addTicker } from './ticker';
 import { R, addBig, addBooths, addFloors, addItems, addWalkways, blank, on, staffDoor, type Floor } from './shared';
 
 // ------------------------------------------------------------------ walls and things
@@ -241,6 +242,7 @@ export function suburbSet(): BlockSet {
   s.add('pillstand2', pillStand('deck', 1), { solid: SOLID });
   addBig(s, 'bbInfo', billboard(['INFORMATION', 'SUPERHIGHWAY', 'NEXT 9 EXITS'], 'denim', 'gold', FLOORS.deck));
   addBig(s, 'bbFax', billboard(['FAX-A-PIZZA!', 'HOT PIZZA BY', 'FAX IN 30 SEC'], 'red', 'gold', FLOORS.deck));
+  addTicker(s, () => rail('h', 'deck'));
 
   return s;
 }

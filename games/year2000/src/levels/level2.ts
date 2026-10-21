@@ -1,10 +1,12 @@
 // Level 2: THE INFORMATION SUPERHIGHWAY. Everybody said it was coming, and here it is:
 // fourteen lanes of hover traffic hauling faxes and encyclopedias through the clouds.
 // Cross the lanes island by island (Frogger never had it this good), ride the pneumatic
-// tube, and catch the Teleport-A-Phone on the far platform to the Mega Mall.
+// tube, and catch the Teleport-A-Phone on the far platform to the Mega Mall. The news
+// zipper on the north rail is one animation chain laid at twelve different phases.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from '../blocks/book';
 import { MON } from '../ids';
+import { tickerSquare } from '../blocks/ticker';
 
 const LEGEND: Legend = {
   '~': 'clouds',
@@ -85,5 +87,7 @@ export function level2(set: BlockSet): LevelMap {
   // Clouds all around, with a few lighter puffs.
   for (let y = 0; y < 100; y++) for (let x = 0; x < 100; x++) if ((x * 7 + y * 13) % 11 === 0) m.set_(x, y, 'clouds2');
   m.stamp(0, 0, ROWS, LEGEND, 'deck');
+  // The Skyway News Feed scrolls along the north rail.
+  for (let i = 0; i < 12; i++) m.set_(9 + i, 1, tickerSquare(i));
   return m;
 }
