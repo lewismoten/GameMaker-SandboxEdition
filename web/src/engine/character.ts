@@ -51,7 +51,7 @@ export function currentFrame(w: World): Frame {
   const e = prev.frames[MAXFRAME - 1].extra;
   const b = (v: number) => v & 0xff;
   return {
-    x: (e[3] | (e[4] << 8)) << 16 >> 16,
+    x: ((e[3] | (e[4] << 8)) << 16) >> 16,
     y: (prev.key << 16) >> 16,
     orient: b(prev.sound) | (b(prev.on) << 8),
     pic1: b(prev.bloc) | (b(prev.ground) << 8),
@@ -526,8 +526,12 @@ export async function moveChars(w: World, pickDrop: DropPicker): Promise<boolean
 
 /**
  * Screen coordinates of the character's bottom block (nextx/nexty), the tail of
- * movechars. The strict < matches the C: column mx itself counts as MLEN blocks
- * away; chkScrnBounds keeps the character from moving left into it.
+ * movechars (PLAYGAME.C 2593-2601; the func-key return at 1643 is the same with
+ * scroll.nx 0). The strict < matches the C: column mx itself counts as MLEN blocks
+ * away, so nextx is 2000+ (row my likewise). chkScrnBounds keeps a walk from
+ * entering it, but a solid monster's push (C 2508) can put the character there;
+ * the C then draws it off screen and ChangeScroll scrolls hard toward it. The port
+ * keeps that. test/charScreenColumn.test.ts covers it, across the map wrap too.
  */
 export function updateCharScreenPos(w: World): void {
   const { chr, ci } = w;
