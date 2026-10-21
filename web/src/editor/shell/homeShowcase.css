@@ -184,6 +184,12 @@
   font-size: 14px;
 }
 
+/* Copy link, after who made it */
+.showcase .sc-link {
+  margin-left: 10px;
+  vertical-align: 1px;
+}
+
 .sc-blurb {
   display: -webkit-box;
   overflow: hidden;

@@ -91,11 +91,21 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       how.featured ? h('span', { class: 'sc-featured', title: 'Picked at random' }, '★ Featured') : null,
       how.resume ? h('span', { class: 'sc-resume' }, 'Continue where you left off') : null,
       how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, icon('dice'), 'Another') : null,
-      // a finished game has an address of its own to share (yours live only in this browser)
-      game.entry ? h('button', { class: 'sc-another sc-link', onclick: () => void copyLink(game), title: 'Copy a link that opens this page on this game' }, icon('link'), 'Copy link') : null,
     );
     title.textContent = game.title;
-    byline.textContent = game.byline;
+    clear(
+      byline,
+      game.byline,
+      // a finished game has an address of its own to share (yours live only in this browser)
+      game.entry
+        ? h(
+            'button',
+            { class: 'sc-another sc-link', onclick: () => void copyLink(game), title: 'Copy a link that opens this page on this game', 'aria-label': `Copy a link to ${game.title}` },
+            icon('link'),
+            'Copy link',
+          )
+        : null,
+    );
     blurb.textContent = game.blurb ?? '';
     blurb.hidden = !game.blurb;
 
