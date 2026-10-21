@@ -106,7 +106,7 @@ Roll onto the outlet to go on to the next board. Gold screws and outlets give yo
 
 export const CREDITS = pages([
   `OHM SWEET OHM
-A logic puzzle in eighteen circuit boards
+A logic puzzle in twenty circuit boards
 
 Design, art, music and wiring: Claude
 
@@ -151,12 +151,12 @@ TO PLAY
 Type OHMSWEET at the DOS prompt (it runs PLAYGAME with OHMSWEET.GAM).
 
 WHAT IS IT?
-Watt, a pocket-sized repair robot, must roll through eighteen haywire circuit boards to get home to his charging socket. Flip switches, blow fuses, throw relays and route live current to shut down the force-field gates... without touching a live wire yourself.
+Watt, a pocket-sized repair robot, must roll through twenty haywire circuit boards to get home to his charging socket. Flip switches, blow fuses, throw relays and route live current to shut down the force-field gates... without touching a live wire yourself.
 
 THIS IS SHAREWARE
 You may copy this disk and give it to your friends, upload it to bulletin boards and share it with user groups, as long as all the files stay together and unchanged.
 
-If you enjoy OHM SWEET OHM, please register for ${price} with Sandbox Software. Registered players get the printed hint book with every answer, a big wiring poster of all eighteen boards, and the next Sandbox Software game at a discount.
+If you enjoy OHM SWEET OHM, please register for ${price} with Sandbox Software. Registered players get the printed hint book with every answer, a big wiring poster of all twenty boards, and the next Sandbox Software game at a discount.
 
 SEND ${price} (check or money order) TO:
  Sandbox Software
@@ -166,7 +166,7 @@ SEND ${price} (check or money order) TO:
 
 FILES ON THIS DISK
  OHMSWEET.GAM the game
- *.MAP *.MON  the eighteen boards
+ *.MAP *.MON  the twenty boards
  *.BBL *.MBL  board and parts art
  WATT.CHR     Watt himself
  *.CMF *.VOC  music and sounds

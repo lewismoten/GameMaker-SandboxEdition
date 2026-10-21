@@ -17,7 +17,7 @@ export function printables(): unknown {
     hints: BOARDS.filter((b) => b.room === room).map((b) => ({ q: `${b.title}: ${b.hint}`, a: b.answer })),
   }));
   return {
-    pitch: 'Watt the repair robot rolls home through eighteen haywire circuit boards. Route the current, never touch it.',
+    pitch: 'Watt the repair robot rolls home through twenty haywire circuit boards. Route the current, never touch it.',
     keys: { 'Arrows / W A S D / keypad': 'Roll one block', R: 'Reboot the board (costs a spare battery)' },
     news: [
       {
