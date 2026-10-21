@@ -716,11 +716,18 @@ dialog.modal .buttons {
 @media (max-width: 900px) {
   .workspace {
     grid-template-columns: 1fr;
+    /* the files bar and the editor keep their own heights (no stretched gap) */
+    grid-template-rows: auto auto;
+    align-content: start;
     height: auto;
   }
   .sidebar {
     border-right: 0;
     border-bottom: 1px solid var(--border);
+  }
+  /* the window scrolls on phones, so the editor is always as tall as what it shows */
+  .workspace > .editor {
+    min-height: max-content;
   }
 }
 
