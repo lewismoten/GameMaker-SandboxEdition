@@ -1,1 +1,4 @@
 .for-lewis/
+
+# the Borland compiler, copied in from the original repository to build the DOS source
+/tools/
