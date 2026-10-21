@@ -1,4 +1,5 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
+import { rovingGrid } from '../rovingGrid';
 import './blocks.css';
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
@@ -84,7 +85,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const pal = () => chooser.palette;
 
   // ---- block picker -------------------------------------------------------
-  const picker = h('div', { class: 'block-picker', role: 'listbox', 'aria-label': 'Blocks' });
+  const picker = rovingGrid(h('div', { class: 'block-picker' }), 'Blocks');
   const pickerCanvases: HTMLCanvasElement[] = [];
   function renderPicker(): void {
     pickerCanvases.length = 0;
@@ -111,7 +112,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
 
   // ---- pixel canvas -------------------------------------------------------
   const SCALE = 16;
-  const canvas = h('canvas', { class: `pixel blk-canvas ${sprites ? 'checker' : ''}`, width: BLEN * SCALE, height: BLEN * SCALE });
+  const canvas = h('canvas', {
+    class: `pixel blk-canvas ${sprites ? 'checker' : ''}`,
+    width: BLEN * SCALE,
+    height: BLEN * SCALE,
+    role: 'img',
+    'aria-label': 'Block painting area, 20 by 20 pixels: drag to paint, right-drag to erase',
+  });
   const ctx = canvas.getContext('2d')!;
   let lineStart: { x: number; y: number } | undefined;
   let before: Uint8Array | undefined;
@@ -317,7 +324,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   );
 
   // ---- colors ---------------------------------------------------------------
-  const swatches = h('div', { class: 'swatches' });
+  const swatches = rovingGrid(h('div', { class: 'swatches' }), 'Drawing color');
   const colorLabel = h('div', { class: 'meta' });
   function renderSwatches(): void {
     clear(
@@ -476,8 +483,17 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
 
   clear(
     host,
-    h('p', { class: 'hint' }, sprites ? 'Color 255 is transparent. ' : '', 'Pick a block on the left, paint it in the middle, and set how it behaves below.'),
-    h('div', { class: 'toolbar', style: 'margin-bottom:8px' }, chooser.el),
+    h(
+      'div',
+      { class: 'blk-head' },
+      h(
+        'p',
+        { class: 'hint' },
+        sprites ? 'Color 255 is transparent. ' : '',
+        'Pick a block on the left, paint it in the middle, and set how it behaves on the right.',
+      ),
+      chooser.el,
+    ),
     h(
       'div',
       { class: 'blk' },

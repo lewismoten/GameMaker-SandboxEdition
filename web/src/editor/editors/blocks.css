@@ -1,4 +1,19 @@
 /* Block set editor: the blocks, the paint area and the colors & properties share the screen. */
+.blk-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 8px;
+}
+.blk-head .hint {
+  flex: 1 1 280px;
+  margin: 0;
+}
+.blk-head .file-field {
+  flex: 0 1 260px;
+}
 .blk {
   display: grid;
   grid-template-columns: minmax(170px, 1fr) minmax(280px, 520px) minmax(260px, 1.1fr);
@@ -13,7 +28,7 @@
   top: 8px;
 }
 .blk-picker .block-picker {
-  max-height: min(78vh, 760px);
+  max-height: max(240px, calc(100dvh - 210px));
   grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
 }
 .blk-picker .block-picker button {
@@ -32,7 +47,7 @@
 .blk-canvas {
   display: block;
   width: 100%;
-  max-width: min(520px, 62vh);
+  max-width: min(520px, max(260px, calc(100dvh - 300px)));
   height: auto;
   aspect-ratio: 1;
   border: 1px solid var(--border);

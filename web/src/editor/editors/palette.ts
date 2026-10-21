@@ -1,4 +1,5 @@
 // Palette editor (PALCHOS.EXE): 256 VGA colors with 0..63 red/green/blue.
+import { rovingGrid } from '../rovingGrid';
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
 import { h, clear } from '../ui';
@@ -11,7 +12,7 @@ registerEditor(['pal'], (host, project, file) => {
   let rangeEnd: number | undefined;
   const save = () => project.files.set(file, serializePalette(pal));
 
-  const swatches = h('div', { class: 'swatches', role: 'grid', 'aria-label': 'Palette colors' });
+  const swatches = rovingGrid(h('div', { class: 'swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
   const preview = h('div', { style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px' });
   const label = h('div', { class: 'meta' });
   const sliders = ['Red', 'Green', 'Blue'].map((name, c) => {
@@ -24,7 +25,11 @@ registerEditor(['pal'], (host, project, file) => {
     };
     range.addEventListener('input', () => set(Number(range.value)));
     num.addEventListener('change', () => set(Number(num.value)));
-    return { range, num, row: h('label', { class: 'field' }, h('span', null, name), h('div', { class: 'row', style: 'align-items:center;gap:6px' }, range, num)) };
+    return {
+      range,
+      num,
+      row: h('label', { class: 'field' }, h('span', null, name), h('div', { class: 'row', style: 'align-items:center;gap:6px' }, range, num)),
+    };
   });
 
   const buttons: HTMLButtonElement[] = [];
@@ -72,7 +77,11 @@ registerEditor(['pal'], (host, project, file) => {
   let gifChoice = gifs[0] ?? '';
   clear(
     host,
-    h('p', { class: 'hint' }, 'Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks.'),
+    h(
+      'p',
+      { class: 'hint' },
+      'Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks.',
+    ),
     h(
       'div',
       { class: 'row' },
@@ -87,7 +96,14 @@ registerEditor(['pal'], (host, project, file) => {
           ? h(
               'div',
               { class: 'toolbar' },
-              fileField(project, 'Copy colors from picture', ['gif'], () => gifChoice, (v) => v && (gifChoice = v), { allowNone: false }),
+              fileField(
+                project,
+                'Copy colors from picture',
+                ['gif'],
+                () => gifChoice,
+                (v) => v && (gifChoice = v),
+                { allowNone: false },
+              ),
               h(
                 'button',
                 {
