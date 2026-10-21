@@ -2,16 +2,16 @@
 // story pages: Doc Leo at home practicing his clown act (balloon animals, a magic trick, a
 // parade strut), then off to the Klown Klub in his red CitiCar; then intro.fli (Gwin and
 // the suitcase). And at the end, the Klown Klub parade with Teddy riding on top.
-import { encodeFli } from '../../web/src/formats/fli';
-import { Pixels } from '../kit/pixels';
-import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from './src/art/draw';
-import { FX } from './src/sprites/fx';
-import { GWIN } from './src/sprites/gwin';
-import { citiCar } from './src/sprites/klown';
-import { dove, marcher } from './src/sprites/magic';
-import { docLeo, FULL } from './src/sprites/people';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from '../art/draw';
+import { FX } from '../sprites/fx';
+import { GWIN } from '../sprites/gwin';
+import { citiCar } from '../sprites/klown';
+import { dove, marcher } from '../sprites/magic';
+import { docLeo, FULL } from '../sprites/people';
 import { SP, landscape } from './screens';
-import { POSES } from './src/sprites/teddy';
+import { POSES } from '../sprites/teddy';
 
 const c = (n: string, k: number) => SP.c(n, k);
 const W = 320;

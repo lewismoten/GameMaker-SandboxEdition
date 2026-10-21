@@ -1,21 +1,21 @@
 // The 320x200 screens: the title (an FLI cartoon, then the poster), the menu, the story,
 // help and credits pages, a card before each level, and the endings. All share one
 // palette (the game's ramps plus a few inks), so Game-Maker's text colors come out the same.
-import { encodeGif } from '../../web/src/formats/gif';
-import { encodeFli } from '../../web/src/formats/fli';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, centered, gradient, klubArt, micro, outlined, scaleBlit, text, textWidth } from './src/art/draw';
-import { buildPalette, buildScreenPalette, type Pal } from './src/art/pal';
-import { POSES } from './src/sprites/teddy';
-import { GWIN } from './src/sprites/gwin';
-import { docLeo, type Costume } from './src/sprites/people';
-import { citiCar, propSprite } from './src/sprites/klown';
-import { renderRegion } from './src/art/render';
-import type { Level } from './src/levels/level';
-import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from './music';
+import { encodeGif } from '../../../../web/src/formats/gif';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, blob, centered, gradient, klubArt, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
+import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
+import { POSES } from '../sprites/teddy';
+import { GWIN } from '../sprites/gwin';
+import { docLeo, type Costume } from '../sprites/people';
+import { citiCar, propSprite } from '../sprites/klown';
+import { renderRegion } from '../art/render';
+import type { Level } from '../levels/level';
+import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from '../sound/music';
 import { CREDITS, HELP, LOST, README, STORY, WON, CARDS } from './text';
-import { dosText } from '../kit/disk';
+import { dosText } from '../../../kit/disk';
 
 export const SP: Pal = buildScreenPalette();
 const c = (n: string, k: number) => SP.c(n, k);

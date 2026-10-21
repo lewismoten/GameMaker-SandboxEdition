@@ -1,9 +1,9 @@
 // teddy.snd: thirty PC speaker effects, and digitized .VOC samples for a Sound Blaster
 // (a woof, a yip, a clown horn honk...) made with the kit's little synthesizer.
-import { newSoundSet, type SoundSet } from '../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../kit/sound';
-import { rng } from '../kit/pixels';
-import { SND } from './src/ids';
+import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { rng } from '../../../kit/pixels';
+import { SND } from '../ids';
 
 /** A one-pole low-pass over a synth (for growly, dull noises). */
 function lowpass(v: Synth, k: number): Synth {

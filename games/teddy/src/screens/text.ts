@@ -65,10 +65,7 @@ export const STORY = pages(
     'parade is lining up. And at',
     'last, the Klown Klub itself.',
   ],
-  [
-    'Good luck, Teddy.',
-    "Who's a good boy?",
-  ],
+  ['Good luck, Teddy.', "Who's a good boy?"],
 );
 
 export const HELP = pages(

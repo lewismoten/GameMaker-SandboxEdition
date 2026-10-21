@@ -13,10 +13,10 @@ import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { buildCharacter, CB } from './src/characters/character';
 import { buildPalette } from './src/art/pal';
-import { buildSounds } from './sounds';
+import { buildSounds } from './src/sound/sounds';
 import { LEVELS, buildGame } from './src/game';
-import { buildScreens } from './screens';
-import { buildCartoons } from './cartoons';
+import { buildScreens } from './src/screens/screens';
+import { buildCartoons } from './src/screens/cartoons';
 import { demoRecording } from './src/demo';
 
 const here = dirname(fileURLToPath(import.meta.url));

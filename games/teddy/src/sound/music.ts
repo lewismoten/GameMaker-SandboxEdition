@@ -1,7 +1,7 @@
 // The soundtrack: ten short FM songs for the Sound Blaster. "Teddy's Theme" runs through
 // most of them (bouncy on the title, sleepy for the story, a full circus march at the
 // Klown Klub). Each voice is its own OPL2 channel; chords spread across three channels.
-import { INSTRUMENTS, sbi, song, type Voice } from '../kit/music';
+import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],
