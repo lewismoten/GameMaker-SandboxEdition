@@ -99,5 +99,7 @@ export const MON = {
   dinoV: 41,
   meteorL: 42,
   sparkyDizzy: 43,
+  /** The 1976½ CitiCar with wings, in the Skyway's slow lane. */
+  citicar: 44,
   none: 64,
 } as const;

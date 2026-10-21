@@ -82,6 +82,8 @@ export function buildMonsters(mb: BlockSet): Monster[] {
   def(MON.fastL, { pics: anim('carT', 1), power: 250, thru: false, end: -1, march: lane(7, -1) });
   def(MON.truckR, { pics: anim('truck', 3), power: 250, thru: false, end: -1, march: lane(3, 1) });
   def(MON.truckL, { pics: anim('truck', 3), power: 250, thru: false, end: -1, march: lane(3, -1) });
+  // The CitiCar takes the slow lane: 1976 top speed, and still no exhaust.
+  def(MON.citicar, { pics: anim('citicar', 4), power: 250, thru: false, end: -1, march: lane(2, 1) });
   def(MON.faxbot, { pics: anim('faxbot', 2), power: CHASER, towards: RANDOM(2), becomes: MON.pop, score: 150 });
 
   def(MON.secbot, { pics: anim('secbot', 4), power: CHASER, towards: 2, end: 500, becomes: MON.pop, score: 200 });

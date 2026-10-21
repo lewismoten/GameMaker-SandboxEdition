@@ -7,6 +7,7 @@ import { micro } from '../art/font';
 import { CTR } from '../ids';
 import { coverPic } from '../blocks/items';
 import { C, PAL } from '../art/pal';
+import { flyingCiticar } from '../art/citicar';
 
 const R = PAL.r;
 const K = () => C('grey', 0);
@@ -529,5 +530,6 @@ export function buildMonsterBlocks(): BlockSet {
   s.add('cover', coverMon(), { effect: CTR.cover, eamt: 1, score: 2000 });
   two('shopper', shopperPic, { hp: -6 });
   two('skater', skaterPic, { hp: -4 });
+  two('citicar', flyingCiticar, { hp: -2 });
   return s;
 }
