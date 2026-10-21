@@ -3,7 +3,7 @@ import './diskBox.css';
 import { h, clear } from '../../editor/core/ui';
 import { diskCount, type Disk } from '../../retro/disks';
 import { creditLine } from '../../project/files';
-import { boxDisks } from '../boxFacts';
+import { boxDisks } from '../boxes/boxFacts';
 import { printedDiskLabel } from './diskLabel';
 
 /** How many disks it takes: an original ships with the DOS player too (as its box says). */

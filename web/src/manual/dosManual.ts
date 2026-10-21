@@ -10,7 +10,7 @@ import { bookletPageCount } from './printables/imposition';
 import type { BookPage } from './printables/manualPages';
 import { gmBoxItems } from './printables/gmItems';
 import * as fig from './figures';
-import { sandboxShots, type GameShot } from '../desk/gmShots';
+import { sandboxShots, type GameShot } from '../desk/boxes/gmShots';
 
 const TITLE = 'Game-Maker 3.0 Owner\u2019s Guide';
 

@@ -2,7 +2,7 @@
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { starterProject } from './starter';
-import { renderShot } from '../../desk/boxArt';
+import { renderShot } from '../../desk/boxes/boxArt';
 import { openGameManual } from '../../manual/gameManual';
 import { GameFiles, IGNORED_FILE, creditLine, loadCatalog, loadFileList, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { deleteProject, listProjects, loadProject } from '../../project/storage';

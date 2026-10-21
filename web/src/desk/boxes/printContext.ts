@@ -1,7 +1,7 @@
 // The paper in a Sandbox Software game's box (manual/printables, read only): the context its
 // renderers need, built the way the manual viewer builds it (manual/gameManual.ts).
-import { loadCatalog, type CatalogEntry } from '../project/files';
-import { shotCache, type PrintContext } from '../manual/printables/kit';
+import { loadCatalog, type CatalogEntry } from '../../project/files';
+import { shotCache, type PrintContext } from '../../manual/printables/kit';
 
 const cache = new Map<string, Promise<PrintContext | undefined>>();
 

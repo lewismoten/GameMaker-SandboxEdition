@@ -5,7 +5,7 @@ import './booklet.css';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
 import { loadCatalog } from '../project/files';
-import { drawBox } from '../desk/gameBox';
+import { drawBox } from '../desk/boxes/gameBox';
 import { buildBooklet } from './printables/manualPages';
 import { openBox } from './printables/viewer';
 import { boxItems } from './printables/items';

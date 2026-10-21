@@ -4,10 +4,10 @@
 // one and it comes forward, turning slowly; drag to turn it, scroll or pinch to zoom,
 // shift-drag (or two fingers) to pan, double-click to reset.
 import './gameBox.css';
-import { h } from '../editor/core/ui';
-import type { CatalogEntry } from '../project/files';
+import { h } from '../../editor/core/ui';
+import type { CatalogEntry } from '../../project/files';
 import { mapShot, renderShot } from './boxArt';
-import { parseGame, ADVTYPE } from '../formats/game';
+import { parseGame, ADVTYPE } from '../../formats/game';
 import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours, type BoxExtras } from './boxFacts';
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';

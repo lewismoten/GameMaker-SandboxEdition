@@ -6,9 +6,9 @@
 import './wallPoster.css';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
-import { mapShot } from './boxArt';
-import type { BoxExtras } from './boxFacts';
-import { seeded } from './boxFacts';
+import { mapShot } from './boxes/boxArt';
+import type { BoxExtras } from './boxes/boxFacts';
+import { seeded } from './boxes/boxFacts';
 
 type Poster = NonNullable<BoxExtras['poster']>;
 

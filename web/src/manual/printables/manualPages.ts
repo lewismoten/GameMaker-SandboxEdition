@@ -2,7 +2,7 @@
 // stapled manuals in shareware boxes), padded with note pages to whole folded sheets, with
 // the box front as the cover and a back cover.
 import { h } from '../../editor/core/ui';
-import { mapShot } from '../../desk/boxArt';
+import { mapShot } from '../../desk/boxes/boxArt';
 import type { CatalogEntry } from '../../project/files';
 import { bookletPageCount } from './imposition';
 import { paginate } from './paginate';

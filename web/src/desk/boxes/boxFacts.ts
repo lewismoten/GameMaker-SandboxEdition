@@ -2,8 +2,8 @@
 // how many floppies it ships on, how long it takes to finish, which selling points are
 // true of it (no claiming digitized sound for a PC speaker game), its rating seal, and
 // how the back cover's copy, reviews, features and screenshots fit the space they have.
-import type { CatalogEntry } from '../project/files';
-import { diskCount } from '../retro/disks';
+import type { CatalogEntry } from '../../project/files';
+import { diskCount } from '../../retro/disks';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
 export interface BoxExtras {
