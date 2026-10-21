@@ -12,6 +12,9 @@ import { muxMp4, type Mp4Sample } from './mp4Mux';
 export async function canEncodeMp4(width: number, height: number): Promise<string | undefined> {
   if (typeof VideoEncoder === 'undefined' || typeof VideoFrame === 'undefined') return undefined;
   // High, Main, then Baseline: hardware encoders differ in what they take.
+  // (profile_idc 0x64/0x4d/0x42 and level: 0x28 = 4.0, 0x1f = 3.1, 0x1e = 3.0;
+  // 42e01e is Constrained Baseline.) format 'avc' asks for length-prefixed NAL units
+  // with the avcC record as the decoder description, which is what MP4 stores.
   for (const codec of ['avc1.640028', 'avc1.4d0028', 'avc1.42001f', 'avc1.42e01e']) {
     try {
       const r = await VideoEncoder.isConfigSupported({ codec, width, height, bitrate: 4_000_000, avc: { format: 'avc' } });
@@ -29,6 +32,8 @@ export async function canEncodeMp4(width: number, height: number): Promise<strin
  */
 export class Mp4Encoder {
   private samples: Mp4Sample[] = [];
+  // Durations are kept by input order and matched to the encoded chunks by index in
+  // finish(), so this relies on the encoder emitting chunks in the order frames went in.
   private durations: number[] = [];
   private avcC?: Uint8Array;
   private encoder: VideoEncoder;
@@ -45,6 +50,7 @@ export class Mp4Encoder {
   ) {
     this.encoder = new VideoEncoder({
       output: (chunk, meta) => {
+        // The first chunk's metadata carries the decoder config; its description is the avcC.
         const desc = meta?.decoderConfig?.description;
         if (desc && !this.avcC) this.avcC = new Uint8Array(desc instanceof ArrayBuffer ? desc : (desc as ArrayBufferView).buffer).slice();
         const data = new Uint8Array(chunk.byteLength);
@@ -65,6 +71,7 @@ export class Mp4Encoder {
   /** Adds a frame shown for `duration` timescale units. */
   async add(canvas: HTMLCanvasElement | OffscreenCanvas, duration: number): Promise<void> {
     if (this.error) throw this.error;
+    // VideoFrame timestamps are in microseconds.
     const us = (t: number) => Math.round((t * 1e6) / this.timescale);
     const frame = new VideoFrame(canvas, { timestamp: us(this.time), duration: us(duration) });
     // a key frame every two seconds, so players can seek
@@ -75,6 +82,7 @@ export class Mp4Encoder {
     this.durations.push(duration);
     this.time += duration;
     this.count++;
+    // Back pressure: wait while the encoder has many frames queued, so memory stays bounded.
     while (this.encoder.encodeQueueSize > 8) await new Promise((r) => setTimeout(r, 1));
   }
 
@@ -131,6 +139,7 @@ export class LiveRecorder {
     let last = 0;
     const pump = (t: number) => {
       if (this.track.readyState === 'ended') return;
+      // The 1 ms slack keeps a frame from slipping to the next animation frame on timer jitter.
       if (t - last >= every - 1 && this.recorder?.state === 'recording') {
         last = t;
         this.track.requestFrame();
@@ -146,6 +155,7 @@ export class LiveRecorder {
     });
     this.recorder.ondataavailable = (e) => e.data.size && this.chunks.push(e.data);
     this.stopped = new Promise((resolve) => (this.recorder.onstop = () => resolve(new Blob(this.chunks, { type: fmt.mime.split(';')[0] }))));
+    // Hand over data every second instead of all at the end.
     this.recorder.start(1000);
   }
 
