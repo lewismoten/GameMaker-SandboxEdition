@@ -25,6 +25,12 @@ const show = (t: number) =>
       .filter(Boolean)
       .join(' '),
     'sparks',
+    process.env.SPARKS
+      ? sim.w.mm
+          .map((m, i) => (m.monnum < 16 ? `${m.monnum}@${sim.w.mi[i].curx[0] - 10},${sim.w.mi[i].cury[0] - 10}` : ''))
+          .filter(Boolean)
+          .join(' ')
+      : '',
     sim.w.mm.filter((m) => m.monnum < 16).length,
   );
 const moves = (process.env.M ?? 'UUULLU').split('');

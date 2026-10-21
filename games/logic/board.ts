@@ -116,6 +116,13 @@ export function compileBoard(spec: BoardSpec, tiles: BlockSet, mb: BlockSet): Bo
     if (w.ctrl) for (const [cx, cy] of cells) ctrlCells.add(`${cx},${cy}`);
   }
 
+  // Red current dies where it crosses live control current: don't let them cross.
+  for (const [a, ca] of wireCells)
+    for (const [b2, cb] of wireCells)
+      if (spec.wires[a].ctrl && !spec.wires[b2].ctrl)
+        for (const [x1, y1] of ca)
+          if (cb.some(([x2, y2]) => x1 === x2 && y1 === y2) && !'nc'.includes(at(x1, y1)))
+            throw new Error(`${spec.file}: control wire ${a} crosses wire ${b2} at ${x1},${y1}`);
   const mons = buildMonsters(mb, wires);
   /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
   const partName = (ch: string, x: number, y: number) => {

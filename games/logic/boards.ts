@@ -235,4 +235,27 @@ export const BOARDS: BoardSpec[] = [
     answer:
       'It is a relay, Normally Open: red current can not get through until pink control current hits it. Then it stays thrown. Turn on the switch on the pink wire, wait, then head for the gate.',
   },
+  {
+    file: 'mower',
+    title: 'The Lawn Mower',
+    room: 'garage',
+    card: ['Self-propelled. Mostly into', 'the rosebushes. Mind the blade.'],
+    rows: [
+      '################',
+      '#.$....#..X....#',
+      '#......#.......#',
+      '#......####g####',
+      '#.........#....#',
+      '#.......@##....#',
+      '#........#1o...#',
+      '#........##....#',
+      '#........>>.#..#',
+      '######0###o#c###',
+    ],
+    wires: { 0: { path: 'R7 U5 L3 U1 R1' }, 1: { path: 'R2 D3', ctrl: true } },
+    solution: 'DDD RR D R U R UU L www D www UUUU L',
+    hint: 'Once I am past the arrows I can not turn the red wire off again.',
+    answer:
+      'The box marked NC is a relay, Normally Closed: red current runs through it until pink control current hits it, then it opens for good. Turn the red switch on as you roll by (you will not get another chance), then use the pink switch to cut the red wire in front of the gate.',
+  },
 ];
