@@ -37,7 +37,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | Folder | What it holds |
 | --- | --- |
 | `core/` | What everything in the editor uses: DOM helpers (`ui.ts`), the open project (`project.ts`), undo (`history.ts`), drawing indexed graphics (`draw.ts`), the CD library (`library.ts`). |
-| `shell/` | The pages: home (`home.ts` with `homeCards.ts`, `homeImport.ts`, `projectExport.ts`), the workspace (file list + editor), new games (`starter.ts`), new-file templates, the health badge, and the shared stylesheet `editor.css`. |
+| `shell/` | The pages: home (`home.ts` with `homeShowcase.ts` (the selected game at the top), `homeCards.ts`, `homeImport.ts`, `projectExport.ts`), the workspace (file list + editor), new games (`starter.ts`), new-file templates, the health badge, and the shared stylesheet `editor.css`. |
 | `widgets/` | Shared pieces: file picker, block chooser, thumbnails, previews, waveform, roving grid, and the game-accurate graphic previews used by the media editors. |
 | `editors/` | One folder per file kind, each with its `.ts`, `.css` and helpers. `registry.ts` maps a file kind to its editor; `all.ts` imports every editor so it registers itself. |
 | `tools/` | Ways to make files beyond "new": importing pictures, composing songs, recording or synthesizing samples, speaker effects, textures. `makers.ts` is their registry, offered by the file picker. |
@@ -68,7 +68,7 @@ player listed in `player-files.json`, the game's files, a manifest and a service
 `../scripts/singlePageBuild.ts`), and `exportDos.ts` (the files plus the CD's
 `XFERPLAY.EXE`, renamed after the game).
 
-**Media.** `media/demo.ts` plays a `.REC` demo in the player. `media/video.ts` turns
+**Media.** `media/demo.ts` plays a `.REC` demo in the player; `media/demoPreview.ts` plays one silently inside a picture on the home page. `media/video.ts` turns
 canvases into video: frame by frame with WebCodecs and `mp4Mux.ts`, or live with
 MediaRecorder (with the game's sound from `audioTap.ts`). `gifEncode.ts` writes animated
 GIFs and `wav.ts` sounds. The desk's capture card (`desk/pc/capture.ts`) takes screenshots
