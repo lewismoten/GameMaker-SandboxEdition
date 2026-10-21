@@ -32,12 +32,18 @@ const WRITTEN: Record<string, string> = {
 /** A heading at the start: words in capitals (with numbers, quotes and the like) before ordinary text. */
 const HEADING = /^(?:["'(]?(?:[A-Z0-9][A-Z0-9'&.,:#!-]*)["')]?\s+)+(?=[A-Z][a-z])/;
 
-/** Ends the text on a whole sentence when it was cut short ("…"), keeping at least a sentence. */
+/** About as much as the panel shows (four or five lines). */
+const MAX = 220;
+
+/**
+ * Ends the text on a whole sentence: as many as fit in MAX characters, or the first one
+ * when even that is longer. Text cut short ("…") with no sentence end in it stays as it is.
+ */
 function wholeSentences(text: string): string {
-  if (!text.endsWith('…')) return text;
-  const cut = text.slice(0, -1);
-  const ends = [...cut.matchAll(/[.!?]["')]?(?=\s)/g)].map((m) => m.index! + m[0].length);
-  const last = ends.filter((i) => i >= 40).pop();
+  const cut = text.endsWith('…') ? text.slice(0, -1) : text;
+  if (cut === text && text.length <= MAX) return text;
+  const ends = [...`${cut} `.matchAll(/[.!?]["')]?(?=\s)/g)].map((m) => m.index! + m[0].length).filter((i) => i >= 40);
+  const last = ends.filter((i) => i <= MAX).pop() ?? ends[0];
   return last ? cut.slice(0, last) : text;
 }
 

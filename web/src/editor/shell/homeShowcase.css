@@ -309,7 +309,7 @@
   }
 
   .sc-blurb {
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 5;
     font-size: 13px;
   }
 

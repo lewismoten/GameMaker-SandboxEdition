@@ -28,3 +28,11 @@ describe('readableBlurb', () => {
     expect(readableBlurb('other', undefined)).toBeUndefined();
   });
 });
+
+describe('readableBlurb length', () => {
+  it('keeps the sentences that fit, or the first one', () => {
+    const one = 'A thunderstorm has scrambled the Bitmores’ Smart Home, and Watt, a pocket-sized repair robot, must roll through twenty haywire circuit boards to get home.';
+    expect(readableBlurb('logic', `${one} Flip switches, blow fuses, throw relays and route live current to shut down the force fields, without touching a live wire.`)).toBe(one);
+    expect(readableBlurb('x', 'Short one. Short two.')).toBe('Short one. Short two.');
+  });
+});
