@@ -105,7 +105,12 @@ export async function filesDemoKind(files: GameFiles, gam: string | null | undef
 interface DemoSource {
   kind: DemoKind;
   rec: Uint8Array;
+  /** An added demo that is the game's own recording (one its title screen does not name). */
+  inGame?: boolean;
 }
+
+/** The tag over a game's own recording that its title screen never named (Houses, Peach). */
+export const IN_GAME_DEMO_TAG = 'Its own recording · unused by the original';
 
 /** The recording a preview plays; a promise while an added demo is still being fetched. */
 function demoSource(files: GameFiles, gam: string, attract: boolean): DemoSource | Promise<DemoSource | undefined> | undefined {
@@ -119,7 +124,7 @@ function demoSource(files: GameFiles, gam: string, attract: boolean): DemoSource
     if (!extra) return fallback();
     // one the game had all along (named nowhere) is in its files already
     const inFiles = extra.inGame ? files.get(extra.file) : undefined;
-    if (inFiles) return { kind: 'added', rec: inFiles };
+    if (inFiles) return { kind: 'added', rec: inFiles, inGame: true };
     return fetchExtraDemo(extra).then((rec) => (rec ? { kind: 'added' as const, rec } : fallback()));
   };
   const index = extraDemosLoaded();
@@ -153,6 +158,8 @@ class PreviewAudio extends AudioEngine {
 export interface DemoPreview {
   /** What is playing: the game's own demo, one added for this edition, or the attract mode (see DEMO_KIND_LABEL). */
   readonly kind: DemoKind;
+  /** An added demo that is the game's own recording, which its title screen never named (see IN_GAME_DEMO_TAG). */
+  readonly inGame: boolean;
   /** Resolves with `kind` once known (at once, unless an added demo is still being fetched). */
   readonly ready: Promise<DemoKind | undefined>;
   readonly muted: boolean;
@@ -194,6 +201,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   let rec: Uint8Array = new Uint8Array(0);
   let kind: DemoKind = source instanceof Promise ? 'added' : source.kind;
   let lastTick = 0;
+  let inGame = false;
   let game = files;
   let muted = o.muted ?? !soundOn;
   let audio: PreviewAudio | undefined;
@@ -213,7 +221,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     if (kind !== 'recorded' && o.tag !== false) {
       const tag = document.createElement('div');
       tag.className = 'demo-kind-tag';
-      tag.textContent = DEMO_KIND_TAG[kind];
+      tag.textContent = inGame ? IN_GAME_DEMO_TAG : DEMO_KIND_TAG[kind];
       tag.style.cssText =
         'position:absolute;top:6px;left:50%;transform:translateX(-50%);max-width:calc(100% - 12px);padding:2px 8px;border-radius:999px;background:rgb(0 0 0 / .72);color:#fff;font:600 11px/1.4 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;z-index:2';
       host.append(tag);
@@ -246,6 +254,9 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     get kind() {
       return kind;
     },
+    get inGame() {
+      return inGame;
+    },
     ready: Promise.resolve(source).then((src) => src?.kind),
     get muted() {
       return muted;
@@ -276,6 +287,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   current = entry;
   const begin = (src: DemoSource) => {
     ({ kind, rec } = src);
+    inGame = !!src.inGame;
     lastTick = recordingTicks(rec);
     game = withoutOpening(files, gam, rec);
     start();
