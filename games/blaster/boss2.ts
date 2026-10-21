@@ -13,6 +13,7 @@ import { kit, type Leg } from './stage';
 import type { BlockSet } from './art';
 import type { StageArt } from './tiles';
 import { HURT } from './common';
+import { ramTiles } from './ram';
 
 /** The sucker, 2 x 2: two eyes on top, a ring of teeth below. */
 function mouth(p: Pal, open: boolean): Pixels {
@@ -77,7 +78,10 @@ export function bossLeech(art: StageArt): Leg {
   let body: { name: string; x: number; y: number }[] = [];
   const k = kit(
     art,
-    (bs) => bossTiles(bs, art),
+    (bs) => {
+      ramTiles(bs, art);
+      bossTiles(bs, art);
+    },
     (b) => {
       bossVirus(b, art.pal);
       body = snake(b, 'seg', 12, 11, 3, 4, (i) => (i === 0 ? 'segHead' : `seg${i % 2}`), { score: 200 });
@@ -94,6 +98,8 @@ export function bossLeech(art: StageArt): Leg {
   for (const s of body) g.mon(2 + s.x, 3 + s.y, s.name);
   g.hatch(2, 2, false).hatch(13, 2, false);
   g.turret(4, 1, 'seeker').turret(11, 1, 'seeker');
+  g.stamp(1, 5, 'dramA', 2, 3).stamp(13, 5, 'dramB', 2, 3);
+  for (let c = 3; c < 13; c++) g.set(c, 9, `ref${c % 4}`);
   g.pickup(1, 8, 'repair').pickup(14, 8, 'nova');
   return {
     file: 's2c',

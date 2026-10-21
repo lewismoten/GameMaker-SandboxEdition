@@ -13,6 +13,7 @@ import { kit, type Leg } from './stage';
 import type { BlockSet } from './art';
 import type { StageArt } from './tiles';
 import { POWER } from './ids';
+import { soundTiles } from './sound3';
 
 function face(p: Pal, loud: boolean): Pixels {
   const big = new Pixels(40, 40, CLEAR);
@@ -74,7 +75,10 @@ function bossVirus(b: Bestiary, p: Pal): void {
 export function bossHowler(art: StageArt): Leg {
   const k = kit(
     art,
-    (bs) => bossTiles(bs, art),
+    (bs) => {
+      soundTiles(bs, art);
+      bossTiles(bs, art);
+    },
     (b) => bossVirus(b, art.pal),
     { mite: 'mite', turretEvery: 10, seekerEvery: 40, flakEvery: 28, hatchShut: 45, hatchOpen: 25, hatchEvery: 8 },
   );
@@ -89,6 +93,9 @@ export function bossHowler(art: StageArt): Leg {
   g.turret(3, 2, 'flak').turret(12, 2, 'flak');
   g.turret(1, 3, 'seeker').turret(14, 3, 'seeker');
   g.hatch(5, 2, false).hatch(10, 2, false);
+  g.stamp(2, 5, 'knob', 2, 2).stamp(12, 5, 'knob', 2, 2);
+  for (let c = 1; c < 15; c++) g.set(c, 9, `vu${(c * 5) % 6}`);
+  g.set(5, 8, 'jackG').set(6, 8, 'jackP').set(9, 8, 'jackB').set(10, 8, 'jackG');
   g.pickup(1, 8, 'repair').pickup(14, 8, 'nova').pickup(1, 7, 'nova');
   return {
     file: 's3c',

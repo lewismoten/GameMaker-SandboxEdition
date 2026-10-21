@@ -13,6 +13,7 @@ import { kit, type Leg } from './stage';
 import type { BlockSet } from './art';
 import type { StageArt } from './tiles';
 import { HURT } from './common';
+import { diskTiles } from './disk4';
 
 function headPic(p: Pal, hot: boolean): Pixels {
   const big = new Pixels(40, 40, CLEAR);
@@ -56,7 +57,10 @@ export function bossCrash(art: StageArt): Leg {
   let right: { name: string; x: number; y: number }[] = [];
   const k = kit(
     art,
-    (bs) => bossTiles(bs, art),
+    (bs) => {
+      diskTiles(bs, art);
+      bossTiles(bs, art);
+    },
     (b) => {
       bossVirus(b, art.pal);
       left = snake(b, 'ringL', 4, 3, 3, 4, (i) => `shard${i % 2}`, { score: 300, spacing: 3 });
@@ -77,6 +81,8 @@ export function bossCrash(art: StageArt): Leg {
   g.turret(4, 2, 'sweep').turret(11, 2, 'sweep');
   g.turret(6, 2, 'seeker').turret(9, 2, 'flak');
   g.hatch(2, 2, false).hatch(13, 2, false);
+  g.stamp(12, 3, 'arm', 2, 5);
+  for (let c = 1; c < 15; c++) if (c < 5 || c > 10) g.set(c, 6, 'sector');
   g.pickup(1, 9, 'repair').pickup(14, 9, 'nova').pickup(14, 7, 'repair');
   return {
     file: 's4c',

@@ -94,7 +94,6 @@ function bossTiles(bs: BlockSet, a: StageArt): void {
       t.blit(s[r][c], 0, 0, CLEAR);
       bs.add(`shell${r}${c}`, t, { solid: SOLID });
     }
-
 }
 
 function bossVirus(b: Bestiary, p: Pal): void {
