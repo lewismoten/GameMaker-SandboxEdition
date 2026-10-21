@@ -60,7 +60,8 @@ textarea {
   color: inherit;
 }
 
-button {
+button,
+a.button {
   padding: 6px 12px;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -68,11 +69,21 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+a.button {
+  display: inline-block;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+button:hover,
+a.button:hover {
   border-color: var(--accent);
 }
 
-button.primary {
+button.primary,
+a.button.primary {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-text);

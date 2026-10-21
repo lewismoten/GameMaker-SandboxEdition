@@ -358,7 +358,7 @@ function projectCard(p: Awaited<ReturnType<typeof listProjects>>[number], nav: H
       'div',
       { class: 'actions' },
       h('button', { class: 'primary', onclick: () => nav.openProject(p.id) }, 'Open'),
-      h('a', { href: `./play.html?project=${encodeURIComponent(p.id)}` }, h('button', null, '▶ Play')),
+      h('a', { class: 'button', href: `./play.html?project=${encodeURIComponent(p.id)}` }, '▶ Play'),
     ),
   );
 }
@@ -392,9 +392,9 @@ function sampleCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
     h(
       'div',
       { class: 'actions' },
-      g.gam && h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
+      g.gam && h('a', { class: 'button primary', href: `./play.html?game=${encodeURIComponent(g.id)}`, 'aria-label': `Play ${g.title}` }, '▶ Play'),
       g.gam
-        ? h('button', { onclick: () => void copy(g.title) }, 'Edit a copy')
+        ? h('button', { onclick: () => void copy(g.title), 'aria-label': `Edit a copy of ${g.title}` }, 'Edit a copy')
         : h(
             'button',
             {
@@ -439,8 +439,8 @@ function originalCard(g: CatalogEntry, nav: HomeNav): HTMLElement {
     h(
       'div',
       { class: 'actions' },
-      h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
-      h('button', { onclick: () => void copy() }, 'Edit a copy'),
+      h('a', { class: 'button primary', href: `./play.html?game=${encodeURIComponent(g.id)}`, 'aria-label': `Play ${g.title}` }, '▶ Play'),
+      h('button', { onclick: () => void copy(), 'aria-label': `Edit a copy of ${g.title}` }, 'Edit a copy'),
     ),
   );
 }
@@ -464,7 +464,7 @@ function sharewareCard(g: CatalogEntry): HTMLElement {
     h(
       'div',
       { class: 'actions' },
-      h('a', { href: `./play.html?game=${encodeURIComponent(g.id)}` }, h('button', { class: 'primary' }, '▶ Play')),
+      h('a', { class: 'button primary', href: `./play.html?game=${encodeURIComponent(g.id)}`, 'aria-label': `Play ${g.title}` }, '▶ Play'),
       h('button', { onclick: () => void showNotice(g) }, 'Notice'),
     ),
   );
