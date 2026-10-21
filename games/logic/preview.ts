@@ -33,7 +33,7 @@ if (process.env.PREVIEW_DIR) {
   const { compileHouse } = await import('./src/levels/board');
   const { renderBoard } = await import('./src/art/render');
   const { buildMonsterBlocks, buildWattBlocks } = await import('./src/sprites/sprites');
-  const S = await import('./screens');
+  const S = await import('./src/screens/screens');
   const mb = buildMonsterBlocks();
   const cb = buildWattBlocks();
   const art = { watt: cb, parts: mb };

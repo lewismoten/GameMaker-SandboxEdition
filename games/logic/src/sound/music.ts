@@ -2,7 +2,7 @@
 // theme, runs through the title, menu, story and ending; each room of the house gets its
 // own tune (a jaunty kitchen, a lounge-lizard living room, a garage-band shuffle and a
 // spooky attic). Each voice is its own OPL2 channel; chords spread across three channels.
-import { INSTRUMENTS, sbi, song, type Voice } from '../kit/music';
+import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],

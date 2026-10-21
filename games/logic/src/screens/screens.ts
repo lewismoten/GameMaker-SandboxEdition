@@ -3,16 +3,16 @@
 // and the backdrops PLAYGAME writes its own words on (high scores, load and save). They all
 // share the game palette, so PLAYGAME's blue, red and purple inks match exactly, and every
 // spot where it writes text is kept light and plain.
-import { encodeGif } from '../../web/src/formats/gif';
-import { encodeFli } from '../../web/src/formats/fli';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../kit/pixels';
-import { dosText } from '../kit/disk';
-import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from './src/art/draw';
-import { PAL, c, r } from './src/art/pal';
-import type { Board } from './src/levels/board';
-import { renderBoard } from './src/art/render';
-import type { BlockSet } from './src/blocks/sets';
+import { encodeGif } from '../../../../web/src/formats/gif';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { Pixels, rng } from '../../../kit/pixels';
+import { dosText } from '../../../kit/disk';
+import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
+import { PAL, c, r } from '../art/pal';
+import type { Board } from '../levels/board';
+import { renderBoard } from '../art/render';
+import type { BlockSet } from '../blocks/sets';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
 
 const W = 320;

@@ -16,12 +16,12 @@ import { buildMonsterBlocks, buildWattBlocks } from './src/sprites/sprites';
 import { buildWatt } from './src/characters/watt';
 import { BOARDS } from './src/levels/boards';
 import { compileHouse } from './src/levels/board';
-import { buildSounds } from './sounds';
-import * as M from './music';
-import { buildScreens } from './screens';
+import { buildSounds } from './src/sound/sounds';
+import * as M from './src/sound/music';
+import { buildScreens } from './src/screens/screens';
 import { buildGame } from './src/game';
 import { demoRecording } from './src/demo';
-import { readme } from './text';
+import { readme } from './src/screens/text';
 import { writePrintables } from './src/printables';
 
 const here = dirname(fileURLToPath(import.meta.url));
