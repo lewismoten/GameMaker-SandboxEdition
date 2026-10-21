@@ -7,7 +7,7 @@ import { registerEditor } from './index';
 import { h, clear, download, toast } from '../core/ui';
 import { encodeWav, toPcm8 } from '../../media/wav';
 import { decodeVoc, encodeVoc } from '../../formats/voc';
-import { audio } from './mediaShared';
+import { audio } from '../widgets/mediaShared';
 import { drawWave } from '../widgets/waveform';
 import { startRecording } from '../tools/vocMaker';
 import {

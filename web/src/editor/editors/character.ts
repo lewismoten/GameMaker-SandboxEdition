@@ -8,7 +8,7 @@ import { blockButton, chooseBlock, type BlockExtra } from '../widgets/blockChoos
 import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
 import { drawBlockTo, paintBlock } from '../core/draw';
 import { paletteChooser } from './blocks';
-import { audio } from './mediaShared';
+import { audio } from '../widgets/mediaShared';
 import { BACKBL, BLEN, CHARBL, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
 import {
   INF_REPEAT,

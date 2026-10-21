@@ -2,7 +2,7 @@
 // sound sets (.SND), songs (.CMF) and animations (.FLI). Only one preview plays at a time.
 import { h, toast } from '../core/ui';
 import { kindOf } from '../core/project';
-import { audio } from '../editors/mediaShared';
+import { audio } from './mediaShared';
 import { paintIndexed } from '../core/draw';
 import { decodeVoc, isVoc } from '../../formats/voc';
 import { isCmf } from '../../formats/cmf';

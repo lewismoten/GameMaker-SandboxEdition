@@ -15,8 +15,8 @@ import { isFli, parseFli } from '../../formats/fli';
 import { PALETTE_SIZE } from '../../formats/palette';
 import { showGraphic } from '../../engine/showGraphic';
 import { normalize } from '../../project/files';
-import { gamePreview } from './mediaShared';
-import { blankScreen, mediaThumb, pictureScreen, screenCanvas, textPages, TEXT_PAGE_LINES, type ScreenPicture } from './mediaPictures';
+import { gamePreview } from '../widgets/mediaShared';
+import { blankScreen, mediaThumb, pictureScreen, screenCanvas, textPages, TEXT_PAGE_LINES, type ScreenPicture } from '../widgets/mediaPictures';
 import {
   clipKind,
   clipTiming,

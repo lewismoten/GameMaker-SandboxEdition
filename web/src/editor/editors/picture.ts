@@ -8,7 +8,7 @@ import { isBlankBlock } from './pictureLogic';
 import { decodeGif, encodeGif, isGif, type IndexedImage } from '../../formats/gif';
 import { matchColor, parsePalette, type Palette } from '../../formats/palette';
 import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../formats/blocks';
-import { gamePreview } from './mediaShared';
+import { gamePreview } from '../widgets/mediaShared';
 
 // ---- pictures -----------------------------------------------------------------
 

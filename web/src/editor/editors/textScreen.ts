@@ -8,8 +8,8 @@ import { kindOf, type Project } from '../core/project';
 import { latin1Text, textBytes } from '../../formats/binary';
 import { parseSlideList } from '../../formats/graphicScripts';
 import { displayFile, match, RGB_PURPLE } from '../../engine/showGraphic';
-import { gamePreview } from './mediaShared';
-import { blankScreen, pictureScreen, screenCanvas, textPages, type ScreenPicture } from './mediaPictures';
+import { gamePreview } from '../widgets/mediaShared';
+import { blankScreen, pictureScreen, screenCanvas, textPages, type ScreenPicture } from '../widgets/mediaPictures';
 import { layoutText, pageOfLine, wrapLongLines, LINE_CHARS, PAGE_LINES, type TextLayout } from './textLayout';
 
 const BACKGROUND_KINDS = ['gif', 'bkd', 'fli'];

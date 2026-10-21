@@ -1,7 +1,7 @@
 // The music editor's document: the song being edited, what is selected, undo, and
 // playback through the app's own OPL2 emulation (the same PlayIt code the games use).
 import type { Project } from '../core/project';
-import { audio } from '../editors/mediaShared';
+import { audio } from '../widgets/mediaShared';
 import { TICK_RATE } from '../../audio/cmfPlayer';
 import {
   auditionSong,

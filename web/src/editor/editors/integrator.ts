@@ -33,7 +33,7 @@ import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../formats/map';
 import { defaultPalette, parsePalette } from '../../formats/palette';
 import { WORLD, CARD_UNITS, arrangements, clampPos, spreadOut, type Arrangement } from '../integratorLayout';
 import { graphicShot, levelShot } from '../integratorArt';
-import { audio } from './mediaShared';
+import { audio } from '../widgets/mediaShared';
 
 /** Board pixels per integrator unit, and the card size on the board. */
 const S = 8;

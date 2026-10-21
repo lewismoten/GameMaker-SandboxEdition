@@ -10,13 +10,13 @@ import { libraryGame, libraryItems, type LibraryItem } from '../library';
 import { parseBackdrop, serializeBackdrop } from '../../formats/graphicScripts';
 import { cdName, normalize } from '../../project/files';
 import { SIZEX, SIZEY } from '../../gfx/screen';
-import { gamePreview } from './mediaShared';
-import { backdropInfo, blankScreen, pictureScreen, screenCanvas } from './mediaPictures';
+import { gamePreview } from '../widgets/mediaShared';
+import { backdropInfo, blankScreen, pictureScreen, screenCanvas } from '../widgets/mediaPictures';
 import { lut, paintIndexed } from '../core/draw';
 import { encodeAnimatedGif, type GifFrame } from '../../media/gifEncode';
 import { pngOf } from '../../media/screenCapture';
 import { createZip } from '../../project/zip';
-import type { ScreenPicture } from './mediaPictures';
+import type { ScreenPicture } from '../widgets/mediaPictures';
 
 const base = (name: string) => name.replace(/\.[^.]*$/, '');
 
