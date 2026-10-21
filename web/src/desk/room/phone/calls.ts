@@ -1,7 +1,8 @@
 // Who answers when you dial from the wall phone: the numbers on Mom's notes, the BBSes
-// (a modem screeches at you), the ratings council on the game boxes, 911, and anyone else
-// (not in service, no answer, busy, or somebody's answering machine). Pittsburgh, 1994:
-// local calls are seven digits; 1 + area code + number works too.
+// (a modem screeches at you), the ratings council on the game boxes, time & temperature,
+// the weather line, the movie line, 911, and anyone else (not in service, no answer, busy,
+// or somebody's answering machine). Pittsburgh, December 1994: local calls are seven
+// digits; 1 + area code + number works too.
 import type { PhoneSounds } from "./sounds";
 import { VOICES, type Voice } from "./voice";
 
@@ -15,6 +16,10 @@ export interface CallLine {
   wait(seconds: number): Promise<void>;
   /** Keys pressed up to #, or what was pressed when `seconds` pass with no key. */
   keysUntilPound(seconds: number): Promise<string>;
+  /** The next key pressed, or "" when `seconds` pass with none. */
+  nextKey(seconds: number): Promise<string>;
+  /** Stops talking mid-sentence (a key pressed during a menu). */
+  hush(): void;
   /** The other end hangs up. */
   ended(why: string): void;
   /** The phone rings again later: someone calling back. */
@@ -98,7 +103,7 @@ const answeringMachine =
 const angryDad: Call = async (line) => {
   await line.say(
     VOICES.dad,
-    "Hello? Did somebody page me? I was in the middle of a meeting with my boss! Is anybody bleeding? Is the house on fire?",
+    "Hello? Did somebody page me? I was up to my elbows in a busted boiler across town, and I had to go find a pay phone! Is anybody bleeding? Is the house on fire?",
   );
   await line.wait(1.5);
   await line.say(
@@ -153,17 +158,14 @@ const DIRECTORY: Record<string, Call> = {
     );
     line.ended("Mom hung up");
   },
-  // Dad at work
+  // Dad at work: the maintenance shop, though he's hardly ever in it
   "5550187": async (line) => {
-    await ring(line, 4);
+    await ring(line, 2);
     await line.say(
-      VOICES.dadMachine,
-      "You’ve reached Dave in Accounts Payable. I’m either away from my desk or on the other line. Please leave a message at the tone.",
+      VOICES.shop,
+      "Maintenance, this is Gus. Dave? Nah, he’s out on a job across town, fixing somebody’s boiler. Try his pager, kiddo.",
     );
-    await line.wait(line.sounds.beep());
-    line.status("Recording… (hang up when you’re done)");
-    await line.wait(30);
-    line.ended("Voicemail cut you off");
+    line.ended("Gus hung up");
   },
   // Dad's pager
   "5550199": pager,
@@ -181,8 +183,20 @@ const DIRECTORY: Record<string, Call> = {
     );
     line.ended("Grandma hung up");
   },
-  // Jenny, the sitter: on the phone, as always
-  "5550164": busy,
+  // Jenny, the sitter (867-5309, like the song): on the phone, as always
+  "8675309": async (line) => {
+    if (Math.random() < 2 / 3) return busy(line);
+    await ring(line, 2);
+    await line.say(
+      VOICES.jenny,
+      "Hello? Oh, hey! I can’t talk, I’m on the other line. Is your mom paying me Friday? Okay, call me later. Bye!",
+    );
+    line.ended("Jenny hung up (back to her other call)");
+  },
+  // time & temperature (POPCORN), the weather line, and the movie line (777-FILM)
+  "7672676": async (line) => timeAndTemperature(line),
+  "9361212": async (line) => weather(line),
+  "7773456": async (line) => movieLine(line),
   // THE -= S A N D B O X =- BBS (1-412-555-SAND), The Sofa, and Sandcastle Knight's BBS
   "5557263": modem,
   "5550177": modem,
@@ -206,6 +220,87 @@ const DIRECTORY: Record<string, Call> = {
     }
   },
 };
+
+/** "At the tone, the time will be 4:05 and 20 seconds", every ten seconds, with a beep. */
+async function timeAndTemperature(line: CallLine): Promise<void> {
+  await ring(line, 1);
+  for (let i = 0; i < 6; i++) {
+    // the next ten-second mark far enough off to say it first
+    const at = new Date(Math.ceil((Date.now() + 6500) / 10000) * 10000);
+    const hour = at.getHours() % 12 || 12;
+    const min = at.getMinutes();
+    const sec = at.getSeconds();
+    const minutes = min === 0 ? "o’clock" : min < 10 ? `oh ${min}` : `${min}`;
+    await line.say(
+      VOICES.timeLady,
+      `${i % 2 ? "" : "Allegheny Savings time and temperature. "}At the tone, the time will be ${hour} ${minutes}${sec ? ` and ${sec} seconds` : ", exactly"}.`,
+    );
+    await line.wait(Math.max(0, (at.getTime() - Date.now()) / 1000));
+    await line.wait(line.sounds.beep());
+    if (i % 2 === 0)
+      await line.say(VOICES.timeLady, "The temperature is 28 degrees.");
+  }
+  line.ended("The time line hung up");
+}
+
+async function weather(line: CallLine): Promise<void> {
+  await ring(line, 1);
+  for (let i = 0; i < 2; i++)
+    await line.say(
+      VOICES.weather,
+      "National Weather Service forecast for Pittsburgh and vicinity. This afternoon, snow showers. Accumulation of two to four inches. High 29. Tonight, cloudy with flurries. Low 18. Tomorrow, partly sunny and cold. High 31. Currently in Pittsburgh, light snow, and 28 degrees.",
+    );
+  line.ended("The weather line hung up");
+}
+
+/** What's playing, December 1994: title, rating, today's showtimes. */
+const MOVIES: [string, string, string][] = [
+  ["The Santa Clause", "PG", "1:10, 3:20, 5:30, 7:40, and 9:50"],
+  ["Star Trek Generations", "PG", "1:30, 4:15, 7:00, and 9:35"],
+  ["The Lion King", "G", "12:45, 2:50, 4:55, and 7:00"],
+  ["Dumb and Dumber", "PG-13", "2:00, 4:30, 7:15, and 9:40"],
+];
+
+async function movieLine(line: CallLine): Promise<void> {
+  await ring(line, 1);
+  await line.say(
+    VOICES.movies,
+    "Hello! And welcome to the Movie Line! Now showing at the Starlite Cinema 8.",
+  );
+  for (let round = 0; round < 4; round++) {
+    // listening from the start: press a key any time during the menu
+    const pressed = line.nextKey(20);
+    const menu = line
+      .say(
+        VOICES.movies,
+        `${MOVIES.map(([title], i) => `For ${title}, press ${i + 1}.`).join(" ")} To hear this again, press 0.`,
+      )
+      .then(
+        () => undefined,
+        () => undefined,
+      );
+    let k = await Promise.race([pressed, menu]);
+    if (k === undefined) k = await pressed;
+    else line.hush();
+    const movie = MOVIES[Number(k) - 1];
+    if (movie) {
+      const [title, rating, times] = movie;
+      await line.say(
+        VOICES.movies,
+        `${title}. Rated ${rating}. Today’s showtimes: ${times}.`,
+      );
+    } else if (!k) {
+      await line.say(
+        VOICES.movies,
+        "Why don’t you just tell me the name of the movie you’ve selected?",
+      );
+      line.status("(You say the name. Nothing happens.)");
+      await line.wait(3);
+    }
+  }
+  await line.say(VOICES.movies, "Thank you for calling the Movie Line!");
+  line.ended("The movie line hung up");
+}
 
 /** A small stable number from the digits, so a number always does the same thing. */
 function hash(s: string): number {
@@ -233,5 +328,8 @@ export const SPEED_DIAL: [string, string][] = [
   ["Dad", "5550187"],
   ["Pager", "5550199"],
   ["Grandma", "5550123"],
-  ["Jenny", "5550164"],
+  ["Jenny", "8675309"],
+  ["Time", "7672676"],
+  ["Weather", "9361212"],
+  ["Movies", "7773456"],
 ];
