@@ -76,6 +76,15 @@ export class Keyboard {
     }
   }
 
+  /** Queues a recorded scan code as-is (demo playback while a screen waits for a key). */
+  feed(scan: number): void {
+    this.events.push(scan);
+    if (scan < 0x80) this.typed.push({ scan, ascii: scanToAscii(scan), key: '' });
+    const w = this.waiters;
+    this.waiters = [];
+    w.forEach((f) => f());
+  }
+
   releaseAll(): void {
     for (const s of this.down) this.events.push(s | 0x80);
     this.down.clear();
