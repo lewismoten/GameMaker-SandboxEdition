@@ -491,17 +491,24 @@ registerEditor(['gam'], (host, project) => {
     class: 'grator-resize',
     role: 'separator',
     'aria-orientation': 'vertical',
-    'aria-label': 'Drag to resize the screens and music panel',
-    title: 'Drag to resize the panel (or use the arrow keys)',
+    'aria-label': 'Side panel width',
+    title: 'Drag to resize the side panel (or focus it and use ← →, Page Up/Down, Home/End)',
     tabIndex: 0,
     'aria-valuemin': 160,
     'aria-valuemax': 640,
-    'aria-valuenow': savedWidth >= 160 && savedWidth <= 640 ? savedWidth : 250,
   });
+  /** The handle reports the panel's real width (its default depends on the window), kept in step as it changes. */
+  const syncHandle = () => {
+    const w = Math.round(side.getBoundingClientRect().width);
+    if (!w) return;
+    handle.setAttribute('aria-valuenow', String(w));
+    handle.setAttribute('aria-valuetext', `${w} pixels wide`);
+  };
+  if (typeof ResizeObserver === 'function') new ResizeObserver(syncHandle).observe(side);
   const setSideW = (w: number) => {
     grator.style.setProperty('--grator-side-w', `${w}px`);
     store.set('gm-grator-side-w', String(w));
-    handle.setAttribute('aria-valuenow', String(Math.round(w)));
+    syncHandle();
     draw();
   };
   handle.addEventListener('pointerdown', (e) => {
@@ -516,10 +523,13 @@ registerEditor(['gam'], (host, project) => {
     handle.addEventListener('pointermove', move);
     handle.addEventListener('pointerup', up);
   });
+  // ← widens the panel (the handle moves left), → narrows it; Page Up/Down take bigger steps, Home is narrowest and End widest
   handle.addEventListener('keydown', (e) => {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const w = Math.round(side.getBoundingClientRect().width);
+    const next: Record<string, number> = { ArrowLeft: w + 20, ArrowUp: w + 20, ArrowRight: w - 20, ArrowDown: w - 20, PageUp: w + 80, PageDown: w - 80, Home: 160, End: 640 };
+    if (!(e.key in next)) return;
     e.preventDefault();
-    setSideW(Math.max(160, Math.min(640, side.getBoundingClientRect().width + (e.key === 'ArrowLeft' ? 20 : -20))));
+    setSideW(Math.max(160, Math.min(640, next[e.key])));
   });
   function renderSide(): void {
     const screens: { label: string; file: string; scene: number }[] = [];
