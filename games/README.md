@@ -52,15 +52,15 @@ A rebuild is deterministic: rebuilding an unchanged game leaves `git status` cle
 
 The play-testing tools:
 
-| game      | command (from `web/`)                              | what it does |
-|-----------|----------------------------------------------------|--------------|
-| maximus   | `npx vite-node ../games/maximus/tools/check.ts`    | lands on every world, drives the rovers around, crosses the training deck |
-| year2000  | `npx vite-node ../games/year2000/tools/verify.ts`  | the bot plays all six levels in a row (`GOD=1` keeps it alive) |
-| year2000  | `npx vite-node ../games/year2000/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` |
-| teddy     | `npx vite-node ../games/teddy/tools/check.ts`      | the bot plays every level (`TEDDY_WALK=<file>` writes the run as a .rec) |
-| logic     | `npx vite-node ../games/logic/tools/check.ts`      | plays every board's solution |
-| blaster   | `npx vite-node ../games/blaster/tools/check.ts`    | the bot pilot flies every leg and boss |
-| sleuth    | `npx vite-node ../games/sleuth/tools/check.ts`     | plays the whole case on the built disk (`--quick`, `--wrong <who>`, `--walk out.rec`) |
+| game     | command (from `web/`)                              | what it does                                                                          |
+| -------- | -------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| maximus  | `npx vite-node ../games/maximus/tools/check.ts`    | lands on every world, drives the rovers around, crosses the training deck             |
+| year2000 | `npx vite-node ../games/year2000/tools/verify.ts`  | the bot plays all six levels in a row (`GOD=1` keeps it alive)                        |
+| year2000 | `npx vite-node ../games/year2000/tools/gendemo.ts` | re-records the title demo into `src/demo.ts`                                          |
+| teddy    | `npx vite-node ../games/teddy/tools/check.ts`      | the bot plays every level (`TEDDY_WALK=<file>` writes the run as a .rec)              |
+| logic    | `npx vite-node ../games/logic/tools/check.ts`      | plays every board's solution                                                          |
+| blaster  | `npx vite-node ../games/blaster/tools/check.ts`    | the bot pilot flies every leg and boss                                                |
+| sleuth   | `npx vite-node ../games/sleuth/tools/check.ts`     | plays the whole case on the built disk (`--quick`, `--wrong <who>`, `--walk out.rec`) |
 
 Each `tools/sim.ts` is a headless copy of PLAYGAME's main loop built on the web app's engine
 (`web/src/engine`), so a check runs the real movement, touch and monster code. Some builds
