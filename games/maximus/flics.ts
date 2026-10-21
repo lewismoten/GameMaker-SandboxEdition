@@ -4,7 +4,7 @@ import { encodeFli } from '../../web/src/formats/fli';
 import { rng } from '../kit/pixels';
 import { Canvas } from './src/art/canvas';
 import { drawPod } from './vehicles';
-import { drawShard } from './items';
+import { drawShard } from './src/blocks/items';
 import { SCREEN, planetArt } from './screens';
 import { WHITE, shared } from './src/art/palette';
 

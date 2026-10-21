@@ -27,7 +27,7 @@ import { CREDITS, INSTRUCTIONS } from '../text';
 import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
 import { drawCourier } from '../courier';
-import { drawShard } from '../items';
+import { drawShard } from './blocks/items';
 
 export async function present(b: Built): Promise<void> {
   const put = (name: string, bytes: Uint8Array) => b.files.set(name.toLowerCase(), bytes);

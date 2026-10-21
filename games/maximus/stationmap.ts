@@ -3,7 +3,7 @@
 // reactor halls, a vault, and the airlock you came in by.
 import { rng } from '../kit/pixels';
 import { Grid, H, W, reachable, wx } from './mapkit';
-import type { SetBuilder } from './blockset';
+import type { SetBuilder } from './src/blocks/blockset';
 import type { PlanetResult, PlanetSpec, Run, Spot } from './planet';
 
 interface Room {

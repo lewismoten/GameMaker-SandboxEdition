@@ -2,13 +2,13 @@
 // each planet's palette turns it into grassland, dunes, glaciers, basalt and lava...
 // Air near the ground is the uniform "horizon" color so decorations can sit anywhere on
 // it; the sky above fades through eight bands to starry space.
-import { Pixels, rng, dither } from '../kit/pixels';
-import { CLEAR, Mask, fbm, fill, outline, pick, shade, sprite, tileNoise } from './src/art/draw';
+import { Pixels, rng, dither } from '../../../kit/pixels';
+import { CLEAR, Mask, fbm, fill, outline, pick, shade, sprite, tileNoise } from '../art/draw';
 import { G, SOLID, TOP, SetBuilder, over, tex } from './blockset';
-import { ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from './src/ids';
+import { ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from '../ids';
 import { PICKUPS, drawModule, drawPickup, drawShard, type PickupId } from './items';
-import { OUTLINE, WHITE, roleIndex } from './src/art/palette';
-import { ROLES } from './src/art/roles';
+import { OUTLINE, WHITE, roleIndex } from '../art/palette';
+import { ROLES } from '../art/roles';
 
 export const RI = roleIndex(ROLES);
 export const R = (name: string) => {

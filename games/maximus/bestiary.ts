@@ -7,9 +7,9 @@ import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '../../web
 import { CLEAR, Mask, fill, outline, shade, sprite } from './src/art/draw';
 import { MBL_SHARED_BASE, MON, MONEY } from './src/ids';
 import { drawCreature, type Archetype, type Paint } from './creatures';
-import { drawPickup } from './items';
+import { drawPickup } from './src/blocks/items';
 import { OUTLINE, S, WHITE, shared } from './src/art/palette';
-import { R } from './surface';
+import { R } from './src/blocks/surface';
 
 export type Corner = [dx: number, dy: number, speed: number, orient?: number];
 

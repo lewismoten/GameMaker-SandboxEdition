@@ -8,7 +8,7 @@ import { Pixels, rng } from '../kit/pixels';
 import { tileNoise } from './src/art/draw';
 import { Canvas } from './src/art/canvas';
 import { drawCourier } from './courier';
-import { drawModule, drawShard } from './items';
+import { drawModule, drawShard } from './src/blocks/items';
 import { buildPalette, hsl, type RGB, type Role, type Theme, S, WHITE, shared } from './src/art/palette';
 import { drawDiver, drawPod, drawRover } from './vehicles';
 import { MODULES, SHARDS } from './src/ids';

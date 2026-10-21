@@ -1,9 +1,9 @@
 // A named background block set (.BBL): blocks are added by name and refer to each other
 // by name (animation chains, what they turn into when touched), then resolved to the
 // 150 numbered slots Game-Maker uses.
-import { Pixels } from '../kit/pixels';
-import { BACKBL, emptyBlock, type Block } from '../../web/src/formats/blocks';
-import { CLEAR } from './src/art/draw';
+import { Pixels } from '../../../kit/pixels';
+import { BACKBL, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
+import { CLEAR } from '../art/draw';
 
 export interface BlockProps extends Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl'>> {
   /** Block this one becomes after `ntime` ticks (by name). */

@@ -7,23 +7,23 @@ import { serializeMonsters } from '../../../web/src/formats/monster';
 import { serializePalette } from '../../../web/src/formats/palette';
 import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
 import { monsterSet, type MonsterSet } from '../bestiary';
-import type { SetBuilder } from '../blockset';
+import type { SetBuilder } from './blocks/blockset';
 import { courier, vehicle, type CharSet } from '../chars';
 import { heartMap, maelstromMap } from '../core';
 import { homeMap } from '../home';
 import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from '../fauna';
 import { Grid, W, reachable } from '../mapkit';
-import { oceanSet } from '../ocean';
+import { oceanSet } from './blocks/ocean';
 import { buildPalette } from './art/palette';
 import { checkPlanet, surfacePlanet, type PlanetResult } from '../planet';
 import { populate, type Spots } from '../populate';
 import { ROLES, themeFor, type Biome } from './art/roles';
 import { oceanPlanet } from '../seaplanet';
-import { spaceSet } from '../space';
+import { spaceSet } from './blocks/space';
 import { galaxyMap, sectorMap } from '../spacemaps';
-import { stationSet } from '../station';
+import { stationSet } from './blocks/station';
 import { stationPlanet } from '../stationmap';
-import { surfaceSet } from '../surface';
+import { surfaceSet } from './blocks/surface';
 import { SCENE, SECTORS, allWorlds, type WorldKind } from './universe';
 
 export interface SceneInfo {

@@ -2,7 +2,7 @@
 // slot Game-Maker has), the Citadel around the Core, and the Heart itself.
 import { rng } from '../kit/pixels';
 import { Grid, W, H, wx, wy } from './mapkit';
-import type { SetBuilder } from './blockset';
+import type { SetBuilder } from './src/blocks/blockset';
 import type { MonsterSet } from './bestiary';
 import type { P } from './spacemaps';
 

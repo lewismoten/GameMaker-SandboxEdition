@@ -5,9 +5,9 @@
 import { rng } from '../kit/pixels';
 import type { Block } from '../../web/src/formats/blocks';
 import { Grid, H, W, reachable, wave1d, wx, wy } from './mapkit';
-import type { SetBuilder } from './blockset';
-import { OPEN_AIR_PICKUPS } from './surface';
-import type { PickupId } from './items';
+import type { SetBuilder } from './src/blocks/blockset';
+import { OPEN_AIR_PICKUPS } from './src/blocks/surface';
+import type { PickupId } from './src/blocks/items';
 
 export interface Spot {
   x: number;
