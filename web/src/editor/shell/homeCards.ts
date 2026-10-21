@@ -19,6 +19,7 @@ import { catalogHasDemo, filesHaveDemo, playDemoPreview, type DemoPreview } from
 import type { HomeNav } from './home';
 import { downloadProject, exportProject, exportProjectPage, exportProjectForDos } from './projectExport';
 import { gamePage } from '../../seo/site';
+import { icon as svgIcon, type IconName } from './homeIcons';
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -77,11 +78,9 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
       ? (g.company ?? 'Sandbox Software')
       : kind === 'shareware'
         ? creditLine(g) || 'Shareware · play only'
-        : RSD_GAMES.includes(g.id)
-          ? 'By Recreational Software Designs'
-          : g.gam
-            ? 'Gameware from the Game-Maker CD'
-            : 'Pictures, monsters and sounds to build with';
+        : !g.gam
+          ? 'Pictures, monsters and sounds to build with'
+          : [g.company ?? g.author, g.year].filter(Boolean).join(' · ') || 'Gameware from the Game-Maker CD';
   return {
     key: `cd:${g.id}`,
     kind,
@@ -131,20 +130,34 @@ export function projectGame(p: ProjectSummary): HomeGame {
   };
 }
 
-/** Draws a game's picture into a canvas when it scrolls into view. */
-export const shotObserver = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (!e.isIntersecting) continue;
-    shotObserver.unobserve(e.target);
-    const el = e.target as HTMLCanvasElement & { draw?: () => Promise<unknown> };
-    void el.draw?.().catch(() => undefined);
-  }
-});
+/**
+ * Draws a game's picture into a canvas when it comes near the view (a picture needs a
+ * few of the game's files, so the ones far down a long list wait until scrolled to).
+ */
+export const shotObserver = new IntersectionObserver(
+  (entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      shotObserver.unobserve(e.target);
+      const el = e.target as HTMLCanvasElement & { draw?: () => Promise<unknown> };
+      void el.draw?.();
+    }
+  },
+  { rootMargin: '300px 0px' },
+);
 
-/** A canvas showing the game's picture once it is in view. */
+/**
+ * A canvas showing the game's picture once it is near the view. Until then it is marked
+ * `shot-loading` (a placeholder shimmer), and `shot-none` when there is no picture to draw.
+ */
 export function gameShot(game: HomeGame, width: number, height: number, className = 'card-shot pixel'): HTMLCanvasElement {
-  const c = h('canvas', { class: className, width, height, 'aria-hidden': 'true' }) as HTMLCanvasElement & { draw?: () => Promise<unknown> };
-  c.draw = () => game.drawShot(c);
+  const c = h('canvas', { class: `${className} shot-loading`, width, height, 'aria-hidden': 'true' }) as HTMLCanvasElement & { draw?: () => Promise<unknown> };
+  c.draw = () =>
+    game
+      .drawShot(c)
+      .then((drawn) => drawn !== false || c.classList.add('shot-none'))
+      .catch(() => c.classList.add('shot-none'))
+      .finally(() => c.classList.remove('shot-loading'));
   shotObserver.observe(c);
   return c;
 }
@@ -248,7 +261,7 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
     'button',
     { class: 'tile-select', type: 'button', 'aria-label': `${game.title}: show it at the top`, onclick: () => o.onSelect(game) },
     h('span', { class: 'tile-title' }, game.title),
-    h('span', { class: 'tile-meta' }, game.byline),
+    h('span', { class: 'tile-meta', title: game.byline }, game.byline),
   );
   const tile = h('article', { class: 'card game-tile', dataset: { search: game.search, key: game.key } }, picture, select);
   // the picture selects too (the buttons over it do their own thing)
@@ -258,29 +271,33 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   if (game.health) picture.append(healthBadge(game.health));
   if (!game.gam) return tile;
 
-  const icon = (glyph: string, label: string, onclick: () => void) =>
+  // each button says what it does in a tip (on hover and keyboard focus) and to screen readers
+  const icon = (name: IconName, tip: string, onclick: () => void) =>
     h(
       'button',
-      { class: 'shot-icon', type: 'button', title: label, 'aria-label': `${label}: ${game.title}`, onclick: (e: Event) => (e.stopPropagation(), onclick()) },
-      glyph,
+      { class: 'shot-icon', type: 'button', dataset: { tip }, 'aria-label': `${tip}: ${game.title}`, onclick: (e: Event) => (e.stopPropagation(), onclick()) },
+      svgIcon(name),
     );
-  icons.append(icon('⌨', 'Keys', () => openKeys(game)));
-  if (hasManual(game)) icons.append(icon('📖', 'Manual', () => void openGameManual(game.entry!)));
+  icons.append(icon('keys', 'Keys: what each key does', () => openKeys(game)));
+  if (hasManual(game)) icons.append(icon('manual', 'Read the manual', () => void openGameManual(game.entry!)));
 
-  // ▶ only once we know there is a demo to play
+  // ▶ Demo only once we know there is a demo to play
   let playing: { stop(): void } | undefined;
-  const demo = icon('▶', 'Play the demo here', () => {
+  const demoLabel = h('span', null, 'Demo');
+  const demo = icon('play', 'Watch the demo here', () => {
     if (playing) return playing.stop();
     playing = demoInPicture(game, picture, {
       onState: (on) => {
-        demo.textContent = on ? '■' : '▶';
-        demo.title = on ? 'Stop the demo' : 'Play the demo here';
-        demo.setAttribute('aria-label', `${demo.title}: ${game.title}`);
+        demo.firstElementChild!.replaceWith(svgIcon(on ? 'stop' : 'play'));
+        demoLabel.textContent = on ? 'Stop' : 'Demo';
+        demo.dataset.tip = on ? 'Stop the demo' : 'Watch the demo here';
+        demo.setAttribute('aria-label', `${demo.dataset.tip}: ${game.title}`);
         demo.setAttribute('aria-pressed', String(on));
         if (!on) playing = undefined;
       },
     });
   });
+  demo.append(demoLabel);
   demo.classList.add('demo-toggle');
   demo.setAttribute('aria-pressed', 'false');
   whenSeen(tile, () => void game.hasDemo().then((yes) => yes && icons.prepend(demo)));
