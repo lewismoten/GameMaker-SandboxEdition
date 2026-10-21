@@ -301,25 +301,37 @@ async function stickerList(ctx: PrintContext): Promise<Sticker[]> {
     { text: 'SANDBOX', sub: 'SOFTWARE', shape: 'circle', color: '#f2b632', ink: '#1a1208' },
     { text: '', shape: 'badge', special: 'gm' },
   ];
-  return Promise.all(
-    specs.map(async (spec): Promise<Sticker> => {
-      const shape = spec.shape ?? 'rect';
-      if (spec.hero || spec.sprite) {
-        const src = spec.hero ? await portrait(g, spec.hero) : await spriteArt(g, spec.sprite!);
-        const img = await loadImage(src);
-        return { spec, shape, img: img && trim(img), kind: img ? 'sprite' : 'text' };
-      }
-      if (spec.shot) {
-        const img = await loadImage(await ctx.shot(spec.shot));
-        return { spec, shape, img, kind: img ? 'shot' : 'text' };
-      }
-      return { spec, shape, kind: 'text', special: spec.special };
-    }),
-  );
+  return Promise.all(specs.map((spec) => resolveSticker(spec, ctx)));
 }
 
 export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
-  const list = await stickerList(ctx);
+  return stickerSheets(await stickerList(ctx), ctx.entry.id);
+}
+
+/** A sticker drawn from another game's files (for a sheet that mixes games, like Game-Maker's). */
+export type MixedSticker = StickerSpec & { special?: Special; from?: PrintContext };
+
+/** A sheet of stickers whose pictures come from several games: each spec names the game it is drawn from. */
+export async function mixedStickers(specs: MixedSticker[], base: string): Promise<Sheet[]> {
+  const list = await Promise.all(specs.map((spec) => resolveSticker(spec, spec.from)));
+  return stickerSheets(list, base);
+}
+
+async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined): Promise<Sticker> {
+  const shape = spec.shape ?? 'rect';
+  if (ctx && (spec.hero || spec.sprite)) {
+    const src = spec.hero ? await portrait(ctx.entry, spec.hero) : await spriteArt(ctx.entry, spec.sprite!);
+    const img = await loadImage(src);
+    return { spec, shape, img: img && trim(img), kind: img ? 'sprite' : 'text' };
+  }
+  if (ctx && spec.shot) {
+    const img = await loadImage(await ctx.shot(spec.shot));
+    return { spec, shape, img, kind: img ? 'shot' : 'text' };
+  }
+  return { spec, shape, kind: 'text', special: spec.special };
+}
+
+function stickerSheets(list: Sticker[], id: string): Sheet[] {
   const pages = layoutStickers(
     list.map((s) => {
       const [w, h_] = stickerSize(s.shape, s.kind === 'sprite');
@@ -329,7 +341,7 @@ export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
   const names = list.map((s) =>
     s.special === 'bbs' ? 'Sandbox BBS' : s.special === 'gm' ? PRODUCT : [s.spec.text, s.spec.sub].filter(Boolean).join(' ') || 'Picture',
   );
-  const base = ctx.entry.id.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+  const base = id.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
   return pages.map((page, i) => {
     const art = drawPage(page, list, DPI_SCREEN, false);
     const s = sheet(
