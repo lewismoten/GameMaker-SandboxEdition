@@ -211,17 +211,16 @@ export function buildScreens(
   body(n1, 180, 84, 130, [
     'FORT ASHBY - THE STORM THAT',
     'CAME IN OVERNIGHT LEFT A FOOT',
-    'AND A HALF OF SNOW ON DOWDEN',
-    'ADDITIONS AND ALL OF MINERAL',
-    'COUNTY.',
+    'AND A HALF OF SNOW ACROSS',
+    'ALL OF MINERAL COUNTY.',
     '',
     'PLOWS ARE OUT ON GALE STREET',
     'AND BOWDEN DRIVE. DRIVERS:',
     'WATCH FOR SLEDS ON JAMIE ST.',
     '',
-    'NO MAILBOXES TO DIG OUT IN',
-    'DOWDEN - THE CARRIER WALKS',
-    'THE MAIL TO EVERY DOOR SLOT.',
+    'NO MAILBOXES TO DIG OUT ON',
+    'GALE STREET - THE CARRIER',
+    'WALKS TO EVERY DOOR SLOT.',
     'CLEAR YOUR FRONT WALK TOO!',
   ]);
   save('news1.gif', n1);
@@ -279,11 +278,11 @@ export function buildScreens(
   n3.frame(12, 86, 88, 86, c('newsink', 0));
   micro(n3, 14, 176, 'OUR FOUNDER', c('newsink', 1));
   body(n3, 110, 88, 200, [
-    'A FORT ASHBY TEEN FROM DOWDEN ADDITIONS',
-    'HAS A PLAN FOR ALL THIS SNOW. HE WILL',
-    'SHOVEL ANY DRIVEWAY OR WALK AROUND FOR',
-    'ONE DOLLAR A SCOOP - AND EVERY DOLLAR',
-    'GOES INTO A COFFEE CAN UNTIL IT HOLDS $89.',
+    'A FORT ASHBY TEEN HAS A PLAN FOR ALL',
+    'THIS SNOW. HE WILL SHOVEL ANY DRIVEWAY',
+    'OR WALK AROUND FOR ONE DOLLAR A SCOOP -',
+    'AND EVERY DOLLAR GOES INTO A COFFEE',
+    'CAN UNTIL IT HOLDS $89.',
     '',
     '"THAT IS WHAT GAME-MAKER COSTS AT THE',
     'MALL," HE TOLD THE COURIER. "EACH',
@@ -406,7 +405,7 @@ export function buildScreens(
     'THE PRICE OF THE POPULAR GAME DESIGN',
     'KIT JUMPED FORTY DOLLARS THIS WEEK.',
     '',
-    'ONE DOWDEN ADDITIONS STUDENT BOUGHT',
+    'ONE FORT ASHBY STUDENT BOUGHT',
     'HIS COPY IN DECEMBER AT LAVALE MALL',
     'WITH MONEY FROM SHOVELING GALE, DUNN,',
     'LEOTA, LEON, JAMIE AND BOWDEN.',
@@ -446,7 +445,7 @@ export function buildScreens(
     const rf = rng(77);
     const flakes = Array.from({ length: 140 }, () => ({ x: rf() * W, y: rf() * H, v: 1.5 + rf() * 2.5, d: rf() * 6, big: rf() < 0.3 }));
     const caption1 = 'DECEMBER 11, 1992  7:00 AM';
-    const caption2 = 'DOWDEN ADDITIONS';
+    const caption2 = 'FORT ASHBY, W. VA.';
     for (let f = 0; f < N; f++) {
       const p = new Pixels(W, H);
       gradient(p, 0, 0, W, 150, pal.r('dusksky'), 0, 15);
