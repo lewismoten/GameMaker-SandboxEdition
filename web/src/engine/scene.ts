@@ -64,6 +64,11 @@ export interface Session {
   onFrame?: (w: World) => void;
   /** Emulated PC speed; read every tick so it can change while playing. */
   speed: SpeedSetting;
+  /**
+   * The last level played. loadscene loads into globals, so a level that leaves its
+   * palette, block or character slot blank keeps the previous level's (PLAYGAME.C 4239).
+   */
+  lastWorld?: World;
 }
 
 /**
@@ -301,12 +306,13 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   let linkin = linkIn;
 
   m.screen.setPaletteTo(0, 0, 0);
-  const loaded = loadScene(s, doscene);
+  const loaded = loadScene(s, doscene, s.lastWorld);
   if (Array.isArray(loaded)) {
     await missingFiles(s, loaded);
     return { ok: false, link: MAXSCENELINKS + 1 };
   }
   let w = loaded.world;
+  s.lastWorld = w;
   w.ci = s.ci;
   w.clock = s.timerCounter;
   attachSound(s, w, loaded.sounds);
