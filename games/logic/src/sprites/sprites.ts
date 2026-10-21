@@ -123,6 +123,24 @@ function relayPic(closed: boolean, normallyClosed: boolean): Pixels {
   return p;
 }
 
+/** A little two-line character LCD, split across two blocks (half 0 left, 1 right). Unpowered
+ * it shows what a real one shows before anyone has talked to it: a row of solid boxes.
+ * Booted, it says READY, and the cursor blinks. */
+function lcdPic(half: number, booted: boolean, cursor = true): Pixels {
+  const w = new Pixels(40, 20, CLEAR);
+  bevel(w, 0, 0, 40, 20, r('green'), 0, 1);
+  for (let i = 0; i < 8; i++) w.set(3 + i * 2, 1, c('gold', 2));
+  w.rect(3, 4, 34, 13, c('ink', 0));
+  w.rect(4, 5, 32, 11, booted ? c('green', 3) : c('green', 1));
+  if (booted) {
+    micro(w, 6, 6, 'READY', c('ink', 0));
+    if (cursor) w.rect(6, 12, 3, 3, c('ink', 0));
+  } else for (let i = 0; i < 8; i++) w.rect(5 + i * 4, 6, 3, 4, c('green', 0));
+  const p = blank();
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, w.get(x + half * 20, y));
+  return p;
+}
+
 /** Watt's reset: a cartoon "boing" burst. */
 function boomPic(big: boolean): Pixels {
   const p = blank();
@@ -164,6 +182,11 @@ export function buildMonsterBlocks(): BlockSet {
   add('relayNOon', relayPic(true, false), { solid: SOLID });
   add('relayNC', relayPic(true, true), { solid: SOLID });
   add('relayNCoff', relayPic(false, true), { solid: SOLID });
+  for (const h of [0, 1]) {
+    add(`lcd${h}`, lcdPic(h, false));
+    add(`lcdReady${h}`, lcdPic(h, true));
+  }
+  add('lcdBlank1', lcdPic(1, true, false));
   add('boom1', boomPic(false));
   add('boom2', boomPic(true), { hp: -999 });
   return mb;

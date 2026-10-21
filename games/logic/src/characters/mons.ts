@@ -37,7 +37,7 @@ export interface Wire {
 }
 
 /** Monsters 0..COMMON_PARTS-1 are the shared parts; wire k is monster COMMON_PARTS + k. */
-export const COMMON_PARTS = 36;
+export const COMMON_PARTS = 40;
 export const isWire = (monnum: number) => monnum >= COMMON_PARTS && monnum < 64;
 
 /** One room's monster list: the shared parts, then its wires. */
@@ -98,6 +98,14 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
   b.add('relayNOon', { pics: [['relayNOon', 50]], power: POWER.current, becomes: 'relayNOon' });
   b.add('relayNC', { pics: [['relayNC', 50]], power: POWER.current, becomes: 'relayNCoff' });
   b.add('relayNCoff', { pics: [['relayNCoff', 50]], power: POWER.relayNCoff, end: -2 });
+  // A character LCD sunk in the housing on a wire, in two halves: current passing through
+  // boots it (it is weaker than current), and booted it is exactly as strong as current, so
+  // the sparks pass straight on through it to whatever is next.
+  for (const h of [0, 1]) {
+    b.add(`lcd${h}`, { pics: [[`lcd${h}`, 50]], power: POWER.gate, becomes: `lcdReady${h}` });
+    const pics: [string, number][] = h ? [['lcdReady1', 6], ['lcdBlank1', 6]] : [['lcdReady0', 50]];
+    b.add(`lcdReady${h}`, { pics, power: POWER.current, end: -2 });
+  }
   // Watt's reboot: a little burst that turns into a big one a tick later.
   b.add('boom', { pics: [['boom1', 9]], power: 1, end: 1, becomes: 'boomBig' });
   b.add('boomBig', { pics: [['boom2', 9]], power: 1, end: 4 });
