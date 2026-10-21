@@ -1,7 +1,7 @@
 // High score tables (.HIS).
-import { registerEditor } from './registry';
-import { h, clear, numberField } from '../core/ui';
-import { parseHighScores, serializeHighScores } from '../../formats/highscore';
+import { registerEditor } from '../registry';
+import { h, clear, numberField } from '../../core/ui';
+import { parseHighScores, serializeHighScores } from '../../../formats/highscore';
 
 registerEditor(['his'], (host, project, file) => {
   const scores = parseHighScores(project.files.get(file)!);

@@ -14,6 +14,6 @@ import './textScreen/textScreen';
 import './slideShow/slideShow';
 import './music';
 import './sample/sample';
-import './highScores';
+import './highScores/highScores';
 import '../tools/all';
 import './recording';
