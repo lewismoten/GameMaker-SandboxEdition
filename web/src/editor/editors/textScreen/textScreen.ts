@@ -2,14 +2,14 @@
 // The text box marks each screen page and the 31 character edge; the screen beside it is
 // redrawn as you type, page by page, exactly as Display_File draws it.
 import './textScreen.css';
-import { registerEditor } from './registry';
-import { h, clear, debounce } from '../core/ui';
-import { kindOf, type Project } from '../core/project';
-import { latin1Text, textBytes } from '../../formats/binary';
-import { parseSlideList } from '../../formats/graphicScripts';
-import { displayFile, match, RGB_PURPLE } from '../../engine/showGraphic';
-import { gamePreview } from '../widgets/mediaShared';
-import { blankScreen, pictureScreen, screenCanvas, textPages, type ScreenPicture } from '../widgets/mediaPictures';
+import { registerEditor } from '../registry';
+import { h, clear, debounce } from '../../core/ui';
+import { kindOf, type Project } from '../../core/project';
+import { latin1Text, textBytes } from '../../../formats/binary';
+import { parseSlideList } from '../../../formats/graphicScripts';
+import { displayFile, match, RGB_PURPLE } from '../../../engine/showGraphic';
+import { gamePreview } from '../../widgets/mediaShared';
+import { blankScreen, pictureScreen, screenCanvas, textPages, type ScreenPicture } from '../../widgets/mediaPictures';
 import { layoutText, pageOfLine, wrapLongLines, LINE_CHARS, PAGE_LINES, type TextLayout } from './textLayout';
 
 const BACKGROUND_KINDS = ['gif', 'bkd', 'fli'];

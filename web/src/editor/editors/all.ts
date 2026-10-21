@@ -10,7 +10,7 @@ import './sounds/sounds';
 import './picture/picture';
 import './animation/animation';
 import './backdrop/backdrop';
-import './textScreen';
+import './textScreen/textScreen';
 import './slideShow';
 import './music';
 import './sample';

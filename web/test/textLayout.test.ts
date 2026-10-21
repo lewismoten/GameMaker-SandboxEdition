@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { layoutText, pageOfLine, wrapLongLines } from '../src/editor/editors/textLayout';
+import { layoutText, pageOfLine, wrapLongLines } from '../src/editor/editors/textScreen/textLayout';
 import { textLines } from '../src/formats/graphicScripts';
 import { textBytes } from '../src/formats/binary';
 
