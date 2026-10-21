@@ -1,5 +1,6 @@
 // The words: text pages shown over the notepad (31 columns, 16 lines a page) and the
 // readme on the disk.
+import { withCreditPage } from '../../../kit/license';
 const page = (lines: string[], pages = 1) => {
   for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
   if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
@@ -63,7 +64,7 @@ export const INSTRUCTIONS = [
   ]),
 ].join('\n');
 
-export const CREDITS = page(
+const CREDITS_TEXT = page(
   [
     'SNOWBOUND: THE $89 SHOVEL',
     'Sandbox Software, 1995',
@@ -175,3 +176,6 @@ SAYING THANKS
 Stay warm!
 `.replace(/^\n/, '');
 }
+
+/** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
+export const CREDITS = withCreditPage(CREDITS_TEXT);
