@@ -1,6 +1,8 @@
 // getfname with folders: Game-Maker's file picker let you type a path, and listed the
 // sub-directories ("SAMPLE\") along with matching files, so you could move between
 // game areas. Picking a folder enters it; picking (or typing) a file returns it.
+// The box layout and messages follow getFileName in textUi.ts (getfname's question box
+// over a 15-column list); getfname's C body is not in code/GM (only WINDIO.H declares it).
 import { attr } from '../text/textScreen';
 import { CURATTR, MENUATTR, SHADATTR, errorBox, type Ui } from '../text/textUi';
 import type { FileSystem } from './vfs';
@@ -30,12 +32,14 @@ export async function browseFile(
   const want = exts.map((e) => `.${e.toUpperCase()}`);
   /** A file name typed with its path (D:\GAMES\SHIP.GIF): picked once its folder is listed. */
   let typedFile = '';
+  // Each pass lists one folder and runs the picker until the user leaves it.
   for (;;) {
     const list = await fs.listDir(drive, parts);
     if (list === null) {
       typedFile = '';
       const r = await errorBox(ui, `I can't access drive ${drive}:!  Did you remember to insert a disk?`, '(R)etry (A)bort');
       if (r === 'R') continue;
+      // Abort on a floppy falls back to C:\GM; on C: it gives up.
       if (drive === 'C') return null;
       drive = 'C';
       parts = ['GM'];
@@ -49,12 +53,16 @@ export async function browseFile(
       if (!node && opts.allowNew) return { drive, parts, name, exists: false };
       await errorBox(ui, 'Sorry, the file does not exist!', '(C)ontinue');
     }
+    // List order: "..\" (below the root), then folders, then files with a wanted extension.
     const entries = [
       ...(parts.length ? ['..\\'] : []),
       ...(list ?? []).filter((n) => n.dir).map((n) => `${n.name}\\`),
       ...(list ?? []).filter((n) => !n.dir && want.some((w) => n.name.endsWith(w))).map((n) => n.name),
     ];
     const path = `${drive}:\\${parts.map((p) => `${p}\\`).join('')}`;
+    // Geometry: the question box starts at (x, y); lenq is the question plus padding, maxa the
+    // answer field width (path and typing, at most 40 columns, scrolled to show the end).
+    // The list box holds up to 14 names and sits below the field, under the end of the path.
     const lenq = question.length + 2;
     const maxa = Math.min(40, 76 - lenq - x);
     const widf = Math.max(1, Math.min(14, entries.length));
@@ -62,6 +70,7 @@ export async function browseFile(
     const savedQ = s.window(x, y, lenq + maxa + 1, 1, MENUATTR, SHADATTR);
     const savedF = entries.length ? s.window(xf - 1, y + 2, 15, widf, MENUATTR, SHADATTR) : undefined;
     let typed = '';
+    // Start on the first file, or on the first entry when there are only folders.
     let num = Math.min(entries.findIndex((e) => !e.endsWith('\\')) >= 0 ? entries.findIndex((e) => !e.endsWith('\\')) : 0, Math.max(0, entries.length - 1));
     let top = Math.max(0, num - widf + 1);
     const draw = () => {
@@ -89,6 +98,7 @@ export async function browseFile(
           if (num < top) top--;
           typed = '';
         } else if (k.key === 'Backspace') typed = typed.slice(0, -1);
+        // Characters DOS allows in names, plus \ and : for typed paths.
         else if (k.key.length === 1 && typed.length < 40 && /[\w.~!@#$%^&()\\:-]/.test(k.key)) typed += k.key.toUpperCase();
         else if (k.key === 'Enter') {
           const choice = typed || entries[num] || '';
@@ -108,6 +118,7 @@ export async function browseFile(
           } else if (choice === '..\\') next = { drive, parts: parts.slice(0, -1) };
           else if (choice.endsWith('\\')) next = { drive, parts: [...parts, choice.slice(0, -1)] };
           else {
+            // A name typed without an extension gets the first wanted one.
             let name = choice;
             if (!name.includes('.') && want.length) name += want[0];
             const node = list?.find((n) => n.name === name);
@@ -127,6 +138,7 @@ export async function browseFile(
       if (savedF) s.restore(savedF);
       s.restore(savedQ);
     }
+    // Left the folder: Esc, a picked file, or another folder to list on the next pass.
     if (next === null) return null;
     if ('name' in next) return next;
     drive = next.drive;
