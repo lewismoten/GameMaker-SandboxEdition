@@ -1,9 +1,19 @@
 // A game "directory": DOS file names are case-insensitive, so names are stored lower case.
 
+/** Files of a game still on their way from the site (project/streamGame.ts). */
+export interface FileStream {
+  /** Resolves once these files are in, or known not to come; undefined when none is still coming. */
+  need(names: string[]): Promise<void> | undefined;
+  /** Fetches these next, without waiting for them. */
+  want(names: string[]): void;
+}
+
 export class GameFiles {
   private files = new Map<string, Uint8Array>();
   /** Notified after any change. */
   onChange?: (name: string) => void;
+  /** Set while files are still arriving: the game waits for one it needs (engine/machine.ts, need). */
+  stream?: FileStream;
 
   constructor(entries?: Iterable<[string, Uint8Array]>) {
     if (entries) for (const [n, b] of entries) this.files.set(normalize(n), b);
@@ -30,6 +40,12 @@ export class GameFiles {
     const n = normalize(name);
     this.files.set(n, bytes);
     this.onChange?.(n);
+  }
+
+  /** Adds a file that arrived (not one the game wrote): onChange is not told, and a file already here stays. */
+  put(name: string, bytes: Uint8Array): void {
+    const n = normalize(name);
+    if (!this.files.has(n)) this.files.set(n, bytes);
   }
 
   delete(name: string): void {
