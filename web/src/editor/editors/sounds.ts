@@ -7,6 +7,7 @@ import { AudioEngine } from '../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../tools/speakerFx';
 import { fileField } from '../filePicker';
+import { History } from '../history';
 
 const MAXF = 8192;
 const MINF = 64;
@@ -20,6 +21,29 @@ registerEditor(['snd'], (host, project, file) => {
   const snd = parseSoundSet(project.files.get(file)!);
   let current = 0;
   const save = debounce(() => project.files.set(file, serializeSoundSet(snd)), 250);
+  const history = new History<Uint8Array>();
+  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const syncHistory = () => {
+    undoBtn.disabled = !history.canUndo;
+    redoBtn.disabled = !history.canRedo;
+  };
+  /** Call just before changing the sound set. */
+  const remember = () => {
+    history.record(serializeSoundSet(snd));
+    syncHistory();
+  };
+  function step(back: boolean): void {
+    const now = serializeSoundSet(snd);
+    const to = back ? history.undo(now) : history.redo(now);
+    if (!to) return;
+    const was = parseSoundSet(to);
+    snd.freqs.forEach((f, i) => f.set(was.freqs[i]));
+    was.digital.forEach((d, i) => ((snd.digital[i] = d), (snd.digitalRaw[i] = was.digitalRaw[i])));
+    syncHistory();
+    save();
+    render();
+  }
   const list = h('div', { class: 'snd-list', role: 'list', 'aria-label': 'Sound effects' });
   const detail = h('div', { class: 'stack snd-detail' });
 
@@ -114,6 +138,7 @@ registerEditor(['snd'], (host, project, file) => {
       save();
     };
     canvas.addEventListener('pointerdown', (e) => {
+      remember();
       canvas.setPointerCapture(e.pointerId);
       setAt(e);
     });
@@ -123,6 +148,7 @@ registerEditor(['snd'], (host, project, file) => {
 
     const digital = snd.digital[current];
     const shape = (fn: (i: number) => number) => {
+      remember();
       for (let i = 0; i < NUMFREQ; i++) f[i] = Math.max(0, Math.min(MAXF, Math.round(fn(i))));
       save();
       renderDetail();
@@ -130,6 +156,7 @@ registerEditor(['snd'], (host, project, file) => {
     };
     // Sets the whole sound, plays it and redraws.
     const apply = (next: ArrayLike<number>) => {
+      remember();
       for (let i = 0; i < NUMFREQ; i++) f[i] = next[i] ?? 0;
       save();
       renderDetail();
@@ -154,6 +181,7 @@ registerEditor(['snd'], (host, project, file) => {
           ['voc'],
           () => (digital ? `${digital.trim().toLowerCase()}.voc` : ''),
           (v) => {
+            remember();
             snd.digital[current] = v.replace(/\.voc$/, '').slice(0, 8);
             save();
             renderList();
@@ -206,7 +234,7 @@ registerEditor(['snd'], (host, project, file) => {
               numberField(
                 `${i + 1}`,
                 () => f[i],
-                (v) => ((f[i] = v), save(), draw(), renderList(), renderPlay()),
+                (v) => (remember(), (f[i] = v), save(), draw(), renderList(), renderPlay()),
                 { min: 0, max: MAXF },
               ),
             ),
@@ -224,12 +252,26 @@ registerEditor(['snd'], (host, project, file) => {
   clear(
     host,
     h(
-      'p',
-      { class: 'hint' },
-      `A sound set holds ${LASTSND} effects. The first nine are played by the game itself; the rest can be attached to character sequences.`,
+      'div',
+      { class: 'ed-head' },
+      h(
+        'p',
+        { class: 'hint' },
+        `A sound set holds ${LASTSND} effects. The first nine are played by the game itself; the rest can be attached to character sequences.`,
+      ),
+      h('div', { class: 'toolbar' }, undoBtn, redoBtn),
     ),
     h('div', { class: 'snd-layout' }, list, detail),
   );
   render();
-  return () => audio.stopAll();
+  const onKey = (e: KeyboardEvent) => {
+    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' || k === 'y') {
+      e.preventDefault();
+      step(k === 'z' && !e.shiftKey);
+    }
+  };
+  window.addEventListener('keydown', onKey);
+  return () => (audio.stopAll(), window.removeEventListener('keydown', onKey));
 });
