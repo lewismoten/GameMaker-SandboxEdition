@@ -42,7 +42,10 @@ export function buildWatt(cb: BlockSet, bombMonster: number): Character {
   set(S[4], [f('down0', 1)], { key: 0 });
 
   const roll = (dx: number, dy: number, a: string, b: string, mirror = false) => [a, b, a, b, a].map((p) => f(p, 1, { x: dx * STEP, y: dy * STEP, mirror }));
-  const move = { ground: 1 };
+  // ground: a move can't be cut short, so Watt always ends squarely on a block.
+  // norepeat: one block per press. PLAYGAME only reads a released key between moves, so a
+  // tap would otherwise often roll two blocks.
+  const move = { ground: 1, norepeat: 1 };
   set(S[SEQ.up], roll(0, -1, 'up0', 'up1'), { key: KEY.up, jstkMov: 1, ...move });
   set(S[SEQ.down], roll(0, 1, 'down0', 'down1'), { key: KEY.down, jstkMov: 5, ...move });
   set(S[SEQ.left], roll(-1, 0, 'side0', 'side1'), { key: KEY.left, jstkMov: 7, ...move });
