@@ -1,0 +1,200 @@
+{
+  "pitch": "Watt the repair robot rolls home through fifteen haywire circuit boards. Route the current, never touch it.",
+  "keys": {
+    "Arrows / W A S D / keypad": "Roll one block",
+    "R": "Reboot the board (costs a spare battery)"
+  },
+  "news": [
+    {
+      "head": "Ohm Sweet Ohm: puzzles made of pure Game-Maker",
+      "html": "<p>Every switch, fuse and relay in Sandbox Software's new puzzler is built from ordinary Game-Maker blocks and monsters: batteries are blocks that give birth to \"current\" monsters, and gates fall when a stronger monster touches them. Not one line of code!</p>"
+    }
+  ],
+  "stickers": [
+    {
+      "text": "THINK BEFORE YOU ROLL",
+      "sub": "Ohm Sweet Ohm",
+      "shape": "badge",
+      "color": "#0d3a24",
+      "ink": "#ffd23c"
+    },
+    {
+      "text": "DANGER: LIVE CURRENT",
+      "sub": "Watt says so",
+      "shape": "badge",
+      "color": "#ffd23c",
+      "ink": "#111111"
+    }
+  ],
+  "items": [
+    {
+      "kind": "hintbook",
+      "title": "Ohm Sweet Ohm Hint Book",
+      "note": "A nudge and an answer for every board",
+      "promised": true,
+      "intro": "Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them!",
+      "sections": [
+        {
+          "head": "The Kitchen",
+          "hints": [
+            {
+              "q": "The Toaster: How do I get past the crackling gate?",
+              "a": "Bump the switch from below to turn it on. Current runs along the wire to the gate and shuts it down. Keep off the wire while it glows!"
+            },
+            {
+              "q": "The Blender: The gate is open, but the wire next to it is live!",
+              "a": "A gate stays open once current has reached it. Bump the switch again to turn the power off, wait for the last spark to drain away, then walk through."
+            },
+            {
+              "q": "The Coffee Maker: I turned the top switch on and now I am stuck down by the bottom switch!",
+              "a": "Two switches in a row both have to be on. Turn on the bottom one FIRST, while the wire is still dead, then the top one. When the gate opens, turn the top switch off again so you can step over the wire."
+            },
+            {
+              "q": "The Fridge: I rolled through the arrow and now I cannot get back to the switch.",
+              "a": "The arrow is a diode: you can only go through it the way it points. Before you go through, turn the switch on, wait for the gate to open, and turn the switch OFF again."
+            }
+          ]
+        },
+        {
+          "head": "The Living Room",
+          "hints": [
+            {
+              "q": "The TV Set: If I turn the power on, I can never cross that wire. If I don't, the gate stays shut.",
+              "a": "That is a timer button, not a switch. Bump it as you go by: it turns itself off after about five seconds. Wait for the gate to open and the wire to go dark, then cross."
+            },
+            {
+              "q": "The VCR: The current keeps coming and going. How do I get across?",
+              "a": "Those batteries pulse: on for a moment, off for a moment, and the two take turns. Wait next to a wire until the current has just gone by, then roll across. Stop between the two wires and do it again."
+            },
+            {
+              "q": "The Floor Lamp: One wire is always live, and there is no switch for it!",
+              "a": "Bump a fuse and it blows for good, and its wire goes dead. Follow the copper: the LEFT fuse feeds the wire in front of the gate. Blow that one, never the right one (it feeds the gate). Then turn on the switch."
+            },
+            {
+              "q": "The Stereo: I bumped the battery with the red \"!\" and now I am stuck.",
+              "a": "A dead battery starts when you bump it, and it never stops. That one feeds the wire in front of the gate. Use the switch at the top instead: its wire stays inside the housing."
+            }
+          ]
+        },
+        {
+          "head": "The Garage",
+          "hints": [
+            {
+              "q": "The Garage Door Opener: The battery will not stop, and its wire is in my way.",
+              "a": "Start the battery, and wait for the gate to open. Then bump the fuse next to the battery: it blows and the wire goes dead for good. Blow it too early and the gate never opens."
+            },
+            {
+              "q": "The Power Drill: The red wire runs into a box marked NO. What is that?",
+              "a": "It is a relay, Normally Open: red current can not get through until pink control current hits it. Then it stays thrown. Turn on the switch on the pink wire, wait, then head for the gate."
+            },
+            {
+              "q": "The Lawn Mower: Once I am past the arrows I can not turn the red wire off again.",
+              "a": "The box marked NC is a relay, Normally Closed: red current runs through it until pink control current hits it, then it opens for good. Turn the red switch on as you roll by (you will not get another chance), then use the pink switch to cut the red wire in front of the gate."
+            },
+            {
+              "q": "The Christmas Lights: Every switch has to be on at once, but then I am fenced in!",
+              "a": "Switches in a row: current gets as far as the first one that is off. Work so the live wire never fences you in: turn the switch just above you OFF first, cross over and turn the top one on, come back, turn the middle one on again, then the bottom one. When the gate opens, turn the bottom one off and walk around."
+            }
+          ]
+        },
+        {
+          "head": "The Attic",
+          "hints": [
+            {
+              "q": "The Home Computer: Both pink switches open the gate. Why do I keep getting stuck?",
+              "a": "Trace the wires through the chip. The left switch lets the TOP red wire through, and that one ends up running right in front of the gate, for good. The right switch lets the BOTTOM red wire through, inside the housing. Use only the right switch (and never both: each one shuts the other path)."
+            },
+            {
+              "q": "The Clock Radio: Snooze button, flashing wires, one-way arrows... where do I start?",
+              "a": "Bump the timer button as you roll over the arrows. It lets the pulses through for a few seconds, long enough to open the gate. Then wait for it to go off, cross, and slip through the flashing wire between pulses."
+            },
+            {
+              "q": "Home Sweet Ohm: I pressed the timer button, but nothing happened!",
+              "a": "The timer only lets current through if it is already waiting there. First slip across the flashing wire and turn on the switch in the bottom wall, come back, THEN roll over the arrows and press the timer. Wait for the gate, wait for the wire to go dark, and go home."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "letter",
+      "title": "Hint book postcard",
+      "note": "Stuck? Help is a stamp away",
+      "letterhead": "SANDBOX SOFTWARE HINT LINE (BY MAIL)",
+      "address": "P.O. Box 1995, Pittsburgh, PA 15213 (a make-believe address)",
+      "date": "Spring 1995",
+      "to": "Dear stuck electrician,",
+      "body": "<p><b>Watt fizzled again?</b> The Christmas lights got you tangled? Is the home computer computing you right out of spare batteries?</p><p>The <b>Ohm Sweet Ohm Hint Book</b> has a gentle nudge and a full answer for all fifteen boards, printed under red so you only read as much as you want. Every registered copy comes with one, and with the hint book in hand, there is no board you can't solve.</p><p>Register for <b>$12</b> and it's in the mail to you!</p>",
+      "signature": "Watt (and the folks at Sandbox Software)",
+      "style": "print"
+    },
+    {
+      "kind": "map",
+      "title": "Wiring poster",
+      "note": "Board 13, the home computer",
+      "promised": true,
+      "heading": "THE HOME COMPUTER: WIRING DIAGRAM",
+      "intro": "The trickiest chip in the Bitmore house, wire by wire. Two pink control lines throw four relays; only one combination gets current safely to the gate.",
+      "panels": [
+        {
+          "map": "computer.map",
+          "x": 10,
+          "y": 10,
+          "w": 16,
+          "h": 10,
+          "caption": "Follow each pink wire up through the chip: which relays does it throw?",
+          "marks": [
+            {
+              "x": 18,
+              "y": 15,
+              "label": "Watt drops onto the GND pad here",
+              "kind": "start"
+            },
+            {
+              "x": 23,
+              "y": 12,
+              "label": "The outlet home",
+              "kind": "goal"
+            },
+            {
+              "x": 16,
+              "y": 17,
+              "label": "Left pink switch",
+              "kind": "note"
+            },
+            {
+              "x": 19,
+              "y": 17,
+              "label": "Right pink switch",
+              "kind": "note"
+            }
+          ]
+        }
+      ],
+      "legend": ["NO: normally open relay", "NC: normally closed relay", "Copper bridges mark wires that cross without touching"],
+      "landscape": true
+    },
+    {
+      "kind": "idcard",
+      "title": "Repair robot license",
+      "note": "Watt's very own",
+      "org": "BITMORE SMART HOME - MAINTENANCE",
+      "name": "WATT",
+      "role": "Repair robot, fuse box division",
+      "fields": [
+        ["Height", "6 in. (antenna up)"],
+        ["Rated", "9 volts, 1 smile"],
+        ["Lives at", "Main fuse box, Juniper Lane"],
+        ["Do not", "touch live current"]
+      ],
+      "color": "#0d3a24",
+      "ink": "#ffd23c",
+      "portrait": {
+        "chr": "watt.chr",
+        "cbl": "watt.cbl",
+        "pal": "watt.pal"
+      },
+      "back": "If found fizzled, please return to the nearest charging socket. Thank you!"
+    }
+  ]
+}

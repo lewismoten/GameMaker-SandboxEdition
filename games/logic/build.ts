@@ -23,6 +23,7 @@ import { buildScreens } from './screens';
 import { buildGame } from './game';
 import { demoRecording } from './demo';
 import { readme } from './text';
+import { writePrintables } from './printables';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -79,3 +80,4 @@ disk.write();
 console.log(
   `${boards.length} boards; ${tiles.kitchen.names.length} board blocks, ${mb.names.length} part blocks, ${cb.names.length} Watt blocks, ${boards[0].mons.names.filter(Boolean).length - 1}+ monsters a board`,
 );
+writePrintables(join(here, 'printables.json'));
