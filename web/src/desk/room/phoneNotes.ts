@@ -5,7 +5,7 @@ import "./phoneNotes.css";
 import { h } from "../../editor/core/ui";
 
 const NUMBERS: [string, string][] = [
-  ["Mom at work", "555-0142 x210"],
+  ["Mom at work", "555-0148 x210"],
   ["Dad at work", "555-0187"],
   ["Dad’s pager", "555-0199"],
   ["Grandma", "555-0123"],
