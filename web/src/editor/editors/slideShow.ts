@@ -3,6 +3,7 @@
 // one that waits for a key, or goes straight on, is a whole thumbnail with that "transition"
 // after it. Media from the game is dragged (or tapped) onto the timeline; the small screen
 // above plays the show as the game would, lighting up the clip it is on.
+import { History } from '../history';
 import './slideShow.css';
 import { registerEditor } from './index';
 import { h, clear, toast } from '../ui';
@@ -50,7 +51,38 @@ registerEditor(['lst'], (host, project, file) => {
   let playStart = 0;
   let pps = loadZoom();
 
-  const save = () => project.files.set(file, serializeSlideList(entries));
+  // Undo: every save records the list as it was (saves less than half a second apart are one step).
+  const history = new History<Uint8Array>();
+  let base = serializeSlideList(entries);
+  let lastChange = 0;
+  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const syncHistory = () => {
+    undoBtn.disabled = !history.canUndo;
+    redoBtn.disabled = !history.canRedo;
+  };
+  const save = () => {
+    const bytes = serializeSlideList(entries);
+    const now = Date.now();
+    if (bytes.length !== base.length || bytes.some((b, i) => b !== base[i])) {
+      if (now - lastChange > 500) history.record(base);
+      lastChange = now;
+      base = bytes;
+      syncHistory();
+    }
+    project.files.set(file, bytes);
+  };
+  function step(back: boolean): void {
+    const to = back ? history.undo(base) : history.redo(base);
+    if (!to) return;
+    entries = parseSlideList(to);
+    base = to;
+    lastChange = 0;
+    selected = Math.min(selected, entries.length - 1);
+    syncHistory();
+    project.files.set(file, to);
+    render();
+  }
 
   // ---- facts and thumbnails, cached by file contents --------------------------------
   const factCache = new Map<string, { bytes?: Uint8Array; facts: ClipFacts }>();
@@ -709,6 +741,8 @@ registerEditor(['lst'], (host, project, file) => {
       h('button', { onclick: () => play(selected) }, '▶ From the selected slide'),
       length,
       h('span', { class: 'spacer' }),
+      undoBtn,
+      redoBtn,
       h('label', { class: 'sl-zoom' }, '🔍', zoom),
     ),
     track,
@@ -731,7 +765,17 @@ registerEditor(['lst'], (host, project, file) => {
     clearTimeout(soon);
     soon = setTimeout(render, 250);
   };
+  const onKey = (e: KeyboardEvent) => {
+    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' || k === 'y') {
+      e.preventDefault();
+      step(k === 'z' && !e.shiftKey);
+    }
+  };
+  window.addEventListener('keydown', onKey);
   return () => {
+    window.removeEventListener('keydown', onKey);
     off();
     clearTimeout(soon);
     closeMenu();
