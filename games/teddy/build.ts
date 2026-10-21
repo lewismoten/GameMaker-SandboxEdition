@@ -18,6 +18,7 @@ import { LEVELS, buildGame } from './src/game';
 import { buildScreens } from './src/screens/screens';
 import { buildCartoons } from './src/screens/cartoons';
 import { demoRecording } from './src/demo';
+import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -44,4 +45,5 @@ for (const [name, bytes] of Object.entries(buildScreens(levels))) disk.put(name,
 for (const [name, bytes] of Object.entries(buildCartoons())) disk.put(name, bytes);
 disk.put('demo.rec', await demoRecording(levels[0]));
 disk.put('teddy.gam', serializeGame(buildGame(levels, process.env.TEDDY_START)));
+disk.put('license.txt', licenseText("Teddy's Little Big Adventure"));
 disk.write();

@@ -1,5 +1,6 @@
 // The words: text pages Game-Maker writes over the cream panels (30 columns, 16 lines a
 // page), the level cards, and the readme on the disk.
+import { withCreditPage } from '../../../kit/license';
 
 /** Pads a page to 16 lines and checks the width. */
 const page = (lines: string[]) => {
@@ -124,7 +125,7 @@ export const HELP = pages(
   ],
 );
 
-export const CREDITS = pages(
+const CREDITS_TEXT = pages(
   [
     "TEDDY'S LITTLE BIG ADVENTURE",
     'Version 1.0, 1995',
@@ -316,3 +317,6 @@ Woof!
 }
 
 export const README = readme('$12');
+
+/** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
+export const CREDITS = withCreditPage(CREDITS_TEXT);
