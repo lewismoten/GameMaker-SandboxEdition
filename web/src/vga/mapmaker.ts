@@ -12,7 +12,8 @@
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { BLEN } from './shared/facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
 import { BACKBL, MONBL, emptyBlock, parseBlocks } from '../formats/blocks';
 import { parseMonsters } from '../formats/monster';
 import { MLEN, MWID, parseMap, serializeMap } from '../formats/map';
@@ -52,6 +53,11 @@ import {
 import { MapMakerPaint } from './mapmaker/paint';
 
 class MapMaker extends MapMakerPaint {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Map Maker', this.work, () => this.saved, () => [{ ext: 'map', bytes: serializeMap(this.map) }]);
+  }
+
   async main(): Promise<void> {
     const h = this.h;
     const sc = h.screen;
@@ -530,4 +536,11 @@ class MapMaker extends MapMakerPaint {
 }
 
 /** MAPMAKER.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'MAPMAKER.EXE', run: (h) => new MapMaker(h).main() };
+export const program: Program = {
+  exe: 'MAPMAKER.EXE',
+  run: (h) => {
+    const d = new MapMaker(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};

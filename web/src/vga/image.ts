@@ -10,7 +10,8 @@
 // smallgif). Decoding and drawing are in image/screen.ts, the layout in image/layout.ts.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
 import { SIZEX, SIZEY } from './shared/vga';
 import { BLEN, LEFT, NONE, RED1, RED2, RIGHT } from './shared/facelift';
 import { BACKBL, parseBlocks, serializeBlocks } from '../formats/blocks';
@@ -18,6 +19,14 @@ import { LOLEN, LOX, LOY, LOX1, LOY1, MX, MY, HY, HELPFILE, pal2bytes, blankBloc
 import { ImageReaderScreen } from './image/screen';
 
 class ImageReader extends ImageReaderScreen {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Image Reader', this.work, () => this.saved, () => [
+      { ext: 'pal', bytes: pal2bytes(this.colors) },
+      { ext: 'bbl', bytes: serializeBlocks(this.blocks) },
+    ]);
+  }
+
   async main(): Promise<void> {
     const h = this.h;
     const sc = h.screen;
@@ -446,4 +455,11 @@ class ImageReader extends ImageReaderScreen {
 }
 
 /** IMAGE.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'IMAGE.EXE', run: (h) => new ImageReader(h).main() };
+export const program: Program = {
+  exe: 'IMAGE.EXE',
+  run: (h) => {
+    const d = new ImageReader(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};

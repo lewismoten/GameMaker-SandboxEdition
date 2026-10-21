@@ -9,7 +9,8 @@ import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from 
 import { WorkArea } from '../retro/dos/workArea';
 import { type Vga } from './shared/vga';
 import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED2, initStartCols } from './shared/facelift';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
 import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, serializeSoundSet, type SoundSet } from '../formats/sound';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { output } from '../audio/output';
@@ -89,6 +90,11 @@ const ANNOUNCE = [
 ];
 
 class SoundDesigner {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Sound Designer', this.work, () => this.saved, () => [{ ext: 'snd', bytes: serializeSoundSet(this.s) }]);
+  }
+
   s = initialSounds();
   saved = true;
   v!: Vga;
@@ -492,4 +498,11 @@ class SoundDesigner {
 }
 
 /** SNDEDIT.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'SNDEDIT.EXE', run: (h) => new SoundDesigner(h).main() };
+export const program: Program = {
+  exe: 'SNDEDIT.EXE',
+  run: (h) => {
+    const d = new SoundDesigner(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};

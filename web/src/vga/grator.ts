@@ -14,7 +14,8 @@ import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from 
 import { WorkArea } from '../retro/dos/workArea';
 import { NOSCENE } from '../formats/game';
 import { SIZEX, SIZEY } from './shared/vga';
-import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
+import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
+import type { OpenDesigner } from '../retro/host';
 import { expandlink } from './grator/gramap';
 import {
   NOTUSED,
@@ -47,6 +48,11 @@ import {
 import { IntegratorScenes } from './grator/scenes';
 
 class Integrator extends IntegratorScenes {
+  /** For the desk: whether anything is unsaved, and what saving writes. */
+  openWork(): OpenDesigner {
+    return openWork('Integrator', this.work, () => this.saved, () => [{ ext: 'gam', bytes: this.serialize() }]);
+  }
+
   /** main(): the text-mode menu. */
   async main(): Promise<void> {
     const h = this.h;
@@ -440,4 +446,11 @@ class Integrator extends IntegratorScenes {
 }
 
 /** GRATOR.EXE: runs until the user quits back to Game-Maker's menu. */
-export const program: Program = { exe: 'GRATOR.EXE', run: (h) => new Integrator(h).main() };
+export const program: Program = {
+  exe: 'GRATOR.EXE',
+  run: (h) => {
+    const d = new Integrator(h);
+    h.designer = d.openWork();
+    return d.main();
+  },
+};
