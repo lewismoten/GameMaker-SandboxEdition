@@ -13,6 +13,7 @@ import {
   shortenGap,
   TimeMap,
   screenGaps,
+  screenKeys,
   isDown,
   capLabel,
   clock,
@@ -130,5 +131,41 @@ describe('screen gaps (DOS recordings)', () => {
     expect(map.play(21)).toBe(21);
     expect(map.play(26091)).toBe(33);
     expect(map.segs.some((s) => s.screen)).toBe(true);
+  });
+});
+
+describe('screen keys (DOS recordings)', () => {
+  it('a key read by a screen (recorded at each GetKey poll, never released) is a screen key, not a held note', () => {
+    // PauseTimeKey (GENC.C) records one Enter press three times, a poll apart; no release follows.
+    const events = [
+      { t: 8, key: 71 },
+      { t: 21, key: 71 | 0x80 },
+      { t: 26079, key: 28 },
+      { t: 26080, key: 28 },
+      { t: 26081, key: 28 },
+      { t: 26091, key: 79 },
+      { t: 26095, key: 79 | 0x80 },
+    ];
+    expect(screenKeys(events)).toEqual([{ t: 26079, scan: 28, events: [2, 3, 4] }]);
+    const { notes } = toNotes(events);
+    expect(notes.map((n) => [n.scan, n.start, n.end])).toEqual([
+      [71, 8, 21],
+      [79, 26091, 26095],
+    ]);
+    // Trimming does not invent a release for a key the game never had down.
+    expect(trimAt(events, 26085)).toEqual(events.slice(0, 5));
+  });
+
+  const nebula = resolve(__dirname, '../../cd/gameware/nebula/demo.rec');
+  it.skipIf(!existsSync(nebula))("Nebula's three Enter presses during screens are screen keys", () => {
+    const events = toEvents(parseRecording(new Uint8Array(readFileSync(nebula))));
+    const keys = screenKeys(events);
+    expect(keys.map((k) => [k.scan, k.events.length])).toEqual([
+      [28, 3],
+      [28, 3],
+      [28, 3],
+    ]);
+    const { notes } = toNotes(events);
+    expect(notes.some((n) => n.scan === 28 && n.end === null)).toBe(false);
   });
 });

@@ -55,8 +55,10 @@ const isPrefix = (key: number) => key === EXT || key === 0xe1;
 export function toNotes(events: RecEvent[], minGap = 0, capTicks: (scan: number) => number = () => 0): { notes: Note[]; lanes: number } {
   const notes: Note[] = [];
   const open = new Map<number, Note>();
+  // Keys a between-scene screen read (screenKeys) never reached the game: no note.
+  const screen = new Set(screenKeys(events).flatMap((k) => k.events));
   events.forEach((e, i) => {
-    if (isPrefix(e.key)) return;
+    if (isPrefix(e.key) || screen.has(i)) return;
     const scan = e.key & 0x7f;
     const held = open.get(scan);
     if (e.key < 0x80) {
@@ -171,6 +173,45 @@ export const SCREEN_POLLS = 4096;
 /** The gaps that are a screen's GetKey polls rather than time in play (DOS recordings). */
 export function screenGaps(events: RecEvent[]): Gap[] {
   return idleGaps(events, SCREEN_POLLS + 1);
+}
+
+/** A key pressed while a between-scene screen waited for one (DOS recordings). */
+export interface ScreenKey {
+  /** When the screen read it: the end of the screen's gap. */
+  t: number;
+  scan: number;
+  /** The indexes of the events it was recorded as (one press, recorded at each poll that saw it). */
+  events: number[];
+}
+
+/**
+ * The keys between-scene screens read. During a screen the recorder saw the key through
+ * GetKey, which recorded the BIOS key (a scan code, never a release) every time it was
+ * polled and found one: PauseTimeKey (GENC.C) polls GetKey(1) until a key comes, then
+ * calls GetKey(1) and GetKey(0) to return it, so one press is recorded three times, one
+ * poll apart (Nebula's three Enter presses are 3 + 3 + 3 events), and a keyboard flush
+ * (while (GetKey(1)) GetKey(0), PLAYGAME.C) records any repeats the same way. The screen
+ * used the key up and the game's keyboard handler never saw it go down or up, so it is a
+ * mark on the screen band, not a key held to the end of the demo. The run is the event
+ * after a screen gap and the same key at each following poll (delta of 1). Every waiting
+ * loop peeks before it reads (GetKey(1) then GetKey(0)), so a screen's key is always
+ * recorded at least twice; a lone event after a long gap is a key pressed in play (a
+ * recording made in the browser can idle that long), and stays a note.
+ */
+export function screenKeys(events: RecEvent[]): ScreenKey[] {
+  const out: ScreenKey[] = [];
+  let last = 0;
+  for (let i = 0; i < events.length; i++) {
+    const e = events[i];
+    const gap = e.t - last;
+    last = e.t;
+    if (gap <= SCREEN_POLLS || e.key >= 0x80 || isPrefix(e.key)) continue;
+    const k: ScreenKey = { t: e.t, scan: e.key, events: [i] };
+    while (i + 1 < events.length && events[i + 1].key === e.key && events[i + 1].t - events[i].t <= 1) k.events.push(++i);
+    last = events[i].t;
+    if (k.events.length > 1) out.push(k);
+  }
+  return out;
 }
 
 /**
