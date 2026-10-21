@@ -5,6 +5,7 @@ import { serializeSlideList } from '../../../web/src/formats/graphicScripts';
 import { serializeGame } from '../../../web/src/formats/game';
 import { serializeHighScores } from '../../../web/src/formats/highscore';
 import { dosText } from '../../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../../kit/sandlogo';
 import type { Built } from './game';
 import { buildSongs } from './sound/music';
 import { buildSounds } from './sound/sounds';
@@ -41,6 +42,7 @@ export async function present(b: Built): Promise<void> {
   putAll(buildSongs());
 
   // films
+  put(SANDLOGO, sandLogoFli());
   put('intro.fli', introFli());
   put('warp.fli', warpFli());
   for (const biome of DESCENT_BIOMES) put(descentFile(biome), descentFli(biome));
@@ -52,6 +54,7 @@ export async function present(b: Built): Promise<void> {
   put(
     'title.lst',
     serializeSlideList([
+      { name: SANDLOGO, pause: 0 }, // the Sandbox Software logo, then the game's own intro
       { name: 'intro.fli', pause: 0 },
       { name: 'title.gif', pause: 12 },
     ]),
