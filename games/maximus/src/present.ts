@@ -25,6 +25,7 @@ import {
 import { introFli, launchFli, warpFli, wonFli } from './screens/flics';
 import { DESCENT_BIOMES, descentFile, descentFli } from './screens/descent';
 import { CREDITS, INSTRUCTIONS } from './screens/text';
+import { HAILS, hailPages } from './screens/hails';
 import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
 import { drawCourier } from './sprites/courier';
@@ -144,7 +145,18 @@ export async function present(b: Built): Promise<void> {
       ),
     ),
   );
-  for (const w of worlds) put(`w${w.scene}.lst`, serializeSlideList([{ name: descentFile(w.world.biome), pause: 0 }, { name: `w${w.scene}.bkd` }]));
+  // three worlds hail the pod first: the hail, then the landing film and the card
+  putAll(hailPages((name) => worlds.find((w) => w.world.name === name)!.scene));
+  const hailed = new Set(HAILS.map((h) => h.world));
+  for (const w of worlds)
+    put(
+      `w${w.scene}.lst`,
+      serializeSlideList([
+        ...(hailed.has(w.world.name) ? [{ name: `w${w.scene}h.bkd` }] : []),
+        { name: descentFile(w.world.biome), pause: 0 },
+        { name: `w${w.scene}.bkd` },
+      ]),
+    );
   putAll(
     placeCards([
       {

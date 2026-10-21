@@ -68,7 +68,7 @@ const gif = (c: Canvas) => encodeGif({ width: c.w, height: c.h, pixels: c.px, pa
 
 // ------------------------------------------------------------------ painting helpers
 
-function spaceBg(c: Canvas, seed: number, nebula = true): void {
+export function spaceBg(c: Canvas, seed: number, nebula = true): void {
   c.gradient(0, 0, c.w, c.h, C('space').slice(0, 5));
   if (nebula) {
     const n = tileNoise(seed, 160, 5);
