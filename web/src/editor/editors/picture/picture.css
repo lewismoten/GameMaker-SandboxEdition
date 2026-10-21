@@ -26,6 +26,12 @@
   .pic-layout .pic-slots {
     max-height: clamp(96px, calc(var(--ws-vh, 100dvh) - 705px), 220px);
   }
+  /* on short windows the copying column scrolls by itself rather than the editor */
+  .pic-layout .pic-side {
+    max-height: calc(var(--ws-vh, 100dvh) - 180px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
 .pic-copy {
   margin-top: 8px;
