@@ -344,6 +344,9 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   renderWorld(m.screen, w);
   await m.fadeTo(w.palette);
   m.keyboard.attach();
+  // Arrow chords (↑+← = Home, …) only for keypad keys this character uses.
+  const bound = new Set(w.chr.sequences.map((q) => q.key >> 8).filter((k) => k));
+  m.keyboard.chordable = (scan) => bound.has(scan);
   m.flushKeys();
 
   // done: 0 playing, 1 Esc, DEAD. newlink stays MAXSCENELINKS until chklnk finds a link.
@@ -522,6 +525,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   m.audio.stopSpeaker();
   await m.fadeAllTo(0, 0, 0);
   m.keyboard.detach();
+  m.keyboard.chordable = undefined;
   m.keyboard.attach();
   // Return codes as in playscene: MAXSCENELINKS restarts this scene, +1 quits (Esc),
   // +2 means no lives left; anything lower is the link taken.

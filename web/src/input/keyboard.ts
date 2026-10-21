@@ -1,7 +1,11 @@
 // Keyboard state for the player: a raw scan code event queue (what playgame's
 // keyboard interrupt handler collected into KeysPending) plus a BIOS style buffer of
 // typed keys for menus and text entry.
+import { ARROW_CODES, ArrowChords } from './chords';
 import { SCAN, scanToAscii } from './scancodes';
+
+// Navigation keys by DOM key: a Mac laptop has none, and makes them with fn+arrows (fn ⌫ = Del).
+const BY_KEY: Record<string, number> = { Home: 71, PageUp: 73, End: 79, PageDown: 81, Insert: 82, Delete: 83 };
 
 export interface TypedKey {
   scan: number;
@@ -18,6 +22,13 @@ export class Keyboard {
   readonly down = new Set<number>();
   private target?: EventTarget;
   private waiters: (() => void)[] = [];
+  /** Two arrows held together stand for the keypad key between them when the game binds it. */
+  readonly chords = new ArrowChords();
+
+  /** Which keys the game binds, for arrow chords (none: arrows stay arrows). */
+  set chordable(bound: ((scan: number) => boolean) | undefined) {
+    this.chords.bound = bound ?? (() => false);
+  }
 
   private onDown = (e: Event) => this.handle(e as KeyboardEvent, true);
   private onUp = (e: Event) => this.handle(e as KeyboardEvent, false);
@@ -39,16 +50,20 @@ export class Keyboard {
   }
 
   private handle(e: KeyboardEvent, pressed: boolean): void {
-    const scan = SCAN[e.code];
+    // The key wins for Home/End/PgUp/PgDn/Ins/Del: whatever code a Mac's fn+arrow reports.
+    const scan = BY_KEY[e.key] ?? SCAN[e.code];
     if (scan === undefined) return;
     // Let browser shortcuts with Ctrl/Meta through (except plain Ctrl used as a game key).
     if (e.metaKey) return;
     e.preventDefault();
+    if (ARROW_CODES[e.code] === scan) {
+      if (!pressed || !e.repeat) for (const k of this.chords.arrow(scan, pressed)) this.apply(k);
+      if (!pressed) return;
+    } else if (pressed && !e.repeat) {
+      this.down.add(scan);
+      this.events.push(scan);
+    }
     if (pressed) {
-      if (!e.repeat) {
-        this.down.add(scan);
-        this.events.push(scan);
-      }
       const ascii = e.key.length === 1 ? e.key.charCodeAt(0) & 0xff : scan === 28 ? 13 : scan === 1 ? 27 : scan === 14 ? 8 : 0;
       this.typed.push({ scan, ascii, key: e.key });
       const w = this.waiters;
@@ -57,6 +72,18 @@ export class Keyboard {
     } else if (this.down.has(scan)) {
       this.down.delete(scan);
       this.events.push(scan | 0x80);
+    }
+  }
+
+  /** One scan code event for the game (an arrow chord's press or release). */
+  private apply(k: number): void {
+    const scan = k & 0x7f;
+    if (k < 0x80) {
+      this.down.add(scan);
+      this.events.push(scan);
+    } else if (this.down.has(scan)) {
+      this.down.delete(scan);
+      this.events.push(k);
     }
   }
 
@@ -88,6 +115,7 @@ export class Keyboard {
   releaseAll(): void {
     for (const s of this.down) this.events.push(s | 0x80);
     this.down.clear();
+    this.chords.reset();
   }
 
   /** bioskey(1)/bioskey(0): peek or take the next typed key. */
