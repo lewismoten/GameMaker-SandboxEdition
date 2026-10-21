@@ -12,12 +12,13 @@ export function printables(): unknown {
   // the home computer's corner of the attic map
   const n = BOARDS.filter((b) => b.room === 'attic').findIndex((b) => b.file === 'computer');
   const [OX, OY] = SLOTS[n];
+  const boardNo = BOARDS.findIndex((b) => b.file === 'computer') + 1;
   const sections = Object.entries(ROOMS).map(([room, head]) => ({
     head,
     hints: BOARDS.filter((b) => b.room === room).map((b) => ({ q: `${b.title}: ${b.hint}`, a: b.answer })),
   }));
   return {
-    pitch: 'Watt the repair robot rolls home through twenty haywire circuit boards. Route the current, never touch it.',
+    pitch: 'Watt the repair robot rolls home through twenty-three haywire circuit boards. Route the current, never touch it.',
     keys: { 'Arrows / W A S D / keypad': 'Roll one block', R: 'Reboot the board (costs a spare battery)' },
     news: [
       {
@@ -42,7 +43,7 @@ export function printables(): unknown {
       {
         kind: 'map',
         title: 'Wiring poster',
-        note: 'Board 13, the home computer',
+        note: `Board ${boardNo}, the home computer`,
         promised: true,
         heading: 'THE HOME COMPUTER: WIRING DIAGRAM',
         intro:

@@ -1,5 +1,5 @@
 {
-  "pitch": "Watt the repair robot rolls home through twenty haywire circuit boards. Route the current, never touch it.",
+  "pitch": "Watt the repair robot rolls home through twenty-three haywire circuit boards. Route the current, never touch it.",
   "keys": {
     "Arrows / W A S D / keypad": "Roll one block",
     "R": "Reboot the board (costs a spare battery)"
@@ -151,7 +151,7 @@
     {
       "kind": "map",
       "title": "Wiring poster",
-      "note": "Board 13, the home computer",
+      "note": "Board 19, the home computer",
       "promised": true,
       "heading": "THE HOME COMPUTER: WIRING DIAGRAM",
       "intro": "The trickiest chip in the Bitmore house, wire by wire. Two pink control lines throw four relays; only one combination gets current safely to the gate.",

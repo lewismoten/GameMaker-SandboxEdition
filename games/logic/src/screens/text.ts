@@ -103,11 +103,22 @@ Bump into a switch, button or fuse to work it.`,
   current once thrown.
 
 Roll onto the outlet to go on to the next board. Gold screws and outlets give you a spare battery.`,
+  `CHIPS AND GADGETS
+ 555 TIMER: pulses its wire,
+  on twice as long as off.
+  Its red OUT light goes
+  dark when the current
+  does. Roll in right
+  behind the last spark!
+ LCD SCREEN, and the
+  CitiCar's headlights:
+  current lights them up,
+  then runs on through.`,
 ]);
 
 const CREDITS_TEXT = pages([
   `OHM SWEET OHM
-A logic puzzle in twenty circuit boards
+A logic puzzle in twenty-three circuit boards
 
 Design, art, music and wiring: Claude
 
@@ -152,12 +163,12 @@ TO PLAY
 Type OHMSWEET at the DOS prompt (it runs PLAYGAME with OHMSWEET.GAM).
 
 WHAT IS IT?
-Watt, a pocket-sized repair robot, must roll through twenty haywire circuit boards to get home to his charging socket. Flip switches, blow fuses, throw relays and route live current to shut down the force-field gates... without touching a live wire yourself.
+Watt, a pocket-sized repair robot, must roll through twenty-three haywire circuit boards to get home to his charging socket. Flip switches, blow fuses, throw relays and route live current to shut down the force-field gates... without touching a live wire yourself.
 
 THIS IS SHAREWARE
 You may copy this disk and give it to your friends, upload it to bulletin boards and share it with user groups, as long as all the files stay together and unchanged.
 
-If you enjoy OHM SWEET OHM, please register for ${price} with Sandbox Software. Registered players get the printed hint book with every answer, a big wiring poster of all twenty boards, and the next Sandbox Software game at a discount.
+If you enjoy OHM SWEET OHM, please register for ${price} with Sandbox Software. Registered players get the printed hint book with every answer, a big wiring poster of all twenty-three boards, and the next Sandbox Software game at a discount.
 
 SEND ${price} (check or money order) TO:
  Sandbox Software
@@ -167,7 +178,7 @@ SEND ${price} (check or money order) TO:
 
 FILES ON THIS DISK
  OHMSWEET.GAM the game
- *.MAP *.MON  the twenty boards
+ *.MAP *.MON  all the boards
  *.BBL *.MBL  board and parts art
  WATT.CHR     Watt himself
  *.CMF *.VOC  music and sounds
