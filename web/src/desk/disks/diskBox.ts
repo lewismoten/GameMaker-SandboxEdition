@@ -5,6 +5,7 @@ import { diskCount, type Disk } from '../../retro/dos/disks';
 import { creditLine } from '../../project/files';
 import { boxDisks } from '../boxes/boxFacts';
 import { printedDiskLabel } from './diskLabel';
+import { rsdDiskLabel } from './rsdLabel';
 
 /** How many disks it takes: an original ships with the DOS player too (as its box says). */
 export function disksIn(d: Disk): number {
@@ -17,7 +18,12 @@ export type DiskAction = 'play' | 'design' | 'modern';
 function printedLabel(d: Disk, n: number): HTMLElement {
   const g = d.catalog!;
   // © and the year kept together (a no-break space), never split across lines
-  return printedDiskLabel(g, `Disk\u00a0${n}\u00a0of\u00a0${disksIn(d)} · ©\u00a0${g.year ?? 1995}`, d.note);
+  return printedDiskLabel(g, `©\u00a0${g.year ?? 1995}`, d.note, diskTag(d, n));
+}
+
+/** "Disk 2" in the title area of a game that takes more than one disk (empty otherwise). */
+function diskTag(d: Disk, n: number): string {
+  return disksIn(d) > 1 ? `Disk\u00a0${n}` : '';
 }
 
 /** A disk; `n` numbers the later disks of a game that takes more than one. */
@@ -43,13 +49,15 @@ export function floppyElement(d: Disk, small = false, n = 1): HTMLElement {
     h('div', { class: 'shutter' }),
     d.kind === 'original'
       ? printedLabel(d, n)
-      : h(
-          'div',
-          { class: 'label' },
-          label,
-          h('small', null, [sub, count > 1 ? `disk ${n} of ${count}` : ''].filter(Boolean).join('\n')),
-          d.note ? h('span', { class: 'marker-note' }, d.note) : null,
-        ),
+      : d.kind === 'rsd'
+        ? rsdDiskLabel(g, label, diskTag(d, n), d.note)
+        : h(
+            'div',
+            { class: 'label' },
+            h('span', { class: 'hand-title' }, h('span', null, label), count > 1 ? h('span', { class: 'hand-disk' }, `Disk ${n}`) : null),
+            h('small', null, sub),
+            d.note ? h('span', { class: 'marker-note' }, d.note) : null,
+          ),
     h('div', { class: 'wp' }),
     d.density === 'HD' ? h('div', { class: 'density-hole' }) : null,
     d.density === 'HD' ? h('div', { class: 'hd' }, 'HD') : null,

@@ -66,23 +66,7 @@
   font-size: 11px;
 }
 
-.floppy[data-kind='rsd'] .label {
-  /* the box's black banner with yellow GAME-MAKER lettering */
-  background: linear-gradient(180deg, #0b0b0b 0 15px, transparent 15px), repeating-linear-gradient(180deg, #fbf8ee 0 13px, #f3c9bd 13px 14px), #fbf8ee;
-  padding-top: 18px;
-}
-
-.floppy[data-kind='rsd'] .label::before {
-  content: 'GAME-MAKER  ·  RSD';
-  position: absolute;
-  left: 8px;
-  top: 2px;
-  color: #f2e600;
-  font:
-    700 9px/11px ui-monospace,
-    monospace;
-  letter-spacing: 0.1em;
-}
+/* RSD's own disks have a printed label: desk/disks/rsdLabel.css */
 
 .floppy[data-kind='blank'] .label {
   color: #999;
@@ -120,9 +104,11 @@
 
 /* written on later, in red marker */
 .floppy .marker-note {
+  /* below the title and the lines written under it, still in view when disks overlap */
   position: absolute;
   right: 6px;
-  top: 10px;
+  top: 46%;
+  z-index: 2;
   color: #d0141b;
   font:
     700 12px/1 'Marker Felt',
@@ -271,4 +257,16 @@
   margin-top: auto;
   border-top: 1px solid var(--lband);
   padding-top: 1.6cqw;
+}
+
+/* the hand-written title, with "Disk 2" at its right for a game on more than one disk */
+.floppy .label .hand-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.floppy .label .hand-disk {
+  flex: none;
+  font-size: 12px;
 }
