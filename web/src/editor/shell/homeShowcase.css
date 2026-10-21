@@ -250,7 +250,7 @@
 }
 
 @media (max-width: 760px) {
-  .showcase {
+  .home .showcase {
     grid-template-columns: 1fr;
     gap: 14px;
     margin-bottom: 18px;

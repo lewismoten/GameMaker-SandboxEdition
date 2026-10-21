@@ -126,9 +126,14 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     void p.done.then(() => player === p && !o.loop && handle.stop());
   };
 
-  // Scrolled out of sight: stop (the card shows its picture again).
+  // Scrolled out of sight after being seen: stop (the card shows its picture again). One
+  // that starts out of sight (the page is still scrolling to it) waits to be seen first.
+  let inView = false;
   const seen = new IntersectionObserver((entries) => {
-    if (entries.some((e) => !e.isIntersecting)) handle.stop();
+    for (const e of entries) {
+      if (e.isIntersecting) inView = true;
+      else if (inView) handle.stop();
+    }
   });
 
   const handle: DemoPreview = {
