@@ -1,7 +1,7 @@
 // Named 20x20 blocks collected in order and resolved into a Game-Maker block set, so the
 // art and the maps can say "prop table" instead of a raw block number.
-import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../web/src/formats/blocks';
-import type { Pixels } from '../kit/pixels';
+import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../../../web/src/formats/blocks';
+import type { Pixels } from '../../../kit/pixels';
 
 export const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 export { SOLTOP, SOLRIG, SOLBOT, SOLLEF };

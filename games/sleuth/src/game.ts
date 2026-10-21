@@ -3,8 +3,8 @@
 // intro they show. A question is a link to a scene whose intro is the answer; the answer
 // scene looks exactly like the room she asked it in, so the talk simply goes on.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
-import type { Theatre } from '../theatre';
-import { LINEUP, ROOM, SOLVED, SUSPECTS, ZCELL, center, type ParlorLinks } from '../parlor';
+import type { Theatre } from './levels/theatre';
+import { LINEUP, ROOM, SOLVED, SUSPECTS, ZCELL, center, type ParlorLinks } from './levels/parlor';
 
 export const TITLE = 'FINAL CURTAIN';
 

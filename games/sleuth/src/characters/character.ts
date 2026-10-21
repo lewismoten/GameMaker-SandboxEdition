@@ -1,12 +1,12 @@
 // ADA.CHR and ADA.CBL: Inspector Penn walks in eight directions on the arrows, on WASD,
 // on Q/E (up and to the side) and on the number pad's corners; Space picks things up;
 // L raises the prop magnifying glass, but only while she carries it.
-import { CHARBL } from '../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
-import { BlockSet } from './blockset';
-import { ADA, strikeFrames } from './ada';
-import { CTR, KEY, SEQ, SND } from './src/ids';
-import { ITEMS } from './tiles';
+import { CHARBL } from '../../../../web/src/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { BlockSet } from '../blocks/blockset';
+import { ADA, strikeFrames } from '../sprites/ada';
+import { CTR, KEY, SEQ, SND } from '../ids';
+import { ITEMS } from '../blocks/tiles';
 
 export function buildAdaBlocks(): BlockSet {
   const cb = new BlockSet(50, true);

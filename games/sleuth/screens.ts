@@ -10,7 +10,7 @@ import { dosText } from '../kit/disk';
 import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from './src/art/draw';
 import { P, c, ramp as r } from './src/art/pal';
 import { W, H, actCard, caseFile, evidenceScreen, facade, portraitScreen, stageView, actor, rain } from './art';
-import { itemPictures, ITEMS, ITEM, boards, symbol } from './tiles';
+import { itemPictures, ITEMS, ITEM, boards, symbol } from './src/blocks/tiles';
 import {
   ACC_INTRO,
   ACT_CARDS,
@@ -32,7 +32,7 @@ import {
   wide,
 } from './text';
 import { PIN_FILES, SUSPECT_LETTER, WRONG_KEYS } from './src/game';
-import { SUSPECTS } from './parlor';
+import { SUSPECTS } from './src/levels/parlor';
 import type { Who } from './src/art/people';
 import { renderRegion } from './src/art/render';
 import type { GameMap } from '../../web/src/formats/map';

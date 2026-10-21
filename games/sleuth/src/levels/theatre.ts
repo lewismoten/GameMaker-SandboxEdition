@@ -3,8 +3,8 @@
 //     booth roped off, the pit door latched and the trap stairs boarded.
 //   ACT TWO, 2 AM: only the ghost light burns. Mrs. Crane has handed over her keys, so
 //     everything is open, and the safe stands where the bookcase was.
-import { newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
-import type { BlockSet } from './blockset';
+import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import type { BlockSet } from '../blocks/blockset';
 
 /** Where the theatre sits on the 100x100 map. */
 export const OX = 10;

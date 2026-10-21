@@ -2,11 +2,11 @@
 // marble, paneled walls, velvet seats, the stage and its set, the rooms backstage, the
 // evidence, the safe's three dials, and the dark under the stage that only shows where
 // Ada's lantern has been.
-import { Pixels, rng } from '../kit/pixels';
+import { Pixels, rng } from '../../../kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from './blockset';
-import { blob, micro, microC, pool, shadeAt, speckle } from './src/art/draw';
-import { c, ink, ramp as r } from './src/art/pal';
-import { CTR } from './src/ids';
+import { blob, micro, microC, pool, shadeAt, speckle } from '../art/draw';
+import { c, ink, ramp as r } from '../art/pal';
+import { CTR } from '../ids';
 
 export const T = (fill = 0) => new Pixels(20, 20, fill);
 export const clone = (p: Pixels) => {

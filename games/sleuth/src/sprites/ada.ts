@@ -1,8 +1,8 @@
 // Inspector Ada Penn, seen from above at a slant: cloche hat, auburn bob, a belted trench
 // coat. One block tall, so she fits every doorway and the gap between two rows of seats.
-import { Pixels } from '../kit/pixels';
-import { CLEAR, art } from './src/art/draw';
-import { c, ink } from './src/art/pal';
+import { Pixels } from '../../../kit/pixels';
+import { CLEAR, art } from '../art/draw';
+import { c, ink } from '../art/pal';
 
 const KEY: Record<string, number> = {
   o: c('black', 0),

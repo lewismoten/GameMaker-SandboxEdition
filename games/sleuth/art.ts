@@ -4,7 +4,7 @@ import { Pixels, rng } from '../kit/pixels';
 import { CLEAR, blob, centered, gradient, micro, microC, outlined, pool, shadeAt, speckle, text } from './src/art/draw';
 import { c, ink, ramp as r } from './src/art/pal';
 import { portrait, PEOPLE, type Who } from './src/art/people';
-import { symbol } from './tiles';
+import { symbol } from './src/blocks/tiles';
 
 export const W = 320;
 export const H = 200;

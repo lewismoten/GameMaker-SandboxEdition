@@ -2,11 +2,11 @@
 // the lobby, Macbeth the theatre cat, sandbags on the fly lines, and at 2 AM the night
 // watchman on his rounds, wisps from the ghost light and rats under the stage, which in the
 // dark are nothing but two red eyes.
-import { emptyMonster, type Monster } from '../../web/src/formats/monster';
-import { Pixels } from '../kit/pixels';
-import { BlockSet, SOLID } from './blockset';
-import { CLEAR, art, blob } from './src/art/draw';
-import { c, ramp as r } from './src/art/pal';
+import { emptyMonster, type Monster } from '../../../../web/src/formats/monster';
+import { Pixels } from '../../../kit/pixels';
+import { BlockSet, SOLID } from '../blocks/blockset';
+import { CLEAR, art, blob } from '../art/draw';
+import { c, ramp as r } from '../art/pal';
 
 const K: Record<string, number> = {
   o: c('black', 0),

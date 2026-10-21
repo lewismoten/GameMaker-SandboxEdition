@@ -6,9 +6,9 @@ import { GameSim } from './sim';
 import { Bot } from './bot';
 import { act1, act2, accuse, greenRoom } from './walkthrough';
 import { buildGame } from './src/game';
-import { buildActs } from './acts';
-import { buildTheatreBlocks } from './tiles';
-import { buildParlorBlocks, buildParlorMap } from './parlor';
+import { buildActs } from './src/levels/acts';
+import { buildTheatreBlocks } from './src/blocks/tiles';
+import { buildParlorBlocks, buildParlorMap } from './src/levels/parlor';
 
 export function sceneIndex() {
   return buildGame(buildActs(buildTheatreBlocks()), buildParlorMap(buildParlorBlocks()).links).ix;

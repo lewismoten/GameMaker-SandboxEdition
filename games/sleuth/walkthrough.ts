@@ -3,8 +3,8 @@
 // first. check.ts runs it against the built disk; demo.ts records the start of it.
 import { Bot } from './bot';
 import { SCAN, CTR } from './src/ids';
-import { at } from './theatre';
-import { buildParlorBlocks, buildParlorMap, center, LINEUP, ROOM, SUSPECTS } from './parlor';
+import { at } from './src/levels/theatre';
+import { buildParlorBlocks, buildParlorMap, center, LINEUP, ROOM, SUSPECTS } from './src/levels/parlor';
 
 const PL = buildParlorMap(buildParlorBlocks()).links;
 

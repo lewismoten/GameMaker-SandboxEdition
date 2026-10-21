@@ -3,15 +3,15 @@
 // and the stage at dawn where she names the killer. Every one of them is exactly one
 // screen, and every scene that uses one starts Ada in its middle, so a question can lead
 // to a whole new scene (the answer is its intro) that looks like the same room.
-import { newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
-import { emptyMonster, type Monster } from '../../web/src/formats/monster';
-import { Pixels } from '../kit/pixels';
-import { BlockSet, SOLID, type BlockDef } from './blockset';
-import { CLEAR, blob, microC, pool, speckle } from './src/art/draw';
-import { c, ramp as r } from './src/art/pal';
-import { addItems, boards, clone, footlight, stageBoards, symbol, wallFace, wallTop, T, ITEMS, ITEM } from './tiles';
-import { figure, portrait, type Who } from './src/art/people';
-import { CTR } from './src/ids';
+import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { emptyMonster, type Monster } from '../../../../web/src/formats/monster';
+import { Pixels } from '../../../kit/pixels';
+import { BlockSet, SOLID, type BlockDef } from '../blocks/blockset';
+import { CLEAR, blob, microC, pool, speckle } from '../art/draw';
+import { c, ramp as r } from '../art/pal';
+import { addItems, boards, clone, footlight, stageBoards, symbol, wallFace, wallTop, T, ITEMS, ITEM } from '../blocks/tiles';
+import { figure, portrait, type Who } from '../art/people';
+import { CTR } from '../ids';
 
 export const SUSPECTS: Who[] = ['lila', 'edgar', 'agatha', 'felix', 'pike'];
 

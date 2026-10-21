@@ -1,6 +1,6 @@
 // The two acts in the theatre: who stands where.
-import type { BlockSet } from './blockset';
-import { MON } from './critters';
+import type { BlockSet } from '../blocks/blockset';
+import { MON } from '../characters/critters';
 import { buildTheatre, type Placed, type Theatre } from './theatre';
 
 export function buildActs(bs: BlockSet): Theatre[] {
