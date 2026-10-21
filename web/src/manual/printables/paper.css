@@ -590,35 +590,36 @@
 /* ---------------------------------------------------------------- red film */
 
 .rf-code {
-  position: relative;
-  display: inline-block;
-  padding: 0.3em 0.5em;
-  text-align: left;
-  font:
-    700 1em/1.35 Arial,
-    Helvetica,
-    sans-serif;
-  background: #fff;
-  isolation: isolate;
+  display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding: 0.15em 0.3em;
+  vertical-align: middle;
+  background: rgb(255, 196, 202);
+  line-height: 0;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
 
-.rf-text {
-  print-color-adjust: exact;
-  -webkit-print-color-adjust: exact;
+/* one word of the answer hidden in its noise (a canvas picture, redFilm.ts) */
+.rf-word {
+  display: block;
+  max-width: none;
+  image-rendering: auto;
+  user-select: none;
 }
 
-/* the red lines (backgrounds set in redFilm.ts), overprinting the cyan letters like ink:
-   red over cyan multiplies to a dark cyan, which red film keeps dark */
-.rf-noise {
-  position: absolute;
-  inset: 0;
-  mix-blend-mode: multiply;
-  background-blend-mode: multiply;
-  pointer-events: none;
-  print-color-adjust: exact;
-  -webkit-print-color-adjust: exact;
+.rf-word.rf-print {
+  display: none;
+}
+
+@media print {
+  .rf-word.rf-screen {
+    display: none;
+  }
+  .rf-word.rf-print {
+    display: block;
+  }
 }
 
 .rf-lens {
@@ -631,6 +632,8 @@
   border-radius: 50%;
   background: #ff0000;
   mix-blend-mode: multiply;
+  /* only the red channel, its light end stretched (redFilm.ts ensureRedView) */
+  backdrop-filter: url(#rf-red-view);
   pointer-events: none;
   box-shadow:
     0 0 0 3px rgba(90, 0, 0, 0.85),
@@ -651,6 +654,7 @@
   border-radius: 6px;
   background: #ff0000;
   mix-blend-mode: multiply;
+  backdrop-filter: url(#rf-red-view);
   cursor: grab;
   touch-action: none;
   box-shadow: 0 0 0 2px rgba(120, 0, 0, 0.6);

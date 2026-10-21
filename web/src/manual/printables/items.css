@@ -1352,7 +1352,7 @@
 }
 
 .hb-a .rf-code {
-  display: block;
+  display: flex;
   font-size: 3cqw;
 }
 

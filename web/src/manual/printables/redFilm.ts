@@ -1,18 +1,29 @@
 // Hint book answers hidden the way 90s hint books (and Daniel C. Wilson's "red reveal",
-// danielcwilson.com/blog/2018/02/optical-fun-red-reveal/) hid them, with just two inks as a
-// printer would use: the answer in cyan, the ink opposite red, on a field of crossing red
-// lines about as dark as the cyan, with fine red lines printed over the letters too.
-// Every red has full red (R = 255), so through red film it turns the film's own red, just as
-// the white paper does, and vanishes; the cyan has no red at all, so it turns dark. Where a
-// fine line crosses a letter the inks overprint (multiply, as ink on paper does) into a dark
-// cyan or black, which the film keeps dark, so the letters come through whole. That holds
-// for real red cellophane over a printed page too.
+// danielcwilson.com/blog/2018/02/optical-fun-red-reveal/) hid them. Through red film only
+// a color's red gets through, so anything printed with full red (R = 255) turns the film's
+// own red, just like the white paper, and vanishes; the answer is printed in a pale cyan,
+// which has little red, so it alone turns dark.
+//
+// Without the film the answer has to be hard to pick out, so each word is drawn on a canvas
+// in three layers, all from a seed made of the word so a page always prints the same:
+//   1. decoy strokes: short pale pink and lilac pen strokes as thick as the letters' and as
+//      light as the cyan, some under the letters and some over them, so the eye cannot tell
+//      a letter stroke from noise by its weight, lightness or shape;
+//   2. the letters in pale cyan, about as light as the decoys;
+//   3. dense crossing red lines over everything, cutting every letter into pieces.
+// Every decoy and line has R = 255, so through the film only the letters are left.
 import { h } from '../../editor/core/ui';
 
-/** The answer's ink: process cyan, no red at all. */
-export const CYAN_INK = 'rgb(0,174,239)';
-/** The red lines, from pure red to a light red; every one has full red. */
-export const LINE_INKS = ['rgb(255,0,0)', 'rgb(255,80,80)', 'rgb(255,140,140)'];
+/** The answer's ink on screen: a very pale cyan, hardly different from the white decoys. */
+export const CYAN_INK = 'rgb(204,250,255)';
+/** The answer's ink on paper: a stronger cyan, so real red cellophane over a print shows it dark enough. */
+export const PRINT_CYAN_INK = 'rgb(160,240,255)';
+/** The red lines over everything, saturated to light; every one has full red. */
+export const LINE_INKS = ['rgb(255,0,0)', 'rgb(255,50,50)', 'rgb(255,90,110)', 'rgb(255,30,80)'];
+/** The decoy strokes: pale pinks and lilacs about as light as the cyan; full red. */
+export const DECOY_INKS = ['rgb(255,255,255)', 'rgb(255,252,246)', 'rgb(255,248,255)'];
+/** The paper under it all, a pale pink. */
+export const FIELD_INK = 'rgb(255,196,202)';
 
 const rgb = (color: string) => (color.match(/\d+/g) ?? []).map(Number);
 
@@ -22,40 +33,161 @@ export function luma(color: string): number {
   return 0.299 * r + 0.587 * g + 0.114 * b;
 }
 
-/** Two inks printed over each other (multiply), as "rgb(r,g,b)". */
-export function overprint(a: string, b: string): string {
-  const x = rgb(a);
-  const y = rgb(b);
-  return `rgb(${x.map((v, i) => Math.round((v * y[i]) / 255)).join(',')})`;
-}
-
 /** How light a color looks through pure red film, 0-255: only its red gets through. */
 export function throughRedFilm(color: string): number {
   return rgb(color)[0];
 }
 
-const layer = (deg: number, gap: number, line: number, ink: string) =>
-  `repeating-linear-gradient(${deg}deg, transparent 0 ${gap}em, ${ink} ${gap}em ${gap + line}em)`;
-
-/** The red lines under the answer: crossing hatching about as dark as the cyan, as CSS backgrounds. */
-export function redField(): string {
-  return [layer(152, 0.11, 0.07, LINE_INKS[1]), layer(112, 0.13, 0.06, LINE_INKS[0]), layer(38, 0.09, 0.08, LINE_INKS[2])].join(',');
+/** A small seeded random number generator (mulberry32), so a word always gets the same noise. */
+export function seeded(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-/** The fine red lines printed over the answer, cutting its letters. */
-export function redLines(): string {
-  return [layer(152, 0.22, 0.045, LINE_INKS[0]), layer(64, 0.29, 0.04, LINE_INKS[1])].join(',');
+/** A seed from a string. */
+export function hashText(text: string): number {
+  let x = 2166136261;
+  for (let i = 0; i < text.length; i++) x = Math.imul(x ^ text.charCodeAt(i), 16777619);
+  return x >>> 0;
 }
 
-/** An answer hidden among red lines. */
+/** The canvas's font size in pixels: big enough to print sharply at a few times its size on screen. */
+const PX = 64;
+/** Line height, in ems (the word canvases stack into lines this tall). */
+const LINE = 1.4;
+const FONT = `700 ${PX}px Arial, Helvetica, sans-serif`;
+/** Bold Arial's stroke is about this many ems thick. */
+const STROKE = 0.15;
+
+/** Draws `count` short pen strokes, each a gentle curve, from `inks`. */
+function strokes(
+  c: CanvasRenderingContext2D,
+  rnd: () => number,
+  w: number,
+  hh: number,
+  count: number,
+  inks: string[],
+  width: () => number,
+  len: () => number,
+): void {
+  c.lineCap = 'round';
+  for (let i = 0; i < count; i++) {
+    // start anywhere up to a stroke's length outside, so the noise is as thick at the edges
+    const l = len();
+    const x = -l + rnd() * (w + 2 * l);
+    const y = -l + rnd() * (hh + 2 * l);
+    const a = rnd() * Math.PI * 2;
+    const bend = (rnd() - 0.5) * l * 0.8;
+    const ex = x + Math.cos(a) * l;
+    const ey = y + Math.sin(a) * l;
+    c.strokeStyle = inks[Math.floor(rnd() * inks.length)];
+    c.lineWidth = width();
+    c.beginPath();
+    c.moveTo(x, y);
+    c.quadraticCurveTo((x + ex) / 2 - Math.sin(a) * bend, (y + ey) / 2 + Math.cos(a) * bend, ex, ey);
+    c.stroke();
+  }
+}
+
+/** One word (with the space after it) hidden in noise, as a canvas `PX` pixels to the em. */
+export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  const c0 = canvas.getContext('2d');
+  if (!c0) return canvas;
+  c0.font = FONT;
+  const pad = PX * 0.3;
+  const w = Math.ceil(c0.measureText(word).width + pad);
+  const hh = Math.ceil(PX * LINE);
+  canvas.width = w;
+  canvas.height = hh;
+  const c = canvas.getContext('2d')!;
+  const rnd = seeded(seed);
+  const area = ((w + PX) * (hh + PX)) / (PX * PX);
+  c.fillStyle = FIELD_INK;
+  c.fillRect(0, 0, w, hh);
+  const stroke = () => PX * STROKE * (0.8 + rnd() * 0.4);
+  const decoyLen = () => PX * (0.2 + rnd() * 0.45);
+  // 1. decoys under the letters
+  strokes(c, rnd, w, hh, Math.round(area * 12), DECOY_INKS, stroke, decoyLen);
+  // 2. the letters
+  c.font = FONT;
+  c.textBaseline = 'middle';
+  c.fillStyle = ink;
+  c.fillText(word, pad / 3, hh / 2 + PX * 0.04);
+  // decoys over the letters, breaking them up
+  strokes(c, rnd, w, hh, Math.round(area * 0.6), DECOY_INKS, stroke, decoyLen);
+  // 3. the red lines: long and thin, crossing every which way
+  strokes(
+    c,
+    rnd,
+    w,
+    hh,
+    Math.round(area * 20),
+    LINE_INKS,
+    () => PX * (0.03 + rnd() * 0.03),
+    () => PX * (0.4 + rnd() * 1.2),
+  );
+  return canvas;
+}
+
+/** An answer hidden among red lines: each word is its own picture so the answer wraps like text
+ * (one picture for the screen, one in a stronger cyan for printing). */
 export function redCode(text: string): HTMLElement {
+  const words = text.split(/\s+/).filter(Boolean);
+  const base = hashText(text);
+  const picture = (word: string, seed: number, ink: string, cls: string) => {
+    const cv = hiddenWord(word, seed, ink);
+    const img = h('img', { class: `rf-word ${cls}`, alt: '', draggable: false, src: cv.toDataURL('image/png') });
+    img.style.width = `${cv.width / PX}em`;
+    img.style.height = `${LINE}em`;
+    return img;
+  };
   return h(
     'span',
-    { class: 'rf-code', style: `background:${redField()}, #fff` },
-    h('span', { class: 'rf-text', style: `color:${CYAN_INK}` }, text),
-    // fine red lines over the top, overprinting the cyan (see .rf-noise in paper.css)
-    h('span', { class: 'rf-noise', 'aria-hidden': 'true', style: `background:${redLines()}` }),
+    { class: 'rf-code', role: 'img', 'aria-label': 'Hidden answer: lay the red film over it' },
+    ...words.flatMap((word, i) => [picture(word, base + i * 7919, CYAN_INK, 'rf-screen'), picture(word, base + i * 7919, PRINT_CYAN_INK, 'rf-print')]),
   );
+}
+
+/**
+ * How the red film is shown on screen: an SVG filter for `backdrop-filter` that keeps only the
+ * red channel and stretches its light end, the way an eye looking through red film soon sees
+ * the red as white and anything a little darker as dark. (Where it isn't supported the film
+ * just multiplies by red.)
+ */
+export const RED_VIEW_ID = 'rf-red-view';
+
+function ensureRedView(): void {
+  if (document.getElementById(RED_VIEW_ID)) return;
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('width', '0');
+  svg.setAttribute('height', '0');
+  svg.style.position = 'absolute';
+  const filter = document.createElementNS(ns, 'filter');
+  filter.id = RED_VIEW_ID;
+  filter.setAttribute('color-interpolation-filters', 'sRGB');
+  const m = document.createElementNS(ns, 'feColorMatrix');
+  m.setAttribute('type', 'matrix');
+  m.setAttribute('values', `${RED_VIEW_GAIN} 0 0 0 ${1 - RED_VIEW_GAIN}  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0`);
+  filter.append(m);
+  svg.append(filter);
+  document.body.append(svg);
+}
+
+/** How much the red film view stretches the red channel (1 = plain red film). */
+export const RED_VIEW_GAIN = 4;
+
+/** Red through the on-screen film for a color, 0-255 (see ensureRedView). */
+export function throughRedView(color: string): number {
+  return Math.max(0, Math.min(255, Math.round(RED_VIEW_GAIN * throughRedFilm(color) + (1 - RED_VIEW_GAIN) * 255)));
 }
 
 /**
@@ -66,6 +198,7 @@ export class RedLens {
   private el = h('div', { class: 'rf-lens', hidden: true, 'aria-hidden': 'true' });
 
   mount(parent: HTMLElement): void {
+    ensureRedView();
     parent.append(this.el);
   }
 
@@ -115,6 +248,7 @@ export class RedFilm {
   }
 
   mount(parent: HTMLElement): void {
+    ensureRedView();
     parent.append(this.el);
   }
 
