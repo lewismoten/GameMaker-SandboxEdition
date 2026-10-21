@@ -1,11 +1,22 @@
 // Minimal ZIP reader/writer using the platform's (de)compression streams.
 // Writes deflate (falling back to stored); reads stored and deflated entries.
+// Used to import and export game projects and to build the DOS and web app downloads.
+// This is not a port of anything in the original Game-Maker.
+//
+// Layout (PKWARE APPNOTE; a copy is in code/GM/APPNOTE.TXT): for each file a local header
+// (signature 0x04034B50, 30 bytes + name) and its data, then the central directory (one
+// 0x02014B50 entry, 46 bytes + name + extra + comment, per file, pointing back at its
+// local header), then the end of central directory record (0x06054B50, 22 bytes + comment)
+// giving the entry count, directory size and directory offset. ZIP64 and encryption are
+// not supported; the writer uses no data descriptors.
 
 export interface ZipEntry {
   name: string;
   data: Uint8Array;
 }
 
+// CRC-32 (reflected polynomial 0xEDB88320, initial value and final XOR 0xFFFFFFFF),
+// computed a byte at a time from a 256-entry table.
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
@@ -29,6 +40,8 @@ async function transform(data: Uint8Array, stream: CompressionStream | Decompres
 
 const canCompress = () => typeof CompressionStream !== 'undefined';
 
+// MS-DOS time (hour << 11 | minute << 5 | second / 2) and date ((year - 1980) << 9 |
+// month << 5 | day), in local time; years before 1980 cannot be stored.
 function dosDateTime(d: Date): [number, number] {
   const time = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
   const date = ((Math.max(1980, d.getFullYear()) - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
@@ -46,6 +59,8 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
     const crc = crc32(e.data);
     let method = 0;
     let body = e.data;
+    // Method 8 is deflate; the zip stores raw deflate data (no zlib header). Tiny files and
+    // files that do not shrink are stored (method 0).
     if (canCompress() && e.data.length > 64) {
       const deflated = await transform(e.data, new CompressionStream('deflate-raw'));
       if (deflated.length < e.data.length) {
@@ -53,6 +68,8 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
         body = deflated;
       }
     }
+    // Local header: signature, version needed (2.0), flags, method, time, date, CRC,
+    // compressed size, uncompressed size, name length, extra length (0), then the name.
     const h = new DataView(new ArrayBuffer(30));
     h.setUint32(0, 0x04034b50, true);
     h.setUint16(4, 20, true);
@@ -66,6 +83,8 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
     h.setUint16(26, name.length, true);
     local.push(new Uint8Array(h.buffer), name, body);
 
+    // Central directory entry: the same fields after "version made by", plus extra and
+    // comment lengths, disk, attributes (all 0 here) and the local header's offset at +42.
     const c = new DataView(new ArrayBuffer(46));
     c.setUint32(0, 0x02014b50, true);
     c.setUint16(4, 20, true);
@@ -83,6 +102,8 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
     offset += 30 + name.length + body.length;
   }
   const centralSize = central.reduce((n, p) => n + p.length, 0);
+  // End of central directory: entries on this disk and in total, directory size, and the
+  // directory's offset, which is where the local records end.
   const end = new DataView(new ArrayBuffer(22));
   end.setUint32(0, 0x06054b50, true);
   end.setUint16(8, entries.length, true);
@@ -102,6 +123,8 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
 export async function readZip(bytes: Uint8Array): Promise<ZipEntry[]> {
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let eocd = -1;
+  // The end record is 22 bytes plus a comment of up to 65535 bytes, so scan back from the
+  // end of the file at most that far for its signature.
   for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
     if (v.getUint32(i, true) === 0x06054b50) {
       eocd = i;
@@ -123,6 +146,10 @@ export async function readZip(bytes: Uint8Array): Promise<ZipEntry[]> {
     const localOffset = v.getUint32(p + 42, true);
     const name = dec.decode(bytes.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
+    // Folder entries carry no data. Sizes come from the central directory because the
+    // local header's may be 0 when the writer used a data descriptor; its name and extra
+    // lengths can differ from the directory's, so they are read from the local header.
+    // CRCs are not checked, and entries using other methods are skipped.
     if (name.endsWith('/')) continue;
     const lNameLen = v.getUint16(localOffset + 26, true);
     const lExtraLen = v.getUint16(localOffset + 28, true);
