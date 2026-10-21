@@ -28,6 +28,7 @@ import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
 import { CREDITS, INSTRUCTIONS, readme } from './src/screens/text';
 import { ITEM_PICS } from './src/blocks/items';
 import { PAGES_NEEDED } from './src/ids';
+import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -192,6 +193,7 @@ end.files = ['won.lst', 'won.cmf', 'lost.gif', 'lost.cmf', ...new Array(16).fill
 disk.put('year2000.gam', serializeGame(game));
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
+disk.put('license.txt', licenseText("In The Year 2000!"));
 disk.write();
 console.log(
   `${Object.entries(sets)

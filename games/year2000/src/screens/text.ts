@@ -1,4 +1,5 @@
 // The text pages (shown 31 characters wide by Game-Maker) and README.TXT.
+import { withCreditPage } from '../../../kit/license';
 
 function check(name: string, s: string, width = 30): string {
   for (const line of s.split('\n')) if (line.length > width) throw new Error(`${name}: line too long (${line.length}): ${line}`);
@@ -58,7 +59,7 @@ F3 Music  F4 Sound
 F5 Save   F6 Load   ESC Quit`,
 );
 
-export const CREDITS = check(
+const CREDITS_TEXT = check(
   'credits',
   `IN THE YEAR 2000!
 Version 1.0 - 1992
@@ -178,3 +179,6 @@ Please make checks payable to Sandbox Software. Allow 4 to 6 weeks for delivery,
 Made with GAME-MAKER 3.0 by Recreational Software Designs.
 `);
 }
+
+/** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
+export const CREDITS = withCreditPage(CREDITS_TEXT);
