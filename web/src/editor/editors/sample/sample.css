@@ -40,7 +40,7 @@
   display: block;
   width: 100%;
   /* taller when the window has room for it */
-  height: clamp(160px, calc(var(--ws-vh, 100dvh) - 620px), 340px);
+  height: clamp(150px, calc(var(--ws-vh, 100dvh) - 620px), 340px);
   border-radius: 6px;
   cursor: text;
   touch-action: none;
