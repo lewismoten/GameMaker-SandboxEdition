@@ -126,16 +126,27 @@ from `master`. In the repository settings, set **Pages → Source** to **GitHub 
 
 ## Layout
 
+[`src/README.md`](src/README.md) maps the source folders and the main flows in more
+detail. In short:
+
 | Folder | What it holds |
 | --- | --- |
 | `src/formats` | Readers/writers for every file type. Borland C++ 16-bit layout: `int` is 2 bytes, structs are byte-packed. |
 | `src/engine` | The game engine: `game.ts` (`DoGame`, `play`), `scene.ts` (`playscene`), `character.ts`, `monsters.ts`, `scroll.ts`, `touch.ts`, `keys.ts`, plus menus, text screens and the "machine" (screen, keyboard, timers). Function names follow `PLAYGAME.C`. |
 | `src/audio` | `opl.ts` (OPL2 emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV calls), `music.worklet.ts`, `engine.ts` (Web Audio output). |
-| `src/gfx` | Mode 13h screen and the 8×8 font. |
-| `src/editor` | The editor app: home page, workspace and one editor per file type in `editors/`. |
+| `src/gfx`, `src/input` | Mode 13h screen and the 8×8 font; keyboard scan codes and the gamepad. |
 | `src/player` | The embeddable player (canvas, start overlay, touch controls). |
-| `src/export` | Web app exporter and service worker generator. |
-| `src/project` | Game file store, IndexedDB storage, ZIP reader/writer. |
+| `src/project` | Game file store, IndexedDB storage, ZIP reader/writer, health check. |
+| `src/export` | Web app, single-page and DOS exporters, and the service worker generator. |
+| `src/media` | Demo playback and saving video, animated GIFs and WAV. |
+| `src/editor` | Today's web interface: `shell/` (home page, workspace), `core/` (DOM helpers, the open project, undo), `widgets/` (pickers, thumbnails, previews), `editors/<kind>/` (one folder per file type, registered in `editors/registry.ts`), `tools/` (making pictures, songs and sounds), `keymap/` (the ⌨ Keys map). |
+| `src/desk` | The 1994 desk: `desk.ts`, and `pc/`, `boxes/`, `disks/`, `mug/`, `room/` for the things on it. |
+| `src/retro` | The desk's PC: `computer.ts` (with `computer/`), `dos/` (COMMAND.COM, files, disks), `text/` (text mode and Game-Maker's text UI), `bbs/` (terminal and BBSes), `gm.ts` (GM.EXE's menus). |
+| `src/vga` | The eight designers ported from their C source, one file per `.EXE` (a big one's parts in a folder of the same name), and `shared/` (VGA screen, block routines, Game-Maker's look). |
+| `src/manual` | The Owner's Guide, the web Guide, and the original games' manuals and box contents. |
+| `src/seo` | Page titles, descriptions and JSON-LD. |
+| `scripts` | Vite plugins: serving the CD's games, the one-page player, SEO pages. |
+| `test` | Vitest tests, one file per subject, each starting with a line saying what it covers. |
 
 ## File formats
 
