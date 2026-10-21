@@ -78,6 +78,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
       status,
       async say(v, text) {
         live();
+        status("Connected");
         pad?.caption(v.who, text);
         await speak(text, v, signal);
         live();
