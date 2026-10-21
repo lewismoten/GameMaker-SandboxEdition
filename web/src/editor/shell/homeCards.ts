@@ -14,6 +14,7 @@ import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
 import { showKeyMap } from '../keymap/keyMapView';
 import { demoButton } from '../../media/demo';
+import { offerAddedDemo } from '../../media/addedDemo';
 import { catalogHasDemo, filesHaveDemo, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
 import { gamePage } from '../../seo/site';
@@ -304,8 +305,11 @@ async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promis
     if (!pick) return;
     if (pick !== 'new') return nav.openProject(pick.id);
   }
+  // a demo added for this edition goes in only if asked for (offerAddedDemo, media/addedDemo.ts)
+  const files = await offerAddedDemo(game.entry, await game.files(), game.gam);
+  if (!files) return;
   toast(`Copying ${game.title}…`);
-  const p = Project.fromFiles(await game.files(), name);
+  const p = Project.fromFiles(files, name);
   if (game.gam) p.gam = game.gam;
   await p.saveNow();
   rememberOrigin(p.id, game.entry?.id);
