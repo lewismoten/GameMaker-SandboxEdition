@@ -89,8 +89,8 @@
           "head": "1. Doc Leo's Backyard",
           "hints": [
             {
-              "q": "Where is Doc Leo's top hat?",
-              "a": "Up in the top branches of the old oak. Hop up through the branches one at a time, then stand on the hat and press F."
+              "q": "Where is Doc Leo's fedora?",
+              "a": "Up in the top branches of the old oak. Hop up through the branches one at a time, then stand on the fedora and press F."
             },
             {
               "q": "The squirrel keeps nipping me.",
@@ -118,8 +118,8 @@
               "a": "It only sprays for a while. Wait until it rests, then trot right across."
             },
             {
-              "q": "How do I get the bow tie?",
-              "a": "It's caught on yard-sale balloons by the white house's porch. Stand under them and press 1 to high five; the bow tie drops down."
+              "q": "How do I get the green tie?",
+              "a": "It's caught on yard-sale balloons by the white house's porch. Stand under them and press 1 to high five; the tie drops down."
             },
             {
               "q": "The kids on the porches hold out a hand.",
@@ -135,8 +135,8 @@
               "a": "Walk into the fountain's jet. It lifts Teddy up; steer off the top and over the hedge."
             },
             {
-              "q": "Which kid has Doc Leo's shoes?",
-              "a": "One of the kids on the bench. Stand near the SIT? bubble and press 2 to sit pretty, and the heart wins them over. The shoes drop right down."
+              "q": "Which kid has Doc Leo's red sneakers?",
+              "a": "One of the kids on the bench. Stand near the SIT? bubble and press 2 to sit pretty, and the heart wins them over. The sneakers drop right down."
             },
             {
               "q": "The geese won't let me on the covered bridge.",
@@ -152,8 +152,8 @@
           "head": "4. Downtown",
           "hints": [
             {
-              "q": "The horn is up on a fire escape.",
-              "a": "Stand on the subway steam vent and it blows Teddy up. Steer onto the fire escape and fetch the horn with F."
+              "q": "The rubber chicken is up on a fire escape.",
+              "a": "Stand on the subway steam vent and it blows Teddy up. Steer onto the fire escape and fetch the chicken (leash and all) with F."
             },
             {
               "q": "Biggles Department Store is in the way.",
@@ -274,7 +274,7 @@
     },
     {
       "text": "HIGH FIVE!",
-      "sub": "DOC LEO'S BOW TIE",
+      "sub": "DOC LEO'S GREEN TIE",
       "shape": "circle",
       "color": "#1d5fb8",
       "ink": "#ffd23f",
