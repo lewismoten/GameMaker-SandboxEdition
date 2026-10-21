@@ -92,6 +92,13 @@ export function modal<T>(title: string, build: (close: (v: T | undefined) => voi
 export async function promptText(title: string, label: string, value = '', pattern?: string): Promise<string | undefined> {
   return modal<string>(title, (close) => {
     const input = h('input', { type: 'text', value, required: true, pattern, autofocus: true, onfocus: (e: Event) => (e.target as HTMLInputElement).select() });
+    // Chrome may focus the dialog's input before it is shown (opened from the keyboard), losing the
+    // selection, so typing would add to the name: select it again once the dialog is open.
+    requestAnimationFrame(() => {
+      if (!input.isConnected) return;
+      input.focus();
+      input.setSelectionRange(0, input.value.length);
+    });
     const form = h(
       'form',
       {
