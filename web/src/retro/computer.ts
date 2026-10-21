@@ -5,6 +5,8 @@
 // games); the drives and game folders are in computer/drives.ts and computer/folders.ts.
 import { attr } from "./text/textScreen";
 import { type ProgramRef } from "./dos/vfs";
+import { ProgramAborted } from "./text/textInput";
+import type { OpenDesigner } from "./host";
 import { errorBox, askText } from "./text/textUi";
 import { runGameMaker, playgame } from "./gm";
 import { runTerminal } from "./bbs/bbs";
@@ -121,6 +123,7 @@ export class Computer extends ComputerFolders {
 
   async run(ref: ProgramRef, _args: string[]): Promise<void> {
     this.busy = true;
+    this.program = ref.kind;
     try {
       switch (ref.kind) {
         case "gm":
@@ -151,8 +154,19 @@ export class Computer extends ComputerFolders {
           for (const l of ref.lines) await this.shell.execute(l);
           break;
       }
+    } catch (e) {
+      // stopped from outside (stopProgram): back to the prompt
+      if (!(e instanceof ProgramAborted)) throw e;
+      this.vgaScreen?.destroy();
+      this.vgaScreen = undefined;
+      clear(this.layer);
+      this.keys.enabled = true;
+      this.screen.clear();
     } finally {
       this.busy = false;
+      this.program = undefined;
+      this.designer = undefined;
+      this.keys.resume();
       this.screen.resetPalette();
       this.setMode("text");
     }
@@ -160,6 +174,31 @@ export class Computer extends ComputerFolders {
 
   /** The game playing on the monitor, if any. */
   private player?: PlayerHandle;
+  /** The program running (Computer.run), if any. */
+  private program?: ProgramRef["kind"];
+  /** Closes the web-style designer on the monitor, if one is open. */
+  private closeEditor?: () => void;
+  designer?: OpenDesigner;
+
+  /** Game-Maker (or one of its designers) is running. */
+  get inGameMaker(): boolean {
+    return this.program === "gm";
+  }
+
+  /**
+   * Stops Game-Maker wherever it is, as if you'd quit every menu: no questions asked, so
+   * save first (see designer). False if something else is running.
+   */
+  async stopProgram(): Promise<boolean> {
+    if (!this.busy) return true;
+    if (await this.stopGame()) return true;
+    if (!this.inGameMaker) return false;
+    this.keys.abort();
+    this.vgaScreen?.abort();
+    this.closeEditor?.();
+    for (let i = 0; this.busy && i < 150; i++) await sleep(20);
+    return !this.busy;
+  }
 
   /**
    * Stops the game that is playing, as if you'd quit it, and waits for the DOS prompt.
@@ -217,6 +256,7 @@ export class Computer extends ComputerFolders {
     return new Promise<void>((resolve) => {
       let cleanup: void | (() => void);
       const close = () => {
+        this.closeEditor = undefined;
         if (typeof cleanup === "function") cleanup();
         window.removeEventListener("keydown", onKey, true);
         clear(this.layer);
@@ -239,6 +279,7 @@ export class Computer extends ComputerFolders {
         }
       };
       window.addEventListener("keydown", onKey, true);
+      this.closeEditor = close;
       const body = h("div", { class: "vga-body" });
       clear(
         this.layer,

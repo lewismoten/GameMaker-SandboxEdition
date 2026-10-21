@@ -6,6 +6,21 @@ import type { GameFiles, CatalogEntry } from '../project/files';
 import type { Project } from '../editor/core/project';
 import type { FileSystem } from './dos/vfs';
 import type { HdGame } from './dos/hardDisk';
+import type { WorkArea } from './dos/workArea';
+
+/**
+ * A ported designer with work open. The desk asks it whether anything is unsaved before
+ * it stops Game-Maker (to play a game, say), and saves it if you want.
+ */
+export interface OpenDesigner {
+  /** "Palette Designer" */
+  title: string;
+  readonly saved: boolean;
+  /** Where its files are (the game area) and the file being edited (curfile). */
+  work: WorkArea;
+  /** What saving writes: the work, one file per extension. */
+  contents(): { ext: string; bytes: Uint8Array }[];
+}
 
 /** A game found in a folder on one of the PC's drives. */
 export interface FolderGame {
@@ -47,6 +62,8 @@ export interface RetroHost extends Ui {
   catalog(): Promise<CatalogEntry[]>;
   /** Shareware downloaded from the BBS into C:\DOWNLOAD. */
   downloads: Downloads;
+  /** The ported designer running, if any (vga/*.ts set it; Computer.run clears it). */
+  designer?: OpenDesigner;
   /** Unlocked Web Audio context for modem sounds. */
   audio(): AudioContext | undefined;
   /** False when TURBO is off and the PC runs like a 286. */
