@@ -2,6 +2,7 @@
 import { rovingGrid } from '../../widgets/rovingGrid';
 import './blocks.css';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { fileField } from '../../widgets/filePicker';
 import { TEXTURES, paintTexture } from '../../tools/textures';
 import { h, clear, numberField, checkField, selectField, debounce } from '../../core/ui';
@@ -70,7 +71,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const raw = project.files.get(file)!;
   const blocks = parseBlocks(raw, Math.max(BLOCK_COUNTS[kind], Math.ceil(raw.length / BLOCK_SIZE)));
   const sprites = kind !== 'bbl';
-  let current = 0;
+  // the address keeps the block being painted (…/NEBULA.BBL?block=12)
+  const view = viewState(['p', project.id, file]);
+  const urlBlock = view.num('block');
+  let current = urlBlock !== undefined && urlBlock >= 0 && urlBlock < blocks.length ? urlBlock : 0;
   let color = sprites ? 0 : 1;
   let tool: Tool = 'draw';
   // each block keeps its own undo and redo (its pixels), so switching blocks never undoes another's paint
@@ -107,6 +111,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   }
   function select(i: number): void {
     current = i;
+    view.set({ block: i });
     [...picker.children].forEach((b, j) => b.classList.toggle('selected', j === i));
     renderBlock();
     renderProps();

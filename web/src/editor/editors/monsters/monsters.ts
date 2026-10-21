@@ -3,6 +3,7 @@ import './monsters.css';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
 import { registerEditor } from '../registry';
+import { viewState } from '../../../urlState';
 import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
 import { blockCanvas, paintBlock } from '../../core/draw';
 import { paletteChooser } from '../blocks/blocks';
@@ -36,7 +37,10 @@ registerEditor(['mon'], (host, project, file) => {
   const game = project.game();
   let mblName = (use && game.scenes[use.scene].files[4]) || project.files.byExtension('mbl')[0] || '';
   let mblk = mblName ? parseBlocks(project.files.get(mblName)!, MONBL) : newBlockSet('mbl');
-  let current = 0;
+  // the address keeps the monster shown (…/NEBULA.MON?monster=3)
+  const view = viewState(['p', project.id, file]);
+  const urlMonster = view.num('monster');
+  let current = urlMonster !== undefined && urlMonster >= 0 && urlMonster < mons.length ? urlMonster : 0;
   const save = debounce(() => project.files.set(file, serializeMonsters(mons)), 250);
   const chooser = paletteChooser(project, mblName || file, () => render());
   /** Each monster as its first animation frame, for choosing monsters by picture. */
@@ -287,6 +291,7 @@ registerEditor(['mon'], (host, project, file) => {
   }
 
   function render(): void {
+    view.set({ monster: current });
     renderList();
     renderDetail();
   }
