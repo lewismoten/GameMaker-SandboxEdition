@@ -306,7 +306,7 @@
     600 13px system-ui,
     sans-serif;
   cursor: pointer;
-  opacity: 0.55;
+  opacity: 0.75;
   transition: opacity 0.2s;
 }
 

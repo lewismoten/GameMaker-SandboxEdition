@@ -39,6 +39,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   const canvas = document.createElement('canvas');
   canvas.tabIndex = 0;
   canvas.setAttribute('aria-label', `${opts.title ?? 'Game'} screen`);
+  // the game takes the keyboard (arrows, Space, letters) while it has focus
+  canvas.setAttribute('role', 'application');
   container.append(canvas);
   const machine = new Machine(canvas, files);
   const unexact = opts.exactPixels ? exactScale(canvas) : undefined;
