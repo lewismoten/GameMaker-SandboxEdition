@@ -12,7 +12,11 @@ import { createZip } from '../project/zip';
 import { download } from '../editor/core/ui';
 import type { Program } from '../vga/shared/designer';
 
-/** Designers ported to VGA graphics: they run their own menus, as the .EXEs did. */
+/**
+ * Designers ported to VGA graphics: they run their own menus, as the .EXEs did. Each .EXE is
+ * one file at the top of vga/ that exports `program` (its parts live in a folder of the same
+ * name, and shared code in vga/shared/, which this glob does not pick up).
+ */
 const PORTED: Record<string, Program['run']> = Object.fromEntries(
   Object.values(import.meta.glob<{ program?: Program }>('../vga/*.ts', { eager: true }))
     .flatMap((m) => (m.program ? [[m.program.exe, m.program.run]] : [])),
