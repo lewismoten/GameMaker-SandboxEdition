@@ -121,7 +121,7 @@
       "ticks": 1011,
       "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
       "date": "2026-10-21",
-      "recCrc": 90341861
+      "recCrc": 3950137910
     },
     {
       "id": "ajquest",
@@ -138,10 +138,10 @@
       "file": "bounerm.rec",
       "gam": "bounerim.gam",
       "gamCrc": 4030024679,
-      "ticks": 831,
+      "ticks": 1011,
       "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
       "date": "2026-10-21",
-      "recCrc": 2066954832
+      "recCrc": 2448463427
     },
     {
       "id": "congress",
@@ -248,10 +248,10 @@
       "file": "zoom.rec",
       "gam": "zoom_.gam",
       "gamCrc": 4009495921,
-      "ticks": 1011,
+      "ticks": 1111,
       "made": "Recorded for Game-Maker: Sandbox Edition by a bot playing the game in the web engine (games/kit/cdDemos); the original game has no demo.",
       "date": "2026-10-21",
-      "recCrc": 3703461303
+      "recCrc": 2374114001
     }
   ]
 }
