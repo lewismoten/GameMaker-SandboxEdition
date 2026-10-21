@@ -1,5 +1,10 @@
 // IndexedDB persistence: editor projects (whole game directories) and per-game
 // "save data" overlays (high scores, saved games, recordings written while playing).
+// This stands in for the DOS disk the original Game-Maker read and wrote; it is not a port.
+//
+// Database "gamemaker-web", version 1, two object stores:
+//   projects: ProjectRecord rows keyed by their `id`.
+//   saves: one object per game id mapping file name -> bytes (out-of-line keys).
 import { GameFiles } from './files';
 
 const DB_NAME = 'gamemaker-web';
@@ -10,13 +15,17 @@ const SAVES = 'saves';
 export interface ProjectRecord {
   id: string;
   name: string;
+  /** File name of the project's main .gam file within `files`. */
   gam: string;
+  /** Date.now() of the last save; the project list is sorted newest first. */
   updated: number;
+  /** The whole game directory: file name -> contents. */
   files: Record<string, Uint8Array>;
 }
 
 let dbPromise: Promise<IDBDatabase> | undefined;
 
+// Opens the database once and shares the connection; a first open creates the stores.
 function db(): Promise<IDBDatabase> {
   dbPromise ??= new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -43,6 +52,7 @@ function request<T>(store: string, mode: IDBTransactionMode, run: (s: IDBObjectS
   );
 }
 
+/** Project summaries without their files. getAll() still loads the files, then drops them. */
 export async function listProjects(): Promise<Omit<ProjectRecord, 'files'>[]> {
   const all = await request<ProjectRecord[]>(PROJECTS, 'readonly', (s) => s.getAll());
   return all.map(({ files: _files, ...rest }) => rest).sort((a, b) => b.updated - a.updated);
@@ -72,6 +82,10 @@ export async function loadSaveData(gameId: string): Promise<Record<string, Uint8
   }
 }
 
+/**
+ * Adds or replaces one save file by rewriting the game's whole save record (read, change,
+ * put in separate transactions). Failures are logged, not thrown, so play goes on.
+ */
 export async function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
   try {
     const current = await loadSaveData(gameId);
@@ -82,6 +96,7 @@ export async function writeSaveFile(gameId: string, name: string, bytes: Uint8Ar
   }
 }
 
+/** A random id; falls back to time + random when crypto.randomUUID is missing (insecure contexts). */
 export function newId(): string {
   return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
