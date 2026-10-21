@@ -1,5 +1,5 @@
 // The dogs on the painted covers: Teddy, the red-gold Pembroke corgi (big upright ears, his
-// right one taller, a white blaze, chest and paws, a big grin), and Gwin, his big sister,
+// right one taller, a white blaze, chest and paws, a big grin), and Gwinn, his big sister,
 // a lean liver-brown pit-lab mix with floppy ears, amber eyes and a pink collar.
 import { type Ctx, blob, ell, fill, lin, poly, rad, stroke } from './paint';
 
@@ -17,7 +17,7 @@ export interface DogLook {
 }
 
 export const TEDDY: DogLook = { coat: ['#ffc070', '#dc7a2a', '#7a3410'], ears: 'up', legs: 24, long: 72, eye: '#2a1408', nose: '#111', tongue: true };
-export const GWIN: DogLook = { coat: ['#b07050', '#6e3a22', '#2e1408'], ears: 'flop', legs: 64, long: 70, eye: '#f0b030', nose: '#5a2a1a', collar: '#ff6fb0', tongue: true };
+export const GWINN: DogLook = { coat: ['#b07050', '#6e3a22', '#2e1408'], ears: 'flop', legs: 64, long: 70, eye: '#f0b030', nose: '#5a2a1a', collar: '#ff6fb0', tongue: true };
 
 /** A dog standing, facing right; (x, y) is the ground under its middle. */
 export function dog(c: Ctx, x: number, y: number, s: number, d: DogLook, flip = false): void {
@@ -50,7 +50,7 @@ export function dog(c: Ctx, x: number, y: number, s: number, d: DogLook, flip = 
   ]));
   ell(c, 10, top + 24, L * 0.7, 14);
   fill(c, d.ears === 'up' ? '#fbf3e8' : mid);
-  // the fluffy corgi rump, or Gwin's whip of a tail
+  // the fluffy corgi rump, or Gwinn's whip of a tail
   if (d.ears === 'up') {
     ell(c, -L + 16, top - 2, 26, 30);
     fill(c, rad(c, -L + 8, top - 16, 36, [

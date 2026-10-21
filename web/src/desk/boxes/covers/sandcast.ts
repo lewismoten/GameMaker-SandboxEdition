@@ -1,7 +1,7 @@
 // Sandcastle Knight's cover: the Fourth of July, fireworks over the backyard, and Teddy the
 // corgi knight (tin helmet, red plume) guarding his sandbox castle, its tower flying a
-// thirteen-star flag, while Gwin eyes his tennis ball.
-import { dog, GWIN, TEDDY } from './dog';
+// thirteen-star flag, while Gwinn eyes his tennis ball.
+import { dog, GWINN, TEDDY } from './dog';
 import { type Ctx, blob, ell, fill, finish, glow, lin, poly, rad, seeded, stars, stroke } from './paint';
 
 /** A firework burst. */
@@ -122,8 +122,8 @@ const paint = (c: Ctx, w: number, h: number): void => {
     [1, '#a8c020'],
   ]));
   stroke(c, '#fff', 2, [108, 592, 118, 600, 130, 606]);
-  // Gwin peeking from the fence corner, Teddy the knight front and center
-  dog(c, 70, 470, 0.62, GWIN);
+  // Gwinn peeking from the fence corner, Teddy the knight front and center
+  dog(c, 70, 470, 0.62, GWINN);
   dog(c, 250, 630, 1.3, { ...TEDDY, helmet: true });
   // his toy shovel, planted like a sword
   stroke(c, '#d81e1e', 9, [490, 640, 520, 470]);

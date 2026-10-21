@@ -39,7 +39,7 @@ const COMING: { id: string; title: string; blurb: string; when: string }[] = [
     id: 'teddy',
     title: "Teddy's Little Big Adventure",
     blurb:
-      'Teddy the Pembroke Welsh Corgi knows a ton of tricks. Literally: he will need every one of them on his biggest adventure yet, with his big sister Gwin making a mess of everything along the way.',
+      'Teddy the Pembroke Welsh Corgi knows a ton of tricks. Literally: he will need every one of them on his biggest adventure yet, with his big sister Gwinn making a mess of everything along the way.',
     when: 'Coming soon',
   },
 ];

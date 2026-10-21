@@ -1,8 +1,8 @@
 // Teddy's Little Big Adventure's cover: Main Street on the afternoon of the Klown Klub's Big
 // Show. Teddy grins front and center, Doc Leo the hobo clown (fedora, ash beard, green tie,
-// red sneakers, rubber chicken on a leash) waves by his little red CitiCar, and Gwin makes
+// red sneakers, rubber chicken on a leash) waves by his little red CitiCar, and Gwinn makes
 // off with the costume suitcase.
-import { dog, GWIN, TEDDY } from './dog';
+import { dog, GWINN, TEDDY } from './dog';
 import { type Ctx, blob, ell, fill, finish, glow, lin, poly, rad, seeded, stroke } from './paint';
 
 /** The 1976½ CitiCar: a tomato-red wedge with round headlight pods and a tall windshield. */
@@ -227,8 +227,8 @@ const paint = (c: Ctx, w: number, h: number): void => {
     (ell(c, bx, by, rx, ry), fill(c, rad(c, bx - 4, by - 4, rx + 6, [[0, '#ffd0f0'], [1, '#ff5aa8']])));
   citicar(c, 440, 520, 1.15);
   docLeo(c, 150, 584, 0.95);
-  // Gwin dashing off with the costume suitcase
-  dog(c, 480, 574, 0.55, GWIN);
+  // Gwinn dashing off with the costume suitcase
+  dog(c, 480, 574, 0.55, GWINN);
   c.save();
   c.translate(480 + 112 * 0.55, 574 - 140 * 0.55);
   c.rotate(0.15);
