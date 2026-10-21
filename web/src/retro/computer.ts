@@ -3,61 +3,73 @@
 //
 // This file is the power switch and running programs (DOS commands, Game-Maker's designers,
 // games); the drives and game folders are in computer/drives.ts and computer/folders.ts.
-import { attr } from './text/textScreen';
-import { type ProgramRef } from './dos/vfs';
-import { errorBox, askText } from './text/textUi';
-import { runGameMaker, playgame } from './gm';
-import { runTerminal } from './bbs/bbs';
-import { mountPlayer } from '../player/player';
-import { GameFiles } from '../project/files';
-import { loadProject } from '../project/storage';
-import { Project } from '../editor/core/project';
-import { editors, fileInfo } from '../editor/editors/registry';
-import { kindOf } from '../editor/core/project';
-import { Vga } from '../vga/shared/vga';
-import { output } from '../audio/output';
-import { h, clear } from '../editor/core/ui';
-import { AUTOEXEC } from './computer/setup';
-import { ComputerFolders } from './computer/folders';
+import { attr } from "./text/textScreen";
+import { type ProgramRef } from "./dos/vfs";
+import { errorBox, askText } from "./text/textUi";
+import { runGameMaker, playgame } from "./gm";
+import { runTerminal } from "./bbs/bbs";
+import { mountPlayer, type PlayerHandle } from "../player/player";
+import { GameFiles } from "../project/files";
+import { loadProject } from "../project/storage";
+import { Project } from "../editor/core/project";
+import { editors, fileInfo } from "../editor/editors/registry";
+import { kindOf } from "../editor/core/project";
+import { Vga } from "../vga/shared/vga";
+import { output } from "../audio/output";
+import { h, clear } from "../editor/core/ui";
+import { AUTOEXEC } from "./computer/setup";
+import { ComputerFolders } from "./computer/folders";
 
 export class Computer extends ComputerFolders {
   async powerOn(): Promise<void> {
     if (this.powered) return;
     this.powered = true;
     this.unlockAudio();
-    this.setMode('text');
+    this.setMode("text");
     const s = this.screen;
     s.resetPalette();
     s.clear(attr(7, 0));
     s.cursorVisible = false;
     const turbo = !this.opts.speed.ticksPerSecond;
-    s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    s.print(
+      `AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? "486DX2-66 Turbo" : "486DX2-66 (Turbo off)"}\n\n`,
+    );
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
-      s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
+      s.print(
+        `Memory Test: ${String(k).padStart(5)}K${k === 4096 ? " OK" : ""}`,
+      );
       await sleep(30);
     }
     this.postBeep(); // one short beep: the power-on self test passed
-    s.print('\n\nStarting MS-DOS...\n\n');
+    s.print("\n\nStarting MS-DOS...\n\n");
     await sleep(500);
     // CONFIG.SYS
-    s.print('HIMEM is testing extended memory...');
+    s.print("HIMEM is testing extended memory...");
     await sleep(turbo ? 350 : 1100);
-    s.print('done.\n');
+    s.print("done.\n");
     await sleep(150);
-    s.print('EMM386 successfully installed.\n  Available Upper Memory     :  91 KB\n\n');
+    s.print(
+      "EMM386 successfully installed.\n  Available Upper Memory     :  91 KB\n\n",
+    );
     await sleep(250);
-    s.print('  ATAPI CD-ROM Device Driver  Version 2.14\n  Drive 0: CD-ROM 2X (MSCD001)\n\n');
+    s.print(
+      "  ATAPI CD-ROM Device Driver  Version 2.14\n  Drive 0: CD-ROM 2X (MSCD001)\n\n",
+    );
     await sleep(turbo ? 400 : 900);
     // AUTOEXEC.BAT
     for (const l of AUTOEXEC.slice(1)) {
-      if (l.includes('MSCDEX')) {
-        s.print('MSCDEX Version 2.23\n        Drive D: = Driver MSCD001 unit 0\n');
+      if (l.includes("MSCDEX")) {
+        s.print(
+          "MSCDEX Version 2.23\n        Drive D: = Driver MSCD001 unit 0\n",
+        );
         await sleep(300);
-      } else if (l.includes('DOSKEY')) s.print('DOSKEY installed.\n');
-      else if (l.includes('MOUSE')) s.print('Mouse driver installed\n');
+      } else if (l.includes("DOSKEY")) s.print("DOSKEY installed.\n");
+      else if (l.includes("MOUSE")) s.print("Mouse driver installed\n");
     }
-    s.print('\nType HELP for commands, GM to start Game-Maker, TERMINAL to call the BBS.\n\n');
+    s.print(
+      "\nType HELP for commands, GM to start Game-Maker, TERMINAL to call the BBS.\n\n",
+    );
     s.cursorVisible = true;
     void this.shell.loop();
   }
@@ -68,7 +80,7 @@ export class Computer extends ComputerFolders {
     if (!ctx) return;
     const o = ctx.createOscillator();
     const g = ctx.createGain();
-    o.type = 'square';
+    o.type = "square";
     o.frequency.value = 1046;
     const t = ctx.currentTime + 0.02;
     g.gain.setValueAtTime(0, t);
@@ -111,48 +123,71 @@ export class Computer extends ComputerFolders {
     this.busy = true;
     try {
       switch (ref.kind) {
-        case 'gm':
+        case "gm":
           this.opts.onDriveAccess?.(this.shell.drive);
           await runGameMaker(this);
           break;
-        case 'playgame':
+        case "playgame":
           this.screen.gameMakerColors();
           await playgame(this);
           this.screen.resetPalette();
           this.screen.clear();
           break;
-        case 'terminal':
+        case "terminal":
           await runTerminal(this);
           break;
-        case 'install':
-          this.screen.print('Game-Maker SE 3.00 is already installed in C:\\GM.\nType GM to start it.\n');
+        case "install":
+          this.screen.print(
+            "Game-Maker SE 3.00 is already installed in C:\\GM.\nType GM to start it.\n",
+          );
           break;
-        case 'game': {
-          this.opts.onDriveAccess?.(ref.diskId ? 'A' : this.shell.drive);
+        case "game": {
+          this.opts.onDriveAccess?.(ref.diskId ? "A" : this.shell.drive);
           const files = new GameFiles(await ref.files());
           await this.playGame(files, ref.gam, ref.title, ref.notice);
           break;
         }
-        case 'batch':
+        case "batch":
           for (const l of ref.lines) await this.shell.execute(l);
           break;
       }
     } finally {
       this.busy = false;
       this.screen.resetPalette();
-      this.setMode('text');
+      this.setMode("text");
     }
   }
 
-  playGame(files: GameFiles, gam: string, title: string, notice?: string): Promise<void> {
+  /** The game playing on the monitor, if any. */
+  private player?: PlayerHandle;
+
+  /**
+   * Stops the game that is playing, as if you'd quit it, and waits for the DOS prompt.
+   * False if no game was playing (Game-Maker, the terminal or an editor may be).
+   */
+  async stopGame(): Promise<boolean> {
+    const p = this.player;
+    if (!p) return false;
+    p.stop();
+    await p.done;
+    for (let i = 0; this.busy && i < 100; i++) await sleep(20);
+    return !this.busy;
+  }
+
+  playGame(
+    files: GameFiles,
+    gam: string,
+    title: string,
+    notice?: string,
+  ): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
-    this.setMode('game');
-    const host = h('div', { class: 'crt-game' });
+    this.setMode("game");
+    const host = h("div", { class: "crt-game" });
     clear(this.layer, host);
     this.opts.onGame?.({ files, gam, title });
     return new Promise<void>((resolve) => {
-      mountPlayer(host, files, gam, {
+      this.player = mountPlayer(host, files, gam, {
         title,
         notice,
         autoStart: true,
@@ -161,6 +196,7 @@ export class Computer extends ComputerFolders {
         speed: this.opts.speed,
         onQuit: () => false, // back to DOS
         onExit: () => {
+          this.player = undefined;
           this.opts.onGame?.(undefined);
           clear(this.layer);
           this.keys.enabled = true;
@@ -171,46 +207,64 @@ export class Computer extends ComputerFolders {
     });
   }
 
-  openEditor(project: Project, fileName: string, program: string): Promise<void> {
-    this.setMode('gfx');
+  openEditor(
+    project: Project,
+    fileName: string,
+    program: string,
+  ): Promise<void> {
+    this.setMode("gfx");
     this.keys.enabled = false;
     return new Promise<void>((resolve) => {
       let cleanup: void | (() => void);
       const close = () => {
-        if (typeof cleanup === 'function') cleanup();
-        window.removeEventListener('keydown', onKey, true);
+        if (typeof cleanup === "function") cleanup();
+        window.removeEventListener("keydown", onKey, true);
         clear(this.layer);
         this.keys.enabled = true;
         this.keys.clear();
-        this.setMode('text');
+        this.setMode("text");
         resolve();
       };
       const onKey = (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement)) {
+        if (
+          e.key === "Escape" &&
+          !(
+            e.target instanceof HTMLInputElement ||
+            e.target instanceof HTMLSelectElement ||
+            e.target instanceof HTMLTextAreaElement
+          )
+        ) {
           e.preventDefault();
           close();
         }
       };
-      window.addEventListener('keydown', onKey, true);
-      const body = h('div', { class: 'vga-body' });
+      window.addEventListener("keydown", onKey, true);
+      const body = h("div", { class: "vga-body" });
       clear(
         this.layer,
         h(
-          'div',
-          { class: 'vga-editor' },
+          "div",
+          { class: "vga-editor" },
           h(
-            'div',
-            { class: 'vga-titlebar' },
-            h('span', null, `${program}  ·  ${fileName.toUpperCase()}`),
-            h('span', { class: 'spacer' }),
-            h('button', { onclick: () => this.openModern(project.id, fileName), title: 'Open this file in today’s web editor' }, '⤢ Today’s web'),
-            h('button', { onclick: close }, 'Quit (Esc)'),
+            "div",
+            { class: "vga-titlebar" },
+            h("span", null, `${program}  ·  ${fileName.toUpperCase()}`),
+            h("span", { class: "spacer" }),
+            h(
+              "button",
+              {
+                onclick: () => this.openModern(project.id, fileName),
+                title: "Open this file in today’s web editor",
+              },
+              "⤢ Today’s web",
+            ),
+            h("button", { onclick: close }, "Quit (Esc)"),
           ),
           body,
         ),
       );
       // The editors are their own download, fetched the first time the PC opens one.
-      void import('../editor/editors/all').then(() => {
+      void import("../editor/editors/all").then(() => {
         if (!body.isConnected) return;
         const editor = editors[kindOf(fileName)] ?? fileInfo;
         cleanup = editor(body, project, fileName);
@@ -223,11 +277,11 @@ export class Computer extends ComputerFolders {
     this.keys.enabled = false;
     if (this.vgaScreen) this.vgaScreen.mem.fill(0);
     else {
-      const holder = h('div', { class: 'crt-vga' });
+      const holder = h("div", { class: "crt-vga" });
       clear(this.layer, holder);
       this.vgaScreen = new Vga(holder);
     }
-    this.setMode('vga');
+    this.setMode("vga");
     this.vgaScreen.canvas.focus();
     return this.vgaScreen;
   }
@@ -241,7 +295,7 @@ export class Computer extends ComputerFolders {
     this.screen.clear(attr(7, 0));
     this.keys.enabled = true;
     this.keys.clear();
-    this.setMode('text');
+    this.setMode("text");
   }
 
   openModern(projectId: string, fileName?: string): void {
@@ -252,13 +306,23 @@ export class Computer extends ComputerFolders {
   async writableProject(): Promise<Project | undefined> {
     const d = this.inserted;
     if (!d) {
-      await errorBox(this, 'Drive A: is empty.', 'Choose a disk from the disk box.  (C)ontinue');
+      await errorBox(
+        this,
+        "Drive A: is empty.",
+        "Choose a disk from the disk box.  (C)ontinue",
+      );
       return undefined;
     }
-    if (d.disk.kind === 'blank') {
-      const r = await errorBox(this, 'The disk in drive A: is not formatted.', '(F)ormat it for a new game   (E)xit');
-      if (r !== 'F' && r !== 'Enter') return undefined;
-      const name = (await askText(this, 'Name of your new game:', 19, 'My Game'))?.trim();
+    if (d.disk.kind === "blank") {
+      const r = await errorBox(
+        this,
+        "The disk in drive A: is not formatted.",
+        "(F)ormat it for a new game   (E)xit",
+      );
+      if (r !== "F" && r !== "Enter") return undefined;
+      const name = (
+        await askText(this, "Name of your new game:", 19, "My Game")
+      )?.trim();
       if (!name) return undefined;
       const project = Project.create(name);
       await project.saveNow();
@@ -266,10 +330,22 @@ export class Computer extends ComputerFolders {
       return project;
     }
     if (d.disk.writeProtected)
-      return this.copyToHardDisk(d.disk.title, d.files, d.disk.gam, d.disk.catalog?.id, `${d.disk.title}: the disk is write-protected.`);
-    const stored = d.disk.projectId ? await loadProject(d.disk.projectId) : undefined;
+      return this.copyToHardDisk(
+        d.disk.title,
+        d.files,
+        d.disk.gam,
+        d.disk.catalog?.id,
+        `${d.disk.title}: the disk is write-protected.`,
+      );
+    const stored = d.disk.projectId
+      ? await loadProject(d.disk.projectId)
+      : undefined;
     if (!stored) return undefined;
-    const project = Project.fromFiles(stored.files, stored.record.name, d.disk.projectId);
+    const project = Project.fromFiles(
+      stored.files,
+      stored.record.name,
+      d.disk.projectId,
+    );
     project.gam = stored.record.gam;
     d.files = project.files;
     return project;
