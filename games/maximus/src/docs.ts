@@ -221,7 +221,7 @@ export function about(b: Built): object {
         shot('heart', { x: 74, y: 47, r: 4 }),
       ],
       rating: 'Ages 8 and up',
-      // the desk's box and shelf (web/src/desk/boxFacts.ts, wallPoster.ts)
+      // the desk's box and shelf (web/src/desk/boxes/boxFacts.ts, web/src/desk/room/wallPoster.ts)
       hours: 20,
       reviews: [
         { quote: 'A whole galaxy on four floppies. We lost a long weekend to the Hundred Worlds and want it back.', source: 'VGA Voyager, March 1995' },
