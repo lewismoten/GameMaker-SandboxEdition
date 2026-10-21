@@ -195,7 +195,43 @@ registerEditor(['gif'], (host, project, file) => {
   };
 
   let replacePal = '';
-  const preview = gamePreview(project, file);
+  const preview = gamePreview(project, file, { collapsed: true });
+  const fileTools = h(
+    'div',
+    { class: 'toolbar pic-file-tools' },
+    fileField(
+      project,
+      'Palette for imported pictures',
+      ['pal'],
+      () => replacePal,
+      (v) => (replacePal = v),
+      { noneLabel: ['This picture’s palette', 'keep the colors it has'] },
+    ),
+    h(
+      'button',
+      {
+        onclick: async () => {
+          const [f] = await pickFiles({ multiple: false, accept: 'image/*' });
+          if (!f) return;
+          img = await importImage(f, replacePal ? parsePalette(project.files.get(replacePal)!) : img.palette);
+          project.files.set(file, encodeGif(img));
+          draw();
+          toast('Picture replaced (scaled to 320×200).');
+        },
+      },
+      'Replace with an image file…',
+    ),
+    h(
+      'button',
+      {
+        onclick: () =>
+          canvas.toBlob(async (b) => {
+            if (b) download(file.replace(/\.gif$/, '.png'), new Uint8Array(await b.arrayBuffer()), 'image/png');
+          }),
+      },
+      'Download as PNG',
+    ),
+  );
   clear(
     host,
     h(
@@ -206,7 +242,7 @@ registerEditor(['gif'], (host, project, file) => {
     h(
       'div',
       { class: 'pic-layout' },
-      h('div', { class: 'pic-main' }, canvas, info),
+      h('div', { class: 'pic-main' }, canvas, info, preview.el, fileTools),
       h(
         'div',
         { class: 'pic-side' },
@@ -273,46 +309,8 @@ registerEditor(['gif'], (host, project, file) => {
             ),
           ),
         ),
-        h(
-          'div',
-          { class: 'panel toolbar', style: 'margin-top:8px' },
-          fileField(
-            project,
-            'Palette for imported pictures',
-            ['pal'],
-            () => replacePal,
-            (v) => (replacePal = v),
-            { noneLabel: ['This picture’s palette', 'keep the colors it has'] },
-          ),
-          h(
-            'button',
-            {
-              onclick: async () => {
-                const [f] = await pickFiles({ multiple: false, accept: 'image/*' });
-                if (!f) return;
-                img = await importImage(f, replacePal ? parsePalette(project.files.get(replacePal)!) : img.palette);
-                project.files.set(file, encodeGif(img));
-                draw();
-                toast('Picture replaced (scaled to 320×200).');
-              },
-            },
-            'Replace with an image file…',
-          ),
-          h(
-            'button',
-            {
-              onclick: () =>
-                canvas.toBlob(async (b) => {
-                  if (b) download(file.replace(/\.gif$/, '.png'), new Uint8Array(await b.arrayBuffer()), 'image/png');
-                }),
-            },
-            'Download as PNG',
-          ),
-        ),
       ),
     ),
-    h('div', { style: 'height:12px' }),
-    preview.el,
   );
   draw();
   reloadSet();

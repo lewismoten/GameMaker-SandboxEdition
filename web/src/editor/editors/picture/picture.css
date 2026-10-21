@@ -189,3 +189,11 @@
     height: 96px;
   }
 }
+/* under the picture: preview, then the file's own tools */
+.pic-main .game-preview {
+  margin-top: 8px;
+}
+.pic-file-tools {
+  align-items: flex-end;
+  margin-top: 10px;
+}

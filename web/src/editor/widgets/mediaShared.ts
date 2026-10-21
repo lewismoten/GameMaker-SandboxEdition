@@ -21,6 +21,8 @@ export interface PreviewOptions {
   idle?: (canvas: HTMLCanvasElement) => void;
   label?: string;
   hint?: string;
+  /** The screen shows only while the preview runs (for editors that already show the picture). */
+  collapsed?: boolean;
 }
 
 export interface GamePreview {
@@ -41,9 +43,14 @@ export function gamePreview(project: Project, file: string, opts: PreviewOptions
   let token = 0;
   const label = opts.label ?? '▶ Preview as in the game';
   const button = h('button', { class: 'primary' }, label);
+  const hint = h('span', { class: 'meta' }, opts.hint ?? 'Press a key or click the screen to move on. Esc skips the rest.');
   const setRunning = (on: boolean) => {
     button.textContent = on ? '■ Stop' : label;
     button.classList.toggle('primary', !on);
+    if (opts.collapsed) {
+      canvas.hidden = !on;
+      hint.hidden = !on;
+    }
   };
   const stop = () => {
     token++;
@@ -58,7 +65,9 @@ export function gamePreview(project: Project, file: string, opts: PreviewOptions
     machine = m;
     m.keyboard.attach(canvas);
     canvas.tabIndex = 0;
+    setRunning(true);
     canvas.focus();
+    if (opts.collapsed) canvas.scrollIntoView({ block: 'nearest' });
     const pal = project.paletteFor(file).palette;
     m.screen.setPalette(pal);
     m.screen.clear();
@@ -84,8 +93,9 @@ export function gamePreview(project: Project, file: string, opts: PreviewOptions
   const el = h(
     'div',
     { class: `stack game-preview ${opts.className ?? ''}` },
-    h('div', { class: 'toolbar' }, button, h('span', { class: 'meta' }, opts.hint ?? 'Press a key or click the screen to move on. Esc skips the rest.')),
+    h('div', { class: 'toolbar' }, button, hint),
     canvas,
   );
+  if (opts.collapsed) setRunning(false);
   return { el, canvas, play, stop, running: () => !!machine };
 }
