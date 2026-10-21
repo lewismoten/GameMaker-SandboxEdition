@@ -1,4 +1,10 @@
-// Monster behavior from code/GM/PLAYGAME.C: moveallmons and friends.
+// Monster behavior ported from code/GM/PLAYGAME.C: moveallmons (one tick of
+// animation, movement, wall checks and collisions for every live monster slot),
+// MonEndPath and minfo::Bresenhams (walking a march path), minfo::ChkWalls,
+// ChkMonChr / PicChkTouch / DoCollision (pixel-exact touching), and
+// BirthMon / KillMon / BlocBirthMon / CharBirthMon (creating and removing monsters).
+// Positions are a map block plus a pixel offset inside it: curx[0]/cury[0] is the
+// block, curx[1]/cury[1] the 0..BLEN-1 offset. The map wraps at MLEN x MWID.
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, TRANSPARENT } from '../formats/blocks';
 import { ATTACKMOVEMENT, LASTSL, MAXMARCH, NORMALMOVEMENT, type March, type Monster } from '../formats/monster';
 import { chrFrame } from './keys';
@@ -75,6 +81,7 @@ export function calcDraw(w: World, mi: MonInfo): boolean {
   return ok;
 }
 
+/** minfo::DistToPlace: shortest block distance to (x, y) across the map wrap, in pixels. */
 function distToPlace(mi: MonInfo, x: number, y: number): void {
   let dx = x - mi.curx[0];
   let dy = y - mi.cury[0];
@@ -85,6 +92,11 @@ function distToPlace(mi: MonInfo, x: number, y: number): void {
   mi.delta = { x: dx * BLEN, y: dy * BLEN };
 }
 
+/**
+ * minfo::Bresenhams: steps up to `speed` pixels along the line in mi.delta.
+ * offl counts pixels walked on the major axis and offs is the error term; offl
+ * becomes -1 once the end is reached, which is the "path segment done" signal.
+ */
 function bresenhams(mi: MonInfo, speed: number): Coord {
   const move = { x: 0, y: 0 };
   const ax = Math.abs(mi.delta.x);
@@ -130,6 +142,12 @@ function wrap(c: Coord): void {
 
 const solidAt = (w: World, x: number, y: number) => shownBlock(w, mapBlock(w, x, y)).solid;
 
+/**
+ * minfo::ChkHorizWalls: looks at the block beside the monster in the direction it
+ * moves (and the one above/below when it is more than BLEN/4 into it). A wall
+ * there clamps the move so the monster stops flush with its current block.
+ * The C also had a commented-out flag 2 case; only flags 1 and 3 exist.
+ */
 function chkHorizWalls(w: World, mi: MonInfo, move: Coord, temp: Coord): boolean {
   let chk: number;
   let flag: number;
@@ -154,6 +172,7 @@ function chkHorizWalls(w: World, mi: MonInfo, move: Coord, temp: Coord): boolean
   return false;
 }
 
+/** minfo::ChkVertWalls: the vertical counterpart of chkHorizWalls. */
 function chkVertWalls(w: World, mi: MonInfo, move: Coord, temp: Coord): boolean {
   let chk: number;
   let flag: number;
@@ -178,6 +197,7 @@ function chkVertWalls(w: World, mi: MonInfo, move: Coord, temp: Coord): boolean 
   return false;
 }
 
+/** minfo::ChkWalls: checks the dominant axis first; temp carries over between the two checks. */
 function chkWalls(w: World, mi: MonInfo, move: Coord): boolean {
   const temp = { x: mi.curx[0], y: mi.cury[0] };
   let blocked = false;
@@ -191,6 +211,7 @@ function chkWalls(w: World, mi: MonInfo, move: Coord): boolean {
   return blocked;
 }
 
+/** MonInRange: within ATTACKX x ATTACKY blocks of the character, so the attack march starts. */
 function monInRange(w: World, mm: number): boolean {
   const mi = w.mi[mm];
   return Math.abs(mi.curx[0] - w.chr.x[0]) < ATTACKX && Math.abs(mi.cury[0] - w.chr.y[0]) < ATTACKY;
@@ -199,6 +220,7 @@ function monInRange(w: World, mm: number): boolean {
 /** BirthMon: puts monster `mon` in slot mm (or the first empty slot when mm >= LASTMM). */
 export function birthMon(w: World, mm: number, mon: number, x: number, y: number): number {
   if (mm >= LASTMM) {
+    // The C do/while scans every slot once, starting at FirstEmptyMM and wrapping.
     let t = w.firstEmptyMM;
     for (let n = 0; n <= LASTMM; n++) {
       if (t >= 0 && t < LASTMM && w.mm[t].monnum === LASTMON) {
@@ -227,12 +249,14 @@ export function birthMon(w: World, mm: number, mon: number, x: number, y: number
 /** KillMon: returns true if the monster is gone (rather than transformed). */
 export function killMon(w: World, mm: number): boolean {
   const mon = w.mon[w.mm[mm].monnum];
+  // end === -2 means the monster can never be killed.
   if (!mon || mon.end === -2) return false;
   if (mon.newmon === LASTMON || mon.newmon < 0) {
     w.mm[mm].monnum = LASTMON;
     if (mm < w.firstEmptyMM) w.firstEmptyMM = Math.max(0, mm - 1);
     return true;
   }
+  // Transform into newmon in the same slot; offl = -1 makes the next tick start a new path.
   const mi = w.mi[mm];
   birthMon(w, mm, mon.newmon, mi.curx[0], mi.cury[0]);
   mi.offl = -1;
@@ -245,6 +269,7 @@ export function killMon(w: World, mm: number): boolean {
 
 /** BlocBirthMon: blocks that give birth to monsters near the screen. */
 export function blockBirthMonsters(w: World): void {
+  // birthFlag stands in for the C's 0x4000 bit set in blks[0][n].Birthtime.
   w.birthFlag.fill(0);
   for (const b of w.blkMon) {
     if (b.nexttime <= w.clock) {
@@ -252,6 +277,7 @@ export function blockBirthMonsters(w: World): void {
       w.birthFlag[b.blnum] = 1;
     }
   }
+  // Scan the screen plus half a screen on every side.
   for (let lx = w.mx - SCRNBLEN / 2; lx < w.mx + (SCRNBLEN * 3) / 2; lx++) {
     for (let ly = w.my - SCRNBWID / 2; ly < w.my + (SCRNBWID * 3) / 2; ly++) {
       const x = (lx + MLEN) % MLEN;
@@ -278,6 +304,7 @@ export function charBirthMon(w: World, x: number, y: number, monNum: number): vo
   mi.cury[1] = w.chr.y[1];
   mi.offl = -1;
   const mon = w.mon[monNum & 0xff];
+  // Path and chase monsters fly off in the character's last move direction (netx/nety).
   if (mon && mon.towards < 64) {
     const { netx, nety } = w.ci;
     mi.delta = { x: netx * BLEN, y: nety * BLEN };
@@ -286,6 +313,14 @@ export function charBirthMon(w: World, x: number, y: number, monNum: number): vo
   }
 }
 
+/**
+ * MonEndPath: called when the current path segment is done (offl === -1). Aims
+ * the monster at the next corner of its march; at the end of the march (dest
+ * reached MAXMARCH or a corner with speed pic 0) it starts over at the normal
+ * march, or dies there if end === -1. Returns true if the monster was killed.
+ * dest is left pointing one past the segment being walked, hence dest - 1 in
+ * moveAllMonsters.
+ */
 function monEndPath(w: World, mm: number, monNum: number): boolean {
   const mi = w.mi[mm];
   const mon = w.mon[monNum];
@@ -312,7 +347,11 @@ function monEndPath(w: World, mm: number, monNum: number): boolean {
   return false;
 }
 
-/** PicChkTouch: pixel-exact overlap of two 20x20 sprites (255 = transparent). */
+/**
+ * PicChkTouch: pixel-exact overlap of two 20x20 sprites (255 = transparent).
+ * Both positions are shifted so the overlap is measured from the nearer corner;
+ * each of the four branches handles one relative placement of sprite 2.
+ */
 export function picChkTouch(x1: number, y1: number, pic1: Uint8Array, x2: number, y2: number, pic2: Uint8Array): boolean {
   const dx = Math.abs(x2 - x1);
   const dy = Math.abs(y2 - y1);
@@ -369,6 +408,7 @@ export function picChkTouch(x1: number, y1: number, pic1: Uint8Array, x2: number
 function chkMonChr(w: World, mm: number): boolean {
   const mi = w.mi[mm];
   const { ci } = w;
+  // Compare in screen pixels; only monsters on screen can touch the character.
   if (mi.scrPos.x === OFFSCRN) return false;
   const lx = Math.min(mi.scrPos.x, ci.scrx);
   const ly = Math.min(mi.scrPos.y, ci.scry);
@@ -376,6 +416,7 @@ function chkMonChr(w: World, mm: number): boolean {
   const mon = { x: mi.scrPos.x - lx, y: mi.scrPos.y - ly };
   const maxx = { x: Math.max(chr.x, mon.x), y: Math.max(chr.y, mon.y) };
   let retval = false;
+  // Bounding test; BLEN * 2 because the character is two blocks high.
   if (mon.x <= chr.x + BLEN && mon.x + BLEN >= chr.x && mon.y <= chr.y + BLEN && mon.y + BLEN * 2 >= chr.y) {
     let mons = monPicNum(w, mm);
     if (mons >= MONBL) return false;
@@ -385,12 +426,14 @@ function chkMonChr(w: World, mm: number): boolean {
     if (frame.pic1 < CHARBL) retval = picChkTouch(chr.x, chr.y, w.cblk[frame.pic1].pixels, mon.x, mon.y + BLEN, mpix) || retval;
     if (retval) {
       mons = w.mblk[mons].solid;
+      // A solid monster pushes the character along the axis it is farther apart on.
       if (mons > 0) {
         if (maxx.x >= maxx.y) w.monsolid |= chr.x === 0 ? SOLRIG & mons : SOLLEF & mons;
         else w.monsolid |= chr.y === 0 ? SOLBOT & mons : SOLTOP & mons;
         w.mmSolid = mm;
       }
     }
+    // Squeezed from both sides by two monsters: push on the other axis instead.
     if (w.monsolid & SOLRIG && w.monsolid & SOLLEF) w.monsolid |= chr.y === 0 ? SOLBOT & mons : SOLTOP & mons;
     if (w.monsolid & SOLBOT && w.monsolid & SOLTOP) w.monsolid |= chr.x === 0 ? SOLRIG & mons : SOLLEF & mons;
   }
@@ -405,6 +448,8 @@ function doCollision(w: World, mm1: number, mm2: number, where: number): number 
   const m1 = w.mon[mon1];
   const m2 = w.mon[mon2];
   if (m1.power === m2.power) return mm2;
+  // `where` says which neighboring cell mm1 is in (bit 1: x + 1, bit 2: y + 1).
+  // A kill by a character-fired monster scores and uses up the shot too.
   const addx = where & 1 ? BLEN : 0;
   const addy = where & 2 ? BLEN : 0;
   const p1 = monPicNum(w, mm1);
@@ -444,12 +489,15 @@ export function moveAllMonsters(w: World): void {
     const mi = w.mi[mm];
     if (!mon) continue;
 
+    // Animation: step to the next picture, wrapping at LASTSL or an empty slot.
+    // pic[n][1] is how many ticks that picture stays up.
     if (clock >= mi.nextAni) {
       mi.curPic++;
       if (mi.curPic >= LASTSL || mon.pic[mi.curPic][0] >= MONBL) mi.curPic = mon.pic[0][0] < MONBL ? 0 : LASTSL;
       mi.nextAni = mi.curPic < LASTSL ? clock + mon.pic[mi.curPic][1] : clock + 100000;
     }
 
+    // Movement: speed is in pixels per tick times the ticks elapsed (MONMOVESPEED is 1).
     if (clock < mi.nextMove) continue;
     const speed = Math.trunc((clock - mi.nextMove + 1) / MONMOVESPEED);
     mi.nextMove = clock + MONMOVESPEED;
@@ -459,6 +507,13 @@ export function moveAllMonsters(w: World): void {
       mi.dest = 1;
     }
 
+    // Four kinds of movement, as in moveallmons:
+    // - attack march relative to the character (activate === 2): every corner is
+    //   an offset from the character, re-aimed each tick;
+    // - towards === 0: walk the march path, corner to corner (MonEndPath);
+    // - towards < 64: chase (or flee when negative) the character at |towards| pixels a tick;
+    // - towards >= 64: wander to random spots 5 to 11 blocks away at towards >> 6 pixels a tick.
+    // A march corner's pic field holds the speed of the segment.
     let move: Coord;
     if (mi.curMarch === ATTACKMOVEMENT && mon.activate === 2) {
       const c = marchAt(mon, ATTACKMOVEMENT, mi.dest);
@@ -478,6 +533,7 @@ export function moveAllMonsters(w: World): void {
       if (mi.offl === -1 && monEndPath(w, mm, monNum)) continue;
       move = bresenhams(mi, marchAt(mon, mi.curMarch, mi.dest - 1).pic * speed);
     } else if (mon.towards < 64) {
+      // A monster fired by the character keeps the delta CharBirthMon gave it.
       if (!mi.fromchar) {
         distToPlace(mi, chr.x[0], chr.y[0]);
         mi.delta.x += chr.x[1] - mi.curx[1];
@@ -506,14 +562,17 @@ export function moveAllMonsters(w: World): void {
       move = bresenhams(mi, (mon.towards >> 6) * speed);
     }
 
+    // `thru` means "stops on solid" (MON.H); a monster the character fired dies on a wall.
     if (mon.thru && chkWalls(w, mi, move) && mi.fromchar > 0 && killMon(w, mm)) continue;
 
+    // Stuck: a wandering monster picks a new random target next tick ("keep monsters moving").
     if (move.x === 0 && move.y === 0) mi.target = { x: mi.curx[0], y: mi.cury[0] };
     else {
       mi.curx[1] += move.x;
       mi.cury[1] += move.y;
     }
 
+    // Take the monster out of the map's monster layer; it is put back below at its new cell.
     if (mapMonAt(w, mi.curx[0], mi.cury[0]) === mm) setMapMon(w, mi.curx[0], mi.cury[0], LASTMM);
 
     while (mi.curx[1] >= BLEN) {
@@ -532,6 +591,7 @@ export function moveAllMonsters(w: World): void {
       mi.cury[1] += BLEN;
       mi.cury[0]--;
     }
+    // The C compares cury[0] against MLEN here; MLEN === MWID so MWID is the same.
     if (mi.curx[0] < 0) mi.curx[0] += MLEN;
     if (mi.cury[0] < 0) mi.cury[0] += MWID;
     if (mi.curx[0] >= MLEN) mi.curx[0] -= MLEN;
@@ -539,6 +599,9 @@ export function moveAllMonsters(w: World): void {
 
     if (!calcDraw(w, mi)) mi.scrPos = { x: OFFSCRN, y: OFFSCRN };
 
+    // Touching the character applies the monster block's effects; monsters weaker
+    // than CHARPOWER die (or transform) on contact. fromchar === 1 is a monster the
+    // character fired that hasn't transformed yet; it can't touch the character.
     if (mi.curPic >= 0 && mi.curPic < LASTSL && chkMonChr(w, mm) && mi.fromchar !== 1) {
       const pic = monPicNum(w, mm);
       const playSnd = doBlockTouchChar(w, w.mblk[pic]) - 1;
@@ -548,6 +611,8 @@ export function moveAllMonsters(w: World): void {
       }
     }
 
+    // Fight any monster registered in this cell or the three cells it may overlap.
+    // The cells are not wrapped, like map[y][x + 1] in the C.
     let survivor = mm;
     const x0 = mi.curx[0];
     const y0 = mi.cury[0];
@@ -561,6 +626,7 @@ export function moveAllMonsters(w: World): void {
       if (other < LASTMM) survivor = doCollision(w, other, mm, where);
     }
     if (survivor < LASTMM) setMapMon(w, w.mi[survivor].curx[0], w.mi[survivor].cury[0], survivor);
+    // end > 0 is a lifetime in ticks.
     if (mon.end > 0 && mi.birthTime + mon.end <= clock) killMon(w, mm);
   }
 }
