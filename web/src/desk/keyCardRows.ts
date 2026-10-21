@@ -12,9 +12,9 @@ export interface CardRow {
 type Binding = GameKeyMap['keys'][number];
 
 /** What a key does, in a few words: the first ways it is used, plus "…" when levels differ. */
-export function keyDoes(k: Binding): string {
+export function keyDoes(k: Binding, max = 2): string {
   const titles = [...new Set(k.uses.map((u) => u.action.title))];
-  return titles.length > 2 ? `${titles.slice(0, 2).join(' / ')} …` : titles.join(' / ');
+  return titles.length > max ? `${titles.slice(0, max).join(' / ')} …` : titles.join(' / ');
 }
 
 const ARROWS: Record<string, string> = { Up: '↑', Down: '↓', Left: '←', Right: '→' };
@@ -32,7 +32,7 @@ export function cardRows(keys: Binding[], compact = false): CardRow[] {
   const byDoes = new Map<string, CardRow>();
   for (const k of keys) {
     if (!k.uses.some((u) => u.action.kind !== 'nothing')) continue;
-    const does = keyDoes(k);
+    const does = keyDoes(k, compact ? 1 : 2);
     const name = compact ? shortKey(k.name) : k.name;
     const row = byDoes.get(does);
     if (row) {

@@ -40,12 +40,15 @@ function fitKeys(keys: string[], room: number): string[] {
  * small card taped to the monitor: fewer, larger lines, so it reads at a glance.
  */
 export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLElement {
-  const rows = cardRows(km.keys, compact);
+  const all = cardRows(km.keys, compact);
+  // the small card keeps to five lines, big enough to read from the chair; the rest are up close
+  const rows = compact && all.length > 5 ? all.slice(0, 4) : all;
+  const more = all.length - rows.length;
   const joy = km.joystick.length > 0;
   const always = GLOBAL_KEYS.filter((g) => (compact ? g.scan <= 59 : g.scan <= 64));
   const two = !compact && rows.length + (joy ? 1 : 0) > 9;
   // the writing gets smaller to fit every line on the card's ruled lines
-  const lines = Math.ceil((rows.length + (joy && !compact ? 1 : 0)) / (two ? 2 : 1)) + 1;
+  const lines = Math.ceil((rows.length + (more ? 1 : 0) + (joy && !compact ? 1 : 0)) / (two ? 2 : 1)) + 1;
   const line = Math.min(compact ? 9.5 : 6.4, 43 / Math.max(1, lines));
   return h(
     'div',
@@ -68,6 +71,7 @@ export function indexCard(title: string, km: GameKeyMap, compact = false): HTMLE
           );
         }),
         rows.length ? null : h('div', { class: 'idx-row' }, h('span', null, 'No keys: this game plays itself.')),
+        more ? h('div', { class: 'idx-row more' }, h('span', null, `+ ${more} more — click to read them all`)) : null,
         joy && !compact
           ? h('div', { class: 'idx-row joy' }, h('span', { class: 'idx-keys' }, h('kbd', null, 'Joy')), h('span', null, 'a joystick or gamepad works too'))
           : null,

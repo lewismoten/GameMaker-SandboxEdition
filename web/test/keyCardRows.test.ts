@@ -43,3 +43,11 @@ describe('key card rows', () => {
     expect(shortKey('PgUp / Pad 9')).toBe('PgUp');
   });
 });
+
+describe('key card rows, several uses', () => {
+  it('the small card names only the first use of a key', () => {
+    const k = key('Up / Pad 8', 'Fire, moving up', 'Jump');
+    expect(cardRows([k])[0].does).toBe('Fire, moving up / Jump');
+    expect(cardRows([k], true)[0].does).toBe('Fire, moving up …');
+  });
+});
