@@ -2,7 +2,7 @@
 export {};
 import './palette/palette';
 import './blocks/blocks';
-import './map';
+import './map/map';
 import './integrator/integrator';
 import './monsters';
 import './character';

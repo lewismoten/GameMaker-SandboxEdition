@@ -1,17 +1,17 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
-import { rovingGrid } from '../widgets/rovingGrid';
-import { History } from '../core/history';
-import { registerEditor } from './registry';
-import { h, clear, selectField, toast, debounce, modal, download } from '../core/ui';
-import { blockCanvas, blockImages } from '../core/draw';
-import { paletteChooser } from './blocks/blocks';
-import type { FileKind, Project } from '../core/project';
-import { fileField, pickFile } from '../widgets/filePicker';
-import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../formats/blocks';
-import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../../formats/map';
-import { LASTMON, parseMonsters, type Monster } from '../../formats/monster';
-import { normalize } from '../../project/files';
-import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from '../mapClip';
+import { rovingGrid } from '../../widgets/rovingGrid';
+import { History } from '../../core/history';
+import { registerEditor } from '../registry';
+import { h, clear, selectField, toast, debounce, modal, download } from '../../core/ui';
+import { blockCanvas, blockImages } from '../../core/draw';
+import { paletteChooser } from '../blocks/blocks';
+import type { FileKind, Project } from '../../core/project';
+import { fileField, pickFile } from '../../widgets/filePicker';
+import { BACKBL, BLEN, MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
+import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../../../formats/map';
+import { LASTMON, parseMonsters, type Monster } from '../../../formats/monster';
+import { normalize } from '../../../project/files';
+import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from '../../mapClip';
 import './mapExport.css';
 
 type Mode = 'paint' | 'rect' | 'fill' | 'pick' | 'monster';
