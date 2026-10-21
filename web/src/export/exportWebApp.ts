@@ -6,6 +6,9 @@ import { createZip, type ZipEntry } from '../project/zip';
 import type { GameFiles } from '../project/files';
 import { hashText, serviceWorkerSource } from './serviceWorker';
 import { encodeGame, fillPage, GAME_MARK } from './singlePage';
+import { gameAbout } from './gameAbout';
+import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
+import { PRODUCT } from '../edition';
 
 export interface ExportOptions {
   title: string;
@@ -55,8 +58,9 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   const theme = opts.themeColor ?? '#000000';
 
   const gameEntries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
-  const game = await encodeGame({ id, title: opts.title, gam: opts.gam }, gameEntries);
-  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game), theme)) });
+  const { blurb, notice } = gameAbout(gameEntries);
+  const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, gameEntries);
+  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb }), theme)) });
 
   for (const icon of ICONS) {
     try {
@@ -71,7 +75,7 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   const manifest = {
     name: opts.title,
     short_name: (opts.shortName ?? opts.title).slice(0, 12),
-    description: `${opts.title}: a Game-Maker game.`,
+    description: gameDescription({ title: opts.title, blurb }),
     start_url: './',
     scope: './',
     display: 'fullscreen',
@@ -113,7 +117,9 @@ function readme(title: string): string {
   return `${title}
 ${'='.repeat(title.length)}
 
-This folder is a complete, offline-capable web app made with Game-Maker Web.
+This folder is a complete, offline-capable web app made with
+${PRODUCT}: ${SITE_URL}
+(source code: ${REPO_URL}).
 
 Publish it
   Upload the contents of this folder to any static web host (GitHub Pages,
