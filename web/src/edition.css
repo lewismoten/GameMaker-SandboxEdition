@@ -4,7 +4,9 @@ h1 .edition {
   padding: 1px 6px;
   border: 1px solid currentColor;
   border-radius: 3px;
-  font: 600 10px/1.4 system-ui, sans-serif;
+  font:
+    600 10px/1.4 system-ui,
+    sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   vertical-align: middle;
@@ -16,7 +18,9 @@ h1 .edition {
   display: block;
   margin: -4px 0 6px;
   color: #ffd400;
-  font: 800 14px/1.2 system-ui, sans-serif;
+  font:
+    800 14px/1.2 system-ui,
+    sans-serif;
   letter-spacing: 0.3em;
   text-transform: uppercase;
 }
@@ -32,7 +36,12 @@ h1 .edition {
 
 /* phones: the header wraps instead of running off the side */
 @media (max-width: 600px) {
+  .topbar .hide-narrow {
+    display: none;
+  }
   .topbar {
+    gap: 8px;
+    padding: 6px 10px;
     flex-wrap: wrap;
     row-gap: 4px;
   }

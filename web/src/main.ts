@@ -73,8 +73,13 @@ function startModern(hash?: string): void {
       titleSlot,
       h('span', { class: 'spacer' }),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
-      h('button', { onclick: () => startDesk(), title: 'Go back to the mid-90s desk' }, '💾 1994 desk'),
-      h('a', { href: 'https://github.com/lewismoten/GameMaker-SandboxEdition', target: '_blank', rel: 'noopener' }, 'Source'),
+      h(
+        'button',
+        { onclick: () => startDesk(), title: 'Go back to the mid-90s desk', 'aria-label': 'Back to the 1994 desk' },
+        h('span', { 'aria-hidden': 'true' }, '💾'),
+        h('span', { class: 'hide-narrow' }, ' 1994 desk'),
+      ),
+      h('a', { class: 'hide-narrow', href: 'https://github.com/lewismoten/GameMaker-SandboxEdition', target: '_blank', rel: 'noopener' }, 'Source'),
     ),
     content,
   );
