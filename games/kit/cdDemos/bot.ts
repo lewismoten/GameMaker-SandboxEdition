@@ -28,6 +28,13 @@ export interface BotOptions {
   explore?: number;
   /** Keep at least this many blocks from every monster (for games whose monsters roam at random). */
   keepAway?: number;
+  /**
+   * Hand-planned waypoints by scene, in blocks, taken in order (each counts as reached
+   * within a block and a half); after the last one the scene's goals or links apply.
+   */
+  route?: Record<number, { x: number; y: number }[]>;
+  /** How much each block closer to a goal counts (default 15). */
+  goalWeight?: number;
   /** A place to head for in a scene, in blocks: rewards getting closer. */
   goals?: Record<number, { x: number; y: number }[]>;
   seed?: number;
@@ -47,7 +54,9 @@ const pos = (w: World) => ({ x: w.chr.x[0] * 20 + w.chr.x[1], y: w.chr.y[0] * 20
 const carried = (w: World) => w.ci.inv.filter((b) => b !== BACKBL + 1 && b < BACKBL).length;
 
 export class Bot {
-  private o: Required<Omit<BotOptions, 'links' | 'goals' | 'seed'>> & Pick<BotOptions, 'links' | 'goals'>;
+  private o: Required<Omit<BotOptions, 'links' | 'goals' | 'route' | 'seed'>> & Pick<BotOptions, 'links' | 'goals' | 'route'>;
+  /** The next waypoint of the scene's route. */
+  private leg = 0;
   private visits = new Map<number, Uint16Array>();
   private held: number | undefined;
   private scene = -1;
@@ -69,8 +78,10 @@ export class Bot {
       kinds: o.kinds ?? ['move', 'jump', 'fire', 'pickup'],
       explore: o.explore ?? 1,
       keepAway: o.keepAway ?? 0,
+      goalWeight: o.goalWeight ?? 15,
       links: o.links,
       goals: o.goals,
+      route: o.route,
     };
     this.rand = rng(o.seed ?? 7);
   }
@@ -130,6 +141,8 @@ export class Bot {
 
   /** Where to head in this scene: its own goals, else the links it may take. */
   private goals(s: Session): { x: number; y: number }[] {
+    const leg = this.o.route?.[this.scene]?.[this.leg];
+    if (leg) return [leg];
     return this.o.goals?.[this.scene] ?? (s.game.scenes[this.scene]?.links ?? []).filter((l, i) => l.toScene < s.game.scenes.length && this.allowed(i)).map((l) => l.from);
   }
 
@@ -141,7 +154,8 @@ export class Bot {
     let f = this.fields.get(key);
     if (f) return f;
     f = new Int32Array(MAP_W * MAP_W).fill(-1);
-    const open = (x: number, y: number) => x >= 0 && y >= 0 && x < MAP_W && y < MAP_W && !w.bg[w.map[y * MAP_W + x]]?.solid;
+    // the map wraps around at its edges, as the scrolling does
+    const open = (x: number, y: number) => !w.bg[w.map[y * MAP_W + x]]?.solid;
     const queue: number[] = [];
     for (const g of goals) {
       f[g.y * MAP_W + g.x] = 0;
@@ -151,7 +165,7 @@ export class Bot {
       const c = queue[i];
       const x = c % MAP_W;
       const y = (c - x) / MAP_W;
-      for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) {
+      for (const [nx, ny] of [[(x + 1) % MAP_W, y], [(x + MAP_W - 1) % MAP_W, y], [x, (y + 1) % MAP_W], [x, (y + MAP_W - 1) % MAP_W]]) {
         const n = ny * MAP_W + nx;
         if (open(nx, ny) && f[n] < 0) {
           f[n] = f[c] + 1;
@@ -231,7 +245,7 @@ export class Bot {
         const steps = field[Math.floor(q.y / 20) * MAP_W + Math.floor(q.x / 20)];
         return steps >= 0 ? steps + (Math.abs((q.x % 20) - 10) + Math.abs((q.y % 20) - 10)) / 20 : 2 * Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
       };
-      value += (d(pos(w)) - d(end)) * 15;
+      value += (d(pos(w)) - d(end)) * this.o.goalWeight;
     }
     return value;
   }
@@ -243,11 +257,18 @@ export class Bot {
       const scene = this.sceneOf(w, s);
       if (scene !== this.scene) this.log.push(`tick ${s.rec.tick}: scene ${scene} ${s.game.scenes[scene]?.desc ?? ''}`);
       else this.log.push(`tick ${s.rec.tick}: scene ${scene} again (died?)`);
+      if (scene !== this.scene) this.leg = 0;
       this.scene = scene;
       this.held = undefined;
     }
     const at = pos(w);
     this.trail.push(at);
+    const leg = this.o.route?.[this.scene]?.[this.leg];
+    if (leg && Math.hypot(at.x / 20 - leg.x, at.y / 20 - leg.y) < 1.5) {
+      this.log.push(`tick ${s.rec.tick}: reached waypoint ${this.leg} (${leg.x},${leg.y})`);
+      this.leg++;
+      this.trail.length = 0;
+    }
     const v = this.visited(this.scene);
     const cell = Math.floor(at.y / 20) * MAP_W + Math.floor(at.x / 20);
     if (v[cell] < 60000) v[cell]++;
