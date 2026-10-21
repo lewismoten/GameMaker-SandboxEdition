@@ -16,7 +16,8 @@ export type DiskAction = 'play' | 'design' | 'modern';
 /** A printed label, as a shareware publisher had them made (see diskLabel.ts). */
 function printedLabel(d: Disk, n: number): HTMLElement {
   const g = d.catalog!;
-  return printedDiskLabel(g, `Disk ${n} of ${disksIn(d)} · 3½" ${d.density} · © ${g.year ?? 1995}`, d.note);
+  // © and the year kept together (a no-break space), never split across lines
+  return printedDiskLabel(g, `Disk\u00a0${n}\u00a0of\u00a0${disksIn(d)} · ©\u00a0${g.year ?? 1995}`, d.note);
 }
 
 /** A disk; `n` numbers the later disks of a game that takes more than one. */

@@ -10,6 +10,8 @@
   clip-path: polygon(0 0, 100% 0, 100% 100%, 8% 100%, 0 94%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   color: #1a1a1a;
+  /* the printed label's type is sized in cqw, so it scales with the disk */
+  container-type: inline-size;
 }
 
 .floppy .shutter {
@@ -46,10 +48,12 @@
   padding-top: 13px;
   /* a printed band across the top, then the ruled lines to write on */
   background:
-    linear-gradient(180deg, var(--stripe, #1565c0) 0 8px, transparent 8px),
-    repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px),
-    #fbf8ee;
-  font: 15px/14px 'Comic Sans MS', 'Marker Felt', 'Segoe Print', cursive;
+    linear-gradient(180deg, var(--stripe, #1565c0) 0 8px, transparent 8px), repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px), #fbf8ee;
+  font:
+    15px/14px 'Comic Sans MS',
+    'Marker Felt',
+    'Segoe Print',
+    cursive;
   color: #1c2a6b;
   white-space: pre-line;
   text-align: left;
@@ -63,10 +67,7 @@
 }
 
 .floppy[data-kind='rsd'] .label {
-  background:
-    linear-gradient(180deg, #000080 0 15px, transparent 15px),
-    repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px),
-    #fbf8ee;
+  background: linear-gradient(180deg, #000080 0 15px, transparent 15px), repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px), #fbf8ee;
   padding-top: 18px;
 }
 
@@ -76,7 +77,9 @@
   left: 8px;
   top: 2px;
   color: #ffd400;
-  font: 700 9px/11px ui-monospace, monospace;
+  font:
+    700 9px/11px ui-monospace,
+    monospace;
   letter-spacing: 0.1em;
 }
 
@@ -120,7 +123,10 @@
   right: 6px;
   top: 10px;
   color: #d0141b;
-  font: 700 12px/1 'Marker Felt', 'Comic Sans MS', cursive;
+  font:
+    700 12px/1 'Marker Felt',
+    'Comic Sans MS',
+    cursive;
   transform: rotate(-7deg);
   white-space: nowrap;
 }
@@ -129,7 +135,9 @@
   position: absolute;
   left: 2.5%;
   top: 11%;
-  font: 700 8px/1 system-ui, sans-serif;
+  font:
+    700 8px/1 system-ui,
+    sans-serif;
   color: rgba(255, 255, 255, 0.55);
 }
 
@@ -169,7 +177,9 @@
   flex: none;
   width: 260px;
   margin-bottom: -170px;
-  transition: transform 0.18s ease, filter 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease;
   filter: brightness(0.82);
   cursor: pointer;
 }
@@ -202,7 +212,9 @@
 
 .flip-info h2 {
   margin: 0 0 4px;
-  font: 700 20px/1.2 system-ui, sans-serif;
+  font:
+    700 20px/1.2 system-ui,
+    sans-serif;
 }
 
 .flip-info p {
@@ -210,42 +222,52 @@
   color: #d8ccb0;
 }
 
-
-
-/* a professionally printed label (original games) */
+/* a professionally printed label (original games), sized to the disk (cqw: 1% of its width) */
 .floppy .label.printed {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 0 0 6px;
+  gap: 1cqw;
+  padding: 0 0 3cqw;
   background: var(--lbg);
   color: var(--link);
-  font: 12px/1.15 Arial, Helvetica, sans-serif;
+  font:
+    6.6cqw/1.15 Arial,
+    Helvetica,
+    sans-serif;
   white-space: normal;
 }
 
 .floppy .label.printed .p-logo {
-  padding: 3px 8px;
+  padding: 1.6cqw 4.4cqw;
   background: var(--lband);
   color: #fff;
-  font: 900 8px/1 Arial, sans-serif;
+  font:
+    900 4.4cqw/1 Arial,
+    sans-serif;
   letter-spacing: 0.18em;
+  white-space: nowrap;
 }
 
 .floppy .label.printed .p-title {
-  padding: 4px 8px 0;
-  font: italic 900 17px/1 'Arial Black', Impact, sans-serif;
+  padding: 2cqw 4.4cqw 0;
+  font:
+    italic 900 9.4cqw/1 'Arial Black',
+    Impact,
+    sans-serif;
   letter-spacing: -0.02em;
 }
 
 .floppy .label.printed .p-line,
 .floppy .label.printed .p-foot {
-  padding: 0 8px;
-  font-size: 9px;
+  padding: 0 4.4cqw;
+  font-size: 5cqw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .floppy .label.printed .p-foot {
   margin-top: auto;
   border-top: 1px solid var(--lband);
-  padding-top: 3px;
+  padding-top: 1.6cqw;
 }

@@ -34,7 +34,13 @@ function labelArt(g: CatalogEntry): Promise<LabelArt> {
   return hit;
 }
 
-/** The label. `foot` is the disk's small print ("Disk 1 of 2 · 3½" HD · © 1995"). */
+/** The company band: just the first word ("SANDBOX"), so it fits one line on a small disk. */
+function logoText(g: CatalogEntry): string {
+  const name = (g.original?.label?.logo ?? g.company ?? 'Sandbox Software').toUpperCase();
+  return name.replace(/\s+SOFTWARE$/, '');
+}
+
+/** The label. `foot` is the disk's small print ("Disk 1 of 2 · © 1995"). */
 export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string): HTMLElement {
   const l = g.original?.label;
   const box = g.original?.box;
@@ -51,7 +57,7 @@ export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string): 
         `--lbg:${l?.background ?? '#fff'};--lband:${l?.band ?? '#c62828'};--link:${l?.ink ?? '#111'};` +
         `--bbg:${box?.background ?? l?.band ?? '#222'};--bacc:${box?.accent ?? '#ffd400'};--bink:${box?.ink ?? '#fff'}`,
     },
-    h('span', { class: 'p-logo' }, l?.logo ?? (g.company ?? 'SANDBOX SOFTWARE').toUpperCase()),
+    h('span', { class: 'p-logo' }, logoText(g)),
     h(
       'div',
       { class: 'p-banner' },
@@ -59,7 +65,7 @@ export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string): 
       h('span', { class: `p-title ${main.length > 14 ? 'long' : ''}` }, main),
       sub ? h('span', { class: 'p-sub' }, sub) : null,
     ),
-    h('span', { class: 'p-line' }, `Shareware${g.price ? ` · Register for ${g.price}` : ''}`),
+    h('span', { class: 'p-line' }, `Shareware${g.price ? ` · ${g.price}\u00a0Registration` : ''}`),
     h('span', { class: 'p-foot' }, foot),
     note ? h('span', { class: 'marker-note' }, note) : null,
   );
