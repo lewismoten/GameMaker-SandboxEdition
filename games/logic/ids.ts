@@ -1,7 +1,4 @@
-// Shared numbers: monster slots, sound effects and keys.
-
-/** Monsters 0..15 are each board's own currents (battery k gives birth to monster k). */
-export const ROUTES = 16;
+// Shared numbers: sound effects and keys.
 
 /** Sound set slots. PLAYGAME plays 0..8 by itself (1 when a monster is beaten, 4 for a life...). */
 export const SND = {
