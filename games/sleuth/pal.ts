@@ -45,7 +45,7 @@ const INKS: [string, RGB][] = [
 
 const LIGHT: Record<Light, { mul: RGB; add: RGB }> = {
   house: { mul: [1, 1, 1], add: [0, 0, 0] },
-  night: { mul: [0.26, 0.3, 0.46], add: [4, 6, 16] },
+  night: { mul: [0.4, 0.44, 0.64], add: [6, 8, 22] },
   dawn: { mul: [1.0, 0.86, 0.84], add: [20, 8, 18] },
 };
 
