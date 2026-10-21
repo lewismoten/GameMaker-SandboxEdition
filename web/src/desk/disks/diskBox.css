@@ -7,7 +7,8 @@
   aspect-ratio: 9 / 9.4;
   border-radius: 6px;
   background: linear-gradient(160deg, color-mix(in srgb, var(--body) 85%, #fff), var(--body) 45%, color-mix(in srgb, var(--body) 80%, #000));
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 8% 100%, 0 94%);
+  /* the cut corner; the clip reaches above the top so the edge's shadow can fall on the disk behind */
+  clip-path: polygon(0 -16px, 100% -16px, 100% 100%, 8% 100%, 0 94%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   color: #1a1a1a;
   /* the printed label's type is sized in cqw, so it scales with the disk */
@@ -167,14 +168,15 @@
   transition:
     transform 0.18s ease,
     filter 0.18s ease;
-  filter: brightness(0.82);
+  /* each disk casts a soft shadow up onto the one behind, so two of a color don't merge */
+  filter: brightness(0.82) drop-shadow(0 -3px 4px rgba(0, 0, 0, 0.55));
   cursor: pointer;
 }
 
 /* the later disks of a multi-disk game: just their tops show behind disk 1 */
 .disk-row .floppy.spare {
   margin-bottom: -240px;
-  filter: brightness(0.7);
+  filter: brightness(0.7) drop-shadow(0 -3px 4px rgba(0, 0, 0, 0.55));
 }
 
 .disk-row .floppy:last-child {
@@ -183,7 +185,7 @@
 
 .disk-row .floppy[aria-selected='true'] {
   transform: translateY(-24px);
-  filter: none;
+  filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.6));
 }
 
 .flip-info .hint {
