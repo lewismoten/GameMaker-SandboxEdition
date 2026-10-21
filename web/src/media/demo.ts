@@ -12,6 +12,7 @@ import type { Session } from '../engine/scene';
 import { LiveRecorder, recorderFormat } from './video';
 import { AudioMix } from './audioTap';
 import { saveBlob } from './screenCapture';
+import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
 
 const SKIP_KEY = 'gm-demo-skip-intro';
@@ -213,7 +214,19 @@ export function demoButton(title: string, load: () => Promise<GameFiles>, gam: s
         // a CD game that shipped without one may have a demo added for this edition
         const added = extraDemoForGam(await loadExtraDemos(), files.get(gam));
         const bytes = added && (added.inGame ? files.get(added.file) : await fetchExtraDemo(added));
-        if (!added || !bytes) return toast(`${title} has no demo recording.`);
+        if (!added || !bytes) {
+          // nothing recorded: the attract mode walks the hero about instead
+          const walk = attractRecording(files, gam);
+          if (!walk) return toast(`${title} has no demo recording.`);
+          return playDemo({
+            title,
+            files,
+            gam,
+            rec: walk,
+            heading: `${title}: a preview`,
+            notice: 'Preview — not a recorded demo: the hero walks back and forth with the game’s own keys. Nothing is saved to the game.',
+          });
+        }
         await playDemo({ title, files, gam, rec: bytes, heading: `${title}: the demo (added)`, notice: `${ADDED_DEMO_NOTICE}. ${added.made}` });
       },
     },

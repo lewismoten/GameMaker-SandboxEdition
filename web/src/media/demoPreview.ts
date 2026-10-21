@@ -28,6 +28,13 @@ export const DEMO_KIND_LABEL: Record<DemoKind, string> = {
   attract: 'Preview — not a recorded demo',
 };
 
+/** The short note shown over a preview that is not the game's own demo. */
+export const DEMO_KIND_TAG: Record<DemoKind, string> = {
+  recorded: '',
+  added: 'Added demo · not in the original game',
+  attract: 'Preview · not a recorded demo',
+};
+
 // the index is small: fetched early, so a preview can tell at once whether a demo was added
 if (typeof window !== 'undefined') void loadExtraDemos();
 
@@ -164,6 +171,8 @@ export interface DemoPreviewOptions {
   onStop?: () => void;
   /** Walk the hero about when the game has no demo recording (default true). */
   attract?: boolean;
+  /** Show DEMO_KIND_TAG over an added demo or the attract mode (default true). */
+  tag?: boolean;
 }
 
 let current: { stop(): void } | undefined;
@@ -201,6 +210,14 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     let endedAt = 0;
     const p = mountPlayer(host, game, gam, { title: o.title, playback: rec, preview: true, audio: sound, onSession: (s) => (session = s) });
     player = p;
+    if (kind !== 'recorded' && o.tag !== false) {
+      const tag = document.createElement('div');
+      tag.className = 'demo-kind-tag';
+      tag.textContent = DEMO_KIND_TAG[kind];
+      tag.style.cssText =
+        'position:absolute;top:6px;left:50%;transform:translateX(-50%);max-width:calc(100% - 12px);padding:2px 8px;border-radius:999px;background:rgb(0 0 0 / .72);color:#fff;font:600 11px/1.4 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;z-index:2';
+      host.append(tag);
+    }
     clearInterval(timer);
     // A second after the last recorded key (or once the playback is over) the demo is done.
     timer = setInterval(() => {
