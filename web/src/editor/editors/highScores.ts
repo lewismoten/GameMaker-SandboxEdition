@@ -22,14 +22,14 @@ registerEditor(['his'], (host, project, file) => {
               '',
               () => s.score,
               (v) => ((s.score = v), save()),
-              { min: 0 },
+              { min: 0, title: `Score ${i + 1}` },
             ),
           ),
           h(
             'td',
             null,
             (() => {
-              const input = h('input', { type: 'text', value: s.name, maxLength: 22 });
+              const input = h('input', { type: 'text', value: s.name, maxLength: 22, 'aria-label': `Name ${i + 1}` });
               input.addEventListener('change', () => ((s.name = input.value), save()));
               return input;
             })(),
