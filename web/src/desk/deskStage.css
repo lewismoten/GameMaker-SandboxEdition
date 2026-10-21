@@ -213,9 +213,15 @@
     top: 232px;
   }
 
+  /* the lamp's pool of light, falling forward and left from under its shade */
   .desk-scene .lamp-glow {
-    left: 1010px;
-    top: 340px;
+    left: 1000px;
+    top: 330px;
+    width: 440px;
+    height: 400px;
+    background:
+      radial-gradient(ellipse 42% 30% at 46% 62%, rgba(255, 214, 140, 0.5), transparent 75%),
+      radial-gradient(ellipse at 48% 50%, rgba(255, 210, 130, 0.3), rgba(255, 200, 110, 0.12) 45%, transparent 70%);
   }
 
   /* a fixed screen can't sit inside a scaled box: drop the scale while the screen fills the window */

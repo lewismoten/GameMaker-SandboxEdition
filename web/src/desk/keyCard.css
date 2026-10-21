@@ -16,6 +16,18 @@
     filter 0.15s;
 }
 
+/* phones: under the screen, inside the bezel */
+@media (max-width: 960px) {
+  .monitor:has(> .key-card-spot:not([hidden])) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .monitor > .key-card-spot {
+    order: 1;
+  }
+}
+
 /* on the stage: hanging off the bezel's left side, out over the speaker */
 @media (min-width: 961px) {
   .key-card-spot {
