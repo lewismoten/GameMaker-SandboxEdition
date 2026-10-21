@@ -14,7 +14,7 @@ OHMSWEET.GAM).
 WHAT IS IT?
 Watt, a pocket-sized repair
 robot, must roll through
-fifteen haywire circuit boards
+twenty haywire circuit boards
 to get home to his charging
 socket. Flip switches, blow
 fuses, throw relays and route
@@ -35,7 +35,7 @@ please register for $12 with
 Sandbox Software. Registered
 players get the printed hint
 book with every answer, a big
-wiring poster of all fifteen
+wiring poster of all twenty
 boards, and the next Sandbox
 Software game at a discount.
 
@@ -49,8 +49,7 @@ and so is this address.)
 
 FILES ON THIS DISK
  OHMSWEET.GAM the game
- *.MAP *.MON the fifteen
- boards
+ *.MAP *.MON the twenty boards
  *.BBL *.MBL board and parts
  art
  WATT.CHR Watt himself

@@ -52,7 +52,7 @@ export const BOARDS: BoardSpec[] = [
       'A gate stays open once current has reached it. Bump the switch again to turn the power off, wait for the last spark to drain away, then walk through.',
   },
   {
-    file: 'microwave',
+    file: 'micro',
     title: 'The Microwave',
     room: 'kitchen',
     card: ['Popcorn button: 4 minutes.', 'Popcorn: 2 minutes. Good luck.'],
