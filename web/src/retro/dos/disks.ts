@@ -1,16 +1,29 @@
 // The 3.5" floppy disks in the desk's disk box: Recreational Software Designs' own
 // games first, the other gameware samples, your projects, and blank disks.
-import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
-import { listProjects, loadProject } from '../../project/storage';
+import {
+  loadCatalog,
+  loadHostedGame,
+  type CatalogEntry,
+  GameFiles,
+} from "../../project/files";
+import { listProjects, loadProject } from "../../project/storage";
 
 export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 /** The games RSD made to show off Game-Maker. */
-export const RSD_GAMES = ['sample', 'pipemare', 'nebula', 'houses', 'tutor', 'terrain', 'penguin'];
+export const RSD_GAMES = [
+  "sample",
+  "pipemare",
+  "nebula",
+  "houses",
+  "tutor",
+  "terrain",
+  "penguin",
+];
 /** Up to 720 KB fit on a double density disk; more needs high density (1.44 MB). */
 export const DD_BYTES = 737_280;
 
 /** original: the games made for this project, on professionally printed labels. */
-export type DiskKind = 'rsd' | 'gameware' | 'original' | 'project' | 'blank';
+export type DiskKind = "rsd" | "gameware" | "original" | "project" | "blank";
 
 export interface Disk {
   id: string;
@@ -25,7 +38,7 @@ export interface Disk {
   /** Something written on the label later in red marker, if anything. */
   note?: string;
   /** HD disks have a second hole, opposite the write-protect tab. */
-  density: 'HD' | 'DD';
+  density: "HD" | "DD";
   /** .gam file on the disk (none for blank disks and asset libraries). */
   gam?: string;
   /** Bytes used, for the "1 of 2" disk count. */
@@ -33,36 +46,73 @@ export interface Disk {
   /** The write-protect tab: originals are protected, so editing makes a copy. */
   writeProtected: boolean;
   projectId?: string;
+  /** The user's disks: when the game was last saved (Date.now()). */
+  updated?: number;
   catalog?: CatalogEntry;
   load: () => Promise<GameFiles>;
 }
 
-const COLORS = ['#2b2b2b', '#8a1d1d', '#1d6b3a', '#5a3a8a', '#9a7a10', '#1c6f7a', '#444b55', '#a4471b'];
+const COLORS = [
+  "#2b2b2b",
+  "#8a1d1d",
+  "#1d6b3a",
+  "#5a3a8a",
+  "#9a7a10",
+  "#1c6f7a",
+  "#444b55",
+  "#a4471b",
+];
 /** RSD's own disks: a deeper pink than the label (the Game-Maker box's #f0a090), so they read apart. */
-const RSD_PINK = '#d9786a';
+const RSD_PINK = "#d9786a";
 /** Publishers of the disks, so each gets a distinct color (filled in by loadDisks). */
 const PUBLISHERS: string[] = [];
-const STRIPES = ['#c62828', '#1565c0', '#2e7d32', '#f9a825', '#6a1b9a', '#00838f', '#ef6c00'];
-const NOTES = ['Do not erase!', 'BACKUP', 'keep!!', 'Mine - hands off', 'v2 - good one', 'DO NOT FORMAT', 'from Doc Leo', 'BEAT IT!'];
+const STRIPES = [
+  "#c62828",
+  "#1565c0",
+  "#2e7d32",
+  "#f9a825",
+  "#6a1b9a",
+  "#00838f",
+  "#ef6c00",
+];
+const NOTES = [
+  "Do not erase!",
+  "BACKUP",
+  "keep!!",
+  "Mine - hands off",
+  "v2 - good one",
+  "DO NOT FORMAT",
+  "from Doc Leo",
+  "BEAT IT!",
+];
 
 /** A small stable number from a string, to pick colors and notes. */
 function hash(s: string): number {
   let n = 2166136261;
-  for (let i = 0; i < s.length; i++) n = Math.imul(n ^ s.charCodeAt(i), 16777619);
+  for (let i = 0; i < s.length; i++)
+    n = Math.imul(n ^ s.charCodeAt(i), 16777619);
   return n >>> 0;
 }
 
 /** Disks from one author or company share a color; RSD's own are the Game-Maker box's pink. */
-function looks(g: CatalogEntry): Pick<Disk, 'color' | 'stripe' | 'note' | 'density'> {
+function looks(
+  g: CatalogEntry,
+): Pick<Disk, "color" | "stripe" | "note" | "density"> {
   const group = g.company ?? g.author;
   const rsd = RSD_GAMES.includes(g.id);
   // Each publisher gets its own color, in the order they appear; others are light grey.
   const groupIndex = group ? [...new Set(PUBLISHERS)].indexOf(group) : -1;
   return {
-    color: rsd ? RSD_PINK : groupIndex >= 0 ? COLORS[groupIndex % COLORS.length] : '#bdb8ad',
-    stripe: rsd ? '#0b0b0b' : STRIPES[hash(`${group ?? g.id}*`) % STRIPES.length],
+    color: rsd
+      ? RSD_PINK
+      : groupIndex >= 0
+        ? COLORS[groupIndex % COLORS.length]
+        : "#bdb8ad",
+    stripe: rsd
+      ? "#0b0b0b"
+      : STRIPES[hash(`${group ?? g.id}*`) % STRIPES.length],
     // printed labels carry no scribbles; notes are for the user's own hand-written disks
-    density: (g.bytes ?? 0) > DD_BYTES ? 'HD' : 'DD',
+    density: (g.bytes ?? 0) > DD_BYTES ? "HD" : "DD",
   };
 }
 
@@ -72,21 +122,27 @@ export function diskCount(bytes: number): number {
 
 export async function loadDisks(): Promise<Disk[]> {
   const catalog = await loadCatalog().catch(() => [] as CatalogEntry[]);
-  const gameware = catalog.filter((g) => g.kind === 'gameware');
+  const gameware = catalog.filter((g) => g.kind === "gameware");
   PUBLISHERS.length = 0;
-  for (const g of gameware) if (!RSD_GAMES.includes(g.id) && (g.company ?? g.author)) PUBLISHERS.push((g.company ?? g.author)!);
+  for (const g of gameware)
+    if (!RSD_GAMES.includes(g.id) && (g.company ?? g.author))
+      PUBLISHERS.push((g.company ?? g.author)!);
   const disks: Disk[] = [];
   const order = [
-    ...RSD_GAMES.map((id) => gameware.find((g) => g.id === id)).filter((g): g is CatalogEntry => !!g),
+    ...RSD_GAMES.map((id) => gameware.find((g) => g.id === id)).filter(
+      (g): g is CatalogEntry => !!g,
+    ),
     ...gameware.filter((g) => !RSD_GAMES.includes(g.id)),
   ];
   order.forEach((g) => {
     const rsd = RSD_GAMES.includes(g.id);
     disks.push({
       id: `cd:${g.id}`,
-      kind: rsd ? 'rsd' : 'gameware',
+      kind: rsd ? "rsd" : "gameware",
       title: g.gam ? g.title : `${g.id} art & sounds`,
-      label: g.gam ? g.title : `${g.id.toUpperCase()}\npictures, monsters, sounds`,
+      label: g.gam
+        ? g.title
+        : `${g.id.toUpperCase()}\npictures, monsters, sounds`,
       ...looks(g),
       gam: g.gam ?? undefined,
       bytes: g.bytes ?? 0,
@@ -100,12 +156,12 @@ export async function loadDisks(): Promise<Disk[]> {
     const label = g.original?.label;
     disks.push({
       id: `cd:${g.id}`,
-      kind: 'original',
+      kind: "original",
       title: g.title,
       label: g.title,
-      color: label?.band ?? '#222',
-      stripe: label?.band ?? '#c62828',
-      density: (g.bytes ?? 0) > DD_BYTES ? 'HD' : 'DD',
+      color: label?.band ?? "#222",
+      stripe: label?.band ?? "#c62828",
+      density: (g.bytes ?? 0) > DD_BYTES ? "HD" : "DD",
       gam: g.gam ?? undefined,
       bytes: g.bytes ?? 0,
       writeProtected: true,
@@ -113,37 +169,52 @@ export async function loadDisks(): Promise<Disk[]> {
       load: () => loadHostedGame(g),
     });
   }
-  for (const p of (await listProjects().catch(() => [])).filter((p) => !p.id.startsWith('hd-'))) {
+  for (const p of (await listProjects().catch(() => [])).filter(
+    (p) => !p.id.startsWith("hd-"),
+  )) {
     disks.push({
       id: `project:${p.id}`,
-      kind: 'project',
+      kind: "project",
       title: p.name,
       label: p.name,
-      color: '#d8d2c0',
+      color: "#d8d2c0",
       stripe: STRIPES[hash(p.id) % STRIPES.length],
       // a scribbled note now and then, as on any kid's own disks
-      note: hash(p.id) % 10 < 4 ? NOTES[(hash(p.id) >>> 4) % NOTES.length] : undefined,
-      density: 'HD',
+      note:
+        hash(p.id) % 10 < 4
+          ? NOTES[(hash(p.id) >>> 4) % NOTES.length]
+          : undefined,
+      density: "HD",
       gam: p.gam,
       bytes: 0,
       writeProtected: false,
       projectId: p.id,
+      updated: p.updated,
       load: async () => (await loadProject(p.id))?.files ?? new GameFiles(),
     });
   }
   disks.push({
-    id: 'blank',
-    kind: 'blank',
-    title: 'Blank disk',
-    label: '',
-    color: '#2b2b2b',
-    stripe: '#9e9e9e',
-    density: 'HD',
+    id: "blank",
+    kind: "blank",
+    title: "Blank disk",
+    label: "",
+    color: "#2b2b2b",
+    stripe: "#9e9e9e",
+    density: "HD",
     bytes: 0,
     writeProtected: false,
     load: async () => new GameFiles(),
   });
-  return disks;
+  // Sandbox Software's games at the front, then RSD's and the other gameware, then the
+  // user's own disks (newest first, as listProjects gives them) and a blank one.
+  const rank: Record<DiskKind, number> = {
+    original: 0,
+    rsd: 1,
+    gameware: 2,
+    project: 3,
+    blank: 4,
+  };
+  return disks.sort((a, b) => rank[a.kind] - rank[b.kind]);
 }
 
 /** Fills in each disk's size once its files are loaded. */
