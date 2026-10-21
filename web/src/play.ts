@@ -21,7 +21,8 @@ root.style.cssText = 'width:100%;height:100%';
 
 async function loadBundle(): Promise<{ id: string; title: string; gam: string; files: GameFiles } | undefined> {
   const res = await fetch('./game/manifest.json').catch(() => undefined);
-  if (!res?.ok) return undefined;
+  // A dev server answers a missing file with index.html (status 200): only JSON is a bundle.
+  if (!res?.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
   const m: BundleManifest = await res.json();
   const files = new GameFiles();
   await Promise.all(
