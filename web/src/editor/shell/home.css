@@ -482,7 +482,7 @@
   line-height: 1.3;
 }
 
-/* Keys, Manual and Demo over a picture */
+/* Keys and Manual over a picture */
 .shot-icons {
   position: absolute;
   right: 6px;
@@ -586,32 +586,10 @@ a.button.with-ico {
   transition-delay: 0.25s;
 }
 
-/* With a mouse, Keys and Manual show on the tile being pointed at (or focused); the Demo
-   button always shows, so a glance tells which games have one. */
+/* With a mouse, Keys and Manual show on the tile being pointed at (or focused). */
 @media (hover: hover) {
-  .game-tile:not(:hover, :focus-within) .shot-icon:not(.demo-toggle) {
+  .game-tile:not(:hover, :focus-within) .shot-icon {
     opacity: 0;
-  }
-}
-
-/* the Demo button is the one to notice */
-.shot-icon.demo-toggle {
-  border-color: #ffd400;
-  background: #ffd400;
-  color: #000;
-}
-
-.shot-icon.demo-toggle:hover {
-  background: #ffe866;
-}
-
-.demo-loading .demo-toggle {
-  animation: demo-wait 0.8s ease-in-out infinite alternate;
-}
-
-@keyframes demo-wait {
-  to {
-    opacity: 0.4;
   }
 }
 

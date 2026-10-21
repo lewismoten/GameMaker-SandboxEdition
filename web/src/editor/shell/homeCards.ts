@@ -1,9 +1,8 @@
 // The games on the home page. One model (HomeGame) covers your projects, the CD's sample
 // games, our own games and the shareware. The grid shows each as a compact tile: its
 // picture (the first level, drawn when the tile scrolls into view) with buttons over it
-// for the keys, the manual and the demo (which plays right there in the picture), and its
-// title. Choosing a tile shows the game in the panel at the top (homeShowcase.ts), which
-// offers everything else with gameActions().
+// for the keys and the manual, and its title. Choosing a tile shows the game in the panel
+// at the top (homeShowcase.ts), which plays its demo and offers everything else with gameActions().
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot } from '../../desk/boxes/boxArt';
@@ -174,22 +173,6 @@ export function gameShot(game: HomeGame, width: number, height: number, classNam
   return c;
 }
 
-/** Calls `f` once the element has scrolled into view. */
-const whenSeen = (() => {
-  const waiting = new WeakMap<Element, () => void>();
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) continue;
-      io.unobserve(e.target);
-      waiting.get(e.target)?.();
-    }
-  });
-  return (el: Element, f: () => void) => {
-    waiting.set(el, f);
-    io.observe(el);
-  };
-})();
-
 /** ⌨ Keys: a keyboard map of what each key does in the game, worked out from its files. */
 export function openKeys(game: HomeGame): void {
   showKeyMap(game.files(), game.gam ?? undefined, game.title);
@@ -266,13 +249,12 @@ export interface TileOptions {
   onMore?(game: HomeGame): void;
 }
 
-/** A game in the grid: its picture with Keys, Manual and Demo over it, and its title. */
+/** A game in the grid: its picture with Keys and Manual over it, and its title. */
 export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   const shot = game.gam || game.kind === 'mine' ? gameShot(game, 160, 100) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
-  // Keys and Manual at the top left, the Demo at the bottom right (⚠ takes the top right)
+  // Keys and Manual at the top left (⚠ takes the top right); choosing the tile plays its demo in the panel
   const tools = h('div', { class: 'shot-icons shot-tools' });
-  const icons = h('div', { class: 'shot-icons' });
-  const picture = h('div', { class: 'tile-shot' }, shot, tools, icons);
+  const picture = h('div', { class: 'tile-shot' }, shot, tools);
   const select = h(
     'button',
     { class: 'tile-select', type: 'button', onclick: () => o.onSelect(game) },
@@ -310,26 +292,6 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   tools.append(icon('keys', 'Keys: what each key does', () => openKeys(game)));
   if (hasManual(game)) tools.append(icon('manual', 'Read the manual', () => void openGameManual(game.entry!)));
 
-  // ▶ Demo only once we know there is a demo to play
-  let playing: { stop(): void } | undefined;
-  const demoLabel = h('span', null, 'Demo');
-  const demo = icon('play', 'Watch the demo here', () => {
-    if (playing) return playing.stop();
-    playing = demoInPicture(game, picture, {
-      onState: (on) => {
-        demo.firstElementChild!.replaceWith(svgIcon(on ? 'stop' : 'play'));
-        demoLabel.textContent = on ? 'Stop' : 'Demo';
-        demo.dataset.tip = on ? 'Stop the demo' : 'Watch the demo here';
-        demo.setAttribute('aria-label', `${demo.dataset.tip}: ${game.title}`);
-        demo.setAttribute('aria-pressed', String(on));
-        if (!on) playing = undefined;
-      },
-    });
-  });
-  demo.append(demoLabel);
-  demo.classList.add('demo-toggle');
-  demo.setAttribute('aria-pressed', 'false');
-  whenSeen(tile, () => void game.hasDemo().then((yes) => yes && icons.prepend(demo)));
   return tile;
 }
 
