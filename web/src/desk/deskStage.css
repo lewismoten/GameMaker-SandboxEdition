@@ -240,10 +240,13 @@
     top: 40px;
   }
 
+  /* 36" x 48" (380 x 500 with its frame), its sill 36" up at y 410: it stands partly behind
+     the monitor and runs up past the top of the stage, so its top is cut off there */
   .desk-scene .snow-window {
-    left: 1146px;
-    top: 40px;
-    width: 270px;
+    left: 908px;
+    top: -90px;
+    width: 380px;
+    clip-path: inset(90px -100px -100px -100px);
   }
 
   /* its base well inside the desk top's tapering right end */

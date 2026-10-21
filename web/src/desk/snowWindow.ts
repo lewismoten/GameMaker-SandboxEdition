@@ -17,8 +17,9 @@ interface Flake {
   drift: number;
 }
 
+// a 36" x 48" window, upright like a real double-hung one
 const W = 320;
-const H = 270;
+const H = 427;
 const GROUND = H - 230; // the hills and houses are drawn for a 230-pixel-high view
 
 export function snowyWindow(): HTMLElement {
@@ -37,8 +38,8 @@ export function snowyWindow(): HTMLElement {
     const x = Math.sin(seed * 9301 + 49297) * 233280;
     return x - Math.floor(x);
   };
-  const stars = Array.from({ length: 40 }, (_, i) => [rnd(i) * W, rnd(i + 99) * H * 0.5, rnd(i + 7) < 0.2 ? 1.4 : 0.8]);
-  const flakes: Flake[] = Array.from({ length: 120 }, () => ({
+  const stars = Array.from({ length: 60 }, (_, i) => [rnd(i) * W, rnd(i + 99) * H * 0.6, rnd(i + 7) < 0.2 ? 1.4 : 0.8]);
+  const flakes: Flake[] = Array.from({ length: 180 }, () => ({
     x: Math.random() * W,
     y: Math.random() * H,
     r: 0.6 + Math.random() * 1.9,
@@ -97,14 +98,17 @@ export function snowyWindow(): HTMLElement {
       ctx.globalAlpha = 1 - d * 2;
       ctx.fillStyle = '#fff';
       for (const [x, y, r] of stars) ctx.fillRect(x, y, r, r);
+      // a crescent: the full moon with its shadowed side cut away, so the sky shows there
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, W, H);
+      ctx.arc(257, 145, 13, 0, Math.PI * 2);
+      ctx.clip('evenodd');
       ctx.fillStyle = '#f4f0dc';
       ctx.beginPath();
-      ctx.arc(250, 42, 15, 0, Math.PI * 2);
+      ctx.arc(250, 150, 15, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = mix([10, 14, 34], [140, 166, 196], d);
-      ctx.beginPath();
-      ctx.arc(257, 37, 13, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.restore();
       ctx.globalAlpha = 1;
     }
     // far hills, then pines along them

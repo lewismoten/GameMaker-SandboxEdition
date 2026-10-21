@@ -10,7 +10,7 @@
     top: 40px;
     z-index: 0;
     display: block;
-    width: 270px;
+    width: 380px;
   }
 
   /* the curtain rod, with a knob at each end */
@@ -77,8 +77,8 @@
 
   .snow-window .sill {
     position: relative;
-    height: 10px;
-    margin: 0 -14px;
+    height: 12px;
+    margin: 0 -16px;
     border-radius: 2px;
     background: linear-gradient(#f4efe2, #c9c0a8);
     box-shadow: 0 5px 7px rgba(0, 0, 0, 0.4);
@@ -88,8 +88,8 @@
   .sw-curtain {
     position: absolute;
     top: -10px;
-    bottom: -18px;
-    width: 40px;
+    bottom: -40px;
+    width: 58px;
     background:
       repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 4px 9px, rgba(255, 255, 255, 0.12) 11px 12px, transparent 13px 14px),
       linear-gradient(#9c3b33, #7a2a25);
@@ -97,13 +97,13 @@
   }
 
   .sw-curtain.left {
-    left: -30px;
+    left: -44px;
     border-radius: 0 0 40% 6px;
     clip-path: polygon(0 0, 100% 0, 70% 55%, 100% 100%, 0 100%);
   }
 
   .sw-curtain.right {
-    right: -30px;
+    right: -44px;
     border-radius: 0 0 6px 40%;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 30% 55%);
   }
