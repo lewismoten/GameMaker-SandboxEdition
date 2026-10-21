@@ -63,3 +63,26 @@ export function licenseText(title: string): string {
 
 /** The lines every game's credits end with (30 columns or less). */
 export const CREDIT_NOTICE = ['Made in 2026 by Lewis Moten', 'with Claude. Free to share:', 'see LICENSE.TXT on the disk.'];
+
+/** The last credits page of every game: one 16-line text screen. */
+export const CREDIT_PAGE = [
+  'FREE TO SHARE',
+  '',
+  ...CREDIT_NOTICE,
+  '',
+  'The shareware page is part',
+  'of the 1995 story: there is',
+  'no fee and nothing to mail.',
+  '',
+  'MIT License, (c) 2026',
+  'Lewis Moten.',
+];
+
+/** A game's credits text with the FREE TO SHARE page after it, on a page of its own. */
+export function withCreditPage(credits: string): string {
+  const lines = credits.replace(/\s+$/, '').split('\n');
+  while (lines.length % PAGE) lines.push('');
+  const notice = [...CREDIT_PAGE];
+  while (notice.length < PAGE) notice.push('');
+  return [...lines, ...notice].join('\n');
+}
