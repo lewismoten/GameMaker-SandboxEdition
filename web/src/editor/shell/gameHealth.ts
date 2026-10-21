@@ -81,7 +81,8 @@ const seen = new IntersectionObserver((entries) => {
   }
 });
 
-export function healthBadge(target: HealthTarget): HTMLElement {
+/** `focusable`: in the Tab order once there is something to show (tiles leave it out). */
+export function healthBadge(target: HealthTarget, focusable = false): HTMLElement {
   const badge = h(
     'button',
     { class: 'health-badge unknown', tabindex: -1, onclick: (e: Event) => (e.stopPropagation(), void showHealthReport(target)) },
@@ -94,7 +95,7 @@ export function healthBadge(target: HealthTarget): HTMLElement {
       const worst = worstSeverity(issues);
       if (!worst) return;
       badge.classList.remove('unknown');
-      badge.tabIndex = 0;
+      if (focusable) badge.tabIndex = 0;
       badge.classList.add(worst);
       const errors = issues.filter((i) => i.severity === 'error').length;
       const label = errors ? `${errors} problem${errors === 1 ? '' : 's'}` : `${issues.length} warning${issues.length === 1 ? '' : 's'}`;
