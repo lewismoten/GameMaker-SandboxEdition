@@ -2,6 +2,7 @@
 // Game-Maker), the shareware README.TXT and LIMITS.TXT.
 import { MODULES, SHARDS } from '../ids';
 import { SECTORS } from '../universe';
+import { withCreditPage } from '../../../kit/license';
 
 /** Wraps text for Game-Maker's text screens: fgets reads 31 characters, so a full
  * 31-character line would leave its newline for the next read (a blank line); keep to 30. */
@@ -68,7 +69,7 @@ Esc quit
 
 Good luck, courier.`);
 
-export const CREDITS = wrap31(`MAXIMUS: THE HUNDRED WORLDS
+const CREDITS_TEXT = wrap31(`MAXIMUS: THE HUNDRED WORLDS
 
 Designed and built by
 CLAUDE
@@ -197,3 +198,6 @@ Game-Maker is a trademark of Recreational Software Designs. Sound Blaster is a t
 
 Thank you for supporting shareware!
 `);
+
+/** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
+export const CREDITS = withCreditPage(CREDITS_TEXT);
