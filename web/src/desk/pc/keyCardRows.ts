@@ -1,7 +1,8 @@
 // What goes on a game's handwritten key card (desk/pc/keyCard.ts): one line per thing you can
 // do, with every key that does it, so "Fire" is written once however many keys fire. The
-// small card taped to the monitor is shorter still: arrows for the arrow keys, and the four
-// ways to move on one line.
+// small card taped to the monitor is shorter still: arrows for the arrow keys, which go
+// unsaid when all they do is move (everyone knows), and the other keys that only move (W A S
+// D, the pad) on one "Move" line.
 import type { GameKeyMap } from '../../editor/keymap/keyMap';
 
 export interface CardRow {
@@ -26,13 +27,26 @@ export function shortKey(name: string): string {
   return ARROWS[first] ?? first;
 }
 
+/** A key that does nothing but walk the player around, in every level. */
+const onlyMoves = (k: Binding) => k.uses.every((u) => u.action.kind === 'move' || u.action.kind === 'nothing');
+
 /** The card's lines. `compact` is for the small card: short key names and moves merged. */
 export function cardRows(keys: Binding[], compact = false): CardRow[] {
   const rows: CardRow[] = [];
   const byDoes = new Map<string, CardRow>();
+  let moves: CardRow | undefined;
   for (const k of keys) {
     if (!k.uses.some((u) => u.action.kind !== 'nothing')) continue;
-    const does = keyDoes(k, compact ? 1 : 2);
+    if (compact && onlyMoves(k)) {
+      if (ARROWS[k.name.split(' / ')[0].trim()]) continue; // arrow keys move: no need to say
+      if (!moves) rows.push((moves = { keys: [], does: 'Move' }));
+      const name = shortKey(k.name);
+      if (!moves.keys.includes(name)) moves.keys.push(name);
+      continue;
+    }
+    // an arrow key that does more than move: say what else it does ("↑ Push up")
+    const arrow = compact && !!ARROWS[k.name.split(' / ')[0].trim()];
+    const does = keyDoes(arrow ? { ...k, uses: k.uses.filter((u) => u.action.kind !== 'move') } : k, compact ? 1 : 2);
     const name = compact ? shortKey(k.name) : k.name;
     const row = byDoes.get(does);
     if (row) {
