@@ -262,7 +262,7 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   const picture = h('div', { class: 'tile-shot' }, shot, tools, icons);
   const select = h(
     'button',
-    { class: 'tile-select', type: 'button', 'aria-label': `${game.title}: show it at the top`, onclick: () => o.onSelect(game) },
+    { class: 'tile-select', type: 'button', onclick: () => o.onSelect(game) },
     h('span', { class: 'tile-title' }, game.title),
     h('span', { class: 'tile-meta', title: game.byline }, game.byline),
   );
@@ -278,7 +278,8 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   const icon = (name: IconName, tip: string, onclick: () => void) =>
     h(
       'button',
-      { class: 'shot-icon', type: 'button', dataset: { tip }, 'aria-label': `${tip}: ${game.title}`, onclick: (e: Event) => (e.stopPropagation(), onclick()) },
+      // out of the Tab order (one stop per tile; the panel at the top has them all for the keyboard)
+      { class: 'shot-icon', type: 'button', tabindex: -1, dataset: { tip }, 'aria-label': `${tip}: ${game.title}`, onclick: (e: Event) => (e.stopPropagation(), onclick()) },
       svgIcon(name),
     );
   tools.append(icon('keys', 'Keys: what each key does', () => openKeys(game)));

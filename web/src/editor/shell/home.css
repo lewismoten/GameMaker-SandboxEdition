@@ -338,9 +338,14 @@
   cursor: pointer;
 }
 
+/* the focus ring goes round the whole tile */
 .tile-select:focus-visible {
+  outline: none;
+}
+
+.game-tile:has(.tile-select:focus-visible) {
   outline: 3px solid var(--focus);
-  outline-offset: -3px;
+  outline-offset: 2px;
 }
 
 .tile-title {

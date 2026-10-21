@@ -185,6 +185,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       ),
     );
   };
+  // Arrow keys move between the tiles (Tab stops once per tile); Home and End go to the ends.
+  tiles.addEventListener('keydown', (e) => {
+    const from = (e.target as HTMLElement).closest('.tile-select');
+    if (!from || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
+    const all = [...tiles.querySelectorAll<HTMLElement>('.game-tile:not([hidden]) .tile-select')];
+    const i = all.indexOf(from as HTMLElement);
+    const top = (el: HTMLElement) => el.closest('.game-tile')!.getBoundingClientRect().top;
+    const cols = Math.max(1, all.filter((el) => top(el) === top(all[0])).length);
+    const j = { ArrowLeft: i - 1, ArrowRight: i + 1, ArrowUp: i - cols, ArrowDown: i + cols, Home: 0, End: all.length - 1 }[e.key]!;
+    if (j < 0 || j >= all.length) return;
+    e.preventDefault();
+    all[j].focus();
+    all[j].scrollIntoView({ block: 'nearest' });
+  });
+
   catNav.addEventListener('keydown', (e) => {
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -99, End: 99 }[e.key];
     if (!step) return;
