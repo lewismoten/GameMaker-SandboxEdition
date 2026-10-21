@@ -5,7 +5,20 @@
 import './recording.css';
 import { h, modal } from '../../core/ui';
 import { scanName } from '../../../input/scancodes';
-import { moveRange, moveNote, trimAt, idleGaps, shortenGap, duration, clock, TimeMap, type RecEvent, type Grip, type Gap } from './recTimelineModel';
+import {
+  moveRange,
+  moveNote,
+  trimAt,
+  idleGaps,
+  screenGaps,
+  shortenGap,
+  duration,
+  clock,
+  TimeMap,
+  type RecEvent,
+  type Grip,
+  type Gap,
+} from './recTimelineModel';
 import { TICK, RULER, CAP_H, FOLD, type Layout, layout, type Frame, type CapBox, draw, fitCanvas, stripHeight } from './recTimelineDraw';
 
 export interface Timeline {
@@ -35,6 +48,7 @@ export function watchTimeline(events: RecEvent[], getTick: () => number | undefi
   let shown = 0;
   let raf = 0;
   const end = duration(events);
+  const screens = screenGaps(events);
   const frame = () => {
     raf = requestAnimationFrame(frame);
     if (!canvas.isConnected) return;
@@ -55,17 +69,18 @@ export function watchTimeline(events: RecEvent[], getTick: () => number | undefi
     }
     const { ctx, width } = fitCanvas(canvas, stripHeight(lay.lanes));
     const playX = Math.round(width * 0.28);
-    const map = new TimeMap(ppt);
-    draw({ ctx, width, height: stripHeight(lay.lanes), map, ox: playX - shown * ppt, lay, endT: Infinity, pos: shown, playX });
-    // A long wait before the next key: say how long.
+    const map = new TimeMap(ppt, [], screens);
+    draw({ ctx, width, height: stripHeight(lay.lanes), map, ox: playX - map.x(shown), lay, endT: Infinity, pos: shown, playX });
+    // A long wait before the next key: say how long (a screen's polls are no time in play).
     const next = lay.notes.find((n) => n.start > shown);
-    if (next && (next.start - shown) * ppt > width - playX) {
+    if (next && map.x(next.start) - map.x(shown) > width - playX) {
       ctx.font = '11px ui-monospace, Menlo, Consolas, monospace';
       ctx.fillStyle = '#9aa6ff';
       ctx.textAlign = 'right';
-      ctx.fillText(`next key in ${clock(next.start - shown, false)} →`, width - 8, RULER + 14);
+      const during = screens.some((g) => g.to === next.start && shown >= g.from);
+      ctx.fillText(during ? 'next key: during the screen →' : `next key in ${clock(map.play(next.start) - map.play(shown), false)} →`, width - 8, RULER + 14);
     }
-    readout.textContent = shown > end ? `${clock(shown)} · all keys played` : `${clock(shown)} / ${clock(end)}`;
+    readout.textContent = shown > end ? `${clock(map.play(shown))} · all keys played` : `${clock(map.play(shown))} / ${clock(map.play(end))}`;
   };
   raf = requestAnimationFrame(frame);
   return { el, destroy: () => cancelAnimationFrame(raf) };
@@ -138,7 +153,7 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
 
   function rebuild(): void {
     lay = layout(events, ppt);
-    map = new TimeMap(ppt, idleGaps(events, FOLD));
+    map = new TimeMap(ppt, idleGaps(events, FOLD), screenGaps(events));
   }
 
   function contentWidth(): number {
@@ -173,7 +188,7 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
   function describe(): void {
     const total = duration(events);
     if (drag?.kind === 'trim') {
-      status.textContent = `✂ Trim the demo to ${clock(drag.t)} (of ${clock(total)}); keys still held there are let go.`;
+      status.textContent = `✂ Trim the demo to ${clock(map.play(drag.t))} (of ${clock(map.play(total))}); keys still held there are let go.`;
       return;
     }
     const at = hover && hover.grip !== 'fold' && hover.grip !== 'trim' ? lay.notes[hover.note] : undefined;
@@ -181,16 +196,18 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
       const n = lay.notes[drag.note];
       const s = drag.grip === 'end' ? n.start : n.start + drag.dt;
       const e = n.end === null ? null : drag.grip === 'start' ? n.end : n.end + drag.dt;
-      status.textContent = `${scanName(n.scan)}: down ${clock(s)}${e === null ? ', held to the end' : ` → up ${clock(e)} (${((e - s) / TICK).toFixed(2)} s)`}`;
+      status.textContent = `${scanName(n.scan)}: down ${clock(map.play(s))}${e === null ? ', held to the end' : ` → up ${clock(map.play(e))} (${((map.play(e) - map.play(s)) / TICK).toFixed(2)} s)`}`;
     } else if (at) {
       const how =
         hover!.grip === 'end' ? 'drag to change when it is let go' : hover!.grip === 'start' ? 'drag to change when it is pressed' : 'drag to move this press';
-      status.textContent = `${scanName(at.scan)}: down ${clock(at.start)}${at.end === null ? ', held to the end' : ` → up ${clock(at.end)} (${((at.end - at.start) / TICK).toFixed(2)} s)`} · ${how}`;
+      status.textContent = `${scanName(at.scan)}: down ${clock(map.play(at.start))}${at.end === null ? ', held to the end' : ` → up ${clock(map.play(at.end))} (${((map.play(at.end) - map.play(at.start)) / TICK).toFixed(2)} s)`} · ${how}`;
     } else if (hover?.grip === 'trim') status.textContent = 'Drag the END flag left to cut off the rest of the demo.';
     else if (hover?.grip === 'fold') {
       const s = map.segs[hover.note];
-      status.textContent = `${clock(s.t1 - s.t0, false)} with no key pressed or let go, folded up. Click to shorten it.`;
-    } else status.textContent = `${lay.notes.length} key presses · ${clock(total)} · drag keys to retime them, the END flag to trim`;
+      status.textContent = s.screen
+        ? `A between-scene screen (an animation, picture or text page). In DOS the next key was pressed while it showed, after ${(s.t1 - s.t0).toLocaleString()} key checks — not time in play.`
+        : `${clock(s.t1 - s.t0, false)} with no key pressed or let go, folded up. Click to shorten it.`;
+    } else status.textContent = `${lay.notes.length} key presses · ${clock(map.play(total))} · drag keys to retime them, the END flag to trim`;
   }
 
   function hit(x: number, y: number): Frame['hover'] {
@@ -256,7 +273,8 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
     }
     if (!cancel && d?.kind === 'fold') {
       const s = map.segs[d.seg];
-      void shorten({ from: s.t0, to: s.t1 });
+      // a screen's polls are how DOS timed the key; shortening them would change the demo
+      if (!s.screen) void shorten({ from: s.t0, to: s.t1 });
     }
     render();
   };

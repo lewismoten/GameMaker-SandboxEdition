@@ -167,7 +167,7 @@ export function draw(f: Frame): CapBox[] {
       if (major && x > lastLabel + 44 && (f.trimT === undefined || x < X(f.trimT) - 40 || x > X(f.trimT) + 44)) {
         lastLabel = x;
         ctx.fillStyle = '#9aa6ff';
-        ctx.fillText(clock(t, step < 1), x + 3, 7);
+        ctx.fillText(clock(f.map.play(t), step < 1), x + 3, 7);
         ctx.fillStyle = 'rgba(111,123,208,0.10)';
         ctx.fillRect(x, RULER, 1, height - RULER);
       }
@@ -191,7 +191,7 @@ export function draw(f: Frame): CapBox[] {
     ctx.save();
     ctx.fillStyle = hot ? PLAYHEAD : '#9aa6ff';
     ctx.textAlign = 'center';
-    const span = clock(s.t1 - s.t0, false);
+    const span = s.screen ? `${Math.round((s.t1 - s.t0) / 1000)}k polls` : clock(s.t1 - s.t0, false);
     const tw = ctx.measureText(span).width + 8;
     ctx.fillStyle = '#151a3d';
     ctx.fillRect((xa + xb) / 2 - tw / 2, 0, tw, RULER - 1);
@@ -199,7 +199,7 @@ export function draw(f: Frame): CapBox[] {
     ctx.fillText(span, (xa + xb) / 2, 7);
     ctx.translate((xa + xb) / 2, RULER + (height - RULER) / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('folded', 0, 0);
+    ctx.fillText(s.screen ? 'screen' : 'folded', 0, 0);
     ctx.restore();
   }
   // Watching: shade the past and draw the playhead under the keys.
