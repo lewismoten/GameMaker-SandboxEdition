@@ -30,7 +30,7 @@ export interface BotOptions {
   keepAway?: number;
   /**
    * Hand-planned waypoints by scene, in blocks, taken in order (each counts as reached
-   * within a block and a half); after the last one the scene's goals or links apply.
+   * within two blocks); after the last one the scene's goals or links apply.
    */
   route?: Record<number, { x: number; y: number }[]>;
   /** How much each block closer to a goal counts (default 15). */
@@ -48,6 +48,8 @@ interface Option {
 }
 
 const MAP_W = 100;
+/** Game ticks a jump, shot or pick up key is held (long enough for a jump to take off). */
+const TAP = 6;
 
 /** Where the character is, in pixels on the map. */
 const pos = (w: World) => ({ x: w.chr.x[0] * 20 + w.chr.x[1], y: w.chr.y[0] * 20 + w.chr.y[1] });
@@ -63,6 +65,8 @@ export class Bot {
   private world?: World;
   private rand: () => number;
   private trail: { x: number; y: number }[] = [];
+  /** Ticks left to hold a tap key. */
+  private tapLeft = 0;
   /** Decisions left to keep the current choice. */
   private locked = 0;
   /** Moments worth a look: deaths, links taken, pick ups. */
@@ -194,8 +198,8 @@ export class Bot {
     let value = 0;
     const tapped = opt && opt.kind !== 'move';
     for (let t = 0; t < this.o.horizon; t++) {
-      // jumps, shots and pick ups are taps: let go after a decision's worth of ticks
-      if (tapped && t === this.o.every) p.key(opt.key | 0x80);
+      // jumps, shots and pick ups are taps, held for TAP ticks
+      if (tapped && t === TAP) p.key(opt.key | 0x80);
       if (opt?.then !== undefined && t === this.o.every) {
         p.key(opt.key | 0x80);
         p.key(opt.then);
@@ -260,11 +264,19 @@ export class Bot {
       if (scene !== this.scene) this.leg = 0;
       this.scene = scene;
       this.held = undefined;
+      this.tapLeft = 0;
+    }
+    // a tap is held for TAP ticks, then let go before choosing again
+    if (this.tapLeft > 0) {
+      this.tapLeft -= this.o.every;
+      if (this.tapLeft > 0) return;
+      if (this.held !== undefined) m.keyboard.feed(this.held | 0x80);
+      this.held = undefined;
     }
     const at = pos(w);
     this.trail.push(at);
     const leg = this.o.route?.[this.scene]?.[this.leg];
-    if (leg && Math.hypot(at.x / 20 - leg.x, at.y / 20 - leg.y) < 1.5) {
+    if (leg && Math.hypot(at.x / 20 - leg.x, at.y / 20 - leg.y) < 2) {
       this.log.push(`tick ${s.rec.tick}: reached waypoint ${this.leg} (${leg.x},${leg.y})`);
       this.leg++;
       this.trail.length = 0;
@@ -276,8 +288,10 @@ export class Bot {
     const options: (Option | undefined)[] = [undefined, ...single];
     // with somewhere to go, also look at turning: one move now, another after it
     if (this.hasGoals(s)) {
+      // (backing off, then jumping: a run-up for a ledge)
       const moves = single.filter((o) => o.kind === 'move');
-      for (const a of moves) for (const b of moves) if (a !== b) options.push({ ...a, then: b.key });
+      const next = single.filter((o) => o.kind === 'move' || o.kind === 'jump');
+      for (const a of moves) for (const b of next) if (a !== b) options.push({ ...a, then: b.key });
     }
     const values = new Map<Option | undefined, number>();
     let best: Option | undefined;
@@ -296,7 +310,7 @@ export class Bot {
       if (process.env.BOT_DEBUG) this.log.push(`  t${s.rec.tick} key ${opt?.key ?? '-'} worst ${worst.toFixed(0)} avg ${(sum / this.o.dice).toFixed(0)}`);
       if (value > bestValue) [best, bestValue] = [opt, value];
     }
-    const current = options.find((x) => x?.key === this.held && x?.then === undefined);
+    const current = options.find((x) => x?.key === this.held && x?.then === undefined && x?.kind === 'move');
     // Hold on to a choice for a few decisions (unless it hurts), so the hero does not dither
     // at the edge of danger; and when the hero has hardly moved for a while, set off
     // somewhere at random that does not hurt.
@@ -310,16 +324,13 @@ export class Bot {
       if (safe.length) best = safe[Math.floor(this.rand() * safe.length)];
       this.locked = 5;
       this.trail.length = 0;
-    } else if (best?.key !== this.held) this.locked = 2;
+    } else if (best?.key !== this.held && best?.kind === 'move') this.locked = 2;
     if (process.env.BOT_DEBUG) this.log.push(`  t${s.rec.tick} chose ${best?.key} held ${this.held}`);
     if (best?.key !== this.held) {
       if (this.held !== undefined) m.keyboard.feed(this.held | 0x80);
       if (best) m.keyboard.feed(best.key);
       this.held = best?.key;
-    } else if (best && best.kind !== 'move') {
-      // a tap again: let go and press once more next time
-      m.keyboard.feed(best.key | 0x80);
-      this.held = undefined;
+      if (best && best.kind !== 'move') this.tapLeft = TAP;
     }
   }
 
