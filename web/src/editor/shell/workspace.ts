@@ -332,6 +332,9 @@ export class Workspace {
     this.player = undefined;
     this.current = file;
     this.sidebar.classList.remove('open');
+    // a new file starts at its top (phones scroll the window, wide screens the editor)
+    window.scrollTo(0, 0);
+    this.main.scrollTop = 0;
     location.replace(`#/p/${this.project.id}/${encodeURIComponent(file)}`);
     this.renderSidebar();
     const body = h('div');

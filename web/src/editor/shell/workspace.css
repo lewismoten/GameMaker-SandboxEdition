@@ -201,6 +201,8 @@
   .next-steps .next-steps-hide {
     position: sticky;
     right: 0;
+    background: var(--panel);
+    box-shadow: -10px 0 8px var(--panel);
   }
 }
 
