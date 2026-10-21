@@ -43,25 +43,35 @@
   padding: 14px 10px 10px;
   background: #0b0b0b;
   color: #f2e600;
-  font: italic 900 24px/1 'Arial Black', Arial, sans-serif;
+  font:
+    italic 900 24px/1 'Arial Black',
+    Arial,
+    sans-serif;
   text-shadow: 2px 2px 0 #1f9a3a;
 }
 
 .guide-book span {
   margin-top: 18px;
   padding: 0 12px;
-  font: 700 20px/1.1 Helvetica, Arial, sans-serif;
+  font:
+    700 20px/1.1 Helvetica,
+    Arial,
+    sans-serif;
 }
 
 .guide-book em {
   padding: 0 12px;
-  font: 15px 'Times New Roman', serif;
+  font:
+    15px 'Times New Roman',
+    serif;
 }
 
 .guide-book small {
   margin-top: auto;
   padding: 0 12px;
-  font: 700 10px Arial, sans-serif;
+  font:
+    700 10px Arial,
+    sans-serif;
 }
 
 /* the CD: a silver disc with a rainbow diffraction sheen that shifts as it turns */
@@ -146,13 +156,28 @@
 
 .holo-label .cd-title {
   fill: #000080;
-  font: 900 11px 'Arial Black', Arial, sans-serif;
+  font:
+    900 11px 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.holo-label .cd-edition {
+  fill: #1d3f7a;
+  font:
+    900 5.6px Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.12em;
 }
 
 .holo-label .cd-small {
-  fill: #b0103a;
-  font: 700 5.4px Arial, Helvetica, sans-serif;
-  letter-spacing: 0.02em;
+  fill: #8a0a2c;
+  font:
+    900 5px Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.08em;
 }
 
 @keyframes holo-turn {
@@ -190,6 +215,9 @@
   border-bottom: 1px solid #f2e600;
   background: #1d3f7a;
   color: #fff;
-  font: 900 6px/1.4 Arial, Helvetica, sans-serif;
+  font:
+    900 6px/1.4 Arial,
+    Helvetica,
+    sans-serif;
   letter-spacing: 0.06em;
 }

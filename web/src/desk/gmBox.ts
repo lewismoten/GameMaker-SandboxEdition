@@ -197,9 +197,11 @@ export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
   b.font = SANS(15, 900);
   b.fillText('SYSTEM REQUIREMENTS', 44, y + 24);
   b.font = SANS(14, 400);
-  ['IBM PC/AT or compatible (386 or better recommended)', '640K RAM · VGA graphics · hard disk · DOS 3.3 or later', 'Mouse required · Sound Blaster optional · CD-ROM or 1.44 MB floppy'].forEach((l, i) =>
-    b.fillText(l, 44, y + 50 + i * 22),
-  );
+  [
+    'IBM PC/AT or compatible (386 or better recommended)',
+    '640K RAM · VGA graphics · hard disk · DOS 3.3 or later',
+    'Mouse required · Sound Blaster optional · CD-ROM or 1.44 MB floppy',
+  ].forEach((l, i) => b.fillText(l, 44, y + 50 + i * 22));
   b.font = SANS(12, 400);
   b.fillText('Game-Maker © 1991–1994 Recreational Software Designs; released under the MIT License in 2014.', 30, H - 40);
   b.fillText('Sandbox Edition box art, made for this modified fork. Not the original RSD box.', 30, H - 22);
@@ -212,14 +214,26 @@ export function drawGmBox(tiles: [HTMLCanvasElement, string][]): BoxFaces {
     s.fillStyle = RED;
     s.fillRect(0, H - 120, D, 34);
     s.save();
-    s.translate(D / 2 + 26, H / 2 - 60);
+    s.translate(D / 2 + 26, H / 2 - 10);
     s.rotate(Math.PI / 2);
-    logo(s, 0, 0, H - 260, 80, 'center');
+    logo(s, 0, 0, H - 300, 80, 'center');
     s.restore();
     s.fillStyle = '#fff';
     s.textAlign = 'center';
     s.font = SANS(16, 900);
     s.fillText('RSD', D / 2, 52);
+    // this fork's mark under the publisher's
+    s.fillStyle = '#1d3f7a';
+    s.fillRect(D / 2 - 34, 64, 68, 30);
+    s.strokeStyle = YELLOW;
+    s.lineWidth = 2;
+    s.strokeRect(D / 2 - 33, 65, 66, 28);
+    s.fillStyle = YELLOW;
+    s.font = SANS(20, 900);
+    s.fillText('SE', D / 2, 87);
+    s.fillStyle = '#fff';
+    s.font = SANS(11, 700);
+    s.fillText('SANDBOX EDITION', D / 2, H - 70);
     s.font = SANS(14, 700, true);
     s.fillText('VERSION 3.0', D / 2, H - 98);
     return c.toDataURL();
@@ -242,10 +256,12 @@ export function gmBoxContents(openGuide: () => void): HTMLElement {
   disc.querySelector('.holo-label')!.innerHTML = `<svg viewBox="0 0 100 100">
     <defs>
       <path id="holo-top" d="M 16 50 A 34 34 0 0 1 84 50"/>
-      <path id="holo-bottom" d="M 13 50 A 37 37 0 0 0 87 50"/>
+      <path id="holo-inner" d="M 26 50 A 24 24 0 0 1 74 50"/>
+      <path id="holo-bottom" d="M 12 50 A 38 38 0 0 0 88 50"/>
     </defs>
     <text class="cd-title"><textPath href="#holo-top" startOffset="50%" text-anchor="middle">GAME-MAKER 3.0</textPath></text>
-    <text class="cd-small"><textPath href="#holo-bottom" startOffset="50%" text-anchor="middle">SANDBOX EDITION · NOT AN ORIGINAL RSD DISC</textPath></text>
+    <text class="cd-edition"><textPath href="#holo-inner" startOffset="50%" text-anchor="middle">SANDBOX EDITION</textPath></text>
+    <text class="cd-small"><textPath href="#holo-bottom" startOffset="50%" text-anchor="middle">NOT AN ORIGINAL RSD DISC</textPath></text>
   </svg>`;
   // the sheen follows the light: move the pointer over the disc to tilt it
   disc.addEventListener('pointermove', (e) => {
