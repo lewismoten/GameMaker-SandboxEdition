@@ -1,8 +1,8 @@
 // Floors and grounds: each a function that paints a fresh 20x20 square, so items and
 // decorations can be laid on top of the right ground.
 import { Pixels, rng } from '../kit/pixels';
-import { shadeAt, speckle } from './draw';
-import { C, PAL } from './pal';
+import { shadeAt, speckle } from './src/art/draw';
+import { C, PAL } from './src/art/pal';
 
 export type Painter = (seed?: number) => Pixels;
 

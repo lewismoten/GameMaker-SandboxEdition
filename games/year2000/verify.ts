@@ -4,7 +4,7 @@
 //   cd web && npx vite-node ../games/year2000/verify.ts      (GOD=1 keeps the bot alive)
 import { newCharInfo } from '../../web/src/engine/world';
 import { buildCharacter } from './character';
-import { CTR, MON, PAGES_NEEDED, SEQ } from './ids';
+import { CTR, MON, PAGES_NEEDED, SEQ } from './src/ids';
 import { LEVELS, SETS } from './levels';
 import { DIALS } from './level4';
 import { buildMonsters } from './monsters';

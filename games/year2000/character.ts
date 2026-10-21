@@ -4,7 +4,7 @@
 import { CHARBL, MONBL } from '../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
 import type { BlockSet } from './book';
-import { CTR, MON, SEQ, SND } from './ids';
+import { CTR, MON, SEQ, SND } from './src/ids';
 
 export const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920 };
 /**

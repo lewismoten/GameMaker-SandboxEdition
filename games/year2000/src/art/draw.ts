@@ -1,5 +1,5 @@
 // Drawing helpers shared by the block, sprite and screen art.
-import { Pixels, dither, rng } from '../kit/pixels';
+import { Pixels, dither, rng } from '../../../kit/pixels';
 
 export const T = 255;
 

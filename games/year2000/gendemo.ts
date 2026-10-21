@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { newCharInfo } from '../../web/src/engine/world';
 import { Bot } from './bot';
 import { buildCharacter } from './character';
-import { MON } from './ids';
+import { MON } from './src/ids';
 import { LEVELS, SETS } from './levels';
 import { buildMonsters } from './monsters';
 import { Sim } from './sim';

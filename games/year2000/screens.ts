@@ -4,9 +4,9 @@
 import { encodeFli } from '../../web/src/formats/fli';
 import { encodeGif } from '../../web/src/formats/gif';
 import { Pixels, dither, rng } from '../kit/pixels';
-import { T, blob, gradient, oval, shadeAt } from './draw';
-import { micro, microWidth, outlined, text, textWidth } from './font';
-import { C, PAL } from './pal';
+import { T, blob, gradient, oval, shadeAt } from './src/art/draw';
+import { micro, microWidth, outlined, text, textWidth } from './src/art/font';
+import { C, PAL } from './src/art/pal';
 
 const R = PAL.r;
 export const W = 320;

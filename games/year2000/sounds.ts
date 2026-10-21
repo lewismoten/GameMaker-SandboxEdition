@@ -3,7 +3,7 @@
 import { newSoundSet, type SoundSet } from '../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker } from '../kit/sound';
 import { rng } from '../kit/pixels';
-import { SND } from './ids';
+import { SND } from './src/ids';
 
 export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array> } {
   const set = newSoundSet();

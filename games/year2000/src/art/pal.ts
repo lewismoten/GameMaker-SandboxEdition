@@ -1,6 +1,6 @@
 // IN THE YEAR 2000: one VGA palette for everything, blocks and screens alike. Chrome,
 // hot pink, teal and purple: the future as it looked from a 1992 sticker book.
-import { PaletteBuilder } from '../kit/palette';
+import { PaletteBuilder } from '../../../kit/palette';
 
 type RGB = [number, number, number];
 

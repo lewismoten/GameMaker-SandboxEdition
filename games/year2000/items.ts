@@ -2,9 +2,9 @@
 // any floor (and shown big on the screens). In the year 2000 everything hovers a little,
 // so each one floats over its own shadow.
 import { Pixels } from '../kit/pixels';
-import { T, blob, oval, outline } from './draw';
-import { micro } from './font';
-import { C } from './pal';
+import { T, blob, oval, outline } from './src/art/draw';
+import { micro } from './src/art/font';
+import { C } from './src/art/pal';
 
 const K = () => C('grey', 0);
 

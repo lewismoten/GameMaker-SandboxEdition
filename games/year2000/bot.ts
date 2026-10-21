@@ -4,7 +4,7 @@
 import { MLEN } from '../../web/src/formats/map';
 import { INF_REPEAT } from '../../web/src/formats/character';
 import type { Sim } from './sim';
-import { SEQ } from './ids';
+import { SEQ } from './src/ids';
 
 export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
 const DIRS: [number, number, number][] = [

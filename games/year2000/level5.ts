@@ -5,7 +5,7 @@
 // waiting at the Visitor Center, up in meteor alley.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from './book';
-import { MON } from './ids';
+import { MON } from './src/ids';
 
 const LEGEND: Legend = {
   '~': 'space',

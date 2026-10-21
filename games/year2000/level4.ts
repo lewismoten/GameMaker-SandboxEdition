@@ -8,7 +8,7 @@
 // room, so the room you leave is reset (and its quarters come back) every time you dial.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from './book';
-import { MON } from './ids';
+import { MON } from './src/ids';
 
 const BASE: Legend = {
   X: 'xwall',

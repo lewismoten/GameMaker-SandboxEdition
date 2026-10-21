@@ -19,14 +19,14 @@ import { DIALS } from './level4';
 import type { LevelMap } from './mapkit';
 import { buildMonsters } from './monsters';
 import { lostSong, menuSong, storySong, titleSong, wonSong } from './music';
-import { PAL } from './pal';
-import { renderMap } from './render';
+import { PAL } from './src/art/pal';
+import { renderMap } from './src/art/render';
 import * as S from './screens';
 import { buildSounds } from './sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './sprites';
 import { CREDITS, INSTRUCTIONS, readme } from './text';
 import { ITEM_PICS } from './items';
-import { PAGES_NEEDED } from './ids';
+import { PAGES_NEEDED } from './src/ids';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));

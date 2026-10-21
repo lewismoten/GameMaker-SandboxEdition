@@ -3,7 +3,7 @@
 import { Pixels } from '../kit/pixels';
 import type { BlockSet } from './book';
 import { citySet, moonSet, suburbSet } from './blocks';
-import { PAL } from './pal';
+import { PAL } from './src/art/pal';
 import { writePng } from './png';
 
 const out = process.env.OUT ?? '/tmp';

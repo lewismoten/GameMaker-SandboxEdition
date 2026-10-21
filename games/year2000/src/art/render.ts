@@ -1,9 +1,9 @@
 // Renders part of a map (blocks plus the monsters standing on it) into a picture, for the
 // level cards, the screens and checking the maps.
-import type { Block } from '../../web/src/formats/blocks';
-import type { GameMap } from '../../web/src/formats/map';
-import type { Monster } from '../../web/src/formats/monster';
-import { Pixels } from '../kit/pixels';
+import type { Block } from '../../../../web/src/formats/blocks';
+import type { GameMap } from '../../../../web/src/formats/map';
+import type { Monster } from '../../../../web/src/formats/monster';
+import { Pixels } from '../../../kit/pixels';
 
 export function renderMap(map: GameMap, bg: Block[], x0: number, y0: number, w: number, h: number, mbl?: Block[], mons?: Monster[]): Pixels {
   const p = new Pixels(w * 20, h * 20);

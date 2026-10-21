@@ -1,6 +1,6 @@
 // Pictures bigger than one block (dome homes, billboards, the rocket...), drawn whole
 // and then cut into 20x20 blocks.
-import { Pixels, rng } from '../kit/pixels';
+import { Pixels, rng } from '../../../kit/pixels';
 import { T, blob, gradient, hgradient, oval, shadeAt } from './draw';
 import { micro, microWidth, text } from './font';
 import { C, PAL } from './pal';
