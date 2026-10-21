@@ -276,7 +276,8 @@ export class Bot {
     const at = pos(w);
     this.trail.push(at);
     const leg = this.o.route?.[this.scene]?.[this.leg];
-    if (leg && Math.hypot(at.x / 20 - leg.x, at.y / 20 - leg.y) < 2) {
+    const wrap = (d: number) => ((d % MAP_W) + MAP_W * 1.5) % MAP_W - MAP_W / 2;
+    if (leg && Math.hypot(wrap(at.x / 20 - leg.x), wrap(at.y / 20 - leg.y)) < 2) {
       this.log.push(`tick ${s.rec.tick}: reached waypoint ${this.leg} (${leg.x},${leg.y})`);
       this.leg++;
       this.trail.length = 0;
