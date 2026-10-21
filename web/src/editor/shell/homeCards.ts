@@ -20,6 +20,7 @@ import type { HomeNav } from './home';
 import { downloadProject, exportProject, exportProjectPage, exportProjectForDos } from './projectExport';
 import { gamePage } from '../../seo/site';
 import { icon as svgIcon, type IconName } from './homeIcons';
+import { editedWhen } from './homeTime';
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -107,7 +108,7 @@ export function projectGame(p: ProjectSummary): HomeGame {
     key: `my:${p.id}`,
     kind: 'mine',
     title: p.name,
-    byline: `${p.gam} · edited ${new Date(p.updated).toLocaleDateString()}`,
+    byline: `${editedWhen(p.updated)} · ${p.gam}`,
     gam: p.gam,
     search: searchText(p.name, p.gam),
     project: p,
