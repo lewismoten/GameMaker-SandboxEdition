@@ -1,6 +1,6 @@
 // What came in a Sandbox Software game's box, laid out beside it in the box viewer (like the
 // Game-Maker box's Owner's Guide and CD, desk/boxes/gmBox.ts): the disk set to play right away,
-// the manual, a few of the printed extras fanned out (manual/printables, read only) and a
+// the manual (its own cover, manual/printables/manualCover.ts), a few of the printed extras fanned out (manual/printables, read only) and a
 // way to look through all of it.
 import './gameBoxContents.css';
 import '../../manual/printables/paper.css';
@@ -10,6 +10,8 @@ import { loadDisks, type Disk } from '../../retro/dos/disks';
 import { boxItems } from '../../manual/printables/items';
 import { floppyElement, disksIn } from '../disks/diskBox';
 import { printContext } from './printContext';
+import { manualCover } from '../../manual/printables/manualCover';
+import '../../manual/booklet.css';
 
 let disks: Promise<Disk[]> | undefined;
 
@@ -26,7 +28,7 @@ const closeViewerThen = (then: () => void) => () => {
   then();
 };
 
-export function sandboxBoxContents(entry: CatalogEntry, front: string | undefined, hooks: BoxContentsHooks): HTMLElement {
+export function sandboxBoxContents(entry: CatalogEntry, _front: string | undefined, hooks: BoxContentsHooks): HTMLElement {
   const insert = closeViewerThen(hooks.insert);
   const open = closeViewerThen(hooks.open);
 
@@ -47,11 +49,12 @@ export function sandboxBoxContents(entry: CatalogEntry, front: string | undefine
     diskSet.append(h('span', { class: 'bc-label' }, n > 1 ? `▶ Play: ${n} disks, disk 1 goes in A:` : '▶ Play: put the disk in A:'));
   });
 
+  // the manual, closed: its own cover (not the box front), the whole page in view
   const manual = entry.original?.manual
     ? h(
         'button',
         { class: 'bc-manual', onclick: open, title: 'Read the manual' },
-        front ? h('img', { src: front, alt: '' }) : h('b', null, entry.title),
+        h('span', { class: 'mpage mp-cover cover' }, h('span', { class: 'mpage-in' }, manualCover(entry).el)),
         h('span', { class: 'bc-staples', 'aria-hidden': 'true' }),
         h('span', { class: 'bc-label' }, '📖 Manual'),
       )

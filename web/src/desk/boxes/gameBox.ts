@@ -345,7 +345,7 @@ export async function drawBox(entry: CatalogEntry): Promise<BoxFaces | undefined
 }
 
 function copyright(entry: CatalogEntry): string {
-  return `© ${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}. Made with Game-Maker by Recreational Software Designs.`;
+  return `©\u00a0${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}. Made with Game-Maker by Recreational Software Designs.`;
 }
 
 /** "Main: Subtitle" split in two. */

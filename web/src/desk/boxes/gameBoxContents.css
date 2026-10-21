@@ -61,7 +61,7 @@
   translate: 0 -8px;
 }
 
-/* the manual: the box front on a stapled booklet */
+/* the manual: its own cover on a stapled booklet, the whole page in view */
 .bc-manual {
   position: relative;
   width: min(150px, 20vh);
@@ -69,23 +69,21 @@
   transition: transform 0.15s;
 }
 
-.bc-manual img,
-.bc-manual b {
+.bc-manual .mpage {
   display: block;
   width: 100%;
+  height: auto;
+  max-width: none;
   aspect-ratio: 5.5 / 8.5;
-  object-fit: cover;
   border-radius: 1px 4px 4px 1px;
-  background: #f6f1e2;
   box-shadow:
     inset 5px 0 0 rgba(0, 0, 0, 0.15),
     6px 10px 18px rgba(0, 0, 0, 0.55);
 }
 
-.bc-manual b {
-  padding: 12px;
-  box-sizing: border-box;
-  color: #18150f;
+.bc-manual .mpage-in {
+  display: block;
+  padding: 0;
 }
 
 .bc-manual .bc-staples {

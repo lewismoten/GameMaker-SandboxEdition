@@ -190,7 +190,7 @@ async function license(): Promise<Sheet[]> {
       4,
       'gml',
       h('h3', null, 'LICENSE'),
-      h('p', null, 'Game-Maker 3.0 © 1991–1994 Recreational Software Designs. Its author, Andy Stone, released the source code under the MIT License in 2014.'),
+      h('p', null, 'Game-Maker 3.0 ©\u00a01991–1994 Recreational Software Designs. Its author, Andy Stone, released the source code under the MIT License in 2014.'),
       h('p', null, `${PRODUCT} is a modified fork of it, MIT licensed too. The games you make are yours to share however you like.`),
       h(
         'p',
