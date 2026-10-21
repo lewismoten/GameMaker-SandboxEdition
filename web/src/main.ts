@@ -17,7 +17,7 @@ const UI_KEY = 'gm-ui';
 
 const app = document.querySelector<HTMLElement>('#app')!;
 const titleSlot = h('span');
-const content = h('div');
+const content = h('div', { class: 'content', id: 'content' });
 let workspace: Workspace | undefined;
 let disposeDesk: (() => void) | undefined;
 let ui: Ui = 'desk';
@@ -43,6 +43,7 @@ function rememberUi(next: Ui): void {
 function startDesk(): void {
   ui = 'desk';
   rememberUi('desk');
+  app.classList.remove('modern');
   workspace?.dispose();
   workspace = undefined;
   document.title = 'Game-Maker 1994';
@@ -61,8 +62,10 @@ function startDesk(): void {
 function startModern(hash?: string): void {
   ui = 'modern';
   rememberUi('modern');
+  app.classList.add('modern');
   clear(
     app,
+    h('a', { class: 'skip-link', href: '#content', onclick: skipToContent }, 'Skip to content'),
     h(
       'header',
       { class: 'topbar' },
@@ -79,6 +82,14 @@ function startModern(hash?: string): void {
   else void route();
 }
 
+/** The skip link moves focus to the page's main area without changing the route. */
+function skipToContent(e: Event): void {
+  e.preventDefault();
+  const target = content.querySelector<HTMLElement>('main, [role="main"]') ?? content;
+  if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+  target.focus();
+}
+
 const nav = {
   openProject: (id: string) => {
     location.hash = `#/p/${id}`;
@@ -88,6 +99,7 @@ const nav = {
 async function route(): Promise<void> {
   if (ui !== 'modern') return;
   const [, kind, id, file] = location.hash.split('/');
+  content.removeAttribute('role');
   if (kind === 'p' && id) {
     if (workspace?.project.id === id) {
       if (file && decodeURIComponent(file) !== workspace.currentFile) workspace.open(decodeURIComponent(file));
@@ -111,6 +123,7 @@ async function route(): Promise<void> {
   workspace = undefined;
   clear(titleSlot);
   if (kind === 'help') {
+    content.setAttribute('role', 'main');
     document.title = `Guide · ${PRODUCT}`;
     renderWebManual(content);
     return;

@@ -93,7 +93,7 @@ export function matchesFile(name: string, query: string): boolean {
 export class Workspace {
   readonly project: Project;
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
-  private main = h('section', { class: 'editor' });
+  private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
   private cleanup?: () => void;
   private player?: PlayerHandle;
@@ -215,8 +215,8 @@ export class Workspace {
       : h('span', null, KIND_LABELS[k]);
     const parts: (HTMLElement | null)[] = [
       h(
-        'h4',
-        null,
+        'h2',
+        { class: 'file-kind' },
         head,
         k === 'gam'
           ? null

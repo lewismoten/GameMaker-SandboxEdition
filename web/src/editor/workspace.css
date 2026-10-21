@@ -28,7 +28,7 @@
   pointer-events: none;
 }
 
-.sidebar h4 .fold {
+.sidebar h2.file-kind .fold {
   display: flex;
   flex: 1;
   align-items: center;
@@ -45,11 +45,11 @@
   cursor: pointer;
 }
 
-.sidebar h4 .fold:hover {
+.sidebar h2.file-kind .fold:hover {
   color: var(--text, inherit);
 }
 
-.sidebar h4 .chev {
+.sidebar h2.file-kind .chev {
   display: inline-block;
   width: 10px;
   transition: transform 0.15s;
@@ -60,7 +60,7 @@
   transform: none;
 }
 
-.sidebar h4 .count {
+.sidebar h2.file-kind .count {
   margin-left: auto;
   margin-right: 6px;
   padding: 0 6px;
