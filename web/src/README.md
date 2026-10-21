@@ -8,7 +8,9 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   [`seo/route.ts`](seo/route.ts) keeps the page's title and share tags in step with what
   is on screen.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game
-  (`?game=<id>`, `?project=<id>`, or the game bundled in an exported web app).
+  (`?game=<id>`, `?project=<id>`, or the game bundled in an exported web app). Each
+  bundled game also has its own copy of the page, `play-<id>.html` (made at build time,
+  naming its game with `<meta name="gm:game">`), so link previews show that game.
 
 Every module starts with a comment saying what it is for. Code ported from the original C
 source names the file it came from (`code/GM/*.C` in the repository root).
@@ -85,5 +87,6 @@ and recordings of the PC's screen with `screenCapture.ts` and the live recorder.
 [`../scripts`](../scripts) holds Vite plugins: `cdGames.ts` serves the CD's games and
 `../games` (and writes them into the build), `singlePageBuild.ts` builds
 `standalone.html`, `seoBuild.ts` puts tags, JSON-LD and readable text into the pages and
-writes (and serves in dev) `robots.txt`, `sitemap.xml` and `llms.txt`. `../vite.config.ts` also emits the
+writes (and serves in dev) `robots.txt`, `sitemap.xml`, `llms.txt`, each game's
+`play-<id>.html` and its preview picture `og/<id>.png` (drawn by `ogImage.ts`). `../vite.config.ts` also emits the
 service worker and `player-files.json`.
