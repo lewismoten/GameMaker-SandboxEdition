@@ -235,3 +235,8 @@
 .idx-card.compact .idx-sheet {
   font-weight: 700;
 }
+
+.idx-row.more {
+  color: #b3121a;
+  font-size: calc(var(--line, 5.8cqw) * 0.5);
+}
