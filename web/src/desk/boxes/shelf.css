@@ -1,4 +1,4 @@
-/* The shelf on the wall, boxes standing on it spine out (desk/shelf.ts). --shelf-u is pixels per inch of box. */
+/* The shelf on the wall, boxes standing on it spine out (desk/boxes/shelf.ts). --shelf-u is pixels per inch of box. */
 .game-shelf {
   --shelf-u: 16px;
   position: absolute;

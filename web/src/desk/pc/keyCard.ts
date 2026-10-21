@@ -1,6 +1,6 @@
 // The game's keyboard reference card, taped to the monitor while the game plays: the printed
 // quick reference card from a Sandbox Software box (manual/printables), or for any other
-// game an index card written out from its character files (editor/keyMap.ts). Click it to
+// game an index card written out from its character files (editor/keymap/keyMap.ts). Click it to
 // read it larger.
 import './keyCard.css';
 import '../../manual/printables/paper.css';

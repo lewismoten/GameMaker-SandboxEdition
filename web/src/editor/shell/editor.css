@@ -356,7 +356,7 @@ main.home {
   cursor: pointer;
 }
 
-/* "Add a file": a grid of the kinds of files (editor/workspace.ts) */
+/* "Add a file": a grid of the kinds of files (editor/shell/workspace.ts) */
 .kind-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -609,7 +609,7 @@ dialog.modal .modal-close {
   line-height: 1;
 }
 
-/* file thumbnails (editor/thumbs.ts) */
+/* file thumbnails (editor/widgets/thumbs.ts) */
 .thumb {
   display: block;
   width: 64px;
@@ -675,7 +675,7 @@ dialog.modal .buttons {
   }
 }
 
-/* the visual file picker (editor/filePicker.ts) */
+/* the visual file picker (editor/widgets/filePicker.ts) */
 .file-picker {
   width: min(860px, 86vw);
 }
@@ -768,7 +768,7 @@ dialog.modal .buttons {
   opacity: 0.85;
 }
 
-/* a file slot (editor/filePicker.ts fileField) */
+/* a file slot (editor/widgets/filePicker.ts fileField) */
 .file-field-body {
   display: flex;
   align-items: stretch;
@@ -883,7 +883,7 @@ dialog.modal .buttons {
   border-radius: 6px;
 }
 
-/* recording and watching demos (editor/editors/recording.ts) */
+/* recording and watching demos (editor/editors/recording/recording.ts) */
 .rec-dialog {
   width: min(900px, 86vw);
 }
@@ -905,7 +905,7 @@ dialog.modal .buttons {
     monospace;
 }
 
-/* choosing blocks by their pictures (editor/blockChooser.ts) */
+/* choosing blocks by their pictures (editor/widgets/blockChooser.ts) */
 .block-button {
   display: inline-flex;
   align-items: center;

@@ -1,4 +1,4 @@
-/* the Sandbox BBS mug on the desk (desk/mug.ts); its size and place come from deskProps.css */
+/* the Sandbox BBS mug on the desk (desk/mug/mug.ts); its size and place come from deskProps.css */
 .mug-prop {
   position: relative;
   cursor: pointer;
@@ -30,7 +30,7 @@
   overflow: visible;
 }
 
-/* ---- the closer look (desk/mugViewer.ts) and the sublimation sheet (desk/mugPrint.ts) */
+/* ---- the closer look (desk/mug/mugViewer.ts) and the sublimation sheet (desk/mug/mugPrint.ts) */
 .mugv {
   position: fixed;
   inset: 0;

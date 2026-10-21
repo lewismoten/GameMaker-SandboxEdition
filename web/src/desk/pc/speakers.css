@@ -1,4 +1,4 @@
-/* the desk speakers (desk/speakers.ts), standing either side of the monitor */
+/* the desk speakers (desk/pc/speakers.ts), standing either side of the monitor */
 .speaker {
   position: absolute;
   top: 384px;

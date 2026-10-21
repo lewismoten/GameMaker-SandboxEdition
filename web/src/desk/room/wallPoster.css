@@ -1,4 +1,4 @@
-/* A game's poster or fold-out map, pinned to the wall between the poster and the monitor (desk/wallPoster.ts). */
+/* A game's poster or fold-out map, pinned to the wall between the poster and the monitor (desk/room/wallPoster.ts). */
 .wall-poster {
   position: absolute;
   left: 300px;

@@ -5,7 +5,7 @@ import { attr, COLS, ROWS } from '../text/textScreen';
 import { toCp437 } from '../text/cp437';
 import { busySounds, dialSounds } from './modem';
 
-/** What the modem's front lights show; the desk's modem listens for these (desk/modem.ts). */
+/** What the modem's front lights show; the desk's modem listens for these (desk/pc/modem.ts). */
 export type ModemSignal = 'ready' | 'offhook' | 'carrier' | 'receive' | 'send' | 'hangup' | 'off';
 
 export function modemSignal(signal: ModemSignal): void {

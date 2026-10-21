@@ -1,5 +1,5 @@
 // What came in a Sandbox Software game's box, laid out beside it in the box viewer (like the
-// Game-Maker box's Owner's Guide and CD, desk/gmBox.ts): the disk set to play right away,
+// Game-Maker box's Owner's Guide and CD, desk/boxes/gmBox.ts): the disk set to play right away,
 // the manual, a few of the printed extras fanned out (manual/printables, read only) and a
 // way to look through all of it.
 import './gameBoxContents.css';

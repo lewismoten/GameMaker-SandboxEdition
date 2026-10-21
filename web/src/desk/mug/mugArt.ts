@@ -1,5 +1,5 @@
 // The pictures that can go on the Sandbox BBS mug, drawn the way the board drew them: real
-// CP437 characters in the 16 text-mode colors, from the BBS's own ANSI art (retro/ansiArt.ts).
+// CP437 characters in the 16 text-mode colors, from the BBS's own ANSI art (retro/bbs/ansiArt.ts).
 // Each design is a block of 80-column text rendered with the VGA font, 8 x 16 pixels a cell.
 import { TextScreen, attr, COLS } from '../../retro/text/textScreen';
 import { SANDBOX_ANSI, bigText, bigTextWidth, centered, fadeBar, sandboxLogin } from '../../retro/bbs/ansiArt';

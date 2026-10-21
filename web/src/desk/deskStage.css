@@ -8,7 +8,7 @@
    One perspective for the whole desk: lines running straight back (the desk top's ends, the
    end panels, the keyboard tray's runners) all head for one vanishing point, (720, -784),
    high above the stage. So the desk top is 110px narrower at each end of its back edge,
-   and the tray's tilt and perspective (desk/tray.css) are set to meet the same point. */
+   and the tray's tilt and perspective (desk/pc/tray.css) are set to meet the same point. */
 .desk-edge,
 .desk-top,
 .desk-legs {
@@ -122,7 +122,7 @@
     background: linear-gradient(270deg, #3a2513, #24170c 60%, #120c07);
   }
 
-  /* the desk's front edge, drawn over the back of the keyboard tray (desk/tray.css) */
+  /* the desk's front edge, drawn over the back of the keyboard tray (desk/pc/tray.css) */
   .desk-edge {
     display: block;
     position: absolute;

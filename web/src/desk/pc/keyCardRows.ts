@@ -1,4 +1,4 @@
-// What goes on a game's handwritten key card (desk/keyCard.ts): one line per thing you can
+// What goes on a game's handwritten key card (desk/pc/keyCard.ts): one line per thing you can
 // do, with every key that does it, so "Fire" is written once however many keys fire. The
 // small card taped to the monitor is shorter still: arrows for the arrow keys, and the four
 // ways to move on one line.

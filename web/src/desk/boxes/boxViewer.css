@@ -1,4 +1,4 @@
-/* 3D retail boxes (desk/gameBox.ts). --u is screen pixels per inch of box. */
+/* 3D retail boxes (desk/boxes/boxViewer.ts). --u is screen pixels per inch of box. */
 
 .box3d {
   --u: 40px;

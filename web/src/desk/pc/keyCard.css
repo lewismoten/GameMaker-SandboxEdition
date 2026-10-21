@@ -1,4 +1,4 @@
-/* the game's key card, taped to the monitor's bezel while it plays (desk/keyCard.ts) */
+/* the game's key card, taped to the monitor's bezel while it plays (desk/pc/keyCard.ts) */
 .key-card-spot {
   position: relative;
   z-index: 3;

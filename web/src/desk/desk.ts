@@ -423,7 +423,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   let shelf: Shelf | undefined;
 
-  /** The shelf on the wall: a box for each original game (desk/shelf.ts). */
+  /** The shelf on the wall: a box for each original game (desk/boxes/shelf.ts). */
   async function fillShelf(games: CatalogEntry[]): Promise<void> {
     const scene = desk.querySelector<HTMLElement>('.desk-scene');
     if (scene) shelf = await gameShelf(scene, games, { insert: (id) => void insertOriginal(id), manual: (g, front) => void openGameManual(g, front) });

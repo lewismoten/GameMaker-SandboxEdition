@@ -215,7 +215,7 @@
   cursor: text;
 }
 
-/* the picture bulges with the glass (desk/crtWarp.ts) */
+/* the picture bulges with the glass (desk/pc/crtWarp.ts) */
 .crt .crt-picture {
   position: absolute;
   inset: 0;
@@ -293,7 +293,7 @@
   height: 100%;
 }
 
-/* the designers' 320x200 VGA picture, filling the tube like the text does (vga/vga.ts) */
+/* the designers' 320x200 VGA picture, filling the tube like the text does (vga/shared/vga.ts) */
 .crt .crt-vga {
   position: absolute;
   inset: 3.5% 4%;
@@ -1448,7 +1448,7 @@
   letter-spacing: 0.02em;
 }
 
-/* the external modem (desk/modem.ts), sitting on top of the case */
+/* the external modem (desk/pc/modem.ts), sitting on top of the case */
 .case > .modem {
   position: absolute;
   left: 22px;

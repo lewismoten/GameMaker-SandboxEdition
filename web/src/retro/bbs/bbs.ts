@@ -1,6 +1,6 @@
 // TERMINAL.EXE: a dialing directory of (recreated) Pittsburgh BBSes. THE -= S A N D B O X =-
 // BBS, a Renegade board, has the CD's shareware games to read about and "download" into
-// C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/sofa.ts).
+// C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/bbs/sofa.ts).
 import type { RetroHost } from '../host';
 import { attr, COLS, ROWS } from '../text/textScreen';
 import { readLine } from '../text/textInput';
