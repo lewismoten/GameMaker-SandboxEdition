@@ -426,9 +426,10 @@
 }
 .sl-bin-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
-  gap: 10px;
-  max-height: 340px;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+  /* fills what is left of the window, so the page itself doesn't scroll */
+  max-height: clamp(150px, calc(100dvh - 740px), 340px);
   overflow-y: auto;
 }
 .sl-media {
