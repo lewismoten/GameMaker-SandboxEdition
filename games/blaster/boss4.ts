@@ -45,7 +45,7 @@ function bossVirus(b: Bestiary, p: Pal): void {
   const hurt = (q: Pixels) => tint(q, (c) => (p.r('steel').includes(c) ? p.c('red', 1 + (p.r('steel').indexOf(c) >> 1)) : c));
   for (let r = 0; r < 2; r++)
     for (let c = 0; c < 2; c++)
-      weakPoint(b, `head${r}${c}`, r === 0 ? 6 : 9, (h) => (h <= 3 ? [hurt(h0[r][c]), hurt(h1[r][c])] : [h0[r][c], h1[r][c]]), { score: 1800, anim: 3 });
+      weakPoint(b, `head${r}${c}`, r === 0 ? 7 : 10, (h) => (h <= 3 ? [hurt(h0[r][c]), hurt(h1[r][c])] : [h0[r][c], h1[r][c]]), { score: 1800, anim: 3 });
   const [d0, d1] = disc(p, { main: 'virus', accent: 'slime' });
   b.mb.add('shard0', d0, { chHitPt: HURT.enemy });
   b.mb.add('shard1', d1, { chHitPt: HURT.enemy });
