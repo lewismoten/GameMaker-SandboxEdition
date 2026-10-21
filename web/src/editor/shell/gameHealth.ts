@@ -6,6 +6,7 @@ import { h, modal } from '../core/ui';
 import { checkGame, QUICK_CHECK_FILE, worstSeverity, type FileSource, type Issue } from '../../project/health';
 import { fetchGameFile, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { loadProject } from '../../project/storage';
+import { splitInherited } from './homeOrigin';
 
 export interface HealthTarget {
   title: string;
@@ -17,6 +18,10 @@ export interface HealthTarget {
   fileHref?(file: string): string | undefined;
   /** A finished game exactly as it was released (the CD's or ours): only playable or copied, not fixed here. */
   released?: boolean;
+  /** A copy of a released game: `quick` and `deep` leave out what the original already had. */
+  original?: HealthTarget;
+  /** Every file read, split into the copy's own problems and those that came with the original. */
+  deepSplit?(): Promise<{ own: Issue[]; inherited: Issue[] }>;
 }
 
 const cache = new Map<string, Promise<Issue[]>>();
@@ -61,17 +66,27 @@ export function catalogTarget(g: CatalogEntry): HealthTarget {
   };
 }
 
-/** A game being made in this browser. */
-export function projectTarget(id: string, title: string, updated: number): HealthTarget {
+/**
+ * A game being made in this browser. `original`: the released game it was copied from, whose
+ * own problems are left out of the badge and listed apart in the report.
+ */
+export function projectTarget(id: string, title: string, updated: number, original?: HealthTarget): HealthTarget {
   const load = async (deep: boolean): Promise<Issue[]> => {
     const p = await loadProject(id);
     if (!p) return [];
     return checkGame(p.files, p.record.gam, { deep });
   };
+  const split = async (deep: boolean) => {
+    const mine = await load(deep);
+    if (!original || !mine.length) return { own: mine, inherited: [] };
+    return splitInherited(mine, await (deep ? original.deep() : original.quick()).catch(() => []));
+  };
   return {
     title,
-    quick: () => cached(`project:${id}:${updated}`, () => load(false)),
-    deep: () => load(true),
+    original,
+    quick: () => cached(`project:${id}:${updated}:${original ? 'own' : 'all'}`, async () => (await split(false)).own),
+    deep: async () => (await split(true)).own,
+    deepSplit: () => split(true),
     fileHref: (file) => `#/p/${encodeURIComponent(id)}/${encodeURIComponent(file)}`,
   };
 }
@@ -147,43 +162,61 @@ export async function showHealthReport(target: HealthTarget): Promise<void> {
     body,
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
   ]);
-  const issues = await target.deep().catch((e: Error) => [{ severity: 'error', kind: 'unreadable', message: `The check failed: ${e.message}` } as Issue]);
-  const groups = new Map<Issue['kind'], Issue[]>();
-  for (const i of issues) groups.set(i.kind, [...(groups.get(i.kind) ?? []), i]);
+  const failed = (e: Error) => ({ own: [{ severity: 'error', kind: 'unreadable', message: `The check failed: ${e.message}` } as Issue], inherited: [] as Issue[] });
+  const { own: issues, inherited } = await (target.deepSplit ? target.deepSplit() : target.deep().then((own) => ({ own, inherited: [] as Issue[] }))).catch(failed);
   const errors = issues.filter((i) => i.severity === 'error').length;
+  const from = target.original?.title ?? 'the original';
+  const came = inherited.length
+    ? ` ${inherited.length} more note${inherited.length === 1 ? '' : 's'} came with ${from} as it was released (it plays the same), listed last.`
+    : '';
   // a released game is as it was: its notes are facts about its files, not alarms
   const summary = target.released
     ? issues.length
       ? `This is the game exactly as it was released, and it plays here as it did in DOS: where it names a file that isn’t there, it does without. ${issues.length} note${issues.length === 1 ? '' : 's'} on its files, worth knowing if you edit a copy:`
       : '✓ Every file the game names is there and every file can be read.'
     : !issues.length
-      ? '✓ No problems found: every file the game names is there and every file can be read.'
-      : errors
-        ? `${errors} problem${errors === 1 ? '' : 's'} may stop parts of this game from showing or playing as intended${issues.length > errors ? `, and ${issues.length - errors} smaller warning${issues.length - errors === 1 ? '' : 's'}` : ''}.`
-        : `${issues.length} warning${issues.length === 1 ? '' : 's'}; the game should still play.`;
-  body.replaceChildren(
-    h('p', { class: `health-summary ${target.released ? (issues.length ? 'warning' : 'ok') : (worstSeverity(issues) ?? 'ok')}` }, summary),
-    ...[...groups].map(([kind, list]) =>
+      ? inherited.length
+        ? `✓ Nothing you changed has caused a problem.${came}`
+        : '✓ No problems found: every file the game names is there and every file can be read.'
+      : (errors
+          ? `${errors} problem${errors === 1 ? '' : 's'} may stop parts of this game from showing or playing as intended${issues.length > errors ? `, and ${issues.length - errors} smaller warning${issues.length - errors === 1 ? '' : 's'}` : ''}.`
+          : `${issues.length} warning${issues.length === 1 ? '' : 's'}; the game should still play.`) + came;
+  /** The issues grouped by kind; `quiet` lists them as notes (ⓘ), not alarms. */
+  const groups = (list: Issue[], quiet: boolean, title = (kind: Issue['kind'], n: number) => `${KIND_TITLES[kind]} (${n})`) => {
+    const byKind = new Map<Issue['kind'], Issue[]>();
+    for (const i of list) byKind.set(i.kind, [...(byKind.get(i.kind) ?? []), i]);
+    return [...byKind].map(([kind, items]) =>
       h(
         'section',
         null,
-        h('h4', null, `${KIND_TITLES[kind]} (${list.length})`),
+        h('h4', null, title(kind, items.length)),
         h(
           'ul',
           null,
-          ...list.map((i) => {
+          ...items.map((i) => {
             const href = i.file ? target.fileHref?.(i.file) : undefined;
             return h(
               'li',
-              { class: target.released ? 'warning' : i.severity },
-              h('span', { class: 'sev', 'aria-label': target.released ? 'note' : i.severity }, i.severity === 'error' && !target.released ? '⚠' : 'ⓘ'),
+              { class: quiet ? 'warning' : i.severity },
+              h('span', { class: 'sev', 'aria-label': quiet ? 'note' : i.severity }, i.severity === 'error' && !quiet ? '⚠' : 'ⓘ'),
               ' ',
               href ? h('a', { href }, i.message) : i.message,
             );
           }),
         ),
       ),
-    ),
+    );
+  };
+  body.replaceChildren(
+    h('p', { class: `health-summary ${target.released ? (issues.length ? 'warning' : 'ok') : (worstSeverity(issues) ?? 'ok')}` }, summary),
+    ...groups(issues, !!target.released),
+    ...(inherited.length
+      ? [
+          h('h3', { class: 'health-inherited' }, `Inherited from ${from}`),
+          h('p', { class: 'meta' }, `${from} had these as it was released, and it plays as it did in DOS. Nothing to fix unless you want to.`),
+          ...groups(inherited, true),
+        ]
+      : []),
   );
   await shown;
 }
