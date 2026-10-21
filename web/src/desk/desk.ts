@@ -41,6 +41,7 @@ import { EDITION, FORK_NOTE } from "../edition";
 import { loadCatalog, type CatalogEntry } from "../project/files";
 import { Project } from "../editor/core/project";
 import type { SpeedSetting } from "../engine/scene";
+import { viewState } from "../urlState";
 
 export interface DeskNav {
   /** Leave for today's web interface, optionally opening a project file. */
@@ -62,6 +63,25 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   };
   let disks: Disk[] = [];
   let lastDisk: string | undefined;
+  // The address keeps what is going on at the desk, so a reload or a shared link comes back
+  // to it: the disk in drive A:, what the PC is running, and what is open on the desk
+  // (#/desk?disk=cd:nebula&run=play, #/desk?run=gm&open=gm-manual).
+  const deskView = viewState(["desk"]);
+  /** What the address says to do, read before anything here changes it. */
+  const wanted = {
+    disk: deskView.get("disk"),
+    run: deskView.get("run"),
+    open: deskView.get("open"),
+  };
+  /** Keeps something open on the desk in the address while it is open. */
+  const opened = async (name: string, open: () => Promise<void>) => {
+    deskView.set({ open: name });
+    try {
+      await open();
+    } finally {
+      if (deskView.get("open") === name) deskView.set({ open: undefined });
+    }
+  };
 
   const crt = h(
     "div",
@@ -312,6 +332,21 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       setZoom(mode === "gfx" ? "gfx" : enlarged ? "manual" : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
     onGame: (game) => keyCard.show(game),
+    // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
+    onProgram: (p) =>
+      deskView.set({
+        run: !p
+          ? "dos"
+          : p.kind === "game"
+            ? "play"
+            : p.kind === "gm"
+              ? p.drive === "A"
+                ? "design"
+                : "gm"
+              : p.kind === "terminal"
+                ? "bbs"
+                : "dos",
+      }),
     // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
     onDriveAccess: (drive) => {
       if (drive === "A") floppy.busy(700);
@@ -354,6 +389,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         crt.classList.add("switching-off");
         powerLed.classList.remove("on");
         spk.power(false);
+        // a cold start: the address forgets the disk and the program too
+        deskView.set({ disk: undefined, run: undefined, open: undefined });
         setTimeout(() => location.reload(), 1700);
       } else computer.focus();
       return;
@@ -366,6 +403,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     setTurbo(turbo);
     await computer.powerOn();
     setTurbo(turbo);
+    if (!deskView.get("run")) deskView.set({ run: "dos" });
   }
 
   /** Types a command at the prompt (booting first if needed). */
@@ -477,7 +515,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       d.kind === "original" && d.catalog?.original?.manual
         ? h(
             "button",
-            { onclick: () => void openGameManual(d.catalog!) },
+            { onclick: () => void gameManual(d.catalog!) },
             "📖 Manual",
           )
         : null,
@@ -489,6 +527,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     computer.insertDisk(d, files);
     showInDrive(d);
     lastDisk = d.id;
+    deskView.set({ disk: d.id });
   }
 
   function eject(): void {
@@ -498,6 +537,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     }
     computer.eject();
     showInDrive(undefined);
+    deskView.set({ disk: undefined });
   }
 
   async function flip(): Promise<void> {
@@ -580,8 +620,17 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       await command(d.kind === "blank" ? "C:\nCD \\GM\nGM" : "A:\nGM");
   }
 
+  /** A game's manual, kept in the address while it is open (open=manual:<game>). */
+  const gameManual = (g: CatalogEntry, front?: string) =>
+    opened(`manual:${g.id}`, () => openGameManual(g, front));
+  /** Game-Maker's own Owner's Guide (open=gm-manual). */
+  const dosManual = () => opened("gm-manual", openDosManual);
+
   /** The Game-Maker box: turn it over, read the Owner's Guide, or put the CD in and start it. */
-  async function openGmBox(): Promise<void> {
+  function openGmBox(): Promise<void> {
+    return opened("gm-box", showGmBox);
+  }
+  async function showGmBox(): Promise<void> {
     const tiles = [...boxTiles.querySelectorAll<HTMLElement>(".tile")].map(
       (t) =>
         [
@@ -592,7 +641,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     await openBoxViewer({ title: "Game-Maker SE 3.0" }, drawGmBox(tiles), {
       insert: () => void startGameMaker(),
       insertLabel: "Put the CD in and start Game-Maker",
-      manual: () => void openDosManual(),
+      manual: () => void dosManual(),
       extras: gmBoxContents(
         () => {
           document
@@ -600,7 +649,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
               ".box-viewer-bar button:last-child",
             )
             ?.click();
-          void openDosManual();
+          void dosManual();
         },
         () => {
           document
@@ -645,7 +694,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     if (scene)
       shelf = await gameShelf(scene, games, {
         insert: (id) => void insertOriginal(id),
-        manual: (g, front) => void openGameManual(g, front),
+        manual: (g, front) => void gameManual(g, front),
       });
     // on the wall under the poster, so it comes next when you Tab along the wall
     const el = scene?.querySelector(".game-shelf");
@@ -660,14 +709,47 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   async function catalog(): Promise<void> {
     const entries = await loadCatalog().catch(() => []);
-    await openCatalog(entries, {
-      callBbs: () => void command("C:\nTERMINAL"),
-      downloaded: (id) => computer.downloads.has(id),
-    });
+    await opened("catalog", () =>
+      openCatalog(entries, {
+        callBbs: () => void command("C:\nTERMINAL"),
+        downloaded: (id) => computer.downloads.has(id),
+      }),
+    );
+  }
+
+  /** Comes back to what the address describes: the disk in A:, the program running, what is open. */
+  async function restore(): Promise<void> {
+    const { disk, run, open } = wanted;
+    if (!disk && !run && !open) return;
+    if (!disks.length) await refreshDisks();
+    const d = disk ? disks.find((x) => x.id === disk) : undefined;
+    if (disk && !d) {
+      deskView.set({ disk: undefined });
+      toast(
+        disk.startsWith("project:")
+          ? "That disk holds a game made in another browser, so it isn’t in this disk box."
+          : "That disk isn’t in the disk box.",
+      );
+    }
+    if (d) await insert(d);
+    if (run === "play" && d?.gam) await onDisk(d, "play");
+    else if (run === "design" && d) await onDisk(d, "design");
+    else if (run === "gm") await startGameMaker();
+    else if (run === "bbs") await command("C:\nTERMINAL");
+    else if (run) await power(true);
+    if (open === "catalog") void catalog();
+    else if (open === "gm-box") void openGmBox();
+    else if (open === "gm-manual") void dosManual();
+    else if (open?.startsWith("manual:")) {
+      const g = (await loadCatalog().catch(() => [])).find(
+        (x) => x.id === open.slice(7) && x.original?.manual,
+      );
+      if (g) void gameManual(g);
+    }
   }
 
   setTurbo(turbo);
-  void refreshDisks();
+  void refreshDisks().then(restore);
   void loadCatalog().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
   );

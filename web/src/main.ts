@@ -51,7 +51,9 @@ async function startDesk(): Promise<void> {
   workspace?.dispose();
   workspace = undefined;
   document.title = 'Game-Maker 1994';
-  history.replaceState(null, '', location.pathname + location.search);
+  // the desk keeps its own state in the address (#/desk?disk=…&run=…, see desk.ts)
+  const deskHash = parseHash(location.hash).path[0] === 'desk' ? location.hash : '#/desk';
+  history.replaceState(null, '', location.pathname + location.search + deskHash);
   const { renderDesk } = await import('./desk/desk');
   if (ui !== 'desk') return;
   disposeDesk = renderDesk(app, {
