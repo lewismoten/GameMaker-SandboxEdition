@@ -6,7 +6,7 @@
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
-import { WorkArea } from '../retro/workArea';
+import { WorkArea } from '../retro/dos/workArea';
 import { type Vga } from './shared/vga';
 import { BLACK, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED2, initStartCols } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';

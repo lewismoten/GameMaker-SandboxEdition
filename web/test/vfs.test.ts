@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dirLine, file, resolvePath } from '../src/retro/vfs';
+import { dirLine, file, resolvePath } from '../src/retro/dos/vfs';
 
 describe('retro DOS file system', () => {
   const cwd = (d: string) => (d === 'C' ? ['GM'] : d === 'D' ? ['GAMEWARE'] : []);

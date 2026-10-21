@@ -5,7 +5,7 @@
 // Prev and Next step through the other links between the same two scenes.
 import type { RetroHost } from '../../retro/host';
 import { showHelpScreen } from '../../retro/text/textUi';
-import type { WorkArea } from '../../retro/workArea';
+import type { WorkArea } from '../../retro/dos/workArea';
 import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '../../formats/game';
 import { BACKBL, BLOCK_SIZE } from '../../formats/blocks';
 import { MLEN, MWID } from '../../formats/map';

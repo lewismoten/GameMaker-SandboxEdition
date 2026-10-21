@@ -1,10 +1,10 @@
 // The designers' file handling in text mode (WINDIO.C's loadany, saveany and delany):
 // files are read from and written to the game area, a game folder such as C:\GM\SAMPLE.
-import type { RetroHost } from './host';
+import type { RetroHost } from '../host';
 import { browseFile, type Picked } from './picker';
-import { errorBox } from './text/textUi';
-import { gameArea } from './gm';
-import type { Project } from '../editor/core/project';
+import { errorBox } from '../text/textUi';
+import { gameArea } from '../gm';
+import type { Project } from '../../editor/core/project';
 
 type Folder = { drive: string; parts: string[] };
 

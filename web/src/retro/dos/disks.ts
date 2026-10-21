@@ -1,7 +1,7 @@
 // The 3.5" floppy disks in the desk's disk box: Recreational Software Designs' own
 // games first, the other gameware samples, your projects, and blank disks.
-import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../project/files';
-import { listProjects, loadProject } from '../project/storage';
+import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
+import { listProjects, loadProject } from '../../project/storage';
 
 export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 /** The games RSD made to show off Game-Maker. */

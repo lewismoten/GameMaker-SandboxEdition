@@ -2,15 +2,15 @@
 // terminal and games, with drive A: (floppy), C: (hard disk) and D: (the CD).
 import { TextScreen, attr } from './text/textScreen';
 import { TextKeys } from './text/textInput';
-import { Shell } from './shell';
-import { FileSystem, file, folder, liveFolder, textFile, type DosNode, type ProgramRef } from './vfs';
-import { dosDirName, hardDiskGames, hdFiles, hdProject, makeGameFolder, restoreInstalled, type HdGame } from './hardDisk';
+import { Shell } from './dos/shell';
+import { FileSystem, file, folder, liveFolder, textFile, type DosNode, type ProgramRef } from './dos/vfs';
+import { dosDirName, hardDiskGames, hdFiles, hdProject, makeGameFolder, restoreInstalled, type HdGame } from './dos/hardDisk';
 import { exportDos } from '../export/exportDos';
 import { Downloads, type FolderGame, type InsertedDisk, type RetroHost } from './host';
 import { errorBox, askText } from './text/textUi';
 import { runGameMaker, playgame } from './gm';
 import { runTerminal } from './bbs/bbs';
-import type { Disk } from './disks';
+import type { Disk } from './dos/disks';
 import { mountPlayer } from '../player/player';
 import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../project/files';
 import { loadProject } from '../project/storage';

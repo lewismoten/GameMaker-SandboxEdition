@@ -3,7 +3,7 @@
 // true of it (no claiming digitized sound for a PC speaker game), its rating seal, and
 // how the back cover's copy, reviews, features and screenshots fit the space they have.
 import type { CatalogEntry } from '../../project/files';
-import { diskCount } from '../../retro/disks';
+import { diskCount } from '../../retro/dos/disks';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
 export interface BoxExtras {

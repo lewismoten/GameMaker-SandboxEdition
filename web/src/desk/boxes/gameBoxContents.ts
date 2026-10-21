@@ -6,7 +6,7 @@ import './gameBoxContents.css';
 import '../../manual/printables/paper.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { loadDisks, type Disk } from '../../retro/disks';
+import { loadDisks, type Disk } from '../../retro/dos/disks';
 import { boxItems } from '../../manual/printables/items';
 import { floppyElement, disksIn } from '../disks/diskBox';
 import { printContext } from './printContext';

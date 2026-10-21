@@ -5,7 +5,7 @@ import './deskStage.css';
 import './pc/crtOff.css';
 import { h, clear, toast } from '../editor/core/ui';
 import { Computer, type MonitorMode } from '../retro/computer';
-import { loadDisks, RSD_GAMES, type Disk } from '../retro/disks';
+import { loadDisks, RSD_GAMES, type Disk } from '../retro/dos/disks';
 import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './disks/diskBox';
 import { openCatalog } from './room/catalog';
 import { openDosManual } from '../manual/dosManual';

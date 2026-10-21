@@ -1,11 +1,11 @@
 // What programs running on the retro PC (Game-Maker, the BBS terminal, games) can use.
 import type { Vga } from '../vga/shared/vga';
 import type { Ui } from './text/textUi';
-import type { Disk } from './disks';
+import type { Disk } from './dos/disks';
 import type { GameFiles, CatalogEntry } from '../project/files';
 import type { Project } from '../editor/core/project';
-import type { FileSystem } from './vfs';
-import type { HdGame } from './hardDisk';
+import type { FileSystem } from './dos/vfs';
+import type { HdGame } from './dos/hardDisk';
 
 /** A game found in a folder on one of the PC's drives. */
 export interface FolderGame {

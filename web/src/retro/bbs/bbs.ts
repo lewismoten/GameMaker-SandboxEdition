@@ -5,7 +5,7 @@ import type { RetroHost } from '../host';
 import { attr, COLS, ROWS } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { toCp437 } from '../text/cp437';
-import { commas } from '../vfs';
+import { commas } from '../dos/vfs';
 import type { CatalogEntry } from '../../project/files';
 import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';
 import { Term, boxBottom, boxRow, boxRule, boxTop, dial, modemSignal, sleep, statusLine } from './term';

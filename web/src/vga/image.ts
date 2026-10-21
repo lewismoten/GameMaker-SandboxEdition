@@ -8,7 +8,7 @@
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
-import { WorkArea } from '../retro/workArea';
+import { WorkArea } from '../retro/dos/workArea';
 import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';
 import { BLEN, Face, LEFT, NONE, RED1, RED2, RIGHT, initStartCols } from './shared/facelift';

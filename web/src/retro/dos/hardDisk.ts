@@ -2,10 +2,10 @@
 // Game-Maker (runtime/run/GM) and your own games. Installed games are writable, as on
 // a real hard disk: the first change saves your copy over the installed one (kept in
 // this browser), and Utilities > Restore puts the original back.
-import { Project } from '../editor/core/project';
-import { GameFiles, loadHostedGame, type CatalogEntry } from '../project/files';
-import { deleteProject, listProjects, loadProject } from '../project/storage';
-import { newGame, serializeGame } from '../formats/game';
+import { Project } from '../../editor/core/project';
+import { GameFiles, loadHostedGame, type CatalogEntry } from '../../project/files';
+import { deleteProject, listProjects, loadProject } from '../../project/storage';
+import { newGame, serializeGame } from '../../formats/game';
 
 export interface HdGame {
   /** Folder name under C:\GM (8.3, upper case). */

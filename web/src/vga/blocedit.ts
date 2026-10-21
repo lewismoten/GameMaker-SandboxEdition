@@ -8,7 +8,7 @@
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
-import { WorkArea } from '../retro/workArea';
+import { WorkArea } from '../retro/dos/workArea';
 import { BACKBL, BLEN, CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../formats/blocks';
 import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters, type Monster } from '../formats/monster';
 import { type RGBdata, type Vga, SIZEX, SIZEY } from './shared/vga';

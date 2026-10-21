@@ -5,7 +5,7 @@
 import type { RetroHost } from '../../retro/host';
 import { attr } from '../../retro/text/textScreen';
 import { MENUATTR, SHADATTR, vertMenu } from '../../retro/text/textUi';
-import type { WorkArea } from '../../retro/workArea';
+import type { WorkArea } from '../../retro/dos/workArea';
 import { BACKBL, BLEN, CHARBL, MONBL, parseBlocks, serializeBlocks, type Block } from '../../formats/blocks';
 import type { Vga } from './vga';
 

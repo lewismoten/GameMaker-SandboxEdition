@@ -8,8 +8,8 @@
 import type { RetroHost } from '../retro/host';
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
-import { browseFile } from '../retro/picker';
-import { WorkArea } from '../retro/workArea';
+import { browseFile } from '../retro/dos/picker';
+import { WorkArea } from '../retro/dos/workArea';
 import {
   ADVTYPE,
   ENDTYPE,

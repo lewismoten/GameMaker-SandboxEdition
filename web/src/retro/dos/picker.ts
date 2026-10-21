@@ -1,8 +1,8 @@
 // getfname with folders: Game-Maker's file picker let you type a path, and listed the
 // sub-directories ("SAMPLE\") along with matching files, so you could move between
 // game areas. Picking a folder enters it; picking (or typing) a file returns it.
-import { attr } from './text/textScreen';
-import { CURATTR, MENUATTR, SHADATTR, errorBox, type Ui } from './text/textUi';
+import { attr } from '../text/textScreen';
+import { CURATTR, MENUATTR, SHADATTR, errorBox, type Ui } from '../text/textUi';
 import type { FileSystem } from './vfs';
 
 export interface Picked {

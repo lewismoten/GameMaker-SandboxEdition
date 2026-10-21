@@ -4,8 +4,8 @@
 import type { RetroHost } from './host';
 import { attr, type TextScreen } from './text/textScreen';
 import { BARATTR, BARCURSOR, TITLEATTR, MENUATTR, SHADATTR, askText, errorBox, horizMenu, showHelpScreen, vertMenu } from './text/textUi';
-import { browseFile, type Picked } from './picker';
-import { isModified } from './hardDisk';
+import { browseFile, type Picked } from './dos/picker';
+import { isModified } from './dos/hardDisk';
 import { templateFor } from '../editor/shell/templates';
 import type { FileKind } from '../editor/core/project';
 import { createZip } from '../project/zip';

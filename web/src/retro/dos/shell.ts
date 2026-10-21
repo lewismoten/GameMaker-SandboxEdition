@@ -1,9 +1,9 @@
 // COMMAND.COM for the retro PC: the C:\> prompt, built-in commands, and running
 // programs found in the current folder or on the PATH.
-import type { TextScreen } from './text/textScreen';
-import { readLine, type TextKeys } from './text/textInput';
+import type { TextScreen } from '../text/textScreen';
+import { readLine, type TextKeys } from '../text/textInput';
 import { commas, dirLine, dirWide, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
-import { toCp437 } from './text/cp437';
+import { toCp437 } from '../text/cp437';
 
 export interface ShellHost {
   screen: TextScreen;
