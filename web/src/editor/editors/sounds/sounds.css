@@ -61,3 +61,25 @@
     max-height: 40vh;
   }
 }
+/* the pitch drawing: as wide as it can be, but shorter on short windows so the effect fits */
+.snd-pitch {
+  display: block;
+  width: auto;
+  max-width: min(100%, 504px);
+  max-height: clamp(130px, calc(100dvh - 650px), 220px);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #000;
+  touch-action: none;
+  cursor: crosshair;
+}
+.snd-speaker .sfx-grid {
+  grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
+}
+.snd-speaker .sfx-grid button {
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+.snd-speaker > .toolbar button {
+  padding: 4px 10px;
+}

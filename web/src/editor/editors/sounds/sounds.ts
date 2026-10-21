@@ -107,7 +107,7 @@ registerEditor(['snd'], (host, project, file) => {
     const canvas = h('canvas', {
       width: W,
       height: H,
-      style: 'width:100%;max-width:504px;border:1px solid var(--border);border-radius:6px;background:#000;touch-action:none;cursor:crosshair',
+      class: 'snd-pitch',
     });
     const ctx = canvas.getContext('2d')!;
     const draw = () => {
@@ -192,7 +192,7 @@ registerEditor(['snd'], (host, project, file) => {
       ),
       h(
         'div',
-        { class: 'panel stack' },
+        { class: 'panel stack snd-speaker' },
         h('strong', null, 'PC speaker'),
         h('p', { class: 'hint', style: 'margin:0' }, 'Draw the pitch of each step (about 1/146 of a second each). Drag to the bottom for silence.'),
         canvas,
