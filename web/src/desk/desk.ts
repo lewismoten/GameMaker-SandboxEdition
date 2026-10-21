@@ -46,19 +46,16 @@ export interface DeskNav {
   toModern(projectId?: string, file?: string): void;
 }
 
-const TURBO_KEY = "gm-turbo";
 const SLOW_TICKS = 8; // a 286-class PC
 
-function loadTurbo(): boolean {
-  try {
-    return localStorage.getItem(TURBO_KEY) !== "off";
-  } catch {
-    return true;
-  }
-}
-
 export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
-  let turbo = loadTurbo();
+  // the PC starts in turbo every visit; the button slows it down until you leave
+  let turbo = true;
+  try {
+    localStorage.removeItem("gm-turbo"); // the setting earlier versions kept
+  } catch {
+    /* private mode */
+  }
   const speed: SpeedSetting = {
     ticksPerSecond: turbo ? undefined : SLOW_TICKS,
   };
@@ -344,11 +341,6 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   function setTurbo(on: boolean): void {
     turbo = on;
     speed.ticksPerSecond = on ? undefined : SLOW_TICKS;
-    try {
-      localStorage.setItem(TURBO_KEY, on ? "on" : "off");
-    } catch {
-      /* private mode */
-    }
     turboBtn.setAttribute("aria-pressed", String(on));
     turboLed.classList.toggle("on", on && computer.powered);
     mhz.show(computer.powered ? (on ? "66" : "8") : "");
