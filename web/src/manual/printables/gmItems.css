@@ -1,0 +1,269 @@
+/* the paper in the Game-Maker SE box (gmItems.ts); sizes in cqw of the sheet's width */
+
+/* ---- designer's key card */
+.pp-gmk {
+  display: flex;
+  flex-direction: column;
+  padding: 3cqw 3.5cqw 1.2cqw;
+  background: #f0a090;
+  font:
+    1.45cqw/1.25 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.gmk-head {
+  display: flex;
+  align-items: baseline;
+  gap: 2cqw;
+  margin: -3cqw -3.5cqw 1.2cqw;
+  padding: 1.6cqw 3.5cqw 1.2cqw;
+  background: #0b0b0b;
+  color: #fff;
+}
+
+.gmk-head b {
+  color: #f2e600;
+  font:
+    italic 900 4.4cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  text-shadow: 0.3cqw 0.3cqw 0 #1f9a3a;
+}
+
+.gmk-head span {
+  font:
+    700 2.4cqw Arial,
+    sans-serif;
+}
+
+.gmk-head em {
+  margin-left: auto;
+  padding: 0.3cqw 1cqw;
+  background: #1d3f7a;
+  border: 0.25cqw solid #f2e600;
+  font:
+    900 1.6cqw Arial,
+    sans-serif;
+  font-style: normal;
+}
+
+.gmk-cols {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 3cqw;
+}
+
+.pp-gmk section {
+  margin-bottom: 0.6cqw;
+  break-inside: avoid;
+}
+
+.pp-gmk h3 {
+  margin: 0 0 0.4cqw;
+  padding: 0.2cqw 0.8cqw;
+  background: #d81e1e;
+  color: #fff;
+  font:
+    900 1.7cqw Arial,
+    sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pp-gmk table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pp-gmk th {
+  width: 36%;
+  padding: 0.1cqw 0.6cqw 0.1cqw 0;
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+.pp-gmk td {
+  padding: 0.15cqw 0;
+}
+
+.pp-gmk kbd {
+  display: inline-block;
+  min-width: 2.2cqw;
+  margin-right: 0.4cqw;
+  padding: 0 0.5cqw;
+  border: 0.18cqw solid #18150f;
+  border-radius: 0.5cqw;
+  background: #fffaf0;
+  box-shadow: 0 0.2cqw 0 #18150f;
+  text-align: center;
+  font:
+    700 1.25cqw/1.4 'Courier New',
+    monospace;
+}
+
+.gmk-foot {
+  margin: 0.6cqw 0 0;
+  font-size: 1.25cqw;
+  font-style: italic;
+}
+
+.gmk-order {
+  margin-top: 1.6cqw;
+  padding: 1cqw 1.2cqw;
+  border: 0.25cqw dashed #18150f;
+  background: #fff6ee;
+}
+
+/* ---- poster */
+.pp-gmp {
+  display: flex;
+  flex-direction: column;
+  padding: 4cqw;
+  background: radial-gradient(120% 70% at 50% 0%, #2a4fa0, #0b1030 70%);
+  color: #fff;
+  font:
+    2.2cqw/1.35 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.gmp-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3cqw;
+}
+
+.gmp-top span {
+  font:
+    900 4cqw Arial,
+    sans-serif;
+  letter-spacing: 0.4em;
+}
+
+.gmp-top b {
+  color: #f2e600;
+  font:
+    italic 900 12cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  text-shadow: 0.8cqw 0.8cqw 0 #1f9a3a;
+}
+
+.gmp-top em {
+  margin-top: 1cqw;
+  padding: 0.4cqw 2cqw;
+  background: #d81e1e;
+  font:
+    900 3cqw Arial,
+    sans-serif;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gmp-grid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 1fr;
+  align-content: center;
+  gap: 3cqw;
+}
+
+.gmp-grid figure {
+  margin: 0;
+  padding: 1cqw;
+  background: #f6f1e2;
+  box-shadow: 0.6cqw 0.8cqw 0 rgba(0, 0, 0, 0.45);
+  color: #18150f;
+}
+
+.gmp-grid figure:nth-child(odd) {
+  transform: rotate(-1.5deg);
+}
+
+.gmp-grid figure:nth-child(even) {
+  transform: rotate(1.2deg);
+}
+
+.gmp-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.gmp-grid figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1cqw;
+  margin-top: 0.8cqw;
+  font-size: 1.8cqw;
+}
+
+.gmp-grid figcaption span {
+  color: #d81e1e;
+  font-weight: 700;
+  text-align: right;
+}
+
+.gmp-bottom {
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+  margin-top: 3cqw;
+}
+
+.gmp-bottom p {
+  margin: 0;
+}
+
+.gmp-bottom .pp-sandbox-banner {
+  padding: 0 0.6cqw;
+  background: #000;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+}
+
+/* ---- license card */
+.pp-gml {
+  padding: 5cqw 6cqw;
+  font:
+    3.1cqw/1.4 'Times New Roman',
+    serif;
+}
+
+.pp-gml h3 {
+  margin: 0 0 2cqw;
+  border-bottom: 0.5cqw solid #18150f;
+  font:
+    900 5cqw Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.pp-gml p {
+  margin: 0 0 2cqw;
+}
+
+.gml-mit {
+  font:
+    2.3cqw/1.35 'Courier New',
+    monospace;
+}
+
+.gml-small {
+  font-size: 2.3cqw;
+  font-style: italic;
+}
+
+@media print {
+  .pp-gmk,
+  .pp-gmp {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

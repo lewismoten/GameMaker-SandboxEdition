@@ -1,7 +1,14 @@
 // The Game-Maker 3.0 Owner's Guide for the desk PC, typeset like a 1994 manual. It
 // describes this recreation (the desk, its DOS and Game-Maker's text menus) in the voice
 // of the original documentation, with specifications from GM_SPECS.TXT.
-import { openBooklet, type BookletPage } from './booklet';
+import { type BookletPage } from './booklet';
+import './booklet.css';
+import { h } from '../editor/ui';
+import { loadCatalog, type CatalogEntry } from '../project/files';
+import { openBox } from './printables/viewer';
+import { bookletPageCount } from './printables/imposition';
+import type { BookPage } from './printables/manualPages';
+import { gmBoxItems } from './printables/gmItems';
 import * as fig from './figures';
 import { sandboxShots, type GameShot } from '../desk/gmShots';
 
@@ -367,5 +374,16 @@ function pages(shots: GameShot[]): BookletPage[] {
 export async function openDosManual(): Promise<void> {
   // the gallery's screenshots: give them a moment to load, and go without them if they can't
   const shots = await Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
-  return openBooklet(pages(shots), TITLE);
+  const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.original);
+  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family));
+}
+
+/** The guide as a stapled booklet for the box viewer: note pages fill it out to whole folded sheets. */
+function bookPages(guide: BookletPage[]): BookPage[] {
+  const body = (p: BookletPage) => (Array.isArray(p.body) ? p.body : [p.body]);
+  const inside = guide.slice(0, -1).map((p, i): BookPage => ({ kind: i === 0 || p.cover ? 'cover' : 'text', head: p.head, body: body(p) }));
+  const back: BookPage = { kind: 'cover', body: body(guide[guide.length - 1]) };
+  const pads = bookletPageCount(guide.length) - guide.length;
+  for (let i = 0; i < pads; i++) inside.push({ kind: 'notes', head: [TITLE, 'Notes'], body: [h('h2', null, 'Notes'), h('div', { class: 'mp-ruled' })] });
+  return [...inside, back];
 }
