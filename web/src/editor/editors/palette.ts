@@ -1,5 +1,6 @@
 // Palette editor (PALCHOS.EXE): 256 VGA colors with 0..63 red/green/blue.
 import { rovingGrid } from '../rovingGrid';
+import { History } from '../history';
 import { registerEditor } from './index';
 import { fileField } from '../filePicker';
 import { h, clear } from '../ui';
@@ -11,6 +12,28 @@ registerEditor(['pal'], (host, project, file) => {
   let selected = 1;
   let rangeEnd: number | undefined;
   const save = () => project.files.set(file, serializePalette(pal));
+  const history = new History<Uint8Array>();
+  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  let lastRecord = 0;
+  /** Call before a change; a slider drag (changes less than a second apart) is one step. */
+  const remember = (coalesce = false) => {
+    const now = Date.now();
+    if (!coalesce || now - lastRecord > 1000) history.record(pal.slice());
+    lastRecord = now;
+    undoBtn.disabled = !history.canUndo;
+    redoBtn.disabled = !history.canRedo;
+  };
+  function step(back: boolean): void {
+    const to = back ? history.undo(pal.slice()) : history.redo(pal.slice());
+    if (!to) return;
+    pal.set(to);
+    lastRecord = 0;
+    undoBtn.disabled = !history.canUndo;
+    redoBtn.disabled = !history.canRedo;
+    save();
+    refresh();
+  }
 
   const swatches = rovingGrid(h('div', { class: 'swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
   const preview = h('div', { style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px' });
@@ -19,6 +42,7 @@ registerEditor(['pal'], (host, project, file) => {
     const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name });
     const num = h('input', { type: 'number', min: 0, max: 63 });
     const set = (v: number) => {
+      remember(true);
       pal[selected * 3 + c] = Math.max(0, Math.min(63, v | 0));
       save();
       refresh();
@@ -66,6 +90,7 @@ registerEditor(['pal'], (host, project, file) => {
 
   const spread = () => {
     if (rangeEnd === undefined) return;
+    remember();
     const [a, b] = [Math.min(selected, rangeEnd), Math.max(selected, rangeEnd)];
     for (let i = a + 1; i < b; i++)
       for (let c = 0; c < 3; c++) pal[i * 3 + c] = Math.round(pal[a * 3 + c] + ((pal[b * 3 + c] - pal[a * 3 + c]) * (i - a)) / (b - a));
@@ -91,7 +116,7 @@ registerEditor(['pal'], (host, project, file) => {
         { class: 'panel stack', style: 'flex:1 1 260px' },
         h('div', { class: 'row', style: 'align-items:center' }, preview, label),
         ...sliders.map((s) => s.row),
-        h('div', { class: 'toolbar' }, h('button', { onclick: spread }, 'Spread range')),
+        h('div', { class: 'toolbar' }, h('button', { onclick: spread }, 'Spread range'), undoBtn, redoBtn),
         gifs.length
           ? h(
               'div',
@@ -108,6 +133,7 @@ registerEditor(['pal'], (host, project, file) => {
                 'button',
                 {
                   onclick: () => {
+                    remember();
                     pal.set(decodeGif(project.files.get(gifChoice)!).palette);
                     save();
                     refresh();
@@ -121,6 +147,7 @@ registerEditor(['pal'], (host, project, file) => {
           'button',
           {
             onclick: () => {
+              remember();
               pal.set(defaultPalette());
               save();
               refresh();
@@ -132,4 +159,14 @@ registerEditor(['pal'], (host, project, file) => {
     ),
   );
   refresh();
+  const onKey = (e: KeyboardEvent) => {
+    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' || k === 'y') {
+      e.preventDefault();
+      step(k === 'z' && !e.shiftKey);
+    }
+  };
+  window.addEventListener('keydown', onKey);
+  return () => window.removeEventListener('keydown', onKey);
 });
