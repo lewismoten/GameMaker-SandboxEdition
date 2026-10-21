@@ -19,6 +19,7 @@ import { BURROW, DAY, DUSK } from './src/art/palette';
 import * as levels from './src/levels/levels';
 import { buildGame } from './src/game';
 import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, titleScreen, wonScreen } from './src/screens/screens';
+import { sysopFli } from './src/screens/sysop';
 import { CREDITS, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
 import { buildDemo } from './src/demo';
 import { licenseText } from '../kit/license';
@@ -102,6 +103,10 @@ for (const key of Object.keys(L) as (keyof typeof L)[]) {
   if (key === 'hub') continue;
   (lv as { intro?: string }).intro = message(key === 'bbs' ? 'bbsintro' : key, subjects[key], INTRO[key], key === 'bbs' ? 'SYSOP' : 'TEDDY');
 }
+
+// The secret BBS's welcome, then its file area: SYSOP.GIF downloads and draws itself in.
+disk.put('sysop.fli', sysopFli());
+lst('bbsintro.lst', [['bbsintro.gif', 0], ['bbsintro.txt'], ['sysop.fli']]);
 
 const demo = buildDemo();
 disk.put('demo.rec', demo);

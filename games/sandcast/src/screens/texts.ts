@@ -139,9 +139,11 @@ Fill your bucket at her water bowls. Mind the slobbery balls and her flying rope
 
 Welcome to THE -= S A N D B O X =- BBS, Pittsburgh, PA!
 
-You found the secret dial-up. Grab the floppies (shareware!), but watch out for line noise.
+SysOp: Lewis. Co-SysOp: Dr. Leo, PhD (Comedic Science).
 
-Leave by the door of static.
+You found the secret dial-up. Grab the floppies (shareware!), but watch out for line noise. Leave by the door of static.
+
+New upload: SYSOP.GIF!
 `),
 };
 
