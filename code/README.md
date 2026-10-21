@@ -3,8 +3,10 @@
 The C, C++ and assembly source of **RSD Game-Maker 3.0** (1991–1995), by G. Andrew Stone,
 G. Oliver Stone, Oliver Stone Jr. and Joan Stone of Recreational Software Designs.
 
-- **Unmodified.** These files are as Andy Stone published them in 2014. This fork doesn't
-  maintain them; they're kept for reference, and the web port follows their behavior.
+- **As published, less a few files.** Every file here is as Andy Stone published it in
+  2014, except that this fork removed other companies' files (below), including from
+  `GM/GM.ZIP`, and added this README. It doesn't otherwise maintain them; they're kept
+  for reference, and the web port follows their behavior.
 - **Copyright and license.** The copyright notices in the files are the Stones' and still
   apply. In 2014 Andy Stone released the source under the MIT License: see
   [LICENSE](../LICENSE).
