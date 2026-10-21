@@ -48,7 +48,10 @@
   .tray-move {
     position: absolute;
     inset: 0;
-    perspective: 900px;
+    /* the eye 2218px off the stage: with the board's 56 degree tilt its runners head for the
+       desk's vanishing point, 1496px above the desk's front edge (desk/deskStage.css):
+       2218 / tan(56deg) = 1496 */
+    perspective: 2218px;
     perspective-origin: 50% 0;
     transition: transform 0.9s cubic-bezier(0.35, 0.05, 0.25, 1);
   }
@@ -64,7 +67,8 @@
     top: 0;
     width: 830px;
     height: 212px;
-    transform: rotateX(56deg);
+    /* scaled up a little so the tray keeps its size under the flatter perspective */
+    transform: scale(1.1) rotateX(56deg);
     transform-origin: 50% 0;
   }
 
