@@ -56,7 +56,7 @@ function pages(shots: GameShot[]): BookletPage[] {
         <div class="cover-tag">VGA 256 colors \u00b7 Sound Blaster \u00b7 No programming</div>
         <div class="cover-title">Owner\u2019s Guide</div>
         <div class="cover-sub">Sandbox Edition, based on Version 3.0 for IBM PC and compatibles<br>Includes the CD-ROM edition and the shareware BBS</div>
-        <div class="cover-fork">A new guide written for this modified fork of Game-Maker. It is not the manual RSD shipped in 1994.</div>
+        <div class="cover-fork">A new guide written for this modified fork of RSD Game-Maker. It is not the manual RSD shipped in 1994.</div>
         <div class="cover-foot">Game-Maker by Recreational Software Designs \u00b7 Sandbox Edition</div>`),
     },
     page(

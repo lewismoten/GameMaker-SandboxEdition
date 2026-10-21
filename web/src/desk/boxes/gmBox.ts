@@ -131,7 +131,7 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
   f.fillText('SANDBOX EDITION', 18, 175);
   f.font = SANS(13, 700, true);
   f.textAlign = 'right';
-  f.fillText('a modified fork of Game-Maker 3.0', W - 18, 175);
+  f.fillText('a modified fork of RSD Game-Maker 3.0', W - 18, 175);
   f.textAlign = 'left';
   // version flash
   f.save();

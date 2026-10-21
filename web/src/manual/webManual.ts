@@ -124,7 +124,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   [
     'credits',
     'Credits and license',
-    `<p>Game-Maker was made from 1991 to 1995 by Recreational Software Designs: G. Andrew
+    `<p>RSD Game-Maker was made from 1991 to 1995 by Recreational Software Designs: G. Andrew
     Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone. In 2014 Andy Stone released its
     source code under the <b>MIT License</b>, saying that “porting Game-Maker to modern OSes
     is the first step” to preserving the games people made with it.</p>
@@ -132,7 +132,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     1992 with snow-shoveling money. Running in a browser is the simplest way to reach every
     modern computer, and everything here reads and writes the original file formats, so
     games made today still play in DOS and DOSBox. The web port, both the 1994 desk and
-    today's web editor, was written with <b>Claude Opus 5.5</b>. It is MIT licensed too.</p>
+    today's web editor, was written with <b>Claude Opus 5.5</b>: AI assistance did most of the
+    porting and code generation. It is MIT licensed too.</p>
     <p>GIF is a service mark of CompuServe; FLI is Autodesk Animator's format; Sound
     Blaster, CMF and VOC belong to Creative Technology; the OPL2 chip is Yamaha's. The CD's
     sample and shareware games belong to their authors. Sandbox Software, its BBS and the
