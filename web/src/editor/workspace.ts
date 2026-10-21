@@ -343,19 +343,19 @@ export class Workspace {
     } catch {
       /* private mode: always shown */
     }
-    const steps: [FileKind, string, string][] = [
-      ['map', '🗺', 'Change the level'],
-      ['bbl', '🧱', 'Paint the scenery'],
-      ['chr', '🦸', 'The hero'],
-      ['mon', '👾', 'Monsters'],
-      ['snd', '🔊', 'Sounds'],
+    const steps: [FileKind, string, string, string][] = [
+      ['map', '🗺', 'Change the level', 'Add a map'],
+      ['bbl', '🧱', 'Paint the scenery', 'Add scenery blocks'],
+      ['chr', '🦸', 'The hero', 'Add a hero'],
+      ['mon', '👾', 'Monsters', 'Add monsters'],
+      ['snd', '🔊', 'Sounds', 'Add sounds'],
     ];
     const strip = h(
       'nav',
       { class: 'next-steps', 'aria-label': 'Make it yours' },
       h('strong', null, 'Make it yours:'),
       h('button', { class: 'primary', onclick: () => this.play() }, '▶ Play test'),
-      ...steps.map(([kind, icon, label]) => {
+      ...steps.map(([kind, icon, label, addLabel]) => {
         const first = this.project.files.byExtension(kind)[0];
         return first
           ? h('button', { title: `Edit ${first}`, onclick: () => this.open(first) }, h('span', { 'aria-hidden': 'true' }, `${icon} `), label)
@@ -363,7 +363,7 @@ export class Workspace {
               'button',
               { title: `This game has no ${KIND_LABELS[kind].toLowerCase()} yet`, onclick: () => void this.addOfKind(kind) },
               h('span', { 'aria-hidden': 'true' }, '＋ '),
-              `Add ${KIND_LABELS[kind].toLowerCase()}`,
+              addLabel,
             );
       }),
       h(
