@@ -22,6 +22,7 @@ import { editedWhen } from './homeTime';
 import { readableBlurb } from './homeBlurb';
 import { rememberOrigin } from './homeOrigin';
 import { projectMenuItems } from './homeProjectActions';
+import { chooseCopy } from './homeCopies';
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -297,6 +298,12 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
 
 /** Makes an editable copy of a CD game and opens it. */
 async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promise<void> {
+  // already have a copy? offer it first, so a second one is made only on purpose
+  if (game.entry) {
+    const pick = await chooseCopy(game.title, game.entry.id, game.gam);
+    if (!pick) return;
+    if (pick !== 'new') return nav.openProject(pick.id);
+  }
   toast(`Copying ${game.title}…`);
   const p = Project.fromFiles(await game.files(), name);
   if (game.gam) p.gam = game.gam;
