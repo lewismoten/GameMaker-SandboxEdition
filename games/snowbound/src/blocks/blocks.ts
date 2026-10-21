@@ -10,7 +10,7 @@ import { blockContext, type BlockBook } from './book';
 import { addGround } from './ground';
 import { addThings } from './things';
 import { addHouses } from './houses';
-import { addMall } from './mall';
+import { addMall, addSnack } from './mall';
 import { addSled } from './sled';
 import { addRoute } from './route';
 import { addFair } from './fair';
@@ -26,5 +26,6 @@ export function buildBlocks(pal: Pal): BlockBook {
   addSled(k, treats);
   addRoute(k, painters);
   addFair(k, painters, mall);
+  addSnack(k, painters);
   return k.book;
 }

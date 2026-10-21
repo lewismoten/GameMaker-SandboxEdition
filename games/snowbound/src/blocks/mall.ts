@@ -120,3 +120,17 @@ export function addMall(k: Ctx) {
   book.add('arcadeDoor', arcadeDoor, { solid: SOLID, effect: MONEY, eamt: -1, hp: 5, score: 100 });
   return { mallWall };
 }
+
+/** Timeout's snack bar sells exactly one thing: a frosty mug of root beer on the walk out
+ * front, which warms you up like cocoa (don't ask how). Added last so older blocks keep
+ * their numbers. */
+export function addSnack(k: Ctx, { sidewalk }: { sidewalk: (seed: number) => Pixels }): void {
+  const { book, c } = k;
+  const p = sidewalk(143);
+  p.rect(5, 6, 9, 11, c('wood', 1)).rect(5, 6, 2, 11, c('wood', 2)).rect(12, 6, 2, 11, c('wood', 0));
+  p.rect(5, 5, 9, 2, c('glow', 3)).rect(4, 4, 11, 2, c('snow', 6)).set(6, 3, c('snow', 6)).set(11, 3, c('snow', 6));
+  p.rect(14, 8, 3, 1, c('ice', 4)).rect(16, 8, 1, 6, c('ice', 4)).rect(14, 13, 3, 1, c('ice', 4));
+  for (let y = 8; y < 16; y += 3) p.set(7, y, c('ice', 4));
+  p.rect(4, 17, 11, 1, c('concrete', 1));
+  book.add('rootBeer', p, { hp: 35, score: 25, touch: 'walk' });
+}

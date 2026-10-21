@@ -459,6 +459,8 @@ export function lavaleMall(book: BlockBook) {
   // the History Fair table on the walk, and the corkboard on the wall behind it
   m.set(X + 27, 14, 'fairMan').set(X + 28, 14, 'fairBell').set(X + 29, 14, 'fairFlag');
   m.set(X + 32, 13, 'board0').set(X + 33, 13, 'board1');
+  // Timeout's snack bar: root beer, and only root beer
+  m.set(X + 16, 14, 'rootBeer');
   m.patch(X, 16, ['BB_LB_BBBBLBBB_BBBLBBBB_BBBLBBBB__BBBLBBB_BBBBLBBB_BBBLBB_B']);
   // the fire lane
   m.fill(X, 17, 60, 1, '=').fill(X, 18, 60, 1, '-');
