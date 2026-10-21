@@ -1,5 +1,12 @@
 // DoGame and play() from code/GM/PLAYGAME.C: the title and menu screens, and the
 // loop that walks the scene graph from the start scene to "Game Won".
+//
+// Scenes 0 and 1 are not levels. Scene 0's file slots hold the front end: 0 title
+// picture, 1 title song, 2 menu screen, 3 menu song, 4 storyline, 5 storyline song,
+// 6 instructions, 7 credits, 8 high score screen, 9 load and 10 save backgrounds,
+// 11 demo recording; its links say where play starts. Scene 1 is "Game Won": 0/1 the
+// won picture and song, 2/3 the dead picture and song. In a level, slots 9 and 10
+// are the pictures shown before and after it (PREGRAPHICFILEIDX, POSTGRAPHICFILEIDX).
 import { Machine } from './machine';
 import { Recorder } from './recorder';
 import { playScene, sceneFile, startGameInits, type Session, type SpeedSetting } from './scene';
@@ -97,6 +104,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     m.screen.write(12 * 8, 13 * 8, blue, game.scenes[0].desc);
     ['Play', 'Read Instructions', 'Read Storyline', 'See Credits', 'See Highest Scores', 'Quit'].forEach((t, i) => m.screen.write(80, (15 + i) * 8, blue, t));
 
+    // 30 s idle timeout: GVertMenu then returns NumChoices+1 (7), the demo case.
     choice = await gVertMenu(m, 70, 15 * 8 + 1, 8, 6, blue, 30, choice);
     switch (choice) {
       case 1:
@@ -165,9 +173,12 @@ async function play(s: Session, startLink: number): Promise<void> {
   let curlink = startLink;
   let oldscene = 0;
   startGameInits(s);
+  // 0xffff (no scene) fails the `curscene < length` test below, ending play at once.
   let curscene = game.scenes[0].links[curlink]?.toScene ?? 0xffff;
 
-  // The integrator's classic mistake: start position == game won position.
+  // The integrator's classic mistake: start position == game won position. The check
+  // compares the start link's From (on scene 0) with the first scene's links to
+  // scene 1, as the C does, and nudges the won link by 10 blocks each way.
   const first = game.scenes[curscene];
   const startLinkData = game.scenes[0].links[curlink];
   if (first && startLinkData) {
@@ -199,6 +210,8 @@ async function play(s: Session, startLink: number): Promise<void> {
     const oldlink = curlink;
     const r = await playScene(s, curscene, oldscene, curlink);
     if (!r.ok) break;
+    // r.link: a link index to follow, MAXSCENELINKS to replay the scene after a death
+    // (entering again by the same link), or above it for Esc / no lives left.
     curlink = r.link;
     m.flushKeys();
     if (curlink > MAXSCENELINKS) break;
@@ -222,6 +235,8 @@ async function play(s: Session, startLink: number): Promise<void> {
   m.screen.setPalette(s.colors);
   m.flushKeys();
   let score = s.ci.score;
+  // A playthrough that makes the high score table is kept as data<place>.rec; demo
+  // playback never scores (score -1 leaves off the "Your Latest Score" line).
   if (!s.rec.playing) {
     const place = await checkHighScores(m, s.gameName, s.colors, score);
     if (place) m.files.set(`data${place}.rec`, s.rec.save());
