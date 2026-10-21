@@ -47,7 +47,11 @@ registerEditor(['gif'], (host, project, file) => {
     return;
   }
   let img = decodeGif(bytes);
-  const canvas = h('canvas', { class: 'pixel', style: 'width:100%;max-width:960px;border-radius:6px;cursor:crosshair;image-rendering:pixelated' });
+  const canvas = h('canvas', {
+    class: 'pixel pic-canvas',
+    role: 'img',
+    'aria-label': `${file}: click to choose a 20 by 20 area to copy into a block`,
+  });
   const overlay = { x: 0, y: 0 };
   const info = h('div', { class: 'meta' });
   const draw = () => {
@@ -149,7 +153,13 @@ registerEditor(['gif'], (host, project, file) => {
       el.classList.toggle('target', i === targetBlock);
       el.setAttribute('aria-selected', String(i === targetBlock));
     });
-    slots.children[targetBlock]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    // scroll the block list only, never the page around it
+    const el = slots.children[targetBlock] as HTMLElement | undefined;
+    if (el) {
+      const top = el.offsetTop - slots.offsetTop;
+      if (top < slots.scrollTop) slots.scrollTop = top;
+      else if (top + el.offsetHeight > slots.scrollTop + slots.clientHeight) slots.scrollTop = top + el.offsetHeight - slots.clientHeight;
+    }
     updatePreview();
   };
   const reloadSet = () => {
@@ -192,105 +202,112 @@ registerEditor(['gif'], (host, project, file) => {
       { class: 'hint' },
       'Click the picture to choose a 20×20 area (Shift-click snaps to the block grid), then copy it into a block — the way Game-Maker’s IMAGE tool grabbed blocks from pictures.',
     ),
-    canvas,
-    info,
-    h(
-      'section',
-      { class: 'panel pic-copy' },
-      h('h3', null, 'Copy the area into a block'),
-      h(
-        'div',
-        { class: 'toolbar' },
-        fileField(
-          project,
-          'Block set',
-          ['bbl', 'mbl', 'cbl'],
-          () => target,
-          (v) => v && ((target = v), reloadSet()),
-          { allowNone: false },
-        ),
-        selectField(
-          'Colors',
-          [
-            [1, 'Match the block set’s palette'],
-            [0, 'Copy color numbers as they are'],
-          ] as [number, string][],
-          () => (remap ? 1 : 0),
-          (v) => ((remap = !!v), updatePreview()),
-        ),
-      ),
-      h(
-        'div',
-        { class: 'pic-copy-body' },
-        h(
-          'div',
-          { class: 'pic-swap' },
-          slotLabel,
-          h(
-            'div',
-            { class: 'pic-swap-row' },
-            h('figure', null, before, beforeCap),
-            h('span', { class: 'pic-arrow', 'aria-hidden': 'true' }, '➜'),
-            h('figure', null, after, h('figcaption', null, 'After copying')),
-          ),
-          h(
-            'label',
-            { class: 'pic-advance' },
-            (() => {
-              const c = h('input', { type: 'checkbox', checked: advance });
-              c.addEventListener('change', () => (advance = c.checked));
-              return c;
-            })(),
-            'Then move on to the next empty block',
-          ),
-          copyBtn,
-        ),
-        h(
-          'div',
-          { class: 'pic-slots-wrap' },
-          h(
-            'div',
-            { class: 'meta' },
-            'Click the block to replace. The orange frame is the one you’re about to change; blocks marked “empty” have nothing drawn yet.',
-          ),
-          slots,
-        ),
-      ),
-    ),
     h(
       'div',
-      { class: 'panel toolbar', style: 'margin-top:8px' },
-      fileField(
-        project,
-        'Palette for imported pictures',
-        ['pal'],
-        () => replacePal,
-        (v) => (replacePal = v),
-        { noneLabel: ['This picture’s palette', 'keep the colors it has'] },
-      ),
+      { class: 'pic-layout' },
+      h('div', { class: 'pic-main' }, canvas, info),
       h(
-        'button',
-        {
-          onclick: async () => {
-            const [f] = await pickFiles({ multiple: false, accept: 'image/*' });
-            if (!f) return;
-            img = await importImage(f, replacePal ? parsePalette(project.files.get(replacePal)!) : img.palette);
-            project.files.set(file, encodeGif(img));
-            draw();
-            toast('Picture replaced (scaled to 320×200).');
-          },
-        },
-        'Replace with an image file…',
-      ),
-      h(
-        'button',
-        {
-          onclick: () =>
-            canvas.toBlob(async (b) => {
-              if (b) download(file.replace(/\.gif$/, '.png'), new Uint8Array(await b.arrayBuffer()), 'image/png');
-            }),
-        },
-        'Download as PNG',
+        'div',
+        { class: 'pic-side' },
+        h(
+          'section',
+          { class: 'panel pic-copy' },
+          h('h3', null, 'Copy the area into a block'),
+          h(
+            'div',
+            { class: 'toolbar' },
+            fileField(
+              project,
+              'Block set',
+              ['bbl', 'mbl', 'cbl'],
+              () => target,
+              (v) => v && ((target = v), reloadSet()),
+              { allowNone: false },
+            ),
+            selectField(
+              'Colors',
+              [
+                [1, 'Match the block set’s palette'],
+                [0, 'Copy color numbers as they are'],
+              ] as [number, string][],
+              () => (remap ? 1 : 0),
+              (v) => ((remap = !!v), updatePreview()),
+            ),
+          ),
+          h(
+            'div',
+            { class: 'pic-copy-body' },
+            h(
+              'div',
+              { class: 'pic-swap' },
+              slotLabel,
+              h(
+                'div',
+                { class: 'pic-swap-row' },
+                h('figure', null, before, beforeCap),
+                h('span', { class: 'pic-arrow', 'aria-hidden': 'true' }, '➜'),
+                h('figure', null, after, h('figcaption', null, 'After copying')),
+              ),
+              h(
+                'label',
+                { class: 'pic-advance' },
+                (() => {
+                  const c = h('input', { type: 'checkbox', checked: advance });
+                  c.addEventListener('change', () => (advance = c.checked));
+                  return c;
+                })(),
+                'Then move on to the next empty block',
+              ),
+              copyBtn,
+            ),
+            h(
+              'div',
+              { class: 'pic-slots-wrap' },
+              h(
+                'div',
+                { class: 'meta' },
+                'Click the block to replace. The orange frame is the one you’re about to change; blocks marked “empty” have nothing drawn yet.',
+              ),
+              slots,
+            ),
+          ),
+        ),
+        h(
+          'div',
+          { class: 'panel toolbar', style: 'margin-top:8px' },
+          fileField(
+            project,
+            'Palette for imported pictures',
+            ['pal'],
+            () => replacePal,
+            (v) => (replacePal = v),
+            { noneLabel: ['This picture’s palette', 'keep the colors it has'] },
+          ),
+          h(
+            'button',
+            {
+              onclick: async () => {
+                const [f] = await pickFiles({ multiple: false, accept: 'image/*' });
+                if (!f) return;
+                img = await importImage(f, replacePal ? parsePalette(project.files.get(replacePal)!) : img.palette);
+                project.files.set(file, encodeGif(img));
+                draw();
+                toast('Picture replaced (scaled to 320×200).');
+              },
+            },
+            'Replace with an image file…',
+          ),
+          h(
+            'button',
+            {
+              onclick: () =>
+                canvas.toBlob(async (b) => {
+                  if (b) download(file.replace(/\.gif$/, '.png'), new Uint8Array(await b.arrayBuffer()), 'image/png');
+                }),
+            },
+            'Download as PNG',
+          ),
+        ),
       ),
     ),
     h('div', { style: 'height:12px' }),

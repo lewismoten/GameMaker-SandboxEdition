@@ -1,4 +1,31 @@
 /* Pictures editor: copying a 20x20 area into a block. */
+.pic-canvas {
+  display: block;
+  width: 100%;
+  max-width: min(960px, max(320px, calc((100dvh - 250px) * 1.6)));
+  border-radius: 6px;
+  cursor: crosshair;
+  image-rendering: pixelated;
+}
+.pic-main,
+.pic-side {
+  min-width: 0;
+}
+/* wide screens: the picture on the left, copying into blocks on the right */
+@media (min-width: 1200px) {
+  .pic-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(340px, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+  .pic-layout .pic-copy {
+    margin-top: 0;
+  }
+  .pic-layout .pic-slots {
+    max-height: 220px;
+  }
+}
 .pic-copy {
   margin-top: 8px;
 }
