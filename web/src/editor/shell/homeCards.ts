@@ -260,6 +260,8 @@ export function demoInPicture(
 export interface TileOptions {
   /** Shows the game in the panel at the top. */
   onSelect(game: HomeGame): void;
+  /** A game of yours: its ⋯ button (rename, duplicate, download, delete…). */
+  onMore?(game: HomeGame): void;
 }
 
 /** A game in the grid: its picture with Keys, Manual and Demo over it, and its title. */
@@ -276,6 +278,17 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
     h('span', { class: 'tile-meta', title: game.tileByline ?? game.byline }, game.tileByline ?? game.byline),
   );
   const tile = h('article', { class: 'card game-tile', dataset: { search: game.search, key: game.key } }, picture, select);
+  if (game.project && o.onMore) {
+    const tip = 'Rename, duplicate, download or delete';
+    tile.classList.add('has-more');
+    tile.append(
+      h(
+        'button',
+        { class: 'tile-more', type: 'button', title: tip, 'aria-label': `More: ${tip.toLowerCase()} ${game.title}`, onclick: () => o.onMore!(game) },
+        '⋯',
+      ),
+    );
+  }
   // the picture selects too (the buttons over it do their own thing)
   picture.addEventListener('click', (e) => {
     if (!(e.target as HTMLElement).closest('button')) o.onSelect(game);

@@ -51,6 +51,16 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[]
 ];
 
 const CATEGORY_KEY = 'gm-home-category';
+const SORT_KEY = 'gm-home-sort';
+type MySort = 'edited' | 'name';
+
+function savedSort(): MySort {
+  try {
+    return localStorage.getItem(SORT_KEY) === 'name' ? 'name' : 'edited';
+  } catch {
+    return 'edited';
+  }
+}
 const GAME_HASH = '#/game/';
 
 function savedCategory(): Category | undefined {
@@ -106,8 +116,32 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   // one HomeGame per game for the page's life, so files load once
   const games = new Map<string, HomeGame>();
   const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
-  const gamesOf = (c: Category): HomeGame[] =>
-    c === 'mine' ? projects.map((p) => remember(projectGame(p, findOriginal(p, catalog)))) : entriesOf(c).map((e) => remember(catalogGame(e, c)));
+  let sort = savedSort();
+  const sorted = () => (sort === 'name' ? [...projects].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })) : projects);
+  const mine = (p: (typeof projects)[number]) => remember(projectGame(p, findOriginal(p, catalog)));
+  const gamesOf = (c: Category): HomeGame[] => (c === 'mine' ? sorted().map(mine) : entriesOf(c).map((e) => remember(catalogGame(e, c))));
+  // My games in the order you like: the one edited last first, or by name
+  const sortBox = h(
+    'label',
+    { class: 'lib-sort' },
+    'Sort by ',
+    h(
+      'select',
+      {
+        onchange: (e: Event) => {
+          sort = (e.target as HTMLSelectElement).value as MySort;
+          try {
+            localStorage.setItem(SORT_KEY, sort);
+          } catch {
+            /* not remembered */
+          }
+          void select('mine');
+        },
+      },
+      h('option', { value: 'edited', selected: sort === 'edited' }, 'Last edited'),
+      h('option', { value: 'name', selected: sort === 'name' }, 'Name'),
+    ),
+  );
   const findGame = (key: string): HomeGame | undefined => {
     for (const c of CATEGORIES) {
       const g = gamesOf(c.id).find((x) => x.key === key);
@@ -176,6 +210,14 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     markSelected();
   };
 
+  /** With games of your own, the one edited last (to carry on with); otherwise a featured game. */
+  const showStart = () => {
+    if (!projects.length) return feature();
+    top.show(mine(projects[0]), { resume: true });
+    if (location.hash.startsWith(GAME_HASH)) history.replaceState(null, '', '#/');
+    markSelected();
+  };
+
   // The collections are tabs: arrow keys move between them, Tab goes on to the games.
   const renderCats = () => {
     const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.id === 'mine' ? projects.length : entriesOf(c.id).length]));
@@ -240,13 +282,14 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const info = CATEGORIES.find((x) => x.id === c)!;
     libTitle.textContent = info.name;
     libLead.textContent = info.lead;
+    sortBox.hidden = c !== 'mine' || projects.length < 2;
     clear(
       libTools,
       c === 'mine' ? drop : null,
     );
     let cards: HTMLElement[];
     if (c !== 'mine' && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
-    else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose }));
+    else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) }));
     if (!cards.length)
       cards = [
         c === 'mine'
@@ -275,8 +318,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   const refreshProjects = async () => {
     projects = await listProjects().catch(() => []);
+    // renamed or saved since: made afresh
+    for (const k of [...games.keys()]) if (k.startsWith('my:')) games.delete(k);
     const key = top.game?.key;
-    if (key && !findGame(key)) feature();
+    const now = key && findGame(key);
+    if (!now) showStart();
+    else if (now.kind === 'mine') top.show(now, {});
     await select(current);
   };
 
@@ -310,7 +357,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           catNav,
           h('div', { class: 'lib-find' }, search, h('button', { class: 'primary lib-new', type: 'button', onclick: () => void newGame(nav) }, '+ New game')),
         ),
-        h('div', { class: 'lib-about' }, libTitle, libLead),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox),
         libTools,
         tiles,
       ),
@@ -367,9 +414,11 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   } catch {
     catalogError = 'These games are unavailable offline until they have been opened once.';
   }
+  // a link to a game shows it, in its own collection
   const chosen = findGame(hashKey());
-  if (chosen) top.show(chosen, {});
-  else feature();
-  if (!top.game && projects.length) top.show(remember(projectGame(projects[0], findOriginal(projects[0], catalog))), {});
+  if (chosen) {
+    top.show(chosen, {});
+    current = chosen.kind;
+  } else showStart();
   await select(current);
 }

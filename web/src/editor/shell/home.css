@@ -796,3 +796,50 @@ a.button.with-ico {
   border-color: transparent;
   font-weight: 400;
 }
+
+/* a game of yours: ⋯ beside its title opens its actions in the panel */
+.game-tile.has-more .tile-select {
+  padding-right: 36px;
+}
+
+.tile-more {
+  position: absolute;
+  right: 4px;
+  bottom: 6px;
+  min-height: 0;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.tile-more:hover,
+.tile-more:focus-visible {
+  border-color: var(--border);
+  background: var(--panel-2);
+  color: inherit;
+}
+
+.lib-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lib-sort[hidden] {
+  display: none;
+}
+
+.lib-sort select {
+  padding: 3px 6px;
+  font: inherit;
+  color: var(--text);
+}
