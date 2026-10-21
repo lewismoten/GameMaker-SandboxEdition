@@ -1,5 +1,6 @@
 // COMMAND.COM for the retro PC: the C:\> prompt, built-in commands, and running
-// programs found in the current folder or on the PATH.
+// programs found in the current folder or on the PATH. This is the port's own stand-in
+// for MS-DOS, not a port of Game-Maker code; it imitates DOS 6.22 messages.
 import type { TextScreen } from '../text/textScreen';
 import { readLine, type TextKeys } from '../text/textInput';
 import { commas, dirLine, dirWide, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
@@ -15,11 +16,13 @@ export interface ShellHost {
   makeDir?(drive: string, parts: string[]): Promise<string | undefined>;
 }
 
+// The fixed search path, and the extensions a program may have.
 const PATH = ['C:\\DOS', 'C:\\GM', 'C:\\COMM'];
 const EXTS = ['COM', 'EXE', 'BAT'];
 
 export class Shell {
   drive = 'C';
+  // Like DOS, each drive remembers its own current folder (path parts below the root).
   private cwd = new Map<string, string[]>();
   private history: string[] = [];
   private host: ShellHost;
@@ -64,9 +67,11 @@ export class Shell {
   async execute(line: string): Promise<void> {
     const trimmed = line.trim();
     if (!trimmed) return;
+    // "A:" alone switches drives.
     if (/^[A-Za-z]:$/.test(trimmed)) return this.changeDrive(trimmed[0].toUpperCase());
     // Built-ins may be followed directly by a path or switch: "CD..", "DIR/W", "CD\GM".
     const b = /^(dir|cd|chdir|md|mkdir|cls|ver|vol|type|echo|mem|date|time|help|path|\?)(?=$|[\s.\\/])(.*)$/i.exec(trimmed);
+    // Anything that is not a built-in is a program name; its arguments are the words after it.
     const cmd = b ? b[1].toUpperCase() : '';
     const rest = b ? b[2].trim() : trimmed.split(/\s+/).slice(1).join(' ');
     const args = rest ? rest.split(/\s+/) : [];
@@ -129,6 +134,7 @@ export class Shell {
       return;
     }
     const root = await this.host.fs.drives.get(d)!.root();
+    // A null root is an empty drive (no disk), answered with DOS's critical error text.
     if (root === null) {
       this.out(`Not ready reading drive ${d}`);
       this.out('Abort, Retry, Fail?F');
@@ -150,6 +156,8 @@ export class Shell {
     let { drive, parts } = resolvePath(target, this.drive, this.cwdOf);
     let pattern: RegExp | undefined;
     let list = await this.host.fs.listDir(drive, parts);
+    // When the last part is not a folder but looks like a wildcard or file name, list its
+    // parent folder filtered by it (* any run of characters, ? one character).
     if (list === undefined && parts.length && /[*?.]/.test(parts[parts.length - 1])) {
       // DIR *.GAM
       const glob = parts.pop()!;
@@ -169,7 +177,9 @@ export class Shell {
     this.out(` Directory of ${drive}:\\${parts.join('\\')}`);
     this.out();
     const lines: string[] = [];
+    // Folders below the root list the . and .. entries first.
     if (parts.length) lines.push(...(['.', '..'].map((n) => (wide ? `[${n}]`.padEnd(16) : dirLine({ name: n, dir: true, size: 0, date: new Date(1994, 9, 20, 11, 42) })))));
+    // DIR /W: names in five 16-column cells a line.
     if (wide) {
       const cells = [...lines.splice(0), ...items.map(dirWide)];
       for (let i = 0; i < cells.length; i += 5) lines.push(cells.slice(i, i + 5).join('').trimEnd());
@@ -227,6 +237,7 @@ export class Shell {
     }
     const bytes = await node.read();
     let text = '';
+    // Ctrl-Z (0x1A) ends a DOS text file; CRs are dropped so CR LF prints as one line break.
     for (const b of bytes) {
       if (b === 0x1a) break;
       if (b !== 13) text += String.fromCharCode(b);
@@ -249,11 +260,16 @@ export class Shell {
       this.out(l);
   }
 
-  /** Finds NAME, NAME.EXE/.COM/.BAT in the current folder (or the given path), then the PATH. */
+  /**
+   * Finds a program: NAME.EXT exactly when an extension is typed, otherwise NAME.COM, NAME.EXE
+   * or NAME.BAT. A word with a drive or backslash searches only that folder; a bare name
+   * searches the current folder, then each PATH folder in order. Only nodes that can run match.
+   */
   private async findProgram(word: string): Promise<{ node: DosNode; at: { drive: string; parts: string[] } } | undefined> {
     const { drive, parts } = resolvePath(word, this.drive, this.cwdOf);
     const name = parts.pop() ?? '';
     const [base, ext] = splitName(name);
+    // Within one folder the first matching entry in listing order wins, not the EXTS order.
     const names = ext ? [name] : EXTS.map((e) => `${base}.${e}`);
     const where = word.includes('\\') || word.includes(':') ? [{ drive, parts }] : [{ drive, parts }, ...PATH.map((p) => resolvePath(p, 'C', this.cwdOf))];
     for (const w of where) {
