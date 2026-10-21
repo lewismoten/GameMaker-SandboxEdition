@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { GameSim } from './sim';
 import { Bot } from './bot';
 import { act1, act2, accuse, greenRoom } from './walkthrough';
-import { buildGame } from './game';
+import { buildGame } from './src/game';
 import { buildActs } from './acts';
 import { buildTheatreBlocks } from './tiles';
 import { buildParlorBlocks, buildParlorMap } from './parlor';

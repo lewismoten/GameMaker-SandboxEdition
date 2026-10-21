@@ -5,7 +5,7 @@ import { CHARBL } from '../../web/src/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../web/src/formats/character';
 import { BlockSet } from './blockset';
 import { ADA, strikeFrames } from './ada';
-import { CTR, KEY, SEQ, SND } from './ids';
+import { CTR, KEY, SEQ, SND } from './src/ids';
 import { ITEMS } from './tiles';
 
 export function buildAdaBlocks(): BlockSet {

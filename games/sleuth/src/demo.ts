@@ -2,10 +2,10 @@
 // the start of Act One (the key and the seating chart in the box office, through the
 // house to the wings, the lens from the props room, the ticket stub it reveals under the
 // prop table and Felix's checklist), then presses Esc.
-import { serializeRecording } from '../../web/src/formats/recording';
-import { GameSim } from './sim';
-import { Bot } from './bot';
-import { act1 } from './walkthrough';
+import { serializeRecording } from '../../../web/src/formats/recording';
+import { GameSim } from '../sim';
+import { Bot } from '../bot';
+import { act1 } from '../walkthrough';
 import { SCAN } from './ids';
 
 export async function demoRecording(files: Map<string, Uint8Array>): Promise<Uint8Array> {

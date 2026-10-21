@@ -3,7 +3,7 @@
 // dials, picks things up, and steps on links. What it presses is recorded, so a finished
 // route is also a demo (or a whole-game walkthrough for testing the real engine).
 import { GameSim } from './sim';
-import { SCAN } from './ids';
+import { SCAN } from './src/ids';
 
 type Pt = { x: number; y: number };
 export type Dir = 'up' | 'down' | 'left' | 'right';

@@ -5,8 +5,8 @@
 import { emptyMonster, type Monster } from '../../web/src/formats/monster';
 import { Pixels } from '../kit/pixels';
 import { BlockSet, SOLID } from './blockset';
-import { CLEAR, art, blob } from './draw';
-import { c, ramp as r } from './pal';
+import { CLEAR, art, blob } from './src/art/draw';
+import { c, ramp as r } from './src/art/pal';
 
 const K: Record<string, number> = {
   o: c('black', 0),

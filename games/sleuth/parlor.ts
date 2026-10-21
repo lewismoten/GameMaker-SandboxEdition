@@ -7,11 +7,11 @@ import { newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map
 import { emptyMonster, type Monster } from '../../web/src/formats/monster';
 import { Pixels } from '../kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from './blockset';
-import { CLEAR, blob, microC, pool, speckle } from './draw';
-import { c, ramp as r } from './pal';
+import { CLEAR, blob, microC, pool, speckle } from './src/art/draw';
+import { c, ramp as r } from './src/art/pal';
 import { addItems, boards, clone, footlight, stageBoards, symbol, wallFace, wallTop, T, ITEMS, ITEM } from './tiles';
-import { figure, portrait, type Who } from './people';
-import { CTR } from './ids';
+import { figure, portrait, type Who } from './src/art/people';
+import { CTR } from './src/ids';
 
 export const SUSPECTS: Who[] = ['lila', 'edgar', 'agatha', 'felix', 'pike'];
 

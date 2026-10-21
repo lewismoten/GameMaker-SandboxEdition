@@ -2,7 +2,7 @@
 // question, every card on the board), and the accusation, with or without a wrong guess
 // first. check.ts runs it against the built disk; demo.ts records the start of it.
 import { Bot } from './bot';
-import { SCAN, CTR } from './ids';
+import { SCAN, CTR } from './src/ids';
 import { at } from './theatre';
 import { buildParlorBlocks, buildParlorMap, center, LINEUP, ROOM, SUSPECTS } from './parlor';
 

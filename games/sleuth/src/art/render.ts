@@ -1,9 +1,9 @@
 // Renders part of a map (blocks plus the monsters standing on it) into a picture, for
 // screens, the manual and design previews.
-import { orientIndex, type Block } from '../../web/src/formats/blocks';
-import type { GameMap } from '../../web/src/formats/map';
-import type { Monster } from '../../web/src/formats/monster';
-import { Pixels } from '../kit/pixels';
+import { orientIndex, type Block } from '../../../../web/src/formats/blocks';
+import type { GameMap } from '../../../../web/src/formats/map';
+import type { Monster } from '../../../../web/src/formats/monster';
+import { Pixels } from '../../../kit/pixels';
 
 export function renderRegion(map: GameMap, bg: Block[], mbl: Block[], mons: Monster[], x0: number, y0: number, w: number, h: number): Pixels {
   const p = new Pixels(w * 20, h * 20);

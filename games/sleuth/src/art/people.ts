@@ -1,7 +1,7 @@
 // The people of the case, painted at any size from the same description: head-and-
 // shoulders portraits for the interview rooms (40x40, four blocks), the answer screens
 // (big), the box and the suspect cards; and little 20x20 figures for the green room.
-import { Pixels } from '../kit/pixels';
+import { Pixels } from '../../../kit/pixels';
 import { CLEAR, blob, shadeAt } from './draw';
 import { c, ramp as r } from './pal';
 

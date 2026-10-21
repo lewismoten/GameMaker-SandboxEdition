@@ -3,7 +3,7 @@
 // stage (each new flagstone the lantern finds), a gasp at a scare, and a gong for a strike.
 import { newSoundSet, type SoundSet } from '../../web/src/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../kit/sound';
-import { SND } from './ids';
+import { SND } from './src/ids';
 
 const env = (attack: number, decay: number) => (t: number) => Math.min(1, t / attack) * Math.max(0, 1 - t) ** decay;
 

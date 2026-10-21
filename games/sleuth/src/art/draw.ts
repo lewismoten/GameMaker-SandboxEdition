@@ -1,7 +1,7 @@
 // Drawing helpers for blocks, sprites and screens: dithered shading, lumps, the PC's 8x8
 // font (scaled, outlined) and a 3x5 font small enough to letter a door plate on one block.
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { Pixels, dither, rng } from '../kit/pixels';
+import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { Pixels, dither, rng } from '../../../kit/pixels';
 
 export const CLEAR = 255;
 

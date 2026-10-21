@@ -4,9 +4,9 @@
 // Ada's lantern has been.
 import { Pixels, rng } from '../kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from './blockset';
-import { blob, micro, microC, pool, shadeAt, speckle } from './draw';
-import { c, ink, ramp as r } from './pal';
-import { CTR } from './ids';
+import { blob, micro, microC, pool, shadeAt, speckle } from './src/art/draw';
+import { c, ink, ramp as r } from './src/art/pal';
+import { CTR } from './src/ids';
 
 export const T = (fill = 0) => new Pixels(20, 20, fill);
 export const clone = (p: Pixels) => {
