@@ -124,6 +124,7 @@ export class Computer extends ComputerFolders {
   async run(ref: ProgramRef, _args: string[]): Promise<void> {
     this.busy = true;
     this.program = ref.kind;
+    this.opts.onProgram?.({ kind: ref.kind, drive: this.shell.drive });
     try {
       switch (ref.kind) {
         case "gm":
@@ -166,6 +167,7 @@ export class Computer extends ComputerFolders {
       this.busy = false;
       this.program = undefined;
       this.designer = undefined;
+      this.opts.onProgram?.(undefined);
       this.keys.resume();
       this.screen.resetPalette();
       this.setMode("text");

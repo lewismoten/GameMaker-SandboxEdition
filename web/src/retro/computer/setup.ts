@@ -14,6 +14,8 @@ export interface ComputerOptions {
   onDriveAccess?: (drive: string) => void;
   /** A game starts on the monitor (its files), or stops (undefined): the desk sets out its key card. */
   onGame?: (game?: { files: GameFiles; gam: string; title: string }) => void;
+  /** A program starts (Game-Maker, a game, the terminal…, and the drive it started on) or ends (undefined). */
+  onProgram?: (program?: { kind: string; drive: string }) => void;
   openModern: (projectId: string, file?: string) => void;
 }
 
