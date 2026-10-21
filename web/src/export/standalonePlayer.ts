@@ -4,6 +4,8 @@
 import { mountPlayer } from '../player/player';
 import { GameFiles } from '../project/files';
 import { decodeGame, fromBase64, GAME_ELEMENT_ID, toBase64, type SinglePageGame } from './singlePage';
+import { CREDIT } from './pageSeo';
+import './credit.css';
 
 const root = document.querySelector<HTMLElement>('#player')!;
 document.documentElement.style.cssText = 'height:100%;background:#000';
@@ -30,6 +32,21 @@ function writeSave(id: string, name: string, bytes: Uint8Array): void {
   }
 }
 
+/**
+ * "Made with Game-Maker: Sandbox Edition · source" in the corner while the start screen
+ * shows (gone while the game plays), linking to the site and its source code.
+ */
+function showCredit(): void {
+  const link = (href: string, text: string) => Object.assign(document.createElement('a'), { href, textContent: text, target: '_blank', rel: 'noopener' });
+  const credit = document.createElement('div');
+  credit.className = 'gm-made-with';
+  credit.append(link(CREDIT.site, CREDIT.text), ' · ', link(CREDIT.repo, 'source'));
+  document.body.append(credit);
+  const update = () => (credit.hidden = !root.querySelector('.gm-start'));
+  new MutationObserver(update).observe(root, { childList: true });
+  update();
+}
+
 async function main(): Promise<void> {
   root.textContent = 'Loading…';
   const el = document.getElementById(GAME_ELEMENT_ID);
@@ -45,11 +62,13 @@ async function main(): Promise<void> {
   const start = () =>
     mountPlayer(root, files, game.gam, {
       title: game.title,
+      notice: game.notice,
       onFileWrite: (name, bytes) => writeSave(game.id, name, bytes),
       onQuit: () => false, // "Quit" shows the game's menu again
       onExit: start,
     });
   start();
+  showCredit();
 }
 
 main().catch((e: Error) => {
