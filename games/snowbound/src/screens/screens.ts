@@ -4,7 +4,7 @@ import { encodeFli } from '../../../../web/src/formats/fli';
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, gradient, shadeAt } from '../art/draw';
-import { centered, micro, outlined, text, textWidth } from '../art/font';
+import { centered, micro, microWidth, outlined, text, textWidth } from '../art/font';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
 export type Spr = Map<string, Pixels>;
@@ -295,6 +295,57 @@ export function buildScreens(
     'LAVALE MALL BY NIGHT. WATCH OUT, PLOWS!',
   ]);
   save('news3.gif', n3);
+
+  // ---------------- the route card: the regular carrier's notes on every customer, left
+  // for the substitute (the founder sat in on the News-Tribune route 1992-94), on the desk
+  // next to the canvas bag and a rolled paper.
+  {
+    const p = new Pixels(W, H);
+    for (let y = 0; y < H; y++)
+      for (let x = 0; x < W; x++) p.set(x, y, shadeAt(pal.r('wood'), 1, 3, 0.55 + Math.sin(x / 9 + Math.sin(y / 23) * 3) * 0.25, x, y));
+    // the card, a little shadow under it
+    p.rect(16, 10, 292, 160, c('wood', 0));
+    p.rect(12, 6, 292, 160, c('paper', 4));
+    p.rect(12, 32, 292, 1, c('coat', 2));
+    for (let y = 42; y < 164; y += 9) p.rect(12, y, 292, 1, c('siding', 4));
+    text(p, 20, 10, 'ROUTE 12', c('newsink', 0));
+    micro(p, 20, 22, 'MINERAL DAILY NEWS-TRIBUNE', c('newsink', 1));
+    micro(p, 296 - microWidth('SUBSTITUTE: L. MOTEN'), 12, 'SUBSTITUTE: L. MOTEN', c('menublue', 1));
+    micro(p, 296 - microWidth('GALE ST & LEOTA ST'), 22, 'GALE ST & LEOTA ST', c('newsink', 1));
+    const notes: [string, string][] = [
+      ['GALE ST', ''],
+      ['BLUE HOUSE', 'BISCUIT CARRIES IT IN FOR THEM. ALREADY CHEWED.'],
+      ['YELLOW HOUSE', 'FOLDED, NOT ROLLED. DO NOT ASK WHY.'],
+      ['MRS. HAINES', 'PORCH, NOT THE BUSHES. TIPS $5 AT CHRISTMAS.'],
+      ['END HOUSE', 'READS THE COMICS FIRST. THEN COMPLAINS.'],
+      ['LEOTA ST', ''],
+      ['BLUE HOUSE', 'BY 7 AM. "7 MEANS 6:59."'],
+      ['YELLOW HOUSE', 'PAYS IN QUARTERS. (SAVE THEM FOR TIMEOUT.)'],
+      ['', ''],
+      ['NO PAPER', 'BIG PETE, BOWDEN DR. HE THROWS IT BACK.'],
+      ['SNOW DAY', 'PAPERS FIRST. THEN SHOVELS. - R.'],
+    ];
+    notes.forEach(([who, what], i) => {
+      const y = 36 + i * 9;
+      if (!what) micro(p, 20, y, who, c('coat', 1));
+      else {
+        micro(p, 26, y, who, c('newsink', 0));
+        micro(p, 82, y, what, c('menublue', 0));
+      }
+    });
+    // the founder's pencil: the math in the margin, and a check mark by every customer
+    micro(p, 26, 153, '$89 IS 89 SCOOPS, OR ONE PINK BOX. SAME THING.', c('newsink', 1));
+    p.rect(26, 159, 11, 1, c('coat', 2)).rect(26, 161, 11, 1, c('coat', 2));
+    for (const i of [1, 2, 3, 4, 6, 7]) p.line(296, 38 + i * 9, 298, 40 + i * 9, c('newsink', 1)).line(298, 40 + i * 9, 302, 34 + i * 9, c('newsink', 1));
+    // a rolled paper with a red rubber band, and the canvas carrier bag
+    p.rect(26, 176, 60, 14, c('paper', 4)).rect(26, 186, 60, 4, c('paper', 2)).rect(24, 176, 3, 14, c('paper', 1)).rect(85, 176, 3, 14, c('paper', 2));
+    for (let x = 32; x < 80; x += 6) p.rect(x, 180, 4, 1, c('newsink', 2));
+    p.rect(52, 175, 3, 16, c('coat', 3)).rect(55, 175, 1, 16, c('coat', 1));
+    p.rect(196, 168, 100, 30, c('orange', 2)).rect(196, 168, 100, 4, c('orange', 3)).rect(196, 194, 100, 4, c('orange', 0));
+    p.rect(206, 160, 6, 10, c('orange', 1)).rect(280, 160, 6, 10, c('orange', 1));
+    micro(p, 246 - Math.floor(microWidth('NEWS-TRIBUNE', 2) / 2), 177, 'NEWS-TRIBUNE', c('ink', 0), 2);
+    save('route.gif', p);
+  }
 
   // ---------------- the notepad behind text pages (instructions, credits, load/save)
   const pad = (heading: string) => {
