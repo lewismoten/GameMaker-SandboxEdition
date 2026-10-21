@@ -7,6 +7,7 @@ import './editor/shell/editor.css';
 import { h, clear, toast } from './editor/core/ui';
 import type { Workspace } from './editor/shell/workspace';
 import { watchForUpdates } from './devReload';
+import { registerServiceWorker } from './offline';
 import { EDITION, FORK_NOTE, PRODUCT, SHORT } from './edition';
 import './edition.css';
 
@@ -148,8 +149,6 @@ const startHash = location.hash;
 if (startHash !== '#/desk' && (startHash.startsWith('#/p/') || startHash === '#/help' || savedUi() === 'modern')) startModern();
 else void startDesk();
 
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  void navigator.serviceWorker.register('./sw.js').catch(() => undefined);
-}
+registerServiceWorker();
 
 watchForUpdates();
