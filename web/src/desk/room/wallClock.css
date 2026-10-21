@@ -8,9 +8,10 @@
   .desk.wide-wall .wall-clock {
     display: block;
     position: absolute;
-    left: -232px;
+    /* stage.ts sizes it to the wall beside the desk */
+    left: var(--clock-left, -232px);
     top: 40px;
-    width: 180px;
+    width: calc(180px * var(--clock-size, 1));
     filter: drop-shadow(5px 9px 8px rgba(0, 0, 0, 0.45));
   }
 
