@@ -6,10 +6,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { newCharInfo } from '../../web/src/engine/world';
 import { Bot } from './bot';
-import { buildCharacter } from './character';
+import { buildCharacter } from './src/characters/character';
 import { MON } from './src/ids';
-import { LEVELS, SETS } from './levels';
-import { buildMonsters } from './monsters';
+import { LEVELS, SETS } from './src/levels/levels';
+import { buildMonsters } from './src/characters/monsters';
 import { Sim } from './sim';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
 

@@ -1,7 +1,7 @@
 // DEMO.REC: what the title screen plays when nobody touches the keyboard: Dex sets out
 // across Hover Heights. Recorded by playing the level in the simulator (see verify.ts):
 // pairs of [ticks since the last key, PC scan code; +128 = released], ending with Esc.
-import { serializeRecording, type RecordedKey } from '../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
 
 export const DEMO: number[] = [
   1, 77, 12, 205, 0, 75, 16, 203, 0, 80, 8, 208, 0, 75, 4, 203, 0, 80, 12, 208, 0, 77, 8, 205, 0, 80, 8, 208, 0, 77, 12, 205, 0, 80, 20, 208, 0, 75, 4, 203, 0,

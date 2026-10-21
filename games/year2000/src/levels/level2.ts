@@ -3,8 +3,8 @@
 // Cross the lanes island by island (Frogger never had it this good), ride the pneumatic
 // tube, and catch the Teleport-A-Phone on the far platform to the Mega Mall.
 import { LevelMap, type Legend } from './mapkit';
-import type { BlockSet } from './src/blocks/book';
-import { MON } from './src/ids';
+import type { BlockSet } from '../blocks/book';
+import { MON } from '../ids';
 
 const LEGEND: Legend = {
   '~': 'clouds',

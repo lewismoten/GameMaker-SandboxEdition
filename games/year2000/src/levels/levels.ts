@@ -1,6 +1,6 @@
 // The six levels in order, with the files each scene loads and what its card says.
-import { citySet, moonSet, suburbSet } from './src/blocks/blocks';
-import type { BlockSet } from './src/blocks/book';
+import { citySet, moonSet, suburbSet } from '../blocks/blocks';
+import type { BlockSet } from '../blocks/book';
 import type { LevelMap } from './mapkit';
 import { level1 } from './level1';
 import { level2 } from './level2';
@@ -8,7 +8,7 @@ import { level3 } from './level3';
 import { level4 } from './level4';
 import { level5 } from './level5';
 import { level6 } from './level6';
-import { exchangeSong, fairSong, highwaySong, mallSong, moonSong, suburbSong } from './music';
+import { exchangeSong, fairSong, highwaySong, mallSong, moonSong, suburbSong } from '../../music';
 
 export const SETS = { suburb: suburbSet, city: citySet, moon: moonSet };
 

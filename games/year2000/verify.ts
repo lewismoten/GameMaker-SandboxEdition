@@ -3,11 +3,11 @@
 // from level to level like the real game does.
 //   cd web && npx vite-node ../games/year2000/verify.ts      (GOD=1 keeps the bot alive)
 import { newCharInfo } from '../../web/src/engine/world';
-import { buildCharacter } from './character';
+import { buildCharacter } from './src/characters/character';
 import { CTR, MON, PAGES_NEEDED, SEQ } from './src/ids';
-import { LEVELS, SETS } from './levels';
-import { DIALS } from './level4';
-import { buildMonsters } from './monsters';
+import { LEVELS, SETS } from './src/levels/levels';
+import { DIALS } from './src/levels/level4';
+import { buildMonsters } from './src/characters/monsters';
 import { Sim, type SimScene } from './sim';
 import { Bot } from './bot';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';

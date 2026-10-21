@@ -4,8 +4,8 @@
 // friendliest aliens you ever met. The Moon School airlock wants a Moon Pass, which is
 // waiting at the Visitor Center, up in meteor alley.
 import { LevelMap, type Legend } from './mapkit';
-import type { BlockSet } from './src/blocks/book';
-import { MON } from './src/ids';
+import type { BlockSet } from '../blocks/book';
+import { MON } from '../ids';
 
 const LEGEND: Legend = {
   '~': 'space',

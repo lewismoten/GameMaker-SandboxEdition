@@ -3,8 +3,8 @@
 // Zap him three times to calm him down, turn in 20 pages at the judges' table, hand
 // over the cover page, and step up to the podium.
 import { LevelMap, type Legend } from './mapkit';
-import type { BlockSet } from './src/blocks/book';
-import { MON } from './src/ids';
+import type { BlockSet } from '../blocks/book';
+import { MON } from '../ids';
 
 const LEGEND: Legend = {
   S: 'schoolTop',
