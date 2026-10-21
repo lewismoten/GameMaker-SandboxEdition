@@ -4,7 +4,7 @@
 // until the sound is turned on), or shows its first level; beside it are the title, who
 // made it, a few lines about it, and everything that can be done with it.
 import './homeShowcase.css';
-import { h, clear } from '../core/ui';
+import { h, clear, promptText, toast } from '../core/ui';
 import { demoDialogButton, demoInPicture, gameActions, type HomeGame, type GameKind } from './homeCards';
 import { healthBadge, healthNote } from './gameHealth';
 import { icon } from './homeIcons';
@@ -35,6 +35,18 @@ function whenIdleAndSeen(el: Element, f: () => void): void {
   const start = () => io.observe(el);
   if (document.readyState === 'complete') start();
   else addEventListener('load', start, { once: true });
+}
+
+/** Copies the address that shows `game` here (#/game/…). */
+async function copyLink(game: HomeGame): Promise<void> {
+  const url = `${location.origin}${location.pathname}#/game/${game.key}`;
+  try {
+    await navigator.clipboard.writeText(url);
+    toast(`Link to ${game.title} copied.`);
+  } catch {
+    // no clipboard (an insecure page, or refused): show it to copy by hand
+    await promptText('Link to this game', 'Copy this link', url);
+  }
 }
 
 export interface Showcase {
@@ -79,6 +91,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       how.featured ? h('span', { class: 'sc-featured', title: 'Picked at random' }, '★ Featured') : null,
       how.resume ? h('span', { class: 'sc-resume' }, 'Continue where you left off') : null,
       how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, icon('dice'), 'Another') : null,
+      // a finished game has an address of its own to share (yours live only in this browser)
+      game.entry ? h('button', { class: 'sc-another sc-link', onclick: () => void copyLink(game), title: 'Copy a link that opens this page on this game' }, icon('link'), 'Copy link') : null,
     );
     title.textContent = game.title;
     byline.textContent = game.byline;
