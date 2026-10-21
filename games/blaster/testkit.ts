@@ -3,7 +3,7 @@ import { DRIFT } from './src/ids';
 import { buildPalette } from './src/art/pal';
 import { buildShip, shipBlocks } from './src/characters/ship';
 import { Sim } from './sim';
-import { buildLeg, startOf, type Leg } from './stage';
+import { buildLeg, startOf, type Leg } from './src/stages/stage';
 
 export function simOf(l: Leg, seed = 1): Sim {
   const cb = shipBlocks(buildPalette('board'));

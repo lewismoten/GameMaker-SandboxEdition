@@ -1,11 +1,11 @@
 // Stage 4: THE HARD DISK. Leg A "The Platter" spins under the ship (rows of data streams
 // that shove it left and right); leg B "Bad Sectors" crawls with virus. Then the Head Crash.
-import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from './src/characters/enemies';
+import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
-import { buildPalette } from './src/art/pal';
-import { diskArt, diskTiles, diskVirus } from './src/blocks/disk4';
+import { buildPalette } from '../art/pal';
+import { diskArt, diskTiles, diskVirus } from '../blocks/disk4';
 import { kit, type Stage } from './stage';
-import { bossCrash } from './boss4';
+import { bossCrash } from '../../boss4';
 
 function virus4(b: Parameters<typeof diskVirus>[0], p: Parameters<typeof diskVirus>[1]): void {
   diskVirus(b, p);

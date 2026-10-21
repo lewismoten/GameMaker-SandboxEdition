@@ -1,11 +1,11 @@
 // Stage 5: THE CPU. Leg A "The Pipeline" throws everything the virus has learned; leg B
 // "The Core" is the last run before GLITCH itself.
-import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from './src/characters/enemies';
+import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
-import { buildPalette } from './src/art/pal';
-import { cpuArt, cpuTiles, cpuVirus } from './src/blocks/cpu5';
+import { buildPalette } from '../art/pal';
+import { cpuArt, cpuTiles, cpuVirus } from '../blocks/cpu5';
 import { kit, type Stage } from './stage';
-import { bossGlitch } from './boss5';
+import { bossGlitch } from '../../boss5';
 
 function virus5(b: Parameters<typeof cpuVirus>[0], p: Parameters<typeof cpuVirus>[1]): void {
   cpuVirus(b, p);

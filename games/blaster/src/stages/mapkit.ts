@@ -2,11 +2,11 @@
 // screen: horizontal scrolling is off) running from the launch pad near the bottom of the
 // map to the gate near the top. Positions are (column 0..15, distance in rows from the
 // launch pad). A boss arena is one fixed screen, positioned (column, row 0..9).
-import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../web/src/formats/map';
-import { rng } from '../kit/pixels';
-import type { BlockSet } from './src/art/draw';
-import type { Bestiary } from './src/characters/mons';
-import type { StageArt } from './src/blocks/tiles';
+import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { rng } from '../../../kit/pixels';
+import type { BlockSet } from '../art/draw';
+import type { Bestiary } from '../characters/mons';
+import type { StageArt } from '../blocks/tiles';
 
 export const X0 = 2;
 export const START_ROW = 94;

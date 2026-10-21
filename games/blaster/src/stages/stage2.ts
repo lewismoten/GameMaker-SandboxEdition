@@ -1,12 +1,12 @@
 // Stage 2: MEMORY LANE. Leg A "The Address Bus" brings the data streams (gravity blocks
 // that shove the ship sideways) and the slugs that never stop coming; leg B "The Cache"
 // runs between rows of chips. Then the Memory Leech.
-import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from './src/characters/enemies';
+import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
-import { buildPalette } from './src/art/pal';
-import { ramArt, ramTiles, ramVirus } from './src/blocks/ram';
+import { buildPalette } from '../art/pal';
+import { ramArt, ramTiles, ramVirus } from '../blocks/ram';
 import { kit, type Stage } from './stage';
-import { bossLeech } from './boss2';
+import { bossLeech } from '../../boss2';
 
 function virus2(b: Parameters<typeof ramVirus>[0], p: Parameters<typeof ramVirus>[1]): void {
   ramVirus(b, p);

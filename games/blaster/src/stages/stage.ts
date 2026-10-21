@@ -1,14 +1,14 @@
 // What a stage is made of: a palette, its blocks and virus for the two scrolling legs, its
 // boss arena (with its own block and monster sets), and the maps.
-import type { Block } from '../../web/src/formats/blocks';
-import type { GameMap } from '../../web/src/formats/map';
-import type { Monster } from '../../web/src/formats/monster';
-import { BlockSet } from './src/art/draw';
-import { addCommon } from './src/characters/sharedMonsters';
+import type { Block } from '../../../../web/src/formats/blocks';
+import type { GameMap } from '../../../../web/src/formats/map';
+import type { Monster } from '../../../../web/src/formats/monster';
+import { BlockSet } from '../art/draw';
+import { addCommon } from '../characters/sharedMonsters';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';
-import { Bestiary } from './src/characters/mons';
-import type { Pal, Theme } from './src/art/pal';
-import { addStageTiles, type StageArt, type TileOpts } from './src/blocks/tiles';
+import { Bestiary } from '../characters/mons';
+import type { Pal, Theme } from '../art/pal';
+import { addStageTiles, type StageArt, type TileOpts } from '../blocks/tiles';
 
 export interface Kit {
   bs: BlockSet;
