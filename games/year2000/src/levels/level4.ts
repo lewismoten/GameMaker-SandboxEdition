@@ -34,7 +34,8 @@ export const DIALS: [string, string][] = [
 
 const door = (mark: string) => ({ tile: 'booth_door', mark });
 
-// The exchange hall: switchboards, operators, and four numbered booths (4 is out of order).
+// The exchange hall: switchboards, operators, four numbered booths (4 is out of order), and
+// the antique corner: a teleprinter that types a tip, and a 1916 crank phone to ring.
 const HALL = [
   'XXXXXXXXXXXXXXXXXXXXXXXX',
   'XWWWWWWWWWWWWWWWWWWWWWWX',
@@ -44,8 +45,8 @@ const HALL = [
   'X......................X',
   'X..q..T.........T......X',
   'X......................X',
-  'X....W.....*......W....X',
-  'X....W...z........W..q.X',
+  'X...()......*....SSS...X',
+  'X...YY...z........K..q.X',
   'X......................X',
   'X..T.........q.....T...X',
   'X......................X',
@@ -57,6 +58,12 @@ const HALL_LEGEND: Legend = {
   ...BASE,
   '.': 'marble',
   W: 'switchboard',
+  // Restoring the Signal: the teleprinter's paper and cabinet, the crank phone and its plaque.
+  '(': 'ttyL0',
+  ')': 'ttyR0',
+  Y: { big: 'ttyBody', w: 2, h: 1 },
+  K: 'crank',
+  S: { big: 'plaque', w: 3, h: 1 },
   a: door('hall1'),
   b: door('hall2'),
   c: door('hall3'),

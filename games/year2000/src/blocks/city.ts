@@ -12,6 +12,7 @@ import { C } from '../art/pal';
 import { neonSign, rocket } from '../art/bigart';
 import { R, addBig, addBooths, addFloors, addItems, addLasers, addWalkways, blank, on, staffDoor, type Floor } from './shared';
 import { mowerDock, pool } from './suburb';
+import { addSignal } from './signal';
 
 // Mall pieces.
 function mallWall(top: boolean): Pixels {
@@ -341,5 +342,6 @@ export function citySet(): BlockSet {
   s.add('launchsign', launchSign(), { solid: SOLID });
   s.add('board', boardRamp());
   for (const n of [1, 2, 3, 4]) s.add(`num${n}`, numberSign(n), { solid: SOLID });
+  addSignal(s);
   return s;
 }
