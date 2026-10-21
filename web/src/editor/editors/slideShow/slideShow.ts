@@ -149,8 +149,15 @@ registerEditor(['lst'], (host, project, file) => {
   let playFrom = 0;
   const preview = gamePreview(project, file, {
     className: 'sl-preview',
-    label: '▶ Play the show',
-    hint: 'A key or a click moves on; Esc ends the show.',
+    // the transport's Play button starts and stops the show
+    button: false,
+    onRunning: (on) => {
+      playBtn.textContent = on ? '■ Stop' : '▶ Play the show';
+      playBtn.title = on ? 'Stop the show' : 'Play the show from the first slide';
+      playBtn.classList.toggle('playing', on);
+      playHint.hidden = !on;
+      length.hidden = on;
+    },
     run: async (m, pal) => {
       const cols = new Uint8Array(PALETTE_SIZE);
       for (let i = playFrom; i < entries.length; i++) {
@@ -169,6 +176,8 @@ registerEditor(['lst'], (host, project, file) => {
     if (preview.running()) return;
     screenCanvas(stillOf(selected), 'pixel', preview.canvas);
   };
+  const playBtn = h('button', { class: 'primary', onclick: () => (preview.running() ? preview.stop() : play(0)) }, '▶ Play the show');
+  const playHint = h('span', { class: 'sl-length', hidden: true }, 'A key or a click moves on; Esc ends the show.');
   const play = (from: number) => {
     playFrom = Math.max(0, Math.min(from, entries.length - 1));
     preview.play();
@@ -742,9 +751,9 @@ registerEditor(['lst'], (host, project, file) => {
     h(
       'div',
       { class: 'sl-transport' },
-      h('button', { class: 'primary', onclick: () => play(0) }, '▶ Play from the start'),
-      h('button', { onclick: () => play(selected) }, '▶ From the selected slide'),
+      playBtn,
       length,
+      playHint,
       h('span', { class: 'spacer' }),
       undoBtn,
       redoBtn,

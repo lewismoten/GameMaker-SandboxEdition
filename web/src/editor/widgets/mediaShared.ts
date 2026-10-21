@@ -23,6 +23,10 @@ export interface PreviewOptions {
   hint?: string;
   /** The screen shows only while the preview runs (for editors that already show the picture). */
   collapsed?: boolean;
+  /** False: no Play button or hint above the screen, for editors with play buttons of their own (see onRunning). */
+  button?: boolean;
+  /** Called when the preview starts or stops, so an editor's own play button can show Stop. */
+  onRunning?: (on: boolean) => void;
 }
 
 export interface GamePreview {
@@ -45,6 +49,7 @@ export function gamePreview(project: Project, file: string, opts: PreviewOptions
   const button = h('button', { class: 'primary' }, label);
   const hint = h('span', { class: 'meta' }, opts.hint ?? 'Press a key or click the screen to move on. Esc skips the rest.');
   const setRunning = (on: boolean) => {
+    opts.onRunning?.(on);
     button.textContent = on ? '■ Stop' : label;
     button.classList.toggle('primary', !on);
     if (opts.collapsed) {
@@ -93,7 +98,7 @@ export function gamePreview(project: Project, file: string, opts: PreviewOptions
   const el = h(
     'div',
     { class: `stack game-preview ${opts.className ?? ''}` },
-    h('div', { class: 'toolbar' }, button, hint),
+    opts.button === false ? null : h('div', { class: 'toolbar' }, button, hint),
     canvas,
   );
   if (opts.collapsed) setRunning(false);
