@@ -31,6 +31,7 @@ export async function helpScreen(m: Machine, w: World, instructions: string | un
   const blue = match(w.palette, RGB_BLUE);
   // gmhelp.txt is Game-Maker's general help (left out of TRANSFER builds); the game's
   // own instructions follow.
+  await m.need('gmhelp.txt');
   if (m.files.has('gmhelp.txt')) {
     frame2(m, blue);
     await displayFile(m, 'gmhelp.txt', yellow, 30, w.palette);

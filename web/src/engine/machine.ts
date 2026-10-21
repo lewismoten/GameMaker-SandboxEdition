@@ -77,6 +77,34 @@ export class Machine {
     w.forEach((f) => f());
   }
 
+  /** Told when the game waits for files still on their way (true) and when they are in. */
+  onLoading?: (loading: boolean) => void;
+
+  /**
+   * Waits for game files still on their way from the site (a hosted game starts before
+   * all its files are in, project/streamGame.ts); a short wait shows no cue. Names the
+   * game doesn't have, or that are in already, return at once.
+   */
+  async need(...names: (string | undefined)[]): Promise<void> {
+    const wait = this.files.stream?.need(names.filter((n): n is string => !!n));
+    if (!wait) return;
+    const cue = setTimeout(() => this.onLoading?.(true), 150);
+    try {
+      await wait;
+    } finally {
+      clearTimeout(cue);
+      this.onLoading?.(false);
+    }
+    // the time spent loading was no GetKey polling on the DOS PC (demo playback)
+    this.polledAt = performance.now();
+    this.checkAbort();
+  }
+
+  /** Fetches these game files next, if they are still on their way, without waiting. */
+  want(...names: (string | undefined)[]): void {
+    this.files.stream?.want(names.filter((n): n is string => !!n));
+  }
+
   checkAbort(): void {
     if (this.aborted) throw new GameAborted();
   }

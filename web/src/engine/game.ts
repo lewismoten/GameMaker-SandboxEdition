@@ -71,7 +71,9 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors });
 
-  // Title
+  // Title (a hosted game may still be loading: m.need waits for files on their way)
+  m.want(file(0, 0), file(0, 2), file(0, 3));
+  await m.need(file(0, 1));
   await m.audio.playSong(m.files.get(file(0, 1) ?? ''));
   if (file(0, 0)) await show(file(0, 0)!);
 
@@ -87,7 +89,10 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     return;
   }
 
-  const menuSong = () => m.audio.playSong(m.files.get(file(0, 3) ?? ''));
+  const menuSong = async () => {
+    await m.need(file(0, 3));
+    await m.audio.playSong(m.files.get(file(0, 3) ?? ''));
+  };
   await menuSong();
   let choice = 1;
   let menuScreen: { pixels: Uint8Array; palette: Uint8Array } | undefined;
@@ -127,6 +132,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
         break;
       case 3:
         restoreMenu();
+        await m.need(file(0, 5));
         await m.audio.playSong(m.files.get(file(0, 5) ?? ''));
         if (file(0, 4)) await show(file(0, 4)!);
         else {
@@ -148,6 +154,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
         await showHighScores(m, s.gameName, s.colors, -1);
         break;
       case 7: // idle on the menu: run the demo recording
+        await m.need(file(0, 11));
         if (file(0, 11) && s.rec.initPlayback(m.files.get(file(0, 11)!))) {
           menuScreen = undefined;
           m.audio.stopSong();
@@ -227,10 +234,12 @@ async function play(s: Session, startLink: number): Promise<void> {
 
   s.rec.pause();
   if (curscene === 1) {
+    await m.need(file(1, 1));
     await m.audio.playSong(m.files.get(file(1, 1) ?? ''));
     if (file(1, 0)) await showGraphic(m, file(1, 0)!, { gamePalette: s.colors });
   }
   if (curlink === MAXSCENELINKS + 2) {
+    await m.need(file(1, 3));
     await m.audio.playSong(m.files.get(file(1, 3) ?? ''));
     if (file(1, 2)) await showGraphic(m, file(1, 2)!, { gamePalette: s.colors });
   }

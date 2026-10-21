@@ -137,6 +137,7 @@ export function readHighScores(m: Machine, gamename: string): HighScore[] {
 
 /** ShowHighScores (HISCOREL.C): the table rows get closer together further down. */
 export async function showHighScores(m: Machine, gamename: string, colors: Uint8Array, score = -1): Promise<void> {
+  await m.need(highScoreFile(gamename));
   const top = readHighScores(m, gamename);
   const red = match(colors, RGB_RED);
   const blue = match(colors, RGB_BLUE);
@@ -158,6 +159,7 @@ export async function showHighScores(m: Machine, gamename: string, colors: Uint8
 
 /** CheckHighScores: asks for a name when the score makes the top ten; returns the 1-based place or 0. */
 export async function checkHighScores(m: Machine, gamename: string, colors: Uint8Array, score: number): Promise<number> {
+  await m.need(highScoreFile(gamename));
   const top = readHighScores(m, gamename);
   const place = placeFor(top, score);
   let result = 0;

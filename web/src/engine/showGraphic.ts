@@ -30,6 +30,11 @@ export interface GraphicOptions {
 
 /** Returns false when the player pressed Esc (which aborts slide shows). */
 export async function showGraphic(m: Machine, file: string, opts: GraphicOptions): Promise<boolean> {
+  await m.need(file);
+  if (ext(file) === '.bkd') {
+    const bkd = m.files.get(file);
+    if (bkd) await m.need(parseBackdrop(bkd).gif);
+  }
   // ShowGraphic's pictures, animations and text pages read keys through GetKey, which
   // kept a demo's recorder running (see Machine.keyPoll).
   return m.waiting(() => showGraphicNow(m, file, opts));
