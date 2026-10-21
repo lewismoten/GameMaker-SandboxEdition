@@ -19,10 +19,10 @@
   "items": [
     {
       "kind": "map",
-      "title": "Map of Dowden Additions",
+      "title": "Map of Fort Ashby",
       "note": "Printed map for registered players",
       "promised": true,
-      "heading": "DOWDEN ADDITIONS & LAVALE MALL",
+      "heading": "FORT ASHBY & LAVALE MALL",
       "intro": "Every street from home to the register, with the best-paying driveways marked. Distances not to scale. Mailboxes not included.",
       "panels": [
         {
@@ -310,7 +310,7 @@
       "date": "1995",
       "to": "Dear registered player,",
       "style": "type",
-      "body": "<p>Thank you for registering SNOWBOUND. You helped a kid with a shovel buy a pink box, and that pink box made this game.</p><p>As promised, your printed map of Dowden Additions is in this box, along with the hint book and a few things from the founder's coffee can.</p><p><b>SNOWBOUND II: Spring Thaw</b> is next: mud season, a lawn mower, and a used 486 at the flea market. Watch The Sandbox Scoop and the BBS for news.</p><p>We promise to keep making games.</p>",
+      "body": "<p>Thank you for registering SNOWBOUND. You helped a kid with a shovel buy a pink box, and that pink box made this game.</p><p>As promised, your printed map of Fort Ashby is in this box, along with the hint book and a few things from the founder's coffee can.</p><p><b>SNOWBOUND II: Spring Thaw</b> is next: mud season, a lawn mower, and a used 486 at the flea market. Watch The Sandbox Scoop and the BBS for news.</p><p>We promise to keep making games.</p>",
       "signature": "The Sandbox crew"
     }
   ],
@@ -393,7 +393,7 @@
   "news": [
     {
       "head": "SNOWBOUND II: Spring Thaw",
-      "html": "<p>The snow is melting in Dowden Additions, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>",
+      "html": "<p>The snow is melting in Fort Ashby, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>",
       "everywhere": true
     }
   ]
