@@ -226,11 +226,11 @@ const paint = (c: Ctx, w: number, h: number): void => {
   ])
     (ell(c, bx, by, rx, ry), fill(c, rad(c, bx - 4, by - 4, rx + 6, [[0, '#ffd0f0'], [1, '#ff5aa8']])));
   citicar(c, 440, 520, 1.15);
-  docLeo(c, 150, 600, 0.95);
+  docLeo(c, 150, 584, 0.95);
   // Gwin dashing off with the costume suitcase
-  dog(c, 480, 600, 0.55, GWIN);
+  dog(c, 480, 574, 0.55, GWIN);
   c.save();
-  c.translate(480 + 112 * 0.55, 600 - 140 * 0.55);
+  c.translate(480 + 112 * 0.55, 574 - 140 * 0.55);
   c.rotate(0.15);
   poly(c, [-16, -4, 30, -4, 30, 26, -16, 26]);
   fill(c, lin(c, 0, -4, 0, 26, [
@@ -240,7 +240,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
   stroke(c, '#3a1a06', 3, [0, -4, 4, -12, 12, -12, 16, -4]);
   stroke(c, '#ffd23c', 3, [-16, 8, 30, 8]);
   c.restore();
-  dog(c, 290, 640, 1.18, TEDDY);
+  dog(c, 290, 604, 1.12, TEDDY);
   // flying confetti
   for (let i = 0; i < 40; i++) {
     c.fillStyle = ['#d9381e', '#ffd23c', '#1d5fb8', '#1e9a5a', '#ff5aa8'][i % 5];
