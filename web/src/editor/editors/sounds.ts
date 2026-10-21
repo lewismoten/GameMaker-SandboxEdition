@@ -22,10 +22,18 @@ registerEditor(['snd'], (host, project, file) => {
   const list = h('div', { class: 'stack', style: 'flex:0 0 230px' });
   const detail = h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' });
 
-  const play = async (i: number) => {
-    await audio.resume();
+  const vocOf = (i: number) => {
     const name = snd.digital[i];
-    if (name && name[0] !== ' ' && project.files.has(`${name}.voc`)) audio.playVoc(project.files.get(`${name}.voc`));
+    return name && name[0] !== ' ' && project.files.has(`${name}.voc`) ? `${name}.voc` : undefined;
+  };
+  // A slot is silent when it has neither a .voc file nor any PC speaker step.
+  const hasAudio = (i: number) => !!vocOf(i) || snd.freqs[i].some((v) => v > 0);
+
+  const play = async (i: number) => {
+    if (!hasAudio(i)) return;
+    await audio.resume();
+    const voc = vocOf(i);
+    if (voc) audio.playVoc(project.files.get(voc));
     else audio.playSpeaker(snd.freqs[i]);
   };
 
@@ -36,8 +44,21 @@ registerEditor(['snd'], (host, project, file) => {
         h(
           'div',
           { class: 'row', style: 'gap:4px;flex-wrap:nowrap' },
-          h('button', { class: i === current ? 'primary' : '', style: 'flex:1;text-align:left', onclick: () => ((current = i), render()) }, `${i}. ${SOUND_NAMES[i] ?? 'Effect'}${snd.digital[i] ? ' 🔊' : ''}`),
-          h('button', { title: 'Play', 'aria-label': `Play effect ${i}`, onclick: () => void play(i) }, '▶'),
+          h(
+            'button',
+            { class: i === current ? 'primary' : '', style: 'flex:1;text-align:left', onclick: () => ((current = i), render()) },
+            `${i}. ${SOUND_NAMES[i] ?? 'Effect'}${snd.digital[i] ? ' 🔊' : ''}`,
+          ),
+          h(
+            'button',
+            {
+              title: hasAudio(i) ? 'Play' : 'No sound yet: no PC speaker steps and no .voc file',
+              'aria-label': `Play effect ${i}`,
+              disabled: !hasAudio(i),
+              onclick: () => void play(i),
+            },
+            '▶',
+          ),
         ),
       ),
     );
@@ -45,9 +66,19 @@ registerEditor(['snd'], (host, project, file) => {
 
   function renderDetail(): void {
     const f = snd.freqs[current];
+    const playBtn = h('button', { class: 'primary', onclick: () => void play(current) }, '▶ Play');
+    const renderPlay = () => {
+      playBtn.disabled = !hasAudio(current);
+      playBtn.title = playBtn.disabled ? 'Nothing to play yet: draw some PC speaker steps or pick a .voc file' : '';
+    };
+    renderPlay();
     const W = 36 * 14;
     const H = 220;
-    const canvas = h('canvas', { width: W, height: H, style: 'width:100%;max-width:504px;border:1px solid var(--border);border-radius:6px;background:#000;touch-action:none;cursor:crosshair' });
+    const canvas = h('canvas', {
+      width: W,
+      height: H,
+      style: 'width:100%;max-width:504px;border:1px solid var(--border);border-radius:6px;background:#000;touch-action:none;cursor:crosshair',
+    });
     const ctx = canvas.getContext('2d')!;
     const draw = () => {
       ctx.fillStyle = '#000';
@@ -81,7 +112,7 @@ registerEditor(['snd'], (host, project, file) => {
       setAt(e);
     });
     canvas.addEventListener('pointermove', (e) => canvas.hasPointerCapture(e.pointerId) && setAt(e));
-    canvas.addEventListener('pointerup', () => renderList());
+    canvas.addEventListener('pointerup', () => (renderList(), renderPlay()));
     draw();
 
     const digital = snd.digital[current];
@@ -89,6 +120,7 @@ registerEditor(['snd'], (host, project, file) => {
       for (let i = 0; i < NUMFREQ; i++) f[i] = Math.max(0, Math.min(MAXF, Math.round(fn(i))));
       save();
       renderDetail();
+      renderList();
     };
     // Sets the whole sound, plays it and redraws.
     const apply = (next: ArrayLike<number>) => {
@@ -100,7 +132,12 @@ registerEditor(['snd'], (host, project, file) => {
     };
     clear(
       detail,
-      h('div', { class: 'panel stack' }, h('h3', { style: 'margin:0' }, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`), h('p', { class: 'hint', style: 'margin:0' }, current < SOUND_NAMES.length ? 'Played automatically by the game.' : 'Use it from a character sequence.')),
+      h(
+        'div',
+        { class: 'panel stack' },
+        h('h3', { style: 'margin:0' }, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`),
+        h('p', { class: 'hint', style: 'margin:0' }, current < SOUND_NAMES.length ? 'Played automatically by the game.' : 'Use it from a character sequence.'),
+      ),
       h(
         'div',
         { class: 'panel stack' },
@@ -117,7 +154,7 @@ registerEditor(['snd'], (host, project, file) => {
           },
           { noneLabel: ['PC speaker only', 'play the PC speaker sound below'] },
         ),
-        h('div', { class: 'toolbar' }, h('button', { class: 'primary', onclick: () => void play(current) }, '▶ Play')),
+        h('div', { class: 'toolbar' }, playBtn),
       ),
       h(
         'div',
@@ -152,7 +189,23 @@ registerEditor(['snd'], (host, project, file) => {
           ...TRANSFORMS.map((t) => h('button', { title: t.title, onclick: () => apply(t.run(Uint16Array.from(f))) }, t.name)),
           h('button', { onclick: () => shape(() => 0), title: 'Clear every step' }, 'Silence'),
         ),
-        h('details', null, h('summary', null, 'Exact values (Hz)'), h('div', { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(80px,1fr))' }, ...Array.from(f).map((_, i) => numberField(`${i + 1}`, () => f[i], (v) => ((f[i] = v), save(), draw()), { min: 0, max: MAXF })))),
+        h(
+          'details',
+          null,
+          h('summary', null, 'Exact values (Hz)'),
+          h(
+            'div',
+            { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(80px,1fr))' },
+            ...Array.from(f).map((_, i) =>
+              numberField(
+                `${i + 1}`,
+                () => f[i],
+                (v) => ((f[i] = v), save(), draw(), renderList(), renderPlay()),
+                { min: 0, max: MAXF },
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -162,7 +215,15 @@ registerEditor(['snd'], (host, project, file) => {
     renderDetail();
   }
 
-  clear(host, h('p', { class: 'hint' }, `A sound set holds ${LASTSND} effects. The first nine are played by the game itself; the rest can be attached to character sequences.`), h('div', { class: 'row' }, list, detail));
+  clear(
+    host,
+    h(
+      'p',
+      { class: 'hint' },
+      `A sound set holds ${LASTSND} effects. The first nine are played by the game itself; the rest can be attached to character sequences.`,
+    ),
+    h('div', { class: 'row' }, list, detail),
+  );
   render();
   return () => audio.stopAll();
 });
