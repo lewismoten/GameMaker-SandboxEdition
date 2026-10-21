@@ -430,7 +430,7 @@
   grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: 8px;
   /* fills what is left of the window, so the page itself doesn't scroll */
-  max-height: clamp(110px, calc(100dvh - 685px), 340px);
+  max-height: clamp(110px, calc(100dvh - 705px), 340px);
   overflow-y: auto;
 }
 .sl-media {

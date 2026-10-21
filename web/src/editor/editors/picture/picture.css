@@ -22,8 +22,9 @@
   .pic-layout .pic-copy {
     margin-top: 0;
   }
+  /* the blocks to replace take what the window has left, scrolling by themselves */
   .pic-layout .pic-slots {
-    max-height: 220px;
+    max-height: clamp(96px, calc(100dvh - 705px), 220px);
   }
 }
 .pic-copy {
