@@ -1,6 +1,6 @@
 // "Screenshots" for the Game-Maker box on the desk, drawn from the free sample games'
 // real maps: the area where each game's first level starts.
-import { GameFiles, cdName, type CatalogEntry } from '../../project/files';
+import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
 import { parseGame, NOSCENE, type Point } from '../../formats/game';
 import { levelShot } from '../../editor/editors/integrator/integratorArt';
 import { parseMap, MLEN, MWID } from '../../formats/map';
@@ -10,11 +10,8 @@ import { parsePalette } from '../../formats/palette';
 import { paintIndexed } from '../../editor/core/draw';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
-  // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names)
-  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
-  if (!n) return undefined;
-  const r = await fetch(`./${entry.path}${n}`).catch(() => undefined);
-  return r?.ok ? new Uint8Array(await r.arrayBuffer()) : undefined;
+  // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names); fetched once, shared
+  return fetchGameFile(entry, name);
 }
 
 /** How interesting a picture is: plenty of colors, and not one color filling it. */
