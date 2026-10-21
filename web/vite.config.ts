@@ -15,15 +15,16 @@ function publicFiles(): string[] {
   return readdirSync(publicDir).filter((f) => statSync(resolve(publicDir, f)).isFile());
 }
 
-/** Game folders are cached when a game is first played, not at install. */
-const precacheable = (f: string) => f !== 'sw.js' && f !== 'og-image.png' && (!f.startsWith('games/') || f === 'games/index.json');
-
 type Bundle = Rollup.OutputBundle;
 
-/** play.html plus every chunk, stylesheet and asset reachable from it. */
-function playerGraph(bundle: Bundle): string[] {
-  const out = new Set<string>(['play.html']);
-  const html = bundle['play.html'];
+/**
+ * A page plus every chunk, stylesheet and asset reachable from it. With `lazy` false only
+ * what the page loads up front (static imports): not the chunks it imports on demand, nor
+ * files a chunk merely names (such as the audio worklet).
+ */
+function pageGraph(bundle: Bundle, page: string, lazy = true): string[] {
+  const out = new Set<string>([page]);
+  const html = bundle[page];
   const queue: string[] = [];
   const mention = (text: string) => {
     for (const f of Object.keys(bundle)) if (!out.has(f) && f.startsWith('assets/') && text.includes(f.slice('assets/'.length))) queue.push(f);
@@ -35,18 +36,32 @@ function playerGraph(bundle: Bundle): string[] {
     out.add(f);
     const item = bundle[f];
     if (item?.type === 'chunk') {
-      queue.push(...item.imports, ...item.dynamicImports);
+      queue.push(...item.imports);
+      if (lazy) queue.push(...item.dynamicImports);
       const meta = (item as unknown as { viteMetadata?: { importedCss: Set<string>; importedAssets: Set<string> } }).viteMetadata;
       if (meta) queue.push(...meta.importedCss, ...meta.importedAssets);
-      mention(item.code); // e.g. the audio worklet, referenced by URL
+      if (lazy) mention(item.code); // e.g. the audio worklet, referenced by URL
     } else if (item?.type === 'asset' && f.endsWith('.css')) mention(String(item.source));
   }
   return [...out].sort();
 }
 
+/** play.html plus everything it can load: what an exported game web app needs. */
+const playerGraph = (bundle: Bundle) => pageGraph(bundle, 'play.html');
+
+/** The app shell, cached at install: the two pages and what they load up front, the icons and manifest. */
+function appShell(bundle: Bundle): string[] {
+  const icons = publicFiles().filter((f) => /^(icon|apple-touch-icon).*\.(png|svg)$|\.webmanifest$/.test(f));
+  return [...new Set(['./', ...pageGraph(bundle, 'index.html', false), ...pageGraph(bundle, 'play.html', false), ...icons])];
+}
+
 /**
- * Emits sw.js for offline use of the whole site, and player-files.json: the files
- * the exporter copies to build a stand-alone game web app.
+ * Emits sw.js, and player-files.json: the files the exporter copies to build a
+ * stand-alone game web app.
+ *
+ * The service worker installs only the app shell, so a first visit downloads nothing it
+ * does not show. Everything else (the desk or today's web, the editors, games, the guide)
+ * is cached the first time it is used and works offline from then on.
  */
 function offline(): Plugin {
   return {
@@ -55,7 +70,7 @@ function offline(): Plugin {
     enforce: 'post', // after Vite's HTML plugin has emitted the pages
     generateBundle(_options, bundle) {
       const built = Object.keys(bundle);
-      const precache = [...new Set(['./', ...built, ...publicFiles()])].filter(precacheable);
+      const precache = appShell(bundle);
       const version = hashText(built.sort().join('|'));
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: serviceWorkerSource(version, precache) });
       const player = playerGraph(bundle);
