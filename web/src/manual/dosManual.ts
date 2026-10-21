@@ -3,6 +3,7 @@
 // of the original documentation, with specifications from GM_SPECS.TXT.
 import { openBooklet, type BookletPage } from './booklet';
 import * as fig from './figures';
+import { sandboxShots, type GameShot } from '../desk/gmShots';
 
 const TITLE = 'Game-Maker 3.0 Owner\u2019s Guide';
 
@@ -18,7 +19,28 @@ function figure(draw: Parameters<typeof fig.shot>[0], caption: string, rows?: [n
 
 const page = (chapter: string, html: string): BookletPage => ({ head: [TITLE, chapter], body: div(html) });
 
-function pages(): BookletPage[] {
+/** What each Sandbox Software game shows a designer, for its figure's caption. */
+const GAME_NOTES: Record<string, string> = {
+  maximus: 'Maximus: The Hundred Worlds. A hundred small maps linked by doors.',
+  teddy: 'Teddy\u2019s Little Big Adventure. A two-block hero with twenty animations.',
+  year2000: 'In The Year 2000! Blocks that move the character along like conveyors.',
+  snowbound: 'Snowbound: The $89 Shovel. Monsters on paths drive the traffic.',
+  sandcast: 'Sandcastle Knight. Gravity blocks, and objects to pick up and put down.',
+  blaster: 'Virus Blaster. Shots, explosions and monsters born from other monsters.',
+  logic: 'Ohm Sweet Ohm. Blocks that change when touched make the puzzles.',
+  sleuth: 'Final Curtain. Text screens between the levels tell the story.',
+};
+
+function gallery(shots: GameShot[], first: number): string {
+  return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 3cqw">${shots
+    .map(
+      (g, i) =>
+        `<figure><img alt="${g.title}" src="${g.canvas.toDataURL()}"><figcaption>Figure 3-${first + i}. ${GAME_NOTES[g.id] ?? g.title}</figcaption></figure>`,
+    )
+    .join('')}</div>`;
+}
+
+function pages(shots: GameShot[]): BookletPage[] {
   return [
     {
       cover: true,
@@ -42,11 +64,12 @@ function pages(): BookletPage[] {
         <tr><td>3. Designing Games</td><td>7</td></tr>
         <tr><td>&nbsp;&nbsp;&nbsp;Choosing files</td><td>8</td></tr>
         <tr><td>&nbsp;&nbsp;&nbsp;Your first game</td><td>9</td></tr>
-        <tr><td>4. Utilities</td><td>10</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;When something goes wrong</td><td>11</td></tr>
-        <tr><td>5. The Game-Maker BBS</td><td>12</td></tr>
-        <tr><td>Appendix A. Specifications</td><td>13</td></tr>
-        <tr><td>Appendix B. About This Edition</td><td>15</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Games made with Game-Maker</td><td>10</td></tr>
+        <tr><td>4. Utilities</td><td>12</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;When something goes wrong</td><td>13</td></tr>
+        <tr><td>5. The Game-Maker BBS</td><td>14</td></tr>
+        <tr><td>Appendix A. Specifications</td><td>15</td></tr>
+        <tr><td>Appendix B. About This Edition</td><td>17</td></tr>
       </table>
       <div class="note"><strong>Welcome!</strong> It\u2019s as much fun to create computer games as it is to play them.
       Game-Maker lets you turn your game ideas into great games with no programming at all.
@@ -203,6 +226,21 @@ function pages(): BookletPage[] {
       Load Sample\u2019s map in the Map Maker, move a few blocks, and play it again.</div>`,
     ),
     page(
+      '3. Designing Games',
+      `<h2>Games made with Game-Maker</h2>
+      <p>Every one of these Sandbox Software games was built with the tools in this box: no
+      programming, just blocks, monsters, maps and the Integrator. The pictures are their
+      own maps, drawn from their own files.</p>
+      ${gallery(shots.slice(0, 4), 3)}`,
+    ),
+    page(
+      '3. Designing Games',
+      `${gallery(shots.slice(4, 8), 7)}
+      <div class="note"><strong>See how they work.</strong> Sandbox Software\u2019s games are on the
+      CD. Open any of them in Game-Maker\u2019s design tools and look at its blocks, monsters and
+      maps, then make something of your own.</div>`,
+    ),
+    page(
       '4. Utilities',
       `<span class="chapter">4</span>
       <h1>Utilities</h1>
@@ -326,6 +364,8 @@ function pages(): BookletPage[] {
   ];
 }
 
-export function openDosManual(): Promise<void> {
-  return openBooklet(pages(), TITLE);
+export async function openDosManual(): Promise<void> {
+  // the gallery's screenshots: give them a moment to load, and go without them if they can't
+  const shots = await Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
+  return openBooklet(pages(shots), TITLE);
 }
