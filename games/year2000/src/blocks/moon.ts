@@ -1,0 +1,190 @@
+// MOON.BBL: the Moon (stars with the Earth rising, moon rocks, the flag, the base) and the
+// Moon School's Science Fair (lockers, school walls, the projects, the judges' table that
+// counts your pages, the podium and bleachers).
+import { Pixels, rng } from '../../../kit/pixels';
+import { BlockSet, SOLID } from './book';
+import { blob, gradient, oval } from '../art/draw';
+import { FLOORS } from './floors';
+import { micro } from '../art/font';
+import { CTR, MON, PAGES_NEEDED } from '../ids';
+import { C } from '../art/pal';
+import { banner, billboard, crater, domeHome } from '../art/bigart';
+import { R, addBig, addBooths, addFloors, addItems, addLasers, addWalkways, blank, on, staffDoor, type Floor } from './shared';
+import { mowerDock } from './suburb';
+import { crtTv } from './city';
+
+// Moon pieces.
+function stars(seed: number, earth = false): Pixels {
+  const p = blank(C('night', 0));
+  const r = rng(seed);
+  for (let i = 0; i < 5; i++) p.set(r() * 20, r() * 20, C('grey', 4 + Math.floor(r() * 4)));
+  if (earth) {
+    blob(p, 10, 10, 7, 7, R('sky'), 1, 5);
+    blob(p, 8, 8, 3, 2, R('green'), 2, 4);
+    blob(p, 12, 13, 2.5, 2, R('green'), 2, 4);
+    oval(p, 11, 6, 3, 1, C('grey', 7));
+  }
+  return p;
+}
+
+function moonRock(floor: Floor): Pixels {
+  const p = on(floor);
+  oval(p, 11, 16, 8, 2.5, C('moon', 0));
+  blob(p, 10, 11, 8, 7, R('moon'), 1, 5);
+  p.set(7, 8, C('moon', 0)).set(13, 12, C('moon', 0));
+  return p;
+}
+
+function flag(): Pixels {
+  const p = on('moon');
+  p.rect(5, 2, 1, 16, C('chrome', 5));
+  p.rect(6, 2, 10, 7, C('paper', 2));
+  for (let y = 2; y < 9; y += 2) p.rect(6, y, 10, 1, C('red', 3));
+  p.rect(6, 2, 4, 4, C('denim', 2));
+  p.set(7, 3, C('grey', 7)).set(8, 4, C('grey', 7));
+  return p;
+}
+
+function baseWall(top: boolean): Pixels {
+  const p = blank();
+  if (top) {
+    gradient(p, 0, 0, 20, 20, R('chrome'), 4, 6);
+    for (let x = 0; x < 20; x += 10) p.rect(x, 0, 1, 20, C('chrome', 3));
+    p.rect(0, 18, 20, 2, C('chrome', 7));
+  } else {
+    gradient(p, 0, 0, 20, 20, R('chrome'), 3, 1);
+    p.rect(0, 0, 20, 2, C('chrome', 7));
+    p.rect(4, 6, 12, 6, C('glass', 1)).frame(4, 6, 12, 6, C('chrome', 5));
+    p.set(6, 7, C('grey', 7));
+  }
+  return p;
+}
+
+function lockers(): Pixels {
+  const p = blank();
+  for (let x = 0; x < 20; x += 5) {
+    p.rect(x, 0, 5, 20, C('denim', 3)).rect(x, 0, 1, 20, C('denim', 1));
+    for (let y = 3; y < 9; y += 2) p.rect(x + 1, y, 3, 1, C('denim', 1));
+    p.set(x + 3, 12, C('chrome', 6));
+  }
+  p.rect(0, 18, 20, 2, C('grey', 1));
+  return p;
+}
+
+function schoolWall(top: boolean): Pixels {
+  const p = blank();
+  if (top) {
+    gradient(p, 0, 0, 20, 20, R('gold'), 1, 2);
+    p.rect(0, 18, 20, 2, C('chrome', 6));
+  } else {
+    gradient(p, 0, 0, 20, 20, R('brick'), 2, 1);
+    for (let y = 0; y < 20; y += 4) p.rect(0, y, 20, 1, C('brick', 0));
+  }
+  return p;
+}
+
+function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone'): Pixels {
+  const p = on('gym');
+  p.rect(0, 8, 20, 12, C('paper', 2)).rect(0, 8, 20, 2, C('chrome', 6)).rect(0, 18, 20, 2, C('paper', 0));
+  if (kind === 'volcano') {
+    for (let y = 2; y < 15; y++) p.rect(10 - (y - 1) / 1.6, y, ((y - 1) / 1.6) * 2, 1, C('wood', 1 + (y % 2)));
+    p.rect(8, 1, 4, 2, C('red', 4)).set(9, 0, C('orange', 4));
+  } else if (kind === 'potato') {
+    blob(p, 6, 12, 4, 3, R('wood'), 1, 3);
+    blob(p, 14, 12, 4, 3, R('wood'), 1, 3);
+    p.rect(7, 3, 6, 5, C('night', 1));
+    micro(p, 8, 4, '12', C('red', 4));
+    p.line(6, 9, 9, 7, C('red', 3)).line(14, 9, 11, 7, C('gold', 3));
+  } else if (kind === 'robot') {
+    p.rect(6, 4, 8, 10, C('chrome', 4));
+    p.rect(7, 1, 6, 4, C('chrome', 5));
+    p.set(8, 2, C('red', 4)).set(11, 2, C('red', 4));
+    p.rect(3, 6, 3, 2, C('chrome', 3)).rect(14, 6, 3, 2, C('chrome', 3));
+    micro(p, 7, 8, 'HI', C('neon', 3));
+  } else if (kind === 'tv') {
+    p.blit(crtTv(1).crop(0, 2, 20, 16), 0, -2);
+    p.rect(0, 14, 20, 6, C('paper', 2));
+  } else {
+    // Dex's own project: a "pocket telephone". The judges have their doubts.
+    p.rect(8, 3, 4, 10, C('grey', 1)).rect(9, 4, 2, 2, C('neon', 2)).line(11, 3, 12, 0, C('grey', 2));
+    for (let y = 7; y < 12; y += 2) p.set(9, y, C('grey', 5)).set(10, y, C('grey', 5));
+    micro(p, 1, 14, 'POCKET', C('denim', 1));
+  }
+  return p;
+}
+
+function judgeTable(done: boolean, label = 'PAGES'): Pixels {
+  const p = on('gym');
+  p.rect(0, 4, 20, 14, C('denim', 2)).rect(0, 4, 20, 3, C('denim', 4));
+  p.rect(2, 9, 16, 6, C('paper', 2));
+  micro(p, 2, 10, done ? 'OK!' : label, done ? C('green', 2) : C('red', 3));
+  if (!done) micro(p, 2, 14, 'HERE', C('denim', 1));
+  void PAGES_NEEDED;
+  return p;
+}
+
+function podium(): Pixels {
+  const p = on('gym');
+  p.rect(3, 6, 14, 13, C('gold', 3)).rect(3, 6, 14, 3, C('gold', 5));
+  micro(p, 8, 11, '1', C('gold', 1), 2);
+  p.disc(10, 3, 2.5, C('gold', 5));
+  p.rect(9, 3, 2, 4, C('gold', 4));
+  return p;
+}
+
+function bleachers(): Pixels {
+  const p = blank();
+  for (let y = 0; y < 20; y += 5) {
+    p.rect(0, y, 20, 3, C('wood', 3)).rect(0, y + 3, 20, 2, C('wood', 1));
+  }
+  return p;
+}
+
+function volcanoSpawner(): Pixels {
+  return project('volcano');
+}
+
+export function moonSet(): BlockSet {
+  const s = new BlockSet(150, false);
+  addFloors(s, ['moon', 'moonprint', 'gym', 'gymLine', 'metal', 'sidewalk']);
+  s.add('space', stars(1), { solid: SOLID });
+  s.add('space2', stars(2), { solid: SOLID });
+  s.add('earth', stars(3, true), { solid: SOLID });
+  addItems(s, 'moon', ['page', 'quarter', 'pill', 'battery', 'cola', 'pass']);
+  addItems(s, 'metal', ['page', 'quarter', 'pill', 'battery']);
+  addItems(s, 'gym', ['page', 'pill', 'battery', 'quarter']);
+  addBooths(s, 'sidewalk');
+  addLasers(s, 'metal', 9, 27);
+  addWalkways(s, 'walk');
+
+  addBig(s, 'crater', crater(FLOORS.moon));
+  s.add('moonrock', moonRock('moon'), { solid: SOLID });
+  s.add('flag', flag(), { solid: SOLID });
+  s.add('baseTop', baseWall(true), { solid: SOLID });
+  s.add('baseWall', baseWall(false), { solid: SOLID });
+  s.add('airlock', staffDoor('pass', 'metal'), { solid: SOLID, effect: CTR.moonpass, eamt: -1, touch: 'metal' });
+  addBig(s, 'mdome', domeHome(FLOORS.moon, 'purple'));
+  addBig(s, 'bbMoon', billboard(["MCMOON'S", 'OVER 1 BILLION', 'PILLS SERVED'], 'gold', 'red', FLOORS.moon));
+  addBig(s, 'bbWelcome', billboard(['WELCOME TO', 'THE MOON', 'POP. 2,000'], 'purple', 'gold', FLOORS.moon));
+  const meteorHole = stars(5);
+  s.add('meteorgun', meteorHole, { solid: SOLID, birthMon: MON.meteor, birthTime: 40 });
+  s.add('meteorgunL', stars(6), { solid: SOLID, birthMon: MON.meteorL, birthTime: 47 });
+  s.add('buggydock', mowerDock('moon', 'GAS'), { solid: SOLID });
+
+  // Moon School.
+  s.add('lockers', lockers(), { solid: SOLID });
+  s.add('schoolTop', schoolWall(true), { solid: SOLID });
+  s.add('schoolWall', schoolWall(false), { solid: SOLID });
+  s.add('bleachers', bleachers(), { solid: SOLID });
+  s.add('volcano', volcanoSpawner(), { solid: SOLID, birthMon: MON.lava, birthTime: 48 });
+  s.add('potato', project('potato'), { solid: SOLID });
+  s.add('robotproj', project('robot'), { solid: SOLID });
+  s.add('tvproj', project('tv'), { solid: SOLID });
+  s.add('phoneproj', project('phone'), { solid: SOLID });
+  s.add('judgetable', judgeTable(false), { solid: SOLID, effect: CTR.pages, eamt: -PAGES_NEEDED, score: 5000, touch: 'judgedone' });
+  s.add('judgedone', judgeTable(true));
+  s.add('covertable', judgeTable(false, 'COVER'), { solid: SOLID, effect: CTR.cover, eamt: -1, score: 5000, touch: 'judgedone' });
+  s.add('podium', podium());
+  addBig(s, 'banner', banner('SCIENCE FAIR 2000', 8, 1, 'denim', 'gold'));
+  return s;
+}
