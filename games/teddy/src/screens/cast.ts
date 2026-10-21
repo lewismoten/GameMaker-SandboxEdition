@@ -389,11 +389,104 @@ function leoScene(reel: Reel): void {
   }
 }
 
+/** The palette with a ramp's colors rotated `step` places (palette cycling). */
+function cycled(name: string, step: number, base: Uint8Array = CP.pal): Uint8Array {
+  const pal = Uint8Array.from(base);
+  const ramp = r(name);
+  ramp.forEach((idx, k) => pal.set(base.subarray(ramp[(k + step) % ramp.length] * 3, ramp[(k + step) % ramp.length] * 3 + 3), idx * 3));
+  return pal;
+}
+
+/** The CitiCar, three-quarters from the front: a red wedge with a flat hood, headlight pods and a black bumper. */
+export function citiCarBig(p: Pixels): void {
+  const red = r('red');
+  // the far wheel peeking out, then the body side, roof, glass, hood and nose
+  blob(p, 102, 170, 12, 14, [c('ink', 0), c('ink', 1)], 0, 1);
+  shadedPoly(p, [[70, 92], [124, 80], [138, 168], [74, 166]], red, 1, 2);
+  p.rect(68, 158, 10, 9, c('ink', 0));
+  shadedPoly(p, [[108, 72], [200, 64], [216, 73], [124, 82]], r('stone'), 1, 3);
+  shadedPoly(p, [[80, 94], [117, 84], [121, 118], [83, 126]], r('sky'), 3, 7);
+  shadedPoly(p, [[126, 83], [214, 75], [221, 118], [131, 125]], r('sky'), 4, 7);
+  for (let k = 0; k < 14; k++) p.set(150 + k * 2, 112 - k * 2, c('fur', 2)).set(151 + k * 2, 112 - k * 2, c('fur', 2));
+  p.line(126, 83, 131, 125, c('red', 0)).line(214, 75, 221, 118, c('red', 0));
+  shadedPoly(p, [[131, 125], [221, 118], [252, 148], [140, 160]], red, 2, 3);
+  shadedPoly(p, [[140, 160], [252, 148], [252, 168], [140, 176]], red, 1, 2);
+  // the hood scoop, the pinstripe, the door seam and handle
+  p.line(176, 124, 188, 151, c('red', 0)).line(178, 124, 190, 151, c('red', 3));
+  p.line(74, 140, 132, 132, c('red', 3));
+  p.line(117, 84, 123, 162, c('red', 0));
+  p.rect(108, 128, 6, 2, c('metal', 3));
+  // headlights in raised pods, amber corner lights
+  for (const [x, y] of [
+    [164, 150],
+    [228, 143],
+  ] as Pt[]) {
+    blob(p, x, y, 11, 10, red, 1, 3);
+    blob(p, x, y + 1, 7, 7, [c('metal', 2), c('cloud', 0), c('cloud', 2)], 0, 2);
+    p.rect(x - 3, y - 2, 2, 2, c('fur', 2));
+  }
+  p.rect(144, 158, 6, 4, c('amber', 2)).rect(244, 150, 6, 4, c('amber', 2));
+  // the black bumper bar and a blank plate
+  p.rect(134, 168, 122, 9, c('ink', 0)).rect(134, 168, 122, 2, c('ink', 1));
+  p.rect(182, 170, 22, 10, c('yellow', 3)).frame(182, 170, 22, 10, c('ink', 1));
+  // the near front wheel: a little whitewall
+  blob(p, 150, 182, 12, 13, [c('ink', 0), c('ink', 1)], 0, 1);
+  blob(p, 150, 182, 7, 8, [c('paint', 2), c('paint', 3)], 0, 1);
+  blob(p, 150, 182, 4, 5, [c('metal', 2), c('metal', 3)], 0, 1);
+}
+
+/** Scene 4: the CitiCar plugged in at a charging station; the current runs down the cable. */
+function carScene(reel: Reel): void {
+  const p = new Pixels(W, H);
+  // stucco wall over a stone base, the parking space, a strip of grass
+  gradient(p, 0, 0, W, 110, r('cream'), 3, 1);
+  for (let y = 110; y < 150; y += 6) for (let x = (y / 6) % 2 ? 0 : 9; x < W; x += 18) p.rect(x, y, 17, 5, c('stone', 2 + ((x + y) % 3 === 0 ? 1 : 0)));
+  p.rect(0, 150, W, 50, c('asphalt', 1));
+  speckle(p, 0, 150, W, 50, r('asphalt'), 1, 1, 13, 0.2);
+  p.rect(0, 176, 40, 24, c('grass', 2)).rect(40, 172, 4, 28, c('amber', 1));
+  p.line(300, 150, 270, 200, c('paint', 3));
+  // the red EV CHARGING sign
+  p.rect(40, 20, 120, 34, c('red', 1)).frame(40, 20, 120, 34, c('paint', 3));
+  outlined(p, 52, 26, 'EV ONLY', c('paint', 3), c('red', 0), 1);
+  outlined(p, 52, 38, 'CHARGING', c('paint', 3), c('red', 0), 1);
+  p.ring(140, 37, 10, c('paint', 3)).rect(137, 31, 6, 9, c('paint', 3)).rect(138, 28, 1, 3, c('paint', 3)).rect(141, 28, 1, 3, c('paint', 3));
+  // the charger post with its screen
+  p.rect(16, 70, 22, 110, c('ink', 1)).rect(18, 72, 18, 106, c('metal', 1)).rect(21, 80, 12, 16, c('ink', 0));
+  p.rect(14, 176, 26, 6, c('stone', 3));
+  const volt = r('volt');
+  for (let k = 0; k < 5; k++) p.rect(23, 92 - k * 3, 8, 2, volt[k % volt.length]);
+  citiCarBig(p);
+  // the cable: a droop from the charger to the car's side port, its colors cycling
+  let prev: Pt = [30, 110];
+  for (let i = 0; i <= 60; i++) {
+    const t = i / 60;
+    const x = Math.round(30 + t * 58);
+    const y = Math.round(110 + Math.sin(t * Math.PI) * 50 + t * 26);
+    p.rect(x - 1, y - 1, 3, 3, c('ink', 0));
+    prev = [x, y];
+  }
+  for (let i = 0; i <= 60; i++) {
+    const t = i / 60;
+    p.set(Math.round(30 + t * 58), Math.round(110 + Math.sin(t * Math.PI) * 50 + t * 26), volt[Math.floor(i / 3) % volt.length]);
+  }
+  p.rect(prev[0] - 2, prev[1] - 3, 6, 6, c('ink', 0));
+  big(p, 'CITICAR', 8, 240);
+  say(p, 'RED. 1976.', 30, undefined, 240);
+  say(p, '100% ELECTRIC.', 42, undefined, 240);
+  for (let f = 0; f < 36; f++) {
+    const q = new Pixels(W, H);
+    q.px.set(p.px);
+    if (f >= 12) say(q, 'CHARGES A MILE AN HOUR.', 190, c('yellow', 3));
+    reel.add(q, 1, cycled('volt', volt.length - (f % volt.length)));
+  }
+}
+
 export function castFli(): Uint8Array {
   const reel = new Reel();
   teddyScene(reel);
   gwinScene(reel);
   leoScene(reel);
+  carScene(reel);
   return encodeFli(reel.frames, CP.pal, { speed: 7, palettes: reel.pals });
 }
 
