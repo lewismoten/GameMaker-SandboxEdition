@@ -4,18 +4,56 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$15",
-  "blurb": "A virus is eating the family 486. Shrink down, launch the BLASTER nano-fighter off the floppy and blast your way up the motherboard, through memory, the sound card and the hard disk to the CPU.",
+  "blurb": "GLITCH, a virus off a bad BBS download, is eating the family 486. Shrink down, launch the BLASTER nano-fighter and blast your way up the motherboard, through memory, the sound card and the hard disk into the CPU itself.",
   "exe": "BLASTER.EXE",
   "sound": "sb",
-  "label": { "background": "#0b1a10", "band": "#36e07a", "ink": "#ffffff", "logo": "SANDBOX SOFTWARE" },
+  "label": {
+    "background": "#0b1a10",
+    "band": "#36e07a",
+    "ink": "#ffffff",
+    "logo": "SANDBOX SOFTWARE"
+  },
   "box": {
     "background": "#0a0f24",
-    "accent": "#ff3cc8",
+    "accent": "#ff7a1a",
     "ink": "#ffffff",
     "tagline": "Your PC has a virus. Shrink down and blast it.",
-    "back": "",
-    "features": [],
-    "shots": [["s1a.map", 2, 50]],
-    "rating": "Ages 8 and up"
+    "back": "Late one night you downloaded COOLGAME.ZIP from a BBS you had never called before. It was not a cool game. It was GLITCH, a virus that eats a PC from the inside out - Mom's tax return, Dad's novel, your homework, YOUR HIGH SCORES.\n\nLoad VACCINE.EXE, shrink to the size of a byte and climb into the BLASTER, the fastest nano-fighter ever to fit through a floppy drive. Scream up the data bus of the motherboard, dodge the data streams of Memory Lane, ride the thumping speakers of the Sound Card, fight the spin of the Hard Disk platter and burn into the CPU itself. Five stages, ten scrolling runs, five towering bosses built out of dozens of monsters each - and GLITCH waiting at the core.",
+    "features": [
+      "A real vertically scrolling shoot-'em-up made with Game-Maker - no programming",
+      "Auto-fire twin blasters, plus Nova Bombs that fan out five plasma bolts",
+      "Five stages inside a 486: the motherboard, memory, the sound card, the hard disk and the CPU",
+      "Five bosses, each built from dozens of monsters, plugging the only way out",
+      "Turrets that sweep and fire, virus hatches, firewalls, data streams and thumping speakers",
+      "Twelve Sound Blaster songs and digitized explosions",
+      "An animated FLI intro cartoon and a self-playing demo"
+    ],
+    "shots": [
+      ["s1a.map", 2, 50],
+      ["s3b.map", 2, 54],
+      ["s1c.map", 2, 45],
+      ["s4a.map", 2, 44],
+      ["s5c.map", 2, 45]
+    ],
+    "rating": "Ages 8 and up",
+    "hours": 4,
+    "reviews": [
+      {
+        "quote": "We did not think Game-Maker could scroll like this. Then GLITCH ate our high scores and we stopped thinking at all.",
+        "source": "Megapixel Monthly, June 1995"
+      },
+      {
+        "quote": "The most fun you can have with a computer virus.",
+        "source": "Diskette Digest"
+      }
+    ],
+    "award": {
+      "title": "Best Action Shareware",
+      "from": "VGA Voyager"
+    },
+    "poster": {
+      "gif": "title.gif",
+      "caption": "Your PC has a virus. Shrink down and blast it."
+    }
   }
 }
