@@ -34,6 +34,8 @@ export interface BotOptions {
 interface Option {
   key: number;
   kind: ActionKind;
+  /** A move key to switch to after this decision (only looked at, to find turns toward a goal). */
+  then?: number;
 }
 
 const MAP_W = 100;
@@ -123,6 +125,15 @@ export class Bot {
     return l === 'any' || (!!l && l.includes(link));
   }
 
+  /** Where to head in this scene: its own goals, else the links it may take. */
+  private goals(s: Session): { x: number; y: number }[] {
+    return this.o.goals?.[this.scene] ?? (s.game.scenes[this.scene]?.links ?? []).filter((l, i) => l.toScene < s.game.scenes.length && this.allowed(i)).map((l) => l.from);
+  }
+
+  private hasGoals(s: Session): boolean {
+    return this.goals(s).length > 0;
+  }
+
   /** Plays one option ahead on a copy; higher is better. */
   private async tryOption(w: World, s: Session, opt: Option | undefined, dice: number): Promise<number> {
     const copy = cloneWorld(w, rng(dice * 7919 + w.clock));
@@ -138,6 +149,10 @@ export class Bot {
     for (let t = 0; t < this.o.horizon; t++) {
       // jumps, shots and pick ups are taps: let go after a decision's worth of ticks
       if (tapped && t === this.o.every) p.key(opt.key | 0x80);
+      if (opt?.then !== undefined && t === this.o.every) {
+        p.key(opt.key | 0x80);
+        p.key(opt.then);
+      }
       await p.tick();
       if (p.dead) return -2000 + t * 20;
       if (p.link >= 0) return this.allowed(p.link) ? 3000 - t : -3000;
@@ -160,7 +175,7 @@ export class Bot {
     if (back) value += Math.min(60, Math.hypot(end.x - back.x, end.y - back.y) / 4) * this.o.explore;
     if (process.env.BOT_DEBUG === '2' && dice === 0)
       this.log.push(`    key ${opt?.key} from ${pos(w).x},${pos(w).y} to ${end.x},${end.y} back ${back?.x},${back?.y} hp ${before.hp}->${ci.hitpts} score +${ci.score - before.score} cells ${seenHere.size}`);
-    const goals = this.o.goals?.[this.scene];
+    const goals = this.goals(s);
     if (goals?.length) {
       const d = (q: { x: number; y: number }) => Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
       value += (d(pos(w)) - d(end)) * 15;
@@ -183,7 +198,13 @@ export class Bot {
     const v = this.visited(this.scene);
     const cell = Math.floor(at.y / 20) * MAP_W + Math.floor(at.x / 20);
     if (v[cell] < 60000) v[cell]++;
-    const options: (Option | undefined)[] = [undefined, ...this.options(w)];
+    const single = this.options(w);
+    const options: (Option | undefined)[] = [undefined, ...single];
+    // with somewhere to go, also look at turning: one move now, another after it
+    if (this.hasGoals(s)) {
+      const moves = single.filter((o) => o.kind === 'move');
+      for (const a of moves) for (const b of moves) if (a !== b) options.push({ ...a, then: b.key });
+    }
     const values = new Map<Option | undefined, number>();
     let best: Option | undefined;
     let bestValue = -Infinity;
@@ -201,7 +222,7 @@ export class Bot {
       if (process.env.BOT_DEBUG) this.log.push(`  t${s.rec.tick} key ${opt?.key ?? '-'} worst ${worst.toFixed(0)} avg ${(sum / this.o.dice).toFixed(0)}`);
       if (value > bestValue) [best, bestValue] = [opt, value];
     }
-    const current = options.find((x) => x?.key === this.held);
+    const current = options.find((x) => x?.key === this.held && x?.then === undefined);
     // Hold on to a choice for a few decisions (unless it hurts), so the hero does not dither
     // at the edge of danger; and when the hero has hardly moved for a while, set off
     // somewhere at random that does not hurt.

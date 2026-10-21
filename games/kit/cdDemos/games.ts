@@ -9,6 +9,8 @@ export interface CdDemoGame {
   /** Game ticks to record (18.2 a second). */
   ticks?: number;
   bot?: BotOptions;
+  /** Bot runs to try for one that holds up under other monster dice (default 4). */
+  attempts?: number;
   /**
    * The game's own recording that its title screen never names: listed as the added demo
    * as it is (nothing recorded here).

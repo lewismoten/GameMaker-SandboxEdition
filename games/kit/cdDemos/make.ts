@@ -27,14 +27,29 @@ async function make(ids: string[]): Promise<void> {
   for (const g of CD_DEMO_GAMES.filter((x) => !ids.length || ids.includes(x.id))) {
     if (g.inGame) continue;
     const files = loadCdGame(g.kind, g.id);
-    const t0 = Date.now();
-    const { rec, bot } = await recordDemo(files, g.gam, g.ticks ?? 820, g.bot);
-    console.log(`${g.id}: ${rec.length / 3} keys in ${((Date.now() - t0) / 1000).toFixed(0)} s; ${bot.log.join('; ')}`);
-    for (const seed of [1, 2, 3]) {
-      const shots = process.env.SHOTS && seed === 1 ? { file: join(process.env.SHOTS, `${g.id}.png`), every: 70 } : undefined;
-      const r = await replay(files, g.gam, rec, seed, shots);
-      console.log(`  replay ${seed}: ${JSON.stringify(r)}`);
+    const ticks = g.ticks ?? 820;
+    // Monsters roll their own dice in every playback, so a recording must hold up under
+    // other dice too: try a few bot runs and keep the first that never dies or stalls in
+    // five replays (else the one that fails least).
+    let best: { rec: Uint8Array; fails: number; cells: number } | undefined;
+    for (let attempt = 1; attempt <= (g.attempts ?? 4) && best?.fails !== 0; attempt++) {
+      const t0 = Date.now();
+      const { rec, bot } = await recordDemo(files, g.gam, ticks, { ...g.bot, seed: attempt * 101 });
+      console.log(`${g.id} #${attempt}: ${rec.length / 3} keys in ${((Date.now() - t0) / 1000).toFixed(0)} s; ${bot.log.join('; ')}`);
+      let fails = 0;
+      let cells = Infinity;
+      for (const seed of [1, 2, 3, 4, 5]) {
+        const shots = process.env.SHOTS && seed === 1 ? { file: join(process.env.SHOTS, `${g.id}-${attempt}.png`), every: 70 } : undefined;
+        const r = await replay(files, g.gam, rec, seed, shots);
+        const ok = r.deaths === 0 && r.ended >= ticks && r.ticks < ticks + 200;
+        if (!ok) fails++;
+        cells = Math.min(cells, r.cells);
+        console.log(`  replay ${seed}: ${ok ? 'ok ' : 'BAD'} ${JSON.stringify(r)}`);
+      }
+      if (!best || fails < best.fails || (fails === best.fails && cells > best.cells)) best = { rec, fails, cells };
     }
+    const rec = best!.rec;
+    console.log(`${g.id}: kept a recording that failed ${best!.fails} of 5 replays`);
     writeFileSync(join(DEMOS, `${g.id}.rec`), rec);
   }
 }
