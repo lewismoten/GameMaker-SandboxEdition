@@ -26,6 +26,7 @@ import {
   publisherBand,
   framedShot,
   badge,
+  balancedWidth,
   barcode,
   wrapLines,
   roundRect,
@@ -133,7 +134,11 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   f.fillStyle = box.ink;
   f.font = SANS(24, 700);
   f.textAlign = 'center';
-  const tagEnd = wrap(f, box.tagline, fw / 2, tagY, fw - 80, 28);
+  // outlined so it reads over the rays on any box color, its lines evened out
+  f.strokeStyle = 'rgba(0, 0, 0, 0.75)';
+  f.lineWidth = 5;
+  f.lineJoin = 'round';
+  const tagEnd = wrap(f, box.tagline, fw / 2, tagY, balancedWidth(f, box.tagline, fw - 80), 28, true);
   f.textAlign = 'left';
   const shotY = Math.max(316, tagEnd + 8);
   const shotW = Math.min(fw - 110, ((fh - 150 - shotY) / 0.625) | 0);

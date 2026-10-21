@@ -37,8 +37,11 @@ function measure(ctx: CanvasRenderingContext2D, text: string): number {
 }
 
 /** Draws a line that may hold the marked name, honoring the text alignment. */
-function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: number): void {
-  if (!line.includes(NAME_MARK)) return ctx.fillText(line, x, y);
+function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: number, outline = false): void {
+  if (!line.includes(NAME_MARK)) {
+    if (outline) ctx.strokeText(line, x, y);
+    return ctx.fillText(line, x, y);
+  }
   const align = ctx.textAlign;
   const total = measure(ctx, line);
   let at = align === 'center' ? x - total / 2 : align === 'right' || align === 'end' ? x - total : x;
@@ -58,25 +61,41 @@ function drawLine(ctx: CanvasRenderingContext2D, line: string, x: number, y: num
   ctx.textAlign = align;
 }
 
-/** Word-wraps text to a width; returns the y after the last line. */
-export function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, lineHeight: number): number {
+/**
+ * Word-wraps text to a width; returns the y after the last line. With `outline`, each line
+ * is stroked first in the context's strokeStyle, so it reads over a busy background.
+ */
+export function wrap(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, width: number, lineHeight: number, outline = false): number {
   for (const para of marked(text).split(/\n+/)) {
     let line = '';
     for (const word of para.split(/\s+/)) {
       const test = line ? `${line} ${word}` : word;
       if (measure(ctx, test) > width && line) {
-        drawLine(ctx, line, x, y);
+        drawLine(ctx, line, x, y, outline);
         y += lineHeight;
         line = word;
       } else line = test;
     }
     if (line) {
-      drawLine(ctx, line, x, y);
+      drawLine(ctx, line, x, y, outline);
       y += lineHeight;
     }
     y += lineHeight * 0.4;
   }
   return y;
+}
+
+/** The narrowest width (down to half) that wraps text into no more lines than `width` does: even lines, no stray last word. */
+export function balancedWidth(ctx: CanvasRenderingContext2D, text: string, width: number): number {
+  const lines = wrapLines(ctx, text, width);
+  let lo = width / 2;
+  let hi = width;
+  while (hi - lo > 4) {
+    const mid = (lo + hi) / 2;
+    if (wrapLines(ctx, text, mid) > lines) lo = mid;
+    else hi = mid;
+  }
+  return hi;
 }
 
 /** The biggest font size (up to max) at which text fits the width. */
