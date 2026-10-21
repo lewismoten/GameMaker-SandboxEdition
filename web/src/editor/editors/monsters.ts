@@ -1,6 +1,7 @@
 // Monster editor (MONEDIT.EXE): 64 monsters with animation, strength and movement.
 import './monsters.css';
 import { rovingGrid } from '../rovingGrid';
+import { History } from '../history';
 import { registerEditor } from './index';
 import { h, clear, numberField, selectField, checkField, debounce } from '../ui';
 import { blockCanvas, paintBlock } from '../draw';
@@ -87,7 +88,36 @@ registerEditor(['mon'], (host, project, file) => {
   function edit(fn: () => void): void {
     fn();
     mons[current].used = 1;
+    committed();
     save();
+  }
+
+  // Undo: each change records the state before it (changes less than half a second apart, like a drag, are one step).
+  const history = new History<Uint8Array>();
+  let base = serializeMonsters(mons);
+  let lastChange = 0;
+  const undoBtn = h('button', { title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const syncHistory = () => {
+    undoBtn.disabled = !history.canUndo;
+    redoBtn.disabled = !history.canRedo;
+  };
+  function committed(): void {
+    const now = Date.now();
+    if (now - lastChange > 500) history.record(base);
+    lastChange = now;
+    base = serializeMonsters(mons);
+    syncHistory();
+  }
+  function step(back: boolean): void {
+    const to = back ? history.undo(base) : history.redo(base);
+    if (!to) return;
+    mons.splice(0, mons.length, ...parseMonsters(to));
+    base = to;
+    lastChange = 0;
+    syncHistory();
+    save();
+    render();
   }
 
   function renderDetail(): void {
@@ -266,6 +296,7 @@ registerEditor(['mon'], (host, project, file) => {
         { class: 'hint' },
         'Pick a monster, then set its animation, strength and movement. Place monsters on maps with the map editor, or let blocks and character sequences give birth to them.',
       ),
+      h('div', { class: 'toolbar' }, undoBtn, redoBtn),
       fileField(
         project,
         'Monster blocks',
@@ -284,8 +315,18 @@ registerEditor(['mon'], (host, project, file) => {
     h('div', { class: 'mon-layout' }, h('div', { class: 'mon-side' }, list), detail),
   );
   render();
+  const onKey = (e: KeyboardEvent) => {
+    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' || k === 'y') {
+      e.preventDefault();
+      step(k === 'z' && !e.shiftKey);
+    }
+  };
+  window.addEventListener('keydown', onKey);
   return () => {
     clearTimeout(timer);
     paths.destroy();
+    window.removeEventListener('keydown', onKey);
   };
 });
