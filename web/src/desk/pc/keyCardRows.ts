@@ -4,7 +4,7 @@
 // unsaid when all they do is move (everyone knows), and the other keys that only move (W A S
 // D, the pad) on one "Move" line.
 import type { GameKeyMap } from '../../editor/keymap/keyMap';
-import { isMac, macShort, withMacHint } from '../../input/macKeys';
+import { isMac, macShort } from '../../input/macKeys';
 
 export interface CardRow {
   keys: string[];
@@ -32,9 +32,15 @@ export function shortKey(name: string): string {
 const onlyMoves = (k: Binding) => k.uses.every((u) => u.action.kind === 'move' || u.action.kind === 'nothing');
 
 /** The card's lines. `compact` is for the small card: short key names and moves merged.
- * On a Mac (`mac`) keys it lacks are written the way to make them: "↑+←" for Home. */
+ * On a Mac (`mac`) keys it lacks are written the way to make them: "↑+←" for Home, after
+ * "Home / Pad 7" on the big card, as one more key that does the same. */
 export function cardRows(keys: Binding[], compact = false, mac = isMac()): CardRow[] {
-  const keyName = (k: Binding) => (compact ? (macShort(k.scan, mac) ?? shortKey(k.name)) : withMacHint(k.name, k.scan, mac));
+  const keyNames = (k: Binding): string[] => {
+    const m = macShort(k.scan, mac);
+    if (compact) return [m ?? shortKey(k.name)];
+    return m ? [k.name, m] : [k.name];
+  };
+  const add = (row: CardRow, k: Binding) => row.keys.push(...keyNames(k).filter((n) => !row.keys.includes(n)));
   const rows: CardRow[] = [];
   const byDoes = new Map<string, CardRow>();
   let moves: CardRow | undefined;
@@ -43,19 +49,16 @@ export function cardRows(keys: Binding[], compact = false, mac = isMac()): CardR
     if (compact && onlyMoves(k)) {
       if (ARROWS[k.name.split(' / ')[0].trim()]) continue; // arrow keys move: no need to say
       if (!moves) rows.push((moves = { keys: [], does: 'Move' }));
-      const name = keyName(k);
-      if (!moves.keys.includes(name)) moves.keys.push(name);
+      add(moves, k);
       continue;
     }
     // an arrow key that does more than move: say what else it does ("↑ Push up")
     const arrow = compact && !!ARROWS[k.name.split(' / ')[0].trim()];
     const does = keyDoes(arrow ? { ...k, uses: k.uses.filter((u) => u.action.kind !== 'move') } : k, compact ? 1 : 2);
-    const name = keyName(k);
     const row = byDoes.get(does);
-    if (row) {
-      if (!row.keys.includes(name)) row.keys.push(name);
-    } else {
-      const r = { keys: [name], does };
+    if (row) add(row, k);
+    else {
+      const r = { keys: keyNames(k), does };
       byDoes.set(does, r);
       rows.push(r);
     }

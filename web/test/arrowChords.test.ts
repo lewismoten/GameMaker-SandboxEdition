@@ -88,6 +88,6 @@ describe('Mac key names', () => {
       { keys: ['Space'], does: 'Jump' },
     ]);
     expect(cardRows(keys, true, false)[0].keys).toEqual(['Home', 'PgUp']);
-    expect(cardRows(keys, false, true)[0].keys).toEqual(['Home / Pad 7 (↑+← or fn ←)']);
+    expect(cardRows(keys, false, true)[0].keys).toEqual(['Home / Pad 7', '↑+←']);
   });
 });
