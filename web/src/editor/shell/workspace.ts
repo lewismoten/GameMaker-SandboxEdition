@@ -11,7 +11,6 @@ import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { createZip } from '../../project/zip';
 import { exportWebApp } from '../../export/exportWebApp';
 import { exportSinglePage } from '../../export/exportSinglePage';
-import { exportDos } from '../../export/exportDos';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
@@ -612,7 +611,7 @@ export class Workspace {
   private async exportForDos(): Promise<void> {
     try {
       const title = this.project.game().scenes[0]?.desc || this.project.name;
-      const { name, zip, exe } = await exportDos(this.project.files, { title, gam: this.project.gam });
+      const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(this.project.files, { title, gam: this.project.gam });
       download(name, zip, 'application/zip');
       toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
     } catch (e) {

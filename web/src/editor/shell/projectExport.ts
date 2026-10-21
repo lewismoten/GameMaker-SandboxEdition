@@ -5,7 +5,6 @@ import { loadProject } from '../../project/storage';
 import { createZip } from '../../project/zip';
 import { exportWebApp } from '../../export/exportWebApp';
 import { exportSinglePage } from '../../export/exportSinglePage';
-import { exportDos } from '../../export/exportDos';
 import { parseGame } from '../../formats/game';
 
 export async function downloadProject(id: string): Promise<void> {
@@ -48,7 +47,7 @@ export async function exportProjectForDos(id: string): Promise<void> {
   if (!p) return;
   try {
     const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
-    const { name, zip, exe } = await exportDos(p.files, { title, gam: p.record.gam });
+    const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(p.files, { title, gam: p.record.gam });
     download(name, zip, 'application/zip');
     toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
   } catch (e) {

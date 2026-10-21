@@ -2,7 +2,6 @@
 // copy on the hard disk when it comes from a floppy or the CD), new and restored game
 // folders, and copying a game to a floppy.
 import { dosDirName, hdFiles, hdProject, makeGameFolder, restoreInstalled, type HdGame } from '../dos/hardDisk';
-import { exportDos } from '../../export/exportDos';
 import { type FolderGame } from '../host';
 import { errorBox } from '../text/textUi';
 import { GameFiles } from '../../project/files';
@@ -133,7 +132,7 @@ export abstract class ComputerFolders extends ComputerDrives {
     const r = await errorBox(this, 'Transfer Done!', '(D)ownload it too, to run in DOSBox   (C)ontinue');
     if (r === 'D' && gam) {
       try {
-        const { name, zip } = await exportDos(project.files, { title: game.title, gam });
+        const { name, zip } = await (await import('../../export/exportDos')).exportDos(project.files, { title: game.title, gam });
         download(name, zip, 'application/zip');
       } catch (e) {
         await errorBox(this, (e as Error).message.slice(0, 70), '(C)ontinue');
