@@ -5,6 +5,7 @@ import './deskProps.css';
 import { h } from '../editor/ui';
 import { output } from '../audio/output';
 import { watchDaylight } from './daylight';
+import { deskMug } from './mug';
 
 const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
   const el = h('div', { class: cls });
@@ -13,30 +14,8 @@ const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
 };
 
 export function mug(): HTMLElement {
-  return svg(
-    'desk-mug',
-    '0 0 90 150',
-    `<!-- the handle, then the inside of the mug and its back rim -->
-    <path d="M70 84 q18 0 18 18 q0 18 -18 18" fill="none" stroke="#e9e3d0" stroke-width="7"/>
-    <path d="M70 84 q18 0 18 18 q0 18 -18 18" fill="none" stroke="#b9b29c" stroke-width="2"/>
-    <ellipse cx="41" cy="71" rx="31" ry="4.5" fill="#d9d3bf"/>
-    <ellipse cx="41" cy="71.6" rx="28.5" ry="3.4" fill="#2a2621"/>
-    <!-- pencils and pens standing in it: out of the opening, in front of the back rim -->
-    <g stroke="#1a1a1a" stroke-width="0.6">
-      <g transform="rotate(-14 30 70)"><rect x="24" y="8" width="7" height="70" fill="#f2c200"/><polygon points="24,8 31,8 27.5,0" fill="#e8c9a0"/><polygon points="26.5,2.5 28.5,2.5 27.5,0" fill="#333"/><rect x="24" y="72" width="7" height="6" fill="#d33"/></g>
-      <g transform="rotate(8 50 70)"><rect x="46" y="4" width="6" height="74" fill="#1f4fbf"/><rect x="46" y="4" width="6" height="12" fill="#e9e9e9"/><rect x="51" y="8" width="1.6" height="16" fill="#c0c0c0"/></g>
-      <g transform="rotate(-3 40 70)"><rect x="37" y="14" width="6" height="64" fill="#c22"/><rect x="37" y="14" width="6" height="8" fill="#222"/></g>
-      <g transform="rotate(18 62 70)"><rect x="58" y="12" width="7" height="66" fill="#2c8a3c"/><polygon points="58,12 65,12 61.5,4" fill="#e8c9a0"/><polygon points="60.5,6.5 62.5,6.5 61.5,4" fill="#333"/></g>
-    </g>
-    <!-- the mug's front: its top edge curves round the front of the opening -->
-    <path d="M10 71 A31 4.5 0 0 0 72 71 L72 139 Q72 144 67 144 L15 144 Q10 144 10 139 Z" fill="#f2eee2"/>
-    <path d="M10 71 A31 4.5 0 0 0 72 71 L72 139 Q72 144 67 144 L15 144 Q10 144 10 139 Z" fill="url(#mug-shade)"/>
-    <path d="M10.4 71 A30.6 4.4 0 0 0 71.6 71" fill="none" stroke="#fffdf6" stroke-width="1"/>
-    <defs><linearGradient id="mug-shade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity="0.15"/><stop offset="0.35" stop-color="#fff" stop-opacity="0.2"/><stop offset="1" stop-color="#000" stop-opacity="0.25"/></linearGradient></defs>
-    <text x="41" y="96" text-anchor="middle" font-family="ui-monospace, Courier New, monospace" font-weight="700" font-size="9"><tspan fill="#d33">S</tspan><tspan fill="#c8a000">A</tspan><tspan fill="#1a9a3a">N</tspan><tspan fill="#0aa">D</tspan><tspan fill="#2346c8">B</tspan><tspan fill="#a3a">O</tspan><tspan fill="#a65a00">X</tspan></text>
-    <text x="41" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="7" fill="#333">BBS</text>
-    <text x="41" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="5" fill="#555">412-555-SAND</text>`,
-  );
+  // the mug lives in mug.ts: printed with the picture chosen in its viewer
+  return deskMug(() => void import('./mugViewer').then((m) => m.openMugViewer()));
 }
 
 /** A dial tone for as long as the handset is off the hook. */
