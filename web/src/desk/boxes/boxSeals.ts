@@ -1,6 +1,7 @@
 // The little printed extras that crowd a mid-90s game box: a starburst shouting the hours
 // of play, a magazine award in a laurel wreath, the "1 PLAYER" icon, the disk count, the
-// (made-up) Home Software Rating Council's age seal and a store's price sticker.
+// (made-up) Home Software Rating Council's age seal, a store's price sticker and the platform
+// badge (MS-DOS, IBM PC & compatibles, 3½" disks) a shopper looks for first.
 import { ratingMark } from './boxFacts';
 
 const SANS = (px: number, weight = 700) => `${weight} ${px}px Arial, Helvetica, sans-serif`;
@@ -169,6 +170,64 @@ export function diskIcons(ctx: CanvasRenderingContext2D, x: number, y: number, h
   const w = iconW + 10 + ctx.measureText(label).width;
   ctx.restore();
   return w;
+}
+
+function badgeSize(ctx: CanvasRenderingContext2D, w: number, disks?: number) {
+  const dosPx = fitPx(ctx, 'MS-DOS', (px) => `italic 900 ${px}px 'Arial Black', Impact, sans-serif`, w - 14, 40);
+  const pcPx = fitPx(ctx, 'IBM PC & COMPATIBLES', CONDENSED, w - 12, 15);
+  const strip = disks ? Math.round(pcPx * 1.7) : 0;
+  return { dosPx, pcPx, strip, h: Math.round(dosPx * 1.05 + pcPx * 1.5 + 10) + strip };
+}
+
+/** How tall platformBadge draws at width w. */
+export const platformBadgeHeight = (ctx: CanvasRenderingContext2D, w: number, disks?: number): number => badgeSize(ctx, w, disks).h;
+
+/**
+ * The platform badge, as on the spine and bottom of a 1995 box: "MS-DOS" big on black,
+ * "IBM PC & COMPATIBLES" under it and, with a disk count, a 3½" disk strip. Returns its height.
+ */
+export function platformBadge(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, disks?: number): number {
+  ctx.save();
+  const { dosPx, pcPx, strip, h } = badgeSize(ctx, w, disks);
+  ctx.fillStyle = '#0b0b0b';
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, 5);
+  ctx.fill();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(x + 3, y + 3, w - 6, h - 6, 3);
+  ctx.stroke();
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#fff';
+  ctx.font = `italic 900 ${dosPx}px 'Arial Black', Impact, sans-serif`;
+  ctx.fillText('MS-DOS', x + w / 2, y + 6 + dosPx * 0.86);
+  ctx.fillStyle = '#f5d000';
+  ctx.font = CONDENSED(pcPx);
+  ctx.fillText('IBM PC & COMPATIBLES', x + w / 2, y + 8 + dosPx * 1.05 + pcPx * 0.85);
+  if (disks) {
+    const sy = y + h - strip - 3;
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(x + 3, sy, w - 6, strip);
+    // a little 3½" disk, then the count
+    const d = strip * 0.7;
+    ctx.font = CONDENSED(pcPx);
+    const label = `${disks} × 3½" DISK${disks === 1 ? '' : 'S'}`;
+    const lw = ctx.measureText(label).width;
+    const dx = x + (w - d - 6 - lw) / 2;
+    const dy = sy + (strip - d) / 2;
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(dx, dy, d, d);
+    ctx.fillStyle = '#c8c8c8';
+    ctx.fillRect(dx + d * 0.25, dy, d * 0.5, d * 0.32);
+    ctx.fillStyle = '#f2f2f2';
+    ctx.fillRect(dx + d * 0.15, dy + d * 0.5, d * 0.7, d * 0.5);
+    ctx.fillStyle = '#0b0b0b';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, dx + d + 6, sy + strip * 0.72);
+  }
+  ctx.restore();
+  return h;
 }
 
 /** The made-up Home Software Rating Council's age seal: a shield with the age in it. */
