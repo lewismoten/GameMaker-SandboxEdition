@@ -2,12 +2,12 @@
 // umbrella, the curtain, Ada's three theories, the curtain call and the lights going out.
 // Slide shows (.LST) string them together with text pages, which is how a flashback is
 // told in Game-Maker.
-import { encodeFli } from '../../web/src/formats/fli';
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, centered, microC, outlined, pool, scaleBlit, shadeAt } from './src/art/draw';
-import { P, c, ramp as r } from './src/art/pal';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, blob, centered, microC, outlined, pool, scaleBlit, shadeAt } from '../art/draw';
+import { P, c, ramp as r } from '../art/pal';
 import { W, H, actor, dagger, facade, rain, stageView } from './art';
-import { symbol } from './src/blocks/tiles';
+import { symbol } from '../blocks/tiles';
 
 const fli = (frames: Pixels[], speed: number, palettes?: Uint8Array[]) =>
   encodeFli(

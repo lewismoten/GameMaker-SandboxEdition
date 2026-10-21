@@ -1,10 +1,10 @@
 // Pictures for the 320x200 screens and the cartoons: the Paragon's front in the rain,
 // the stage seen from the stalls, actors on it, and the papers PLAYGAME writes on.
-import { Pixels, rng } from '../kit/pixels';
-import { CLEAR, blob, centered, gradient, micro, microC, outlined, pool, shadeAt, speckle, text } from './src/art/draw';
-import { c, ink, ramp as r } from './src/art/pal';
-import { portrait, PEOPLE, type Who } from './src/art/people';
-import { symbol } from './src/blocks/tiles';
+import { Pixels, rng } from '../../../kit/pixels';
+import { CLEAR, blob, centered, gradient, micro, microC, outlined, pool, shadeAt, speckle, text } from '../art/draw';
+import { c, ink, ramp as r } from '../art/pal';
+import { portrait, PEOPLE, type Who } from '../art/people';
+import { symbol } from '../blocks/tiles';
 
 export const W = 320;
 export const H = 200;

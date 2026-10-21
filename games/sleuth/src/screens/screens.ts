@@ -3,14 +3,14 @@
 // notebook-and-close-up page for every card on the evidence board, the act cards, the
 // endings and the high scores. Everything shares the house palette, so PLAYGAME's inks
 // (purple text, red MORE..., blue menu) land on the colors made for them.
-import { encodeGif } from '../../web/src/formats/gif';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { Pixels } from '../kit/pixels';
-import { dosText } from '../kit/disk';
-import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from './src/art/draw';
-import { P, c, ramp as r } from './src/art/pal';
+import { encodeGif } from '../../../../web/src/formats/gif';
+import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { Pixels } from '../../../kit/pixels';
+import { dosText } from '../../../kit/disk';
+import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from '../art/draw';
+import { P, c, ramp as r } from '../art/pal';
 import { W, H, actCard, caseFile, evidenceScreen, facade, portraitScreen, stageView, actor, rain } from './art';
-import { itemPictures, ITEMS, ITEM, boards, symbol } from './src/blocks/tiles';
+import { itemPictures, ITEMS, ITEM, boards, symbol } from '../blocks/tiles';
 import {
   ACC_INTRO,
   ACT_CARDS,
@@ -31,13 +31,13 @@ import {
   readme,
   wide,
 } from './text';
-import { PIN_FILES, SUSPECT_LETTER, WRONG_KEYS } from './src/game';
-import { SUSPECTS } from './src/levels/parlor';
-import type { Who } from './src/art/people';
-import { renderRegion } from './src/art/render';
-import type { GameMap } from '../../web/src/formats/map';
-import type { Block } from '../../web/src/formats/blocks';
-import type { Monster } from '../../web/src/formats/monster';
+import { PIN_FILES, SUSPECT_LETTER, WRONG_KEYS } from '../game';
+import { SUSPECTS } from '../levels/parlor';
+import type { Who } from '../art/people';
+import { renderRegion } from '../art/render';
+import type { GameMap } from '../../../../web/src/formats/map';
+import type { Block } from '../../../../web/src/formats/blocks';
+import type { Monster } from '../../../../web/src/formats/monster';
 
 export function gif(p: Pixels, pal: Uint8Array = P.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });

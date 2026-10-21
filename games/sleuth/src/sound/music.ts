@@ -2,7 +2,7 @@
 // turns up everywhere: a slow swing on the title, strings for the story, muted brass
 // over a walking bass for Act One, a cold organ for 2 AM, a clock ticking in the green
 // room, drums of a sort at dawn, and in D major for the curtain call.
-import { INSTRUMENTS, sbi, song, type Voice } from '../kit/music';
+import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
 const CHORDS: Record<string, string[]> = {
   Dm: ['D4', 'F4', 'A4'],

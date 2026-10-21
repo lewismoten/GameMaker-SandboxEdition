@@ -1,9 +1,9 @@
 // FINAL.SND and its digitized sounds: a chord for every piece of evidence, the creak of
 // the green room door, the click of the safe's dials, footsteps in the dark under the
 // stage (each new flagstone the lantern finds), a gasp at a scare, and a gong for a strike.
-import { newSoundSet, type SoundSet } from '../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../kit/sound';
-import { SND } from './src/ids';
+import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { SND } from '../ids';
 
 const env = (attack: number, decay: number) => (t: number) => Math.min(1, t / attack) * Math.max(0, 1 - t) ** decay;
 

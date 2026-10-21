@@ -16,10 +16,10 @@ import { buildAdaBlocks, buildCharacter } from './src/characters/character';
 import { buildActs } from './src/levels/acts';
 import { buildGame } from './src/game';
 import { buildParlorBlocks, buildParlorMap, buildParlorMonsters } from './src/levels/parlor';
-import { buildScreens } from './screens';
-import { buildFlics } from './flics';
-import { buildMusic } from './music';
-import { buildSounds } from './sounds';
+import { buildScreens } from './src/screens/screens';
+import { buildFlics } from './src/screens/flics';
+import { buildMusic } from './src/sound/music';
+import { buildSounds } from './src/sound/sounds';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { demoRecording } from './src/demo';
 
