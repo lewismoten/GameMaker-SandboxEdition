@@ -1,6 +1,10 @@
 // Port of the Recording class (code/GM/PLAYGAME.C): every game is recorded so a top
 // ten score can be replayed (data<n>.rec), and demo .rec files are played back by
 // feeding their key events into the pending key queue at the recorded tick.
+//
+// Time is counted in processed game ticks, not wall time: playscene calls DoPlayBack
+// once per game tick whether recording or playing back, and that call advances the
+// timer. A demo therefore stays in step with the game even when ticks are skipped.
 import { RECLEN, parseRecording, serializeRecording, type RecordedKey } from '../formats/recording';
 
 export const RECORD = 1;
@@ -71,7 +75,11 @@ export class Recorder {
     return out;
   }
 
-  /** DoRecord */
+  /**
+   * DoRecord: called when a key is actually applied to the character (keys held back
+   * while a sequence can't be interrupted are recorded on the tick they take effect).
+   * DeltaTime is a 16-bit uint in the C, and at most RECLEN keys are kept.
+   */
   doRecord(key: number): void {
     if (this.paused || this.mode !== RECORD || this.index >= RECLEN) return;
     this.keys[this.index] = { key, delta: (this.timer - this.lastKeyPress) & 0xffff };
@@ -84,7 +92,7 @@ export class Recorder {
     return serializeRecording(this.keys.slice(0, this.index));
   }
 
-  /** For save games. */
+  /** For save games (the C wrote the Recording object and its keys into the .sav). */
   snapshot(): unknown {
     return {
       mode: this.mode,
