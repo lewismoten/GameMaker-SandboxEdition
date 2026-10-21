@@ -1,48 +1,53 @@
 // The mid-90s desk: a PC running a DOS look-alike, a box of floppy disks, the
 // Game-Maker CD and a paper shareware catalog.
-import './desk.css';
-import './deskStage.css';
-import './pc/crtOff.css';
-import { h, clear, toast } from '../editor/core/ui';
-import { Computer } from '../retro/computer';
-import type { MonitorMode } from '../retro/computer/setup';
-import { loadDisks, RSD_GAMES, type Disk } from '../retro/dos/disks';
-import { openDiskBox, floppyElement, diskFacts, type DiskAction } from './disks/diskBox';
-import { openCatalog } from './room/catalog';
-import { openDosManual } from '../manual/dosManual';
-import { installCrtWarp } from './pc/crtWarp';
-import { sevenSegment, floppyDrive, cdDrive, openTray } from './pc/caseParts';
-import { keyboard } from './pc/keyboard';
-import { keyboardTray } from './pc/tray';
-import { speakers } from './pc/speakers';
-import { mug, wallPhone, deskLamp } from './room/deskProps';
-import { deskModem } from './pc/modem';
-import { openBoxViewer } from './boxes/boxViewer';
-import { gameShelf, type Shelf } from './boxes/shelf';
-import { openGameManual } from '../manual/gameManual';
-import { snowyWindow } from './room/snowWindow';
-import { drawGmBox, gmBoxContents } from './boxes/gmBox';
-import { SANDBOX_SHOTS, sandboxShots } from './boxes/gmShots';
-import { fitStage } from './stage';
-import { keyCardSpot } from './pc/keyCard';
-import { newsClipping } from './room/newsClipping';
-import { deskCapture } from './pc/capture';
-import { EDITION, FORK_NOTE } from '../edition';
-import { loadCatalog, type CatalogEntry } from '../project/files';
-import { Project } from '../editor/core/project';
-import type { SpeedSetting } from '../engine/scene';
+import "./desk.css";
+import "./deskStage.css";
+import "./pc/crtOff.css";
+import { h, clear, toast } from "../editor/core/ui";
+import { Computer } from "../retro/computer";
+import type { MonitorMode } from "../retro/computer/setup";
+import { loadDisks, type Disk } from "../retro/dos/disks";
+import {
+  openDiskBox,
+  floppyElement,
+  diskFacts,
+  type DiskAction,
+} from "./disks/diskBox";
+import { openCatalog } from "./room/catalog";
+import { openDosManual } from "../manual/dosManual";
+import { installCrtWarp } from "./pc/crtWarp";
+import { sevenSegment, floppyDrive, cdDrive, openTray } from "./pc/caseParts";
+import { keyboard } from "./pc/keyboard";
+import { keyboardTray } from "./pc/tray";
+import { speakers } from "./pc/speakers";
+import { mug, wallPhone, deskLamp } from "./room/deskProps";
+import { deskModem } from "./pc/modem";
+import { openBoxViewer } from "./boxes/boxViewer";
+import { gameShelf, type Shelf } from "./boxes/shelf";
+import { openGameManual } from "../manual/gameManual";
+import { snowyWindow } from "./room/snowWindow";
+import { drawGmBox, gmBoxContents } from "./boxes/gmBox";
+import { SANDBOX_SHOTS, sandboxShots } from "./boxes/gmShots";
+import { fitStage } from "./stage";
+import { keyCardSpot } from "./pc/keyCard";
+import { newsClipping } from "./room/newsClipping";
+import { deskCapture } from "./pc/capture";
+import { EDITION, FORK_NOTE } from "../edition";
+import { loadCatalog, type CatalogEntry } from "../project/files";
+import { Project } from "../editor/core/project";
+import type { SpeedSetting } from "../engine/scene";
 
 export interface DeskNav {
   /** Leave for today's web interface, optionally opening a project file. */
   toModern(projectId?: string, file?: string): void;
 }
 
-const TURBO_KEY = 'gm-turbo';
+const TURBO_KEY = "gm-turbo";
 const SLOW_TICKS = 8; // a 286-class PC
 
 function loadTurbo(): boolean {
   try {
-    return localStorage.getItem(TURBO_KEY) !== 'off';
+    return localStorage.getItem(TURBO_KEY) !== "off";
   } catch {
     return true;
   }
@@ -50,67 +55,104 @@ function loadTurbo(): boolean {
 
 export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   let turbo = loadTurbo();
-  const speed: SpeedSetting = { ticksPerSecond: turbo ? undefined : SLOW_TICKS };
+  const speed: SpeedSetting = {
+    ticksPerSecond: turbo ? undefined : SLOW_TICKS,
+  };
   let disks: Disk[] = [];
   let lastDisk: string | undefined;
 
-  const crt = h('div', { class: 'crt', role: 'region', 'aria-label': 'Computer monitor' }, h('div', { class: 'power-hint' }, 'Press the power button ⏻'));
+  const crt = h(
+    "div",
+    { class: "crt", role: "region", "aria-label": "Computer monitor" },
+    h("div", { class: "power-hint" }, "Press the power button ⏻"),
+  );
   const floppy = floppyDrive(() => eject());
   // What you can do with the disk in drive A: (shown only while there is one).
-  const driveActions = h('div', { class: 'drive-actions', hidden: true });
+  const driveActions = h("div", { class: "drive-actions", hidden: true });
   const cd = cdDrive(() => void ejectCd());
-  const powerLed = h('span', { class: 'led green' });
-  const turboLed = h('span', { class: 'led amber' });
+  const powerLed = h("span", { class: "led green" });
+  const turboLed = h("span", { class: "led amber" });
   const mhz = sevenSegment(2);
-  const powerBtn = h('button', { class: 'case-btn power', 'aria-label': 'Power', 'aria-pressed': 'false', onclick: () => void power() }, '⏻');
-  const turboBtn = h('button', { class: 'case-btn', 'aria-label': 'Turbo', onclick: () => setTurbo(!turbo) });
-  const box = h('div', { class: 'box' });
+  const powerBtn = h(
+    "button",
+    {
+      class: "case-btn power",
+      "aria-label": "Power",
+      "aria-pressed": "false",
+      onclick: () => void power(),
+    },
+    "⏻",
+  );
+  const turboBtn = h("button", {
+    class: "case-btn",
+    "aria-label": "Turbo",
+    onclick: () => setTurbo(!turbo),
+  });
+  const box = h("div", { class: "box" });
   // the playing game's key card, taped to the monitor
-  const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
+  const keyCard = keyCardSpot(() =>
+    crt.querySelector<HTMLElement>(".crt-game canvas[tabindex]")?.focus(),
+  );
   const spk = speakers();
   const lamp = deskLamp();
-  const modem = deskModem(() => void command('C:\nTERMINAL'));
+  const modem = deskModem(() => void command("C:\nTERMINAL"));
   // The same Sandbox games as the box's 3D front (boxes/gmShots.ts), each with what it shows off.
-  const BOX_TILES = SANDBOX_SHOTS.slice(0, 6).map(([id, feature]) => [id, feature] as [string, string]);
+  const BOX_TILES = SANDBOX_SHOTS.slice(0, 6).map(
+    ([id, feature]) => [id, feature] as [string, string],
+  );
   const boxTiles = h(
-    'div',
-    { class: 'tiles', 'aria-hidden': 'true' },
-    ...BOX_TILES.map(([id, caption]) => h('div', { class: 'tile', dataset: { game: id } }, h('canvas'), h('span', null, caption))),
+    "div",
+    { class: "tiles", "aria-hidden": "true" },
+    ...BOX_TILES.map(([id, caption]) =>
+      h(
+        "div",
+        { class: "tile", dataset: { game: id } },
+        h("canvas"),
+        h("span", null, caption),
+      ),
+    ),
   );
 
   const desk = h(
-    'div',
-    { class: 'desk', dataset: { power: 'off', zoom: 'false' } },
+    "div",
+    { class: "desk", dataset: { power: "off", zoom: "false" } },
     h(
-      'header',
-      { class: 'desk-bar' },
-      h('h1', null, 'GAME-MAKER'),
-      h('span', { title: FORK_NOTE }, `${EDITION} · the 1994 desk`),
-      h('span', { class: 'spacer' }),
-      matchMedia('(pointer: coarse)').matches ? h('span', { class: 'touch-tip' }, 'No keyboard? The disk box, CD and catalog type for you.') : null,
-      h('button', { onclick: () => nav.toModern() }, 'Switch to today’s web →'),
+      "header",
+      { class: "desk-bar" },
+      h("h1", null, "GAME-MAKER"),
+      h("span", { title: FORK_NOTE }, `${EDITION} · the 1994 desk`),
+      h("span", { class: "spacer" }),
+      matchMedia("(pointer: coarse)").matches
+        ? h(
+            "span",
+            { class: "touch-tip" },
+            "No keyboard? The disk box, CD and catalog type for you.",
+          )
+        : null,
+      h("button", { onclick: () => nav.toModern() }, "Switch to today’s web →"),
     ),
     h(
-      'div',
-      { class: 'desk-scene' },
+      "div",
+      { class: "desk-scene" },
       // Homage: the winter of 1992-93, shoveling snow to buy Game-Maker.
       h(
-        'a',
+        "a",
         {
-          class: 'poster',
-          href: 'https://lewismoten.com/1992/12/11/moten-snow-to-software-operations-founder-operator/',
-          target: '_blank',
-          rel: 'noopener',
-          title: 'Moten Snow-to-Software Operations: shoveling snow in the winter of 1992 to buy Game-Maker',
+          class: "poster",
+          href: "https://lewismoten.com/1992/12/11/moten-snow-to-software-operations-founder-operator/",
+          target: "_blank",
+          rel: "noopener",
+          title:
+            "Moten Snow-to-Software Operations: shoveling snow in the winter of 1992 to buy Game-Maker",
         },
-        h('img', {
-          src: './desk/moten-snow-to-software.jpg',
-          alt: 'Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel',
-          loading: 'lazy',
+        h("img", {
+          src: "./desk/moten-snow-to-software.jpg",
+          alt: "Poster: MOTEN Snow-to-Software Operations, a pixel-art snowflake and shovel",
+          loading: "lazy",
         }),
       ),
-      h('div', { class: 'desk-top', 'aria-hidden': 'true' }),
-      h('div', { class: 'desk-legs', 'aria-hidden': 'true' }),
+      h("div", { class: "desk-top", "aria-hidden": "true" }),
+      h("div", { class: "desk-legs", "aria-hidden": "true" }),
       snowyWindow(),
       newsClipping(),
       spk.left,
@@ -119,85 +161,136 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       lamp.lamp,
       lamp.glow,
       h(
-        'div',
-        { class: 'desk-left' },
+        "div",
+        { class: "desk-left" },
         h(
-          'button',
-          { class: 'prop catalog-prop', onclick: () => void catalog(), 'aria-label': 'Shareware catalog: games made with Game-Maker' },
+          "button",
+          {
+            class: "prop catalog-prop",
+            onclick: () => void catalog(),
+            "aria-label": "Shareware catalog: games made with Game-Maker",
+          },
           h(
-            'div',
-            { class: 'paper', 'aria-hidden': 'true' },
-            'SHAREWARE',
-            h('br'),
-            'CATALOG',
-            h('em', null, 'Games made with Game-Maker · Fall 1994 · call our BBS!'),
+            "div",
+            { class: "paper", "aria-hidden": "true" },
+            "SHAREWARE",
+            h("br"),
+            "CATALOG",
+            h(
+              "em",
+              null,
+              "Games made with Game-Maker · Fall 1994 · call our BBS!",
+            ),
           ),
-          h('span', { class: 'caption' }, 'Shareware catalog'),
+          h("span", { class: "caption" }, "Shareware catalog"),
         ),
         h(
-          'button',
-          { class: 'prop disk-box', onclick: () => void flip(), 'aria-label': 'Disk box: pick a game to put in drive A' },
+          "button",
+          {
+            class: "prop disk-box",
+            onclick: () => void flip(),
+            "aria-label": "Disk box: pick a game to put in drive A",
+          },
           box,
-          h('span', { class: 'caption', 'aria-hidden': 'true' }, 'Disk box — pick a game'),
+          h(
+            "span",
+            { class: "caption", "aria-hidden": "true" },
+            "Disk box — pick a game",
+          ),
         ),
         mug(),
       ),
       h(
-        'div',
-        { class: 'desk-right' },
+        "div",
+        { class: "desk-right" },
         h(
-          'button',
-          { class: 'prop gm-box', onclick: () => void openGmBox(), 'aria-label': 'Game-Maker SE 3.0 box: look inside' },
+          "button",
+          {
+            class: "prop gm-box",
+            onclick: () => void openGmBox(),
+            "aria-label": "Game-Maker SE 3.0 box: look inside",
+          },
           h(
-            'div',
-            { class: 'retail' },
-            h('div', { class: 'banner' }, h('em', null, 'COMPUTER-AIDED DESIGN TOOLS'), h('strong', null, 'GAME-MAKER')),
-            h('div', { class: 'tagline' }, 'CREATE YOUR OWN COMPUTER GAMES'),
-            h('div', { class: 'edition-ribbon' }, 'SANDBOX EDITION'),
+            "div",
+            { class: "retail" },
+            h(
+              "div",
+              { class: "banner" },
+              h("em", null, "COMPUTER-AIDED DESIGN TOOLS"),
+              h("strong", null, "GAME-MAKER"),
+            ),
+            h("div", { class: "tagline" }, "CREATE YOUR OWN COMPUTER GAMES"),
+            h("div", { class: "edition-ribbon" }, "SANDBOX EDITION"),
             boxTiles,
-            h('div', { class: 'rsd-badge' }, 'CREATED BY RECREATIONAL SOFTWARE DESIGNS'),
+            h(
+              "div",
+              { class: "rsd-badge" },
+              "CREATED BY RECREATIONAL SOFTWARE DESIGNS",
+            ),
           ),
-          h('span', { class: 'caption' }, 'Game-Maker SE 3.0 — open the box'),
+          h("span", { class: "caption" }, "Game-Maker SE 3.0 — open the box"),
         ),
       ),
       h(
-        'div',
-        { class: 'pc' },
+        "div",
+        { class: "pc" },
         h(
-          'div',
-          { class: 'case' },
+          "div",
+          { class: "case" },
           // the modem sits on top of the case, beside the monitor stand
           modem.el,
-          h('div', { class: 'case-buttons' }, h('label', null, powerBtn, 'POWER'), h('label', null, turboBtn, 'TURBO')),
           h(
-            'div',
-            { class: 'leds' },
-            h('span', null, powerLed, 'POWER'),
-            h('span', null, turboLed, 'TURBO'),
-            h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')),
+            "div",
+            { class: "case-buttons" },
+            h("label", null, powerBtn, "POWER"),
+            h("label", null, turboBtn, "TURBO"),
           ),
-          h('span'),
-          h('div', { class: 'drives' }, cd.el, floppy.el),
+          h(
+            "div",
+            { class: "leds" },
+            h("span", null, powerLed, "POWER"),
+            h("span", null, turboLed, "TURBO"),
+            h("span", { class: "mhz" }, mhz, h("small", null, "MHz")),
+          ),
+          h("span"),
+          h("div", { class: "drives" }, cd.el, floppy.el),
           driveActions,
         ),
         keyboardTray(keyboard(() => void power(true))),
         // the screen takes every key (Tab too), so it comes last when tabbing: the case,
         // tray and monitor buttons come first and CSS puts them back in their places
         h(
-          'div',
-          { class: 'monitor' },
-          h('button', { class: 'sticky', onclick: () => nav.toModern() }, 'Too retro? Use today’s web →'),
-          h('button', { class: 'enlarge', title: 'Fill the window with the screen', 'aria-label': 'Enlarge screen', onclick: () => setZoom('manual') }, '⤢'),
+          "div",
+          { class: "monitor" },
+          h(
+            "button",
+            { class: "sticky", onclick: () => nav.toModern() },
+            "Too retro? Use today’s web →",
+          ),
+          h(
+            "button",
+            {
+              class: "enlarge",
+              title: "Fill the window with the screen",
+              "aria-label": "Enlarge screen",
+              onclick: () => setZoom("manual"),
+            },
+            "⤢",
+          ),
           keyCard.el,
-          h('div', { class: 'screen-bezel' }, crt),
-          h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
-          h('span', { class: 'monitor-led' }),
+          h("div", { class: "screen-bezel" }, crt),
+          h("span", { class: "brand" }, 'PIXELMAX 14" SVGA'),
+          h("span", { class: "monitor-led" }),
         ),
-        h('div', { class: 'monitor-stand' }),
+        h("div", { class: "monitor-stand" }),
       ),
-      h('div', { class: 'desk-edge', 'aria-hidden': 'true' }),
+      h("div", { class: "desk-edge", "aria-hidden": "true" }),
     ),
-    h('button', { class: 'zoom-exit primary', onclick: () => setZoom(false) }, 'Back to the desk'),
+    h(
+      "button",
+      { class: "zoom-exit primary", onclick: () => setZoom(false) },
+      "Back to the desk",
+    ),
   );
   clear(root, desk);
   const unfit = fitStage(desk);
@@ -209,60 +302,64 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     openModern: (projectId, file) => nav.toModern(projectId, file),
     // The designers take the whole window; afterwards, go back to how the user had it.
     // vga stays in the monitor like the real thing.
-    onModeChange: (mode: MonitorMode) => setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
+    onModeChange: (mode: MonitorMode) =>
+      setZoom(mode === "gfx" ? "gfx" : enlarged ? "manual" : false),
     onDisksChanged: (insert) => void refreshDisks(insert),
     onGame: (game) => keyCard.show(game),
     // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
     onDriveAccess: (drive) => {
-      if (drive === 'A') floppy.busy(700);
-      else if (drive === 'D') cd.busy(900);
+      if (drive === "A") floppy.busy(700);
+      else if (drive === "D") cd.busy(900);
     },
   });
   pc = computer;
   const capture = deskCapture(computer);
-  desk.querySelector('.monitor .screen-bezel')?.before(capture.el); // before the screen, for Tab
-  const removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);
-  crt.addEventListener('click', () => void power(true));
+  desk.querySelector(".monitor .screen-bezel")?.before(capture.el); // before the screen, for Tab
+  const removeWarp = installCrtWarp(
+    crt.querySelector<HTMLElement>(".crt-picture")!,
+  );
+  crt.addEventListener("click", () => void power(true));
 
   /** 'gfx': the designers need the whole window; 'manual': the user enlarged the screen. */
-  function setZoom(zoom: 'gfx' | 'manual' | false): void {
-    if (zoom !== 'gfx') enlarged = zoom === 'manual';
-    desk.dataset.zoom = zoom || 'false';
+  function setZoom(zoom: "gfx" | "manual" | false): void {
+    if (zoom !== "gfx") enlarged = zoom === "manual";
+    desk.dataset.zoom = zoom || "false";
     pc?.focus(); // undefined while the PC is still being built
   }
   const onKey = (e: KeyboardEvent) => {
     // Esc leaves a manual zoom only when nothing on the PC is running (games use Esc).
-    if (e.key === 'Escape' && desk.dataset.zoom === 'manual' && !computer.busy) setZoom(false);
+    if (e.key === "Escape" && desk.dataset.zoom === "manual" && !computer.busy)
+      setZoom(false);
   };
-  window.addEventListener('keydown', onKey);
+  window.addEventListener("keydown", onKey);
 
   function setTurbo(on: boolean): void {
     turbo = on;
     speed.ticksPerSecond = on ? undefined : SLOW_TICKS;
     try {
-      localStorage.setItem(TURBO_KEY, on ? 'on' : 'off');
+      localStorage.setItem(TURBO_KEY, on ? "on" : "off");
     } catch {
       /* private mode */
     }
-    turboBtn.setAttribute('aria-pressed', String(on));
-    turboLed.classList.toggle('on', on && computer.powered);
-    mhz.show(computer.powered ? (on ? '66' : '8') : '');
+    turboBtn.setAttribute("aria-pressed", String(on));
+    turboLed.classList.toggle("on", on && computer.powered);
+    mhz.show(computer.powered ? (on ? "66" : "8") : "");
   }
 
   async function power(onlyOn = false): Promise<void> {
     if (computer.powered) {
       if (!onlyOn) {
         // switching off: the tube collapses to a line, then a dot; then the simplest honest "reset"
-        crt.classList.add('switching-off');
-        powerLed.classList.remove('on');
+        crt.classList.add("switching-off");
+        powerLed.classList.remove("on");
         spk.power(false);
         setTimeout(() => location.reload(), 1700);
       } else computer.focus();
       return;
     }
-    desk.dataset.power = 'on';
-    powerBtn.setAttribute('aria-pressed', 'true');
-    powerLed.classList.add('on');
+    desk.dataset.power = "on";
+    powerBtn.setAttribute("aria-pressed", "true");
+    powerLed.classList.add("on");
     modem.power(true);
     spk.power(true);
     setTurbo(turbo);
@@ -273,27 +370,42 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   /** Types a command at the prompt (booting first if needed). */
   async function command(cmd: string): Promise<void> {
     await power(true);
-    if (!computer.typeCommand(cmd)) toast('Quit the program that is running first (Esc usually does it).');
+    if (!computer.typeCommand(cmd))
+      toast("Quit the program that is running first (Esc usually does it).");
   }
 
   async function refreshDisks(insertId?: string): Promise<void> {
     disks = await loadDisks();
-    const peek = [...disks.filter((d) => RSD_GAMES.some((id) => d.id === `cd:${id}`)), ...disks.filter((d) => d.kind === 'project')].slice(0, 4);
+    // two stacks standing in the box: the site's disks (Sandbox's games in front) on the
+    // left, the user's own on the right (a blank one when there are none yet)
+    const site = disks
+      .filter(
+        (d) =>
+          d.kind === "original" || d.kind === "rsd" || d.kind === "gameware",
+      )
+      .slice(0, 3);
+    const own = disks.filter((d) => d.kind === "project").slice(0, 3);
+    const mine = own.length ? own : disks.filter((d) => d.kind === "blank");
+    const stack = (list: Disk[], x0: number) =>
+      [...list].reverse().map((d, k) => {
+        const i = list.length - 1 - k; // drawn back to front, so the first stands in front
+        const el = floppyElement(d, true);
+        el.classList.add("peek");
+        el.style.left = `${x0 + i * 5}px`;
+        el.style.bottom = `${28 - i * 6}px`;
+        el.style.transform = `rotate(${(1 - i) * 2.5}deg) scale(${1 - i * 0.04})`;
+        return el;
+      });
     // back to front: the lid and back wall, the disks standing in a row, the walls around them
     clear(
       box,
-      h('div', { class: 'lid' }),
-      h('div', { class: 'bx-back' }),
-      ...peek.map((d, i) => {
-        const el = floppyElement(d, true);
-        el.style.left = `${24 + i * 8}px`;
-        el.style.bottom = `${28 - i * 5}px`;
-        el.style.transform = `rotate(${(i - 1.5) * 3}deg) scale(${0.9 + i * 0.04})`;
-        return el;
-      }),
-      h('div', { class: 'bx-side l' }),
-      h('div', { class: 'bx-side r' }),
-      h('div', { class: 'bx-front' }),
+      h("div", { class: "lid" }),
+      h("div", { class: "bx-back" }),
+      ...stack(site, 14),
+      ...stack(mine, 90),
+      h("div", { class: "bx-side l" }),
+      h("div", { class: "bx-side r" }),
+      h("div", { class: "bx-front" }),
     );
     if (insertId) {
       const d = disks.find((x) => x.id === insertId);
@@ -312,16 +424,41 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       clear(driveActions);
       return;
     }
-    floppy.setDisk(d.kind === 'blank' ? 'blank disk' : d.title, d.color);
+    floppy.setDisk(d.kind === "blank" ? "blank disk" : d.title, d.color);
     floppy.busy();
     const act = (a: DiskAction) => () => void onDisk(d, a);
     clear(
       driveActions,
-      h('span', { class: 'drive-actions-title', title: diskFacts(d) }, d.kind === 'blank' ? 'Blank disk in A:' : `${d.title} in A:`),
-      d.gam ? h('button', { class: 'primary', onclick: act('play') }, '▶ Play') : null,
-      h('button', { onclick: act('design') }, d.kind === 'blank' ? '✎ New game' : '✎ Design'),
-      d.kind !== 'blank' ? h('button', { onclick: act('modern'), title: 'Open it in today’s web Game-Maker' }, 'Today’s web →') : null,
-      d.kind === 'original' && d.catalog?.original?.manual ? h('button', { onclick: () => void openGameManual(d.catalog!) }, '📖 Manual') : null,
+      h(
+        "span",
+        { class: "drive-actions-title", title: diskFacts(d) },
+        d.kind === "blank" ? "Blank disk in A:" : `${d.title} in A:`,
+      ),
+      d.gam
+        ? h("button", { class: "primary", onclick: act("play") }, "▶ Play")
+        : null,
+      h(
+        "button",
+        { onclick: act("design") },
+        d.kind === "blank" ? "✎ New game" : "✎ Design",
+      ),
+      d.kind !== "blank"
+        ? h(
+            "button",
+            {
+              onclick: act("modern"),
+              title: "Open it in today’s web Game-Maker",
+            },
+            "Today’s web →",
+          )
+        : null,
+      d.kind === "original" && d.catalog?.original?.manual
+        ? h(
+            "button",
+            { onclick: () => void openGameManual(d.catalog!) },
+            "📖 Manual",
+          )
+        : null,
     );
   }
 
@@ -334,7 +471,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   function eject(): void {
     if (computer.busy) {
-      toast('The drive light is on — quit the running program first.');
+      toast("The drive light is on — quit the running program first.");
       return;
     }
     computer.eject();
@@ -349,7 +486,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   /** Putting a disk in drive A: (the PC boots if it is off). */
   async function insertFromBox(d: Disk): Promise<void> {
     if (computer.busy) {
-      toast('The drive light is on — quit the running program first (Esc usually does it).');
+      toast(
+        "The drive light is on — quit the running program first (Esc usually does it).",
+      );
       return;
     }
     await insert(d);
@@ -357,7 +496,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   async function onDisk(d: Disk, action: DiskAction): Promise<void> {
-    if (action === 'modern') {
+    if (action === "modern") {
       if (d.projectId) return nav.toModern(d.projectId);
       const files = await d.load();
       const p = Project.fromFiles(files, `${d.title} (my copy)`);
@@ -366,31 +505,45 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       return nav.toModern(p.id);
     }
     if (computer.busy) {
-      toast('Quit the program that is running first (Esc usually does it).');
+      toast("Quit the program that is running first (Esc usually does it).");
       return;
     }
     if (inDrive?.id !== d.id) await insert(d);
-    if (action === 'play' && d.gam) await command(`A:\n${d.gam.replace(/\.gam$/i, '').toUpperCase()}`);
+    if (action === "play" && d.gam)
+      await command(`A:\n${d.gam.replace(/\.gam$/i, "").toUpperCase()}`);
     // Game-Maker starts in the current folder: the disk, or C:\GM for a new game.
-    else if (action === 'design') await command(d.kind === 'blank' ? 'C:\nCD \\GM\nGM' : 'A:\nGM');
+    else if (action === "design")
+      await command(d.kind === "blank" ? "C:\nCD \\GM\nGM" : "A:\nGM");
   }
 
   /** The Game-Maker box: turn it over, read the Owner's Guide, or put the CD in and start it. */
   async function openGmBox(): Promise<void> {
-    const tiles = [...boxTiles.querySelectorAll<HTMLElement>('.tile')].map(
-      (t) => [t.querySelector('canvas')!, t.querySelector('span')!.textContent ?? ''] as [HTMLCanvasElement, string],
+    const tiles = [...boxTiles.querySelectorAll<HTMLElement>(".tile")].map(
+      (t) =>
+        [
+          t.querySelector("canvas")!,
+          t.querySelector("span")!.textContent ?? "",
+        ] as [HTMLCanvasElement, string],
     );
-    await openBoxViewer({ title: 'Game-Maker SE 3.0' }, drawGmBox(tiles), {
+    await openBoxViewer({ title: "Game-Maker SE 3.0" }, drawGmBox(tiles), {
       insert: () => void startGameMaker(),
-      insertLabel: 'Put the CD in and start Game-Maker',
+      insertLabel: "Put the CD in and start Game-Maker",
       manual: () => void openDosManual(),
       extras: gmBoxContents(
         () => {
-          document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
+          document
+            .querySelector<HTMLButtonElement>(
+              ".box-viewer-bar button:last-child",
+            )
+            ?.click();
           void openDosManual();
         },
         () => {
-          document.querySelector<HTMLButtonElement>('.box-viewer-bar button:last-child')?.click();
+          document
+            .querySelector<HTMLButtonElement>(
+              ".box-viewer-bar button:last-child",
+            )
+            ?.click();
           void startGameMaker();
         },
       ),
@@ -401,22 +554,22 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     if (!computer.cdInserted) {
       await openTray(cd);
       computer.insertCd();
-      cd.setDisc('Game-Maker SE 3.0');
-      desk.querySelector('.gm-box')?.classList.add('cd-in');
+      cd.setDisc("Game-Maker SE 3.0");
+      desk.querySelector(".gm-box")?.classList.add("cd-in");
     }
     cd.busy();
-    await command('GM');
+    await command("GM");
   }
 
   /** The CD-ROM's eject button: out comes the tray (and the Game-Maker CD, back to its box). */
   async function ejectCd(): Promise<void> {
     if (computer.busy && computer.cdInserted) {
-      toast('The CD-ROM is in use — quit the running program first.');
+      toast("The CD-ROM is in use — quit the running program first.");
       return;
     }
     computer.ejectCd();
     cd.setDisc(undefined);
-    desk.querySelector('.gm-box')?.classList.remove('cd-in');
+    desk.querySelector(".gm-box")?.classList.remove("cd-in");
     await openTray(cd);
   }
 
@@ -424,11 +577,15 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** The shelf on the wall: a box for each original game (desk/boxes/shelf.ts). */
   async function fillShelf(games: CatalogEntry[]): Promise<void> {
-    const scene = desk.querySelector<HTMLElement>('.desk-scene');
-    if (scene) shelf = await gameShelf(scene, games, { insert: (id) => void insertOriginal(id), manual: (g, front) => void openGameManual(g, front) });
+    const scene = desk.querySelector<HTMLElement>(".desk-scene");
+    if (scene)
+      shelf = await gameShelf(scene, games, {
+        insert: (id) => void insertOriginal(id),
+        manual: (g, front) => void openGameManual(g, front),
+      });
     // on the wall under the poster, so it comes next when you Tab along the wall
-    const el = scene?.querySelector('.game-shelf');
-    if (el) desk.querySelector('.news-clipping')?.after(el);
+    const el = scene?.querySelector(".game-shelf");
+    if (el) desk.querySelector(".news-clipping")?.after(el);
   }
 
   async function insertOriginal(id: string): Promise<void> {
@@ -439,24 +596,29 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   async function catalog(): Promise<void> {
     const entries = await loadCatalog().catch(() => []);
-    await openCatalog(entries, { callBbs: () => void command('C:\nTERMINAL'), downloaded: (id) => computer.downloads.has(id) });
+    await openCatalog(entries, {
+      callBbs: () => void command("C:\nTERMINAL"),
+      downloaded: (id) => computer.downloads.has(id),
+    });
   }
 
   setTurbo(turbo);
   void refreshDisks();
-  void loadCatalog().then((cat) => fillShelf(cat.filter((g) => g.original?.box)));
+  void loadCatalog().then((cat) =>
+    fillShelf(cat.filter((g) => g.original?.box)),
+  );
   void sandboxShots().then((shots) => {
-    for (const t of boxTiles.querySelectorAll<HTMLElement>('.tile')) {
+    for (const t of boxTiles.querySelectorAll<HTMLElement>(".tile")) {
       const shot = shots.find((s) => s.id === t.dataset.game);
-      const c = t.querySelector('canvas')!;
+      const c = t.querySelector("canvas")!;
       if (!shot) continue;
       c.width = shot.canvas.width;
       c.height = shot.canvas.height;
-      c.getContext('2d')!.drawImage(shot.canvas, 0, 0);
+      c.getContext("2d")!.drawImage(shot.canvas, 0, 0);
     }
   });
   return () => {
-    window.removeEventListener('keydown', onKey);
+    window.removeEventListener("keydown", onKey);
     unfit();
     lamp.dispose();
     shelf?.dispose();
