@@ -238,7 +238,7 @@ export function stage1(): Stage {
     18,
   );
   wires(b, 112, 26);
-  b.cardAt = 9;
+  b.cardAt = 8;
   return {
     n: 1,
     id: 'board',
