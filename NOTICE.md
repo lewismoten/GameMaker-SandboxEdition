@@ -110,6 +110,11 @@ formats from their published descriptions and from Game-Maker's own source.
   Borland and Creative Technology, not the MIT License, so this fork leaves them out (also
   from `code/GM/GM.ZIP`). The web port uses none of them: its sound and graphics are
   written from the formats and from how the DOS programs behaved.
+- **`SNDBLAST.DRV`**, the Sound Blaster voice driver in `cd/gm` and `runtime/run/GM`, is
+  Creative Technology's software ("Copyright (c) Creative Technology Pte Ltd., 1989-1990.
+  All rights reserved") and is not covered by the MIT License. It is included as it came
+  on the original Game-Maker CD, and "Export for DOS" adds it to exported games the way
+  Game-Maker's own Transfer utility did. It will be removed if Creative asks.
 - The desk's hardware brands (Illogitech, PIXELMAX, SQUEAK, AwkWard BIOS) and its BBSes
   and phone numbers are made up, as are the magazines and awards on the game boxes.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
