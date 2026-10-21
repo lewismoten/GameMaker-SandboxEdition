@@ -1,5 +1,5 @@
 // The rooms backstage: the dressing rooms and their vanities (Victor's blackmail letter is
-// propped on Lila's mirror), Victor's office with its playbill (raven, rose and moon in a
+// propped on Lila's mirror), Victor's office with its typewriter and its playbill (raven, rose and moon in a
 // row: the safe's combination), the safe, and a cot and a stove.
 //
 // The safe is a combination lock made of counters. Each of its three dials is four blocks,
@@ -114,11 +114,18 @@ export function addBackstage(add: Add, { B, RG }: { B: Pixels; RG: Pixels }) {
     }),
     S,
   );
+  // Victor's Remington Noiseless, a fresh title page still in it, signed V.C.
   add(
     'desk0',
     on(RG, (p) => {
       p.rect(0, 3, 20, 14, c('wood', 1)).rect(0, 3, 20, 1, c('wood', 3));
-      p.rect(3, 5, 8, 6, c('paper', 4)).rect(14, 5, 3, 3, c('gold', 3));
+      p.rect(2, 0, 16, 8, c('paper', 5)).frame(2, 0, 16, 8, c('paper', 3));
+      micro(p, 3, 2, 'V.C.', c('black', 0));
+      p.rect(2, 8, 16, 2, c('black', 0)).set(1, 8, c('grey', 4)).set(18, 8, c('grey', 4));
+      p.rect(3, 10, 14, 6, c('black', 1)).rect(3, 15, 14, 1, c('black', 0));
+      for (let y = 11; y < 15; y += 2) for (let x = 4 + ((y >> 1) % 2); x < 16; x += 2) p.set(x, y, c('paper', 3));
+      p.rect(7, 14, 6, 1, c('grey', 3));
+      p.set(17, 11, c('gold', 3));
     }),
     S,
   );

@@ -203,7 +203,9 @@ A Play in Three Acts
 by Oliver Pike
 1931"
 
-Victor's red pencil is all over it. The play Victor called his own was written by somebody else.`,
+Victor's red pencil is all over it. The play Victor called his own was written by somebody else.
+\f
+In the Remington Noiseless on his desk: a fresh title page, typed and signed "V.C."`,
   cuesheet: `LIGHT CUE SHEET
 
 From the booth, Act III.
@@ -290,6 +292,8 @@ She will not look at the vanity mirror in her dressing room.`,
 
 "So that's what Victor kept in the safe. He used to laugh about 'Pike's little play.'
 
+"He typed at night on that Remington Noiseless. He bought a Noiseless so nobody would hear him rewrite their lines.
+\f
 "For the record: our books show not one dollar between the Paragon and Mr. Pike, either way. Ever."`,
     ],
   },
