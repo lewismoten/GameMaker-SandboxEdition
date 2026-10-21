@@ -141,7 +141,7 @@ export function storySong(): Uint8Array {
 /** The kitchen: a jaunty plucked version of the theme. */
 export function kitchenSong(): Uint8Array {
   const ch = [...THEME_CH, ...BRIDGE_CH];
-  const [a, b, c] = comp(ch, 'r e q. r e q.', -1);
+  const [a, b, c] = comp(ch, 're q. re q.', -1);
   return tune(132, [
     v(0, pluck, join(THEME, BRIDGE), 105),
     v(1, piano, a, 60),
@@ -159,7 +159,7 @@ export function livingSong(): Uint8Array {
     'F5 q, A5 e, F5 e, C5 q, A4 q, Bb4 q, D5 e, F5 e, A5 h, G5 q, E5 e, C5 e, Bb4 q, G4 q, A4 e, C5 e, F5 e, A5 e, G5 h, ' +
     'F5 q, A5 e, F5 e, D5 q, Bb4 q, G5 q, Bb5 e, G5 e, E5 q, C5 q, D5 e, E5 e, F5 e, G5 e, A5 q, G5 q, F5 h., r q';
   const both = [...ch, ...ch];
-  const [a, b, c] = comp(both, 'r q q. e q', -1);
+  const [a, b, c] = comp(both, 'r q. e q', -1);
   return tune(116, [
     v(0, VIBES, join(m, m), 100),
     v(1, organ, a, 50),
