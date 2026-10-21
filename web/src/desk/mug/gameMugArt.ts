@@ -24,7 +24,7 @@ export const GAME_MUGS: [game: string, hero: string][] = [
 
 /** The picture is a 320 x 200 title screen over a band this tall. */
 export const GAME_ART_W = 320;
-export const GAME_ART_H = 248;
+export const GAME_ART_H = 268;
 const BAND = GAME_ART_H - 200;
 
 /** Text in the 8 x 8 BIOS font. */
@@ -73,6 +73,20 @@ async function hero(entry: CatalogEntry, name: string): Promise<HTMLCanvasElemen
   return c;
 }
 
+/** The part of a sprite that isn't see-through, or undefined if it's empty. */
+function trim(c: HTMLCanvasElement): HTMLCanvasElement | undefined {
+  const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
+  let [x0, y0, x1, y1] = [c.width, c.height, -1, -1];
+  for (let y = 0; y < c.height; y++)
+    for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3]) [x0, y0, x1, y1] = [Math.min(x0, x), Math.min(y0, y), Math.max(x1, x), Math.max(y1, y)];
+  if (x1 < 0) return undefined;
+  const out = document.createElement('canvas');
+  out.width = x1 - x0 + 1;
+  out.height = y1 - y0 + 1;
+  out.getContext('2d')!.drawImage(c, -x0, -y0);
+  return out;
+}
+
 /** A game's mug picture, GAME_ART_W x GAME_ART_H, or undefined if its files can't be had. */
 export async function gameMugArt(game: string, heroName: string): Promise<HTMLCanvasElement | undefined> {
   const entry = (await loadCatalog().catch(() => [])).find((c) => c.id === game);
@@ -93,17 +107,21 @@ export async function gameMugArt(game: string, heroName: string): Promise<HTMLCa
   g.fillRect(0, 200, GAME_ART_W, BAND);
   g.fillStyle = box?.accent ?? '#ff0';
   g.fillRect(0, 200, GAME_ART_W, 2);
-  if (sprite) {
-    // facing in from both ends
-    g.drawImage(sprite, 10, 204);
+  const fig = sprite && trim(sprite);
+  if (fig) {
+    // as large as fits the band in whole pixels, facing in from both ends
+    const k = Math.max(1, Math.min(Math.floor((BAND - 8) / fig.height), Math.floor(64 / fig.width)));
+    const [w, h] = [fig.width * k, fig.height * k];
+    const y = 200 + 2 + Math.round((BAND - 2 - h) / 2);
+    g.drawImage(fig, 8, y, w, h);
     g.save();
-    g.translate(GAME_ART_W - 10, 204);
+    g.translate(GAME_ART_W - 8, y);
     g.scale(-1, 1);
-    g.drawImage(sprite, 0, 0);
+    g.drawImage(fig, 0, 0, w, h);
     g.restore();
   }
   const line = (s: string, y: number, color: string) => text(g, s, Math.round((GAME_ART_W - s.length * 8) / 2), y, color);
-  line('SANDBOX SOFTWARE', 212, box?.accent ?? '#ff0');
-  line('MADE WITH GAME-MAKER', 228, box?.ink ?? '#fff');
+  line('SANDBOX SOFTWARE', 222, box?.accent ?? '#ff0');
+  line('MADE WITH GAME-MAKER', 240, box?.ink ?? '#fff');
   return c;
 }
