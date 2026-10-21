@@ -3,14 +3,14 @@
 // own palette. Click a block in the left map to choose where the character leaves, and
 // one in the right map for where it arrives. Arrow keys scroll the map under the mouse;
 // Prev and Next step through the other links between the same two scenes.
-import type { RetroHost } from '../retro/host';
-import { showHelpScreen } from '../retro/textUi';
-import type { WorkArea } from '../retro/workArea';
-import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '../formats/game';
-import { BACKBL, BLOCK_SIZE } from '../formats/blocks';
-import { MLEN, MWID } from '../formats/map';
-import type { RGBdata, Vga } from './shared/vga';
-import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED1, RED2, palFindCol } from './shared/facelift';
+import type { RetroHost } from '../../retro/host';
+import { showHelpScreen } from '../../retro/textUi';
+import type { WorkArea } from '../../retro/workArea';
+import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '../../formats/game';
+import { BACKBL, BLOCK_SIZE } from '../../formats/blocks';
+import { MLEN, MWID } from '../../formats/map';
+import type { RGBdata, Vga } from '../shared/vga';
+import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED1, RED2, palFindCol } from '../shared/facelift';
 
 const MAP1X = 18;
 const MAP1Y = 5;

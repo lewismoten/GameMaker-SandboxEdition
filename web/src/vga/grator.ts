@@ -29,7 +29,7 @@ import {
 import { type Vga, SIZEX, SIZEY } from './shared/vga';
 import { BLACK, Face, GREEN, GREY2, GREY3, GREY4, RED1, initStartCols } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, type Program } from './shared/designer';
-import { expandlink } from './gramap';
+import { expandlink } from './grator/gramap';
 
 const NOTUSED = 0xffff; // Number in a scene variable when scene not used
 const NOLINK = 0xff;
