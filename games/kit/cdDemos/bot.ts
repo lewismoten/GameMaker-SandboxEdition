@@ -18,8 +18,8 @@ export interface BotOptions {
   horizon?: number;
   /** Monster dice per try (the worst one counts for getting hurt). */
   dice?: number;
-  /** Scene links the bot may take, by scene: link indices, or 'any'. Others are avoided. */
-  links?: Record<number, number[] | 'any'>;
+  /** Scene links the bot may take: 'any', or by scene: link indices, or 'any'. Others are avoided. */
+  links?: 'any' | Record<number, number[] | 'any'>;
   /** Keys never to press (scan codes), e.g. a drop key. */
   never?: number[];
   /** Action kinds to try (default move, jump, fire, pickup). */
@@ -72,19 +72,32 @@ export class Bot {
     this.rand = rng(o.seed ?? 7);
   }
 
-  /** The scene a newly loaded world belongs to: the scene whose map it matches best. */
+  /**
+   * The scene a newly loaded world belongs to: the first level the start link leads to,
+   * then the same scene again (after a death) or one its links lead to, whichever map
+   * matches the new world best (several scenes may share a map file).
+   */
   private sceneOf(w: World, s: Session): number {
-    let best = -1;
+    const scenes = s.game.scenes;
+    const valid = (i: number | undefined): i is number => i !== undefined && i > 1 && i < scenes.length;
+    const candidates =
+      this.scene < 0
+        ? [scenes[0]?.links[0]?.toScene].filter(valid)
+        : [this.scene, ...(scenes[this.scene]?.links ?? []).map((l) => l.toScene).filter(valid)];
+    let best = candidates[0] ?? -1;
     let bestDiff = Infinity;
-    s.game.scenes.forEach((sc, i) => {
-      const f = sc.files[1];
-      const bytes = i > 1 && f ? s.m.files.get(f) : undefined;
-      if (!bytes) return;
+    for (const i of new Set(candidates)) {
+      const f = scenes[i].files[1];
+      const bytes = f ? s.m.files.get(f) : undefined;
+      if (!bytes) continue;
       const map = parseMap(bytes).blocks;
       let diff = 0;
       for (let k = 0; k < map.length; k += 7) if (map[k] !== w.map[k]) diff++;
+      // a link that lands where the hero stands wins a tie
+      const lands = (scenes[this.scene]?.links ?? []).some((l) => l.toScene === i && l.to.x === w.chr.x[0] && l.to.y === w.chr.y[0]);
+      if (lands && i !== this.scene) diff -= 0.5;
       if (diff < bestDiff) [best, bestDiff] = [i, diff];
-    });
+    }
     return best;
   }
 
@@ -107,6 +120,7 @@ export class Bot {
   }
 
   private allowed(link: number): boolean {
+    if (this.o.links === 'any') return true;
     const l = this.o.links?.[this.scene];
     return l === 'any' || (!!l && l.includes(link));
   }
@@ -183,6 +197,7 @@ export class Bot {
       }
       // being hurt with any dice counts in full; otherwise the average, plus a little noise
       const value = (worst < -500 ? worst : sum / this.o.dice) + this.rand() * 8 + (opt?.key === this.held ? 6 : 0);
+      if (process.env.BOT_DEBUG) this.log.push(`  t${s.rec.tick} key ${opt?.key ?? '-'} worst ${worst.toFixed(0)} avg ${(sum / this.o.dice).toFixed(0)}`);
       if (value > bestValue) [best, bestValue] = [opt, value];
     }
     if (best?.key !== this.held) {
