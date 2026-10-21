@@ -1,15 +1,15 @@
 // Hear or see a file before choosing it: a small play button for sounds (.VOC), PC speaker
 // sound sets (.SND), songs (.CMF) and animations (.FLI). Only one preview plays at a time.
-import { h, toast } from './core/ui';
-import { kindOf } from './core/project';
-import { audio } from './editors/mediaShared';
-import { paintIndexed } from './core/draw';
-import { decodeVoc, isVoc } from '../formats/voc';
-import { isCmf } from '../formats/cmf';
-import { parseSoundSet, NUMFREQ } from '../formats/sound';
-import { isFli } from '../formats/fli';
-import { decodeFliFrames } from '../formats/fliFrames';
-import { TICK_RATE } from '../audio/cmfPlayer';
+import { h, toast } from '../core/ui';
+import { kindOf } from '../core/project';
+import { audio } from '../editors/mediaShared';
+import { paintIndexed } from '../core/draw';
+import { decodeVoc, isVoc } from '../../formats/voc';
+import { isCmf } from '../../formats/cmf';
+import { parseSoundSet, NUMFREQ } from '../../formats/sound';
+import { isFli } from '../../formats/fli';
+import { decodeFliFrames } from '../../formats/fliFrames';
+import { TICK_RATE } from '../../audio/cmfPlayer';
 
 /** Kinds that have something to play. */
 export const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli']);

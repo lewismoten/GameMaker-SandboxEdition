@@ -2,7 +2,7 @@
 // blocks, monsters, sounds and music anyone may reuse in their own games.
 import { loadCatalog, loadHostedGame, type CatalogEntry, type GameFiles } from '../project/files';
 import { Project, kindOf, type FileKind } from './core/project';
-import type { ThumbSource } from './thumbs';
+import type { ThumbSource } from './widgets/thumbs';
 
 export interface LibraryItem {
   game: CatalogEntry;

@@ -6,7 +6,7 @@ import { h, clear, numberField, debounce } from '../core/ui';
 import { AudioEngine } from '../../audio/engine';
 import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../tools/speakerFx';
-import { fileField } from '../filePicker';
+import { fileField } from '../widgets/filePicker';
 import { History } from '../core/history';
 
 const MAXF = 8192;

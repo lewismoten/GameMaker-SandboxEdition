@@ -3,8 +3,8 @@
 // each a series of 20x40 frames made of a top and a bottom block.
 import './character.css';
 import { registerEditor } from './index';
-import { fileField } from '../filePicker';
-import { blockButton, chooseBlock, type BlockExtra } from '../blockChooser';
+import { fileField } from '../widgets/filePicker';
+import { blockButton, chooseBlock, type BlockExtra } from '../widgets/blockChooser';
 import { h, clear, numberField, selectField, checkField, debounce } from '../core/ui';
 import { drawBlockTo, paintBlock } from '../core/draw';
 import { paletteChooser } from './blocks';

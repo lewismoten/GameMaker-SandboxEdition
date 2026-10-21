@@ -7,7 +7,7 @@ import { History } from '../core/history';
 import './slideShow.css';
 import { registerEditor } from './index';
 import { h, clear, toast } from '../core/ui';
-import { pickFile } from '../filePicker';
+import { pickFile } from '../widgets/filePicker';
 import { templateFor } from '../templates';
 import type { FileKind } from '../core/project';
 import { parseSlideList, serializeSlideList, textLines, type SlideEntry } from '../../formats/graphicScripts';

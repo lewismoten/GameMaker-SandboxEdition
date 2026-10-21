@@ -8,7 +8,7 @@ import { registerEditor } from './index';
 import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../core/ui';
 import { blockImages } from '../core/draw';
 import type { FileKind, Project } from '../core/project';
-import { fileField } from '../filePicker';
+import { fileField } from '../widgets/filePicker';
 import { GameFiles } from '../../project/files';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import {

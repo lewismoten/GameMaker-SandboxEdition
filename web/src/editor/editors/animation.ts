@@ -7,7 +7,7 @@ import './animation.css';
 import { registerEditor } from './index';
 import { h, clear, download, pickFiles, toast } from '../core/ui';
 import { paintIndexed } from '../core/draw';
-import { pickFile } from '../filePicker';
+import { pickFile } from '../widgets/filePicker';
 import { decodeFrames, remap, rgbaOf } from '../convert';
 import { decodeGif, isGif } from '../../formats/gif';
 import { decodeFliFrames, encodeFliFrames, fitPicture, type FliFrame, type FliFrames } from '../../formats/fliFrames';

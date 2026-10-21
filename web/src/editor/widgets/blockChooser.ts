@@ -1,9 +1,9 @@
 // Choosing a block by its picture: a button showing the current block that opens a grid
 // of every block in the set (plus any special choices, like "none").
-import { h, modal } from './core/ui';
-import { blockCanvas } from './core/draw';
-import type { Palette } from '../formats/palette';
-import type { Block } from '../formats/blocks';
+import { h, modal } from '../core/ui';
+import { blockCanvas } from '../core/draw';
+import type { Palette } from '../../formats/palette';
+import type { Block } from '../../formats/blocks';
 
 export interface BlockExtra {
   value: number;

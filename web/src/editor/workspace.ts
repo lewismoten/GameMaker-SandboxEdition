@@ -1,9 +1,9 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from './core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from './core/project';
-import { pickFile } from './filePicker';
+import { pickFile } from './widgets/filePicker';
 import { MAKERS } from './makers';
-import { KIND_ICON } from './thumbs';
+import { KIND_ICON } from './widgets/thumbs';
 import { editors, fileInfo } from './editors';
 import { GameFiles, loadFileList, normalize } from '../project/files';
 import { createZip } from '../project/zip';

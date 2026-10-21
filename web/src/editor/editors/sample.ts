@@ -8,7 +8,7 @@ import { h, clear, download, toast } from '../core/ui';
 import { encodeWav, toPcm8 } from '../../media/wav';
 import { decodeVoc, encodeVoc } from '../../formats/voc';
 import { audio } from './mediaShared';
-import { drawWave } from '../waveform';
+import { drawWave } from '../widgets/waveform';
 import { startRecording } from '../tools/vocMaker';
 import {
   applyEffect,

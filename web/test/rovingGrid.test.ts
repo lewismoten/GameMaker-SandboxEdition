@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { gridMove } from '../src/editor/rovingGrid';
+import { gridMove } from '../src/editor/widgets/rovingGrid';
 
 describe('gridMove', () => {
   it('moves by one across and by a row up and down', () => {

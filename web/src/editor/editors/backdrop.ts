@@ -3,7 +3,7 @@
 // underscore name the CD gave it); a missing picture is brought in from the library.
 import './backdrop.css';
 import { registerEditor } from './index';
-import { fileField } from '../filePicker';
+import { fileField } from '../widgets/filePicker';
 import { h, clear, download, numberField, toast } from '../core/ui';
 import type { Project } from '../core/project';
 import { libraryGame, libraryItems, type LibraryItem } from '../library';
