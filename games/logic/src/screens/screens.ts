@@ -8,6 +8,7 @@ import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
 import { dosText } from '../../../kit/disk';
+import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { PAL, c, r } from '../art/pal';
 import type { Board } from '../levels/board';
@@ -353,9 +354,12 @@ export function homeFli(art: Art): Uint8Array {
 
 export function buildScreens(art: Art, boards: { b: Board; tiles: BlockSet }[]): Record<string, Uint8Array> {
   const out: Record<string, Uint8Array> = {};
+  out[SANDLOGO] = sandLogoFli();
   out['intro.fli'] = introFli(art);
   out['title.gif'] = gif(titleScreen(art));
+  // the Sandbox Software logo first, then the game's own intro
   out['title.lst'] = serializeSlideList([
+    { name: SANDLOGO, pause: 0 },
     { name: 'intro.fli', pause: 1 },
     { name: 'title.gif', pause: 12 },
   ]);
