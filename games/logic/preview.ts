@@ -41,3 +41,21 @@ if (process.env.PREVIEW_DIR) {
     writePng(join(dir, `board-${spec.file}.png`), renderBoard(compileBoard(spec, tiles, mb), tiles, mb, cb.pic('down0')), PAL.pal, 2);
   }
 }
+
+if (process.env.PREVIEW_DIR && process.env.SCREENS) {
+  const { BOARDS } = await import('./boards');
+  const { compileBoard } = await import('./board');
+  const { buildMonsterBlocks, buildWattBlocks } = await import('./sprites');
+  const S = await import('./screens');
+  const art = { watt: buildWattBlocks(), parts: buildMonsterBlocks() };
+  const shots: [string, Pixels][] = [
+    ['title', S.titleScreen(art)],
+    ['menu', S.menuScreen(art)],
+    ['page', S.pageScreen(art, 'THE STORY', 51)],
+    ['scores', S.scoresScreen(art)],
+    ['slots', S.slotsScreen(art)],
+  ];
+  const tiles = buildTiles(STYLES[BOARDS[2].room]);
+  shots.push(['card', S.cardScreen(compileBoard(BOARDS[2], tiles, art.parts), 3, BOARDS.length, tiles, art)]);
+  for (const [name, p] of shots) writePng(join(dir, `screen-${name}.png`), p, PAL.pal, 2);
+}
