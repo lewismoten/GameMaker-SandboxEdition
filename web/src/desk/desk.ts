@@ -33,6 +33,7 @@ import { keyCardSpot } from "./pc/keyCard";
 import { newsClipping } from "./room/newsClipping";
 import { phoneNotes } from "./room/phoneNotes";
 import { wallClock } from "./room/wallClock";
+import { askSaveFirst, folderText } from "./pc/saveFirst";
 import { wasteBasket } from "./room/wasteBasket";
 import { roomDoor } from "./room/roomDoor";
 import { deskCapture } from "./pc/capture";
@@ -506,14 +507,56 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** Putting a disk in drive A: the PC boots if it is off, and the disk's game starts
    * (typed at the DOS prompt, as you would); a disk without one leaves you at A:. */
-  async function insertFromBox(d: Disk): Promise<void> {
-    // a game playing is quit for the new disk; anything else has to be left first
-    if (computer.busy && !(await computer.stopGame())) {
-      toast(
-        "The drive light is on — quit the running program first (Esc usually does it).",
-      );
-      return;
+  /**
+   * Gets back to the DOS prompt for a disk: a game playing quits, and Game-Maker closes
+   * after asking to save a designer's unsaved changes. False if you'd rather keep going
+   * (or something else, like the BBS terminal, is running).
+   */
+  async function leaveProgram(): Promise<boolean> {
+    if (!computer.busy) return true;
+    if (await computer.stopGame()) return true;
+    if (!computer.inGameMaker) {
+      toast("Quit the program that is running first (Esc usually does it).");
+      return false;
     }
+    const open = computer.designer;
+    let saveAs = "";
+    if (open && !open.saved && open.contents().length) {
+      // the disk in A: is write-protected, or the work is on the CD
+      const at = open.work.folder.drive;
+      const readOnly = at === "D" || (at === "A" && !!inDrive?.writeProtected);
+      const answer = await askSaveFirst(open, readOnly);
+      if (answer === null) return false;
+      saveAs = answer;
+    }
+    if (!(await computer.stopProgram())) {
+      toast("Game-Maker didn’t close. Quit it with Esc first.", "error");
+      return false;
+    }
+    if (open && saveAs) {
+      const names = open.contents().map((c) => `${saveAs}.${c.ext}`);
+      // nobody's at Game-Maker now: a read-only game is copied to the hard disk unasked
+      computer.quiet = true;
+      computer.copiedTo = undefined;
+      let ok = true;
+      try {
+        for (const c of open.contents())
+          ok = (await open.work.write(`${saveAs}.${c.ext}`, c.bytes)) && ok;
+      } finally {
+        computer.quiet = false;
+      }
+      const list = names.map((n) => n.toUpperCase()).join(" and ");
+      const where = computer.copiedTo
+        ? `${computer.copiedTo}, a copy of the game on the hard disk (the original can’t be changed)`
+        : folderText(open);
+      if (ok) toast(`Saved ${list} in ${where}.`);
+      else toast(`Couldn’t save ${list}.`, "error");
+    }
+    return true;
+  }
+
+  async function insertFromBox(d: Disk): Promise<void> {
+    if (!(await leaveProgram())) return;
     await insert(d);
     if (d.gam) await onDisk(d, "play");
     else await power(true);
@@ -528,11 +571,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       await p.saveNow();
       return nav.toModern(p.id);
     }
-    // Design (or Play) while a game is playing quits the game first
-    if (computer.busy && !(await computer.stopGame())) {
-      toast("Quit the program that is running first (Esc usually does it).");
-      return;
-    }
+    if (!(await leaveProgram())) return;
     if (inDrive?.id !== d.id) await insert(d);
     if (action === "play" && d.gam)
       await command(`A:\n${d.gam.replace(/\.gam$/i, "").toUpperCase()}`);
