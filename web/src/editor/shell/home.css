@@ -428,7 +428,8 @@ button.with-ico {
 }
 
 /* the tip naming what a button does, on hover and on keyboard focus */
-.shot-icon[data-tip]::after {
+.shot-icon[data-tip]::after,
+.health-badge[data-tip]::after {
   content: attr(data-tip);
   position: absolute;
   right: 0;
@@ -452,8 +453,15 @@ button.with-ico {
   left: 0;
 }
 
+.health-badge[data-tip]::after {
+  top: calc(100% + 6px);
+  bottom: auto;
+}
+
 .shot-icon[data-tip]:hover::after,
-.shot-icon[data-tip]:focus-visible::after {
+.shot-icon[data-tip]:focus-visible::after,
+.health-badge[data-tip]:hover::after,
+.health-badge[data-tip]:focus-visible::after {
   opacity: 1;
   transition-delay: 0.25s;
 }

@@ -98,7 +98,8 @@ export function healthBadge(target: HealthTarget): HTMLElement {
       badge.classList.add(worst);
       const errors = issues.filter((i) => i.severity === 'error').length;
       const label = errors ? `${errors} problem${errors === 1 ? '' : 's'}` : `${issues.length} warning${issues.length === 1 ? '' : 's'}`;
-      badge.title = `${label}: ${issues[0].message}${issues.length > 1 ? ' …' : ''} (click for the full report)`;
+      // the tip names how many; the report (a click away) says what
+      badge.dataset.tip = `${label[0].toUpperCase()}${label.slice(1)} found: click for the report`;
       badge.setAttribute('aria-label', `${target.title}: ${label}. Show the report.`);
     });
   seen.observe(badge);
