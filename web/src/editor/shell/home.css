@@ -9,6 +9,7 @@
   gap: 10px;
   min-width: 0;
   margin: 0;
+  container: library / inline-size;
 }
 
 .lib-bar {
@@ -706,5 +707,46 @@ a.button.with-ico {
 
   .lib-tiles {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+/* When the tabs, search and New game don't fit on one line, the tabs fill the first line
+   and search with New game the second, both the library's full width. */
+@container library (max-width: 860px) {
+  .lib-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lib-cats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .lib-cat {
+    justify-content: center;
+  }
+
+  .lib-find {
+    flex: none;
+  }
+
+  .lib-search {
+    flex: 1 1 auto;
+  }
+}
+
+/* narrower still: the tabs as a 2 x 2 grid */
+@container library (max-width: 559px) {
+  .lib-cats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lib-cat {
+    justify-content: flex-start;
+  }
+
+  .lib-cat-count {
+    margin-left: auto;
   }
 }
