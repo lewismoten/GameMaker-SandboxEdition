@@ -253,7 +253,7 @@ export interface TileOptions {
   onSelect(game: HomeGame): void;
 }
 
-/** A game in the grid: its picture with ⌨ 📖 ▶ over it, and its title. */
+/** A game in the grid: its picture with Keys, Manual and Demo over it, and its title. */
 export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
   const shot = game.gam || game.kind === 'mine' ? gameShot(game, 160, 100) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
   // Keys and Manual at the top left, the Demo at the bottom right (⚠ takes the top right)
@@ -338,14 +338,14 @@ export function moreMenu(...items: (HTMLElement | null | false | undefined)[]): 
 
 /** Everything that can be done with a game, for the panel at the top. */
 export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise<void>): HTMLElement[] {
-  const play = (href: string) => h('a', { class: 'button primary', href, 'aria-label': `Play ${game.title}` }, '▶ Play');
+  const play = (href: string) => h('a', { class: 'button primary with-ico', href, 'aria-label': `Play ${game.title}` }, svgIcon('play'), 'Play');
   const keys = h('button', { class: 'with-ico', title: 'What each key does in this game', onclick: () => openKeys(game) }, svgIcon('keys'), 'Keys');
   const e = game.entry;
   if (game.project) {
     const p = game.project;
     return [
-      h('button', { class: 'primary', onclick: () => nav.openProject(p.id) }, '✎ Open'),
-      h('a', { class: 'button', href: `./play.html?project=${encodeURIComponent(p.id)}` }, '▶ Play'),
+      h('button', { class: 'primary with-ico', onclick: () => nav.openProject(p.id) }, svgIcon('edit'), 'Open'),
+      h('a', { class: 'button with-ico', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
       keys,
       moreMenu(
         h('button', { onclick: () => void downloadProject(p.id) }, 'Download .zip'),
@@ -388,19 +388,20 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
     [
       play(href),
       game.kind === 'shareware'
-        ? h('button', { onclick: () => void showNotice(e) }, '📜 Notice')
-        : h('button', { onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, '✎ Edit a copy'),
+        ? h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice')
+        : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
       keys,
-      hasManual(game) ? h('button', { onclick: () => void openGameManual(e) }, '📖 Manual') : null,
+      hasManual(game) ? h('button', { class: 'with-ico', onclick: () => void openGameManual(e) }, svgIcon('manual'), 'Manual') : null,
     ] as (HTMLElement | null)[]
   ).filter((x): x is HTMLElement => !!x);
 }
 
-/** “🎬 Demo…”: the demo in a dialog, where it can also be saved as a video. */
+/** “Demo video”: the demo in a dialog, where it can also be saved as a video. */
 export function demoDialogButton(game: HomeGame): HTMLElement | null {
   const b = demoButton(game.title, () => game.files(), game.gam);
   if (!b) return null;
-  b.textContent = '🎬 Demo video';
+  b.replaceChildren(svgIcon('film'), 'Demo video');
+  b.classList.add('with-ico');
   b.title = 'Watch the demo with its music and sounds, or save it as a video';
   return b;
 }

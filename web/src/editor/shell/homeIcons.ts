@@ -1,4 +1,4 @@
-// Small line icons for the buttons over a game's picture on the home page. Drawn as SVG
+// Small line icons for the home page's buttons and tabs. Drawn as SVG
 // so they look the same in every browser (the ⌨ character is missing from many fonts and
 // came out as a dash). They take the button's text color.
 const PATHS = {
@@ -6,6 +6,12 @@ const PATHS = {
   manual: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>',
   play: '<path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/>',
   stop: '<rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/>',
+  edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+  disk: '<path d="M4 4h13l3 3v13H4z"/><path d="M8 4v5h8V4M7 20v-6h10v6"/>',
+  star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  film: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/>',
+  notice: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/>',
 } as const;
 
 export type IconName = keyof typeof PATHS;

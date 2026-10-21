@@ -60,9 +60,9 @@
   outline-offset: 1px;
 }
 
-.lib-cat-icon {
-  width: 1.2em;
-  text-align: center;
+.lib-cat .ico {
+  flex: none;
+  opacity: 0.85;
 }
 
 .lib-cat-count {
@@ -478,7 +478,8 @@
   flex: none;
 }
 
-button.with-ico {
+.with-ico,
+a.button.with-ico {
   display: inline-flex;
   align-items: center;
   gap: 6px;

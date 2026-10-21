@@ -13,6 +13,7 @@ import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../../edition';
 import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type HomeGame } from './homeCards';
 import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
+import { icon, type IconName } from './homeIcons';
 
 export interface HomeNav {
   openProject(id: string): void;
@@ -20,28 +21,28 @@ export interface HomeNav {
 
 type Category = GameKind;
 
-const CATEGORIES: { id: Category; icon: string; name: string; lead: string }[] = [
+const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[] = [
   {
     id: 'mine',
-    icon: '✎',
+    icon: 'edit',
     name: 'My games',
     lead: 'Games you are making or have copied, kept in this browser. Download a .zip now and then to keep them safe.',
   },
   {
     id: 'gameware',
-    icon: '💾',
+    icon: 'disk',
     name: 'Gameware',
     lead: 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.',
   },
   {
     id: 'sandbox',
-    icon: '★',
+    icon: 'star',
     name: 'Sandbox',
     lead: 'New games from Sandbox Software, made with Game-Maker in the original formats, so they also play in DOS. Play them, read their manuals, or edit a copy to see how they were made.',
   },
   {
     id: 'shareware',
-    icon: '🔒',
+    icon: 'lock',
     name: 'Shareware',
     lead: 'Games other people made with Game-Maker, as distributed on the CD. They are copyrighted by their authors and can only be played here, exactly as released. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
   },
@@ -192,7 +193,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
             title: c.lead,
             onclick: () => void select(c.id, true),
           },
-          h('span', { class: 'lib-cat-icon', 'aria-hidden': 'true' }, c.icon),
+          icon(c.icon),
           h('span', { class: 'lib-cat-name' }, c.name),
           h('span', { class: 'lib-cat-count' }, String(counts[c.id]), h('span', { class: 'vh' }, ` game${counts[c.id] === 1 ? '' : 's'}`)),
         ),
