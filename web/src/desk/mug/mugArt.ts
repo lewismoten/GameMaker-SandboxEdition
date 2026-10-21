@@ -2,7 +2,7 @@
 // CP437 characters in the 16 text-mode colors, from the BBS's own ANSI art (retro/ansiArt.ts).
 // Each design is a block of 80-column text rendered with the VGA font, 8 x 16 pixels a cell.
 import { TextScreen, attr, COLS } from '../../retro/text/textScreen';
-import { SANDBOX_ANSI, bigText, bigTextWidth, centered, fadeBar, sandboxLogin } from '../../retro/ansiArt';
+import { SANDBOX_ANSI, bigText, bigTextWidth, centered, fadeBar, sandboxLogin } from '../../retro/bbs/ansiArt';
 import { toCp437 } from '../../retro/text/cp437';
 
 export type MugDesignId = 'logo' | 'scene' | 'banner' | 'gm';

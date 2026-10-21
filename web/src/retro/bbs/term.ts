@@ -1,8 +1,8 @@
 // The terminal program's screen: BBS pipe color codes (|XX = color XX), a status bar
 // on the bottom line, ANSI-style boxes, and dialing a number with the modem.
-import type { RetroHost } from './host';
-import { attr, COLS, ROWS } from './text/textScreen';
-import { toCp437 } from './text/cp437';
+import type { RetroHost } from '../host';
+import { attr, COLS, ROWS } from '../text/textScreen';
+import { toCp437 } from '../text/cp437';
 import { busySounds, dialSounds } from './modem';
 
 /** What the modem's front lights show; the desk's modem listens for these (desk/modem.ts). */

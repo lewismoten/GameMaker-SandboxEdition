@@ -2,7 +2,7 @@
 // tone, touch-tones, the ring, the answering modem's 2100 Hz tone, the V.8 / V.32bis
 // handshake (FSK chirps, the "bing-bong" tones, then the hiss of training), and silence
 // once the speaker turns off at CONNECT. Everything is band-limited like a phone line.
-import { output } from "../audio/output";
+import { output } from "../../audio/output";
 
 const DTMF: Record<string, [number, number]> = {
   "1": [697, 1209],

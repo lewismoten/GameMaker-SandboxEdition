@@ -1,8 +1,8 @@
 // ANSI art for the BBSes, drawn straight into the text screen with CP437 block
 // characters: big shaded letters, fade bars, sand dunes, a sand castle, a pail and
 // shovel, and a sofa, the way 1990s BBS screens looked.
-import { attr, COLS, type TextScreen } from './text/textScreen';
-import { toCp437 } from './text/cp437';
+import { attr, COLS, type TextScreen } from '../text/textScreen';
+import { toCp437 } from '../text/cp437';
 
 /** 5x5 block letters. */
 const FONT: Record<string, string[]> = {

@@ -9,7 +9,7 @@ import { exportDos } from '../export/exportDos';
 import { Downloads, type FolderGame, type InsertedDisk, type RetroHost } from './host';
 import { errorBox, askText } from './text/textUi';
 import { runGameMaker, playgame } from './gm';
-import { runTerminal } from './bbs';
+import { runTerminal } from './bbs/bbs';
 import type { Disk } from './disks';
 import { mountPlayer } from '../player/player';
 import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../project/files';

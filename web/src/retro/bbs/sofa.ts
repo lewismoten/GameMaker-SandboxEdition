@@ -1,9 +1,9 @@
 // The Sofa: a (recreated) multi-line Pittsburgh BBS running The Major BBS, the kind of
 // board people called to hang out: who's on which line, and a live teleconference where
 // the other callers chat while you type.
-import type { RetroHost } from './host';
-import { attr, COLS } from './text/textScreen';
-import { readLine } from './text/textInput';
+import type { RetroHost } from '../host';
+import { attr, COLS } from '../text/textScreen';
+import { readLine } from '../text/textInput';
 import { sofaLogin } from './ansiArt';
 import { Term, sleep } from './term';
 

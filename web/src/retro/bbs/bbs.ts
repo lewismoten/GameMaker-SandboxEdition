@@ -1,16 +1,16 @@
 // TERMINAL.EXE: a dialing directory of (recreated) Pittsburgh BBSes. THE -= S A N D B O X =-
 // BBS, a Renegade board, has the CD's shareware games to read about and "download" into
 // C:\DOWNLOAD; The Sofa is a multi-line Major BBS for hanging out (retro/sofa.ts).
-import type { RetroHost } from './host';
-import { attr, COLS, ROWS } from './text/textScreen';
-import { readLine } from './text/textInput';
-import { toCp437 } from './text/cp437';
-import { commas } from './vfs';
-import type { CatalogEntry } from '../project/files';
+import type { RetroHost } from '../host';
+import { attr, COLS, ROWS } from '../text/textScreen';
+import { readLine } from '../text/textInput';
+import { toCp437 } from '../text/cp437';
+import { commas } from '../vfs';
+import type { CatalogEntry } from '../../project/files';
 import { sandboxLogin, sandBanner, SANDBOX_ANSI } from './ansiArt';
 import { Term, boxBottom, boxRow, boxRule, boxTop, dial, modemSignal, sleep, statusLine } from './term';
 import { runSofa, SOFA_PHONE, sofaBusy } from './sofa';
-import { output } from '../audio/output';
+import { output } from '../../audio/output';
 
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 const PHONE = '1-412-555-SAND';

@@ -2,7 +2,7 @@
 // lights follow the call: MR when the PC is on, TR while the terminal runs, OH when it
 // picks up the line, CD and HS once connected, RD and SD flickering with the data.
 import { h } from '../../editor/core/ui';
-import type { ModemSignal } from '../../retro/term';
+import type { ModemSignal } from '../../retro/bbs/term';
 
 const LIGHTS = ['HS', 'AA', 'CD', 'OH', 'RD', 'SD', 'TR', 'MR'] as const;
 type Light = (typeof LIGHTS)[number];

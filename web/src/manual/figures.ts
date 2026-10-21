@@ -2,7 +2,7 @@
 import { TextScreen, attr } from '../retro/text/textScreen';
 import { toCp437 } from '../retro/text/cp437';
 import { paintMenuScreen } from '../retro/gm';
-import { sandboxLogin } from '../retro/ansiArt';
+import { sandboxLogin } from '../retro/bbs/ansiArt';
 import { MENUATTR, SHADATTR, ERRORATTR, CURATTR } from '../retro/text/textUi';
 
 type Draw = (s: TextScreen) => void;
