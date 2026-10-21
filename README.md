@@ -25,6 +25,15 @@ opens original game folders, plays the CD's games (the shareware ones play-only,
 their authors' notices), and exports your games as installable offline web apps or as
 DOS folders that run in DOSBox.
 
+Where things are:
+
+- [`web/`](web) — the browser app (see [web/src/README.md](web/src/README.md) for a map of
+  the source: the 1994 desk, today's editor, the file formats, the engine and player).
+- [`games/`](games) — the Sandbox Software games, each built in code into real Game-Maker
+  files (see [games/README.md](games/README.md)).
+- `cd/`, `code/`, `runtime/`, `tools/` — the original 2014 release: the CD image, the DOS
+  source, an installed copy and the Borland compiler (described below).
+
 It is published at https://lewismoten.github.io/GameMaker-SandboxEdition/ by the GitHub Actions
 workflow in `.github/workflows/pages.yml`. See [web/README.md](web/README.md) for
 details.
