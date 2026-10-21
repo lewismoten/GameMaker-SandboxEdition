@@ -11,6 +11,8 @@ import { TrackList } from './tracks';
 import { InstrumentPanel } from './instrument';
 import { SongPanel } from './songPanel';
 import { VelocityField } from './velocity';
+import { startProgram } from '../../../formats/cmfEdit';
+import { MUS_TABS, loadTab, saveTab, stepTab, type MusTab } from './tabs';
 import './music.css';
 
 registerEditor(['cmf'], (host, project, file) => {
@@ -98,14 +100,11 @@ registerEditor(['cmf'], (host, project, file) => {
   const follow = h('input', { type: 'checkbox', checked: doc.follow });
   follow.addEventListener('change', () => (doc.follow = follow.checked));
 
-  const bar = h(
+  // the roll's tools show only on the Song tab; play, undo and redo work on every tab
+  const rollTools = h(
     'div',
-    { class: 'mus-bar' },
-    h('div', { class: 'toolbar' }, playBtn, toStart, loopBtn, time),
-    h(
-      'div',
-      { class: 'toolbar' },
-      tools,
+    { class: 'toolbar mus-roll-tools' },
+    tools,
       h('label', { class: 'mus-inline', title: 'Snap notes to the grid' }, h('span', null, 'Snap'), snap),
       h('button', { title: 'Zoom out', 'aria-label': 'Zoom out', onclick: () => zoom(1 / 1.5) }, '−'),
       h('button', { title: 'Zoom in', 'aria-label': 'Zoom in', onclick: () => zoom(1.5) }, '+'),
@@ -120,10 +119,8 @@ registerEditor(['cmf'], (host, project, file) => {
         },
         'Fit',
       ),
-      undoBtn,
-      redoBtn,
-    ),
   );
+  const bar = h('div', { class: 'mus-bar' }, h('div', { class: 'toolbar' }, playBtn, toStart, loopBtn, time), rollTools);
   const options = h(
     'div',
     { class: 'mus-options' },
@@ -167,18 +164,77 @@ registerEditor(['cmf'], (host, project, file) => {
     overview.draw();
   });
 
+  // ---- tabs: the notes get the whole editor; instruments and song settings have their own ----
+  const songPanel_ = h(
+    'section',
+    { class: 'mus-panel mus-panel-song', id: 'mus-song', role: 'tabpanel', 'aria-labelledby': 'mus-tab-song' },
+    overview.el,
+    h('div', { class: 'mus-main' }, tracks.el, h('div', { class: 'mus-roll-col' }, roll.el, options)),
+  );
+  const instPanel = h('section', { class: 'mus-panel', id: 'mus-inst', role: 'tabpanel', 'aria-labelledby': 'mus-tab-inst' }, instrument.el);
+  const setPanel = h(
+    'section',
+    { class: 'mus-panel mus-panel-set', id: 'mus-set', role: 'tabpanel', 'aria-labelledby': 'mus-tab-set' },
+    h('div', { class: 'panel mus-song-box' }, h('h3', null, 'Song settings'), songPanel.el),
+  );
+  const panels: Record<MusTab, HTMLElement> = { song: songPanel_, inst: instPanel, set: setPanel };
+  const tabBar = h(
+    'div',
+    { class: 'mus-tabs', role: 'tablist', 'aria-label': 'Music' },
+    ...MUS_TABS.map(([key, label, title]) =>
+      h(
+        'button',
+        {
+          type: 'button',
+          class: 'mus-tab',
+          id: `mus-tab-${key}`,
+          role: 'tab',
+          title,
+          'aria-controls': panels[key].id,
+          onclick: () => showTab(key, true),
+          onkeydown: (e: KeyboardEvent) => {
+            const next = stepTab(key, e.key);
+            if (!next) return;
+            e.preventDefault();
+            showTab(next, true);
+            tabBar.querySelector<HTMLElement>('[aria-selected="true"]')?.focus();
+          },
+        },
+        label,
+      ),
+    ),
+  );
+  let tab = loadTab();
+  function showTab(key: MusTab, remember = false): void {
+    tab = key;
+    for (const [k, el] of Object.entries(panels)) el.hidden = k !== key;
+    rollTools.hidden = key !== 'song';
+    for (const b of tabBar.querySelectorAll<HTMLElement>('.mus-tab')) {
+      const on = b.id === `mus-tab-${key}`;
+      b.setAttribute('aria-selected', String(on));
+      b.tabIndex = on ? 0 : -1;
+    }
+    if (remember) saveTab(key);
+    if (key === 'song') roll.draw();
+  }
+  /** Opens the Instruments tab on instrument i (the selected track's when not given). */
+  const editInstrument = (i?: number) => {
+    instrument.show(i);
+    showTab('inst', true);
+    instPanel.querySelector<HTMLElement>('.mus-inst-list [aria-current="true"]')?.focus();
+  };
+  roll.onEditInstrument = editInstrument;
+  tracks.onEditInstrument = (ch) => editInstrument(startProgram(doc.song, ch));
+  tracks.render();
+
   const root = h(
     'div',
     { class: 'mus', tabIndex: -1 },
+    h('div', { class: 'mus-tabrow' }, tabBar, h('div', { class: 'toolbar mus-undo' }, undoBtn, redoBtn)),
     bar,
-    overview.el,
-    h('div', { class: 'mus-main' }, tracks.el, h('div', { class: 'mus-roll-col' }, roll.el, options)),
-    h(
-      'div',
-      { class: 'mus-lower' },
-      instrument.el,
-      h('details', { class: 'mus-song-box panel', open: doc.song.clockTicks !== 146 }, h('summary', null, 'Song settings'), songPanel.el),
-    ),
+    songPanel_,
+    instPanel,
+    setPanel,
   );
 
   // Space plays, Ctrl+Z undoes — anywhere in the editor except in text fields.
@@ -200,6 +256,7 @@ registerEditor(['cmf'], (host, project, file) => {
   });
 
   clear(host, root);
+  showTab(tab);
   refresh();
   if (!doc.song.notes.length && !doc.tracks().length) toast('An empty song: add a track to start.');
   return () => {

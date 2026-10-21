@@ -292,13 +292,6 @@
 }
 
 /* ---- instrument ---- */
-.mus-lower {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
-  gap: 8px;
-  align-items: start;
-}
-
 .mus-inst h3 {
   margin: 0;
   font:
@@ -440,12 +433,6 @@
   margin-top: 8px;
 }
 
-@media (max-width: 860px) {
-  .mus-lower {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 @media (max-width: 760px) {
   .mus-main {
     grid-template-columns: minmax(0, 1fr);
@@ -484,24 +471,29 @@
   align-items: center;
 }
 
-/* Wide, tall-enough windows: the editor is as tall as the window; the piano roll takes the
-   room left by the instrument panel, which scrolls by itself when it doesn't all fit. */
+/* Wide, tall-enough windows: the editor is as tall as the window; the piano roll takes all of
+   the Song tab, and the Instruments and Settings tabs scroll by themselves. */
 @media (min-width: 861px) and (min-height: 600px) {
   .mus {
     height: calc(var(--ws-vh, 100dvh) - 128px);
+  }
+  .mus-panel {
+    flex: 1 1 0;
+    min-height: 0;
   }
   .mus-main {
     height: auto;
     flex: 1 1 0;
     min-height: 330px;
   }
-  .mus-lower {
-    flex: 0 1 auto;
-    min-height: 140px;
-    max-height: 42%;
+  .mus-inst {
+    height: 100%;
+  }
+  .mus-inst-list,
+  .mus-inst-edit,
+  .mus-panel-set {
     overflow: auto;
     overscroll-behavior: contain;
-    border-radius: 8px;
   }
 }
 .mus-tips {
@@ -539,13 +531,6 @@
   background: var(--panel);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
-/* folded Song settings takes only the room its heading needs */
-@media (min-width: 861px) {
-  .mus-lower:has(> .mus-song-box:not([open])) {
-    grid-template-columns: minmax(0, 1fr) max-content;
-  }
-}
-
 /* wide operator cards: the envelope and its sliders on the left, harmonic, wave and switches on the right */
 .mus-op-half {
   display: flex;
@@ -565,5 +550,189 @@
   }
   .mus-op > h4 {
     grid-column: 1 / -1;
+  }
+}
+
+/* ---- tabs: Song, Instruments, Settings ---- */
+.mus-tabrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.mus-tabs {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+}
+.mus-undo {
+  margin-left: auto;
+  padding-bottom: 4px;
+}
+.mus-undo button {
+  padding: 3px 10px;
+}
+.mus-tab {
+  margin-bottom: -1px;
+  padding: 7px 14px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: none;
+  color: var(--muted);
+  font:
+    700 13px/1.2 ui-monospace,
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.mus-tab:hover {
+  color: var(--text);
+}
+.mus-tab[aria-selected='true'] {
+  border-color: var(--border);
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: inset 0 3px 0 var(--mus-gold);
+}
+.mus-tab:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+.mus-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.mus-panel[hidden],
+.mus-roll-tools[hidden] {
+  display: none;
+}
+.mus-song-box {
+  max-width: 760px;
+}
+.mus-song-box h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* ---- Instruments tab: the song's instruments, and the one being shaped ---- */
+.mus-inst {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 0;
+}
+.mus-inst-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+.mus-inst-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mus-inst-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 6px;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+}
+.mus-inst-item[aria-current='true'] {
+  background: var(--panel-2);
+  border-color: var(--mus-gold);
+  box-shadow: inset 4px 0 0 var(--mus-gold);
+}
+.mus-inst-num {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 3px;
+  border-radius: 4px;
+  background: var(--mus-navy);
+  color: #fff;
+  font:
+    700 12px/1 ui-monospace,
+    monospace;
+}
+.mus-inst-item .mus-track-text {
+  flex: 1 1 auto;
+}
+.mus-inst-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mus-inst-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px;
+  max-width: 40px;
+}
+.mus-inst-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--track);
+}
+.mus-inst-edit {
+  min-width: 0;
+}
+.mus-inst-users {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.mus-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--track);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.mus-chip[aria-pressed='true'] {
+  border-color: var(--track);
+  box-shadow: 0 0 0 1px var(--track);
+}
+
+@media (max-width: 760px) {
+  .mus-inst {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mus-inst-list ul {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .mus-inst-list li {
+    flex: 0 0 180px;
+  }
+  .mus-tab {
+    flex: 1;
+    padding: 7px 6px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+  .mus-tabs {
+    flex: 1 1 auto;
   }
 }
