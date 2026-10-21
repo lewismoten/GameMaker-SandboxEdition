@@ -1,12 +1,12 @@
 // Autodesk Animator .FLI films: the opening, the warp jump out of the galaxy chart, the
 // launch back to orbit, and the Core lighting up at the end.
-import { encodeFli } from '../../web/src/formats/fli';
-import { rng } from '../kit/pixels';
-import { Canvas } from './src/art/canvas';
-import { drawPod } from './src/sprites/vehicles';
-import { drawShard } from './src/blocks/items';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { rng } from '../../../kit/pixels';
+import { Canvas } from '../art/canvas';
+import { drawPod } from '../sprites/vehicles';
+import { drawShard } from '../blocks/items';
 import { SCREEN, planetArt } from './screens';
-import { WHITE, shared } from './src/art/palette';
+import { WHITE, shared } from '../art/palette';
 
 const C = (n: string) => SCREEN.ramps.get(n) ?? shared.get(n)!;
 const film = (frames: Canvas[], speed: number) =>

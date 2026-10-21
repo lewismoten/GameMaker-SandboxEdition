@@ -1,18 +1,18 @@
 // The pictures between the play: title, menu, the story slide show, instruction and
 // credit pages, high scores, load/save, the planet cards (every card of a sector lives
 // in one tall GIF; each planet's .BKD shows its own 320x200 window of it), and the end.
-import { encodeGif } from '../../web/src/formats/gif';
-import { encodeFli } from '../../web/src/formats/fli';
-import { serializeBackdrop, serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../kit/pixels';
-import { tileNoise } from './src/art/draw';
-import { Canvas } from './src/art/canvas';
-import { drawCourier } from './src/sprites/courier';
-import { drawModule, drawShard } from './src/blocks/items';
-import { buildPalette, hsl, type RGB, type Role, type Theme, S, WHITE, shared } from './src/art/palette';
-import { drawDiver, drawPod, drawRover } from './src/sprites/vehicles';
-import { MODULES, SHARDS } from './src/ids';
-import { SECTORS, type World } from './src/universe';
+import { encodeGif } from '../../../../web/src/formats/gif';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { serializeBackdrop, serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { Pixels, rng } from '../../../kit/pixels';
+import { tileNoise } from '../art/draw';
+import { Canvas } from '../art/canvas';
+import { drawCourier } from '../sprites/courier';
+import { drawModule, drawShard } from '../blocks/items';
+import { buildPalette, hsl, type RGB, type Role, type Theme, S, WHITE, shared } from '../art/palette';
+import { drawDiver, drawPod, drawRover } from '../sprites/vehicles';
+import { MODULES, SHARDS } from '../ids';
+import { SECTORS, type World } from '../universe';
 
 // ------------------------------------------------------------------ the screen palette
 

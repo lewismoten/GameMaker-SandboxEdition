@@ -3,12 +3,12 @@
 // world's own sky onto its own ground: green hills, dunes, ice teeth, lava, mushroom
 // forests, crystal spires; a splash and a dive for the seas; a docking bay for stations.
 // Only the canopy changes from frame to frame, so each film stays small.
-import { encodeFli } from '../../web/src/formats/fli';
-import { rng } from '../kit/pixels';
-import { Canvas } from './src/art/canvas';
+import { encodeFli } from '../../../../web/src/formats/fli';
+import { rng } from '../../../kit/pixels';
+import { Canvas } from '../art/canvas';
 import { SCREEN, planetArt } from './screens';
-import { WHITE, shared } from './src/art/palette';
-import type { Biome } from './src/art/roles';
+import { WHITE, shared } from '../art/palette';
+import type { Biome } from '../art/roles';
 
 const C = (n: string) => SCREEN.ramps.get(n) ?? shared.get(n)!;
 

@@ -3,7 +3,7 @@
 import { Disk } from '../kit/disk';
 import { buildGame } from './src/game';
 import { present } from './src/present';
-import { README } from './text';
+import { README } from './src/screens/text';
 import { about, limitsTxt, manual } from './src/docs';
 import { writeFileSync } from 'node:fs';
 

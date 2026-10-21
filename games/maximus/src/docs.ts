@@ -13,8 +13,8 @@ import type { Built } from './game';
 import { SHARED_END } from './art/palette';
 import { ROLES } from './art/roles';
 import { SECTORS, SCENE, allWorlds } from './universe';
-import { SONGS } from '../music';
-import { wrapDoc } from '../text';
+import { SONGS } from './sound/music';
+import { wrapDoc } from './screens/text';
 
 export interface Limit {
   what: string;

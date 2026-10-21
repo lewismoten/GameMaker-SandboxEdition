@@ -1,8 +1,8 @@
 // MAXIMUS.SND: all thirty sound slots, each with a PC speaker tune and a digitized
 // Sound Blaster sample (.VOC) synthesized here.
-import { newSoundSet, serializeSoundSet } from '../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../kit/sound';
-import { rng } from '../kit/pixels';
+import { newSoundSet, serializeSoundSet } from '../../../../web/src/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { rng } from '../../../kit/pixels';
 
 const noise = (seed: number): Synth => osc.noise(seed);
 /** A noise source low-passed by averaging (rumble). */

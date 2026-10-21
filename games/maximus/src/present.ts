@@ -6,8 +6,8 @@ import { serializeGame } from '../../../web/src/formats/game';
 import { serializeHighScores } from '../../../web/src/formats/highscore';
 import { dosText } from '../../kit/disk';
 import type { Built } from './game';
-import { buildSongs } from '../music';
-import { buildSounds } from '../sounds';
+import { buildSongs } from './sound/music';
+import { buildSounds } from './sound/sounds';
 import {
   type Scan,
   hiscoreScreen,
@@ -20,10 +20,10 @@ import {
   titleScreen,
   wonScreens,
   planetArt,
-} from '../screens';
-import { introFli, launchFli, warpFli, wonFli } from '../flics';
-import { DESCENT_BIOMES, descentFile, descentFli } from '../descent';
-import { CREDITS, INSTRUCTIONS } from '../text';
+} from './screens/screens';
+import { introFli, launchFli, warpFli, wonFli } from './screens/flics';
+import { DESCENT_BIOMES, descentFile, descentFli } from './screens/descent';
+import { CREDITS, INSTRUCTIONS } from './screens/text';
 import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
 import { drawCourier } from './sprites/courier';

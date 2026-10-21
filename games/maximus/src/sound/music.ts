@@ -1,8 +1,8 @@
 // The soundtrack: Sound Blaster FM songs as .CMF files. A tiny arranger turns a chord
 // chart and a melody into a band: lead and harmony, a bass line, arpeggios, a pad, and
 // OPL2 rhythm-mode drums (bass drum, snare, tom, cymbal, hi-hat on channels 11..15).
-import { encodeCmf, type CmfEvent } from '../../web/src/formats/cmf';
-import { INSTRUMENTS, midi, sbi } from '../kit/music';
+import { encodeCmf, type CmfEvent } from '../../../../web/src/formats/cmf';
+import { INSTRUMENTS, midi, sbi } from '../../../kit/music';
 
 const I = {
   ...INSTRUMENTS,
