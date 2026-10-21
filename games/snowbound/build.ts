@@ -19,7 +19,10 @@ import { buildPalette, type TimeOfDay } from './src/art/pal';
 import { renderRegion } from './src/art/render';
 import { buildScreens } from './src/screens/screens';
 import { buildSounds } from './src/sound/sounds';
-import { buildCharBlocks, buildKid, buildMonsterBlocks, buildMonsters, buildSledder, type MonsterOptions } from './src/sprites/sprites';
+import { buildCharBlocks } from './src/sprites/charBlocks';
+import { buildMonsterBlocks } from './src/sprites/monsterBlocks';
+import { buildMonsters, type MonsterOptions } from './src/characters/monsters';
+import { buildKid, buildSledder } from './src/characters/kid';
 import { CREDITS, INSTRUCTIONS, readme } from './src/screens/text';
 import { demoRecording } from './src/demo';
 
