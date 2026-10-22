@@ -16,6 +16,7 @@ import { buildFlats } from './src/build/flats';
 import { passFiles } from './src/levels/talk';
 import { assemble, type SceneSpec } from './src/game';
 import { autoArrange } from '../../web/src/editor/editors/integrator/integratorLayout';
+import { untangle } from './src/layout';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -43,7 +44,7 @@ const flats = buildFlats({ west: { to: 'harbor', at: HARBOR_ARRIVE.flats }, east
 const towns = buildTowns(spot, { flats: flats.west, vaults: dungeons.starts.vaults });
 for (const f of [...world.files, ...towns.files, ...dungeons.files, ...flats.files]) disk.put(f.name, f.bytes);
 
-const specs: SceneSpec[] = [world.scene, ...towns.scenes, ...dungeons.scenes, ...flats.scenes];
+const specs: SceneSpec[] = [world.scene, ...towns.scenes, ...dungeons.scenes, ...flats.scenes, ...world.talkScenes];
 // the world's doors into the towns, the dungeons and onto the Flats
 world.scene.links.push(
   ...towns.worldLinks,
@@ -53,8 +54,10 @@ world.scene.links.push(
   { from: spot.mines, to: 'mines', at: dungeons.starts.mines },
   { from: [70, 49], to: 'flats', at: flats.east },
 );
-const { game } = assemble(specs, { start: { to: 'nowish', at: towns.start } });
-// scene boxes where the Game Integrator's Auto-arrange puts them
+const { game, ids } = assemble(specs, { start: { to: 'nowish', at: towns.start } });
+// links in an order Auto-arrange draws without crossing arrows, and the scene boxes where it puts them
+const left = untangle(game, ids.get('world')!);
+if (left) throw new Error(`The scene graph still has ${left} crossing arrows`);
 for (const [i, p] of autoArrange(game)) game.scenes[i].pos = p;
 disk.put('tuit.gam', serializeGame(game));
 disk.write();

@@ -13,7 +13,9 @@ import { planWorld } from '../levels/world';
 import { BLK } from '../ids';
 import type { Cast } from './cast';
 import type { SceneSpec } from '../game';
-import { worldMons, scatter } from './foes';
+import { worldMons, scatter, place } from './foes';
+import { TALK } from '../levels/script';
+import { giftCell, talkFiles, talkScene } from '../levels/talk';
 import { peopleSheet } from './people';
 
 export interface AreaFile {
@@ -56,10 +58,26 @@ export function buildWorld(cast: Cast) {
     [slime, 70, 40, 78, 56, 4],
     [bat, 72, 62, 80, 72, 4],
   ]);
+  // the royal hounds and Sir Reginald, each a talk (walk into them) that sends them home
+  const world: SceneSpec['links'] = [];
+  const talkScenes: SceneSpec[] = [];
+  const talkFilesOut: AreaFile[] = [];
+  for (const [key, talk] of [
+    ['teddy', TALK.teddy],
+    ['gwinn', TALK.gwinn],
+    ['chick', TALK.chick],
+  ] as const) {
+    const at = plan.spot[key];
+    place(map, book2.n(`npc:${key}`), at[0], at[1]);
+    world.push({ from: at, to: talk.id, at: giftCell(talk.gift ?? 'none') });
+    talkScenes.push(talkScene(talk, 'world', [at[0], at[1] + 1]));
+    talkFilesOut.push(...talkFiles(talk));
+  }
   const mons = book2.finish();
   reindexMonsters(map);
 
   const files: AreaFile[] = [
+    ...talkFilesOut,
     { name: 'world.bbl', bytes: serializeBlocks(blocks) },
     { name: 'world.pal', bytes: serializePalette(book.pal!.vga) },
     { name: 'world.map', bytes: serializeMap(map) },
@@ -70,7 +88,7 @@ export function buildWorld(cast: Cast) {
     id: 'world',
     desc: 'Procrastia',
     files: { pal: 'world.pal', map: 'world.map', bbl: 'world.bbl', mon: 'world.mon', mbl: 'people.mbl' },
-    links: [],
+    links: world,
   };
-  return { files, scene, plan, map, book, blocks, mb, mons };
+  return { files, scene, talkScenes, plan, map, book, blocks, mb, mons };
 }

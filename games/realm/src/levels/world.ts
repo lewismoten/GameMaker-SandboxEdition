@@ -121,7 +121,12 @@ export function planWorld(): WorldPlan {
   cm.path('road', [[78, 63], [78, 66], [76, 68], [76, 73]]);
   cm.path('road', [[74, 50], [74, 44], [78, 40]]);
 
+  // trails into the woods: to Teddy's clearing in the Whistling Woods, to the Gloomwood glade
+  cm.path('road', [[40, 42], [47, 42], [49, 44]]);
+  cm.path('road', [[76, 70], [80, 74], [82, 74]]);
   separate(cm);
+  // the clearings themselves
+  cm.clear('forest', (x, y) => Math.hypot(x - 50, y - 44) < 3.2 || Math.hypot(x - 83, y - 75) < 3.2);
   const stamps: WorldPlan['stamps'] = [];
   const spot: Record<string, Pt> = {};
   const stamp = (name: string, x: number, y: number, w: number, h: number, keep = false) => {
@@ -145,6 +150,10 @@ export function planWorld(): WorldPlan {
   // the Snooze Barrows: a cave in the cliff at the end of the north road
   stamp('cave', 40, 24, 1, 1, true);
   spot.barrows = [40, 24];
+  // where the royal hounds and Sir Reginald are found
+  spot.teddy = [50, 44];
+  spot.gwinn = [15, 61];
+  spot.chick = [84, 75];
   // the Putoff Mines: an adit in Mount Putoff's south cliff, at the end of the north road
   stamp('mine', 78, 38, 1, 1, true);
   spot.mines = [78, 38];
