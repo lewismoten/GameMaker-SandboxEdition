@@ -424,6 +424,8 @@ export function plinth(under: Pixels, exhibit: Pixels): Pixels {
 export function bookwormEgg(): Pixels {
   const p = blank();
   blob(p, 10, 10, 6, 8, r('paper'), 1, 4);
+  // ruled like a notebook page
+  for (const y of [5, 8, 16]) for (let x = 5; x < 16; x++) if (p.get(x, y) !== CLEAR) p.set(x, y, c('sky', 4));
   // the gold blanket stitch down the seam
   for (let y = 4; y < 17; y += 2) p.set(10, y, c('brass', 4));
   // the ribbon bookmark from the top

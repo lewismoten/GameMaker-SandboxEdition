@@ -142,7 +142,7 @@ THE END
 export const EGG = page([
   `THE BOOKWORM EGG
 
-Cream felt, blanket-stitched in gold. A green felt bookworm in red reading glasses curls around its middle, and a red ribbon bookmark hangs from the top.
+Cream felt ruled with pale lines like a notebook page, blanket-stitched in gold. A green felt bookworm in red reading glasses curls around its middle, and a red ribbon bookmark hangs from the top.
 
 Finders, pocketers. If it is in your pocket (F2), it is yours.`,
   `Tucked under the ribbon: a recipe card, filed under 641.5 (cookbooks), stained brown and still a little fizzy.
