@@ -25,6 +25,10 @@ export class Bot {
   pacifist = false;
   /** Fights only within this many blocks. */
   reach = 2.2;
+  /** Grab loot seen on the way (tools/lootwatch.ts) when it's a short detour. */
+  loot = false;
+  /** In a boss fight: the boss's parts are left to the fight (fight() and walking ignore them). */
+  boss = false;
   constructor(readonly sim: GameSim) {}
 
   say(s: string): void {
@@ -52,6 +56,7 @@ export class Bot {
       if (!mon || mon.power <= POWER.drop || mon.power >= POWER.note) return;
       const mi = w.mi[i];
       if (mi.fromchar) return;
+      if (this.boss && mon.power >= 100) return;
       // a wight inside the rock can't be reached (a slash dies on the wall)
       if (this.sim.solidAt(mi.curx[0] + (mi.curx[1] > 10 ? 1 : 0), mi.cury[0] + (mi.cury[1] > 10 ? 1 : 0)) && w.mblk[w.mon[m.monnum].pic[0][0]]?.solid === 0) return;
       let dx = mi.curx[0] + mi.curx[1] / 20 - px;
@@ -205,7 +210,12 @@ export class Bot {
   }
 
   /** Holds a direction until Pip stands exactly on (x, y), fighting anything that comes close. */
-  private async run(dir: Dir, x: number, y: number, maxTicks = 900): Promise<string | undefined> {
+  private async run(dir: Dir, x: number, y: number, maxTicks = 900, axisOnly = false): Promise<string | undefined> {
+    const vert = dir === 'up' || dir === 'down';
+    const there = () => {
+      const p = this.sim.pos;
+      return axisOnly ? (vert ? p.y === y && p.sy === 0 : p.x === x && p.sx === 0) : p.x === x && p.y === y && p.sx === 0 && p.sy === 0;
+    };
     const scan = SCAN[dir];
     this.sim.press(scan);
     let last = '';
@@ -217,7 +227,7 @@ export class Bot {
         return r;
       }
       const p = this.sim.pos;
-      if (p.x === x && p.y === y && p.sx === 0 && p.sy === 0) break;
+      if (there()) break;
       const near = this.foes()[0];
       if (!this.pacifist && near && Math.hypot(near[0], near[1]) < this.reach) {
         const f = await this.fight();
@@ -233,9 +243,24 @@ export class Bot {
       }
     }
     this.sim.release(scan);
-    const p = this.sim.pos;
-    if (!(p.x === x && p.y === y && p.sx === 0 && p.sy === 0)) return 'stuck';
+    if (!there()) return 'stuck';
     return this.wait(1);
+  }
+
+  /** Off a block's edge: steps onto the nearest whole block (each axis). */
+  private async settle(): Promise<string | undefined> {
+    for (let k = 0; k < 2; k++) {
+      const p = this.sim.pos;
+      if (!p.sx && !p.sy) return undefined;
+      const back: Dir = p.sx ? (p.sx < 10 ? 'left' : 'right') : p.sy < 10 ? 'up' : 'down';
+      const bx = back === 'right' ? p.x + 1 : p.x;
+      const by = back === 'down' ? p.y + 1 : p.y;
+      // (the other axis's offset stays as it is: run stops on the block, not the exact spot)
+      const r = await this.run(back, bx, by, 20, true);
+      if (r && r !== 'stuck') return r;
+      if (r === 'stuck') return undefined;
+    }
+    return undefined;
   }
 
   /** Walks to (x, y). Returns 'link' / 'dead' / 'end' if a scene change happened on the way. */
@@ -243,6 +268,10 @@ export class Bot {
     const scene = this.sim.scene;
     for (let attempt = 0; attempt < 40; attempt++) {
       if (this.sim.scene !== scene) return 'link';
+      // off a block's edge (a fight's one-tick turn leaves him there): settle onto the nearest
+      // whole block first, or a straight run the other way never lines up and walks on past
+      const s = await this.settle();
+      if (s) return s;
       const steps = this.path(x, y, through);
       if (!steps) throw new Error(`No path to ${x},${y} ${label} from ${this.sim.pos.x},${this.sim.pos.y} in ${this.sim.game.scenes[this.sim.scene].desc}`);
       if (!steps.length) return undefined;
@@ -270,15 +299,6 @@ export class Bot {
       if (!blocked) {
         if (label) this.say(`at ${label}`);
         return undefined;
-      }
-      // off a block's edge: settle onto the nearest whole block before planning again
-      const p = this.sim.pos;
-      if (p.sx || p.sy) {
-        const back: Dir = p.sx ? (p.sx < 10 ? 'left' : 'right') : p.sy < 10 ? 'up' : 'down';
-        const bx = back === 'right' ? p.x + 1 : p.x;
-        const by = back === 'down' ? p.y + 1 : p.y;
-        const r = await this.run(back, bx, by, 20);
-        if (r && r !== 'stuck') return r;
       }
       const r = await this.wait(2);
       if (r) return r;
