@@ -818,7 +818,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   void loadCatalog().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
   );
-  // a secret game revealed or hidden again (all eight eggs found, or EGG.EXE): the shelf
+  // a secret game revealed or hidden again (all twelve eggs found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
     const cat = await loadCatalog().catch(() => [] as CatalogEntry[]);
