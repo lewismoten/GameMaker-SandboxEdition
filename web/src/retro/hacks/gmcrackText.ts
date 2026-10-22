@@ -27,7 +27,7 @@ export const GMCRACK_DIZ: string[] = [
   'in C:\\DOWNLOAD (and put it back!). Read the',
   'GMCRACK.NFO first. For this desk PC only.',
   '-'.repeat(DIZ_WIDTH),
-  `Uploaded by ${SYSOP_HANDLE} * THE -= SANDBOX =- BBS`,
+  `Uploaded by ${SYSOP_HANDLE} to THE SANDBOX BBS`,
 ];
 
 /** GMCRACK.NFO, in CP437 box characters like every .NFO of the day (≤ 79 columns). */

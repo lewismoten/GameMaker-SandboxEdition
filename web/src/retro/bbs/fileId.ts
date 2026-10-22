@@ -15,7 +15,7 @@ export const DIZ_NAME = 'FILE_ID.DIZ';
 export const SYSOP_HANDLE = 'vesuvian';
 
 const RULE = '-'.repeat(DIZ_WIDTH);
-const SIGNOFF = 'Uploaded by %s * THE -= SANDBOX =- BBS';
+const SIGNOFF = 'Uploaded by %s to THE SANDBOX BBS';
 
 /** Plain 7-bit ASCII, as a DIZ had to be: curly quotes, dashes and the like made plain. */
 export function ascii(text: string): string {
