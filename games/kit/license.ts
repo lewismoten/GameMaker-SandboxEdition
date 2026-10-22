@@ -52,6 +52,10 @@ export function licenseText(title: string): string {
     '1991-95 Recreational Software',
     'Designs, MIT License 2014.',
     '',
+    ...wrap30(
+      "In 1995 Game-Maker's license let you give a game free to up to ten people; shareware had to ask at least $5 and pay RSD 10% of the fees. Since 2014 Game-Maker is MIT licensed, and so is this game: free to share, change or even sell.",
+    ),
+    '',
     'MIT License',
     '',
     'Copyright (c) 2026',

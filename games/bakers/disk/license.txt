@@ -16,6 +16,15 @@ Built with RSD Game-Maker (C)
 1991-95 Recreational Software
 Designs, MIT License 2014.
 
+In 1995 Game-Maker's license
+let you give a game free to up
+to ten people; shareware had
+to ask at least $5 and pay RSD
+10% of the fees. Since 2014
+Game-Maker is MIT licensed,
+and so is this game: free to
+share, change or even sell.
+
 MIT License
 
 Copyright (c) 2026
@@ -37,7 +46,6 @@ and to permit persons to whom
 the Software is furnished to
 do so, subject to the
 following conditions:
-
 The above copyright notice and
 this permission notice shall
 be included in all copies or
@@ -61,3 +69,11 @@ OTHERWISE, ARISING FROM, OUT
 OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+
+
+
+
+
+
+
+
