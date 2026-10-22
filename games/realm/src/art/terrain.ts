@@ -11,7 +11,7 @@
 // painted at a distance from the boundary (foam, wet sand, shadows, cliff faces) join up too,
 // and every texture is tileable noise with a 20 pixel period.
 import { Canvas, type RGB, mix, smooth, tnoise, clamp01 } from './rgb';
-import { blend, canopyTex, dirtTex, grassTex, rockTex, sandTex, type Sampler } from './textures';
+import { blend, canopyTex, dirtTex, grassTex, rockTex, sandTex } from './textures';
 
 export const TL = 1;
 export const TR = 2;
@@ -95,8 +95,6 @@ const SAND = sandTex(9);
 export function grass(x: number, y: number, variant = 0): RGB {
   return (variant ? GRASS_V[(variant - 1) % 3] : GRASS)(x, y);
 }
-
-export const grassSampler = (variant = 0): Sampler => (x, y) => grass(x, y, variant);
 
 /** Shore: deep water, shallows, foam, wet sand, dry sand, grass. */
 export const shore: Shader = (x, y, d) => {

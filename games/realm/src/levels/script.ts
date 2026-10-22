@@ -440,5 +440,3 @@ The royal map ends at the edge of the kingdom with "Here Be Root Beer," and a li
     before: ['eggshow.gif'],
   },
 };
-
-export type TalkId = keyof typeof TALK;
