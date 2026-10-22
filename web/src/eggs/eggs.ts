@@ -72,12 +72,13 @@ export const EGGS: readonly Egg[] = [
   },
   {
     game: 'depth',
-    gameTitle: 'Depth', // until its builder names it
+    gameTitle: 'Depth Perception',
     name: 'The Prism Egg',
     description: 'Glossy black felt laid with a vanishing checkerboard floor in silver chain stitch, a faceted felt cube in three shades of violet so it reads as solid, and a rainbow of floss where the light comes through.',
     credits: ['Rendered by Claude Opus 5.5, one ray at a time', 'Lit by Doc Leo, who insisted on a spotlight'],
     lore: 'Left rendering all night at 320x200: a perfect kitchen, a pot on every burner, a carton of twelve eggs. In the chrome kettle, thirteen reflections. Nobody can find the thirteenth.',
     look: { felt: '#15121f', band: '#b9c0d8', patch: '#7a4fd0', thread: '#e8e4ff', pattern: 'grid', motif: 'cube' },
+    detect: { block: 149 },
   },
   {
     game: 'logic',
