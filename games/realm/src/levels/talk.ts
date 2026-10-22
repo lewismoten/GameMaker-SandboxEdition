@@ -17,6 +17,7 @@ import { talkPage, THEMES, INK } from '../screens/talk';
 import type { SceneSpec } from '../game';
 import type { AreaFile } from '../build/world';
 import { Pal } from '../art/pal';
+import { paintEgg } from '../art/egg';
 
 const COLS = 30;
 const LINES = 16;
@@ -76,12 +77,19 @@ export interface Talk {
   gift?: keyof typeof GIFTS;
   /** Shown before the words: a picture of its own (a .GIF name) instead of the portrait page. */
   picture?: string;
+  /** Pictures shown first, each waiting for a key. */
+  before?: string[];
 }
 
 const animals = animalPics();
 const hero = heroPics();
 export function portrait(who: string): Canvas {
   if (who === 'pip') return hero.get('down0')!;
+  if (who === 'egg') {
+    const cv = new Canvas(20, 20);
+    paintEgg(cv, 10, 10, 18);
+    return cv;
+  }
   if (PEOPLE[who]) return person(PEOPLE[who])[0];
   const a = animals.get(`${who}0`);
   if (!a) throw new Error(`No portrait for ${who}`);
@@ -95,7 +103,7 @@ export function talkFiles(t: Talk): AreaFile[] {
   const pic = t.picture ?? `${t.id}.gif`;
   if (!t.picture) files.push({ name: `${t.id}.gif`, bytes: talkPage(t.name, portrait(t.who), THEMES[t.theme], t.place).gif({ text: INK }) });
   files.push({ name: `${t.id}.txt`, bytes: new TextEncoder().encode(pages(t.text).replace(/\n/g, '\r\n')) });
-  files.push({ name: `${t.id}.lst`, bytes: serializeSlideList([{ name: pic, pause: 0 }, { name: `${t.id}.txt` }]) });
+  files.push({ name: `${t.id}.lst`, bytes: serializeSlideList([...(t.before ?? []).map((name) => ({ name })), { name: pic, pause: 0 }, { name: `${t.id}.txt` }]) });
   return files;
 }
 

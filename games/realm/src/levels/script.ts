@@ -372,6 +372,31 @@ It's Sir Reginald Cluckington III! Red harness, leash trailing, looking extremel
 Squeak. He'll find his way back to Doc Leo's tent, he says. (Squeak.) Rubber chickens always do.`,
     'chick',
   ),
+  // ---------------------------------------------------------------- the felt egg
+  eggnote: {
+    ...t(
+      'eggnote',
+      'egg',
+      'The Heraldry Egg',
+      'falls',
+      'Behind the Falls',
+      `The stone slides aside. Under it, a note in a tidy hand:
+
+THE HERALDRY EGG. Forest-green felt quartered in gold diamonds like a herald's coat, a silver felt sword laid over a scrap of treasure map, and a road of brown backstitch winding all the way round the shell.
+
+Stitched inside the lining:
+
+Questmaster Gwinn (two n's, three quests, never once asked for directions)
+
+Map inked by Lewis "Lewie" Moten III
+
+Roads curved by Claude Opus 5.5
+
+The royal map ends at the edge of the kingdom with "Here Be Root Beer," and a line the cartographer was far too polite to finish: "Taken from the Redcoats, fair and square, on a Tuesday, by..."`,
+      'lore',
+    ),
+    before: ['eggshow.gif'],
+  },
 };
 
 export type TalkId = keyof typeof TALK;

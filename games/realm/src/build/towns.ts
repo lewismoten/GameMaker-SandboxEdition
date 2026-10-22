@@ -4,6 +4,9 @@ import { townBook } from '../blocks/townSet';
 import { MonBook } from '../characters/monbook';
 import { peopleSheet } from './people';
 import { townMap } from '../levels/townMap';
+import { portMap } from '../levels/portMap';
+import { portBook } from '../blocks/portSet';
+import { streetBridges } from '../levels/plan';
 import { buildArea } from './area';
 import { cellHash } from '../levels/ground';
 import type { LinkSpec, SceneSpec } from '../game';
@@ -16,6 +19,10 @@ const grassBase = (x: number, y: number) => {
 };
 
 /** Where Pip comes back out onto the world from each place. */
+/** Where THE CHEZ starts on the Dawdle Flats, coming from the west; where the Vaults begin. */
+export const FLATS_WEST: Pt = [4, 50];
+export const VAULTS_START: Pt = [50, 90];
+
 export const WORLD_ARRIVE: Record<string, Pt> = {
   nowish: [22, 78],
   laterburg: [31, 47],
@@ -55,8 +62,40 @@ export function buildTowns(spot: Record<string, Pt>): { files: AreaFile[]; scene
   });
   files.push(...town.files);
   scenes.push(...town.scenes);
+  const pm = new MonBook(mb);
+  const pp = portMap(pm);
+  const port = buildArea({
+    name: 'port',
+    plan: pp.plan,
+    book: portBook(streetBridges(pp.plan.cm)),
+    mons: pm,
+    layers: ['water', 'hedge', 'street'],
+    base: grassBase,
+    scenes: [
+      {
+        id: 'harbor',
+        desc: 'Someday Harbor',
+        owns: ([x]) => x < 50,
+        extra: [
+          ...[23, 24, 25].map((x) => ({ from: [x, 1] as Pt, to: 'world', at: WORLD_ARRIVE.harbor })),
+          { from: pp.plan.spot.garage, to: 'flats', at: FLATS_WEST },
+          { from: pp.plan.spot.vaults, to: 'vaults', at: VAULTS_START },
+        ],
+      },
+      {
+        id: 'falls',
+        desc: 'Eventually Falls',
+        owns: ([x]) => x >= 50,
+        extra: [70, 71, 72].map((x) => ({ from: [x, 64] as Pt, to: 'world', at: WORLD_ARRIVE.falls })),
+      },
+    ],
+  });
+  files.push(...port.files);
+  scenes.push(...port.scenes);
   // the world's town icons lead in
   for (const x of [21, 22]) worldLinks.push({ from: [x, 81], to: 'nowish', at: t.nowish.arrive });
   worldLinks.push({ from: spot.laterburg, to: 'laterburg', at: t.laterburg.arrive });
+  for (const x of [13, 14, 15]) worldLinks.push({ from: [x, 47], to: 'harbor', at: pp.harbor.arrive });
+  for (const x of [79, 80]) worldLinks.push({ from: [x, 61], to: 'falls', at: pp.falls.arrive });
   return { files, scenes, worldLinks, start: t.plan.spot.home };
 }
