@@ -156,6 +156,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Starring Teddy, a little bigger this time', 'Stunts by Gwinn (two n\'s), uncredited at her own request'],
     lore: 'Buried with the bone: a wooden spoon, well gnawed and still sticky. Teddy will not say where he got it, but he keeps looking toward the kitchen and licking his nose.',
     look: { felt: '#e3a857', band: '#3a6fc4', patch: '#fbf6ea', thread: '#5a3216', pattern: 'pawprints', motif: 'bone' },
+    detect: { block: 149 },
   },
   {
     game: 'year2000',
