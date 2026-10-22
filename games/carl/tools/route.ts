@@ -240,4 +240,19 @@ export async function theWild(bot: Bot): Promise<void> {
   });
 }
 
+/** 6. The aux cord: over the sage and the oils, the donut, a roll past the clap in the bookcase gap, the stereo. */
+export async function theAux(bot: Bot): Promise<void> {
+  expect(bot, 7, 'the aux cord');
+  await carefully(bot, 'over the sage and the oils', 12, () => go(bot, [[19, 3], [26, 2], [36, 2], [36, 3]], 'the donut'));
+  await carefully(bot, 'the clap in the bookcase gap', 12, async () => {
+    await go(bot, [[38, 1]], 'the gap');
+    await rollAhead(bot, 'right');
+    await go(bot, [[42, 1]], 'through');
+  });
+  await carefully(bot, 'the aux cord', 12, async () => {
+    await go(bot, [[42, 6], [47, 7], [49, 8]], 'the stereo');
+    await leave(bot, bot.fly(50, 8, 'the aux cord'), 'the aux cord');
+  });
+}
+
 export const counts = { snacks: (b: Bot) => count(b, SNACKS), smiles: (b: Bot) => count(b, SMILES), ears: (b: Bot) => count(b, EARS), hours: (b: Bot) => count(b, HOURS) };
