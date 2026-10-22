@@ -1,7 +1,7 @@
 // KID.CHR and SLED.CHR: the kid (a sequence per key: walk in eight directions, throw a
 // snowball, the starting meters: health, lives, money and snowballs) and the sled, whose
 // steering, braking and pushing all add momentum so it drifts and keeps its speed.
-import { emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
+import { PICKUPSEQ, emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
 import { PAPERS, SND, THROWSEQ } from '../ids';
 import { buildCharBlocks } from '../sprites/charBlocks';
 
@@ -15,6 +15,7 @@ const KEY = {
   left: 0x4b00,
   right: 0x4d00,
   space: 0x3920,
+  enter: 0x1c0d,
   w: 0x1177,
   a: 0x1e61,
   s: 0x1f73,
@@ -96,6 +97,16 @@ export function buildKid(cb: ReturnType<typeof buildCharBlocks>, myBallMon: numb
   walk(17, KEY.pad9, 0, 3, -3, SIDE);
   walk(18, KEY.pad1, JOY.downLeft, -3, 3, SIDE, MIRROR);
   walk(19, KEY.pad3, JOY.downRight, 3, 3, SIDE);
+  // Pick up (sequence 3): stoop for whatever lies at your feet. Nothing in the snow is
+  // an object but one thing in the pines, so the key goes unmentioned.
+  set(
+    PICKUPSEQ,
+    [
+      { pic: n('down1'), pause: 3 },
+      { pic: n('down0'), pause: 2 },
+    ],
+    { key: KEY.enter, sound: SND.other, jstkMov: 0, jstkBut: 0 },
+  );
   set(
     THROWSEQ,
     [
