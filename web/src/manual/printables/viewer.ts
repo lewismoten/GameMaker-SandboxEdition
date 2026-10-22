@@ -26,7 +26,16 @@ export interface BoxItem {
 
 type PrintMode = 'item' | 'booklet' | 'all';
 
-export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Promise<void> {
+export interface BoxOptions {
+  /** How the manual is bound: two staples in the fold (a shareware booklet), or a plastic comb. */
+  binding?: 'staples' | 'comb';
+}
+
+/** Gap between the pages of a comb-bound spread, as a fraction of a page's width. */
+const COMB_GAP = 0.07;
+
+export function openBox(title: string, pages: BookPage[], items: BoxItem[], options: BoxOptions = {}): Promise<void> {
+  const comb = options.binding === 'comb';
   return new Promise((resolve) => {
     let current = 'manual';
     let at = 0;
@@ -47,7 +56,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
     const two = () => stage.clientWidth >= 760;
 
     // ---- the manual
-    const spread = h('div', { class: 'gmb-spread gmb-pages' });
+    const spread = h('div', { class: `gmb-spread gmb-pages${comb ? ' comb' : ''}` });
+    let turned: 1 | -1 | 0 = 0;
     const nav = h(
       'div',
       { class: 'gmb-nav' },
@@ -61,7 +71,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       at = shown[0];
       const availW = stage.clientWidth - 24;
       const availH = stage.clientHeight - 64;
-      const pw = Math.max(120, Math.min(availW / (isTwo ? 2 : 1), (availH * PAGE_W) / PAGE_H));
+      const gap = comb ? COMB_GAP * (isTwo ? 1 : 0.5) : 0;
+      const pw = Math.max(120, Math.min(availW / ((isTwo ? 2 : 1) + gap + (comb ? (isTwo ? 0.06 : 0.12) : 0)), (availH * PAGE_W) / PAGE_H));
       spread.style.setProperty('--pw', `${pw}px`);
       spread.replaceChildren(
         ...shown.map((i, k) => {
@@ -74,19 +85,37 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       );
       spread.classList.toggle('one', shown.length === 1 && isTwo);
       spread.classList.toggle('alone-right', shown.length === 1 && isTwo && shown[0] === 0);
-      if (shown.length === 2 && shown[0] === stapled[0]) spread.append(h('i', { class: 'gmb-staple top' }), h('i', { class: 'gmb-staple bottom' }));
+      if (comb) {
+        // the comb runs along the bound edge: between the pages, or beside a page shown alone
+        const side = shown.length === 2 ? 'mid' : shown[0] % 2 === 0 ? 'start' : 'end'; // even pages are right-hand pages
+        spread.dataset.comb = side;
+        spread.style.setProperty('--gap', side === 'mid' ? `${pw * gap}px` : '0px');
+        // the page block: thicker on whichever side more pages lie
+        const read = total > 1 ? shown[0] / (total - 1) : 0;
+        const thick = Math.min(18, Math.max(5, pw * 0.035));
+        spread.style.setProperty('--lt', `${thick * read}px`);
+        spread.style.setProperty('--rt', `${thick * (1 - read)}px`);
+        spread.append(h('i', { class: 'gmb-comb', 'aria-hidden': 'true' }), h('i', { class: 'gmb-edge l', 'aria-hidden': 'true' }), h('i', { class: 'gmb-edge r', 'aria-hidden': 'true' }));
+        if (turned) {
+          const page = spread.querySelectorAll('.mpage')[turned === 1 && shown.length === 2 ? 0 : shown.length - 1] as HTMLElement | undefined;
+          page?.classList.add(turned === 1 ? 'turn-in-next' : 'turn-in-prev');
+        }
+        turned = 0;
+      } else if (shown.length === 2 && shown[0] === stapled[0]) spread.append(h('i', { class: 'gmb-staple top' }), h('i', { class: 'gmb-staple bottom' }));
       counter.textContent =
         shown[0] === 0
           ? `Cover · ${total} pages`
           : shown[0] === total - 1
             ? 'Back cover'
-            : `Page ${shown.join('–')} of ${total - 2}${shown[0] === stapled[0] ? ' · center' : ''}`;
+            : `Page ${shown.join('–')} of ${total - 2}${!comb && shown[0] === stapled[0] ? ' · center' : ''}`;
       stage.replaceChildren(spread, nav);
       crispShots(spread);
     };
     const go = (dir: 1 | -1) => {
       if (current !== 'manual') return;
+      const was = at;
       at = stepSpread(at, total, two(), dir);
+      if (at !== was) turned = dir;
       showManual();
     };
 
@@ -124,7 +153,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
     };
 
     const entries: { id: string; title: string; note?: string; icon: string; promised?: boolean }[] = [
-      { id: 'manual', title: 'Manual', note: `${total} pages, stapled`, icon: '📖' },
+      { id: 'manual', title: 'Manual', note: `${total} pages, ${comb ? 'comb-bound' : 'stapled'}`, icon: '📖' },
       ...items,
     ];
     for (const it of entries)
@@ -188,7 +217,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       'div',
       { class: 'gmb-print-menu', hidden: true },
       h('button', { onclick: () => void print('item') }, 'This piece'),
-      h('button', { onclick: () => void print('booklet') }, 'Manual as a booklet', h('small', null, 'two pages a side: fold the stack, staple the fold')),
+      h('button', { onclick: () => void print('booklet') }, 'Manual as a booklet', h('small', null, comb ? 'two pages a side: fold the stack, or cut it and bind it' : 'two pages a side: fold the stack, staple the fold')),
       h('button', { onclick: () => void print('all') }, 'Everything in the box'),
     );
 

@@ -852,3 +852,142 @@
     serif;
   text-align: center;
 }
+
+/* ---------------------------------------------------------------- a plastic comb binding */
+/* (openBox with binding: 'comb'): white plastic rings through rectangular punched holes,
+   between the pages of a spread or around the bound edge of a page shown alone, and the
+   page block's edges, thicker on the side where more pages lie */
+.gmb-spread.comb {
+  --hz: calc(var(--pw) * 0.07);
+  --cg: var(--gap, 0px);
+  gap: var(--gap, 0px);
+  perspective: 2400px;
+}
+
+.gmb-spread.comb[data-comb='start'],
+.gmb-spread.comb[data-comb='end'] {
+  --cg: calc(var(--pw) * 0.045);
+}
+
+.gmb-spread.comb[data-comb='start'] {
+  margin-left: calc(var(--cg) + var(--hz) * 0.2);
+}
+
+.gmb-spread.comb[data-comb='end'] {
+  margin-right: calc(var(--cg) + var(--hz) * 0.2);
+}
+
+.gmb-comb {
+  position: absolute;
+  top: 1.4%;
+  bottom: 1.4%;
+  z-index: 3;
+  width: calc(var(--cg) + 2 * var(--hz));
+  pointer-events: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30' preserveAspectRatio='none'><defs><linearGradient id='h'><stop offset='0' stop-color='%23767065'/><stop offset='.12' stop-color='%23d6d1c6'/><stop offset='.3' stop-color='%23fbfaf6'/><stop offset='.5' stop-color='%23fff'/><stop offset='.7' stop-color='%23f2efe8'/><stop offset='.88' stop-color='%23d0cbbf'/><stop offset='1' stop-color='%23767065'/></linearGradient><linearGradient id='v' x2='0' y2='1'><stop offset='0' stop-color='%23fff' stop-opacity='.75'/><stop offset='.45' stop-color='%23fff' stop-opacity='0'/><stop offset='1' stop-color='%23000' stop-opacity='.25'/></linearGradient></defs><rect x='13' y='8' width='8' height='14' fill='%231d160c' fill-opacity='.85'/><rect x='79' y='8' width='8' height='14' fill='%231d160c' fill-opacity='.85'/><rect x='17' y='9.5' width='66' height='11' rx='2' fill='url(%23h)'/><rect x='17' y='9.5' width='66' height='11' rx='2' fill='url(%23v)'/></svg>")
+    center top / 100% calc(100% / 16) repeat-y;
+  filter: drop-shadow(0 calc(var(--pw) * 0.006) calc(var(--pw) * 0.005) rgba(0, 0, 0, 0.45));
+}
+
+[data-comb='mid'] > .gmb-comb {
+  left: calc(50% - var(--cg) / 2 - var(--hz));
+}
+
+[data-comb='start'] > .gmb-comb,
+[data-comb='end'] > .gmb-comb {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30' preserveAspectRatio='none'><defs><linearGradient id='h'><stop offset='0' stop-color='%23999488'/><stop offset='.18' stop-color='%23ebe8e0'/><stop offset='.55' stop-color='%23fff'/><stop offset='.86' stop-color='%23d0cbbf'/><stop offset='1' stop-color='%23767065'/></linearGradient><linearGradient id='v' x2='0' y2='1'><stop offset='0' stop-color='%23fff' stop-opacity='.75'/><stop offset='.45' stop-color='%23fff' stop-opacity='0'/><stop offset='1' stop-color='%23000' stop-opacity='.25'/></linearGradient></defs><rect x='79' y='8' width='8' height='14' fill='%231d160c' fill-opacity='.85'/><rect x='6' y='9.5' width='77' height='11' rx='5' fill='url(%23h)'/><rect x='6' y='9.5' width='77' height='11' rx='5' fill='url(%23v)'/></svg>");
+}
+
+[data-comb='start'] > .gmb-comb {
+  left: calc(-1 * (var(--cg) + var(--hz)));
+}
+
+[data-comb='end'] > .gmb-comb {
+  right: calc(-1 * (var(--cg) + var(--hz)));
+  transform: scaleX(-1);
+}
+
+/* the gutter between the pages: the comb's back, in shadow */
+[data-comb='mid']::before {
+  content: '';
+  position: absolute;
+  top: 0.6%;
+  bottom: 0.6%;
+  left: calc(50% - var(--cg) / 2);
+  width: var(--cg);
+  background: linear-gradient(90deg, rgba(20, 14, 6, 0.75), #8f8a7f 22%, #d8d4ca 50%, #8f8a7f 78%, rgba(20, 14, 6, 0.75));
+}
+
+/* the page block under the open pages */
+.gmb-edge {
+  position: absolute;
+  top: 0.5%;
+  bottom: -0.5%;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, #f1ead6 0 1px, #c7bda2 1px 2px);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+}
+
+.gmb-edge.l {
+  left: calc(-1 * var(--lt));
+  width: var(--lt);
+  border-radius: 2px 0 0 2px;
+}
+
+.gmb-edge.r {
+  right: calc(-1 * var(--rt));
+  width: var(--rt);
+  border-radius: 0 2px 2px 0;
+}
+
+[data-comb='start'] > .gmb-edge.l,
+[data-comb='end'] > .gmb-edge.r {
+  display: none;
+}
+
+[data-comb='end'] > .gmb-edge.l {
+  width: calc(var(--lt) + var(--rt));
+  left: calc(-1 * (var(--lt) + var(--rt)));
+}
+
+/* turning a page over the comb */
+.gmb-spread.comb .mpage.turn-in-next {
+  transform-origin: right center;
+  animation: gmb-turn-next 0.36s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.gmb-spread.comb .mpage.turn-in-prev {
+  transform-origin: left center;
+  animation: gmb-turn-prev 0.36s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+[data-comb='start'] > .mpage.turn-in-next,
+[data-comb='start'] > .mpage.turn-in-prev {
+  transform-origin: left center;
+}
+
+[data-comb='end'] > .mpage.turn-in-next,
+[data-comb='end'] > .mpage.turn-in-prev {
+  transform-origin: right center;
+}
+
+@keyframes gmb-turn-next {
+  from {
+    transform: rotateY(75deg);
+    filter: brightness(0.75);
+  }
+}
+
+@keyframes gmb-turn-prev {
+  from {
+    transform: rotateY(-75deg);
+    filter: brightness(0.75);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gmb-spread.comb .mpage.turn-in-next,
+  .gmb-spread.comb .mpage.turn-in-prev {
+    animation: none;
+  }
+}

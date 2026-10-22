@@ -376,7 +376,7 @@ export async function openDosManual(): Promise<void> {
   // the gallery's screenshots: give them a moment to load, and go without them if they can't
   const shots = await Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
   const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.original);
-  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family));
+  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb' });
 }
 
 /** The guide as a stapled booklet for the box viewer: note pages fill it out to whole folded sheets. */
