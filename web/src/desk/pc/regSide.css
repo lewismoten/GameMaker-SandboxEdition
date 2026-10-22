@@ -68,39 +68,52 @@
 .rs-page {
   flex: 1;
   min-height: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  container-type: size;
+  overflow-y: auto;
+  container-type: inline-size;
 }
 
+/* the page as wide as the panel, its type no smaller than 13px: a tall page scrolls */
 .rs-page .mpage {
-  flex: none;
-  width: min(100cqw, 100cqh * 5.5 / 8.5);
+  width: 100%;
   height: auto;
+  min-height: calc(100cqw * 8.5 / 5.5);
   max-width: none;
-  aspect-ratio: 5.5 / 8.5;
+  aspect-ratio: auto;
   cursor: default;
   background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.4), transparent 60%), var(--rs-paper);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
 .rs-page .mpage-in {
-  padding: 8cqw 8.5cqw 10cqw;
-  font-size: 3.05cqw;
+  position: relative;
+  inset: auto;
+  box-sizing: border-box;
+  min-height: calc(100cqw * 8.5 / 5.5);
+  padding: max(8cqw, 30px) 8.5cqw max(10cqw, 36px);
+  font-size: max(3.05cqw, 13px);
   line-height: 1.38;
+}
+
+/* tables, notes and captions: readable too */
+.rs-page .mpage table,
+.rs-page .mpage .note {
+  font-size: max(2.35cqw, 12px);
+}
+
+.rs-page .mpage figcaption {
+  font-size: max(2.1cqw, 11px);
 }
 
 .rs-page .mpage .runhead {
   top: 4cqw;
   left: 8.5cqw;
   right: 8.5cqw;
-  font-size: 2.4cqw;
+  font-size: max(2.4cqw, 11px);
 }
 
 .rs-page .mpage .folio {
   bottom: 4.2cqw;
-  font-size: 2.5cqw;
+  font-size: max(2.5cqw, 11px);
 }
 
 .rs-page .rs-mark {
@@ -392,17 +405,6 @@
 
 .rs-narrow .rs-manual {
   height: 62dvh;
-}
-
-/* the page as wide as the sheet, scrolled, so its words stay readable */
-.rs-narrow .rs-page {
-  display: block;
-  overflow-y: auto;
-  container-type: inline-size;
-}
-
-.rs-narrow .rs-page .mpage {
-  width: 100%;
 }
 
 .rs-swap[hidden] {

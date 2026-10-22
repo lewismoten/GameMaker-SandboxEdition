@@ -105,6 +105,9 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
       markWord(para, q.word);
     }
     clear(pageView, el);
+    // bring the marked word into view in the scrolled page
+    const word = el.querySelector<HTMLElement>('.rs-word');
+    pageView.scrollTop = word ? Math.max(0, word.offsetTop - pageView.clientHeight / 3) : 0;
     pageTitle.textContent = `· page ${pageNo}`;
     prevBtn.disabled = pageNo <= 1;
     nextBtn.disabled = pageNo >= last;
@@ -306,6 +309,11 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     reopen.hidden = !closed;
     reopen.textContent = isQ ? 'Owner’s Guide and registration card' : 'Registration card';
     answer.hidden = !isQ || !desk?.type;
+    if (ask?.kind === 'question') {
+      // where to type: the screen, or on a narrow window (a phone) the Word found box
+      const where = narrow ? 'Type the word in the Word found box below.' : 'Type the word on the screen.';
+      askLine.textContent = `GM asks for page ${ask.page}, paragraph ${ask.paragraph}, word ${ask.word}. ${where}`;
+    }
     root.classList.toggle('rs-on', !!ask);
   }
 
@@ -337,7 +345,6 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     if (ask.kind === 'question') {
       cardTitle.textContent = 'Register instead?';
       cardLead.textContent = 'Register this copy and GM stops asking for words from the guide.';
-      askLine.textContent = `GM asks for page ${ask.page}, paragraph ${ask.paragraph}, word ${ask.word}. Type the word on the screen.`;
       if (!same) {
         pageNo = ask.page;
         say(`Game-Maker asks for a word from the Owner’s Guide: page ${ask.page}, paragraph ${ask.paragraph}, word ${ask.word}. The guide is open at that page beside the monitor, with the registration card.`);
