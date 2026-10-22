@@ -237,6 +237,9 @@ function drawBlock(h: RetroHost, x: number, y: number, b: Block | undefined, pal
     }
 }
 
+/** A counter no block of the game uses: its value means nothing, so no warnings. */
+const isUnused = (f: SaveField, labels: GameLabels | undefined) => f.group === 'counters' && !!labels && !labels.counterUse.get(f.meter!);
+
 const PANE = 52; // the details pane's left column
 const PANE_W = 25;
 
@@ -269,7 +272,7 @@ function details(h: RetroHost, f: SaveField | undefined, save: SavedGame, labels
     y++;
     for (const l of wrapWords(f.note, PANE_W)) line(l, DIM);
   }
-  const warn = fieldWarnings(save, f, labels);
+  const warn = isUnused(f, labels) ? [] : fieldWarnings(save, f, labels);
   if (warn.length) {
     y++;
     for (const w of warn) for (const l of wrapWords(`! ${w}`, PANE_W)) line(l, RED);
@@ -310,9 +313,10 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
         rows.push({ text: `\xc4\xc4 ${GROUP_LABELS[f.group]} `.padEnd(46, '\xc4'), a: HEAD, selectable: false });
         rowField.push(undefined);
       }
-      const warn = fieldWarnings(save, f, labels).length ? '!' : ' ';
+      const unused = isUnused(f, labels);
+      const warn = !unused && fieldWarnings(save, f, labels).length ? '!' : ' ';
       const mark = edited.has(f.id) ? '*' : ' ';
-      rows.push({ text: cell(f.label, 30) + valueText(f, save).padStart(13) + mark + warn, a: !f.editable ? DIM : warn === '!' ? RED : edited.has(f.id) ? YELLOW : BRIGHT });
+      rows.push({ text: cell(f.label, 30) + valueText(f, save).padStart(13) + mark + warn, a: !f.editable || unused ? DIM : warn === '!' ? RED : edited.has(f.id) ? YELLOW : BRIGHT });
       rowField.push(f);
     }
     statusLine(h, note || (dirty() ? 'Changed (*). F2 saves.' : 'Pick a value and press Enter.'), note.startsWith('WARNING') || note.startsWith('ERROR') ? RED : dirty() ? YELLOW : TEXT);
@@ -394,36 +398,43 @@ async function pickItem(h: RetroHost, o: Open, save: SavedGame, f: SaveField): P
   const blocks = labels?.blocks(scene);
   const pal = labels?.palette(scene);
   const v = getField(save, f.id);
-  const rows: ListRow[] = [{ text: '(empty)' }];
-  const values = [BACKBL];
-  for (let n = 0; n < BACKBL; n++) {
+  const held = typeof v === 'number' ? v : BACKBL;
+  const every = Array.from({ length: BACKBL }, (_, n) => n);
+  // the level's pick-ups (and what the slot holds) first; Tab shows every block
+  const pickUps = every.filter((n) => blocks?.[n]?.obj || n === held);
+  let all = !blocks || pickUps.length < 2;
+  for (;;) {
+    const values = [BACKBL, ...(all ? every : pickUps)];
+    const rows: ListRow[] = values.map((n) => (n === BACKBL ? { text: '(empty)' } : { text: blockText(blocks?.[n], n, labels, scene), a: blocks?.[n]?.obj ? BRIGHT : DIM }));
+    frame(h, 1, TOP, 78, BOTTOM, `${f.label}: choose an item`);
+    scr(h).fill(PANE - 2, TOP + 1, PANE - 2, BOTTOM - 1, BG, 179);
+    keyBar(h, `~\x18\x19~ Choose  ~Enter~ Put in the slot  ~Tab~ ${all ? 'Pick-ups only' : 'Every block'}  ~Esc~ Cancel`);
+    statusLine(h, all ? 'White blocks can be picked up in the game; cyan ones are scenery.' : `The level's ${pickUps.length} pick-ups. Tab shows every block.`);
+    const pick = await pickList(h, rows, {
+      x: 2,
+      y: TOP + 1,
+      w: PANE - 5,
+      h: BOTTOM - TOP - 1,
+      cur: Math.max(0, values.indexOf(held)),
+      hotkeys: ['Tab'],
+      onMove: (i) => {
+        scr(h).fill(PANE, TOP + 1, PANE + PANE_W, BOTTOM - 1, BG);
+        if (!i) return put(h, PANE, TOP + 1, DIM, 'An empty slot');
+        drawBlock(h, PANE + 2, TOP + 2, blocks?.[values[i]], pal);
+        wrapWords(blockText(blocks?.[values[i]], values[i], labels, scene).replace(/^Block +\d+ +/, ''), PANE_W).forEach((l, k) => put(h, PANE, TOP + 13 + k, TEXT, l));
+      },
+    });
+    if (pick.key === 'Tab') {
+      all = !all;
+      continue;
+    }
+    if (pick.key !== 'Enter') return '';
+    const n = values[pick.i];
     const b = blocks?.[n];
-    rows.push({ text: blockText(b, n, labels, scene), a: b?.obj ? BRIGHT : DIM });
-    values.push(n);
+    if (n !== BACKBL && b && !b.obj && !(await confirm(h, ['WARNING: this block is not one the hero can pick up.', 'It shows on the F2 screen, and dropping it', 'puts it on the map.']))) return 'Not changed.';
+    setField(save, f.id, n, labels);
+    return n === BACKBL ? `${f.label} emptied.` : `${f.label}: block ${n}.`;
   }
-  frame(h, 1, TOP, 78, BOTTOM, `${f.label}: choose an item`);
-  scr(h).fill(PANE - 2, TOP + 1, PANE - 2, BOTTOM - 1, BG, 179);
-  keyBar(h, '~\x18\x19~ Choose  ~Enter~ Put in the slot  ~Esc~ Cancel');
-  statusLine(h, 'Bright blocks can be picked up in the game; dim ones are scenery.');
-  const pick = await pickList(h, rows, {
-    x: 2,
-    y: TOP + 1,
-    w: PANE - 5,
-    h: BOTTOM - TOP - 1,
-    cur: Math.max(0, values.indexOf(typeof v === 'number' ? v : BACKBL)),
-    onMove: (i) => {
-      scr(h).fill(PANE, TOP + 1, PANE + PANE_W, BOTTOM - 1, BG);
-      if (!i) return put(h, PANE, TOP + 1, DIM, 'An empty slot');
-      drawBlock(h, PANE + 2, TOP + 2, blocks?.[values[i]], pal);
-      wrapWords(blockText(blocks?.[values[i]], values[i], labels, scene).replace(/^Block +\d+ +/, ''), PANE_W).forEach((l, k) => put(h, PANE, TOP + 13 + k, TEXT, l));
-    },
-  });
-  if (pick.key !== 'Enter') return '';
-  const n = values[pick.i];
-  const b = blocks?.[n];
-  if (n !== BACKBL && b && !b.obj && !(await confirm(h, ['WARNING: this block is not one the hero can pick up.', 'It shows on the F2 screen, and dropping it', 'puts it on the map.']))) return 'Not changed.';
-  setField(save, f.id, n, labels);
-  return n === BACKBL ? `${f.label} emptied.` : `${f.label}: block ${n}.`;
 }
 
 // ---------------------------------------------------------------- high scores
