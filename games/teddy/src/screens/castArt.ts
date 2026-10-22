@@ -13,12 +13,16 @@ export interface Art {
   rows: string[];
 }
 
-/** Draws a piece of art (shifted by dx, dy), coloring through `c(ramp, shade)`. */
-export function drawArt(p: Pixels, art: Art, c: (ramp: string, shade: number) => number, dx = 0, dy = 0): Pixels {
+/**
+ * Draws a piece of art (shifted by dx, dy), coloring through `c(ramp, shade)`; `flip`
+ * mirrors it left to right within its own box.
+ */
+export function drawArt(p: Pixels, art: Art, c: (ramp: string, shade: number) => number, dx = 0, dy = 0, flip = false): Pixels {
   const ink: Record<string, number> = {};
   for (const [ch, [ramp, k]] of Object.entries(art.key)) ink[ch] = c(ramp, k);
+  const w = Math.max(...art.rows.map((row) => row.length));
   art.rows.forEach((row, y) => {
-    for (let x = 0; x < row.length; x++) if (row[x] !== '.') p.set(art.x + dx + x, art.y + dy + y, ink[row[x]]);
+    for (let x = 0; x < row.length; x++) if (row[x] !== '.') p.set(art.x + dx + (flip ? w - 1 - x : x), art.y + dy + y, ink[row[x]]);
   });
   return p;
 }
