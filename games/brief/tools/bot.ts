@@ -151,6 +151,7 @@ export class Bot {
 
   scene = 0;
   stem = '';
+  private lastTried = '';
 
   get words(): number {
     return this.ci.meter[CTR.words] - 1;
@@ -160,47 +161,48 @@ export class Bot {
     for (let i = 0; i < n && this.sim.link < 0; i++) await this.sim.tick();
   }
 
-  private value(meter: number[]): number {
-    let v = meter[CTR.words];
-    for (let i = 20; i < 28; i++) v += meter[i] * 1000;
-    return v;
-  }
-
-  /** Plays a move (a direction, or standing still) on a copy, and counts the words kept. */
+  /** Plays a move (a direction, or standing still) on a copy: the words it would lose on the way. */
   private async trial(d: Dir | undefined, ahead = 16): Promise<number> {
     const t = cloneSim(this.sim);
+    let lost = 0;
+    let last = t.w.ci.meter[CTR.words];
+    const tick = async () => {
+      await t.tick();
+      const now = t.w.ci.meter[CTR.words];
+      // a drop of exactly a hundred is THE END taking its due, not a loss
+      if (now < last && last - now !== 100) lost += last - now;
+      last = now;
+    };
     if (d) t.press(SCAN[d]);
-    await t.tick();
+    await tick();
     if (d) t.release(SCAN[d]);
-    for (let i = 0; i < ahead && t.link < 0; i++) await t.tick();
-    // a move that takes a link (THE END spending its hundred words on the way) is a good one
-    // and so is one that opens THE END (a story counted is worth more than its hundred words)
-    return t.link >= 0 ? 1e6 : this.value(t.w.ci.meter);
+    for (let i = 0; i < ahead && t.link < 0; i++) await tick();
+    return lost;
   }
 
   /**
    * One move toward the goal; when careful, a move that loses no words to a shusher (or
-   * scissors, or static...): the step wanted, else standing still, else a sidestep.
+   * scissors, or static...): the step wanted, else standing still, else a sidestep, else
+   * whichever loses least.
    */
   async step(d: Dir, careful: boolean): Promise<void> {
     let move: Dir | undefined = d;
     if (careful) {
-      const now = this.value(this.sim.w.ci.meter);
       const options: (Dir | undefined)[] = [d, undefined, ...STEPS.map((s) => s[0]).filter((x) => x !== d)];
-      let best = -1;
+      let least = Infinity;
+      const tried: string[] = [];
       for (const o of options) {
-        const kept = await this.trial(o);
-        if (kept >= now) {
-          move = o;
-          best = kept;
-          break;
-        }
-        if (kept > best) (best = kept), (move = o);
+        const lost = await this.trial(o);
+        tried.push(`${o ?? 'wait'}=${lost}`);
+        if (lost < least) (least = lost), (move = o);
+        if (lost === 0) break;
       }
+      this.lastTried = tried.join(' ');
     }
     const w0 = this.words;
     if (!move) {
       await this.ticks(2);
+      if (process.env.BOT_DEBUG && this.words < w0) console.log(`  wait at ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words} [${this.lastTried}]`);
       return;
     }
     this.sim.press(SCAN[move]);
@@ -208,7 +210,7 @@ export class Bot {
     this.sim.release(SCAN[move]);
     for (let i = 0; i < 20 && this.sim.w.chr.cseq !== 0 && this.sim.link < 0; i++) await this.ticks(1);
     await this.ticks(1);
-    if (process.env.BOT_DEBUG && this.words !== w0) console.log(`  ${move} -> ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words}`);
+    if (process.env.BOT_DEBUG && this.words !== w0) console.log(`  ${move} -> ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words} [${this.lastTried}]`);
   }
 
   /** Walks to (into) one of the goals until a link is taken or `until` holds. */

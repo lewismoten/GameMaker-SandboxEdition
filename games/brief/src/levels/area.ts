@@ -72,8 +72,8 @@ export class Area {
    * The same monster on another path: its frames are shared. A path is a loop of moves,
    * [dx, dy, speed] each, that ends where it started; then the monster walks it again.
    */
-  patrol(base: string, path: [number, number, number][]): string {
-    const name = `${base}@${path.map((p) => p.join(',')).join(';')}`;
+  patrol(base: string, path: [number, number, number][], called?: string): string {
+    const name = called ?? `${base}@${path.map((p) => p.join(',')).join(';')}`;
     if (!this.mons.has(name)) {
       const d = this.mons.defs[this.mons.id(base)];
       this.mons.add(name, { ...d, path: loop(name, path) });

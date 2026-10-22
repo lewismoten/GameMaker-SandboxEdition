@@ -257,6 +257,12 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     const cover = win.marks.get('cover');
     if (!end || !page || !cover) throw new Error(`${wing.id} book ${k + 1}: needs an E, an L and an X`);
     if (Math.abs(end.x - page.x) + Math.abs(end.y - page.y) !== 1) throw new Error(`${wing.id} book ${k + 1}: L goes right behind E`);
+    // the bookmark is walled in: the only way onto it is through the open page
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const x = end.x + dx;
+      const y = end.y + dy;
+      if ((x !== page.x || y !== page.y) && y <= 9 && !a.tiles.def(a.get(x, y)).solid) throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
+    }
     return { spec: b, win, end, page, cover };
   });
   const spines = [0, 1, 2, 3].map((k) => hall.marks.get(`spine${k}`)!);
