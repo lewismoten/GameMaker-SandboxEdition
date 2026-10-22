@@ -5,6 +5,7 @@ import type { Painter } from './paint';
 
 const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   blaster: () => import('./blaster'),
+  brief: () => import('./brief'),
   logic: () => import('./logic'),
   maximus: () => import('./maximus'),
   sandcast: () => import('./sandcast'),
