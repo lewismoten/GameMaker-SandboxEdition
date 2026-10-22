@@ -396,8 +396,44 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('sun'), 1, 3, 0.4 + k * 0.2 + Math.sin((x + y) / 4) * 0.1, x, y));
     return p;
   };
-  book.add('light', glow(1), { grav: GRAV.up });
+  // rays of light under the hand, lifting
+  const rays = sky(109);
+  for (let x = 0; x < 20; x++) for (let y = 0; y < 20; y++) if ((x + Math.floor(y / 3)) % 5 < 2) rays.set(x, y, shadeAt(R('sun'), 0, 3, 1 - y / 24, x, y));
+  book.add('light', rays, { grav: GRAV.up });
   book.add('palm', glow(2), { grav: GRAV.none });
+  // The hand itself, eight blocks by three: a great open hand of light, cupped to hold the
+  // seed, the thumb up at the left and the four fingers curling up at the right.
+  const hand = new Pixels(160, 60);
+  for (let y = 0; y < 60; y++) for (let x = 0; x < 160; x++) hand.set(x, y, c('sky', 3 + ((x * 7 + y * 3) % 11 === 0 ? 1 : 0)));
+  const FINGERS: [number, number][] = [
+    [112, 16],
+    [126, 8],
+    [140, 6],
+    [153, 12],
+  ];
+  const inHand = (x: number, y: number) => {
+    const bowl = ((x - 82) / 76) ** 2 + ((y - 24) / 32) ** 2 <= 1 && y >= 30;
+    const heel = ((x - 82) / 60) ** 2 + ((y - 44) / 14) ** 2 <= 1;
+    const thumb = x >= 8 && x <= 22 && y >= 14 + Math.max(0, x - 18) * 2 && y <= 40;
+    const thumbTip = (x - 15) ** 2 + (y - 14) ** 2 <= 49;
+    const fingers = FINGERS.some(([fx, top]) => Math.abs(x - fx) <= 5 && y >= top && y <= 40);
+    const tips = FINGERS.some(([fx, top]) => (x - fx) ** 2 + (y - top) ** 2 <= 25);
+    return bowl || heel || thumb || thumbTip || fingers || tips;
+  };
+  for (let y = 0; y < 60; y++)
+    for (let x = 0; x < 160; x++) {
+      if (!inHand(x, y)) {
+        // a soft glow round it
+        if ([-3, 3].some((d) => inHand(x + d, y) || inHand(x, y + d))) hand.set(x, y, shadeAt(R('sun'), 0, 2, 0.6, x, y));
+        continue;
+      }
+      const edge = !inHand(x - 1, y) || !inHand(x + 1, y) || !inHand(x, y - 1) || !inHand(x, y + 1);
+      hand.set(x, y, edge ? c('sun', 1) : shadeAt(R('sun'), 1, 3, 1.05 - y / 70 + Math.sin(x / 9) * 0.05, x, y));
+    }
+  // the gaps between the fingers, and the palm's lines
+  for (const [fx, top] of FINGERS) hand.line(fx + 6, top + 6, fx + 6, 38, c('sun', 1));
+  hand.line(40, 40, 96, 37, c('sun', 1)).line(52, 46, 104, 42, c('sun', 1)).line(24, 26, 26, 40, c('sun', 1));
+  for (let ty = 0; ty < 3; ty++) for (let tx = 0; tx < 8; tx++) book.add(`hand${ty * 8 + tx}`, hand.crop(tx * 20, ty * 20, 20, 20), { grav: GRAV.none });
 
   // ---------- ways out ----------
   // The sunny patch at the end of the garden: plant yourself here.

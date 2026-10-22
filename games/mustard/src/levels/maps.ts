@@ -278,10 +278,11 @@ export function sky(book: BlockBook): Level {
   m.col(22, 20, 33, 'z').row(20, 14, 20, '-').set(16, 20, 'n').set(20, 23, '*');
   m.row(17, 9, 15, '-').row(14, 4, 15, '-').set(15, 13, '1').set(9, 16, '*');
   // and on the left, up past the rain cloud to the clouds
-  m.col(5, 3, 13, 'z').text(16, 8, '{}').text(8, 4, '()()').set(9, 3, 'Q');
+  m.col(5, 5, 13, 'z').text(16, 9, '{}').text(8, 6, '()()').set(9, 5, 'Q');
   // the palm of God's hand: light that lifts into it
-  m.row(2, 7, 18, 'g').fill(10, 0, 8, 2, 'h').set(9, 1, 'h').set(18, 1, 'h').set(8, 0, 'h').set(19, 0, 'h');
-  m.mon(MON.squirrel, 9, 36).mon(MON.bird, 15, 36).mon(MON.bird, 16, 19).mon(MON.crow, 8, 10).mon(MON.squirrel, 9, 13).mon(MON.bee, 17, 27);
-  m.link(13, 0, 'won');
+  m.row(3, 6, 19, 'g');
+  for (let k = 0; k < 24; k++) m.set(9 + (k % 8), Math.floor(k / 8), `hand${k}`);
+  m.mon(MON.squirrel, 9, 36).mon(MON.bird, 15, 36).mon(MON.bird, 16, 19).mon(MON.crow, 8, 10).mon(MON.squirrel, 9, 16).mon(MON.bee, 17, 27);
+  m.link(13, 1, 'won');
   return { m, start: at(12, 43), size: [W, H] };
 }

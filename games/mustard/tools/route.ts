@@ -177,9 +177,10 @@ export async function theSky(bot: Bot): Promise<void> {
   await carefully(bot, 'the breeze to the clouds', 10, async () => {
     await must(bot, bot.walk(6, 'the left breeze'), 'breeze');
     await must(bot, bot.until('left', () => bot.px.x <= 5 * 20, 'into the breeze', 60), 'breeze');
-    await rise(4, 'up on the breeze');
+    await rise(6, 'up on the breeze');
     // over the clouds, into the light that lifts into the palm, and across it to the middle
-    const toPalm = async () => (await bot.hop('right', 4, 'right', 9.5)) ?? (await bot.until('right', () => false, 'the palm', 200));
+    const toPalm = async () =>
+      (await bot.hop('right', 4, 'right', 9.5)) ?? (await bot.hop('up', 14)) ?? (await bot.hop('right', 6)) ?? (await bot.until('right', () => false, 'the palm', 200));
     await leave(bot, toPalm(), "the palm of God's hand");
   });
 }
