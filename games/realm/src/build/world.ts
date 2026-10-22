@@ -13,7 +13,8 @@ import { planWorld } from '../levels/world';
 import { BLK } from '../ids';
 import type { Cast } from './cast';
 import type { SceneSpec } from '../game';
-import { foeSheet, worldMonsters, placeWorldMonsters } from './foes';
+import { worldMons, scatter } from './foes';
+import { peopleSheet } from './people';
 
 export interface AreaFile {
   name: string;
@@ -43,9 +44,19 @@ export function buildWorld(cast: Cast) {
   for (const s of plan.stamps) for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * 100 + s.x + x] = book.n(`${s.name}:${x},${y}`);
   const blocks = book.finish();
 
-  const mb = foeSheet();
-  const mons = worldMonsters(mb);
-  placeWorldMonsters(map, plan, (x, y) => blocks[map.blocks[y * 100 + x]].solid !== 0);
+  const mb = peopleSheet();
+  const book2 = worldMons(mb);
+  const solid = (x: number, y: number) => blocks[map.blocks[y * 100 + x]].solid !== 0;
+  const slime = book2.n('slime');
+  const bat = book2.n('bat');
+  scatter(map, solid, 77, [
+    [slime, 24, 54, 34, 72, 4],
+    [slime, 14, 36, 28, 44, 3],
+    [bat, 34, 26, 44, 34, 3],
+    [slime, 70, 40, 78, 56, 4],
+    [bat, 72, 62, 80, 72, 4],
+  ]);
+  const mons = book2.finish();
   reindexMonsters(map);
 
   const files: AreaFile[] = [
@@ -53,12 +64,12 @@ export function buildWorld(cast: Cast) {
     { name: 'world.pal', bytes: serializePalette(book.pal!.vga) },
     { name: 'world.map', bytes: serializeMap(map) },
     { name: 'world.mon', bytes: serializeMonsters(mons) },
-    { name: 'foe.mbl', bytes: serializeBlocks(mb.blocks) },
+    { name: 'people.mbl', bytes: serializeBlocks(mb.blocks) },
   ];
   const scene: SceneSpec = {
     id: 'world',
     desc: 'Procrastia',
-    files: { pal: 'world.pal', map: 'world.map', bbl: 'world.bbl', mon: 'world.mon', mbl: 'foe.mbl' },
+    files: { pal: 'world.pal', map: 'world.map', bbl: 'world.bbl', mon: 'world.mon', mbl: 'people.mbl' },
     links: [],
   };
   return { files, scene, plan, map, book, blocks, mb, mons };

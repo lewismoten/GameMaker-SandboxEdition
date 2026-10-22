@@ -63,11 +63,11 @@ export const castleWall: Shader = (x, y, d, nx, ny) => {
 };
 
 /** The shared ground and families both town block sets start with. */
-export function townGround(book: BlockBook): void {
+export function townGround(book: BlockBook, o: { water?: boolean } = {}): void {
   book.add('grass', plain((x, y) => grass(x, y)));
   for (const k of [1, 2, 3]) book.add(`grass${k}`, plain((x, y) => grass(x, y, k)));
   addFamily(book, { layer: 'street', shader: street, diag: true, rough: 0.5, seed: 31 });
-  addFamily(book, { layer: 'water', shader: quay, rough: 0.3, seed: 33, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
+  if (o.water) addFamily(book, { layer: 'water', shader: quay, rough: 0.3, seed: 33, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
   addFamily(book, { layer: 'hedge', shader: hedge, rough: 1.3, seed: 35, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
   book.add('flowers', flowerBox());
   book.add('tree', tree(false), { solid: ALL });
@@ -138,7 +138,7 @@ function fence(dir: 'h' | 'v'): Canvas {
   return cv;
 }
 
-function signpost(): Canvas {
+export function signpost(): Canvas {
   const cv = plain((x, y) => grass(x, y));
   cv.rect(9, 9, 2, 10, [96, 64, 38]);
   shadow(cv, 2, 4, 16, 7);

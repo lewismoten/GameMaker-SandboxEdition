@@ -66,6 +66,15 @@ export class CornerMap {
       }
   }
 
+  /** Clears the corners inside a polygon (and on its edge). */
+  unregion(layer: string, pts: [number, number][]): void {
+    const tmp = new CornerMap(['t']);
+    tmp.region('t', pts);
+    const f = this.field(layer);
+    const t = tmp.field('t');
+    for (let i = 0; i < f.length; i++) if (t[i] >= 0.5) f[i] = 0;
+  }
+
   /** Clears a layer where fn(x, y) is true. */
   clear(layer: string, fn: (x: number, y: number) => boolean): void {
     const f = this.field(layer);
