@@ -163,7 +163,23 @@ export interface StarChartItem extends ItemBase {
   inset?: MapPanel;
 }
 
-export type PrintableItem = MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem;
+/**
+ * A recipe card: a ruled index card in a cook's hand, its lines numbered (a footnote mark
+ * where a line has a note), the notes on the back, an optional rubber stamp across the front.
+ * `blank` lines print as a numbered rule with nothing on it.
+ */
+export interface RecipeItem extends ItemBase {
+  kind: 'recipe';
+  heading: string;
+  serves?: string;
+  lines: { n: number; name: string; line: string; note?: string }[];
+  blank?: number[];
+  stamp?: string;
+  /** A last line on the back, under the notes. */
+  back?: string;
+}
+
+export type PrintableItem = MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {

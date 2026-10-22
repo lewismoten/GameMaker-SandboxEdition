@@ -18,6 +18,7 @@ const ICONS: Record<PrintableItem['kind'], string> = {
   idcard: '🪪',
   chart: '📋',
   starchart: '🌌',
+  recipe: '🥄',
 };
 
 export function boxItems(ctx: PrintContext): BoxItem[] {

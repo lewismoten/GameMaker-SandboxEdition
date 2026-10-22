@@ -4,7 +4,7 @@ import { h } from '../../editor/core/ui';
 import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
 import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
-import type { ChartItem, HintBookItem, IdCardItem, JournalItem, LetterItem, MapItem, MapPanel, NewspaperItem, PrintableItem, StarChartItem } from './types';
+import type { ChartItem, HintBookItem, IdCardItem, JournalItem, LetterItem, MapItem, MapPanel, NewspaperItem, PrintableItem, RecipeItem, StarChartItem } from './types';
 
 // ------------------------------------------------------------------ maps
 async function mapPanel(ctx: PrintContext, p: MapPanel, start: number): Promise<HTMLElement> {
@@ -366,5 +366,36 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return chart(it);
     case 'starchart':
       return starChart(ctx, it);
+    case 'recipe':
+      return recipe(it);
   }
+}
+
+// ------------------------------------------------------------------ recipe card
+async function recipe(it: RecipeItem): Promise<Sheet[]> {
+  const rows = [...it.lines.map((l) => ({ n: l.n, l })), ...(it.blank ?? []).map((n) => ({ n, l: undefined }))].sort((a, b) => a.n - b.n);
+  const front = sheet(
+    8,
+    5,
+    'rc',
+    h('header', { class: 'rc-head' }, h('b', null, it.heading), it.serves ? h('span', null, it.serves) : null),
+    h(
+      'ol',
+      { class: 'rc-lines' },
+      ...rows.map(({ n, l }) =>
+        h('li', { class: l ? '' : 'rc-blank' }, h('span', { class: 'rc-n' }, `${n}.`), l ? h('span', null, h('b', null, l.name), ': ', l.line, l.note ? h('sup', null, `${n}`) : null) : h('span', { class: 'rc-rule' }, '')),
+      ),
+    ),
+    it.stamp ? h('div', { class: 'rc-stamp', 'aria-hidden': 'true' }, it.stamp) : null,
+  );
+  const back = sheet(
+    8,
+    5,
+    'rc rc-back',
+    h('header', { class: 'rc-head' }, h('b', null, 'Notes'), h('span', null, 'added by the family since')),
+    h('ol', { class: 'rc-notes' }, ...it.lines.filter((l) => l.note).map((l) => h('li', null, h('sup', null, `${l.n}`), ' ', l.note!))),
+    it.back ? h('p', { class: 'rc-last' }, it.back) : null,
+    h('div', { class: 'rc-ring', 'aria-hidden': 'true' }),
+  );
+  return [front, back];
 }

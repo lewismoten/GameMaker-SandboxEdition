@@ -1450,6 +1450,113 @@
   margin: 0 0 3.45cqw;
 }
 
+/* ---------------------------------------------------------------- recipe card */
+.pp-sheet.pp-rc {
+  position: relative;
+  padding: 4cqw 5cqw;
+  background: repeating-linear-gradient(transparent 0 4.4cqw, #a9bfd8 4.4cqw 4.55cqw) 0 8cqw / 100% calc(100% - 8cqw) no-repeat, #fbf6e6 !important;
+  font:
+    2.3cqw/4.55cqw 'Bradley Hand',
+    'Comic Sans MS',
+    'Segoe Print',
+    cursive;
+  color: #1b2d6b;
+  overflow: hidden;
+}
+
+.rc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 0.35cqw solid #c8241e;
+  margin-bottom: 0.4cqw;
+  color: #2a1408;
+}
+
+.rc-head b {
+  font:
+    700 3.4cqw/1.2 Georgia,
+    serif;
+  letter-spacing: 0.04em;
+}
+
+.rc-head span {
+  font:
+    italic 1.9cqw Georgia,
+    serif;
+}
+
+.rc-lines,
+.rc-notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rc-lines li {
+  display: flex;
+  gap: 1cqw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rc-n {
+  min-width: 3.2cqw;
+  text-align: right;
+}
+
+.rc-lines sup,
+.rc-notes sup {
+  color: #c8241e;
+  font-size: 1.4cqw;
+}
+
+.rc-blank .rc-rule {
+  flex: 1;
+}
+
+.rc-stamp {
+  position: absolute;
+  right: 6cqw;
+  bottom: 9cqw;
+  padding: 0.6cqw 2cqw;
+  border: 0.6cqw double #c8241e;
+  color: #c8241e;
+  font:
+    700 4.6cqw/1 'Courier New',
+    Courier,
+    monospace;
+  letter-spacing: 0.12em;
+  transform: rotate(-12deg);
+  opacity: 0.78;
+  mix-blend-mode: multiply;
+}
+
+.pp-sheet.pp-rc-back {
+  font-size: 2cqw;
+}
+
+.rc-notes li {
+  line-height: 4.55cqw;
+}
+
+.rc-last {
+  margin: 0;
+  font-style: italic;
+}
+
+.rc-ring {
+  position: absolute;
+  left: 58%;
+  top: 46%;
+  width: 22cqw;
+  height: 22cqw;
+  border: 1.2cqw solid rgba(120, 52, 16, 0.22);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 /* ---------------------------------------------------------------- newspaper */
 .pp-sheet.pp-np {
   padding: 4cqw 5cqw;
