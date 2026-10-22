@@ -23,14 +23,16 @@ export interface Screens {
   demo: string;
   won: string;
   lost: string;
+  /** What Teddy finds pressed in the sand of Gwinn's dig (shown as he climbs out). */
+  dug: string;
 }
 
 const SHARED = { bbl: 'sandcast.bbl', mon: 'sandcast.mon', mbl: 'sandcast.mbl', chr: 'sandcast.chr', cbl: 'sandcast.cbl', snd: 'sandcast.snd' };
 
 /** Scene numbers. */
-export const S = { title: 0, end: 1, hub: 2, keep: 3, moat: 4, lagoon: 5, burrows: 6, patio: 7, bbs: 8 } as const;
+export const S = { title: 0, end: 1, hub: 2, keep: 3, moat: 4, lagoon: 5, burrows: 6, patio: 7, bbs: 8, dig: 9, dugOut: 10 } as const;
 
-export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'>, Level>, screens: Screens): Game {
+export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end' | 'dugOut'>, Level>, screens: Screens): Game {
   const g = newGame('SANDCASTLE KNIGHT');
   const [title, end] = g.scenes;
   title.files = [
@@ -52,16 +54,19 @@ export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'
   end.files = [screens.won, '', screens.lost, ''];
   while (end.files.length < 20) end.files.push('');
 
-  const order = ['hub', 'keep', 'moat', 'lagoon', 'burrows', 'patio', 'bbs'] as const;
-  for (const key of order) {
-    const lv = levels[key];
+  const order = ['hub', 'keep', 'moat', 'lagoon', 'burrows', 'patio', 'bbs', 'dig'] as const;
+  const scene = (lv: Level, intro: string | undefined) => {
     const sc = emptyScene(ADVTYPE);
     sc.desc = lv.desc.slice(0, 19);
     sc.pos = lv.pos;
-    sc.files = [lv.pal, lv.name, SHARED.bbl, SHARED.mon, SHARED.mbl, SHARED.chr, SHARED.cbl, SHARED.snd, '', lv.intro ?? '', ''];
+    sc.files = [lv.pal, lv.name, SHARED.bbl, SHARED.mon, SHARED.mbl, SHARED.chr, SHARED.cbl, SHARED.snd, '', intro ?? '', ''];
     while (sc.files.length < 20) sc.files.push('');
-    g.scenes[S[key]] = sc;
-  }
+    return sc;
+  };
+  for (const key of order) g.scenes[S[key]] = scene(levels[key], levels[key].intro);
+  // Climbing out of Gwinn's dig comes back up into the sandbox: the same playfield as the
+  // sandbox scene, with the same doors, but with a message on the way in.
+  g.scenes[S.dugOut] = scene({ ...levels.hub, desc: 'Up from the dig', pos: { x: 150, y: 120 } }, screens.dug);
 
   const link = (from: number, slot: number, fromMap: LevelMap | null, fromMark: string | null, to: number, toMap: LevelMap | null, toMark: string | null) => {
     const l: Link = {
@@ -89,6 +94,10 @@ export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'
   link(S.burrows, 1, M('burrows'), 'vaultExit', S.keep, M('keep'), 'back');
   link(S.patio, 0, M('patio'), 'crown', S.end, null, null);
   link(S.bbs, 0, M('bbs'), 'exit', S.hub, M('hub'), 'arriveBBS');
+  // The lone dune in the sandbox's northeast corner hides Gwinn's dig.
+  link(S.hub, 5, M('hub'), 'holeDig', S.dig, M('dig'), 'arrive');
+  link(S.dig, 0, M('dig'), 'exit', S.dugOut, M('hub'), 'arriveDig');
+  for (let i = 0; i <= 5; i++) g.scenes[S.dugOut].links[i] = { ...g.scenes[S.hub].links[i] };
 
   return g;
 }

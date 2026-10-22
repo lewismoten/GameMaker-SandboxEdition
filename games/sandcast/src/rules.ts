@@ -55,6 +55,8 @@ export const CTR = {
   flags2: 25,
   /** Teddy's toys found (squeaky bones and flying discs), for the F2 status screen. */
   toys: 26,
+  /** 1 + felt eggs carried out of Gwinn's dig (the little sandcastle there lets you by for one). */
+  egg: 27,
 } as const;
 
 /** Sound effects in the .SND set (0-8 are played by Game-Maker for counter changes). */

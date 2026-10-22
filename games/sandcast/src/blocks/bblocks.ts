@@ -14,6 +14,7 @@ import { addToys } from './toys';
 import { addBurrows } from './burrows';
 import { addPatio } from './patio';
 import { addBbs } from './bbs';
+import { addDig } from './dig';
 
 addSandbox();
 const juiceArt = addPickups();
@@ -23,6 +24,7 @@ addToys();
 addBurrows();
 addPatio();
 addBbs(juiceArt);
+addDig();
 
 export const BG = bg;
 export const B = (name: string) => bg.id(name);

@@ -147,6 +147,18 @@ New upload: SYSOP.GIF!
 `),
 };
 
+/** Climbing out of Gwinn's dig with what was buried there. */
+export const DUG = wrap(`
+|THE SANDCASTLE EGG
+
+Down in Gwinn's dig, a felt egg: sandy tan, blue waves, a castle with a pink pennant, one brown paw print.
+
+Pressed into the wet sand beside it: one word, "ONCE," and then nothing. As if the rest of the story just fell out.
+
+|Dug up by Gwinn, with help
+|(and a nap) from Teddy.
+`);
+
 export const WON = wrap(`
 |*** GOOD BOY! ***
 

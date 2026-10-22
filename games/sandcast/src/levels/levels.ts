@@ -150,6 +150,39 @@ export function hub(): LevelMap {
       q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
+  // Way up in the northeast corner, one lone dune with paw prints leading to it. Gwinn
+  // was digging here; dig it out and see where it goes.
+  m.set(46, 4, 'paws').set(47, 3, 'paws').set(48, 2, 'paws').mark('arriveDig', 48, 2);
+  m.set(48, 1, 'dune').mark('holeDig', 48, 1);
+  return m;
+}
+
+// ================================================================= Gwinn's dig
+// The pocket under the lone dune: wet sand, something felt, and a little sandcastle in the
+// way of the ladder back up. It lets Teddy by once he carries what was buried here.
+export function dig(): LevelMap {
+  const m = new LevelMap('earth', 8);
+  m.stamp(
+    0,
+    0,
+    [
+      'WWWWWWWWW',
+      'WWWWLWWWW',
+      'WWW,c,WWW',
+      'WW,,,,,WW',
+      'W,,,E,,,W',
+      'W,,,@,,,W',
+      'WW,,,,,WW',
+      'WWWWWWWWW',
+    ],
+    L({
+      ',': 'damp',
+      L: { tile: 'ladder', mark: 'exit' },
+      c: 'tinyCastle',
+      E: 'egg',
+      '@': { tile: 'damp', mark: 'arrive' },
+    }),
+  );
   return m;
 }
 

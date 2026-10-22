@@ -20,7 +20,7 @@ import * as levels from './src/levels/levels';
 import { buildGame } from './src/game';
 import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, snapFli, titleScreen, wonFli } from './src/screens/screens';
 import { sysopFli } from './src/screens/sysop';
-import { CREDITS, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
+import { CREDITS, DUG, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
 import { buildDemo } from './src/demo';
 import { licenseText } from '../kit/license';
 
@@ -88,6 +88,7 @@ const L = {
   burrows: { name: 'burrows.map', desc: 'Beetle Burrows', map: levels.burrows(), pal: 'burrow.pal', pos: { x: 60, y: 40 } },
   patio: { name: 'patio.map', desc: "Gwinn's Nap", map: levels.patio(), pal: 'dusk.pal', pos: { x: 60, y: 160 } },
   bbs: { name: 'bbs.map', desc: 'SANDBOX BBS', map: levels.bbs(), pal: 'sandcast.pal', pos: { x: 240, y: 160 } },
+  dig: { name: 'dig.map', desc: "Gwinn's Dig", map: levels.dig(), pal: 'sandcast.pal', pos: { x: 150, y: 160 } },
 };
 const subjects: Record<keyof typeof L, string> = {
   hub: 'Morning in the sandbox',
@@ -97,13 +98,14 @@ const subjects: Record<keyof typeof L, string> = {
   burrows: 'Level 4: Beetle Burrows',
   patio: "Level 5: Gwinn's nap",
   bbs: 'Secret dial-up!',
+  dig: '',
 };
 for (const key of Object.keys(L) as (keyof typeof L)[]) {
   const lv = L[key];
   disk.put(lv.name, serializeMap(lv.map.done()));
   // The sandbox is visited between every castle, so it has no briefing of its own (and the
   // title demo starts there without waiting for a key).
-  if (key === 'hub') continue;
+  if (key === 'hub' || key === 'dig') continue;
   (lv as { intro?: string }).intro = message(key === 'bbs' ? 'bbsintro' : key, subjects[key], INTRO[key], key === 'bbs' ? 'SYSOP' : 'TEDDY');
 }
 
@@ -126,6 +128,7 @@ const game = buildGame(L, {
   demo: 'demo.rec',
   won: 'won.lst',
   lost: 'lost.lst',
+  dug: message('dug', 'Something in the sand', DUG, 'GWINN'),
 });
 disk.put('sandcast.gam', serializeGame(game));
 disk.put('readme.txt', README);
