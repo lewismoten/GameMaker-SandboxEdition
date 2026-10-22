@@ -11,6 +11,7 @@ import type { BookPage } from './printables/manualPages';
 import { gmBoxItems } from './printables/gmItems';
 import * as fig from './figures';
 import { sandboxShots, type GameShot } from '../desk/boxes/gmShots';
+import { gmCover } from './printables/gmCover';
 
 const TITLE = 'Game-Maker 3.0 Owner\u2019s Guide';
 
@@ -47,17 +48,17 @@ function gallery(shots: GameShot[], first: number): string {
     .join('')}</div>`;
 }
 
+/** The blueprint cover, peeled back to show Teddy's game (or whichever game loaded). */
+function coverOf(shots: GameShot[]): HTMLElement {
+  const g = shots.find((s) => s.id === 'teddy') ?? shots[0];
+  return gmCover(g?.canvas.toDataURL(), g?.title);
+}
+
 function pages(shots: GameShot[]): BookletPage[] {
   return [
     {
       cover: true,
-      body: div(`
-        <div class="cover-banner"><em>Make Your Own Computer Games!</em><strong>GAME-MAKER</strong></div>
-        <div class="cover-tag">VGA 256 colors \u00b7 Sound Blaster \u00b7 No programming</div>
-        <div class="cover-title">Owner\u2019s Guide</div>
-        <div class="cover-sub">Sandbox Edition, based on Version 3.0 for IBM PC and compatibles<br>Includes the CD-ROM edition and the shareware BBS</div>
-        <div class="cover-fork">A new guide written for this modified fork of RSD Game-Maker. It is not the manual RSD shipped in 1994.</div>
-        <div class="cover-foot">Game-Maker by Recreational Software Designs \u00b7 Sandbox Edition</div>`),
+      body: coverOf(shots),
     },
     page(
       'Contents',
