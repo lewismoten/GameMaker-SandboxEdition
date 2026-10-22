@@ -105,6 +105,12 @@ async function field(h: RetroHost, x: number, y: number, len: number, digits = f
   }
 }
 
+/** What was typed in a field, shown plainly once it is entered. */
+function entered(h: RetroHost, x: number, y: number, len: number, text: string): void {
+  h.screen.fill(x, y, x + len - 1, y, attr(7, 0));
+  put(h, x, y, `|15${text}`);
+}
+
 async function anyKey(h: RetroHost): Promise<void> {
   hint(h, 'Press any key to go back');
   await h.keys.next();
@@ -158,11 +164,11 @@ async function register(h: RetroHost, name?: string, key?: string): Promise<void
   hint(h, 'Type, then Enter.  Esc goes back.');
   const n = name ?? (await field(h, 10, TOP + 2, KEYGEN_MAX));
   if (!n?.trim()) return;
-  put(h, 10, TOP + 2, `|15${n}`);
+  entered(h, 10, TOP + 2, KEYGEN_MAX, n);
   put(h, 4, TOP + 3, '|07Key:  ');
   const k = key ?? (await field(h, 10, TOP + 3, 12, true));
   if (!k) return;
-  put(h, 10, TOP + 3, `|15${k}`);
+  entered(h, 10, TOP + 3, 12, k);
   await step(h, TOP + 5, 'Writing C:\\GM\\PLAYGAME.REG');
   pcExtras().setReg(regFile(n, SERIAL, k));
   const ok = checkRegistration(pcExtras().reg).kind === 'registered';
@@ -193,7 +199,7 @@ async function keygenScreen(h: RetroHost): Promise<void> {
   hint(h, 'Type your name exactly as you will register it, then Enter.  Esc goes back.');
   const name = await field(h, 10, TOP + 2, KEYGEN_MAX);
   if (!name?.trim()) return;
-  put(h, 10, TOP + 2, `|15${name}`);
+  entered(h, 10, TOP + 2, KEYGEN_MAX, name);
   // a little show while it "computes"
   for (let i = 0; i < 12; i++) {
     put(h, 4, TOP + 3, `|07Key:  |08${hex(Math.floor(Math.random() * 0xffffffff), 8)}`);
