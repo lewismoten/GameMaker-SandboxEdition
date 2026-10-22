@@ -711,10 +711,41 @@
             {
               "q": "Something in the Maelstrom cannot be hurt.",
               "a": "The Phantom, magma and tumbling asteroids cannot be hurt at all. Keep moving."
-            },
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
             {
               "q": "Some say the felt-maker left something behind...",
-              "a": "Fly to where the galaxy chart's four corners meet. Rock is not always rock, and P picks up more than modules."
+              "a": "Fly to where the galaxy chart's four corners meet. The chart wraps around, so all four corners are one place, as far from the Core as space goes."
+            },
+            {
+              "q": "I'm there. It's just a knot of asteroids.",
+              "a": "Rock is not always rock. Try the knot's south face. And keep a module slot free: if you're full, drop one with D first."
+            },
+            {
+              "q": "Plot me a course.",
+              "a": "Fly to the corner of the galaxy chart and come at the knot from below. The two rocks in the middle of its south face are only a picture: fly straight up through them. Inside, press P to pick up the felt egg, then touch the beacon.",
+              "sketch": {
+                "rows": [
+                  "o oooo",
+                  "ooo=ooo",
+                  " ooX o",
+                  "oo   oo",
+                  " oo::oo",
+                  "  o^^o",
+                  "   ^",
+                  "   @"
+                ],
+                "labels": [
+                  { "x": 8, "y": 1, "text": "BEACON" },
+                  { "x": 8, "y": 2, "text": "FELT EGG" },
+                  { "x": 8, "y": 4, "text": "NOT ROCK" },
+                  { "x": 8, "y": 7, "text": "YOU" }
+                ]
+              }
             }
           ]
         }
