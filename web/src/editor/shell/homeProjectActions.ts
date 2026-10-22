@@ -3,7 +3,7 @@
 import { h, promptText, toast } from '../core/ui';
 import { deleteProject, listProjects, loadProject, newId, saveProject } from '../../project/storage';
 import { downloadProject, exportProject, exportProjectPage, exportProjectForDos } from './projectExport';
-import { forgetOrigin, originId, rememberOrigin } from './homeOrigin';
+import { forgetOrigin, isImported, originId, rememberOrigin, setImported } from './homeOrigin';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -36,6 +36,7 @@ async function duplicate(p: ProjectSummary, refresh: () => Promise<void>, onMade
   const name = copyName(p.name, (await listProjects()).map((x) => x.name));
   await saveProject(id, name, stored.record.gam, stored.files);
   rememberOrigin(id, originId(p.id));
+  setImported(id, isImported(p.id));
   toast(`Made “${name}”.`);
   await refresh();
   onMade?.(id);
@@ -45,14 +46,24 @@ async function remove(p: ProjectSummary, refresh: () => Promise<void>): Promise<
   const stored = await loadProject(p.id);
   if (!stored) return refresh();
   const origin = originId(p.id);
+  const imported = isImported(p.id);
   await deleteProject(p.id);
   forgetOrigin(p.id);
+  setImported(p.id, false);
   await refresh();
   undoToast(`Deleted “${p.name}”.`, async () => {
     await saveProject(p.id, stored.record.name, stored.record.gam, stored.files);
     rememberOrigin(p.id, origin);
+    setImported(p.id, imported);
     await refresh();
   });
+}
+
+/** Lists a game under Imported, or under My games. */
+async function move(p: ProjectSummary, imported: boolean, refresh: () => Promise<void>): Promise<void> {
+  setImported(p.id, imported);
+  toast(`“${p.name}” is now listed under ${imported ? 'Imported' : 'My games'}.`);
+  await refresh();
 }
 
 /** A notice with an Undo button, for a few seconds. */
@@ -82,6 +93,9 @@ export function projectMenuItems(p: ProjectSummary, refresh: () => Promise<void>
     h('button', { onclick: () => void exportProject(p.id) }, 'Export web app'),
     h('button', { onclick: () => void exportProjectPage(p.id), title: 'One .html file with the game and player inside' }, 'Export as one web page'),
     h('button', { onclick: () => void exportProjectForDos(p.id) }, 'Export for DOS'),
+    isImported(p.id)
+      ? h('button', { onclick: () => void move(p, false, refresh), title: 'List it with the games you make here' }, 'Move to My games')
+      : h('button', { onclick: () => void move(p, true, refresh), title: 'List it with the games brought in from elsewhere' }, 'Move to Imported'),
     h('button', { class: 'danger', onclick: () => void remove(p, refresh) }, 'Delete'),
   ];
 }

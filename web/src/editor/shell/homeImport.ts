@@ -9,6 +9,7 @@ import { crc32, isZip, readZip } from '../../project/zip';
 import { gameFromPageFiles } from '../../project/importPage';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
+import { setImported } from './homeOrigin';
 
 export async function newGame(nav: HomeNav): Promise<void> {
   const choice = await modal<{ name: string; starter: boolean }>('New game', (close) => {
@@ -107,7 +108,9 @@ async function importFiles(nav: HomeNav, { files, name, gam }: Imported): Promis
   const p = Project.fromFiles(files, name);
   if (gam && files.has(gam)) p.gam = gam;
   await p.saveNow();
-  toast(`Opened ${p.name} (${files.size} files)`);
+  // listed under Imported, apart from the games made here (⋯ More can move it to My games)
+  setImported(p.id, true);
+  toast(`Opened ${p.name} (${files.size} files). It is listed under Imported.`);
   nav.openProject(p.id);
 }
 
