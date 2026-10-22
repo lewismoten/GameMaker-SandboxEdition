@@ -1,7 +1,9 @@
 // EGG.EXE: an unlisted program on the desk PC (not in HELP, not in any folder) for testing the
 // felt eggs. Lists all twelve (and, once all twelve are in, the two kept apart in bonus.ts),
-// where each stands, and adds or breaks them. It only changes the
-// overrides in localStorage (eggState.ts), never a game's save. Game-Maker's text UI style.
+// where each stands, and adds or breaks them. On the rotten egg's row, ← → (or - +) crack it a
+// tap at a time, H crumbles it to the diamond heart and 0 makes it whole (bonus.ts eggTaps).
+// It only changes what is kept in localStorage (eggState.ts, bonus.ts), never a game's save.
+// Game-Maker's text UI style.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '../retro/text/cp437';
@@ -29,14 +31,20 @@ interface Row {
   inSave: boolean;
   found: boolean;
   hidden: boolean;
+  /** The rotten egg's row only: how far it is tapped (0 whole .. 13 the diamond heart). */
+  taps?: number;
 }
+
+type Bonus = typeof import('./bonus');
+let bonus: Bonus | undefined;
 
 async function ledger(): Promise<Row[]> {
   const list = await eggStates();
   const rows: Row[] = list.map((e) => ({ key: e.egg.game, gameTitle: e.egg.gameTitle, name: e.egg.name, status: e.status, inSave: e.inSave, found: e.found, hidden: !!e.egg.detect }));
   if (!list.length || !list.every((e) => e.found)) return rows;
-  const { bonusStates, bonusKey } = await import('./bonus');
-  for (const e of await bonusStates()) rows.push({ key: bonusKey(e.egg), gameTitle: e.egg.gameTitle, name: e.egg.name, status: e.status, inSave: e.inSave, found: e.found, hidden: !!e.egg.detect });
+  bonus ??= await import('./bonus');
+  const { bonusStates, bonusKey, eggTaps } = bonus;
+  for (const e of await bonusStates()) rows.push({ key: bonusKey(e.egg), gameTitle: e.egg.gameTitle, name: e.egg.name, status: e.status, inSave: e.inSave, found: e.found, hidden: !!e.egg.detect, taps: e.egg.id === 'rotten' ? eggTaps() : undefined });
   return rows;
 }
 
@@ -52,7 +60,6 @@ export async function runEggExe(ui: Ui): Promise<void> {
   const frame = () => {
     s.fill(0, 0, 79, 24, attr(7, 0), 176);
     s.write(0, 0, TITLEATTR, toCp437(' EGG.EXE  Egg Inspector 1.0'.padEnd(55) + 'Sandbox Software 1995 ').slice(0, 80));
-    s.write(0, 24, BARATTR, toCp437(' ↑↓ Choose   Enter Add/Break   A Add   B Break   R Reset   Esc Quit').padEnd(80));
     y = Math.max(2, Math.floor((24 - (n + 4)) / 2));
     s.window(x, y, w, n + 4, MENUATTR, SHADATTR);
     s.write(x + Math.floor((w - 16) / 2), y - 1, attr(15, 1), ' FELT EGG LEDGER ');
@@ -74,12 +81,20 @@ export async function runEggExe(ui: Ui): Promise<void> {
       const a = i === cur ? CURATTR : MENUATTR;
       s.fill(x + 1, row, x + w - 2, row, a);
       s.write(x + 2, row, a, toCp437(e.gameTitle.slice(0, 28).padEnd(29) + e.name.slice(0, 23).padEnd(24)));
-      s.write(x + 55, row, i === cur ? CURATTR : STATE_ATTR[e.status], toCp437(STATE_TEXT[e.status]).padEnd(15));
+      // a found rotten egg shows how cracked it is; otherwise where it stands
+      const t = e.found && e.taps !== undefined && bonus ? e.taps : undefined;
+      const text = t !== undefined ? bonus!.tapsText(t) : STATE_TEXT[e.status];
+      const ta = t === undefined || !t ? STATE_ATTR[e.status] : t >= bonus!.TAPS ? attr(13, 1) : attr(14, 1);
+      s.write(x + 55, row, i === cur ? CURATTR : ta, toCp437(text).padEnd(15));
     });
     // the full state of the chosen egg, under the list
     const e = list[cur];
+    const cracks = e.taps !== undefined && bonus ? `, ${bonus.tapsText(e.taps)}` : '';
     s.fill(x + 1, y + n + 2, x + w - 2, y + n + 2, MENUATTR);
-    s.write(x + 2, y + n + 2, MENUATTR, toCp437(`${e.name}: ${STATE_TEXT[e.status]}${e.inSave ? '' : e.hidden ? ', not in any save' : ', not hidden in the game yet'}`).slice(0, w - 4));
+    s.write(x + 2, y + n + 2, MENUATTR, toCp437(`${e.name}: ${STATE_TEXT[e.status]}${e.inSave ? '' : e.hidden ? ', not in any save' : ', not hidden in the game yet'}${cracks}`).slice(0, w - 4));
+    // the keys, with the cracking ones on the rotten egg's row
+    const bar = e.taps !== undefined ? ' ↑↓ Choose  ←→ Crack  H Heart  0 Whole  Enter Add/Break  R Reset  Esc Quit' : ' ↑↓ Choose   Enter Add/Break   A Add   B Break   R Reset   Esc Quit';
+    s.write(0, 24, BARATTR, toCp437(bar).padEnd(80).slice(0, 80));
     const k = await ui.keys.next();
     const key = k.key.length === 1 ? k.key.toUpperCase() : k.key;
     if (key === 'ArrowDown') cur = (cur + 1) % list.length;
@@ -89,7 +104,16 @@ export async function runEggExe(ui: Ui): Promise<void> {
     else if (key === 'Enter' || key === ' ') setOverride(e.key, e.found ? 'broken' : e.inSave ? undefined : 'added');
     else if (key === 'A') setOverride(e.key, e.inSave ? undefined : 'added');
     else if (key === 'B') setOverride(e.key, 'broken');
-    else if (key === 'R') setOverride(e.key, undefined);
+    else if (key === 'R') {
+      // the rotten egg goes back to whole, too
+      if (e.taps !== undefined && e.taps) bonus?.setEggTaps(0);
+      setOverride(e.key, undefined);
+    } else if (e.taps !== undefined && bonus) {
+      if (key === 'ArrowRight' || key === '+' || key === '=') bonus.setEggTaps(e.taps + 1);
+      else if (key === 'ArrowLeft' || key === '-' || key === '_') bonus.setEggTaps(e.taps - 1);
+      else if (key === 'H') bonus.setEggTaps(bonus.TAPS);
+      else if (key === '0') bonus.setEggTaps(0);
+    }
     else if (key === 'Escape' || key === 'Q') break;
   }
   s.resetPalette();
