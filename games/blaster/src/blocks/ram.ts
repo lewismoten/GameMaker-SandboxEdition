@@ -146,12 +146,14 @@ export function stackTiles(bs: BlockSet, a: StageArt, beat: number): void {
 }
 
 // ------------------------------------------------------------------ a corner of memory
-/** A SIMM edge with one gold finger missing, and the label on the floor round the corner. */
+/** A SIMM edge with one gold finger missing (a tiny bug sits in the gap), and the label on the floor round the corner. */
 export function cornerTiles(bs: BlockSet, a: StageArt): void {
   const p = a.pal;
   const t = a.edge('L', 0);
   t.rect(3, 12, 14, 8, p.c('base', 0));
   t.rect(3, 12, 3, 2, p.c('trim', 2)).set(4, 14, p.c('trim', 1));
+  t.rect(10, 14, 2, 3, p.c('red', 2)).set(10, 14, p.c('red', 3)).set(10, 13, p.c('ink', 0)).set(11, 13, p.c('ink', 0));
+  for (const y of [14, 15, 16]) t.set(9, y, p.c('slime', 4)).set(12, y, p.c('slime', 4));
   bs.add('edgeGap', t);
   slices(bs, 'lblLog', label(a, 3, 'COUNTER.LOG', a.pal.c('glow', 3)));
 }
