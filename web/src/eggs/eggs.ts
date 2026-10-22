@@ -122,6 +122,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Sent from the future by Lewis "Lewie" Moten III', 'and Claude Opus 5.5'],
     lore: 'A postcard from the future: "Stories got so small they fit in your pocket. Somebody still has to count every word back in."',
     look: { felt: '#1f9a9a', band: '#c8d4dc', patch: '#e2412f', thread: '#eaf6f6', pattern: 'waves', motif: 'rocket' },
+    detect: { block: 149 },
   },
 ];
 
