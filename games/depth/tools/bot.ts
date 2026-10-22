@@ -99,6 +99,8 @@ export class Bot {
   cost(x: number, y: number): number | undefined {
     const b = this.sim.shown(x, y);
     if (b.chHitPt <= -100) return undefined;
+    // slopes carry Ray off; only ride them on purpose
+    if (b.grav) return undefined;
     if (b.solid) {
       // a gate opens for a counter that can pay for it
       if (b.effect >= 20 && b.eamt < 0) {
@@ -225,6 +227,26 @@ export class Bot {
     const p = this.sim.pos;
     await this.run(dir, p.x + STEP[dir].x, p.y + STEP[dir].y, 10);
     await this.run(back[dir], p.x, p.y, 10);
+  }
+
+  /** Rolls onto a slope (dir) and lets it carry Ray until he stops; returns where. */
+  async ride(dir: Dir, maxTicks = 300): Promise<{ x: number; y: number }> {
+    this.sim.press(SCAN[dir]);
+    await this.wait(3);
+    this.sim.release(SCAN[dir]);
+    let still = 0;
+    let last = '';
+    for (let t = 0; t < maxTicks && still < 12; t++) {
+      const r = await this.tick();
+      if (r) throw new Error(`riding: ${r}`);
+      const p = this.sim.pos;
+      const now = `${p.x},${p.y},${p.sx},${p.sy}`;
+      still = now === last ? still + 1 : 0;
+      last = now;
+    }
+    const p = this.sim.pos;
+    if (p.sx || p.sy) throw new Error(`stopped between cells at ${p.x},${p.y} +${p.sx},${p.sy}`);
+    return p;
   }
 
   /** Presses Enter to pick up what Ray is on. */

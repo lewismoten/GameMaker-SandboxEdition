@@ -61,14 +61,27 @@ export class TileBook {
     return `${k.kind}:${k.part ?? 0}:${k.variant ?? 0}|${ctxKey(k.ctx.near)}|${ctxKey(k.ctx.far)}`;
   }
 
+  private readonly pins = new Map<string, number>();
+
+  /** Gives every cell of `kind` this block number (one look only: the felt egg). */
+  pin(kind: string, n: number): void {
+    this.pins.set(kind, n);
+  }
+
   /** The block number for this cell (made on first use). */
   get(key: CellKey): number {
     const k = this.canonical(key);
     const id = TileBook.id(k);
     let n = this.index.get(id);
+    const pinned = this.pins.get(k.kind);
+    if (pinned !== undefined && n === undefined) {
+      if (this.keys[pinned]) throw new Error(`Block ${pinned} (${k.kind}) is already ${TileBook.id(this.keys[pinned])}`);
+      this.reserve(pinned, k);
+      return pinned;
+    }
     if (n === undefined) {
-      n = this.keys.length;
-      while (this.reserved.has(n)) n++;
+      n = 0;
+      while (this.keys[n]) n++;
       if (n >= this.limit) throw new Error(`${this.theme}: more than ${this.limit} blocks`);
       this.keys[n] = k;
       this.index.set(id, n);

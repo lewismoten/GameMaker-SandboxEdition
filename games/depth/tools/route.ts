@@ -7,8 +7,10 @@ import { buildLevel } from '../src/levels/map';
 import { TileBook } from '../src/tiles/book';
 import { rulesFor } from '../src/tiles/rules';
 import { farScene, nearScene } from '../src/game';
+import { CROWN, MON } from '../src/ids';
 
-type Step = [number, number, string] | ['pickup'] | ['wait', number] | ['face', 'up' | 'down' | 'left' | 'right'];
+type D = 'up' | 'down' | 'left' | 'right';
+type Step = [number, number, string] | ['pickup'] | ['wait', number] | ['face', D] | ['ride', D, number, number] | ['boss'];
 
 /** The level's offset in the 100x100 world. */
 function offset(level: Level): [number, number] {
@@ -58,7 +60,18 @@ async function follow(bot: Bot, level: Level, steps: Step[]): Promise<void> {
       continue;
     }
     if (s[0] === 'face') {
-      await bot.face(s[1] as 'up');
+      await bot.face(s[1] as D);
+      continue;
+    }
+    if (s[0] === 'ride') {
+      const [, dir, x, y] = s as ['ride', D, number, number];
+      const p = await bot.ride(dir);
+      if (p.x !== ox + x || p.y !== oy + y) throw new Error(`${level.name}: the slope left Ray at ${p.x - ox},${p.y - oy}, not ${x},${y}`);
+      bot.say(`rode the slope to ${x},${y}`);
+      continue;
+    }
+    if (s[0] === 'boss') {
+      await carefully(bot, 'Count Polygon', 80, () => countPolygon(bot));
       continue;
     }
     const [x, y, label] = s as [number, number, string];
@@ -75,6 +88,29 @@ const expectScene = (bot: Bot, scene: number, what: string) => {
   if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
 };
 
+/**
+ * Count Polygon: wait on the arena's west side facing east and fire as he comes (the bot
+ * fires at whatever is in line); five hits take him down to the last polygon, then roll over
+ * to it.
+ */
+async function countPolygon(bot: Bot): Promise<void> {
+  const counts = new Set<number>([MON.count1, MON.count2, MON.count3, MON.count4, MON.count5]);
+  const where = (mons: Set<number>) => {
+    const w = bot.sim.w;
+    const i = w.mm.findIndex((m) => mons.has(m.monnum));
+    return i < 0 ? undefined : { x: w.mi[i].curx[0], y: w.mi[i].cury[0] };
+  };
+  for (let t = 0; t < 1500 && where(counts); t++) if (await bot.tick()) throw new Error('a scene change in the arena');
+  if (where(counts)) throw new Error('Count Polygon is still there');
+  const c = where(new Set([MON.crown]));
+  if (!c) throw new Error('no crown');
+  bot.say('Count Polygon is down to his last polygon');
+  const r = await bot.goto(c.x, c.y, 'the crown');
+  if (r) throw new Error(`crown: ${r}`);
+  await bot.wait(4);
+  if (bot.sim.meter(CROWN) < 2) throw new Error('the crown did not count');
+}
+
 export const ROUTES: Step[][] = [
   // 1. The Checkerboard
   [
@@ -87,6 +123,74 @@ export const ROUTES: Step[][] = [
     [36, 3, 'ring 3 to far'],
     [41, 2, 'blue lens'],
     [41, 10, 'exit'],
+  ],
+  // 2. The Glass Garden
+  [
+    [8, 2, 'photons'],
+    [13, 5, 'garden gate'],
+    [21, 5, 'across the panels'],
+    [32, 5, 'ring 1 to far'],
+    [26, 4, 'red lens'],
+    [30, 11, 'far bridge'],
+    [36, 17, 'the stepping stones'],
+    [31, 17, 'first island'],
+    [26, 17, 'second island'],
+    [21, 17, 'green lens'],
+    [26, 17, 'second island again'],
+    [31, 17, 'first island again'],
+    [37, 17, 'back across'],
+    [41, 13, 'ring 2 to near'],
+    [52, 12, 'blue lens'],
+    [51, 20, 'exit'],
+  ],
+  // 3. The Hall of Mirrors
+  [
+    [5, 10, 'room D'],
+    [26, 12, 'blue lens'],
+    [15, 12, 'ring 2 to far'],
+    [15, 4, 'room B'],
+    [26, 3, 'red lens'],
+    [15, 18, 'room H'],
+    [4, 20, 'green lens'],
+    [25, 23, 'exit'],
+  ],
+  // 4. Fractal Peaks
+  [
+    [13, 4, 'the chute'],
+    ['ride', 'right', 28, 4],
+    [30, 7, 'ring 1 to far'],
+    [35, 4, 'red lens'],
+    [40, 9, 'the south chute'],
+    ['ride', 'down', 40, 20],
+    [30, 20, 'green lens'],
+    [36, 22, 'ring 2 to near'],
+    [20, 21, 'over the near bridge'],
+    [14, 18, 'blue lens'],
+    [5, 24, 'exit'],
+  ],
+  // 5. Teapot Temple
+  [
+    [7, 4, 'THE CHEZ'],
+    [13, 6, 'temple door'],
+    [22, 6, 'ring 1 to far'],
+    [29, 6, 'red lens'],
+    [33, 12, 'ring 2 to near'],
+    [39, 12, 'green lens'],
+    [36, 22, 'blue lens'],
+    [22, 13, 'exit'],
+  ],
+  // 6. The Vanishing Point
+  [
+    [6, 11, 'ring 1 to far'],
+    [10, 7, 'red lens'],
+    [12, 14, 'ring 2 to near'],
+    [16, 15, 'green lens'],
+    [17, 11, 'the edge'],
+    [21, 11, 'across the panels'],
+    [22, 7, 'blue lens'],
+    [26, 11, 'the arena'],
+    ['boss'],
+    [48, 11, 'exit'],
   ],
 ];
 
