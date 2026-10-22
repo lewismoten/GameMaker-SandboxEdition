@@ -37,11 +37,14 @@ export function pageKeys(page: number, pages: number): string {
 export interface PagedListing {
   /** The area's header lines; it gets the page number to show. */
   header: (page: number, pages: number) => string[];
-  /** Each entry's lines on the listing. */
-  entries: string[][];
-  /** Lines under the entries (the legend). */
-  footer: string[];
+  /** Each entry's lines on the listing (made again for each page shown, so a * stays current). */
+  entries: Lines<string[][]>;
+  /** Lines under the entries (the legend), the same number every time. */
+  footer: Lines<string[]>;
 }
+
+type Lines<T> = T | (() => T);
+const now = <T>(l: Lines<T>): T => (typeof l === 'function' ? (l as () => T)() : l);
 
 /** Draws the listing a page at a time, keeping the prompt on the screen below it. */
 export class Pager {
@@ -52,20 +55,15 @@ export class Pager {
     private t: Term,
     private list: PagedListing,
   ) {
-    const room = SCREEN_ROWS - list.header(0, 1).length - list.footer.length - 2; // the prompt, and the line it moves to
+    const room = SCREEN_ROWS - list.header(0, 1).length - now(list.footer).length - 2; // the prompt, and the line it moves to
     this.pages = paginate(
-      list.entries.map((e) => e.length),
+      now(list.entries).map((e) => e.length),
       room,
     );
   }
 
   get count(): number {
     return this.pages.length;
-  }
-
-  /** Which page the entry (0-based) is on. */
-  pageOf(entry: number): number {
-    return Math.max(0, this.pages.findIndex((p) => p.includes(entry)));
   }
 
   /** Clears the screen and draws the current page. */
@@ -76,8 +74,9 @@ export class Pager {
     s.cursorX = 0;
     s.cursorY = 0;
     for (const l of this.list.header(this.page, this.count)) this.t.line(l);
-    for (const i of this.pages[this.page]) for (const l of this.list.entries[i]) this.t.line(l);
-    for (const l of this.list.footer) this.t.line(l);
+    const entries = now(this.list.entries);
+    for (const i of this.pages[this.page]) for (const l of entries[i] ?? []) this.t.line(l);
+    for (const l of now(this.list.footer)) this.t.line(l);
   }
 
   /** The page-turning part of the prompt. */
