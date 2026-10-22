@@ -711,6 +711,10 @@
             {
               "q": "Something in the Maelstrom cannot be hurt.",
               "a": "The Phantom, magma and tumbling asteroids cannot be hurt at all. Keep moving."
+            },
+            {
+              "q": "Some say the felt-maker left something behind...",
+              "a": "Fly to where the galaxy chart's four corners meet. Rock is not always rock, and P picks up more than modules."
             }
           ]
         }
