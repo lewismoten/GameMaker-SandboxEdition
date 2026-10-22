@@ -9,7 +9,8 @@ import { P } from '../art/pal';
 import { FLIP } from '../characters/mons';
 import { POWER } from '../ids';
 import { newBestiary } from './level';
-import { pacer, scent } from './common';
+import { pacer, popUp, scent } from './common';
+import { FX } from '../sprites/fx';
 import { askBubble } from '../sprites/folks';
 import { bell } from '../sprites/townfolk';
 
@@ -70,7 +71,7 @@ export function midwayBeasts() {
       ['askSpin2', 8],
     ],
     power: POWER.spinAsk,
-    becomes: 'ticketFall',
+    becomes: 'ticket',
     upscore: 100,
   });
   for (const [name, pic, dy] of [
@@ -110,7 +111,9 @@ export function midwayBeasts() {
     'puff',
     2,
   );
-  scent(b, 'scentTicket', 'ticketFall');
+  b.pic('ticketAir', FX.ticket1);
+  popUp(b, 'ticketPop', 'ticketAir', 'ticket');
+  scent(b, 'scentTicket', 'ticketPop');
   void FLIP;
   return b;
 }

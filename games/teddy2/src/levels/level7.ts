@@ -31,14 +31,7 @@ export function midway(): Level {
   // The High Striker: pegs up the pole, its bell at the top (a monster).
   for (let y = 29; y < 39; y++) m.set(12, y, 'striker');
   m.set(12, 39, 'strikerBase');
-  for (const [x, y] of [
-    [11, 38],
-    [13, 36],
-    [11, 34],
-    [13, 32],
-    [11, 30],
-  ])
-    m.set(x, y, 'peg');
+  for (const y of [38, 36, 34, 32, 30]) m.set(11, y, 'peg');
   m.set(14, 38, 'honkerTop').set(14, 39, 'honkerBot');
   // The ring toss and Bubbles.
   for (let bx = 0; bx < 3; bx++) for (let by = 0; by < 3; by++) m.set(18 + bx, 37 + by, `toss${bx}${by}`);
@@ -77,7 +70,7 @@ export function midway(): Level {
   m.rect(0, 28, 1, 12, 'hedgeWall');
 
   // Monsters.
-  m.mon(10, 28, 'strikerBell');
+  m.mon(11, 28, 'strikerBell');
   m.mon(22, 38, 'askSit');
   m.mon(43, 39, 'askSpin');
   m.mon(29, 39, 'horse1');
@@ -88,7 +81,7 @@ export function midway(): Level {
   for (const [x, y] of [
     [30, 35],
     [tower + 3, 17],
-    [12, 27],
+    [11, 26],
   ])
     m.mon(x, y, 'poodle');
   const treats: [number, number][] = [
