@@ -518,7 +518,11 @@ export function buildTileSet(style: Style): TileSet {
   const fl = floorPx(style, false);
   const fl2 = floorPx(style, true);
   // the fixed numbers: void and the three things Doc Leo can carry
-  const vd = px().rect(0, 0, 20, 20, c('dark', 0));
+  // beyond the kitchen: the old foundations, dark stone laid in courses
+  const vd = px().map((x, y) => {
+    const row = Math.floor(y / 5);
+    return y % 5 === 4 || (x + (row % 2) * 5) % 10 === 9 ? c('dark', 0) : (x * 3 + y * 7) % 11 === 0 ? c('dark', 2) : c('dark', 1);
+  });
   t.add('void', vd, { solid: SOLID });
   t.add('chicken', on(fl, chickenItem()), { obj: true, touch: 'floor' });
   t.add('kazoo', on(fl, kazoo()), { obj: true, touch: 'floor' });

@@ -37,11 +37,13 @@ const secretOnly = process.argv.includes('--secret');
 try {
   if (!secretOnly) {
     const bot = await playThrough(false);
+    if (!bot.sim.ci.inv.includes(FIXED_BLOCK.kazoo)) throw new Error('The kazoo was not picked up in the Spice Parlor');
     console.log(`WON  normal route: ${bot.sim.deaths} deaths, score ${bot.sim.ci.score}, ${bot.squawks} squawks`);
   }
   await eggsFound();
   if (Object.keys(SECRET_ROUTE).length) {
     const bot = await playThrough(true);
+    if (!bot.sim.ci.inv.includes(FIXED_BLOCK.tricorn)) throw new Error("Ebenezer's tricorn was not picked up in the hidey-hole");
     if (bot.sim.trail.includes(roomScene(6))) throw new Error('The secret route went through the Tea Room');
     if (!bot.sim.trail.includes(roomScene(0))) throw new Error('The secret route never reached the hidey-hole');
     console.log(`WON  secret route (skips the Tea Room): ${bot.sim.deaths} deaths, score ${bot.sim.ci.score}`);
