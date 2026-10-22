@@ -15,6 +15,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "hours": 2,
     "background": "#1d5fb8",
     "accent": "#ffd23f",
     "ink": "#ffffff",
