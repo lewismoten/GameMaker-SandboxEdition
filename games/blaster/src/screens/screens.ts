@@ -14,7 +14,7 @@ import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
 import { buildLeg, type Stage } from '../stages/stage';
 import { H, SHIP, SHIP_FLAME, SP, W, blob, c, circuit, dos, floppy, glitchFace, logo, monitor, panel, room, scaleBlit, speedLines, tower } from './cartoon';
-import { CREDITS, HELP, LOST, README, STORY, WON } from './text';
+import { CREDITS, DEBUG_EGG, HELP, LOST, README, STORY, WON } from './text';
 import { SONGS } from '../sound/music';
 
 export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
@@ -22,8 +22,7 @@ export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
 }
 
 /** The card before a leg: a framed look at it, its name and a few words. */
-export function card(s: Stage, legIndex: number): Pixels {
-  const l = s.legs[legIndex];
+export function card(s: Stage, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
   const pc = (n: string, k: number) => s.pal.c(n, k);
   const p = new Pixels(W, H, pc('ink', 0));
   const b = buildLeg(l);
@@ -31,10 +30,10 @@ export function card(s: Stage, legIndex: number): Pixels {
   const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, X0, y0, 16, 5);
   p.blit(view, 0, 0);
   p.rect(0, 100, W, 2, pc('trim', 3));
-  const tag = l.kind === 'boss' ? 'WARNING!' : `STAGE ${s.n}-${'AB'[legIndex]}`;
-  outlined(p, 12, 110, tag, l.kind === 'boss' ? pc('red', 3) : pc('gold', 4), pc('ink', 0), 1);
+  const tag = tagged ?? (l.kind === 'boss' ? 'WARNING!' : `STAGE ${s.n}-${'AB'[legIndex]}`);
+  outlined(p, 12, 110, tag, l.kind === 'boss' && !tagged ? pc('red', 3) : pc('gold', 4), pc('ink', 0), 1);
   outlined(p, 12, 122, s.title.toUpperCase(), pc('steel', 5), pc('ink', 0), 1);
-  outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
+  outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
   l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('grey', 6)));
   if (l.kind !== 'boss') scaleBlit(p, SHIP, 268, 112, 2);
   return p;
@@ -258,6 +257,16 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
       put(`${l.file}.gif`, gif(card(s, i), s.pal.pal));
       lst(`${l.file}.lst`, [[`${l.file}.gif`, 4]]);
     });
+    const side = s.side;
+    if (side) {
+      const room = side.room.file;
+      put(`${room}.gif`, gif(card(s, -1, side.room, 'UNMAPPED SECTOR'), s.pal.pal));
+      lst(`${room}.lst`, [[`${room}.gif`, 0]]);
+      // the way out: the egg's page, then the next leg's own card
+      put(`${side.outro}bg.gif`, gif(page('THE DEBUG EGG', 31)));
+      put(`${side.outro}.txt`, DEBUG_EGG);
+      lst(`${side.outro}.lst`, [[`${side.outro}bg.gif`, 0], [`${side.outro}.txt`], [`${side.then}.gif`, 4]]);
+    }
   }
   put(SANDLOGO, sandLogoFli());
   put('intro.fli', introFli());

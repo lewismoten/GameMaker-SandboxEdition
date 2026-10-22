@@ -180,6 +180,38 @@ export const LOST = pages([
   '   before they wear you down.',
 ]);
 
+/** The page on the way out of the corner of memory (30 columns). */
+export const DEBUG_EGG = pages(
+  [
+    'Charcoal felt crossed with',
+    'lime-green circuit traces in',
+    'backstitch. A little felt bug',
+    'with six French-knot legs. A',
+    'ribbon of tiny white chip',
+    'pins around the waist.',
+    '',
+    'Found in a corner of memory:',
+    'COUNTER.LOG. Its last line',
+    'reads "Word 100 of 100 ...',
+    'STOP." Everything after it',
+    'is static.',
+  ],
+  [
+    'Stitched by the whole',
+    'Sandbox crew:',
+    '',
+    '  Claude Opus 5.5',
+    '  Lewis "Lewie" Moten III',
+    '  Teddy',
+    '  Gwinn',
+    '  Doc Leo',
+    '',
+    'Keep it in your hold. It is',
+    'yours now.',
+  ],
+);
+for (const l of DEBUG_EGG.split('\n')) if (l.length > 30) throw new Error(`Egg line over 30 columns: "${l}"`);
+
 /** readme.txt, 31 columns wide. */
 export function readme(price: string): string {
   const lines = [

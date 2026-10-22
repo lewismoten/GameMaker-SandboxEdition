@@ -57,6 +57,48 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
     game.scenes.push(scene);
   });
 
+  // side rooms go after every leg, each followed by its way-out copy of the next leg
+  for (const s of stages) {
+    const side = s.side;
+    if (!side) continue;
+    const at = (file: string) => {
+      const i = legs.findIndex(({ l }) => l.file === file);
+      if (i < 0) throw new Error(`No leg ${file}`);
+      return i + 2;
+    };
+    const roomAt = game.scenes.length;
+    const room = emptyScene(ADVTYPE);
+    room.desc = `${s.n}x ${side.room.title}`.slice(0, 19);
+    room.pos = { x: 24, y: 170 };
+    room.scroll = { ...room.scroll, up: 0, down: 0, left: 0, right: 0 };
+    room.files = [
+      `s${s.n}.pal`,
+      `${side.room.file}.map`,
+      `${side.room.kitFile}.bbl`,
+      `${side.room.kitFile}.mon`,
+      `${side.room.kitFile}.mbl`,
+      'shipfree.chr',
+      'ship.cbl',
+      'blaster.snd',
+      'story.cmf',
+      `${side.room.file}.lst`,
+      ...new Array(10).fill(''),
+    ];
+    const then = game.scenes[at(side.then)];
+    const out = structuredClone(then);
+    out.files[9] = `${side.outro}.lst`;
+    out.pos = { x: 60, y: 170 };
+    room.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
+    side.room.grid.links.forEach((from, k) => {
+      room.links[k] = { toScene: roomAt + 1, from, to: startOf(legs[at(side.then) - 2].l) };
+    });
+    const from = game.scenes[at(side.from)];
+    const free = from.links.findIndex((l) => l.toScene === NOSCENE);
+    if (free < 0) throw new Error(`No free link in ${side.from}`);
+    from.links[free] = { toScene: roomAt, from: side.cell, to: startOf(side.room) };
+    game.scenes.push(room, out);
+  }
+
   const first = Math.max(0, startAt ? legs.findIndex(({ l }) => l.file === startAt) : 0);
   title.links[0] = { toScene: first + 2, from: { x: 0, y: 0 }, to: startOf(legs[first].l) };
   return game;

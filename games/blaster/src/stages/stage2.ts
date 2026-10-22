@@ -2,10 +2,11 @@
 // that shove the ship sideways) and the slugs that never stop coming; leg B "The Cache"
 // runs between rows of chips. Then the Memory Leech.
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, stalker, swooper } from '../characters/enemies';
-import { strip, type Grid } from './mapkit';
+import { LENGTH, X0, arena, strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
-import { STACK_BYTES, ramArt, ramTiles, ramVirus, stackTiles } from '../blocks/ram';
-import { kit, type Stage } from './stage';
+import { STACK_BYTES, cornerTiles, ramArt, ramTiles, ramVirus, stackTiles } from '../blocks/ram';
+import { kit, type Leg, type Stage } from './stage';
+import { EGG_BLOCK } from '../blocks/egg';
 import { bossLeech } from '../bosses/boss2';
 
 function virus2(b: Parameters<typeof ramVirus>[0], p: Parameters<typeof ramVirus>[1]): void {
@@ -129,6 +130,21 @@ function legB(g: Grid): void {
   g.fence(1, 14, 85, 'B');
 }
 
+/**
+ * A corner of memory nobody maps: off the top left of the Address Bus, where one gold
+ * finger of the SIMM's edge is missing. The data stream just below shoves the ship that way.
+ */
+function corner(g: Grid): void {
+  g.rect(1, 0, 14, 2, (c, d) => `gate${(c + d * 2) % 4}`);
+  for (let c = 0; c < 16; c++) g.link(c, 0);
+  for (let c = 4; c < 12; c++) g.set(c, 3, `ref${c % 4}`);
+  g.stamp(12, 5, 'dramB', 2, 3).stamp(5, 6, 'dramA', 2, 3);
+  g.plate(1, 6, 3, 3);
+  g.set(2, 7, 'egg');
+  g.stamp(1, 5, 'lblLog', 3, 1);
+  if (g.bs.id('egg') !== EGG_BLOCK) throw new Error('The egg moved');
+}
+
 export function stage2(): Stage {
   const pal = buildPalette('ram');
   const art = ramArt(pal);
@@ -140,6 +156,7 @@ export function stage2(): Stage {
     },
     (b) => virus2(b, pal),
     { mite: 'mite', turretEvery: 12, seekerEvery: 45, flakEvery: 34, hatchShut: 45, hatchOpen: 30, hatchEvery: 8, fenceOn: 28, fenceOff: 28 },
+    (bs) => cornerTiles(bs, art),
   );
   const a = strip(ks.bs, ks.beasts, art, 201);
   legA(a);
@@ -154,6 +171,19 @@ export function stage2(): Stage {
     14,
   );
   a.cardAt = 44;
+  const gap = LENGTH - 1;
+  a.set(0, gap, 'edgeGap');
+  const nook = arena(ks.bs, ks.beasts, art, 209);
+  corner(nook);
+  const room: Leg = {
+    file: 's2x',
+    kitFile: 's2',
+    title: 'A Corner of Memory',
+    kind: 'boss',
+    grid: nook,
+    kit: ks,
+    card: ['Nobody maps this corner.', 'Something soft sits on a', 'pad. Fly over it and', 'press ENTER to take it.'],
+  };
   const b = strip(ks.bs, ks.beasts, art, 202);
   legB(b);
   b.sprinkle(
@@ -176,6 +206,7 @@ export function stage2(): Stage {
     art,
     song: 'ram.cmf',
     bossSong: 'boss.cmf',
+    side: { from: 's2a', cell: { x: X0, y: a.y(gap) }, room, then: 's2b', outro: 's2y' },
     legs: [
       {
         file: 's2a',

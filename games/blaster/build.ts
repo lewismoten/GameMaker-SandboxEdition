@@ -46,6 +46,7 @@ for (const s of stages) {
       `${l.file} ${l.title}: ${l.kit.bs.names.length} blocks, ${l.kit.beasts.mb.names.length} monster blocks, ${l.kit.beasts.names.length} monsters, ${l.grid.placed} placed`,
     );
   }
+  if (s.side) disk.put(`${s.side.room.file}.map`, serializeMap(buildLeg(s.side.room).map));
 }
 
 for (const [name, bytes] of Object.entries(buildScreens(stages))) disk.put(name, bytes);

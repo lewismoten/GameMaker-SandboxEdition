@@ -29,6 +29,22 @@ export interface Leg {
   card: string[];
 }
 
+/**
+ * A room off the beaten path: a link cell in one leg (not one of its gate's links, so the
+ * bot never takes it) leads in; its way out shows a page, then plays the next leg again.
+ */
+export interface SideRoom {
+  /** The leg with the way in, and the map cell of the way in. */
+  from: string;
+  cell: { x: number; y: number };
+  /** The room itself: one fixed screen (kind 'boss', but no boss). */
+  room: Leg;
+  /** The leg the way out leads to. */
+  then: string;
+  /** File base of the page shown on the way out (<outro>.lst). */
+  outro: string;
+}
+
 export interface Stage {
   n: number;
   id: string;
@@ -39,10 +55,11 @@ export interface Stage {
   legs: Leg[];
   song: string;
   bossSong: string;
+  side?: SideRoom;
 }
 
 /** A fresh kit: floors and edges, then the stage's own blocks, then the shared ones. */
-export function kit(art: StageArt, own: (bs: BlockSet) => void, virus: (b: Bestiary) => void, opts: TileOpts): Kit {
+export function kit(art: StageArt, own: (bs: BlockSet) => void, virus: (b: Bestiary) => void, opts: TileOpts, late?: (bs: BlockSet) => void): Kit {
   const bs = new BlockSet(150, 'bbl');
   for (let v = 0; v < art.floors; v++) bs.add(`floor${v}`, art.floor(v));
   for (let v = 0; v < art.edges; v++) {
@@ -51,6 +68,7 @@ export function kit(art: StageArt, own: (bs: BlockSet) => void, virus: (b: Besti
   }
   own(bs);
   addStageTiles(bs, art, opts);
+  late?.(bs);
   // the same number in every set: the inventory keeps only block numbers
   bs.addAt(EGG_BLOCK, 'egg', eggPic(art.pal, pad(art)), { obj: 1, touch: 'pad' });
   const beasts = new Bestiary();

@@ -145,6 +145,17 @@ export function stackTiles(bs: BlockSet, a: StageArt, beat: number): void {
   slices(bs, 'lblZp', label(a, 3, 'ZERO PAGE $00', a.pal.c('glow', 3)));
 }
 
+// ------------------------------------------------------------------ a corner of memory
+/** A SIMM edge with one gold finger missing, and the label on the floor round the corner. */
+export function cornerTiles(bs: BlockSet, a: StageArt): void {
+  const p = a.pal;
+  const t = a.edge('L', 0);
+  t.rect(3, 12, 14, 8, p.c('base', 0));
+  t.rect(3, 12, 3, 2, p.c('trim', 2)).set(4, 14, p.c('trim', 1));
+  bs.add('edgeGap', t);
+  slices(bs, 'lblLog', label(a, 3, 'COUNTER.LOG', a.pal.c('glow', 3)));
+}
+
 export function ramVirus(b: Bestiary, p: Pal): void {
   pics(b, 'mite', ...mite(keyOf(p, { main: 'gold', accent: 'red' })));
   pics(b, 'bat', ...bat(keyOf(p, { main: 'virus', accent: 'slime' })));
