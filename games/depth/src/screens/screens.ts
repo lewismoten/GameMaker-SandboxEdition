@@ -62,8 +62,10 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   files['credits.lst'] = serializeSlideList([{ name: 'cast.gif', pause: 8 }, { name: 'credbg.gif', pause: 0 }, { name: 'credits.txt' }]);
 
   gif('hiscore.gif', P.hiscorePicture());
-  gif('loadgame.gif', P.savePicture('LOAD GAME'));
-  gif('savegame.gif', P.savePicture('SAVE GAME'));
+  // the red pointer is on smoked glass here: a brighter red reads there
+  const slotsFixed = [GM_PURPLE, [255, 72, 72] as typeof GM_RED, GM_BLUE, GM_YELLOW];
+  files['loadgame.gif'] = toGif(P.savePicture('LOAD GAME'), slotsFixed);
+  files['savegame.gif'] = toGif(P.savePicture('SAVE GAME'), slotsFixed);
 
   // the level cards
   for (const s of input.sets) gif(`card${s.level.n}.gif`, P.cardPicture(s.level.n, s.level.name, s.level.tagline, s.level.advice));

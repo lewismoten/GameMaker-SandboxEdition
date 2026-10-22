@@ -58,7 +58,9 @@ export function panel(p: Picture, x0: number, y0: number, x1: number, y1: number
  * come out in the colors chosen for them.
  */
 export const GM_PURPLE: Col = [200, 40, 200];
-export const GM_RED: Col = [252, 40, 40];
+// a deeper red than (63,10,10) itself, still the nearest entry to it, so MORE... reads at 3:1 on
+// the frosted glass (the GIFs' highlights stop short of white)
+export const GM_RED: Col = [200, 16, 16];
 export const GM_BLUE: Col = [40, 40, 252];
 /** Save names are written nearest (63,63,0). */
 export const GM_YELLOW: Col = [252, 252, 0];

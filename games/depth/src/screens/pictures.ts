@@ -213,7 +213,7 @@ export function hiscorePicture(): Picture {
 export function savePicture(word: string): Picture {
   const shapes: Shape[] = [floor(), ...ray(-2.4, -1.4, 1.4)];
   const pic = still(stage(shapes), cam([0, -7, 3.4], [0, 0, 0.5], 0.85), 4, 16, 10);
-  panel(pic, 50, 30, 300, 178, rgb(10, 8, 34), 0.88, rgb(120, 220, 255));
+  panel(pic, 50, 30, 300, 178, rgb(8, 6, 28), 0.92, rgb(120, 220, 255));
   panel(pic, STATUS.x, STATUS.y, STATUS.x + STATUS.w, STATUS.y + STATUS.h, rgb(236, 240, 255), 0.93, rgb(255, 255, 255));
   centered(pic, 8, word, WHITE, 2, { outline: INK });
   return pic;
