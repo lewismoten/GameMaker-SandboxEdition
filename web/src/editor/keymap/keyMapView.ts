@@ -10,6 +10,7 @@ import { decodeGif, isGif } from '../../formats/gif';
 import { blockCanvas, paintIndexed } from '../core/draw';
 import { isMac, macHint } from '../../input/macKeys';
 import type { GameFiles } from '../../project/files';
+import { icon } from '../shell/homeIcons';
 
 type Child = Node | string | null | undefined | false;
 
@@ -418,7 +419,7 @@ export function showKeyMap(files: GameFiles | Promise<GameFiles>, gamFile: strin
   const close = el('button', 'km-close', '×');
   close.title = 'Close (Esc)';
   close.setAttribute('aria-label', 'Close');
-  const dlg = el('dialog', 'km-dialog', el('header', 'km-head', el('h2', null, el('span', 'km-icon', '⌨'), ` Keys · ${title}`), close), body);
+  const dlg = el('dialog', 'km-dialog', el('header', 'km-head', el('h2', null, el('span', 'km-icon', icon('keys')), ` Keys · ${title}`), close), body);
   const done = () => {
     dlg.close();
     dlg.remove();

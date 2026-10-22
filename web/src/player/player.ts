@@ -12,6 +12,7 @@ import { showKeyMap } from '../editor/keymap/keyMapView';
 import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
 import { parseGame } from '../formats/game';
+import { icon } from '../editor/shell/homeIcons';
 
 export interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -130,7 +131,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   // ⌨ Keys: what each key does in this game, worked out from its characters.
   const keys = document.createElement('button');
   keys.className = 'gm-keys';
-  keys.textContent = '⌨ Keys';
+  // (a drawn keyboard: the ⌨ character is missing from many fonts)
+  keys.append(icon('keys'), 'Keys');
   keys.title = 'What each key does in this game';
   keys.addEventListener('click', (e) => {
     e.stopPropagation();
