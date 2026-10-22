@@ -265,7 +265,7 @@ registerEditor(['gif'], (host, project, file) => {
         h(
           'section',
           { class: 'panel pic-copy' },
-          h('h3', null, 'Copy the area into a block'),
+          h('h2', null, 'Copy the area into a block'),
           h(
             'div',
             { class: 'toolbar' },
