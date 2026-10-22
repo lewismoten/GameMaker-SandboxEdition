@@ -47,6 +47,8 @@ export interface CdCatalogEntry {
   original?: OriginalExtras;
   /** games/catalog.json: the entry has a games/details/<id>.json (see slimCatalog). */
   details?: boolean;
+  /** Original games: the site path of the game's walkthrough (../games/<id>/walkthrough.json, src/walkthrough). */
+  walkthrough?: string;
 }
 
 /** What ../games/<id>/about.json and manual.json add for an original game. */
@@ -285,6 +287,10 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     if (!gam) continue;
     const gamBytes = readFileSync(disk.get(gam)!);
     const notice = NOTICES.map((n) => disk.get(n)).filter((p): p is string => !!p);
+    // the walkthrough is served beside the disk's files, but is not one of them
+    const walk = join(base, 'walkthrough.json');
+    const walkthrough = existsSync(walk) ? `${path}walkthrough.json` : undefined;
+    if (walkthrough) files.set(walkthrough, walk);
     (about.secret === true ? secret : catalog).push({
       id,
       title: about.title,
@@ -303,6 +309,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       notice: notice.map((p) => dosText(readFileSync(p))).join('\n\n----\n\n'),
       gamCrc: crc32(gamBytes),
       original: { label: about.label, box: about.box, sound: about.sound, manual, printables },
+      ...(walkthrough ? { walkthrough } : {}),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
   }
