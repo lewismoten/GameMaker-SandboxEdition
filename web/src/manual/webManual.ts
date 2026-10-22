@@ -175,7 +175,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     dreams up each song and prompts AI tools to write and record it. Some of those songs have
     become games, shareware “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>,
     <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b>, <b>Loaf #13 (Left in the
-    Basket)</b>, <b>Certified Rat Tickler</b>, <b>Where’s the Remote?!</b> and <b>A Fly Named Carl</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
+    Basket)</b>, <b>Certified Rat Tickler</b>, <b>Where’s the Remote?!</b>, <b>A Fly Named Carl</b> and <b>The Great
+    Dairy Reckoning of 3:17 A.M.</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s.
     Third Goat from the Left and Mustard Seed Hustle: lyrics written by ChatGPT from Lewis’s
     prompts; music made with Riffusion (now Google Flow Music). Third Goat’s cover art was made
@@ -190,10 +191,14 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     its title and cover art were drawn for the game by Claude Opus 5.5.
     A Fly Named Carl: lyrics written by ChatGPT from Lewis’s prompt; music: credit pending; its
     title and cover art were drawn for the game by Claude Opus 5.5.
+    The Great Dairy Reckoning of 3:17 A.M.: a spoken piece from Lewis’s own struggle (he is
+    lactose intolerant, and he loves cheesecake); monologue written by ChatGPT from Lewis’s
+    prompt; recording: credit pending; no music came with it, so its music was composed for the
+    game by Claude Opus 5.5, and its title art was drawn for the game by Claude Opus 5.5.
     The Bard’s logo was
     made with DeepAI, and the photo of Doc Leo is Lewis’s own.
-    Each game’s music and sounds are drawn from its song’s recording (Certified Rat Tickler’s were
-    made for the game); its code, pictures and
+    Each game’s music and sounds are drawn from its song’s recording (Certified Rat Tickler’s and
+    The Great Dairy Reckoning’s were made for the game); its code, pictures and
     levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
     <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
