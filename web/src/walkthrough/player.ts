@@ -1,6 +1,6 @@
 // "Watch walkthrough" on a Sandbox game's page: the whole game played from power-on to the
 // credits on the real engine (runtime.ts), at 320×200 scaled up with square pixels. Play and
-// pause, 1×/2×/4×, sound, a chapter list to jump to (a jump replays the game from the start
+// pause, 1×/2×/4×, the demos' sound choice (None · Sound Blaster · PC speaker, media/demoAudio.ts), a chapter list to jump to (a jump replays the game from the start
 // as fast as it can, nothing drawn, to the chapter's first scene), "Download MP4" (made frame
 // by frame, faster than real time, exportVideo.ts) and the YouTube title and description.
 import './walkthrough.css';
@@ -12,11 +12,11 @@ import { TICK_RATE } from '../audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
 import { WalkAudio, WalkRun } from './runtime';
 import { canExport, exportWalkthrough } from './exportVideo';
+import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
 const SKIP_MS = (40 * 1000) / TICK_RATE;
-const SOUND_KEY = 'gm-walkthrough-sound';
 
 const walkCache = new Map<string, Promise<Walkthrough | undefined>>();
 
@@ -52,14 +52,6 @@ export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
   });
 }
 
-function loadSound(): boolean {
-  try {
-    return localStorage.getItem(SOUND_KEY) !== 'off';
-  } catch {
-    return true;
-  }
-}
-
 /** Opens the walkthrough player. */
 export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>): Promise<void> {
   const [walk, files] = await Promise.all([loadWalkthrough(entry), loadFiles()]);
@@ -80,7 +72,7 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
   const ticks = tl.chapters.slice(1).map((c) => h('span', { class: 'wt-bar-tick', style: `left:${(100 * c.frame) / total}%` }));
   const progress = h('div', { class: 'wt-bar', role: 'progressbar', 'aria-label': 'Walkthrough position', 'aria-valuemin': '0', 'aria-valuemax': String(Math.round(total / WALKTHROUGH_FPS)) }, bar, ...ticks);
   const speeds = [1, 2, 4].map((v) => h('button', { type: 'button', class: 'wt-speed', 'aria-pressed': String(v === 1), 'aria-label': `Speed ${v}×`, dataset: { speed: String(v) } }, `${v}×`));
-  const soundBtn = h('button', { type: 'button', class: 'wt-sound' });
+  const soundPick = demoAudioPicker({ label: 'Sound', className: 'wt-sound' });
   const chapterList = h('ol', { class: 'wt-chapters' });
   const status = h('p', { class: 'meta wt-status', role: 'status' });
 
@@ -99,7 +91,9 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
 
   // ---- playback ---------------------------------------------------------------------
   const audio = new WalkAudio();
-  let sound = loadSound();
+  let mode = demoAudio();
+  let sound = mode !== 'none';
+  audio.card = mode !== 'speaker';
   audio.setMuted(!sound);
   let run: WalkRun | undefined;
   let playing = false;
@@ -156,12 +150,6 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
     playBtn.textContent = playing ? '❚❚ Pause' : run?.done ? '↺ Watch again' : '▶ Play';
     playBtn.setAttribute('aria-label', playing ? 'Pause' : run?.done ? 'Watch again from the start' : 'Play');
     screen.classList.toggle('paused', !playing);
-  };
-
-  const showSound = () => {
-    soundBtn.textContent = sound ? '🔊 Sound on' : '🔇 Sound off';
-    soundBtn.setAttribute('aria-pressed', String(sound));
-    soundBtn.setAttribute('aria-label', 'Sound');
   };
 
   const loop = (now: number) => {
@@ -242,16 +230,13 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
       speed = Number(b.dataset.speed);
       speeds.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     });
-  soundBtn.addEventListener('click', () => {
-    sound = !sound;
-    try {
-      localStorage.setItem(SOUND_KEY, sound ? 'on' : 'off');
-    } catch {
-      /* private mode */
-    }
-    audio.setMuted(!sound);
+  // the sound choice: at once (back on the card, the scene's song starts over)
+  const offAudio = onDemoAudio((m) => {
+    mode = m;
+    sound = m !== 'none';
+    if (!seeking) audio.setMuted(!sound);
+    audio.setCard(m !== 'speaker', run?.session);
     if (sound && playing) void audio.start();
-    showSound();
   });
 
   // ---- the video file ---------------------------------------------------------------
@@ -278,6 +263,7 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
         from,
         to,
         signal: making.signal,
+        sound: mode,
         onProgress: (done, all) => {
           exportBar.value = done / all;
           const secs = (performance.now() - began) / 1000;
@@ -286,7 +272,7 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
         },
       });
       saveBlob(name, res.blob);
-      status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio === 'none' ? ', without sound (this browser has no audio encoder)' : ` with ${res.audio.toUpperCase()} sound`}.`;
+      status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
     } catch (e) {
       status.textContent = (e as Error).name === 'AbortError' ? 'Video cancelled.' : `The video could not be made: ${(e as Error).message}`;
     } finally {
@@ -310,7 +296,6 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
   const ytDetails = h('details', { class: 'wt-youtube' }, h('summary', null, 'YouTube title & description'), h('label', null, 'Title', ytTitle), h('label', null, 'Description', ytDesc));
 
   showPlay();
-  showSound();
   showTime();
   fresh();
   void run!.start().then(() => run!.step(true));
@@ -324,7 +309,7 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
         { class: 'wt-main' },
         screen,
         progress,
-        h('div', { class: 'wt-controls' }, playBtn, timeEl, h('span', { class: 'wt-speeds', role: 'group', 'aria-label': 'Speed' }, ...speeds), soundBtn),
+        h('div', { class: 'wt-controls' }, playBtn, timeEl, h('span', { class: 'wt-speeds', role: 'group', 'aria-label': 'Speed' }, ...speeds), soundPick),
         status,
       ),
       h(
@@ -334,13 +319,14 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
         chapterList,
         h('h3', null, 'Video'),
         h('div', { class: 'wt-export' }, exportSel, exportBtn, exportBar),
-        h('p', { class: 'hint' }, '320×200 at 60 frames a second with the game’s music and sounds, made frame by frame (faster than real time).'),
+        h('p', { class: 'hint' }, '320×200 at 60 frames a second with the sound picked under the screen, made frame by frame (faster than real time).'),
         copyBtn,
         ytDetails,
       ),
     ),
   );
   closed = true;
+  offAudio();
   making?.abort();
   cancelAnimationFrame(raf);
   run?.stop();

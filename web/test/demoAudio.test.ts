@@ -47,3 +47,24 @@ describe('demo audio', () => {
     play.mockRestore();
   });
 });
+
+describe('walkthrough sound without a card', () => {
+  it('writes no song into the video, and starts it again when the card goes back in', async () => {
+    const { WalkAudio } = await import('../src/walkthrough/runtime');
+    const play = vi.spyOn(AudioEngine.prototype, 'playSong').mockResolvedValue(true);
+    const a = new WalkAudio();
+    a.logging = true;
+    a.card = false;
+    void a.playSong(song);
+    expect(a.playVoc(new Uint8Array(4))).toBe(false);
+    expect(a.events.some((e) => e.kind === 'song' || e.kind === 'voc')).toBe(false);
+    const s = { speakerOnly: true } as Session;
+    a.setCard(true, s);
+    expect(s.speakerOnly).toBe(false);
+    expect(a.events.at(-1)).toMatchObject({ kind: 'song', bytes: song });
+    a.setCard(false, s);
+    expect(s.speakerOnly).toBe(true);
+    expect(a.events.slice(-2).map((e) => e.kind)).toEqual(['stopSong', 'stopVoc']);
+    play.mockRestore();
+  });
+});

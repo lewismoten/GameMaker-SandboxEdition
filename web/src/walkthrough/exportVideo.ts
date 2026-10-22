@@ -1,8 +1,10 @@
 // "Download MP4": the walkthrough rendered frame by frame, faster than real time, at exactly
 // 320×200 and 60 frames a second, with its soundtrack rendered offline (audioRender.ts):
 // H.264 from WebCodecs' VideoEncoder, AAC (or Opus where the browser has no AAC encoder)
-// from its AudioEncoder, put together by mp4av.ts.
+// from its AudioEncoder, put together by mp4av.ts. The sound is the demos' choice
+// (media/demoAudio.ts): Sound Blaster, the PC speaker only, or none (no sound track).
 import { canEncodeMp4 } from '../media/video';
+import type { DemoAudio } from '../media/demoAudio';
 import type { GameFiles } from '../project/files';
 import { AudioRenderer } from './audioRender';
 import { WALKTHROUGH_FPS, type Walkthrough } from './format';
@@ -23,6 +25,8 @@ export interface ExportOptions {
   to?: number;
   onProgress?: (done: number, total: number) => void;
   signal?: AbortSignal;
+  /** The sound to put in (default Sound Blaster); 'none' leaves the sound track out. */
+  sound?: DemoAudio;
 }
 
 export interface ExportResult {
@@ -58,7 +62,7 @@ const aborted = () => new DOMException('The video was cancelled', 'AbortError');
 export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult> {
   const vcodec = await canEncodeMp4(W, H);
   if (!vcodec) throw new Error('This browser has no H.264 video encoder (WebCodecs).');
-  const acodec = await audioCodec();
+  const acodec = o.sound === 'none' ? undefined : await audioCodec();
 
   let fail: Error | undefined;
   const video: AvSample[] = [];
@@ -94,6 +98,7 @@ export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult>
 
   const run = new WalkRun(headlessCanvas(), o.files.copy(), o.gam, o.walk);
   run.audio.logging = true;
+  run.audio.card = o.sound !== 'speaker';
   const sound = new AudioRenderer(run.audio.events, RATE);
   const from = Math.max(0, o.from ?? 0);
   const to = Math.min(o.to ?? o.walk.timeline.frames, o.walk.timeline.frames + WALKTHROUGH_FPS);

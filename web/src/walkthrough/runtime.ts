@@ -52,12 +52,20 @@ export class WalkAudio extends AudioEngine {
   now: () => number = () => 0;
   private song?: Uint8Array;
   private muted = false;
+  /** False: a PC without a Sound Blaster (PLAYGAME's SoundCard() found none): no songs, every effect on the speaker. */
+  card = true;
 
   private log(e: AudioEvent): void {
     if (this.logging) this.events.push(e);
   }
 
   override async playSong(bytes: Uint8Array | undefined): Promise<boolean> {
+    if (!this.card) {
+      // no song without the card, but kept in mind for when it goes back in
+      this.stopSong();
+      this.song = bytes;
+      return false;
+    }
     // super stops the song playing first (and that is written down first)
     const done = super.playSong(bytes);
     this.log({ t: this.now(), kind: 'song', bytes });
@@ -88,7 +96,7 @@ export class WalkAudio extends AudioEngine {
   }
 
   override playVoc(bytes: Uint8Array | undefined): boolean {
-    if (!this.soundEnabled) return false;
+    if (!this.soundEnabled || !this.card) return false;
     this.log({ t: this.now(), kind: 'voc', bytes });
     return this.muted ? false : super.playVoc(bytes);
   }
@@ -102,7 +110,20 @@ export class WalkAudio extends AudioEngine {
   async start(): Promise<void> {
     const fresh = !this.context;
     await this.resume();
-    if (fresh && this.song && !this.muted) await super.playSong(this.song);
+    if (fresh && this.song && !this.muted && this.card) await super.playSong(this.song);
+  }
+
+  /** Takes the Sound Blaster out or puts it back while the game plays (`session` is the game's, for its speakerOnly). */
+  setCard(on: boolean, session?: Session): void {
+    if (session) session.speakerOnly = !on;
+    if (on === this.card) return;
+    this.card = on;
+    const song = this.song;
+    if (!on) {
+      this.stopSong();
+      this.stopVoc();
+      this.song = song;
+    } else if (song && !this.muted) void this.playSong(song);
   }
 
   /** Silences the music and effects (the music waits where it is). */
@@ -239,7 +260,7 @@ export async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walk
     timerCounter: 1,
     soundOn: true,
     musicOn: m.audio.musicEnabled,
-    speakerOnly: false,
+    speakerOnly: m.audio instanceof WalkAudio && !m.audio.card,
     speed: {},
     rand: () => (walk.rand.per === 'scene' ? seeded(walk.rand.seed) : shared),
     onScene: (scene) => {
