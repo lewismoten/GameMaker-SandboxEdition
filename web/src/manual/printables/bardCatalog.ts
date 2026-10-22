@@ -15,7 +15,7 @@ const ISSUE = 'Winter 1995';
 
 /** The credits page's words for the Bard's songs and pictures (manual/webManual.ts). */
 export const BARD_CREDIT =
-  'The words are Lewis’s. The recording and cover art of Third Goat from the Left were made with Riffusion (now Google Flow Music); Mustard Seed Hustle’s are still to be credited. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn from its song’s recording; its code, pictures and levels were made by Claude Opus 5.5, with Lewis directing and playtesting.';
+  'Third Goat from the Left: words by Lewis; recording and cover art made with Riffusion (now Google Flow Music). Mustard Seed Hustle: words written by ChatGPT from Lewis’s prompt; music made with Riffusion; animated cover made with Producer.ai. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn from its song’s recording; its code, pictures and levels were made by Claude Opus 5.5, with Lewis directing and playtesting.';
 
 /** Where on the credits slide (bardpic.gif, 320 x 200) Doc Leo's snapshot and the logo sit. */
 const SNAPSHOT = [20, 24, 124, 120] as const;

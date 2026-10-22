@@ -173,8 +173,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     performed as his hobo clown, Doc Leo. He started with Christian songs, but the Bard isn’t limited to them. Some of those songs have become games, shareware
     “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b> and <b>Mustard Seed Hustle</b>. Once there are four or
     more, they get a Bizarre collection of their own on the home page.</p>
-    <p>The words are Lewis’s. The recording and cover art of Third Goat from the Left were made
-    with Riffusion (now Google Flow Music); Mustard Seed Hustle’s are still to be credited. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own.
+    <p>Third Goat from the Left: words by Lewis; recording and cover art made with Riffusion (now Google Flow Music).
+    Mustard Seed Hustle: words written by ChatGPT from Lewis’s prompt; music made with Riffusion; animated cover made with Producer.ai. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own.
     Each game’s music and sounds are drawn from its song’s recording; its code, pictures and
     levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
