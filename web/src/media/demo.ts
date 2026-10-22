@@ -15,6 +15,7 @@ import { DemoAudioEngine, demoAudio, demoAudioPicker, onDemoAudio } from './demo
 import { saveBlob } from './screenCapture';
 import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
+import { claimMediaFocus } from './mediaFocus';
 
 const SKIP_KEY = 'gm-demo-skip-intro';
 
@@ -95,6 +96,13 @@ export function playDemo(o: DemoOptions): Promise<void> {
   const skipBox = h('input', { type: 'checkbox', checked: skip });
   const tick = () => (session?.rec.playing ? session.rec.tick : 0);
   const below = o.below?.(tick);
+  // the page's other demos stop while this one plays (another player taking over stops this one)
+  const release = claimMediaFocus('player', () => {
+    void stopVideo(true);
+    player?.stop();
+    sound?.dispose();
+    status.textContent = 'Stopped: another player started. ↺ Restart plays it again.';
+  });
 
   const stopVideo = async (keep: boolean) => {
     const v = video;
@@ -211,6 +219,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
       ),
     );
   }).then(() => {
+    release?.();
     offAudio();
     void stopVideo(true);
     below?.destroy();

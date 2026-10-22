@@ -1,6 +1,7 @@
 // Demo previews: a game's title-screen demo (.REC, start scene slot 11) playing inside a
 // small screen on the page, such as a home page card or the selected game. Only one plays
-// at a time: it stops when another starts, when it scrolls out of view, or when the
+// at a time: it stops when another starts, when a player such as the walkthrough takes the
+// media focus (mediaFocus.ts), when it scrolls out of view, or when the
 // recording runs out. It plays with the demos' sound choice (demoAudio.ts: None, Sound
 // Blaster or PC speaker), silent until the visitor has used the page.
 //
@@ -17,6 +18,7 @@ import { attractRecording } from './attractDemo';
 import { extraDemoForGam, extraDemosLoaded, fetchExtraDemo, loadExtraDemos, type ExtraDemo } from './extraDemos';
 import { DEMO_KIND_TAG, type DemoKind } from './demoKind';
 import { onSoundUnlocked, soundUnlocked } from '../audio/context';
+import { claimMediaFocus } from './mediaFocus';
 
 // the index is small: fetched early, so a preview can tell at once whether a demo was added
 if (typeof window !== 'undefined') void loadExtraDemos();
@@ -102,17 +104,18 @@ export interface DemoPreviewOptions {
   tag?: boolean;
 }
 
-let current: { stop(): void } | undefined;
-
 /**
  * Plays the title demo in `host` (sized by the page): the game's own, else one added for
  * this edition, else (unless `attract` is false) the attract mode. Returns undefined when
- * there is nothing to play; `kind` says which it is.
+ * there is nothing to play, or a player (the walkthrough) has the media focus
+ * (mediaFocus.ts); `kind` says which it is.
  */
 export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string, o: DemoPreviewOptions): DemoPreview | undefined {
   const source = demoSource(files, gam, o.attract !== false);
   if (!source) return undefined;
-  current?.stop();
+  // one at a time: this stops the preview playing, and stops when a player starts
+  const release = claimMediaFocus('preview', () => handle.stop());
+  if (!release) return undefined;
   let rec: Uint8Array = new Uint8Array(0);
   let kind: DemoKind = source instanceof Promise ? 'added' : source.kind;
   let lastTick = 0;
@@ -193,7 +196,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
       if (stopped) return;
       stopped = true;
       offAudio();
-      if (current === entry) current = undefined;
+      release();
       clearInterval(timer);
       seen.disconnect();
       offUnlock();
@@ -216,8 +219,6 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     host.querySelector('.demo-sound-hint')?.remove();
     if (audio && !stopped) void audio.wake();
   });
-  const entry = { stop: () => handle.stop() };
-  current = entry;
   const begin = (src: DemoSource) => {
     ({ kind, rec } = src);
     inGame = !!src.inGame;
