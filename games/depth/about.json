@@ -1,0 +1,10 @@
+{
+  "title": "Depth Perception",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1996,
+  "price": "$15",
+  "blurb": "Count Polygon is stealing the polygons out of the render of the century. Roll Ray, the chrome sphere from every ray-tracing demo, through six ray-traced worlds and pull focus between near and far: whatever is sharp is solid, and a blur isn't there at all.",
+  "exe": "DEPTH.EXE",
+  "sound": "sb"
+}
