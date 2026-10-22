@@ -140,9 +140,9 @@ export class MapBuilder {
    * The level's Dutch door at column x (Doc Leo's bottom row y): solid wall above, the open top
    * half, the bottom half that asks for the carpet; and the exit two blocks on, with its link.
    */
-  door(x: number, y: number, toScene: LinkSpec['toScene']): this {
+  door(x: number, y: number, toScene: LinkSpec['toScene'], exit = 'X'): this {
     this.col(x, 0, y - 2, '#').set(x, y - 1, 'D').set(x, y, 'G');
-    this.fill(x + 2, y - 1, 1, 2, 'X');
+    this.fill(x + 2, y - 1, 1, 2, exit);
     return this.link(x + 2, y, toScene);
   }
 
@@ -203,4 +203,96 @@ export function course(book: BlockBook): Level {
   return { m, start: at(2, 9), size: [W, H], rats: ratCount(m) };
 }
 
-export const LEVEL_MAPS = { course };
+/** 2. The lab: benches, cage racks, Tesla coils, the floor buffer and Dean Dour; out by the window. */
+export function lab(book: BlockBook): Level {
+  const W = 78;
+  const H = 14;
+  const m = new MapBuilder(book, 'lab', 1).room(W, H);
+  m.set(4, 5, 'p').set(8, 4, 'd').set(30, 4, 'd').set(47, 3, 'p').set(64, 4, 'd');
+  // the first bench, flasks bubbling, a rat on the floor and one on the bench
+  m.mon(MON.labRat, 7, 11);
+  m.row(10, 11, 18, '_').set(11, 11, '|').set(18, 11, '|').set(12, 9, 'f').set(17, 9, 'o');
+  m.mon(MON.labRat, 13, 9);
+  // the Tesla coils, and a cage rack over them with a tense rat on top
+  m.set(21, 11, 'z').set(25, 11, 'z');
+  m.row(8, 20, 27, 'h').fill(20, 9, 8, 1, 'g').set(26, 7, 'c');
+  m.mon(MON.labTense, 21, 7);
+  // the floor buffer's run, the racks above it: up the bench and onto the racks
+  m.mon(MON.buffer, 31, 11);
+  m.row(10, 29, 31, '_').set(29, 11, '|').set(31, 11, '|');
+  m.row(8, 33, 42, 'h').fill(33, 9, 10, 1, 'g').text(40, 6, 'o.o');
+  m.mon(MON.labRat, 34, 7).mon(MON.labRat, 38, 7);
+  // Dean Dour of the Board of Serious Science, on his rounds
+  m.mon(MON.deanA, 45, 10).mon(MON.deanB, 45, 11);
+  // the mustard seed in a petri dish on a bench
+  m.row(10, 52, 56, '_').set(52, 11, '|').set(56, 11, '|').set(55, 9, 'f');
+  m.mon(MON.seed, 53, 9);
+  // rats along the floor to the door, another rack
+  m.mon(MON.labTense, 58, 11).mon(MON.labRat, 66, 11);
+  m.row(8, 60, 65, 'h').fill(60, 9, 6, 1, 'g').set(65, 7, 'k');
+  m.mon(MON.labRat, 61, 7);
+  m.set(70, 10, 'o').set(70, 11, 'c');
+  // the door: ten rats in the carpet; out the window into the night
+  m.door(72, 11, 'next', 'L');
+  return { m, start: at(2, 11), size: [W, H], rats: ratCount(m) };
+}
+
+/** 3. The sewers: the walkways, the steam, the pipes over the channels, bats and an alligator. */
+export function sewer(book: BlockBook): Level {
+  const W = 80;
+  const H = 14;
+  const m = new MapBuilder(book, 'sewer', 2).room(W, H);
+  m.set(3, 8, 'u').set(27, 10, 'a').set(28, 10, 'a').set(50, 8, 'u').set(61, 10, 'a');
+  // the first walkway: a wild rat, a bat
+  m.mon(MON.wildRat, 6, 11).mon(MON.bat, 8, 6);
+  // the channel, the alligator lurking in it; the steam up to the pipe over it
+  m.fill(15, 11, 9, 1, '~').fill(15, 12, 9, 1, 'v');
+  m.mon(MON.gatorB, 18, 11).mon(MON.gatorA, 19, 11);
+  m.set(13, 12, 'r').col(13, 3, 11, 's');
+  m.row(5, 14, 24, '_').set(22, 4, 'o');
+  m.mon(MON.wildRat, 16, 4);
+  // the long walkway: rats, cheese, a bat
+  m.mon(MON.wildTense, 28, 11).mon(MON.wildRat, 33, 11).mon(MON.bat, 34, 5);
+  m.set(31, 10, 'Q').set(38, 9, 'c');
+  // a step up to the low pipe over the second channel
+  m.set(40, 11, '#').row(9, 41, 49, '_').fill(42, 11, 7, 1, '~').fill(42, 12, 7, 1, 'v');
+  m.mon(MON.wildRat, 43, 8);
+  // the last walkway
+  m.mon(MON.wildRat, 52, 11).mon(MON.wildTense, 58, 11).mon(MON.wildRat, 64, 11).mon(MON.bat, 60, 4);
+  m.set(56, 10, 'Q').set(67, 9, 'k').set(68, 11, 'o');
+  // the door: eighteen rats in the carpet; up the ladder to the street
+  m.door(71, 11, 'next', 'm');
+  m.col(73, 1, 9, 'l');
+  return { m, start: at(2, 11), size: [W, H], rats: ratCount(m) };
+}
+
+/** 4. The empire: up the tower in the storm, ledge by ledge, to the balcony. */
+export function tower(book: BlockBook): Level {
+  const W = 44;
+  const H = 24;
+  const m = new MapBuilder(book, 'tower', 3).room(W, H);
+  m.set(3, 14, 'B').set(8, 17, 'n').set(16, 2, 'n').set(28, 17, 'n').set(38, 11, 'n').set(26, 3, 'B').set(40, 18, 'B');
+  // the floor: rats, a Jacob's ladder
+  m.mon(MON.wildRat, 4, 21).mon(MON.labTense, 12, 21).mon(MON.wildRat, 30, 21);
+  m.set(9, 21, 'j');
+  // a step, and the ledges zigzagging up
+  m.set(19, 21, '#');
+  m.row(19, 20, 30, '_').set(29, 18, 'c');
+  m.mon(MON.wildRat, 22, 18);
+  m.row(17, 32, 41, '_');
+  m.mon(MON.labRat, 34, 16);
+  m.row(15, 22, 30, '_').set(29, 14, 'o');
+  m.mon(MON.wildTense, 23, 14).mon(MON.pigeon, 24, 11);
+  m.row(13, 10, 20, '_');
+  m.mon(MON.wildRat, 12, 12).mon(MON.goat, 18, 12);
+  m.row(11, 1, 8, '_').set(1, 10, 'k');
+  m.mon(MON.labRat, 3, 10);
+  m.row(9, 10, 20, '_').set(19, 8, 'o');
+  m.mon(MON.wildRat, 12, 8).set(21, 6, 'j');
+  m.row(7, 22, 32, '_');
+  m.mon(MON.deanA, 23, 5).mon(MON.deanB, 23, 6).mon(MON.labTense, 28, 6);
+  // the top ledge, and the balcony
+  m.row(5, 34, 42, '_');
+  m.door(39, 4, 'won', 'y');
+  return { m, start: at(2, 21), size: [W, H], rats: ratCount(m) };
+}
