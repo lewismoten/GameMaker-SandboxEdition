@@ -1,6 +1,7 @@
-// The felt eggs on the desk's wall: a narrow shadow box under the poster that holds each egg
-// found so far. Until the first one, there is nothing at all; the box only ever shows the
-// eggs that are in it (never how many could be). Clicking it opens the viewer (eggViewer.ts).
+// The felt eggs on the desk's wall: a small shadow box standing on the top game shelf that
+// holds each egg found so far (two rows of six, a dozen, when they are all in). Until the
+// first one, there is nothing at all; the box only ever shows the eggs that are in it (never
+// how many could be). Clicking it opens the viewer (eggViewer.ts).
 import './eggs.css';
 import { h, clear } from '../editor/core/ui';
 import { EGGS_CHANGED, eggStates, type EggState } from './eggState';
