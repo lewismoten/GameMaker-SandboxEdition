@@ -107,7 +107,7 @@ export class Workspace {
     this.project = project;
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     this.unlisten = project.onChange((name) => {
-      if (!this.listed.has(name)) this.renderSidebar();
+      if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
     });
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
