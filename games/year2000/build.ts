@@ -89,7 +89,7 @@ disk.put('menu.gif', S.gif(S.menuScreen(art)));
 S.storyScreens(art).forEach((p, i) => disk.put(`story${i + 1}.gif`, S.gif(p)));
 disk.put('howto.gif', S.gif(S.paperScreen('HOW TO PLAY', art, 'stars')));
 disk.put('credits.gif', S.gif(S.paperScreen('CREDITS', art, 'credits')));
-disk.put('won1.gif', S.gif(S.wonScreen1(art)));
+disk.put('won1.gif', S.gif(...S.wonScreen1(art)));
 disk.put('won2.gif', S.gif(S.wonScreen2(art)));
 disk.put('lost.gif', S.gif(S.lostScreen(art)));
 disk.put('hiscore.gif', S.gif(S.hiscoreScreen(art)));

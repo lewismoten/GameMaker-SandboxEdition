@@ -5,7 +5,8 @@
 import { Pixels, dither, rng } from '../../../kit/pixels';
 import { blob, gradient, oval, shadeAt } from '../art/draw';
 import { micro, microWidth, outlined, text, textWidth } from '../art/font';
-import { C } from '../art/pal';
+import { C, PAL } from '../art/pal';
+import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { H, R, W, centeredText, chrome, chromeCentered, consoleTv, grid, scaleBlit, skyline, speedLines, stripedSun, sunsetSky, type Art } from './paint';
 
 // ------------------------------------------------------------------ title
@@ -180,7 +181,8 @@ export function levelCard(n: number, title: string, lines: string[], view: Pixel
 }
 
 // ------------------------------------------------------------------ endings
-export function wonScreen1(a: Art): Pixels {
+/** The science fair; returns the picture and its palette (the exhibit photo's colors added). */
+export function wonScreen1(a: Art): [Pixels, Uint8Array] {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, 90, R('gold'), 1, 2);
   for (let y = 90; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, y % 10 === 0 ? C('wood', 2) : C('wood', 3));
@@ -224,7 +226,13 @@ export function wonScreen1(a: Art): Pixels {
     C('grey', 7),
     C('night', 0),
   );
-  return p;
+  // On the wall, a real photo from the 1970s exhibit hall: THE CHEZ, the electric car of the
+  // future, which turned out to be a little red wedge that plugs into the wall.
+  const chez = resample(loadScan('chez'), 72);
+  const at = polaroid(p, 230, 34, chez.w, chez.h, { paper: C('grey', 7), edge: C('grey', 0), shadow: C('gold', 0), tape: C('chrome', 6) });
+  micro(p, Math.round(at.cx - microWidth('CAR OF THE FUTURE') / 2), Math.round(at.cy - 2), 'CAR OF THE FUTURE', C('denim', 1));
+  const { pal } = pastePhoto(p, PAL.pal, chez, 230, 34);
+  return [p, pal];
 }
 
 export function wonScreen2(a: Art): Pixels {

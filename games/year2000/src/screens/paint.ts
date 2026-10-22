@@ -12,8 +12,8 @@ export const R = PAL.r;
 export const W = 320;
 export const H = 200;
 
-export function gif(p: Pixels): Uint8Array {
-  return encodeGif({ width: p.w, height: p.h, pixels: p.px, palette: PAL.pal });
+export function gif(p: Pixels, palette: Uint8Array = PAL.pal): Uint8Array {
+  return encodeGif({ width: p.w, height: p.h, pixels: p.px, palette });
 }
 
 export function fli(frames: Pixels[], speed: number, palettes?: Uint8Array[]): Uint8Array {
