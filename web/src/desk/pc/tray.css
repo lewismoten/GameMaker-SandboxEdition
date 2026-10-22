@@ -239,16 +239,22 @@
   height: 100%;
 }
 
-/* the cord runs back over the tray to the PC */
+/* the cord runs back over the tray to the PC from the top of the mouse (tray.ts draws it) */
 .mouse-cord {
   position: absolute;
-  left: 60%;
-  top: -52px;
-  width: 34px;
-  height: 112px;
-  border: 2px solid #c9c1a6;
-  border-color: transparent transparent transparent #c9c1a6;
-  border-radius: 40% 0 0 60%;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.mouse-cord path {
+  fill: none;
+  stroke: #c9c1a6;
+  stroke-width: 2.4;
+  stroke-linecap: round;
 }
 
 .ball-mouse {
@@ -270,7 +276,27 @@
     inset -3px 0 3px rgba(0, 0, 0, 0.18),
     4px 10px 8px rgba(0, 0, 0, 0.5),
     1px 3px 2px rgba(0, 0, 0, 0.35);
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.ball-mouse:active {
+  cursor: grabbing;
+}
+
+.ball-mouse:focus-visible {
+  outline: 2px solid #ffd75e;
+  outline-offset: 3px;
+}
+
+/* a button held down sinks into the shell */
+.ball-mouse[data-down='left'] .mouse-btn.left,
+.ball-mouse[data-down='right'] .mouse-btn.right {
+  background: linear-gradient(#d9d2bd, #c7bfa6 70%, #b0a88e);
+  box-shadow:
+    inset 0 2px 2px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 #9e967c;
 }
 
 .ball-mouse .mouse-btn {
@@ -318,19 +344,4 @@
     italic 800 6px/1 system-ui,
     sans-serif;
   text-align: center;
-}
-
-.ball-mouse.nudge {
-  animation: mouse-nudge 0.5s ease-out;
-}
-
-@keyframes mouse-nudge {
-  30% {
-    translate: 6px -3px;
-    rotate: 6deg;
-  }
-  70% {
-    translate: -3px 1px;
-    rotate: -2deg;
-  }
 }
