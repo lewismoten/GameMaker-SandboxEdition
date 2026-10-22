@@ -21,7 +21,7 @@ export const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between raindrops from a rain cloud, and between pebbles from the scree. */
 export const RAIN_EVERY = 40;
-export const SCREE_EVERY = 70;
+export const SCREE_EVERY = 90;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();

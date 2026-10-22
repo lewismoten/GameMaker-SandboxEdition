@@ -154,8 +154,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.peaBL] = mon(anim('peaA0', 'peaA1', 4), { power: 200, thru: 0, end: -1, newmon: MON.peaBR }, [corner(0, 0, 1), corner(-strut, 0, 1, 4)]);
   set[MON.mole] = mon(anim('mole0', 'mole1', 5), { power: 150, thru: 1 }, pace(5, 1));
   set[MON.worm] = mon(anim('worm0', 'worm1', 6), { power: 150, thru: 1 }, pace(3, 1));
-  // Pebbles roll out of the scree, down the slope to the left, and fall apart in a puff.
-  set[MON.pebble] = mon(anim('pebble0', 'pebble1', 2), { power: 150, thru: 1, end: 110, newmon: MON.dust }, [corner(0, 0, 3, 4), corner(-30, 0, 3, 4)]);
+  // Pebbles roll out of the scree, down the slope to the right, and fall apart in a puff.
+  set[MON.pebble] = mon(anim('pebble0', 'pebble1', 2), { power: 150, thru: 0, end: 60, newmon: MON.dust }, [corner(0, 0, 3), corner(30, 0, 3)]);
   set[MON.dust] = mon([[n('dust'), 5]], { power: 100, thru: 0, end: 6 });
   set[MON.eagle] = mon(anim('eagle0', 'eagle1', 4), { power: 150, thru: 0 }, [corner(0, 0, 3), corner(9, 2, 3, 0), corner(14, 0, 3, 0), corner(5, -2, 3, 4), corner(0, 0, 3, 4)]);
   // A white goat, a long way from Bethlehem, pacing her ledge. Harmless.

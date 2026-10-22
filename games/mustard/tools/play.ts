@@ -1,11 +1,11 @@
 // The bot's whole game on the built disk, level after level, without losing a life, ending in
 // the palm of God's hand (check.ts and walkthrough.ts run it).
 import { Bot } from './bot';
-import { theDust, theMound } from './route';
+import { theDust, theMound, theMountain } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-export const LEVELS = [theMound, theDust];
+export const LEVELS = [theMound, theDust, theMountain];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {
   const sim = new GameSim(undefined, seed);

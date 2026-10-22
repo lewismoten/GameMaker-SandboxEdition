@@ -1,5 +1,5 @@
 // The way through the game, as orders for the bot.
-import { WATER } from '../src/ids';
+import { FAITH, WATER } from '../src/ids';
 import { Bot } from './bot';
 
 const expect = (bot: Bot, scene: number, what: string) => {
@@ -48,6 +48,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
 }
 
 export const water = (bot: Bot) => bot.sim.meter(WATER) - 1;
+export const faith = (bot: Bot) => bot.sim.meter(FAITH) - 1;
 
 /** 1. The mound and the garden. */
 export async function theMound(bot: Bot): Promise<void> {
@@ -116,5 +117,35 @@ export async function theDust(bot: Bot): Promise<void> {
     await go('up', 1, 'under the sidewalk');
     await go('right', 44);
     await leave(bot, bot.hold('up', 30), 'through the crack');
+  });
+}
+
+/** 3. The mountain: faith on the way up, and each wall of boulders moved with it. */
+export async function theMountain(bot: Bot): Promise<void> {
+  expect(bot, 4, 'the mountain');
+  const glimmer = async (x: number, label: string) => {
+    await must(bot, bot.walk(x, label), label);
+    await must(bot, bot.hop('up', 12), `up for ${label}`);
+  };
+  await carefully(bot, 'the meadow', 10, async () => {
+    await glimmer(5, 'a glimmer of faith');
+    await must(bot, bot.walk(10, 'the first terrace'), 'meadow');
+  });
+  await carefully(bot, 'the first terraces', 10, async () => {
+    await glimmer(14, 'faith past the goat');
+    await must(bot, bot.walk(22, 'the first wall'), 'terrace');
+  });
+  await carefully(bot, 'the first wall', 10, async () => {
+    await must(bot, bot.walk(26, 'through the first wall'), 'wall A');
+    await glimmer(29, 'faith on the high terrace');
+  });
+  await carefully(bot, 'the second wall', 12, async () => {
+    await must(bot, bot.walk(33, 'through the second wall'), 'wall B');
+    await glimmer(38, 'faith on the peak');
+    await must(bot, bot.walk(44, 'down from the peak'), 'peak');
+  });
+  await carefully(bot, 'the last wall', 12, async () => {
+    await must(bot, bot.walk(48, 'through the last wall'), 'wall C');
+    await leave(bot, bot.walk(62, 'the pass'), 'the pass');
   });
 }

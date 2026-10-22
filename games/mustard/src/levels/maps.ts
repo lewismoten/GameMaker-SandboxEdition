@@ -223,3 +223,41 @@ export function dust(book: BlockBook): Level {
   m.link(44, 0, 'next');
   return { m, start: at(2, 2), size: [W, H] };
 }
+
+/** 3. The mountain: terraces up and over, three walls of boulders that only faith moves, pebbles, an eagle and a goat. */
+export function mountain(book: BlockBook): Level {
+  const W = 64;
+  const H = 20;
+  const m = new MapBuilder(book, 'crag');
+  m.fill(1, 0, W - 2, 3, '^').fill(1, 3, W - 2, 16, '.').col(0, 0, 19, 'M').col(W - 1, 0, 19, 'M').row(19, 0, W - 1, 'M');
+  m.set(6, 2, 'w').set(30, 3, 'w').set(52, 2, 'w');
+  // the ground under each stretch: [from x, to x, top row]
+  const steps: [number, number, number][] = [
+    [1, 10, 17],
+    [11, 18, 15],
+    [19, 26, 13],
+    [27, 34, 11],
+    [35, 42, 9],
+    [43, 50, 11],
+    [51, 62, 13],
+  ];
+  for (const [x0, x1, top] of steps) {
+    m.row(top, x0, x1, top === 17 ? '=' : 'm').fill(x0, top + 1, x1 - x0 + 1, 18 - top, 'M');
+  }
+  m.row(9, 35, 42, 'N');
+  // pines and tufts
+  m.set(3, 16, 'T').set(8, 16, ',').set(12, 14, 'T').set(21, 12, ',').set(33, 10, 'T').set(49, 10, 'T').set(57, 12, 'T').set(53, 12, ',');
+  // the walls of boulders (four high: a hop can't clear them; faith moves them two at a time)
+  m.col(24, 9, 12, 'X').col(31, 7, 10, 'X').col(46, 7, 10, 'X');
+  // faith, a golden glimmer at a time
+  m.set(5, 15, '$').set(9, 16, '$').set(14, 12, '$').set(20, 11, '$').set(27, 9, '$').set(29, 8, '$').set(38, 6, '$').set(41, 7, '$').set(44, 9, '$');
+  // sunbeams, dew, and a golden flower on the peak
+  m.text(16, 10, '*').text(36, 4, '*..*').set(52, 10, '*').set(18, 14, 'd').set(40, 8, '1').set(60, 9, '*');
+  // loose scree: pebbles roll out of it, down across the last terrace
+  m.set(50, 12, 'S');
+  // the pass over the mountain: the way on
+  m.set(61, 12, '>');
+  m.mon(MON.goat, 12, 14).mon(MON.eagle, 20, 4).mon(MON.eagle, 44, 3).mon(MON.bee, 6, 12);
+  m.link(61, 12, 'next');
+  return { m, start: at(2, 16), size: [W, H] };
+}
