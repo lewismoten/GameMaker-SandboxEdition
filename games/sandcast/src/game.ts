@@ -64,9 +64,9 @@ export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'
     return sc;
   };
   for (const key of order) g.scenes[S[key]] = scene(levels[key], levels[key].intro);
-  // Climbing out of Gwinn's dig comes back up into the sandbox: the same playfield as the
-  // sandbox scene, with the same doors, but with a message on the way in.
-  g.scenes[S.dugOut] = scene({ ...levels.hub, desc: 'Up from the dig', pos: { x: 150, y: 120 } }, screens.dug);
+  // Climbing out of Gwinn's dig shows a message on the way: a scene of the dig itself that
+  // starts Teddy on the ladder, which is a link straight up into the sandbox.
+  g.scenes[S.dugOut] = scene({ ...levels.dig, desc: 'Up from the dig', pos: { x: 150, y: 120 } }, screens.dug);
 
   const link = (from: number, slot: number, fromMap: LevelMap | null, fromMark: string | null, to: number, toMap: LevelMap | null, toMark: string | null) => {
     const l: Link = {
@@ -96,8 +96,8 @@ export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'
   link(S.bbs, 0, M('bbs'), 'exit', S.hub, M('hub'), 'arriveBBS');
   // The lone dune in the sandbox's northeast corner hides Gwinn's dig.
   link(S.hub, 5, M('hub'), 'holeDig', S.dig, M('dig'), 'arrive');
-  link(S.dig, 0, M('dig'), 'exit', S.dugOut, M('hub'), 'arriveDig');
-  for (let i = 0; i <= 5; i++) g.scenes[S.dugOut].links[i] = { ...g.scenes[S.hub].links[i] };
+  link(S.dig, 0, M('dig'), 'exit', S.dugOut, M('dig'), 'exit');
+  link(S.dugOut, 0, M('dig'), 'exit', S.hub, M('hub'), 'arriveDig');
 
   return g;
 }
