@@ -102,12 +102,13 @@ export const EGGS: readonly Egg[] = [
   },
   {
     game: 'realm',
-    gameTitle: 'Realm', // until its builder names it
+    gameTitle: 'Quest for the Round Tuit',
     name: 'The Heraldry Egg',
     description: 'Forest-green felt quartered in gold diamonds like a herald\'s coat, a silver felt sword laid over a scrap of treasure map, and a road of brown backstitch winding all the way around the shell.',
     credits: ['Questmaster Gwinn (two n\'s, three quests, never once asked for directions)', 'Map inked by Lewis "Lewie" Moten III', 'Roads curved by Claude Opus 5.5'],
     lore: 'The royal map ends at the edge of the kingdom with "Here Be Root Beer," and a line the cartographer was far too polite to finish: "Taken from the Redcoats, fair and square, on a Tuesday, by..."',
     look: { felt: '#2f5d3a', band: '#d8b04a', patch: '#c9ced6', thread: '#f4e7c0', pattern: 'diamonds', motif: 'sword' },
+    detect: { block: 149 },
   },
   {
     game: 'sandcast',
