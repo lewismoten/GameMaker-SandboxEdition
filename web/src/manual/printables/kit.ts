@@ -56,8 +56,9 @@ export function sheet(w: number, h_: number, cls: string, ...children: (Node | s
   const el = h(
     'div',
     { class: 'pp-paper', style: `aspect-ratio: ${w} / ${h_}` },
+    // a section, so a printed piece's own <header> is its letterhead, not the page's banner landmark
     h(
-      'div',
+      'section',
       {
         class: `pp-sheet ${cls
           .split(/\s+/)
