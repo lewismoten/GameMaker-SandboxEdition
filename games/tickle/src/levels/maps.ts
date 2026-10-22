@@ -274,24 +274,23 @@ export function tower(book: BlockBook): Level {
   // the floor: rats, a Jacob's ladder
   m.mon(MON.wildRat, 4, 21).mon(MON.labTense, 12, 21).mon(MON.wildRat, 30, 21);
   m.set(9, 21, 'j');
-  // a step, and the ledges zigzagging up
-  m.set(19, 21, '#');
-  m.row(19, 20, 30, '_').set(29, 18, 'c');
-  m.mon(MON.wildRat, 22, 18);
-  m.row(17, 32, 41, '_');
-  m.mon(MON.labRat, 34, 16);
-  m.row(15, 22, 30, '_').set(29, 14, 'o');
-  m.mon(MON.wildTense, 23, 14).mon(MON.pigeon, 24, 11);
-  m.row(13, 10, 20, '_');
-  m.mon(MON.wildRat, 12, 12).mon(MON.goat, 18, 12);
-  m.row(11, 1, 8, '_').set(1, 10, 'k');
-  m.mon(MON.labRat, 3, 10);
-  m.row(9, 10, 20, '_').set(19, 8, 'o');
-  m.mon(MON.wildRat, 12, 8).set(21, 6, 'j');
-  m.row(7, 22, 32, '_');
-  m.mon(MON.deanA, 23, 5).mon(MON.deanB, 23, 6).mon(MON.labTense, 28, 6);
+  // the ledges zigzagging up, two blocks apart
+  m.row(20, 20, 30, '_').set(29, 19, 'c');
+  m.mon(MON.wildRat, 22, 19);
+  m.row(18, 32, 41, '_');
+  m.mon(MON.labRat, 33, 17).mon(MON.deanA, 38, 16).mon(MON.deanB, 38, 17);
+  m.row(16, 22, 30, '_').set(29, 15, 'o');
+  m.mon(MON.wildTense, 23, 15).mon(MON.pigeon, 24, 12);
+  m.row(14, 10, 20, '_');
+  m.mon(MON.wildRat, 12, 13).mon(MON.goat, 18, 13);
+  m.row(12, 1, 8, '_').set(1, 11, 'k');
+  m.mon(MON.labRat, 3, 11);
+  m.row(10, 10, 20, '_').set(19, 9, 'o');
+  m.mon(MON.wildRat, 12, 9).set(21, 6, 'j');
+  m.row(8, 22, 32, '_');
+  m.mon(MON.labTense, 25, 7);
   // the top ledge, and the balcony
-  m.row(5, 34, 42, '_');
-  m.door(39, 4, 'won', 'y');
+  m.row(6, 34, 42, '_');
+  m.door(39, 5, 'won', 'y');
   return { m, start: at(2, 21), size: [W, H], rats: ratCount(m) };
 }
