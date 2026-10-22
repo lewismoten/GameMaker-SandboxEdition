@@ -6,7 +6,7 @@
 import { TextScreen } from '../text/textScreen';
 import { TextKeys } from '../text/textInput';
 import { Shell } from '../dos/shell';
-import { FileSystem, file, folder, liveFolder, textFile, type DosNode, type ProgramRef } from '../dos/vfs';
+import { FileSystem, file, folder, liveFolder, textFile, deskDate, DOS_DATE, type DosNode, type ProgramRef } from '../dos/vfs';
 import { hardDiskGames, hdFiles, type HdGame } from '../dos/hardDisk';
 import { Downloads, type InsertedDisk } from '../host';
 import type { Disk } from '../dos/disks';
@@ -112,14 +112,15 @@ export abstract class ComputerDrives {
   }
 
   protected buildDrives(): void {
-    const gameFolder = (g: CatalogEntry): DosNode =>
+    // `date`: when the folder came to be (a download's arrival); the CD's are as shipped
+    const gameFolder = (g: CatalogEntry, date = DOS_DATE): DosNode =>
       folder(g.id, async () => {
-        const nodes = g.files.map((f) => file(f, 0, { read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
+        const nodes = g.files.map((f) => file(f, 0, { date, read: async () => (await this.catalogFiles(g)).get(f) ?? new Uint8Array() }));
         // Sizes come from the files themselves, loaded when the folder is opened.
         const files = await this.catalogFiles(g);
         for (const n of nodes) n.size = files.get(n.name.toLowerCase())?.length ?? 0;
         return nodes;
-      });
+      }, date);
 
     this.fs.addDrive({
       letter: 'A',
@@ -145,7 +146,8 @@ export abstract class ComputerDrives {
       letter: 'C',
       label: 'GAMEMAKER',
       free: 48_234_496,
-      root: async () => [
+      // waits for what the BBS put on C: before this visit (kept in the browser)
+      root: () => this.downloads.ready.then(() => [
         folder('DOS', () =>
           ['COMMAND.COM', 'HIMEM.SYS', 'EMM386.EXE', 'MSCDEX.EXE', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) =>
             file(n, 20_000 + n.length * 1357),
@@ -167,6 +169,7 @@ export abstract class ComputerDrives {
           return dl.list().flatMap((id) => {
             const g = cat.find((c) => c.id === id);
             if (!g) return [];
+            const date = dl.date(id) ?? DOS_DATE;
             // DEL takes files out one by one; RD removes the emptied folder (and the download)
             const gone = (n: DosNode) => {
               n.remove = () => dl.deleteFile(id, n.name);
@@ -177,12 +180,14 @@ export abstract class ComputerDrives {
                 ...(g.exe
                   ? [
                       file(g.exe, 155_156, {
+                        date,
                         run: { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` } as ProgramRef,
                       }),
                     ]
                   : []),
-                ...(await gameFolder(g).list!()),
+                ...(await gameFolder(g, date).list!()),
               ].filter(gone),
+              date,
             );
             node.remove = () => dl.remove(id);
             return [node];
@@ -197,10 +202,12 @@ export abstract class ComputerDrives {
                     .filter((f) => this.downloads.has(f.name))
                     .map((f) =>
                       file(f.name, f.bytes, {
+                        date: this.downloads.date(f.name) ?? DOS_DATE,
                         read: () => fetch(`./bbs/${f.name}`).then(async (r) => (r.ok ? new Uint8Array(await r.arrayBuffer()) : new Uint8Array())),
                         remove: () => this.downloads.remove(f.name),
                       }),
                     ),
+                  this.downloads.dirDate('IMAGES'),
                 ),
                 { remove: () => this.downloads.setDir('IMAGES', false) },
               ),
@@ -209,7 +216,7 @@ export abstract class ComputerDrives {
         textFile('AUTOEXEC.BAT', AUTOEXEC.join('\n') + '\n'),
         textFile('CONFIG.SYS', CONFIG_SYS.join('\n') + '\n'),
         file('COMMAND.COM', 54_645),
-      ],
+      ]),
     });
 
     this.fs.addDrive({
@@ -221,7 +228,7 @@ export abstract class ComputerDrives {
         const cat = await this.catalog();
         return [
           folder('GM', () => this.gmFolder(false)),
-          folder('GAMEWARE', () => cat.filter((g) => g.kind === 'gameware').map(gameFolder)),
+          folder('GAMEWARE', () => cat.filter((g) => g.kind === 'gameware').map((g) => gameFolder(g))),
           file('INSTALL.EXE', 61_421, { run: { kind: 'install' } }),
           textFile(
             'README.TXT',
@@ -258,12 +265,18 @@ export abstract class ComputerDrives {
         return file(e.name, e.size, { run: runs[e.name], read: text ? async () => (await this.gmFile(e.name)) ?? new Uint8Array() : undefined });
       });
     const games = hardDisk ? await this.hdGames() : (await this.hdGames()).filter((g) => g.source === 'installed');
-    const folders = games.map((g) =>
-      liveFolder(g.dir, async () => {
-        const files = hardDisk ? await hdFiles(g) : new GameFiles(await this.catalogFiles(g.catalog!));
-        return files.entries().map(([n, b]) => file(n, b.length, { read: async () => b }));
-      }),
-    );
+    // your games and changed installed ones are dated when last saved
+    const folders = games.map((g) => {
+      const date = hardDisk && g.updated ? deskDate(g.updated) : DOS_DATE;
+      return liveFolder(
+        g.dir,
+        async () => {
+          const files = hardDisk ? await hdFiles(g) : new GameFiles(await this.catalogFiles(g.catalog!));
+          return files.entries().map(([n, b]) => file(n, b.length, { date, read: async () => b }));
+        },
+        date,
+      );
+    });
     return [...folders, ...programs];
   }
 

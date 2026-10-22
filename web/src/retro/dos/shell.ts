@@ -3,7 +3,7 @@
 // for MS-DOS, not a port of Game-Maker code; it imitates DOS 6.22 messages.
 import type { TextScreen } from '../text/textScreen';
 import { readLine, type TextKeys } from '../text/textInput';
-import { commas, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
+import { commas, deskDate, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
 import { toCp437 } from '../text/cp437';
 
 export interface ShellHost {
@@ -112,7 +112,7 @@ export class Shell {
         this.out('Largest executable program size        567K (580,112 bytes)');
         return;
       case 'DATE':
-        this.out(`Current date is ${new Date().toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' }).replace(',', '')}`);
+        this.out(`Current date is ${deskDate().toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' }).replace(',', '')}`);
         return;
       case 'TIME':
         this.out(`Current time is ${new Date().toLocaleTimeString('en-US')}`);

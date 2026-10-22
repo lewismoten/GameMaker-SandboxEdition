@@ -15,6 +15,8 @@ export interface HdGame {
   source: 'installed' | 'project';
   projectId?: string;
   catalog?: CatalogEntry;
+  /** Date.now() when your copy was last saved (none for an installed game as shipped). */
+  updated?: number;
 }
 
 /** Your copy of an installed game is stored as a project with this id. */
@@ -28,18 +30,20 @@ export function dosDirName(name: string): string {
 export async function hardDiskGames(catalog: CatalogEntry[], installedDirs: string[]): Promise<HdGame[]> {
   const games: HdGame[] = [];
   const taken = new Set<string>();
+  const projects = await listProjects().catch(() => []);
   for (const d of installedDirs) {
     const g = catalog.find((c) => c.id === d.toLowerCase() && c.gam);
     if (!g) continue;
-    games.push({ dir: d.toUpperCase(), title: g.title, source: 'installed', catalog: g });
+    const changed = projects.find((p) => p.id === installedId(g.id));
+    games.push({ dir: d.toUpperCase(), title: g.title, source: 'installed', catalog: g, updated: changed?.updated });
     taken.add(d.toUpperCase());
   }
-  for (const p of await listProjects().catch(() => [])) {
+  for (const p of projects) {
     if (p.id.startsWith('hd-')) continue; // shown as the installed folder it replaces
     let dir = dosDirName(p.gam);
     for (let i = 1; taken.has(dir); i++) dir = `${dir.slice(0, 8 - String(i).length)}${i}`;
     taken.add(dir);
-    games.push({ dir, title: p.name, source: 'project', projectId: p.id });
+    games.push({ dir, title: p.name, source: 'project', projectId: p.id, updated: p.updated });
   }
   return games.sort((a, b) => a.dir.localeCompare(b.dir));
 }
