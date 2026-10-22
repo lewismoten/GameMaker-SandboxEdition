@@ -196,8 +196,8 @@ export function course(book: BlockBook): Level {
   m.row(8, 39, 42, '_').set(39, 9, '|').set(42, 9, '|').set(41, 7, 'b');
   m.mon(MON.labRat, 38, 9);
   // the last desk: rat 5, and the rubber chicken
-  m.row(8, 46, 50, '_').set(46, 9, '|').set(50, 9, '|').set(50, 7, 'k').text(44, 6, 'o.o');
-  m.mon(MON.labRat, 46, 7);
+  m.row(8, 45, 50, '_').set(45, 9, '|').set(50, 9, '|').set(50, 7, 'k').set(46, 6, 'o');
+  m.mon(MON.labRat, 47, 7);
   // the door: three rats in the carpet
   m.door(57, 9, 'next');
   return { m, start: at(2, 9), size: [W, H], rats: ratCount(m) };

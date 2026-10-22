@@ -81,7 +81,7 @@ export async function theCourse(bot: Bot): Promise<void> {
   await tickle(bot, 'right', 'the rat under the Bunsen burner');
   await carefully(bot, 'up on the last desk', 0, async () => {
     await must(bot, bot.walk(43, 'by the last desk'), 'desk');
-    await upTo(bot, 'right', 46.2, 7, 'onto the last desk', 8);
+    await upTo(bot, 'right', 45.2, 7, 'onto the last desk', 8);
   });
   await tickle(bot, 'right', 'practice rat 5');
   await carefully(bot, 'the chicken', 10, async () => {
