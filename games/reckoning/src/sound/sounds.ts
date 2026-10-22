@@ -152,7 +152,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   {
     const rate = CLIPS.worth;
     const slam = render(0.35, mix([gate(lowNoise(21, 0.8), 0, 0.03), 1], [osc.sine((t) => 90 - t * 100), 0.6], [lowNoise(22, 0.1), 0.4]), rate, env(0.002, 1.4));
-    vocs.slamworth = vocOf('slamworth', join(slam, new Float32Array(Math.round(rate * 0.05)), clipSamples('worth')), rate);
+    vocs.slamwrth = vocOf('slamwrth', join(slam, new Float32Array(Math.round(rate * 0.05)), clipSamples('worth')), rate);
   }
   // the thunderous flush, then softly: "...Is there Lactaid in hell?" (kept at 8000 Hz to fit)
   {
@@ -169,7 +169,7 @@ export function buildVocs(): Record<string, Uint8Array> {
 const PLAYS: Record<Place, Partial<Record<keyof typeof SND, string>>> = {
   bedroom: { speak: 'cant', wail: 'intol', hurt: 'creak', die: 'wake', kill: 'hello', step: 'pat' },
   fridge: { speak: 'enemy', wail: 'intol', hurt: 'nom', die: 'moo', gain: 'better', spend: 'betray', kill: 'hello', step: 'hum' },
-  dash: { speak: 'ohno', wail: 'shins', hurt: 'gurgle', die: 'colon', gain: 'squeak', spend: 'slamworth', kill: 'hello', step: 'pat' },
+  dash: { speak: 'ohno', wail: 'shins', hurt: 'gurgle', die: 'colon', gain: 'squeak', spend: 'slamwrth', kill: 'hello', step: 'pat' },
   hell: { speak: 'begone', wail: 'demon', hurt: 'coward', die: 'suffer', gain: 'almond', spend: 'flushlac', kill: 'thunder', step: 'pat', score: 'thunder' },
 };
 
