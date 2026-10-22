@@ -88,7 +88,15 @@ disk.put('mustard.gam', serializeGame(game));
 
 // the pictures, cartoons and words
 for (const [name, bytes] of Object.entries(buildScreens({ seed: cb.pics }))) disk.put(name, bytes);
-const cast: Cast = { seed: cb.pics, mons: mb.pics };
+const cast: Cast = {
+  seed: cb.pics,
+  mons: mb.pics,
+  block: (name) => {
+    const p = new Pixels(20, 20);
+    p.px.set(bbl[book.n(name)].pixels);
+    return p;
+  },
+};
 const cover = coverFli();
 disk.put(BARDLOGO, bardIntroFli());
 disk.put('cover.fli', cover.fli);

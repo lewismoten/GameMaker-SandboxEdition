@@ -28,6 +28,8 @@ export interface Cast {
   seed: Map<string, Pixels>;
   /** Everybody else's (the .MBL's pictures). */
   mons: Map<string, Pixels>;
+  /** A background block's picture. */
+  block: (name: string) => Pixels;
 }
 
 /** A four-point twinkle of size 0..3. */
@@ -224,17 +226,19 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
       scaleBlit(p, s(k % 4 < 2 ? 'sprout.root0' : 'sprout.root1'), 140, y - 20, 2);
       if (k >= 16) say(p, 160, STRIP + 6, k % 6 < 3 ? 'scritch...' : '...scritch');
     },
-    // 3. the mountain: glimmers fly to the plant and the boulders crumble
+    // 3. the mountain: glimmers fly to the plant and the wall of boulders crumbles away
     (p, k) => {
-      const bx = 200;
-      const gone = Math.max(0, Math.floor((k - 10) / 4));
-      for (let b = gone; b < 4; b++) scaleBlit(p, sprite(cast.mons, 'pebble0'), bx, STRIP + 82 - b * 22, 1);
+      const gone = Math.max(0, Math.floor((k - 10) / 3));
+      for (let b = 0; b < 4; b++) {
+        const pic = 3 - b < gone - 1 ? undefined : 3 - b < gone ? 'crumble1' : 'boulder';
+        if (pic) p.blit(cast.block(pic), 220, STRIP + 100 - b * 20);
+      }
       for (let g = 0; g < 3; g++) {
         const t = Math.min(1, Math.max(0, (k - g * 3) / 9));
-        twinkle(p, pal, Math.round(20 + t * 110 + g * 6), Math.round(STRIP + 20 + t * 40), 3 - g);
+        if (t < 1) twinkle(p, pal, Math.round(20 + t * 110 + g * 6), Math.round(STRIP + 20 + t * 40), 3 - g);
       }
-      scaleBlit(p, s('plant.front'), 120, STRIP + 64, 2);
-      scaleBlit(p, sprite(cast.seed, k >= 10 ? 'topJoy' : 'top0'), 120, STRIP + 24, 2);
+      scaleBlit(p, s('plant.front'), 120, STRIP + 80, 2);
+      scaleBlit(p, sprite(cast.seed, k >= 10 ? 'topJoy' : 'top0'), 120, STRIP + 40, 2);
       if (k >= 12) say(p, 230, STRIP + 4, 'FAITH!');
     },
     // 4. the sky: the plant rides the breeze up, and a bird comes to say hello
