@@ -36,7 +36,7 @@ export interface WingSpec {
   tint: string;
   /** The felt egg in its cup by the door: shell, band and dots (ramp, shade). */
   egg: [[string, number], [string, number], [string, number]];
-  /** The two hallway signs (three lines each, 15 characters at most). */
+  /** The two hallway signs (three lines each, 14 characters at most). */
   signs: [string[], string[]];
   /** Draws the wing's story blocks and monsters into the area. */
   art(a: Area): void;
