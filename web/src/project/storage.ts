@@ -100,6 +100,15 @@ export async function writeSaveFile(gameId: string, name: string, bytes: Uint8Ar
   }
 }
 
+/**
+ * Replaces a game's whole save record (restoring a backup, deleting a slot): files left out
+ * are gone afterwards. Fires SAVES_CHANGED. Unlike writeSaveFile, failures are thrown.
+ */
+export async function replaceSaveData(gameId: string, files: Record<string, Uint8Array>): Promise<void> {
+  await request(SAVES, 'readwrite', (s) => (Object.keys(files).length ? s.put({ ...files }, gameId) : s.delete(gameId)));
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
+}
+
 /** A random id; falls back to time + random when crypto.randomUUID is missing (insecure contexts). */
 export function newId(): string {
   return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
