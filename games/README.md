@@ -68,6 +68,8 @@ The other play-testing tools:
 | depth     | `npx vite-node ../games/depth/tools/check.ts`        | the bot rolls all six scenes, pulls focus, beats Count Polygon                  |
 | goat      | `npx vite-node ../games/goat/tools/check.ts`         | the bot eats, gathers wool and screams its way to the manger                    |
 | goat      | `npx vite-node ../games/goat/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| mustard   | `npx vite-node ../games/mustard/tools/check.ts`      | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze |
+| mustard   | `npx vite-node ../games/mustard/tools/gendemo.ts`    | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | logic     | `npx vite-node ../games/logic/tools/check.ts`        | plays every board's solution                                                    |
 | maximus   | `npx vite-node ../games/maximus/tools/check.ts`      | lands on every world, drives the rovers around, crosses the training deck       |
@@ -226,3 +228,16 @@ rhythm-mode arrangement of the song made from an analysis of the recording (`too
 `src/sound/song.ts`), and some of the VOCs are cut from it (`tools/cutClips.py`); the title, the
 credits and the ending dither the song's cover art, the Bard's logo and Doc Leo's photo
 (`tools/scans.ts`).
+
+**Mustard Seed Hustle** (`mustard`). The Bard of Bizarre's second game, another of his gospel
+oddities, shareware from The Sofa BBS like the goat (`"series": "bizarre"`). A side-on platformer:
+you are a mustard seed with tiny red sneakers, and every level the seed is a different character
+file as it grows (a seed, a sprout, then a plant two blocks tall). Air pulls down, so a hop is an
+upward push each tick Up is held and Q/E hop sideways; soft dust is a solid block whose touch turns
+it into a root, air with no gravity, so the seed digs its own climbable tunnels (landing on dust
+puts roots down); dandelion fluff and the evening breeze are air that pulls up. Water (counter 20)
+opens the sidewalk's crack at five drops, faith (counter 21) moves boulders one each, and the seed
+has no attack at all ("it don't shout"). The song's tools are shared: `kit/song/analyze.py` and
+`kit/song/cutclips.py` (each game's `tools/analyze.py` and `tools/cutClips.py` name the song),
+`kit/song.ts` writes the arrangement and `kit/songPreview.ts` renders it; the title cartoon is the
+song's animated cover, its seven frames dithered into one palette (`tools/scans.ts`).
