@@ -1,0 +1,277 @@
+{
+ "pitch": "Roll a chrome sphere through six ray-traced worlds and pull focus between near and far: sharp is solid, a blur isn't there.",
+ "keys": {
+  "Up": "Roll up",
+  "Down": "Roll down",
+  "Left": "Roll left",
+  "Right": "Roll right",
+  "Q": "Roll up-left",
+  "E": "Roll up-right",
+  "Home": "Roll up-left",
+  "PgUp": "Roll up-right",
+  "End": "Roll down-left",
+  "PgDn": "Roll down-right",
+  "Space": "Fire a ray of light",
+  "Enter": "Pick up",
+  "F2": "Score, light and lives",
+  "F3": "Music on / off",
+  "F4": "Sound effects on / off"
+ },
+ "stickers": [
+  {
+   "text": "RAY",
+   "sub": "EVERY POLYGON INTACT",
+   "shape": "badge",
+   "color": "#120c34",
+   "ink": "#ffffff",
+   "hero": {
+    "chr": "near.chr",
+    "cbl": "ray.cbl",
+    "pal": "l1.pal"
+   }
+  },
+  {
+   "text": "COUNT POLYGON",
+   "sub": "TWENTY FACES, THEN FEWER",
+   "shape": "star",
+   "color": "#7a4fd0",
+   "ink": "#ffffff",
+   "sprite": {
+    "blocks": "depth.mbl",
+    "pal": "l1.pal",
+    "grid": [
+     [
+      28
+     ]
+    ]
+   }
+  },
+  {
+   "text": "TEDDY",
+   "sub": "ONE TALL EAR",
+   "shape": "circle",
+   "color": "#ffa63a",
+   "ink": "#120c34",
+   "sprite": {
+    "blocks": "depth.mbl",
+    "pal": "l1.pal",
+    "grid": [
+     [
+      18
+     ]
+    ]
+   }
+  },
+  {
+   "text": "GWINN",
+   "sub": "SITTING PRETTY",
+   "shape": "circle",
+   "color": "#ff8fc8",
+   "ink": "#120c34",
+   "sprite": {
+    "blocks": "depth.mbl",
+    "pal": "l2.pal",
+    "grid": [
+     [
+      22
+     ]
+    ]
+   }
+  },
+  {
+   "text": "DOC LEO",
+   "sub": "LIGHTING DIRECTOR",
+   "shape": "badge",
+   "color": "#2a3a7a",
+   "ink": "#ffffff",
+   "sprite": {
+    "blocks": "depth.mbl",
+    "pal": "l5.pal",
+    "grid": [
+     [
+      24
+     ]
+    ]
+   }
+  },
+  {
+   "text": "NOT RENDERED",
+   "sub": "WIREFRAME",
+   "shape": "rect",
+   "color": "#0c2a14",
+   "ink": "#7cff9a",
+   "sprite": {
+    "blocks": "depth.mbl",
+    "pal": "l1.pal",
+    "grid": [
+     [
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "text": "NO GLASSES REQUIRED",
+   "shape": "rect",
+   "color": "#28c8ff",
+   "ink": "#120c34"
+  }
+ ],
+ "news": [
+  {
+   "head": "We threw away the cardboard glasses",
+   "html": "<p>Our art department spent a week with red and blue cellophane and a stack of headache tablets before Doc Leo said what everybody was thinking: real depth isn't two colors, it's focus. <b>Depth Perception</b> has a near plane and a far plane in every scene, and only the one in focus is solid. The glasses are still in the box. You won't need them.</p>",
+   "everywhere": true
+  },
+  {
+   "head": "How long does a render take?",
+   "html": "<p>Every block, sprite and cartoon in <b>Depth Perception</b> was ray traced on our office 486. The intro alone took a long weekend. The box art took eleven hours and a vampire. We are told the next machine will be faster.</p>"
+  }
+ ],
+ "items": [
+  {
+   "kind": "hintbook",
+   "title": "Depth Perception Hint Book",
+   "note": "Answers hidden: use the red film",
+   "promised": true,
+   "intro": "From the render farm's log book. Lay the red film over an answer to read it - the only red glasses this game will ever ask you to wear.",
+   "sections": [
+    {
+     "head": "Focus",
+     "hints": [
+      {
+       "q": "How do I get past a wall of amber blocks?",
+       "a": "Amber blocks are the near plane. Find a focus ring with a cyan lens and roll onto it: the far plane comes into focus and the amber blocks turn to blurs you can roll through."
+      },
+      {
+       "q": "I pulled focus and now I'm stuck.",
+       "a": "Every focus ring works both ways. Step off it and back onto it to pull focus back. You arrive on the far side of the ring each time."
+      },
+      {
+       "q": "Why did the photons come back?",
+       "a": "Pulling focus re-renders the scene the way it was. Photons, bulbs and gates come back; your lenses stay in your pocket."
+      }
+     ]
+    },
+    {
+     "head": "The Checkerboard",
+     "hints": [
+      {
+       "q": "Where is the red lens?",
+       "a": "Behind the column of amber blocks. Pull focus at the ring left of the column and roll straight through."
+      },
+      {
+       "q": "How do I cross the chasm?",
+       "a": "In the near plane the amber walkway holds you. Roll onto the ring in the middle: the far plane comes into focus and the cyan walkway takes you the rest of the way."
+      }
+     ]
+    },
+    {
+     "head": "The Glass Garden",
+     "hints": [
+      {
+       "q": "The violet panels keep disappearing under me.",
+       "a": "They drift in and out of focus together, about two seconds each way. Wait on solid ground until they sharpen, then roll without stopping."
+      },
+      {
+       "q": "The green lens is across three sets of panels.",
+       "a": "The middle set keeps the opposite time to the others. Cross one set, wait on the little island for the next to sharpen, and go again."
+      }
+     ]
+    },
+    {
+     "head": "The Hall of Mirrors",
+     "hints": [
+      {
+       "q": "Which doors can I use?",
+       "a": "Amber doors open in the far plane, cyan doors in the near plane. The ring in the middle room pulls focus."
+      },
+      {
+       "q": "My double keeps rolling into me.",
+       "a": "It wakes when you come close. Face it and fire first: one ray renders it to nothing."
+      }
+     ]
+    },
+    {
+     "head": "Fractal Peaks",
+     "hints": [
+      {
+       "q": "The arrows carried me away!",
+       "a": "Golden chevrons pull you the way they point until you hit something. Ride the two chutes on purpose; stay off the slopes beside the pit."
+      }
+     ]
+    },
+    {
+     "head": "Teapot Temple",
+     "hints": [
+      {
+       "q": "I'm low on light.",
+       "a": "THE CHEZ is plugged in at the parking lot. Stand below its rear wheel and push up against the charge port: it charges you, and keeps charging."
+      },
+      {
+       "q": "The steam keeps getting me.",
+       "a": "A ray puts out a puff. Keep moving past the teapots rather than standing beside them."
+      }
+     ]
+    },
+    {
+     "head": "The Vanishing Point",
+     "hints": [
+      {
+       "q": "How do I beat Count Polygon?",
+       "a": "He waits until you come within reach. Stand level with him a few blocks away, facing him, and fire again and again: twenty faces, eight, four, a triangle, a point."
+      },
+      {
+       "q": "The last door won't open.",
+       "a": "It wants the last polygon the Count leaves behind. Roll over it, then go through the gold door and the red, green and blue gates."
+      }
+     ]
+    },
+    {
+     "head": "The Felt Egg",
+     "hints": [
+      {
+       "q": "Somebody felted something into the render...",
+       "a": "Not every mirror in the Hall of Mirrors is a wall. Look for a mirror with something faint inside it."
+      },
+      {
+       "q": "I found a mirror I can roll through. Now what?",
+       "a": "Behind it is the Prism Egg on a pedestal. Roll onto it and press Enter to pick it up and keep it. Leave by the mirror just above the one you came in by."
+      },
+      {
+       "q": "Just draw me a map.",
+       "a": "In the far plane, go up through the amber door into the top middle room, then right into the top right room past the red lens. Its right wall has two two-way mirrors; with the far plane in focus, roll through the lower one, then press Enter on the felt egg.",
+       "sketch": {
+        "rows": [
+         "##########",
+         "#....::..#",
+         "#..o.::X.#",
+         "#.....#..#",
+         "#..@..####",
+         "###:###"
+        ],
+        "labels": [
+         {
+          "x": 2,
+          "y": 3,
+          "text": "RED LENS"
+         },
+         {
+          "x": 8,
+          "y": 2,
+          "text": "EGG"
+         },
+         {
+          "x": 4,
+          "y": 5,
+          "text": "AMBER DOOR"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

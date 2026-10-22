@@ -75,6 +75,9 @@ export function rulesFor(o: LevelRules): Rules {
       case 'chez':
         // plugged in at the rear passenger side: push against it to charge up
         return part === 2 ? { solid: SOLID, hp: 2 } : { solid: SOLID };
+      case 'mirrordoor':
+        // the two-way mirror: a wall while the near plane is in focus, a way through in the far
+        return plane === 'near' ? { solid: SOLID } : {};
       case 'egg':
         // an object: walking over it does nothing; the pick-up key (Enter) takes it
         return { obj: true, score: 1996, touch: 'floor' };

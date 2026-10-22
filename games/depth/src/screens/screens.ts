@@ -89,7 +89,7 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
 }
 
 /**
- * The Hall of Mirrors' two-way mirror: just behind it a link takes Ray to a scene of its own
+ * The Hall of Mirrors' two-way mirror (only the far plane lets you through): just behind it a link takes Ray to a scene of its own
  * whose intro is the egg's page; it starts him on a link straight back into the far plane,
  * beside the felt egg, one row up so walking out again doesn't show the page twice.
  */
@@ -107,7 +107,7 @@ function eggScene(sets: LevelSet[]): Extra {
   s.links = Array.from({ length: MAXSCENELINKS }, (_, k) => (k === 0 ? { toScene: farScene(L), from: { ...at }, to: back } : { toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
   return {
     scenes: [s],
-    links: (['near', 'far'] as const).map((plane) => ({ level: L, plane, link: { toScene: LORE_SCENE, from: { ...at }, to: { ...at } } })),
+    links: [{ level: L, plane: 'far', link: { toScene: LORE_SCENE, from: { ...at }, to: { ...at } } }],
   };
 }
 
