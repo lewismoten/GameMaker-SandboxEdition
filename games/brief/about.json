@@ -31,10 +31,31 @@
       "A thirty-third book. Exactly one hundred words. Your turn."
     ],
     "shots": [
-      ["library.map", 0, 0],
-      ["clown.map", 16, 0],
-      ["lab.map", 64, 0],
-      ["clown.map", 0, 0]
+      [
+        "library.map",
+        0,
+        0
+      ],
+      [
+        "clown.map",
+        16,
+        0
+      ],
+      [
+        "future.map",
+        32,
+        0
+      ],
+      [
+        "other.map",
+        64,
+        0
+      ],
+      [
+        "after.map",
+        16,
+        0
+      ]
     ],
     "rating": "Ages 8 and up",
     "hours": 3,
@@ -53,7 +74,13 @@
       "from": "Diskette Digest Readers' Choice"
     },
     "poster": {
-      "map": ["library.map", 0, 0, 16, 10],
+      "map": [
+        "library.map",
+        0,
+        0,
+        16,
+        10
+      ],
       "title": "The Reading Room",
       "caption": "Eight wing doors, eight felt eggs, one jammed Word Counter"
     }

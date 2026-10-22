@@ -152,10 +152,11 @@ function shelves(seed: number): Pixels {
 }
 
 /** A paper panel where PLAYGAME writes words. */
-function panel(p: Pixels, x: number, y: number, w: number, h: number): void {
+function panel(p: Pixels, x: number, y: number, w: number, h: number, ruled = true): void {
   p.rect(x + 4, y + 4, w, h, c('ink', 0));
   p.rect(x, y, w, h, c('paper', 4));
   p.frame(x, y, w, h, c('paper', 1));
+  if (!ruled) return;
   for (let yy = y + 11; yy < y + h - 2; yy += 8) p.rect(x + 3, yy, w - 6, 1, c('sky', 4));
   p.rect(x + 8, y + 2, 1, h - 4, c('red', 4));
 }
@@ -165,7 +166,7 @@ export function menuScreen(joe: BlockSet): Pixels {
   headline(p, 10, 'KEEP IT BRIEF!', 2, c('yellow', 3), c('red', 1));
   centered(p, 38, 'The Tiny Pockets Library', c('paper', 4), 1, c('ink', 0));
   // PLAYGAME writes the game's name at (96,104) and the menu at (80,120..167) in blue
-  panel(p, 62, 96, 196, 80);
+  panel(p, 62, 96, 196, 80, false);
   bigJoe(p, joe, 10, 112, 2);
   scaleBlit(p, shusher(1), 262, 112, 2);
   outlined(p, 44, 186, 'Arrows to choose, Enter to go', c('paper', 4), c('ink', 0));
@@ -205,14 +206,14 @@ export function coverScreen(tint: string, title: string): Pixels {
 /** High scores: PLAYGAME writes the table from the top (x=20..300), "Hit any key" at y=192. */
 export function scoresScreen(): Pixels {
   const p = shelves(21);
-  panel(p, 10, 0, 300, 200);
+  panel(p, 10, 0, 300, 200, false);
   return p;
 }
 
 /** Load and save: "Load Game" at (124,10) and ten slots from y=40, 14 apart, x=73... */
 export function slotsScreen(joe: BlockSet): Pixels {
   const p = shelves(31);
-  panel(p, 50, 4, 220, 192);
+  panel(p, 50, 4, 220, 192, false);
   bigJoe(p, joe, 4, 150, 2);
   scaleBlit(p, corgi(0), 276, 160, 2);
   return p;
