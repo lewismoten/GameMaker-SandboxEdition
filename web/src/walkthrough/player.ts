@@ -332,5 +332,5 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
   making?.abort();
   cancelAnimationFrame(raf);
   run?.stop();
-  void audio.context?.close().catch(() => undefined);
+  audio.dispose();
 }

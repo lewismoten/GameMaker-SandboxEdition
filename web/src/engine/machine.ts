@@ -49,10 +49,14 @@ export class Machine {
   /** The ball mouse on the desk moves the pointer and clicks too. */
   private offDeskMouse!: () => void;
 
-  constructor(canvas: HTMLCanvasElement, files: GameFiles, audio = new AudioEngine(), opts: MachineOptions = {}) {
+  /** The engine was made here (not passed in): it goes with the Machine. */
+  private ownsAudio: boolean;
+
+  constructor(canvas: HTMLCanvasElement, files: GameFiles, audio?: AudioEngine, opts: MachineOptions = {}) {
     this.screen = new Screen(canvas);
     this.files = files;
-    this.audio = audio;
+    this.ownsAudio = !audio;
+    this.audio = audio ?? new AudioEngine();
     if (opts.input === false) {
       this.offDeskMouse = () => undefined;
       this.keyboard.attach = this.keyboard.detach = () => undefined;
@@ -118,7 +122,8 @@ export class Machine {
     this.aborted = true;
     if (this.raf) cancelAnimationFrame(this.raf);
     this.keyboard.detach();
-    this.audio.stopAll();
+    if (this.ownsAudio) this.audio.dispose();
+    else this.audio.stopAll();
     this.screen.canvas.removeEventListener('pointerdown', this.onPointer);
     this.screen.canvas.removeEventListener('pointermove', this.onMove);
     this.offDeskMouse();
