@@ -149,9 +149,9 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
         const since = crumble ? clock - crumble.at : 99;
         const grow = still ? 1 : Math.min(1, since / 1.1);
         const ease = 1 - Math.pow(1 - grow, 3);
-        const size = box.w * 1.15 * (0.35 + 0.65 * ease);
+        const size = box.w * 1.3 * (0.35 + 0.65 * ease);
         const bob = still ? 0 : Math.sin(clock * 1.2) * box.h * 0.015;
-        const hy = box.y + box.h * 0.5 + bob;
+        const hy = box.y + box.h * 0.4 + bob;
         shadow(box.w * 0.34 * (0.5 + 0.5 * ease), 0.32);
         if (since > 1 || !crumble) drawRestingShards(g, cx, floor, box.w * 0.95);
         // the light that comes out of it
