@@ -58,6 +58,7 @@ The play-testing tools:
 | year2000 | `npx vite-node ../games/year2000/tools/verify.ts`  | the bot plays all six levels in a row (`GOD=1` keeps it alive)                        |
 | year2000 | `npx vite-node ../games/year2000/tools/gendemo.ts` | re-records the title demo into `src/demo.ts`                                          |
 | teddy    | `npx vite-node ../games/teddy/tools/check.ts`      | the bot plays every level (`TEDDY_WALK=<file>` writes the run as a .rec)              |
+| teddy2   | `npx vite-node ../games/teddy2/tools/check.ts`     | the bot plays all eight levels, Teddy's and Gwinn's (`TEDDY2_WALK=<file>` for a .rec) |
 | logic    | `npx vite-node ../games/logic/tools/check.ts`      | plays every board's solution                                                          |
 | blaster  | `npx vite-node ../games/blaster/tools/check.ts`    | the bot pilot flies every leg and boss                                                |
 | sleuth   | `npx vite-node ../games/sleuth/tools/check.ts`     | plays the whole case on the built disk (`--quick`, `--wrong <who>`, `--walk out.rec`) |
@@ -115,6 +116,16 @@ powers decides what each trick beats: a bark beats a blocker cat, only a high fi
 kid's raised hand, only the heart from sitting pretty beats someone asking for a sit. Beaten
 monsters are reborn as what they become (a falling treat, a ticket, a costume piece), so every
 puzzle is a birth chain.
+
+**Teddy's Little Bigger Adventure** (`teddy2`). The sequel: the morning after the Big Show, Gwinn's
+bed is empty, and Teddy follows her trail out to the Tri-County Fair. Each level scene names its own
+character file, so the MEANWHILE... levels load `gwinn.chr` and you play Gwinn, with tricks of her
+own (BOOF, a big dig, chewing, zoomies, a sit she hasn't learned). Teddy's new SNIFF sends out a
+monster that beats only scents: faint, nearly invisible monsters that turn into what was hidden there.
+A rung bell's DING is a monster that drops onto what hangs below it and starts it up (a bucket truck,
+a grain hoist, a velvet rope coming down), solid monsters carry the dog up as lifts (THE BIG DROP rides
+21 blocks), rapids are water with gravity to the side, and the felt egg is behind a hedge you can only
+reach by walking off the left end of the map, which wraps round to the right.
 
 **Ohm Sweet Ohm** (`logic`). Watt the repair robot rolls through twenty circuit boards. All the
 boards of a room share one map, each in its own screen-sized window, and each outlet links back
