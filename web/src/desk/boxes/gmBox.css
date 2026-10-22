@@ -529,3 +529,21 @@
   -webkit-text-stroke: 0;
   transform: rotate(12deg);
 }
+
+/* with the guide's real cover (gmCover.ts) the picture fills the button: no drawn peel or sticker */
+.guide-book.has-cover {
+  padding: 0;
+  background: #143a76;
+}
+
+.guide-book.has-cover::after {
+  content: none;
+}
+
+.guide-book.has-cover .gmc {
+  border-radius: inherit;
+}
+
+.guide-book.has-cover::before {
+  z-index: 1;
+}

@@ -4,7 +4,8 @@
 import './gmBox.css';
 import { h } from '../../editor/core/ui';
 import type { BoxFaces } from './gameBox';
-import { loadedShots, preloadShots } from './gmShots';
+import { loadedShots, preloadShots, sandboxShots } from './gmShots';
+import { gmCover } from '../../manual/printables/gmCover';
 import { priceSticker } from './boxSeals';
 import { GM_PRICE, gmFloppy } from '../../manual/printables/gmInserts';
 
@@ -351,6 +352,12 @@ function insertList(openGuide: () => void): HTMLElement {
   return list;
 }
 
+function coverImg(game?: string, title?: string): HTMLImageElement {
+  const img = gmCover(game, title);
+  img.alt = '';
+  return img;
+}
+
 /** The Owner's Guide, the program disks, the bonus-games CD and the inserts, laid beside the box in the viewer. */
 export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTMLElement {
   // Click the CD to put it in the drive and start Game-Maker (same as the viewer's button).
@@ -377,6 +384,12 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
     disc.style.setProperty('--lx', `${((e.clientX - r.left) / r.width) * 100}%`);
     disc.style.setProperty('--ly', `${((e.clientY - r.top) / r.height) * 100}%`);
   });
+  // the Owner's Guide with its real cover (manual/printables/gmCover.ts): Teddy's game under the peeled corner once it has loaded
+  const guide = h('button', { class: 'guide-book has-cover', onclick: openGuide, title: 'Read the Owner’s Guide', 'aria-label': 'Read the Owner’s Guide' }, coverImg());
+  void sandboxShots().then((shots) => {
+    const g = shots.find((x) => x.id === 'teddy') ?? shots[0];
+    if (g) guide.replaceChildren(coverImg(g.canvas.toDataURL(), g.title));
+  });
   const disks = h(
     'button',
     { class: 'gm-disks', onclick: () => showInBox(openGuide, 'disks'), title: 'Look at the program disks', 'aria-label': 'Program disks: two 3½-inch disks' },
@@ -389,14 +402,7 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
     h(
       'div',
       { class: 'gm-left' },
-      h(
-        'button',
-        { class: 'guide-book', onclick: openGuide, title: 'Read the Owner’s Guide' },
-        h('strong', null, 'GAME-MAKER'),
-        h('span', null, 'Owner’s Guide'),
-        h('em', null, 'Sandbox Edition'),
-        h('small', null, 'Sandbox Edition · a new guide for this fork'),
-      ),
+      guide,
       disks,
       disc,
     ),
