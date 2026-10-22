@@ -66,12 +66,12 @@ THE RESERVE STACKS
  The purple STAX door in
  the reading room leads
  to the Reserve Stacks.
- Eight egg cup gates stand
- in a row there, one for
- each wing. A gate opens
- once its wing has four
- stories back on the
- shelf.
+ Eight stamp gates stand
+ in a row there, each
+ inked with its wing's
+ stamp. A gate opens once
+ its wing has four stories
+ stamped SHELVED.
 
  What is past the gates?
  Exactly one hundred

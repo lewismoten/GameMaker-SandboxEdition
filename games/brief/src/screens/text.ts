@@ -80,12 +80,12 @@ Walk into a door, a book or a page to use it.`,
  The purple STAX door in
  the reading room leads
  to the Reserve Stacks.
- Eight egg cup gates stand
- in a row there, one for
- each wing. A gate opens
- once its wing has four
- stories back on the
- shelf.
+ Eight stamp gates stand
+ in a row there, each
+ inked with its wing's
+ stamp. A gate opens once
+ its wing has four stories
+ stamped SHELVED.
 
  What is past the gates?
  Exactly one hundred
@@ -104,8 +104,10 @@ He wrote every one of them for Laurence Simon's weekly 100 Word Stories challeng
 Two of these stories first went up under the name Mystery Robot Joe. He has a job now.`,
   `Game design, art, music and every block of the library: Claude Opus 5.5
 
-Starring Mystery Robot Joe, Teddy (a corgi who knows left from right), Gwinn (two n's) and Doc Leo, PhD (Comedic Science).`,
-  `Published by Sandbox Software. You can't buy this one.
+Starring Mystery Robot Joe, Teddy (a corgi who knows left from right), Gwinn (two n's) and Doc Leo, PhD (Comedic Science).
+
+THE CHEZ, the CitiCar, is parked out front. It is charging. It is always charging.`,
+  `Published by Sandbox Software. Late fees not included.
 
 Made with Game-Maker 3.0 from Recreational Software Designs.
 
@@ -219,8 +221,10 @@ Every book in the library behind The Dog House's red door holds exactly one hund
 
 The stories are Lewis Moten's 100 Word Stories, written for Laurence Simon's weekly 100 Word Stories challenge, word for word.
 
-THIS IS NOT SHAREWARE
-There is no order form. You can't buy this one. If you have this disk, you found it.
+THIS IS SHAREWARE
+Copy this disk for a friend, upload it to your favorite BBS, put it on a shareware disk: all of the files, unchanged. Please return it on time.
+
+If you enjoy it, register for $10 (exactly) with Sandbox Software, Dept. 100, P.O. Box 1992. Registered readers get a library card with their own name on it and our thanks, in under one hundred words.
 
 FILES ON THIS DISK
  BRIEF.GAM    the game
