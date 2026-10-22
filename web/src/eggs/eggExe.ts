@@ -25,7 +25,7 @@ export async function runEggExe(ui: Ui): Promise<void> {
   s.gameMakerColors();
   s.fill(0, 0, 79, 24, attr(7, 0), 176);
   s.write(0, 0, TITLEATTR, toCp437(' EGG.EXE  Egg Inspector 1.0'.padEnd(55) + 'Sandbox Software 1995 ').slice(0, 80));
-  s.write(0, 24, BARATTR, toCp437(' ↑↓ Choose   A Add   B Break   R Back to the saves   Esc Quit').padEnd(80));
+  s.write(0, 24, BARATTR, toCp437(' ↑↓ Choose   Enter Add/Break   A Add   B Break   R Reset   Esc Quit').padEnd(80));
   const x = 4;
   const y = 5;
   const w = 72;
