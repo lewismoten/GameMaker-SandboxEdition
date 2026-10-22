@@ -6,8 +6,8 @@
 // drawing (run by requestAnimationFrame at the game's 18.2 Hz tick; the map, path arrows and
 // walking monster are drawn by monsterPathDraw.ts), editing with the pointer, the
 // picture/speed popup for a corner, and the panels (tabs, toolbar, notices, side list, the
-// numbers table). The path math and the walker are in monsterPath.ts; measurements and map
-// choices in monsterPathView.ts.
+// numbers table, which monsterPathNumbers.ts builds). The path math and the walker are in
+// monsterPath.ts; measurements and map choices in monsterPathView.ts.
 import './monsterPath.css';
 import { h, clear, modal, toast } from '../../core/ui';
 import { blockImages, paintBlock } from '../../core/draw';
@@ -34,6 +34,7 @@ import {
 } from './monsterPath';
 import { MAX_SPEED, ORIENTS, TICK_MS, mapChoices, type PathEditorOptions } from './monsterPathView';
 import { drawPathScene, mapLayerCanvas } from './monsterPathDraw';
+import { renderPathNumbers } from './monsterPathNumbers';
 
 export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refresh: () => void; destroy: () => void } {
   const { project } = o;
@@ -685,85 +686,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   }
 
   function renderNumbers(): void {
-    const k = kind();
-    const p = path();
-    const list = corners(p, k);
-    const num = (get: () => number, set: (v: number) => void, min: number, max: number) => {
-      const i = h('input', { type: 'number', value: String(get()), min, max });
-      i.addEventListener('change', () => {
-        const v = Math.max(min, Math.min(max, Math.round(Number(i.value) || 0)));
-        i.value = String(v);
-        set(v);
-        changed();
-        draw();
-      });
-      return i;
-    };
-    const b = box();
-    const open = numbers.open;
-    clear(
-      numbers,
-      h('summary', null, 'Exact numbers'),
-      list.length
-        ? h(
-            'table',
-            { class: 'data' },
-            h(
-              'thead',
-              null,
-              h('tr', null, h('th', null, '#'), h('th', null, 'Across'), h('th', null, 'Down'), h('th', null, 'Speed'), h('th', null, 'Picture')),
-            ),
-            h(
-              'tbody',
-              null,
-              ...list.map((c, n) => {
-                const sel = h('select', null, ...ORIENTS.map(([v, l]) => h('option', { value: String(v), selected: v === c.orient }, l)));
-                sel.addEventListener('change', () => {
-                  p[c.i].orient = Number(sel.value);
-                  changed();
-                });
-                return h(
-                  'tr',
-                  null,
-                  h('td', null, n + 1),
-                  h(
-                    'td',
-                    null,
-                    num(
-                      () => c.x,
-                      (v) => moveCorner(p, k, c.i, v, corners(p, k).find((x) => x.i === c.i)!.y),
-                      b.x0,
-                      b.x0 + b.w - 1,
-                    ),
-                  ),
-                  h(
-                    'td',
-                    null,
-                    num(
-                      () => c.y,
-                      (v) => moveCorner(p, k, c.i, corners(p, k).find((x) => x.i === c.i)!.x, v),
-                      b.y0,
-                      b.y0 + b.h - 1,
-                    ),
-                  ),
-                  h(
-                    'td',
-                    null,
-                    num(
-                      () => c.speed,
-                      (v) => (p[c.i].pic = v),
-                      1,
-                      MAX_SPEED,
-                    ),
-                  ),
-                  h('td', null, sel),
-                );
-              }),
-            ),
-          )
-        : h('p', { class: 'hint' }, 'No corners yet.'),
-    );
-    numbers.open = open;
+    renderPathNumbers(numbers, path(), kind(), changed, draw);
   }
 
   function renderAll(): void {
