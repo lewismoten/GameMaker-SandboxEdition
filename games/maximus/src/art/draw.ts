@@ -169,12 +169,6 @@ export function recolor(p: Pixels, map: Map<number, number>): Pixels {
   return q.map((_x, _y, c) => map.get(c) ?? c);
 }
 
-/** Map ramp a onto ramp b (by relative shade). */
-export function rampMap(a: number[], b: number[], m = new Map<number, number>()): Map<number, number> {
-  a.forEach((c, i) => m.set(c, b[Math.round((i / Math.max(1, a.length - 1)) * (b.length - 1))]));
-  return m;
-}
-
 /** Value noise in 0..1 that tiles every `period` pixels (for seamless block textures). */
 export function tileNoise(seed: number, period = N, cells = 4): (x: number, y: number) => number {
   const r = rng(seed);
