@@ -3,7 +3,7 @@
 //   - air falls (gravity down); the floors, the furniture and the fridge's walls are solid;
 //     shelves, bed tops, counters' edges and the floating tiles of the reckoning are ledges
 //     (stand on them, hop up through them);
-//   - the noisy things on the floor (a creaky board, a squeaky toy, the Lego) are air that costs
+//   - the noisy things on the floor (a creaky board, a squeaky toy, the toy blocks) are air that costs
 //     dignity (hit points) when you step into them: hop over;
 //   - celery is willpower (counter 20), and the cheesecake only lets you near with seven, and
 //     takes all seven; rolls of toilet paper are counter 21, and the bathroom door takes three;
@@ -148,7 +148,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('creak', creak, { ...air, hp: -8, touch: 'creaked' });
   // once it has creaked it is quiet (a hurt holds him still, so a floor that always hurt would hold him there)
   book.add('creaked', base.crop(0, 0, 20, 20).rect(0, 17, 20, 3, c('wood', 2)).rect(0, 17, 20, 1, c('wood', 3)), air);
-  const lego = (bg: Pixels, seed: number) => {
+  const toyBlocks = (bg: Pixels, seed: number) => {
     const r = rng(seed);
     for (let i = 0; i < 4; i++) {
       const x = 2 + Math.floor(r() * 14);
@@ -157,9 +157,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     }
     return bg;
   };
-  book.add('lego', lego(base.crop(0, 0, 20, 20), 31), { ...air, hp: -10, touch: 'legoKicked' });
+  book.add('toyBlocks', toyBlocks(base.crop(0, 0, 20, 20), 31), { ...air, hp: -10, touch: 'toyBlocksKicked' });
   // kicked aside to the corners
-  book.add('legoKicked', base.crop(0, 0, 20, 20).rect(0, 17, 3, 3, c('red', 2)).rect(17, 18, 3, 2, c('cheese', 2)), air);
+  book.add('toyBlocksKicked', base.crop(0, 0, 20, 20).rect(0, 17, 3, 3, c('red', 2)).rect(17, 18, 3, 2, c('cheese', 2)), air);
   const squeak = base.crop(0, 0, 20, 20);
   blob(squeak, 10, 16, 6, 3.4, R('pink'), 0, 2);
   squeak.set(14, 15, c('ink', 0)).line(4, 14, 2, 12, c('pink', 1)).set(6, 14, c('pink', 2));

@@ -79,7 +79,7 @@ export const INSTRUCTIONS = [
   page([
     'DIGNITY is your health. A',
     'creaky board, a squeaky toy,',
-    'the Lego, a sleeping dog and',
+    'toy blocks, a sleeping dog and',
     'all the dairy cost you some.',
     'Hop over. A glass of water',
     'brings it back.',
@@ -180,10 +180,10 @@ slice of New York cheesecake in
 the fridge. Tiptoe out of bed
 without waking your wife, past
 the creaky board, the sleeping
-dogs and the Lego. Climb the
-fridge's shelves past the dairy
-come to life, with all the
-willpower seven sticks of
+dogs and the toy blocks. Climb
+the fridge's shelves past the
+dairy come to life, with all
+the willpower seven sticks of
 celery can give. Eat it anyway.
 Then: the dash to the bathroom,
 the gurgle right behind you.

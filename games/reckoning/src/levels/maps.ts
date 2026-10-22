@@ -1,7 +1,7 @@
 // The four acts, from the monologue, each laid out by rows and runs of blocks; everything outside
 // an act is solid:
-//   1. 3:17 A.M.: out of bed without waking her, past the creaky board, the sleeping dogs and the
-//      Lego in the hall, through the living room (the TV remote, lost down the side of the couch),
+//   1. 3:17 A.M.: out of bed without waking her, past the creaky board, the sleeping dogs and the toy
+//      blocks in the hall, through the living room (the TV remote, lost down the side of the couch),
 //      to the kitchen and the glow of the open fridge.
 //   2. The Enemy-Lover: up the counters and the fridge's shelves past the dairy come to life,
 //      seven sticks of celery for willpower, to the cheesecake on the top shelf. It takes all
@@ -35,7 +35,7 @@ const LEGEND: Record<string, string> = {
   d: 'doorway',
   t: 'doorTop',
   '!': 'creak',
-  L: 'lego',
+  L: 'toyBlocks',
   z: 'squeak',
   g: 'goatPic',
   m: 'camelPic',
@@ -197,7 +197,7 @@ export function bedroom(book: BlockBook): Level {
   m.col(14, 8, 9, 'D').col(15, 8, 9, 'D').set(14, 7, '$').set(15, 7, '$');
   m.set(18, 9, 'd').set(18, 8, 't');
   // the hall: the runner, the family's pictures, the night light, Teddy asleep, a squeaky toy,
-  // the laundry basket, the Lego, Gwinn asleep, a glass of water
+  // the laundry basket, the toy blocks, Gwinn asleep, a glass of water
   m.row(10, 19, 43, 'r');
   m.set(22, 5, 'g').set(27, 5, 'm').set(32, 5, 'l').set(20, 9, 'i');
   m.mon(MON.teddy, 22, 9);

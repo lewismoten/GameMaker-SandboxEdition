@@ -303,7 +303,7 @@ export function howtoFli(cast: Cast): Uint8Array {
   const M = (n: string) => sprite(cast.man, n);
   const N = (n: string) => sprite(cast.mons, n);
   const scene = (p: Pixels, k: number) => {
-    // the Lego on the floor; he tiptoes and hops over it
+    // the toy blocks on the floor; he tiptoes and hops over them
     if (k < 30)
       for (const [x, col] of [[100, 'red'], [108, 'pjs'], [116, 'cheese']] as const) p.rect(x, 148, 6, 4, c(col, 2)).rect(x, 147, 6, 1, c(col, 3));
     let x = 10 + k * 5;

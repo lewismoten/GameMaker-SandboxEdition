@@ -54,7 +54,7 @@ export const rolls = (bot: Bot) => bot.sim.meter(ROLLS) - 1;
 export const straws = (bot: Bot) => bot.sim.meter(STRAW) - 1;
 export const milk = (bot: Bot) => bot.sim.meter(SEQ.throw);
 
-/** I. 3:17 a.m.: out of bed, past the creaky board, the dogs, the basket and the Lego, through the living room to the kitchen. */
+/** I. 3:17 a.m.: out of bed, past the creaky board, the dogs, the basket and the toy blocks, through the living room to the kitchen. */
 export async function bedroom(bot: Bot): Promise<void> {
   expect(bot, 2, 'the bedroom');
   await carefully(bot, 'out of bed', 0, async () => {
@@ -73,11 +73,11 @@ export async function bedroom(bot: Bot): Promise<void> {
     await must(bot, bot.walk(26.4, 'along the shelf'), 'along');
     await must(bot, bot.hop('right', 6, 'right', 29.8), 'off the shelf, over the squeaky toy');
   });
-  await carefully(bot, 'the basket and the Lego', 0, async () => {
+  await carefully(bot, 'the basket and the toy blocks', 0, async () => {
     await must(bot, bot.walk(30, 'by the basket'), 'basket');
     await must(bot, bot.hop('right', 12, 'right', 33), 'over the basket');
-    await must(bot, bot.walk(34, 'the coins by the Lego'), 'coins');
-    await must(bot, bot.hop('right', 12, 'right', 37.6), 'over the Lego');
+    await must(bot, bot.walk(34, 'the coins by the toy blocks'), 'coins');
+    await must(bot, bot.hop('right', 12, 'right', 37.6), 'over the toy blocks');
   });
   await carefully(bot, 'past Gwinn', 0, async () => {
     await must(bot, bot.walk(38, 'before Gwinn'), 'gwinn');
@@ -96,7 +96,7 @@ export async function bedroom(bot: Bot): Promise<void> {
     await must(bot, bot.hop('up', 12, 'right', 61.2), 'up on the first shelf');
     await must(bot, bot.hop('up', 12), 'up on the top shelf');
     await must(bot, bot.walk(62, 'the glass of water on top'), 'water');
-    await must(bot, bot.hop('right', 6, 'right', 65.6), 'off the shelf, over the Lego');
+    await must(bot, bot.hop('right', 6, 'right', 65.6), 'off the shelf, over the toy blocks');
   });
   await carefully(bot, 'into the kitchen', 0, async () => {
     await leave(bot, bot.walk(68, 'the kitchen door'), 'the kitchen');
@@ -148,8 +148,8 @@ export async function dash(bot: Bot): Promise<void> {
     await over(9, 'the first chair', 10.4);
     await must(bot, bot.walk(11.8, 'by the second chair'), 'chair 2');
     await over(13, 'the second chair', 14.4);
-    await must(bot, bot.walk(18, 'before the Lego'), 'lego');
-    await over(19, 'the Lego', 20.8);
+    await must(bot, bot.walk(18, 'before the toy blocks'), 'blocks');
+    await over(19, 'the toy blocks', 20.8);
   });
   await carefully(bot, 'past Teddy, the basket, the squeaky toy', 16, async () => {
     await must(bot, bot.walk(21, 'before Teddy'), 'teddy');
@@ -166,13 +166,13 @@ export async function dash(bot: Bot): Promise<void> {
     await must(bot, bot.hop('right', 6, 'right', 47), 'down off the shelf');
     await must(bot, bot.walk(47, 'the roll on the floor'), 'roll 2');
   });
-  await carefully(bot, 'past Gwinn, the creaky board, the Lego, the chair', 16, async () => {
+  await carefully(bot, 'past Gwinn, the creaky board, the toy blocks, the chair', 16, async () => {
     await must(bot, bot.walk(48.6, 'before Gwinn'), 'gwinn');
     await over(51, 'Gwinn', 54.8);
     await must(bot, bot.walk(55.8, 'before the creaky board'), 'board');
     await over(57, 'the creaky board', 58.6);
-    await must(bot, bot.walk(59.8, 'before the Lego'), 'lego');
-    await over(61, 'the Lego', 62.6);
+    await must(bot, bot.walk(59.8, 'before the toy blocks'), 'blocks');
+    await over(61, 'the toy blocks', 62.6);
     await must(bot, bot.walk(63.8, 'before the chair'), 'chair');
     await over(65, 'the chair', 66.4);
     await must(bot, bot.walk(70.8, 'the glass of water, by the basket'), 'water');

@@ -13,10 +13,10 @@ slice of New York cheesecake in
 the fridge. Tiptoe out of bed
 without waking your wife, past
 the creaky board, the sleeping
-dogs and the Lego. Climb the
-fridge's shelves past the dairy
-come to life, with all the
-willpower seven sticks of
+dogs and the toy blocks. Climb
+the fridge's shelves past the
+dairy come to life, with all
+the willpower seven sticks of
 celery can give. Eat it anyway.
 Then: the dash to the bathroom,
 the gurgle right behind you.
