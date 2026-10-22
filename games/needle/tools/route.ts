@@ -161,3 +161,37 @@ export async function theTailor(bot: Bot): Promise<void> {
     await leave(bot, bot.crawl('right', 62, "through the last needle's eye"), 'the back door');
   });
 }
+
+/** 4. The eye of the needle: up the golden thread, the Spirit's updraft, through the shaft's gate, up the clouds to the eye. */
+export async function theEye(bot: Bot): Promise<void> {
+  expect(bot, 5, 'the eye of the needle');
+  await carefully(bot, 'the golden thread', 12, async () => {
+    await must(bot, bot.walk(5, 'the golden thread'), 'thread');
+    await must(bot, bot.dig('up', 29.5, 'up the golden thread'), 'climb');
+    await must(bot, bot.walk(9, 'the cloud'), 'cloud');
+  });
+  await carefully(bot, 'the updraft', 12, async () => {
+    await must(bot, bot.until('left', () => bot.px.x <= 3 * 20, "into the Spirit's updraft", 80), 'updraft');
+    await must(bot, bot.until(undefined, () => bot.px.y <= 13 * 20, 'up on the updraft', 200), 'rise');
+    await must(bot, bot.hop('right', 4, 'right', 6), 'onto the cloud by the needle');
+    await must(bot, bot.walk(11, 'the golden lamp, to the shaft'), 'lamp');
+  });
+  await carefully(bot, "through the needle's shaft", 12, async () => {
+    await must(bot, bot.crawl('right', 14, 'through the eye gate in the shaft'), 'gate');
+    await must(bot, bot.walk(17, 'the dates'), 'dates');
+  });
+  await carefully(bot, 'up the clouds', 12, async () => {
+    const row = () => bot.at.y;
+    await must(bot, bot.hop('up', 14), 'up a cloud');
+    if (row() !== 10) throw new Error(`not on the cloud at 10 (${bot.at.y})`);
+    await must(bot, bot.hop('right', 10, 'right', 20), 'up the next cloud');
+    if (row() !== 7) throw new Error(`not on the cloud at 7 (${bot.at.y})`);
+    await must(bot, bot.hop('left', 10, 'left', 16), 'up to the eye');
+    if (row() !== 5) throw new Error(`not on the cloud at 5 (${bot.at.y})`);
+  });
+  if (grace(bot) < 4) throw new Error(`only ${grace(bot)} grace at the eye`);
+  await carefully(bot, 'the eye of the needle', 12, async () => {
+    await must(bot, bot.walk(14, 'the eye of the needle'), 'eye');
+    await leave(bot, bot.crawl('left', 12, 'through the eye of the needle'), 'the eye');
+  });
+}

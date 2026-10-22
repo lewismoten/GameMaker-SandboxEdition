@@ -351,3 +351,57 @@ export function tailor(book: BlockBook): Level {
   m.link(61, 15, 'next');
   return { m, start: at(2, 15), size: [W, H] };
 }
+
+/** The sky's shade on each row of the needle level (5 at the top, dawn; 0 at the bottom, night), and the band rows between. */
+const EYE_SHADES: [number, number, number][] = [
+  [0, 5, 5],
+  [6, 6, -4],
+  [7, 13, 4],
+  [14, 14, -3],
+  [15, 21, 3],
+  [22, 22, -2],
+  [23, 29, 2],
+  [30, 30, -1],
+  [31, 37, 1],
+  [38, 38, -0.5],
+  [39, 43, 0],
+];
+export const eyeShade = (row: number): number => {
+  const s = EYE_SHADES.find(([a, b]) => row >= a && row <= b)![2];
+  return s < 0 ? Math.ceil(-s) : s;
+};
+
+/** 4. The eye of the needle: up the golden thread, the Spirit's updraft, through the shaft, to the eye. */
+export function eye(book: BlockBook): Level {
+  const W = 26;
+  const H = 46;
+  const m = new MapBuilder(book, { '.': 'bg' }, 'edge');
+  for (const [a, b, s] of EYE_SHADES) for (let y = a; y <= b; y++) m.row(y, 1, W - 2, s < 0 ? `band${Math.floor(-s)}` : s === 0 ? 'bg' : `sky${s}`);
+  m.fill(0, 44, W, 2, 'dune').col(0, 0, 43, 'edge').col(W - 1, 0, 43, 'edge');
+  const cloud = (y: number, x0: number, x1: number) => m.row(y, x0, x1, `cloud${eyeShade(y)}`);
+  // the sleeping city far below, the moon
+  for (let x = 1; x < W - 1; x++) if (x < 11 || x > 14) m.set(x, 43, x % 2 ? 'town0' : 'town1');
+  m.set(20, 34, 'moon');
+  // the great golden needle: its point in the sand, its shaft, its head and its eye
+  m.set(12, 43, 'pointL').set(13, 43, 'pointR');
+  for (let y = 7; y <= 42; y++) m.set(12, y, `shaftL${Math.min(5, eyeShade(y))}`).set(13, y, `shaftR${Math.min(5, eyeShade(y))}`);
+  for (let y = 0; y < 7; y++) m.set(12, y, `head${y}L`).set(13, y, `head${y}R`);
+  m.set(13, 5, 'pupil');
+  // a small eye gate through the shaft
+  m.set(12, 13, 'gate').set(13, 13, 'hole');
+  // the golden thread down the left, to a cloud; the Spirit's updraft up to the gate's ledge
+  for (let y = 29; y <= 43; y++) m.set(5, y, `thread${Math.min(2, eyeShade(y))}`);
+  cloud(31, 2, 10);
+  for (let y = 13; y <= 30; y++) m.set(3, y, `lift${Math.max(1, Math.min(4, eyeShade(y)))}a`);
+  cloud(14, 4, 11);
+  // the right side: clouds up to the eye
+  cloud(14, 14, 20);
+  cloud(11, 16, 19);
+  cloud(8, 19, 22);
+  cloud(6, 14, 18);
+  // good things
+  m.set(9, 29, 'jar2').set(8, 13, 'lamp4').set(21, 7, 'olive').set(17, 13, 'dates4');
+  m.mon(MON.star, 7, 25).mon(MON.star, 20, 17).mon(MON.star, 16, 3).mon(MON.dove, 15, 30).mon(MON.dove, 4, 8).mon(MON.star, 9, 38);
+  m.link(13, 5, 'won');
+  return { m, start: at(3, 43), size: [W, H] };
+}

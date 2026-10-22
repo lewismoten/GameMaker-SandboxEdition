@@ -3,12 +3,13 @@
 import type { Light, Pal } from '../art/pal';
 import { cityBlocks } from '../blocks/city';
 import { desertBlocks } from '../blocks/desert';
+import { eyeBlocks } from '../blocks/eye';
 import { tailorBlocks } from '../blocks/tailor';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
 import type { Form } from '../sprites/sprites';
-import { city, desert, tailor, type Level } from './maps';
+import { city, desert, eye, tailor, type Level } from './maps';
 
 export interface LevelDef {
   /** The level's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -28,4 +29,5 @@ export const LEVELS: LevelDef[] = [
   { file: 'city', desc: 'The City Gate', light: 'morning', blocks: cityBlocks, build: city, form: 'loaded', snd: 'city', mons: { strut: 6, dog: 3 }, view: [16, 4] },
   { file: 'desert', desc: 'The Desert Road', light: 'noon', blocks: desertBlocks, build: desert, form: 'saddled', snd: 'desert', mons: {}, view: [40, 4] },
   { file: 'tailor', desc: "The Tailor's Shop", light: 'lamp', blocks: tailorBlocks, build: tailor, form: 'shod', snd: 'tailor', mons: { snip: 4 }, view: [20, 4] },
+  { file: 'eye', desc: 'The Eye of the Needle', light: 'night', blocks: eyeBlocks, build: eye, form: 'bare', snd: 'eye', mons: {}, view: [5, 2] },
 ];
