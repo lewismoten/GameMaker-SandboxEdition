@@ -235,7 +235,8 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
     mode = m;
     sound = m !== 'none';
     if (!seeking) audio.setMuted(!sound);
-    audio.setCard(m !== 'speaker', run?.session);
+    // (None only silences: the card stays as it was, so the song comes back with it)
+    if (m !== 'none') audio.setCard(m === 'blaster', run?.session);
     if (sound && playing) void audio.start();
   });
 
