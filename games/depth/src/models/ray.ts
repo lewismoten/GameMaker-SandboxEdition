@@ -3,7 +3,7 @@
 import { MAT } from '../render/look';
 import { Sdf, Sphere, rgb, sd, type Material, type Shape, type V } from '../render/tracer';
 
-export const RAY_R = 0.38;
+export const RAY_R = 0.41;
 export const RAY_AT: V = [0.5, 0.6, RAY_R + 0.02];
 
 /** Rotates (x, y, z) about the x or y axis by `a`. */

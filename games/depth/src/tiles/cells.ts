@@ -80,6 +80,24 @@ const glassOf = (c: V, glow = 0.25): Material => ({
   emit: [c[0] * glow, c[1] * glow, c[2] * glow],
 });
 
+/** A glass walkway: pale, tinted, ruled with a grid, its edges lit. */
+const walkway = (c: V): Material => ({
+  color: (p) => {
+    const u = p[0] - Math.floor(p[0]);
+    const v = p[1] - Math.floor(p[1]);
+    const e = Math.min(u, v, 1 - u, 1 - v);
+    if (e < 0.08) return mix(c, [1, 1, 1], 0.75);
+    const grid = Math.abs(u - 0.5) < 0.02 || Math.abs(v - 0.5) < 0.02;
+    return grid ? mix(c, [1, 1, 1], 0.5) : mix(c, [0.1, 0.1, 0.15], 0.45);
+  },
+  diffuse: 0.75,
+  reflect: 0.3,
+  fresnel: 0.4,
+  spec: 1.3,
+  shine: 110,
+  emit: [c[0] * 0.08, c[1] * 0.08, c[2] * 0.08],
+});
+
 const amber: Material = { color: NEAR_COL, diffuse: 0.85, spec: 1.0, shine: 70, fresnel: 0.3, emit: [0.12, 0.05, 0] };
 const cyan: Material = { color: FAR_COL, diffuse: 0.75, spec: 1.2, shine: 90, fresnel: 0.35, emit: [0, 0.05, 0.1] };
 
@@ -191,14 +209,16 @@ export function kinds(): Record<string, Kind> {
     const f = F;
     const out: Shape[] = [];
     for (const x of [cx + 0.03, cx + 0.97]) out.push(new Cylinder(x, cy + 0.99, 0.035, 0, H, MAT.chrome));
-    out.push(new Box([cx, cy + f, H - 0.06], [cx + 1, cy + 1, H], MAT.chrome));
+    // chrome rails along the top's front and back edges
+    out.push(new Box([cx, cy + 0.96, H - 0.05], [cx + 1, cy + 1, H], MAT.chrome));
+    out.push(new Box([cx, cy + f, H - 0.05], [cx + 1, cy + f + 0.04, H], MAT.chrome));
     return out;
   };
   const K: Record<string, Kind> = {
     floor: floor(),
     pit: pit(),
     void: pit(),
-    wall: { ground: () => 'floor', tall: () => true, shapes: (cx, cy, _p, t) => [cube(cx, cy, t.wall)] },
+    wall: { ground: () => 'floor', tall: () => true, shapes: (cx, cy, _p, t) => [cube(cx, cy, t.wall, { round: t.wallRound })] },
     near: {
       ground: () => 'floor',
       tall: (p) => p === 'near',
@@ -214,7 +234,7 @@ export function kinds(): Record<string, Kind> {
       ground: (p) => (p === 'near' ? 'floor' : 'pit'),
       tall: () => false,
       shapes: (cx, cy, p) => {
-        const panel = new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], { ...glassOf(NEAR_COL, 0.2), diffuse: 0.6, glass: undefined, reflect: 0.25, fresnel: 0.4 });
+        const panel = new Box([cx + 0.04, cy + 0.04, -0.12], [cx + 0.96, cy + 0.96, 0], walkway(NEAR_COL));
         return [p === 'near' ? panel : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: NEAR_COL, diffuse: 0.8, emit: [0.15, 0.07, 0] }))];
       },
     },
@@ -222,13 +242,13 @@ export function kinds(): Record<string, Kind> {
       ground: (p) => (p === 'far' ? 'floor' : 'pit'),
       tall: () => false,
       shapes: (cx, cy, p) => {
-        const panel = new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], { ...glassOf(FAR_COL, 0.2), diffuse: 0.6, glass: undefined, reflect: 0.25, fresnel: 0.4 });
+        const panel = new Box([cx + 0.04, cy + 0.04, -0.12], [cx + 0.96, cy + 0.96, 0], walkway(FAR_COL));
         return [p === 'far' ? panel : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: FAR_COL, diffuse: 0.8, emit: [0, 0.07, 0.15] }))];
       },
     },
     photon: item(
-      (x, y) => [new Sphere([x, y, 0.3], 0.1, { color: rgb(255, 250, 200), diffuse: 0.3, emit: rgb(255, 230, 150), noShadow: true })],
-      () => [[0.5, 0.58, 0.3, 6, rgb(255, 220, 120)]],
+      (x, y) => [new Sphere([x, y, 0.3], 0.13, { color: rgb(255, 250, 200), diffuse: 0.3, emit: rgb(255, 230, 150), noShadow: true })],
+      () => [[0.5, 0.58, 0.3, 8, rgb(255, 220, 120)]],
     ),
     bulb: item(
       (x, y) => [

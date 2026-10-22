@@ -36,7 +36,7 @@ export function spriteWorld(shapes: Shape[], look: SpriteLook = {}): World {
     key: { dir: KEY_DIR, color: look.keyColor ?? rgb(255, 246, 232), soft: 0.05 },
     sky: look.sky ?? rgb(96, 100, 140),
     ground: look.ground ?? rgb(60, 52, 70),
-    env: (d) => studio(d, { top: rgb(110, 130, 200), horizon: rgb(255, 225, 205), floor: rgb(70, 60, 80) }),
+    env: (d) => studio(d, { top: rgb(150, 170, 235), horizon: rgb(255, 230, 210), floor: rgb(90, 80, 100) }),
     maxDepth: 3,
   };
 }

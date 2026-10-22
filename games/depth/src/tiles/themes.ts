@@ -16,6 +16,8 @@ export interface Theme {
   ground: V;
   key: V;
   env: (d: V) => V;
+  /** How round the wall cubes' edges are (boulders are very). */
+  wallRound?: number;
 }
 
 const hash2 = (x: number, y: number) => {
@@ -68,9 +70,11 @@ export const THEMES: Record<ThemeId, Theme> = {
       color: (p) => {
         const u = frac(p[0]);
         const v = frac(p[1]);
-        const grout = Math.min(u, v, 1 - u, 1 - v) < 0.035;
-        const vein = 0.5 + 0.5 * Math.sin(p[0] * 11 + Math.sin(p[1] * 9) * 1.5);
-        return grout ? rgb(40, 70, 60) : mix(rgb(120, 190, 160), rgb(200, 240, 215), vein);
+        // square glass tiles, each lit from within toward its middle
+        const e = Math.min(u, v, 1 - u, 1 - v);
+        if (e < 0.035) return rgb(40, 70, 60);
+        const glow = 1 - Math.hypot(u - 0.5, v - 0.5) * 1.3;
+        return mix(rgb(110, 180, 150), rgb(215, 250, 230), Math.max(0, glow));
       },
       diffuse: 0.9,
       reflect: 0.1,
@@ -78,7 +82,7 @@ export const THEMES: Record<ThemeId, Theme> = {
       spec: 0.7,
       shine: 50,
     },
-    wall: { color: rgb(170, 230, 210), diffuse: 0.1, spec: 1.4, shine: 140, glass: { ior: 1.45, tint: rgb(150, 235, 200), absorb: 0.15 } },
+    wall: { color: rgb(150, 228, 205), diffuse: 0.65, reflect: 0.22, fresnel: 0.55, spec: 1.5, shine: 140, emit: rgb(14, 30, 24) },
     cliff: rgb(40, 90, 80),
     abyss: rgb(4, 20, 24),
     sky: rgb(130, 180, 170),
@@ -131,6 +135,7 @@ export const THEMES: Record<ThemeId, Theme> = {
       shine: 20,
     },
     cliff: rgb(120, 96, 80),
+    wallRound: 0.22,
     abyss: rgb(30, 40, 80),
     sky: rgb(150, 160, 200),
     ground: rgb(90, 80, 60),
