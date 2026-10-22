@@ -2,7 +2,9 @@
 // copying them into the web project: the dev server serves them straight from cd/, and
 // the production build (e.g. in GitHub Actions) emits them into dist/.
 //
-//   games/index.json             catalog of every playable game
+//   games/index.json             catalog of every playable game (but the secret ones)
+//   games/extra.json             the secret games (about.json "secret": true), full entries;
+//                                fetched only once every felt egg is found (src/project/secretGames.ts)
 //   games/gameware/<id>/<file>   the free sample games that came with Game-Maker (editable)
 //   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
 //   games/originals/<id>/<file>  new games made for this project (../games/<id>/disk),
@@ -175,6 +177,8 @@ function blurbFor(names: string[], disk: Map<string, string>): string | undefine
 interface Scan {
   gm: GmInstallEntry[];
   catalog: CdCatalogEntry[];
+  /** Original games whose about.json says "secret": true: in no listing, page, sitemap or picture the build makes; only in games/extra.json. */
+  secret: CdCatalogEntry[];
   /** Site path -> file on disk. */
   files: Map<string, string>;
 }
@@ -182,6 +186,7 @@ interface Scan {
 function scan(cdRoot: string): Scan {
   const files = new Map<string, string>();
   const catalog: CdCatalogEntry[] = [];
+  const secret: CdCatalogEntry[] = [];
   const cdNotice = existsSync(join(cdRoot, 'sharware/readme.txt')) ? dosText(readFileSync(join(cdRoot, 'sharware/readme.txt'))) : '';
 
   for (const kind of ['gameware', 'shareware'] as const) {
@@ -235,7 +240,7 @@ function scan(cdRoot: string): Scan {
       catalog.push(entry);
     }
   }
-  scanOriginals(join(cdRoot, '../games'), catalog, files);
+  scanOriginals(join(cdRoot, '../games'), catalog, secret, files);
   // The DOS player used by "Export for DOS".
   for (const name of ['xferplay.exe', 'sndblast.drv']) {
     const p = join(cdRoot, 'gm', name);
@@ -251,20 +256,20 @@ function scan(cdRoot: string): Scan {
       if (st.isFile() && GM_TEXT.test(name)) files.set(`gm/${name.toLowerCase()}`, join(install, name));
     }
   }
-  return { gm, catalog, files };
+  return { gm, catalog, secret, files };
 }
 
 /**
  * ../games/<id>/: original games made for this project. disk/ holds the game as it would
  * be on its floppy; about.json its credits, label and box; manual.json its manual.
  */
-function scanOriginals(root: string, catalog: CdCatalogEntry[], files: Map<string, string>): void {
+function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalogEntry[], files: Map<string, string>): void {
   if (!existsSync(root)) return;
   for (const dir of readdirSync(root).sort()) {
     const base = join(root, dir);
     const diskDir = join(base, 'disk');
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
-    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string };
+    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string; secret?: boolean };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     const id = dir.toLowerCase();
@@ -280,7 +285,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], files: Map<strin
     if (!gam) continue;
     const gamBytes = readFileSync(disk.get(gam)!);
     const notice = NOTICES.map((n) => disk.get(n)).filter((p): p is string => !!p);
-    catalog.push({
+    (about.secret === true ? secret : catalog).push({
       id,
       title: about.title,
       author: about.author,
@@ -322,9 +327,14 @@ export function catalogDetails(e: CdCatalogEntry): { notice?: string; original?:
   return e.notice || original ? { notice: e.notice, original } : undefined;
 }
 
-/** Every playable game on the CD and in ../games (what games/index.json lists). */
+/** Every playable game on the CD and in ../games but the secret ones (what games/index.json lists, and every page, sitemap and picture the build makes). */
 export function cdCatalog(cdRoot: string): CdCatalogEntry[] {
   return scan(cdRoot).catalog;
+}
+
+/** The secret games (games/extra.json): listed only once every felt egg is found. */
+export function cdSecretCatalog(cdRoot: string): CdCatalogEntry[] {
+  return scan(cdRoot).secret;
 }
 
 /** Where each game file the site serves (e.g. games/gameware/nebula/nebula.gam) is on disk. */
@@ -346,9 +356,10 @@ export function cdGames(cdRoot: string): Plugin {
       server.watcher.on('unlink', forget);
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
-        if (url === 'games/index.json' || url === 'gm/index.json' || url === 'games/catalog.json') {
+        if (url === 'games/index.json' || url === 'gm/index.json' || url === 'games/catalog.json' || url === 'games/extra.json') {
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify(url.startsWith('gm/') ? get().gm : url.endsWith('catalog.json') ? slimCatalog(get().catalog) : get().catalog));
+          const { gm, catalog, secret } = get();
+          res.end(JSON.stringify(url.startsWith('gm/') ? gm : url.endsWith('catalog.json') ? slimCatalog(catalog) : url.endsWith('extra.json') ? secret : catalog));
           return;
         }
         const details = /^games\/details\/([a-z0-9_-]+)\.json$/.exec(url);
@@ -365,7 +376,7 @@ export function cdGames(cdRoot: string): Plugin {
       });
     },
     generateBundle() {
-      const { gm, catalog, files } = get();
+      const { gm, catalog, secret, files } = get();
       // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
       // files shrink 3-20x: each game file but a GIF also gets a gzip copy, <file>.gz, which
       // the site fetches and unpacks instead (src/project/files.ts, fetchSiteFile). The
@@ -376,6 +387,8 @@ export function cdGames(cdRoot: string): Plugin {
         const details = catalogDetails(e);
         if (details) this.emitFile({ type: 'asset', fileName: `games/details/${e.id}.json`, source: JSON.stringify(details) });
       }
+      // Whole entries (no games/details/<id>.json), so nothing else the build writes names them.
+      this.emitFile({ type: 'asset', fileName: 'games/extra.json', source: JSON.stringify(secret.map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
       for (const [site, disk] of files) {
         const bytes = readFileSync(disk);

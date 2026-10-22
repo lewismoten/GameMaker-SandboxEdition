@@ -125,7 +125,7 @@ export function cdName(name: string): string {
 export const IGNORED_FILE = /\.(exe|com|bat|drv|ico|bak|obj|map\.bak)$/i;
 
 import type { OriginalExtras } from '../../scripts/cdGames';
-import { hideSecretGames } from './secretGames';
+import { withSecretGames } from './secretGames';
 
 export interface CatalogEntry {
   id: string;
@@ -180,7 +180,7 @@ export function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
   if (!p) {
     p = fetch(`${base}index.json`)
       .then((res) => (res.ok ? (res.json() as Promise<CatalogEntry[]>) : []))
-      .then(hideSecretGames);
+      .then((list) => withSecretGames(list, base));
     p.catch(() => catalogs.delete(base));
     catalogs.set(base, p);
   }
@@ -204,7 +204,7 @@ export function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
   const key = `${base}catalog.json`;
   let p = catalogs.get(key);
   if (!p) {
-    p = fetchJson<CatalogEntry[]>(key).then((list) => (list ? hideSecretGames(list) : loadCatalog(base)));
+    p = fetchJson<CatalogEntry[]>(key).then((list) => (list ? withSecretGames(list, base) : loadCatalog(base)));
     p.catch(() => catalogs.delete(key));
     catalogs.set(key, p);
   }
