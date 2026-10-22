@@ -1,130 +1,21 @@
 /* what comes out of the Game-Maker box in the box viewer (desk/boxes/gmBox.ts): the guide,
-   the program disks and the CD on the left, the paper inserts listed on the right */
+   the program disks and the CD on the left (the paper inserts are listed on the right, boxList.css) */
 .gm-contents {
   display: contents;
 }
 
-.gm-left,
-.gm-right {
+.gm-left {
   position: absolute;
   top: 50%;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
+  left: max(16px, 3vw);
+  gap: 2.6vh;
   transform: translateY(-55%);
 }
 
-.gm-left {
-  left: max(16px, 3vw);
-  gap: 2.6vh;
-}
-
-.gm-right {
-  right: max(16px, 3vw);
-  width: min(290px, 26vw);
-  max-height: calc(100vh - 150px);
-  align-items: stretch;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid rgba(239, 229, 204, 0.25);
-  border-radius: 10px;
-  background: rgba(20, 16, 10, 0.72);
-  color: #efe5cc;
-}
-
-.gm-right h2 {
-  margin: 0;
-  font:
-    700 12px system-ui,
-    sans-serif;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.gm-inserts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  overflow: auto;
-  list-style: none;
-}
-
-.gm-insert {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 4px 6px;
-  border: 0;
-  border-radius: 6px;
-  background: none;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.gm-insert:hover {
-  background: rgba(239, 229, 204, 0.12);
-}
-
-.gm-insert-thumb {
-  display: grid;
-  flex: none;
-  place-items: start center;
-  width: 54px;
-  height: 40px;
-  overflow: hidden;
-  border-radius: 3px;
-  background: #3a3226;
-  font-size: 20px;
-  line-height: 40px;
-}
-
-.gm-insert-thumb .pp-paper {
-  width: 54px;
-}
-
-.gm-insert-thumb .pp-paper.wide {
-  align-self: center;
-}
-
-.gm-insert-thumb .pp-sheet {
-  box-shadow: none;
-}
-
-.gm-insert-name {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  font:
-    600 13px/1.25 system-ui,
-    sans-serif;
-}
-
-.gm-insert-name small {
-  color: #cfc4a8;
-  font-size: 11px;
-  font-weight: 400;
-}
-
-.gm-all {
-  padding: 8px 14px;
-  border: 1px solid #c9c1a6;
-  border-radius: 6px;
-  background: linear-gradient(#efe9d6, #cfc7ad);
-  color: #1d1a14;
-  font:
-    600 13px system-ui,
-    sans-serif;
-  cursor: pointer;
-}
-
-.gm-insert:focus-visible,
-.gm-all:focus-visible,
 .gm-disks:focus-visible,
 .guide-book:focus-visible {
   outline: 3px solid #ffd400;
@@ -349,7 +240,7 @@
 }
 
 @media (max-width: 760px) {
-  /* a phone: the guide, disks and CD in a row above the viewer's bar; the inserts behind one button */
+  /* a phone: the guide, disks and CD in a row above the viewer's bar */
   .gm-left {
     top: auto;
     bottom: 190px;
@@ -382,21 +273,6 @@
 
   .holo-cd {
     width: 78px;
-  }
-
-  .gm-right {
-    top: 12px;
-    right: 10px;
-    width: auto;
-    padding: 0;
-    border: 0;
-    background: none;
-    transform: none;
-  }
-
-  .gm-right h2,
-  .gm-inserts-list {
-    display: none;
   }
 }
 

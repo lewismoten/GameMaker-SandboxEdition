@@ -8,6 +8,8 @@ import { loadedShots, preloadShots, sandboxShots } from './gmShots';
 import { gmCover } from '../../manual/printables/gmCover';
 import { priceSticker } from './boxSeals';
 import { GM_PRICE, gmFloppy } from '../../manual/printables/gmInserts';
+import type { BoxItem } from '../../manual/printables/viewer';
+import { boxList, showInBox } from './boxList';
 
 preloadShots();
 
@@ -300,56 +302,12 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
   return { front: front.toDataURL(), back: back.toDataURL(), left: spine(), right: spine(), top: end(), bottom: end() };
 }
 
-/**
- * Opens the Owner's Guide with everything in the box (manual/dosManual.ts, through `openGuide`)
- * and turns to one piece in its tray.
- */
-function showInBox(openGuide: () => void, id: string): void {
-  openGuide();
-  const pick = () => {
-    const b = document.querySelector<HTMLButtonElement>(`.gmb-tray-list li[data-id="${id}"] button`);
-    b?.click();
-    b?.focus({ preventScroll: true });
-    return !!b;
-  };
-  if (pick()) return;
-  const watch = new MutationObserver(() => pick() && watch.disconnect());
-  watch.observe(document.body, { childList: true });
-  setTimeout(() => watch.disconnect(), 10_000);
-}
-
-/** The pieces of paper in the box, each a button that opens it to read; a small picture of each comes in when ready. */
-function insertList(openGuide: () => void): HTMLElement {
-  const list = h('ul', { class: 'gm-inserts-list' });
-  void Promise.all([import('../../manual/printables/gmItems'), import('../../project/files')]).then(async ([{ gmBoxItems }, { loadCatalog }]) => {
-    const family = (await loadCatalog().catch(() => [])).filter((g) => g.original);
-    const items = gmBoxItems(family).filter((i) => i.id !== 'disks');
-    for (const item of items) {
-      const thumb = h('span', { class: 'gm-insert-thumb', 'aria-hidden': 'true' }, item.icon);
-      list.append(
-        h(
-          'li',
-          null,
-          h(
-            'button',
-            { class: 'gm-insert', onclick: () => showInBox(openGuide, item.id), title: `Look at the ${item.title.toLowerCase()}` },
-            thumb,
-            h('span', { class: 'gm-insert-name' }, item.title, item.note ? h('small', null, item.note) : null),
-          ),
-        ),
-      );
-    }
-    // the pictures, one at a time so the box keeps turning smoothly
-    for (const [i, item] of items.entries()) {
-      const sheets = await item.render().catch(() => []);
-      const first = sheets[0];
-      const thumb = list.children[i]?.querySelector('.gm-insert-thumb');
-      if (!first || !thumb) continue;
-      first.el.classList.add(first.w >= first.h ? 'wide' : 'tall');
-      thumb.replaceChildren(first.el);
-    }
+/** The pieces of paper in the box (the disks lie beside the guide already), as the guide's own tray lists them. */
+function insertItems(): Promise<BoxItem[]> {
+  return Promise.all([import('../../manual/printables/gmItems'), import('../../project/files')]).then(async ([{ gmBoxItems }, { loadCatalog, isSandboxGame }]) => {
+    const family = (await loadCatalog().catch(() => [])).filter(isSandboxGame);
+    return gmBoxItems(family).filter((i) => i.id !== 'disks');
   });
-  return list;
 }
 
 function coverImg(game?: string, title?: string): HTMLImageElement {
@@ -406,12 +364,6 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
       disks,
       disc,
     ),
-    h(
-      'nav',
-      { class: 'gm-right', 'aria-label': 'What’s in the Game-Maker box' },
-      h('h2', null, 'In the box'),
-      insertList(openGuide),
-      h('button', { class: 'gm-all', onclick: openGuide }, 'Everything in the box'),
-    ),
+    boxList({ label: 'What’s in the Game-Maker box', items: insertItems(), open: openGuide }),
   );
 }

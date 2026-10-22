@@ -1,0 +1,133 @@
+/* "In the box" beside a box in the box viewer (desk/boxes/boxList.ts): the paper that came in
+   it, each piece with a small picture of itself */
+.box-list {
+  position: absolute;
+  top: 50%;
+  right: max(16px, 3vw);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(290px, 26vw);
+  max-height: calc(100vh - 150px);
+  padding: 12px;
+  border: 1px solid rgba(239, 229, 204, 0.25);
+  border-radius: 10px;
+  background: rgba(20, 16, 10, 0.72);
+  color: #efe5cc;
+  transform: translateY(-55%);
+}
+
+.box-list h2 {
+  margin: 0;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.box-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.box-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.box-list-item:hover {
+  background: rgba(239, 229, 204, 0.12);
+}
+
+.box-list-thumb {
+  display: grid;
+  flex: none;
+  place-items: start center;
+  width: 54px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #3a3226;
+  font-size: 20px;
+  line-height: 40px;
+}
+
+.box-list-thumb .pp-paper {
+  width: 54px;
+}
+
+.box-list-thumb .pp-paper.wide {
+  align-self: center;
+}
+
+.box-list-thumb .pp-sheet {
+  box-shadow: none;
+}
+
+.box-list-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font:
+    600 13px/1.25 system-ui,
+    sans-serif;
+}
+
+.box-list-name small {
+  color: #cfc4a8;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.box-list-all {
+  padding: 8px 14px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.box-list-item:focus-visible,
+.box-list-all:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  /* a phone: just the button, top right; the viewer's own tray lists the pieces */
+  .box-list {
+    top: 12px;
+    right: 10px;
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    transform: none;
+  }
+
+  .box-list h2,
+  .box-list-items {
+    display: none;
+  }
+}
