@@ -14,11 +14,13 @@ export interface LevelDef {
   form: Form;
   snd: Place;
   mons: MonsterOptions;
+  /** The card's view: its top-left block (level coordinates) of 16 x 6. */
+  view: [number, number];
 }
 
 export const LEVELS: LevelDef[] = [
-  { file: 'mound', desc: 'The Mound', light: 'dawn', build: mound, form: 'seed', snd: 'garden', mons: {} },
-  { file: 'dust', desc: 'Deep Down in the Dust', light: 'under', build: dust, form: 'sprout', snd: 'dust', mons: {} },
-  { file: 'mountain', desc: 'The Mountain', light: 'day', build: mountain, form: 'plant', snd: 'mountain', mons: {} },
-  { file: 'sky', desc: "The Palm of God's Hand", light: 'gold', build: sky, form: 'plant', snd: 'sky', mons: { crow: 5 } },
+  { file: 'mound', desc: 'The Mound', light: 'dawn', build: mound, form: 'seed', snd: 'garden', mons: {}, view: [0, 4] },
+  { file: 'dust', desc: 'Deep Down in the Dust', light: 'under', build: dust, form: 'sprout', snd: 'dust', mons: {}, view: [2, 4] },
+  { file: 'mountain', desc: 'The Mountain', light: 'day', build: mountain, form: 'plant', snd: 'mountain', mons: {}, view: [16, 7] },
+  { file: 'sky', desc: "The Palm of God's Hand", light: 'gold', build: sky, form: 'plant', snd: 'sky', mons: { crow: 5 }, view: [5, 0] },
 ];
