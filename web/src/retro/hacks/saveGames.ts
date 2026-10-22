@@ -51,14 +51,18 @@ export async function hackGames(catalog: CatalogEntry[]): Promise<HackGame[]> {
 
 /** The games that have save files now (in list order). */
 export async function gamesWithSaves(games: HackGame[]): Promise<GameWithSaves[]> {
-  const all = await Promise.all(
+  return (await gamesAndSaves(games)).filter((g) => Object.keys(g.files).length);
+}
+
+/** Every game with what it has saved (maybe nothing): SAVEHACK can start a save in any of them. */
+export async function gamesAndSaves(games: HackGame[]): Promise<GameWithSaves[]> {
+  return Promise.all(
     games.map(async (g) => {
       const files = await loadSaveData(g.save);
       const bytes = Object.values(files).reduce((n, b) => n + b.length, 0);
       return { ...g, files, bytes };
     }),
   );
-  return all.filter((g) => Object.keys(g.files).length);
 }
 
 /** A game by what was typed: its DOS name, its id or its save id (any case). */

@@ -3,7 +3,9 @@
 // high-score table), and change the score, hit points, lives, money, counters and inventory,
 // with each value's limits checked and warnings at the edges; "Max all" sets every stat to the
 // most the game handles well. Before the first change to a game it backs up the saves as they
-// were ("Original", by SAVEHACK, in the shared backups store) and can put them back.
+// were ("Original", by SAVEHACK, in the shared backups store) and can put them back. An empty
+// slot can get a new saved game, the game as Play starts it (project/saveData newGameSave), so
+// a game never saved can be hacked too.
 //
 // The saves and their fields come from project/saveData (the same ones the web's "Saves &
 // scores" panel edits); the game's own files name the levels, items and sequences.
@@ -28,6 +30,8 @@ import {
   listBackups,
   loadGameSaves,
   maxAll,
+  newGameSave,
+  NEW_SAVE_NAME,
   restoreBackup,
   saveFields,
   saveFileName,
@@ -37,13 +41,14 @@ import {
   sortHighScores,
   writeHighScores,
   writeSlot,
+  SLOT_NAME_LENGTH,
   type GameLabels,
   type GameSaves,
   type SaveField,
   type SavedGame,
 } from '../../project/saveData';
 import type { GameFiles } from '../../project/files';
-import { gameFilesOf, gamesWithSaves, hackGames, type GameWithSaves } from './saveGames';
+import { gameFilesOf, gamesAndSaves, hackGames, type GameWithSaves } from './saveGames';
 import { BG, BRIGHT, DIM, GREEN, HEAD, RED, TEXT, YELLOW, cell, confirm, dosStamp, editLine, frame, keyBar, messageBox, num, pickList, put, statusLine, type ListRow } from './dosUi';
 import { deskDate } from '../dos/vfs';
 
@@ -96,21 +101,21 @@ export async function runSaveHack(h: RetroHost): Promise<void> {
 
   chrome('~Enter~ Select  ~Esc~ Quit');
   statusLine(h, 'Scanning for saved games...');
-  const games = await gamesWithSaves(await hackGames(await h.catalog()));
-  if (!games.length) {
-    statusLine(h, '');
-    await messageBox(h, ['No saved games found!', '', 'Play a game and save it (F5) first, then run SAVEHACK again.', '', 'Press any key.']);
-  }
+  // every game, the ones with saved data first (an empty slot can get a new save)
+  const all = await gamesAndSaves(await hackGames(await h.catalog()));
+  const has = (g: GameWithSaves) => Object.keys(g.files).length > 0;
+  const games = [...all.filter(has), ...all.filter((g) => !has(g))];
+  const withData = games.filter(has).length;
   let gi = 0;
   while (games.length) {
     chrome('~\x18\x19~ Choose  ~Enter~ Select game  ~Esc~ Quit');
     frame(h, 1, TOP, 78, BOTTOM, 'Select a game');
     put(h, 3, TOP + 1, HEAD, cell('Name', 10) + cell('Game', 40) + cell('Saves', 8) + 'Scores');
-    statusLine(h, `${games.length} game${games.length === 1 ? '' : 's'} with saved data found.`);
+    statusLine(h, withData ? `${withData} game${withData === 1 ? '' : 's'} with saved data found. Pick any game to start a new save.` : 'No saved games found! Pick a game to start a new save in it.');
     const rows: ListRow[] = games.map((g) => {
       const saves = Object.keys(g.files).filter((n) => /^game\d\.sav$/i.test(n)).length;
       const his = Object.keys(g.files).some((n) => /\.his$/i.test(n));
-      return { text: cell(g.dos, 10) + cell(g.title, 40) + cell(String(saves), 8) + (his ? 'Yes' : '-') };
+      return { text: cell(g.dos, 10) + cell(g.title, 40) + cell(saves ? String(saves) : '-', 8) + (his ? 'Yes' : '-'), a: has(g) ? BRIGHT : DIM };
     });
     const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: gi });
     if (pick.key === 'Escape') break;
@@ -140,13 +145,13 @@ async function slotMenu(h: RetroHost, o: Open, chrome: Chrome, original: Origina
   let cur = 0;
   let note = '';
   for (;;) {
-    chrome('~\x18\x19~ Choose  ~Enter~ Edit  ~R~ Restore original  ~Esc~ Back');
+    chrome('~\x18\x19~ Choose  ~Enter~ Edit  ~N~ New save  ~R~ Restore original  ~Esc~ Back');
     frame(h, 1, TOP, 78, BOTTOM, `${o.game.title} - select a saved game`);
     put(h, 3, TOP + 1, HEAD, cell('File', 13) + cell('Name', 21) + cell('Level', 21) + cell('Score', 12) + 'Lives');
     const rows: ListRow[] = o.saves.slots.map((sl) => {
       const file = cell(saveFileName(sl.slot).toUpperCase(), 13);
       if (sl.error) return { text: file + cell(sl.name || '(no name)', 21) + 'Damaged: ' + sl.error, a: RED, selectable: false };
-      if (!sl.save) return { text: file + '(empty)', a: DIM, selectable: false };
+      if (!sl.save) return { text: file + cell('(empty)', 21) + 'Enter: start a new save here', a: DIM };
       const sv = sl.save;
       const lvl = o.labels?.sceneName(sv.doscene);
       return { text: file + cell(sl.name || '(no name)', 21) + cell(`${sv.doscene}${lvl ? ` ${lvl}` : ''}`, 21) + cell(num(sv.world.ci.score), 12) + num(sv.world.ci.lives) };
@@ -156,13 +161,26 @@ async function slotMenu(h: RetroHost, o: Open, chrome: Chrome, original: Origina
     rows.push({ text: '', selectable: false });
     rows.push({ text: `High-score table (${hsName})${o.saves.highScoresFromDisk ? ' - as it came on the disk' : ''}`, a: YELLOW });
     rows.push(orig ? { text: `Restore original saves (backed up ${dosStamp(deskDate(orig.when))})`, a: YELLOW } : { text: 'Restore original saves (nothing changed yet)', a: DIM, selectable: false });
-    statusLine(h, note || (o.saves.slots.some((sl) => sl.save) ? 'Pick a saved game to edit.' : 'This game has no saved games, only its high scores.'), note ? GREEN : TEXT);
+    statusLine(h, note || (o.saves.slots.some((sl) => sl.save) ? 'Pick a saved game to edit, or an empty slot for a new save.' : 'No saved games yet: pick an empty slot to start one.'), note.startsWith('ERROR') ? RED : note ? GREEN : TEXT);
     note = '';
     const first = rows.findIndex((r) => r.selectable !== false);
-    const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: cur || first, hotkeys: ['R'] });
+    const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: cur || first, hotkeys: ['R', 'N'] });
     if (pick.key === 'Escape') return;
     cur = pick.i;
-    if (pick.key === 'R' || pick.i === rows.length - 1) {
+    if (pick.key === 'N' || (pick.i < 10 && pick.key === 'Enter' && !o.saves.slots[pick.i].save && !o.saves.slots[pick.i].error)) {
+      // N on a full slot: the first empty one
+      const slot = pick.i < 10 && !o.saves.slots[pick.i].bytes ? pick.i : o.saves.slots.findIndex((sl) => !sl.bytes);
+      if (slot < 0) {
+        note = 'ERROR: every slot holds a save. Pick one to edit instead.';
+        continue;
+      }
+      note = await newSave(h, o, slot, original);
+      if (o.saves.slots[slot].save) {
+        cur = slot;
+        const edited = await editSave(h, o, slot, chrome, original);
+        note = edited || note;
+      }
+    } else if (pick.key === 'R' || pick.i === rows.length - 1) {
       if (!orig) {
         note = 'Nothing to restore: SAVEHACK has not changed this game.';
         continue;
@@ -174,6 +192,27 @@ async function slotMenu(h: RetroHost, o: Open, chrome: Chrome, original: Origina
     } else if (pick.i === rows.length - 2) note = await highScores(h, o, chrome, original);
     else if (pick.i < 10) note = await editSave(h, o, pick.i, chrome, original);
   }
+}
+
+/** Fills an empty slot with the game as it starts, named; returns a note for the slot list. */
+async function newSave(h: RetroHost, o: Open, slot: number, original: Original): Promise<string> {
+  if (!o.disk || !o.gam) return `ERROR: ${o.game.dos}'s game files can't be read, so SAVEHACK can't start a game.`;
+  let save: SavedGame;
+  try {
+    save = newGameSave(o.disk, o.gam);
+  } catch (e) {
+    return `ERROR: ${(e as Error).message}`.slice(0, 77);
+  }
+  const file = saveFileName(slot).toUpperCase();
+  const ask = `Name for the new ${file}: `;
+  statusLine(h, ask, YELLOW);
+  const name = await editLine(h, 1 + ask.length, ROWS - 2, SLOT_NAME_LENGTH + 1, NEW_SAVE_NAME);
+  if (name === null) return 'No new save made.';
+  const backed = await original(o);
+  await writeSlot(o.game.save, slot, save, name.trim().slice(0, SLOT_NAME_LENGTH));
+  await reload(o);
+  const lvl = o.labels?.sceneName(save.doscene);
+  return `${file} created: level ${save.doscene}${lvl ? ` ${lvl}` : ''}, as the game starts.${backed}`.slice(0, 77);
 }
 
 // ---------------------------------------------------------------- the editor
