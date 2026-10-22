@@ -311,7 +311,7 @@ export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.joi
     c.font = LABEL_FONT;
     c.textBaseline = 'middle';
     for (const l of sketch.labels ?? []) c.fillText(l.text, pad + l.x * CELL, pad + (l.y + 0.55) * CELL);
-  }, 12);
+  }, 16);
   return canvas;
 }
 
