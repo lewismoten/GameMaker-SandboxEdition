@@ -1,4 +1,4 @@
-// Tests: The desk mouse (input/deskMouse.ts): rolls reported in screen pixels, fractions kept, buttons.
+// Tests: The desk mouse (input/deskMouse.ts): slow rolls keep their fractions; listeners hear it until they stop.
 import { describe, expect, it } from 'vitest';
 import { deskMouse, listenDeskMouse, Mickeys } from '../src/input/deskMouse';
 
