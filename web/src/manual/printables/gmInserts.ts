@@ -302,7 +302,7 @@ export async function supportCard(): Promise<Sheet[]> {
     num('Fax support', SUPPORT.fax, '24 hours · answered next business day'),
     num('FaxBack documents', SUPPORT.faxback, 'Call from your fax handset · 101 Installing · 102 Memory · 103 Sound Blaster · 104 Mouse · 105 Windows'),
     h('h3', null, 'ONLINE'),
-    h('div', { class: 'gsc-num' }, h('span', null, 'The official BBS'), h('b', null, sandboxBanner()), h('b', null, SUPPORT.bbs), h('small', null, '24 hours · 2400–14,400 baud · 8-N-1 · updates, patches and new games')),
+    h('div', { class: 'gsc-num' }, h('span', null, 'The official BBS ', sandboxBanner()), h('b', null, SUPPORT.bbs), h('small', null, '24 hours · 2400–14,400 baud · 8-N-1 · updates, patches and new games')),
     h(
       'dl',
       { class: 'gsc-net' },

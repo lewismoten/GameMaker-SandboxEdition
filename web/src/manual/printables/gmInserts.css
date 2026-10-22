@@ -431,7 +431,7 @@
   border-radius: 1.2cqw;
   background: #f0a090;
   font:
-    1.05cqw/1.15 Arial,
+    1.3cqw/1.15 Arial,
     Helvetica,
     sans-serif;
 }
@@ -465,6 +465,7 @@
 
 .gkt-row {
   display: flex;
+  flex: 1;
   gap: 1.6cqw;
 }
 
@@ -489,8 +490,8 @@
   align-items: center;
   gap: 0.3cqw;
   min-width: 0;
-  min-height: 9cqw;
-  padding: 0.4cqw;
+  justify-content: space-between;
+  padding: 0.6cqw 0.4cqw;
   border: 0.15cqw dashed #18150f;
   border-radius: 0.6cqw;
   background: #fff8ee;
@@ -504,7 +505,7 @@
   background: #18150f;
   color: #fff;
   font:
-    700 1.2cqw 'Courier New',
+    700 1.6cqw 'Courier New',
     monospace;
 }
 
@@ -603,8 +604,8 @@
 }
 
 .pp-gmg line {
-  stroke: #7fb2df;
-  stroke-width: 0.06;
+  stroke: #8dbbe3;
+  stroke-width: 0.09;
 }
 
 .pp-gmg line.md {
@@ -775,11 +776,11 @@
   overflow-wrap: anywhere;
 }
 
-.gsc-mail {
+.pp-gsc .gsc-mail {
   margin: 1.6cqw 0 0;
 }
 
-.gsc-fake {
+.pp-gsc .gsc-fake {
   margin: auto 0 0;
   padding: 1.2cqw 1.6cqw;
   border: 0.25cqw dashed #6b6250;
