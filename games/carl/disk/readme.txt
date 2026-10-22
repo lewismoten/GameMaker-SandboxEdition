@@ -9,7 +9,7 @@
  it's wearing stilettos."
 
 You are Carl, the fly. He has
-snacks, a Netflix queue, a
+snacks, a movie queue, a
 dish towel and the old clap.
 You have a barrel roll and a
 college degree in doom. Eat

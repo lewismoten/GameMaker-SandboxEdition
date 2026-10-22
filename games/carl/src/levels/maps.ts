@@ -1,6 +1,6 @@
 // The six levels, from the song, each laid out block by block; everything outside a level is
 // solid. Carl flies: there is no ground to walk, only things in the way.
-//   1. The Couch: the living room on a sunny afternoon, the Netflix snacks (eight of them),
+//   1. The Couch: the living room on a sunny afternoon, the TV snacks (eight of them),
 //      a hand in the popcorn, a dish towel snapping, Teddy snapping, to the floor lamp.
 //   2. The Walls: the kitchen, the old clap, the towel, a rolled-up magazine; flash a smile from
 //      six spots on the walls and the kitchen door opens.
@@ -133,7 +133,7 @@ function lamp(m: MapBuilder, x: number, y: number): void {
   m.set(x, 10, 'lampBase');
 }
 
-/** 1. The couch: the living room, the Netflix snacks, to the lamp. */
+/** 1. The couch: the living room, the TV snacks, to the lamp. */
 export function theCouch(book: BlockBook): Level {
   const W = 58;
   const H = 12;
