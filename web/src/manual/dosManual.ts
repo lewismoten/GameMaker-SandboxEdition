@@ -524,7 +524,7 @@ function pages(shots: GameShot[]): BookletPage[] {
       word.</p>
       <p>A new copy comes unregistered, so GM asks every time until you register it. While it
       asks, this guide opens beside the monitor at the right page, and the registration card
-      lies next to it: write your name, <b>Mail</b> it for your registration number (the
+      lies next to it: write your name, <b>Mail the card</b> for your registration number (the
       reply comes right back) and choose <b>Apply</b>. Or type <code>GM REGISTER</code> and
       enter the name and number as the program asks.</p>
       <div class="note"><strong>Why?</strong> Disks were easy to copy; a thick printed manual was
