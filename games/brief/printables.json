@@ -4,7 +4,8 @@
     "Up": "Walk one step up (hold to keep walking)",
     "Down": "Walk one step down",
     "Left": "Walk one step left",
-    "Right": "Walk one step right"
+    "Right": "Walk one step right",
+    "P": "Pocket a small thing"
   },
   "items": [
     {
@@ -81,6 +82,30 @@
           "hints": [
             { "q": "The stamp gates won't open.", "a": "Each gate wants four stories restored in its own wing. The plate on the gate says 4. It means it." },
             { "q": "What is the thirty-third book?", "a": "Exactly one hundred words. Whose hundred is up to you." }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            { "q": "Some say there is a felt egg somewhere in the library.", "a": "Libraries lose things. Good libraries keep a lost and found. The Word Counter complains that nobody can find it." },
+            { "q": "Where is the lost and found?", "a": "In the Reserve Stacks. Not every shelf there is as solid as it looks: look for a book pulled half out, with a red ribbon hanging from it." },
+            { "q": "I found it. Now what?", "a": "Walk onto the shoebox and press P. Finders, pocketers. F2 shows it in Joe's pocket, and a save keeps it there." },
+            {
+              "q": "Step by step?",
+              "a": "In the Reserve Stacks, walk to the bottom right corner, past the fern, and keep walking right into the shelf with the ribbon. In the Lost and Found, stand on the shoebox with the egg and press P. Leave by the OUT door.",
+              "sketch": {
+                "rows": [
+                  "    =",
+                  "  o@X",
+                  "=====",
+                  ""
+                ],
+                "labels": [
+                  { "x": 6, "y": 1, "text": "LOOSE SHELF" },
+                  { "x": 0, "y": 3, "text": "RESERVE STACKS, FAR CORNER" }
+                ]
+              }
+            }
           ]
         },
         {
