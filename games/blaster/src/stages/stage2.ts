@@ -136,7 +136,7 @@ function legB(g: Grid): void {
  */
 function corner(g: Grid): void {
   g.rect(1, 0, 14, 2, (c, d) => `gate${(c + d * 2) % 4}`);
-  for (let c = 0; c < 16; c++) g.link(c, 0);
+  for (let c = 1; c < 15; c++) g.link(c, 1);
   for (let c = 4; c < 12; c++) g.set(c, 3, `ref${c % 4}`);
   g.stamp(12, 5, 'dramB', 2, 3).stamp(5, 6, 'dramA', 2, 3);
   g.plate(1, 6, 3, 3);
@@ -172,7 +172,8 @@ export function stage2(): Stage {
   );
   a.cardAt = 44;
   const gap = LENGTH - 1;
-  a.set(0, gap, 'edgeGap');
+  // the way in: the floor cell beside the missing finger (the ship can't fly over the edge)
+  a.set(0, gap, 'edgeGap').set(1, gap, 'floor0');
   const nook = arena(ks.bs, ks.beasts, art, 209);
   corner(nook);
   const room: Leg = {
@@ -206,7 +207,7 @@ export function stage2(): Stage {
     art,
     song: 'ram.cmf',
     bossSong: 'boss.cmf',
-    side: { from: 's2a', cell: { x: X0, y: a.y(gap) }, room, then: 's2b', outro: 's2y' },
+    side: { from: 's2a', cell: { x: X0 + 1, y: a.y(gap) }, room, then: 's2b', outro: 's2y' },
     legs: [
       {
         file: 's2a',
