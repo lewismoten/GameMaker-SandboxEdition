@@ -6,7 +6,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels, dither, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, resample } from '../../../kit/photo';
-import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from '../art/palette';
+import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
 
@@ -541,7 +541,4 @@ export function zoomiesFli(): Uint8Array {
   add(end, 6);
   return encodeFli(frames, DAY, { speed: 8 });
 }
-
-/** The colors Game-Maker picks for text over these screens, for checking. */
-export const TEXT_COLOR = TEXT_MAGENTA;
 export { GRASS };
