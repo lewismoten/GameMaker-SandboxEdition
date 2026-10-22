@@ -19,6 +19,8 @@ const STEPS: [Dir, number, number][] = [
   ['right', 1, 0],
 ];
 
+const BACK: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' };
+
 export interface Recorded {
   tick: number;
   key: number;
@@ -192,7 +194,10 @@ export class Bot {
   async step(d: Dir, careful: boolean): Promise<void> {
     let move: Dir | undefined = d;
     if (careful) {
-      const options: (Dir | undefined)[] = [d, undefined, ...STEPS.map((s) => s[0]).filter((x) => x !== d)];
+      // a sidestep out of a patroller's lane before backing off: backing away along the lane
+      // it walks only meets it again, up and down for as long as it patrols
+      const back = BACK[d];
+      const options: (Dir | undefined)[] = [d, undefined, ...STEPS.map((s) => s[0]).filter((x) => x !== d && x !== back), back];
       let least = Infinity;
       const tried: string[] = [];
       for (const o of options) {
@@ -248,9 +253,9 @@ export class Bot {
   }
 }
 
-/** The monsters that confiscate words. */
+/** The monsters that fine Joe (a point a tick, Area.monster's hazards) or confiscate words. */
 export function hazardsOf(area: Area): Set<string> {
-  return new Set(area.mons.names.filter((n, i) => n && area.mons.defs[i].pics.some(([pic]) => (area.mb.def(pic).eamt ?? 0) < 0)));
+  return new Set(area.mons.names.filter((n, i) => n && area.mons.defs[i].pics.some(([pic]) => (area.mb.def(pic).score ?? 0) < 0 || (area.mb.def(pic).eamt ?? 0) < 0)));
 }
 
 export function windowBox(ox: number, oy: number) {
