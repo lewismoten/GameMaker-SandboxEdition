@@ -22,6 +22,9 @@ import { levelExtras } from './src/levels/extras';
 import { buildScreens } from './src/screens/screens';
 import { buildSounds } from './src/sound/sounds';
 import { SONGS } from './src/sound/music';
+import { demoRecording } from './src/demo';
+import { readme } from './src/screens/text';
+import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -69,6 +72,10 @@ if (fast) {
   if (existsSync(dir)) for (const n of readdirSync(dir)) if (!disk.files.has(n)) disk.put(n, new Uint8Array(readFileSync(join(dir, n))));
 }
 log('screens');
+
+disk.put('demo.rec', demoRecording());
+disk.put('readme.txt', readme('$15'));
+disk.put('license.txt', licenseText('Depth Perception'));
 
 disk.put('depth.gam', serializeGame(buildGame(sets, files, screens.extra)));
 disk.write();

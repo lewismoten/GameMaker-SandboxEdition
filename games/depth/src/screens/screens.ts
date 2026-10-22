@@ -3,19 +3,17 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, type Scene } from '../../../../web/src/formats/game';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
-import { licenseText } from '../../../kit/license';
 import { farScene, nearScene, type Extra } from '../game';
 import type { LevelSet } from '../levels/blocks';
 import { rgb } from '../render/tracer';
 import type { Picture } from '../render/image';
 import type { SpriteSet } from '../sprites/sprites';
-import { demoRecording } from '../demo';
 import { GM_BLUE, GM_PURPLE, GM_RED, GM_YELLOW, centered, toGif } from './draw';
 import { endingFrames } from './ending';
 import { introFrames, toFli } from './intro';
 import * as P from './pictures';
 import { storyPictures, wonPicture } from './story';
-import { CREDITS, EGG_TEXT, INSTRUCTIONS, readme } from './text';
+import { CREDITS, EGG_TEXT, INSTRUCTIONS } from './text';
 import { titlePicture } from './title';
 
 export interface ScreenInput {
@@ -87,9 +85,6 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   files['egg.txt'] = EGG_TEXT;
   files['egg.lst'] = serializeSlideList([{ name: 'egg.gif' }, { name: 'eggbg.gif', pause: 0 }, { name: 'egg.txt' }]);
 
-  files['demo.rec'] = demoRecording();
-  files['readme.txt'] = readme('$15');
-  files['license.txt'] = licenseText('Depth Perception');
   return { files, extra: eggScene(input.sets) };
 }
 
