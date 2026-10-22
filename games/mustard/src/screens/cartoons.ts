@@ -410,9 +410,9 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
     for (let y = 0; y < H; y++) sky.rect(0, y, W, 1, pal.r('gold2')[Math.min(5, Math.floor((H - y) / 34))]);
     const scene = (p: Pixels, k: number) => {
       const rise = Math.min(1, k / 18);
-      const s = 1.8;
+      const s = 1.6;
       const hx = Math.round(160 - (HAND_W * s) / 2);
-      const hy = Math.round(200 - rise * 96);
+      const hy = Math.round(200 - rise * 140);
       for (let a = 0; a < 12; a++) {
         const ang = Math.PI * (1.05 + a / 11) + (k % 4) * 0.01;
         if ((a + (k >> 1)) % 3) continue;
@@ -420,10 +420,10 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       }
       drawHand(p, pal, hx, hy, s, 0.6 + rise * 0.4);
       // the mound and the little tree in the palm
-      mound(p, pal, 160, hy + 66, 34, 12);
-      tree(p, pal, 160, hy + 56, 0.45);
+      mound(p, pal, 160, hy + 62, 30, 10);
+      tree(p, pal, 160, hy + 54, 0.45);
       for (let t = 0; t < 6; t++) twinkle(p, pal, (37 + t * 53 + k * 3) % W, 20 + ((t * 31 + k * 2) % 60), [1, 2, 3, 2][(k + t) % 4]);
-      caption(p, pal, k < 20 ? ["That mustard seed's growin' strong", '...'] : ['in the palm', "of God's hand."]);
+      caption(p, pal, k < 20 ? ["That mustard seed's", "growin' strong..."] : ['...in the palm', "of God's hand."]);
     };
     const first = new Pixels(W, H);
     first.px.set(sky.px);
@@ -441,9 +441,9 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
     for (let i = 0; i < 70; i++) bg.set(Math.floor(rr() * W), Math.floor(rr() * 150), c('faith', i % 3));
     const scene = (p: Pixels, k: number) => {
       outlined(p, 160 - textWidth('THE END', 3) / 2, 18, 'THE END', c('seed', 4), c('ink', 0), 3, c('seed', 1));
-      const hop = Math.round(Math.abs(Math.sin(k / 2.4)) * 30);
-      scaleBlit(p, sprite(cast.seed, hop > 8 ? 'plant.joy' : 'plant.front'), 130, 118 - hop, 3);
-      scaleBlit(p, sprite(cast.seed, hop > 8 ? 'topJoy' : 'top0'), 130, 58 - hop, 3);
+      const hop = Math.round(Math.abs(Math.sin(k / 2.4)) * 16);
+      scaleBlit(p, sprite(cast.seed, hop > 5 ? 'plant.joy' : 'plant.front'), 140, 104 - hop, 2);
+      scaleBlit(p, sprite(cast.seed, hop > 5 ? 'topJoy' : 'top0'), 140, 64 - hop, 2);
       for (let t = 0; t < 8; t++) twinkle(p, pal, 60 + ((t * 47 + k * 5) % 200), 60 + ((t * 23 + k * 7) % 90), [0, 1, 2, 3, 2, 1][(k + t) % 6]);
       if (k >= 8) outlined(p, 160 - textWidth('HALLELUJAH!', 2) / 2, 150, 'HALLELUJAH!', c('sun', 3), c('ink', 0), 2);
       caption(p, pal, ['Keep the mustard seed', 'hustle alive!']);
