@@ -21,6 +21,7 @@ import {
   statusLine,
 } from "./term";
 import { runSofa, SOFA_PHONE, sofaBusy } from "./sofa";
+import { gifGallery } from "./gifArea";
 import { output } from "../../audio/output";
 
 const BBS_NAME = "THE -= S A N D B O X =- BBS";
@@ -164,6 +165,9 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
         k === "N" ? "New Files Scan" : "The Sand Pile: Game-Maker Shareware",
       );
       show = true;
+    } else if (k === "P") {
+      await gifGallery(t, h);
+      show = true;
     } else if (k === "B") {
       await bulletins(t, catalog);
       show = true;
@@ -262,11 +266,12 @@ function mainMenu(t: Term, s: RetroHost["screen"]): void {
     ["F", "File Areas (the sand pile)", "B", "Bulletins"],
     ["N", "New Files Scan", "S", "System Information"],
     ["Y", "Your Statistics", "C", "Page the SysOp"],
-    ["?", "Redisplay this menu", "G", "Goodbye (log off)"],
+    ["P", "Picture Gallery (GIF files)", "?", "Redisplay this menu"],
+    ["", "", "G", "Goodbye (log off)"],
   ];
   t.line(boxRow(""));
   for (const [a, la, b, lb] of rows)
-    t.line(boxRow(`    ${item(a, la)}${item(b, lb)}`));
+    t.line(boxRow(`    ${a ? item(a, la) : " ".repeat(34)}${item(b, lb)}`));
   t.line(boxRow(""));
   t.line(boxBottom());
   t.line();
