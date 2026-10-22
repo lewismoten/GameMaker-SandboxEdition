@@ -87,6 +87,8 @@ function parseView(s: string | undefined): View {
   const n = Number(s);
   return Number.isInteger(n) && n >= 1 && n <= SAVE_SLOTS ? n - 1 : 0;
 }
+/** "0 to 32,767; the game handles up to 9,999 well." */
+const rangeText = (f: SaveField, lower = false) => `${lower ? 'from' : 'From'} ${fmt(f.min)} to ${fmt(f.max)}${f.safeMax < f.max ? `; the game handles up to ${fmt(f.safeMax)} well` : ''}.`;
 const kb = (n: number) => `${fmt(Math.max(1, Math.round(n / 1024)))} KB`;
 
 async function confirmDialog(title: string, text: string, ok: string, danger = false): Promise<boolean> {
@@ -195,13 +197,18 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   };
 
   // ------------------------------------------------------------------ a slot
-  const fieldRow = (slot: number, save: SavedGame, f: SaveField, refresh: (rebuild?: boolean) => void): HTMLElement => {
+  /** The ⓘ beside a field (its note and limits), or `groupTip` for a group whose fields share one. */
+  const fieldRow = (slot: number, save: SavedGame, f: SaveField, refresh: (rebuild?: boolean) => void, groupTip?: string): HTMLElement => {
     const id = `sv-${slot}-${f.id.replace(':', '-')}`;
     const v = getField(save, f.id);
+    const unused = f.group === 'counters' && /unused/.test(f.label);
     const warn = h('p', { class: 'sv-warn', id: `${id}-warn` });
     const showWarn = () => {
-      const w = fieldWarnings(save, f, labels);
-      clear(warn, ...w.map((x) => h('span', null, '⚠ ', x)));
+      // the limits are in the ⓘ beside the field
+      // a counter no block uses can't block the way
+      const w = unused ? [] : fieldWarnings(save, f, labels).map((x) => x.replace(/ \(see the note on its limit\)/, ''));
+      // one line each (all of it on focus, and in the title)
+      clear(warn, ...w.map((x) => h('span', { title: x }, '⚠ ', x)));
       warn.hidden = !w.length;
     };
     if (f.type === 'info')
@@ -218,7 +225,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
           class: 'sv-item',
           id,
           'aria-label': `${f.label}: ${n === BACKBL ? 'empty' : `block ${n}`}. Change`,
-          'aria-describedby': `${id}-warn`,
+          'aria-describedby': [groupTip, `${id}-warn`].filter(Boolean).join(' '),
           onclick: async () => {
             let next: number | undefined;
             if (blocks && pal) next = await chooseBlock(`${f.label}: what the hero carries`, blocks, pal, n, [{ value: BACKBL, label: 'empty', icon: '·' }], false, (b, i) => !!b.obj || i === n);
@@ -242,6 +249,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       return row;
     }
     const unlimited = v === UNLIMITED;
+    const own = groupTip ? undefined : tip(f.label, h('p', null, f.note), h('p', null, rangeText(f)));
     const input = h('input', {
       type: 'number',
       id,
@@ -252,7 +260,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       value: typeof v === 'number' ? String(v) : '',
       placeholder: v === null ? 'not set yet' : unlimited ? '∞' : '',
       disabled: unlimited,
-      'aria-describedby': `${id}-range ${id}-warn`,
+      'aria-describedby': `${own?.id ?? groupTip ?? ''} ${id}-warn`.trim(),
       onchange: () => {
         const n = Number(input.value);
         if (input.value === '' || Number.isNaN(n)) return;
@@ -282,10 +290,9 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       : null;
     const row = h(
       'div',
-      { class: `sv-field${f.group === 'counters' && /unused/.test(f.label) ? ' unused' : ''}` },
-      h('label', { class: 'sv-label', for: id }, f.label),
+      { class: `sv-field${unused ? ' unused' : ''}` },
+      h('span', { class: 'sv-label-row' }, h('label', { class: 'sv-label', for: id }, f.label), own?.el),
       h('div', { class: 'sv-input' }, input, box),
-      h('p', { class: 'sv-range', id: `${id}-range` }, `${fmt(f.min)} to ${fmt(f.max)}${f.safeMax < f.max ? ` · safe up to ${fmt(f.safeMax)}` : ''}`),
       warn,
     );
     showWarn();
@@ -360,24 +367,20 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       const g = f.group === 'money' ? 'player' : f.group;
       groups.set(g, [...(groups.get(g) ?? []), f]);
     }
-    const groupNote: Partial<Record<FieldGroup, string>> = {
-      uses: groups.get('uses')?.[0]?.note,
-      counters: groups.get('counters')?.[0]?.note,
-      inventory: groups.get('inventory')?.[0]?.note,
-    };
+    // these groups' fields share one note (and limits): an ⓘ by the group's name
+    const groupTips = new Map<FieldGroup, ReturnType<typeof tip>>();
+    for (const g of ['uses', 'counters', 'inventory'] as FieldGroup[]) {
+      const first = groups.get(g)?.[0];
+      if (first) groupTips.set(g, tip(GROUP_LABELS[g], h('p', null, first.note), g === 'inventory' ? null : h('p', null, `Each ${rangeText(first, true)}`)));
+    }
     // where the hero is comes first: the picture shows the save at a glance
     const sets = [...groups].sort(([a], [b]) => Number(b === 'where') - Number(a === 'where')).map(([g, list]) =>
       g === 'where' ? whereGroup(slot, w, () => refreshState()) : h(
         'fieldset',
         { class: `sv-group sv-g-${g}` },
-        h('legend', null, GROUP_LABELS[g]),
-        groupNote[g] ? h('p', { class: 'sv-group-note' }, groupNote[g]) : null,
+        h('legend', null, GROUP_LABELS[g], groupTips.get(g)?.el),
         (() => {
-          const row = (f: SaveField) => {
-            const r = fieldRow(slot, save, f, (rebuild) => refreshState(rebuild));
-            if (g === 'player') r.append(h('p', { class: 'sv-note' }, f.note));
-            return r;
-          };
+          const row = (f: SaveField) => fieldRow(slot, save, f, (rebuild) => refreshState(rebuild), groupTips.get(g)?.id);
           if (g !== 'uses') return h('div', { class: 'sv-fields' }, list.map(row));
           // the sequences that never count down are folded away
           const limited = list.filter((f) => getField(save, f.id) !== UNLIMITED);
@@ -427,6 +430,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         h('button', { type: 'button', onclick: () => exportSav(slot, serializeSave(save)), title: 'Download this save (with any changes) as a .sav file' }, '⇩ Download .sav'),
         h('button', { type: 'button', onclick: () => void importSav(slot) }, '⇪ Import .sav…'),
         h('button', { type: 'button', class: 'danger', onclick: () => void removeSlot(slot) }, 'Delete save'),
+        h('button', { type: 'button', class: 'sv-about-btn', onclick: () => void aboutSave(slot, fields), 'aria-haspopup': 'dialog' }, h('span', { class: 'sv-about-i', 'aria-hidden': 'true' }, 'i'), 'About this save'),
       ),
       status,
       h('div', { class: 'sv-groups' }, sets),
@@ -595,6 +599,33 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     );
   };
 
+  /** Every note of a save's fields, the map's keys and what saving does, in one place. */
+  const aboutSave = (slot: number, fields: SaveField[]) =>
+    modal<void>(`About slot ${slot + 1}`, (close) => {
+      const byGroup = new Map<FieldGroup, SaveField[]>();
+      for (const f of fields) if (f.group !== 'where') byGroup.set(f.group, [...(byGroup.get(f.group) ?? []), f]);
+      const shared = (g: FieldGroup) => g === 'uses' || g === 'counters' || g === 'inventory';
+      return [
+        h(
+          'div',
+          { class: 'sv-about', tabindex: 0, role: 'region', 'aria-label': 'About this save' },
+          h('h3', null, 'Saving'),
+          h('p', null, 'Changes stay here until Save changes; Undo changes drops them. The first change of a visit backs every save up first (see Backups). In the game, F6 loads the save. Download .sav gives the file with any changes; Import .sav… puts a file in this slot.'),
+          h('p', null, '★ Max all raises every counting value to the most the game handles well; the items stay as they are.'),
+          h('h3', null, GROUP_LABELS.where),
+          h('p', null, LEVEL_HELP),
+          h('p', null, MAP_HELP),
+          ...[...byGroup].flatMap(([g, list]) => [
+            h('h3', null, GROUP_LABELS[g]),
+            shared(g)
+              ? h('p', null, list[0].note, g === 'inventory' ? '' : ` Each ${rangeText(list[0], true)}`)
+              : h('dl', null, list.flatMap((f) => [h('dt', null, f.label), h('dd', null, `${f.note} ${rangeText(f)}`)])),
+          ]),
+        ),
+        h('div', { class: 'buttons' }, h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => close(undefined) }, 'Close')),
+      ];
+    });
+
   const commitSlot = async (slot: number) => {
     const w = work.get(slot);
     if (!w) return;
@@ -731,7 +762,12 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     });
     clear(
       main,
-      h('header', { class: 'sv-head' }, h('h3', { class: 'sv-title', tabindex: -1 }, 'High scores'), h('p', { class: 'sv-where' }, saves!.highScoreFile ?? highScoreFileName(target.gam ?? 'game'))),
+      h(
+        'header',
+        { class: 'sv-head' },
+        h('div', { class: 'sv-label-row' }, h('h3', { class: 'sv-title', tabindex: -1 }, 'High scores'), tip('the high scores', `The Top Ten screen shows a score in 10 columns and hides a score of 0. Players type up to ${HIGH_SCORE_NAME_MAX} letters; a new score goes in above every lower one, so keep the table highest first.`).el),
+        h('p', { class: 'sv-where' }, saves!.highScoreFile ?? highScoreFileName(target.gam ?? 'game')),
+      ),
       h(
         'div',
         { class: 'sv-tools', role: 'toolbar', 'aria-label': 'High scores' },
@@ -741,7 +777,6 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         h('button', { type: 'button', class: 'danger', onclick: () => ((scores = list.map(() => ({ score: 0, name: '' }))), render()) }, 'Clear table'),
       ),
       status,
-      h('p', { class: 'sv-group-note' }, `The Top Ten screen shows a score in 10 columns and hides a score of 0. Players type up to ${HIGH_SCORE_NAME_MAX} letters; a new score goes in above every lower one.`),
       h(
         'div',
         { class: 'sv-table-wrap' },

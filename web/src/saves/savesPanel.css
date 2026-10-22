@@ -251,6 +251,13 @@ dialog.modal .sv-inf {
 }
 .sv-warn span {
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sv-field:focus-within .sv-warn span,
+.sv-warn:hover span {
+  white-space: normal;
 }
 .sv-warn[hidden] {
   display: none;
@@ -640,4 +647,58 @@ dialog.modal .sv-inf {
 }
 .sv-where-tools .sv-input select {
   flex: 1 1 100%;
+}
+
+/* "About this save": every note in one place */
+.sv-about-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.sv-about-i {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: italic 700 10px/1 Georgia, 'Times New Roman', serif;
+}
+.sv-about {
+  max-width: 40em;
+  max-height: min(65dvh, 640px);
+  overflow-y: auto;
+  padding-right: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.sv-about h3 {
+  margin: 14px 0 4px;
+  font-size: 15px;
+}
+.sv-about h3:first-child {
+  margin-top: 0;
+}
+.sv-about p {
+  margin: 0 0 6px;
+}
+.sv-about dl {
+  margin: 0;
+}
+.sv-about dt {
+  font-weight: 600;
+}
+.sv-about dd {
+  margin: 0 0 6px;
+  color: var(--muted);
+}
+.sv-group legend {
+  display: inline-flex;
+  align-items: center;
+}
+@media (max-width: 720px) {
+  .sv-about-btn {
+    margin-left: 0;
+  }
 }

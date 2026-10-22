@@ -18,7 +18,8 @@ export interface Tip {
 /** `about` names what the tip is about ("Score"), for the button's accessible name. */
 export function tip(about: string, ...text: Child[]): Tip {
   const id = `sv-tip-${++next}`;
-  const bubble = h('div', { class: 'sv-tip-bubble', id, role: 'tooltip', popover: 'manual' }, ...text);
+  // spaces between the paragraphs, so they read apart in the field's description too
+  const bubble = h('div', { class: 'sv-tip-bubble', id, role: 'tooltip', popover: 'manual' }, ...text.flatMap((t, i) => (i ? [' ', t] : [t])));
   let pinned = false;
   let hideTimer: ReturnType<typeof setTimeout> | undefined;
   const isOpen = () => bubble.matches(':popover-open');
