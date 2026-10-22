@@ -82,10 +82,10 @@ export function buildScreens(
     'AND BOWDEN DRIVE. DRIVERS:',
     'WATCH FOR SLEDS ON JAMIE ST.',
     '',
-    'NO MAILBOXES TO DIG OUT ON',
-    'GALE STREET - THE CARRIER',
-    'WALKS TO EVERY DOOR SLOT.',
-    'CLEAR YOUR FRONT WALK TOO!',
+    'FRONT WALKS NEED DIGGING TOO:',
+    'THE PAPER STILL HAS TO REACH',
+    'THE DOOR MAT. KIDS WITH',
+    'SHOVELS - NAME YOUR PRICE!',
   ]);
   save('news1.gif', n1);
 

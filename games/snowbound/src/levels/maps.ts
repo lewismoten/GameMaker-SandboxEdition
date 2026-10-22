@@ -154,8 +154,8 @@ function bankRow(m: MapBuilder, x: number, y: number, w: number, gaps: number[])
 /**
  * Gale Street, 7 AM: home is the corner house at Gale Street and Dunn Drive. Leota Street
  * runs north between the neighbors, Leon Drive crosses the east end (and leads to the
- * top of Jamie Street). One plow, Biscuit the dog, and no mailboxes anywhere: the carrier
- * walks to every door, so every front walk needs digging out too. And the carrier is you:
+ * top of Jamie Street). One plow, Biscuit the dog, and front walks to dig out as well as
+ * driveways (neighbors want to reach the car, and the paper on the mat). The paper carrier is you:
  * the paper bundle by the porch at home holds one paper for each customer's door mat.
  */
 export function galeStreet(book: BlockBook) {
