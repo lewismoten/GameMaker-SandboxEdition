@@ -303,7 +303,7 @@ export function hiscoreScreen(): Uint8Array {
   const c = new Canvas();
   spaceBg(c, 61);
   // Black bands under "Top Ten Scores" (y 0) and "Hit any key" (y 192), which PLAYGAME writes in red.
-  c.rect(0, 0, 320, 10, 0);
+  c.rect(0, 0, 320, 12, 0);
   c.rect(0, 189, 320, 11, 0);
   c.panel(10, 20, 300, 168, C('ice')[7], C('blue')[2], WHITE);
   for (let k = 0; k < 10; k++) c.sprite(drawShard(k).crop(5, 0, 10, 20), 292, 24 + k * 16, 1);
