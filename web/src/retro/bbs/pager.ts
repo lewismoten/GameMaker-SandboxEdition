@@ -35,10 +35,12 @@ export function pageKeys(page: number, pages: number): string {
 }
 
 export interface PagedListing {
-  /** The area's header lines; it gets the page number to show. */
-  header: (page: number, pages: number) => string[];
-  /** Each entry's lines on the listing (made again for each page shown, so a * stays current). */
+  /** The area's header lines (the same number every time); it gets the page number to show and the mode. */
+  header: (page: number, pages: number, extended: boolean) => string[];
+  /** Each entry's lines on the extended listing, its whole FILE_ID.DIZ (made again for each page shown, so a * stays current). */
   entries: Lines<string[][]>;
+  /** Each entry's one line on the compact listing, when the area has one. */
+  compact?: Lines<string[]>;
   /** Lines under the entries (the legend), the same number every time. */
   footer: Lines<string[]>;
 }
@@ -46,20 +48,35 @@ export interface PagedListing {
 type Lines<T> = T | (() => T);
 const now = <T>(l: Lines<T>): T => (typeof l === 'function' ? (l as () => T)() : l);
 
-/** Draws the listing a page at a time, keeping the prompt on the screen below it. */
+/** More extended pages than this and an area opens on its compact list, one line a file. */
+export const EXTENDED_PAGES = 3;
+
+/**
+ * Draws the listing a page at a time, keeping the prompt on the screen below it. An area with
+ * a compact list opens on it once the full FILE_ID.DIZ pages would run past EXTENDED_PAGES;
+ * E toggles between the two (PCBoard's one-line list and its extended descriptions).
+ */
 export class Pager {
   page = 0;
-  readonly pages: number[][];
+  extended: boolean;
+  private paged: { full: number[][]; brief: number[][] };
 
   constructor(
     private t: Term,
     private list: PagedListing,
   ) {
-    const room = SCREEN_ROWS - list.header(0, 1).length - now(list.footer).length - 2; // the prompt, and the line it moves to
-    this.pages = paginate(
+    const room = SCREEN_ROWS - list.header(0, 1, true).length - now(list.footer).length - 2; // the prompt, and the line it moves to
+    const full = paginate(
       now(list.entries).map((e) => e.length),
       room,
     );
+    const brief = list.compact ? paginate(now(list.compact).map(() => 1), room) : full;
+    this.paged = { full, brief };
+    this.extended = !list.compact || full.length <= EXTENDED_PAGES;
+  }
+
+  get pages(): number[][] {
+    return this.extended ? this.paged.full : this.paged.brief;
   }
 
   get count(): number {
@@ -73,30 +90,50 @@ export class Pager {
     s.fill(0, 0, COLS - 1, SCREEN_ROWS - 1, attr(7, 0));
     s.cursorX = 0;
     s.cursorY = 0;
-    for (const l of this.list.header(this.page, this.count)) this.t.line(l);
-    const entries = now(this.list.entries);
+    for (const l of this.list.header(this.page, this.count, this.extended)) this.t.line(l);
+    const entries = this.extended || !this.list.compact ? now(this.list.entries) : now(this.list.compact).map((l) => [l]);
     for (const i of this.pages[this.page]) for (const l of entries[i] ?? []) this.t.line(l);
     for (const l of now(this.list.footer)) this.t.line(l);
   }
 
-  /** The page-turning part of the prompt. */
+  /** The page-turning part of the prompt (and the E toggle, where there is a compact list). */
   keys(): string {
-    return pageKeys(this.page, this.count);
+    const toggle = this.list.compact ? `|15E|07)${this.extended ? ' short list' : 'xtended'}, ` : '';
+    return pageKeys(this.page, this.count) + toggle;
   }
 
   /**
-   * Turns the page for N, P, L (list again) or Enter (the next page): true when the answer
-   * was one of those. Enter on the last page is not (the caller is done).
+   * Turns the page for N, P, L (list again), E (the other listing, at the page with the same
+   * first file) or Enter (the next page): true when the answer was one of those. Enter on the
+   * last page is not (the caller is done).
    */
   turn(answer: string): boolean {
     const last = this.page >= this.count - 1;
     if (answer === 'N' || (answer === '' && !last)) this.show(last ? this.page : this.page + 1);
     else if (answer === 'P') this.show(this.page - 1);
     else if (answer === 'L') this.show();
-    else return false;
+    else if (answer === 'E' && this.list.compact) {
+      const first = this.pages[this.page][0] ?? 0;
+      this.extended = !this.extended;
+      this.show(Math.max(0, this.pages.findIndex((p) => p.includes(first))));
+    } else return false;
     return true;
   }
 }
+
+/** The file a "#", "V#" or "R#" answer asks to read about (1-based), or NaN. */
+export const readNumber = (answer: string) => (/^[VR]?\d+$/.test(answer) ? Number(answer.replace(/^[VR]/, '')) : NaN);
+
+/** The day a file went up, made up but always the same for it: MM-DD-YY in its year. */
+export function uploadDate(key: string, year = 1995): string {
+  let x = 2166136261;
+  for (const c of key) x = Math.imul(x ^ c.charCodeAt(0), 16777619) >>> 0;
+  const two = (n: number) => String(n).padStart(2, '0');
+  return `${two(1 + (x % 12))}-${two(1 + ((x >>> 8) % 28))}-${two(year % 100)}`;
+}
+
+/** A FILE_ID.DIZ's first line as a one-line summary: its title, without the [1/1] disk count. */
+export const dizSummary = (diz: string[]) => (diz[0] ?? '').replace(/\s*\[\d+\/\d+\]\s*$/, '').trim();
 
 /** "Page 1 of 3" for a header, or nothing when it all fits on one. */
 export const pageLabel = (page: number, pages: number) => (pages > 1 ? `Page ${page + 1} of ${pages}` : '');
