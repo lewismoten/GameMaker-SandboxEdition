@@ -6,7 +6,7 @@
 //
 // The address keeps which part is open (#/game/<key>?saves=3, ?saves=scores, ?saves=backups).
 import './savesPanel.css';
-import { h, clear, download, modal, pickFiles, toast } from '../editor/core/ui';
+import { h, clear, download, modal, pickFiles } from '../editor/core/ui';
 import { blockCanvas } from '../editor/core/draw';
 import { chooseBlock } from '../editor/widgets/blockChooser';
 import { setHashParams } from '../urlState';
@@ -104,6 +104,15 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   /** Slots whose unlimited sequences are shown. */
   const openUnlimited = new Set<number>();
 
+  // messages show in the dialog's footer (a toast would sit under the dialog's backdrop)
+  const sayEl = h('p', { class: 'sv-say', role: 'status', 'aria-live': 'polite' });
+  let sayTimer: ReturnType<typeof setTimeout> | undefined;
+  const toast = (message: string, kind: 'info' | 'error' = 'info') => {
+    sayEl.textContent = message;
+    sayEl.classList.toggle('error', kind === 'error');
+    clearTimeout(sayTimer);
+    sayTimer = setTimeout(() => (sayEl.textContent = ''), kind === 'error' ? 10000 : 6000);
+  };
   const nav = h('nav', { class: 'sv-nav', 'aria-label': 'Save slots, high scores and backups' });
   const main = h('section', { class: 'sv-main', 'aria-live': 'off' });
   const body = h('div', { class: 'sv' }, nav, main);
@@ -466,7 +475,8 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     const refreshState = () => {
       const dirty = dirtyScores();
       saveBtn.disabled = undoBtn.disabled = !dirty;
-      status.textContent = dirty ? 'Not saved yet.' : saves!.highScoresFromDisk ? 'The table this game came with.' : '';
+      const order = list.some((e, i) => i > 0 && e.score > list[i - 1].score) ? ' ⚠ Not highest first: the game puts a new score above the first lower one it finds, so use Sort by score.' : '';
+      status.textContent = (dirty ? 'Not saved yet.' : saves!.highScoresFromDisk ? 'The table this game came with.' : '') + order;
       renderNav();
     };
     const rows = list.map((e, i) => {
@@ -698,7 +708,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       }
       render();
     })().catch((e) => clear(main, h('p', { class: 'sv-empty' }, `Could not read the saves: ${(e as Error).message}`)));
-    return [body, h('div', { class: 'buttons sv-close' }, h('button', { type: 'button', onclick: () => void tryClose(close) }, 'Close'))];
+    return [body, h('div', { class: 'buttons sv-close' }, sayEl, h('button', { type: 'button', onclick: () => void tryClose(close) }, 'Close'))];
   });
   const dlg = body.closest('dialog');
   dlg?.classList.add('sv-dialog');

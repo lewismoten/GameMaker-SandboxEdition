@@ -307,8 +307,11 @@ dialog.modal .sv-inf {
   width: 11em;
 }
 .sv-scores input[type='text'] {
+  width: 20em;
+  max-width: 100%;
+}
+.sv-scores td:last-child {
   width: 100%;
-  min-width: 10em;
 }
 .sv-warn-cell {
   font-size: 12px;
@@ -368,7 +371,17 @@ dialog.modal .sv-inf {
 }
 
 .sv-close {
+  align-items: center;
   margin-top: 10px !important;
+}
+.sv-say {
+  flex: 1;
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text);
+}
+.sv-say.error {
+  color: var(--danger);
 }
 .sv-confirm {
   max-width: 34em;
