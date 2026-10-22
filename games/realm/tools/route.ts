@@ -28,7 +28,7 @@ export const barrows: Step = async (b) => {
     await b.push('up', 3);
     await b.goto(76, 41, 'the big chest');
     await b.push('up', 3);
-    await bossFight(b, 50, 31, 'Sir Snoozalot');
+    await bossFight(b, 50, 30, 'Sir Snoozalot');
     await b.talk(50, 26, 'the first piece');
     await b.enter(50, 83, 'the stairs out');
   });
@@ -45,7 +45,7 @@ function bossAlive(b: Bot): boolean {
 }
 
 /** Walks up under a boss and swings until the way through is clear. */
-async function bossFight(b: Bot, x: number, y: number, name: string): Promise<void> {
+async function bossFight(b: Bot, x: number, y: number, name: string, face: 'up' | 'down' = 'up'): Promise<void> {
   await b.goto(x, y, name);
   b.reach = 3;
   for (let k = 0; k < 400; k++) {
@@ -57,10 +57,16 @@ async function bossFight(b: Bot, x: number, y: number, name: string): Promise<vo
       b.say(`boss parts ${parts.map(([m, i]) => `${m}@${w.mi[i].curx[0]},${w.mi[i].cury[0]}`).join(' ')} pip ${w.chr.x}/${w.chr.y} steel ${b.sim.meter(13)}`);
     }
     if (bossAlive(b)) {
-      // still blocked: swing straight up at the boss
-      b.sim.press(72);
-      await b.wait(1);
-      b.sim.release(72);
+      // still blocked: back to the boss and swing straight at it (a step its way only if it
+      // can't reach the piece)
+      const p = b.sim.pos;
+      if (Math.abs(p.x - x) + Math.abs(p.y - y) > 1) await b.goto(x, y, name);
+      const key = face === 'up' ? 72 : 80;
+      if (!b.stepTouchesLink(face)) {
+        b.sim.press(key);
+        await b.wait(1);
+        b.sim.release(key);
+      }
       b.sim.press(57);
       await b.wait(2);
       b.sim.release(57);
@@ -93,7 +99,7 @@ export const vaults: Step = async (b) => {
   // the foghorn clears the fog bank as Pip walks into it
   await b.retry(() => b.enter(16, 49, 'the Soggy Vaults', set([16, 48])));
   await b.retry(async () => {
-    await bossFight(b, 50, 84, 'the Kraken');
+    await bossFight(b, 50, 85, 'the Kraken', 'down');
     await b.talk(50, 90, 'the second piece');
     await b.enter(50, 17, 'the stairs up to the pier');
   });
@@ -118,7 +124,7 @@ export const mines: Step = async (b) => {
   await b.retry(() => b.enter(78, 38, 'the Putoff Mines'));
   await b.retry(async () => {
     await b.goto(50, 66, 'through the lamp door', set([50, 70]));
-    await bossFight(b, 50, 27, 'Tick-Tock');
+    await bossFight(b, 50, 26, 'Tick-Tock');
     await b.talk(50, 22, 'the third piece');
     await b.enter(50, 83, 'the stairs out');
   });
@@ -128,7 +134,7 @@ export const keep: Step = async (b) => {
   await b.retry(() => b.enter(76, 76, 'Deadline Keep'));
   await b.retry(async () => {
     await b.goto(50, 35, 'through the sockets', set([50, 39], [50, 38], [50, 37]));
-    await bossFight(b, 50, 20, 'Lord Deadline');
+    await bossFight(b, 50, 19, 'Lord Deadline');
     await b.goto(50, 15, 'the Round Tuit');
   });
 };

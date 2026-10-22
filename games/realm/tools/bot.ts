@@ -120,10 +120,14 @@ export class Bot {
       // face it: a one-tick step its way (the slash flies the way Pip last stepped)
       const dir: Dir = Math.abs(f[0]) >= Math.abs(f[1]) ? (f[0] > 0 ? 'right' : 'left') : f[1] > 0 ? 'down' : 'up';
       this.sim.releaseAll();
-      this.sim.press(SCAN[dir]);
-      let r = await this.wait(1);
-      this.sim.release(SCAN[dir]);
-      if (r) return r;
+      let r: string | undefined;
+      // (never a step that would touch a link: a fight is no reason to leave the room)
+      if (!this.stepTouchesLink(dir)) {
+        this.sim.press(SCAN[dir]);
+        r = await this.wait(1);
+        this.sim.release(SCAN[dir]);
+        if (r) return r;
+      }
       this.sim.press(SCAN.space);
       r = await this.wait(2);
       this.sim.release(SCAN.space);
@@ -138,6 +142,17 @@ export class Bot {
       if (r) return r;
     }
     return undefined;
+  }
+
+  /** Whether a 4-pixel step `dir` would put any part of Pip on a link's block. */
+  stepTouchesLink(dir: Dir): boolean {
+    const c = this.sim.w.chr;
+    const px = c.x[0] * 20 + c.x[1] + STEP[dir].x * 4;
+    const py = c.y[0] * 20 + c.y[1] + STEP[dir].y * 4;
+    const links = this.linkCells();
+    for (const x of new Set([Math.floor(px / 20), Math.floor((px + 19) / 20)]))
+      for (const y of new Set([Math.floor(py / 20), Math.floor((py + 19) / 20)])) if (links.has(`${(x + 100) % 100},${(y + 100) % 100}`)) return true;
+    return false;
   }
 
   private linkCells(): Set<string> {

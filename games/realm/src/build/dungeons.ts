@@ -42,7 +42,7 @@ const SPECS: Spec[] = [
     bossPower: 120,
     bite: -6,
     boss: 'snoozalot',
-    bossHits: 4,
+    bossHits: 3,
     shot: 'zzz',
     foes: [
       { name: 'slime', wander: 1, rush: 1, hits: 2 },
@@ -59,7 +59,7 @@ const SPECS: Spec[] = [
     bossPower: 140,
     bite: -6,
     boss: 'kraken',
-    bossHits: 5,
+    bossHits: 3,
     shot: 'spark',
     foes: [
       { name: 'crab', wander: 1, rush: 2, hits: 2 },
@@ -75,7 +75,7 @@ const SPECS: Spec[] = [
     bossPower: 150,
     bite: -8,
     boss: 'ticktock',
-    bossHits: 5,
+    bossHits: 4,
     shot: 'ember',
     foes: [
       { name: 'golem', wander: 1, rush: 1, hits: 3 },
@@ -91,7 +91,7 @@ const SPECS: Spec[] = [
     bossPower: 155,
     bite: -8,
     boss: 'deadline',
-    bossHits: 7,
+    bossHits: 5,
     shot: 'minute',
     foes: [
       { name: 'goblin', wander: 2, rush: 2, hits: 2 },
