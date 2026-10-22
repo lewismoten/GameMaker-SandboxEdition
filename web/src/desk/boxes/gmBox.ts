@@ -232,7 +232,7 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
     'IBM AT, PS/2 or compatible: 286 or better',
     '512K free memory · hard disk · MS-DOS 4.1+',
     'Standard VGA (256 colors) · two-button mouse',
-    '3½" 1.44 MB drive · CD-ROM for the bonus games',
+    '3½" 1.44 MB drive · double-spin CD-ROM (bonus CD)',
     'Optional: Sound Blaster card, joystick',
   ].forEach((l, i) => b.fillText(l, 42, y + 36 + i * 15));
   const upcX = W - 30 - 166;
