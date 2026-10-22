@@ -217,6 +217,11 @@ function crc(buf: Uint8Array): number {
   return (c ^ 0xffffffff) >>> 0;
 }
 
+/** A PNG chunk: length, type, data and CRC (also for scripts/gameShots.ts). */
+export function pngChunk(type: string, data: Uint8Array): Uint8Array {
+  return chunk(type, data);
+}
+
 function chunk(type: string, data: Uint8Array): Uint8Array {
   const out = new Uint8Array(12 + data.length);
   const dv = new DataView(out.buffer);

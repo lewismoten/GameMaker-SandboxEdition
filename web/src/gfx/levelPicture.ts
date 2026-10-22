@@ -1,0 +1,146 @@
+// A picture of a level as the player first sees it, as palette-indexed pixels: the map around
+// the block the hero arrives on, with its placed monsters and the hero. No canvas, so the
+// build draws the home page's game pictures with it too (scripts/gameShots.ts), exactly as
+// the page would (integratorArt.ts levelShot, desk/boxes/boxArt.ts renderShot).
+import { NOSCENE, type Game, type Point, type Scene } from '../formats/game';
+import { parseMap, MLEN, MWID } from '../formats/map';
+import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../formats/blocks';
+import { parseMonsters } from '../formats/monster';
+import { parseCharacter } from '../formats/character';
+import { defaultPalette, paletteToRGBA, parsePalette, type Palette } from '../formats/palette';
+
+export interface LevelPicture {
+  width: number;
+  height: number;
+  /** One palette index per pixel. */
+  pixels: Uint8Array;
+  palette: Palette;
+}
+
+/** A game's files by name (GameFiles fits). */
+export interface FileSource {
+  get(name: string): Uint8Array | undefined;
+}
+
+/**
+ * `cols` x `rows` blocks of a level's map centred on `at`, drawn the way the game draws
+ * them: background blocks in the level's palette, placed monsters (first frame) and the
+ * hero (first frame) standing on `at`. Undefined when the level has no map.
+ */
+export function levelPixels(files: FileSource, scene: Scene, at: Point, cols = 8, rows = 5): LevelPicture | undefined {
+  const get = (i: number) => (scene.files[i] ? files.get(scene.files[i]) : undefined);
+  const mapB = get(1);
+  if (!mapB) return undefined;
+  try {
+    const palB = get(0);
+    const palette = palB ? parsePalette(palB) : defaultPalette();
+    const map = parseMap(mapB);
+    const bblB = get(2);
+    const blocks = bblB ? parseBlocks(bblB, BACKBL) : [];
+    const monB = get(3);
+    const mblB = get(4);
+    const mons = monB ? parseMonsters(monB) : [];
+    const mblocks = mblB ? parseBlocks(mblB, MONBL) : [];
+    const W = cols * BLEN;
+    const pixels = new Uint8Array(W * rows * BLEN);
+    const paint = (px: Uint8Array | undefined, bx: number, by: number, transparent: boolean) => {
+      if (!px || bx < 0 || by < 0 || bx >= cols || by >= rows) return;
+      for (let yy = 0; yy < BLEN; yy++)
+        for (let xx = 0; xx < BLEN; xx++) {
+          const c = px[yy * BLEN + xx];
+          if (!transparent || c !== TRANSPARENT) pixels[(by * BLEN + yy) * W + bx * BLEN + xx] = c;
+        }
+    };
+    const x0 = at.x - Math.floor(cols / 2);
+    const y0 = at.y - Math.floor((rows - 1) / 2);
+    for (let by = 0; by < rows; by++)
+      for (let bx = 0; bx < cols; bx++) {
+        const mx = (((x0 + bx) % MLEN) + MLEN) % MLEN;
+        const my = (((y0 + by) % MWID) + MWID) % MWID;
+        const cell = my * MLEN + mx;
+        paint((blocks[map.blocks[cell]] ?? blocks[0])?.pixels, bx, by, false);
+        const placed = map.monsters[map.mons[cell]];
+        const pic = placed && mons[placed.monnum]?.pic[0]?.[0];
+        if (pic !== undefined && pic >= 0) paint(mblocks[pic]?.pixels, bx, by, true);
+      }
+    // the hero
+    const chrB = get(5);
+    const cblB = get(6);
+    if (chrB && cblB) {
+      const frame = parseCharacter(chrB).sequences[0]?.frames[0];
+      const cbl = parseBlocks(cblB, CHARBL);
+      if (frame) {
+        paint(cbl[frame.pic1]?.pixels, at.x - x0, at.y - y0, true);
+        paint(cbl[frame.pic2]?.pixels, at.x - x0, at.y - y0 + 1, true);
+      }
+    }
+    return { width: W, height: rows * BLEN, pixels, palette };
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * The first few levels in the order the game reaches them, each with where the hero
+ * arrives (some games begin with an "intro" level of lettering, or a dark one). A game
+ * whose front end links nowhere: its first level, from the middle of the map.
+ */
+export function firstLevels(game: Game, max = 5): Map<number, Point> {
+  const arrivals = new Map<number, Point>();
+  const queue = [0];
+  const seen = new Set(queue);
+  while (queue.length && arrivals.size < max) {
+    const from = game.scenes[queue.shift()!];
+    for (const l of from?.links ?? []) {
+      if (l.toScene === NOSCENE || !game.scenes[l.toScene]) continue;
+      if (game.scenes[l.toScene].gametype === 10 && !arrivals.has(l.toScene)) arrivals.set(l.toScene, l.to);
+      if (!seen.has(l.toScene)) (seen.add(l.toScene), queue.push(l.toScene));
+    }
+  }
+  if (!arrivals.size) {
+    const i = game.scenes.findIndex((s) => s.gametype === 10);
+    if (i >= 0) arrivals.set(i, { x: 50, y: 50 });
+  }
+  return arrivals;
+}
+
+/** How interesting a picture is: plenty of colors, and not one color filling it (every 4th pixel looked at). */
+export function busyness(pic: LevelPicture): number {
+  const rgb = paletteToRGBA(pic.palette);
+  const counts = new Map<number, number>();
+  for (let i = 0; i < pic.pixels.length; i += 4) {
+    const k = rgb[pic.pixels[i]] & 0xffffff;
+    counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  const total = pic.pixels.length / 4;
+  const top = Math.max(...counts.values());
+  return Math.min(counts.size, 40) * (1 - top / total);
+}
+
+/** The most colorful of `pictures` (the first of equals), or undefined. */
+export function busiest(pictures: (LevelPicture | undefined)[]): LevelPicture | undefined {
+  let best: LevelPicture | undefined;
+  let bestScore = -1;
+  for (const p of pictures) {
+    if (!p) continue;
+    const score = busyness(p);
+    if (score > bestScore) ((best = p), (bestScore = score));
+  }
+  return best;
+}
+
+/** The pictures the build draws for each listed game (scripts/gameShots.ts): a home page tile's (8 x 5 blocks) and a screen's (16 x 10). */
+export const BUILT_SHOTS: readonly (readonly [number, number])[] = [
+  [8, 5],
+  [16, 10],
+];
+
+/** Where the build puts a game's picture of `cols` x `rows` blocks. */
+export function builtShotPath(id: string, cols: number, rows: number): string {
+  return `games/shots/${id}-${cols}x${rows}.png`;
+}
+
+/** A game's picture: the most colorful of the first levels it reaches (renderShot's choice). */
+export function gamePicture(files: FileSource, game: Game, cols: number, rows: number): LevelPicture | undefined {
+  return busiest([...firstLevels(game)].map(([i, at]) => levelPixels(files, game.scenes[i], at, cols, rows)));
+}

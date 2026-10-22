@@ -18,6 +18,7 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
+import { gameShots } from './gameShots';
 
 export interface CdCatalogEntry {
   id: string;
@@ -49,6 +50,8 @@ export interface CdCatalogEntry {
   details?: boolean;
   /** Original games: the site path of the game's walkthrough (../games/<id>/walkthrough.json, src/walkthrough). */
   walkthrough?: string;
+  /** The build drew its pictures (games/shots/<id>-<cols>x<rows>.png, scripts/gameShots.ts). */
+  shots?: boolean;
 }
 
 /** What ../games/<id>/about.json and manual.json add for an original game. */
@@ -402,7 +405,14 @@ export function cdGames(cdRoot: string): Plugin {
       });
     },
     generateBundle() {
-      const { gm, catalog, secret, files } = get();
+      const { gm, secret, files } = get();
+      // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
+      const catalog = get().catalog.map((e) => {
+        const disk = new Map(e.files.flatMap((n) => (files.has(`${e.path}${n}`) ? [[n, files.get(`${e.path}${n}`)!] as [string, string]] : [])));
+        const shots = gameShots(e.id, e.gam, disk);
+        for (const [fileName, source] of shots) this.emitFile({ type: 'asset', fileName, source });
+        return shots.size ? { ...e, shots: true } : e;
+      });
       // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
       // files shrink 3-20x: each game file but a GIF also gets a gzip copy, <file>.gz, which
       // the site fetches and unpacks instead (src/project/files.ts, fetchSiteFile). The

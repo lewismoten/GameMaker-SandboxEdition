@@ -1,8 +1,8 @@
 // "Screenshots" for the Game-Maker box on the desk, drawn from the free sample games'
 // real maps: the area where each game's first level starts.
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
-import { parseGame, NOSCENE, type Point } from '../../formats/game';
-import { levelShot } from '../../editor/editors/integrator/integratorArt';
+import { parseGame } from '../../formats/game';
+import { BUILT_SHOTS, builtShotPath, busiest, firstLevels, levelPixels } from '../../gfx/levelPicture';
 import { parseMap, MLEN, MWID } from '../../formats/map';
 import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
 import { parseMonsters } from '../../formats/monster';
@@ -14,61 +14,47 @@ async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array 
   return fetchGameFile(entry, name);
 }
 
-/** How interesting a picture is: plenty of colors, and not one color filling it. */
-function busyness(c: HTMLCanvasElement): number {
-  const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
-  const counts = new Map<number, number>();
-  for (let i = 0; i < d.length; i += 16) {
-    const k = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2];
-    counts.set(k, (counts.get(k) ?? 0) + 1);
-  }
-  const total = d.length / 16;
-  const top = Math.max(...counts.values());
-  return Math.min(counts.size, 40) * (1 - top / total);
+/** A picture the build drew of a listed game (games/shots/), if it drew this size. */
+async function builtShot(entry: CatalogEntry, cols: number, rows: number): Promise<HTMLImageElement | undefined> {
+  if (!entry.shots || !BUILT_SHOTS.some(([c, r]) => c === cols && r === rows)) return undefined;
+  const img = new Image();
+  img.src = `./${builtShotPath(entry.id, cols, rows)}`;
+  return img.decode().then(
+    () => img,
+    () => undefined,
+  );
 }
 
 /**
  * Renders `cols` x `rows` blocks of a level, with its monsters and the hero where he
  * arrives: the most colorful of the first few levels the game reaches (some games begin
- * with an "intro" level of lettering, or a dark one).
+ * with an "intro" level of lettering, or a dark one). A built site has the usual sizes
+ * drawn already (one small picture instead of the game's files).
  */
 export async function renderShot(entry: CatalogEntry, canvas: HTMLCanvasElement, cols = 8, rows = 6): Promise<boolean> {
   if (!entry.gam) return false;
+  const built = await builtShot(entry, cols, rows);
+  if (built) {
+    canvas.width = built.naturalWidth;
+    canvas.height = built.naturalHeight;
+    canvas.getContext('2d')!.drawImage(built, 0, 0);
+    return true;
+  }
   const gam = await fetchFile(entry, entry.gam);
   if (!gam) return false;
   const game = parseGame(gam);
-  // levels in the order the game reaches them, each with where the hero arrives
-  const arrivals = new Map<number, Point>();
-  const queue = [0];
-  const seen = new Set(queue);
-  while (queue.length && arrivals.size < 5) {
-    const from = game.scenes[queue.shift()!];
-    for (const l of from?.links ?? []) {
-      if (l.toScene === NOSCENE || !game.scenes[l.toScene]) continue;
-      if (game.scenes[l.toScene].gametype === 10 && !arrivals.has(l.toScene)) arrivals.set(l.toScene, l.to);
-      if (!seen.has(l.toScene)) (seen.add(l.toScene), queue.push(l.toScene));
-    }
-  }
-  if (!arrivals.size) {
-    const i = game.scenes.findIndex((s) => s.gametype === 10);
-    if (i >= 0) arrivals.set(i, { x: 50, y: 50 });
-  }
-  let best: HTMLCanvasElement | undefined;
-  let bestScore = -1;
-  for (const [i, at] of arrivals) {
-    const scene = game.scenes[i];
-    const names = scene.files.slice(0, 7).filter(Boolean);
-    const bytes = await Promise.all(names.map((n) => fetchFile(entry, n)));
-    const files = new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]!] as [string, Uint8Array]] : [])));
-    const shot = levelShot(files, scene, at, cols, rows);
-    if (!shot) continue;
-    const score = busyness(shot);
-    if (score > bestScore) ((best = shot), (bestScore = score));
-  }
+  const levels = [...firstLevels(game)];
+  const pictures = await Promise.all(
+    levels.map(async ([i, at]) => {
+      const names = game.scenes[i].files.slice(0, 7).filter(Boolean);
+      const bytes = await Promise.all(names.map((n) => fetchFile(entry, n)));
+      const files = new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]!] as [string, Uint8Array]] : [])));
+      return levelPixels(files, game.scenes[i], at, cols, rows);
+    }),
+  );
+  const best = busiest(pictures);
   if (!best) return false;
-  canvas.width = best.width;
-  canvas.height = best.height;
-  canvas.getContext('2d')!.drawImage(best, 0, 0);
+  paintIndexed(canvas, best.pixels, best.width, best.height, best.palette);
   return true;
 }
 
