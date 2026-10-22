@@ -105,7 +105,7 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
   let p = 2;
   const u16 = (at: number) => (data[at] << 8) | data[at + 1];
 
-  outer: while (p + 4 <= data.length) {
+  outer: while (p + 1 < data.length) {
     if (data[p] !== 0xff) {
       p++;
       continue;
@@ -123,6 +123,7 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
       p += 2;
       continue;
     }
+    if (p + 4 > data.length) break;
     const len = u16(p + 2);
     const seg = p + 4;
     const end = p + 2 + len;
