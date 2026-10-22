@@ -5,48 +5,104 @@
 import { dog, GWINN, TEDDY } from './dog';
 import { type Ctx, blob, ell, fill, finish, glow, lin, poly, rad, seeded, stroke } from './paint';
 
-/** The 1976½ CitiCar: a tomato-red wedge with round headlight pods and a tall windshield. */
+/** The 1976½ CitiCar, seen from its front corner as it sits in the photo: a short tomato-red
+ * wedge, the hood sloping straight up into a big flat windshield, a tall boxy cabin with a grey
+ * roof, round headlight pods on the hood's corners, a black bumper with "THE CHEZ" on its plate,
+ * and little whitewall wheels. Drawn in the photo's own coordinates (ground under the middle at
+ * 320, 520), then placed with its ground at (x, y). */
 function citicar(c: Ctx, x: number, y: number, s: number): void {
   c.save();
   c.translate(x, y);
   c.scale(s, s);
-  ell(c, 0, 4, 130, 14);
+  c.translate(-320, -520);
+  ell(c, 320, 500, 200, 34);
   fill(c, 'rgba(0,0,0,0.35)');
-  // the cabin: grey roof, tall upright glass
-  poly(c, [-40, -70, -30, -150, 70, -150, 84, -70]);
-  fill(c, lin(c, 0, -150, 0, -70, [
-    [0, '#9ad4ff'],
-    [1, '#2a5a8a'],
-  ]));
-  poly(c, [-36, -150, 74, -150, 72, -160, -32, -160]);
-  fill(c, '#8a8a96');
-  stroke(c, '#c01810', 8, [16, -150, 20, -72]);
-  stroke(c, 'rgba(255,255,255,0.6)', 5, [-20, -140, -4, -84]);
-  // the wedge body
-  poly(c, [-118, -40, -40, -76, 100, -76, 108, -16, 100, -6, -116, -6, -124, -24]);
-  fill(c, lin(c, 0, -76, 0, -6, [
-    [0, '#ff7a5a'],
-    [0.4, '#e8321e'],
-    [1, '#8a1408'],
-  ]));
-  stroke(c, '#fff', 2, [-110, -30, 100, -40]);
-  // headlight pods, the bumper bar, small whitewall tires
-  for (const hx of [-104, -78]) {
-    ell(c, hx, -46, 11, 11);
-    fill(c, '#c01810');
-    ell(c, hx, -46, 7, 7);
-    fill(c, '#fff8d0');
-    glow(c, hx, -46, 20, '#fff2a0', 0.5);
-  }
-  stroke(c, '#151515', 9, [-126, -16, -40, -14]);
-  for (const wx of [-74, 66]) {
-    ell(c, wx, -6, 22, 22);
+  const red = (x0: number, y0: number, x1: number, y1: number) =>
+    lin(c, x0, y0, x1, y1, [
+      [0, '#ff6a50'],
+      [0.5, '#e02a18'],
+      [1, '#9a160a'],
+    ]);
+  // wheels behind the body: the far rear one and the front one tucked under the bumper
+  for (const [wx, wy, rx, ry] of [
+    [182, 446, 18, 30],
+    [462, 456, 20, 30],
+  ]) {
+    ell(c, wx, wy, rx, ry);
     fill(c, '#151515');
-    ell(c, wx, -6, 13, 13);
-    fill(c, '#f4f4f4');
-    ell(c, wx, -6, 7, 7);
-    fill(c, '#9a9aa4');
   }
+  // the side: rear quarter and the tall door, flat panels
+  poly(c, [150, 262, 222, 250, 270, 452, 268, 486, 152, 448]);
+  fill(c, red(150, 0, 270, 0));
+  poly(c, [174, 266, 212, 258, 218, 346, 178, 352]);
+  fill(c, lin(c, 0, 258, 0, 352, [
+    [0, '#9ad4ff'],
+    [1, '#2a4a6a'],
+  ]));
+  stroke(c, '#7a1006', 3, [216, 256, 222, 470]);
+  stroke(c, '#e8c070', 3, [152, 400, 266, 436]);
+  // the grey roof
+  poly(c, [162, 248, 222, 238, 328, 236, 336, 246, 222, 252, 158, 262]);
+  fill(c, '#5a5a62');
+  // the windshield: big, flat, raked back
+  poly(c, [224, 252, 330, 246, 380, 300, 226, 324]);
+  fill(c, lin(c, 0, 246, 0, 324, [
+    [0, '#c8ecff'],
+    [0.55, '#6aa8d8'],
+    [1, '#2a4a6a'],
+  ]));
+  stroke(c, 'rgba(255,255,255,0.7)', 4, [250, 262, 236, 312]);
+  stroke(c, '#151515', 3, [262, 318, 330, 300]);
+  // the hood, sloping straight down from the windshield to the bumper, with its little scoop
+  poly(c, [226, 324, 380, 300, 392, 312, 488, 398, 482, 404, 270, 448, 228, 330]);
+  fill(c, red(300, 300, 380, 440));
+  poly(c, [330, 330, 350, 326, 366, 372, 342, 380]);
+  fill(c, '#c01e10');
+  stroke(c, '#7a1006', 2, [342, 380, 366, 372]);
+  // round headlight pods on the hood's corners, chrome rims, amber turn signals below
+  for (const [hx, hy, r] of [
+    [290, 384, 24],
+    [418, 354, 21],
+  ]) {
+    ell(c, hx + 4, hy - 4, r + 6, r + 4);
+    fill(c, red(hx - r, hy - r, hx + r, hy + r));
+    ell(c, hx, hy, r * 0.82, r * 0.82);
+    fill(c, '#d8d8e0');
+    ell(c, hx, hy, r * 0.62, r * 0.62);
+    fill(c, rad(c, hx - 4, hy - 4, r * 0.62, [
+      [0, '#ffffff'],
+      [1, '#a8b0c0'],
+    ]));
+  }
+  for (const [tx, ty] of [
+    [288, 432],
+    [470, 384],
+  ]) {
+    poly(c, [tx - 9, ty - 6, tx + 9, ty - 8, tx + 9, ty + 4, tx - 9, ty + 6]);
+    fill(c, '#ffa020');
+  }
+  // the black bumper bar across the nose, and the plate
+  poly(c, [266, 446, 494, 396, 500, 404, 500, 428, 272, 482, 266, 476]);
+  fill(c, '#1a1a1e');
+  c.save();
+  c.translate(392, 452);
+  c.rotate(-0.21);
+  poly(c, [-38, -16, 38, -16, 38, 16, -38, 16]);
+  fill(c, '#f2c81a');
+  stroke(c, '#1a1a1e', 2, [-36, -14, 36, -14, 36, 14, -36, 14, -36, -14]);
+  c.fillStyle = '#1a1a1e';
+  c.font = '900 19px Arial, sans-serif';
+  c.textAlign = 'center';
+  c.textBaseline = 'middle';
+  c.fillText('THE CHEZ', 0, 2, 70);
+  c.restore();
+  // the near front wheel: small, round, a whitewall and a chrome cap
+  ell(c, 276, 500, 26, 34);
+  fill(c, '#151515');
+  ell(c, 276, 500, 17, 23);
+  fill(c, '#f4f4f4');
+  ell(c, 278, 500, 9, 12);
+  fill(c, '#9a9aa4');
   c.restore();
 }
 
@@ -225,7 +281,7 @@ const paint = (c: Ctx, w: number, h: number): void => {
     [32, 200, 12, 7],
   ])
     (ell(c, bx, by, rx, ry), fill(c, rad(c, bx - 4, by - 4, rx + 6, [[0, '#ffd0f0'], [1, '#ff5aa8']])));
-  citicar(c, 440, 520, 1.15);
+  citicar(c, 468, 482, 0.64);
   docLeo(c, 150, 584, 0.95);
   // Gwinn dashing off with the costume suitcase
   dog(c, 480, 574, 0.55, GWINN);
