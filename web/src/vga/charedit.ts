@@ -19,6 +19,7 @@ import { INF_REPEAT, MAXSEQ, parseCharacter, serializeCharacter, type Sequence }
 import { LASTSND, NUMFREQ, parseSoundSet } from '../formats/sound';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { output } from '../audio/output';
+import { soundBlaster } from '../retro/computer/soundBlaster';
 import { DELAY, MATTR, sleep, pad, scan, initalldata, bytes2pal, biosKey, keyName } from './charedit/layout';
 import { CharacterInventory } from './charedit/inventory';
 
@@ -334,7 +335,8 @@ class CharacterMaker extends CharacterInventory {
     const ctx = this.h.audio();
     if (!ctx) return;
     const name = (this.s.digital[n] ?? '').trim();
-    if (name) {
+    // a .VOC needs the Sound Blaster; without it the PC speaker plays the sound
+    if (name && soundBlaster()) {
       const bytes = await this.work.read(`${name.toLowerCase()}.voc`);
       if (bytes && isVoc(bytes)) {
         const voc = decodeVoc(bytes);

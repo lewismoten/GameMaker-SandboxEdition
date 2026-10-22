@@ -11,6 +11,7 @@ import type { FileKind } from '../editor/core/project';
 import { createZip } from '../project/zip';
 import { download } from '../editor/core/ui';
 import { prefetchWhenIdle } from '../prefetch';
+import { soundBlaster } from './computer/soundBlaster';
 import type { Program } from '../vga/shared/designer';
 
 /**
@@ -237,7 +238,8 @@ export async function playgame(h: RetroHost): Promise<void> {
       }
       await h.playGame(game.files, pick.name.toLowerCase(), game.title, game.notice);
     } else if (choice === 2) {
-      await errorBox(h, 'Sound Blaster at 220h, IRQ 7, and Auto-Detect VGA', 'are already set up for this PC.  (C)ontinue');
+      if (soundBlaster()) await errorBox(h, 'Sound Blaster at 220h, IRQ 7, and Auto-Detect VGA', 'are already set up for this PC.  (C)ontinue');
+      else await errorBox(h, 'No Sound Blaster answers at 220h: sounds play on', 'the PC speaker, with no music.  (C)ontinue');
     } else return;
   }
 }

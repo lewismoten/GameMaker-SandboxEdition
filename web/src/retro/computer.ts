@@ -19,6 +19,7 @@ import { PictureScreen } from "./view/picture";
 import { output } from "../audio/output";
 import { h, clear } from "../editor/core/ui";
 import { AUTOEXEC } from "./computer/setup";
+import { soundBlaster } from "./computer/soundBlaster";
 import { ComputerFolders } from "./computer/folders";
 
 export class Computer extends ComputerFolders {
@@ -246,6 +247,8 @@ export class Computer extends ComputerFolders {
         noKeysButton: true,
         exactPixels: true, // the monitor's size is never a whole multiple of 320x200
         speed: this.opts.speed,
+        // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)
+        noSoundCard: !soundBlaster(),
         onQuit: () => false, // back to DOS
         onFileWrite: saveId ? (name, bytes) => void writeSaveFile(saveId, name, bytes) : undefined,
         onExit: () => {

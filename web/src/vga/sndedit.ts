@@ -14,6 +14,7 @@ import type { OpenDesigner } from '../retro/host';
 import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, serializeSoundSet, type SoundSet } from '../formats/sound';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { output } from '../audio/output';
+import { soundBlaster } from '../retro/computer/soundBlaster';
 
 const ROOTN = 25;
 const FREQL = 6; // 2^6 = 64 Hz
@@ -297,7 +298,8 @@ class SoundDesigner {
   private async playSound(i: number): Promise<void> {
     const ctx = this.h.audio();
     const name = this.s.digital[i].trim();
-    if (name && ctx) {
+    // a .VOC needs the Sound Blaster; without it the PC speaker plays the sound
+    if (name && ctx && soundBlaster()) {
       const bytes = await this.work.read(`${name.toLowerCase()}.voc`);
       if (bytes && isVoc(bytes)) {
         const voc = decodeVoc(bytes);
