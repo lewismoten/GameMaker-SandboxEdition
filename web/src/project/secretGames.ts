@@ -20,8 +20,8 @@ export async function secretsRevealed(): Promise<boolean> {
   }
 }
 
-/** FNV-1a of an id. */
-function idHash(id: string): number {
+/** FNV-1a of an id: how code that must know a secret game (its box cover) knows it without naming it. */
+export function idHash(id: string): number {
   let h = 0x811c9dc5;
   for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 0x01000193) >>> 0;
   return h;

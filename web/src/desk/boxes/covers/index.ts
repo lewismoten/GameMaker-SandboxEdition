@@ -2,10 +2,10 @@
 // on real 1995 boxes: each is drawn in code (covers/<id>.ts), loaded only when its box is
 // drawn, painted once and kept.
 import type { Painter } from './paint';
+import { idHash } from '../../../project/secretGames';
 
 const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   blaster: () => import('./blaster'),
-  brief: () => import('./brief'),
   logic: () => import('./logic'),
   maximus: () => import('./maximus'),
   sandcast: () => import('./sandcast'),
@@ -13,6 +13,11 @@ const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   snowbound: () => import('./snowbound'),
   teddy: () => import('./teddy'),
   year2000: () => import('./year2000'),
+};
+
+/** The secret games' covers, by idHash, so the desk's code names none of them (see project/secretGames). */
+const SECRET_COVERS: Record<number, () => Promise<{ default: Painter }>> = {
+  0xe1c9f99f: () => import('./extra'),
 };
 
 /** Where the award laurel and the "hours of play" burst sit, clear of each cover's subject. */
@@ -30,7 +35,7 @@ export function coverArt(id: string, w: number, h: number): Promise<HTMLCanvasEl
   const key = `${id}@${w}x${h}`;
   let p = painted.get(key);
   if (!p) {
-    const load = COVERS[id];
+    const load = COVERS[id] ?? SECRET_COVERS[idHash(id)];
     p = !load
       ? Promise.resolve(undefined)
       : load()
