@@ -219,3 +219,37 @@ export function pastePhoto(p: Pixels, pal: Uint8Array, s: Scan, x: number, y: nu
   for (let yy = 0; yy < s.h; yy++) for (let xx = 0; xx < s.w; xx++) p.set(x + xx, y + yy, idx[yy * s.w + xx]);
   return { pal: out, slots };
 }
+
+export interface FrameColors {
+  /** The print's white border. */
+  paper: number;
+  /** Its outline. */
+  edge: number;
+  /** A drop shadow on what's under it (-1: none). */
+  shadow?: number;
+  /** Strips of tape over the top corners (-1: none), every other pixel so the print shows through. */
+  tape?: number;
+}
+
+/**
+ * An instant print with its photo area w x h at (x, y): a white border, deeper at the bottom
+ * for a caption, an outline, a drop shadow and tape at the top corners. Returns where the
+ * caption strip's middle is.
+ */
+export function polaroid(p: Pixels, x: number, y: number, w: number, h: number, c: FrameColors, bottom = 14): { cx: number; cy: number } {
+  const [fx, fy, fw, fh] = [x - 4, y - 4, w + 8, h + 4 + bottom];
+  if ((c.shadow ?? -1) >= 0) p.rect(fx + 3, fy + 3, fw, fh, c.shadow!);
+  p.rect(fx, fy, fw, fh, c.paper).frame(fx, fy, fw, fh, c.edge);
+  if ((c.tape ?? -1) >= 0)
+    for (const [tx, flip] of [
+      [fx - 5, 1],
+      [fx + fw - 17, -1],
+    ] as const)
+      for (let k = 0; k < 22; k++)
+        for (let t = 0; t < 7; t++) {
+          const px = tx + k;
+          const py = fy - 6 + t + Math.round((flip > 0 ? 21 - k : k) / 3);
+          if ((px + py) % 2 === 0 || t === 0 || t === 6) p.set(px, py, c.tape!);
+        }
+  return { cx: fx + fw / 2, cy: y + h + bottom / 2 };
+}

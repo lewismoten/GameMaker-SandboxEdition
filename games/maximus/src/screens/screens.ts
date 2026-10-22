@@ -5,6 +5,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeBackdrop, serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
+import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { tileNoise } from '../art/draw';
 import { Canvas } from '../art/canvas';
 import { drawCourier } from '../sprites/courier';
@@ -345,14 +346,22 @@ export function wonScreens(): Map<string, Uint8Array> {
   {
     const c = new Canvas();
     spaceBg(c, 73);
-    logo(c, 50, 4);
-    c.center(100, 'DELIVERED.', C('yellow')[6], { scale: 2, outline: 0 });
+    logo(c, 12, 4);
     // the couriers' creed, for the letter carriers this game is dedicated to
-    c.center(122, 'NEITHER SNOW NOR RAIN NOR HEAT', C('ice')[5], { shadow: 0 });
-    c.center(131, 'NOR GLOOM OF NIGHT...', C('ice')[5], { shadow: 0 });
-    c.center(150, 'THANK YOU FOR PLAYING', C('cyan')[6], { shadow: 0 });
-    c.center(166, 'SANDBOX SOFTWARE 1995', C('grey')[4]);
-    out.set('won3.gif', gif(c));
+    const col = (y: number, s: string, color: number | number[], o: { scale?: number; shadow?: number; outline?: number } = {}) =>
+      c.text(Math.round(222 - Canvas.width(s, o.scale ?? 1) / 2), y, s, color, o);
+    col(72, 'DELIVERED.', C('yellow')[6], { scale: 2, outline: 0 });
+    col(98, 'NEITHER SNOW NOR RAIN', C('ice')[5], { shadow: 0 });
+    col(108, 'NOR HEAT NOR GLOOM', C('ice')[5], { shadow: 0 });
+    col(118, 'OF NIGHT...', C('ice')[5], { shadow: 0 });
+    col(144, 'THANK YOU FOR PLAYING', C('cyan')[6], { shadow: 0 });
+    col(160, 'SANDBOX SOFTWARE 1995', C('grey')[4]);
+    // Dr. Leo, who walked a parcel over for Max at Boxcar Flats: his snapshot, scanned in
+    const leo = resample(loadScan('leo'), 84);
+    const at = polaroid(c, 26, 66, leo.w, leo.h, { paper: WHITE, edge: C('grey')[3], shadow: 0, tape: C('sand')[6] });
+    c.text(Math.round(at.cx - Canvas.width('DR. LEO') / 2), Math.round(at.cy - 3), 'DR. LEO', C('blue')[1]);
+    const { pal } = pastePhoto(c, SCREEN.pal, leo, 26, 66);
+    out.set('won3.gif', encodeGif({ width: c.w, height: c.h, pixels: c.px, palette: pal }));
   }
   out.set(
     'won.lst',
