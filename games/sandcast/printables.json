@@ -229,20 +229,19 @@
               "a": "Pick up the shovel (P) by the toy chest. Go to the top right corner of the sandbox and follow the paw prints to the lone dune. Walk into it twice to dig it out, then step into the hole. In Gwinn's Dig, press P to pick up the felt egg. The little sandcastle by the ladder only lets you by once you carry it. Climb the ladder out.",
               "sketch": {
                 "rows": [
-                  "----------|",
-                  "        X |",
-                  "        . |",
-                  "       .  |",
-                  "      .   |",
-                  "     ^    |",
-                  "   = @    |",
+                  "---------|",
+                  "       X |",
+                  "       . |",
+                  "      .  |",
+                  "     .   |",
+                  "  =  @   |",
                   ""
                 ],
                 "labels": [
                   { "x": 1, "y": 1, "text": "LONE DUNE" },
                   { "x": 1, "y": 3, "text": "PAWS" },
-                  { "x": 0, "y": 7, "text": "LAGOON" },
-                  { "x": 6, "y": 6, "text": "YOU" }
+                  { "x": 0, "y": 6, "text": "LAGOON" },
+                  { "x": 6, "y": 5, "text": "YOU" }
                 ]
               }
             }
