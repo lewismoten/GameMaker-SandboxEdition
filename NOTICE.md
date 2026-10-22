@@ -62,6 +62,11 @@ game folder opens in the browser unchanged.
   Software games in code, and testing them, directed and reviewed by Lewis.
 - **Sandbox Software games** (`games/`): new games made for this fork, built in code into
   real Game-Maker files. "Sandbox Software", its address and its BBS number are fictional.
+  The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and
+  text. Many are drawn from Lewis "Lewie" Moten III: his blog writing, photos he provided,
+  and conversations about his interests, experiences and hobbies. Lewis directed each game
+  and played it as it came together, and his feedback shaped every one. Teddy, Gwinn and
+  Doc Leo appear as themselves.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase and others).
   Shareware games are shown play-only, with their authors' original notices.
