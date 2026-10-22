@@ -1,10 +1,11 @@
-// The green room's prop fireplace at 2 AM, and what the lens finds behind its silk flames:
-// a felt egg in theater-red velvet with gold checkerboard trim, a black-and-white comedy
-// mask on the front and a gold curtain-tie stitched round its middle. Touching the
-// fireplace with the lens costs a charge and shows the egg; touching the egg adds to
-// CTR.egg and leaves the hearth open (the scene link behind it shows who left it there).
+// The 2 AM green room's sofa, and what the lens finds between its cushions: a felt egg in
+// theater-red velvet with gold checkerboard trim, a black-and-white comedy mask on the
+// front and a gold curtain-tie stitched round its middle. Touching the sofa with the lens
+// costs a charge and shows the egg; touching the egg adds to CTR.egg and leaves the seat
+// open (the scene link there shows who left it).
 import { Pixels } from '../../../kit/pixels';
-import { shadeAt, pool } from '../art/draw';
+import { shadeAt } from '../art/draw';
+import { clone } from './painters';
 import { c, ramp as r } from '../art/pal';
 import { CTR } from '../ids';
 import { SOLID, type BlockDef } from './blockset';
@@ -116,36 +117,28 @@ export function feltEgg(p: Pixels, cx: number, cy: number, rx: number, ry: numbe
   return p;
 }
 
-/** The fireplace without its fire: wallpaper, the grey surround and a dark hearth. */
-function hearth(wallpaper: () => Pixels, open: boolean): Pixels {
-  const p = wallpaper();
-  p.rect(1, 3, 18, 15, c('grey', 3)).rect(4, 7, 12, 11, c('black', 0));
-  p.rect(1, 3, 18, 2, c('grey', 5));
-  if (open) {
-    // the false back swung aside: a draft of cold air and a sliver of the dark behind
-    p.rect(5, 8, 2, 10, c('panel', 2)).rect(6, 8, 1, 10, c('panel', 3));
-    for (let y = 9; y < 17; y += 2) p.set(12, y, c('grey', 1));
-  }
+/** The sofa with its seat cushion lifted onto the back: a dark hollow where it sat. */
+function lifted(sofa: Pixels): Pixels {
+  const p = clone(sofa);
+  p.rect(1, 7, 18, 8, c('black', 0)).rect(1, 7, 18, 1, c('velvet', 0));
+  // the cushion, propped against the back
+  p.rect(1, 1, 18, 5, c('velvet', 3)).rect(1, 1, 18, 1, c('velvet', 4)).rect(1, 5, 18, 1, c('velvet', 1));
+  for (let x = 4; x < 20; x += 6) p.set(x, 3, c('gold', 3));
   return p;
 }
 
 type Add = (name: string, p: Pixels, d?: BlockDef) => number;
 
 /**
- * The second round's right-hand fireplace looks and flickers like the left one, but it is a
- * stage prop: under the lens (a charge) its silk flames show the egg sitting behind them.
- * `fire` and `fire2` are the real fireplace's two frames.
+ * The second round's sofa looks like any sofa, but under the lens (a charge) something
+ * shows between the cushions: the egg. Touching it takes it (CTR.egg) and leaves the
+ * hollow, which Ada can step into (the scene link there shows who left it).
  */
-export function addEggBlocks(add: Add, wallpaper: () => Pixels, fire: Pixels, fire2: Pixels): void {
+export function addEggBlocks(add: Add, sofa: Pixels): void {
   const S = { solid: SOLID };
-  add('propfire', fire, { ...S, effect: CTR.lens, eamt: -1, touch: 'fire_egg', next: 'propfire2', ntime: 4 });
-  add('propfire2', fire2, { ...S, effect: CTR.lens, eamt: -1, touch: 'fire_egg', next: 'propfire', ntime: 5 });
-  const egg = hearth(wallpaper, false);
-  // the silk flames pulled aside, lying limp in the hearth
-  pool(egg, 10, 17, 6, 2, r('glow'), 0, 1);
-  feltEgg(egg, 10, 11, 5.5, 7);
-  add('fire_egg', egg, { ...S, effect: CTR.egg, eamt: 1, touch: 'hearth' });
-  add('hearth', hearth(wallpaper, true));
+  add('propsofa', sofa, { ...S, effect: CTR.lens, eamt: -1, touch: 'sofa_egg' });
+  add('sofa_egg', feltEgg(lifted(sofa), 10, 10, 5.5, 7), { ...S, effect: CTR.egg, eamt: 1, touch: 'sofa_open' });
+  add('sofa_open', lifted(sofa));
 }
 
 /** The lore screen's close-up (80x80, CLEAR around the egg). */

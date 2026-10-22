@@ -324,6 +324,6 @@ export function buildParlorBlocks(): BlockSet {
   pool(dark, 10, 10, 9, 9, r('velvet'), 0, 2);
   add('zcell', clone(dark), { effect: CTR.strike, eamt: 1, score: -500 });
   add('solved', clone(dark), { score: 5000 });
-  addEggBlocks(add, wallpaper, bs.pic('fire'), bs.pic('fire2'));
+  addEggBlocks(add, bs.pic('sofa'));
   return bs;
 }

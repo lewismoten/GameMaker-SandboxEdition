@@ -219,10 +219,10 @@ It is crossed out: "CUT at dress rehearsal - V.C."
 The whole of Act III played in full light.`,
 };
 
-/** Behind the green room's prop fireplace at 2 AM: who left it, and the note tucked inside. */
+/** Between the green room's sofa cushions at 2 AM: who left it, and the note tucked inside. */
 export const EGG = `THE VELVET CURTAIN EGG
 
-Behind the silk flames of a prop fireplace: a felt egg, deep theater red, with gold checks, a comedy mask and a gold curtain-tie.
+Between the green room's sofa cushions: a felt egg, deep theater red, with gold checks, a comedy mask and a gold curtain-tie.
 
 PERFORMED BY
 Doc Leo, hobo clown (standing backward in line, as usual)
