@@ -69,6 +69,29 @@ export function paperScreen(heading: string, a: Art, deco: 'pages' | 'stars' | '
   return p;
 }
 
+/** A postcard from tomorrow, with the felt egg on its stamp: Display_File writes the message. */
+export function postcardScreen(egg: Pixels): Pixels {
+  const p = new Pixels(W, H);
+  sunsetSky(p, 200, 5);
+  p.rect(31, 33, 266, 156, C('night', 0));
+  p.rect(28, 30, 266, 156, C('paper', 2));
+  p.frame(30, 32, 262, 152, C('teal', 3));
+  chromeCentered(p, 6, 'FROM TOMORROW', 2);
+  // The stamp: perforated edges, teal sky, the egg.
+  p.rect(240, 34, 50, 50, C('paper', 1));
+  for (let k = 0; k < 50; k += 4) {
+    p.set(240 + k, 34, C('paper', 2)).set(240 + k, 83, C('paper', 2));
+    p.set(240, 34 + k, C('paper', 2)).set(289, 34 + k, C('paper', 2));
+  }
+  gradient(p, 243, 37, 44, 44, R('teal'), 1, 4);
+  scaleBlit(p, egg, 245, 38, 2);
+  micro(p, 245, 75, '2000', C('grey', 7));
+  // The postmark's wavy lines.
+  for (let y = 39; y < 52; y += 5) for (let x = 198; x < 238; x++) p.set(x, y + Math.round(Math.sin(x / 3)), C('grey', 3));
+  p.ring(214, 44, 9, C('grey', 3));
+  return p;
+}
+
 // ------------------------------------------------------------------ the story
 function caption(p: Pixels, lines: string[], ink = C('grey', 7), bg = C('night', 0)): void {
   const h = lines.length * 10 + 8;

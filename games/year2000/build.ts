@@ -25,7 +25,8 @@ import { renderMap } from './src/art/render';
 import * as S from './src/screens/screens';
 import { buildSounds } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
-import { CREDITS, INSTRUCTIONS, readme } from './src/screens/text';
+import { CREDITS, INSTRUCTIONS, POSTCARD, readme } from './src/screens/text';
+import { eggPic } from './src/blocks/egg';
 import { ITEM_PICS } from './src/blocks/items';
 import { PAGES_NEEDED } from './src/ids';
 import { licenseText } from '../kit/license';
@@ -106,6 +107,9 @@ lst('howto.lst', [['howto.gif', 0], ['howto.txt']]);
 lst('credits.lst', [['credits.gif', 0], ['credits.txt']]);
 lst('won.lst', [['won.fli', 0], ['won1.gif'], ['won2.gif']]);
 disk.put('howto.txt', INSTRUCTIONS);
+// The postcard in the launch pad's closet, on the way to the Moon.
+disk.put('postcard.gif', S.gif(S.postcardScreen(eggPic())));
+disk.put('postcard.txt', POSTCARD);
 disk.put('credits.txt', CREDITS);
 
 // Songs.
@@ -115,7 +119,8 @@ disk.put('story.cmf', storySong());
 disk.put('won.cmf', wonSong());
 disk.put('lost.cmf', lostSong());
 
-// The levels. Scenes: 0 title, 1 the end, 2.. the levels in order.
+// The levels. Scenes: 0 title, 1 the end, 2.. the levels in order, then the Moon again for
+// whoever leaves the exchange by the closet hatch (the postcard comes before the rocket).
 const game = newGame('IN THE YEAR 2000');
 const maps: LevelMap[] = LEVELS.map((l) => l.build(sets[l.set]));
 let pages = 0;
@@ -161,12 +166,22 @@ LEVELS.forEach((l, i) => {
     from: map.at('exit'),
     to: next ? (next.marks.has('start') ? next.at('start') : next.at('hall')) : { x: 0, y: 0 },
   });
+  if (map.marks.has('tomorrow')) links.push({ toScene: 2 + LEVELS.length, from: map.at('tomorrow'), to: next.at('start') });
   if (links.length > MAXSCENELINKS) throw new Error('Too many links');
   scene.links = Array.from({ length: MAXSCENELINKS }, (_, k) => links[k] ?? { toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } });
   game.scenes.push(scene);
   console.log(`${l.desc}: ${map.count('page')} pages, ${map.count('quarter')} quarters, ${map.monsters} monsters`);
 });
 console.log(`${pages} pages in all; the judges want ${PAGES_NEEDED}`);
+{
+  const moon = LEVELS.findIndex((l) => l.file === 'moon');
+  const scene = structuredClone(game.scenes[2 + moon]);
+  scene.desc = 'Tomorrow';
+  scene.pos = { x: 40 + moon * 48, y: 150 };
+  scene.files[9] = 'postcard.lst';
+  game.scenes.push(scene);
+  lst('postcard.lst', [['postcard.gif', 0], ['postcard.txt'], ...LEVELS[moon].intro.map((f) => [f, 0] as [string, number]), [`card${moon + 1}.gif`, 8]]);
+}
 
 const title = game.scenes[0];
 title.files = [

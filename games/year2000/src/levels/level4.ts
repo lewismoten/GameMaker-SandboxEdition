@@ -204,6 +204,24 @@ const LAUNCH_LEGEND: Legend = {
   '@': { mark: 'launch' },
 };
 
+// Beside the launch pad, a storage closet with no door. One brick of the shared wall is only
+// a hologram (light shows through its mortar); inside, something has to be picked up by
+// hand, and the round hatch past it opens only for whoever carries it.
+const CLOSET = [
+  'XXXXXXXX',
+  'X......X',
+  'g..e...h',
+  'X......X',
+  'XXXXXXXX',
+];
+const CLOSET_LEGEND: Legend = {
+  ...BASE,
+  '.': 'concrete',
+  g: 'xwallGlow',
+  e: 'egg',
+  h: { tile: 'hatch', mark: 'tomorrow' },
+};
+
 export function level4(set: BlockSet): LevelMap {
   const m = new LevelMap(set, 'void');
   m.stamp(0, 0, HALL, HALL_LEGEND, 'marble');
@@ -212,5 +230,6 @@ export function level4(set: BlockSet): LevelMap {
   m.stamp(30, 16, SEA, SEA_LEGEND, 'seafloor');
   m.stamp(52, 16, JUNGLE, JUNGLE_LEGEND, 'jungle');
   m.stamp(0, 20, LAUNCH, LAUNCH_LEGEND, 'concrete');
+  m.stamp(19, 23, CLOSET, CLOSET_LEGEND, 'concrete');
   return m;
 }

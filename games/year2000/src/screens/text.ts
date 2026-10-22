@@ -88,6 +88,27 @@ you the next game on a real
 See you in the future!`,
 );
 
+/** The postcard in the launch pad's closet (16 lines: one page). */
+export const POSTCARD = check(
+  'postcard',
+  `THE TOMORROW EGG
+
+Teal felt, silver waves,
+a red rocket with a yarn
+flame, chrome sequins.
+
+Sent from the future by
+Lewis "Lewie" Moten III
+and Claude Opus 5.5
+
+A postcard from the future:
+"Stories got so small they
+fit in your pocket. Somebody
+still has to count every
+word back in."`,
+);
+if (POSTCARD.split('\n').length > 16) throw new Error('postcard: more than one page');
+
 /**
  * Wraps a plain-text file to Game-Maker's text width (30 columns: a line of exactly 31
  * leaves a blank line in PLAYGAME). Lines that fit are kept; longer ones wrap with a
