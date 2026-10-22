@@ -6,18 +6,13 @@
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot } from '../../desk/boxes/boxArt';
-import { openGameManual } from '../../manual/gameManual';
 import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
 import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
 import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
-import { showKeyMap } from '../keymap/keyMapView';
-import { demoButton } from '../../media/demo';
-import { demoAudioPicker } from '../../media/demoAudio';
-import { offerAddedDemo } from '../../media/addedDemo';
-import { catalogHasDemo, filesDemoKind, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
+import type { DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
 import { gamePage } from '../../seo/site';
 import { icon as svgIcon, type IconName } from './homeIcons';
@@ -26,6 +21,11 @@ import { readableBlurb } from './homeBlurb';
 import { rememberOrigin } from './homeOrigin';
 import { projectMenuItems } from './homeProjectActions';
 import { chooseCopy } from './homeCopies';
+
+// Loaded when first used, so the list of games shows without them: the demo player (and
+// the game engine with it), the keyboard map and the manual with the paper in the box.
+const demoPreview = () => import('../../media/demoPreview');
+const openGameManual = async (entry: CatalogEntry) => (await import('../../manual/gameManual')).openGameManual(entry);
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -112,7 +112,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
       await s.files.stream?.need(demoNeeds(s.files.get(g.gam ?? '')));
       return s.files;
     }),
-    hasDemo: () => catalogHasDemo(g),
+    hasDemo: async () => (await demoPreview()).catalogHasDemo(g),
   };
 }
 
@@ -150,7 +150,7 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
     },
     files: load,
     // its own demo, one added for the CD game it still is, or the attract mode (demoPreview.ts)
-    hasDemo: async () => !!(await filesDemoKind(await load(), p.gam)),
+    hasDemo: async () => !!(await (await demoPreview()).filesDemoKind(await load(), p.gam)),
   };
 }
 
@@ -188,7 +188,7 @@ export function gameShot(game: HomeGame, width: number, height: number, classNam
 
 /** ⌨ Keys: a keyboard map of what each key does in the game, worked out from its files. */
 export function openKeys(game: HomeGame): void {
-  showKeyMap(game.files(), game.gam ?? undefined, game.title);
+  void import('../keymap/keyMapView').then(({ showKeyMap }) => showKeyMap(game.files(), game.gam ?? undefined, game.title));
 }
 
 /** The manual, for games that have one printed. */
@@ -208,21 +208,26 @@ export function demoInPicture(
   let preview: DemoPreview | undefined;
   let stopped = false;
   const host = h('div', { class: 'demo-screen', 'aria-hidden': 'true' });
-  const sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
+  let sound: HTMLElement | undefined;
   const stop = () => {
     if (stopped) return;
     stopped = true;
     preview?.stop();
     host.remove();
-    sound.remove();
+    sound?.remove();
     screen.classList.remove('demo-playing');
     o.onState?.(false);
   };
   const ready = (async () => {
     screen.classList.add('demo-loading');
     try {
-      const files = await (game.previewFiles ?? game.files)();
+      const [files, { playDemoPreview }, { demoAudioPicker }] = await Promise.all([
+        (game.previewFiles ?? game.files)(),
+        demoPreview(),
+        import('../../media/demoAudio'),
+      ]);
       if (stopped || !game.gam) return false;
+      sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
       screen.append(host, sound);
       preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop });
       if (!preview) {
@@ -305,6 +310,7 @@ async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promis
     if (pick !== 'new') return nav.openProject(pick.id);
   }
   // a demo added for this edition goes in only if asked for (offerAddedDemo, media/addedDemo.ts)
+  const { offerAddedDemo } = await import('../../media/addedDemo');
   const files = await offerAddedDemo(game.entry, await game.files(), game.gam);
   if (!files) return;
   toast(`Copying ${game.title}…`);
@@ -378,12 +384,15 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
 
 /** “Demo video”: the demo in a dialog, where it can also be saved as a video. */
 export function demoDialogButton(game: HomeGame): HTMLElement | null {
-  const b = demoButton(game.title, () => game.files(), game.gam);
-  if (!b) return null;
-  b.replaceChildren(svgIcon('film'), 'Demo video');
-  b.classList.add('with-ico');
-  b.title = 'Watch the demo with its music and sounds, or save it as a video';
-  return b;
+  if (!game.gam) return null;
+  // the dialog and the video maker load when it is pressed (media/demo.ts does the rest)
+  const press = async () => (await import('../../media/demo')).demoButton(game.title, () => game.files(), game.gam)?.click();
+  return h(
+    'button',
+    { class: 'with-ico', title: 'Watch the demo with its music and sounds, or save it as a video', onclick: () => void press() },
+    svgIcon('film'),
+    'Demo video',
+  );
 }
 
 export async function showNotice(listed: CatalogEntry): Promise<unknown> {
