@@ -23,22 +23,28 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
   let why = '';
-  for (let wait = 0; wait <= 240; wait += 6) {
-    bot.restore(start);
-    try {
-      if (wait && (await bot.wait(wait))) throw new Error('a scene change while waiting');
-      await stretch();
-    } catch (e) {
-      why = String(e).split('\n')[0];
-      continue;
+  // first picking up the loot on the way; if no moment is safe for that, sticking to the way
+  for (const forage of [true, false])
+    for (let wait = 0; wait <= 240; wait += 6) {
+      bot.restore(start);
+      bot.forage = forage;
+      try {
+        if (wait && (await bot.wait(wait))) throw new Error('a scene change while waiting');
+        await stretch();
+      } catch (e) {
+        why = String(e).split('\n')[0];
+        if (process.env.BOT_WHY) console.log(`${label} forage ${forage} wait ${wait}: ${String(e).split("\n")[0]}\n${bot.log.slice(-40).join("\n")}`);
+        continue;
+      } finally {
+        bot.forage = true;
+      }
+      const loss = hp - bot.sim.ci.hitpts;
+      if (bot.sim.deaths === deaths && loss <= maxLoss) {
+        bot.say(`${label}: waited ${wait} ticks${forage ? '' : ' (no detours)'}, lost ${loss} hit points`);
+        return;
+      }
+      why = `lost ${loss} hit points, ${bot.sim.deaths - deaths} lives`;
     }
-    const loss = hp - bot.sim.ci.hitpts;
-    if (bot.sim.deaths === deaths && loss <= maxLoss) {
-      bot.say(`${label}: waited ${wait} ticks, lost ${loss} hit points`);
-      return;
-    }
-    why = `lost ${loss} hit points, ${bot.sim.deaths - deaths} lives`;
-  }
   throw new Error(`${label}: no safe moment (${why})`);
 }
 
@@ -54,6 +60,7 @@ export async function theField(bot: Bot): Promise<void> {
     await must(bot, bot.take(11, 4, 'down', 'a thistle'), 'thistle');
     await must(bot, bot.take(19, 4, 'left', 'wool on the thorns'), 'wool');
     await must(bot, bot.take(13, 13, 'left', 'wool on the thorns'), 'wool');
+    await must(bot, bot.goto(4, 14, 'the thistles and the star in the lower field'), 'lower field');
     await must(bot, bot.take(17, 9, 'down', 'hay'), 'hay');
     await must(bot, bot.goto(24, 8, 'the gap in the wall'), 'gap');
   });
@@ -63,8 +70,9 @@ export async function theField(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'beyond the wall', 12, async () => {
     await must(bot, bot.take(31, 9, 'left', 'wool on the thorns'), 'wool');
-    await must(bot, bot.take(35, 1, 'down', 'wool on the thorns'), 'wool');
+    await must(bot, bot.take(28, 16, 'up', 'wool on the thorns'), 'wool');
     await must(bot, bot.goto(36, 13, 'the goat bell'), 'bell');
+    await must(bot, bot.take(35, 1, 'down', 'wool on the thorns'), 'wool');
   });
   await carefully(bot, 'the double wall', 10, async () => {
     await must(bot, bot.goto(37, 8, 'the double wall'), 'wall');
@@ -75,6 +83,7 @@ export async function theField(bot: Bot): Promise<void> {
   });
   await carefully(bot, "the shepherds' camp", 12, async () => {
     await must(bot, bot.take(42, 5, 'down', 'wool on the thorns'), 'wool');
+    await must(bot, bot.goto(43, 16, 'hay and a thistle by the camp'), 'hay');
     await must(bot, bot.take(50, 14, 'left', 'wool on the thorns'), 'wool');
   });
   if (bot.wool < 5) throw new Error(`only ${bot.wool} wool`);
@@ -90,9 +99,14 @@ export async function bethlehem(bot: Bot): Promise<void> {
     await must(bot, bot.goto(2, 4, 'the sandal'), 'sandal');
   });
   await carefully(bot, 'across the square', 20, async () => {
+    await must(bot, bot.goto(25, 10, 'a star in the square'), 'star');
+    await must(bot, bot.goto(38, 4, 'another sandal, and a star'), 'sandal');
+    await must(bot, bot.goto(38, 10, 'and another'), 'sandal');
     await must(bot, bot.goto(33, 12, 'the alley'), 'alley');
   });
   await carefully(bot, 'the alley', 10, async () => {
+    // the laundry and the census are the way itself; no detours past the sleeping cousin
+    bot.forage = false;
     await must(bot, bot.goto(33, 13, 'the cousin in the alley'), 'alley');
     await must(bot, bot.scream('down'), 'scream');
     await must(bot, bot.goto(33, 16, 'past the cousin and the laundry'), 'laundry');
@@ -109,10 +123,13 @@ export async function theCaravan(bot: Bot): Promise<void> {
   for (let x = 30; x <= 38; x++) bot.avoid.set(`${x + 2},${18 + 2}`, 30);
   for (let x = 1; x <= 9; x++) bot.avoid.set(`${x + 2},${20 + 2}`, 30);
   await carefully(bot, 'the north camp', 15, async () => {
+    await must(bot, bot.take(9, 3, 'up', 'hay'), 'hay');
     await must(bot, bot.goto(18, 2, 'wool'), 'wool');
     await must(bot, bot.take(31, 3, 'left', 'wool on the thorns'), 'wool');
+    await must(bot, bot.goto(37, 1, 'a star'), 'star');
   });
   await carefully(bot, 'across the camel lanes', 15, async () => {
+    await must(bot, bot.goto(25, 11, 'a star by the tents'), 'star');
     await must(bot, bot.goto(31, 12, 'past the camels'), 'lanes');
   });
   await carefully(bot, 'the gifts', 15, async () => {
@@ -136,6 +153,7 @@ export async function theCaravan(bot: Bot): Promise<void> {
 export async function theStable(bot: Bot): Promise<void> {
   expect(bot, 5, 'the stable');
   await carefully(bot, 'the stable', 20, async () => {
+    await must(bot, bot.take(3, 13, 'up', 'hay in the corner'), 'hay');
     await must(bot, bot.goto(2, 6, 'wool'), 'wool');
     await must(bot, bot.take(9, 3, 'down', 'the dusty straw by Joseph'), 'dust');
     await must(bot, bot.goto(12, 5, 'before the line'), 'line');

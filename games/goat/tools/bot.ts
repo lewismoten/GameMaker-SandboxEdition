@@ -4,6 +4,7 @@
 // Moving monsters (the crowd, camels, pigeons) are handled by trying a stretch again from a
 // snapshot after a wait (see route.ts, carefully()).
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
+import { LASTMON } from '../../../web/src/formats/monster';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 import { SCREAMSEQ, WOOL } from '../src/ids';
@@ -82,7 +83,7 @@ export class Bot {
   private cost(x: number, y: number): number | undefined {
     const shown = this.sim.shown(x, y);
     const b = this.sim.blockAt(x, y);
-    const extra = this.avoid.get(`${x},${y}`) ?? 0;
+    const extra = (this.avoid.get(`${x},${y}`) ?? 0) + (this.crowd?.has(y * 100 + x) ? 30 : 0);
     if (shown.solid) {
       const d = EAT.get(this.sim.w.blkmap[b]) ?? EAT.get(b);
       return d === undefined ? undefined : 1 + d + extra;
@@ -91,9 +92,11 @@ export class Bot {
     return 1 + extra;
   }
 
-  /** Shortest path (4 directions) to (tx, ty) in world blocks, avoiding links not asked for. */
-  path(tx: number, ty: number): Pt[] | undefined {
-    const { x: sx, y: sy } = this.sim.pos;
+  /**
+   * Path costs from (sx, sy) to every cell (4 directions), avoiding links but (tx, ty). Reversed,
+   * they are the costs of getting from every cell to (sx, sy).
+   */
+  private search(sx: number, sy: number, tx = -1, ty = -1, reverse = false) {
     const links = this.linkCells();
     const key = (x: number, y: number) => y * 100 + x;
     const dist = new Map<number, number>([[key(sx, sy), 0]]);
@@ -111,7 +114,8 @@ export class Bot {
         if (nx < 0 || ny < 0 || nx > 99 || ny > 99) continue;
         const target = nx === tx && ny === ty;
         if (!target && links.has(`${nx},${ny}`)) continue;
-        const c = this.cost(nx, ny) ?? (target ? 1 : undefined);
+        if (reverse && this.cost(nx, ny) === undefined) continue;
+        const c = reverse ? (this.cost(x, y) ?? 1) : (this.cost(nx, ny) ?? (target ? 1 : undefined));
         if (c === undefined) continue;
         const nd = d + c;
         if (nd < (dist.get(key(nx, ny)) ?? Infinity)) {
@@ -121,6 +125,14 @@ export class Bot {
         }
       }
     }
+    return { dist, from };
+  }
+
+  /** Shortest path (4 directions) to (tx, ty) in world blocks, avoiding links not asked for. */
+  path(tx: number, ty: number): Pt[] | undefined {
+    const { x: sx, y: sy } = this.sim.pos;
+    const { dist, from } = this.search(sx, sy, tx, ty);
+    const key = (x: number, y: number) => y * 100 + x;
     if (!dist.has(key(tx, ty))) return undefined;
     const out: Pt[] = [];
     let k = key(tx, ty);
@@ -129,6 +141,98 @@ export class Bot {
       k = from.get(k)!;
     }
     return out;
+  }
+
+  /** While looking for loot: the cells the monsters stand on now (no detour squeezes past them). */
+  private crowd: Set<number> | undefined;
+
+  private monsterCells(): Set<number> {
+    const out = new Set<number>();
+    const { mm, mi } = this.sim.w;
+    mm.forEach((m, i) => {
+      if (m.monnum === LASTMON) return;
+      const { curx, cury } = mi[i];
+      for (const dx of curx[1] ? [0, 1] : [0]) for (const dy of cury[1] ? [0, 1] : [0]) out.add((cury[0] + dy) * 100 + curx[0] + dx);
+    });
+    return out;
+  }
+
+  /** Picks up loot it can see on the way (off for a stretch that can't afford a detour). */
+  forage = true;
+  /** The most extra path cost one pickup may add to a walk, and all of a walk's pickups together. */
+  detour = 12;
+  budget = 24;
+
+  /** Loot in the view now: wool, hay, thistles, stars, crates of cabbages, a sandal (never the pail). */
+  private lootInView(): Pt[] {
+    const { mx, my } = this.sim.w;
+    const out: Pt[] = [];
+    for (let by = 0; by < 10; by++)
+      for (let bx = 0; bx < 16; bx++) {
+        const x = (mx + bx) % 100;
+        const y = (my + by) % 100;
+        const n = this.sim.blockAt(x, y);
+        const b = this.sim.shown(x, y);
+        if (b.touchBl === (this.sim.w.blkmap[n] ?? n) || b.chHitPt < 0 || b.scorePts < 0 || (b.effect && b.eamt < 0)) continue;
+        if (b.scorePts > 0 || b.chHitPt > 0 || (b.effect && b.eamt > 0)) out.push({ x, y });
+      }
+    return out;
+  }
+
+  /** Health and nothing else (cabbages, figs): a meal, not a gift. */
+  private isFood(c: Pt): boolean {
+    const b = this.sim.shown(c.x, c.y);
+    return b.chHitPt > 0 && !(b.effect && b.eamt > 0);
+  }
+
+  /**
+   * On the way to (tx, ty): goes for the loot in view most on the way (then the nearest) whose detour costs no more than
+   * `detour` (and the walk's pickups no more than `budget`), as a player grabs what's on the
+   * way; a pickup behind a hazard or far off the way is left.
+   */
+  private async gather(tx: number, ty: number, skip?: Pt): Promise<string | undefined> {
+    let spent = 0;
+    for (let k = 0; k < 8; k++) {
+      const p = this.sim.pos;
+      if (p.sx || p.sy) return undefined;
+      const key = (x: number, y: number) => y * 100 + x;
+      this.crowd = this.monsterCells();
+      const fromHere = this.search(p.x, p.y).dist;
+      const toTarget = this.search(tx, ty, -1, -1, true).dist;
+      this.crowd = undefined;
+      const direct = fromHere.get(key(tx, ty));
+      if (direct === undefined) return undefined;
+      let best: { at: Pt; stand: Pt; d: number; extra: number } | undefined;
+      for (const c of this.lootInView()) {
+        if ((c.x === tx && c.y === ty) || (skip && c.x === skip.x && c.y === skip.y)) continue;
+        const stands = this.sim.solidAt(c.x, c.y) ? Object.values(STEP).map((s) => ({ x: c.x + s.x, y: c.y + s.y })) : [c];
+        for (const s of stands) {
+          if (s !== c && this.cost(s.x, s.y) === undefined) continue;
+          const a = fromHere.get(key(s.x, s.y));
+          const b = toTarget.get(key(s.x, s.y));
+          if (a === undefined || b === undefined) continue;
+          // a crate of cabbages is only worth a step or two when she isn't hungry
+          const food = this.isFood(c) && this.sim.ci.hitpts >= 100 ? 4 : 0;
+          const extra = a + b - direct + (s === c ? 0 : 3) + food;
+          if (extra > this.detour || spent + extra > this.budget) continue;
+          if (!best || extra < best.extra || (extra === best.extra && a < best.d)) best = { at: c, stand: s, d: a, extra };
+        }
+      }
+      if (process.env.BOT_GATHER) console.log(`[${this.sim.scene}] gather to ${tx - ORIGIN},${ty - ORIGIN} from ${p.x - ORIGIN},${p.y - ORIGIN} view ${this.sim.w.mx},${this.sim.w.my}: ${this.lootInView().map((c) => `${c.x - ORIGIN},${c.y - ORIGIN}`).join(' ')} -> ${best ? `${best.at.x - ORIGIN},${best.at.y - ORIGIN} +${best.extra}` : 'none'}`);
+      if (!best) return undefined;
+      spent += best.extra;
+      const { at, stand } = best;
+      const was = this.forage;
+      this.forage = false;
+      try {
+        let r = await this.goto(stand.x - ORIGIN, stand.y - ORIGIN, `loot at ${at.x - ORIGIN},${at.y - ORIGIN}`);
+        if (!r && (stand.x !== at.x || stand.y !== at.y)) r = await this.push(stand.x < at.x ? 'right' : stand.x > at.x ? 'left' : stand.y < at.y ? 'down' : 'up');
+        if (r) return r;
+      } finally {
+        this.forage = was;
+      }
+    }
+    return undefined;
   }
 
   /** Holds a direction until the goat stands exactly on (x, y), eating on the way. */
@@ -160,9 +264,13 @@ export class Bot {
   }
 
   /** Walks to (x, y) in level coordinates. Returns 'link'/'dead'/'end' on a scene change. */
-  async goto(lx: number, ly: number, label = ''): Promise<string | undefined> {
+  async goto(lx: number, ly: number, label = '', skip?: Pt): Promise<string | undefined> {
     const x = lx + ORIGIN;
     const y = ly + ORIGIN;
+    if (this.forage) {
+      const r = await this.gather(x, y, skip);
+      if (r) return r;
+    }
     for (let attempt = 0; attempt < 12; attempt++) {
       const steps = this.path(x, y);
       if (!steps) throw new Error(`No path to ${lx},${ly} ${label} from ${this.sim.pos.x - ORIGIN},${this.sim.pos.y - ORIGIN} in scene ${this.sim.scene}`);
@@ -186,6 +294,12 @@ export class Bot {
         }
         cur = this.sim.pos;
         i = j + 1;
+      }
+      const at = this.sim.pos;
+      if (!blocked && (at.x !== x || at.y !== y)) {
+        // bumped off the cell on arrival (a cousin in the way): walk it again
+        this.say(`bumped off ${label}`);
+        continue;
       }
       if (!blocked) {
         if (label) this.say(`at ${label}`);
@@ -233,7 +347,7 @@ export class Bot {
   /** Walks up to the solid block at (x, y) from `side` of it and pushes into it. */
   async take(lx: number, ly: number, side: Dir, label = ''): Promise<string | undefined> {
     const s = STEP[side];
-    const r = await this.goto(lx + s.x, ly + s.y, label);
+    const r = await this.goto(lx + s.x, ly + s.y, label, { x: lx + ORIGIN, y: ly + ORIGIN });
     if (r) return r;
     const into: Dir = side === 'left' ? 'right' : side === 'right' ? 'left' : side === 'up' ? 'down' : 'up';
     return this.push(into);
