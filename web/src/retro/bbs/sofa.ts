@@ -5,6 +5,7 @@ import type { RetroHost } from '../host';
 import { attr, COLS } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { sofaLogin } from './ansiArt';
+import { sofaFiles } from './sofaFiles';
 import { Term, sleep } from './term';
 
 export const SOFA_PHONE = '1-412-555-0177';
@@ -36,6 +37,7 @@ const PLEAS: [string, string][] = [
   ['REMOTE CONTROL', 'my 2400 baud modem cannot keep up with this'],
   ['CUSHION KING', 'ok I give up, see you guys in the forums'],
   ['INCLINE RIDER', 'is anyone else even reading this?'],
+  ['CUSHION KING', "anybody play DOC LEO's goat game yet? I screamed and my cousin fainted"],
 ];
 
 const spamLine = () => Array.from({ length: 6 + Math.floor(Math.random() * 6) }, () => (Math.random() < 0.12 ? 'spam' : 'SPAM')).join(' ');
@@ -47,6 +49,7 @@ function menu(t: Term): void {
   t.line('|14   T |07... |15Teleconference |07(talk with the other callers)');
   t.line('|14   W |07... |15Who\'s on |07(see every line)');
   t.line('|14   L |07... |15The lounge |07(news from the SysOps)');
+  t.line('|14   F |07... |15File library |07(free downloads from our regulars)');
   t.line('|14   X |07... |15Exit |07(log off)');
   t.line();
 }
@@ -76,12 +79,13 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   t.line(`|07There are |14${CALLERS.length + 1}|07 users online right now.`);
   menu(t);
   for (;;) {
-    t.print('|11Make your selection (T,W,L or ? for help, X to exit): |15');
+    t.print('|11Make your selection (T,W,L,F or ? for help, X to exit): |15');
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     if (k === 'T') await teleconference(t, h, name);
     else if (k === 'W') whosOn(t, name, line);
     else if (k === 'L') lounge(t);
+    else if (k === 'F') await sofaFiles(t, h);
     else if (k === '?') menu(t);
     else if (k === 'X' || k === 'Escape') {
       t.line();
@@ -110,7 +114,9 @@ function lounge(t: Term): void {
   t.line('|14The lounge');
   t.line('|07Eight lines and no waiting! Pull up a cushion and stay a while.');
   t.line('|07Teleconference is open all night. Be nice, no flooding the channel.');
-  t.line('|07Looking for games? The Sandbox BBS has Game-Maker shareware.');
+  t.line('|07NEW in the File library: THIRD GOAT FROM THE LEFT, a Game-Maker game by');
+  t.line('|07our own DOC LEO (The Bard of Bizarre), from his song. Free! Hit F.');
+  t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
   t.line();
 }
 
