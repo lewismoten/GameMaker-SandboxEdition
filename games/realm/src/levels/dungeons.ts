@@ -103,8 +103,8 @@ export function vaultsPlan(mons: MonBook): DungeonPlan {
   hall(p, [[34, 64], [42, 64], [42, 72], [50, 72]]);
   hall(p, [[66, 64], [58, 64], [58, 72], [50, 72]]);
   oct(p, 40, 72, 60, 86, 3); // the Kraken's pool
-  p.cm.region('pool', [[42, 80], [47, 80], [47, 84], [42, 84]]);
-  p.cm.region('pool', [[53, 80], [58, 80], [58, 84], [53, 84]]);
+  p.cm.region('pool', [[43, 79], [47, 79], [47, 83], [43, 83]]);
+  p.cm.region('pool', [[53, 79], [57, 79], [57, 83], [53, 83]]);
   hall(p, [[50, 86], [50, 90]]);
   p.put('stairs', 50, 17);
   p.put('torch', 46, 18);

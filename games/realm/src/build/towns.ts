@@ -19,18 +19,20 @@ const grassBase = (x: number, y: number) => {
 };
 
 /** Where Pip comes back out onto the world from each place. */
-/** Where THE CHEZ starts on the Dawdle Flats, coming from the west; where the Vaults begin. */
-export const FLATS_WEST: Pt = [4, 50];
-export const VAULTS_START: Pt = [50, 90];
-
 export const WORLD_ARRIVE: Record<string, Pt> = {
   nowish: [22, 78],
   laterburg: [31, 47],
   harbor: [16, 48],
   falls: [80, 58],
+  barrows: [40, 26],
+  mines: [78, 40],
+  keep: [76, 72],
+  post: [71, 51],
 };
+/** Coming back to Someday Harbor: out of the Vaults onto the pier, out of THE CHEZ by the garage. */
+export const HARBOR_ARRIVE: Record<string, Pt> = { vaults: [16, 46], flats: [31, 13] };
 
-export function buildTowns(spot: Record<string, Pt>): { files: AreaFile[]; scenes: SceneSpec[]; worldLinks: LinkSpec[]; start: Pt } {
+export function buildTowns(spot: Record<string, Pt>, harborDoors: { flats: Pt; vaults: Pt }): { files: AreaFile[]; scenes: SceneSpec[]; worldLinks: LinkSpec[]; start: Pt } {
   const mb = peopleSheet();
   const files: AreaFile[] = [];
   const scenes: SceneSpec[] = [];
@@ -78,8 +80,8 @@ export function buildTowns(spot: Record<string, Pt>): { files: AreaFile[]; scene
         owns: ([x]) => x < 50,
         extra: [
           ...[23, 24, 25].map((x) => ({ from: [x, 1] as Pt, to: 'world', at: WORLD_ARRIVE.harbor })),
-          { from: pp.plan.spot.garage, to: 'flats', at: FLATS_WEST },
-          { from: pp.plan.spot.vaults, to: 'vaults', at: VAULTS_START },
+          { from: pp.plan.spot.garage, to: 'flats', at: harborDoors.flats },
+          { from: pp.plan.spot.vaults, to: 'vaults', at: harborDoors.vaults },
         ],
       },
       {

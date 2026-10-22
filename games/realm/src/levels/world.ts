@@ -145,6 +145,9 @@ export function planWorld(): WorldPlan {
   // the Snooze Barrows: a cave in the cliff at the end of the north road
   stamp('cave', 40, 24, 1, 1, true);
   spot.barrows = [40, 24];
+  // the Putoff Mines: an adit in Mount Putoff's south cliff, at the end of the north road
+  stamp('mine', 78, 38, 1, 1, true);
+  spot.mines = [78, 38];
   void [N, cellHash];
   return { cm, stamps, spot };
 }

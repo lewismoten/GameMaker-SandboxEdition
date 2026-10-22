@@ -249,6 +249,22 @@ export function worldFeatures(book: BlockBook): void {
     [[0, 0]],
     (x, y) => cliff(x, y, shapeSdf(TL | TR, x, y), 0, 1),
   );
+  // The Putoff Mines' adit: timbers and a lantern hook in Mount Putoff's cliff
+  cut(
+    book,
+    'mine',
+    1,
+    1,
+    (cv) => {
+      cv.rect(4, 7, 12, 13, [12, 10, 12]);
+      cv.rect(3, 6, 2, 14, [120, 80, 46]).rect(15, 6, 2, 14, [120, 80, 46]);
+      cv.rect(2, 5, 16, 2.4, [140, 96, 56]);
+      cv.line(7, 19, 8.5, 12, 0.7, [80, 80, 90]).line(13, 19, 11.5, 12, 0.7, [80, 80, 90]);
+      cv.disc(16, 9, 1.2, [255, 200, 80]);
+    },
+    [[0, 0]],
+    (x, y) => cliff(x, y, shapeSdf(TL | TR, x, y), 0, 1),
+  );
   void [rock, paintTile];
 }
 
