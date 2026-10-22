@@ -438,7 +438,7 @@ registerEditor(['lst'], (host, project, file) => {
     if (!e) {
       clear(
         inspector,
-        h('h3', null, 'An empty slide show'),
+        h('h2', null, 'An empty slide show'),
         h(
           'p',
           { class: 'meta' },
@@ -475,7 +475,7 @@ registerEditor(['lst'], (host, project, file) => {
         'div',
         { class: 'sl-insp-head' },
         h('span', { class: 'sl-insp-num' }, `${selected + 1}`),
-        h('div', null, h('h3', null, e.name.toUpperCase()), h('div', { class: 'meta' }, KIND_NAME[f.kind])),
+        h('div', null, h('h2', null, e.name.toUpperCase()), h('div', { class: 'meta' }, KIND_NAME[f.kind])),
         f.exists
           ? h(
               'a',
@@ -743,7 +743,7 @@ registerEditor(['lst'], (host, project, file) => {
     h(
       'div',
       { class: 'sl-bin-head' },
-      h('h3', null, 'Media'),
+      h('h2', null, 'Media'),
       h('span', { class: 'meta' }, 'Drag onto the timeline, or tap to add after the selected slide. Drag a slide here to take it out.'),
       h('span', { class: 'spacer' }),
       h('button', { onclick: () => void addFromPicker('gif', true) }, '📀 From the library…'),

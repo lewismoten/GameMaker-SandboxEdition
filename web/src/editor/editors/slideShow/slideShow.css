@@ -16,7 +16,7 @@
   gap: 8px;
   min-height: 100%;
 }
-.sl-inspector h3 {
+.sl-inspector h2 {
   margin: 0;
   font:
     700 16px/1.2 ui-monospace,
@@ -412,7 +412,7 @@
   align-items: center;
   margin-bottom: 10px;
 }
-.sl-bin-head h3 {
+.sl-bin-head h2 {
   margin: 0;
   font-size: 12px;
   text-transform: uppercase;
