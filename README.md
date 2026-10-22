@@ -11,15 +11,23 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 ## What's in it
 
 - **Two ways to use it:** the *1994 desk*, a recreated PC with a DOS prompt, Game-Maker's
-  original menus and designers, and a BBS to dial; or *today's web* editor with
-  point-and-click editors for every part of a game.
+  original menus and designers, a BBS to dial, and the games' boxes, disks and manuals on
+  the shelf; or *today's web* editor with point-and-click editors for every part of a game.
 - **Original file formats:** games are read and written byte for byte as `.GAM`, `.MAP`,
   `.BBL`, `.MON`, `.CHR`, `.CMF`, `.FLI` and the rest, so a game made here still runs in DOS
   Game-Maker and DOSBox, and old games open here unchanged.
 - **The CD's games:** the sample "gameware" (edit a copy) and the shareware (play only,
-  with their authors' notices).
-- **Eight new Sandbox Software games** built for this fork, each with a manual, box art and
-  printable extras.
+  with their authors' notices). CD games that shipped without a title demo get one recorded
+  for this edition, kept apart from their original files.
+- **Twelve new Sandbox Software games** built for this fork, entirely in code
+  ([games/](games)): Maximus: The Hundred Worlds, Sandcastle Knight, Snowbound: The $89
+  Shovel, In The Year 2000!, Teddy's Little Big Adventure, Teddy's Little Bigger Adventure,
+  Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT BRIEF! The Tiny Pockets Library,
+  Depth Perception and Quest for the Round Tuit. Each comes with a manual, box art,
+  printable extras and hidden felt eggs to find.
+- **Demos and walkthroughs:** title demos play with Sound Blaster music, the PC speaker or
+  no sound, and every Sandbox game has a walkthrough that plays it from power-on to the
+  credits on the real engine, with chapters, ready to download as an MP4.
 - **Sharing:** export a game as a one-page web game, an installable web app, or a folder
   that runs in DOSBox. Everything is saved in your browser and works offline.
 
@@ -43,7 +51,7 @@ Pushes to `master` are published to GitHub Pages by
 | Folder | What it holds |
 | --- | --- |
 | [`web/`](web) | The browser app. [web/src/README.md](web/src/README.md) maps the source. |
-| [`games/`](games) | The Sandbox Software games, built in code. See [games/README.md](games/README.md). |
+| [`games/`](games) | The Sandbox Software games, built in code, and the shared kit that builds and play-tests them. See [games/README.md](games/README.md). |
 | `cd/` | The original Game-Maker CD image, with its sample and shareware games. |
 | `code/` | The original DOS C/C++ source. |
 | `runtime/` | A DOS `C:` drive with Game-Maker installed, for DOSBox. |
