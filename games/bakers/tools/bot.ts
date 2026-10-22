@@ -302,6 +302,16 @@ export class Bot {
         if (r) return r;
         continue;
       }
+      // a run of hot plates ahead: set off only when it stays dark long enough to cross
+      if (nm.startsWith('hot') && !this.nameAt(p.x, p.y).startsWith('hot')) {
+        let n = 0;
+        while (n < path.length && this.nameAt(path[n].to.x, path[n].to.y).startsWith('hot')) n++;
+        if (this.coolFor() < (n + 1) * 5 + 3) {
+          const r = await this.wait(1);
+          if (r) return r;
+          continue;
+        }
+      }
       let move: Dir | undefined = first.d;
       if (!this.bold) {
         const then = path[1]?.d;
@@ -324,6 +334,19 @@ export class Bot {
       if (r) return r;
     }
     throw new Error(`${label}: gave up going to ${x},${y}\n${this.log.slice(-6).join('\n')}`);
+  }
+
+  /** Ticks until the hot plates are live again (0 while they are). */
+  coolFor(): number {
+    this.refresh();
+    const i = this.names.indexOf('hot0');
+    if (i < 0) return 1e9;
+    const w = this.sim.w;
+    const shown = this.names[w.blkmap[i]];
+    const left = w.nxtchg[i] - w.clock;
+    if (shown === 'hot0') return left + 10;
+    if (shown === 'hot1') return left;
+    return 0;
   }
 
   /** Picks up what he is standing on (Enter). */
