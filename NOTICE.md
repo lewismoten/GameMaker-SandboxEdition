@@ -54,6 +54,9 @@ game folder opens in the browser unchanged.
 - **RSD Game-Maker 1.0–3.0** (1991–1995): Recreational Software Designs: G. Andrew Stone,
   G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Source released under the MIT License
   by Andy Stone in 2014.
+- **Peter (Pete) Savage** wrote Game-Maker's Sound Blaster voice-file routines
+  (`code/GM/SOUNDC.C`) and joystick routines (`code/GM/JSTICKC.C`, `code/GM/JSTICKA.ASM`),
+  and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
   *1994 desk* (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
@@ -127,6 +130,84 @@ formats from their published descriptions and from Game-Maker's own source.
 - **Mr. Yuck** is a trademark of UPMC Children's Hospital of Pittsburgh. The green
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
+
+## Third-party code and acknowledgments in the original source
+
+The original source in `code/` is the Stones' work, but it also holds other people's code
+and documents, kept as Andy Stone published them. Each keeps its own terms, not the MIT
+License, and its notices stay in the files. Most of it is reference material that
+Game-Maker's makefiles don't build.
+
+**Documents and citations**
+
+- **CRC-32**: PKWARE's ZIP format description `code/GM/APPNOTE.TXT` (described in
+  `code/Image/PNG/INDEX` as from PKZIP 1.93a) says "The CRC-32 algorithm was generously
+  contributed by David Schwaderer and can be found in his excellent book 'C Programmers
+  Guide to NetBIOS' published by Howard W. Sams & Co. Inc." The same file credits Roger
+  Schlafly for PKZIP's encryption and Robert Mahoney for the `.ZIP` name, and cites
+  Storer, *Data Compression, Methods and Theory* (Computer Science Press, 1988) and Held,
+  *Data Compression, Techniques and Applications* (John Wiley & Sons, 1987). Game-Maker's
+  own C and assembly code computes no CRC.
+- **FLI format**: `code/Image/FLI/FLIDOC.TXT`, the *Turbo C FLI Library* document for
+  Autodesk Animator files, "Copyright 1989-1990 Dancing Flame, San Francisco. Program Code
+  and Library by Jim Kent. Documentation by Jim Kent and Heidi Brumbaugh." Andy Stone's
+  `FLI.CPP` quotes it in a comment.
+- **PNG specification**, tenth draft (`code/Image/PNG/PNG10.TXT`, `PNG.TXT`): copyright
+  1995 Thomas Boutell, which may be reproduced only "in complete and unaltered form".
+- **References in comments**: `code/GM/SVGAA.ASM` marks a commented-out ATI bank switch
+  "From svgakt30.zip", and `code/DRV/STLTH64.ASM` cites "vgadoc3" for an S3 register.
+- Also kept as found: the Association of Shareware Professionals' ombudsman statement
+  (`code/GM/OMBUDSMN.ASP`); a captured SunOS 5.4 `make` manual page
+  (`code/Image/PNG/MAKEINFO.TXT`); and the installer's credit line for Haruyasu
+  Yoshizaki's LHarc (`code/GM/FLOPINST.CPP`), the archiver it ran (`LHARC.EXE` isn't
+  included).
+
+**Bundled code by other authors** (all under `code/Image/`)
+
+- **Info-ZIP Zip 2.0.1 and UnZip 5.12** (`PNG/ZIP`, `PNG/UNZIP`, `PNG/ZIP201.ZIP`,
+  `PNG/UNZIP512.ZIP`). Zip: "Copyright (C) 1990-1993 Mark Adler, Richard B. Wales,
+  Jean-loup Gailly, Kai Uwe Rommel, Igor Mandrichenko and John Bush. Permission is granted
+  to any individual or institution to use, copy, or redistribute this software so long as
+  all of the original files are included, that it is not sold for profit, and that this
+  copyright notice is retained." UnZip's terms are in `PNG/UNZIP/COPYING`. They include
+  Samuel H. Smith's 1989 copyright on the code in `UNREDUCE.C` and the old unshrink, which
+  says "Do not use any of this in a commercial product"; Igor Mandrichenko's VMS code (not
+  for profit); and Greg Roelofs's `UNSHRINK.C`, which requires his name to stay with it.
+  Mark Adler put `inflate`, `explode`, `funzip` and `ship` 1.7 (`PNG/SHIP17.ZIP`) in the
+  public domain or left them uncopyrighted. `PNG/ZIP/MKTIME.C` is copyright 1988, 1989
+  David MacKenzie. Info-ZIP's comments also thank Haruhiko Okumura (`ar`/`ar002`).
+  `PNG/UNZIP/CONTRIBS` lists the other contributors.
+- **pnglib 0.6** (`PNG/T`, `PNG/PNGLIB06.ZIP`, 1 May 1995), the draft PNG reference
+  library: "Copyright (c) 1995 Guy Eric Schalnat, Group 42, Inc." It may be used, copied,
+  modified and distributed provided its origin isn't misrepresented, altered versions are
+  marked, and the notice in `png.h` stays. The zlib library it needs isn't included.
+- **GIFSAVE** 1.0 (`GIF`), by Sverre H. Huseby (1992): "dedicated to the Public Domain".
+  It isn't part of Game-Maker's build.
+- **BMP2BGI** 1.0 (`BMP2BGI1.ZIP`, 1991) by Richard G. Rasulis, Jr. ("(c) R.G.Rasulis
+  Consulting Services"). Its `BMP.H` is "(c) Ziff-Davis Publishing", from Charles
+  Petzold's article in *PC Magazine* (vol. 10, no. 10, pp. 365–370). No license is
+  given.
+
+**Unattributed, so flagged rather than credited**
+
+- `code/GM/SBC.H`, `SBCVOICE.H`, `SBCMUSIC.H`, `SBCTS.H` and `SBMIDI.H` declare the
+  functions of Creative's Sound Blaster library (`SBCL.LIB`, left out, above). They
+  carry no notice but appear to come from Creative's developer kit.
+- `code/Image/LZTIMER.H` declares `ZTimerOn`/`ZTimerOff`/`ZGetTime`, the names used by
+  Michael Abrash's "Zen timer". The timer itself isn't included, and its use in
+  `IMAGE1.CPP` is commented out.
+- `code/DRV/S3_BIOS.ASM` (not built) looks like code taken from a disassembled S3 video
+  BIOS.
+- `code/GM/APTE.TXT` appears to be a Borland technical note.
+- The sample pictures in `code/Image/PNG/PICS` are of unknown origin. One of them says so
+  itself ("Peppers").
+
+**What the web port uses**: none of this code. `web/src/project/zip.ts` writes its own
+table-driven CRC-32 (the standard ZIP polynomial that APPNOTE credits to Schwaderer) and
+follows APPNOTE's layout. The FLI reader `web/src/formats/fli.ts` follows Andy Stone's
+`FLI.CPP` and the format in Kent's `FLIDOC.TXT`. The GIF LZW coder in
+`web/src/formats/gif.ts` is new, not GIFSAVE. `web/src/formats/voc.ts` reproduces Peter
+Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/) and [Vitest](https://vitest.dev/) (MIT), used only to build
