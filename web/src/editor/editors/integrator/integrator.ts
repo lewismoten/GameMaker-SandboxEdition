@@ -37,6 +37,7 @@ import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from
 import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
 import { linksPanel } from './sceneLinks';
+import { BoardCamera } from './boardCamera';
 import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
 import { fileUndo } from '../../core/fileUndo';
@@ -149,9 +150,7 @@ registerEditor(['gam'], (host, project, file) => {
     'aria-label': 'Scenes and links: drag a card to move it, drag the background to pan, scroll to zoom',
   });
   const zoomLabel = h('span', { class: 'grator-zoom' }, '100%');
-  const cam = { x: 0, y: 0, z: 1 };
-  /** True while the view is still the "show every scene" fit: resizing the board fits it again. */
-  let fitted = true;
+  const cam = new BoardCamera(board, () => draw());
   const used = () => usedScenes(game);
   const cardRect = (i: number): Rect => cardRectOf(game, i);
   const boardBounds = (): Rect => {
@@ -188,21 +187,8 @@ registerEditor(['gam'], (host, project, file) => {
     });
   }
 
-  const toBoard = (clientX: number, clientY: number) => {
-    const r = board.getBoundingClientRect();
-    return { x: cam.x + (clientX - r.left) / cam.z, y: cam.y + (clientY - r.top) / cam.z };
-  };
-  function zoomAt(z: number, clientX?: number, clientY?: number): void {
-    const r = board.getBoundingClientRect();
-    const cx = clientX ?? r.left + r.width / 2;
-    const cy = clientY ?? r.top + r.height / 2;
-    const before = toBoard(cx, cy);
-    fitted = false;
-    cam.z = Math.max(0.15, Math.min(4, z));
-    cam.x = before.x - (cx - r.left) / cam.z;
-    cam.y = before.y - (cy - r.top) / cam.z;
-    draw();
-  }
+  const toBoard = (clientX: number, clientY: number) => cam.toBoard(clientX, clientY);
+  const zoomAt = (z: number, clientX?: number, clientY?: number) => cam.zoomAt(z, clientX, clientY);
   function fit(): void {
     const rs = used().map(cardRect);
     const b = rs.length
@@ -212,26 +198,9 @@ registerEditor(['gam'], (host, project, file) => {
           return { x: x0, y: y0, w: Math.max(...rs.map((r) => r.x + r.w)) - x0, h: Math.max(...rs.map((r) => r.y + r.h)) - y0 };
         })()
       : boardBounds();
-    const w = board.clientWidth || 800;
-    const hh = board.clientHeight || 500;
-    const pad = 30;
-    fitted = true;
-    // no bigger than 125%: a game of one or two scenes shouldn't fill the board with giant cards
-    cam.z = Math.max(0.15, Math.min(1.25, Math.min((w - pad * 2) / b.w, (hh - pad * 2) / b.h)));
-    cam.x = b.x - (w / cam.z - b.w) / 2;
-    cam.y = b.y - (hh / cam.z - b.h) / 2;
-    draw();
+    cam.fit(b);
   }
-  function centerOn(i: number): void {
-    const r = cardRect(i);
-    const w = board.clientWidth / cam.z;
-    const hh = board.clientHeight / cam.z;
-    if (r.x >= cam.x && r.y >= cam.y && r.x + r.w <= cam.x + w && r.y + r.h <= cam.y + hh) return;
-    fitted = false;
-    cam.x = r.x + r.w / 2 - w / 2;
-    cam.y = r.y + r.h / 2 - hh / 2;
-    draw();
-  }
+  const centerOn = (i: number) => cam.centerOn(cardRect(i));
 
   function sceneAt(x: number, y: number): number {
     const order = used().sort((a, b) => Number(b === selected) - Number(a === selected));
@@ -289,11 +258,8 @@ registerEditor(['gam'], (host, project, file) => {
       const [a, b] = [...pointers.values()];
       if (a && b) zoomAt((gesture.z * Math.hypot(a.x - b.x, a.y - b.y)) / gesture.d, (a.x + b.x) / 2, (a.y + b.y) / 2);
     } else if (gesture.type === 'pan') {
-      fitted = false;
-      cam.x = gesture.cx - (e.clientX - gesture.sx) / cam.z;
-      cam.y = gesture.cy - (e.clientY - gesture.sy) / cam.z;
+      cam.panTo(gesture.cx - (e.clientX - gesture.sx) / cam.z, gesture.cy - (e.clientY - gesture.sy) / cam.z);
       board.style.cursor = 'grabbing';
-      draw();
     } else {
       if (!gesture.moved && Math.hypot(e.clientX - gesture.sx, e.clientY - gesture.sy) < 4) return;
       gesture.moved = true;
@@ -323,11 +289,7 @@ registerEditor(['gam'], (host, project, file) => {
     (e) => {
       e.preventDefault();
       if (e.ctrlKey || Math.abs(e.deltaY) >= Math.abs(e.deltaX)) zoomAt(cam.z * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX, e.clientY);
-      else {
-        fitted = false;
-        cam.x += e.deltaX / cam.z;
-        draw();
-      }
+      else cam.panTo(cam.x + e.deltaX / cam.z, cam.y);
     },
     { passive: false },
   );
@@ -365,7 +327,7 @@ registerEditor(['gam'], (host, project, file) => {
     } else return;
     e.preventDefault();
   });
-  const resize = new ResizeObserver(() => (fitted ? fit() : draw()));
+  const resize = new ResizeObserver(() => (cam.fitted ? fit() : draw()));
   resize.observe(board);
 
   async function exportPng(): Promise<void> {
