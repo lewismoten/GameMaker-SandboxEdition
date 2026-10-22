@@ -421,7 +421,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       drawHand(p, pal, hx, hy, s, 0.6 + rise * 0.4);
       // the mound and the little tree in the palm
       mound(p, pal, 160, hy + 62, 30, 10);
-      tree(p, pal, 160, hy + 54, 0.45);
+      tree(p, pal, 160, hy + 54, 0.62);
       for (let t = 0; t < 6; t++) twinkle(p, pal, (37 + t * 53 + k * 3) % W, 20 + ((t * 31 + k * 2) % 60), [1, 2, 3, 2][(k + t) % 4]);
       caption(p, pal, k < 20 ? ["That mustard seed's", "growin' strong..."] : ['...in the palm', "of God's hand."]);
     };
