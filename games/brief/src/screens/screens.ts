@@ -295,7 +295,7 @@ export function introFli(joe: BlockSet): Uint8Array {
   const base = (open: number) => {
     const p = nightSky(7);
     grass(p, 160, 8);
-    dogHouse(p, 110, 56, 2.2, open);
+    dogHouse(p, 110, 36, 2.2, open);
     return p;
   };
   const say = (p: Pixels, lines: string[]) => lines.forEach((l, i) => centered(p, 172 + i * 11, l, c('paper', 4), 1, c('ink', 0)));
@@ -314,14 +314,22 @@ export function introFli(joe: BlockSet): Uint8Array {
   // the words pour out: drawn once in the cycle's colors, by height
   const slots = freeEntries(CYCLE);
   const pour = base(1);
+  // streams of words arcing out of the open door, left and right, each word colored by how far
+  // along its stream it is, so turning the colors sends them flying along the arcs
   const R = rng(5);
-  for (let i = 0; i < 160; i++) {
-    const y = 80 + Math.floor(R() * 110);
-    const spread = (y - 80) * 0.9;
-    const x = 160 + (R() * 2 - 1) * (20 + spread);
-    const word = ['the', 'and', 'a', 'of', 'Doc', 'hmm', 'yes', 'pod', 'shh', 'tea', 'X'][Math.floor(R() * 11)];
-    const k = Math.floor((y - 80) / 7) % CYCLE;
-    micro(pour, Math.round(x), y, word, slots[k]);
+  const words = ['the', 'and', 'a', 'of', 'Doc', 'hmm', 'yes', 'pod', 'shh', 'tea', 'X', 'Bob', 'owl', 'vase'];
+  const door = { x: 150, y: 76 };
+  for (let s = 0; s < 10; s++) {
+    const dir = s % 2 ? 1 : -1;
+    const vx = dir * (1.6 + R() * 2.6);
+    const vy = -(2.2 + R() * 2.4);
+    for (let k = 0; k < 26; k++) {
+      const t = k * 2.2;
+      const x = door.x + vx * t * 1.7;
+      const y = door.y + vy * t + 0.09 * t * t;
+      if (y > 158 || x < 2 || x > 300 || (x > 104 && x < 210 && y > 40 && y < 172)) continue;
+      micro(pour, Math.round(x), Math.round(y), words[Math.floor(R() * words.length)], slots[k % CYCLE]);
+    }
   }
   for (let t = 0; t < 32; t++) {
     const p = new Pixels(W, H);
