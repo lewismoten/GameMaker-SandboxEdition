@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "tickle",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0lzQAsAawMLQGtNk0azQYSCJIATQDNBiwBrAwtAa0QTRbND00WzQAsAawMLQGtCk0dzQYSCJIATQDNBk0PzQ9NCM0ALAGsDC0BrQpNHM0GEgiSAE0DzQNND80ALAGsDC0BrQ1NDM0PTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0YzQAsAawMLQGtF00OzQYSBpIATQLNA00IzQAsAawMLQGtC00azQYSCpIATQHNBSwBrAwtAa0iTSLNBk0IzQpNCs0GEgqSAE0BzQVNCc0ALAGsDC0BrQxNC80ALAGsDC0Bra0BTRvNExIMkgBNH80DEgaSAE0AzQVNH80GEgqSAE0AzQZNAs0ALAGsDC0BrQtNFc0QSwLLCU0KzQxLHssALAGsDC0BrQ1NEs0ALAGsDC0BrRNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0RzQAsAawMLQGtGE0hzQZNBc0SEgSSAE0DzQdNBM0ALAGsDC0BrRZNMs0VTQbNACwBrAwtAa0WTSTNACwBrAwtAa0MTRTNBkgIyAlNCEgKyAXNBhIIkgBNAM0GTQzNACwBrAwtAa0LTR/NDk0HzQAsAawMLQGtF00XzQAsAawMLQGtHk0rzQAsAawMLQGtF00HzQZICsgJTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0EzQAsAawMLQGtI00pzQZNDM0ALAGsDC0BrSJNTs0ALAGsDC0BrQtLMssGEgiSAE0AzSosAawMLQGtFk0vzQYSCJIATQPNA00CzQAsAawMLQGtCksEywYQCJAASwLLBEsLywAsAawMLQGtD0sgywYQCJAASwLLBEsbywAsAawMLQGtEEsZywYQCJAASwLLBEsRywAsAawMLQGtEEsSywZNI80GEgiSAE0DzQNNBs0ALAGsDC0BrRxNK80GEgiSAE0DzQNNE80ALAGsDC0BrQ9NIM0GEgiSAE0DzQMmAaYUTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Course"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Lab"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Sewers"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Empire"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 21844,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1259
+   },
+   {
+    "title": "Level 1: The Course",
+    "frame": 3591
+   },
+   {
+    "title": "Level 2: The Lab",
+    "frame": 5789
+   },
+   {
+    "title": "Level 3: The Sewers",
+    "frame": 9360
+   },
+   {
+    "title": "Level 4: The Empire",
+    "frame": 12339
+   },
+   {
+    "title": "Ending",
+    "frame": 16432
+   },
+   {
+    "title": "Credits",
+    "frame": 19756
+   }
+  ]
+ }
+}
