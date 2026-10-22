@@ -11,6 +11,7 @@ import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
+import { recordDownload, updateAccount } from './ratio';
 
 export interface UtilityFile {
   name: string;
@@ -127,6 +128,7 @@ async function download(t: Term, h: RetroHost, u: BbsUtility): Promise<void> {
     await sleep(h.turbo() ? 60 : 300);
   }
   h.downloads.add(u.id);
+  updateAccount((a) => recordDownload(a, u.bytes, true)); // the SysOp's upload: FREE
   const exe = u.files.find((f) => f.run)?.name.replace(/\.EXE$/i, '');
   t.line(`|07Type |15CD \\DOWNLOAD\\${dir}|07${exe ? ` then |15${exe}|07` : ''} after you log off.${u.files.some((f) => /\.NFO$/i.test(f.name)) ? ' Read the |15.NFO|07 first!' : ''}`);
   t.line();
