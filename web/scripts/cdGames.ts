@@ -409,7 +409,7 @@ export function cdGames(cdRoot: string): Plugin {
       // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
       const catalog = get().catalog.map((e) => {
         const disk = new Map(e.files.flatMap((n) => (files.has(`${e.path}${n}`) ? [[n, files.get(`${e.path}${n}`)!] as [string, string]] : [])));
-        const shots = gameShots(e.id, e.gam, disk);
+        const shots = gameShots(e.id, e.gam, disk, e.original?.box?.shots);
         for (const [fileName, source] of shots) this.emitFile({ type: 'asset', fileName, source });
         return shots.size ? { ...e, shots: true } : e;
       });

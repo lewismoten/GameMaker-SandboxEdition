@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { inflateSync } from 'node:zlib';
 import { encodeIndexedPng, gameShots } from '../scripts/gameShots';
-import { builtShotPath } from '../src/gfx/levelPicture';
+import { builtMapShotPath, builtMapViews, builtShotPath } from '../src/gfx/levelPicture';
 
 const disk = resolve(__dirname, '../../games/teddy/disk');
 
@@ -25,8 +25,11 @@ describe("the build's game pictures", () => {
   it.runIf(existsSync(disk))('draws a game its tile and screen pictures', () => {
     const files = new Map(readdirSync(disk).map((n) => [n.toLowerCase(), join(disk, n)] as [string, string]));
     const gam = [...files.keys()].find((n) => n.endsWith('.gam'))!;
-    const shots = gameShots('teddy', gam, files);
-    expect([...shots.keys()]).toEqual([builtShotPath('teddy', 8, 5), builtShotPath('teddy', 16, 10)]);
+    const about = JSON.parse(readFileSync(resolve(disk, '../about.json'), 'utf8')) as { box: { shots: [string, number, number][] } };
+    const shots = gameShots('teddy', gam, files, about.box.shots);
+    const views = builtMapViews(about.box.shots);
+    expect(views.at(-1)?.slice(3)).toEqual([12, 4]); // the disk label's strip
+    expect([...shots.keys()]).toEqual([builtShotPath('teddy', 8, 5), builtShotPath('teddy', 16, 10), ...views.map((v) => builtMapShotPath('teddy', v))]);
     for (const png of shots.values()) expect(png.length).toBeLessThan(16_000);
   });
 });

@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { parseGame } from '../src/formats/game';
 import { vga8 } from '../src/formats/palette';
-import { BUILT_SHOTS, builtShotPath, gamePicture, type LevelPicture } from '../src/gfx/levelPicture';
+import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, gamePicture, mapPixels, type LevelPicture } from '../src/gfx/levelPicture';
 import { pngChunk } from './ogImage';
 import { cdName } from '../src/project/files';
 
@@ -29,10 +29,11 @@ export function encodeIndexedPng(pic: LevelPicture): Uint8Array {
 }
 
 /**
- * A game's pictures, by site path: each size in BUILT_SHOTS, or none when it has no level to
- * show. `disk` maps a game file's name (as listed) to where it is on disk.
+ * A game's pictures, by site path: each size in BUILT_SHOTS, and an original game's box
+ * views (builtMapViews of its box's `shots`); none when it has no level to show. `disk` maps
+ * a game file's name (as listed) to where it is on disk.
  */
-export function gameShots(id: string, gam: string | null, disk: ReadonlyMap<string, string>): Map<string, Uint8Array> {
+export function gameShots(id: string, gam: string | null, disk: ReadonlyMap<string, string>, boxShots?: [string, number, number][]): Map<string, Uint8Array> {
   const out = new Map<string, Uint8Array>();
   if (!gam || !disk.has(gam)) return out;
   const cache = new Map<string, Uint8Array | undefined>();
@@ -50,6 +51,11 @@ export function gameShots(id: string, gam: string | null, disk: ReadonlyMap<stri
       const pic = gamePicture(files, game, cols, rows);
       if (pic) out.set(builtShotPath(id, cols, rows), encodeIndexedPng(pic));
     }
+    if (out.size)
+      for (const view of builtMapViews(boxShots)) {
+        const pic = mapPixels(files, game, ...view);
+        if (pic) out.set(builtMapShotPath(id, view), encodeIndexedPng(pic));
+      }
   } catch {
     /* unreadable: the page draws it, or shows none */
   }

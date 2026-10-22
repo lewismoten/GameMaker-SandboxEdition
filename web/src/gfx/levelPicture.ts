@@ -144,3 +144,61 @@ export function builtShotPath(id: string, cols: number, rows: number): string {
 export function gamePicture(files: FileSource, game: Game, cols: number, rows: number): LevelPicture | undefined {
   return busiest([...firstLevels(game)].map(([i, at]) => levelPixels(files, game.scenes[i], at, cols, rows)));
 }
+
+/**
+ * `w` x `h` blocks of a map from (`x`, `y`), as the game draws it: the background blocks in
+ * the palette of the scene that uses the map, with its placed monsters on top (their first
+ * animation frame). Undefined when no level uses the map, or its palette, map or blocks are missing.
+ */
+export function mapPixels(files: FileSource, game: Game, mapName: string, x: number, y: number, w = 16, h = 10): LevelPicture | undefined {
+  const scene = game.scenes.find((s) => s.gametype === 10 && s.files[1]?.toLowerCase() === mapName.toLowerCase());
+  if (!scene) return undefined;
+  const get = (i: number) => (scene.files[i] ? files.get(scene.files[i]) : undefined);
+  const [palB, mapB, bblB, monB, mblB] = [0, 1, 2, 3, 4].map(get);
+  if (!palB || !mapB || !bblB) return undefined;
+  const palette = parsePalette(palB);
+  const map = parseMap(mapB);
+  const blocks = parseBlocks(bblB, BACKBL);
+  const mons = monB ? parseMonsters(monB) : [];
+  const mblocks = mblB ? parseBlocks(mblB, MONBL) : [];
+  const W = w * BLEN;
+  const pixels = new Uint8Array(W * h * BLEN);
+  const paint = (px: Uint8Array, bx: number, by: number, transparent: boolean) => {
+    for (let yy = 0; yy < BLEN; yy++)
+      for (let xx = 0; xx < BLEN; xx++) {
+        const c = px[yy * BLEN + xx];
+        if (!transparent || c !== TRANSPARENT) pixels[(by * BLEN + yy) * W + bx * BLEN + xx] = c;
+      }
+  };
+  for (let by = 0; by < h; by++)
+    for (let bx = 0; bx < w; bx++) {
+      const mx = (((x + bx) % MLEN) + MLEN) % MLEN;
+      const my = (((y + by) % MWID) + MWID) % MWID;
+      const cell = my * MLEN + mx;
+      paint((blocks[map.blocks[cell]] ?? blocks[0]).pixels, bx, by, false);
+      const placed = map.monsters[map.mons[cell]];
+      const mon = placed && mons[placed.monnum];
+      const pic = mon?.pic[0]?.[0];
+      if (pic !== undefined && pic >= 0 && mblocks[pic]) paint(mblocks[pic].pixels, bx, by, true);
+    }
+  return { width: W, height: h * BLEN, pixels, palette };
+}
+
+/** A view of a map: its name, the top-left block and the size in blocks. */
+export type MapView = [map: string, x: number, y: number, w: number, h: number];
+
+/**
+ * The map views the build draws for an original game, from its box's screenshot spots: each
+ * as a VGA screen (the box, the Game-Maker box, the manual cover) and the first as its disk
+ * label's strip (desk/disks/diskLabel.ts).
+ */
+export function builtMapViews(shots: readonly [string, number, number][] | undefined): MapView[] {
+  if (!shots?.length) return [];
+  const [m, x, y] = shots[0];
+  return [...shots.map(([map, sx, sy]): MapView => [map, sx, sy, 16, 10]), [m, x + 2, y + 3, 12, 4]];
+}
+
+/** Where the build puts a map view's picture. */
+export function builtMapShotPath(id: string, [map, x, y, w, h]: MapView): string {
+  return `games/shots/${id}-${map.toLowerCase().replace(/[^a-z0-9_.]/g, '_')}-${x}-${y}-${w}x${h}.png`;
+}
