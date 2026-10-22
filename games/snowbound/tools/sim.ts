@@ -162,6 +162,8 @@ export class GameSim {
   }
 
   private event(k: number): void {
+    // once the game is won there is nothing left to press keys in
+    if (this.ended) return;
     this.pending.push(k);
     // a key recorded at tick t is played on the segment's t-th tick: the next one
     const at = this.ticks + 1;
