@@ -191,7 +191,11 @@
             },
             {
               "q": "The Clock Room: I am lost.",
-              "a": "Everybody is. Every door marked 1 opens when every door marked 2 closes. Head right along the top, then down the right side; the latch is on the bottom-right chamber."
+              "a": "Everybody is. Every door marked 1 opens when every door marked 2 closes. Head right along the top to the alcove at the end, then down the right side; the latch is on the bottom-right chamber."
+            },
+            {
+              "q": "The Clock Room: the spoon is on a lazy Susan, and it will not turn.",
+              "a": "Read the sign over it again: STIR COUNTER CLOCKWISE. Not counterclockwise. Turn the COUNTER CLOCKWISE. Push the handle at XII, then III, then VI, then IX. Pushed the other way it jams. A full turn and the spoon is yours."
             },
             {
               "q": "The Lightning Loft: the plates.",
