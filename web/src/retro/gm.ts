@@ -117,7 +117,7 @@ export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'mai
     // unregistered: the registration card stays beside the monitor while the menu waits
     const takeCard = offerCardAtMenu(h, (name) => {
       registeredTo = name;
-      registeredBox(h, name);
+      drawDesktop(h); // under the menu bar: the old box goes, the new one is drawn
     });
     try {
       ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
