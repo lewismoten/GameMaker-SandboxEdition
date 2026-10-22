@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "goat",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUgKyAFLBcsBUA/QAU0FzQFIBcgBTRnNAVAF0AFND80BSAPIAkgCyAFNI80BTQPNAlAU0AFLCssBUBTQAUsUywFQBdABTQPNAkgPyAFNGc0BSAPIAkgCyAFIBcgBTSPNATkCuQxND80BUAXQAU0PzQFNA80CSCPIAU0ZzQFIA8gCUDfQAU0FzQFIGcgBTQXNAU0FzQE5ArkMOQK5DE0PzQFICsgBTQXNAUgDyAJQKNABTSPNAU0DzQJIHsgBTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgFyAFNKM0BSAPIAksUywFID8gBSw/LAVAo0AFNnAHNAVAF0AE5ArkMUA/QAVAU0AFQ"
+  },
+  {
+   "scene": 4,
+   "keys": "AVAF0AFNWs0BUAXQAU08zQFNA80CUC3QAU0FzQFQBdABSzzLAVAF0AE5ArkMUA/QAUgFyAFLHssBUAXQAU1uzQFQBdABTQrNAVAP0AFNBc0BTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0UzQFID8gBSw/LAU0PzQFICsgBTRTNAUgDyAJIAsgBUA7QAU0TzQFI"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Shepherds' Field"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Bethlehem"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Caravan"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Stable"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 15660,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1045
+   },
+   {
+    "title": "Level 1: The Shepherds' Field",
+    "frame": 2811
+   },
+   {
+    "title": "Level 2: Bethlehem",
+    "frame": 5859
+   },
+   {
+    "title": "Level 3: The Caravan",
+    "frame": 7697
+   },
+   {
+    "title": "Level 4: The Stable",
+    "frame": 10053
+   },
+   {
+    "title": "Ending",
+    "frame": 11180
+   },
+   {
+    "title": "Credits",
+    "frame": 13568
+   }
+  ]
+ }
+}
