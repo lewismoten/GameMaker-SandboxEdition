@@ -1,0 +1,47 @@
+MOVING (arrows or W A D)
+ LEFT/RIGHT  walk (A/D)
+ UP/W  hop (hold it to hop
+       higher, let go to
+       steer)
+ Q/E   hop up and left/right
+       in one go
+
+TEDDY'S TRICKS
+ SPACE  speak: WOOF! scares
+        off pests
+ DOWN   dig: bones, soft dirt
+ F      fetch
+ S      SNIFF! (new) finds
+        what is hidden where
+        you see a faint wisp
+MORE TRICKS (number keys)
+ 1  high five: hands held
+    out, balloons, and bells
+    (Teddy rings bells now)
+ 2  sit pretty: a heart for
+    anybody asking "SIT!"
+ 3  spin: revolving doors,
+    turnstiles, SPIN bubbles
+ 4  play dead (hold): things
+    fly over you
+
+Roll over? Teddy retired
+from rolling over. By
+choice. He is a professional
+now.
+
+GWINN'S TRICKS (MEANWHILE...)
+ SPACE  BOOF: a big bark
+ DOWN   dig BIG (hard dirt)
+ 1      chew (ropes, boxes)
+ 2      sit (still learning)
+ 3      ZOOMIES! knocks over
+        things both ways
+ 4      flop (hold)
+
+Bring what Gwinn dropped to
+Doc Leo at THE CHEZ.
+F1 help  F2 your stuff
+F3 music F4 sounds
+F5 save  F6 load  ESC quit
+F2 shows treats as "Money".
