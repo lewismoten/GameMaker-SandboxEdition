@@ -175,8 +175,8 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  // Big loud things are solid (they push the seed back) and hurt to bump into.
-  const hurt = (hp: number) => ({ chHitPt: hp, solid: 15 });
+  // Big loud things are solid (they push the seed away) and hurt to bump into.
+  const hurt = (hp: number) => ({ chHitPt: Math.round(hp / 2), solid: 15 });
 
   // Raindrops: catch one and it is a drop of water (and a sip).
   const drop = (f: number) => {
@@ -204,8 +204,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(17, 11, 19, 8, ink).set(17, 12, c('white', 2));
     return done(p);
   };
-  book.add('beetle0', beetle(0), hurt(-8));
-  book.add('beetle1', beetle(1), hurt(-8));
+  book.add('beetle0', beetle(0), hurt(-4));
+  book.add('beetle1', beetle(1), hurt(-4));
   // An ant, small and red, all business.
   const ant = (f: number) => {
     const p = P();
@@ -216,8 +216,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(15, 10, 18, 6 + f, ink).set(15, 11, ink);
     return done(p);
   };
-  book.add('ant0', ant(0), hurt(-5));
-  book.add('ant1', ant(1), hurt(-5));
+  book.add('ant0', ant(0), hurt(-3));
+  book.add('ant1', ant(1), hurt(-3));
   // The crow: big, black and loud, flapping.
   const crow = (f: number) => {
     const p = P();
@@ -229,8 +229,8 @@ export function buildMonsterBlocks(pal: Pal) {
     else for (let k = 0; k < 7; k++) p.line(7 + k, 13, 5 + k, 19 - k / 3, c('crow', 1));
     return done(p);
   };
-  book.add('crow0', crow(0), hurt(-10));
-  book.add('crow1', crow(1), hurt(-10));
+  book.add('crow0', crow(0), hurt(-5));
+  book.add('crow1', crow(1), hurt(-5));
   // The peacock, two blocks wide: A the tail fan (behind), B the head and the strut.
   const peaTail = (f: number) => {
     const p = P();
@@ -255,10 +255,10 @@ export function buildMonsterBlocks(pal: Pal) {
     if (f) micro(p, 11, 9, '!', c('red', 3));
     return done(p);
   };
-  book.add('peaA0', peaTail(0), hurt(-12));
-  book.add('peaA1', peaTail(1), hurt(-12));
-  book.add('peaB0', peaHead(0), hurt(-12));
-  book.add('peaB1', peaHead(1), hurt(-12));
+  book.add('peaA0', peaTail(0), hurt(-5));
+  book.add('peaA1', peaTail(1), hurt(-5));
+  book.add('peaB0', peaHead(0), hurt(-5));
+  book.add('peaB1', peaHead(1), hurt(-5));
   // The mole in his miner's helmet, lamp lit, digging for a miracle.
   const mole = (f: number) => {
     const p = P();
@@ -269,8 +269,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(12, 10, ink).rect(14 + f, 17, 4, 2, c('pink', 2)).rect(2, 17, 4, 2, c('pink', 2));
     return done(p);
   };
-  book.add('mole0', mole(0), hurt(-10));
-  book.add('mole1', mole(1), hurt(-10));
+  book.add('mole0', mole(0), hurt(-5));
+  book.add('mole1', mole(1), hurt(-5));
   // An earthworm, minding its own business.
   const worm = (f: number) => {
     const p = P();
@@ -278,8 +278,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(16, 13 + Math.round(Math.sin(8 + f * 1.6) * 1.5), ink);
     return done(p);
   };
-  book.add('worm0', worm(0), hurt(-2));
-  book.add('worm1', worm(1), hurt(-2));
+  book.add('worm0', worm(0), hurt(-1));
+  book.add('worm1', worm(1), hurt(-1));
   // A pebble rolling down the mountain.
   const pebble = (f: number) => {
     const p = P();
@@ -288,8 +288,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(10, 12, 10 + Math.cos(a) * 4, 12 + Math.sin(a) * 4, c('stone', 0)).set(7, 9, c('stone', 5));
     return done(p);
   };
-  book.add('pebble0', pebble(0), hurt(-10));
-  book.add('pebble1', pebble(1), hurt(-10));
+  book.add('pebble0', pebble(0), hurt(-5));
+  book.add('pebble1', pebble(1), hurt(-5));
   const puff = P();
   for (const [x, y, r] of [[6, 14, 3], [12, 13, 3.5], [9, 10, 2.5]]) blob(puff, x, y, r, r * 0.8, pal.r('dust'), 1, 3);
   book.add('dust', puff);
@@ -306,8 +306,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(8, 14, 5, 2, c('white', 1));
     return done(p);
   };
-  book.add('eagle0', eagle(0), hurt(-14));
-  book.add('eagle1', eagle(1), hurt(-14));
+  book.add('eagle0', eagle(0), hurt(-6));
+  book.add('eagle1', eagle(1), hurt(-6));
   // A white goat with her horns, third from the left in another song. Friendly.
   const goat = (f: number) => {
     const p = P();
@@ -334,8 +334,8 @@ export function buildMonsterBlocks(pal: Pal) {
     if (f) micro(p, 16, 1, '!', c('red', 3));
     return done(p);
   };
-  book.add('squirrel0', squirrel(0), hurt(-8));
-  book.add('squirrel1', squirrel(1), hurt(-8));
+  book.add('squirrel0', squirrel(0), hurt(-4));
+  book.add('squirrel1', squirrel(1), hurt(-4));
   // Birds of the air, come to lodge in the branches: a hello is worth points, and off they go.
   const bird = (f: number, flying: boolean) => {
     const p = P();
@@ -361,7 +361,7 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 9, f ? 5 : 7, 3, 2, pal.r('white'), 1, 2);
     return done(p);
   };
-  book.add('bee0', bee(0), hurt(-6));
-  book.add('bee1', bee(1), hurt(-6));
+  book.add('bee0', bee(0), hurt(-3));
+  book.add('bee1', bee(1), hurt(-3));
   return book;
 }

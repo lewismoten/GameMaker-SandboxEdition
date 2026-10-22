@@ -178,7 +178,7 @@ export function mound(book: BlockBook): Level {
   m.set(15, 8, 'U').set(15, 9, 'u').set(17, 7, 'U').col(17, 8, 9, 'u').set(17, 6, 'd').set(15, 5, '*');
   // the lawn, where the peacock struts; leaves above it, and a rain cloud
   m.text(20, 9, '.p.x..q..,.');
-  for (const x of [20, 24, 28]) m.row(7, x, x + 1, 'L');
+  for (const x of [20, 23, 26, 29]) m.row(7, x, x + 1, 'L');
   m.text(21, 4, '*..*..*').text(24, 1, '{}');
   // dandelion fluff up and over the garden wall
   m.col(33, 2, 8, 'F').set(33, 9, 'D');
@@ -186,7 +186,7 @@ export function mound(book: BlockBook): Level {
   // the vegetable patch: pots, a beetle, a bee, leaves, the golden flower up high
   m.set(45, 7, 'U').col(45, 8, 9, 'u').set(46, 7, 'U').col(46, 8, 9, 'u').set(45, 5, '*');
   m.text(48, 9, 'p.,..q.x..,');
-  for (const x of [50, 55]) m.row(7, x, x + 1, 'L');
+  for (const x of [50, 56]) m.row(7, x, x + 1, 'L');
   m.text(50, 4, '*..d..*').text(52, 1, '{}');
   m.set(59, 6, 'U').col(59, 7, 9, 'u').set(60, 6, 'U').col(60, 7, 9, 'u').set(62, 4, 'L').set(62, 3, '1');
   // the sunny patch at the end of the garden: the way on

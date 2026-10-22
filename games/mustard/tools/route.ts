@@ -58,10 +58,11 @@ export async function theMound(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the flowerpots and the leaves', 12, async () => {
     await must(bot, bot.walk(17, 'up the flowerpots'), 'pots');
-    for (const x of [20, 24, 28]) await must(bot, bot.hop('right', 8, 'right', x + 0.5), `leaf ${x}`);
-    await must(bot, bot.walk(33, 'the dandelion fluff'), 'fluff');
+    for (const x of [20, 23, 26, 29]) await must(bot, bot.hop('right', 8, 'right', x + 0.5), `leaf ${x}`);
+    await must(bot, bot.walk(31, 'the dandelion'), 'dandelion');
   });
   await carefully(bot, 'over the wall', 12, async () => {
+    await must(bot, bot.until('right', () => bot.px.x >= 33 * 20, 'into the fluff', 60), 'fluff');
     await must(bot, bot.until(undefined, () => bot.px.y <= 3 * 20, 'up on the fluff', 120), 'fluff');
     await must(bot, bot.hop('right', 4, 'right', 37), 'onto the wall');
     await must(bot, bot.walk(39, 'the top of the wall'), 'wall');
@@ -70,10 +71,10 @@ export async function theMound(bot: Bot): Promise<void> {
   await carefully(bot, 'the vegetable patch', 12, async () => {
     await must(bot, bot.walk(54, 'the thistle'), 'thistle');
     await must(bot, bot.hop('right', 10, 'right', 57), 'over the thistle');
-    await must(bot, bot.walk(55.5, 'under the leaf'), 'leaf');
+    await must(bot, bot.walk(56.5, 'under the leaf'), 'leaf');
     await must(bot, bot.hop('up', 14), 'up on the leaf');
     await must(bot, bot.hop('right', 8, 'right', 59.5), 'the tall pots');
-    await must(bot, bot.hop('right', 8, 'right', 62.5), 'the golden flower');
+    await must(bot, bot.walk(60.5, 'the golden flower'), 'the golden flower');
     await leave(bot, bot.walk(68, 'the sunny patch'), 'the sunny patch');
   });
 }

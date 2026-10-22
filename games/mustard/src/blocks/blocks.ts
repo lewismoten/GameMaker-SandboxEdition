@@ -267,7 +267,12 @@ export function buildBlocks(pal: Pal): BlockBook {
     }
     return bg;
   };
-  book.add('thistle', thistle(sky(73)), { grav: GRAV.down, hp: -6 });
+  // A thistle pricks once, then droops (harmless).
+  book.add('thistle', thistle(sky(73)), { grav: GRAV.down, hp: -8, touch: 'thistleDown' });
+  const drooped = sky(74);
+  for (let k = 0; k < 4; k++) drooped.line(10, 19, 2 + k * 5, 15 + (k % 2), c('leaf', 1));
+  for (const [x, y] of [[4, 14], [10, 13], [16, 14]]) drooped.disc(x, y, 2, c('purple', 1));
+  book.add('thistleDown', drooped, { grav: GRAV.down });
 
   // ---------- underground ----------
   // Packed earth with an old tin can, a button, a bottle cap: just soil, but nice to look at.
