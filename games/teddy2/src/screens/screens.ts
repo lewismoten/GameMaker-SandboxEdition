@@ -7,6 +7,7 @@ import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, gradient, klubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
+import { saveSlots } from '../../../kit/saveSlots';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
@@ -116,6 +117,17 @@ export function page(heading: string, seed = 3): Pixels {
 }
 
 /**
+ * The load and save pages: Game-Maker writes the names in yellow, so each sits on a dark
+ * strip, and its blue message at y 185 on the panel, which reaches down past it.
+ */
+export function slotsPage(heading: string, seed: number): Pixels {
+  const p = page(heading, seed);
+  p.rect(28, 186, 264, 12, c('ink', 0));
+  p.rect(30, 180, 260, 16, c('cream', 3));
+  return saveSlots(p, c('ink', 0), c('cream', 3), c('blue', 1));
+}
+
+/**
  * The high scores: Game-Maker writes "Top Ten Scores" in red at the top, the scores in
  * blue from x 20, and "Hit any key" in red at the bottom (x 116..203, y 192..199), so
  * each sits on a cream plate rather than the bunting or the grass.
@@ -129,7 +141,8 @@ export function scoresScreen(): Pixels {
     p.rect(x, y, w, h, c('cream', 3));
   };
   plate(96, 0, 128, 10);
-  plate(12, 22, 296, 160);
+  // down past the latest score's row (y 177..184)
+  plate(12, 22, 296, 165);
   plate(108, 190, 104, 10);
   p.rect(12, 22, 296, 2, c('paint', 3));
   return p;
@@ -211,8 +224,8 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   textPage('help', 'HOW TO PLAY', HELP);
   textPage('credits', 'CREDITS', CREDITS);
   put('scores.gif', gif(scoresScreen()));
-  put('loadgame.gif', gif(page('LOAD A GAME', 13)));
-  put('savegame.gif', gif(page('SAVE THIS GAME', 17)));
+  put('loadgame.gif', gif(slotsPage('LOAD A GAME', 13)));
+  put('savegame.gif', gif(slotsPage('SAVE THIS GAME', 17)));
   put('won.gif', gif(...wonScreen()));
   put('wontxt.gif', gif(page('BEST IN SHOW', 19)));
   put('won.txt', WON);
