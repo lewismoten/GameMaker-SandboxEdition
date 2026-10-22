@@ -290,9 +290,14 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
     h(
       'table',
       null,
-      h('tr', null, h('th', null, 'Qty'), h('th', null, 'Title'), h('th', null, 'Price')),
+      h('tr', null, h('th', null, 'Qty'), h('th', null, 'Title'), h('th', null, 'Registration')),
       ...family.map((g) => h('tr', null, h('td', null, '___'), h('td', null, g.title), h('td', null, price(g)))),
       h('tr', null, h('td', null, ''), h('td', null, 'Shipping & handling'), h('td', null, '$3.00')),
+    ),
+    h(
+      'p',
+      { class: 'cat-price-note' },
+      'These are the registration fees, paid to the author. The few dollars a store asks for a shareware disk (Bits & Bytes Software: $4.99) pay for the disk and the copying, not the registration.',
     ),
     fictionalNote(),
   );

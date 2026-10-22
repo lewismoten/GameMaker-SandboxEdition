@@ -15,7 +15,7 @@ export interface BoxExtras {
   reviews?: { quote: string; source: string }[];
   /** A laurel on the front, e.g. { title: 'Shareware Game of the Month', from: 'Diskette Digest' }. */
   award?: { title: string; from: string };
-  /** The store's price sticker; a shareware box sold for a few dollars. */
+  /** The store's price sticker ($4.99 at Bits & Bytes by default): what the store asked for the shareware disk, not the author's registration fee (CatalogEntry.price). */
   sticker?: { store?: string; price?: string };
   /** A poster or fold-out map for the wall while the game is played. */
   poster?: { gif?: string; map?: [string, number, number, number, number]; title?: string; caption?: string };
