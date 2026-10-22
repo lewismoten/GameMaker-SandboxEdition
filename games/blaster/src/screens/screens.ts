@@ -6,6 +6,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
+import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, centered, outlined, text } from '../art/draw';
@@ -220,7 +221,22 @@ export function wonFli(): Uint8Array {
   const last = desk((g) => dos(g, boot));
   outlined(last, 70, 20, 'SYSTEM CLEAN!', c('slime', 5), c('ink', 0), 2);
   for (let i = 0; i < 2; i++) frames.push(frame(last));
-  return encodeFli(frames, SP.pal, { speed: 6 });
+  // On the desk the whole time, in a brass frame: the team's real mascot, Teddy, scanned in
+  // and dithered into palette entries no frame uses.
+  const used = new Set<number>();
+  for (const f of frames) for (const v of f) used.add(v);
+  const top = new Pixels(W, H);
+  top.px.set(frames[frames.length - 1]);
+  const pet = resample(loadScan('teddy'), 54, 0, [0.24, 0, 0.96, 0.74]);
+  const [px, py] = [16, 110];
+  const box = { x: px - 5, y: py - 5, w: pet.w + 10, h: pet.h + 14 };
+  top.rect(box.x + 3, box.y + 3, box.w, box.h, c('ink', 0));
+  top.rect(box.x, box.y, box.w, box.h, c('gold', 2)).frame(box.x, box.y, box.w, box.h, c('gold', 0)).frame(box.x + 1, box.y + 1, box.w - 2, box.h - 2, c('gold', 4));
+  top.rect(px + pet.w / 2 - 10, py + pet.h + 2, 20, 4, c('gold', 4));
+  const { pal } = pastePhoto(top, SP.pal, pet, px, py, { reserved: [...used] });
+  for (const f of frames)
+    for (let y = box.y; y < box.y + box.h + 3; y++) for (let x = box.x; x < box.x + box.w + 3; x++) f[y * W + x] = top.px[y * W + x];
+  return encodeFli(frames, pal, { speed: 6 });
 }
 
 /** Game over: GLITCH grinning from the monitor. */
