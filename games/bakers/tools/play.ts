@@ -1,8 +1,8 @@
 // Plays the whole game on the built disk with the bot: every room in turn (tools/route.ts),
-// or by the secret way through the hidey-hole.
+// or by the secret way through the hidey-hole; both go under the stove with Sir Reginald.
 import { compileAll } from '../src/compile';
 import { Bot } from './bot';
-import { ROUTE, SECRET_ROUTE, playRoom } from './route';
+import { INTERLUDE_ROUTE, ROUTE, SECRET_ROUTE, playRoom } from './route';
 import { GameSim } from './sim';
 
 export async function playThrough(secret: boolean, seed = 1): Promise<Bot> {
@@ -12,7 +12,7 @@ export async function playThrough(secret: boolean, seed = 1): Promise<Bot> {
   for (let guard = 0; guard < 20 && !sim.ended; guard++) {
     const room = bot.room();
     const level = room.spec.level;
-    const stops = (secret && SECRET_ROUTE[level]) || ROUTE[level];
+    const stops = room.spec.interlude ? INTERLUDE_ROUTE : (secret && SECRET_ROUTE[level]) || ROUTE[level];
     if (!stops) throw new Error(`No route for ${room.spec.name}`);
     const seg = sim.segments.length;
     await playRoom(bot, stops);

@@ -4,6 +4,7 @@
 //   cd web && npx vite-node ../games/bakers/tools/check.ts [--secret]
 import { compileAll } from '../src/compile';
 import { roomScene } from '../src/game';
+import { STOVE_SCENE } from '../src/ids';
 import { FIXED_BLOCK } from '../src/ids';
 import { Bot } from './bot';
 import { GameSim } from './sim';
@@ -57,6 +58,8 @@ try {
   if (!secretOnly) {
     const bot = await playThrough(false);
     if (!bot.sim.ci.inv.includes(FIXED_BLOCK.kazoo)) throw new Error('The kazoo was not picked up in the Spice Parlor');
+    const at = bot.sim.trail.indexOf(STOVE_SCENE);
+    if (at < 0 || bot.sim.trail[at - 1] !== roomScene(4) || bot.sim.trail[at + 1] !== roomScene(5)) throw new Error('Sir Reginald did not go under the stove between the Bakehouse and the Cold Cellar');
     console.log(`WON  normal route: ${bot.sim.deaths} deaths, score ${bot.sim.ci.score}, ${bot.squawks} squawks`);
   }
   await eggsFound();
@@ -66,6 +69,7 @@ try {
     if (!bot.sim.ci.inv.includes(FIXED_BLOCK.tricorn)) throw new Error("Ebenezer's tricorn was not picked up in the hidey-hole");
     if (bot.sim.trail.includes(roomScene(6))) throw new Error('The secret route went through the Tea Room');
     if (!bot.sim.trail.includes(roomScene(0))) throw new Error('The secret route never reached the hidey-hole');
+    if (!bot.sim.trail.includes(STOVE_SCENE)) throw new Error('The secret route never went under the stove');
     console.log(`WON  secret route (skips the Tea Room): ${bot.sim.deaths} deaths, score ${bot.sim.ci.score}`);
   }
 } catch (e) {

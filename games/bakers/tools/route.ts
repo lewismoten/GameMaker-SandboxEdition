@@ -32,6 +32,9 @@ export const ROUTE: Record<number, Stop[]> = {
   13: ['k', 'I'],
 };
 
+/** Sir Reginald's way under the stove, to the molasses. */
+export const INTERLUDE_ROUTE: Stop[] = ['I'];
+
 /** The secret way out of the Cold Cellar, and the hidey-hole's own route. */
 export const SECRET_ROUTE: Record<number, Stop[]> = {
   5: ['J'],
