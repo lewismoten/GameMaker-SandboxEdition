@@ -6,7 +6,7 @@ import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type 
 import type { BlockSet } from '../blocks/book';
 import { CTR, MON, SEQ, SND } from '../ids';
 
-export const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920 };
+export const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920, p: 0x1970 };
 /**
  * Alternate keys (scan code << 8 | ASCII). Game-Maker can't read two arrows at once, so the
  * diagonals get keys of their own: Q/E and the number pad's 7/9/1/3. W/A/S/D copy the arrows.
@@ -53,7 +53,8 @@ export function buildCharacter(cb: BlockSet, moon: boolean): Character {
   set(S[SEQ.die], [f('hurt', 2), f('die0', 3), f('die1', 3), f('die2', 6), f('die3', 24)], { sound: SND.die });
   // One quick flash: a longer hurt would freeze Dex while a car (or a dinosaur) keeps hitting him.
   set(S[SEQ.hurt], [f('hurt', 1)], { sound: SND.hurt });
-  set(S[SEQ.pickup], [f('down0', 1)], { key: 0 });
+  // P picks up what Dex stands on. Almost nothing in the future needs picking up by hand.
+  set(S[SEQ.pickup], [f('blink', 2), f('down0', 1)], { key: KEY.p, sound: SND.pickup, ground: 1, norepeat: 1 });
   set(S[SEQ.drop], [f('down0', 1)], { key: 0 });
 
   const side = ['side1', 'side0', 'side1', 'side0'];
