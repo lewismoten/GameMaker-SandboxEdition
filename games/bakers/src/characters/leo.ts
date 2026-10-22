@@ -37,7 +37,9 @@ export function buildLeo(cb: BlockSet): Character {
   // idle: blinks, and now and then checks the chicken is still breathing (it is rubber)
   set(S[SEQ.idle], [f('down0', 50), f('blink', 3), f('down0', 70), f('blink', 3), f('down0', 40), f('squawkDown', 8), f('down0', 30), f('blink', 3)]);
   set(S[SEQ.die], [f('hurt', 3), f('down0', 3), f('hurt', 3), f('dead', 12), f('dead2', 14), f('dead', 14)], { sound: SND.die, jstkBut: 0 });
-  set(S[SEQ.hurt], [f('hurt', 1)], { sound: SND.hurt, jstkBut: 0 });
+  // The flinch is "ground" (can't be cut short), so a key let go while he flinches waits until
+  // the step he was taking is done: he never ends up between two blocks.
+  set(S[SEQ.hurt], [f('hurt', 1)], { sound: SND.hurt, jstkBut: 0, ground: 1 });
   set(S[SEQ.pickup], [f('down0', 2), f('blink', 2)], { key: KEY.enter, sound: SND.pickup, ground: 1, norepeat: 1 });
   set(S[SEQ.drop], [f('down0', 1)], { key: 0 });
 
@@ -74,7 +76,7 @@ export function buildLeo(cb: BlockSet): Character {
   set(S[SEQ.salute], [f('salute', 24), f('down0', 2)], { key: KEY.t, sound: SND.fife, bloc: FIXED_BLOCK.tricorn, ground: 1, norepeat: 1 });
 
   ch.meter[0] = HIT_POINTS;
-  ch.meter[1] = 3;
+  ch.meter[1] = 5;
   // Counters read one more than they hold: no ingredients, no spoons.
   ch.meter[3] = 1;
   for (let i = 20; i < 30; i++) ch.meter[i] = 1;

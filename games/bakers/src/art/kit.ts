@@ -477,3 +477,42 @@ export function ingredient(n: number, frame = 0): Pixels {
   }
   return over(p, outline(q, ink));
 }
+
+// ------------------------------------------------------------------ the two eggs
+
+/** The rotten egg: grey-green, cracked, stamped BEST BEFORE 1776, and you can see the smell. */
+export function eggRotten(): Pixels {
+  const p = blank();
+  p.rect(5, 17, 10, 2, c('dark', 0));
+  blob(p, 10, 12, 5, 6, [c('grass', 0), c('grass', 1), c('grey', 3), c('grey', 4)], 0, 3);
+  p.line(7, 10, 9, 12, c('ink', 0)).line(9, 12, 8, 14, c('ink', 0)).line(9, 12, 11, 11, c('ink', 0));
+  micro(p, 7, 14, '76', c('redcoat', 1));
+  // stink lines
+  for (const x of [5, 10, 15]) for (let y = 1; y < 6; y++) p.set(x + ((y >> 1) % 2 ? 1 : 0), y, c('grass', 3));
+  return outline(p, O());
+}
+
+/**
+ * The true Easter egg: a pastry egg in the Faberge manner, glazed, banded in gold leaf, on a
+ * little holder of spun sugar, with a tiny mechanical baker turning on top.
+ */
+export function eggFaberge(frame = 0): Pixels {
+  const p = blank();
+  // the spun-sugar holder
+  for (let x = 5; x < 16; x += 2) p.line(x, 19, 10, 15, c('yellow', 2));
+  p.rect(6, 15, 9, 1, c('yellow', 3));
+  // the egg: golden pastry, glazed
+  blob(p, 10, 10, 4.5, 5.5, [c('orange', 1), c('orange', 2), c('corgi', 3), c('yellow', 3)], 0, 3);
+  p.rect(6, 10, 9, 1, c('brass', 4)).rect(6, 8, 9, 1, c('brass', 3));
+  for (const [x, y] of [
+    [8, 12],
+    [12, 12],
+    [10, 6],
+  ])
+    p.set(x, y, c('red', 3));
+  p.set(8, 6, c('paper', 4)).set(9, 6, c('paper', 4));
+  // the little baker on top: a white toque, turning
+  const bx = frame ? 11 : 9;
+  p.rect(bx, 1, 2, 2, c('paper', 4)).rect(bx, 3, 2, 1, c('skin', 2)).rect(bx, 4, 2, 1, c('paper', 4));
+  return outline(p, O());
+}

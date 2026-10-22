@@ -109,4 +109,7 @@ export const MON = {
 } as const;
 
 /** Background block numbers every set keeps in the same place (inventory items are block numbers). */
-export const FIXED_BLOCK = { void: 0, chicken: 1, kazoo: 2, tricorn: 3 } as const;
+export const FIXED_BLOCK = { void: 0, chicken: 1, kazoo: 2, tricorn: 3, eggRotten: 4, eggFaberge: 5 } as const;
+
+/** The scenes of the two egg cupboards. */
+export const EGG_SCENE = { rotten: 16, faberge: 17 } as const;

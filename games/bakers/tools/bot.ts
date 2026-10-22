@@ -237,11 +237,15 @@ export class Bot {
     this.sim.press(SCAN[d]);
     let r = await this.tick();
     this.sim.release(SCAN[d]);
+    const trace: string[] = [];
     for (let i = 0; i < 60 && !r; i++) {
       const p = this.sim.pos;
+      if (process.env.BOT_DEBUG === '3') trace.push(`${p.x},${p.y}+${p.sx},${p.sy} s${this.sim.w.chr.cseq}f${this.sim.w.chr.cframe} g${this.sim.ci.gravx},${this.sim.ci.gravy} hp${this.sim.ci.hitpts}`);
       if (this.sim.w.chr.cseq === 0 && p.sx === 0 && p.sy === 0 && this.sim.ci.gravx === 0 && this.sim.ci.gravy === 0) break;
       r = await this.tick();
     }
+    const q = this.sim.pos;
+    if (process.env.BOT_DEBUG === '3' && (q.sx || q.sy)) console.log(`misaligned after ${d}: ${trace.join(' | ')}`);
     return r;
   }
 
@@ -314,7 +318,7 @@ export class Bot {
         // dodging back and forth for too long: take the hit and go
         if (stalled > 60) (move = first.d), (stalled = 0), (best = Infinity);
       }
-      if (process.env.BOT_DEBUG === '2') console.log(`  ${label} at ${p.x},${p.y} -> ${move ?? 'wait'} (path ${path.length})`);
+      if (process.env.BOT_DEBUG === "2") console.log(`  ${label} at ${p.x},${p.y}+${p.sx},${p.sy} seq ${this.sim.w.chr.cseq} hp ${this.sim.ci.hitpts} -> ${move ?? "wait"} (path ${path.length})`);
       const r = await this.stepRaw(move, 3);
       if (r === 'dead') this.say(`${label}: died`);
       if (r && r !== 'dead') return r;

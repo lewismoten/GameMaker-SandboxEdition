@@ -12,7 +12,8 @@
 //   m a hidden mousetrap   M one you can see   a b timed panels (in turn)   r riser   o opener
 //   h a hot floor   ] [ _ ~ spouts firing east, west, south, north
 //   I the room's ingredient (the way out)   J a second one (the secret way out)
-//   z the kazoo   t the tricorn   T Teddy   Y Teddy (facing left)   G Gwinn
+//   D a hatch down to the room's egg cupboard   O the hatch back up (in a cupboard)
+//   z the kazoo   t the tricorn   q the rotten egg   f the pastry egg   T Teddy   Y Teddy (facing left)   G Gwinn
 // Digits and other letters are the room's own (monsters on patrol, signs).
 import { MLEN, newMap, reindexMonsters, LASTMM, type GameMap } from '../../../../web/src/formats/map';
 import type { ThemeName } from '../art/pal';
@@ -29,8 +30,10 @@ export type Cell = string | { tile?: string; mon?: (b: Bestiary) => string };
 export interface RoomSpec {
   /** File name (8.3 base): its .map, .mon and .pal. */
   file: string;
-  /** Level number 1..13, or 0 for the secret room. */
+  /** Level number 1..13, or 0 for the secret room. Egg cupboards carry their parent's. */
   level: number;
+  /** An egg cupboard: the scene it is, and where in its parent room the way back lands. */
+  cupboard?: { scene: number; back: [number, number] };
   name: string;
   style: Style;
   theme: ThemeName;
@@ -55,6 +58,8 @@ export interface Room {
   start: { x: number; y: number };
   exit: { x: number; y: number };
   secret?: { x: number; y: number };
+  /** The hatch to the egg cupboard (D) or, in a cupboard, back (O). */
+  hatch?: { x: number; y: number };
   /** Every cell's legend character, by map coordinates (for tools). */
   chars: Map<string, string>;
 }
@@ -99,6 +104,8 @@ const BASE: Record<string, string> = {
   X: 'fwallCrack',
   z: 'kazoo',
   t: 'tricorn',
+  q: 'eggRotten',
+  f: 'eggFaberge',
 };
 
 const WALLISH = new Set(['#', '%']);
@@ -123,6 +130,7 @@ export function buildRoom(spec: RoomSpec, set: TileSet, mb: BlockSet): Room {
   let start: Room['start'] | undefined;
   let exit: Room['exit'] | undefined;
   let secret: Room['secret'] | undefined;
+  let hatch: Room['hatch'] | undefined;
   const chars = new Map<string, string>();
   const at = (x: number, y: number) => spec.rows[y]?.[x] ?? '#';
   const signRun = new Map<string, number>();
@@ -144,6 +152,11 @@ export function buildRoom(spec: RoomSpec, set: TileSet, mb: BlockSet): Room {
       if (ch === '@') {
         set1(floorName());
         start = { x: mx, y: my };
+        return;
+      }
+      if (ch === 'D' || ch === 'O') {
+        set1('stairs');
+        hatch = { x: mx, y: my };
         return;
       }
       if (ch === 'I' || ch === 'J') {
@@ -177,7 +190,7 @@ export function buildRoom(spec: RoomSpec, set: TileSet, mb: BlockSet): Room {
       set1(t === 'floor' ? floorName() : t);
     }),
   );
-  if (!start || !exit) throw new Error(`${spec.file}: needs an @ and an I`);
+  if (!start || !(exit || (spec.cupboard && hatch))) throw new Error(`${spec.file}: needs an @ and an I (or an O)`);
   reindexMonsters(map);
-  return { spec, map, mons, start, exit, secret, chars };
+  return { spec, map, mons, start, exit: exit ?? hatch!, secret, hatch, chars };
 }

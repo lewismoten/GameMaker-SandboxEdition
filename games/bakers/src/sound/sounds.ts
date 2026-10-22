@@ -116,6 +116,20 @@ function trombone(): Uint8Array {
   });
 }
 
+/** A music box: the first bar of the march, on little steel tines (a life: pie, or the pastry egg). */
+function musicBox(): Uint8Array {
+  const notes = [784, 988, 1175, 1175, 1319, 1175];
+  const at = [0, 0.12, 0.24, 0.42, 0.54, 0.66];
+  return sample(1.4, (t) => {
+    let v = 0;
+    notes.forEach((f, i) => {
+      const u = t - at[i];
+      if (u >= 0) v += (Math.sin(2 * Math.PI * f * u) + 0.3 * Math.sin(2 * Math.PI * f * 4.2 * u)) * Math.exp(-u * 4.5) * 0.3;
+    });
+    return v;
+  }, { envelope: () => 1, gain: 1 });
+}
+
 function fanfare(): Uint8Array {
   const notes = [523, 659, 784, 1047];
   return sample(0.6, (t) => {
@@ -143,7 +157,8 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
   put(SND.kill, speaker((i) => (i < 10 ? 2400 + (i % 3) * 600 : 0)), 'squeak', squeak());
   put(SND.ingredient, SPEAKER.arpeggio([1319, 1568, 2093, 2637]), 'sparkle', sparkle());
   put(SND.vault, speaker((i) => (i < 24 ? (i % 2 ? 900 : 0) : i < 30 ? 70 : 0)), 'tumblers', tumblers());
-  put(SND.life, SPEAKER.arpeggio(), 'fanfare', fanfare());
+  put(SND.life, SPEAKER.arpeggio([784, 988, 1175, 1175, 1319, 1175]), 'musicbox', musicBox());
+  void fanfare;
   put(SND.score, SPEAKER.coin());
   put(SND.subScore, SPEAKER.fall(800, 200));
   put(SND.key, speaker((i) => (i < 4 ? 900 : 0)), 'clack', clack());

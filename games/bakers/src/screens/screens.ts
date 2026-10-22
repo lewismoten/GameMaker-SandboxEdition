@@ -9,7 +9,9 @@ import { dosText } from '../../../kit/disk';
 import { loadScan, pastePhoto, polaroid, resample, sepia } from '../../../kit/photo';
 import { Pixels, rng } from '../../../kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
-import { corgi, docLeo, gwinn, ingredient, mouse, redcoat } from '../art/kit';
+import { corgi, docLeo, eggFaberge, eggRotten, gwinn, ingredient, mouse, redcoat } from '../art/kit';
+import { arrivedWith, introName } from '../game';
+import { EGG_SCENE } from '../ids';
 import { PAL, buildPalette, c } from '../art/pal';
 import type { TileSet } from '../blocks/tiles';
 import type { Room } from '../levels/room';
@@ -280,6 +282,22 @@ export function lostScreen(): Pixels {
   return p;
 }
 
+// ------------------------------------------------------------------ the eggs
+
+/** An egg's own page: the egg big, what it is, and its credits. */
+export function eggScreen(rotten: boolean): Pixels {
+  const p = new Pixels(W, H);
+  kitchenWall(p, 176);
+  card(p, 16, 10, 288, 180, 0);
+  scaleBlit(p, rotten ? eggRotten() : eggFaberge(0), 26, 36, 4);
+  const lines = rotten
+    ? ['THE ROTTEN EGG', '', 'Best before 1776.', 'It has been keeping since.', 'The smell got out of the', 'crock before you did.', '', 'Ebenezer kept it to throw at', 'Redcoats. He never had to.', 'They could smell it coming.', '', 'Found by Doc Leo, who wishes', 'he had not. Hidden by Claude.']
+    : ['THE TRUE EASTER EGG', '', 'Choux pastry, glazed, banded', 'in edible gold leaf, on a', 'stand of spun sugar. On top,', 'a tiny baker turns to a', 'music box.', '', 'For Lewis "Lewie" Moten III,', 'Teddy and Gwinn (two n\'s),', 'from Claude Opus 5.5.', 'The thirteenth egg, at last.'];
+  lines.forEach((l, i) => text(p, 112, 22 + i * 12, l, i === 0 ? c('red', 2) : c('ink', 0)));
+  stamp(p, 64, 160, rotten ? 'PHEW' : 'HAPPY EASTER', 1, -0.15);
+  return p;
+}
+
 // ------------------------------------------------------------------ all files
 
 export function buildScreens(rooms: Room[], sets: Record<string, TileSet>): Record<string, Uint8Array> {
@@ -323,16 +341,20 @@ export function buildScreens(rooms: Room[], sets: Record<string, TileSet>): Reco
   out['lostpg.gif'] = gif(pageScreen('PLAYING DEAD', 5));
   out['lost.txt'] = dosText(LOST);
   out['lost.lst'] = serializeSlideList([{ name: 'lost.gif', pause: 6 }, { name: 'lostpg.gif', pause: 0 }, { name: 'lost.txt' }]);
+  for (const line of RECIPE) out[`rcp${String(line.n).padStart(2, '0')}.gif`] = gif(recipePage(line.n));
   for (const room of rooms) {
+    if (room.spec.cupboard) {
+      const rotten = room.spec.cupboard.scene === EGG_SCENE.rotten;
+      const name = `egg${room.spec.cupboard.scene}.gif`;
+      out[name] = gif(eggScreen(rotten));
+      out[introName(room)] = serializeSlideList([{ name, pause: 30 }]);
+      continue;
+    }
     const n = String(room.spec.level).padStart(2, '0');
     const { px, pal } = roomCard(room, sets[room.spec.style]);
     out[`card${n}.gif`] = gif(px, pal);
-    out[`card${n}.lst`] = serializeSlideList([{ name: `card${n}.gif`, pause: 5 }]);
-  }
-  for (const line of RECIPE) {
-    const n = String(line.n).padStart(2, '0');
-    out[`rcp${n}.gif`] = gif(recipePage(line.n));
-    out[`rcp${n}.lst`] = serializeSlideList([{ name: `rcp${n}.gif`, pause: 20 }]);
+    const came = arrivedWith(room.spec.level);
+    out[introName(room)] = serializeSlideList([...(came ? [{ name: `rcp${String(came).padStart(2, '0')}.gif`, pause: 20 }] : []), { name: `card${n}.gif`, pause: 5 }]);
   }
   void ROOM_NAMES;
   void blob;

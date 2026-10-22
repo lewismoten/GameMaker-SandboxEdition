@@ -17,7 +17,7 @@
 //   spouts          blocks that give birth to monster 10..13 (whatever this room makes of it)
 import { Pixels, rng } from '../../../kit/pixels';
 import { bevel, blob, micro, outline, shadeAt } from '../art/draw';
-import { blank, cap, chickenItem, float, ingredient, kazoo, on, pie, spoon, tricorn } from '../art/kit';
+import { blank, cap, chickenItem, eggFaberge, eggRotten, float, ingredient, kazoo, on, pie, spoon, tricorn } from '../art/kit';
 import { c, r } from '../art/pal';
 import { CTR, MON } from '../ids';
 import { BlockSet, GRAV, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP } from './sets';
@@ -46,8 +46,9 @@ export const TIMING = {
   spout: 40,
 };
 
-export const HOT_DAMAGE = -1;
-export const TRAP_DAMAGE = -5;
+/** One touch of a hot floor or a mousetrap and Doc Leo plays dead (the room starts over). */
+export const HOT_DAMAGE = -100;
+export const TRAP_DAMAGE = -100;
 
 // ------------------------------------------------------------------ drawing
 
@@ -521,6 +522,10 @@ export function buildTileSet(style: Style): TileSet {
   t.add('chicken', on(fl, chickenItem()), { obj: true, touch: 'floor' });
   t.add('kazoo', on(fl, kazoo()), { obj: true, touch: 'floor' });
   t.add('tricorn', on(fl, tricorn()), { obj: true, touch: 'floor' });
+  // the two eggs (carried, they go in the save): the rotten one costs thirteen points to pick
+  // up (the smell), the pastry one is worth a life (and plays the music box)
+  t.add('eggRotten', on(fl, eggRotten()), { obj: true, touch: 'floor', score: -13 });
+  t.add('eggFaberge', on(fl, eggFaberge()), { obj: true, touch: 'floor', effect: 1, eamt: 1, score: 1776 });
 
   t.add('floor', fl);
   t.add('floor2', fl2);
@@ -551,7 +556,7 @@ export function buildTileSet(style: Style): TileSet {
   t.add('latchOpen', latch(fl, true));
   t.add('latch', latch(fl, false), { solid: SOLID, effect: CTR.keys, eamt: -1, touch: 'latchOpen' });
   t.add('cap', on(fl, cap()), { score: 50, touch: 'floor' });
-  t.add('float', on(fl, float()), { hp: 10, score: 5, touch: 'floor' });
+  t.add('float', on(fl, float()), { score: 250, touch: 'floor' });
   t.add('pie', on(fl, pie()), { effect: 1, eamt: 1, score: 100, touch: 'floor' });
   t.add('trapSprung', trap(fl, 'sprung'));
   t.add('trapArmed', trap(fl, 'armed'), { hp: TRAP_DAMAGE, touch: 'trapSprung' });

@@ -1,6 +1,7 @@
 // kitchen.mbl, the monster blocks every room shares, and the kinds of monster a room can
 // put in its .MON. A monster block carries what touching it does (hit points), so a mouse's
 // two frames both bite. The power ladder decides every fight:
+// Mice and ants only cost points (a mouse nips, then runs); everything else is one touch.
 //   scared mouse 72 > squawk 70 > redcoat 50 > mouse, ant 40      (a squawk sends them off)
 //   kazoo 75: louder, and it takes on the same crowd
 //   flying things 80: they beat a squawk, and burst on Doc Leo (under 100, so once each)
@@ -11,6 +12,9 @@ import { CLEAR } from '../art/draw';
 import { ant, bubble, cork, corgi, fireball, flyingCap, gwinn, icicle, kazooWave, knife, mouse, redcoat, rollingPin, spark, squawkWave, steam } from '../art/kit';
 import { BlockSet, Bestiary, type BlockDef, type MonDef } from '../blocks/sets';
 import { MON } from '../ids';
+
+/** Every hazard in the kitchen is one touch: Doc Leo plays dead and the room starts over. */
+export const KILL = -100;
 
 function rot90(src: Pixels): Pixels {
   const p = new Pixels(20, 20, CLEAR);
@@ -23,20 +27,20 @@ const FRAMES: Record<string, [Pixels, BlockDef][]> = {
   squawk: [0, 1].map((i) => [squawkWave(i), {}]),
   kazooH: [0, 1].map((i) => [kazooWave(i), {}]),
   kazooV: [0, 1].map((i) => [rot90(kazooWave(i)), {}]),
-  mouse: [0, 1].map((i) => [mouse(i), { hp: -3 }]),
+  mouse: [0, 1].map((i) => [mouse(i), { score: -25 }]),
   mouseScared: [0, 1].map((i) => [mouse(i, true), {}]),
-  pin: [0, 1, 2].map((i) => [rollingPin(i), { hp: -1 }]),
-  knife: [0, 1].map((i) => [knife(i), { hp: -2 }]),
-  redcoat: [0, 1].map((i) => [redcoat(i), { hp: -4 }]),
+  pin: [0, 1, 2].map((i) => [rollingPin(i), { hp: KILL }]),
+  knife: [0, 1].map((i) => [knife(i), { hp: KILL }]),
+  redcoat: [0, 1].map((i) => [redcoat(i), { hp: KILL }]),
   redcoatRun: [0, 1].map((i) => [redcoat(i, true), {}]),
-  ant: [0, 1].map((i) => [ant(i), { hp: -2 }]),
-  fireball: [0, 1].map((i) => [fireball(i), { hp: -4 }]),
-  steam: [0, 1].map((i) => [steam(i), { hp: -3 }]),
-  bubble: [0, 1].map((i) => [bubble(i), { hp: -2 }]),
-  cork: [0, 1].map((i) => [cork(i), { hp: -3 }]),
-  spark: [0, 1].map((i) => [spark(i), { hp: -3 }]),
-  icicle: [[icicle(), { hp: -4 }]],
-  flyingCap: [0, 1].map((i) => [flyingCap(i), { hp: -2 }]),
+  ant: [0, 1].map((i) => [ant(i), { score: -10 }]),
+  fireball: [0, 1].map((i) => [fireball(i), { hp: KILL }]),
+  steam: [0, 1].map((i) => [steam(i), { hp: KILL }]),
+  bubble: [0, 1].map((i) => [bubble(i), { hp: KILL }]),
+  cork: [0, 1].map((i) => [cork(i), { hp: KILL }]),
+  spark: [0, 1].map((i) => [spark(i), { hp: KILL }]),
+  icicle: [[icicle(), { hp: KILL }]],
+  flyingCap: [0, 1].map((i) => [flyingCap(i), { hp: KILL }]),
   teddy: [
     [corgi(0), {}],
     [corgi(1), {}],
