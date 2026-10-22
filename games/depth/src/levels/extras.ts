@@ -5,7 +5,7 @@ import type { Plane } from '../tiles/cells';
 import type { Level } from './levels';
 
 export interface LevelExtras {
-  rules?: (kind: string, plane: Plane) => Behavior | undefined;
+  rules?: (kind: string, plane: Plane, part: number) => Behavior | undefined;
   prepare?: (book: TileBook) => void;
 }
 

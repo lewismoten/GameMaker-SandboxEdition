@@ -26,6 +26,21 @@ export const LEGEND: Record<string, string> = {
   X: 'exit',
   o: 'orb',
   E: 'egg',
+  P: 'pulseA',
+  Q: 'pulseB',
+  '^': 'slopeN',
+  '>': 'slopeE',
+  v: 'slopeS',
+  '<': 'slopeW',
+  k: 'crystal',
+  U: 'teapot',
+  A: 'nest',
+  I: 'pillar',
+  m: 'mirrordoor',
+  '[': 'chez:0',
+  ']': 'chez:1',
+  '{': 'chez:2',
+  '}': 'chez:3',
   C: 'crowngate',
 };
 
@@ -88,7 +103,9 @@ export function buildLevel(book: TileBook, lv: LevelText): BuiltLevel {
       marks.get(ch)!.push([ox + x, oy + y]);
     }
   }
-  const kindAt = (x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= h ? 'void' : kinds[y][x]);
+  // a kind may name a part of a bigger model: "chez:2"
+  const kindAt = (x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= h ? 'void' : kinds[y][x].split(':')[0]);
+  const partAt = (x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : Number(kinds[y][x].split(':')[1] ?? 0));
   const ctxAt = (x: number, y: number, p: Plane): Ctx => ({
     w: KINDS[kindAt(x - 1, y)].tall(p),
     n: KINDS[kindAt(x, y - 1)].tall(p),
@@ -96,7 +113,7 @@ export function buildLevel(book: TileBook, lv: LevelText): BuiltLevel {
     nPit: KINDS[kindAt(x, y - 1)].ground(p) === 'pit',
   });
   const blockAt = (x: number, y: number, kind = kindAt(x, y)) =>
-    book.get({ kind, ctx: { near: ctxAt(x, y, 'near'), far: ctxAt(x, y, 'far') } });
+    book.get({ kind, part: partAt(x, y), ctx: { near: ctxAt(x, y, 'near'), far: ctxAt(x, y, 'far') } });
 
   const maps = { near: newMap(), far: newMap() };
   // the whole world is void first, then the level is laid in
