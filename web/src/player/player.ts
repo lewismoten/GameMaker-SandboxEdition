@@ -7,6 +7,7 @@ import { runGame, type RunOptions } from '../engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
+import { screenKeys } from './screenKeys';
 import { showKeyMap } from '../editor/keymap/keyMapView';
 import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
@@ -136,7 +137,15 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     keys.blur();
     showKeyMap(files.stream ? withCharacters(files, gamFile) : files, gamFile, opts.title ?? 'Game', () => canvas.focus());
   });
-  if (!opts.noKeysButton && !opts.preview) container.append(keys);
+  // ...and beside it, keys to click or tap (F-keys a Mac or the browser keeps, Esc, arrows)
+  let unkeys: (() => void) | undefined;
+  if (!opts.noKeysButton && !opts.preview) {
+    const corner = document.createElement('div');
+    corner.className = 'gm-corner';
+    corner.append(keys);
+    container.append(corner);
+    unkeys = screenKeys(container, corner, canvas);
+  }
 
   let stopped = false;
   let unhide: (() => void) | undefined;
@@ -172,6 +181,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
         unexact?.();
         unhide?.();
         touch?.detach();
+        unkeys?.();
         files.onChange = previousWrite;
         opts.onExit?.();
         resolve();
@@ -199,6 +209,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       unexact?.();
       unhide?.();
       touch?.detach();
+      unkeys?.();
       files.onChange = previousWrite;
     },
   };
