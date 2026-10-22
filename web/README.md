@@ -57,6 +57,13 @@ to look the way they did, from the original source and files.
   and a game's `.EXE` play games on the monitor, whose picture bulges like CRT glass
   (an SVG displacement filter; full screen stays flat).
 - **TURBO** on the case switches between full speed and a 286-class PC (see below).
+- **The speakers** have a Sound Blaster switch (`desk/pc/blasterSwitch.ts`): with the card
+  out, games and designers play every sound on the PC speaker and there is no music, as
+  PLAYGAME did when it found no card.
+- **The ball mouse** on its pad is the PC's mouse (`input/deskMouse.ts`): it reports how
+  far it rolled, and the designers and PLAYGAME move their own pointers by that much.
+- **The capture card** (`desk/pc/capture.ts`) saves screenshots at the VGA card's
+  resolution and records the screen (or the whole desk) with everything the PC plays.
 - **The disk box** holds 3.5" disks standing shutter-down: RSD's own Sample, Pipemare
   and Nebula, the other gameware, your games, and a blank disk. Scroll through them and
   click one to put it in drive A:; the drive then offers Play, Design and today's web.
@@ -72,6 +79,12 @@ to look the way they did, from the original source and files.
   keyboard presses its keys as you type, and an external modem on top of the case
   dials the BBS when clicked, its lights following the call.
 - **The window** shows snow falling on the neighbors' houses.
+- **The wall phone** (`desk/room/phone`) gets a dial tone, dials the numbers on Mom's
+  notes, the BBSes (a modem screeches), the weather and movie lines and more; voices use
+  the browser's speech synthesis, with captions.
+- **Felt eggs** (`src/eggs`): each Sandbox game hides an egg the hero can carry, so it
+  ends up in a saved game; a shadow box on the shelf shows the ones found. Finding them all
+  unlocks secret games, which the site never lists or names until then.
 - **The shelf** holds the boxes of the original games in `../games`: click one to bring
   it forward and turn it (drag, scroll to zoom, shift-drag to pan), read its manual or
   put its disk in drive A:.
@@ -83,42 +96,46 @@ to look the way they did, from the original source and files.
 
 ## Original games
 
-`../games` holds three new games made with Game-Maker's formats, published as shareware
-by "Sandbox Software" (1995). Each is built in code by its `build.ts` with the format
-encoders and `games/kit`, into a `disk/` folder that the site serves like the CD's
-shareware, with box art, a printed label and a manual from `about.json`/`manual.json`.
-
-- **Snowbound: The $89 Shovel** (Sound Blaster): shovel driveways in Fort Ashby, WV,
-  in the winter of 1992 to earn the $89 for Game-Maker.
-- **Sandcastle Knight** (PC speaker only): a tin knight rebuilds the sandcastles a cat
-  flattened, with a secret THE -= S A N D B O X =- BBS room.
-- **Maximus: The Hundred Worlds** (Sound Blaster): the limits test — 100 scenes, every
-  block and monster slot, 200 monsters on a map, all 20 character sequences and 30
-  sounds; `LIMITS.TXT` on its disk lists each limit and how close it gets.
-
-Rebuild one with `cd web && npx vite-node ../games/<id>/build.ts`.
+`../games` holds the Sandbox Software games made for this edition (see
+[`../games/README.md`](../games/README.md)). Each is built in code by its `build.ts` with the
+format encoders and `games/kit`, into a `disk/` folder that the site serves like the CD's
+shareware, with box art, a printed label and a manual from `about.json`/`manual.json`, and a
+`walkthrough.json` that plays the whole game. Rebuild one with
+`cd web && npx vite-node ../games/<id>/build.ts`.
 
 ## Running it
 
 ```sh
 cd web
 npm install
-npm run dev       # http://localhost:5173
-npm test          # format round-trips against the CD's files, audio, zip
-npm run build     # static site in web/dist
-npm run preview   # serve the build (needed to try "Export web app")
+npm run dev        # http://localhost:5173
+npm test           # every test in test/ (vitest), about 10 s
+npm run typecheck  # tsc --noEmit (strict)
+npm run build      # typecheck, then the static site in web/dist
+npm run preview    # serve the build (the service worker and "Export web app" need it)
+npx vitest run test/formats.test.ts   # one test file
 ```
 
 The games are never copied into `web/`. The Vite plugin in `scripts/cdGames.ts` serves
-them straight from `../cd` while developing, and only the production build (for
-example the GitHub Actions run) writes them into `dist`:
+them straight from `../cd` and `../games` while developing, and only the production build
+(for example the GitHub Actions run) writes them into `dist`:
 
 | Site path | Source |
 | --- | --- |
-| `games/index.json` | catalog generated from the folders below |
+| `games/index.json` | the full catalog: every listed game with its notice, manual and printables |
+| `games/catalog.json` | the same list without those (a quarter of the size); what the home page, shelf and play page load |
+| `games/details/<id>.json` | one game's notice, manual and printables, fetched when opened |
+| `games/extra.json` | the secret games, fetched only once all the felt eggs are found (`project/secretGames.ts`) |
 | `games/gameware/<id>/` | `cd/gameware/<id>/` (editable samples) |
 | `games/shareware/<id>/` | `cd/sharware/<id>/` (play only; `.exe`/`.bat`/`.com` files left out) |
+| `games/originals/<id>/` | `../games/<id>/disk/` and its `walkthrough.json` |
+| `games/shots/<id>-*.png` | each game's pictures for tiles, boxes and the play page, drawn at build time (`scripts/gameShots.ts`) |
+| `gm/index.json`, `gm/<file>` | the installed `C:\GM` folder (`runtime/run/GM`) for the desk's PC |
 | `dos/xferplay.exe`, `dos/sndblast.drv` | `cd/gm/`, for "Export for DOS" |
+| `extras/demos.json`, `extras/demos/<id>.rec` | demos recorded for CD games that shipped without one (in `public/`) |
+
+Every game file but a GIF also gets a gzip copy (`<file>.gz`), which the site fetches and
+unpacks, since GitHub Pages sends unknown file types uncompressed.
 
 The GitHub Actions workflow in [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)
 tests and builds on every push and pull request, and deploys `web/dist` to GitHub Pages
@@ -136,17 +153,55 @@ detail. In short:
 | `src/audio` | `opl.ts` (OPL2 emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV calls), `music.worklet.ts`, `engine.ts` (Web Audio output). |
 | `src/gfx`, `src/input` | Mode 13h screen and the 8×8 font; keyboard scan codes and the gamepad. |
 | `src/player` | The embeddable player (canvas, start overlay, touch controls). |
-| `src/project` | Game file store, IndexedDB storage, ZIP reader/writer, health check. |
+| `src/project` | Game file store and the catalog, streaming a hosted game, IndexedDB storage, ZIP reader/writer, health check. |
 | `src/export` | Web app, single-page and DOS exporters, and the service worker generator. |
-| `src/media` | Demo playback and saving video, animated GIFs and WAV. |
+| `src/media` | Demo playback and previews, the demo sound choice, and saving video, animated GIFs and WAV. |
+| `src/walkthrough` | Playing a Sandbox game's walkthrough on the engine, and rendering it to MP4. |
+| `src/eggs` | The felt eggs: which are found (from saved games), their shadow box and viewer, and `EGG.EXE`. |
 | `src/editor` | Today's web interface: `shell/` (home page, workspace), `core/` (DOM helpers, the open project, undo), `widgets/` (pickers, thumbnails, previews), `editors/<kind>/` (one folder per file type, registered in `editors/registry.ts`), `tools/` (making pictures, songs and sounds), `keymap/` (the ⌨ Keys map). |
 | `src/desk` | The 1994 desk: `desk.ts`, and `pc/`, `boxes/`, `disks/`, `mug/`, `room/` for the things on it. |
 | `src/retro` | The desk's PC: `computer.ts` (with `computer/`), `dos/` (COMMAND.COM, files, disks), `text/` (text mode and Game-Maker's text UI), `bbs/` (terminal and BBSes), `gm.ts` (GM.EXE's menus). |
 | `src/vga` | The eight designers ported from their C source, one file per `.EXE` (a big one's parts in a folder of the same name), and `shared/` (VGA screen, block routines, Game-Maker's look). |
 | `src/manual` | The Owner's Guide, the web Guide, and the original games' manuals and box contents. |
 | `src/seo` | Page titles, descriptions and JSON-LD. |
-| `scripts` | Vite plugins: serving the CD's games, the one-page player, SEO pages. |
+| `src/*.ts` | Entries (`main.ts`, `play.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`. |
+| `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. |
 | `test` | Vitest tests, one file per subject, each starting with a line saying what it covers. |
+
+## How the site works
+
+- **Addresses** (`src/urlState.ts`): both interfaces keep their place in the hash, so a
+  reload or a shared link comes back to it: `#/` (home, `?tab=…`), `#/game/cd:nebula` (a game
+  on the home page), `#/p/<project>/<file>?scene=3` (a file open in the workspace, with what is
+  selected in it), `#/help/<section>` (the web Guide) and `#/desk`. Small changes replace the
+  history entry; opening a page or file pushes one. `play.html?game=<id>` (and each game's
+  own `play-<id>.html`) plays one game full window.
+- **Loading** (`src/main.ts`): the desk and today's web are separate downloads, and the
+  editors load only when a game is opened. Lists come from `games/catalog.json`; a game's
+  manual and notice from `games/details/<id>.json` when it is opened. Tiles and boxes show
+  the prebuilt `games/shots` pictures instead of drawing them from game files.
+- **Streaming** (`src/project/streamGame.ts`): a hosted game starts as soon as its `.gam`
+  is in; its other files follow in the order play needs them, and the engine waits only
+  if it reaches a file still on its way.
+- **Offline** (`src/siteWorker.ts`, `src/offline.ts`): the build writes a service worker
+  that precaches the app shell and caches games as they are used. A new deploy downloads
+  only what changed, then waits: a small notice offers to reload, so a game being played is
+  never swapped out. `src/prefetch.ts` fetches likely next code when the page is idle.
+- **Demos** (`src/media`): the home page plays a game's title demo in its picture, one at
+  a time; the demo video dialog plays it full size. Every demo on the page plays with one
+  remembered sound choice: Sound Blaster, PC speaker only, or none (`media/demoAudio.ts`;
+  silent until the visitor has used the page). CD games that shipped without a demo have
+  one recorded for this edition (`media/extraDemos.ts`, kept apart from their files), and
+  any other game gets an "attract mode" made up from its hero's keys.
+- **Walkthroughs** (`src/walkthrough`): each Sandbox game's `walkthrough.json` plays the
+  whole game on the real engine, deterministically, with chapters to jump to; "Download
+  MP4" renders it faster than real time at 320×200, 60 fps, with H.264 video and AAC (or
+  Opus) sound rendered offline.
+- **Editors** (`src/editor/editors/<kind>`): one per file type, each with Undo and Redo
+  (Ctrl+Z / Ctrl+Y; `editor/core/history.ts`, or `editor/core/fileUndo.ts` for editors that
+  rewrite whole files). Work is saved to IndexedDB as you go.
+- **Tests** (`test/`): one Vitest file per subject, each starting with a line saying what
+  it covers; they run in Node (`npm test`). Many check formats against the CD's own files.
 
 ## File formats
 
