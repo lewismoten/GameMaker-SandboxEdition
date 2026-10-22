@@ -1,5 +1,6 @@
 // The way through the game, as orders for the bot.
 import { BASKETS, CRUMBS } from '../src/ids';
+import { ORIGIN } from '../src/levels/maps';
 import { Bot } from './bot';
 
 const expect = (bot: Bot, scene: number, what: string) => {
@@ -47,6 +48,12 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
   throw new Error(`${label}: no safe moment (${why})\n${bot.log.slice(-10).join('\n')}`);
 }
 
+/** Something picked up on the way (level block x, y): it must be gone, not still lying there giving points. */
+function picked(bot: Bot, x: number, y: number, what: string): void {
+  const b = bot.sim.shown(x + ORIGIN, y + ORIGIN);
+  if (b.scorePts > 0 || b.chHitPt > 0) throw new Error(`missed ${what} at ${x},${y}`);
+}
+
 export const crumbs = (bot: Bot) => bot.sim.meter(CRUMBS) - 1;
 export const baskets = (bot: Bot) => bot.sim.meter(BASKETS) - 1;
 
@@ -57,13 +64,23 @@ export async function theCrowd(bot: Bot): Promise<void> {
     await must(bot, bot.walk(5, 'the side of the basket'), 'side');
     await must(bot, bot.hop('right', 10, 'right', 8), 'hop out');
     await must(bot, bot.walk(11, 'out of the shade'), 'shade');
+    await must(bot, bot.hop('up', 8), 'a crumb dropped in the grass');
+    picked(bot, 11, 6, 'the crumb by the hungry man');
   });
   await carefully(bot, 'past the hungry man', 12, async () => {
     await must(bot, bot.hop('right', 12, 'right', 18), 'over the feet');
     await must(bot, bot.walk(19, 'past the feet'), 'feet');
   });
   await carefully(bot, 'over the fish basket', 12, async () => {
+    await must(bot, bot.walk(23, 'under a crumb'), 'crumb');
+    await must(bot, bot.hop('up', 12), 'the crumb under the hands');
+    await must(bot, bot.walk(27, 'under the next crumb'), 'crumb');
+    await must(bot, bot.hop('up', 8), 'the next crumb');
     await must(bot, bot.walk(30, 'under the hands'), 'hands');
+    await must(bot, bot.hop('up', 8), 'the crumb by the rock');
+    picked(bot, 23, 5, 'the crumb under the first hands');
+    picked(bot, 27, 6, 'the crumb under the second hands');
+    picked(bot, 30, 6, 'the crumb by the rock');
   });
   await carefully(bot, 'over the rock and up on the warm air', 12, async () => {
     await must(bot, bot.walk(35, 'over the rock'), 'rock');
@@ -78,6 +95,14 @@ export async function theCrowd(bot: Bot): Promise<void> {
     await must(bot, bot.walk(53, 'the jar'), 'jar');
     await must(bot, bot.hop('right', 12, 'right', 60), 'over the feet');
     await must(bot, bot.walk(60, 'past the feet'), 'feet');
+    if (bot.at.y !== 9) throw new Error(`not on the grass (${bot.px.y / 20})`);
+    // a step back for the last crumb he dropped
+    await must(bot, bot.walk(58, 'under the last crumb'), 'crumb');
+    await must(bot, bot.hop('up', 8), 'the last crumb');
+    picked(bot, 58, 6, 'the last crumb by the second man');
+    await must(bot, bot.walk(60, 'under the fish basket'), 'fish basket');
+    await must(bot, bot.hop('up', 12), 'the holy crumb over the fish basket');
+    picked(bot, 60, 5, 'the holy crumb over the fish basket');
   });
   await carefully(bot, 'into the stack of baskets', 12, async () => {
     await leave(bot, bot.walk(66, 'the stack of baskets'), 'the stack');
@@ -208,7 +233,12 @@ export async function theWayHome(bot: Bot): Promise<void> {
     await must(bot, bot.walk(39, 'past Brother Camel'), 'camel');
   });
   await carefully(bot, 'past the second dog', 12, async () => {
-    await must(bot, bot.hop('right', 12, 'right', 46.5), 'over the dog');
+    // up on the roofs, along them over the dog and its crumbs, and down past the moth
+    await must(bot, bot.hop('up', 14), 'up on the roof');
+    if (bot.at.y !== 5) throw new Error(`not on the roof (${bot.at.y})`);
+    await must(bot, bot.walk(46.5, 'along the roofs'), 'roofs');
+    picked(bot, 40, 5, 'the first crumb on the roofs');
+    picked(bot, 44, 5, 'the second crumb on the roofs');
     await must(bot, bot.walk(51, 'by the lamp'), 'lamp');
     await must(bot, bot.hop('up', 6), 'a holy crumb');
   });
