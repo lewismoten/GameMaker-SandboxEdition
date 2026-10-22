@@ -279,7 +279,7 @@ export function demoInPicture(
       o.onState?.(true);
       return true;
     } catch (e) {
-      toast((e as Error).message, 'error');
+      toast(plainError(e), 'error');
       stop();
       return false;
     } finally {
