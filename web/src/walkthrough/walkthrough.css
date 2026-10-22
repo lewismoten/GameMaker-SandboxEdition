@@ -21,8 +21,8 @@ dialog.modal:has(.wt-dialog) {
 
 .wt-screen {
   position: relative;
-  /* 320x200 with square pixels, as large as fits under the controls */
-  width: min(100%, calc((94vh - 190px) * 1.6));
+  /* 320x200 with square pixels, as large as fits above the controls and the download row */
+  width: min(100%, calc((94vh - 270px) * 1.6));
   aspect-ratio: 16 / 10;
   margin: 0 auto;
   background: #000;
@@ -164,24 +164,40 @@ dialog.modal:has(.wt-dialog) {
   font-variant-numeric: tabular-nums;
 }
 
-.wt-export {
+.wt-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
 }
 
-.wt-export select {
-  flex: 1 1 100%;
+.wt-export-pick {
+  flex: 0 1 18em;
   min-width: 0;
+}
+
+.wt-export-btn,
+.wt-copy-btn {
+  white-space: nowrap;
+}
+
+.wt-copy-btn {
+  margin-left: auto;
+}
+
+.wt-copy-btn.copied {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .wt-export-progress {
   width: 100%;
+  height: 8px;
 }
 
-.wt-side .hint {
-  margin: 0;
-  font-size: 12px;
+.wt-youtube summary {
+  cursor: pointer;
+  font-size: 13px;
 }
 
 .wt-youtube label {
@@ -205,6 +221,12 @@ dialog.modal:has(.wt-dialog) {
   }
   .wt-screen {
     width: 100%;
+  }
+  .wt-export-pick {
+    flex: 1 1 100%;
+  }
+  .wt-copy-btn {
+    margin-left: 0;
   }
   .wt-side {
     max-height: none;

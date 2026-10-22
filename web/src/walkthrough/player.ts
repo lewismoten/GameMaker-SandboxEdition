@@ -2,7 +2,9 @@
 // credits on the real engine (runtime.ts), at 320×200 scaled up with square pixels. Play and
 // pause, 1×/2×/4×, the demos' sound choice (None · Sound Blaster · PC speaker, media/demoAudio.ts), a chapter list to jump to (a jump replays the game from the start
 // as fast as it can, nothing drawn, to the chapter's first scene), "Download MP4" (made frame
-// by frame, faster than real time, exportVideo.ts) and the YouTube title and description.
+// by frame, faster than real time, exportVideo.ts) and "Copy for YouTube" (title, description
+// and chapter markers) right under the screen. While it is open the page's other demos stop
+// (media/mediaFocus.ts).
 import './walkthrough.css';
 import { h, modal, toast } from '../editor/core/ui';
 import { saveBlob } from '../media/screenCapture';
@@ -13,6 +15,7 @@ import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format'
 import { WalkAudio, WalkRun } from './runtime';
 import { canExport, exportWalkthrough } from './exportVideo';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
+import { claimMediaFocus } from '../media/mediaFocus';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -52,8 +55,42 @@ export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
   });
 }
 
+/** What "Copy for YouTube" puts on the clipboard: the title, a blank line, then the description (its chapter list last). */
+export const youtubeClipboard = (yt: { title: string; description: string }) => `${yt.title}\n\n${yt.description}`;
+
+/** Copies `text`: the Clipboard API, else a selected textarea inside `inside` (a modal dialog keeps the rest of the page inert). */
+async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = h('textarea', { readonly: true, 'aria-hidden': 'true', tabindex: '-1', style: 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0' }, text) as HTMLTextAreaElement;
+    inside.append(ta);
+    ta.select();
+    let ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch {
+      /* no clipboard at all */
+    }
+    ta.remove();
+    return ok;
+  }
+}
+
 /** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show. */
 export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void): Promise<void> {
+  // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
+  let lose = () => {};
+  const release = claimMediaFocus('player', () => lose());
+  try {
+    await watch(entry, loadFiles, onReady, (f) => (lose = f));
+  } finally {
+    release?.();
+  }
+}
+
+async function watch(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady: (() => void) | undefined, onLose: (f: () => void) => void): Promise<void> {
   const [walk, files] = await Promise.all([loadWalkthrough(entry), loadFiles()]);
   if (!walk || !entry.gam) {
     toast(`${entry.title} has no walkthrough.`);
@@ -78,16 +115,23 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
 
   const exportSel = h(
     'select',
-    { 'aria-label': 'What to put in the video' },
+    { class: 'wt-export-pick', 'aria-label': 'What to put in the MP4' },
     h('option', { value: 'all' }, `Whole walkthrough (${clock(total / WALKTHROUGH_FPS)})`),
     ...tl.chapters.map((c, i) => h('option', { value: String(i) }, `Only ${c.title} (${clock(((tl.chapters[i + 1]?.frame ?? total) - c.frame) / WALKTHROUGH_FPS)})`)),
   );
-  const exportBtn = h('button', { type: 'button', class: 'with-ico' }, '⬇ Download MP4');
-  const exportBar = h('progress', { class: 'wt-export-progress', max: 1, value: 0, hidden: true, 'aria-label': 'Making the video' });
+  const exportBtn = h('button', { type: 'button', class: 'wt-export-btn', title: '320×200 at 60 frames a second with the sound picked, made frame by frame (faster than real time)' }, '⬇ Download MP4');
+  const exportBar = h('progress', { class: 'wt-export-progress', max: 1, value: 0, hidden: true, 'aria-label': 'Making the MP4' });
   const yt = walkthroughText(entry, walk);
-  const copyBtn = h('button', { type: 'button' }, 'Copy YouTube title & description');
+  const ytText = youtubeClipboard(yt);
+  const marks = (yt.description.split('\nChapters:\n')[1] ?? '').split('\n').filter(Boolean).length;
+  const copyLabel = '⧉ Copy for YouTube';
+  const copyBtn = h(
+    'button',
+    { type: 'button', class: 'wt-copy-btn', title: `Copies the YouTube title, description${marks ? ` and ${marks} chapter markers` : ''} in one go` },
+    copyLabel,
+  );
   const ytTitle = h('input', { type: 'text', readonly: true, value: yt.title, 'aria-label': 'YouTube title' });
-  const ytDesc = h('textarea', { readonly: true, rows: 8, 'aria-label': 'YouTube description' }, yt.description);
+  const ytDesc = h('textarea', { readonly: true, rows: 10, 'aria-label': 'YouTube description and chapters' }, yt.description);
 
   // ---- playback ---------------------------------------------------------------------
   const audio = new WalkAudio();
@@ -242,6 +286,11 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
 
   // ---- the video file ---------------------------------------------------------------
   let making: AbortController | undefined;
+  // another player took the media focus: pause, and stop making a video
+  onLose(() => {
+    if (playing) setPlaying(false);
+    making?.abort();
+  });
   exportBtn.addEventListener('click', async () => {
     if (making) return making.abort();
     if (!(await canExport())) return toast('This browser cannot make MP4 videos (it has no H.264 encoder). Try Chrome, Edge or Safari.', 'error');
@@ -251,7 +300,7 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
     const name = `${slug(entry.title)}-walkthrough${pick === 'all' ? '' : `-${slug(tl.chapters[Number(pick)].title)}`}-320x200.mp4`;
     setPlaying(false);
     making = new AbortController();
-    exportBtn.textContent = '✕ Cancel video';
+    exportBtn.textContent = '✕ Cancel MP4';
     exportSel.disabled = true;
     exportBar.hidden = false;
     exportBar.value = 0;
@@ -284,17 +333,32 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
     }
   });
 
+  let copied: ReturnType<typeof setTimeout> | undefined;
   copyBtn.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(`${yt.title}\n\n${yt.description}`);
-      toast('YouTube title and description copied.');
-    } catch {
+    if (await copyText(ytText, copyBtn.parentElement ?? copyBtn)) {
+      copyBtn.textContent = '✓ Copied!';
+      copyBtn.classList.add('copied');
+      status.textContent = `Copied the YouTube title, description${marks ? ` and ${marks} chapter markers` : ''}.`;
+      clearTimeout(copied);
+      copied = setTimeout(() => {
+        copyBtn.textContent = copyLabel;
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    } else {
+      // no clipboard here: the text, selected, to copy by hand
       ytDetails.open = true;
       ytDesc.focus();
       ytDesc.select();
+      status.textContent = 'This browser would not copy it: the text is selected below to copy by hand.';
     }
   });
-  const ytDetails = h('details', { class: 'wt-youtube' }, h('summary', null, 'YouTube title & description'), h('label', null, 'Title', ytTitle), h('label', null, 'Description', ytDesc));
+  const ytDetails = h(
+    'details',
+    { class: 'wt-youtube' },
+    h('summary', null, 'YouTube title, description and chapters'),
+    h('label', null, 'Title', ytTitle),
+    h('label', null, 'Description (the chapters are at the end)', ytDesc),
+  );
 
   showPlay();
   showTime();
@@ -312,18 +376,16 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
         screen,
         progress,
         h('div', { class: 'wt-controls' }, playBtn, timeEl, h('span', { class: 'wt-speeds', role: 'group', 'aria-label': 'Speed' }, ...speeds), soundPick),
+        h('div', { class: 'wt-actions', role: 'group', 'aria-label': 'Download and share' }, exportSel, exportBtn, copyBtn),
+        exportBar,
         status,
+        ytDetails,
       ),
       h(
         'aside',
-        { class: 'wt-side', 'aria-label': 'Chapters and video' },
+        { class: 'wt-side', 'aria-label': 'Chapters' },
         h('h3', null, 'Chapters'),
         chapterList,
-        h('h3', null, 'Video'),
-        h('div', { class: 'wt-export' }, exportSel, exportBtn, exportBar),
-        h('p', { class: 'hint' }, '320×200 at 60 frames a second with the sound picked under the screen, made frame by frame (faster than real time).'),
-        copyBtn,
-        ytDetails,
       ),
     ),
   );
