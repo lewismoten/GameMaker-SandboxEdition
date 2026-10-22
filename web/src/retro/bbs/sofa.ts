@@ -39,6 +39,7 @@ const PLEAS: [string, string][] = [
   ['CUSHION KING', 'ok I give up, see you guys in the forums'],
   ['INCLINE RIDER', 'is anyone else even reading this?'],
   ['CUSHION KING', "anybody play DOC LEO's goat game yet? I screamed and my cousin fainted"],
+  ['REMOTE CONTROL', "DOC LEO's new game is about me. I was under his thigh the whole time"],
 ];
 
 const spamLine = () => Array.from({ length: 6 + Math.floor(Math.random() * 6) }, () => (Math.random() < 0.12 ? 'spam' : 'SPAM')).join(' ');
@@ -116,8 +117,8 @@ function lounge(t: Term): void {
   t.line('|07Eight lines and no waiting! Pull up a cushion and stay a while.');
   t.line('|07Teleconference is open all night. Be nice, no flooding the channel.');
   t.line('|07NEW in the File library: THIRD GOAT FROM THE LEFT, MUSTARD SEED HUSTLE,');
-  t.line('|07THREAD THE NEEDLE, BROTHER CAMEL, LOAF #13 (LEFT IN THE BASKET) and');
-  t.line('|07CERTIFIED RAT TICKLER, Game-Maker');
+  t.line('|07THREAD THE NEEDLE, BROTHER CAMEL, LOAF #13 (LEFT IN THE BASKET),');
+  t.line("|07CERTIFIED RAT TICKLER and WHERE'S THE REMOTE?!, Game-Maker");
   t.line('|07games by our own DOC LEO (The Bard of Bizarre), from his songs.');
   t.line('|07Free! Hit F.');
   t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
