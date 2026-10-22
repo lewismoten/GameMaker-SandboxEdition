@@ -26,6 +26,9 @@ describe('hint book drawings', () => {
   it('use only known glyphs, and keep their labels on the drawing', () => {
     for (const [where, s] of sketches()) {
       expect(unknownGlyphs(s), where).toEqual([]);
+      // small enough for the red film sheet to cover at once
+      expect(s.rows.length, where).toBeLessThanOrEqual(7);
+      for (const r of s.rows) expect(r.length, where).toBeLessThanOrEqual(14);
       for (const l of s.labels ?? []) expect(l.y >= 0 && l.y < s.rows.length && l.x >= 0, `${where}: ${l.text}`).toBe(true);
     }
   });
