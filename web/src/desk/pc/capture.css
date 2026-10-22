@@ -164,3 +164,14 @@
     animation: none;
   }
 }
+
+/* No room above (a narrow window): the menu opens below the buttons. */
+.desk-capture .cap-menu.below {
+  top: calc(100% + 6px);
+  bottom: auto;
+}
+
+/* An open menu sits above the keyboard tray and everything else on the desk. */
+.desk[data-zoom='false'] .desk-capture:has(> .cap-menu:not([hidden])) {
+  z-index: 40;
+}

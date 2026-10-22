@@ -219,7 +219,19 @@ export function deskCapture(pc: Computer): { el: HTMLElement; dispose(): void } 
     );
     menu.hidden = false;
     recBtn.setAttribute('aria-expanded', 'true');
+    place();
     if (byKeyboard) items()[0]?.focus();
+  }
+
+  /** Keeps the open menu on screen: below the buttons when there's no room above, nudged in from the sides. */
+  function place(): void {
+    menu.classList.remove('below');
+    menu.style.translate = '';
+    if (menu.getBoundingClientRect().top < 8) menu.classList.add('below');
+    const r = menu.getBoundingClientRect();
+    const scale = r.width / (menu.offsetWidth || 1); // the desk may be scaled to fit the window
+    const dx = r.left < 8 ? 8 - r.left : r.right > innerWidth - 8 ? innerWidth - 8 - r.right : 0;
+    if (dx) menu.style.translate = `${dx / scale}px 0`;
   }
 
   menu.addEventListener('keydown', (e) => {
