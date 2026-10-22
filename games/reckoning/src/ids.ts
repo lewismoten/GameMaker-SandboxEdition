@@ -125,7 +125,7 @@ export const MILK_CARTON = 4;
 
 /** Sound effect numbers in each .SND (0..8 are the ones PLAYGAME plays by itself). */
 export const SND = {
-  /** Dignity back (a glass of water, Lactaid). */
+  /** Dignity back (a glass of water, lactase pills). */
   help: 0,
   /** A monster done in (a hello, a milkshake splashed, the Devil hit). */
   kill: 1,

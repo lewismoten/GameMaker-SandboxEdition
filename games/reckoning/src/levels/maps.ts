@@ -9,7 +9,7 @@
 //   3. Oh No: the dash to the bathroom with the Swamp Demon (the gurgle) right behind him, the
 //      lights flickering, the dogs awake and wanting to play, three rolls of toilet paper.
 //   4. The Reckoning: the lights turn blood red. The Devil in leisure wear, sipping a milkshake.
-//      Almond milk, oat milk and Lactaid; his last straw; the porcelain throne.
+//      Almond milk, oat milk and lactase pills; his last straw; the porcelain throne.
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
@@ -93,7 +93,7 @@ const LEGEND: Record<string, string> = {
   ':': 'fountain',
   a: 'almond',
   e: 'oat',
-  ';': 'lactaid',
+  ';': 'lactasePills',
   '/': 'throne',
 };
 
@@ -291,7 +291,7 @@ export function reckoning(book: BlockBook): Level {
   m.fill(1, 0, W - 2, 10, '~').row(10, 0, W - 1, '+').row(11, 0, W - 1, '+').col(0, 0, 11, '+').col(W - 1, 0, 11, '+');
   // the pit (flames) in the floor
   m.row(10, 12, 13, '&');
-  // floating tiles, the milk on them, Lactaid on the floor
+  // floating tiles, the milk on them, lactase pills on the floor
   m.row(7, 4, 6, '@').set(5, 6, 'a');
   m.row(5, 8, 10, '@').set(9, 4, 'e');
   m.set(8, 9, ';');

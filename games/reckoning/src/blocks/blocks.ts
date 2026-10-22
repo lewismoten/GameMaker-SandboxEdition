@@ -8,7 +8,7 @@
 //   - celery is willpower (counter 20), and the cheesecake only lets you near with seven, and
 //     takes all seven; rolls of toilet paper are counter 21, and the bathroom door takes three;
 //   - in the reckoning, almond milk and oat milk refill the splash (the throw sequence's own
-//     counter), Lactaid mends dignity, the soda fountain behind the Devil gives
+//     counter), lactase pills mend dignity, the soda fountain behind the Devil gives
 //     birth to milkshakes, and the porcelain throne takes the Devil's last straw (counter 22);
 //   - coins are points, a glass of water mends dignity, the TV remote under the couch cushion is
 //     an extra life.
@@ -535,11 +535,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('almondGone', voidAir(98), air);
   book.add('oat', carton(voidAir(99), 'OAT', 'cheese'), { ...air, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'oatGone' });
   book.add('oatGone', voidAir(99), air);
-  // Lactaid caplets: dignity back
-  const lactaid = voidAir(96);
-  lactaid.rect(4, 7, 12, 10, c('white', 2)).rect(4, 7, 12, 3, c('pjs', 2));
-  micro(lactaid, 5, 11, 'LAC', c('pjs', 1));
-  book.add('lactaid', lactaid, { hp: 30, score: 100, touch: 'void' });
+  // lactase pills: dignity back
+  const lactase = voidAir(96);
+  lactase.rect(4, 7, 12, 10, c('white', 2)).rect(4, 7, 12, 3, c('pjs', 2));
+  micro(lactase, 5, 11, 'LAC', c('pjs', 1));
+  book.add('lactasePills', lactase, { hp: 30, score: 100, touch: 'void' });
   // the porcelain throne: it takes the Devil's last straw, and flushes
   const throne = (open: boolean) => {
     const p = voidAir(97);

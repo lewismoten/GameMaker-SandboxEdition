@@ -99,7 +99,7 @@ export const INSTRUCTIONS = [
     'beats the Devil, top and',
     'bottom, four times each.',
     'Almond and oat milk refill',
-    'it. Lactaid mends your',
+    'it. Lactase pills mend your',
     'dignity.',
     '',
     "Take the Devil's last straw",
