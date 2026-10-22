@@ -55,3 +55,7 @@ writePng(join(out, 'scr-title.png'), titleScreen(), PAL.pal, 2);
 writePng(join(out, 'scr-menu.png'), menuScreen(), PAL.pal, 2);
 writePng(join(out, 'scr-recipe05.png'), recipePage(5), PAL.pal, 2);
 writePng(join(out, 'scr-egg-rotten.png'), eggScreen(true), PAL.pal, 2);
+
+// Doc Leo and the monster blocks
+writePng(join(out, 'leo.png'), blockSheet(all.cb.build().slice(0, all.cb.names.length), 16, 3), PAL.pal, 4);
+writePng(join(out, 'mons.png'), blockSheet(mbl.slice(0, all.mb.names.length), 20, 3), PAL.pal, 3);

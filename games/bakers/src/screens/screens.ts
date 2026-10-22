@@ -116,7 +116,7 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   scaleBlit(p, ingredient(n, 0), 56, 120, 2);
   text(p, 100, 128, 'FIND:', c('ink', 1));
   text(p, 100, 140, RECIPE[n - 1]?.name ?? '???', c('red', 2));
-  scaleBlit(p, leo('down'), 236, 118, 2);
+  bigLeo(p, 226, 98, 0.95);
   return { px: p, pal: pal.pal };
 }
 

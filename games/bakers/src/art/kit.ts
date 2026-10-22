@@ -45,7 +45,7 @@ export function docLeo(facing: Facing, step = 0, squawk = false): Pixels {
   p.rect(5, 18, 10, 2, c('dark', 0));
   if (facing === 'up') {
     // the back: hat crown, jacket back, no face
-    p.rect(5, 1, 10, 7, ink).rect(6, 2, 8, 5, hat).rect(4, 6, 12, 2, ink).rect(5, 6, 10, 1, hatD).rect(6, 4, 8, 1, c('red', 1));
+    p.rect(6, 3, 8, 4, ink).rect(7, 3, 6, 3, hat).set(10, 3, ink).rect(7, 5, 6, 1, c('red', 1)).rect(3, 6, 14, 2, ink).rect(4, 6, 12, 1, hatD);
     p.rect(6, 8, 8, 2, ink).rect(7, 8, 6, 2, c('brown', 1));
     p.rect(4, 10, 12, 6, ink).rect(5, 10, 10, 5, jacket).rect(5, 10, 1, 5, jacketL).rect(9, 11, 1, 4, c('blue', 0));
     p.rect(3, 11, 2, 4, jacket).rect(15, 11, 2, 4, jacket);
@@ -55,7 +55,7 @@ export function docLeo(facing: Facing, step = 0, squawk = false): Pixels {
   }
   if (facing === 'side') {
     // facing right (mirrored for left)
-    p.rect(6, 1, 9, 6, ink).rect(7, 2, 7, 4, hat).rect(4, 6, 13, 2, ink).rect(5, 6, 11, 1, hatD).rect(7, 4, 7, 1, c('red', 1));
+    p.rect(7, 2, 8, 5, ink).rect(8, 3, 6, 3, hat).set(11, 2, ink).rect(8, 5, 6, 1, c('red', 1)).rect(4, 6, 14, 2, ink).rect(5, 6, 12, 1, hatD);
     p.rect(8, 8, 7, 5, ink).rect(9, 8, 5, 4, skin);
     p.rect(9, 10, 5, 2, c('night', 2)).rect(12, 10, 2, 1, c('paper', 4)); // ash beard, white mouth
     p.set(13, 9, c('red', 3)).set(14, 9, c('red', 3)); // the nose
@@ -74,7 +74,8 @@ export function docLeo(facing: Facing, step = 0, squawk = false): Pixels {
     return p;
   }
   // facing down (toward you)
-  p.rect(5, 0, 10, 7, ink).rect(6, 1, 8, 5, hat).rect(3, 5, 14, 2, ink).rect(4, 5, 12, 1, hatD).rect(6, 3, 8, 1, c('red', 1));
+  // a fedora: a low pinched crown, a red band, a wide chewed brim
+  p.rect(6, 2, 8, 4, ink).rect(7, 2, 6, 3, hat).set(10, 2, ink).rect(7, 4, 6, 1, c('red', 1)).rect(2, 5, 16, 2, ink).rect(3, 5, 14, 1, hatD).set(16, 6, c('dark', 1));
   p.rect(6, 7, 8, 6, ink).rect(7, 7, 6, 5, skin);
   p.rect(7, 10, 6, 2, c('night', 2)).rect(9, 10, 2, 1, c('paper', 4)); // ash beard, white mouth (turned down)
   p.set(8, 11, c('paper', 4)).set(11, 11, c('paper', 4));
