@@ -458,7 +458,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
           const phase = (col + row * 2 - k) % 12;
           const bow = phase >= 0 && phase < 3;
           const fur = (col + row) % 3 ? 'lab' : 'wild';
-          scaleBlit(p, M(bow ? `${fur}.rat${(k + col) % 2}` : `${fur}.giggle${(k + col + row) % 2}`), x, y - 8, 1);
+          scaleBlit(p, M(bow ? `${fur}.rat0` : `${fur}.giggle${phase === 3 ? 1 : 0}`), x, y - 8, 1);
         }
       caption(p, pal, k < 30 ? ['Picture it: a laughing carpet', 'bowing under my command.'] : ['I will raise a legion squeaking', 'with hysterical morale!']);
     };
