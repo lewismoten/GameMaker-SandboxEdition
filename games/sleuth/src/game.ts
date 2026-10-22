@@ -121,9 +121,14 @@ export function buildGame(acts: Theatre[], pl: ParlorLinks): { game: Game; ix: S
   ix.how = add('How?', { ...stage, intro: 'how.lst' }, false, 100, 165);
   ix.why = add('Why?', { ...stage, intro: 'why.lst' }, false, 120, 165);
   ix.wrong = add('The Commissioner', stage, false, 160, 178);
-  ix.solved = add('Solved', stage, false, 140, 165);
+  // Solved (its first tick scores the solved block) and the wrong verdicts (their page, then
+  // on to the Commissioner) start Ada on their only link, so they pass straight through.
+  // PLAYGAME still fades each one's map in and out around that tick: they load dark.pal,
+  // all black, so the stage never flashes up between a page and the next scene.
+  const pass = { ...stage, pal: 'dark.pal' };
+  ix.solved = add('Solved', pass, false, 140, 165);
   ix.w = {};
-  WRONG_KEYS.forEach((k, i) => (ix.w[k] = add(`Wrong: ${k}`, { ...stage, intro: `w${k}.lst` }, false, 160 + i * 18, 165)));
+  WRONG_KEYS.forEach((k, i) => (ix.w[k] = add(`Wrong: ${k}`, { ...pass, intro: `w${k}.lst` }, false, 160 + i * 18, 165)));
 
   // ---- links
   const link = (scene: number, n: number, from: Pt, toScene: number, to: Pt) => (game.scenes[scene].links[n] = { toScene, from, to });

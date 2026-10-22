@@ -30,6 +30,8 @@ const disk = new Disk(join(here, 'disk'));
 disk.put('house.pal', serializePalette(buildPalette('house').pal));
 disk.put('night.pal', serializePalette(buildPalette('night').pal));
 disk.put('dawn.pal', serializePalette(buildPalette('dawn').pal));
+// the pass-through scenes' palette (Solved and the wrong verdicts, src/game.ts): all black
+disk.put('dark.pal', serializePalette(new Uint8Array(768)));
 const tbs = buildTheatreBlocks();
 disk.put('paragon.bbl', serializeBlocks(tbs.build()));
 const critters = buildCritters();
