@@ -55,8 +55,28 @@ export function monstersNamed(sim: Sim, names: string[], test: (name: string) =>
   return out;
 }
 
+/** Cells in the box still holding a word slip (a block named w<value>~<floor>). */
+export function wordCells(sim: Sim, area: Area, box: { x0: number; y0: number; x1: number; y1: number }): { x: number; y: number }[] {
+  const out: { x: number; y: number }[] = [];
+  for (let y = box.y0; y <= box.y1; y++)
+    for (let x = box.x0; x <= box.x1; x++) if (/^w\d+~/.test(area.tiles.names[sim.w.map[y * MLEN + x]] ?? '')) out.push({ x, y });
+  return out;
+}
+
 /** The first step of a shortest walk from Joe to any goal cell (goals may be solid: bumped). */
-export function firstStep(sim: Sim, goals: { x: number; y: number }[], box: { x0: number; y0: number; x1: number; y1: number }): Dir | undefined {
+export function firstStep(sim: Sim, goals: { x: number; y: number }[], box: { x0: number; y0: number; x1: number; y1: number }, avoid: { x: number; y: number }[] = []): Dir | undefined {
+  if (avoid.length) {
+    try {
+      return firstStep(sim, goals, box, []) === undefined ? undefined : firstStepAvoiding(sim, goals, box, avoid);
+    } catch {
+      /* no way around them: walk through */
+    }
+  }
+  return firstStepAvoiding(sim, goals, box, []);
+}
+
+function firstStepAvoiding(sim: Sim, goals: { x: number; y: number }[], box: { x0: number; y0: number; x1: number; y1: number }, avoid: { x: number; y: number }[]): Dir | undefined {
+  const blocked = new Set(avoid.map((a) => a.y * MLEN + a.x));
   const { bx, by } = sim.pos;
   const key = (x: number, y: number) => y * MLEN + x;
   const goal = new Set(goals.map((g) => key(g.x, g.y)));
@@ -72,7 +92,7 @@ export function firstStep(sim: Sim, goals: { x: number; y: number }[], box: { x0
         const ny = y + dy;
         const k = key(nx, ny);
         if (nx < box.x0 || ny < box.y0 || nx > box.x1 || ny > box.y1 || seen.has(k)) continue;
-        if (!goal.has(k) && solidAt(sim, nx, ny)) continue;
+        if (!goal.has(k) && (solidAt(sim, nx, ny) || blocked.has(k))) continue;
         seen.add(k);
         prev.set(k, [key(x, y), d]);
         if (goal.has(k)) {
@@ -99,7 +119,7 @@ export class Bot {
 
   constructor(
     readonly game: Game,
-    readonly areas: Record<string, { area: Area; names: string[] }>,
+    readonly areas: Record<string, { area: Area; names: string[]; hazards: Set<string> }>,
     readonly chr: import('../../../web/src/formats/character').Character,
     readonly cbl: import('../../../web/src/formats/blocks').Block[],
   ) {}
@@ -110,6 +130,7 @@ export class Bot {
     const s = this.game.scenes[scene];
     const stem = s.files[1].replace(/\.map$/, '');
     const { area, names } = this.areas[stem];
+    this.stem = stem;
     this.sim = new Sim(
       {
         map: structuredClone(area.done()),
@@ -129,6 +150,7 @@ export class Bot {
   }
 
   scene = 0;
+  stem = '';
 
   get words(): number {
     return this.ci.meter[CTR.words] - 1;
@@ -138,39 +160,71 @@ export class Bot {
     for (let i = 0; i < n && this.sim.link < 0; i++) await this.sim.tick();
   }
 
-  /** One step, made when it costs no words (tried on copies of the scene a few ticks ahead). */
+  private value(meter: number[]): number {
+    let v = meter[CTR.words];
+    for (let i = 20; i < 28; i++) v += meter[i] * 1000;
+    return v;
+  }
+
+  /** Plays a move (a direction, or standing still) on a copy, and counts the words kept. */
+  private async trial(d: Dir | undefined, ahead = 16): Promise<number> {
+    const t = cloneSim(this.sim);
+    if (d) t.press(SCAN[d]);
+    await t.tick();
+    if (d) t.release(SCAN[d]);
+    for (let i = 0; i < ahead && t.link < 0; i++) await t.tick();
+    // a move that takes a link (THE END spending its hundred words on the way) is a good one
+    // and so is one that opens THE END (a story counted is worth more than its hundred words)
+    return t.link >= 0 ? 1e6 : this.value(t.w.ci.meter);
+  }
+
+  /**
+   * One move toward the goal; when careful, a move that loses no words to a shusher (or
+   * scissors, or static...): the step wanted, else standing still, else a sidestep.
+   */
   async step(d: Dir, careful: boolean): Promise<void> {
+    let move: Dir | undefined = d;
     if (careful) {
-      for (let wait = 0; wait < 80; wait++) {
-        const trial = cloneSim(this.sim);
-        const before = trial.w.ci.meter[CTR.words];
-        trial.press(SCAN[d]);
-        await trial.tick();
-        trial.release(SCAN[d]);
-        for (let i = 0; i < 12 && trial.link < 0; i++) await trial.tick();
-        if (trial.w.ci.meter[CTR.words] >= before) break;
-        await this.ticks(1);
+      const now = this.value(this.sim.w.ci.meter);
+      const options: (Dir | undefined)[] = [d, undefined, ...STEPS.map((s) => s[0]).filter((x) => x !== d)];
+      let best = -1;
+      for (const o of options) {
+        const kept = await this.trial(o);
+        if (kept >= now) {
+          move = o;
+          best = kept;
+          break;
+        }
+        if (kept > best) (best = kept), (move = o);
       }
     }
-    this.sim.press(SCAN[d]);
+    const w0 = this.words;
+    if (!move) {
+      await this.ticks(2);
+      return;
+    }
+    this.sim.press(SCAN[move]);
     await this.ticks(1);
-    this.sim.release(SCAN[d]);
+    this.sim.release(SCAN[move]);
     for (let i = 0; i < 20 && this.sim.w.chr.cseq !== 0 && this.sim.link < 0; i++) await this.ticks(1);
     await this.ticks(1);
+    if (process.env.BOT_DEBUG && this.words !== w0) console.log(`  ${move} -> ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words}`);
   }
 
   /** Walks to (into) one of the goals until a link is taken or `until` holds. */
   async walk(goals: () => { x: number; y: number }[], box: { x0: number; y0: number; x1: number; y1: number }, until: () => boolean, careful = true, limit = 4000): Promise<void> {
     const start = this.sim.ticks;
     while (this.sim.link < 0 && !until()) {
-      if (this.sim.ticks - start > limit) throw new Error(`Stuck in scene ${this.scene} at ${this.sim.pos.bx},${this.sim.pos.by} (${this.words} words)`);
-      const g = goals();
-      if (!g.length) return;
-      const d = firstStep(this.sim, g, box);
-      if (!d) {
-        await this.ticks(2);
-        continue;
+      if (this.sim.ticks - start > limit) {
+        const g = goals()[0];
+        const b = g ? this.sim.w.bg[this.sim.w.map[g.y * MLEN + g.x]] : undefined;
+        throw new Error(`Stuck in scene ${this.scene} at ${this.sim.pos.bx},${this.sim.pos.by} (${this.words} words)${b ? ` before block ${b.nextBl}/${b.touchBl} effect ${b.effect} ${b.eamt} solid ${b.solid}` : ''}`);
       }
+      const g = goals().filter((p) => p.x >= box.x0 && p.y >= box.y0 && p.x <= box.x1 && p.y <= box.y1);
+      if (!g.length) return;
+      const { names, hazards } = this.areas[this.stem];
+      const d = firstStep(this.sim, g, box, monstersNamed(this.sim, names, (n) => hazards.has(n)));
+      if (!d) return; // standing on a goal
       await this.step(d, careful);
     }
   }
@@ -183,6 +237,11 @@ export class Bot {
     this.enter(l.toScene, l.to);
     return l.toScene;
   }
+}
+
+/** The monsters that confiscate words. */
+export function hazardsOf(area: Area): Set<string> {
+  return new Set(area.mons.names.filter((n, i) => n && area.mons.defs[i].pics.some(([pic]) => (area.mb.def(pic).eamt ?? 0) < 0)));
 }
 
 export function windowBox(ox: number, oy: number) {

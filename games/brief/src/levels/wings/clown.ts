@@ -177,7 +177,7 @@ function art(a: Area): void {
   a.monster('guide', [[figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun', arms: 'up' }), 6], [figure({ shirt: ['red', 3], dress: true, hair: ['yellow', 2], hairStyle: 'bun' }), 6]], {
     path: [[0, 3, 1], [0, -3, 1]],
   });
-  a.monster('static', [[bubble(4, 'pink'), 5], [bubble(4, 'pink', 1), 5]], { hazard: true, path: [[4, 0, 1], [0, 2, 1], [-4, 0, 1], [0, -2, 1]] });
+  a.monster('static', [[bubble(4, 'pink'), 5], [bubble(4, 'pink', 1), 5]], { hazard: true, path: [[3, 0, 1], [0, 2, 1], [-3, 0, 1], [0, -2, 1]] });
 
   // Bubble Rap
   a.tile('lino', floor('lino', 3, 'green'));
@@ -188,8 +188,8 @@ function art(a: Area): void {
   joker.line(16, 8, 16, 19, c('brass', 3)).disc(16, 7, 1.5, c('brass', 4));
   a.prop('joker', 'lino', joker);
   sign(['BUBBLE WRAP', 'AISLE 3', 'POP AT RANDOM'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`wrap${i}`, px));
-  a.monster('bubbig', [[bubble(7), 6], [bubble(7, 'sky', 1), 6]], { path: [[0, 2, 1], [0, -2, 1]] });
-  a.monster('bubsmall', [[bubble(3), 4], [bubble(3, 'sky', 1), 4]], { path: [[2, 0, 1], [-2, 0, 1]] });
+  a.monster('bubbig', [[bubble(7), 6], [bubble(7, 'sky', 1), 6]], { power: 1, path: [[0, 2, 1], [0, -2, 1]] });
+  a.monster('bubsmall', [[bubble(3), 4], [bubble(3, 'sky', 1), 4]], { power: 1, path: [[2, 0, 1], [-2, 0, 1]] });
 
   // The Interest We Lost
   a.tile('office', floor('carpet', 4, 'blue'));
@@ -221,9 +221,9 @@ export const CLOWN: WingSpec = {
       n: 13,
       floor: 'saw',
       rows: [
-        '#######E########',
-        '#kKkKkK.kKkKkKk#',
-        '#o..+...D.....*#',
+        '################',
+        '#kKkKkKLkKkKkKk#',
+        '#o..+..ED.....*#',
         '#.RRRR...RRRR..#',
         '#.R~.......o.R+#',
         '#.R..t..@.m..R.#',
@@ -262,12 +262,12 @@ export const CLOWN: WingSpec = {
         '#.d..o...s..~.+#',
         '#.....V........#',
         '#*.f....h....o.#',
-        '#...~.....+....#',
+        '#...~.....+..o.#',
         '#.gq...o@..G...#',
         '#.gq.+.....c.~.#',
-        '#.........+..o.#',
-        '#....z.r.r.*.o.#',
-        '#E############X#',
+        '#.........+....#',
+        '#E...z.r.r.*.o.#',
+        '#L############X#',
       ],
       legend: {
         d: 'bdog',
@@ -306,8 +306,8 @@ export const CLOWN: WingSpec = {
         '#+..j...@....~.#',
         '#..AAAA.AAaA.S.#',
         '#o....+....b.o.#',
-        '#*.123.........#',
-        '#X############E#',
+        '#*.123........E#',
+        '#X############L#',
       ],
       legend: {
         A: 'aisle',
@@ -343,7 +343,7 @@ export const CLOWN: WingSpec = {
         '#.dd.....dd..+.#',
         '#.+..S......o..#',
         '#*.~..bbb.....E#',
-        '######X#########',
+        '######X#######L#',
       ],
       legend: {
         c: 'cabinet',

@@ -51,5 +51,8 @@ export function buildJoe(cb: BlockSet): Character {
 
   ch.meter[0] = 10; // hit points: nothing here takes any
   ch.meter[1] = 3; // lives: nothing here takes any either
+  // Counters read one more than they hold: no words, and no stories restored in any wing.
+  ch.meter[3] = 1;
+  for (let i = 20; i < 30; i++) ch.meter[i] = 1;
   return ch;
 }

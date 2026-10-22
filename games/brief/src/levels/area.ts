@@ -1,7 +1,8 @@
 // An area of the library: one map (100x100 blocks), its block set (.BBL), its monster blocks
 // (.MBL) and monsters (.MON), with screen-sized windows stamped onto the map from ASCII rows.
 // Scenes never scroll, so PLAYGAME frames each window around the cell Joe enters on: column
-// 8, row 5 of the window. Every way into a window lands there.
+// 8, row 5 of the window. Every way into a window lands there. PLAYGAME also keeps the
+// character off the screen's top row and left column, so nothing Joe must reach goes there.
 import { MLEN, LASTMM, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import { Pixels } from '../../../kit/pixels';
 import { BlockSet, Bestiary, SOLID, type BlockDef, type MonDef } from '../blocks/sets';
@@ -61,29 +62,39 @@ export class Area {
       if (!this.mb.has(pn)) this.mb.add(pn, px, bd);
       return [pn, t];
     });
-    const { hazard, pickup, ...rest } = def;
-    this.mons.add(name, { pics, power: pickup ? 1 : 150, end: 0, ...rest });
+    const { hazard, pickup, path, ...rest } = def;
+    this.mons.add(name, { pics, power: pickup ? 1 : 150, end: 0, ...rest, ...(path ? { path: loop(name, path) } : {}) });
     void hazard;
     return name;
   }
 
   /**
-   * The same monster on another path: its frames are shared. A path is corners as offsets
-   * from the start, [dx, dy, speed]; after the last corner the monster walks it again.
+   * The same monster on another path: its frames are shared. A path is a loop of moves,
+   * [dx, dy, speed] each, that ends where it started; then the monster walks it again.
    */
   patrol(base: string, path: [number, number, number][]): string {
     const name = `${base}@${path.map((p) => p.join(',')).join(';')}`;
     if (!this.mons.has(name)) {
       const d = this.mons.defs[this.mons.id(base)];
-      this.mons.add(name, { ...d, path });
+      this.mons.add(name, { ...d, path: loop(name, path) });
     }
     return name;
   }
 
-  /** The word slips and the shusher every area that holds books has. */
-  addWordMonsters(): void {
-    for (const v of [20, 10, 5, 1]) this.monster(`w${v}`, [[wordSlip(v, 0), 7], [wordSlip(v, 1), 7]], { pickup: v });
+  /** The shusher every area has. */
+  addShusher(): void {
     this.monster('shh', [[shusher(0), 9], [shusher(1), 9]], { hazard: true });
+  }
+
+  /**
+   * A word slip lying on a floor: a background block (monsters fight, and every shusher
+   * outranks a word, so words are never monsters), worth `v` words and as many points.
+   * Picked up, it leaves the bare floor.
+   */
+  wordOn(v: number, under: string): string {
+    const name = `w${v}~${under}`;
+    if (!this.tiles.has(name)) this.tile(name, on(this.tiles.pic(under), wordSlip(v, 0)), { effect: CTR.words, eamt: v, score: v, touch: under });
+    return name;
   }
 
   monAt(x: number, y: number, name: string): void {
@@ -118,8 +129,7 @@ export class Area {
           return;
         }
         if (ch in WORD_CHARS) {
-          this.set(mx, my, under);
-          this.monAt(mx, my, `w${WORD_CHARS[ch]}`);
+          this.set(mx, my, this.wordOn(WORD_CHARS[ch], under));
           words += WORD_CHARS[ch];
           return;
         }
@@ -129,6 +139,7 @@ export class Area {
         this.set(mx, my, cc.tile === '.' ? under : cc.tile);
         if (cc.mon) this.monAt(mx, my, cc.mon);
         if (cc.mark) {
+          if (x === 0 || y === 0) throw new Error(`${this.file}: ${cc.mark} at ${x},${y} is where Joe can't reach`);
           if (marks.has(cc.mark)) throw new Error(`${this.file}: mark ${cc.mark} twice`);
           marks.set(cc.mark, { x: mx, y: my });
         }
@@ -141,6 +152,24 @@ export class Area {
     reindexMonsters(this.map);
     return this.map;
   }
+}
+
+/**
+ * A patrol written as moves (each relative to the last corner) as Game-Maker stores it:
+ * corners as offsets from the start. The moves must come back to the start, because when a
+ * march starts over its first corner is measured from wherever the monster is.
+ */
+function loop(name: string, moves: [number, number, number, number?][]): [number, number, number, number?][] {
+  let x = 0;
+  let y = 0;
+  const out = moves.map(([dx, dy, speed, o]): [number, number, number, number?] => {
+    x += dx;
+    y += dy;
+    return [x, y, speed, o];
+  });
+  if (x || y) throw new Error(`${name}: its patrol does not come back to where it started`);
+  if (out.length > 10) throw new Error(`${name}: more than 10 corners`);
+  return out;
 }
 
 /** Checks a book window holds exactly a hundred words. */

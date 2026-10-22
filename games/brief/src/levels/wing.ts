@@ -5,10 +5,11 @@
 //   map window   0..15     the hallway
 //   map window  16..31     book 1, then books 2..4 every 16 columns
 //
-// A book's way out is THE END page: a solid page that only opens for a hundred words
+// A book's way out is THE END page (E): a solid page that only opens for a hundred words
 // (counter 3, which it takes), and the open page counts the story into the wing (counter
-// 20 + w) as Joe steps onto it, which is the link to the story's card. The back cover is a
-// way out without finishing.
+// 20 + w) as Joe steps onto it. Right behind it, walled in, a bookmark (L) is the link to the
+// story's card: a link on the page itself would be taken the moment the page opens, before
+// Joe ever touched the open page. The back cover (X) is a way out without finishing.
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { c, r } from '../art/pal';
@@ -48,6 +49,9 @@ export interface WingSpec {
 export interface CompiledBook {
   spec: BookSpec;
   win: Window;
+  /** THE END page (solid until it takes a hundred words; open, it counts the story). */
+  page: { x: number; y: number };
+  /** The bookmark behind it: the link to the story's card. */
   end: { x: number; y: number };
   cover: { x: number; y: number };
 }
@@ -125,6 +129,16 @@ function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): 
   return p;
 }
 
+/** The bookmark behind THE END: a red ribbon on gold, the way on to the story. */
+function bookmark(under: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(under.px);
+  p.rect(2, 2, 16, 16, c('brass', 3)).frame(2, 2, 16, 16, c('brass', 1));
+  p.rect(8, 0, 4, 16, c('red', 2)).rect(8, 16, 2, 3, c('red', 2)).rect(10, 16, 2, 2, c('red', 2));
+  p.rect(8, 0, 1, 16, c('red', 4));
+  return p;
+}
+
 /** The back cover: a way out of a book without finishing it. */
 function backCover(tint: string): Pixels {
   const p = new Pixels(20, 20);
@@ -196,7 +210,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
   // what every book has
   a.solid('edge', edge(tint));
   a.tile('cover', backCover(tint));
-  a.addWordMonsters();
+  a.addShusher();
   spec.art(a);
 
   // the hallway window
@@ -226,20 +240,24 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     const tag = `${k}`;
     a.tile(`endDone${tag}`, endPage('done', under, tint));
     a.tile(`endOpen${tag}`, endPage('open', under, tint), { effect: wingCounter(index), eamt: 1, touch: `endDone${tag}`, score: 0 });
+    a.tile(`endLink${tag}`, bookmark(under));
     a.solid(`end${tag}`, endPage('shut', under, tint), { effect: CTR.words, eamt: -WORDS_PER_BOOK, touch: `endOpen${tag}` });
     const legend: Record<string, Cell> = {
       '#': 'edge',
       '.': '.',
-      E: { tile: `end${tag}`, mark: 'end' },
+      E: { tile: `end${tag}`, mark: 'page' },
+      L: { tile: `endLink${tag}`, mark: 'end' },
       X: { tile: 'cover', mark: 'cover' },
       ...b.legend,
     };
     const win = a.window(ox, 0, b.rows, legend, b.floor);
     checkWords(`${wing.id} book ${k + 1} (${story(b.n).title})`, win);
     const end = win.marks.get('end');
+    const page = win.marks.get('page');
     const cover = win.marks.get('cover');
-    if (!end || !cover) throw new Error(`${wing.id} book ${k + 1}: needs an E and an X`);
-    return { spec: b, win, end, cover };
+    if (!end || !page || !cover) throw new Error(`${wing.id} book ${k + 1}: needs an E, an L and an X`);
+    if (Math.abs(end.x - page.x) + Math.abs(end.y - page.y) !== 1) throw new Error(`${wing.id} book ${k + 1}: L goes right behind E`);
+    return { spec: b, win, end, page, cover };
   });
   const spines = [0, 1, 2, 3].map((k) => hall.marks.get(`spine${k}`)!);
   return { spec, index, area: a, hall, spines, door: hall.marks.get('door')!, books };

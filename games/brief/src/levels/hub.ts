@@ -125,25 +125,25 @@ function blankBook(under: Pixels): Pixels {
 }
 
 const READING_ROOM = [
-  'SS1SS2NNNN3SS4SS',
-  'S.a....h.....a.S',
+  'SSSSSSNNNNSSSSSS',
+  'SS1SS2SSSS3SS4SS',
+  'Sa......h.....aS',
   'S.....wwww.....S',
   'S..Tt.wwww..Tt.S',
-  'S..............S',
-  'Z.......@......S',
+  'S.......@......Z',
   'S..cc......g...S',
   'S.QQQ......KKK.S',
-  'S.f..........f.S',
+  'Sf............fS',
   'SS5SS6SdeS7SS8SS',
 ];
 
 const STACKS = [
   'SSSSSSSSSSSSSSSS',
-  'SBl76543210....S',
+  'SB76543210.....S',
   'SSSSSSSSSSSS...S',
   'SAAA.......J...S',
   'S..............S',
-  'X.......@....b.S',
+  'S.......@....b.X',
   'S..q...........S',
   'S.....CCC......S',
   'S.f..........f.S',
@@ -236,7 +236,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   a.prop('patron2', 'floor', figure({ shirt: ['orange', 2], hair: ['grey', 4], hairStyle: 'bun', dress: true, glasses: true }));
 
   // monsters
-  a.addWordMonsters();
+  a.addShusher();
   a.monster('teddy', [[corgi(0), 4], [corgi(1), 4]], { path: [[5, 0, 2], [-5, 0, 2]] });
   a.monster('gwinn', [[gwinn(0, true), 3], [gwinn(1, true), 3]], { path: [[-5, 0, 3], [5, 0, 3]] });
 
@@ -261,11 +261,11 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
     ...Object.fromEntries([2, 3, 4, 5, 6, 7, 8].map((n) => [String(n), { tile: `door${n - 1}`, mark: `door${n - 1}` }])),
   } as Record<string, Cell>, 'floor');
   // the Word Counter (4x2) and the signs, set block by block
-  a.set(6, 2, 'wc00099'), a.set(7, 2, 'wc10099'), a.set(8, 2, 'wc20099'), a.set(9, 2, 'wc30');
-  a.set(6, 3, 'wc01'), a.set(7, 3, 'wc11'), a.set(8, 3, 'wc21'), a.set(9, 3, 'wc31');
+  a.set(6, 3, 'wc00099'), a.set(7, 3, 'wc10099'), a.set(8, 3, 'wc20099'), a.set(9, 3, 'wc30');
+  a.set(6, 4, 'wc01'), a.set(7, 4, 'wc11'), a.set(8, 4, 'wc21'), a.set(9, 4, 'wc31');
   for (let i = 0; i < 4; i++) a.set(6 + i, 0, `quiet${i}`);
   for (let i = 0; i < 3; i++) a.set(2 + i, 7, `fine${i}`), a.set(11 + i, 7, `chew${i}`);
-  a.monAt(2, 4, 'teddy');
+  a.monAt(2, 2, 'teddy');
   a.monAt(12, 8, 'gwinn');
 
   const stacks = a.window(16, 0, STACKS, {
@@ -279,7 +279,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
     q: 'patron2',
     C: 'line0',
     f: 'fern',
-    ...Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 7].map((w) => [String(w), { tile: w < wings.length ? `gate${w}` : 'shelf', mark: `gate${w}` }])),
+    ...Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 7].map((w) => [String(w), { tile: w < wings.length ? `gate${w}` : 'floor', mark: `gate${w}` }])),
   } as Record<string, Cell>, 'floor');
   for (let i = 0; i < 3; i++) a.set(17 + i, 3, `stax${i}`), a.set(16 + 6 + i, 7, `line${i}`);
 
