@@ -115,6 +115,7 @@ const SUMMARY: Record<string, string> = {
   goat: 'The holy night, from the goat nobody painted. Eat anything, scream your fainting cousins stiff, find your place.',
   mustard: 'A tiny mustard seed with the greatest feet hops, pushes roots for water and moves a mountain on tiny faith.',
   needle: "The rich man's camel gives his gold to the poor, humps down through the narrow ways and squeezes through the eye of a needle.",
+  loaf: 'The loaf nobody picked at the feeding of the 5,000 rolls past hungry hands and flying fish, gathers twelve baskets and goes home.',
 };
 
 const TAGLINES = [
