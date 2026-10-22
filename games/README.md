@@ -78,6 +78,8 @@ fails until it is rerun. The other play-testing tools:
 | mustard   | `npx vite-node ../games/mustard/tools/gendemo.ts`    | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | loaf      | `npx vite-node ../games/loaf/tools/check.ts`         | the bot rolls the hillside, climbs the wasteland, gathers twelve baskets, goes home |
 | loaf      | `npx vite-node ../games/loaf/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| tickle    | `npx vite-node ../games/tickle/tools/check.ts`       | the bot pins and tickles 31 rats: the course, the lab, the sewers, the tower     |
+| tickle    | `npx vite-node ../games/tickle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -279,3 +281,19 @@ door takes one holy crumb. No cover came with the song, so the title is a painti
 (`src/art/cover.ts`) and quantized into its FLI. The music shows off `kit/songFx.ts`: organ swells
 by program change, the bass drum tuned as the bass, vibrato-twin choirs, stepped scoops, echoes,
 stutters, timpani rolls and dramatic pauses.
+
+**Certified Rat Tickler** (`tickle`). The Bard of Bizarre's song about the day Lewis earned his rat
+tickling certificate, shareware from The Sofa BBS (`"series": "bizarre"`). A side-on platformer:
+Doc Leo, in a lab coat over his hobo clown clothes, is two blocks tall, hops like the loaf rises,
+and PIN and TICKLE each send a hand out to both sides. The technique is the monster powers and
+the shapes of the sprites: a pin (power 160) turns a wary rat (150) into a pinned one on its back;
+a tickle (170) would beat a wary rat too, but its fingers are drawn only in the top half of the
+block and a wary rat only in the bottom half, so no pixels meet unless the rat is on its back
+with its paws up (`spriteRules()` checks it). A pinned rat becomes a giggling one that comes to
+Doc Leo's hand, and touching it adds it to the laughing carpet (counter 20, all game long); each
+level's door is a Dutch door whose bottom half takes the carpet and gives it straight back as he
+steps through. Bumping a wary rat costs rapport with a 22 kHz "dread" whistle; a joining rat
+chirps at 50 kHz. No recording came with the song, so the music is an original villainous tango
+composed in `src/sound/song.ts` (theremin, bandoneon, the choir's maniacal laughter) and every
+sound is synthesized; the title is a painting drawn in code, and the parody certificate
+(`cert.fli`) is made up for the game.
