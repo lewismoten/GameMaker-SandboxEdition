@@ -61,7 +61,6 @@ LEVELS.forEach((level, i) => {
   disk.put(f.card, serializeSlideList([{ name: `card${i + 1}.gif`, pause: 7 }]));
   log(`${level.name}: ${set.book.used} blocks`);
 });
-disk.put('dark.pal', serializePalette(new Uint8Array(768)));
 
 const fast = !!process.env.DEPTH_FAST;
 const screens = buildScreens({ sprites, sets }, fast);

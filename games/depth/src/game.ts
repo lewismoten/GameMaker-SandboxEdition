@@ -48,11 +48,12 @@ export function buildGame(sets: LevelSet[], lf: LevelFiles[], extra: Extra = {})
     const f = lf[i];
     const next = i + 1 < sets.length ? { toScene: cardScene(i + 1), to: sets[i + 1].built.start } : { toScene: 1, to: [0, 0] as [number, number] };
     const pt = (p: [number, number]) => ({ x: p[0], y: p[1] });
-    // the card scene: dark palette (PLAYGAME fades the map in and out around its one tick)
+    // the card scene: the near plane's own files, so the tick PLAYGAME shows it between the
+    // card and the level looks just like the level's first moment (and map pictures of it work)
     const card = emptyScene(ADVTYPE);
     card.desc = `${i + 1}. ${set.level.name}`.slice(0, 19);
     card.pos = { x: 30 + i * 46, y: 40 };
-    card.files = files(['dark.pal', f.map.near, f.bbl.near, '', '', 'near.chr', 'ray.cbl', 'depth.snd', '', f.card]);
+    card.files = files([f.pal, f.map.near, f.bbl.near, '', '', 'near.chr', 'ray.cbl', 'depth.snd', '', f.card]);
     card.links = pad([{ toScene: nearScene(i), from: pt(b.start), to: pt(b.start) }]);
     const plane = (p: 'near' | 'far') => {
       const s = emptyScene(ADVTYPE);

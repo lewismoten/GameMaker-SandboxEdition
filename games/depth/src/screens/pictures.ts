@@ -145,7 +145,7 @@ export function howtoPicture(): Picture {
   return pic;
 }
 
-const CAST_CAM = { eye: [0.2, 7.5, 2.4] as V, look: [0.1, 0, 0.6] as V, fov: 0.72 };
+const CAST_CAM = { eye: [0.0, 7.8, 2.4] as V, look: [-0.2, 0, 0.6] as V, fov: 0.76 };
 
 /** Where a point lands across the screen for a camera (for labels). */
 function project(eye: V, look: V, p: V, fov = CAST_CAM.fov): number {
@@ -159,17 +159,17 @@ function project(eye: V, look: V, p: V, fov = CAST_CAM.fov): number {
 /** The cast, under Doc Leo's spotlight. */
 export function castPicture(labels = true): Picture {
   // seen from the south (+y), so east is on the left: THE CHEZ at the east end, nose first
-  const shapes: Shape[] = [floor(), ...citicar(0, 0, 1.3, [1.8, -0.9, 0]), ...place(C.teddy(2), 0.7, 1.0, 1.8, 0.3), ...place(C.gwinn(2), -0.7, 0.9, 1.8, -0.1), ...place(C.docLeo(0), -2.3, 0.5, 2.0, -0.2), ...ray(-3.8, 1.1, 1.1)];
+  const shapes: Shape[] = [floor(), ...citicar(0, 0, 1.3, [1.7, -0.9, 0]), ...place(C.teddy(2), 0.65, 1.0, 1.8, 0.3), ...place(C.gwinn(2), -0.65, 0.9, 1.8, -0.1), ...place(C.docLeo(0), -2.0, 0.5, 2.0, -0.2), ...ray(-3.25, 1.1, 1.0)];
   const world = stage(shapes, { points: [{ at: [0.5, 3, 5], color: rgb(255, 240, 210), radius: 0.3, reach: 6 }], keyColor: rgb(120, 120, 150) });
   const pic = still(world, cam(CAST_CAM.eye, CAST_CAM.look, CAST_CAM.fov), 4, 20, 5);
   bloom(pic, 0.9, 2.5, 0.5);
   if (!labels) return pic;
   centered(pic, 8, 'THE CAST', WHITE, 2, { outline: INK });
   const names: [V, string][] = [
-    [[-3.8, 1.1, 0], 'RAY'],
-    [[-2.3, 0.5, 0], 'DOC LEO'],
-    [[-0.7, 0.9, 0], 'GWINN'],
-    [[0.7, 1.0, 0], 'TEDDY'],
+    [[-3.25, 1.1, 0], 'RAY'],
+    [[-2.0, 0.5, 0], 'DOC LEO'],
+    [[-0.65, 0.9, 0], 'GWINN'],
+    [[0.65, 1.0, 0], 'TEDDY'],
     [[3.0, -0.5, 0], 'THE CHEZ'],
   ];
   const c = CAST_CAM;

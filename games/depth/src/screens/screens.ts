@@ -103,7 +103,7 @@ function eggScene(sets: LevelSet[]): Extra {
   const s: Scene = emptyScene(ADVTYPE);
   s.desc = 'Behind the Mirror';
   s.pos = { x: 140, y: 190 };
-  s.files = ['dark.pal', `l${L + 1}far.map`, `l${L + 1}far.bbl`, '', '', 'far.chr', 'ray.cbl', 'depth.snd', '', 'egg.lst', ...new Array(10).fill('')];
+  s.files = [`l${L + 1}.pal`, `l${L + 1}far.map`, `l${L + 1}far.bbl`, '', '', 'far.chr', 'ray.cbl', 'depth.snd', '', 'egg.lst', ...new Array(10).fill('')];
   s.links = Array.from({ length: MAXSCENELINKS }, (_, k) => (k === 0 ? { toScene: farScene(L), from: { ...at }, to: back } : { toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
   return {
     scenes: [s],
