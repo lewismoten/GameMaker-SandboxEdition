@@ -167,7 +167,7 @@ export function street(): Level {
   // Inside the Dog House, kept deep under the street where nothing else goes: a high five
   // from the rock cubby reaches the roof over the red door, the scene's way in.
   const [rx, ry] = [40, 62];
-  m.rect(rx - 4, ry - 3, 24, 15, 'dhWall');
+  m.rect(rx - 12, ry - 8, 40, 25, 'dhWall');
   m.rect(rx, ry, 16, 8, 'dhBack');
   m.rect(rx, ry + 8, 16, 1, 'dhFloor');
   m.set(rx, ry + 6, 'dhBook0T').set(rx, ry + 7, 'dhBook0B');
