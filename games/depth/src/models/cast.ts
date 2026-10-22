@@ -3,7 +3,7 @@
 // a de-render burst, a teapot's steam). Each model stands in a 1x1 cell, floor at z = 0,
 // facing the camera (south, +y); `f` is the animation frame.
 import { MAT } from '../render/look';
-import { Cylinder, Moved, Sdf, Sphere, add, hull, mix, mul, norm, rgb, sd, type Material, type Shape, type V } from '../render/tracer';
+import { Cylinder, Moved, Sdf, Sphere, add, hull, mix, mul, rgb, sd, type Material, type Shape, type V } from '../render/tracer';
 import { F, around, model } from './parts';
 import { rayModel } from './ray';
 
@@ -368,7 +368,6 @@ export function sweep(n: number, r: number, z: number, c: V): V[] {
   });
 }
 
-export const vnorm = norm;
 export { Cylinder, MAT };
 
 /** Shapes grown (or shrunk) by s about a point on the floor. */

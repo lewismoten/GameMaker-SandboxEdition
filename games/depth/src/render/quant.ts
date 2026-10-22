@@ -175,11 +175,3 @@ export function putColors(pal: Uint8Array, at: number, cols: Col[]): number[] {
     return at + i;
   });
 }
-
-/** A whole-picture palette: `fixed` entries first, then median cut for the rest (255 left black). */
-export function pictureColors(frames: Rgb[], fixed: Col[] = [], total = 255): { pal: Uint8Array; matcher: Matcher } {
-  const pal = new Uint8Array(768);
-  putColors(pal, 0, fixed);
-  putColors(pal, fixed.length, medianCut(frames, total - fixed.length));
-  return { pal, matcher: new Matcher(pal, Array.from({ length: total }, (_, i) => i)) };
-}

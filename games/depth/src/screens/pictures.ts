@@ -6,7 +6,7 @@ import { Box, Cylinder, Moved, Sphere, cross, dot, mix, norm, rgb, rotation, sub
 import * as C from '../models/cast';
 import { citicar } from '../models/citicar';
 import { RAY_R, rayDeath, rayModel } from '../models/ray';
-import { FAR_COL, KINDS, LENS_COL, NEAR_COL, cube, eggShape } from '../tiles/cells';
+import { FAR_COL, KINDS, NEAR_COL, cube, eggShape } from '../tiles/cells';
 import { THEMES, type ThemeId } from '../tiles/themes';
 import { centered, panel, text } from './draw';
 import { STATUS } from '../../../kit/saveSlots';
@@ -243,5 +243,3 @@ export function eggPicture(): Picture {
   flare(pic, 186, 54, 0.45);
   return pic;
 }
-
-export const LENSES = LENS_COL;
