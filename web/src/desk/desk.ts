@@ -28,6 +28,7 @@ import "./boxes/gmBox.css";
 import { SANDBOX_SHOTS, sandboxShots } from "./boxes/gmShots";
 import { fitStage } from "./stage";
 import { keyCardSpot } from "./pc/keyCard";
+import { regSide } from "./pc/regSide";
 import { newsClipping } from "./room/newsClipping";
 import { phoneNotes } from "./room/phoneNotes";
 import { wallClock } from "./room/wallClock";
@@ -417,6 +418,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       setZoom(false);
   };
   window.addEventListener("keydown", onKey);
+  // GM's copy check and GM REGISTER: the Owner's Guide and the registration card beside the monitor
+  const reg = regSide(
+    () => desk.querySelector<HTMLElement>(".monitor"),
+    () => computer?.focus(),
+  );
 
   function setTurbo(on: boolean): void {
     turbo = on;
@@ -881,6 +887,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   return () => {
     window.removeEventListener("keydown", onKey);
+    reg.dispose();
     unfit();
     lamp.dispose();
     shelf?.dispose();
