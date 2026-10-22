@@ -38,6 +38,8 @@ if (rooms.some((r) => r.mons.id('boom') !== boom)) throw new Error('The reboot m
 const chr = buildWatt(cb, boom);
 disk.put('watt.chr', serializeCharacter(chr));
 disk.put('watt.pal', serializePalette(PAL.pal));
+// the pass-through scenes' palette (see src/game.ts): all black, so their map never shows
+disk.put('dark.pal', serializePalette(new Uint8Array(768)));
 disk.put('parts.mbl', serializeBlocks(mb.build()));
 disk.put('watt.cbl', serializeBlocks(cb.build()));
 for (const r of rooms) {

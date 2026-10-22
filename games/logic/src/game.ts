@@ -8,6 +8,11 @@
 // title card as the intro graphic, and Watt starting right on a link that sends him on
 // into the room scene, onto the same pad. A reboot then restarts the board at once, with
 // no card, and every board still gets its own card on the way in.
+//
+// PLAYGAME fades every scene's map in before its first tick and fades it out after the
+// link is taken, so a pass-through scene would flash the board up and back down before
+// the room fades it in again. The card and fuse box page scenes therefore load dark.pal,
+// all black: their map fades in and out unseen, and only the room scene shows the board.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '../../../web/src/formats/game';
 import type { CompiledRoom } from './levels/board';
 
@@ -41,8 +46,8 @@ export function buildGame(rooms: CompiledRoom[], startAt = 0): Game {
   const boards = rooms.flatMap((r, ri) => r.boards.map((b) => ({ b, ri })));
   const roomScene = (ri: number) => 2 + ri;
   const cardScene = (g: number) => 2 + rooms.length + g;
-  const files = (room: string, intro = '') => [
-    'watt.pal',
+  const files = (room: string, intro = '', pal = 'watt.pal') => [
+    pal,
     `${room}.map`,
     `${room}.bbl`,
     `${room}.mon`,
@@ -77,7 +82,7 @@ export function buildGame(rooms: CompiledRoom[], startAt = 0): Game {
     card.desc = b.spec.title.slice(0, 19);
     card.pos = { x: 20 + (g % 10) * 28, y: 150 + Math.floor(g / 10) * 20 };
     card.scroll = { ...card.scroll, up: 0, down: 0, left: 0, right: 0 };
-    card.files = files(rooms[ri].room, `${b.spec.file}.lst`);
+    card.files = files(rooms[ri].room, `${b.spec.file}.lst`, 'dark.pal');
     card.links = noLinks();
     card.links[0] = { toScene: roomScene(ri), from: b.start, to: b.start };
     game.scenes.push(card);
@@ -98,7 +103,7 @@ export function buildGame(rooms: CompiledRoom[], startAt = 0): Game {
     page.desc = 'The Fuse Box';
     page.pos = { x: 40 + ri * 70, y: 60 };
     page.scroll = { ...page.scroll, up: 0, down: 0, left: 0, right: 0 };
-    page.files = files(r.room, 'fusebox.lst');
+    page.files = files(r.room, 'fusebox.lst', 'dark.pal');
     page.links = noLinks();
     page.links[0] = { toScene: roomScene(ri), from: fb.from.start, to: fb.from.start };
     game.scenes.push(page);
