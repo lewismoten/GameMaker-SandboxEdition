@@ -117,6 +117,7 @@ const SUMMARY: Record<string, string> = {
   needle: "The rich man's camel gives his gold to the poor, humps down through the narrow ways and squeezes through the eye of a needle.",
   loaf: 'The loaf nobody picked at the feeding of the 5,000 rolls past hungry hands and flying fish, gathers twelve baskets and goes home.',
   tickle: 'Doc Leo has a rat tickling certificate and no rats yet. Pin first, then tickle, and raise a laughing carpet. MWA-HA-HA!',
+  remote: "The remote is gone. Lift the cushions, the dog and the cat, call Mom, fall into the void between the cushions. Check your hand.",
 };
 
 const TAGLINES = [
