@@ -216,6 +216,10 @@
             {
               "q": "The creek ice carries me away.",
               "a": "It runs east. Cross on the bridge instead of the ice."
+            },
+            {
+              "q": "Some say the felt-maker left something behind...",
+              "a": "The snowman behind your house lost a mitten. Follow it into the pines, and what you can't push, stoop for with Enter."
             }
           ]
         },
