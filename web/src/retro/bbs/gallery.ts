@@ -16,16 +16,16 @@ export interface GalleryFile {
 }
 
 const DESC: Record<string, string> = {
-  'TEDDY.GIF': "Teddy the corgi, all ears and smiles. The SysOp's best buddy and official board mascot.",
-  'GWINN.GIF': 'Teddy and his pal Gwinn in the grass, leashes and all. Two very good dogs.',
-  'GAZEBO.GIF': 'The SysOp and Teddy by the town gazebo on a spring day. Shades on, ears up.',
-  'HOBO1.GIF': "The SysOp's first time out as a hobo clown: hat, tie and greasepaint. Small and quick.",
-  'HOBO2.GIF': 'Hobo clown out on a sunny Main Street, suspenders and all. 128 colors.',
-  'HOBO3.GIF': 'Hobo clown at clown club, with a rubber chicken and a wall of clown art.',
-  'COLONIAL.GIF': 'The SysOp in colonial dress, tricorn hat and all, beside General Washington. Huzzah!',
-  'DOGHOUSE.GIF': 'The Dog House: the SysOp\'s Little Free Library, full of dog books. Take one, leave one.',
-  'LIBRARY.GIF': 'The Dog House again, small enough for a 2400 baud caller. 64 colors.',
-  'CHEZ.GIF': "THE CHEZ: the SysOp's little red CitiCar, electric before electric was cool.",
+  'TEDDY.GIF': "Teddy the corgi, all ears and smiles. The SysOp's best buddy.",
+  'GWINN.GIF': 'Teddy and his pal Gwinn in the grass. Two very good dogs.',
+  'GAZEBO.GIF': 'The SysOp and Teddy at the town gazebo.',
+  'HOBO1.GIF': 'First time out as a hobo clown!',
+  'HOBO2.GIF': 'Hobo clown on a sunny Main Street.',
+  'HOBO3.GIF': 'Hobo clown at clown club, with a rubber chicken.',
+  'COLONIAL.GIF': 'The SysOp in colonial dress beside General Washington. Huzzah!',
+  'DOGHOUSE.GIF': "The Dog House: the SysOp's Little Free Library. Take a book, leave a book.",
+  'LIBRARY.GIF': 'The Dog House again, sized for 2400 baud.',
+  'CHEZ.GIF': "THE CHEZ, the SysOp's red CitiCar. Electric before electric was cool!",
 };
 
 export const GALLERY: GalleryFile[] = list.map((f) => ({ ...f, desc: DESC[f.name] ?? '' }));
@@ -67,6 +67,7 @@ export function caption(scr: PictureScreen, text: string): void {
   const black = nearestColor(scr.dac, 0, 0, 0);
   const cols = scr.width / 8;
   const t = text.slice(0, cols);
-  scr.text(0, scr.height / 8 - 1, ' '.repeat(cols), white, black);
-  scr.text((cols - t.length) >> 1, scr.height / 8 - 1, t, white, black);
+  const row = scr.height / scr.cellHeight - 1;
+  scr.text(0, row, ' '.repeat(cols), white, black);
+  scr.text((cols - t.length) >> 1, row, t, white, black);
 }

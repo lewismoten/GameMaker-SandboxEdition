@@ -8,6 +8,7 @@ import { decodeGif } from '../src/formats/gif';
 import { decodePartialGif } from '../src/formats/gifProgressive';
 import { modeFor, nearestColor, placeIn } from '../src/retro/view/picture';
 import { bytesAt, GIF_CPS, GIF_TIME_COMPRESSION } from '../src/retro/bbs/gifArea';
+import { GALLERY } from '../src/retro/bbs/gallery';
 
 describe('GIF Gallery files', () => {
   it.each(list)('$name is a 1994 download: 8.3 name, interlaced GIF89a, VGA sized, 256 colors or fewer', (f) => {
@@ -25,6 +26,14 @@ describe('GIF Gallery files', () => {
     expect(g.colors).toBe(f.colors);
     expect(g.aspect).toBeCloseTo(53 / 64); // tall VGA pixels
     expect(decodeGif(bytes).pixels.length).toBe(f.width * f.height);
+  });
+
+  it('describes every file in two listing lines or less (the list fits one screen)', () => {
+    expect(GALLERY.length).toBe(list.length);
+    for (const f of GALLERY) {
+      expect(f.desc, f.name).not.toBe('');
+      expect(f.desc.length, f.name).toBeLessThanOrEqual(80);
+    }
   });
 });
 

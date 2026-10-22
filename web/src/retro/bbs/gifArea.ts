@@ -47,13 +47,13 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
     t.line(boxBottom());
     for (const [i, f] of GALLERY.entries()) {
       const got = h.downloads.has(f.name) ? '|10*' : ' ';
-      const desc = wrap(f.desc, 38);
+      const desc = wrap(f.desc, 41);
       t.line(
         `|11${String(i + 1).padStart(2)} ${got}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(8)} |03${`${f.width}x${f.height}`.padEnd(7)} |03${String(f.colors).padStart(3)}c |07${desc[0] ?? ''}`,
       );
       if (desc[1]) t.line(`${' '.repeat(38)}|07${desc[1]}`);
     }
-    t.line('|10*|07 = already in C:\\DOWNLOAD   |08Interlaced GIF89a: your viewer shows them as they arrive.');
+    t.line('|10*|07 = already in C:\\DOWNLOAD   |08Interlaced GIFs: they fill in as they arrive.');
   };
   list();
   for (;;) {

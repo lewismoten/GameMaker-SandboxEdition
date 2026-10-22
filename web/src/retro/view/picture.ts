@@ -1,5 +1,5 @@
 // A 256-color graphics screen for showing pictures: VGA's 320x200 (mode 13h) or the SVGA
-// 640x400 mode most 1994 cards had (VESA mode 100h), with the BIOS 8x8 font for a line of
+// 640x400 mode most 1994 cards had (VESA mode 100h), with the BIOS font for a line of
 // text. Text mode can't show a picture, so the BBS's view-while-downloading and VPIC switch
 // the monitor to one of these, then back.
 //
@@ -121,13 +121,19 @@ export class PictureScreen {
     this.dirty = true;
   }
 
-  /** Text in the BIOS 8x8 font at a character cell, on a solid background like the BIOS draws it. */
+  /** A character cell's height: 8x8 at 320x200, 8x16 (each font row twice) at 640x400, as the BIOS draws them. */
+  get cellHeight(): number {
+    return this.height >= 400 ? 16 : 8;
+  }
+
+  /** Text at a character cell in the BIOS font, on a solid background like the BIOS draws it. */
   text(col: number, row: number, s: string, fg: number, bg: number): void {
+    const ch = this.cellHeight;
     for (let i = 0; i < s.length; i++) {
       const glyph = s.charCodeAt(i) & 255;
-      for (let y = 0; y < 8; y++) {
-        const bits = FONT_CP437[glyph * 8 + y];
-        const o = (row * 8 + y) * this.width + (col + i) * 8;
+      for (let y = 0; y < ch; y++) {
+        const bits = FONT_CP437[glyph * 8 + Math.floor((y * 8) / ch)];
+        const o = (row * ch + y) * this.width + (col + i) * 8;
         if (o < 0 || o + 8 > this.mem.length) continue;
         for (let x = 0; x < 8; x++) this.mem[o + x] = bits & (1 << x) ? fg : bg;
       }
