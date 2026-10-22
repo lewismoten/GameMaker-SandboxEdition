@@ -1,0 +1,110 @@
+{
+ "version": 1,
+ "game": "sandcast",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUgEyAFNBM0BGQKZBk0MzQFIBMgBTQTNAUgUyAFNBM0BSALIBVAB0AJI"
+  },
+  {
+   "scene": 3,
+   "keys": "AUgIyAFNBM0BSAjIAU0EzQFIHMgBTQzNAVAI0AFNBM0BUAjQAU0gzQFIFMgBSwjLAUgCyAJNC80BSBDIAU0IzQFIDMgBSwzLAUgCyAJLBMsBSAjIAUtQywFQCNABSwjLAUgCyAJQDNABSwzLAVAQ0AFNDM0BSALIAk0szQFIAsgFUALQAkgQyAFIAcgDIQKhDEg="
+  },
+  {
+   "scene": 2,
+   "keys": "AU0ozQFIHMgBTRzNAUg="
+  },
+  {
+   "scene": 4,
+   "keys": "AUgUyAFNEM0BTSDNAUgEyAFNBM0BUATQAUtQywFNHM0BSALIBVAC0AJIBMgBSALIBVAC0AJIDMgBSyDLAUgCyAJNBM0BSAzIAUgcyAFLBMsBSALIAk0EzQFICMgBTTzNAVAI0AFNBM0BSALIAlAc0AFLBMsBUAzQAU0EzQFIAsgCSwTLAUgIyAFLIMsBSALIBVAC0AJI"
+  },
+  {
+   "scene": 2,
+   "keys": "AUg1yAFLBMsBSA=="
+  },
+  {
+   "scene": 5,
+   "keys": "AUgEyAEZApkGTRDNAVAI0AFLFMsBUCDQAUsIywFQAdADIQKhJFAU0JIBUEPQAVAE0AFICMgBTTjNrAFQCNABTRTNAUgkyAFIBMgBS0zLL0gQyAFICMgBSyDLAUgCyAVQAtACSAzIAUsIywFI"
+  },
+  {
+   "scene": 2,
+   "keys": "AUgQyAFLIMsBSATIAUsMywFIDMgBSxzLAUg="
+  },
+  {
+   "scene": 6,
+   "keys": "AVAI0AFLBMsBTRTNAUgEyAFNM80BTSDNAVAE0AFNCM0BTQTNAVAE0AFQAtAFUALQAkgEyAFQGNABSw/LAUgEyAFLGMsBUATQAUsQywFLAssFTQLNAksEywFLAssFTQLNAks4ywFQBNABTQTNAVAE0AFQAtAFUALQAkgEyAFQGNABSwTLAUgEyAFNJ80BUATQAU0TzQFQAtACSA/IAUgCyAJQBNABSxDLAU0EzQFNBM0BTQTNAU0EzQFNBM0BTQTNAU0EzQFNBM0BTQTNAU0EzQFNBM0BTQTNAU0EzQFNBM0BSATIAU0EzQEhAqEQUATQAU0/zQFQBNABTQzNAVAE0AFQAtAFUALQAkgEyAFQ"
+  },
+  {
+   "scene": 7,
+   "keys": "AVAC0AJIIMgBSwzLAUgEyAEwArAOMAKwVUsEywFICMgBTQTNAUgYyAFN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 3,
+   "title": "Level 1: Anthill Keep"
+  },
+  {
+   "scene": 4,
+   "title": "Level 2: Hosewater Moat"
+  },
+  {
+   "scene": 5,
+   "title": "Level 3: Low Tide Lagoon"
+  },
+  {
+   "scene": 6,
+   "title": "Level 4: Beetle Burrows"
+  },
+  {
+   "scene": 7,
+   "title": "Level 5: Gwinn's Nap"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 21881,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1261
+   },
+   {
+    "title": "Level 1: Anthill Keep",
+    "frame": 3663
+   },
+   {
+    "title": "Level 2: Hosewater Moat",
+    "frame": 6404
+   },
+   {
+    "title": "Level 3: Low Tide Lagoon",
+    "frame": 9211
+   },
+   {
+    "title": "Level 4: Beetle Burrows",
+    "frame": 13357
+   },
+   {
+    "title": "Level 5: Gwinn's Nap",
+    "frame": 16465
+   },
+   {
+    "title": "Ending",
+    "frame": 17809
+   },
+   {
+    "title": "Credits",
+    "frame": 20329
+   }
+  ]
+ }
+}
