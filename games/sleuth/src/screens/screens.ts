@@ -5,7 +5,8 @@
 // (purple text, red MORE..., blue menu) land on the colors made for them.
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels, rng } from '../../../kit/pixels';
+import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from '../art/draw';
@@ -226,7 +227,8 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
   // the endings
   put('won.gif', gif(caseFile('CASE CLOSED')));
   put('won.txt', wide(WON));
-  lst('won.lst', [['won.fli', 0], ['won.gif', 0], ['won.txt']]);
+  put('archive.gif', gif(...archivePage()));
+  lst('won.lst', [['won.fli', 0], ['won.gif', 0], ['won.txt'], ['archive.gif']]);
   put('lost.gif', gif(caseFile('OFF THE CASE')));
   put('lost.txt', wide(LOST));
   lst('lost.lst', [['lost.fli', 0], ['lost.gif', 0], ['lost.txt']]);
@@ -245,3 +247,31 @@ export function coronerNote(): Pixels {
 }
 
 export { ITEM, H };
+
+/**
+ * After the case: a page of the Port Ellery Historical Society's album, the one that hangs
+ * the lobby's history wall. A real photo, printed in sepia and dithered into the page's
+ * spare palette entries: the town crier of the Sesquicentennial pageant beside the painted
+ * General Washington, mounted with photo corners.
+ */
+function archivePage(): [Pixels, Uint8Array] {
+  const p = new Pixels(W, H, c('black', 0));
+  const R = rng(1926);
+  for (let k = 0; k < 700; k++) p.set(Math.floor(R() * W), Math.floor(R() * H), c('black', 1));
+  const photo = sepia(resample(loadScan('colonial'), 196), [42, 28, 16], [242, 224, 186], 1.12);
+  const [x, y] = [Math.round((W - photo.w) / 2), 16];
+  p.rect(x - 6, y - 6, photo.w + 12, photo.h + 12, c('paper', 4)).frame(x - 6, y - 6, photo.w + 12, photo.h + 12, c('paper', 2));
+  // photo corners
+  for (const [cx, cy, dx, dy] of [
+    [x - 9, y - 9, 1, 1],
+    [x + photo.w + 8, y - 9, -1, 1],
+    [x - 9, y + photo.h + 8, 1, -1],
+    [x + photo.w + 8, y + photo.h + 8, -1, -1],
+  ])
+    for (let i = 0; i < 14; i++) for (let j = 0; j < 14 - i; j++) p.set(cx + dx * i, cy + dy * j, j === 13 - i ? c('black', 1) : c('black', 2));
+  centered(p, 158, 'SESQUICENTENNIAL PAGEANT', c('paper', 4));
+  centered(p, 170, 'PORT ELLERY  JULY 4, 1926', c('paper', 3));
+  microC(p, W / 2, 186, 'THE TOWN CRIER, WITH GENERAL WASHINGTON', c('tan', 2));
+  const { pal } = pastePhoto(p, P.pal, photo, x, y);
+  return [p, pal];
+}
