@@ -5,7 +5,7 @@
 // afresh with loadCatalog. No page reload.
 import { EGGS_CHANGED, OVERRIDES_KEY } from '../eggs/eggState';
 import { forgetCatalog } from './files';
-import { noteSecretsListed, secretsListed, secretsRevealed } from './secretGames';
+import { secretsListed, secretsRevealed } from './secretGames';
 import { SAVES_CHANGED } from './storage';
 
 /** Fired on window (a CustomEvent whose detail is { revealed }) when the catalog's list changes. */
@@ -17,12 +17,15 @@ const POLL_MS = 8000;
 export const catalogStale = (listed: boolean | undefined, revealed: boolean): boolean => listed !== undefined && listed !== revealed;
 
 let chain: Promise<void> = Promise.resolve();
+/** What the watchers were last told the lists show (kept apart: a list loaded meanwhile is not news to them). */
+let told: boolean | undefined;
 
 async function check(): Promise<void> {
-  if (secretsListed() === undefined) return;
+  told ??= secretsListed();
+  if (told === undefined) return;
   const revealed = await secretsRevealed();
-  if (!catalogStale(secretsListed(), revealed)) return;
-  noteSecretsListed(revealed);
+  if (!catalogStale(told, revealed)) return;
+  told = revealed;
   forgetCatalog();
   window.dispatchEvent(new CustomEvent(CATALOG_CHANGED, { detail: { revealed } }));
 }
@@ -68,11 +71,13 @@ function start(): () => void {
  */
 export function onCatalogChanged(then: (revealed: boolean) => void): () => void {
   watchers.add(then);
+  told ??= secretsListed();
   stop ??= start();
   return () => {
     watchers.delete(then);
     if (watchers.size) return;
     stop?.();
     stop = undefined;
+    told = undefined;
   };
 }

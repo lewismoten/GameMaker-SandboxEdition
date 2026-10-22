@@ -25,8 +25,6 @@ let listed: boolean | undefined;
 
 /** Whether the last list given out showed the secret games (undefined: none given out yet). */
 export const secretsListed = (): boolean | undefined => listed;
-/** Notes what the lists now show (project/catalogWatch.ts, when it forgets the catalog). */
-export const noteSecretsListed = (revealed: boolean): void => void (listed = revealed);
 
 /** The list without the secret games, unless they have been revealed. */
 export async function hideSecretGames<T extends { id: string }>(list: T[]): Promise<T[]> {
