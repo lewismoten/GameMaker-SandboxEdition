@@ -7,7 +7,7 @@ import { newCharInfo } from '../../../web/src/engine/world';
 import { buildCharacter, CB } from './characters/character';
 import { Recorder, runRoute } from '../tools/bot';
 import { ROUTES } from '../tools/routes';
-import { Sim } from '../tools/sim';
+import { Sim } from '../../kit/sceneSim';
 import type { Level } from './levels/level';
 import { SCAN } from './ids';
 

@@ -9,7 +9,7 @@ import { newCharInfo } from '../../../web/src/engine/world';
 import { LEVELS } from '../src/game';
 import { ROUTES } from './routes';
 import { Recorder, runRoute } from './bot';
-import { Sim } from './sim';
+import { Sim } from '../../kit/sceneSim';
 import { encodeKeys, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';
 import { writeWalkthrough } from '../../kit/walkthrough';
 
