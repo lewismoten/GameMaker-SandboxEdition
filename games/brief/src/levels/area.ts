@@ -1,0 +1,149 @@
+// An area of the library: one map (100x100 blocks), its block set (.BBL), its monster blocks
+// (.MBL) and monsters (.MON), with screen-sized windows stamped onto the map from ASCII rows.
+// Scenes never scroll, so PLAYGAME frames each window around the cell Joe enters on: column
+// 8, row 5 of the window. Every way into a window lands there.
+import { MLEN, LASTMM, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { Pixels } from '../../../kit/pixels';
+import { BlockSet, Bestiary, SOLID, type BlockDef, type MonDef } from '../blocks/sets';
+import { on, shusher, wordSlip } from '../art/kit';
+import { CTR, WORDS_PER_BOOK } from '../ids';
+
+export const WIN_W = 16;
+export const WIN_H = 10;
+export const ENTRY = { x: 8, y: 5 };
+
+/** A map cell: a block, maybe a monster on it, maybe a named mark. */
+export type Cell = string | { tile: string; mon?: string; mark?: string };
+
+/** Word pickups by map character: the value each slip is worth. */
+export const WORD_CHARS: Record<string, number> = { '*': 20, '+': 10, '~': 5, o: 1 };
+
+export interface Window {
+  ox: number;
+  oy: number;
+  /** Where Joe enters (map coordinates). */
+  entry: { x: number; y: number };
+  marks: Map<string, { x: number; y: number }>;
+  /** Words lying in this window. */
+  words: number;
+}
+
+export class Area {
+  readonly tiles = new BlockSet(150, false);
+  readonly mb = new BlockSet(100, true);
+  readonly mons = new Bestiary(this.mb);
+  readonly map: GameMap = newMap();
+  private placed = 0;
+
+  constructor(readonly file: string) {}
+
+  /** A background block. */
+  tile(name: string, px: Pixels, def: BlockDef = {}): string {
+    this.tiles.add(name, px, def);
+    return name;
+  }
+
+  /** A solid background block. */
+  solid(name: string, px: Pixels, def: BlockDef = {}): string {
+    return this.tile(name, px, { solid: SOLID, ...def });
+  }
+
+  /** A sprite over a background block of this set, solid or not. */
+  prop(name: string, base: string, sprite: Pixels, solid = true, def: BlockDef = {}): string {
+    return this.tile(name, on(this.tiles.pic(base), sprite), solid ? { solid: SOLID, ...def } : def);
+  }
+
+  /** Monster blocks (frames) and the monster. `hazard`: touching it confiscates a word a tick. */
+  monster(name: string, frames: [Pixels, number][], def: Partial<MonDef> & { hazard?: boolean; pickup?: number } = {}): string {
+    const pics: [string, number][] = frames.map(([px, t], i) => {
+      const pn = `${name}#${i}`;
+      const bd: BlockDef = def.hazard ? { effect: CTR.words, eamt: -1 } : def.pickup ? { effect: CTR.words, eamt: def.pickup, score: def.pickup } : {};
+      if (!this.mb.has(pn)) this.mb.add(pn, px, bd);
+      return [pn, t];
+    });
+    const { hazard, pickup, ...rest } = def;
+    this.mons.add(name, { pics, power: pickup ? 1 : 150, end: 0, ...rest });
+    void hazard;
+    return name;
+  }
+
+  /**
+   * The same monster on another path: its frames are shared. A path is corners as offsets
+   * from the start, [dx, dy, speed]; after the last corner the monster walks it again.
+   */
+  patrol(base: string, path: [number, number, number][]): string {
+    const name = `${base}@${path.map((p) => p.join(',')).join(';')}`;
+    if (!this.mons.has(name)) {
+      const d = this.mons.defs[this.mons.id(base)];
+      this.mons.add(name, { ...d, path });
+    }
+    return name;
+  }
+
+  /** The word slips and the shusher every area that holds books has. */
+  addWordMonsters(): void {
+    for (const v of [20, 10, 5, 1]) this.monster(`w${v}`, [[wordSlip(v, 0), 7], [wordSlip(v, 1), 7]], { pickup: v });
+    this.monster('shh', [[shusher(0), 9], [shusher(1), 9]], { hazard: true });
+  }
+
+  monAt(x: number, y: number, name: string): void {
+    if (this.placed >= LASTMM) throw new Error(`${this.file}: too many monsters`);
+    this.map.monsters[this.placed++] = { monnum: this.mons.id(name), status: 0, xtra: 0, curx: x, cury: y, extra: 0 };
+  }
+
+  set(x: number, y: number, name: string): void {
+    this.map.blocks[y * MLEN + x] = this.tiles.id(name);
+  }
+
+  get(x: number, y: number): string {
+    return this.tiles.names[this.map.blocks[y * MLEN + x]];
+  }
+
+  /**
+   * Stamps a 16x10 window with its top-left at (ox, oy). `under` is the floor beneath word
+   * slips and the other monsters; '@' marks the entry (it must be column 8, row 5).
+   */
+  window(ox: number, oy: number, rows: string[], legend: Record<string, Cell>, under: string): Window {
+    if (rows.length !== WIN_H || rows.some((r) => r.length !== WIN_W)) throw new Error(`${this.file} window at ${ox},${oy}: must be ${WIN_W}x${WIN_H}`);
+    if (rows[ENTRY.y][ENTRY.x] !== '@') throw new Error(`${this.file} window at ${ox},${oy}: Joe enters at column 8, row 5 ('@')`);
+    const marks = new Map<string, { x: number; y: number }>();
+    let words = 0;
+    rows.forEach((row, y) =>
+      [...row].forEach((ch, x) => {
+        const mx = ox + x;
+        const my = oy + y;
+        if (ch === '@') {
+          this.set(mx, my, under);
+          marks.set('entry', { x: mx, y: my });
+          return;
+        }
+        if (ch in WORD_CHARS) {
+          this.set(mx, my, under);
+          this.monAt(mx, my, `w${WORD_CHARS[ch]}`);
+          words += WORD_CHARS[ch];
+          return;
+        }
+        const cell = legend[ch];
+        if (cell === undefined) throw new Error(`${this.file}: unknown map character "${ch}" at ${x},${y}`);
+        const cc = typeof cell === 'string' ? { tile: cell } : cell;
+        this.set(mx, my, cc.tile === '.' ? under : cc.tile);
+        if (cc.mon) this.monAt(mx, my, cc.mon);
+        if (cc.mark) {
+          if (marks.has(cc.mark)) throw new Error(`${this.file}: mark ${cc.mark} twice`);
+          marks.set(cc.mark, { x: mx, y: my });
+        }
+      }),
+    );
+    return { ox, oy, entry: { x: ox + ENTRY.x, y: oy + ENTRY.y }, marks, words };
+  }
+
+  done(): GameMap {
+    reindexMonsters(this.map);
+    return this.map;
+  }
+}
+
+/** Checks a book window holds exactly a hundred words. */
+export function checkWords(file: string, w: Window): void {
+  if (w.words !== WORDS_PER_BOOK) throw new Error(`${file} window at ${w.ox}: ${w.words} words, not ${WORDS_PER_BOOK}`);
+}
