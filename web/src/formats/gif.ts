@@ -100,7 +100,8 @@ export function decodeGif(bytes: Uint8Array): IndexedImage {
 // two, up to 12 bits (4096 entries). Code `clear` (1 << minCodeSize) resets the table and
 // width; `clear + 1` ends the image. Each table entry is a prefix code plus one suffix
 // byte; `first` caches the first byte of an entry's string for the KwKwK case.
-function lzwDecode(data: Uint8Array, minCodeSize: number, pixelCount: number): Uint8Array {
+// `done`, if given, gets how many pixels the data held (fewer when it was cut short).
+export function lzwDecode(data: Uint8Array, minCodeSize: number, pixelCount: number, done?: { count: number }): Uint8Array {
   const out = new Uint8Array(pixelCount);
   const clear = 1 << minCodeSize;
   const eoi = clear + 1;
@@ -123,7 +124,10 @@ function lzwDecode(data: Uint8Array, minCodeSize: number, pixelCount: number): U
   while (o < pixelCount) {
     // Data that runs out early leaves the remaining pixels at index 0.
     while (bits < codeSize) {
-      if (pos >= data.length) return out;
+      if (pos >= data.length) {
+        if (done) done.count = o;
+        return out;
+      }
       bitBuf |= data[pos++] << bits;
       bits += 8;
     }
@@ -165,6 +169,7 @@ function lzwDecode(data: Uint8Array, minCodeSize: number, pixelCount: number): U
     if (prev < 0) first[code] = code;
     prev = code;
   }
+  if (done) done.count = o;
   return out;
 }
 
@@ -202,7 +207,7 @@ export function encodeGif(img: IndexedImage): Uint8Array {
 // code. The width grows when `next` passes 1 << codeSize, one entry later than in the
 // decoder, because the decoder adds each entry one code behind the encoder. When the table
 // fills (4096 codes) a clear code is sent and the dictionary restarts.
-function lzwEncode(pixels: Uint8Array, minCodeSize: number): Uint8Array {
+export function lzwEncode(pixels: Uint8Array, minCodeSize: number): Uint8Array {
   const clear = 1 << minCodeSize;
   const eoi = clear + 1;
   const out: number[] = [];
