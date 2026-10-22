@@ -214,4 +214,16 @@ export async function theBed(bot: Bot): Promise<void> {
   });
 }
 
+/** 4. The open window: through the gusts, over the clothesline, along the branch, the pie, the tall grass. */
+export async function theWindow(bot: Bot): Promise<void> {
+  expect(bot, 5, 'the window');
+  await carefully(bot, 'through the gusts', 12, () => go(bot, [[10, 8], [17, 8], [18, 5]], 'the gusts'));
+  await carefully(bot, 'over the clothesline', 12, () => go(bot, [[31, 5]], 'the clothesline'));
+  await carefully(bot, 'along the branch', 12, () => go(bot, [[41, 5], [41, 8], [43, 9], [45, 9]], 'the pie and the lemonade'));
+  await carefully(bot, 'into the wild', 12, async () => {
+    await go(bot, [[47, 9], [55, 9]], 'the gusts again');
+    await leave(bot, bot.fly(57, 9, 'the tall grass'), 'the wild');
+  });
+}
+
 export const counts = { snacks: (b: Bot) => count(b, SNACKS), smiles: (b: Bot) => count(b, SMILES), ears: (b: Bot) => count(b, EARS), hours: (b: Bot) => count(b, HOURS) };
