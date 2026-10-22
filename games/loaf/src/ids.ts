@@ -31,6 +31,8 @@ export const MON = {
   /** The child, walking home ahead of you, two blocks tall (A her head, B her robe). */
   girlA: 18,
   girlB: 19,
+  /** The mustard seed hopping off after a hello. */
+  seedOff: 20,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */
