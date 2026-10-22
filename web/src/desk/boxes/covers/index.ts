@@ -21,7 +21,9 @@ const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
  * (see project/secretGames): e.g. `0x1234abcd: () => import('./extra')` for a cover in
  * covers/extra.ts. None yet.
  */
-const SECRET_COVERS: Record<number, () => Promise<{ default: Painter }>> = {};
+const SECRET_COVERS: Record<number, () => Promise<{ default: Painter }>> = {
+  0x3cb23e5f: () => import('./extra'),
+};
 
 /** Where the award laurel and the "hours of play" burst sit, clear of each cover's subject. */
 export const SEALS: Record<string, { laurel: 'left' | 'right'; burst: 'left' | 'right' }> = {
