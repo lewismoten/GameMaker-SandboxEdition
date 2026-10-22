@@ -174,8 +174,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     wrong thing in the Bible but sort of make sense, but the Bard isn’t limited to them. Lewis
     dreams up each song and prompts AI tools to write and record it. Some of those songs have
     become games, shareware “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>,
-    <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b> and <b>Loaf #13 (Left in the
-    Basket)</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
+    <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b>, <b>Loaf #13 (Left in the
+    Basket)</b> and <b>Certified Rat Tickler</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s.
     Third Goat from the Left and Mustard Seed Hustle: lyrics written by ChatGPT from Lewis’s
     prompts; music made with Riffusion (now Google Flow Music). Third Goat’s cover art was made
@@ -183,9 +183,13 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     Brother Camel: lyrics written by ChatGPT from Lewis’s prompts; music and animated cover:
     credit pending. Loaf #13 (Left in the Basket): lyrics written by ChatGPT from Lewis’s
     prompt; music: credit pending; its title and cover art were drawn for the game by Claude
-    Opus 5.5. The Bard’s logo was
+    Opus 5.5. Certified Rat Tickler: lyrics written by ChatGPT from Lewis’s prompts (after much
+    back and forth); no recording came with it, so its music was composed for the game by Claude
+    Opus 5.5, and its title, cover and certificate art were drawn for the game by Claude Opus 5.5.
+    The Bard’s logo was
     made with DeepAI, and the photo of Doc Leo is Lewis’s own.
-    Each game’s music and sounds are drawn from its song’s recording; its code, pictures and
+    Each game’s music and sounds are drawn from its song’s recording (Certified Rat Tickler’s were
+    made for the game); its code, pictures and
     levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
     <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
