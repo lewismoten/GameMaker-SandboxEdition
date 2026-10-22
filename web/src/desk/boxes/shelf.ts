@@ -1,5 +1,5 @@
-// The shelf on the wall with Sandbox Software's boxes standing on it like books, spines
-// out. The box whose game is in the drive, or the one last taken down to look at, stands
+// Two shelves on the wall with Sandbox Software's boxes standing on them like books, spines
+// out (the felt eggs' shadow box, once there is one, stands at the top shelf's right end). The box whose game is in the drive, or the one last taken down to look at, stands
 // face out. Click a box to take it down (the box viewer); in the viewer ◀ ▶ walk along
 // the shelf. While one of these games is in drive A: its poster hangs on the wall.
 import { sandboxBoxContents } from './gameBoxContents';
@@ -9,6 +9,7 @@ import type { CatalogEntry } from '../../project/files';
 import { boxModel, openBoxViewer, type BoxViewerPage } from './boxViewer';
 import { drawBox, type BoxFaces } from './gameBox';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
+import { shelfLayout } from './shelfLayout';
 
 export interface ShelfHooks {
   /** Put the game's disk in drive A:. */
@@ -18,11 +19,14 @@ export interface ShelfHooks {
 }
 
 const FRONT_KEY = 'gm-shelf-front';
-/** Pixels of shelf the boxes may use: from the wall's edge to the left speaker, which stands in front of the rest (shelf.css). */
-const SHELF_PX = 280;
-/** Pixels between the boxes (shelf.css: the gap, and a face-out box's margins). */
-const GAP_PX = 2;
-const FACE_MARGIN_PX = 6;
+/** Pixels of each shelf the boxes may use, top first (shelf.css): the bottom one from the wall's
+ * edge to the left speaker, which stands in front of the rest; the top one leaves room at its
+ * right end for the felt eggs' shadow box (eggs.css). */
+const SHELF_PX = [146, 300];
+/** Where the bottom shelf's plank is, and the room between a shelf's boxes and the plank above (shelf.css). */
+const BOTTOM_Y = 426;
+const PLANK_PX = 12;
+const HEADROOM_PX = 6;
 
 function remembered(): string | undefined {
   try {
@@ -51,12 +55,23 @@ export interface Shelf {
 export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks: ShelfHooks): Promise<Shelf | undefined> {
   if (!games.length) return undefined;
   setPosterWall(scene, games);
-  const shelf = h('div', { class: 'game-shelf', role: 'group', 'aria-label': 'Game boxes on the shelf' });
-  // a spine is 2" wide and a box face 7.5": shrink them all when the shelf fills up
-  const spines = games.length - 1;
-  const u = Math.min(16, (SHELF_PX - FACE_MARGIN_PX - spines * GAP_PX) / (spines * 2 + 7.5));
-  shelf.style.setProperty('--shelf-u', `${u.toFixed(2)}px`);
+  const shelf = h('div', { class: 'game-shelf', role: 'group', 'aria-label': 'Game boxes on the shelves' });
+  // as big as they fit, the top shelf filled first
+  const layout = shelfLayout(games.length, SHELF_PX);
+  const rows = layout.rows.map((_, i) => h('div', { class: `shelf-row ${i ? 'bottom' : 'top'}` }));
+  shelf.append(...rows);
+  shelf.style.setProperty('--shelf-u', `${layout.u.toFixed(2)}px`);
+  // the top shelf's plank, for whatever stands on it (the eggs' shadow box)
+  scene.style.setProperty('--shelf-top-y', `${BOTTOM_Y - 9.25 * layout.u - PLANK_PX - HEADROOM_PX}px`);
   scene.append(shelf);
+  const rowOf = (i: number) => {
+    let k = i;
+    for (let r = 0; r < rows.length; r++) {
+      if (k < layout.rows[r]) return rows[r];
+      k -= layout.rows[r];
+    }
+    return rows[rows.length - 1];
+  };
   const faces = new Map<string, BoxFaces>();
   const slots = new Map<string, HTMLElement>();
   let front = remembered() ?? games[0].id;
@@ -121,7 +136,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   };
 
   // draw the boxes one by one, so the first ones appear while the rest are drawn
-  for (const g of games) {
+  for (const [i, g] of games.entries()) {
     const f = await (g.id === front ? completed(g) : drawBox(g, { shots: false }).catch(() => undefined));
     if (!f) continue;
     faces.set(g.id, f);
@@ -136,7 +151,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       boxModel(f),
     );
     slots.set(g.id, slot);
-    shelf.append(slot);
+    rowOf(i).append(slot);
   }
   if (!slots.has(front) && slots.size) face([...slots.keys()][0]);
 

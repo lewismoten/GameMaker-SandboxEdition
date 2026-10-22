@@ -1,22 +1,30 @@
-/* The shelf on the wall, boxes standing on it spine out (desk/boxes/shelf.ts). --shelf-u is pixels per inch of box. */
+/* Two shelves on the wall, boxes standing on them spine out (desk/boxes/shelf.ts). --shelf-u is pixels per inch of box. */
 .game-shelf {
-  --shelf-u: 16px;
+  --shelf-u: 9px;
   position: absolute;
-  left: max(16px, 3%);
-  /* on the wall, clear of the desk top (which starts at 470px) so its shadow falls on the wall */
-  top: calc(426px - 9.25 * var(--shelf-u));
+  left: 24px;
+  /* two shelves on the wall, the bottom one clear of the desk top (which starts at 470px) so its
+     shadow falls on the wall; the top one, 18px higher than its boxes, under the poster (shelf.ts) */
+  top: calc(426px - 2 * 9.25 * var(--shelf-u) - 18px);
   z-index: -1; /* on the wall: behind whatever stands on the desk (the speaker) */
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.game-shelf .shelf-row {
+  position: relative;
   display: flex;
   align-items: flex-end;
   gap: 2px;
-  width: 280px; /* ends before the left speaker, which stands in front of the wall (shelf.ts SHELF_PX) */
+  width: 300px; /* ends before the left speaker, which stands in front of the wall (shelf.ts SHELF_PX) */
   height: calc(9.25 * var(--shelf-u));
   padding: 0 4px;
   box-sizing: content-box;
 }
 
 /* the plank, with a shadow on the wall under it */
-.game-shelf::after {
+.game-shelf .shelf-row::after {
   content: '';
   position: absolute;
   left: -6px;
@@ -30,8 +38,8 @@
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.45);
 }
 
-/* two brackets holding the plank to the wall */
-.game-shelf::before {
+/* two brackets holding each plank to the wall */
+.game-shelf .shelf-row::before {
   content: '';
   position: absolute;
   left: 26px;
@@ -42,6 +50,12 @@
     linear-gradient(90deg, #2b2b2e, #6b6b70 40%, #2b2b2e) left / 6px 100% no-repeat,
     linear-gradient(90deg, #2b2b2e, #6b6b70 40%, #2b2b2e) right / 6px 100% no-repeat;
   filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.4));
+}
+
+/* the top shelf's brackets are short: the boxes on the shelf below stand right under them */
+.game-shelf .shelf-row.top::before {
+  bottom: -18px;
+  height: 6px;
 }
 
 /* a box's slot is as wide as what shows: the spine, or the front when it stands face out */
