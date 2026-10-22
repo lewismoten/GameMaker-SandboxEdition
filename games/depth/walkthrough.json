@@ -131,7 +131,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 25182,
+  "frames": 24822,
   "chapters": [
    {
     "title": "Opening",
@@ -147,31 +147,31 @@
    },
    {
     "title": "Scene 2: The Glass Garden",
-    "frame": 6164
+    "frame": 6104
    },
    {
     "title": "Scene 3: The Hall of Mirrors",
-    "frame": 9980
+    "frame": 9860
    },
    {
     "title": "Scene 4: Fractal Peaks",
-    "frame": 13293
+    "frame": 13113
    },
    {
     "title": "Scene 5: Teapot Temple",
-    "frame": 16151
+    "frame": 15911
    },
    {
     "title": "Scene 6: The Vanishing Point",
-    "frame": 18749
+    "frame": 18449
    },
    {
     "title": "Ending",
-    "frame": 21531
+    "frame": 21171
    },
    {
     "title": "Credits",
-    "frame": 23094
+    "frame": 22734
    }
   ]
  }

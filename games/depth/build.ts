@@ -58,7 +58,7 @@ LEVELS.forEach((level, i) => {
   disk.put(f.map.far, serializeMap(set.built.maps.far));
   disk.put(f.bbl.near, serializeBlocks(set.blocks.near));
   disk.put(f.bbl.far, serializeBlocks(set.blocks.far));
-  disk.put(f.card, serializeSlideList([{ name: `card${i + 1}.gif`, pause: 10 }]));
+  disk.put(f.card, serializeSlideList([{ name: `card${i + 1}.gif`, pause: 7 }]));
   log(`${level.name}: ${set.book.used} blocks`);
 });
 disk.put('dark.pal', serializePalette(new Uint8Array(768)));

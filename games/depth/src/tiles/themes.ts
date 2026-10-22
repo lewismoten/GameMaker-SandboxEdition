@@ -55,7 +55,7 @@ const frac = (v: number) => v - Math.floor(v);
 export const THEMES: Record<ThemeId, Theme> = {
   checker: {
     id: 'checker',
-    floor: { color: checker(rgb(232, 230, 240), rgb(34, 32, 70), 0.5), diffuse: 0.9, reflect: 0.12, fresnel: 0.2, spec: 0.4, shine: 40 },
+    floor: { color: checker(rgb(214, 212, 228), rgb(50, 48, 100), 0.5), diffuse: 0.9, reflect: 0.12, fresnel: 0.2, spec: 0.4, shine: 40 },
     wall: { color: rgb(196, 70, 60), diffuse: 0.85, spec: 0.9, shine: 60, fresnel: 0.25 },
     cliff: rgb(70, 64, 110),
     abyss: rgb(8, 6, 26),
