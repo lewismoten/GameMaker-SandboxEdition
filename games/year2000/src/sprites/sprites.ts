@@ -478,10 +478,6 @@ function coverMon(): Pixels {
   return coverPic();
 }
 
-export interface MonsterBlocks {
-  set: BlockSet;
-}
-
 export function buildMonsterBlocks(): BlockSet {
   const s = new BlockSet(100, true);
   const two = (name: string, f: (k: number) => Pixels, def: BlockDef = {}) => {
