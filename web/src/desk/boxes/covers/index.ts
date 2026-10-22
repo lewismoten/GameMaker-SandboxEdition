@@ -13,6 +13,7 @@ const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   sleuth: () => import('./sleuth'),
   snowbound: () => import('./snowbound'),
   teddy: () => import('./teddy'),
+  teddy2: () => import('./teddy2'),
   year2000: () => import('./year2000'),
 };
 
@@ -30,6 +31,7 @@ export const SEALS: Record<string, { laurel: 'left' | 'right'; burst: 'left' | '
   sandcast: { laurel: 'right', burst: 'right' },
   sleuth: { laurel: 'right', burst: 'right' },
   snowbound: { laurel: 'left', burst: 'right' },
+  teddy2: { laurel: 'left', burst: 'left' },
   year2000: { laurel: 'right', burst: 'right' },
 };
 
