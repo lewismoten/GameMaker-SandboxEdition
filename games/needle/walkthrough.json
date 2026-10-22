@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "needle",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "PU01SArIC0gKyAPNCU0ISArIF80HTQhICsgISArIDc0KTQNICsgISArICEgKyBTNBk0XzVZNBEgKyBhICsgMzQZNDUgKyCFICsgISArICM0GTQhICsgSzQwSDJIATRHNA00DSArICEgKyAhICsgFzQZNDc0HLh+uAE0="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0cSArIF80HEgySAE0GzQsSDJIATRbNA0sAywZNA0gKyEJICsgFzQZNO0gKyAXNBk0SzQYuPa4ALiiuAC4yrgBND80GTRdICsgFzQZNEkgKyA/NBk0="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0ZzQZNBc0GSBHIAE0ZzQZNKM0GLh+uAE0XzQYuKK4ATRLNEU0VSArICUgKyBrNBk0PzQZID8gATRTNBk0DzQZIC8gATRnNBk0IzSEu"
+  },
+  {
+   "scene": 5,
+   "keys": "AU0KzQZIGcgATRTNBkseyyISBJIATQvNJU0ZzQYuH64ATQ/NBkgOyAQSCpIATQXNAxAKkABLCssDSwrLBiw="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The City Gate"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Desert Road"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Tailor's Shop"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Eye of the Needle"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 17446,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1366
+   },
+   {
+    "title": "Level 1: The City Gate",
+    "frame": 3064
+   },
+   {
+    "title": "Level 2: The Desert Road",
+    "frame": 6218
+   },
+   {
+    "title": "Level 3: The Tailor's Shop",
+    "frame": 8794
+   },
+   {
+    "title": "Level 4: The Eye of the Needle",
+    "frame": 10996
+   },
+   {
+    "title": "Ending",
+    "frame": 12585
+   },
+   {
+    "title": "Credits",
+    "frame": 15358
+   }
+  ]
+ }
+}
