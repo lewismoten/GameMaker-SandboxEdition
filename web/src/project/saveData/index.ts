@@ -10,6 +10,7 @@ export * from './highScores';
 export * from './gameLabels';
 export * from './backups';
 export * from './newGame';
+export * from './saveLevel';
 
 export interface SaveSlot {
   slot: number;
