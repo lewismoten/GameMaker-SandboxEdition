@@ -7,7 +7,7 @@
 // kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
 // (?tab=sandbox&q=snow), so a reload or a link shows the same.
 import { h, clear, modal, toast } from '../core/ui';
-import { loadGameList, type CatalogEntry } from '../../project/files';
+import { isSandboxGame, loadGameList, type CatalogEntry } from '../../project/files';
 import { listProjects } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
@@ -143,9 +143,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     c === 'gameware'
       ? gameware()
       : c === 'sandbox'
-        ? catalog.filter((g) => g.original && g.gam)
+        ? catalog.filter((g) => isSandboxGame(g) && g.gam)
         : c === 'shareware'
-          ? catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam)
+          ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && g.gam)
           : [];
   // one HomeGame per game for the page's life, so files load once
   const games = new Map<string, HomeGame>();

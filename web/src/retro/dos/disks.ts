@@ -1,6 +1,7 @@
 // The 3.5" floppy disks in the desk's disk box: Recreational Software Designs' own
 // games first, the other gameware samples, your projects, and blank disks.
 import {
+  isSandboxGame,
   loadGameList,
   loadHostedGame,
   type CatalogEntry,
@@ -152,7 +153,7 @@ export async function loadDisks(): Promise<Disk[]> {
     });
   });
   // Our own games, on their printed shareware disks (open to change, unlike other shareware).
-  for (const g of catalog.filter((c) => c.original)) {
+  for (const g of catalog.filter(isSandboxGame)) {
     const label = g.original?.label;
     disks.push({
       id: `cd:${g.id}`,

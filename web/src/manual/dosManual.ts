@@ -4,7 +4,7 @@
 import { type BookletPage } from './booklet';
 import './booklet.css';
 import { h } from '../editor/core/ui';
-import { loadCatalog, type CatalogEntry } from '../project/files';
+import { isSandboxGame, loadCatalog, type CatalogEntry } from '../project/files';
 import { openBox } from './printables/viewer';
 import { bookletPageCount } from './printables/imposition';
 import type { BookPage } from './printables/manualPages';
@@ -563,7 +563,7 @@ function pages(shots: GameShot[]): BookletPage[] {
 export async function openDosManual(): Promise<void> {
   // the gallery's screenshots: give them a moment to load, and go without them if they can't
   const shots = await Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
-  const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.original);
+  const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
   return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb' });
 }
 

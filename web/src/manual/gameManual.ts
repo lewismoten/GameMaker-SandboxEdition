@@ -4,7 +4,7 @@
 import './booklet.css';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
-import { loadCatalog, withDetails } from '../project/files';
+import { isSandboxGame, loadCatalog, withDetails } from '../project/files';
 import { drawBox } from '../desk/boxes/gameBox';
 import { buildBooklet } from './printables/manualPages';
 import { openBox } from './printables/viewer';
@@ -22,7 +22,7 @@ export async function openGameManual(listed: CatalogEntry, coverImage?: string, 
   document.body.append(host);
   try {
     const pages = await buildBooklet(entry, cover, host);
-    const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.original);
+    const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
     const ctx: PrintContext = { entry, family, printables: entry.original?.printables ?? {}, manual, shot: shotCache(entry) };
     const items = boxItems(ctx);
     onReady?.();

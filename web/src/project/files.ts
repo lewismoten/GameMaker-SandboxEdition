@@ -167,6 +167,18 @@ export interface CatalogEntry {
   heroShot?: boolean;
 }
 
+/** The publisher of the games made for this project (games/<id>/about.json "company"). */
+export const SANDBOX_COMPANY = 'Sandbox Software';
+
+/**
+ * A Sandbox Software game: one of ours, with its box, disk and manual. Other games built in
+ * ../games under another publisher's name (a BBS download such as The Bard of Bizarre's)
+ * are listed with the shareware instead.
+ */
+export function isSandboxGame(g: Pick<CatalogEntry, 'original' | 'company'>): boolean {
+  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY;
+}
+
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
 
 /** Forgets the fetched catalogs, so the next load lists what is current (a secret game revealed). */
