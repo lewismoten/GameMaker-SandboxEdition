@@ -5,7 +5,8 @@
 // most the game handles well. Before the first change to a game it backs up the saves as they
 // were ("Original", by SAVEHACK, in the shared backups store) and can put them back. An empty
 // slot can get a new saved game, the game as Play starts it (project/saveData newGameSave), so
-// a game never saved can be hacked too.
+// a game never saved can be hacked too, and a save can be moved to another level (entered at its
+// start, as the game enters it: project/saveData changeSaveLevel).
 //
 // The saves and their fields come from project/saveData (the same ones the web's "Saves &
 // scores" panel edits); the game's own files name the levels, items and sequences.
@@ -21,12 +22,14 @@ import {
   SCORE_MIN,
   UNLIMITED,
   backupNow,
+  changeSaveLevel,
   cloneSave,
   fieldWarnings,
   gameLabels,
   getField,
   highScoreFileName,
   highScoreWarnings,
+  levelLabel,
   listBackups,
   loadGameSaves,
   maxAll,
@@ -35,6 +38,7 @@ import {
   restoreBackup,
   saveFields,
   saveFileName,
+  saveLevels,
   sequenceLabel,
   serializeSave,
   setField,
@@ -302,6 +306,7 @@ function details(h: RetroHost, f: SaveField | undefined, save: SavedGame, labels
     } else line('(empty slot)', DIM);
   } else {
     line(`Value: ${valueText(f, save)}`, BRIGHT);
+    if (f.id === 'scene') line('Enter picks another level', GREEN);
     if (f.editable) {
       line(`Range: ${num(f.min)} to`);
       line(`       ${num(f.max)}`);
@@ -355,7 +360,8 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
       const unused = isUnused(f, labels);
       const warn = !unused && fieldWarnings(save, f, labels).length ? '!' : ' ';
       const mark = edited.has(f.id) ? '*' : ' ';
-      rows.push({ text: cell(f.label, 30) + valueText(f, save).padStart(13) + mark + warn, a: !f.editable || unused ? DIM : warn === '!' ? RED : edited.has(f.id) ? YELLOW : BRIGHT });
+      const fixed = !f.editable && f.id !== 'scene';
+      rows.push({ text: cell(f.label, 30) + valueText(f, save).padStart(13) + mark + warn, a: fixed || unused ? DIM : warn === '!' ? RED : edited.has(f.id) ? YELLOW : BRIGHT });
       rowField.push(f);
     }
     statusLine(h, note || (dirty() ? 'Changed (*). F2 saves.' : 'Pick a value and press Enter.'), note.startsWith('WARNING') || note.startsWith('ERROR') ? RED : dirty() ? YELLOW : TEXT);
@@ -385,6 +391,18 @@ async function editSave(h: RetroHost, o: Open, slot: number, chrome: Chrome, ori
     if (pick.key === 'M') {
       const changed = maxAll(save, labels);
       note = changed.length ? `Max all: ${changed.length} stat${changed.length === 1 ? '' : 's'} set as high as the game handles well.` : 'Every stat is at its maximum already.';
+      continue;
+    }
+    if (f?.id === 'scene' && pick.key === 'Enter') {
+      const next = await pickLevel(h, o, save);
+      if (typeof next === 'string') note = next;
+      else {
+        // the save is changed in place (the list and Save read this object)
+        for (const k of Object.keys(save)) delete (save as Record<string, unknown>)[k];
+        Object.assign(save, next);
+        const lvl = o.labels?.sceneName(save.doscene);
+        note = `Level ${save.doscene}${lvl ? ` ${lvl}` : ''}: the hero starts at ${save.world.chr.x[0]},${save.world.chr.y[0]}.`.slice(0, 77);
+      }
       continue;
     }
     if (!f || !f.editable) {
@@ -473,6 +491,25 @@ async function pickItem(h: RetroHost, o: Open, save: SavedGame, f: SaveField): P
     if (n !== BACKBL && b && !b.obj && !(await confirm(h, ['WARNING: this block is not one the hero can pick up.', 'It shows on the F2 screen, and dropping it', 'puts it on the map.']))) return 'Not changed.';
     setField(save, f.id, n, labels);
     return n === BACKBL ? `${f.label} emptied.` : `${f.label}: block ${n}.`;
+  }
+}
+
+/** Picks a level for the save: the game's levels, the hero put at the start of the one chosen. */
+async function pickLevel(h: RetroHost, o: Open, save: SavedGame): Promise<SavedGame | string> {
+  if (!o.disk || !o.gam || !o.labels) return `ERROR: ${o.game.dos}'s game files can't be read, so SAVEHACK can't change the level.`;
+  const levels = saveLevels(o.labels.game);
+  if (!levels.length) return 'ERROR: no level of this game is linked to.';
+  frame(h, 1, TOP, 78, BOTTOM, 'Level: choose where the saved game goes');
+  keyBar(h, '~\x18\x19~ Choose  ~Enter~ Go there  ~Esc~ Cancel');
+  statusLine(h, 'The hero starts where the game enters the level. Score, lives, items stay.');
+  put(h, 3, TOP + 1, HEAD, cell('Level', 50) + 'Starts at');
+  const rows: ListRow[] = levels.map((l) => ({ text: cell(levelLabel(l), 50) + `${l.to.x},${l.to.y}`, a: l.scene === save.doscene ? YELLOW : BRIGHT }));
+  const pick = await pickList(h, rows, { x: 2, y: TOP + 2, w: 75, h: BOTTOM - TOP - 3, cur: Math.max(0, levels.findIndex((l) => l.scene === save.doscene)) });
+  if (pick.key !== 'Enter') return '';
+  try {
+    return changeSaveLevel(o.disk, o.gam, save, levels[pick.i].scene);
+  } catch (e) {
+    return `ERROR: ${(e as Error).message}`.slice(0, 77);
   }
 }
 
