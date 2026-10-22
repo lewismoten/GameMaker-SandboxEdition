@@ -76,6 +76,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Charted by Claude Opus 5.5', 'and Lewis "Lewie" Moten III'],
     lore: 'Between worlds it hums a catalog number. A hundred worlds, a hundred words: somebody out there is very particular about the number.',
     look: { felt: '#1b2350', band: '#c9d3ff', patch: '#8a4fb0', thread: '#ffffff', pattern: 'stars', motif: 'planet' },
+    detect: { block: 129 },
   },
   {
     game: 'sandcast',
