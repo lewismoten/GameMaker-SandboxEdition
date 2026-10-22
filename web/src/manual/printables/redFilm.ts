@@ -98,9 +98,9 @@ function strokes(
 
 /**
  * The three layers around whatever `ink` draws (see the top of this file): decoy strokes as
- * thick as `stroke()` under and over it, then the red lines across everything.
+ * thick as `stroke()` under and over it, then `lines` red lines per square em across everything.
  */
-function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, hh: number, stroke: () => number, ink: () => void): void {
+function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, hh: number, stroke: () => number, ink: () => void, lines = 20): void {
   const area = ((w + PX) * (hh + PX)) / (PX * PX);
   c.fillStyle = FIELD_INK;
   c.fillRect(0, 0, w, hh);
@@ -117,7 +117,7 @@ function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, h
     rnd,
     w,
     hh,
-    Math.round(area * 20),
+    Math.round(area * lines),
     LINE_INKS,
     () => PX * (0.03 + rnd() * 0.03),
     () => PX * (0.4 + rnd() * 1.2),
@@ -166,12 +166,12 @@ export function redCode(text: string): HTMLElement {
 }
 
 /** A sketch cell's size on the canvas, in pixels. */
-const CELL = PX * 0.5;
+const CELL = PX * 0.75;
 /** How wide a sketch cell is shown, in ems of the answer's text. */
-const CELL_EM = 0.8;
+const CELL_EM = 1.5;
 /** A sketch's pen: about as thick as the decoys, so neither gives the other away. */
-const PEN = PX * 0.11;
-const LABEL_FONT = `700 ${CELL * 0.85}px Arial, Helvetica, sans-serif`;
+const PEN = CELL * 0.2;
+const LABEL_FONT = `700 ${CELL * 0.7}px Arial, Helvetica, sans-serif`;
 
 /** What each character of a sketch's rows draws in its cell. */
 export const SKETCH_GLYPHS: Record<string, string> = {
@@ -311,7 +311,7 @@ export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.joi
     c.font = LABEL_FONT;
     c.textBaseline = 'middle';
     for (const l of sketch.labels ?? []) c.fillText(l.text, pad + l.x * CELL, pad + (l.y + 0.55) * CELL);
-  });
+  }, 12);
   return canvas;
 }
 
