@@ -431,7 +431,7 @@ export function fieldWarnings(save: SavedGame, f: SaveField, labels: SaveLabels 
     if (blk && !blk.obj) out.push('This block is not one the hero can pick up: it shows on the F2 screen, and dropping it puts it on the map.');
     return out;
   }
-  if (v > f.safeMax) out.push(`Above ${f.safeMax.toLocaleString('en-US')}, more than the game handles well. ${f.note}`);
+  if (v > f.safeMax) out.push(`Above ${f.safeMax.toLocaleString('en-US')}: more than the game handles well (see the note on its limit).`);
   if (f.id === 'hitpts' && v <= 0) out.push('0 or less: the hero dies at the next touch.');
   if (f.id === 'lives' && v === 0) out.push('No spare lives: the next death ends the game.');
   if (f.id.startsWith('counter:') && v <= 0) out.push('0 or less: blocks that take from this counter will block the way.');

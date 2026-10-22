@@ -101,6 +101,8 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   const work = new Map<number, { save: SavedGame; name: string }>();
   let scores: HighScore[] | undefined;
   let backedUp = false;
+  /** Slots whose unlimited sequences are shown. */
+  const openUnlimited = new Set<number>();
 
   const nav = h('nav', { class: 'sv-nav', 'aria-label': 'Save slots, high scores and backups' });
   const main = h('section', { class: 'sv-main', 'aria-live': 'off' });
@@ -223,7 +225,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       max: f.max,
       step: 1,
       value: typeof v === 'number' ? String(v) : '',
-      placeholder: v === null ? 'not set yet' : '',
+      placeholder: v === null ? 'not set yet' : unlimited ? '∞' : '',
       disabled: unlimited,
       'aria-describedby': `${id}-range ${id}-warn`,
       onchange: () => {
@@ -305,7 +307,9 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       const dirty = dirtySlot(slot);
       saveBtn.disabled = !dirty;
       undoBtn.disabled = !dirty;
-      status.textContent = dirty ? `Changed: ${changedFields(s.save!, save, labels).length || 'name'}. Not saved yet.` : 'Saved. Load it in the game with F6.';
+      const n = changedFields(s.save!, save, labels).length;
+      const what = [n ? `${n} value${n === 1 ? '' : 's'}` : null, w.name !== s.name ? 'the name' : null].filter(Boolean).join(' and ');
+      status.textContent = dirty ? `Changed ${what || 'the save'}: not saved yet.` : 'Saved. In the game, F6 loads it.';
       renderNav();
       if (rebuild) render();
     };
@@ -324,9 +328,12 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
 
     const fields = saveFields(save, labels);
     const groups = new Map<FieldGroup, SaveField[]>();
-    for (const f of fields) groups.set(f.group, [...(groups.get(f.group) ?? []), f]);
+    // money sits with score, health and lives (one short group, not two)
+    for (const f of fields) {
+      const g = f.group === 'money' ? 'player' : f.group;
+      groups.set(g, [...(groups.get(g) ?? []), f]);
+    }
     const groupNote: Partial<Record<FieldGroup, string>> = {
-      money: groups.get('money')?.[0]?.note,
       uses: groups.get('uses')?.[0]?.note,
       counters: groups.get('counters')?.[0]?.note,
       inventory: groups.get('inventory')?.[0]?.note,
@@ -335,18 +342,31 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     const sets = [...groups].map(([g, list]) =>
       h(
         'fieldset',
-        { class: `sv-group sv-${g}` },
+        { class: `sv-group sv-g-${g}` },
         h('legend', null, GROUP_LABELS[g]),
         groupNote[g] ? h('p', { class: 'sv-group-note' }, groupNote[g]) : null,
-        h(
-          'div',
-          { class: 'sv-fields' },
-          list.map((f) => {
-            const row = fieldRow(slot, save, f, (rebuild) => refreshState(rebuild));
-            if (g === 'player') row.append(h('p', { class: 'sv-note' }, f.note));
-            return row;
-          }),
-        ),
+        (() => {
+          const row = (f: SaveField) => {
+            const r = fieldRow(slot, save, f, (rebuild) => refreshState(rebuild));
+            if (g === 'player') r.append(h('p', { class: 'sv-note' }, f.note));
+            return r;
+          };
+          if (g !== 'uses') return h('div', { class: 'sv-fields' }, list.map(row));
+          // the sequences that never count down are folded away
+          const limited = list.filter((f) => getField(save, f.id) !== UNLIMITED);
+          const free = list.filter((f) => getField(save, f.id) === UNLIMITED);
+          return [
+            limited.length ? h('div', { class: 'sv-fields' }, limited.map(row)) : h('p', { class: 'sv-group-note' }, 'Every sequence of this character is unlimited.'),
+            free.length
+              ? h(
+                  'details',
+                  { class: 'sv-more', open: openUnlimited.has(slot), ontoggle: (e: Event) => ((e.target as HTMLDetailsElement).open ? openUnlimited.add(slot) : openUnlimited.delete(slot)) },
+                  h('summary', null, `${free.length} unlimited sequence${free.length === 1 ? '' : 's'}`),
+                  h('div', { class: 'sv-fields' }, free.map(row)),
+                )
+              : null,
+          ];
+        })(),
       ),
     );
 

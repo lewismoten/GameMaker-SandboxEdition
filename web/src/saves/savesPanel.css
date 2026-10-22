@@ -167,9 +167,10 @@ dialog.modal .sv-name {
   padding: 0 4px;
   font-weight: 600;
 }
-.sv-uses,
-.sv-counters,
-.sv-inventory {
+.sv-g-player,
+.sv-g-uses,
+.sv-g-counters,
+.sv-g-inventory {
   grid-column: 1 / -1;
 }
 .sv-group-note {
@@ -183,11 +184,19 @@ dialog.modal .sv-name {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 8px 14px;
 }
-.sv-player .sv-fields,
-.sv-where .sv-fields {
+.sv-g-player .sv-fields {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+.sv-g-where .sv-fields {
   grid-template-columns: 1fr;
 }
-.sv-inventory .sv-fields {
+.sv-more summary {
+  margin: 8px 0 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+}
+.sv-g-inventory .sv-fields {
   grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
 }
 
