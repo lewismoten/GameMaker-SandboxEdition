@@ -31,11 +31,20 @@ export function buildWorld(cast: Cast) {
   for (const [wm, rm] of bridgeCombos(plan.cm)) book.add(bridgeName(wm, rm), paintBridge(wm, rm), {});
   worldFeatures(book);
   book.add('egg', eggBlock((x, y) => grass(x, y)), { obj: 1 });
+  const keepOut = [...Object.values(plan.spot), ...plan.stamps.map((s) => [s.x, s.y] as [number, number])];
+  const clear = (x: number, y: number) => {
+    for (let dy = -2; dy <= 3; dy++) for (let dx = -2; dx <= 3; dx++) for (const l of ['water', 'road', 'forest', 'rock']) if (plan.cm.in(l, x + dx, y + dy)) return false;
+    return keepOut.every(([sx, sy]) => Math.abs(sx - x) > 4 || Math.abs(sy - y) > 4);
+  };
   const ground = resolveGround(plan.cm, book, {
     layers: ['water', 'rock', 'forest', 'road'],
     fullVariants: { water: 3, forest: 3, rock: 3 },
     base: (x, y) => {
       const h = cellHash(x, y);
+      // lone trees and bushes, never in anybody's way: away from the roads, the doors, the
+      // clearings and anything the quests need
+      const t = cellHash(x, y, 11);
+      if (t < 0.045 && clear(x, y)) return t < 0.02 ? 'tree' : t < 0.032 ? 'pine' : 'bush';
       return h < 0.03 ? 'flowers' : h < 0.05 ? 'tufts' : h < 0.065 ? 'stones' : h < 0.3 ? 'grass1' : h < 0.5 ? 'grass2' : h < 0.7 ? 'grass3' : 'grass';
     },
   });

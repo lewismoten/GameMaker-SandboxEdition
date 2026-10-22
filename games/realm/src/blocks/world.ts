@@ -25,6 +25,9 @@ export function worldTerrain(book: BlockBook): void {
   addFamily(book, { layer: 'rock', shader: cliff, rough: 1.4, seed: 17, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
   for (const k of [1, 2, 3]) book.add(`rock:full${k}`, new Canvas(20, 20).shade((x, y) => rock(x, y, k), 2), { solid: ALL });
   book.add('rock:peak', peak(), { solid: ALL });
+  book.add('tree', tree(false), { solid: ALL });
+  book.add('pine', tree(true), { solid: ALL });
+  book.add('bush', bush(), {});
 }
 
 function flowerBed(seed: number): Canvas {
@@ -65,6 +68,41 @@ function stones(): Canvas {
   cv.ellipse(7.2, 10.2, 1.4, 0.8, [210, 200, 180]);
   cv.ellipse(13.5, 7.5, 2, 1.2, [40, 60, 30]);
   cv.ellipse(13.3, 6.8, 1.8, 1.3, (x, y) => rock(x * 3, y * 3));
+  return cv;
+}
+
+/** A lone tree in the meadow, round or pine, with its shadow to the bottom right. */
+function tree(pine: boolean): Canvas {
+  const cv = new Canvas(20, 20).shade((x, y) => grass(x, y, 1), 2);
+  cv.ellipse(12.5, 17.5, 7, 2.4, [34, 56, 28]);
+  cv.rect(9, 12, 2.4, 6.5, [96, 64, 38]);
+  if (pine)
+    for (const [y, w] of [
+      [1.5, 3.2],
+      [5.5, 5.6],
+      [9.5, 7.6],
+    ])
+      cv.poly(
+        [
+          [10, y],
+          [10 + w, y + 6.5],
+          [10 - w, y + 6.5],
+        ],
+        (px, py) => [40 + (16 - px) * 3 - (py - y) * 2, 110 + (16 - px) * 3 - (py - y) * 3, 50],
+      );
+  else cv.disc(10, 8.5, 7.5, (px, py) => canopy(px * 1.3, py * 1.3, 99, 2).map((v, i) => v + (i === 1 ? 10 : 0) + Math.max(0, 9 - Math.hypot(px - 7, py - 5.5) * 1.6) * 6) as [number, number, number]);
+  return cv;
+}
+
+function bush(): Canvas {
+  const cv = new Canvas(20, 20).shade((x, y) => grass(x, y, 3), 2);
+  cv.ellipse(11, 14.5, 7, 2.2, [34, 56, 28]);
+  for (const [x, y, r] of [
+    [7, 11, 4],
+    [12, 10, 4.5],
+    [10, 13, 4],
+  ])
+    cv.disc(x, y, r, (px, py) => canopy(px * 1.5, py * 1.5, 99, 3));
   return cv;
 }
 

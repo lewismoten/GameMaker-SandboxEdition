@@ -110,6 +110,13 @@ export function planWorld(): WorldPlan {
   cm.path('road', [[31, 48], [31, 46]]);
   cm.path('road', [[31, 48], [40, 48], [40, 27]]);
 
+  // groves, an outcrop and a pond to break up the meadows
+  cm.region('forest', roughen(octo('nwgrove', [[16, 18], [22, 18], [24, 20], [24, 26], [22, 28], [16, 28], [14, 26], [14, 20]]), 71));
+  cm.region('rock', roughen(octo('outcrop', [[16, 34], [20, 34], [22, 36], [22, 38], [20, 40], [16, 40], [14, 38], [14, 36]]), 73));
+  cm.region('forest', roughen(octo('lakewood', [[48, 62], [52, 62], [54, 64], [54, 74], [52, 76], [50, 76], [48, 74]]), 75));
+  cm.region('water', octo('pond', [[30, 60], [32, 60], [33, 61], [33, 63], [32, 64], [30, 64], [29, 63], [29, 61]]));
+  cm.region('forest', roughen(octo('hillwood', [[44, 20], [50, 20], [52, 22], [52, 26], [44, 26]]), 77));
+
   // ---- Far Putoff
   // Mount Putoff and its range; the Gloomwood round Deadline Keep
   cm.region('rock', roughen(octo('putoff', [[70, 16], [86, 16], [88, 18], [88, 34], [84, 38], [76, 38], [72, 34], [70, 34]]), 29));

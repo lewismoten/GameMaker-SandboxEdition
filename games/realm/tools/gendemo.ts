@@ -35,6 +35,8 @@ try {
   await bot.goto(24, 64, 'up the road');
   await bot.goto(25, 54, 'the meadow');
   await bot.goto(20, 46, 'toward the harbor road');
+  await bot.goto(28, 49, 'back along the road');
+  await bot.goto(36, 48, 'to the bridge');
 } catch (e) {
   if (!String(e).includes('limit')) throw e;
 }
