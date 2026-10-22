@@ -52,3 +52,7 @@ dialog.modal .demo-skip input {
   width: auto;
   margin: 0;
 }
+
+.demo-bar .demo-audio {
+  margin-left: 8px;
+}

@@ -50,8 +50,9 @@ export function demoAudio(): DemoAudio {
   return mode;
 }
 
-export function setDemoAudio(m: DemoAudio): void {
-  if (m === mode) return;
+/** Picks the sound; `again` tells the demos even when it is the same (a click on the choice already made). */
+export function setDemoAudio(m: DemoAudio, again = false): void {
+  if (m === mode && !again) return;
   mode = m;
   try {
     localStorage.setItem(KEY, m);
@@ -158,7 +159,9 @@ export function demoAudioPicker(o: DemoAudioPickerOptions = {}): HTMLElement {
     input.name = name;
     input.value = m;
     input.checked = m === mode;
-    input.addEventListener('change', () => input.checked && setDemoAudio(m));
+    // (a click, or an arrow key, which clicks too; clicking the choice already made starts a
+    // sound that waited for the visitor to use the page)
+    input.addEventListener('click', () => input.checked && setDemoAudio(m, true));
     // over a picture that plays the demo when clicked, a choice is only a choice
     lab.addEventListener('click', (e) => e.stopPropagation());
     const text = document.createElement('span');
