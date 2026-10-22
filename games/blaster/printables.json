@@ -79,6 +79,10 @@
               "a": "That's the 6502's stack in page one. It fills from $01FF on the right, then overflows and empties all at once. Hug the left side and slip through, or wait for the pop."
             },
             {
+              "q": "Is anything else up in Memory Lane?",
+              "a": "Some say the felt-maker left something behind in a corner of memory, where a gold finger ought to be."
+            },
+            {
               "q": "The slugs follow me everywhere.",
               "a": "Leak Slugs never give up. They take three hits; shoot them as they come at you from ahead, because they are slower than you and can't catch up from behind."
             },
