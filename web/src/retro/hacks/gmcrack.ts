@@ -267,7 +267,7 @@ async function uncrack(h: RetroHost): Promise<void> {
   clearArea(h);
   put(h, 4, TOP, `|14UNCRACKING |15${exe}`);
   if (h.downloads.isDeleted(g.id, bakName(exe))) {
-    put(h, 4, TOP + 2, `|12${bakName(exe)} is gone! |07Download ${g.title.slice(0, 30)} again from the BBS.`);
+    put(h, 4, TOP + 2, `|12${bakName(exe)} is gone! |07Download the game again from the BBS.`);
     return anyKey(h);
   }
   await step(h, TOP + 2, `Deleting the patched ${exe}`);
