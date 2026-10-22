@@ -378,3 +378,39 @@ export function shusher(frame: number): Pixels {
   if (frame) micro(p, 0, 0, 'SH', c('red', 3));
   return p;
 }
+
+/** A sprite turned a quarter clockwise (somebody lying down). */
+export function rot90(src: Pixels): Pixels {
+  const p = blank();
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(19 - y, x, src.get(x, y));
+  return p;
+}
+
+/** A sprite mirrored left to right, keeping it a sprite. */
+export function mirror(src: Pixels): Pixels {
+  const p = blank();
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(19 - x, y, src.get(x, y));
+  return p;
+}
+
+/** A soap bubble (or a balloon, given a ramp), radius `rad`, at the middle of a block. */
+export function bubble(rad: number, ramp = 'sky', dy = 0): Pixels {
+  const p = blank();
+  if (ramp === 'sky') {
+    p.ring(10, 10 + dy, rad, c('sky', 4));
+    p.ring(10, 10 + dy, rad - 0.7, c('purple', 4));
+    p.set(10 - rad / 2, 10 + dy - rad / 2, c('paper', 4));
+  } else {
+    blob(p, 10, 9 + dy, rad, rad * 1.15, r(ramp), 1, r(ramp).length - 1);
+    p.line(10, 9 + dy + rad * 1.15, 10, 19, c('grey', 4));
+  }
+  return p;
+}
+
+/** A plinth for an exhibit, over a floor. */
+export function plinth(under: Pixels, exhibit: Pixels): Pixels {
+  const p = on(under);
+  p.rect(4, 12, 12, 8, c('paper', 3)).rect(4, 12, 12, 1, c('paper', 4)).rect(15, 12, 1, 8, c('paper', 1));
+  p.blit(exhibit, 0, -6, CLEAR);
+  return p;
+}
