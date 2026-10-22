@@ -24,7 +24,7 @@ import { runSofa, SOFA_PHONE, sofaBusy } from "./sofa";
 import { gifGallery } from "./gifArea";
 import { gameDiz, isSofaFile } from "./fileId";
 import { WAREZ, warezArea, zipsOf } from "./warezArea";
-import { Pager, pageLabel } from "./pager";
+import { dizSummary, Pager, pageLabel, readNumber, uploadDate } from "./pager";
 import { GALLERY } from "./gallery";
 import {
   account,
@@ -544,12 +544,22 @@ async function files(
     );
   });
   const pager = new Pager(t, {
-    header: (p, n) => [
+    header: (p, n, ext) => [
       boxTop(n > 1 ? `${title} (${pageLabel(p, n)})` : title),
-      boxRow("|11  #  File name        Size  Description"),
+      boxRow(
+        ext
+          ? "|11  #  File name        Size  Description"
+          : `|11#  ${"File name".padEnd(12)}${"Size".padStart(8)} ${"Date".padEnd(8)} Description`,
+      ),
       boxBottom(),
     ],
     entries,
+    // PCBoard's one line a file: the DIZ's title, V# for the rest
+    compact: () =>
+      catalog.map(
+        (g, i) =>
+          `|11${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? "|10*" : " "}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g)).padEnd(40)}${isFree(g) ? "|10FREE" : ""}`,
+      ),
     footer: () => [
       `|10*|07 = already downloaded to C:\\DOWNLOAD   |10FREE|07 = doesn't count against your ratio`,
       `|12LEECHES WILL BE DELETED! |07Ratio |141:${RATIO}|07. File points left: |14${filePoints(account())}|07   |15U|07 to upload.`,
@@ -557,7 +567,7 @@ async function files(
   });
   pager.show();
   for (;;) {
-    t.print(`|11File # to read about, D# to download, ${pager.keys()}|15U|07)pload, |15Q|07)uit: |15`);
+    t.print(`|11V# to view, D# to download, ${pager.keys()}|15U|07)pload, |15Q|07)uit: |15`);
     const answer = (
       (await readLine(h.screen, h.keys, [], 6, attr(15, 0))) ?? "Q"
     )
@@ -571,8 +581,7 @@ async function files(
       continue;
     }
     const dl = answer.startsWith("D");
-    const n = Number(answer.replace(/^D/, ""));
-    const g = catalog[n - 1];
+    const g = catalog[(dl ? Number(answer.slice(1)) : readNumber(answer)) - 1];
     if (!g) {
       t.line("|12No such file.");
       continue;
