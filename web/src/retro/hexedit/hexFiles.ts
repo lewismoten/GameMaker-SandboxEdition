@@ -82,7 +82,7 @@ export async function openFile(h: RetroHost, drive: string, parts: string[], nam
       name: upper,
       bytes: files[key],
       write: async (bytes) => {
-        const b = await backupNow(save, { label: `Before HEXEDIT changed ${upper}`, auto: true, by: 'HEXEDIT' });
+        const b = await backupNow(save, { label: `HEXEDIT: ${upper}`, auto: true, by: 'HEXEDIT' });
         await writeSaveFile(save, key, bytes);
         return b ? 'Saved. The saves as they were are a backup now (BACKUP /L lists it).' : 'Saved.';
       },
