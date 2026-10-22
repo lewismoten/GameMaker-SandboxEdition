@@ -132,7 +132,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('leaves', canopy(sky(46), 46, false), air);
   // the shade under the fig tree
   const shade = P();
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) shade.set(x, y, shadeAt(R('olive'), 0, 2, 0.4 + Math.sin((x + y) / 5) * 0.2, x, y));
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) shade.set(x, y, shadeAt(R('olive'), 0, 2, 0.42, x, y));
+  {
+    const r = rng(46);
+    for (let i = 0; i < 7; i++) shade.set(Math.floor(r() * 20), Math.floor(r() * 20), c('leaf', 1));
+  }
   book.add('shade', shade, air);
   // the wicker basket Loaf #13 was left in (an open top to climb out of, its sides, its rim)
   const weave = (bg: Pixels, dense = 1) => {
