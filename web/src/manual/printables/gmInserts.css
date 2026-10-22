@@ -225,8 +225,9 @@
   font-weight: 700;
 }
 
-.grc-lead {
+.pp-grc .grc-lead {
   margin: 0 0 1cqw;
+  padding-right: 32cqw;
   font-style: italic;
 }
 
