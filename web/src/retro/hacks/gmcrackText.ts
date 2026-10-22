@@ -4,6 +4,9 @@
 import { DIZ_WIDTH, SYSOP_HANDLE } from '../bbs/fileId';
 
 export const GROUP = 'DiGiTAL DUNE';
+
+/** Where cracking keeps the original: GAME.EXE -> GAME.BAK. */
+export const bakName = (exe: string): string => exe.replace(/\.EXE$/i, '.BAK').toUpperCase();
 export const VERSION = '1.0';
 export const RELEASED = '07/04/95';
 /** Who the scroller and the .NFO greet. */

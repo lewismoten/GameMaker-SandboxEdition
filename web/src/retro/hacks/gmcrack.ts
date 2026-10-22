@@ -11,7 +11,7 @@ import { toCp437 } from '../text/cp437';
 import { bigText, bigTextWidth, centered, fadeBar } from '../bbs/ansiArt';
 import { pcExtras } from './pcExtras';
 import { NAME_MAX, SERIAL, checkRegistration, regFile, registrationNumber } from '../gmReg/registration';
-import { GMCRACK_NFO, GREETINGS, GROUP, SCROLLER, VERSION } from './gmcrackText';
+import { GMCRACK_NFO, GREETINGS, GROUP, SCROLLER, VERSION, bakName } from './gmcrackText';
 
 /** The keygen's name field: CHK.C's fgets keeps 28 letters of a 29-letter name, so 28 is the most that works. */
 const KEYGEN_MAX = NAME_MAX - 1;
@@ -29,8 +29,6 @@ export async function crackable(h: RetroHost): Promise<CatalogEntry[]> {
     .map((id) => cat.find((g) => g.id === id))
     .filter((g): g is CatalogEntry => !!g && g.kind === 'shareware' && !!g.exe && !!g.gam && !h.downloads.isDeleted(g.id, g.exe.toUpperCase()));
 }
-
-export const bakName = (exe: string): string => exe.replace(/\.EXE$/i, '.BAK').toUpperCase();
 
 function hash(s: string): number {
   let x = 2166136261;
