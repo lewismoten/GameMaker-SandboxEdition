@@ -2,12 +2,12 @@
 // beats them, and they die into geese running off), friendly ducks, the squirrel, kids who
 // ask for a sit (125: only the heart that sitting pretty sends up, 130, beats them; they die
 // into Doc Leo's falling shoes or a falling treat that lands as a treat to pick up),
-// frisbees flying past (projectiles), and Gwinn rolling in the mud.
+// flying discs sailing past (projectiles), and Gwinn rolling in the mud.
 import { CRITTERS } from '../sprites/critters';
 import { FLIP } from '../characters/mons';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';
-import { askBubble, frisbee } from '../sprites/folks';
+import { askBubble, flyingDisc } from '../sprites/folks';
 import { propSprite } from '../sprites/klown';
 
 export function parkBeasts() {
@@ -20,7 +20,7 @@ export function parkBeasts() {
   b.pic('askShoes1', askBubble('SIT?', shoes, 0)).pic('askShoes2', askBubble('SIT?', shoes, 1));
   b.pic('askSit1', askBubble('SIT?', undefined, 0)).pic('askSit2', askBubble('SIT?', undefined, 1));
   b.pic('shoes', shoes).pic('shoesGot', shoes, { effect: CTR.props, eamt: 1, score: 100 });
-  b.pic('frisbee1', frisbee(0), { hp: -8 }).pic('frisbee2', frisbee(1), { hp: -8 });
+  b.pic('flyingDisc1', flyingDisc(0), { hp: -8 }).pic('flyingDisc2', flyingDisc(1), { hp: -8 });
   // The geese guarding the covered bridge: barking is the only thing they respect.
   b.add('goose', {
     pics: [
@@ -95,10 +95,10 @@ export function parkBeasts() {
     upscore: 25,
   });
   b.add('treatFall2', { pics: [['treat1', 2]], power: POWER.pickup, path: [[0, 2, 3]], end: -1, becomes: 'treat' });
-  b.add('frisbee', {
+  b.add('flyingDisc', {
     pics: [
-      ['frisbee1', 2],
-      ['frisbee2', 2],
+      ['flyingDisc1', 2],
+      ['flyingDisc2', 2],
     ],
     power: POWER.projectile,
     path: [[-12, 0, 6]],

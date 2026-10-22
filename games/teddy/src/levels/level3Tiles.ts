@@ -257,7 +257,7 @@ export function parkTiles(): Tiles {
       return p;
     })(),
   );
-  t.on('frisbeeKid', kid('girl'), 'lawn', 'air', { birthMon: 0, birthTime: 0 });
+  t.on('discKid', kid('girl'), 'lawn', 'air', { birthMon: 0, birthTime: 0 });
   t.air('parkSign', sign(t.pic('lawn'), 'PARK'));
   t.wall(
     'gatePost',
