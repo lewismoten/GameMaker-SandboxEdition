@@ -9,6 +9,7 @@ import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { bigStar, H, skyline, stars, twinkle, W } from './night';
+import { CARDS } from './text';
 
 /** Clear pixels in sprites. */
 const T = 255;
@@ -260,5 +261,109 @@ export function storyFli(cast: Cast): Uint8Array {
       );
     });
   r.fadeOut(4);
+  return r.fli(SPEED);
+}
+
+export interface CardView {
+  /** The level's view (16 x 6 blocks), without the goat, in the level's palette. */
+  map: Pixels;
+  pal: Pal;
+  /** Where the goat starts in the view (pixels), when it is in it. */
+  start?: [number, number];
+}
+
+/** The strip of level on a card: y 54 to 174. */
+const STRIP = 54;
+
+/**
+ * A level's card (cardN.fli): its name drops in, the place comes alive (the goat greets an
+ * angel in the field; the crowd shoves through Bethlehem; the wise men's camel parade; a
+ * sneeze on Joseph and a kicked pail in the stable), and its lines of the song appear.
+ */
+export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
+  const pal = card.pal;
+  const c = pal.c;
+  const ink = c('ink', 0);
+  const info = CARDS[i];
+  const bg = new Pixels(W, H, ink);
+  bg.blit(card.map, 0, STRIP);
+  const frame = (p: Pixels, k: number) => {
+    p.rect(0, 0, W, STRIP, ink).rect(0, 174, W, 26, ink);
+    p.rect(0, STRIP - 1, W, 1, c('gold', 2)).rect(0, 174, W, 1, c('gold', 2));
+    const drop = [-24, -14, -2, 10, 6, 8][Math.min(5, k)];
+    outlined(p, 160 - textWidth(info.title, 2) / 2, drop, info.title, c('gold', 3), c('ink', 1), 2);
+    if (k >= 5) centered(p, 32, info.where, c('cloth', 3));
+    if (k >= 9) centered(p, 178, `"${info.lines[0]}`, c('cloth', 3));
+    if (k >= 15) centered(p, 189, ` ${info.lines[1]}"`, c('cloth', 3));
+  };
+  const say = (p: Pixels, x: number, y: number, words: string, color = 'cloth') => outlined(p, Math.round(x - textWidth(words) / 2), y, words, c(color, 3), ink);
+  const sprite = (set: Map<string, Pixels>, name: string) => set.get(name)!;
+  const goat = (name: string) => sprite(cast.goat, name);
+  const mon = (name: string) => sprite(cast.mons, name);
+  const actors: ((p: Pixels, k: number) => void)[] = [
+    // 1. the field: an angel flies over, trailing stars, and the goat bleats at it
+    (p, k) => {
+      const [gx, gy] = card.start ?? [60, 114];
+      const ax = 330 - k * 13;
+      for (let t = 1; t <= 4; t++) twinkle(p, pal, ax + 14 + t * 14, STRIP + 18 + ((t + k) % 2) * 3, 3 - Math.floor(t * 0.7));
+      p.blit(angel(pal, (k >> 1) % 2), ax, STRIP + 2, T);
+      const looking = ax < gx + 60;
+      const bleat = k >= 22;
+      p.blit(goat(bleat ? 'bleat' : looking ? (k % 6 < 1 ? 'blink' : 'down0') : 'down0'), gx, gy, T);
+      if (bleat) say(p, gx + 10, gy - 12, 'BLEAT!', 'gold');
+    },
+    // 2. Bethlehem: the crowd, home to be counted, streams past; the goat gets lost in it
+    (p, k) => {
+      for (let n = 0; n < 8; n++) {
+        const x = 330 + n * 34 - k * 6;
+        p.blit(mon(`walk${n % 2 ? 'B' : 'A'}${(k + n) % 2}`), x, STRIP + 22 + (n % 2) * 14, T);
+      }
+      const gx = Math.min(-20 + k * 5, 100);
+      const walking = gx < 100;
+      p.blit(walking ? goat(`side${k % 3}`) : goat(k % 6 < 1 ? 'blink' : 'down0'), gx, STRIP + 100, T);
+      if (!walking) say(p, gx + 10, STRIP + 86, '?', 'gold');
+    },
+    // 3. the caravan: the wise men strut, each with his camel
+    (p, k) => {
+      let x = 40 + k * 5;
+      for (let n = 0; n < 3; n++) {
+        const step = (k + n) % 2;
+        p.blit(mon(`front${step}`), x, STRIP + 22, T);
+        p.blit(mon(`rear${step}`), x - 20, STRIP + 22, T);
+        x -= 26;
+        p.blit(mon(`wise${step}`), x, STRIP + 20 - step, T);
+        if ((k + n * 3) % 6 < 2) twinkle(p, pal, x + 10, STRIP + 16, 2);
+        x -= 32;
+      }
+    },
+    // 4. the stable: dusty straw makes the goat sneeze on Joseph; backing off, she kicks the pail
+    (p, k) => {
+      const shake = k >= 12 && k < 20 ? (k % 2 ? 1 : -1) : 0;
+      p.blit(cast.block('joseph'), 100 + shake, STRIP + 20);
+      if (k >= 12 && k < 22) say(p, 110, STRIP + 4, '!', 'gold');
+      p.blit(cast.block(k >= 22 ? 'pailKicked' : 'pail'), 40, STRIP + 40);
+      const y = STRIP + 40;
+      if (k < 6) p.blit(goat(`up${k % 3}`), 80, y + (5 - k) * 16, T);
+      else if (k < 11) {
+        p.blit(goat(k % 2 ? 'chew0' : 'chew1'), 80, y, T);
+        say(p, 90, y + 24, 'MUNCH', 'cloth');
+      } else if (k < 18) {
+        p.blit(goat('scream0'), 80, y + (k === 11 ? 1 : 0), T);
+        say(p, 90, y + 24, 'ACHOO!', 'gold');
+        for (let d = 0; d < 5; d++) p.set(98 + d * 2 + (k - 11) * 2, y + 6 - (k - 11) * 2 - d, c('cloth', 3));
+      } else if (k < 22) p.blit(goat(`side${k % 3}`).flipX(), 80 - (k - 17) * 5, y, T);
+      else {
+        p.blit(goat('scream1').flipX(), 60, y - (k === 22 ? 2 : 0), T);
+        say(p, 50, y - 14, 'CLANG!', 'gold');
+      }
+    },
+  ];
+  const r = new Reel(pal.pal);
+  const first = new Pixels(W, H);
+  first.px.set(bg.px);
+  actors[i](first, 0);
+  frame(first, 0);
+  r.fadeIn(first, 3);
+  for (let k = 0; k < 28; k++) r.frame(bg, (p) => (actors[i](p, k), frame(p, k)));
   return r.fli(SPEED);
 }

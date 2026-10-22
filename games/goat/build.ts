@@ -21,7 +21,7 @@ import { buildBlocks } from './src/blocks/blocks';
 import { buildGoat, buildMonsters, type MonsterOptions } from './src/characters';
 import { demoRecording } from './src/demo';
 import { caravan, field, stable, town, ORIGIN, type Level } from './src/levels/maps';
-import { storyFli, type Cast } from './src/screens/cartoons';
+import { cardFli, storyFli, type Cast, type CardView } from './src/screens/cartoons';
 import { buildScreens } from './src/screens/screens';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { creditsSong, levelSongs, lostSong, storySong, titleSong, wonSong } from './src/sound/song';
@@ -68,7 +68,7 @@ const LEVELS: LevelDef[] = [
 const game = newGame('THIRD GOAT');
 const built = LEVELS.map((l) => ({ l, ...l.build(book) }));
 const songs = levelSongs();
-const cards: Parameters<typeof buildScreens>[0]['cards'] = [];
+const cards: CardView[] = [];
 let line: Parameters<typeof buildScreens>[0]['line'] | undefined;
 built.forEach(({ l, m, start }, i) => {
   const pal = buildPalette(l.light);
@@ -78,10 +78,11 @@ built.forEach(({ l, m, start }, i) => {
   disk.put(`${l.file}.map`, serializeMap(map));
   disk.put(`${l.file}.mon`, serializeMonsters(mons));
   disk.put(`${l.file}.cmf`, songs[i]);
-  disk.put(`lvl${i + 1}.lst`, serializeSlideList([{ name: `card${i + 1}.gif`, pause: 8 }]));
+  disk.put(`lvl${i + 1}.lst`, serializeSlideList([{ name: `card${i + 1}.fli`, pause: 3 }]));
   const [vx, vy] = l.view;
-  const view = renderRegion(map, bbl, mb.blocks, mons, vx + ORIGIN, vy + ORIGIN, 16, 6, [{ pixels: cb.blocks[cb.n('down0')].pixels, x: start[0], y: start[1] }]);
-  cards.push({ map: view, pal });
+  const view = renderRegion(map, bbl, mb.blocks, mons, vx + ORIGIN, vy + ORIGIN, 16, 6, []);
+  const [sx, sy] = [start[0] - vx, start[1] - vy];
+  cards.push({ map: view, pal, start: sx >= 0 && sy >= 0 && sx < 16 && sy < 6 ? [sx * 20, 54 + sy * 20] : undefined });
   if (l.file === 'stable') {
     // the ending's picture: the line at the manger, with the goat in her place
     const done = { ...map, blocks: map.blocks.slice() };
@@ -114,7 +115,7 @@ end.files = ['won.lst', 'won.cmf', 'lost.gif', 'lost.cmf', ...new Array(16).fill
 disk.put('goat.gam', serializeGame(game));
 
 const goatPics = cb.pics;
-const screens = buildScreens({ cards, goat: goatPics, line: line! });
+const screens = buildScreens({ goat: goatPics, line: line! });
 for (const [name, bytes] of Object.entries(screens)) disk.put(name, bytes);
 disk.put(BARDLOGO, bardIntroFli());
 disk.put('title.lst', serializeSlideList([{ name: BARDLOGO, pause: 0 }, { name: 'title.gif', pause: 12 }]));
@@ -128,6 +129,7 @@ const cast: Cast = {
   },
 };
 disk.put('story.fli', storyFli(cast));
+cards.forEach((card, i) => disk.put(`card${i + 1}.fli`, cardFli(i, card, cast)));
 disk.put('story.lst', serializeSlideList([{ name: 'story.fli', pause: 1 }, { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'bardpic.gif', pause: 8 }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));

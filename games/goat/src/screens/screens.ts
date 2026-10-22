@@ -1,4 +1,4 @@
-// The 320x200 pictures: the title (the song's cover art), the menu, the level cards, the
+// The 320x200 pictures: the title (the song's cover art), the menu, the
 // parchment behind text pages, the high scores, the endings and the credits (with Doc Leo).
 // Photos and art are dithered into each picture's free palette entries (kit/photo.ts). The
 // cartoons are in cartoons.ts.
@@ -9,11 +9,9 @@ import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { bigStar as star, skyline as town, stars as nightStars } from './night';
-import { AUTHOR, CARDS } from './text';
+import { AUTHOR } from './text';
 
 export interface ScreenExtras {
-  /** Level views for the cards (16 x 6 blocks) in their own palettes. */
-  cards: { map: Pixels; pal: Pal }[];
   /** The goat's sprites. */
   goat: Map<string, Pixels>;
   /** The line at the manger, with the goat in her place (8 x 3 blocks), in the stable's palette. */
@@ -91,20 +89,6 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     p.rect(160 - rule / 2, 21, rule, 1, c('brown', 2));
     save('hiscore.gif', p);
   }
-
-  // ---------------- level cards: the place, and its lines of the song
-  x.cards.forEach((card, i) => {
-    const info = CARDS[i];
-    const p = new Pixels(W, H, card.pal.c('ink', 0));
-    p.blit(card.map, 0, 54);
-    p.rect(0, 0, W, 54, card.pal.c('ink', 0)).rect(0, 174, W, 26, card.pal.c('ink', 0));
-    p.rect(0, 53, W, 1, card.pal.c('gold', 2)).rect(0, 174, W, 1, card.pal.c('gold', 2));
-    outlined(p, 160 - textWidth(info.title, 2) / 2, 8, info.title, card.pal.c('gold', 3), card.pal.c('ink', 1), 2);
-    centered(p, 32, info.where, card.pal.c('cloth', 3));
-    centered(p, 178, `"${info.lines[0]}`, card.pal.c('cloth', 3));
-    centered(p, 189, ` ${info.lines[1]}"`, card.pal.c('cloth', 3));
-    save(`card${i + 1}.gif`, p, card.pal.pal);
-  });
 
   // ---------------- endings
   {
