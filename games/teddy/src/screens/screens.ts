@@ -5,7 +5,8 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
-import { CLEAR, blob, centered, gradient, klubArt, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
+import { CLEAR, blob, centered, gradient, klubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
+import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
@@ -214,7 +215,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('scores.gif', gif(scoresScreen()));
   put('loadgame.gif', gif(page('LOAD A GAME', 13)));
   put('savegame.gif', gif(page('SAVE THIS GAME', 17)));
-  put('won.gif', gif(wonScreen()));
+  put('won.gif', gif(...wonScreen()));
   put('wontxt.gif', gif(page('THE BIG SHOW', 19)));
   put('won.txt', WON);
   lst('won.lst', [['won.gif', 8], ['parade.fli', 0], ['wontxt.gif', 0], ['won.txt']]);
@@ -241,8 +242,8 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   return out;
 }
 
-/** The ending: Teddy takes a bow at the Big Show. */
-export function wonScreen(): Pixels {
+/** The ending: Teddy takes a bow at the Big Show. Returns the picture and its palette. */
+export function wonScreen(): [Pixels, Uint8Array] {
   const p = new Pixels(W, H, c('ink', 0));
   // the big top inside: stripes and a spotlight
   for (let x = 0; x < W; x++) for (let y = 0; y < 150; y++) p.set(x, y, Math.floor((x + (150 - y) * 0.4) / 20) % 2 ? c('tent', 1) : c('tent', 0));
@@ -259,7 +260,11 @@ export function wonScreen(): Pixels {
   const R = rng(4);
   for (let i = 0; i < 90; i++) p.rect(Math.floor(R() * W), Math.floor(R() * 150), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
   outlined(p, 64, 166, 'TA-DAAA!', c('yellow', 3), c('ink', 0), 3);
-  return p;
+  // taped to the tent pole: a real snapshot of Teddy and his person at the town gazebo
+  const shot = tone(resample(loadScan('gazebo'), 88, 0, [0.04, 0.14, 1, 1]), (v) => v.map((x) => (x - 128) * 1.2 + 120) as [number, number, number]);
+  const at = polaroid(p, 14, 24, shot.w, shot.h, { paper: c('cream', 3), edge: c('ink', 0), shadow: c('ink', 0), tape: c('yellow', 3) });
+  micro(p, Math.round(at.cx - microWidth('TEDDY & LEWIS') / 2), Math.round(at.cy - 2), 'TEDDY & LEWIS', c('ink', 0));
+  return [p, pastePhoto(p, SP.pal, shot, 14, 24).pal];
 }
 
 /** Game over: Teddy asleep in his doghouse under the stars. */
