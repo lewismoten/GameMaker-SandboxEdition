@@ -50,7 +50,8 @@ export class Term {
     if (online !== this || this.lost) return false;
     this.lost = (async () => {
       const junk =
-        "}{~|`^ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒ░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼";
+        // only characters the terminal's font draws (ASCII and CP437's graphics), as on a real screen
+        "}{~`^@#$%&*+=<>/\\[]_;:!?'\"░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼►◄↕↑↓→←▲▼";
       for (let i = 0; i < 40; i++) {
         let line = "";
         for (let n = 2 + Math.floor(Math.random() * 9); n > 0; n--)
