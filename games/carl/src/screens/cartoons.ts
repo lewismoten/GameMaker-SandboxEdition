@@ -335,7 +335,11 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       } else {
         scaleBlit(p, sprite(cast.carl, k % 6 < 3 ? 'grin' : 'front1'), 160, 56 - (k % 4 < 2 ? 0 : 3), 2);
         // the meters and notes dancing
-        for (let b = 0; b < 6; b++) p.rect(126 + b * 4, 116 - ((k * (b + 3)) % 12), 2, 2 + ((k * (b + 3)) % 12), c('led', 1));
+        // the meters dance in the receiver's lower panel, under its FM display
+        for (let b = 0; b < 6; b++) {
+          const lvl = 1 + ((k * (b + 3)) % 6);
+          p.rect(124 + b * 4, 120, 2, 12, c('ink', 1)).rect(124 + b * 4, 132 - lvl * 2, 2, lvl * 2, c('led', 1));
+        }
         for (let n = 0; n < 4; n++) {
           const nx = 80 + n * 52 + Math.round(Math.sin((k + n * 5) / 3) * 6);
           const ny = 90 - ((k * 3 + n * 17) % 70);
