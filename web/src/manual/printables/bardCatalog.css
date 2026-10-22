@@ -1,0 +1,282 @@
+/* The Bard of Bizarre's flyer (bardCatalog.ts): a half-letter sheet in the colors of his credits
+   slide (night purple, parchment, gold); sizes in cqw of the sheet's width */
+.pp-sheet.pp-bard {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4cqw;
+  padding: 5cqw 6cqw 4cqw;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(242, 182, 50, 0.18), transparent 30%),
+    var(--grain, none),
+    #fbefcb;
+  color: #2a1036;
+  font:
+    3.1cqw/1.35 Georgia,
+    'Times New Roman',
+    serif;
+}
+
+.bard-head {
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+  margin: -5cqw -6cqw 0;
+  padding: 3cqw 6cqw;
+  border-bottom: 1.2cqw double #f2b632;
+  background: #341445;
+  color: #fbefcb;
+}
+
+.bard-logo {
+  flex: none;
+  width: 30cqw;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.bard-logo-text {
+  font:
+    italic 900 6cqw/1 Georgia,
+    serif;
+  color: #f2b632;
+}
+
+.bard-head div {
+  display: flex;
+  flex-direction: column;
+  gap: 1cqw;
+}
+
+.bard-head b {
+  color: #f2b632;
+  font:
+    900 8.4cqw/0.95 'Cooper Black',
+    'Arial Black',
+    Georgia,
+    serif;
+  letter-spacing: 0.02em;
+  text-shadow: 0.5cqw 0.5cqw 0 #b3121a;
+  transform: rotate(-3deg);
+  transform-origin: left;
+}
+
+.bard-head span {
+  font:
+    italic 3.2cqw/1.25 Georgia,
+    serif;
+}
+
+.bard-head em {
+  font:
+    700 2.4cqw 'Courier New',
+    monospace;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  color: #e6c8f0;
+}
+
+.bard-howdy {
+  display: flex;
+  align-items: center;
+  gap: 4cqw;
+}
+
+.bard-snap {
+  flex: none;
+  width: 24cqw;
+  height: auto;
+  image-rendering: pixelated;
+  box-shadow: 0.6cqw 1cqw 1.4cqw rgba(42, 16, 54, 0.35);
+  transform: rotate(-4deg);
+}
+
+.bard-howdy p {
+  margin: 0;
+  font:
+    2.7cqw/1.35 'Courier New',
+    monospace;
+}
+
+.bard-sig {
+  display: block;
+  margin-top: 1cqw;
+  font:
+    italic 700 3.4cqw Georgia,
+    serif;
+  color: #b3121a;
+  text-align: right;
+}
+
+.pp-bard .bard-h {
+  margin: 0;
+  padding-bottom: 0.6cqw;
+  border-bottom: 0.5cqw dotted #341445;
+  font:
+    900 4.2cqw/1.1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #341445;
+}
+
+.bard-game {
+  display: grid;
+  grid-template-columns: 34cqw 1fr;
+  gap: 3cqw;
+  align-items: start;
+}
+
+.bard-shot {
+  width: 100%;
+  height: auto;
+  border: 0.8cqw solid #341445;
+  image-rendering: pixelated;
+}
+
+.bard-shot-none {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  background: #341445;
+  color: #f2b632;
+  font-size: 10cqw;
+}
+
+.bard-game h3 {
+  margin: 0 0 0.6cqw;
+  font:
+    900 4.2cqw/1.1 Georgia,
+    serif;
+  color: #b3121a;
+}
+
+.bard-game p {
+  margin: 0 0 1cqw;
+  font-size: 2.6cqw;
+  line-height: 1.3;
+}
+
+.bard-game .bard-meta {
+  font:
+    700 2.2cqw/1.3 'Courier New',
+    monospace;
+  color: #5a3a66;
+}
+
+.bard-stamp {
+  position: absolute;
+  top: -2cqw;
+  right: -1cqw;
+  background: rgba(251, 239, 203, 0.7);
+  padding: 1cqw 2.4cqw;
+  border: 0.6cqw solid #b3121a;
+  border-radius: 1.4cqw;
+  color: #b3121a;
+  font:
+    700 2.2cqw/1.1 'Courier New',
+    monospace;
+  text-align: center;
+  transform: rotate(-8deg);
+  opacity: 0.85;
+}
+
+.bard-stamp b {
+  display: block;
+  font:
+    italic 900 4.2cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+/* the back */
+.bard-get ol {
+  margin: 1.6cqw 0 0;
+  padding-left: 6cqw;
+}
+
+.bard-get li {
+  margin-bottom: 1cqw;
+}
+
+.bard-phone {
+  white-space: nowrap;
+  color: #b3121a;
+}
+
+.bard-get kbd,
+.bard-get code {
+  padding: 0 0.6cqw;
+  border: 0.25cqw solid #341445;
+  border-radius: 0.6cqw;
+  font:
+    700 2.7cqw 'Courier New',
+    monospace;
+}
+
+.bard-get code {
+  border: 0;
+}
+
+.bard-coupon {
+  position: relative;
+  padding: 3cqw 4cqw;
+  border: 0.6cqw dashed #341445;
+  background: #fff8e4;
+  font-size: 2.8cqw;
+}
+
+.bard-coupon h2 {
+  margin: 0 0 1cqw;
+  font:
+    900 3.8cqw 'Arial Black',
+    Arial,
+    sans-serif;
+  color: #341445;
+  text-transform: uppercase;
+}
+
+.bard-coupon p {
+  margin: 0 0 1.2cqw;
+}
+
+.bard-coupon table {
+  width: 100%;
+  margin-bottom: 1.4cqw;
+  border-collapse: collapse;
+  font:
+    700 2.8cqw 'Courier New',
+    monospace;
+}
+
+.bard-coupon td {
+  padding: 0.6cqw 0;
+  border-bottom: 0.3cqw solid #c9b98f;
+}
+
+.bard-coupon td:last-child {
+  text-align: right;
+}
+
+.bard-coupon address {
+  margin: 0 0 1.2cqw 6cqw;
+  font:
+    italic 3cqw/1.3 Georgia,
+    serif;
+}
+
+.bard-coupon .bard-story {
+  font-style: italic;
+  color: #5a3a66;
+}
+
+.bard-small {
+  margin: auto 0 0;
+  padding-top: 1.4cqw;
+  border-top: 0.3cqw solid #c9b98f;
+  font:
+    2.1cqw/1.35 Arial,
+    Helvetica,
+    sans-serif;
+  color: #3d2a46;
+}

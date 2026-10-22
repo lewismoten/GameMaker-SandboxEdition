@@ -1,7 +1,8 @@
 // What's in the Game-Maker: Sandbox Edition box besides the Owner's Guide and the bonus-games
 // CD: the program disks, a quick reference card for Game-Maker's own design tools (from the
 // original help screens), the inserts in gmInserts.ts (keyboard template, map grid pad,
-// registration card, license, customer support), Sandbox Software's catalog, the BBS ad, a
+// registration card, license, customer support), Sandbox Software's catalog, The Bard of
+// Bizarre's (bardCatalog.ts), the BBS ad, a
 // poster of games made with Game-Maker and a sticker sheet that mixes every Sandbox game's heroes.
 import './gmItems.css';
 import { h } from '../../editor/core/ui';
@@ -11,6 +12,7 @@ import { sandboxShots } from '../../desk/boxes/gmShots';
 import type { BoxItem } from './viewer';
 import { BBS_PHONE, sandboxBanner, sandboxLogo, sheet, shotCache, type PrintContext, type Sheet } from './kit';
 import { bbsAd, catalog } from './gen';
+import { bardCatalog } from './bardCatalog';
 import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, supportCard } from './gmInserts';
 import { PLAYGAME_KEYS } from './keys';
 import { mixedStickers, stickerScreen, type MixedSticker } from './stickers';
@@ -215,6 +217,7 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
     { id: 'license', title: 'License agreement', note: 'MIT License', icon: '📜', render: licenseSheet },
     { id: 'support', title: 'Customer support', note: 'Phone, fax, BBS, Internet; troubleshooting', icon: '☎️', render: supportCard },
     { id: 'catalog', title: 'Sandbox Software catalog', note: 'Games made with Game-Maker', icon: '🗂️', render: () => catalog(ctx) },
+    { id: 'bard', title: 'The Bard of Bizarre catalog', note: 'Song-games from The Sofa BBS', icon: '🎸', render: () => bardCatalog() },
     { id: 'poster', title: 'Poster', note: 'Games made with Game-Maker', icon: '🖼️', render: poster },
     { id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     {
