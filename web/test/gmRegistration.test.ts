@@ -62,3 +62,16 @@ describe('the copy protection questions', () => {
     expect(rightAnswer(q, '')).toBe(false);
   });
 });
+
+describe('GMCRACK’s answer table', () => {
+  it('lists every question, fitting 80 columns and the screen', async () => {
+    const { answerPages } = await import('../src/retro/hacks/gmcrack');
+    const pages = answerPages();
+    const text = pages.flat().join('\n');
+    for (const q of QUESTIONS) expect(text).toContain(q.answer);
+    for (const page of pages) {
+      expect(page.length).toBeLessThanOrEqual(10);
+      for (const row of page) expect(row.replace(/\|\d\d/g, '').length + 4).toBeLessThanOrEqual(80);
+    }
+  });
+});

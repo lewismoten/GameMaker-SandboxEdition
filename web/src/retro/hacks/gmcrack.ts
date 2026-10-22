@@ -12,6 +12,7 @@ import { toCp437 } from '../text/cp437';
 import { bigText, bigTextWidth, centered, fadeBar } from '../bbs/ansiArt';
 import { pcExtras } from './pcExtras';
 import { NAME_MAX, SERIAL, checkRegistration, regFile, registrationNumber } from '../gmReg/registration';
+import { QUESTIONS } from '../gmReg/copyCheck';
 import { GMCRACK_NFO, GREETINGS, GROUP, SCROLLER, VERSION, bakName } from './gmcrackText';
 
 /** The keygen's name field: CHK.C's fgets keeps 28 letters of a 29-letter name, so 28 is the most that works. */
@@ -147,13 +148,14 @@ async function menu(h: RetroHost): Promise<string> {
     ['4', 'Crack a shareware game'],
     ['5', 'Uncrack a game'],
     ['6', 'Read GMCRACK.NFO'],
+    ['7', 'Answer table (doc check)'],
   ];
-  items.forEach(([k, label], i) => put(h, i < 3 ? 6 : 42, TOP + 3 + (i % 3), `|06[|14${k}|06] |15${label}`));
-  put(h, 6, TOP + 7, '|06[|14Q|06] |07Quit to DOS');
-  hint(h, 'Choose 1-6, or Q to quit');
+  items.forEach(([k, label], i) => put(h, i < 4 ? 6 : 42, TOP + 3 + (i % 4), `|06[|14${k}|06] |15${label}`));
+  put(h, 42, TOP + 6, '|06[|14Q|06] |07Quit to DOS');
+  hint(h, 'Choose 1-7, or Q to quit');
   for (;;) {
     const k = (await h.keys.next()).key.toUpperCase();
-    if ('123456Q'.includes(k) && k.length === 1) return k;
+    if ('1234567Q'.includes(k) && k.length === 1) return k;
     if (k === 'ESCAPE') return 'Q';
   }
 }
@@ -188,7 +190,7 @@ async function unregister(h: RetroHost): Promise<void> {
   await step(h, TOP + 3, 'Spoiling the registration number');
   pcExtras().setReg(regFile(name, SERIAL, '0'));
   put(h, 4, TOP + 5, '|07Game-Maker is |12UNREGISTERED|07. Next time GM starts it shows the serial');
-  put(h, 4, TOP + 6, '|07number and asks for a word from the |15Owner\'s Guide|07 (in the Game-Maker box).');
+  put(h, 4, TOP + 6, '|07number and asks for a word from the |15Owner\'s Manual|07: see |14[7] Answer table|07.');
   put(h, 4, TOP + 8, '|08Hint: DEL C:\\GM\\PLAYGAME.REG and GM won\'t start at all;');
   put(h, 4, TOP + 9, '|08GM REGISTER (or [1] here) brings it back.');
   await anyKey(h);
@@ -287,6 +289,43 @@ async function readNfo(h: RetroHost): Promise<void> {
   }
 }
 
+/** Rows of the answer table on one screen: two columns of ANSWER_ROWS. */
+const ANSWER_ROWS = 9;
+const ANSWER_HEAD = 'PAGE PAR WORD  ANSWER       ';
+const GUTTER = '      ';
+
+/** The doc check bypass list: every question CHK.EXE can ask with its word, two columns a screen (|NN colors). */
+export function answerPages(): string[][] {
+  const cell = (i: number) => {
+    const q = QUESTIONS[i];
+    return q ? `|07${String(q.page).padStart(4)} ${String(q.paragraph).padStart(3)} ${String(q.word).padStart(4)}  |14${q.answer.padEnd(13)}` : '';
+  };
+  const pages: string[][] = [];
+  for (let first = 0; first < QUESTIONS.length; first += ANSWER_ROWS * 2) {
+    const two = first + ANSWER_ROWS < QUESTIONS.length;
+    const rows = [`|08${ANSWER_HEAD}${two ? GUTTER + ANSWER_HEAD : ''}`];
+    for (let r = 0; r < ANSWER_ROWS && first + r < QUESTIONS.length; r++) rows.push(`${cell(first + r)}${GUTTER}${cell(first + ANSWER_ROWS + r)}`);
+    pages.push(rows);
+  }
+  return pages;
+}
+
+async function answerTable(h: RetroHost): Promise<void> {
+  const pages = answerPages();
+  for (let p = 0; p < pages.length; ) {
+    clearArea(h);
+    put(h, 4, TOP - 1, `|14DOC CHECK BYPASS LIST |07for the printed Owner's Manual  |08(${p + 1}/${pages.length})`);
+    pages[p].forEach((row, i) => put(h, 4, TOP + 1 + i, row));
+    const more = p + 1 < pages.length;
+    hint(h, `${more ? 'Any key for more' : 'Any key goes back'}${p > 0 ? ', PgUp for the last screen' : ''}${more ? ', Esc goes back' : ''}`);
+    const k = (await h.keys.next()).key;
+    if (k === 'Escape') return;
+    if (k === 'PageUp' && p > 0) p--;
+    else if (more) p++;
+    else return;
+  }
+}
+
 function usage(h: RetroHost): void {
   const p = (t: string) => h.screen.print(`${toCp437(t)}\n`);
   p(`GMCRACK v${VERSION}  (c) 1995 ${GROUP}`);
@@ -318,6 +357,7 @@ export async function runGmCrack(h: RetroHost, args: string[]): Promise<void> {
       else if (k === '4') await crack(h);
       else if (k === '5') await uncrack(h);
       else if (k === '6') await readNfo(h);
+      else if (k === '7') await answerTable(h);
     }
   } finally {
     stop();
