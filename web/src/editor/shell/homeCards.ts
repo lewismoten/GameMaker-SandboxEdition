@@ -21,11 +21,47 @@ import { readableBlurb } from './homeBlurb';
 import { rememberOrigin } from './homeOrigin';
 import { projectMenuItems } from './homeProjectActions';
 import { chooseCopy } from './homeCopies';
+import { plainError } from '../core/plainError';
 
 // Loaded when first used, so the list of games shows without them: the demo player (and
 // the game engine with it), the keyboard map and the manual with the paper in the box.
 const demoPreview = () => import('../../media/demoPreview');
-const openGameManual = async (entry: CatalogEntry) => (await import('../../manual/gameManual')).openGameManual(entry);
+const openGameManual = async (entry: CatalogEntry, onReady?: () => void) => (await import('../../manual/gameManual')).openGameManual(entry, undefined, onReady);
+
+/**
+ * A button that loads something before it opens (the manual's box, made from the game's
+ * files): it says “Loading…” meanwhile and ignores more presses.
+ */
+function loadingButton(ico: IconName, name: string, ariaLabel: string, open: (ready: () => void) => Promise<unknown>): HTMLButtonElement {
+  const label = h('span', null, name);
+  const ready = () => {
+    b.removeAttribute('aria-busy');
+    label.textContent = name;
+  };
+  const b = h(
+    'button',
+    {
+      type: 'button',
+      class: 'with-ico',
+      'aria-label': ariaLabel,
+      onclick: async () => {
+        if (b.getAttribute('aria-busy') === 'true') return;
+        b.setAttribute('aria-busy', 'true');
+        label.textContent = 'Loading…';
+        try {
+          await open(ready);
+        } catch (e) {
+          toast(plainError(e), 'error');
+        } finally {
+          ready();
+        }
+      },
+    },
+    svgIcon(ico),
+    label,
+  );
+  return b;
+}
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -382,7 +418,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
         ? h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice')
         : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
       keys,
-      hasManual(game) ? h('button', { class: 'with-ico', onclick: () => void openGameManual(e) }, svgIcon('manual'), 'Manual') : null,
+      hasManual(game) ? loadingButton('manual', 'Manual', `Read the ${game.title} manual`, (ready) => openGameManual(e, ready)) : null,
     ] as (HTMLElement | null)[]
   ).filter((x): x is HTMLElement => !!x);
 }
