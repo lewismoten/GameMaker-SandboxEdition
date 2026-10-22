@@ -111,11 +111,13 @@ export class Bot {
     return this.slides.get(key) ?? undefined;
   }
   private want = new Set<string>();
+  private trying = 0;
 
   /** Tries the slide on a copy of the game: Doc Leo put at (x, y), one step toward d. */
   private async trySlide(key: string): Promise<void> {
     const [xs, ys, d] = key.split(',') as [string, string, Dir];
     const snap = this.sim.snapshot();
+    this.trying++;
     const w = this.sim.w;
     w.chr.x[0] = Number(xs);
     w.chr.y[0] = Number(ys);
@@ -137,6 +139,7 @@ export class Bot {
     const p = this.sim.pos;
     if (!r && this.sim.scene === snap.scene && p.sx === 0 && p.sy === 0) end = { x: p.x, y: p.y };
     this.sim.restore(snap);
+    this.trying--;
     this.slides.set(key, end);
   }
 
@@ -245,13 +248,14 @@ export class Bot {
       r = await this.tick();
     }
     const q = this.sim.pos;
-    if (process.env.BOT_DEBUG === '3' && (q.sx || q.sy)) console.log(`misaligned after ${d}: ${trace.join(' | ')}`);
+    if (process.env.BOT_DEBUG === '3' && !this.trying && (q.sx || q.sy)) console.log(`[${this.sim.scene}] misaligned after ${d}: ${trace.join(' | ')}`);
     return r;
   }
 
   /** Hit points (and lives) a choice costs over the next stretch, tried on a copy. */
   private async trial(d: Dir | undefined, then: Dir | undefined): Promise<number> {
     const snap = this.sim.snapshot();
+    this.trying++;
     const hp = this.sim.ci.hitpts;
     const lives = this.sim.ci.lives;
     const deaths = this.sim.deaths;
@@ -260,6 +264,7 @@ export class Bot {
     if (!r) r = await this.wait(4);
     const lost = (this.sim.deaths > deaths ? 1000 : 0) + (lives - this.sim.ci.lives) * 1000 + Math.max(0, hp - this.sim.ci.hitpts);
     this.sim.restore(snap);
+    this.trying--;
     return lost;
   }
 
@@ -313,7 +318,8 @@ export class Bot {
         }
       }
       let move: Dir | undefined = first.d;
-      if (!this.bold) {
+      // on the hot plates, no dithering: straight across
+      if (!this.bold && !this.nameAt(p.x, p.y).startsWith('hot')) {
         const then = path[1]?.d;
         let least = await this.trial(first.d, then);
         if (least > 0) {
