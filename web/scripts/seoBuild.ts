@@ -312,7 +312,7 @@ export function llmsTxt(catalog: CdCatalogEntry[]): string {
 
 > ${md(SITE_ABOUT)}
 
-${md(FORK_NOTE)}. It runs entirely in the browser (no account, no server): games are kept in the browser's storage and the site works offline. Every file it writes is in the original Game-Maker 3.0 / PLAYGAME formats (.gam, .pal, .bbl/.mbl/.cbl, .chr, .mon, .map, .snd and the standard .gif, .fli, .cmf, .voc), so games run in DOS (or DOSBox) as well. The site opens on a recreated 1994 desk with a DOS PC running the original designers; today's web interface is one click away.
+${md(FORK_NOTE)}. It runs entirely in the browser (no account, no server): games are kept in the browser's storage and the site works offline. Every file it writes is in the original Game-Maker 3.0 / PLAYGAME formats (.gam, .pal, .bbl/.mbl/.cbl, .chr, .mon, .map, .snd and the standard .gif, .fli, .cmf, .voc), so games run in DOS (or DOSBox) as well. Game-Maker and its PLAYGAME player are re-implemented in TypeScript from the released C source; it is not a PC emulator, and no DOS or x86 code runs (some hardware is emulated: VGA mode 13h and the OPL2 FM sound chip). The site opens on a recreated 1994 desk with a simulated DOS PC running Game-Maker's ported designers; today's web interface is one click away.
 
 ## The app
 

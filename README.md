@@ -15,7 +15,7 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
   the shelf; or *today's web* editor with point-and-click editors for every part of a game.
 - **A port, not a PC emulator:** Game-Maker and its PLAYGAME player are re-implemented in
   TypeScript from the released C source, and no DOS or x86 code runs. The desk's PC is a
-  simulation; only some hardware is emulated (VGA mode 13h, the OPL2 FM sound chip).
+  simulation; some hardware is emulated (VGA mode 13h, the OPL2 FM sound chip).
 - **Original file formats:** games are read and written byte for byte as `.GAM`, `.MAP`,
   `.BBL`, `.MON`, `.CHR`, `.CMF`, `.FLI` and the rest, so a game made here still runs in DOS
   Game-Maker and DOSBox, and old games open here unchanged.
