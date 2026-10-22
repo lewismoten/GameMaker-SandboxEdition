@@ -5,7 +5,7 @@
 // the chart's corners meet (the felt egg is in there): every route is planned with that
 // corner of the chart walled off.
 import { buildGame, type Built, type SceneInfo } from '../src/game';
-import { ITEM_BASE, SCAN, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
+import { ITEM_BASE, MODULES, SCAN, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
 import { SCENE } from '../src/universe';
 import { field, idx, seek, wrap, type P, type SeekOpts } from './drive';
 import type { Live } from './live';
@@ -138,7 +138,7 @@ export class Route {
     await this.flyLink(sc, link);
     const info = this.info(scene);
     const prize = info.shard !== undefined ? `the ${SHARDS[info.shard]} shard` : 'a module';
-    this.chapter(scene, info.name);
+    this.chapter(scene, `${info.name}: ${info.shard !== undefined ? `The ${SHARDS[info.shard]} Shard` : `The ${MODULES[info.module!].name}`}`);
     this.status(`landed on ${info.name} for ${prize}`);
     await this.inScene(scene, () => this.ground(info));
     await d.enter(sc);
