@@ -382,10 +382,10 @@ export function stinkPuff(seed: number): HTMLCanvasElement {
   const tints = ['164, 196, 92', '128, 170, 72', '196, 206, 120', '98, 140, 60', '176, 186, 96'];
   for (let i = 0; i < 46; i++) {
     const a = rand() * Math.PI * 2;
-    const d = Math.pow(rand(), 0.7) * 34;
+    const d = Math.pow(rand(), 0.7) * 24;
     const x = 64 + Math.cos(a) * d * 1.1;
     const y = 64 + Math.sin(a) * d * 0.85;
-    const r = 10 + rand() * 20;
+    const r = 10 + rand() * 24;
     const grd = g.createRadialGradient(x, y, 0, x, y, r);
     const t = tints[Math.floor(rand() * tints.length)];
     const al = 0.06 + rand() * 0.1;
@@ -922,7 +922,7 @@ let nest: { cup: Thread[]; foot: { a: number; bend: number; color: string; w: nu
 function sugarThreads() {
   if (nest) return nest;
   const rand = rng(2024);
-  const amber = () => `hsla(${26 + rand() * 16}, ${80 + rand() * 18}%, ${34 + rand() * 28}%, ${0.35 + rand() * 0.4})`;
+  const amber = () => `hsla(${28 + rand() * 14}, ${82 + rand() * 16}%, ${32 + rand() * 26}%, ${0.25 + rand() * 0.4})`;
   const thread = (rx0: number, rx1: number): Thread => ({
     rx: rx0 + rand() * (rx1 - rx0),
     dy: (rand() - 0.5) * 0.5,
@@ -931,7 +931,7 @@ function sugarThreads() {
     sweep: 1.2 + rand() * 3.6,
     color: amber(),
     w: 0.6 + rand() * 1.1,
-    shine: rand() < 0.3,
+    shine: rand() < 0.35,
   });
   nest = {
     cup: Array.from({ length: 120 }, () => thread(0.82, 1.14)),
@@ -968,7 +968,7 @@ export function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: numbe
     for (const pass of [0, 1]) {
       if (pass && !t.shine) break;
       g.strokeStyle = pass ? 'rgba(255, 244, 210, 0.75)' : t.color;
-      g.lineWidth = Math.max(0.4, (pass ? 0.4 : t.w) * k * 1.4);
+      g.lineWidth = Math.max(0.4, (pass ? 0.4 : t.w) * Math.min(1.2, k));
       g.beginPath();
       let pen = false;
       for (const [x, y, isFront] of pts) {
@@ -994,7 +994,7 @@ export function drawSugarNest(g: CanvasRenderingContext2D, box: Box, turn: numbe
     const x1 = cx + Math.cos(a + f.bend) * R * 0.62;
     const y1 = footY + Math.sin(a + f.bend) * R * 0.62 * squash;
     g.strokeStyle = f.color;
-    g.lineWidth = Math.max(0.4, f.w * k * 1.4);
+    g.lineWidth = Math.max(0.4, f.w * Math.min(1.2, k));
     g.beginPath();
     g.moveTo(x0, y0);
     g.quadraticCurveTo(cx + Math.cos(a) * R * 0.3, (y0 + y1) / 2 + R * 0.05, x1, y1);
@@ -1184,4 +1184,53 @@ export function drawPastryEgg(g: CanvasRenderingContext2D, box: Box, turn: numbe
   drawShell(g, pastryShell(), turn, box, res);
   drawSugarNest(g, box, turn, 'front');
   drawBaker(g, box.x + box.w / 2, box.y + box.h * 0.025, box.h * 0.3, bakerTurn);
+}
+
+/**
+ * The little glass cake stand beside the shadow box, `w` x `h`, holding whichever of
+ * 'rotten', 'heart' and 'pastry' have been found (left to right).
+ */
+export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number, items: ('rotten' | 'heart' | 'pastry')[]): void {
+  const plateY = h * 0.7;
+  const cx = w / 2;
+  // the foot and stem, pressed glass
+  const glass = (fill: string) => {
+    g.fillStyle = fill;
+    g.fill();
+    g.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+    g.lineWidth = Math.max(0.6, w * 0.012);
+    g.stroke();
+  };
+  g.beginPath();
+  g.ellipse(cx, h * 0.94, w * 0.24, h * 0.04, 0, 0, Math.PI * 2);
+  glass('rgba(200, 226, 240, 0.45)');
+  g.beginPath();
+  g.moveTo(cx - w * 0.05, plateY);
+  g.quadraticCurveTo(cx - w * 0.02, h * 0.82, cx - w * 0.09, h * 0.93);
+  g.lineTo(cx + w * 0.09, h * 0.93);
+  g.quadraticCurveTo(cx + w * 0.02, h * 0.82, cx + w * 0.05, plateY);
+  glass('rgba(200, 226, 240, 0.4)');
+  // the plate's underside, then what stands on it, then its rim
+  g.beginPath();
+  g.ellipse(cx, plateY, w * 0.47, h * 0.06, 0, 0, Math.PI * 2);
+  glass('rgba(210, 232, 244, 0.42)');
+  const n = Math.max(1, items.length);
+  items.forEach((item, i) => {
+    const ex = n === 1 ? cx : w * (0.3 + (0.4 * i) / (n - 1));
+    if (item === 'heart') {
+      const s = Math.min(w * 0.4, h * 0.5);
+      drawHeart(g, ex, plateY - s * 0.48, s, 0.45, 0.3);
+      return;
+    }
+    const eh = item === 'pastry' ? (plateY - h * 0.04) / 1.34 : Math.min(h * 0.44, (w * 0.34) / EGG_ASPECT);
+    const ew = eh * EGG_ASPECT;
+    const box = { x: ex - ew / 2, y: item === 'pastry' ? plateY - eh * 1.04 : plateY - eh * 0.98, w: ew, h: eh };
+    if (item === 'pastry') drawPastryEgg(g, box, 0.2, 0.5, Math.max(40, Math.round(eh * 2)));
+    else drawShell(g, rottenShell(3), 0.4, box, Math.max(40, Math.round(eh * 2)));
+  });
+  g.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+  g.lineWidth = Math.max(0.6, w * 0.014);
+  g.beginPath();
+  g.ellipse(cx, plateY, w * 0.47, h * 0.06, 0, 0.1, Math.PI - 0.1);
+  g.stroke();
 }
