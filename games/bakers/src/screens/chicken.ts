@@ -49,13 +49,21 @@ function room(): Pixels {
   return p;
 }
 
+/** Doc Leo (big) beside the stove; with `away` his leash hangs empty: the chicken is elsewhere. */
+function leoAt(p: Pixels, bg: Pixels, up: boolean, away: boolean): void {
+  bigLeo(p, 40, FLOOR - 102, 1.6, up);
+  if (!away || up) return;
+  for (let y = 134; y < 158; y++) for (let x = 99; x < 122; x++) p.set(x, y, bg.get(x, y));
+}
+
 /** The chicken big: a 20x20 sprite at 3x, its feet at (x, y). */
 const big = (p: Pixels, spr: Pixels, x: number, y: number, flip = false, s = 3) => scaleBlit(p, spr, Math.round(x - 10 * s), Math.round(y - 18 * s), s, flip);
 
 export function stoveInFli(): Uint8Array {
   const reel = new Reel(PAL.pal);
   const bg = room();
-  const leo = (p: Pixels, up: boolean) => bigLeo(p, 40, FLOOR - 102, 1.6, up);
+  let away = false;
+  const leo = (p: Pixels, up: boolean) => leoAt(p, bg, up, away);
   const first = new Pixels(W, H);
   first.px.set(bg.px);
   leo(first, false);
@@ -63,8 +71,6 @@ export function stoveInFli(): Uint8Array {
   reel.fadeIn(first, 8).add(first, 22);
   reel.frame(bg, (p) => {
     leo(p, false);
-    // Doc Leo's hat would fit. Doc Leo would not.
-    p.rect(SX + 14, GAP_TOP + 4, 40, 1, c('red', 3));
     say(p, ['Doc Leo will not fit under there.', '']);
   }, 18);
   reel.frame(bg, (p) => {
@@ -73,6 +79,7 @@ export function stoveInFli(): Uint8Array {
     say(p, ['Sir Reginald Cluckington III', 'will.']);
   }, 20);
   // the toss: up out of Doc Leo's hand and down to the gap
+  away = true;
   const from = { x: 112, y: 64 };
   const to = { x: SX + 40, y: FLOOR - 2 };
   for (let t = 0; t <= 12; t++) {
@@ -90,7 +97,7 @@ export function stoveInFli(): Uint8Array {
     reel.frame(bg, (p) => {
       leo(p, false);
       const x = to.x + t * 6;
-      big(p, reggieBounce(false), x, FLOOR + 2);
+      big(p, reggieBounce(false), x, FLOOR + 1, false, 2);
       // the skirt and legs drawn back over him as he goes under
       p.rect(SX, GAP_TOP - 6, SW, 6, c('grey', 0)).rect(SX + 2, GAP_TOP, 10, FLOOR - GAP_TOP, c('grey', 1));
       if (t < 10) headline(p, 4, 'SQUEEEZE', 2, c('yellow', 3), c('red', 2), 200);
@@ -110,7 +117,7 @@ export function stoveInFli(): Uint8Array {
 export function stoveOutFli(): Uint8Array {
   const reel = new Reel(PAL.pal);
   const bg = room();
-  const leo = (p: Pixels, up: boolean) => bigLeo(p, 40, FLOOR - 102, 1.6, up);
+  const leo = (p: Pixels, up: boolean) => leoAt(p, bg, up, true);
   const first = new Pixels(W, H);
   first.px.set(bg.px);
   leo(first, false);
