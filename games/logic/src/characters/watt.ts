@@ -38,7 +38,8 @@ export function buildWatt(cb: BlockSet, bombMonster: number): Character {
     jstkBut: 0,
   });
   set(S[SEQ.hurt], [f('zapped', 1)], { sound: SND.zap, jstkBut: 0 });
-  set(S[3], [f('down0', 1)], { key: 0 });
+  // Pickup: the space bar lifts an object off the board (only one thing in the house is one).
+  set(S[3], [f('blink', 2), f('down0', 2)], { key: KEY.space, sound: SND.score, norepeat: 1 });
   set(S[4], [f('down0', 1)], { key: 0 });
 
   const roll = (dx: number, dy: number, a: string, b: string, mirror = false) => [a, b, a, b, a].map((p) => f(p, 1, { x: dx * STEP, y: dy * STEP, mirror }));

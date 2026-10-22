@@ -8,7 +8,7 @@
 // link back into the same scene, landing on the next board's pad.
 import { newMap, reindexMonsters, LASTMM, MLEN, type GameMap } from '../../../../web/src/formats/map';
 import { buildMonsters, type Wire } from '../characters/mons';
-import { E, N, S, W, STYLES, buildTiles, type Battery, type BatteryKind } from '../blocks/tiles';
+import { E, EGG, N, S, W, STYLES, buildTiles, type Battery, type BatteryKind } from '../blocks/tiles';
 import type { Bestiary, BlockSet } from '../blocks/sets';
 
 export const COLS = 16;
@@ -59,6 +59,17 @@ const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 
 /** Parts sunk in the housing over a wire that current lights up: the two halves of a
  * character LCD, and the CitiCar (tail, middle, nose). */
 const LCD: Record<string, string> = { '{': 'lcd0', '}': 'lcd1', K: 'car0', M: 'car1', N: 'car2' };
+const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
+const isWall = (ch: string) => ch === '#' || ch === ' ' || ch === ':' || ch === '?' || ch in DECOR || ch in LCD || isBattery(ch);
+/** Which neighbors of a housing block are housing too (the autotile mask). */
+function wallMask(at: (x: number, y: number) => string, x: number, y: number): number {
+  let m = 0;
+  if (isWall(at(x, y - 1))) m |= N;
+  if (isWall(at(x + 1, y))) m |= E;
+  if (isWall(at(x, y + 1))) m |= S;
+  if (isWall(at(x - 1, y))) m |= W;
+  return m;
+}
 const DIRS: Record<string, [number, number, number, number]> = { U: [0, -1, N, S], D: [0, 1, S, N], L: [-1, 0, W, E], R: [1, 0, E, W] };
 
 export interface Board {
@@ -73,6 +84,32 @@ export interface Board {
   exit: { x: number; y: number };
   /** Cells each wire runs through, in board coordinates. */
   wireCells: Map<string, [number, number][]>;
+  /** A '?' in the housing: a panel Watt can roll into (map block). */
+  seam?: { x: number; y: number };
+}
+
+/** Behind the seam: the house's main fuse box, in the room's last slot. Watt lands on its
+ * pad; its socket leads out again. # housing, . board, @ pad, S socket, e the felt egg,
+ * P tape on the wall, * % = & parts soldered to the board. */
+export const FUSEBOX = [
+  '                ',
+  '   #####P####   ',
+  '   #*......*#   ',
+  '   #=...e..=#   ',
+  '   #........#   ',
+  '   #....@...#   ',
+  '   #........#   ',
+  '   #%..S...%#   ',
+  '   ##########   ',
+  '                ',
+];
+
+export interface Fusebox {
+  /** The board whose seam leads in (and where the socket sends Watt back to). */
+  from: Board;
+  start: { x: number; y: number };
+  exit: { x: number; y: number };
+  egg: { x: number; y: number };
 }
 
 function parseMoves(path: string): string[] {
@@ -91,6 +128,7 @@ export interface CompiledRoom {
   map: GameMap;
   mons: Bestiary;
   boards: Board[];
+  fusebox?: Fusebox;
 }
 
 interface Parsed {
@@ -168,15 +206,19 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
 
   const mons = buildMonsters(mb, wires);
   const batteries: Battery[] = kinds.map((kind, k) => ({ k, kind, mon: mons.id(`wire${k}`), high: highs[k] }));
-  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard') });
+  const seams = new Set<number>();
+  for (const { spec } of parsed)
+    spec.rows.forEach((row, y) => [...row].forEach((ch, x) => ch === '?' && seams.add(wallMask((x2, y2) => spec.rows[y2]?.[x2] ?? ' ', x, y))));
+  const fusebox = seams.size > 0;
+  if (fusebox && specs.length >= SLOTS.length) throw new Error(`${room}: no slot left for the fuse box`);
+  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard'), seams: [...seams], fusebox });
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
   let placed = 0;
   const boards = parsed.map((p) => {
     const { spec, ox, oy, traceBits, sideGates, ctrlCells } = p;
     const at = (x: number, y: number) => spec.rows[y]?.[x] ?? ' ';
-    const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
-    const isWall = (ch: string) => ch === '#' || ch === ' ' || ch === ':' || ch in DECOR || ch in LCD || isBattery(ch);
+    let seam: Board['seam'];
     /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
     const partName = (ch: string, x: number, y: number) => {
       const tb = traceBits.get(`${x},${y}`) ?? 0;
@@ -202,14 +244,11 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
           put(x, y, `conduit${tb}`);
         } else if (ch === '#') {
           if (tb) put(x, y, `conduit${tb}`);
-          else {
-            let m = 0;
-            if (isWall(at(x, y - 1))) m |= N;
-            if (isWall(at(x + 1, y))) m |= E;
-            if (isWall(at(x, y + 1))) m |= S;
-            if (isWall(at(x - 1, y))) m |= W;
-            put(x, y, `wall${m}`);
-          }
+          else put(x, y, `wall${wallMask(at, x, y)}`);
+        } else if (ch === '?') {
+          if (tb || seam) throw new Error(`${spec.file}: one seam, off the wires`);
+          put(x, y, `seam${wallMask(at, x, y)}`);
+          seam = { x: ox + x, y: oy + y };
         } else if (ch in DECOR) put(x, y, DECOR[ch]);
         else if (ch === ':') put(x, y, 'out555');
         else if (isBattery(ch)) {
@@ -232,10 +271,32 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
         }
       }
     if (!exit.x) throw new Error(`${spec.file}: no outlet`);
-    return { spec, map, mons, ox, oy, start: { x: ox + 8, y: oy + 5 }, exit, wireCells: p.wireCells };
+    return { spec, map, mons, ox, oy, start: { x: ox + 8, y: oy + 5 }, exit, wireCells: p.wireCells, seam };
   });
   reindexMonsters(map);
-  return { room, tiles, map, mons, boards };
+  let box: Fusebox | undefined;
+  const from = boards.find((b) => b.seam);
+  if (from) {
+    const [ox, oy] = SLOTS[SLOTS.length - 1];
+    const at = (x: number, y: number) => FUSEBOX[y]?.[x] ?? ' ';
+    // the tape is stuck on the housing
+    const housing = (x: number, y: number) => (at(x, y) === 'P' ? '#' : at(x, y));
+    const names: Record<string, string> = { ' ': 'void', '@': 'pad', S: 'socket', e: 'egg', P: 'tape', ...DECOR };
+    const cell = { start: { x: 0, y: 0 }, exit: { x: 0, y: 0 }, egg: { x: 0, y: 0 } };
+    for (let y = 0; y < ROWS; y++)
+      for (let x = 0; x < COLS; x++) {
+        const ch = at(x, y);
+        const name = ch === '#' ? `wall${wallMask(housing, x, y)}` : ch === '.' ? `floor${(x * 7 + y * 3 + ((x * y) % 5)) % 3}` : names[ch];
+        if (!name) throw new Error(`fuse box: what is '${ch}'?`);
+        map.blocks[(oy + y) * MLEN + ox + x] = tiles.id(name);
+        if (ch === '@') cell.start = { x: ox + x, y: oy + y };
+        if (ch === 'S') cell.exit = { x: ox + x, y: oy + y };
+        if (ch === 'e') cell.egg = { x: ox + x, y: oy + y };
+      }
+    if (tiles.id('egg') !== EGG) throw new Error('The egg moved');
+    box = { from, ...cell };
+  }
+  return { room, tiles, map, mons, boards, fusebox: box };
 }
 
 export const ROOMS: Room[] = ['kitchen', 'living', 'garage', 'attic'];

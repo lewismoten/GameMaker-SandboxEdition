@@ -82,6 +82,28 @@ export function buildGame(rooms: CompiledRoom[], startAt = 0): Game {
     card.links[0] = { toScene: roomScene(ri), from: b.start, to: b.start };
     game.scenes.push(card);
   });
+  // Behind a seam in a board's housing: the fuse box. Its socket leads through a page of
+  // text back onto that board's pad.
+  rooms.forEach((r, ri) => {
+    const fb = r.fusebox;
+    if (!fb?.from.seam) return;
+    const links = game.scenes[roomScene(ri)].links;
+    const free = () => {
+      const i = links.findIndex((l) => l.toScene === NOSCENE);
+      if (i < 0) throw new Error(`${r.room}: no link left for the fuse box`);
+      return i;
+    };
+    links[free()] = { toScene: roomScene(ri), from: fb.from.seam, to: fb.start };
+    const page = emptyScene(ADVTYPE);
+    page.desc = 'The Fuse Box';
+    page.pos = { x: 40 + ri * 70, y: 60 };
+    page.scroll = { ...page.scroll, up: 0, down: 0, left: 0, right: 0 };
+    page.files = files(r.room, 'fusebox.lst');
+    page.links = noLinks();
+    page.links[0] = { toScene: roomScene(ri), from: fb.from.start, to: fb.from.start };
+    game.scenes.push(page);
+    links[free()] = { toScene: game.scenes.length - 1, from: fb.exit, to: fb.from.start };
+  });
   title.links[0] = { toScene: cardScene(startAt), from: { x: 0, y: 0 }, to: boards[startAt].b.start };
   return game;
 }

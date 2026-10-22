@@ -23,4 +23,5 @@ export const KEY = {
   a: 0x1e61,
   d: 0x2064,
   r: 0x1372,
+  space: 0x3920,
 } as const;

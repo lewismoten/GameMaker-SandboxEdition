@@ -243,6 +243,79 @@ function decorPic(st: Style, kind: string, frame = 0): Pixels {
   return p;
 }
 
+/** Block number of the felt egg in every room's set (an object: only the pickup key takes it). */
+export const EGG = 149;
+
+/** A felted egg sitting on the board: copper-orange felt, a yellow bolt appliqued on, a
+ * zigzag of black running stitch like a resistor, and a brass button terminal on top. */
+export function eggPic(st: Style, under = floorPic(st, 0)): Pixels {
+  const p = under;
+  const R = rng(9149);
+  const cx = 10;
+  const cy = 10.5;
+  const inside = (x: number, y: number, grow = 0) => {
+    const ry = 7.5 + grow;
+    const rx = (y + 0.5 < cy ? 5.3 : 6.3) + grow;
+    const nx = (x + 0.5 - cx) / rx;
+    const ny = (y + 0.5 - cy) / ry;
+    return nx * nx + ny * ny <= 1;
+  };
+  // a soft shadow on the board, then a dark edge so the felt stands off any board
+  for (let x = 5; x < 16; x++) p.set(x, 18, c('ink', 0));
+  for (let x = 6; x < 15; x++) p.set(x, 19, c('ink', 1));
+  const felt = r('copper');
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      if (inside(x, y, 1) && !inside(x, y)) p.set(x, y, c('ink', 0));
+      if (!inside(x, y)) continue;
+      // lit from the top left, with fuzzy felt speckle
+      const l = 0.55 - (x - cx) / 12 - (y - cy) / 20 + (R() - 0.5) * 0.3;
+      p.set(x, y, shadeAt(felt, 1, 3, l, x, y));
+    }
+  // blanket stitch just inside the edge in pale thread
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) if (inside(x, y) && !inside(x, y, -1) && (x + y) % 3 === 0) p.set(x, y, c('paper', 3));
+  // the zigzag of black running stitch around the waist, like a resistor's leads
+  for (let x = 4; x < 17; x++) {
+    const y = 13 + [0, 1, 0, -1][x % 4];
+    if (inside(x, y, -0.8)) p.set(x, y, c('ink', 0));
+  }
+  // the yellow lightning bolt applique, edged in dark thread
+  const bolt = ['...yy', '..yy.', '.yyyy', '...y.', '..y..', '.y...'];
+  const key = { y: c('yellow', 3) };
+  for (const [dx, dy] of [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+  ])
+    bolt.forEach((row, yy) => [...row].forEach((ch, xx) => ch === 'y' && p.set(7 + xx + dx, 5 + yy + dy, c('copper', 0))));
+  p.draw(7, 5, bolt, key);
+  // the brass button terminal on top
+  p.rect(9, 1, 2, 2, c('gold', 2)).set(9, 1, c('gold', 3)).set(10, 2, c('gold', 0));
+  return p;
+}
+
+/** A wall with the faint seam of a little access panel in it. Watt can roll right in. */
+function seamPic(st: Style, mask: number): Pixels {
+  const p = wallPic(st, mask);
+  const ramp = r(st.wall);
+  const seam = ramp[Math.max(0, st.face - 1)];
+  p.frame(4, 4, 12, 12, seam);
+  p.set(5, 6, ramp[Math.max(0, st.face - 2)]).set(5, 13, ramp[Math.max(0, st.face - 2)]);
+  return p;
+}
+
+/** A strip of masking tape across a wall with a word written on it. */
+function tapePic(st: Style, mask: number, word: string): Pixels {
+  const p = wallPic(st, mask);
+  // two lines of writing on a strip of masking tape
+  p.rect(0, 3, 20, 15, c('paper', 2));
+  for (let x = 0; x < 20; x += 3) p.set(x, 3, c('paper', 1)).set(x + 1, 17, c('paper', 1));
+  word.split(' ').forEach((w, i) => micro(p, 10 - Math.floor((w.length * 4 - 1) / 2), 5 + i * 6, w, c('ink', 0)));
+  return p;
+}
+
 /** Every block a room's boards use, drawn in its style. */
 export interface Battery {
   /** The wire's number in its room. */
@@ -254,7 +327,7 @@ export interface Battery {
   high?: number;
 }
 
-export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadboard?: boolean } = {}): BlockSet {
+export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadboard?: boolean; seams?: number[]; fusebox?: boolean } = {}): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, px: Pixels, def: BlockDef = {}) => bs.add(name, px, def);
   const vp = new Pixels(20, 20, c('night', 0));
@@ -321,5 +394,12 @@ export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadbo
     }
     for (let k = 0; k < 3; k++) add(`cpu${k}`, cpuPic(st, k), { solid: SOLID });
   }
+  // a panel in the housing that isn't quite a wall, and what lies behind it
+  for (const m of opts.seams ?? []) add(`seam${m}`, seamPic(st, m));
+  if (opts.fusebox) {
+    add('socket', outletPic(st));
+    add('tape', tapePic(st, N | E | W, 'PRESS SPACE'));
+  }
+  bs.addAt(EGG, 'egg', eggPic(st), { obj: true, touch: 'floor0' });
   return bs;
 }

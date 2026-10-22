@@ -18,6 +18,8 @@ export interface BlockDef {
   eamt?: number;
   birthMon?: number;
   birthTime?: number;
+  /** An object (the Pick-up flag): only the pickup key takes it. */
+  obj?: boolean;
 }
 
 export class BlockSet {
@@ -36,6 +38,16 @@ export class BlockSet {
     this.pics.push(px);
     this.defs.push(def);
     return this.names.length - 1;
+  }
+
+  /** Adds a block at a fixed number past the others (so every set agrees on it). */
+  addAt(at: number, name: string, px: Pixels, def: BlockDef = {}): number {
+    if (this.names.includes(name)) throw new Error(`Block ${name} twice`);
+    if (at < this.names.length || at >= this.count) throw new Error(`Block ${at} (${name}) is taken or out of range`);
+    this.names[at] = name;
+    this.pics[at] = px;
+    this.defs[at] = def;
+    return at;
   }
 
   id(name: string): number {
@@ -73,6 +85,7 @@ export class BlockSet {
       b.eamt = d.eamt ?? 0;
       b.birthMon = d.birthMon ?? 0;
       b.birthTime = d.birthTime ?? 0;
+      b.obj = d.obj ? 1 : 0;
       return b;
     });
   }

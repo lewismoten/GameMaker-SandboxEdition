@@ -144,6 +144,21 @@ THE END
 There's no place like Ohm.`,
 ]);
 
+/** The page behind the fuse box's socket. */
+export const FUSEBOX = pages([
+  `THE LIVE WIRE EGG
+
+Copper-orange felt with a yellow lightning bolt on each side, a zigzag of black running stitch like a resistor, and a tiny brass button for a terminal on top.
+
+Wired up by
+Claude Opus 5.5`,
+  `Taped inside the fuse box: a meter marked WORDS.
+
+The needle sits at exactly one hundred, and no amount of current will move it.
+
+Watt closes the panel very gently.`,
+]);
+
 export const LOST = pages([
   `Out of spare batteries!
 

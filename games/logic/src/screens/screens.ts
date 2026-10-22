@@ -15,7 +15,8 @@ import { PAL, c, r } from '../art/pal';
 import type { Board } from '../levels/board';
 import { renderBoard } from '../art/render';
 import type { BlockSet } from '../blocks/sets';
-import { CREDITS, HELP, LOST, STORY, WON } from './text';
+import { CREDITS, FUSEBOX, HELP, LOST, STORY, WON } from './text';
+import { STYLES, eggPic } from '../blocks/tiles';
 
 const W = 320;
 const H = 200;
@@ -404,6 +405,13 @@ export function buildScreens(art: Art, boards: { b: Board; tiles: BlockSet }[]):
   out['lost.gif'] = gif(pageScreen(art, 'OUT OF BATTERIES', 55, 'toast'));
   out['lost.txt'] = dosText(LOST);
   out['lost.lst'] = serializeSlideList([{ name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]);
+  // the page behind the fuse box (the felt egg either side of the title)
+  const fuse = pageScreen(art, 'THE LIVE WIRE EGG', 56, 'blink');
+  const egg = eggPic(STYLES.garage, new Pixels(20, 20, CLEAR));
+  fuse.blit(egg, 64, 4, CLEAR).blit(egg, 236, 4, CLEAR);
+  out['fusebox.gif'] = gif(fuse);
+  out['fusebox.txt'] = dosText(FUSEBOX);
+  out['fusebox.lst'] = serializeSlideList([{ name: 'fusebox.gif', pause: 0 }, { name: 'fusebox.txt' }]);
   // Each board's card (its card scene's intro graphic); a new room starts with Watt riding
   // the house wiring to it.
   let rides = 0;
