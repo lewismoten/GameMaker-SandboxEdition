@@ -61,6 +61,12 @@ export class BlockBook {
     return i;
   }
 
+  /** Changes a block's attributes after it was added (a vent's monster, once monsters are numbered). */
+  setAttrs(name: string, a: Attrs): void {
+    const i = this.n(name);
+    this.attrs.set(i, { ...this.attrs.get(i), ...a });
+  }
+
   has(name: string): boolean {
     return this.index.has(name);
   }
