@@ -140,6 +140,9 @@ export class Computer extends ComputerFolders {
         case "terminal":
           await (await import("./bbs/bbs")).runTerminal(this);
           break;
+        case "vpic":
+          await (await import("./view/vpic")).runVpic(this, _args);
+          break;
         case "install":
           this.screen.print(
             "Game-Maker SE 3.00 is already installed in C:\\GM.\nType GM to start it.\n",

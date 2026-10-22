@@ -18,6 +18,7 @@ export type ProgramRef =
   | { kind: 'gm' }
   | { kind: 'playgame' }
   | { kind: 'terminal' }
+  | { kind: 'vpic' }
   | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string }
   | { kind: 'install' }
   | { kind: 'batch'; lines: string[] };
