@@ -256,7 +256,7 @@
     position: absolute;
     left: 1040px;
     top: 548px;
-    z-index: 1;
+    z-index: 2;
     margin: 0;
   }
 
@@ -264,7 +264,7 @@
     position: absolute;
     left: 1168px;
     top: 412px;
-    z-index: 1;
+    z-index: 2;
   }
 
   .desk-scene .poster {
@@ -316,8 +316,11 @@
     top: 232px;
   }
 
-  /* the lamp's pool of light, falling forward and left from under its shade */
+  /* the lamp's pool of light, falling forward and left from under its shade. It lights the
+     desk top, the wall and the speaker behind it, but not the mug and the Game-Maker box
+     standing in front of the lamp: it sits below them (z-index 1 < 2) */
   .desk-scene .lamp-glow {
+    z-index: 1;
     left: 968px;
     top: 330px;
     width: 440px;
