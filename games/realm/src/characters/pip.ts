@@ -36,7 +36,7 @@ export function frames(list: F[]): Frame[] {
 }
 
 /** Pixels a walking step moves, and the step count per walk cycle. */
-export const STEP = 3;
+export const STEP = 4;
 
 export function buildPip(cb: SpriteSheet): Character {
   const ch = newCharacter();
@@ -97,14 +97,16 @@ export function buildPip(cb: SpriteSheet): Character {
   walk(SEQ.s, KEY.s, 0, 0, STEP, DOWN);
   walk(SEQ.d, KEY.d, 0, STEP, 0, SIDE);
   // A swing fires a slash the way Pip last walked (Game-Maker aims a fired monster along the
-  // last step); y 20 puts it on his own row, a one-block character's only row.
+  // last step); y 20 puts it on his own row, a one-block character's only row. The slash comes
+  // first, on the very tick the key is pressed: a foe's bite starts the hurt sequence, which
+  // would cut a wind-up short before the blow ever landed.
   const swing = (i: number, mon: number) =>
     set(
       i,
       [
-        { pic: n('windup'), pause: 1 },
         { pic: 0, pic1: mon, pic2: MONBL, y: 20, pause: 0 },
         { pic: n('strike'), pause: 3 },
+        { pic: n('windup'), pause: 1 },
       ],
       { key: KEY.space, sound: SND.slash, norepeat: 1, ground: 1, jstkMov: JOY.any, jstkBut: 1 },
     );
@@ -113,18 +115,16 @@ export function buildPip(cb: SpriteSheet): Character {
   set(
     SEQ.kazoo,
     [
-      { pic: n('toot'), pause: 1 },
       { pic: 0, pic1: MON.note, pic2: MONBL, y: 20, pause: 0 },
-      { pic: n('toot'), pause: 4 },
+      { pic: n('toot'), pause: 5 },
     ],
     { key: KEY.k, sound: SND.kazoo, norepeat: 1, ground: 1, jstkMov: 0, jstkBut: 0 },
   );
   set(
     SEQ.tonic,
     [
-      { pic: n('swig'), pause: 4 },
       { pic: 0, pic1: MON.tonicA, pic2: MONBL, y: 20, pause: 0 },
-      { pic: n('swig'), pause: 6 },
+      { pic: n('swig'), pause: 10 },
     ],
     { key: KEY.t, sound: SND.tonic, norepeat: 1, ground: 1, jstkMov: 0, jstkBut: 0 },
   );

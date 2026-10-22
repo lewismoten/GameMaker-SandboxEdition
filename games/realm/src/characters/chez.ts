@@ -59,9 +59,8 @@ export function buildChez(cb: SpriteSheet): Character {
   set(
     17,
     [
-      { pic: n('carSide1'), pause: 1 },
       { pic: 0, pic1: MON.note, pic2: MONBL, y: 20, pause: 0 },
-      { pic: n('carSide0'), pause: 6 },
+      { pic: n('carSide1'), pause: 6 },
     ],
     { key: KEY.space, sound: SND.honk, norepeat: 1, ground: 1, jstkMov: 9, jstkBut: 1 },
   );
