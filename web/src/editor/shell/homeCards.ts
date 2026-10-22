@@ -36,6 +36,9 @@ export function playLink(id: string): string {
   return import.meta.env?.DEV ? `./play.html?game=${encodeURIComponent(id)}` : `./${gamePage(id)}`;
 }
 
+/** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
+const PREVIEW_AHEAD = 192 * 1024;
+
 export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
@@ -107,7 +110,8 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
     drawShot: (c) => renderShot(g, c, Math.round(c.width / 20), Math.round(c.height / 20)),
     files: once(() => loadHostedGame(g)),
     previewFiles: once(async () => {
-      const s = streamHostedGame(g);
+      // the demo's files as it asks for them, and a little ahead (not the whole game)
+      const s = streamHostedGame(g, './', 4, PREVIEW_AHEAD);
       await s.started;
       await s.files.stream?.need(demoNeeds(s.files.get(g.gam ?? '')));
       return s.files;
