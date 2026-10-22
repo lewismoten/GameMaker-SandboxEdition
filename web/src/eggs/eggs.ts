@@ -57,6 +57,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['The whole Sandbox crew: Claude Opus 5.5, Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
     lore: 'Found in a corner of memory: COUNTER.LOG. Its last line reads "Word 100 of 100 ... STOP." Everything after it is static.',
     look: { felt: '#2b2f36', band: '#7cd63a', patch: '#e8443a', thread: '#d8f5c0', pattern: 'circuit', motif: 'bug' },
+    detect: { block: 149 },
   },
   {
     game: 'logic',
