@@ -372,6 +372,48 @@ It's Sir Reginald Cluckington III! Red harness, leash trailing, looking extremel
 Squeak. He'll find his way back to Doc Leo's tent, he says. (Squeak.) Rubber chickens always do.`,
     'chick',
   ),
+  // ---------------------------------------------------------------- the pieces of the Tuit
+  piece1: t(
+    'piece1',
+    'pip',
+    'The First Piece',
+    'nowish',
+    'The Snooze Barrows',
+    `Sir Snoozalot rolls over, mumbles "five more minutes," and is gone in a puff of dust.
+
+Behind him, on a little stone plinth: a wedge of old oak edged in brass. The first piece of the Royal Round Tuit!
+
+It's warm, and it hums faintly, like something that very much wants to get on with things.
+
+(It glows on the Tuit Table in the Garden Court now. Two to go.)`,
+    'piece',
+  ),
+  piece2: t(
+    'piece2',
+    'pip',
+    'The Second Piece',
+    'harbor',
+    'The Soggy Vaults',
+    `The Kraken of Kinda-Later sinks back into the deep, promising to come back for you eventually.
+
+The second piece of the Round Tuit sits in a scallop shell, crackling with blue sparks. Lightning! It must have soaked it up from the storm-eels.
+
+Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink this right up. (Don't worry. It's a tuit. It recharges.)`,
+    'piece',
+  ),
+  piece3: t(
+    'piece3',
+    'pip',
+    'The Third Piece',
+    'falls',
+    'The Putoff Mines',
+    `Tick-Tock the Unpunctual winds down, chimes thirteen, and stops for good. Fashionably late to its own defeat.
+
+The third piece of the Round Tuit was the key that wound it up.
+
+Three pieces. One Round Tuit. All that's left is to get around to Deadline Keep, south of Eventually Falls, past the Gloomwood.`,
+    'piece',
+  ),
   // ---------------------------------------------------------------- the felt egg
   eggnote: {
     ...t(

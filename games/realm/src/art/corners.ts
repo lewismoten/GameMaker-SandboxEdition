@@ -66,6 +66,19 @@ export class CornerMap {
       }
   }
 
+  /** Clears the corners within `r` (Chebyshev) of an octilinear path: a corridor 2r blocks wide. */
+  carve(layer: string, pts: [number, number][], r = 1): void {
+    const tmp = new CornerMap(['t']);
+    tmp.path('t', pts);
+    const t = tmp.field('t');
+    const f = this.field(layer);
+    for (let y = 0; y < N; y++)
+      for (let x = 0; x < N; x++) {
+        if (t[y * N + x] < 0.5) continue;
+        for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) f[wrap(y + dy) * N + wrap(x + dx)] = 0;
+      }
+  }
+
   /** Clears the corners inside a polygon (and on its edge). */
   unregion(layer: string, pts: [number, number][]): void {
     const tmp = new CornerMap(['t']);

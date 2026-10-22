@@ -41,6 +41,8 @@ export function buildArea(o: {
   base: (x: number, y: number) => string;
   scenes: AreaScene[];
   fullVariants?: Record<string, number>;
+  /** The monster block set (default PEOPLE.MBL). */
+  mbl?: string;
 }): Area {
   const { plan, book, mons } = o;
   const map = plan.build(book, { layers: o.layers, base: o.base, fullVariants: o.fullVariants });
@@ -67,7 +69,7 @@ export function buildArea(o: {
           done.add(talk.id);
           // back where Pip stood: the npc's back spot, else one block below the link
           const npc = plan.npcs.find((n) => n.talk?.id === talk.id && n.at[0] === l.from[0] && n.at[1] === l.from[1]);
-          const back = npc?.back ?? [l.from[0], l.from[1] + 1];
+          const back = npc?.back ?? (l.at[0] || l.at[1] ? l.at : [l.from[0], l.from[1] + 1]);
           files.push(...talkFiles(talk));
           scenes.push(talkScene(talk, sc.id, back as Pt));
         }
@@ -77,7 +79,7 @@ export function buildArea(o: {
     scenes.unshift({
       id: sc.id,
       desc: sc.desc,
-      files: { pal: `${o.name}.pal`, map: `${o.name}.map`, bbl: `${o.name}.bbl`, mon: `${o.name}.mon`, mbl: 'people.mbl', cmf: sc.cmf, intro: sc.intro },
+      files: { pal: `${o.name}.pal`, map: `${o.name}.map`, bbl: `${o.name}.bbl`, mon: `${o.name}.mon`, mbl: o.mbl ?? 'people.mbl', cmf: sc.cmf, intro: sc.intro },
       links,
     });
   }
