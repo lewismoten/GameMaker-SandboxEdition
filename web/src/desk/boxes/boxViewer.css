@@ -218,3 +218,8 @@
     height: 56px;
   }
 }
+
+/* the viewer takes focus when it opens (Tab then reaches what came in the box); no ring around the whole screen */
+.box-viewer:focus {
+  outline: none;
+}
