@@ -22,7 +22,7 @@
   align-items: baseline;
   gap: 1.2cqw;
   margin: 0;
-  padding-top: 1.3cqw;
+  padding-top: 2cqw;
 }
 
 .mpage .rr dt {
@@ -45,6 +45,11 @@
   line-height: 1;
 }
 
+/* gives the line a baseline for its label while the ink sits over it */
+.mpage .rr-line::before {
+  content: '\200b';
+}
+
 .mpage .rr-printed {
   padding-left: 1cqw;
   font: 700 2.35cqw/1.2 'Courier New', Courier, monospace;
@@ -53,8 +58,10 @@
 
 /* ballpoint ink */
 .mpage .rr-hand {
-  display: inline-block;
-  padding: 0 1cqw;
+  position: absolute;
+  left: 1cqw;
+  bottom: -0.22em;
+  max-width: 100%;
   color: #1d3b8f;
   font:
     600 4.4cqw/0.9 Caveat,
@@ -63,12 +70,12 @@
     'Comic Sans MS',
     cursive;
   white-space: nowrap;
-  transform: translateY(0.35em) rotate(-1.6deg);
+  transform: rotate(-1.6deg);
   transform-origin: left bottom;
 }
 
 .mpage .rr-number {
-  transform: translateY(0.35em) rotate(-0.8deg) translateX(1.5cqw);
+  transform: translateX(1.5cqw) rotate(-0.8deg);
   letter-spacing: 0.04em;
 }
 
