@@ -11,7 +11,7 @@ export interface TownSpots {
 
 /** Hedges everywhere in a half except the town's own ground. */
 export function hedgeAround(p: Plan, x0: number, x1: number, inside: Pt[]): void {
-  p.cm.paint('hedge', (x, y) => (x >= x0 && x <= x1 ? 1 : 0), [x0, 0, x1, 99]);
+  p.cm.paint('hedge', (x) => (x >= x0 && x <= x1 ? 1 : 0), [x0, 0, x1, 99]);
   p.cm.unregion('hedge', inside);
 }
 
