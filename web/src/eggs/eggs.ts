@@ -87,6 +87,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Dug up by Gwinn', 'with help (and a nap) from Teddy'],
     lore: 'Pressed into the wet sand beside it: one word, "ONCE," and then nothing. As if the rest of the story just fell out.',
     look: { felt: '#e6c48a', band: '#3d8fd1', patch: '#c9573a', thread: '#fff6e0', pattern: 'scallops', motif: 'castle' },
+    detect: { block: 146 },
   },
   {
     game: 'sleuth',
