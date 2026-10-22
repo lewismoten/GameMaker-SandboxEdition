@@ -6,11 +6,12 @@ import type { Level } from './levels/level';
 import { house } from './levels/level1';
 import { main } from './levels/level2';
 import { night } from './levels/level3';
+import { river } from './levels/level4';
 
-export const LEVELS: (() => Level)[] = [house, main, night];
+export const LEVELS: (() => Level)[] = [house, main, night, river];
 
 /** Songs per level (CMF file names), in level order. */
-export const LEVEL_SONGS = ['house.cmf', 'main.cmf', 'night.cmf'];
+export const LEVEL_SONGS = ['house.cmf', 'main.cmf', 'night.cmf', 'river.cmf'];
 
 export const TITLE = 'TEDDY 2: BIGGER!';
 
