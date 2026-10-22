@@ -313,7 +313,7 @@
 .rs-reopen {
   position: fixed;
   z-index: 60;
-  left: 12px;
+  right: 12px;
   bottom: 12px;
   padding: 8px 14px;
   border: 1px solid #6d0b10;
