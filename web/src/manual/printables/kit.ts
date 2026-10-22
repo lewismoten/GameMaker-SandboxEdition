@@ -123,11 +123,7 @@ export function fictionalNote(): HTMLElement {
   return h('p', { class: 'pp-fictional' }, `(${FICTIONAL_NOTE})`);
 }
 
-/** Main title and subtitle of "Main: Subtitle". */
-export function splitTitle(title: string): [string, string] {
-  const i = title.indexOf(':');
-  return i < 0 ? [title, ''] : [title.slice(0, i), title.slice(i + 1).trim()];
-}
+export { splitTitle } from '../../project/gameTitle';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
   return fetchGameFile(entry, name); // fetched once, shared

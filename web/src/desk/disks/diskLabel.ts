@@ -4,6 +4,7 @@
 import './diskLabel.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
+import { splitTitle } from '../../project/gameTitle';
 import { mapShot } from '../boxes/boxArt';
 import { portrait } from '../../manual/printables/kit';
 
@@ -56,10 +57,7 @@ function logoText(g: CatalogEntry): string {
 export function printedDiskLabel(g: CatalogEntry, foot: string, note?: string, disk = ''): HTMLElement {
   const l = g.original?.label;
   const box = g.original?.box;
-  const [main, sub] = (() => {
-    const i = g.title.indexOf(':');
-    return i < 0 ? [g.title, ''] : [g.title.slice(0, i), g.title.slice(i + 1).trim()];
-  })();
+  const [main, sub] = splitTitle(g.title);
   const art = h('div', { class: 'p-art' });
   const label = h(
     'div',

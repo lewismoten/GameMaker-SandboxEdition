@@ -5,6 +5,7 @@
 // turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
 // it comes forward in the viewer.
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
+import { splitTitle } from '../../project/gameTitle';
 import { mapShot, renderShot } from './boxArt';
 import { parseGame, ADVTYPE, type Game } from '../../formats/game';
 import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours } from './boxFacts';
@@ -343,7 +344,7 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     platformBadge(s, 12, c.height - 50 - badgeH, c.width - 24, info.disks);
     spineTitle(s, box, mainTitle.toUpperCase(), subTitle.toUpperCase(), c.width, 84, c.height - 150 - badgeH);
     s.fillStyle = box.ink;
-    s.font = SANS(13, 700);
+    s.font = SANS(fit(s, sub, (p) => SANS(p, 700), c.width - 12, 13), 700); // a long price shrinks to the spine
     s.textAlign = 'center';
     s.fillText(sub, c.width / 2, c.height - 24);
     wear(s, c.width, c.height, `${entry.id}/${side}`, { fade: side === 'left' ? 0.2 : 0.1, creases: 0 });
@@ -404,12 +405,6 @@ function sunburst(ctx: CanvasRenderingContext2D, box: Box, x: number, y: number)
 
 function copyright(entry: CatalogEntry): string {
   return `©\u00a0${entry.year ?? 1995} ${entry.company ?? 'Sandbox Software'}. Made with Game-Maker by Recreational Software Designs.`;
-}
-
-/** "Main: Subtitle" split in two. */
-function splitTitle(title: string): [string, string] {
-  const i = title.indexOf(':');
-  return i < 0 ? [title, ''] : [title.slice(0, i), title.slice(i + 1).trim()];
 }
 
 /**
