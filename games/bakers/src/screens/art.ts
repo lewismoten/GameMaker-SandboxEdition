@@ -176,13 +176,15 @@ export function stamp(p: Pixels, cx: number, cy: number, words: string, scale = 
   const R = rng(words.length * 13);
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
-  for (let y = 0; y < h; y++)
-    for (let x = 0; x < w; x++) {
-      const v = src.get(x, y);
-      if (v === 255 || R() < 0.18) continue;
-      const dx = x - w / 2;
-      const dy = y - h / 2;
-      p.set(cx + dx * cos - dy * sin, cy + dx * sin + dy * cos, v);
+  const span = Math.ceil(Math.hypot(w, h) / 2) + 1;
+  // each pixel of the page looks back into the unrotated stamp (no holes)
+  for (let dy = -span; dy <= span; dy++)
+    for (let dx = -span; dx <= span; dx++) {
+      const sx = Math.round(dx * cos + dy * sin + w / 2);
+      const sy = Math.round(-dx * sin + dy * cos + h / 2);
+      const v = src.get(sx, sy);
+      if (v === 255 || v < 0 || R() < 0.07) continue;
+      p.set(cx + dx, cy + dy, v);
     }
 }
 
@@ -228,3 +230,87 @@ export function mainStreet(p: Pixels, seed = 1): void {
 }
 
 export { centered, scaleBlit, text, micro, outlined, gradient, blob, textWidth };
+
+/**
+ * Doc Leo, large: a chewed grey fedora with a red band, the hobo face (ash beard, the white
+ * mouth turned down, white round the eyes, rosy cheeks and the red nose), round spectacles,
+ * a navy corduroy jacket with pins over a purple shirt and a green tie, and the rubber
+ * chicken held up or hanging on its red leash. 40 x 64 units of `s` pixels, top-left at (x, y).
+ */
+export function bigLeo(p: Pixels, x: number, y: number, s: number, chickenUp = false): void {
+  const R = (xx: number, yy: number, w: number, h: number, col: number) => p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
+  const D = (xx: number, yy: number, r0: number, col: number) => p.disc(x + xx * s, y + yy * s, r0 * s, col);
+  const ink = c('ink', 0);
+  // legs and red sneakers
+  R(11, 50, 7, 11, c('blue', 0));
+  R(22, 50, 7, 11, c('blue', 0));
+  R(9, 60, 10, 4, c('red', 3));
+  R(21, 60, 10, 4, c('red', 3));
+  R(9, 63, 10, 1, c('paper', 4));
+  R(21, 63, 10, 1, c('paper', 4));
+  // jacket (corduroy ribs), shirt and tie
+  R(6, 28, 28, 24, ink);
+  R(7, 29, 26, 22, c('blue', 1));
+  for (let i = 8; i < 33; i += 2) R(i, 29, 0.5, 22, c('blue', 2));
+  R(16, 29, 8, 14, c('purple', 2));
+  R(19, 29, 2, 13, c('green', 3));
+  R(18.5, 41, 3, 2, c('green', 2));
+  D(10, 33, 1.2, c('brass', 3));
+  D(11, 37, 1, c('red', 3));
+  D(9, 40, 1, c('sky', 3));
+  // arms
+  R(2, 30, 5, 16, c('blue', 1));
+  R(2, 45, 5, 3, c('skin', 2));
+  if (chickenUp) {
+    R(33, 18, 5, 14, c('blue', 1));
+    R(33, 15, 5, 3, c('skin', 2));
+    // the chicken, squeezed, beak open
+    R(30, 4, 12, 7, c('yellow', 3));
+    R(30, 9, 12, 2, c('yellow', 1));
+    R(40, 1, 5, 5, c('yellow', 3));
+    R(45, 2, 3, 1, c('orange', 2));
+    R(45, 4, 3, 1, c('orange', 2));
+    R(41, 0, 2, 1, c('red', 3));
+    R(42, 2, 1, 1, ink);
+  } else {
+    R(33, 30, 5, 16, c('blue', 1));
+    R(33, 45, 5, 3, c('skin', 2));
+    p.line(x + 36 * s, y + 47 * s, x + 40 * s, y + 56 * s, c('red', 2));
+    R(37, 56, 9, 5, c('yellow', 3));
+    R(44, 54, 3, 3, c('yellow', 3));
+    R(47, 55, 2, 1, c('orange', 2));
+    R(45, 53, 1, 1, c('red', 3));
+  }
+  // head
+  R(10, 10, 20, 19, ink);
+  R(11, 11, 18, 17, c('skin', 2));
+  // the ash beard, and the white mouth turned down
+  R(11, 20, 18, 8, c('night', 2));
+  R(15, 21, 10, 5, c('paper', 4));
+  R(17, 23, 6, 1, c('red', 1));
+  R(16, 24, 1, 1, c('red', 1));
+  R(23, 24, 1, 1, c('red', 1));
+  // white round the eyes, spectacles, brows
+  R(12, 13, 7, 6, c('paper', 4));
+  R(21, 13, 7, 6, c('paper', 4));
+  p.ring(x + 15.5 * s, y + 16 * s, 3.4 * s, c('brass', 2));
+  p.ring(x + 24.5 * s, y + 16 * s, 3.4 * s, c('brass', 2));
+  R(19, 16, 2, 0.6, c('brass', 2));
+  R(15, 15, 2, 2, ink);
+  R(24, 15, 2, 2, ink);
+  R(12, 11, 7, 1.5, ink);
+  R(21, 11, 7, 1.5, ink);
+  // cheeks and the red nose
+  D(13, 20, 1.6, c('red', 4));
+  D(27, 20, 1.6, c('red', 4));
+  D(20, 19, 2.6, c('red', 3));
+  D(19.3, 18.3, 0.8, c('red', 5));
+  // the chewed grey fedora
+  R(4, 9, 32, 3, ink);
+  R(5, 9, 30, 2, c('grey', 2));
+  R(10, 1, 20, 9, ink);
+  R(11, 2, 18, 7, c('grey', 3));
+  R(11, 6, 18, 2, c('red', 1));
+  R(18, 2, 4, 1, c('grey', 1));
+  R(30, 9, 3, 1, c('night', 1)); // a bite out of the brim
+}

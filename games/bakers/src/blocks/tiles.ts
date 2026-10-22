@@ -102,8 +102,9 @@ function wallTop(style: Style, seed = 1): Pixels {
       p.rect(0, 0, 20, 1, c('wall', 4));
       break;
     case 'parlor':
-      p.rect(0, 0, 20, 20, c('trim', 1));
-      p.rect(1, 1, 18, 18, c('trim', 2)).rect(1, 1, 18, 1, c('trim', 3));
+      // the top of a paneled wall: dark wood with a brass-edged cap
+      p.rect(0, 0, 20, 20, c('wood', 0));
+      p.rect(2, 2, 16, 16, c('wood', 1)).frame(2, 2, 16, 16, c('trim', 1));
       break;
     case 'works':
       bevel(p, 0, 0, 20, 20, r('wall'), 2, 1);

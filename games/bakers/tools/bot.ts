@@ -156,9 +156,26 @@ export class Bot {
     return this.search(goal);
   }
 
+  /** Cells next to a lethal monster right now, and what stepping there costs extra. */
+  private dangerMap(): Map<number, number> {
+    const out = new Map<number, number>();
+    const w = this.sim.w;
+    const names = this.room().mons.names;
+    w.mm.forEach((m, i) => {
+      if (m.monnum >= 64) return;
+      const n = names[m.monnum] ?? '';
+      if (/^(mouse|ant|teddy|gwinn|squawk|kazoo)/.test(n) || n.includes('~run')) return;
+      const x = w.mi[i].curx[0];
+      const y = w.mi[i].cury[0];
+      for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) out.set((y + dy) * MLEN + x + dx, (out.get((y + dy) * MLEN + x + dx) ?? 0) + 12);
+    });
+    return out;
+  }
+
   private search(goal: Pt): { d: Dir; to: Pt }[] | undefined {
     const { x: sx, y: sy } = this.sim.pos;
     const links = this.linkCells();
+    const danger = this.dangerMap();
     const key = (p: Pt) => p.y * MLEN + p.x;
     const dist = new Map<number, number>([[key({ x: sx, y: sy }), 0]]);
     const from = new Map<number, { prev: number; d: Dir; to: Pt }>();
@@ -181,8 +198,8 @@ export class Bot {
       for (const d of DIRS) {
         const e = this.edge(p.x, p.y, d, goal, links);
         if (!e) continue;
-        const nd = dd + e.cost;
         const k = key(e.to);
+        const nd = dd + e.cost + (danger.get(k) ?? 0);
         if (nd < (dist.get(k) ?? Infinity)) {
           dist.set(k, nd);
           from.set(k, { prev: key(p), d, to: e.to });

@@ -47,3 +47,11 @@ for (const room of all.rooms) {
   }
   writePng(join(out, `room-${String(room.spec.level).padStart(2, '0')}-${room.spec.file}.png`), p, buildPalette(room.spec.theme).pal, 1);
 }
+
+// the screens
+import { menuScreen, recipePage, titleScreen, eggScreen } from '../src/screens/screens';
+import { PAL } from '../src/art/pal';
+writePng(join(out, 'scr-title.png'), titleScreen(), PAL.pal, 2);
+writePng(join(out, 'scr-menu.png'), menuScreen(), PAL.pal, 2);
+writePng(join(out, 'scr-recipe05.png'), recipePage(5), PAL.pal, 2);
+writePng(join(out, 'scr-egg-rotten.png'), eggScreen(true), PAL.pal, 2);

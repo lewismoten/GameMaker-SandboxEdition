@@ -16,7 +16,7 @@ import { PAL, buildPalette, c } from '../art/pal';
 import type { TileSet } from '../blocks/tiles';
 import type { Room } from '../levels/room';
 import { RECIPE, ROOM_NAMES, THIRTEENTH } from '../recipe';
-import { H, W, blob, card, centered, chez, gradient, headline, kitchenWall, mainStreet, micro, mug, outlined, scaleBlit, stamp, stand, starCircle, bigTricorn, text } from './art';
+import { H, W, bigLeo, blob, card, centered, chez, gradient, headline, kitchenWall, mainStreet, micro, mug, outlined, scaleBlit, stamp, stand, starCircle, bigTricorn, text } from './art';
 import { wrap } from './pages';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
 
@@ -43,10 +43,10 @@ export function titleScreen(): Pixels {
   headline(p, 8, "BAKER'S", 3, c('paper', 4), c('red', 2));
   headline(p, 36, 'DOZEN', 3, c('yellow', 3), c('red', 2));
   outlined(p, 72, 180, 'The Thirteenth Ingredient', c('paper', 4), c('ink', 0));
-  scaleBlit(p, leo('down', 0, true), 236, 118, 3);
+  bigLeo(p, 238, 84, 1.45, true);
   scaleBlit(p, corgi(0), 14, 140, 2);
   micro(p, 4, 4, 'SANDBOX SOFTWARE PRESENTS', c('sky', 4));
-  micro(p, 238, 192, 'DO NOT TELL THE BRITISH', c('sky', 3));
+  micro(p, 222, 192, 'DO NOT TELL THE BRITISH', c('sky', 3));
   return p;
 }
 
@@ -135,7 +135,7 @@ export function recipePage(n: number): Pixels {
   const foot = wrap(`* ${line.note}`, 32);
   foot.forEach((l, i) => text(p, 32, 132 + i * 11, l, c('ink', 1)));
   text(p, 104 + 8 * body[body.length - 1].length, 58 + (body.length - 1) * 11, '*', c('red', 2));
-  stamp(p, 228, 110, 'CLASSIFIED', 1, -0.2);
+  stamp(p, 214, 100, 'CLASSIFIED', 2, -0.1);
   micro(p, 30, 178, `KEPT IN ${line.room.toUpperCase()}`, c('rootbeer', 1));
   return p;
 }
@@ -190,8 +190,8 @@ export function introFli(): Uint8Array {
   for (let t = 0; t < 16; t++) {
     const p = new Pixels(W, H);
     kitchenWall(p, 170);
-    scaleBlit(p, leo('down', 0, t > 8), 112, 24, 5);
-    if (t > 8) outlined(p, 210, 40, '!', c('red', 3), c('ink', 0), 3);
+    bigLeo(p, 120, 14, 2.4, t > 8);
+    if (t > 8) outlined(p, 236, 30, '!', c('red', 3), c('ink', 0), 3);
     say(p, ['There is one other copy.', "Ebenezer Baker's kitchen. Downstairs."]);
     frames.push(p);
   }
