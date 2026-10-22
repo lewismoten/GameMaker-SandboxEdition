@@ -77,11 +77,13 @@ export interface Grab {
   secret: (n: number) => boolean;
   /** Map cells already gone for in this scene (taken, or given up on). */
   tried: Set<number>;
-  /** Most extra cells a detour may cost (default 10), and how far off the loot may be (default 12). */
+  /** Most extra cells a detour may cost (default 12 on foot, 16 flying), and how far off the loot may be (16, 20). */
   detour?: number;
   reach?: number;
-  /** Below this many hit points only healing is worth a detour (default 100). */
+  /** Below this many hit points only healing is worth a detour (default 45). */
   careful?: number;
+  /** Cells already logged as passed by (MAXIMUS_GRAB_LOG). */
+  passed?: Set<string>;
 }
 
 type Plan = { held: number[][]; name: string };
@@ -165,6 +167,12 @@ function grabNear(d: Driver, opts: SeekOpts, dist: Int32Array, at: P, tall: numb
   const here = dist[idx(at.x, at.y)];
   if (here < 0) return undefined;
   const hazard = (n: number) => bbl[n].chHitPt < 0;
+  // MAXIMUS_GRAB_LOG=1: why loot in view was passed by (once a cell)
+  const why = (i: number, m: string) => {
+    if (!process.env.MAXIMUS_GRAB_LOG || g.passed?.has(`${i}${m}`)) return;
+    (g.passed ??= new Set()).add(`${i}${m}`);
+    console.log(`    grab: passed block ${map[i]} at ${i % 100},${Math.floor(i / 100)}: ${m}`);
+  };
   const avoid = (x: number, y: number) => avoid0(x, y) || g.secret(map[idx(x, y)]);
   // cells in view holding loot not gone for yet, with no hazard beside them
   const cand: number[] = [];
@@ -175,10 +183,11 @@ function grabNear(d: Driver, opts: SeekOpts, dist: Int32Array, at: P, tall: numb
       const i = idx(x, y);
       if (g.tried.has(i) || !g.loot(map[i]) || avoid(x, y) || dist[i] < 0) continue;
       // hurt: only what mends
-      if (w.ci.hitpts < (g.careful ?? 100) && bbl[map[i]].chHitPt <= 0) continue;
+      if (w.ci.hitpts < (g.careful ?? 45) && bbl[map[i]].chHitPt <= 0) continue;
       let near = false;
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (hazard(map[idx(x + dx, y + dy)])) near = true;
       if (!near) cand.push(i);
+      else why(i, 'beside a hazard');
     }
   if (!cand.length) return undefined;
   // the way there: open cells only (no doors or fields), never through a secret or a link it should not take
@@ -192,14 +201,25 @@ function grabNear(d: Driver, opts: SeekOpts, dist: Int32Array, at: P, tall: numb
     return true;
   };
   const from = field(at, open);
-  const maxDetour = g.detour ?? 10;
-  const reach = g.reach ?? 12;
+  // the pod and the diving bell cover ground faster than the courier on foot
+  const maxDetour = g.detour ?? (mode === 'fly' ? 16 : 12);
+  const reach = g.reach ?? (mode === 'fly' ? 20 : 16);
   let best: { i: number; detour: number; to: number } | undefined;
   for (const i of cand) {
     const to = from[i];
-    if (to < 0 || to > reach) continue;
+    // a pile of loot is worth going further for than one chip: a few more cells for each other piece beside it
+    let pile = 0;
+    for (const j of cand) if (j !== i && Math.abs(wrap((j % 100) - (i % 100))) <= 3 && Math.abs(wrap(Math.floor(j / 100) - Math.floor(i / 100))) <= 3) pile++;
+    const more = 4 * Math.min(3, pile);
+    if (to < 0 || to > reach + more) {
+      why(i, to < 0 ? 'no open way' : `${to} cells off`);
+      continue;
+    }
     const detour = to + dist[i] - here;
-    if (detour > maxDetour) continue;
+    if (detour > maxDetour + more) {
+      why(i, `detour ${detour}`);
+      continue;
+    }
     if (!best || detour < best.detour || (detour === best.detour && to < best.to)) best = { i, detour, to };
   }
   if (!best) return undefined;
