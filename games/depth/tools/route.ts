@@ -10,7 +10,7 @@ import { farScene, nearScene } from '../src/game';
 import { CROWN, MON } from '../src/ids';
 
 type D = 'up' | 'down' | 'left' | 'right';
-type Step = [number, number, string] | ['pickup'] | ['wait', number] | ['face', D] | ['ride', D, number, number] | ['boss'];
+type Step = [number, number, string] | ['pickup'] | ['wait', number] | ['face', D] | ['ride', D, number, number] | ['boss'] | ['push', D, number];
 
 /** The level's offset in the 100x100 world. */
 function offset(level: Level): [number, number] {
@@ -35,6 +35,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
       await stretch();
     } catch (e) {
       why = String(e);
+      if (process.env.DEBUG) console.log(`  ${label} (wait ${wait}): ${why}`);
       continue;
     }
     const loss = hp - bot.sim.ci.hitpts;
@@ -70,11 +71,17 @@ async function follow(bot: Bot, level: Level, steps: Step[]): Promise<void> {
       bot.say(`rode the slope to ${x},${y}`);
       continue;
     }
+    if (s[0] === 'push') {
+      await bot.push(s[1] as D, s[2] as number);
+      bot.say('charged up');
+      continue;
+    }
     if (s[0] === 'boss') {
       await carefully(bot, 'Count Polygon', 80, () => countPolygon(bot));
       continue;
     }
     const [x, y, label] = s as [number, number, string];
+    await carefully(bot, `${level.name}: light`, 30, () => bot.topUp());
     const changes = /^(ring|exit)/.test(label);
     await carefully(bot, `${level.name}: ${label}`, 30, async () => {
       const r = await bot.goto(ox + x, oy + y, label);
@@ -100,7 +107,19 @@ async function countPolygon(bot: Bot): Promise<void> {
     const i = w.mm.findIndex((m) => mons.has(m.monnum));
     return i < 0 ? undefined : { x: w.mi[i].curx[0], y: w.mi[i].cury[0] };
   };
-  for (let t = 0; t < 1500 && where(counts); t++) if (await bot.tick()) throw new Error('a scene change in the arena');
+  // step into his reach, facing him
+  const c0 = where(counts);
+  if (!c0) throw new Error('no Count Polygon');
+  const r0 = await bot.goto(c0.x - 6, c0.y, 'in reach');
+  if (r0) throw new Error(`in reach: ${r0}`);
+  for (let t = 0; t < 1500 && where(counts); t++) {
+    if (process.env.DEBUG && t % 10 === 0) {
+      const w = bot.sim.w;
+      const ms = w.mm.map((m, i) => (m.monnum < 64 ? `${m.monnum}@${w.mi[i].curx[0]},${w.mi[i].cury[0]}` : '')).filter(Boolean);
+      console.log(`  t${t} ray ${bot.sim.pos.x},${bot.sim.pos.y} hp ${bot.sim.ci.hitpts} ${ms.join(' ')}`);
+    }
+    if (await bot.tick()) throw new Error('a scene change in the arena');
+  }
   if (where(counts)) throw new Error('Count Polygon is still there');
   const c = where(new Set([MON.crown]));
   if (!c) throw new Error('no crown');
@@ -148,7 +167,7 @@ export const ROUTES: Step[][] = [
     [5, 10, 'room D'],
     [26, 12, 'blue lens'],
     [15, 12, 'ring 2 to far'],
-    [15, 4, 'room B'],
+    [14, 5, 'room B'],
     [26, 3, 'red lens'],
     [15, 18, 'room H'],
     [4, 20, 'green lens'],
@@ -171,6 +190,7 @@ export const ROUTES: Step[][] = [
   // 5. Teapot Temple
   [
     [7, 4, 'THE CHEZ'],
+    ['push', 'up', 40],
     [13, 6, 'temple door'],
     [22, 6, 'ring 1 to far'],
     [29, 6, 'red lens'],

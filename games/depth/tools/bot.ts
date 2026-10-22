@@ -249,6 +249,47 @@ export class Bot {
     return p;
   }
 
+  /** The nearest light bulb (a block that gives light when touched), by path. */
+  nearestLight(maxSteps = 24): { x: number; y: number } | undefined {
+    const { x: sx, y: sy } = this.sim.pos;
+    const seen = new Set<number>([sy * 100 + sx]);
+    let ring: [number, number][] = [[sx, sy]];
+    const links = this.linkCells();
+    for (let d = 0; d < maxSteps && ring.length; d++) {
+      const next: [number, number][] = [];
+      for (const [x, y] of ring)
+        for (const s of Object.values(STEP)) {
+          const nx = x + s.x;
+          const ny = y + s.y;
+          const k = ny * 100 + nx;
+          if (seen.has(k) || links.has(`${nx},${ny}`)) continue;
+          seen.add(k);
+          const b = this.sim.shown(nx, ny);
+          if (b.chHitPt > 0 && !b.solid && b.touchBl !== this.sim.blockAt(nx, ny)) return { x: nx, y: ny };
+          if (this.cost(nx, ny) !== undefined) next.push([nx, ny]);
+        }
+      ring = next;
+    }
+    return undefined;
+  }
+
+  /** Low on light: fetch the nearest bulb first. */
+  async topUp(below = 70): Promise<void> {
+    if (this.sim.ci.hitpts >= below) return;
+    const b = this.nearestLight();
+    if (!b) return;
+    const r = await this.goto(b.x, b.y, 'a light bulb');
+    if (r) throw new Error(`light bulb: ${r}`);
+  }
+
+  /** Pushes against a block (THE CHEZ's charge port) for a while. */
+  async push(dir: Dir, ticks: number): Promise<void> {
+    this.sim.press(SCAN[dir]);
+    await this.wait(ticks);
+    this.sim.release(SCAN[dir]);
+    await this.wait(2);
+  }
+
   /** Presses Enter to pick up what Ray is on. */
   async pickup(): Promise<void> {
     this.sim.press(SCAN.enter);

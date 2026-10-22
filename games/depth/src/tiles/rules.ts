@@ -71,7 +71,7 @@ export function rulesFor(o: LevelRules): Rules {
       case 'teapot':
         return { solid: SOLID, birth: { mon: MON.steam, time: 70 } };
       case 'nest':
-        return { solid: SOLID, birth: { mon: MON.bat, time: 90 } };
+        return { solid: SOLID, birth: { mon: MON.bat, time: 160 } };
       case 'chez':
         // plugged in at the rear passenger side: push against it to charge up
         return part === 2 ? { solid: SOLID, hp: 2 } : { solid: SOLID };

@@ -2,7 +2,9 @@
 //
 // Game-Maker's rules: of two monsters that touch, the one with more power kills the other
 // (equal powers ignore each other). A monster under power 100 dies when it touches Ray, after
-// its picture's effects land; 100 and up stays. A monster that dies is reborn as its newmon:
+// its picture's effects land; 100 and up stays (and hurts again every tick it touches). So
+// the henchmen are all under 100: a wireframe that rolls into you costs light once and is
+// rendered by the bump. Only Count Polygon (140) stays. A monster that dies is reborn as its newmon:
 // a wireframe your ray hits becomes a crystal worth points, and Count Polygon loses faces.
 // 'end' is a lifetime in ticks (-1: die at the end of the march, -2: never); 'towards' chases
 // (1..63), flees (negative) or wanders (64 and up).
@@ -37,17 +39,17 @@ export function buildMonsters(sp: SpriteSet): Monster[] {
   const anim = (name: string, n: number, t = 3): [number, number][] => Array.from({ length: n }, (_, f) => [m(`${name}${f}`), t]);
   set[MON.shot] = mon(anim('shot', 1, 4), { power: SHOT_POWER, thru: 1, towards: 9, end: 16, newmon: MON.pop });
   set[MON.pop] = mon(anim('pop', 3, 2), { power: 100, thru: 0, end: 6 });
-  set[MON.wire] = mon(anim('wire', 4, 3), { power: 110, thru: 1, newmon: MON.crystal, upscore: 50 }, patrol(3, 0, 1));
-  set[MON.wireH] = mon(anim('wire', 4, 3), { power: 110, thru: 1, newmon: MON.crystal, upscore: 50 }, patrol(6, 0, 2));
-  set[MON.wireV] = mon(anim('wire', 4, 3), { power: 110, thru: 1, newmon: MON.crystal, upscore: 50 }, patrol(0, 3, 1));
+  set[MON.wire] = mon(anim('wire', 4, 3), { power: 90, thru: 1, newmon: MON.crystal, upscore: 50 }, patrol(3, 0, 1));
+  set[MON.wireH] = mon(anim('wire', 4, 3), { power: 90, thru: 1, newmon: MON.crystal, upscore: 50 }, patrol(6, 0, 2));
+  set[MON.wireV] = mon(anim('wire', 4, 3), { power: 90, thru: 1, newmon: MON.crystal, upscore: 50 }, patrol(0, 3, 1));
   set[MON.crystal] = mon(anim('crystal', 2, 6), { power: 20, thru: 0, end: -2 });
-  set[MON.jaggy] = mon(anim('jaggy', 2, 3), { power: 120, thru: 1, newmon: MON.pop, upscore: 75 }, patrol(4, 0, 2));
-  set[MON.jaggyV] = mon(anim('jaggy', 2, 3), { power: 120, thru: 1, newmon: MON.pop, upscore: 75 }, patrol(0, 4, 2));
+  set[MON.jaggy] = mon(anim('jaggy', 2, 3), { power: 95, thru: 1, newmon: MON.pop, upscore: 75 }, patrol(4, 0, 2));
+  set[MON.jaggyV] = mon(anim('jaggy', 2, 3), { power: 95, thru: 1, newmon: MON.pop, upscore: 75 }, patrol(0, 4, 2));
   set[MON.steam] = mon(anim('steam', 3, 5), { power: 60, thru: 1, towards: 2, end: 70, newmon: MON.pop });
   // the dark double: wanders until you come near, then rolls straight at you
   set[MON.mirror] = mon(
     anim('double', 4, 2),
-    { power: 130, thru: 1, towards: 64 + 64, activate: 2, newmon: MON.pop, upscore: 150 },
+    { power: 98, thru: 1, towards: 64 + 64, activate: 2, newmon: MON.pop, upscore: 150 },
     [],
     [corner(0, 0, 2), corner(0, 0, 2), corner(0, 0, 2)],
   );
@@ -75,12 +77,19 @@ export function buildMonsters(sp: SpriteSet): Monster[] {
     square(3, 3, 1),
   );
   set[MON.leo] = mon(anim('leo', 2, 6), { power: 200, thru: 1 }, patrol(4, 0, 1));
-  set[MON.bat] = mon(anim('bat', 2, 2), { power: 105, thru: 0, towards: 2, end: 150, newmon: MON.pop, upscore: 40 });
+  set[MON.bat] = mon(anim('bat', 2, 2), { power: 85, thru: 0, towards: 2, end: 120, newmon: MON.pop, upscore: 40 });
   // Count Polygon: each stage is killed by a shot and reborn with fewer faces
   const stages = [MON.count1, MON.count2, MON.count3, MON.count4, MON.count5];
   stages.forEach((id, s) => {
     const next = s < 4 ? stages[s + 1] : MON.crown;
-    set[id] = mon(anim(`count${s}_`, 2, 5), { power: 140, thru: 1, towards: s < 4 ? 1 + (s > 1 ? 1 : 0) : 2, newmon: next, upscore: 500 + s * 250 });
+    // he waits at the vanishing point until you come within reach, then glides at you
+    const speed = s < 2 ? 1 : 2;
+    set[id] = mon(
+      anim(`count${s}_`, 2, 5),
+      { power: 140, thru: 1, activate: 2, newmon: next, upscore: 500 + s * 250 },
+      [corner(0, 0, 1)],
+      [corner(0, 0, speed), corner(0, 0, speed), corner(0, 0, speed)],
+    );
   });
   // the crown matches the shot's power, so a stray shot can't destroy it; it stays where it
   // fell, and touching it counts it (again and again: the gate only needs one)
@@ -103,7 +112,7 @@ export function monsterTouches(sp: SpriteSet, mbl: Block[]): void {
   each('gwinn', 4, { chHitPt: 1 });
   each('leo', 2, { chHitPt: 1 });
   each('bat', 2, { chHitPt: -10 });
-  for (let s = 0; s < 5; s++) each(`count${s}_`, 2, { chHitPt: -20 });
+  for (let s = 0; s < 5; s++) each(`count${s}_`, 2, { chHitPt: -6 });
   each('crown', 2, { effect: CROWN, eamt: 1 });
   each('shard', 2, { chHitPt: -15 });
 }
