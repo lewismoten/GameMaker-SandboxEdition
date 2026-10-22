@@ -259,6 +259,7 @@ export const CARDS: Record<string, string[]> = {
   house: ["Gwinn's bed is empty! Sniff", 'out her collar. Doc Leo waits.', 'NEW: SNIFF (S)'],
   night: ['MEANWHILE... last night. YOU', 'are Gwinn. Follow your nose!', 'NEW: BOOF CHEW DIG ZOOMIES'],
   farm: ['MEANWHILE... dawn. Gwinn finds', 'a farm. So many chickens!', 'RIDE THE HAY ELEVATOR'],
+  midway: ['THE FAIR! Earn tickets with', 'tricks. THE BIG DROP takes 3.', 'NEW: TICKETS FOR TRICKS'],
   maze: ['A corn maze! Sniff out her', 'paw prints: they show the way.', 'STEPS GO UP, HOLES GO DOWN'],
   river: ['The rubber chicken is in the', 'river! Sit for the miller.', 'NEW: SWIM WITH THE CURRENT'],
   main: ['Her leash is on the gazebo!', 'Ring bells with a high five.', 'NEW: RING THE BELL (1)'],
