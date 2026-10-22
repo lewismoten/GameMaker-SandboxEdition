@@ -2,3 +2,6 @@
 
 # the Borland compiler, copied in from the original repository to build the DOS source
 /tools/
+
+# macOS Finder
+.DS_Store
