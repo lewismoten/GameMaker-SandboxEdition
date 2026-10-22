@@ -43,7 +43,7 @@
   align-items: center;
   gap: 4px 12px;
 }
-.snd-title h3 {
+.snd-title h2 {
   margin: 0;
 }
 .editor .snd-title .hint {

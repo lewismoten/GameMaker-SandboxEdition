@@ -175,7 +175,7 @@ registerEditor(['snd'], (host, project, file) => {
         h(
           'div',
           { class: 'snd-title' },
-          h('h3', null, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`),
+          h('h2', null, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`),
           h('p', { class: 'hint' }, current < SOUND_NAMES.length ? 'Played automatically by the game.' : 'Use it from a character sequence.'),
           playBtn,
         ),
