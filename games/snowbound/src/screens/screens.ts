@@ -7,6 +7,7 @@ import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
 import { blob, gradient, shadeAt } from '../art/draw';
 import { centered, micro, microWidth, outlined, text, textWidth } from '../art/font';
 import { buildScreenPalette, type Pal } from '../art/pal';
+import { feltEgg } from '../blocks/woods';
 
 export type Spr = Map<string, Pixels>;
 
@@ -364,6 +365,11 @@ export function buildScreens(
   save('loadgame.gif', pad('LOAD GAME'));
   save('savegame.gif', pad('SAVE GAME'));
   save('storybg.gif', pad('THE STORY'));
+  // found in the pines: the felted egg, four times life size, beside the text
+  const woods = pad('IN THE PINES');
+  blob(woods, 250, 134, 30, 5, pal.r('snow'), 2, 4);
+  scaleBlit(woods, feltEgg(c), 210, 58, 4);
+  save('woods.gif', woods);
   const hs = pad('THE COFFEE CAN');
   save('hiscore.gif', hs);
 

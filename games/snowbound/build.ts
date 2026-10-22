@@ -24,7 +24,7 @@ import { buildCharBlocks } from './src/sprites/charBlocks';
 import { buildMonsterBlocks } from './src/sprites/monsterBlocks';
 import { buildMonsters, type MonsterOptions } from './src/characters/monsters';
 import { buildKid, buildSledder } from './src/characters/kid';
-import { CREDITS, INSTRUCTIONS, readme } from './src/screens/text';
+import { CREDITS, INSTRUCTIONS, WOODS, readme } from './src/screens/text';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
 
@@ -119,7 +119,8 @@ const LEVELS: Level[] = [
   },
 ];
 
-// Scenes: 0 title/menu, 1 game won/lost, 2.. the levels in order.
+// Scenes: 0 title/menu, 1 game won/lost, 2.. the levels in order, then the pines.
+const WOODS_SCENE = 2 + LEVELS.length;
 const game = newGame('SNOWBOUND');
 const built = LEVELS.map((l) => ({ l, ...l.build(book) }));
 const cards: Parameters<typeof buildScreens>[1]['cards'] = [];
@@ -166,14 +167,34 @@ built.forEach(({ l, m, start }, i) => {
   scene.links = Array.from({ length: MAXSCENELINKS }, (_, k) => {
     const spec = m.links[k];
     if (!spec) return { toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } };
+    const from = { x: spec.from[0], y: spec.from[1] };
+    if (spec.toScene === 'woods') return { toScene: WOODS_SCENE, from, to: { x: spec.to[0], y: spec.to[1] } };
     const next = built[i + 1];
     const to = spec.toScene === 'won' ? { x: 0, y: 0 } : { x: next.start[0], y: next.start[1] };
-    return { toScene: spec.toScene === 'won' ? 1 : i + 3, from: { x: spec.from[0], y: spec.from[1] }, to };
+    return { toScene: spec.toScene === 'won' ? 1 : i + 3, from, to };
   });
   game.scenes.push(scene);
   console.log(`${l.desc}: $${m.money} to shovel and pick up`);
 });
 console.log(`Total: $${totalMoney} before the mall lot snows over`);
+
+// The pines behind the Gale Street park: the toboggan's link comes here. The scene loads
+// Gale Street again (no monsters, no song) only for its intro, the page about what lay in
+// the hollow, and starts the kid on a link down to the top of Jamie Street, so it is gone
+// on the first tick and a crash on the sled run replays Jamie Street, not this page.
+{
+  const pines = emptyScene(ADVTYPE);
+  pines.desc = 'The Pines';
+  pines.pos = { x: 90, y: 170 };
+  pines.files = ['morning.pal', 'gale.map', 'snow.bbl', '', '', 'kid.chr', 'kid.cbl', 'snow.snd', '', 'woods.lst', ...new Array(10).fill('')];
+  const gale = game.scenes[2].links.find((l) => l.toScene === WOODS_SCENE)!;
+  const jamie = built[1].start;
+  pines.links = Array.from({ length: MAXSCENELINKS }, (_, k) =>
+    k === 0 ? { toScene: 3, from: { ...gale.to }, to: { x: jamie[0], y: jamie[1] } } : { toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } },
+  );
+  if (game.scenes.length !== WOODS_SCENE) throw new Error('The pines must follow the levels');
+  game.scenes.push(pines);
+}
 void shotPal;
 
 const start = game.scenes[0];
@@ -215,6 +236,8 @@ disk.put('story.lst', serializeSlideList([{ name: 'news1.gif' }, { name: 'news2.
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 disk.put('won.lst', serializeSlideList([{ name: 'won1.gif' }, { name: 'arcade.gif' }, { name: 'won2.gif' }, { name: 'won3.gif' }]));
+disk.put('woods.lst', serializeSlideList([{ name: 'woods.gif', pause: 0 }, { name: 'woods.txt' }]));
+disk.put('woods.txt', WOODS);
 disk.put('howto.txt', INSTRUCTIONS);
 disk.put('credits.txt', CREDITS);
 disk.put('title.cmf', titleSong());

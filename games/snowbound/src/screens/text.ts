@@ -177,5 +177,39 @@ Stay warm!
 `.replace(/^\n/, '');
 }
 
+// Found in the pines: two pages beside the felted egg on the notepad, so no line runs
+// past column 23.
+const beside = (lines: string[]) => {
+  for (const l of lines) if (l.length > 23) throw new Error(`Line too long beside the picture: "${l}"`);
+  return page(lines);
+};
+export const WOODS = [
+  beside([
+    'THE MITTEN EGG',
+    '',
+    'Fluffy white felt with',
+    'blue snowflakes in',
+    'lazy-daisy stitch, a',
+    'red mitten with a cuff',
+    'of real yarn, and a',
+    'scarf of red and green',
+    'stripes wrapped around',
+    'its middle.',
+    '',
+    'Shoveled out by',
+    'Lewis "Lewie" Moten III',
+    'winter of 1992.',
+  ]),
+  beside([
+    'A note was frozen to',
+    'it:',
+    '',
+    '"The Word Counter',
+    'jammed at ninety-nine.',
+    'Bring a shovel and',
+    'come quick."',
+  ]),
+].join('\n');
+
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
 export const CREDITS = withCreditPage(CREDITS_TEXT);

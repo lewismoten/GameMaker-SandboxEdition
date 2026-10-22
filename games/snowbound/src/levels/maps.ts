@@ -59,7 +59,7 @@ const LEGEND: Record<string, string> = {
 
 export interface LinkSpec {
   from: [number, number];
-  toScene: 'next' | 'won';
+  toScene: 'next' | 'won' | 'woods';
   to: [number, number];
 }
 
@@ -207,6 +207,24 @@ export function galeStreet(book: BlockBook) {
     'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
   ]);
   m.fill(10, 23, 1, 8, '.');
+  // The pines behind the park. The snowman out back has lost a mitten, and the pine behind
+  // it is only drawn: a trail winds through the woods to a hollow where something lies in
+  // the snow, and an old toboggan waits at the head of a run down to Jamie Street.
+  m.set(18, 30, 'mitten');
+  for (const [x, y] of [
+    [18, 31],
+    [18, 32],
+    [18, 33],
+    [19, 33],
+    [20, 33],
+    [21, 33],
+    [21, 34],
+    [21, 35],
+  ])
+    m.set(x, y, 'pineDrawn');
+  m.patch(18, 36, ['TT....TTT', 'T......TT', 'T......TT', 'TT....TTT']);
+  m.set(22, 38, 'feltEgg').set(25, 37, 'toboggan');
+  m.link(25, 37, 'woods', 24, 37);
   // Dunn Drive runs north-south past the house, plowed down to the asphalt.
   m.fill(8, 4, 2, 27, 'a');
   m.street(10, 18, 'stGaleDunn');
