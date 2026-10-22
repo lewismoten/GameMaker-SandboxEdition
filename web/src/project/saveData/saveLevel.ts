@@ -258,8 +258,8 @@ export function saveMap(files: FileSource, gam: string, save: SavedGame): SaveMa
   const orient = currentFrame(w).orient;
   if (ci.curtop < CHARBL) sprite(0, 0, orient & 15, w.cblk[ci.curtop].pixels, heroSprite, BLEN, BLEN * 2, false);
   if (ci.curbottom < CHARBL) sprite(0, BLEN, orient >> 4, w.cblk[ci.curbottom].pixels, heroSprite, BLEN, BLEN * 2, false);
-  // where renderWorld puts him on the F6 screen, from his feet's block there
-  const heroOffset = ci.scrx > OFFSCRN ? { x: ci.scrx - wrap(hero.x - w.mx, MLEN) * BLEN, y: ci.scry - BLEN - wrap(hero.y - w.my, MWID) * BLEN } : { x: 0, y: -BLEN };
+  // as updateCharScreenPos places him: his block plus the pixels into it
+  const heroOffset = { x: chr.x[1], y: chr.y[1] - BLEN };
   const fits = new Uint8Array(MLEN * MWID);
   for (let y = 0; y < MWID; y++)
     for (let x = 0; x < MLEN; x++) fits[y * MLEN + x] = !shownBlock(w, mapBlock(w, x, y)).solid && !shownBlock(w, mapBlock(w, x, wrap(y - 1, MWID))).solid ? 1 : 0;
