@@ -107,6 +107,7 @@ registerEditor(['bkd'], (host, project, file) => {
     }
     whole.width = img.width;
     whole.height = img.height;
+    whole.style.setProperty('--ar', String(img.width / Math.max(1, img.height)));
     const data = ctx.createImageData(img.width, img.height);
     const out = new Uint32Array(data.data.buffer);
     const l = lut(img.palette);

@@ -57,7 +57,9 @@
   color: var(--muted);
 }
 .bkd-whole {
-  width: 100%;
+  /* as wide as the pane, but short enough that the downloads under it fit the window
+     (--ar: the picture's width over its height, set from backdrop.ts) */
+  width: min(100%, max(240px, calc((100dvh - 410px) * var(--ar, 1.6))));
   height: auto;
   border-radius: 6px;
   background: #000;
@@ -74,6 +76,9 @@
 @media (max-width: 760px) {
   .bkd-layout {
     grid-template-columns: 1fr;
+  }
+  .bkd-whole {
+    width: 100%;
   }
 }
 
