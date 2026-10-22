@@ -395,7 +395,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         ? 'Playing: slide a thumb around the pad to move and tap the buttons to act; Esc, F1 help and F2 status have buttons too. '
         : // each key with its word, the dot after it, so a line never starts with one
           `Playing: ${['F1 help', 'F2 status', 'F3 music', 'F4 sound', 'F5 save', 'F6 load', 'Esc leaves a level'].map((k) => k.replace(/ /g, '\u00a0')).join('\u00a0· ')}. `,
-      h('a', { href: '#/help', onclick: onGuide }, 'Read the Guide →'),
+      h('a', { href: '#/help', onclick: onGuide }, 'Read the Guide\u00a0→'),
     ),
   ];
   // when Getting started has no room beside the library, a link in the library's header opens it
