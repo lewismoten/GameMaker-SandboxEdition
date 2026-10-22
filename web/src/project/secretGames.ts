@@ -1,6 +1,6 @@
 // Secret games: an original game (games/<id>) whose about.json says "secret": true stays out
 // of every listing that goes through loadCatalog / loadCatalogList (the desk shelf, the home
-// page, the retro PC's drives, the catalog printables, the play page) until all eight felt
+// page, the retro PC's drives, the catalog printables, the play page) until all twelve felt
 // eggs are found (eggs/eggState.ts: held in a game's save, or added with EGG.EXE).
 //
 // Nothing the site serves up front names them: the build (web/scripts/cdGames.ts) leaves
@@ -31,7 +31,7 @@ export function idHash(id: string): number {
  * Secret games a dev server started before games/extra.json existed still lists in
  * games/index.json, by idHash (so the source names none). Only that server needs it.
  */
-const OLD_SECRETS: readonly number[] = [0xe1c9f99f];
+const OLD_SECRETS: readonly number[] = [0x3cb23e5f];
 
 /** Whether a dev server from before games/extra.json would list this game in the open. */
 export const isOldSecret = (id: string): boolean => OLD_SECRETS.includes(idHash(id));

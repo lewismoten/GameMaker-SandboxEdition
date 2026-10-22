@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 
 const found = { all: false };
 vi.mock('../src/eggs/eggState', () => ({
-  eggStates: async () => Array.from({ length: 8 }, (_, i) => ({ found: found.all || i < 7 })),
+  eggStates: async () => Array.from({ length: 12 }, (_, i) => ({ found: found.all || i < 11 })),
 }));
 
 import { isOldSecret, secretsListed, withSecretGames } from '../src/project/secretGames';
@@ -21,7 +21,7 @@ describe('secret games', () => {
   beforeEach(() => {
     found.all = false;
     fetches.length = 0;
-    extra = json([{ id: 'brief' }]);
+    extra = json([{ id: 'bakers' }]);
     vi.stubGlobal('fetch', async (url: string) => {
       fetches.push(url);
       return extra ?? new Response('<!doctype html>', { headers: { 'content-type': 'text/html' } });
@@ -35,17 +35,18 @@ describe('secret games', () => {
     expect(secretsListed()).toBe(false);
   });
 
-  it('adds games/extra.json once all eight eggs are found', async () => {
+  it('adds games/extra.json once all twelve eggs are found', async () => {
     found.all = true;
-    expect((await withSecretGames(list)).map((g) => g.id)).toEqual(['teddy', 'logic', 'brief']);
+    expect((await withSecretGames(list)).map((g) => g.id)).toEqual(['teddy', 'logic', 'bakers']);
     expect(fetches).toEqual(['./games/extra.json']);
     expect(secretsListed()).toBe(true);
   });
 
   it('copes with a dev server from before games/extra.json', async () => {
     extra = undefined;
-    const old = [...list, { id: 'brief' }];
-    expect(isOldSecret('brief')).toBe(true);
+    const old = [...list, { id: 'bakers' }];
+    expect(isOldSecret('bakers')).toBe(true);
+    expect(isOldSecret('brief')).toBe(false);
     expect(isOldSecret('teddy')).toBe(false);
     expect((await withSecretGames(old)).map((g) => g.id)).toEqual(['teddy', 'logic']);
     found.all = true;
@@ -54,11 +55,15 @@ describe('secret games', () => {
 
   it('does not list one twice', async () => {
     found.all = true;
-    expect((await withSecretGames([...list, { id: 'brief' }])).map((g) => g.id)).toEqual(['teddy', 'logic', 'brief']);
+    expect((await withSecretGames([...list, { id: 'bakers' }])).map((g) => g.id)).toEqual(['teddy', 'logic', 'bakers']);
   });
 });
 
 describe('the build and secret games', () => {
+  it.skipIf(!existsSync(resolve(__dirname, '../../games/brief/about.json')))('lists KEEP IT BRIEF! in the open', () => {
+    expect(JSON.parse(readFileSync(resolve(__dirname, '../../games/brief/about.json'), 'utf8')).secret).not.toBe(true);
+  });
+
   const cd = resolve(__dirname, '../../cd');
   const games = resolve(__dirname, '../../games');
   const secret = existsSync(games)

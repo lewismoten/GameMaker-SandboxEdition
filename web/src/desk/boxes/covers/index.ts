@@ -6,6 +6,7 @@ import { idHash } from '../../../project/secretGames';
 
 const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   blaster: () => import('./blaster'),
+  brief: () => import('./brief'),
   logic: () => import('./logic'),
   maximus: () => import('./maximus'),
   sandcast: () => import('./sandcast'),
@@ -15,10 +16,12 @@ const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   year2000: () => import('./year2000'),
 };
 
-/** The secret games' covers, by idHash, so the desk's code names none of them (see project/secretGames). */
-const SECRET_COVERS: Record<number, () => Promise<{ default: Painter }>> = {
-  0xe1c9f99f: () => import('./extra'),
-};
+/**
+ * The secret games' covers, by idHash, so the desk's code and chunk names name none of them
+ * (see project/secretGames): e.g. `0x1234abcd: () => import('./extra')` for a cover in
+ * covers/extra.ts. None yet.
+ */
+const SECRET_COVERS: Record<number, () => Promise<{ default: Painter }>> = {};
 
 /** Where the award laurel and the "hours of play" burst sit, clear of each cover's subject. */
 export const SEALS: Record<string, { laurel: 'left' | 'right'; burst: 'left' | 'right' }> = {
