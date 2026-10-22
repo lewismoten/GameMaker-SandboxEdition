@@ -175,7 +175,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     dreams up each song and prompts AI tools to write and record it. Some of those songs have
     become games, shareware “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>,
     <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b>, <b>Loaf #13 (Left in the
-    Basket)</b> and <b>Certified Rat Tickler</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
+    Basket)</b>, <b>Certified Rat Tickler</b> and <b>Where’s the Remote?!</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s.
     Third Goat from the Left and Mustard Seed Hustle: lyrics written by ChatGPT from Lewis’s
     prompts; music made with Riffusion (now Google Flow Music). Third Goat’s cover art was made
@@ -186,6 +186,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     Opus 5.5. Certified Rat Tickler: lyrics written by ChatGPT from Lewis’s prompts (after much
     back and forth); no recording came with it, so its music was composed for the game by Claude
     Opus 5.5, and its title, cover and certificate art were drawn for the game by Claude Opus 5.5.
+    Where’s the Remote?!: lyrics written by ChatGPT from Lewis’s prompt; music: credit pending;
+    its title and cover art were drawn for the game by Claude Opus 5.5.
     The Bard’s logo was
     made with DeepAI, and the photo of Doc Leo is Lewis’s own.
     Each game’s music and sounds are drawn from its song’s recording (Certified Rat Tickler’s were
