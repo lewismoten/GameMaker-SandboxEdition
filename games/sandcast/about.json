@@ -7,6 +7,7 @@
   "blurb": "Teddy the corgi knight takes back the backyard sandbox after his big sister Gwinn's zoomies flattened every castle. Build towers of sand, toss tennis balls, show off your tricks!",
   "exe": "SANDCAST.EXE",
   "sound": "speaker",
+  "egg": { "block": 146 },
   "label": {
     "background": "#f4dfa8",
     "band": "#1f4fa0",
