@@ -1,72 +1,122 @@
 [
   {
     "name": "TEDDY.GIF",
-    "bytes": 127103,
-    "width": 480,
-    "height": 400,
-    "colors": 256
+    "bytes": 37869,
+    "width": 240,
+    "height": 200,
+    "format": "GIF",
+    "colors": 256,
+    "gray": false,
+    "progressive": false
   },
   {
-    "name": "GWINN.GIF",
-    "bytes": 257742,
-    "width": 640,
-    "height": 400,
-    "colors": 256
+    "name": "TEDDY16G.GIF",
+    "bytes": 11548,
+    "width": 240,
+    "height": 200,
+    "format": "GIF",
+    "colors": 16,
+    "gray": true,
+    "progressive": false
+  },
+  {
+    "name": "TEDDY.JPG",
+    "bytes": 6104,
+    "width": 240,
+    "height": 200,
+    "format": "JPEG",
+    "colors": 16777216,
+    "gray": false,
+    "progressive": true
+  },
+  {
+    "name": "GWINN.JPG",
+    "bytes": 15846,
+    "width": 320,
+    "height": 200,
+    "format": "JPEG",
+    "colors": 16777216,
+    "gray": false,
+    "progressive": false
   },
   {
     "name": "GAZEBO.GIF",
-    "bytes": 200087,
-    "width": 640,
-    "height": 400,
-    "colors": 256
+    "bytes": 36872,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 64,
+    "gray": false,
+    "progressive": false
   },
   {
     "name": "HOBO1.GIF",
-    "bytes": 30904,
+    "bytes": 11328,
     "width": 192,
     "height": 200,
-    "colors": 256
+    "format": "GIF",
+    "colors": 16,
+    "gray": true,
+    "progressive": false
   },
   {
     "name": "HOBO2.GIF",
-    "bytes": 43694,
+    "bytes": 14571,
     "width": 320,
     "height": 200,
-    "colors": 128
+    "format": "GIF",
+    "colors": 8,
+    "gray": true,
+    "progressive": false
   },
   {
-    "name": "HOBO3.GIF",
-    "bytes": 164984,
-    "width": 640,
-    "height": 350,
-    "colors": 256
+    "name": "HOBO3.JPG",
+    "bytes": 7204,
+    "width": 320,
+    "height": 174,
+    "format": "JPEG",
+    "colors": 256,
+    "gray": true,
+    "progressive": false
   },
   {
     "name": "COLONIAL.GIF",
-    "bytes": 185187,
-    "width": 608,
-    "height": 400,
-    "colors": 256
+    "bytes": 44609,
+    "width": 304,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
   },
   {
-    "name": "DOGHOUSE.GIF",
-    "bytes": 125903,
-    "width": 360,
-    "height": 400,
-    "colors": 256
+    "name": "DOGHOUSE.JPG",
+    "bytes": 10011,
+    "width": 180,
+    "height": 200,
+    "format": "JPEG",
+    "colors": 16777216,
+    "gray": false,
+    "progressive": true
   },
   {
     "name": "LIBRARY.GIF",
-    "bytes": 24905,
+    "bytes": 14699,
     "width": 210,
     "height": 200,
-    "colors": 64
+    "format": "GIF",
+    "colors": 16,
+    "gray": false,
+    "progressive": false
   },
   {
-    "name": "CHEZ.GIF",
-    "bytes": 176862,
-    "width": 592,
-    "height": 400,
-    "colors": 256
+    "name": "CHEZ.JPG",
+    "bytes": 11713,
+    "width": 296,
+    "height": 200,
+    "format": "JPEG",
+    "colors": 16777216,
+    "gray": false,
+    "progressive": false
   }
 ]
