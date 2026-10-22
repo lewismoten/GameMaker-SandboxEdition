@@ -52,13 +52,6 @@ export const currentRoute = (): HashRoute => parseHash(location.hash);
 /** One setting from the current address. */
 export const hashParam = (name: string): string | undefined => currentRoute().params[name];
 
-/** A whole-number setting from the current address, or undefined when missing or not a number. */
-export function hashNumber(name: string): number | undefined {
-  const v = hashParam(name);
-  if (v === undefined || !/^-?\d+$/.test(v)) return undefined;
-  return Number(v);
-}
-
 /** Merges `changes` into the settings (undefined removes one); the path stays. */
 export function withParams(route: HashRoute, changes: Record<string, ParamValue>): string {
   const params: Record<string, ParamValue> = { ...route.params };
@@ -80,9 +73,6 @@ export function setHashParams(changes: Record<string, ParamValue>, onlyUnder?: r
   const next = withParams(route, changes);
   if (next !== (location.hash || '#/')) history.replaceState(history.state, '', `${location.pathname}${location.search}${next}`);
 }
-
-/** The path of the current address, so an editor can scope its settings to its own file. */
-export const currentPath = (): string[] => currentRoute().path;
 
 export interface ViewState {
   /** A setting, only while the address is still at this view's path. */
