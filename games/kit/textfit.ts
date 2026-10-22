@@ -34,6 +34,8 @@ export interface TextItem {
   y: number;
   col: number;
   text: string;
+  /** The color PLAYGAME asked for (RGBRed and friends); flagged when the screen shows something else. */
+  want?: RGB;
   /** Marker boxes (menu cursors) are solid fills, not glyphs. */
   box?: { w: number; h: number };
 }
@@ -143,7 +145,7 @@ function walk(files: Map<string, Uint8Array>, file: string, s: Shown, gamePal: U
     const lines = textLines(bytes);
     for (let p = 0; p * 16 < lines.length; p++) {
       const texts: TextItem[] = lines.slice(p * 16, p * 16 + 16).map((t, i) => ({ x: 40, y: (5 + i) * 8, col, text: t }));
-      if (lines.length > (p + 1) * 16) texts.push({ x: 224, y: 168, col: red, text: 'MORE...' });
+      if (lines.length > (p + 1) * 16) texts.push({ x: 224, y: 168, col: red, text: 'MORE...', want: RED });
       out.push({ name: `${from}${file}${lines.length > 16 ? ` p${p + 1}` : ''}`, kind: 'page', pixels: s.pixels.slice(), palette: s.palette.slice(), texts });
     }
   } else if (e === '.lst') {
@@ -323,6 +325,11 @@ export function checkTextScreen(s: TextScreen, opts: TextFitOptions = {}, marks?
     if (art > allow) problems.push(`${art} art pixels within ${margin}px`);
     const contrast = contrastRatio(rgb8(s.palette, t.col), paper);
     if (contrast < minContrast) problems.push(`contrast ${contrast.toFixed(2)}`);
+    // A palette that lacks the color (or a text page whose ink was matched in another palette) shows another one.
+    if (t.want) {
+      const shown = [0, 1, 2].map((k) => s.palette[t.col * 3 + k]);
+      if (Math.hypot(shown[0] - t.want[0], shown[1] - t.want[1], shown[2] - t.want[2]) > 30) problems.push(`ink shows as rgb(${shown.join(',')}), not rgb(${t.want.join(',')})`);
+    }
     if (problems.length) issues.push({ screen: s.name, text: t.box ? '[marker]' : t.text, x: t.x, y: t.y, artPixels: art, contrast, problems });
   }
   return issues;
