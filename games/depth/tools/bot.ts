@@ -21,6 +21,10 @@ export class Bot {
   private firing = false;
   /** Cells to keep off (a monster's beat). */
   avoid = new Map<string, number>();
+  /** Cells a detour for loot must keep out of (the two-way mirror and the felt egg's room). */
+  forbid = new Set<string>();
+  /** Loot tried and given up on (a monster in the way), by scene and cell. */
+  private passed = new Set<string>();
   constructor(readonly sim: GameSim) {}
 
   snapshot() {
@@ -112,8 +116,16 @@ export class Bot {
     return 1 + (this.avoid.get(`${x},${y}`) ?? 0);
   }
 
-  path(tx: number, ty: number): Pt[] | undefined {
-    const { x: sx, y: sy } = this.sim.pos;
+  /** A detour's cost: never through a gate (it would spend a lens), anything that hurts or the egg's room. */
+  private safeCost(x: number, y: number): number | undefined {
+    if (this.forbid.has(`${x},${y}`)) return undefined;
+    const b = this.sim.shown(x, y);
+    if (b.solid || b.chHitPt < 0) return undefined;
+    return this.cost(x, y);
+  }
+
+  path(tx: number, ty: number, start: Pt = this.sim.pos, careful = false): Pt[] | undefined {
+    const { x: sx, y: sy } = start;
     const links = this.linkCells();
     const key = (x: number, y: number) => y * 100 + x;
     const dist = new Map<number, number>([[key(sx, sy), 0]]);
@@ -131,7 +143,7 @@ export class Bot {
         if (nx < 0 || ny < 0 || nx > 99 || ny > 99) continue;
         const target = nx === tx && ny === ty;
         if (!target && links.has(`${nx},${ny}`)) continue;
-        const c = this.cost(nx, ny);
+        const c = careful ? this.safeCost(nx, ny) : this.cost(nx, ny);
         if (c === undefined) continue;
         const nd = d + c;
         if (nd < (dist.get(key(nx, ny)) ?? Infinity)) {
@@ -180,9 +192,10 @@ export class Bot {
   }
 
   /** Rolls to (x, y). Returns 'link'/'dead'/'end' when the scene changes on the way. */
-  async goto(x: number, y: number, label = ''): Promise<string | undefined> {
+  async goto(x: number, y: number, label = '', opts: { loot?: boolean; careful?: boolean } = {}): Promise<string | undefined> {
     for (let attempt = 0; attempt < 8; attempt++) {
-      const steps = this.path(x, y);
+      if (opts.loot) await this.grabLoot(x, y);
+      let steps = this.path(x, y, this.sim.pos, opts.careful);
       if (!steps) throw new Error(`No path to ${x},${y} ${label} from ${this.sim.pos.x},${this.sim.pos.y} in scene ${this.sim.scene}`);
       let i = 0;
       let cur = this.sim.pos;
@@ -204,6 +217,17 @@ export class Bot {
         }
         cur = this.sim.pos;
         i = j + 1;
+        if (opts.loot && i < steps.length) {
+          await this.grabLoot(x, y);
+          const p = this.sim.pos;
+          if (p.x !== cur.x || p.y !== cur.y) {
+            const again = this.path(x, y);
+            if (!again) throw new Error(`No path to ${x},${y} ${label} after picking up loot in scene ${this.sim.scene}`);
+            steps = again;
+            i = 0;
+            cur = p;
+          }
+        }
       }
       if (!blocked) {
         if (label) this.say(`at ${label}`);
@@ -219,6 +243,71 @@ export class Bot {
       if (r) return r;
     }
     throw new Error(`Could not reach ${x},${y} ${label}`);
+  }
+
+  /** Loot Ray can see (the 16x10 blocks on screen) that rolling over takes: photons, bulbs, lenses. */
+  private visibleLoot(): Pt[] {
+    const { w } = this.sim;
+    const out: Pt[] = [];
+    for (let by = 0; by < 10; by++)
+      for (let bx = 0; bx < 16; bx++) {
+        const x = (w.mx + bx) % 100;
+        const y = (w.my + by) % 100;
+        const n = this.sim.blockAt(x, y);
+        const b = w.bg[n];
+        if (!b || b.obj || b.solid || b.touchBl === n || b.chHitPt < 0) continue;
+        if (!(b.scorePts > 0 || b.chHitPt > 0 || (b.effect > 0 && b.eamt > 0))) continue;
+        if (this.forbid.has(`${x},${y}`) || this.passed.has(`${this.sim.scene}:${x},${y}`)) continue;
+        out.push({ x, y });
+      }
+    return out;
+  }
+
+  /**
+   * On the way to (tx, ty): picks up what Ray can see when it costs at most `most` extra
+   * cells there and back, nearest first, the way a player would; never through a
+   * gate, a hurt or the egg's room, and a pickup that costs light or a life is taken back.
+   */
+  async grabLoot(tx: number, ty: number, most = 10): Promise<void> {
+    for (let n = 0; n < 12; n++) {
+      const here = this.sim.pos;
+      const direct = this.path(tx, ty)?.length;
+      if (direct === undefined) return;
+      let best: { p: Pt; a: number } | undefined;
+      for (const p of this.visibleLoot()) {
+        const a = this.path(p.x, p.y, here, true)?.length;
+        if (process.env.DEBUG_LOOT && (a === undefined || a > 12)) console.log(`  [${this.sim.scene}] loot ${p.x},${p.y} from ${here.x},${here.y}: ${a ?? 'no path'}`);
+        if (a === undefined || a > 12) continue;
+        const b = this.path(tx, ty, p)?.length;
+        if (b === undefined) continue;
+        const extra = a + b - direct;
+        if (process.env.DEBUG_LOOT) console.log(`  [${this.sim.scene}] loot ${p.x},${p.y} from ${here.x},${here.y}: ${a} + ${b} - ${direct} = ${extra}`);
+        if (extra <= most && (!best || a < best.a)) best = { p, a };
+      }
+      if (!best) return;
+      const { p } = best;
+      const start = this.snapshot();
+      const hp = this.sim.ci.hitpts;
+      const deaths = this.sim.deaths;
+      const scene = this.sim.scene;
+      const blk = this.sim.blockAt(p.x, p.y);
+      let ok = false;
+      let why = '';
+      try {
+        const r = await this.goto(p.x, p.y, '', { careful: true });
+        ok = !r && this.sim.scene === scene && this.sim.deaths === deaths && hp - this.sim.ci.hitpts <= 10 && this.sim.blockAt(p.x, p.y) !== blk;
+        why = `${r} scene ${this.sim.scene} deaths ${this.sim.deaths - deaths} lost ${hp - this.sim.ci.hitpts} blk ${blk}->${this.sim.blockAt(p.x, p.y)}`;
+      } catch (e) {
+        why = String(e);
+      }
+      if (process.env.DEBUG_LOOT && !ok) console.log(`  [${scene}] gave up on ${p.x},${p.y}: ${why}`);
+      if (!ok) {
+        this.restore(start);
+        this.passed.add(`${scene}:${p.x},${p.y}`);
+        continue;
+      }
+      this.say(`picked up loot at ${p.x},${p.y}`);
+    }
   }
 
   /** Taps a direction (turns Ray to face it) without leaving the cell: a step there and back. */

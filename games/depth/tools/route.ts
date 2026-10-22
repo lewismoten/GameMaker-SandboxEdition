@@ -19,6 +19,30 @@ function offset(level: Level): [number, number] {
 }
 
 /**
+ * Where a detour for loot never goes: the two-way mirror, the felt egg and the room behind
+ * the mirror (every cell reached from the egg without crossing a wall or the mirror).
+ */
+export function eggRoom(level: Level): Set<string> {
+  const b = buildLevel(new TileBook(level.theme, rulesFor({ level: level.n })), level);
+  const out = new Set<string>();
+  const at = (x: number, y: number) => b.kinds[y]?.[x] ?? 'void';
+  const todo: [number, number][] = [];
+  for (let y = 0; y < b.height; y++)
+    for (let x = 0; x < b.width; x++) {
+      if (at(x, y) === 'mirrordoor') out.add(`${b.ox + x},${b.oy + y}`);
+      if (at(x, y) === 'egg') todo.push([x, y]);
+    }
+  while (todo.length) {
+    const [x, y] = todo.pop()!;
+    const k = `${b.ox + x},${b.oy + y}`;
+    if (out.has(k) || ['wall', 'void', 'mirrordoor'].includes(at(x, y).split(':')[0])) continue;
+    out.add(k);
+    todo.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+  }
+  return out;
+}
+
+/**
  * Plays a stretch where monsters can catch Ray out: if it costs a life or more than
  * `maxLoss` light, it is taken back and played again after a wait, so he rolls out at a
  * better moment.
@@ -51,6 +75,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
 /** Follows steps; a step onto a ring or the vanishing point must change the scene. */
 async function follow(bot: Bot, level: Level, steps: Step[]): Promise<void> {
   const [ox, oy] = offset(level);
+  bot.forbid = eggRoom(level);
   for (const s of steps) {
     if (s[0] === 'pickup') {
       await bot.pickup();
@@ -84,7 +109,7 @@ async function follow(bot: Bot, level: Level, steps: Step[]): Promise<void> {
     await carefully(bot, `${level.name}: light`, 30, () => bot.topUp());
     const changes = /^(ring|exit)/.test(label);
     await carefully(bot, `${level.name}: ${label}`, 30, async () => {
-      const r = await bot.goto(ox + x, oy + y, label);
+      const r = await bot.goto(ox + x, oy + y, label, { loot: true });
       if (changes && r !== 'link' && r !== 'end') throw new Error(`${label}: no scene change (${r})`);
       if (!changes && r) throw new Error(`${label}: ${r}`);
     });
