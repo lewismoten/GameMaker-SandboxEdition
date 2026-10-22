@@ -1,0 +1,29 @@
+{
+  "title": "BAKER'S DOZEN: The Thirteenth Ingredient",
+  "pages": [
+    {
+      "head": "The Story",
+      "html": "<h1>BAKER'S DOZEN</h1><h2>The Thirteenth Ingredient</h2><p>Every Fourth of July, <b>Doc Leo's root beer stand</b> pours the Baker Family Root Beer. Doc Leo is a Baker on his mother's side. He does not talk about it. Nobody in the family talks about it.</p><p>The story goes that in 1776, <b>Corporal Ebenezer Baker</b> crept into a Redcoat supply tent for a loaf of bread and came out with a recipe card instead. The British never recovered. Historians say it was the French, the weather and General Washington. Historians were not there.</p><p>This year, <b>Gwinn ate the card</b>. (Gwinn has two n's. The card had twelve ingredients. She got all twelve, and the corner.)</p><p>The only other copy is the kitchen itself. Ebenezer kept every ingredient in the old family kitchen under the bakery, and he built it to keep out Redcoats. It still works. It works much too well.</p><shot map=\"pantry.map\" x=\"2\" y=\"2\" w=\"16\" h=\"10\" caption=\"The Pantry. Teddy will show you the stairs.\"></shot>"
+    },
+    {
+      "head": "Getting Started",
+      "html": "<h1>Getting Started</h1><p>Type <kbd>BAKERS</kbd> and press <kbd>Enter</kbd>. You need a VGA display. A Sound Blaster plays the march, the squawks and Gerald's bubbling; without one, the PC speaker squawks for you.</p><h2>Keys</h2><table><tr><td><kbd>Arrows</kbd>, <kbd>W A S D</kbd> or the number pad</td><td>Walk one step (hold to keep walking)</td></tr><tr><td><kbd>Space</kbd></td><td>Squawk the rubber chicken</td></tr><tr><td><kbd>Enter</kbd></td><td>Pick up what you are standing on</td></tr><tr><td><kbd>K</kbd></td><td>The kazoo (once you have found it)</td></tr><tr><td><kbd>T</kbd></td><td>Tip the tricorn (once you have found it). It does nothing. Ebenezer insisted.</td></tr><tr><td><kbd>F1</kbd></td><td>Help</td></tr><tr><td><kbd>F2</kbd></td><td>What you carry. <b>Money</b> counts ingredients: Ebenezer paid his debts in sassafras.</td></tr><tr><td><kbd>F5</kbd> / <kbd>F6</kbd></td><td>Save / load</td></tr><tr><td><kbd>Esc</kbd></td><td>Back to the menu</td></tr></table>"
+    },
+    {
+      "head": "Ebenezer's Kitchen",
+      "html": "<h1>Ebenezer's Kitchen</h1><p>Thirteen rooms, one on top of the next. Each keeps one ingredient on a little rug. Walk onto it and you have it, and the dumbwaiter takes you up to the next room. The page of the recipe card it came from goes in your pocket.</p><p>Ebenezer built the kitchen to confuse the Redcoats, and it confuses everybody:</p><ul><li><b>False walls.</b> Some walls are not walls. Lean on things.</li><li><b>Very clean glass.</b> Some floors are walls.</li><li><b>Swing doors</b> only push one way. The arrow says which.</li><li><b>Belts and downpipes</b> carry you to the end, like it or not. <b>Greased boards</b> do the same, and look like boards.</li><li><b>Panels 1 and 2</b> take turns: when one set is up, the other is down, every three seconds.</li><li><b>Dough rises</b> (and foam). After a while it closes the shortcut for good.</li><li><b>Ice thaws</b>, and doors on kitchen timers open, when they are ready and not before.</li><li><b>Spoon latches</b> open for a wooden spoon. Each takes one.</li></ul><shot map=\"clock.map\" x=\"2\" y=\"2\" w=\"16\" h=\"10\" caption=\"The Clock Room. The 1s are up. Wait three seconds.\"></shot>"
+    },
+    {
+      "head": "Hazards",
+      "html": "<h1>Hazards</h1><p>Doc Leo has five lives and one trick, playing dead, which he does very well. One touch of anything below and the room starts over:</p><ul><li><b>Rolling pins</b> and <b>clock hands</b> on their beats</li><li><b>Ovens</b>, <b>kegs</b>, <b>teapots</b> and <b>cappers</b> that fire things</li><li><b>Hot plates</b>, which glow before they burn</li><li><b>Mousetraps</b>, some of which look like floorboards</li><li><b>Toy Redcoats</b> marching on their beats</li></ul><p><b>Mice</b> and <b>ants</b> only nibble your score. A <b>squawk</b> of the rubber chicken sends a mouse running and a Redcoat off under a white flag, for a while.</p><p><b>Bottle caps</b> are 50 points. A <b>root beer float</b> is 250. A slice of Grandma's <b>pie</b> is a life (it plays the music box).</p><shot map=\"tearoom.map\" x=\"2\" y=\"2\" w=\"16\" h=\"8\" caption=\"The Tea Room. Redcoats do not like rubber chickens. Nobody does.\"></shot>"
+    },
+    {
+      "head": "The Recipe",
+      "html": "<h1>The Recipe</h1><p>The Baker Family Root Beer serves a baker's dozen. The card lists twelve ingredients. The family has added footnotes since 1776, mostly about Tories.</p><p>Your box includes a <b>facsimile of the card</b>, reconstructed from memory, Gwinn's teeth marks, and the family's assurances that it is close enough. The thirteenth line has been left blank, as it always has been.</p><p>When you have all twelve, the Vault's door has twelve keyholes. It counts. It gives them back. It does not keep anything except the other half of the card.</p><shot map=\"vault.map\" x=\"14\" y=\"6\" w=\"16\" h=\"8\" caption=\"The Vault. Twelve keyholes.\"></shot>"
+    },
+    {
+      "head": "Credits",
+      "html": "<h1>Credits</h1><p><b>Game design, rooms, art, music and every block of the kitchen:</b> Claude Opus 5.5</p><p><b>Starring:</b> Doc Leo, PhD (Comedic Science), as himself; Teddy, a corgi who knows left from right; Gwinn (two n's), as the dog who ate the card; THE CHEZ, a 1976 CitiCar, at four miles an hour; and Gerald, a yeast, age 250</p><p><b>Recipe:</b> the Baker family, 1776 (allegedly)</p><p><b>Published by</b> Sandbox Software, 1996. There is no order form. If you have this disk, you found it.</p><p>Made with Game-Maker 3.0 from Recreational Software Designs.</p><p>No Redcoats were harmed. Several were startled.</p>"
+    }
+  ]
+}

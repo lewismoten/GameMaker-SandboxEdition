@@ -254,6 +254,24 @@ export class Bot {
     return r;
   }
 
+  /** The first wait (in ticks, up to 90) after which these steps are safe, tried on copies. */
+  private async safeDelay(steps: Dir[]): Promise<number | undefined> {
+    for (let k = 0; k <= 90; k += 3) {
+      const snap = this.sim.snapshot();
+      this.trying++;
+      const lives = this.sim.ci.lives;
+      const deaths = this.sim.deaths;
+      let r = await this.wait(k);
+      for (const d of steps) if (!r) r = await this.stepRaw(d, 3);
+      if (!r) r = await this.wait(4);
+      const ok = this.sim.deaths === deaths && this.sim.ci.lives === lives && r !== 'dead';
+      this.sim.restore(snap);
+      this.trying--;
+      if (ok) return k;
+    }
+    return undefined;
+  }
+
   /** Hit points (and lives) a choice costs over the next stretch, tried on a copy. */
   private async trial(d: Dir | undefined, then: Dir | undefined): Promise<number> {
     const snap = this.sim.snapshot();
@@ -325,6 +343,14 @@ export class Bot {
         const then = path[1]?.d;
         let least = await this.trial(first.d, then);
         if (least > 0) {
+          // wait for a gap: the first delay after which the next few steps cost nothing
+          const k = await this.safeDelay(path.slice(0, 3).map((x) => x.d));
+          if (k !== undefined) {
+            let r = await this.wait(k);
+            for (const st of path.slice(0, 3)) if (!r && this.sim.scene === scene) r = await this.stepRaw(st.d, 3);
+            if (r) return r;
+            continue;
+          }
           for (const o of [undefined, ...DIRS.filter((x) => x !== first.d)] as (Dir | undefined)[]) {
             const lost = await this.trial(o, o ? undefined : first.d);
             if (lost < least) (least = lost), (move = o);
