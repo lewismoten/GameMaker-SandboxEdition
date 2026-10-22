@@ -30,11 +30,11 @@ export interface Played {
   keys: { tick: number; key: number }[];
 }
 
-export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: BlockSet, chr: Character, moves = b.spec.solution): Promise<Played> {
+export async function playSolution(b: Board, tiles: BlockSet, mb: BlockSet, cb: BlockSet, chr: Character, moves = b.spec.solution, ci = newCharInfo()): Promise<Played> {
   const sim = new Sim(
     { map: b.map, bbl: tiles.build(), mbl: mb.build(), mon: b.mons.build(), chr, cbl: cb.build(), links: [{ from: b.exit, to: b.exit }] },
     b.start,
-    newCharInfo(),
+    ci,
   );
   const keys: Played['keys'] = [];
   sim.onKey = (key) => keys.push({ tick: sim.ticks, key });
