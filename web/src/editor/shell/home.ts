@@ -56,7 +56,7 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[]
     id: 'shareware',
     icon: 'lock',
     name: 'Shareware',
-    lead: 'Games other people made with Game-Maker, as distributed on the CD. They are copyrighted by their authors and can only be played here, exactly as released. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
+    lead: 'Games other people made with Game-Maker, from the CD and the BBSes. Most are copyrighted shareware that can only be played here, exactly as released; a few are free to share. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
   },
 ];
 
