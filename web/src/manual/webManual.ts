@@ -171,10 +171,10 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <h3>The Bard of Bizarre</h3>
     <p>The Bard of Bizarre is the name Lewis “Lewie” Moten III gives his songs,
     performed as his hobo clown, Doc Leo. He started with Christian songs, but the Bard isn’t limited to them. Some of those songs have become games, shareware
-    “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>. Once there are four or
+    “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b> and <b>Mustard Seed Hustle</b>. Once there are four or
     more, they get a Bizarre collection of their own on the home page.</p>
-    <p>The words are Lewis’s. The song recordings and cover art were made with Riffusion (now
-    Google Flow Music), the Bard’s logo with DeepAI, and the photo of Doc Leo is Lewis’s own.
+    <p>The words are Lewis’s. The recording and cover art of Third Goat from the Left were made
+    with Riffusion (now Google Flow Music); Mustard Seed Hustle’s are credited in its game. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own.
     Each game’s music and sounds are drawn from its song’s recording; its code, pictures and
     levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
