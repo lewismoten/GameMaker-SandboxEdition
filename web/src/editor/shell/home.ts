@@ -17,21 +17,28 @@ import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
 import { icon, type IconName } from './homeIcons';
 import { wantsTouchControls } from '../../player/touch';
-import { findOriginal } from './homeOrigin';
+import { findOriginal, isImported } from './homeOrigin';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
 
 export interface HomeNav {
   openProject(id: string): void;
 }
 
-type Category = GameKind;
+/** A collection: a kind of game, with your own games split into those made here and those imported. */
+type Category = GameKind | 'imported';
 
 const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[] = [
   {
     id: 'mine',
     icon: 'edit',
     name: 'My games',
-    lead: 'Games you are making or have copied, kept in this browser. Download a .zip now and then to keep them safe.',
+    lead: 'Games you made here or copied from the collections, kept in this browser. Download a .zip now and then to keep them safe.',
+  },
+  {
+    id: 'imported',
+    icon: 'inbox',
+    name: 'Imported',
+    lead: 'Games brought in from a folder, files, a .zip or a one-page export, often made by someone else. Kept in this browser; ⋯ More moves one to My games.',
   },
   {
     id: 'gameware',
@@ -146,7 +153,13 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   let sort = savedSort();
   const sorted = () => (sort === 'name' ? [...projects].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })) : projects);
   const mine = (p: (typeof projects)[number]) => remember(projectGame(p, findOriginal(p, catalog)));
-  const gamesOf = (c: Category): HomeGame[] => (c === 'mine' ? sorted().map(mine) : entriesOf(c).map((e) => remember(catalogGame(e, c))));
+  /** Your games made here (My games) or imported. */
+  const own = (c: Category) => (c === 'mine' || c === 'imported' ? projects.filter((p) => isImported(p.id) === (c === 'imported')) : []);
+  const isOwn = (c: Category) => c === 'mine' || c === 'imported';
+  const gamesOf = (c: Category): HomeGame[] =>
+    isOwn(c) ? sorted().filter((p) => isImported(p.id) === (c === 'imported')).map(mine) : entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind)));
+  /** The collection a game is listed in. */
+  const categoryOf = (g: HomeGame): Category => (g.project && isImported(g.project.id) ? 'imported' : g.kind);
   // My games in the order you like: the one edited last first, or by name
   const sortBox = h(
     'label',
@@ -162,7 +175,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           } catch {
             /* not remembered */
           }
-          void select('mine');
+          void select(current);
         },
       },
       h('option', { value: 'edited', selected: sort === 'edited' }, 'Last edited'),
@@ -247,7 +260,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // The collections are tabs: arrow keys move between them, Tab goes on to the games.
   const renderCats = () => {
-    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.id === 'mine' ? projects.length : entriesOf(c.id).length]));
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, isOwn(c.id) ? own(c.id).length : entriesOf(c.id).length]));
     clear(
       catNav,
       ...CATEGORIES.map((c) =>
@@ -311,13 +324,13 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const info = CATEGORIES.find((x) => x.id === c)!;
     libTitle.textContent = info.name;
     libLead.textContent = info.lead;
-    sortBox.hidden = c !== 'mine' || projects.length < 2;
+    sortBox.hidden = !isOwn(c) || own(c).length < 2;
     clear(
       libTools,
-      c === 'mine' ? drop : null,
+      isOwn(c) ? drop : null,
     );
     let cards: HTMLElement[];
-    if (c !== 'mine' && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
+    if (!isOwn(c) && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
     else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) }));
     if (!cards.length)
       cards = [
@@ -335,7 +348,14 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
                 h('button', { type: 'button', onclick: () => void select('sandbox', true).then(() => document.getElementById('lib-tab-sandbox')?.focus()) }, 'Browse Sandbox'),
               ),
             )
-          : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
+          : c === 'imported'
+            ? h(
+                'div',
+                { class: 'lib-empty' },
+                h('p', { class: 'lib-empty-title' }, 'No imported games yet'),
+                h('p', { class: 'meta' }, 'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you open it above.'),
+              )
+            : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
       ];
     // Keep the page from jumping while the tiles are swapped.
     tiles.style.minHeight = `${tiles.offsetHeight}px`;
@@ -457,7 +477,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   });
 
   projects = await listProjects().catch(() => []);
-  if (!savedCategory() && projects.length) current = 'mine';
+  if (!savedCategory() && projects.length) current = own('mine').length ? 'mine' : 'imported';
   renderCats();
   try {
     catalog = await loadCatalog();
@@ -468,7 +488,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const chosen = findGame(hashKey());
   if (chosen) {
     top.show(chosen, {});
-    current = chosen.kind;
+    current = categoryOf(chosen);
   } else {
     // your own games live in the browser that made them: a link to one opens only there
     if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: “Save & share” downloads it.');

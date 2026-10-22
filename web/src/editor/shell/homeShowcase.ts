@@ -8,6 +8,7 @@ import { h, clear, promptText, toast } from '../core/ui';
 import { demoDialogButton, demoInPicture, gameActions, type HomeGame, type GameKind } from './homeCards';
 import { healthBadge, healthNote } from './gameHealth';
 import { icon } from './homeIcons';
+import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 
 const KIND_LABEL: Record<GameKind, string> = {
@@ -87,7 +88,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
 
     clear(
       label,
-      h('span', { class: `sc-chip kind-${game.kind}` }, KIND_LABEL[game.kind]),
+      h('span', { class: `sc-chip kind-${game.kind}` }, game.project && isImported(game.project.id) ? 'Imported' : KIND_LABEL[game.kind]),
       how.featured ? h('span', { class: 'sc-featured', title: 'Picked at random' }, '★ Featured') : null,
       how.resume ? h('span', { class: 'sc-resume' }, 'Continue where you left off') : null,
       how.featured && how.onAnother ? h('button', { class: 'sc-another', onclick: how.onAnother, title: 'Feature another game' }, icon('dice'), 'Another') : null,
