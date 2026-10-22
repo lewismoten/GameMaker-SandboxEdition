@@ -1,5 +1,5 @@
 // Development aid: renders each level's map (with its monsters) to PNGs in OUT.
-//   cd web && OUT=<dir> npx vite-node ../games/year2000/tools/try.ts
+//   cd web && OUT=<dir> npx vite-node ../games/year2000/tools/maps.ts
 import { citySet, moonSet, suburbSet } from '../src/blocks/blocks';
 import type { BlockSet } from '../src/blocks/book';
 import type { LevelMap } from '../src/levels/mapkit';
