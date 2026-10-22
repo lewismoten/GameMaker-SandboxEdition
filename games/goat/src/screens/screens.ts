@@ -1,5 +1,4 @@
-// The 320x200 pictures: The Bard of Bizarre's logo, the title (the song's cover art), the
-// menu, the story's night over Bethlehem, the level cards, the parchment behind text pages,
+// The 320x200 pictures: the title (the song's cover art), the menu, the story's night over Bethlehem, the level cards, the parchment behind text pages,
 // the high scores, the endings and the credits (with Doc Leo). Photos and art are dithered
 // into each picture's free palette entries (kit/photo.ts).
 import { Pixels, rng } from '../../../kit/pixels';
@@ -55,17 +54,6 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     }
     p.rect(0, ground, W, H - ground, c('night', 0));
   };
-
-  // ---------------- the publisher's logo
-  {
-    const p = new Pixels(W, H, c('purple', 0));
-    const text1 = 'presents';
-    outlined(p, 160 - textWidth(text1) / 2, 186, text1, c('cloth', 3), ink);
-    const logo = resample(loadScan('bardlogo'), 168, 0, [0.04, 0.02, 0.96, 0.98]);
-    const reserved = [c('cloth', 3), ink];
-    const { pal: own } = pastePhoto(p, pal.pal, logo, 76, 6, { colors: 90, reserved });
-    save('bard.gif', p, own);
-  }
 
   // ---------------- title: the song's cover, with the name over its sky
   {
