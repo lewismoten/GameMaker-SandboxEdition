@@ -1,6 +1,6 @@
-// The Big Top Egg: felted like Doc Leo's own clown egg. Cream felt with red big-top stripes
-// that meet at the top like a circus tent, rainbow polka dots, a corgi-orange paw print on
-// its side, a ring of blue running stitch around its middle and a tiny red pom-pom nose.
+// The Second Paw Egg: butterscotch felt walked all over with little brown paw prints, a white
+// felt bone appliqued on its side with a red bow tied round it, and a collar of blue rickrack
+// round its middle with a tiny brass tag that reads "2".
 import { Pixels } from '../../../kit/pixels';
 import { shadeAt } from '../art/draw';
 import { P } from '../art/pal';
@@ -28,14 +28,10 @@ export function drawEgg(p: Pixels, x: number, y: number, w = 14, h = 18): Pixels
       if (!inside(px, py)) continue;
       const nx = (px + 0.5 - cx) / rx;
       const ny = (py + 0.5 - cy) / (py + 0.5 < cy ? ryTop : ryBot);
-      const light = Math.max(0, Math.min(1, 0.75 - 0.45 * nx - 0.35 * ny));
-      // big-top stripes: bands that pinch together at the top of the egg like a tent
-      const t = Math.max(0.12, (py - y + 0.5) / h);
-      const band = Math.floor(((px + 0.5 - cx) / (rx * Math.sqrt(t))) * 1.5 + 10.5);
-      const striped = band % 2 === 0;
+      const light = Math.max(0, Math.min(1, 0.8 - 0.45 * nx - 0.35 * ny));
       // felt: a fuzzy dither, never a flat fill
       const fuzz = ((px * 7 + py * 13) % 5) / 10 - 0.2;
-      p.set(px, py, striped ? shadeAt(r('red'), 0, 3, light + fuzz * 0.6, px, py) : shadeAt(r('fur'), 0, 2, light + 0.2 + fuzz, px, py));
+      p.set(px, py, shadeAt(r('hay'), 0, 3, light + fuzz * 0.6, px, py));
     }
   // an ink outline so it reads against anything
   for (let py = y - 1; py <= y + h; py++)
@@ -43,47 +39,39 @@ export function drawEgg(p: Pixels, x: number, y: number, w = 14, h = 18): Pixels
       if (inside(px, py)) continue;
       if (inside(px - 1, py) || inside(px + 1, py) || inside(px, py - 1) || inside(px, py + 1)) p.set(px, py, ink);
     }
-  // rainbow polka dots, on the cream and the red alike
-  const d = Math.max(1, Math.round(w / 14));
-  const dots: [number, number, string][] = [
-    [0.22, 0.3, 'yellow'],
-    [0.72, 0.26, 'blue'],
-    [0.14, 0.58, 'green'],
-    [0.86, 0.5, 'purple'],
-    [0.5, 0.12, 'green'],
-    [0.7, 0.86, 'yellow'],
-    [0.3, 0.84, 'blue'],
-    [0.46, 0.42, 'purple'],
-  ];
-  for (const [fx, fy, ramp] of dots) {
+  const k = Math.max(1, Math.round(w / 14));
+  // little brown paw prints walking all over it
+  const paw = (fx: number, fy: number) => {
     const px = Math.round(x + fx * w);
     const py = Math.round(y + fy * h);
-    if (inside(px, py) && inside(px + d - 1, py + d - 1)) p.rect(px, py, d, d, c(ramp, 3));
-  }
-  // a ring of blue running stitch around the middle
-  const sy = Math.round(y + h * 0.6);
-  for (let px = x; px < x + w; px++) if (inside(px, sy) && (px - x) % 3 !== 2) p.set(px, sy, c('blue', 2));
-  // a corgi-orange paw print on the side, appliqued on a round cream patch
-  const k = Math.max(1, Math.round(w / 14));
-  const pawX = Math.round(cx + w * 0.12);
-  const pawY = Math.round(y + h * 0.74);
-  const pr = 3 * k;
-  for (let py = pawY - pr - k; py <= pawY + pr - k; py++)
-    for (let px = pawX - pr; px <= pawX + pr; px++)
-      if ((px - pawX) ** 2 + (py - pawY + k) ** 2 <= pr * pr + 1 && inside(px, py)) p.set(px, py, c('fur', 2));
-  p.rect(pawX - k, pawY, 3 * k, 2 * k, c('corgi', 3));
-  for (const [tx, ty] of [
-    [-2, -2],
-    [0, -3],
-    [2, -2],
+    if (!inside(px, py) || !inside(px + 2 * k, py + k)) return;
+    p.rect(px, py, 2 * k, k, c('wood', 1));
+    p.rect(px - k, py - k, k, k, c('wood', 1)).rect(px + 2 * k, py - k, k, k, c('wood', 1));
+    if (k > 1) p.rect(px + Math.floor(k / 2), py - 2 * k, k, k, c('wood', 1));
+  };
+  for (const [fx, fy] of [
+    [0.3, 0.2],
+    [0.6, 0.12],
+    [0.18, 0.42],
+    [0.72, 0.36],
+    [0.5, 0.82],
+    [0.22, 0.78],
   ])
-    p.rect(pawX + tx * k, pawY + ty * k, k, k, c('corgi', 3));
-  // the tiny red pom-pom nose on top
-  const nx0 = Math.round(cx) - 1 - k;
-  const ny0 = y - 2 * k;
-  p.rect(nx0, ny0, 2 + k * 2, 2 + k, ink);
-  p.rect(nx0 + 1, ny0 - 1, k * 2, 1, ink);
-  p.rect(nx0 + 1, ny0, k * 2, 1 + k, c('red', 3)).set(nx0 + 1, ny0, c('fur', 2));
+    paw(fx, fy);
+  // a collar of blue rickrack round the middle, and its tiny brass tag
+  const sy = Math.round(y + h * 0.6);
+  for (let px = x; px < x + w; px++) if (inside(px, sy)) p.set(px, sy + ((px - x) % 2), c('blue', 2));
+  const tx = Math.round(cx - k);
+  p.rect(tx, sy + 2, 2 * k, 2 * k, c('gold', 2)).set(tx, sy + 2, c('gold', 1));
+  if (k > 1) p.rect(tx + Math.floor(k / 2), sy + 2 + Math.floor(k / 2), k, k, ink);
+  // a white felt bone appliqued on the side, a red bow tied round its middle
+  const bx = Math.round(cx - w * 0.28);
+  const by = Math.round(y + h * 0.36);
+  const bw = Math.round(w * 0.56);
+  p.rect(bx + k, by, bw - 2 * k, 2 * k, c('fur', 2));
+  for (const ex of [bx, bx + bw - 2 * k]) p.rect(ex, by - k, 2 * k, k, c('fur', 2)).rect(ex, by + 2 * k, 2 * k, k, c('fur', 2));
+  const mx = Math.round(bx + bw / 2) - k;
+  p.rect(mx, by - k, 2 * k, 4 * k, c('red', 2)).rect(mx - k, by - 2 * k, k, k, c('red', 3)).rect(mx + 2 * k, by - 2 * k, k, k, c('red', 3));
   return p;
 }
 
@@ -94,10 +82,10 @@ export function eggBlock(base: Pixels): Pixels {
   return drawEgg(p, 3, 2, 14, 17);
 }
 
-/** A tiny egg, 4 x 5, for a glimpse of one on a shelf. */
+/** A tiny egg, 4 x 5, for a glimpse of one. */
 export function tinyEgg(p: Pixels, x: number, y: number): Pixels {
-  p.rect(x + 1, y, 2, 1, c('fur', 2));
-  p.rect(x, y + 1, 4, 3, c('fur', 2)).rect(x + 1, y + 4, 2, 1, c('fur', 1));
-  p.set(x + 1, y + 1, c('red', 2)).set(x + 1, y + 2, c('red', 2)).set(x + 3, y + 2, c('red', 1)).set(x + 2, y + 3, c('blue', 2));
+  p.rect(x + 1, y, 2, 1, c('hay', 3));
+  p.rect(x, y + 1, 4, 3, c('hay', 2)).rect(x + 1, y + 4, 2, 1, c('hay', 1));
+  p.set(x + 1, y + 1, c('wood', 1)).set(x + 3, y + 2, c('wood', 1)).set(x + 2, y + 3, c('blue', 2));
   return p;
 }
