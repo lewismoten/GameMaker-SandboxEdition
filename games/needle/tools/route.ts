@@ -1,5 +1,6 @@
 // The way through the game, as orders for the bot.
 import { GOLD, GRACE, THREAD } from '../src/ids';
+import { ORIGIN } from '../src/levels/maps';
 import { Bot } from './bot';
 
 const expect = (bot: Bot, scene: number, what: string) => {
@@ -47,6 +48,12 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
   throw new Error(`${label}: no safe moment (${why})\n${bot.log.slice(-10).join('\n')}`);
 }
 
+/** Something picked up on the way (level block x, y): it must be gone, not still lying there giving points. */
+function picked(bot: Bot, x: number, y: number, what: string): void {
+  const b = bot.sim.shown(x + ORIGIN, y + ORIGIN);
+  if (b.scorePts > 0 || b.chHitPt > 0) throw new Error(`missed ${what} at ${x},${y}`);
+}
+
 export const gold = (bot: Bot) => bot.sim.meter(GOLD) - 1;
 export const grace = (bot: Bot) => bot.sim.meter(GRACE) - 1;
 export const thread = (bot: Bot) => bot.sim.meter(THREAD) - 1;
@@ -59,6 +66,10 @@ export async function theCity(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the first stall', 12, async () => {
     await must(bot, bot.walk(23, 'the beggar'), 'beggar');
+    // up the crates and a sideways hop onto the stall's awning for the coin glinting there
+    await must(bot, bot.walk(26, 'up the crates'), 'crates');
+    await must(bot, bot.hop('left', 18, 'left', 20.5), 'onto the awning');
+    picked(bot, 20, 5, 'the coin on the awning');
     await must(bot, bot.walk(28, 'the widow'), 'widow');
   });
   await carefully(bot, 'over the roofs', 12, async () => {
@@ -75,6 +86,8 @@ export async function theCity(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the crates', 12, async () => {
     await must(bot, bot.walk(66, 'up the crates to the lamp'), 'crates');
+    await must(bot, bot.walk(67.2, 'down to the jar'), 'jar');
+    picked(bot, 67, 9, 'the jar by the crates');
     await must(bot, bot.walk(69, 'the needle gate'), 'gate');
   });
   if (gold(bot) !== 6 || grace(bot) !== 4) throw new Error(`gold ${gold(bot)}, grace ${grace(bot)} at the needle gate`);
@@ -101,6 +114,12 @@ export async function theDesert(bot: Bot): Promise<void> {
     [36, 'the second gusts'],
   ] as const) {
     await carefully(bot, label, 12, async () => {
+      if (x === 36) {
+        // a hop in the calm for the coin glinting over the sand
+        await must(bot, bot.walk(33, 'under the coin'), label);
+        await must(bot, bot.hop('up'), 'up for the coin');
+        picked(bot, 33, 6, 'the coin in the sandstorm');
+      }
       await must(bot, bot.walk(x - 0.1, label), label);
       if (bot.px.x < (x - 1) * 20) throw new Error(`blown back to ${bot.px.x / 20}`);
     });
@@ -116,6 +135,10 @@ export async function theDesert(bot: Bot): Promise<void> {
   await carefully(bot, 'the oasis', 12, async () => {
     await must(bot, bot.walk(58, 'the pool'), 'pool');
     await must(bot, bot.walk(63, 'the traveler at the oasis'), 'traveler');
+    // a sideways hop back up onto the goat's ledge for the coin and the dates
+    await must(bot, bot.hop('left', 18, 'left', 59), 'onto the ledge');
+    picked(bot, 59, 5, 'the coin on the ledge');
+    picked(bot, 60, 5, 'the dates on the ledge');
   });
   await carefully(bot, 'the dunes', 12, async () => {
     await must(bot, bot.walk(69, 'the top of the dune'), 'top');
@@ -186,6 +209,8 @@ export async function theEye(bot: Bot): Promise<void> {
     if (row() !== 10) throw new Error(`not on the cloud at 10 (${bot.at.y})`);
     await must(bot, bot.hop('right', 10, 'right', 20), 'up the next cloud');
     if (row() !== 7) throw new Error(`not on the cloud at 7 (${bot.at.y})`);
+    await must(bot, bot.walk(21, "the dove's olive branch"), 'olive');
+    picked(bot, 21, 7, "the dove's olive branch");
     await must(bot, bot.hop('left', 10, 'left', 16), 'up to the eye');
     if (row() !== 5) throw new Error(`not on the cloud at 5 (${bot.at.y})`);
   });
