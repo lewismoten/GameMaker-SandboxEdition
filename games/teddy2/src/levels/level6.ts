@@ -47,8 +47,8 @@ export function maze(): Level {
   // steps up, holes down
   m.set(22, 37, 'step');
   m.set(40, 33, 'step');
-  m.set(56, 32, 'drop').set(56, 33, 'drop');
-  m.set(61, 36, 'drop').set(61, 37, 'drop');
+  m.rect(54, 32, 3, 2, 'drop');
+  m.rect(59, 36, 3, 2, 'drop');
   m.set(27, 30, 'scareTop').set(27, 31, 'scareBot');
   m.set(15, 35, 'signLost');
 
@@ -68,8 +68,8 @@ export function maze(): Level {
   m.mon(21, 39, 'scent_up');
   m.mon(39, 35, 'scent_up');
   m.mon(42, 31, 'scent_left');
-  m.mon(55, 31, 'scent_down');
-  m.mon(60, 35, 'scent_down');
+  m.mon(52, 31, 'scent_down');
+  m.mon(57, 35, 'scent_down');
   m.mon(30, 31, 'scentStick');
   m.mon(29, 39, 'scentBone');
   m.mon(13, 35, 'scentPoodle');
@@ -100,10 +100,8 @@ export function maze(): Level {
     [45, 31],
     [48, 31],
     [51, 31],
-    [58, 31],
     [48, 35],
     [52, 35],
-    [55, 35],
     [53, 39],
     [57, 39],
     [66, 39],
