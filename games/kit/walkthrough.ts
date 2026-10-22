@@ -62,6 +62,6 @@ export async function writeWalkthrough(id: string, walk: Omit<Walkthrough, 'vers
   const path = join(gamesDir, id, 'walkthrough.json');
   writeFileSync(path, JSON.stringify(full, null, 1) + '\n');
   const sec = r.frames / WALKTHROUGH_FPS;
-  console.log(`${id}: walkthrough reaches the ending; video ${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, '0')}, ${r.chapters.length} chapters -> ${path}`);
+  console.log(`${id}: walkthrough reaches the ending; video ${Math.floor(Math.round(sec) / 60)}:${String(Math.round(sec) % 60).padStart(2, '0')}, ${r.chapters.length} chapters -> ${path}`);
   return r;
 }
