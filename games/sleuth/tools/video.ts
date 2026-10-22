@@ -14,6 +14,8 @@ const first = s.trail[0];
 await writeWalkthrough('sleuth', {
   // GameSim draws every scene's monsters from one rng(7)
   rand: { seed: 7, per: 'game' },
+  // the case files are dense: give each text page time to be read
+  hold: 15,
   segments: [{ scene: first, keys: encodeKeys(s.keys) }],
   chapters: [
     { scene: ix.act1, title: 'Act One: The Paragon Theatre' },

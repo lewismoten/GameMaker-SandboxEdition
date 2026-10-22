@@ -5,6 +5,7 @@
   "seed": 7,
   "per": "game"
  },
+ "hold": 15,
  "segments": [
   {
    "scene": 2,
@@ -35,7 +36,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 70875,
+  "frames": 107149,
   "chapters": [
    {
     "title": "Opening",
@@ -43,35 +44,35 @@
    },
    {
     "title": "Story",
-    "frame": 1315
+    "frame": 1434
    },
    {
     "title": "Act One: The Paragon Theatre",
-    "frame": 3838
+    "frame": 5634
    },
    {
     "title": "The Green Room, Midnight",
-    "frame": 7683
+    "frame": 9719
    },
    {
     "title": "Act Two: The Theatre at Night",
-    "frame": 28629
+    "frame": 42428
    },
    {
     "title": "The Green Room, 2 AM",
-    "frame": 37909
+    "frame": 54049
    },
    {
     "title": "Dawn: The Accusation",
-    "frame": 62560
+    "frame": 92954
    },
    {
     "title": "Ending",
-    "frame": 65309
+    "frame": 97383
    },
    {
     "title": "Credits",
-    "frame": 68843
+    "frame": 103437
    }
   ]
  }
