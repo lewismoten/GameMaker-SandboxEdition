@@ -10,6 +10,7 @@ import { healthBadge, healthNote } from './gameHealth';
 import { icon } from './homeIcons';
 import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
+import { walkthroughButton } from '../../walkthrough/button';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -128,6 +129,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     playBtn.addEventListener('click', () => (demo ? demo.stop() : play()));
 
     clear(actions, ...gameActions(game, nav, refresh));
+    const walk = walkthroughButton(game.entry, () => game.files());
+    if (walk) actions.insertBefore(walk, actions.querySelector('.card-more'));
     clear(notes, game.health?.released ? healthNote(game.health) : null);
     void game.hasDemo().then((yes) => {
       if (gen !== generation || !yes) return;

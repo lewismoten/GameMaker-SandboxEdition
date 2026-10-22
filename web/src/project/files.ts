@@ -159,7 +159,8 @@ export interface CatalogEntry {
   /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
   gz?: boolean;
   /** From games/catalog.json: its notice, manual and printables are in games/details/<id>.json (withDetails). */
-  details?: boolean;
+  details?: boolean;  /** Original games: the site path of its walkthrough (src/walkthrough), when it has one. */
+  walkthrough?: string;
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
