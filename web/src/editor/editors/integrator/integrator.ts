@@ -40,7 +40,8 @@ import { linksPanel } from './sceneLinks';
 import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
 import { fileUndo } from '../../core/fileUndo';
-import { END_SCREENS, END_SONGS, START_SCREENS, START_SONGS } from './sceneSlots';
+import { screensAndSongs } from './sceneSlots';
+import { screensGrid, songsList } from './sideLists';
 import {
   S,
   inRect,
@@ -554,28 +555,7 @@ registerEditor(['gam'], (host, project, file) => {
     setSideW(Math.max(160, Math.min(640, next[e.key])));
   });
   function renderSide(): void {
-    const screens: { label: string; file: string; scene: number }[] = [];
-    const songs: { label: string; file: string; scene: number }[] = [];
-    game.scenes.forEach((s, i) => {
-      const kind = sceneKind(s);
-      const add = (list: typeof screens, slots: [number, string][], prefix = '') => {
-        for (const [slot, label] of slots) if (s.files[slot]) list.push({ label: prefix + label, file: s.files[slot], scene: i });
-      };
-      if (kind === 'start') (add(screens, START_SCREENS), add(songs, START_SONGS));
-      else if (kind === 'end') (add(screens, END_SCREENS), add(songs, END_SONGS));
-      else if (kind === 'adventure') {
-        const name = s.desc || `Level ${i}`;
-        add(
-          screens,
-          [
-            [9, ' intro'],
-            [10, ' exit'],
-          ],
-          name,
-        );
-        add(songs, [[8, '']], name);
-      }
-    });
+    const { screens, songs } = screensAndSongs(game);
     const pick = (scene: number) => {
       selected = scene;
       centerOn(scene);
@@ -660,40 +640,7 @@ registerEditor(['gam'], (host, project, file) => {
     }
     clear(
       sideBody,
-      now === 'screens'
-        ? screens.length
-          ? h(
-              'div',
-              { class: 'grator-screens' },
-              ...screens.map((g) => {
-                const shot = screenOf(g.file);
-                const fig = h('figure', { class: 'grator-screen', title: `${g.label}: ${g.file}` });
-                const pic = h('button', { class: 'grator-screen-pic', 'aria-label': `Show the scene that uses ${g.file}`, onclick: () => pick(g.scene) });
-                if (shot) {
-                  const c = h('canvas', { class: 'pixel', width: shot.width, height: shot.height });
-                  c.getContext('2d')!.drawImage(shot, 0, 0);
-                  pic.append(c);
-                } else pic.append(h('span', { class: 'grator-noshot' }, g.file));
-                fig.append(pic, h('figcaption', null, h('b', null, g.label), h('span', null, g.file.toLowerCase(), ' ', edit(g.file))));
-                return fig;
-              }),
-            )
-          : h('p', { class: 'hint' }, 'No title, menu or between-level screens yet.')
-        : songs.length
-          ? h(
-              'ul',
-              { class: 'grator-songs' },
-              ...songs.map((m) =>
-                h(
-                  'li',
-                  null,
-                  project.files.has(m.file) ? songButton(m.file) : h('span', { class: 'grator-play' }, '·'),
-                  h('button', { class: 'linklike', onclick: () => pick(m.scene), title: 'Show the scene' }, h('b', null, m.label)),
-                  h('span', { class: 'meta' }, m.file.toLowerCase()),
-                ),
-              ),
-            )
-          : h('p', { class: 'hint' }, 'No Sound Blaster music yet.'),
+      now === 'screens' ? screensGrid(screens, screenOf, pick, edit) : songsList(songs, (f) => project.files.has(f), songButton, pick),
     );
   }
 
