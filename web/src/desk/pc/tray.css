@@ -66,7 +66,8 @@
     left: -40px;
     top: 0;
     width: 830px;
-    height: 212px;
+    /* deep enough for the keyboard (175px, template strip and all) and the lip in front of it */
+    height: 232px;
     /* scaled up a little so the tray keeps its size under the flatter perspective */
     transform: scale(1.1) rotateX(56deg);
     transform-origin: 50% 0;
@@ -75,7 +76,7 @@
   .tray-plane .keyboard {
     position: absolute;
     left: 100px; /* centered under the PC: (660 - 540) / 2 + 40 */
-    top: 46px;
+    top: 34px;
     width: 540px;
     margin: 0;
     transform: none;
@@ -158,7 +159,8 @@
   .tray-handle {
     position: absolute;
     left: 50%;
-    top: 126px;
+    /* on the lip: the plane's last 16px, seen tilted */
+    top: 140px;
     width: 120px;
     height: 22px;
     margin-left: -60px;
