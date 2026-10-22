@@ -266,7 +266,7 @@ function sticker(cx: number, cy: number, r: number): string {
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gmc-red)"/>
     <path id="gmc-arc" d="M ${cx - ar} ${cy} A ${ar} ${ar} 0 0 1 ${cx + ar} ${cy}" fill="none"/>
     <text class="gmc-st-arc"><textPath href="#gmc-arc" startOffset="50%" text-anchor="middle">TECHNICAL SUPPORT</textPath></text>
-    <text class="gmc-st-num" x="${cx}" y="${cy + r * 0.26}" text-anchor="middle">1-800-555-0142</text>
+    <text class="gmc-st-num" x="${cx}" y="${cy + r * 0.26}" text-anchor="middle">1-800-555-0176</text>
     <text class="gmc-st-small" x="${cx}" y="${cy + r * 0.5}" text-anchor="middle">9 AM–6 PM EASTERN</text>
     <text class="gmc-st-small" x="${cx}" y="${cy + r * 0.68}" text-anchor="middle">MONDAY–FRIDAY</text>
     <ellipse cx="${cx - r * 0.3}" cy="${cy - r * 0.5}" rx="${r * 0.42}" ry="${r * 0.16}" fill="rgba(255,255,255,.22)" transform="rotate(-24 ${cx - r * 0.3} ${cy - r * 0.5})"/>
@@ -275,7 +275,7 @@ function sticker(cx: number, cy: number, r: number): string {
 
 export const COVER_ALT =
   'Owner’s Guide cover: GAME-MAKER, Sandbox Edition, Version 3.0, in white on a blue blueprint of a hero drawn pixel by pixel, a joystick, and a diskette. ' +
-  'The bottom of the blueprint is peeled back to show a game made with Game-Maker. A red sticker reads Technical Support, 1-800-555-0142, 9 AM to 6 PM Eastern, Monday to Friday.';
+  'The bottom of the blueprint is peeled back to show a game made with Game-Maker. A red sticker reads Technical Support, 1-800-555-0176, 9 AM to 6 PM Eastern, Monday to Friday.';
 
 /** The cover. `game` is a 320 x 200 game screen (a data URL) to show under the peeled corner. */
 export function gmCover(game?: string, gameTitle?: string): HTMLImageElement {

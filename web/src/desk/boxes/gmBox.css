@@ -507,7 +507,7 @@
 
 /* the red technical support sticker */
 .guide-book strong::after {
-  content: 'TECHNICAL\A SUPPORT\A 1-800-\A 555-0142';
+  content: 'TECHNICAL\A SUPPORT\A 1-800-\A 555-0176';
   white-space: pre;
   position: absolute;
   z-index: 1;
