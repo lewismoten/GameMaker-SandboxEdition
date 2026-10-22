@@ -1,0 +1,61 @@
+/* Pressing the desk keyboard's keys with the pointer (desk/pc/keyboard.ts): a key lights up
+   under the pointer, sinks while held, and Shift/Ctrl/Alt glow while they stick for the next key. */
+.keyboard .key {
+  cursor: pointer;
+  touch-action: none;
+}
+
+@media (hover: hover) {
+  .keyboard .key:hover {
+    background: linear-gradient(#fffdf4, #ece4cc);
+    color: #1d1a12;
+    box-shadow:
+      inset 0 0 0 1px #4f8cff,
+      0 3px 0 #a79e85,
+      0 4px 2px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.keyboard .key.down,
+.keyboard .key.down:hover {
+  background: linear-gradient(#e6dfca, #d2c9b0);
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 1px 0 #a79e85;
+}
+
+/* a modifier clicked once: down until the next key */
+.keyboard .key.latched {
+  background: linear-gradient(#fff2b8, #f0d878);
+  box-shadow:
+    inset 0 0 0 1px #c99a00,
+    0 1px 0 #a79e85;
+}
+
+/* the template's words are buttons: the same print, a pointer and a focus ring */
+.keyboard button.kt-label {
+  margin: 0;
+  padding: 1px 2px;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.keyboard button.kt-label:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.keyboard button.kt-label:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keyboard .key.down,
+  .keyboard .key.down:hover {
+    transition: none;
+  }
+}
