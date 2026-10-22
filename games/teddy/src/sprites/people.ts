@@ -87,10 +87,11 @@ export function docLeo(wearing: Costume = FULL, wave = false): Pixels {
       : ['....oddddo..oddddo..', '....odoodo..odoodo..', '....oddddo..oddddo..', '....oooooo..oooooo..']),
   ];
   if (wearing.chicken) {
-    // the rubber chicken out for a walk on its leash
-    const hen = ['.r.', 'orr', 'oYoe', 'oYo', 'oYYo', 'orro', 'oYYo', '.oo'];
-    for (let i = 25; i < 30; i++) rows[i] = patch(rows[i], 1, 'q');
-    hen.forEach((h, i) => (rows[29 + i] = patch(rows[29 + i], 0, h)));
+    // the rubber chicken in its red harness, dangling from his fist on its short leash
+    const hen = ['..rr.', '.oYYo', 'eeoYo', '..rYo', '..oYo', '.oYYq', 'oYqqq', 'oYYYo', '.oYo.', '.j.j.'];
+    rows[25] = patch(rows[25], 3, 'q');
+    for (let i = 26; i < 32; i++) rows[i] = patch(rows[i], 4, 'q');
+    hen.forEach((h, i) => (rows[27 + i] = patch(rows[27 + i], 0, h)));
   }
   if (wave) {
     // the right hand up: hello!
