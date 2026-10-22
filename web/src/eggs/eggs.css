@@ -266,6 +266,14 @@
   display: none;
 }
 
+/* on a phone it stands under the shadow box, which is drawn larger than the room it takes
+   (scaled 1.4 from its top; three rows of four by the time there is a stand) */
+@media (max-width: 960px) {
+  .egg-stand {
+    margin-top: 62px;
+  }
+}
+
 .egg-stand:focus-visible {
   outline: 3px solid #ffd23f;
   outline-offset: 2px;
