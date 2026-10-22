@@ -2,9 +2,12 @@
 // doctor" for Game-Maker SE on the desk PC. It registers Game-Maker (writes C:\GM\PLAYGAME.REG
 // with a name and key), unregisters it (spoils the key, so CHK.EXE asks the manual again), has
 // a KEYGEN that works the key out as CHK.C checks it, and "cracks" shareware in C:\DOWNLOAD:
-// GAME.EXE is kept as GAME.BAK and the "patched" GAME.EXE shows the group's intro before the
-// game, as cracked games of the day did (uncrack puts the .BAK back). The game itself is not
-// changed, and stays shareware (play only). It touches nothing but this pretend PC.
+// a Game-Maker game's GAME.EXE is XFERPLAY.EXE named after the .GAM it plays (UTILITY.C's
+// transfer; PLAYGAME.C under TRANSFER loads argv[0]'s name + .GAM), so the crack renames it
+// GAME.BAK and puts a "patched" XFERPLAY in under the same GAME.EXE name, with the group's
+// intro before the game as cracked games of the day had (uncrack puts the .BAK back). The
+// game itself is not changed, and stays shareware (play only). It touches nothing but this
+// pretend PC.
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { attr, COLS, ROWS } from '../text/textScreen';
@@ -208,13 +211,14 @@ async function crack(h: RetroHost): Promise<void> {
   const at = hash(g.id);
   clearArea(h);
   put(h, 4, TOP, `|14CRACKING |15${exe} |07(${g.title.slice(0, 48)})`);
-  await step(h, TOP + 2, `Copying ${exe} to ${bakName(exe)}`);
+  await step(h, TOP + 2, `Renaming ${exe} to ${bakName(exe)}`);
   await step(h, TOP + 3, 'Looking for the entry point', `|10found at ${hex(at & 0xffff, 4)}:${hex((at >>> 16) & 0xfff0, 4)}`, 900);
   await step(h, TOP + 4, `Patching 75 ${hex(at & 0x7f, 2)} -> EB ${hex(at & 0x7f, 2)}`);
   await step(h, TOP + 5, `Adding the ${GROUP} intro`);
+  await step(h, TOP + 6, `Writing patched XFERPLAY as ${exe}`);
   pcExtras().setCracked(g.id, true);
-  put(h, 4, TOP + 7, `|10Cracked! |07${exe} starts with the ${GROUP} intro now.`);
-  put(h, 4, TOP + 8, `|07Enjoy it? |14REGISTER it with its author|07${g.price && !/free/i.test(g.price) ? ` (${g.price})` : ''}!`);
+  put(h, 4, TOP + 8, `|10Cracked! |07${exe} starts with the ${GROUP} intro now.`);
+  put(h, 4, TOP + 9, `|07Enjoy it? |14REGISTER it with its author|07${g.price && !/free/i.test(g.price) ? ` (${g.price})` : ''}!`);
   await anyKey(h);
 }
 
