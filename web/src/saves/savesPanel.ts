@@ -28,6 +28,8 @@ import {
   listBackups,
   loadGameSaves,
   maxAll,
+  newGameSave,
+  NEW_SAVE_NAME,
   parseSave,
   putBackup,
   getBackup,
@@ -285,10 +287,11 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         h('header', { class: 'sv-head' }, title),
         s.error
           ? h('p', { class: 'sv-empty' }, `${s.error} `, 'You can download it as it is, or delete it.')
-          : h('p', { class: 'sv-empty' }, 'Nothing saved here yet. In the game, press F5 to save into this slot, or bring in a .sav file.'),
+          : h('p', { class: 'sv-empty' }, 'Nothing saved here yet. In the game, press F5 to save into this slot, start a new save here as the game begins, or bring in a .sav file.'),
         h(
           'div',
           { class: 'sv-tools' },
+          !s.bytes && disk && target.gam ? h('button', { type: 'button', class: 'primary', onclick: () => void newSave(slot), title: 'A saved game at the very start: the first level, with the hero’s starting hit points, lives and items' }, '＋ New save') : null,
           h('button', { type: 'button', onclick: () => void importSav(slot) }, '⇪ Import .sav…'),
           s.bytes ? h('button', { type: 'button', onclick: () => exportSav(slot, s.bytes!) }, '⇩ Download .sav') : null,
           s.bytes ? h('button', { type: 'button', class: 'danger', onclick: () => void removeSlot(slot) }, 'Delete') : null,
@@ -452,6 +455,23 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     await reload();
     toast(`${file.name} is in slot ${slot + 1}.`);
     render();
+  };
+
+  /** An empty slot gets the game as it starts (saveData newGameSave), named; then it can be edited. */
+  const newSave = async (slot: number) => {
+    if (!disk || !target.gam) return;
+    try {
+      const save = newGameSave(disk, target.gam);
+      await safety();
+      await writeSlot(target.saveId, slot, save, NEW_SAVE_NAME);
+      work.delete(slot);
+      await reload();
+      toast(`Slot ${slot + 1}: a new game, as it starts. Rename it or change anything; in the game, F6 loads it.`);
+      render();
+      main.querySelector<HTMLInputElement>(`#sv-name-${slot}`)?.select();
+    } catch (e) {
+      toast(`Could not make a new save: ${(e as Error).message}`, 'error');
+    }
   };
 
   const removeSlot = async (slot: number) => {
