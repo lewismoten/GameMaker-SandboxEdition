@@ -9,6 +9,7 @@ import { serializeMonsters } from '../../web/src/formats/monster';
 import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
+import { parseSlideList } from '../../web/src/formats/graphicScripts';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { PAL } from './src/art/pal';
@@ -55,5 +56,9 @@ disk.put(GAM, serializeGame(game));
 disk.put('license.txt', licenseText('KEEP IT BRIEF! The Tiny Pockets Library'));
 // every file a scene names must be on the disk
 for (const s of game.scenes) for (const f of s.files) if (f && !disk.files.has(f)) throw new Error(`${s.desc} needs ${f}, which is not on the disk`);
+// ...and every file a slide list names
+for (const [name, bytes] of disk.files)
+  if (name.endsWith('.lst'))
+    for (const e of parseSlideList(bytes)) if (!disk.files.has(e.name)) throw new Error(`${name} names ${e.name}, which is not on the disk`);
 disk.write();
 console.log(`${game.scenes.length} scenes`);
