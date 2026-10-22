@@ -59,7 +59,13 @@ and `src/demo.ts` unchanged. That is the test for any refactor here.
 Every game has `tools/walkthrough.ts`. Run it after changing a level: the bot plays the whole
 game, then `kit/walkthrough.ts` replays its keys on the web app's real engine, checks that
 the run reaches the ending and times the chapters for the web app's "Watch walkthrough".
-The other play-testing tools:
+Then run `npx vite-node ../games/kit/playtime.ts`: it sets each box's "Over N hours of
+gameplay!" (`about.json` `box.hours`, the only place a game states its length) from its
+walkthrough, so the claims stay in proportion to how long each game takes. Play time is the
+level chapters only (not Opening, Story, Ending or Credits), and
+`hours = max(1, round(play minutes × 25 / 60))`: 25 claimed minutes per minute of the bot's
+perfect run, which puts the median game on 3 hours. A test (`web/src/desk/boxes/playtime.test.ts`)
+fails until it is rerun. The other play-testing tools:
 
 | game      | command (from `web/`)                                | what it does                                                                    |
 | --------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
