@@ -24,17 +24,17 @@
   align-items: center;
   gap: 12px;
 }
-.mon-who h3 {
+.mon-who h2 {
   margin: 0;
 }
 .mon-anim {
   flex: 1 1 300px;
   min-width: 0;
 }
-.mon-anim h4 {
+.mon-anim h3 {
   margin: 0;
 }
-.mon-anim h4 small {
+.mon-anim h3 small {
   font-weight: 400;
 }
 .mon-frames {
@@ -68,7 +68,7 @@
   gap: 4px 12px;
   margin-bottom: 6px;
 }
-.mon-anim-head h4 {
+.mon-anim-head h3 {
   margin: 0;
 }
 .mon-frame-tools {

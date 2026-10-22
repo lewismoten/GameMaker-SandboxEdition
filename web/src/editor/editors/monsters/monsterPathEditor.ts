@@ -802,7 +802,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
         h(
           'div',
           { class: 'mpath-inspect' },
-          h('h4', null, `Corner ${list.indexOf(cur) + 1}`, h('small', null, ` ${cur.x >= 0 ? '+' : ''}${cur.x}, ${cur.y >= 0 ? '+' : ''}${cur.y}`)),
+          h('h3', null, `Corner ${list.indexOf(cur) + 1}`, h('small', null, ` ${cur.x >= 0 ? '+' : ''}${cur.x}, ${cur.y >= 0 ? '+' : ''}${cur.y}`)),
           h('div', { class: 'meta' }, 'Picture on the way here'),
           orientPicker(cur.i),
           speedControl(cur.i),
