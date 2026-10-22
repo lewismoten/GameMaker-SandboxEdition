@@ -15,7 +15,7 @@ export async function gVertMenu(m: Machine, x: number, y: number, dy: number, co
   const rowY = (c: number) => y - 8 + c * dy;
   let prev = m.screen.getCol(x, rowY(choice));
   m.flushKeys();
-  let idleSince = performance.now();
+  let idleSince = m.now();
   for (;;) {
     m.screen.boxFill(x, rowY(choice), x + 5, rowY(choice) + 4, color);
     const k = m.keyboard.readKey();
@@ -30,12 +30,12 @@ export async function gVertMenu(m: Machine, x: number, y: number, dy: number, co
       }
     }
     if (k) {
-      idleSince = performance.now();
+      idleSince = m.now();
       if (k.ascii === 13) return choice;
       if (k.ascii === 27) return 0;
       if (k.scan === 72) move = -1;
       if (k.scan === 80) move = 1;
-    } else if (performance.now() - idleSince > idleSeconds * 1000) return count + 1;
+    } else if (m.now() - idleSince > idleSeconds * 1000) return count + 1;
     if (move) {
       m.screen.boxFill(x, rowY(choice), x + 5, rowY(choice) + 4, prev);
       choice += move;
@@ -59,7 +59,7 @@ export async function gGet(m: Machine, x: number, y: number, col: number, bcol: 
   };
   for (;;) {
     // GGet blinked by counting delay(1) calls; a fixed 450 ms phase stands in for it.
-    const blinkOn = Math.floor(performance.now() / 450) % 2 === 0;
+    const blinkOn = Math.floor(m.now() / 450) % 2 === 0;
     cursor(blinkOn ? col : bcol);
     const k = m.keyboard.readKey();
     if (!k) {

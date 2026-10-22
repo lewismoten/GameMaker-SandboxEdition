@@ -26,6 +26,17 @@ export interface PointerState {
   clicks: number;
 }
 
+/** How a Machine is driven (the defaults are a live player's). */
+export interface MachineOptions {
+  /**
+   * 'manual': no animation frame loop; whoever made the Machine calls presentFrame() for
+   * each frame, and now() is theirs too (a walkthrough steps the game on a clock of its own).
+   */
+  frames?: 'auto' | 'manual';
+  /** False: the pointer, the desk mouse and the keyboard never reach the game. */
+  input?: boolean;
+}
+
 export class Machine {
   readonly screen: Screen;
   readonly keyboard = new Keyboard();
@@ -36,12 +47,25 @@ export class Machine {
   private frameWaiters: (() => void)[] = [];
   private raf = 0;
   /** The ball mouse on the desk moves the pointer and clicks too. */
-  private offDeskMouse: () => void;
+  private offDeskMouse!: () => void;
 
-  constructor(canvas: HTMLCanvasElement, files: GameFiles, audio = new AudioEngine()) {
+  constructor(canvas: HTMLCanvasElement, files: GameFiles, audio = new AudioEngine(), opts: MachineOptions = {}) {
     this.screen = new Screen(canvas);
     this.files = files;
     this.audio = audio;
+    if (opts.input === false) {
+      this.offDeskMouse = () => undefined;
+      this.keyboard.attach = () => undefined;
+    } else this.listen(canvas);
+    if (opts.frames === 'manual') return;
+    const loop = () => {
+      this.presentFrame();
+      this.raf = requestAnimationFrame(loop);
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+
+  private listen(canvas: HTMLCanvasElement): void {
     canvas.addEventListener('pointerdown', this.onPointer);
     canvas.addEventListener('pointermove', this.onMove);
     const mickeys = new Mickeys();
@@ -56,14 +80,24 @@ export class Machine {
       }
       held = buttons;
     });
-    const loop = () => {
-      this.screen.present();
-      const w = this.frameWaiters;
-      this.frameWaiters = [];
-      w.forEach((f) => f());
-      this.raf = requestAnimationFrame(loop);
-    };
-    this.raf = requestAnimationFrame(loop);
+  }
+
+  /** The time in ms the game goes by (waits, fades, animations, the game clock). */
+  now(): number {
+    return performance.now();
+  }
+
+  /** One display frame: the screen is shown (unless `show` is false) and everything waiting for a frame goes on. */
+  presentFrame(show = true): void {
+    if (show) this.screen.present();
+    const w = this.frameWaiters;
+    this.frameWaiters = [];
+    w.forEach((f) => f());
+  }
+
+  /** How many are waiting for the next frame (a stepped Machine's game is idle when one is). */
+  get frameWaiting(): number {
+    return this.frameWaiters.length;
   }
 
   private toScreen(e: PointerEvent): void {
@@ -112,7 +146,7 @@ export class Machine {
       this.onLoading?.(false);
     }
     // the time spent loading was no GetKey polling on the DOS PC (demo playback)
-    this.polledAt = performance.now();
+    this.polledAt = this.now();
     this.checkAbort();
   }
 
@@ -133,8 +167,8 @@ export class Machine {
   }
 
   async sleep(ms: number): Promise<void> {
-    const end = performance.now() + ms;
-    while (performance.now() < end) await this.frame();
+    const end = this.now() + ms;
+    while (this.now() < end) await this.frame();
   }
 
   takeClick(): boolean {
@@ -149,14 +183,14 @@ export class Machine {
    * button; scan 28 is Enter's), or undefined on time out (the C returned FALSE).
    */
   async pauseTimeKey(seconds = Infinity): Promise<TypedKey | undefined> {
-    const end = performance.now() + seconds * 1000;
+    const end = this.now() + seconds * 1000;
     this.takeClick();
     return this.waiting(async () => {
       for (;;) {
         const k = this.keyboard.readKey();
         if (k) return k;
         if (this.takeClick()) return { scan: 28, ascii: 1, key: '' };
-        if (performance.now() >= end) return undefined;
+        if (this.now() >= end) return undefined;
         await this.frame();
       }
     });
@@ -172,7 +206,7 @@ export class Machine {
    * interrupt and never called GetKey, so it does not count.
    */
   async waiting<T>(fn: () => Promise<T>): Promise<T> {
-    if (this.waitDepth++ === 0) this.polledAt = performance.now();
+    if (this.waitDepth++ === 0) this.polledAt = this.now();
     try {
       return await fn();
     } finally {
@@ -182,7 +216,7 @@ export class Machine {
 
   private pollKeys(): void {
     if (!this.keyPoll || this.waitDepth === 0) return;
-    const now = performance.now();
+    const now = this.now();
     const polls = Math.max(1, Math.round((now - this.polledAt) * POLLS_PER_MS));
     this.polledAt = now;
     for (const key of this.keyPoll(polls)) this.keyboard.feed(key);
@@ -210,10 +244,10 @@ export class Machine {
    */
   async fadeTo(dest: ArrayLike<number>, steps = 65): Promise<void> {
     const from = this.screen.palette.slice();
-    const start = performance.now();
+    const start = this.now();
     const duration = (steps / 70) * 1000;
     for (;;) {
-      const t = Math.min(1, (performance.now() - start) / duration);
+      const t = Math.min(1, (this.now() - start) / duration);
       const step = Math.floor(t * steps);
       const pal = new Uint8Array(PALETTE_SIZE);
       for (let i = 0; i < PALETTE_SIZE; i++) {

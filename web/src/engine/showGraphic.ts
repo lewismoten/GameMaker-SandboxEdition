@@ -132,7 +132,7 @@ export async function playFli(m: Machine, file: string): Promise<boolean> {
   const canvas = newFliCanvas(anim);
   canvas.palette.set(m.screen.palette);
   canvas.pixels.set(m.screen.pixels.subarray(0, Math.min(canvas.pixels.length, m.screen.pixels.length)));
-  let due = performance.now();
+  let due = m.now();
   for (let f = 0; f < anim.frameCount; f++) {
     if (applyFliFrame(anim, f, canvas)) m.screen.setPalette(canvas.palette);
     m.screen.drawImage(canvas.pixels, anim.width, anim.height);
@@ -143,7 +143,7 @@ export async function playFli(m: Machine, file: string): Promise<boolean> {
     }
     due += (anim.speed * 1000) / 70;
     do await m.frame();
-    while (performance.now() < due);
+    while (m.now() < due);
   }
   return true;
 }

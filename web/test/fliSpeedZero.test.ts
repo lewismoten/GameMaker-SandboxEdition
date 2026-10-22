@@ -22,6 +22,7 @@ function fakeMachine(bytes: Uint8Array) {
       frames++;
     },
     checkAbort() {},
+    now: () => performance.now(),
   };
   return { m: m as unknown as Machine, counts: () => ({ frames, draws }) };
 }

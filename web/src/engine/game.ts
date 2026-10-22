@@ -180,7 +180,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
 }
 
 /** play(curlink): from scene 0's link to the end. */
-async function play(s: Session, startLink: number): Promise<void> {
+export async function play(s: Session, startLink: number): Promise<void> {
   const { m, game } = s;
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   let curlink = startLink;
@@ -219,6 +219,7 @@ async function play(s: Session, startLink: number): Promise<void> {
   s.rec.restart();
 
   while (curscene < game.scenes.length && curscene !== 1) {
+    s.onScene?.(curscene);
     if (file(curscene, 9)) await showGraphic(m, file(curscene, 9)!, { gamePalette: s.colors });
     const oldlink = curlink;
     const r = await playScene(s, curscene, oldscene, curlink);
@@ -237,6 +238,7 @@ async function play(s: Session, startLink: number): Promise<void> {
 
   s.rec.pause();
   if (curscene === 1) {
+    s.onScene?.(1);
     await m.need(file(1, 1));
     await m.audio.playSong(m.files.get(file(1, 1) ?? ''));
     if (file(1, 0)) await showGraphic(m, file(1, 0)!, { gamePalette: s.colors });

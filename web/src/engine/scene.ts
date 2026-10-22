@@ -64,6 +64,10 @@ export interface Session {
   onFrame?: (w: World) => void;
   /** Emulated PC speed; read every tick so it can change while playing. */
   speed: SpeedSetting;
+  /** The random numbers a level's monsters get as it loads (default Math.random; a walkthrough seeds them). */
+  rand?: () => () => number;
+  /** Told the scene number each time play() enters a scene (before its picture). */
+  onScene?: (scene: number) => void;
   /**
    * The last level played. loadscene loads into globals, so a level that leaves its
    * palette, block or character slot blank keeps the previous level's (PLAYGAME.C 4239).
@@ -123,7 +127,7 @@ function loadScene(s: Session, scnum: number, prev?: World): LoadedScene | strin
   const cbl = need(6);
   if (missing.length) return missing;
 
-  const world = createWorld(parseMap(map ?? new Uint8Array(0)), { play: () => false });
+  const world = createWorld(parseMap(map ?? new Uint8Array(0)), { play: () => false }, s.rand?.());
   if (pal) world.palette = parsePalette(pal);
   else if (prev) world.palette = prev.palette;
   world.bg = padBlocks(bbl ? parseBlocks(bbl, NBACK) : prev?.bg.slice(0, NBACK), NBACK);
@@ -382,17 +386,17 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   const cpuReady = () => {
     const tps = s.speed.ticksPerSecond;
     if (!tps) return true;
-    const now = performance.now();
+    const now = m.now();
     if (now - lastTickAt < 1000 / tps) return false;
     lastTickAt = now;
     return true;
   };
   // One NewTimer interrupt: the PIT reprogrammed to 8x the BIOS rate, about 145.6 Hz.
   const tickMs = 1000 / TICK_RATE;
-  let last = performance.now();
+  let last = m.now();
   let acc = 0;
   const resync = () => {
-    last = performance.now();
+    last = m.now();
     acc = 0;
   };
 
@@ -506,7 +510,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
 
   while (!done && newlink === MAXSCENELINKS) {
     await m.frame();
-    const now = performance.now();
+    const now = m.now();
     acc += now - last;
     last = now;
     let n = Math.floor(acc / tickMs);
