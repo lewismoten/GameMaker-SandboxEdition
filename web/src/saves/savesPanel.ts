@@ -13,6 +13,7 @@ import { setHashParams } from '../urlState';
 import { SAVES_CHANGED } from '../project/storage';
 import {
   backupNow,
+  changeSaveLevel,
   changedFields,
   cloneSave,
   deleteBackup,
@@ -21,6 +22,11 @@ import {
   gameLabels,
   getField,
   GROUP_LABELS,
+  levelLabel,
+  moveSaveHero,
+  pictureBlock,
+  saveLevels,
+  savePicture,
   HIGH_SCORES,
   HIGH_SCORE_NAME_MAX,
   highScoreFileName,
@@ -105,6 +111,8 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   let backedUp = false;
   /** Slots whose unlimited sequences are shown. */
   const openUnlimited = new Set<number>();
+  /** The last word on moving the hero in a slot (why he can't go there, or where he went). */
+  const whereSay = new Map<number, { text: string; error: boolean }>();
 
   // messages show in the dialog's footer (a toast would sit under the dialog's backdrop)
   const sayEl = h('p', { class: 'sv-say', role: 'status', 'aria-live': 'polite' });
@@ -310,6 +318,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         type: 'button',
         onclick: () => {
           work.delete(slot);
+          whereSay.delete(slot);
           render();
         },
       },
@@ -349,10 +358,10 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       uses: groups.get('uses')?.[0]?.note,
       counters: groups.get('counters')?.[0]?.note,
       inventory: groups.get('inventory')?.[0]?.note,
-      where: 'Shown, not changed: moving the hero needs that level’s map, so travel in the game.',
     };
-    const sets = [...groups].map(([g, list]) =>
-      h(
+    // where the hero is comes first: the picture shows the save at a glance
+    const sets = [...groups].sort(([a], [b]) => Number(b === 'where') - Number(a === 'where')).map(([g, list]) =>
+      g === 'where' ? whereGroup(slot, w) : h(
         'fieldset',
         { class: `sv-group sv-g-${g}` },
         h('legend', null, GROUP_LABELS[g]),
@@ -419,6 +428,151 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     refreshState();
   };
 
+  // ------------------------------------------------------------------ where the hero is
+  /** The level picker, the screen around the hero (click to move him), and his block. */
+  const whereGroup = (slot: number, w: { save: SavedGame; name: string }): HTMLElement => {
+    const save = w.save;
+    const gam = target.gam;
+    const levels = labels && disk && gam ? saveLevels(labels.game) : [];
+    const id = `sv-${slot}-where`;
+    const say = h('p', { class: 'sv-where-say', id: `${id}-say`, role: 'status' });
+    const tell = (text: string, error = false) => {
+      whereSay.set(slot, { text, error });
+      say.textContent = text;
+      say.classList.toggle('error', error);
+    };
+    const last = whereSay.get(slot);
+    if (last) tell(last.text, last.error);
+    /** Puts a changed save in and draws the slot again, keeping focus where it was. */
+    const change = (make: () => SavedGame, done: (next: SavedGame) => string, focus: string) => {
+      try {
+        const next = make();
+        w.save = next;
+        tell(done(next));
+      } catch (e) {
+        tell((e as Error).message, true);
+        return;
+      }
+      render();
+      main.querySelector<HTMLElement>(`#${focus}`)?.focus({ preventScroll: true });
+    };
+    const levelName = (scene: number) => labels?.sceneName(scene) ?? `level ${scene}`;
+    const x = save.world.chr.x[0];
+    const y = save.world.chr.y[0];
+    const who = w.name.trim() || 'The hero';
+
+    const select = h(
+      'select',
+      {
+        id: `${id}-level`,
+        disabled: !levels.length,
+        'aria-describedby': `${id}-say`,
+        onchange: () => {
+          const scene = Number(select.value);
+          change(
+            () => changeSaveLevel(disk!, gam!, save, scene),
+            (n) => `${who} is at the start of ${levelName(n.doscene)} (block ${n.world.chr.x[0]}, ${n.world.chr.y[0]}). Save changes to keep it.`,
+            `${id}-level`,
+          );
+        },
+      },
+      ...levels.map((l) => h('option', { value: String(l.scene), selected: l.scene === save.doscene }, levelLabel(l))),
+      levels.some((l) => l.scene === save.doscene) ? null : h('option', { value: String(save.doscene), selected: true, disabled: true }, labels?.sceneName(save.doscene) ? `Level ${save.doscene}: ${labels.sceneName(save.doscene)}` : `Level ${save.doscene}`),
+    ) as HTMLSelectElement;
+    const restart = h(
+      'button',
+      {
+        type: 'button',
+        id: `${id}-restart`,
+        disabled: !levels.some((l) => l.scene === save.doscene),
+        title: 'Enter this level again from its start, as the game does: its items and monsters come back',
+        onclick: () =>
+          change(
+            () => changeSaveLevel(disk!, gam!, save, save.doscene),
+            (n) => `${who} is back at the start of ${levelName(n.doscene)} (block ${n.world.chr.x[0]}, ${n.world.chr.y[0]}). Save changes to keep it.`,
+            `${id}-restart`,
+          ),
+      },
+      '↺ Level start',
+    );
+    const moveTo = (bx: number, by: number, focus: string) =>
+      change(
+        () => moveSaveHero(disk!, gam!, save, bx, by),
+        () => `${who} moved to block ${bx}, ${by}. Save changes to keep it.`,
+        focus,
+      );
+    const coord = (axis: 'x' | 'y', v: number, label: string) =>
+      h(
+        'label',
+        { class: 'sv-coord', for: `${id}-${axis}` },
+        h('span', null, label),
+        h('input', { type: 'number', id: `${id}-${axis}`, inputmode: 'numeric', min: 0, max: 99, step: 1, value: String(v), 'aria-describedby': `${id}-say` }),
+      );
+    const form = h(
+      'form',
+      {
+        class: 'sv-move',
+        onsubmit: (e: Event) => {
+          e.preventDefault();
+          const bx = Number((form.querySelector(`#${id}-x`) as HTMLInputElement).value);
+          const by = Number((form.querySelector(`#${id}-y`) as HTMLInputElement).value);
+          moveTo(bx, by, `${id}-go`);
+        },
+      },
+      coord('x', x, 'Column'),
+      coord('y', y, 'Row'),
+      h('button', { id: `${id}-go`, disabled: !disk || !gam }, 'Move hero'),
+    );
+
+    let shot: HTMLElement;
+    try {
+      if (!disk || !gam) throw new Error('The game’s files are not here to draw the level.');
+      const pic = savePicture(disk, gam, save);
+      const canvas = document.createElement('canvas');
+      canvas.width = pic.width;
+      canvas.height = pic.height;
+      const ctx = canvas.getContext('2d')!;
+      const img = ctx.createImageData(pic.width, pic.height);
+      for (let i = 0; i < pic.pixels.length; i++) {
+        const c = pic.pixels[i] * 3;
+        const v6 = (n: number) => (n << 2) | (n >> 4);
+        img.data.set([v6(pic.palette[c]), v6(pic.palette[c + 1]), v6(pic.palette[c + 2]), 255], i * 4);
+      }
+      ctx.putImageData(img, 0, 0);
+      const alt = `${who} in ${levelName(save.doscene)} at block ${x}, ${y}`;
+      const el = h('img', { class: 'sv-shot', src: canvas.toDataURL(), alt, width: pic.width, height: pic.height, title: 'Click a spot to move the hero there', draggable: false }) as HTMLImageElement;
+      el.addEventListener('click', (e) => {
+        const r = el.getBoundingClientRect();
+        const b = pictureBlock(pic, ((e.clientX - r.left) * pic.width) / r.width, ((e.clientY - r.top) * pic.height) / r.height);
+        moveTo(b.x, b.y, `${id}-x`);
+      });
+      shot = h('figure', { class: 'sv-shot-box' }, el, h('figcaption', null, 'The screen after F6. Click where the hero should stand (his feet; he is two blocks high).'));
+    } catch (e) {
+      shot = h('p', { class: 'sv-empty' }, `No picture: ${(e as Error).message}`);
+    }
+
+    return h(
+      'fieldset',
+      { class: 'sv-group sv-g-where' },
+      h('legend', null, GROUP_LABELS.where),
+      h(
+        'div',
+        { class: 'sv-where-grid' },
+        shot,
+        h(
+          'div',
+          { class: 'sv-where-tools' },
+          h('label', { class: 'sv-label', for: `${id}-level` }, 'Level'),
+          h('div', { class: 'sv-input' }, select, restart),
+          h('p', { class: 'sv-group-note' }, levels.length ? 'A new level starts where the game enters it, with its items and monsters fresh; score, lives, items and counters stay.' : 'The game’s files are needed to change the level.'),
+          h('span', { class: 'sv-label' }, 'Where the hero stands'),
+          form,
+          say,
+        ),
+      ),
+    );
+  };
+
   const commitSlot = async (slot: number) => {
     const w = work.get(slot);
     if (!w) return;
@@ -426,6 +580,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       await safety();
       await writeSlot(target.saveId, slot, w.save, w.name);
       work.delete(slot);
+      whereSay.delete(slot);
       await reload();
       toast(`Slot ${slot + 1} saved. In the game, F6 loads it.`);
       render();
