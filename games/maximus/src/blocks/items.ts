@@ -213,4 +213,55 @@ export function drawModule(i: number): Pixels {
   return p;
 }
 
+/**
+ * A felt egg, hand-stitched: midnight-blue felt with silver star stitches, a ringed plum
+ * planet on its belly and one long orbit of white chain stitch looping all the way round.
+ */
+export function drawEgg(): Pixels {
+  const p = sprite();
+  const cx = 10;
+  const cy = 10.5;
+  // an egg: narrower at the top
+  const egg = new Mask();
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      const top = y + 0.5 < cy;
+      const dy = (y + 0.5 - cy) / (top ? 8.2 : 7.2);
+      const rx = top ? 6 - dy * dy * 1.6 : 6;
+      if (((x + 0.5 - cx) / rx) ** 2 + dy * dy <= 1) egg.set(x, y);
+    }
+  // felt: soft shading with a fuzzy dither between neighboring shades
+  shade(p, egg, [S('nova', 0), S('hud', 1), S('nova', 1), S('hud', 2)], { dither: true, seed: 12 });
+  // silver star stitches: little crosses and single knots
+  for (const [x, y, big] of [
+    [8, 4, 1],
+    [12, 5, 0],
+    [6, 9, 0],
+    [14, 12, 0],
+    [7, 16, 1],
+    [12, 17, 0],
+  ] as const) {
+    p.set(x, y, big ? WHITE : S('metal', 5));
+    if (big) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) p.set(x + dx, y + dy, S('metal', 4));
+  }
+  // the ringed planet on its belly: plum felt with a gold ring
+  shade(p, new Mask().ellipse(10.5, 13, 2.2, 2.2), [S('plasma', 0), S('plasma', 1), S('plasma', 2)]);
+  for (let x = 7; x <= 13; x++) if (x < 9 || x > 11) p.set(x, x < 10 ? 13 : 12, S('gold', 3));
+  p.set(9, 13, S('gold', 4)).set(10, 13, S('gold', 4)).set(11, 12, S('gold', 4));
+  // the orbit: a tilted loop of white chain stitch; behind the egg it is hidden
+  const seen = new Set<number>();
+  for (let k = 0; k < 120; k++) {
+    const a = (k / 120) * Math.PI * 2;
+    const ox = Math.cos(a) * 9;
+    const oy = Math.sin(a) * 2.2;
+    const x = Math.round(cx - 0.5 + ox * 0.95 + oy * 0.3);
+    const y = Math.round(7.5 - 0.5 - ox * 0.3 + oy * 0.95);
+    if (Math.sin(a) < 0 && egg.get(x, y)) continue;
+    if (seen.has(y * 20 + x)) continue;
+    seen.add(y * 20 + x);
+    p.set(x, y, seen.size % 3 === 0 ? S('pearl', 1) : WHITE);
+  }
+  return outline(p, OUTLINE);
+}
+
 export { PICKUPS as PICKUP_IDS };

@@ -5,6 +5,8 @@
 /** Background block slots shared by every .BBL (same art, same shared palette colors). */
 export const ITEM_BASE = 140; // 140..149: the ten courier modules (inventory objects)
 export const SHARD_BASE = 130; // 130..139: the ten star-shards (planet sets) / shard gates (space set)
+/** 129 in every .BBL: one more inventory object, the same block in all four sets so it can be carried anywhere. */
+export const EGG_BLOCK = 129;
 
 /** Counters: 1 lives, 3 money (credits), 5..19 sequence ammo, 20..29 the star-shards. */
 export const SHARD_COUNTER = 20;
