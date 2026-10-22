@@ -394,6 +394,42 @@
               "a": "Victor Crane stole his play. Pike wrote THE RAVEN'S BRIDE in 1931; the manuscript was in Victor's safe."
             }
           ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind in the theater.",
+              "a": "Somewhere comfy, and only after midnight. Bring your magnifying glass."
+            },
+            {
+              "q": "Where, after midnight?",
+              "a": "The green room, at 2 AM. The sofa looks like any sofa, until you look closer."
+            },
+            {
+              "q": "I give up. Spell it out.",
+              "a": "At 2 AM, carry the magnifying glass from the props room into the green room. Stand just left of the sofa in the bottom right corner and push right into it (it costs one lens charge). The egg shows between the cushions: push again to take it, then step into the empty seat.",
+              "sketch": {
+                "rows": [
+                  "----------------",
+                  "|              |",
+                  "|              |",
+                  "|o            o|",
+                  "|              |",
+                  "|              |",
+                  "|o            o|",
+                  "|              |",
+                  "|         o @X |",
+                  "-==-------------"
+                ],
+                "labels": [
+                  { "x": 2, "y": 1, "text": "THE GREEN ROOM, 2 AM" },
+                  { "x": 3, "y": 4, "text": "o: ARMCHAIRS" },
+                  { "x": 11, "y": 7, "text": "SOFA" }
+                ]
+              }
+            }
+          ]
         }
       ]
     },
