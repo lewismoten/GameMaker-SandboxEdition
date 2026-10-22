@@ -225,7 +225,7 @@
   color: #4a4436;
 }
 
-.rs-in {
+.rs .rs-in {
   box-sizing: border-box;
   width: 100%;
   margin-bottom: 6px;
@@ -238,12 +238,12 @@
   font: 600 17px 'Comic Sans MS', 'Bradley Hand', 'Segoe Print', cursive;
 }
 
-.rs-num {
+.rs .rs-num {
   font-family: 'Courier New', monospace;
   letter-spacing: 0.08em;
 }
 
-.rs-in[aria-invalid='true'] {
+.rs .rs-in[aria-invalid='true'] {
   border-bottom-color: var(--rs-red);
   background: #fbe3e1;
 }
