@@ -34,12 +34,8 @@ function screenMat(img: Picture, x0: number, x1: number, z0: number, z1: number)
       const k = sy % 2 ? 0.8 : 1;
       return [img.rgb[i] * k, img.rgb[i + 1] * k, img.rgb[i + 2] * k];
     },
-    diffuse: 0.15,
-    reflect: 0.08,
-    fresnel: 0.3,
-    spec: 1.2,
-    shine: 120,
-    emit: [0.85, 0.85, 0.85],
+    // a glowing tube: what's on it is what you see
+    flat: true,
   };
 }
 

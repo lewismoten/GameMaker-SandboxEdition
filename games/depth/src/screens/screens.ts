@@ -70,7 +70,7 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   // the end
   const ending = endingFrames();
   files['ending.fli'] = toFli(ending.frames, ending.speed, 3, 1);
-  gif('won1.gif', wonPicture(cast));
+  gif('won1.gif', wonPicture(P.castPicture(false)));
   files['won.lst'] = serializeSlideList([{ name: 'ending.fli', pause: 0 }, { name: 'won1.gif' }]);
   gif('lost.gif', P.lostPicture());
   files['lost.lst'] = serializeSlideList([{ name: 'lost.gif' }]);
