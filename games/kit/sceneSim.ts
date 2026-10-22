@@ -2,7 +2,8 @@
 // scene at a time, built from a game's blocks, map, monsters and character as the build
 // makes them (no disk needed). A game's tools play their levels on it: measure hops, check
 // that every trick or part does its job, let a bot walk a level from its start to its exit,
-// and record the title demo (onKey sees every key event). Used by Teddy's Little Big and
+// and record the title demo (onKey sees every key event); snapshot()/restore() let a bot
+// try a move a few ticks ahead and take it back. Used by Teddy's Little Big and
 // Little Bigger Adventures, Ohm Sweet Ohm and KEEP IT BRIEF!; games that play the built disk
 // scene after scene use gameSim.ts instead.
 import { moveChars } from '../../web/src/engine/character';
@@ -17,7 +18,6 @@ import { MONBL, type Block } from '../../web/src/formats/blocks';
 import type { Character } from '../../web/src/formats/character';
 import type { GameMap } from '../../web/src/formats/map';
 import type { Monster } from '../../web/src/formats/monster';
-import { rng } from './pixels';
 
 export interface SimScene {
   map: GameMap;
@@ -29,6 +29,30 @@ export interface SimScene {
   links?: { from: { x: number; y: number }; to: { x: number; y: number } }[];
   /** Monster names by number (for bots that look for one). */
   names?: string[];
+}
+
+/** What Sim.snapshot() keeps. */
+export interface SimState {
+  w: Omit<World, 'sound' | 'rand' | 'joystick' | 'bg' | 'mblk' | 'cblk' | 'mon' | 'palette' | 'chr'>;
+  chr: Character;
+  randA: number;
+  held: number[];
+  pending: number[];
+  doScroll: boolean;
+  sounds: number;
+  ticks: number;
+  link: number;
+  dead: boolean;
+}
+
+/** A deep copy of plain data (typed arrays sliced). */
+function copy<T>(v: T): T {
+  if (v === null || typeof v !== 'object') return v;
+  if (ArrayBuffer.isView(v)) return (v as unknown as Uint8Array).slice() as T;
+  if (Array.isArray(v)) return v.map(copy) as T;
+  const o: Record<string, unknown> = {};
+  for (const k in v) o[k] = copy((v as Record<string, unknown>)[k]);
+  return o as T;
 }
 
 export class Sim {
@@ -52,7 +76,8 @@ export class Sim {
     /** False for games whose scenes never scroll (one screen each): the scroll window is shut. */
     scroll = true,
   ) {
-    const w = createWorld(scene.map, { play: (n) => (this.sounds.push(n), true) }, rng(seed));
+    this.randA = seed >>> 0;
+    const w = createWorld(scene.map, { play: (n) => (this.sounds.push(n), true) }, () => this.rand());
     w.bg = padBlocks(scene.bbl, BACKBL);
     w.mblk = padBlocks(scene.mbl, MONBL);
     w.cblk = padBlocks(scene.cbl, CHARBL);
@@ -69,6 +94,48 @@ export class Sim {
     // moveCharGrav(reset) and handleJoystick(reset)
     w.gclk = w.clock;
     w.joyOldTime = w.clock;
+  }
+
+  /** kit/pixels.ts rng() (mulberry32), with its state out where a snapshot can keep it. */
+  private randA: number;
+  private rand(): number {
+    this.randA = (this.randA + 0x6d2b79f5) >>> 0;
+    let t = this.randA;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+
+  /** Everything that changes as the scene plays, to try a move and take it back with restore(). */
+  snapshot(): SimState {
+    const { sound, rand, joystick, bg, mblk, cblk, mon, palette, chr, ...rest } = this.w;
+    return {
+      w: copy(rest),
+      chr: { ...chr, x: [...chr.x], y: [...chr.y] },
+      randA: this.randA,
+      held: [...this.held],
+      pending: [...this.pending],
+      doScroll: this.doScroll,
+      sounds: this.sounds.length,
+      ticks: this.ticks,
+      link: this.link,
+      dead: this.dead,
+    };
+  }
+
+  restore(s: SimState): void {
+    const { ci, ...rest } = copy(s.w);
+    // the character info stays the same object (a game's tools carry it on to the next level)
+    Object.assign(this.w, rest, { chr: { ...s.chr, x: [...s.chr.x], y: [...s.chr.y] } });
+    Object.assign(this.w.ci, ci);
+    this.randA = s.randA;
+    this.held = new Set(s.held);
+    this.pending = [...s.pending];
+    this.doScroll = s.doScroll;
+    this.sounds.length = s.sounds;
+    this.ticks = s.ticks;
+    this.link = s.link;
+    this.dead = s.dead;
   }
 
   press(scan: number): void {
