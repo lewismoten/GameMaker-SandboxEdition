@@ -116,7 +116,7 @@ export function limits(b: Built): Limit[] {
     {
       what: 'Palette colors',
       max: '256 (255 drawable; 255 is the sprite clear color)',
-      used: `${SHARED_END} shared + ${roles} per place = ${SHARED_END + roles}; ${pals} palettes, one per scene`,
+      used: `${SHARED_END} shared + ${roles} per place = ${SHARED_END + roles}; ${pals} palettes`,
       where: '*.PAL',
     },
     { what: 'Monsters drawn at once', max: '50', used: 'Maelstrom keeps under it so none goes invisible', where: 'MAEL.MAP' },

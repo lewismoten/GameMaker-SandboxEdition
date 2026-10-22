@@ -160,8 +160,7 @@ PALETTE COLORS
          clear color)
   Used:  86 shared + 169 per
          place = 255; 99
-         palettes, one per
-         scene
+         palettes
   Where: *.PAL
 
 MONSTERS DRAWN AT ONCE
