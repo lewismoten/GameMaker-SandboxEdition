@@ -19,7 +19,7 @@ export const RECIPE: RecipeLine[] = [
   { n: 3, name: 'Nutmeg', line: 'One whole nutmeg. Genuine.', note: 'Not wooden. Connecticut, we are looking at you.', room: 'The Spice Parlor' },
   { n: 4, name: 'Molasses', line: 'One jug of Boston molasses, poured slowly.', note: 'Very slowly. Molasses has never been in a hurry about anything.', room: 'The Bakehouse' },
   { n: 5, name: 'Vanilla Bean', line: 'One bean, smuggled in a tricorn hat.', note: "Ebenezer's hat smelled lovely until 1803.", room: 'The Cold Cellar' },
-  { n: 6, name: 'Boston Harbor Tea', line: 'One pinch, fished out of the harbor on the night of December 16, 1773.', note: 'Slightly salty. That is how you know it is authentic.', room: 'The Tea Room' },
+  { n: 6, name: 'Boston Harbor Tea', line: 'One pinch, fished out of the harbor, Dec. 16, 1773.', note: 'Slightly salty. That is how you know it is authentic.', room: 'The Tea Room' },
   { n: 7, name: 'Cane Sugar', line: 'Two cups, untaxed.', note: 'The tax man was told it was sand. He believed it. He was not a baker.', room: 'The Sugar Room' },
   { n: 8, name: 'Yeast', line: 'One spoonful of Gerald.', note: 'Gerald is the family starter. Gerald is 250 years old. Feed Gerald.', room: 'The Brewery' },
   { n: 9, name: 'Cloves', line: 'Twelve cloves, one for each colony.', note: 'There were thirteen colonies. Georgia brought its own.', room: 'The Clock Room' },
