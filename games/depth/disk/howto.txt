@@ -1,1 +1,63 @@
-Roll with the arrows.
+Count Polygon is stealing the
+polygons out of the render.
+Roll RAY, the chrome sphere,
+through six scenes to each
+one's VANISHING POINT, the
+white light at the end.
+
+ARROWS or W A S D roll. Q/E
+and the keypad corners roll
+on the diagonals. SPACE fires
+a ray of light the way you
+last rolled.
+
+Every scene has two planes:
+NEAR and FAR. Only one is in
+focus at a time.
+SHARP THINGS ARE SOLID.
+A BLUR ISN'T THERE AT ALL.
+
+Roll onto a FOCUS RING to
+pull focus to the other
+plane. Its lens glows the
+color of where it takes you:
+AMBER is near, CYAN is far.
+Ray's bands show which plane
+is in focus.
+
+Glass walkways hold you only
+in their own plane. Violet
+panels come and go: wait for
+them. The void is a long way
+down.
+Find the RED, GREEN and BLUE
+lenses. The RGB gate before
+each vanishing point takes
+one of each. Pulling focus
+brings a scene back the way
+it was (you keep your lenses).
+
+Wireframes, jaggies, bats and
+your dark double cost light.
+Your ray renders a wireframe
+into a crystal: touch it for
+points. Light bulbs, Teddy,
+Gwinn and Doc Leo give light.
+So does THE CHEZ: push on its
+charge port.
+
+Arrows on the ground pull you
+their way. Teapots steam at
+you. Count Polygon loses a few
+faces with every ray.
+
+F1 help      F2 status
+F3 music     F4 sound
+F5 save      F6 load
+ESC quit
+
+NO GLASSES REQUIRED.
+
+
+
+

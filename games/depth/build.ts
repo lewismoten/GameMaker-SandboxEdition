@@ -1,6 +1,7 @@
 // DEPTH PERCEPTION — builds every file of the game into games/depth/disk/.
 //   cd web && npx vite-node ../games/depth/build.ts
 // Everything you see is ray traced here: the blocks, the sprites, the title, the cartoons.
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '../../web/src/formats/blocks';
@@ -59,8 +60,14 @@ LEVELS.forEach((level, i) => {
 });
 disk.put('dark.pal', serializePalette(new Uint8Array(768)));
 
-const screens = buildScreens({ sprites, sets });
+const fast = !!process.env.DEPTH_FAST;
+const screens = buildScreens({ sprites, sets }, fast);
 for (const [name, bytes] of Object.entries(screens.files)) disk.put(name, bytes);
+if (fast) {
+  // keep the pictures from the last full build
+  const dir = join(here, 'disk');
+  if (existsSync(dir)) for (const n of readdirSync(dir)) if (!disk.files.has(n)) disk.put(n, new Uint8Array(readFileSync(join(dir, n))));
+}
 log('screens');
 
 disk.put('depth.gam', serializeGame(buildGame(sets, files, screens.extra)));

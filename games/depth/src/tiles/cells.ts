@@ -101,36 +101,55 @@ const walkway = (c: V): Material => ({
 const amber: Material = { color: NEAR_COL, diffuse: 0.85, spec: 1.0, shine: 70, fresnel: 0.3, emit: [0.12, 0.05, 0] };
 const cyan: Material = { color: FAR_COL, diffuse: 0.75, spec: 1.2, shine: 90, fresnel: 0.35, emit: [0, 0.05, 0.1] };
 
-/** The felt egg (the Prism Egg): black felt, a silver checker band, a violet cube appliqué. */
+/** The felt egg (the Prism Egg): glossy black felt, a vanishing checkerboard in silver stitch
+ * round its bottom, a faceted violet cube on its front and a rainbow of floss across it. */
 export function eggShape(x: number, y: number, z: number, s = 1): Shape {
+  const hh = 0.22 * s;
   const felt: Material = {
     color: (p) => {
-      const lz = (p[2] - z) / s;
-      const band = Math.abs(lz) < 0.05;
-      if (band) return (Math.floor((Math.atan2(p[1] - y, p[0] - x) * 12) / Math.PI) & 1) === 0 ? rgb(200, 205, 225) : rgb(30, 26, 44);
-      // the violet cube on its front
-      const fx = (p[0] - x) / s;
-      if (p[1] > y && Math.abs(fx) < 0.07 && lz > 0.07 && lz < 0.2) return lz > 0.15 ? rgb(170, 130, 240) : fx < 0 ? rgb(122, 79, 208) : rgb(80, 44, 150);
-      return rgb(24, 20, 34);
+      const lz = (p[2] - z) / hh; // -1 bottom .. 1 top
+      const fx = (p[0] - x) / (0.16 * s);
+      const front = p[1] > y;
+      // the rainbow of floss, a slanted band
+      const band = lz - 0.5 + fx * 0.25;
+      if (Math.abs(band) < 0.07) {
+        const hue = (fx + 1) / 2;
+        const k = Math.max(0, Math.min(5, Math.floor(hue * 6)));
+        return [rgb(240, 60, 60), rgb(250, 160, 40), rgb(250, 230, 60), rgb(70, 210, 90), rgb(60, 140, 250), rgb(150, 80, 230)][k];
+      }
+      // the violet cube, three shades so it reads as solid
+      if (front && Math.abs(fx) < 0.42 && lz > -0.25 && lz < 0.32) {
+        if (lz > 0.12 - Math.abs(fx) * 0.25) return rgb(176, 140, 245);
+        return fx < 0 ? rgb(122, 79, 208) : rgb(78, 44, 150);
+      }
+      // a checkerboard floor in silver chain stitch, vanishing round the bottom
+      if (lz < -0.35) {
+        const a = Math.atan2(p[1] - y, p[0] - x) * 4;
+        const v = Math.log(1.05 + lz) * 6;
+        const line = Math.abs(a - Math.round(a)) < 0.09 || Math.abs(v - Math.round(v)) < 0.12;
+        if (line) return rgb(205, 210, 230);
+      }
+      return rgb(22, 18, 32);
     },
     diffuse: 1,
-    spec: 0.15,
-    shine: 8,
+    spec: 0.5,
+    shine: 25,
   };
   const a = 0.17 * s;
   return new Sdf(
     [
-      [x - a, y - a, z - 0.25 * s],
-      [x + a, y + a, z + 0.25 * s],
+      [x - a, y - a, z - hh - 0.02 * s],
+      [x + a, y + a, z + hh + 0.02 * s],
     ],
     (px, py, pz) => {
       const lz = (pz - z) / s;
-      const k = 1 + lz * 0.35; // narrower at the top
-      return sd.ellipsoid((px - x) / k, (py - y) / k, pz - z, 0.16 * s, 0.16 * s, 0.22 * s);
+      const k = 1 - lz * 0.9; // narrower at the top: an egg
+      return sd.ellipsoid((px - x) / k, (py - y) / k, pz - z, 0.15 * s, 0.15 * s, 0.22 * s) * Math.min(1, k);
     },
     [felt],
   );
 }
+
 
 /** A slope: floor tilted downhill toward (dx, dy), with chevrons pointing the way it pulls. */
 function slope(dx: number, dy: number): Kind {

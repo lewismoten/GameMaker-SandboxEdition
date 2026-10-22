@@ -63,6 +63,7 @@ interface State {
   deaths: number;
   trail: number[];
   segments: SceneKeys[];
+  segmentTicks: number[];
 }
 
 export class GameSim {
@@ -78,6 +79,8 @@ export class GameSim {
   ticks = 0;
   /** Keys per scene entered (a scene entered again after a death keeps counting on). */
   segments: SceneKeys[] = [];
+  /** Ticks each finished segment ran. */
+  segmentTicks: number[] = [];
   private lastKeyTick = 0;
   private held = new Set<number>();
   private pending: number[] = [];
@@ -114,6 +117,7 @@ export class GameSim {
     this.link = link;
     this.trail.push(scene);
     if (!again) {
+      if (this.segments.length) this.segmentTicks.push(this.ticks);
       this.segments.push({ scene, keys: [] });
       this.ticks = 0;
       this.lastKeyTick = 0;
@@ -264,6 +268,7 @@ export class GameSim {
       deaths: this.deaths,
       trail: [...this.trail],
       segments: this.segments.map((s) => ({ scene: s.scene, keys: s.keys.slice() })),
+      segmentTicks: [...this.segmentTicks],
     };
   }
 
@@ -286,6 +291,7 @@ export class GameSim {
     this.deaths = s.deaths;
     this.trail = [...s.trail];
     this.segments = s.segments.map((x) => ({ scene: x.scene, keys: x.keys.slice() }));
+    this.segmentTicks = [...s.segmentTicks];
   }
 }
 
