@@ -70,6 +70,8 @@ The other play-testing tools:
 | goat      | `npx vite-node ../games/goat/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | mustard   | `npx vite-node ../games/mustard/tools/check.ts`      | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze |
 | mustard   | `npx vite-node ../games/mustard/tools/gendemo.ts`    | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| loaf      | `npx vite-node ../games/loaf/tools/check.ts`         | the bot rolls the hillside, climbs the wasteland, gathers twelve baskets, goes home |
+| loaf      | `npx vite-node ../games/loaf/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -258,3 +260,16 @@ block that is fully on screen, and a block above a climbing two-high character o
 gusts are air that pulls down and left, coming and going by next/ntime. The title cartoon dithers
 the song's fourteen cover frames (`tools/scans.ts`); the music and five sung clips come from the
 recording through the shared song tools.
+
+**Loaf #13 (Left in the Basket)** (`loaf`). The Bard of Bizarre's gospel slow jam about the loaf
+nobody picked at the feeding of the five thousand, shareware from The Sofa BBS (`"series":
+"bizarre"`). A side-on platformer like the seed's: the loaf rolls (its face goes round with it),
+rises while Up is held, and sings "I'm still bread!" (a clip cut from the song). Warm air over a
+cooking fire is air that lifts, the weave inside the stacked baskets is air with no gravity
+(climb it) and chaff gives way to it; holy crumbs (counter 20) open the lid at seven, each empty
+basket at dusk is gathered up full by a touch (counter 21) and the twelfth only takes you with
+eleven; on the way home the loaf is a second character file, wrapped in the child's cloth, and her
+door takes one holy crumb. No cover came with the song, so the title is a painting drawn in code
+(`src/art/cover.ts`) and quantized into its FLI. The music shows off `kit/songFx.ts`: organ swells
+by program change, the bass drum tuned as the bass, vibrato-twin choirs, stepped scoops, echoes,
+stutters, timpani rolls and dramatic pauses.
