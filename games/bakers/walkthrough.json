@@ -23,6 +23,10 @@
    "keys": "AVAB0AVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBUgByAVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFSwHLBUsBywVQAdAFUAHQBUsBywVLAcsFUAHQBVAB0AVQAdAFUAHQBU0BzQVNAc0FTQHNBVAB0AVQAdAFTQHNBU0="
   },
   {
+   "scene": 18,
+   "keys": "AVAB0AVNAc0FTQHNBU0BzQVNAc0FOQG5CE0BzQVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFUAHQBVAB0AVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVIAcgFTQHNBU0="
+  },
+  {
    "scene": 6,
    "keys": "AVAB0AVNAc0FTQHNzQNNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNC00BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBUgByAVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBVAB0AVQAdAFSwHLBUsBywVLAcsFSwHLBVAB0AVQAdAiUAHQBVAB0AVNAc0FUAHQBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQ=="
   },
@@ -77,6 +81,10 @@
    "title": "Room 4: The Bakehouse"
   },
   {
+   "scene": 18,
+   "title": "Interlude: Under the Stove"
+  },
+  {
    "scene": 6,
    "title": "Room 5: The Cold Cellar"
   },
@@ -115,7 +123,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 45892,
+  "frames": 48035,
   "chapters": [
    {
     "title": "Opening",
@@ -142,48 +150,52 @@
     "frame": 10761
    },
    {
-    "title": "Room 5: The Cold Cellar",
+    "title": "Interlude: Under the Stove",
     "frame": 12720
    },
    {
+    "title": "Room 5: The Cold Cellar",
+    "frame": 14861
+   },
+   {
     "title": "Room 6: The Tea Room",
-    "frame": 16494
+    "frame": 18635
    },
    {
     "title": "Room 7: The Sugar Room",
-    "frame": 19143
+    "frame": 21284
    },
    {
     "title": "Room 8: The Brewery",
-    "frame": 21080
+    "frame": 23221
    },
    {
     "title": "Room 9: The Clock Room",
-    "frame": 24365
+    "frame": 26506
    },
    {
     "title": "Room 10: The Bottling Line",
-    "frame": 27113
+    "frame": 29254
    },
    {
     "title": "Room 11: The Lightning Loft",
-    "frame": 29090
+    "frame": 31231
    },
    {
     "title": "Room 12: The Cistern",
-    "frame": 32292
+    "frame": 34435
    },
    {
     "title": "Room 13: The Vault",
-    "frame": 34900
+    "frame": 37043
    },
    {
     "title": "Ending",
-    "frame": 38045
+    "frame": 40188
    },
    {
     "title": "Credits",
-    "frame": 43856
+    "frame": 45999
    }
   ]
  }
