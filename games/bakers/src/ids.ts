@@ -14,6 +14,8 @@ export const CTR = {
   ingredients: 3,
   /** Skeleton keys carried: a lock door takes one. */
   keys: 20,
+  /** Quarter turns of the Clock Room's lazy Susan (blocks/susan.ts). */
+  turns: 21,
 } as const;
 
 /** Ingredients in the recipe card's list. The thirteenth is not on it. */

@@ -400,6 +400,25 @@ export class Bot {
     return 0;
   }
 
+  /**
+   * Pushes the solid block at (x, y): walks to a free cell beside it and steps into it (a
+   * lazy Susan's handle). Returns true when the block changed (false: it would not budge).
+   */
+  async push(x: number, y: number, label: string): Promise<boolean> {
+    const before = this.nameAt(x, y);
+    const p0 = this.sim.pos;
+    const sides = DIRS.map((d) => ({ d, at: { x: x - STEP[d].x, y: y - STEP[d].y } }))
+      .filter((s) => !this.sim.solidAt(s.at.x, s.at.y))
+      .sort((a, b) => Math.abs(a.at.x - p0.x) + Math.abs(a.at.y - p0.y) - (Math.abs(b.at.x - p0.x) + Math.abs(b.at.y - p0.y)));
+    if (!sides.length) throw new Error(`${label}: nowhere to push ${x},${y} from`);
+    const { d, at } = sides[0];
+    const r = await this.goto(at.x, at.y, label);
+    if (r) throw new Error(`${label}: ${r} on the way to push ${x},${y}`);
+    await this.stepRaw(d);
+    await this.wait(2);
+    return this.nameAt(x, y) !== before;
+  }
+
   /** Picks up what he is standing on (Enter). */
   async pickup(): Promise<void> {
     this.sim.press(SCAN.enter);

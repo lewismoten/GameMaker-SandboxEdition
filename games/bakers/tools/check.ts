@@ -7,7 +7,9 @@ import { roomScene } from '../src/game';
 import { FIXED_BLOCK } from '../src/ids';
 import { Bot } from './bot';
 import { GameSim } from './sim';
-import { SECRET_ROUTE } from './route';
+import { SECRET_ROUTE, SUSAN } from './route';
+import { CTR } from '../src/ids';
+import { ORIGIN } from '../src/levels/room';
 import { playThrough } from './play';
 
 /** Both eggs can be found and kept: the crock off the Larder, the display case off the Vault. */
@@ -33,6 +35,23 @@ async function eggsFound(): Promise<void> {
   }
 }
 
+/** The Clock Room's lazy Susan turns clockwise only: pushed IX right after XII it jams; XII, III, VI, IX hands over the spoon. */
+async function susanTurns(): Promise<void> {
+  const all = compileAll();
+  const sim = new GameSim(undefined, 1);
+  const bot = new Bot(sim, all);
+  sim.warp(roomScene(9), roomScene(9) - 1, 0);
+  const push = (i: number) => bot.push(SUSAN[i][0] + ORIGIN.x, SUSAN[i][1] + ORIGIN.y, `the lazy Susan ${['XII', 'III', 'VI', 'IX'][i]}`);
+  const spoons = sim.meter(CTR.keys);
+  if (await push(3)) throw new Error('The lazy Susan turned at IX before XII');
+  if (!(await push(0))) throw new Error('The lazy Susan would not turn at XII');
+  if (await push(3)) throw new Error('The lazy Susan turned counterclockwise (XII then IX)');
+  if (await push(2)) throw new Error('The lazy Susan skipped III');
+  for (const i of [1, 2, 3]) if (!(await push(i))) throw new Error(`The lazy Susan jammed at ${['XII', 'III', 'VI', 'IX'][i]}`);
+  if (sim.meter(CTR.keys) !== spoons + 1) throw new Error('A full turn of the lazy Susan did not hand over the spoon');
+  console.log(`ok   the lazy Susan jams counterclockwise and hands over the spoon after a turn clockwise (${sim.meter(CTR.turns) - 1} quarters)`);
+}
+
 const secretOnly = process.argv.includes('--secret');
 try {
   if (!secretOnly) {
@@ -41,6 +60,7 @@ try {
     console.log(`WON  normal route: ${bot.sim.deaths} deaths, score ${bot.sim.ci.score}, ${bot.squawks} squawks`);
   }
   await eggsFound();
+  await susanTurns();
   if (Object.keys(SECRET_ROUTE).length) {
     const bot = await playThrough(true);
     if (!bot.sim.ci.inv.includes(FIXED_BLOCK.tricorn)) throw new Error("Ebenezer's tricorn was not picked up in the hidey-hole");
@@ -49,6 +69,6 @@ try {
     console.log(`WON  secret route (skips the Tea Room): ${bot.sim.deaths} deaths, score ${bot.sim.ci.score}`);
   }
 } catch (e) {
-  console.error(`FAIL ${(e as Error).message}`);
+  console.error(`FAIL ${(e as Error).message}`, process.env.BOT_STACK ? (e as Error).stack : "");
   process.exitCode = 1;
 }
