@@ -125,6 +125,7 @@ export function cdName(name: string): string {
 export const IGNORED_FILE = /\.(exe|com|bat|drv|ico|bak|obj|map\.bak)$/i;
 
 import type { OriginalExtras } from '../../scripts/cdGames';
+import { hideSecretGames } from './secretGames';
 
 export interface CatalogEntry {
   id: string;
@@ -163,6 +164,13 @@ export interface CatalogEntry {
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
 
+/** Forgets the fetched catalogs, so the next load lists what is current (a secret game revealed). */
+export function forgetCatalog(): void {
+  catalogs.clear();
+}
+// EGG.EXE adding or breaking an egg can reveal (or hide again) a secret game.
+if (typeof window !== 'undefined') window.addEventListener('gm-eggs-changed', forgetCatalog);
+
 /**
  * The games catalog (games/index.json, about 300 kB). Many parts of the page ask for it;
  * it is fetched once and shared. A failed fetch is forgotten so a later call retries.
@@ -170,7 +178,9 @@ const catalogs = new Map<string, Promise<CatalogEntry[]>>();
 export function loadCatalog(base = './games/'): Promise<CatalogEntry[]> {
   let p = catalogs.get(base);
   if (!p) {
-    p = fetch(`${base}index.json`).then((res) => (res.ok ? (res.json() as Promise<CatalogEntry[]>) : []));
+    p = fetch(`${base}index.json`)
+      .then((res) => (res.ok ? (res.json() as Promise<CatalogEntry[]>) : []))
+      .then(hideSecretGames);
     p.catch(() => catalogs.delete(base));
     catalogs.set(base, p);
   }
@@ -194,7 +204,7 @@ export function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
   const key = `${base}catalog.json`;
   let p = catalogs.get(key);
   if (!p) {
-    p = fetchJson<CatalogEntry[]>(key).then((list) => list ?? loadCatalog(base));
+    p = fetchJson<CatalogEntry[]>(key).then((list) => (list ? hideSecretGames(list) : loadCatalog(base)));
     p.catch(() => catalogs.delete(key));
     catalogs.set(key, p);
   }
