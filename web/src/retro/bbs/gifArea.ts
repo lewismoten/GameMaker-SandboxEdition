@@ -1,22 +1,22 @@
 // The GIF Gallery file area: list the pictures, and download one by Zmodem while the
-// terminal's GIF viewer paints it from the bytes received so far. A text terminal can't
-// show graphics, so for the transfer the monitor switches to a 256-color graphics mode and
-// the picture fills in (interlaced: coarse, then finer) as it arrives, the way terminal
-// programs with view-while-download did it; then back to the BBS's text.
+// terminal's viewer paints it from the bytes received so far. A text terminal can't show
+// graphics, so for the transfer the monitor switches to 320x200 256-color graphics and the
+// picture fills in as it arrives (an interlaced GIF coarse then finer, a baseline JPEG top
+// to bottom, a progressive JPEG blurry then sharper), the way terminal programs with
+// view-while-download did it; then back to the BBS's text. Pictures go to C:\IMAGES.
 import type { RetroHost } from '../host';
 import { attr, COLS, ROWS } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
-import { decodePartialGif } from '../../formats/gifProgressive';
 import { modeFor } from '../view/picture';
 import { boxBottom, boxRow, boxTop, modemSignal, sleep, type Term } from './term';
-import { caption, GALLERY, galleryBytes, paintGif, type GalleryFile } from './gallery';
+import { caption, decodePicture, formatLabel, GALLERY, galleryBytes, paintPicture, type GalleryFile } from './gallery';
 
-/** 14,400 bps: GIFs are compressed already, so V.42bis can't squeeze them further. */
+/** 14,400 bps: GIFs and JPEGs are compressed already, so V.42bis can't squeeze them further. */
 export const GIF_CPS = 1440;
-/** A 250K picture takes three minutes at 14,400; here it takes about 17 seconds. */
-export const GIF_TIME_COMPRESSION = 10;
+/** Real time: a 20K picture takes 14 seconds to paint in, as it did (Space skips ahead). */
+export const GIF_TIME_COMPRESSION = 1;
 
 /** How many bytes have arrived `ms` after the transfer started (at the board's sped-up rate). */
 export function bytesAt(ms: number, size: number, cps = GIF_CPS * GIF_TIME_COMPRESSION): number {
@@ -43,17 +43,17 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
     s.cursorX = 0;
     s.cursorY = 0;
     t.line(boxTop('GIF Gallery: The SysOp\'s Snapshots'));
-    t.line(boxRow(`|11#  ${'File name'.padEnd(12)}${'Size'.padStart(8)} ${'Picture'.padEnd(12)} Description`));
+    t.line(boxRow(`|11#  ${'File name'.padEnd(12)}${'Size'.padStart(7)} ${'Picture'} ${'Format'.padEnd(9)} Description`));
     t.line(boxBottom());
     for (const [i, f] of GALLERY.entries()) {
       const got = h.downloads.has(f.name) ? '|10*' : ' ';
-      const desc = wrap(f.desc, 41);
+      const desc = wrap(f.desc, 37);
       t.line(
-        `|11${String(i + 1).padStart(2)} ${got}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(8)} |03${`${f.width}x${f.height}`.padEnd(7)} |03${String(f.colors).padStart(3)}c |07${desc[0] ?? ''}`,
+        `|11${String(i + 1).padStart(2)} ${got}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(7)} |03${`${f.width}x${f.height}`.padEnd(7)} |${f.format === 'GIF' ? '13' : '10'}${formatLabel(f).padEnd(9)} |07${desc[0] ?? ''}`,
       );
-      if (desc[1]) t.line(`${' '.repeat(38)}|07${desc[1]}`);
+      if (desc[1]) t.line(`${' '.repeat(42)}|07${desc[1]}`);
     }
-    t.line('|10*|07 = already in C:\\DOWNLOAD   |08Interlaced GIFs: they fill in as they arrive.');
+    t.line('|10*|07 = already in C:\\IMAGES   |08Interlaced GIFs and JPEGs fill in as they arrive.');
   };
   list();
   for (;;) {
@@ -81,25 +81,27 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
     t.line('|12The file is not on line right now. Try again later.');
     return;
   }
-  t.line('|07Starting transfer. Your GIF viewer will show it as it comes in. |08(Esc aborts)');
+  t.line('|07Starting transfer. Your viewer shows it as it comes in. |08(Esc aborts, Space skips ahead)');
   t.print('');
   await sleep(900);
   const [sw, sh] = modeFor(f.width, f.height);
   const scr = h.pictureMode(sw, sh);
   let got = 0;
   let aborted = false;
-  const start = performance.now();
+  let start = performance.now();
   try {
     for (;;) {
       t.print(''); // a dropped call ends the transfer
       got = bytesAt(performance.now() - start, bytes.length);
-      const g = decodePartialGif(bytes.subarray(0, got));
-      if (g) paintGif(scr, g);
+      const pic = decodePicture(bytes.subarray(0, got));
+      if (pic) paintPicture(scr, pic);
       modemSignal('receive');
-      if (scr.poll() === 'Escape') {
+      const k = scr.poll();
+      if (k === 'Escape') {
         aborted = true;
         break;
       }
+      if (k === ' ') start = performance.now() - (bytes.length / GIF_CPS / GIF_TIME_COMPRESSION) * 1000; // skip to the end
       if (got >= bytes.length) break;
       await sleep(80);
     }
@@ -116,8 +118,8 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
     t.line('|12Transfer aborted.');
     return;
   }
-  t.line(`|10Transfer complete. |07${f.name} saved in C:\\DOWNLOAD.`);
+  t.line(`|10Transfer complete. |07${f.name} saved in C:\\IMAGES.`);
   h.downloads.add(f.name);
-  t.line(`|07After you log off, type |15VPIC \\DOWNLOAD\\${f.name}|07 to look at it again.`);
+  t.line(`|07After you log off, type |15VPIC \\IMAGES\\${f.name}|07 to look at it again.`);
   t.line();
 }

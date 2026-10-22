@@ -8,31 +8,44 @@ import { decodeGif } from '../src/formats/gif';
 import { decodePartialGif } from '../src/formats/gifProgressive';
 import { modeFor, nearestColor, placeIn } from '../src/retro/view/picture';
 import { bytesAt, GIF_CPS, GIF_TIME_COMPRESSION } from '../src/retro/bbs/gifArea';
-import { GALLERY } from '../src/retro/bbs/gallery';
+import { decodePicture, GALLERY } from '../src/retro/bbs/gallery';
+import { decodePartialJpeg } from '../src/formats/jpeg';
 
 describe('GIF Gallery files', () => {
-  it.each(list)('$name is a 1994 download: 8.3 name, interlaced GIF89a, VGA sized, 256 colors or fewer', (f) => {
-    expect(f.name).toMatch(/^[A-Z0-9_]{1,8}\.GIF$/);
+  it.each(list)('$name is a 1994 download: 8.3 name, 320x200 or smaller, small', (f) => {
+    expect(f.name).toMatch(/^[A-Z0-9_]{1,8}\.(GIF|JPG)$/);
     const bytes = new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', f.name)));
     expect(bytes.length).toBe(f.bytes);
-    const g = decodePartialGif(bytes)!;
-    expect(String.fromCharCode(...bytes.subarray(0, 6))).toBe('GIF89a');
-    expect(g.interlaced).toBe(true);
-    expect(g.complete).toBe(true);
-    expect([g.width, g.height]).toEqual([f.width, f.height]);
-    expect(g.width).toBeLessThanOrEqual(640);
-    expect(g.height).toBeLessThanOrEqual(400);
-    expect(g.colors).toBeLessThanOrEqual(256);
-    expect(g.colors).toBe(f.colors);
-    expect(g.aspect).toBeCloseTo(53 / 64); // tall VGA pixels
-    expect(decodeGif(bytes).pixels.length).toBe(f.width * f.height);
+    expect(bytes.length).toBeLessThan(48_000);
+    expect(f.width).toBeLessThanOrEqual(320);
+    expect(f.height).toBeLessThanOrEqual(200);
+    if (f.format === 'GIF') {
+      const g = decodePartialGif(bytes)!;
+      expect(String.fromCharCode(...bytes.subarray(0, 6))).toBe('GIF89a');
+      expect(g.interlaced).toBe(true);
+      expect(g.complete).toBe(true);
+      expect([g.width, g.height]).toEqual([f.width, f.height]);
+      expect(g.colors).toBe(f.colors);
+      expect(g.aspect).toBeCloseTo(53 / 64); // tall VGA pixels
+      expect(decodeGif(bytes).pixels.length).toBe(f.width * f.height);
+    } else {
+      const j = decodePartialJpeg(bytes)!;
+      expect([j.width, j.height]).toEqual([f.width, f.height]);
+      expect(j.complete).toBe(true);
+      expect(j.progressive).toBe(f.progressive);
+      expect(j.channels).toBe(f.gray ? 1 : 3);
+      expect(j.aspect).toBeCloseTo(5 / 6);
+    }
+    const pic = decodePicture(bytes)!;
+    expect(pic.complete).toBe(true);
+    expect(pic.pixels.length).toBe(f.width * f.height);
   });
 
   it('describes every file in two listing lines or less (the list fits one screen)', () => {
     expect(GALLERY.length).toBe(list.length);
     for (const f of GALLERY) {
       expect(f.desc, f.name).not.toBe('');
-      expect(f.desc.length, f.name).toBeLessThanOrEqual(80);
+      expect(f.desc.length, f.name).toBeLessThanOrEqual(74);
     }
   });
 });
@@ -69,11 +82,11 @@ describe('gallery download', () => {
     expect(bytesAt(-5, 5000)).toBe(0);
   });
 
-  it('takes long enough to watch but not forever', () => {
+  it('takes about as long as it did at 14,400 bps', () => {
     for (const f of list) {
       const seconds = f.bytes / (GIF_CPS * GIF_TIME_COMPRESSION);
-      expect(seconds, f.name).toBeGreaterThan(1);
-      expect(seconds, f.name).toBeLessThan(25);
+      expect(seconds, f.name).toBeGreaterThan(3);
+      expect(seconds, f.name).toBeLessThan(35);
     }
   });
 });

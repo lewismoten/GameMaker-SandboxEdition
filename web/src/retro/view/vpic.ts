@@ -1,18 +1,17 @@
-// VPIC.EXE: the GIF viewer in C:\COMM, for pictures downloaded from the BBS. "VPIC FILE.GIF"
-// shows one; plain "VPIC" lists the GIFs in the current folder to pick from. The picture is
-// shown in 320x200 VGA if it fits there, otherwise 640x400, centered and (if bigger than
-// that) shrunk to fit; any key goes back.
+// VPIC.EXE: the picture viewer in C:\COMM, for GIFs and JPEGs downloaded from the BBS into
+// C:\IMAGES. "VPIC FILE.GIF" shows one; plain "VPIC" lists the pictures in the current folder
+// to pick from. JPEGs are shown as 1994 viewers on a 256-color card did: grays as VGA's 64
+// shades, color dithered to a color cube. The picture is shown in 320x200 VGA if it fits
+// there, otherwise 640x400, centered and (if bigger than that) shrunk to fit; any key goes back.
 import type { RetroHost } from '../host';
 import type { DosNode } from '../dos/vfs';
 import { commas, resolvePath } from '../dos/vfs';
 import { attr, COLS, ROWS } from '../text/textScreen';
-import { decodePartialGif } from '../../formats/gifProgressive';
-import { isGif } from '../../formats/gif';
 import { modeFor } from './picture';
-import { paintGif } from '../bbs/gallery';
+import { decodePicture, paintPicture } from '../bbs/gallery';
 import { toCp437 } from '../text/cp437';
 
-const TITLE = 'VPIC  GIF viewer';
+const TITLE = 'VPIC  GIF/JPEG viewer';
 
 export async function runVpic(h: RetroHost, args: string[]): Promise<void> {
   const s = h.screen;
@@ -30,23 +29,23 @@ export async function runVpic(h: RetroHost, args: string[]): Promise<void> {
     if (err) s.print(`${TITLE}\n${err}\n`);
     return;
   }
-  const files = ((await h.fs.listDir(wd.drive, wd.parts)) ?? []).filter((n) => !n.dir && /\.GIF$/.test(n.name));
+  const files = ((await h.fs.listDir(wd.drive, wd.parts)) ?? []).filter((n) => !n.dir && /\.(GIF|JPG)$/.test(n.name));
   if (!files.length) {
-    s.print(`${TITLE}\nUsage: VPIC [d:][path]filename.GIF\nNo .GIF files in ${wd.drive}:\\${wd.parts.join('\\')}\n`);
+    s.print(`${TITLE}\nUsage: VPIC [d:][path]filename.GIF (or .JPG)\nNo .GIF or .JPG files in ${wd.drive}:\\${wd.parts.join('\\')}\n`);
     return;
   }
   await picker(h, files, `${wd.drive}:\\${wd.parts.join('\\')}`);
 }
 
-/** Shows a GIF until a key is pressed; an error message if it isn't one. */
+/** Shows a GIF or JPEG until a key is pressed; an error message if it isn't one. */
 async function show(h: RetroHost, node: DosNode): Promise<string | undefined> {
   const bytes = await node.read!();
-  const g = isGif(bytes) ? decodePartialGif(bytes) : undefined;
-  if (!g || !g.width || !g.height) return `${node.name} is not a GIF file`;
-  const [w, hh] = modeFor(g.width, g.height);
+  const pic = decodePicture(bytes);
+  if (!pic || !pic.width || !pic.height) return `${node.name} is not a GIF or JPEG file`;
+  const [w, hh] = modeFor(pic.width, pic.height);
   const scr = h.pictureMode(w, hh);
   try {
-    paintGif(scr, g);
+    paintPicture(scr, pic);
     await scr.key();
   } finally {
     h.leavePictureMode();
@@ -54,7 +53,7 @@ async function show(h: RetroHost, node: DosNode): Promise<string | undefined> {
   return undefined;
 }
 
-/** A list of the folder's GIFs: arrows to choose, Enter to view, Esc to quit. */
+/** A list of the folder's pictures: arrows to choose, Enter to view, Esc to quit. */
 async function picker(h: RetroHost, files: DosNode[], where: string): Promise<void> {
   const s = h.screen;
   const top = 3;
@@ -65,7 +64,7 @@ async function picker(h: RetroHost, files: DosNode[], where: string): Promise<vo
     s.cursorVisible = false;
     s.clear(attr(7, 1));
     s.fill(0, 0, COLS - 1, 0, attr(0, 3));
-    s.write(1, 0, attr(0, 3), `${TITLE}   ${where}\\*.GIF`);
+    s.write(1, 0, attr(0, 3), `${TITLE}   ${where}`);
     s.write(1, 2, attr(14, 1), 'Name           Size');
     const first = Math.max(0, Math.min(at - rows + 1, files.length - rows));
     files.slice(first, first + rows).forEach((f, i) => {
