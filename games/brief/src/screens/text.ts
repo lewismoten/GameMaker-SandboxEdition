@@ -109,7 +109,7 @@ Starring Mystery Robot Joe, Teddy (a corgi who knows left from right), Gwinn (tw
 
 Made with Game-Maker 3.0 from Recreational Software Designs.
 
-No words were harmed in the making of this game. A few were confiscated.`,
+No words were harmed in the making of this game. A few were fined.`,
 ]);
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
