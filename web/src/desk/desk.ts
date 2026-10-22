@@ -833,6 +833,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     () => fetch("./gm/index.json"), // C:\GM's listing, so GM starts offline too
     lazy.gmBox,
     lazy.boxViewer,
+    () => import("./boxes/gameBoxContents"), // what a box holds, shown when it is opened
     lazy.catalog,
     () => import("./room/phone/phone"),
     lazy.dosManual,
