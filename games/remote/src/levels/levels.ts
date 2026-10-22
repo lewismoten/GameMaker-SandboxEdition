@@ -20,7 +20,7 @@ export interface LevelDef {
 }
 
 export const LEVELS: LevelDef[] = [
-  { file: 'den', desc: "Where's the Remote?!", light: 'den', build: livingRoom, snd: 'den', song: 'den', mons: { cat: 6 }, view: [3, 0] },
+  { file: 'den', desc: "Where's the Remote?!", light: 'den', build: livingRoom, snd: 'den', song: 'den', mons: { cat: 6 }, view: [1, 3] },
   { file: 'kitchen', desc: 'Who Knows Anymore?', light: 'kitchen', build: kitchen, snd: 'kitchen', song: 'kitchen', mons: { toast: 4 }, view: [9, 0] },
   { file: 'void', desc: 'The Void Between the Cushions', light: 'void', build: theVoid, snd: 'void', song: 'void', mons: {}, view: [10, 1] },
   { file: 'ride', desc: 'The Living Room Ride', light: 'ride', build: theRide, snd: 'ride', song: 'ride', mons: { ride: [20, 3] }, view: [6, 2] },
