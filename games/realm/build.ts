@@ -15,6 +15,7 @@ import { buildDungeons } from './src/build/dungeons';
 import { buildFlats } from './src/build/flats';
 import { passFiles } from './src/levels/talk';
 import { assemble, type SceneSpec } from './src/game';
+import { autoArrange } from '../../web/src/editor/editors/integrator/integratorLayout';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -46,12 +47,15 @@ const specs: SceneSpec[] = [world.scene, ...towns.scenes, ...dungeons.scenes, ..
 // the world's doors into the towns, the dungeons and onto the Flats
 world.scene.links.push(
   ...towns.worldLinks,
+  // (in this order the Game Integrator's Auto-arrange draws the game with no crossing arrows)
   { from: spot.barrows, to: 'barrows', at: dungeons.starts.barrows },
-  { from: spot.mines, to: 'mines', at: dungeons.starts.mines },
   { from: spot.keep, to: 'keep', at: dungeons.starts.keep },
+  { from: spot.mines, to: 'mines', at: dungeons.starts.mines },
   { from: [70, 49], to: 'flats', at: flats.east },
 );
 const { game } = assemble(specs, { start: { to: 'nowish', at: towns.start } });
+// scene boxes where the Game Integrator's Auto-arrange puts them
+for (const [i, p] of autoArrange(game)) game.scenes[i].pos = p;
 disk.put('tuit.gam', serializeGame(game));
 disk.write();
 console.log(`${game.scenes.length} scenes`);
