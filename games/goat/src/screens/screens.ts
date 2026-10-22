@@ -222,7 +222,7 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
   {
     // credits: the Bard himself
     const p = new Pixels(W, H);
-    gradient(p, 0, 0, W, H, pal.r('purple'), 0, 1);
+    p.rect(0, 0, W, H, c('purple', 0));
     stars(p, 51, H, 50);
     const leo = resample(loadScan('docleo'), 110, 0, [0.06, 0.04, 0.94, 0.96]);
     const logo = resample(loadScan('bardlogo'), 120, 0, [0.04, 0.02, 0.96, 0.98]);
