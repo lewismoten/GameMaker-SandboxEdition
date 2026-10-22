@@ -489,6 +489,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   if (chosen) {
     top.show(chosen, {});
     current = categoryOf(chosen);
+    // …and its Saves & scores, when the address had it open (#/game/<key>?saves=3)
+    const saves = currentRoute().params.saves;
+    if (saves) top.openSaves(saves);
   } else {
     // your own games live in the browser that made them: a link to one opens only there
     if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: “Save & share” downloads it.');
