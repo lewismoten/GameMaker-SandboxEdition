@@ -10,7 +10,7 @@ import { newCharInfo } from '../../../web/src/engine/world';
 import { LEVELS } from '../src/game';
 import { ROUTES } from './routes';
 import { Recorder, runRoute } from './bot';
-import { Sim } from './sim';
+import { Sim } from '../../kit/sceneSim';
 import { CTR } from '../src/ids';
 
 const only = process.argv.slice(2);
