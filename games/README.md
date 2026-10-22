@@ -80,6 +80,8 @@ fails until it is rerun. The other play-testing tools:
 | loaf      | `npx vite-node ../games/loaf/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | tickle    | `npx vite-node ../games/tickle/tools/check.ts`       | the bot pins and tickles 31 rats: the course, the lab, the sewers, the tower     |
 | tickle    | `npx vite-node ../games/tickle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| remote    | `npx vite-node ../games/remote/tools/check.ts`       | the bot searches the living room, calls Mom, pays the TV in the void, rides home |
+| remote    | `npx vite-node ../games/remote/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -297,3 +299,19 @@ chirps at 50 kHz. No recording came with the song, so the music is an original v
 composed in `src/sound/song.ts` (theremin, bandoneon, the choir's maniacal laughter) and every
 sound is synthesized; the title is a painting drawn in code, and the parody certificate
 (`cert.fli`) is made up for the game.
+
+**Where's the Remote?!** (`remote`). The Bard of Bizarre's song about a mundane thing nobody should
+care about, shareware from The Sofa BBS (`"series": "bizarre"`). A top-down search through a 1995
+living room, its kitchen, the void between the cushions and the living room ride. Searching is
+touching: push into a couch cushion, Teddy's bed, the cat's chair or the laundry and it becomes the
+searched version, counting a spot (counter 20); the baby gate takes six. Mom's number is seven
+fridge magnets (counter 21) the phone dials, pennies are money and the pay TV in the void takes
+ten, and on the ride the spinning rug is gravity in a ring (the bot steps back onto its line when
+carried past). Two engine facts shape it: a block's next/ntime is one clock shared by every copy of
+that block (so there are no per-block delays), and a hurt freezes you, so a floor that always hurts
+holds you there; a Bermuda swirl stings once and closes, and every monster that hurts does it on one
+stinging tick of its animation a round. SPACE shouts "Where's the remote?!" (a clip cut from the
+recording), a monster that blows dust bunnies, cockroaches and lint away. The music is a kazoo-led
+FM arrangement using `kit/songFx.ts` (stutters, filter-sweep "VCR whirrs", an 808 boom and theremin
+glides in the void, a calliope for the ride, a dramatic pause before "beneath my thigh"); no cover
+came with the song, so the title is a painting drawn in code (`src/art/cover.ts`).
