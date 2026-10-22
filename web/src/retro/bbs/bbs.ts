@@ -22,6 +22,9 @@ import {
 } from "./term";
 import { runSofa, SOFA_PHONE, sofaBusy } from "./sofa";
 import { gifGallery } from "./gifArea";
+import { utilityArea } from "./utilArea";
+import { gameDiz } from "./fileId";
+import { pcExtras } from "../hacks/pcExtras";
 import { output } from "../../audio/output";
 
 const BBS_NAME = "THE -= S A N D B O X =- BBS";
@@ -172,6 +175,9 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     } else if (k === "P") {
       await gifGallery(t, h);
       show = true;
+    } else if (k === "U") {
+      await utilityArea(t, h);
+      show = true;
     } else if (k === "B") {
       await bulletins(t, catalog);
       show = true;
@@ -271,7 +277,7 @@ function mainMenu(t: Term, s: RetroHost["screen"]): void {
     ["N", "New Files Scan", "S", "System Information"],
     ["Y", "Your Statistics", "C", "Page the SysOp"],
     ["P", "Picture Gallery (GIF files)", "?", "Redisplay this menu"],
-    ["", "", "G", "Goodbye (log off)"],
+    ["U", "Utilities (DOS tools)", "G", "Goodbye (log off)"],
   ];
   t.line(boxRow(""));
   for (const [a, la, b, lb] of rows)
@@ -413,17 +419,17 @@ async function files(
   let lines = 4;
   for (const [i, g] of catalog.entries()) {
     const got = h.downloads.has(g.id) ? "|10*" : " ";
-    const by = g.author ?? g.company;
-    const desc = wrap(
-      `${g.title}${by ? ` by ${by}` : ""}${g.year ? ` (${g.year})` : ""}. ${g.price ? `${g.price === "Freeware" ? "Freeware" : `Reg. ${g.price}`}. ` : ""}${g.blurb ?? ""}`,
-      52,
+    // Renegade showed each archive's FILE_ID.DIZ (without its ruled lines, to save the scrolling)
+    const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
+    desc.forEach((l, j) =>
+      t.line(
+        j === 0
+          ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${l}`
+          : `${" ".repeat(25)}|${j === desc.length - 1 ? "08" : "07"}${l}`,
+      ),
     );
-    t.line(
-      `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${desc[0] ?? ""}`,
-    );
-    if (desc[1]) t.line(`${" ".repeat(25)}|07${desc[1]}`);
-    lines += desc[1] ? 2 : 1;
-    if (lines > 18 && i < catalog.length - 1) {
+    lines += desc.length;
+    if (lines > 14 && i < catalog.length - 1) {
       if (!(await t.more())) break;
       lines = 0;
     }
@@ -452,6 +458,9 @@ async function files(
 
 async function readAbout(t: Term, g: CatalogEntry): Promise<void> {
   t.line(`|14${zipName(g)} |15${g.title}`);
+  t.line("|11FILE_ID.DIZ:");
+  for (const l of gameDiz(g)) t.line(`|07  ${l}`);
+  t.line();
   for (const l of wrap(g.blurb ?? "", 76)) t.line(`|07${l}`);
   t.line();
   t.line("|11Author’s notice (from the archive’s readme):");
@@ -495,6 +504,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   t.line("|10Transfer complete.");
   await unzip(t, h, g);
   h.downloads.add(g.id);
+  if (pcExtras().cracked(g.id) !== undefined) pcExtras().setCracked(g.id, false); // a fresh copy, as its author made it
   t.line(
     `|07Type |15CD \\DOWNLOAD\\${g.id.toUpperCase()}|07 then |15${(g.exe ?? "").replace(/\.EXE$/i, "")}|07 after you log off to play.`,
   );
@@ -518,6 +528,7 @@ async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
       f.toUpperCase(),
       g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length),
     ]),
+    ["FILE_ID.DIZ", 450],
   ];
   for (const [name, size] of files) {
     t.print(`|07  Inflating: ${name.padEnd(13)}`);
