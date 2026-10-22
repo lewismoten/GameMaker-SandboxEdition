@@ -1,10 +1,10 @@
-// Plays the whole case on the built disk with the bot (used by check.ts and demo.ts).
+// Plays the whole case on the built disk with the bot (used by check.ts and walkthrough.ts).
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GameSim } from './sim';
 import { Bot } from './bot';
-import { act1, act2, accuse, findEgg, greenRoom } from './walkthrough';
+import { act1, act2, accuse, findEgg, greenRoom } from './route';
 import { buildGame } from '../src/game';
 import { buildActs } from '../src/levels/acts';
 import { buildTheatreBlocks } from '../src/blocks/tiles';

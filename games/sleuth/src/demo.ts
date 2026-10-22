@@ -5,7 +5,7 @@
 import { serializeRecording } from '../../../web/src/formats/recording';
 import { GameSim } from '../tools/sim';
 import { Bot } from '../tools/bot';
-import { act1 } from '../tools/walkthrough';
+import { act1 } from '../tools/route';
 import { SCAN } from './ids';
 
 export async function demoRecording(files: Map<string, Uint8Array>): Promise<Uint8Array> {
