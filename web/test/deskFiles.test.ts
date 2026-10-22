@@ -22,6 +22,12 @@ describe('a downloaded game folder', () => {
     expect(node('GOAT.EXE')!.run).toBe(run);
   });
 
+  it('a CD game keeps its own CONFIG.HLP (or none, like ORB)', () => {
+    const list = (f: string[]) => gameDownloadNodes({ ...goat, id: 'gridlin', files: f }, date, run).map((n) => n.name);
+    expect(list(['goat.gam', 'config.hlp', 'gmhelp.txt'])).not.toContain('CONFIG.HLP');
+    expect(list(['goat.gam', 'gmhelp.txt'])).not.toContain('CONFIG.HLP');
+  });
+
   it('cracked: GOAT.EXE becomes the patched player (still GOAT.GAM and its saves) and the original is GOAT.BAK; uncracked it is back', () => {
     pcExtras().setCracked('goat', true);
     expect(names()).toEqual(['GOAT.EXE', 'GOAT.BAK', 'CONFIG.BAT', 'CONFIG.HLP', 'SNDBLAST.DRV', 'FILE_ID.DIZ']);

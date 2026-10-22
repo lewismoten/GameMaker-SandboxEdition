@@ -43,7 +43,10 @@ export function gameDownloadNodes(g: CatalogEntry, date: Date, run: ProgramRef &
     const bat = configBat(g.gam);
     nodes.push(bytesNode('CONFIG.BAT', Uint8Array.from(bat, (c) => c.charCodeAt(0)), { date, run: { kind: 'batch', lines: [bat.trim()] } }));
   }
-  nodes.push(file('CONFIG.HLP', CONFIG_HLP_SIZE, { date }), file('SNDBLAST.DRV', SNDBLAST_SIZE, { date }));
+  // the CD's games kept their CONFIG.HLP (or, like ORB, came without one) with their files
+  const has = (n: string) => g.files.some((f) => f.toLowerCase() === n);
+  if (!has('config.hlp') && !has('gmhelp.txt')) nodes.push(file('CONFIG.HLP', CONFIG_HLP_SIZE, { date }));
+  nodes.push(file('SNDBLAST.DRV', SNDBLAST_SIZE, { date }));
   nodes.push(bytesNode(DIZ_NAME, dizBytes(gameDiz(g)), { date }));
   return nodes;
 }
