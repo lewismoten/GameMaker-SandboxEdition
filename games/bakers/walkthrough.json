@@ -23,10 +23,6 @@
    "keys": "AVAB0AVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBUgByAVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFSwHLBUsBywVQAdAFUAHQBUsBywVLAcsFUAHQBVAB0AVQAdAFUAHQBU0BzQVNAc0FTQHNBVAB0AVQAdAFTQHNBU0="
   },
   {
-   "scene": 18,
-   "keys": "AVAB0AVNAc0FTQHNBU0BzQVNAc0FOQG5CE0BzQVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFUAHQBVAB0AVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVIAcgFTQHNBU0="
-  },
-  {
    "scene": 6,
    "keys": "AVAB0AVNAc0FTQHNzQNNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNC00BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBUgByAVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBVAB0AVQAdAFSwHLBUsBywVLAcsFSwHLBVAB0AVQAdAiUAHQBVAB0AVNAc0FUAHQBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVQAdAFTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQ=="
   },
@@ -37,6 +33,10 @@
   {
    "scene": 8,
    "keys": "AVAB0AVNAc0FTQHNBU0BzQVNAc0FUAHQBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVIAcgFTQHNBU0BzQVNAc0FUAHQBU0BzQVNAc0FSAHIBUsBywVLAcsFSwHLBUsBywVQAdAFUAHQBVAB0AVQAdAFUAHQBVAB0AVQAdAFTQHNBU0BzQVNAc0FTQ=="
+  },
+  {
+   "scene": 18,
+   "keys": "AVAB0AVNAc0FTQHNBU0BzQVNAc0FTQHNBVAB0AVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBVAB0AVQAdAFUAHQBVAB0AVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBU0BzQVNAc0FTQHNBUgByAVNAc0FTQ=="
   },
   {
    "scene": 9,
@@ -81,10 +81,6 @@
    "title": "Room 4: The Bakehouse"
   },
   {
-   "scene": 18,
-   "title": "Interlude: Under the Stove"
-  },
-  {
    "scene": 6,
    "title": "Room 5: The Cold Cellar"
   },
@@ -95,6 +91,10 @@
   {
    "scene": 8,
    "title": "Room 7: The Sugar Room"
+  },
+  {
+   "scene": 18,
+   "title": "Interlude: Under the Stove"
   },
   {
    "scene": 9,
@@ -123,7 +123,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 48035,
+  "frames": 48002,
   "chapters": [
    {
     "title": "Opening",
@@ -150,52 +150,52 @@
     "frame": 10761
    },
    {
-    "title": "Interlude: Under the Stove",
+    "title": "Room 5: The Cold Cellar",
     "frame": 12720
    },
    {
-    "title": "Room 5: The Cold Cellar",
-    "frame": 14861
-   },
-   {
     "title": "Room 6: The Tea Room",
-    "frame": 18635
+    "frame": 16494
    },
    {
     "title": "Room 7: The Sugar Room",
-    "frame": 21284
+    "frame": 19143
+   },
+   {
+    "title": "Interlude: Under the Stove",
+    "frame": 21080
    },
    {
     "title": "Room 8: The Brewery",
-    "frame": 23221
+    "frame": 23188
    },
    {
     "title": "Room 9: The Clock Room",
-    "frame": 26506
+    "frame": 26473
    },
    {
     "title": "Room 10: The Bottling Line",
-    "frame": 29254
+    "frame": 29221
    },
    {
     "title": "Room 11: The Lightning Loft",
-    "frame": 31231
+    "frame": 31198
    },
    {
     "title": "Room 12: The Cistern",
-    "frame": 34435
+    "frame": 34402
    },
    {
     "title": "Room 13: The Vault",
-    "frame": 37043
+    "frame": 37010
    },
    {
     "title": "Ending",
-    "frame": 40188
+    "frame": 40155
    },
    {
     "title": "Credits",
-    "frame": 45999
+    "frame": 45966
    }
   ]
  }
