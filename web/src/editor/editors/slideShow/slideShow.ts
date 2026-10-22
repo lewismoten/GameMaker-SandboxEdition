@@ -6,8 +6,8 @@
 //
 // One closure per editor. Its sections, in order: facts and thumbnails (cached by file
 // contents), the screen, layout, the timeline, changing clips (with undo), the inspector,
-// the media bin, dragging, and the page. Timing as PLAYGAME plays it is in
-// slideTimeline.ts.
+// the media bin, and the page. Dragging and the timeline's keys are in timelineInput.ts;
+// timing as PLAYGAME plays it is in slideTimeline.ts.
 import { History } from '../../core/history';
 import './slideShow.css';
 import { registerEditor } from '../registry';
@@ -29,12 +29,12 @@ import {
   clipWidth,
   MAX_SLIDES,
   moveEntry,
-  secondsForWidth,
   showLength,
   type ClipFacts,
   type ClipTiming,
   type Then,
 } from './slideTimeline';
+import { timelineInput } from './timelineInput';
 
 const MEDIA_KINDS: FileKind[] = ['gif', 'fli', 'bkd', 'txt', 'lst'];
 const THUMB_W = 112;
@@ -570,170 +570,30 @@ registerEditor(['lst'], (host, project, file) => {
     insert(name, selected + 1);
   };
 
-  // ---- dragging: media onto the timeline, clips along it, clip edges ----------------
-  type Drag = { from: 'media'; name: string } | { from: 'clip'; index: number };
-  let pending: { drag: Drag; x: number; y: number; el: HTMLElement; id: number } | undefined;
-  let dragging: { drag: Drag; ghost: HTMLElement; at: number } | undefined;
-
-  const dropIndex = (x: number, y: number): number => {
-    const r = track.getBoundingClientRect();
-    if (y < r.top - 50 || y > r.bottom + 50 || x < r.left - 20 || x > r.right + 20) return -1;
-    for (let i = 0; i < clipEls.length; i++) {
-      const c = clipEls[i].getBoundingClientRect();
-      if (x < c.left + c.width / 2) return i;
-    }
-    return entries.length;
-  };
-  const showMarker = (at: number) => {
-    if (at < 0) {
-      marker.hidden = true;
-      return;
-    }
-    const lr = track.getBoundingClientRect();
-    const ref = clipEls[at]?.getBoundingClientRect();
-    const last = clipEls[clipEls.length - 1]?.getBoundingClientRect();
-    const x = ref ? ref.left - 4 : last ? last.right + 18 : lr.left + 16;
-    marker.hidden = false;
-    marker.style.left = `${x - lr.left + track.scrollLeft}px`;
-  };
-
-  const startDrag = (p: NonNullable<typeof pending>) => {
-    const src = p.el.querySelector('img') ?? p.el;
-    const ghost = h('div', { class: 'sl-ghost' });
-    const bg = src instanceof HTMLImageElement ? src.src : (p.el.style.backgroundImage.match(/url\("?(.*?)"?\)/)?.[1] ?? '');
-    if (bg) ghost.style.backgroundImage = `url(${bg})`;
-    ghost.textContent = p.drag.from === 'media' ? p.drag.name.toUpperCase() : entries[p.drag.index].name.toUpperCase();
-    document.body.append(ghost);
-    if (p.drag.from === 'clip') clipEls[p.drag.index]?.classList.add('lifted');
-    dragging = { drag: p.drag, ghost, at: -1 };
-    host.classList.add('sl-dragging');
-  };
-
-  const onDown = (ev: PointerEvent) => {
-    if (ev.button !== 0) return;
-    const target = ev.target as HTMLElement;
-    const handle = target.closest<HTMLElement>('.sl-handle');
-    const clip = target.closest<HTMLElement>('.sl-clip');
-    if (handle && clip) return resizeStart(ev, clip, handle.dataset.side === 'left');
-    const media = target.closest<HTMLElement>('.sl-media');
-    const el = clip ?? media;
-    if (!el) return;
-    ev.preventDefault();
-    el.setPointerCapture(ev.pointerId);
-    pending = {
-      drag: clip ? { from: 'clip', index: Number(clip.dataset.index) } : { from: 'media', name: media!.dataset.name! },
-      x: ev.clientX,
-      y: ev.clientY,
-      el,
-      id: ev.pointerId,
-    };
-  };
-  const onMove = (ev: PointerEvent) => {
-    if (pending && !dragging && Math.hypot(ev.clientX - pending.x, ev.clientY - pending.y) > 5) startDrag(pending);
-    if (!dragging) return;
-    dragging.ghost.style.transform = `translate(${ev.clientX + 8}px, ${ev.clientY + 8}px)`;
-    dragging.at = dropIndex(ev.clientX, ev.clientY);
-    showMarker(dragging.at);
-    // scroll the timeline near its ends
-    const r = track.getBoundingClientRect();
-    if (dragging.at >= 0) {
-      if (ev.clientX < r.left + 40) track.scrollLeft -= 12;
-      else if (ev.clientX > r.right - 40) track.scrollLeft += 12;
-    }
-    const overBin = binBox.contains(document.elementFromPoint(ev.clientX, ev.clientY));
-    dragging.ghost.classList.toggle('removing', dragging.drag.from === 'clip' && overBin);
-  };
-  const onUp = (ev: PointerEvent) => {
-    const p = pending;
-    const d = dragging;
-    pending = undefined;
-    dragging = undefined;
-    marker.hidden = true;
-    host.classList.remove('sl-dragging');
-    if (!p) return;
-    if (!d) {
-      // a tap
-      if (p.drag.from === 'clip') select(p.drag.index);
-      else insert(p.drag.name, selected + 1);
-      return;
-    }
-    d.ghost.remove();
-    clipEls.forEach((c) => c.classList.remove('lifted'));
-    const overBin = binBox.contains(document.elementFromPoint(ev.clientX, ev.clientY));
-    if (d.drag.from === 'clip' && overBin) return remove(d.drag.index);
-    if (d.at < 0) return;
-    if (d.drag.from === 'media') insert(d.drag.name, d.at);
-    else if (d.at !== d.drag.index && d.at !== d.drag.index + 1) commit(moveEntry(entries, d.drag.index, d.at), d.at > d.drag.index ? d.at - 1 : d.at);
-  };
-
-  /** Dragging a clip's edge: its seconds follow the width. */
-  const resizeStart = (ev: PointerEvent, clip: HTMLElement, left: boolean) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    const i = Number(clip.dataset.index);
-    const e = entries[i];
-    const t0 = timing(e);
-    if (t0.ignored) return toast('A slide show inside a slide show keeps its own timing.');
-    if (!facts(e.name).exists) return;
-    clip.setPointerCapture(ev.pointerId);
-    select(i, false);
-    const startW = clip.getBoundingClientRect().width;
-    const startX = ev.clientX;
-    let lastW = startW;
-    clip.classList.add('resizing');
-    const move = (m: PointerEvent) => {
-      const dx = m.clientX - startX;
-      const want = Math.max(20, startW + (left ? -dx : dx));
-      e.pause = secondsForWidth(want, { ...t0, then: 'seconds' }, pps);
-      const t = timing(e);
-      const w = clipWidth(t, pps, THUMB_W);
-      clip.style.width = `${w}px`;
-      clip.classList.add('timed');
-      // growing to the left: keep the left edge under the pointer
-      if (left) track.scrollLeft += w - lastW;
-      lastW = w;
-      const badge = clip.querySelector('.sl-badge') ?? clip.appendChild(h('span', { class: 'sl-badge' }));
-      badge.textContent = badgeText(e, t);
-    };
-    const up = () => {
-      clip.removeEventListener('pointermove', move);
-      clip.removeEventListener('pointerup', up);
-      clip.removeEventListener('pointercancel', up);
-      clip.classList.remove('resizing');
-      save();
-      renderLane();
-      renderInspector();
-    };
-    clip.addEventListener('pointermove', move);
-    clip.addEventListener('pointerup', up);
-    clip.addEventListener('pointercancel', up);
-  };
-
-  for (const el of [lane, bin]) {
-    el.addEventListener('pointerdown', onDown);
-    el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointerup', onUp);
-    el.addEventListener('pointercancel', onUp);
-  }
-  bin.addEventListener('keydown', (ev) => {
-    const m = (ev.target as HTMLElement).closest<HTMLElement>('.sl-media');
-    if (m && (ev.key === 'Enter' || ev.key === ' ')) {
-      ev.preventDefault();
-      insert(m.dataset.name!, selected + 1);
-    }
-  });
-  track.addEventListener('keydown', (ev) => {
-    if (!entries.length) return;
-    if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
-      ev.preventDefault();
-      const d = ev.key === 'ArrowLeft' ? -1 : 1;
-      const to = Math.max(0, Math.min(entries.length - 1, selected + d));
-      if (ev.altKey && to !== selected) commit(moveEntry(entries, selected, d < 0 ? to : to + 1), to);
-      else select(to);
-    } else if (ev.key === 'Delete' || ev.key === 'Backspace') {
-      ev.preventDefault();
-      remove(selected);
-    } else if (ev.key === 'Enter') play(selected);
+  // ---- dragging and keys on the timeline and the media bin (timelineInput.ts) ----------
+  const input = timelineInput({
+    host,
+    track,
+    lane,
+    marker,
+    bin,
+    binBox: () => binBox,
+    clipEls,
+    entries: () => entries,
+    selected: () => selected,
+    pps: () => pps,
+    thumbWidth: THUMB_W,
+    timing,
+    facts,
+    badgeText,
+    select,
+    insert,
+    remove,
+    commit,
+    play,
+    save,
+    renderLane,
+    renderInspector,
   });
 
   // ---- page ---------------------------------------------------------------------------
@@ -779,7 +639,7 @@ registerEditor(['lst'], (host, project, file) => {
 
   // Other editors may add or change the files shown here.
   const off = project.onChange((n) => {
-    if (n === file || dragging) return;
+    if (n === file || input.dragging()) return;
     if (MEDIA_KINDS.includes(clipKind(n) as FileKind)) refreshSoon();
   });
   let soon: ReturnType<typeof setTimeout> | undefined;
