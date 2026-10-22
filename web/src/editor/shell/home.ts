@@ -64,7 +64,7 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[]
     id: 'bizarre',
     icon: 'music',
     name: 'Bizarre',
-    lead: 'Songs by The Bard of Bizarre, the name Lewis “Lewie” Moten III sings under as his hobo clown Doc Leo, turned into games. Shareware from The Sofa BBS: play them here as released, and read each one’s notice for the song behind it.',
+    lead: 'Songs by The Bard of Bizarre, Lewis “Lewie” Moten III’s song project with his hobo clown Doc Leo as its face, turned into games: Lewis dreams up each song and AI tools write and record it. Shareware from The Sofa BBS: play them here as released, and read each one’s notice for the song behind it.',
   },
 ];
 

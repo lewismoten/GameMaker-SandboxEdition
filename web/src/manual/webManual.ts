@@ -169,12 +169,18 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     experiences and hobbies. Lewis directed each game and played it as it came together, and
     his feedback shaped every one. Teddy, Gwinn and Doc Leo appear as themselves.</p>
     <h3>The Bard of Bizarre</h3>
-    <p>The Bard of Bizarre is the name Lewis “Lewie” Moten III gives his songs,
-    performed as his hobo clown, Doc Leo. He started with Christian songs, but the Bard isn’t limited to them. Some of those songs have become games, shareware
-    “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b> and <b>Mustard Seed Hustle</b>. Once there are four or
-    more, they get a Bizarre collection of their own on the home page.</p>
-    <p>Third Goat from the Left: words by Lewis; recording and cover art made with Riffusion (now Google Flow Music).
-    Mustard Seed Hustle: words written by ChatGPT from Lewis’s prompt; music made with Riffusion; animated cover made with Producer.ai. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own.
+    <p>The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, with his hobo clown, Doc
+    Leo, as its face. It started with Christian songs, his “bizarre gospels” that dwell on the
+    wrong thing in the Bible but sort of make sense, but the Bard isn’t limited to them. Lewis
+    dreams up each song and prompts AI tools to write and record it. Some of those songs have
+    become games, shareware “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>
+    and <b>Mustard Seed Hustle</b>. Once there are four or more, they get a Bizarre collection
+    of their own on the home page.</p>
+    <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s.
+    Third Goat from the Left and Mustard Seed Hustle: lyrics written by ChatGPT from Lewis’s
+    prompts; music made with Riffusion (now Google Flow Music). Third Goat’s cover art was made
+    by Riffusion, and Mustard Seed Hustle’s animated cover with Producer.ai. The Bard’s logo was
+    made with DeepAI, and the photo of Doc Leo is Lewis’s own.
     Each game’s music and sounds are drawn from its song’s recording; its code, pictures and
     levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
