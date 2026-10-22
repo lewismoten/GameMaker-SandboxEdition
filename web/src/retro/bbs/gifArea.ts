@@ -119,6 +119,7 @@ async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promise<void>
     return;
   }
   t.line(`|10Transfer complete. |07${f.name} saved in C:\\IMAGES.`);
+  h.downloads.setDir('IMAGES', true); // made with the first picture
   h.downloads.add(f.name);
   t.line(`|07After you log off, type |15VPIC \\IMAGES\\${f.name}|07 to look at it again.`);
   t.line();

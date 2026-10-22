@@ -164,19 +164,17 @@ export abstract class ComputerDrives {
         ]),
         liveFolder('DOWNLOAD', async () => {
           const cat = await this.catalog();
-          return this.downloads.list().flatMap((id) => {
-            // a picture from the BBS's GIF Gallery
-            const gif = bbsGifs.find((f) => f.name === id);
-            if (gif)
-              return [
-                file(gif.name, gif.bytes, {
-                  read: () => fetch(`./bbs/${gif.name}`).then(async (r) => (r.ok ? new Uint8Array(await r.arrayBuffer()) : new Uint8Array())),
-                }),
-              ];
+          const dl = this.downloads;
+          return dl.list().flatMap((id) => {
             const g = cat.find((c) => c.id === id);
             if (!g) return [];
-            return [
-              folder(g.id, async () => [
+            // DEL takes files out one by one; RD removes the emptied folder (and the download)
+            const gone = (n: DosNode) => {
+              n.remove = () => dl.deleteFile(id, n.name);
+              return !dl.isDeleted(id, n.name);
+            };
+            const node = liveFolder(g.id, async () =>
+              [
                 ...(g.exe
                   ? [
                       file(g.exe, 155_156, {
@@ -185,10 +183,30 @@ export abstract class ComputerDrives {
                     ]
                   : []),
                 ...(await gameFolder(g).list!()),
-              ]),
-            ];
+              ].filter(gone),
+            );
+            node.remove = () => dl.remove(id);
+            return [node];
           });
         }),
+        // pictures from the BBS's GIF Gallery; the folder is made with the first one
+        ...(this.downloads.hasDir('IMAGES') || bbsGifs.some((f) => this.downloads.has(f.name))
+          ? [
+              Object.assign(
+                liveFolder('IMAGES', () =>
+                  bbsGifs
+                    .filter((f) => this.downloads.has(f.name))
+                    .map((f) =>
+                      file(f.name, f.bytes, {
+                        read: () => fetch(`./bbs/${f.name}`).then(async (r) => (r.ok ? new Uint8Array(await r.arrayBuffer()) : new Uint8Array())),
+                        remove: () => this.downloads.remove(f.name),
+                      }),
+                    ),
+                ),
+                { remove: () => this.downloads.setDir('IMAGES', false) },
+              ),
+            ]
+          : []),
         textFile('AUTOEXEC.BAT', AUTOEXEC.join('\n') + '\n'),
         textFile('CONFIG.SYS', CONFIG_SYS.join('\n') + '\n'),
         file('COMMAND.COM', 54_645),
