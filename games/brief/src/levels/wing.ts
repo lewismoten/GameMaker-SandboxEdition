@@ -8,8 +8,11 @@
 // A book's way out is THE END page (E): a solid page that only opens for a hundred words
 // (counter 3, which it takes), and the open page counts the story into the wing (counter
 // 20 + w) as Joe steps onto it. Right behind it, walled in, a bookmark (L) is the link to the
-// story's card: a link on the page itself would be taken the moment the page opens, before
-// Joe ever touched the open page. The back cover (X) is a way out without finishing.
+// story: a link on the page itself would be taken the moment the page opens, before Joe ever
+// touched the open page. That link is a book's only way out, so the story (the scene's exit
+// graphic) is shown exactly when it has been put back. Nothing in a book can take words away
+// (shushers and the like fine points instead), so every book can always be finished.
+// (An X in the rows is page edge, where the back cover used to be.)
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { c, r } from '../art/pal';
@@ -53,7 +56,6 @@ export interface CompiledBook {
   page: { x: number; y: number };
   /** The bookmark behind it: the link to the story's card. */
   end: { x: number; y: number };
-  cover: { x: number; y: number };
 }
 
 export interface CompiledWing {
@@ -139,14 +141,6 @@ function bookmark(under: Pixels): Pixels {
   return p;
 }
 
-/** The back cover: a way out of a book without finishing it. */
-function backCover(tint: string): Pixels {
-  const p = new Pixels(20, 20);
-  bevel(p, 0, 0, 20, 20, r(tint), 1, 2);
-  p.rect(3, 6, 14, 8, c(tint, 0));
-  micro(p, 3, 8, 'EXIT', c('brass', 4));
-  return p;
-}
 
 /** The felt egg on a brass egg cup, on a little plinth. */
 function eggCup(spec: WingSpec, under: Pixels): Pixels {
@@ -209,7 +203,6 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
   a.solid('eggcup', eggCup(spec, hallFloor));
   // what every book has
   a.solid('edge', edge(tint));
-  a.tile('cover', backCover(tint));
   a.addShusher();
   spec.art(a);
 
@@ -248,15 +241,14 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
       '.': '.',
       E: { tile: `end${tag}`, mark: 'page' },
       L: { tile: `endLink${tag}`, mark: 'end' },
-      X: { tile: 'cover', mark: 'cover' },
+      X: 'edge',
       ...b.legend,
     };
     const win = a.window(ox, 0, b.rows, legend, b.floor);
     checkWords(`${wing.id} book ${k + 1} (${story(b.n).title})`, win);
     const end = win.marks.get('end');
     const page = win.marks.get('page');
-    const cover = win.marks.get('cover');
-    if (!end || !page || !cover) throw new Error(`${wing.id} book ${k + 1}: needs an E, an L and an X`);
+    if (!end || !page) throw new Error(`${wing.id} book ${k + 1}: needs an E and an L`);
     if (Math.abs(end.x - page.x) + Math.abs(end.y - page.y) !== 1) throw new Error(`${wing.id} book ${k + 1}: L goes right behind E`);
     // the bookmark is walled in: the only way onto it is through the open page
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
@@ -264,7 +256,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
       const y = end.y + dy;
       if ((x !== page.x || y !== page.y) && y <= 9 && x >= ox && x < ox + WIN_W && !a.tiles.def(a.get(x, y)).solid) throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
     }
-    return { spec: b, win, end, page, cover };
+    return { spec: b, win, end, page };
   });
   const spines = [0, 1, 2, 3].map((k) => hall.marks.get(`spine${k}`)!);
   return { spec, index, area: a, hall, spines, door: hall.marks.get('door')!, books };

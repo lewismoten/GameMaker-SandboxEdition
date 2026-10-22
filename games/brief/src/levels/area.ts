@@ -54,11 +54,14 @@ export class Area {
     return this.tile(name, on(this.tiles.pic(base), sprite), solid ? { solid: SOLID, ...def } : def);
   }
 
-  /** Monster blocks (frames) and the monster. `hazard`: touching it confiscates a word a tick. */
+  /**
+   * Monster blocks (frames) and the monster. `hazard`: touching it fines Joe a point a tick
+   * (score; the shushers and their friends never touch the words he carries).
+   */
   monster(name: string, frames: [Pixels, number][], def: Partial<MonDef> & { hazard?: boolean; pickup?: number } = {}): string {
     const pics: [string, number][] = frames.map(([px, t], i) => {
       const pn = `${name}#${i}`;
-      const bd: BlockDef = def.hazard ? { effect: CTR.words, eamt: -1 } : def.pickup ? { effect: CTR.words, eamt: def.pickup, score: def.pickup } : {};
+      const bd: BlockDef = def.hazard ? { score: -1 } : def.pickup ? { effect: CTR.words, eamt: def.pickup, score: def.pickup } : {};
       if (!this.mb.has(pn)) this.mb.add(pn, px, bd);
       return [pn, t];
     });

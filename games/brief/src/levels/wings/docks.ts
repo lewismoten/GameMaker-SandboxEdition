@@ -262,7 +262,7 @@ export const DOCKS: WingSpec = {
         P: { tile: '.', mon: 'parrot' },
         J: { tile: '.', mon: 'jim' },
       },
-      note: 'The ship flying the queen\'s flag. Mind the parrot; it repeats everything you say, and keeps the words.',
+      note: 'The ship flying the queen\'s flag. Mind the parrot; it repeats everything you say, and charges for it.',
       twist: {
         grid: [
           ['sugar', 'mast', 'spice'],
@@ -299,7 +299,7 @@ export const DOCKS: WingSpec = {
         '3': 'choose2',
         D: { tile: '.', mon: 'coin' },
       },
-      note: 'A bag of coins, and a man who says take whichever you like. Except that one. The big shiny coins roll around; they take words, not change.',
+      note: 'A bag of coins, and a man who says take whichever you like. Except that one. The big shiny coins roll around; they take points, not change.',
       twist: {
         grid: [
           ['coinTable', 'coinTable', null],
@@ -374,7 +374,7 @@ export const DOCKS: WingSpec = {
         S: { tile: '.', mon: 'steam' },
         Q: { tile: '.', mon: 'steam' },
       },
-      note: 'The Delta Queen on the Mississippi, a calliope, a certificate. The steam is harmless. To robots. It takes words.',
+      note: 'The Delta Queen on the Mississippi, a calliope, a certificate. The steam is harmless. To robots. It fines you anyway.',
       twist: {
         grid: [
           ['river', 'paddle0', 'river'],

@@ -25,11 +25,12 @@ export const SND = {
   kill: 1,
   /** A word picked up (counter 3 up). */
   word: 2,
-  /** Words taken: a shusher confiscating one, or THE END page taking its hundred. */
-  shh: 3,
+  /** THE END page taking its hundred words (counter 3 down). */
+  spend: 3,
   life: 4,
   score: 5,
-  lose: 6,
+  /** A fine: a shusher (or scissors, or static...) touching Joe costs a point a tick. */
+  fine: 6,
   /** A wing counter up: a story shelved. */
   shelved: 7,
   /** A wing counter down: an egg cup lock turns. */

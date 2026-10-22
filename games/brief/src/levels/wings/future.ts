@@ -283,7 +283,7 @@ export const FUTURE: WingSpec = {
         A: { tile: '.', mon: 'agent' },
         a: { tile: '.', mon: 'agentH' },
       },
-      note: 'A family portrait for the King and Queen. The family is off saving the world. The Secret Service is not; it takes words.',
+      note: 'A family portrait for the King and Queen. The family is off saving the world. The Secret Service is not; it hands out fines.',
       twist: {
         grid: [
           ['king', 'queen', 'slight'],
@@ -319,7 +319,7 @@ export const FUTURE: WingSpec = {
         T: { tile: '.', mon: 'tea' },
         Q: { tile: '.', mon: 'question' },
       },
-      note: 'A konbini in Tokyo. Thirty kinds of rice ball. The tea is the one thing you can never get. The cashier\'s questions take words.',
+      note: 'A konbini in Tokyo. Thirty kinds of rice ball. The tea is the one thing you can never get. The cashier\'s questions cost you points.',
       twist: {
         grid: [
           ['onigiri', 'm:tea#0', 'teafridge'],
@@ -356,7 +356,7 @@ export const FUTURE: WingSpec = {
         '3': 'jaroldSign2',
         F: { tile: '.', mon: 'leaf' },
       },
-      note: 'Take care of Jarold, says the manager. Jarold is a ficus. Jarold is dead on arrival. There is an ad. There is an alley. The falling leaves take words.',
+      note: 'Take care of Jarold, says the manager. Jarold is a ficus. Jarold is dead on arrival. There is an ad. There is an alley. The falling leaves are a fineable offense.',
       twist: {
         grid: [
           ['jarold', 'odesk', 'jaroldJr'],
@@ -393,7 +393,7 @@ export const FUTURE: WingSpec = {
         '3': 'bridgeSign2',
         l: { tile: '.', mon: 'little' },
       },
-      note: 'Bob the giant is not bright, but the village finds him odd jobs. Something got broken. Something got crushed. The little person is very upset, and takes words.',
+      note: 'Bob the giant is not bright, but the village finds him odd jobs. Something got broken. Something got crushed. The little person is very upset, and fines everyone.',
       twist: {
         grid: [
           ['bobTop', 'cottage', null],

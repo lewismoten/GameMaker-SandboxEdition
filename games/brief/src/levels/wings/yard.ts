@@ -363,7 +363,7 @@ export const YARD: WingSpec = {
         '3': 'power2',
         S: { tile: '.', mon: 'spark' },
       },
-      note: 'Timmy needs tools for a pinewood derby car. Santa has a bag. Hidey ho. The sparks are not festive; they take words.',
+      note: 'Timmy needs tools for a pinewood derby car. Santa has a bag. Hidey ho. The sparks are not festive; they cost points.',
       twist: {
         grid: [
           ['wbchainsaw', 'wbgrinder', 'wbcnc'],

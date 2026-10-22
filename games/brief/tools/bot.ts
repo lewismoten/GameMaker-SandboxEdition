@@ -152,6 +152,7 @@ export class Bot {
   scene = 0;
   stem = '';
   private lastTried = '';
+  private waited = 0;
 
   get words(): number {
     return this.ci.meter[CTR.words] - 1;
@@ -161,16 +162,16 @@ export class Bot {
     for (let i = 0; i < n && this.sim.link < 0; i++) await this.sim.tick();
   }
 
-  /** Plays a move (a direction, or standing still) on a copy: the words it would lose on the way. */
+  /** Plays a move (a direction, or standing still) on a copy: the fines it would collect on the way. */
   private async trial(d: Dir | undefined, ahead = 16): Promise<number> {
     const t = cloneSim(this.sim);
     let lost = 0;
-    let last = t.w.ci.meter[CTR.words];
+    let last = t.w.ci.score;
     const tick = async () => {
       await t.tick();
-      const now = t.w.ci.meter[CTR.words];
-      // a drop of exactly a hundred is THE END taking its due, not a loss
-      if (now < last && last - now !== 100) lost += last - now;
+      // a fine: a shusher (or scissors, or static...) costs a point a tick
+      const now = t.w.ci.score;
+      if (now < last) lost += last - now;
       last = now;
     };
     if (d) t.press(SCAN[d]);
@@ -181,7 +182,7 @@ export class Bot {
   }
 
   /**
-   * One move toward the goal; when careful, a move that loses no words to a shusher (or
+   * One move toward the goal; when careful, a move that collects no fines from a shusher (or
    * scissors, or static...): the step wanted, else standing still, else a sidestep, else
    * whichever loses least.
    */
@@ -200,6 +201,9 @@ export class Bot {
       this.lastTried = tried.join(' ');
     }
     const w0 = this.words;
+    // a shusher standing still in the way will not move off: after a while, pay the fine
+    this.waited = move ? 0 : this.waited + 1;
+    if (!move && this.waited > 30) (move = d), (this.waited = 0);
     if (!move) {
       await this.ticks(2);
       if (process.env.BOT_DEBUG && this.words < w0) console.log(`  wait at ${this.sim.pos.bx},${this.sim.pos.by} words ${w0} -> ${this.words} [${this.lastTried}]`);

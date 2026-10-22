@@ -274,7 +274,7 @@ export const OTHER: WingSpec = {
         C: { tile: '.', mon: 'clock' },
         s: { tile: '.', mon: 'sound' },
       },
-      note: 'A feast fit for a ruler of house cats, and the fancy catnip. Time melts here. The melting clocks take words; the colorful sounds just hum.',
+      note: 'A feast fit for a ruler of house cats, and the fancy catnip. Time melts here. The melting clocks charge late fees; the colorful sounds just hum.',
       twist: {
         grid: [
           ['m:clock#0', 'nip', 'm:sound#0'],
@@ -309,7 +309,7 @@ export const OTHER: WingSpec = {
         '3': 'vp2',
         Z: { tile: '.', mon: 'eraser' },
       },
-      note: 'A drawing of impossible stairs, after M.C. Escher. A vanishing point that eats pencils. And Jim. The eraser takes words, and possibly Jim.',
+      note: 'A drawing of impossible stairs, after M.C. Escher. A vanishing point that eats pencils. And Jim. The eraser takes points, and possibly Jim.',
       twist: {
         grid: [
           ['stairs0', 'vanish0', 'stairs1'],
@@ -345,7 +345,7 @@ export const OTHER: WingSpec = {
         '3': 'subs2',
         U: { tile: '.', mon: 'underwood' },
       },
-      note: 'Gotcha City. A bologna sandwich with no condiments. A cry for help. Look! It\'s a bird! The birds take words. Underwood takes his time.',
+      note: 'Gotcha City. A bologna sandwich with no condiments. A cry for help. Look! It\'s a bird! The birds fine you. Underwood takes his time.',
       twist: {
         grid: [
           ['subshop', 'm:underwood#0', 'bldg0'],
@@ -381,7 +381,7 @@ export const OTHER: WingSpec = {
         '3': 'hands2',
         P: { tile: '.', mon: 'chip' },
       },
-      note: 'A corn chipper, Paul, and Charles, who should have kept his hands in place. Read the first letters. Then do not. The flying chips take words.',
+      note: 'A corn chipper, Paul, and Charles, who should have kept his hands in place. Read the first letters. Then do not. The flying chips cost points.',
       twist: {
         grid: [
           ['belt0', 'chipper00', 'chipper10'],

@@ -271,7 +271,7 @@ export const LAB: WingSpec = {
         z: 'eureka2',
         I: { tile: '.', mon: 'inventor' },
       },
-      note: 'An all-night inventor, a crowd, some reporters. The reporters want a quote and will take any words you have.',
+      note: 'An all-night inventor, a crowd, some reporters. The reporters want a quote, and charge you for it.',
       twist: {
         grid: [
           ['pipes0', 'wires', 'pipes1'],
@@ -344,7 +344,7 @@ export const LAB: WingSpec = {
         O: { tile: '.', mon: 'ooze' },
         D: { tile: '.', mon: 'doctor' },
       },
-      note: 'A purple ooze in three silly cartoon masks. Do not let it absorb you. Do not let it absorb your words, either.',
+      note: 'A purple ooze in three silly cartoon masks. Do not let it absorb you. It fines on contact.',
       twist: {
         grid: [
           ['benchOoze', 'masks', 'bench'],

@@ -299,7 +299,7 @@ export const AFTER: WingSpec = {
         H: { tile: '.', mon: 'hootH' },
         h: { tile: '.', mon: 'hoot' },
       },
-      note: 'A one-eyed owl with a chiseled jaw guards the forest, asking not who, but whom. Its hoots carry. So do your words, if they can.',
+      note: 'A one-eyed owl with a chiseled jaw guards the forest, asking not who, but whom. Its hoots carry, and so do its fines.',
       twist: {
         grid: [
           ['pine0', 'owl', 'pine1'],
@@ -333,7 +333,7 @@ export const AFTER: WingSpec = {
         '3': 'quiet2',
         S: { tile: '.', mon: 'echo' },
       },
-      note: 'Alone. In the dark. No one to tell to be quiet. The echoes are the noisiest thing in the universe, and they take words.',
+      note: 'Alone. In the dark. No one to tell to be quiet. The echoes are the noisiest thing in the universe, and they fine you for listening.',
       twist: {
         grid: [
           ['bars', 'cellwall', 'celldoor'],

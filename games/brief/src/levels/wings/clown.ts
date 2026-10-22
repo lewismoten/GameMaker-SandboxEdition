@@ -285,7 +285,7 @@ export const CLOWN: WingSpec = {
         V: { tile: '.', mon: 'guide' },
         G: { tile: '.', mon: 'static' },
       },
-      note: 'A balloon museum with a live cheese band. Do not touch the sculptures. They are touchy. Static electricity will try to hug you; it confiscates words.',
+      note: 'A balloon museum with a live cheese band. Do not touch the sculptures. They are touchy. Static electricity will try to hug you. That costs points.',
       twist: {
         grid: [
           ['bdog', 'bsword', 'bflower', 'bhat'],

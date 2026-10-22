@@ -27,6 +27,7 @@ const all = compileAll();
 const { cb, chr, wings, hub, game } = all;
 
 disk.put('brief.pal', serializePalette(PAL.pal));
+disk.put('dark.pal', serializePalette(new Uint8Array(768)));
 disk.put('joe.chr', serializeCharacter(chr));
 disk.put('joe.cbl', serializeBlocks(cb.build()));
 for (const a of [hub.area, ...wings.map((w) => w.area)]) {

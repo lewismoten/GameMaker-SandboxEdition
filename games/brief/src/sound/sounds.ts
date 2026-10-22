@@ -62,7 +62,8 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
   };
   put(SND.kill, SPEAKER.chirp(), 'pop', pop());
   put(SND.word, speaker((i) => (i < 6 ? 1800 + i * 200 : 0)), 'flutter', flutter());
-  put(SND.shh, SPEAKER.noise(3, 2000, 6000), 'shhh', shh());
+  put(SND.spend, speaker((i) => (i < 6 ? 220 : i < 10 ? 0 : i < 16 ? 160 : 0)), 'clunk', clunk());
+  put(SND.fine, SPEAKER.noise(3, 2000, 6000), 'shhh', shh());
   put(SND.life, SPEAKER.arpeggio(), 'fanfare', fanfare());
   put(SND.score, SPEAKER.coin());
   put(SND.shelved, SPEAKER.arpeggio([1568, 2093, 1568, 2093]), 'ding', bell());

@@ -307,7 +307,7 @@ export const LIVING: WingSpec = {
         T: { tile: '.', mon: 'twister' },
         D: { tile: '.', mon: 'dancer' },
       },
-      note: 'Oliver Twist\'s party. Twister, a Rubik\'s Cube, tongue twisters, Chubby Checker. Outside, a twister. Inside, also a twister. It takes words.',
+      note: 'Oliver Twist\'s party. Twister, a Rubik\'s Cube, tongue twisters, Chubby Checker. Outside, a twister. Inside, also a twister. It fines you.',
       twist: {
         grid: [
           ['twistWindow', 'deadTV', 'record0'],
