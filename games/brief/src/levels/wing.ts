@@ -242,6 +242,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     a.tile(`endOpen${tag}`, endPage('open', under, tint), { effect: wingCounter(index), eamt: 1, touch: `endDone${tag}`, score: 0 });
     a.tile(`endLink${tag}`, bookmark(under));
     a.solid(`end${tag}`, endPage('shut', under, tint), { effect: CTR.words, eamt: -WORDS_PER_BOOK, touch: `endOpen${tag}` });
+    for (const ch of ['#', '.', 'E', 'L', 'X', '@', '*', '+', '~', 'o']) if (ch in b.legend) throw new Error(`${wing.id} book ${k + 1}: "${ch}" means something else in every book`);
     const legend: Record<string, Cell> = {
       '#': 'edge',
       '.': '.',
