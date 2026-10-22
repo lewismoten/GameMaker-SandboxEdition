@@ -5,10 +5,11 @@
 // shows the same arrangement.
 //
 // The editor is one closure over the game. Its sections, in order: pictures (cached scene
-// shots), songs, the board (pan, zoom, dragging cards), the toolbar (Auto-arrange, Spread
-// out, zoom, PNG), the side panel (screens and music), scenes (adding, playing from one),
-// and the selected scene's panel (its links table is sceneLinks.ts). Drawing the board is in
-// board.ts; the layout algorithms are in integratorLayout.ts and layoutCells.ts.
+// shots), songs, the board, the toolbar (Auto-arrange, Spread out, zoom, PNG), the side
+// panel (screens and music: sideLists.ts), scenes (adding, playing from one), and the
+// selected scene's panel (its links table: sceneLinks.ts). Drawing the board is in board.ts,
+// its camera in boardCamera.ts and its pointer and keys in boardInput.ts; the layout
+// algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
 import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
@@ -38,6 +39,7 @@ import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
 import { linksPanel } from './sceneLinks';
 import { BoardCamera } from './boardCamera';
+import { boardInput } from './boardInput';
 import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
 import { fileUndo } from '../../core/fileUndo';
@@ -187,7 +189,6 @@ registerEditor(['gam'], (host, project, file) => {
     });
   }
 
-  const toBoard = (clientX: number, clientY: number) => cam.toBoard(clientX, clientY);
   const zoomAt = (z: number, clientX?: number, clientY?: number) => cam.zoomAt(z, clientX, clientY);
   function fit(): void {
     const rs = used().map(cardRect);
@@ -207,33 +208,18 @@ registerEditor(['gam'], (host, project, file) => {
     return order.find((i) => inRect(cardRect(i), x, y)) ?? -1;
   }
 
-  // pointers: one = drag a card or pan; two = pinch zoom
-  const pointers = new Map<number, { x: number; y: number }>();
-  let gesture:
-    | { type: 'card'; i: number; dx: number; dy: number; sx: number; sy: number; moved: boolean }
-    | { type: 'pan'; sx: number; sy: number; cx: number; cy: number }
-    | { type: 'pinch'; d: number; z: number }
-    | undefined;
-  board.addEventListener('pointerdown', (e) => {
-    board.focus({ preventScroll: true });
-    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    board.setPointerCapture(e.pointerId);
-    if (pointers.size === 2) {
-      const [a, b] = [...pointers.values()];
-      gesture = { type: 'pinch', d: Math.hypot(a.x - b.x, a.y - b.y), z: cam.z };
-      return;
-    }
-    const p = toBoard(e.clientX, e.clientY);
-    const i = sceneAt(p.x, p.y);
-    if (i >= 0) {
-      const btn = cardButtons(i, cardRect(i)).find((b) => inRect(b, p.x, p.y));
-      if (btn) {
-        void toggleSong(btn.file);
-        gesture = undefined;
-        return;
-      }
-      const pos = game.scenes[i].pos;
-      gesture = { type: 'card', i, dx: p.x - (pos.x + 2) * S, dy: p.y - (pos.y + 2) * S, sx: e.clientX, sy: e.clientY, moved: false };
+  // pointers, wheel and keys (boardInput.ts)
+  boardInput({
+    board,
+    cam,
+    game,
+    used,
+    selected: () => selected,
+    sceneAt,
+    cardRect,
+    cardButtons,
+    toggleSong: (f) => void toggleSong(f),
+    press: (i) => {
       if (selected !== i) {
         selected = i;
         renderPanel();
@@ -244,88 +230,21 @@ registerEditor(['gam'], (host, project, file) => {
         renderSide();
       }
       draw();
-    } else gesture = { type: 'pan', sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y };
-  });
-  board.addEventListener('pointermove', (e) => {
-    if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (!gesture) {
-      const p = toBoard(e.clientX, e.clientY);
-      const i = sceneAt(p.x, p.y);
-      board.style.cursor = i < 0 ? 'grab' : cardButtons(i, cardRect(i)).some((b) => inRect(b, p.x, p.y)) ? 'pointer' : 'move';
-      return;
-    }
-    if (gesture.type === 'pinch') {
-      const [a, b] = [...pointers.values()];
-      if (a && b) zoomAt((gesture.z * Math.hypot(a.x - b.x, a.y - b.y)) / gesture.d, (a.x + b.x) / 2, (a.y + b.y) / 2);
-    } else if (gesture.type === 'pan') {
-      cam.panTo(gesture.cx - (e.clientX - gesture.sx) / cam.z, gesture.cy - (e.clientY - gesture.sy) / cam.z);
-      board.style.cursor = 'grabbing';
-    } else {
-      if (!gesture.moved && Math.hypot(e.clientX - gesture.sx, e.clientY - gesture.sy) < 4) return;
-      gesture.moved = true;
-      const p = toBoard(e.clientX, e.clientY);
-      game.scenes[gesture.i].pos = clampPos({ x: (p.x - gesture.dx) / S - 2, y: (p.y - gesture.dy) / S - 2 });
+    },
+    step: (i) => {
+      selected = i;
+      centerOn(i);
+      renderPanel();
       draw();
-    }
-  });
-  const endPointer = (e: PointerEvent) => {
-    pointers.delete(e.pointerId);
-    if (gesture?.type === 'card' && gesture.moved) {
+    },
+    cardMoved: () => {
       arranged = undefined;
       renderTools();
       save();
-    }
-    if (gesture?.type === 'pinch' && pointers.size === 1) {
-      const [p] = [...pointers.values()];
-      gesture = { type: 'pan', sx: p.x, sy: p.y, cx: cam.x, cy: cam.y };
-      return;
-    }
-    gesture = undefined;
-  };
-  board.addEventListener('pointerup', endPointer);
-  board.addEventListener('pointercancel', endPointer);
-  board.addEventListener(
-    'wheel',
-    (e) => {
-      e.preventDefault();
-      if (e.ctrlKey || Math.abs(e.deltaY) >= Math.abs(e.deltaX)) zoomAt(cam.z * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX, e.clientY);
-      else cam.panTo(cam.x + e.deltaX / cam.z, cam.y);
     },
-    { passive: false },
-  );
-  board.addEventListener('dblclick', (e) => {
-    const p = toBoard(e.clientX, e.clientY);
-    const i = sceneAt(p.x, p.y);
-    if (i >= 0 && game.scenes[i].gametype === ADVTYPE) playFrom(i);
-  });
-  board.addEventListener('keydown', (e) => {
-    if (e.key === '+' || e.key === '=') zoomAt(cam.z * 1.25);
-    else if (e.key === '-') zoomAt(cam.z / 1.25);
-    else if (e.key === '0') fit();
-    else if (e.key === 'Tab') return;
-    else if (e.key.startsWith('Arrow')) {
-      // step the selection to the nearest scene in that direction
-      const here = game.scenes[selected]?.pos ?? { x: 0, y: 0 };
-      const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key] ?? [0, 0];
-      let best = -1;
-      let bestD = Infinity;
-      for (const i of used()) {
-        const p = game.scenes[i].pos;
-        const dx = p.x - here.x;
-        const dy = p.y - here.y;
-        const along = dx * dir[0] + dy * dir[1];
-        if (i === selected || along <= 0) continue;
-        const d = along + 2 * Math.abs(dx * dir[1] + dy * dir[0]);
-        if (d < bestD) [best, bestD] = [i, d];
-      }
-      if (best >= 0) {
-        selected = best;
-        centerOn(best);
-        renderPanel();
-        draw();
-      }
-    } else return;
-    e.preventDefault();
+    playFrom,
+    draw,
+    fit,
   });
   const resize = new ResizeObserver(() => (cam.fitted ? fit() : draw()));
   resize.observe(board);
