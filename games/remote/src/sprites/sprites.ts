@@ -168,7 +168,16 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  const hurt = (hp: number) => ({ chHitPt: hp });
+  /**
+   * A monster that hurts to touch: its pictures don't, but each also has a stinging copy
+   * (name + "!") that its animation shows for one tick in every round. Touching hurts only on
+   * that tick, so bumping into one costs a little and you can still get away (a hurt freezes
+   * you for a moment, and a monster that hurt every tick would hold you there).
+   */
+  const sting = (name: string, pic: Pixels, hp: number) => {
+    book.add(name, pic);
+    book.add(`${name}!`, pic, { chHitPt: hp });
+  };
 
   // The shout: "?!" in a burst of sound.
   const shout = (f: number) => {
@@ -200,8 +209,8 @@ export function buildMonsterBlocks(pal: Pal) {
     if (!f) p.rect(4, 17, 12, 1, c('cat', 0));
     return done(p);
   };
-  book.add('bunny0', bunny(0), hurt(-3));
-  book.add('bunny1', bunny(1), hurt(-3));
+  sting('bunny0', bunny(0), -2);
+  book.add('bunny1', bunny(1));
   const poof = (f: number) => {
     const p = P();
     for (const [x, y, r] of [[6, 10, 3], [12, 8, 3.4], [14, 13, 2.6], [8, 14, 2.4], [10, 11, 3]] as const) blob(p, x + (f ? (x - 10) * 0.4 : 0), y + (f ? (y - 11) * 0.4 : 0), r + f, r + f, pal.r('cat'), 2, 3);
@@ -222,8 +231,8 @@ export function buildMonsterBlocks(pal: Pal) {
     for (const [x, d] of [[6, 1], [8, -1], [11, 1], [13, -1]] as const) p.set(x + (f ? d : -d), 16, c('cat', 3)).set(x + (f ? d : -d), 8, c('cat', 3));
     return done(p);
   };
-  book.add('cat0', cat(0), hurt(-6));
-  book.add('cat1', cat(1), hurt(-6));
+  sting('cat0', cat(0), -4);
+  book.add('cat1', cat(1));
 
   // Teddy, the corgi: red-gold with a white blaze and chest, the right ear taller than the left, grinning.
   const teddy = (f: number) => {
@@ -251,8 +260,8 @@ export function buildMonsterBlocks(pal: Pal) {
     if (!f) p.set(8, 9, c('wood', 2)).set(12, 11, c('wood', 2));
     return done(p);
   };
-  book.add('toast0', toast(0), hurt(-4));
-  book.add('toast1', toast(1), hurt(-4));
+  sting('toast0', toast(0), -3);
+  book.add('toast1', toast(1));
   const crumbs = P();
   for (const [x, y] of [[6, 14], [9, 15], [13, 13], [11, 16], [8, 12]]) crumbs.rect(x, y, 2, 1, c('wood', 3));
   book.add('crumbs', crumbs);
@@ -266,8 +275,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(15, 10, 19, 7, ink).line(15, 12, 19, 14, ink);
     return done(p);
   };
-  book.add('roach0', roach(0), hurt(-2));
-  book.add('roach1', roach(1), hurt(-2));
+  sting('roach0', roach(0), -2);
+  book.add('roach1', roach(1));
 
   // A lost sock drifting, argyle.
   const sock = (f: number) => {
@@ -279,8 +288,8 @@ export function buildMonsterBlocks(pal: Pal) {
     for (const [x, y] of [[9, 7], [11, 10]]) p.set(x, y, c('red', 2)).set(x + 1, y + 1, c('red', 2));
     return done(p);
   };
-  book.add('sock0', sock(0), hurt(-3));
-  book.add('sock1', sock(1), hurt(-3));
+  sting('sock0', sock(0), -3);
+  book.add('sock1', sock(1));
 
   // A penny, turning in the void: money.
   const penny = (f: number) => {
@@ -320,8 +329,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(6 - f, 15, 3, 2, c('red', 2)).rect(11 + f, 15, 3, 2, c('red', 2)).set(7 - f, 15, c('white', 2)).set(12 + f, 15, c('white', 2));
     return done(p);
   };
-  book.add('seed0', seed(0));
-  book.add('seed1', seed(1));
+  book.add('seed0', seed(0), { scorePts: 100 });
+  book.add('seed1', seed(1), { scorePts: 100 });
 
   // Lint: a grey wisp with a frown, drifting after you.
   const lint = (f: number) => {
@@ -334,8 +343,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(8, 9, ink).set(12, 9, ink).line(8, 12, 12, 12, c('cat', 0));
     return p;
   };
-  book.add('lint0', lint(0), hurt(-2));
-  book.add('lint1', lint(1), hurt(-2));
+  sting('lint0', lint(0), -2);
+  book.add('lint1', lint(1));
 
   // The third goat from the left, grazing on lost socks.
   const goat = (f: number) => {
@@ -358,16 +367,16 @@ export function buildMonsterBlocks(pal: Pal) {
     if (f) p.rect(5, 16, 10, 3, c('wood', 2));
     return done(p);
   };
-  book.add('recliner0', recliner(0), { chHitPt: -6, solid: 15 });
-  book.add('recliner1', recliner(1), { chHitPt: -6, solid: 15 });
+  sting('recliner0', recliner(0), -6);
+  book.add('recliner1', recliner(1));
   const ottoman = (f: number) => {
     const p = P();
     blob(p, 10, 10, 7, 6, pal.r('couch'), 1, 4);
     for (let a = 0; a < 6.28; a += 1.05) p.set(10 + Math.cos(a + f * 0.5) * 4, 10 + Math.sin(a + f * 0.5) * 3, c('flora', 2));
     return done(p);
   };
-  book.add('ottoman0', ottoman(0), { chHitPt: -4, solid: 15 });
-  book.add('ottoman1', ottoman(1), { chHitPt: -4, solid: 15 });
+  sting('ottoman0', ottoman(0), -4);
+  book.add('ottoman1', ottoman(1));
   const lampshade = (f: number) => {
     const p = P();
     for (let y = 3; y < 11; y++) p.rect(10 - 2 - (y - 3) / 2, y, 4 + (y - 3), 1, c('lamp', y % 3 ? 1 : 2));
@@ -375,15 +384,15 @@ export function buildMonsterBlocks(pal: Pal) {
     if (f) for (const [x, y] of [[3, 4], [16, 5], [2, 9], [17, 10]]) p.set(x, y, c('lamp', 2));
     return done(p);
   };
-  book.add('lampshade0', lampshade(0), { chHitPt: -4, solid: 15 });
-  book.add('lampshade1', lampshade(1), { chHitPt: -4, solid: 15 });
+  sting('lampshade0', lampshade(0), -4);
+  book.add('lampshade1', lampshade(1));
   const popcorn = (f: number) => {
     const p = P();
     for (const [x, y] of [[8, 9], [12, 11], [10, 13]] as const) blob(p, x + f, y - f, 2.2, 2, pal.r('white'), 1, 2);
     p.set(11, 12, c('yellow', 1)).set(8, 10, c('yellow', 1));
     return done(p);
   };
-  book.add('popcorn0', popcorn(0), hurt(-2));
-  book.add('popcorn1', popcorn(1), hurt(-2));
+  sting('popcorn0', popcorn(0), -2);
+  book.add('popcorn1', popcorn(1));
   return book;
 }

@@ -28,7 +28,7 @@ export const MON = {
   /** The mustard seed in red sneakers, lost between the cushions too. Say hi. */
   seed: 13,
   seedBye: 14,
-  /** Lint: a grey wisp that drifts after you. A shout blows it away. */
+  /** Lint: a grey wisp drifting about. A shout blows it away. */
   lint: 15,
   /** The third goat from the left, a long way from Bethlehem, grazing on lost socks. Harmless. */
   goat: 16,
@@ -112,7 +112,7 @@ export const MOMS_NUMBER = '5550113';
 
 /** Sound effect numbers in each .SND (0..8 are the ones PLAYGAME plays by itself). */
 export const SND = {
-  /** Patience back (Teddy's kiss, the fridge's cold soda, a candy bar in the void). */
+  /** Patience back (Teddy's kiss, the fridge's cold soda, cold pizza, a candy bar in the void). */
   help: 0,
   /** A monster done in (a dust bunny blown away; the raccoon says hi). */
   kill: 1,
@@ -120,11 +120,11 @@ export const SND = {
   money: 2,
   /** Pennies spent (the pay TV warms up). */
   pay: 3,
-  /** An extra life ("Check your hand."). */
+  /** An extra life (the Voice-O-Matic's pizza). */
   life: 4,
   /** Points (junk). */
   score: 5,
-  /** Points lost (Teddy grumbles if you bother him twice). */
+  /** Points lost (Teddy grumbles: that's his bowl). */
   lose: 6,
   /** A counter up (a spot searched, a magnet, PLAY pressed). */
   gain: 7,

@@ -134,17 +134,19 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     [n(a), t],
     [n(b), t],
   ];
+  /** The same, with its stinging tick first (sprites.ts sting()): it hurts once a round. */
+  const stings = (a: string, b: string, t = 3): [number, number][] => [[n(`${a}!`), 1], ...anim(a, b, t)];
   set[MON.shout] = mon(anim('shout0', 'shout1', 2), { power: 120, thru: 1, towards: 7, end: 14, newmon: MON.echo });
   set[MON.echo] = mon([[n('echo'), 3]], { power: 100, thru: 0, end: 4 });
-  set[MON.bunny] = mon(anim('bunny0', 'bunny1', 5), { power: 110, thru: 1, towards: wander(1), newmon: MON.poof, upscore: 25 });
+  set[MON.bunny] = mon(stings('bunny0', 'bunny1', 5), { power: 110, thru: 1, towards: wander(1), newmon: MON.poof, upscore: 25 });
   set[MON.poof] = mon(anim('poof0', 'poof1', 3), { power: 100, thru: 0, end: 6 });
-  set[MON.cat] = mon(anim('cat0', 'cat1', 6), { power: 150, thru: 1 }, pace(o.cat ?? 6, 1));
+  set[MON.cat] = mon(stings('cat0', 'cat1', 6), { power: 150, thru: 1 }, pace(o.cat ?? 6, 1));
   // Teddy follows you round the kitchen, slowly, in case anything falls
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 5), { power: 200, thru: 1, towards: 1 });
-  set[MON.toast] = mon(anim('toast0', 'toast1', 2), { power: 150, thru: 0, end: -1, newmon: MON.crumbs }, [corner(0, 0, 3), corner(0, o.toast ?? 4, 3, 1)]);
+  set[MON.toast] = mon(stings('toast0', 'toast1', 2), { power: 150, thru: 0, end: -1, newmon: MON.crumbs }, [corner(0, 0, 3), corner(0, o.toast ?? 4, 3, 1)]);
   set[MON.crumbs] = mon([[n('crumbs'), 10]], { power: 100, thru: 0, end: 30 });
-  set[MON.roach] = mon(anim('roach0', 'roach1', 2), { power: 110, thru: 1, towards: wander(2), newmon: MON.poof, upscore: 20 });
-  set[MON.sock] = mon(anim('sock0', 'sock1', 8), { power: 150, thru: 0 }, loop(3, 2, 1));
+  set[MON.roach] = mon(stings('roach0', 'roach1', 2), { power: 110, thru: 1, towards: wander(2), newmon: MON.poof, upscore: 20 });
+  set[MON.sock] = mon(stings('sock0', 'sock1', 8), { power: 150, thru: 0 }, loop(3, 2, 1));
   set[MON.penny] = mon(
     [
       [n('penny0'), 6],
@@ -157,13 +159,13 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.raccoonBye] = mon([[n('raccoonBye'), 4]], { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(4, -3, 3, 0)]);
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 1, newmon: MON.seedBye }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.seedBye] = mon(anim('seed1', 'seed0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
-  set[MON.lint] = mon(anim('lint0', 'lint1', 4), { power: 110, thru: 1, towards: 1, newmon: MON.poof, upscore: 15 });
+  set[MON.lint] = mon(stings('lint0', 'lint1', 4), { power: 110, thru: 1, towards: wander(1), newmon: MON.poof, upscore: 15 });
   set[MON.goat] = mon(anim('goat0', 'goat1', 12), { power: 200, thru: 1 }, pace(2, 1));
   const [rw, rh] = o.ride ?? [8, 2];
-  set[MON.recliner] = mon(anim('recliner0', 'recliner1', 8), { power: 200, thru: 0 }, loop(rw, rh, 2));
-  set[MON.ottoman] = mon(anim('ottoman0', 'ottoman1', 4), { power: 200, thru: 0 }, [corner(0, 0, 2), corner(-rw, 0, 2, 4), corner(-rw, -rh, 2, 4), corner(0, -rh, 2, 0), corner(0, 0, 2, 0)]);
-  set[MON.lampshade] = mon(anim('lampshade0', 'lampshade1', 3), { power: 200, thru: 0 }, pace(4, 2));
-  set[MON.popcorn] = mon(anim('popcorn0', 'popcorn1', 2), { power: 150, thru: 1, towards: wander(2) });
+  set[MON.recliner] = mon(stings('recliner0', 'recliner1', 8), { power: 200, thru: 0 }, loop(rw, rh, 2));
+  set[MON.ottoman] = mon(stings('ottoman0', 'ottoman1', 4), { power: 200, thru: 0 }, [corner(0, 0, 2), corner(-rw, 0, 2, 4), corner(-rw, -rh, 2, 4), corner(0, -rh, 2, 0), corner(0, 0, 2, 0)]);
+  set[MON.lampshade] = mon(stings('lampshade0', 'lampshade1', 3), { power: 200, thru: 0 }, pace(4, 2));
+  set[MON.popcorn] = mon(stings('popcorn0', 'popcorn1', 2), { power: 150, thru: 1, towards: wander(2) });
   set[MON.rider] = mon(anim('raccoon0', 'raccoon1', 3), { power: 50, thru: 1, newmon: MON.raccoonBye }, loop(3, 1, 2));
   return set;
 }

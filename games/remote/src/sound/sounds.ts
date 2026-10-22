@@ -5,7 +5,7 @@
 // warming up, the Voice-O-Matic's babble, an "ow!" and a flop into the couch); the singing is
 // cut from the song itself (clips.ts): "Where's the remote?!" for SPACE, "Lifted the dog, looked
 // under the cat." as Teddy gets lifted, "Opened the fridge, who knows anymore?", "Called my
-// mom..." as the phone dials, "Check your hand." (C, and Mom's answer), "a tiny raccoon" and
+// mom..." as the phone dials, "Check your hand." (C), "a tiny raccoon" and
 // "There you are, you sneaky guy." as you sit back down on the couch.
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { rng } from '../../../kit/pixels';

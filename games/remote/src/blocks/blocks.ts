@@ -4,12 +4,12 @@
 //   - searching is touching: push into a couch cushion, the blanket, the laundry, the magazines,
 //     the cat's chair or Teddy's bed and it changes into the searched version, counting one spot
 //     (counter 20); the baby gate to the kitchen only opens for six;
-//   - Teddy gives you a kiss (patience back), the cat a swipe (patience lost); bother Teddy twice
-//     and he grumbles (points lost); the Voice-O-Matic mishears you and orders a pizza (a life);
+//   - Teddy gives you a kiss (patience back), the cat a swipe (patience lost); the Voice-O-Matic
+//     mishears you and orders a pizza (a life);
 //   - in the kitchen the fridge's cold soda gives patience back, the toaster gives birth to
 //     flying toast, Mom's number is seven fridge magnets on the floor (counter 21), and the phone
-//     dials them, rings, and Mom answers (a life) before you hang up;
-//   - in the void between the cushions the nothing is solid, the Bermuda swirls sting, the lost
+//     dials them; Teddy's bowl is his (points off);
+//   - in the void between the cushions the nothing is solid, a Bermuda swirl stings once, the lost
 //     things are points, the fake remotes say NOPE, and the pay TV takes ten pennies (money);
 //   - on the living room ride the spinning rug carries you round (gravity), the VCR's PLAY
 //     button counts (counter 22) and the couch only lets you sit down with the tape playing.
@@ -272,8 +272,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('chairCat', chair(true), { solid: SOLID, hp: -6, effect: SPOTS, eamt: 1, score: 50, touch: 'chairEmpty' });
   book.add('chairEmpty', chair(false), solid);
-  // Teddy asleep in his bed: lift the dog (he kisses you); bother him again and he grumbles
-  const bed = (dog: 'asleep' | 'up' | 'grumpy') => {
+  // Teddy asleep in his bed: lift the dog (he kisses you: patience)
+  const bed = (dog: 'asleep' | 'up') => {
     const p = carpet(11);
     blob(p, 10, 11, 9, 7, R('plaid'), 0, 2);
     blob(p, 10, 11, 6.4, 4.6, R('red'), 0, 2);
@@ -289,14 +289,12 @@ export function buildBlocks(pal: Pal): BlockBook {
       blob(p, 12, 10, 3.2, 3, R('fur'), 1, 3);
       p.line(10, 8, 9, 4, c('fur', 2)).line(14, 8, 15, 3, c('fur', 2)).line(12, 7, 12, 12, c('white', 2));
       p.set(11, 9, ink).set(13, 9, ink).set(12, 12, ink);
-      if (dog === 'up') p.set(12, 13, c('pink', 2)).set(12, 14, c('pink', 1));
-      else p.line(10, 7, 12, 8, ink).line(14, 7, 12, 8, ink);
+      p.set(12, 13, c('pink', 2)).set(12, 14, c('pink', 1));
     }
     return p;
   };
   book.add('dogBed', bed('asleep'), { solid: SOLID, hp: 10, effect: SPOTS, eamt: 1, score: 50, touch: 'dogUp' });
-  book.add('dogUp', bed('up'), { solid: SOLID, score: -5, touch: 'dogGrumpy' });
-  book.add('dogGrumpy', bed('grumpy'), solid);
+  book.add('dogUp', bed('up'), solid);
   // the end table and its lamp
   const lamp = carpet(12);
   lamp.rect(2, 8, 16, 10, c('wood', 2)).rect(2, 8, 16, 1, c('wood', 4)).rect(2, 17, 16, 1, c('wood', 0));
@@ -487,7 +485,13 @@ export function buildBlocks(pal: Pal): BlockBook {
   blob(bowl, 10, 11, 6, 4, R('red'), 1, 3);
   blob(bowl, 10, 10, 4, 2.4, R('wood'), 1, 2);
   micro(bowl, 5, 13, 'TED', c('white', 2));
-  book.add('bowl', bowl, solid);
+  // it's Teddy's: touch it and he grumbles (points off), and it's licked clean
+  book.add('bowl', bowl, { solid: SOLID, score: -5, touch: 'bowlClean' });
+  const clean = lino(24);
+  blob(clean, 10, 11, 6, 4, R('red'), 1, 3);
+  blob(clean, 10, 10, 4, 2.4, R('silver'), 1, 2);
+  micro(clean, 5, 13, 'TED', c('white', 2));
+  book.add('bowlClean', clean, solid);
   const trash = lino(25);
   trash.rect(4, 2, 12, 16, c('silver', 1)).rect(4, 2, 12, 3, c('silver', 2)).rect(8, 0, 4, 2, c('silver', 0));
   trash.rect(6, 7, 1, 9, c('silver', 0)).rect(10, 7, 1, 9, c('silver', 0)).rect(13, 7, 1, 9, c('silver', 0));
@@ -510,26 +514,23 @@ export function buildBlocks(pal: Pal): BlockBook {
     micro(p, 6, 6, d, c('white', 2), 2);
     book.add(`magnet${d}`, p, { effect: DIGITS, eamt: 1, score: 25, touch: 'lino' });
   }
-  // the phone: a beige wall phone with a long curly cord. It dials seven digits ("Called my
-  // mom..."), rings, Mom answers ("Check your hand." and a life), and you hang up and go.
-  const phone = (state: 'hung' | 'ring0' | 'ring1' | 'off') => {
+  // the phone: a beige wall phone with a long curly cord. It dials all seven digits ("Called my
+  // mom..."), and you're on the line.
+  const phone = (off: boolean) => {
     const p = tileWall.crop(0, 0, 20, 20);
     p.rect(5, 6, 10, 12, c('fridge', 1)).rect(5, 6, 10, 1, c('fridge', 3));
     for (let k = 0; k < 9; k++) p.rect(7 + (k % 3) * 2, 11 + Math.floor(k / 3) * 2, 1, 1, c('crt', 1));
-    if (state !== 'off') p.rect(4, 3 - (state === 'ring1' ? 1 : 0), 4, 15, c('fridge', 2)).rect(4, 3 - (state === 'ring1' ? 1 : 0), 4, 1, c('fridge', 3));
-    else p.rect(7, 18, 3, 2, c('fridge', 0));
-    for (let y = 16; y < 20; y++) p.set(5 + ((y * 3) % 4), y, c('fridge', 0));
-    if (state === 'ring0' || state === 'ring1') {
-      for (const [x, y] of [[16, 4], [17, 7], [16, 10]]) p.rect(x + (state === 'ring1' ? 1 : 0), y, 2, 1, c('red', 3));
-      micro(p, 13, 0, state === 'ring0' ? 'HI' : 'MA', c('red', 1));
+    if (!off) p.rect(4, 3, 4, 15, c('fridge', 2)).rect(4, 3, 4, 1, c('fridge', 3));
+    else {
+      p.rect(7, 18, 3, 2, c('fridge', 0));
+      micro(p, 12, 0, 'MA', c('red', 1));
     }
-    if (state === 'hung') micro(p, 12, 1, String(DIGITS_NEEDED), c('red', 1));
+    for (let y = 16; y < 20; y++) p.set(5 + ((y * 3) % 4), y, c('fridge', 0));
+    if (!off) micro(p, 12, 1, String(DIGITS_NEEDED), c('red', 1));
     return p;
   };
-  book.add('phone', phone('hung'), { solid: SOLID, effect: DIGITS, eamt: -DIGITS_NEEDED, score: 500, touch: 'phoneRing' });
-  book.add('phoneRing', phone('ring0'), { solid: SOLID, effect: LIVES, eamt: 1, score: 500, touch: 'phoneDone', next: 'phoneRing2', ntime: 8 });
-  book.add('phoneRing2', phone('ring1'), { solid: SOLID, effect: LIVES, eamt: 1, score: 500, touch: 'phoneDone', next: 'phoneRing', ntime: 8 });
-  book.add('phoneDone', phone('off'));
+  book.add('phone', phone(false), { solid: SOLID, effect: DIGITS, eamt: -DIGITS_NEEDED, score: 500, touch: 'phoneDone' });
+  book.add('phoneDone', phone(true));
 
   // ---------- the void between the cushions ----------
   const deep = (seed: number) => {
@@ -560,7 +561,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('fabric', fabric(44));
   book.add('fabric2', fabric(45));
-  // the Bermuda swirl: it stings
+  // a Bermuda swirl on the path: it stings as you step through it, and closes
   const swirl = (f: number) => {
     const p = deep(46);
     for (let t = 0; t < 60; t++) {
@@ -570,8 +571,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     }
     return p;
   };
-  book.add('swirl0', swirl(0), { hp: -3, next: 'swirl1', ntime: 3 });
-  book.add('swirl1', swirl(1), { hp: -3, next: 'swirl0', ntime: 3 });
+  book.add('swirl0', swirl(0), { hp: -8, touch: 'fabric2', next: 'swirl1', ntime: 3 });
+  book.add('swirl1', swirl(1), { hp: -8, touch: 'fabric2', next: 'swirl0', ntime: 3 });
   // lost things: points (and a few red herrings)
   const lost = (what: string, draw: (p: Pixels) => void, score: number) => {
     const p = fabric(50 + book.index.size);
