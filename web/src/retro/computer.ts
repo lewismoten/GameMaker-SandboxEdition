@@ -156,6 +156,9 @@ export class Computer extends ComputerFolders {
           await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId);
           break;
         }
+        case "egg":
+          await (await import("../eggs/eggExe")).runEggExe(this);
+          break;
         case "batch":
           for (const l of ref.lines) await this.shell.execute(l);
           break;

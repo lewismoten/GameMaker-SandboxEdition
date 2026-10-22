@@ -19,6 +19,7 @@ export interface DosNode {
 export type ProgramRef =
   | { kind: 'gm' }
   | { kind: 'playgame' }
+  | { kind: 'egg' }
   | { kind: 'terminal' }
   | { kind: 'vpic' }
   | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string; /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string }

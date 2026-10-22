@@ -124,6 +124,13 @@ export class Shell {
         this.out(`PATH=${PATH.join(';')}`);
         return;
     }
+    // EGG.EXE answers from anywhere, though no folder lists it and HELP never mentions it
+    if (/^(?:[a-z]:)?\\?egg(?:\.exe)?$/i.test(trimmed.split(/\s+/)[0])) {
+      this.screen.cursorVisible = false;
+      await this.host.run({ kind: 'egg' }, args, { drive: this.drive, parts: this.cwdOf(this.drive) });
+      this.screen.cursorVisible = true;
+      return;
+    }
     const prog = await this.findProgram(trimmed.split(/\s+/)[0]);
     if (!prog) {
       this.out('Bad command or file name');
