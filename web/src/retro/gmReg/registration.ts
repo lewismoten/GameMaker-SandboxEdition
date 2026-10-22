@@ -13,9 +13,6 @@ import { toCp437 } from '../text/cp437';
 /** ADDREG#.CPP: serial = counter * 1029 + 4 ("ser-4 must be a multiple of 1029"). This PC's copy is number 1995. */
 export const SERIAL = 1995 * 1029 + 4;
 
-/** The name the desk's copy came registered to. */
-export const DEFAULT_NAME = 'Lewis Moten';
-
 /** CHK.C regi(): the name field is 30 wide, then name[29]=0 keeps 29 characters. */
 export const NAME_MAX = 29;
 /** qwindow(13,14,12,…): the registration number field. */
@@ -83,5 +80,10 @@ export function checkRegistration(file: string | null | undefined, serial = SERI
   return registered ? { kind: 'registered', userName } : { kind: 'check', userName };
 }
 
-/** The desk's PLAYGAME.REG until something changes it: registered to DEFAULT_NAME. */
-export const DEFAULT_REG = regFile(DEFAULT_NAME, SERIAL, String(registrationNumber(DEFAULT_NAME, SERIAL)));
+/**
+ * The desk's PLAYGAME.REG until something changes it: as a new copy came, with this copy's
+ * serial number but no name or registration number yet (RSD's own file in code/GM is the same
+ * shape, with a number that doesn't fit). So GM asks a word from the manual at every start
+ * until the card is filled in: GM REGISTER, or the registration card beside the monitor.
+ */
+export const DEFAULT_REG = regFile('', SERIAL, '0');

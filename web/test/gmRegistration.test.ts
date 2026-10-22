@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_NAME, DEFAULT_REG, SERIAL, checkRegistration, regFile, registrationNumber, validSerial } from '../src/retro/gmReg/registration';
+import { DEFAULT_REG, SERIAL, checkRegistration, regFile, registrationNumber, validSerial } from '../src/retro/gmReg/registration';
 import { QUESTIONS, rightAnswer } from '../src/retro/gmReg/copyCheck';
 
 describe('Game-Maker registration (CHK.C)', () => {
@@ -10,8 +10,8 @@ describe('Game-Maker registration (CHK.C)', () => {
     expect(validSerial(SERIAL + 1)).toBe(false);
   });
 
-  it('starts registered with the desk’s PLAYGAME.REG', () => {
-    expect(checkRegistration(DEFAULT_REG)).toEqual({ kind: 'registered', userName: DEFAULT_NAME });
+  it('starts unregistered with the desk’s PLAYGAME.REG: no name, this serial, no number', () => {
+    expect(checkRegistration(DEFAULT_REG)).toEqual({ kind: 'check', userName: String(SERIAL) });
   });
 
   it('asks the manual when the number is wrong, showing the serial number', () => {

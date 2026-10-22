@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PcExtras, type PcExtrasState } from '../src/retro/hacks/pcExtras';
-import { DEFAULT_REG } from '../src/retro/gmReg/registration';
+import { DEFAULT_REG, checkRegistration } from '../src/retro/gmReg/registration';
 
 const memory = (start?: PcExtrasState) => {
   let v = start;
@@ -8,11 +8,12 @@ const memory = (start?: PcExtrasState) => {
 };
 
 describe('PcExtras', () => {
-  it('comes registered, and keeps a deleted PLAYGAME.REG deleted', async () => {
+  it('comes unregistered, and keeps a deleted PLAYGAME.REG deleted', async () => {
     const store = memory();
     const x = new PcExtras(store);
     await x.ready;
     expect(x.reg).toBe(DEFAULT_REG);
+    expect(checkRegistration(x.reg).kind).toBe('check');
     x.setReg(null);
     await x.saved();
     const again = new PcExtras(store);

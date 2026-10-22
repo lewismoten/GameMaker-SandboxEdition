@@ -6,7 +6,7 @@ import { idbRecord } from '../dos/cDriveStore';
 import { DEFAULT_REG } from '../gmReg/registration';
 
 export interface PcExtrasState {
-  /** PLAYGAME.REG's text; null once deleted; undefined: as the PC came (DEFAULT_REG). */
+  /** PLAYGAME.REG's text; null once deleted; undefined: as the PC came (DEFAULT_REG, unregistered). */
   reg?: string | null;
   /** The copy-protection question for the next start (the byte CHK.C kept in PLAYGAME.EXE). */
   question?: number;
