@@ -7,12 +7,16 @@ export type RegAsk =
   /** manualcheck(): a word from the Owner's Guide (or register instead). */
   | { kind: 'question'; page: number; paragraph: number; word: number }
   /** regi(): GM REGISTER asking for the name and number from the card. */
-  | { kind: 'register' };
+  | { kind: 'register' }
+  /** GM's menu, running unregistered after the copy check: the card can still register it. */
+  | { kind: 'unregistered' };
 
 export interface RegDesk {
   ask: RegAsk;
   /** Writes PLAYGAME.REG as regi() did and lets GM go on; a message in plain words when it can't. */
   apply(name: string, number: string): string | undefined;
+  /** Types on GM's keyboard (for a phone with no keyboard: the copy check's answer). */
+  type?(text: string): void;
 }
 
 type Listener = (desk: RegDesk | null) => void;

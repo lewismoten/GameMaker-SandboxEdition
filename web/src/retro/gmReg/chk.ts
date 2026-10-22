@@ -18,8 +18,12 @@ const MAIN_BAR = '     Play        Design      Utilities      About        Quit 
 /** A key no keyboard sends: the registration card beside the monitor was applied. */
 const CARD_KEY = 'RegistrationCard';
 
-/** While GM asks `ask`, the desk's registration card can answer instead: true once it has. */
-function offerCard(h: RetroHost, ask: RegAsk): { applied: () => boolean; done: () => void } {
+/**
+ * While GM asks `ask`, the desk's registration card can answer instead: applied() is true once
+ * it has. `onApplied` (GM's menu) takes the news itself; otherwise a key no keyboard sends
+ * wakes the question on the screen.
+ */
+function offerCard(h: RetroHost, ask: RegAsk, onApplied?: (name: string) => void): { applied: () => boolean; done: () => void } {
   let applied = false;
   setRegDesk({
     ask,
@@ -28,11 +32,28 @@ function offerCard(h: RetroHost, ask: RegAsk): { applied: () => boolean; done: (
       if (wrong) return wrong;
       pcExtras().setReg(regFile(name.trim(), SERIAL, number.trim()));
       applied = true;
-      h.keys.push({ key: CARD_KEY, code: '', ctrl: false, shift: false, alt: false });
+      if (onApplied) onApplied(name.trim());
+      else h.keys.push({ key: CARD_KEY, code: '', ctrl: false, shift: false, alt: false });
       return undefined;
     },
+    type: (text) => h.keys.type(text),
   });
   return { applied: () => applied, done: () => setRegDesk(null) };
+}
+
+/**
+ * GM's main menu on an unregistered copy: CHK.EXE has let it start (the word was right), but
+ * the card beside the monitor stays until it is filled in. Applying it writes PLAYGAME.REG and
+ * puts the name in the "Registered To:" box at once (CHK.EXE would show it at the next start).
+ * Returns how to take the card away again, or undefined when the copy is registered.
+ */
+export function offerCardAtMenu(h: RetroHost, onRegistered: (name: string) => void): (() => void) | undefined {
+  if (checkRegistration(pcExtras().reg).kind === 'registered') return undefined;
+  const card = offerCard(h, { kind: 'unregistered' }, (name) => {
+    card.done();
+    onRegistered(name);
+  });
+  return card.done;
 }
 
 /** qwindow(x, y, len, q, ans): a one-line question box; null for Esc (or the card applied). */

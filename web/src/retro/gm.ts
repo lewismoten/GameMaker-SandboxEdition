@@ -13,7 +13,7 @@ import { download } from '../editor/core/ui';
 import { prefetchWhenIdle } from '../prefetch';
 import { soundBlaster } from './computer/soundBlaster';
 import type { Program } from '../vga/shared/designer';
-import { chk, registeredBox } from './gmReg/chk';
+import { chk, offerCardAtMenu, registeredBox } from './gmReg/chk';
 
 /**
  * Designers ported to VGA graphics: they run their own menus, as the .EXEs did. Each .EXE is
@@ -114,7 +114,16 @@ export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'mai
   for (;;) {
     drawDesktop(h);
     drawBars(h, MAIN_BAR);
-    ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
+    // unregistered: the registration card stays beside the monitor while the menu waits
+    const takeCard = offerCardAtMenu(h, (name) => {
+      registeredTo = name;
+      registeredBox(h, name);
+    });
+    try {
+      ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
+    } finally {
+      takeCard?.();
+    }
     switch (ch) {
       case 1:
         registeredTo = undefined; // PLAYGAME.EXE's own screen
