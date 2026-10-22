@@ -8,19 +8,19 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "ARIIkgBNCM0JTRFICsgLzQZNCkgKyAZICsgOSArID0gKyAfNBhIIkgBNDc0DEgiSAE0JzQMSCJIATQnNAxIIkgBNCs0DTQfNEU0OzQ0SBJIATRXNA00NzQZNIkgKyA9ICsgYzRBNCEgKyCfNBhIKkgBNB80DSwTLBkgOyAkSCJIATQrNA00GzQZN"
+   "keys": "ARIIkgBNCM0JTRFICsgLzQZNCkgKyAZICsgOSArID0gKyAfNBhIIkgBNDc0DEgiSAE0JzQMSCJIATQnNAxIIkgBNCs0DTQfNEU0OzQ0SBJIATRXNA00NzQZIBsgJTSJICsgPSArIGM0KTQZICsgSzQZIDsgESArICRIIkgBNCc0LSwLLBhIKkgBNCM0DSwTLBkgOyAkSCJIATQrNA00GzQYSCJIATQHNBU0JzQ9IDMgJTQ=="
   },
   {
    "scene": 3,
-   "keys": "AU1QzQBQT9AASxvLAEsUywZNF80GTVPNAFBP0ABLG8sASxvLBk0VzQZNA80GTS/NAE0RSArIB0gKyBHNBk0DSArIDs0GSADIAE0ozQBQU9AATQfNAE0RzQNNAc0DTW7NBkgRyABNBs0ASA=="
+   "keys": "AU1QzQBQNdAASzzLAE0OzQBQEtAATRPNBk1TzQBQT9AASxvLAEsbywZLDcsGSAXICU0ezQZIBcgJTQTNBkgGyABQAdAATWTNAEsOywBID8gqTSjNAFBR0ABNCM0ATSvNBk1szQZNCs0AUEPQAEgayABLB8sASA=="
   },
   {
    "scene": 4,
-   "keys": "AU0UzQZIDMgJTSLNBk0DSArIBkgKyBvNBkgMyAlNHkgKyAZICsgbzQZNG80GTQNICsgGSArIFM0GSAzICU0bzQZNCkgKyAZICsgbzQZIDMgJTSXNCE0bzQZN"
+   "keys": "AU0UzQZIDMgJTSLNBk0DSArIBkgKyBvNBkgMyAlNDc0GSAzICU0RSArIBkgKyBvNBk0bzQZNA0gKyAZICsgUzQZIDMgJTRvNBk0KSArIBkgKyA7NBkgMyAlNDc0GSAzICU0lzQhNG80GTR9ICsgxzQZIDMgJTQ=="
   },
   {
    "scene": 5,
-   "keys": "AU0OzQZIDsgHSA7IBEgOyARNNc0aEASQAEsTyyhLGssGSA7IBEgOyARLOcsGSwfLDhIEkgBNGs0DSA7IAxIGkgNN"
+   "keys": "AU0OzQZIDsgHSxzLBk0czQZIDsgETQ3NBksNywZIDsgESyLLBk0izQZNNc0LSwjLAE0IzQAQBJAASxPLA0saywZIDsgESA7IBEs5ywZLB8sOEgSSAE0azQNIDsgDEgaSA00="
   }
  ],
  "chapters": [
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18459,
+  "frames": 20272,
   "chapters": [
    {
     "title": "Opening",
@@ -59,23 +59,23 @@
    },
    {
     "title": "Level 2: Deep Down in the Dust",
-    "frame": 5560
+    "frame": 5883
    },
    {
     "title": "Level 3: The Mountain",
-    "frame": 9115
+    "frame": 10117
    },
    {
     "title": "Level 4: The Palm of God's Hand",
-    "frame": 11705
+    "frame": 13027
    },
    {
     "title": "Ending",
-    "frame": 13610
+    "frame": 15426
    },
    {
     "title": "Credits",
-    "frame": 16371
+    "frame": 18184
    }
   ]
  }
