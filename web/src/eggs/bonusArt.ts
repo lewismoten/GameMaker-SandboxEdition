@@ -1188,9 +1188,10 @@ export function drawPastryEgg(g: CanvasRenderingContext2D, box: Box, turn: numbe
 
 /**
  * The little glass cake stand beside the shadow box, `w` x `h`, holding whichever of
- * 'rotten', 'heart' and 'pastry' have been found (left to right).
+ * 'rotten', 'heart' and 'pastry' have been found (left to right); the rotten egg cracked by
+ * `taps` taps (0 .. 12).
  */
-export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number, items: ('rotten' | 'heart' | 'pastry')[]): void {
+export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number, items: ('rotten' | 'heart' | 'pastry')[], taps = 0): void {
   const plateY = h * 0.7;
   const cx = w / 2;
   // the foot and stem, pressed glass
@@ -1226,7 +1227,7 @@ export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number,
     const ew = eh * EGG_ASPECT;
     const box = { x: ex - ew / 2, y: item === 'pastry' ? plateY - eh * 1.04 : plateY - eh * 0.98, w: ew, h: eh };
     if (item === 'pastry') drawPastryEgg(g, box, 0.2, 0.5, Math.max(40, Math.round(eh * 2)));
-    else drawShell(g, rottenShell(3), 0.4, box, Math.max(40, Math.round(eh * 2)));
+    else drawShell(g, rottenShell(taps), 0.4, box, Math.max(40, Math.round(eh * 2)));
   });
   g.strokeStyle = 'rgba(255, 255, 255, 0.85)';
   g.lineWidth = Math.max(0.6, w * 0.014);
