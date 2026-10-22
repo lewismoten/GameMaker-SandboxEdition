@@ -379,19 +379,21 @@ function yourStats(t: Term, name: string, left: number): void {
   row(`|07Time left today: |14${left}|07 min`);
   t.line(boxRule());
   row(
-    `|07Uploads:   |14${String(a.ulFiles).padStart(4)}|07 files |14${kb(a.ulBytes).padStart(9)}${a.ulTries ? `   |08(${a.ulTries} cut off when someone picked up the phone)` : ""}`,
+    `|07Uploads:   |14${String(a.ulFiles).padStart(4)}|07 files |14${kb(a.ulBytes).padStart(9)}${a.ulTries ? `   |08(${a.ulTries} cut off by the phone)` : ""}`,
   );
   row(
-    `|07Downloads: |14${String(a.dlFiles).padStart(4)}|07 files |14${kb(a.dlBytes).padStart(9)}   |08(${a.dlFiles - a.counted} of them |10FREE|08)`,
+    `|07Downloads: |14${String(a.dlFiles).padStart(4)}|07 files |14${kb(a.dlBytes).padStart(9)}   |08(${Math.max(0, a.dlFiles - a.counted)} of them |10FREE|08)`,
   );
   row(
     `|07U/D ratio: |14${ratioText(a).padEnd(10)}|07Board ratio: |141:${RATIO}|07   File points: |${points ? "14" : "12"}${points}`,
   );
   t.line(boxBottom());
-  if (points <= 2)
+  if (points <= 2) {
     t.line(
-      `|12${points ? "Running low on file points!" : "Your U/D ratio is too low!"} |07Upload something, or call again tomorrow. |10FREE|07 files still download.`,
+      `|12${points ? "Running low on file points!" : "Your U/D ratio is too low!"} |07Upload something, or call again tomorrow.`,
     );
+    t.line("|10FREE|07 files (the SysOp's own) always download.");
+  }
   t.line();
 }
 
