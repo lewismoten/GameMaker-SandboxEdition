@@ -6,10 +6,22 @@
 import { rng } from '../../../kit/pixels';
 import { over } from '../art/draw';
 import { LevelMap, type Level } from './level';
+import { reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import { bandOf } from './level1Tiles';
 import { cut } from '../blocks/tiles';
 import { G, streetTiles } from './level2Tiles';
 import { streetBeasts } from './level2Beasts';
+
+/**
+ * Maple Street as it is once the bow tie is fetched (the Dog House only lets Teddy in then):
+ * the same map without the tie on its balloons.
+ */
+function afterTie(m: LevelMap, tie: number): GameMap {
+  const map = structuredClone(m.done());
+  for (const p of map.monsters) if (p.monnum === tie) p.monnum = 64;
+  reindexMonsters(map);
+  return map;
+}
 
 export function street(): Level {
   const bs = streetTiles();
@@ -67,7 +79,8 @@ export function street(): Level {
   // The Dog House: a tiny little library on the lawn out front.
   m.set(14, 37, 'libRoofL').set(15, 37, 'libRoofR');
   m.set(14, 38, 'libBooks').set(15, 38, 'libDrawer');
-  m.set(14, 39, 'libRocksL').set(15, 39, 'libRocksR');
+  m.set(14, 39, 'libRocksL').set(15, 39, 'libRocksRPay');
+  m.set(16, 37, 'hedgeKnot');
   // Lawn sprinkler A.
   m.set(17, 38, 'sprayAhOff').set(18, 38, 'sprayAhOff').set(19, 38, 'sprayAhOff').set(20, 38, 'sprayAhOff');
   m.set(17, 39, 'sprayAlOff').set(18, 39, 'sprayAheadOff').set(19, 39, 'sprayAlOff').set(20, 39, 'sprayAlOff');
@@ -195,6 +208,6 @@ export function street(): Level {
     exit: m.at('exit'),
     view: [23, 35],
     pose: [30, 38, 'frontReach'],
-    nook: { door: { x: 15, y: 37 }, room: { x: rx + 2, y: ry + 7 }, out: { x: rx + 15, y: ry + 7 }, back: { x: 16, y: 39 }, title: 'The Dog House', card: 'doghouse.lst' },
+    nook: { map: 'streetb.map', after: afterTie(m, beasts.id('tieBalloon')), door: { x: 16, y: 37 }, room: { x: rx + 2, y: ry + 7 }, out: { x: rx + 15, y: ry + 7 }, back: { x: 16, y: 39 }, title: 'The Dog House', card: 'doghouse.lst' },
   };
 }

@@ -245,15 +245,20 @@ export function streetTiles(): Tiles {
   };
   const shut = lib({});
   t.air('libRoofL', shut[0][0]);
-  // the right half of the roof, over the top of the red door, is solid (stand on it, bonk
-  // on it), but a paw raised from the rock cubby reaches it: the scene's link into the Dog House
-  t.wall('libRoofR', lib({ glimpse: true })[0][1]);
+  t.air('libRoofR', lib({ glimpse: true })[0][1]);
   t.air('libGap', lib({ gap: true })[1][0]);
   t.add('libBooks', shut[1][0], { obj: true, score: 250, touch: 'libGap', grav: GRAV.down });
   t.air('libDrawerOpen', lib({ open: true })[1][1]);
   t.air('libDrawer', shut[1][1], { effect: CTR.treats, eamt: 3, score: 30, touch: 'libDrawerOpen' });
   t.ledge('libRocksL', shut[2][0]);
+  // The right half of the rock cubby only holds Teddy up once he has carried the bow tie
+  // past it: the touch costs a costume piece (refused without one), then gives it straight
+  // back, and leaves the ledge. The knot in the hedge beside it is solid, so only a paw
+  // raised from that end of the cubby reaches it: the scene's link into the Dog House.
   t.ledge('libRocksR', shut[2][1]);
+  t.air('libRocksRGive', shut[2][1], { effect: CTR.props, eamt: 1, touch: 'libRocksR' });
+  t.air('libRocksRPay', shut[2][1], { effect: CTR.props, eamt: -1, touch: 'libRocksRGive' });
+  t.wall('hedgeKnot', t.pic('hedgeTop'));
 
   nook(t);
 

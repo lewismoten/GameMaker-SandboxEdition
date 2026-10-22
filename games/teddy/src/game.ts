@@ -83,7 +83,7 @@ export function buildGame(levels: Level[], startAt?: string): Game {
     };
     const at = game.scenes.length;
     const room = scene(n.title, 40, level.files.map((f, k) => (k === 9 || k === 10 ? '' : f)));
-    const again = scene(level.desc, 80, level.files.map((f, k) => (k === 9 ? n.card : k === 10 ? '' : f)));
+    const again = scene(level.desc, 80, level.files.map((f, k) => (k === 1 ? n.map : k === 9 ? n.card : k === 10 ? '' : f)));
     const drive = scene(`${level.desc.slice(0, 13)} drive`, 120, level.files.map((f, k) => (k === 0 ? DARK : k === 9 ? '' : f)));
     drive.links[0] = { ...level.links[0] };
     level.links[0] = { toScene: at + 2, from: l.exit, to: l.exit };

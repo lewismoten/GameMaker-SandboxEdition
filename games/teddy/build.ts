@@ -36,6 +36,7 @@ for (const l of levels) {
   disk.put(`${l.file}.mbl`, serializeBlocks(l.beasts.mb.build()));
   disk.put(`${l.file}.mon`, serializeMonsters(l.beasts.build()));
   disk.put(`${l.file}.map`, serializeMap(l.map.done()));
+  if (l.nook) disk.put(l.nook.map, serializeMap(l.nook.after));
   console.log(
     `${l.title}: ${l.bs.names.length} blocks, ${l.beasts.mb.names.length} monster blocks, ${l.beasts.names.filter(Boolean).length} monsters, ${l.map.monsters} placed`,
   );

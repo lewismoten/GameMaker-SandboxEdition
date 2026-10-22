@@ -5,6 +5,7 @@ import { BlockSet, GRAV, SOLID, type BlockDef } from '../blocks/blockset';
 import { Bestiary } from '../characters/mons';
 import { commonMonsters } from '../characters/sharedMonsters';
 import { LevelMap } from './levelmap';
+import type { GameMap } from '../../../../web/src/formats/map';
 import { Pixels } from '../../../kit/pixels';
 import { CTR, KEEPSAKE } from '../ids';
 import { eggBlock } from '../sprites/egg';
@@ -30,9 +31,10 @@ export interface Level {
   /**
    * A room kept on the same map: a link at `door` takes Teddy to `room` (a scene of its
    * own with no card), and the room's way out at `out` brings him back to `back` (in a
-   * copy of the level's scene that shows `card` as it starts and has no way back in).
+   * copy of the level's scene that shows `card` as it starts, plays on `after` (written as
+   * `map`) and has no way back in).
    */
-  nook?: { door: Spot; room: Spot; out: Spot; back: Spot; title: string; card: string };
+  nook?: { map: string; after: GameMap; door: Spot; room: Spot; out: Spot; back: Spot; title: string; card: string };
 }
 
 type Spot = { x: number; y: number };
