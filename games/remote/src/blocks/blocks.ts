@@ -203,9 +203,6 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(14, 19, 72, 2, c('couch', 3));
     // the arms roll over
     for (const x0 of [0, 86]) p.rect(x0, 0, 14, 2, c('couch', 4)).rect(x0 + 1, 2, 12, 1, c('couch', 3));
-    // flower pillows on the back
-    blob(p, 22, 10, 7, 6, R('flora'), 0, 3);
-    blob(p, 78, 10, 7, 6, R('purple'), 1, 3);
     return p;
   })();
   // The couch faces the TV, away from you: its seat cushions on the far side (the top row) and
