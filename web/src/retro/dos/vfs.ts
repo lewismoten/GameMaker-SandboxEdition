@@ -12,6 +12,8 @@ export interface DosNode {
   read?: () => Promise<Uint8Array>;
   /** Running this file starts a program (handled by the computer). */
   run?: ProgramRef;
+  /** DEL (a file) or RD (an empty folder) can take it away; without it: "Access denied". */
+  remove?: () => Promise<void> | void;
 }
 
 export type ProgramRef =
@@ -78,6 +80,22 @@ export function resolvePath(input: string, drive: string, cwdOf: (drive: string)
     else parts.push(p);
   }
   return { drive: d, parts };
+}
+
+/**
+ * Whether a file name matches a DOS wildcard: * is any run of characters and ? any one,
+ * within the name and the extension separately ("*.*" is every file, "*" or "FOO" only
+ * names without an extension, "*.GIF" every GIF).
+ */
+export function dosMatch(pattern: string, name: string): boolean {
+  const split = (n: string): [string, string] => {
+    const dot = n.indexOf('.');
+    return dot < 0 ? [n, ''] : [n.slice(0, dot), n.slice(dot + 1)];
+  };
+  const part = (p: string, n: string) => new RegExp(`^${p.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.?')}$`, 'i').test(n);
+  const [pb, pe] = split(pattern);
+  const [nb, ne] = split(name);
+  return part(pb, nb) && part(pe, ne);
 }
 
 export class FileSystem {

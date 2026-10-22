@@ -85,18 +85,35 @@ export interface RetroHost extends Ui {
 }
 
 const KEY = 'gm-bbs-downloads';
+/** Files DEL took out of a download's folder ("id/NAME"), and folders made on C: ("IMAGES"). */
+const DELETED = 'gm-bbs-deleted';
+const DIRS = 'gm-dos-dirs';
 
-export class Downloads {
-  private ids = new Set<string>();
-  onChange?: () => void;
-
-  constructor() {
-    try {
-      for (const id of JSON.parse(localStorage.getItem(KEY) ?? '[]')) this.ids.add(id);
-    } catch {
-      /* private mode */
-    }
+function load(key: string): Set<string> {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(key) ?? '[]'));
+  } catch {
+    return new Set(); // private mode
   }
+}
+
+function save(key: string, set: Set<string>): void {
+  try {
+    localStorage.setItem(key, JSON.stringify([...set]));
+  } catch {
+    /* private mode */
+  }
+}
+
+/**
+ * What the BBS downloaded to C: (shareware ids and picture names), kept in the browser:
+ * DEL takes files out again, RD the folders.
+ */
+export class Downloads {
+  private ids = load(KEY);
+  private deleted = load(DELETED);
+  private dirs = load(DIRS);
+  onChange?: () => void;
 
   has(id: string): boolean {
     return this.ids.has(id);
@@ -108,11 +125,43 @@ export class Downloads {
 
   add(id: string): void {
     this.ids.add(id);
-    try {
-      localStorage.setItem(KEY, JSON.stringify([...this.ids]));
-    } catch {
-      /* private mode */
-    }
+    // downloading again brings back every file of it
+    for (const d of this.deleted) if (d.startsWith(`${id}/`)) this.deleted.delete(d);
+    this.persist();
+  }
+
+  /** Forgets a download (DEL of a picture, RD of an emptied shareware folder). */
+  remove(id: string): void {
+    this.ids.delete(id);
+    for (const d of this.deleted) if (d.startsWith(`${id}/`)) this.deleted.delete(d);
+    this.persist();
+  }
+
+  /** DEL of one file in a download's folder. */
+  deleteFile(id: string, name: string): void {
+    this.deleted.add(`${id}/${name}`);
+    this.persist();
+  }
+
+  isDeleted(id: string, name: string): boolean {
+    return this.deleted.has(`${id}/${name}`);
+  }
+
+  /** A folder made on C: (C:\IMAGES on the first picture), until RD removes it. */
+  hasDir(name: string): boolean {
+    return this.dirs.has(name);
+  }
+
+  setDir(name: string, made: boolean): void {
+    if (made) this.dirs.add(name);
+    else this.dirs.delete(name);
+    this.persist();
+  }
+
+  private persist(): void {
+    save(KEY, this.ids);
+    save(DELETED, this.deleted);
+    save(DIRS, this.dirs);
     this.onChange?.();
   }
 }
