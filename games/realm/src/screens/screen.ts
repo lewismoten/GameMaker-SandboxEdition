@@ -23,6 +23,11 @@ export interface Inks {
   more?: RGB;
   /** Saved games' names (nearest to yellow). */
   names?: RGB;
+  /**
+   * What index 0 shows, when it isn't black: a page shown from a scene with an all-black
+   * palette gets its MORE... in index 0 (the nearest to red there), so talk pages put red at 0.
+   */
+  zero?: RGB;
 }
 
 /** 8-bit RGB to the 6-bit value the palette will hold. */
@@ -120,7 +125,7 @@ export class Screen {
 
   /** The picture as 256 colors: the inks reserved, the rest by median cut; returns pixels and palette. */
   indexed(inks: Inks = {}, dither = 6): { pixels: Uint8Array; palette: Uint8Array } {
-    const fixed: RGB[] = [[0, 0, 0]];
+    const fixed: RGB[] = [inks.zero ?? [0, 0, 0]];
     const want: [RGB, RGB][] = [];
     if (inks.text) want.push([inks.text, PURPLE]);
     if (inks.menu) want.push([inks.menu, BLUE]);
@@ -135,7 +140,7 @@ export class Screen {
       const ink = six(fixed[1 + k]);
       const limit = d2(ink, target);
       for (let i = 0; i < 256; i++) {
-        if (i === 1 + k) continue;
+        if (i === 1 + k || (i === 0 && inks.zero)) continue;
         let c: RGB = [pal[i * 3], pal[i * 3 + 1], pal[i * 3 + 2]];
         let guard = 0;
         while (d2(c, target) <= limit && guard++ < 40) c = c.map((v, j) => Math.max(0, Math.min(63, v + Math.sign(v - target[j] || 1)))) as RGB;
@@ -157,7 +162,7 @@ export class Screen {
           v = 0;
           for (let p = 0; p < 256; p++) {
             // the reserved inks are only for Game-Maker's own words
-            if (p >= 1 && p <= want.length) continue;
+            if ((p >= 1 && p <= want.length) || (p === 0 && inks.zero)) continue;
             const dd = 3 * (pal[p * 3] - c[0]) ** 2 + 4 * (pal[p * 3 + 1] - c[1]) ** 2 + 2 * (pal[p * 3 + 2] - c[2]) ** 2;
             if (dd < best) {
               best = dd;

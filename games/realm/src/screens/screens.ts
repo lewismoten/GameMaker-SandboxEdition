@@ -5,6 +5,7 @@ import { Canvas, type RGB, mix, clamp01, tnoise } from '../art/rgb';
 import { Screen, type Inks } from './screen';
 import { sky, stars, hills, tuit, castle, pennant } from './scenery';
 import { parchment, bigSprite, INK } from './talk';
+import { SLOT, STATUS } from '../../../kit/saveSlots';
 import { heroPics } from '../sprites/hero';
 import { PEOPLE, person, animalPics } from '../sprites/people';
 import { chezPics } from '../sprites/chezCar';
@@ -162,7 +163,8 @@ export function textBackdrop(kind: 'help' | 'credits'): Screen {
     const v = Math.hypot((x - 160) / 200, (y - 100) / 140);
     return mix(kind === 'help' ? [40, 50, 90] : [70, 30, 50], [10, 10, 20], clamp01(v));
   });
-  parchment(cv, 32, 33, 296, 178, kind === 'help' ? 7 : 8);
+  // the bottom roller clears MORE... (y 168..175)
+  parchment(cv, 32, 33, 296, 184, kind === 'help' ? 7 : 8);
   sc.centered(10, kind === 'help' ? 'HOW TO PLAY' : 'CREDITS', (_x, y) => GOLD((y - 10) / 16), 2, [20, 10, 20]);
   if (kind === 'help') {
     stand(cv, hero.get('strike')!, 16, 196, 1.5);
@@ -177,10 +179,11 @@ export function textBackdrop(kind: 'help' | 'credits'): Screen {
 /** The hall of fame: Game-Maker writes the scores in blue, the heading in red. */
 export function scoresScreen(): Screen {
   const sc = new Screen();
-  sc.cv.shade((x, y) => mix([240, 226, 190], [206, 180, 130], clamp01(y / 200 + tnoise(x, y, 10, 320, 5) * 0.2)));
+  // light enough at the bottom for the red Hit any key; the dashes clear the rows (to y 184)
+  sc.cv.shade((x, y) => mix([244, 232, 200], [228, 210, 168], clamp01(y / 200 + tnoise(x, y, 10, 320, 5) * 0.2)));
   for (let x = 0; x < 320; x += 8) {
     sc.cv.rect(x, 12, 4, 1, [150, 110, 60]);
-    sc.cv.rect(x + 4, 186, 4, 1, [150, 110, 60]);
+    sc.cv.rect(x + 4, 188, 4, 1, [150, 110, 60]);
   }
   stand(sc.cv, hero.get('down0')!, 300, 180, 1.5);
   return sc;
@@ -191,8 +194,11 @@ export function slotsScreen(saving: boolean): Screen {
   const sc = new Screen();
   sc.cv.shade((x, y) => mix([20, 24, 50], [8, 8, 20], clamp01(Math.hypot(x - 160, y - 100) / 200)));
   sc.centered(10, saving ? 'SAVE YOUR QUEST' : 'TAKE UP A QUEST', (_x, y) => GOLD((y - 10) / 16), 1.5, [0, 0, 0]);
-  for (let i = 0; i < 10; i++) sc.cv.rrect(56, 36 + i * 14, 208, 12, 3, [34, 40, 76]);
-  tuit(sc.cv, 290, 172, 14, 0.4);
+  // dark enough under the slots for the red pointer; Game-Maker's blue message (y 185) goes on
+  // a strip of parchment (kit/saveSlots.ts)
+  for (let i = 0; i < 10; i++) sc.cv.rrect(SLOT.x, SLOT.y(i), SLOT.w, SLOT.h - 1, 3, [16, 18, 42]);
+  sc.cv.rrect(STATUS.x, STATUS.y, STATUS.w, STATUS.h, 3, [238, 222, 184]);
+  tuit(sc.cv, 290, 150, 14, 0.4);
   return sc;
 }
 
