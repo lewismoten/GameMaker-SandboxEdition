@@ -138,4 +138,46 @@ export async function theLab(bot: Bot): Promise<void> {
   });
 }
 
-export const ROUTE = [theCourse, theLab];
+/** 3. The sewers: up the steam onto the pipe over the alligator, the long walkway, the low pipe, the last walkway. */
+export async function theSewers(bot: Bot): Promise<void> {
+  expect(bot, 4, 'the sewers');
+  await tickle(bot, 'right', 'the first wild rat');
+  await carefully(bot, 'up the steam and onto the pipe', 0, async () => {
+    await must(bot, bot.walk(12, 'by the grate'), 'grate');
+    await must(bot, bot.until('right', () => bot.px.x >= 13 * 20, 'into the steam', 30), 'steam');
+    await must(bot, bot.until(undefined, () => bot.px.y <= 3 * 20, 'up the steam', 160), 'lift');
+    await upTo(bot, 'right', 14.4, 4, 'onto the pipe', 4);
+  });
+  await tickle(bot, 'right', 'the rat on the pipe');
+  await carefully(bot, 'off the pipe past the channel', 0, async () => {
+    await must(bot, bot.walk(25.5, 'down off the pipe'), 'down');
+    if (bot.at.y !== 11) throw new Error(`not on the walkway (${bot.at.y})`);
+  });
+  await tickle(bot, 'right', 'the tense wild rat');
+  await tickle(bot, 'right', 'the rat by the cheese');
+  await carefully(bot, 'the step and the low pipe', 0, async () => {
+    await must(bot, bot.walk(38, 'the coffee'), 'coffee');
+    await must(bot, bot.hop('up', 8), 'the coffee');
+    await must(bot, bot.walk(40, 'up on the step'), 'step');
+    if (bot.at.y !== 10) throw new Error(`not on the step (${bot.at.y})`);
+    await upTo(bot, 'right', 41.2, 8, 'onto the low pipe', 8);
+  });
+  await tickle(bot, 'right', 'the rat on the low pipe');
+  await carefully(bot, 'off the low pipe', 0, async () => {
+    await must(bot, bot.walk(50.5, 'down off the pipe'), 'down');
+    if (bot.at.y !== 11) throw new Error(`not on the walkway (${bot.at.y})`);
+  });
+  await tickle(bot, 'right', 'the rat on the last walkway');
+  await tickle(bot, 'right', 'the tense rat on the last walkway');
+  await tickle(bot, 'right', 'the rat by the door');
+  await carefully(bot, 'the chicken', 4, async () => {
+    await must(bot, bot.walk(66.5, 'under the chicken'), 'under');
+    await must(bot, bot.hop('up', 10), 'the chicken');
+  });
+  enough(bot, 2);
+  await carefully(bot, 'the manhole', 10, async () => {
+    await leave(bot, bot.walk(74, 'up the ladder to the street'), 'the manhole');
+  });
+}
+
+export const ROUTE = [theCourse, theLab, theSewers];
