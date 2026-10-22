@@ -26,7 +26,7 @@ export interface Behavior {
   next?: { kind: string; time: number };
 }
 
-export type Rules = (kind: string, plane: Plane) => Behavior;
+export type Rules = (kind: string, plane: Plane, part: number) => Behavior;
 
 export const ctxKey = (c: Ctx) => `${+c.w}${+c.n}${+c.nw}${+c.nPit}`;
 
@@ -103,7 +103,7 @@ export class TileBook {
         const k = this.keys[n];
         if (!k) continue;
         for (const p of PLANES) {
-          const b = this.rules(k.kind, p);
+          const b = this.rules(k.kind, p, k.part ?? 0);
           if (b.touch) this.as(n, b.touch);
           if (b.next) this.as(n, b.next.kind);
         }
@@ -112,7 +112,7 @@ export class TileBook {
     for (let n = 0; n < this.keys.length; n++) {
       const k = this.keys[n];
       if (!k) continue;
-      const b = this.rules(k.kind, plane);
+      const b = this.rules(k.kind, plane, k.part ?? 0);
       const blk = out[n];
       blk.solid = b.solid ?? 0;
       blk.chHitPt = b.hp ?? 0;

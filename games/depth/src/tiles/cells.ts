@@ -7,6 +7,8 @@ import { blur, oblique, over, render, type Picture, OBLIQUE_K } from '../render/
 import { MAT } from '../render/look';
 import { Box, Cylinder, Sdf, Sphere, hull, mix, rgb, sd, type Material, type Shape, type V, type World } from '../render/tracer';
 import { THEMES, type Theme, type ThemeId } from './themes';
+import { teapotModel } from '../models/cast';
+import { citicar } from '../models/citicar';
 
 export type Plane = 'near' | 'far';
 export const PLANES: Plane[] = ['near', 'far'];
@@ -110,6 +112,37 @@ export function eggShape(x: number, y: number, z: number, s = 1): Shape {
     },
     [felt],
   );
+}
+
+/** A slope: floor tilted downhill toward (dx, dy), with chevrons pointing the way it pulls. */
+function slope(dx: number, dy: number): Kind {
+  return {
+    ground: () => 'floor',
+    tall: () => false,
+    shapes: (cx, cy) => {
+      const out: Shape[] = [];
+      const [x, y] = [cx + 0.5, cy + 0.5];
+      const mat: Material = { color: rgb(255, 230, 120), diffuse: 0.7, spec: 0.8, shine: 40, emit: rgb(60, 45, 10) };
+      for (const k of [-0.22, 0.12]) {
+        const ax = x + dx * k;
+        const ay = y + dy * k;
+        const px = -dy;
+        const py = dx;
+        const tip: V = [ax + dx * 0.16, ay + dy * 0.16, 0];
+        const l: V = [ax + px * 0.24, ay + py * 0.24, 0];
+        const r: V = [ax - px * 0.24, ay - py * 0.24, 0];
+        const li: V = [l[0] + dx * 0.1, l[1] + dy * 0.1, 0];
+        const ri: V = [r[0] + dx * 0.1, r[1] + dy * 0.1, 0];
+        const tipi: V = [tip[0] + dx * 0.1, tip[1] + dy * 0.1, 0];
+        for (const [a, b, c, d] of [
+          [l, tip, tipi, li],
+          [r, tip, tipi, ri],
+        ] as V[][])
+          out.push(hull([a, b, c, d, ...[a, b, c, d].map((v) => [v[0], v[1], 0.035] as V)], mat));
+      }
+      return out;
+    },
+  };
 }
 
 /** The kinds of cell. Items stand on the floor; cubes fill the cell. */
@@ -281,6 +314,90 @@ export function kinds(): Record<string, Kind> {
         const [x, y] = mid(cx, cy);
         return [new Sphere([x, y - 0.05, 0.5], 0.36, { ...MAT.chrome, diffuse: 0.15 }), new Cylinder(x, y - 0.05, 0.22, 0, 0.16, MAT.marble(rgb(230, 225, 235), rgb(120, 110, 140)))];
       },
+    },
+    // auto-focus panels: the focus drifts on its own, so these come and go together
+    pulseA: {
+      ground: () => 'floor',
+      tall: () => false,
+      shapes: (cx, cy) => [new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], { color: rgb(220, 200, 255), diffuse: 0.6, reflect: 0.3, fresnel: 0.4, spec: 1.2, shine: 90, emit: rgb(50, 30, 80) })],
+    },
+    pulseB: {
+      ground: () => 'pit',
+      tall: () => false,
+      shapes: (cx, cy) => [ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: rgb(200, 170, 255), diffuse: 0.8, emit: rgb(60, 30, 90) }))],
+    },
+    slopeN: slope(0, -1),
+    slopeE: slope(1, 0),
+    slopeS: slope(0, 1),
+    slopeW: slope(-1, 0),
+    crystal: {
+      ground: () => 'floor',
+      tall: () => false,
+      shapes: (cx, cy) => {
+        const [x, y] = mid(cx, cy);
+        const prism = (dx: number, dy: number, h: number, r: number, c: V) =>
+          hull(
+            [
+              ...[0, 1, 2, 3, 4, 5].map((k) => [x + dx + Math.cos(k * 1.047) * r, y + dy + Math.sin(k * 1.047) * r, 0] as V),
+              ...[0, 1, 2, 3, 4, 5].map((k) => [x + dx + Math.cos(k * 1.047) * r * 0.9, y + dy + Math.sin(k * 1.047) * r * 0.9, h] as V),
+              [x + dx, y + dy, h + r * 1.3],
+            ],
+            { color: c, diffuse: 0.45, spec: 1.5, shine: 120, reflect: 0.2, fresnel: 0.4, emit: [c[0] * 0.2, c[1] * 0.2, c[2] * 0.2] },
+          );
+        return [prism(0, -0.02, 0.55, 0.11, rgb(140, 240, 220)), prism(-0.2, 0.08, 0.32, 0.08, rgb(170, 140, 255)), prism(0.19, 0.1, 0.38, 0.08, rgb(120, 220, 255))];
+      },
+    },
+    teapot: {
+      ground: () => 'floor',
+      tall: () => false,
+      shapes: (cx, cy) => {
+        const [x, y] = mid(cx, cy);
+        return [teapotModel([x - 0.04, y - 0.04, 0], 0.62), new Cylinder(x, y - 0.04, 0.4, 0, 0.02, MAT.marble(rgb(240, 236, 228), rgb(160, 120, 110)))];
+      },
+    },
+    nest: {
+      ground: () => 'floor',
+      tall: () => false,
+      shapes: (cx, cy) => {
+        const [x, y] = mid(cx, cy);
+        return [
+          hull(
+            [
+              [x - 0.36, y - 0.3, 0],
+              [x + 0.36, y - 0.3, 0],
+              [x, y + 0.36, 0],
+              [x, y - 0.05, 0.6],
+            ],
+            (f) => ({ color: f % 2 ? rgb(60, 30, 90) : rgb(40, 20, 60), diffuse: 0.8, spec: 1, shine: 60 }),
+          ),
+          new Sphere([x, y + 0.06, 0.24], 0.06, { color: rgb(255, 60, 60), emit: rgb(255, 40, 40), noShadow: true }),
+        ];
+      },
+      glows: () => [[0.5, 0.64, 0.24, 6, rgb(255, 60, 60)]],
+    },
+    pillar: {
+      ground: () => 'floor',
+      tall: () => true,
+      shapes: (cx, cy, _p, t) => {
+        const x = cx + 0.5;
+        const y = cy + 0.62;
+        return [new Cylinder(x, y, 0.3, 0, H, t.wall), new Cylinder(x, y, 0.38, H - 0.08, H, MAT.gold), new Cylinder(x, y, 0.38, 0, 0.08, MAT.gold)];
+      },
+    },
+    // the two-way mirror in the Hall of Mirrors: a wall to look at, with something faint inside
+    mirrordoor: {
+      ground: () => 'floor',
+      tall: () => true,
+      shapes: (cx, cy, _p, t) => [
+        cube(cx, cy, { ...t.wall, reflect: 0.62, color: rgb(200, 205, 230) }),
+        eggShape(cx + 0.5, cy + 0.72, 0.36, 0.7),
+      ],
+    },
+    chez: {
+      ground: () => 'floor',
+      tall: () => false,
+      span: [2, 2],
+      shapes: (cx, cy) => citicar(cx, cy),
     },
     egg: item((x, y) => [eggShape(x, y, 0.22), new Cylinder(x, y, 0.2, 0, 0.04, MAT.chrome)]),
   };
