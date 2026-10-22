@@ -21,6 +21,7 @@ import { speakers } from "./pc/speakers";
 import { mug, wallPhone, deskLamp } from "./room/deskProps";
 import { deskModem } from "./pc/modem";
 import type { Shelf } from "./boxes/shelf";
+import { onCatalogChanged } from "../project/catalogWatch";
 import { snowyWindow } from "./room/snowWindow";
 // the box on the desk wears gmBox.css's ribbon; the box's insides load when it is opened
 import "./boxes/gmBox.css";
@@ -718,14 +719,28 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   let shelf: Shelf | undefined;
 
   /** The shelf on the wall: a box for each original game (desk/boxes/shelf.ts). */
+  // filled again when the list changes: the latest fill wins
+  let shelfFill = 0;
   async function fillShelf(games: CatalogEntry[]): Promise<void> {
+    const fill = ++shelfFill;
     const scene = desk.querySelector<HTMLElement>(".desk-scene");
+    shelf?.dispose();
+    shelf = undefined;
+    scene?.querySelectorAll(".game-shelf").forEach((el) => el.remove());
     const { gameShelf } = await lazy.shelf();
-    if (scene)
-      shelf = await gameShelf(scene, games, {
-        insert: (id) => void insertOriginal(id),
-        manual: (g, front) => void gameManual(g, front),
-      });
+    if (fill !== shelfFill) return;
+    const made = scene
+      ? await gameShelf(scene, games, {
+          insert: (id) => void insertOriginal(id),
+          manual: (g, front) => void gameManual(g, front),
+        })
+      : undefined;
+    if (fill !== shelfFill) {
+      made?.dispose();
+      made?.element.remove();
+      return;
+    }
+    shelf = made;
     // on the wall under the poster, so it comes next when you Tab along the wall
     const el = scene?.querySelector(".game-shelf");
     if (el) desk.querySelector(".news-clipping")?.after(el);
@@ -800,6 +815,18 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   void loadCatalog().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
   );
+  // a secret game revealed or hidden again (all eight eggs found, or EGG.EXE): the shelf
+  // and the disk box follow, and the box of a game no longer listed is put back
+  const unCatalog = onCatalogChanged(async () => {
+    const cat = await loadCatalog().catch(() => [] as CatalogEntry[]);
+    if (!desk.isConnected) return;
+    const viewer = document.querySelector<HTMLElement>(".box-viewer");
+    const showing = viewer?.getAttribute("aria-label");
+    if (showing && !cat.some((g) => `${g.title} box` === showing))
+      viewer!.querySelector<HTMLButtonElement>(".box-viewer-bar button:last-child")?.click();
+    void fillShelf(cat.filter((g) => g.original?.box));
+    void refreshDisks();
+  });
   // the felt eggs found in the Sandbox games (nothing at all until the first one)
   let unEggs: (() => void) | undefined;
   void import("../eggs/eggDisplay").then(({ eggDisplay }) => {
@@ -826,6 +853,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     unfit();
     lamp.dispose();
     shelf?.dispose();
+    unCatalog();
     unEggs?.();
     removeWarp();
     capture.dispose();

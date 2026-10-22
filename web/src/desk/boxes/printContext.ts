@@ -2,8 +2,11 @@
 // renderers need, built the way the manual viewer builds it (manual/gameManual.ts).
 import { loadCatalog, type CatalogEntry } from '../../project/files';
 import { shotCache, type PrintContext } from '../../manual/printables/kit';
+import { CATALOG_CHANGED } from '../../project/catalogWatch';
 
 const cache = new Map<string, Promise<PrintContext | undefined>>();
+// a secret game revealed or hidden again: the family of games changes
+if (typeof window !== 'undefined') window.addEventListener(CATALOG_CHANGED, () => cache.clear());
 
 /** Undefined for games without a manual (only the originals have printed paper). */
 export function printContext(entry: CatalogEntry): Promise<PrintContext | undefined> {

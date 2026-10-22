@@ -33,7 +33,6 @@ export abstract class ComputerDrives {
   protected layer: HTMLElement;
   protected vgaScreen?: Vga;
   protected mode: MonitorMode = 'off';
-  protected catalogCache?: Promise<CatalogEntry[]>;
   protected gmIndex?: Promise<GmInstallEntry[]>;
   protected gmFiles = new Map<string, Promise<Uint8Array | undefined>>();
   protected audioCtx?: AudioContext;
@@ -279,7 +278,8 @@ export abstract class ComputerDrives {
   }
 
   catalog(): Promise<CatalogEntry[]> {
-    return (this.catalogCache ??= loadCatalog().catch(() => []));
+    // not kept here: loadCatalog keeps it, and forgets it when a secret game is revealed or hidden again
+    return loadCatalog().catch(() => []);
   }
 
   gmFile(name: string): Promise<Uint8Array | undefined> {

@@ -6,6 +6,7 @@ import './gameBoxContents.css';
 import '../../manual/printables/paper.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
+import { CATALOG_CHANGED } from '../../project/catalogWatch';
 import { loadDisks, type Disk } from '../../retro/dos/disks';
 import { boxItems } from '../../manual/printables/items';
 import { floppyElement, disksIn } from '../disks/diskBox';
@@ -14,6 +15,8 @@ import { manualCover } from '../../manual/printables/manualCover';
 import '../../manual/booklet.css';
 
 let disks: Promise<Disk[]> | undefined;
+// a secret game revealed or hidden again: its disks come or go
+if (typeof window !== 'undefined') window.addEventListener(CATALOG_CHANGED, () => (disks = undefined));
 
 export interface BoxContentsHooks {
   /** Put disk 1 in drive A: (and play). */
