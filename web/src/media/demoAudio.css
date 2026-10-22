@@ -13,9 +13,11 @@
   white-space: nowrap;
 }
 
-.demo-audio label {
+.demo-audio[role] label {
   position: relative;
   display: inline-flex;
+  flex-direction: row;
+  gap: 0;
   align-items: center;
   padding: 6px 10px;
   border: 1px solid var(--border, #888);
@@ -27,22 +29,22 @@
   cursor: pointer;
 }
 
-.demo-audio label:first-of-type {
+.demo-audio[role] label:first-of-type {
   margin-left: 0;
   border-radius: 6px 0 0 6px;
 }
 
-.demo-audio label:last-of-type {
+.demo-audio[role] label:last-of-type {
   border-radius: 0 6px 6px 0;
 }
 
-.demo-audio label:hover {
+.demo-audio[role] label:hover {
   z-index: 1;
   border-color: var(--accent, #ffd400);
 }
 
 /* the radio itself stays for the keyboard and screen readers; its label is the button */
-.demo-audio input {
+.demo-audio[role] input {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -52,7 +54,7 @@
   cursor: pointer;
 }
 
-.demo-audio label:has(input:checked) {
+.demo-audio[role] label:has(input:checked) {
   z-index: 1;
   border-color: var(--accent, #ffd400);
   background: var(--accent, #ffd400);
@@ -60,7 +62,7 @@
   font-weight: 600;
 }
 
-.demo-audio label:has(input:focus-visible) {
+.demo-audio[role] label:has(input:focus-visible) {
   z-index: 2;
   outline: 3px solid var(--focus, #ffd400);
   outline-offset: 1px;
@@ -76,7 +78,7 @@
 }
 
 /* over a picture: small, dark and see-through, in the demo button's yellow */
-.demo-audio.compact label {
+.demo-audio.compact[role] label {
   padding: 3px 8px;
   border-color: rgb(255 212 0 / 0.7);
   background: rgb(10 10 40 / 0.75);
@@ -84,20 +86,20 @@
   font: 700 12px/1.4 system-ui, sans-serif;
 }
 
-.demo-audio.compact label:has(input:checked) {
+.demo-audio.compact[role] label:has(input:checked) {
   border-color: #ffd400;
   background: #ffd400;
   color: #000;
 }
 
-.demo-audio.compact label:first-of-type {
+.demo-audio.compact[role] label:first-of-type {
   border-radius: 14px 0 0 14px;
 }
 
-.demo-audio.compact label:last-of-type {
+.demo-audio.compact[role] label:last-of-type {
   border-radius: 0 14px 14px 0;
 }
 
-.demo-audio.compact label:has(input:focus-visible) {
+.demo-audio.compact[role] label:has(input:focus-visible) {
   outline-color: #fff;
 }

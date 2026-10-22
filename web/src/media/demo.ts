@@ -11,6 +11,7 @@ import { parseRecording } from '../formats/recording';
 import type { Session } from '../engine/scene';
 import { LiveRecorder, recorderFormat } from './video';
 import { AudioMix } from './audioTap';
+import { DemoAudioEngine, demoAudio, demoAudioPicker, onDemoAudio } from './demoAudio';
 import { saveBlob } from './screenCapture';
 import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
@@ -83,6 +84,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
   let skip = loadSkip();
   let player: PlayerHandle | undefined;
   let session: Session | undefined;
+  let sound: DemoAudioEngine | undefined;
   let video: { rec: LiveRecorder; mix: AudioMix; timer: ReturnType<typeof setInterval> } | undefined;
   const lastTick = recordingTicks(o.rec);
   let generation = 0;
@@ -116,9 +118,12 @@ export function playDemo(o: DemoOptions): Promise<void> {
     session = undefined;
     const gen = ++generation;
     const files = skip ? withoutOpening(o.files, o.gam, o.rec) : o.files.copy();
+    sound = new DemoAudioEngine(demoAudio());
     player = mountPlayer(host, files, o.gam, {
       title: o.title,
       playback: o.rec,
+      audio: sound,
+      speakerOnly: sound.mode !== 'blaster',
       autoStart: true,
       noKeysButton: true,
       onSession: (s) => (session = s),
@@ -165,6 +170,9 @@ export function playDemo(o: DemoOptions): Promise<void> {
     }
   };
 
+  // the sound choice changes the demo as it plays (and the video being recorded)
+  const offAudio = onDemoAudio((m) => sound?.setMode(m, session));
+
   recBtn.addEventListener('click', () => (video ? void stopVideo(true) : start(true)));
   skipBox.addEventListener('change', () => {
     skip = skipBox.checked;
@@ -187,6 +195,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
         'div',
         { class: 'demo-bar' },
         h('label', { class: 'demo-skip' }, skipBox, 'Skip the title and opening screens'),
+        demoAudioPicker({ label: 'Sound', showLabel: true }),
         h('span', { class: 'spacer' }),
         h('button', { onclick: () => start(false), title: 'Play it again from the beginning' }, '↺ Restart'),
         recBtn,
@@ -196,10 +205,11 @@ export function playDemo(o: DemoOptions): Promise<void> {
       h(
         'p',
         { class: 'hint' },
-        `Videos are 320×200 with the game’s music and sounds, recorded as it plays (${fmt ? fmt.ext.toUpperCase() : 'not available here'}); they stop by themselves two seconds after the last recorded key.`,
+        `Videos are 320×200 with the sound picked above, recorded as it plays (${fmt ? fmt.ext.toUpperCase() : 'not available here'}); they stop by themselves two seconds after the last recorded key.`,
       ),
     );
   }).then(() => {
+    offAudio();
     void stopVideo(true);
     below?.destroy();
     player?.stop();
