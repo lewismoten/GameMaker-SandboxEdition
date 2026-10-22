@@ -136,8 +136,8 @@ scene looks exactly like the room she asked it in, so the conversation simply go
 is a combination lock made of counters, the dark under the stage gives way to the floor only
 where the lantern has been, and the check bot plays the whole case from the built disk.
 
-**KEEP IT BRIEF! The Tiny Pockets Library** (`brief`). The secret ninth game: its about.json
-says `"secret": true`, and it stays out of every listing until all eight felt eggs are found.
+**KEEP IT BRIEF! The Tiny Pockets Library** (`brief`). A Sandbox game on the shelf like the
+others.
 Lewis Moten's thirty-two 100 Word Stories, word for word, each acted out in a book of its own
 behind The Dog House's red door. Words are floor blocks that count into counter 3; THE END is
 a solid page that only takes exactly one hundred (Game-Maker refuses a touch the counter can't
