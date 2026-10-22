@@ -1,0 +1,47 @@
+THREAD THE NEEDLE,
+BROTHER CAMEL
+by The Bard of Bizarre, 1995
+Shareware from The Sofa BBS
+
+Based on the song "Thread the
+Needle, Brother Camel" by The
+Bard of Bizarre (Lewis Moten
+as his hobo clown, Doc Leo),
+one of the Bard's bizarre
+gospels (Matthew 19:24).
+
+Lyrics: ChatGPT, from Lewis's
+prompts. Music and animated
+cover: (credit pending).
+
+This game's FM music, its
+sung clips and the title
+cartoon are made from them.
+The Bard of Bizarre logo:
+DeepAI. Doc Leo photo: Lewis
+Moten.
+
+Game: blocks, maps, sprites
+and the FM arrangement by
+Claude, built as Game-Maker
+3.0 files. Made with GAME-
+MAKER by Recreational
+Software Designs.
+
+Even a camel can dream!
+
+FREE TO SHARE
+
+Made in 2026 by Lewis Moten
+with Claude. Free to share:
+see LICENSE.TXT on the disk.
+
+The shareware page is part
+of the 1995 story: there is
+no fee and nothing to mail.
+
+MIT License, (c) 2026
+Lewis Moten.
+
+
+

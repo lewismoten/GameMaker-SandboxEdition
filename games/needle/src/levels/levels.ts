@@ -27,7 +27,7 @@ export interface LevelDef {
 
 export const LEVELS: LevelDef[] = [
   { file: 'city', desc: 'The City Gate', light: 'morning', blocks: cityBlocks, build: city, form: 'loaded', snd: 'city', mons: { strut: 6, dog: 3 }, view: [16, 4] },
-  { file: 'desert', desc: 'The Desert Road', light: 'noon', blocks: desertBlocks, build: desert, form: 'saddled', snd: 'desert', mons: {}, view: [40, 4] },
+  { file: 'desert', desc: 'The Desert Road', light: 'noon', blocks: desertBlocks, build: desert, form: 'saddled', snd: 'desert', mons: {}, view: [47, 4] },
   { file: 'tailor', desc: "The Tailor's Shop", light: 'lamp', blocks: tailorBlocks, build: tailor, form: 'shod', snd: 'tailor', mons: { snip: 4 }, view: [20, 4] },
-  { file: 'eye', desc: 'The Eye of the Needle', light: 'night', blocks: eyeBlocks, build: eye, form: 'bare', snd: 'eye', mons: {}, view: [5, 2] },
+  { file: 'eye', desc: 'The Eye of the Needle', light: 'night', blocks: eyeBlocks, build: eye, form: 'bare', snd: 'eye', mons: {}, view: [2, 1] },
 ];
