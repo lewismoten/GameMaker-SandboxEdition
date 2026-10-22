@@ -5,6 +5,7 @@ import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels, dither, rng } from '../../../kit/pixels';
+import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, TEXT_MAGENTA, WATER, WOOD, YELLOW } from '../art/palette';
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
@@ -331,6 +332,43 @@ export function wonFli(): Uint8Array {
     pals.push(pal);
   }
   return encodeFli(frames, pals[0], { speed: 5, palettes: pals });
+}
+
+/**
+ * After NO CARRIER: the GIF Teddy left in the file area, opened in a GIF viewer. A real
+ * snapshot of Teddy and his big sister Gwinn, dithered into the BBS palette's spare entries,
+ * arrives the way an interlaced GIF did: every 8th row, then the 4ths, the 2nds, the rest.
+ */
+export function snapFli(): Uint8Array {
+  const p = screen();
+  p.rect(0, 0, W, 8, ANSI[1]);
+  text(p, 0, 0, ' GWINN.GIF  256x160x256  Interlaced', ANSI[15]);
+  const photo = resample(loadScan('gwinn'), 256);
+  const [x, y] = [32, 18];
+  p.frame(x - 2, y - 2, photo.w + 4, photo.h + 4, ANSI[7]);
+  text(p, 32, 184, 'Teddy and big sister Gwinn!', ANSI[14]);
+  const { pal } = pastePhoto(p, DAY, photo, x, y);
+  const done = Uint8Array.from(p.px);
+  const frames: Uint8Array[] = [];
+  const shown = new Set<number>();
+  const passes: [start: number, step: number, frames: number][] = [
+    [0, 8, 3],
+    [4, 8, 3],
+    [2, 4, 4],
+    [1, 2, 6],
+  ];
+  for (const [start, step, n] of passes) {
+    const rows: number[] = [];
+    for (let r = start; r < photo.h; r += step) rows.push(r);
+    for (let f = 1; f <= n; f++) {
+      rows.slice(0, Math.round((rows.length * f) / n)).forEach((r) => shown.add(r));
+      const px = done.slice();
+      for (let r = 0; r < photo.h; r++) if (!shown.has(r)) px.fill(BLACK, (y + r) * W + x, (y + r) * W + x + photo.w);
+      frames.push(px);
+    }
+  }
+  for (let i = 0; i < 24; i++) frames.push(done);
+  return encodeFli(frames, pal, { speed: 6 });
 }
 
 /** A sprite scaled up `s` times at (x, y); clear pixels stay clear. */
