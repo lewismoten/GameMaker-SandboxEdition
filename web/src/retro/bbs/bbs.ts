@@ -146,7 +146,7 @@ export async function runTerminal(h: RetroHost): Promise<void> {
       // the upload died with the call; say who did it
       t.line();
       for (const l of wrap(`(${heard.who}, on the kitchen extension: "${heard.words}")`, 78))
-        t.line(`|08${l}`);
+        t.line(`|07${l}`);
       t.line();
       t.line("|07The upload never finished, so the board never got it.");
       t.print("|07Press a key… ");
@@ -260,10 +260,10 @@ function leechWarning(t: Term): void {
     `|12  ** LEECHES WILL BE DELETED! **  |07This board keeps a |141:${RATIO}|07 upload/download ratio.`,
   );
   t.line(
-    `|07  New callers get |14${NEW_USER_FILES}|07 files on the house, each call earns |14${POINTS_PER_CALL}|07 more, every upload`,
+    `|07  New callers get |14${NEW_USER_FILES}|07 files on the house; each call earns |14${POINTS_PER_CALL}|07 more, each upload |14${RATIO}|07.`,
   );
   t.line(
-    `|07  |14${RATIO}|07, and the SysOp's own files are |10FREE|07. File points: |14${filePoints(a)}|07   U/D: |14${ratioText(a)}`,
+    `|07  The SysOp's own files are |10FREE|07.   Your file points: |14${filePoints(a)}|07   U/D: |14${ratioText(a)}`,
   );
 }
 
@@ -687,7 +687,7 @@ async function pickFile(t: Term, h: RetroHost): Promise<{ name: string; size: nu
   };
   await listing(cwd);
   for (;;) {
-    t.print(`|15TERMINAL|07 Send which file? (a name or folder on C:, Enter to cancel) |15`);
+    t.print(`|15TERMINAL|07 Send which file on C:? (a folder lists it; Enter cancels) |15`);
     const typed = ((await readLine(h.screen, h.keys, [], 40, attr(15, 0))) ?? "").trim().toUpperCase();
     t.line();
     if (!typed) return undefined;
