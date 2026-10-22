@@ -16,6 +16,7 @@ import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
 import './workspace.css';
 import { SHORT } from '../../edition';
+import { plainError } from '../core/plainError';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -615,7 +616,7 @@ export class Workspace {
       download(name, zip, 'application/zip');
       toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
     } catch (e) {
-      toast((e as Error).message, 'error');
+      toast(plainError(e), 'error');
     }
   }
 
@@ -627,7 +628,7 @@ export class Workspace {
       download(name, html, 'text/html');
       toast(`Saved ${name}. Open it in any browser to play — no internet needed.`);
     } catch (e) {
-      toast((e as Error).message, 'error');
+      toast(plainError(e), 'error');
     }
   }
 
@@ -639,7 +640,7 @@ export class Workspace {
       download(name, zip, 'application/zip');
       toast(`Saved ${name}. Unzip it onto any static web host to publish it.`);
     } catch (e) {
-      toast((e as Error).message, 'error');
+      toast(plainError(e), 'error');
     }
   }
 }

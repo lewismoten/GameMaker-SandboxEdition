@@ -6,6 +6,7 @@ import { createZip } from '../../project/zip';
 import { exportWebApp } from '../../export/exportWebApp';
 import { exportSinglePage } from '../../export/exportSinglePage';
 import { parseGame } from '../../formats/game';
+import { plainError } from '../core/plainError';
 
 export async function downloadProject(id: string): Promise<void> {
   const p = await loadProject(id);
@@ -24,7 +25,7 @@ export async function exportProject(id: string): Promise<void> {
     download(name, zip, 'application/zip');
     toast(`Saved ${name}. Unzip it onto any static web host.`);
   } catch (e) {
-    toast((e as Error).message, 'error');
+    toast(plainError(e), 'error');
   }
 }
 
@@ -38,7 +39,7 @@ export async function exportProjectPage(id: string): Promise<void> {
     download(name, html, 'text/html');
     toast(`Saved ${name}. Open it in any browser to play — no internet needed.`);
   } catch (e) {
-    toast((e as Error).message, 'error');
+    toast(plainError(e), 'error');
   }
 }
 
@@ -51,6 +52,6 @@ export async function exportProjectForDos(id: string): Promise<void> {
     download(name, zip, 'application/zip');
     toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
   } catch (e) {
-    toast((e as Error).message, 'error');
+    toast(plainError(e), 'error');
   }
 }
