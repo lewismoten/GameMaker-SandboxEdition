@@ -6,7 +6,7 @@ vi.mock('../src/eggs/eggState', () => ({
   eggStates: async () => Array.from({ length: 8 }, (_, i) => ({ found: found.all || i < 7 })),
 }));
 
-import { hideSecretGames, isSecretGame, SECRET_GAMES } from '../src/project/secretGames';
+import { hideSecretGames, isSecretGame, SECRET_GAMES, secretsListed } from '../src/project/secretGames';
 
 const list = [{ id: 'teddy' }, { id: 'brief' }, { id: 'logic' }];
 
@@ -28,6 +28,14 @@ describe('secret games', () => {
   it('shows it once all eight eggs are found', async () => {
     found.all = true;
     expect((await hideSecretGames(list)).map((g) => g.id)).toEqual(['teddy', 'brief', 'logic']);
+  });
+
+  it('remembers what the last list showed', async () => {
+    await hideSecretGames(list);
+    expect(secretsListed()).toBe(false);
+    found.all = true;
+    await hideSecretGames(list);
+    expect(secretsListed()).toBe(true);
   });
 
   it('leaves a list without secrets alone', async () => {

@@ -82,6 +82,9 @@ export async function loadSaveData(gameId: string): Promise<Record<string, Uint8
   }
 }
 
+/** Fired on window after writeSaveFile stores a file (a saved game can hold a felt egg). */
+export const SAVES_CHANGED = 'gm-saves-changed';
+
 /**
  * Adds or replaces one save file by rewriting the game's whole save record (read, change,
  * put in separate transactions). Failures are logged, not thrown, so play goes on.
@@ -91,6 +94,7 @@ export async function writeSaveFile(gameId: string, name: string, bytes: Uint8Ar
     const current = await loadSaveData(gameId);
     current[name] = bytes;
     await request(SAVES, 'readwrite', (s) => s.put(current, gameId));
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
   } catch (e) {
     console.warn('Could not store save data', e);
   }
