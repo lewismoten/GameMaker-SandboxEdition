@@ -3,9 +3,9 @@
 //   0 title   1 the end (won / lost)   2..14 the thirteen rooms, in order   15 the hidey-hole
 //   16 the compost crock (the rotten egg, off the Larder)
 //   17 Ebenezer's display case (the pastry egg, off the Vault)
-//   18 under the stove: Sir Reginald Cluckington III's interlude (the molasses rolled under
-//      the Bakehouse stove; the Bakehouse's way out is the gap, and the chicken's way out
-//      is the molasses, on to the Cold Cellar). It is played as the chicken (chick.chr), and
+//   18 under the stove: Sir Reginald Cluckington III's interlude (the sugar hid under the
+//      Sugar Room's stove from the tax man; the Sugar Room's way out is the gap, and the
+//      chicken's way out is the sugar, on to the Brewery). It is played as the chicken (chick.chr), and
 //      it is the one room with an exit picture: the cartoon of him popping back out.
 //
 // Every room's ingredient is its way out: the jar's cell is the link to the next room, so
@@ -65,7 +65,7 @@ function scene(desc: string, files: string[], x: number, y: number): Scene {
 /** Integrator positions: the rooms snake down the screen, the side rooms beside theirs. */
 function pos(room: Room): { x: number; y: number } {
   if (room.spec.cupboard) return room.spec.cupboard.scene === 16 ? { x: 160, y: 10 } : { x: 70, y: 160 };
-  if (room.spec.interlude) return { x: 280, y: 40 };
+  if (room.spec.interlude) return { x: 70, y: 91 };
   const level = room.spec.level;
   if (level === 0) return { x: 270, y: 74 };
   const row = Math.floor((level - 1) / 4);

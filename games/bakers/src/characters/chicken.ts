@@ -1,5 +1,5 @@
 // chick.chr: Sir Reginald Cluckington III, played for the one room Doc Leo cannot fit in
-// (under the Bakehouse stove). He waddles a block a step with the arrows, like Doc Leo (five
+// (under the Sugar Room's stove). He waddles a block a step with the arrows, like Doc Leo (five
 // frames of four pixels, so he too always stands square on the grid), but W A S D flap him
 // into a glide: two blocks in the time of one step (five frames of eight pixels; a wall
 // stops him square after one). Space squawks (the same squawk monster: mice run), B bounces

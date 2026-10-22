@@ -1,7 +1,7 @@
 // The two cartoons round Sir Reginald's interlude (reels, games/kit/reel.ts): on the way in,
-// Doc Leo finds the molasses has rolled under the Bakehouse's iron range, does not fit, and
-// posts Sir Reginald Cluckington III in after it (SQUEEEZE); on the way out, a jug of molasses
-// slides out of the dark, the chicken pops out after it and bounces into Doc Leo's hand.
+// Doc Leo finds the sugar has been hiding under the Sugar Room's iron range since the tax man
+// came, does not fit, and posts Sir Reginald Cluckington III in after it (SQUEEEZE); on the
+// way out, the sugar slides out of the dark, the chicken pops out after it and bounces into Doc Leo's hand.
 import { Pixels } from '../../../kit/pixels';
 import { Reel } from '../../../kit/reel';
 import { ingredient } from '../art/kit';
@@ -67,7 +67,7 @@ export function stoveInFli(): Uint8Array {
   const first = new Pixels(W, H);
   first.px.set(bg.px);
   leo(first, false);
-  say(first, ['The molasses rolled under the stove.', 'In 1777. It is still rolling.']);
+  say(first, ['The sugar hid under the stove', 'when the tax man came. In 1773.']);
   reel.fadeIn(first, 8).add(first, 22);
   reel.frame(bg, (p) => {
     leo(p, false);
@@ -123,8 +123,8 @@ export function stoveOutFli(): Uint8Array {
   leo(first, false);
   say(first, ['A long minute under the stove...', '']);
   reel.fadeIn(first, 8).add(first, 12);
-  const jug = ingredient(4, 0);
-  // the jug slides out first, very slowly (it is molasses)
+  const jug = ingredient(7, 0);
+  // the sugar slides out first
   for (let t = 0; t < 12; t++) {
     reel.frame(bg, (p) => {
       leo(p, false);
@@ -151,7 +151,7 @@ export function stoveOutFli(): Uint8Array {
       big(p, jug, SX + 12, FLOOR + 2, false, 2);
       big(p, h.s === 'squash' ? reggieBounce(false) : reggieBounce(true), h.x, h.y);
       headline(p, 8, 'SQUEAK!', 3, c('yellow', 3), c('red', 2), 220);
-      say(p, ['Sir Reginald Cluckington III,', 'with the molasses.']);
+      say(p, ['Sir Reginald Cluckington III,', 'with the sugar. Untaxed.']);
     }, i % 4 === 0 ? 3 : 2);
   });
   reel.frame(bg, (p) => {

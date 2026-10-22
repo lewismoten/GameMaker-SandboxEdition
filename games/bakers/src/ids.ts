@@ -123,5 +123,5 @@ export const FIXED_BLOCK = { void: 0, chicken: 1, kazoo: 2, tricorn: 3, eggRotte
 /** The scenes of the two egg cupboards. */
 export const EGG_SCENE = { rotten: 16, faberge: 17 } as const;
 
-/** Sir Reginald's interlude under the stove, between the Bakehouse and the Cold Cellar. */
+/** Sir Reginald's interlude under the stove, between the Sugar Room and the Brewery. */
 export const STOVE_SCENE = 18;

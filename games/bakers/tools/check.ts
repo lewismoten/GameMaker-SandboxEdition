@@ -59,7 +59,7 @@ try {
     const bot = await playThrough(false);
     if (!bot.sim.ci.inv.includes(FIXED_BLOCK.kazoo)) throw new Error('The kazoo was not picked up in the Spice Parlor');
     const at = bot.sim.trail.indexOf(STOVE_SCENE);
-    if (at < 0 || bot.sim.trail[at - 1] !== roomScene(4) || bot.sim.trail[at + 1] !== roomScene(5)) throw new Error('Sir Reginald did not go under the stove between the Bakehouse and the Cold Cellar');
+    if (at < 0 || bot.sim.trail[at - 1] !== roomScene(7) || bot.sim.trail[at + 1] !== roomScene(8)) throw new Error('Sir Reginald did not go under the stove between the Sugar Room and the Brewery');
     console.log(`WON  normal route: ${bot.sim.deaths} deaths, score ${bot.sim.ci.score}, ${bot.squawks} squawks`);
   }
   await eggsFound();
