@@ -153,7 +153,7 @@ export function introFli(): Uint8Array {
     const p = new Pixels(W, H);
     mainStreet(p, 3);
     const x = -150 + t * 8;
-    stand(p, x, 100, 1);
+    stand(p, x, 100, 1, "LEO'S");
     p.rect(x + 70, 140, 14, 2, c('ink', 0));
     chez(p, x + 84, 122, 1.1, t);
     say(p, ['July the Fourth.', "Doc Leo's root beer stand rolls in."]);
@@ -253,12 +253,12 @@ export function paradeScreen(): { px: Pixels; pal: Uint8Array } {
     const col = c(['red', 'paper', 'sky', 'yellow'][k], 3);
     for (let a = 0; a < 13; a++) p.line(fx, fy, fx + Math.cos(a / 2.07) * 16, fy + Math.sin(a / 2.07) * 16, col);
   }
-  stand(p, 20, 96, 1);
+  stand(p, 20, 96, 1, "LEO'S");
   p.rect(90, 136, 14, 2, c('ink', 0));
   chez(p, 104, 118, 1.1);
   scaleBlit(p, corgi(0), 180, 150, 2);
-  scaleBlit(p, leo('down', 0, true), 220, 120, 3);
-  headline(p, 64, 'BEST BATCH IN 250 YEARS', 1, c('yellow', 3), c('ink', 0));
+  bigLeo(p, 232, 112, 1.1, true);
+  headline(p, 74, 'BEST BATCH IN 250 YEARS', 1, c('yellow', 3), c('ink', 0), 124);
   const pf = { paper: c('paper', 4), edge: c('paper', 2), shadow: c('dark', 0), tape: c('yellow', 4) };
   const photo = resample(loadScan('chez'), 64);
   const { cx, cy } = polaroid(p, 248, 12, photo.w, photo.h, pf, 12);

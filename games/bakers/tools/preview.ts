@@ -59,3 +59,13 @@ writePng(join(out, 'scr-egg-rotten.png'), eggScreen(true), PAL.pal, 2);
 // Doc Leo and the monster blocks
 writePng(join(out, 'leo.png'), blockSheet(all.cb.build().slice(0, all.cb.names.length), 16, 3), PAL.pal, 4);
 writePng(join(out, 'mons.png'), blockSheet(mbl.slice(0, all.mb.names.length), 20, 3), PAL.pal, 3);
+import { thirteenthScreen, paradeScreen, roomCard } from '../src/screens/screens';
+writePng(join(out, 'scr-egg-faberge.png'), eggScreen(false), PAL.pal, 2);
+const t13 = thirteenthScreen();
+writePng(join(out, 'scr-back13.png'), t13.px, t13.pal, 2);
+const par = paradeScreen();
+writePng(join(out, 'scr-parade.png'), par.px, par.pal, 2);
+for (const room of all.rooms.filter((r) => [6, 9, 13].includes(r.spec.level) && !r.spec.cupboard)) {
+  const cardPic = roomCard(room, all.sets[room.spec.style]);
+  writePng(join(out, `scr-card${room.spec.level}.png`), cardPic.px, cardPic.pal, 2);
+}
