@@ -3,7 +3,7 @@
 // for MS-DOS, not a port of Game-Maker code; it imitates DOS 6.22 messages.
 import type { TextScreen } from '../text/textScreen';
 import { readLine, type TextKeys } from '../text/textInput';
-import { commas, dirLine, dirWide, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
+import { commas, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
 import { toCp437 } from '../text/cp437';
 
 export interface ShellHost {
@@ -70,7 +70,7 @@ export class Shell {
     // "A:" alone switches drives.
     if (/^[A-Za-z]:$/.test(trimmed)) return this.changeDrive(trimmed[0].toUpperCase());
     // Built-ins may be followed directly by a path or switch: "CD..", "DIR/W", "CD\GM".
-    const b = /^(dir|cd|chdir|md|mkdir|cls|ver|vol|type|echo|mem|date|time|help|path|\?)(?=$|[\s.\\/])(.*)$/i.exec(trimmed);
+    const b = /^(dir|cd|chdir|md|mkdir|rd|rmdir|del|erase|cls|ver|vol|type|echo|mem|date|time|help|path|\?)(?=$|[\s.\\/])(.*)$/i.exec(trimmed);
     // Anything that is not a built-in is a program name; its arguments are the words after it.
     const cmd = b ? b[1].toUpperCase() : '';
     const rest = b ? b[2].trim() : trimmed.split(/\s+/).slice(1).join(' ');
@@ -84,6 +84,12 @@ export class Shell {
       case 'MD':
       case 'MKDIR':
         return this.md(rest);
+      case 'RD':
+      case 'RMDIR':
+        return this.rd(rest);
+      case 'DEL':
+      case 'ERASE':
+        return this.del(args);
       case 'CLS':
         this.screen.clear();
         return;
@@ -224,6 +230,64 @@ export class Shell {
     if (err) this.out(err);
   }
 
+  /** DEL / ERASE: files matching a name or wildcard; a folder (or *.*) asks first. */
+  private async del(args: string[]): Promise<void> {
+    const target = args.find((a) => !a.startsWith('/'));
+    if (!target) {
+      this.out('Required parameter missing');
+      return;
+    }
+    const { drive, parts } = resolvePath(target, this.drive, this.cwdOf);
+    const node = await this.host.fs.find(drive, parts);
+    if (node === null) {
+      this.out(`Not ready reading drive ${drive}`);
+      return;
+    }
+    // DEL FOLDER means every file in it
+    const pattern = node?.dir ? '*.*' : (parts.pop() ?? '*.*');
+    const list = await this.host.fs.listDir(drive, parts);
+    const files = (list ?? []).filter((n) => !n.dir && dosMatch(pattern, n.name));
+    if (!files.length) {
+      this.out('File not found');
+      return;
+    }
+    if (pattern === '*.*') {
+      this.out('All files in directory will be deleted!');
+      this.screen.print('Are you sure (Y/N)?');
+      const yes = ((await readLine(this.screen, this.host.keys, [], 1)) ?? '').trim().toUpperCase() === 'Y';
+      this.screen.print('\n');
+      if (!yes) return;
+    }
+    let denied = false;
+    for (const f of files) {
+      if (f.remove) await f.remove();
+      else denied = true;
+    }
+    if (denied) this.out('Access denied');
+  }
+
+  /** RD / RMDIR: an empty folder. */
+  private async rd(arg: string): Promise<void> {
+    if (!arg) {
+      this.out('Required parameter missing');
+      return;
+    }
+    const { drive, parts } = resolvePath(arg, this.drive, this.cwdOf);
+    const node = parts.length ? await this.host.fs.find(drive, parts) : undefined;
+    const cwd = this.cwdOf(drive);
+    if (node?.dir && parts.length <= cwd.length && parts.every((p, i) => cwd[i] === p)) {
+      this.out(`Attempt to remove current directory - ${arg}`);
+      return;
+    }
+    if (!node?.dir || (await node.list?.())?.length) {
+      this.out('Invalid path, not directory,');
+      this.out('or directory not empty');
+      return;
+    }
+    if (node.remove) await node.remove();
+    else this.out('Access denied');
+  }
+
   private async type(arg: string): Promise<void> {
     if (!arg) {
       this.out('Required parameter missing');
@@ -250,12 +314,13 @@ export class Shell {
       'DIR [path] [/W] [/P]   List files          CD [path]   Change folder',
       'MD C:\\GM\\name        Make a folder for a new game',
       'A:  C:  D:             Change drive         TYPE file   Show a text file',
+      'DEL file (*.GIF)       Delete files        RD [path]   Remove an empty folder',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
       '',
       'GM          Start Game-Maker (C:\\GM)',
       'PLAYGAME    Play a Game-Maker game',
       'TERMINAL    Dial the Game-Maker shareware BBS',
-      'VPIC        View a GIF picture (VPIC \\DOWNLOAD\\TEDDY.GIF)',
+      'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);
