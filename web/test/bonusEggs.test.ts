@@ -5,7 +5,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 const saves: Record<string, Record<string, Uint8Array>> = {};
 vi.mock('../src/project/storage', () => ({ loadSaveData: async (id: string) => saves[id] ?? {} }));
 
-import { BONUS_EGGS, bonusKey, bonusStates, bonusStatus, isHatched, setHatched, TAPS } from '../src/eggs/bonus';
+import { BONUS_EGGS, bonusKey, bonusStates, bonusStatus, clampTaps, eggTaps, isHatched, parseTaps, setEggTaps, tapsText, TAPS, TAPS_KEY } from '../src/eggs/bonus';
 import { EGGS } from '../src/eggs/eggs';
 import { eggStates, OVERRIDES_KEY } from '../src/eggs/eggState';
 import { tapMessage } from '../src/eggs/bonusViewer';
@@ -50,12 +50,45 @@ describe('the two eggs kept apart from the dozen', () => {
     expect((await bonusStates()).some((s) => s.found)).toBe(false);
   });
 
-  it('remembers the rotten egg tapped open', () => {
-    expect(isHatched()).toBe(false);
-    setHatched(true);
+  it('reads the rotten egg\'s tap count, clamped', () => {
+    expect(parseTaps('7', null)).toBe(7);
+    expect(parseTaps('99', null)).toBe(TAPS);
+    expect(parseTaps('-3', null)).toBe(0);
+    expect(parseTaps('junk', null)).toBe(0);
+    expect(clampTaps(4.8)).toBe(4);
+  });
+
+  it('migrates the old tapped-open flag to a count', () => {
+    expect(parseTaps(null, '1')).toBe(TAPS);
+    expect(parseTaps(null, null)).toBe(0);
+    // a count, once written, wins over the old flag
+    expect(parseTaps('2', '1')).toBe(2);
+    store.set('gm-egg-hatched', '1');
+    expect(eggTaps()).toBe(TAPS);
     expect(isHatched()).toBe(true);
-    setHatched(false);
+  });
+
+  it('remembers each crack stage, drops the old flag and tells the desk', () => {
+    const events: string[] = [];
+    vi.stubGlobal('window', { dispatchEvent: (e: Event) => events.push(e.type) });
+    store.set('gm-egg-hatched', '1');
+    setEggTaps(5);
+    expect(store.get(TAPS_KEY)).toBe('5');
+    expect(store.has('gm-egg-hatched')).toBe(false);
+    expect(eggTaps()).toBe(5);
     expect(isHatched()).toBe(false);
+    setEggTaps(TAPS);
+    expect(isHatched()).toBe(true);
+    setEggTaps(0);
+    expect(store.has(TAPS_KEY)).toBe(false);
+    expect(eggTaps()).toBe(0);
+    expect(events).toEqual(['gm-eggs-changed', 'gm-eggs-changed', 'gm-eggs-changed']);
+  });
+
+  it('says how cracked the rotten egg is', () => {
+    expect(tapsText(0)).toBe('whole');
+    expect(tapsText(5)).toBe('cracked 5/13');
+    expect(tapsText(13)).toBe('diamond heart');
   });
 
   it('says what each tap does', () => {

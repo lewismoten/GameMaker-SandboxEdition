@@ -8,7 +8,7 @@
 // same `gm-eggs` record as the dozen's, keyed `<game>/<id>` (bonusKey) so they never collide
 // with a game's own key.
 import type { EggDetect } from './eggs';
-import { readOverrides, savesHold, statusOf, type EggStatus, type Override } from './eggState';
+import { EGGS_CHANGED, readOverrides, savesHold, statusOf, type EggStatus, type Override } from './eggState';
 import { loadSaveData } from '../project/storage';
 
 export interface BonusEgg {
@@ -73,25 +73,51 @@ export async function bonusStates(): Promise<BonusState[]> {
   return out;
 }
 
-/** The rotten egg, once tapped open, stays open (this browser only). */
-const HATCHED_KEY = 'gm-egg-hatched';
-
-export function isHatched(): boolean {
-  try {
-    return localStorage.getItem(HATCHED_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-export function setHatched(on: boolean): void {
-  try {
-    if (on) localStorage.setItem(HATCHED_KEY, '1');
-    else localStorage.removeItem(HATCHED_KEY);
-  } catch {
-    /* private mode: it stays open until the page closes */
-  }
-}
-
 /** How many taps open the rotten egg. */
 export const TAPS = 13;
+
+/**
+ * How far the rotten egg has been tapped (0 whole .. TAPS crumbled to the diamond heart),
+ * remembered in this browser only. It used to be a yes/no 'gm-egg-hatched' = '1' (open).
+ */
+export const TAPS_KEY = 'gm-egg-taps';
+const OLD_HATCHED_KEY = 'gm-egg-hatched';
+
+export const clampTaps = (n: number): number => (Number.isFinite(n) ? Math.max(0, Math.min(TAPS, Math.floor(n))) : 0);
+
+/** The stored tap count, from the new key if set, else the old open/shut flag. */
+export function parseTaps(taps: string | null, oldHatched: string | null): number {
+  if (taps !== null && taps.trim() !== '') return clampTaps(Number(taps));
+  return oldHatched === '1' ? TAPS : 0;
+}
+
+/** Kept here too, for private mode (no storage): it then lasts until the page closes. */
+let held = 0;
+
+export function eggTaps(): number {
+  try {
+    return parseTaps(localStorage.getItem(TAPS_KEY), localStorage.getItem(OLD_HATCHED_KEY));
+  } catch {
+    return held;
+  }
+}
+
+/** Set the tap count (EGG.EXE, or the viewer as it is tapped); the desk redraws the cake stand. */
+export function setEggTaps(n: number): void {
+  const t = clampTaps(n);
+  held = t;
+  try {
+    if (t) localStorage.setItem(TAPS_KEY, String(t));
+    else localStorage.removeItem(TAPS_KEY);
+    localStorage.removeItem(OLD_HATCHED_KEY);
+  } catch {
+    /* private mode: it stays as it is until the page closes */
+  }
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(EGGS_CHANGED));
+}
+
+/** The rotten egg is open: crumbled to the diamond heart. */
+export const isHatched = (): boolean => eggTaps() >= TAPS;
+
+/** The rotten egg's crack stage in words: "whole", "cracked 5/13" or "diamond heart". */
+export const tapsText = (taps: number): string => (taps >= TAPS ? 'diamond heart' : taps > 0 ? `cracked ${taps}/${TAPS}` : 'whole');

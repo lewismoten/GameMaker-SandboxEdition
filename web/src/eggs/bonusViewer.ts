@@ -1,11 +1,12 @@
 // A closer look at the eggs on the cake stand (bonus.ts). The rotten egg sits in a haze of
 // its own stench; tap it (click, touch, or Enter / Space) thirteen times and it wobbles,
-// cracks, and crumbles to a diamond heart that then turns in the light (and stays open after).
+// cracks, and crumbles to a diamond heart that then turns in the light. Every tap is kept
+// (bonus.ts eggTaps, which EGG.EXE can also set), so it opens as cracked as it was left.
 // The pastry egg turns on its spun-sugar holder while the clockwork baker on top spins and a
 // music box plays (with a mute button). Drag, or ← →, turns either; Esc closes. With reduced
 // motion: no wobble, no rising clouds, no falling shards, no spinning; the sound still plays.
 import { h, clear } from '../editor/core/ui';
-import { isHatched, setHatched, TAPS, type BonusState } from './bonus';
+import { eggTaps, setEggTaps, TAPS, type BonusState } from './bonus';
 import { drawHeart, drawPastryEgg, drawRestingShards, drawShell, EGG_ASPECT, rottenShell, stinkPuff, type Box } from './bonusArt';
 import { musicBox } from './musicBox';
 
@@ -37,8 +38,9 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     let last = performance.now();
     let clock = 0;
     let dirty = true;
-    let taps = 0;
-    let hatched = isHatched();
+    // how far it was tapped before (or set in EGG.EXE): it carries on from there
+    let taps = eggTaps();
+    let hatched = taps >= TAPS;
     let wobbleAt = -10;
     let crumble: { at: number; shards: Shard[]; snap: HTMLCanvasElement; box: Box } | undefined;
     let puffs: Puff[] = [];
@@ -269,9 +271,10 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
 
     const show = () => {
       const e = found[at];
-      const open = rotten() && hatched;
       turn = 0;
-      taps = 0;
+      taps = rotten() ? eggTaps() : 0;
+      hatched = taps >= TAPS;
+      const open = rotten() && hatched;
       puffs = [];
       // already hazy when it comes into view
       nextPuff = clock - 4;
@@ -298,11 +301,10 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     const tap = () => {
       if (!tappable()) return;
       taps++;
+      setEggTaps(taps);
       wobbleAt = clock;
       say.textContent = tapMessage(taps);
       if (taps >= TAPS) {
-        hatched = true;
-        setHatched(true);
         const keep = turn;
         show();
         turn = keep;
@@ -317,8 +319,7 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     };
 
     const mend = () => {
-      hatched = false;
-      setHatched(false);
+      setEggTaps(0);
       show();
       say.textContent = 'The shell is glued back together, smell and all.';
       canvas.focus();
