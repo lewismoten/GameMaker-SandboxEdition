@@ -129,8 +129,9 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     'The 1994 desk',
     `<p><b>💾 1994 desk</b> shows Game-Maker the way it was used in DOS: a PC with a DOS
     prompt, Game-Maker’s text menus, a box of diskettes, the CD, a shareware catalog and
-    a BBS to call. It is not an emulator; it is drawn to look the way it did. The
-    <b>Owner’s Guide</b> on the desk explains it.</p>
+    a BBS to call. It is a simulation, not a PC emulator: no DOS program runs. Game-Maker’s
+    tools are rebuilt from their original source code, and the rest is made to look and act
+    the way it did. The <b>Owner’s Guide</b> on the desk explains it.</p>
     <p>The games you change on the desk are the same games you see here, so you can switch
     between the two at any time.</p>`,
   ],
@@ -178,14 +179,18 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
     <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
-    and The Sofa BBS, and the programs on it (SAVEHACK, BACKUP, GMCRACK and its KEYGEN, EGG,
-    the GM30 release, PKUNZIP and VPIC look-alikes), was written for this project by
+    and The Sofa BBS, and the programs on it (SAVEHACK, BACKUP, GMCRACK and its KEYGEN,
+    HEXEDIT, EGG, the GM30 release, PKUNZIP and VPIC look-alikes), was written for this project by
     <b>Claude Opus 5.5</b> under Lewis’s direction. Their in-story authors are part of the
     fiction: “vesuvian” is Lewis’s eight-letter BBS handle, from the Magic: The Gathering card
     Vesuvian Doppelganger, and “DiGiTAL DUNE” is a made-up group.</p>
-    <p>They recreate a 1990s PC as nostalgia and history: dialing BBSes, trading shareware, and
-    the warez and cracking scene that was part of that world. They act only on the pretend PC
-    and this site’s own data. Nothing here cracks or generates keys for any real product:
+    <p>The hacking, cracking and editing tools are mainly for debugging: switching a game
+    between shareware and registered to test both, editing and backing up saved games, and
+    looking inside Game-Maker’s files (HEXEDIT is a hex viewer that names each field of
+    Game-Maker’s file formats). They are dressed in 1990s scene style for fun. With the rest
+    of the desk they recreate a 1990s PC as nostalgia and history: dialing BBSes, trading
+    shareware, and the warez and cracking scene that was part of that world. They act only on
+    the pretend PC and this site’s own data. Nothing here cracks or generates keys for any real product:
     GMCRACK’s key is worked out the way Game-Maker’s own code, now MIT licensed, checks it, and
     the “warez” are this project’s own free files. They are here to show what that era felt
     like, for testing and for fun, not to encourage software piracy. Please support the
