@@ -4,23 +4,43 @@
   "company": "Sandbox Software",
   "year": 1996,
   "price": "$15",
-  "blurb": "King Dillydally IX says he'll save the kingdom as soon as he gets a round tuit. Lord Deadline stole it. A full role-playing adventure across Procrastia: four towns, four dungeons, side quests, a horseless carriage and a jester with a rubber chicken.",
+  "blurb": "King Dillydally IX will save the kingdom as soon as he gets a round tuit, and Lord Deadline has stolen it. A full role-playing adventure across Procrastia: four towns, four dungeons, side quests, a horseless carriage and a jester with a rubber chicken on a leash.",
   "exe": "TUIT.EXE",
   "sound": "sb",
+  "egg": { "block": 149 },
   "label": {
-    "background": "#f6efdc",
+    "background": "#f3ead2",
     "band": "#2f5d3a",
     "ink": "#2a1a10",
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "background": "#20314f",
+    "background": "#1d2147",
     "accent": "#e8b84a",
     "ink": "#ffffff",
     "tagline": "Somebody has to get around to it.",
-    "back": "Placeholder.",
-    "features": [],
-    "shots": [["world.map", 18, 74]],
-    "rating": "Ages 8 and up"
+    "back": "In the Kingdom of Procrastia, everything gets done. Eventually. King Dillydally IX keeps the realm running with the Royal Round Tuit: whenever he gets one, he gets around to it. Then Lord Deadline stole it, broke it in three, and hid the pieces where nobody would ever get around to looking.\n\nNobody except Pip, the stable hand of Nowish, who does things the day he's asked. Take the King's writ into the Snooze Barrows. Sound the foghorn over the Soggy Vaults. Charge THE CHEZ, a horseless carriage from the far-off future of 1976 and a half, and drive it across forty leagues of tidal mud. Find two runaway royal hounds, a library book three hundred years overdue, and a rubber chicken on the run. Then knock on Deadline Keep's door. Before he does.",
+    "features": [
+      "A whole kingdom to explore: four towns, four dungeons, a world map and a road trip",
+      "Shores, rivers and roads that curve and run diagonally - painted in true color, dithered into 256",
+      "Two dozen townsfolk to talk to: just walk into them",
+      "Shops, an inn, steel swords, tonics, a kazoo of considerable power",
+      "Side quests for the royal hounds, the librarian and Doc Leo the hobo clown",
+      "Four bosses, two blocks tall and fond of naps",
+      "Eleven Sound Blaster songs, digitized sound, an animated intro"
+    ],
+    "shots": [
+      ["world.map", 24, 38],
+      ["town.map", 66, 6],
+      ["port.map", 70, 1]
+    ],
+    "rating": "Ages 8 and up",
+    "hours": 6,
+    "reviews": [
+      { "quote": "The best RPG we got around to reviewing this year.", "source": "Modem Morning News" },
+      { "quote": "Those rivers! Those shorelines! In Game-Maker?", "source": "Megapixel Monthly" }
+    ],
+    "award": { "title": "Shareware Gem", "from": "Diskette Digest" },
+    "poster": { "gif": "title.gif", "caption": "Somebody has to get around to it." }
   }
 }
