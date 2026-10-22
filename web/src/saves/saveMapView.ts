@@ -122,7 +122,9 @@ export function saveMapView(o: MapViewOptions): MapView {
     ctx.fillRect(0, 0, cssW, cssH);
     const z = camera().zoom;
     // the level, as often as it shows (it wraps)
-    eachCopy(0, 0, map.width, map.height, (sx, sy) => ctx.drawImage(level, Math.round(sx), Math.round(sy), map.width * z, map.height * z));
+    // on whole pixels, so the copies meet without a seam
+    const snap = (v: number) => Math.round(v * dpr) / dpr;
+    eachCopy(0, 0, map.width, map.height, (sx, sy) => ctx.drawImage(level, snap(sx), snap(sy), snap(sx + map.width * z) - snap(sx), snap(sy + map.height * z) - snap(sy)));
     // the screen F6 opens on
     ctx.save();
     ctx.setLineDash([6, 4]);

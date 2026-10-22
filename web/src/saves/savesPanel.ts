@@ -408,6 +408,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         title,
         h('label', { class: 'sv-name', for: `sv-name-${slot}` }, h('span', null, 'Name'), nameInput),
         h('p', { class: 'sv-where' }, labels?.sceneName(save.doscene) ? `Level ${save.doscene}: ${labels.sceneName(save.doscene)}` : `Level ${save.doscene}`, ` · ${kb(s.bytes?.length ?? 0)}`),
+        h('button', { type: 'button', class: 'sv-about-btn', onclick: () => void aboutSave(slot, fields), 'aria-haspopup': 'dialog' }, h('span', { class: 'sv-about-i', 'aria-hidden': 'true' }, 'i'), 'About this save'),
       ),
       h(
         'div',
@@ -430,7 +431,6 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         h('button', { type: 'button', onclick: () => exportSav(slot, serializeSave(save)), title: 'Download this save (with any changes) as a .sav file' }, '⇩ Download .sav'),
         h('button', { type: 'button', onclick: () => void importSav(slot) }, '⇪ Import .sav…'),
         h('button', { type: 'button', class: 'danger', onclick: () => void removeSlot(slot) }, 'Delete save'),
-        h('button', { type: 'button', class: 'sv-about-btn', onclick: () => void aboutSave(slot, fields), 'aria-haspopup': 'dialog' }, h('span', { class: 'sv-about-i', 'aria-hidden': 'true' }, 'i'), 'About this save'),
       ),
       status,
       h('div', { class: 'sv-groups' }, sets),
