@@ -308,8 +308,8 @@ registerEditor(['bkd'], (host, project, file) => {
     h(
       'div',
       { class: 'bkd-layout' },
-      h('div', { class: 'bkd-pane' }, h('h3', null, 'The whole picture'), whole, size),
-      h('div', { class: 'bkd-pane' }, h('h3', null, 'On the game screen'), preview.el),
+      h('div', { class: 'bkd-pane' }, h('h2', null, 'The whole picture'), whole, size),
+      h('div', { class: 'bkd-pane' }, h('h2', null, 'On the game screen'), preview.el),
     ),
     exports,
   );
