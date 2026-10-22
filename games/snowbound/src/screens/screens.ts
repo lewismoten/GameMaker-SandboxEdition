@@ -3,6 +3,7 @@
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { Pixels, rng } from '../../../kit/pixels';
+import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
 import { blob, gradient, shadeAt } from '../art/draw';
 import { centered, micro, microWidth, outlined, text, textWidth } from '../art/font';
 import { buildScreenPalette, type Pal } from '../art/pal';
@@ -451,8 +452,8 @@ export function buildScreens(
   const won3 = paper('MOUNTAIN COURIER', 'MONDAY  JANUARY 4  1993');
   centered(won3, 44, 'GAME-MAKER NOW $129', c('newsink', 0), 2);
   centered(won3, 64, 'Local kid: "Glad I shoveled fast."', c('newsink', 0));
-  box(won3, 30, 84, 1);
-  body(won3, 90, 86, 220, [
+  box(won3, 30, 77, 1);
+  body(won3, 90, 76, 220, [
     'THE PRICE OF THE POPULAR GAME DESIGN',
     'KIT JUMPED FORTY DOLLARS THIS WEEK.',
     '',
@@ -460,13 +461,24 @@ export function buildScreens(
     'HIS COPY IN DECEMBER AT LAVALE MALL',
     'WITH MONEY FROM SHOVELING GALE, DUNN,',
     'LEOTA, LEON, JAMIE AND BOWDEN.',
-    '',
     'HIS FIRST GAME IS ABOUT, OF COURSE,',
     'SHOVELING SNOW.',
-    '',
-    '              THANKS FOR PLAYING!',
   ]);
-  save('won3.gif', won3);
+  won3.rect(8, 141, 304, 1, c('newsink', 0));
+  // the other story on the page, with a real photo run through the paper's halftone: the
+  // History Fair volunteer from the mall, beside General Washington
+  const rgb8 = (i: number) => [0, 1, 2].map((k) => pal.pal[i * 3 + k] * 4 + 2) as [number, number, number];
+  const fair = sepia(resample(loadScan('colonial'), 80), rgb8(c('newsink', 0)), rgb8(c('paper', 4)), 1.15);
+  won3.frame(9, 144, fair.w + 2, fair.h + 2, c('newsink', 0));
+  text(won3, 98, 148, 'HISTORY FAIR AT THE MALL', c('newsink', 0));
+  body(won3, 98, 160, 212, [
+    'A VOLUNTEER IN COLONIAL DRESS GREETS',
+    'SHOPPERS BESIDE GENERAL WASHINGTON AT',
+    "LAVALE MALL'S HISTORY FAIR.",
+  ]);
+  micro(won3, 238, 189, 'THANKS FOR PLAYING!', c('newsink', 0));
+  const { pal: won3pal } = pastePhoto(won3, pal.pal, fair, 10, 145, { colors: 24 });
+  save('won3.gif', won3, won3pal);
 
   const lost = new Pixels(W, H);
   gradient(lost, 0, 0, W, 130, pal.r('wall'), 1, 0);
