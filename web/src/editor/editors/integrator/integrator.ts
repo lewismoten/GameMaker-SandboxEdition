@@ -7,11 +7,11 @@
 // The editor is one closure over the game. Its sections, in order: pictures (cached scene
 // shots), songs, the board (pan, zoom, dragging cards), the toolbar (Auto-arrange, Spread
 // out, zoom, PNG), the side panel (screens and music), scenes (adding, playing from one),
-// and the selected scene's panel. Drawing the board is in board.ts; the layout algorithms
-// are in integratorLayout.ts and layoutCells.ts.
+// and the selected scene's panel (its links table is sceneLinks.ts). Drawing the board is in
+// board.ts; the layout algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
-import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../../core/ui';
+import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
 import { GameFiles } from '../../../project/files';
@@ -20,7 +20,6 @@ import {
   ADVTYPE,
   ENDTYPE,
   GRAPHIC_EXTS,
-  MAXSCENELINKS,
   NOSCENE,
   SCENEDESCLEN,
   STARTTYPE,
@@ -32,12 +31,12 @@ import {
   type Point,
   type Scene,
 } from '../../../formats/game';
-import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../../formats/map';
+import { newMap, parseMap, serializeMap } from '../../../formats/map';
 import { WORLD, CARD_UNITS, clampPos } from './layoutCells';
 import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from './integratorLayout';
 import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
-import { pickOnMap } from './pickOnMap';
+import { linksPanel } from './sceneLinks';
 import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
 import { fileUndo } from '../../core/fileUndo';
@@ -780,40 +779,6 @@ registerEditor(['gam'], (host, project, file) => {
       [0, 'Never scroll'],
     ];
     const changed = () => (save(), draw());
-    const pointField = (p: Point, label: string, sceneForMap: number) =>
-      h(
-        'span',
-        { class: 'row', style: 'gap:4px;align-items:center;flex-wrap:nowrap' },
-        numberField(
-          `${label} x`,
-          () => p.x,
-          (v) => ((p.x = v), changed()),
-          { min: 0, max: MLEN - 1 },
-        ),
-        numberField(
-          'y',
-          () => p.y,
-          (v) => ((p.y = v), changed()),
-          { min: 0, max: MWID - 1 },
-        ),
-        h(
-          'button',
-          {
-            title: 'Pick on the map',
-            onclick: async () => {
-              const pick = await pickOnMap(project, game, sceneForMap, p, `${label}: click a map block`);
-              if (pick) {
-                p.x = pick.x;
-                p.y = pick.y;
-                changed();
-                renderPanel();
-              }
-            },
-          },
-          '⌖',
-        ),
-      );
-
     clear(
       panel,
       h(
@@ -908,62 +873,7 @@ registerEditor(['gam'], (host, project, file) => {
         : null,
       kind === 'end'
         ? null
-        : h(
-            'div',
-            { class: 'panel' },
-            h('h2', { style: 'margin-top:0' }, kind === 'start' ? 'Where the game starts' : 'Links to other scenes'),
-            h(
-              'p',
-              { class: 'hint' },
-              kind === 'start'
-                ? 'Link 1 picks the first level and the block where the character starts in it.'
-                : 'When the character touches the “from” block, play continues in the linked scene at its “to” block. Link to “Game Won” to end the game.',
-            ),
-            h(
-              'div',
-              { class: 'grator-links' },
-              h(
-                'table',
-                { class: 'data' },
-                h(
-                  'thead',
-                  null,
-                  h(
-                    'tr',
-                    null,
-                    h('th', null, '#'),
-                    h('th', null, 'Go to scene'),
-                    kind === 'start' ? null : h('th', null, 'From block (this map)'),
-                    h('th', null, 'To block (its map)'),
-                  ),
-                ),
-                h(
-                  'tbody',
-                  null,
-                  ...s.links.slice(0, kind === 'start' ? 1 : MAXSCENELINKS).map((l, i) =>
-                    h(
-                      'tr',
-                      null,
-                      h('td', null, i + 1),
-                      h(
-                        'td',
-                        null,
-                        selectField(
-                          '',
-                          sceneOptions(),
-                          () => l.toScene,
-                          (v) => ((l.toScene = v), save(), draw(), renderPanel()),
-                          `Link ${i + 1} goes to`,
-                        ),
-                      ),
-                      kind === 'start' ? null : h('td', null, l.toScene === NOSCENE ? '' : pointField(l.from, 'From', selected)),
-                      h('td', null, l.toScene === NOSCENE ? '' : pointField(l.to, 'To', l.toScene)),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+        : linksPanel({ project, game, scene: selected, sceneOptions, changed, rerender: renderPanel }, s, kind),
     );
   }
 
