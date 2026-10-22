@@ -14,6 +14,9 @@ export const ROUTE: Record<number, Stop[]> = {
   3: [{ pickup: [8, 8] }, 'k', 'I'],
   4: ['k', 'I'],
   5: ['k', 'I'],
+  6: ['k', 'I'],
+  7: ['k', 'I'],
+  8: ['k', 'I'],
 };
 
 /** The secret way out of the Cold Cellar, and the hidey-hole's own route. */
