@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 15660,
+  "frames": 15257,
   "chapters": [
    {
     "title": "Opening",
@@ -51,31 +51,31 @@
    },
    {
     "title": "Story",
-    "frame": 1045
+    "frame": 1008
    },
    {
     "title": "Level 1: The Shepherds' Field",
-    "frame": 2811
+    "frame": 3014
    },
    {
     "title": "Level 2: Bethlehem",
-    "frame": 5859
+    "frame": 5871
    },
    {
     "title": "Level 3: The Caravan",
-    "frame": 7697
+    "frame": 7518
    },
    {
     "title": "Level 4: The Stable",
-    "frame": 10053
+    "frame": 9682
    },
    {
     "title": "Ending",
-    "frame": 11180
+    "frame": 10618
    },
    {
     "title": "Credits",
-    "frame": 13568
+    "frame": 13165
    }
   ]
  }
