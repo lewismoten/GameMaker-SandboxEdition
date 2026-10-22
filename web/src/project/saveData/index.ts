@@ -9,6 +9,7 @@ export * from './saveGame';
 export * from './highScores';
 export * from './gameLabels';
 export * from './backups';
+export * from './newGame';
 
 export interface SaveSlot {
   slot: number;
