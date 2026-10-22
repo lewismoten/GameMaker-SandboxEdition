@@ -189,7 +189,8 @@ async function unregister(h: RetroHost): Promise<void> {
   pcExtras().setReg(regFile(name, SERIAL, '0'));
   put(h, 4, TOP + 5, '|07Game-Maker is |12UNREGISTERED|07. Next time GM starts it shows the serial');
   put(h, 4, TOP + 6, '|07number and asks for a word from the |15Owner\'s Guide|07 (in the Game-Maker box).');
-  put(h, 4, TOP + 7, '|08Hint: DEL C:\\GM\\PLAYGAME.REG and GM won\'t start at all (GM REGISTER fixes it).');
+  put(h, 4, TOP + 8, '|08Hint: DEL C:\\GM\\PLAYGAME.REG and GM won\'t start at all;');
+  put(h, 4, TOP + 9, '|08GM REGISTER (or [1] here) brings it back.');
   await anyKey(h);
 }
 
