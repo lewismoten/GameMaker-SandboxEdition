@@ -219,6 +219,22 @@ It is crossed out: "CUT at dress rehearsal - V.C."
 The whole of Act III played in full light.`,
 };
 
+/** Behind the green room's prop fireplace at 2 AM: who left it, and the note tucked inside. */
+export const EGG = `THE VELVET CURTAIN EGG
+
+Behind the silk flames of a prop fireplace: a felt egg, deep theater red, with gold checks, a comedy mask and a gold curtain-tie.
+
+PERFORMED BY
+Doc Leo, hobo clown (standing backward in line, as usual)
+\f
+A NOTE TUCKED INSIDE
+
+The case notes say every word fell out of every book in town on the same night.
+
+The last line, underlined twice:
+
+"Check the little library with the red door."`;
+
 // ---------------------------------------------------------------- the interviews
 
 export interface Talk {

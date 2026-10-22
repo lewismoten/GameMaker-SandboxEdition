@@ -14,10 +14,12 @@ import { P, c, ramp as r } from '../art/pal';
 import { W, H, actCard, caseFile, evidenceScreen, facade, portraitScreen, stageView, actor, rain } from './art';
 import { boards } from '../blocks/painters';
 import { itemPictures, ITEMS, ITEM, symbol } from '../blocks/items';
+import { eggCloseUp } from '../blocks/egg';
 import {
   ACC_INTRO,
   ACT_CARDS,
   CREDITS,
+  EGG,
   EVIDENCE,
   GR1_INTRO,
   GR2_INTRO,
@@ -195,6 +197,11 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
     put(`${base}.txt`, narrow(EVIDENCE[pin]));
     lst(`${base}.lst`, [[`${base}.gif`, 0], [`${base}.txt`]]);
   }
+
+  // behind the prop fireplace at 2 AM
+  put('egg.gif', gif(evidenceScreen(eggCloseUp(CLEAR), 'VELVET CURTAIN EGG')));
+  put('egg.txt', narrow(EGG));
+  lst('egg.lst', [['egg.gif', 0], ['egg.txt']]);
 
   // the act cards
   const view = (v: MapView, x: number, y: number, night = false) => {
