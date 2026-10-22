@@ -27,8 +27,9 @@ export function resolveGround(cm: CornerMap, book: BlockBook, o: GroundOptions):
         blocks[y * N + x] = book.n(o.base(x, y));
         continue;
       }
-      if (hit.includes('water') && hit.includes('road')) {
-        blocks[y * N + x] = book.n(bridgeName(cm.mask('water', x, y), cm.mask('road', x, y)));
+      const way = hit.find((l) => l === 'road' || l === 'street');
+      if (hit.includes('water') && way) {
+        blocks[y * N + x] = book.n(bridgeName(cm.mask('water', x, y), cm.mask(way, x, y)));
         continue;
       }
       const l = hit[0];
@@ -54,7 +55,7 @@ export function bridgeCombos(cm: CornerMap): [number, number][] {
   for (let y = 0; y < N; y++)
     for (let x = 0; x < N; x++) {
       const wm = cm.mask('water', x, y);
-      const rm = cm.mask('road', x, y);
+      const rm = cm.mask(cm.layers.has('road') ? 'road' : 'street', x, y);
       if (wm && rm) seen.set(bridgeName(wm, rm), [wm, rm]);
     }
   return [...seen.values()];

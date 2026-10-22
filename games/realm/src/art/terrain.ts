@@ -201,20 +201,20 @@ export const street: Shader = (x, y, d) => {
  * plank deck with rails along the road (road corners `rm`) wherever it is over the water or its
  * banks; dirt where it is back on land.
  */
-export function paintBridge(wm: number, rm: number): Canvas {
+export function paintBridge(wm: number, rm: number, land: (x: number, y: number, inside: number) => RGB = dirt, under: Shader = shore): Canvas {
   const cv = new Canvas(B, B);
   const horiz = rm === (TL | TR) || rm === (BL | BR) || (rm & (TL | TR)) === 0 || (rm & (BL | BR)) === 0;
   const across = horiz ? (x: number) => x : (_x: number, y: number) => y;
   cv.shade((x, y) => {
     const dw = shapeSdf(wm, x, y);
     const dr = shapeSdf(rm, x, y) + (horiz ? 0 : 0);
-    const under = shore(x, y, dw, 0, 0);
+    const below = under(x, y, dw, 0, 0);
     if (dr > 0.6) {
       // a rail's shadow on the water beside the deck
-      if (dr < 2.2 && dw < 4) return mix(under, [10, 30, 50], 0.45);
-      return under;
+      if (dr < 2.2 && dw < 4) return mix(below, [10, 30, 50], 0.45);
+      return below;
     }
-    if (dw > 6) return dirt(x, y, -dr);
+    if (dw > 6) return land(x, y, -dr);
     // the deck: boards across the way, a rail on each side
     if (dr > -1.4) return mix([96, 62, 34], [150, 104, 60], dr < -0.6 ? 0.9 : 0.3);
     const board = across(x, y) % 4;
