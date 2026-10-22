@@ -2,9 +2,10 @@
 // too), a button for every other key the current character's sequences use, and
 // Esc/F1/F2/Enter. Buttons send scan codes, as if the keys were pressed.
 //
-// Layout follows the player's shape: upright (9:16) puts the screen on top and a
-// game-pad below it; sideways (16:9) puts the screen in the middle with the pad on the
-// left and the action buttons on the right.
+// The screen keeps all the room it can; the controls float over the player, see-through
+// until pressed (player.css): upright (9:16) the screen sits at the top with the pad and
+// buttons over the black below it, sideways (16:9) they float over the screen's edges.
+// 🎮 hides them (remembered).
 import type { Keyboard } from '../input/keyboard';
 import { scanName } from '../input/scancodes';
 
@@ -49,6 +50,17 @@ export function touchLabel(scan: number): string {
   return short[scan] ?? scanName(scan).replace(/ \/ .*/, '');
 }
 
+const HIDE_KEY = 'gm-touch-controls';
+
+/** The visitor hid the touch controls (they stay hidden in every game until shown again). */
+function touchHidden(): boolean {
+  try {
+    return localStorage.getItem(HIDE_KEY) === 'hidden';
+  } catch {
+    return false;
+  }
+}
+
 export class TouchControls {
   readonly el: HTMLElement;
   private actions: HTMLElement;
@@ -75,7 +87,7 @@ export class TouchControls {
       const s = document.createElement('span');
       s.className = `gm-arrow gm-${area}`;
       s.textContent = label;
-      s.setAttribute('aria-label', scanName(scan));
+      s.setAttribute('aria-hidden', 'true'); // (the pad is one control, named as a group)
       pad.append(s);
       arrows[scan] = s;
     }
@@ -102,8 +114,36 @@ export class TouchControls {
     this.actions.className = 'gm-actions';
     const sys = document.createElement('div');
     sys.className = 'gm-sys';
-    sys.append(this.button(1, 'Esc'), this.button(59, 'F1'), this.button(60, 'F2'), this.button(28, 'Enter'));
+    sys.append(this.button(1, 'Esc'), this.button(59, 'F1'), this.button(60, 'F2'), this.button(28, 'Enter'), this.toggle());
     this.el.append(sys, pad, this.actions);
+  }
+
+  /** The switch that hides the controls (to see the whole screen, or to play with a keyboard), remembered. */
+  private toggle(): HTMLButtonElement {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gm-touch-toggle';
+    b.textContent = '🎮';
+    const set = (hidden: boolean) => {
+      this.el.classList.toggle('gm-touch-hidden', hidden);
+      b.setAttribute('aria-pressed', String(!hidden));
+      b.setAttribute('aria-label', 'Touch controls');
+      b.title = hidden ? 'Show the touch controls' : 'Hide the touch controls';
+    };
+    set(touchHidden());
+    b.addEventListener('pointerdown', (e) => e.preventDefault()); // the game keeps the focus
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const hidden = !this.el.classList.contains('gm-touch-hidden');
+      if (hidden) this.releaseAll();
+      set(hidden);
+      try {
+        localStorage.setItem(HIDE_KEY, hidden ? 'hidden' : 'shown');
+      } catch {
+        /* private mode */
+      }
+    });
+    return b;
   }
 
   /** Adds the controls to the player and keeps their layout matched to its shape. */
@@ -124,8 +164,15 @@ export class TouchControls {
 
   detach(): void {
     this.resize?.disconnect();
+    this.releaseAll();
+  }
+
+  private releaseAll(): void {
     for (const s of this.padDown) this.keyboard.inject(s, false);
     this.padDown.clear();
+    this.el.querySelectorAll('.gm-arrow.down').forEach((e) => e.classList.remove('down'));
+    // (a held button lets go of its key the way a lost finger does)
+    this.el.querySelectorAll('button.down').forEach((b) => b.dispatchEvent(new Event('pointercancel')));
   }
 
   /** Releases the arrows no longer wanted, then presses the new ones; a key held in both stays down untouched. */
