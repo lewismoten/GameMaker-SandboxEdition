@@ -7,7 +7,7 @@
 // kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
 // (?tab=sandbox&q=snow), so a reload or a link shows the same.
 import { h, clear, modal, toast } from '../core/ui';
-import { loadCatalog, type CatalogEntry } from '../../project/files';
+import { loadGameList, type CatalogEntry } from '../../project/files';
 import { listProjects } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
@@ -480,7 +480,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   if (!savedCategory() && projects.length) current = own('mine').length ? 'mine' : 'imported';
   renderCats();
   try {
-    catalog = await loadCatalog();
+    catalog = await loadGameList();
   } catch {
     catalogError = 'These games are unavailable offline until they have been opened once.';
   }
@@ -506,7 +506,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const unwatch = (unwatchHome = onCatalogChanged(async () => {
     if (!page.isConnected) return unwatch();
     try {
-      catalog = await loadCatalog();
+      catalog = await loadGameList();
     } catch {
       return;
     }

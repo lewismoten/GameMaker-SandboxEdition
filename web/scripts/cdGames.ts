@@ -323,9 +323,28 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
 export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
   return catalog.map(({ notice: _notice, original, ...e }, i) => ({
     ...e,
-    ...(original ? { original: { label: original.label, box: original.box, sound: original.sound } } : {}),
+    ...(original ? { original: slimOriginal(original) } : {}),
     ...(catalogDetails(catalog[i]) ? { details: true } : {}),
   }));
+}
+
+/**
+ * What the shelf, the disk box and the home page draw an original game with: its label, box and
+ * sound card, the manual's title (pages: [] until withDetails fills them in) and the hero from
+ * its paper (the disk label's portrait). The rest is in games/details/<id>.json.
+ */
+function slimOriginal(o: OriginalExtras): OriginalExtras {
+  const p = o.printables;
+  const stickers = p?.stickers?.filter((s) => s.hero);
+  const items = p?.items?.filter((i) => i.kind === 'idcard' && i.portrait);
+  const printables = stickers?.length || items?.length ? { ...(stickers?.length ? { stickers } : {}), ...(items?.length ? { items } : {}) } : undefined;
+  return {
+    label: o.label,
+    box: o.box,
+    sound: o.sound,
+    ...(o.manual ? { manual: { title: o.manual.title, pages: [] } } : {}),
+    ...(printables ? { printables } : {}),
+  };
 }
 
 /** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */

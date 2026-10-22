@@ -35,7 +35,7 @@ import { wasteBasket } from "./room/wasteBasket";
 import { roomDoor } from "./room/roomDoor";
 import { deskCapture } from "./pc/capture";
 import { EDITION, FORK_NOTE } from "../edition";
-import { loadCatalog, type CatalogEntry } from "../project/files";
+import { loadCatalog, loadGameList, type CatalogEntry } from "../project/files";
 import { Project } from "../editor/core/project";
 import type { SpeedSetting } from "../engine/scene";
 import { viewState } from "../urlState";
@@ -815,13 +815,13 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     // last, Game-Maker's eight designers (so a later visit can design offline too)
     () => import("../retro/gm").then((m) => m.loadDesigners()),
   ]);
-  void loadCatalog().then((cat) =>
+  void loadGameList().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
   );
   // a secret game revealed or hidden again (all twelve eggs found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
-    const cat = await loadCatalog().catch(() => [] as CatalogEntry[]);
+    const cat = await loadGameList().catch(() => [] as CatalogEntry[]);
     if (!desk.isConnected) return;
     const viewer = document.querySelector<HTMLElement>(".box-viewer");
     const showing = viewer?.getAttribute("aria-label");

@@ -4,14 +4,15 @@
 import './booklet.css';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
-import { loadCatalog } from '../project/files';
+import { loadCatalog, withDetails } from '../project/files';
 import { drawBox } from '../desk/boxes/gameBox';
 import { buildBooklet } from './printables/manualPages';
 import { openBox } from './printables/viewer';
 import { boxItems } from './printables/items';
 import { shotCache, type PrintContext } from './printables/kit';
 
-export async function openGameManual(entry: CatalogEntry, coverImage?: string): Promise<void> {
+export async function openGameManual(listed: CatalogEntry, coverImage?: string): Promise<void> {
+  const entry = await withDetails(listed); // a listed entry holds only the manual's title
   const manual = entry.original?.manual;
   if (!manual) return;
   const title = manual.title || `${entry.title} Manual`;

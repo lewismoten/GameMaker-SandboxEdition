@@ -212,6 +212,16 @@ export function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
   return p;
 }
 
+/**
+ * The list the home page, the shelf and the disk box draw from: games/catalog.json (a quarter
+ * of index.json; manuals hold only their title until withDetails). The development server
+ * hands out the full catalog instead: it serves catalog.json from whatever scripts/cdGames.ts
+ * it was started with, which may be older than this page.
+ */
+export function loadGameList(base = './games/'): Promise<CatalogEntry[]> {
+  return import.meta.env?.DEV ? loadCatalog(base) : loadCatalogList(base);
+}
+
 /** An entry with its shareware notice, manual and printables (games/details/<id>.json), for one from loadCatalogList. */
 export async function withDetails(entry: CatalogEntry, base = './games/'): Promise<CatalogEntry> {
   if (!entry.details) return entry; // nothing left out, or a full entry

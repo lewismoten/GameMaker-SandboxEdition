@@ -1,6 +1,6 @@
 // Screenshots of the Sandbox Software games, all made with Game-Maker, for the Game-Maker
 // SE box art and its Owner's Guide: each drawn from the game's own map (its box's first view).
-import { loadCatalog, type CatalogEntry } from '../../project/files';
+import { loadGameList, type CatalogEntry } from '../../project/files';
 import { mapShot, renderShot } from './boxArt';
 
 export interface GameShot {
@@ -27,7 +27,7 @@ let all: Promise<GameShot[]> | undefined;
 
 /** Every Sandbox game's screenshot, 16 x 10 blocks (a VGA screen), loaded once. */
 export function sandboxShots(): Promise<GameShot[]> {
-  all ??= loadCatalog()
+  all ??= loadGameList()
     .then(async (cat) => {
       const shots = await Promise.all(
         SANDBOX_SHOTS.map(async ([id, feature, view = 0]) => {

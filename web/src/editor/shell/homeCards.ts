@@ -7,7 +7,7 @@ import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot } from '../../desk/boxes/boxArt';
 import { openGameManual } from '../../manual/gameManual';
-import { GameFiles, creditLine, loadHostedGame, type CatalogEntry } from '../../project/files';
+import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
 import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
@@ -386,7 +386,8 @@ export function demoDialogButton(game: HomeGame): HTMLElement | null {
   return b;
 }
 
-export function showNotice(g: CatalogEntry): Promise<unknown> {
+export async function showNotice(listed: CatalogEntry): Promise<unknown> {
+  const g = await withDetails(listed).catch(() => listed); // the notice is in games/details/<id>.json
   return modal(`${g.title}: shareware notice`, (close) => [
     h(
       'pre',

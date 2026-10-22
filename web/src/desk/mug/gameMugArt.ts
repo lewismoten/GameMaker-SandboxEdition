@@ -1,7 +1,7 @@
 // Mug pictures for the Sandbox Software games: each game's own title screen (TITLE.GIF) over
 // a band in its box colors, with its hero standing at both ends of the band (the first frame
 // of the hero's .CHR, drawn from its .CBL blocks in the palette of a level the hero plays in).
-import { fetchGameFile, loadCatalog, type CatalogEntry } from '../../project/files';
+import { fetchGameFile, loadGameList, type CatalogEntry } from '../../project/files';
 import { decodeGif, isGif } from '../../formats/gif';
 import { parseGame } from '../../formats/game';
 import { parseCharacter } from '../../formats/character';
@@ -89,7 +89,7 @@ function trim(c: HTMLCanvasElement): HTMLCanvasElement | undefined {
 
 /** A game's mug picture, GAME_ART_W x GAME_ART_H, or undefined if its files can't be had. */
 export async function gameMugArt(game: string, heroName: string): Promise<HTMLCanvasElement | undefined> {
-  const entry = (await loadCatalog().catch(() => [])).find((c) => c.id === game);
+  const entry = (await loadGameList().catch(() => [])).find((c) => c.id === game);
   if (!entry) return undefined;
   const [titleB, sprite] = await Promise.all([fetchGameFile(entry, 'title.gif'), hero(entry, heroName).catch(() => undefined)]);
   if (!titleB || !isGif(titleB)) return undefined;
