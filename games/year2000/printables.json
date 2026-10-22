@@ -76,7 +76,11 @@
               "q": "How do I get on the Moon Shuttle?",
               "a": "Walk up the boarding ramp right under the rocket. The booth on the launch pad only takes you back to the hall."
             },
-            { "q": "I'm hurt. Is there help?", "a": "Booth 1 goes to Grandma's condo in Florida. She gives a big hug that heals you." }
+            { "q": "I'm hurt. Is there help?", "a": "Booth 1 goes to Grandma's condo in Florida. She gives a big hug that heals you." },
+            {
+              "q": "What's in the closet next to the launch pad?",
+              "a": "Some say the felt-maker left something behind. In the future not every brick is a brick, and some things you have to pick up yourself (P)."
+            }
           ]
         },
         {
