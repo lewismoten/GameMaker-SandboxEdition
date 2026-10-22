@@ -188,7 +188,7 @@ export function hall(book: BlockBook, name: string, st: HouseStyle, seed: number
       cv.rrect(door[0] + 8, 37, 9, 7, 1, [214, 190, 140]);
       sign(cv, door[0] + 12.5, 40.5);
     }
-  });
+  }, (x, y) => !(x === 1 && y === 2));
 }
 
 /** A market stall: a striped awning over a counter; the wares go on separate counter blocks. */

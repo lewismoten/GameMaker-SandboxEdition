@@ -4,15 +4,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '../../web/src/formats/blocks';
 import { serializeCharacter } from '../../web/src/formats/character';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeMonsters } from '../../web/src/formats/monster';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { buildSounds } from './src/sound/sounds';
 import { buildWorld } from './src/build/world';
 import { buildCast } from './src/build/cast';
-import { assemble } from './src/game';
+import { buildTowns } from './src/build/towns';
+import { passFiles } from './src/levels/talk';
+import { assemble, type SceneSpec } from './src/game';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -23,11 +23,16 @@ disk.put('pip.chr', serializeCharacter(cast.pip));
 const sounds = buildSounds();
 disk.put('realm.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
+for (const f of passFiles()) disk.put(f.name, f.bytes);
 
 const world = buildWorld(cast);
-for (const f of world.files) disk.put(f.name, f.bytes);
+const towns = buildTowns(world.plan.spot);
+for (const f of [...world.files, ...towns.files]) disk.put(f.name, f.bytes);
 
-const { game } = assemble([world.scene], { start: { to: 'world', at: [22, 83] } });
+const specs: SceneSpec[] = [world.scene, ...towns.scenes];
+// the world's doors into the towns
+world.scene.links.push(...towns.worldLinks);
+const { game } = assemble(specs, { start: { to: 'nowish', at: towns.start } });
 disk.put('tuit.gam', serializeGame(game));
-void [serializeMap, serializeMonsters];
 disk.write();
+console.log(`${game.scenes.length} scenes`);
