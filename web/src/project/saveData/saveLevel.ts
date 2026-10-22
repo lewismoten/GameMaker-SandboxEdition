@@ -9,10 +9,12 @@
 // (StartSceneInits only fills those the first time). The save editors (the web's "Saves &
 // scores" panel and the desk PC's SAVEHACK.EXE) use it.
 import { loadScene, restoreSaved, savedState, startSceneInits, type Saved } from '../../engine/scene';
-import { moveCharGrav, updateCharScreenPos } from '../../engine/character';
-import { calcDraw } from '../../engine/monsters';
+import { currentFrame, moveCharGrav, updateCharScreenPos } from '../../engine/character';
+import { calcDraw, monPicNum } from '../../engine/monsters';
 import { renderWorld, VISIBLE_H, VISIBLE_W } from '../../engine/render';
-import { CHARBL, MLEN, MWID, OFFSCRN, SCRNBLEN, SCRNBWID, mapBlock, newCharInfo, shownBlock, type World } from '../../engine/world';
+import { BLEN, CHARBL, LASTMM, LASTMON, MLEN, MONBL, MWID, OFFSCRN, SCRNBLEN, SCRNBWID, mapBlock, newCharInfo, shownBlock, type World } from '../../engine/world';
+import { TRANSPARENT, orientIndex } from '../../formats/blocks';
+import { LASTSL } from '../../formats/monster';
 import { Recorder } from '../../engine/recorder';
 import { MAXFRAME } from '../../formats/character';
 import { ADVTYPE, NOSCENE, parseGame, type Game, type Point } from '../../formats/game';
@@ -157,14 +159,8 @@ function offscreen(): Screen {
   return new Screen({ getContext: () => ctx } as unknown as HTMLCanvasElement);
 }
 
-/**
- * The screen around the hero, drawn by the engine (renderWorld): the level's blocks as they
- * are in the save, its monsters, and the hero in his saved frame. Throws SaveFormatError when
- * the level's files are missing.
- */
-export function savePicture(files: FileSource, gam: string, save: SavedGame): SavePicture {
-  const w = savedWorld(files, gam, save, () => 0.5);
-  // as after F6: the view starts on a block, the hero shown in his frame
+/** The world as F6 shows it: the view starting on a block, monsters placed, the hero shown in his frame. */
+function asAfterF6(w: World): void {
   w.scroll.nx = w.scroll.ny = 0;
   w.scroll.littleShiftx = w.scroll.littleShifty = 0;
   for (const mi of w.mi) if (!calcDraw(w, mi)) mi.scrPos = { x: OFFSCRN, y: OFFSCRN };
@@ -177,6 +173,17 @@ export function savePicture(files: FileSource, gam: string, save: SavedGame): Sa
   if (chr.cframe < 0 || chr.cframe >= MAXFRAME) chr.cframe = 0;
   w.ci.curtop = f?.pic1 ?? CHARBL;
   w.ci.curbottom = f?.pic2 ?? CHARBL;
+}
+
+/**
+ * The screen around the hero, drawn by the engine (renderWorld): the level's blocks as they
+ * are in the save, its monsters, and the hero in his saved frame. Throws SaveFormatError when
+ * the level's files are missing.
+ */
+export function savePicture(files: FileSource, gam: string, save: SavedGame): SavePicture {
+  const w = savedWorld(files, gam, save, () => 0.5);
+  asAfterF6(w);
+  const { chr } = w;
   const screen = offscreen();
   renderWorld(screen, w);
   const pixels = new Uint8Array(VISIBLE_W * VISIBLE_H);
@@ -187,4 +194,74 @@ export function savePicture(files: FileSource, gam: string, save: SavedGame): Sa
 /** The map block under pixel (px, py) of a SavePicture. */
 export function pictureBlock(pic: Pick<SavePicture, 'view'>, px: number, py: number): Point {
   return { x: wrap(pic.view.x + Math.floor(px / 20), MLEN), y: wrap(pic.view.y + Math.floor(py / 20), MWID) };
+}
+
+/** The whole level of a save, for looking around it and moving the hero (the Saves & scores map). */
+export interface SaveMap {
+  /** MLEN x MWID blocks of BLEN pixels: palette indices of the level as F6 shows it, without the hero. */
+  width: number;
+  height: number;
+  pixels: Uint8Array;
+  /** 256 6-bit RGB entries. */
+  palette: Uint8Array;
+  /** The map block at the top-left corner of the screen F6 shows. */
+  view: Point;
+  /** The hero's feet. */
+  hero: Point;
+  /** The hero as drawn: BLEN x 2*BLEN palette indices, TRANSPARENT where nothing is drawn. */
+  heroSprite: Uint8Array;
+  /** Where heroSprite's top-left is drawn, in pixels from the top-left of his feet's block. */
+  heroOffset: Point;
+  /** MLEN x MWID: 1 where the hero fits with his feet on that block (heroSpotProblem finds nothing). */
+  fits: Uint8Array;
+}
+
+/**
+ * The whole level of a save, drawn the way renderWorld draws its screen (each block as it is shown
+ * now, then the monsters), with the hero apart so he can be moved; and where he fits.
+ * Throws SaveFormatError when the level's files are missing.
+ */
+export function saveMap(files: FileSource, gam: string, save: SavedGame): SaveMap {
+  const w = savedWorld(files, gam, save, () => 0.5);
+  asAfterF6(w);
+  const width = MLEN * BLEN;
+  const height = MWID * BLEN;
+  const pixels = new Uint8Array(width * height);
+  for (let by = 0; by < MWID; by++)
+    for (let bx = 0; bx < MLEN; bx++) {
+      const src = shownBlock(w, mapBlock(w, bx, by)).pixels;
+      for (let yy = 0; yy < BLEN; yy++) pixels.set(src.subarray(yy * BLEN, yy * BLEN + BLEN), (by * BLEN + yy) * width + bx * BLEN);
+    }
+  const sprite = (x: number, y: number, orient: number, src: Uint8Array, out: Uint8Array, outW: number, outH: number, wrapIt: boolean) => {
+    for (let yy = 0; yy < BLEN; yy++)
+      for (let xx = 0; xx < BLEN; xx++) {
+        const v = src[orientIndex(orient, xx, yy)];
+        if (v === TRANSPARENT) continue;
+        let px = x + xx;
+        let py = y + yy;
+        if (wrapIt) (px = wrap(px, outW), py = wrap(py, outH));
+        else if (px < 0 || py < 0 || px >= outW || py >= outH) continue;
+        out[py * outW + px] = v;
+      }
+  };
+  if (!w.noMons)
+    for (let mm = 0; mm < LASTMM; mm++) {
+      const mi = w.mi[mm];
+      if (w.mm[mm].monnum >= LASTMON || mi.curPic < 0 || mi.curPic >= LASTSL) continue;
+      const pic = monPicNum(w, mm);
+      if (pic >= MONBL) continue;
+      sprite(mi.curx[0] * BLEN + mi.curx[1], mi.cury[0] * BLEN + mi.cury[1], mi.orient, w.mblk[pic].pixels, pixels, width, height, true);
+    }
+  const { chr, ci } = w;
+  const hero = { x: chr.x[0], y: chr.y[0] };
+  const heroSprite = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
+  const orient = currentFrame(w).orient;
+  if (ci.curtop < CHARBL) sprite(0, 0, orient & 15, w.cblk[ci.curtop].pixels, heroSprite, BLEN, BLEN * 2, false);
+  if (ci.curbottom < CHARBL) sprite(0, BLEN, orient >> 4, w.cblk[ci.curbottom].pixels, heroSprite, BLEN, BLEN * 2, false);
+  // where renderWorld puts him on the F6 screen, from his feet's block there
+  const heroOffset = ci.scrx > OFFSCRN ? { x: ci.scrx - wrap(hero.x - w.mx, MLEN) * BLEN, y: ci.scry - BLEN - wrap(hero.y - w.my, MWID) * BLEN } : { x: 0, y: -BLEN };
+  const fits = new Uint8Array(MLEN * MWID);
+  for (let y = 0; y < MWID; y++)
+    for (let x = 0; x < MLEN; x++) fits[y * MLEN + x] = !shownBlock(w, mapBlock(w, x, y)).solid && !shownBlock(w, mapBlock(w, x, wrap(y - 1, MWID))).solid ? 1 : 0;
+  return { width, height, pixels, palette: Uint8Array.from(w.palette), view: { x: w.mx, y: w.my }, hero, heroSprite, heroOffset, fits };
 }

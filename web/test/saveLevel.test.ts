@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { changeSaveLevel, heroSpotProblem, moveSaveHero, newGameSave, pictureBlock, saveLevels, savePicture, savedWorld, SaveFormatError, serializeSave, parseSave } from '../src/project/saveData';
+import { changeSaveLevel, heroSpotProblem, moveSaveHero, newGameSave, pictureBlock, saveLevels, savePicture, saveMap, savedWorld, SaveFormatError, serializeSave, parseSave } from '../src/project/saveData';
 import { changeBlocks, restoreSaved, type Saved } from '../src/engine/scene';
 import { moveChars } from '../src/engine/character';
 import { blockBirthMonsters, moveAllMonsters } from '../src/engine/monsters';
@@ -113,6 +113,28 @@ describe('changing a saved game’s level', () => {
     expect(moved.world.ci.score).toBe(save.world.ci.score);
     if (solid) expect(() => moveSaveHero(files, gam, save, ...solid!)).toThrow(SaveFormatError);
     expect(heroSpotProblem(w, 100, 0)).toMatch(/off the map/);
+  });
+
+  it('draws the whole level, the F6 screen the same, and where the hero fits', () => {
+    const { files, gam } = disk(ids[0]);
+    const save = newGameSave(files, gam, seeded());
+    const map = saveMap(files, gam, save);
+    const pic = savePicture(files, gam, save);
+    const w = savedWorld(files, gam, save);
+    expect(map.width).toBe(MLEN * 20);
+    expect(map.hero).toEqual(pic.hero);
+    expect(map.view).toEqual(pic.view);
+    expect(map.heroSprite.some((v) => v !== 255)).toBe(true);
+    for (let y = 0; y < MWID; y += 7) for (let x = 0; x < MLEN; x += 3) expect(map.fits[y * MLEN + x] === 1).toBe(!heroSpotProblem(w, x, y));
+    // the screen F6 shows is that part of the level (the hero and monsters at its edges aside)
+    let same = 0;
+    for (let y = 0; y < pic.height; y++)
+      for (let x = 0; x < pic.width; x++) {
+        const mx = (pic.view.x * 20 + x) % map.width;
+        const my = (pic.view.y * 20 + y) % map.height;
+        if (map.pixels[my * map.width + mx] === pic.pixels[y * pic.width + x]) same++;
+      }
+    expect(same / (pic.width * pic.height)).toBeGreaterThan(0.97);
   });
 
   it('refuses a level no link leads to', () => {
