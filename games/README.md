@@ -61,7 +61,7 @@ The play-testing tools:
 | logic    | `npx vite-node ../games/logic/tools/check.ts`      | plays every board's solution                                                          |
 | blaster  | `npx vite-node ../games/blaster/tools/check.ts`    | the bot pilot flies every leg and boss                                                |
 | sleuth   | `npx vite-node ../games/sleuth/tools/check.ts`     | plays the whole case on the built disk (`--quick`, `--wrong <who>`, `--walk out.rec`) |
-| brief    | `npx vite-node ../games/brief/tools/check.ts`      | the bot restores all 32 books, passes the eight egg cup gates and opens the 33rd book |
+| brief    | `npx vite-node ../games/brief/tools/check.ts`      | the bot restores all 32 books, passes the eight stamp gates and opens the 33rd book |
 
 Each `tools/sim.ts` is a headless copy of PLAYGAME's main loop built on the web app's engine
 (`web/src/engine`), so a check runs the real movement, touch and monster code. Some builds
