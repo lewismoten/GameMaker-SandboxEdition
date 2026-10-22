@@ -324,9 +324,9 @@ export class Shell {
       'DEL file (*.GIF)       Delete files        RD [path]   Remove an empty folder',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
       '',
-      'GM          Start Game-Maker (C:\\GM)',
+      'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',
-      'TERMINAL    Dial the Game-Maker shareware BBS',
+      'TERMINAL    Dial BBSes to download shareware',
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
