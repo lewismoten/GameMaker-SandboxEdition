@@ -116,44 +116,59 @@ export function recorderFormat(withAudio: boolean): { mime: string; ext: 'mp4' |
   return undefined;
 }
 
-/** Records a canvas (and optionally an audio track) live, as it is drawn. */
+/**
+ * Records live, as it is drawn: a canvas (frames on our own clock), or a video track that
+ * brings its own frames (a tab captured with getDisplayMedia), and optionally an audio track.
+ */
 export class LiveRecorder {
   private recorder: MediaRecorder;
   private chunks: Blob[] = [];
   private stopped: Promise<Blob>;
   readonly ext: 'mp4' | 'webm';
   readonly mime: string;
-  private track: CanvasCaptureMediaStreamTrack;
+  private track: MediaStreamTrack;
   private raf = 0;
 
-  constructor(canvas: HTMLCanvasElement, audio?: MediaStreamTrack, fps = 70) {
+  constructor(source: HTMLCanvasElement | MediaStreamTrack, audio?: MediaStreamTrack, fps = 70) {
     const fmt = recorderFormat(!!audio);
     if (!fmt) throw new Error('This browser cannot record video');
     this.ext = fmt.ext;
     this.mime = fmt.mime;
-    // Frames on our clock, not only when the canvas changes: a screen that holds still
-    // (a title, "Hit any key") must still fill its time in the video.
-    const stream = canvas.captureStream(0);
-    this.track = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack;
-    const every = 1000 / fps;
-    let last = 0;
-    const pump = (t: number) => {
-      if (this.track.readyState === 'ended') return;
-      // The 1 ms slack keeps a frame from slipping to the next animation frame on timer jitter.
-      if (t - last >= every - 1 && this.recorder?.state === 'recording') {
-        last = t;
-        this.track.requestFrame();
-      }
+    let pixels: number;
+    let stream: MediaStream;
+    if (source instanceof MediaStreamTrack) {
+      this.track = source;
+      stream = new MediaStream([source]);
+      const { width = 1280, height = 720 } = source.getSettings();
+      pixels = width * height;
+    } else {
+      // Frames on our clock, not only when the canvas changes: a screen that holds still
+      // (a title, "Hit any key") must still fill its time in the video.
+      stream = source.captureStream(0);
+      const track = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack;
+      this.track = track;
+      pixels = source.width * source.height;
+      const every = 1000 / fps;
+      let last = 0;
+      const pump = (t: number) => {
+        if (track.readyState === 'ended') return;
+        // The 1 ms slack keeps a frame from slipping to the next animation frame on timer jitter.
+        if (t - last >= every - 1 && this.recorder?.state === 'recording') {
+          last = t;
+          track.requestFrame();
+        }
+        this.raf = requestAnimationFrame(pump);
+      };
       this.raf = requestAnimationFrame(pump);
-    };
-    this.raf = requestAnimationFrame(pump);
+    }
     if (audio) stream.addTrack(audio);
     this.recorder = new MediaRecorder(stream, {
       mimeType: fmt.mime,
-      videoBitsPerSecond: Math.max(2_500_000, canvas.width * canvas.height * 40),
+      videoBitsPerSecond: Math.min(12_000_000, Math.max(2_500_000, pixels * 40)),
       audioBitsPerSecond: 160_000,
     });
     this.recorder.ondataavailable = (e) => e.data.size && this.chunks.push(e.data);
+    // The last piece of data arrives (dataavailable) before stop, so the file is whole here.
     this.stopped = new Promise((resolve) => (this.recorder.onstop = () => resolve(new Blob(this.chunks, { type: fmt.mime.split(';')[0] }))));
     // Hand over data every second instead of all at the end.
     this.recorder.start(1000);
@@ -171,11 +186,16 @@ export class LiveRecorder {
     if (this.recorder.state === 'paused') this.recorder.resume();
   }
 
-  /** Stops and resolves with the whole video. */
-  stop(): Promise<Blob> {
+  /** Stops and resolves with the whole video. The tracks end once the recorder has let go of them. */
+  async stop(): Promise<Blob> {
     cancelAnimationFrame(this.raf);
-    if (this.recorder.state !== 'inactive') this.recorder.stop();
+    if (this.recorder.state !== 'inactive') {
+      // a paused recorder hands over what it has when stopped, but resuming first is kinder to older Safari
+      if (this.recorder.state === 'paused') this.recorder.resume();
+      this.recorder.stop();
+    }
+    const blob = await this.stopped;
     this.track.stop();
-    return this.stopped;
+    return blob;
   }
 }
