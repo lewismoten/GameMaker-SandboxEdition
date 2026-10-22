@@ -93,6 +93,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Performed by Doc Leo, hobo clown (standing backward in line, as usual)'],
     lore: 'The case notes say every word fell out of every book in town on the same night. The last line, underlined twice: "Check the little library with the red door."',
     look: { felt: '#8e1d2c', band: '#d6a53a', patch: '#f4f0e6', thread: '#f2cf6b', pattern: 'checks', motif: 'mask' },
+    detect: { counter: 25, atLeast: 2 },
   },
   {
     game: 'snowbound',
