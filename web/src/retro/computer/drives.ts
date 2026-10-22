@@ -177,14 +177,13 @@ export abstract class ComputerDrives {
               n.remove = () => dl.deleteFile(id, n.name);
               return !dl.isDeleted(id, n.name);
             };
-            const node = liveFolder(g.id, async () =>
-              [
-                // the .EXE (or GMCRACK's patched one and the .BAK), and FILE_ID.DIZ
-                ...gameDownloadNodes(g, date, { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` }),
-                ...(await gameFolder(g, date).list!()),
-              ].filter(gone),
-              date,
-            );
+            const node = liveFolder(g.id, async () => {
+              // the .EXE (or GMCRACK's patched one and the .BAK), CONFIG.BAT and the rest, and FILE_ID.DIZ
+              const own = gameDownloadNodes(g, date, { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` });
+              // one of each name (a CD game brought its own FILE_ID.DIZ; the BBS's ZIP wrote over it)
+              const files = (await gameFolder(g, date).list!()).filter((n) => !own.some((o) => o.name === n.name));
+              return [...own, ...files].filter(gone);
+            }, date);
             node.remove = () => dl.remove(id);
             return [node];
           });
