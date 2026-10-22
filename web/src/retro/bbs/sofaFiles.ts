@@ -31,7 +31,7 @@ export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
     const got = h.downloads.has(g.id) ? '|10*' : ' ';
     const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
     return desc.map((l, j) =>
-      j === 0 ? `|14${String(i + 1).padStart(2)} ${got}|15${sofaZipName(g).padEnd(12)}|14${commas(sofaZipSize(g)).padStart(8)} |07${l}` : `${' '.repeat(25)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
+      j === 0 ? `|14${String(i + 1).padStart(2)} ${got}|15${sofaZipName(g).padEnd(12)}|14${commas(sofaZipSize(g)).padStart(9)} |07${l}` : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
     );
   });
   if (!files.length) entries.push(['|08  (the library is empty tonight)']);
@@ -39,9 +39,10 @@ export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
     header: (p, n) => [
       '|13          ──────────────── |15The Sofa |13─ |15File Library |13────────────────',
       `|07  Free for every caller. Uploaded by our own regulars.${n > 1 ? `|08   ${pageLabel(p, n)}` : ''}`,
+      '',
     ],
     entries,
-    footer: ['|10*|07 = already downloaded to C:\\DOWNLOAD'],
+    footer: ['', '|10*|07 = already downloaded to C:\\DOWNLOAD'],
   });
   pager.show();
   for (;;) {
