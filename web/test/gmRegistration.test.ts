@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_REG, SERIAL, checkRegistration, regFile, registrationNumber, validSerial } from '../src/retro/gmReg/registration';
+import { CARD_NAME_MAX, DEFAULT_REG, SERIAL, cardCheck, checkRegistration, regFile, registrationNumber, validSerial } from '../src/retro/gmReg/registration';
 import { QUESTIONS, rightAnswer } from '../src/retro/gmReg/copyCheck';
 
 describe('Game-Maker registration (CHK.C)', () => {
@@ -25,6 +25,22 @@ describe('Game-Maker registration (CHK.C)', () => {
     expect(checkRegistration(undefined)).toEqual({ kind: 'missing' });
     expect(checkRegistration(regFile('A', 1029 + 4, String(registrationNumber('A', 1033))))).toEqual({ kind: 'bad' });
     expect(checkRegistration('garbage')).toEqual({ kind: 'bad' });
+  });
+
+  it('checks the desk’s registration card in plain words', () => {
+    const key = String(registrationNumber('Gwinn', SERIAL));
+    expect(cardCheck('Gwinn', key)).toBeUndefined();
+    expect(cardCheck('  Gwinn ', ` ${key} `)).toBeUndefined();
+    expect(cardCheck('', key)).toMatch(/name/);
+    expect(cardCheck('Gwinn', '')).toMatch(/Mail the card/);
+    expect(cardCheck('Gwinn', '12ab')).toMatch(/digits/);
+    expect(cardCheck('Gwin', key)).toMatch(/doesn’t fit/);
+    expect(cardCheck('A'.repeat(CARD_NAME_MAX + 1), '1')).toMatch(/at most/);
+    // whatever the card accepts, GM accepts
+    const long = 'B'.repeat(CARD_NAME_MAX);
+    const longKey = String(registrationNumber(long, SERIAL));
+    expect(cardCheck(long, longKey)).toBeUndefined();
+    expect(checkRegistration(regFile(long, SERIAL, longKey))).toEqual({ kind: 'registered', userName: long });
   });
 
   it('keeps CHK.C’s fgets quirk: a 29-character name loses its last letter', () => {

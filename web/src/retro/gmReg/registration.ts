@@ -87,3 +87,22 @@ export function checkRegistration(file: string | null | undefined, serial = SERI
  * until the card is filled in: GM REGISTER, or the registration card beside the monitor.
  */
 export const DEFAULT_REG = regFile('', SERIAL, '0');
+
+/** The longest name whose number works: CHK.C's fgets keeps 28 letters of a 29-letter name. */
+export const CARD_NAME_MAX = NAME_MAX - 1;
+
+/**
+ * The desk's registration card (desk/pc/regSide.ts) checks the name and number in plain words
+ * before writing PLAYGAME.REG as regi() did. The number is the reply to the mailed card
+ * (registrationNumber), so one that doesn't fit the name is turned away rather than written.
+ */
+export function cardCheck(name: string, number: string): string | undefined {
+  const n = name.trim();
+  const k = number.trim();
+  if (!n) return 'Write your name on the card first.';
+  if (n.length > CARD_NAME_MAX) return `The name can be at most ${CARD_NAME_MAX} letters long.`;
+  if (!k) return 'Write the registration number from the reply card. No number yet? Mail the card.';
+  if (!/^\d+$/.test(k)) return 'The registration number is digits only.';
+  if (Number(k) !== registrationNumber(n, SERIAL)) return 'That number doesn’t fit this name. Write the name exactly as on the reply card, or mail the card again.';
+  return undefined;
+}

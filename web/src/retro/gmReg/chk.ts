@@ -8,13 +8,34 @@ import { attr } from '../text/textScreen';
 import { BARATTR, MENUATTR, SHADATTR, TITLEATTR, errorBox } from '../text/textUi';
 import { toCp437 } from '../text/cp437';
 import { pcExtras } from '../hacks/pcExtras';
-import { NAME_MAX, NUMBER_MAX, SERIAL, checkRegistration, regFile } from './registration';
+import { NAME_MAX, NUMBER_MAX, SERIAL, cardCheck, checkRegistration, regFile } from './registration';
 import { QUESTIONS, questionFor, rightAnswer } from './copyCheck';
+import { setRegDesk, type RegAsk } from './regDesk';
 
 const GMTOPBAR = '                           G A M E  -  M A K E R  SE 3.00                       ';
 const MAIN_BAR = '     Play        Design      Utilities      About        Quit         Help      ';
 
-/** qwindow(x, y, len, q, ans): a one-line question box; null for Esc. */
+/** A key no keyboard sends: the registration card beside the monitor was applied. */
+const CARD_KEY = 'RegistrationCard';
+
+/** While GM asks `ask`, the desk's registration card can answer instead: true once it has. */
+function offerCard(h: RetroHost, ask: RegAsk): { applied: () => boolean; done: () => void } {
+  let applied = false;
+  setRegDesk({
+    ask,
+    apply(name, number) {
+      const wrong = cardCheck(name, number);
+      if (wrong) return wrong;
+      pcExtras().setReg(regFile(name.trim(), SERIAL, number.trim()));
+      applied = true;
+      h.keys.push({ key: CARD_KEY, code: '', ctrl: false, shift: false, alt: false });
+      return undefined;
+    },
+  });
+  return { applied: () => applied, done: () => setRegDesk(null) };
+}
+
+/** qwindow(x, y, len, q, ans): a one-line question box; null for Esc (or the card applied). */
 export async function qWindow(h: RetroHost, x: number, y: number, len: number, question: string, start = ''): Promise<string | null> {
   const s = h.screen;
   const saved = s.window(x, y, question.length + len + 2, 1, MENUATTR, SHADATTR);
@@ -27,7 +48,7 @@ export async function qWindow(h: RetroHost, x: number, y: number, len: number, q
       s.cursorX = Math.min(79, x + 1 + question.length + answer.length);
       s.cursorY = y;
       const k = await h.keys.next();
-      if (k.key === 'Escape') return null;
+      if (k.key === 'Escape' || k.key === CARD_KEY) return null;
       if (k.key === 'Enter') return answer;
       if (k.key === 'Backspace') answer = answer.slice(0, -1);
       else if (k.key.length === 1 && answer.length < len) answer += k.key;
@@ -47,15 +68,23 @@ async function regi(h: RetroHost): Promise<void> {
   s.write(29, 6, 2, 'GM V3.00 Registration');
   s.write(0, 0, TITLEATTR, GMTOPBAR);
   s.write(0, 1, BARATTR, MAIN_BAR);
-  const name = await qWindow(h, 5, 14, 30, 'Enter your name (Exactly as on card): ');
-  if (!name) return abort();
-  const number = await qWindow(h, 13, 14, NUMBER_MAX, 'Enter registration number from card: ');
-  if (!number) return abort();
-  pcExtras().setReg(regFile(name.slice(0, NAME_MAX), SERIAL, number));
-  await errorBox(h, 'REGISTRATION   COMPLETE', 'Hit any key to start GM');
+  const card = offerCard(h, { kind: 'register' });
+  const complete = () => errorBox(h, 'REGISTRATION   COMPLETE', 'Hit any key to start GM');
+  try {
+    const name = await qWindow(h, 5, 14, 30, 'Enter your name (Exactly as on card): ');
+    if (card.applied()) return void (await complete());
+    if (!name) return abort();
+    const number = await qWindow(h, 13, 14, NUMBER_MAX, 'Enter registration number from card: ');
+    if (card.applied()) return void (await complete());
+    if (!number) return abort();
+    pcExtras().setReg(regFile(name.slice(0, NAME_MAX), SERIAL, number));
+  } finally {
+    card.done();
+  }
+  await complete();
 }
 
-/** manualcheck(0): three tries at a word from the manual. */
+/** manualcheck(0): three tries at a word from the manual (or the card, registered meanwhile). */
 async function manualCheck(h: RetroHost): Promise<boolean> {
   const s = h.screen;
   const store = pcExtras();
@@ -66,6 +95,7 @@ async function manualCheck(h: RetroHost): Promise<boolean> {
   const saved = s.window(14, 3, 50, 10, MENUATTR, SHADATTR);
   const white = attr(15, 1);
   const yellow = attr(14, 1);
+  const card = offerCard(h, { kind: 'question', page: q.page, paragraph: q.paragraph, word: q.word });
   try {
     for (let i = 0; i < 3; i++) {
       s.write(15, 3, white, '   Please enter the following informantion.');
@@ -79,19 +109,22 @@ async function manualCheck(h: RetroHost): Promise<boolean> {
       s.write(15, 11, yellow, `Paragraph: ${q.paragraph}`);
       s.write(15, 12, yellow, `Word: ${q.word}`);
       const typed = (await qWindow(h, 24, 15, 15, 'Word Found: ')) ?? '';
-      if (rightAnswer(q, typed)) return true;
+      if (card.applied() || rightAnswer(q, typed)) return true;
       if (i < 2) {
         await errorBox(h, 'THAT IS INCORRECT', '(R)etry');
+        if (card.applied()) return true;
         continue;
       }
       s.restore(saved);
       await errorBox(h, 'THAT IS INCORRECT', '(E)xit');
+      if (card.applied()) return true;
       // ...unless you got it wrong: then the same question waits for you
       store.setQuestion(n);
       return false;
     }
     return false;
   } finally {
+    card.done();
     s.restore(saved);
   }
 }
@@ -118,7 +151,12 @@ export async function chk(h: RetroHost, args: string[]): Promise<string | undefi
     await errorBox(h, 'Bad Registration File!', '(Q)uit');
     return undefined;
   }
-  if (r.kind === 'check' && !(await manualCheck(h))) return undefined;
+  if (r.kind === 'check') {
+    if (!(await manualCheck(h))) return undefined;
+    // registered with the card while GM asked: "Registered To:" the name
+    const now = checkRegistration(store.reg);
+    if (now.kind === 'registered') return now.userName;
+  }
   return r.userName;
 }
 
