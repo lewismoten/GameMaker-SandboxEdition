@@ -84,6 +84,8 @@ fails until it is rerun. The other play-testing tools:
 | remote    | `npx vite-node ../games/remote/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | carl      | `npx vite-node ../games/carl/tools/check.ts`         | the bot flies the living room, the kitchen, the bedroom, the yard, the wild and back for the aux cord |
 | carl      | `npx vite-node ../games/carl/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| reckoning | `npx vite-node ../games/reckoning/tools/check.ts`    | the bot sneaks to the fridge, climbs it for seven celery, outruns the gurgle, splashes the Devil |
+| reckoning | `npx vite-node ../games/reckoning/tools/gendemo.ts`  | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -331,3 +333,21 @@ Snacks (counter 20) open the floor lamp, smiles from the kitchen walls (counter 
 bedroom window, and hourglasses (counter 23, two hours each) break the documentary's clock at 24. Two block
 sets (the house, the yard), gusts that blow by next/ntime, and the cover drawn in code (`src/art/cover.ts`);
 the music is a kazoo, an island-strummed ukulele and Carl himself as a buzzing one-channel arpeggio.
+
+**The Great Dairy Reckoning of 3:17 A.M.** (`reckoning`). The Bard of Bizarre's spoken monologue (from
+Lewis's own struggle: lactose intolerant, loves cheesecake), shareware from The Sofa BBS (`"series":
+"bizarre"`). A side-on platformer in four acts. Out of bed without waking her: the noisy things on
+the floor (a creaky board, a squeaky toy, the Lego) are air that costs dignity once and then goes
+quiet (a hurt holds the man still, so a floor that always hurt would hold him there), the dogs asleep
+are solid. Up the open fridge's glass shelves (ledges) past the dairy come to life for seven sticks
+of celery (counter 20): the cheesecake only lets him near with all seven, takes them, and is eaten.
+The dash down the dark hall with the gurgle (a monster that chases at 2 pixels a tick) behind him,
+three rolls of toilet paper (counter 21) for the bathroom door. The reckoning loads a second
+character file whose Space throws almond milk: two splashes (power 220, at his head and his feet)
+beat the soda fountain's milkshakes (200) and knock each half of the Devil (200) a stage further;
+the throw keeps its own count because the house's file leaves that sequence's meter at -20000
+(undefined: each scene copies the next file's count over it), and the cartons don't grow back (a
+block's next/ntime is one clock for all its copies). The recording is spoken with no music bed, so
+the FM score is composed for the game (thunder rolls, the ominous organ, a cow's moo, a tango); the
+voice clips are cut from the recording (`tools/cutClips.py`), and the title art is painted in code
+(`src/art/cover.ts`).
