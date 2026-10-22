@@ -4,18 +4,19 @@
 //
 // One closure per editor. Its sections, in order: sounds, the hero sheet (health, money,
 // counters, inventory), the sequence list, the preview stage (each frame shown for its
-// pause in 18.2 Hz ticks), frames, the selected sequence's detail, and the page. Turning
-// blocks and editing frame lists are pure helpers in characterLogic.ts.
+// pause in 18.2 Hz ticks), the selected sequence's detail, and the page. The frame cards and
+// key picker are in characterFrames.ts; turning blocks and editing frame lists are pure
+// helpers in characterLogic.ts.
 import './character.css';
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
-import { blockButton, chooseBlock, type BlockExtra } from '../../widgets/blockChooser';
+import { blockButton } from '../../widgets/blockChooser';
 import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
 import { History } from '../../core/history';
-import { drawBlockTo, paintBlock } from '../../core/draw';
+import { drawBlockTo } from '../../core/draw';
 import { paletteChooser } from '../blocks/blocks';
 import { audio } from '../../widgets/mediaShared';
-import { BACKBL, BLEN, CHARBL, MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
+import { BACKBL, BLEN, CHARBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
 import {
   INF_REPEAT,
   MAXFRAME,
@@ -28,24 +29,10 @@ import {
   type Sequence,
 } from '../../../formats/character';
 import { LASTSND, parseSoundSet, SOUND_NAMES } from '../../../formats/sound';
-import { scanName, SCAN } from '../../../input/scancodes';
+import { scanName } from '../../../input/scancodes';
 import { viewState } from '../../../urlState';
-import {
-  ORIENT_NAMES,
-  bottomOrient,
-  deleteFrame,
-  firesMonster,
-  flipHOrient,
-  flipVOrient,
-  insertFrame,
-  moveFrame,
-  normalOrient,
-  rotateOrient,
-  topOrient,
-  travel,
-  withBottomOrient,
-  withTopOrient,
-} from './characterLogic';
+import { bottomOrient, firesMonster, insertFrame, normalOrient, topOrient, travel } from './characterLogic';
+import { frameCard, keyPicker, type FrameContext } from './characterFrames';
 
 const JOY_DIRS: [number, string][] = [
   [0, 'No joystick'],
@@ -394,165 +381,15 @@ registerEditor(['chr'], (host, project, file) => {
     return `${n} frame${n > 1 ? 's' : ''}, ${(ticks / 18.2).toFixed(2)} s per loop${dir ? `, moves ${dir}` : ', stays in place'}${seq.momentum ? ' (as momentum)' : ''}.`;
   }
 
-  // ---------------------------------------------------------------- frames
-  function keyPicker(seq: Sequence): HTMLElement {
-    const btn = h('button', { class: 'chr-key', title: 'Click, then press the key' }, seq.key ? scanName(seq.key >> 8) : 'None');
-    btn.addEventListener('click', () => {
-      btn.textContent = 'Press a key…';
-      const onKey = (e: KeyboardEvent) => {
-        e.preventDefault();
-        window.removeEventListener('keydown', onKey, true);
-        if (e.code === 'Escape') {
-          btn.textContent = seq.key ? scanName(seq.key >> 8) : 'None';
-          return;
-        }
-        const scan = SCAN[e.code];
-        if (scan === undefined || (scan >= 59 && scan <= 68)) {
-          btn.textContent = 'That key is reserved';
-          return;
-        }
-        const ascii = e.key.length === 1 ? e.key.toLowerCase().charCodeAt(0) & 0xff : 0;
-        edit(() => (seq.key = (scan << 8) | ascii));
-        renderList();
-        btn.textContent = scanName(scan);
-      };
-      window.addEventListener('keydown', onKey, true);
-    });
-    return h(
-      'label',
-      { class: 'field' },
-      h('span', null, 'Key'),
-      h(
-        'div',
-        { class: 'row', style: 'gap:4px' },
-        btn,
-        seq.key ? h('button', { onclick: () => (edit(() => (seq.key = 0)), renderList(), renderDetail()) }, 'Clear') : null,
-      ),
-    );
-  }
-
-  /** One block of a frame: click to choose, hover for rotate / flip buttons. */
-  function frameCell(f: Frame, top: boolean): HTMLElement {
-    const get = () => (top ? f.pic1 : f.pic2);
-    const orient = () => (top ? topOrient(f) : bottomOrient(f));
-    const canvas = h('canvas', { width: BLEN, height: BLEN, class: 'pixel' });
-    const cell = h('div', { class: 'chr-cell checker' });
-    const paint = (changed = false) => {
-      const n = get();
-      cell.classList.toggle('none', n >= CHARBL);
-      cell.title =
-        n < CHARBL
-          ? `${top ? 'Top' : 'Bottom'}: block ${n}, ${ORIENT_NAMES[normalOrient(orient())].toLowerCase()} — click to change`
-          : `No ${top ? 'top' : 'bottom'} block — click to choose one`;
-      if (n < CHARBL) paintBlock(canvas, cbl[n].pixels, pal(), { transparent: true, orient: normalOrient(orient()) });
-      else canvas.getContext('2d')!.clearRect(0, 0, BLEN, BLEN);
-      if (changed) renderList();
-    };
-    const turn = (fn: (o: number) => number, label: string, icon: string) =>
-      h(
-        'button',
-        {
-          class: 'chr-turn',
-          title: label,
-          'aria-label': label,
-          onclick: (e: Event) => {
-            e.stopPropagation();
-            edit(() => (f.orient = top ? withTopOrient(f, fn(topOrient(f))) : withBottomOrient(f, fn(bottomOrient(f)))));
-            paint(true);
-          },
-        },
-        icon,
-      );
-    const extras: BlockExtra[] = [{ value: CHARBL, label: 'none', icon: '∅' }];
-    if (!top) extras.push({ value: MONBL, label: 'Fire a monster', icon: '🔥' });
-    cell.addEventListener('click', async () => {
-      const n = await chooseBlock(`${top ? 'Top' : 'Bottom'} block`, cbl, pal(), get(), extras, true);
-      if (n === undefined) return;
-      const wasFiring = firesMonster(f);
-      edit(() => {
-        if (top) f.pic1 = n;
-        else {
-          if (n === MONBL && !wasFiring) f.pic1 = 0;
-          else if (n !== MONBL && wasFiring) f.pic1 = CHARBL;
-          f.pic2 = n;
-        }
-      });
-      if (wasFiring !== firesMonster(f)) renderDetail();
-      else paint(true);
-    });
-    cell.append(
-      canvas,
-      h(
-        'div',
-        { class: 'chr-turns' },
-        turn(rotateOrient, 'Rotate a quarter turn', '↻'),
-        turn(flipHOrient, 'Flip left ↔ right', '⇆'),
-        turn(flipVOrient, 'Flip upside down', '⇅'),
-      ),
-    );
-    paint();
-    return cell;
-  }
-
-  function frameCard(seq: Sequence, f: Frame, i: number, n: number): HTMLElement {
-    const fires = firesMonster(f);
-    const tool = (label: string, icon: string, fn: () => void, disabled = false) =>
-      h('button', { class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (edit(fn), renderDetail()) }, icon);
-    const sprite = fires
-      ? h(
-          'div',
-          { class: 'chr-sprite fires' },
-          h(
-            'div',
-            { class: 'chr-fire' },
-            h('span', { class: 'chr-fire-icon' }, '🔥'),
-            numberField(
-              'Monster #',
-              () => f.pic1,
-              (v) => edit(() => (f.pic1 = v)),
-              { min: 0, max: 63, title: 'Which monster (from the monster file) is born beside the hero' },
-            ),
-          ),
-          frameCell(f, false),
-        )
-      : h('div', { class: 'chr-sprite' }, frameCell(f, true), frameCell(f, false));
-    return h(
-      'div',
-      { class: 'chr-frame' },
-      h(
-        'div',
-        { class: 'chr-frame-head' },
-        h('b', null, i + 1),
-        tool('Move earlier', '◀', () => moveFrame(seq, i, -1), i === 0),
-        tool('Move later', '▶', () => moveFrame(seq, i, 1), i >= n - 1),
-        tool('Duplicate', '⧉', () => insertFrame(seq, i), n >= MAXFRAME),
-        tool('Delete', '✕', () => deleteFrame(seq, i)),
-      ),
-      sprite,
-      h(
-        'div',
-        { class: 'chr-frame-fields' },
-        numberField(
-          '→ x',
-          () => f.x,
-          (v) => edit(() => ((f.x = v), (stageInfo.textContent = describeTravel(seq)))),
-          { min: -20, max: 20, title: 'Pixels to move right (negative: left) when this frame shows' },
-        ),
-        numberField(
-          '↓ y',
-          () => f.y,
-          (v) => edit(() => ((f.y = v), (stageInfo.textContent = describeTravel(seq)))),
-          { min: -20, max: 20, title: 'Pixels to move down (negative: up) when this frame shows' },
-        ),
-        numberField(
-          '⏱ ticks',
-          () => f.pause,
-          (v) => edit(() => ((f.pause = v), (stageInfo.textContent = describeTravel(seq)))),
-          { min: 0, max: 999, title: 'How long the frame shows, in 1/18 s ticks' },
-        ),
-      ),
-    );
-  }
+  // ---------------------------------------------------------------- frames (characterFrames.ts)
+  const frames: FrameContext = {
+    blocks: () => cbl,
+    palette: pal,
+    edit,
+    listChanged: () => renderList(),
+    redraw: () => renderDetail(),
+    travelChanged: (seq) => (stageInfo.textContent = describeTravel(seq)),
+  };
 
   // ---------------------------------------------------------------- sequence detail
   const detail = h('div', { class: 'chr-detail' });
@@ -585,7 +422,7 @@ registerEditor(['chr'], (host, project, file) => {
     );
     stageInfo.textContent = describeTravel(seq);
 
-    frameCards = seq.frames.slice(0, n).map((f, i) => frameCard(seq, f, i, n));
+    frameCards = seq.frames.slice(0, n).map((f, i) => frameCard(frames, seq, f, i, n));
     const addFrame =
       n < MAXFRAME
         ? h(
@@ -637,7 +474,7 @@ registerEditor(['chr'], (host, project, file) => {
               h(
                 'div',
                 { class: 'chr-fields' },
-                keyPicker(seq),
+                keyPicker(frames, seq),
                 selectField(
                   'Joystick',
                   JOY_DIRS,
