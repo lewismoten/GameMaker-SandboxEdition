@@ -9,6 +9,7 @@ import { decodeGif, encodeGif, isGif, type IndexedImage } from '../../../formats
 import { matchColor, parsePalette, type Palette } from '../../../formats/palette';
 import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../../formats/blocks';
 import { gamePreview } from '../../widgets/mediaShared';
+import { fileUndo } from '../../core/fileUndo';
 
 // ---- pictures -----------------------------------------------------------------
 
@@ -182,6 +183,7 @@ registerEditor(['gif'], (host, project, file) => {
     )
       return;
     b.pixels.set(grabbed());
+    undo.before(target);
     project.files.set(target, serializeBlocks(blocks));
     toast(`Copied into block ${targetBlock} of ${target}.`);
     const copied = targetBlock;
@@ -194,11 +196,26 @@ registerEditor(['gif'], (host, project, file) => {
     slots.children[copied]?.classList.add('just-copied');
   };
 
+  // Undo takes back a replaced picture or a block copied into a set
+  const undo = fileUndo(
+    project.files,
+    () => {
+      const now = project.files.get(file);
+      if (now && isGif(now)) img = decodeGif(now);
+      draw();
+      updatePreview();
+      reloadSet();
+    },
+    { merge: -1 },
+  );
+  const stopKeys = undo.listenKeys();
   let replacePal = '';
   const preview = gamePreview(project, file, { collapsed: true });
   const fileTools = h(
     'div',
     { class: 'toolbar pic-file-tools' },
+    undo.undoBtn,
+    undo.redoBtn,
     fileField(
       project,
       'Palette for imported pictures',
@@ -214,6 +231,7 @@ registerEditor(['gif'], (host, project, file) => {
           const [f] = await pickFiles({ multiple: false, accept: 'image/*' });
           if (!f) return;
           img = await importImage(f, replacePal ? parsePalette(project.files.get(replacePal)!) : img.palette);
+          undo.before(file);
           project.files.set(file, encodeGif(img));
           draw();
           toast('Picture replaced (scaled to 320×200).');
@@ -314,7 +332,10 @@ registerEditor(['gif'], (host, project, file) => {
   );
   draw();
   reloadSet();
-  return preview.stop;
+  return () => {
+    stopKeys();
+    preview.stop();
+  };
 });
 
 // ---- animations -----------------------------------------------------------------
