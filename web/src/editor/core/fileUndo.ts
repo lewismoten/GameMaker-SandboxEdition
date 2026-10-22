@@ -10,6 +10,8 @@ type Snapshot = Map<string, Uint8Array | undefined>;
 export interface FileHistory {
   /** Call just before changing these files. */
   before(...names: string[]): void;
+  /** Like before(), but part of the last step whenever there is one (trying one layout after another). */
+  join(...names: string[]): void;
   undo(): boolean;
   redo(): boolean;
   readonly canUndo: boolean;
@@ -48,21 +50,23 @@ export function fileHistory(files: GameFiles, restored: () => void, opts: { merg
     restored();
     return true;
   };
+  const before = (names: string[], join: boolean) => {
+    const now = Date.now();
+    const top = past[past.length - 1];
+    if (top && (join || now - last <= merge)) {
+      // the same step: files it had not touched yet join it as they are now
+      for (const n of names) if (!top.has(n)) top.set(n, files.get(n));
+    } else {
+      past.push(snap(names));
+      if (past.length > limit) past.shift();
+    }
+    last = now;
+    future.length = 0;
+    sync();
+  };
   return {
-    before(...names) {
-      const now = Date.now();
-      const top = past[past.length - 1];
-      if (top && now - last <= merge) {
-        // the same step: files it had not touched yet join it as they are now
-        for (const n of names) if (!top.has(n)) top.set(n, files.get(n));
-      } else {
-        past.push(snap(names));
-        if (past.length > limit) past.shift();
-      }
-      last = now;
-      future.length = 0;
-      sync();
-    },
+    before: (...names) => before(names, false),
+    join: (...names) => before(names, true),
     undo: () => step(past, future),
     redo: () => step(future, past),
     get canUndo() {
@@ -85,6 +89,7 @@ export function fileUndo(files: GameFiles, restored: () => void, opts: { merge?:
   const redoBtn = h('button', { type: 'button', class: 'redo-btn', title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => steps.redo() }, '↷ Redo');
   return {
     before: (...names) => steps.before(...names),
+    join: (...names) => steps.join(...names),
     undo: () => steps.undo(),
     redo: () => steps.redo(),
     get canUndo() {

@@ -40,6 +40,7 @@ import { audio } from '../../widgets/mediaShared';
 import { pickOnMap } from './pickOnMap';
 import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
+import { fileUndo } from '../../core/fileUndo';
 import { END_SCREENS, END_SONGS, START_SCREENS, START_SONGS } from './sceneSlots';
 import {
   S,
@@ -59,10 +60,33 @@ registerEditor(['gam'], (host, project, file) => {
   const urlScene = view.num('scene');
   let selected = urlScene !== undefined && usedScenes(game).includes(urlScene) ? urlScene : 0;
   let playing: string | undefined;
-  let undoPositions: Map<number, Point> | undefined;
   /** Auto-arrange's layouts, best first, while the user steps through them. */
   let arranged: { list: Arrangement[]; k: number } | undefined;
-  const save = () => project.saveGame(game);
+  // Undo takes back any change to the .gam: cards moved, scenes added, files and links chosen
+  const undo = fileUndo(project.files, () => {
+    Object.assign(game, project.game());
+    arranged = undefined;
+    const gone = !usedScenes(game).includes(selected);
+    if (gone) selected = 0;
+    shots.clear();
+    renderTools();
+    renderSide();
+    renderPanel();
+    if (gone) fit();
+    else draw();
+  });
+  // small, so the toolbar keeps to one line
+  for (const [b, name] of [[undo.undoBtn, 'Undo'], [undo.redoBtn, 'Redo']] as const) {
+    b.textContent = name === 'Undo' ? '↶' : '↷';
+    b.setAttribute('aria-label', name);
+    b.classList.add('grator-undo');
+  }
+  const stopKeys = undo.listenKeys();
+  const save = (sameStep = false) => {
+    if (sameStep) undo.join(project.gam);
+    else undo.before(project.gam);
+    project.saveGame(game);
+  };
 
   // ---- pictures --------------------------------------------------------------------
   const shots = new Map<string, HTMLCanvasElement | undefined>();
@@ -281,7 +305,6 @@ registerEditor(['gam'], (host, project, file) => {
   const endPointer = (e: PointerEvent) => {
     pointers.delete(e.pointerId);
     if (gesture?.type === 'card' && gesture.moved) {
-      undoPositions = undefined;
       arranged = undefined;
       renderTools();
       save();
@@ -371,11 +394,11 @@ registerEditor(['gam'], (host, project, file) => {
     });
     return n;
   };
-  function relayout(positions: Map<number, Point>, keepArranged = false): void {
+  /** `again`: another of Auto-arrange's layouts, which Undo takes back with the first. */
+  function relayout(positions: Map<number, Point>, keepArranged = false, again = false): void {
     if (!keepArranged) arranged = undefined;
-    if (!undoPositions || !keepArranged) undoPositions = new Map(used().map((i) => [i, { ...game.scenes[i].pos }]));
     for (const [i, p] of positions) game.scenes[i].pos = p;
-    save();
+    save(again);
     renderTools();
     fit();
   }
@@ -402,9 +425,10 @@ registerEditor(['gam'], (host, project, file) => {
             ? 'Try the next best layout'
             : 'Lay the scenes out as a map of the game: the start first, each scene next to the one that leads there, the end last (press again for other layouts)',
           onclick: () => {
+            const again = !!arranged;
             if (arranged) arranged.k = (arranged.k + 1) % arranged.list.length;
             else arranged = { list: arrangements(game), k: 0 };
-            relayout(arranged.list[arranged.k].positions, true);
+            relayout(arranged.list[arranged.k].positions, true, again);
           },
         },
         arranged && arranged.list.length > 1 ? `⇄ Another layout ${arranged.k + 1}/${arranged.list.length}` : '⇄ Auto-arrange',
@@ -421,23 +445,8 @@ registerEditor(['gam'], (host, project, file) => {
             '⇲ Close gaps',
           )
         : null,
-      undoPositions
-        ? h(
-            'button',
-            {
-              title: 'Put the scenes back where they were',
-              onclick: () => {
-                for (const [i, p] of undoPositions!) if (game.scenes[i]) game.scenes[i].pos = p;
-                undoPositions = undefined;
-                arranged = undefined;
-                save();
-                renderTools();
-                fit();
-              },
-            },
-            '↶ Undo',
-          )
-        : null,
+      undo.undoBtn,
+      undo.redoBtn,
       h('span', { class: 'grator-spacer' }),
       h('button', { title: 'Download a picture of all the scenes and links', onclick: () => void exportPng() }, '⬇ PNG'),
     );
@@ -710,6 +719,8 @@ registerEditor(['gam'], (host, project, file) => {
         for (const b of parseMap(oldMap).blocks) counts.set(b, (counts.get(b) ?? 0) + 1);
         map.blocks.fill([...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0);
       }
+      // one step with the scene: Undo takes the new map away too
+      undo.before(project.gam, mapName);
       project.files.set(mapName, serializeMap(map));
       s.files[1] = mapName;
     }
@@ -980,6 +991,7 @@ registerEditor(['gam'], (host, project, file) => {
   renderPanel();
   requestAnimationFrame(fit);
   return () => {
+    stopKeys();
     stopWatching();
     resize.disconnect();
     wide?.removeEventListener?.('change', onWide);
