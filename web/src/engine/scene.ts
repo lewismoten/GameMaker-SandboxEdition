@@ -315,6 +315,12 @@ async function missingFiles(s: Session, files: string[]): Promise<void> {
 export interface SceneResult {
   ok: boolean;
   link: number;
+  /**
+   * The level played at the end and the one before it: another level's after F6 loaded a game
+   * saved there (LoadGame sets play's curscene and oldscene, globals in the C).
+   */
+  doscene?: number;
+  prevscene?: number;
 }
 
 /** What F5 writes to game<n>.sav (this port's JSON in place of SaveGame's binary records). */
@@ -561,7 +567,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
       newlink = MAXSCENELINKS;
     } else newlink = MAXSCENELINKS + 2;
   }
-  return { ok: true, link: newlink };
+  return { ok: true, link: newlink, doscene, prevscene };
 }
 
 // Same game<n>.sav names as SaveGame/LoadGame, but the contents are this port's JSON,

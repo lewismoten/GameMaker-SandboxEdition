@@ -224,6 +224,10 @@ export async function play(s: Session, startLink: number): Promise<void> {
     const oldlink = curlink;
     const r = await playScene(s, curscene, oldscene, curlink);
     if (!r.ok) break;
+    // F6 may have loaded a game saved in another level: play goes on from there. (curlink
+    // still restarts by the link played before, as the C's oldlink does.)
+    if (r.doscene !== undefined) curscene = r.doscene;
+    if (r.prevscene !== undefined) oldscene = r.prevscene;
     // r.link: a link index to follow, MAXSCENELINKS to replay the scene after a death
     // (entering again by the same link), or above it for Esc / no lives left.
     curlink = r.link;
