@@ -4,7 +4,7 @@ import type { Light } from '../art/pal';
 import type { BlockBook } from '../blocks/blocks';
 import type { Form, MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
-import { dust, mound, mountain, type Level } from './maps';
+import { dust, mound, mountain, sky, type Level } from './maps';
 
 export interface LevelDef {
   file: string;
@@ -20,4 +20,5 @@ export const LEVELS: LevelDef[] = [
   { file: 'mound', desc: 'The Mound', light: 'dawn', build: mound, form: 'seed', snd: 'garden', mons: {} },
   { file: 'dust', desc: 'Deep Down in the Dust', light: 'under', build: dust, form: 'sprout', snd: 'dust', mons: {} },
   { file: 'mountain', desc: 'The Mountain', light: 'day', build: mountain, form: 'plant', snd: 'mountain', mons: {} },
+  { file: 'sky', desc: "The Palm of God's Hand", light: 'gold', build: sky, form: 'plant', snd: 'sky', mons: { crow: 5 } },
 ];

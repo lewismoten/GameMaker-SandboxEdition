@@ -261,3 +261,27 @@ export function mountain(book: BlockBook): Level {
   m.link(61, 12, 'next');
   return { m, start: at(2, 16), size: [W, H] };
 }
+
+/** 4. The palm of God's hand: up the great plant's branches on the evening breeze, past the clouds, into the light. */
+export function sky(book: BlockBook): Level {
+  const W = 26;
+  const H = 46;
+  const m = new MapBuilder(book, 'soil');
+  m.fill(1, 0, W - 2, 44, '.').col(0, 0, 45, '#').col(W - 1, 0, 45, '#').row(44, 1, W - 2, '=').row(45, 0, W - 1, '#');
+  m.set(5, 30, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
+  // the great plant's stalk, up the middle
+  m.col(12, 18, 43, '[').col(13, 18, 43, ']');
+  // its branches, every three rows (hop up through them)
+  m.row(40, 9, 16, '-').row(37, 9, 16, '-').row(34, 9, 22, '-');
+  m.set(15, 37, 'n').set(10, 39, 'd').text(9, 32, '*').set(16, 36, '*');
+  // the evening breeze lifts on the right, to the nest branch
+  m.col(22, 20, 33, 'z').row(20, 14, 20, '-').set(16, 20, 'n').set(20, 23, '*');
+  m.row(17, 9, 15, '-').row(14, 4, 15, '-').set(15, 13, '1').set(9, 16, '*');
+  // and on the left, up past the rain cloud to the clouds
+  m.col(5, 3, 13, 'z').text(16, 8, '{}').text(8, 4, '()()').set(9, 3, 'Q');
+  // the palm of God's hand: light that lifts into it
+  m.row(2, 7, 18, 'g').fill(10, 0, 8, 2, 'h').set(9, 1, 'h').set(18, 1, 'h').set(8, 0, 'h').set(19, 0, 'h');
+  m.mon(MON.squirrel, 9, 36).mon(MON.bird, 15, 36).mon(MON.bird, 16, 19).mon(MON.crow, 8, 10).mon(MON.squirrel, 9, 13).mon(MON.bee, 17, 27);
+  m.link(13, 0, 'won');
+  return { m, start: at(12, 43), size: [W, H] };
+}

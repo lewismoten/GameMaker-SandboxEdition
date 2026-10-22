@@ -149,3 +149,37 @@ export async function theMountain(bot: Bot): Promise<void> {
     await leave(bot, bot.walk(62, 'the pass'), 'the pass');
   });
 }
+
+/** 4. Up the great plant, on the breeze, past the clouds and into the palm of God's hand. */
+export async function theSky(bot: Bot): Promise<void> {
+  expect(bot, 5, 'the sky');
+  const rise = (row: number, label: string) => must(bot, bot.until(undefined, () => bot.px.y <= row * 20, label, 160), label);
+  await carefully(bot, 'the lower branches', 10, async () => {
+    await must(bot, bot.walk(14, 'under the branches'), 'start');
+    for (const row of [39, 36, 33]) {
+      await must(bot, bot.hop('up', 14), `up to ${row}`);
+      if (bot.at.y !== row) throw new Error(`not on the branch at ${row} (${bot.at.y})`);
+    }
+  });
+  await carefully(bot, 'the evening breeze', 10, async () => {
+    await must(bot, bot.until('right', () => bot.px.x >= 22 * 20, 'into the breeze', 120), 'breeze');
+    await rise(20, 'up on the breeze');
+    await must(bot, bot.hop('left', 4, 'left', 18.5), 'onto the nest branch');
+    if (bot.at.y !== 19) throw new Error(`not on the nest branch (${bot.at.y})`);
+  });
+  await carefully(bot, 'the upper branches', 10, async () => {
+    await must(bot, bot.walk(14.5, 'under the next branch'), 'branch');
+    for (const row of [16, 13]) {
+      await must(bot, bot.hop('up', 14), `up to ${row}`);
+      if (bot.at.y !== row) throw new Error(`not on the branch at ${row} (${bot.at.y})`);
+    }
+  });
+  await carefully(bot, 'the breeze to the clouds', 10, async () => {
+    await must(bot, bot.walk(6, 'the left breeze'), 'breeze');
+    await must(bot, bot.until('left', () => bot.px.x <= 5 * 20, 'into the breeze', 60), 'breeze');
+    await rise(4, 'up on the breeze');
+    // over the clouds, into the light that lifts into the palm, and across it to the middle
+    const toPalm = async () => (await bot.hop('right', 4, 'right', 9.5)) ?? (await bot.until('right', () => false, 'the palm', 200));
+    await leave(bot, toPalm(), "the palm of God's hand");
+  });
+}
