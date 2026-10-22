@@ -1,4 +1,4 @@
-// The Living Room (the Live Wire Egg from Ohm Sweet Ohm): Dad's Weather System, The End?, It
+// The Living Room: Dad's Weather System, The End?, It
 // Was Probably The Lighting, and Alone With a Broken Bulb.
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
@@ -234,7 +234,7 @@ function art(a: Area): void {
 export const LIVING: WingSpec = {
   wing: WINGS[4],
   tint: 'orange',
-  egg: [['orange', 2], ['ink', 1], ['yellow', 3]],
+  stamp: [['orange', 2], ['ink', 1], ['yellow', 3]],
   signs: [
     ['THE COUCH IS', 'NOT A BED.', 'YES, GWINN.'],
     ['HOME IS WHERE', 'THE BOOKS', 'ARE'],

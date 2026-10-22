@@ -1,4 +1,4 @@
-// The Docks (the Sandcastle Egg from Sandcastle Knight): A Pirate's Worst Surprise, Except
+// The Docks: A Pirate's Worst Surprise, Except
 // Those Ones, Legend at the Water's Edge and Steam-Powered Summer.
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
@@ -225,7 +225,7 @@ function art(a: Area): void {
 export const DOCKS: WingSpec = {
   wing: WINGS[2],
   tint: 'blue',
-  egg: [['sand', 3], ['blue', 3], ['pink', 2]],
+  stamp: [['sand', 3], ['blue', 3], ['pink', 2]],
   signs: [
     ['ALL HANDS', 'ON DECK', '(QUIETLY)'],
     ['NO PARROTING', 'THE BOOKS', ''],

@@ -1,4 +1,4 @@
-// After Hours (the Velvet Curtain Egg from Final Curtain): the quiet ones. Where the Mountain
+// After Hours: the quiet ones. Where the Mountain
 // Speaks, The Ledger of the Woods, Silence Has Teeth and The Incomplete Idiot.
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
@@ -226,7 +226,7 @@ function art(a: Area): void {
 export const AFTER: WingSpec = {
   wing: WINGS[5],
   tint: 'purple',
-  egg: [['red', 1], ['brass', 3], ['paper', 4]],
+  stamp: [['red', 1], ['brass', 3], ['paper', 4]],
   signs: [
     ['AFTER HOURS:', 'WHISPER', 'QUIETER'],
     ['PLEASE RETURN', 'THE SILENCE', 'BY MIDNIGHT'],

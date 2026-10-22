@@ -1,8 +1,8 @@
 // library.map: the reading room behind The Dog House's red door, and the Reserve Stacks.
 //
-// The reading room has a door for each wing (a felt egg in its egg cup over each one), the
-// Word Counter jammed at its desk, and a door into the Reserve Stacks. In the Stacks a
-// corridor runs past eight egg cup gates, one per wing, to the thirty-third book. A gate
+// The reading room has a door for each wing (the wing's stamp inked on a plate over each one),
+// the Word Counter jammed at its desk, and a door into the Reserve Stacks. In the Stacks a
+// corridor runs past eight stamp gates, one per wing, to the thirty-third book. A gate
 // takes four of its wing's restored stories (counter 20 + w) and gives all four back the
 // moment Joe steps through it, so it only ever checks; Game-Maker refuses the touch while
 // the wing has fewer than four.
@@ -17,18 +17,16 @@ import { shelf, type WingSpec } from './wing';
 /** Door labels, wing by wing (five letters fit on a door). */
 export const DOOR_LABELS = ['CLOWN', 'LAB', 'DOCKS', 'YARD', 'HOME', 'NIGHT', 'OTHER', '2000'];
 
-function wingDoor(label: string, egg: WingSpec['egg'], seed: number): Pixels {
+function wingDoor(label: string, stamp: WingSpec['stamp'], seed: number): Pixels {
   const p = shelf(seed, 'red');
   bevel(p, 3, 4, 14, 16, r('wood'), 3, 1);
   p.rect(5, 12, 10, 1, c('wood', 1));
   micro(p, 10 - Math.round((label.length * 4 - 1) / 2), 7, label, c('ink', 0));
   p.rect(14, 14, 2, 2, c('brass', 4));
-  // the egg cup over the door, and its felt egg
-  const [felt, band, dot] = egg;
-  p.rect(6, 0, 8, 4, c('wood', 1));
-  blob(p, 10, 0.5, 2.5, 2.5, r(felt[0]), Math.max(0, felt[1] - 2), felt[1]);
-  p.rect(8, 1, 4, 1, c(band[0], band[1])).set(9, 0, c(dot[0], dot[1]));
-  p.rect(8, 2, 4, 2, c('brass', 3));
+  // the plate over the door, inked with the wing's stamp
+  const [rubber, rim, emblem] = stamp;
+  p.rect(6, 0, 8, 4, c('brass', 3)).rect(7, 0, 6, 3, c(rubber[0], rubber[1]));
+  p.rect(8, 1, 4, 1, c(rim[0], rim[1])).set(10, 1, c(emblem[0], emblem[1]));
   return p;
 }
 
@@ -97,19 +95,19 @@ function redDoor(half: 0 | 1): Pixels {
   return p;
 }
 
-/** An egg cup gate in the Reserve Stacks: brass bars, the wing's egg on top, "4" on the plate. */
-function gate(label: string, egg: WingSpec['egg'], open: boolean, under: Pixels): Pixels {
+/** A stamp gate in the Reserve Stacks: brass bars, the wing's stamp on top, "4" on the plate. */
+function gate(label: string, stamp: WingSpec['stamp'], open: boolean, under: Pixels): Pixels {
   const p = on(under);
-  const [felt, band] = egg;
+  const [rubber, rim, emblem] = stamp;
   if (!open) {
     for (let x = 2; x < 20; x += 4) p.rect(x, 4, 2, 16, c('brass', 2)).rect(x, 4, 1, 16, c('brass', 4));
     p.rect(0, 10, 20, 2, c('brass', 1));
     p.rect(4, 12, 12, 7, c('paper', 4)).frame(4, 12, 12, 7, c('brass', 0));
     micro(p, 10 - Math.round((label.length * 4 - 1) / 2), 13, label, c('ink', 0));
   }
-  blob(p, 10, 3, 3, 3.5, r(felt[0]), Math.max(0, felt[1] - 2), felt[1]);
-  p.rect(7, 3, 6, 1, c(band[0], band[1]));
-  p.rect(7, 5, 6, 2, c('brass', 3));
+  // the wing's seal on a brass cap
+  p.rect(6, 0, 8, 6, c(rubber[0], rubber[1])).frame(7, 1, 6, 4, c(rim[0], rim[1])).rect(9, 2, 2, 2, c(emblem[0], emblem[1]));
+  p.rect(5, 5, 10, 2, c('brass', 3));
   return p;
 }
 
@@ -172,7 +170,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   const rug = floor('carpet', 9, 'purple');
   a.tile('rug', rug);
   a.solid('shelf', shelf(101, 'red'));
-  wings.forEach((w, i) => a.tile(`door${i}`, wingDoor(DOOR_LABELS[i], w.egg, 110 + i)));
+  wings.forEach((w, i) => a.tile(`door${i}`, wingDoor(DOOR_LABELS[i], w.stamp, 110 + i)));
   for (let i = wings.length; i < 8; i++) a.solid(`door${i}`, wingDoor('SOON', [['grey', 3], ['grey', 1], ['grey', 4]], 110 + i));
   // the Word Counter's display: jammed, it flips between 099, 101 and STOP forever
   const shows = ['099', '101', 'STOP', '000'];
@@ -214,9 +212,9 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   sign(['BOOKS ARE NOT', 'CHEW TOYS.', 'YES, GWINN.'], 3).forEach((px, i) => a.solid(`chew${i}`, on(parquet, px)));
   // the Reserve Stacks
   wings.forEach((w, i) => {
-    a.tile(`gateOpen${i}`, gate('', w.egg, true, parquet), { effect: wingCounter(i), eamt: BOOKS_PER_WING, touch: `gateDone${i}` });
-    a.tile(`gateDone${i}`, gate('', w.egg, true, parquet));
-    a.solid(`gate${i}`, gate(`${BOOKS_PER_WING}`, w.egg, false, parquet), { effect: wingCounter(i), eamt: -BOOKS_PER_WING, touch: `gateOpen${i}` });
+    a.tile(`gateOpen${i}`, gate('', w.stamp, true, parquet), { effect: wingCounter(i), eamt: BOOKS_PER_WING, touch: `gateDone${i}` });
+    a.tile(`gateDone${i}`, gate('', w.stamp, true, parquet));
+    a.solid(`gate${i}`, gate(`${BOOKS_PER_WING}`, w.stamp, false, parquet), { effect: wingCounter(i), eamt: -BOOKS_PER_WING, touch: `gateOpen${i}` });
   });
   a.tile('book33', blankBook(parquet));
   const lectern = blank();

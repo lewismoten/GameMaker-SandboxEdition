@@ -1,4 +1,4 @@
-// The Backyard (the Mitten Egg from Snowbound): Superpowers of Spooker Boy, Champion of the
+// The Backyard: Superpowers of Spooker Boy, Champion of the
 // Backyard Games, Hung Out to Dry and Santa's Little OSHA Violation.
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
@@ -211,7 +211,7 @@ function art(a: Area): void {
 export const YARD: WingSpec = {
   wing: WINGS[3],
   tint: 'green',
-  egg: [['grey', 5], ['blue', 3], ['red', 3]],
+  stamp: [['grey', 5], ['blue', 3], ['red', 3]],
   signs: [
     ['KEEP OFF THE', 'GRASS. KEEP', 'ON READING.'],
     ['LIGHTS ON?', 'TIME TO GO', 'HOME, BILLY'],

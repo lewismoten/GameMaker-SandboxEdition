@@ -1,4 +1,4 @@
-// The Laboratory (the Debug Egg from Virus Blaster): Great Minds, Strange Priorities;
+// The Laboratory: Great Minds, Strange Priorities;
 // Duplicate Daughters, Divided Dad; Becoming Purple; and Church of the First of Zero.
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
@@ -229,7 +229,7 @@ function art(a: Area): void {
 export const LAB: WingSpec = {
   wing: WINGS[1],
   tint: 'teal',
-  egg: [['grey', 1], ['green', 4], ['red', 3]],
+  stamp: [['grey', 1], ['green', 4], ['red', 3]],
   signs: [
     ['DO NOT FEED', 'THE OOZE', ''],
     ['MAD SCIENCE', 'IS A PHASE', '(HOPEFULLY)'],

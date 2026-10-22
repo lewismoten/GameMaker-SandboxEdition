@@ -20,7 +20,7 @@ async function gateHolds(): Promise<void> {
     () => true,
   );
   if (!stuck || bot.sim.pos.bx === gate.x || bot.ci.meter[wingCounter(0)] !== 4) throw new Error('A gate opened for three stories');
-  console.log('ok   an egg cup gate stays shut for a wing with three stories');
+  console.log('ok   a stamp gate stays shut for a wing with three stories');
 }
 
 await playThrough(process.argv[2])

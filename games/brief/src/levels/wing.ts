@@ -14,7 +14,7 @@
 // (shushers and the like fine points instead), so every book can always be finished.
 // (An X in the rows is page edge, where the back cover used to be.)
 import { Pixels, rng } from '../../../kit/pixels';
-import { CLEAR, bevel, blob, micro } from '../art/draw';
+import { CLEAR, bevel, micro } from '../art/draw';
 import { c, r } from '../art/pal';
 import { blank, floor, on, sign } from '../art/kit';
 import { CTR, WORDS_PER_BOOK, wingCounter } from '../ids';
@@ -38,8 +38,12 @@ export interface WingSpec {
   wing: Wing;
   /** Ramp for the hallway carpet, the spines' leather and the page corners. */
   tint: string;
-  /** The felt egg in its cup by the door: shell, band and dots (ramp, shade). */
-  egg: [[string, number], [string, number], [string, number]];
+  /**
+   * The wing's library stamp (the one that inks SHELVED on its returns): its rubber, its rim
+   * and its emblem (ramp, shade). It inks the plate over the wing's door and its gate in the
+   * Reserve Stacks.
+   */
+  stamp: [[string, number], [string, number], [string, number]];
   /** The two hallway signs (three lines each, 14 characters at most). */
   signs: [string[], string[]];
   /** Draws the wing's story blocks and monsters into the area. */
@@ -142,15 +146,18 @@ function bookmark(under: Pixels): Pixels {
 }
 
 
-/** The felt egg on a brass egg cup, on a little plinth. */
-function eggCup(spec: WingSpec, under: Pixels): Pixels {
+/** The wing's rubber stamp on its ink pad, and a fresh SHELVED impression beside it. */
+function stampDesk(spec: WingSpec, under: Pixels): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(under.px);
-  const [felt, band, dot] = spec.egg;
-  blob(p, 10, 8, 5, 6.5, r(felt[0]), Math.max(0, felt[1] - 2), felt[1]);
-  p.rect(5, 8, 10, 2, c(band[0], band[1]));
-  for (const [x, y] of [[8, 5], [12, 6], [9, 12], [11, 4]]) p.set(x, y, c(dot[0], dot[1]));
-  p.rect(7, 13, 6, 2, c('brass', 3)).rect(8, 15, 4, 2, c('brass', 1)).rect(6, 17, 8, 2, c('wood', 1));
+  const [rubber, rim, emblem] = spec.stamp;
+  // the ink pad in its tin
+  p.rect(1, 13, 12, 5, c('tin', 2)).rect(2, 14, 10, 3, c('ink', 1));
+  // the stamp: a wooden knob on a handle, its rubber foot in the wing's colors
+  p.disc(7, 3, 2, c('wood', 4)).rect(6, 4, 3, 5, c('wood', 2));
+  p.rect(3, 9, 9, 3, c(rubber[0], rubber[1])).rect(3, 11, 9, 1, c(rim[0], rim[1]));
+  // the impression: a square seal, rim and emblem
+  p.rect(13, 6, 6, 6, c('paper', 4)).frame(14, 7, 4, 4, c(rim[0], rim[1])).set(15, 8, c(emblem[0], emblem[1])).set(16, 9, c(emblem[0], emblem[1]));
   return p;
 }
 
@@ -200,7 +207,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
   spec.signs.forEach((lines, s) => sign(lines, 3).forEach((px, i) => a.solid(`sign${s}${i}`, on(shelf(index * 13 + 5, tint), px))));
   a.solid('tableL', table(hallFloor, 0));
   a.solid('tableR', table(hallFloor, 1));
-  a.solid('eggcup', eggCup(spec, hallFloor));
+  a.solid('stampdesk', stampDesk(spec, hallFloor));
   // what every book has
   a.solid('edge', edge(tint));
   a.addShusher();
@@ -213,7 +220,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     '.': 'hall',
     T: 'tableL',
     t: 'tableR',
-    G: 'eggcup',
+    G: 'stampdesk',
     D: { tile: 'door', mark: 'door' },
     N: 'shelf',
     K: 'shelf',

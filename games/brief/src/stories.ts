@@ -314,20 +314,18 @@ export interface Wing {
   /** File name stem for the wing's map, blocks and monsters. */
   id: string;
   name: string;
-  /** The Sandbox game whose felt egg sits in the egg cup over the wing's door. */
-  egg: string;
   books: number[];
 }
 
 export const WINGS: Wing[] = [
-  { id: 'clown', name: 'Clown Alley', egg: 'teddy', books: [13, 25, 24, 11] },
-  { id: 'lab', name: 'The Laboratory', egg: 'blaster', books: [3, 5, 10, 12] },
-  { id: 'docks', name: 'The Docks', egg: 'sandcast', books: [6, 8, 7, 30] },
-  { id: 'yard', name: 'The Backyard', egg: 'snowbound', books: [15, 19, 20, 31] },
-  { id: 'living', name: 'The Living Room', egg: 'logic', books: [2, 21, 22, 14] },
-  { id: 'after', name: 'After Hours', egg: 'sleuth', books: [1, 16, 23, 29] },
-  { id: 'other', name: 'Other Dimensions', egg: 'maximus', books: [17, 18, 4, 26] },
-  { id: 'future', name: 'The Future Shelf', egg: 'year2000', books: [28, 32, 27, 9] },
+  { id: 'clown', name: 'Clown Alley', books: [13, 25, 24, 11] },
+  { id: 'lab', name: 'The Laboratory', books: [3, 5, 10, 12] },
+  { id: 'docks', name: 'The Docks', books: [6, 8, 7, 30] },
+  { id: 'yard', name: 'The Backyard', books: [15, 19, 20, 31] },
+  { id: 'living', name: 'The Living Room', books: [2, 21, 22, 14] },
+  { id: 'after', name: 'After Hours', books: [1, 16, 23, 29] },
+  { id: 'other', name: 'Other Dimensions', books: [17, 18, 4, 26] },
+  { id: 'future', name: 'The Future Shelf', books: [28, 32, 27, 9] },
 ];
 
 export const story = (n: number): Story => {

@@ -1,6 +1,6 @@
 // The whole game, played by the bot in the headless simulator, scene by scene, from the reading room through every wing and every book (a
 // hundred words each, THE END, the story card, back to the hallway), into the Reserve
-// Stacks, through all eight egg cup gates, to the thirty-third book and the ending.
+// Stacks, through all eight stamp gates, to the thirty-third book and the ending.
 import { CTR, WORDS_PER_BOOK, wingCounter } from '../src/ids';
 import { compileAll } from '../src/compile';
 import { sceneIds } from '../src/game';

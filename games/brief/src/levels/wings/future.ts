@@ -1,4 +1,4 @@
-// The Future Shelf (the Tomorrow Egg from In The Year 2000!): books from a strange year called
+// The Future Shelf: books from a strange year called
 // 2026. Prompted Royalty, Everything But the Tea, Craigslist Said It Was Healthy, and The Day
 // the Vase Fell.
 import { Pixels } from '../../../../kit/pixels';
@@ -245,7 +245,7 @@ function art(a: Area): void {
 export const FUTURE: WingSpec = {
   wing: WINGS[7],
   tint: 'sky',
-  egg: [['teal', 3], ['grey', 5], ['red', 3]],
+  stamp: [['teal', 3], ['grey', 5], ['red', 3]],
   signs: [
     ['BOOKS FROM', 'THE FUTURE:', 'NO SPOILERS'],
     ['WHO IS', 'CHATGPT?', ''],

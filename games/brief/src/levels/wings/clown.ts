@@ -1,4 +1,4 @@
-// Clown Alley (the Big Top Egg from Teddy's Little Big Adventure): The Scissor Situation,
+// Clown Alley: The Scissor Situation,
 // A very Cultured Performance, Bubble Rap and The Interest We Lost.
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
@@ -209,7 +209,7 @@ function art(a: Area): void {
 export const CLOWN: WingSpec = {
   wing: WINGS[0],
   tint: 'red',
-  egg: [['paper', 4], ['red', 3], ['orange', 3]],
+  stamp: [['paper', 4], ['red', 3], ['orange', 3]],
   signs: [
     ['HONK IF YOU', 'LOVE BOOKS', '(QUIETLY)'],
     ['LOST: ONE RED', 'NOSE. ASK AT', 'THE DESK'],

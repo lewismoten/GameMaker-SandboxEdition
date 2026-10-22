@@ -1,4 +1,4 @@
-// Other Dimensions (the Orbit Egg from Maximus): Nip from Another Dimension, Relativity
+// Other Dimensions: Nip from Another Dimension, Relativity
 // Detour, Crime, Panic, and... Mustard, and Repeat Until Texture Is Uniform.
 import { Pixels } from '../../../../kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
@@ -240,7 +240,7 @@ function art(a: Area): void {
 export const OTHER: WingSpec = {
   wing: WINGS[6],
   tint: 'pink',
-  egg: [['night', 3], ['grey', 5], ['purple', 3]],
+  stamp: [['night', 3], ['grey', 5], ['purple', 3]],
   signs: [
     ['MIND THE', 'VANISHING', 'POINTS'],
     ['IN SPACE NO', 'ONE CAN HEAR', 'YOU SHUSH'],
