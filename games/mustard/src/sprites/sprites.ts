@@ -175,7 +175,8 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  const hurt = (hp: number) => ({ chHitPt: hp });
+  // Big loud things are solid (they push the seed back) and hurt to bump into.
+  const hurt = (hp: number) => ({ chHitPt: hp, solid: 15 });
 
   // Raindrops: catch one and it is a drop of water (and a sip).
   const drop = (f: number) => {
