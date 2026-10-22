@@ -17,6 +17,7 @@ import { passFiles } from './src/levels/talk';
 import { assemble, type SceneSpec } from './src/game';
 import * as MUSIC from './src/sound/music';
 import { screenFiles } from './src/build/screens';
+import { demoRecording } from './src/demo';
 import { autoArrange } from '../../web/src/editor/editors/integrator/integratorLayout';
 import { untangle } from './src/layout';
 
@@ -63,5 +64,6 @@ const left = untangle(game, ids.get('world')!);
 if (left) throw new Error(`The scene graph still has ${left} crossing arrows`);
 for (const [i, p] of autoArrange(game)) game.scenes[i].pos = p;
 disk.put('tuit.gam', serializeGame(game));
+disk.put('demo.rec', demoRecording());
 disk.write();
 console.log(`${game.scenes.length} scenes`);
