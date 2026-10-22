@@ -423,7 +423,7 @@ button.grator-play.playing {
 .grator-side-scene .grator-panel > .panel + .panel {
   border-top: 1px solid var(--border);
 }
-.grator-side-scene .grator-panel h3 {
+.grator-side-scene .grator-panel h2 {
   font-size: 15px;
 }
 .grator-side-scene .grid-fields {

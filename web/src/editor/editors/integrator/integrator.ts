@@ -814,7 +814,7 @@ registerEditor(['gam'], (host, project, file) => {
         'div',
         { class: 'panel stack' },
         h(
-          'h3',
+          'h2',
           { style: 'margin:0' },
           kind === 'start' ? 'Start scene (title & menu)' : kind === 'end' ? 'End scene (game won / lost)' : `Level scene #${selected}`,
         ),
@@ -858,7 +858,7 @@ registerEditor(['gam'], (host, project, file) => {
       h(
         'div',
         { class: 'panel' },
-        h('h3', { style: 'margin-top:0' }, 'Files'),
+        h('h2', { style: 'margin-top:0' }, 'Files'),
         h(
           'div',
           { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(190px,1fr))' },
@@ -885,7 +885,7 @@ registerEditor(['gam'], (host, project, file) => {
         ? h(
             'div',
             { class: 'panel' },
-            h('h3', { style: 'margin-top:0' }, 'Scrolling'),
+            h('h2', { style: 'margin-top:0' }, 'Scrolling'),
             h(
               'div',
               { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(230px,1fr))' },
@@ -905,7 +905,7 @@ registerEditor(['gam'], (host, project, file) => {
         : h(
             'div',
             { class: 'panel' },
-            h('h3', { style: 'margin-top:0' }, kind === 'start' ? 'Where the game starts' : 'Links to other scenes'),
+            h('h2', { style: 'margin-top:0' }, kind === 'start' ? 'Where the game starts' : 'Links to other scenes'),
             h(
               'p',
               { class: 'hint' },
