@@ -18,8 +18,11 @@ export interface ShelfHooks {
 }
 
 const FRONT_KEY = 'gm-shelf-front';
-/** Inches of shelf the boxes may use, at 16px an inch (shrinks the boxes when it fills up). */
-const SHELF_PX = 318;
+/** Pixels of shelf the boxes may use: from the wall's edge to the left speaker, which stands in front of the rest (shelf.css). */
+const SHELF_PX = 280;
+/** Pixels between the boxes (shelf.css: the gap, and a face-out box's margins). */
+const GAP_PX = 2;
+const FACE_MARGIN_PX = 6;
 
 function remembered(): string | undefined {
   try {
@@ -50,7 +53,8 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   setPosterWall(scene, games);
   const shelf = h('div', { class: 'game-shelf', role: 'group', 'aria-label': 'Game boxes on the shelf' });
   // a spine is 2" wide and a box face 7.5": shrink them all when the shelf fills up
-  const u = Math.min(16, SHELF_PX / ((games.length - 1) * 2.2 + 7.5));
+  const spines = games.length - 1;
+  const u = Math.min(16, (SHELF_PX - FACE_MARGIN_PX - spines * GAP_PX) / (spines * 2 + 7.5));
   shelf.style.setProperty('--shelf-u', `${u.toFixed(2)}px`);
   scene.append(shelf);
   const faces = new Map<string, BoxFaces>();

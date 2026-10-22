@@ -9,7 +9,7 @@
   display: flex;
   align-items: flex-end;
   gap: 2px;
-  width: 318px;
+  width: 280px; /* ends before the left speaker, which stands in front of the wall (shelf.ts SHELF_PX) */
   height: calc(9.25 * var(--shelf-u));
   padding: 0 4px;
   box-sizing: content-box;
