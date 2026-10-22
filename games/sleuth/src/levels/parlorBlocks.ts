@@ -12,6 +12,7 @@ import { T, boards, clone, footlight, stageBoards, wallFace, wallTop } from '../
 import { addItems, symbol } from '../blocks/items';
 import { portrait } from '../art/people';
 import { CTR } from '../ids';
+import { addEggBlocks } from '../blocks/egg';
 import { CARDS, HOW, SUSPECTS, WHY } from './parlor';
 
 // ---------------------------------------------------------------- art
@@ -323,5 +324,6 @@ export function buildParlorBlocks(): BlockSet {
   pool(dark, 10, 10, 9, 9, r('velvet'), 0, 2);
   add('zcell', clone(dark), { effect: CTR.strike, eamt: 1, score: -500 });
   add('solved', clone(dark), { score: 5000 });
+  addEggBlocks(add, wallpaper, bs.pic('fire'), bs.pic('fire2'));
   return bs;
 }

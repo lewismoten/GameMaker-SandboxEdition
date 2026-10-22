@@ -18,6 +18,8 @@ export const CTR = {
   dials: 23,
   /** A wrong accusation waiting to be paid for. */
   strike: 24,
+  /** Something found behind the green room's fireplace at 2 AM. */
+  egg: 25,
 } as const;
 
 /** Sequence slots: 0-4 are PLAYGAME's own (idle, die, hurt, pick up, drop). */
