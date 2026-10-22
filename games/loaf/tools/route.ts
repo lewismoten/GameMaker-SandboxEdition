@@ -135,10 +135,85 @@ export async function theWasteland(bot: Bot): Promise<void> {
   });
 }
 
+/** 3. Twelve baskets full: every empty basket on the hillside touched and gathered up full, then into the twelfth. */
 export async function theBaskets(bot: Bot): Promise<void> {
   expect(bot, 4, 'the baskets');
+  const start = baskets(bot);
+  const gathered = (n: number, where: string) => {
+    if (baskets(bot) - start < n) throw new Error(`${baskets(bot) - start} baskets gathered by ${where}`);
+  };
+  await carefully(bot, 'the first baskets', 10, async () => {
+    await must(bot, bot.walk(7, 'the first basket'), 'basket 1');
+    await must(bot, bot.walk(9, 'under the stone'), 'stone');
+    await must(bot, bot.hop('up', 10), 'up to the basket on the stone');
+    await must(bot, bot.walk(16, 'the third basket'), 'basket 3');
+    await must(bot, bot.walk(20, 'the fourth basket'), 'basket 4');
+    gathered(4, 'the olive tree');
+  });
+  await carefully(bot, 'the basket on the stones', 12, async () => {
+    await must(bot, bot.walk(23, 'up the rocks'), 'rocks');
+    await must(bot, bot.walk(23.5, 'against the basket'), 'basket 5');
+    gathered(5, 'the rocks');
+  });
+  await carefully(bot, 'past the fox', 14, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 31), 'over the fox');
+    await must(bot, bot.walk(36, 'the baskets by the seed'), 'baskets 6 and 7');
+    gathered(7, 'the fire');
+  });
+  await carefully(bot, 'up on the warm air', 12, async () => {
+    await must(bot, bot.walk(37, 'up on the rock'), 'rock');
+    await must(bot, bot.until('right', () => bot.px.x >= 38 * 20, 'into the warm air', 60), 'warm');
+    await must(bot, bot.until(undefined, () => bot.px.y <= 2 * 20, 'up on the warm air', 160), 'lift');
+    await must(bot, bot.hop('right', 4, 'right', 40), 'onto the fig branch');
+    await must(bot, bot.walk(46, 'past the basket in the tree'), 'basket 8');
+    await must(bot, bot.walk(50, 'down to the grass'), 'down');
+    gathered(9, 'the fig tree');
+  });
+  await carefully(bot, 'the last baskets', 12, async () => {
+    await must(bot, bot.walk(56, 'past the jar'), 'basket 10');
+    await must(bot, bot.walk(59, 'under the stones'), 'stones');
+    await must(bot, bot.hop('up', 10), 'up to the basket on the stones');
+    await must(bot, bot.land(), 'land');
+    gathered(11, 'the twelfth');
+  });
+  await carefully(bot, 'into the twelfth basket', 12, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 66.5), 'over the disciple');
+    await leave(bot, bot.walk(69, 'the twelfth basket'), 'the twelfth basket');
+  });
 }
 
+/** 4. The way home: over the roofs, the dogs and the brook, by the well and Brother Camel, to her door. */
 export async function theWayHome(bot: Bot): Promise<void> {
   expect(bot, 5, 'the way home');
+  await carefully(bot, 'over the first roof', 10, async () => {
+    await must(bot, bot.walk(3, 'under the roof'), 'roof');
+    await must(bot, bot.hop('up', 14), 'up on the roof');
+    await must(bot, bot.walk(12, 'along the roof'), 'along');
+    if (bot.at.y !== 5) throw new Error(`not on the roof (${bot.at.y})`);
+  });
+  await carefully(bot, 'past the dog to the brook', 12, async () => {
+    await must(bot, bot.walk(13.5, 'down off the roof'), 'off the roof');
+    await must(bot, bot.hop('right', 12, 'right', 20.5), 'over the dog');
+    await must(bot, bot.walk(22, 'the bank of the brook'), 'bank');
+  });
+  await carefully(bot, 'the stepping stones', 20, async () => {
+    for (const x of [24, 26, 28]) {
+      await must(bot, bot.hop('right', 6, 'right', x), `the stone at ${x}`);
+      if (bot.at.y !== 9 || bot.at.x !== x) throw new Error(`not on the stone at ${x} (${bot.at.x},${bot.at.y})`);
+    }
+    await must(bot, bot.hop('right', 6, 'right', 30), 'the far bank');
+  });
+  await carefully(bot, 'the well and Brother Camel', 10, async () => {
+    await must(bot, bot.walk(33, 'up on the well'), 'well');
+    await must(bot, bot.walk(39, 'past Brother Camel'), 'camel');
+  });
+  await carefully(bot, 'past the second dog', 12, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 46.5), 'over the dog');
+    await must(bot, bot.walk(51, 'by the lamp'), 'lamp');
+    await must(bot, bot.hop('up', 6), 'a holy crumb');
+  });
+  if (crumbs(bot) < 1) throw new Error('no holy crumb for the door');
+  await carefully(bot, 'home', 12, async () => {
+    await leave(bot, bot.walk(62, 'her door'), 'her door');
+  });
 }

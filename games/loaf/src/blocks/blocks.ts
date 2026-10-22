@@ -382,8 +382,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let y = 8; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, c('water', y === 8 ? 3 : (x + y * 2 + f * 3) % 9 === 0 ? 3 : 1));
     return p;
   };
-  book.add('brook0', brook(0), { hp: -5, grav: GRAV.down, next: 'brook1', ntime: 6 });
-  book.add('brook1', brook(1), { hp: -5, grav: GRAV.down, next: 'brook0', ntime: 6 });
+  book.add('brook0', brook(0), { hp: -2, grav: GRAV.down, next: 'brook1', ntime: 6 });
+  book.add('brook1', brook(1), { hp: -2, grav: GRAV.down, next: 'brook0', ntime: 6 });
   const stone = brook(0);
   blob(stone, 10, 9, 8, 4, R('stone'), 1, 4);
   book.add('step', stone, { solid: SOLID });

@@ -252,10 +252,10 @@ export function baskets(book: BlockBook): Level {
   m.mon(MON.seed, 32, 9);
   // the fire and its warm air up to the fig branches, a basket at the top
   m.set(37, 8, 'R').set(37, 9, 'R').set(38, 9, 'x').col(38, 2, 8, 'u');
-  m.col(43, 4, 9, 'T').fill(39, 0, 8, 2, 'v').row(2, 39, 46, 'F').set(41, 1, 'e').set(45, 1, '$');
-  m.set(48, 9, 'e').set(52, 9, 'l').set(54, 9, 'e');
-  m.mon(MON.gull, 48, 3).mon(MON.man, 55, 9);
-  m.set(58, 7, '_').set(59, 7, '_').set(59, 6, 'e').set(64, 9, 'j');
+  m.col(43, 4, 9, 'T').fill(39, 0, 8, 2, 'v').row(2, 39, 44, 'F').set(45, 2, 'e').set(42, 1, '$');
+  m.set(48, 9, 'e').set(51, 9, 'l').set(52, 9, 'j').set(54, 9, 'e');
+  m.mon(MON.gull, 48, 3).mon(MON.man, 61, 9);
+  m.set(58, 7, '_').set(59, 7, '_').set(59, 6, 'e');
   m.mon(MON.owl, 60, 2);
   // the twelfth basket
   m.set(68, 9, 'B').set(66, 9, ',');
@@ -270,16 +270,16 @@ export function home(book: BlockBook): Level {
   const m = new MapBuilder(book, 'earth');
   m.fill(1, 0, W - 2, 3, 't').fill(1, 3, W - 2, 7, '.').row(10, 0, W - 1, 'r').fill(0, 11, W, 2, 's').col(0, 0, 12, '#').col(W - 1, 0, 12, '#');
   // the first houses: their roofs to stand on, lamplight in the windows
-  m.fill(4, 6, 8, 4, 'A').row(5, 3, 12, 'p').set(6, 8, 'q').set(9, 8, 'd').set(7, 4, '@').set(10, 4, '*');
+  m.fill(4, 7, 8, 3, 'A').row(6, 3, 12, 'p').set(6, 8, 'q').set(9, 8, 'd').set(7, 5, '@').set(10, 5, '*');
   m.set(14, 9, 'k').set(16, 9, 'P').set(16, 8, 'Q');
-  m.mon(MON.dog, 17, 9);
-  // a low garden wall, then the brook and its stepping stones
-  m.set(21, 9, 'N').fill(22, 10, 7, 2, '-').set(23, 10, 'S').set(25, 10, 'S').set(27, 10, 'S');
+  m.mon(MON.dog, 15, 9);
+  // the brook and its stepping stones
+  m.fill(23, 10, 7, 2, '-').set(24, 10, 'S').set(26, 10, 'S').set(28, 10, 'S');
   // the well, and Brother Camel kneeling by it
   m.set(33, 9, 'y').set(33, 8, '@');
   m.mon(MON.camelA, 35, 9).mon(MON.camelB, 36, 9);
   // more houses; a lamp with its moth
-  m.fill(39, 6, 9, 4, 'A').row(5, 38, 48, 'p').set(41, 8, 'q').set(45, 8, 'q').text(40, 4, '*...*');
+  m.fill(39, 7, 9, 3, 'A').row(6, 38, 48, 'p').set(41, 8, 'q').set(45, 8, 'q').text(40, 5, '*...*');
   m.set(49, 9, 'k').set(51, 8, '@');
   m.mon(MON.moth, 48, 7).mon(MON.dog, 41, 9).mon(MON.owl, 44, 1);
   // the child, walking home ahead of you

@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "loaf",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0HzQYSCpIATQvNBU0UzSoSDJIATSDNA00HzQZNA0gKyEfNBk0RSArIBkgKyBLNCE0DSArIBkgKyAfNBk0EzQ8SBJIATQjNA00ozQZND0gKyAbNBk0hzQYSDJIATRrNA0sAywZNCkgKyA5ICsg="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0bzQZICMgJTS/NBkgIyAlNEc0NUCnQB0srSArIB0gKyAPLCEgIyAlLG8sGEAqQAEsGywNNK80qEgySAE0PzQNNDs0GEgySAE0YzQNICMgJTQvNBlBA0EFLD0gKyAjLBkgIyAxNNs0GSAjIBU0OzTxIFsgASwxICsgHSArICssGSAjIB00SzQZI"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0RSArIEs0GTQ3NBkgKyAdNF0gKyBnNBk0JSArIEs02TQpICsgGSArIC80PTQdICsgPSArIBM0HEgySAE08zQNNA0gKyBxICsgSzQZNA0gKyAZICsgHzQZNBM0PEgSSAE0IzQNNJc0aTQpICsgSzQZNF0gKyBLNBk0UzQZICsgKEgySAE0izQNN"
+  },
+  {
+   "scene": 5,
+   "keys": "AU0HzQZIDsgHTTzNDE0IzQ8SDJIATRvNA00KzQYSBpIATQbNAxIGkgBNBc0EEgaSAE0FzQQSBpIATQbNA00QSArIB80GTSbNPBIMkgBNH80DTR7NBkgGyAlN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Hungry Crowd"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Wicker Wasteland"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Twelve Baskets Full"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Way Home"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 19560,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1239
+   },
+   {
+    "title": "Level 1: The Hungry Crowd",
+    "frame": 2947
+   },
+   {
+    "title": "Level 2: The Wicker Wasteland",
+    "frame": 5452
+   },
+   {
+    "title": "Level 3: Twelve Baskets Full",
+    "frame": 9271
+   },
+   {
+    "title": "Level 4: The Way Home",
+    "frame": 12517
+   },
+   {
+    "title": "Ending",
+    "frame": 14761
+   },
+   {
+    "title": "Credits",
+    "frame": 17472
+   }
+  ]
+ }
+}
