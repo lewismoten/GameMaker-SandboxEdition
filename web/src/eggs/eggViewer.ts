@@ -136,7 +136,7 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
     const overlay = h(
       'div',
       { class: 'eggv', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'eggv-title' },
-      h('header', { class: 'eggv-bar' }, h('strong', null, 'Felt eggs'), closeBtn),
+      h('div', { class: 'eggv-bar' }, h('strong', null, 'Felt eggs'), closeBtn),
       h('div', { class: 'eggv-main' }, stage, h('div', null, card, h('div', { class: 'eggv-nav' }, prev, next, count))),
     );
     show();
