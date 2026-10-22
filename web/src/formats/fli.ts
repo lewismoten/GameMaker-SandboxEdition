@@ -250,7 +250,7 @@ function brun(px: Uint8Array, w: number, h: number): number[] {
  * LC (delta) chunk: only the lines and spans that changed since the previous frame.
  * Returns undefined when nothing changed, or when a full BRUN frame would be smaller.
  */
-function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number): number[] | undefined {
+function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number, runs = false): number[] | undefined {
   let first = 0;
   while (first < h && rowSame(prev, px, first, w)) first++;
   if (first === h) return [0, 0, 0, 0]; // an empty change: same picture
@@ -282,9 +282,12 @@ function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number): numb
       }
       const n = end - x;
       const allSame = px.subarray(row + x, row + end).every((v) => v === px[row + x]);
-      if (allSame && n > 2) packets.push(skip, (256 - n) & 255, px[row + x]);
-      else packets.push(skip, n, ...px.subarray(row + x, row + end));
-      count++;
+      if (runs && !allSame) count += packRuns(px, row + x, row + end, skip, packets);
+      else {
+        if (allSame && n > 2) packets.push(skip, (256 - n) & 255, px[row + x]);
+        else packets.push(skip, n, ...px.subarray(row + x, row + end));
+        count++;
+      }
       lastEnd = end;
       x = end;
     }
@@ -293,6 +296,38 @@ function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number): numb
     out.push(count, ...packets);
   }
   return out;
+}
+
+/** Splits px[from, to) into run packets (3 or more of a color) and literal ones; returns how many. */
+function packRuns(px: Uint8Array, from: number, to: number, skip: number, packets: number[]): number {
+  let count = 0;
+  let lit = from;
+  const flush = (end: number) => {
+    if (end > lit) {
+      packets.push(count ? 0 : skip, end - lit, ...px.subarray(lit, end));
+      count++;
+    }
+  };
+  let i = from;
+  while (i < to) {
+    let r = 1;
+    while (i + r < to && r < 127 && px[i + r] === px[i]) r++;
+    if (r >= 3) {
+      flush(i);
+      packets.push(count ? 0 : skip, (256 - r) & 255, px[i]);
+      count++;
+      i += r;
+      lit = i;
+    } else {
+      i += r;
+      while (i - lit > 127) {
+        flush(lit + 127);
+        lit += 127;
+      }
+    }
+  }
+  flush(to);
+  return count;
 }
 
 function rowSame(a: Uint8Array, b: Uint8Array, y: number, w: number): boolean {
@@ -322,6 +357,7 @@ export function encodeFli(
     height?: number;
     speed?: number;
     /** A palette per frame (fades, flashes); changes are stored where they happen. */ palettes?: Uint8Array[];
+    /** Code runs of a color inside changed spans as run packets too (smaller deltas for drawn art). */ runs?: boolean;
   } = {},
 ): Uint8Array {
   const w = opts.width ?? 320;
@@ -338,7 +374,7 @@ export function encodeFli(
     }
     // After the first frame, store only what changed, when that is smaller.
     const prev = i > 0 ? all[i - 1] : undefined;
-    const delta = prev ? lineDelta(prev, px, w, h) : undefined;
+    const delta = prev ? lineDelta(prev, px, w, h, opts.runs) : undefined;
     // BRUN is only built to compare against when the delta is 64000 bytes (a raw frame) or more.
     const full = delta && delta.length < 64000 ? undefined : brun(px, w, h);
     if (delta && (!full || delta.length < full.length)) chunks.push(fliChunk(12, delta));
