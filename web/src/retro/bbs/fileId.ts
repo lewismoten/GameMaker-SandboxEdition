@@ -116,6 +116,7 @@ const SUMMARY: Record<string, string> = {
   mustard: 'A tiny mustard seed with the greatest feet hops, pushes roots for water and moves a mountain on tiny faith.',
   needle: "The rich man's camel gives his gold to the poor, humps down through the narrow ways and squeezes through the eye of a needle.",
   loaf: 'The loaf nobody picked at the feeding of the 5,000 rolls past hungry hands and flying fish, gathers twelve baskets and goes home.',
+  tickle: 'Doc Leo has a rat tickling certificate and no rats yet. Pin first, then tickle, and raise a laughing carpet. MWA-HA-HA!',
 };
 
 const TAGLINES = [
