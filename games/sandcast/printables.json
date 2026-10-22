@@ -212,6 +212,41 @@
               "a": "Keep moving and fling sand at them; save your water for her paws."
             }
           ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind in the sandbox.",
+              "a": "Gwinn was digging somewhere she shouldn't. Follow the paw prints."
+            },
+            {
+              "q": "Where do the paw prints go?",
+              "a": "Way up in the northeast corner, above the way to Low Tide Lagoon, to one lone dune. Bring your shovel."
+            },
+            {
+              "q": "Just show me where to dig.",
+              "a": "Pick up the shovel (P) by the toy chest. Go to the top right corner of the sandbox and follow the paw prints to the lone dune. Walk into it twice to dig it out, then step into the hole. In Gwinn's Dig, press P to pick up the felt egg. The little sandcastle by the ladder only lets you by once you carry it. Climb the ladder out.",
+              "sketch": {
+                "rows": [
+                  "----------|",
+                  "        X |",
+                  "        . |",
+                  "       .  |",
+                  "      .   |",
+                  "     ^    |",
+                  "   = @    |",
+                  ""
+                ],
+                "labels": [
+                  { "x": 1, "y": 1, "text": "LONE DUNE" },
+                  { "x": 1, "y": 3, "text": "PAWS" },
+                  { "x": 0, "y": 7, "text": "LAGOON" },
+                  { "x": 6, "y": 6, "text": "YOU" }
+                ]
+              }
+            }
+          ]
         }
       ]
     },
