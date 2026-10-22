@@ -7,8 +7,8 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, Mask, fill, outline, shade, sprite } from '../art/draw';
 import { G, SOLID, SetBuilder, TOP, over, tex } from './blockset';
-import { ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
-import { PICKUPS, drawModule, drawPickup, drawShard, type PickupId } from './items';
+import { EGG_BLOCK, ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
+import { PICKUPS, drawEgg, drawModule, drawPickup, drawShard, type PickupId } from './items';
 import { OUTLINE, WHITE } from '../art/palette';
 import { PICKUP_FX, R } from './common';
 import {
@@ -223,7 +223,6 @@ export function surfaceSet(): SetBuilder {
   );
   s.add('ruin:block', rockTex(88, 'ruin'), { solid: SOLID });
   D('sign:right', sign('right'));
-  D('sign:left', sign('left'));
   D('sign:up', sign('up'));
   // hazards
   s.add('spikes', spikes(hz), { solid: SOLID, chHitPt: -3 });
@@ -315,6 +314,7 @@ export function surfaceSet(): SetBuilder {
   for (let i = 0; i < 10; i++)
     s.add(`shard:${i}`, over(shrine(false), drawShard(i)), { effect: SHARD_COUNTER + i, eamt: 1, scorePts: 5000, touch: 'shrine' }, SHARD_BASE + i);
   for (let i = 0; i < 10; i++) s.add(`module:${i}`, over(shrine(false), drawModule(i)), { obj: 1, scorePts: 1000, touch: 'shrine' }, ITEM_BASE + i);
+  s.add('egg', over(shrine(false), drawEgg()), { obj: 1, touch: 'shrine' }, EGG_BLOCK);
   return s;
 }
 

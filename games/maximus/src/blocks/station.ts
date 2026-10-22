@@ -7,8 +7,8 @@
 import { dither } from '../../../kit/pixels';
 import { Mask, outline, shade, sprite } from '../art/draw';
 import { G, SOLID, SetBuilder, TOP, over, tex } from './blockset';
-import { ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
-import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
+import { EGG_BLOCK, ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
+import { PICKUPS, drawEgg, drawModule, drawPickup, drawShard } from './items';
 import { OUTLINE, WHITE } from '../art/palette';
 import { PICKUP_FX, R } from './common';
 import { airlock, arrowsOn, console_, conveyor, crate, deck, infoPanel, laser, panel, pipe, reactor, shrine, wall, windowView } from './stationArt';
@@ -25,11 +25,6 @@ export function stationSet(): SetBuilder {
   s.add(
     'void',
     tex((x, y) => (dither(x, y, 0.1) ? R('sky')[1] : R('sky')[0])),
-    { grav: G.none },
-  );
-  s.add(
-    'zerog',
-    panel(12, 2).map((x, y, c) => ((x + y) % 9 === 0 ? R('glow')[1] : c)),
     { grav: G.none },
   );
   for (let k = 0; k < 3; k++) s.add(`wall:${k}`, wall(20 + k, k), { solid: SOLID });
@@ -240,5 +235,6 @@ export function stationSet(): SetBuilder {
   for (let i = 0; i < 10; i++)
     s.add(`shard:${i}`, over(shrine(false), drawShard(i)), { effect: SHARD_COUNTER + i, eamt: 1, scorePts: 5000, touch: 'shrine' }, SHARD_BASE + i);
   for (let i = 0; i < 10; i++) s.add(`module:${i}`, over(shrine(false), drawModule(i)), { obj: 1, scorePts: 1000, touch: 'shrine' }, ITEM_BASE + i);
+  s.add('egg', over(shrine(false), drawEgg()), { obj: 1, touch: 'shrine' }, EGG_BLOCK);
   return s;
 }

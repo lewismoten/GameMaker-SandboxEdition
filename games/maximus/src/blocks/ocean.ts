@@ -7,8 +7,8 @@
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, Mask, fill, outline, shade, sprite } from '../art/draw';
 import { G, SOLID, SetBuilder, TOP, over, tex } from './blockset';
-import { ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
-import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
+import { EGG_BLOCK, ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
+import { PICKUPS, drawEgg, drawModule, drawPickup, drawShard } from './items';
 import { OUTLINE, WHITE } from '../art/palette';
 import { PICKUP_FX, R } from './common';
 import { airBg, anemone, bubbles, buoy, clam, coral, current, deepWater, kelp, reefRock, sandTex, shrine, surfaceWave, water, wreck } from './oceanArt';
@@ -52,27 +52,6 @@ export function oceanSet(): SetBuilder {
     'reef:ledge',
     tex((x, y) => (y < 7 ? (y === 0 ? R('rock')[6] : R('rock')[2 + ((x + y) % 3)]) : water(4, 50).get(x, y))),
     { solid: TOP },
-  );
-  s.add(
-    'crystal:wall',
-    over(
-      reefRock(44, 'deep'),
-      (() => {
-        const p = sprite();
-        for (let i = 0; i < 3; i++)
-          shade(
-            p,
-            new Mask().poly([
-              [4 + i * 6, 18],
-              [8 + i * 6, 18],
-              [6 + i * 6, 4 + i * 3],
-            ]),
-            R('crystal'),
-          );
-        return p;
-      })(),
-    ),
-    { solid: SOLID },
   );
   // decorations in the water
   const D = (name: string, sp: Pixels, depth = 5, props = {}) => s.add(name, over(water(depth, 60 + s.count), sp), props);
@@ -286,6 +265,7 @@ export function oceanSet(): SetBuilder {
   for (let i = 0; i < 10; i++)
     s.add(`shard:${i}`, over(shrine(false), drawShard(i)), { effect: SHARD_COUNTER + i, eamt: 1, scorePts: 5000, touch: 'shrine' }, SHARD_BASE + i);
   for (let i = 0; i < 10; i++) s.add(`module:${i}`, over(shrine(false), drawModule(i)), { obj: 1, scorePts: 1000, touch: 'shrine' }, ITEM_BASE + i);
+  s.add('egg', over(shrine(false), drawEgg()), { obj: 1, touch: 'shrine' }, EGG_BLOCK);
   return s;
 }
 

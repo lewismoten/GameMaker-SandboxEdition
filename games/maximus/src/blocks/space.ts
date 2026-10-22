@@ -4,8 +4,8 @@
 import { Pixels, rng, dither } from '../../../kit/pixels';
 import { CLEAR, Mask, fill, outline, pick, shade, sprite, tileNoise } from '../art/draw';
 import { G, SOLID, SetBuilder, over, tex } from './blockset';
-import { ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from '../ids';
-import { PICKUPS, drawModule, drawPickup, drawShard } from './items';
+import { EGG_BLOCK, ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from '../ids';
+import { PICKUPS, drawEgg, drawModule, drawPickup, drawShard } from './items';
 import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from '../art/palette';
 import { PICKUP_FX, R } from './common';
 
@@ -341,18 +341,17 @@ export function spaceSet(): SetBuilder {
       s.add(`warp${f}:${part}`, over(voidBg(42, 0), pic.crop(dx, dy, 20, 20)), { next: `warp${1 - f}:${part}`, ntime: 3 });
   }
   for (let k = 0; k < 5; k++) s.add(`rock:${k}`, asteroid(500 + k, 60 + k), { solid: SOLID });
-  s.add(
-    'rock:big',
-    over(
-      voidBg(66, 0),
-      (() => {
-        const p = sprite();
-        shade(p, new Mask().rect(0, 0, 20, 20), R('rock').slice(0, 5), { dither: true, seed: 4 });
-        return p;
-      })(),
-    ),
-    { solid: SOLID },
+  const bigRock = over(
+    voidBg(66, 0),
+    (() => {
+      const p = sprite();
+      shade(p, new Mask().rect(0, 0, 20, 20), R('rock').slice(0, 5), { dither: true, seed: 4 });
+      return p;
+    })(),
   );
+  s.add('rock:big', bigRock, { solid: SOLID });
+  // the same rock, but only a picture of one: the pod flies straight through
+  s.add('rock:fake', bigRock);
   for (let k = 0; k < 4; k++) s.add(`hull:${k}`, hull(k), { solid: SOLID });
   s.add(
     'dock',
@@ -461,9 +460,11 @@ export function spaceSet(): SetBuilder {
     { chHitPt: -15, touch: 'void:0' },
   );
   // pickups as floating crates
-  for (const id of PICKUPS) s.add(`p:${id}`, over(voidBg(80, 1), drawPickup(id)), { ...PICKUP_FX[id], touch: 'void:0' });
+  // (mines and flak are never found loose in space: their slots hold the fake rock and the egg)
+  for (const id of PICKUPS) if (id !== 'mines' && id !== 'flak') s.add(`p:${id}`, over(voidBg(80, 1), drawPickup(id)), { ...PICKUP_FX[id], touch: 'void:0' });
   // shared slots: the ten shard gates and the ten modules
   for (let i = 0; i < 10; i++) s.add(`gate:${i}`, gate(i), { solid: SOLID, effect: SHARD_COUNTER + i, eamt: 0, touch: 'barrier:open' }, SHARD_BASE + i);
   for (let i = 0; i < 10; i++) s.add(`module:${i}`, over(voidBg(90, 0), drawModule(i)), { obj: 1, scorePts: 1000, touch: 'void:0' }, ITEM_BASE + i);
+  s.add('egg', over(voidBg(90, 0), drawEgg()), { obj: 1, touch: 'void:0' }, EGG_BLOCK);
   return s;
 }

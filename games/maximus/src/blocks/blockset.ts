@@ -24,8 +24,8 @@ export class SetBuilder {
   private links: { i: number; next?: string; touch?: string }[] = [];
   private cursor = 0;
   readonly used = new Set<number>();
-  /** Slots only explicit `at` adds may use (the shared shard/module range). */
-  readonly reserved = new Set<number>(Array.from({ length: 20 }, (_, k) => 130 + k));
+  /** Slots only explicit `at` adds may use (the shared egg/shard/module range, 129..149). */
+  readonly reserved = new Set<number>(Array.from({ length: 21 }, (_, k) => 129 + k));
 
   constructor(
     readonly name: string,
