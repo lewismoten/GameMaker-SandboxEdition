@@ -61,6 +61,7 @@ The play-testing tools:
 | logic    | `npx vite-node ../games/logic/tools/check.ts`      | plays every board's solution                                                          |
 | blaster  | `npx vite-node ../games/blaster/tools/check.ts`    | the bot pilot flies every leg and boss                                                |
 | sleuth   | `npx vite-node ../games/sleuth/tools/check.ts`     | plays the whole case on the built disk (`--quick`, `--wrong <who>`, `--walk out.rec`) |
+| brief    | `npx vite-node ../games/brief/tools/check.ts`      | the bot restores all 32 books, passes the eight egg cup gates and opens the 33rd book |
 
 Each `tools/sim.ts` is a headless copy of PLAYGAME's main loop built on the web app's engine
 (`web/src/engine`), so a check runs the real movement, touch and monster code. Some builds
@@ -134,3 +135,14 @@ and which intro they show: a question is a link to a scene whose intro is the an
 scene looks exactly like the room she asked it in, so the conversation simply goes on. The safe
 is a combination lock made of counters, the dark under the stage gives way to the floor only
 where the lantern has been, and the check bot plays the whole case from the built disk.
+
+**KEEP IT BRIEF! The Tiny Pockets Library** (`brief`). The secret ninth game: its about.json
+says `"secret": true`, and it stays out of every listing until all eight felt eggs are found.
+Lewis Moten's thirty-two 100 Word Stories, word for word, each acted out in a book of its own
+behind The Dog House's red door. Words are floor blocks that count into counter 3; THE END is
+a solid page that only takes exactly one hundred (Game-Maker refuses a touch the counter can't
+pay for), opens, and counts the story into its wing's counter. The story is the book's exit
+graphic, so it shows exactly when it is put back. Shushers fine points (score) instead of
+taking words, so a book can always be finished. In the Reserve Stacks, egg cup gates take four
+of a wing's stories and give them straight back as Joe steps through: a counter check that
+keeps nothing. The intro's words pour out of the door by palette cycling.
