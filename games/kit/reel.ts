@@ -65,7 +65,7 @@ export class Reel {
 
   /** The .FLI: `speed` is the wait after each frame in 1/70 s (5 = 14 frames a second). */
   fli(speed: number): Uint8Array {
-    return encodeFli(this.frames, this.pal, { width: this.w, height: this.h, speed, palettes: this.palettes });
+    return encodeFli(this.frames, this.pal, { width: this.w, height: this.h, speed, palettes: this.palettes, runs: true });
   }
 
   /** How long it plays, in seconds. */

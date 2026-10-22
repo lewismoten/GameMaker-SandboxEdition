@@ -1,7 +1,7 @@
-// The 320x200 pictures: the title (the song's cover art), the menu, the story's night over
-// Bethlehem, the level cards, the parchment behind text pages, the high scores, the endings
-// and the credits (with Doc Leo). Photos and art are dithered into each picture's free
-// palette entries (kit/photo.ts).
+// The 320x200 pictures: the title (the song's cover art), the menu, the level cards, the
+// parchment behind text pages, the high scores, the endings and the credits (with Doc Leo).
+// Photos and art are dithered into each picture's free palette entries (kit/photo.ts). The
+// cartoons are in cartoons.ts.
 import { Pixels } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { blob, gradient, shadeAt } from '../../../snowbound/src/art/draw';
@@ -90,27 +90,6 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     const rule = textWidth('THE FRONT-STALL PEW') + 16;
     p.rect(160 - rule / 2, 21, rule, 1, c('brown', 2));
     save('hiscore.gif', p);
-  }
-
-  // ---------------- the story: that night over Bethlehem
-  {
-    const p = new Pixels(W, H);
-    gradient(p, 0, 0, W, 150, pal.r('night'), 0, 7);
-    stars(p, 5, 150, 160);
-    bigStar(p, 160, 34, 7);
-    for (let y = 40; y < 150; y++) {
-      const half = (y - 40) * 0.35;
-      for (let xx = Math.round(160 - half); xx <= 160 + half; xx++) if ((xx + y) % 3 === 0) p.set(xx, y, c('night', 7));
-    }
-    skyline(p, 150);
-    // the stable: a lean-to of beams, light spilling from it
-    p.rect(132, 122, 56, 28, c('wood', 0)).rect(126, 118, 68, 6, c('wood', 1));
-    p.rect(146, 128, 28, 22, c('glow', 1)).rect(150, 132, 20, 18, c('glow', 2)).rect(156, 138, 8, 6, c('glow', 3));
-    scaleBlit(p, side, 60, 134, 2);
-    p.rect(0, 172, W, 28, c('night', 0));
-    centered(p, 176, 'BETHLEHEM.  A NIGHT LIKE NO OTHER.', c('cloth', 3));
-    centered(p, 188, 'And a goat nobody painted.', c('gold', 3));
-    save('story1.gif', p);
   }
 
   // ---------------- level cards: the place, and its lines of the song

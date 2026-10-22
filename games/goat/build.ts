@@ -13,6 +13,7 @@ import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
 import { Disk } from '../kit/disk';
+import { Pixels } from '../kit/pixels';
 import { licenseText } from '../kit/license';
 import { renderRegion } from '../snowbound/src/art/render';
 import { buildPalette, type Light } from './src/art/pal';
@@ -20,6 +21,7 @@ import { buildBlocks } from './src/blocks/blocks';
 import { buildGoat, buildMonsters, type MonsterOptions } from './src/characters';
 import { demoRecording } from './src/demo';
 import { caravan, field, stable, town, ORIGIN, type Level } from './src/levels/maps';
+import { storyFli, type Cast } from './src/screens/cartoons';
 import { buildScreens } from './src/screens/screens';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { creditsSong, levelSongs, lostSong, storySong, titleSong, wonSong } from './src/sound/song';
@@ -116,7 +118,17 @@ const screens = buildScreens({ cards, goat: goatPics, line: line! });
 for (const [name, bytes] of Object.entries(screens)) disk.put(name, bytes);
 disk.put(BARDLOGO, bardIntroFli());
 disk.put('title.lst', serializeSlideList([{ name: BARDLOGO, pause: 0 }, { name: 'title.gif', pause: 12 }]));
-disk.put('story.lst', serializeSlideList([{ name: 'story1.gif', pause: 10 }, { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
+const cast: Cast = {
+  goat: cb.pics,
+  mons: mb.pics,
+  block: (name) => {
+    const p = new Pixels(20, 20);
+    p.px.set(bbl[book.n(name)].pixels);
+    return p;
+  },
+};
+disk.put('story.fli', storyFli(cast));
+disk.put('story.lst', serializeSlideList([{ name: 'story.fli', pause: 1 }, { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'bardpic.gif', pause: 8 }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 disk.put('won.lst', serializeSlideList([{ name: 'won1.gif', pause: 10 }, { name: 'won2.gif', pause: 12 }, { name: 'won3.gif', pause: 10 }]));
