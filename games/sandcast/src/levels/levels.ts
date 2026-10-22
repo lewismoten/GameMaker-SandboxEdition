@@ -161,7 +161,7 @@ export function hub(): LevelMap {
 // The pocket under the lone dune: wet sand, something felt, and a little sandcastle in the
 // way of the ladder back up. It lets Teddy by once he carries what was buried here.
 export function dig(): LevelMap {
-  const m = new LevelMap('earth', 8);
+  const m = new LevelMap('packed', 8);
   m.stamp(
     0,
     0,
@@ -177,6 +177,7 @@ export function dig(): LevelMap {
     ],
     L({
       ',': 'damp',
+      W: 'packed',
       L: { tile: 'ladder', mark: 'exit' },
       c: 'tinyCastle',
       E: 'egg',

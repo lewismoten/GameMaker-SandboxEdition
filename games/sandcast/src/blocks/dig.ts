@@ -35,20 +35,20 @@ function feltEgg(p: Pixels): Pixels {
       if (y >= crest) p.set(x, y, y === crest ? WATER[6] : (x + y) % 3 === 0 ? WATER[3] : WATER[4]);
       if (y === crest - 1 && x % 2 === 0) p.set(x, y, SAND[9]);
     }
-  // The castle appliqué (rust felt): two turrets, a keep, a dark gate and merlons.
-  p.rect(6, 8, 7, 5, RED[3]);
-  p.rect(5, 6, 2, 7, RED[3]).rect(12, 6, 2, 7, RED[3]);
-  p.set(5, 5, RED[3]).set(13, 5, RED[3]);
-  p.rect(8, 6, 3, 2, RED[3]).set(8, 5, RED[3]).set(10, 5, RED[3]);
-  p.rect(5, 6, 1, 7, RED[4]).rect(8, 6, 1, 2, RED[4]);
-  p.rect(13, 6, 1, 7, RED[2]).rect(6, 12, 7, 1, RED[2]);
-  p.rect(9, 10, 1, 3, RED[0]).set(9, 9, RED[1]);
-  p.set(6, 9, RED[1]).set(12, 9, RED[1]);
+  // The castle appliqué (rust felt): two turrets with merlons, a keep and a dark gate.
+  p.rect(7, 9, 6, 4, RED[3]);
+  p.rect(6, 7, 2, 6, RED[3]).rect(12, 7, 2, 6, RED[3]);
+  p.set(6, 6, RED[3]).set(13, 6, RED[3]);
+  p.rect(9, 8, 2, 1, RED[3]);
+  p.rect(6, 7, 1, 6, RED[4]).rect(13, 7, 1, 6, RED[2]).rect(7, 12, 6, 1, RED[2]);
+  p.rect(9, 10, 2, 2, RED[0]);
   // The pink pennant on its pole.
-  p.rect(9, 2, 1, 4, WOOD[2]);
-  p.rect(10, 2, 2, 2, PINK[2]).set(12, 2, PINK[1]).set(10, 3, PINK[3]);
+  p.rect(9, 4, 1, 4, WOOD[2]);
+  p.rect(10, 4, 2, 2, PINK[2]).set(12, 4, PINK[1]).set(10, 5, PINK[3]);
   // One brown paw print by the moat.
-  p.rect(14, 12, 2, 2, WOOD[1]).set(13, 11, WOOD[1]).set(14, 10, WOOD[1]).set(16, 10, WOOD[1]).set(16, 11, WOOD[1]);
+  p.rect(14, 12, 2, 1, WOOD[1]).set(14, 11, WOOD[1]).set(15, 10, WOOD[1]).set(16, 11, WOOD[1]);
+  // Stitches around the castle.
+  for (const [x, y] of [[5, 9], [5, 11], [14, 9], [8, 6], [11, 7]]) p.set(x, y, SAND[9]);
   // A little light on the felt.
   p.set(4, 4, SAND[9]).set(5, 3, SAND[9]);
   return p;
@@ -57,10 +57,10 @@ function feltEgg(p: Pixels): Pixels {
 /** "ONCE", pressed into wet sand, with the dent the egg left above it. */
 function onceInSand(p: Pixels): Pixels {
   const font: Record<string, string[]> = {
-    O: ['###', '#.#', '#.#', '#.#', '###'],
-    N: ['#.#', '###', '###', '###', '#.#'],
-    C: ['###', '#..', '#..', '#..', '###'],
-    E: ['###', '#..', '##.', '#..', '###'],
+    O: ['.##.', '#..#', '#..#', '#..#', '.##.'],
+    N: ['#..#', '##.#', '#.##', '#..#', '#..#'],
+    C: ['.###', '#...', '#...', '#...', '.###'],
+    E: ['####', '#...', '###.', '#...', '####'],
   };
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
@@ -72,7 +72,7 @@ function onceInSand(p: Pixels): Pixels {
     }
   // Each stroke is a groove: lit on its lower right edge, dark inside.
   const strokes = (fn: (x: number, y: number) => void) =>
-    [...'ONCE'].forEach((ch, i) => font[ch].forEach((row, y) => [...row].forEach((c, x) => c === '#' && fn(1 + i * 5 + x, 11 + y))));
+    [...'ONCE'].forEach((ch, i) => font[ch].forEach((row, y) => [...row].forEach((c, x) => c === '#' && fn(i * 5 + x, 12 + y))));
   strokes((x, y) => p.set(x + 1, y + 1, OCHRE[5]));
   strokes((x, y) => p.set(x, y, OCHRE[0]));
   return p;
