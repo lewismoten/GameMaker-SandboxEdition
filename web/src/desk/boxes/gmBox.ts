@@ -179,7 +179,7 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
     30,
     174,
     W - 60,
-    23,
+    22,
   );
   b.font = SANS(18);
   for (const line of [
@@ -195,7 +195,7 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
     b.fillRect(34, y - 13, 10, 10);
     b.fillStyle = '#1d1a14';
     b.fillText(line, 56, y);
-    y += 23;
+    y += 21;
   }
   // a strip of games made with it
   const strip: [HTMLCanvasElement, string][] = games.length
@@ -217,27 +217,26 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
     b.fillText(name, sx, y + 22 + (sw * 10) / 16 + 14);
   });
   y += 132;
-  // system requirements (as the Owner's Manual gives them) and what is in the box
+  // system requirements (as the Owner's Manual gives them), and the UPC block with the list price
+  const reqW = W - 60 - 182;
   b.fillStyle = '#fff6ee';
-  b.fillRect(30, y, W - 60, 118);
+  b.fillRect(30, y, reqW, 104);
   b.strokeStyle = '#1d1a14';
   b.lineWidth = 2;
-  b.strokeRect(30, y, W - 60, 118);
+  b.strokeRect(30, y, reqW, 104);
   b.fillStyle = '#1d1a14';
   b.font = SANS(13, 900);
-  b.fillText('SYSTEM REQUIREMENTS', 44, y + 20);
-  b.font = SANS(13, 400);
+  b.fillText('SYSTEM REQUIREMENTS', 42, y + 19);
+  b.font = SANS(12, 400);
   [
-    'IBM AT, PS/2 or compatible, 286 or better · 512K free memory',
-    'Standard VGA (256 colors) · hard disk · MS-DOS 4.1 or later',
-    'Two-button Microsoft-compatible mouse · 3½" 1.44 MB drive',
-    'Optional: Sound Blaster compatible card, joystick, CD-ROM drive',
-  ].forEach((l, i) => b.fillText(l, 44, y + 38 + i * 17));
-  b.font = SANS(12, 700);
-  b.fillText('IN THIS BOX: 2 program disks · bonus games CD-ROM · Owner’s Guide · inserts', 44, y + 108);
-  // the UPC block with the list price
-  const upcX = W - 196;
-  const upcY = H - 150;
+    'IBM AT, PS/2 or compatible: 286 or better',
+    '512K free memory · hard disk · MS-DOS 4.1+',
+    'Standard VGA (256 colors) · two-button mouse',
+    '3½" 1.44 MB drive · CD-ROM for the bonus games',
+    'Optional: Sound Blaster card, joystick',
+  ].forEach((l, i) => b.fillText(l, 42, y + 36 + i * 15));
+  const upcX = W - 30 - 166;
+  const upcY = y + 4;
   b.fillStyle = '#fff';
   b.fillRect(upcX, upcY, 166, 96);
   b.fillStyle = '#111';
