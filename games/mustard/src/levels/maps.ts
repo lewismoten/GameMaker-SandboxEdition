@@ -197,3 +197,29 @@ export function mound(book: BlockBook): Level {
   m.link(67, 9, 'next');
   return { m, start: at(4, 7), size: [W, H] };
 }
+
+/** 2. Deep down in the dust: push roots down to the groundwater, five drops, and up through the crack in the sidewalk. */
+export function dust(book: BlockBook): Level {
+  const W = 48;
+  const H = 20;
+  const m = new MapBuilder(book, 'soil');
+  m.fill(1, 1, W - 2, H - 2, ':');
+  // the sidewalk overhead at the far end, and its crack
+  m.row(0, 36, W - 2, 's').set(44, 0, 'C');
+  // where the seed planted itself: a pocket of roots
+  m.fill(1, 1, 3, 2, 'r');
+  // packed earth and rocks to dig around, junk in the dirt
+  m.row(5, 1, 12, '#').set(13, 5, 'K').row(11, 9, 22, 'K').fill(17, 2, 2, 6, '#').set(24, 3, 'j').set(31, 9, 'J').set(39, 17, 'k');
+  m.fill(28, 1, 1, 7, 'K').fill(36, 8, 2, 7, '#').row(17, 1, 20, '#');
+  // caves: air (it falls), each with its drop of water
+  m.fill(4, 7, 6, 2, 'c').row(9, 4, 9, '#').set(7, 8, 'o').set(5, 7, '+');
+  m.fill(12, 13, 7, 3, 'c').row(16, 12, 18, '#').set(15, 15, 'o').set(13, 13, '+').set(18, 13, '!');
+  m.fill(20, 5, 6, 2, 'c').row(7, 20, 25, '#').set(22, 6, 'o').set(24, 5, '+');
+  m.fill(26, 13, 10, 3, 'c').row(16, 26, 35, '#').set(30, 15, 'o').set(34, 13, '+');
+  m.fill(39, 9, 5, 2, 'c').row(11, 39, 43, '#').set(41, 10, 'o');
+  // groundwater in the dust itself
+  m.set(32, 4, 'O').set(45, 15, 'O');
+  m.mon(MON.ant, 4, 8).mon(MON.worm, 12, 15).mon(MON.mole, 26, 15).mon(MON.ant, 20, 6).mon(MON.worm, 39, 10);
+  m.link(44, 0, 'next');
+  return { m, start: at(2, 2), size: [W, H] };
+}

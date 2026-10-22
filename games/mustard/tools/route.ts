@@ -78,3 +78,43 @@ export async function theMound(bot: Bot): Promise<void> {
     await leave(bot, bot.walk(68, 'the sunny patch'), 'the sunny patch');
   });
 }
+
+/** 2. Deep down in the dust: five drops of water, then up through the crack. */
+export async function theDust(bot: Bot): Promise<void> {
+  expect(bot, 3, 'the dust');
+  const go = (dir: 'left' | 'right' | 'up' | 'down', to: number, label = '') => must(bot, bot.dig(dir, to, label), label || `${dir} to ${to}`);
+  await carefully(bot, 'the first cave', 10, async () => {
+    await go('right', 14);
+    await go('down', 8);
+    await go('left', 10, 'into the first cave');
+    await must(bot, bot.walk(7, 'its drop of water'), 'water 1');
+    await must(bot, bot.walk(10.5, 'back to the roots'), 'back');
+  });
+  await carefully(bot, 'under the rocks', 10, async () => {
+    await go('right', 23);
+    await go('down', 14);
+    await go('left', 19, 'into the second cave');
+    await must(bot, bot.walk(15, 'its drop of water'), 'water 2');
+    await must(bot, bot.walk(18, 'the golden flower'), 'flower');
+    await must(bot, bot.walk(19, 'back to the roots'), 'back');
+  });
+  await carefully(bot, "the mole's cave", 10, async () => {
+    await go('right', 26, "into the mole's cave");
+    await must(bot, bot.walk(30, 'its drop of water'), 'water 3');
+    await must(bot, bot.walk(32, 'under the groundwater'), 'under');
+    await go('up', 4, 'the groundwater');
+  });
+  await carefully(bot, 'the last cave', 10, async () => {
+    await go('right', 38);
+    await go('down', 10);
+    await go('right', 39, 'into the last cave');
+    await must(bot, bot.walk(41, 'its drop of water'), 'water 5');
+    await must(bot, bot.walk(43, 'the far wall'), 'wall');
+  });
+  if (water(bot) < 5) throw new Error(`only ${water(bot)} drops of water`);
+  await carefully(bot, 'up to the crack', 10, async () => {
+    await go('up', 1, 'under the sidewalk');
+    await go('right', 44);
+    await leave(bot, bot.hold('up', 30), 'through the crack');
+  });
+}

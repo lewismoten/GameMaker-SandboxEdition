@@ -4,7 +4,7 @@ import type { Light } from '../art/pal';
 import type { BlockBook } from '../blocks/blocks';
 import type { Form, MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
-import { mound, type Level } from './maps';
+import { dust, mound, type Level } from './maps';
 
 export interface LevelDef {
   file: string;
@@ -16,4 +16,7 @@ export interface LevelDef {
   mons: MonsterOptions;
 }
 
-export const LEVELS: LevelDef[] = [{ file: 'mound', desc: 'The Mound', light: 'dawn', build: mound, form: 'seed', snd: 'garden', mons: {} }];
+export const LEVELS: LevelDef[] = [
+  { file: 'mound', desc: 'The Mound', light: 'dawn', build: mound, form: 'seed', snd: 'garden', mons: {} },
+  { file: 'dust', desc: 'Deep Down in the Dust', light: 'under', build: dust, form: 'sprout', snd: 'dust', mons: {} },
+];

@@ -148,6 +148,13 @@ export class Bot {
     return r;
   }
 
+  /** Digs (or climbs, or walks) along one axis until the seed reaches level column/row `to`. */
+  async dig(dir: 'left' | 'right' | 'up' | 'down', to: number, label = '', max = 400): Promise<Result> {
+    const goal = to * 20;
+    const check = () => (dir === 'left' ? this.px.x <= goal : dir === 'right' ? this.px.x >= goal : dir === 'up' ? this.px.y <= goal : this.px.y >= goal);
+    return this.until(dir, check, label || `dug ${dir} to ${to}`, max);
+  }
+
   /** Holds `key` until `check` says so (or `max` ticks: then it fails). */
   async until(key: keyof typeof SCAN | undefined, check: () => boolean, label: string, max = 300): Promise<Result> {
     if (key) this.sim.press(SCAN[key]);
