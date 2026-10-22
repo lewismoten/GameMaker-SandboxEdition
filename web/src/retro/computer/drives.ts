@@ -15,6 +15,7 @@ import { Vga } from '../../vga/shared/vga';
 import { h } from '../../editor/core/ui';
 import type { GmInstallEntry } from '../../../scripts/cdGames';
 import { MonitorMode, ComputerOptions, AUTOEXEC, CONFIG_SYS } from './setup';
+import bbsGifs from '../bbs/gallery.json';
 
 export abstract class ComputerDrives {
   // Defined by a later layer (see the chain in the header comment).
@@ -155,6 +156,7 @@ export abstract class ComputerDrives {
         liveFolder('GM', () => this.gmFolder(true)),
         folder('COMM', () => [
           file('TERMINAL.EXE', 211_340, { run: { kind: 'terminal' } }),
+          file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
           textFile(
             'PHONE.LST',
             'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     412-555-0177  14400 N81  Major BBS, 8 lines\n',
@@ -163,6 +165,14 @@ export abstract class ComputerDrives {
         liveFolder('DOWNLOAD', async () => {
           const cat = await this.catalog();
           return this.downloads.list().flatMap((id) => {
+            // a picture from the BBS's GIF Gallery
+            const gif = bbsGifs.find((f) => f.name === id);
+            if (gif)
+              return [
+                file(gif.name, gif.bytes, {
+                  read: () => fetch(`./bbs/${gif.name}`).then(async (r) => (r.ok ? new Uint8Array(await r.arrayBuffer()) : new Uint8Array())),
+                }),
+              ];
             const g = cat.find((c) => c.id === id);
             if (!g) return [];
             return [

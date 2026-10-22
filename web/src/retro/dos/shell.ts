@@ -255,6 +255,7 @@ export class Shell {
       'GM          Start Game-Maker (C:\\GM)',
       'PLAYGAME    Play a Game-Maker game',
       'TERMINAL    Dial the Game-Maker shareware BBS',
+      'VPIC        View a GIF picture (VPIC \\DOWNLOAD\\TEDDY.GIF)',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);
