@@ -3,7 +3,7 @@
 // waterwheel turning (two pictures taking turns), the miller's grain hoist and its loft,
 // the high bank, the calm pool below it, the beach and the charging post by the boat ramp.
 import { Pixels } from '../../../kit/pixels';
-import { blob, micro, speckle } from '../art/draw';
+import { blob, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, leaves, planks, r, sky, trunk, tuft } from '../blocks/tiles';
 import { sign, water } from './common';
