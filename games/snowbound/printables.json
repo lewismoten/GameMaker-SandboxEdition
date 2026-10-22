@@ -256,23 +256,19 @@
               "a": "In the park across Gale Street, find your snowman at the bottom of the park and the red mitten just below it. Walk down into the pines there: the trail runs down, right and down again to a hollow. Press Enter on the felt egg to pick it up, then push the frozen toboggan for a ride to Jamie Street.",
               "sketch": {
                 "rows": [
-                  "    o",
-                  " T  v  T",
-                  " T  .  T",
-                  " T  .  T",
-                  "    ....  T",
-                  " T     .  T",
-                  "   T   .  T",
-                  "  T        T",
-                  "  T        =",
-                  "  T     X  T",
-                  "   TTTTTTTT"
+                  "   o",
+                  "T  v  T",
+                  "T  ....  T",
+                  "T     v  T",
+                  " T      =",
+                  " T   X   T",
+                  "  TTTTTTT"
                 ],
                 "labels": [
-                  { "x": 6, "y": 0, "text": "SNOWMAN" },
-                  { "x": 9, "y": 1, "text": "MITTEN" },
-                  { "x": 13, "y": 8, "text": "TOBOGGAN" },
-                  { "x": 13, "y": 9, "text": "FELT EGG" }
+                  { "x": 5, "y": 0, "text": "SNOWMAN" },
+                  { "x": 8, "y": 1, "text": "MITTEN" },
+                  { "x": 9, "y": 4, "text": "TOBOGGAN" },
+                  { "x": 10, "y": 5, "text": "FELT EGG" }
                 ]
               }
             }
