@@ -989,11 +989,15 @@ registerEditor(['gam'], (host, project, file) => {
   renderTools();
   renderSide();
   renderPanel();
+  // the board gives up the height of a toolbar that wraps onto a second row
+  const toolsSize = new ResizeObserver(() => grator.style.setProperty('--grator-tools-h', `${tools.offsetHeight}px`));
+  toolsSize.observe(tools);
   requestAnimationFrame(fit);
   return () => {
     stopKeys();
     stopWatching();
     resize.disconnect();
+    toolsSize.disconnect();
     wide?.removeEventListener?.('change', onWide);
     if (raf) cancelAnimationFrame(raf);
     audio.stopSong();
