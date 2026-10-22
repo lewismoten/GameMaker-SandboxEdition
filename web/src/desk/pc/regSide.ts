@@ -33,7 +33,8 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   let shown = { manual: false, card: false };
   let narrowTab: 'manual' | 'card' = 'manual';
   let pageNo = 0;
-  let mark = false;
+  let mark = true; // the asked paragraph and word are marked until the user hides the marks
+  let cardClosed = false; // the user put the card away: GM's menu leaves it away
   let guide: Guide | undefined;
 
   const live = h('div', { class: 'rs-live', role: 'status', 'aria-live': 'polite' });
@@ -49,7 +50,25 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   const pageView = h('div', { class: 'rs-page', tabIndex: 0, role: 'region', 'aria-label': 'Guide page' });
   const prevBtn = h('button', { type: 'button', class: 'rs-btn', ...keepFocus, onclick: () => turn(-1) }, '‹ Back');
   const nextBtn = h('button', { type: 'button', class: 'rs-btn', ...keepFocus, onclick: () => turn(1) }, 'Next ›');
-  const markBtn = h('button', { type: 'button', class: 'rs-btn', 'aria-pressed': 'false', ...keepFocus, onclick: () => toggleMark() }, 'Show the paragraph');
+  const markBtn = h('button', { type: 'button', class: 'rs-btn', 'aria-pressed': 'true', ...keepFocus, onclick: () => toggleMark() }, 'Mark the word');
+  // for a phone (no keyboard): the answer typed here goes to GM as if typed on the screen
+  const answerIn = h('input', { id: 'rs-answer', class: 'rs-answer-in', type: 'text', maxLength: 15, autocomplete: 'off', autocapitalize: 'characters', spellcheck: false });
+  const answer = h(
+    'form',
+    {
+      class: 'rs-answer',
+      onsubmit: (e: Event) => {
+        e.preventDefault();
+        const word = answerIn.value.trim();
+        if (!word || !desk?.type) return;
+        desk.type(`${word}\n`);
+        answerIn.value = '';
+      },
+    },
+    h('label', { for: 'rs-answer' }, 'Word found'),
+    answerIn,
+    h('button', { type: 'submit', class: 'rs-btn' }, 'Type it'),
+  );
   const toCard = h('button', { type: 'button', class: 'rs-btn rs-swap', ...keepFocus, onclick: () => swap('card') }, 'Register instead');
   const manual = h(
     'section',
@@ -64,6 +83,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     askLine,
     pageView,
     h('div', { class: 'rs-nav' }, prevBtn, markBtn, nextBtn),
+    answer,
   );
 
   function drawPage(): void {
@@ -79,12 +99,52 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     const levels = [...new Set([...el.querySelectorAll('h1, h2, h3, h4')].map((x) => Number(x.tagName[1])))].sort();
     el.querySelectorAll('h1, h2, h3, h4').forEach((x) => x.setAttribute('aria-level', String(3 + levels.indexOf(Number(x.tagName[1])))));
     const q = ask?.kind === 'question' ? ask : undefined;
-    if (q && mark && pageNo === q.page) el.querySelectorAll('.mp-flow p')[q.paragraph - 1]?.classList.add('rs-mark');
+    const para = q && mark && pageNo === q.page ? el.querySelectorAll<HTMLElement>('.mp-flow p')[q.paragraph - 1] : undefined;
+    if (para && q) {
+      para.classList.add('rs-mark');
+      markWord(para, q.word);
+    }
     clear(pageView, el);
     pageTitle.textContent = `· page ${pageNo}`;
     prevBtn.disabled = pageNo <= 1;
     nextBtn.disabled = pageNo >= last;
     markBtn.setAttribute('aria-pressed', String(mark && !!q && pageNo === q.page));
+    markBtn.textContent = mark && q && pageNo === q.page ? 'Hide the marks' : 'Mark the word';
+  }
+
+  /** Wraps the paragraph's nth word (words split at spaces, as the copy check counts them) in a mark. */
+  function markWord(para: HTMLElement, n: number): void {
+    const walker = document.createTreeWalker(para, NodeFilter.SHOW_TEXT);
+    const texts: Text[] = [];
+    while (walker.nextNode()) texts.push(walker.currentNode as Text);
+    let count = 0;
+    let inWord = false;
+    const spans: [Text, number, number][] = [];
+    for (const t of texts) {
+      const v = t.data;
+      let start = -1;
+      for (let i = 0; i <= v.length; i++) {
+        const space = i === v.length || /\s/.test(v[i]);
+        if (i < v.length && !space && !inWord) {
+          inWord = true;
+          count++;
+        }
+        if (i < v.length && space) inWord = false;
+        const mine = i < v.length && !space && count === n;
+        if (mine && start < 0) start = i;
+        if (!mine && start >= 0) {
+          spans.push([t, start, i]);
+          start = -1;
+        }
+      }
+    }
+    for (const [t, a, b] of spans) {
+      const word = t.splitText(a);
+      word.splitText(b - a);
+      const m = h('mark', { class: 'rs-word' });
+      word.replaceWith(m);
+      m.append(word);
+    }
   }
 
   function turn(d: number): void {
@@ -98,7 +158,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     mark = !(mark && pageNo === q.page);
     pageNo = q.page;
     drawPage();
-    if (mark) say(`Paragraph ${q.paragraph} of page ${q.page} is marked. Count to word ${q.word}.`);
+    if (mark) say(`Paragraph ${q.paragraph} of page ${q.page} is marked, and word ${q.word} in it.`);
   }
 
   // ---- the registration card ---------------------------------------------------------
@@ -184,6 +244,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
 
   function close(which: 'manual' | 'card'): void {
     shown = { ...shown, [which]: false };
+    if (which === 'card' || root.classList.contains('rs-narrow')) cardClosed = true;
     // on a narrow window the sheet goes away whole
     if (root.classList.contains('rs-narrow')) shown = { manual: false, card: false };
     update();
@@ -199,6 +260,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
 
   function open(): void {
     shown = { manual: ask?.kind === 'question', card: true };
+    cardClosed = false;
     update();
   }
 
@@ -207,7 +269,10 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     const vw = innerWidth;
     const vh = innerHeight;
     const left = m ? m.left : 0;
-    const right = m ? vw - m.right : 0;
+    // the card goes right of the monitor and of the "Too retro?" note stuck to its corner
+    const note = monitor()?.querySelector('.sticky')?.getBoundingClientRect();
+    const edge = m ? Math.max(m.right, note && note.width ? note.right : 0) : 0;
+    const right = m ? vw - edge : 0;
     const wide = !!m && m.width > 200 && left >= 300 && right >= 260 && vh >= 560 && m.top < vh / 3;
     root.classList.toggle('rs-narrow', !wide);
     root.classList.toggle('rs-wide', wide);
@@ -218,7 +283,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     const chrome = 128; // header, question and page buttons
     manual.style.cssText = `left:${left - 14 - mw}px;top:${top}px;width:${mw}px;height:${Math.min(vh - top - 12, chrome + (mw - 20) * (8.5 / 5.5))}px`;
     const cw = Math.min(360, right - 28);
-    card.style.cssText = `left:${m.right + 14}px;top:${top}px;width:${cw}px;max-height:${vh - top - 12}px`;
+    card.style.cssText = `left:${edge + 14}px;top:${top}px;width:${cw}px;max-height:${vh - top - 12}px`;
   }
 
   function update(): void {
@@ -240,24 +305,34 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     const closed = !!ask && manual.hidden && card.hidden;
     reopen.hidden = !closed;
     reopen.textContent = isQ ? 'Owner’s Guide and registration card' : 'Registration card';
+    answer.hidden = !isQ || !desk?.type;
     root.classList.toggle('rs-on', !!ask);
   }
 
+  // GM goes from one step to the next (the copy check, then its menu) with a moment between:
+  // the panels wait that moment before they go, so they don't blink
+  let hiding: ReturnType<typeof setTimeout> | undefined;
   function setAsk(d: RegDesk | null): void {
-    const before = ask;
-    desk = d;
-    ask = d?.ask ?? null;
-    if (!ask) {
-      shown = { manual: false, card: false };
-      update();
+    clearTimeout(hiding);
+    if (!d) {
+      desk = null;
+      hiding = setTimeout(() => {
+        ask = null;
+        shown = { manual: false, card: false };
+        update();
+      }, 250);
       return;
     }
+    const before = ask;
+    desk = d;
+    ask = d.ask;
     const same = before && JSON.stringify(before) === JSON.stringify(ask);
     if (!same) {
-      shown = { manual: ask.kind === 'question', card: true };
+      if (ask.kind !== 'unregistered') cardClosed = false; // GM asks again: the card comes back
+      shown = { manual: ask.kind === 'question', card: !cardClosed };
       narrowTab = ask.kind === 'question' ? 'manual' : 'card';
-      mark = false;
-      problem(undefined);
+      mark = true;
+      if (before?.kind !== 'question' || ask.kind !== 'unregistered') problem(undefined);
     }
     if (ask.kind === 'question') {
       cardTitle.textContent = 'Register instead?';
@@ -272,6 +347,10 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
         });
       }
       drawPage();
+    } else if (ask.kind === 'unregistered') {
+      cardTitle.textContent = 'Register Game-Maker';
+      cardLead.textContent = 'GM is running unregistered, so it asks for a word from the guide every time it starts. Fill in the card and it won’t.';
+      if (!same && before?.kind === 'question') say('That’s the word. Game-Maker is running unregistered; the registration card stays beside the monitor.');
     } else {
       cardTitle.textContent = 'GM REGISTER';
       cardLead.textContent = 'Game-Maker asks for the name and number from this card. Fill them in here, or type them on the screen.';
