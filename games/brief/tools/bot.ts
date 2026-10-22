@@ -111,6 +111,8 @@ function firstStepAvoiding(sim: Sim, goals: { x: number; y: number }[], box: { x
 
 export class Bot {
   readonly keys: Recorded[] = [];
+  /** Each scene entered, with the game ticks played before it (a walkthrough's segments). */
+  readonly entries: { scene: number; base: number; key: number }[] = [];
   /** Game ticks played in earlier scenes (for a recording that spans scenes). */
   private base = 0;
   sim!: Sim;
@@ -146,6 +148,7 @@ export class Bot {
       this.ci,
     );
     this.sim.onKey = (key) => this.keys.push({ tick: this.base + this.sim.ticks, key });
+    this.entries.push({ scene, base: this.base, key: this.keys.length });
     this.scene = scene;
   }
 
