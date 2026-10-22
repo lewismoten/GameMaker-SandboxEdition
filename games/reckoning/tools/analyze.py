@@ -42,8 +42,12 @@ def main():
         ch = np.bincount(pc, weights=f[band] ** 2, minlength=12)
         top = NAMES[int(np.argmax(ch))]
         print('%5d s  %6.1f  %6.1f  %s%s' % (i, m[i], s[i], top, '  .' if m[i] < -55 else ''))
-    silent = int((m < -55).sum())
-    print('%d of %d seconds silent: no music bed under the voice' % (silent, n) if silent else 'no silence: check for a music bed')
+    q = SR // 4
+    k = len(mid) // q
+    quarter = 20 * np.log10(np.sqrt((mid[: k * q].reshape(k, q) ** 2).mean(1)) + 1e-9)
+    first = quarter[: 64 * 4]
+    silent = int((first < -55).sum())
+    print('first minute: %d of %d quarter seconds silent (under -55 dB)%s' % (silent, len(first), ': no music bed under the voice' if silent > 10 else ''))
     if '--no-whisper' in sys.argv:
         return
     import whisper  # openai-whisper, the cached "base" model
