@@ -1,15 +1,14 @@
 // Demo previews: a game's title-screen demo (.REC, start scene slot 11) playing inside a
 // small screen on the page, such as a home page card or the selected game. Only one plays
 // at a time: it stops when another starts, when it scrolls out of view, or when the
-// recording runs out. It starts silent; the sound can be turned on (and stays on for the
-// next preview until it is turned off).
+// recording runs out. It plays with the demos' sound choice (demoAudio.ts: None, Sound
+// Blaster or PC speaker), silent until the visitor has used the page.
 //
 // A game without a title demo can still show one: a CD game may have a demo added for this
 // edition (extraDemos.ts, kept apart from its files), and any other game an "attract
 // mode" (attractDemo.ts) that walks its hero back and forth. `kind` tells them apart so the
 // page can say which it is.
-import { AudioEngine } from '../audio/engine';
-import { getVolume, output } from '../audio/output';
+import { DemoAudioEngine, demoAudio, onDemoAudio, type DemoAudio } from './demoAudio';
 import { parseGame } from '../formats/game';
 import type { Session } from '../engine/scene';
 import { mountPlayer, type PlayerHandle } from '../player/player';
@@ -135,23 +134,11 @@ function demoSource(files: GameFiles, gam: string, attract: boolean): DemoSource
 /** True once the visitor has clicked or typed on the page: sound may start without asking. */
 const mayPlaySound = () => (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation?.hasBeenActive ?? false;
 
-let soundOn = false;
-
-/** Sound that can be silenced, and that never asks the browser for audio before the visitor has used the page. */
-class PreviewAudio extends AudioEngine {
-  constructor(public muted: boolean) {
-    super();
-  }
-
+/** The demos' sound, which never asks the browser for audio before the visitor has used the page (or for None). */
+class PreviewAudio extends DemoAudioEngine {
   override async resume(): Promise<void> {
-    if (this.muted && !this.context && !mayPlaySound()) return;
+    if (!this.context && (this.mode === 'none' || !mayPlaySound())) return;
     await super.resume();
-    this.applyMute();
-  }
-
-  applyMute(): void {
-    const ctx = this.context;
-    if (ctx) (output(ctx) as GainNode).gain.value = this.muted ? 0 : getVolume();
   }
 }
 
@@ -162,16 +149,13 @@ export interface DemoPreview {
   readonly inGame: boolean;
   /** Resolves with `kind` once known (at once, unless an added demo is still being fetched). */
   readonly ready: Promise<DemoKind | undefined>;
-  readonly muted: boolean;
-  /** Turns the sound on or off (starting over, with its music, if no sound was allowed when it began). */
-  setMuted(muted: boolean): void;
+  /** The sound it plays with: the demos' choice (demoAudio.ts), followed as it changes. */
+  readonly audio: DemoAudio;
   stop(): void;
 }
 
 export interface DemoPreviewOptions {
   title: string;
-  /** Start with sound (defaults to the last choice on this page, silent at first). */
-  muted?: boolean;
   /** Play again from the start when the recording runs out. */
   loop?: boolean;
   /** Called once when it stops: ended, scrolled away, replaced by another or stopped. */
@@ -203,7 +187,6 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   let lastTick = 0;
   let inGame = false;
   let game = files;
-  let muted = o.muted ?? !soundOn;
   let audio: PreviewAudio | undefined;
   let player: PlayerHandle | undefined;
   let session: Session | undefined;
@@ -213,10 +196,10 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
   const start = () => {
     player?.stop();
     session = undefined;
-    const sound = (audio = new PreviewAudio(muted));
+    const sound = (audio = new PreviewAudio(demoAudio()));
     let played = false;
     let endedAt = 0;
-    const p = mountPlayer(host, game, gam, { title: o.title, playback: rec, preview: true, audio: sound, onSession: (s) => (session = s) });
+    const p = mountPlayer(host, game, gam, { title: o.title, playback: rec, preview: true, audio: sound, speakerOnly: sound.mode !== 'blaster', onSession: (s) => (session = s) });
     player = p;
     if (kind !== 'recorded' && o.tag !== false) {
       const tag = document.createElement('div');
@@ -261,22 +244,13 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
       return inGame;
     },
     ready: Promise.resolve(source).then((src) => src?.kind),
-    get muted() {
-      return muted;
-    },
-    setMuted(m: boolean) {
-      muted = m;
-      soundOn = !m;
-      // (still fetching an added demo: it starts with this choice)
-      if (!audio) return;
-      audio.muted = m;
-      // Sound held back until the visitor used the page: start over so the music plays too.
-      if (!m && !audio.context) start();
-      else audio.applyMute();
+    get audio() {
+      return audio?.mode ?? demoAudio();
     },
     stop() {
       if (stopped) return;
       stopped = true;
+      offAudio();
       if (current === entry) current = undefined;
       clearInterval(timer);
       seen.disconnect();
@@ -286,6 +260,13 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
       o.onStop?.();
     },
   };
+  // the choice changed: at once, or (sound held back until the visitor used the page) from the start
+  // (still fetching an added demo: it starts with the new choice)
+  const offAudio = onDemoAudio((m) => {
+    if (!audio) return;
+    if (m !== 'none' && !audio.context) start();
+    else audio.setMode(m, session);
+  });
   const entry = { stop: () => handle.stop() };
   current = entry;
   const begin = (src: DemoSource) => {

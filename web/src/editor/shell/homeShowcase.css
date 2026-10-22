@@ -78,13 +78,10 @@
   font-size: 56px;
 }
 
-.sc-glass .shot-icon.demo-sound {
+.sc-glass .demo-audio.demo-sound {
   left: auto;
   right: 10px;
   bottom: 10px;
-  width: 36px;
-  height: 36px;
-  font-size: 18px;
 }
 
 .sc-demo-btn {

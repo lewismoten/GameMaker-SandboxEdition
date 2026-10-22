@@ -15,6 +15,7 @@ import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
 import { showKeyMap } from '../keymap/keyMapView';
 import { demoButton } from '../../media/demo';
+import { demoAudioPicker } from '../../media/demoAudio';
 import { offerAddedDemo } from '../../media/addedDemo';
 import { catalogHasDemo, filesDemoKind, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
@@ -196,8 +197,8 @@ export function hasManual(game: HomeGame): boolean {
 }
 
 /**
- * Plays the game's demo inside `screen` (an element holding the picture), with a stop and a
- * sound button over it; returns a function that stops it. `onState` hears when it plays and stops.
+ * Plays the game's demo inside `screen` (an element holding the picture), with the demos'
+ * sound choice (None · SB · PC, media/demoAudio.ts) over it; returns a function that stops it. `onState` hears when it plays and stops.
  */
 export function demoInPicture(
   game: HomeGame,
@@ -207,18 +208,7 @@ export function demoInPicture(
   let preview: DemoPreview | undefined;
   let stopped = false;
   const host = h('div', { class: 'demo-screen', 'aria-hidden': 'true' });
-  const sound = h('button', { class: 'shot-icon demo-sound', type: 'button' });
-  const showSound = () => {
-    const muted = preview?.muted ?? true;
-    sound.textContent = muted ? '🔇' : '🔊';
-    sound.title = muted ? 'Turn the sound on' : 'Turn the sound off';
-    sound.setAttribute('aria-label', `${sound.title} (${game.title} demo)`);
-  };
-  sound.addEventListener('click', (e) => {
-    e.stopPropagation();
-    preview?.setMuted(!preview.muted);
-    showSound();
-  });
+  const sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
   const stop = () => {
     if (stopped) return;
     stopped = true;
@@ -239,7 +229,6 @@ export function demoInPicture(
         stop();
         return false;
       }
-      showSound();
       screen.classList.add('demo-playing');
       o.onState?.(true);
       return true;
