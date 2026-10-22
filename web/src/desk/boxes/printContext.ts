@@ -1,6 +1,6 @@
 // The paper in a Sandbox Software game's box (manual/printables, read only): the context its
 // renderers need, built the way the manual viewer builds it (manual/gameManual.ts).
-import { loadCatalog, withDetails, type CatalogEntry } from '../../project/files';
+import { isSandboxGame, loadCatalog, withDetails, type CatalogEntry } from '../../project/files';
 import { shotCache, type PrintContext } from '../../manual/printables/kit';
 import { CATALOG_CHANGED } from '../../project/catalogWatch';
 
@@ -16,7 +16,7 @@ export function printContext(listed: CatalogEntry): Promise<PrintContext | undef
       const entry = await withDetails(listed); // a listed entry holds only the manual's title
       const manual = entry.original?.manual;
       if (!manual) return undefined;
-      const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.original);
+      const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
       return { entry, family, printables: entry.original?.printables ?? {}, manual, shot: shotCache(entry) };
     })();
     cache.set(listed.id, p);
