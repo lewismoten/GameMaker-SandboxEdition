@@ -123,7 +123,7 @@ export const EGGS: readonly Egg[] = [
     name: 'The Velvet Curtain Egg',
     description: 'Deep theater-red felt with gold checkerboard trim, a black-and-white comedy mask appliquéd on the front, and a gold thread curtain-tie stitched around the middle.',
     credits: ['Performed by Doc Leo, hobo clown (standing backward in line, as usual)'],
-    lore: 'Case 13, never closed: one recipe card lifted in 1776, one root beer the family will not discuss, one kitchen door with flour on the knob. Last note, underlined twice: "Count the eggs again. Bakers always do."',
+    lore: 'Case 13, never closed: one recipe card lifted in 1776, one root beer the family will not discuss, one kitchen door with flour on the knob. Last note, underlined twice: "Count the eggs again. A baker always does."',
     look: { felt: '#8e1d2c', band: '#d6a53a', patch: '#f4f0e6', thread: '#f2cf6b', pattern: 'checks', motif: 'mask' },
     detect: { counter: 25, atLeast: 2 },
   },
