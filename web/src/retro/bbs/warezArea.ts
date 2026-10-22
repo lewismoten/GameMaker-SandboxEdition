@@ -7,11 +7,12 @@
 // of points gets the SysOp's leech amnesty rather than a locked door.
 import type { RetroHost } from '../host';
 import type { ProgramRef } from '../dos/vfs';
-import { attr, COLS, ROWS } from '../text/textScreen';
+import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';
+import { Pager, pageLabel } from './pager';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
@@ -134,38 +135,23 @@ async function accessCheck(t: Term, h: RetroHost): Promise<boolean> {
 export async function warezArea(t: Term, h: RetroHost): Promise<void> {
   if (!(await accessCheck(t, h))) return;
   const s = h.screen;
-  const list = async () => {
-    s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
-    s.cursorX = 0;
-    s.cursorY = 0;
-    t.line(boxTop('W)arez: 0-Day Elite Releases (shhh)'));
-    t.line(boxRow('|11  #  File name        Size  Description'));
-    t.line(boxBottom());
-    let lines = 4;
-    for (const [i, u] of WAREZ.entries()) {
-      const got = h.downloads.has(u.id) ? '|10*' : ' ';
-      const desc = u.diz.filter((l) => !/^-+$/.test(l)); // as Renegade listed a DIZ, without its rules
-      desc.forEach((l, j) =>
-        t.line(j === 0 ? `|11${String(i + 1).padStart(2)} ${got}|15${u.zip.padEnd(12)}|14${commas(u.bytes).padStart(9)} |07${l}` : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`),
-      );
-      lines += desc.length;
-      if (lines > 12 && i < WAREZ.length - 1) {
-        if (!(await t.more())) break;
-        lines = 0;
-      }
-    }
-    t.line(`|10*|07 = already in C:\\DOWNLOAD   |12Not FREE:|07 a file point a ZIP. You have |14${filePoints(account())}|07.`);
-  };
-  await list();
+  const pager = new Pager(t, {
+    header: (p, n) => [boxTop(`W)arez: 0-Day Elite Releases (shhh)${n > 1 ? ` ${pageLabel(p, n)}` : ''}`), boxRow('|11  #  File name        Size  Description'), boxBottom()],
+    entries: () =>
+      WAREZ.map((u, i) => {
+        const got = h.downloads.has(u.id) ? '|10*' : ' ';
+        const desc = u.diz.filter((l) => !/^-+$/.test(l)); // as Renegade listed a DIZ, without its rules
+        return desc.map((l, j) => (j === 0 ? `|11${String(i + 1).padStart(2)} ${got}|15${u.zip.padEnd(12)}|14${commas(u.bytes).padStart(9)} |07${l}` : `${' '.repeat(26)}|${j === desc.length - 1 ? '08' : '07'}${l}`));
+      }),
+    footer: () => [`|10*|07 = already in C:\\DOWNLOAD   |12Not FREE:|07 a file point a ZIP. You have |14${filePoints(account())}|07.`],
+  });
+  pager.show();
   for (;;) {
-    t.print('|11D# to download, L to list again, Q to quit: |15');
+    t.print(`|11D# to download, ${pager.keys()}|15L|07 to list again, |15Q|07 to quit: |15`);
     const answer = ((await readLine(s, h.keys, [], 6, attr(15, 0))) ?? 'Q').trim().toUpperCase();
     t.line();
+    if (pager.turn(answer)) continue;
     if (!answer || answer === 'Q') return;
-    if (answer === 'L') {
-      await list();
-      continue;
-    }
     const u = WAREZ[Number(answer.replace(/^D/, '')) - 1];
     if (!u) t.line('|12No such file.');
     else await download(t, h, u);

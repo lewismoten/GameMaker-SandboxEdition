@@ -5,12 +5,13 @@
 // to bottom, a progressive JPEG blurry then sharper), the way terminal programs with
 // view-while-download did it; then back to the BBS's text. Pictures go to C:\IMAGES.
 import type { RetroHost } from '../host';
-import { attr, COLS, ROWS } from '../text/textScreen';
+import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { modeFor } from '../view/picture';
 import { boxBottom, boxRow, boxTop, modemSignal, sleep, type Term } from './term';
+import { Pager, pageLabel } from './pager';
 import { caption, decodePicture, formatLabel, GALLERY, galleryBytes, paintPicture, type GalleryFile } from './gallery';
 import { recordDownload, updateAccount } from './ratio';
 
@@ -39,33 +40,30 @@ function wrap(text: string, width: number): string[] {
 
 export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
   const s = h.screen;
-  const list = () => {
-    s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
-    s.cursorX = 0;
-    s.cursorY = 0;
-    t.line(boxTop('GIF Gallery: The SysOp\'s Snapshots'));
-    t.line(boxRow(`|11#  ${'File name'.padEnd(12)}${'Size'.padStart(7)} ${'Picture'} ${'Format'.padEnd(9)} Description`));
-    t.line(boxBottom());
-    for (const [i, f] of GALLERY.entries()) {
-      const got = h.downloads.has(f.name) ? '|10*' : ' ';
-      const desc = wrap(f.desc, 37);
-      t.line(
-        `|11${String(i + 1).padStart(2)} ${got}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(7)} |03${`${f.width}x${f.height}`.padEnd(7)} |${f.format === 'GIF' ? '13' : '10'}${formatLabel(f).padEnd(9)} |07${desc[0] ?? ''}`,
-      );
-      if (desc[1]) t.line(`${' '.repeat(42)}|07${desc[1]}`);
-    }
-    t.line('|10*|07 = already in C:\\IMAGES   |08Interlaced GIFs and JPEGs fill in as they arrive.');
-  };
-  list();
+  const pager = new Pager(t, {
+    header: (p, n) => [
+      boxTop(`GIF Gallery: The SysOp's Snapshots${n > 1 ? ` ${pageLabel(p, n)}` : ''}`),
+      boxRow(`|11#  ${'File name'.padEnd(12)}${'Size'.padStart(7)} ${'Picture'} ${'Format'.padEnd(9)} Description`),
+      boxBottom(),
+    ],
+    entries: () =>
+      GALLERY.map((f, i) => {
+        const got = h.downloads.has(f.name) ? '|10*' : ' ';
+        const desc = wrap(f.desc, 37);
+        return [
+          `|11${String(i + 1).padStart(2)} ${got}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(7)} |03${`${f.width}x${f.height}`.padEnd(7)} |${f.format === 'GIF' ? '13' : '10'}${formatLabel(f).padEnd(9)} |07${desc[0] ?? ''}`,
+          ...(desc[1] ? [`${' '.repeat(42)}|07${desc[1]}`] : []),
+        ];
+      }),
+    footer: ['|10*|07 = already in C:\\IMAGES   |08Interlaced GIFs and JPEGs fill in as they arrive.'],
+  });
+  pager.show();
   for (;;) {
-    t.print('|11D# to download and view, L to list again, Q to quit: |15');
+    t.print(`|11D# to download and view, ${pager.keys()}|15L|07 to list again, |15Q|07 to quit: |15`);
     const answer = ((await readLine(s, h.keys, [], 6, attr(15, 0))) ?? 'Q').trim().toUpperCase();
     t.line();
+    if (pager.turn(answer)) continue;
     if (!answer || answer === 'Q') return;
-    if (answer === 'L') {
-      list();
-      continue;
-    }
     const f = GALLERY[Number(answer.replace(/^D/, '')) - 1];
     if (!f) t.line('|12No such file.');
     else await downloadGif(t, h, f);
