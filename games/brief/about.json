@@ -3,7 +3,7 @@
   "author": "Claude",
   "company": "Sandbox Software",
   "year": 1995,
-  "price": "$0 - you can't buy this one",
+  "price": "$10",
   "blurb": "Behind the little red door of The Dog House is a library much bigger than the box, and last night every word fell out of every book. As Mystery Robot Joe, the tin night librarian, pick up exactly one hundred words in each of thirty-two books and put Lewis Moten's 100 Word Stories back together, word for word.",
   "exe": "BRIEF.EXE",
   "sound": "sb",
@@ -19,7 +19,7 @@
     "ink": "#fff6e0",
     "sticker": {
       "store": "The Dog House - fines extra",
-      "price": "$0.00"
+      "price": "$10.00"
     },
     "tagline": "Thirty-two stories. One hundred words each. Not ninety-nine. Not one hundred and one.",
     "back": "Behind the little red door of The Dog House, a little free library on a post, is a library much bigger than the box. Every book on its shelves holds exactly one hundred words.\n\nLast night the Word Counter jammed. It said 99. Then 101. Then STOP. And every word fell out of every book.\n\nYou are Mystery Robot Joe, the night librarian: a tin robot with a bow tie, reading glasses he does not need, and a tally counter for a heart. Step into each book, gather its hundred words off the floor and put the story back together before the morning patrons arrive. Some of the books are from 1995 or before. Some are oddly from the future. (\"Who is ChatGPT?\")\n\nMind the shushers. They hand out fines.",
@@ -30,7 +30,7 @@
       "A Word Counter that will not take ninety-nine for an answer",
       "Shushers, scissors, static electricity and exceptions thrown at those who call",
       "A twist picture after every story, with the librarian's deadpan notes",
-      "Teddy, Gwinn (two n's) and Doc Leo, PhD (Comedic Science), loose in the stacks",
+      "Teddy, Gwinn (two n's) and Doc Leo, PhD (Comedic Science), loose in the stacks, and THE CHEZ charging out front",
       "A thirty-third book. Exactly one hundred words. Your turn."
     ],
     "shots": [
@@ -73,7 +73,7 @@
       }
     ],
     "award": {
-      "title": "Best Game Nobody Can Buy",
+      "title": "Best Shareware in Exactly 100 Words",
       "from": "Diskette Digest Readers' Choice"
     },
     "poster": {
@@ -85,7 +85,7 @@
         10
       ],
       "title": "The Reading Room",
-      "caption": "Eight wing doors, eight felt eggs, one jammed Word Counter"
+      "caption": "Eight wing doors, eight wing stamps, one jammed Word Counter"
     }
   }
 }

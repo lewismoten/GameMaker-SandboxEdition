@@ -15,7 +15,7 @@
       "address": "Reading Room Desk, The Tiny Pockets Library, behind the red door of The Dog House",
       "date": "The night of the jam",
       "to": "To the night librarian",
-      "body": "<p>Joe,</p><p>I jammed. I am not proud of it. I said 99. Then I said 101. Then I said STOP, which is not even a number. By the time I came to, every word had fallen out of every book on every shelf.</p><p>Here is what I need. Every book holds <b>one hundred words</b>. I will open THE END of a book for exactly that many, and not one fewer. Pick them up off the floor. All of them. The slips say how many words each is worth; I am told some of them are paragraphs. Short paragraphs.</p><p>The shushers mean well. They will still fine you, a point at a time. So will the scissors, the static, the reporters, and a twister I would rather not discuss.</p><p>When four stories are back in a wing, that wing's egg cup gate in the Reserve Stacks will let you through. I check. I do not collect. Past the gates there is one more book. Do not ask me what is in it. I only count.</p><p>THE END is the only way out of a book. Nobody can take your words in there, so you can always finish. Finish.</p>",
+      "body": "<p>Joe,</p><p>I jammed. I am not proud of it. I said 99. Then I said 101. Then I said STOP, which is not even a number. By the time I came to, every word had fallen out of every book on every shelf.</p><p>Here is what I need. Every book holds <b>one hundred words</b>. I will open THE END of a book for exactly that many, and not one fewer. Pick them up off the floor. All of them. The slips say how many words each is worth; I am told some of them are paragraphs. Short paragraphs.</p><p>The shushers mean well. They will still fine you, a point at a time. So will the scissors, the static, the reporters, and a twister I would rather not discuss.</p><p>When four stories are back in a wing, that wing's stamp gate in the Reserve Stacks will let you through. I check. I do not collect. Past the gates there is one more book. Do not ask me what is in it. I only count.</p><p>THE END is the only way out of a book. Nobody can take your words in there, so you can always finish. Finish.</p>",
       "signature": "The Word Counter\n(099... 101... sorry. 100.)",
       "style": "type"
     },
@@ -47,7 +47,7 @@
       "intro": "A library much bigger than the box. Hang it by your computer, and keep it brief.",
       "panels": [
         { "map": "library.map", "x": 0, "y": 0, "w": 16, "h": 10, "caption": "The reading room: eight wing doors and the Word Counter" },
-        { "map": "library.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Reserve Stacks: eight egg cup gates and one more book" },
+        { "map": "library.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Reserve Stacks: eight stamp gates and one more book" },
         { "map": "clown.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "Clown Alley: The Scissor Situation" },
         { "map": "docks.map", "x": 48, "y": 0, "w": 16, "h": 10, "caption": "The Docks: Legend at the Water's Edge" },
         { "map": "yard.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Backyard: Superpowers of Spooker Boy" },
@@ -79,7 +79,7 @@
         {
           "head": "The Reserve Stacks",
           "hints": [
-            { "q": "The egg cup gates won't open.", "a": "Each gate wants four stories restored in its own wing. The plate on the gate says 4. It means it." },
+            { "q": "The stamp gates won't open.", "a": "Each gate wants four stories restored in its own wing. The plate on the gate says 4. It means it." },
             { "q": "What is the thirty-third book?", "a": "Exactly one hundred words. Whose hundred is up to you." }
           ]
         },
@@ -102,8 +102,8 @@
   ],
   "news": [
     {
-      "head": "A library nobody can buy",
-      "html": "<p>Our lawyers asked us to print a price for <b>KEEP IT BRIEF!</b>, so we printed one: $0, and you still can't buy it. Thirty-two stories, one hundred words each, and a tin librarian who refuses to round. If you have a copy, you found it. Keep it brief.</p>"
+      "head": "A library in a box on a post",
+      "html": "<p>Our lawyers asked us to keep the press release for <b>KEEP IT BRIEF!</b> under one hundred words, so: thirty-two stories, one hundred words each, a tin librarian who refuses to round, and shushers who fine. Register for $10. Exactly $10. The Word Counter will not make change. Keep it brief.</p>"
     }
   ]
 }
