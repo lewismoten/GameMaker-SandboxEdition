@@ -57,6 +57,7 @@
 }
 
 .box-list-thumb {
+  position: relative;
   display: grid;
   flex: none;
   place-items: start center;
@@ -69,12 +70,11 @@
   line-height: 40px;
 }
 
-.box-list-thumb .pp-paper {
-  width: 54px;
-}
-
-.box-list-thumb .pp-paper.wide {
-  align-self: center;
+.box-list-shrunk {
+  position: absolute;
+  left: 0;
+  width: 432px;
+  transform-origin: 0 0;
 }
 
 .box-list-thumb .pp-sheet {

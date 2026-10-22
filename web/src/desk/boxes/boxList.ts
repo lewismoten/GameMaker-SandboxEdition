@@ -6,6 +6,11 @@ import './boxList.css';
 import { h } from '../../editor/core/ui';
 import type { BoxItem } from '../../manual/printables/viewer';
 
+/** The pictures: THUMB_W x THUMB_H, each piece laid out LAYOUT pixels wide and shrunk to fit. */
+const THUMB_W = 54;
+const THUMB_H = 40;
+const LAYOUT = 432;
+
 /**
  * Opens the box's contents viewer (through `open`) and turns to one piece in its tray, once the
  * tray is there (a manual can take a few seconds to lay out).
@@ -60,9 +65,12 @@ export function boxList(o: BoxListOptions): HTMLElement {
       const first = sheets[0];
       const thumb = list.children[i]?.querySelector('.box-list-thumb');
       if (!first || !thumb) continue;
-      first.el.classList.add(first.w >= first.h ? 'wide' : 'tall');
+      // laid out at a readable size and shrunk, so pieces sized in pixels look as they do full size
+      first.el.style.width = `${LAYOUT}px`;
       first.el.inert = true; // a picture of the piece: nothing in it to reach
-      thumb.replaceChildren(first.el);
+      const tall = (THUMB_W * first.h) / first.w;
+      const shrunk = h('span', { class: 'box-list-shrunk', style: `transform: scale(${THUMB_W / LAYOUT}); top: ${Math.max(0, (THUMB_H - tall) / 2)}px` }, first.el);
+      thumb.replaceChildren(shrunk);
     }
   });
   return h(
