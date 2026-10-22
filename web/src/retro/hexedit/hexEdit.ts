@@ -1,6 +1,6 @@
 // HEXEDIT.EXE in C:\DOS on the desk PC: a 1994-style hex viewer and editor for looking at how
-// Game-Maker's files are built. Offset, sixteen bytes in hex and the same in CP437 on each
-// line; for Game-Maker's formats (and the media files it plays) a structure panel names the
+// Game-Maker's files are built. Offset, sixteen bytes in hex and the same as text on each
+// line (printable ASCII, dots for the rest); for Game-Maker's formats (and the media files it plays) a structure panel names the
 // field under the cursor, colors each field's bytes and lists the sections to jump to
 // (structure.ts, structureMedia.ts). It views first, as HIEW did: E starts typing over bytes
 // in hex or ASCII, F10 writes the file back where DOS could (hexFiles.ts), with a .BAK first.
@@ -31,7 +31,7 @@ export const HEXEDIT_HELP = [
 ];
 
 /** Field colors on blue, cycled field by field. */
-const COLORS = [11, 14, 10, 13, 15, 9];
+const COLORS = [11, 14, 10, 13, 15];
 const HEX_X = 11;
 const ASC_X = 61;
 const TOP = 2;
@@ -471,7 +471,9 @@ function draw(h: RetroHost, t: State): void {
         aa = t.ascii ? attr(0, 15) : attr(0, 7);
       }
       s.write(hexX(i), y, a, hex(b));
-      s.put(ASC_X + i, y, b === 0 || b === 255 ? 0xfa : b, at === t.pos ? aa : inField ? attr(fg, 0) : b === 0 || b === 255 ? attr(8, 1) : attr(fg === 7 ? 7 : fg, 1));
+      // printable ASCII as itself; the rest (which the 8x8 font draws as boxes) as a dot
+      const shown = b >= 0x20 && b < 0x7f;
+      s.put(ASC_X + i, y, shown ? b : 0xfa, at === t.pos ? aa : inField ? attr(shown ? fg : 7, 0) : shown ? attr(fg, 1) : attr(8, 1));
     }
   }
   // where in the file: a scroll bar on the right
@@ -494,7 +496,7 @@ function draw(h: RetroHost, t: State): void {
 function position(t: State): string {
   if (!t.buf.length) return 'The file is empty.';
   const b = t.buf[t.pos];
-  return `Offset ${hex(t.pos, 8)}h (${num(t.pos)})   Byte ${hex(b)}h = ${b}${b > 127 ? ` (${b - 256})` : ''}   ${t.undo.length ? `${num(t.undo.length)} bytes typed` : ''}`;
+  return `Offset ${hex(t.pos, 8)}h (${num(t.pos)})   Byte ${hex(b)}h = ${b}${b > 127 ? ` (${b - 256})` : ''}   ${t.undo.length ? `${num(t.undo.length)} byte${t.undo.length === 1 ? '' : 's'} typed` : ''}`;
 }
 
 function panel(h: RetroHost, t: State, cur: Leaf | undefined): void {
@@ -526,7 +528,7 @@ function panel(h: RetroHost, t: State, cur: Leaf | undefined): void {
     return;
   }
   line(0, 'Section', st.sections[cur.sect]?.name ?? '');
-  line(1, 'Field', cur.name ? `${cur.group} \xaf ${cur.name}` : cur.group, attr(COLORS[cur.color % COLORS.length], 1));
+  line(1, 'Field', cur.name ? `${cur.group} ► ${cur.name}` : cur.group, attr(COLORS[cur.color % COLORS.length], 1));
   line(2, 'Offset', `${hex(cur.off, 8)}h (${num(cur.off)})  ${num(cur.len)} byte${cur.len === 1 ? '' : 's'}  ${TYPE_NAMES[cur.type]}`);
   const v = cur.value;
   const shown = v === undefined ? `${cur.len > 16 ? `${num(cur.len)} raw bytes` : [...b.subarray(cur.off, cur.off + cur.len)].map((x) => hex(x)).join(' ')}` : typeof v === 'string' ? `"${v}"` : `${v}  (${hex(v < 0 ? v + 2 ** (8 * Math.min(cur.len, 4)) : v, cur.len * 2)}h)`;
