@@ -1,11 +1,15 @@
 // The sound sets: a PC speaker sound for every effect, each backed by a Sound Blaster .VOC.
 // The little noises are synthesized here (the clop of a hop, a camel's grumble as he kneels,
 // a coin's clink, a chime, a sip of water, a bleat when he's hurt, a long sigh as he faints,
-// a twinkle); the singing is cut from the song itself (clips.ts).
+// a twinkle); the singing is cut from the song itself (clips.ts): "Thread the needle, Brother
+// Camel!" for an extra life, "Drop that gold and run your race!" for every coin given away,
+// "Even a camel can dream!" for Space, "...squeeze on through!" as an eye gate opens or a thread
+// is mended, and "Hump down..." as the eye of the needle opens.
 import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
 import { rng } from '../../../kit/pixels';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
 import { SND } from '../ids';
+import { CLIPS, clipVoc } from './clips';
 
 /** White noise through a one-pole low-pass (0..1: how much of the new sample passes). */
 function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {
@@ -63,13 +67,12 @@ export function buildVocs(): Record<string, Uint8Array> {
   vocs.sigh = sample(1.0, voice((t) => 260 - t * 140, 600, 1000, 6, 0.08), { envelope: env(0.06, 0.9) });
   // a star caught: a twinkle
   vocs.twinkle = sample(0.45, mix([osc.sine((t) => 1800 + 900 * Math.sin(t * 50)), 0.5], [osc.sine(3600), 0.2]), { envelope: env(0.01, 1.8) });
-  // a gate opening: stone grinding aside
-  vocs.grind = sample(0.6, mix([lowNoise(9, (t) => 0.4 - t * 0.4), 0.7], [gate(lowNoise(10, 0.2), 0.2, 0.3), 0.5]), { envelope: env(0.02, 1.2) });
+  for (const name of CLIPS) vocs[name] = clipVoc(name);
   return vocs;
 }
 
 /** A level's .SND: which VOC each effect plays. */
-export function buildSoundSet(_place: Place): SoundSet {
+export function buildSoundSet(place: Place): SoundSet {
   const set = newSoundSet();
   const add = (n: number, name: string, freqs: Uint16Array) => {
     set.freqs[n] = freqs;
@@ -78,16 +81,16 @@ export function buildSoundSet(_place: Place): SoundSet {
   add(SND.help, 'sip', SPEAKER.rise(400, 900));
   add(SND.kill, 'twinkle', speaker((i) => (i < 6 ? 1800 + (i % 2) * 600 : 0)));
   add(SND.money, 'clink', SPEAKER.coin());
-  add(SND.pay, 'clink', speaker((i) => (i < 5 ? 2000 - i * 200 : 0)));
-  add(SND.life, 'chime', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
+  add(SND.pay, 'gold', speaker((i) => (i < 5 ? 2000 - i * 200 : 0)));
+  add(SND.life, 'thread', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
   add(SND.score, 'chime', speaker((i) => (i < 6 ? 1319 : i < 14 ? 1976 : 0)));
   add(SND.lose, 'sigh', SPEAKER.fall(600, 200));
   add(SND.gain, 'chime', speaker((i) => (i < 8 ? 900 + i * 120 : 0)));
-  add(SND.spend, 'grind', SPEAKER.noise(3, 60, 300));
+  add(SND.spend, place === 'eye' ? 'humpdown' : 'squeeze', SPEAKER.noise(3, 60, 300));
   add(SND.hop, 'clop', speaker((i) => (i < 3 ? 500 : i < 6 ? 0 : i < 9 ? 600 : 0)));
   add(SND.kneel, 'grumble', SPEAKER.noise(4, 70, 160));
   add(SND.hurt, 'bleat', SPEAKER.warble(500, 80, 2.4));
   add(SND.faint, 'sigh', SPEAKER.fall(500, 100));
-  add(SND.dream, 'twinkle', SPEAKER.arpeggio([523, 659, 784, 1047]));
+  add(SND.dream, 'dream', SPEAKER.arpeggio([523, 659, 784, 1047]));
   return set;
 }
