@@ -1,6 +1,6 @@
 // The numbers that tie Virus Blaster's ship, monsters, blocks, sounds and maps together.
 
-/** Character sequences (0-4 are Game-Maker's fixed ones; pick up and drop are unused). */
+/** Character sequences (0-4 are Game-Maker's fixed ones; drop is unused). */
 export const SEQ = {
   idle: 0,
   die: 1,
@@ -44,6 +44,7 @@ export const KEY = {
   q: 0x1071,
   e: 0x1265,
   space: 0x3920,
+  enter: 0x1c0d,
 } as const;
 
 /** Scan codes (for bots and demo recordings). */
@@ -63,6 +64,7 @@ export const SCAN = {
   q: 16,
   e: 18,
   space: 57,
+  enter: 28,
   esc: 1,
 } as const;
 

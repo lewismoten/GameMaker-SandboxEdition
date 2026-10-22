@@ -146,7 +146,7 @@ export type BlockProps = Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl' | '
  */
 export class BlockSet {
   readonly names: string[] = [];
-  private pics: Pixels[] = [];
+  private pics: (Pixels | undefined)[] = [];
   private props: BlockProps[] = [];
   constructor(
     readonly limit: number,
@@ -163,6 +163,17 @@ export class BlockSet {
     return this.names.length - 1;
   }
 
+  /** Adds a block at a fixed number, leaving the slots before it empty. */
+  addAt(n: number, name: string, pic: Pixels, props: BlockProps = {}): number {
+    if (this.names.length > n) throw new Error(`${this.kind}: block ${n} is taken (${name})`);
+    while (this.names.length < n) {
+      this.names.push(`(empty ${this.names.length})`);
+      this.pics.push(undefined);
+      this.props.push({});
+    }
+    return this.add(name, pic, props);
+  }
+
   has(name: string): boolean {
     return this.names.includes(name);
   }
@@ -174,15 +185,19 @@ export class BlockSet {
   }
 
   pic(name: string): Pixels {
-    return this.pics[this.id(name)];
+    const pic = this.pics[this.id(name)];
+    if (!pic) throw new Error(`${this.kind}: ${name} is an empty slot`);
+    return pic;
   }
 
   build(monsterId?: (name: string) => number, transparentPad = false): Block[] {
     const out: Block[] = [];
     this.names.forEach((name, i) => {
       const pr = this.props[i];
+      const pic = this.pics[i];
+      if (!pic) return void out.push(emptyBlock(i, transparentPad));
       const b = emptyBlock(i, transparentPad);
-      b.pixels = Uint8Array.from(this.pics[i].px);
+      b.pixels = Uint8Array.from(pic.px);
       const { next, touch, birth, ...rest } = pr;
       Object.assign(b, rest);
       if (next) b.nextBl = this.id(next);

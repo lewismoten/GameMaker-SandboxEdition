@@ -8,7 +8,8 @@ import { addCommon } from '../characters/sharedMonsters';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';
 import { Bestiary } from '../characters/mons';
 import type { Pal, Theme } from '../art/pal';
-import { addStageTiles, type StageArt, type TileOpts } from '../blocks/tiles';
+import { addStageTiles, pad, type StageArt, type TileOpts } from '../blocks/tiles';
+import { EGG_BLOCK, eggPic } from '../blocks/egg';
 
 export interface Kit {
   bs: BlockSet;
@@ -50,6 +51,8 @@ export function kit(art: StageArt, own: (bs: BlockSet) => void, virus: (b: Besti
   }
   own(bs);
   addStageTiles(bs, art, opts);
+  // the same number in every set: the inventory keeps only block numbers
+  bs.addAt(EGG_BLOCK, 'egg', eggPic(art.pal, pad(art)), { obj: 1, touch: 'pad' });
   const beasts = new Bestiary();
   addCommon(beasts, art.pal);
   virus(beasts);

@@ -129,8 +129,8 @@ export function buildShip(cb: BlockSet, drift: number): Character {
   setSeq(S[SEQ.hurt], [frame(fl, 0, dy), frame(s0, 0, dy), frame(fl, 0, dy), birth(SHOT_MON.shot), frame(s1, 0, dy), frame(fl, 0, dy), frame(s0, 0, dy)], {
     sound: SND.hurt,
   });
-  // pick up and drop are left without keys
-  setSeq(S[SEQ.pickup], [frame(s0, 0, dy)]);
+  // Enter picks up what the ship is over (the stages have nothing to pick up); drop has no key
+  setSeq(S[SEQ.pickup], [frame(s0, 0, dy)], { key: KEY.enter });
   setSeq(S[SEQ.drop], [frame(s0, 0, dy)]);
 
   const H = 6; // sideways speed

@@ -111,7 +111,7 @@ function gap(a: StageArt): Pixels {
   return t;
 }
 
-function pad(a: StageArt): Pixels {
+export function pad(a: StageArt): Pixels {
   const p = a.pal;
   const t = copy(a.floor(0));
   for (let y = 0; y < 20; y++)
