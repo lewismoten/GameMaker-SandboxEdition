@@ -13,6 +13,14 @@ const page = (lines: string[], pages = 1) => {
 export const TITLE = 'THIRD GOAT FROM THE LEFT';
 export const AUTHOR = 'The Bard of Bizarre';
 
+/**
+ * Who made the song: the lyrics, and the recording and cover art the game's music and clips come
+ * from. Used by LICENSE.TXT (the credits page and the README spell it out to fit their columns;
+ * about.json says the same in its blurb).
+ */
+export const SONG_CREDIT =
+  "lyrics written by ChatGPT from Lewis Moten's prompt (one of his 'bizarre gospels'); recording and cover art made with Riffusion (now Google Flow Music)";
+
 export const STORY = [
   page([
     'I was there that night in',
@@ -123,16 +131,15 @@ const CREDITS_TEXT = page(
     'Based on the song "Third Goat',
     'from the Left" by The Bard of',
     'Bizarre (Lewis Moten as his',
-    'hobo clown, Doc Leo).',
+    'hobo clown, Doc Leo), one of',
+    "the Bard's bizarre gospels.",
     '',
-    'Words and idea: Lewis Moten.',
-    'The recording was made with',
-    'Riffusion, an AI music tool',
-    '(later Producer.ai, now',
-    'Google Flow Music). This',
-    "game's FM music and sampled",
-    'sounds are made from it.',
-    'Song cover art: Riffusion.',
+    "Lyrics: ChatGPT, from Lewis's",
+    'prompt. Recording and cover',
+    'art: Riffusion (now Google',
+    "Flow Music). This game's FM",
+    'music and sampled sounds are',
+    'made from the recording.',
     'The Bard of Bizarre logo:',
     'DeepAI. Doc Leo photo: Lewis',
     'Moten.',
@@ -223,12 +230,14 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Third Goat from the
-  Left": words and idea by
-  Lewis Moten as The Bard of
-  Bizarre; the recording was
-  made with Riffusion (later
-  Producer.ai, now Google Flow
-  Music), as was its cover art.
+  Left": lyrics written by
+  ChatGPT from Lewis Moten's
+  prompt (one of his "bizarre
+  gospels" as The Bard of
+  Bizarre); the recording and
+  its cover art were made with
+  Riffusion (now Google Flow
+  Music).
   The logo was made with
   DeepAI; the Doc Leo photo is
   Lewis's own. The music and

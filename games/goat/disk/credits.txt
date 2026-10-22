@@ -5,16 +5,15 @@ Shareware from The Sofa BBS
 Based on the song "Third Goat
 from the Left" by The Bard of
 Bizarre (Lewis Moten as his
-hobo clown, Doc Leo).
+hobo clown, Doc Leo), one of
+the Bard's bizarre gospels.
 
-Words and idea: Lewis Moten.
-The recording was made with
-Riffusion, an AI music tool
-(later Producer.ai, now
-Google Flow Music). This
-game's FM music and sampled
-sounds are made from it.
-Song cover art: Riffusion.
+Lyrics: ChatGPT, from Lewis's
+prompt. Recording and cover
+art: Riffusion (now Google
+Flow Music). This game's FM
+music and sampled sounds are
+made from the recording.
 The Bard of Bizarre logo:
 DeepAI. Doc Leo photo: Lewis
 Moten.
@@ -28,6 +27,7 @@ Software Designs.
 
 Third goat from the left -
 forgotten but true!
+
 
 
 FREE TO SHARE

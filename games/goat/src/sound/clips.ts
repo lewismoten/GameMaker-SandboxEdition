@@ -1,4 +1,5 @@
-// Digitized clips of Lewis singing "Third Goat from the Left", as Sound Blaster .VOC files.
+// Digitized clips of the sung recording of "Third Goat from the Left" (made with Riffusion), as
+// Sound Blaster .VOC files.
 // The samples (clips/<name>.pcm: 8-bit unsigned mono at 11025 Hz) are cut from the recording by
 // games/goat/tools/cutClips.py, which reads the MP3 (not in the repo) and regenerates them
 // exactly. Game-Maker reads a VOC's size as 16 bits, so each stays under 40,000 bytes.

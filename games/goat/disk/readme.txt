@@ -66,12 +66,14 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Third Goat from the
-  Left": words and idea by
-  Lewis Moten as The Bard of
-  Bizarre; the recording was
-  made with Riffusion (later
-  Producer.ai, now Google Flow
-  Music), as was its cover art.
+  Left": lyrics written by
+  ChatGPT from Lewis Moten's
+  prompt (one of his "bizarre
+  gospels" as The Bard of
+  Bizarre); the recording and
+  its cover art were made with
+  Riffusion (now Google Flow
+  Music).
   The logo was made with
   DeepAI; the Doc Leo photo is
   Lewis's own. The music and

@@ -7,13 +7,18 @@ Bizarre's 1995 shareware
 notice, its fee and its
 address are part of the story:
 there is nothing to pay. The
-song is Lewis Moten's (as The
-Bard of Bizarre), recorded
-with Riffusion, an AI music
-tool.
+song is The Bard of Bizarre's
+(Lewis Moten's): lyrics
+written by ChatGPT from Lewis
+Moten's prompt (one of his
+'bizarre gospels'); recording
+and cover art made with
+Riffusion (now Google Flow
+Music).
 
 Made in 2026 by Lewis Moten,
 with AI help from Claude.
+
 Built with RSD Game-Maker (C)
 1991-95 Recreational Software
 Designs, MIT License 2014.
@@ -72,8 +77,3 @@ OTHERWISE, ARISING FROM, OUT
 OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
-
-
-
-
-

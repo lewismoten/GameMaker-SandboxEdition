@@ -23,7 +23,7 @@ import { demoRecording } from './src/demo';
 import { caravan, field, stable, town, ORIGIN, type Level } from './src/levels/maps';
 import { cardFli, faintFli, lostFli, storyFli, wonFlis, type Cast, type CardView, type LineView } from './src/screens/cartoons';
 import { buildScreens } from './src/screens/screens';
-import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
+import { CREDITS, INSTRUCTIONS, SONG_CREDIT, STORY, readme } from './src/screens/text';
 import { creditsSong, levelSongs, lostSong, storySong, titleSong, wonSong } from './src/sound/song';
 import { buildSoundSet, buildVocs, type Place } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
@@ -156,7 +156,7 @@ disk.put(
   'license.txt',
   licenseText(
     'Third Goat from the Left',
-    "The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song is Lewis Moten's (as The Bard of Bizarre), recorded with Riffusion, an AI music tool.",
+    `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
   ),
 );
 disk.write();
