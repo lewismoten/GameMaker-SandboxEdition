@@ -282,8 +282,8 @@ export function buildMonsterBlocks(pal: Pal) {
     foot(10, f ? 0 : 3);
     return done(p);
   };
-  book.add('feet0', feet(0), hurt(-10));
-  book.add('feet1', feet(1), hurt(-10));
+  book.add('feet0', feet(0), hurt(-6));
+  book.add('feet1', feet(1), hurt(-6));
   // The third goat from the left, grazing her way across the hillside. Friendly.
   const goat = (f: number) => {
     const p = P();

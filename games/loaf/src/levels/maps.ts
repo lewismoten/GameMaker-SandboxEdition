@@ -216,7 +216,7 @@ export function wicker(book: BlockBook): Level {
   m.fill(10, 1, 8, 4, 'o').set(14, 2, '%').set(11, 4, '+').set(15, 4, '+').set(12, 1, '|');
   // down the weave into R3, the long room with a weevil and a mouse
   m.col(17, 5, 9, 'Y');
-  m.fill(8, 10, 17, 3, 'o').set(9, 11, '%').set(22, 11, '%').text(12, 12, '+oo+').set(18, 10, '|');
+  m.fill(8, 8, 17, 5, 'o').set(9, 11, '%').set(22, 11, '%').text(12, 12, '+oo+').set(18, 8, '|');
   m.mon(MON.weevil, 10, 12).mon(MON.mouse, 18, 12);
   // R4, through the chaff to the west, a holy crumb on a basket bottom
   m.col(7, 11, 12, 'z');
