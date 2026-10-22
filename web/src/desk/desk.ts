@@ -800,6 +800,17 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   void loadCatalog().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
   );
+  // the felt eggs found in the Sandbox games (nothing at all until the first one)
+  let unEggs: (() => void) | undefined;
+  void import("../eggs/eggDisplay").then(({ eggDisplay }) => {
+    if (!desk.isConnected) return;
+    unEggs = eggDisplay((el) => {
+      // on the wall, after the poster and clipping when you Tab along it
+      const clip = desk.querySelector(".news-clipping");
+      if (clip) clip.after(el);
+      else desk.querySelector(".desk-scene")?.append(el);
+    });
+  });
   void sandboxShots().then((shots) => {
     for (const t of boxTiles.querySelectorAll<HTMLElement>(".tile")) {
       const shot = shots.find((s) => s.id === t.dataset.game);
@@ -815,6 +826,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     unfit();
     lamp.dispose();
     shelf?.dispose();
+    unEggs?.();
     removeWarp();
     capture.dispose();
     computer.screen.destroy();

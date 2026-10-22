@@ -1,0 +1,223 @@
+/* The felt eggs' shadow box on the desk's wall (eggs/eggDisplay.ts) and the egg viewer
+   (eggs/eggViewer.ts). On a phone the box stands on the desk under the PC. */
+.egg-perch {
+  order: 1;
+  justify-self: center;
+  margin: 0 auto 16px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 3px;
+  /* a dark stained frame, cream felt inside */
+  background:
+    radial-gradient(ellipse at 50% 30%, #f4ead2, #d9cba8 75%) padding-box,
+    linear-gradient(160deg, #6b4524, #3e2511 60%, #2a170a) border-box;
+  border: 7px solid transparent;
+  box-shadow:
+    inset 0 3px 6px rgba(0, 0, 0, 0.45),
+    3px 7px 10px rgba(0, 0, 0, 0.45);
+  cursor: zoom-in;
+  transform: scale(1.4);
+  transform-origin: 50% 0;
+}
+
+.egg-perch[hidden] {
+  display: none;
+}
+
+.egg-perch:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 3px;
+}
+
+.egg-row {
+  display: flex;
+  gap: 2px;
+}
+
+.egg-mini {
+  display: block;
+  width: 30px;
+  height: 40px;
+  filter: drop-shadow(1px 2px 1px rgba(60, 40, 10, 0.35));
+}
+
+@media (min-width: 961px) {
+  /* on the wall under the poster and the clipping, above the game shelf */
+  .desk-scene > .egg-perch {
+    position: absolute;
+    left: 176px;
+    top: 230px;
+    z-index: 1;
+    margin: 0;
+    transform: translateX(-50%) rotate(-0.6deg);
+    transition: transform 0.15s;
+  }
+
+  .desk-scene > .egg-perch:hover,
+  .desk-scene > .egg-perch:focus-visible {
+    transform: translateX(-50%) rotate(0deg) scale(1.06);
+  }
+}
+
+/* ---- the viewer --------------------------------------------------------------------------- */
+.eggv {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: radial-gradient(ellipse at 35% 45%, #3b3226, #17130e 75%);
+  color: #f4ead2;
+  font: 16px/1.45 Georgia, 'Times New Roman', serif;
+}
+
+.eggv-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.35);
+  font-family: system-ui, sans-serif;
+}
+
+.eggv-bar strong {
+  flex: 1;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+
+.eggv button {
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 1px solid #a89470;
+  border-radius: 6px;
+  background: #2c241a;
+  color: #f4ead2;
+  font: 600 14px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.eggv button:hover {
+  background: #44382a;
+}
+
+.eggv button:focus-visible,
+.eggv-canvas:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 2px;
+}
+
+.eggv button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.eggv-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 24px 24px;
+  box-sizing: border-box;
+  min-height: 0;
+  overflow: auto;
+}
+
+.eggv-stage {
+  position: relative;
+  height: min(72vh, 640px);
+  min-height: 260px;
+}
+
+.eggv-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  border-radius: 12px;
+}
+
+.eggv-canvas:active {
+  cursor: grabbing;
+}
+
+.eggv-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  margin: 0;
+  text-align: center;
+  font: 13px system-ui, sans-serif;
+  color: #c9b98f;
+}
+
+.eggv-card h2 {
+  margin: 0 0 2px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffe9b0;
+}
+
+.eggv-where {
+  margin: 0 0 14px;
+  font: 600 14px system-ui, sans-serif;
+  color: #d8c08a;
+}
+
+.eggv-card h3 {
+  margin: 16px 0 4px;
+  font: 700 12px system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c9b98f;
+}
+
+.eggv-card p,
+.eggv-card ul {
+  margin: 0;
+}
+
+.eggv-card ul {
+  padding-left: 1.2em;
+}
+
+/* the mystery: a typed slip of paper */
+.eggv-lore {
+  margin-top: 6px;
+  padding: 12px 14px;
+  background: #f1e6c8;
+  color: #2a2014;
+  font: 15px/1.5 'Courier New', Courier, monospace;
+  transform: rotate(-0.8deg);
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.eggv-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font: 14px system-ui, sans-serif;
+}
+
+@media (max-width: 760px) {
+  .eggv-main {
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding: 8px 16px 24px;
+  }
+
+  .eggv-stage {
+    height: 42vh;
+    min-height: 220px;
+  }
+
+  .eggv-card h2 {
+    font-size: 24px;
+  }
+}
