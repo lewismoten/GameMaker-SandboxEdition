@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "remote",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUsFywFQA9ACTQXNAVAD0AJNBc0BUAPQAkgUyAFNBc0BUBTQAUsZywFQI9ABTQXNAUgPyAFLCssBSwPLAlAF0AFNI80BSB7IAU0ozQFIBcgBTRTNAUgDyAJIAsgBSAXIAU0KzQFIA8gCUArQAUsFywFQBdABTQPNAlAU0AFQA9ACTQXNAVAZ0AFIFMgBTQ/NAU0="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgFyAFNGc0BUBTQAUsPywFQD9ABTQ/NAVAF0AFNKM0BSCjIAUsKywFIA8gCUAXQAU0ZzQFIA8gCSwXLAUgKyAFNA80CUCPQAUgKyAFNGc0BUA/QAU0KzQFII8gBSAXIAU0FzQFI"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0UzQFLFMsBUA/QAVAK0AFNCs0BTQXNAVAP0AFQDtABTRnNAUsjywFQD9ABUArQAU0PzQFLD8sBSBnIAU0ezQFQD9ABTQ/NAU0PzQFLHssBSA/IAUseywFQHtABTRnNAVAP0AFNPM0BSzzLAUgPyAFLGcsBSB7IAU0ezQFQD9ABTTbNAVAP0AFNCs0BTQrNAUsUywFID8gBSzLLAUgPyAFLHssBUBnQAU0ZzQFQHtABTW7NAUgFyAFNBc0BTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AUsPywFID8gBTQ/NAUgfyABQAtAASALIAFAC0ABIAsgGTQHNAFAC0ABIAsgAUALQAEgCyAZILcgASwHLB00FzQFIA8gCUAXQAUsFywFQKdAASwHLAE0BzQBLAcsATQHNBksGywBNAc0ASwHLAE0BzQBLAcsGUBDQAEgCyABQAtAASALIAFAC0AZNAc0ASALIAFAC0ABIAsgAUALQBlAt0AZNBc0BUA=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Living Room"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Kitchen"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Void Between the Cushions"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Living Room Ride"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 19956,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1259
+   },
+   {
+    "title": "Level 1: The Living Room",
+    "frame": 2967
+   },
+   {
+    "title": "Level 2: The Kitchen",
+    "frame": 4994
+   },
+   {
+    "title": "Level 3: The Void Between the Cushions",
+    "frame": 6812
+   },
+   {
+    "title": "Level 4: The Living Room Ride",
+    "frame": 11128
+   },
+   {
+    "title": "Ending",
+    "frame": 12753
+   },
+   {
+    "title": "Credits",
+    "frame": 15468
+   }
+  ]
+ }
+}
