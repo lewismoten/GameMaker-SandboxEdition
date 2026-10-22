@@ -51,6 +51,8 @@ export interface SceneIndex {
   wrong: number;
   solved: number;
   w: Record<string, number>;
+  /** Between the 2 AM green room's sofa cushions: the green room again, with EGG.LST. */
+  egg: number;
 }
 
 export function buildGame(acts: Theatre[], pl: ParlorLinks): { game: Game; ix: SceneIndex } {
@@ -175,5 +177,11 @@ export function buildGame(acts: Theatre[], pl: ParlorLinks): { game: Game; ix: S
   for (const k of WRONG_KEYS) link(ix.w[k], 0, ZCELL, ix.wrong, center(ROOM.wrong));
   link(ix.wrong, 0, pl.wrongExit, ix.acc, center(ROOM.who));
   link(ix.solved, 0, SOLVED, 1, { x: 0, y: 0 });
+
+  // The sofa's seat (once the lens has shown what sits there and Ada has taken it): the same
+  // green room, with the egg's note for an intro, and Ada back in the middle of the room.
+  ix.egg = add('Green Room 2 (sofa)', { ...green, intro: 'egg.lst' }, false, 104, 112);
+  hubLinks([ix.egg], 'gr2', ix.iv2, g2.evs, ix.acca, center(ROOM.who));
+  for (const s of [g2.a, g2.plain, ...g2.evs, ix.egg]) link(s, MAXSCENELINKS - 1, pl.sofa, ix.egg, center(ROOM.gr2));
   return { game, ix };
 }

@@ -139,6 +139,8 @@ export interface ParlorLinks {
   why: { x: number; y: number }[][];
   accBack: { x: number; y: number };
   wrongExit: { x: number; y: number };
+  /** The second round's sofa (see blocks/egg.ts). */
+  sofa: { x: number; y: number };
 }
 
 /** Which suspect sits in which green room chair (by the talk tiles, left to right, top to bottom). */
@@ -208,6 +210,7 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
     why: [],
     accBack: { x: 0, y: 0 },
     wrongExit: { x: 0, y: 0 },
+    sofa: { x: ROOM.gr2.x + 13, y: ROOM.gr2.y + 8 },
   };
 
   // the green room, both rounds
@@ -219,7 +222,7 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
       if (ch === 'a') return 'armchair';
       if (ch === 't') return 'talk';
       if (ch === 'E') return 'exit';
-      if (ch === 's') return 'sofa';
+      if (ch === 's') return round === 'gr2' ? 'propsofa' : 'sofa';
       throw new Error(ch);
     });
     // pins along the board: the coroner's note, then the evidence of the round
