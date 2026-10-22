@@ -1,0 +1,26 @@
+{
+  "title": "Quest for the Round Tuit",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1996,
+  "price": "$15",
+  "blurb": "King Dillydally IX says he'll save the kingdom as soon as he gets a round tuit. Lord Deadline stole it. A full role-playing adventure across Procrastia: four towns, four dungeons, side quests, a horseless carriage and a jester with a rubber chicken.",
+  "exe": "TUIT.EXE",
+  "sound": "sb",
+  "label": {
+    "background": "#f6efdc",
+    "band": "#2f5d3a",
+    "ink": "#2a1a10",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "background": "#20314f",
+    "accent": "#e8b84a",
+    "ink": "#ffffff",
+    "tagline": "Somebody has to get around to it.",
+    "back": "Placeholder.",
+    "features": [],
+    "shots": [["world.map", 18, 74]],
+    "rating": "Ages 8 and up"
+  }
+}
