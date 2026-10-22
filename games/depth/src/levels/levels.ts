@@ -15,6 +15,8 @@ export interface Level extends LevelText {
   id: string;
   name: string;
   theme: ThemeId;
+  /** Its song (SONGS in sound/music.ts). */
+  song: string;
   /** The level card: a line under the title and three lines of advice. */
   tagline: string;
   advice: string[];
@@ -30,6 +32,7 @@ export const LEVELS: Level[] = [
     id: 'l1',
     name: 'The Checkerboard',
     theme: 'checker',
+    song: 'checker',
     tagline: 'Where every render begins.',
     advice: ['Roll with the arrows. A blur', "isn't there: roll a ring to", 'pull focus. SPACE fires.'],
     monsters: { W, V, T: { mon: MON.teddy, plane: 'both' } },
