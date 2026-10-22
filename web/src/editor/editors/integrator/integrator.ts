@@ -402,6 +402,8 @@ registerEditor(['gam'], (host, project, file) => {
     renderTools();
     fit();
   }
+  /** A tool's symbol and name; on a narrow board only the symbol shows (the name stays its label). */
+  const toolFace = (symbol: string, name: string) => [h('span', { class: 'grator-sym', 'aria-hidden': 'true' }, symbol), h('span', { class: 'grator-label' }, name)];
   function renderTools(): void {
     const crowded = overlapping();
     const saved = gapSavings(game);
@@ -414,16 +416,19 @@ registerEditor(['gam'], (host, project, file) => {
         {
           class: crowded ? 'grator-attention' : undefined,
           title: `${crowded ? `${crowded} scenes are hiding one another. ` : ''}Move the cards apart so none hides another, keeping your arrangement`,
+          'aria-label': 'Spread out',
           onclick: () => relayout(spreadOut(game)),
         },
-        '✥ Spread out',
+        ...toolFace('✥', 'Spread out'),
       ),
       h(
         'button',
         {
+          class: arranged && arranged.list.length > 1 ? 'grator-arranging' : undefined,
           title: arranged
             ? 'Try the next best layout'
             : 'Lay the scenes out as a map of the game: the start first, each scene next to the one that leads there, the end last (press again for other layouts)',
+          'aria-label': arranged && arranged.list.length > 1 ? `Another layout, ${arranged.k + 1} of ${arranged.list.length}` : 'Auto-arrange',
           onclick: () => {
             const again = !!arranged;
             if (arranged) arranged.k = (arranged.k + 1) % arranged.list.length;
@@ -431,7 +436,7 @@ registerEditor(['gam'], (host, project, file) => {
             relayout(arranged.list[arranged.k].positions, true, again);
           },
         },
-        arranged && arranged.list.length > 1 ? `⇄ Another layout ${arranged.k + 1}/${arranged.list.length}` : '⇄ Auto-arrange',
+        ...toolFace('⇄', arranged && arranged.list.length > 1 ? `Another layout ${arranged.k + 1}/${arranged.list.length}` : 'Auto-arrange'),
       ),
       // only when the cards sit far apart (e.g. the DOS layout: title at the top, the end at the bottom)
       roomy >= 0.15
@@ -440,15 +445,16 @@ registerEditor(['gam'], (host, project, file) => {
             {
               class: roomy >= 0.3 ? 'grator-attention' : undefined,
               title: 'Bring the cards closer together, keeping your arrangement, so the board can show them bigger',
+              'aria-label': 'Close gaps',
               onclick: () => relayout(closeGaps(game)),
             },
-            '⇲ Close gaps',
+            ...toolFace('⇲', 'Close gaps'),
           )
         : null,
       undo.undoBtn,
       undo.redoBtn,
       h('span', { class: 'grator-spacer' }),
-      h('button', { title: 'Download a picture of all the scenes and links', onclick: () => void exportPng() }, '⬇ PNG'),
+      h('button', { title: 'Download a picture of all the scenes and links', 'aria-label': 'Download PNG', onclick: () => void exportPng() }, ...toolFace('⬇', 'PNG')),
     );
   }
   /** Zoom controls float over the board's corner, like a map's. */

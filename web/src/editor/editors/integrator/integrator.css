@@ -14,6 +14,7 @@
 }
 .grator-main {
   min-width: 0;
+  container: grator-main / inline-size;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -23,6 +24,17 @@
 }
 .grator-spacer {
   flex: 1;
+}
+.grator-sym + .grator-label {
+  margin-left: 0.35em;
+}
+/* a narrow board: the arranging tools and PNG show only their symbols (their names are
+   still their labels, and the tooltips say what they do), so the toolbar keeps to one row;
+   a tool asking for attention, or stepping through layouts, keeps its name */
+@container grator-main (max-width: 720px) {
+  .grator-tools button:not(.grator-attention, .grator-arranging) .grator-label {
+    display: none;
+  }
 }
 .grator-zoom {
   min-width: 3.5em;
