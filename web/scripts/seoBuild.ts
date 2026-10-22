@@ -100,8 +100,12 @@ const STYLE = `<style>
       .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
     </style>`;
 
+/**
+ * The home page's structured data: the app, its source, and the games as a list of their own
+ * pages (each page carries the game's full JSON-LD, gameHead), which keeps index.html small.
+ */
 function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
-  const games = playable(catalog).map((g) => gameJsonLd(g, playUrl(g.id), imageUrl(g)));
+  const games = playable(catalog);
   return [
     appJsonLd(),
     repoJsonLd(),
@@ -110,7 +114,7 @@ function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
       '@id': `${SITE_URL}#games`,
       name: `Games you can play with ${PRODUCT}`,
       numberOfItems: games.length,
-      itemListElement: games.map((item, i) => ({ '@type': 'ListItem', position: i + 1, item })),
+      itemListElement: games.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: playUrl(g.id), name: g.title })),
     },
   ];
 }
@@ -142,21 +146,19 @@ function indexBody(catalog: CdCatalogEntry[]): string {
 /** play.html: what each game is, so the page can name itself before the game loads. */
 function playHead(catalog: CdCatalogEntry[]): string {
   const meta = metaTags({ ...ROUTES.player, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
-  const games = Object.fromEntries(
-    playable(catalog).map((g) => [
-      g.id,
-      { title: g.title, description: gameDescription(g), url: playUrl(g.id), image: imageUrl(g), ld: gameJsonLd(g, playUrl(g.id), imageUrl(g)) },
-    ]),
-  );
-  // Runs before the app: the page's title, description, picture, canonical address (the
-  // game's own page) and JSON-LD for ?game=<id> (search engines that run scripts see them;
-  // link previews see the defaults, which is why each game has its own page).
+  // each game's title and description; its addresses follow from its id (playUrl, gameImagePath)
+  const games = Object.fromEntries(playable(catalog).map((g) => [g.id, { title: g.title, description: gameDescription(g) }]));
+  // Runs before the app: the page's title, description, picture and canonical address (the
+  // game's own page, which has the game's JSON-LD) for ?game=<id> (search engines that run
+  // scripts see them; link previews see the defaults, which is why each game has its own page).
   const script = `<script>
       (function () {
         var games = ${scriptJson(games)};
         var id = new URLSearchParams(location.search).get('game');
         var g = id && Object.prototype.hasOwnProperty.call(games, id) ? games[id] : null;
-        var url = g ? g.url : null;
+        var site = ${JSON.stringify(SITE_URL)};
+        var url = g ? site + ${scriptJson(gamePage('GAMEID').split('GAMEID'))}.join(encodeURIComponent(id)) : null;
+        if (g) g.image = site + ${scriptJson(gameImagePath('GAMEID').split('GAMEID'))}.join(encodeURIComponent(id));
         var title = g ? g.title + ${JSON.stringify(` · play in your browser · ${PRODUCT}`)} : null;
         function set(sel, attr, value) { var el = document.head.querySelector(sel); if (el) el.setAttribute(attr, value); }
         if (g) {
@@ -169,8 +171,6 @@ function playHead(catalog: CdCatalogEntry[]): string {
           ['meta[property="og:image:alt"]', 'meta[name="twitter:image:alt"]'].forEach(function (s) { set(s, 'content', g.title + ': its title screen'); });
           var link = document.createElement('link'); link.rel = 'canonical'; link.href = url; document.head.appendChild(link);
           var og = document.createElement('meta'); og.setAttribute('property', 'og:url'); og.content = url; document.head.appendChild(og);
-          var ld = document.createElement('script'); ld.type = 'application/ld+json';
-          ld.textContent = JSON.stringify(Object.assign({ '@context': 'https://schema.org' }, g.ld)); document.head.appendChild(ld);
         }
       })();
     </script>`;
