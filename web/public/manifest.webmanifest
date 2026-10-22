@@ -1,16 +1,28 @@
 {
+  "id": "./",
   "name": "Game-Maker: Sandbox Edition",
   "short_name": "Game-Maker SE",
   "description": "Design, play and publish games made with Recreational Software Designs' Game-Maker 3.0 — in the browser, online or offline.",
+  "lang": "en-US",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#000080",
   "theme_color": "#000080",
+  "categories": ["games", "entertainment", "education"],
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
     { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Play the games", "short_name": "Games", "description": "The sample games, the Sandbox games and the shareware", "url": "./#/", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "The 1994 desk", "short_name": "1994 desk", "description": "Game-Maker on a mid-90s PC", "url": "./#/desk", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Guide", "short_name": "Guide", "description": "How to use Game-Maker: Sandbox Edition", "url": "./#/help", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ],
+  "screenshots": [
+    { "src": "og-image.png", "sizes": "1200x630", "type": "image/png", "form_factor": "wide", "label": "Game-Maker: Sandbox Edition" }
   ]
 }
