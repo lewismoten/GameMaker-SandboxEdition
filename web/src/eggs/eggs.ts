@@ -67,6 +67,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Wired up by Claude Opus 5.5'],
     lore: 'Taped inside the fuse box: a meter marked WORDS. The needle sits at exactly one hundred, and no amount of current will move it.',
     look: { felt: '#d9762b', band: '#2a1a10', patch: '#ffd23f', thread: '#fff1c4', pattern: 'zigzag', motif: 'bolt' },
+    detect: { block: 149 },
   },
   {
     game: 'maximus',
