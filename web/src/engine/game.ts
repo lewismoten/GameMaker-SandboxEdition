@@ -21,6 +21,8 @@ export interface RunOptions {
   /** Called when the player picks Quit; return true to show the menu again. */
   onQuit?: () => Promise<boolean> | boolean;
   speakerOnly?: boolean;
+  /** No Sound Blaster (PLAYGAME's SoundCard() found none): no songs, every sound on the PC speaker. */
+  noSoundCard?: boolean;
   joystick?: Session['joystick'];
   /** Play a .rec demo immediately instead of showing the menu. */
   playback?: Uint8Array;
@@ -47,6 +49,7 @@ export function loadGameFile(m: Machine, gamFile: string): Game {
 /** Runs a game until the player quits. */
 export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}): Promise<void> {
   const game = loadGameFile(m, gamFile);
+  if (opts.noSoundCard) m.audio.musicEnabled = false;
   const s: Session = {
     m,
     game,
@@ -58,7 +61,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     timerCounter: 1,
     soundOn: true,
     musicOn: m.audio.musicEnabled,
-    speakerOnly: !!opts.speakerOnly,
+    speakerOnly: !!opts.speakerOnly || !!opts.noSoundCard,
     joystick: opts.joystick,
     onFrame: opts.onFrame,
     speed: opts.speed ?? {},

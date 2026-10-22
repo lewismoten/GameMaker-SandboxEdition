@@ -527,9 +527,12 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         if (!w.keydn[58 + f]) continue;
         w.keydn[58 + f] = 0;
         if (f === 3) {
-          s.musicOn = !s.musicOn;
-          if (s.musicOn) void m.audio.playSong(song);
-          else m.audio.stopSong();
+          // only with a card to play it on (CARDEXIST in PLAYGAME.C)
+          if (m.audio.musicEnabled) {
+            s.musicOn = !s.musicOn;
+            if (s.musicOn) void m.audio.playSong(song);
+            else m.audio.stopSong();
+          }
         } else if (f === 4) s.soundOn = !s.soundOn;
         else if (f === 8) w.jstickOn = !w.jstickOn;
         // F7 is "reserved for future use" in the original.
