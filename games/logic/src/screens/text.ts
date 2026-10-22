@@ -152,9 +152,9 @@ Copper-orange felt with a yellow lightning bolt on each side, a zigzag of black 
 
 Wired up by
 Claude Opus 5.5`,
-  `Taped inside the fuse box: a meter marked WORDS.
+  `Taped inside the fuse box: "KITCHEN CIRCUIT. DO NOT TRIP DURING THE BOIL."
 
-The needle sits at exactly one hundred, and no amount of current will move it.
+Under it, in much older ink: "The stove was never the secret ingredient."
 
 Watt closes the panel very gently.`,
 ]);
