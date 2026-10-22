@@ -22,7 +22,7 @@ import {
 } from "./term";
 import { runSofa, SOFA_PHONE, sofaBusy } from "./sofa";
 import { gifGallery } from "./gifArea";
-import { gameDiz } from "./fileId";
+import { gameDiz, isSofaFile } from "./fileId";
 import { WAREZ, warezArea, zipsOf } from "./warezArea";
 import { GALLERY } from "./gallery";
 import {
@@ -179,7 +179,7 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     t.line();
   }
   const catalog = (await h.catalog()).filter(
-    (g) => g.kind === "shareware" && g.gam,
+    (g) => g.kind === "shareware" && g.gam && !isSofaFile(g), // The Sofa's own uploads are only there
   );
   // the board's user file: started from what this PC already downloaded
   account(() => seedAccount(h, catalog));
