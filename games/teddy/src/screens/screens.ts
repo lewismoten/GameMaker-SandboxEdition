@@ -152,11 +152,13 @@ export function scoresScreen(): Pixels {
 export function menuScreen(): Pixels {
   const p = landscape(5);
   logo(p, 4);
+  // Teddy and Gwinn peek out from behind the panel, so nothing of theirs comes near the
+  // menu marker Game-Maker draws at x 70.
+  teddyBig(p, 'frontBeg', 0, 112, 4);
+  gwinnBig(p, 'gwinn1', 252, 108, 3, true);
   p.rect(58, 96, 204, 78, c('ink', 0));
   p.rect(60, 98, 200, 74, c('cream', 3));
   p.rect(60, 98, 200, 2, c('paint', 3));
-  teddyBig(p, 'frontBeg', 0, 112, 4);
-  gwinnBig(p, 'gwinn1', 252, 108, 3, true);
   micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1995', c('paint', 3));
   return p;
 }
