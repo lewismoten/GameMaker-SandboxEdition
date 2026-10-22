@@ -66,8 +66,19 @@ export async function theField(bot: Bot): Promise<void> {
     await must(bot, bot.take(35, 1, 'down', 'wool on the thorns'), 'wool');
     await must(bot, bot.goto(36, 13, 'the goat bell'), 'bell');
   });
+  await carefully(bot, 'the double wall', 10, async () => {
+    await must(bot, bot.goto(37, 8, 'the double wall'), 'wall');
+    await must(bot, bot.goto(38, 8, 'nose to nose'), 'wall');
+    await must(bot, bot.scream('right'), 'scream');
+    await must(bot, bot.scream('right'), 'scream again');
+    await must(bot, bot.goto(41, 8, 'over two fainted cousins'), 'past');
+  });
+  await carefully(bot, "the shepherds' camp", 12, async () => {
+    await must(bot, bot.take(42, 5, 'down', 'wool on the thorns'), 'wool');
+    await must(bot, bot.take(50, 14, 'left', 'wool on the thorns'), 'wool');
+  });
   if (bot.wool < 5) throw new Error(`only ${bot.wool} wool`);
-  const r = await bot.goto(39, 8, 'the road to Bethlehem');
+  const r = await bot.goto(51, 8, 'the road to Bethlehem');
   if (r !== 'link') throw new Error(`the field's exit: ${r}`);
 }
 
@@ -82,6 +93,9 @@ export async function bethlehem(bot: Bot): Promise<void> {
     await must(bot, bot.goto(33, 12, 'the alley'), 'alley');
   });
   await carefully(bot, 'the alley', 10, async () => {
+    await must(bot, bot.goto(33, 13, 'the cousin in the alley'), 'alley');
+    await must(bot, bot.scream('down'), 'scream');
+    await must(bot, bot.goto(33, 16, 'past the cousin and the laundry'), 'laundry');
     await must(bot, bot.goto(33, 20, 'past the laundry and the census'), 'census');
   });
   const r = await bot.goto(33, 21, 'out to the caravan');

@@ -177,7 +177,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   // Lambs mill about; bump one for a tuft of wool and it bounds off shorn, to grow it back.
   set[MON.lamb] = mon(anim('lamb0', 'lamb1', 5), { power: 60, thru: 1, towards: 64, newmon: MON.lambShorn, upscore: 0 });
   set[MON.lambShorn] = mon(anim('shorn0', 'shorn1', 2), { power: 100, thru: 1, towards: -4, end: 240, newmon: MON.lamb });
-  // The fainting cousins stand in the way, solid, until a scream knocks them over.
+  // The fainting cousins stand in the way, solid, until a scream knocks them over. Lying
+  // stiff they match the scream's power, so the next scream passes over them to the next cousin.
   const faint = o.faint ?? FAINT_TICKS;
   set[MON.goat] = mon(
     [
@@ -188,9 +189,9 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     ],
     { power: 110, thru: 1, newmon: MON.goatFaint, upscore: 100 },
   );
-  set[MON.goatFaint] = mon(anim('goatFaint0', 'goatFaint1', 8), { power: 100, thru: 1, end: faint, newmon: MON.goat });
+  set[MON.goatFaint] = mon(anim('goatFaint0', 'goatFaint1', 8), { power: 120, thru: 1, end: faint, newmon: MON.goat });
   set[MON.cousin] = mon(anim('brown0', 'brown1', 4), { power: 110, thru: 1, towards: 64, newmon: MON.cousinFaint, upscore: 50 });
-  set[MON.cousinFaint] = mon([[n('brownFaint'), 10]], { power: 100, thru: 1, end: faint, newmon: MON.cousin });
+  set[MON.cousinFaint] = mon([[n('brownFaint'), 10]], { power: 120, thru: 1, end: faint, newmon: MON.cousin });
   // Pigeons come for you when you're close, and peck; a scream sends them off in feathers.
   set[MON.pigeon] = mon(anim('pigeon0', 'pigeon1', 3), { power: 40, thru: 1, towards: 64, activate: 2, newmon: MON.feathers, upscore: 25 }, [], [corner(0, 0, 1), corner(0, 0, 2)]);
   set[MON.feathers] = mon(anim('feathers0', 'feathers1', 2), { power: 100, thru: 0, end: 6 });
