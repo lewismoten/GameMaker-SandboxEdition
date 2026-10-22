@@ -5,6 +5,7 @@ import './capture.css';
 import { h, toast } from '../../editor/core/ui';
 import type { Computer } from '../../retro/computer';
 import type { Vga } from '../../vga/shared/vga';
+import type { PictureScreen } from '../../retro/view/picture';
 import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
 import type { LiveRecorder } from '../../media/video';
 import { AudioMix } from '../../media/audioTap';
@@ -14,17 +15,35 @@ export type RecordMode = 'all' | 'graphics' | 'text';
 
 type Source = { kind: 'text' } | { kind: 'vga'; draw: (c: HTMLCanvasElement) => void } | { kind: 'none' };
 
+/** Palette-indexed pixels (mode 13h or a VPIC/GIF picture mode) through the DAC, at their own size. */
+function drawIndexed(mem: Uint8Array, dac: Uint8Array, width: number, height: number, c: HTMLCanvasElement): void {
+  if (c.width !== width || c.height !== height) [c.width, c.height] = [width, height];
+  const ctx = c.getContext('2d')!;
+  const img = ctx.createImageData(width, height);
+  const out = new Uint32Array(img.data.buffer);
+  const v = (x: number) => ((x & 63) << 2) | ((x & 63) >> 4);
+  const rgba = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) rgba[i] = 0xff000000 | (v(dac[i * 3 + 2]) << 16) | (v(dac[i * 3 + 1]) << 8) | v(dac[i * 3]);
+  for (let i = 0; i < width * height; i++) out[i] = rgba[mem[i]];
+  ctx.putImageData(img, 0, 0);
+}
+
 /** What the monitor shows now, as something that can be drawn at native resolution. */
 function sourceOf(pc: Computer): Source {
   const mode = pc.monitor.dataset.mode;
   if (mode === 'text' || mode === 'off') return { kind: 'text' };
   if (mode === 'vga') {
+    // Game-Maker's designers and PLAYGAME's screens (mode 13h), or a picture mode (VPIC, the BBS's GIFs)
     const vga = pc['vgaScreen'] as Vga | undefined;
     if (vga) return { kind: 'vga', draw: (c) => drawVga(vga, c) };
+    const pic = pc['picture'] as PictureScreen | undefined;
+    if (pic) return { kind: 'vga', draw: (c) => drawIndexed(pic.mem, pic.dac, pic.width, pic.height, c) };
   }
   if (mode === 'game') {
-    const game = pc.monitor.querySelector<HTMLCanvasElement>('.crt-game canvas');
-    if (game && game.width === VGA_W && game.height === VGA_H)
+    // The game's own 320x200 canvas: the one that takes the keys, not the smoothly scaled
+    // copy (exactScale) laid under it at the monitor's size.
+    const game = [...pc.monitor.querySelectorAll<HTMLCanvasElement>('.crt-game canvas')].find((c) => c.width === VGA_W && c.height === VGA_H && c.tabIndex >= 0);
+    if (game)
       return {
         kind: 'vga',
         draw: (c) => {
@@ -33,6 +52,7 @@ function sourceOf(pc: Computer): Source {
         },
       };
   }
+  // 'gfx': today's web editors, drawn by the page rather than on the VGA screen
   return { kind: 'none' };
 }
 
