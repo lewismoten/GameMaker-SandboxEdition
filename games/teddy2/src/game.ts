@@ -4,11 +4,12 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
 import type { Level } from './levels/level';
 import { house } from './levels/level1';
+import { main } from './levels/level2';
 
-export const LEVELS: (() => Level)[] = [house];
+export const LEVELS: (() => Level)[] = [house, main];
 
 /** Songs per level (CMF file names), in level order. */
-export const LEVEL_SONGS = ['house.cmf'];
+export const LEVEL_SONGS = ['house.cmf', 'main.cmf'];
 
 export const TITLE = 'TEDDY 2: BIGGER!';
 

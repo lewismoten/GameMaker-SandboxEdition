@@ -241,6 +241,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('menu.cmf', menuSong());
   put('story.cmf', storySong());
   put('house.cmf', backyardSong());
+  put('main.cmf', backyardSong());
   put('won.cmf', wonSong());
   put('lost.cmf', lostSong());
   put('readme.txt', README);
