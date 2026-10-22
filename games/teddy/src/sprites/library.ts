@@ -6,6 +6,7 @@
 import { Pixels } from '../../../kit/pixels';
 import { micro } from '../art/draw';
 import { P } from '../art/pal';
+import { tinyEgg } from './egg';
 
 const c = (n: string, k: number) => P.c(n, k);
 
@@ -14,6 +15,8 @@ export interface LibraryState {
   gap?: boolean;
   /** The middle snack drawer pulled open, empty. */
   open?: boolean;
+  /** Something small and striped at the back of the top shelf instead of the paperbacks. */
+  glimpse?: boolean;
 }
 
 /** Draws the library into a 40x60 picture (already filled with the background behind it). */
@@ -35,7 +38,8 @@ export function dogHouseLibrary(p: Pixels, s: LibraryState = {}): Pixels {
   p.rect(9, 14, 22, 1, c('paint', 1)).rect(9, 14, 1, 17, c('paint', 1));
   // top shelf: a VHS box lying flat and a stack of paperbacks
   p.rect(11, 16, 12, 3, c('blue', 2)).rect(11, 16, 12, 1, c('blue', 3)).rect(13, 17, 4, 1, c('yellow', 3)).rect(18, 17, 3, 1, c('red', 3));
-  p.rect(24, 17, 6, 2, c('green', 1)).rect(24, 16, 5, 1, c('purple', 2));
+  if (s.glimpse) tinyEgg(p, 25, 14);
+  else p.rect(24, 17, 6, 2, c('green', 1)).rect(24, 16, 5, 1, c('purple', 2));
   p.rect(10, 19, 20, 1, c('wood', 2));
   // the books, spines out
   const books: [number, number, string, number][] = [

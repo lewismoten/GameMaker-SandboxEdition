@@ -82,6 +82,13 @@ export const CTR = {
 } as const;
 
 /**
+ * Background block 149 is the same carryable thing in every level's .BBL, so it looks the
+ * same in the F2 status screen wherever Teddy is carrying it (the inventory keeps only
+ * block numbers). Only one level ever puts it on the map.
+ */
+export const KEEPSAKE = 149;
+
+/**
  * Monster numbers, the same in every level's .MON (the character gives birth to the first
  * ones by number). Powers decide who scares whom: a higher power beats a lower one.
  */

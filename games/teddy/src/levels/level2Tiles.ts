@@ -239,19 +239,23 @@ export function streetTiles(): Tiles {
   // The Dog House, the tiny little library in front of the blue house: take a book (fetch
   // it off the shelf), and the paw-knob drawer has snacks. The rock cubby's red roof is a
   // ledge, so Teddy can hop up and browse.
-  const lib = (st: { gap?: boolean; open?: boolean }) => {
+  const lib = (st: { gap?: boolean; open?: boolean; glimpse?: boolean }) => {
     const p = canvas(2, 3, (_bx, by) => (by < 2 ? t.pic('wall_siding') : lawn));
     return cut(dogHouseLibrary(p, st));
   };
   const shut = lib({});
   t.air('libRoofL', shut[0][0]);
-  t.air('libRoofR', shut[0][1]);
+  // the right half of the roof over the top of the red door is solid: nothing goes through
+  // it, though a paw raised from the rock cubby can reach it (the scene's link to the nook)
+  t.air('libRoofR', lib({ glimpse: true })[0][1]);
   t.air('libGap', lib({ gap: true })[1][0]);
   t.add('libBooks', shut[1][0], { obj: true, score: 250, touch: 'libGap', grav: GRAV.down });
   t.air('libDrawerOpen', lib({ open: true })[1][1]);
   t.air('libDrawer', shut[1][1], { effect: CTR.treats, eamt: 3, score: 30, touch: 'libDrawerOpen' });
   t.ledge('libRocksL', shut[2][0]);
   t.ledge('libRocksR', shut[2][1]);
+
+  nook(t);
 
   t.klownCar(
     (_bx, by) => (by === 0 ? t.pic('hedge') : t.pic('lawn')),
@@ -260,4 +264,83 @@ export function streetTiles(): Tiles {
     (by) => (by === 0 ? t.pic('hedge') : t.pic('lawn')),
   );
   return t;
+}
+
+/**
+ * Inside the Dog House, Teddy-sized: white painted walls, a shelf of giant books, an open
+ * book with blank pages, the red door seen from inside, and the felt egg on the shelf.
+ */
+function nook(t: Tiles): void {
+  const back = (() => {
+    const p = new Pixels(20, 20);
+    speckle(p, 0, 0, 20, 20, r('paint'), 3, 1, 61, 0.12);
+    p.rect(9, 0, 1, 20, c('paint', 2));
+    return p;
+  })();
+  t.air('dhBack', back);
+  t.wall(
+    'dhWall',
+    (() => {
+      const p = new Pixels(20, 20, c('ink', 1));
+      speckle(p, 0, 0, 20, 20, r('wood'), 0, 1, 62, 0.2);
+      return p;
+    })(),
+  );
+  t.wall(
+    'dhFloor',
+    (() => {
+      const p = new Pixels(20, 20);
+      speckle(p, 0, 0, 20, 20, r('wood'), 2, 1, 63, 0.15);
+      p.rect(0, 0, 20, 2, c('wood', 4)).rect(0, 2, 20, 1, c('wood', 1)).rect(0, 12, 20, 1, c('wood', 1));
+      return p;
+    })(),
+  );
+  t.ledge(
+    'dhShelf',
+    (() => {
+      const p = copy(back);
+      p.rect(0, 0, 20, 5, c('wood', 3)).rect(0, 0, 20, 1, c('wood', 4)).rect(0, 4, 20, 1, c('wood', 1));
+      p.rect(0, 5, 20, 2, c('paint', 1));
+      return p;
+    })(),
+  );
+  // giant books standing up, two blocks tall: spines with a gold band, no titles
+  const book = (ramp: string, seed: number) => {
+    const p = canvas(1, 2, back);
+    const R = rng(seed);
+    const w = 14 + Math.floor(R() * 4);
+    const x0 = Math.floor((20 - w) / 2);
+    const top = 4 + Math.floor(R() * 6);
+    p.rect(x0, top, w, 40 - top, c(ramp, 2)).rect(x0, top, 2, 40 - top, c(ramp, 3)).rect(x0 + w - 2, top, 2, 40 - top, c(ramp, 1));
+    p.frame(x0, top, w, 40 - top, c('ink', 0));
+    p.rect(x0 + 1, top + 5, w - 2, 2, c('gold', 2)).rect(x0 + 1, 33, w - 2, 2, c('gold', 2));
+    return cut(p);
+  };
+  for (const [k, ramp] of ['blue', 'red', 'green', 'purple'].entries()) {
+    const [[top], [bot]] = book(ramp, 64 + k);
+    t.air(`dhBook${k}T`, top);
+    t.air(`dhBook${k}B`, bot);
+  }
+  // an open book lying flat, every page blank
+  const open = canvas(2, 1, back);
+  open.rect(1, 12, 38, 8, c('red', 1)).rect(1, 19, 38, 1, c('ink', 0));
+  for (let x = 2; x < 38; x++) {
+    const sag = Math.round(2 * Math.sin(((x - 2) / 36) * Math.PI));
+    open.rect(x, 8 + sag, 1, 11 - sag, c('paint', 3));
+    open.set(x, 8 + sag, c('paint', 2));
+  }
+  open.rect(19, 9, 2, 10, c('paint', 1));
+  const [[pageL, pageR]] = cut(open);
+  t.air('dhPageL', pageL);
+  t.air('dhPageR', pageR);
+  // the red door from inside: the frame, and Maple Street through the plexi
+  const door = canvas(1, 2, back);
+  door.rect(1, 2, 18, 38, c('red', 2)).frame(1, 2, 18, 38, c('ink', 0));
+  door.rect(4, 5, 12, 26, c('sky', 6)).rect(4, 22, 12, 9, c('grass', 3)).rect(4, 20, 12, 2, c('leaf', 2));
+  for (let k = 0; k < 6; k++) door.set(6 + k, 6 + k, c('paint', 3));
+  door.rect(13, 32, 3, 3, c('paint', 3));
+  const [[doorT], [doorB]] = cut(door);
+  t.air('dhDoorT', doorT);
+  t.air('dhDoorB', doorB);
+  t.keepsake(back, 'dhBack');
 }

@@ -164,6 +164,22 @@ export function street(): Level {
     m.mon(x, y, 'poodle');
   m.mon(64, G, 'buried');
   m.mon(66, G, 'buried');
+  // Inside the Dog House, kept deep under the street where nothing else goes: a high five
+  // from the rock cubby reaches the roof over the red door, the scene's way in.
+  const [rx, ry] = [40, 62];
+  m.rect(rx - 4, ry - 3, 24, 15, 'dhWall');
+  m.rect(rx, ry, 16, 8, 'dhBack');
+  m.rect(rx, ry + 8, 16, 1, 'dhFloor');
+  m.set(rx, ry + 6, 'dhBook0T').set(rx, ry + 7, 'dhBook0B');
+  m.set(rx + 1, ry + 6, 'dhBook1T').set(rx + 1, ry + 7, 'dhBook1B');
+  m.set(rx + 3, ry + 6, 'dhBook2T').set(rx + 3, ry + 7, 'dhBook2B');
+  m.set(rx + 5, ry + 7, 'dhPageL').set(rx + 6, ry + 7, 'dhPageR');
+  m.rect(rx + 8, ry + 5, 4, 1, 'dhShelf');
+  m.set(rx + 8, ry + 3, 'dhBook3T').set(rx + 8, ry + 4, 'dhBook3B');
+  m.set(rx + 9, ry + 3, 'dhBook1T').set(rx + 9, ry + 4, 'dhBook1B');
+  m.set(rx + 10, ry + 4, 'keepsake');
+  m.set(rx + 11, ry + 3, 'dhBook2T').set(rx + 11, ry + 4, 'dhBook2B');
+  m.set(rx + 15, ry + 6, 'dhDoorT').set(rx + 15, ry + 7, 'dhDoorB');
   m.mark('start', 6, 39);
   m.mark('exit', car, 39);
   void over;

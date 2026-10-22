@@ -6,7 +6,9 @@ import { Bestiary } from '../characters/mons';
 import { commonMonsters } from '../characters/sharedMonsters';
 import { LevelMap } from './levelmap';
 import { Pixels } from '../../../kit/pixels';
-import { CTR } from '../ids';
+import { CTR, KEEPSAKE } from '../ids';
+import { eggBlock } from '../sprites/egg';
+import { P } from '../art/pal';
 import { klownCar, pockets, propOn, wantBubble } from '../sprites/klown';
 
 export interface Level {
@@ -25,12 +27,26 @@ export interface Level {
   view: [number, number];
   /** Teddy drawn into the card: block [x, y] and his pose. */
   pose?: [number, number, string];
+  /**
+   * A room kept on the same map: a link at `door` takes Teddy to `room` (a scene of its
+   * own with no card), and the room's way out at `out` brings him back to `back` (in a
+   * copy of the level's scene that shows `card` as it starts and has no way back in).
+   */
+  nook?: { door: Spot; room: Spot; out: Spot; back: Spot; title: string; card: string };
 }
+
+type Spot = { x: number; y: number };
 
 /** A level's block set: non-solid blocks fall (gravity down) unless they say otherwise. */
 export class Tiles extends BlockSet {
   constructor() {
     super(150, false);
+    this.keepsake(new Pixels(20, 20, P.c('paint', 3)));
+  }
+
+  /** Block 149 in every set: the felt egg, over `base`; `after` is what is left when it is fetched. */
+  keepsake(base: Pixels, after?: string): number {
+    return this.pin(KEEPSAKE, 'keepsake', eggBlock(base), { obj: true, score: 500, touch: after, grav: GRAV.down });
   }
 
   /** Scenery Teddy walks in front of (falls through). */

@@ -60,6 +60,26 @@ export function buildGame(levels: Level[], startAt?: string): Game {
     game.scenes.push(scene);
   });
 
+  // A level's nook is two more scenes on the level's own files: the nook itself (no card),
+  // and the level again from the nook's door with a card of its own and no way back in.
+  levels.forEach((l, i) => {
+    if (!l.nook) return;
+    const level = game.scenes[i + 2];
+    const n = l.nook;
+    const room = { ...emptyScene(ADVTYPE), desc: n.title.slice(0, 19), pos: { x: level.pos.x, y: level.pos.y + 50 } };
+    room.files = level.files.map((f, k) => (k === 9 || k === 10 ? '' : f));
+    const again = { ...emptyScene(ADVTYPE), desc: level.desc, pos: { x: level.pos.x, y: level.pos.y + 100 } };
+    again.files = level.files.map((f, k) => (k === 9 ? n.card : f));
+    const unlinked = () => Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
+    room.links = unlinked();
+    again.links = unlinked();
+    const roomAt = game.scenes.length;
+    room.links[0] = { toScene: roomAt + 1, from: n.out, to: n.back };
+    again.links[0] = { ...level.links[0] };
+    level.links[1] = { toScene: roomAt, from: n.door, to: n.room };
+    game.scenes.push(room, again);
+  });
+
   const first = Math.max(0, startAt ? levels.findIndex((l) => l.file === startAt) : 0);
   title.links[0] = { toScene: first + 2, from: { x: 0, y: 0 }, to: levels[first].start };
   return game;
