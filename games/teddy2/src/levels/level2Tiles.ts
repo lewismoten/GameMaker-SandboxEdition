@@ -214,7 +214,6 @@ export function mainTiles(): Tiles {
       const x1 = part === 'R' ? y + 1 : 20;
       for (let x = Math.max(0, x0); x < Math.min(20, x1); x++) p.set(x, y, (x + y) % 6 === 0 ? c('green', 0) : c('green', y < 2 ? 2 : 1));
     }
-    if (part === 'M') p.rect(0, 16, 20, 4, c('paint', 3)).rect(0, 19, 20, 1, c('paint', 1));
     return p;
   };
   t.ledge('gzPeak', roofRow(bandRow(32), 'peak'));
@@ -257,7 +256,7 @@ export function mainTiles(): Tiles {
   );
   // Gwinn's pink leash, tangled round the weathervane: fetch it (F) from the roof's peak.
   t.clue('gzLeash', 'leash', 'sky0');
-  t.air('signRing', sign(sky(3), 'RING 1'));
+  t.air('signRing', sign(sky(3), 'RING'));
 
   // The bucket truck: the cab and its boom (the bucket is a monster riding up and down).
   const truck = canvas(3, 2, () => sky(3));
