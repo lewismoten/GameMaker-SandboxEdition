@@ -7,6 +7,7 @@
   "blurb": "Gwinn ran off with Doc Leo's clown costume, and tonight is the Klown Klub's Big Show! Hop, bark, dig, sit, spin and play dead across town as Teddy, a little corgi with a ton of tricks.",
   "exe": "TEDDY.EXE",
   "sound": "sb",
+  "egg": { "block": 149 },
   "label": {
     "background": "#fff6e0",
     "band": "#d9381e",

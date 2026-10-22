@@ -14,7 +14,7 @@ import { Disk } from '../kit/disk';
 import { buildCharacter, CB } from './src/characters/character';
 import { buildPalette } from './src/art/pal';
 import { buildSounds } from './src/sound/sounds';
-import { LEVELS, buildGame } from './src/game';
+import { DARK, LEVELS, buildGame } from './src/game';
 import { buildScreens } from './src/screens/screens';
 import { buildCartoons } from './src/screens/cartoons';
 import { demoRecording } from './src/demo';
@@ -44,6 +44,7 @@ for (const l of levels) {
 for (const [name, bytes] of Object.entries(buildScreens(levels))) disk.put(name, bytes);
 for (const [name, bytes] of Object.entries(buildCartoons())) disk.put(name, bytes);
 disk.put('demo.rec', await demoRecording(levels[0]));
+if (levels.some((l) => l.nook)) disk.put(DARK, serializePalette(new Uint8Array(768)));
 disk.put('teddy.gam', serializeGame(buildGame(levels, process.env.TEDDY_START)));
 disk.put('license.txt', licenseText("Teddy's Little Big Adventure"));
 disk.write();

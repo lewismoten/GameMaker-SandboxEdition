@@ -198,6 +198,33 @@ export const LOST = pages([
   '   come flying at you',
 ]);
 
+/** Shown on the way out of the Dog House (the felt egg's page; names as in the credits). */
+export const DOGHOUSE = pages(
+  [
+    "Felted like Doc Leo's own",
+    'clown egg: cream felt with',
+    'red big-top stripes, rainbow',
+    'polka dots, a corgi-orange',
+    'paw print on each side and a',
+    'tiny red pom-pom nose on top.',
+    '',
+    'Teddy found it by the red',
+    'door of The Dog House.',
+    '',
+    'Every book inside was there,',
+    'but every page was blank.',
+  ],
+  [
+    'STARRING',
+    '',
+    'Teddy, a corgi who knows',
+    'left from right',
+    '',
+    'and Doc Leo, PhD',
+    '(Comedic Science)',
+  ],
+);
+
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
   backyard: ["Fetch Doc Leo's fedora, dig", 'under the fence. WOOF at Gwinn!', 'NEW: HOP SPEAK DIG FETCH'],

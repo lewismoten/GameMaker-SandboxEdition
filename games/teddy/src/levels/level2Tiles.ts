@@ -245,9 +245,9 @@ export function streetTiles(): Tiles {
   };
   const shut = lib({});
   t.air('libRoofL', shut[0][0]);
-  // the right half of the roof over the top of the red door is solid: nothing goes through
-  // it, though a paw raised from the rock cubby can reach it (the scene's link to the nook)
-  t.air('libRoofR', lib({ glimpse: true })[0][1]);
+  // the right half of the roof, over the top of the red door, is solid (stand on it, bonk
+  // on it), but a paw raised from the rock cubby reaches it: the scene's link into the Dog House
+  t.wall('libRoofR', lib({ glimpse: true })[0][1]);
   t.air('libGap', lib({ gap: true })[1][0]);
   t.add('libBooks', shut[1][0], { obj: true, score: 250, touch: 'libGap', grav: GRAV.down });
   t.air('libDrawerOpen', lib({ open: true })[1][1]);

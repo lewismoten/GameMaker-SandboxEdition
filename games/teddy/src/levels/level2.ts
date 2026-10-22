@@ -195,5 +195,6 @@ export function street(): Level {
     exit: m.at('exit'),
     view: [23, 35],
     pose: [30, 38, 'frontReach'],
+    nook: { door: { x: 15, y: 37 }, room: { x: rx + 2, y: ry + 7 }, out: { x: rx + 15, y: ry + 7 }, back: { x: 16, y: 39 }, title: 'The Dog House', card: 'doghouse.lst' },
   };
 }

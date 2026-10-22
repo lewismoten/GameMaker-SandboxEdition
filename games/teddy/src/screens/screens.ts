@@ -15,7 +15,8 @@ import { citiCar, propSprite } from '../sprites/klown';
 import { renderRegion } from '../art/render';
 import type { Level } from '../levels/level';
 import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from '../sound/music';
-import { CREDITS, HELP, LOST, README, STORY, WON, CARDS } from './text';
+import { CREDITS, DOGHOUSE, HELP, LOST, README, STORY, WON, CARDS } from './text';
+import { drawEgg } from '../sprites/egg';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 
@@ -227,6 +228,14 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
     put(`${l.file}.gif`, gif(card(l, i + 1, CARDS[l.file] ?? []), buildPalette(l.time).pal));
     lst(`${l.file}.lst`, [[`${l.file}.gif`, 30]]);
   });
+  if (levels.some((l) => l.nook)) {
+    const egg = page('THE BIG TOP EGG', 29);
+    drawEgg(egg, 4, 150, 18, 23);
+    drawEgg(egg, 298, 150, 18, 23);
+    put('doghouse.gif', gif(egg));
+    put('doghouse.txt', DOGHOUSE);
+    lst('doghouse.lst', [['doghouse.gif', 0], ['doghouse.txt']]);
+  }
   put('drive.fli', driveFli());
   put('title.cmf', titleSong());
   put('menu.cmf', menuSong());
