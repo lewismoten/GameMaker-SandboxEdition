@@ -66,6 +66,8 @@ The other play-testing tools:
 | blaster   | `npx vite-node ../games/blaster/tools/check.ts`      | the bot pilot flies every leg and boss                                          |
 | brief     | `npx vite-node ../games/brief/tools/check.ts`        | the bot restores all 32 books, passes the eight stamp gates, opens the 33rd     |
 | depth     | `npx vite-node ../games/depth/tools/check.ts`        | the bot rolls all six scenes, pulls focus, beats Count Polygon                  |
+| goat      | `npx vite-node ../games/goat/tools/check.ts`         | the bot eats, gathers wool and screams its way to the manger                    |
+| goat      | `npx vite-node ../games/goat/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | logic     | `npx vite-node ../games/logic/tools/check.ts`        | plays every board's solution                                                    |
 | maximus   | `npx vite-node ../games/maximus/tools/check.ts`      | lands on every world, drives the rovers around, crosses the training deck       |
@@ -210,3 +212,16 @@ counters you walk into twice. Foes are under power 100, so a bite costs them a h
 solid monsters in an alcove's mouth. THE CHEZ crosses the Dawdle Flats as a second character, where
 the low bridges flood and drain by the clock, and the felt egg turns up in a nest behind a waterfall
 for four seconds in every twenty-four.
+
+**Third Goat from the Left** (`goat`). Not a Sandbox Software game: a 1995 shareware game by The Bard
+of Bizarre (Lewis as his hobo clown Doc Leo), downloaded from The Sofa BBS's file library, so it is
+listed with the shareware (`isSandboxGame` in web/src/project/files.ts) and gets no box, floppy or
+felt egg. You are the goat nobody painted on the holy night, from Lewis's song (recorded with
+Riffusion). Anything a goat eats is a solid block that turns to floor when pushed (hay and thistles fill
+the scream's counter), wool is counter 20 and the empty place third from the left in the line at the
+manger only takes five, and the fainting cousins are solid monsters a scream (power 120) knocks into a
+stiff one of equal power, so the next scream flies over it to the cousin behind. The music is an OPL2
+rhythm-mode arrangement of the song made from an analysis of the recording (`tools/analyze.py`,
+`src/sound/song.ts`), and some of the VOCs are cut from it (`tools/cutClips.py`); the title, the
+credits and the ending dither the song's cover art, the Bard's logo and Doc Leo's photo
+(`tools/scans.ts`).
