@@ -1,8 +1,9 @@
 // The Block Designer's state (BLOCEDIT.C's globals: the block set, the viewing grid, the
 // mouse buttons' colors, the draw tool in progress) and the small routines that only touch it.
 // The designer is one class split into layers, each extending the one before:
-//   state -> paint (drawing into a block) -> screen (drawing the designer) -> info (a block's
-//   game behavior) -> transfer (copying blocks, converting palettes) -> BlockDesigner (menus, mouse).
+//   state -> paint (drawing into a block) -> screen (drawing the designer) -> infoScreen
+//   (drawing a block's info screen) -> info (changing a block's game behavior on it) ->
+//   transfer (copying blocks, converting palettes) -> BlockDesigner (menus, mouse).
 import type { RetroHost } from '../../retro/host';
 import { WorkArea } from '../../retro/dos/workArea';
 import { BACKBL, BLEN, type Block } from '../../formats/blocks';
