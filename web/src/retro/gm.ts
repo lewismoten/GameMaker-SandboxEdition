@@ -108,46 +108,53 @@ export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'mai
       return;
     }
   }
-  drawDesktop(h);
-  let ch = start === 'design' ? 2 : 1;
-  if (start === 'design') await design(h);
-  for (;;) {
+  // unregistered: the registration card stays beside the monitor as long as GM runs (its
+  // menus, designers and games); applied, the "Registered To:" box takes the name at once
+  let atMenu = false;
+  const takeCard = offerCardAtMenu(h, (name) => {
+    registeredTo = name;
+    if (atMenu) drawDesktop(h); // under the menu bar: the old box goes, the new one is drawn
+  });
+  try {
     drawDesktop(h);
-    drawBars(h, MAIN_BAR);
-    // unregistered: the registration card stays beside the monitor while the menu waits
-    const takeCard = offerCardAtMenu(h, (name) => {
-      registeredTo = name;
-      drawDesktop(h); // under the menu bar: the old box goes, the new one is drawn
-    });
-    try {
-      ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
-    } finally {
-      takeCard?.();
+    let ch = start === 'design' ? 2 : 1;
+    if (start === 'design') await design(h);
+    for (;;) {
+      drawDesktop(h);
+      drawBars(h, MAIN_BAR);
+      atMenu = true;
+      try {
+        ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
+      } finally {
+        atMenu = false;
+      }
+      switch (ch) {
+        case 1:
+          registeredTo = undefined; // PLAYGAME.EXE's own screen
+          await playgame(h);
+          break;
+        case 2:
+          await design(h);
+          break;
+        case 3:
+          registeredTo = undefined; // UTILITY.EXE's own screen
+          await utilities(h);
+          break;
+        case 4:
+          await help(h, 'about.hlp');
+          break;
+        case 6:
+          await help(h, 'gmmain.hlp');
+          break;
+        default:
+          registeredTo = undefined;
+          h.screen.resetPalette();
+          h.screen.clear();
+          return;
+      }
     }
-    switch (ch) {
-      case 1:
-        registeredTo = undefined; // PLAYGAME.EXE's own screen
-        await playgame(h);
-        break;
-      case 2:
-        await design(h);
-        break;
-      case 3:
-        registeredTo = undefined; // UTILITY.EXE's own screen
-        await utilities(h);
-        break;
-      case 4:
-        await help(h, 'about.hlp');
-        break;
-      case 6:
-        await help(h, 'gmmain.hlp');
-        break;
-      default:
-        registeredTo = undefined;
-        h.screen.resetPalette();
-        h.screen.clear();
-        return;
-    }
+  } finally {
+    takeCard?.();
   }
 }
 

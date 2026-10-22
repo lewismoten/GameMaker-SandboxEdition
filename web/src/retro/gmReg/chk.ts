@@ -42,9 +42,9 @@ function offerCard(h: RetroHost, ask: RegAsk, onApplied?: (name: string) => void
 }
 
 /**
- * GM's main menu on an unregistered copy: CHK.EXE has let it start (the word was right), but
- * the card beside the monitor stays until it is filled in. Applying it writes PLAYGAME.REG and
- * puts the name in the "Registered To:" box at once (CHK.EXE would show it at the next start).
+ * GM running on an unregistered copy: CHK.EXE has let it start (the word was right), but the
+ * card beside the monitor stays, as a reminder, until it is filled in. Applying it writes
+ * PLAYGAME.REG and gives `onRegistered` the name for the "Registered To:" box.
  * Returns how to take the card away again, or undefined when the copy is registered.
  */
 export function offerCardAtMenu(h: RetroHost, onRegistered: (name: string) => void): (() => void) | undefined {
