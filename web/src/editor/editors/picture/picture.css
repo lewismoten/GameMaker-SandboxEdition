@@ -204,3 +204,13 @@
   align-items: flex-end;
   margin-top: 10px;
 }
+
+/* the picture's size and grab area, with Undo and Redo at the right */
+.pic-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+  margin-top: 4px;
+}

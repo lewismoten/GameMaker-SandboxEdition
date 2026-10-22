@@ -214,8 +214,6 @@ registerEditor(['gif'], (host, project, file) => {
   const fileTools = h(
     'div',
     { class: 'toolbar pic-file-tools' },
-    undo.undoBtn,
-    undo.redoBtn,
     fileField(
       project,
       'Palette for imported pictures',
@@ -260,7 +258,7 @@ registerEditor(['gif'], (host, project, file) => {
     h(
       'div',
       { class: 'pic-layout' },
-      h('div', { class: 'pic-main' }, canvas, info, preview.el, fileTools),
+      h('div', { class: 'pic-main' }, canvas, h('div', { class: 'pic-info-row' }, info, h('div', { class: 'toolbar' }, undo.undoBtn, undo.redoBtn)), preview.el, fileTools),
       h(
         'div',
         { class: 'pic-side' },
