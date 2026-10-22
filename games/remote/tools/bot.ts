@@ -7,6 +7,7 @@
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
 import { DIGITS, MONEY, PLAY, SCAN, SPOTS } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
+import { MLEN, bgBlock, type World } from '../../../web/src/engine/world';
 import type { GameSim } from './sim';
 
 type Pt = { x: number; y: number };
@@ -17,19 +18,84 @@ export class Bot {
   log: string[] = [];
   /** Extra cost per cell (in world blocks). */
   avoid = new Map<string, number>();
+  /** Pickups seen on screen (world "x,y"), for the loot report. */
+  seen = new Set<string>();
+  /** Grab visible pickups on the way (off while a stretch needs exact moves). */
+  greedy = !process.env.NO_LOOT;
   constructor(readonly sim: GameSim) {}
 
+  /** A pickup lying on the floor at (x, y): walk onto it and it's yours (points, patience, pennies, magnets). */
+  isLoot(x: number, y: number, w: World = this.sim.w): boolean {
+    const b = w.map[y * MLEN + x];
+    const blk = bgBlock(w, w.blkmap[b] ?? 0);
+    if (blk.solid || blk.touchBl === b || blk.chHitPt < 0) return false;
+    return blk.scorePts > 0 || blk.chHitPt > 0 || (blk.effect > 0 && blk.eamt > 0);
+  }
+
+  /** The cells on screen round you (PLAYGAME shows 16 x 10 blocks). */
+  private *onScreen(): Generator<[number, number]> {
+    const { x, y } = this.sim.pos;
+    for (let yy = y - 5; yy <= y + 5; yy++) for (let xx = x - 8; xx <= x + 8; xx++) if (xx >= 0 && yy >= 0 && xx < 100 && yy < 100) yield [xx, yy];
+  }
+
+  /** Pickups seen but left lying in each level, counted as you leave it (the loot report). */
+  readonly left: Record<number, number> = {};
+
+  private leftIn(scene: number, w: World): number {
+    const here = `${scene}:`;
+    const lying = [...this.seen].filter((k) => {
+      if (!k.startsWith(here)) return false;
+      const [x, y] = k.slice(here.length).split(',').map(Number);
+      return this.isLoot(x, y, w);
+    });
+    if (process.env.BOT_LOG) console.log(`left lying in scene ${scene}: ${lying.join(' ')} (world blocks)`);
+    return lying.length;
+  }
+
+  /**
+   * Like a person would: picks up what's on screen and close by (a few steps out of the way,
+   * nothing that hurts on the path), nearest first, then goes on.
+   */
+  async grab(maxSteps = 7): Promise<string | undefined> {
+    if (!this.greedy) return undefined;
+    for (let n = 0; n < 6; n++) {
+      let best: { x: number; y: number; len: number } | undefined;
+      for (const [x, y] of this.onScreen()) {
+        if (!this.isLoot(x, y)) continue;
+        const p = this.path(x, y);
+        if (!p || p.length > maxSteps) continue;
+        if (p.some((c) => this.sim.shown(c.x, c.y).chHitPt < 0)) continue;
+        if (!best || p.length < best.len) best = { x, y, len: p.length };
+      }
+      if (!best) return undefined;
+      this.greedy = false;
+      try {
+        const r = await this.goto(best.x - ORIGIN, best.y - ORIGIN, 'something on the floor');
+        if (r) return r;
+      } finally {
+        this.greedy = !process.env.NO_LOOT;
+      }
+    }
+    return undefined;
+  }
+
   snapshot() {
-    return { sim: this.sim.snapshot(), log: this.log.length };
+    return { sim: this.sim.snapshot(), log: this.log.length, seen: new Set(this.seen) };
   }
 
   restore(s: ReturnType<Bot['snapshot']>): void {
     this.sim.restore(s.sim);
     this.log.length = s.log;
+    this.seen = new Set(s.seen);
   }
 
   async tick(): Promise<string | undefined> {
-    return (await this.sim.tick()) ?? undefined;
+    const w = this.sim.w;
+    const scene = this.sim.scene;
+    const r = (await this.sim.tick()) ?? undefined;
+    if (r === 'link' || r === 'end') this.left[scene] = this.leftIn(scene, w);
+    if (!r && this.sim.ticks % 8 === 0) for (const [x, y] of this.onScreen()) if (this.isLoot(x, y)) this.seen.add(`${this.sim.scene}:${x},${y}`);
+    return r;
   }
 
   /** A counter as shown (Game-Maker's counters start at 1 and show one less). */
@@ -148,6 +214,8 @@ export class Bot {
   async goto(lx: number, ly: number, label = ''): Promise<string | undefined> {
     const x = lx + ORIGIN;
     const y = ly + ORIGIN;
+    const g = await this.grab();
+    if (g) return g;
     for (let attempt = 0; attempt < 16; attempt++) {
       const steps = this.path(x, y);
       if (!steps) throw new Error(`No path to ${lx},${ly} ${label} from ${this.sim.pos.x - ORIGIN},${this.sim.pos.y - ORIGIN} in scene ${this.sim.scene}`);

@@ -130,6 +130,13 @@ export async function theVoid(bot: Bot): Promise<void> {
     [19, 18, 'a penny'],
     [20, 16, 'a pog'],
     [22, 16, 'a penny'],
+    [9, 5, 'a calculator (NOPE)'],
+    [14, 2, 'a penny'],
+    [16, 4, 'a pog'],
+    [15, 9, 'the sock from Christmas'],
+    [19, 11, 'a penny'],
+    [26, 10, 'a spoon'],
+    [31, 12, 'a holy crumb (a loaf was here)'],
   ];
   for (const [x, y, what] of stops)
     await carefully(bot, what, 12, async () => {
