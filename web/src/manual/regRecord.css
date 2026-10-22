@@ -1,0 +1,114 @@
+/* The Owner's Guide's registration record (regRecord.ts): printed lines, written in by hand. */
+.mpage .rr {
+  margin: 2cqw 0 0;
+  padding: 1.2cqw 2cqw 1cqw;
+  border: 0.25cqw solid #18150f;
+  font-size: 2.35cqw;
+}
+
+.mpage .rr-head {
+  margin-bottom: 0.6cqw;
+  font: 700 2.6cqw/1.2 Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mpage .rr dl {
+  margin: 0;
+}
+
+.mpage .rr-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2cqw;
+  margin: 0;
+  padding-top: 1.3cqw;
+}
+
+.mpage .rr dt {
+  flex: none;
+  font: 2.35cqw/1 'Times New Roman', Times, serif;
+}
+
+.mpage .rr dd {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+/* the printed line to write on */
+.mpage .rr-line {
+  position: relative;
+  display: block;
+  min-height: 1.2em;
+  border-bottom: 0.2cqw solid #18150f;
+  line-height: 1;
+}
+
+.mpage .rr-printed {
+  padding-left: 1cqw;
+  font: 700 2.35cqw/1.2 'Courier New', Courier, monospace;
+  letter-spacing: 0.08em;
+}
+
+/* ballpoint ink */
+.mpage .rr-hand {
+  display: inline-block;
+  padding: 0 1cqw;
+  color: #1d3b8f;
+  font:
+    600 4.4cqw/0.9 Caveat,
+    'Bradley Hand',
+    'Segoe Print',
+    'Comic Sans MS',
+    cursive;
+  white-space: nowrap;
+  transform: translateY(0.35em) rotate(-1.6deg);
+  transform-origin: left bottom;
+}
+
+.mpage .rr-number {
+  transform: translateY(0.35em) rotate(-0.8deg) translateX(1.5cqw);
+  letter-spacing: 0.04em;
+}
+
+.mpage .rr-blank {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.mpage .rr-small {
+  margin-top: 1.2cqw;
+  font: italic 2cqw/1.3 'Times New Roman', Times, serif;
+}
+
+/* the back cover: no box, the cover's own type */
+.mpage.cover .rr-cover {
+  margin: 3cqw 6cqw 0;
+  padding: 0;
+  border: 0;
+  font-size: 3.2cqw;
+}
+
+.mpage.cover .rr-cover dt {
+  font-size: 3.2cqw;
+}
+
+.mpage.cover .rr-cover .rr-row {
+  padding-top: 3cqw;
+}
+
+.mpage.cover .rr-cover .rr-hand {
+  font-size: 5.6cqw;
+}
+
+/* the rest of the back cover: lines for notes */
+.mpage.cover .rr-notes {
+  margin: 4cqw 6cqw 0;
+  height: 40cqw;
+  background: repeating-linear-gradient(to bottom, transparent 0 5.6cqw, rgba(24, 21, 15, 0.55) 5.6cqw calc(5.6cqw + 0.2cqw));
+}

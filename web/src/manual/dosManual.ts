@@ -12,12 +12,14 @@ import { gmBoxItems } from './printables/gmItems';
 import * as fig from './figures';
 import { sandboxShots, type GameShot } from '../desk/boxes/gmShots';
 import { gmCover } from './printables/gmCover';
+import { regRecord } from './regRecord';
 
 const TITLE = 'Game-Maker 3.0 Owner\u2019s Guide';
 
-function div(html: string): HTMLElement {
+function div(html: string, ...more: HTMLElement[]): HTMLElement {
   const el = document.createElement('div');
   el.innerHTML = html;
+  el.append(...more);
   return el;
 }
 
@@ -25,7 +27,7 @@ function figure(draw: Parameters<typeof fig.shot>[0], caption: string, rows?: [n
   return `<figure><img alt="${caption}" src="${fig.shot(draw, rows)}"><figcaption>${caption}</figcaption></figure>`;
 }
 
-const page = (chapter: string, html: string): BookletPage => ({ head: [TITLE, chapter], body: div(html) });
+const page = (chapter: string, html: string, ...more: HTMLElement[]): BookletPage => ({ head: [TITLE, chapter], body: div(html, ...more) });
 
 /** What each Sandbox Software game shows a designer, for its figure's caption. */
 const GAME_NOTES: Record<string, string> = {
@@ -86,6 +88,7 @@ function pages(shots: GameShot[]): BookletPage[] {
       Game-Maker lets you turn your game ideas into great games with no programming at all.
       We suggest you start by playing a few of the sample games, then read Chapter 3 and try
       the tools in the order given there.</div>`,
+      regRecord('page'),
     ),
     page(
       '1. Getting Started',
@@ -558,9 +561,11 @@ function pages(shots: GameShot[]): BookletPage[] {
       cover: true,
       body: div(`
         <div class="cover-banner"><em>It’s as much fun to create computer games as it is to play them.</em></div>
-        <div class="cover-title">Notes</div>
-        <div class="cover-sub">Game name: ____________________<br><br>Folder: C:\\GM\\____________<br><br>Registration code: ______________</div>
-        <div class="cover-foot">GAME-MAKER · Recreational Software Designs</div>`),
+        <div class="cover-title">Notes</div>`,
+        regRecord('cover'),
+        h('div', { class: 'rr-notes', 'aria-hidden': 'true' }),
+        h('div', { class: 'cover-foot' }, 'GAME-MAKER · Recreational Software Designs'),
+      ),
     },
   ];
 }
