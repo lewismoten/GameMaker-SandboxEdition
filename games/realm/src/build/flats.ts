@@ -38,6 +38,7 @@ export function buildFlats(o: { west: { to: string; at: Pt }; east: { to: string
       {
         id: 'flats',
         desc: 'The Dawdle Flats',
+        cmf: 'flats.cmf',
         owns: () => true,
         extra: [
           { from: fp.westExit, to: o.west.to, at: o.west.at },

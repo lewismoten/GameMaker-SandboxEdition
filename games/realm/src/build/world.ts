@@ -87,7 +87,7 @@ export function buildWorld(cast: Cast) {
   const scene: SceneSpec = {
     id: 'world',
     desc: 'Procrastia',
-    files: { pal: 'world.pal', map: 'world.map', bbl: 'world.bbl', mon: 'world.mon', mbl: 'people.mbl' },
+    files: { pal: 'world.pal', map: 'world.map', bbl: 'world.bbl', mon: 'world.mon', mbl: 'people.mbl', cmf: 'world.cmf' },
     links: world,
   };
   return { files, scene, talkScenes, plan, map, book, blocks, mb, mons };

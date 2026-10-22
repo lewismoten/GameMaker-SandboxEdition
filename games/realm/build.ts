@@ -15,6 +15,7 @@ import { buildDungeons } from './src/build/dungeons';
 import { buildFlats } from './src/build/flats';
 import { passFiles } from './src/levels/talk';
 import { assemble, type SceneSpec } from './src/game';
+import * as MUSIC from './src/sound/music';
 import { autoArrange } from '../../web/src/editor/editors/integrator/integratorLayout';
 import { untangle } from './src/layout';
 
@@ -29,6 +30,7 @@ const sounds = buildSounds();
 disk.put('realm.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
 for (const f of passFiles()) disk.put(f.name, f.bytes);
+for (const [name, make] of Object.entries(MUSIC)) disk.put(`${name.replace(/Song$/, '')}.cmf`, make());
 
 const world = buildWorld(cast);
 const spot = world.plan.spot;

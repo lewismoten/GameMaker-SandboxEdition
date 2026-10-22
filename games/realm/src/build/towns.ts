@@ -51,12 +51,14 @@ export function buildTowns(spot: Record<string, Pt>, harborDoors: { flats: Pt; v
       {
         id: 'nowish',
         desc: 'Nowish',
+        cmf: 'town.cmf',
         owns: ([x]) => x < 50,
         extra: [21, 22, 23].map((x) => ({ from: [x, 39] as Pt, to: 'world', at: WORLD_ARRIVE.nowish })),
       },
       {
         id: 'laterburg',
         desc: 'Laterburg',
+        cmf: 'castle.cmf',
         owns: ([x]) => x >= 50,
         extra: [73, 74, 75, 76].map((x) => ({ from: [x, 67] as Pt, to: 'world', at: WORLD_ARRIVE.laterburg })),
       },
@@ -77,6 +79,7 @@ export function buildTowns(spot: Record<string, Pt>, harborDoors: { flats: Pt; v
       {
         id: 'harbor',
         desc: 'Someday Harbor',
+        cmf: 'town.cmf',
         owns: ([x]) => x < 50,
         extra: [
           ...[23, 24, 25].map((x) => ({ from: [x, 1] as Pt, to: 'world', at: WORLD_ARRIVE.harbor })),
@@ -87,6 +90,7 @@ export function buildTowns(spot: Record<string, Pt>, harborDoors: { flats: Pt; v
       {
         id: 'falls',
         desc: 'Eventually Falls',
+        cmf: 'town.cmf',
         owns: ([x]) => x >= 50,
         extra: [70, 71, 72].map((x) => ({ from: [x, 64] as Pt, to: 'world', at: WORLD_ARRIVE.falls })),
       },
