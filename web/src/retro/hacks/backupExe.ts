@@ -148,14 +148,14 @@ async function backupUi(h: RetroHost): Promise<void> {
     statusLine(h, 'Reading saved games...');
     const games = await uiGames(h);
     frame(h, 1, TOP, 78, BOTTOM, 'Games with saved data');
-    put(h, 3, TOP + 1, HEAD, `    ${cell('Name', 10)}${cell('Game', 32)}${'Files'.padStart(6)}${'Bytes'.padStart(10)}  Backups  Newest`);
+    put(h, 3, TOP + 1, HEAD, `    ${cell('Name', 10)}${cell('Game', 26)}${'Files'.padStart(6)}${'Bytes'.padStart(10)}${'Backups'.padStart(8)}  Newest`);
     if (!games.length) {
       statusLine(h, '');
       await messageBox(h, ['No saved games yet.', '', 'Play a game and save it (F5), then run BACKUP.', '', 'Press any key.'], BG);
       break;
     }
     const rows: ListRow[] = games.map((g) => ({
-      text: `${picked.has(g.save) ? '[\xfb]' : '[ ]'} ${cell(g.dos, 10)}${cell(g.title, 32)}${String(g.files).padStart(6)}${num(g.bytes).padStart(10)}${String(g.backups.length).padStart(9)}  ${g.backups[0] ? stamp(g.backups[0].when).slice(0, 8) : '--'}`,
+      text: `${picked.has(g.save) ? '[\xfb]' : '[ ]'} ${cell(g.dos, 10)}${cell(g.title, 26)}${String(g.files).padStart(6)}${num(g.bytes).padStart(10)}${String(g.backups.length).padStart(8)}  ${g.backups[0] ? stamp(g.backups[0].when).slice(0, 8) : '--'}`,
       a: g.files ? BRIGHT : DIM,
     }));
     statusLine(h, note || `${plural(games.length, 'game')}; ${picked.size ? `${picked.size} marked` : 'none marked (B backs up the one chosen)'}.`, note ? GREEN : TEXT);
