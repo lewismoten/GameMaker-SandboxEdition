@@ -21,10 +21,14 @@ export const ROUTE: Record<number, Stop[]> = {
   10: ['k', 'I'],
   11: ['k', 'I'],
   12: [[29, 1], [15, 10], 'I'],
+  13: ['k', 'I'],
 };
 
 /** The secret way out of the Cold Cellar, and the hidey-hole's own route. */
-export const SECRET_ROUTE: Record<number, Stop[]> = {};
+export const SECRET_ROUTE: Record<number, Stop[]> = {
+  5: ['J'],
+  0: [{ pickup: [18, 1] }, 'I'],
+};
 
 export async function playRoom(bot: Bot, stops: Stop[]): Promise<void> {
   const scene = bot.sim.scene;

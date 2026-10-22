@@ -598,6 +598,28 @@ export function buildTileSet(style: Style): TileSet {
     t.add(`ing${n}b`, on(rug, ingredient(n, 1)), { effect: CTR.ingredients, eamt: 1, score: 1000, next: `ing${n}`, ntime: 6 });
   }
 
+  // the Vault's door: twelve keyholes round a wheel (with flour on the knob). It takes twelve
+  // ingredients (counter 3) and refuses fewer; open, it hands them straight back.
+  const vault = (open: boolean) => {
+    const p = on(fl);
+    if (open) {
+      p.rect(0, 0, 3, 20, c('metal', 1)).rect(17, 0, 3, 20, c('metal', 1));
+      p.disc(18, 10, 2, c('metal', 3));
+      return p;
+    }
+    p.rect(0, 0, 20, 20, c('metal', 1));
+    p.disc(10, 10, 9, c('metal', 3)).disc(10, 10, 8, c('metal', 2));
+    for (let i = 0; i < 12; i++) {
+      const a = (i * Math.PI) / 6;
+      p.set(10 + Math.cos(a) * 6.5, 10 + Math.sin(a) * 6.5, c('dark', 0));
+    }
+    p.disc(10, 10, 2.5, c('trim', 3)).set(9, 9, c('paper', 4)).set(10, 9, c('paper', 4));
+    return p;
+  };
+  t.add('vaultDone', vault(true));
+  t.add('vaultOpen', vault(true), { effect: CTR.ingredients, eamt: 12, touch: 'vaultDone' });
+  t.add('vault', vault(false), { solid: SOLID, effect: CTR.ingredients, eamt: -12, touch: 'vaultOpen' });
+
   const signs = new Map<string, number>();
   for (const [name, lines, n] of SIGNS[style]) {
     signBlocks(lines, n, wallFace(style)).forEach((b, i) => t.add(`${name}${i}`, b, { solid: SOLID }));

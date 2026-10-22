@@ -11,6 +11,7 @@ import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../web/src/formats/blocks'
 import { MLEN } from '../../../web/src/formats/map';
 import { CTR, SCAN } from '../src/ids';
 import type { Compiled } from '../src/compile';
+import { sceneOf } from '../src/game';
 
 export type Dir = 'up' | 'down' | 'left' | 'right';
 type Pt = { x: number; y: number };
@@ -44,7 +45,7 @@ export class Bot {
   /** The room being played (the compiled room for the current scene). */
   room() {
     const s = this.sim.scene;
-    return this.all.rooms.find((r) => (r.spec.level === 0 ? 15 : r.spec.level + 1) === s)!;
+    return this.all.rooms.find((r) => sceneOf(r) === s)!;
   }
 
   private refresh(): void {
@@ -90,6 +91,7 @@ export class Bot {
     if (name === 'trapHidden' || name === 'trapArmed') return { cost: 40, to: { x: tx, y: ty } };
     if (name.startsWith('panel_') || name.startsWith('opener')) return { cost: 6, to: { x: tx, y: ty } };
     if (name.startsWith('riser')) return this.sim.solidAt(tx, ty) ? undefined : { cost: 2, to: { x: tx, y: ty } };
+    if (name === 'vault') return this.sim.meter(CTR.ingredients) > 12 ? { cost: 2, to: { x: tx, y: ty } } : undefined;
     if (name === 'latch') return this.sim.meter(CTR.keys) > 1 ? { cost: 2, to: { x: tx, y: ty } } : undefined;
     if (name.startsWith('hot')) return { cost: 4, to: { x: tx, y: ty } };
     if (name.startsWith('belt_') || name.startsWith('grease_')) {
