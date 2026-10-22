@@ -31,7 +31,7 @@ const SCANS: Scan[] = [
   { name: 'gazebo', photo: 'lewie-and-teddy-at-gazebo.jpg', crop: [0, 0, 1, 1], size: 320, blur: [[0.11, 0.06, 0.16, 0.27]] },
   { name: 'gwinn', photo: 'teddy-and-gwinn-in-grass.jpg', crop: [0, 0, 1, 1], size: 320 },
   { name: 'teddy', photo: 'teddy smiling.jpg', crop: [0.08, 0, 0.92, 0.84], size: 256 },
-  // Dr. Leo's first dress-out: down to the tie, short of the pin on his lapel
+  // Doc Leo's first dress-out: down to the tie, short of the pin on his lapel
   { name: 'leo', photo: 'lewies-first-dressout-as-a-hobo-clown.jpg', crop: [0.1, 0.03, 0.9, 0.82], size: 256 },
   // in colonial dress beside General Washington; the tent's banner at the right is cropped off
   { name: 'colonial', photo: 'lewie dressed up for SAR with George Washington.jpg', crop: [0, 0.05, 0.93, 1], size: 320 },

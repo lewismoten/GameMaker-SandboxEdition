@@ -342,7 +342,7 @@ export function wonFli(): Uint8Array {
 export function snapFli(): Uint8Array {
   const p = screen();
   p.rect(0, 0, W, 8, ANSI[1]);
-  text(p, 0, 0, ' GWINN.GIF  256x160x256  Interlaced', ANSI[15]);
+  text(p, 0, 0, ' GWINN2.GIF  256x160x256  Interlaced', ANSI[15]);
   const photo = resample(loadScan('gwinn'), 256);
   const [x, y] = [32, 18];
   p.frame(x - 2, y - 2, photo.w + 4, photo.h + 4, ANSI[7]);

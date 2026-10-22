@@ -448,7 +448,7 @@ const LISTING: [string, string, string][] = [
   ['13STARS.GIF', '9K', 'Flag Resolution, 1777'],
   ['CHICKEN.TXT', '2K', 'Walking a rubber'],
   ['', '', 'chicken on a leash.'],
-  ['', '', '      -Dr. Leo, PhD'],
+  ['', '', '      -Doc Leo, PhD'],
   ['NOISELES.TXT', '3K', 'Typed on a Remington'],
   ['', '', 'Noiseless. Shhh!'],
   ['6502.ASM', '8K', 'Atari 400 sprite demo'],
