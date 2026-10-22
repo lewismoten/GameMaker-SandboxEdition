@@ -370,7 +370,18 @@ export function buildScreens(
   blob(woods, 254, 134, 24, 4, pal.r('snow'), 2, 4);
   scaleBlit(woods, feltEgg(c), 214, 58, 4);
   save('woods.gif', woods);
-  const hs = pad('THE COFFEE CAN');
+  // the high scores: PLAYGAME prints "Top Ten Scores" in red at y 0, the rows from y 27 and
+  // "Hit any key" at y 192 (HISCOREL.C), so the page runs off the top and bottom of the
+  // screen for all of that to sit on paper, and the title is small, between the red line and the first row
+  const hs = new Pixels(W, H);
+  gradient(hs, 0, 0, W, H, pal.r('nightsky'), 2, 6);
+  snowfall(hs, pal, 21, 90);
+  hs.rect(24, 0, 272, H, c('paper', 4)).rect(24, 0, 1, H, c('paper', 1)).rect(295, 0, 1, H, c('paper', 1));
+  hs.rect(34, 0, 1, H, c('coat', 3));
+  for (let y = 14; y < 196; y += 18) hs.rect(27, y, 4, 4, c('nightsky', 3));
+  centered(hs, 11, 'THE COFFEE CAN', c('menublue', 1));
+  const rule = textWidth('THE COFFEE CAN', 1) + 16;
+  hs.rect(160 - rule / 2, 21, rule, 1, c('menublue', 2));
   save('hiscore.gif', hs);
 
   // ---------------- endings
