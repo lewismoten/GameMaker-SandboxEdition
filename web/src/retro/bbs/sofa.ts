@@ -6,6 +6,7 @@ import { attr, COLS } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { sofaLogin } from './ansiArt';
 import { sofaFiles } from './sofaFiles';
+import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
 
 export const SOFA_PHONE = '1-412-555-0177';
@@ -133,6 +134,10 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
   let spamAt = performance.now() + 600;
   let pleaAt = performance.now() + 3000;
   let plea = Math.floor(Math.random() * PLEAS.length);
+  let canAt = performance.now() + 4000;
+  let burst: BurstLine[] = [];
+  let burstAt = 0;
+  let round = 0;
   const prompt = () => t.print(`|11: |15${typed}`);
   const eraseLine = () => {
     s.fill(0, s.cursorY, COLS - 1, s.cursorY, attr(7, 0));
@@ -146,12 +151,29 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
   prompt();
   for (;;) {
     const now = performance.now();
-    // The flood: far too fast to read.
-    while (now > spamAt) {
-      say(`|12From ${SPAMMER}: |15${spamLine()}`);
-      spamAt += 70 + Math.random() * 90;
+    // Now and then the flood turns into a whole can of SPAM, and the channel fights back.
+    if (!burst.length && now > canAt) {
+      burst = spamCanBurst(SPAMMER, round++);
+      burstAt = now;
     }
-    if (now > pleaAt) {
+    if (burst.length) {
+      while (burst.length && now >= burstAt + burst[0].wait) {
+        burstAt += burst[0].wait;
+        say(burst.shift()!.text);
+      }
+      if (!burst.length) {
+        spamAt = now + 2500;
+        pleaAt = now + 4000;
+        canAt = now + 20000 + Math.random() * 10000;
+      }
+    } else {
+      // The flood: far too fast to read.
+      while (now > spamAt) {
+        say(`|12From ${SPAMMER}: |15${spamLine()}`);
+        spamAt += 70 + Math.random() * 90;
+      }
+    }
+    if (!burst.length && now > pleaAt) {
       const [who, text] = PLEAS[plea++ % PLEAS.length];
       say(`|14From ${who}: |07${text}`);
       pleaAt = now + 2200 + Math.random() * 3000;
