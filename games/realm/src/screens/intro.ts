@@ -68,7 +68,7 @@ export function introFli(): Uint8Array {
     words.cv.draw(cv, 0, 0);
     if (f >= 2 && f < 14) words.centered(20, 'Procrastia. Late at night.', [230, 220, 250], 1, [0, 0, 0]);
     if (f >= 24 && f < 40) words.centered(20, 'Somebody who hates waiting...', [250, 200, 200], 1, [0, 0, 0]);
-    if (f >= 48) words.centered(16, 'THE ROUND TUIT IS GONE!', (_x, y) => mix([255, 236, 150], [200, 120, 30], clamp01((y - 16) / 16)), 2, [0, 0, 0]);
+    if (f >= 48) words.centered(16, 'THE ROUND TUIT IS GONE!', (_x, y) => mix([255, 236, 150], [200, 120, 30], clamp01((y - 16) / 12)), 1.5, [0, 0, 0]);
     if (f >= 62) words.centered(40, '"Get around to THAT!" - Lord Deadline', [250, 210, 210], 1, [0, 0, 0]);
     frames.push(words.cv);
     void t;

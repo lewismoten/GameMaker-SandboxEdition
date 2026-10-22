@@ -278,9 +278,9 @@ export class Bot {
   }
 
   /** Talks to whoever stands at (x, y): walks in, plays the talk, comes back. */
-  async talk(x: number, y: number, label: string): Promise<void> {
+  async talk(x: number, y: number, label: string, through?: Set<string>): Promise<void> {
     const scene = this.sim.scene;
-    const r = await this.goto(x, y, `talk to ${label}`);
+    const r = await this.goto(x, y, `talk to ${label}`, through);
     if (r !== 'link') throw new Error(`${label}: no talk (${r})`);
     // the talk scene links straight back on its first tick
     const back = await this.wait(3);
