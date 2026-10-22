@@ -103,10 +103,19 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
   ];
   const pal = medianCutPalette(frames, INKS);
   const q = new Quantizer(pal, 10);
-  const pics = frames.map((f) => {
+  // Where a frame hardly differs from the one before (the backdrop, the mound), it keeps the
+  // pixels it had: the scans' noise would otherwise change every frame of the FLI.
+  const pics: Pixels[] = [];
+  frames.forEach((f, i) => {
     const p = new Pixels(W, H);
     p.px.set(q.apply(f, W, H));
-    return p;
+    const prev = frames[i - 1];
+    if (prev)
+      for (let j = 0; j < W * H; j++) {
+        const d = Math.abs(f[j * 3] - prev[j * 3]) + Math.abs(f[j * 3 + 1] - prev[j * 3 + 1]) + Math.abs(f[j * 3 + 2] - prev[j * 3 + 2]);
+        if (d < 18) p.px[j] = pics[i - 1].px[j];
+      }
+    pics.push(p);
   });
   const name = (p: Pixels, drop: number, sub: boolean) => {
     outlined(p, 160 - textWidth('MUSTARD SEED HUSTLE', 2) / 2, drop, 'MUSTARD SEED HUSTLE', 1, 3, 2, 2);
