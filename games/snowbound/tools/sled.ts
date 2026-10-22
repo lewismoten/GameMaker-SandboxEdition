@@ -1,11 +1,17 @@
 // The sled run down Jamie Street: every few ticks the bot tries each key (or none) a few
 // moves deep on snapshots of the game and keeps the one that goes farthest down the hill
-// without hitting a tree or a rock, picking up the dollars it can on the way.
-import { SCAN, type Bot } from './bot';
+// without hitting a tree or a rock, picking up the dollars it can on the way (and steering
+// a little toward one it sees coming).
+import { BLOCK, SCAN, type Bot } from './bot';
 
 const ACTIONS = [0, SCAN.down, SCAN.left, SCAN.right, SCAN.up] as const;
 const STEP = 3;
 const DEPTH = 3;
+const BILL = BLOCK.get('slopeBill')!;
+/** How much a dollar ahead pulls the sled toward it. */
+const LURE = 40;
+/** How many columns to either side a dollar can lure the sled from. */
+const REACH = 4;
 
 export async function sledRun(bot: Bot, maxTicks = 3000): Promise<string | undefined> {
   const { sim } = bot;
@@ -29,7 +35,20 @@ export async function sledRun(bot: Bot, maxTicks = 3000): Promise<string | undef
     if (r === 'dead' || r === 'end') return -1e9;
     if (r === 'link') return 1e6 - sim.ticks;
     const p = sim.pos;
-    return p.y * 20 + p.sy + 40 * (sim.money - money0) - 30 * (hp0 - sim.ci.hitpts) - danger() + sim.ci.gravy;
+    return p.y * 20 + p.sy + 40 * (sim.money - money0) - 30 * (hp0 - sim.ci.hitpts) - danger() + sim.ci.gravy + lure();
+  };
+  /** A dollar a little way down the hill, near enough in line to steer for (as a player would). */
+  const lure = () => {
+    const p = sim.pos;
+    const px = p.x * 20 + p.sx;
+    let best = 0;
+    for (let dy = 1; dy <= 10; dy++)
+      for (let dx = -REACH; dx <= REACH; dx++) {
+        if (sim.blockAt(p.x + dx, p.y + dy) !== BILL) continue;
+        const off = Math.abs((p.x + dx) * 20 - px) / 20;
+        best = Math.max(best, LURE * (1 - off / (REACH + 1)) * (1 - dy / 12));
+      }
+    return best;
   };
   const search = async (depth: number, hp0: number, money0: number): Promise<number> => {
     let best = -Infinity;
