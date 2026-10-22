@@ -58,7 +58,7 @@ export function menuScreen(): Pixels {
   // PLAYGAME writes the game's name at (96,104) and the menu at (80,120..167) in blue
   card(p, 62, 92, 196, 84);
   p.rect(64, 100, 192, 72, c('paper', 4));
-  scaleBlit(p, leo('down'), 8, 110, 2);
+  bigLeo(p, 6, 86, 1.25);
   scaleBlit(p, gwinn(0, true), 266, 132, 2);
   mug(p, 270, 62, 1);
   micro(p, 72, 190, 'ARROWS TO CHOOSE, ENTER TO GO', c('paper', 4));
