@@ -158,7 +158,7 @@ export abstract class ComputerDrives {
           file('VPIC.EXE', 77_221, { run: { kind: 'vpic' } }),
           textFile(
             'PHONE.LST',
-            'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     412-555-0177  14400 N81  Major BBS, 8 lines\n',
+            'THE -= S A N D B O X =- BBS  1-412-555-SAND  14400 N81  Renegade\nTHE SOFA                     1-412-555-0177  14400 N81  Major BBS, 8 lines\n',
           ),
         ]),
         liveFolder('DOWNLOAD', async () => {

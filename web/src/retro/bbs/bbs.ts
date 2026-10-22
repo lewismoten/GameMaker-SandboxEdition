@@ -33,20 +33,24 @@ const TIME_COMPRESSION = 25; // nobody wants to wait ten minutes
 
 const DIRECTORY = [
   {
-    name: BBS_NAME,
+    // the board's name in its colors, without the BBS (every entry here is one)
+    name: `|07THE ${SANDBOX_ANSI}`,
     number: PHONE,
     software: "Renegade",
     run: runSandbox,
     busy: () => false,
   },
   {
-    name: "The Sofa",
+    name: "|15The Sofa",
     number: SOFA_PHONE,
     software: "Major BBS, 8 lines",
     run: runSofa,
     busy: sofaBusy,
   },
 ];
+
+/** Text without its |NN color codes. */
+const visible = (s: string) => s.replace(/\|\d\d/g, "");
 
 export async function runTerminal(h: RetroHost): Promise<void> {
   const t = new Term(h);
@@ -67,7 +71,7 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     DIRECTORY.forEach((d, i) =>
       t.line(
         boxRow(
-          `|14 ${i + 1}  |15${d.name.padEnd(28)} |07${d.number.padEnd(15)} |1014400  |07${d.software}`,
+          `|14 ${i + 1}  ${d.name}${" ".repeat(Math.max(0, 28 - visible(d.name).length))} |07${d.number.padEnd(15)} |1014400  |07${d.software}`,
           "03",
         ),
       ),
