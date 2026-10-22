@@ -1,6 +1,7 @@
 // The walkthrough's detour for a board's gold screw: a player sees the screw on the board and
 // rolls over for it on the way. Tries a there-and-back trip from every point of the board's
-// solution (the shortest path over plain board, crossing as few wires as it can) and keeps the
+// solution (the shortest path over plain board, crossing as few wires as it can, and around a
+// cell that zapped an earlier try) and keeps the
 // one that costs the least time and still reaches the outlet alive. The solution itself (and
 // the hint book that prints it) stays as it is; only the walkthrough takes the detour.
 import type { CharInfo } from '../../../web/src/engine/world';
@@ -11,9 +12,8 @@ import { playSolution, type Played } from './verify';
 
 const STEP: Record<string, [number, number]> = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] };
 const BACK: Record<string, string> = { U: 'D', D: 'U', L: 'R', R: 'L' };
-
-/** Shortest moves from `from` to `to` over open board ('.', '$', '@'); a wire cell costs ten. */
-function path(rows: string[], from: [number, number], to: [number, number], wires: Set<string>): string | undefined {
+/** Shortest moves from `from` to `to` over open board ('.', '$', '@') around `live`; a wire cell costs ten. */
+function path(rows: string[], from: [number, number], to: [number, number], wires: Set<string>, live: Set<string>): string | undefined {
   const key = (x: number, y: number) => `${x},${y}`;
   const best = new Map<string, { cost: number; prev: string; move: string }>([[key(...from), { cost: 0, prev: '', move: '' }]]);
   const open: [number, number, number][] = [[0, ...from]];
@@ -27,11 +27,12 @@ function path(rows: string[], from: [number, number], to: [number, number], wire
       for (let k = here; best.get(k)!.prev; k = best.get(k)!.prev) out = best.get(k)!.move + out;
       return out;
     }
-    for (const [m, [dx, dy]] of Object.entries(STEP)) {
+    for (const m of 'UDLR') {
+      const [dx, dy] = STEP[m];
       const nx = x + dx;
       const ny = y + dy;
       const k = key(nx, ny);
-      if (!'.$@'.includes(rows[ny]?.[nx] ?? '#')) continue;
+      if (live.has(k) || !'.$@'.includes(rows[ny]?.[nx] ?? '#')) continue;
       const c = cost + (wires.has(k) ? 10 : 1);
       if (best.has(k) && best.get(k)!.cost <= c) continue;
       best.set(k, { cost: c, prev: here, move: m });
@@ -70,16 +71,23 @@ export async function withScrew(b: Board, tiles: BlockSet, mb: BlockSet, cb: Blo
     const m = at ? /stopped at (-?\d+),(-?\d+)/.exec(at.why) : undefined;
     if (at && !m) continue;
     const from: [number, number] = m ? [+m[1], +m[2]] : [b.start.x - b.ox, b.start.y - b.oy];
-    const go = path(b.spec.rows, from, screw, wires);
-    if (go === undefined) continue;
-    const back = [...go].reverse().map((c) => BACK[c]).join('');
-    const moves = prefix + go + back + solution.slice(k);
-    // each move takes about six ticks: skip a trip that cannot beat the best one so far
-    if (found && go.length * 2 * 6 >= best.extra + 12) continue;
-    const r = await play(moves);
-    if (r.ok && r.score >= base.score + 500 && (!found || r.ticks - base.ticks < best.extra)) {
-      best = { moves, played: r, extra: r.ticks - base.ticks };
-      found = true;
+    // a trip that gets zapped tries again around the live cell that zapped it
+    const live = new Set<string>();
+    for (let tries = 0; tries < 6; tries++) {
+      const go = path(b.spec.rows, from, screw, wires, live);
+      if (go === undefined) break;
+      const back = [...go].reverse().map((c) => BACK[c]).join('');
+      const moves = prefix + go + back + solution.slice(k);
+      // each move takes about six ticks: skip a trip that cannot beat the best one so far
+      if (found && go.length * 2 * 6 >= best.extra + 12) break;
+      const r = await play(moves);
+      if (r.ok && r.score >= base.score + 500 && (!found || r.ticks - base.ticks < best.extra)) {
+        best = { moves, played: r, extra: r.ticks - base.ticks };
+        found = true;
+      }
+      const z = /zapped at (-?\d+),(-?\d+)/.exec(r.why);
+      if (!z || live.has(`${z[1]},${z[2]}`)) break;
+      live.add(`${z[1]},${z[2]}`);
     }
   }
   return best;

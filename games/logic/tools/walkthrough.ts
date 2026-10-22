@@ -35,7 +35,7 @@ for (const [ri, room] of rooms.entries()) {
     const r = await playSolution(b, room.tiles, mb, cb, chr, screw.moves, ci);
     if (!r.ok) throw new Error(`${b.spec.file}: ${r.why}`);
     if (b.spec.solution.includes('r')) console.log(`${b.spec.file}: the solution reboots`);
-    const how = b.spec.rows.some((row) => row.includes('$')) ? (screw.extra ? `the screw +${(screw.extra / 18.2).toFixed(1)} s` : 'NO SCREW') : 'no screw on the board';
+    const how = b.spec.rows.some((row) => row.includes('$')) ? (screw.extra ? `the screw +${(screw.extra / 18.2).toFixed(1)} s` : 'screw left: no safe trip') : 'no screw on the board';
     console.log(`${b.spec.file} ${b.spec.title}: ${r.ticks} ticks, score ${ci.score}, ${how}`);
     // a key pressed between ticks t and t+1 is played back on tick t+1 (the recorder counts from 1)
     segments.push({ scene: roomScene, keys: encodeKeys(keysAt(r.keys.map((k) => ({ tick: k.tick + 1, key: k.key })))) });
