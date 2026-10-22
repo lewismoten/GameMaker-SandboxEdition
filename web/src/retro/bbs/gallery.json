@@ -1,0 +1,72 @@
+[
+  {
+    "name": "TEDDY.GIF",
+    "bytes": 127103,
+    "width": 480,
+    "height": 400,
+    "colors": 256
+  },
+  {
+    "name": "GWINN.GIF",
+    "bytes": 257742,
+    "width": 640,
+    "height": 400,
+    "colors": 256
+  },
+  {
+    "name": "GAZEBO.GIF",
+    "bytes": 200087,
+    "width": 640,
+    "height": 400,
+    "colors": 256
+  },
+  {
+    "name": "HOBO1.GIF",
+    "bytes": 30904,
+    "width": 192,
+    "height": 200,
+    "colors": 256
+  },
+  {
+    "name": "HOBO2.GIF",
+    "bytes": 43694,
+    "width": 320,
+    "height": 200,
+    "colors": 128
+  },
+  {
+    "name": "HOBO3.GIF",
+    "bytes": 164984,
+    "width": 640,
+    "height": 350,
+    "colors": 256
+  },
+  {
+    "name": "COLONIAL.GIF",
+    "bytes": 185187,
+    "width": 608,
+    "height": 400,
+    "colors": 256
+  },
+  {
+    "name": "DOGHOUSE.GIF",
+    "bytes": 125903,
+    "width": 360,
+    "height": 400,
+    "colors": 256
+  },
+  {
+    "name": "LIBRARY.GIF",
+    "bytes": 24905,
+    "width": 210,
+    "height": 200,
+    "colors": 64
+  },
+  {
+    "name": "CHEZ.GIF",
+    "bytes": 176862,
+    "width": 592,
+    "height": 400,
+    "colors": 256
+  }
+]
