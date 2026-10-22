@@ -52,9 +52,9 @@ disk.put('lost.cmf', M.lostSong());
 for (const id of new Set(rooms.map((r) => r.spec.song))) disk.put(`${id}.cmf`, M.roomSong(id));
 
 for (const [name, bytes] of Object.entries(buildScreens(rooms, sets))) disk.put(name, bytes);
-disk.put('demo.rec', await demoRecording(all));
 disk.put('readme.txt', readme());
 disk.put(GAM, serializeGame(game));
+disk.put('demo.rec', await demoRecording(all, disk.files));
 disk.put('license.txt', licenseText("BAKER'S DOZEN: The Thirteenth Ingredient"));
 // every file a scene names must be on the disk
 for (const s of game.scenes) for (const f of s.files) if (f && !disk.files.has(f)) throw new Error(`${s.desc} needs ${f}, which is not on the disk`);
