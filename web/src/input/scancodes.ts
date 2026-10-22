@@ -39,8 +39,3 @@ export function scanName(scan: number): string {
   const a = scanToAscii(scan);
   return a > 32 ? String.fromCharCode(a).toUpperCase() : `Scan ${scan}`;
 }
-
-/** All bindable keys, for key pickers. */
-export function bindableScans(): number[] {
-  return [...new Set(Object.values(SCAN))].filter((s) => s !== 1 && !(s >= 59 && s <= 68)).sort((a, b) => a - b);
-}

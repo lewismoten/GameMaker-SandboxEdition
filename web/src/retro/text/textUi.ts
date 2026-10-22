@@ -87,14 +87,6 @@ export async function errorBox(ui: Ui, l1: string, l2: string): Promise<string> 
   return k.key.length === 1 ? k.key.toUpperCase() : k.key;
 }
 
-/** openmenu + writestr title + lines; returns a closer. */
-export function messageWindow(ui: Ui, x: number, y: number, w: number, lines: string[], title?: string): () => void {
-  const saved = ui.screen.window(x, y, w, lines.length, MENUATTR, SHADATTR);
-  if (title) ui.screen.write(x + Math.max(0, Math.floor((w - title.length) / 2)), y - 1, attr(15, 1), ` ${title} `);
-  lines.forEach((l, i) => ui.screen.write(x + 1, y + i, MENUATTR, toCp437(l).slice(0, w - 2)));
-  return () => ui.screen.restore(saved);
-}
-
 /**
  * getfname: the question box with the file name being typed, and the file list
  * box below it. Returns the chosen name, or null for Esc.

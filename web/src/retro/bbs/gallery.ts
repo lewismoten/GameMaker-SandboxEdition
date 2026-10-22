@@ -38,8 +38,6 @@ const DESC: Record<string, string> = {
 
 export const GALLERY: GalleryFile[] = list.map((f) => ({ ...f, desc: DESC[f.name] ?? '' }));
 
-export const galleryFile = (name: string) => GALLERY.find((f) => f.name === name.toUpperCase());
-
 /** What the file listing says about a picture: "256 color", "16 gray", "JPEG prog"… */
 export function formatLabel(f: GalleryFile): string {
   if (f.format === 'GIF') return `${f.colors} ${f.gray ? 'gray' : 'color'}`;

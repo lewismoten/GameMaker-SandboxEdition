@@ -143,8 +143,3 @@ export function readSinglePage(html: string): SinglePageGame | undefined {
     throw new Error('This web page holds a game in a format this version cannot read.');
   return game;
 }
-
-/** Does this look like an HTML page holding a Game-Maker game? (cheap check before reading it all) */
-export function isSinglePageName(name: string): boolean {
-  return /\.html?$/i.test(name);
-}

@@ -171,5 +171,3 @@ export const EGGS: readonly Egg[] = [
     detect: { block: 149 },
   },
 ];
-
-export const eggFor = (game: string): Egg | undefined => EGGS.find((e) => e.game === game);

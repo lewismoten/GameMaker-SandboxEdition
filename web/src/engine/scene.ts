@@ -85,12 +85,6 @@ export interface SpeedSetting {
   ticksPerSecond?: number;
 }
 
-export const SPEED_PRESETS: { id: string; label: string; ticksPerSecond?: number }[] = [
-  { id: 'turbo', label: 'Turbo (full 18.2 ticks/s)' },
-  { id: '386', label: '386-class PC (about 12 ticks/s)', ticksPerSecond: 12 },
-  { id: '286', label: '286-class PC (about 8 ticks/s)', ticksPerSecond: 8 },
-];
-
 export function sceneFile(game: Game, scene: number, slot: number): string | undefined {
   return game.scenes[scene]?.files[slot] || undefined;
 }
