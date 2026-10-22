@@ -22,7 +22,9 @@ import type { AreaFile } from './world';
 interface Spec {
   theme: Theme;
   desc: string;
+  /** The foes' power (under 100: a bite costs them a hit) and the boss's (100 and up). */
   power: number;
+  bossPower: number;
   bite: number;
   boss: BossName;
   bossHits: number;
@@ -36,8 +38,9 @@ const SPECS: Spec[] = [
   {
     theme: 'barrows',
     desc: 'The Snooze Barrows',
-    power: 120,
-    bite: -1,
+    power: 90,
+    bossPower: 120,
+    bite: -6,
     boss: 'snoozalot',
     bossHits: 4,
     shot: 'zzz',
@@ -52,8 +55,9 @@ const SPECS: Spec[] = [
   {
     theme: 'vaults',
     desc: 'The Soggy Vaults',
-    power: 140,
-    bite: -1,
+    power: 95,
+    bossPower: 140,
+    bite: -6,
     boss: 'kraken',
     bossHits: 5,
     shot: 'spark',
@@ -67,8 +71,9 @@ const SPECS: Spec[] = [
   {
     theme: 'mines',
     desc: 'The Putoff Mines',
-    power: 150,
-    bite: -2,
+    power: 97,
+    bossPower: 150,
+    bite: -10,
     boss: 'ticktock',
     bossHits: 5,
     shot: 'ember',
@@ -82,8 +87,9 @@ const SPECS: Spec[] = [
   {
     theme: 'keep',
     desc: 'Deadline Keep',
-    power: 155,
-    bite: -2,
+    power: 98,
+    bossPower: 155,
+    bite: -12,
     boss: 'deadline',
     bossHits: 7,
     shot: 'minute',
@@ -114,8 +120,8 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
     const mb = new SpriteSheet('mbl');
     addFx(mb);
     for (const f of s.foes) for (const k of ['0', '1', 'Hit']) mb.add(`${f.name}${k}`, (dfoes.get(`${f.name}${k}`) ?? world.get(`${f.name}${k}`))!, { hp: s.bite });
-    mb.add(s.shot, dfoes.get(s.shot)!, { hp: -2 });
-    for (const [n, pic] of bossPics(s.boss)) mb.add(n, pic, { hp: -3, solid: ALL });
+    mb.add(s.shot, dfoes.get(s.shot)!, { hp: -6 });
+    for (const [n, pic] of bossPics(s.boss)) mb.add(n, pic, { hp: -1, solid: ALL });
     const mons = new MonBook(mb);
     for (const f of s.foes) {
       if (f.path) {
@@ -144,8 +150,8 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
       let next: number = LASTMON;
       const base = `${s.boss}${q}`;
       for (let k = s.bossHits - 1; k >= 1; k--)
-        next = mons.add(`${base}${k}`, { pics: [[mb.n(`${base}Hit`), 2], [mb.n(base), 3]], power: s.power, upscore: 100 }, next);
-      mons.add(base, { pics: [[mb.n(base), 99]], power: s.power, upscore: 100 }, next);
+        next = mons.add(`${base}${k}`, { pics: [[mb.n(`${base}Hit`), 2], [mb.n(base), 3]], power: s.bossPower, upscore: 100 }, next);
+      mons.add(base, { pics: [[mb.n(base), 99]], power: s.bossPower, upscore: 100 }, next);
     }
     const dp = s.plan(mons);
     const book = dungeonBook(s.theme);

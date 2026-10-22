@@ -20,11 +20,11 @@ export function buildFlats(o: { west: { to: string; at: Pt }; east: { to: string
   addFx(mb);
   const d = dungeonFoePics();
   const w = foePics();
-  for (const k of ['0', '1', 'Hit']) mb.add(`crab${k}`, d.get(`crab${k}`)!, { hp: -2 });
-  for (const k of ['0', '1', 'Hit']) mb.add(`slime${k}`, w.get(`slime${k}`)!, { hp: -1 });
+  for (const k of ['0', '1', 'Hit']) mb.add(`crab${k}`, d.get(`crab${k}`)!, { hp: -8 });
+  for (const k of ['0', '1', 'Hit']) mb.add(`slime${k}`, w.get(`slime${k}`)!, { hp: -5 });
   const mons = new MonBook(mb);
-  addChaser(mons, 'crab', { pics: [['crab0', 6], ['crab1', 6]], hurt: [['crabHit', 2], ['crab1', 2]], power: 100, wander: 1, rush: 2, drop: MON.gem, score: 20, hits: 1 });
-  addChaser(mons, 'slime', { pics: [['slime0', 8], ['slime1', 8]], hurt: [['slimeHit', 2], ['slime1', 2]], power: 100, wander: 1, rush: 1, drop: MON.heart, score: 10, hits: 1 });
+  addChaser(mons, 'crab', { pics: [['crab0', 6], ['crab1', 6]], hurt: [['crabHit', 2], ['crab1', 2]], power: 90, wander: 1, rush: 2, drop: MON.gem, score: 20, hits: 1 });
+  addChaser(mons, 'slime', { pics: [['slime0', 8], ['slime1', 8]], hurt: [['slimeHit', 2], ['slime1', 2]], power: 90, wander: 1, rush: 1, drop: MON.heart, score: 10, hits: 1 });
   const fp = flatsPlan(mons);
   const book = flatsBook(streetBridges(fp.plan.cm, 'road'));
   const area = buildArea({

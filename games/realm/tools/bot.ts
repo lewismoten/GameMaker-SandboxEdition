@@ -12,6 +12,12 @@ export type Dir = 'up' | 'down' | 'left' | 'right';
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 export const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57, t: 20, k: 37 } as const;
 
+export class Died extends Error {
+  constructor() {
+    super('Pip died');
+  }
+}
+
 export class Bot {
   log: string[] = [];
   swings = 0;
@@ -30,15 +36,20 @@ export class Bot {
 
   /** Foes near Pip: [dx, dy] in blocks (fractional), nearest first. */
   foes(): [number, number][] {
+    return this.foeList().map((f) => [f[0], f[1]]);
+  }
+
+  /** Foes near Pip: [dx, dy, slot], nearest first. */
+  foeList(): [number, number, number][] {
     const w = this.sim.w;
     const c = w.chr;
     const px = c.x[0] + c.x[1] / 20;
     const py = c.y[0] + c.y[1] / 20;
-    const out: [number, number][] = [];
+    const out: [number, number, number][] = [];
     w.mm.forEach((m, i) => {
       if (m.monnum >= 64) return;
       const mon = w.mon[m.monnum];
-      if (!mon || mon.power < 100 || mon.power >= POWER.note) return;
+      if (!mon || mon.power <= POWER.drop || mon.power >= POWER.note) return;
       const mi = w.mi[i];
       if (mi.fromchar) return;
       // a wight inside the rock can't be reached (a slash dies on the wall)
@@ -49,14 +60,32 @@ export class Bot {
       if (dx < -50) dx += 100;
       if (dy > 50) dy -= 100;
       if (dy < -50) dy += 100;
-      out.push([dx, dy]);
+      out.push([dx, dy, i]);
     });
     return out.sort((a, b) => Math.hypot(...a) - Math.hypot(...b));
   }
 
-  /** One game tick; fights and drinks as needed between ticks. */
+  /** One game tick. A death throws Died: the scene starts over, and so does what the bot was doing there. */
   async tick(): Promise<string | undefined> {
-    return this.sim.tick();
+    const r = await this.sim.tick();
+    if (r === 'dead') {
+      this.sim.releaseAll();
+      this.say('died');
+      throw new Died();
+    }
+    return r;
+  }
+
+  /** Runs `fn`, and runs it again from the scene's start if Pip dies (up to `times`). */
+  async retry(fn: () => Promise<void>, times = 4): Promise<void> {
+    for (let k = 0; ; k++) {
+      try {
+        await fn();
+        return;
+      } catch (e) {
+        if (!(e instanceof Died) || k >= times) throw e;
+      }
+    }
   }
 
   async wait(n: number): Promise<string | undefined> {
@@ -99,7 +128,11 @@ export class Bot {
       r = await this.wait(2);
       this.sim.release(SCAN.space);
       this.swings++;
-      if (process.env.BOT_LOG) this.say(`swing ${dir} at ${f.map((v) => v.toFixed(1))} (${this.foes().length} foes)`);
+      if (process.env.BOT_LOG) {
+        const t = this.foeList()[0];
+        const w = this.sim.w;
+        this.say(`swing ${dir} at ${f.map((v) => v.toFixed(1))} (${this.foes().length} foes)${t ? ` mon ${w.mm[t[2]].monnum} pow ${w.mon[w.mm[t[2]].monnum].power}` : ''} pip ${w.chr.x}/${w.chr.y}`);
+      }
       if (r) return r;
       r = await this.wait(4);
       if (r) return r;
@@ -254,11 +287,25 @@ export class Bot {
     if (this.sim.scene !== scene) throw new Error(`${label}: did not come back (${back})`);
   }
 
-  /** Takes a link at (x, y) into another scene. */
+  /** True in a conversation's pass-through scene. */
+  inPass(): boolean {
+    return this.sim.game.scenes[this.sim.scene].files[1] === 'pass.map';
+  }
+
+  /** Takes a link at (x, y) into another scene (stray talks on the way are played and walked away from). */
   async enter(x: number, y: number, label: string, through?: Set<string>): Promise<void> {
-    const before = this.sim.trail.length;
-    const r = await this.goto(x, y, label, through);
-    if (this.sim.trail.length === before) throw new Error(`${label}: no scene change (${r})`);
+    const start = this.sim.scene;
+    for (let k = 0; k < 6; k++) {
+      const before = this.sim.trail.length;
+      await this.goto(x, y, label, through);
+      if (this.sim.trail.length === before) throw new Error(`${label}: no scene change`);
+      if (this.inPass() && this.sim.game.scenes[start].links.some((l) => l.from.x === x && l.from.y === y && this.sim.game.scenes[l.toScene] === this.sim.game.scenes[this.sim.scene])) break;
+      if (this.inPass()) {
+        await this.wait(3);
+        if (this.sim.scene === start) continue;
+      }
+      break;
+    }
     this.say(`entered ${this.sim.game.scenes[this.sim.scene].desc}`);
   }
 }

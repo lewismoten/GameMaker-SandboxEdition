@@ -62,12 +62,17 @@ export const MON = {
 /** The first monster number free for each scene's own cast. */
 export const MON_FREE = 8;
 
-/** Powers: higher kills lower when two monsters touch; 100 and up never die touching Pip. */
+/**
+ * Powers: higher kills lower when two monsters touch. Foes are under 100, so a foe that bites
+ * Pip pays for it (Game-Maker kills a weaker monster that touches the character, turning it
+ * into what it becomes): every bite costs the foe a hit, as a blow would. Bosses are 100 and up
+ * (they never die of touching), and from the Vaults on stronger than the wooden sword.
+ */
 export const POWER = {
   drop: 1,
-  foeEasy: 110,
+  foeEasy: 90,
   slashWood: 130,
-  foeHard: 145,
+  foeHard: 98,
   slashSteel: 160,
   boss: 150,
   note: 200,

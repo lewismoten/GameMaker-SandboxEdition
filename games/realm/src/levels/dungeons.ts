@@ -77,7 +77,8 @@ export function barrowsPlan(mons: MonBook): DungeonPlan {
   p.put('rubble', 30, 46);
   p.put('rubble', 68, 40);
   for (const [x, y] of [[40, 34], [60, 34], [40, 41], [60, 41]] as Pt[]) p.put('pillar', x, y);
-  p.put('vent', 49, 29);
+  p.put('vent', 45, 31);
+  p.put('vent', 55, 31);
   p.put('piece1', 50, 26);
   foes(p, mons.n('bat'), [[40, 54], [58, 60], [45, 62], [70, 43]]);
   foes(p, mons.n('wight'), [[52, 54], [26, 44], [74, 45], [44, 38], [56, 38]]);
@@ -111,14 +112,13 @@ export function vaultsPlan(mons: MonBook): DungeonPlan {
   p.put('torch', 54, 18);
   // currents: the water runs south down the nave's middle and west through the east cistern
   p.col('pushS', 50, 33, 46);
-  p.row('pushW', 67, 81, 60);
   p.put('chest', 20, 58);
   p.put('heartpot', 32, 58);
   p.put('bigchest', 80, 68);
   p.put('heartpot', 68, 68);
-  p.row('spikes', 72, 76, 66);
   for (const [x, y] of [[36, 34], [64, 34], [36, 46], [64, 46], [42, 75], [58, 75]] as Pt[]) p.put('pillar', x, y);
-  p.put('vent', 49, 87);
+  p.put('vent', 45, 85);
+  p.put('vent', 55, 85);
   p.put('piece2', 50, 90);
   foes(p, mons.n('crab'), [[40, 35], [60, 35], [44, 46], [56, 47], [24, 59], [76, 62], [70, 66], [46, 76], [54, 76]]);
   foes(p, mons.n('eel'), [[42, 41], [58, 41], [26, 64]]);
@@ -158,7 +158,8 @@ export function minesPlan(mons: MonBook): DungeonPlan {
   for (let x = 72; x <= 84; x += 3) p.put('floor2', x, 35);
   p.row('spikes', 76, 80, 44);
   for (const [x, y] of [[40, 29], [60, 29], [32, 54], [68, 54], [32, 64], [68, 64]] as Pt[]) p.put('pillar', x, y);
-  p.put('vent', 49, 25);
+  p.put('vent', 45, 27);
+  p.put('vent', 55, 27);
   p.put('piece3', 50, 22);
   foes(p, mons.n('golem'), [[36, 55], [64, 55], [40, 63], [60, 63], [22, 34], [80, 36], [44, 32], [56, 32]]);
   foes(p, mons.n('bat'), [[48, 57], [52, 62], [18, 32], [82, 33]]);
@@ -198,7 +199,8 @@ export function keepPlan(mons: MonBook): DungeonPlan {
   p.put('bigchest', 30, 60);
   p.put('chest', 70, 60);
   p.row('spikes', 46, 54, 72);
-  p.put('vent', 49, 19);
+  p.put('vent', 45, 21);
+  p.put('vent', 55, 21);
   p.put('tuit', 50, 15);
   foes(p, mons.n('goblin'), [[44, 58], [56, 58], [48, 66], [52, 68], [30, 55], [70, 55], [42, 46], [58, 46]]);
   foes(p, mons.n('tick'), [[46, 62], [54, 62], [40, 50], [60, 50], [44, 30], [56, 30]]);

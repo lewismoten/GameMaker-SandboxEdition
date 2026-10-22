@@ -118,7 +118,7 @@ export function planWorld(): WorldPlan {
   // the Eventually Falls river from the mountain to the sea
   cm.path('water', [[80, 38], [80, 46], [76, 50], [76, 60], [72, 64], [66, 64]]);
   cm.path('road', [[71, 50], [74, 50], [74, 56], [80, 56], [80, 59]]);
-  cm.path('road', [[78, 63], [78, 66], [76, 68], [76, 73]]);
+  cm.path('road', [[78, 63], [78, 66], [80, 68], [80, 78], [76, 78]]);
   cm.path('road', [[74, 50], [74, 44], [78, 40]]);
 
   // trails into the woods: to Teddy's clearing in the Whistling Woods, to the Gloomwood glade

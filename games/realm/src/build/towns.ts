@@ -26,7 +26,7 @@ export const WORLD_ARRIVE: Record<string, Pt> = {
   falls: [80, 58],
   barrows: [40, 26],
   mines: [78, 40],
-  keep: [76, 72],
+  keep: [76, 78],
   post: [71, 51],
 };
 /** Coming back to Someday Harbor: out of the Vaults onto the pier, out of THE CHEZ by the garage. */

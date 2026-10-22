@@ -15,6 +15,7 @@ export function peopleSheet(): SpriteSheet {
   }
   for (const [name, pic] of animalPics()) mb.add(name, pic);
   const pics = foePics();
-  for (const name of ['slime0', 'slime1', 'slimeHit', 'bat0', 'bat1', 'batHit']) mb.add(name, pics.get(name)!, { hp: -1 });
+  for (const name of ['slime0', 'slime1', 'slimeHit']) mb.add(name, pics.get(name)!, { hp: -6 });
+  for (const name of ['bat0', 'bat1', 'batHit']) mb.add(name, pics.get(name)!, { hp: -4 });
   return mb;
 }
