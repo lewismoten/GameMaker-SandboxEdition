@@ -1,8 +1,10 @@
 // The cartoons (FLIs drawn here, frame by frame, with the game's own sprites in its own
 // palettes): the story's night, told in three scenes (the star rising over Bethlehem, the
-// angels and the shepherds, the goat nobody painted). Each reel opens on black and fades
+// angels and the shepherds, the goat nobody painted), the level cards, how to get past a
+// fainting cousin, fainting yourself, and the endings. Each reel opens on black and fades
 // in and out by palette (kit/reel.ts), and only what moves is stored in each frame.
 import { Pixels } from '../../../kit/pixels';
+import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { Reel } from '../../../kit/reel';
 import { blob } from '../../../snowbound/src/art/draw';
 import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
@@ -438,4 +440,151 @@ export function faintFli(cast: Cast): Uint8Array {
   r.fadeIn(first, 3);
   for (let k = 0; k < 48; k++) r.frame(bg, (p) => scene(p, k));
   return r.fli(SPEED);
+}
+
+/** You fainted (lost.fli): the goat wobbles, goes stiff, keels over legs up, sees stars, and springs back up. */
+export function lostFli(cast: Cast): Uint8Array {
+  const pal = buildScreenPalette();
+  const c = pal.c;
+  const ink = c('ink', 0);
+  const bg = new Pixels(W, H, c('night', 0));
+  bands(bg, 0, 0, W, 150, pal.r('night'), 0, 4);
+  stars(bg, pal, 41, 140, 80);
+  bg.rect(0, 140, W, 60, c('night', 0));
+  blob(bg, 160, 150, 120, 14, pal.r('hay'), 0, 2);
+  const goat = (n: string) => cast.goat.get(n)!;
+  const r = new Reel(pal.pal);
+  const scene = (p: Pixels, k: number) => {
+    if (k < 6) {
+      scaleBlit(p, goat('side0'), 130 + (k % 2 ? 2 : -2), 84, 3);
+      outlined(p, 166, 66, '!', c('gold', 3), ink, 2);
+    } else if (k < 9) scaleBlit(p, goat('faint0'), 130, 90, 3);
+    else if (k < 30) {
+      scaleBlit(p, goat('faint1'), 130, 84 + (k === 9 ? -3 : 0), 3);
+      if (k < 12) outlined(p, 160 - textWidth('THUD') / 2, 70, 'THUD', c('cloth', 3), ink);
+      for (let s = 0; s < 3; s++) {
+        const a = (k / 3 + (s * Math.PI * 2) / 3) % (Math.PI * 2);
+        twinkle(p, pal, 190 + Math.round(Math.cos(a) * 16), 100 + Math.round(Math.sin(a) * 6), 2);
+      }
+    } else scaleBlit(p, goat(k < 33 ? 'bleat' : 'side0'), 130, 84 - (k < 32 ? 10 : 0), 3);
+    if (k >= 9) outlined(p, 160 - textWidth('YOU FAINTED', 3) / 2, 24 + Math.max(0, 12 - k) * -8, 'YOU FAINTED', c('cloth', 3), ink, 3);
+    if (k >= 12) centered(p, 172, 'Legs up. Stiff as a board.', c('cloth', 3));
+    if (k >= 30) centered(p, 184, 'Even fainting goats get back up!', c('gold', 3));
+  };
+  const first = new Pixels(W, H);
+  first.px.set(bg.px);
+  scene(first, 0);
+  r.fadeIn(first, 3);
+  for (let k = 0; k < 38; k++) r.frame(bg, (p) => scene(p, k));
+  return r.fli(SPEED);
+}
+
+export interface LineView {
+  /** The line at the manger (8 x 3 blocks, the stable's palette) with her place open and empty. */
+  empty: Pixels;
+  /** The same with straw in her place (she stands on it). */
+  done: Pixels;
+  /** Her place, in blocks from the view's top left. */
+  at: [number, number];
+  pal: Pal;
+}
+
+/**
+ * The endings: won1.fli (she walks into her place in the line, third from the left, and the
+ * arrow points her out), won2.fli (He sees you: the cover goat beneath the pulsing star) and
+ * won3.fli (THE END: she chews quietly, all night long).
+ */
+export function wonFlis(cast: Cast, line: LineView): Record<string, Uint8Array> {
+  const out: Record<string, Uint8Array> = {};
+  const goat = (n: string) => cast.goat.get(n)!;
+  {
+    const lp = line.pal;
+    const c = lp.c;
+    const ink = c('ink', 0);
+    const base = (map: Pixels) => {
+      const p = new Pixels(W, H, ink);
+      for (let y = 0; y < 52; y++) for (let x = 0; x < W; x++) p.set(x, y, c('glow', Math.max(0, Math.min(2, Math.round(2.4 * (1 - Math.hypot(x - 160, (y - 60) * 1.6) / 170))))));
+      scaleBlit(p, map, 0, 52, 2);
+      p.rect(0, 172, W, 28, ink);
+      return p;
+    };
+    const empty = base(line.empty);
+    const done = base(line.done);
+    const gx = line.at[0] * 40;
+    const gy = 52 + line.at[1] * 40;
+    const title = 'THIRD GOAT FROM THE LEFT!';
+    const scene = (p: Pixels, k: number) => {
+      if (k < 9) scaleBlit(p, goat(`up${k % 3}`), gx, Math.round(gy + (8 - k) * 6), 2);
+      else scaleBlit(p, goat('up0'), gx, gy, 2);
+      p.rect(0, 172, W, 28, ink);
+      if (k >= 10) {
+        const ay = [0, 14, 26, 34, 30, 32][Math.min(5, k - 10)] + 10;
+        const ax = gx + 20;
+        for (let d = 0; d < 6; d++) p.rect(ax - d, ay - d, 1 + d * 2, 1, c('gold', 3));
+        p.rect(ax - 1, ay - 14, 3, 8, c('gold', 3));
+        outlined(p, 160 - textWidth(title) / 2, 10, title, c(k % 4 < 2 ? 'gold' : 'cloth', 3), ink);
+        for (let s = 0; s < 4; s++) twinkle(p, lp, gx + [2, 38, 6, 34][s], gy + [6, 4, 30, 34][s], [0, 1, 2, 3, 2, 1][(k + s * 2) % 6]);
+      }
+      if (k >= 14) centered(p, 177, '"I claim my space!', c('cloth', 3));
+      if (k >= 20) centered(p, 188, 'In the gospel barnyard..."', c('cloth', 3));
+    };
+    const r = new Reel(lp.pal);
+    const first = new Pixels(W, H);
+    first.px.set(empty.px);
+    scene(first, 0);
+    r.fadeIn(first, 3);
+    for (let k = 0; k < 30; k++) r.frame(k < 9 ? empty : done, (p) => scene(p, k));
+    out['won1.fli'] = r.fli(SPEED);
+  }
+  {
+    // He sees you: the cover goat, beneath the star
+    const pal = buildScreenPalette();
+    const c = pal.c;
+    const ink = c('ink', 0);
+    const p = new Pixels(W, H, c('night', 0));
+    bands(p, 0, 0, W, H, pal.r('night'), 0, 4);
+    stars(p, pal, 21, H, 90);
+    const cover = resample(loadScan('goatcover'), 120, 0, [0.12, 0.08, 0.88, 0.95]);
+    const reserved = [c('cloth', 3), c('gold', 3), ink, c('parch', 4), c('parch', 1), c('night', 0), c('star', 0), c('star', 1), c('star', 2)];
+    polaroid(p, 24, 22, cover.w, cover.h, { paper: c('parch', 4), edge: c('parch', 1), shadow: c('night', 0) });
+    const { pal: own } = pastePhoto(p, pal.pal, cover, 24, 22, { colors: 100, reserved });
+    const lines = ['He sees you.', '', "Even if you're...", '', 'the third goat', 'from the left.'];
+    const r = new Reel(own);
+    const scene = (q: Pixels, k: number) => {
+      bigStar(q, pal, 230, 30, [5, 6, 7, 6][(k >> 1) % 4]);
+      lines.forEach((l, i) => k >= 4 + i * 4 && outlined(q, 170, 70 + i * 14, l, i >= 4 ? c('gold', 3) : c('cloth', 3), ink));
+    };
+    const first = new Pixels(W, H);
+    first.px.set(p.px);
+    scene(first, 0);
+    r.fadeIn(first, 3);
+    for (let k = 0; k < 36; k++) r.frame(p, (q) => scene(q, k));
+    out['won2.fli'] = r.fli(SPEED);
+  }
+  {
+    // the end, all night long
+    const pal = buildScreenPalette();
+    const c = pal.c;
+    const ink = c('ink', 0);
+    const p = new Pixels(W, H);
+    bands(p, 0, 0, W, 150, pal.r('night'), 0, 6);
+    stars(p, pal, 33, 150);
+    skyline(p, pal, 150);
+    const r = new Reel(pal.pal);
+    const scene = (q: Pixels, k: number) => {
+      bigStar(q, pal, 160, 30, [5, 6, 7, 6][(k >> 1) % 4]);
+      scaleBlit(q, goat(k % 4 < 2 ? 'chew0' : 'chew1'), 130, 110, 3);
+      const drop = [-30, -6, 18, 40, 56, 50, 52][Math.min(6, k)];
+      outlined(q, 160 - textWidth('THE END', 3) / 2, drop, 'THE END', c('gold', 3), ink, 3);
+      if (k >= 8) centered(q, 176, 'Some just chew quietly...', c('cloth', 3));
+      if (k >= 14) centered(q, 188, 'all night long.', c('cloth', 3));
+    };
+    const first = new Pixels(W, H);
+    first.px.set(p.px);
+    scene(first, 0);
+    r.fadeIn(first, 3);
+    for (let k = 0; k < 32; k++) r.frame(p, (q) => scene(q, k));
+    out['won3.fli'] = r.fli(SPEED);
+  }
+  return out;
 }

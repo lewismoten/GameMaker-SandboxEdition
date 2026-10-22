@@ -1,21 +1,19 @@
-// The 320x200 pictures: the title (the song's cover art), the menu, the
-// parchment behind text pages, the high scores, the endings and the credits (with Doc Leo).
-// Photos and art are dithered into each picture's free palette entries (kit/photo.ts). The
-// cartoons are in cartoons.ts.
+// The 320x200 pictures: the title (the song's cover art), the menu, the parchment behind
+// text pages, the high scores and the credits (with Doc Leo). Photos and art are dithered
+// into each picture's free palette entries (kit/photo.ts). The cartoons (the story, the
+// level cards, the endings) are in cartoons.ts.
 import { Pixels } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
-import { blob, gradient, shadeAt } from '../../../snowbound/src/art/draw';
+import { gradient } from '../../../snowbound/src/art/draw';
 import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
-import { buildScreenPalette, type Pal } from '../art/pal';
+import { buildScreenPalette } from '../art/pal';
 import { bigStar as star, skyline as town, stars as nightStars } from './night';
 import { AUTHOR } from './text';
 
 export interface ScreenExtras {
   /** The goat's sprites. */
   goat: Map<string, Pixels>;
-  /** The line at the manger, with the goat in her place (8 x 3 blocks), in the stable's palette. */
-  line: { map: Pixels; pal: Pal };
 }
 
 export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
@@ -90,62 +88,6 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     save('hiscore.gif', p);
   }
 
-  // ---------------- endings
-  {
-    // the line at the manger, and you in it
-    const lp = x.line.pal;
-    const p = new Pixels(W, H, lp.c('ink', 0));
-    for (let y = 0; y < 60; y++) for (let xx = 0; xx < W; xx++) p.set(xx, y, shadeAt(lp.r('glow'), 0, 2, 1 - Math.hypot(xx - 160, y - 60) / 160, xx, y));
-    scaleBlit(p, x.line.map, 0, 52, 2);
-    p.rect(0, 172, W, 28, lp.c('ink', 0));
-    // the arrow: third from the left
-    const ax = 4 * 40 + 20;
-    for (let k = 0; k < 6; k++) p.rect(ax - k, 42 - k, 1 + k * 2, 1, lp.c('gold', 3));
-    p.rect(ax - 1, 30, 3, 8, lp.c('gold', 3));
-    outlined(p, 160 - textWidth('THIRD GOAT FROM THE LEFT!') / 2, 10, 'THIRD GOAT FROM THE LEFT!', lp.c('gold', 3), lp.c('ink', 0));
-    centered(p, 177, '"I claim my space!', lp.c('cloth', 3));
-    centered(p, 188, 'In the gospel barnyard..."', lp.c('cloth', 3));
-    save('won1.gif', p, lp.pal);
-  }
-  {
-    // He sees you: the cover goat beneath the star
-    const p = new Pixels(W, H, c('night', 0));
-    gradient(p, 0, 0, W, H, pal.r('night'), 0, 4);
-    stars(p, 21, H, 90);
-    bigStar(p, 230, 30, 6);
-    const goat = resample(loadScan('goatcover'), 120, 0, [0.12, 0.08, 0.88, 0.95]);
-    const reserved = [c('cloth', 3), c('gold', 3), ink, c('parch', 4), c('parch', 1), c('night', 0)];
-    polaroid(p, 24, 22, goat.w, goat.h, { paper: c('parch', 4), edge: c('parch', 1), shadow: c('night', 0) });
-    const { pal: own } = pastePhoto(p, pal.pal, goat, 24, 22, { colors: 100, reserved });
-    const lines = ['He sees you.', '', "Even if you're...", '', 'the third goat', 'from the left.'];
-    lines.forEach((l, i) => outlined(p, 170, 70 + i * 14, l, i >= 4 ? c('gold', 3) : c('cloth', 3), ink));
-    save('won2.gif', p, own);
-  }
-  {
-    // the end, all night long
-    const p = new Pixels(W, H);
-    gradient(p, 0, 0, W, 150, pal.r('night'), 0, 6);
-    stars(p, 33, 150);
-    bigStar(p, 160, 30, 6);
-    skyline(p, 150);
-    scaleBlit(p, x.goat.get('chew0')!, 130, 110, 3);
-    outlined(p, 160 - textWidth('THE END', 3) / 2, 52, 'THE END', c('gold', 3), ink, 3);
-    centered(p, 176, 'Some just chew quietly...', c('cloth', 3));
-    centered(p, 188, 'all night long.', c('cloth', 3));
-    save('won3.gif', p);
-  }
-  {
-    const p = new Pixels(W, H);
-    gradient(p, 0, 0, W, 150, pal.r('night'), 0, 4);
-    stars(p, 41, 150, 80);
-    p.rect(0, 140, W, 60, c('night', 0));
-    blob(p, 160, 150, 120, 14, pal.r('hay'), 0, 2);
-    scaleBlit(p, x.goat.get('faint1')!, 130, 84, 3);
-    outlined(p, 160 - textWidth('YOU FAINTED', 3) / 2, 24, 'YOU FAINTED', c('cloth', 3), ink, 3);
-    centered(p, 172, 'Legs up. Stiff as a board.', c('cloth', 3));
-    centered(p, 184, 'Even fainting goats get back up!', c('gold', 3));
-    save('lost.gif', p);
-  }
   {
     // credits: the Bard himself
     const p = new Pixels(W, H);

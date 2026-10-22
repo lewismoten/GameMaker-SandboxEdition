@@ -21,7 +21,7 @@ import { buildBlocks } from './src/blocks/blocks';
 import { buildGoat, buildMonsters, type MonsterOptions } from './src/characters';
 import { demoRecording } from './src/demo';
 import { caravan, field, stable, town, ORIGIN, type Level } from './src/levels/maps';
-import { cardFli, faintFli, storyFli, type Cast, type CardView } from './src/screens/cartoons';
+import { cardFli, faintFli, lostFli, storyFli, wonFlis, type Cast, type CardView, type LineView } from './src/screens/cartoons';
 import { buildScreens } from './src/screens/screens';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { creditsSong, levelSongs, lostSong, storySong, titleSong, wonSong } from './src/sound/song';
@@ -69,7 +69,7 @@ const game = newGame('THIRD GOAT');
 const built = LEVELS.map((l) => ({ l, ...l.build(book) }));
 const songs = levelSongs();
 const cards: CardView[] = [];
-let line: Parameters<typeof buildScreens>[0]['line'] | undefined;
+let line: LineView | undefined;
 built.forEach(({ l, m, start }, i) => {
   const pal = buildPalette(l.light);
   const map = m.build();
@@ -84,11 +84,14 @@ built.forEach(({ l, m, start }, i) => {
   const [sx, sy] = [start[0] - vx, start[1] - vy];
   cards.push({ map: view, pal, start: sx >= 0 && sy >= 0 && sx < 16 && sy < 6 ? [sx * 20, 54 + sy * 20] : undefined });
   if (l.file === 'stable') {
-    // the ending's picture: the line at the manger, with the goat in her place
-    const done = { ...map, blocks: map.blocks.slice() };
-    done.blocks[(4 + ORIGIN) * 100 + 12 + ORIGIN] = book.n('straw');
+    // the endings' picture: the line at the manger, her place open and then with straw under her
+    const view = (k: string) => {
+      const b = { ...map, blocks: map.blocks.slice() };
+      b.blocks[(4 + ORIGIN) * 100 + 12 + ORIGIN] = book.n(k);
+      return renderRegion(b, bbl, mb.blocks, mons, 8 + ORIGIN, 2 + ORIGIN, 8, 3, []);
+    };
     const at = m.links.find((k) => k.toScene === 'won')!.from;
-    line = { map: renderRegion(done, bbl, mb.blocks, mons, 8 + ORIGIN, 2 + ORIGIN, 8, 3, [{ pixels: cb.blocks[cb.n('up0')].pixels, x: at[0], y: at[1] }]), pal };
+    line = { empty: view('placeOpen'), done: view('straw'), at: [at[0] - ORIGIN - 8, at[1] - ORIGIN - 2], pal };
   }
 
   const scene = emptyScene(ADVTYPE);
@@ -111,11 +114,11 @@ const start = game.scenes[0];
 start.files = ['title.lst', 'title.cmf', 'menu.gif', 'menu.cmf', 'story.lst', 'story.cmf', 'howto.lst', 'credits.lst', 'hiscore.gif', 'loadgame.gif', 'savegame.gif', 'demo.rec', ...new Array(8).fill('')];
 start.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: built[0].start[0], y: built[0].start[1] } };
 const end = game.scenes[1];
-end.files = ['won.lst', 'won.cmf', 'lost.gif', 'lost.cmf', ...new Array(16).fill('')];
+end.files = ['won.lst', 'won.cmf', 'lost.lst', 'lost.cmf', ...new Array(16).fill('')];
 disk.put('goat.gam', serializeGame(game));
 
 const goatPics = cb.pics;
-const screens = buildScreens({ goat: goatPics, line: line! });
+const screens = buildScreens({ goat: goatPics });
 for (const [name, bytes] of Object.entries(screens)) disk.put(name, bytes);
 disk.put(BARDLOGO, bardIntroFli());
 disk.put('title.lst', serializeSlideList([{ name: BARDLOGO, pause: 0 }, { name: 'title.gif', pause: 12 }]));
@@ -134,7 +137,10 @@ disk.put('story.lst', serializeSlideList([{ name: 'story.fli', pause: 1 }, { nam
 disk.put('faint.fli', faintFli(cast));
 disk.put('howto.lst', serializeSlideList([{ name: 'faint.fli', pause: 2 }, { name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'bardpic.gif', pause: 8 }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
-disk.put('won.lst', serializeSlideList([{ name: 'won1.gif', pause: 10 }, { name: 'won2.gif', pause: 12 }, { name: 'won3.gif', pause: 10 }]));
+for (const [name, bytes] of Object.entries(wonFlis(cast, line!))) disk.put(name, bytes);
+disk.put('won.lst', serializeSlideList([{ name: 'won1.fli', pause: 4 }, { name: 'won2.fli', pause: 8 }, { name: 'won3.fli', pause: 8 }]));
+disk.put('lost.fli', lostFli(cast));
+disk.put('lost.lst', serializeSlideList([{ name: 'lost.fli', pause: 6 }]));
 disk.put('story.txt', STORY);
 disk.put('howto.txt', INSTRUCTIONS);
 disk.put('credits.txt', CREDITS);
