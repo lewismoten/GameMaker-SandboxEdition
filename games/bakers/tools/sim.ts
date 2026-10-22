@@ -235,6 +235,11 @@ export class GameSim {
     return { x: c.x[0], y: c.y[0], sx: c.x[1], sy: c.y[1] };
   }
 
+  /** Ticks since play began (the clock runs on across scenes). */
+  get elapsed(): number {
+    return this.clock;
+  }
+
   meter(i: number): number {
     return this.ci.meter[i];
   }
