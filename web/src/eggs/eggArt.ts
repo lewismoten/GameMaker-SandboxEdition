@@ -45,6 +45,8 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
     for (let i = 0; i < n; i++) {
       const x = rand() * TEX_W;
       const y = TEX_H * (vMin + rand() * (vMax - vMin));
+      // leave the appliqués clear
+      if ([0.25, 0.75].some((u) => Math.abs(x - u * TEX_W) < 48 && Math.abs(y - TEX_H * 0.4) < 40)) continue;
       wrap((dx) => draw(x + dx, y, i));
     }
   };
