@@ -91,3 +91,13 @@ export const idbCDrive: CDriveStore = {
     await request('readwrite', (st) => st.put(state, KEY));
   },
 };
+
+/** Another record in the same store beside C:'s lists (e.g. PLAYGAME.REG, cracked games). */
+export function idbRecord<T>(key: string): { load(): Promise<T | undefined>; save(value: T): Promise<void> } {
+  return {
+    load: () => request<T | undefined>('readonly', (st) => st.get(key)),
+    async save(value) {
+      await request('readwrite', (st) => st.put(value, key));
+    },
+  };
+}
