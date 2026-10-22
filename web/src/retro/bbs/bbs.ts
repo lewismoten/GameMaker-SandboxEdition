@@ -22,8 +22,25 @@ import {
 } from "./term";
 import { runSofa, SOFA_PHONE, sofaBusy } from "./sofa";
 import { gifGallery } from "./gifArea";
-import { utilityArea } from "./utilArea";
 import { gameDiz } from "./fileId";
+import { UTILITIES, utilityArea } from "./utilArea";
+import { GALLERY } from "./gallery";
+import {
+  account,
+  filePoints,
+  kb,
+  mayDownload,
+  newAccount,
+  NEW_USER_FILES,
+  POINTS_PER_CALL,
+  RATIO,
+  ratioText,
+  recordDownload,
+  updateAccount,
+  type BbsAccount,
+} from "./ratio";
+import { pickUpExtension, type Overheard } from "./pickup";
+import { resolvePath, type DosNode } from "../dos/vfs";
 import { pcExtras } from "../hacks/pcExtras";
 import { output } from "../../audio/output";
 
@@ -123,6 +140,18 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     t.line("|12NO CARRIER");
     modemSignal("hangup");
     t.status(statusLine("Offline"));
+    const heard = overheard;
+    overheard = undefined;
+    if (heard) {
+      // the upload died with the call; say who did it
+      t.line();
+      for (const l of wrap(`(${heard.who}, on the kitchen extension: "${heard.words}")`, 78))
+        t.line(`|08${l}`);
+      t.line();
+      t.line("|07The upload never finished, so the board never got it.");
+      t.print("|07Press a key… ");
+      await t.key();
+    }
     await sleep(1200);
   }
 }
@@ -149,11 +178,14 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     await readLine(s, h.keys, [], 16, attr(0, 0)); // typed in black: nobody sees it
     t.line();
   }
-  await lastCallers(t, name);
-
   const catalog = (await h.catalog()).filter(
     (g) => g.kind === "shareware" && g.gam,
   );
+  // the board's user file: started from what this PC already downloaded
+  account(() => seedAccount(h, catalog));
+  updateAccount((a) => ({ ...a, calls: a.calls + 1 }));
+  await lastCallers(t, name);
+
   let show = true;
   for (;;) {
     if (show) mainMenu(t, s);
@@ -182,7 +214,7 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
       await bulletins(t, catalog);
       show = true;
     } else if (k === "S") await systemInfo(t, catalog.length);
-    else if (k === "Y") yourStats(t, name, h, minutesLeft());
+    else if (k === "Y") yourStats(t, name, minutesLeft());
     else if (k === "C") await pageSysop(t, h);
     else if (k === "?" || k === "Enter") show = true;
     else if (k === "G" || k === "Escape") {
@@ -199,6 +231,40 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
       return;
     } else t.line("|12Unknown command. |07Press |15?|07 for the menu.");
   }
+}
+
+/** What happened on a call that dropped mid-upload, for after NO CARRIER. */
+let overheard: Overheard | undefined;
+
+/** The SysOp's own uploads (his Sandbox Software games) are FREE: the ratio skips them. */
+const isFree = (g: CatalogEntry) => !!g.original;
+
+/** A record for a caller this board hasn't seen, counting what is on C: already. */
+function seedAccount(h: RetroHost, catalog: CatalogEntry[]): BbsAccount {
+  let a = newAccount();
+  for (const id of h.downloads.list()) {
+    const g = catalog.find((c) => c.id === id);
+    const u = UTILITIES.find((x) => x.id === id);
+    const p = GALLERY.find((x) => x.name === id);
+    if (g) a = recordDownload(a, zipSize(g), isFree(g));
+    else if (u) a = recordDownload(a, u.bytes, true);
+    else if (p) a = recordDownload(a, p.bytes, true);
+  }
+  return a;
+}
+
+/** The board's warning to leeches, with where the caller stands. */
+function leechWarning(t: Term): void {
+  const a = account();
+  t.line(
+    `|12  ** LEECHES WILL BE DELETED! **  |07This board keeps a |141:${RATIO}|07 upload/download ratio.`,
+  );
+  t.line(
+    `|07  New callers get |14${NEW_USER_FILES}|07 files on the house, each call earns |14${POINTS_PER_CALL}|07 more, every upload`,
+  );
+  t.line(
+    `|07  |14${RATIO}|07, and the SysOp's own files are |10FREE|07. File points: |14${filePoints(a)}|07   U/D: |14${ratioText(a)}`,
+  );
 }
 
 function zipName(g: CatalogEntry): string {
@@ -259,6 +325,8 @@ async function lastCallers(t: Term, name: string): Promise<void> {
   t.line(boxBottom());
   t.line("|08   D = downloaded   U = uploaded");
   t.line();
+  leechWarning(t);
+  t.line();
   t.print("|07Press |15[Enter]|07 to continue");
   await t.key();
 }
@@ -299,14 +367,31 @@ async function systemInfo(t: Term, files: number): Promise<void> {
   t.line();
 }
 
-function yourStats(t: Term, name: string, h: RetroHost, left: number): void {
+function yourStats(t: Term, name: string, left: number): void {
+  const a = account();
+  const points = filePoints(a);
+  const row = (l: string) => t.line(boxRow(`  ${l}`));
   t.line();
-  t.line(
-    `|07Handle: |15${name}|07   Security level: |14${name === "GUEST" ? 10 : 20}|07   Time left today: |14${left}|07 min`,
+  t.line(boxTop("Your Statistics"));
+  row(
+    `|07Handle: |15${name.padEnd(24)}|07Security level: |14${name === "GUEST" ? 10 : 20}|07   Calls: |14${a.calls}`,
   );
-  t.line(
-    `|07Files downloaded: |14${h.downloads.list().length}|07   Uploads: |140|07   Ratio: |14no limit`,
+  row(`|07Time left today: |14${left}|07 min`);
+  t.line(boxRule());
+  row(
+    `|07Uploads:   |14${String(a.ulFiles).padStart(4)}|07 files |14${kb(a.ulBytes).padStart(9)}${a.ulTries ? `   |08(${a.ulTries} cut off when someone picked up the phone)` : ""}`,
   );
+  row(
+    `|07Downloads: |14${String(a.dlFiles).padStart(4)}|07 files |14${kb(a.dlBytes).padStart(9)}   |08(${a.dlFiles - a.counted} of them |10FREE|08)`,
+  );
+  row(
+    `|07U/D ratio: |14${ratioText(a).padEnd(10)}|07Board ratio: |141:${RATIO}|07   File points: |${points ? "14" : "12"}${points}`,
+  );
+  t.line(boxBottom());
+  if (points <= 2)
+    t.line(
+      `|12${points ? "Running low on file points!" : "Your U/D ratio is too low!"} |07Upload something, or call again tomorrow. |10FREE|07 files still download.`,
+    );
   t.line();
 }
 
@@ -347,6 +432,17 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
             `|14  ${g.title.padEnd(34)}|07${g.price ? `Reg. ${g.price}` : "Shareware"}`,
         ),
         "|07Press |15N|07 at the main menu to scan just the new files.",
+      ],
+    ],
+    [
+      "Upload/download ratio (read this, leeches!)",
+      [
+        `|07This board runs a |141:${RATIO}|07 ratio: upload one file, download ${RATIO}.`,
+        `|07New callers get |14${NEW_USER_FILES}|07 files on the house, and every call earns |14${POINTS_PER_CALL}|07 more.`,
+        "|07Files the SysOp uploaded (Sandbox Software, Utilities, the GIF Gallery)",
+        "|07are |10FREE|07 and never count. Check |15Y|07 at the main menu for your stats.",
+        "|12Callers who only take and never give will be DELETED.",
+        "|08Please tell your family before you upload. The SysOp's mom picks up too.",
       ],
     ],
     [
@@ -424,7 +520,7 @@ async function files(
     desc.forEach((l, j) =>
       t.line(
         j === 0
-          ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${l}`
+          ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${l.padEnd(46)}${isFree(g) ? "|10FREE" : ""}`
           : `${" ".repeat(25)}|${j === desc.length - 1 ? "08" : "07"}${l}`,
       ),
     );
@@ -434,9 +530,14 @@ async function files(
       lines = 0;
     }
   }
-  t.line("|10*|07 = already downloaded to C:\\DOWNLOAD");
+  t.line(
+    `|10*|07 = already downloaded to C:\\DOWNLOAD   |10FREE|07 = doesn't count against your ratio`,
+  );
+  t.line(
+    `|12LEECHES WILL BE DELETED! |07Ratio |141:${RATIO}|07. File points left: |14${filePoints(account())}|07   |15U|07 to upload.`,
+  );
   for (;;) {
-    t.print("|11File # to read about, D# to download, Q to quit: |15");
+    t.print("|11File # to read about, D# to download, U to upload, Q to quit: |15");
     const answer = (
       (await readLine(h.screen, h.keys, [], 6, attr(15, 0))) ?? "Q"
     )
@@ -444,6 +545,10 @@ async function files(
       .toUpperCase();
     t.line();
     if (!answer || answer === "Q") return;
+    if (answer === "U") {
+      await upload(t, h);
+      continue;
+    }
     const dl = answer.startsWith("D");
     const n = Number(answer.replace(/^D/, ""));
     const g = catalog[n - 1];
@@ -474,6 +579,14 @@ async function readAbout(t: Term, g: CatalogEntry): Promise<void> {
 
 async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const size = zipSize(g);
+  if (!mayDownload(account(), isFree(g))) {
+    t.line("|12Your U/D ratio is too low! Please upload something.");
+    t.line(
+      `|07Ratio |141:${RATIO}|07, U/D |14${ratioText(account())}|07. Each call earns |14${POINTS_PER_CALL}|07 file point; |10FREE|07 files always download.`,
+    );
+    t.line();
+    return;
+  }
   const seconds = size / CPS;
   t.line(
     `|07Protocol: |15Zmodem|07.  ${zipName(g)} is |14${commas(size)}|07 bytes, about |14${Math.ceil(seconds / 60)}|07 minute(s) at 14,400 bps.`,
@@ -502,6 +615,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   }
   t.line();
   t.line("|10Transfer complete.");
+  updateAccount((a) => recordDownload(a, size, isFree(g)));
   await unzip(t, h, g);
   h.downloads.add(g.id);
   if (pcExtras().cracked(g.id) !== undefined) pcExtras().setCracked(g.id, false); // a fresh copy, as its author made it
@@ -543,4 +657,112 @@ async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
     s.write(x, s.cursorY, attr(7, 0), "    ");
     t.line();
   }
+}
+
+// ---- uploads ----------------------------------------------------------------------------
+
+/** Protocols for an upload: key, name, characters per second at 14,400 bps. */
+const PROTOCOLS: [string, string, number][] = [
+  ["Z", "Zmodem", 1650],
+  ["Y", "Ymodem", 1580],
+  ["X", "Xmodem", 1190],
+];
+
+/** The file to send, picked on C: in the terminal (a folder lists itself). */
+async function pickFile(t: Term, h: RetroHost): Promise<{ name: string; size: number; path: string } | undefined> {
+  let cwd: string[] = [];
+  const listing = async (parts: string[]) => {
+    const items = ((await h.fs.listDir("C", parts)) ?? []).filter((n) => n.name !== "." && n.name !== "..");
+    const path = `C:\\${parts.join("\\")}`;
+    t.line(`|11 Directory of ${path}`);
+    const shown = items.slice(0, 15);
+    for (let i = 0; i < shown.length; i += 2)
+      t.line(
+        shown
+          .slice(i, i + 2)
+          .map((n: DosNode) => `|${n.dir ? "14" : "15"}  ${(n.dir ? `[${n.name}]` : n.name).padEnd(15)}|07${(n.dir ? "<DIR>" : commas(n.size)).padStart(10)}`)
+          .join("     "),
+      );
+    if (items.length > shown.length) t.line(`|08  …and ${items.length - shown.length} more`);
+  };
+  await listing(cwd);
+  for (;;) {
+    t.print(`|15TERMINAL|07 Send which file? (a name or folder on C:, Enter to cancel) |15`);
+    const typed = ((await readLine(h.screen, h.keys, [], 40, attr(15, 0))) ?? "").trim().toUpperCase();
+    t.line();
+    if (!typed) return undefined;
+    const at = resolvePath(typed, "C", () => cwd);
+    const node = at.drive === "C" ? await h.fs.find("C", at.parts) : undefined;
+    if (!node) {
+      t.line("|12File not found.");
+    } else if (node.dir) {
+      cwd = at.parts;
+      await listing(cwd);
+    } else return { name: node.name, size: node.size, path: `C:\\${at.parts.join("\\")}` };
+  }
+}
+
+/**
+ * An upload: protocol, the file from C:, a line for the listing, and the transfer, which
+ * never finishes. Partway through somebody picks up the kitchen extension, yells about
+ * the noise, and the call drops (NO CARRIER).
+ */
+async function upload(t: Term, h: RetroHost): Promise<void> {
+  const s = h.screen;
+  t.line();
+  t.line(boxTop("Upload to the Sand Pile"));
+  t.line(boxRow(`  |07Every upload earns |14${RATIO}|07 file points. Thanks for giving back!`));
+  t.line(boxRule());
+  for (const [k, name, cps] of PROTOCOLS)
+    t.line(boxRow(`  |06[|14${k}|06] |07${name.padEnd(8)} |08${cps} cps`));
+  t.line(boxRow("  |06[|14Q|06] |07Quit"));
+  t.line(boxBottom());
+  t.print("|11Protocol: |15");
+  const k = await t.key();
+  t.line(k.length === 1 ? k : "");
+  const protocol = PROTOCOLS.find(([key]) => key === k);
+  if (!protocol) return;
+  const [, proto, cps] = protocol;
+  const file = await pickFile(t, h);
+  if (!file) {
+    t.line("|07Upload cancelled.");
+    return;
+  }
+  t.print("|11Describe it in one line: |15");
+  await readLine(s, h.keys, [], 45, attr(15, 0));
+  t.line();
+  t.line(
+    `|07Begin your |15${proto}|07 upload of |15${file.name}|07 now (|14${commas(file.size)}|07 bytes). |08Ctrl-X aborts.`,
+  );
+  t.status(` TERMINAL 2.1 │ Sending ${file.path} by ${proto}`);
+  modemSignal("send");
+  const row = s.cursorY;
+  const start = performance.now();
+  // long enough to see it going, whatever the size
+  const total = Math.max(9000, ((file.size / cps) * 1000) / TIME_COMPRESSION);
+  const cutAt = 0.35 + Math.random() * 0.3;
+  for (;;) {
+    const key = h.keys.poll();
+    if (key?.key === "Escape" || (key?.ctrl && key.key.toUpperCase() === "X")) {
+      t.line();
+      t.line("|12Upload aborted.");
+      t.status(statusLine("Online"));
+      return;
+    }
+    const f = Math.min(cutAt, (performance.now() - start) / total);
+    const bar = "█".repeat(Math.round(f * 30)).padEnd(30, "░");
+    s.cursorY = row;
+    s.cursorX = 0;
+    t.print(
+      `|15${file.name.padEnd(12)} |10${toCp437(bar)} |14${commas(Math.round(file.size * f)).padStart(9)} |07bytes  ${cps} cps`,
+    );
+    modemSignal("send");
+    if (f >= cutAt) break;
+    await sleep(120);
+  }
+  // somebody in the house wants the phone
+  updateAccount((a) => ({ ...a, ulTries: a.ulTries + 1 }));
+  overheard = await pickUpExtension(h.audio());
+  t.interrupt();
+  t.line(); // the line is gone: NO CARRIER from here
 }
