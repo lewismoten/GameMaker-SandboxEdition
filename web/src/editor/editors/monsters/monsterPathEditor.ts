@@ -3,10 +3,11 @@
 // stretch, and watch the monster walk it exactly as playgame moves it.
 //
 // One closure per editor. Its sections, in order: the view (zoom and fit), maps, the DOM,
-// drawing (map layer, path arrows, the walking monster, run by requestAnimationFrame at the
-// game's 18.2 Hz tick), editing with the pointer, the picture/speed popup for a corner,
-// and the panels (tabs, toolbar, notices, side list, the numbers table). The path math and
-// the walker are in monsterPath.ts; measurements and map choices in monsterPathView.ts.
+// drawing (run by requestAnimationFrame at the game's 18.2 Hz tick; the map, path arrows and
+// walking monster are drawn by monsterPathDraw.ts), editing with the pointer, the
+// picture/speed popup for a corner, and the panels (tabs, toolbar, notices, side list, the
+// numbers table). The path math and the walker are in monsterPath.ts; measurements and map
+// choices in monsterPathView.ts.
 import './monsterPath.css';
 import { h, clear, modal, toast } from '../../core/ui';
 import { blockImages, paintBlock } from '../../core/draw';
@@ -31,7 +32,8 @@ import {
   type Corner,
   type PathKind,
 } from './monsterPath';
-import { CELL, MAX_SPEED, ORIENTS, SCALE, TICK_MS, mapChoices, type PathEditorOptions } from './monsterPathView';
+import { MAX_SPEED, ORIENTS, TICK_MS, mapChoices, type PathEditorOptions } from './monsterPathView';
+import { drawPathScene, mapLayerCanvas } from './monsterPathDraw';
 
 export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refresh: () => void; destroy: () => void } {
   const { project } = o;
@@ -182,180 +184,30 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
     return c;
   }
 
-  // ---- Drawing ----------------------------------------------------------------------------
+  // ---- Drawing (monsterPathDraw.ts) --------------------------------------------------------
   function buildMapLayer(): void {
-    const b = view();
-    const c = document.createElement('canvas');
-    c.width = b.w * BLEN;
-    c.height = b.h * BLEN;
-    const g = c.getContext('2d')!;
-    g.fillStyle = '#000';
-    g.fillRect(0, 0, c.width, c.height);
-    if (map && mapImgs.length) {
-      for (let cy = 0; cy < b.h; cy++)
-        for (let cx = 0; cx < b.w; cx++) {
-          const mx = (((start.x + b.x0 + cx) % MLEN) + MLEN) % MLEN;
-          const my = (((start.y + b.y0 + cy) % MWID) + MWID) % MWID;
-          const img = mapImgs[map.blocks[my * MLEN + mx]];
-          if (img) g.drawImage(img, cx * BLEN, cy * BLEN);
-        }
-    } else {
-      g.fillStyle = '#0a0a2a';
-      g.fillRect(0, 0, c.width, c.height);
-    }
-    mapLayer = c;
-  }
-
-  /** Canvas pixel centre of a spot given in blocks from the origin. */
-  const cx = (x: number) => (x - view().x0) * CELL + CELL / 2;
-  const cy = (y: number) => (y - view().y0) * CELL + CELL / 2;
-
-  function arrow(x1: number, y1: number, x2: number, y2: number, color: string, dashed = false): void {
-    ctx.save();
-    ctx.lineCap = 'round';
-    ctx.setLineDash(dashed ? [8, 8] : []);
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 7;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    const len = Math.hypot(x2 - x1, y2 - y1);
-    if (len > CELL * 0.6) {
-      const a = Math.atan2(y2 - y1, x2 - x1);
-      const mx = (x1 + x2) / 2;
-      const my = (y1 + y2) / 2;
-      ctx.setLineDash([]);
-      ctx.beginPath();
-      ctx.moveTo(mx + Math.cos(a) * 9, my + Math.sin(a) * 9);
-      ctx.lineTo(mx + Math.cos(a + 2.5) * 10, my + Math.sin(a + 2.5) * 10);
-      ctx.lineTo(mx + Math.cos(a - 2.5) * 10, my + Math.sin(a - 2.5) * 10);
-      ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  function badge(x: number, y: number, text: string, bgc: string, fg = '#000'): void {
-    ctx.font = 'bold 13px ui-monospace, Menlo, Consolas, monospace';
-    const w = Math.max(16, ctx.measureText(text).width + 6);
-    ctx.fillStyle = '#000';
-    ctx.fillRect(x - 1, y - 1, w + 2, 18);
-    ctx.fillStyle = bgc;
-    ctx.fillRect(x, y, w, 16);
-    ctx.fillStyle = fg;
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
-    ctx.fillText(text, x + w / 2, y + 8.5);
+    mapLayer = mapLayerCanvas(view(), map, mapImgs, start);
   }
 
   function draw(): void {
-    const b = view();
-    if (canvas.width !== b.w * CELL) canvas.width = b.w * CELL;
-    if (canvas.height !== b.h * CELL) canvas.height = b.h * CELL;
-    canvas.style.aspectRatio = `${b.w} / ${b.h}`;
     if (!mapLayer) buildMapLayer();
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(mapLayer!, 0, 0, canvas.width, canvas.height);
-    const k = kind();
     const disabled = tab === 1 && mon().activate === 0;
-
-    // Faint grid so corners clearly snap to blocks.
-    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let i = 1; i < b.w; i++) (ctx.moveTo(i * CELL + 0.5, 0), ctx.lineTo(i * CELL + 0.5, canvas.height));
-    for (let i = 1; i < b.h; i++) (ctx.moveTo(0, i * CELL + 0.5), ctx.lineTo(canvas.width, i * CELL + 0.5));
-    ctx.stroke();
-
-    if (disabled) {
-      ctx.fillStyle = 'rgba(0,0,0,0.55)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      return;
-    }
-
-    // The 8x5-block range in which the character triggers (and keeps up) an attack.
-    if (k === 'chase') {
-      ctx.save();
-      ctx.setLineDash([6, 6]);
-      ctx.strokeStyle = 'rgba(255,80,80,0.9)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(cx(-7) - CELL / 2, cy(-4) - CELL / 2, 15 * CELL, 9 * CELL);
-      ctx.restore();
-    }
-
-    const list = corners(path(), k);
-    // Lines and arrows.
-    let px = 0;
-    let py = 0;
-    list.forEach((c, n) => {
-      const sel = c.i === selected;
-      const from = n === 0 && k === 'chase' ? undefined : { x: px, y: py };
-      if (from) arrow(cx(from.x), cy(from.y), cx(c.x), cy(c.y), sel ? '#00e0ff' : '#ffd400');
-      px = c.x;
-      py = c.y;
+    if (!disabled) ants = (ants + 1) % 16;
+    drawPathScene(ctx, {
+      view: view(),
+      mapLayer: mapLayer!,
+      kind: kind(),
+      disabled,
+      corners: corners(path(), kind()),
+      selected,
+      ants,
+      hover,
+      walker,
+      start,
+      firstPic: firstPic(),
+      walkerPic: walker ? (mon().pic[Math.max(0, walker.frame)]?.[0] ?? -1) : -1,
+      sprite,
     });
-    // Where the next lap goes: corners are measured from wherever the lap starts.
-    if (list.length && k !== 'chase') {
-      const lastC = list[list.length - 1];
-      if (lastC.x !== 0 || lastC.y !== 0) arrow(cx(lastC.x), cy(lastC.y), cx(lastC.x + list[0].x), cy(lastC.y + list[0].y), 'rgba(255,212,0,0.55)', true);
-    }
-
-    // The origin: the start block, or the character for chase paths.
-    const ox = cx(0) - CELL / 2;
-    const oy = cy(0) - CELL / 2;
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#000';
-    ctx.strokeRect(ox + 1.5, oy + 1.5, CELL - 3, CELL - 3);
-    ctx.strokeStyle = k === 'chase' ? '#ff5050' : '#40ff60';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(ox + 2, oy + 2, CELL - 4, CELL - 4);
-    badge(ox + 2, oy + CELL - 18, k === 'chase' ? '☺' : 'S', k === 'chase' ? '#ff5050' : '#40ff60');
-
-    // Corners: the monster's picture as it heads there.
-    ants = (ants + 1) % 16;
-    list.forEach((c, n) => {
-      const x = cx(c.x) - CELL / 2;
-      const y = cy(c.y) - CELL / 2;
-      const s = sprite(firstPic(), c.orient);
-      ctx.fillStyle = c.i === selected ? 'rgba(0,224,255,0.25)' : 'rgba(255,255,255,0.18)';
-      ctx.fillRect(x, y, CELL, CELL);
-      ctx.globalAlpha = c.i === selected ? 0.95 : 0.7;
-      if (s) ctx.drawImage(s, x, y, CELL, CELL);
-      ctx.globalAlpha = 1;
-      ctx.save();
-      ctx.lineWidth = 2;
-      if (c.i === selected) {
-        ctx.setLineDash([5, 3]);
-        ctx.lineDashOffset = -ants;
-        ctx.strokeStyle = '#00e0ff';
-      } else ctx.strokeStyle = 'rgba(255,212,0,0.9)';
-      ctx.strokeRect(x + 1, y + 1, CELL - 2, CELL - 2);
-      ctx.restore();
-      badge(x + 1, y + 1, String(n + 1), c.i === selected ? '#00e0ff' : '#ffd400');
-    });
-
-    if (hover) {
-      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(cx(hover.x) - CELL / 2 + 0.5, cy(hover.y) - CELL / 2 + 0.5, CELL - 1, CELL - 1);
-    }
-
-    // The walking monster.
-    if (walker && list.length) {
-      const pic = mon().pic[Math.max(0, walker.frame)]?.[0] ?? -1;
-      const s = sprite(pic, walker.orient);
-      const wx = (walker.bx - start.x - b.x0) * CELL + walker.px * SCALE;
-      const wy = (walker.by - start.y - b.y0) * CELL + walker.py * SCALE;
-      if (s) ctx.drawImage(s, wx, wy, CELL, CELL);
-    }
   }
 
   function loop(t: number): void {
