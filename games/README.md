@@ -64,6 +64,7 @@ The play-testing tools:
 | sleuth   | `npx vite-node ../games/sleuth/tools/check.ts`     | plays the whole case on the built disk (`--quick`, `--wrong <who>`, `--walk out.rec`) |
 | brief    | `npx vite-node ../games/brief/tools/check.ts`      | the bot restores all 32 books, passes the eight stamp gates and opens the 33rd book |
 | depth    | `npx vite-node ../games/depth/tools/check.ts`      | the bot rolls all six scenes, pulls focus, beats Count Polygon (`tools/egg.ts`: the egg) |
+| realm    | `npx vite-node ../games/realm/tools/check.ts`      | the bot plays the whole main quest (`tools/eggcheck.ts`: the egg, `tools/walkthrough.ts`) |
 
 Each `tools/sim.ts` is a headless copy of PLAYGAME's main loop built on the web app's engine
 (`web/src/engine`), so a check runs the real movement, touch and monster code. Some builds
@@ -170,3 +171,17 @@ solidity, so whatever is in focus is sharp and solid and the other plane's block
 out-of-focus blurs you roll through. Focus rings are links between the two. Auto-focus panels
 blink by next/ntime, slopes are gravity, teapots and bat nests give birth to monsters, and Count
 Polygon is a chain of five monsters that each ray kills into the next, fewer-faced one.
+
+**Quest for the Round Tuit** (`realm`). An RPG: Pip of Nowish recovers the three pieces of the Royal
+Round Tuit across four towns and four dungeons. The ground is autotiled: every block of shore,
+river, road, forest edge, cliff, cobbled street and cave wall is chosen by which of its four corners
+lie in that material (marching squares), and painted in true color from a signed distance field,
+so edges curve and run at 45 degrees and the foam, wet sand and shadows join from block to block;
+each scene's palette is a median cut of its own paintings around a fixed set of sprite colors.
+Talking is a link to a scene of its own: PASS.MAP under an all-black palette, the conversation for
+its intro, and a link straight back, whose start block can hand over a reward. Quests are counters
+and gates that take k and give it straight back (a refused touch keeps the gate shut); shops are
+counters you walk into twice. Foes are under power 100, so a bite costs them a hit; bosses are four
+solid monsters in an alcove's mouth. THE CHEZ crosses the Dawdle Flats as a second character, where
+the low bridges flood and drain by the clock, and the felt egg turns up in a nest behind a waterfall
+for four seconds in every twenty-four.
