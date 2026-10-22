@@ -29,7 +29,7 @@ sim.release = (k: number) => {
 };
 const LIMIT = 1100;
 try {
-  await bot.goto(16, 21, 'by the pond');
+  await bot.goto(18, 22, 'by the pond');
   await bot.goto(19, 24, 'the green');
   await bot.enter(22, 39, 'out of Nowish');
   await bot.goto(24, 64, 'up the road');
@@ -65,3 +65,5 @@ export function demoRecording(): Uint8Array {
 `;
 writeFileSync(join(here, '../src/demo.ts'), src);
 console.log(`${keep.length} key events over ${last} ticks; the bot swung ${bot.swings} times; ${bot.log.slice(-1)}`);
+// a demo can't talk to anyone: a conversation would wait for a key nobody presses
+if (sim.trail.some((s) => sim.game.scenes[s].files[1] === 'pass.map')) throw new Error('The demo walked into a conversation');
