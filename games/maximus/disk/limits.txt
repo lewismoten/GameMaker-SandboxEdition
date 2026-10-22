@@ -35,7 +35,7 @@ SCENE FILE-NAME POOL
   Limit: 65,520 bytes
          (PLAYGAME clamps it
          at 0xFFF0)
-  Used:  2913 bytes
+  Used:  2922 bytes
   Where: MAXIMUS.GAM
 
 LINKS PER SCENE
@@ -159,7 +159,7 @@ PALETTE COLORS
          255 is the sprite
          clear color)
   Used:  86 shared + 169 per
-         place = 255; 98
+         place = 255; 99
          palettes, one per
          scene
   Where: *.PAL

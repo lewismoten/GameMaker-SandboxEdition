@@ -393,9 +393,12 @@ export function buildGame(): Built {
     });
   }
   // Between Worlds: the galaxy again, entered on its own way out, so its picture (present.ts)
-  // shows and the pod is back outside the knot after a single tick
+  // shows and the pod is back outside the knot after a single tick. PLAYGAME still fades its
+  // map in and out around that tick, so it loads dark.pal (all black) and the galaxy never
+  // flashes up between the picture and the galaxy scene's own fade-in.
   {
-    const sc = setup(SCENE.between, 'Between Worlds', { pal: 'galaxy.pal', map: 'galaxy.map', bbl: 'space.bbl', chr: 'pod' });
+    put('dark.pal', serializePalette(new Uint8Array(768)));
+    const sc = setup(SCENE.between, 'Between Worlds', { pal: 'dark.pal', map: 'galaxy.map', bbl: 'space.bbl', chr: 'pod' });
     sc.links[0] = link(SCENE.galaxy, galaxy.knot.beacon, galaxy.knot.out);
     sc.pos = { x: 157, y: 30 };
   }
