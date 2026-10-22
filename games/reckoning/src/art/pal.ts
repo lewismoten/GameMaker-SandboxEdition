@@ -57,7 +57,7 @@ const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
   // the hall, lights flickering, a sickly green
   dash: { sky: [[14, 22, 14], [90, 120, 70], [40, 56, 34]], mul: [0.74, 0.86, 0.62], add: [6, 14, 0] },
   // the reckoning: blood red
-  hell: { sky: [[40, 0, 0], [220, 60, 30], [120, 10, 8]], mul: [1.05, 0.5, 0.42], add: [40, 0, 0] },
+  hell: { sky: [[40, 0, 0], [200, 50, 24], [110, 8, 6]], mul: [1.05, 0.66, 0.58], add: [34, 4, 4] },
   plain: { sky: [[30, 36, 76], [140, 150, 200], [70, 80, 130]], mul: [1, 1, 1], add: [0, 0, 0] },
 };
 
