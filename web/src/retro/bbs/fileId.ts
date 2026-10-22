@@ -113,6 +113,7 @@ const SUMMARY: Record<string, string> = {
   signhdg: 'Hedrick H. Hogg must bring one hundred crumpets to tea with the Queen.',
   zoom: "A spell gone wrong makes A-J Bear's cousin Zoom super. As told by A-J himself.",
   goat: 'The holy night, from the goat nobody painted. Eat anything, scream your fainting cousins stiff, find your place.',
+  mustard: 'A tiny mustard seed with the greatest feet hops, pushes roots for water and moves a mountain on tiny faith.',
 };
 
 const TAGLINES = [
