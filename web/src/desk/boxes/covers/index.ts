@@ -6,6 +6,7 @@ import { idHash } from '../../../project/secretGames';
 
 const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   blaster: () => import('./blaster'),
+  depth: () => import('./depth'),
   brief: () => import('./brief'),
   logic: () => import('./logic'),
   maximus: () => import('./maximus'),
