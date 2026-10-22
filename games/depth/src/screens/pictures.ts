@@ -9,6 +9,7 @@ import { RAY_R, rayDeath, rayModel } from '../models/ray';
 import { FAR_COL, KINDS, LENS_COL, NEAR_COL, cube, eggShape } from '../tiles/cells';
 import { THEMES, type ThemeId } from '../tiles/themes';
 import { centered, panel, text } from './draw';
+import { STATUS } from '../../../kit/saveSlots';
 import { logoShapes, SKY } from './title';
 import { H, W, cam, floor, glowMat, props, stage, still } from './stage';
 
@@ -127,8 +128,10 @@ export function menuPicture(): Picture {
 }
 
 /** A page for PLAYGAME's text (x 40..288, y 40..168): frosted glass over a picture. */
-export function textPage(base: Picture, tint: V = rgb(240, 236, 255)): Picture {
-  panel(base, 32, 34, 296, 180, tint, 0.84, rgb(255, 255, 255));
+export function textPage(base: Picture, tint: V = rgb(248, 246, 255)): Picture {
+  // frosted enough that the dark checks behind don't dim the purple words or the red
+  // MORE... below 3:1
+  panel(base, 32, 34, 296, 180, tint, 0.96, rgb(255, 255, 255));
   return base;
 }
 
@@ -197,16 +200,21 @@ export function howtoBackground(): Picture {
 export function hiscorePicture(): Picture {
   const shapes: Shape[] = [floor(), logoShapes([0, 6, 3.2], 0.8)];
   const pic = still(stage(shapes, { env: SKY }), cam([0, -6, 3], [0, 0, 1.6], 0.9), 4, 16, 9);
-  panel(pic, 10, 0, 310, 12, rgb(255, 255, 255), 0.85);
-  panel(pic, 10, 22, 310, 200, rgb(236, 240, 255), 0.8, rgb(255, 255, 255));
+  panel(pic, 10, 0, 310, 12, rgb(255, 255, 255), 0.97);
+  panel(pic, 10, 22, 310, 200, rgb(246, 248, 255), 0.94, rgb(255, 255, 255));
   return pic;
 }
 
-/** Load and save: PLAYGAME lists the save names in yellow from (80, 40). */
+/**
+ * Load and save: PLAYGAME lists the save names in yellow from (80, 40) with its red marker at
+ * x 60, and writes its blue message at y 185: smoked glass under the names and marker,
+ * frosted glass under the message (kit/saveSlots.ts).
+ */
 export function savePicture(word: string): Picture {
   const shapes: Shape[] = [floor(), ...ray(-2.4, -1.4, 1.4)];
   const pic = still(stage(shapes), cam([0, -7, 3.4], [0, 0, 0.5], 0.85), 4, 16, 10);
-  panel(pic, 64, 30, 300, 186, rgb(10, 8, 34), 0.75, rgb(120, 220, 255));
+  panel(pic, 50, 30, 300, 178, rgb(10, 8, 34), 0.88, rgb(120, 220, 255));
+  panel(pic, STATUS.x, STATUS.y, STATUS.x + STATUS.w, STATUS.y + STATUS.h, rgb(236, 240, 255), 0.93, rgb(255, 255, 255));
   centered(pic, 8, word, WHITE, 2, { outline: INK });
   return pic;
 }

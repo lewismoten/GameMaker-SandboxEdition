@@ -2,6 +2,7 @@
 // the felt egg's page.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, type Scene } from '../../../../web/src/formats/game';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { matchColor } from '../../../../web/src/formats/palette';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { farScene, nearScene, type Extra } from '../game';
 import type { LevelSet } from '../levels/blocks';
@@ -81,7 +82,10 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   centered(eggTitled, 10, 'THE PRISM EGG', rgb(255, 255, 255), 2, { outline: rgb(30, 10, 50) });
   centered(eggTitled, 182, 'Behind the two-way mirror...', rgb(220, 200, 255), 1, { outline: rgb(30, 10, 50) });
   gif('egg.gif', eggTitled);
-  gif('eggbg.gif', P.textPage(egg, rgb(244, 236, 255)));
+  // PLAYGAME writes the page's MORE... in the color nearest red in the Hall of Mirrors'
+  // palette (the scene's), whatever this picture has at that index: keep red there
+  const red = matchColor(input.sets[2].pal, 63, 10, 10);
+  files['eggbg.gif'] = toGif(P.textPage(egg, rgb(250, 246, 255)), fixed, 1, red < fixed.length ? [] : [[red, GM_RED]]);
   files['egg.txt'] = EGG_TEXT;
   files['egg.lst'] = serializeSlideList([{ name: 'egg.gif' }, { name: 'eggbg.gif', pause: 0 }, { name: 'egg.txt' }]);
 
