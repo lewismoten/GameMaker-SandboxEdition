@@ -737,8 +737,28 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     true,
   );
   let confirmed = false;
+  // Chrome closes a dialog on a second Esc without a cancel event it lets us stop: open it again and ask
+  dlg?.addEventListener('close', () => {
+    if (!dlg.isConnected || confirmed) return;
+    // shown again under any question already open
+    const asked = document.querySelector<HTMLDialogElement>('dialog.modal[open]:not(.sv-dialog)');
+    asked?.close();
+    dlg.showModal();
+    if (asked) asked.showModal();
+    void tryClose(() => {
+      confirmed = true;
+      closeBtn?.click();
+    });
+  });
+  let asking = false;
   async function tryClose(close: (v: undefined) => void) {
-    if (anyDirty() && !(await confirmDialog('Leave without saving?', 'Some changes here are not saved yet.', 'Leave', true))) return;
+    if (asking) return;
+    if (anyDirty()) {
+      asking = true;
+      const leave = await confirmDialog('Leave without saving?', 'Some changes here are not saved yet.', 'Leave', true);
+      asking = false;
+      if (!leave) return;
+    }
     confirmed = true;
     close(undefined);
   }
