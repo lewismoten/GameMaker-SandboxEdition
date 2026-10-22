@@ -174,7 +174,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b> and <b>Mustard Seed Hustle</b>. Once there are four or
     more, they get a Bizarre collection of their own on the home page.</p>
     <p>The words are Lewis’s. The recording and cover art of Third Goat from the Left were made
-    with Riffusion (now Google Flow Music); Mustard Seed Hustle’s are credited in its game. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own.
+    with Riffusion (now Google Flow Music); Mustard Seed Hustle’s are still to be credited. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own.
     Each game’s music and sounds are drawn from its song’s recording; its code, pictures and
     levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
