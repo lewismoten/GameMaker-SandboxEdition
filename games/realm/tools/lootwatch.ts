@@ -16,6 +16,8 @@ export function isLootBlock(sim: GameSim, b: number): boolean {
   if (b === BLK.egg) return false;
   const B = sim.w.bg[b];
   if (!B || B.touchBl === b) return false;
+  // a quest thing (the foghorn, a piece, the Tome) is the quest's business
+  if (B.effect >= 20) return false;
   // money, lives and the sequence counters (tonics, kazoo notes), but no quest counters (20..29)
   const gives = (B.effect === 3 || B.effect === 1 || (B.effect >= 5 && B.effect <= 19)) && B.eamt > 0;
   // a block that takes something first is a shop or a gate

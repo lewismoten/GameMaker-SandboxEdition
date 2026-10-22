@@ -12,6 +12,7 @@ import { GameSim } from './sim';
 const SEED = 1;
 const sim = new GameSim(undefined, SEED);
 const bot = new Bot(sim);
+bot.loot = true;
 for (const [name, step] of ROUTE) {
   await step(bot);
   console.log(`${name}: ${bot.log[bot.log.length - 1]}`);

@@ -6,6 +6,7 @@ import { ROUTE } from './route';
 
 const sim = new GameSim(undefined, 1);
 const bot = new Bot(sim);
+bot.loot = true;
 for (const [name, step] of ROUTE) {
   try {
     await step(bot);
