@@ -8,5 +8,7 @@ import { L05 } from './rooms/l05';
 import { L06 } from './rooms/l06';
 import { L07 } from './rooms/l07';
 import { L08 } from './rooms/l08';
+import { L09 } from './rooms/l09';
+import { L10 } from './rooms/l10';
 
-export const ROOM_SPECS: RoomSpec[] = [L01, L02, L03, L04, L05, L06, L07, L08];
+export const ROOM_SPECS: RoomSpec[] = [L01, L02, L03, L04, L05, L06, L07, L08, L09, L10];

@@ -290,7 +290,7 @@ export class Bot {
       // a mouse or a Redcoat in front: squawk first
       if (this.sim.ticks - this.lastSquawk > 10 && this.squawkable()) {
         const r = await this.squawk();
-        if (r) return r === 'dead' ? 'dead' : r;
+        if (r) return r;
         continue;
       }
       // the next cell shut (a panel, an opener, ice)? wait for it
@@ -321,7 +321,7 @@ export class Bot {
       if (process.env.BOT_DEBUG === "2") console.log(`  ${label} at ${p.x},${p.y}+${p.sx},${p.sy} seq ${this.sim.w.chr.cseq} hp ${this.sim.ci.hitpts} -> ${move ?? "wait"} (path ${path.length})`);
       const r = await this.stepRaw(move, 3);
       if (r === 'dead') this.say(`${label}: died`);
-      if (r && r !== 'dead') return r;
+      if (r) return r;
     }
     throw new Error(`${label}: gave up going to ${x},${y}\n${this.log.slice(-6).join('\n')}`);
   }

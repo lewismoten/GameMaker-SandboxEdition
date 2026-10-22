@@ -17,6 +17,8 @@ export const ROUTE: Record<number, Stop[]> = {
   6: ['k', 'I'],
   7: ['k', 'I'],
   8: ['k', 'I'],
+  9: ['k', 'I'],
+  10: ['k', 'I'],
 };
 
 /** The secret way out of the Cold Cellar, and the hidey-hole's own route. */
@@ -41,10 +43,15 @@ export async function playRoom(bot: Bot, stops: Stop[]): Promise<void> {
       pick = true;
     }
     done.add(`${target.x},${target.y}`);
+    // a death is taken back and the stretch played again after a little wait, so Doc Leo
+    // sets off at a better moment (the walkthrough should not die)
+    const before = bot.snapshot();
     for (let attempt = 0; ; attempt++) {
       const r = await bot.goto(target.x, target.y, `${name} -> ${JSON.stringify(stop)}`);
       if (r === 'dead') {
-        if (attempt > 3) throw new Error(`${name}: died ${attempt + 1} times`);
+        if (attempt > 40) throw new Error(`${name}: died ${attempt + 1} times`);
+        bot.restore(before);
+        await bot.wait(3 + attempt * 4);
         continue;
       }
       if (r === 'link' || r === 'end') {
