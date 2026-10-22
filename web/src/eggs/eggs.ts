@@ -68,6 +68,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Every word by Lewis "Lewie" Moten III, exactly one hundred at a time', 'Shelved and counted by Claude Opus 5.5'],
     lore: 'Pressed between two pages like a flower: a recipe card, exactly one hundred words, nearly all crossed out. One line survives: "A baker\'s dozen is thirteen. Never trust a cook who stops at twelve."',
     look: { felt: '#f6efdc', band: '#8fb3d9', patch: '#c8241e', thread: '#2a1408', pattern: 'ruled', motif: 'book' },
+    detect: { block: 149 },
   },
   {
     game: 'depth',
