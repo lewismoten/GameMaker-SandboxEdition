@@ -46,10 +46,10 @@ function turnstile(open: boolean): Pixels {
   return sprite(
     open
       ? ['.........mm.........', '.........mm.........', '.........mm.........', '....MMMMMmmMMMMM....', '.........mm.........', '.........mm.........', '.........mm.........', '.........mm.........', '........mmmm........']
-      : ['.........mm.........', 'MMMMMMMMMmmMMMMMMMMM', '.........mm.........', 'MMMMMMMMMmmMMMMMMMMM', '.........mm.........', 'MMMMMMMMMmmMMMMMMMMM', '.........mm.........', '.........mm.........', '........mmmm........'],
+      : ['MMMMMMMMMMMMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'M.......mmmm.......M', 'MMMMMMMMMMMMMMMMMMMM'],
     K,
     0,
-    11,
+    open ? 11 : 0,
   );
 }
 
@@ -96,7 +96,7 @@ export function showBeasts() {
       ['pop1', 2],
       ['pop2', 2],
     ],
-    power: POWER.projectile + 90,
+    power: POWER.pest,
     path: [[-9, 0, 6, FLIP]],
     end: -1,
   });

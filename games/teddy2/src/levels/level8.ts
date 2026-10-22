@@ -38,8 +38,8 @@ export function show(): Level {
   m.set(28, 37, 'signHoop');
   // The popcorn stand, which pops popcorn across the ring.
   m.set(40, 38, 'popTop').set(40, 39, 'popBot');
-  bs.def('popTop').birthMon = beasts.id('popcorn');
-  bs.def('popTop').birthTime = 46;
+  bs.def('popBot').birthMon = beasts.id('popcorn');
+  bs.def('popBot').birthTime = 46;
   // The judges' table and bell; the velvet rope (a monster) across the Best Behaved ring.
   m.set(55, 39, 'table').set(56, 39, 'table');
   m.set(57, 38, 'judgeTop').set(57, 39, 'judgeBot');
