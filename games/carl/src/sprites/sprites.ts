@@ -150,8 +150,8 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  /** A hazard: hurts on touch and shoves Carl back. */
-  const hurt = (hp: number, solid = 15) => ({ chHitPt: -hp, solid });
+  /** A hazard: hurts on touch (half again what's written: a fly's patience is short) and shoves Carl back. */
+  const hurt = (hp: number, solid = 15) => ({ chHitPt: -Math.round(hp * 1.5), solid });
 
   // ---- swatting things: they stand in one place and swing; Carl's barrel roll makes them miss ----
   // the dish towel, twisted into a rat tail, cocked and snapped

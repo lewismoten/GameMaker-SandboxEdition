@@ -54,10 +54,14 @@ export function buildYard(pal: Pal): BlockBook {
     return p;
   };
   book.add('siding', sidingAt(P()), AIR);
+  // the same, solid: the edges of the yard (Carl can't fly round the house or off into the sky)
+  book.add('sidingWall', sidingAt(P()), { solid: SOLID });
+  book.add('skyWall', sky(5, 2), { solid: SOLID });
   const eave = P().rect(0, 0, 20, 20, c('grey', 1));
   for (let x = 0; x < 20; x += 5) eave.line(x, 0, x + 4, 10, c('grey', 0));
   eave.rect(0, 12, 20, 5, c('white', 3)).rect(0, 17, 20, 3, c('steel', 1));
   book.add('eave', eave, { solid: SOLID });
+  book.add('eaveWall', eave.crop(0, 0, 20, 20), { solid: SOLID });
   // the bedroom window, open, the man leaning out and begging (his hand is a monster)
   const open = new Pixels(40, 40);
   sidingAt(open, 0, 0, 40, 40);
@@ -174,6 +178,7 @@ export function buildYard(pal: Pal): BlockBook {
     return p;
   };
   book.add('tall', tall(26, false), AIR);
+  book.add('tallWall', tall(28, false), { solid: SOLID });
   book.add('wild', tall(27, true), { score: 500 });
 
   // ---------- the wild (the documentary) ----------

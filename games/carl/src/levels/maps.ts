@@ -35,6 +35,21 @@ export class MapBuilder {
     this.map.blocks.fill(book.n(filler));
   }
 
+  /**
+   * What lies past the level's walls, for the screen to show near the edges (it can't be reached:
+   * the walls are solid): `name(x, y)` in level coordinates, for every cell outside the W x H level.
+   */
+  surround(W: number, H: number, name: (x: number, y: number) => string): this {
+    for (let y = 0; y < 100; y++)
+      for (let x = 0; x < 100; x++) {
+        const lx = x - ORIGIN;
+        const ly = y - ORIGIN;
+        if (lx >= 0 && lx < W && ly >= 0 && ly < H) continue;
+        this.map.blocks[y * 100 + x] = this.book.n(name(lx > 60 ? lx - 100 : lx, ly > 60 ? ly - 100 : ly));
+      }
+    return this;
+  }
+
   /** Sets a block at level coordinates. */
   set(x: number, y: number, name: string): this {
     this.map.blocks[(y + ORIGIN) * 100 + x + ORIGIN] = this.book.n(name);
@@ -91,6 +106,8 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
 /** A room: ceiling, wallpaper, the chair rail, wainscot, the floor (shag), and the side walls. */
 function room(m: MapBuilder, W: number, H: number): void {
+  // the rooms next door: the same wallpaper, wainscot, ceiling and shag
+  m.surround(W, H, (_x, y) => (y <= 0 ? 'ceil' : y <= 6 ? 'paper' : y === 7 ? 'rail' : y < H - 1 ? 'panel' : 'shag'));
   m.row(0, 0, W - 1, 'ceil').fill(1, 1, W - 2, 6, 'paper').row(7, 1, W - 2, 'rail').fill(1, 8, W - 2, H - 9, 'panel').row(H - 1, 0, W - 1, 'shag');
   m.col(0, 0, H - 1, 'side').col(W - 1, 0, H - 1, 'side');
 }
@@ -162,6 +179,7 @@ export function theWalls(book: BlockBook): Level {
   const W = 52;
   const H = 12;
   const m = new MapBuilder(book, 'side');
+  m.surround(W, H, (_x, y) => (y <= 0 ? 'ceil' : y < H - 1 ? 'tiles' : 'shag'));
   m.row(0, 0, W - 1, 'ceil').fill(1, 1, W - 2, 10, 'tiles').row(H - 1, 0, W - 1, 'shag').col(0, 0, H - 1, 'side').col(W - 1, 0, H - 1, 'side');
   m.each('tilesB', [
     [3, 3],
@@ -237,7 +255,9 @@ export function theWindow(book: BlockBook): Level {
   const W = 60;
   const H = 14;
   const m = new MapBuilder(book, 'earth');
-  m.row(0, 1, W - 2, 'skyHi').fill(1, 1, W - 2, 11, 'sky').row(12, 0, W - 1, 'grass').col(0, 0, H - 1, 'earth').col(W - 1, 0, H - 1, 'earth');
+  // the rest of the house to the left, more sky over the yard, the ground going on
+  m.surround(W, H, (x, y) => (y >= 12 ? (y === 12 ? 'grass' : 'earth') : y < 0 ? 'skyWall' : x < 0 ? (y === 0 ? 'eaveWall' : 'sidingWall') : 'sky'));
+  m.row(0, 1, W - 2, 'skyHi').fill(1, 1, W - 2, 11, 'sky').row(12, 0, W - 1, 'grass').col(0, 0, 11, 'sidingWall').set(0, 0, 'eaveWall').col(W - 1, 0, 11, 'tallWall').fill(0, 13, W, 1, 'earth');
   m.each('cloud', [
     [14, 2],
     [27, 1],
@@ -260,7 +280,7 @@ export function theWindow(book: BlockBook): Level {
   // the picnic table: pie and lemonade
   m.row(10, 42, 45, 'picnic').set(42, 11, 'picnicLeg').set(45, 11, 'picnicLeg').set(43, 9, 'pie').set(45, 9, 'lemonade');
   m.set(50, 11, 'birdbath');
-  m.mon(MON.wasp, 47, 3);
+  m.mon(MON.wasp, 47, 3).mon(MON.bird, 44, 6);
   // gusts again, and the tall grass: the wild
   m.fill(52, 2, 2, 9, 'calm');
   m.fill(56, 6, 3, 6, 'tall').set(57, 9, 'wild');
@@ -273,7 +293,9 @@ export function theWild(book: BlockBook): Level {
   const W = 64;
   const H = 14;
   const m = new MapBuilder(book, 'earth');
-  m.row(0, 1, W - 2, 'skyHi').fill(1, 1, W - 2, 11, 'sky').row(12, 0, W - 1, 'grass').col(0, 0, H - 1, 'stem').col(W - 1, 0, H - 1, 'rock');
+  // the wild goes on past the stems and the rocks, under more sky
+  m.surround(W, H, (_x, y) => (y >= 12 ? (y === 12 ? 'grass' : 'earth') : y < 0 ? 'skyWall' : 'tall'));
+  m.row(0, 1, W - 2, 'skyHi').fill(1, 1, W - 2, 11, 'sky').row(12, 0, W - 1, 'grass').col(0, 0, 11, 'stem').col(W - 1, 0, 11, 'rock');
   // the crew's boom microphones poke in from above
   m.set(20, 0, 'boomPole').set(20, 1, 'boom').set(42, 0, 'boomPole').set(42, 1, 'boomPole').set(42, 2, 'boom');
   // tall grass stems, the third goat grazing
@@ -282,7 +304,7 @@ export function theWild(book: BlockBook): Level {
   m.set(12, 11, 'flower');
   // the pond: a frog on a lily pad, its tongue
   m.fill(14, 12, 9, 2, 'pond0').set(17, 12, 'lily').set(20, 12, 'lily');
-  m.mon(MON.frog, 17, 11).mon(MON.tongue, 17, 10);
+  m.mon(MON.frog, 17, 11).mon(MON.tongue, 17, 10).mon(MON.frog, 20, 11).mon(MON.tongue, 20, 10);
   // mushrooms, the mustard seed, a dragonfly, melted clocks
   m.set(25, 11, 'shroom').set(26, 11, 'shroom');
   m.mon(MON.seed, 25, 10).mon(MON.dragonfly, 23, 5);
@@ -337,6 +359,8 @@ export function theAux(book: BlockBook): Level {
   // the coffee table: burning sage and the oil diffuser
   m.row(9, 20, 26, 'tableTop').set(20, 10, 'tableLeg').set(26, 10, 'tableLeg').set(21, 8, 'smudge').set(24, 8, 'diffuser').set(26, 8, 'crumbP');
   m.set(29, 10, 'sideTable').set(29, 9, 'candle');
+  // Teddy's awake and snapping
+  m.mon(MON.teddy, 27, 10);
   // the wet floor, the man mopping it, the bucket
   m.row(11, 31, 45, 'wet');
   m.mon(MON.mopperA, 33, 9).mon(MON.mopperB, 33, 10).mon(MON.mop, 34, 10);
