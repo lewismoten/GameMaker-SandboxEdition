@@ -1,5 +1,6 @@
+// Tests: The desk mouse (input/deskMouse.ts): rolls reported in screen pixels, fractions kept, buttons.
 import { describe, expect, it } from 'vitest';
-import { deskMouse, listenDeskMouse, Mickeys } from './deskMouse';
+import { deskMouse, listenDeskMouse, Mickeys } from '../src/input/deskMouse';
 
 describe('desk mouse', () => {
   it('keeps the fractions of a slow roll', () => {
