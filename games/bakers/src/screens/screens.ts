@@ -10,7 +10,9 @@ import { loadScan, pastePhoto, polaroid, resample, sepia } from '../../../kit/ph
 import { Pixels, rng } from '../../../kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { corgi, docLeo, eggFaberge, eggRotten, gwinn, ingredient, mouse, redcoat } from '../art/kit';
-import { arrivedWith, introName } from '../game';
+import { arrivedWith, introName, outroName } from '../game';
+import { reggie } from '../sprites/chicken';
+import { stoveInFli, stoveOutFli } from './chicken';
 import { EGG_SCENE } from '../ids';
 import { PAL, buildPalette, c } from '../art/pal';
 import type { TileSet } from '../blocks/tiles';
@@ -114,7 +116,7 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   strip.forEach((n, i) => p.blit(tiles.pic(n), i * 20, 180));
   const lvl = room.spec.level;
   card(p, 40, 22, 240, 146, 0);
-  centered(p, 28, lvl ? `ROOM ${lvl} OF 13` : 'ROOM ? OF 13', c('red', 2));
+  centered(p, 28, room.spec.interlude ? `BETWEEN ROOMS ${lvl} AND ${lvl + 1}` : lvl ? `ROOM ${lvl} OF 13` : 'ROOM ? OF 13', c('red', 2));
   const name = room.spec.name.toUpperCase();
   centered(p, 46, name, c('ink', 0), name.length > 14 ? 1 : 2);
   room.spec.card.forEach((l, i) => centered(p, 78 + i * 11, l, c('blue', 1)));
@@ -122,7 +124,8 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   scaleBlit(p, ingredient(n, 0), 56, 120, 2);
   text(p, 100, 128, 'FIND:', c('ink', 1));
   text(p, 100, 140, RECIPE[n - 1]?.name ?? '???', c('red', 2));
-  bigLeo(p, 236, 116, 0.75);
+  if (room.spec.hero === 'chick') scaleBlit(p, reggie('down'), 226, 104, 2);
+  else bigLeo(p, 236, 116, 0.75);
   return { px: p, pal: pal.pal };
 }
 
@@ -355,6 +358,16 @@ export function buildScreens(rooms: Room[], sets: Record<string, TileSet>): Reco
       const name = `egg${room.spec.cupboard.scene}.gif`;
       out[name] = gif(eggScreen(rotten));
       out[introName(room)] = serializeSlideList([{ name, pause: 30 }]);
+      continue;
+    }
+    if (room.spec.interlude) {
+      const f = room.spec.file;
+      const { px, pal } = roomCard(room, sets[room.spec.style]);
+      out[`card${f.slice(0, 4)}.gif`] = gif(px, pal);
+      out[`${f}in.fli`] = stoveInFli();
+      out[`${f}out.fli`] = stoveOutFli();
+      out[introName(room)] = serializeSlideList([{ name: `${f}in.fli`, pause: 1 }, { name: `card${f.slice(0, 4)}.gif`, pause: 5 }]);
+      out[outroName(room)] = serializeSlideList([{ name: `${f}out.fli`, pause: 1 }]);
       continue;
     }
     const n = String(room.spec.level).padStart(2, '0');

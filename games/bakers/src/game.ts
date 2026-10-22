@@ -3,6 +3,10 @@
 //   0 title   1 the end (won / lost)   2..14 the thirteen rooms, in order   15 the hidey-hole
 //   16 the compost crock (the rotten egg, off the Larder)
 //   17 Ebenezer's display case (the pastry egg, off the Vault)
+//   18 under the stove: Sir Reginald Cluckington III's interlude (the molasses rolled under
+//      the Bakehouse stove; the Bakehouse's way out is the gap, and the chicken's way out
+//      is the molasses, on to the Cold Cellar). It is played as the chicken (chick.chr), and
+//      it is the one room with an exit picture: the cartoon of him popping back out.
 //
 // Every room's ingredient is its way out: the jar's cell is the link to the next room, so
 // picking it up (counter 3 up, a thousand points) and leaving happen on the same step, and no
@@ -24,7 +28,7 @@ export const SECRET_FROM = 5;
 export const SKIPPED = 6;
 
 export const roomScene = (level: number) => (level === 0 ? SECRET_SCENE : level + 1);
-export const sceneOf = (room: Room) => room.spec.cupboard?.scene ?? roomScene(room.spec.level);
+export const sceneOf = (room: Room) => room.spec.cupboard?.scene ?? room.spec.interlude?.scene ?? roomScene(room.spec.level);
 
 /** The ingredient a room's way in has just handed you (its intro shows that page first). */
 export function arrivedWith(level: number): number | undefined {
@@ -33,7 +37,11 @@ export function arrivedWith(level: number): number | undefined {
   return level > 1 ? level - 1 : undefined;
 }
 
-export const introName = (room: Room) => (room.spec.cupboard ? `egg${room.spec.cupboard.scene}.lst` : `in${String(room.spec.level).padStart(2, '0')}.lst`);
+export const introName = (room: Room) =>
+  room.spec.cupboard ? `egg${room.spec.cupboard.scene}.lst` : room.spec.interlude ? `${room.spec.file}in.lst` : `in${String(room.spec.level).padStart(2, '0')}.lst`;
+
+/** The picture shown on the way out (only an interlude has one). */
+export const outroName = (room: Room) => (room.spec.interlude ? `${room.spec.file}out.lst` : '');
 
 function noLinks(): Link[] {
   return Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
@@ -41,7 +49,8 @@ function noLinks(): Link[] {
 
 export function sceneFiles(room: Room): string[] {
   const s = room.spec;
-  return [`${s.file}.pal`, `${s.file}.map`, `${s.style}.bbl`, `${s.file}.mon`, 'mons.mbl', 'leo.chr', 'leo.cbl', 'leo.snd', `${s.song}.cmf`, introName(room), '', ...new Array(9).fill('')];
+  const hero = s.hero ?? 'leo';
+  return [`${s.file}.pal`, `${s.file}.map`, `${s.style}.bbl`, `${s.file}.mon`, 'mons.mbl', `${hero}.chr`, `${hero}.cbl`, 'leo.snd', `${s.song}.cmf`, introName(room), outroName(room), ...new Array(9).fill('')];
 }
 
 function scene(desc: string, files: string[], x: number, y: number): Scene {
@@ -56,6 +65,7 @@ function scene(desc: string, files: string[], x: number, y: number): Scene {
 /** Integrator positions: the rooms snake down the screen, the side rooms beside theirs. */
 function pos(room: Room): { x: number; y: number } {
   if (room.spec.cupboard) return room.spec.cupboard.scene === 16 ? { x: 160, y: 10 } : { x: 70, y: 160 };
+  if (room.spec.interlude) return { x: 280, y: 40 };
   const level = room.spec.level;
   if (level === 0) return { x: 270, y: 74 };
   const row = Math.floor((level - 1) / 4);
@@ -70,7 +80,8 @@ export function buildGame(rooms: Room[]): Game {
   end.desc = 'The Thirteenth';
   end.files = ['won.lst', 'won.cmf', 'lost.lst', 'lost.cmf', ...new Array(16).fill('')];
 
-  const main = rooms.filter((r) => !r.spec.cupboard);
+  const main = rooms.filter((r) => !r.spec.cupboard && !r.spec.interlude);
+  const interludes = new Map(rooms.filter((r) => r.spec.interlude).map((r) => [r.spec.level, r]));
   const byLevel = new Map(main.map((r) => [r.spec.level, r]));
   const last = Math.max(...main.map((r) => r.spec.level));
   for (let l = 1; l <= last; l++) if (!byLevel.has(l)) throw new Error(`No room for level ${l}`);
@@ -91,7 +102,11 @@ export function buildGame(rooms: Room[]): Game {
   for (const room of main) {
     const l = room.spec.level;
     const next = l === 0 ? byLevel.get(SKIPPED + 1) : byLevel.get(l + 1);
-    setLink(room, 0, room.exit, next ? roomScene(next.spec.level) : 1, next ? next.start : { x: 0, y: 0 });
+    const between = interludes.get(l);
+    if (between) {
+      setLink(room, 0, room.exit, sceneOf(between), between.start);
+      setLink(between, 0, between.exit, roomScene(next!.spec.level), next!.start);
+    } else setLink(room, 0, room.exit, next ? roomScene(next.spec.level) : 1, next ? next.start : { x: 0, y: 0 });
     if (room.secret) {
       const to = byLevel.get(0) ?? byLevel.get(l + 1);
       if (to) setLink(room, 1, room.secret, roomScene(to.spec.level), to.start);

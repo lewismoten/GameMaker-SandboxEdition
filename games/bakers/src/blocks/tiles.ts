@@ -21,6 +21,7 @@ import { blank, cap, chickenItem, eggFaberge, eggRotten, float, ingredient, kazo
 import { c, r } from '../art/pal';
 import { CTR, MON } from '../ids';
 import { addLazySusan } from './susan';
+import { addStoveGap } from './stove';
 import { BlockSet, GRAV, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP } from './sets';
 
 export type Style = 'kitchen' | 'cellar' | 'parlor' | 'works';
@@ -637,6 +638,7 @@ export function buildTileSet(style: Style): TileSet {
   t.add('fwallCrack', crack);
   // added last, so every other block keeps its number
   if (style === 'parlor') addLazySusan(t, fl);
+  if (style === 'kitchen') addStoveGap(t, fl);
   void outline;
   void blank;
   void SOLTOP;

@@ -116,6 +116,19 @@ function trombone(): Uint8Array {
   });
 }
 
+/** A rubber chicken squeezed gently: a squeaky toy, eek-eek. */
+function toy(): Uint8Array {
+  return sample(0.22, band(saw((t) => (t < 0.1 ? 1400 + t * 4000 : 1700 - (t - 0.1) * 2500)), 0.1, 0.6), {
+    envelope: (u) => (u < 0.42 ? Math.sin((Math.PI * u) / 0.42) : u > 0.5 ? Math.sin((Math.PI * (u - 0.5)) / 0.5) : 0),
+    gain: 0.8,
+  });
+}
+
+/** Boing: rubber hitting the floor and coming back up. */
+function boing(): Uint8Array {
+  return sample(0.45, osc.sine((t) => 140 + 260 * Math.exp(-t * 6) + 30 * Math.sin(t * 70)), { envelope: (u) => (1 - u) ** 1.5, gain: 0.9 });
+}
+
 /** A music box: the first bar of the march, on little steel tines (a life: pie, or the pastry egg). */
 function musicBox(): Uint8Array {
   const notes = [784, 988, 1175, 1175, 1319, 1175];
@@ -169,5 +182,7 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
   put(SND.kazoo, speaker((i) => (i < 30 ? (i < 10 ? 392 : i < 20 ? 392 : 523) + (i % 2) * 6 : 0)), 'kazoo', kazoo());
   put(SND.fife, speaker((i) => [523, 523, 587, 659, 523, 659][Math.min(5, Math.floor(i / 6))]), 'fife', fife());
   put(SND.pickup, SPEAKER.chirp());
+  put(SND.toy, speaker((i) => (i < 4 ? 1500 + i * 150 : i > 5 && i < 10 ? 1700 - (i - 6) * 150 : 0)), 'toy', toy());
+  put(SND.boing, speaker((i) => (i < 16 ? 400 - i * 15 + (i % 2) * 40 : 0)), 'boing', boing());
   return { set, vocs };
 }
