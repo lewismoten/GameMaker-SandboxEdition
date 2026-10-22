@@ -168,6 +168,8 @@ export const SCENE = {
   citadel: 10,
   heart: 11,
   firstWorld: 12,
+  /** after the 88 worlds: a scene the pod passes straight through (its picture is the point) */
+  between: 100,
 };
 
 export function allWorlds(): { world: World; sector: number; index: number; scene: number }[] {

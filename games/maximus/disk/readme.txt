@@ -9,7 +9,7 @@ You may copy Maximus and give
 it to your friends, upload it
 to your favorite BBS, or put
 it on a shareware CD, as long
-as all 508 files stay together
+as all 511 files stay together
 and nobody charges money for
 it. (A hundred worlds take
 some room: 7.1 MB. Unzip it

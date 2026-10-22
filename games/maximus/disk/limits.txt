@@ -35,7 +35,7 @@ SCENE FILE-NAME POOL
   Limit: 65,520 bytes
          (PLAYGAME clamps it
          at 0xFFF0)
-  Used:  2903 bytes
+  Used:  2913 bytes
   Where: MAXIMUS.GAM
 
 LINKS PER SCENE
@@ -193,14 +193,14 @@ CMF INSTRUMENTS / FM VOICES
 PICTURES BETWEEN SCENES
   Limit: any GIF, FLI, BKD,
          TXT or LST
-  Used:  24 GIFs, 23 FLIs, 94
+  Used:  25 GIFs, 23 FLIs, 94
          BKD windows into 7
          tall GIFs (a sector's
          planet cards, each
          with its world's
          scan; the Core's
          places; three hails),
-         93 slide shows
+         94 slide shows
   Where: CARDS1..5.GIF,
          PLACES.GIF, HAILS.GIF
 

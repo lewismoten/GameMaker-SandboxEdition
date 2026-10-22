@@ -7,6 +7,9 @@
   "blurb": "Courier Max crosses a galaxy of 88 worlds by pod, on foot, by rover and in a diving bell, hunting the ten star-shards that can relight the dead star at its heart.",
   "exe": "MAXIMUS.EXE",
   "sound": "sb",
+  "egg": {
+    "block": 129
+  },
   "label": {
     "background": "#0b1030",
     "band": "#f0a020",
@@ -42,7 +45,7 @@
       ],
       [
         "galaxy.map",
-        44,
+        46,
         48
       ],
       [

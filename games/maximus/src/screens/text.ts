@@ -201,3 +201,17 @@ Thank you for supporting shareware!
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
 export const CREDITS = withCreditPage(CREDITS_TEXT);
+
+/** The page shown Between Worlds (one screen: 16 lines of 30 columns at most). */
+export const BETWEEN = wrap31(`THE ORBIT EGG
+
+Midnight-blue felt, silver star stitches, a ringed planet in plum and gold, and one long orbit of white chain stitch.
+
+Charted by Claude Opus 5.5
+and Lewis "Lewie" Moten III
+
+Between worlds it hums a catalog number. A hundred worlds, a hundred words: somebody out there is very particular about the number.`);
+{
+  const lines = BETWEEN.trimEnd().split('\n');
+  if (lines.length > 16 || lines.some((l) => l.length > 30)) throw new Error(`BETWEEN does not fit one page: ${lines.length} lines`);
+}

@@ -8,7 +8,7 @@ import { LASTMM, MLEN, MWID } from '../../../web/src/formats/map';
 import { LASTMON, LASTSL, MAXMARCH } from '../../../web/src/formats/monster';
 import { RECLEN } from '../../../web/src/formats/recording';
 import { LASTSND } from '../../../web/src/formats/sound';
-import { MODULES, SHARDS } from './ids';
+import { EGG_BLOCK, MODULES, SHARDS } from './ids';
 import type { Built } from './game';
 import { SHARED_END } from './art/palette';
 import { ROLES } from './art/roles';
@@ -44,11 +44,13 @@ export function limits(b: Built): Limit[] {
   const bkds = [...b.files.keys()].filter((f) => f.endsWith('.bkd')).length;
   const pals = [...b.files.keys()].filter((f) => f.endsWith('.pal')).length;
   const mapsFull = b.scenes.length;
+  // the scenes a player sees listed: title, ending and every map scene (not Between Worlds)
+  const listed = b.scenes.length + 2;
   return [
     {
       what: 'Scenes in a .GAM',
       max: '231 (PLAYGAME allocates all scenes in one 64K block of 283-byte records)',
-      used: `${g.scenes.length}: title, ending, training deck, galaxy, 5 sectors, 88 worlds, Maelstrom, Citadel, Heart. We stopped at 100: ${g.scenes.length * 283} bytes of scene records sit easily in DOS memory, every scene still loads in a moment, and the integrator's 310x165 world view still shows each scene box and link`,
+      used: `${listed}: title, ending, training deck, galaxy, 5 sectors, 88 worlds, Maelstrom, Citadel, Heart. We stopped at 100: ${listed * 283} bytes of scene records sit easily in DOS memory, every scene still loads in a moment, and the integrator's 310x165 world view still shows each scene box and link`,
       where: 'MAXIMUS.GAM',
     },
     { what: 'Scene file-name pool', max: '65,520 bytes (PLAYGAME clamps it at 0xFFF0)', used: `${pool} bytes`, where: 'MAXIMUS.GAM' },
@@ -202,6 +204,7 @@ export function about(b: Built): object {
       'Courier Max crosses a galaxy of 88 worlds by pod, on foot, by rover and in a diving bell, hunting the ten star-shards that can relight the dead star at its heart.',
     exe: 'MAXIMUS.EXE',
     sound: 'sb',
+    egg: { block: EGG_BLOCK },
     label: { background: '#0b1030', band: '#f0a020', ink: '#ffffff', logo: 'SANDBOX SOFTWARE' },
     box: {
       background: '#0b1030',

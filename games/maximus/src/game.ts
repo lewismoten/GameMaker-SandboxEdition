@@ -205,6 +205,7 @@ export function buildGame(): Built {
     sc.links[0] = link(SCENE.home, galaxy.dock, home.arrive);
     galaxy.sectors.forEach((s, k) => (sc.links[1 + k] = link(SCENE.sector(k), s.warp, sectorMaps[k].arrive)));
     sc.links[6] = link(SCENE.maelstrom, { x: galaxy.core.x + 1, y: galaxy.core.y + 1 }, maelstrom.arrive);
+    sc.links[7] = link(SCENE.between, galaxy.knot.beacon, galaxy.knot.beacon);
     sc.pos = { x: 157, y: 60 };
     record({
       scene: SCENE.galaxy,
@@ -391,7 +392,14 @@ export function buildGame(): Built {
       palette: buildPalette(ROLES, themeFor('core', 9)).pal,
     });
   }
-  if (game.scenes.length !== 100) problems.push(`${game.scenes.length} scenes`);
+  // Between Worlds: the galaxy again, entered on its own way out, so its picture (present.ts)
+  // shows and the pod is back outside the knot after a single tick
+  {
+    const sc = setup(SCENE.between, 'Between Worlds', { pal: 'galaxy.pal', map: 'galaxy.map', bbl: 'space.bbl', chr: 'pod' });
+    sc.links[0] = link(SCENE.galaxy, galaxy.knot.beacon, galaxy.knot.out);
+    sc.pos = { x: 157, y: 30 };
+  }
+  if (game.scenes.length !== 101) problems.push(`${game.scenes.length} scenes`);
   put('maximus.gam', serializeGame(game));
   return { files, game, scenes, sets, monsters, chars, problems };
 }

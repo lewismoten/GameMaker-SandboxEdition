@@ -24,12 +24,12 @@ import {
 } from './screens/screens';
 import { introFli, launchFli, warpFli, wonFli } from './screens/flics';
 import { DESCENT_BIOMES, descentFile, descentFli } from './screens/descent';
-import { CREDITS, INSTRUCTIONS } from './screens/text';
+import { BETWEEN, CREDITS, INSTRUCTIONS } from './screens/text';
 import { HAILS, hailPages } from './screens/hails';
 import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
 import { drawCourier } from './sprites/courier';
-import { drawShard } from './blocks/items';
+import { drawEgg, drawShard } from './blocks/items';
 
 export async function present(b: Built): Promise<void> {
   const put = (name: string, bytes: Uint8Array) => b.files.set(name.toLowerCase(), bytes);
@@ -79,6 +79,15 @@ export async function present(b: Built): Promise<void> {
   );
   put('credits.txt', dosText(CREDITS));
   put('credits.lst', serializeSlideList([{ name: 'credbg.gif', pause: 0 }, { name: 'credits.txt' }]));
+  put(
+    'orbit.gif',
+    pageScreen('THE ORBIT EGG', 83, (c) => {
+      c.sprite(drawEgg(), 12, 6, 1);
+      c.sprite(drawEgg(), 288, 6, 1, true);
+    }),
+  );
+  put('orbit.txt', dosText(BETWEEN));
+  put('orbit.lst', serializeSlideList([{ name: 'orbit.gif', pause: 0 }, { name: 'orbit.txt' }]));
   put('hiscore.gif', hiscoreScreen());
   put('maximus.his', startingScores());
   put('load.gif', slotScreen('LOAD GAME', 91));
@@ -206,6 +215,11 @@ export async function present(b: Built): Promise<void> {
       sc.files[9] = `w${info.scene}.lst`;
       sc.files[10] = 'launch.fli';
     }
+  }
+  {
+    const sc = g.scenes[SCENE.between];
+    sc.files[8] = 'galaxy.cmf';
+    sc.files[9] = 'orbit.lst';
   }
   put('maximus.gam', serializeGame(g));
 }

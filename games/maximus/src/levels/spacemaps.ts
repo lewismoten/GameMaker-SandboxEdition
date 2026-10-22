@@ -110,6 +110,8 @@ export interface GalaxyResult {
   sectors: { warp: P; arrive: P }[];
   core: P;
   coreArrive: P;
+  /** the beacon inside the knot where the chart's corners meet, and where the pod comes back out */
+  knot: { beacon: P; out: P };
 }
 
 /** The galaxy: Core in the middle, sectors around it on a spiral. */
@@ -176,7 +178,38 @@ export function galaxyMap(s: SetBuilder): GalaxyResult {
     const y = Math.floor(r() * H);
     if (!g.isLocked(x, y)) g.set(x, y, k % 3 ? s.id(`debris:${k % 3}`) : s.id('comet'));
   }
-  return { grid: g, arriveHome, dock, sectors, core: { x: cx - 1, y: cy - 1 }, coreArrive };
+  // a knot of asteroids where the chart's four corners meet (the map wraps, so it sits
+  // split across all four), as far from the Core as space goes. Its south face is only a
+  // picture of rock; inside, something felt floats beside a beacon.
+  const knot = [
+    'r.RRRR.',
+    'RRRBRRr',
+    '.RREvR.',
+    'rRvvvRr',
+    '.RRFFRR',
+    '..r..r.',
+  ];
+  const kx = 97;
+  const ky = 96;
+  const rocks = [0, 1, 2, 3, 4].map((k) => s.id(`rock:${k}`));
+  let beacon: P = { x: 0, y: 0 };
+  knot.forEach((row, j) =>
+    [...row].forEach((ch, i) => {
+      const x = wx(kx + i);
+      const y = wy(ky + j);
+      if (ch === 'R') g.set(x, y, s.id('rock:big'), true);
+      else if (ch === 'r') g.set(x, y, rocks[(i * 3 + j) % 5], true);
+      else if (ch === 'F') g.set(x, y, s.id('rock:fake'), true);
+      else if (ch === 'v') g.set(x, y, s.id('void:0'), true);
+      else if (ch === 'E') g.set(x, y, s.id('egg'), true);
+      else if (ch === 'B') {
+        g.set(x, y, s.id('signal:0'), true);
+        beacon = { x, y };
+      }
+    }),
+  );
+  const out = { x: wx(kx + 3), y: wy(ky + knot.length + 1) };
+  return { grid: g, arriveHome, dock, sectors, core: { x: cx - 1, y: cy - 1 }, coreArrive, knot: { beacon, out } };
 }
 
 export interface SectorResult {
