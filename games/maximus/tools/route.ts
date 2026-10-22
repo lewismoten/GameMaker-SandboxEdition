@@ -5,7 +5,7 @@
 // the chart's corners meet (the felt egg is in there): every route is planned with that
 // corner of the chart walled off.
 import { buildGame, type Built, type SceneInfo } from '../src/game';
-import { ITEM_BASE, MODULES, SCAN, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
+import { ITEM_BASE, MODULES, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
 import { SCENE } from '../src/universe';
 import { field, idx, seek, wrap, type P, type SeekOpts } from './drive';
 import type { Live } from './live';
@@ -131,7 +131,8 @@ export class Route {
   }
 
   /** Lands on world `scene` from its sector chart, takes its prize, and goes back up. */
-  async world(sector: number, scene: number): Promise<void> {
+  /** `heal`: top up at the spring from below this, to this (the last world before the Core fills right up). */
+  async world(sector: number, scene: number, heal?: { below: number; to: number }): Promise<void> {
     const d = this.d;
     const sc = SCENE.sector(sector);
     const link = this.links(sc).findIndex((l) => l.toScene === scene);
@@ -140,7 +141,7 @@ export class Route {
     const prize = info.shard !== undefined ? `the ${SHARDS[info.shard]} shard` : 'a module';
     this.chapter(scene, `${info.name}: ${info.shard !== undefined ? `The ${SHARDS[info.shard]} Shard` : `The ${MODULES[info.module!].name}`}`);
     this.status(`landed on ${info.name} for ${prize}`);
-    await this.inScene(scene, () => this.ground(info));
+    await this.inScene(scene, () => this.ground(info, heal));
     await d.enter(sc);
     this.status('back in orbit');
   }
@@ -222,7 +223,7 @@ export class Route {
   }
 
   /** On a world: the prize from its vault (credits for the door first if need be), a stop at the spring if hurt, back to the uplink. */
-  async ground(info: SceneInfo): Promise<void> {
+  async ground(info: SceneInfo, heal?: { below: number; to: number }): Promise<void> {
     const d = this.d;
     const scene = info.scene;
     const prize = info.shard !== undefined ? `the ${SHARDS[info.shard]} shard` : 'a module';
@@ -245,7 +246,7 @@ export class Route {
       if (!this.has(info)) throw new Error(`${info.name}: the prize was not taken`);
       this.status(`took ${prize}`);
     }
-    await this.heal(info);
+    await this.heal(info, heal?.below, heal?.to);
     if (d.dead) return;
     await seek(d, this.links(scene)[0].from, this.opts({ mode, tall, passable: this.gates(info), maxTicks: 8000 }));
   }
@@ -292,9 +293,9 @@ export class Route {
   }
 
   /**
-   * The Heart: across the hall to the Guardian, then through its plates with the Plasma Lance
-   * (Z; each plate takes two bolts): the row at head height from the floor, then the row above
-   * it from a hop, then over on the jets, and on to the exit.
+   * The Heart: across the hall to the Guardian, then through its plates at floor height (they
+   * crack and fall as the courier shoulders into them, a few hit points a touch, with a plasma
+   * bolt now and then), and on to the exit.
    */
   async heart(): Promise<void> {
     const d = this.d;
@@ -309,41 +310,31 @@ export class Route {
       d.release(k);
     };
     await this.inScene(SCENE.heart, async () => {
-      const wall = { x: 74, y: 55 };
+      const wall = { x: 73, y: 55 };
       if (d.pos.bx < 79) {
         await seek(d, wall, this.opts({ mode: 'walk', tall: 2, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 4000 }));
         if (d.dead) return;
         this.status(`at the Guardian (${this.plates().size} plates)`);
         for (let round = 0; round < 80 && d.pos.bx < 79 && !d.dead; round++) {
           const p = this.plates();
-          const row54 = [76, 77, 78].some((x) => p.has(`${x},54`));
-          const row53 = [76, 77, 78].some((x) => p.has(`${x},53`));
-          if (d.pos.bx > 75 || d.pos.bx < 72) {
-            await seek(d, wall, this.opts({ mode: 'walk', tall: 2, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 600 }));
+          // the plates at the courier's height (rows 54 and 55)
+          const low = [...p].map((c) => c.split(',').map(Number)).filter(([, y]) => y >= 54);
+          if (this.trace) this.log(`    guardian round ${round}: at ${d.pos.bx},${d.pos.by} plasma ${d.w.ci.meter[SEQ.plasma]} hp ${d.w.ci.hitpts} plates ${low.map((c) => c.join(',')).join(' ')}`);
+          if (!low.length) {
+            // a way through at floor level: walk it
+            d.press(SCAN.right);
+            for (let t = 0; t < 30 && d.pos.bx < 79 && !d.dead; t++) await d.tick();
+            d.release(SCAN.right);
             continue;
           }
-          // face the wall
-          await tap(SCAN.right, 2);
-          await wait(2);
-          if (row54) {
-            await tap(SCAN.z);
-            await wait(7);
-          } else if (row53) {
-            await tap(SCAN.up);
-            await wait(2);
-            await tap(SCAN.z);
-            await wait(8);
-          } else {
-            // through on the jets, under the row above
-            d.press(SCAN.right);
-            for (let t = 0; t < 40 && d.pos.bx < 79 && !d.dead; t++) {
-              if (t % 3 === 0) d.press(SCAN.up);
-              else d.release(SCAN.up);
-              await d.tick();
-            }
-            d.release(SCAN.up);
-            d.release(SCAN.right);
+          // the plates crack and fall as the courier shoulders into them (each touch costs
+          // hit points), with a plasma bolt now and then
+          d.press(SCAN.right);
+          for (let t = 0; t < 20 && d.pos.bx < 79 && !d.dead; t++) {
+            if (t === 10) await tap(SCAN.z);
+            else await d.tick();
           }
+          d.release(SCAN.right);
         }
         this.status(`past the Guardian at ${d.pos.bx},${d.pos.by}`);
       }
