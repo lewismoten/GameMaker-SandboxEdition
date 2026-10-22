@@ -140,7 +140,7 @@ registerEditor(['chr'], (host, project, file) => {
   const seqName = (i: number) => SEQUENCE_NAMES[i] ?? (chr.sequences[i].key ? `Key ${scanName(chr.sequences[i].key >> 8)}` : 'No key yet');
   const help = (text: string) => h('p', { class: 'chr-help' }, text);
   const group = (title: string, icon: string, ...body: (Node | null)[]) =>
-    h('section', { class: 'chr-group' }, h('h4', null, h('span', { class: 'chr-icon' }, icon), title), ...body);
+    h('section', { class: 'chr-group' }, h('h2', null, h('span', { class: 'chr-icon' }, icon), title), ...body);
 
   // ---------------------------------------------------------------- sounds
   const vocFor = (n: number) => {
@@ -287,7 +287,7 @@ registerEditor(['chr'], (host, project, file) => {
       h(
         'section',
         { class: 'chr-group chr-f2-card' },
-        h('h4', null, h('span', { class: 'chr-icon' }, '▦'), 'Starting inventory'),
+        h('h2', null, h('span', { class: 'chr-icon' }, '▦'), 'Starting inventory'),
         h('div', { class: 'chr-f2' }, inv, status),
         help('What the hero carries at the start, laid out as the F2 status screen shows it. Only blocks marked "can be picked up" fit here.'),
       ),
@@ -604,7 +604,7 @@ registerEditor(['chr'], (host, project, file) => {
         h(
           'div',
           null,
-          h('h3', null, `${current}. ${seqName(current)}`),
+          h('h2', null, `${current}. ${seqName(current)}`),
           help(own ? 'Your own move: it runs when its key is pressed or the joystick is pushed its way.' : BUILT_IN_HELP[current]),
         ),
       ),
@@ -624,7 +624,7 @@ registerEditor(['chr'], (host, project, file) => {
       h(
         'section',
         { class: 'chr-frames-wrap' },
-        h('h4', null, 'Frames ', h('span', { class: 'chr-muted' }, `${n} of ${MAXFRAME} · hover a block to turn or flip it, click it to change it`)),
+        h('h3', null, 'Frames ', h('span', { class: 'chr-muted' }, `${n} of ${MAXFRAME} · hover a block to turn or flip it, click it to change it`)),
         h('div', { class: 'chr-frames' }, ...frameCards, addFrame),
       ),
       h(
