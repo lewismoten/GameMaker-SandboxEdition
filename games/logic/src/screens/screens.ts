@@ -5,6 +5,7 @@
 // spot where it writes text is kept light and plain.
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
+import { matchColor } from '../../../../web/src/formats/palette';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
@@ -21,8 +22,8 @@ import { STYLES, eggPic } from '../blocks/tiles';
 const W = 320;
 const H = 200;
 
-export function gif(p: Pixels): Uint8Array {
-  return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: PAL.pal });
+export function gif(p: Pixels, palette: Uint8Array = PAL.pal): Uint8Array {
+  return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette });
 }
 
 export interface Art {
@@ -175,29 +176,44 @@ export function menuScreen(art: Art): Pixels {
 export function pageScreen(art: Art, title: string, seed: number, pose = 'down0'): Pixels {
   const p = new Pixels(W, H);
   traces(p, seed);
-  panel(p, 32, 30, 264, 152);
+  // The paper reaches past the text on every side, so its corner rings sit clear of the letters.
+  panel(p, 28, 26, 270, 158);
   outlined(p, Math.round(W / 2 - textWidth(title) / 2), 12, title, c('yellow', 3), c('ink', 0));
   bigWatt(p, art, 290, 2, 1, pose);
   bigWatt(p, art, 6, 2, 1, pose, true);
   return p;
 }
 
-/** High scores: PLAYGAME writes the whole table from the top (x=20..300) and "Hit any key" at y=192. */
+/**
+ * High scores: PLAYGAME writes the whole table from the top ("Top Ten Scores" at y 0, rows
+ * at x 20 that reach x 284 with a 22 letter name) and "Hit any key" at y 192, so the paper
+ * runs off the top and bottom of the screen and Watt waves from the top corners.
+ */
 export function scoresScreen(art: Art): Pixels {
   const p = new Pixels(W, H);
   traces(p, 21);
-  panel(p, 10, 0, 300, 200);
-  for (let i = 0; i < 4; i++) bigWatt(p, art, 264, 30 + i * 40, 2, i % 2 ? 'blink' : 'down0');
+  panel(p, 10, -8, 300, 216);
+  bigWatt(p, art, 22, 2, 1);
+  bigWatt(p, art, 278, 2, 1, 'blink');
   return p;
 }
 
-/** Load and save: "Load Game" at (124,10) and ten slots from y=40, 14 apart, x=73... */
-export function slotsScreen(art: Art): Pixels {
+/**
+ * Load and save: PLAYGAME writes ten names in yellow at x 80, y 40 + 14i (up to 20
+ * letters), its red marker at x 60, and its messages in blue at y 185 (x 40..272). Yellow
+ * vanishes on paper, so the names get a dark slot board, and the messages a paper strip.
+ */
+export function slotsScreen(art: Art, title: string): Pixels {
   const p = new Pixels(W, H);
   traces(p, 31);
-  panel(p, 50, 4, 220, 192);
-  bigWatt(p, art, 4, 150, 2);
-  bigWatt(p, art, 276, 150, 2, 'side0', true);
+  outlined(p, Math.round(W / 2 - textWidth(title) / 2), 12, title, c('yellow', 3), c('ink', 0));
+  p.rect(53, 34, 202, 146, c('ink', 0));
+  bevel(p, 50, 31, 202, 146, r('ink'), 1, 2);
+  p.rect(53, 34, 196, 140, c('pcb', 0));
+  p.rect(33, 182, 256, 18, c('ink', 0));
+  bevel(p, 30, 179, 256, 20, r('paper'), 3, 2);
+  bigWatt(p, art, 4, 136, 2);
+  bigWatt(p, art, 276, 136, 2, 'side0', true);
   return p;
 }
 
@@ -396,8 +412,8 @@ export function buildScreens(art: Art, boards: { b: Board; tiles: BlockSet }[]):
   out['credits.txt'] = dosText(CREDITS);
   out['credits.lst'] = serializeSlideList([{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]);
   out['scores.gif'] = gif(scoresScreen(art));
-  out['loadgame.gif'] = gif(slotsScreen(art));
-  out['savegame.gif'] = gif(slotsScreen(art));
+  out['loadgame.gif'] = gif(slotsScreen(art, 'LOAD A GAME'));
+  out['savegame.gif'] = gif(slotsScreen(art, 'SAVE THIS GAME'));
   out['home.fli'] = homeFli(art);
   out['won.gif'] = gif(pageScreen(art, 'HOME SWEET OHM!', 54, 'blink'));
   out['won.txt'] = dosText(WON);
@@ -409,7 +425,13 @@ export function buildScreens(art: Art, boards: { b: Board; tiles: BlockSet }[]):
   const fuse = pageScreen(art, 'THE LIVE WIRE EGG', 56, 'blink');
   const egg = eggPic(STYLES.garage, new Pixels(20, 20, CLEAR));
   fuse.blit(egg, 64, 4, CLEAR).blit(egg, 236, 4, CLEAR);
-  out['fusebox.gif'] = gif(fuse);
+  // The fuse box page's scene loads dark.pal (all black), so PLAYGAME's "MORE..." red
+  // matches palette index 0 there; this picture doesn't use index 0, so it is made red.
+  const fusePal = PAL.pal.slice();
+  const red = matchColor(PAL.pal, 63, 10, 10);
+  fusePal.set(PAL.pal.subarray(red * 3, red * 3 + 3), 0);
+  if (fuse.px.includes(0)) throw new Error('fusebox.gif uses palette index 0');
+  out['fusebox.gif'] = gif(fuse, fusePal);
   out['fusebox.txt'] = dosText(FUSEBOX);
   out['fusebox.lst'] = serializeSlideList([{ name: 'fusebox.gif', pause: 0 }, { name: 'fusebox.txt' }]);
   // Each board's card (its card scene's intro graphic); a new room starts with Watt riding

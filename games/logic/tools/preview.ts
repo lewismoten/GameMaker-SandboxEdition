@@ -50,7 +50,7 @@ if (process.env.PREVIEW_DIR) {
       ['menu', S.menuScreen(art)],
       ['page', S.pageScreen(art, 'THE STORY', 51)],
       ['scores', S.scoresScreen(art)],
-      ['slots', S.slotsScreen(art)],
+      ['slots', S.slotsScreen(art, 'LOAD A GAME')],
     ] as [string, Pixels][])
       writePng(join(dir, `screen-${name}.png`), p, PAL.pal, 2);
 }
