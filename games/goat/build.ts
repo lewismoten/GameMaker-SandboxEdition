@@ -81,7 +81,7 @@ built.forEach(({ l, m, start }, i) => {
   disk.put(`lvl${i + 1}.lst`, serializeSlideList([{ name: `card${i + 1}.fli`, pause: 3 }]));
   const [vx, vy] = l.view;
   const view = renderRegion(map, bbl, mb.blocks, mons, vx + ORIGIN, vy + ORIGIN, 16, 6, []);
-  const [sx, sy] = [start[0] - vx, start[1] - vy];
+  const [sx, sy] = [start[0] - ORIGIN - vx, start[1] - ORIGIN - vy];
   cards.push({ map: view, pal, start: sx >= 0 && sy >= 0 && sx < 16 && sy < 6 ? [sx * 20, 54 + sy * 20] : undefined });
   if (l.file === 'stable') {
     // the endings' picture: the line at the manger, her place open and then with straw under her
