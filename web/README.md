@@ -19,7 +19,8 @@ the original source in [`code/GM`](../code/GM). It can:
   pre-3.00 `.gam` files (they are converted the same way the 3.00 integrator did).
 - **Run the original games**: the sample "gameware" from the CD, the shareware games
   (`cd/sharware`, which shipped as compiled `.exe` + data files) or any game folder.
-  The player is a TypeScript port of `PLAYGAME.C`, not an emulator.
+  The player is a TypeScript port of `PLAYGAME.C`, not a DOS emulator: a shareware game's
+  `.exe` is never run; the port plays its data files.
 - **Respect shareware**: the gameware samples that came with Game-Maker can be edited
   and reused. The shareware games are copyrighted by their authors, so they are
   play-only, exactly as distributed on the CD, with each author's shareware notice
@@ -39,12 +40,20 @@ Graphics use an HTML canvas (an emulated 320×200, 256-color VGA mode 13h) and s
 uses the Web Audio API (an OPL2 FM synthesizer in an AudioWorklet for `.cmf` music,
 oscillators for PC speaker effects, and buffers for `.voc` samples).
 
+**Port, simulation or emulator?** Game-Maker and PLAYGAME are re-implemented in TypeScript
+from their C source; this is not a PC emulator, and no DOS or x86 code runs. The desk's
+PC (its DOS, BBSes and utilities) is a simulation written for this project. Some hardware
+*is* emulated, because the original code drove it directly: VGA mode 13h and its 6-bit
+palette DAC, the Yamaha YM3812 (OPL2) FM chip behind the Sound Blaster's music, the
+Sound Blaster's ADPCM sample decoding, and the PC timer's tick rates (including a slower
+PC's skipped ticks).
+
 ## The 1994 desk
 
 The site opens on a mid-90s desk; "Switch to today's web" (remembered per visitor)
-goes to the modern interface and its "💾 1994 desk" button comes back. Nothing on the
-desk is emulated: the DOS prompt, Game-Maker's menus and the BBS are drawn by this app
-to look the way they did, from the original source and files.
+goes to the modern interface and its "💾 1994 desk" button comes back. The desk's PC is
+a simulation, not a PC emulator: the DOS prompt, Game-Maker's menus and the BBS are
+written in TypeScript to look and act the way they did, from the original source and files.
 
 - **The PC** boots to a `C:\>` prompt (`DIR`, `CD`, `MD`, `TYPE`, `HELP`, …). Drive
   C: holds Game-Maker in `C:\GM`, with a folder per installed game (changes to them
