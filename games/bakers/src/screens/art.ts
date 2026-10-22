@@ -152,18 +152,21 @@ export function stand(p: Pixels, x: number, y: number, s: number, sign = "DOC LE
 }
 
 /** Index card paper: cream, a red header line and blue rules. */
-export function card(p: Pixels, x: number, y: number, w: number, h: number, tilt = 0): void {
+export function card(p: Pixels, x: number, y: number, w: number, h: number, tilt = 0, opts: { rule?: number; stain?: [number, number] | null } = {}): void {
   p.rect(x + 4, y + 4, w, h, c('dark', 0));
   for (let yy = 0; yy < h; yy++) {
     const dx = Math.round((tilt * yy) / h);
     p.rect(x + dx, y + yy, w, 1, c('paper', 4));
   }
-  p.rect(x, y + 18, w, 1, c('red', 3));
-  for (let yy = y + 30; yy < y + h - 4; yy += 11) p.rect(x + 2, yy, w - 4, 1, c('sky', 4));
+  const rule = opts.rule ?? 18;
+  p.rect(x, y + rule, w, 1, c('red', 3));
+  for (let yy = y + rule + 12; yy < y + h - 4; yy += 11) p.rect(x + 2, yy, w - 4, 1, c('sky', 4));
   p.frame(x, y, w, h, c('paper', 2));
-  // a ring stain (root beer)
-  p.ring(x + w - 28, y + h - 22, 12, c('rootbeer', 4));
-  p.ring(x + w - 28, y + h - 22, 11, c('paper', 3));
+  // a ring stain (root beer), by default near the bottom right corner
+  if (opts.stain === null) return;
+  const [sx, sy] = opts.stain ?? [x + w - 28, y + h - 22];
+  p.ring(sx, sy, 12, c('rootbeer', 4));
+  p.ring(sx, sy, 11, c('paper', 3));
 }
 
 /** A rubber stamp, red, at an angle, a little uneven. */

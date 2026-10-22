@@ -16,6 +16,7 @@ import { PAL, buildPalette, c } from '../art/pal';
 import type { TileSet } from '../blocks/tiles';
 import type { Room } from '../levels/room';
 import { RECIPE, ROOM_NAMES, THIRTEENTH } from '../recipe';
+import { saveSlots } from '../../../kit/saveSlots';
 import { H, W, bigLeo, blob, card, centered, chez, gradient, headline, kitchenWall, mainStreet, micro, mug, outlined, scaleBlit, stamp, stand, starCircle, bigTricorn, text } from './art';
 import { wrap } from './pages';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
@@ -71,8 +72,9 @@ export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pi
   kitchenWall(p, 186);
   p.rect(0, 0, W, 28, c('wood', 1));
   headline(p, 7, title, 2, c('yellow', 3), c('red', 2));
-  card(p, 28, 32, 264, 148);
-  p.rect(30, 34, 260, 2, c('paper', 4));
+  // PLAYGAME writes from y 40 to 175 (MORE... at the bottom right): the card's red rule sits
+  // above the first line, and no ring stain on these
+  card(p, 28, 30, 264, 150, 0, { rule: 6, stain: null });
   scaleBlit(p, who, 296, 162, 1);
   micro(p, 4, 192, 'BAKER FAMILY EYES ONLY', c('paper', 3));
   void seed;
@@ -82,16 +84,20 @@ export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pi
 export function scoresScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 190);
-  card(p, 10, 0, 300, 200);
+  // the ring stain goes right of the rows (x 20..285), below the last full one
+  card(p, 10, 0, 300, 200, 0, { stain: [296, 186] });
   return p;
 }
 
 export function slotsScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 176);
-  card(p, 50, 4, 220, 192);
-  scaleBlit(p, leo('down'), 4, 150, 2);
-  scaleBlit(p, corgi(0, true), 276, 160, 2);
+  // the names are written in yellow: each gets a dark strip, the blue message the card
+  // (kit/saveSlots.ts); the card is wide enough for the message from x 40
+  card(p, 30, 4, 262, 192, 0, { stain: [266, 20] });
+  saveSlots(p, c('ink', 0), c('paper', 4), c('rootbeer', 2));
+  scaleBlit(p, leo('down'), 4, 160, 1);
+  scaleBlit(p, corgi(0, true), 296, 176, 1);
   return p;
 }
 
