@@ -1,12 +1,14 @@
-// The 320x200 pictures: the title (the song's cover art), the menu, the story's night over Bethlehem, the level cards, the parchment behind text pages,
-// the high scores, the endings and the credits (with Doc Leo). Photos and art are dithered
-// into each picture's free palette entries (kit/photo.ts).
-import { Pixels, rng } from '../../../kit/pixels';
+// The 320x200 pictures: the title (the song's cover art), the menu, the story's night over
+// Bethlehem, the level cards, the parchment behind text pages, the high scores, the endings
+// and the credits (with Doc Leo). Photos and art are dithered into each picture's free
+// palette entries (kit/photo.ts).
+import { Pixels } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { blob, gradient, shadeAt } from '../../../snowbound/src/art/draw';
 import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
+import { bigStar as star, skyline as town, stars as nightStars } from './night';
 import { AUTHOR, CARDS } from './text';
 
 export interface ScreenExtras {
@@ -25,35 +27,9 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
   const save = (name: string, p: Pixels, palette = pal.pal) => (files[name] = gif(p, palette));
   const ink = c('ink', 0);
 
-  const stars = (p: Pixels, seed: number, h: number, n = 120) => {
-    const r = rng(seed);
-    for (let k = 0; k < n; k++) p.set(Math.floor(r() * W), Math.floor(r() * h), c('star', r() < 0.2 ? 2 : r() < 0.6 ? 1 : 0));
-  };
-  /** The star of Bethlehem: a bright cross of light. */
-  const bigStar = (p: Pixels, cx: number, cy: number, s: number) => {
-    for (let k = -s * 3; k <= s * 3; k++) {
-      const v = 1 - Math.abs(k) / (s * 3);
-      p.set(cx + k, cy, c('star', v > 0.6 ? 2 : v > 0.3 ? 1 : 0)).set(cx, cy + k, c('star', v > 0.6 ? 2 : v > 0.3 ? 1 : 0));
-    }
-    for (let k = -s; k <= s; k++) p.set(cx + k, cy + k, c('star', 1)).set(cx + k, cy - k, c('star', 1));
-    p.disc(cx, cy, s * 0.6, c('star', 2));
-  };
-  /** Bethlehem asleep on its hill, and the stable below with lamplight in the door. */
-  const skyline = (p: Pixels, ground: number) => {
-    for (let x = 0; x < W; x++) {
-      const h = ground - 18 - Math.round(Math.sin(x / 37) * 8 + Math.sin(x / 11) * 2);
-      for (let y = h; y < ground; y++) p.set(x, y, c('night', 1));
-    }
-    const r = rng(9);
-    for (let k = 0; k < 14; k++) {
-      const bx = 10 + Math.floor(r() * 290);
-      const bw = 12 + Math.floor(r() * 16);
-      const bh = 10 + Math.floor(r() * 14);
-      p.rect(bx, ground - 20 - bh, bw, bh + 4, c('night', 2));
-      if (r() < 0.6) p.rect(bx + 3 + Math.floor(r() * (bw - 6)), ground - 16 - bh + 4, 2, 3, c('glow', 2));
-    }
-    p.rect(0, ground, W, H - ground, c('night', 0));
-  };
+  const stars = (p: Pixels, seed: number, h: number, n = 120) => nightStars(p, pal, seed, h, n);
+  const bigStar = (p: Pixels, cx: number, cy: number, s: number) => star(p, pal, cx, cy, s);
+  const skyline = (p: Pixels, ground: number) => town(p, pal, ground);
 
   // ---------------- title: the song's cover, with the name over its sky
   {
