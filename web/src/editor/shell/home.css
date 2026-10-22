@@ -712,7 +712,7 @@ a.button.with-ico {
     align-items: stretch;
   }
 
-  /* four tabs as a 2 x 2 grid */
+  /* the tabs two to a row */
   .lib-cats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -741,7 +741,7 @@ a.button.with-ico {
 
 /* When the tabs, search and New game don't fit on one line, the tabs fill the first line
    and search with New game the second, both the library's full width. */
-@container library (max-width: 860px) {
+@container library (max-width: 960px) {
   .lib-bar {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -749,7 +749,7 @@ a.button.with-ico {
 
   .lib-cats {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .lib-cat {
@@ -765,7 +765,7 @@ a.button.with-ico {
   }
 }
 
-/* narrower still: the tabs as a 2 x 2 grid */
+/* narrower still: the tabs two to a row */
 @container library (max-width: 559px) {
   .lib-cats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
