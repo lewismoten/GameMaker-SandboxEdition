@@ -19,7 +19,7 @@ And every word fell out of every book.`,
   `You are MYSTERY ROBOT JOE, the night librarian: a tin robot with a bow tie, reading glasses he does not need, and a tally counter for a heart.
 
 Step into each book, pick its hundred words up off the floor, and put the story back together before the morning patrons arrive.`,
-  `Mind the shushers. They confiscate words.
+  `Mind the shushers. They hand out fines.
 
 Mind Gwinn, too. She is not allowed in the library, and she is in the library.
 
@@ -61,23 +61,21 @@ Walk into a door, a book or a page to use it.`,
  you carry 100. It takes
  them, opens, and the
  bookmark behind it puts
- the story back.
-
- EXIT (the back cover)
- leaves without finishing.`,
+ the story back. That is
+ the only way out.`,
   `SHUSHERS
  ...and scissors, static,
  clothes pegs and the like
- confiscate a word every
- moment they touch you.
+ cannot take your words.
+ They fine you instead: a
+ point off your score for
+ every moment they touch
+ you.
 
- Short of words? Step out
- the back cover and in
- again: a book reshelves
- its words as you leave.
- The words you carry stay
- with you. Spares count
- toward the next book.`,
+ Overdue fines are a
+ librarian's love
+ language. Stay out of
+ their way.`,
   `THE RESERVE STACKS
  The purple STAX door in
  the reading room leads
