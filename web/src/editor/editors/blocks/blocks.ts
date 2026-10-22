@@ -416,7 +416,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     if (kind === 'mbl') {
       clear(
         props,
-        h('h3', null, `Block ${current}: when a monster showing this picture touches the character`),
+        h('h2', null, `Block ${current}: when a monster showing this picture touches the character`),
         sides(
           'Solid (pushes the character)',
           () => b.solid,
@@ -429,7 +429,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
     clear(
       props,
-      h('h3', null, `Block ${current}`),
+      h('h2', null, `Block ${current}`),
       sides(
         'Solid sides',
         () => b.solid,
@@ -452,7 +452,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           'Goes into the inventory with the pick-up sequence',
         ),
       ),
-      h('h4', null, 'When touched'),
+      h('h3', null, 'When touched'),
       h(
         'div',
         { class: 'grid-fields' },
@@ -464,7 +464,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           'Set to this block’s own number to stay the same',
         ),
       ),
-      h('h4', null, 'Over time'),
+      h('h3', null, 'Over time'),
       h(
         'div',
         { class: 'grid-fields' },
