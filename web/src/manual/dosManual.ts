@@ -77,10 +77,10 @@ function pages(shots: GameShot[]): BookletPage[] {
         <tr><td>&nbsp;&nbsp;&nbsp;Troubleshooting a real PC</td><td>19</td></tr>
         <tr><td>5. The Game-Maker BBS</td><td>20</td></tr>
         <tr><td>6. Sharing Your Games</td><td>21</td></tr>
-        <tr><td>Appendix A. Specifications</td><td>22</td></tr>
-        <tr><td>Appendix B. Files and Folders</td><td>24</td></tr>
-        <tr><td>Appendix C. The Copy Check</td><td>25</td></tr>
-        <tr><td>Appendix D. About This Edition</td><td>26</td></tr>
+        <tr><td>Appendix A. Specifications</td><td>23</td></tr>
+        <tr><td>Appendix B. Files and Folders</td><td>25</td></tr>
+        <tr><td>Appendix C. The Copy Check</td><td>26</td></tr>
+        <tr><td>Appendix D. About This Edition</td><td>27</td></tr>
       </table>
       <div class="note"><strong>Welcome!</strong> It\u2019s as much fun to create computer games as it is to play them.
       Game-Maker lets you turn your game ideas into great games with no programming at all.
@@ -438,8 +438,11 @@ function pages(shots: GameShot[]): BookletPage[] {
         quarter.</li>
         <li><b>Selling games.</b> A commercial license, with a royalty per copy.</li>
       </ul>
-      <p>The license was printed on the sealed disk envelope, and opening it meant you agreed.</p>
-      <h3>Today</h3>
+      <p>The license was printed on the sealed disk envelope, and opening it meant you agreed.</p>`,
+    ),
+    page(
+      '6. Sharing Your Games',
+      `<h3>Today</h3>
       <p>In 2014 Andy Stone released Game-Maker\u2019s source code under the <b>MIT
       License</b>, and this edition keeps it. Use, copy, change, share or sell Game-Maker and the
       games you make with it, with no limit on people and nothing to pay: just keep the
@@ -462,17 +465,17 @@ function pages(shots: GameShot[]): BookletPage[] {
         <li>100 by 100 blocks (2000 by 2000 pixels), or a smaller area you choose. A VGA screen is 16 by 10 blocks.</li>
         <li>Scrolling in all directions; the right side joins the left and the top joins the bottom.</li>
         <li>255 colors plus \u201cclear\u201d. Doors take the character to other scenes.</li>
-      </ul>
-      <h3>Picture blocks</h3>
-      <ul>
-        <li>Solid on each side separately, or passable. Gravity in any of eight directions.</li>
-        <li>Objects can be picked up and put down. Touching a block can play a sound and change money, hit points, lives, ammunition and other counters.</li>
-        <li>Blocks can change with time or when touched, and can give birth to monsters.</li>
       </ul>`,
     ),
     page(
       'Appendix A. Specifications',
-      `<h3>Characters</h3>
+      `<h3>Picture blocks</h3>
+      <ul>
+        <li>Solid on each side separately, or passable. Gravity in any of eight directions.</li>
+        <li>Objects can be picked up and put down. Touching a block can play a sound and change money, hit points, lives, ammunition and other counters.</li>
+        <li>Blocks can change with time or when touched, and can give birth to monsters.</li>
+      </ul>
+      <h3>Characters</h3>
       <ul>
         <li>Twenty animation sequences of up to ten frames; one or two blocks in size.</li>
         <li>Inventory, and an initial inventory. An object or counter can enable a sequence.</li>
@@ -481,7 +484,7 @@ function pages(shots: GameShot[]): BookletPage[] {
       </ul>
       <h3>Monsters</h3>
       <ul>
-        <li>Up to 60 monster types and 200 monsters per scene, 20 frames each.</li>
+        <li>Up to 64 monsters in a set, 20 frames each; up to 200 monsters per scene.</li>
         <li>Move toward or away from the character, at random, along a path, or attack along a path when in range.</li>
         <li>Live until killed, until the end of a path, for a set time, or forever. Can give birth to another monster when they die.</li>
       </ul>
