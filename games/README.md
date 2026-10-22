@@ -216,7 +216,8 @@ for four seconds in every twenty-four.
 **Third Goat from the Left** (`goat`). Not a Sandbox Software game: a 1995 shareware game by The Bard
 of Bizarre (Lewis as his hobo clown Doc Leo), downloaded from The Sofa BBS's file library, so it is
 listed with the shareware (`isSandboxGame` in web/src/project/files.ts) and gets no box, floppy or
-felt egg. You are the goat nobody painted on the holy night, from Lewis's song (recorded with
+felt egg. Its about.json says `"series": "bizarre"`: once four or more of the Bard's games are in the
+catalog they leave Shareware for a Bizarre tab of their own (web/src/project/bizarre.ts). You are the goat nobody painted on the holy night, from Lewis's song (recorded with
 Riffusion). Anything a goat eats is a solid block that turns to floor when pushed (hay and thistles fill
 the scream's counter), wool is counter 20 and the empty place third from the left in the line at the
 manger only takes five, and the fainting cousins are solid monsters a scream (power 120) knocks into a

@@ -47,6 +47,8 @@ export interface CdCatalogEntry {
   price?: string;
   /** Original games (../games): the disk label, box art and manual, from about.json. */
   original?: OriginalExtras;
+  /** Original games: about.json "series" ("bizarre": The Bard of Bizarre's games, src/project/bizarre.ts). */
+  series?: string;
   /** games/catalog.json: the entry has a games/details/<id>.json (see slimCatalog). */
   details?: boolean;
   /** Original games: the site path of the game's walkthrough (../games/<id>/walkthrough.json, src/walkthrough). */
@@ -277,7 +279,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const base = join(root, dir);
     const diskDir = join(base, 'disk');
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
-    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string; secret?: boolean };
+    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     const id = dir.toLowerCase();
@@ -315,6 +317,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       notice: notice.map((p) => dosText(readFileSync(p))).join('\n\n----\n\n'),
       gamCrc: crc32(gamBytes),
       original: { label: about.label, box: about.box, sound: about.sound, manual, printables },
+      ...(about.series ? { series: about.series } : {}),
       ...(walkthrough ? { walkthrough } : {}),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);

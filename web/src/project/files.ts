@@ -156,6 +156,8 @@ export interface CatalogEntry {
   sizes?: number[];
   /** Original games made for this project: label, box art, manual, sound card. */
   original?: OriginalExtras;
+  /** Original games: a series of their own ("bizarre": The Bard of Bizarre's, see bizarre.ts). */
+  series?: string;
   /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
   gz?: boolean;
   /** From games/catalog.json: its notice, manual and printables are in games/details/<id>.json (withDetails). */
