@@ -293,9 +293,9 @@ export class Route {
   }
 
   /**
-   * The Heart: across the hall to the Guardian, then through its plates at floor height (they
-   * crack and fall as the courier shoulders into them, a few hit points a touch, with a plasma
-   * bolt now and then), and on to the exit.
+   * The Heart: across the hall to the Guardian, lance the plates in the row it fires along,
+   * then through what is left at floor height (plates crack and fall as the courier shoulders
+   * into them, a few hit points a touch, with a plasma bolt now and then), and on to the exit.
    */
   async heart(): Promise<void> {
     const d = this.d;
@@ -315,6 +315,16 @@ export class Route {
         await seek(d, wall, this.opts({ mode: 'walk', tall: 2, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 4000 }));
         if (d.dead) return;
         this.status(`at the Guardian (${this.plates().size} plates)`);
+        // the Plasma Lance first: two bolts crack and break each plate in the row the
+        // courier fires along (row 54); what is left at floor height it shoulders through
+        await tap(SCAN.right);
+        for (let shot = 0; shot < 12 && !d.dead && d.link < 0; shot++) {
+          const row = [...this.plates()].filter((c) => c.endsWith(',54'));
+          if (!row.length || d.w.ci.meter[SEQ.plasma] <= 0) break;
+          await tap(SCAN.z);
+          await wait(7);
+        }
+        this.status(`lanced the Guardian (${this.plates().size} plates left)`);
         for (let round = 0; round < 80 && d.pos.bx < 79 && !d.dead; round++) {
           const p = this.plates();
           // the plates at the courier's height (rows 54 and 55)

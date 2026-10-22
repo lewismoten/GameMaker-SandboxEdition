@@ -3,7 +3,7 @@
 // star-shards sector by sector up the jump rings (and the Plasma Lance from Little Hollow for
 // the Guardian), the Maelstrom, the Citadel and the Heart - and games/kit/walkthrough.ts plays
 // the keys it pressed back from the start to check that they reach the ending.
-//   cd web && npx vite-node ../games/maximus/tools/walkthrough.ts
+//   cd web && npx vite-node ../games/maximus/tools/walkthrough.ts   (SEED=n tries another monster seed)
 import { SECTORS, SCENE } from '../src/universe';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import type { Walkthrough } from '../../../web/src/walkthrough/format';
@@ -20,7 +20,7 @@ const PLAN: { sector: number; worlds: string[] }[] = [
   { sector: 4, worlds: ['Ghost Station', 'Hollow Sun'] },
 ];
 
-const rand: Walkthrough['rand'] = { seed: 1, per: 'scene' };
+const rand: Walkthrough['rand'] = { seed: Number(process.env.SEED ?? 2), per: 'scene' };
 const live = new Live({ version: 1, game: 'maximus', rand, segments: [], chapters: [], timeline: { fps: 60, frames: 0, chapters: [] } });
 live.log = () => {};
 let route!: Route;
