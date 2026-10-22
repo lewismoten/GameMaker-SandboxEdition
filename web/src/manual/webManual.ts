@@ -24,9 +24,16 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     as you like; <b>Empty</b> gives you just a title and an ending. <b>Open game folder…</b>, <b>Open files or
     .zip…</b>, or dropping files on the page imports an original game: the folder with its
     <code>.GAM</code>, <code>.MAP</code>, <code>.BBL</code> and other files.</p>
-    <h3>Sample games</h3>
+    <p>Games you open from elsewhere are listed under <b>Imported</b>; the rest are under
+    <b>My games</b>.</p>
+    <h3>Gameware</h3>
     <p>The free “gameware” from the Game-Maker CD. <b>▶ Play</b> plays it;
-    <b>Edit a copy</b> adds a copy to your games.</p>
+    <b>Edit a copy</b> adds a copy to your games. <b>Demo video</b> shows a game’s demo with its
+    music and sound, and can save it as a video.</p>
+    <h3>Sandbox</h3>
+    <p>New games made for this edition in the original formats, so they also play in DOS. Each
+    has a <b>Manual</b> to read or print, and <b>Walkthrough</b> plays the whole game from start
+    to finish, with chapters to jump to and an MP4 to download.</p>
     <h3>Shareware</h3>
     <p>Games other people made and shared as shareware. They are play-only here, in their
     shareware form. <b>Shareware notice</b> shows the author’s terms. If you enjoy one,
@@ -47,6 +54,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       you see its picture; click it to choose another, or ✎ to edit it.</li>
       <li><b>+ Add level scene</b> starts a level with the last level’s palette, blocks,
       monsters and hero, on a fresh map of its own.</li>
+      <li><b>↶ Undo</b> and <b>↷ Redo</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd> and
+      <kbd>Ctrl</kbd>+<kbd>Y</kbd>) take back changes in the editor you are in.</li>
     </ul>`,
   ],
   [
