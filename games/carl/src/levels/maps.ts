@@ -333,7 +333,7 @@ export function theAux(book: BlockBook): Level {
   couch(m, 7, true);
   m.set(19, 3, 'crumbW').set(26, 2, 'crumbW');
   // the coffee table: burning sage and the oil diffuser
-  m.row(9, 20, 26, 'tableTop').set(20, 10, 'tableLeg').set(26, 10, 'tableLeg').set(21, 8, 'smudge').set(24, 8, 'diffuser').set(26, 8, 'chips');
+  m.row(9, 20, 26, 'tableTop').set(20, 10, 'tableLeg').set(26, 10, 'tableLeg').set(21, 8, 'smudge').set(24, 8, 'diffuser').set(26, 8, 'crumbP');
   m.set(29, 10, 'sideTable').set(29, 9, 'candle');
   // the wet floor, the man mopping it, the bucket
   m.row(11, 31, 45, 'wet');

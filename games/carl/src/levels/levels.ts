@@ -24,7 +24,7 @@ export interface LevelDef {
 
 export const LEVELS: LevelDef[] = [
   { file: 'couch', desc: 'The Couch', set: 'house', light: 'day', build: theCouch, snd: 'house', song: 'couch', mons: {}, view: [20, 5] },
-  { file: 'walls', desc: 'The Walls', set: 'house', light: 'kitchen', build: theWalls, snd: 'house', song: 'walls', mons: { wind: 16 }, view: [18, 3] },
+  { file: 'walls', desc: 'The Walls', set: 'house', light: 'kitchen', build: theWalls, snd: 'kitchen', song: 'walls', mons: { wind: 16 }, view: [18, 3] },
   { file: 'bed', desc: 'Joins Me in Bed', set: 'house', light: 'night', build: theBed, snd: 'bed', song: 'bed', mons: { wind: 24 }, view: [10, 5] },
   { file: 'window', desc: 'The Open Window', set: 'yard', light: 'yard', build: theWindow, snd: 'yard', song: 'window', mons: { patrol: 6 }, view: [0, 3] },
   { file: 'wild', desc: 'Carl Has Seen Things', set: 'yard', light: 'doc', build: theWild, snd: 'wild', song: 'wild', mons: { patrol: 6 }, view: [13, 6] },
