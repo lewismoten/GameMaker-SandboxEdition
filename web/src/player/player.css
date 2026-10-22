@@ -157,11 +157,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #8a90c8;
+  /* see-through backgrounds, the labels kept solid (readable over any picture) */
+  border: 2px solid rgb(138 144 200 / 0.6);
   border-bottom-width: 4px;
   border-radius: 12px;
-  background: linear-gradient(#2c3160, #1b1e3c);
+  background: rgb(27 30 60 / var(--touch-alpha));
   color: #fff;
+  text-shadow: 0 1px 2px #000;
   font:
     700 15px/1 system-ui,
     sans-serif;
@@ -174,19 +176,15 @@
   min-width: 56px;
   min-height: 56px;
   padding: 0 12px;
-  opacity: var(--touch-alpha);
 }
 
 .gm-touch .down {
-  background: linear-gradient(#ffe25a, #d8a800);
+  background: rgb(255 214 40 / 0.9);
   border-color: #fff3a6;
   color: #1b1e3c;
+  text-shadow: none;
   transform: translateY(2px);
   border-bottom-width: 2px;
-}
-
-.gm-touch button.down {
-  opacity: 0.92;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -208,15 +206,15 @@
   height: var(--pad);
   padding: 6px;
   border-radius: 50%;
-  background: radial-gradient(circle, #23264a 0 30%, #14162c 31% 100%);
-  border: 2px solid #5a5f99;
+  background: radial-gradient(circle, rgb(35 38 74 / var(--touch-alpha)) 0 30%, rgb(20 22 44 / var(--touch-alpha)) 31% 100%);
+  border: 2px solid rgb(138 144 200 / 0.5);
   box-sizing: border-box;
   touch-action: none;
-  opacity: var(--touch-alpha);
 }
 
+/* a thumb on the pad: the pad grows clearer */
 .gm-pad:has(.down) {
-  opacity: 0.85;
+  --touch-alpha: 0.8;
 }
 
 .gm-pad .gm-arrow {
@@ -252,8 +250,8 @@
   min-width: 64px;
   min-height: 64px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #c0303a, #6b0f17);
-  border-color: #ff8a90;
+  background: radial-gradient(circle at 35% 30%, rgb(192 48 58 / var(--touch-alpha)), rgb(107 15 23 / var(--touch-alpha)));
+  border-color: rgb(255 138 144 / 0.7);
   font-size: 13px;
 }
 
@@ -273,14 +271,13 @@
   padding: 0 10px;
   font-size: 13px;
   border-radius: 20px;
-  background: #24263a;
-  border-color: #8a8dac;
+  background: rgb(36 38 58 / var(--touch-alpha));
+  border-color: rgb(138 141 172 / 0.6);
   border-bottom-width: 2px;
 }
 
-/* the switch that hides the controls: always there, a little clearer than the rest */
+/* the switch that hides the controls: always there */
 .gm-sys .gm-touch-toggle {
-  --touch-alpha: 0.6;
   font-size: 18px;
 }
 

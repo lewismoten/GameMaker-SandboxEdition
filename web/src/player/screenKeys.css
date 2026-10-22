@@ -177,13 +177,15 @@
 
 .gm-player.has-touch .gm-osk-key {
   min-height: 36px;
-  opacity: 0.72;
+  background: rgb(27 30 60 / 0.55);
+  text-shadow: 0 1px 2px #000;
 }
 
 .gm-player.has-touch .gm-osk-key.down,
 .gm-player.has-touch .gm-osk-key[aria-pressed='true'],
 .gm-player.has-touch .gm-osk-more[aria-expanded='true'] {
-  opacity: 0.95;
+  background: rgb(255 214 40 / 0.92);
+  text-shadow: none;
 }
 
 .gm-player.has-touch.touch-landscape .gm-osk-key {
