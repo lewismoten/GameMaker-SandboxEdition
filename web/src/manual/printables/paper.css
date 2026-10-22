@@ -812,3 +812,43 @@
     line-height: 1;
   }
 }
+
+/* a screen shot enlarged over the page (crisp.ts) */
+.gmb-pages figure img.crisp {
+  cursor: zoom-in;
+  max-width: none;
+  margin-inline: auto;
+}
+
+.gmb-pages figure img.crisp:focus-visible {
+  outline: 3px solid #f2b632;
+  outline-offset: 2px;
+}
+
+.gmb-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(8, 5, 2, 0.9);
+  cursor: zoom-out;
+}
+
+.gmb-zoom img {
+  display: block;
+  max-width: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.gmb-zoom p {
+  margin: 0;
+  font:
+    italic 15px Georgia,
+    serif;
+  text-align: center;
+}

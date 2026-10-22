@@ -7,6 +7,7 @@ import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
 import { RedFilm, RedLens } from './redFilm';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
+import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
 
 /** A thing in the box. */
 export interface BoxItem {
@@ -81,6 +82,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
             ? 'Back cover'
             : `Page ${shown.join('–')} of ${total - 2}${shown[0] === stapled[0] ? ' · center' : ''}`;
       stage.replaceChildren(spread, nav);
+      crispShots(spread);
     };
     const go = (dir: 1 | -1) => {
       if (current !== 'manual') return;
@@ -206,11 +208,13 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       resolve();
     };
     const onKey = (e: KeyboardEvent) => {
+      if (zoomOpen()) return; // an enlarged screen shot takes the keys
       e.stopImmediatePropagation(); // not for the PC underneath
       if (e.key === 'ArrowRight' || e.key === 'PageDown') go(1);
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(-1);
       else if (e.key === 'Home') ((at = 0), current === 'manual' && showManual());
       else if (e.key === 'Escape') menu.hidden ? close() : (menu.hidden = true);
+      else if ((e.key === 'Enter' || e.key === ' ') && isShot(e.target)) enlarge(e.target);
       else return;
       e.preventDefault();
     };
