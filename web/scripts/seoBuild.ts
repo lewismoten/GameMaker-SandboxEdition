@@ -38,6 +38,7 @@ import {
   SITE_URL,
 } from '../src/seo/site';
 import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
+import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
 export const HEAD_MARK = '<!--SEO:HEAD-->';
 export const BODY_MARK = '<!--SEO:BODY-->';
@@ -55,8 +56,11 @@ const pageHref = (g: CdCatalogEntry) => `./${gamePage(g.id)}`;
 
 function groups(catalog: CdCatalogEntry[]): [string, string, CdCatalogEntry[]][] {
   const games = playable(catalog);
+  // The Bard of Bizarre's games: a group of their own once there are enough (src/project/bizarre.ts)
+  const bizarre = hasBizarreTab(games) ? games.filter(isBizarreGame) : [];
   return [
-    ['New games', 'Made for this project with Game-Maker, released as shareware.', games.filter((g) => g.original)],
+    ['New games', 'Made for this project with Game-Maker, released as shareware.', games.filter((g) => g.original && !bizarre.includes(g))],
+    ['Bizarre', 'Songs by The Bard of Bizarre (Lewis Moten as his hobo clown Doc Leo), turned into games.', bizarre],
     [
       'Sample games',
       'The free games that came with Game-Maker 3.0 — open them in the editor to see how they work.',
