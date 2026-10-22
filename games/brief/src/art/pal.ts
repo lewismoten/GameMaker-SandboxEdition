@@ -32,6 +32,8 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
 
 export interface Pal {
   pal: Uint8Array;
+  /** Palette entries in use (the rest are free, e.g. for color cycling). */
+  used: number;
   r(name: string): number[];
   c(name: string, k: number): number;
   /** The exact inks PLAYGAME matches for menus and text pages. */
@@ -51,6 +53,7 @@ export function buildPalette(): Pal {
   for (const [name, n, a, b, m] of RAMPS) p.ramp(name, n, a, b, m);
   return {
     pal: p.pal,
+    used: p.used,
     r: (name) => p.get(name),
     c: (name, k) => {
       const r = p.get(name);
