@@ -45,7 +45,8 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   // ---- the Owner's Guide -------------------------------------------------------------
   const pageTitle = h('span', { class: 'rs-sub' });
   const askLine = h('p', { class: 'rs-ask' });
-  const pageView = h('div', { class: 'rs-page', 'aria-live': 'polite' });
+  // focusable so a keyboard can scroll it when the page is taller than the sheet
+  const pageView = h('div', { class: 'rs-page', tabIndex: 0, role: 'region', 'aria-label': 'Guide page' });
   const prevBtn = h('button', { type: 'button', class: 'rs-btn', ...keepFocus, onclick: () => turn(-1) }, '‹ Back');
   const nextBtn = h('button', { type: 'button', class: 'rs-btn', ...keepFocus, onclick: () => turn(1) }, 'Next ›');
   const markBtn = h('button', { type: 'button', class: 'rs-btn', 'aria-pressed': 'false', ...keepFocus, onclick: () => toggleMark() }, 'Show the paragraph');
@@ -74,6 +75,9 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     pageNo = Math.max(1, Math.min(last, pageNo));
     const el = guide.draw(guide.pages[pageNo], pageNo);
     el.setAttribute('aria-label', `Page ${pageNo}`);
+    // the page's own headings, numbered on from this panel's, without skipping a level
+    const levels = [...new Set([...el.querySelectorAll('h1, h2, h3, h4')].map((x) => Number(x.tagName[1])))].sort();
+    el.querySelectorAll('h1, h2, h3, h4').forEach((x) => x.setAttribute('aria-level', String(3 + levels.indexOf(Number(x.tagName[1])))));
     const q = ask?.kind === 'question' ? ask : undefined;
     if (q && mark && pageNo === q.page) el.querySelectorAll('.mp-flow p')[q.paragraph - 1]?.classList.add('rs-mark');
     clear(pageView, el);

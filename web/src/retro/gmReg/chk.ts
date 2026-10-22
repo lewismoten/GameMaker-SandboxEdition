@@ -69,7 +69,10 @@ async function regi(h: RetroHost): Promise<void> {
   s.write(0, 0, TITLEATTR, GMTOPBAR);
   s.write(0, 1, BARATTR, MAIN_BAR);
   const card = offerCard(h, { kind: 'register' });
-  const complete = () => errorBox(h, 'REGISTRATION   COMPLETE', 'Hit any key to start GM');
+  const complete = () => {
+    card.done(); // the card has done its job: off the desk while GM says so
+    return errorBox(h, 'REGISTRATION   COMPLETE', 'Hit any key to start GM');
+  };
   try {
     const name = await qWindow(h, 5, 14, 30, 'Enter your name (Exactly as on card): ');
     if (card.applied()) return void (await complete());
