@@ -168,7 +168,7 @@ export function menuScreen(): Uint8Array {
   // the menu panel (Game-Maker writes the menu here in blue)
   c.panel(62, 94, 196, 78, C('ice')[7], C('blue')[2], WHITE);
   c.rect(64, 96, 192, 1, C('ice')[6]);
-  c.sprite(drawCourier({ arm: [150, 170], backArm: [5, 10] }), 270, 112, 2);
+  c.sprite(drawCourier({ arm: [150, 170], backArm: [5, 10] }), 278, 112, 2);
   c.center(184, 'ARROWS TO CHOOSE, ENTER TO GO', C('grey')[4], { shadow: 0 });
   return gif(c);
 }
@@ -302,8 +302,10 @@ export function pageScreen(title: string, seed: number, art: (c: Canvas) => void
 export function hiscoreScreen(): Uint8Array {
   const c = new Canvas();
   spaceBg(c, 61);
+  // Black bands under "Top Ten Scores" (y 0) and "Hit any key" (y 192), which PLAYGAME writes in red.
   c.rect(0, 0, 320, 10, 0);
-  c.panel(10, 20, 300, 170, C('ice')[7], C('blue')[2], WHITE);
+  c.rect(0, 189, 320, 11, 0);
+  c.panel(10, 20, 300, 168, C('ice')[7], C('blue')[2], WHITE);
   for (let k = 0; k < 10; k++) c.sprite(drawShard(k).crop(5, 0, 10, 20), 292, 24 + k * 16, 1);
   return gif(c);
 }
@@ -314,6 +316,8 @@ export function slotScreen(title: string, seed: number): Uint8Array {
   c.center(8, title, C('yellow').slice(2).reverse(), { scale: 2, outline: 0 });
   c.panel(50, 30, 250, 150, C('space')[1], C('blue')[3]);
   for (let i = 0; i < 10; i++) c.rect(76, 38 + i * 14, 200, 11, C('space')[2]);
+  // PLAYGAME writes "Game Saved!" / "This game has not been saved!" in blue at y 185, x 40..272.
+  c.panel(34, 181, 252, 18, C('ice')[7], C('blue')[2], WHITE);
   return gif(c);
 }
 
