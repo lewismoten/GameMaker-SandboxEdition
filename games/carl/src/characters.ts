@@ -194,7 +194,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   // something it leaves a whirl that makes whatever else is there miss too
   set[MON.whoosh] = mon(anim('whoosh0', 'whoosh1', 1), { power: 160, thru: 0, end: 16, towards: 5, newmon: MON.whirl });
   set[MON.whirl] = mon(anim('whoosh1', 'whoosh0', 1), { power: 160, thru: 0, end: 8 });
-  set[MON.buzz] = mon(anim('buzz0', 'buzz1', 2), { power: 110, thru: 1, end: 16, towards: 6 });
+  set[MON.buzz] = mon(anim('buzz0', 'buzz1', 2), { power: 110, thru: 0, end: 16, towards: 6 });
   return set;
 }
 

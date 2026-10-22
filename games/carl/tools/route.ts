@@ -1,5 +1,5 @@
 // The way through the game, as orders for the bot.
-import { EARS, HOURS, SMILES, SNACKS } from '../src/ids';
+import { EARS, HOURS, MON, SMILES, SNACKS } from '../src/ids';
 import { Bot } from './bot';
 
 const expect = (bot: Bot, scene: number, what: string) => {
@@ -181,6 +181,37 @@ export async function theWalls(bot: Bot): Promise<void> {
   );
   need(bot, SMILES, 6, 'smiles');
   await carefully(bot, 'the kitchen door', 10, () => leave(bot, bot.fly(50, 9, 'the door'), 'the door'));
+}
+
+/** Up to a point, a nudge `dir` (so the buzz goes that way), and a buzz. */
+async function buzzAt(bot: Bot, at: Pt, dir: 'left' | 'right' | 'up' | 'down'): Promise<void> {
+  await go(bot, [at], 'buzzing spot');
+  await must(bot, bot.hold(dir, 1), 'face');
+  await must(bot, bot.tap('b', 14), 'buzz');
+}
+
+/** 3. In bed: buzz his ear, then Teddy's twice, flying into each as it twitches; the window. */
+export async function theBed(bot: Bot): Promise<void> {
+  expect(bot, 4, 'the bed');
+  await carefully(bot, 'his ear', 10, async () => {
+    await go(bot, [[9, 3], [16, 4]], 'over his head');
+    await buzzAt(bot, [16, 4], 'down');
+    await go(bot, [[16, 7]], 'into his ear');
+    need(bot, EARS, 1, 'ears');
+    await go(bot, [[16, 2]], 'back up');
+  });
+  await carefully(bot, 'over the bed', 10, () => go(bot, [[24, 2], [33, 2], [38, 2], [38, 9], [39, 9]], 'to Teddy'));
+  for (const n of [2, 3])
+    await carefully(bot, `Teddy's ear (${n})`, 10, async () => {
+      for (let t = 0; t < 40 && !bot.sim.w.mm.some((m) => m.monnum === MON.dogEar); t++) await must(bot, bot.wait(6), 'his ear asleep');
+      await buzzAt(bot, [39, 9], 'left');
+      await go(bot, [[36, 9], [39, 9]], "into Teddy's ear");
+      need(bot, EARS, n, 'ears');
+    });
+  await carefully(bot, 'the window', 10, async () => {
+    await go(bot, [[42, 8], [43, 4]], 'the window');
+    await leave(bot, bot.fly(45, 4, 'out'), 'the window');
+  });
 }
 
 export const counts = { snacks: (b: Bot) => count(b, SNACKS), smiles: (b: Bot) => count(b, SMILES), ears: (b: Bot) => count(b, EARS), hours: (b: Bot) => count(b, HOURS) };
