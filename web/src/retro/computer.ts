@@ -225,6 +225,26 @@ export class Computer extends ComputerFolders {
     return !this.busy;
   }
 
+  /** A game is playing on the monitor. */
+  get gamePlaying(): boolean {
+    return !!this.player;
+  }
+
+  /** Set while restartGame stops the game, so it starts again instead of going back to DOS. */
+  private restarting = false;
+
+  /**
+   * Starts the game playing over from the beginning, as if you'd quit it and run it again:
+   * it looks for the Sound Blaster card again as it starts. False if no game is playing.
+   */
+  restartGame(): boolean {
+    const p = this.player;
+    if (!p || this.restarting) return false;
+    this.restarting = true;
+    p.stop();
+    return true;
+  }
+
   playGame(
     files: GameFiles,
     gam: string,
@@ -240,7 +260,7 @@ export class Computer extends ComputerFolders {
     this.opts.onGame?.({ files, gam, title });
     // the game player (the engine) loads with the first game played (the desk fetches it ahead)
     return new Promise<void>((resolve) => {
-      void import("../player/player").then(({ mountPlayer }) => (this.player = mountPlayer(host, files, gam, {
+      const mount = () => void import("../player/player").then(({ mountPlayer }) => (this.player = mountPlayer(host, files, gam, {
         title,
         notice,
         autoStart: true,
@@ -253,6 +273,13 @@ export class Computer extends ComputerFolders {
         onFileWrite: saveId ? (name, bytes) => void writeSaveFile(saveId, name, bytes) : undefined,
         onExit: () => {
           this.player = undefined;
+          if (this.restarting) {
+            // restartGame: the same game, from the start
+            this.restarting = false;
+            clear(host);
+            mount();
+            return;
+          }
           this.opts.onGame?.(undefined);
           clear(this.layer);
           this.keys.enabled = true;
@@ -260,6 +287,7 @@ export class Computer extends ComputerFolders {
           resolve();
         },
       })));
+      mount();
     });
   }
 
