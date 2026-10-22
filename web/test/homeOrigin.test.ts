@@ -38,3 +38,20 @@ describe('copyName', async () => {
     expect(copyName('Nebula copy 2', ['Nebula', 'Nebula copy', 'Nebula copy 2'])).toBe('Nebula copy 3');
   });
 });
+
+describe('imported games', async () => {
+  const store = new Map<string, string>();
+  (globalThis as { localStorage?: unknown }).localStorage ??= {
+    getItem: (k: string) => store.get(k) ?? null,
+    setItem: (k: string, v: string) => void store.set(k, v),
+  };
+  const { isImported, setImported } = await import('../src/editor/shell/homeOrigin');
+  it('lists a game under My games until it is marked imported, and back again', () => {
+    expect(isImported('a')).toBe(false);
+    setImported('a', true);
+    expect(isImported('a')).toBe(true);
+    expect(isImported('b')).toBe(false);
+    setImported('a', false);
+    expect(isImported('a')).toBe(false);
+  });
+});

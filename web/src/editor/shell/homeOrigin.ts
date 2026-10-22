@@ -39,6 +39,37 @@ export function originId(id: string): string | undefined {
   return read()[id];
 }
 
+// Games brought in from outside (a folder, files, a .zip or a one-page export, likely made by
+// someone else) are listed under Imported rather than My games. Remembered here, beside the
+// origins; a game with no mark (made new, copied from the catalog, or imported before this was
+// remembered) stays in My games.
+const SOURCE_KEY = 'gm-project-source';
+
+function readSources(): Record<string, 'imported'> {
+  try {
+    return JSON.parse(localStorage.getItem(SOURCE_KEY) ?? '{}') as Record<string, 'imported'>;
+  } catch {
+    return {};
+  }
+}
+
+/** Marks project `id` as imported (true) or as one of yours (false). */
+export function setImported(id: string, imported: boolean): void {
+  const map = readSources();
+  if (!!map[id] === imported) return;
+  if (imported) map[id] = 'imported';
+  else delete map[id];
+  try {
+    localStorage.setItem(SOURCE_KEY, JSON.stringify(map));
+  } catch {
+    /* not remembered: the game is then listed in My games */
+  }
+}
+
+export function isImported(id: string): boolean {
+  return readSources()[id] === 'imported';
+}
+
 /**
  * The catalog game a project came from: the one it was copied from here, or else the one
  * finished game (not shareware) whose .gam file has the same name, as a copy made before
