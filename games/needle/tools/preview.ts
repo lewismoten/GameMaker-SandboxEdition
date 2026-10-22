@@ -8,6 +8,10 @@ import { join } from 'node:path';
 import { blockSheet, writePng } from '../../kit/png';
 import { Pixels } from '../../kit/pixels';
 import { buildPalette } from '../src/art/pal';
+import { renderRegion } from '../../snowbound/src/art/render';
+import { buildMonsters } from '../src/characters';
+import { LEVELS } from '../src/levels/levels';
+import { ORIGIN } from '../src/levels/maps';
 import { buildCharBlocks, buildMonsterBlocks, FORMS, type Form } from '../src/sprites/sprites';
 
 const out = process.argv[2] ?? join(tmpdir(), 'needle-preview');
@@ -34,4 +38,19 @@ forms.forEach((form, row) => {
   });
 });
 writePng(join(out, 'camel.png'), sheet, day.pal, 4);
+for (const l of LEVELS) {
+  const pal = buildPalette(l.light);
+  const kit = l.blocks(pal);
+  const { m, start, size } = l.build(kit.book);
+  const bbl = kit.book.finish();
+  const map = m.build();
+  const cb = buildCharBlocks(pal, l.form);
+  const camel = [
+    { pixels: cb.blocks[cb.n('stand')].pixels, x: start[0], y: start[1] },
+    { pixels: cb.blocks[cb.n('stand.top')].pixels, x: start[0], y: start[1] - 1 },
+  ];
+  const pic = renderRegion(map, bbl, mb.blocks, buildMonsters(mb, l.mons), ORIGIN, ORIGIN, size[0], size[1], camel);
+  writePng(join(out, `${l.file}.png`), pic, pal.pal, 2);
+  writePng(join(out, `${l.file}-blocks.png`), blockSheet(bbl.slice(0, kit.book.index.size), 12), pal.pal, 3);
+}
 console.log(`previews in ${out}`);

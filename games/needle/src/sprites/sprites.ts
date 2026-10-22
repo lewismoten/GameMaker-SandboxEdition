@@ -402,8 +402,8 @@ export function buildMonsterBlocks(pal: Pal) {
     if (f) micro(p, 13, 1, '!', c('gold', 3));
     return done(p);
   };
-  book.add('seed0', seed(0));
-  book.add('seed1', seed(1));
+  book.add('seed0', seed(0), { effect: 1, eamt: 1, scorePts: 100 });
+  book.add('seed1', seed(1), { effect: 1, eamt: 1, scorePts: 100 });
   // Scissors, snipping.
   const scissors = (f: number) => {
     const p = P();
