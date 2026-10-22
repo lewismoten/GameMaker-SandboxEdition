@@ -10,6 +10,7 @@ const COVERS: Record<string, () => Promise<{ default: Painter }>> = {
   brief: () => import('./brief'),
   logic: () => import('./logic'),
   maximus: () => import('./maximus'),
+  realm: () => import('./realm'),
   sandcast: () => import('./sandcast'),
   sleuth: () => import('./sleuth'),
   snowbound: () => import('./snowbound'),
