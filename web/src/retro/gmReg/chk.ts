@@ -71,9 +71,9 @@ async function manualCheck(h: RetroHost): Promise<boolean> {
       s.write(15, 3, white, '   Please enter the following informantion.');
       s.write(15, 4, yellow, '       OR send in your registration card');
       s.write(15, 5, yellow, '             to skip this hassle!');
-      s.write(15, 7, white, 'Count every paragraph, not including headings,');
-      s.write(15, 8, white, 'tables or notes. ("Game-maker" is one word).');
-      s.write(15, 10, yellow, `Page: ${q.page}  (Owner's Guide)`);
+      s.write(15, 7, white, 'Count every paragraph, not including headings');
+      s.write(15, 8, white, 'or captions. ("Game-maker" is one word).');
+      s.write(15, 10, yellow, `Page: ${q.page}`);
       s.write(15, 11, yellow, `Paragraph: ${q.paragraph}`);
       s.write(15, 12, yellow, `Word: ${q.word}`);
       const typed = (await qWindow(h, 24, 15, 15, 'Word Found: ')) ?? '';

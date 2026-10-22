@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_NAME, DEFAULT_REG, SERIAL, checkRegistration, regFile, registrationNumber, validSerial } from '../src/retro/gmReg/registration';
 import { QUESTIONS, rightAnswer } from '../src/retro/gmReg/copyCheck';
@@ -35,31 +34,31 @@ describe('Game-Maker registration (CHK.C)', () => {
   });
 });
 
-/** The <p> paragraphs of each page of the Owner's Guide, as words. */
-function guidePages(): string[][][] {
-  const src = readFileSync(new URL('../src/manual/dosManual.ts', import.meta.url), 'utf8');
-  const body = src.slice(src.indexOf('  return [\n    {'), src.indexOf('export async function openDosManual'));
-  const starts = [...body.matchAll(/^ {4}(page\(|\{)/gm)].map((m) => m.index!);
-  return starts.map((s, i) =>
-    [...body.slice(s, starts[i + 1] ?? body.length).matchAll(/<p>([\s\S]*?)<\/p>/g)].map((m) =>
-      m[1]
-        .replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
-        .replace(/<[^>]+>/g, '')
-        .trim()
-        .split(/\s+/),
-    ),
-  );
-}
-
 describe('the copy protection questions', () => {
-  it('are answered by the Owner’s Guide (page, paragraph, word)', () => {
-    const pages = guidePages();
-    expect(pages.length).toBeGreaterThan(15);
+  // the answers come from the printed Game-Maker 3.0 Owner's Manual (read off a scan, which
+  // stays out of the repository); this checks that the list is one CHK.C could have asked
+  it('are words of the printed Owner\u2019s Manual (page, paragraph, word)', () => {
+    expect(QUESTIONS.length).toBeGreaterThanOrEqual(18);
+    const seen = new Set<string>();
     for (const q of QUESTIONS) {
-      const word = pages[q.page]?.[q.paragraph - 1]?.[q.word - 1] ?? '';
-      const bare = word.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '');
-      expect(rightAnswer(q, bare), `page ${q.page} paragraph ${q.paragraph} word ${q.word}: ${word}`).toBe(true);
-      expect(q.answer.length).toBeLessThanOrEqual(13);
+      const at = `${q.page}/${q.paragraph}/${q.word}`;
+      expect(seen.has(at), at).toBe(false);
+      seen.add(at);
+      expect(q.page).toBeGreaterThanOrEqual(1);
+      expect(q.page).toBeLessThanOrEqual(107);
+      expect(q.paragraph).toBeGreaterThanOrEqual(1);
+      expect(q.word).toBeGreaterThanOrEqual(1);
+      // answer[14] in CHK.C: thirteen letters at most, and only letters
+      expect(q.answer).toMatch(/^[A-Z]{1,13}$/);
     }
+  });
+
+  it('accepts the word in any case', () => {
+    const q = QUESTIONS.find((x) => x.page === 13 && x.paragraph === 1 && x.word === 6)!;
+    expect(rightAnswer(q, 'which')).toBe(true);
+    expect(rightAnswer(q, ' Which ')).toBe(true);
+    expect(rightAnswer(q, 'WHICH,')).toBe(true);
+    expect(rightAnswer(q, 'red')).toBe(false);
+    expect(rightAnswer(q, '')).toBe(false);
   });
 });

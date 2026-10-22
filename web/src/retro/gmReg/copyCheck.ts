@@ -1,13 +1,15 @@
 // CHK.C manualcheck(): the copy protection of an unregistered Game-Maker. It asked for a word
-// by section, line and word in the printed manual (COPYTECT.DAT has RSD's list, for a manual
-// this desk doesn't have). Here the questions come from the Owner's Guide in the Game-Maker
-// box on the desk (manual/dosManual.ts), by its printed page numbers. A browser wraps lines
-// differently at every size, so they count paragraphs instead of lines: the <p> paragraphs
-// of a page, not headings, tables, notes or captions. test/gmCopyCheck.test.ts checks every
-// answer against the guide.
+// in the printed manual (COPYTECT.DAT held RSD's encoded list: a section number, a line and a
+// word, "Count every line with text, not including numbered headings"). Here the questions come
+// from the printed Game-Maker 3.0 Owner's Manual (the spiral-bound "Create Your Own Games with
+// Game-Maker" book), by the page number printed at the foot of the page. Lines depend on the
+// printing, so they count paragraphs: every paragraph of text on the page, including the text in
+// a boxed note, but not headings, menus, tables or figure captions. A paragraph carried over from
+// the page before would be ambiguous, so every question is on a page that starts fresh. Each
+// answer was read off a scan of the book; test/gmRegistration.test.ts checks the list's shape.
 
 export interface CopyQuestion {
-  /** The page number printed at the bottom of the Owner's Guide page. */
+  /** The page number printed at the foot of the Owner's Manual page. */
   page: number;
   paragraph: number;
   word: number;
@@ -15,28 +17,44 @@ export interface CopyQuestion {
 }
 
 export const QUESTIONS: CopyQuestion[] = [
-  { page: 2, paragraph: 2, word: 11, answer: 'COUNTS' },
-  { page: 2, paragraph: 3, word: 2, answer: 'TURBO' },
-  { page: 3, paragraph: 1, word: 31, answer: 'TRANSFER' },
-  { page: 4, paragraph: 1, word: 15, answer: 'HELP' },
-  { page: 5, paragraph: 1, word: 9, answer: 'GAME-MAKER' },
-  { page: 5, paragraph: 2, word: 28, answer: 'ESC' },
-  { page: 6, paragraph: 1, word: 13, answer: 'PIPEMARE' },
-  { page: 6, paragraph: 2, word: 22, answer: 'F1' },
-  { page: 7, paragraph: 1, word: 24, answer: 'MOUSE' },
-  { page: 8, paragraph: 2, word: 16, answer: 'RESTORE' },
-  { page: 8, paragraph: 3, word: 33, answer: 'YELLOW' },
-  { page: 10, paragraph: 1, word: 24, answer: 'INTEGRATOR' },
-  { page: 13, paragraph: 1, word: 6, answer: 'RED' },
-  { page: 13, paragraph: 2, word: 18, answer: 'README' },
-  { page: 14, paragraph: 2, word: 6, answer: 'PILE' },
-  { page: 14, paragraph: 3, word: 24, answer: 'FEE' },
-  { page: 17, paragraph: 1, word: 12, answer: 'PINK' },
-  { page: 17, paragraph: 4, word: 13, answer: 'MIT' },
+  { page: 1, paragraph: 1, word: 5, answer: 'EXPERIENCED' },
+  { page: 7, paragraph: 1, word: 5, answer: 'POWERFUL' },
+  { page: 7, paragraph: 2, word: 10, answer: 'UNLIMITED' },
+  { page: 7, paragraph: 6, word: 8, answer: 'RESTRAINED' },
+  { page: 9, paragraph: 1, word: 10, answer: 'ARRANGED' },
+  { page: 9, paragraph: 3, word: 8, answer: 'SCENES' },
+  { page: 13, paragraph: 1, word: 6, answer: 'WHICH' },
+  { page: 20, paragraph: 1, word: 14, answer: 'COPYRIGHTED' },
+  { page: 22, paragraph: 3, word: 12, answer: 'CONFIGURATION' },
+  { page: 23, paragraph: 1, word: 5, answer: 'GRAPHICAL' },
+  { page: 23, paragraph: 2, word: 5, answer: 'RETURN' },
+  { page: 25, paragraph: 1, word: 8, answer: 'DESCRIBED' },
+  { page: 28, paragraph: 1, word: 7, answer: 'SUGGEST' },
+  { page: 29, paragraph: 1, word: 11, answer: 'POP' },
+  { page: 33, paragraph: 1, word: 5, answer: 'ZOOMED' },
+  { page: 33, paragraph: 3, word: 5, answer: 'FOUNDATION' },
+  { page: 45, paragraph: 1, word: 7, answer: 'MOVE' },
+  { page: 47, paragraph: 1, word: 10, answer: 'CLEAR' },
+  { page: 56, paragraph: 1, word: 3, answer: 'SHOOT' },
+  { page: 57, paragraph: 1, word: 15, answer: 'SIXTY' },
+  { page: 72, paragraph: 1, word: 4, answer: 'TOGETHER' },
+  { page: 78, paragraph: 1, word: 4, answer: 'CERTAIN' },
+  { page: 79, paragraph: 1, word: 4, answer: 'UTILITIES' },
+  { page: 82, paragraph: 1, word: 8, answer: 'INTERESTING' },
+  { page: 85, paragraph: 1, word: 8, answer: 'SCORPION' },
+  { page: 98, paragraph: 1, word: 7, answer: 'DIRECTORY' },
+  { page: 99, paragraph: 1, word: 7, answer: 'HEART' },
+  { page: 100, paragraph: 1, word: 6, answer: 'ENCOURAGES' },
+  { page: 101, paragraph: 2, word: 7, answer: 'COVERED' },
+  { page: 104, paragraph: 1, word: 15, answer: 'DISKETTE' },
 ];
 
-/** stricmp(answeren, answer): the word typed, any case. */
-export const rightAnswer = (q: CopyQuestion, typed: string): boolean => typed.trim().toUpperCase() === q.answer;
+/** stricmp(answeren, answer): the word typed, any case (stray punctuation around it is forgiven). */
+export const rightAnswer = (q: CopyQuestion, typed: string): boolean =>
+  typed
+    .trim()
+    .replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '')
+    .toUpperCase() === q.answer;
 
 /** The question for this start: the one PLAYGAME.EXE remembers, or any (random(87)+1 in CHK.C). */
 export function questionFor(remembered: number | undefined, random = Math.random): number {
