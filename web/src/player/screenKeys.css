@@ -109,7 +109,7 @@
   overflow: hidden;
   text-overflow: clip;
   color: #c9cdf0;
-  font-size: clamp(8px, 2.3vw, 10px);
+  font-size: clamp(7px, 1.9vw, 10px);
   font-weight: 600;
   text-transform: uppercase;
 }

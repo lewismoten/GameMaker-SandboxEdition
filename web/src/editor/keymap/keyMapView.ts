@@ -8,7 +8,7 @@ import { parsePalette, defaultPalette, type Palette } from '../../formats/palett
 import { parseMonsters, type Monster } from '../../formats/monster';
 import { decodeGif, isGif } from '../../formats/gif';
 import { blockCanvas, paintIndexed } from '../core/draw';
-import { macHint } from '../../input/macKeys';
+import { isMac, macHint } from '../../input/macKeys';
 import type { GameFiles } from '../../project/files';
 
 type Child = Node | string | null | undefined | false;
@@ -374,6 +374,8 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
     'km-global',
     el('h3', null, 'Keys in every Game-Maker game'),
     el('table', null, ...km.global.map((g) => el('tr', null, el('td', null, el('kbd', 'km-key small', g.name)), el('td', null, g.title)))),
+    // a Mac's F-keys work its brightness and volume unless fn is held; the player's F1–F10 button always works
+    el('p', 'km-note', isMac() ? 'On a Mac, hold fn with F1–F10. Or click the F1–F10 button over the game to press any of these keys.' : 'Keys the browser keeps (F5, F6…)? Click the F1–F10 button over the game to press them.'),
   );
 
   const instr = km.instructions.length
