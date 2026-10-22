@@ -308,6 +308,7 @@ export class Bot {
         waited = move ? 0 : waited + 1;
         if (!move && waited > 40) (move = first.d), (waited = 0);
       }
+      if (process.env.BOT_DEBUG === '2') console.log(`  ${label} at ${p.x},${p.y} -> ${move ?? 'wait'} (path ${path.length})`);
       const r = await this.stepRaw(move, 3);
       if (r === 'dead') this.say(`${label}: died`);
       if (r && r !== 'dead') return r;

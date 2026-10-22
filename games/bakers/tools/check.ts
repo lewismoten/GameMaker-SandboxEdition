@@ -17,9 +17,10 @@ export async function playThrough(secret: boolean, seed = 1): Promise<Bot> {
     const level = room.spec.level;
     const stops = (secret && SECRET_ROUTE[level]) || ROUTE[level];
     if (!stops) throw new Error(`No route for ${room.spec.name}`);
-    const t0 = sim.ticks;
+    const seg = sim.segments.length;
     await playRoom(bot, stops);
-    console.log(`ok   ${room.spec.name.padEnd(20)} ${String(sim.trail.length).padStart(3)} scenes  hp ${sim.ci.hitpts}  lives ${sim.ci.lives}  ingredients ${sim.ingredients}  (${t0} -> ${sim.ticks} ticks)`);
+    const keys = sim.segments.slice(seg - 1).reduce((n, s) => n + s.keys.length, 0);
+    console.log(`ok   ${room.spec.name.padEnd(20)} deaths ${sim.deaths}  hp ${sim.ci.hitpts}  lives ${sim.ci.lives}  ingredients ${sim.ingredients}  score ${sim.ci.score}  (${keys} keys)`);
   }
   if (sim.ended !== 'won') throw new Error(`The bot did not win (${sim.ended})`);
   return bot;

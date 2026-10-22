@@ -10,6 +10,7 @@ export type Stop = string | [number, number] | { pickup: [number, number] };
 
 export const ROUTE: Record<number, Stop[]> = {
   1: ['k', 'I'],
+  2: ['k', 'I'],
 };
 
 /** The secret way out of the Cold Cellar, and the hidey-hole's own route. */
