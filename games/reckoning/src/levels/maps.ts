@@ -229,26 +229,26 @@ export function fridge(book: BlockBook): Level {
   // the counter, its cabinets, the bread box (Loaf #13), the sink, the upper cabinets
   m.row(12, 4, 13, 'X').row(13, 4, 13, 'Y');
   m.set(6, 11, 'j').set(9, 11, 'J').set(12, 11, '2');
-  m.row(8, 4, 12, 'u').set(8, 7, '2');
-  m.mon(MON.loaf, 6, 11).mon(MON.carl, 15, 6);
+  m.row(9, 4, 12, 'u').set(8, 8, '2');
+  m.mon(MON.loaf, 6, 11).mon(MON.carl, 15, 5);
   m.set(17, 13, 'V');
-  // the fridge, standing open: its walls, the cold glowing inside, the freezer, the bulb
-  m.row(0, 22, 44, 'E').col(22, 1, 13, 'F').col(44, 7, 13, 'F').set(22, 9, '3');
-  m.fill(23, 1, 21, 13, 'f').fill(23, 1, 8, 2, 'Z').set(35, 1, '*');
-  // the crisper drawers, and the shelves (gaps to hop up through)
-  m.fill(23, 12, 5, 2, 'h');
+  // the fridge, standing open (its bottom open to walk in): its walls, the cold glowing inside, the freezer, the bulb
+  m.row(0, 22, 44, 'E').col(22, 1, 9, 'F').col(44, 7, 13, 'F').set(22, 7, '3');
+  m.fill(23, 1, 21, 13, 'f').set(22, 10, 'f').set(22, 11, 'f').set(22, 12, 'f').set(22, 13, 'f').fill(23, 1, 8, 2, 'Z').set(35, 1, '*');
+  // the crisper drawers, and the shelves (gaps to drop through)
+  m.fill(23, 13, 5, 1, 'h');
   m.row(10, 23, 43, 'G').row(10, 33, 34, 'f');
-  m.row(7, 23, 43, 'G').row(7, 25, 26, 'f').row(7, 40, 41, 'f');
+  m.row(7, 23, 43, 'G').row(7, 40, 41, 'f');
   m.row(4, 23, 44, 'G').row(4, 29, 30, 'f');
   // the dairy, come to life
-  m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 28, 6).mon(MON.butter, 34, 6).mon(MON.cream, 24, 3).mon(MON.milk, 37, 3);
+  m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 24, 6).mon(MON.butter, 34, 6).mon(MON.cream, 24, 2).mon(MON.milk, 24, 3);
   // willpower: seven sticks of celery
-  m.set(25, 11, '1').set(41, 13, '1').set(24, 9, '1').set(43, 6, '1').set(32, 3, '1');
+  m.set(25, 12, '1').set(24, 9, '1').set(31, 9, '1').set(39, 6, '1').set(35, 3, '1');
   // the door, swung open: its shelves (the mustard, and the mustard seed by it, the ketchup)
   m.row(11, 45, 46, 'y').row(8, 45, 46, 'y').set(45, 8, 'M').row(5, 45, 46, 'y').set(46, 11, 'N');
   m.mon(MON.seed, 46, 7);
   // the cheesecake on the top shelf, glowing like a cursed artifact
-  m.set(41, 3, '4').set(40, 3, '5').set(41, 2, '5').set(42, 2, '5').set(43, 3, '5');
+  m.set(41, 3, '4').set(42, 3, '5').set(41, 2, '5').set(42, 2, '5').set(43, 3, '5');
   m.link(41, 3, 'next');
   return { m, start: at(2, 13), size: [W, H] };
 }
@@ -263,15 +263,15 @@ export function dash(book: BlockBook): Level {
   m.row(10, 0, 14, '=');
   // the kitchen chairs, then the hall
   m.set(9, 9, '7').set(13, 9, '7').set(16, 9, 'd').set(16, 8, 't');
-  m.set(19, 9, 'L').set(20, 9, 'L');
+  m.set(19, 9, 'L');
   m.mon(MON.teddyUp, 23, 9);
   m.set(30, 9, 'U').set(34, 9, 'z');
   m.set(26, 5, 'g').set(36, 5, 'l');
   // the linen closet: a roll on its top shelf
-  m.row(6, 39, 42, '8').set(41, 5, '9');
+  m.row(7, 39, 42, '8').set(41, 6, '9');
   m.set(47, 9, '0');
   m.mon(MON.gwinnUp, 50, 9);
-  m.set(57, 9, '!').set(61, 9, 'L').set(62, 9, 'L').set(65, 9, '7').set(67, 9, 'V');
+  m.set(57, 9, '!').set(61, 9, 'L').set(65, 9, '7').set(67, 9, 'V');
   // a roll on top of the laundry basket
   m.set(72, 9, 'U').set(72, 8, '9');
   m.set(78, 9, 'z').set(82, 9, '!').set(76, 5, 'm');
@@ -296,7 +296,7 @@ export function reckoning(book: BlockBook): Level {
   m.row(5, 8, 10, '@').set(9, 4, 'e');
   m.set(8, 9, ';');
   m.row(7, 15, 17, '@').set(16, 6, 'a');
-  m.set(19, 9, 'a');
+  m.row(7, 19, 20, '@').set(20, 6, 'e');
   // the Devil, lounging, sipping; the soda fountain behind him up on its tiles
   m.mon(MON.devilA0, 24, 8).mon(MON.devilB0, 24, 9);
   m.row(7, 26, 28, '@').set(27, 6, ':');

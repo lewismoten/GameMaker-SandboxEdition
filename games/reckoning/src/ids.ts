@@ -72,13 +72,17 @@ export const SEQ = {
   leftA: 12,
   hopW: 13,
   downS: 14,
-  /** Space: a line of the monologue (in the reckoning: throw almond milk, a sequence counter). */
+  /** Space: a line of the monologue. */
   speak: 15,
   speakB: 16,
   hopLeft7: 17,
   hopRight9: 18,
-  /** B in the reckoning: a line of the monologue (no milk). */
-  wail: 19,
+  /**
+   * Space in the reckoning: throw almond milk. Its own counter (meter 19) is the milk in hand: the
+   * house's character file leaves this sequence undefined, so the count starts fresh from HELL.CHR
+   * (a defined sequence's count carries on from scene to scene, and the house's Space is endless).
+   */
+  throw: 19,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
@@ -114,7 +118,7 @@ export const ROLLS = 21;
 export const ROLLS_NEEDED = 3;
 /** The Devil's last straw: the porcelain throne takes it. */
 export const STRAW = 22;
-/** Almond milk in hand at the start of the reckoning (the throw's own counter, meter[SEQ.speak]). */
+/** Almond milk in hand at the start of the reckoning (the throw's own counter, meter[SEQ.throw]). */
 export const MILK_START = 4;
 /** Almond milk, oat milk: splashes in a carton. */
 export const MILK_CARTON = 4;

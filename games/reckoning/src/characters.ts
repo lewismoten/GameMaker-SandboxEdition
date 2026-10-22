@@ -79,19 +79,21 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>, form: Form): Ch
   const down = [f({ pic: 'sneak0', x: SNEAK_STEP, pause: 2 }), f({ pic: 'sneak1', x: SNEAK_STEP, pause: 2 })];
   set(S[SEQ.down], down, { key: KEY.down, jstkMov: JOY.down, sound: SND.step });
   set(S[SEQ.downS], down, { key: KEY.s, sound: SND.step });
-  // the monologue (Space, B), or in the reckoning: Space throws almond milk to the right
+  // the monologue (Space, B), or in the reckoning: Space throws almond milk to the right (each plays
+  // through: "ground", or the joystick's idle would cut in)
   const speak = [f({ pic: 'speak0', pause: 8 }), f({ pic: 'speak1', pause: 10 }), f({ pic: 'speak0', pause: 6 }), f({ pic: 'front', pause: 2 })];
   if (form === 'hell') {
     // the throw's first frame steps right a pixel (and back), so the splashes fly to the right
-    set(S[SEQ.speak], [f({ pic: 'throw0', x: 1, pause: 3 }), birth(MON.splash, 0), birth(MON.splash, -1), f({ pic: 'throw1', x: -1, pause: 4 }), f({ pic: 'front', pause: 2 })], {
+    set(S[SEQ.throw], [f({ pic: 'throw0', x: 1, pause: 3 }), birth(MON.splash, 0), birth(MON.splash, -1), f({ pic: 'throw1', x: -1, pause: 4 }), f({ pic: 'front', pause: 2 })], {
       key: KEY.space,
       sound: SND.speak,
+      ground: 1,
       norepeat: 1,
       jstkMov: JOY.any,
       jstkBut: 1,
     });
-  } else set(S[SEQ.speak], speak, { key: KEY.space, sound: SND.speak, norepeat: 1, jstkMov: JOY.any, jstkBut: 1 });
-  set(S[SEQ.speakB], speak, { key: KEY.b, sound: SND.wail, norepeat: 1 });
+  } else set(S[SEQ.speak], speak, { key: KEY.space, sound: SND.speak, ground: 1, norepeat: 1, jstkMov: JOY.any, jstkBut: 1 });
+  set(S[SEQ.speakB], speak, { key: KEY.b, sound: SND.wail, ground: 1, norepeat: 1 });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // dignity (hit points)
@@ -99,7 +101,9 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>, form: Form): Ch
   ch.meter[WILL] = 1; // shown as meter - 1: none yet
   ch.meter[ROLLS] = 1;
   ch.meter[STRAW] = 1;
-  if (form === 'hell') ch.meter[SEQ.speak] = MILK_START;
+  // The throw's milk: the house's file keeps it unset (-20000: undefined, so each scene copies the
+  // next file's count over it) until the reckoning's file gives him his first cartons.
+  ch.meter[SEQ.throw] = form === 'hell' ? MILK_START : -20000;
   ch.cseq = 0;
   ch.cframe = 0;
   return ch;

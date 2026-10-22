@@ -7,8 +7,8 @@
 //     dignity (hit points) when you step into them: hop over;
 //   - celery is willpower (counter 20), and the cheesecake only lets you near with seven, and
 //     takes all seven; rolls of toilet paper are counter 21, and the bathroom door takes three;
-//   - in the reckoning, almond milk and oat milk refill the splash (the Space sequence's own
-//     counter) and grow back, Lactaid mends dignity, the soda fountain behind the Devil gives
+//   - in the reckoning, almond milk and oat milk refill the splash (the throw sequence's own
+//     counter), Lactaid mends dignity, the soda fountain behind the Devil gives
 //     birth to milkshakes, and the porcelain throne takes the Devil's last straw (counter 22);
 //   - coins are points, a glass of water mends dignity, the TV remote under the couch cushion is
 //     an extra life.
@@ -26,8 +26,6 @@ export const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between milkshakes from the soda fountain. */
 export const SHAKE_EVERY = 46;
-/** Ticks before an almond milk carton is back on its tile. */
-export const MILK_REGROW = 160;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -524,7 +522,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('fountain', fountain(0), { solid: SOLID, birthMon: MON.shake, birthTime: SHAKE_EVERY });
-  // almond milk and oat milk: splashes for the throw (the Space sequence's own counter); they grow back
+  // almond milk and oat milk: splashes for the throw (the throw sequence's own counter). They don't
+  // grow back: a block's next/ntime runs on one clock for all its copies, so they would come back at once
   const carton = (bg: Pixels, label: string, col: string) => {
     bg.rect(5, 6, 10, 13, c('white', 2)).rect(5, 6, 10, 1, c('white', 1));
     for (let y = 2; y < 6; y++) bg.rect(5 + (6 - y), y, 10 - (6 - y) * 2, 1, c('white', 1));
@@ -532,10 +531,10 @@ export function buildBlocks(pal: Pal): BlockBook {
     micro(bg, 6, 11, label, c('white', 2));
     return bg;
   };
-  book.add('almond', carton(voidAir(98), 'ALM', 'crust'), { ...air, effect: SEQ.speak, eamt: MILK_CARTON, score: 50, touch: 'almondGone' });
-  book.add('almondGone', voidAir(98), { ...air, next: 'almond', ntime: MILK_REGROW });
-  book.add('oat', carton(voidAir(99), 'OAT', 'cheese'), { ...air, effect: SEQ.speak, eamt: MILK_CARTON, score: 50, touch: 'oatGone' });
-  book.add('oatGone', voidAir(99), { ...air, next: 'oat', ntime: MILK_REGROW });
+  book.add('almond', carton(voidAir(98), 'ALM', 'crust'), { ...air, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'almondGone' });
+  book.add('almondGone', voidAir(98), air);
+  book.add('oat', carton(voidAir(99), 'OAT', 'cheese'), { ...air, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'oatGone' });
+  book.add('oatGone', voidAir(99), air);
   // Lactaid caplets: dignity back
   const lactaid = voidAir(96);
   lactaid.rect(4, 7, 12, 10, c('white', 2)).rect(4, 7, 12, 3, c('pjs', 2));
