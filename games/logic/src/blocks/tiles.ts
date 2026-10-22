@@ -269,7 +269,7 @@ export function eggPic(st: Style, under = floorPic(st, 0)): Pixels {
       if (inside(x, y, 1) && !inside(x, y)) p.set(x, y, c('ink', 0));
       if (!inside(x, y)) continue;
       // lit from the top left, with fuzzy felt speckle
-      const l = 0.55 - (x - cx) / 12 - (y - cy) / 20 + (R() - 0.5) * 0.3;
+      const l = 0.55 - (x - cx) / 12 - (y - cy) / 20 + (R() - 0.5) * 0.15;
       p.set(x, y, shadeAt(felt, 1, 3, l, x, y));
     }
   // blanket stitch just inside the edge in pale thread
@@ -280,17 +280,10 @@ export function eggPic(st: Style, under = floorPic(st, 0)): Pixels {
     const y = 13 + [0, 1, 0, -1][x % 4];
     if (inside(x, y, -0.8)) p.set(x, y, c('ink', 0));
   }
-  // the yellow lightning bolt applique, edged in dark thread
-  const bolt = ['...yy', '..yy.', '.yyyy', '...y.', '..y..', '.y...'];
-  const key = { y: c('yellow', 3) };
-  for (const [dx, dy] of [
-    [-1, 0],
-    [1, 0],
-    [0, -1],
-    [0, 1],
-  ])
-    bolt.forEach((row, yy) => [...row].forEach((ch, xx) => ch === 'y' && p.set(7 + xx + dx, 5 + yy + dy, c('copper', 0))));
-  p.draw(7, 5, bolt, key);
+  // the yellow lightning bolt applique, with a dark stitched edge below and right
+  const bolt = ['....yy', '...yy.', '..yy..', '.yyyyy', '...yy.', '..yy..', '.yy...', '.y....'];
+  bolt.forEach((row, yy) => [...row].forEach((ch, xx) => ch === 'y' && p.set(7 + xx, 5 + yy + 1, c('copper', 0)).set(8 + xx, 5 + yy, c('copper', 0))));
+  p.draw(7, 5, bolt, { y: c('yellow', 3) });
   // the brass button terminal on top
   p.rect(9, 1, 2, 2, c('gold', 2)).set(9, 1, c('gold', 3)).set(10, 2, c('gold', 0));
   return p;
