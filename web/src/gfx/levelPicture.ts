@@ -202,3 +202,41 @@ export function builtMapViews(shots: readonly [string, number, number][] | undef
 export function builtMapShotPath(id: string, [map, x, y, w, h]: MapView): string {
   return `games/shots/${id}-${map.toLowerCase().replace(/[^a-z0-9_.]/g, '_')}-${x}-${y}-${w}x${h}.png`;
 }
+
+/** A hero as a character file draws him: chr, cbl and pal file names, and which sequence (manual/printables Portrait). */
+export interface HeroSpec {
+  chr: string;
+  cbl: string;
+  pal: string;
+  seq?: number;
+}
+
+/** The hero an original game's paper shows (its hero sticker, else its ID card's portrait): the disk label and manual cover draw him. */
+export function heroOf(original: { printables?: { stickers?: { hero?: HeroSpec }[]; items?: { kind: string; portrait?: HeroSpec }[] } } | undefined): HeroSpec | undefined {
+  const p = original?.printables;
+  return p?.stickers?.find((s) => s.hero)?.hero ?? p?.items?.flatMap((i) => (i.kind === 'idcard' && i.portrait ? [i.portrait] : []))[0];
+}
+
+/** The hero as he stands in his first frame: top and bottom block, 20 x 40, TRANSPARENT around him. */
+export function heroPixels(files: FileSource, p: HeroSpec): LevelPicture | undefined {
+  const [chrB, cblB, palB] = [p.chr, p.cbl, p.pal].map((f) => files.get(f));
+  if (!chrB || !cblB || !palB) return undefined;
+  try {
+    const frame = parseCharacter(chrB).sequences[p.seq ?? 0].frames[0];
+    const blocks = parseBlocks(cblB, CHARBL);
+    const pixels = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
+    for (const [pic, y0] of [
+      [frame.pic1, 0],
+      [frame.pic2, BLEN],
+    ] as const)
+      if (blocks[pic]) pixels.set(blocks[pic].pixels, y0 * BLEN);
+    return { width: BLEN, height: BLEN * 2, pixels, palette: parsePalette(palB) };
+  } catch {
+    return undefined;
+  }
+}
+
+/** Where the build puts a game's hero (heroOf), when it drew him. */
+export function builtHeroPath(id: string): string {
+  return `games/shots/${id}-hero.png`;
+}

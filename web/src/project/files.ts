@@ -163,6 +163,8 @@ export interface CatalogEntry {
   walkthrough?: string;
   /** Built sites: its pictures are drawn already (games/shots/, gfx/levelPicture.ts builtShotPath). */
   shots?: boolean;
+  /** …and its hero (games/shots/<id>-hero.png, gfx/levelPicture.ts builtHeroPath). */
+  heroShot?: boolean;
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();

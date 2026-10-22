@@ -2,6 +2,7 @@
 // note that says the addresses are made up.
 import { h } from '../../editor/core/ui';
 import { mapShot } from '../../desk/boxes/boxArt';
+import { builtHeroPath, heroOf } from '../../gfx/levelPicture';
 import type { CatalogEntry } from '../../project/files';
 import type { MapPanel, PrintablesFile, Portrait, SpriteArt } from './types';
 import { fetchGameFile } from '../../project/files';
@@ -131,6 +132,9 @@ async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array 
 
 /** The hero as he stands in his first character sequence: top and bottom block, 20 x 40. */
 export async function portrait(entry: CatalogEntry, p: Portrait): Promise<string | undefined> {
+  // the hero the build drew (the disk label's and the manual cover's): a small picture instead of three game files
+  const drawn = entry.heroShot ? heroOf(entry.original) : undefined;
+  if (drawn && drawn.chr === p.chr && drawn.cbl === p.cbl && drawn.pal === p.pal && (drawn.seq ?? 0) === (p.seq ?? 0)) return `./${builtHeroPath(entry.id)}`;
   const [chrB, cblB, palB] = await Promise.all([p.chr, p.cbl, p.pal].map((f) => fetchFile(entry, f)));
   if (!chrB || !cblB || !palB) return undefined;
   try {

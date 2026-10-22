@@ -5,12 +5,16 @@ import { readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { parseGame } from '../src/formats/game';
 import { vga8 } from '../src/formats/palette';
-import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, gamePicture, mapPixels, type LevelPicture } from '../src/gfx/levelPicture';
+import { BUILT_SHOTS, builtHeroPath, builtMapShotPath, builtMapViews, builtShotPath, gamePicture, heroPixels, mapPixels, type HeroSpec, type LevelPicture } from '../src/gfx/levelPicture';
+import { TRANSPARENT } from '../src/formats/blocks';
 import { pngChunk } from './ogImage';
 import { cdName } from '../src/project/files';
 
-/** A palette PNG of only the colors the picture uses; rows unfiltered (flat pixel art packs best that way). */
-export function encodeIndexedPng(pic: LevelPicture): Uint8Array {
+/**
+ * A palette PNG of only the colors the picture uses; rows unfiltered (flat pixel art packs best
+ * that way). With `transparent`, that palette index is see-through.
+ */
+export function encodeIndexedPng(pic: LevelPicture, transparent?: number): Uint8Array {
   const used = [...new Set(pic.pixels)].sort((a, b) => a - b);
   const index = new Map(used.map((c, i) => [c, i]));
   const raw = new Uint8Array((pic.width + 1) * pic.height);
@@ -21,7 +25,9 @@ export function encodeIndexedPng(pic: LevelPicture): Uint8Array {
   dv.setUint32(4, pic.height);
   ihdr.set([8, 3, 0, 0, 0], 8);
   const plte = Uint8Array.from(used.flatMap((c) => [0, 1, 2].map((k) => vga8(pic.palette[c * 3 + k]))));
-  const parts = [Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10]), pngChunk('IHDR', ihdr), pngChunk('PLTE', plte), pngChunk('IDAT', deflateSync(raw, { level: 9 })), pngChunk('IEND', new Uint8Array(0))];
+  const clear = transparent === undefined ? -1 : used.indexOf(transparent);
+  const trns = clear < 0 ? [] : [pngChunk('tRNS', Uint8Array.from(used.slice(0, clear + 1).map((_, i) => (i === clear ? 0 : 255))))];
+  const parts = [Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10]), pngChunk('IHDR', ihdr), pngChunk('PLTE', plte), ...trns, pngChunk('IDAT', deflateSync(raw, { level: 9 })), pngChunk('IEND', new Uint8Array(0))];
   const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
   let at = 0;
   for (const p of parts) out.set(p, (at += p.length) - p.length);
@@ -29,11 +35,11 @@ export function encodeIndexedPng(pic: LevelPicture): Uint8Array {
 }
 
 /**
- * A game's pictures, by site path: each size in BUILT_SHOTS, and an original game's box
- * views (builtMapViews of its box's `shots`); none when it has no level to show. `disk` maps
- * a game file's name (as listed) to where it is on disk.
+ * A game's pictures, by site path: each size in BUILT_SHOTS, an original game's box views
+ * (builtMapViews of its box's `shots`) and its hero (heroOf); none when it has no level to
+ * show. `disk` maps a game file's name (as listed) to where it is on disk.
  */
-export function gameShots(id: string, gam: string | null, disk: ReadonlyMap<string, string>, boxShots?: [string, number, number][]): Map<string, Uint8Array> {
+export function gameShots(id: string, gam: string | null, disk: ReadonlyMap<string, string>, boxShots?: [string, number, number][], hero?: HeroSpec): Map<string, Uint8Array> {
   const out = new Map<string, Uint8Array>();
   if (!gam || !disk.has(gam)) return out;
   const cache = new Map<string, Uint8Array | undefined>();
@@ -56,6 +62,8 @@ export function gameShots(id: string, gam: string | null, disk: ReadonlyMap<stri
         const pic = mapPixels(files, game, ...view);
         if (pic) out.set(builtMapShotPath(id, view), encodeIndexedPng(pic));
       }
+    const face = out.size && hero ? heroPixels(files, hero) : undefined;
+    if (face) out.set(builtHeroPath(id), encodeIndexedPng(face, TRANSPARENT));
   } catch {
     /* unreadable: the page draws it, or shows none */
   }
