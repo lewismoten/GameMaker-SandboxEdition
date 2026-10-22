@@ -139,7 +139,7 @@ export function storyFli(cast: Cast): Uint8Array {
     const pose = sing ? (k % 6 < 3 ? 'loaf.bread0' : 'loaf.bread1') : k >= 46 ? 'loaf.blink' : k % 16 === 9 ? 'loaf.blink' : 'loaf.front';
     scaleBlit(p, L(pose), 30, 122 - (sing ? 6 : 0), 2);
     basketArt(p, pal, 50, 150, 30, 18, false);
-    if (sing && k % 8 < 6) say(p, pal, 60, 96, "I'M STILL BREAD!");
+    if (sing && k % 8 < 6) say(p, pal, 92, 96, "I'M STILL BREAD!");
     caption(p, pal, lines(k));
   };
   const first = new Pixels(W, H);
@@ -316,7 +316,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       const lift = Math.max(0, k - 30) * 3;
       const cx = Math.min(196, -40 + k * 9);
       child(p, cast, cx, 110, 2, (k >> 1) % 2, true);
-      scaleBlit(p, L(k >= 30 ? 'loaf.rise' : 'loaf.front'), 160, 122 - Math.min(40, lift), 2);
+      scaleBlit(p, L(k >= 30 ? 'loaf.rise' : 'loaf.front'), 160 + Math.min(24, lift), 122 - Math.min(40, lift), 2);
       caption(p, pal, k < 30 ? ['He gathered me up,', 'twelve baskets full.'] : ['I traveled home', 'in the hands of a child.']);
     };
     const first = new Pixels(W, H);
