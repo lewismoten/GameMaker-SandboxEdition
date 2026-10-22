@@ -65,8 +65,10 @@ export function buildGame(levels: Record<Exclude<keyof typeof S, 'title' | 'end'
   };
   for (const key of order) g.scenes[S[key]] = scene(levels[key], levels[key].intro);
   // Climbing out of Gwinn's dig shows a message on the way: a scene of the dig itself that
-  // starts Teddy on the ladder, which is a link straight up into the sandbox.
-  g.scenes[S.dugOut] = scene({ ...levels.dig, desc: 'Up from the dig', pos: { x: 150, y: 120 } }, screens.dug);
+  // starts Teddy on the ladder, which is a link straight up into the sandbox. PLAYGAME still
+  // fades its map in and out around that one tick, so it loads dark.pal (all black, see
+  // build.ts) and the dig never flashes up between the message and the sandbox.
+  g.scenes[S.dugOut] = scene({ ...levels.dig, pal: 'dark.pal', desc: 'Up from the dig', pos: { x: 150, y: 120 } }, screens.dug);
 
   const link = (from: number, slot: number, fromMap: LevelMap | null, fromMark: string | null, to: number, toMap: LevelMap | null, toMark: string | null) => {
     const l: Link = {

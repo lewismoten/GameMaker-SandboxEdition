@@ -37,6 +37,8 @@ disk.put('sandcast.snd', buildSounds());
 disk.put('sandcast.pal', DAY);
 disk.put('burrow.pal', BURROW);
 disk.put('dusk.pal', DUSK);
+// the pass-through scene's palette (Up from the dig, src/game.ts): all black, so its map never shows
+disk.put('dark.pal', new Uint8Array(768));
 
 // Screens.
 disk.put(SANDLOGO, sandLogoFli());
