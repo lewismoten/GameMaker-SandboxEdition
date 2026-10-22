@@ -216,10 +216,6 @@
             {
               "q": "The creek ice carries me away.",
               "a": "It runs east. Cross on the bridge instead of the ice."
-            },
-            {
-              "q": "Some say the felt-maker left something behind...",
-              "a": "The snowman behind your house lost a mitten. Follow it into the pines, and what you can't push, stoop for with Enter."
             }
           ]
         },
@@ -241,6 +237,44 @@
             {
               "q": "I'm freezing.",
               "a": "Grab hot cocoa, or the root beer outside Timeout (35 warmth each). If you go home cold, the street starts over with fresh snow, and your coffee can stays full."
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind...",
+              "a": "The snowman behind your house lost a mitten. Where a mitten drops, a trail starts."
+            },
+            {
+              "q": "I found the mitten. Now what?",
+              "a": "The pine right behind it is only painted on. Walk straight through it and follow the trail into the woods. What you can't push, stoop for with Enter."
+            },
+            {
+              "q": "Just draw me a map.",
+              "a": "In the park across Gale Street, find your snowman at the bottom of the park and the red mitten just below it. Walk down into the pines there: the trail runs down, right and down again to a hollow. Press Enter on the felt egg to pick it up, then push the frozen toboggan for a ride to Jamie Street.",
+              "sketch": {
+                "rows": [
+                  "    o",
+                  " T  v  T",
+                  " T  .  T",
+                  " T  .  T",
+                  "    ....  T",
+                  " T     .  T",
+                  "   T   .  T",
+                  "  T        T",
+                  "  T        =",
+                  "  T     X  T",
+                  "   TTTTTTTT"
+                ],
+                "labels": [
+                  { "x": 6, "y": 0, "text": "SNOWMAN" },
+                  { "x": 9, "y": 1, "text": "MITTEN" },
+                  { "x": 13, "y": 8, "text": "TOBOGGAN" },
+                  { "x": 13, "y": 9, "text": "FELT EGG" }
+                ]
+              }
             }
           ]
         }
