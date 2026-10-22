@@ -5,9 +5,10 @@
 // character off the screen's top row and left column, so nothing Joe must reach goes there.
 import { MLEN, LASTMM, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import { Pixels } from '../../../kit/pixels';
+import { c } from '../art/pal';
 import { BlockSet, Bestiary, SOLID, type BlockDef, type MonDef } from '../blocks/sets';
-import { on, shusher, wordSlip } from '../art/kit';
-import { CTR, WORDS_PER_BOOK } from '../ids';
+import { bookwormEgg, floor, on, shusher, wordSlip } from '../art/kit';
+import { CTR, EGG_BLOCK, WORDS_PER_BOOK } from '../ids';
 
 export const WIN_W = 16;
 export const WIN_H = 10;
@@ -36,7 +37,13 @@ export class Area {
   readonly map: GameMap = newMap();
   private placed = 0;
 
-  constructor(readonly file: string) {}
+  constructor(readonly file: string) {
+    // the felt egg, in its shoebox: the same block in every set, so the inventory shows it
+    // wherever Joe carries it (only the Lost and Found has one on its floor)
+    const box = on(floor('parquet', 1));
+    box.rect(2, 12, 16, 7, c('brown', 1)).rect(3, 12, 14, 2, c('brown', 0)).rect(2, 18, 16, 1, c('brown', 0));
+    this.tiles.add('egg', on(box, bookwormEgg()), { obj: true }, EGG_BLOCK);
+  }
 
   /** A background block. */
   tile(name: string, px: Pixels, def: BlockDef = {}): string {

@@ -6,12 +6,12 @@ KEYS
  F2 status: Money is the
     words you carry. Words
     are money.
+ P pocket a small thing
  F5 save F6 load
  Esc quit to the menu
 
 Walk into a door, a book or a
 page to use it.
-
 
 
 THE LIBRARY

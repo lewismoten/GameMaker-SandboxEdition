@@ -2,7 +2,8 @@
 //
 //   0  title             1  the end (won / lost)
 //   2  the reading room  3  the Reserve Stacks  4  the thirty-third book's card
-//   then for each wing: its hallway and its four books.
+//   then for each wing: its hallway and its four books;
+//   45 the Lost and Found (behind the loose shelf in the Stacks; the felt egg).
 //
 // PLAYGAME shows a scene's intro graphic on every way in and its exit graphic on every way
 // out, so the hallways and the reading room have neither. A book's intro is its cover page
@@ -52,6 +53,7 @@ export interface SceneIds {
   card33: number;
   hall: (w: number) => number;
   book: (w: number, k: number) => number;
+  lost: number;
 }
 
 export function sceneIds(): SceneIds {
@@ -61,6 +63,7 @@ export function sceneIds(): SceneIds {
     card33: 4,
     hall: (w) => 5 + w * 5,
     book: (w, k) => 5 + w * 5 + 1 + k,
+    lost: 5 + 8 * 5,
   };
 }
 
@@ -114,6 +117,13 @@ export function buildGame(hub: CompiledHub, wings: CompiledWing[]): Game {
       game.scenes.push(book);
     });
   });
+  // the Lost and Found: in through the loose shelf, out by its door, which shows the felt
+  // egg's page (its exit graphic) and puts Joe back in the Stacks
+  const lost = scene('Lost and Found', files('library', 'library.cmf', '', 'egg.lst'), 230, 110);
+  if (game.scenes.length !== id.lost) throw new Error('Scene numbers out of step');
+  game.scenes.push(lost);
+  stacks.links[2] = { toScene: id.lost, from: hub.looseShelf, to: hub.lost.entry };
+  lost.links[0] = { toScene: id.stacks, from: hub.lostOut, to: hub.stacks.entry };
   title.links[0] = { toScene: id.room, from: { x: 0, y: 0 }, to: hub.room.entry };
   return game;
 }

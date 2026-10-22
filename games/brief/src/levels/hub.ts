@@ -7,7 +7,7 @@
 // moment Joe steps through it, so it only ever checks; Game-Maker refuses the touch while
 // the wing has fewer than four.
 import { Pixels } from '../../../kit/pixels';
-import { bevel, blob, micro } from '../art/draw';
+import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { c, r } from '../art/pal';
 import { blank, corgi, docLeo, figure, floor, gwinn, mirror, on, sign } from '../art/kit';
 import { BOOKS_PER_WING, wingCounter } from '../ids';
@@ -135,6 +135,25 @@ const READING_ROOM = [
   'SS5SS6SdeS7SS8SS',
 ];
 
+/**
+ * The Lost and Found, behind the loose shelf in the Stacks' far corner (a shelf block without
+ * Game-Maker's solid flag: it only looks like the rest). Umbrellas, one sock, a spare rubber
+ * chicken, a charge cable with a tag, Teddy asleep on somebody's sweater, and in a shoebox the
+ * felt egg: a Pick-up block, so it is Joe's only if he pockets it (P).
+ */
+const LOST = [
+  'SSSSSSLLLLSSSSSS',
+  'Su............uS',
+  'S..............S',
+  'S..r........h..S',
+  'S..............S',
+  'S.......@......S',
+  'S...s.....E....S',
+  'S.............tS',
+  'S.FFF..........S',
+  'SSSSSSSDSSSSSSSS',
+];
+
 const STACKS = [
   'SSSSSSSSSSSSSSSS',
   'SB76543210.....S',
@@ -144,7 +163,7 @@ const STACKS = [
   'S.......@....b.X',
   'S..q...........S',
   'S.....CCC......S',
-  'S.f..........f.S',
+  'S.f..........f.Y',
   'SSSSSSSSSSSSSSSS',
 ];
 
@@ -161,6 +180,12 @@ export interface CompiledHub {
   book33: { x: number; y: number };
   /** The gates, by wing. */
   gates: { x: number; y: number }[];
+  /** The loose shelf in the Stacks (a link into the Lost and Found), and the Lost and Found. */
+  looseShelf: { x: number; y: number };
+  lost: Window;
+  /** The felt egg in its shoebox, and the Lost and Found's door back to the Stacks. */
+  egg: { x: number; y: number };
+  lostOut: { x: number; y: number };
 }
 
 export function compileHub(wings: WingSpec[]): CompiledHub {
@@ -228,6 +253,63 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
     micro(p, 3, 8, '<--', c('ink', 0));
     return p;
   })()));
+  // the loose shelf: one book pulled half out, a red ribbon hanging from it; it is not solid
+  a.tile('looseShelf', (() => {
+    const p = shelf(101, 'red');
+    p.rect(13, 7, 3, 6, c('purple', 3)).rect(13, 8, 3, 1, c('brass', 4)).rect(16, 7, 1, 6, c('ink', 0));
+    p.rect(14, 13, 1, 5, c('red', 3)).set(13, 18, c('red', 3)).set(15, 18, c('red', 3));
+    return p;
+  })());
+  // the Lost and Found
+  sign(['LOST & FOUND', 'CLAIM BY 1995'], 4, { board: 'brown', ink: 'paper', edge: 'brass' }).forEach((px, i) => a.solid(`lostSign${i}`, on(shelf(150 + i, 'red'), px)));
+  sign(['FINDERS', 'POCKETERS'], 3).forEach((px, i) => a.solid(`pocket${i}`, on(parquet, px)));
+  a.solid('umbrellas', on(parquet, (() => {
+    const p = blank();
+    p.rect(5, 12, 10, 7, c('tin', 2)).rect(5, 12, 10, 1, c('tin', 4));
+    p.line(7, 12, 5, 2, c('red', 3)).line(10, 12, 10, 1, c('blue', 3)).line(13, 12, 15, 3, c('yellow', 3));
+    p.rect(4, 1, 3, 2, c('red', 3)).rect(9, 0, 3, 2, c('blue', 3)).rect(14, 2, 3, 2, c('yellow', 3));
+    return p;
+  })()));
+  a.solid('sock', on(parquet, (() => {
+    const p = blank();
+    p.rect(8, 4, 4, 10, c('green', 3)).rect(8, 12, 8, 4, c('green', 3)).rect(8, 4, 4, 2, c('paper', 4)).rect(14, 12, 2, 4, c('red', 3));
+    micro(p, 2, 16, 'ONE', c('ink', 0));
+    return p;
+  })()));
+  a.solid('chicken', on(parquet, (() => {
+    const p = blank();
+    p.rect(4, 8, 11, 5, c('yellow', 3)).rect(14, 5, 3, 4, c('yellow', 3)).set(17, 6, c('orange', 3)).set(15, 4, c('red', 3)).set(16, 4, c('red', 3));
+    p.line(5, 13, 4, 17, c('orange', 2)).line(9, 13, 9, 17, c('orange', 2));
+    micro(p, 1, 1, 'LEO', c('ink', 0));
+    return p;
+  })()));
+  a.solid('cable', on(parquet, (() => {
+    const p = blank();
+    for (let i = 0; i < 16; i++) p.set(2 + i, 10 + Math.round(Math.sin(i / 2) * 3), c('ink', 0));
+    p.rect(15, 6, 4, 4, c('grey', 4)).frame(15, 6, 4, 4, c('ink', 0));
+    p.rect(1, 13, 13, 6, c('paper', 4)).frame(1, 13, 13, 6, c('brass', 1));
+    micro(p, 2, 14, 'CHEZ', c('red', 2));
+    return p;
+  })()));
+  a.solid('teddyNap', on(parquet, (() => {
+    const p = blank();
+    p.rect(1, 14, 18, 5, c('blue', 2)).rect(1, 14, 18, 1, c('blue', 4));
+    p.blit(corgi(0), 0, -2, CLEAR);
+    micro(p, 13, 0, 'Z', c('sky', 4));
+    return p;
+  })()));
+  a.tile('shoebox', on(parquet, (() => {
+    const p = blank();
+    p.rect(2, 12, 16, 7, c('brown', 1)).rect(3, 12, 14, 2, c('brown', 0)).rect(2, 18, 16, 1, c('brown', 0));
+    return p;
+  })()));
+  a.tiles.def('egg').touch = 'shoebox';
+  a.tile('lostOut', on(parquet, (() => {
+    const p = blank();
+    bevel(p, 3, 2, 14, 18, r('wood'), 3, 1);
+    micro(p, 4, 8, 'OUT', c('ink', 0));
+    return p;
+  })()));
   // Doc Leo, standing backward in line (as usual), and the rest of the line
   a.prop('leoBack', 'floor', mirror(docLeo(0)));
   a.prop('patron', 'floor', figure({ shirt: ['teal', 3], hair: ['ink', 1], pants: ['brown', 1] }));
@@ -277,9 +359,25 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
     q: 'patron2',
     C: 'line0',
     f: 'fern',
+    Y: { tile: 'looseShelf', mark: 'looseShelf' },
     ...Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 7].map((w) => [String(w), { tile: w < wings.length ? `gate${w}` : 'floor', mark: `gate${w}` }])),
   } as Record<string, Cell>, 'floor');
   for (let i = 0; i < 3; i++) a.set(17 + i, 3, `stax${i}`), a.set(16 + 6 + i, 7, `line${i}`);
+
+  const lost = a.window(32, 0, LOST, {
+    ...shelfCells,
+    L: 'shelf',
+    F: 'shelf',
+    u: 'umbrellas',
+    r: 'chicken',
+    h: 'cable',
+    s: 'sock',
+    t: 'teddyNap',
+    E: { tile: 'egg', mark: 'egg' },
+    D: { tile: 'lostOut', mark: 'lostOut' },
+  } as Record<string, Cell>, 'floor');
+  for (let i = 0; i < 4; i++) a.set(32 + 6 + i, 0, `lostSign${i}`);
+  for (let i = 0; i < 3; i++) a.set(32 + 2 + i, 8, `pocket${i}`);
 
   return {
     area: a,
@@ -290,5 +388,9 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
     fromStacks: stacks.marks.get('back')!,
     book33: stacks.marks.get('book33')!,
     gates: [0, 1, 2, 3, 4, 5, 6, 7].map((w) => stacks.marks.get(`gate${w}`)!),
+    looseShelf: stacks.marks.get('looseShelf')!,
+    lost,
+    egg: lost.marks.get('egg')!,
+    lostOut: lost.marks.get('lostOut')!,
   };
 }

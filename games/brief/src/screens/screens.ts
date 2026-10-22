@@ -10,13 +10,13 @@ import { dosText } from '../../../kit/disk';
 import { Pixels, rng } from '../../../kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
-import { corgi, docLeo, gwinn, shusher, wordSlip } from '../art/kit';
+import { bookwormEgg, corgi, docLeo, gwinn, shusher, wordSlip } from '../art/kit';
 import { PAL, c, r } from '../art/pal';
 import type { BlockSet } from '../blocks/sets';
 import type { CompiledWing } from '../levels/wing';
 import { story } from '../stories';
 import { joinPages, storyPages } from './pages';
-import { CREDITS, HELP, LOST, STORY, WON, book33Text, coverText } from './text';
+import { CREDITS, EGG, HELP, LOST, STORY, WON, book33Text, coverText } from './text';
 
 const W = 320;
 const H = 200;
@@ -266,6 +266,19 @@ export function twistScreen(w: CompiledWing, k: number): Pixels {
   return p;
 }
 
+/** The felt egg, big, on the Lost and Found's shelf, before its page. */
+export function eggScreen(): Pixels {
+  const p = shelves(71);
+  p.rect(0, 0, W, 28, c('wood', 0));
+  headline(p, 7, 'LOST AND FOUND', 2, c('yellow', 3), c('red', 1));
+  p.rect(100, 40, 120, 130, c('ink', 0)).rect(104, 44, 112, 122, c('night', 2));
+  scaleBlit(p, bookwormEgg(), 110, 50, 5);
+  centered(p, 178, 'The Bookworm Egg', c('paper', 4), 1, c('ink', 0));
+  scaleBlit(p, gwinn(0, true), 30, 140, 2);
+  scaleBlit(p, docLeo(0), 248, 130, 2, true);
+  return p;
+}
+
 // ------------------------------------------------------------------ the intro cartoon
 
 /**
@@ -402,6 +415,11 @@ export function buildScreens(joe: BlockSet, wings: CompiledWing[]): Record<strin
       out[`s${s.n}.lst`] = serializeSlideList([{ name: 'page.gif', pause: 0 }, { name: `s${s.n}.txt` }, { name: `t${s.n}.gif`, pause: 20 }]);
     });
   }
+  // the felt egg
+  out['eggpic.gif'] = gif(eggScreen());
+  out['egg.gif'] = gif(pageScreen(joe, 'THE FELT EGG', 62, 'shh'));
+  out['egg.txt'] = dosText(EGG);
+  out['egg.lst'] = serializeSlideList([{ name: 'eggpic.gif', pause: 8 }, { name: 'egg.gif', pause: 0 }, { name: 'egg.txt' }]);
   // the thirty-third book
   out['b33.gif'] = gif(pageScreen(joe, 'BOOK 33', 61, 'blink'));
   out['b33.txt'] = dosText(book33Text());

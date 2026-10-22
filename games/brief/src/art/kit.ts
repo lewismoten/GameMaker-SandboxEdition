@@ -414,3 +414,24 @@ export function plinth(under: Pixels, exhibit: Pixels): Pixels {
   p.blit(exhibit, 0, -6, CLEAR);
   return p;
 }
+
+// ------------------------------------------------------------------ the felt egg
+
+/**
+ * The Bookworm Egg (a sprite): cream felt with a gold blanket-stitched seam, a green felt
+ * bookworm in red reading glasses curled around its middle, and a red ribbon bookmark.
+ */
+export function bookwormEgg(): Pixels {
+  const p = blank();
+  blob(p, 10, 10, 6, 8, r('paper'), 1, 4);
+  // the gold blanket stitch down the seam
+  for (let y = 4; y < 17; y += 2) p.set(10, y, c('brass', 4));
+  // the ribbon bookmark from the top
+  p.rect(12, 2, 2, 9, c('red', 3)).set(12, 11, c('red', 2)).set(13, 12, c('red', 2));
+  // the bookworm, curled around the middle, in his reading glasses
+  p.rect(4, 12, 12, 2, c('green', 3)).rect(4, 13, 12, 1, c('green', 1));
+  for (const x of [6, 9, 12]) p.set(x, 12, c('green', 5));
+  p.rect(14, 9, 4, 4, c('green', 3)).set(17, 10, c('ink', 0));
+  p.frame(15, 9, 3, 2, c('red', 3));
+  return p;
+}

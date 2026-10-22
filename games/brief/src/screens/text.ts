@@ -35,6 +35,7 @@ export const HELP = page([
  F2 status: Money is the
     words you carry. Words
     are money.
+ P  pocket a small thing
  F5 save  F6 load
  Esc  quit to the menu
 
@@ -134,6 +135,30 @@ THE END
 ...And, as always, keep it brief!`,
 ]);
 
+/**
+ * The felt egg's page: shown on the way out of the Lost and Found. Its name, the egg, its
+ * credits and its piece of the mystery (web/src/eggs/eggs.ts has the same).
+ */
+export const EGG = page([
+  `THE BOOKWORM EGG
+
+Cream felt, blanket-stitched in gold. A green felt bookworm in red reading glasses curls around its middle, and a red ribbon bookmark hangs from the top.
+
+Finders, pocketers. If it is in your pocket (F2), it is yours.`,
+  `Tucked under the ribbon: a recipe card, filed under 641.5 (cookbooks), stained brown and still a little fizzy.
+
+"ROOT BEER. Serves a baker's dozen. For ingredient 13, see other side."
+
+The other side is overdue.`,
+  `Felted by Lewis "Lewie" Moten III, who felted a Doc Leo clown egg first.
+
+Shelved by Claude Opus 5.5.
+
+Chewed (slightly) by Teddy. Hidden by Gwinn. Guarded by Doc Leo, facing the wrong way.
+
+...And, as always, keep it brief!`,
+]);
+
 export const LOST = page([
   `You can't lose in a library.
 
@@ -174,7 +199,7 @@ const COMPLAINTS = [
   'I DREAM OF NINETY-NINE. IT IS A NIGHTMARE.',
   'WHO WROTE THESE? A HUMAN. HE COUNTED. GOOD.',
   'NO WORD LEFT BEHIND. NO WORD LEFT OVER.',
-  'TALLY HO.',
+  'LOST SOMETHING? SO DID THE LOST AND FOUND.',
   'THE END COSTS ONE HUNDRED. IT IS WORTH IT.',
 ];
 

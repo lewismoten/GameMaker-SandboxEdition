@@ -18,6 +18,8 @@ export interface BlockDef {
   eamt?: number;
   birthMon?: number;
   birthTime?: number;
+  /** Game-Maker's Pick-up flag: the pickup key puts the block in the inventory. */
+  obj?: boolean;
 }
 
 export class BlockSet {
@@ -29,13 +31,17 @@ export class BlockSet {
     readonly transparent: boolean,
   ) {}
 
-  add(name: string, px: Pixels, def: BlockDef = {}): number {
+  /** Adds a block in the next free slot, or in slot `at` (kept free for it). */
+  add(name: string, px: Pixels, def: BlockDef = {}, at?: number): number {
     if (this.names.includes(name)) throw new Error(`Block ${name} twice`);
-    if (this.names.length >= this.count) throw new Error(`Too many blocks (${name})`);
-    this.names.push(name);
-    this.pics.push(px);
-    this.defs.push(def);
-    return this.names.length - 1;
+    let i = at ?? 0;
+    if (at === undefined) while (i < this.count && this.names[i] !== undefined) i++;
+    if (i >= this.count) throw new Error(`Too many blocks (${name})`);
+    if (this.names[i] !== undefined) throw new Error(`Block slot ${i} taken by ${this.names[i]}`);
+    this.names[i] = name;
+    this.pics[i] = px;
+    this.defs[i] = def;
+    return i;
   }
 
   id(name: string): number {
@@ -73,6 +79,7 @@ export class BlockSet {
       b.eamt = d.eamt ?? 0;
       b.birthMon = d.birthMon ?? 0;
       b.birthTime = d.birthTime ?? 0;
+      b.obj = d.obj ? 1 : 0;
       return b;
     });
   }

@@ -14,6 +14,13 @@ export const CTR = {
 
 export const wingCounter = (w: number) => CTR.wing0 + w;
 
+/**
+ * The felt egg's block: the same number in every block set (the inventory keeps only
+ * numbers), a Pick-up block, and the only one in the game. A save holding it in
+ * world.ci.inv has found it (web/src/eggs/eggs.ts).
+ */
+export const EGG_BLOCK = 149;
+
 /** Words in every book. Not 99. Not 101. */
 export const WORDS_PER_BOOK = 100;
 /** Stories a wing must have restored before its stamp gate in the Reserve Stacks opens. */
@@ -48,6 +55,8 @@ export const KEY = {
   s: 0x1f73,
   a: 0x1e61,
   d: 0x2064,
+  /** P: Joe pockets what he stands on (if it is small enough; almost nothing is). */
+  p: 0x1970,
 } as const;
 
 /** Scan codes for recordings and the simulator. */
