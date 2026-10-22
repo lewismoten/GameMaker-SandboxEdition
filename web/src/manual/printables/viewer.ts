@@ -41,7 +41,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     let at = 0;
     const total = pages.length;
     const stapled = centerSpread(total);
-    const stage = h('div', { class: 'gmb-stage' });
+    // the stage scrolls a tall piece: focusable, so the keyboard can scroll it too
+    const stage = h('div', { class: 'gmb-stage', tabindex: 0, role: 'region', 'aria-label': 'The piece shown' });
     const tray = h('ul', { class: 'gmb-tray-list' });
     const counter = h('span', { class: 'gmb-counter' });
     const filmBtn = h(
@@ -255,7 +256,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       'div',
       { class: 'gmb', role: 'dialog', 'aria-modal': 'true', 'aria-label': title },
       h(
-        'header',
+        'div',
         { class: 'gmb-bar' },
         h('strong', null, title),
         h('span', { class: 'gmb-spacer' }),

@@ -198,6 +198,11 @@
   padding: 12px;
 }
 
+.gmb-stage:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: -3px;
+}
+
 .gmb-loading {
   font:
     italic 15px Georgia,
