@@ -1,0 +1,183 @@
+// Two shelves on the wall with Sandbox Software's boxes standing on them like books, spines
+// out (the felt eggs' shadow box, once there is one, stands at the top shelf's right end). The box whose game is in the drive, or the one last taken down to look at, stands
+// face out. Click a box to take it down (the box viewer); in the viewer ◀ ▶ walk along
+// the shelf. While one of these games is in drive A: its poster hangs on the wall.
+import { sandboxBoxContents } from './gameBoxContents';
+import './shelf.css';
+import { h } from '../../editor/core/ui';
+import type { CatalogEntry } from '../../project/files';
+import { boxModel, openBoxViewer, type BoxViewerPage } from './boxViewer';
+import { drawBox, type BoxFaces } from './gameBox';
+import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
+import { shelfLayout } from './shelfLayout';
+
+export interface ShelfHooks {
+  /** Put the game's disk in drive A:. */
+  insert: (id: string) => void;
+  /** Open the game's manual (only for games that have one). */
+  manual?: (entry: CatalogEntry, front: string) => void;
+}
+
+const FRONT_KEY = 'gm-shelf-front';
+/** Pixels of each shelf the boxes may use, top first (shelf.css): the bottom one from the wall's
+ * edge to the left speaker, which stands in front of the rest; the top one leaves room at its
+ * right end for the felt eggs' shadow box (eggs.css). */
+const SHELF_PX = [146, 300];
+/** Where the bottom shelf's plank is, and the room between a shelf's boxes and the plank above (shelf.css). */
+const BOTTOM_Y = 426;
+const PLANK_PX = 12;
+const HEADROOM_PX = 6;
+
+function remembered(): string | undefined {
+  try {
+    return localStorage.getItem(FRONT_KEY) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function remember(id: string): void {
+  try {
+    localStorage.setItem(FRONT_KEY, id);
+  } catch {
+    /* private window: just don't remember */
+  }
+}
+
+export interface Shelf {
+  element: HTMLElement;
+  /** Turns a game's box face out. */
+  face: (id: string) => void;
+  dispose: () => void;
+}
+
+/** Fills the shelf on the wall of `scene` with the games' boxes. */
+export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks: ShelfHooks): Promise<Shelf | undefined> {
+  if (!games.length) return undefined;
+  setPosterWall(scene, games);
+  const shelf = h('div', { class: 'game-shelf', role: 'group', 'aria-label': 'Game boxes on the shelves' });
+  // as big as they fit, the top shelf filled first
+  const layout = shelfLayout(games.length, SHELF_PX);
+  const rows = layout.rows.map((_, i) => h('div', { class: `shelf-row ${i ? 'bottom' : 'top'}` }));
+  shelf.append(...rows);
+  shelf.style.setProperty('--shelf-u', `${layout.u.toFixed(2)}px`);
+  // the top shelf's plank, for whatever stands on it (the eggs' shadow box)
+  scene.style.setProperty('--shelf-top-y', `${BOTTOM_Y - 9.25 * layout.u - PLANK_PX - HEADROOM_PX}px`);
+  scene.append(shelf);
+  const rowOf = (i: number) => {
+    let k = i;
+    for (let r = 0; r < rows.length; r++) {
+      if (k < layout.rows[r]) return rows[r];
+      k -= layout.rows[r];
+    }
+    return rows[rows.length - 1];
+  };
+  const faces = new Map<string, BoxFaces>();
+  const slots = new Map<string, HTMLElement>();
+  let front = remembered() ?? games[0].id;
+  if (!games.some((g) => g.id === front)) front = games[0].id;
+
+  // Boxes spine out are drawn without their screenshots (no game files to download);
+  // a box gets them when it is turned face out or taken down.
+  const complete = new Map<string, Promise<BoxFaces | undefined>>();
+  const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
+    let p = complete.get(g.id);
+    if (!p) {
+      p = drawBox(g)
+        .catch(() => undefined)
+        .then((f) => {
+          if (!f) return faces.get(g.id);
+          faces.set(g.id, f);
+          slots.get(g.id)?.replaceChildren(boxModel(f));
+          return f;
+        });
+      complete.set(g.id, p);
+    }
+    return p;
+  };
+
+  const face = (id: string) => {
+    if (!slots.has(id)) return;
+    const g = games.find((x) => x.id === id);
+    if (g) void completed(g);
+    front = id;
+    remember(id);
+    for (const [gid, el] of slots) el.classList.toggle('face-out', gid === id);
+  };
+
+  const onShelf = () => games.filter((g) => faces.has(g.id));
+  const page = (g: CatalogEntry): BoxViewerPage => {
+    const f = faces.get(g.id)!;
+    return {
+      entry: g,
+      faces: f,
+      actions: {
+        manual: g.original?.manual && hooks.manual ? () => hooks.manual!(g, f.front) : undefined,
+        insert: () => hooks.insert(g.id),
+        // beside the box: the disks, the manual and the paper that came in it
+        extras: sandboxBoxContents(g, f.front, { insert: () => hooks.insert(g.id), open: () => hooks.manual?.(g, f.front) }),
+        step: async (dir) => {
+          const list = onShelf();
+          if (list.length < 2) return undefined;
+          const i = list.findIndex((x) => x.id === front);
+          const next = list[(i + dir + list.length) % list.length];
+          face(next.id);
+          await completed(next);
+          return page(next);
+        },
+      },
+    };
+  };
+  const open = async (g: CatalogEntry) => {
+    face(g.id);
+    await completed(g);
+    const p = page(g);
+    void openBoxViewer(p.entry, p.faces, p.actions);
+  };
+
+  // draw the boxes one by one, so the first ones appear while the rest are drawn
+  for (const [i, g] of games.entries()) {
+    const f = await (g.id === front ? completed(g) : drawBox(g, { shots: false }).catch(() => undefined));
+    if (!f) continue;
+    faces.set(g.id, f);
+    const slot = h(
+      'button',
+      {
+        class: `shelf-box${g.id === front ? ' face-out' : ''}`,
+        title: `${g.title} — take it off the shelf`,
+        'aria-label': `${g.title} box`,
+        onclick: () => void open(g),
+      },
+      boxModel(f),
+    );
+    slots.set(g.id, slot);
+    rowOf(i).append(slot);
+  }
+  if (!slots.has(front) && slots.size) face([...slots.keys()][0]);
+
+  // follow drive A: — the desk lists "<title> in A:" beside the drive
+  const desk = scene.closest('.desk') ?? scene;
+  let inDrive: string | undefined;
+  const watch = () => {
+    const label = desk.querySelector('.drive-actions-title')?.textContent ?? '';
+    const drive = desk.querySelector<HTMLElement>('.drive-actions');
+    const g = drive && !drive.hidden ? games.find((x) => label === `${x.title} in A:`) : undefined;
+    if (g?.id === inDrive) return;
+    inDrive = g?.id;
+    if (g) {
+      face(g.id);
+      void showWallPoster(g.id);
+    } else hideWallPoster();
+  };
+  const observer = new MutationObserver(watch);
+  observer.observe(desk, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden'] });
+  watch();
+  return {
+    element: shelf,
+    face,
+    dispose: () => {
+      observer.disconnect();
+      hideWallPoster();
+    },
+  };
+}

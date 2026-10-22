@@ -1,0 +1,329 @@
+/* Monster path editor: a path drawn over a real map, retro arcade style. */
+.mpath {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mpath-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border);
+}
+.mpath-tabs button {
+  border-radius: 6px 6px 0 0;
+  border-bottom: none;
+  margin-bottom: -2px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-weight: 600;
+}
+.mpath-tabs button small {
+  font-weight: 400;
+  color: var(--muted);
+}
+.mpath-tabs button.selected {
+  background: var(--title-bg);
+  color: var(--title-text);
+  border-color: var(--title-bg);
+}
+.mpath-tabs button.selected small {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.mpath-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+}
+.mpath-toolbar .field {
+  min-width: 0;
+}
+.mpath-toolbar select {
+  max-width: 260px;
+}
+.mpath-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.mpath-play {
+  min-width: 92px;
+}
+
+.mpath-notice:empty {
+  display: none;
+}
+.mpath-notice p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.mpath-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  font-size: 13px;
+}
+.mpath-modes > span {
+  margin-right: 4px;
+}
+.mpath-modes button.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.mpath-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+.mpath-left {
+  flex: 1 1 420px;
+  min-width: 0;
+  max-width: 760px;
+}
+.mpath-stage {
+  position: relative;
+  padding: 6px;
+  background: #000;
+  border-radius: 8px;
+  border: 3px solid;
+  border-color: #6b6b8f #1c1c2e #1c1c2e #6b6b8f;
+  box-shadow: 0 0 0 1px var(--border);
+}
+.mpath-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+  image-rendering: pixelated;
+  touch-action: none;
+  outline: none;
+}
+.mpath-canvas:focus-visible {
+  box-shadow: 0 0 0 2px var(--focus);
+}
+.mpath-readout {
+  font:
+    12px ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  color: var(--muted);
+  min-height: 1.4em;
+  margin-top: 4px;
+}
+
+.mpath-pop {
+  position: absolute;
+  z-index: 3;
+  width: 240px;
+  max-width: calc(100% - 12px);
+  background: #10102a;
+  color: #f0f0ff;
+  border: 2px solid #ffd400;
+  border-radius: 6px;
+  padding: 8px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mpath-pop[hidden] {
+  display: none;
+}
+.mpath-pop .meta {
+  color: #b8b8d8;
+}
+.mpath-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mpath-pop-head .modal-close {
+  color: inherit;
+}
+.mpath-pop-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mpath-orients {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 4px;
+  justify-content: start;
+}
+.mpath-orients button {
+  padding: 2px;
+  line-height: 0;
+  border-width: 2px;
+}
+.mpath-orients button.selected {
+  border-color: #00b8d0;
+  box-shadow: 0 0 0 2px #00e0ff;
+}
+
+.mpath-speed {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 2px 8px;
+  font-size: 13px;
+}
+.mpath-speed input {
+  width: 100%;
+  min-width: 0;
+}
+.mpath-speed output {
+  font:
+    bold 14px ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  min-width: 2ch;
+  text-align: right;
+}
+.mpath-speed small {
+  grid-column: 2 / 4;
+  color: var(--muted);
+  font-size: 11px;
+}
+.mpath-pop .mpath-speed small {
+  color: #b8b8d8;
+}
+
+.mpath-side {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mpath-count {
+  font:
+    bold 13px ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.mpath-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.mpath-chips button {
+  padding: 2px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  line-height: 1;
+}
+.mpath-chips button.selected {
+  border-color: #00b8d0;
+  box-shadow: 0 0 0 2px #00e0ff;
+}
+.mpath-inspect {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-2);
+}
+.mpath-inspect h4 {
+  margin: 0;
+}
+.mpath-inspect h4 small {
+  font:
+    12px ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  color: var(--muted);
+}
+.mpath-clear {
+  align-self: flex-start;
+}
+.mpath-keys {
+  font-size: 12px;
+}
+
+.mpath-numbers summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+}
+.mpath-numbers table {
+  margin-top: 6px;
+}
+
+.mpath-mini {
+  width: min(400px, 80vw);
+  height: auto;
+  cursor: crosshair;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.mpath-zoom {
+  display: flex;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+}
+.mpath-zoom button {
+  border-radius: 0;
+  min-width: 36px;
+}
+.mpath-zoom button:first-child {
+  border-radius: 6px 0 0 6px;
+}
+.mpath-zoom button:last-child {
+  border-radius: 0 6px 6px 0;
+}
+.mpath-zoom button + button {
+  border-left: none;
+}
+
+.mpath-pop button {
+  background: #23234a;
+  color: #f0f0ff;
+  border-color: #6b6b8f;
+}
+.mpath-pop button:hover {
+  background: #33336a;
+}
+.mpath-pop button.danger {
+  color: #ff8a80;
+}
+.mpath-pop .mpath-orients button {
+  background: #fff;
+}
+.mpath-pop-head .modal-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.mpath-numbers {
+  overflow-x: auto;
+}

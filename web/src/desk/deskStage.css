@@ -1,0 +1,392 @@
+/* The desk as a stage scaled to fit the window (desk/stage.ts); phones stack instead.
+   Stage coordinates: 1440 x 880. The desk top runs from x 40 to 1400 at its front edge
+   (--edge); its back meets the wall at y 470. Past its ends you see the wall come down to
+   the baseboard and the carpet.
+   Things on the wall are drawn about 10px to the inch: the desk top, 30" up, meets the wall
+   at y 470, so the floor meets it at y 770; the window's sill is 36" up and the wall phone
+   hangs at a standing person's height.
+   One perspective for the whole desk: lines running straight back (the desk top's ends, the
+   end panels, the keyboard tray's runners) all head for one vanishing point, (720, -784),
+   high above the stage. So the desk top is 110px narrower at each end of its back edge,
+   and the tray's tilt and perspective (desk/pc/tray.css) are set to meet the same point. */
+.desk-edge,
+.desk-top,
+.desk-legs {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .desk {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    /* clip, not just hide: focusing something near the bottom must not scroll the stage */
+    overflow: clip;
+    background:
+      /* light from the window, falling on the wall to its left */
+      radial-gradient(
+        ellipse 40% 55% at 85% 22%,
+        rgba(190, 205, 235, var(--window-light, 0.1)),
+        transparent 70%
+      ),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 30%),
+      repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
+  }
+
+  /* the desk top belongs to the stage, so it lines up with what sits on it */
+  .desk::after {
+    display: none;
+  }
+
+  .desk-scene {
+    --edge: 712px;
+    position: absolute;
+    left: 50%;
+    top: var(--bar-h, 50px);
+    display: block;
+    width: 1440px;
+    height: 880px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transform: translateX(-50%) scale(var(--stage-scale, 1));
+    transform-origin: 50% 0;
+  }
+
+  /* the baseboard and the carpet, seen past the ends of the desk */
+  .desk-scene::before {
+    content: "";
+    position: absolute;
+    left: -3000px;
+    right: -3000px;
+    top: 770px;
+    bottom: -8000px;
+    z-index: -3;
+    background:
+      linear-gradient(
+        #e6dfcc,
+        #c8bfa6 10px,
+        #8f8670 13px,
+        #1c1a18 14px,
+        #2c2824 40px,
+        transparent 160px
+      ),
+      radial-gradient(
+          circle at 30% 40%,
+          rgba(255, 255, 255, 0.04) 0 1px,
+          transparent 1.5px
+        )
+        0 0 / 5px 5px,
+      linear-gradient(#2c2824, #3b342d 260px);
+  }
+
+  /* the desk top, narrower at the back than at the front: its ends run toward the vanishing point */
+  .desk-top {
+    display: block;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 470px;
+    height: calc(var(--edge) - 470px);
+    z-index: -1;
+    clip-path: polygon(110px 0, calc(100% - 110px) 0, 100% 100%, 0 100%);
+    background:
+      radial-gradient(
+        ellipse 30% 70% at 50% 30%,
+        rgba(255, 235, 200, 0.08),
+        transparent 70%
+      ),
+      repeating-linear-gradient(
+        176deg,
+        rgba(0, 0, 0, 0.08) 0 3px,
+        transparent 3px 11px
+      ),
+      linear-gradient(
+        180deg,
+        #3f2915 0,
+        #5a3a1f 5px,
+        var(--wood-b) 16px,
+        var(--wood-a) 100%
+      );
+    box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  /* the dark knee space under the desk, between its two end panels */
+  .desk-legs {
+    display: block;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: var(--edge);
+    bottom: -8000px;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(
+          90deg,
+          #4a2f18,
+          #6b4626 6px,
+          #3d2714 34px,
+          transparent 34px
+        )
+        left / 34px 100% no-repeat,
+      linear-gradient(
+          270deg,
+          #4a2f18,
+          #6b4626 6px,
+          #3d2714 34px,
+          transparent 34px
+        )
+        right / 34px 100% no-repeat,
+      linear-gradient(#17110c, #0d0b09 200px, #0d0b09);
+  }
+
+  /* the end panels' inner faces, running back under the desk toward the vanishing point:
+     each is cut off below by the line where it meets the floor (back at the wall, 58px
+     below the desk's front edge, coming forward to the panel's front foot well below the stage) */
+  .desk-legs::before,
+  .desk-legs::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 104px;
+    height: 356px;
+    background: linear-gradient(90deg, #3a2513, #24170c 60%, #120c07);
+  }
+
+  .desk-legs::before {
+    left: 34px;
+    clip-path: polygon(0 0, 100% 0, 100% 58px, 0 100%);
+  }
+
+  .desk-legs::after {
+    right: 34px;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 58px);
+    background: linear-gradient(270deg, #3a2513, #24170c 60%, #120c07);
+  }
+
+  /* the desk's front edge, drawn over the back of the keyboard tray (desk/pc/tray.css) */
+  .desk-edge {
+    display: block;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: calc(var(--edge) - 1px);
+    height: 23px;
+    z-index: 4;
+    border-radius: 0 0 3px 3px;
+    pointer-events: none;
+    background:
+      linear-gradient(rgba(255, 230, 190, 0.35), transparent 2px),
+      linear-gradient(
+        #8a5c34,
+        #6e4828 10px,
+        #5e3c1f 18px,
+        #2a1a0d 20px,
+        #17110c 22px
+      );
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  /* --- where everything stands ----------------------------------------------------- */
+
+  .pc {
+    position: absolute;
+    left: 390px;
+    top: 8px;
+    width: 660px;
+  }
+
+  /* the case stands over the desk's front edge (z-index 4), so the buttons for the disk in
+     drive A:, hanging below it, aren't cut off by the edge */
+  .pc > .case {
+    z-index: 5;
+  }
+
+  /* the props stand on the stage itself, at their own depth on the desk */
+  .desk-left,
+  .desk-right {
+    display: contents;
+  }
+
+  .desk-scene .prop .caption {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: max-content;
+    max-width: 200px;
+    margin-top: 6px;
+    transform: translateX(-50%);
+    padding: 2px 8px;
+    border-radius: 9px;
+    background: rgba(20, 14, 8, 0.55);
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+
+  .desk-scene .prop:hover .caption,
+  .desk-scene .prop:focus-visible .caption {
+    opacity: 1;
+    background: rgba(20, 14, 8, 0.85);
+  }
+
+  .desk-scene .prop:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 6px;
+    border-radius: 4px;
+  }
+
+  .catalog-prop {
+    position: absolute;
+    left: 44px;
+    top: 506px;
+    z-index: 1;
+  }
+
+  .disk-box {
+    position: absolute;
+    left: 202px;
+    top: 522px;
+    z-index: 1;
+  }
+
+  .desk-mug {
+    position: absolute;
+    left: 1040px;
+    top: 548px;
+    z-index: 2;
+    margin: 0;
+  }
+
+  .gm-box {
+    position: absolute;
+    left: 1168px;
+    top: 412px;
+    z-index: 2;
+  }
+
+  .desk-scene .poster {
+    left: 24px;
+    top: 30px;
+    width: 186px;
+  }
+
+  /* a game's own poster, pinned up while its disk is in A:, tucked behind the monitor's edge */
+  .desk-scene .wall-poster {
+    left: 318px;
+    top: 30px;
+    z-index: -1;
+  }
+
+  .desk-scene .speaker.left {
+    right: auto;
+    left: 336px;
+  }
+
+  .desk-scene .speaker.right {
+    left: 1026px;
+  }
+
+  /* on the wall past the window and the desk's end, where you can stand at it: its
+     earpiece about 5 feet up */
+  .desk-scene .wall-phone {
+    left: 1350px;
+    top: 168px;
+  }
+
+  .desk-scene .news-clipping {
+    left: 224px;
+    top: 40px;
+  }
+
+  /* 36" x 48" (380 x 500 with its frame), its sill 36" up at y 410: it stands partly behind
+     the monitor and runs up past the top of the stage, so its top is cut off there */
+  .desk-scene .snow-window {
+    left: 908px;
+    top: -90px;
+    width: 380px;
+    clip-path: inset(90px -100px -100px -100px);
+  }
+
+  /* its base well inside the desk top's tapering right end */
+  .desk-scene .desk-lamp {
+    left: 1146px;
+    top: 232px;
+  }
+
+  /* the lamp's pool of light, falling forward and left from under its shade. It lights the
+     desk top, the wall and the speaker behind it, but not the mug and the Game-Maker box
+     standing in front of the lamp: it sits below them (z-index 1 < 2) */
+  .desk-scene .lamp-glow {
+    z-index: 1;
+    left: 968px;
+    top: 330px;
+    width: 440px;
+    height: 400px;
+    background:
+      radial-gradient(
+        ellipse 42% 30% at 46% 62%,
+        rgba(255, 214, 140, 0.5),
+        transparent 75%
+      ),
+      radial-gradient(
+        ellipse at 48% 50%,
+        rgba(255, 210, 130, 0.3),
+        rgba(255, 200, 110, 0.12) 45%,
+        transparent 70%
+      );
+  }
+
+  /* a fixed screen can't sit inside a scaled box: drop the scale while the screen fills the window */
+  .desk:not([data-zoom="false"]) .desk-scene {
+    transform: none;
+  }
+}
+
+/* phones: the props stand on one stretch of desk top under the PC */
+@media (max-width: 960px) {
+  .desk::after {
+    display: none;
+  }
+
+  .desk-scene {
+    row-gap: 0;
+    padding-bottom: 0;
+  }
+
+  .desk-scene > .pc {
+    margin-bottom: 20px;
+  }
+
+  .desk-left,
+  .desk-right {
+    justify-self: stretch;
+    gap: 24px 28px;
+    margin: 0 -16px;
+    padding: 28px 16px 12px;
+    background:
+      repeating-linear-gradient(
+        176deg,
+        rgba(0, 0, 0, 0.08) 0 3px,
+        transparent 3px 11px
+      ),
+      linear-gradient(180deg, var(--wood-b), var(--wood-a));
+  }
+
+  .desk-left {
+    box-shadow: inset 0 10px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  .desk-right {
+    padding: 12px 16px 48px;
+    background:
+      repeating-linear-gradient(
+        176deg,
+        rgba(0, 0, 0, 0.08) 0 3px,
+        transparent 3px 11px
+      ),
+      var(--wood-a);
+  }
+}

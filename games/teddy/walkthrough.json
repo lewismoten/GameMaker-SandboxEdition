@@ -1,0 +1,94 @@
+{
+ "version": 1,
+ "game": "teddy",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0eSAjICUgIyBrNAU0CSAjIBkgIyATNAU0BSAbIBs0KTRXNAU0HzQE5ArkQTRzNAVAC0BRLAcsHOQK5F0sfywFNJkgIyBFICMgYSAjIBM0BTQFIB8gEzQpNB80BSAjICkgIyApLBMsBIQKhCk0mzQFQAtAZTRzNAU0BSAjIBc0KTRDN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0OSAjIDM0BSwHLAwICghBLA8sBTQjNAU0BSAjIBM0KIQKhCk0FzRZNFM0BTQJICMgRSAjIGM0BTQHNAwICghRNB80BTQPNC00BzQM5ArkUTRVICMgMzQFLAcsDAgKCEEsDywFNE80BTURICMgNSAjICUgIyBfNAVAC0BRNGkgIyAzNAUsBywMCAoIQSwPLAU0ZSAjIFM0="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0KSAjIBkgIyBDNAU0WzQFQAtAZTRTNAU0BSAjIBc0KTQJICMgHzR9NEM0BTRDNAU0LzQEDAoMoTQZICMgGSAjIBkgIyBDNATkCuRRNGM0BOQK5FE0aSAjIIEgIyBhICMg2zQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0QzQE5ArkUTSTNGk0QzR8hAqEKTQfNEAQChAZNAkgIyBHNAU0CSAjIFUgIyBPNAQQChAZNAkgIyA3NDwUYhQFNEM0iBRSFAU0UzQFNFkgIyA5ICMgNSAjIDUgIyBFICMgwzQ=="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0UzQECAoIUTQTNASECoQpNEM0BAwKDKE0QzQFNAc0DBAKEFE0HzQFNIM0BBgKGHk0QzR0FFIUBTRRICMgCzQkFFIUBTRRICMgCzQkFFIUBTRRICMgQSAjIBkgIyAfNCwQChAZNAkgIyAzNAVAC0BlNKM0pTRjNAU0BzQMDAoMeTRTN"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Doc Leo's Backyard"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Maple Street"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Puddlewick Park"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: Downtown"
+  },
+  {
+   "scene": 6,
+   "title": "Level 5: The Klown Klub"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 25393,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 2390
+   },
+   {
+    "title": "Level 1: Doc Leo's Backyard",
+    "frame": 5940
+   },
+   {
+    "title": "Level 2: Maple Street",
+    "frame": 8796
+   },
+   {
+    "title": "Level 3: Puddlewick Park",
+    "frame": 11891
+   },
+   {
+    "title": "Level 4: Downtown",
+    "frame": 14563
+   },
+   {
+    "title": "Level 5: The Klown Klub",
+    "frame": 17367
+   },
+   {
+    "title": "Ending",
+    "frame": 20404
+   },
+   {
+    "title": "Credits",
+    "frame": 22509
+   }
+  ]
+ }
+}

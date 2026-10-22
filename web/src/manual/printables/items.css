@@ -1,0 +1,2104 @@
+/* The paper extras. Sizes are in cqw: hundredths of the sheet's width. */
+
+/* ---------------------------------------------------------------- postcard */
+.pp-sheet.pp-pc {
+  padding: 4cqw 5cqw;
+  background: var(--grain, none), #efe6cf;
+  font:
+    2.6cqw/1.3 'Courier New',
+    Courier,
+    monospace;
+}
+
+.pc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 0.5cqw solid #b3121a;
+  padding-bottom: 1cqw;
+  margin-bottom: 1.6cqw;
+  color: #b3121a;
+}
+
+.pc-head b {
+  font:
+    900 4.4cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.pc-head span {
+  font:
+    italic 700 2.8cqw Georgia,
+    serif;
+}
+
+.pc-lead {
+  margin: 0 0 1.4cqw;
+  font:
+    2.5cqw/1.3 Georgia,
+    serif;
+}
+
+.pc-line {
+  display: flex;
+  gap: 1.5cqw;
+  align-items: flex-end;
+  margin: 1.4cqw 0;
+}
+
+.pc-line span {
+  white-space: nowrap;
+}
+
+.pc-line i {
+  flex: 1;
+  border-bottom: 0.25cqw solid #4b4436;
+}
+
+.pc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6cqw 2.2cqw;
+  margin: 1.2cqw 0;
+}
+
+.pc-check i {
+  display: inline-block;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  margin-right: 0.8cqw;
+  border: 0.3cqw solid #333;
+  vertical-align: -0.3cqw;
+}
+
+.pc-stamp-free {
+  position: absolute;
+  right: 3cqw;
+  top: 13cqw;
+  padding: 1cqw 2cqw;
+  border: 0.7cqw double #b3121a;
+  border-radius: 1.4cqw;
+  color: #b3121a;
+  font:
+    900 4.4cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  text-align: center;
+  transform: rotate(-12deg);
+  opacity: 0.82;
+  mix-blend-mode: multiply;
+}
+
+.pc-stamp-free small {
+  display: block;
+  font:
+    700 2cqw/1.4 Arial,
+    sans-serif;
+}
+
+.pp-sheet.pp-pc-front .pc-from {
+  display: flex;
+  flex-direction: column;
+  gap: 2.6cqw;
+  width: 40%;
+}
+
+.pp-sheet.pp-pc-front .pc-from i {
+  border-bottom: 0.25cqw solid #4b4436;
+  height: 1cqw;
+}
+
+.pc-stamp {
+  position: absolute;
+  top: 4cqw;
+  right: 5cqw;
+  display: grid;
+  place-items: center;
+  width: 13cqw;
+  height: 16cqw;
+  border: 0.3cqw dashed #6b6250;
+  font:
+    700 2.2cqw/1.2 Arial,
+    sans-serif;
+  text-align: center;
+  color: #6b6250;
+}
+
+.pc-cancel {
+  position: absolute;
+  top: 6cqw;
+  right: 14cqw;
+  padding: 1.2cqw 2.4cqw;
+  border: 0.5cqw solid rgba(30, 40, 120, 0.7);
+  border-radius: 50%;
+  color: rgba(30, 40, 120, 0.75);
+  font:
+    900 2.4cqw/1.1 'Courier New',
+    monospace;
+  text-align: center;
+  transform: rotate(-16deg);
+}
+
+.pc-to {
+  position: absolute;
+  left: 46%;
+  top: 34%;
+  display: flex;
+  flex-direction: column;
+  font:
+    700 3.2cqw/1.45 'Courier New',
+    monospace;
+}
+
+.pc-bars {
+  position: absolute;
+  left: 46%;
+  bottom: 18%;
+  display: flex;
+  gap: 0.5cqw;
+  align-items: flex-end;
+  height: 2.6cqw;
+}
+
+.pc-bars i {
+  width: 0.35cqw;
+  height: 50%;
+  background: #222;
+}
+
+.pc-bars i.tall {
+  height: 100%;
+}
+
+.pp-sheet.pp-pc-front .pp-fictional {
+  position: absolute;
+  left: 5cqw;
+  right: 5cqw;
+  bottom: 3cqw;
+  margin: 0;
+  font-size: 2.1cqw;
+}
+
+/* ---------------------------------------------------------------- key card */
+.pp-sheet.pp-kc {
+  display: flex;
+  flex-direction: column;
+  padding: 3.2cqw 3.6cqw 2cqw;
+  background: var(--grain, none), linear-gradient(#fbf6e6, #efe5c8);
+  font:
+    1.75cqw/1.3 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.kc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2cqw 2cqw;
+  margin: -3.2cqw -3.6cqw 2.4cqw;
+  background: #18150f;
+  color: #f2b632;
+}
+
+.kc-head b {
+  font:
+    900 3.6cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.kc-head span {
+  color: #fff;
+  font:
+    700 1.8cqw Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.kc-body {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  grid-template-areas: 'move act' 'list list';
+  gap: 1.4cqw 2.6cqw;
+}
+
+.kc-move {
+  grid-area: move;
+}
+
+.kc-act {
+  grid-area: act;
+}
+
+.kc-head b.long {
+  font-size: 2.8cqw;
+}
+
+.kc-head span {
+  white-space: nowrap;
+}
+
+.kc-body h3,
+.kc-always h3 {
+  margin: 0 0 1cqw;
+  padding-bottom: 0.4cqw;
+  border-bottom: 0.3cqw solid #18150f;
+  font:
+    900 1.7cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.14em;
+}
+
+.kc-dias {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.6cqw;
+  margin-bottom: 1.2cqw;
+}
+
+.kc-dia {
+  margin: 0;
+  text-align: center;
+}
+
+.kc-dia-keys {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.45cqw;
+}
+
+.kc-dia-row {
+  display: flex;
+  gap: 0.45cqw;
+  justify-content: center;
+}
+
+.kc-cap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3.8cqw;
+  height: 3.8cqw;
+  box-sizing: border-box;
+  border: 0.15cqw solid #8a8270;
+  border-bottom-width: 0.45cqw;
+  border-radius: 0.5cqw;
+  background: #fffdf4;
+  color: #8a8270;
+  font:
+    700 1.7cqw/1 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.kc-cap.gap {
+  visibility: hidden;
+}
+
+.kc-cap.on {
+  border-color: #18150f;
+  background: #f2b632;
+  color: #18150f;
+}
+
+.kc-cap i {
+  position: absolute;
+  right: 0.3cqw;
+  bottom: 0.1cqw;
+  font:
+    700 1.3cqw/1 Arial,
+    sans-serif;
+  font-style: normal;
+}
+
+.kc-dia figcaption {
+  margin-top: 0.6cqw;
+  font:
+    italic 1.2cqw/1.2 Georgia,
+    serif;
+  max-width: 15cqw;
+}
+
+.kc-list {
+  font-size: 1.35cqw;
+  line-height: 1.25;
+}
+
+.kc-act.two .kc-list {
+  columns: 2;
+  column-gap: 1.6cqw;
+}
+
+.kc-moves {
+  grid-area: list;
+  columns: 2;
+  column-gap: 2.6cqw;
+  font-size: 1.35cqw;
+}
+
+.kc-item {
+  display: flex;
+  gap: 0.8cqw;
+  align-items: baseline;
+  break-inside: avoid;
+  padding: 0.3cqw 0;
+  border-bottom: 0.12cqw solid #c9bd9c;
+}
+
+.kc-item kbd,
+.kc-chip kbd {
+  flex: none;
+  min-width: 3.4cqw;
+  padding: 0 0.5cqw;
+  border: 0.15cqw solid #18150f;
+  border-bottom-width: 0.35cqw;
+  border-radius: 0.4cqw;
+  background: #fff;
+  font:
+    700 1.3cqw/1.4 'Courier New',
+    monospace;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.kc-item kbd.kc-arrows {
+  background: #f2b632;
+  font-family: Arial, sans-serif;
+}
+
+.kc-always {
+  margin-top: auto;
+  padding-top: 1.6cqw;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6cqw 1.6cqw;
+  align-items: baseline;
+  font-size: 1.3cqw;
+}
+
+.kc-always h3 {
+  width: 100%;
+  margin-bottom: 0.4cqw;
+}
+
+.kc-chip {
+  display: flex;
+  gap: 0.5cqw;
+  align-items: baseline;
+}
+
+.kc-foot {
+  margin: 1cqw 0 0;
+  font:
+    italic 1.4cqw Georgia,
+    serif;
+  opacity: 0.8;
+}
+
+/* ---------------------------------------------------------------- catalog */
+.pp-sheet.pp-cat {
+  padding: 5cqw 6cqw;
+  font-size: 2cqw;
+}
+
+.cat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.6cqw;
+  border-bottom: 0.8cqw solid #18150f;
+}
+
+.cat-logo {
+  font-size: 3.6cqw;
+  color: #d97f17;
+}
+
+.cat-head div {
+  text-align: right;
+}
+
+.cat-head b {
+  display: block;
+  font:
+    900 4.6cqw/1 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.cat-lead {
+  font:
+    italic 2.2cqw/1.3 Georgia,
+    serif;
+}
+
+.cat-game {
+  display: grid;
+  grid-template-columns: 26% 1fr;
+  gap: 2.4cqw;
+  margin: 0 0 1.8cqw;
+  padding-bottom: 1.6cqw;
+  border-bottom: 0.2cqw dashed #6b6250;
+}
+
+.cat-game.this {
+  outline: 0.4cqw solid #f2b632;
+  outline-offset: 0.8cqw;
+}
+
+.cat-game h3 {
+  margin: 0 0 0.6cqw;
+  font:
+    900 2.8cqw/1.1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.cat-meta {
+  margin: 0 0 0.6cqw;
+  font:
+    700 1.5cqw Arial,
+    sans-serif;
+  color: #6b2e0f;
+}
+
+.cat-game p,
+.cat-game ul {
+  margin: 0 0 0.6cqw;
+}
+
+.cat-game ul {
+  padding-left: 2.4cqw;
+}
+
+.cat-pic img {
+  border: 0.3cqw solid #18150f;
+}
+
+.cat-bbs {
+  margin-bottom: 2.4cqw;
+}
+
+.cat-bbs h3 {
+  margin: 0 0 1cqw;
+  font:
+    900 2.4cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.cat-bbs .pp-sandbox-banner {
+  padding: 0 0.4em;
+  background: #000;
+  color: #ccc;
+  font:
+    700 0.95em 'Courier New',
+    monospace;
+}
+
+.cat-coming {
+  margin-top: 3cqw;
+  padding: 1.6cqw 2.2cqw;
+  margin-bottom: 2.4cqw;
+  background: #18150f;
+  color: #f6f1e2;
+}
+
+.cat-coming h3,
+.cat-order h3 {
+  margin: 0 0 1cqw;
+  font:
+    900 2.4cqw 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.cat-coming h3 {
+  color: #f2b632;
+}
+
+.cat-coming p {
+  margin: 0 0 0.8cqw;
+}
+
+.cat-order {
+  padding: 1.6cqw 2.2cqw;
+  border: 0.4cqw dashed #18150f;
+}
+
+.cat-order table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cat-order th,
+.cat-order td {
+  padding: 0.4cqw;
+  border-bottom: 0.15cqw solid #a99e82;
+  text-align: left;
+}
+
+/* ---------------------------------------------------------------- BBS ad */
+.pp-sheet.pp-bbs {
+  padding: 3cqw;
+  background: #0b0b0b;
+  color: #aaa;
+}
+
+.bbs-screen {
+  padding: 3cqw 2cqw;
+  border: 0.4cqw solid #555;
+  background: #000;
+  font:
+    3cqw/1.45 'Courier New',
+    'Lucida Console',
+    monospace;
+  text-align: center;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ansi.big {
+  margin: 1.2cqw 0;
+  font:
+    900 5.2cqw/1.1 'Courier New',
+    monospace;
+  color: #fff;
+}
+
+.c-gray {
+  color: #888;
+}
+.c-cyan {
+  color: #55ffff;
+}
+.c-yellow {
+  color: #ffff55;
+}
+.c-white {
+  color: #fff;
+}
+.c-green {
+  color: #55ff55;
+  text-align: left;
+  padding-left: 6cqw;
+}
+.c-magenta {
+  color: #ff55ff;
+  text-align: left;
+  padding-left: 6cqw;
+}
+.c-red {
+  color: #ff5555;
+}
+
+.bbs-note {
+  margin: 1.6cqw 0 0;
+  color: #999;
+  font:
+    italic 1.9cqw Georgia,
+    serif;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- warranty */
+.pp-sheet.pp-war {
+  padding: 4cqw 5cqw;
+  border: 1.6cqw solid transparent;
+  background: var(--grain, none), #f8f2df;
+  outline: 0.4cqw solid #2c4a7a;
+  outline-offset: -2.6cqw;
+  font-size: 2.1cqw;
+}
+
+.war-frame {
+  text-align: center;
+}
+
+.war-frame h3 {
+  margin: 0;
+  color: #2c4a7a;
+  font:
+    700 3.6cqw/1.2 Georgia,
+    'Times New Roman',
+    serif;
+  font-variant: small-caps;
+}
+
+.war-title {
+  margin: 0.4cqw 0 1.6cqw;
+  font:
+    italic 2.6cqw Georgia,
+    serif;
+}
+
+.war-text {
+  margin: 0;
+  padding-left: 3cqw;
+  text-align: justify;
+}
+
+.war-text li {
+  margin-bottom: 0.8cqw;
+}
+
+.war-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1cqw;
+  font:
+    700 1.8cqw 'Courier New',
+    monospace;
+}
+
+.pp-war .pp-fictional {
+  font-size: 1.8cqw;
+}
+
+/* ---------------------------------------------------------------- newsletter */
+.pp-sheet.pp-nl {
+  padding: 4.5cqw 5.5cqw;
+  font-size: 1.85cqw;
+  line-height: 1.38;
+}
+
+.nl-mast {
+  border-top: 1cqw solid #18150f;
+  border-bottom: 0.3cqw solid #18150f;
+  text-align: center;
+}
+
+.nl-title {
+  padding: 1.2cqw 0 0.4cqw;
+  font:
+    italic 900 8cqw/1 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: -0.02em;
+}
+
+.nl-sub {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6cqw 0;
+  border-top: 0.2cqw solid #18150f;
+  font:
+    700 1.5cqw Arial,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.nl-cols {
+  margin-top: 2cqw;
+  column-count: 3;
+  column-gap: 3cqw;
+  column-rule: 0.15cqw solid #8d8470;
+}
+
+.nl-lead {
+  column-span: all;
+  margin: 0 0 1cqw;
+  font:
+    900 4.6cqw/1.05 Impact,
+    'Arial Black',
+    sans-serif;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.nl-intro {
+  column-span: all;
+  margin: 0 0 2cqw;
+  font:
+    italic 2.1cqw Georgia,
+    serif;
+  text-align: center;
+}
+
+.nl-cols article {
+  break-inside: avoid;
+  margin-bottom: 2cqw;
+}
+
+.nl-cols h3 {
+  margin: 0 0 0.8cqw;
+  font:
+    900 2.4cqw/1.1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.nl-cols p {
+  margin: 0 0 0.8cqw;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.nl-next .pp-photo {
+  margin: 0 0 1cqw;
+  border: 0.3cqw solid #18150f;
+}
+
+.nl-when {
+  font-weight: 700;
+  font-style: italic;
+}
+
+.nl-next:first-of-type h3::before {
+  content: '★ ';
+  color: #d81e1e;
+}
+
+.nl-foot {
+  position: absolute;
+  left: 5.5cqw;
+  right: 5.5cqw;
+  bottom: 3cqw;
+  font:
+    1.5cqw Arial,
+    sans-serif;
+  border-top: 0.2cqw solid #18150f;
+  padding-top: 0.8cqw;
+}
+
+.nl-foot .pp-fictional {
+  display: inline;
+  border: 0;
+  padding: 0;
+  font-size: 1.5cqw;
+}
+
+.pp-nl .pp-sandbox-banner {
+  padding: 0 0.4em;
+  background: #000;
+  color: #ccc;
+  font:
+    700 0.95em 'Courier New',
+    monospace;
+}
+
+/* ---------------------------------------------------------------- hint book postcard */
+.pp-sheet.pp-ho {
+  font:
+    2.7cqw/1.35 Georgia,
+    serif;
+}
+
+.pp-sheet.pp-ho-front {
+  background: var(--grain, none), #18150f;
+}
+
+.ho-shot {
+  position: absolute;
+  inset: 0;
+  background: var(--ho-bg) center / cover no-repeat;
+  image-rendering: pixelated;
+  filter: saturate(1.1);
+}
+
+.ho-shot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 0 38%, color-mix(in srgb, var(--ho-bg) 92%, transparent) 52%);
+}
+
+.ho-book {
+  position: absolute;
+  left: 7cqw;
+  top: 9cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1cqw;
+  width: 30cqw;
+  height: 44cqw;
+  padding: 3cqw 2cqw;
+  box-sizing: border-box;
+  background: var(--ho-bg);
+  color: var(--ho-ink);
+  border: 0.6cqw solid var(--ho-accent);
+  box-shadow: 1.4cqw 1.8cqw 0 rgba(0, 0, 0, 0.45);
+  transform: rotate(-6deg);
+  text-align: center;
+}
+
+.ho-book-band {
+  padding: 0.4cqw 2cqw;
+  background: #d81e1e;
+  color: #fff;
+  font:
+    900 2.2cqw 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.ho-book b {
+  margin-top: 2cqw;
+  color: var(--ho-accent);
+  font:
+    900 4.2cqw/1.05 'Arial Black',
+    Impact,
+    sans-serif;
+}
+
+.ho-book span:not(.ho-book-band) {
+  font:
+    900 2.6cqw 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.ho-book-film {
+  position: absolute;
+  right: -9cqw;
+  bottom: -2cqw;
+  width: 22cqw;
+  height: 13cqw;
+  background: rgba(255, 0, 0, 0.72);
+  mix-blend-mode: multiply;
+  border: 0.3cqw solid rgba(120, 0, 0, 0.5);
+  transform: rotate(14deg);
+}
+
+.ho-burst {
+  position: absolute;
+  right: 4cqw;
+  top: 3cqw;
+  display: grid;
+  place-items: center;
+  width: 22cqw;
+  height: 22cqw;
+  background: #ffe14a;
+  color: #b3121a;
+  clip-path: polygon(
+    50% 0,
+    61% 18%,
+    82% 10%,
+    79% 32%,
+    100% 40%,
+    84% 55%,
+    96% 75%,
+    73% 76%,
+    68% 100%,
+    50% 86%,
+    32% 100%,
+    27% 76%,
+    4% 75%,
+    16% 55%,
+    0 40%,
+    21% 32%,
+    18% 10%,
+    39% 18%
+  );
+  font:
+    900 3.3cqw 'Arial Black',
+    Impact,
+    sans-serif;
+  transform: rotate(10deg);
+}
+
+.ho-pitch {
+  position: absolute;
+  right: 5cqw;
+  bottom: 5cqw;
+  width: 46cqw;
+  color: var(--ho-ink);
+  text-shadow: 0 0.3cqw 0.6cqw rgba(0, 0, 0, 0.6);
+}
+
+.ho-pitch h3 {
+  margin: 0 0 1.4cqw;
+  color: var(--ho-accent);
+  font:
+    900 3.8cqw/1.1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.ho-pitch p {
+  margin: 0 0 1cqw;
+}
+
+.ho-film-note {
+  display: inline-block;
+  padding: 0.4cqw 1.6cqw;
+  background: #d81e1e;
+  color: #fff;
+  text-shadow: none;
+  font:
+    900 2.4cqw 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.1em;
+}
+
+.pp-sheet.pp-ho-back {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 4cqw;
+  padding: 5cqw 5cqw 4cqw;
+  background: var(--grain, none), #fbf6e6;
+}
+
+.ho-msg {
+  padding-right: 4cqw;
+  border-right: 0.3cqw solid #8a8270;
+  font-size: 2.5cqw;
+}
+
+.ho-msg h3 {
+  margin: 0 0 1.4cqw;
+  color: #b3121a;
+  font:
+    900 3.6cqw/1.1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.ho-msg p {
+  margin: 0 0 1.4cqw;
+}
+
+.ho-sample .rf-code {
+  margin-top: 0.6cqw;
+  font-size: 2.3cqw;
+}
+
+.ho-price s {
+  color: #6b6250;
+}
+
+.ho-price b {
+  color: #b3121a;
+  font:
+    900 3cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.ho-in {
+  font-style: italic;
+}
+
+.ho-mail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.ho-indicia {
+  align-self: flex-end;
+  padding: 1.2cqw 1.6cqw;
+  border: 0.3cqw solid #18150f;
+  font:
+    700 1.8cqw/1.25 Arial,
+    sans-serif;
+  text-align: center;
+}
+
+.ho-indicia small {
+  font-weight: 400;
+}
+
+.ho-to {
+  display: flex;
+  flex-direction: column;
+  gap: 3.6cqw;
+  margin-top: 6cqw;
+  font:
+    700 1.9cqw Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.ho-to i {
+  border-bottom: 0.25cqw solid #4b4436;
+}
+
+.ho-mail .pp-fictional {
+  margin-top: auto;
+  font-size: 1.6cqw;
+}
+
+/* ---------------------------------------------------------------- stickers */
+.pp-sheet.pp-stk {
+  padding: 3.5cqw 5cqw;
+  background: var(--grain, none), #fbfbf7;
+}
+
+.stk-head b {
+  display: block;
+  font:
+    900 5cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.stk-head span {
+  font:
+    italic 2cqw Georgia,
+    serif;
+}
+
+.stk-head em {
+  float: right;
+  font:
+    700 1.8cqw Arial,
+    sans-serif;
+}
+
+/* the Print Then Cut area, 6.75 x 9.25 in, centered on the letter page */
+.stk-art {
+  display: block;
+  width: 79.41%;
+  margin: 1.6cqw auto 0;
+}
+
+.stk-cut {
+  width: min(100%, 980px);
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid #b9ad8c;
+  border-radius: 8px;
+  background: #fffaf0;
+  color: #222;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+
+.stk-cut summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.stk-cut-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.stk-cut-row button {
+  padding: 4px 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.stk-cut-row small {
+  color: #555;
+}
+
+.stk-cut ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.stk-foot {
+  position: absolute;
+  bottom: 3cqw;
+  left: 5cqw;
+  font:
+    italic 1.6cqw Georgia,
+    serif;
+  opacity: 0.7;
+}
+
+/* ---------------------------------------------------------------- maps */
+.pp-sheet.pp-map {
+  padding: 4cqw 4.5cqw;
+  background: var(--grain, none), linear-gradient(#f3ead0, #e9dcb8);
+  font-size: 1.6cqw;
+}
+
+.map-head {
+  padding-right: 8cqw;
+}
+
+.map-head h2 {
+  margin: 0;
+  font:
+    900 4cqw/1.05 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.map-head p {
+  margin: 0.6cqw 0 1.6cqw;
+  font:
+    italic 1.9cqw Georgia,
+    serif;
+}
+
+.map-panels {
+  display: grid;
+  gap: 2cqw;
+}
+
+.map-panels.c2:not(.n1) {
+  grid-template-columns: 1fr 1fr;
+}
+
+.map-panels.c2:not(.n1):not(.n2) > :first-child {
+  grid-column: span 2;
+  width: min(100%, calc(var(--ar) * 58cqw));
+  margin: 0 auto;
+}
+
+/* a tall map never runs off the sheet */
+.map-panels.n1 .map-panel {
+  width: min(100%, calc(var(--ar) * 100cqw));
+  margin: 0 auto;
+}
+
+.map-panel {
+  margin: 0;
+}
+
+.map-pic {
+  position: relative;
+  border: 0.4cqw solid #3a2a12;
+  box-shadow:
+    0 0 0 0.3cqw #f3ead0,
+    0 0 0 0.5cqw #3a2a12;
+}
+
+.map-pic img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  filter: sepia(0.25) saturate(0.85) contrast(1.05);
+}
+
+.map-panel figcaption {
+  margin-top: 0.6cqw;
+  font:
+    italic 700 1.7cqw Georgia,
+    serif;
+}
+
+.mp-mark {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.6cqw;
+  height: 2.6cqw;
+  padding: 0 0.4cqw;
+  border: 0.3cqw solid #fff;
+  border-radius: 1.4cqw;
+  background: #18150f;
+  color: #fff;
+  font:
+    900 1.5cqw/1 Arial,
+    sans-serif;
+}
+
+.map-pic .mp-mark {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, 0.6);
+}
+
+.mk-secret .mp-mark,
+.mp-mark.mk-secret {
+  background: #d81e1e;
+  font-size: 1.8cqw;
+}
+
+.mk-start .mp-mark,
+.mp-mark.mk-start {
+  background: #1f9a3a;
+}
+
+.mk-goal .mp-mark,
+.mp-mark.mk-goal {
+  background: #d6a228;
+  color: #18150f;
+}
+
+.mk-shop .mp-mark,
+.mp-mark.mk-shop {
+  background: #2c4a7a;
+}
+
+.map-key {
+  columns: 2;
+  font-size: 1.5cqw;
+  column-gap: 3cqw;
+  margin: 2cqw 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.map-key li {
+  break-inside: avoid;
+  margin-bottom: 0.6cqw;
+}
+
+.map-legend p {
+  margin: 0.4cqw 0;
+  font-style: italic;
+}
+
+.map-compass {
+  position: absolute;
+  top: 3.5cqw;
+  right: 4.5cqw;
+  display: grid;
+  place-items: center;
+  width: 6cqw;
+  height: 6cqw;
+  border: 0.3cqw solid #3a2a12;
+  border-radius: 50%;
+  font:
+    900 2.2cqw Georgia,
+    serif;
+  background: conic-gradient(from -20deg, #3a2a12 0 40deg, transparent 40deg 320deg, #3a2a12 320deg) center / 30% 80% no-repeat;
+}
+
+/* ---------------------------------------------------------------- hint book */
+.pp-sheet.pp-hb {
+  padding: 7cqw 8cqw;
+  font:
+    3cqw/1.4 'Times New Roman',
+    Times,
+    serif;
+}
+
+.pp-sheet.pp-hb-cover {
+  background: var(--grain, none), linear-gradient(160deg, #1d2b52, #0b1020) !important;
+  color: #fff;
+  text-align: center;
+}
+
+.hb-band {
+  margin: 0 -8cqw 6cqw;
+  padding: 2cqw;
+  background: #d81e1e;
+  font:
+    900 5cqw 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: 0.3em;
+}
+
+.pp-sheet.pp-hb-cover h2 {
+  margin: 0;
+  color: #f2b632;
+  font:
+    900 8cqw/1.05 'Arial Black',
+    Impact,
+    sans-serif;
+}
+
+.hb-sub {
+  font:
+    italic 3.6cqw Georgia,
+    serif;
+}
+
+.hb-howto {
+  margin: 8cqw 0 0;
+  padding: 4cqw;
+  background: #f6f1e2;
+  color: #18150f;
+  text-align: left;
+}
+
+.hb-mapref {
+  margin: 4cqw 0 0;
+  padding: 2.4cqw 4cqw;
+  border: 0.5cqw dashed currentColor;
+  font:
+    2.9cqw/1.35 Arial,
+    sans-serif;
+  text-align: left;
+}
+
+.hb-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5cqw;
+  font:
+    700 2.4cqw Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.pp-hb-page h3 {
+  margin: 0 0 2cqw;
+  padding-bottom: 0.8cqw;
+  border-bottom: 0.4cqw solid #18150f;
+  font:
+    900 4cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.hb-q {
+  margin-bottom: 3cqw;
+}
+
+.hb-q p {
+  margin: 0 0 1cqw;
+}
+
+.hb-a .rf-code {
+  display: flex;
+  font-size: 3cqw;
+}
+
+.hb-a .rf-code.rf-sketch-box {
+  display: inline-flex;
+}
+
+.hb-folio {
+  position: absolute;
+  bottom: 4cqw;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font:
+    2.4cqw Arial,
+    sans-serif;
+}
+
+/* ---------------------------------------------------------------- letter */
+.pp-sheet.pp-let {
+  padding: 8cqw 10cqw;
+  font:
+    2.2cqw/1.55 'Times New Roman',
+    Times,
+    serif;
+}
+
+.let-head {
+  margin-bottom: 4cqw;
+  padding-bottom: 1.4cqw;
+  border-bottom: 0.3cqw double #18150f;
+  text-align: center;
+}
+
+.let-head b {
+  display: block;
+  font:
+    700 4cqw/1.1 Georgia,
+    serif;
+  letter-spacing: 0.06em;
+}
+
+.let-head span {
+  font:
+    italic 1.8cqw Georgia,
+    serif;
+}
+
+.let-date {
+  text-align: right;
+}
+
+.let-body p {
+  margin: 0 0 1.6cqw;
+}
+
+.let-sign {
+  margin-top: 4cqw;
+  font:
+    3.4cqw/1 'Brush Script MT',
+    'Bradley Hand',
+    'Segoe Script',
+    cursive;
+}
+
+.pp-sheet.pp-let-type {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.pp-sheet.pp-let-type .let-body {
+  text-shadow: 0 0 0.08cqw rgba(0, 0, 0, 0.7);
+}
+
+.pp-sheet.pp-let-hand {
+  background: repeating-linear-gradient(transparent 0 3.35cqw, #a9bfd8 3.35cqw 3.45cqw), #fbf9f0 !important;
+  font:
+    2.5cqw/3.45cqw 'Bradley Hand',
+    'Comic Sans MS',
+    'Segoe Print',
+    cursive;
+  color: #1b2d6b;
+}
+
+.pp-sheet.pp-let-hand .let-body p {
+  margin: 0 0 3.45cqw;
+}
+
+/* ---------------------------------------------------------------- recipe card */
+.pp-sheet.pp-rc {
+  position: relative;
+  padding: 4cqw 5cqw;
+  background: repeating-linear-gradient(transparent 0 4.4cqw, #a9bfd8 4.4cqw 4.55cqw) 0 8cqw / 100% calc(100% - 8cqw) no-repeat, #fbf6e6 !important;
+  font:
+    2.3cqw/4.55cqw 'Bradley Hand',
+    'Comic Sans MS',
+    'Segoe Print',
+    cursive;
+  color: #1b2d6b;
+  overflow: hidden;
+}
+
+.rc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 0.35cqw solid #c8241e;
+  margin-bottom: 0.4cqw;
+  color: #2a1408;
+}
+
+.rc-head b {
+  font:
+    700 3.4cqw/1.2 Georgia,
+    serif;
+  letter-spacing: 0.04em;
+}
+
+.rc-head span {
+  font:
+    italic 1.9cqw Georgia,
+    serif;
+}
+
+.rc-lines,
+.rc-notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rc-lines li {
+  display: flex;
+  gap: 1cqw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rc-n {
+  min-width: 3.2cqw;
+  text-align: right;
+}
+
+.rc-lines sup,
+.rc-notes sup {
+  color: #c8241e;
+  font-size: 1.4cqw;
+}
+
+.rc-blank .rc-rule {
+  flex: 1;
+}
+
+.rc-stamp {
+  position: absolute;
+  right: 6cqw;
+  bottom: 9cqw;
+  padding: 0.6cqw 2cqw;
+  border: 0.6cqw double #c8241e;
+  color: #c8241e;
+  font:
+    700 4.6cqw/1 'Courier New',
+    Courier,
+    monospace;
+  letter-spacing: 0.12em;
+  transform: rotate(-12deg);
+  opacity: 0.78;
+  mix-blend-mode: multiply;
+}
+
+.pp-sheet.pp-rc-back {
+  font-size: 2cqw;
+}
+
+.rc-notes li {
+  line-height: 4.55cqw;
+}
+
+.rc-last {
+  margin: 0;
+  font-style: italic;
+}
+
+.rc-ring {
+  position: absolute;
+  left: 58%;
+  top: 46%;
+  width: 22cqw;
+  height: 22cqw;
+  border: 1.2cqw solid rgba(120, 52, 16, 0.22);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- newspaper */
+.pp-sheet.pp-np {
+  padding: 4cqw 5cqw;
+  background: var(--grain, none), #ece6d4;
+  font:
+    1.85cqw/1.35 'Times New Roman',
+    Times,
+    serif;
+}
+
+.np-mast {
+  text-align: center;
+  border-bottom: 0.6cqw double #18150f;
+}
+
+.np-name {
+  font:
+    700 7cqw/1 'Old English Text MT',
+    'UnifrakturMaguntia',
+    'Times New Roman',
+    serif;
+}
+
+.np-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5cqw 0;
+  border-top: 0.2cqw solid #18150f;
+  font:
+    700 1.4cqw Arial,
+    sans-serif;
+  text-transform: uppercase;
+}
+
+.np-headline {
+  margin: 1.4cqw 0 0.6cqw;
+  font:
+    900 6.4cqw/0.95 Impact,
+    'Arial Narrow',
+    sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.np-deck {
+  margin: 0 0 1.4cqw;
+  font:
+    italic 2.2cqw Georgia,
+    serif;
+  text-align: center;
+}
+
+.np-photo {
+  float: right;
+  width: 46%;
+  margin: 0 0 1.4cqw 2cqw;
+}
+
+.np-photo img {
+  filter: grayscale(1) contrast(1.2);
+}
+
+.np-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2cqw;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.np-col p {
+  margin: 0 0 0.8cqw;
+  text-indent: 1.4cqw;
+}
+
+.np-briefs {
+  clear: both;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2cqw;
+  margin-top: 2cqw;
+  padding-top: 1cqw;
+  border-top: 0.4cqw solid #18150f;
+}
+
+.np-briefs b {
+  font:
+    900 1.7cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.np-briefs p {
+  margin: 0.4cqw 0 0;
+}
+
+.np-novelty {
+  position: absolute;
+  bottom: 2cqw;
+  left: 5cqw;
+  right: 5cqw;
+  margin: 0;
+  font:
+    italic 1.3cqw Georgia,
+    serif;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* ---------------------------------------------------------------- journal */
+.pp-sheet.pp-jr {
+  padding: 7cqw 8cqw 7cqw 12cqw;
+  background:
+    linear-gradient(90deg, transparent 9cqw, #e79a9a 9cqw 9.3cqw, transparent 9.3cqw), repeating-linear-gradient(transparent 0 4.6cqw, #a9bfd8 4.6cqw 4.75cqw),
+    #fdfbf2 !important;
+  font:
+    3.2cqw/4.75cqw 'Bradley Hand',
+    'Comic Sans MS',
+    'Segoe Print',
+    cursive;
+  color: #1b2d6b;
+}
+
+.pp-jr h2 {
+  margin: 0 0 4.75cqw;
+  font:
+    700 4.4cqw/4.75cqw 'Bradley Hand',
+    'Comic Sans MS',
+    cursive;
+  text-decoration: underline;
+}
+
+.jr-date {
+  margin: 0;
+  font-weight: 700;
+}
+
+.jr-text p {
+  margin: 0 0 4.75cqw;
+}
+
+/* ---------------------------------------------------------------- ID card */
+.pp-sheet.pp-id {
+  border-radius: 4cqw;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.6), transparent 50%), #f2f2ec;
+  font:
+    3.4cqw/1.25 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.id-band {
+  padding: 2.4cqw 4cqw;
+  background: var(--card);
+  color: var(--card-ink);
+  font:
+    900 3.6cqw/1.1 'Arial Black',
+    Arial,
+    sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.id-body {
+  display: flex;
+  gap: 4cqw;
+  padding: 4cqw;
+}
+
+.id-photo {
+  flex: none;
+  width: 26cqw;
+  height: 32cqw;
+  border: 0.6cqw solid #fff;
+  background: #9aa3ad;
+  box-shadow: 0 0 0 0.3cqw #888;
+  overflow: hidden;
+}
+
+.id-photo {
+  display: grid;
+  place-items: end center;
+  background: center / cover no-repeat;
+  image-rendering: pixelated;
+  color: #fff;
+  font:
+    700 2.4cqw Arial,
+    sans-serif;
+  text-align: center;
+}
+
+.id-photo span {
+  align-self: center;
+}
+
+.id-photo .id-face {
+  width: 70%;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 0.4cqw rgba(0, 0, 0, 0.6));
+}
+
+.id-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6cqw;
+  min-width: 0;
+}
+
+.id-name {
+  font:
+    900 5.4cqw/1.1 Arial,
+    sans-serif;
+}
+
+.id-role {
+  color: var(--card);
+  font-weight: 700;
+}
+
+.id-field small {
+  display: inline-block;
+  min-width: 18cqw;
+  color: #6b6b6b;
+  font-size: 2.6cqw;
+  text-transform: uppercase;
+}
+
+.id-holo {
+  position: absolute;
+  right: 5cqw;
+  bottom: 5cqw;
+  width: 14cqw;
+  height: 14cqw;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg at var(--hx) 50%, #ff8acb, #8affd1, #8ab2ff, #ffe48a, #ff8acb);
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+.pp-sheet.pp-id-back {
+  padding: 0 5cqw;
+  font-size: 3cqw;
+}
+
+.id-stripe {
+  height: 14cqw;
+  margin: 8cqw -5cqw 4cqw;
+  background: #1a1a1a;
+}
+
+.id-sig {
+  margin-top: 3cqw;
+  padding: 1cqw 2cqw;
+  background: repeating-linear-gradient(135deg, #f7f0dd 0 1cqw, #efe3c0 1cqw 2cqw);
+}
+
+.id-sig i {
+  display: block;
+  font:
+    5cqw 'Brush Script MT',
+    'Bradley Hand',
+    cursive;
+  color: #1b2d6b;
+}
+
+/* ---------------------------------------------------------------- charts */
+.pp-sheet.pp-ch {
+  padding: 4.5cqw 4.5cqw;
+  font:
+    1.25cqw/1.22 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.pp-ch h2 {
+  margin: 0;
+  font:
+    900 3.6cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.ch-intro {
+  margin: 0.6cqw 0 1.6cqw;
+  font:
+    italic 1.8cqw Georgia,
+    serif;
+}
+
+.ch-tables {
+  columns: 3;
+  column-gap: 3cqw;
+}
+
+.ch-tables section {
+  break-inside: avoid;
+  margin-bottom: 2cqw;
+}
+
+.pp-ch h3 {
+  margin: 0 0 0.6cqw;
+  padding: 0.5cqw 1cqw;
+  background: #18150f;
+  color: #f6f1e2;
+  font:
+    900 1.8cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.ch-note {
+  margin: 0 0 0.6cqw;
+  font-style: italic;
+}
+
+.pp-ch table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pp-ch th,
+.pp-ch td {
+  padding: 0.25cqw 0.5cqw;
+  border-bottom: 0.1cqw solid #b8ad91;
+  text-align: left;
+}
+
+.pp-ch th {
+  font-size: 1.3cqw;
+  text-transform: uppercase;
+}
+
+.pp-ch tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ---------------------------------------------------------------- star chart */
+.pp-sheet.pp-sc {
+  background: #0a0d1f;
+  color: #e8e6ff;
+  font:
+    1.2cqw/1.3 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.sc-head {
+  position: absolute;
+  top: 2cqw;
+  left: 2.5cqw;
+  z-index: 1;
+}
+
+.sc-head b {
+  display: block;
+  color: #f0a020;
+  font:
+    900 3cqw/1 'Arial Black',
+    Impact,
+    sans-serif;
+}
+
+.sc-head span {
+  font:
+    700 1.2cqw Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+}
+
+.sc-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sc-svg text {
+  font-family: Helvetica, Arial, sans-serif;
+  fill: #e8e6ff;
+}
+
+.sc-svg .sc-hub {
+  font:
+    900 15px 'Arial Black',
+    Arial,
+    sans-serif;
+  fill: #f0a020;
+}
+
+.sc-svg .sc-small {
+  font-size: 10px;
+}
+
+.sc-svg .sc-sector {
+  font:
+    900 15px 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.sc-svg .sc-gate {
+  font:
+    italic 11px Georgia,
+    serif;
+}
+
+.sc-svg .sc-world {
+  font-size: 9.5px;
+}
+
+.sc-svg .sc-world.holds {
+  font-weight: 700;
+  fill: #f6d04d;
+}
+
+.sc-inset {
+  position: absolute;
+  right: 2cqw;
+  bottom: 2cqw;
+  width: 20%;
+  border: 0.3cqw solid #f0a020;
+}
+
+.sc-inset figcaption {
+  margin: 0;
+  padding: 0.3cqw 0.6cqw;
+  background: #f0a020;
+  color: #0a0d1f;
+  font-size: 1.1cqw;
+}
+
+.sc-legend {
+  position: absolute;
+  left: 2.5cqw;
+  bottom: 2cqw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3cqw;
+  max-width: 24%;
+}
+
+.sc-legend b {
+  color: #f0a020;
+}
+
+.sc-legend .dot {
+  display: inline-block;
+  width: 1cqw;
+  height: 1cqw;
+  border-radius: 50%;
+  background: #8a93c8;
+}
+
+.sc-legend .dot.gold {
+  background: #f6d04d;
+}
+
+/* the creases of a sheet folded in four */
+.sc-folds i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0.4cqw;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.12));
+}
+
+.sc-folds i:nth-child(1) {
+  left: 25%;
+}
+.sc-folds i:nth-child(2) {
+  left: 50%;
+}
+.sc-folds i:nth-child(3) {
+  left: 75%;
+}
+
+/* folded on the table, then opened out panel by panel */
+.pp-fo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: auto;
+  perspective: 2200px;
+}
+
+.fo-folded {
+  position: relative;
+  width: var(--sw, 900px);
+  aspect-ratio: 11 / 8.5;
+  transform-style: preserve-3d;
+}
+
+.fo-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--i) * 25%);
+  width: 25%;
+  overflow: hidden;
+  transform-origin: left center;
+  transform: translateX(calc(var(--i) * -100% + 150%));
+  z-index: calc(10 - var(--i));
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+  transition:
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--i) * 0.25s),
+    opacity 0.2s linear calc(var(--i) * 0.25s);
+}
+
+.pp-fo:not(.open) .fo-panel:not(:first-child) {
+  opacity: 0;
+  transform: translateX(calc(var(--i) * -100% + 150%)) rotateY(-90deg);
+}
+
+.pp-fo.open .fo-panel {
+  opacity: 1;
+  transform: translateX(0) rotateY(0);
+}
+
+/* the folded packet: a little thicker, a little worn */
+.pp-fo:not(.open) .fo-panel:first-child {
+  box-shadow:
+    3px 3px 0 #1a1e38,
+    6px 6px 0 #12152b,
+    9px 9px 0 #0c0e1e,
+    0 16px 28px rgba(0, 0, 0, 0.7);
+}
+
+.fo-panel > .pp-paper {
+  position: absolute;
+  top: 0;
+  left: calc(var(--i) * -100%);
+  width: 400% !important;
+}
+
+.fo-btn {
+  font-size: 15px !important;
+}
+
+.pp-sheet .mp-flow {
+  display: flow-root;
+}
+
+.pp-sheet .mp-flow > :first-child {
+  margin-top: 0;
+}

@@ -1,0 +1,63 @@
+MAXIMUS: THE HUNDRED WORLDS
+
+Designed and built by
+CLAUDE
+
+for SANDBOX SOFTWARE
+Pittsburgh, PA
+
+Made with GAME-MAKER 3.0 by
+Recreational Software Designs
+
+Every world, sprite, song and
+sound effect was made by a
+program, from a seed, so you
+and your friends fly the same
+galaxy.
+
+Music for Sound Blaster FM.
+Speech and effects digitized
+at 11 kHz.
+
+Thanks to every courier who
+ever delivered anything on
+time.
+
+Dedicated to three real
+couriers: Lewis's mother, a
+letter carrier; his father,
+who kept the post office
+running in maintenance; and
+his grandmother, a postal
+clerk. They were all at the
+post office when he bought
+Game-Maker in 1992.
+
+This is shareware. If you
+enjoy it, please register.
+
+
+
+
+
+
+
+
+
+
+
+FREE TO SHARE
+
+Made in 2026 by Lewis Moten
+with Claude. Free to share:
+see LICENSE.TXT on the disk.
+
+The shareware page is part
+of the 1995 story: there is
+no fee and nothing to mail.
+
+MIT License, (c) 2026
+Lewis Moten.
+
+
+

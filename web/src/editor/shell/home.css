@@ -1,0 +1,872 @@
+/* Home page: the selected game (homeShowcase.ts) and the library: collection tabs with
+   search and "New game", a line about the collection, and its games as picture tiles
+   (homeCards.ts). Wide windows put the game in a column beside the library and fit the
+   page to the window (the tiles scroll by themselves if they must); narrower, it stacks. */
+
+.home .library {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  container: library / inline-size;
+}
+
+.lib-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.lib-cats {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.lib-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 5px 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.lib-cat:hover {
+  background: var(--panel-2);
+  border-color: transparent;
+}
+
+.lib-cat.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.lib-cat:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.lib-cat .ico {
+  flex: none;
+  opacity: 0.85;
+}
+
+.lib-cat-count {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 9px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.lib-cat.active .lib-cat-count {
+  background: var(--accent-text);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* read by screen readers only */
+.home .vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.lib-find {
+  display: flex;
+  flex: 1 1 200px;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.lib-search {
+  flex: 0 1 240px;
+  min-width: 110px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  background: var(--panel);
+  color: inherit;
+  font: inherit;
+}
+
+.lib-new {
+  flex: none;
+  padding: 6px 14px;
+  border-radius: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lib-about {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+}
+
+.home .lib-about h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.lib-about .lead {
+  flex: 1 1 30ch;
+  max-width: 100ch;
+  margin: 0;
+  font-size: 13px;
+}
+
+.lib-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lib-tools:empty {
+  display: none;
+}
+
+.lib-drop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 10px;
+  padding: 10px 12px;
+}
+
+.lib-empty {
+  grid-column: 1 / -1;
+  padding: 28px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  text-align: center;
+}
+
+.lib-empty p {
+  margin: 0 0 6px;
+}
+
+.lib-empty-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.lib-empty .toolbar {
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.lib-tiles {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 10px;
+}
+
+.lib-tiles > .meta {
+  grid-column: 1 / -1;
+  margin: 8px 0;
+}
+
+.lib-none {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.lib-elsewhere {
+  padding: 3px 10px;
+  border-radius: 14px;
+}
+
+/* Getting started: under the library when the page stacks, under the game on a wide window */
+.home-start {
+  margin: 24px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  font-size: 13px;
+}
+
+.home .home-start h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.home-start ul,
+.home-start-dialog ul {
+  margin: 0 0 6px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.home-start li {
+  margin: 3px 0;
+}
+
+.home-start-dialog {
+  max-width: 460px;
+}
+
+.home-start-dialog li {
+  margin: 6px 0;
+}
+
+.home-start li .ico,
+.home-start-dialog li .ico {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: -2px;
+}
+
+.home-start .meta {
+  margin: 0 0 6px;
+  color: var(--muted);
+}
+
+/* “How it works”: Getting started in a dialog, when the page has no room for it */
+.lib-how {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 0;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  color: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.lib-how[hidden] {
+  display: none;
+}
+
+.lib-about > .lib-how {
+  margin-left: auto;
+}
+
+.lib-sort:not([hidden]) + .lib-how {
+  margin-left: 0;
+}
+
+/* Wide and tall enough: the game in a column beside the library, the page fits the window. */
+@media (min-width: 1000px) and (min-height: 600px) {
+  #app.modern:has(> .content > main.home) {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  #app.modern > .content > main.home {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  main.home {
+    display: grid;
+    grid-template-columns: minmax(320px, 28%) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, max-content) minmax(0, 1fr);
+    gap: 0 24px;
+    max-width: 1720px;
+    padding: 14px 24px 16px;
+  }
+
+  .home-intro {
+    grid-column: 1 / -1;
+  }
+
+  .home .library {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    min-height: 0;
+  }
+
+  .home-start {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    max-height: calc(100% - 12px);
+    margin: 12px 0 0;
+    overflow: hidden;
+  }
+
+  .home-start.clipped {
+    display: none;
+  }
+
+  /* bigger tiles where there is room for them */
+  @media (min-width: 1360px) {
+    .home .lib-tiles {
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    }
+  }
+
+  @media (min-width: 1700px) {
+    .home .lib-tiles {
+      grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+    }
+  }
+
+  /* the tiles scroll by themselves; the padding leaves room for the selected tile's ring */
+  .lib-tiles {
+    grid-template-columns: repeat(auto-fill, minmax(131px, 1fr));
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: -4px;
+    padding: 4px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+}
+
+/* a game tile: its picture (with buttons over it) and its title */
+.game-tile {
+  position: relative;
+  gap: 0;
+  padding: 0;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.game-tile[hidden] {
+  display: none;
+}
+
+.game-tile:hover {
+  border-color: var(--accent);
+}
+
+.game-tile.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.game-tile:hover,
+.game-tile:focus-within {
+  z-index: 2;
+}
+
+.tile-shot {
+  position: relative;
+  border-radius: 9px 9px 0 0;
+  aspect-ratio: 8 / 5;
+  background: #000;
+  cursor: pointer;
+}
+
+.game-tile .card-shot-none {
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+}
+
+.game-tile .card-shot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  border-radius: 9px 9px 0 0;
+}
+
+/* the picture is rounded rather than clipped, so the buttons' tips can reach past it */
+.tile-shot > .demo-screen {
+  overflow: hidden;
+  border-radius: 9px 9px 0 0;
+}
+
+/* a picture still being drawn: a soft shimmer; one that can't be drawn: a plain screen */
+.card-shot.shot-loading {
+  background: linear-gradient(100deg, #0d0f18 30%, #1d2133 50%, #0d0f18 70%) 0 0 / 300% 100%;
+  animation: shot-shimmer 1.4s linear infinite;
+}
+
+.card-shot.shot-none {
+  background: radial-gradient(circle at 50% 45%, #1d2148, #05060c 75%);
+}
+
+@keyframes shot-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-shot.shot-loading {
+    animation: none;
+    background-position: 50% 0;
+  }
+
+  .shot-icon,
+  .shot-icon:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+.tile-select {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: 0;
+  padding: 7px 10px 9px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* the focus ring goes round the whole tile */
+.tile-select:focus-visible {
+  outline: none;
+}
+
+.game-tile:has(.tile-select:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.tile-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.tile-meta {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+/* Keys and Manual over a picture */
+.shot-icons {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 3;
+  display: flex;
+  gap: 5px;
+}
+
+.shot-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 0;
+  padding: 0 7px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 15px;
+  background: rgba(10, 10, 40, 0.78);
+  color: #fff;
+  font:
+    700 12px/1 system-ui,
+    sans-serif;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.1s,
+    background 0.1s,
+    opacity 0.15s;
+}
+
+.shot-icons.shot-tools {
+  z-index: 4;
+  top: 6px;
+  right: auto;
+  bottom: auto;
+  left: 6px;
+}
+
+.shot-icon .ico {
+  flex: none;
+}
+
+.with-ico,
+a.button.with-ico {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shot-icon:hover {
+  border-color: #fff;
+  background: #2a3fae;
+  transform: scale(1.06);
+}
+
+.shot-icon:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* the tip naming what a button does, on hover and on keyboard focus */
+.shot-icon[data-tip]::after,
+.health-badge[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #0b0d14;
+  color: #fff;
+  font: 600 12px/1.3 system-ui, sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+
+.shot-tools .shot-icon[data-tip]::after {
+  top: calc(100% + 6px);
+  right: auto;
+  bottom: auto;
+  left: 0;
+}
+
+.health-badge[data-tip]::after {
+  top: calc(100% + 6px);
+  bottom: auto;
+}
+
+.shot-icon[data-tip]:hover::after,
+.shot-icon[data-tip]:focus-visible::after,
+.health-badge[data-tip]:hover::after,
+.health-badge[data-tip]:focus-visible::after {
+  opacity: 1;
+  transition-delay: 0.25s;
+}
+
+/* With a mouse, Keys and Manual show on the tile being pointed at (or focused). */
+@media (hover: hover) {
+  .game-tile:not(:hover, :focus-within) .shot-icon {
+    opacity: 0;
+  }
+}
+
+/* a demo playing in a picture (demoInPicture in homeCards.ts), over the player's own layout */
+.demo-screen,
+.demo-screen.gm-player {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #000;
+}
+
+.demo-audio.demo-sound {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  z-index: 3;
+}
+
+.demo-playing .health-badge {
+  display: none;
+}
+
+/* ⚠ health badge on a tile's picture */
+.health-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 2px solid #000;
+  border-radius: 50%;
+  font:
+    700 15px/1 system-ui,
+    sans-serif;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* not yet checked, or nothing wrong: kept in layout so it can be seen scrolling into view */
+.health-badge.unknown {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.health-badge.error {
+  background: #ffcc00;
+  color: #000;
+}
+
+.health-badge.warning {
+  background: #9fb4ff;
+  color: #000;
+}
+
+.health-report {
+  max-width: 640px;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.health-report h4 {
+  margin: 14px 0 4px;
+}
+
+.health-report h3.health-inherited {
+  margin: 20px 0 2px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+}
+
+.health-report ul {
+  margin: 0;
+  padding-left: 4px;
+  list-style: none;
+}
+
+.health-report li {
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.health-report li .sev {
+  display: inline-block;
+  width: 18px;
+}
+
+.health-report li.error .sev {
+  color: #d89a00;
+}
+
+.health-report li.warning .sev {
+  color: var(--muted);
+}
+
+.health-summary {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+
+.health-summary.ok {
+  border-left: 4px solid #2a9d4b;
+}
+
+.health-summary.error {
+  border-left: 4px solid #ffcc00;
+}
+
+.health-summary.warning {
+  border-left: 4px solid #9fb4ff;
+}
+
+@media (max-width: 720px) {
+  .lib-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* the tabs two to a row */
+  .lib-cats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lib-cat {
+    justify-content: flex-start;
+  }
+
+  .lib-cat-count {
+    margin-left: auto;
+  }
+
+  .lib-find {
+    flex: none;
+  }
+
+  .lib-search {
+    flex: 1 1 auto;
+  }
+
+  .lib-tiles {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+/* When the tabs, search and New game don't fit on one line, the tabs fill the first line
+   and search with New game the second, both the library's full width. */
+@container library (max-width: 960px) {
+  .lib-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lib-cats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .lib-cat {
+    justify-content: center;
+  }
+
+  .lib-find {
+    flex: none;
+  }
+
+  .lib-search {
+    flex: 1 1 auto;
+  }
+}
+
+/* five tabs in a narrow row: no icons, tighter, so each name and count fits */
+@container library (min-width: 560px) and (max-width: 780px) {
+  .lib-cat {
+    gap: 5px;
+    padding: 5px 6px;
+  }
+
+  .lib-cat .ico {
+    display: none;
+  }
+}
+
+/* narrower still: the tabs two to a row */
+@container library (max-width: 559px) {
+  .lib-cats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lib-cat {
+    justify-content: flex-start;
+  }
+
+  .lib-cat-count {
+    margin-left: auto;
+  }
+}
+
+/* “Deleted … Undo” after deleting a game of yours */
+.home-undo {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 8px 8px 14px;
+  transform: translateX(-50%);
+  border-radius: 8px;
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.home-undo button {
+  padding: 4px 12px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-weight: 700;
+}
+
+.home-undo .home-undo-close {
+  padding: 4px 8px;
+  border-color: transparent;
+  font-weight: 400;
+}
+
+/* a game of yours: ⋯ beside its title opens its actions in the panel */
+.game-tile.has-more .tile-select {
+  padding-right: 36px;
+}
+
+.tile-more {
+  position: absolute;
+  right: 4px;
+  bottom: 6px;
+  min-height: 0;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.tile-more:hover,
+.tile-more:focus-visible {
+  border-color: var(--border);
+  background: var(--panel-2);
+  color: inherit;
+}
+
+.lib-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lib-sort[hidden] {
+  display: none;
+}
+
+.lib-sort select {
+  padding: 3px 6px;
+  font: inherit;
+  color: var(--text);
+}

@@ -1,0 +1,327 @@
+/* 3.5" floppy disks, drawn the way they stand in a disk box: shutter down, label up */
+
+.floppy {
+  --body: #2b2b2b;
+  position: relative;
+  width: 180px;
+  aspect-ratio: 9 / 9.4;
+  border-radius: 6px;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--body) 85%, #fff),
+    var(--body) 45%,
+    color-mix(in srgb, var(--body) 80%, #000)
+  );
+  /* the cut corner; the clip reaches above the top so the edge's shadow can fall on the disk behind */
+  clip-path: polygon(0 -16px, 100% -16px, 100% 100%, 8% 100%, 0 94%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: #1a1a1a;
+  /* the printed label's type is sized in cqw, so it scales with the disk */
+  container-type: inline-size;
+}
+
+.floppy .shutter {
+  position: absolute;
+  left: 22%;
+  bottom: 0;
+  width: 56%;
+  height: 33%;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(
+    90deg,
+    #8d939a,
+    #e3e7ea 40%,
+    #a7adb3 70%,
+    #e3e7ea
+  );
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.floppy .shutter::after {
+  content: "";
+  position: absolute;
+  left: 24%;
+  top: 24%;
+  width: 18%;
+  height: 62%;
+  border-radius: 2px;
+  background: #3c3f42;
+}
+
+.floppy .label {
+  position: absolute;
+  left: 11%;
+  right: 11%;
+  top: 4%;
+  height: 54%;
+  padding: 6px 8px;
+  overflow: hidden;
+  border-radius: 0 0 2px 2px;
+  padding-top: 13px;
+  /* a printed band across the top, then the ruled lines to write on */
+  background:
+    linear-gradient(180deg, var(--stripe, #1565c0) 0 8px, transparent 8px),
+    repeating-linear-gradient(180deg, #fbf8ee 0 13px, #c9d6f2 13px 14px),
+    #fbf8ee;
+  font:
+    15px/14px "Comic Sans MS",
+    "Marker Felt",
+    "Segoe Print",
+    cursive;
+  color: #1c2a6b;
+  white-space: pre-line;
+  text-align: left;
+}
+
+.floppy .label small {
+  display: block;
+  margin-top: 2px;
+  color: #6b1c1c;
+  font-size: 11px;
+}
+
+/* RSD's own disks have a printed label: desk/disks/rsdLabel.css */
+
+.floppy[data-kind="blank"] .label {
+  color: #999;
+}
+
+/* write-protect tab: open hole = protected */
+.floppy .wp {
+  position: absolute;
+  right: 2.5%;
+  top: 2%;
+  width: 7%;
+  height: 7%;
+  background: #111;
+}
+
+.floppy .wp::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 50% 0;
+  background: #555;
+}
+
+.floppy[data-protected="true"] .wp::after {
+  inset: 50% 0 0 0;
+}
+
+.floppy .density-hole {
+  position: absolute;
+  left: 2.5%;
+  top: 2%;
+  width: 7%;
+  height: 7%;
+  background: #111;
+}
+
+/* written on later, in red marker */
+.floppy .marker-note {
+  /* below the title and the lines written under it, still in view when disks overlap */
+  position: absolute;
+  right: 6px;
+  top: 46%;
+  z-index: 2;
+  color: #d0141b;
+  font:
+    700 12px/1 "Marker Felt",
+    "Comic Sans MS",
+    cursive;
+  transform: rotate(-7deg);
+  white-space: nowrap;
+}
+
+.floppy .hd {
+  position: absolute;
+  left: 2.5%;
+  top: 11%;
+  font:
+    700 8px/1 system-ui,
+    sans-serif;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* small disks peeking out of the box on the desk */
+.disk-box .floppy {
+  position: absolute;
+  width: 100px;
+  transform-origin: 50% 100%;
+}
+
+/* ---- the open disk box: a row of disks seen from the front, scrolling top to bottom --- */
+
+.disk-case {
+  width: min(340px, 100%);
+  height: min(64vh, 600px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px 26px 40px;
+  border: 10px solid #2a2b30;
+  border-top-width: 6px;
+  border-radius: 6px 6px 12px 12px;
+  background: linear-gradient(90deg, #15161a, #24262c 50%, #15161a);
+  box-shadow:
+    inset 0 12px 18px rgba(0, 0, 0, 0.6),
+    0 18px 30px rgba(0, 0, 0, 0.55);
+  scrollbar-color: #555 transparent;
+}
+
+.disk-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* each disk hides all but the top of the one behind it */
+.disk-row .floppy {
+  flex: none;
+  width: 260px;
+  margin-bottom: -170px;
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease;
+  /* each disk casts a soft shadow up onto the one behind, so two of a color don't merge */
+  filter: brightness(0.82) drop-shadow(0 -3px 4px rgba(0, 0, 0, 0.55));
+  cursor: pointer;
+}
+
+/* the later disks of a multi-disk game: just their tops show behind disk 1 */
+.disk-row .floppy.spare {
+  margin-bottom: -240px;
+  filter: brightness(0.7) drop-shadow(0 -3px 4px rgba(0, 0, 0, 0.55));
+}
+
+.disk-row .floppy:last-child {
+  margin-bottom: 0;
+}
+
+.disk-row .floppy[aria-selected="true"] {
+  transform: translateY(-24px);
+  filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.6));
+}
+
+.flip-info .hint {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.flip-info {
+  max-width: 560px;
+  min-height: 110px;
+  text-align: center;
+}
+
+.flip-info h2 {
+  margin: 0 0 4px;
+  font:
+    700 20px/1.2 system-ui,
+    sans-serif;
+}
+
+.flip-info p {
+  margin: 0 0 10px;
+  color: #d8ccb0;
+}
+
+/* a professionally printed label (original games), sized to the disk (cqw: 1% of its width) */
+.floppy .label.printed {
+  display: flex;
+  flex-direction: column;
+  gap: 1cqw;
+  padding: 0 0 3cqw;
+  background: var(--lbg);
+  color: var(--link);
+  font:
+    6.6cqw/1.15 Arial,
+    Helvetica,
+    sans-serif;
+  white-space: normal;
+}
+
+.floppy .label.printed .p-logo {
+  padding: 1.6cqw 4.4cqw;
+  background: var(--lband);
+  color: #fff;
+  font:
+    900 4.4cqw/1 Arial,
+    sans-serif;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+}
+
+.floppy .label.printed .p-title {
+  padding: 2cqw 4.4cqw 0;
+  font:
+    italic 900 9.4cqw/1 "Arial Black",
+    Impact,
+    sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.floppy .label.printed .p-line,
+.floppy .label.printed .p-foot {
+  padding: 0 4.4cqw;
+  font-size: 5cqw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.floppy .label.printed .p-foot {
+  margin-top: auto;
+  border-top: 1px solid var(--lband);
+  padding-top: 1.6cqw;
+}
+
+/* the hand-written title, with "Disk 2" at its right for a game on more than one disk */
+.floppy .label .hand-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.floppy .label .hand-disk {
+  flex: none;
+  font-size: 12px;
+}
+
+/* two windows side by side: the site's disks and the user's own (desk/disks/diskBox.ts) */
+.disk-cases {
+  display: flex;
+  gap: 18px;
+  max-width: 100%;
+}
+
+.disk-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.disk-col h3 {
+  margin: 0;
+  color: #f4ead2;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 720px) {
+  .disk-cases {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .disk-cases .disk-case {
+    height: min(36vh, 360px);
+  }
+}
+
+/* the two small stacks standing in the desk's disk box */
+.disk-box .floppy.peek {
+  width: 70px;
+  filter: brightness(var(--dim, 1)) drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.5));
+}

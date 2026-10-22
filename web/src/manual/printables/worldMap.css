@@ -1,0 +1,132 @@
+/* The fold-out World Map (worldMap.ts): one SVG filling its sheet, on screen a folded packet
+   that opens into a view to zoom and drag around. */
+.pp-sheet.pp-wm {
+  background: #f4ecd6;
+}
+
+.pp-sheet.pp-wm .wm-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.wm-tile-tag {
+  position: absolute;
+  right: 1.2cqw;
+  bottom: 0.8cqw;
+  padding: 0.3cqw 0.8cqw;
+  background: #fffdf6e0;
+  color: #2b241c;
+  font:
+    1.3cqw Arial,
+    sans-serif;
+}
+
+.wm-tile-tag b {
+  font-size: 1.6cqw;
+}
+
+/* folded: the title corner of the map, a stack of folds behind it */
+.wm-fold {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: auto;
+  width: 100%;
+}
+
+.wm-folded {
+  width: 340px;
+  height: 220px;
+  overflow: hidden;
+  cursor: pointer;
+  transform: rotate(-1.5deg);
+  box-shadow:
+    3px 3px 0 #d8ceb4,
+    6px 6px 0 #c4b998,
+    9px 9px 0 #ab9f7e,
+    0 18px 30px rgba(0, 0, 0, 0.7);
+  transition: transform 0.2s;
+}
+
+.wm-folded:hover {
+  transform: rotate(0deg) scale(1.03);
+}
+
+.wm-face-crop {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wm-face .pp-sheet {
+  box-shadow: none;
+}
+
+/* open: the map in a view to scroll, drag and zoom */
+.wm-fold.open {
+  flex: 1;
+  align-self: stretch;
+  min-height: 0;
+  gap: 8px;
+}
+
+.wm-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #efe5cc;
+  font:
+    13px system-ui,
+    sans-serif;
+}
+
+.wm-bar button {
+  min-width: 34px;
+  padding: 5px 10px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.wm-view {
+  flex: 1;
+  align-self: stretch;
+  min-height: 300px;
+  overflow: auto;
+  padding: 12px;
+  cursor: grab;
+  touch-action: none;
+  animation: wm-unfold 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-origin: left top;
+}
+
+.wm-view:active {
+  cursor: grabbing;
+}
+
+.wm-view .wm-screen-sheet {
+  max-width: none;
+  user-select: none;
+}
+
+@keyframes wm-unfold {
+  0% {
+    clip-path: inset(0 75% 70% 0);
+    opacity: 0.6;
+  }
+  50% {
+    clip-path: inset(0 0 70% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}

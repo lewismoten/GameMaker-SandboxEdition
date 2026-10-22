@@ -1,0 +1,484 @@
+{
+  "pitch": "Opening night, 1936: the star of THE RAVEN'S BRIDE dies on stage. Search the Paragon, question five suspects and name the killer by dawn.",
+  "keys": {
+    "Up": "Walk up",
+    "Down": "Walk down",
+    "Left": "Walk left",
+    "Right": "Walk right",
+    "W": "Walk up",
+    "A": "Walk left",
+    "S": "Walk down",
+    "D": "Walk right",
+    "Q": "Walk up-left",
+    "E": "Walk up-right",
+    "Home": "Walk up-left (number pad 7)",
+    "PgUp": "Walk up-right (number pad 9)",
+    "End": "Walk down-left (number pad 1)",
+    "PgDn": "Walk down-right (number pad 3)",
+    "Space": "Pick up evidence",
+    "L": "Look through the lens (once you have it)",
+    "F2": "Your evidence (Money), score and chances (Lives)",
+    "F3": "Music on / off",
+    "F4": "Sound effects on / off"
+  },
+  "items": [
+    {
+      "kind": "chart",
+      "title": "Case file 36-1031",
+      "note": "The Inspector's case file",
+      "promised": true,
+      "heading": "PORT ELLERY POLICE DEPT. - CASE FILE 36-1031",
+      "intro": "Victim: VICTOR CRANE, 52, owner of the Paragon Theatre. Died on stage at about 9:48 PM, October 31, 1936, during Act III of THE RAVEN'S BRIDE. Investigating officer: Insp. Ada Penn. (Fill in the blanks as you go.)",
+      "tables": [
+        {
+          "head": "Timeline, opening night",
+          "columns": ["Time", "What happened"],
+          "rows": [
+            ["7:30", "Felix Morrow latches the pit door, as every night"],
+            ["7:45", "Doors open. Coats and umbrellas checked."],
+            ["8:00", "Curtain up on Act I"],
+            ["9:00", "Interval begins. Prop check, stage right."],
+            ["9:00-9:20", "The interval. Where was everyone?"],
+            ["9:20", "Act III begins"],
+            ["9:45", "Lila Fontaine takes the dagger from the prop table"],
+            ["9:48", "Count Corvin is stabbed. Victor Crane dies."]
+          ]
+        },
+        {
+          "head": "Evidence",
+          "note": "Tick it off when you find it.",
+          "columns": ["", "Item", "Where", "What it tells you"],
+          "rows": [
+            ["[ ]", "Coroner's note", "Doc Avery", ""],
+            ["[ ]", "Prop checklist", "", ""],
+            ["[ ]", "Ticket stub", "", ""],
+            ["[ ]", "Seating chart", "", ""],
+            ["[ ]", "Insurance policy", "", ""],
+            ["[ ]", "Cloakroom ledger", "", ""],
+            ["[ ]", "Umbrella #13", "", ""],
+            ["[ ]", "Manuscript", "", ""],
+            ["[ ]", "Light cue sheet", "", ""]
+          ]
+        },
+        {
+          "head": "The solution",
+          "note": "Write it in pencil.",
+          "columns": ["Who?", "How?", "Why?"],
+          "rows": [["", "", ""]]
+        }
+      ]
+    },
+    {
+      "kind": "newspaper",
+      "title": "The Port Ellery Courier",
+      "note": "Sunday morning, November 1, 1936",
+      "masthead": "THE PORT ELLERY COURIER",
+      "date": "Sunday, November 1, 1936",
+      "price": "Three Cents",
+      "headline": "STAR SLAIN ON STAGE",
+      "deck": "Victor Crane falls in Act III of his own play; the dagger was real. Police hold cast at the Paragon.",
+      "columns": [
+        "<p>PORT ELLERY, Oct. 31. - Six hundred playgoers at the Paragon Theatre tonight applauded what they believed was the finest death scene of the season, only to learn that Victor Crane, 52, the theater's owner and the star of its new melodrama, THE RAVEN'S BRIDE, was in fact dead.</p><p>Mr. Crane, as the villainous Count Corvin, was struck at 9:48 by the heroine Rowena, played by Miss Lila Fontaine, with what should have been a harmless stage dagger.</p>",
+        "<p>Police say the weapon was a genuine antique blade. Inspector Ada Penn of Homicide arrived shortly after ten and ordered the company held in the theater's green room.</p><p>Mrs. Agatha Crane, the widow and co-owner, declined to comment. The play's second performance has been canceled. Mr. Edgar Bliss, Mr. Crane's understudy, is expected to assume the role when the house reopens.</p>",
+        "<p><b>OUR CRITIC'S VIEW.</b> The Courier's drama critic, Mr. Oliver Pike, was in attendance. His review, filed before the tragedy was known, will not be printed. Of the play itself Mr. Pike remarked only that it was \"rather good. Surprisingly good, for Victor.\"</p>"
+      ],
+      "photo": {
+        "map": "act1.map",
+        "x": 24,
+        "y": 20,
+        "w": 20,
+        "h": 6,
+        "caption": "The stage of the Paragon after the house was cleared. Police photograph."
+      },
+      "briefs": [
+        ["Rain to continue", "The weather bureau promises rain through Tuesday."],
+        ["Ghost light burns on", "Theater custom keeps one bulb lit on an empty stage all night."],
+        ["Lost: black umbrella", "Tag no. 13, Paragon cloakroom. Owner may claim it at Police HQ."],
+        ["History in the lobby", "The Historical Society's archives committee has hung its July 1776 plaque and old Courier clippings at the Paragon."],
+        ["Correction", "A 1931 item in these pages printed a new play's title as \"Rayen Brine.\" The Courier regrets the error, five years late."],
+        ["For sale", "Remington Noiseless typewriter. Types without a sound, which some find unnerving. $75. Box 1936."]
+      ]
+    },
+    {
+      "kind": "idcard",
+      "title": "Suspect card: Lila Fontaine",
+      "note": "From the case file",
+      "promised": true,
+      "org": "PORT ELLERY POLICE - HOMICIDE",
+      "name": "Lila Fontaine",
+      "role": "Leading lady",
+      "fields": [
+        ["Case", "36-1031"],
+        ["At the Paragon", "The Raven's Bride"],
+        ["Says, 9:00-9:20", "In her dressing room with Mrs. Hobbs"],
+        ["Motive?", "Victor's blackmail letter"]
+      ],
+      "color": "#1f5a3a",
+      "ink": "#f6ead2",
+      "photo": {
+        "map": "green.map",
+        "x": 7,
+        "y": 11,
+        "w": 2,
+        "h": 2
+      },
+      "back": "Interviewed by Insp. A. Penn, October 31, 1936. Detain until dawn. Do not let this suspect read the other cards."
+    },
+    {
+      "kind": "idcard",
+      "title": "Suspect card: Edgar Bliss",
+      "note": "From the case file",
+      "promised": true,
+      "org": "PORT ELLERY POLICE - HOMICIDE",
+      "name": "Edgar Bliss",
+      "role": "Understudy",
+      "fields": [
+        ["Case", "36-1031"],
+        ["At the Paragon", "The Herald (Act I only)"],
+        ["Says, 9:00-9:20", "At the lobby bar"],
+        ["Motive?", "He gets Victor's part"]
+      ],
+      "color": "#4a4a52",
+      "ink": "#f6ead2",
+      "photo": {
+        "map": "green.map",
+        "x": 23,
+        "y": 11,
+        "w": 2,
+        "h": 2
+      },
+      "back": "Interviewed by Insp. A. Penn, October 31, 1936. Detain until dawn. Do not let this suspect read the other cards."
+    },
+    {
+      "kind": "idcard",
+      "title": "Suspect card: Agatha Crane",
+      "note": "From the case file",
+      "promised": true,
+      "org": "PORT ELLERY POLICE - HOMICIDE",
+      "name": "Agatha Crane",
+      "role": "Co-owner",
+      "fields": [
+        ["Case", "36-1031"],
+        ["At the Paragon", "The box office"],
+        ["Says, 9:00-9:20", "Counting the house with Nell"],
+        ["Motive?", "A $50,000 policy"]
+      ],
+      "color": "#5a2a5a",
+      "ink": "#f6ead2",
+      "photo": {
+        "map": "green.map",
+        "x": 39,
+        "y": 11,
+        "w": 2,
+        "h": 2
+      },
+      "back": "Interviewed by Insp. A. Penn, October 31, 1936. Detain until dawn. Do not let this suspect read the other cards."
+    },
+    {
+      "kind": "idcard",
+      "title": "Suspect card: Felix Morrow",
+      "note": "From the case file",
+      "promised": true,
+      "org": "PORT ELLERY POLICE - HOMICIDE",
+      "name": "Felix Morrow",
+      "role": "Stage manager",
+      "fields": [
+        ["Case", "36-1031"],
+        ["At the Paragon", "Props and the stage"],
+        ["Says, 9:00-9:20", "Prop check at 9, then on stage with the crew"],
+        ["Motive?", "Victor meant to sack him"]
+      ],
+      "color": "#7a6234",
+      "ink": "#f6ead2",
+      "photo": {
+        "map": "green.map",
+        "x": 55,
+        "y": 11,
+        "w": 2,
+        "h": 2
+      },
+      "back": "Interviewed by Insp. A. Penn, October 31, 1936. Detain until dawn. Do not let this suspect read the other cards."
+    },
+    {
+      "kind": "idcard",
+      "title": "Suspect card: Oliver Pike",
+      "note": "From the case file",
+      "promised": true,
+      "org": "PORT ELLERY POLICE - HOMICIDE",
+      "name": "Oliver Pike",
+      "role": "Drama critic",
+      "fields": [
+        ["Case", "36-1031"],
+        ["At the Paragon", "Seat F-9, the Courier"],
+        ["Says, 9:00-9:20", "In seat F-9, never left it"],
+        ["Motive?", "?"]
+      ],
+      "color": "#1a1a1e",
+      "ink": "#f6ead2",
+      "photo": {
+        "map": "green.map",
+        "x": 71,
+        "y": 11,
+        "w": 2,
+        "h": 2
+      },
+      "back": "Interviewed by Insp. A. Penn, October 31, 1936. Detain until dawn. Do not let this suspect read the other cards."
+    },
+    {
+      "kind": "map",
+      "title": "Floor plan of the Paragon",
+      "note": "From the fire marshal's file",
+      "heading": "THE PARAGON THEATRE - FLOOR PLAN",
+      "intro": "As found at 10:30 PM. North is the stage door; the house faces the stage from the south. Not to be removed from the case file.",
+      "panels": [
+        {
+          "map": "act1.map",
+          "x": 10,
+          "y": 10,
+          "w": 50,
+          "h": 48,
+          "caption": "The Paragon, ground floor (the trap room lies east, under the stage)",
+          "marks": [
+            {
+              "x": 34,
+              "y": 53,
+              "label": "Ada arrives: the lobby",
+              "kind": "start"
+            },
+            {
+              "x": 14,
+              "y": 52,
+              "label": "Box office",
+              "kind": "note"
+            },
+            {
+              "x": 15,
+              "y": 31,
+              "label": "Pass door to the wings",
+              "kind": "note"
+            },
+            {
+              "x": 42,
+              "y": 13,
+              "label": "Props room",
+              "kind": "note"
+            },
+            {
+              "x": 55,
+              "y": 22,
+              "label": "The prop table, stage right",
+              "kind": "secret"
+            },
+            {
+              "x": 50,
+              "y": 13,
+              "label": "Victor Crane's office",
+              "kind": "note"
+            },
+            {
+              "x": 37,
+              "y": 16,
+              "label": "Green room door",
+              "kind": "goal"
+            },
+            {
+              "x": 34,
+              "y": 23,
+              "label": "Where Victor fell",
+              "kind": "note"
+            },
+            {
+              "x": 47,
+              "y": 34,
+              "label": "Pit gate",
+              "kind": "note"
+            }
+          ]
+        }
+      ],
+      "legend": ["Dressing rooms along the north corridor: STAR (Victor Crane), LILA, CAST.", "The lighting booth and the cloakroom are off the lobby."],
+      "landscape": false,
+      "columns": 1
+    },
+    {
+      "kind": "hintbook",
+      "title": "Final Curtain Hint Book",
+      "note": "Read the answers through the red film",
+      "promised": true,
+      "intro": "Stuck on a case? Lay the red film over an answer to read it. Read only the hint you need: the fun is in the deducing.",
+      "sections": [
+        {
+          "head": "Act One",
+          "hints": [
+            {
+              "q": "Where do I start?",
+              "a": "The box office, off the west side of the lobby. There is a key on the floor and the seating chart on the desk."
+            },
+            {
+              "q": "How do I get backstage from the house?",
+              "a": "Take the west aisle to the front, then go up through the pass door in the corner at stage left."
+            },
+            {
+              "q": "Victor's office is locked.",
+              "a": "The key from the box office opens it. Walk into the door."
+            },
+            {
+              "q": "I have three pieces of evidence and can't find a fourth.",
+              "a": "Get the magnifying glass from the props room shelves, then walk the floor in front of the prop table in the stage-right wing."
+            },
+            {
+              "q": "The green room door won't open.",
+              "a": "It needs all four pieces of Act One evidence: the seating chart, the checklist, the ticket stub and the insurance policy. Push it, then push again."
+            }
+          ]
+        },
+        {
+          "head": "Act Two",
+          "hints": [
+            {
+              "q": "It's too dark under the stage.",
+              "a": "Get the night watchman's lantern from the WATCH room at the east end of the corridor. Everywhere you walk lights up."
+            },
+            {
+              "q": "How do I get under the stage?",
+              "a": "Through the pit gate on the east side of the front rail, along the orchestra pit, and through the PIT door."
+            },
+            {
+              "q": "What is the safe's combination?",
+              "a": "The playbill on the office wall: RAVEN, ROSE, MOON, left to right. Push each dial until it shows its symbol."
+            },
+            {
+              "q": "Where is the fourth piece in Act Two?",
+              "a": "In the far south-east corner of the trap room maze. The rats are harmless, but they cost you points."
+            },
+            {
+              "q": "The watchman keeps getting in my way.",
+              "a": "He only walks the south half of the corridor. Keep to the north side."
+            }
+          ]
+        },
+        {
+          "head": "The Interviews",
+          "hints": [
+            {
+              "q": "Who has an alibi?",
+              "a": "Lila (Mrs. Hobbs), Edgar (the bar tab chalked at 9:05 and 9:15), Agatha (the box office count signed 9:10) and Felix (his crew). One suspect has nobody to vouch for him."
+            },
+            {
+              "q": "Who lied?",
+              "a": "The critic. He says he never left seat F-9, but his stub was under the prop table and his umbrella left the cloakroom at 9:05."
+            },
+            {
+              "q": "What does the clipping in the lobby say?",
+              "a": "It's a misprint. Carry the lens and push against each smudged word: PIKE'S PLAY: RAVEN BRIDE, back in 1931."
+            },
+            {
+              "q": "Is the plaque worth reading?",
+              "a": "Exactly 1,776 points' worth. Push against its middle."
+            }
+          ]
+        },
+        {
+          "head": "Dawn",
+          "hints": [
+            {
+              "q": "Who did it?",
+              "a": "Oliver Pike, the critic."
+            },
+            {
+              "q": "How?",
+              "a": "He swapped the trick dagger for a real one at the prop table during the interval. There was no poison, and the Act III blackout had been cut."
+            },
+            {
+              "q": "Why?",
+              "a": "Victor Crane stole his play. Pike wrote THE RAVEN'S BRIDE in 1931; the manuscript was in Victor's safe."
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind in the theater.",
+              "a": "Somewhere comfy, and only after midnight. Bring your magnifying glass."
+            },
+            {
+              "q": "Where, after midnight?",
+              "a": "The green room, at 2 AM. The sofa looks like any sofa, until you look closer."
+            },
+            {
+              "q": "I give up. Spell it out.",
+              "a": "At 2 AM, carry the magnifying glass from the props room into the green room. Stand just left of the sofa in the bottom right corner and push right into it (it costs one lens charge). The egg shows between the cushions: push again to take it, then step into the empty seat.",
+              "sketch": {
+                "rows": [
+                  "------------",
+                  "|o        o|",
+                  "|          |",
+                  "|o        o|",
+                  "|      o @X|",
+                  "-==---------"
+                ],
+                "labels": [
+                  { "x": 2, "y": 2, "text": "GREEN ROOM, 2 AM" },
+                  { "x": 8, "y": 3, "text": "SOFA" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "letter",
+      "title": "Hint book postcard",
+      "note": "Bound into the manual",
+      "style": "print",
+      "letterhead": "SANDBOX SOFTWARE - THE FINAL CURTAIN HINT BOOK",
+      "address": "P.O. Box 1995, Pittsburgh, PA 15213 (a fictional address - do not mail)",
+      "date": "1995",
+      "to": "Dear Detective,",
+      "body": "<p><b>Stuck in the dark under the stage? Can't crack Victor's safe?</b></p><p>The <b>FINAL CURTAIN HINT BOOK</b> answers every question you might have, from the box office to the curtain call, printed under red ink so you only read the answer you need. Comes with its own red decoder film, a floor plan of the Paragon and the full solution, sealed.</p><p>FREE with registration ($15), or $5 on its own. Fill in the order slip in the box.</p>",
+      "signature": "Sandbox Software"
+    },
+    {
+      "kind": "letter",
+      "title": "A note found in the green room",
+      "note": "Handwritten, unsigned",
+      "style": "hand",
+      "date": "Oct. 31",
+      "to": "Victor -",
+      "body": "<p>You will remember the play. You laughed at it in this very office five years ago. Tonight six hundred people will see it with your name on the program.</p><p>Enjoy your death scene.</p>",
+      "signature": "- a friend of Rowena's"
+    }
+  ],
+  "stickers": [
+    {
+      "text": "CASE CLOSED",
+      "sub": "Port Ellery P.D.",
+      "shape": "badge",
+      "color": "#8a1622",
+      "ink": "#f6ead2"
+    },
+    {
+      "text": "THE PARAGON",
+      "sub": "Opening night",
+      "shape": "rect",
+      "color": "#1a0608",
+      "ink": "#e8b830"
+    },
+    {
+      "text": "GHOST LIGHT",
+      "sub": "Never let it go out",
+      "shape": "circle",
+      "color": "#20304a",
+      "ink": "#f6ead2"
+    }
+  ],
+  "news": [
+    {
+      "head": "Coming soon: a whodunit from Sandbox",
+      "html": "<p>Our first mystery, <b>FINAL CURTAIN</b>, puts you in a trench coat at the Paragon Theatre on Halloween night, 1936. Every clue is in the game, and the solution comes in three parts: who, how and why.</p>",
+      "everywhere": true
+    }
+  ]
+}

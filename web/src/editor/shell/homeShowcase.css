@@ -1,0 +1,366 @@
+/* The selected game panel at the top of the home page (homeShowcase.ts): a 1994 monitor
+   showing the game (its demo or its first level) beside its title, credits and actions,
+   on the night-sky gradient of the original box. */
+.home-intro {
+  margin: 4px 0 14px;
+}
+
+.home-intro h1 {
+  margin: 0 0 2px;
+  color: var(--text);
+  font:
+    italic 900 22px/1.1 'Arial Black',
+    Impact,
+    sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.home-intro p {
+  max-width: 80ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.home-intro .home-fork {
+  color: inherit;
+}
+
+.home .showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 26px;
+  align-items: center;
+  margin: 0 0 28px;
+  padding: 22px;
+  border-radius: 14px;
+  background: radial-gradient(120% 140% at 100% 0%, rgba(255, 255, 255, 0.12), transparent 60%), linear-gradient(135deg, #0b0b30, #1d1060 55%, #3a0d4d);
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  scroll-margin-top: 60px;
+}
+
+.showcase:not([data-key]) {
+  display: none;
+}
+
+.sc-screen {
+  padding: 12px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #e8e1cc, #b6ad93);
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.sc-glass {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 8 / 5;
+  border-radius: 10px;
+  background: #000;
+  box-shadow: inset 0 0 20px #000;
+}
+
+.sc-shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.sc-none {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 56px;
+}
+
+.sc-glass .demo-audio.demo-sound {
+  left: auto;
+  right: 10px;
+  bottom: 10px;
+}
+
+.sc-demo-btn {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 3;
+  padding: 6px 12px;
+  border: 1px solid #ffd400;
+  border-radius: 18px;
+  background: rgba(10, 10, 40, 0.75);
+  color: #ffd400;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.sc-demo-btn:hover {
+  background: #ffd400;
+  color: #000;
+}
+
+.sc-demo-btn[hidden] {
+  display: none;
+}
+
+.demo-loading .sc-demo-btn {
+  animation: demo-wait 0.8s ease-in-out infinite alternate;
+}
+
+.sc-info {
+  min-width: 0;
+}
+
+.sc-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.sc-chip {
+  padding: 2px 9px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sc-featured {
+  color: #ff8fb0;
+  font-weight: 700;
+}
+
+.sc-resume {
+  color: #8ff0b4;
+  font-weight: 700;
+}
+
+.showcase .sc-another {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 0;
+  padding: 2px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  background: transparent;
+  color: #e7e2ff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.showcase .sc-another:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.showcase .sc-title {
+  margin: 0 0 4px;
+  color: #f5e600;
+  font:
+    italic 900 clamp(24px, 3.4vw, 38px)/1.05 'Arial Black',
+    Impact,
+    sans-serif;
+  text-shadow:
+    3px 3px 0 #1f9a3a,
+    4px 4px 0 #000;
+  outline: none;
+}
+
+.sc-byline {
+  margin: 0 0 10px;
+  color: #e7e2ff;
+  font-size: 14px;
+}
+
+/* Copy link, after who made it (on a line of its own when there is no room) */
+.showcase .sc-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.sc-blurb {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  max-width: 52ch;
+  margin: 0 0 14px;
+  color: #d6d0f5;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.sc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sc-actions > .button,
+.sc-actions > button,
+.sc-actions > .card-more > summary {
+  padding: 8px 14px;
+  font-size: 15px;
+}
+
+.showcase .sc-actions > button:not(.primary),
+.showcase .sc-actions > .button:not(.primary),
+.showcase .card-more > summary {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.showcase .card-more-menu {
+  color: var(--text);
+}
+
+/* the ⋯ More menu */
+.card-more {
+  position: relative;
+}
+
+.card-more > summary {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.card-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.card-more-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 210px;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.card-more-menu button {
+  width: 100%;
+  text-align: left;
+}
+
+@media (max-width: 760px) {
+  .home .showcase {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding: 12px;
+  }
+
+  .sc-screen {
+    padding: 8px;
+  }
+}
+
+/* Wide and tall enough (see home.css): the game is a column beside the library. */
+@media (min-width: 1000px) and (min-height: 600px) {
+  .home-intro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 16px;
+    margin: 0 0 12px;
+  }
+
+  .home-intro p {
+    flex: 1 1 40ch;
+    max-width: none;
+    font-size: 13px;
+  }
+
+  .home .showcase {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    align-self: start;
+    align-content: start;
+    gap: 14px;
+    max-height: 100%;
+    margin: 0;
+    padding: 14px;
+    overflow-y: auto;
+  }
+
+  .sc-screen {
+    padding: 9px;
+  }
+
+  .showcase .sc-title {
+    font-size: clamp(22px, 2vw, 32px);
+  }
+
+  .sc-blurb {
+    -webkit-line-clamp: 5;
+    font-size: 13px;
+  }
+
+  /* the panel scrolls by itself here, so ⋯ More opens in place instead of over the edge */
+  .showcase .card-more[open] {
+    flex-basis: 100%;
+  }
+
+  .showcase .card-more > summary {
+    width: fit-content;
+  }
+
+  .showcase .card-more-menu {
+    position: static;
+    margin-top: 6px;
+  }
+
+  .sc-actions > .button,
+  .sc-actions > button,
+  .sc-actions > .card-more > summary {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+
+/* ⓘ Notes on its files: a released game's health report, quietly (gameHealth.ts) */
+.sc-notes:not(:has(.health-note:not([hidden]))) {
+  display: none;
+}
+
+.sc-notes {
+  margin-top: 8px;
+}
+
+.showcase .health-note {
+  min-height: 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: #c9c2ee;
+  font-size: 12px;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.showcase .health-note:hover {
+  color: #fff;
+}

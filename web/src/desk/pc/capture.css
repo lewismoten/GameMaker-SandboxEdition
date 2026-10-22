@@ -1,0 +1,177 @@
+/* The desk's capture buttons: two small plastic buttons on the monitor's chin. */
+.desk-capture {
+  position: absolute;
+  right: calc(13% + 34px);
+  bottom: 1.6%;
+  display: flex;
+  gap: 4px;
+  z-index: 3;
+}
+
+.desk-capture .cap-btn {
+  padding: 1px 6px;
+  border: 1px solid var(--plastic-edge, #9a917a);
+  border-radius: 3px;
+  background: linear-gradient(#f1ecdc, #c9c0a5);
+  color: #3c372b;
+  font:
+    700 12px/1.2 system-ui,
+    sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.desk-capture .cap-btn:hover {
+  background: linear-gradient(#fff9e8, #d6cdb2);
+}
+
+.desk-capture.recording .cap-rec {
+  color: #fff;
+  border-color: #7a1010;
+  background: linear-gradient(#e33, #a01818);
+  font-variant-numeric: tabular-nums;
+  animation: cap-blink 1s steps(2, start) infinite;
+}
+
+.desk-capture.recording.paused .cap-rec {
+  animation: none;
+  background: linear-gradient(#c88, #955);
+}
+
+@keyframes cap-blink {
+  50% {
+    box-shadow: 0 0 8px #f44;
+  }
+}
+
+.desk-capture.flash::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  opacity: 0.35;
+  pointer-events: none;
+  animation: cap-flash 0.3s ease-out forwards;
+}
+
+@keyframes cap-flash {
+  to {
+    opacity: 0;
+  }
+}
+
+.desk-capture .cap-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(300px, 86vw);
+  padding: 8px;
+  border: 2px solid #c9c0a5;
+  border-radius: 4px;
+  background: #0000aa;
+  color: #fff;
+  font:
+    13px/1.3 ui-monospace,
+    'Cascadia Mono',
+    Menlo,
+    monospace;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+.desk-capture .cap-menu[hidden] {
+  display: none;
+}
+
+.desk-capture .cap-menu strong {
+  color: #ffff55;
+  font-weight: 700;
+}
+
+.desk-capture .cap-menu button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.desk-capture .cap-menu button:hover,
+.desk-capture .cap-menu button:focus-visible {
+  background: #00aaaa;
+  color: #000;
+}
+
+.desk-capture .cap-menu button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.desk-capture .cap-menu small {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* While the screen fills the window, the buttons float in a corner above it. */
+.desk:not([data-zoom='false']) .desk-capture {
+  position: fixed;
+  right: auto;
+  left: 12px;
+  bottom: 12px;
+  z-index: 62;
+}
+
+.desk:not([data-zoom='false']) .desk-capture .cap-menu {
+  right: auto;
+  left: 0;
+}
+
+/* Armed: waiting for the next game, a steady red dot */
+.desk-capture.armed .cap-rec {
+  color: #a01818;
+  border-color: #7a1010;
+}
+
+.desk-capture .cap-menu .cap-sep {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #5555ff;
+  color: #55ffff;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.desk-capture .cap-menu .cap-wait[aria-checked='true'] span {
+  color: #ffff55;
+}
+
+.desk-capture .cap-menu .cap-wait[aria-checked='true']:hover span,
+.desk-capture .cap-menu .cap-wait[aria-checked='true']:focus-visible span {
+  color: #000;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-capture.recording .cap-rec,
+  .desk-capture.flash::after {
+    animation: none;
+  }
+}
+
+/* No room above (a narrow window): the menu opens below the buttons. */
+.desk-capture .cap-menu.below {
+  top: calc(100% + 6px);
+  bottom: auto;
+}
+
+/* An open menu sits above the keyboard tray and everything else on the desk. */
+.desk[data-zoom='false'] .desk-capture:has(> .cap-menu:not([hidden])) {
+  z-index: 40;
+}

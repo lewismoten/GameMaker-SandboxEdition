@@ -1,0 +1,119 @@
+/* The map picture dialog: pick the whole map, just the level or a game screen with a frame. */
+.map-export {
+  width: min(560px, 86vw);
+}
+.map-export-modes {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.map-export-modes button {
+  flex: 1;
+  border: 0;
+  border-radius: 0;
+  padding: 8px 6px;
+}
+.map-export-modes button + button {
+  border-left: 1px solid var(--border);
+}
+.map-export-modes button[aria-checked='true'] {
+  background: var(--focus);
+  color: #fff;
+}
+.map-export-screen {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.map-export-screen[hidden] {
+  display: none;
+}
+.map-export-preview {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #000;
+  line-height: 0;
+  touch-action: none;
+  user-select: none;
+}
+.map-export-shot {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.map-export-frame {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #ffd400;
+  box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.62);
+  cursor: move;
+  min-width: 4px;
+  min-height: 4px;
+}
+.map-export-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px;
+  background: #ffd400;
+  border: 2px solid #000;
+  border-radius: 3px;
+}
+.map-export-frame.fixed .map-export-handle {
+  display: none;
+}
+.map-export-handle.h-n,
+.map-export-handle.h-s {
+  left: 50%;
+  cursor: ns-resize;
+}
+.map-export-handle.h-e,
+.map-export-handle.h-w {
+  top: 50%;
+  cursor: ew-resize;
+}
+.map-export-handle.h-n,
+.map-export-handle.h-ne,
+.map-export-handle.h-nw {
+  top: 0;
+}
+.map-export-handle.h-s,
+.map-export-handle.h-se,
+.map-export-handle.h-sw {
+  top: 100%;
+}
+.map-export-handle.h-w,
+.map-export-handle.h-nw,
+.map-export-handle.h-sw {
+  left: 0;
+}
+.map-export-handle.h-e,
+.map-export-handle.h-ne,
+.map-export-handle.h-se {
+  left: 100%;
+}
+.map-export-handle.h-nw,
+.map-export-handle.h-se {
+  cursor: nwse-resize;
+}
+.map-export-handle.h-ne,
+.map-export-handle.h-sw {
+  cursor: nesw-resize;
+}
+.map-export-info {
+  margin: 0;
+  text-align: center;
+}
+.map-export-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+}

@@ -1,0 +1,58 @@
+/* Demo playback and video saving (media/demo.ts) */
+.demo-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+dialog.modal .demo-skip,
+.demo-skip {
+  display: inline-flex;
+  flex-direction: row;
+  margin: 0;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.demo-player {
+  position: relative;
+}
+
+.demo-player.recording::after {
+  content: '● REC';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #f44;
+  font:
+    700 12px/1.2 ui-monospace,
+    Menlo,
+    monospace;
+  pointer-events: none;
+  animation: demo-rec-blink 1s steps(2, start) infinite;
+}
+
+@keyframes demo-rec-blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.demo-status {
+  min-height: 1.4em;
+  font-variant-numeric: tabular-nums;
+}
+
+dialog.modal .demo-skip input {
+  width: auto;
+  margin: 0;
+}
+
+.demo-bar .demo-audio {
+  margin-left: 8px;
+}

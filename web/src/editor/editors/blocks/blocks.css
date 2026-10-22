@@ -1,0 +1,125 @@
+/* Block set editor: the blocks, the paint area and the colors & properties share the screen. */
+.blk-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 8px;
+}
+.blk-head .hint {
+  flex: 1 1 280px;
+  margin: 0;
+}
+.blk-head .file-field {
+  flex: 0 1 260px;
+}
+.blk {
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) minmax(280px, 520px) minmax(260px, 1.1fr);
+  grid-template-areas: 'picker paint side';
+  gap: 14px;
+  align-items: start;
+}
+.blk-picker {
+  grid-area: picker;
+  min-width: 0;
+  position: sticky;
+  top: calc(8px + var(--ws-sticky-top, 0px));
+}
+.blk-picker .block-picker {
+  max-height: max(240px, calc(var(--ws-vh, 100dvh) - 210px));
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+}
+.blk-picker .block-picker button {
+  width: auto;
+  height: auto;
+  aspect-ratio: 1;
+}
+.blk-picker .block-picker button canvas {
+  width: 100%;
+  height: 100%;
+}
+.blk-paint {
+  grid-area: paint;
+  min-width: 0;
+}
+.blk-canvas {
+  display: block;
+  width: 100%;
+  max-width: min(520px, max(260px, calc(var(--ws-vh, 100dvh) - 350px)));
+  height: auto;
+  aspect-ratio: 1;
+  border: 1px solid var(--border);
+  cursor: crosshair;
+  touch-action: none;
+}
+.blk-side {
+  grid-area: side;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.blk-side .swatches {
+  max-width: none;
+}
+/* wide screens: colors and properties scroll by themselves, so the page never does */
+@media (min-width: 1000px) {
+  .blk-side {
+    position: sticky;
+    top: 8px;
+    max-height: max(320px, calc(var(--ws-vh, 100dvh) - 200px));
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}
+.blk-side .panel {
+  margin: 0;
+}
+.blk-side .grid-fields {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
+
+/* tablets / narrow desktops: blocks and paint side by side, colors and properties underneath, side by side */
+@media (max-width: 999px) {
+  .blk {
+    grid-template-columns: minmax(150px, 1fr) minmax(260px, 460px);
+    grid-template-areas: 'picker paint' 'side side';
+  }
+  .blk-side {
+    display: grid;
+    grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
+    align-items: start;
+  }
+  .blk-picker .block-picker {
+    max-height: min(560px, 70vh);
+  }
+}
+
+/* phones: one column, the blocks in a strip you scroll sideways */
+@media (max-width: 640px) {
+  .blk {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'picker' 'paint' 'side';
+    gap: 10px;
+  }
+  .blk-picker {
+    position: static;
+  }
+  .blk-picker .block-picker {
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, 48px);
+    grid-template-columns: none;
+    grid-auto-columns: 48px;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .blk-canvas {
+    max-width: 100%;
+  }
+  .blk-side {
+    display: flex;
+  }
+}

@@ -1,0 +1,740 @@
+/* Music (.CMF) editor */
+.mus {
+  --mus-screen: #05061a;
+  --mus-gold: #ffd400;
+  --mus-navy: #000080;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  outline: none;
+}
+
+.mus-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--mus-navy);
+  border-radius: 8px;
+  color: #fff;
+}
+
+.mus-bar button,
+.mus-bar select {
+  background: #11135a;
+  border-color: #3a3fa0;
+  color: #fff;
+}
+
+.mus-bar button:hover:not(:disabled) {
+  background: #1d2190;
+}
+
+.mus-bar button[aria-pressed='true'] {
+  background: var(--mus-gold);
+  border-color: var(--mus-gold);
+  color: #000;
+}
+
+.mus-bar button.primary {
+  background: var(--mus-gold);
+  border-color: var(--mus-gold);
+  color: #000;
+  font-weight: 700;
+  min-width: 6.5em;
+}
+
+.mus-time {
+  font:
+    600 13px/1 ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  color: var(--mus-gold);
+  white-space: pre;
+  padding: 0 6px;
+}
+
+.mus-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.mus-tools {
+  gap: 2px;
+}
+
+.mus-tools button {
+  min-width: 34px;
+  padding: 6px 8px;
+}
+
+.mus-overview {
+  min-width: 0;
+}
+
+.mus-overview-canvas {
+  display: block;
+  border-radius: 6px;
+  border: 1px solid #2e3680;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.mus-main {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 8px;
+  height: clamp(380px, 62vh, 740px);
+}
+
+.mus-roll-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mus-roll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  border-radius: 6px;
+  border: 1px solid #2e3680;
+  overflow: hidden;
+  background: var(--mus-screen);
+}
+
+.mus-roll-canvas {
+  display: block;
+  touch-action: none;
+  outline: none;
+}
+
+.mus-roll-canvas:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--focus);
+}
+
+.mus-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  font-size: 12px;
+}
+
+.mus-vel {
+  flex-wrap: wrap;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid #2e3680;
+  border-radius: 6px;
+  background: #0a0c26;
+}
+
+.mus-vel-label {
+  color: #c8ceff;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  white-space: nowrap;
+}
+
+.mus-vel input[type='range'] {
+  width: 110px;
+  accent-color: #ffd400;
+}
+
+.mus-options .hint {
+  margin: 0;
+  font-size: 12px;
+}
+
+.mus-popup {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 210px;
+  padding: 8px;
+  background: var(--panel);
+  color: var(--text);
+  border: 2px solid var(--mus-gold);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+}
+
+/* ---- tracks ---- */
+.mus-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: auto;
+  min-height: 0;
+}
+
+.mus-track {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--track);
+  border-radius: 6px;
+}
+
+.mus-track.active {
+  border-color: var(--track);
+  box-shadow: 0 0 0 1px var(--track);
+  background: var(--panel-2);
+}
+
+.mus-track.silent .mus-track-text {
+  opacity: 0.55;
+}
+
+.mus-track-name {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 2px;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+
+.mus-swatch {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--track);
+  color: #000;
+  font:
+    700 12px/1 ui-monospace,
+    monospace;
+}
+
+.mus-track-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.mus-track-text b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mus-track-text small {
+  color: var(--muted);
+}
+
+.mus-track-tools {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.mus-track-tools select {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  padding: 2px;
+}
+
+.mus-ms {
+  flex: 0 0 auto;
+  width: 26px;
+  padding: 2px 0;
+  font:
+    700 12px/1.4 ui-monospace,
+    monospace;
+}
+
+.mus-ms[aria-pressed='true'] {
+  background: #ff5555;
+  border-color: #ff5555;
+  color: #000;
+}
+
+.mus-ms.solo[aria-pressed='true'] {
+  background: var(--mus-gold);
+  border-color: var(--mus-gold);
+}
+
+.mus-add {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mus-add .hint {
+  margin: 0;
+}
+
+.mus-add-btn {
+  border-style: dashed;
+}
+
+/* ---- instrument ---- */
+.mus-inst h3 {
+  margin: 0;
+  font:
+    700 13px/1.3 ui-monospace,
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mus-inst-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mus-inst .hint {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+.mus-ops {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.mus-op {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.mus-op.off {
+  opacity: 0.45;
+}
+
+.mus-op h4 {
+  margin: 0 0 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.mus-env {
+  width: 100%;
+  height: 56px;
+  border-radius: 4px;
+  image-rendering: pixelated;
+}
+
+.mus-slider {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.mus-slider output {
+  text-align: right;
+  font-family: ui-monospace, monospace;
+}
+
+.mus-slider input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.mus-op-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+}
+
+.mus-voice {
+  margin-top: 8px;
+}
+
+.mus-voice .mus-slider {
+  flex: 1 1 240px;
+  max-width: 360px;
+}
+
+.mus-waves {
+  display: flex;
+  gap: 3px;
+}
+
+.mus-waves button {
+  padding: 3px;
+  line-height: 0;
+  color: var(--text);
+}
+
+.mus-waves button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.mus-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  font-size: 12px;
+}
+
+/* ---- song settings ---- */
+.mus-song-box summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.mus-song-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.mus-song-grid .field > span {
+  white-space: normal;
+}
+
+.mus-song-grid .hint {
+  margin: 0;
+  font-size: 12px;
+}
+
+.mus-warn {
+  margin-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .mus-main {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+
+  .mus-tracks {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .mus-track {
+    flex: 0 0 200px;
+  }
+
+  .mus-add {
+    flex: 0 0 180px;
+  }
+
+  .mus-add-btn {
+    flex: 0 0 auto;
+  }
+
+  .mus-roll {
+    flex: none;
+    height: 400px;
+  }
+}
+
+/* Loudness tools in Song settings */
+.mus-loud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Wide, tall-enough windows: the editor is as tall as the window; the piano roll takes all of
+   the Song tab, and the Instruments and Settings tabs scroll by themselves. */
+@media (min-width: 861px) and (min-height: 600px) {
+  .mus {
+    height: calc(var(--ws-vh, 100dvh) - 128px);
+  }
+  .mus-panel {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+  .mus-main {
+    height: auto;
+    flex: 1 1 0;
+    min-height: 330px;
+  }
+  .mus-inst {
+    height: 100%;
+  }
+  .mus-inst-list,
+  .mus-inst-edit,
+  .mus-panel-set {
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}
+.mus-tips {
+  position: relative;
+  margin-left: auto;
+}
+.mus-tips summary {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-weight: 700;
+  color: var(--text);
+  list-style: none;
+  cursor: pointer;
+}
+.mus-tips summary::-webkit-details-marker {
+  display: none;
+}
+.mus-tips summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.mus-tips[open] > .hint {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 5;
+  width: min(420px, 80vw);
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+/* wide operator cards: the envelope and its sliders on the left, harmonic, wave and switches on the right */
+.mus-op-half {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.mus-ops {
+  container-type: inline-size;
+}
+@container (min-width: 900px) {
+  .mus-op {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) fit-content(230px);
+    column-gap: 14px;
+    align-content: start;
+  }
+  .mus-op > h4 {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---- tabs: Song, Instruments, Settings ---- */
+.mus-tabrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.mus-tabs {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+}
+.mus-undo {
+  margin-left: auto;
+  padding-bottom: 4px;
+}
+.mus-undo button {
+  padding: 3px 10px;
+}
+.mus-tab {
+  margin-bottom: -1px;
+  padding: 7px 14px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: none;
+  color: var(--muted);
+  font:
+    700 13px/1.2 ui-monospace,
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.mus-tab:hover {
+  color: var(--text);
+}
+.mus-tab[aria-selected='true'] {
+  border-color: var(--border);
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: inset 0 3px 0 var(--mus-gold);
+}
+.mus-tab:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+.mus-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.mus-panel[hidden],
+.mus-roll-tools[hidden] {
+  display: none;
+}
+.mus-song-box {
+  max-width: 760px;
+}
+.mus-song-box h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* ---- Instruments tab: the song's instruments, and the one being shaped ---- */
+.mus-inst {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 0;
+}
+.mus-inst-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+.mus-inst-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mus-inst-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 6px;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+}
+.mus-inst-item[aria-current='true'] {
+  background: var(--panel-2);
+  border-color: var(--mus-gold);
+  box-shadow: inset 4px 0 0 var(--mus-gold);
+}
+.mus-inst-num {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 3px;
+  border-radius: 4px;
+  background: var(--mus-navy);
+  color: #fff;
+  font:
+    700 12px/1 ui-monospace,
+    monospace;
+}
+.mus-inst-item .mus-track-text {
+  flex: 1 1 auto;
+}
+.mus-inst-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mus-inst-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px;
+  max-width: 40px;
+}
+.mus-inst-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--track);
+}
+.mus-inst-edit {
+  align-self: start;
+  max-height: 100%;
+  min-width: 0;
+}
+.mus-inst-users {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.mus-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--track);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.mus-chip[aria-pressed='true'] {
+  border-color: var(--track);
+  box-shadow: 0 0 0 1px var(--track);
+}
+
+@media (max-width: 760px) {
+  .mus-inst {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mus-inst-list ul {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .mus-inst-list li {
+    flex: 0 0 180px;
+  }
+  .mus-tab {
+    flex: 1;
+    padding: 7px 6px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+  .mus-tabs {
+    flex: 1 1 auto;
+  }
+}

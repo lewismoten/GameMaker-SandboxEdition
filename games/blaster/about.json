@@ -1,0 +1,61 @@
+{
+  "title": "Virus Blaster",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1995,
+  "price": "$15",
+  "blurb": "GLITCH, a virus off a bad BBS download, is eating the family 486. Shrink down, launch the BLASTER nano-fighter and blast your way up the motherboard, through memory, the sound card and the hard disk into the CPU itself.",
+  "exe": "BLASTER.EXE",
+  "sound": "sb",
+  "egg": { "block": 149 },
+  "label": {
+    "background": "#0b1a10",
+    "band": "#36e07a",
+    "ink": "#ffffff",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "background": "#0a0f24",
+    "accent": "#ff7a1a",
+    "ink": "#ffffff",
+    "tagline": "Your PC has a virus. Shrink down and blast it.",
+    "back": "Late one night you downloaded COOLGAME.ZIP from a BBS you had never called before. It was not a cool game. It was GLITCH, a virus that eats a PC from the inside out. Mom's taxes. Your homework. YOUR HIGH SCORES.\n\nTime for VACCINE.EXE. Shrink to the size of a byte, climb into the BLASTER nano-fighter and blast your way up through the family 486 - motherboard, memory, sound card, hard disk and into the CPU itself. Five stages. Ten scrolling runs. Five towering bosses. And GLITCH waiting at the core.",
+    "features": [
+      "A real vertically scrolling shoot-'em-up made with Game-Maker - no programming",
+      "Auto-fire twin blasters, plus Nova Bombs that fan out five plasma bolts",
+      "Five stages inside a 486: the motherboard, memory, the sound card, the hard disk and the CPU",
+      "Five towering bosses blocking the only way out",
+      "Turrets that sweep and fire, virus hatches, firewalls, data streams and thumping speakers",
+      "Fly past a homemade 6502 on a breadboard, a blinking 555 timer and a stack that overflows",
+      "Twelve Sound Blaster songs and digitized explosions",
+      "An animated intro cartoon and a self-playing demo"
+    ],
+    "shots": [
+      ["s1a.map", 2, 50],
+      ["s3b.map", 2, 54],
+      ["s1c.map", 2, 45],
+      ["s4a.map", 2, 44],
+      ["s5c.map", 2, 45]
+    ],
+    "rating": "Ages 8 and up",
+    "hours": 4,
+    "reviews": [
+      {
+        "quote": "We did not think Game-Maker could scroll like this. Then GLITCH ate our high scores and we stopped thinking at all.",
+        "source": "Megapixel Monthly, June 1995"
+      },
+      {
+        "quote": "The most fun you can have with a computer virus.",
+        "source": "Diskette Digest"
+      }
+    ],
+    "award": {
+      "title": "Best Action Shareware",
+      "from": "VGA Voyager"
+    },
+    "poster": {
+      "gif": "title.gif",
+      "caption": "Your PC has a virus. Shrink down and blast it."
+    }
+  }
+}

@@ -1,0 +1,95 @@
+/* The visual file picker: play buttons on sound and animation cards, sound group chips. */
+.pick-cell {
+  position: relative;
+  display: flex;
+}
+
+.pick-cell > .pick-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.pick-play {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: rgba(16, 20, 42, 0.82);
+  color: #ffd400;
+  font-size: 12px;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  opacity: 0.88;
+  transition:
+    transform 0.1s,
+    opacity 0.1s;
+}
+
+.pick-play:hover,
+.pick-play:focus-visible {
+  opacity: 1;
+  transform: scale(1.1);
+  background: #000080;
+}
+
+.pick-play.playing {
+  opacity: 1;
+  background: #b3261e;
+  color: #fff;
+  animation: pick-play-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pick-play-pulse {
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 212, 0, 0.35);
+  }
+}
+
+.pick-group {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.pick-group small {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.pick-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+
+.pick-filters:empty {
+  display: none;
+}
+
+.pick-chip {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.pick-chip small {
+  margin-left: 6px;
+  color: var(--muted);
+}
+
+.pick-chip[aria-pressed='true'] {
+  background: #0d1a10;
+  color: #6cf28a;
+  border-color: #2c5a36;
+}
+
+.pick-chip[aria-pressed='true'] small {
+  color: #a8f5b9;
+}

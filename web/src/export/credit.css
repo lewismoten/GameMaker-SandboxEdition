@@ -1,0 +1,26 @@
+/* "Made with Game-Maker: Sandbox Edition" in the corner of an exported game's start screen. */
+.gm-made-with {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  max-width: calc(100% - 120px);
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #aab;
+  font:
+    12px/1.3 system-ui,
+    sans-serif;
+}
+.gm-made-with a {
+  color: #9cf;
+  text-decoration: none;
+}
+.gm-made-with a:hover,
+.gm-made-with a:focus-visible {
+  text-decoration: underline;
+}
+.gm-made-with[hidden] {
+  display: none;
+}

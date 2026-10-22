@@ -1,0 +1,86 @@
+/* Backdrop editor: the whole picture with its window, and the game screen it makes. */
+.bkd-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+}
+.bkd-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+}
+.bkd-fields input[type='number'] {
+  width: 7ch;
+}
+.bkd-status {
+  flex: 1 1 280px;
+}
+.bkd-status:empty {
+  display: none;
+}
+.bkd-note {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+  font-size: 13px;
+}
+.bkd-note.warn {
+  border-left-color: #e0a800;
+  background: color-mix(in srgb, #e0a800 14%, var(--panel));
+}
+.bkd-note button {
+  margin: 4px 6px 0 0;
+  padding: 3px 10px;
+}
+
+.bkd-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr);
+  gap: 16px;
+  margin-top: 12px;
+  align-items: start;
+}
+.bkd-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.bkd-pane h3 {
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.bkd-whole {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  background: #000;
+  cursor: grab;
+  touch-action: none;
+}
+.bkd-whole:active {
+  cursor: grabbing;
+}
+.bkd-whole:focus-visible {
+  outline: 3px solid var(--focus);
+}
+
+@media (max-width: 760px) {
+  .bkd-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* downloads */
+.bkd-exports {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}

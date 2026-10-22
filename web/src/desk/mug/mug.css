@@ -1,0 +1,464 @@
+/* the Sandbox BBS mug on the desk (desk/mug/mug.ts); its size and place come from deskProps.css */
+.mug-prop {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.mug-prop:hover,
+.mug-prop:focus-visible {
+  transform: translateY(-3px) rotate(-1deg);
+}
+
+.mug-prop:focus-visible {
+  outline: 2px solid #ffd23f;
+  outline-offset: 4px;
+}
+
+.mug-prop .mug-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mug-prop .mug-layer svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---- the closer look (desk/mug/mugViewer.ts) and the sublimation sheet (desk/mug/mugPrint.ts) */
+.mugv {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(90% 70% at 35% 45%, rgba(255, 236, 200, 0.18), transparent 60%), linear-gradient(#2a1d14, #120c08);
+  color: #f6efe0;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+
+.mugv-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.mugv-bar strong {
+  font:
+    700 17px Georgia,
+    serif;
+}
+
+.mugv-spacer {
+  flex: 1;
+}
+
+.mugv button {
+  padding: 7px 12px;
+  border: 1px solid #c8b896;
+  border-radius: 6px;
+  background: #f3ead6;
+  color: #2a1d14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.mugv button:hover {
+  background: #fff8e8;
+}
+
+.mugv button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mugv-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr minmax(260px, 340px);
+  min-height: 0;
+}
+
+.mugv-stage {
+  position: relative;
+  min-height: 300px;
+}
+
+.mugv-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.mugv-canvas:active {
+  cursor: grabbing;
+}
+
+.mugv-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  margin: 0;
+  color: rgba(246, 239, 224, 0.6);
+  text-align: center;
+  pointer-events: none;
+}
+
+.mugv-side {
+  overflow: auto;
+  padding: 14px 16px 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.mugv-side h3,
+.subl-side h3 {
+  margin: 14px 0 6px;
+  color: #ffd23f;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mugv-note {
+  margin: 4px 0 8px;
+  color: rgba(246, 239, 224, 0.75);
+  font-size: 12px;
+}
+
+.mugv-designs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.mugv .mugv-design {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  border: 2px solid transparent;
+  background: #000;
+  color: #f6efe0;
+}
+
+.mugv .mugv-design:hover {
+  background: #111;
+}
+
+.mugv-design img,
+.subl-design img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.mugv-design span {
+  font-size: 12px;
+}
+
+.mugv [aria-pressed='true'] {
+  border-color: #ffd23f;
+  box-shadow: 0 0 0 2px rgba(255, 210, 63, 0.35);
+}
+
+.mugv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mugv .mugv-chip[aria-pressed='true'] {
+  background: #ffd23f;
+}
+
+.mugv .mugv-swatch {
+  width: 34px;
+  height: 34px;
+  padding: 4px;
+  border: 2px solid #c8b896;
+  border-radius: 50%;
+}
+
+.mugv-swatch i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.mugv .mugv-make,
+.mugv .subl-primary {
+  width: 100%;
+  margin-top: 18px;
+  padding: 10px 12px;
+  border-color: #ffd23f;
+  background: #ffd23f;
+  font-size: 14px;
+}
+
+.mugv .subl-primary {
+  width: auto;
+  margin: 0;
+}
+
+/* sublimation order form: a row a picture, a column a mug size */
+.subl-order {
+  width: 100%;
+  margin: 12px 0 8px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.subl-order caption {
+  margin-bottom: 6px;
+  color: #ffd23f;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.subl-order thead th {
+  padding: 0 2px 4px;
+  color: rgba(246, 239, 224, 0.8);
+  font-weight: 600;
+  line-height: 1.15;
+  vertical-align: bottom;
+}
+
+.subl-order thead th:first-child {
+  text-align: left;
+}
+
+.subl-order tbody tr {
+  border-top: 1px solid rgba(246, 239, 224, 0.12);
+}
+
+.subl-order tbody th {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 0;
+  font-weight: 600;
+  text-align: left;
+}
+
+.subl-order tbody th img {
+  flex: none;
+  width: 64px;
+  height: auto;
+  image-rendering: pixelated;
+  background: #000;
+}
+
+.subl-order td {
+  padding: 2px;
+  text-align: center;
+}
+
+.subl-order input {
+  width: 3.4em;
+  padding: 4px 2px;
+  border: 1px solid #8a7a5c;
+  border-radius: 5px;
+  background: #f3ead6;
+  color: #2a1d14;
+  font:
+    700 13px system-ui,
+    sans-serif;
+  text-align: center;
+}
+
+.subl-order input:not(:placeholder-shown) {
+  border-color: #ffd23f;
+  background: #fff3c4;
+}
+
+.subl-order tfoot th,
+.subl-order tfoot td {
+  padding-top: 6px;
+  border-top: 2px solid rgba(246, 239, 224, 0.4);
+  color: #ffe9a8;
+  font-weight: 700;
+  text-align: center;
+}
+
+.subl-order tfoot th {
+  text-align: left;
+}
+
+.mugv .subl-png {
+  margin-left: 6px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+/* sublimation sheet */
+.subl {
+  z-index: 61;
+}
+
+.subl-main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(300px, 470px) 1fr;
+  min-height: 0;
+}
+
+.subl-side {
+  overflow: auto;
+  padding: 12px 16px 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.subl-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.subl-row label {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.subl-row select {
+  padding: 5px;
+  color: #2a1d14;
+  background: #f3ead6;
+  border-radius: 5px;
+  font:
+    13px system-ui,
+    sans-serif;
+}
+
+.subl-design {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.subl-design b {
+  display: block;
+  font-size: 13px;
+}
+
+.subl-design small {
+  display: block;
+  color: rgba(246, 239, 224, 0.7);
+  font-size: 11px;
+}
+
+.subl-qty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mugv .subl-qty button {
+  width: 28px;
+  padding: 3px 0;
+}
+
+.subl-qty output {
+  min-width: 1.4em;
+  text-align: center;
+  font-weight: 700;
+}
+
+.subl-status {
+  min-height: 2.8em;
+  color: #ffe9a8;
+}
+
+.subl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.subl-help {
+  margin-top: 14px;
+  font-size: 12px;
+}
+
+.subl-help summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.subl-help ol {
+  padding-left: 18px;
+}
+
+.subl-pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 18px;
+  overflow: auto;
+  padding: 18px;
+}
+
+.subl-pages figure {
+  margin: 0;
+  text-align: center;
+}
+
+.subl-page {
+  display: block;
+  width: min(420px, 80vw);
+  height: auto;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+
+.subl-pages figcaption {
+  margin-top: 6px;
+  color: rgba(246, 239, 224, 0.7);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .mugv-main,
+  .subl-main {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .mugv-stage {
+    flex: none;
+    height: 46vh;
+  }
+
+  .mugv-side,
+  .subl-side {
+    overflow: visible;
+  }
+}

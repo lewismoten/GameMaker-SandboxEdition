@@ -1,0 +1,216 @@
+/* On-screen keys (player/screenKeys.ts): a button in the player's top corner, beside ⌨ Keys,
+   and a panel of keys along the bottom of the game. */
+.gm-player .gm-corner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+}
+
+.gm-player .gm-corner .gm-keys {
+  position: static;
+}
+
+.gm-player .gm-osk-toggle {
+  padding: 4px 10px;
+  border: 1px solid #ffd400;
+  border-radius: 6px;
+  background: rgba(0, 0, 128, 0.7);
+  color: #ffd400;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.gm-player .gm-osk-toggle:hover,
+.gm-player .gm-osk-toggle:focus-visible,
+.gm-player .gm-osk-toggle[aria-expanded='true'] {
+  opacity: 1;
+}
+
+.gm-player .gm-osk-toggle[aria-expanded='true'] {
+  background: #ffd400;
+  color: #00006b;
+}
+
+.gm-player .gm-osk-toggle:focus-visible,
+.gm-player .gm-osk-key:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.gm-player .gm-osk {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 4;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-sizing: border-box;
+  width: min(100%, 760px);
+  padding: 8px max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  border-radius: 12px 12px 0 0;
+  background: rgba(10, 12, 32, 0.9);
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.5);
+}
+
+.gm-player .gm-osk[hidden],
+.gm-player .gm-osk-full[hidden] {
+  display: none;
+}
+
+.gm-player .gm-osk-full {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.gm-player .gm-osk-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.gm-player .gm-osk-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  min-height: 38px;
+  padding: 2px 0;
+  overflow: hidden;
+  border: 1px solid #5a5f88;
+  border-bottom-width: 3px;
+  border-radius: 7px;
+  background: linear-gradient(#2c3160, #1b1e3c);
+  color: #f0f1ff;
+  font:
+    700 clamp(11px, 3.2vw, 14px) / 1 system-ui,
+    sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.gm-player .gm-osk-key small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  color: #c9cdf0;
+  font-size: clamp(7px, 1.9vw, 10px);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* the template's colors (desk keyboard): Quit red, Help/Status yellow, sound cyan, Save/Load green */
+.gm-player .gm-osk-key[data-code='Escape'] small {
+  color: #ff9a9a;
+}
+.gm-player .gm-osk-key:is([data-code='F1'], [data-code='F2']) small {
+  color: #ffe27a;
+}
+.gm-player .gm-osk-key:is([data-code='F3'], [data-code='F4']) small {
+  color: #8eeaff;
+}
+.gm-player .gm-osk-key:is([data-code='F5'], [data-code='F6']) small {
+  color: #9dffa8;
+}
+.gm-player .gm-osk-key:is([data-code='F8'], [data-code='F9'], [data-code='F10']) small {
+  color: #ffb8ee;
+}
+
+@media (hover: hover) {
+  .gm-player .gm-osk-key:hover {
+    border-color: #ffd400;
+    background: linear-gradient(#3b4180, #252a55);
+  }
+}
+
+.gm-player .gm-osk-key.down,
+.gm-player .gm-osk-key[aria-pressed='true'],
+.gm-player .gm-osk-more[aria-expanded='true'] {
+  border-color: #fff3a6;
+  background: linear-gradient(#ffe25a, #d8a800);
+  color: #1b1e3c;
+}
+
+.gm-player .gm-osk-key.down {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+.gm-player .gm-osk-key.down small,
+.gm-player .gm-osk-key[aria-pressed='true'] small {
+  color: #1b1e3c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm-player .gm-osk-key.down {
+    transform: none;
+  }
+}
+
+/* Touch screens (player/touch.ts): the panel takes its own place in the player's grid instead
+   of lying over the game-pad, so the pad, the buttons and the keys all work at once. */
+.gm-player.has-touch .gm-osk {
+  grid-area: osk;
+  position: static;
+  translate: none;
+  width: 100%;
+  padding: 6px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.gm-player.has-touch .gm-osk-key {
+  min-height: 34px;
+}
+
+/* upright: screen, system keys, the panel, then the pad; the screen gives up the height it needs */
+.gm-player.has-touch.touch-portrait.gm-osk-open {
+  container-type: inline-size;
+  grid-template-rows: minmax(0, 1fr) auto auto auto;
+  grid-template-areas: 'screen screen' 'sys sys' 'osk osk' 'pad act';
+}
+
+.gm-player.has-touch.touch-portrait.gm-osk-open canvas {
+  width: auto;
+  height: min(100%, 75cqw);
+  max-width: 100%;
+}
+
+.gm-player.has-touch.touch-portrait.gm-osk-open .gm-pad {
+  --pad: clamp(112px, 30vmin, 160px);
+}
+
+.gm-player.has-touch.touch-portrait.gm-osk-open .gm-actions button {
+  min-width: 56px;
+  min-height: 56px;
+}
+
+/* sideways: the panel goes under the screen, between the pad and the buttons */
+.gm-player.has-touch.touch-landscape.gm-osk-open {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'sys screen .' 'pad screen act' 'pad osk act';
+}
+
+.gm-player.has-touch.touch-landscape.gm-osk-open .gm-osk {
+  min-width: min(52vw, 440px);
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+}
+
+.gm-player.has-touch.touch-landscape.gm-osk-open .gm-osk-key {
+  min-height: 28px;
+}

@@ -1,0 +1,48 @@
+/* "You already have a copy" (homeCopies.ts) */
+.copies-intro {
+  margin: 0 0 12px;
+}
+
+.copies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 50vh;
+  margin: 0 0 14px;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.copies-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.copies-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.copies-name b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copies-name small {
+  color: var(--muted, var(--text));
+}
+
+.copies-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}

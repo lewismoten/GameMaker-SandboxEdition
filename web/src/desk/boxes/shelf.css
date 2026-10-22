@@ -1,0 +1,125 @@
+/* Two shelves on the wall, boxes standing on them spine out (desk/boxes/shelf.ts). --shelf-u is pixels per inch of box. */
+.game-shelf {
+  --shelf-u: 9px;
+  position: absolute;
+  left: 24px;
+  /* two shelves on the wall, the bottom one clear of the desk top (which starts at 470px) so its
+     shadow falls on the wall; the top one, 18px higher than its boxes, under the poster (shelf.ts) */
+  top: calc(426px - 2 * 9.25 * var(--shelf-u) - 18px);
+  z-index: -1; /* on the wall: behind whatever stands on the desk (the speaker) */
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.game-shelf .shelf-row {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 300px; /* ends before the left speaker, which stands in front of the wall (shelf.ts SHELF_PX) */
+  height: calc(9.25 * var(--shelf-u));
+  padding: 0 4px;
+  box-sizing: content-box;
+}
+
+/* the plank, with a shadow on the wall under it */
+.game-shelf .shelf-row::after {
+  content: '';
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  bottom: -12px;
+  height: 12px;
+  border-radius: 2px;
+  background:
+    linear-gradient(rgba(255, 230, 190, 0.25), transparent 30%), repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 3px, transparent 3px 11px),
+    linear-gradient(#8a5a33, #5a3a1f);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* two brackets holding each plank to the wall */
+.game-shelf .shelf-row::before {
+  content: '';
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  bottom: -32px;
+  height: 22px;
+  background:
+    linear-gradient(90deg, #2b2b2e, #6b6b70 40%, #2b2b2e) left / 6px 100% no-repeat,
+    linear-gradient(90deg, #2b2b2e, #6b6b70 40%, #2b2b2e) right / 6px 100% no-repeat;
+  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.4));
+}
+
+/* the top shelf's brackets are short: the boxes on the shelf below stand right under them */
+.game-shelf .shelf-row.top::before {
+  bottom: -18px;
+  height: 6px;
+}
+
+/* a box's slot is as wide as what shows: the spine, or the front when it stands face out */
+.game-shelf .shelf-box {
+  position: relative;
+  flex: none;
+  width: calc(2 * var(--shelf-u));
+  height: calc(9.25 * var(--shelf-u));
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  /* each box turns in its own slot, seen straight on, and never pokes into its neighbors */
+  perspective: 700px;
+  overflow-x: clip;
+  transition:
+    width 0.45s cubic-bezier(0.3, 0.7, 0.3, 1),
+    translate 0.2s;
+}
+
+.game-shelf .shelf-box.face-out {
+  width: calc(7.5 * var(--shelf-u));
+  margin: 0 3px;
+}
+
+.game-shelf .shelf-box .box3d {
+  --u: var(--shelf-u);
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin-left: calc(-3.75 * var(--shelf-u));
+  /* turned so the left spine faces out, pushed back so it stands flush with a face-out box */
+  transform: translateZ(calc(1 * var(--shelf-u) - 3.75 * var(--shelf-u))) rotateY(90deg);
+  transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+.game-shelf .shelf-box.face-out .box3d {
+  transform: none;
+}
+
+/* a little shading between the spines */
+.game-shelf .shelf-box:not(.face-out)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 2px 0 2px rgba(0, 0, 0, 0.35),
+    inset -1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+/* reach for it: the box slides up off the shelf a little */
+.game-shelf .shelf-box:hover,
+.game-shelf .shelf-box:focus-visible {
+  translate: 0 -6px;
+  outline: none;
+}
+
+.game-shelf .shelf-box:focus-visible .box3d {
+  filter: drop-shadow(0 0 3px #ffe082);
+}
+
+@media (max-width: 960px) {
+  .game-shelf {
+    display: none;
+  }
+}

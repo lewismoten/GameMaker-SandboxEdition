@@ -1,0 +1,78 @@
+KEYS
+ Arrows, W A S D or the
+ number pad: one step
+ (hold to keep walking)
+ F1 help
+ F2 status: Money is the
+    words you carry. Words
+    are money.
+ P pocket a small thing
+ F5 save F6 load
+ Esc quit to the menu
+
+Walk into a door, a book or a
+page to use it.
+
+
+THE LIBRARY
+ The reading room has a
+ door to each of the eight
+ wings. Each wing's
+ hallway has four tall
+ books on its shelves:
+ walk into a spine and in
+ you go.
+
+ The door marked OUT goes
+ back to the reading room.
+
+
+
+
+
+IN A BOOK
+ The words lie on the
+ floor as slips of paper:
+ 1, 5, 10 and 20 words.
+ Every book has exactly
+ 100.
+
+ THE END is locked until
+ you carry 100. It takes
+ them, opens, and the
+ bookmark behind it puts
+ the story back. That is
+ the only way out.
+
+
+
+SHUSHERS
+ ...and scissors, static,
+ clothes pegs and the like
+ cannot take your words.
+ They fine you instead: a
+ point off your score for
+ every moment they touch
+ you.
+
+ Overdue fines are a
+ librarian's love
+ language. Stay out of
+ their way.
+
+
+
+THE RESERVE STACKS
+ The purple STAX door in
+ the reading room leads
+ to the Reserve Stacks.
+ Eight stamp gates stand
+ in a row there, each
+ inked with its wing's
+ stamp. A gate opens once
+ its wing has four stories
+ stamped SHELVED.
+
+ What is past the gates?
+ Exactly one hundred
+ words. Ask anyone.

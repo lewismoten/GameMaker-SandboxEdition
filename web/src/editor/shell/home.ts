@@ -1,0 +1,519 @@
+// Home page: one game shown large (a featured one, or the one you chose; see
+// homeShowcase.ts) and the library: tabs for the collections (your games, the CD's
+// gameware, our Sandbox games, the shareware) with search and "New game" beside them, and
+// the chosen collection's games as small picture tiles (homeCards.ts). On a wide window
+// the game sits in a column beside the library and the page fits the window, the tiles
+// scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
+// kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
+// (?tab=sandbox&q=snow), so a reload or a link shows the same.
+import { h, clear, modal, toast } from '../core/ui';
+import { loadCatalog, type CatalogEntry } from '../../project/files';
+import { listProjects } from '../../project/storage';
+import { onCatalogChanged } from '../../project/catalogWatch';
+import './home.css';
+import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../../edition';
+import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type HomeGame } from './homeCards';
+import { showcase } from './homeShowcase';
+import { newGame, importPicked, importDropped } from './homeImport';
+import { icon, type IconName } from './homeIcons';
+import { wantsTouchControls } from '../../player/touch';
+import { findOriginal, isImported } from './homeOrigin';
+import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
+
+export interface HomeNav {
+  openProject(id: string): void;
+}
+
+/** A collection: a kind of game, with your own games split into those made here and those imported. */
+type Category = GameKind | 'imported';
+
+const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[] = [
+  {
+    id: 'mine',
+    icon: 'edit',
+    name: 'My games',
+    lead: 'Games you made here or copied from the collections, kept in this browser. Download a .zip now and then to keep them safe.',
+  },
+  {
+    id: 'imported',
+    icon: 'inbox',
+    name: 'Imported',
+    lead: 'Games brought in from a folder, files, a .zip or a one-page export, often made by someone else. Kept in this browser; ⋯ More moves one to My games.',
+  },
+  {
+    id: 'gameware',
+    icon: 'disk',
+    name: 'Gameware',
+    lead: 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.',
+  },
+  {
+    id: 'sandbox',
+    icon: 'star',
+    name: 'Sandbox',
+    lead: 'New games from Sandbox Software, made with Game-Maker in the original formats, so they also play in DOS. Play them, read their manuals, or edit a copy to see how they were made.',
+  },
+  {
+    id: 'shareware',
+    icon: 'lock',
+    name: 'Shareware',
+    lead: 'Games other people made with Game-Maker, as distributed on the CD. They are copyrighted by their authors and can only be played here, exactly as released. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
+  },
+];
+
+const CATEGORY_KEY = 'gm-home-category';
+const SORT_KEY = 'gm-home-sort';
+type MySort = 'edited' | 'name';
+
+function savedSort(): MySort {
+  try {
+    return localStorage.getItem(SORT_KEY) === 'name' ? 'name' : 'edited';
+  } catch {
+    return 'edited';
+  }
+}
+
+function savedCategory(): Category | undefined {
+  try {
+    const c = localStorage.getItem(CATEGORY_KEY) as Category | null;
+    return c && CATEGORIES.some((x) => x.id === c) ? c : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** The game named in the address (#/game/<key>), if any. */
+const hashKey = () => {
+  const { path } = currentRoute();
+  return path[0] === 'game' ? (path[1] ?? '') : '';
+};
+
+/** Still on the home page (#/ or #/game/…): a late change must not touch another page's address. */
+const onHome = () => [undefined, 'game'].includes(currentRoute().path[0]);
+
+/** Keeps the home page's choices (collection, search) in the address, as #/…?tab=…&q=…. */
+const keep = (changes: Record<string, ParamValue>) => onHome() && setHashParams(changes);
+
+/** Shows `path` (a game, or none) in the address, keeping the settings. */
+function showPath(path: string[]): void {
+  if (!onHome()) return;
+  const { params } = currentRoute();
+  const next = formatHash(path, params);
+  if (next !== location.hash) history.replaceState(history.state, '', `${location.pathname}${location.search}${next}`);
+}
+
+/** The last home page's watch on the catalog (one home page at a time). */
+let unwatchHome: (() => void) | undefined;
+
+export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
+  unwatchHome?.();
+  unwatchHome = undefined;
+  const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
+  const libTitle = h('h2', { id: 'lib-title' });
+  const libLead = h('p', { class: 'lead' });
+  const libTools = h('div', { class: 'lib-tools' });
+  const tiles = h('div', { id: 'lib-panel', class: 'cards lib-tiles', role: 'tabpanel' }, h('p', { class: 'meta' }, 'Loading…'));
+  const search = h('input', {
+    type: 'search',
+    class: 'lib-search',
+    placeholder: 'Find a game…',
+    'aria-label': 'Find a game',
+    oninput: () => {
+      filterTiles();
+      keep({ q: search.value.trim() });
+    },
+  }) as HTMLInputElement;
+  // where games come in: drop them, or pick them
+  const drop = h(
+    'div',
+    { class: 'dropzone lib-drop' },
+    h('span', null, 'Drop a game folder, its files, a .zip or a one-page .html export here, or'),
+    h('button', { type: 'button', onclick: () => void importPicked(nav, { directory: true }) }, 'Open a game folder…'),
+    h('button', { type: 'button', onclick: () => void importPicked(nav, {}) }, 'Open files, .zip or .html…'),
+  );
+
+  let catalog: CatalogEntry[] = [];
+  let catalogError = '';
+  let projects: Awaited<ReturnType<typeof listProjects>> = [];
+  // RSD's own games first
+  const gameware = () =>
+    catalog
+      .filter((g) => g.kind !== 'shareware' && !g.original)
+      .sort((a, b) => (RSD_GAMES.includes(b.id) ? 1 : 0) - (RSD_GAMES.includes(a.id) ? 1 : 0) || RSD_GAMES.indexOf(a.id) - RSD_GAMES.indexOf(b.id));
+  const entriesOf = (c: Category): CatalogEntry[] =>
+    c === 'gameware'
+      ? gameware()
+      : c === 'sandbox'
+        ? catalog.filter((g) => g.original && g.gam)
+        : c === 'shareware'
+          ? catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam)
+          : [];
+  // one HomeGame per game for the page's life, so files load once
+  const games = new Map<string, HomeGame>();
+  const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
+  let sort = savedSort();
+  const sorted = () => (sort === 'name' ? [...projects].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })) : projects);
+  const mine = (p: (typeof projects)[number]) => remember(projectGame(p, findOriginal(p, catalog)));
+  /** Your games made here (My games) or imported. */
+  const own = (c: Category) => (c === 'mine' || c === 'imported' ? projects.filter((p) => isImported(p.id) === (c === 'imported')) : []);
+  const isOwn = (c: Category) => c === 'mine' || c === 'imported';
+  const gamesOf = (c: Category): HomeGame[] =>
+    isOwn(c) ? sorted().filter((p) => isImported(p.id) === (c === 'imported')).map(mine) : entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind)));
+  /** The collection a game is listed in. */
+  const categoryOf = (g: HomeGame): Category => (g.project && isImported(g.project.id) ? 'imported' : g.kind);
+  // My games in the order you like: the one edited last first, or by name
+  const sortBox = h(
+    'label',
+    { class: 'lib-sort' },
+    'Sort by ',
+    h(
+      'select',
+      {
+        onchange: (e: Event) => {
+          sort = (e.target as HTMLSelectElement).value as MySort;
+          try {
+            localStorage.setItem(SORT_KEY, sort);
+          } catch {
+            /* not remembered */
+          }
+          void select(current);
+        },
+      },
+      h('option', { value: 'edited', selected: sort === 'edited' }, 'Last edited'),
+      h('option', { value: 'name', selected: sort === 'name' }, 'Name'),
+    ),
+  );
+  const findGame = (key: string): HomeGame | undefined => {
+    for (const c of CATEGORIES) {
+      const g = gamesOf(c.id).find((x) => x.key === key);
+      if (g) return g;
+    }
+    return undefined;
+  };
+
+  let current: Category = savedCategory() ?? 'gameware';
+
+  const filterTiles = () => {
+    const q = search.value.trim().toLowerCase();
+    let shown = 0;
+    for (const t of tiles.querySelectorAll<HTMLElement>('.card')) {
+      const hit = !q || (t.dataset.search ?? '').includes(q);
+      t.hidden = !hit;
+      if (hit) shown++;
+    }
+    tiles.querySelector('.lib-none')?.remove();
+    if (!q || shown) return;
+    // nothing here: point to the collections that have it
+    const elsewhere = CATEGORIES.filter((c) => c.id !== current)
+      .map((c) => ({ c, n: gamesOf(c.id).filter((g) => g.search.includes(q)).length }))
+      .filter((x) => x.n);
+    tiles.append(
+      h(
+        'div',
+        { class: 'meta lib-none', role: 'status' },
+        `No game in ${CATEGORIES.find((c) => c.id === current)!.name} matches “${search.value.trim()}”.`,
+        ...elsewhere.map(({ c, n }) =>
+          h('button', { type: 'button', class: 'lib-elsewhere', onclick: () => void select(c.id, true).then(() => document.getElementById(`lib-tab-${c.id}`)?.focus()) }, `${c.name} has ${n} →`),
+        ),
+      ),
+    );
+  };
+
+  const markSelected = () => {
+    const key = top.game?.key;
+    for (const t of tiles.querySelectorAll<HTMLElement>('.game-tile')) {
+      const on = t.dataset.key === key;
+      t.classList.toggle('selected', on);
+      t.querySelector('.tile-select')?.setAttribute('aria-current', on ? 'true' : 'false');
+    }
+  };
+
+  /** Shows a game at the top because the visitor chose it. */
+  const choose = (game: HomeGame) => {
+    top.show(game, {});
+    showPath(['game', game.key]);
+    markSelected();
+    const r = top.el.getBoundingClientRect();
+    if (r.top < 0 || r.top > innerHeight * 0.5)
+      top.el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    top.el.querySelector<HTMLElement>('.sc-title')?.focus({ preventScroll: true });
+  };
+
+  /** Shows a game picked at random, one with a demo when there are some. */
+  const feature = () => {
+    const pool = [...gamesOf('sandbox'), ...gamesOf('gameware').filter((g) => g.entry && RSD_GAMES.includes(g.entry.id))].filter((g) => g.gam);
+    const withDemo = pool.filter((g) => g.entry?.files.some((f) => f.endsWith('.rec')));
+    const choices = (withDemo.length ? withDemo : pool).filter((g) => g.key !== top.game?.key);
+    const pick = choices[Math.floor(Math.random() * choices.length)];
+    if (!pick) return;
+    top.show(pick, { featured: true, onAnother: feature });
+    showPath([]);
+    markSelected();
+  };
+
+  /** With games of your own, the one edited last (to carry on with); otherwise a featured game. */
+  const showStart = () => {
+    if (!projects.length) return feature();
+    top.show(mine(projects[0]), { resume: true });
+    showPath([]);
+    markSelected();
+  };
+
+  // The collections are tabs: arrow keys move between them, Tab goes on to the games.
+  const renderCats = () => {
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, isOwn(c.id) ? own(c.id).length : entriesOf(c.id).length]));
+    clear(
+      catNav,
+      ...CATEGORIES.map((c) =>
+        h(
+          'button',
+          {
+            id: `lib-tab-${c.id}`,
+            class: `lib-cat${c.id === current ? ' active' : ''}`,
+            type: 'button',
+            role: 'tab',
+            'aria-selected': String(c.id === current),
+            'aria-controls': 'lib-panel',
+            tabindex: c.id === current ? 0 : -1,
+            title: c.lead,
+            onclick: () => void select(c.id, true),
+          },
+          icon(c.icon),
+          h('span', { class: 'lib-cat-name' }, c.name),
+          h('span', { class: 'lib-cat-count' }, String(counts[c.id]), h('span', { class: 'vh' }, ` game${counts[c.id] === 1 ? '' : 's'}`)),
+        ),
+      ),
+    );
+  };
+  // Arrow keys move between the tiles (Tab stops once per tile); Home and End go to the ends.
+  tiles.addEventListener('keydown', (e) => {
+    const from = (e.target as HTMLElement).closest('.tile-select');
+    if (!from || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
+    const all = [...tiles.querySelectorAll<HTMLElement>('.game-tile:not([hidden]) .tile-select')];
+    const i = all.indexOf(from as HTMLElement);
+    const top = (el: HTMLElement) => el.closest('.game-tile')!.getBoundingClientRect().top;
+    const cols = Math.max(1, all.filter((el) => top(el) === top(all[0])).length);
+    const j = { ArrowLeft: i - 1, ArrowRight: i + 1, ArrowUp: i - cols, ArrowDown: i + cols, Home: 0, End: all.length - 1 }[e.key]!;
+    if (j < 0 || j >= all.length) return;
+    e.preventDefault();
+    all[j].focus();
+    all[j].scrollIntoView({ block: 'nearest' });
+  });
+
+  catNav.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -99, End: 99 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    const i = CATEGORIES.findIndex((c) => c.id === current);
+    const next = CATEGORIES[Math.max(0, Math.min(CATEGORIES.length - 1, Math.abs(step) > 1 ? (step < 0 ? 0 : 99) : (i + step + CATEGORIES.length) % CATEGORIES.length))];
+    void select(next.id, true).then(() => catNav.querySelector<HTMLElement>(`#lib-tab-${next.id}`)?.focus());
+  });
+
+  /** Shows a collection; remembered when the visitor picked it. */
+  const select = async (c: Category, picked = false) => {
+    current = c;
+    if (picked) {
+      keep({ tab: c });
+      try {
+        localStorage.setItem(CATEGORY_KEY, c);
+      } catch {
+        /* not remembered */
+      }
+    }
+    renderCats();
+    tiles.setAttribute('aria-labelledby', `lib-tab-${c}`);
+    const info = CATEGORIES.find((x) => x.id === c)!;
+    libTitle.textContent = info.name;
+    libLead.textContent = info.lead;
+    sortBox.hidden = !isOwn(c) || own(c).length < 2;
+    clear(
+      libTools,
+      isOwn(c) ? drop : null,
+    );
+    let cards: HTMLElement[];
+    if (!isOwn(c) && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
+    else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) }));
+    if (!cards.length)
+      cards = [
+        c === 'mine'
+          ? h(
+              'div',
+              { class: 'lib-empty' },
+              h('p', { class: 'lib-empty-title' }, 'No games here yet'),
+              h('p', { class: 'meta' }, 'Start a new one, or edit a copy of a finished game to see how it was made.'),
+              h(
+                'div',
+                { class: 'toolbar' },
+                h('button', { class: 'primary', type: 'button', onclick: () => void newGame(nav) }, '+ Make a new game'),
+                h('button', { type: 'button', onclick: () => void select('gameware', true).then(() => document.getElementById('lib-tab-gameware')?.focus()) }, 'Browse Gameware'),
+                h('button', { type: 'button', onclick: () => void select('sandbox', true).then(() => document.getElementById('lib-tab-sandbox')?.focus()) }, 'Browse Sandbox'),
+              ),
+            )
+          : c === 'imported'
+            ? h(
+                'div',
+                { class: 'lib-empty' },
+                h('p', { class: 'lib-empty-title' }, 'No imported games yet'),
+                h('p', { class: 'meta' }, 'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you open it above.'),
+              )
+            : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
+      ];
+    // Keep the page from jumping while the tiles are swapped.
+    tiles.style.minHeight = `${tiles.offsetHeight}px`;
+    clear(tiles, ...cards);
+    filterTiles();
+    markSelected();
+    requestAnimationFrame(() => (tiles.style.minHeight = ''));
+  };
+
+  const refreshProjects = async () => {
+    projects = await listProjects().catch(() => []);
+    // renamed or saved since: made afresh
+    for (const k of [...games.keys()]) if (k.startsWith('my:')) games.delete(k);
+    const key = top.game?.key;
+    const now = key && findGame(key);
+    if (!now) showStart();
+    else if (now.kind === 'mine') top.show(now, {});
+    await select(current);
+  };
+
+  const top = showcase(nav, refreshProjects);
+  const touch = wantsTouchControls();
+  /** What Getting started says: on the page, or in a dialog when there is no room for it. */
+  const startBody = (onGuide?: () => void) => [
+    h(
+      'ul',
+      null,
+      h('li', null, h('b', null, icon('play'), 'Play'), touch ? ' right here, with on-screen controls or a gamepad' : ' right here, with keyboard or gamepad'),
+      h('li', null, h('b', null, icon('edit'), 'Edit a copy'), ' to see how a game was made'),
+      h('li', null, h('b', null, icon('plus'), 'New game'), ' to start your own'),
+    ),
+    h(
+      'p',
+      { class: 'meta' },
+      // a touch screen has no F-keys: the player's on-screen pad has the ones that matter
+      touch
+        ? 'Playing: slide a thumb around the pad to move and tap the buttons to act; Esc, F1 help and F2 status have buttons too. '
+        : // each key with its word, the dot after it, so a line never starts with one
+          `Playing: ${['F1 help', 'F2 status', 'F3 music', 'F4 sound', 'F5 save', 'F6 load', 'Esc leaves a level'].map((k) => k.replace(/ /g, '\u00a0')).join('\u00a0· ')}. `,
+      h('a', { href: '#/help', onclick: onGuide }, 'Read the Guide →'),
+    ),
+  ];
+  // when Getting started has no room beside the library, a link in the library's header opens it
+  const howBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'lib-how',
+      hidden: true,
+      onclick: () =>
+        void modal('Getting started', (close) => [
+          h('div', { class: 'home-start-dialog' }, ...startBody(() => close(undefined))),
+          h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
+        ]),
+    },
+    icon('help'),
+    'How it works',
+  );
+
+  clear(
+    root,
+    h(
+      'main',
+      { class: 'home' },
+      h(
+        'header',
+        { class: 'home-intro' },
+        h('h1', null, PRODUCT),
+        h(
+          'p',
+          null,
+          'Make your own arcade and adventure games — blocks, monsters, heroes, maps, music and sound — in the original 1994 file formats. No programming. ',
+          h('a', { href: NOTICE_URL, target: '_blank', rel: 'noopener', class: 'home-fork' }, FORK_NOTE),
+          '.',
+        ),
+      ),
+      top.el,
+      h(
+        'section',
+        { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
+        h(
+          'div',
+          { class: 'lib-bar' },
+          catNav,
+          h('div', { class: 'lib-find' }, search, h('button', { class: 'primary lib-new', type: 'button', onclick: () => void newGame(nav) }, '+ New game')),
+        ),
+        h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, howBtn),
+        libTools,
+        tiles,
+      ),
+      h(
+        'section',
+        { class: 'home-start', 'aria-labelledby': 'home-start-title' },
+        h('h2', { id: 'home-start-title' }, 'Getting started'),
+        ...startBody(),
+      ),
+    ),
+  );
+
+  // On a wide window Getting started fills the space under the game only when it fits there.
+  const start = root.querySelector<HTMLElement>('.home-start')!;
+  const fitStart = () => {
+    start.classList.remove('clipped');
+    start.classList.toggle('clipped', start.scrollHeight > start.clientHeight + 1);
+    howBtn.hidden = !start.classList.contains('clipped');
+  };
+  new ResizeObserver(fitStart).observe(start.parentElement!);
+  new ResizeObserver(fitStart).observe(top.el);
+
+  drop.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    drop.classList.add('over');
+  });
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault();
+    drop.classList.remove('over');
+    void importDropped(nav, e.dataTransfer!);
+  });
+
+  projects = await listProjects().catch(() => []);
+  if (!savedCategory() && projects.length) current = own('mine').length ? 'mine' : 'imported';
+  renderCats();
+  try {
+    catalog = await loadCatalog();
+  } catch {
+    catalogError = 'These games are unavailable offline until they have been opened once.';
+  }
+  // a link to a game shows it, in its own collection
+  const chosen = findGame(hashKey());
+  if (chosen) {
+    top.show(chosen, {});
+    current = categoryOf(chosen);
+  } else {
+    // your own games live in the browser that made them: a link to one opens only there
+    if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: “Save & share” downloads it.');
+    showStart();
+  }
+  // …and the collection and search in the address (#/?tab=sandbox&q=snow) come back too
+  const { tab, q } = currentRoute().params;
+  if (CATEGORIES.some((c) => c.id === tab)) current = tab as Category;
+  if (q) search.value = q;
+  await select(current);
+
+  // a secret game revealed or hidden again (the felt eggs, EGG.EXE): the collections, their
+  // counts and the game at the top follow without a reload
+  const page = root.querySelector<HTMLElement>('main.home')!;
+  const unwatch = (unwatchHome = onCatalogChanged(async () => {
+    if (!page.isConnected) return unwatch();
+    try {
+      catalog = await loadCatalog();
+    } catch {
+      return;
+    }
+    if (!page.isConnected) return;
+    for (const k of [...games.keys()]) if (k.startsWith('cd:') && !catalog.some((g) => `cd:${g.id}` === k)) games.delete(k);
+    const key = top.game?.key;
+    if (key && !findGame(key)) showStart();
+    await select(current);
+  }));
+}

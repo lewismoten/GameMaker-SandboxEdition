@@ -1,0 +1,110 @@
+/* a window on the wall: snowing outside (desk/room/snowWindow.ts) */
+.snow-window {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .snow-window {
+    position: absolute;
+    right: 20px;
+    top: 40px;
+    z-index: 0;
+    display: block;
+    width: 380px;
+  }
+
+  /* the curtain rod, with a knob at each end */
+  .sw-rod {
+    position: absolute;
+    left: -34px;
+    right: -34px;
+    top: -14px;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(#d9c08a, #8a6a34);
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  .sw-rod::before,
+  .sw-rod::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f3e1b0, #9a7638 70%);
+  }
+
+  .sw-rod::before {
+    left: -6px;
+  }
+
+  .sw-rod::after {
+    right: -6px;
+  }
+
+  /* the painted wooden frame and the glass in it */
+  .sw-frame {
+    position: relative;
+    padding: 11px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #f6f2e8, #d9d2c0);
+    box-shadow:
+      inset 0 0 0 2px #bdb49c,
+      inset 0 0 0 9px #ebe5d6,
+      inset 0 0 0 11px #a99f86,
+      6px 12px 20px rgba(0, 0, 0, 0.45);
+  }
+
+  .sw-frame canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+  }
+
+  /* the glazing bars, and a little glare on the glass */
+  .sw-bars {
+    position: absolute;
+    inset: 11px;
+    background:
+      linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.1) 22%, transparent 34%, transparent 60%, rgba(255, 255, 255, 0.06) 62%, transparent 70%),
+      linear-gradient(90deg, transparent calc(50% - 4px), #cfc7b2 calc(50% - 4px), #efe9db 50%, #cfc7b2 calc(50% + 4px), transparent calc(50% + 4px)),
+      linear-gradient(transparent calc(50% - 4px), #efe9db calc(50% - 4px), #cfc7b2 calc(50% + 4px), transparent calc(50% + 4px));
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  }
+
+  .snow-window .sill {
+    position: relative;
+    height: 12px;
+    margin: 0 -16px;
+    border-radius: 2px;
+    background: linear-gradient(#f4efe2, #c9c0a8);
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.4);
+  }
+
+  /* curtains drawn back to either side, gathered in folds */
+  .sw-curtain {
+    position: absolute;
+    top: -10px;
+    bottom: -40px;
+    width: 58px;
+    background:
+      repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 4px 9px, rgba(255, 255, 255, 0.12) 11px 12px, transparent 13px 14px),
+      linear-gradient(#9c3b33, #7a2a25);
+    box-shadow: 3px 8px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  .sw-curtain.left {
+    left: -44px;
+    border-radius: 0 0 40% 6px;
+    clip-path: polygon(0 0, 100% 0, 70% 55%, 100% 100%, 0 100%);
+  }
+
+  .sw-curtain.right {
+    right: -44px;
+    border-radius: 0 0 6px 40%;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 30% 55%);
+  }
+}

@@ -1,0 +1,1721 @@
+/* The mid-90s desk: wall, desk top, PC, disk box, Game-Maker CD and shareware catalog. */
+
+.desk {
+  --plastic: #d8d0b8;
+  --plastic-hi: #ece6d3;
+  --plastic-lo: #b3aa90;
+  --plastic-edge: #8f8770;
+  --wood-a: #6b4626;
+  --wood-b: #7d5530;
+  --glass: #0a0d0b;
+  --led-green: #43ff6a;
+  --led-amber: #ffb000;
+  --led-red: #ff3b30;
+  --paper: #f3eedc;
+  --ink: #1d1a14;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: #f4f1e6;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0) 30%),
+    repeating-linear-gradient(90deg, #4a5468 0 2px, #465063 2px 40px), #465063;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+
+/* the desk top */
+.desk::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38%;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(
+      176deg,
+      rgba(0, 0, 0, 0.08) 0 3px,
+      transparent 3px 11px
+    ),
+    linear-gradient(180deg, #5a3a1f 0, var(--wood-b) 6px, var(--wood-a) 100%);
+  box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.45);
+}
+
+.desk-bar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.desk-bar h1 {
+  margin: 0;
+  font:
+    700 16px/1 ui-monospace,
+    "Courier New",
+    monospace;
+  letter-spacing: 0.25em;
+  color: #ffd400;
+  text-shadow: 0 2px 0 #000;
+}
+
+.desk-bar .spacer {
+  flex: 1;
+}
+
+.desk-bar .touch-tip {
+  font-size: 12px;
+  color: #d8ccb0;
+}
+
+.desk-bar button,
+.desk-overlay button {
+  padding: 7px 12px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.desk-bar button.primary,
+.desk-overlay button.primary {
+  background: linear-gradient(#3e63e0, #2342b8);
+  border-color: #1b318a;
+  color: #fff;
+}
+
+.desk-scene {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 16px 48px;
+}
+
+.desk-left,
+.desk-right {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  padding-bottom: 28px;
+}
+
+.desk-left {
+  justify-content: flex-end;
+}
+
+.desk-right {
+  justify-content: flex-start;
+}
+
+/* ---- the PC ----------------------------------------------------------------------- */
+
+.pc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(820px, 92vw, calc((100vh - 270px) * 1.12));
+}
+
+/* in the page the case comes before the monitor (see desk.ts); show them top to bottom */
+.pc > .monitor {
+  order: 0;
+}
+
+.pc > .monitor-stand {
+  order: 1;
+}
+
+.pc > .case {
+  order: 2;
+  z-index: 1; /* the modem on top of it stays in front of the monitor */
+}
+
+.pc > .kb-tray {
+  order: 3;
+}
+
+.monitor {
+  position: relative;
+  width: 92%;
+  padding: 5.5% 5.5% 9%;
+  border-radius: 22px 22px 16px 16px;
+  background: linear-gradient(
+    160deg,
+    var(--plastic-hi),
+    var(--plastic) 40%,
+    var(--plastic-lo)
+  );
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -4px 0 var(--plastic-edge),
+    0 18px 30px rgba(0, 0, 0, 0.45);
+}
+
+.monitor .brand {
+  position: absolute;
+  left: 7%;
+  bottom: 3%;
+  font:
+    700 11px/1 ui-monospace,
+    monospace;
+  letter-spacing: 0.3em;
+  color: #6d6553;
+}
+
+.monitor .enlarge {
+  position: absolute;
+  right: 13%;
+  bottom: 1.6%;
+  padding: 1px 6px;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 3px;
+  background: linear-gradient(#f1ecdc, #c9c0a5);
+  color: #3c372b;
+  font:
+    700 12px/1.2 system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.monitor .monitor-led {
+  position: absolute;
+  right: 8%;
+  bottom: 3.6%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #253;
+}
+
+.desk[data-power="on"] .monitor .monitor-led {
+  background: var(--led-green);
+  box-shadow: 0 0 8px var(--led-green);
+}
+
+.screen-bezel {
+  position: relative;
+  padding: 3.5%;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #4c473c, #2e2a22);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+
+.crt {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 18px / 22px;
+  background: var(--glass);
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px #000;
+  cursor: text;
+}
+
+/* the picture bulges with the glass (desk/pc/crtWarp.ts) */
+.crt .crt-picture {
+  position: absolute;
+  inset: 0;
+  filter: url(#crt-warp);
+}
+
+.crt canvas.crt-text {
+  position: absolute;
+  /* overscan: real monitors showed a black border around the picture */
+  inset: 3.5% 4%;
+  width: 92%;
+  height: 93%;
+  image-rendering: pixelated;
+  outline: none;
+  filter: saturate(1.15) contrast(1.05);
+}
+
+/* On the desk the screen is smaller than the 640x400 picture: blend pixels rather than
+   dropping rows of them, so text stays readable. A wider black border leaves room for
+   the bulge of the glass. */
+.desk[data-zoom="false"] .crt canvas.crt-text {
+  inset: 4% 4.5%;
+  width: 91%;
+  height: 92%;
+  image-rendering: auto;
+}
+
+.desk[data-power="off"] .crt canvas.crt-text {
+  opacity: 0;
+}
+
+.crt .crt-layer {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+/* scanlines and glass glare */
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.07) 0 1px,
+      transparent 1px 4px
+    ),
+    radial-gradient(
+      120% 90% at 30% 15%,
+      rgba(255, 255, 255, 0.09),
+      transparent 45%
+    ),
+    /* the tube curves away from you: darker toward the corners */
+    radial-gradient(
+        farthest-corner at 50% 50%,
+        transparent 60%,
+        rgba(0, 0, 0, 0.18) 85%,
+        rgba(0, 0, 0, 0.45) 100%
+      );
+  box-shadow:
+    inset 0 0 30px 6px rgba(0, 0, 0, 0.55),
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.08);
+  z-index: 3;
+}
+
+.crt .power-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c7d70;
+  font:
+    15px ui-monospace,
+    monospace;
+  z-index: 2;
+}
+
+.desk[data-power="on"] .crt .power-hint {
+  display: none;
+}
+
+.crt-game {
+  width: 100%;
+  height: 100%;
+}
+
+/* the designers' 320x200 VGA picture, filling the tube like the text does (vga/shared/vga.ts) */
+.crt .crt-vga {
+  position: absolute;
+  inset: 3.5% 4%;
+}
+
+.desk[data-zoom="false"] .crt .crt-vga {
+  inset: 6% 6.5%;
+}
+
+.crt-vga .vga-screen {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: none;
+  touch-action: none;
+}
+
+.monitor-stand {
+  width: 30%;
+  height: 22px;
+  margin-top: -2px;
+  background: linear-gradient(var(--plastic-lo), var(--plastic-edge));
+  clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+}
+
+/* desktop case under the monitor */
+.case {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  min-height: 112px;
+  margin-top: 12px;
+  padding: 26px 22px 34px;
+  border-radius: 6px;
+  background:
+    /* a seam between the front bezel and the cover */
+    linear-gradient(
+      180deg,
+      transparent 10px,
+      rgba(0, 0, 0, 0.18) 10px 11px,
+      rgba(255, 255, 255, 0.5) 11px 12px,
+      transparent 12px
+    ),
+    linear-gradient(
+      180deg,
+      var(--plastic-hi),
+      var(--plastic) 45%,
+      var(--plastic-lo)
+    );
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -5px 0 var(--plastic-edge),
+    0 6px 0 #8f8670,
+    0 18px 26px rgba(0, 0, 0, 0.5);
+  color: #3c372b;
+}
+
+/* the top of the case, seen from slightly above */
+.case::before {
+  content: "";
+  position: absolute;
+  left: 1.5%;
+  right: 1.5%;
+  bottom: 100%;
+  height: 12px;
+  background: linear-gradient(180deg, #cfc6ad, var(--plastic-hi));
+  clip-path: polygon(2% 0, 98% 0, 100% 100%, 0 100%);
+}
+
+/* air vents along the bottom */
+.case::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  bottom: 10px;
+  width: 38%;
+  height: 12px;
+  background: repeating-linear-gradient(
+    90deg,
+    #6f6855 0 3px,
+    transparent 3px 8px
+  );
+  border-radius: 2px;
+  opacity: 0.55;
+}
+
+.case-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* a button with its name printed on the case under it */
+.case-buttons label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font:
+    700 7.5px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0.1em;
+  color: #5a5240;
+}
+
+.case button.case-btn {
+  position: relative;
+  width: 34px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 3px;
+  background: linear-gradient(#f4efe0, #cbc2a8);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 3px 0 var(--plastic-edge),
+    0 4px 3px rgba(0, 0, 0, 0.25);
+  font:
+    700 12px/1 system-ui,
+    sans-serif;
+  color: #6a624e;
+  cursor: pointer;
+}
+
+.case button.case-btn:active,
+.case button.case-btn[aria-pressed="true"] {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 1px 0 var(--plastic-edge);
+}
+
+.leds {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font:
+    600 8px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0.05em;
+  color: #5a5240;
+}
+
+.led {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: #3b3a31;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+  vertical-align: middle;
+}
+
+.led.on.green {
+  background: var(--led-green);
+  box-shadow: 0 0 6px var(--led-green);
+}
+
+.led.on.amber {
+  background: var(--led-amber);
+  box-shadow: 0 0 6px var(--led-amber);
+}
+
+/* the MHz readout: a seven-segment LED behind a dark red window */
+.mhz {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 4px 5px 3px;
+  border-radius: 3px;
+  background: linear-gradient(#1a0503, #0d0201);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.mhz small {
+  font:
+    700 6px/1 system-ui,
+    sans-serif;
+  color: #5c1610;
+}
+
+.seg-display {
+  display: block;
+  height: 22px;
+}
+
+.seg-display svg {
+  display: block;
+  height: 100%;
+}
+
+.seg-display polygon {
+  fill: #2e0805;
+}
+
+.seg-display.lit polygon {
+  fill: #3a0b07;
+}
+
+.seg-display.lit polygon.on {
+  fill: #ff3b2b;
+}
+
+.seg-display.lit svg {
+  filter: drop-shadow(0 0 2px rgba(255, 50, 30, 0.9))
+    drop-shadow(0 0 5px rgba(255, 40, 20, 0.5));
+}
+
+.drives {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-self: end;
+}
+
+.drive {
+  position: relative;
+  width: 230px;
+  border: 1px solid #a99f86;
+  border-radius: 2px;
+  background: linear-gradient(#e6dfca, #cfc7ae);
+  box-shadow:
+    inset 0 1px 0 #fff9,
+    0 1px 0 #fff8,
+    inset 0 -1px 0 #9d947b;
+  font:
+    700 7px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0.08em;
+  color: #5a5240;
+}
+
+.drive .bay-label {
+  font-size: 8px;
+}
+
+.drive-led {
+  width: 8px;
+  height: 3px;
+  border-radius: 1px;
+  background: #24331f;
+}
+
+.drive-led.on {
+  background: var(--led-green);
+  box-shadow: 0 0 5px var(--led-green);
+}
+
+.drive-led.amber.on {
+  background: var(--led-amber);
+  box-shadow: 0 0 5px var(--led-amber);
+}
+
+.eject-btn {
+  width: 16px;
+  height: 7px;
+  padding: 0;
+  border: 1px solid #9d947b;
+  border-radius: 2px;
+  background: linear-gradient(#f2ecdb, #c8bfa5);
+  box-shadow: 0 1px 0 #8f8770;
+  cursor: pointer;
+}
+
+.eject-btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.eject-btn.wide {
+  width: 26px;
+}
+
+/* 3.5" floppy: a dark slot behind a spring flap, the light at left, eject at right */
+.drive.fdd {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 10px;
+}
+
+.drive.fdd .slot {
+  position: relative;
+  height: 9px;
+  border-radius: 2px;
+  background: #15130f;
+  box-shadow: inset 0 2px 2px #000;
+  overflow: hidden;
+}
+
+.drive.fdd .flap {
+  position: absolute;
+  inset: 1px 2px 2px;
+  border-radius: 1px;
+  background: linear-gradient(#3d3a32, #24221d);
+  transition: transform 0.2s;
+  transform-origin: top;
+}
+
+/* a disk in the drive: the flap is pushed in, showing the disk's edge */
+.drive.fdd[data-disk] .flap {
+  transform: scaleY(0.25);
+}
+
+.drive.fdd[data-disk] .slot {
+  background: linear-gradient(transparent 55%, var(--disk-color, #222) 55%);
+}
+
+.drive.fdd .eject-btn {
+  align-self: end;
+  margin-bottom: 5px;
+}
+
+.drive.fdd .capacity {
+  font-size: 6px;
+}
+
+/* CD-ROM: a tray across the front; the controls and the eject button under it */
+.drive.cdrom {
+  height: 38px;
+  padding: 5px 8px 4px;
+}
+
+.drive.cdrom .tray {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 14px;
+  padding: 0 8px;
+  border-radius: 1px;
+  background: linear-gradient(#d9d1ba, #c3bba1);
+  box-shadow:
+    inset 0 1px 0 #f4efe0,
+    inset 0 -1px 0 #8f8770,
+    0 1px 0 #8f8770;
+  transition: transform 0.6s ease;
+}
+
+.cd-logo {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font:
+    italic 700 5px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0.04em;
+  color: #3f392c;
+}
+
+.cd-logo b {
+  font:
+    italic 900 8px/1 Georgia,
+    serif;
+}
+
+.cd-logo small {
+  font-size: 4px;
+}
+
+/* the tray slides out toward you */
+.drive.cdrom.open .tray {
+  transform: translateY(5px) scaleX(0.97);
+  box-shadow:
+    inset 0 1px 0 #f4efe0,
+    0 8px 0 #b7af95,
+    0 9px 4px rgba(0, 0, 0, 0.35);
+}
+
+.cd-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.cd-controls .spacer {
+  flex: 1;
+}
+
+.cd-controls .jack {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #111 35%, #8a826b 40%, #c9c0a5 70%);
+}
+
+.cd-controls .volume {
+  width: 18px;
+  height: 7px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #6b6450 0 1px, #b8af95 1px 3px);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+/* the CD rests in its box until it is in the drive */
+.gm-box.cd-in .cd-disc {
+  opacity: 0;
+  transform: translateX(30px) scale(0.6);
+}
+
+.gm-box .cd-disc {
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+}
+
+/* buttons for the disk in drive A:, hanging under the drive */
+.drive-actions {
+  position: absolute;
+  right: 14px;
+  top: calc(100% + 6px);
+  z-index: 6;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  max-width: calc(100% - 28px);
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(24, 20, 14, 0.88);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+  color: #f4ead2;
+  font:
+    600 12px/1.2 system-ui,
+    sans-serif;
+}
+
+.drive-actions[hidden] {
+  display: none;
+}
+
+.drive-actions::before {
+  content: "";
+  position: absolute;
+  right: 90px;
+  bottom: 100%;
+  border: 6px solid transparent;
+  border-bottom-color: rgba(24, 20, 14, 0.88);
+}
+
+.drive-actions-title {
+  overflow: hidden;
+  max-width: 180px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drive-actions button {
+  flex: none;
+  padding: 4px 9px;
+  border: 1px solid #c9c1a6;
+  border-radius: 5px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 12px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.drive-actions button.primary {
+  border-color: #1b318a;
+  background: linear-gradient(#3e63e0, #2342b8);
+  color: #fff;
+}
+
+.keyboard {
+  position: relative;
+  width: 88%;
+  aspect-ratio: 23.5 / 7.6;
+  margin-top: 14px;
+  /* tilting it back doesn't shrink its box: give back the space it no longer covers */
+  margin-bottom: -11%;
+  border-radius: 6px 6px 10px 10px;
+  background: linear-gradient(
+    var(--plastic-hi),
+    var(--plastic) 60%,
+    var(--plastic-lo)
+  );
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -6px 0 var(--plastic-edge),
+    0 14px 18px rgba(0, 0, 0, 0.5);
+  /* lying on the desk, seen from the chair */
+  transform: perspective(700px) rotateX(52deg);
+  transform-origin: 50% 0;
+  cursor: pointer;
+}
+
+/* Game-Maker's key template behind the function keys (desk/pc/keyboard.ts): a glossy black
+   printed strip, each key's word in the color of its group, the way the boxed software did it */
+.keyboard .key-template {
+  position: absolute;
+  border-radius: 2px;
+  background: linear-gradient(#2a2a2e, #111114);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 1px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.keyboard .kt-label {
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  /* condensed type, tall enough to read on the tilted board */
+  scale: 0.7 1;
+  color: #fff;
+  font:
+    800 7.5px/1 Arial,
+    Helvetica,
+    sans-serif;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.keyboard .kt-esc {
+  color: #ff6b6b;
+}
+
+.keyboard :is(.kt-f1, .kt-f2) {
+  color: #ffd84a;
+}
+
+.keyboard :is(.kt-f3, .kt-f4) {
+  color: #6be3ff;
+}
+
+.keyboard :is(.kt-f5, .kt-f6) {
+  color: #7dff8a;
+}
+
+.keyboard :is(.kt-f8, .kt-f9, .kt-f10) {
+  color: #ff9ae6;
+}
+
+/* the maker's name on the blank stretch over F11 and F12 */
+.keyboard .kt-brand {
+  position: absolute;
+  right: 0.5%;
+  top: 50%;
+  translate: 0 -50%;
+  color: #c9a24a;
+  scale: 0.75 1;
+  transform-origin: 100% 50%;
+  font:
+    italic 900 5.5px/1 'Arial Black',
+    Arial,
+    sans-serif;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* each key: a raised cap with a lighter top and darker sides */
+.keyboard .key {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 2px 3px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: linear-gradient(#f7f3e8, #ddd5bf);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 3px 0 #a79e85,
+    0 4px 2px rgba(0, 0, 0, 0.35);
+  color: #4a4436;
+  font:
+    600 8px/1 system-ui,
+    sans-serif;
+  transition:
+    transform 0.05s,
+    box-shadow 0.05s;
+}
+
+.keyboard .key.small {
+  font-size: 6px;
+}
+
+.keyboard .key.down {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 1px 0 #a79e85;
+}
+
+/* ---- props on the desk -------------------------------------------------------------- */
+
+.prop {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.prop:hover,
+.prop:focus-visible {
+  transform: translateY(-6px) rotate(var(--tilt, 0deg));
+}
+
+.prop .caption {
+  display: block;
+  margin-top: 8px;
+  font:
+    600 12px/1.2 system-ui,
+    sans-serif;
+  color: #f4ead2;
+  text-shadow: 0 1px 2px #000;
+  text-align: center;
+}
+
+/* a 1990s "disk file": a beige plastic tray with a smoked lid tipped open at the back,
+   disks standing in straight rows in two compartments, each row behind showing its top
+   over the one in front, and a lock in the front wall (desk.ts) */
+.disk-box {
+  --tilt: -1deg;
+  width: 186px;
+}
+
+.disk-box .box {
+  position: relative;
+  height: 156px;
+  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.5));
+}
+
+.disk-box .box > div:not(.floppy) {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* the smoked see-through lid, hinged at the back and standing open */
+.disk-box .lid {
+  left: 8px;
+  right: 8px;
+  top: -30px;
+  height: 66px;
+  clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.22),
+      transparent 30%,
+      transparent 75%,
+      rgba(255, 255, 255, 0.1)
+    ),
+    linear-gradient(rgba(120, 124, 134, 0.42), rgba(70, 72, 80, 0.62));
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* inside: the back wall, in the tray's shade */
+.disk-box .bx-back {
+  left: 10px;
+  right: 10px;
+  top: 32px;
+  bottom: 20px;
+  background: linear-gradient(#a59d89, #6f6858);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* the divider down the middle, between the two compartments */
+.disk-box .bx-div {
+  left: 90px;
+  width: 6px;
+  top: 36px;
+  bottom: 12px;
+  background: linear-gradient(90deg, #cfc7b2, #efe9d8 50%, #b5ad97);
+  z-index: 0;
+}
+
+/* a beige index card with its tab up, standing between two rows of disks */
+.disk-box .bx-tab {
+  width: 70px;
+  height: 84px;
+  background: linear-gradient(#f1ebd8, #d6ceb6);
+  clip-path: polygon(0 0, 38% 0, 42% 9px, 100% 9px, 100% 100%, 0 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* the side walls, a little wider at the front */
+.disk-box .bx-side {
+  top: 32px;
+  bottom: 0;
+  width: 12px;
+  background: linear-gradient(#e2dccb, #b3ab95);
+}
+
+.disk-box .bx-side.l {
+  left: 0;
+  clip-path: polygon(100% 0, 0 60px, 0 100%, 100% 100%);
+}
+
+.disk-box .bx-side.r {
+  right: 0;
+  clip-path: polygon(0 0, 100% 60px, 100% 100%, 0 100%);
+}
+
+/* the front wall: beige plastic, lower than the disks */
+.disk-box .bx-front {
+  left: 0;
+  right: 0;
+  top: 106px;
+  bottom: 0;
+  border-radius: 2px 2px 6px 6px;
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.22), transparent 40%),
+    linear-gradient(#e6e0cf, #cfc7b1 55%, #b2aa93);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.2),
+    0 -2px 4px rgba(0, 0, 0, 0.35);
+}
+
+/* its lock, with the key slot */
+.disk-box .bx-front::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    #fff,
+    #c9ccd0 35%,
+    #7c8086 80%
+  );
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.disk-box .bx-front::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  width: 2px;
+  height: 8px;
+  margin-left: -1px;
+  background: #3a3c40;
+}
+
+/* label-maker tape: glossy plastic with raised white letters, cut and stuck on a bit crooked */
+.disk-box .dymo {
+  position: absolute;
+  top: 16px;
+  padding: 2px 5px 1px;
+  border-radius: 1px;
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.28),
+      transparent 45%,
+      rgba(0, 0, 0, 0.25)
+    ),
+    var(--tape, #17181c);
+  color: #f4f4f0;
+  font:
+    700 8px/1 "Courier New",
+    monospace;
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 -0.5px 0 rgba(255, 255, 255, 0.9),
+    0 1px 0.5px rgba(0, 0, 0, 0.8);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
+}
+
+.disk-box .dymo.l {
+  left: 22px;
+  transform: rotate(-2deg);
+}
+
+.disk-box .dymo.r {
+  right: 18px;
+  --tape: #b3191e;
+  transform: rotate(1.5deg);
+}
+
+/* stapled shareware catalog */
+.catalog-prop {
+  --tilt: -4deg;
+  width: 140px;
+}
+
+.catalog-prop .paper {
+  height: 170px;
+  padding: 14px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    4px 4px 0 #ddd6bf,
+    8px 8px 0 #cfc8af,
+    0 12px 18px rgba(0, 0, 0, 0.45);
+  font:
+    700 13px/1.15 "Courier New",
+    ui-monospace,
+    monospace;
+  text-align: left;
+}
+
+.catalog-prop .paper em {
+  display: block;
+  margin-top: 8px;
+  font:
+    400 10px/1.3 "Courier New",
+    monospace;
+}
+
+.catalog-prop .paper::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  width: 14px;
+  height: 3px;
+  background: #999;
+  box-shadow: 0 120px 0 #999;
+}
+
+/* a poster on the wall */
+.poster {
+  position: absolute;
+  left: max(16px, 3%);
+  top: 28px;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: clamp(130px, 17vw, 230px);
+  text-decoration: none;
+  transform: rotate(-1.5deg);
+  transition: transform 0.15s;
+}
+
+.poster:hover,
+.poster:focus-visible {
+  transform: rotate(0deg) scale(1.03);
+}
+
+.poster img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 6px solid #f4f1e8;
+  outline: 3px solid #1b1b1f;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.15),
+    6px 10px 18px rgba(0, 0, 0, 0.5);
+  /* smooth, not pixelated: the poster hangs at a tilt */
+  image-rendering: auto;
+}
+
+/* push-pins */
+.poster::before,
+.poster::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff8a80, #c62828 60%, #7f1010);
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.poster::before {
+  left: 6px;
+}
+
+.poster::after {
+  right: 6px;
+}
+
+@media (max-width: 900px) {
+  .poster {
+    display: none;
+  }
+}
+
+/* the Owner's Guide, lying on the desk */
+.manual-prop {
+  --tilt: 5deg;
+  width: 96px;
+}
+
+.manual-prop .booklet-cover {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 124px;
+  padding: 0 0 8px;
+  overflow: hidden;
+  border-radius: 1px 3px 3px 1px;
+  background: #f0a090;
+  box-shadow:
+    inset 4px 0 0 rgba(0, 0, 0, 0.12),
+    2px 2px 0 #f4efdf,
+    3px 3px 0 #d9d2bc,
+    0 10px 16px rgba(0, 0, 0, 0.45);
+  color: #18150f;
+  text-align: left;
+}
+
+.manual-prop .booklet-cover strong {
+  padding: 8px 6px 6px;
+  background: #0b0b0b;
+  color: #f2e600;
+  font:
+    italic 900 13px/1 "Arial Black",
+    Arial,
+    sans-serif;
+  text-shadow: 1px 1px 0 #1f9a3a;
+}
+
+.manual-prop .booklet-cover span {
+  margin-top: 14px;
+  padding: 0 6px;
+  font:
+    700 12px/1.1 Helvetica,
+    Arial,
+    sans-serif;
+}
+
+.manual-prop .booklet-cover em {
+  padding: 0 6px;
+  font:
+    10px "Times New Roman",
+    serif;
+}
+
+/* sticky note switching to today's web */
+.sticky {
+  position: absolute;
+  right: -46px;
+  top: 30px;
+  z-index: 4;
+  width: 110px;
+  padding: 10px;
+  border: 0;
+  background: #ffe86b;
+  color: #3a3100;
+  box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.35);
+  transform: rotate(6deg);
+  font:
+    700 13px/1.2 "Comic Sans MS",
+    "Marker Felt",
+    cursive;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sticky:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+/* ---- zoomed screen (graphic designers, full screen games) ----------------------------- */
+
+.desk:not([data-zoom="false"]) .desk-scene {
+  z-index: 60;
+}
+
+.desk:not([data-zoom="false"]) .crt {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+.desk:not([data-zoom="false"]) .crt::after {
+  display: none;
+}
+
+/* full screen is a flat picture */
+.desk:not([data-zoom="false"]) .crt .crt-picture {
+  filter: none;
+}
+
+.desk .zoom-exit {
+  display: none;
+}
+
+.desk[data-zoom="manual"] .zoom-exit {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 61;
+  display: block;
+}
+
+/* graphic designers shown "in VGA" on the PC */
+.vga-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #000;
+  color: #c8c8c8;
+}
+
+.vga-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: #840000;
+  color: #fff;
+  font:
+    700 13px/1.4 ui-monospace,
+    "Courier New",
+    monospace;
+  letter-spacing: 0.06em;
+}
+
+.vga-titlebar .spacer {
+  flex: 1;
+}
+
+.vga-titlebar button {
+  padding: 2px 8px;
+  border: 2px outset #d0d0d0;
+  border-radius: 0;
+  background: #b8b8b8;
+  color: #000;
+  font:
+    700 12px ui-monospace,
+    monospace;
+  cursor: pointer;
+}
+
+.vga-body {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  /* Game-Maker's FACELIFT greys for the designers' surfaces */
+  --bg: #000;
+  --panel: #858585;
+  --panel-2: #707070;
+  --text: #000;
+  --muted: #1d1d1d;
+  --border: #4a4a4a;
+  --accent: #ae0000;
+  --accent-text: #fff;
+  --accent-soft: #b9b9b9;
+  --focus: #ffd400;
+  background: #000;
+  color: #000;
+  font:
+    13px/1.35 ui-monospace,
+    "Courier New",
+    monospace;
+}
+
+.vga-body .hint {
+  color: #c8c8c8;
+}
+
+.vga-body .panel,
+.vga-body .block-picker,
+.vga-body .swatches {
+  border: 3px outset #b0b0b0;
+  border-radius: 0;
+  background: var(--panel);
+}
+
+.vga-body button {
+  border: 2px outset #d0d0d0;
+  border-radius: 0;
+  background: #b4b4b4;
+  color: #000;
+}
+
+.vga-body button.primary {
+  background: #ae0000;
+  color: #fff;
+}
+
+.vga-body input,
+.vga-body select,
+.vga-body textarea {
+  border: 2px inset #9a9a9a;
+  border-radius: 0;
+  background: #d8d8d8;
+  color: #000;
+}
+
+/* ---- overlays (disk box, catalog) --------------------------------------------------- */
+
+.desk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px;
+  background: rgba(10, 8, 6, 0.82);
+  color: #f4ead2;
+}
+
+.desk-overlay .close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+@media (max-width: 960px) {
+  .desk-scene {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .desk-left,
+  .desk-right {
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
+  .desk-left {
+    order: 2;
+  }
+  .desk-right {
+    order: 3;
+  }
+  .sticky {
+    right: 0;
+    top: -12px;
+  }
+  .drive {
+    width: 150px;
+  }
+}
+
+@media (max-width: 560px) {
+  .case {
+    grid-template-columns: 1fr 1fr;
+  }
+  .drives {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+  .drive {
+    width: auto;
+  }
+}
+
+.drive.cdrom[data-disk] {
+  --disk-color: linear-gradient(90deg, #c9d3e6, #fbe3f7, #e2f6da, #c9d3e6);
+}
+
+.drive.cdrom[data-disk]::before {
+  color: #000080;
+}
+
+/* ---- the pink Game-Maker box (after the real 1994 retail box) ------------------------ */
+
+.gm-box {
+  --tilt: 2deg;
+  width: 170px;
+}
+
+.gm-box .retail {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #f0a090;
+  box-shadow:
+    inset -6px 0 0 rgba(0, 0, 0, 0.12),
+    0 14px 22px rgba(0, 0, 0, 0.55);
+  text-align: left;
+}
+
+.gm-box .banner {
+  position: relative;
+  z-index: 2;
+  padding: 6px 8px 2px;
+  background: #0b0b0b;
+}
+
+.gm-box .banner em {
+  display: block;
+  color: #fff;
+  font:
+    italic 700 8px/1 Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.gm-box .banner strong {
+  display: block;
+  margin-top: 2px;
+  color: #f2e600;
+  font:
+    italic 900 21px/1 "Arial Black",
+    Arial,
+    sans-serif;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  transform: skewX(-8deg);
+  text-shadow: 2px 2px 0 #1f9a3a;
+}
+
+.gm-box .tagline {
+  position: relative;
+  z-index: 2;
+  padding: 2px 6px;
+  background: #d81e1e;
+  color: #fff;
+  font:
+    italic 700 6.5px/1.4 Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.gm-box .tiles {
+  position: absolute;
+  left: -30px;
+  right: -40px;
+  top: 58px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 8px;
+  transform: rotate(-14deg);
+}
+
+.gm-box .tile {
+  background: #111;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.gm-box .tile canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10; /* a VGA screen of 320 x 200 */
+  image-rendering: pixelated;
+  background: #223;
+}
+
+.gm-box .tile span {
+  display: block;
+  padding: 1px 3px;
+  background: #0b0b0b;
+  color: #fff;
+  font:
+    700 6.5px/1.3 Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.gm-box .rsd-badge {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 2;
+  width: 54px;
+  padding: 3px;
+  border: 2px solid #f2e600;
+  background: #0f6e2c;
+  color: #fff;
+  font:
+    700 5.5px/1.25 Arial,
+    Helvetica,
+    sans-serif;
+  text-align: center;
+}
+
+.gm-box .cd-disc {
+  position: absolute;
+  left: -26px;
+  bottom: 34px;
+  z-index: 3;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #222 0 7%, #c9ced6 7% 16%, transparent 16%),
+    radial-gradient(
+      circle,
+      transparent 0 30%,
+      rgba(255, 255, 255, 0.95) 30% 97%,
+      #aab 97%
+    ),
+    conic-gradient(from 20deg, #ddd, #9cf, #fcf, #ffc, #cfc, #ddd);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
+}
+
+.gm-box .cd-disc svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gm-box .cd-disc .cd-title {
+  fill: #000080;
+  font:
+    900 11px "Arial Black",
+    Arial,
+    sans-serif;
+}
+
+.gm-box .cd-disc .cd-small {
+  fill: #b0103a;
+  font:
+    700 5.4px Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* the external modem (desk/pc/modem.ts), sitting on top of the case */
+.case > .modem {
+  position: absolute;
+  left: 22px;
+  bottom: calc(100% + 1px);
+  z-index: 1;
+  width: 150px;
+}
+
+.case > .modem .caption {
+  display: none;
+}
+
+.case > .modem:hover,
+.case > .modem:focus-visible {
+  transform: translateY(-3px);
+}
+
+.modem-body {
+  position: relative;
+  height: 44px;
+  padding: 6px 8px 0;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(#3b3d42, #1f2024 70%);
+  box-shadow:
+    inset 0 1px 0 #6a6d75,
+    0 8px 12px rgba(0, 0, 0, 0.45);
+  text-align: left;
+}
+
+.modem-brand {
+  display: block;
+  color: #c9ccd2;
+  font:
+    700 7px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.modem-lights {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7px;
+}
+
+.mlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.mlight small {
+  color: #9da1a9;
+  font:
+    600 5.5px/1 system-ui,
+    sans-serif;
+}
+
+.mled {
+  width: 7px;
+  height: 4px;
+  border-radius: 1px;
+  background: #3a1210;
+}
+
+.mled.on {
+  background: #ff4b36;
+  box-shadow: 0 0 5px #ff4b36;
+}

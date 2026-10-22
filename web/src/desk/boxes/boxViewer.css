@@ -1,0 +1,220 @@
+/* 3D retail boxes (desk/boxes/boxViewer.ts). --u is screen pixels per inch of box. */
+
+.box3d {
+  --u: 40px;
+  --w: calc(7.5 * var(--u));
+  --h: calc(9.25 * var(--u));
+  --d: calc(2 * var(--u));
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  transform-style: preserve-3d;
+}
+
+.box3d .bface {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.box3d .bface img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.box3d .front,
+.box3d .back {
+  width: var(--w);
+  height: var(--h);
+  margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+}
+
+.box3d .left,
+.box3d .right {
+  width: var(--d);
+  height: var(--h);
+  margin: calc(var(--h) / -2) 0 0 calc(var(--d) / -2);
+}
+
+.box3d .top,
+.box3d .bottom {
+  width: var(--w);
+  height: var(--d);
+  margin: calc(var(--d) / -2) 0 0 calc(var(--w) / -2);
+}
+
+.box3d .front {
+  transform: translateZ(calc(var(--d) / 2));
+}
+
+.box3d .back {
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+}
+
+.box3d .right {
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+}
+
+.box3d .left {
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+
+.box3d .top {
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+}
+
+.box3d .bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
+}
+
+/* the viewer */
+.box-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% 40%, rgba(40, 34, 26, 0.9), rgba(6, 5, 4, 0.96));
+  animation: box-viewer-in 0.35s ease-out;
+}
+
+@keyframes box-viewer-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.box-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1400px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.box-stage:active {
+  cursor: grabbing;
+}
+
+.box-stage .box3d {
+  --u: min(52px, 6.4vh, 9vw);
+  animation: box-come-forward 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes box-come-forward {
+  from {
+    opacity: 0;
+    translate: 0 30vh;
+    scale: 0.3;
+  }
+}
+
+.box-viewer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px 18px;
+  color: #efe5cc;
+  font:
+    13px system-ui,
+    sans-serif;
+}
+
+.box-viewer-bar strong {
+  font-size: 16px;
+}
+
+.box-viewer-bar .hint {
+  opacity: 0.7;
+}
+
+.box-viewer-bar button {
+  padding: 7px 12px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.box-viewer-bar button.primary {
+  border-color: #1b318a;
+  background: linear-gradient(#3e63e0, #2342b8);
+  color: #fff;
+}
+
+.box-extras-slot {
+  display: contents;
+}
+
+/* along the shelf: the previous and next boxes */
+.box-nav {
+  position: absolute;
+  top: calc(50% - 60px);
+  z-index: 2;
+  width: 52px;
+  height: 84px;
+  border: 1px solid rgba(239, 229, 204, 0.35);
+  border-radius: 10px;
+  background: rgba(20, 16, 10, 0.55);
+  color: #efe5cc;
+  font-size: 26px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.box-nav:hover,
+.box-nav:focus-visible {
+  background: rgba(70, 58, 36, 0.85);
+}
+
+.box-nav.prev {
+  left: max(10px, 3vw);
+}
+
+.box-nav.next {
+  right: max(10px, 3vw);
+}
+
+.box-stage .box3d.from-right {
+  animation: box-from-right 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.box-stage .box3d.from-left {
+  animation: box-from-left 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes box-from-right {
+  from {
+    opacity: 0;
+    translate: 40vw 0;
+  }
+}
+
+@keyframes box-from-left {
+  from {
+    opacity: 0;
+    translate: -40vw 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .box-nav {
+    top: auto;
+    bottom: 120px;
+    width: 44px;
+    height: 56px;
+  }
+}

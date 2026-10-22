@@ -1,62 +1,93 @@
-GameMaker
-=========
+# Game-Maker: Sandbox Edition
 
-This is the source code and executables for Recreational Software Design's GameMaker product, released in 1994.
+Make and play DOS-style games in your web browser, with no programming. A modified fork of
+**RSD Game-Maker 3.0**, the 1991–1995 game construction kit by Recreational Software
+Designs, whose source Andy Stone released under the MIT License in 2014.
 
-You can learn more about this product here:
+**▶ Play it: https://lewismoten.github.io/GameMaker-SandboxEdition/**
 
-[http://en.wikipedia.org/wiki/Game-Maker]
+![The 1994 desk: a PC running Game-Maker, with disks, games and manuals](web/public/og-image.png)
 
-[http://www.aderack.com/game-maker]
+## What's in it
 
+- **Two ways to use it:** the *1994 desk*, a recreated PC with a DOS prompt, Game-Maker's
+  original menus and designers, and a BBS to dial; or *today's web* editor with
+  point-and-click editors for every part of a game.
+- **Original file formats:** games are read and written byte for byte as `.GAM`, `.MAP`,
+  `.BBL`, `.MON`, `.CHR`, `.CMF`, `.FLI` and the rest, so a game made here still runs in DOS
+  Game-Maker and DOSBox, and old games open here unchanged.
+- **The CD's games:** the sample "gameware" (edit a copy) and the shareware (play only,
+  with their authors' notices).
+- **Eight new Sandbox Software games** built for this fork, each with a manual, box art and
+  printable extras.
+- **Sharing:** export a game as a one-page web game, an installable web app, or a folder
+  that runs in DOSBox. Everything is saved in your browser and works offline.
 
-Using This Repository
-=====================
+## Run it yourself
 
-After cloning this repository on your machine, you will see the following directories:
+You need [Node.js](https://nodejs.org/) 22 or later.
 
-cd:  The GameMaker cd image first released in 1994.  This can be used to install GameMaker and contains all the sample games
-code: The GameMaker source code (and other stuff)
-runtime: This is an image of a typical "c:" disk with GameMaker installed.  This makes it easy to run GameMaker inside a dosbox.
-tools: Compilers
+```sh
+cd web
+npm install
+npm run dev      # http://localhost:5173
+npm test         # the test suite
+npm run build    # the static site, in web/dist
+```
 
-First step: install dosbox.  [http://www.dosbox.com/]
+Pushes to `master` are published to GitHub Pages by
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml).
 
-Next "cd" to the root directory of this repository.
+## Where things are
 
-Now run dosbox.
+| Folder | What it holds |
+| --- | --- |
+| [`web/`](web) | The browser app. [web/src/README.md](web/src/README.md) maps the source. |
+| [`games/`](games) | The Sandbox Software games, built in code. See [games/README.md](games/README.md). |
+| `cd/` | The original Game-Maker CD image, with its sample and shareware games. |
+| `code/` | The original DOS C/C++ source. |
+| `runtime/` | A DOS `C:` drive with Game-Maker installed, for DOSBox. |
 
-Inside your dosbox, run:
+## The original DOS version
 
+To run the original Game-Maker, install [DOSBox](https://www.dosbox.com/), start it from
+the root of this repository, and type:
+
+```
 mount c runtime
+c:
+cd c:\gm
+gm
+```
 
-Now you can run GameMaker with:
+To build the DOS source you also need the Borland C++ compiler, which this fork doesn't
+include, nor the Borland and Creative library files it links (none are covered by the
+MIT License; NOTICE.md lists them). Copy the `tools/` folder and those files from the
+[original 2014 repository](https://github.com/gandrewstone/GameMaker) into this one, then,
+following Andy Stone's original notes, in DOSBox:
 
-    c:
-    cd c:\gm
-    gm
+```
+c:
+dev.bat          (mounts the compiler as T: and the source as D:)
+d:
+cd gm
+del *.obj
+del *.exe
+creatall         (or "create palchos", "create blocedit"… for one program)
+```
 
-To start working with the source code, run:
+## Learn more
 
-    c:
-    dev.bat
+- [Game-Maker on Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
+- [The Game-Maker wiki (archived)](https://web.archive.org/web/20260807223841/https://aderack.com/game-maker/index.php?title=Main_Page)
+- [The original 2014 source release](https://github.com/gandrewstone/GameMaker)
 
-This will mount the compiler into the "t:" directory, and the source code into "d:".
+## Credits and license
 
-Now to compile everything:
+RSD Game-Maker was created by G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan
+Stone. This fork is by Lewis Moten; the web port was written with Claude Opus 5.5, with AI
+assistance doing most of the porting and code generation. The CD's games belong to their
+authors. See [NOTICE.md](NOTICE.md) for full credits, the story behind this fork and
+third-party trademarks.
 
-    d:
-    cd gm
-    del *.obj
-    del *.exe
-    creatall
-
-To create a single program:
-
-    create palchos
-    create blocedit
-
-(etc)
-
-In today's world, I've been editing the code outside of dosbox in linux/emacs and then (in the dosbox window) hit ctrl-f4 to sync the disk inside dosbox with the external changes. YMMV.
-
+Released under the [MIT License](LICENSE).

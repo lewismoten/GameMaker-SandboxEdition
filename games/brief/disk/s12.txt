@@ -1,0 +1,28 @@
+CHURCH OF THE FIRST OF ZERO
+by Lewis Moten
+2014-02-02, Week 406
+Topic: Church
+
+Those of us who interpret the
+code at the First of Zero
+welcome all classes. Every
+type is accepted regardless of
+redundancy, complexity,
+obsolescence, ignorance,
+bulkiness, or style. Our
+libraries are linked to our
+past instructions. Through
+various parameters (and
+arguments), we recognize
+objects by their value; and
+even references. All of us
+share a common interface. We
+understand that some of our
+inherited methods are without
+exception, while others are
+thrown at those who call us.
+Execution is our purpose. Any
+of our invalid syntax will be
+judged by the great compiler.
+In the end, you will be
+refactored.

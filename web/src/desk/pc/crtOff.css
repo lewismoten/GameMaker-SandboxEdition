@@ -1,0 +1,70 @@
+/* switching the monitor off (desk.ts): the picture collapses to a bright line across the
+   middle, the line shrinks to a dot in the center, and the dot fades away */
+.crt.switching-off .crt-picture {
+  animation: crt-collapse 0.9s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  transform-origin: 50% 50%;
+  background: #e8f0ff;
+}
+
+/* the picture washes out to white as the beam collapses */
+.crt.switching-off .crt-picture > * {
+  animation: crt-wash 0.35s ease-in forwards;
+}
+
+@keyframes crt-wash {
+  to {
+    opacity: 0.15;
+  }
+}
+
+.crt.switching-off::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 10px 5px #fff,
+    0 0 30px 14px rgba(190, 220, 255, 0.7);
+  opacity: 0;
+  animation: crt-dot 1.6s ease-out forwards;
+}
+
+@keyframes crt-collapse {
+  0% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+  }
+  35% {
+    transform: scale(1, 0.006);
+    filter: brightness(4);
+  }
+  60% {
+    transform: scale(0.004, 0.006);
+    filter: brightness(6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes crt-dot {
+  0%,
+  33% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}

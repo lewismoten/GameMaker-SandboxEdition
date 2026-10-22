@@ -1,0 +1,134 @@
+{
+  "pitch": "Every word fell out of every book in The Dog House's library; as Mystery Robot Joe, put thirty-two 100 Word Stories back together, exactly one hundred words at a time.",
+  "keys": {
+    "Up": "Walk one step up (hold to keep walking)",
+    "Down": "Walk one step down",
+    "Left": "Walk one step left",
+    "Right": "Walk one step right",
+    "P": "Pocket a small thing"
+  },
+  "items": [
+    {
+      "kind": "letter",
+      "title": "A note from the Word Counter",
+      "note": "Found taped to the inside of the box lid",
+      "letterhead": "THE WORD COUNTER",
+      "address": "Reading Room Desk, The Tiny Pockets Library, behind the red door of The Dog House",
+      "date": "The night of the jam",
+      "to": "To the night librarian",
+      "body": "<p>Joe,</p><p>I jammed. I am not proud of it. I said 99. Then I said 101. Then I said STOP, which is not even a number. By the time I came to, every word had fallen out of every book on every shelf.</p><p>Here is what I need. Every book holds <b>one hundred words</b>. I will open THE END of a book for exactly that many, and not one fewer. Pick them up off the floor. All of them. The slips say how many words each is worth; I am told some of them are paragraphs. Short paragraphs.</p><p>The shushers mean well. They will still fine you, a point at a time. So will the scissors, the static, the reporters, and a twister I would rather not discuss.</p><p>When four stories are back in a wing, that wing's stamp gate in the Reserve Stacks will let you through. I check. I do not collect. Past the gates there is one more book. Do not ask me what is in it. I only count.</p><p>THE END is the only way out of a book. Nobody can take your words in there, so you can always finish. Finish.</p>",
+      "signature": "The Word Counter\n(099... 101... sorry. 100.)",
+      "style": "type"
+    },
+    {
+      "kind": "idcard",
+      "title": "Library card",
+      "note": "Laminated, slightly dented",
+      "org": "THE TINY POCKETS LIBRARY",
+      "name": "MYSTERY ROBOT JOE",
+      "role": "Night Librarian",
+      "fields": [
+        ["Shift", "Lights out to first patron"],
+        ["Heart", "One tally counter, wound daily"],
+        ["Glasses", "Reading (not needed)"],
+        ["Overdue fines", "None. Ever."]
+      ],
+      "color": "#c8241e",
+      "ink": "#fff6e0",
+      "portrait": { "chr": "joe.chr", "cbl": "joe.cbl", "pal": "brief.pal" },
+      "back": "The bearer may enter any book in the library, take as many words as it holds (exactly one hundred) and put them back where they belong. Not valid for chew toys. Gwinn, this means you."
+    },
+    {
+      "kind": "map",
+      "title": "Library floor plan",
+      "note": "Reading room, Reserve Stacks and a few books",
+      "promised": true,
+      "landscape": true,
+      "heading": "THE TINY POCKETS LIBRARY",
+      "intro": "A library much bigger than the box. Hang it by your computer, and keep it brief.",
+      "panels": [
+        { "map": "library.map", "x": 0, "y": 0, "w": 16, "h": 10, "caption": "The reading room: eight wing doors and the Word Counter" },
+        { "map": "library.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Reserve Stacks: eight stamp gates and one more book" },
+        { "map": "clown.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "Clown Alley: The Scissor Situation" },
+        { "map": "docks.map", "x": 48, "y": 0, "w": 16, "h": 10, "caption": "The Docks: Legend at the Water's Edge" },
+        { "map": "yard.map", "x": 16, "y": 0, "w": 16, "h": 10, "caption": "The Backyard: Superpowers of Spooker Boy" },
+        { "map": "future.map", "x": 32, "y": 0, "w": 16, "h": 10, "caption": "The Future Shelf: Everything But the Tea" }
+      ],
+      "columns": 2
+    },
+    {
+      "kind": "hintbook",
+      "title": "Librarian's Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Stuck? Find your question, then slide the red film over the answer. The Word Counter would like you to know it disapproves of hints. It disapproves of most things.",
+      "sections": [
+        {
+          "head": "Every Book",
+          "hints": [
+            { "q": "THE END won't open. I picked up every word I could see.", "a": "Press F2: Money is the words you carry. Every book has exactly 100, and nothing can take them, so if it says less there is a slip you missed. Look behind the furniture and along the edges." },
+            { "q": "THE END opened, but nothing happened.", "a": "Walk onto the open page, then onto the gold bookmark right behind it. The bookmark puts the story back." },
+            { "q": "Why did my score go down?", "a": "A fine. Shushers, scissors, static and the like cost a point a moment while they touch you. A perfect night is 3,200." }
+          ]
+        },
+        {
+          "head": "The Reading Room",
+          "hints": [
+            { "q": "Which door goes where?", "a": "Top row, left to right: Clown Alley, the Laboratory, the Docks, the Backyard. Bottom row: the Living Room, After Hours, Other Dimensions, the Future Shelf. The purple STAX door on the right goes to the Reserve Stacks." },
+            { "q": "Can I fix the Word Counter?", "a": "You fix it by filling the books. It will keep flipping between 099, 101 and STOP until then. It is a very dramatic machine." }
+          ]
+        },
+        {
+          "head": "The Reserve Stacks",
+          "hints": [
+            { "q": "The stamp gates won't open.", "a": "Each gate wants four stories restored in its own wing. The plate on the gate says 4. It means it." },
+            { "q": "What is the thirty-third book?", "a": "Exactly one hundred words. Whose hundred is up to you." }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            { "q": "Some say there is a felt egg somewhere in the library.", "a": "Libraries lose things. Good libraries keep a lost and found. The Word Counter complains that nobody can find it." },
+            { "q": "Where is the lost and found?", "a": "In the Reserve Stacks. Not every shelf there is as solid as it looks: look for a book pulled half out, with a red ribbon hanging from it." },
+            { "q": "I found it. Now what?", "a": "Walk onto the shoebox and press P. Finders, pocketers. F2 shows it in Joe's pocket, and a save keeps it there." },
+            {
+              "q": "Step by step?",
+              "a": "In the Reserve Stacks, walk to the bottom right corner, past the fern, and keep walking right into the shelf with the ribbon. In the Lost and Found, stand on the shoebox with the egg and press P. Leave by the OUT door.",
+              "sketch": {
+                "rows": [
+                  "    =",
+                  "  o@X",
+                  "=====",
+                  ""
+                ],
+                "labels": [
+                  { "x": 6, "y": 1, "text": "LOOSE SHELF" },
+                  { "x": 0, "y": 3, "text": "RESERVE STACKS, FAR CORNER" }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "head": "Particular Books",
+          "hints": [
+            { "q": "Clown Alley: the scissors keep getting me.", "a": "They run a loop inside the ring. Wait at the curb until they pass, then walk. Do not run. Do not run in slow motion either." },
+            { "q": "The Future Shelf: how do I get the tea?", "a": "You don't. Nobody does. That is the story." },
+            { "q": "The Backyard: why do the street lights come on?", "a": "They are on timers, one after another. Spooker Boy never noticed them. Now you have." }
+          ]
+        }
+      ]
+    }
+  ],
+  "stickers": [
+    { "text": "KEEP IT BRIEF!", "sub": "THE TINY POCKETS LIBRARY", "shape": "badge", "color": "#c8241e", "ink": "#fff6e0", "hero": { "chr": "joe.chr", "cbl": "joe.cbl", "pal": "brief.pal" } },
+    { "text": "SHHH!", "sub": "SHUSHER", "shape": "circle", "color": "#d8d8d4", "ink": "#2a1408", "sprite": { "blocks": "library.mbl", "pal": "brief.pal", "grid": [[1]] } },
+    { "text": "EXACTLY 100", "sub": "NOT 99. NOT 101.", "shape": "star", "color": "#ffd23f", "ink": "#2a1408" },
+    { "text": "OVERDUE", "sub": "ONE WORD A DAY", "shape": "rect", "color": "#fff6e0", "ink": "#c8241e" }
+  ],
+  "news": [
+    {
+      "head": "A library in a box on a post",
+      "html": "<p>Our lawyers asked us to keep the press release for <b>KEEP IT BRIEF!</b> under one hundred words, so: thirty-two stories, one hundred words each, a tin librarian who refuses to round, and shushers who fine. Register for $10. Exactly $10. The Word Counter will not make change. Keep it brief.</p>"
+    }
+  ]
+}

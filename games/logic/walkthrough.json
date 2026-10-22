@@ -1,0 +1,158 @@
+{
+ "version": 1,
+ "game": "logic",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "C0gByAZIAcgGSAHIBksBywZLAcsGSAHIflAB0AZQAdAGUAHQBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "C00BzQZNAc0GTQHNBkgByEJIAchCSwHLBkgByAZIAcgGSAHIBk0BzQZIAcg="
+  },
+  {
+   "scene": 2,
+   "keys": "C00BzQZNAc0GTQHNBk0BzQZNAc0GSAHIBkgByEJLAcsGSwHLBksBywZIAcgGSAHIBkgByA=="
+  },
+  {
+   "scene": 2,
+   "keys": "C1AB0AZQAdAGSwHLBksBywZIAcgGTQHNBk0BzQZIAcgGSAHIBksBywZLAcsGSAHIBkgByAZIAcgGSAHIBksBywZLAcsGSwHLBksBywZLAct+SwHLfk0BzQZNAc0GTQHNBk0BzQZQAdAGUAHQBlAB0AZQAdAGTQHNBk0BzQZNAc0GTQHNBkgByAZIAcgGSAHIBk0BzQ=="
+  },
+  {
+   "scene": 2,
+   "keys": "C0sBywZLAcsGSwHLBksBywZIAcgGSAHIBkgByAZIAchgTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GUAHQBlAB0AZNAc0GSAHIYEsBywZQAdAGUAHQBlAB0AZQAdA="
+  },
+  {
+   "scene": 2,
+   "keys": "C0sBywZIAcgGSAHIBkgByAZIAcgGSwHLYEsBy2BQAdAGUAHQBlAB0AZQAdAGTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIBkgByAZIAcgGSwHLBksByw=="
+  },
+  {
+   "scene": 3,
+   "keys": "C1AB0AZQAdAGTQHNBk0BzQZNAc0GTQHNBkgByLoBSwHLBkgByAZIAcgGSwHLBkgByAZIAcgGSAHIBkgByA=="
+  },
+  {
+   "scene": 3,
+   "keys": "C1AB0AZQAdAGUAHQBk0BzQZNAc0GUAHQugFNAc0GTQHNBkgByAZIAcgGSAHIBkgByAZIAcgGSAHI"
+  },
+  {
+   "scene": 3,
+   "keys": "C00BzQZNAc0GTQHNFk0BzQZNAc0GUAHQBlAB0AZNAc0="
+  },
+  {
+   "scene": 3,
+   "keys": "C0sBywZLAcsGSwHLBlAB0AZQAdAGUAHQBk0BzRhIAcgGTQHNBk0BzQZNAc1gTQHNYEgByAZNAc0GTQHNBkgByAZIAcgGTQHNBk0BzQZIAcgGSAHIBkgByAZLAcs="
+  },
+  {
+   "scene": 3,
+   "keys": "C0gByAZIAcgGSAHIBkgByAZLAcsGSwHLQlAB0AZQAdAGUAHQBksBywZLAcsGSwHLBkgByAZIAcgGSwHLBkgByAZLAcs="
+  },
+  {
+   "scene": 3,
+   "keys": "C0sBywZLAcsGSwHLBksBywZQAdArUAHQBk0BzQZNAc0GTQHNBlAB0AZIAcgGTQHNBk0BzQZNAc0GUAHQTEgByAZNAc0GTQHNBk0BzQZNAc0="
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLActgTQHNBkgByGBNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZIAcgGSAHIBkgByAZIAcgGSwHL"
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZQAdAGSwHLJE0BzQZNAc0GTQHNBkgByAZNAc0GTQHNBk0BzQZQAdAGUAHQYE0BzQZNAc0GSAHIBkgByAZIAcgGSAHIBkgByAZLAcs="
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLAcsGSAHIBksBywZQAdB+TQHNBkgByAZIAcgGSAHIBksByw=="
+  },
+  {
+   "scene": 4,
+   "keys": "C1AB0AZQAdAGUAHQBk0BzQZNAc0GUAHQBk0BzQZIAcgGTQHNBkgByAZIAcgGSwHLYFAB0GBIAcgGSAHIBkgByAZIAcgGSwHL"
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSAHIBksBywZIAcgGSAHIBkgByAZQAdAGUAHQBk0BzQZIAcgGTQHNBk0BzQZNAc0GTQHNBlAB0PYBUAHQYE0BzQZNAc0GTQHNBlAB0AZNAc0GUAHQBlAB0A=="
+  },
+  {
+   "scene": 4,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLAcsGSwHLBksBywZQAdAGUAHQBlAB0JQCTQHNBk0BzQZNAc0GUAHQBk0BzQZNAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZNAc0GSAHIQksBywZIAcgGSAHIBkgByAZIAcgGTQHNBk0BzQZIAcgGSAHIBkgByA=="
+  },
+  {
+   "scene": 5,
+   "keys": "C1AB0AZQAdAGTQHNYE0BzUJIAcgGTQHNBk0BzQZNAc0GTQHNBk0BzQZIAcgGSAHIBkgByAZIAcg="
+  },
+  {
+   "scene": 5,
+   "keys": "C1AB0AZQAdAGUAHQBk0BzQZNAc0GUAHQugFNAc0GTQHNBkgByCJIAcgGSAHIBkgByAZIAcgGSAHIBkgByA=="
+  },
+  {
+   "scene": 5,
+   "keys": "C00BzQZNAc0GTQHNBk0BzQZIAcgGSAHIBk0BzQZIAcgGSwHLfksBy2BQAdAGUAHQBlAB0AZLAcsGSwHLBksBywZLAcsGSwHLBksBywZLAcsGUAHQBksBywZLAcsGUAHQBksBywZLAcsGSwHLBkgByCRNAc0GSAHIYE0BzQZIAcgGSAHIBkgByAZLAcsGSAHIBkgByAZIAcg="
+  },
+  {
+   "scene": 5,
+   "keys": "C0sBywZLAcsGSwHLBksBywZLAcsGSwHLBlAB0AZQAdAGUAHQQkgByAZIAcgGSAHIBkgByAZNAc0GTQHNBk0BzQZIAchgUAHQBlAB0AZQAdAGUAHQBlAB0AZNAc0GTQHNBk0BzQZNAc0GTQHNBkgByAZIAcgGSAHIBkgByAZIAcgGSAHIBkgByA=="
+  },
+  {
+   "scene": 5,
+   "keys": "C1AB0AZQAdAGUAHQBksBywZLAcsGSwHLBksBywZLAcsGUAHQBk0BzQ1NAc0GTQHNBk0BzQZNAc0GTQHNBk0BzQZQAdC6AU0BzQZNAc0GSAHIHkgByAZIAcgGSAHIBkgByAZIAcgGSAHI"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 6,
+   "title": "Room 1: The Kitchen"
+  },
+  {
+   "scene": 12,
+   "title": "Room 2: The Living Room"
+  },
+  {
+   "scene": 18,
+   "title": "Room 3: The Garage"
+  },
+  {
+   "scene": 24,
+   "title": "Room 4: The Attic"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 44524,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1448
+   },
+   {
+    "title": "Room 1: The Kitchen",
+    "frame": 4060
+   },
+   {
+    "title": "Room 2: The Living Room",
+    "frame": 13137
+   },
+   {
+    "title": "Room 3: The Garage",
+    "frame": 21175
+   },
+   {
+    "title": "Room 4: The Attic",
+    "frame": 31658
+   },
+   {
+    "title": "Ending",
+    "frame": 40867
+   },
+   {
+    "title": "Credits",
+    "frame": 42969
+   }
+  ]
+ }
+}

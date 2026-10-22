@@ -1,0 +1,47 @@
+ARROWS or W A S D  walk
+P      pick up
+SPACE  fling sand (shovel)
+B      throw water (bucket)
+F      toss a tennis ball
+TRICKS: 2 sit   3 spin
+4 play dead     5 roll over
+F2 status F5 save F6 load
+
+SAND: scoop sand piles, and
+dig dunes by walking into them
+with the shovel. F2 shows your
+sand as Money. Sand plugs
+anthills, fills fords and
+builds towers.
+
+TOWERS: walk into a tower ring
+with sand to build it, then
+walk into it again to plant
+your flag. Four flags lift a
+castle gate.
+
+GWINN won't budge for sand or
+water. Toss her a tennis ball
+(F) and she trots off happy.
+Walk toward her first: things
+fly the way you last walked.
+
+SPIN (3) kicks up a whirl of
+sand that bowls over ants and
+beetles.
+
+WATER: balloons and Gwinn's
+bowls fill your bucket. Only
+water (or a ball) flips a
+crab. With the bucket, walk
+into a dashed outline to pack
+a wall of wet sand.
+
+CURRENTS carry you. CRUMBLY
+BRIDGES fall in behind you.
+The tidal flat floods: wait on
+a sandbar.
+
+ACORNS open root doors. A
+cracked wall may not be a wall
+at all.

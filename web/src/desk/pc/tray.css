@@ -1,0 +1,347 @@
+/* the slide-out keyboard tray (desk/pc/tray.ts) */
+.kb-tray {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 26px;
+}
+
+.tray-move {
+  transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+/* phones: just the keyboard, in the flow */
+@media (max-width: 960px) {
+  .tray-move,
+  .tray-plane {
+    display: contents;
+  }
+
+  .kb-tray .keyboard {
+    margin-top: 6px;
+  }
+
+  .mouse-pad,
+  .tray-slab,
+  .tray-handle {
+    display: none;
+  }
+}
+
+/* The stage (desk/stage.ts): the tray hangs under the desk top. Its back runs under the
+   desk's front edge (.desk-edge covers it) and anything slid further back than that edge is
+   hidden by the desk top, so slid in, only its front shows. */
+@media (min-width: 961px) {
+  .kb-tray {
+    position: absolute;
+    left: 0;
+    /* inside .pc, which stands 8px down the stage */
+    top: calc(var(--edge) - 8px);
+    width: 660px;
+    height: 150px;
+    margin: 0;
+    clip-path: inset(0 -400px -400px -400px);
+  }
+
+  .tray-move {
+    position: absolute;
+    inset: 0;
+    /* the eye 2218px off the stage: with the board's 56 degree tilt its runners head for the
+       desk's vanishing point, 1496px above the desk's front edge (desk/deskStage.css):
+       2218 / tan(56deg) = 1496 */
+    perspective: 2218px;
+    perspective-origin: 50% 0;
+    transition: transform 0.9s cubic-bezier(0.35, 0.05, 0.25, 1);
+  }
+
+  .kb-tray[data-out='false'] .tray-move {
+    transform: translateY(-96px);
+  }
+
+  /* the board, laid out flat as if seen from above, then tilted back */
+  .tray-plane {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 830px;
+    /* deep enough for the keyboard (175px, template strip and all) and the lip in front of it */
+    height: 232px;
+    /* scaled up a little so the tray keeps its size under the flatter perspective */
+    transform: scale(1.1) rotateX(56deg);
+    transform-origin: 50% 0;
+  }
+
+  .tray-plane .keyboard {
+    position: absolute;
+    left: 100px; /* centered under the PC: (660 - 540) / 2 + 40 */
+    top: 34px;
+    width: 540px;
+    margin: 0;
+    transform: none;
+    box-shadow:
+      inset 0 2px 0 #fff8,
+      inset 0 -6px 0 var(--plastic-edge),
+      0 10px 10px rgba(0, 0, 0, 0.55);
+  }
+
+  /* the tray itself: a wood-grain board with a raised lip along the front */
+  .tray-slab {
+    position: absolute;
+    inset: 0;
+    border-radius: 0 0 6px 6px;
+    background:
+      linear-gradient(rgba(0, 0, 0, 0.55), transparent 40px), repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.07) 0 3px, transparent 3px 13px),
+      linear-gradient(90deg, #4b3420, #5e4128 50%, #4b3420);
+    box-shadow:
+      inset 0 0 0 2px rgba(0, 0, 0, 0.25),
+      0 30px 30px rgba(0, 0, 0, 0.6);
+  }
+
+  .tray-slab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 16px;
+    border-radius: 0 0 6px 6px;
+    background: linear-gradient(#7a5634, #5a3d22 40%, #2a1a0d);
+    box-shadow: inset 0 2px 0 rgba(255, 230, 190, 0.3);
+  }
+
+  /* steel runners along both sides, out from under the desk */
+  .tray-runner {
+    position: absolute;
+    top: -40px;
+    bottom: 18px;
+    width: 9px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #5d6066, #c9ccd2 40%, #8a8e96 60%, #3e4045);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6);
+  }
+
+  .tray-runner.l {
+    left: -10px;
+  }
+
+  .tray-runner.r {
+    right: -10px;
+  }
+
+  /* a row of rivets along each runner */
+  .tray-runner::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 50px;
+    bottom: 20px;
+    background: radial-gradient(circle, #2b2c30 0 1.6px, transparent 2px) 50% 0 / 5px 46px repeat-y;
+  }
+
+  /* the mouse pad, on the same board to the right of the keyboard */
+  .mouse-pad {
+    position: absolute;
+    left: 662px;
+    top: 56px;
+    width: 156px;
+    height: 140px;
+    border-radius: 8px;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 60%), #1d3f7a;
+    box-shadow:
+      inset 0 0 0 2px #15305e,
+      0 4px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  /* the finger pull in the middle of the front lip: click it to slide the tray */
+  .tray-handle {
+    position: absolute;
+    left: 50%;
+    /* on the lip: the plane's last 16px, seen tilted */
+    top: 140px;
+    width: 120px;
+    height: 22px;
+    margin-left: -60px;
+    padding: 0;
+    border: 0;
+    border-radius: 3px 3px 12px 12px;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .tray-pull {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 4px;
+    height: 10px;
+    border-radius: 2px 2px 10px 10px;
+    background: linear-gradient(#b9bcc2, #6b6e75);
+    box-shadow:
+      inset 0 1px 0 #eef0f3,
+      0 3px 4px rgba(0, 0, 0, 0.6);
+    transition: background 0.15s;
+  }
+
+  .tray-handle:hover .tray-pull,
+  .tray-handle:focus-visible .tray-pull {
+    background: linear-gradient(#e6e8ec, #8f939b);
+  }
+
+  .tray-handle:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 2px;
+  }
+
+  /* what the handle does, shown on hover */
+  .tray-handle::after {
+    content: 'Slide the tray in';
+    position: absolute;
+    left: 50%;
+    top: 24px;
+    padding: 2px 8px;
+    border-radius: 9px;
+    background: rgba(20, 14, 8, 0.85);
+    color: #f4ead2;
+    font:
+      600 12px/1.3 system-ui,
+      sans-serif;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+
+  .kb-tray[data-out='false'] .tray-handle::after {
+    content: 'Pull the keyboard out';
+  }
+
+  .tray-handle:hover::after,
+  .tray-handle:focus-visible::after {
+    opacity: 1;
+  }
+}
+
+/* the pad's print (tray.ts padArt): the BBS's logon screen */
+.pad-art {
+  position: absolute;
+  inset: 3px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.pad-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* the cord runs back over the tray to the PC from the top of the mouse (tray.ts draws it) */
+.mouse-cord {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.mouse-cord path {
+  fill: none;
+  stroke: #c9c1a6;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.ball-mouse {
+  position: absolute;
+  /* parked on the sand, clear of the print */
+  left: 98px;
+  top: 58px;
+  width: 42px;
+  height: 66px;
+  border-radius: 20px 20px 22px 22px / 18px 18px 30px 30px;
+  /* molded plastic: a soft highlight up top, darker toward the sides and the back */
+  background:
+    radial-gradient(ellipse 60% 40% at 38% 28%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(ellipse 90% 70% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.22)),
+    linear-gradient(110deg, var(--plastic-hi), var(--plastic) 50%, var(--plastic-lo));
+  box-shadow:
+    inset 0 -4px 0 var(--plastic-edge),
+    inset 2px 0 2px rgba(255, 255, 255, 0.35),
+    inset -3px 0 3px rgba(0, 0, 0, 0.18),
+    4px 10px 8px rgba(0, 0, 0, 0.5),
+    1px 3px 2px rgba(0, 0, 0, 0.35);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.ball-mouse:active {
+  cursor: grabbing;
+}
+
+.ball-mouse:focus-visible {
+  outline: 2px solid #ffd75e;
+  outline-offset: 3px;
+}
+
+/* a button held down sinks into the shell */
+.ball-mouse[data-down='left'] .mouse-btn.left,
+.ball-mouse[data-down='right'] .mouse-btn.right {
+  background: linear-gradient(#d9d2bd, #c7bfa6 70%, #b0a88e);
+  box-shadow:
+    inset 0 2px 2px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 #9e967c;
+}
+
+.ball-mouse .mouse-btn {
+  position: absolute;
+  top: 3px;
+  width: 17px;
+  height: 21px;
+  background: linear-gradient(#f3eedf, #d6ceb5 70%, #bdb59b);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -2px 0 #9e967c,
+    0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.ball-mouse .mouse-btn.left {
+  left: 3px;
+  border-radius: 17px 2px 2px 4px;
+}
+
+.ball-mouse .mouse-btn.right {
+  right: 3px;
+  border-radius: 2px 17px 4px 2px;
+}
+
+/* the groove between the buttons */
+.ball-mouse::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  width: 2px;
+  height: 22px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: #8f8770;
+}
+
+.ball-mouse .mouse-logo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  color: #8f8770;
+  font:
+    italic 800 6px/1 system-ui,
+    sans-serif;
+  text-align: center;
+}

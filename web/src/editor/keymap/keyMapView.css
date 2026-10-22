@@ -1,0 +1,398 @@
+/* ⌨ Keys dialog: a retro keyboard map. Self-contained so the player (no editor.css) can use it. */
+.km-dialog {
+  width: min(1040px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  padding: 0;
+  border: 2px solid #ffd400;
+  border-radius: 10px;
+  background: #0b0b3a;
+  color: #e8e8ff;
+  font:
+    14px/1.45 system-ui,
+    sans-serif;
+  box-shadow: 6px 6px 0 #000;
+}
+.km-dialog::backdrop {
+  background: rgba(0, 0, 20, 0.7);
+}
+.km-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #000080;
+  border-bottom: 2px solid #ffd400;
+}
+.km-head h2 {
+  margin: 0;
+  font:
+    700 17px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
+  color: #ffd400;
+  letter-spacing: 0.04em;
+}
+.km-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ffd400;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffd400;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.km-close:hover {
+  background: #ffd400;
+  color: #000080;
+}
+.km-body {
+  padding: 12px 16px 20px;
+}
+.km h3 {
+  margin: 18px 0 8px;
+  font:
+    700 14px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
+  color: #55ffff;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.km-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.km-select {
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #55ffff;
+  border-radius: 4px;
+  background: #000040;
+  color: #fff;
+  font: inherit;
+}
+.km-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #b8b8e0;
+}
+.km-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.km-legend .sw {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+.sw.game {
+  background: #ffd400;
+}
+.sw.global {
+  background: #55ffff;
+}
+
+/* the keyboard */
+.km-boards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(#2a2a3a, #18181f);
+  box-shadow:
+    inset 0 2px 0 #444,
+    0 3px 0 #000;
+}
+.km-board {
+  display: block;
+  height: auto;
+}
+.km-board:first-child {
+  flex: 15 1 480px;
+  min-width: 0;
+}
+.km-board:last-child {
+  flex: 7.5 1 220px;
+  min-width: 0;
+  max-width: 340px;
+}
+.km-cap rect {
+  fill: #4a4a58;
+  stroke: #22222a;
+  stroke-width: 1;
+}
+.km-cap .km-cap-label {
+  font:
+    600 11px ui-monospace,
+    monospace;
+  fill: #9a9aac;
+}
+.km-cap .km-cap-act {
+  font:
+    700 12px system-ui,
+    sans-serif;
+  fill: #000080;
+}
+.km-cap .km-cap-act.tight {
+  font-size: 9.5px;
+  letter-spacing: -0.02em;
+}
+.km-icon {
+  font-family: 'Segoe UI Symbol', 'Apple Symbols', system-ui, sans-serif;
+}
+.km-cap.game,
+.km-cap.global {
+  cursor: pointer;
+}
+.km-cap.game rect {
+  fill: #ffd400;
+  stroke: #fff6a0;
+}
+.km-cap.global rect {
+  fill: #55ffff;
+  stroke: #c0ffff;
+}
+.km-cap.game.global rect {
+  fill: #ffd400;
+  stroke: #55ffff;
+  stroke-width: 3;
+}
+.km-cap.game .km-cap-label,
+.km-cap.global .km-cap-label {
+  fill: #000060;
+}
+.km-cap.game:hover rect,
+.km-cap.global:hover rect,
+.km-cap:focus-visible rect {
+  fill: #fff;
+}
+.km-cap:focus {
+  outline: none;
+}
+
+/* the list */
+.km-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.km-row {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid #2a2a70;
+  border-radius: 8px;
+  background: #10104a;
+  scroll-margin: 60px;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.km-row.picked {
+  border-color: #ffd400;
+  background: #1c1c66;
+}
+.km-key {
+  display: inline-block;
+  align-self: start;
+  padding: 4px 8px;
+  border: 1px solid #fff6a0;
+  border-bottom-width: 3px;
+  border-radius: 5px;
+  background: #ffd400;
+  color: #000080;
+  font:
+    700 13px ui-monospace,
+    monospace;
+  text-align: center;
+}
+.km-keycol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.km-mac {
+  color: #c0ffff;
+  font-size: 0.8em;
+  line-height: 1.2;
+}
+.km-key.small {
+  min-width: 34px;
+  background: #55ffff;
+  border-color: #c0ffff;
+}
+.km-uses {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.km-use-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.km-use-head strong {
+  color: #fff;
+  font-size: 15px;
+}
+.km-use.kind-fire .km-use-head strong {
+  color: #ff8080;
+}
+.km-use.kind-jump .km-use-head strong,
+.km-use.kind-move .km-use-head strong {
+  color: #80ff80;
+}
+.km-use.kind-pickup .km-use-head strong,
+.km-use.kind-drop .km-use-head strong {
+  color: #ffd480;
+}
+.km-badge {
+  padding: 0 6px;
+  border-radius: 8px;
+  background: #800000;
+  color: #fff;
+  font-size: 11px;
+}
+.km-where {
+  color: #9a9ad0;
+  font-size: 12px;
+}
+.km-use ul {
+  margin: 2px 0 0;
+  padding-left: 18px;
+  color: #c8c8ec;
+  font-size: 13px;
+}
+.km-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.km-thumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px 2px 2px;
+  border-radius: 4px;
+  background: #000030;
+  font-size: 11px;
+  color: #b8b8e0;
+}
+.km-thumb.need {
+  outline: 1px dashed #ffd400;
+}
+.km-pic {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  background: #000;
+}
+.km-note {
+  margin: 4px 0;
+  color: #9a9ad0;
+  font-size: 12px;
+}
+.km table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.km td {
+  padding: 4px 8px 4px 0;
+  border-bottom: 1px solid #22225a;
+  vertical-align: top;
+}
+.km-joy td:first-child {
+  white-space: nowrap;
+  color: #55ffff;
+}
+.km-global td:first-child {
+  width: 56px;
+}
+.km-instr {
+  margin-top: 16px;
+}
+.km-instr summary {
+  cursor: pointer;
+  color: #ffd400;
+  font:
+    700 14px ui-monospace,
+    monospace;
+}
+.km-text {
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+  margin: 8px 0;
+  padding: 12px 16px;
+  border: 2px solid #5555ff;
+  background: #000;
+  color: #ff55ff;
+  font:
+    14px/1.35 ui-monospace,
+    'Courier New',
+    monospace;
+  white-space: pre;
+}
+.km-gif {
+  display: block;
+  width: min(640px, 100%);
+  margin: 8px 0;
+  image-rendering: pixelated;
+}
+@media (max-width: 600px) {
+  .km-body {
+    padding: 10px;
+  }
+  /* The main keys scroll sideways at a readable size; the arrows and number pad fit below. */
+  .km-boards {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding: 8px;
+  }
+  .km-board:first-child {
+    flex: none;
+    width: 600px;
+  }
+  .km-board:last-child {
+    flex: none;
+    width: min(300px, 100%);
+  }
+  .km-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .km-key {
+    justify-self: start;
+  }
+  .km-cap .km-cap-label {
+    font-size: 13px;
+  }
+  .km-cap .km-cap-act {
+    font-size: 14px;
+  }
+}

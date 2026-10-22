@@ -1,0 +1,47 @@
+MOVING (arrows or W A D)
+ LEFT/RIGHT  walk (A/D)
+ UP/W  hop (hold it to hop
+       higher, let go to
+       steer)
+ Q/E   hop up and left/right
+       in one go
+
+TEDDY'S TRICKS
+ SPACE  speak: WOOF! scares
+        squirrels, cats,
+        pigeons and geese
+ DOWN   dig: unearths bones,
+        digs through soft dirt
+ F      fetch: pick up Doc
+        Leo's costume
+TRICKS ON THE NUMBER KEYS
+ 1  high five: pops balloons,
+    slaps hands held out
+ 2  sit pretty: a heart for
+    anybody asking "SIT!"
+ 3  spin: turns revolving
+    doors and turnstiles
+ 4  play dead (hold): flat
+    as a rug, so things fly
+    over you
+ 5  roll over: shakes loose
+    a fluff ball that knocks
+    stacks over
+
+
+
+TREATS are worth points. A
+BONE gives energy back. A
+BALLOON DOG is worth 250.
+Gwinn bumps you: one treat
+gone. She has Teddy's green
+WOBBLE BALL too: WOOF and she
+drops it. It's an extra nap!
+Bring the costume piece to
+Doc Leo's red CitiCar.
+F1 help      F2 your stuff
+F3 music     F4 sounds
+F5 save      F6 load
+ESC quit
+F2 shows treats as "Money"
+and energy as "Hitpoints".

@@ -1,0 +1,79 @@
+{
+ "version": 1,
+ "game": "sleuth",
+ "rand": {
+  "seed": 7,
+  "per": "game"
+ },
+ "hold": 15,
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AVAE0AFLEMsBUATQAUtAywFIBMgBSAjIAU0EzQFICMgBTQTNAVAM0AFLEMsBOQK5CE0IzQFQCNABTRTNAUgQyAFNCM0BSATIAU0EzQFIDMgBSyTLAUg8yAFNCM0BSATIAUgUyAFLBMsBSBzIAUgIyAFNcM0BSATIAUgMyAFNBM0BOQK5CCYCphBQCNABSwTLAVAM0AFNNM0BUATQAVAI0AFNBM0BUAjQAUsIywE5ArkITQzNATkCuQhIDMgBSwTLAUgMyAFLGMsBSALIBkgKyAFNCM0BOQK5CFAE0AFLCMsBUAjQAUs0ywFIEkgMyAFLDMsBSATIAUsBSAzIAUsEywFIBMgBSwFIDUgMyAFNBM0BSATIAU0BSAzIAU0MzQFIBMgBTQFICMgBSxVLGMsBUAFQBNABTQ1QCVAI0AFLCMsBUATQAUsNUATQAUsVSxjLAVABUATQAU0NUAlQCNABSwjLAVAE0AFLDUgIyAFNEUsYywFQAVAE0AFNDVAJUAjQAUsIywFQBNABSw1QBNABTRFLGMsBUAFQBNABTQ1QCVAI0AFLCMsBUATQAUsNUAjQAU0FSxjLAVABUATQAU0NUAlQCNABSwjLAVAE0AFLDVAM0AFLFU1MzQFIEMgBTQTNATkCuQhQCNABSwTLAVAI0AFLGMsBSBTIAUgByANNBM0BSAHIA0gByANNBM0BSAHIA0gByANIAcgDTQTNAUgCyAQ5ArkIUA7QAUsMywFQCNABS5ABywFQCNABUCzQAU0EzQFQBNABUBDQAU1MzQFQNNABTTTNAVAQ0AFNDM0BTRjNATkCuQhLHMsBUBDQAU0EzQFNHM0BOQK5CEsgywFIFMgBSwjLAUgEyAFLLMsBSALIBE0IzQFIAsgESxTLAUgCyARIAsgETTjNAUgMyAFNJM0BSDDIAUskywFIBMgBSATIAU0IzQFNMM0BSAjIAU0UzQFQENABSwTLAVAI0AFNGM0BUAjQAU0UzQE5ArkISxTLAUgIyAFLGMsBSAjIAU0EzQFIEMgBSxDLAUgMyAFLBMsBSwzLAUggyAFLCMsBSATIAUsEywFICMgBS0jLAUgSSAzIAUsUywFIAUgMyAFLEMsBSAFIDMgBSwzLAUgBSAzIAUsIywFIAUgMyAFLBMsBSAFIDUgMyAFNBM0BSAFIDMgBTQjNAUgBSAzIAU0MzQFIAUgIyAFLFUsYywFQAVAE0AFNDVAJUAjQAUsIywFQBNABSw1QBNABSxVLGMsBUAFQBNABTQ1QCVAI0AFLCMsBUATQAUsNSAjIAU0RSxjLAVABUATQAU0NUAlQCNABSwjLAVAE0AFLDVAE0AFNEUsYywFQAVAE0AFNDVAJUAjQAUsIywFQBNABSw1QCNABTQVLGMsBUAFQBNABTQ1QCVAI0AFLCMsBUATQAUsNUAzQAUsVSAVIBMgBSxjLAUgBSATIAU0UzQFI"
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Act One: The Paragon Theatre"
+  },
+  {
+   "scene": 4,
+   "title": "The Green Room, Midnight"
+  },
+  {
+   "scene": 3,
+   "title": "Act Two: The Theatre at Night"
+  },
+  {
+   "scene": 11,
+   "title": "The Green Room, 2 AM"
+  },
+  {
+   "scene": 62,
+   "title": "Dawn: The Accusation"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 107149,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1434
+   },
+   {
+    "title": "Act One: The Paragon Theatre",
+    "frame": 5634
+   },
+   {
+    "title": "The Green Room, Midnight",
+    "frame": 9719
+   },
+   {
+    "title": "Act Two: The Theatre at Night",
+    "frame": 42428
+   },
+   {
+    "title": "The Green Room, 2 AM",
+    "frame": 54049
+   },
+   {
+    "title": "Dawn: The Accusation",
+    "frame": 92954
+   },
+   {
+    "title": "Ending",
+    "frame": 97383
+   },
+   {
+    "title": "Credits",
+    "frame": 103437
+   }
+  ]
+ }
+}

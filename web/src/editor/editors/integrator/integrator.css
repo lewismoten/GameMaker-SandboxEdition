@@ -1,0 +1,467 @@
+/* Game Integrator: the scene board, its toolbar and the screens & music side panel. */
+.grator {
+  --grator-side-w: 250px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 10px var(--grator-side-w);
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+.grator.side-collapsed {
+  grid-template-columns: minmax(0, 1fr) 6px 34px;
+}
+.grator.side-collapsed .grator-resize {
+  visibility: hidden;
+}
+.grator-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.grator-tools {
+  align-items: center;
+}
+.grator-spacer {
+  flex: 1;
+}
+.grator-zoom {
+  min-width: 3.5em;
+  text-align: center;
+  font:
+    12px ui-monospace,
+    Menlo,
+    monospace;
+  color: var(--muted);
+}
+.grator-board-wrap {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #2b3bb0;
+  box-shadow:
+    0 0 0 1px #000 inset,
+    0 6px 24px rgba(0, 0, 40, 0.35);
+  background: #05061a;
+}
+.grator-board {
+  display: block;
+  width: 100%;
+  /* fills the window under the toolbar; the selected scene's panel follows below */
+  height: clamp(320px, calc(var(--ws-vh, 100dvh) - 236px), 900px);
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+.grator-board:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.grator-resize {
+  cursor: col-resize;
+  touch-action: none;
+  position: relative;
+  outline: none;
+}
+.grator-resize::after {
+  content: '';
+  position: absolute;
+  inset: 40% 3px;
+  border-left: 2px dotted var(--border);
+  border-right: 2px dotted var(--border);
+}
+.grator-resize:hover::after,
+.grator-resize:focus-visible::after {
+  border-color: var(--title-text);
+}
+.grator-side {
+  min-width: 0;
+  max-height: calc(clamp(320px, calc(var(--ws-vh, 100dvh) - 236px), 900px) + 48px);
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.grator-side-head {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 6px 6px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.grator-tabs {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.grator-tab {
+  flex: 1;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: none;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.grator-tab.on {
+  background: var(--panel);
+  border-color: var(--border);
+  color: var(--text);
+  box-shadow: inset 0 3px 0 var(--title-text);
+  margin-bottom: -1px;
+}
+.grator-count {
+  display: inline-block;
+  margin-left: 6px;
+  min-width: 1.6em;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: rgba(127, 140, 200, 0.2);
+  color: var(--text);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+.grator-side-close,
+.grator-side-open {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 18px;
+  padding: 0 8px;
+}
+.grator-side-close:hover,
+.grator-side-open:hover {
+  color: var(--title-text);
+}
+.grator-side-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  width: 100%;
+  padding: 10px 0;
+}
+.grator-side-open-label {
+  writing-mode: vertical-rl;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.grator-side-body {
+  overflow: auto;
+  padding: 10px;
+  flex: 1;
+  min-height: 0;
+}
+.grator-screens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+}
+.grator-screen {
+  margin: 0;
+}
+.grator-screen-pic {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 2px solid #2b3bb0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16 / 10;
+  cursor: pointer;
+}
+.grator-screen-pic:hover {
+  border-color: var(--title-text);
+}
+.grator-screen-pic canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.grator-noshot {
+  color: #889;
+  font:
+    11px ui-monospace,
+    Menlo,
+    monospace;
+}
+.grator-screen figcaption {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  line-height: 1.25;
+  margin-top: 2px;
+  min-width: 0;
+}
+.grator-screen figcaption b,
+.grator-screen figcaption span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grator-screen figcaption span {
+  color: var(--muted);
+  font-family: ui-monospace, Menlo, monospace;
+  white-space: nowrap;
+}
+.grator-edit {
+  display: inline-block;
+  padding: 0 3px;
+  line-height: 1.2;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  text-decoration: none;
+}
+.grator-missing {
+  color: var(--danger);
+}
+.grator-songs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.grator-songs li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 12px;
+}
+.grator-songs li .meta {
+  grid-column: 2;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+}
+.grator-songs .linklike {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+.grator-songs .linklike:hover {
+  text-decoration: underline;
+}
+.grator-songs li > .grator-play {
+  grid-row: span 2;
+}
+.grator-play {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 1;
+}
+button.grator-play.playing {
+  background: var(--title-text);
+  color: #000;
+  border-color: #000;
+  box-shadow: 0 0 8px var(--title-text);
+}
+.grator-song-field {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+.grator-song-field > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+.grator-links {
+  overflow-x: auto;
+}
+
+@media (max-width: 820px) {
+  .grator,
+  .grator.side-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .grator-resize {
+    display: none;
+  }
+  .grator-side {
+    max-height: 50vh;
+  }
+  .grator-board {
+    height: clamp(280px, calc(var(--ws-vh, 100dvh) - 236px), 640px);
+  }
+  .grator-side-open {
+    flex-direction: row;
+    justify-content: center;
+    padding: 8px;
+  }
+  .grator-side-open > :first-child {
+    transform: rotate(90deg);
+  }
+  .grator-side-open-label {
+    writing-mode: horizontal-tb;
+  }
+}
+.grator-attention {
+  border-color: var(--title-text);
+  box-shadow: 0 0 0 2px var(--title-text);
+  animation: grator-pulse 1.6s ease-in-out 3;
+}
+@keyframes grator-pulse {
+  50% {
+    box-shadow: 0 0 0 5px rgba(255, 212, 0, 0.35);
+  }
+}
+
+/* zoom controls and the ? tips, floating over the board's corners */
+.grator-zoombar {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #2b3bb0;
+  border-radius: 8px;
+  background: rgba(5, 6, 26, 0.85);
+}
+.grator-zoombar button {
+  min-width: 30px;
+  padding: 3px 8px;
+}
+.grator-zoombar .grator-zoom {
+  color: #c8cbe8;
+}
+.grator-tips {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  max-width: min(340px, calc(100% - 16px));
+  color: #e4e6ff;
+  font-size: 13px;
+}
+.grator-tips summary {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  border: 1px solid #2b3bb0;
+  border-radius: 50%;
+  background: rgba(5, 6, 26, 0.85);
+  color: #ffd400;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+.grator-tips summary::-webkit-details-marker {
+  display: none;
+}
+.grator-tips summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.grator-tips[open] summary {
+  background: #ffd400;
+  color: #000;
+}
+.grator-tips-body {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid #2b3bb0;
+  border-radius: 8px;
+  background: rgba(5, 6, 26, 0.94);
+  line-height: 1.4;
+}
+.grator-tips-body p {
+  margin: 0 0 6px;
+}
+.grator-tips-body ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* wide windows: the selected scene's panel is the side panel's Scene tab */
+@media (min-width: 1000px) {
+  .grator {
+    --grator-side-w: clamp(320px, 27vw, 440px);
+  }
+}
+.grator-side-scene {
+  container-type: inline-size;
+  padding: 0;
+}
+.grator-side-scene .grator-panel {
+  gap: 0;
+}
+.grator-side-scene .grator-panel > .panel {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 10px 12px 12px;
+}
+.grator-side-scene .grator-panel > .panel + .panel {
+  border-top: 1px solid var(--border);
+}
+.grator-side-scene .grator-panel h3 {
+  font-size: 15px;
+}
+.grator-side-scene .grid-fields {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+}
+/* a narrow panel shows each link as a small block instead of a wide table row */
+@container (max-width: 520px) {
+  .grator-links table,
+  .grator-links tbody,
+  .grator-links td {
+    display: block;
+  }
+  .grator-links thead {
+    display: none;
+  }
+  .grator-links tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 8px;
+    row-gap: 4px;
+    align-items: end;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .grator-links td {
+    padding: 0;
+    border: 0;
+  }
+  .grator-links td:first-child {
+    grid-row: span 3;
+    align-self: start;
+    font-weight: bold;
+  }
+  .grator-links td:empty {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grator-attention {
+    animation: none;
+  }
+}

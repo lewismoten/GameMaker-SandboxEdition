@@ -1,0 +1,237 @@
+/* The workspace's file list: search box and foldable sections (see workspace.ts). */
+
+.sidebar .file-search {
+  position: relative;
+  margin: 10px 0 2px;
+}
+
+.sidebar .file-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 64px 5px 26px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg, transparent) no-repeat 8px 50% / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='6.5' cy='6.5' r='4.5' fill='none' stroke='%23888' stroke-width='2'/%3E%3Cpath d='M10 10l4.5 4.5' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E");
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+}
+
+.sidebar .file-search-count {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.sidebar h2.file-kind .fold {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 2px 4px 2px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar h2.file-kind .fold:hover {
+  color: var(--text, inherit);
+}
+
+.sidebar h2.file-kind .chev {
+  display: inline-block;
+  width: 10px;
+  transition: transform 0.15s;
+  transform: rotate(90deg);
+}
+
+.sidebar .file-section.folded h4 .chev {
+  transform: none;
+}
+
+.sidebar h2.file-kind .count {
+  margin-left: auto;
+  margin-right: 6px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--panel-2);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+/* Folded: only the file being edited stays in view. Searching shows every match. */
+.sidebar:not(.searching) .file-section.folded .file-row:not(.active) {
+  display: none;
+}
+
+.sidebar .file-row[hidden],
+.sidebar .file-section[hidden] {
+  display: none;
+}
+
+.sidebar.searching .file-section .empty {
+  display: none;
+}
+
+/* The top of the file list: Play test (and on phones the "Files" button beside it). */
+.sidebar .side-top {
+  display: flex;
+  gap: 6px;
+}
+
+.sidebar .side-play {
+  flex: 1;
+}
+
+.sidebar .side-actions {
+  flex-wrap: nowrap;
+  margin-top: 8px;
+}
+
+.sidebar .side-actions button {
+  flex: 1 1 auto;
+  padding-inline: 8px;
+  white-space: nowrap;
+}
+
+/* Phones: the file list folds into one "Files" button, kept at the top of the screen. */
+.sidebar .files-toggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  /* editors' own sticky parts stay below the Files bar */
+  .workspace {
+    --ws-sticky-top: 52px;
+  }
+  .sidebar {
+    position: sticky;
+    top: 0;
+  }
+}
+
+/* Phones and tablets (below 1200px): the file list is a "Files" bar over the editor, so the
+   editor gets the window's whole width. */
+@media (max-width: 1199px) {
+  .sidebar {
+    z-index: 20;
+    max-height: none;
+    overflow: visible;
+  }
+  .sidebar .files-toggle {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+  .sidebar .side-play {
+    flex: none;
+  }
+  .sidebar .files-toggle-current {
+    overflow: hidden;
+    color: var(--muted);
+    font-family: ui-monospace, monospace;
+    font-weight: 400;
+    text-overflow: ellipsis;
+  }
+  .sidebar:not(.open) > .side-files {
+    display: none;
+  }
+  /* Open, the list drops down over the editor and scrolls by itself. */
+  .sidebar.open > .side-files {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    max-height: min(70vh, calc(100dvh - 120px));
+    overflow: auto;
+    padding: 8px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  }
+  .sidebar .side-actions {
+    margin-top: 0;
+  }
+}
+
+/* "Make it yours": shortcuts on the game's page into the files that shape it */
+.next-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.next-steps strong {
+  margin-right: 2px;
+  font-size: 13px;
+}
+
+.next-steps button {
+  padding: 3px 10px;
+  font-size: 13px;
+}
+
+.next-steps .next-steps-hide {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+@media (max-width: 640px) {
+  .next-steps {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .next-steps > * {
+    flex: none;
+  }
+  .next-steps .next-steps-hide {
+    position: sticky;
+    right: 0;
+    background: var(--panel);
+    box-shadow: -10px 0 8px var(--panel);
+  }
+}
+
+/* A kind with no files yet is just its heading (its + still adds one). */
+.sidebar .file-section.none h2.file-kind {
+  margin-top: 6px;
+}
+
+.sidebar .none-yet {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
+}
+
+/* a foldable heading stays on one line, its name shortened if it must */
+.sidebar h2.file-kind .fold > span:nth-child(2) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

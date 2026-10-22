@@ -1,0 +1,445 @@
+{
+ "pitch": "The morning after the Big Show, Gwinn's bed is empty: sniff out her trail across town, over the river and out to the Fair as Teddy the corgi, and now and then play as Gwinn herself.",
+ "keys": {
+  "Up": "Hop (hold for a higher hop)",
+  "Space": "Speak: WOOF! (Gwinn: BOOF!)",
+  "Down": "Dig (Gwinn digs BIG)",
+  "F": "Fetch",
+  "S": "Sniff: find what a faint scent hides",
+  "1": "High five, ring a bell (Gwinn: chew)",
+  "2": "Sit pretty (Gwinn: sit... almost)",
+  "3": "Spin (Gwinn: zoomies)",
+  "4": "Play dead, hold (Gwinn: flop)",
+  "Q": "Hop up and to the left",
+  "E": "Hop up and to the right"
+ },
+ "stickers": [
+  {
+   "text": "SNIFF!",
+   "sub": "TEDDY",
+   "shape": "badge",
+   "color": "#d9381e",
+   "ink": "#ffffff",
+   "hero": {
+    "chr": "teddy.chr",
+    "cbl": "teddy.cbl",
+    "pal": "house.pal"
+   }
+  },
+  {
+   "text": "BOOF!",
+   "sub": "GWINN",
+   "shape": "badge",
+   "color": "#1d5fb8",
+   "ink": "#ffd23f",
+   "hero": {
+    "chr": "gwinn.chr",
+    "cbl": "gwinn.cbl",
+    "pal": "farm.pal"
+   }
+  },
+  {
+   "text": "SHE SAT!",
+   "sub": "BEST BEHAVED",
+   "shape": "star",
+   "color": "#ffd23f",
+   "ink": "#2a1408",
+   "sprite": {
+    "blocks": "show.mbl",
+    "pal": "show.pal",
+    "grid": [
+     [
+      54
+     ]
+    ]
+   }
+  },
+  {
+   "text": "DO NOT BOOF",
+   "sub": "PARK SKUNK",
+   "shape": "rect",
+   "color": "#fff6e0",
+   "ink": "#2a1408",
+   "sprite": {
+    "blocks": "night.mbl",
+    "pal": "night.pal",
+    "grid": [
+     [
+      39
+     ]
+    ]
+   }
+  },
+  {
+   "text": "BAWK!",
+   "sub": "THE RUBBER CHICKEN",
+   "shape": "circle",
+   "color": "#ffd23f",
+   "ink": "#2a1408",
+   "sprite": {
+    "blocks": "river.mbl",
+    "pal": "river.pal",
+    "grid": [
+     [
+      45
+     ]
+    ]
+   }
+  },
+  {
+   "text": "RING FOR SERVICE",
+   "sub": "POWER CO.",
+   "shape": "circle",
+   "color": "#1d5fb8",
+   "ink": "#ffffff",
+   "sprite": {
+    "blocks": "main.mbl",
+    "pal": "main.pal",
+    "grid": [
+     [
+      40
+     ]
+    ]
+   }
+  },
+  {
+   "text": "UNIMPRESSED",
+   "sub": "THE RIVAL POODLE",
+   "shape": "rect",
+   "color": "#fbd3e9",
+   "ink": "#2a1408",
+   "sprite": {
+    "blocks": "show.mbl",
+    "pal": "show.pal",
+    "grid": [
+     [
+      38
+     ]
+    ]
+   }
+  }
+ ],
+ "news": [
+  {
+   "head": "Teddy's back, and this time Gwinn's playable",
+   "html": "<p>Our corgi's sequel, <b>Teddy's Little Bigger Adventure</b>, is out! Eight levels from the attic to the dog show, a brand-new trick (SNIFF), and the first Sandbox game with two heroes: in the MEANWHILE... levels you are Gwinn, with tricks of her own. One of them is sitting. She is working on it.</p>"
+  },
+  {
+   "head": "Letters: \"Why did Teddy stop rolling over?\"",
+   "html": "<p>He retired from it, by choice, like he retired from hoops. He is a professional now. Roll over's key went to his new SNIFF, which our testers say is the best trick in the game. Teddy agrees.</p>"
+  }
+ ],
+ "items": [
+  {
+   "kind": "map",
+   "title": "Teddy & Gwinn poster",
+   "note": "Full color, as promised",
+   "promised": true,
+   "landscape": true,
+   "heading": "TEDDY'S LITTLE BIGGER ADVENTURE",
+   "intro": "Same little dog. A little bigger adventure. And his big sister. Hang it where they can both watch you play!",
+   "panels": [
+    {
+     "map": "show.map",
+     "x": 50,
+     "y": 30,
+     "w": 24,
+     "h": 11,
+     "caption": "The dog show: the judge's SIT?, and Gwinn, wiggling."
+    },
+    {
+     "map": "house.map",
+     "x": 0,
+     "y": 21,
+     "w": 16,
+     "h": 13,
+     "caption": "Doc Leo's house at dawn, cut open like a dollhouse"
+    },
+    {
+     "map": "main.map",
+     "x": 46,
+     "y": 30,
+     "w": 16,
+     "h": 11,
+     "caption": "Founders' Day on the Town Commons"
+    },
+    {
+     "map": "night.map",
+     "x": 36,
+     "y": 30,
+     "w": 16,
+     "h": 11,
+     "caption": "Meanwhile, Gwinn's night out"
+    },
+    {
+     "map": "midway.map",
+     "x": 44,
+     "y": 14,
+     "w": 16,
+     "h": 26,
+     "caption": "THE BIG DROP"
+    }
+   ],
+   "columns": 2
+  },
+  {
+   "kind": "idcard",
+   "title": "Dog show entry card",
+   "note": "Number 13 (she entered herself)",
+   "org": "TRI-COUNTY FAIR DOG SHOW",
+   "name": "GWINN",
+   "role": "BEST BEHAVED CLASS (?)",
+   "fields": [
+    [
+     "Entry",
+     "13"
+    ],
+    [
+     "Breed",
+     "Pit-lab mix, chocolate"
+    ],
+    [
+     "Eyes",
+     "Amber"
+    ],
+    [
+     "Collar",
+     "Pink"
+    ],
+    [
+     "Tricks",
+     "Zoomies"
+    ],
+    [
+     "Sits",
+     "Once, allegedly"
+    ]
+   ],
+   "color": "#1d5fb8",
+   "ink": "#ffffff",
+   "photo": {
+    "map": "show.map",
+    "x": 64,
+    "y": 38,
+    "w": 2,
+    "h": 2
+   },
+   "portrait": {
+    "chr": "gwinn.chr",
+    "cbl": "gwinn.cbl",
+    "pal": "farm.pal"
+   },
+   "back": "If found wandering, please return to Doc Leo and THE CHEZ, the little red car by the show barn. She will come for a corn dog. She will come for anything, really."
+  },
+  {
+   "kind": "hintbook",
+   "title": "Teddy & Gwinn Hint Book",
+   "note": "Answers hidden: use the red film",
+   "intro": "Stuck? Find your question, then slide the red film over the answer. One answer at a time: Teddy believes in you. Gwinn believes in corn dogs.",
+   "sections": [
+    {
+     "head": "Every Stop",
+     "hints": [
+      {
+       "q": "What is that faint wispy thing in the air?",
+       "a": "A scent! Stand next to it and press S to sniff. Whatever is hidden there turns up: treats, a bone, a balloon dog, paw prints, and sometimes exactly what you are looking for."
+      },
+      {
+       "q": "I found the thing Gwinn dropped. Now what?",
+       "a": "Bring it to Doc Leo at THE CHEZ, his little red car, at the end of the stop. Its door opens for it: hop in and he drives on."
+      },
+      {
+       "q": "How do Gwinn's levels end?",
+       "a": "She is following her nose to the Fair. Look for her ride at the end: the hay wagon, then the Fair's ride truck. Hop in."
+      }
+     ]
+    },
+    {
+     "head": "1. Doc Leo's House",
+     "hints": [
+      {
+       "q": "Where is Gwinn's collar?",
+       "a": "She slipped out of it down the laundry chute. Drop through the hole in the laundry room floor, land in the basket in the basement and sniff (S)."
+      },
+      {
+       "q": "How do I get over the fridge?",
+       "a": "Hop onto the kitchen counter first, then up onto the fridge, then down the other side."
+      },
+      {
+       "q": "How do I get out of the basement?",
+       "a": "The stairs at the back go up to the laundry room: hop from step to step. Then out the doggy door."
+      },
+      {
+       "q": "What is in the attic?",
+       "a": "Bounce on Doc Leo's bed upstairs: it sends you up through the hatch. A balloon dog and a lot of boxes marked KLUB."
+      }
+     ]
+    },
+    {
+     "head": "2. Main Street",
+     "hints": [
+      {
+       "q": "Gwinn's leash is on top of the gazebo!",
+       "a": "Ring the bucket truck's bell (high five, 1) beside the gazebo. Its bucket starts going up and down: ride it up, step onto the roof and fetch (F) the leash from the weathervane."
+      },
+      {
+       "q": "The Town Crier is asleep on his feet.",
+       "a": "Ring his bell with a high five. He calls out the news and drops a proclamation worth five treats."
+      },
+      {
+       "q": "Pigeons keep pecking me.",
+       "a": "Bark (Space) first."
+      }
+     ]
+    },
+    {
+     "head": "3. Meanwhile: Gwinn's Night Out",
+     "hints": [
+      {
+       "q": "The back gate won't open.",
+       "a": "It's tied with rope. Gwinn chews (1)."
+      },
+      {
+       "q": "A pile of boxes blocks the path.",
+       "a": "Zoomies (3) knock it flat. Chewing won't, and boofing won't."
+      },
+      {
+       "q": "The playground fence is too tall.",
+       "a": "Dig big (Down) at its foot: Gwinn's dig goes through hard clay Teddy couldn't scratch."
+      },
+      {
+       "q": "There's a skunk.",
+       "a": "Do NOT boof at it. Wait until it waddles toward you, then hop over it (E)."
+      }
+     ]
+    },
+    {
+     "head": "4. The River",
+     "hints": [
+      {
+       "q": "I keep falling in the rapids.",
+       "a": "No harm done: the current carries you to the mill bank. Hop the stones with E, or let the water take you."
+      },
+      {
+       "q": "How do I get past the mill?",
+       "a": "The miller wants a sit. Sit pretty (2) near him: his OK drops onto the grain hoist and it starts. Ride it up to the loft and out the door."
+      },
+      {
+       "q": "Where is the rubber chicken?",
+       "a": "Going round and round in the pool below the high bank. Jump in and swim to it."
+      }
+     ]
+    },
+    {
+     "head": "5. Meanwhile: Gwinn on the Farm",
+     "hints": [
+      {
+       "q": "How does Gwinn get into the barn loft?",
+       "a": "Walk onto the hay elevator's belt: it carries her up and through the loft floor."
+      },
+      {
+       "q": "The bales won't budge.",
+       "a": "Zoomies (3)."
+      },
+      {
+       "q": "The goat is in the way.",
+       "a": "BOOF (Space) at it, then chew (1) the rope on the gate."
+      }
+     ]
+    },
+    {
+     "head": "6. The Corn Maze",
+     "hints": [
+      {
+       "q": "Which way?",
+       "a": "Sniff the scents (S): each becomes Gwinn's paw prints pointing the way she went. Hay bales are steps up; holes in a floor drop you down (and you can't climb back)."
+      },
+      {
+       "q": "Where's the thing she dropped?",
+       "a": "At the heart of the maze, by the scarecrow, on the top tier. Sniff there."
+      }
+     ]
+    },
+    {
+     "head": "7. The Fair Midway",
+     "hints": [
+      {
+       "q": "How do I earn tickets?",
+       "a": "Tricks! Climb the High Striker's pegs and high five its bell; sit pretty for Bubbles at the ring toss; spin for Twirly at the wheel; sniff by the carousel."
+      },
+      {
+       "q": "THE BIG DROP won't let me on.",
+       "a": "Its gate takes three tickets. With three, walk through it, hop on the car at the bottom and ride to the top. Gwinn's entry card is on the deck."
+      }
+     ]
+    },
+    {
+     "head": "8. The Dog Show",
+     "hints": [
+      {
+       "q": "The popcorn keeps hitting me.",
+       "a": "Play dead (hold 4) as it comes: it flies right over."
+      },
+      {
+       "q": "How do I get into the Best Behaved ring?",
+       "a": "Ring the bell on the judges' table (high five). The velvet rope comes down."
+      },
+      {
+       "q": "Gwinn won't sit!",
+       "a": "Show her how. Stand under the judge's SIT? and sit pretty (2) yourself. She sits! For three whole seconds."
+      }
+     ]
+    },
+    {
+     "head": "The Felt Egg",
+     "hints": [
+      {
+       "q": "Gwinn has a secret spot. Everybody knows that. Nobody knows where.",
+       "a": "Somewhere you'd never walk on Main Street. Have you ever just kept going the wrong way?"
+      },
+      {
+       "q": "Where does the wrong way go?",
+       "a": "Town is smaller than it looks. Walk LEFT from The Dog House, past the end of Maple Street, and keep walking: you come out behind the tall hedge at the far end of town."
+      },
+      {
+       "q": "Dig where, exactly?",
+       "a": "Behind the hedge, past the sign that says MINE and the bone sticking out of the lawn, there's soft dirt with paw prints. Dig (Down), step into the hole and you drop into Gwinn's den. Fetch the egg (F) from her loot pile, then climb out on the right.",
+       "sketch": {
+        "rows": [
+         "######  ",
+         "######  ",
+         "###### @",
+         "-------:-",
+         "       v",
+         "    . X|"
+        ],
+        "labels": [
+         {
+          "x": 0,
+          "y": 0,
+          "text": "TALL HEDGE"
+         },
+         {
+          "x": 8,
+          "y": 2,
+          "text": "WALK LEFT TO HERE"
+         },
+         {
+          "x": 9,
+          "y": 3,
+          "text": "SOFT DIRT: DIG"
+         },
+         {
+          "x": 0,
+          "y": 5,
+          "text": "THE DEN"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

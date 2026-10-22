@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "snowbound",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUsFywFQBdABTTzNAUgFyAFIBcgBSAXIAVAP0AFLCssBSAXIAUgFyAFIBcgBUArQAUsFywFIBcgBSAXIAVAF0AFND80BUAXQAU0jzQFIBcgBSAXIAVAP0AFND80BSAXIAUgFyAFIBcgBUArQAUsFywFIBcgBSAXIAU0PzQFIGcgBSxTLAUgFyAFQBdABSwrLAUgFyAFQBdABSwXLAUgFyAFQBdABTTzNAUgFyAFQCtABTQ/NAUgFyAFIBcgBUAXQAUsFywFIBcgBUArQAUseywFQI9ABTRnNAUgFyAFIBcgBSAXIAU0FzQFQD9ABSw/LAUgFyAFIBcgBSAXIAVAK0AFLBcsBSAXIAUgFyAFQBdABTQ/NAVAF0AFNKM0BSAXIAUgFyAFQD9ABTQ/NAUgFyAFIBcgBSAXIAVAK0AFLBcsBSAXIAUgFyAFQD9ABTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AVAb0ABLA8sDTQPNAFAP0ANQA9AASwPLAFAD0ANQBtAATQPNAFAP0ANLA8sAUAbQBlAD0ABNA80AUAPQA1AD0ANQA9AATQPNAFAD0ANQA9A="
+  },
+  {
+   "scene": 4,
+   "keys": "AUgFyAFNCs0BUAXQAU0PzQFIBcgBUAXQAUsFywFIBcgBTSPNAVAF0AFLCssBSAXIAVAF0AFLBcsBSAXIAU1LzQFQBdABTQ/NAUgFyAFQBdABSwXLAUgFyAFQBdABSwrLAUgFyAFNI80BUAXQAU0PzQFIBcgBUAXQAUsFywFIBcgBTUbNAVAF0AFLCssBSAXIAVAF0AFLBcsBSAXIAU03zQFQBdABSwrLAUgFyAFQBdABSwXLAUgFyAFNHs0BUAXQAU0ozQFQCtABTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "H00PzQFIX8gBTV85AbkxzQFID8gBTTjNAUg="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Gale Street"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Jamie Street"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Bowden Drive"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: LaVale Mall"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 18143,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1417
+   },
+   {
+    "title": "Level 1: Gale Street",
+    "frame": 3777
+   },
+   {
+    "title": "Level 2: Jamie Street",
+    "frame": 7750
+   },
+   {
+    "title": "Level 3: Bowden Drive",
+    "frame": 8867
+   },
+   {
+    "title": "Level 4: LaVale Mall",
+    "frame": 11826
+   },
+   {
+    "title": "Ending",
+    "frame": 13668
+   },
+   {
+    "title": "Credits",
+    "frame": 16591
+   }
+  ]
+ }
+}

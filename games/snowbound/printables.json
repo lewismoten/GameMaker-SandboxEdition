@@ -1,0 +1,460 @@
+{
+  "pitch": "Shovel Fort Ashby at a dollar a scoop and get $89 to LaVale Mall before the price of Game-Maker goes up.",
+  "keys": {
+    "Space": "Throw a snowball",
+    "Up": "Walk up / dig in your heels on the sled",
+    "Down": "Walk down / push off on the sled",
+    "Left": "Walk left / lean left on the sled",
+    "Right": "Walk right / lean right on the sled",
+    "F2": "Count the coffee can (money, warmth, lives)",
+    "Q": "Walk up-left (sled: brake and steer left)",
+    "E": "Walk up-right (sled: brake and steer right)",
+    "Home": "Walk up-left",
+    "PgUp": "Walk up-right",
+    "End": "Walk down-left",
+    "PgDn": "Walk down-right",
+    "F3": "Music on / off",
+    "F4": "Sound effects on / off"
+  },
+  "items": [
+    {
+      "kind": "map",
+      "title": "Map of Fort Ashby",
+      "note": "Printed map for registered players",
+      "promised": true,
+      "heading": "FORT ASHBY & LAVALE MALL",
+      "intro": "Every street from home to the register, with the best-paying driveways marked. Distances not to scale. Mailboxes not included.",
+      "panels": [
+        {
+          "map": "bowden.map",
+          "x": 6,
+          "y": 21,
+          "w": 75,
+          "h": 26,
+          "caption": "3. Bowden Drive, 4:30 PM",
+          "marks": [
+            {
+              "x": 9,
+              "y": 26,
+              "label": "Off the sled at the corner of Jamie and Bowden",
+              "kind": "start"
+            },
+            {
+              "x": 30,
+              "y": 25,
+              "label": "The Kellers leave a $5 tip on the walk",
+              "kind": "shop"
+            },
+            {
+              "x": 44,
+              "y": 36,
+              "label": "The park: forts, Big Pete and Biscuit",
+              "kind": "note"
+            },
+            {
+              "x": 36,
+              "y": 44,
+              "label": "Two more customers across the frozen creek",
+              "kind": "note"
+            },
+            {
+              "x": 78,
+              "y": 26,
+              "label": "The road to LaVale",
+              "kind": "goal"
+            }
+          ]
+        },
+        {
+          "map": "gale.map",
+          "x": 8,
+          "y": 4,
+          "w": 59,
+          "h": 28,
+          "caption": "1. Gale Street, 7 AM",
+          "marks": [
+            {
+              "x": 13,
+              "y": 16,
+              "label": "Home: the corner of Gale Street and Dunn Drive",
+              "kind": "start"
+            },
+            {
+              "x": 37,
+              "y": 8,
+              "label": "Two customers up Leota Street",
+              "kind": "note"
+            },
+            {
+              "x": 12,
+              "y": 16,
+              "label": "The News-Tribune bundle: one paper for every door mat",
+              "kind": "note"
+            },
+            {
+              "x": 43,
+              "y": 14,
+              "label": "A $5 tip by Mrs. Haines' porch",
+              "kind": "shop"
+            },
+            {
+              "x": 54,
+              "y": 25,
+              "label": "The practice fort",
+              "kind": "note"
+            },
+            {
+              "x": 65,
+              "y": 18,
+              "label": "Leon Drive: north to the top of Jamie Street",
+              "kind": "goal"
+            }
+          ]
+        },
+        {
+          "map": "lavale.map",
+          "x": 10,
+          "y": 11,
+          "w": 60,
+          "h": 27,
+          "caption": "4. LaVale Mall, 8 PM",
+          "marks": [
+            {
+              "x": 28,
+              "y": 13,
+              "label": "Timeout, the arcade: $1 a game",
+              "kind": "shop"
+            },
+            {
+              "x": 50,
+              "y": 13,
+              "label": "Bits & Bytes Software: the pink box, $89",
+              "kind": "goal"
+            },
+            {
+              "x": 26,
+              "y": 14,
+              "label": "Root beer: the whole Timeout menu",
+              "kind": "shop"
+            },
+            {
+              "x": 38,
+              "y": 14,
+              "label": "History Fair: ring the bell for 1776",
+              "kind": "note"
+            },
+            {
+              "x": 40,
+              "y": 28,
+              "label": "The lot: it keeps snowing, and paying",
+              "kind": "note"
+            }
+          ]
+        }
+      ],
+      "legend": ["2. Jamie Street (noon) is on the sled run poster."]
+    },
+    {
+      "kind": "map",
+      "title": "Jamie Street sled run poster",
+      "note": "Tall poster",
+      "heading": "JAMIE STREET SLED RUN",
+      "intro": "Closed for sledding. Top to bottom in one go.",
+      "panels": [
+        {
+          "map": "jamie.map",
+          "x": 31,
+          "y": 5,
+          "w": 22,
+          "h": 79,
+          "caption": "From Leon Drive at the top to Bowden Drive at the bottom."
+        }
+      ]
+    },
+    {
+      "kind": "hintbook",
+      "title": "Snowbound Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "From the founder's own notebook. Lay the red film over an answer to read it.",
+      "sections": [
+        {
+          "head": "Money",
+          "hints": [
+            {
+              "q": "How do I know how much money I have?",
+              "a": "Press F2 to tip out the coffee can: the status screen shows your Money."
+            },
+            {
+              "q": "I got to the register without $89.",
+              "a": "Go back out to the mall lot. A squall blows through every half minute and buries it again: more scoops, more dollars."
+            },
+            {
+              "q": "Where are the tips?",
+              "a": "A $5 envelope beside Mrs. Haines' porch on Gale Street, and another on the Kellers' walk on Bowden Drive."
+            },
+            {
+              "q": "What are the door mats on Gale Street for?",
+              "a": "The morning paper. Grab the bundle by the porch at home, dig out each walk, and step on the mat: 250 points a paper."
+            },
+            {
+              "q": "What is a snow fort worth?",
+              "a": "Walk into it to knock it flat for 100 points, then shovel the pile it leaves for $2."
+            }
+          ]
+        },
+        {
+          "head": "Getting Around",
+          "hints": [
+            {
+              "q": "How do I leave Gale Street?",
+              "a": "Head east to Leon Drive at the end of the street; it leads north to the top of Jamie Street."
+            },
+            {
+              "q": "I keep crashing on the sled.",
+              "a": "Brake with Up before the tree islands, not in them. If you stop dead, push off with Down."
+            },
+            {
+              "q": "The creek ice carries me away.",
+              "a": "It runs east. Cross on the bridge instead of the ice."
+            }
+          ]
+        },
+        {
+          "head": "Trouble",
+          "hints": [
+            {
+              "q": "Big Pete won't stop shoving me.",
+              "a": "Only a snowball makes him cry and go home. Scoop a plow bank for more snowballs."
+            },
+            {
+              "q": "What does the bell at the mall do?",
+              "a": "Push it. It rings for 1776 points, once, and swings the rest of the night."
+            },
+            {
+              "q": "Homing snowballs keep hitting me.",
+              "a": "Throw one of your own at them: yours always wins."
+            },
+            {
+              "q": "I'm freezing.",
+              "a": "Grab hot cocoa, or the root beer outside Timeout (35 warmth each). If you go home cold, the street starts over with fresh snow, and your coffee can stays full."
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind...",
+              "a": "The snowman behind your house lost a mitten. Where a mitten drops, a trail starts."
+            },
+            {
+              "q": "I found the mitten. Now what?",
+              "a": "The pine right behind it is only painted on. Walk straight through it and follow the trail into the woods. What you can't push, stoop for with Enter."
+            },
+            {
+              "q": "Just draw me a map.",
+              "a": "In the park across Gale Street, find your snowman at the bottom of the park and the red mitten just below it. Walk down into the pines there: the trail runs down, right and down again to a hollow. Press Enter on the felt egg to pick it up, then push the frozen toboggan for a ride to Jamie Street.",
+              "sketch": {
+                "rows": [
+                  "   o",
+                  "T  v  T",
+                  "T  ....  T",
+                  "T     v  T",
+                  " T      =",
+                  " T   X   T",
+                  "  TTTTTTT"
+                ],
+                "labels": [
+                  { "x": 5, "y": 0, "text": "SNOWMAN" },
+                  { "x": 8, "y": 1, "text": "MITTEN" },
+                  { "x": 9, "y": 4, "text": "TOBOGGAN" },
+                  { "x": 10, "y": 5, "text": "FELT EGG" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "newspaper",
+      "title": "The Mineral Courier",
+      "note": "The morning paper",
+      "masthead": "The Mineral County Courier",
+      "date": "Friday, December 11, 1992",
+      "price": "35¢",
+      "headline": "AREA SNOWBOUND",
+      "deck": "Foot and a half overnight in Mineral County; schools closed; plows out on every road",
+      "photo": {
+        "map": "gale.map",
+        "x": 8,
+        "y": 11,
+        "w": 14,
+        "h": 10,
+        "caption": "Gale Street at dawn: one driveway done, the rest waiting."
+      },
+      "columns": [
+        "<p>FORT ASHBY - A storm that came in overnight left a foot and a half of snow across Mineral County, closing schools and sending state plow crews out on every road before dawn.</p><p>Residents of Gale Street, Dunn Drive and Leota Street woke to find cars buried to the mirrors.</p>",
+        "<p>With no mailboxes in the neighborhood, carriers walk the mail to every front door. \"If the walk isn't shoveled, I can't get there,\" one carrier said. \"Somebody is going to make a fortune today.\"</p><p>Jamie Street is closed to traffic and open to sleds.</p>",
+        "<p>Over the line in LaVale, Maryland, stores plan to open on time. The Timeout arcade promises the heat will be on.</p><p>A local software shop reports one copy of a popular game-making kit left in the window at $89. The price goes up in January.</p>"
+      ],
+      "briefs": [
+        ["SHOVELING FOR HIRE", "A sign has gone up at Gale and Dunn: one dollar a scoop, founder and operator on duty."],
+        ["HYDRANTS BURIED", "The fire department asks residents to dig out hydrants near their homes."],
+        ["FORECAST", "Clearing by noon. Squalls near the mall after dark."]
+      ]
+    },
+    {
+      "kind": "journal",
+      "title": "The coffee can ledger",
+      "note": "The founder's notebook",
+      "heading": "Snow-to-Software: Ledger",
+      "entries": [
+        {
+          "date": "Fri., Dec. 11, 7:00 AM",
+          "html": "<p>Papers out (subbing on the route again). Sign is up. Coffee can is empty. Goal: $89 before the mall closes.</p>"
+        },
+        {
+          "date": "9:30 AM",
+          "html": "<p>Gale Street done. Mrs. Haines tipped $5! Leota next.</p>"
+        },
+        {
+          "date": "Noon",
+          "html": "<p>Jamie Street is closed for sledding. Fastest way to Bowden. Lost my hat on the moguls.</p>"
+        },
+        {
+          "date": "4:30 PM",
+          "html": "<p>Bowden Drive. Big Pete again. Snowball solved it.</p>"
+        },
+        {
+          "date": "8:00 PM",
+          "html": "<p>LaVale lot keeps filling back in. Good. Count: almost there. DO NOT spend it all at Timeout.</p>"
+        }
+      ]
+    },
+    {
+      "kind": "idcard",
+      "title": "Business card",
+      "note": "Moten Snow-to-Software Operations",
+      "org": "SNOW-TO-SOFTWARE OPERATIONS",
+      "name": "THE FOUNDER",
+      "role": "Founder and Operator",
+      "fields": [
+        ["Rate", "$1 a scoop"],
+        ["Corner", "Gale St. & Dunn Dr."],
+        ["Hours", "Sunrise to closing time"],
+        ["Goal", "One pink box"]
+      ],
+      "color": "#1f4f8f",
+      "ink": "#fff",
+      "portrait": {
+        "chr": "kid.chr",
+        "cbl": "kid.cbl",
+        "pal": "morning.pal"
+      },
+      "photo": {
+        "map": "gale.map",
+        "x": 14,
+        "y": 24,
+        "w": 2,
+        "h": 2
+      },
+      "back": "Driveways, front walks, plow banks and fire hydrants. Every driveway is a pixel of the game I'm going to make."
+    },
+    {
+      "kind": "letter",
+      "title": "Thank-you letter",
+      "note": "From Sandbox Software",
+      "letterhead": "SANDBOX SOFTWARE",
+      "address": "Pittsburgh, Pennsylvania",
+      "date": "1995",
+      "to": "Dear registered player,",
+      "style": "type",
+      "body": "<p>Thank you for registering SNOWBOUND. You helped a kid with a shovel buy a pink box, and that pink box made this game.</p><p>As promised, your printed map of Fort Ashby is in this box, along with the hint book and a few things from the founder's coffee can.</p><p><b>SNOWBOUND II: Spring Thaw</b> is next: mud season, a lawn mower, and a used 486 at the flea market. Watch The Sandbox Scoop and the BBS for news.</p><p>We promise to keep making games.</p>",
+      "signature": "The Sandbox crew"
+    }
+  ],
+  "stickers": [
+    {
+      "text": "$1",
+      "sub": "A SCOOP",
+      "shape": "circle",
+      "color": "#1f4f8f",
+      "ink": "#fff"
+    },
+    {
+      "text": "SNOWBOUND",
+      "sub": "1992",
+      "shape": "badge",
+      "color": "#e9f2fb",
+      "ink": "#1f4f8f"
+    },
+    {
+      "text": "SHOVEL KID",
+      "sub": "$1 A SCOOP",
+      "shape": "badge",
+      "color": "#e9f2fb",
+      "ink": "#1f4f8f",
+      "hero": {
+        "chr": "kid.chr",
+        "cbl": "kid.cbl",
+        "pal": "noon.pal"
+      }
+    },
+    {
+      "text": "PLOWED IN",
+      "sub": "THE CITY PLOW",
+      "shape": "rect",
+      "color": "#f2b632",
+      "ink": "#1a1208",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[16, 17]]
+      }
+    },
+    {
+      "text": "INCOMING!",
+      "sub": "SNOWBALL FIGHT",
+      "shape": "circle",
+      "color": "#1f4f8f",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[10]]
+      }
+    },
+    {
+      "text": "WOOF",
+      "sub": "NEIGHBOR'S DOG",
+      "shape": "star",
+      "color": "#b3121a",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[6]]
+      }
+    },
+    {
+      "text": "JAMIE STREET",
+      "sub": "SLED RUN",
+      "shape": "rect",
+      "color": "#cfe3f7",
+      "ink": "#1f4f8f",
+      "sprite": {
+        "blocks": "snow.mbl",
+        "pal": "noon.pal",
+        "grid": [[26]]
+      }
+    }
+  ],
+  "news": [
+    {
+      "head": "SNOWBOUND II: Spring Thaw",
+      "html": "<p>The snow is melting in Fort Ashby, and the founder has a new plan: mow lawns all through mud season and buy a used 486 at the flea market. Registered SNOWBOUND players get it free when it's done.</p>",
+      "everywhere": true
+    }
+  ]
+}

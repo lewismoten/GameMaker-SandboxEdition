@@ -1,0 +1,365 @@
+/* The felt eggs' shadow box on the top game shelf (eggs/eggDisplay.ts) and the egg viewer
+   (eggs/eggViewer.ts). On a phone the box stands on the desk under the PC. */
+.egg-perch {
+  order: 1;
+  justify-self: center;
+  margin: 0 auto 16px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 3px;
+  /* a dark stained frame, cream felt inside */
+  background:
+    radial-gradient(ellipse at 50% 30%, #f4ead2, #d9cba8 75%) padding-box,
+    linear-gradient(160deg, #6b4524, #3e2511 60%, #2a170a) border-box;
+  border: 7px solid transparent;
+  box-shadow:
+    inset 0 3px 6px rgba(0, 0, 0, 0.45),
+    3px 7px 10px rgba(0, 0, 0, 0.45);
+  cursor: zoom-in;
+  transform: scale(1.4);
+  transform-origin: 50% 0;
+}
+
+.egg-perch[hidden] {
+  display: none;
+}
+
+.egg-perch:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 3px;
+}
+
+.egg-row {
+  display: flex;
+  gap: 2px;
+}
+
+/* on a phone, rows of four */
+@media (max-width: 960px) {
+  .egg-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 126px;
+  }
+}
+
+.egg-mini {
+  display: block;
+  width: 30px;
+  height: 40px;
+  filter: drop-shadow(1px 2px 1px rgba(60, 40, 10, 0.35));
+}
+
+@media (min-width: 961px) {
+  /* standing at the right end of the top game shelf (desk/boxes/shelf.css), about life size:
+     two rows of six once there are more than six */
+  .desk-scene > .egg-perch {
+    position: absolute;
+    right: calc(1440px - 326px);
+    bottom: calc(880px - var(--shelf-top-y, 325px));
+    z-index: 1;
+    margin: 0;
+    padding: 3px 4px;
+    border-width: 5px;
+    box-shadow:
+      inset 0 2px 5px rgba(0, 0, 0, 0.45),
+      2px 4px 6px rgba(0, 0, 0, 0.4);
+    transform: none;
+    transform-origin: 50% 100%;
+    transition: transform 0.15s;
+  }
+
+  .desk-scene > .egg-perch:hover,
+  .desk-scene > .egg-perch:focus-visible {
+    transform: scale(1.06);
+  }
+
+  .desk-scene > .egg-perch .egg-row {
+    flex-wrap: wrap;
+    gap: 2px 1px;
+    max-width: calc(6 * 20px + 5 * 1px);
+  }
+
+  .desk-scene > .egg-perch .egg-mini {
+    width: 20px;
+    height: 27px;
+  }
+}
+
+/* ---- the viewer --------------------------------------------------------------------------- */
+.eggv {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: radial-gradient(ellipse at 35% 45%, #3b3226, #17130e 75%);
+  color: #f4ead2;
+  font: 16px/1.45 Georgia, 'Times New Roman', serif;
+}
+
+.eggv-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.35);
+  font-family: system-ui, sans-serif;
+}
+
+.eggv-bar strong {
+  flex: 1;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+
+.eggv button {
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 1px solid #a89470;
+  border-radius: 6px;
+  background: #2c241a;
+  color: #f4ead2;
+  font: 600 14px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.eggv button:hover {
+  background: #44382a;
+}
+
+.eggv button:focus-visible,
+.eggv-canvas:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 2px;
+}
+
+.eggv button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.eggv-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 24px 24px;
+  box-sizing: border-box;
+  min-height: 0;
+  overflow: auto;
+}
+
+.eggv-stage {
+  position: relative;
+  height: min(72vh, 640px);
+  min-height: 260px;
+}
+
+.eggv-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  border-radius: 12px;
+}
+
+.eggv-canvas:active {
+  cursor: grabbing;
+}
+
+.eggv-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  margin: 0;
+  text-align: center;
+  font: 13px system-ui, sans-serif;
+  color: #c9b98f;
+}
+
+.eggv-card h2 {
+  margin: 0 0 2px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #ffe9b0;
+}
+
+.eggv-where {
+  margin: 0 0 14px;
+  font: 600 14px system-ui, sans-serif;
+  color: #d8c08a;
+}
+
+.eggv-card h3 {
+  margin: 16px 0 4px;
+  font: 700 12px system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c9b98f;
+}
+
+.eggv-card p,
+.eggv-card ul {
+  margin: 0;
+}
+
+.eggv-card ul {
+  padding-left: 1.2em;
+}
+
+/* the mystery: a typed slip of paper */
+.eggv-lore {
+  margin-top: 6px;
+  padding: 12px 14px;
+  background: #f1e6c8;
+  color: #2a2014;
+  font: 15px/1.5 'Courier New', Courier, monospace;
+  transform: rotate(-0.8deg);
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.eggv-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font: 14px system-ui, sans-serif;
+}
+
+@media (max-width: 760px) {
+  .eggv-main {
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding: 8px 16px 24px;
+  }
+
+  .eggv-stage {
+    height: 42vh;
+    min-height: 220px;
+  }
+
+  .eggv-card h2 {
+    font-size: 24px;
+  }
+}
+
+/* ---- the cake stand beside the shadow box (eggDisplay.ts), for the eggs kept apart --------- */
+.egg-stand {
+  order: 1;
+  position: relative;
+  justify-self: center;
+  margin: 0 auto 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: zoom-in;
+}
+
+.egg-stand[hidden] {
+  display: none;
+}
+
+/* on a phone it stands under the shadow box, which is drawn larger than the room it takes
+   (scaled 1.4 from its top; three rows of four by the time there is a stand) */
+@media (max-width: 960px) {
+  .egg-stand {
+    margin-top: 62px;
+  }
+}
+
+.egg-stand:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 2px;
+}
+
+.egg-stand-art {
+  display: block;
+  width: 84px;
+  height: 69px;
+  filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.4));
+}
+
+/* a faint green wisp off the rotten egg */
+.egg-stand-wisp {
+  position: absolute;
+  left: 18%;
+  top: -10%;
+  width: 40%;
+  height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 60%, rgba(150, 190, 90, 0.5), rgba(150, 190, 90, 0) 70%);
+  filter: blur(2px);
+  pointer-events: none;
+  animation: egg-wisp 4.5s ease-in-out infinite;
+}
+
+@keyframes egg-wisp {
+  0% {
+    transform: translate(0, 30%) scale(0.6);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(12%, -45%) scale(1.25);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .egg-stand-wisp {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 961px) {
+  /* at the right end of the bottom shelf, past the boxes, in front of the wall */
+  .desk-scene > .egg-stand {
+    position: absolute;
+    right: calc(1440px - 342px);
+    bottom: calc(880px - 430px);
+    z-index: 1;
+    margin: 0;
+    transform-origin: 50% 100%;
+    transition: transform 0.15s;
+  }
+
+  .desk-scene > .egg-stand .egg-stand-art {
+    width: 56px;
+    height: 46px;
+  }
+
+  .desk-scene > .egg-stand:hover,
+  .desk-scene > .egg-stand:focus-visible {
+    transform: scale(1.08);
+  }
+}
+
+/* ---- the viewer's extras for those eggs (bonusViewer.ts) ---------------------------------- */
+.eggv-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.eggv-extra:not(:empty) {
+  margin-top: 14px;
+}
+
+.eggv .eggv-mute[aria-pressed='true'] {
+  background: #5a2c2c;
+  border-color: #d08a8a;
+}

@@ -1,0 +1,58 @@
+{
+  "title": "Snowbound: The $89 Shovel",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1995,
+  "price": "$12",
+  "blurb": "Fort Ashby, West Virginia, December 1992. Shovel the whole neighborhood at $1 a scoop, sled down Jamie Street, and get $89 to LaVale Mall before the price of Game-Maker goes up.",
+  "exe": "SNOWBND.EXE",
+  "sound": "sb",
+  "label": {
+    "background": "#f4f8ff",
+    "band": "#1d4f91",
+    "ink": "#10183a",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "background": "#1a2a5c",
+    "accent": "#ff8fc8",
+    "ink": "#ffffff",
+    "tagline": "Every driveway is a dollar. Every dollar is a pixel.",
+    "back": "Eighteen inches of snow. No school. And down at LaVale Mall, Game-Maker is $89 - but only until January.\n\nGrab your shovel! Fort Ashby is buried, and every scoop is a dollar. Dig out the neighbors' driveways. Fly down the Jamie Street sled run grabbing loose bills. Dodge the plows on Bowden Drive, then clear the mall parking lot while the storm buries it all over again. Flatten snow forts, outrun Biscuit the dog, and peg Big Pete with a snowball. Just don't blow it all at the arcade - the register closes tonight!",
+    "features": [
+      "Six real Fort Ashby streets and LaVale Mall, from sunrise to a snowy night",
+      "Every scoop of snow pays $1",
+      "Papers first: a real paper route at dawn",
+      "A breakneck sled run with real momentum",
+      "Snowball fights with forts, a bully and a very friendly dog",
+      "A mall lot that keeps snowing over - plus the Timeout arcade",
+      "Animated intro, nine Sound Blaster songs and digitized sound"
+    ],
+    "shots": [
+      ["gale.map", 8, 13],
+      ["bowden.map", 26, 23],
+      ["lavale.map", 24, 10]
+    ],
+    "rating": "Ages 6 and up",
+    "hours": 3,
+    "reviews": [
+      {
+        "quote": "The funniest $89 we ever spent. Watch out for Biscuit!",
+        "source": "Modem Morning News"
+      },
+      {
+        "quote": "Snow so deep you can shovel it.",
+        "source": "Megapixel Monthly"
+      }
+    ],
+    "award": {
+      "title": "Editors' Choice",
+      "from": "Diskette Digest"
+    },
+    "poster": {
+      "gif": "title.gif",
+      "caption": "Every driveway is a dollar. Every dollar is a pixel."
+    }
+  },
+  "egg": { "block": 137 }
+}

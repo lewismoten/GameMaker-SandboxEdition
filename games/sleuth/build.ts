@@ -1,0 +1,63 @@
+// FINAL CURTAIN: builds every file of the game into games/sleuth/disk/.
+//   cd web && npx vite-node ../games/sleuth/build.ts
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { serializeBlocks } from '../../web/src/formats/blocks';
+import { serializeCharacter } from '../../web/src/formats/character';
+import { serializeMap } from '../../web/src/formats/map';
+import { serializeMonsters } from '../../web/src/formats/monster';
+import { serializePalette } from '../../web/src/formats/palette';
+import { serializeGame } from '../../web/src/formats/game';
+import { Disk } from '../kit/disk';
+import { buildPalette } from './src/art/pal';
+import { buildTheatreBlocks } from './src/blocks/tiles';
+import { buildCritters } from './src/characters/critters';
+import { buildAdaBlocks, buildCharacter } from './src/characters/character';
+import { buildActs } from './src/levels/acts';
+import { buildGame } from './src/game';
+import { buildParlorBlocks, buildParlorMap, buildParlorMonsters } from './src/levels/parlor';
+import { buildScreens } from './src/screens/screens';
+import { buildFlics } from './src/screens/flics';
+import { buildMusic } from './src/sound/music';
+import { buildSounds } from './src/sound/sounds';
+import { serializeSoundSet } from '../../web/src/formats/sound';
+import { demoRecording } from './src/demo';
+import { licenseText } from '../kit/license';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const disk = new Disk(join(here, 'disk'));
+
+disk.put('house.pal', serializePalette(buildPalette('house').pal));
+disk.put('night.pal', serializePalette(buildPalette('night').pal));
+disk.put('dawn.pal', serializePalette(buildPalette('dawn').pal));
+// the pass-through scenes' palette (Solved and the wrong verdicts, src/game.ts): all black
+disk.put('dark.pal', serializePalette(new Uint8Array(768)));
+const tbs = buildTheatreBlocks();
+disk.put('paragon.bbl', serializeBlocks(tbs.build()));
+const critters = buildCritters();
+disk.put('paragon.mbl', serializeBlocks(critters.mb.build()));
+disk.put('paragon.mon', serializeMonsters(critters.mon));
+disk.put('ada.chr', serializeCharacter(buildCharacter()));
+disk.put('ada.cbl', serializeBlocks(buildAdaBlocks().build()));
+const acts = buildActs(tbs);
+disk.put('act1.map', serializeMap(acts[0].map));
+disk.put('act2.map', serializeMap(acts[1].map));
+const pbs = buildParlorBlocks();
+const parlor = buildParlorMap(pbs);
+const pm = buildParlorMonsters();
+disk.put('green.bbl', serializeBlocks(pbs.build()));
+disk.put('green.map', serializeMap(parlor.map));
+disk.put('green.mbl', serializeBlocks(pm.mb.build()));
+disk.put('green.mon', serializeMonsters(pm.mon));
+const { game } = buildGame(acts, parlor.links);
+disk.put('final.gam', serializeGame(game));
+const view = (i: number) => ({ map: acts[i].map, bbl: tbs.build(), mbl: critters.mb.build(), mon: critters.mon });
+for (const [name, bytes] of Object.entries(buildScreens({ act1: view(0), act2: view(1) }))) disk.put(name, bytes);
+for (const [name, bytes] of Object.entries(buildFlics())) disk.put(name, bytes);
+for (const [name, bytes] of Object.entries(buildMusic())) disk.put(name, bytes);
+const sounds = buildSounds();
+disk.put('final.snd', serializeSoundSet(sounds.set));
+for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
+disk.put('demo.rec', await demoRecording(disk.files));
+disk.put('license.txt', licenseText("Final Curtain"));
+disk.write();

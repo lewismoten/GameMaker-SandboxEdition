@@ -1,0 +1,13 @@
+/* player/exactScale.ts: the exactly sized copy under the (invisible) game canvas */
+.gm-player canvas.gm-exact {
+  position: absolute;
+  pointer-events: none;
+  image-rendering: auto;
+  aspect-ratio: auto;
+  max-width: none;
+  max-height: none;
+}
+
+.gm-player canvas.gm-exact-source {
+  opacity: 0;
+}

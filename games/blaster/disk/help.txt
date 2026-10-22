@@ -1,0 +1,48 @@
+FLYING
+ The BLASTER flies forward by
+ itself and fires whenever it
+ moves. Just steer!
+
+ ARROWS or W A S D   steer
+ Q / E   up-left / up-right
+ NUMBER PAD 7 9 1 3 diagonals
+ UP      speed ahead
+ DOWN    brake (never stops)
+ SPACE   NOVA BOMB: five big
+         plasma bolts at once
+
+Your energy shows on F2 as
+Hitpoints; Nova Bombs show as
+counter 5.
+THINGS TO GRAB
+ N   Nova Bomb charges (+2)
+ +   Repair the hull (+10)
+ 1UP an extra ship
+ BYTE good data (50 points)
+
+DANGERS
+ Turrets: shoot their armored
+  collars off (3 hits) and
+  they burn out for good.
+ Hatches spit virus mites.
+ Firewalls blink on and off.
+  Flying into a live one
+  burns a hole... and you.
+ Data streams shove sideways.
+
+BOSSES
+Each stage ends at a boss
+plugging the only way out.
+Shoot its glowing weak points
+until they burst, then fly up
+through the hole. Touching a
+boss burns your hull fast!
+
+F1 help      F2 your status
+F3 music     F4 sounds
+F5 save      F6 load
+ESC quit
+
+Lose all your energy and you
+lose a ship; you start that
+part of the stage again.

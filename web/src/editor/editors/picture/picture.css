@@ -1,0 +1,206 @@
+/* Pictures editor: copying a 20x20 area into a block. */
+.pic-canvas {
+  display: block;
+  width: 100%;
+  max-width: min(960px, max(320px, calc((var(--ws-vh, 100dvh) - 250px) * var(--ar, 1.6))));
+  border-radius: 6px;
+  cursor: crosshair;
+  image-rendering: pixelated;
+}
+.pic-main,
+.pic-side {
+  min-width: 0;
+}
+/* wide screens: the picture on the left, copying into blocks on the right */
+@media (min-width: 1000px) {
+  .pic-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(340px, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+  .pic-layout .pic-copy {
+    margin-top: 0;
+  }
+  /* the blocks to replace take what the window has left, scrolling by themselves */
+  .pic-layout .pic-slots {
+    max-height: clamp(96px, calc(var(--ws-vh, 100dvh) - 705px), 220px);
+  }
+  /* on short windows the copying column scrolls by itself rather than the editor */
+  .pic-layout .pic-side {
+    max-height: calc(var(--ws-vh, 100dvh) - 180px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+.pic-copy {
+  margin-top: 8px;
+}
+.pic-copy h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.pic-copy-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+.pic-swap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 12px;
+  border-radius: 8px;
+  background: #000080;
+  color: #ffd400;
+  font-family: ui-monospace, monospace;
+}
+.pic-swap > strong {
+  font-size: 14px;
+}
+.pic-swap-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pic-swap figure {
+  margin: 0;
+  text-align: center;
+}
+.pic-swap canvas {
+  width: 120px;
+  height: 120px;
+  display: block;
+  image-rendering: pixelated;
+  border: 2px solid #fff;
+  box-shadow: 3px 3px 0 #000;
+}
+.pic-swap figure:last-child canvas {
+  border-color: #ffd400;
+}
+.pic-swap figcaption {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #fff;
+}
+.pic-arrow {
+  font-size: 28px;
+  color: #ffd400;
+}
+.pic-advance {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-weight: normal;
+}
+.pic-advance input {
+  width: auto;
+  margin: 0;
+}
+.pic-slots-wrap {
+  flex: 1 1 300px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pic-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 44px);
+  gap: 4px;
+  max-height: 300px;
+  overflow: auto;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-2);
+}
+.pic-slots button {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 2px;
+  border-radius: 4px;
+}
+.pic-slots button canvas {
+  width: 38px;
+  height: 38px;
+  display: block;
+  image-rendering: pixelated;
+}
+.pic-slots button.blank {
+  border-style: dashed;
+}
+.pic-slots button.blank::before {
+  content: 'empty';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 14px;
+  font-size: 8px;
+  text-align: center;
+  color: #fff;
+  text-shadow:
+    0 0 2px #000,
+    0 0 2px #000;
+  pointer-events: none;
+}
+.pic-slots button small {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-size: 9px;
+  color: #fff;
+  text-shadow:
+    0 0 2px #000,
+    0 0 2px #000;
+}
+.pic-slots button.target {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px var(--focus);
+  z-index: 1;
+  animation: pic-target 1s steps(2) infinite;
+}
+.pic-slots button.just-copied::after {
+  content: '✓';
+  position: absolute;
+  left: 2px;
+  top: 0;
+  font-size: 12px;
+  color: #3f3;
+  text-shadow: 0 0 2px #000;
+}
+@keyframes pic-target {
+  50% {
+    box-shadow: 0 0 0 3px #ffd400;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pic-slots button.target {
+    animation: none;
+  }
+}
+@media (max-width: 520px) {
+  .pic-swap {
+    width: 100%;
+  }
+  .pic-swap canvas {
+    width: 96px;
+    height: 96px;
+  }
+}
+/* under the picture: preview, then the file's own tools */
+.pic-main .game-preview {
+  margin-top: 8px;
+}
+.pic-file-tools {
+  align-items: flex-end;
+  margin-top: 10px;
+}

@@ -1,0 +1,157 @@
+/* notes taped to the wall under the phone (desk/room/phoneNotes.ts) */
+.phone-notes {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .phone-notes {
+    display: block;
+    position: absolute;
+    left: 1338px;
+    top: 340px;
+    z-index: 0;
+    width: 96px;
+    padding: 0;
+    border: 0;
+    background: none;
+    transform: rotate(1.5deg);
+    cursor: zoom-in;
+    filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.4));
+    transition: transform 0.15s;
+  }
+
+  .phone-notes:hover,
+  .phone-notes:focus-visible {
+    transform: rotate(0.5deg) scale(1.05);
+    outline: none;
+  }
+}
+
+.pn-small,
+.pn-large {
+  container-type: inline-size;
+}
+
+.pn-large {
+  width: min(92vw, 420px, 60vh);
+}
+
+.pn-notes {
+  position: relative;
+  padding-bottom: 24cqw;
+}
+
+/* a lined index card in Mom's ballpoint, taped at the top corners */
+.pn-card {
+  position: relative;
+  padding: 6cqw 6cqw 5cqw;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      transparent 13.5cqw,
+      #e38b8b 13.5cqw,
+      #e38b8b calc(13.5cqw + 0.5px),
+      transparent calc(13.5cqw + 0.5px)
+    ),
+    repeating-linear-gradient(
+        transparent 0 7.4cqw,
+        #9fc0dc 7.4cqw calc(7.4cqw + 0.5px)
+      )
+      0 14cqw / 100% 100% no-repeat,
+    #fbf8ee;
+  color: #1d3b8f;
+  font:
+    5.6cqw/1.32 "Bradley Hand",
+    "Segoe Print",
+    "Comic Sans MS",
+    cursive;
+  text-align: left;
+}
+
+.pn-card::before,
+.pn-card::after {
+  content: "";
+  position: absolute;
+  top: -2cqw;
+  width: 16cqw;
+  height: 6cqw;
+  background: rgba(240, 236, 214, 0.75);
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.2);
+}
+
+.pn-card::before {
+  left: -3cqw;
+  transform: rotate(-30deg);
+}
+
+.pn-card::after {
+  right: -3cqw;
+  transform: rotate(28deg);
+}
+
+.pn-head {
+  margin-bottom: 1.5cqw;
+  font-weight: 700;
+  font-size: 7cqw;
+  text-decoration: underline;
+  text-align: center;
+}
+
+.pn-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pn-card li {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+
+.pn-card li b {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pn-card p {
+  margin: 1.5cqw 0 0;
+}
+
+.pn-pager {
+  font-size: 4.6cqw;
+}
+
+.pn-warn {
+  color: #b3141b;
+  font-weight: 700;
+  text-decoration: underline wavy;
+  text-decoration-thickness: 0.4cqw;
+}
+
+.pn-911 {
+  font-weight: 700;
+}
+
+.pn-sign {
+  text-align: left;
+}
+
+/* a pink sticky note stuck over the card's corner */
+.pn-sticky {
+  position: absolute;
+  right: -6cqw;
+  bottom: 0;
+  width: 52cqw;
+  padding: 4cqw;
+  box-sizing: border-box;
+  background: linear-gradient(#ffb6cf, #f79bbd);
+  color: #111;
+  font:
+    700 5cqw/1.2 "Marker Felt",
+    "Comic Sans MS",
+    cursive;
+  text-align: center;
+  transform: rotate(-5deg);
+  box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.35);
+}

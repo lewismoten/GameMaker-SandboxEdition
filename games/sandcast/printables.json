@@ -1,0 +1,403 @@
+{
+  "pitch": "Teddy the corgi wins back four sandcastles, his toys and his crown from his big sister Gwinn, one tower and one trick at a time.",
+  "keys": {
+    "2": "Sit (and offer a paw)",
+    "3": "Spin: bowls over ants and beetles",
+    "4": "Play dead",
+    "5": "Roll over",
+    "F": "Toss a tennis ball",
+    "B": "Throw a splash of water",
+    "Space": "Fling a clod of sand",
+    "P": "Pick up"
+  },
+  "items": [
+    {
+      "kind": "map",
+      "title": "Map of the sandbox",
+      "note": "Every secret marked",
+      "promised": true,
+      "heading": "THE SANDBOX: EVERY SECRET MARKED",
+      "intro": "Teddy's own map of the backyard sandbox, with the castles, the shortcuts and every secret. Red stars are secrets: don't peek until you're stuck!",
+      "panels": [
+        {
+          "map": "sandbox.map",
+          "x": 0,
+          "y": 0,
+          "w": 50,
+          "h": 37,
+          "caption": "The sandbox. Each castle you win sets you down in the next corner.",
+          "marks": [
+            {
+              "x": 2,
+              "y": 34,
+              "label": "Teddy's toy chest: you start here. The shovel and a tennis ball are right beside it.",
+              "kind": "start"
+            },
+            {
+              "x": 8,
+              "y": 24,
+              "label": "Anthill Keep (castle 1), inside the ring of dunes",
+              "kind": "goal"
+            },
+            {
+              "x": 45,
+              "y": 21,
+              "label": "Hosewater Moat (castle 2)",
+              "kind": "goal"
+            },
+            {
+              "x": 43,
+              "y": 6,
+              "label": "Low Tide Lagoon (castle 3), past the kiddie pool",
+              "kind": "goal"
+            },
+            {
+              "x": 4,
+              "y": 4,
+              "label": "Beetle Burrows (castle 4): the ladder down",
+              "kind": "goal"
+            },
+            {
+              "x": 43,
+              "y": 32,
+              "label": "Not an ant's hole: it dials THE -= S A N D B O X =- BBS",
+              "kind": "secret"
+            },
+            {
+              "x": 31,
+              "y": 25,
+              "label": "The hose's lazy loop: ride it round and round",
+              "kind": "secret"
+            },
+            {
+              "x": 14,
+              "y": 8,
+              "label": "An extra life hidden in the little dune ring",
+              "kind": "secret"
+            }
+          ]
+        },
+        {
+          "map": "keep.map",
+          "x": 0,
+          "y": 0,
+          "w": 36,
+          "h": 24,
+          "caption": "Anthill Keep",
+          "marks": [
+            {
+              "x": 17,
+              "y": 22,
+              "label": "Keep: where you arrive",
+              "kind": "start"
+            },
+            {
+              "x": 17,
+              "y": 4,
+              "label": "Keep: the gate (four flags)",
+              "kind": "goal"
+            },
+            {
+              "x": 24,
+              "y": 7,
+              "label": "A hole in the courtyard leads very deep down, and back up again",
+              "kind": "secret"
+            }
+          ]
+        },
+        {
+          "map": "burrows.map",
+          "x": 0,
+          "y": 0,
+          "w": 43,
+          "h": 30,
+          "caption": "Beetle Burrows",
+          "marks": [
+            {
+              "x": 2,
+              "y": 3,
+              "label": "Burrows: where you arrive",
+              "kind": "start"
+            },
+            {
+              "x": 9,
+              "y": 2,
+              "label": "A cracked wall: walk into it",
+              "kind": "secret"
+            },
+            {
+              "x": 30,
+              "y": 17,
+              "label": "Another cracked wall, with an acorn behind it",
+              "kind": "secret"
+            },
+            {
+              "x": 35,
+              "y": 3,
+              "label": "The hidden vault",
+              "kind": "goal"
+            },
+            {
+              "x": 40,
+              "y": 27,
+              "label": "Burrows: the way out",
+              "kind": "note"
+            }
+          ]
+        }
+      ],
+      "legend": ["Green arrows: where you start. Gold dots: castles and goals. Red stars: secrets."]
+    },
+    {
+      "kind": "hintbook",
+      "title": "Sandcastle Knight Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Find your question, then lay the red film over the answer. Good dogs only read one answer at a time.",
+      "sections": [
+        {
+          "head": "In the Sandbox",
+          "hints": [
+            {
+              "q": "Where is the shovel?",
+              "a": "Right beside Teddy's toy chest in the southwest corner, where you start. Press P to pick it up."
+            },
+            {
+              "q": "How do I get into Anthill Keep?",
+              "a": "Dig through the ring of dunes with the shovel. Two bites and a dune is gone, and you keep the sand."
+            },
+            {
+              "q": "What is the tennis ball for?",
+              "a": "Gwinn moves for it. Walk toward her and press F, and she trots off happy to bury it."
+            }
+          ]
+        },
+        {
+          "head": "The Castles",
+          "hints": [
+            {
+              "q": "The gate of Anthill Keep won't open.",
+              "a": "Build all four towers (one sand each), then walk into each tower again to plant its flag. Four flags lift the gate."
+            },
+            {
+              "q": "The ants keep biting me.",
+              "a": "Walk into each anthill with sand in your can: one scoop plugs it for good."
+            },
+            {
+              "q": "How do I cross the Hosewater Moat?",
+              "a": "Two scoops of sand fill the south ford. The west bridge is free but crumbles after one crossing."
+            },
+            {
+              "q": "Sand bounces off the crabs.",
+              "a": "Only water flips a crab. Or, with the bucket, walk into a dashed outline to pack a wall the crab can't pass."
+            },
+            {
+              "q": "The lagoon gate won't open.",
+              "a": "It wants three golden shells. They are out on the sandbars: grab them while the tide is out."
+            },
+            {
+              "q": "There aren't enough acorns in the Burrows.",
+              "a": "One more acorn is hidden behind a cracked wall. Walk into the cracks."
+            }
+          ]
+        },
+        {
+          "head": "Gwinn's Nap",
+          "hints": [
+            {
+              "q": "How do I get the crown back?",
+              "a": "Fill your bucket at the water bowls, take a step toward a paw, and splash it twice. She tucks it in. Then the next paw."
+            },
+            {
+              "q": "The slobbery balls keep rolling at me.",
+              "a": "Keep moving and fling sand at them; save your water for her paws."
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind in the sandbox.",
+              "a": "Gwinn was digging somewhere she shouldn't. Follow the paw prints."
+            },
+            {
+              "q": "Where do the paw prints go?",
+              "a": "Way up in the northeast corner, above the way to Low Tide Lagoon, to one lone dune. Bring your shovel."
+            },
+            {
+              "q": "Just show me where to dig.",
+              "a": "Pick up the shovel (P) by the toy chest. Go to the top right corner of the sandbox and follow the paw prints to the lone dune. Walk into it twice to dig it out, then step into the hole. In Gwinn's Dig, press P to pick up the felt egg. The little sandcastle by the ladder only lets you by once you carry it. Climb the ladder out.",
+              "sketch": {
+                "rows": [
+                  "---------|",
+                  "       X |",
+                  "       . |",
+                  "      .  |",
+                  "     .   |",
+                  "  =  @   |",
+                  ""
+                ],
+                "labels": [
+                  { "x": 1, "y": 1, "text": "LONE DUNE" },
+                  { "x": 1, "y": 3, "text": "PAWS" },
+                  { "x": 0, "y": 6, "text": "LAGOON" },
+                  { "x": 6, "y": 5, "text": "YOU" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "letter",
+      "title": "A note from Gwinn",
+      "note": "Pawprints included",
+      "style": "hand",
+      "date": "Saturday",
+      "to": "Dear Teddy,",
+      "body": "<p>i am sorry about the castles. And the hose. And the kiddie pool. And the hole. The beetles were already there i think.</p><p>i did not mean to sit on your crown. it was warm and the patio was sunny and i was so tired from the zoomies.</p><p>You can have the tennis ball back. It is under the tomato plants. It is a little wet.</p><p>You are the best brother and the best knight.</p>",
+      "signature": "love, Gwinn 🐾"
+    },
+    {
+      "kind": "newspaper",
+      "title": "The Backyard Bugle",
+      "note": "Newspaper",
+      "masthead": "The Backyard Bugle",
+      "date": "Saturday Morning Edition",
+      "price": "1 biscuit",
+      "headline": "ZOOMIES FLATTEN SANDBOX",
+      "deck": "Four castles down, hose in the moat, crown missing; local corgi vows to rebuild",
+      "photo": {
+        "map": "sandbox.map",
+        "x": 0,
+        "y": 25,
+        "w": 12,
+        "h": 9,
+        "caption": "The scene this morning: the toy chest, a shovel and not one castle standing."
+      },
+      "columns": [
+        "<p>THE SANDBOX - Residents woke this morning to find every sandcastle in the backyard sandbox flattened. Witnesses describe a brown blur moving \"very, very fast\" shortly after breakfast.</p><p>The hose was left running into the moat. The kiddie pool is now a lagoon.</p>",
+        "<p>The suspect, Gwinn, a brown pit-lab mix, was later found asleep on the patio. She is believed to be lying on the Crown of the Sandbox.</p><p>\"She's not a bad dog,\" said one neighbor. \"She's a good girl who knocks things over.\"</p>",
+        "<p>Teddy, a Pembroke Welsh Corgi and the sandbox's only knight, has picked up his shovel. Asked about his plans, he sat, offered a paw, and rolled over.</p><p>Ants, beetles and crabs are said to be moving into the ruins.</p>"
+      ],
+      "briefs": [
+        ["TENNIS BALL MISSING", "Last seen near the tomato plants. Reward: one belly rub."],
+        ["MODEM HEARD AT NIGHT", "Neighbors report squealing from the upstairs window. Probably the BBS."],
+        ["WEATHER", "Sunny. Low tide in the lagoon by noon."]
+      ]
+    },
+    {
+      "kind": "idcard",
+      "title": "Knight of the Sandbox card",
+      "note": "Teddy's commission",
+      "org": "KNIGHTS OF THE SANDBOX",
+      "name": "TEDDY",
+      "role": "Knight, Good Boy",
+      "fields": [
+        ["Breed", "Pembroke Welsh Corgi"],
+        ["Tricks", "Sit, spin, play dead, roll over"],
+        ["Best toy", "Flying disc"],
+        ["Sister", "Gwinn (it's fine)"]
+      ],
+      "color": "#b3121a",
+      "ink": "#fff",
+      "portrait": {
+        "chr": "sandcast.chr",
+        "cbl": "sandcast.cbl",
+        "pal": "sandcast.pal"
+      },
+      "photo": {
+        "map": "sandbox.map",
+        "x": 10,
+        "y": 30,
+        "w": 2,
+        "h": 2
+      },
+      "back": "The bearer of this card is a knight of the sandbox, sworn to rebuild every castle, plug every anthill and share every tennis ball (eventually)."
+    }
+  ],
+  "stickers": [
+    {
+      "text": "GOOD DOG",
+      "sub": "KNIGHT OF THE SANDBOX",
+      "shape": "badge",
+      "color": "#b3121a",
+      "ink": "#fff"
+    },
+    {
+      "text": "ZOOMIES",
+      "sub": "ZONE",
+      "shape": "star",
+      "color": "#8a5a2b",
+      "ink": "#fff"
+    },
+    {
+      "text": "SIR TEDDY",
+      "sub": "KNIGHT OF THE SANDBOX",
+      "shape": "badge",
+      "color": "#f2d48a",
+      "ink": "#b3121a",
+      "hero": {
+        "chr": "sandcast.chr",
+        "cbl": "sandcast.cbl",
+        "pal": "sandcast.pal"
+      }
+    },
+    {
+      "text": "SNAP!",
+      "sub": "LAGOON CRAB",
+      "shape": "circle",
+      "color": "#55c8e8",
+      "ink": "#7a1010",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[12]]
+      }
+    },
+    {
+      "text": "ANTS!",
+      "sub": "ANTHILL KEEP",
+      "shape": "rect",
+      "color": "#e8c070",
+      "ink": "#3a1a08",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[7]]
+      }
+    },
+    {
+      "text": "STRIKE!",
+      "sub": "BEETLE BOWLING",
+      "shape": "star",
+      "color": "#1f9a3a",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[9]]
+      }
+    },
+    {
+      "text": "GWINN",
+      "sub": "BIG SISTER",
+      "shape": "circle",
+      "color": "#b3121a",
+      "ink": "#fff",
+      "sprite": {
+        "blocks": "sandcast.mbl",
+        "pal": "sandcast.pal",
+        "grid": [[38]]
+      }
+    }
+  ],
+  "news": [
+    {
+      "head": "Teddy's next adventure",
+      "html": "<p>Registered Sandcastle Knight players were promised the next Teddy adventure on disk, and here it comes: <b>Teddy's Little Big Adventure</b> is on our workbench now. Your copy is on the house; watch the BBS for it.</p>",
+      "everywhere": true
+    }
+  ]
+}

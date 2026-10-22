@@ -1,0 +1,200 @@
+// Demo recordings (.REC): the keys of a game played earlier, which the title screen plays
+// back when the menu sits idle. Record one by playing, watch it, and trim it.
+import { registerEditor } from '../registry';
+import { h, clear, modal, toast } from '../../core/ui';
+import { registerMaker } from '../../tools/makers';
+import type { Project } from '../../core/project';
+import { GameFiles } from '../../../project/files';
+import { mountPlayer, type PlayerHandle } from '../../../player/player';
+import { parseRecording, serializeRecording, RECLEN, type RecordedKey } from '../../../formats/recording';
+import { scanName } from '../../../input/scancodes';
+import type { Session } from '../../../engine/scene';
+import { watchTimeline, editTimeline } from './recTimeline';
+import { playDemo } from '../../../media/demo';
+import { toEvents, toKeys, toNotes, duration, clock, EXT, screenGaps, screenKeys, TimeMap } from './recTimelineModel';
+
+/** Plays the game, recording the keys; resolves with the .REC bytes, or undefined. */
+function recordByPlaying(project: Project, title = 'Record a demo'): Promise<Uint8Array | undefined> {
+  return new Promise((resolve) => {
+    let session: Session | undefined;
+    let player: PlayerHandle | undefined;
+    const host = h('div', { class: 'player-host rec-player' });
+    const status = h('span', { class: 'meta' }, 'Click the screen to start: you go straight into the first level. Play as you want the demo to look.');
+    void modal<boolean>(title, (close) => {
+      const timer = setInterval(() => {
+        const n = session ? parseRecording(session.rec.save()).length : 0;
+        if (session) status.textContent = `⏺ Recording · ${n} of ${RECLEN} key presses${n >= RECLEN ? ' (full)' : ''}`;
+      }, 300);
+      const finish = (keep: boolean) => {
+        clearInterval(timer);
+        const bytes = keep && session ? session.rec.save() : undefined;
+        player?.stop();
+        close(keep);
+        resolve(bytes && bytes.length ? bytes : undefined);
+      };
+      queueMicrotask(() => {
+        player = mountPlayer(host, new GameFiles(project.files.entries()), project.gam, {
+          title: project.name,
+          record: true,
+          onSession: (s) => (session = s),
+          onExit: () => finish(true),
+        });
+      });
+      return h(
+        'div',
+        { class: 'stack rec-dialog' },
+        host,
+        h(
+          'div',
+          { class: 'row', style: 'justify-content:space-between;align-items:center' },
+          status,
+          h(
+            'div',
+            { class: 'toolbar' },
+            h('button', { onclick: () => finish(false) }, 'Cancel'),
+            h('button', { class: 'primary', onclick: () => finish(true) }, '■ Stop and keep'),
+          ),
+        ),
+      );
+    }).then((r) => r === undefined && (player?.stop(), resolve(undefined)));
+  });
+}
+
+/** Watches a recording played back in the game, its keys scrolling past a playhead below; it can be saved as a video. */
+function watch(project: Project, bytes: Uint8Array, record = false): void {
+  void playDemo({
+    title: project.name,
+    files: project.files,
+    gam: project.gam,
+    rec: bytes,
+    record,
+    heading: record ? 'Save the demo as a video' : 'Watch the demo',
+    below: (tick) => watchTimeline(toEvents(parseRecording(bytes)), tick),
+  });
+}
+
+async function newRecording(project: Project): Promise<string | undefined> {
+  const bytes = await recordByPlaying(project);
+  if (!bytes) return undefined;
+  const name = project.freeName('demo', 'rec');
+  project.files.set(name, bytes);
+  toast(`Recorded ${name.toUpperCase()}. Set it as the start scene’s demo recording to show it on the title screen.`);
+  return name;
+}
+
+registerMaker('rec', { label: '⏺ Record one by playing…', run: newRecording });
+
+registerEditor(['rec'], (host, project, file) => {
+  let keys: RecordedKey[] = parseRecording(project.files.get(file)!);
+  const undo: Uint8Array[] = [];
+  const uses = project.usesOf(file).some((u) => u.scene === 0 && u.slot === 11);
+  const summary = h('p', { class: 'hint' });
+  const undoButton = h('button', { title: 'Undo the last change', disabled: true, onclick: () => restore() }, '↶ Undo');
+  const raw = h('div');
+  const store = (next: RecordedKey[]) => {
+    undo.push(serializeRecording(keys));
+    keys = next;
+    project.files.set(file, serializeRecording(keys));
+    refresh();
+  };
+  const restore = () => {
+    const prev = undo.pop();
+    if (!prev) return;
+    keys = parseRecording(prev);
+    project.files.set(file, prev);
+    refresh();
+  };
+  const timeline = editTimeline(toEvents(keys), (events) => store(toKeys(events)));
+
+  function refresh(): void {
+    const events = toEvents(keys);
+    const presses = toNotes(events).notes.length;
+    const screens = screenGaps(events);
+    const read = screenKeys(events).length;
+    const during = read
+      ? ` (plus ${read} screen key${read === 1 ? '' : 's'}: pressed during a between-scene screen, timed in DOS by key checks, and used up by the screen, so the game never saw ${read === 1 ? 'it' : 'them'})`
+      : '';
+    summary.textContent = `${presses} key presses (${keys.length} of ${RECLEN} key events) over ${clock(new TimeMap(1, [], screens).play(duration(events)))} of play${during}. ${
+      uses ? 'This is the title screen’s demo.' : 'Choose it as the start scene’s “Demo recording” to show it on the title screen.'
+    }`;
+    undoButton.disabled = !undo.length;
+    timeline.set(events);
+    clear(
+      raw,
+      rawTable(keys, (i) => store(keys.slice(0, i))),
+    );
+  }
+
+  clear(
+    host,
+    summary,
+    h(
+      'div',
+      { class: 'toolbar', style: 'margin-bottom:10px' },
+      h('button', { class: 'primary', onclick: () => watch(project, serializeRecording(keys)) }, '▶ Watch it'),
+      h(
+        'button',
+        { title: 'Play it back in the game and save the screen and sound as a video (320×200)', onclick: () => watch(project, serializeRecording(keys), true) },
+        '⬇ Save as video',
+      ),
+      h(
+        'button',
+        {
+          onclick: async () => {
+            const bytes = await recordByPlaying(project, 'Record it again');
+            if (bytes) store(parseRecording(bytes));
+          },
+        },
+        '⏺ Record again',
+      ),
+      undoButton,
+    ),
+    timeline.el,
+    h('details', { class: 'rec-raw' }, h('summary', null, 'Key events, one by one'), raw),
+  );
+  refresh();
+  return () => timeline.destroy();
+});
+
+/** Every event as recorded, with the time it happens and a way to end the demo there. */
+function rawTable(keys: RecordedKey[], endAt: (index: number) => void): HTMLElement {
+  const events = toEvents(keys);
+  const play = (x: number) => new TimeMap(1, [], screenGaps(events)).play(x);
+  // Which screen key each screen-read event belongs to: 0 = the press that ended the wait, 1+ = the checks that saw it again.
+  const read = new Map<number, number>();
+  for (const k of screenKeys(events)) k.events.forEach((e, n) => read.set(e, n));
+  let t = 0;
+  return h(
+    'table',
+    { class: 'data' },
+    h('thead', null, h('tr', null, h('th', null, 'Time'), h('th', null, 'Key'), h('th', null, ''))),
+    h(
+      'tbody',
+      null,
+      ...keys.slice(0, 400).map((k, i) => {
+        t += k.delta;
+        return h(
+          'tr',
+          null,
+          h(
+            'td',
+            null,
+            read.get(i) === 0 ? `during a screen (${k.delta.toLocaleString()} key checks)` : read.has(i) ? 'during the screen (next check)' : clock(play(t)),
+          ),
+          h(
+            'td',
+            null,
+            k.key === EXT
+              ? '(extended key prefix)'
+              : read.has(i)
+                ? `${scanName(k.key)}: screen key${read.get(i) ? ', seen again' : ''} (the screen read it; the game never saw it)`
+                : `${scanName(k.key & 0x7f)} ${k.key & 0x80 ? 'up' : 'down'}`,
+          ),
+          h('td', null, h('button', { title: 'End the demo here: drop this and every later key', onclick: () => endAt(i) }, '✂ End here')),
+        );
+      }),
+    ),
+  );
+}
+
+export { recordByPlaying };

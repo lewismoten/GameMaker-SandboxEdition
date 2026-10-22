@@ -1,0 +1,230 @@
+{
+  "pitch": "Sparky 3000 ate Dex Dynamo's science report: find 20 pages across the suburbs, the Superhighway, the Mega Mall and the Moon before the Science Fair at 3:00. Bring a quarter!",
+  "keys": {
+    "Space": "Fire the Laser-Tag Zapper (find it in your backyard first)",
+    "F2": "Status: score, lives, hit points and quarters in your pocket"
+  },
+  "items": [
+    {
+      "kind": "hintbook",
+      "title": "In The Year 2000 Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Stuck in the future? Find your question, then lay the red film over the answer. Read only the one you need: the Science Fair starts at 3:00 sharp!",
+      "sections": [
+        {
+          "head": "1. Dome Sweet Dome",
+          "hints": [
+            {
+              "q": "Where is the Laser-Tag Zapper?",
+              "a": "In your own backyard, north of the garage wall. You need the garage remote to open the GATE CLICK door first."
+            },
+            {
+              "q": "Where is the garage remote?",
+              "a": "In the hedge garden at the bottom left of the neighborhood. Squeeze in through the gaps in the hedges; a robo-mower guards it."
+            },
+            {
+              "q": "Which phone booth works?",
+              "a": "Not the OUT one, and not the one that just rings. The working booth is in the far right corner, past the newspaper cannons. Keep a quarter for it!"
+            },
+            { "q": "Can I zap the hoverboard kids?", "a": "No. They zoom up and down the roads, so look both ways and cross behind them." }
+          ]
+        },
+        {
+          "head": "2. The Information Superhighway",
+          "hints": [
+            {
+              "q": "How do I cross fourteen lanes of traffic?",
+              "a": "Island by island. Wait on a deck for a gap, then dash. Gold trucks are slow, red cars are medium, and the teal cars are VERY fast."
+            },
+            {
+              "q": "Where is the phone booth?",
+              "a": "At the far right of the last platform at the bottom, past the FAX-A-PIZZA billboard. The one next to where you start is out of order."
+            },
+            { "q": "What does the glass tube do?", "a": "It whisks you along to the right in a hurry. Step off the side if you want to grab a page instead." }
+          ]
+        },
+        {
+          "head": "3. Mega Mall 2000",
+          "hints": [
+            {
+              "q": "How do I get the STAFF ONLY keycard?",
+              "a": "It's in the corner of TV-RAMA behind a laser fence. Stand next to the lasers and walk through as soon as they blink off. They stay off three times longer than they stay on."
+            },
+            {
+              "q": "Where is the STAFF ONLY door?",
+              "a": "On the south wall of the concourse, on the right. The loading dock behind it has three more laser fences and the phone booth."
+            },
+            {
+              "q": "Are the arcade games worth it?",
+              "a": "Arcade games give 1,000 points and pinball gives 2,500, but each one eats a quarter and then it's GAME OVER. Never spend your last quarter!"
+            },
+            { "q": "The security robots keep catching me.", "a": "They are slower than you are. Lead them in a loop, then turn around and zap them." }
+          ]
+        },
+        {
+          "head": "4. The Teleport-A-Phone Exchange",
+          "hints": [
+            {
+              "q": "Which number do I dial?",
+              "a": "Booth 3 is the shortest way: inside a TV set, then the Jurassic period, then the Moon Shuttle launch pad. Booths 1 and 2 work too, they just take the scenic route. (The teletype in the corner has been trying to tell you.)"
+            },
+            {
+              "q": "I'm out of quarters!",
+              "a": "Every room has quarters, and they come back every time you dial into it. Pick them up before you dial again."
+            },
+            {
+              "q": "How do I get on the Moon Shuttle?",
+              "a": "Walk up the boarding ramp right under the rocket. The booth on the launch pad only takes you back to the hall."
+            },
+            { "q": "I'm hurt. Is there help?", "a": "Booth 1 goes to Grandma's condo in Florida. She gives a big hug that heals you." }
+          ]
+        },
+        {
+          "head": "5. The Moon",
+          "hints": [
+            { "q": "Where is the Moon Pass?", "a": "At the top left of the Moon, west of the big dome. Hop up meteor alley to get it." },
+            {
+              "q": "How do I dodge the meteors?",
+              "a": "They fall at a slant from the sky along the top edge. Watch where they land, then hop through behind them."
+            },
+            {
+              "q": "Where is Moon School?",
+              "a": "The base at the top right. Walk into the MOON PASS airlock with the pass, and the door to the Science Fair is inside."
+            }
+          ]
+        },
+        {
+          "head": "6. The Science Fair",
+          "hints": [
+            { "q": "How do I catch Sparky?", "a": "Zap him three times. Each zap makes him madder and faster, then he gets dizzy and drops the cover page." },
+            {
+              "q": "The cover page vanished!",
+              "a": "You zapped it. A zap burns the cover page up, so stop firing once Sparky drops it. Start the level over and try again."
+            },
+            {
+              "q": "What do I do at the judges' table?",
+              "a": "Walk into the table with 20 pages to turn them in, then walk into the COVER table behind it with the cover page. Then step up to the podium!"
+            },
+            { "q": "The volcano projects keep erupting.", "a": "The lava blobs wander slowly. Keep moving, and grab a food pill if you get singed." }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "What's in the closet next to the launch pad?",
+              "a": "Some say the felt-maker left something behind. In the future not every brick is a brick."
+            },
+            {
+              "q": "The closet has no door!",
+              "a": "It doesn't need one. Look along the Moon Shuttle pad's right wall for a brick with teal light glowing through its mortar."
+            },
+            {
+              "q": "Beam me the blueprints.",
+              "a": "On the Moon Shuttle pad, get into the row of the boarding ramp, on the ramp's right side (don't step on the ramp itself, or you're off to the Moon). Walk right into the glowing brick: you walk straight through it. Press P to pick up the felt egg, then walk on into the rocket hatch at the far end.",
+              "sketch": {
+                "rows": [
+                  "",
+                  "  ==     ----|",
+                  "  ==     |   |",
+                  "   = >>>>: X o",
+                  "     ^   |   |",
+                  "     @   ----|"
+                ],
+                "labels": [
+                  { "x": 0, "y": 0, "text": "SHUTTLE" },
+                  { "x": 9, "y": 0, "text": "THE CLOSET" },
+                  { "x": 0, "y": 3, "text": "RAMP" },
+                  { "x": 10, "y": 4, "text": "HATCH" },
+                  { "x": 6, "y": 5, "text": "YOU" }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "newspaper",
+      "title": "The Hover Heights Herald",
+      "note": "Newspaper (fired from a cannon)",
+      "masthead": "The Hover Heights Herald",
+      "date": "Saturday, January 1, 2000",
+      "price": "25 cents (or one teleport)",
+      "headline": "IT'S THE YEAR 2000!",
+      "deck": "Cars fly, robots mow, dinner fits in a pill; local robot dog eats science report",
+      "photo": { "map": "dome.map", "x": 0, "y": 9, "w": 14, "h": 10, "caption": "The Dynamo family dome on Dome Circle. Robots mowed this lawn." },
+      "columns": [
+        "<p>HOVER HEIGHTS - The new millennium arrived right on time last night, and so did everything else. Flying cars filled the Information Superhighway by breakfast. Robo-mowers trimmed every lawn in neat little squares.</p>",
+        "<p>Dinner, as everybody always said it would, now comes in a pill. \"It tastes just like turkey,\" said one diner. \"With stuffing.\"</p><p>The aliens next door report that they are having a lovely time and would like a hug.</p>",
+        "<p>One family was not celebrating. Sparky 3000, a robot dog, reportedly ate a twenty-page science report titled <i>The Pocket Telephone</i>. \"A telephone in your POCKET?\" laughed one neighbor. \"What'll they think of next?\"</p>"
+      ],
+      "briefs": [
+        ["Y2K BUG A NO-SHOW", "Computers everywhere woke up fine. The only bug in Hover Heights was a robot dog."],
+        ["TELEPORT RATES", "Still 25 cents a call. Booth 4 at the exchange is out of order again."],
+        ["WEATHER ON THE MOON", "Sunny. Meteor showers this afternoon. Bring a helmet."]
+      ]
+    }
+  ],
+  "stickers": [
+    {
+      "text": "SPARKY 3000",
+      "sub": "ROBOT DOG",
+      "shape": "circle",
+      "color": "#3fe0d0",
+      "ink": "#1a0838",
+      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[48]] }
+    },
+    {
+      "text": "DEX DYNAMO",
+      "sub": "AGE 11, HOVER HEIGHTS",
+      "shape": "badge",
+      "color": "#1a0838",
+      "ink": "#ffffff",
+      "hero": { "chr": "dex.chr", "cbl": "dex.cbl", "pal": "y2k.pal" }
+    },
+    {
+      "text": "HUG AN ALIEN",
+      "sub": "THEY'RE VERY FRIENDLY",
+      "shape": "star",
+      "color": "#d0208a",
+      "ink": "#ffffff",
+      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[12]] }
+    },
+    {
+      "text": "NOT INTERESTED!",
+      "sub": "TELEMARKETER ROBOT",
+      "shape": "rect",
+      "color": "#fdf6ff",
+      "ink": "#1a0838",
+      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[30]] }
+    },
+    {
+      "text": "WRONG NUMBER",
+      "sub": "GRANDMA IN FLORIDA",
+      "shape": "circle",
+      "color": "#ffd34a",
+      "ink": "#1a0838",
+      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[38]] }
+    },
+    {
+      "text": "ROBO-MOWER",
+      "sub": "KEEP OFF THE GRASS",
+      "shape": "badge",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[4]] }
+    }
+  ],
+  "news": [
+    {
+      "head": "What will the year 2000 be like?",
+      "html": "<p>We asked BBS callers what they expect in eight short years. The top answers: flying cars (41 votes), robot dogs (29), dinner in a pill (17), and a telephone small enough to fit in your pocket (2 votes, and one of those was a joke). Our programmer is betting on the pocket telephone. Our mail room is still betting on the mail.</p>",
+      "everywhere": true
+    },
+    {
+      "head": "Sparky says thanks",
+      "html": "<p>Register <b>In The Year 2000!</b> for $12 and you get the next Sandbox Software game on a 3 1/2\" disk, a printed manual and a sticker for your computer. Sparky promises not to eat any of it.</p>"
+    }
+  ]
+}

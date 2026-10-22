@@ -1,0 +1,312 @@
+/* A printed 1990s manual: letter-size pages, Times body, Helvetica heads. */
+
+.booklet {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(14, 10, 6, 0.88);
+}
+
+.booklet-spread {
+  display: flex;
+  gap: 0;
+  height: min(84vh, 1100px);
+  max-width: 100%;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6));
+}
+
+.booklet-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #e9dfc6;
+  font: 13px system-ui, sans-serif;
+}
+
+.booklet-controls button {
+  padding: 6px 12px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font: 600 13px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.mpage {
+  position: relative;
+  container-type: inline-size;
+  height: 100%;
+  aspect-ratio: 8.5 / 11;
+  max-width: calc((100vw - 24px) / var(--pages, 2));
+  overflow: hidden;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255, 255, 255, 0.35), transparent 60%),
+    #f4efdf;
+  cursor: pointer;
+}
+
+/* sizes in cqw are fractions of the page width (.mpage is the container) */
+.mpage-in {
+  position: absolute;
+  inset: 0;
+  padding: 7cqw 8cqw 9cqw;
+  color: #18150f;
+  font: 2.55cqw/1.42 'Times New Roman', Times, serif;
+  text-align: justify;
+  hyphens: auto;
+  /* a touch of toner spread */
+  text-shadow: 0 0 0.04cqw rgba(0, 0, 0, 0.55);
+}
+
+.mpage.left {
+  box-shadow: inset -2cqw 0 2.5cqw -2cqw rgba(0, 0, 0, 0.35);
+}
+
+.mpage.right {
+  box-shadow: inset 2cqw 0 2.5cqw -2cqw rgba(0, 0, 0, 0.35);
+}
+
+.mpage .runhead {
+  position: absolute;
+  top: 3.5cqw;
+  left: 8cqw;
+  right: 8cqw;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 0.25cqw solid #18150f;
+  padding-bottom: 0.6cqw;
+  font: italic 2cqw/1 'Times New Roman', Times, serif;
+}
+
+.mpage .folio {
+  position: absolute;
+  bottom: 4cqw;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 2.1cqw/1 Helvetica, Arial, sans-serif;
+}
+
+.mpage h1,
+.mpage h2,
+.mpage h3 {
+  margin: 0 0 1.4cqw;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: left;
+  line-height: 1.1;
+}
+
+.mpage h1 {
+  margin-top: 2.5cqw;
+  font-size: 5.2cqw;
+  font-weight: 700;
+}
+
+.mpage h2 {
+  margin-top: 2.6cqw;
+  font-size: 3.4cqw;
+  border-bottom: 0.15cqw solid #18150f;
+  padding-bottom: 0.4cqw;
+}
+
+.mpage h3 {
+  margin-top: 2cqw;
+  font-size: 2.8cqw;
+}
+
+.mpage p {
+  margin: 0 0 1.4cqw;
+}
+
+.mpage ul,
+.mpage ol {
+  margin: 0 0 1.4cqw;
+  padding-left: 4.5cqw;
+}
+
+.mpage li {
+  margin-bottom: 0.5cqw;
+}
+
+.mpage code,
+.mpage kbd,
+.mpage pre {
+  font: 2.3cqw/1.3 'Courier New', Courier, monospace;
+}
+
+.mpage kbd {
+  padding: 0 0.6cqw;
+  border: 0.15cqw solid #18150f;
+  border-radius: 0.5cqw;
+}
+
+.mpage pre {
+  margin: 0 0 1.6cqw;
+  padding: 1.2cqw 1.6cqw;
+  border-left: 0.6cqw solid #18150f;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.mpage table {
+  width: 100%;
+  margin: 0 0 1.6cqw;
+  border-collapse: collapse;
+  font-size: 2.3cqw;
+  text-align: left;
+}
+
+.mpage th,
+.mpage td {
+  padding: 0.4cqw 0.8cqw;
+  border-bottom: 0.15cqw solid #8d8470;
+  vertical-align: top;
+}
+
+.mpage th {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.mpage figure {
+  margin: 1.6cqw 0 2cqw;
+  text-align: center;
+}
+
+.mpage figure img {
+  width: 100%;
+  border: 0.3cqw solid #18150f;
+  image-rendering: pixelated;
+  /* halftone-ish printing of a screen shot */
+  filter: grayscale(0.15) contrast(1.05);
+}
+
+.mpage figcaption {
+  margin-top: 0.8cqw;
+  font: italic 2.1cqw/1.3 'Times New Roman', Times, serif;
+  text-align: center;
+}
+
+.mpage .note {
+  margin: 1.6cqw 0;
+  padding: 1.2cqw 1.6cqw;
+  border: 0.25cqw solid #18150f;
+  font-size: 2.35cqw;
+}
+
+.mpage .note strong:first-child {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.mpage .chapter {
+  display: block;
+  margin-top: 8cqw;
+  font: 700 16cqw/1 Helvetica, Arial, sans-serif;
+  color: #18150f;
+}
+
+/* cover: the pink box art */
+.mpage.cover {
+  background: #f0a090;
+}
+
+.mpage.cover .mpage-in {
+  padding: 0;
+  text-align: left;
+}
+
+.mpage.cover .cover-banner {
+  padding: 5cqw 6cqw 2cqw;
+  background: #0b0b0b;
+  color: #fff;
+}
+
+.mpage.cover .cover-banner em {
+  display: block;
+  font: italic 700 3.4cqw/1 Arial, Helvetica, sans-serif;
+}
+
+.mpage.cover .cover-banner strong {
+  display: block;
+  margin-top: 1cqw;
+  color: #f2e600;
+  font: italic 900 10.5cqw/1 'Arial Black', Arial, sans-serif;
+  transform: skewX(-8deg);
+  text-shadow: 0.8cqw 0.8cqw 0 #1f9a3a;
+  white-space: nowrap;
+}
+
+.mpage.cover .cover-tag {
+  padding: 1cqw 6cqw;
+  background: #d81e1e;
+  color: #fff;
+  font: italic 700 3.2cqw/1.3 Arial, Helvetica, sans-serif;
+}
+
+.mpage.cover .cover-title {
+  margin: 14cqw 6cqw 0;
+  font: 700 7cqw/1.1 Helvetica, Arial, sans-serif;
+}
+
+.mpage.cover .cover-sub {
+  margin: 3cqw 6cqw;
+  font: 3.2cqw/1.4 'Times New Roman', Times, serif;
+}
+
+.mpage.cover .cover-fork {
+  margin: 4cqw 6cqw 0;
+  padding: 2cqw 3cqw;
+  border: 0.3cqw solid currentColor;
+  font: italic 2.6cqw/1.35 'Times New Roman', Times, serif;
+}
+
+.mpage.cover .cover-foot {
+  position: absolute;
+  left: 6cqw;
+  right: 6cqw;
+  bottom: 6cqw;
+  font: 700 3cqw/1.3 Helvetica, Arial, sans-serif;
+}
+
+/* printing: every page on its own sheet */
+.booklet-print {
+  display: none;
+}
+
+@media print {
+  body > *:not(.booklet-print) {
+    display: none !important;
+  }
+  .booklet-print {
+    display: block;
+  }
+  .booklet-print .mpage {
+    width: 7.5in;
+    height: 10in;
+    max-width: none;
+    aspect-ratio: auto;
+    box-shadow: none;
+    break-after: page;
+    text-shadow: none;
+  }
+}
+
+/* an original game's manual: the box front as its cover */
+.mpage.cover .game-cover {
+  position: absolute;
+  inset: 0;
+  background: #111;
+}
+
+.mpage.cover .game-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

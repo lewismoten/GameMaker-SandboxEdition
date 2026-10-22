@@ -1,0 +1,12 @@
+// The eight wings, in the order of their doors around the reading room.
+import type { WingSpec } from '../wing';
+import { CLOWN } from './clown';
+import { LAB } from './lab';
+import { DOCKS } from './docks';
+import { YARD } from './yard';
+import { LIVING } from './living';
+import { AFTER } from './after';
+import { OTHER } from './other';
+import { FUTURE } from './future';
+
+export const WING_SPECS: WingSpec[] = [CLOWN, LAB, DOCKS, YARD, LIVING, AFTER, OTHER, FUTURE];

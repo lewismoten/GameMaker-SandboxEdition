@@ -1,0 +1,308 @@
+{
+  "pitch": "Gwinn ate the family root beer recipe; as Doc Leo, find all twelve ingredients in Ebenezer Baker's booby-trapped 1777 kitchen (and the thirteenth).",
+  "keys": {
+    "Up": "Walk one step up (hold to keep walking)",
+    "Down": "Walk one step down",
+    "Left": "Walk one step left",
+    "Right": "Walk one step right",
+    "Space": "Squawk the rubber chicken",
+    "Enter": "Pick up",
+    "K": "Kazoo (once found)",
+    "T": "Tip the tricorn (once found)"
+  },
+  "items": [
+    {
+      "kind": "recipe",
+      "title": "The recipe card",
+      "note": "A facsimile. Gwinn has the original.",
+      "heading": "BAKER FAMILY ROOT BEER",
+      "serves": "Serves a baker's dozen",
+      "lines": [
+        {
+          "n": 1,
+          "name": "Sassafras Root",
+          "line": "One root, dug at midnight with a silver spoon.",
+          "note": "Any spoon. Ebenezer just liked saying \"silver.\""
+        },
+        {
+          "n": 2,
+          "name": "Wintergreen",
+          "line": "A good handful, from the north side of the tree only.",
+          "note": "The south side is for Tories."
+        },
+        {
+          "n": 3,
+          "name": "Nutmeg",
+          "line": "One whole nutmeg. Genuine.",
+          "note": "Not wooden. Connecticut, we are looking at you."
+        },
+        {
+          "n": 4,
+          "name": "Molasses",
+          "line": "One jug of Boston molasses, poured slowly.",
+          "note": "Very slowly. Molasses has never been in a hurry about anything."
+        },
+        {
+          "n": 5,
+          "name": "Vanilla Bean",
+          "line": "One bean, smuggled in a tricorn hat.",
+          "note": "Ebenezer's hat smelled lovely until 1803."
+        },
+        {
+          "n": 6,
+          "name": "Boston Harbor Tea",
+          "line": "One pinch, fished out of the harbor, Dec. 16, 1773.",
+          "note": "Slightly salty. That is how you know it is authentic."
+        },
+        {
+          "n": 7,
+          "name": "Cane Sugar",
+          "line": "Two cups, untaxed.",
+          "note": "The tax man was told it was sand. He believed it. He was not a baker."
+        },
+        {
+          "n": 8,
+          "name": "Yeast",
+          "line": "One spoonful of Gerald.",
+          "note": "Gerald is the family starter. Gerald is 250 years old. Feed Gerald."
+        },
+        {
+          "n": 9,
+          "name": "Cloves",
+          "line": "Twelve cloves, one for each colony.",
+          "note": "There were thirteen colonies. Georgia brought its own."
+        },
+        {
+          "n": 10,
+          "name": "Licorice Root",
+          "line": "Two sticks, snapped, never cut.",
+          "note": "Cutting it is how the Redcoats did it. Do not be the Redcoats."
+        },
+        {
+          "n": 11,
+          "name": "Bottled Lightning",
+          "line": "One bolt, borrowed from Dr. Franklin's kite. For the fizz.",
+          "note": "He said we could keep it. He said a great many things."
+        },
+        {
+          "n": 12,
+          "name": "Water, Boiled Twice",
+          "line": "One gallon, boiled once for each Continental Congress.",
+          "note": "The second boil took longer. It was waiting on a quorum."
+        }
+      ],
+      "blank": [
+        13
+      ],
+      "stamp": "CLASSIFIED",
+      "back": "For ingredient 13, see other side."
+    },
+    {
+      "kind": "letter",
+      "title": "A note from Aunt Bernice",
+      "note": "Tucked in with the card",
+      "letterhead": "THE BAKER FAMILY",
+      "address": "Est. 1776 (do not write that down)",
+      "date": "July 3rd, late",
+      "to": "Leo,",
+      "body": "<p>I heard about the card. I am not angry with Gwinn. I am a little angry with Gwinn.</p><p>You know where the other copy is. You have always known. Great-great-great-great-great-grandpa Ebenezer built that kitchen so no Redcoat could ever find his way through it, and as far as anyone can tell, no Baker can either. Your Uncle Walt went down for the nutmeg in 1971 and came back up in 1974. He says it was worth it.</p><p>A few things the family knows: lean on the walls. The doors only go one way, so read the arrows. If the dough is rising, do not stand and admire it. The Tea Room is full of Redcoats (toy ones; we hope); they do not care for your chicken. Nobody does.</p><p>And whatever you find in the Vault, do not read it out loud. You know who might be listening.</p>",
+      "signature": "Aunt Bernice\n(the Pie)",
+      "style": "hand"
+    },
+    {
+      "kind": "idcard",
+      "title": "Root beer vendor license",
+      "note": "Laminated. Sticky.",
+      "org": "PARADE COMMITTEE - FOOD & BEVERAGE",
+      "name": "DOC LEO",
+      "role": "Root Beer Stand No. 13",
+      "fields": [
+        [
+          "Vehicle",
+          "THE CHEZ (1976 CitiCar)"
+        ],
+        [
+          "Top speed",
+          "Parade pace"
+        ],
+        [
+          "Price",
+          "5 cents a mug"
+        ],
+        [
+          "Recipe",
+          "Family. Do not ask."
+        ]
+      ],
+      "color": "#3a1608",
+      "ink": "#fff6e0",
+      "portrait": {
+        "chr": "leo.chr",
+        "cbl": "leo.cbl",
+        "pal": "pantry.pal"
+      },
+      "back": "The bearer may sell root beer along the parade route, honk one (1) rubber chicken, and decline to answer questions from anyone with a British accent."
+    },
+    {
+      "kind": "hintbook",
+      "title": "The Family's Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Find your question, then lay the red film over the answer. The family wrote these down over two hundred and fifty years. Some of them are about the kitchen.",
+      "sections": [
+        {
+          "head": "Every Room",
+          "hints": [
+            {
+              "q": "Where is the ingredient?",
+              "a": "On a little glowing rug, always as far from the stairs as Ebenezer could manage. Walk onto it and you are on your way up."
+            },
+            {
+              "q": "A door will not open.",
+              "a": "A spoon latch wants a wooden spoon (each latch eats one). A swing door only goes the way its arrow points. A numbered panel opens in three seconds; the other number closes."
+            },
+            {
+              "q": "I keep playing dead.",
+              "a": "Everything that is not a mouse or an ant is one touch. Wait for a gap: rolling pins and Redcoats keep to their beats, hot plates glow before they burn, and ovens fire on a steady count."
+            },
+            {
+              "q": "What does the chicken do?",
+              "a": "Space squawks it the way you last walked. A mouse runs off, and a toy Redcoat retreats under a white flag, for a few seconds."
+            }
+          ]
+        },
+        {
+          "head": "Particular Rooms",
+          "hints": [
+            {
+              "q": "The Larder: the corridor of nothing.",
+              "a": "The sign says NOTHING DOWN HERE. There are mousetraps down there, under ordinary floorboards. Keep to the top row."
+            },
+            {
+              "q": "The Spice Parlor: something hums behind a wall.",
+              "a": "In the little room on the left with a bottle cap in it, lean on the east wall. Stand on the kazoo and press Enter. K plays it, all four ways at once."
+            },
+            {
+              "q": "The Bakehouse: the dough closed the shortcut.",
+              "a": "Take the long way: down the left side, past the burners (wait for them to go dark) and up at the far end."
+            },
+            {
+              "q": "The Cold Cellar: the ice will not move.",
+              "a": "It thaws in about twenty-five seconds. Use the time: there is a lot to look at downstairs."
+            },
+            {
+              "q": "The Clock Room: I am lost.",
+              "a": "Everybody is. Every door marked 1 opens when every door marked 2 closes. Head right along the top, then down the right side; the latch is on the bottom-right chamber."
+            },
+            {
+              "q": "The Lightning Loft: the plates.",
+              "a": "They all go live together. Start across the moment they go dark, and do not stop."
+            },
+            {
+              "q": "The Cistern: there is a wall I cannot see.",
+              "a": "It is glass. Go around by the top row."
+            }
+          ]
+        },
+        {
+          "head": "The Room Nobody Mentions",
+          "hints": [
+            {
+              "q": "Is there really a secret room?",
+              "a": "Nobody talks about it. But somebody left a trail of bottle caps in the Cold Cellar."
+            },
+            {
+              "q": "I followed the caps. They end at a wall.",
+              "a": "So did Ebenezer. Lean on it."
+            },
+            {
+              "q": "Just tell me.",
+              "a": "Cold Cellar, bottom left: the caps along the bottom hall lead west to the corner. The wall below the last cap is false; the second vanilla bean behind it drops you into the hidey-hole, whose spare tea takes you past the Tea Room altogether.",
+              "sketch": {
+                "rows": [
+                  "##########",
+                  "#o.o.o.o.#",
+                  ":#########",
+                  "X.########",
+                  "..########"
+                ],
+                "labels": [
+                  {
+                    "x": 2,
+                    "y": 3,
+                    "text": "bean"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "head": "Eggs (the family will not explain these)",
+          "hints": [
+            {
+              "q": "Is there an egg in the Larder? Something smells.",
+              "a": "There is a room in the Larder with counters in it that nobody can get into."
+            },
+            {
+              "q": "I found the room with the counters.",
+              "a": "Lean on its west wall from the room with the pie. The stair in its far corner goes down to a crock."
+            },
+            {
+              "q": "The crock. Do I want this?",
+              "a": "No. Press Enter anyway. It is the Rotten Egg, best before 1776, and it is yours to keep (F2)."
+            },
+            {
+              "q": "The Vault: the sign says THIRTEEN OF SOMETHING.",
+              "a": "Count the eggs again. A baker always does. Then lean on the wall right beside the sign."
+            },
+            {
+              "q": "There is a hatch behind the sign.",
+              "a": "It goes down to Ebenezer's display case. The egg is behind glass on three sides: go around and come at it from below, then press Enter. It plays a music box."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "stickers": [
+    {
+      "text": "BAKER'S DOZEN",
+      "sub": "THE THIRTEENTH INGREDIENT",
+      "shape": "badge",
+      "color": "#14214a",
+      "ink": "#e8b84a",
+      "hero": {
+        "chr": "leo.chr",
+        "cbl": "leo.cbl",
+        "pal": "pantry.pal"
+      }
+    },
+    {
+      "text": "SQUAWK!",
+      "sub": "RUBBER CHICKEN",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#3a1608"
+    },
+    {
+      "text": "CLASSIFIED",
+      "sub": "BAKER FAMILY EYES ONLY",
+      "shape": "rect",
+      "color": "#fff6e0",
+      "ink": "#c8241e"
+    },
+    {
+      "text": "FEED GERALD",
+      "sub": "AGE 250",
+      "shape": "circle",
+      "color": "#e8b84a",
+      "ink": "#3a1608"
+    }
+  ],
+  "news": [
+    {
+      "head": "A game about root beer. Allegedly.",
+      "html": "<p>We were asked not to print anything about <b>BAKER'S DOZEN</b>. So we will only say that it has thirteen rooms, a rubber chicken, and a recipe the British would very much like back. If you have a copy, you found it. Count the eggs again.</p>"
+    }
+  ]
+}

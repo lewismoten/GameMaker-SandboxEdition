@@ -1,0 +1,49 @@
+ARROW KEYS or W A S D walk Dex
+around. Q and E (or 7 and 9 on
+the number pad) walk up-left
+and up-right; 1 and 3 walk
+down-left and down-right.
+SPACE fires the Laser-Tag
+Zapper (once you find it).
+
+PAGES: Sparky chewed up your
+science report and spat the
+pages all over the future.
+The judges need 20 of them.
+
+QUARTERS: every phone booth is
+a Teleport-A-Phone now. Walk
+into the door to dial: it
+costs 25 cents (one quarter).
+Arcade games take them too!
+
+FOOD PILLS heal you. A whole
+turkey dinner in one capsule!
+
+BATTERIES charge your Zapper.
+HOVER-COLA is an extra life.
+FRIENDLY ALIENS give hugs, and
+hugs are good for you.
+
+KEYS: the garage remote, the
+STAFF ONLY keycard and the
+Moon Pass open their doors.
+
+LASER FENCES blink on and off.
+Walk through when they're off!
+
+GLASS TUBES and MOONWALK BELTS
+carry you along - fast.
+
+ROBOTS can be zapped. Cars,
+buggies, dinosaurs and
+meteors can NOT. Get out of
+the way!
+
+On the Moon, your moon suit
+makes you hop and glide. Let
+go early to stop on a dime.
+
+F1 Help   F2 Status (quarters)
+F3 Music  F4 Sound
+F5 Save   F6 Load   ESC Quit

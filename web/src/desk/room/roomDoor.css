@@ -1,0 +1,109 @@
+/* the bedroom door right of the desk (desk/room/roomDoor.ts): 30" x 80" at the stage's 10px
+   to the inch, standing on the floor line (y 770), its top running up out of view */
+.room-door {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .desk.wide-wall .room-door {
+    display: block;
+    position: absolute;
+    left: 1452px;
+    top: -46px;
+    z-index: -2;
+    width: 300px;
+    height: 816px;
+    padding: 16px 16px 0;
+    box-sizing: border-box;
+    /* the painted casing round it */
+    background: linear-gradient(90deg, #d9d2bf, #f1ecdf 40%, #cfc7b2);
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .room-door .rd-door {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1.6fr 1.6fr;
+    gap: 22px 20px;
+    height: 100%;
+    padding: 26px 22px 30px;
+    box-sizing: border-box;
+    background: linear-gradient(90deg, #ddd6c3, #ece6d6 30%, #e4ddca);
+    box-shadow:
+      inset 3px 0 6px rgba(0, 0, 0, 0.25),
+      inset 0 3px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* raised panels: lit from the window, on the left */
+  .room-door .rd-panel {
+    border-radius: 2px;
+    background: linear-gradient(90deg, #e9e3d2, #f4efe3 50%, #ddd5c1);
+    box-shadow:
+      inset 2px 2px 0 rgba(255, 255, 255, 0.7),
+      inset -2px -2px 0 rgba(0, 0, 0, 0.12),
+      0 0 0 4px #e1dac7,
+      0 0 0 5px rgba(0, 0, 0, 0.12);
+  }
+
+  /* the knob, on the side nearest the desk (the hinges are on the far side) */
+  .room-door .rd-knob {
+    position: absolute;
+    left: 14px;
+    top: 412px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 35% 30%,
+      #fff6c8,
+      #d4a83a 45%,
+      #8a6418 85%
+    );
+    box-shadow:
+      0 0 0 5px #c79d3c,
+      0 0 0 6px rgba(0, 0, 0, 0.25),
+      3px 5px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  /* KEEP OUT, in marker on notebook paper, taped on a little crooked */
+  .room-door .rd-sign {
+    position: absolute;
+    left: 40px;
+    top: 236px;
+    width: 150px;
+    padding: 12px 10px 10px;
+    box-sizing: border-box;
+    background:
+      repeating-linear-gradient(transparent 0 15px, #9fc0dc 15px 16px) 0 8px /
+        100% 100% no-repeat,
+      #fbf8ee;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+    transform: rotate(-4deg);
+    text-align: center;
+    color: #c0141b;
+    font:
+      700 26px/1 "Marker Felt",
+      "Comic Sans MS",
+      cursive;
+  }
+
+  .room-door .rd-sign span {
+    display: block;
+    margin-top: 6px;
+    color: #111;
+    font-size: 15px;
+  }
+
+  .room-door .rd-sign::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -8px;
+    width: 46px;
+    height: 16px;
+    margin-left: -23px;
+    background: rgba(240, 236, 214, 0.75);
+    transform: rotate(3deg);
+  }
+}

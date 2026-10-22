@@ -1,0 +1,19 @@
+// Imports every editor so it registers itself.
+export {};
+import './palette/palette';
+import './blocks/blocks';
+import './map/map';
+import './integrator/integrator';
+import './monsters/monsters';
+import './character/character';
+import './sounds/sounds';
+import './picture/picture';
+import './animation/animation';
+import './backdrop/backdrop';
+import './textScreen/textScreen';
+import './slideShow/slideShow';
+import './music/music';
+import './sample/sample';
+import './highScores/highScores';
+import '../tools/all';
+import './recording/recording';

@@ -1,0 +1,235 @@
+/* Text screen editor: a DOS-screen "paper" with page guides, and the game screen beside it. */
+.ts-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 520px);
+  gap: 16px;
+  align-items: start;
+}
+
+.ts-editor {
+  min-width: 0;
+}
+
+.ts-side {
+  position: sticky;
+  top: calc(8px + var(--ws-sticky-top, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ts-bar {
+  display: flex;
+  align-items: end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ts-bar .spacer {
+  flex: 1;
+}
+.ts-bar > button {
+  padding: 4px 10px;
+}
+.ts-page-label {
+  font:
+    12px/1 ui-monospace,
+    monospace;
+  color: var(--muted);
+  min-width: 9ch;
+  text-align: center;
+  align-self: center;
+}
+.ts-over select {
+  max-width: 180px;
+}
+
+/* The paper: textarea over its guides, both scrolled together. */
+.ts-paper {
+  --gut: 48px;
+  --lh: 20px;
+  --ts-bg: #06060c;
+  --ts-odd: #0d0d1c;
+  --ts-text: #e09ce0;
+  position: relative;
+  max-height: 70vh;
+  min-height: 240px;
+  overflow: auto;
+  background: var(--ts-bg);
+  border: 2px solid #34345a;
+  border-radius: 8px;
+  box-shadow: inset 0 0 24px rgba(120, 80, 255, 0.12);
+}
+.ts-guides,
+.ts-input {
+  font:
+    15px/var(--lh) ui-monospace,
+    'Cascadia Mono',
+    Menlo,
+    Consolas,
+    monospace;
+  line-height: var(--lh);
+}
+.ts-guides {
+  position: absolute;
+  inset: 0 auto auto 0;
+  min-width: 100%;
+  padding: 8px 0;
+  pointer-events: none;
+  min-height: 100%;
+}
+/* the 31 character edge and the part the game cuts off, over the page tints */
+.ts-guides::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to right,
+      transparent calc(var(--gut) + 31ch),
+      #ff4d6d calc(var(--gut) + 31ch),
+      #ff4d6d calc(var(--gut) + 31ch + 2px),
+      transparent calc(var(--gut) + 31ch + 2px)
+    ),
+    repeating-linear-gradient(135deg, transparent 0 6px, rgba(255, 77, 109, 0.1) 6px 12px) calc(var(--gut) + 31ch + 2px) 0 / 100% 100% no-repeat;
+}
+.ts-g {
+  position: relative;
+  height: var(--lh);
+}
+.ts-g.odd {
+  background: var(--ts-odd);
+}
+.ts-g.blank {
+  background: rgba(255, 196, 0, 0.16);
+}
+.ts-g.page-top {
+  border-top: 2px dashed #ffd400;
+  margin-top: -2px;
+}
+.ts-g.page-inside {
+  border-bottom: 2px dashed #ffd400;
+  margin-bottom: -2px;
+}
+.ts-g.page-top::after,
+.ts-g.page-inside::after {
+  content: attr(data-page);
+  position: absolute;
+  z-index: 2;
+  right: 6px;
+  top: -9px;
+  padding: 0 6px;
+  font:
+    bold 10px/14px system-ui,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #1a1400;
+  background: #ffd400;
+  border-radius: 7px;
+}
+.ts-g.page-inside::after {
+  top: auto;
+  bottom: -9px;
+}
+.ts-num {
+  position: absolute;
+  left: 0;
+  width: calc(var(--gut) - 10px);
+  text-align: right;
+  font-size: 11px;
+  color: #6f6f99;
+}
+.ts-g.blank .ts-num {
+  color: #ffd400;
+}
+.ts-g.wraps .ts-num {
+  color: #ff8aa0;
+}
+
+.ts-input {
+  position: relative;
+  display: block;
+  min-width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 8px 12px 8px var(--gut);
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  white-space: pre;
+  background: transparent;
+  color: var(--ts-text);
+  caret-color: #fff;
+  text-shadow: 0 0 6px rgba(224, 156, 224, 0.35);
+}
+.ts-input::selection {
+  background: rgba(109, 139, 255, 0.45);
+}
+.ts-paper:focus-within {
+  border-color: var(--focus);
+}
+
+.ts-status {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.ts-warnings {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  display: grid;
+  gap: 4px;
+}
+.ts-warnings li {
+  padding: 4px 8px;
+  border-left: 3px solid #ff8aa0;
+  background: var(--panel-2);
+  border-radius: 4px;
+}
+.ts-warnings li.warn {
+  border-left-color: #e0a800;
+}
+.ts-warnings li.fix {
+  border: 0;
+  background: none;
+  padding: 2px 0;
+}
+.ts-warnings .linkish {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.ts-side .game-preview canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 860px) {
+  .ts-layout {
+    grid-template-columns: 1fr;
+  }
+  /* the screen stays in view above the text while typing */
+  .ts-side {
+    order: -1;
+    top: var(--ws-sticky-top, 0px);
+    z-index: 2;
+    background: var(--bg);
+    padding-bottom: 6px;
+  }
+  .ts-side .game-preview canvas {
+    max-height: 34vh;
+    width: auto;
+    margin: 0 auto;
+  }
+  .ts-paper {
+    max-height: 50vh;
+  }
+}

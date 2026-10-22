@@ -1,0 +1,131 @@
+/* mug, wall phone and lamp (desk/room/deskProps.ts), placed on the desk stage */
+.desk-mug svg,
+.wall-phone svg,
+.desk-lamp svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.desk-mug {
+  width: 90px;
+  height: 150px;
+  margin-right: 6px;
+  filter: drop-shadow(0 8px 6px rgba(0, 0, 0, 0.45));
+}
+
+.wall-phone {
+  position: absolute;
+  left: 1172px;
+  top: 70px;
+  z-index: 0;
+  width: 56px;
+  height: 182px;
+  cursor: pointer;
+  filter: drop-shadow(4px 8px 8px rgba(0, 0, 0, 0.45));
+}
+
+.wall-phone .handset {
+  transition: transform 0.3s;
+  transform-origin: 40px 16px;
+}
+
+/* hung up you see the handset's back; its earpiece and mouthpiece face the wall */
+.wall-phone .hs-front {
+  visibility: hidden;
+}
+
+/* hanging up, it turns back over halfway down */
+.wall-phone .hs-front,
+.wall-phone .hs-back {
+  transition: visibility 0s 0.15s;
+}
+
+/* off the hook: the handset swings out toward you, turning over (edge-on halfway) to show its front */
+.wall-phone.off-hook .handset {
+  animation: phone-lift 0.36s ease-out;
+  transform: translate(-34px, 40px) rotate(24deg) scale(1.08);
+}
+
+.wall-phone.off-hook .hs-front {
+  visibility: visible;
+  transition: visibility 0s 0.16s;
+}
+
+.wall-phone.off-hook .hs-back {
+  visibility: hidden;
+  transition: visibility 0s 0.16s;
+}
+
+@keyframes phone-lift {
+  0% {
+    transform: none;
+  }
+  45% {
+    transform: translate(-16px, 18px) rotate(11deg) scale(0.08, 1.04);
+  }
+  100% {
+    transform: translate(-34px, 40px) rotate(24deg) scale(1.08);
+  }
+}
+
+.wall-phone:focus-visible,
+.desk-lamp:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 4px;
+}
+
+.desk-lamp {
+  position: absolute;
+  left: 1290px;
+  top: 196px;
+  z-index: 1;
+  width: 220px;
+  height: 300px;
+  pointer-events: none;
+  filter: drop-shadow(6px 10px 8px rgba(0, 0, 0, 0.5));
+}
+
+/* only the lamp itself takes clicks, not its empty corners */
+.desk-lamp svg > * {
+  pointer-events: visiblePainted;
+  cursor: pointer;
+}
+
+.desk-lamp .bulb {
+  fill: #6f6a55;
+}
+
+.desk-lamp.on .bulb {
+  fill: #fff6c8;
+  filter: drop-shadow(0 0 6px #ffe9a0);
+}
+
+/* the pool of warm light on the desk under the shade */
+.lamp-glow {
+  position: absolute;
+  left: 1130px;
+  top: 300px;
+  z-index: 4;
+  width: 420px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 45% 55%, rgba(255, 220, 140, 0.45), rgba(255, 200, 110, 0.18) 45%, transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.lamp-glow.on {
+  opacity: 1;
+}
+
+@media (max-width: 960px) {
+  .wall-phone,
+  .desk-lamp,
+  .lamp-glow {
+    display: none;
+  }
+}
