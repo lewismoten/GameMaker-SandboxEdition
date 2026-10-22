@@ -111,6 +111,8 @@ export function drawerScreen(title: string): Pixels {
   gradient(p, 0, 0, W, H, r('navy'), 0, 1);
   p.frame(50, 28, 240, 150, c('gold', 2)).frame(52, 30, 236, 146, c('gold', 0));
   outlined(p, 160 - title.length * 8, 6, title, c('gold', 4), c('black', 0), 2);
+  // A drawer label for PLAYGAME's blue messages (y 185, x 40..272), unreadable on the navy.
+  p.rect(34, 181, 252, 17, c('paper', 4)).frame(33, 180, 254, 19, c('gold', 2));
   return p;
 }
 
