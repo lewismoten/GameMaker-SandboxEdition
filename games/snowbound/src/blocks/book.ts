@@ -17,6 +17,7 @@ interface Attrs {
   touch?: string;
   next?: string;
   ntime?: number;
+  obj?: number;
 }
 
 export class BlockBook {
@@ -42,6 +43,7 @@ export class BlockBook {
     b.birthMon = a.birthMon ?? 0;
     b.birthTime = a.birthTime ?? 0;
     b.ntime = a.ntime ?? 0;
+    b.obj = a.obj ?? 0;
     this.links.push([i, a]);
     return i;
   }

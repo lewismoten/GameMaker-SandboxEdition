@@ -36,6 +36,10 @@ export const THROWSEQ = 9;
  * (like money) so a full bundle of six leaves 7 and the sixth porch leaves 1. */
 export const PAPERS = 20;
 
+/** The pines behind the park: picking up what lies in the hollow there adds 2, and the
+ * frozen toboggan beside it takes 1 to brush off (refused while the counter is at 0). */
+export const THAW = 21;
+
 /** Sound effect numbers in SNOW.SND. */
 export const SND = {
   help: 0,
