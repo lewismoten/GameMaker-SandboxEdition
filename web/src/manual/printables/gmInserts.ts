@@ -80,7 +80,7 @@ export async function diskSleeve(): Promise<Sheet[]> {
           null,
           'The CD is for extra games, pictures, music and sounds to borrow from: not needed to run Game-Maker. Put it in your CD-ROM drive and copy any game you like to your hard disk.',
         ),
-        h('p', { class: 'gmd-need' }, 'Needs 3 MB free on the hard disk. See the support card if anything goes wrong.'),
+        h('p', { class: 'gmd-need' }, 'Needs a double-spin CD-ROM drive and 3 MB free on the hard disk. See the support card if anything goes wrong.'),
       ),
     ),
   ];
@@ -149,6 +149,12 @@ export async function licenseSheet(): Promise<Sheet[]> {
         ),
         h('li', null, h('b', null, 'What you may do. '), 'Install it on as many computers as you own, make backup copies, change it, and give copies away, as long as this notice goes with them.'),
         h('li', null, h('b', null, 'Your games are yours. '), 'Games you make with it are yours to share, sell or upload to any BBS. The PLAYGAME player may go along with them.'),
+        h(
+          'li',
+          null,
+          h('b', null, 'Then and now. '),
+          'RSD’s 1994 agreement allowed one computer at a time and a game given free to no more than ten people; shareware had to ask at least $5 and pay RSD 10% of the fees, and sales paid royalties. The MIT License below replaced all of that.',
+        ),
         h(
           'li',
           null,
