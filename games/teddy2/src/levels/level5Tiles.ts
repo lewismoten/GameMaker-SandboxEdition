@@ -89,9 +89,9 @@ export function farmTiles(): Tiles {
     }
     return p;
   };
-  t.air('roofL', roof('L', 1));
-  t.air('roof', roof('M', 1));
-  t.air('roofR', roof('R', 1));
+  t.air('roofL', roof('L', 0));
+  t.air('roof', roof('M', 0));
+  t.air('roofR', roof('R', 0));
   t.air(
     'hay',
     (() => {

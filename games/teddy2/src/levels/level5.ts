@@ -54,7 +54,6 @@ export function farm(): Level {
     m.set(x + 1, y, 'beltAir0');
     if (y - 1 > 33) m.set(x, y - 1, 'beltAir0');
   }
-  m.set(31, 33, 'barnIn').set(32, 33, 'barnIn').set(33, 33, 'barnIn');
   m.set(b0 + 2, 32, 'hay').set(b0 + 3, 32, 'hay');
   // Outside the loft door: a hay pile to land on; the wallow.
   m.rect(40, 39, 1, 1, 'tuft');
