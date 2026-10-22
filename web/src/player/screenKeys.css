@@ -161,3 +161,56 @@
     transform: none;
   }
 }
+
+/* Touch screens (player/touch.ts): the panel takes its own place in the player's grid instead
+   of lying over the game-pad, so the pad, the buttons and the keys all work at once. */
+.gm-player.has-touch .gm-osk {
+  grid-area: osk;
+  position: static;
+  translate: none;
+  width: 100%;
+  padding: 6px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.gm-player.has-touch .gm-osk-key {
+  min-height: 34px;
+}
+
+/* upright: screen, system keys, the panel, then the pad; the screen gives up the height it needs */
+.gm-player.has-touch.touch-portrait.gm-osk-open {
+  container-type: inline-size;
+  grid-template-rows: minmax(0, 1fr) auto auto auto;
+  grid-template-areas: 'screen screen' 'sys sys' 'osk osk' 'pad act';
+}
+
+.gm-player.has-touch.touch-portrait.gm-osk-open canvas {
+  width: auto;
+  height: min(100%, 75cqw);
+  max-width: 100%;
+}
+
+.gm-player.has-touch.touch-portrait.gm-osk-open .gm-pad {
+  --pad: clamp(112px, 30vmin, 160px);
+}
+
+.gm-player.has-touch.touch-portrait.gm-osk-open .gm-actions button {
+  min-width: 56px;
+  min-height: 56px;
+}
+
+/* sideways: the panel goes under the screen, between the pad and the buttons */
+.gm-player.has-touch.touch-landscape.gm-osk-open {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'sys screen .' 'pad screen act' 'pad osk act';
+}
+
+.gm-player.has-touch.touch-landscape.gm-osk-open .gm-osk {
+  min-width: min(52vw, 440px);
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+}
+
+.gm-player.has-touch.touch-landscape.gm-osk-open .gm-osk-key {
+  min-height: 28px;
+}
