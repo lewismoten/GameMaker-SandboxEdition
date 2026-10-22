@@ -24,6 +24,7 @@ import { runSofa, SOFA_PHONE, sofaBusy } from "./sofa";
 import { gifGallery } from "./gifArea";
 import { gameDiz, isSofaFile } from "./fileId";
 import { WAREZ, warezArea, zipsOf } from "./warezArea";
+import { Pager, pageLabel } from "./pager";
 import { GALLERY } from "./gallery";
 import {
   account,
@@ -532,45 +533,38 @@ async function files(
   catalog: CatalogEntry[],
   title: string,
 ): Promise<void> {
-  const s = h.screen;
-  s.fill(0, 0, COLS - 1, ROWS - 2, attr(7, 0));
-  s.cursorX = 0;
-  s.cursorY = 0;
-  t.line(boxTop(title));
-  t.line(boxRow("|11  #  File name        Size  Description"));
-  t.line(boxBottom());
-  let lines = 4;
-  for (const [i, g] of catalog.entries()) {
+  const entries = () => catalog.map((g, i) => {
     const got = h.downloads.has(g.id) ? "|10*" : " ";
     // Renegade showed each archive's FILE_ID.DIZ (without its ruled lines, to save the scrolling)
     const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
-    desc.forEach((l, j) =>
-      t.line(
-        j === 0
-          ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${l.padEnd(46)}${isFree(g) ? "|10FREE" : ""}`
-          : `${" ".repeat(25)}|${j === desc.length - 1 ? "08" : "07"}${l}`,
-      ),
+    return desc.map((l, j) =>
+      j === 0
+        ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${l.padEnd(46)}${isFree(g) ? "|10FREE" : ""}`
+        : `${" ".repeat(25)}|${j === desc.length - 1 ? "08" : "07"}${l}`,
     );
-    lines += desc.length;
-    if (lines > 14 && i < catalog.length - 1) {
-      if (!(await t.more())) break;
-      lines = 0;
-    }
-  }
-  t.line(
-    `|10*|07 = already downloaded to C:\\DOWNLOAD   |10FREE|07 = doesn't count against your ratio`,
-  );
-  t.line(
-    `|12LEECHES WILL BE DELETED! |07Ratio |141:${RATIO}|07. File points left: |14${filePoints(account())}|07   |15U|07 to upload.`,
-  );
+  });
+  const pager = new Pager(t, {
+    header: (p, n) => [
+      boxTop(n > 1 ? `${title} (${pageLabel(p, n)})` : title),
+      boxRow("|11  #  File name        Size  Description"),
+      boxBottom(),
+    ],
+    entries,
+    footer: () => [
+      `|10*|07 = already downloaded to C:\\DOWNLOAD   |10FREE|07 = doesn't count against your ratio`,
+      `|12LEECHES WILL BE DELETED! |07Ratio |141:${RATIO}|07. File points left: |14${filePoints(account())}|07   |15U|07 to upload.`,
+    ],
+  });
+  pager.show();
   for (;;) {
-    t.print("|11File # to read about, D# to download, U to upload, Q to quit: |15");
+    t.print(`|11File # to read about, D# to download, ${pager.keys()}|15U|07)pload, |15Q|07)uit: |15`);
     const answer = (
       (await readLine(h.screen, h.keys, [], 6, attr(15, 0))) ?? "Q"
     )
       .trim()
       .toUpperCase();
     t.line();
+    if (pager.turn(answer)) continue;
     if (!answer || answer === "Q") return;
     if (answer === "U") {
       await upload(t, h);
