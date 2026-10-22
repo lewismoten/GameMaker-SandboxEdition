@@ -140,6 +140,7 @@ export function night(): Level {
     start: m.at('start'),
     exit: m.at('exit'),
     view: [44, 35],
+    pose: [53, 39, 'gwinnRun1'],
     outro: 'wagon.fli',
   };
 }

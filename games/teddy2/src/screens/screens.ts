@@ -10,6 +10,7 @@ import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/pho
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
+import { GWINN_HERO } from '../sprites/gwinnHero';
 import { docLeo, type Costume } from '../sprites/people';
 import { citiCar } from '../sprites/klown';
 import { renderRegion } from '../art/render';
@@ -169,7 +170,8 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
   const cc = (name: string, k: number) => pal.c(name, k);
   const p = new Pixels(W, H, cc('ink', 0));
   const map = l.map.done();
-  const extra = l.pose ? [{ pixels: POSES[l.pose[2]].px, x: l.pose[0], y: l.pose[1] }] : [];
+  const poses = l.hero === 'gwinn' ? GWINN_HERO : POSES;
+  const extra = l.pose ? [{ pixels: poses[l.pose[2]].px, x: l.pose[0], y: l.pose[1] }] : [];
   const view = renderRegion(map, l.bs.build(), l.beasts.mb.build(), l.beasts.build(), l.view[0], l.view[1], 15, 5, extra);
   p.rect(8, 8, 304, 104, cc('paint', 3));
   p.blit(view, 10, 10);

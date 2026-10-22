@@ -139,6 +139,7 @@ export function farm(): Level {
     start: m.at('start'),
     exit: m.at('exit'),
     view: [22, 35],
+    pose: [29, 37, 'gwinnRun1'],
     outro: 'truck.fli',
   };
 }
