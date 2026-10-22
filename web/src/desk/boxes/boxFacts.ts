@@ -7,7 +7,7 @@ import { diskCount } from '../../retro/dos/disks';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
 export interface BoxExtras {
-  /** Hours of play to finish; estimated from the number of levels when missing. */
+  /** Hours of play to finish, set from the walkthrough by games/kit/playtime.ts (playtime.ts); estimated from the number of levels when missing. */
   hours?: number;
   /** More selling points, printed with the ones worked out from the game's files. */
   claims?: string[];
