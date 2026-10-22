@@ -170,6 +170,7 @@ export class Route {
     const s = this.b.sets[info.bbl];
     const ids = ['p:credit', 'pc:credit'].filter((n) => s.has(n)).map((n) => s.id(n));
     const tall = info.chr === 'courier' ? 2 : 1;
+    const tried = new Set<number>();
     for (let k = 0; k < 6 && d.w.ci.meter[3] - 1 < need && !d.dead; k++) {
       const c = d.w.chr;
       const open = (x: number, y: number) => {
@@ -182,11 +183,12 @@ export class Route {
       const dist = field({ x: c.x[0], y: c.y[0] }, open);
       let best = -1;
       for (let i = 0; i < 10000; i++)
-        if (ids.includes(d.w.map[i]) && dist[i] >= 0 && dist[i] <= within && (best < 0 || dist[i] < dist[best])) best = i;
+        if (ids.includes(d.w.map[i]) && !tried.has(i) && dist[i] >= 0 && dist[i] <= within && (best < 0 || dist[i] < dist[best])) best = i;
       if (best < 0) return;
       const at = { x: best % 100, y: Math.floor(best / 100) };
+      tried.add(best);
       const before = d.w.ci.meter[3];
-      await seek(d, at, this.opts({ mode: info.chr === 'courier' ? 'walk' : 'fly', tall, avoid: this.avoidLinks(info.scene, -1), maxTicks: 800 }));
+      await seek(d, at, this.opts({ mode: info.chr === 'courier' ? 'walk' : 'fly', tall, avoid: this.avoidLinks(info.scene, -1), maxTicks: 400 }));
       // the crate is taken by touching it; a little more if it is not gone yet
       if (d.w.ci.meter[3] === before) for (let i = 0; i < 6 && !d.dead; i++) await d.tick();
       this.status(`credits ${before - 1} -> ${d.w.ci.meter[3] - 1}`);
