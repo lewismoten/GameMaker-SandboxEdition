@@ -144,6 +144,20 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     games made today still play in DOS and DOSBox. The web port, both the 1994 desk and
     today's web editor, was written with <b>Claude Opus 5.5</b>: AI assistance did most of the
     porting and code generation. It is MIT licensed too.</p>
+    <h3>The 1994 license and today</h3>
+    <p>When Game-Maker was sold, its license let you install it on one computer at a time and
+    give a game you made, free, to no more than ten people. Wider sharing needed RSD's
+    permission: for shareware, its manual granted every owner a license as long as the game
+    asked a registration fee of at least $5 and the author paid RSD 10% of the fees each
+    quarter, and selling games meant a commercial license with royalties per copy. The
+    shareware disks sold in stores for a few dollars paid for the disk, not the game; the
+    registration fee went to the author.</p>
+    <p>None of that applies to this edition. Under the MIT License you may use, copy, change,
+    share and sell Game-Maker and the games you make with it, with no limit on people, fees
+    or royalties; just keep the copyright and license notice with the program. The
+    registration fees, order forms and Sandbox Software's address in the Sandbox games are part
+    of their 1990s story: the games are free. The CD's shareware games are still their
+    authors' own, which is why they are play-only here.</p>
     <h3>Sandbox Software games</h3>
     <p>The Sandbox games were written and built by <b>Claude Opus 5.5</b>: the code that builds
     them, their pictures, music, sounds and words. Many are drawn from Lewis “Lewie” Moten
