@@ -9,6 +9,7 @@
 
 .floppy .label.printed.graphic .p-logo {
   padding: 1.2cqw 3.4cqw;
+  color: var(--lbandink, #fff);
   font-size: 4cqw;
 }
 
