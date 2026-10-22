@@ -1,5 +1,6 @@
 // BAKER'S DOZEN: THE THIRTEENTH INGREDIENT: builds every file of the game into games/bakers/disk/.
 //   cd web && npx vite-node ../games/bakers/build.ts
+import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '../../web/src/formats/blocks';
@@ -20,6 +21,7 @@ import { readme } from './src/screens/text';
 import { buildSounds } from './src/sound/sounds';
 import * as M from './src/sound/music';
 import { demoRecording } from './src/demo';
+import { printables } from './src/printables';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -61,4 +63,5 @@ for (const [name, bytes] of disk.files)
   if (name.endsWith('.lst'))
     for (const e of parseSlideList(bytes)) if (!disk.files.has(e.name)) throw new Error(`${name} names ${e.name}, which is not on the disk`);
 disk.write();
+writeFileSync(join(here, 'printables.json'), JSON.stringify(printables(), null, 2) + '\n');
 console.log(`${game.scenes.length} scenes`);
