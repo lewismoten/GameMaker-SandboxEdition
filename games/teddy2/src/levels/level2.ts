@@ -132,7 +132,7 @@ export function main(): Level {
   for (let x = 93; x < 100; x++) m.set(x, 39, 'garden');
   m.set(94, 39, 'boneSign');
   const stash = 97;
-  m.set(stash, G, 'hole').set(stash, G + 1, 'hole');
+  m.set(stash, G, 'hole').set(stash, G + 1, 'holeDeep');
 
   // Her den, deep under the town: Teddy drops in through the hole, takes the egg, climbs out.
   const [rx, ry] = [30, 64];

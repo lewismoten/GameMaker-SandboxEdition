@@ -334,6 +334,8 @@ export function mainTiles(): Tiles {
     })(),
   );
   t.air('hole', new Pixels(20, 20, c('dirt', 0)));
+  // the den's way in, under the soft dirt: looks like any other dirt from above
+  t.air('holeDeep', dirt(10));
   t.wall('dirt', dirt(9));
 
   // Her den, deep under the hedge: dug-out earth, roots, her loot, and the way back up.
