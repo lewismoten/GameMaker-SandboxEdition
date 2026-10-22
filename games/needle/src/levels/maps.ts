@@ -278,3 +278,76 @@ export function desert(book: BlockBook): Level {
   m.link(77, 9, 'next');
   return { m, start: at(3, 9), size: [W, H] };
 }
+
+const TAILOR: Record<string, string> = {
+  '.': 'bg',
+  '%': 'dark',
+  '#': 'rafter',
+  '=': 'floor',
+  L: 'wallLamp',
+  w: 'window',
+  '-': 'shelf',
+  r: 'boltR',
+  b: 'boltB',
+  p: 'boltP',
+  o: 'buttonR',
+  O: 'buttonG',
+  _: 'tape',
+  T: 'table',
+  t: 'treadle',
+  m: 'machine0',
+  M: 'machine1',
+  '|': 'thread',
+  f: 'fray',
+  s: 'spool',
+  S: 'spoolB',
+  x: 'pins',
+  N: 'shaft',
+  A: 'shaftOverEye',
+  V: 'shaftUnderEye',
+  e: 'eyeHole',
+  v: 'point',
+  G: 'gate',
+  q: 'seamstress',
+  W: 'widow',
+  B: 'beggar',
+  D: 'dates',
+  J: 'jar',
+  '1': 'lamp',
+  d: 'door',
+  n: 'doorTop',
+  c: 'scraps',
+  R: 'robe0',
+  '2': 'robe1',
+  K: 'cloak0',
+  '3': 'cloak1',
+};
+
+/** 3. The tailor's shop: spools, threads to climb and mend, needles' eyes to crawl through, the sewing machine. */
+export function tailor(book: BlockBook): Level {
+  const W = 64;
+  const H = 18;
+  const m = new MapBuilder(book, TAILOR, 'rafter');
+  m.fill(1, 1, W - 2, 15, '.').row(16, 0, W - 1, '=').row(17, 0, W - 1, '#');
+  m.text(14, 1, 'R K').text(14, 2, '2 3').text(36, 1, 'K').text(36, 2, '3').text(26, 1, 'R').text(26, 2, '2');
+  m.set(4, 6, 'L').set(20, 12, 'w').set(30, 3, 'L').set(40, 6, 'w').set(44, 11, 'L').set(52, 7, 'w');
+  // the seamstress by the door, a spool on the floor; the first thread, frayed halfway up
+  m.set(5, 15, 'q').set(7, 15, 's').col(8, 1, 15, '|').set(8, 15, 'f').fill(9, 12, 2, 4, 'r').set(3, 15, 'c');
+  // the first shelf: the widow, a moth, a spool; cloth and scraps under it, and the scissors
+  m.row(8, 9, 21, '-').set(13, 7, 'W').set(18, 7, 'S').set(11, 11, 'p').fill(19, 13, 3, 3, 'b').set(15, 15, 'c');
+  // the first great needle: its eye (an eye gate) at the shelf, the shelf on through it
+  m.col(22, 1, 5, 'N').set(22, 6, 'A').set(22, 7, 'G').set(22, 8, 'V').col(22, 9, 14, 'N').set(22, 15, 'v').row(8, 23, 25, '-');
+  // the sewing machine's table: its needle stabs down (kneel under it); a spool, the beggar
+  m.row(10, 26, 35, 'T').col(26, 11, 15, 't').col(35, 11, 15, 't').set(30, 8, 'm').text(31, 7, 'MM').set(28, 9, 's').set(34, 9, 'B');
+  // the floor: a thimble, dates; the second thread, frayed where he steps on
+  m.set(37, 15, 'c').set(40, 15, 's').set(43, 15, 'D').col(46, 1, 15, '|').set(46, 15, 'f').fill(47, 12, 1, 4, 'p');
+  // a middle shelf, and a third thread, frayed where he steps on from it
+  m.row(9, 47, 50, '-').set(49, 8, 'J').col(51, 1, 12, '|').set(51, 8, 'f').fill(48, 13, 3, 3, 'r');
+  // the high shelf: a golden lamp, a mustard seed
+  m.row(4, 52, 57, '-').set(54, 3, '1');
+  // the last needle: crawl through its eye at the floor to the back door
+  m.col(59, 1, 13, 'N').set(59, 14, 'A').set(59, 15, 'e').set(61, 14, 'n').set(61, 15, 'd');
+  m.mon(MON.moth, 15, 5).mon(MON.scissors, 12, 15).mon(MON.needle, 31, 5).mon(MON.thimble, 38, 15).mon(MON.moth, 54, 10).mon(MON.seed, 56, 3);
+  m.link(61, 15, 'next');
+  return { m, start: at(2, 15), size: [W, H] };
+}

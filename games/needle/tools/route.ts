@@ -125,3 +125,39 @@ export async function theDesert(bot: Bot): Promise<void> {
     await leave(bot, bot.walk(78, "the tailor's tent"), 'the tent');
   });
 }
+
+/** 3. The tailor's shop: spools, up the threads (mending the frays), through the needles' eyes. */
+export async function theTailor(bot: Bot): Promise<void> {
+  expect(bot, 4, "the tailor's shop");
+  const climb = async (x: number, row: number, label: string) => {
+    await must(bot, bot.walk(x, `the thread at ${x}`), label);
+    await must(bot, bot.dig('up', row, label), label);
+  };
+  await carefully(bot, 'the first thread', 12, async () => {
+    await must(bot, bot.walk(7, 'the seamstress and a spool'), 'spool');
+    await climb(8, 6, 'up the first thread');
+    await must(bot, bot.walk(13, 'the widow on the shelf'), 'shelf');
+  });
+  await carefully(bot, 'the first shelf', 12, async () => {
+    await must(bot, bot.walk(21, 'a spool, to the great needle'), 'needle');
+    await must(bot, bot.crawl('right', 24, "through the needle's eye"), 'eye');
+  });
+  await carefully(bot, 'the sewing table', 12, async () => {
+    await must(bot, bot.walk(29, 'a spool on the table'), 'table');
+    await must(bot, bot.crawl('right', 33, 'under the sewing needle'), 'under');
+    await must(bot, bot.walk(37, 'the beggar, down to the floor'), 'floor');
+  });
+  await carefully(bot, 'the floor', 12, async () => {
+    await must(bot, bot.walk(43, 'past the thimble'), 'thimble');
+    if (thread(bot) < 2) throw new Error(`only ${thread(bot)} spools for the last two threads`);
+    await climb(46, 7, 'up the second thread');
+    await must(bot, bot.walk(50, 'the middle shelf'), 'middle shelf');
+    await climb(51, 2, 'up the third thread');
+    await must(bot, bot.walk(56, 'along the high shelf'), 'high shelf');
+  });
+  if (gold(bot) !== 0 || grace(bot) !== 7) throw new Error(`gold ${gold(bot)}, grace ${grace(bot)} at the back door`);
+  await carefully(bot, 'the back door', 12, async () => {
+    await must(bot, bot.walk(58, 'down to the last needle'), 'down');
+    await leave(bot, bot.crawl('right', 62, "through the last needle's eye"), 'the back door');
+  });
+}
