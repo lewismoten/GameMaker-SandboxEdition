@@ -10,6 +10,8 @@ import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, blob, centered, gradient, klubArt, outline, outlined, scaleBlit, shadeAt, speckle } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
+import { drawArt } from './castArt';
+import { TEDDY, TEDDY_BLINK, TEDDY_PANT } from './castTeddy';
 import { GWINN } from '../sprites/gwinn';
 import { dogHouseLibrary } from '../sprites/library';
 import { POSES } from '../sprites/teddy';
@@ -184,9 +186,10 @@ function teddyScene(reel: Reel): void {
   for (let f = 0; f < 40; f++) {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
-    const pant = f % 4 < 2;
     const t = new Pixels(W, H, CLEAR);
-    teddyHead(t, 112, 106 + (pant ? 0 : 1), 1.1, { blink: f === 14 || f === 15 || f === 33, pant: true, twitch: f >= 22 && f <= 24 });
+    drawArt(t, TEDDY, c);
+    if (f % 4 < 2) drawArt(t, TEDDY_PANT, c);
+    if (f === 14 || f === 15 || f === 33) drawArt(t, TEDDY_BLINK, c);
     p.blit(outline(t, c('ink', 0)), 0, 0, CLEAR);
     big(p, 'TEDDY', 24, 250);
     say(p, 'RED-GOLD CORGI.', 52, undefined, 250);
