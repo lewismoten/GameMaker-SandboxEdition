@@ -134,7 +134,7 @@ export abstract class ComputerDrives {
           const exe = d.disk.gam.replace(/\.gam$/i, '.exe');
           nodes.unshift(
             file(exe, 160_598, {
-              run: { kind: 'game', title: d.disk.title, gam: d.disk.gam, files: async () => new Map(d.files.entries()), diskId: d.disk.id },
+              run: { kind: 'game', title: d.disk.title, gam: d.disk.gam, files: async () => new Map(d.files.entries()), diskId: d.disk.id, saveId: d.disk.id.startsWith('cd:') ? `game:${d.disk.id.slice(3)}` : undefined },
             }),
           );
         }
@@ -178,7 +178,7 @@ export abstract class ComputerDrives {
                 ...(g.exe
                   ? [
                       file(g.exe, 155_156, {
-                        run: { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice } as ProgramRef,
+                        run: { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` } as ProgramRef,
                       }),
                     ]
                   : []),

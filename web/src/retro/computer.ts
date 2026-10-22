@@ -10,7 +10,7 @@ import type { OpenDesigner } from "./host";
 import { errorBox, askText } from "./text/textUi";
 import type { PlayerHandle } from "../player/player";
 import { GameFiles } from "../project/files";
-import { loadProject } from "../project/storage";
+import { loadProject, loadSaveData, writeSaveFile } from "../project/storage";
 import { Project } from "../editor/core/project";
 import { editors, fileInfo } from "../editor/editors/registry";
 import { kindOf } from "../editor/core/project";
@@ -151,7 +151,9 @@ export class Computer extends ComputerFolders {
         case "game": {
           this.opts.onDriveAccess?.(ref.diskId ? "A" : this.shell.drive);
           const files = new GameFiles(await ref.files());
-          await this.playGame(files, ref.gam, ref.title, ref.notice);
+          // a catalog game keeps its saves and high scores where the play page does
+          if (ref.saveId) for (const [name, bytes] of Object.entries(await loadSaveData(ref.saveId))) files.set(name, bytes);
+          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId);
           break;
         }
         case "batch":
@@ -224,6 +226,7 @@ export class Computer extends ComputerFolders {
     gam: string,
     title: string,
     notice?: string,
+    saveId?: string,
   ): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
@@ -241,6 +244,7 @@ export class Computer extends ComputerFolders {
         exactPixels: true, // the monitor's size is never a whole multiple of 320x200
         speed: this.opts.speed,
         onQuit: () => false, // back to DOS
+        onFileWrite: saveId ? (name, bytes) => void writeSaveFile(saveId, name, bytes) : undefined,
         onExit: () => {
           this.player = undefined;
           this.opts.onGame?.(undefined);

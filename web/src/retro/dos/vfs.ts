@@ -21,7 +21,7 @@ export type ProgramRef =
   | { kind: 'playgame' }
   | { kind: 'terminal' }
   | { kind: 'vpic' }
-  | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string }
+  | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string; /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string }
   | { kind: 'install' }
   | { kind: 'batch'; lines: string[] };
 
