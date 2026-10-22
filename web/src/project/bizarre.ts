@@ -1,4 +1,4 @@
-// The Bard of Bizarre: Lewis "Lewie" Moten III's name for his Christian songs, sung as his
+// The Bard of Bizarre: Lewis "Lewie" Moten III's name for his songs (starting with Christian ones), sung as his
 // hobo clown Doc Leo. Games built from those songs (../games/<id>/about.json "series":
 // "bizarre") are shareware from The Sofa BBS. A handful get a collection of their own: with
 // BIZARRE_MIN or more in the catalog, the home page shows a Bizarre tab (and the site's game

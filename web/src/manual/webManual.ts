@@ -168,8 +168,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     experiences and hobbies. Lewis directed each game and played it as it came together, and
     his feedback shaped every one. Teddy, Gwinn and Doc Leo appear as themselves.</p>
     <h3>The Bard of Bizarre</h3>
-    <p>The Bard of Bizarre is the name Lewis “Lewie” Moten III gives his Christian songs,
-    performed as his hobo clown, Doc Leo. Some of those songs have become games, shareware
+    <p>The Bard of Bizarre is the name Lewis “Lewie” Moten III gives his songs,
+    performed as his hobo clown, Doc Leo. He started with Christian songs, but the Bard isn’t limited to them. Some of those songs have become games, shareware
     “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>. Once there are four or
     more, they get a Bizarre collection of their own on the home page.</p>
     <p>The words are Lewis’s. The song recordings and cover art were made with Riffusion (now
