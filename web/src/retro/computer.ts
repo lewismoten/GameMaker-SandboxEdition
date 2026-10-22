@@ -17,6 +17,7 @@ import { kindOf } from "../editor/core/project";
 import { Vga } from "../vga/shared/vga";
 import { PictureScreen } from "./view/picture";
 import { output } from "../audio/output";
+import { audioContext, unlock } from "../audio/context";
 import { h, clear } from "../editor/core/ui";
 import { AUTOEXEC } from "./computer/setup";
 import { soundBlaster } from "./computer/soundBlaster";
@@ -96,8 +97,8 @@ export class Computer extends ComputerFolders {
 
   unlockAudio(): void {
     try {
-      this.audioCtx ??= new AudioContext();
-      void this.audioCtx.resume();
+      this.audioCtx ??= audioContext();
+      unlock();
     } catch {
       /* no audio */
     }

@@ -10,6 +10,7 @@ import './keyboard.css';
 import { h } from '../../editor/core/ui';
 import { GLOBAL_KEYS } from '../../editor/keymap/keyMap';
 import { VirtualKeys } from '../../input/virtualKeys';
+import { audioContext, unlock } from '../../audio/context';
 import { output } from '../../audio/output';
 
 /** [label, width in key units, KeyboardEvent.code] or a number for a gap. */
@@ -233,9 +234,10 @@ let clickCtx: AudioContext | undefined;
 /** A keycap's click: a short burst of filtered noise, through the desk's volume knob. */
 function click(): void {
   try {
-    clickCtx ??= new AudioContext();
+    clickCtx ??= audioContext();
     const ctx = clickCtx;
-    void ctx.resume();
+    if (!ctx) return;
+    unlock();
     const len = Math.floor(ctx.sampleRate * 0.025);
     const buf = ctx.createBuffer(1, len, ctx.sampleRate);
     const d = buf.getChannelData(0);

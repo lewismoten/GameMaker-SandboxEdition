@@ -3,6 +3,7 @@
 // off-hook howler, answering machine and pager beeps, hold music, a modem screeching on
 // the line, and (out loud, in the room) the phone's bell and a fire engine's siren.
 import { output } from "../../../audio/output";
+import { audioContext, unlock } from "../../../audio/context";
 import { DTMF, Line } from "../../../retro/bbs/modem";
 
 let shared: AudioContext | undefined;
@@ -10,8 +11,8 @@ let shared: AudioContext | undefined;
 /** One audio context for the phone, unlocked by the click that lifts the handset. */
 function audio(): AudioContext | undefined {
   try {
-    shared ??= new AudioContext();
-    if (shared.state === "suspended") void shared.resume();
+    shared ??= audioContext();
+    if (shared && shared.state !== "running") unlock();
     return shared;
   } catch {
     return undefined;
