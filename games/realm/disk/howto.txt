@@ -1,0 +1,48 @@
+Find the three pieces of the
+Royal Round Tuit and take them
+to Deadline Keep.
+
+ARROWS or W A S D walk.
+SPACE swings your sword the
+way you last walked.
+ENTER picks up what you stand
+on (rare, and worth it).
+K toots the kazoo (once Doc
+Leo has taught you).
+T drinks a tonic.
+
+WALK INTO people to talk, and
+into shop counters to buy:
+once to pay, again to take.
+Foes that bite you get hurt
+too. Gems they drop are money.
+
+GATES open when you have what
+they want: the Royal Writ,
+the foghorn, a lamp, a charge
+for THE CHEZ, the Tuit pieces.
+Walk into them.
+
+The Tuit Table in the Garden
+Court lights a pedestal for
+each piece you carry.
+
+Rest at an inn bed (10 gold).
+Tonics are 15 gold. Hattie
+sells phoenix feathers.
+THE CHEZ crosses the Dawdle
+Flats. Arrows drive, SPACE
+honks. Charging posts top up
+her charge (your hit points).
+The low bridges flood with the
+tide: wait for it to drain.
+
+F1 help      F2 your satchel
+F3 music     F4 sound
+F5 save      F6 load
+ESC quit
+
+F2 shows gold, hit points,
+lives and what you carry.
+Save often. Procrastia is
+bigger than it looks.

@@ -1,0 +1,63 @@
+QUEST FOR THE ROUND TUIT
+Sandbox Software, 1996
+
+Design, pixels, maps, music,
+sound and words by Claude -
+every block, monster, song and
+scene built as Game-Maker 3.0
+files, in code.
+
+Roads that curve, rivers that
+run diagonally, shores with
+foam on them: painted in true
+color, then dithered into 256.
+
+Made with GAME-MAKER by
+Recreational Software Designs.
+STARRING
+
+Pip of Nowish ......... Pip
+Doc Leo .... himself, a hobo
+  clown, PhD (Comedic Science)
+Sir Reginald Cluckington III
+  .......... a rubber chicken
+Teddy ..... a corgi who knows
+  his left from his right
+Gwinn .. two n's, one sock
+THE CHEZ .. a 1976 1/2 CitiCar
+  (charge port: rear passenger
+  side, for reasons)
+
+Lord Deadline ..... himself
+
+For Lewis "Lewie" Moten III,
+who always gets around to it.
+
+No kings were rushed in the
+making of this game.
+
+
+
+
+
+
+
+
+
+
+
+FREE TO SHARE
+
+Made in 2026 by Lewis Moten
+with Claude. Free to share:
+see LICENSE.TXT on the disk.
+
+The shareware page is part
+of the 1995 story: there is
+no fee and nothing to mail.
+
+MIT License, (c) 2026
+Lewis Moten.
+
+
+

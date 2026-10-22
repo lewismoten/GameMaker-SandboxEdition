@@ -16,6 +16,7 @@ import { buildFlats } from './src/build/flats';
 import { passFiles } from './src/levels/talk';
 import { assemble, type SceneSpec } from './src/game';
 import * as MUSIC from './src/sound/music';
+import { screenFiles } from './src/build/screens';
 import { autoArrange } from '../../web/src/editor/editors/integrator/integratorLayout';
 import { untangle } from './src/layout';
 
@@ -29,7 +30,7 @@ disk.put('chez.chr', serializeCharacter(cast.chez));
 const sounds = buildSounds();
 disk.put('realm.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
-for (const f of passFiles()) disk.put(f.name, f.bytes);
+for (const f of [...passFiles(), ...screenFiles('$15')]) disk.put(f.name, f.bytes);
 for (const [name, make] of Object.entries(MUSIC)) disk.put(`${name.replace(/Song$/, '')}.cmf`, make());
 
 const world = buildWorld(cast);

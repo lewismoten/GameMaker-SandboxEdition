@@ -12,6 +12,7 @@ import { Canvas, type RGB, mix } from '../art/rgb';
 const PURPLE: RGB = [50, 10, 50];
 const BLUE: RGB = [10, 10, 63];
 const RED: RGB = [63, 10, 10];
+const YELLOW: RGB = [63, 63, 0];
 
 export interface Inks {
   /** What Game-Maker's text pages print in (nearest to purple). */
@@ -20,6 +21,8 @@ export interface Inks {
   menu?: RGB;
   /** "MORE..." (nearest to red). */
   more?: RGB;
+  /** Saved games' names (nearest to yellow). */
+  names?: RGB;
 }
 
 /** 8-bit RGB to the 6-bit value the palette will hold. */
@@ -56,7 +59,7 @@ export class Screen {
             const v = (py - y) / scale;
             const b = Math.floor(u);
             const r = Math.floor(v);
-            if (u < -0.5 || v < -0.5 || u > 8.5 || v > 8.5) return 2;
+            if (u < 0 || v < 0 || u >= 8 || v >= 8) return 2;
             // a lit cell, or a corner bridged diagonally between two lit cells, is ink
             if (on(r, b)) return -1;
             const fu = u - b;
@@ -75,6 +78,42 @@ export class Screen {
     return cx - x;
   }
 
+  /**
+   * Display lettering: the 8x8 font blown up `scale` times, filled with `fill`, a bevel lit from
+   * the top left, a dark outline and a soft drop shadow.
+   */
+  fancy(x: number, y: number, s: string, scale: number, fill: (t: number) => RGB, outline: RGB = [30, 16, 8]): number {
+    const w = Math.ceil(s.length * 8 * scale + 8);
+    const h = Math.ceil(8 * scale + 8);
+    const mask = new Screen(w, h);
+    mask.text(4, 4, s, [255, 255, 255], scale);
+    const a = (px: number, py: number) => (px < 0 || py < 0 || px >= w || py >= h ? 0 : mask.cv.alpha(px, py));
+    // shadow, then outline, then the bevelled face
+    for (let py = 0; py < h; py++)
+      for (let px = 0; px < w; px++) {
+        const sx = x + px - 4;
+        const sy = y + py - 4;
+        const sh = a(px - 2, py - 3);
+        if (sh > 0.3) this.cv.blend(sx, sy, [0, 0, 0], 0.45 * sh);
+        let o = 0;
+        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if (dx * dx + dy * dy <= 5) o = Math.max(o, a(px + dx, py + dy));
+        if (o > 0.3) this.cv.blend(sx, sy, outline, o);
+      }
+    for (let py = 0; py < h; py++)
+      for (let px = 0; px < w; px++) {
+        const k = a(px, py);
+        if (k <= 0) continue;
+        const t = (py - 4) / (8 * scale);
+        let c = fill(Math.max(0, Math.min(1, t)));
+        const lit = a(px - 1, py - 1) < 0.5 || a(px - 2, py - 2) < 0.5;
+        const dark = a(px + 1, py + 1) < 0.5 || a(px + 2, py + 2) < 0.5;
+        if (lit) c = mix(c, [255, 255, 240], 0.55);
+        else if (dark) c = mix(c, [0, 0, 0], 0.35);
+        this.cv.blend(x + px - 4, y + py - 4, c, k);
+      }
+    return w - 8;
+  }
+
   centered(y: number, s: string, col: RGB | ((x: number, y: number) => RGB), scale = 1, shadow?: RGB): void {
     this.text(Math.round((this.w - s.length * 8 * scale) / 2), y, s, col, scale, shadow);
   }
@@ -86,6 +125,7 @@ export class Screen {
     if (inks.text) want.push([inks.text, PURPLE]);
     if (inks.menu) want.push([inks.menu, BLUE]);
     if (inks.more) want.push([inks.more, RED]);
+    if (inks.names) want.push([inks.names, YELLOW]);
     for (const [c] of want) fixed.push(c);
     const rgb = new Uint8Array(this.w * this.h * 3);
     for (let i = 0; i < this.w * this.h; i++) for (let k = 0; k < 3; k++) rgb[i * 3 + k] = Math.max(0, Math.min(255, Math.round(this.cv.c[i * 3 + k])));
