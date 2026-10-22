@@ -34,6 +34,15 @@
   gap: 2px;
 }
 
+/* on a phone, rows of four */
+@media (max-width: 960px) {
+  .egg-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 126px;
+  }
+}
+
 .egg-mini {
   display: block;
   width: 30px;
