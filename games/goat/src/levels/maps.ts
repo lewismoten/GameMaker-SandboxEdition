@@ -315,7 +315,7 @@ export function stable(book: BlockBook): Level {
     30,
   );
   // the line, all facing the manger: goat, goat, (you), goat, lamb, then the donkey and the ox
-  m.set(12, 4, 'place');
+  m.set(12, 4, 'place').set(9, 3, 'dusty');
   m.mon(MON.lineGoat, 10, 4).mon(MON.lineGoat, 11, 4).mon(MON.lineGoat, 13, 4).mon(MON.lineLamb, 14, 4);
   m.mon(MON.donkey, 15, 4).mon(MON.ox, 16, 4);
   m.mon(MON.lamb, 2, 6).mon(MON.lamb, 25, 12).mon(MON.lamb, 3, 12);

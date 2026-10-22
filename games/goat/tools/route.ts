@@ -1,0 +1,135 @@
+// The way through the game, as orders for the bot: out of the fold with the wool, past the
+// cousin in the wall, through Bethlehem's alley (laundry, census), across the caravan's
+// camel lanes and past the cousin on the ridge, and into the stable to the empty place,
+// third from the left.
+import { Bot } from './bot';
+
+const expect = (bot: Bot, scene: number, what: string) => {
+  if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
+};
+
+async function must(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
+  const out = await r;
+  if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
+}
+
+/**
+ * Plays a stretch where moving monsters can catch the goat out: if it costs a life or more
+ * than `maxLoss` hit points (or gets stuck), it is taken back and played again after a short
+ * wait, so she steps out at a better moment.
+ */
+export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+  const start = bot.snapshot();
+  const hp = bot.sim.ci.hitpts;
+  const deaths = bot.sim.deaths;
+  let why = '';
+  for (let wait = 0; wait <= 240; wait += 6) {
+    bot.restore(start);
+    try {
+      if (wait && (await bot.wait(wait))) throw new Error('a scene change while waiting');
+      await stretch();
+    } catch (e) {
+      why = String(e).split('\n')[0];
+      continue;
+    }
+    const loss = hp - bot.sim.ci.hitpts;
+    if (bot.sim.deaths === deaths && loss <= maxLoss) {
+      bot.say(`${label}: waited ${wait} ticks, lost ${loss} hit points`);
+      return;
+    }
+    why = `lost ${loss} hit points, ${bot.sim.deaths - deaths} lives`;
+  }
+  throw new Error(`${label}: no safe moment (${why})`);
+}
+
+/** 1. The shepherds' field. */
+export async function theField(bot: Bot): Promise<void> {
+  expect(bot, 2, "the shepherds' field");
+  await carefully(bot, 'the fold', 10, async () => {
+    await must(bot, bot.goto(2, 2, 'wool'), 'wool');
+    await must(bot, bot.goto(3, 5, 'wool'), 'wool');
+    await must(bot, bot.goto(8, 4, 'through the rope'), 'gate');
+  });
+  await carefully(bot, 'the field', 12, async () => {
+    await must(bot, bot.take(11, 4, 'down', 'a thistle'), 'thistle');
+    await must(bot, bot.take(19, 4, 'left', 'wool on the thorns'), 'wool');
+    await must(bot, bot.take(13, 13, 'left', 'wool on the thorns'), 'wool');
+    await must(bot, bot.take(17, 9, 'down', 'hay'), 'hay');
+    await must(bot, bot.goto(24, 8, 'the gap in the wall'), 'gap');
+  });
+  await carefully(bot, 'the cousin in the gap', 10, async () => {
+    await must(bot, bot.scream('right'), 'scream');
+    await must(bot, bot.goto(27, 8, 'past the fainted cousin'), 'past');
+  });
+  await carefully(bot, 'beyond the wall', 12, async () => {
+    await must(bot, bot.take(31, 9, 'left', 'wool on the thorns'), 'wool');
+    await must(bot, bot.take(35, 1, 'down', 'wool on the thorns'), 'wool');
+    await must(bot, bot.goto(36, 13, 'the goat bell'), 'bell');
+  });
+  if (bot.wool < 5) throw new Error(`only ${bot.wool} wool`);
+  const r = await bot.goto(39, 8, 'the road to Bethlehem');
+  if (r !== 'link') throw new Error(`the field's exit: ${r}`);
+}
+
+/** 2. Bethlehem. */
+export async function bethlehem(bot: Bot): Promise<void> {
+  expect(bot, 3, 'Bethlehem');
+  await carefully(bot, 'the market', 20, async () => {
+    await must(bot, bot.take(9, 6, 'down', 'a cabbage'), 'cabbage');
+    await must(bot, bot.goto(2, 4, 'the sandal'), 'sandal');
+  });
+  await carefully(bot, 'across the square', 20, async () => {
+    await must(bot, bot.goto(33, 12, 'the alley'), 'alley');
+  });
+  await carefully(bot, 'the alley', 10, async () => {
+    await must(bot, bot.goto(33, 20, 'past the laundry and the census'), 'census');
+  });
+  const r = await bot.goto(33, 21, 'out to the caravan');
+  if (r !== 'link') throw new Error(`Bethlehem's exit: ${r}`);
+}
+
+/** 3. The caravan. */
+export async function theCaravan(bot: Bot): Promise<void> {
+  expect(bot, 4, 'the caravan');
+  // the kneeling camels' lines of spit
+  for (let x = 30; x <= 38; x++) bot.avoid.set(`${x + 2},${18 + 2}`, 30);
+  for (let x = 1; x <= 9; x++) bot.avoid.set(`${x + 2},${20 + 2}`, 30);
+  await carefully(bot, 'the north camp', 15, async () => {
+    await must(bot, bot.goto(18, 2, 'wool'), 'wool');
+    await must(bot, bot.take(31, 3, 'left', 'wool on the thorns'), 'wool');
+  });
+  await carefully(bot, 'across the camel lanes', 15, async () => {
+    await must(bot, bot.goto(31, 12, 'past the camels'), 'lanes');
+  });
+  await carefully(bot, 'the gifts', 15, async () => {
+    await must(bot, bot.goto(19, 13, 'above the ridge'), 'ridge');
+    await must(bot, bot.goto(19, 14, 'the gap in the ridge'), 'ridge');
+  });
+  await carefully(bot, 'the cousin on the ridge', 10, async () => {
+    await must(bot, bot.scream('down'), 'scream');
+    await must(bot, bot.goto(19, 17, 'past the fainted cousin'), 'past');
+  });
+  await carefully(bot, 'the spitting camels', 15, async () => {
+    await must(bot, bot.goto(13, 16, 'wool'), 'wool');
+    await must(bot, bot.goto(38, 21, 'the stable door'), 'door');
+  });
+  bot.avoid.clear();
+  const r = await bot.goto(39, 21, 'into the stable');
+  if (r !== 'link') throw new Error(`the caravan's exit: ${r}`);
+}
+
+/** 4. The stable. */
+export async function theStable(bot: Bot): Promise<void> {
+  expect(bot, 5, 'the stable');
+  await carefully(bot, 'the stable', 20, async () => {
+    await must(bot, bot.goto(2, 6, 'wool'), 'wool');
+    await must(bot, bot.take(9, 3, 'down', 'the dusty straw by Joseph'), 'dust');
+    await must(bot, bot.goto(12, 5, 'before the line'), 'line');
+  });
+  if (bot.wool < 5) throw new Error(`only ${bot.wool} wool at the manger`);
+  // five wool opens the place, and she steps right into it
+  let r = await bot.push('up', 4);
+  bot.say('offered the wool');
+  if (!r) r = await bot.goto(12, 4, 'third from the left');
+  if (r !== 'end') throw new Error(`the stable's end: ${r}`);
+}

@@ -243,7 +243,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('census', census(true), { solid: SOLID, score: 100, touch: 'censusEaten' });
-  book.add('censusEaten', census(false), { solid: SOLID });
+  book.add('censusEaten', census(false));
   // The census clerk, asleep at his post.
   const clerk = () => {
     const p = cobble(113);
