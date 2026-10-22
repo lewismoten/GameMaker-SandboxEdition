@@ -13,6 +13,7 @@ import { billboard, domeHome } from '../art/bigart';
 import { addTicker } from './ticker';
 import { chargerPost, citicar } from '../art/citicar';
 import { R, addBig, addBooths, addFloors, addItems, addWalkways, blank, on, staffDoor, type Floor } from './shared';
+import { addEgg } from './egg';
 
 // ------------------------------------------------------------------ walls and things
 function chromeFence(floor: Floor, dir: 'h' | 'v' | 'post'): Pixels {
@@ -232,5 +233,6 @@ export function suburbSet(): BlockSet {
   addBig(s, 'bbFax', billboard(['FAX-A-PIZZA!', 'HOT PIZZA BY', 'FAX IN 30 SEC'], 'red', 'gold', FLOORS.deck));
   addTicker(s, () => rail('h', 'deck'));
 
+  addEgg(s, 'sidewalk');
   return s;
 }

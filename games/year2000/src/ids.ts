@@ -31,7 +31,12 @@ export const CTR = {
   cover: 23,
   /** A Moon Pass from the Moon Visitor Center. */
   moonpass: 24,
+  /** The felt egg, counted when it is picked up: the launch pad closet's hatch wants it. */
+  tomorrow: 25,
 } as const;
+
+/** The felt egg's block number, the same in every background set (the inventory keeps numbers). */
+export const EGG_BLOCK = 149;
 
 /** Sound effects in Y2K.SND (0-8 are played by Game-Maker for counter changes). */
 export const SND = {

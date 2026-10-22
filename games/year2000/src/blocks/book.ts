@@ -1,7 +1,7 @@
 // Named block sets: blocks are added by name with their attributes, and the names are
 // resolved into Game-Maker block numbers when the set is built.
 import { emptyBlock, type Block } from '../../../../web/src/formats/blocks';
-import type { Pixels } from '../../../kit/pixels';
+import { Pixels } from '../../../kit/pixels';
 
 /** Block attributes by name; next/touch refer to other blocks by name. */
 export interface BlockDef {
@@ -24,7 +24,7 @@ export const SOLID = 15;
 export class BlockSet {
   readonly names: string[] = [];
   readonly pics: Pixels[] = [];
-  private defs: BlockDef[] = [];
+  private defs: (BlockDef | undefined)[] = [];
   constructor(
     readonly count: number,
     readonly transparent: boolean,
@@ -38,6 +38,16 @@ export class BlockSet {
     this.pics.push(px);
     this.defs.push(def);
     return this.names.length - 1;
+  }
+
+  /** Leaves the blocks up to `n` unused (blank, with no attributes), so the next add is block n. */
+  skipTo(n: number): void {
+    if (n > this.count || n < this.names.length) throw new Error(`Can't skip to block ${n}`);
+    while (this.names.length < n) {
+      this.names.push('');
+      this.pics.push(new Pixels(20, 20, 0));
+      this.defs.push(undefined);
+    }
   }
 
   id(name: string): number {
@@ -55,7 +65,7 @@ export class BlockSet {
   }
 
   def(name: string): BlockDef {
-    return this.defs[this.id(name)];
+    return this.defs[this.id(name)] ?? {};
   }
 
   build(): Block[] {

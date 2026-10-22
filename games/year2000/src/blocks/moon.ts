@@ -10,6 +10,7 @@ import { CTR, MON, PAGES_NEEDED } from '../ids';
 import { C } from '../art/pal';
 import { banner, billboard, crater, domeHome } from '../art/bigart';
 import { R, addBig, addBooths, addFloors, addItems, addLasers, addWalkways, blank, on, staffDoor, type Floor } from './shared';
+import { addEgg } from './egg';
 import { mowerDock } from './suburb';
 import { crtTv } from './city';
 
@@ -213,5 +214,6 @@ export function moonSet(): BlockSet {
   s.add('covertable', judgeTable(false, 'COVER'), { solid: SOLID, effect: CTR.cover, eamt: -1, score: 5000, touch: 'judgedone' });
   s.add('podium', podium());
   addBig(s, 'banner', banner('SCIENCE FAIR 2000', 8, 1, 'denim', 'gold'));
+  addEgg(s, 'moon');
   return s;
 }

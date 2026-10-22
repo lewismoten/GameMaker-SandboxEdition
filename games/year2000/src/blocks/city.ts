@@ -10,6 +10,7 @@ import { micro } from '../art/font';
 import { CTR, MON } from '../ids';
 import { C } from '../art/pal';
 import { neonSign, rocket } from '../art/bigart';
+import { addEgg, addHatch } from './egg';
 import { R, addBig, addBooths, addFloors, addItems, addLasers, addWalkways, blank, on, staffDoor, type Floor } from './shared';
 import { mowerDock, pool } from './suburb';
 import { addSignal } from './signal';
@@ -164,6 +165,23 @@ function exchangeWall(): Pixels {
     p.rect(0, y, 20, 1, C('brick', 0));
     for (let x = (y / 5) % 2 ? 0 : 5; x < 20; x += 10) p.rect(x, y, 1, 5, C('brick', 0));
   }
+  return p;
+}
+
+function exchangeGlow(): Pixels {
+  const p = exchangeWall();
+  for (const [x, y] of [
+    [0, 7],
+    [0, 8],
+    [5, 12],
+    [5, 13],
+    [3, 10],
+    [8, 10],
+    [10, 16],
+    [10, 17],
+    [12, 15],
+  ])
+    p.set(x, y, C('teal', 3));
   return p;
 }
 
@@ -343,5 +361,10 @@ export function citySet(): BlockSet {
   s.add('board', boardRamp());
   for (const n of [1, 2, 3, 4]) s.add(`num${n}`, numberSign(n), { solid: SOLID });
   addSignal(s);
+  // The closet beside the launch pad: one brick of its wall is only a hologram, with the
+  // closet's teal light showing through the mortar.
+  s.add('xwallGlow', exchangeGlow());
+  addHatch(s);
+  addEgg(s, 'concrete');
   return s;
 }
