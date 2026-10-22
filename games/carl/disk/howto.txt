@@ -7,10 +7,10 @@ keypad 7 9 1 3) fly the
 diagonals. Flies don't fall:
 let go and you hover.
 
-SPACE: BARREL ROLL. Towels,
-claps and swatters that swing
-at you while you roll MISS,
-and stay missed a moment.
+SPACE: BARREL ROLL. Its
+whoosh flies ahead: a towel,
+clap or swatter it hits will
+MISS, and stay missed a bit.
 
 B: BUZZ, the way you last
 flew. It wakes sleeping ears.

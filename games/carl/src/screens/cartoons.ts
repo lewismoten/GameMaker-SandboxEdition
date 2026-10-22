@@ -208,8 +208,7 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     // 2. the walls: the old clap claps on empty air, Carl smiles from the wall
     (p, k) => {
       const shut = k % 8 >= 5;
-      scaleBlit(p, M(shut ? 'clap1' : 'clap0'), 110, STRIP + 30, 2);
-      scaleBlit(p, M(shut ? 'clapB1' : 'clapB0'), 150, STRIP + 30, 2);
+      scaleBlit(p, M(shut ? 'clap1' : 'clap0'), 130, STRIP + 30, 2);
       scaleBlit(p, sprite(cast.carl, 'grin'), 230, STRIP + 20 + (k % 4 < 2 ? 0 : 2), 2);
       if (shut) words(p, 150, STRIP + 12, 'CLAP!');
       if (k >= 16) words(p, 250, STRIP + 4, ':)');
@@ -267,7 +266,7 @@ export function howtoFli(cast: Cast): Uint8Array {
       const carl = rolling ? turned(sprite(cast.carl, 'rollSide'), k - 10) : sprite(cast.carl, k >= 18 ? 'grin' : `side${k % 2}`);
       scaleBlit(p, carl, 120, 70 - (rolling ? Math.round(Math.sin(((k - 10) / 8) * Math.PI * 2) * 12) : 0), 3);
       if (k >= 14 && k < 26) say(p, pal, 214, 40, 'MISSED!');
-      caption(p, pal, ['SPACE: barrel roll.', 'Swatting things miss.']);
+      caption(p, pal, ['SPACE: barrel roll. Its whoosh', 'makes swatting things miss.']);
     } else {
       // the buzz flies off and an ear twitches
       const u = k - 30;

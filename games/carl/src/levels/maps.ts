@@ -147,8 +147,10 @@ export function theCouch(book: BlockBook): Level {
   m.mon(MON.towel, 39, 5).mon(MON.towel, 43, 2);
   m.set(41, 1, 'donutW');
   m.set(44, 5, 'shelfTop').set(44, 4, 'candyP');
-  m.set(46, 10, 'sideTable').set(46, 9, 'candy').set(49, 10, 'plant').set(51, 10, 'pizza');
-  m.mon(MON.towel, 50, 6);
+  m.set(46, 10, 'sideTable').set(46, 9, 'candy').set(50, 10, 'plant').set(51, 10, 'pizza');
+  // a tall bookcase right up to the ceiling but for one gap, where the towel snaps (roll!)
+  m.set(48, 2, 'shelfTop').col(48, 3, 10, 'shelf');
+  m.mon(MON.towel, 48, 1);
   // the floor lamp: eight snacks and it's Carl's
   lamp(m, 54, 4);
   m.link(54, 4, 'next');
@@ -181,9 +183,9 @@ export function theWalls(book: BlockBook): Level {
   m.set(7, 4, 'recipe').set(14, 4, 'calendar').set(18, 6, 'clock');
   // the dish towel over the counter
   m.mon(MON.towel, 11, 4);
-  // the old clap guards the gap between the cabinets and the counter
-  m.fill(23, 1, 2, 5, 'cabinet').fill(23, 8, 2, 1, 'counter').fill(23, 9, 2, 2, 'cabinetLow');
-  m.mon(MON.clapA, 23, 6).mon(MON.clapB, 24, 6).mon(MON.clapA, 23, 7).mon(MON.clapB, 24, 7);
+  // a wall of cabinets, the old clap in the gap at the floor (roll!)
+  m.col(23, 1, 9, 'cabinet').set(23, 8, 'counter').col(23, 9, 9, 'cabinetLow');
+  m.mon(MON.clap, 23, 10);
   m.set(28, 5, 'picture').set(33, 3, 'calendar').set(31, 8, 'recipe');
   m.mon(MON.swatter, 30, 2);
   m.set(35, 10, 'donutT');
@@ -191,7 +193,7 @@ export function theWalls(book: BlockBook): Level {
   m.fill(38, 3, 2, 8, 'fridge').set(38, 2, 'fridgeTop').set(39, 2, 'fridgeTop').set(38, 6, 'fridgeArt');
   m.mon(MON.swatter, 38, 1).mon(MON.towel, 36, 6);
   m.set(43, 4, 'clock').set(45, 7, 'picture').set(42, 9, 'calendar');
-  m.mon(MON.clapA, 46, 9).mon(MON.clapB, 47, 9);
+  m.mon(MON.clap, 46, 7);
   // the kitchen door: six smiles
   m.col(50, 1, 7, 'side').set(50, 8, 'doorFrame').set(50, 9, 'door').set(50, 10, 'doorFrame');
   m.link(50, 9, 'next');
@@ -341,9 +343,9 @@ export function theAux(book: BlockBook): Level {
   m.set(46, 10, 'bucket');
   m.mon(MON.towel, 32, 4);
   m.set(36, 4, 'shelfTop').set(36, 3, 'donutW');
-  // the last stand: shelves, and the old clap in the gap over them
-  m.fill(40, 5, 2, 6, 'shelf').set(40, 5, 'shelfTop').set(41, 5, 'shelfTop').fill(40, 1, 2, 2, 'shelf');
-  m.mon(MON.clapA, 40, 3).mon(MON.clapB, 41, 3).mon(MON.clapA, 40, 4).mon(MON.clapB, 41, 4);
+  // the last stand: a bookcase to the ceiling but for one gap, and the old clap in it (roll!)
+  m.set(40, 2, 'shelfTop').col(40, 3, 10, 'shelf');
+  m.mon(MON.clap, 40, 1);
   m.mon(MON.swatter, 45, 3);
   // the stereo, and the aux cord
   m.col(48, 9, 10, 'speaker').col(51, 9, 10, 'speaker').set(49, 10, 'sideTable').set(50, 10, 'sideTable').set(49, 9, 'receiver').set(50, 9, 'deck');

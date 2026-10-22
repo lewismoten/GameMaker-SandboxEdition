@@ -8,11 +8,11 @@ export const MON = {
   missTowel: 1,
   /** A big hand reaching down into the snack bowl, and back up. */
   reach: 2,
-  /** The old clap: two hands that come together and part (A from the left, B from the right). */
-  clapA: 3,
-  clapB: 4,
-  missClapA: 5,
-  missClapB: 6,
+  /** The old clap: two hands, above and below, that come together and part. */
+  clap: 3,
+  missClap: 4,
+  /** Where Carl's barrel-roll whoosh hits something: a whirl that makes everything there miss. */
+  whirl: 5,
   /** A rolled-up magazine swatting down and up. */
   swatter: 7,
   missSwatter: 8,
@@ -62,7 +62,7 @@ export const MON = {
   /** Brother Camel (from another song), resting in the documentary's desert (A his humps, B his head). */
   camelA: 33,
   camelB: 34,
-  /** Carl's barrel roll: a whirl round him that makes swatting things miss (power 160). */
+  /** Carl's barrel roll: a whoosh of wind that flies ahead the way he last flew (power 160) and makes swatting things miss. */
   whoosh: 35,
   /** Carl's buzz: a wave that flies the way he last flew (power 110) and wakes what's asleep. */
   buzz: 36,

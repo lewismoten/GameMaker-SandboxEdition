@@ -3,8 +3,8 @@
 //
 // Nothing falls in Carl's world (open air has no gravity), so every arrow just flies, and Q/E/Z/C
 // (or keypad 7/9/1/3) fly the diagonals (Game-Maker follows one key at a time). The barrel roll
-// (Space) leaves a whoosh where he was (power 160) that makes the swatting things miss: they turn
-// into a "MISS" for a while, then come back. The buzz (B) flies off the way he last flew (power
+// (Space) throws a whoosh of wind ahead the way he last flew (power 160) that makes the swatting
+// things miss: they turn into a "MISS" for a while, then come back. The buzz (B) flies off the way he last flew (power
 // 110) and wakes what's asleep: an ear buzzed twitches, and flying into a twitching ear counts.
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
 import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
@@ -74,15 +74,16 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.upRight9], side(DIAG, -DIAG), { key: KEY.pgup, sound: SND.fly });
   set(S[SEQ.downLeft1], side(-DIAG, DIAG), { key: KEY.end, sound: SND.fly });
   set(S[SEQ.downRight3], side(DIAG, DIAG), { key: KEY.pgdn, sound: SND.fly });
-  // the barrel roll: a whoosh where he is, and a quick loop (it ends where it began)
+  // the barrel roll: the whoosh flies off ahead, and he turns right over where he is (no
+  // moving, so the way he last flew stays the way he was going)
   set(
     S[SEQ.roll],
     [
       birth(MON.whoosh),
-      f({ pic: 'rollSide', y: -5, orient: 0x10 }),
-      f({ pic: 'rollSide', x: 5, orient: 0x20 }),
-      f({ pic: 'rollSide', y: 5, orient: 0x30 }),
-      f({ pic: 'rollSide', x: -5, orient: 0x00 }),
+      f({ pic: 'rollSide', orient: 0x10 }),
+      f({ pic: 'rollSide', orient: 0x20 }),
+      f({ pic: 'rollSide', orient: 0x30 }),
+      f({ pic: 'rollSide', orient: 0x00 }),
       f({ pic: 'grin', pause: 2 }),
     ],
     { key: KEY.space, sound: SND.roll, norepeat: 1, ground: 1, jstkBut: 1 },
@@ -146,10 +147,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.towel] = swing('towel0', 'towel1', MON.missTowel, 0);
   set[MON.missTowel] = missed(MON.towel);
   set[MON.reach] = mon(anim('reach0', 'reach1', 10), { power: 200, thru: 0 }, [corner(0, 0, 1), corner(0, 1, 1, 1), corner(0, 0, 1, 3)]);
-  set[MON.clapA] = swing('clap0', 'clap1', MON.missClapA, 6);
-  set[MON.clapB] = swing('clapB0', 'clapB1', MON.missClapB, 6);
-  set[MON.missClapA] = missed(MON.clapA);
-  set[MON.missClapB] = missed(MON.clapB);
+  set[MON.clap] = swing('clap0', 'clap1', MON.missClap, 6);
+  set[MON.missClap] = missed(MON.clap);
   set[MON.swatter] = swing('swat0', 'swat1', MON.missSwatter, 12);
   set[MON.missSwatter] = missed(MON.swatter);
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 6), { power: 200, thru: 0 }, [corner(0, 0, 3), corner(0, -2, 3, 0), corner(0, 0, 2, 0), corner(0, 0, 1)]);
@@ -191,8 +190,10 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
   set[MON.camelA] = mon(anim('camelA0', 'camelA1', 30), { power: 200, thru: 1 });
   set[MON.camelB] = mon(anim('camelB0', 'camelB1', 30), { power: 200, thru: 1 });
-  // Carl's own: the whoosh stays where he rolled; the buzz flies the way he last flew
-  set[MON.whoosh] = mon(anim('whoosh0', 'whoosh1', 1), { power: 160, thru: 0, end: 10 });
+  // Carl's own: the whoosh and the buzz fly off the way he last flew; where the whoosh hits
+  // something it leaves a whirl that makes whatever else is there miss too
+  set[MON.whoosh] = mon(anim('whoosh0', 'whoosh1', 1), { power: 160, thru: 0, end: 16, towards: 5, newmon: MON.whirl });
+  set[MON.whirl] = mon(anim('whoosh1', 'whoosh0', 1), { power: 160, thru: 0, end: 8 });
   set[MON.buzz] = mon(anim('buzz0', 'buzz1', 2), { power: 110, thru: 1, end: 16, towards: 6 });
   return set;
 }

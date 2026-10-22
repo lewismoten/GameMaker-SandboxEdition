@@ -190,20 +190,23 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('reach0', reach(0), hurt(8));
   book.add('reach1', reach(1), hurt(8));
-  // the old clap: a big flat hand seen edge-on, open at the side of its cell, or slammed to the middle
+  // the old clap: two big hands, one above and one below, open or slammed together
   const clap = (shut: boolean) => {
     const p = P();
-    const x = shut ? 14 : 1;
-    p.rect(x, 2, 5, 16, c('skin', 2)).rect(x, 2, 1, 16, c('skin', 3)).rect(x + 4, 2, 1, 16, c('skin', 1));
-    for (let y = 3; y < 10; y += 2) p.set(x + 4, y, c('skin', 0));
-    p.rect(x + 1, 0, 3, 3, c('skin', 2)).rect(x - 1, 14, 2, 4, c('skin', 2));
-    if (shut) for (const [dx, dy] of [[-2, 4], [-3, 10], [-2, 16]]) p.line(x + dx, dy, x + dx - 3, dy, c('white', 3));
+    const gap = shut ? 0 : 5;
+    for (const [y0, flip] of [
+      [5 - gap, false],
+      [10 + gap, true],
+    ] as const) {
+      p.rect(2, y0, 16, 5, c('skin', 2)).rect(2, flip ? y0 + 4 : y0, 16, 1, c('skin', 3));
+      for (let x = 5; x < 18; x += 3) p.set(x, flip ? y0 : y0 + 4, c('skin', 0));
+      p.rect(flip ? 0 : 16, flip ? y0 + 1 : y0 - 1, 4, 3, c('skin', 2));
+    }
+    if (shut) for (const [x, y] of [[0, 9], [19, 10], [1, 5], [18, 14]]) p.set(x, y, c('white', 3));
     return done(p);
   };
   book.add('clap0', clap(false), hurt(12));
   book.add('clap1', clap(true), hurt(12));
-  book.add('clapB0', clap(false).flipX(), hurt(12));
-  book.add('clapB1', clap(true).flipX(), hurt(12));
   // a rolled-up magazine, raised and slapped down
   const swatter = (f: number) => {
     const p = P();
@@ -477,12 +480,12 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('spider1', spider(1), hurt(10, 0));
 
   // ---- Carl's own moves ----
-  // the barrel roll's whoosh: swirl lines round where he was
+  // the barrel roll's whoosh: a gust of swirl, a whole block of it
   const whoosh = (f: number) => {
     const p = P();
-    for (let a = 0; a < Math.PI * 1.6; a += 0.05) {
-      const r = 6 + a * 1.4;
-      p.set(10 + Math.cos(a + f * 1.5) * r * 0.9, 10 + Math.sin(a + f * 1.5) * r * 0.6, c('wing', 2));
+    for (let a = 0; a < Math.PI * 4; a += 0.04) {
+      const r = 1 + a * 0.75;
+      p.set(10 + Math.cos(a + f * 1.6) * r, 10 + Math.sin(a + f * 1.6) * r, c('wing', a > 8 ? 2 : 1));
     }
     return p;
   };
