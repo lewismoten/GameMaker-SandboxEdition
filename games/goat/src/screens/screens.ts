@@ -92,7 +92,7 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     outlined(p, 160 - textWidth('FROM THE LEFT') / 2, 30, 'FROM THE LEFT', c('gold', 3), ink);
     p.rect(56, 92, 208, 90, c('wood', 0)).rect(58, 94, 204, 86, c('parch', 1));
     p.rect(62, 98, 196, 78, c('parch', 4)).frame(62, 98, 196, 78, c('parch', 2));
-    scaleBlit(p, side, 258, 136, 3, true);
+    scaleBlit(p, side, 272, 150, 2, true);
     save('menu.gif', p);
   }
 
