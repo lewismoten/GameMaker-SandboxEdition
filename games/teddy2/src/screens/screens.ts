@@ -11,12 +11,13 @@ import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
 import { docLeo, type Costume } from '../sprites/people';
-import { citiCar, propSprite } from '../sprites/klown';
+import { citiCar } from '../sprites/klown';
 import { renderRegion } from '../art/render';
 import type { Level } from '../levels/level';
 import { backyardSong, lostSong, menuSong, storySong, titleSong, wonSong } from '../sound/music';
 import { CREDITS, EGG, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { drawEgg } from '../sprites/egg';
+import { gwinnSits } from '../sprites/klubfolk';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 
@@ -150,14 +151,15 @@ export function menuScreen(): Pixels {
 export function titleScreen(): Pixels {
   const p = landscape(7);
   logo(p, 6);
-  leoBig(p, 136, 92, 2, undefined, true);
-  teddyBig(p, 'frontBeg', 40, 108, 4);
-  gwinnBig(p, 'gwinn1', 200, 112, 4);
-  // Doc Leo's suitcase in Gwinn's mouth, a costume piece popping out
-  p.rect(272, 140, 34, 24, c('wood', 1)).rect(272, 140, 34, 3, c('wood', 3)).rect(272, 151, 34, 2, c('gold', 1)).rect(283, 135, 12, 5, c('wood', 0));
-  scaleBlit(p, propSprite('nose'), 276, 100, 2);
-  scaleBlit(p, propSprite('tie'), 290, 112, 2);
-  centered(p, 186, '(C) 1996 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
+  leoBig(p, 132, 92, 2, undefined, true);
+  teddyBig(p, 'frontSniff', 36, 110, 4);
+  gwinnBig(p, 'gwinnRun1', 214, 118, 4);
+  // a trail of confetti across the grass, and THE CHEZ waiting
+  for (let i = 0; i < 30; i++) p.rect(100 + i * 7, 180 + ((i * 5) % 9), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
+  const car = new Pixels(40, 40, CLEAR);
+  citiCar(car, 0, 0);
+  scaleBlit(p, car, 262, 128, 1);
+  centered(p, 190, '(C) 1996 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
 
@@ -178,11 +180,7 @@ export function card(l: Level, n: number, lines: string[]): Pixels {
 }
 
 /** The cartoons that tell the story before the story pages (built in cartoons.ts). */
-const STORY_REEL: [string, number][] = [
-  ['leo.fli', 0],
-  ['car.fli', 0],
-  ['intro.fli', 0],
-];
+const STORY_REEL: [string, number][] = [['morning.fli', 0]];
 
 /** "Starring...": the cast in close-up before the credits (built in cast.ts). */
 const CAST_REEL: [string, number][] = [['cast.fli', 0]];
@@ -194,14 +192,11 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
 
   put('title.gif', gif(titleScreen()));
   put(SANDLOGO, sandLogoFli());
-  put('intro.fli', introFli());
   // The story told as a slide show of cartoons: Doc Leo's clown act, his CitiCar, then Gwinn.
   // (after the Sandbox Software logo)
   lst('title.lst', [
     [SANDLOGO, 0],
-    ['leo.fli', 0],
-    ['car.fli', 0],
-    ['intro.fli', 0],
+    ['morning.fli', 0],
     ['title.gif', 10],
   ]);
   put('menu.gif', gif(menuScreen()));
@@ -217,9 +212,9 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   put('loadgame.gif', gif(page('LOAD A GAME', 13)));
   put('savegame.gif', gif(page('SAVE THIS GAME', 17)));
   put('won.gif', gif(...wonScreen()));
-  put('wontxt.gif', gif(page('THE BIG SHOW', 19)));
+  put('wontxt.gif', gif(page('BEST IN SHOW', 19)));
   put('won.txt', WON);
-  lst('won.lst', [['won.gif', 8], ['parade.fli', 0], ['wontxt.gif', 0], ['won.txt']]);
+  lst('won.lst', [['won.gif', 8], ['finale.fli', 0], ['wontxt.gif', 0], ['won.txt']]);
   put('lost.gif', gif(lostScreen()));
   put('losttxt.gif', gif(page('TUCKERED OUT', 23)));
   put('lost.txt', LOST);
@@ -254,29 +249,34 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   return out;
 }
 
-/** The ending: Teddy takes a bow at the Big Show. Returns the picture and its palette. */
+/**
+ * The ending: the dog show ring under the spotlight, Gwinn sitting (!) with her blue ribbon,
+ * Teddy beside her, Doc Leo applauding; a real snapshot of the two of them taped up beside
+ * the ribbon board. Returns the picture and its palette.
+ */
 export function wonScreen(): [Pixels, Uint8Array] {
   const p = new Pixels(W, H, c('ink', 0));
-  // the big top inside: stripes and a spotlight
-  for (let x = 0; x < W; x++) for (let y = 0; y < 150; y++) p.set(x, y, Math.floor((x + (150 - y) * 0.4) / 20) % 2 ? c('tent', 1) : c('tent', 0));
+  // the barn's red boards, a spotlight, the ring
+  for (let x = 0; x < W; x++) for (let y = 0; y < 150; y++) p.set(x, y, Math.floor(x / 16) % 2 ? c('red', 0) : c('tent', 0));
   for (let y = 0; y < 150; y++) {
-    const half = 20 + y * 0.6;
-    for (let x = Math.floor(160 - half); x < 160 + half; x++) if ((x + y) % 2 === 0) p.set(x, y, c('glow', 3));
+    const half = 30 + y * 0.6;
+    for (let x = Math.floor(190 - half); x < 190 + half; x++) if ((x + y) % 2 === 0) p.set(x, y, c('glow', 3));
   }
-  p.rect(0, 150, W, 50, c('wood', 2));
-  for (let x = 0; x < W; x += 24) p.rect(x, 150, 1, 50, c('wood', 0));
-  blob(p, 160, 152, 60, 8, SP.r('glow'), 1, 3);
-  leoBig(p, 176, 70, 2, undefined, true);
-  teddyBig(p, 'frontReach', 104, 92, 3);
-  gwinnBig(p, 'gwinnRoll', 220, 126, 2);
+  p.rect(0, 150, W, 50, c('dirt', 2));
+  blob(p, 190, 152, 70, 8, SP.r('glow'), 1, 3);
+  leoBig(p, 236, 70, 2, undefined, true);
+  teddyBig(p, 'frontBeg', 128, 92, 3);
+  scaleBlit(p, gwinnSits(false, 1), 180, 90, 3);
+  // the blue ribbon on her collar
+  p.disc(212, 136, 6, c('blue', 2)).disc(212, 136, 3, c('gold', 2)).rect(208, 142, 3, 10, c('blue', 2)).rect(214, 142, 3, 10, c('blue', 2));
   const R = rng(4);
   for (let i = 0; i < 90; i++) p.rect(Math.floor(R() * W), Math.floor(R() * 150), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
-  outlined(p, 64, 166, 'TA-DAAA!', c('yellow', 3), c('ink', 0), 3);
-  // taped to the tent pole: a real snapshot of Teddy and his person at the town gazebo
-  const shot = tone(resample(loadScan('gazebo'), 88, 0, [0.04, 0.14, 1, 1]), (v) => v.map((x) => (x - 128) * 1.2 + 120) as [number, number, number]);
-  const at = polaroid(p, 14, 24, shot.w, shot.h, { paper: c('cream', 3), edge: c('ink', 0), shadow: c('ink', 0), tape: c('yellow', 3) });
-  micro(p, Math.round(at.cx - microWidth('TEDDY & LEWIS') / 2), Math.round(at.cy - 2), 'TEDDY & LEWIS', c('ink', 0));
-  return [p, pastePhoto(p, SP.pal, shot, 14, 24).pal];
+  outlined(p, 110, 166, 'GWINN SAT!', c('yellow', 3), c('ink', 0), 2);
+  // taped up beside the ribbon board: a real snapshot of Teddy and Gwinn
+  const shot = tone(resample(loadScan('gwinn'), 92, 0, [0.0, 0.05, 1, 0.95]), (v) => v.map((x) => (x - 128) * 1.15 + 124) as [number, number, number]);
+  const at = polaroid(p, 12, 22, shot.w, shot.h, { paper: c('cream', 3), edge: c('ink', 0), shadow: c('ink', 0), tape: c('yellow', 3) });
+  micro(p, Math.round(at.cx - microWidth('TEDDY & GWINN') / 2), Math.round(at.cy - 2), 'TEDDY & GWINN', c('ink', 0));
+  return [p, pastePhoto(p, SP.pal, shot, 12, 22).pal];
 }
 
 /** Game over: Teddy asleep in his doghouse under the stars. */
@@ -301,74 +301,8 @@ export function lostScreen(): Pixels {
 }
 
 /**
- * The intro cartoon (FLI): the backyard at dawn; Gwinn bounds across with Doc Leo's
- * suitcase, costume pieces flying out; Teddy pops out of his doghouse and gives chase;
- * then the logo drops in.
- */
-export function introFli(): Uint8Array {
-  const frames: Uint8Array[] = [];
-  const bg = landscape(2);
-  // the doghouse at left
-  for (let y = 0; y < 30; y++) bg.rect(54 - y, 110 + y, y * 2 + 8, 1, c('red', 1 + (y % 3 === 0 ? 0 : 1)));
-  bg.rect(26, 140, 64, 34, c('wood', 2));
-  blob(bg, 58, 160, 12, 14, [c('ink', 0)], 0, 0);
-  bg.rect(46, 160, 24, 14, c('ink', 0));
-  const add = (p: Pixels, n = 1) => {
-    for (let i = 0; i < n; i++) frames.push(Uint8Array.from(p.px));
-  };
-  const props = ['hat', 'tie', 'shoes', 'chicken', 'nose'];
-  const caption = (p: Pixels, words: string) => centered(p, 10, words, c('paint', 3), 1, c('ink', 0));
-  // 1. Gwinn runs across, props flying
-  for (let f = 0; f < 26; f++) {
-    const p = new Pixels(W, H);
-    p.px.set(bg.px);
-    const gx = -60 + f * 16;
-    gwinnBig(p, f % 2 ? 'gwinnRun1' : 'gwinnRun2', gx, 128, 3);
-    // the suitcase in her mouth
-    p.rect(gx + 50, 150, 16, 12, c('wood', 1)).rect(gx + 54, 147, 8, 3, c('wood', 0));
-    props.forEach((name, i) => {
-      const t = f - 4 - i * 4;
-      if (t < 0) return;
-      const px = gx + 40 - t * 9;
-      const py = 150 - t * 14 + t * t * 1.4;
-      if (py < H) scaleBlit(p, propSprite(name), px, py, 2);
-    });
-    if (f > 14) teddyBig(p, 'frontTilt', 28, 128, 3);
-    caption(p, f < 13 ? 'THE MORNING OF THE BIG SHOW...' : "GWINN! DOC LEO'S COSTUME!");
-    add(p);
-  }
-  // 2. Teddy barks after her
-  for (let f = 0; f < 10; f++) {
-    const p = new Pixels(W, H);
-    p.px.set(bg.px);
-    teddyBig(p, f % 4 < 2 ? 'frontBark' : 'front', 28, 128, 3);
-    if (f % 4 < 2) outlined(p, 92, 120, 'WOOF!', c('yellow', 3), c('ink', 0), 2);
-    caption(p, 'NO NOSE, NO SHOW!');
-    add(p);
-  }
-  // 3. ...and runs after her
-  for (let f = 0; f < 18; f++) {
-    const p = new Pixels(W, H);
-    p.px.set(bg.px);
-    teddyBig(p, f % 2 ? 'walk1' : 'walk2', 28 + f * 18, 140, 3);
-    caption(p, 'TEDDY TO THE RESCUE!');
-    add(p);
-  }
-  // 4. The logo drops in, bouncing
-  const title = titleScreen();
-  for (let f = 0; f < 14; f++) {
-    const p = landscape(7);
-    const drop = Math.round(-90 * Math.cos((f / 13) * Math.PI * 2.5) * (1 - f / 13));
-    logo(p, 6 + Math.min(0, drop) + (drop > 0 ? Math.round(drop / 6) : 0));
-    add(p);
-  }
-  add(title, 3);
-  return encodeFli(frames, SP.pal, { speed: 6 });
-}
-
-/**
- * Between stops (an FLI): Doc Leo's little red CitiCar hums across town (it is electric:
- * no exhaust, just a whirr), Pockets at the wheel and Teddy's head out of the back window.
+ * Between stops (an FLI): THE CHEZ, Doc Leo's little red CitiCar, hums on along Gwinn's
+ * trail (it is electric: no exhaust, just a whirr), Teddy's head out of the back window.
  */
 export function driveFli(): Uint8Array {
   const frames: Uint8Array[] = [];
@@ -377,19 +311,21 @@ export function driveFli(): Uint8Array {
   for (let x = 0; x < W; x += 40) bg.rect(x + 8, 182, 20, 3, c('yellow', 3));
   const carPic = new Pixels(40, 40, CLEAR);
   citiCar(carPic, 0, 0);
+  const leoHead = docLeo(undefined).crop(0, 0, 20, 16);
   for (let f = 0; f < 44; f++) {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
     const x = -130 + f * 11;
     const bob = f % 2;
     scaleBlit(p, carPic, x, 66 + bob, 3);
-    // Pockets' bowler behind the door window; Teddy's head out of the back window, ears flapping
-    p.rect(x + 40, 104 + bob, 16, 3, c('ink', 0)).rect(x + 43, 97 + bob, 10, 7, c('ink', 0));
+    // Doc Leo at the wheel behind the door window; Teddy's head out of the back window, ears flapping
+    scaleBlit(p, leoHead, x + 34, 86 + bob, 2);
     scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x - 4, 92 + bob, 2);
     // the electric whirr
     for (let k = 0; k < 3; k++) p.rect(x - 14 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));
     if (f > 16 && f < 30) outlined(p, x + 124, 84, 'HONK!', c('yellow', 3), c('ink', 0), 2);
-    centered(p, 12, f < 22 ? 'OFF TO THE NEXT STOP!' : "DOC LEO'S CITICAR: 100% ELECTRIC", c('paint', 3), 1, c('ink', 0));
+    centered(p, 12, f < 22 ? "ON GWINN'S TRAIL!" : 'THE CHEZ: 100% ELECTRIC', c('paint', 3), 1, c('ink', 0));
+    if (f >= 22) centered(p, 24, '(ABOUT A MILE AN HOUR OF CHARGE)', c('paint', 3), 1, c('ink', 0));
     frames.push(Uint8Array.from(p.px));
   }
   return encodeFli(frames, SP.pal, { speed: 4 });

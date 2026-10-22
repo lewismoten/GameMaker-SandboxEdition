@@ -1,32 +1,19 @@
-// The cartoons (FLIs) that tell the story as a slide show, before the title poster and the
-// story pages: Doc Leo at home practicing his clown act (balloon animals, a magic trick, a
-// parade strut), then off to the Klown Klub in his red CitiCar; then intro.fli (Gwinn and
-// the suitcase). And at the end, the Klown Klub parade with Teddy riding on top.
+// The cartoons (FLIs): the morning after the Big Show (before the title poster and the story
+// pages), Gwinn's rides between her MEANWHILE... levels (the hay wagon, the Fair's ride truck),
+// and at the end, fireworks and the Fair parade with THE CHEZ in front.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { Pixels } from '../../../kit/pixels';
-import { CLEAR, blob, centered, klubArt, outlined, scaleBlit } from '../art/draw';
-import { FX } from '../sprites/fx';
+import { CLEAR, blob, centered, klubArt, micro, outlined, scaleBlit } from '../art/draw';
 import { GWINN } from '../sprites/gwinn';
 import { citiCar } from '../sprites/klown';
-import { dove, marcher } from '../sprites/magic';
 import { docLeo, FULL } from '../sprites/people';
-import { SP, landscape } from './screens';
+import { SP, landscape, logo, titleScreen } from './screens';
 import { castFli } from './cast';
 import { POSES } from '../sprites/teddy';
 
 const c = (n: string, k: number) => SP.c(n, k);
 const W = 320;
 const H = 200;
-
-/** The backyard at dawn with Teddy's doghouse, as in intro.fli. */
-function backyard(): Pixels {
-  const bg = landscape(2);
-  for (let y = 0; y < 30; y++) bg.rect(54 - y, 110 + y, y * 2 + 8, 1, c('red', 1 + (y % 3 === 0 ? 0 : 1)));
-  bg.rect(26, 140, 64, 34, c('wood', 2));
-  blob(bg, 58, 160, 12, 14, [c('ink', 0)], 0, 0);
-  bg.rect(46, 160, 24, 14, c('ink', 0));
-  return bg;
-}
 
 class Reel {
   frames: Uint8Array[] = [];
@@ -45,125 +32,118 @@ class Reel {
 
 const caption = (p: Pixels, words: string, y = 10) => centered(p, y, klubArt(words), c('paint', 3), 1, c('ink', 0));
 
-/** A long balloon being blown up and twisted into a dog: 0..1. */
-function balloon(p: Pixels, x: number, y: number, t: number): void {
-  if (t < 0.5) {
-    const len = Math.round(4 + t * 2 * 40);
-    for (let i = 0; i < len; i++) blob(p, x + i, y - i * 0.4, 3, 3, SP.r('pink'), 1, 3);
-  } else scaleBlit(p, FX.poodle1, x - 4, y - 30, 2);
+/** Doc Leo's living room at dawn: wallpaper, the window, Teddy's bed and Gwinn's (empty). */
+function livingRoom(): Pixels {
+  const p = new Pixels(W, H);
+  for (let y = 0; y < 150; y++) for (let x = 0; x < W; x++) p.set(x, y, Math.floor(x / 10) % 2 ? c('peach', 2) : c('peach', 3));
+  // the window: a pink dawn outside
+  p.rect(206, 30, 80, 64, c('paint', 3));
+  for (let y = 34; y < 90; y++) p.rect(210, y, 72, 1, c('dusk', 4 + Math.floor((y - 34) / 8)));
+  p.rect(244, 34, 4, 56, c('paint', 3)).rect(210, 60, 72, 4, c('paint', 3));
+  p.rect(0, 150, W, 50, c('wood', 2));
+  for (let x = 0; x < W; x += 32) p.rect(x, 150, 1, 50, c('wood', 0));
+  p.rect(0, 150, W, 3, c('wood', 4));
+  // the beds: Teddy's little blue one, Gwinn's big purple one (empty but for a dent)
+  blob(p, 70, 166, 34, 12, SP.r('blue'), 0, 3);
+  blob(p, 70, 164, 22, 6, SP.r('blue'), 1, 2);
+  blob(p, 190, 168, 48, 16, SP.r('purple'), 0, 3);
+  blob(p, 190, 166, 34, 8, SP.r('purple'), 0, 1);
+  micro(p, 172, 184, 'GWINN', c('paint', 3));
+  // confetti on the floor, in a trail toward the doggy door at the right
+  for (let i = 0; i < 40; i++) p.rect(150 + i * 4 + (i % 3) * 2, 176 + ((i * 7) % 18), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
+  p.rect(292, 140, 26, 34, c('ink', 0)).rect(294, 142, 22, 30, c('wood', 1)).rect(294, 142, 22, 4, c('wood', 3));
+  return p;
 }
 
-/** Clip 1: Doc Leo practices in the backyard: a balloon dog, a magic trick, a parade strut. */
-export function leoFli(): Uint8Array {
-  const r = new Reel(backyard());
-  const leo = (p: Pixels, wave = false, x = 150, y = 92) => scaleBlit(p, docLeo(FULL, wave), x, y, 2);
-  const teddy = (p: Pixels, pose: string) => scaleBlit(p, POSES[pose], 100, 134, 2);
-  // the balloon dog
-  for (let f = 0; f < 22; f++)
+/**
+ * The opening cartoon: the morning after the Big Show. Teddy wakes; Gwinn's bed is empty;
+ * a trail of confetti leads out the doggy door; Teddy sniffs it. Doc Leo comes in with a
+ * letter: the Klown Klub is booked at the Fair tonight. Then the logo drops in.
+ */
+export function morningFli(): Uint8Array {
+  const r = new Reel(livingRoom());
+  const teddy = (p: Pixels, pose: string, x = 46, flip = false) => scaleBlit(p, POSES[pose], x, 118, 3, flip);
+  for (let f = 0; f < 16; f++)
     r.frame((p) => {
-      leo(p);
-      teddy(p, f < 16 ? 'front' : 'frontBeg');
-      balloon(p, 186, 128, f / 16);
-      if (f >= 16) outlined(p, 222, 70, 'SQUEAK!', c('pink', 3), c('ink', 0), 1);
-      caption(p, 'DOC LEO IS A HOBO CLOWN.');
-      caption(p, 'HE TWISTS BALLOON ANIMALS...', 22);
+      teddy(p, 'sleep');
+      if (f % 4 < 2) outlined(p, 110, 104 - (f % 8), 'Z', c('paint', 3), c('ink', 0), 2);
+      caption(p, 'THE MORNING AFTER');
+      caption(p, 'THE BIG SHOW...', 22);
     });
-  // the magic trick: a tap of the wand on his hat, and doves fly out
-  for (let f = 0; f < 22; f++)
-    r.frame((p) => {
-      leo(p, f > 4);
-      teddy(p, f > 6 ? 'frontTilt' : 'front');
-      if (f <= 6) p.line(186, 104, 172 + (f % 2) * 2, 92, c('ink', 0)).rect(171 + (f % 2) * 2, 90, 3, 3, c('paint', 3));
-      if (f === 5 || f === 6) for (let k = 0; k < 8; k++) p.set(170 + Math.round(Math.cos(k) * 10), 90 + Math.round(Math.sin(k) * 8), c('yellow', 3));
-      for (let d = 0; d < 3; d++) {
-        const t = f - 6 - d * 4;
-        if (t > 0) scaleBlit(p, dove(t % 2), 160 + t * 6 + d * 10, 86 - t * 6 + d * 4, 2);
-      }
-      caption(p, 'DOC LEO IS A HOBO CLOWN.');
-      caption(p, '...DOES MAGIC TRICKS...', 22);
-    });
-  // the parade strut: marching on the spot, the rubber chicken squawking, Teddy marching along
   for (let f = 0; f < 18; f++)
     r.frame((p) => {
-      leo(p, f % 4 < 2, 150, 92 - (f % 2) * 2);
-      scaleBlit(p, POSES[f % 2 ? 'walk1' : 'walk2'], 100, 134 - (f % 2) * 2, 2);
-      if (f % 4 < 2) outlined(p, 200, 76, 'BAWK!', c('yellow', 3), c('ink', 0), 1);
-      caption(p, 'DOC LEO IS A HOBO CLOWN.');
-      caption(p, '...AND MARCHES IN EVERY PARADE.', 22);
+      teddy(p, f < 4 ? 'front' : f < 10 ? 'frontTilt' : 'front');
+      if (f >= 10) outlined(p, 168, 110, '?', c('yellow', 3), c('ink', 0), 3);
+      caption(p, "GWINN'S BED IS EMPTY.");
+      if (f >= 6) caption(p, 'HER PINK COLLAR IS GONE.', 22);
     });
-  r.frame((p) => {
-    leo(p, true);
-    teddy(p, 'frontBeg');
-    caption(p, "TONIGHT IS THE KLOWN KLUB'S");
-    caption(p, 'BIG SHOW, AND HE IS THE STAR!', 22);
-  }, 14);
-  return r.fli(9);
-}
-
-/** Clip 2: Doc Leo goes ahead to the Klub in his CitiCar; his costume suitcase waits on the step. */
-export function carFli(): Uint8Array {
-  const bg = backyard();
-  // the drive along the bottom, and the suitcase by the back step
-  bg.rect(0, 176, W, 24, c('asphalt', 1));
-  bg.rect(110, 160, 26, 18, c('wood', 1)).rect(110, 160, 26, 3, c('wood', 3)).rect(110, 168, 26, 2, c('gold', 1)).rect(119, 156, 8, 4, c('wood', 0));
-  const r = new Reel(bg);
-  const car = new Pixels(40, 40, CLEAR);
-  citiCar(car, 0, 0);
-  const head = docLeo({ hat: true, tie: true }).crop(0, 0, 20, 16);
-  for (let f = 0; f < 34; f++) {
-    const x = f < 12 ? 176 : 176 + (f - 12) * (f - 12);
-    r.frame(
-      (p) => {
-        scaleBlit(p, car, x, 80, 3);
-        scaleBlit(p, head, x + 34, 100 - (f > 12 ? f % 2 : 0), 2);
-        scaleBlit(p, POSES[f < 12 ? 'front' : f < 20 ? 'frontTilt' : 'frontBark'], 60, 140, 2);
-        if (f >= 12) for (let k = 0; k < 3; k++) p.rect(x - 10 - k * 9 - (f % 2) * 3, 150 + k * 6, 7 - k * 2, 1, c('paint', 3));
-        if (f < 12) {
-          caption(p, 'HE DRIVES AHEAD IN HIS RED');
-          caption(p, '1976 CITICAR. "SEE YOU AT THE', 22);
-          caption(p, 'BIG SHOW, TEDDY!"', 34);
-        } else {
-          caption(p, 'HIS COSTUME SUITCASE WAITS ON');
-          caption(p, 'THE BACK STEP FOR LATER...', 22);
-        }
-        if (f >= 20 && f % 4 < 2) outlined(p, 100, 120, 'BYE!', c('yellow', 3), c('ink', 0), 1);
-      },
-      f < 12 ? 2 : f === 33 ? 8 : 1,
-    );
+  for (let f = 0; f < 24; f++)
+    r.frame((p) => {
+      const x = 46 + Math.min(f, 14) * 12;
+      teddy(p, f < 14 ? (f % 2 ? 'walk1' : 'walk2') : f % 4 < 2 ? 'frontSniff' : 'frontSniff2', x);
+      if (f >= 14) outlined(p, x + 64, 120, 'SNIFF', c('green', 2), c('ink', 0), 1);
+      caption(p, 'A TRAIL OF CONFETTI LEADS');
+      caption(p, 'OUT THE DOGGY DOOR.', 22);
+    });
+  for (let f = 0; f < 24; f++)
+    r.frame((p) => {
+      scaleBlit(p, docLeo(FULL, f % 8 < 4), 120, 78, 2);
+      teddy(p, f < 12 ? 'frontTilt' : 'frontBeg', 214);
+      // the letter in his hand
+      p.rect(156, 104, 18, 13, c('paint', 3)).frame(156, 104, 18, 13, c('ink', 0)).rect(159, 108, 12, 1, c('ink', 1)).rect(159, 111, 9, 1, c('ink', 1));
+      caption(p, f < 12 ? 'DOC LEO HAS NEWS: THE KLOWN' : "BUT TEDDY WON'T GO WITHOUT", f < 12 ? 10 : 10);
+      caption(p, f < 12 ? 'KLUB PLAYS THE FAIR TONIGHT!' : 'HIS BIG SISTER.', 22);
+    });
+  // the logo drops in, bouncing, over the dawn
+  for (let f = 0; f < 14; f++) {
+    const drop = Math.round(-90 * Math.cos((f / 13) * Math.PI * 2.5) * (1 - f / 13));
+    r.frame((p) => {
+      p.px.set(landscape(7).px);
+      logo(p, 6 + Math.min(0, drop) + (drop > 0 ? Math.round(drop / 6) : 0));
+    });
   }
-  return r.fli(9);
+  r.frame((p) => p.px.set(titleScreen().px), 4);
+  return r.fli(8);
 }
 
-/** The finale: the Klown Klub parade down Main Street at night, Teddy riding on the CitiCar. */
-export function paradeFli(): Uint8Array {
+/** The finale: fireworks over the Fair, THE CHEZ leading the parade, Teddy on the roof, Gwinn and her ribbon. */
+export function finaleFli(): Uint8Array {
   const bg = new Pixels(W, H, c('ink', 0));
-  for (let y = 0; y < 120; y++) for (let x = 0; x < W; x++) if ((x * 13 + y * 7) % 97 === 0) bg.set(x, y, c('glow', 3));
-  for (let x = 0; x < W; x += 34) bg.rect(x, 60 + ((x / 34) % 3) * 8, 30, 120, c('siding', (x / 34) % 2));
-  for (let x = 0; x < W; x += 34) for (let y = 70; y < 160; y += 14) bg.rect(x + 6, y + ((x / 34) % 3) * 8, 6, 6, c('glow', 2));
-  for (let x = 0; x < W; x += 16) for (let k = 0; k < 6; k++) bg.rect(x + k, 40 + k, 15 - k * 2, 1, c(['red', 'yellow', 'blue', 'green'][(x / 16) % 4], 2));
+  for (let y = 0; y < 130; y++) for (let x = 0; x < W; x++) if ((x * 13 + y * 7) % 97 === 0) bg.set(x, y, c('glow', 3));
+  // the Ferris wheel against the night
+  bg.ring(250, 80, 50, c('red', 1));
+  for (let k = 0; k < 12; k++) {
+    const a = (k / 12) * Math.PI * 2;
+    bg.line(250, 80, 250 + Math.round(Math.cos(a) * 50), 80 + Math.round(Math.sin(a) * 50), c('paint', 1));
+    bg.rect(247 + Math.round(Math.cos(a) * 50), 80 + Math.round(Math.sin(a) * 50), 6, 5, c(['yellow', 'blue', 'green'][k % 3], 2));
+  }
   bg.rect(0, 160, W, 40, c('asphalt', 1));
+  for (let x = 0; x < W; x += 16) for (let k = 0; k < 6; k++) bg.rect(x + k, 40 + k, 15 - k * 2, 1, c(['red', 'yellow', 'blue', 'green'][(x / 16) % 4], 2));
   const r = new Reel(bg);
   const car = new Pixels(40, 40, CLEAR);
   citiCar(car, 0, 0);
   const head = docLeo(FULL).crop(0, 0, 20, 16);
-  const confetti = (p: Pixels, f: number) => {
-    for (let i = 0; i < 30; i++) {
-      const x = (i * 53 + f * (3 + (i % 4))) % W;
-      const y = (i * 31 + f * (4 + (i % 3))) % 160;
-      p.rect(x, y, 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
+  const burst = (p: Pixels, cx: number, cy: number, t: number, col: string) => {
+    if (t < 0 || t > 10) return;
+    for (let k = 0; k < 12; k++) {
+      const a = (k / 12) * Math.PI * 2;
+      p.rect(cx + Math.round(Math.cos(a) * t * 4), cy + Math.round(Math.sin(a) * t * 4) + Math.floor(t * t * 0.1), 2, 2, c(col, t < 7 ? 3 : 1));
     }
   };
-  for (let f = 0; f < 60; f++)
+  for (let f = 0; f < 64; f++)
     r.frame((p) => {
-      confetti(p, f);
-      const x0 = -260 + f * 7;
-      (['drum', 'banner', 'balloons'] as const).forEach((kind, i) => scaleBlit(p, marcher(kind, (f + i) % 2), x0 + 240 + i * 46, 82 - ((f + i) % 2), 2));
+      burst(p, 70, 50, f % 22, 'red');
+      burst(p, 160, 34, (f + 8) % 22, 'yellow');
+      burst(p, 110, 70, (f + 15) % 22, 'blue');
+      const x0 = -150 + f * 6;
       scaleBlit(p, car, x0 + 90, 72, 3);
       scaleBlit(p, head, x0 + 124, 92 - (f % 2), 2);
       scaleBlit(p, POSES[f % 6 < 3 ? 'frontBeg' : 'frontReach'], x0 + 100, 52 - (f % 2), 2);
       scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 + 20, 150, 2);
-      caption(p, f < 30 ? 'AND AFTER THE BIG SHOW...' : 'THE KLOWN KLUB PARADE!', 8);
-      if (f >= 30) caption(p, 'TEDDY RIDES UP FRONT.', 20);
+      // her blue ribbon
+      p.disc(x0 + 46, 166, 4, c('blue', 2)).disc(x0 + 46, 166, 2, c('gold', 2));
+      caption(p, f < 32 ? 'AND THE FAIR PARADE...' : 'THE CHEZ LEADS THE WAY!', 8);
+      if (f >= 32) caption(p, 'TEDDY RIDES UP FRONT. GWINN RUNS.', 20);
     });
   return r.fli(5);
 }
@@ -225,5 +205,5 @@ export function truckFli(): Uint8Array {
 }
 
 export function buildCartoons(): Record<string, Uint8Array> {
-  return { 'leo.fli': leoFli(), 'car.fli': carFli(), 'parade.fli': paradeFli(), 'cast.fli': castFli(), 'wagon.fli': wagonFli(), 'truck.fli': truckFli() };
+  return { 'morning.fli': morningFli(), 'finale.fli': finaleFli(), 'cast.fli': castFli(), 'wagon.fli': wagonFli(), 'truck.fli': truckFli() };
 }
