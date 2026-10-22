@@ -133,7 +133,8 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
     title: p.name,
     // the game it began as, when it is a copy
     byline: [editedWhen(p.updated), original?.gam ? `copy of ${original.title}` : null, p.gam].filter(Boolean).join(' · '),
-    tileByline: original?.gam ? `${editedWhen(p.updated)} · from ${original.title}` : undefined,
+    // two lines (pre-line in home.css), so a narrow tile never ends a line with a lone “·”
+    tileByline: original?.gam ? `${editedWhen(p.updated)}\nfrom ${original.title}` : undefined,
     gam: p.gam,
     search: searchText(p.name, p.gam),
     project: p,
