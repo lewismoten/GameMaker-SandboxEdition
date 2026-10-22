@@ -1,7 +1,7 @@
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin, type Rollup } from 'vite';
 import { resolve } from 'node:path';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { hashText } from './src/export/serviceWorker';
 import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
@@ -110,6 +110,28 @@ function offline(): Plugin {
   };
 }
 
+/** Keeps dotfiles (a Mac's .DS_Store in public/, say) out of the built site. */
+function noDotfiles(): Plugin {
+  let outDir = '';
+  const sweep = (dir: string): void => {
+    for (const f of readdirSync(dir)) {
+      const p = resolve(dir, f);
+      if (f.startsWith('.')) rmSync(p, { recursive: true, force: true });
+      else if (statSync(p).isDirectory()) sweep(p);
+    }
+  };
+  return {
+    name: 'gamemaker-no-dotfiles',
+    apply: 'build',
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir);
+    },
+    closeBundle() {
+      if (existsSync(outDir)) sweep(outDir);
+    },
+  };
+}
+
 /**
  * Development: don't hot-reload the page when a source file changes (it would switch
  * off the retro PC); tell the page instead, which offers a Reload button.
@@ -139,10 +161,46 @@ function manualReload(): Plugin {
   };
 }
 
+/**
+ * The play page's code in a few files: each module play.ts loads up front goes in the chunk
+ * for exactly the pages that load it that way too ("player" for its own, "shared-web-play"
+ * for what today's web also loads before showing anything, …). Left to itself the bundler cut
+ * it into a dozen 1-5 kB files the play page waited on. No page loads code it does not use
+ * this way; everything else is split as the bundler likes.
+ */
+function playChunks(): Rollup.GetManualChunk {
+  const pages: [name: string, entries: string[]][] = [
+    ['main', ['src/main.ts', 'src/seo/route.ts']], // index.html's two scripts
+    ['desk', ['src/desk/desk.ts']],
+    ['web', ['src/modernUi.ts']],
+    ['play', ['src/play.ts']],
+  ];
+  let closures: Set<string>[] | undefined;
+  const closure = (entries: string[], info: Rollup.ManualChunkMeta['getModuleInfo']): Set<string> => {
+    const seen = new Set<string>();
+    const stack = entries.map((e) => resolve(__dirname, e));
+    while (stack.length) {
+      const id = stack.pop()!;
+      if (seen.has(id)) continue;
+      seen.add(id);
+      stack.push(...(info(id)?.importedIds ?? []));
+    }
+    return seen;
+  };
+  return (id, { getModuleInfo }) => {
+    closures ??= pages.map(([, entries]) => closure(entries, getModuleInfo));
+    if (/\.css($|\?)/.test(id)) return undefined; // styles stay with the code that imports them
+    if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
+    const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
+    if (!users.includes('play') || users.includes('main')) return undefined;
+    return users.length === 1 ? 'player' : `shared-${users.join('-')}`;
+  };
+}
+
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [cdGames(resolve(__dirname, '../cd')), seoPages(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), manualReload()],
+  plugins: [cdGames(resolve(__dirname, '../cd')), seoPages(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), noDotfiles(), manualReload()],
   build: {
     target: 'es2022',
     rollupOptions: {
@@ -150,6 +208,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         play: resolve(__dirname, 'play.html'),
       },
+      output: { manualChunks: playChunks(), onlyExplicitManualChunks: true },
     },
   },
   worker: {
