@@ -124,7 +124,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const keyCard = keyCardSpot(() =>
     crt.querySelector<HTMLElement>(".crt-game canvas[tabindex]")?.focus(),
   );
-  const spk = speakers();
+  const spk = speakers({
+    gamePlaying: () => computer.gamePlaying,
+    restartGame: () => computer.restartGame(),
+  });
   const lamp = deskLamp();
   const modem = deskModem(() => void command("C:\nTERMINAL"));
   // The same Sandbox games as the box's 3D front (boxes/gmShots.ts), each with what it shows off.

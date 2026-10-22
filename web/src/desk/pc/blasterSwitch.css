@@ -76,3 +76,103 @@
 .speaker.right .spk-controls {
   margin-top: 7px;
 }
+
+/* the note over the speaker after flipping the switch (blasterSwitch.ts): it lives on the page,
+   not on the scaled desk, so it reads at full size */
+.sb-note {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(400px, calc(100vw - 16px));
+  padding: 10px 10px 10px 14px;
+  border: 1px solid #5a5242;
+  border-radius: 8px;
+  background: #221d16;
+  color: #f3eedf;
+  font: 14px/1.35 system-ui, sans-serif;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: sb-note-in 0.18s ease-out;
+}
+
+.sb-note[hidden] {
+  display: none;
+}
+
+.sb-note-text {
+  margin: 0;
+}
+
+.sb-note-buttons {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.sb-note button {
+  border-radius: 5px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sb-note-restart {
+  padding: 5px 10px;
+  border: 1px solid #ffd400;
+  background: #ffd400;
+  color: #1a1611;
+  font-weight: 600 !important;
+  white-space: nowrap;
+}
+
+.sb-note-restart:hover {
+  background: #ffe45c;
+}
+
+.sb-note-close {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #cfc7b2;
+  font-size: 20px !important;
+  line-height: 1 !important;
+}
+
+.sb-note-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.sb-note button:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 2px;
+}
+
+.sb-note-restart:focus-visible {
+  outline-color: #fff;
+}
+
+.sb-note-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes sb-note-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sb-note {
+    animation: none;
+  }
+}

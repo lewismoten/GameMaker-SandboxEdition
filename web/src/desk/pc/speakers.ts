@@ -4,7 +4,7 @@
 import './speakers.css';
 import { h } from '../../editor/core/ui';
 import { getVolume, setVolume } from '../../audio/output';
-import { blasterSwitch } from './blasterSwitch';
+import { blasterSwitch, type BlasterPc } from './blasterSwitch';
 
 const TURN = 270; // degrees from silent to full
 
@@ -39,7 +39,7 @@ function knob(): HTMLElement {
 
 const grille = () => h('div', { class: 'spk-grille' });
 
-export function speakers(): { left: HTMLElement; right: HTMLElement; power(on: boolean): void } {
+export function speakers(pc?: BlasterPc): { left: HTMLElement; right: HTMLElement; power(on: boolean): void } {
   const led = h('span', { class: 'spk-led', title: 'Power' });
   const left = h('div', { class: 'speaker left', 'aria-hidden': 'true' }, grille(), h('span', { class: 'spk-brand' }, 'Illogitech'));
   const right = h(
@@ -48,7 +48,7 @@ export function speakers(): { left: HTMLElement; right: HTMLElement; power(on: b
     grille(),
     h('div', { class: 'spk-controls' }, knob(), led, h('span', { class: 'spk-jack', title: 'Headphones' })),
     // under the controls: the Sound Blaster switch (the card is in the PC; the switch is where you can reach it)
-    blasterSwitch(),
+    blasterSwitch(pc),
   );
   return { left, right, power: (on) => led.classList.toggle('on', on) };
 }
