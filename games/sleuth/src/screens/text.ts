@@ -229,11 +229,10 @@ Doc Leo, hobo clown (standing backward in line, as usual)
 \f
 A NOTE TUCKED INSIDE
 
-The case notes say every word fell out of every book in town on the same night.
+Case 13, never closed: one recipe card lifted in 1776, one root beer the family will not discuss, one kitchen door with flour on the knob.
 
-The last line, underlined twice:
-
-"Check the little library with the red door."`;
+Last note, underlined twice:
+"Count the eggs again. A baker always does."`;
 
 // ---------------------------------------------------------------- the interviews
 
