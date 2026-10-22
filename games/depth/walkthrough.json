@@ -1,0 +1,178 @@
+{
+ "version": 1,
+ "game": "depth",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": ""
+  },
+  {
+   "scene": 3,
+   "keys": "AU0jzQFQBdABTQXNAVAIOQG5BtABOQBNAbkfzQpNFM0BUAXQAU0="
+  },
+  {
+   "scene": 4,
+   "keys": "AUgKyAFNI80BUAE5AbkHOQG5CtABSwXLAVAU0AFNBc0BSA=="
+  },
+  {
+   "scene": 3,
+   "keys": "AUgPyAFNHs0BTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0PzQFIBcgBTQXNAVA="
+  },
+  {
+   "scene": 5,
+   "keys": ""
+  },
+  {
+   "scene": 6,
+   "keys": "AU0ezQFQCtABTRnNAVAF0AdNKM0BTQXNAVAK0AFNAzkBuQc5AbkhzQFICsgBTQ=="
+  },
+  {
+   "scene": 7,
+   "keys": "AUsFywFICsgBSxnLAVAU0AFNFM0BUA/QAVAP0AFNEjkBuQc5AbkSzQFQD9ABSwXLPUsZyw1LGcsNSxnLN00ZzRNNGc0NTR7NAUgUyAFN"
+  },
+  {
+   "scene": 6,
+   "keys": "AU0ezQFIBcgBTRTNAVAP0AFLBcsBUA=="
+  },
+  {
+   "scene": 8,
+   "keys": ""
+  },
+  {
+   "scene": 9,
+   "keys": "AVAP0AFNBc0BUArQAU0KzQFQD9ABUArQAU0ezQFIBcgBTQE5AbkczQFQBdABTTLNAUs="
+  },
+  {
+   "scene": 10,
+   "keys": "AUgVyAFLBcsBSAE5AbkXyAFLBcsBTQrNAUgFyAFNGc0BSAXIAU0ZzQFQBdABSyPLAVAP0AFLFMsBUBTQAUsFywFQFNABTQXNAVAP0AFQCtABSzfLAU0jzQFICsgBTTLNAVAF0AFNFM0BUA=="
+  },
+  {
+   "scene": 11,
+   "keys": ""
+  },
+  {
+   "scene": 12,
+   "keys": "AVAF0AFNGc0BUAXQAU0ezQFNA80sUA/QAU0="
+  },
+  {
+   "scene": 13,
+   "keys": "AUgPyAFNFM0BUBnQAU0ZzQFQA9AkSwE5AbkHOQG5MssBUArQAU0="
+  },
+  {
+   "scene": 12,
+   "keys": "AUgFyAFLS8sBSwXLAUgPyAFLGcsBUAXQAUstywFQ"
+  },
+  {
+   "scene": 14,
+   "keys": ""
+  },
+  {
+   "scene": 15,
+   "keys": "AVAK0AFNGc0BSCjIAlAK0AFNHs0BTQ=="
+  },
+  {
+   "scene": 16,
+   "keys": "AU0ezQFQHtABTQ=="
+  },
+  {
+   "scene": 15,
+   "keys": "AU0ZzQFQMtABSw/LAUgFyAFLATkBuSPLAUgEOQG5B8gBSxM5AbkHOQG5IDkBuQXLAUg="
+  },
+  {
+   "scene": 17,
+   "keys": ""
+  },
+  {
+   "scene": 18,
+   "keys": "AU0="
+  },
+  {
+   "scene": 19,
+   "keys": "AUgUyAFND80BUCPQAU0="
+  },
+  {
+   "scene": 18,
+   "keys": "AVAF0AFND80BSAE5AbkXyAFNBc0fTRTNAUgUyAFNBc0BUBTQAU0UzTQ5AbksTRTNBjkBuQc5AbkHOQG5BzkBuQc5AbkHOQG5BzkBuQc5AbkCTQjNBU0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Scene 1: The Checkerboard"
+  },
+  {
+   "scene": 5,
+   "title": "Scene 2: The Glass Garden"
+  },
+  {
+   "scene": 8,
+   "title": "Scene 3: The Hall of Mirrors"
+  },
+  {
+   "scene": 11,
+   "title": "Scene 4: Fractal Peaks"
+  },
+  {
+   "scene": 14,
+   "title": "Scene 5: Teapot Temple"
+  },
+  {
+   "scene": 17,
+   "title": "Scene 6: The Vanishing Point"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 25182,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1423
+   },
+   {
+    "title": "Scene 1: The Checkerboard",
+    "frame": 3783
+   },
+   {
+    "title": "Scene 2: The Glass Garden",
+    "frame": 6164
+   },
+   {
+    "title": "Scene 3: The Hall of Mirrors",
+    "frame": 9980
+   },
+   {
+    "title": "Scene 4: Fractal Peaks",
+    "frame": 13293
+   },
+   {
+    "title": "Scene 5: Teapot Temple",
+    "frame": 16151
+   },
+   {
+    "title": "Scene 6: The Vanishing Point",
+    "frame": 18749
+   },
+   {
+    "title": "Ending",
+    "frame": 21531
+   },
+   {
+    "title": "Credits",
+    "frame": 23094
+   }
+  ]
+ }
+}
