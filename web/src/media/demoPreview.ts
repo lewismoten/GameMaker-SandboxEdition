@@ -22,11 +22,6 @@ if (typeof window !== 'undefined') void loadExtraDemos();
 
 export { DEMO_KIND_LABEL, DEMO_KIND_TAG, catalogDemoKind, catalogExtraDemo, catalogHasDemo, demoFileName, type DemoKind } from './demoKind';
 
-/** Whether a game's files hold a title demo. */
-export function filesHaveDemo(files: GameFiles, gam: string | null | undefined): boolean {
-  return !!gam && !!titleDemo(files, gam);
-}
-
 /**
  * What a preview of these files plays: their title demo, a demo added for the CD game they
  * still are (same .gam), or the attract mode when the hero has keys to walk with.
@@ -104,11 +99,6 @@ export interface DemoPreviewOptions {
 }
 
 let current: { stop(): void } | undefined;
-
-/** Stops the demo preview playing on the page, if any. */
-export function stopDemoPreview(): void {
-  current?.stop();
-}
 
 /**
  * Plays the title demo in `host` (sized by the page): the game's own, else one added for
