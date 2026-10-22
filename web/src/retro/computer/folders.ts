@@ -8,6 +8,7 @@ import { GameFiles } from '../../project/files';
 import { Project } from '../../editor/core/project';
 import { download } from '../../editor/core/ui';
 import { ComputerDrives } from './drives';
+import { dosDir } from '../../project/dosDir';
 
 export abstract class ComputerFolders extends ComputerDrives {
   /**
@@ -43,7 +44,7 @@ export abstract class ComputerFolders extends ComputerDrives {
       return g ? { title: g.title, files: await hdFiles(g), where: path, kind: 'hd', hd: g } : undefined;
     }
     if (drive === 'C' && top === 'DOWNLOAD') {
-      const g = cat.find((c) => c.id.toUpperCase() === dir && this.downloads.has(c.id));
+      const g = cat.find((c) => dosDir(c) === dir && this.downloads.has(c.id));
       return g ? { title: g.title, files: new GameFiles(await this.catalogFiles(g)), where: path, kind: 'shareware', notice: g.notice } : undefined;
     }
     if (drive === 'D' && this.cdIn && (top === 'GAMEWARE' || top === 'GM')) {

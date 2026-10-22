@@ -12,6 +12,7 @@ import { loadProject, loadSaveData, writeSaveFile } from '../../project/storage'
 import { hdProject } from '../dos/hardDisk';
 import { backupNow } from '../../project/saveData';
 import { Project } from '../../editor/core/project';
+import { dosDir } from '../../project/dosDir';
 
 export interface HexEntry {
   name: string;
@@ -41,7 +42,7 @@ export const pathOf = (drive: string, parts: string[], name?: string): string =>
 async function saveIdOf(h: RetroHost, drive: string, parts: string[]): Promise<string | undefined> {
   if (drive !== 'C' || parts.length !== 2) return undefined;
   if (parts[0] === 'DOWNLOAD') {
-    const g = (await h.catalog()).find((c) => c.id.toUpperCase() === parts[1] && h.downloads.has(c.id));
+    const g = (await h.catalog()).find((c) => dosDir(c) === parts[1] && h.downloads.has(c.id));
     return g?.gam ? `game:${g.id}` : undefined;
   }
   if (parts[0] === 'GM') {

@@ -17,6 +17,7 @@ import type { GmInstallEntry } from '../../../scripts/cdGames';
 import { MonitorMode, ComputerOptions, AUTOEXEC, CONFIG_SYS } from './setup';
 import bbsGifs from '../bbs/gallery.json';
 import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
+import { dosDir } from '../../project/dosDir';
 
 export abstract class ComputerDrives {
   // Defined by a later layer (see the chain in the header comment).
@@ -177,7 +178,7 @@ export abstract class ComputerDrives {
               n.remove = () => dl.deleteFile(id, n.name);
               return !dl.isDeleted(id, n.name);
             };
-            const node = liveFolder(g.id, async () => {
+            const node = liveFolder(dosDir(g), async () => {
               // the .EXE (or GMCRACK's patched one and the .BAK), CONFIG.BAT and the rest, and FILE_ID.DIZ
               const own = gameDownloadNodes(g, date, { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` });
               // one of each name (a CD game brought its own FILE_ID.DIZ; the BBS's ZIP wrote over it)

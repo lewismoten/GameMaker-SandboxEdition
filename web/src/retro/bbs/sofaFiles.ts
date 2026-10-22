@@ -10,6 +10,7 @@ import { readLine } from '../text/textInput';
 import { gameDiz, isSofaFile } from './fileId';
 import { dizSummary, Pager, pageLabel, readNumber, uploadDate } from './pager';
 import { Term, sleep } from './term';
+import { dosDir } from '../../project/dosDir';
 
 /** 14,400 bps with V.42bis, in characters per second, and how much faster than life it runs. */
 const CPS = 1650;
@@ -95,7 +96,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   t.line('|10Transfer complete.');
   await unzip(t, h, g);
   h.downloads.add(g.id);
-  t.line(`|07Type |15CD \\DOWNLOAD\\${g.id.toUpperCase()}|07 then |15${(g.exe ?? '').replace(/\.EXE$/i, '')}|07 after you log off to play.`);
+  t.line(`|07Type |15CD \\DOWNLOAD\\${dosDir(g)}|07 then |15${(g.exe ?? '').replace(/\.EXE$/i, '')}|07 after you log off to play.`);
   t.line();
 }
 
@@ -103,7 +104,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
 async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const s = h.screen;
   const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
-  t.line(`|07C:\\>PKUNZIP -d ${sofaZipName(g)} C:\\DOWNLOAD\\${g.id.toUpperCase()}`);
+  t.line(`|07C:\\>PKUNZIP -d ${sofaZipName(g)} C:\\DOWNLOAD\\${dosDir(g)}`);
   t.line(`|07Searching ZIP: ${sofaZipName(g)}`);
   const files: [string, number][] = [
     ...(g.exe ? [[g.exe, 60_000] as [string, number]] : []),

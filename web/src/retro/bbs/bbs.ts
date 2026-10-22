@@ -44,6 +44,7 @@ import { pickUpExtension, type Overheard } from "./pickup";
 import { resolvePath, type DosNode } from "../dos/vfs";
 import { pcExtras } from "../hacks/pcExtras";
 import { output } from "../../audio/output";
+import { dosDir } from "../../project/dosDir";
 
 const BBS_NAME = "THE -= S A N D B O X =- BBS";
 const PHONE = "1-412-555-SAND";
@@ -650,7 +651,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   h.downloads.add(g.id);
   if (pcExtras().cracked(g.id) !== undefined) pcExtras().setCracked(g.id, false); // a fresh copy, as its author made it
   t.line(
-    `|07Type |15CD \\DOWNLOAD\\${g.id.toUpperCase()}|07 then |15${(g.exe ?? "").replace(/\.EXE$/i, "")}|07 after you log off to play.`,
+    `|07Type |15CD \\DOWNLOAD\\${dosDir(g)}|07 then |15${(g.exe ?? "").replace(/\.EXE$/i, "")}|07 after you log off to play.`,
   );
   t.line();
 }
@@ -663,7 +664,7 @@ async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   const s = h.screen;
   const rate = h.turbo() ? UNZIP_RATE.turbo : UNZIP_RATE.slow;
   t.line(
-    `|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${g.id.toUpperCase()}`,
+    `|07C:\\>PKUNZIP -d ${zipName(g)} C:\\DOWNLOAD\\${dosDir(g)}`,
   );
   t.line(`|07Searching ZIP: ${zipName(g)}`);
   const files: [string, number][] = [
