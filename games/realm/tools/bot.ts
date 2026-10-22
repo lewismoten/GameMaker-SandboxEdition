@@ -168,7 +168,9 @@ export class Bot {
         if (!target && links.has(`${nx},${ny}`)) continue;
         const pass = through.has(`${nx},${ny}`);
         if (!pass && this.sim.solidAt(nx, ny)) continue;
-        const hurt = this.sim.shown(nx, ny).chHitPt < 0 ? 40 : 0;
+        const shown = this.sim.shown(nx, ny);
+        // round what hurts, and round drafts and currents (they push you off your line)
+        const hurt = (shown.chHitPt < 0 ? 40 : 0) + (shown.grav ? 12 : 0);
         const nd = d + 1 + hurt;
         if (nd < (dist.get(key(nx, ny)) ?? Infinity)) {
           dist.set(key(nx, ny), nd);

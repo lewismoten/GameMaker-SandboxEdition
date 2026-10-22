@@ -198,12 +198,13 @@ export function keepPlan(mons: MonBook): DungeonPlan {
   p.put('heartpot', 70, 50);
   p.put('bigchest', 30, 60);
   p.put('chest', 70, 60);
-  p.row('spikes', 46, 54, 72);
+  p.row('spikes', 43, 46, 80);
+  p.row('spikes', 54, 57, 80);
   p.put('vent', 45, 21);
   p.put('vent', 55, 21);
   p.put('tuit', 50, 15);
-  foes(p, mons.n('goblin'), [[44, 58], [56, 58], [48, 66], [52, 68], [30, 55], [70, 55], [42, 46], [58, 46]]);
-  foes(p, mons.n('tick'), [[46, 62], [54, 62], [40, 50], [60, 50], [44, 30], [56, 30]]);
+  foes(p, mons.n('goblin'), [[44, 58], [56, 58], [30, 55], [70, 55], [42, 46], [58, 46]]);
+  foes(p, mons.n('tick'), [[46, 64], [54, 64], [44, 30], [56, 30]]);
   boss(p, mons, 'deadline', 49, 17);
   return { plan: p, start: [50, 83], exits: [[50, 85]], piece: [50, 15] };
 }
