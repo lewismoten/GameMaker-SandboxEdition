@@ -123,7 +123,7 @@ export async function registrationCard(): Promise<Sheet[]> {
       h('small', null, 'POSTAGE WILL BE PAID BY ADDRESSEE'),
     ),
     h('div', { class: 'grc-to' }, h('b', null, SUPPORT.address[0].toUpperCase()), h('span', null, 'Attn: Game-Maker Registration'), h('span', null, SUPPORT.address[1]), h('span', null, SUPPORT.address[2])),
-    h('p', { class: 'grc-note' }, '(Fictional address and permit. Nothing to mail: this edition needs no registration.)'),
+    h('p', { class: 'grc-note' }, '(Fictional address and permit. Nothing to post: when Game-Maker asks, fill in the copy of this card beside the monitor and Mail it from there. The reply with your registration number comes right back.)'),
   );
   return [form, reply];
 }
