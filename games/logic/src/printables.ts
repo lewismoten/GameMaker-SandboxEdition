@@ -37,7 +37,7 @@ export function printables(): unknown {
         note: 'A nudge and an answer for every board',
         promised: true,
         intro:
-          'Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them!',
+          'Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them! (Some say the felt-maker left something behind in the wiring, too.)',
         sections,
       },
       {
