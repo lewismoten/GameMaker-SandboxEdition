@@ -52,8 +52,8 @@ export function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
   });
 }
 
-/** Opens the walkthrough player. */
-export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>): Promise<void> {
+/** Opens the walkthrough player; `onReady` hears when it has loaded and is about to show. */
+export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Promise<GameFiles>, onReady?: () => void): Promise<void> {
   const [walk, files] = await Promise.all([loadWalkthrough(entry), loadFiles()]);
   if (!walk || !entry.gam) {
     toast(`${entry.title} has no walkthrough.`);
@@ -301,6 +301,7 @@ export async function watchWalkthrough(entry: CatalogEntry, loadFiles: () => Pro
   fresh();
   void run!.start().then(() => run!.step(true));
 
+  onReady?.();
   await modal<void>(`${entry.title}: walkthrough`, () =>
     h(
       'div',
