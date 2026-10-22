@@ -537,9 +537,12 @@ function pages(shots: GameShot[]): BookletPage[] {
       <p>Game-Maker was written by Recreational Software Designs of Amherst, New Hampshire, and
       sold from 1991, first on diskettes and in 1994, as version 3.0, on CD-ROM with a
       comb-bound manual. This guide describes a recreation that runs in a web browser, in its
-      own Sandbox Edition box. Nothing here is an emulator: the DOS prompt, the menus and the
-      BBS are drawn to look as they did, and the games are played by a new engine that reads
-      the original files.</p>
+      own Sandbox Edition box. It is not a PC emulator, and no DOS program runs: the DOS
+      prompt, the BBS and the utilities are a simulation made to look and act as they did,
+      Game-Maker\u2019s menus and designers are rebuilt from their original source code, and
+      the games are played by a new engine, ported from PLAYGAME\u2019s source, that reads
+      the original files. Only a few parts of the hardware are emulated, such as the VGA
+      screen and the Sound Blaster\u2019s FM music chip.</p>
       <p>Games you make here are saved in the original formats, so they also play in DOSBox
       or on a real PC.</p>
       <p>The shareware on the BBS and in the disk box belongs to its authors and is shown in
