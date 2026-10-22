@@ -27,6 +27,7 @@ export type ProgramRef =
   | { kind: 'gmcrack' }
   | { kind: 'savehack' }
   | { kind: 'backup' }
+  | { kind: 'hexedit' }
   | { kind: 'batch'; lines: string[] };
 
 export interface Drive {

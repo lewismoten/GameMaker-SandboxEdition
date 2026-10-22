@@ -152,7 +152,7 @@ export abstract class ComputerDrives {
         folder('DOS', () =>
           ['COMMAND.COM', 'HIMEM.SYS', 'EMM386.EXE', 'MSCDEX.EXE', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) =>
             file(n, 20_000 + n.length * 1357),
-          ).concat(file('BACKUP.EXE', 36_802, { run: { kind: 'backup' } })),
+          ).concat(file('BACKUP.EXE', 36_802, { run: { kind: 'backup' } }), file('HEXEDIT.EXE', 41_216, { run: { kind: 'hexedit' } })),
         ),
         folder('CDROM', () => [file('CDROM.SYS', 18_432)]),
         liveFolder('GM', () => this.gmFolder(true)),

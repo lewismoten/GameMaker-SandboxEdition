@@ -329,6 +329,7 @@ export class Shell {
       'TERMINAL    Dial BBSes to download shareware',
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
       'BACKUP      Back up and restore saved games (BACKUP /? for help)',
+      'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\TEDDY\\TEDDY.GAM)',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);

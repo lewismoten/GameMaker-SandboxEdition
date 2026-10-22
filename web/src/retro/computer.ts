@@ -174,6 +174,9 @@ export class Computer extends ComputerFolders {
         case "backup":
           await (await import("./hacks/backupExe")).runBackup(this, _args);
           break;
+        case "hexedit":
+          await (await import("./hexedit/hexEdit")).runHexEdit(this, _args);
+          break;
         case "egg":
           await (await import("../eggs/eggExe")).runEggExe(this);
           break;
