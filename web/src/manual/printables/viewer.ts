@@ -109,7 +109,11 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
 
     const select = (id: string) => {
       current = id;
-      for (const li of tray.children) li.classList.toggle('on', (li as HTMLElement).dataset.id === id);
+      for (const li of tray.children) {
+        const on = (li as HTMLElement).dataset.id === id;
+        li.classList.toggle('on', on);
+        li.querySelector('button')?.setAttribute('aria-current', String(on));
+      }
       const item = items.find((i) => i.id === id);
       filmBtn.hidden = !item?.redFilm;
       if (!item?.redFilm) (film.hide(), lens.hide());
@@ -186,8 +190,12 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
       h('button', { onclick: () => void print('all') }, 'Everything in the box'),
     );
 
-    // ---- the frame
+    // ---- the frame: a modal box; the page under it can't be reached until it closes
+    const opener = document.activeElement as HTMLElement | null;
+    const shut: HTMLElement[] = [];
     const close = () => {
+      for (const el of shut) el.inert = false;
+      opener?.focus({ preventScroll: true });
       window.removeEventListener('keydown', onKey, true);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('afterprint', afterPrint);
@@ -212,7 +220,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
 
     const overlay = h(
       'div',
-      { class: 'gmb', role: 'dialog', 'aria-label': title },
+      { class: 'gmb', role: 'dialog', 'aria-modal': 'true', 'aria-label': title },
       h(
         'header',
         { class: 'gmb-bar' },
@@ -226,7 +234,13 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[]): Pro
     );
     film.mount(overlay);
     lens.mount(overlay);
+    for (const el of document.body.children)
+      if (el instanceof HTMLElement && !el.inert) {
+        el.inert = true;
+        shut.push(el);
+      }
     document.body.append(overlay, printRoot);
     select('manual');
+    tray.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
   });
 }
