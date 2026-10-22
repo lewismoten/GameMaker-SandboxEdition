@@ -32,7 +32,7 @@
       "title": "Ohm Sweet Ohm Hint Book",
       "note": "A nudge and an answer for every board",
       "promised": true,
-      "intro": "Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them! (Some say the felt-maker left something behind in the wiring, too.)",
+      "intro": "Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them! (Heard the felt-maker left something behind in the wiring? See the last page.)",
       "sections": [
         {
           "head": "The Kitchen",
@@ -143,6 +143,59 @@
             {
               "q": "Home Sweet Ohm: I pressed the timer button, but nothing happened!",
               "a": "The timer only lets current through if it is already waiting there. First slip across the flashing wire and turn on the switch in the bottom wall, come back, THEN roll over the arrows and press the timer. Wait for the gate, wait for the wire to go dark, and go home."
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind in the wiring. Where?",
+              "a": "In the garage. One board's housing isn't quite as solid as it looks."
+            },
+            {
+              "q": "Which board?",
+              "a": "The Garage Door Opener (board 13). Look along the bottom of its housing for the faint outline of a little access panel."
+            },
+            {
+              "q": "Show me the wiring.",
+              "a": "On The Garage Door Opener, roll down from the pad, left along the bottom row to the corner, and keep rolling down into the seam. You land in the house's main fuse box. Roll onto the felt egg and press the space bar to pick it up, then roll into the socket to get back.",
+              "sketch": {
+                "rows": [
+                  "----------------",
+                  "|     |        |",
+                  "|     |        |",
+                  "|     -----=---|",
+                  "|              |",
+                  "|       @      |",
+                  "|       v      |",
+                  "|       v      |",
+                  "|v<<<<<<<      |",
+                  "|X--------------"
+                ],
+                "labels": [
+                  {
+                    "x": 9,
+                    "y": 5,
+                    "text": "PAD"
+                  },
+                  {
+                    "x": 2,
+                    "y": 1,
+                    "text": "BOARD"
+                  },
+                  {
+                    "x": 2,
+                    "y": 2,
+                    "text": "13"
+                  },
+                  {
+                    "x": 9,
+                    "y": 7,
+                    "text": "THE SEAM: X"
+                  }
+                ]
+              }
             }
           ]
         }

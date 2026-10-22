@@ -13,10 +13,11 @@ export function printables(): unknown {
   const n = BOARDS.filter((b) => b.room === 'attic').findIndex((b) => b.file === 'computer');
   const [OX, OY] = SLOTS[n];
   const boardNo = BOARDS.findIndex((b) => b.file === 'computer') + 1;
-  const sections = Object.entries(ROOMS).map(([room, head]) => ({
+  const sections: { head: string; hints: { q: string; a: string; sketch?: unknown }[] }[] = Object.entries(ROOMS).map(([room, head]) => ({
     head,
     hints: BOARDS.filter((b) => b.room === room).map((b) => ({ q: `${b.title}: ${b.hint}`, a: b.answer })),
   }));
+  sections.push(feltEgg());
   return {
     pitch: 'Watt the repair robot rolls home through twenty-three haywire circuit boards. Route the current, never touch it.',
     keys: { 'Arrows / W A S D / keypad': 'Roll one block', R: 'Reboot the board (costs a spare battery)' },
@@ -37,7 +38,7 @@ export function printables(): unknown {
         note: 'A nudge and an answer for every board',
         promised: true,
         intro:
-          'Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them! (Some say the felt-maker left something behind in the wiring, too.)',
+          'Stuck on a board? Find it below. The question tells you what most people get stuck on; the answer, printed under red, tells you how to get past. Read the answers through the red film, one at a time, and only when you need them! (Heard the felt-maker left something behind in the wiring? See the last page.)',
         sections,
       },
       {
@@ -91,4 +92,49 @@ export function printables(): unknown {
 
 export function writePrintables(file: string): void {
   writeFileSync(file, JSON.stringify(printables(), null, 2) + '\n');
+}
+
+/**
+ * The hint book's last page: the way to the felt egg, from a nudge to the exact route, with a
+ * drawing of the board whose housing has the seam (rows drawn for the hint book's red film:
+ * | and - the housing, = the gate, @ the pad, X the seam).
+ */
+function feltEgg(): { head: string; hints: { q: string; a: string; sketch?: unknown }[] } {
+  const n = BOARDS.findIndex((b) => b.rows.some((r) => r.includes('?')));
+  const board = BOARDS[n];
+  if (board.file !== 'opener' || board.rows[9][1] !== '?') throw new Error('The seam moved: redraw the hint book sketch');
+  return {
+    head: 'The Felt Egg',
+    hints: [
+      { q: 'Some say the felt-maker left something behind in the wiring. Where?', a: "In the garage. One board's housing isn't quite as solid as it looks." },
+      {
+        q: 'Which board?',
+        a: `${board.title} (board ${n + 1}). Look along the bottom of its housing for the faint outline of a little access panel.`,
+      },
+      {
+        q: 'Show me the wiring.',
+        a: `On ${board.title}, roll down from the pad, left along the bottom row to the corner, and keep rolling down into the seam. You land in the house's main fuse box. Roll onto the felt egg and press the space bar to pick it up, then roll into the socket to get back.`,
+        sketch: {
+          rows: [
+            '----------------',
+            '|     |        |',
+            '|     |        |',
+            '|     -----=---|',
+            '|              |',
+            '|       @      |',
+            '|       v      |',
+            '|       v      |',
+            '|v<<<<<<<      |',
+            '|X--------------',
+          ],
+          labels: [
+            { x: 9, y: 5, text: 'PAD' },
+            { x: 2, y: 1, text: 'BOARD' },
+            { x: 2, y: 2, text: String(n + 1) },
+            { x: 9, y: 7, text: 'THE SEAM: X' },
+          ],
+        },
+      },
+    ],
+  };
 }
