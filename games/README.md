@@ -82,6 +82,8 @@ fails until it is rerun. The other play-testing tools:
 | tickle    | `npx vite-node ../games/tickle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | remote    | `npx vite-node ../games/remote/tools/check.ts`       | the bot searches the living room, calls Mom, pays the TV in the void, rides home |
 | remote    | `npx vite-node ../games/remote/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| carl      | `npx vite-node ../games/carl/tools/check.ts`         | the bot flies the living room, the kitchen, the bedroom, the yard, the wild and back for the aux cord |
+| carl      | `npx vite-node ../games/carl/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -315,3 +317,17 @@ recording), a monster that blows dust bunnies, cockroaches and lint away. The mu
 FM arrangement using `kit/songFx.ts` (stutters, filter-sweep "VCR whirrs", an 808 boom and theremin
 glides in the void, a calliope for the ride, a dramatic pause before "beneath my thigh"); no cover
 came with the song, so the title is a painting drawn in code (`src/art/cover.ts`).
+
+**A Fly Named Carl** (`carl`). The Bard of Bizarre's comedy song about the fly in the room ("There's a
+Fly in the Room (And It's Winning)"), shareware from The Sofa BBS (`"series": "bizarre"`). You are Carl,
+and a fly doesn't fall: every bit of open air has no gravity, so the arrows (and Q/E/Z/C for the
+diagonals) fly and letting go hovers. Gaps one block tall are guarded by a dish towel, the old clap or a
+rolled-up magazine, solid monsters that fill the gap; the barrel roll (Space) throws a whoosh ahead the way
+Carl last flew (a monster fired by the character, power 160) that kills them into a "MISS" which turns
+back into them a while later (newmon with a lifetime). The buzz (B) wakes sleeping ears: an ear (power 105)
+buzzed becomes a twitching ear (power 50) that counts (counter 22) when Carl flies into it and dies into a
+sound-asleep ear that turns back into the first after a while, so one ear can be buzzed again and again.
+Snacks (counter 20) open the floor lamp, smiles from the kitchen walls (counter 21) the door, three ears the
+bedroom window, and hourglasses (counter 23, two hours each) break the documentary's clock at 24. Two block
+sets (the house, the yard), gusts that blow by next/ntime, and the cover drawn in code (`src/art/cover.ts`);
+the music is a kazoo, an island-strummed ukulele and Carl himself as a buzzing one-channel arpeggio.
