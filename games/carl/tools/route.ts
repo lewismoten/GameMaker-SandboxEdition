@@ -118,4 +118,69 @@ export async function theCouch(bot: Bot): Promise<void> {
   await carefully(bot, 'the lamp', 10, () => leave(bot, bot.fly(55, 4, 'the shade'), 'the lamp'));
 }
 
+/** 2. The walls: smiles from the kitchen walls, past the clap at the floor and the swatter over the fridge, to the door. */
+export async function theWalls(bot: Bot): Promise<void> {
+  expect(bot, 3, 'the walls');
+  await carefully(bot, 'over the counter', 10, () =>
+    go(
+      bot,
+      [
+        [4, 6],
+        [6, 4],
+        [7, 4],
+        [8, 6],
+        [13, 6],
+        [14, 4],
+        [17, 2],
+        [18, 2],
+        [18, 6],
+      ],
+      'a recipe, a calendar, a clock',
+    ),
+  );
+  await carefully(bot, 'the clap at the floor', 12, async () => {
+    await go(bot, [[21, 10]], 'the gap');
+    await rollAhead(bot, 'right', 'down');
+    await go(bot, [[25, 10]], 'through');
+  });
+  await carefully(bot, 'the middle wall', 10, () =>
+    go(
+      bot,
+      [
+        [27, 7],
+        [28, 5],
+        [31, 8],
+        [33, 6],
+        [33, 3],
+        [27, 3],
+        [27, 2],
+        [33, 6],
+        [35, 10],
+      ],
+      'a picture, a recipe, a calendar, a crumb, the donut',
+    ),
+  );
+  await carefully(bot, 'the swatter over the fridge', 12, async () => {
+    await go(bot, [[35, 2], [36, 1]], 'the gap');
+    await rollAhead(bot, 'right');
+    await go(bot, [[41, 1]], 'over the fridge');
+  });
+  await carefully(bot, 'the far wall', 10, () =>
+    go(
+      bot,
+      [
+        [43, 4],
+        [44, 7],
+        [45, 7],
+        [44, 9],
+        [42, 9],
+        [48, 9],
+      ],
+      'a clock, a picture, a calendar',
+    ),
+  );
+  need(bot, SMILES, 6, 'smiles');
+  await carefully(bot, 'the kitchen door', 10, () => leave(bot, bot.fly(50, 9, 'the door'), 'the door'));
+}
+
 export const counts = { snacks: (b: Bot) => count(b, SNACKS), smiles: (b: Bot) => count(b, SMILES), ears: (b: Bot) => count(b, EARS), hours: (b: Bot) => count(b, HOURS) };
