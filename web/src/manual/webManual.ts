@@ -135,6 +135,12 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     games made today still play in DOS and DOSBox. The web port, both the 1994 desk and
     today's web editor, was written with <b>Claude Opus 5.5</b>: AI assistance did most of the
     porting and code generation. It is MIT licensed too.</p>
+    <h3>Sandbox Software games</h3>
+    <p>The Sandbox games were written and built by <b>Claude Opus 5.5</b>: the code that builds
+    them, their pictures, music, sounds and words. Many are drawn from Lewis “Lewie” Moten
+    III: his blog writing, photos he provided, and conversations about his interests,
+    experiences and hobbies. Lewis directed each game and played it as it came together, and
+    his feedback shaped every one. Teddy, Gwinn and Doc Leo appear as themselves.</p>
     <p>GIF is a service mark of CompuServe; FLI is Autodesk Animator's format; Sound
     Blaster, CMF and VOC belong to Creative Technology; the OPL2 chip is Yamaha's. The CD's
     sample and shareware games belong to their authors. Sandbox Software, its BBS and the
