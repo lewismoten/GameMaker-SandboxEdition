@@ -105,6 +105,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Shoveled out by Lewis "Lewie" Moten III, winter of 1992'],
     lore: 'A note was frozen to it: "The Word Counter jammed at ninety-nine. Bring a shovel and come quick."',
     look: { felt: '#f4f6fb', band: '#3a6fc4', patch: '#d23a2e', thread: '#2a4f9a', pattern: 'snowflakes', motif: 'mitten' },
+    detect: { block: 137 },
   },
   {
     game: 'teddy',
