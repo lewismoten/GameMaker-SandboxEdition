@@ -118,8 +118,8 @@ function lounge(t: Term): void {
   t.line('|07Teleconference is open all night. Be nice, no flooding the channel.');
   t.line('|07NEW in the File library: THIRD GOAT FROM THE LEFT, MUSTARD SEED HUSTLE,');
   t.line('|07THREAD THE NEEDLE, BROTHER CAMEL, LOAF #13 (LEFT IN THE BASKET),');
-  t.line("|07CERTIFIED RAT TICKLER and WHERE'S THE REMOTE?!, Game-Maker");
-  t.line('|07games by our own DOC LEO (The Bard of Bizarre), from his songs.');
+  t.line("|07CERTIFIED RAT TICKLER, WHERE'S THE REMOTE?! and A FLY NAMED CARL,");
+  t.line('|07Game-Maker games by our own DOC LEO (The Bard of Bizarre), from his songs.');
   t.line('|07Free! Hit F.');
   t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
   t.line();
