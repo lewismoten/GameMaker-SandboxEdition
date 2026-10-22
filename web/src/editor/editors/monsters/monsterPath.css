@@ -208,6 +208,14 @@
   flex-direction: column;
   gap: 8px;
 }
+.mpath-side > * {
+  flex: none;
+}
+.mpath-side-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .mpath-count {
   font:
     bold 13px ui-monospace,

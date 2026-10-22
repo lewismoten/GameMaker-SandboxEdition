@@ -146,16 +146,16 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   const tabsEl = h('div', { class: 'mpath-tabs', role: 'tablist' });
   const toolbar = h('div', { class: 'mpath-toolbar' });
   const notice = h('div', { class: 'mpath-notice' });
-  const side = h('div', { class: 'mpath-side' });
+  const side = h('div', { class: 'mpath-side-list' });
   const numbers = h('details', { class: 'mpath-numbers' });
+  // beside the map: the notice, the corners and their numbers (on a wide window this column
+  // is as tall as the map and scrolls by itself, so the panel fits the window)
   const el = h(
     'section',
     { class: 'panel mpath' },
     tabsEl,
     toolbar,
-    notice,
-    h('div', { class: 'mpath-body' }, h('div', { class: 'mpath-left' }, stage, readout), side),
-    numbers,
+    h('div', { class: 'mpath-body' }, h('div', { class: 'mpath-left' }, stage, readout), h('div', { class: 'mpath-side' }, notice, side, numbers)),
   );
 
   function sprite(pic: number, orient: number): HTMLCanvasElement | undefined {

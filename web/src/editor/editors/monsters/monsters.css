@@ -148,7 +148,7 @@
     align-items: stretch;
   }
   .mon-detail .mpath-toolbar select {
-    max-width: 190px;
+    max-width: 160px;
   }
 }
 
