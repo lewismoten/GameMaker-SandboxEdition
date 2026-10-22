@@ -63,6 +63,7 @@ The play-testing tools:
 | blaster  | `npx vite-node ../games/blaster/tools/check.ts`    | the bot pilot flies every leg and boss                                                |
 | sleuth   | `npx vite-node ../games/sleuth/tools/check.ts`     | plays the whole case on the built disk (`--quick`, `--wrong <who>`, `--walk out.rec`) |
 | brief    | `npx vite-node ../games/brief/tools/check.ts`      | the bot restores all 32 books, passes the eight stamp gates and opens the 33rd book |
+| depth    | `npx vite-node ../games/depth/tools/check.ts`      | the bot rolls all six scenes, pulls focus, beats Count Polygon (`tools/egg.ts`: the egg) |
 
 Each `tools/sim.ts` is a headless copy of PLAYGAME's main loop built on the web app's engine
 (`web/src/engine`), so a check runs the real movement, touch and monster code. Some builds
@@ -157,3 +158,15 @@ graphic, so it shows exactly when it is put back. Shushers fine points (score) i
 taking words, so a book can always be finished. In the Reserve Stacks, egg cup gates take four
 of a wing's stories and give them straight back as Joe steps through: a counter check that
 keeps nothing. The intro's words pour out of the door by palette cycling.
+
+**Depth Perception** (`depth`). Ray, the chrome sphere from every ray tracing demo, rolls through six
+scenes of a render Count Polygon is stealing the polygons out of. Everything is ray traced in the
+build by a small software renderer (`src/render`): blocks are rendered per cell with their
+neighbors (so shadows cross block edges and pits show their walls) through an oblique camera, the
+sprites from 3D models, the title, cards and two FLI cartoons from scenes of chrome, glass and
+checkerboards, all reduced to 256 colors by median cut and dithering. Every scene is two scenes
+sharing one map: a near plane and a far plane whose block sets share their numbers but not their
+solidity, so whatever is in focus is sharp and solid and the other plane's blocks are
+out-of-focus blurs you roll through. Focus rings are links between the two. Auto-focus panels
+blink by next/ntime, slopes are gravity, teapots and bat nests give birth to monsters, and Count
+Polygon is a chain of five monsters that each ray kills into the next, fewer-faced one.
