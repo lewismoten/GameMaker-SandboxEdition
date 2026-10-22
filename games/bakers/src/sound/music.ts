@@ -135,7 +135,7 @@ export function roomSong(id: string): Uint8Array {
       const [a, b, c] = comp(CH, 're e re e re e re e', -1);
       return tune(112, [v(0, HARPSI, THEME, 100), v(1, HARPSI, a, 45), v(2, HARPSI, b, 45), v(3, HARPSI, c, 45), v(4, BASS, bass(CH, 'walk'), 80)]);
     }
-    case 'bakehouse': {
+    case 'bakery': {
       const [a, b, c] = comp(CH, 're e re e re e re e', -1);
       return tune(144, [v(0, brass, THEME, 110, 2), v(1, piano, a, 55, 2), v(2, piano, b, 55, 2), v(3, piano, c, 55, 2), v(4, BASS, bass(CH, 'walk'), 110, 2), v(5, SNARE, drum(13, 'C4 q, C4 q, C4 q, C4 q'), 55)]);
     }
@@ -199,4 +199,4 @@ export function lostSong(): Uint8Array {
   return tune(66, [v(0, KAZOO, mel, 100), v(1, pad, a, 50), v(2, pad, b, 50), v(3, pad, c, 50), v(4, BASS, bass(ch, 'whole'), 85)]);
 }
 
-export const ROOM_SONGS = ['pantry', 'larder', 'parlor', 'bakehouse', 'cellar', 'tearoom', 'sugar', 'brewery', 'clock', 'bottling', 'loft', 'cistern', 'vault', 'hidey'];
+export const ROOM_SONGS = ['pantry', 'larder', 'parlor', 'bakery', 'cellar', 'tearoom', 'sugar', 'brewery', 'clock', 'bottling', 'loft', 'cistern', 'vault', 'hidey'];

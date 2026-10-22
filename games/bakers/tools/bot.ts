@@ -267,6 +267,8 @@ export class Bot {
     const goal = { x, y };
     const scene = this.sim.scene;
     let waited = 0;
+    let best = Infinity;
+    let stalled = 0;
     for (let n = 0; n < limit; n++) {
       if (this.sim.scene !== scene) return 'link';
       const p = this.sim.pos;
@@ -279,6 +281,8 @@ export class Bot {
         continue;
       }
       const first = path[0];
+      if (path.length < best) (best = path.length), (stalled = 0);
+      else stalled++;
       // a mouse or a Redcoat in front: squawk first
       if (this.sim.ticks - this.lastSquawk > 10 && this.squawkable()) {
         const r = await this.squawk();
@@ -307,6 +311,8 @@ export class Bot {
         }
         waited = move ? 0 : waited + 1;
         if (!move && waited > 40) (move = first.d), (waited = 0);
+        // dodging back and forth for too long: take the hit and go
+        if (stalled > 60) (move = first.d), (stalled = 0), (best = Infinity);
       }
       if (process.env.BOT_DEBUG === '2') console.log(`  ${label} at ${p.x},${p.y} -> ${move ?? 'wait'} (path ${path.length})`);
       const r = await this.stepRaw(move, 3);
