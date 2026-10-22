@@ -248,3 +248,110 @@
     font-size: 24px;
   }
 }
+
+/* ---- the cake stand beside the shadow box (eggDisplay.ts), for the eggs kept apart --------- */
+.egg-stand {
+  order: 1;
+  position: relative;
+  justify-self: center;
+  margin: 0 auto 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: zoom-in;
+}
+
+.egg-stand[hidden] {
+  display: none;
+}
+
+.egg-stand:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 2px;
+}
+
+.egg-stand-art {
+  display: block;
+  width: 84px;
+  height: 69px;
+  filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.4));
+}
+
+/* a faint green wisp off the rotten egg */
+.egg-stand-wisp {
+  position: absolute;
+  left: 18%;
+  top: -10%;
+  width: 40%;
+  height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 60%, rgba(150, 190, 90, 0.5), rgba(150, 190, 90, 0) 70%);
+  filter: blur(2px);
+  pointer-events: none;
+  animation: egg-wisp 4.5s ease-in-out infinite;
+}
+
+@keyframes egg-wisp {
+  0% {
+    transform: translate(0, 30%) scale(0.6);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(12%, -45%) scale(1.25);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .egg-stand-wisp {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 961px) {
+  /* at the right end of the bottom shelf, past the boxes, in front of the wall */
+  .desk-scene > .egg-stand {
+    position: absolute;
+    right: calc(1440px - 342px);
+    bottom: calc(880px - 430px);
+    z-index: 1;
+    margin: 0;
+    transform-origin: 50% 100%;
+    transition: transform 0.15s;
+  }
+
+  .desk-scene > .egg-stand .egg-stand-art {
+    width: 56px;
+    height: 46px;
+  }
+
+  .desk-scene > .egg-stand:hover,
+  .desk-scene > .egg-stand:focus-visible {
+    transform: scale(1.08);
+  }
+}
+
+/* ---- the viewer's extras for those eggs (bonusViewer.ts) ---------------------------------- */
+.eggv-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.eggv-extra:not(:empty) {
+  margin-top: 14px;
+}
+
+.eggv .eggv-mute[aria-pressed='true'] {
+  background: #5a2c2c;
+  border-color: #d08a8a;
+}

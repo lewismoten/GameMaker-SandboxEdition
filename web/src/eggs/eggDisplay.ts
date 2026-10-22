@@ -1,7 +1,9 @@
 // The felt eggs on the desk's wall: a small shadow box standing on the top game shelf that
 // holds each egg found so far (two rows of six, a dozen, when they are all in). Until the
 // first one, there is nothing at all; the box only ever shows the eggs that are in it (never
-// how many could be). Clicking it opens the viewer (eggViewer.ts).
+// how many could be). Clicking it opens the viewer (eggViewer.ts). Once all twelve are in, a
+// little cake stand beside it holds the eggs kept apart from the dozen, if any are found
+// (bonus.ts, loaded only then; bonusViewer.ts).
 import './eggs.css';
 import { h, clear } from '../editor/core/ui';
 import { EGGS_CHANGED, eggStates, type EggState } from './eggState';
@@ -15,12 +17,46 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
   const row = h('span', { class: 'egg-row', 'aria-hidden': 'true' });
   box.append(row);
   place(box);
+  // once the dozen is complete, a little cake stand beside it for any eggs kept apart (bonus.ts)
+  const stand = h('button', { type: 'button', class: 'egg-stand', hidden: true });
+  box.after(stand);
   let found: EggState[] = [];
   let shown = '';
   let opening = false;
+  let extra: import('./bonus').BonusState[] = [];
+  let standShown = '';
+
+  const refreshStand = async (complete: boolean) => {
+    if (!complete) {
+      extra = [];
+      stand.hidden = true;
+      standShown = '';
+      return;
+    }
+    const [{ bonusStates, isHatched }, { drawCakeStand }] = await Promise.all([import('./bonus'), import('./bonusArt')]);
+    extra = (await bonusStates()).filter((e) => e.found);
+    const hatched = isHatched();
+    const items = extra.map((e) => (e.egg.id === 'rotten' ? (hatched ? 'heart' : 'rotten') : 'pastry') as 'rotten' | 'heart' | 'pastry');
+    const key = items.join(',');
+    if (key === standShown) return;
+    standShown = key;
+    stand.hidden = !items.length;
+    if (!items.length) return;
+    const names = items.map((i) => (i === 'rotten' ? 'a rotten egg' : i === 'heart' ? 'a diamond heart' : 'a pastry egg'));
+    stand.setAttribute('aria-label', `Cake stand with ${names.join(' and ')}: take a closer look`);
+    stand.title = 'A cake stand';
+    const W = 56;
+    const H = 46;
+    const k = Math.min(3, Math.max(1, window.devicePixelRatio || 1)) * 1.5;
+    const c = h('canvas', { class: 'egg-stand-art', width: W * k, height: H * k, 'aria-hidden': 'true' });
+    drawCakeStand(c.getContext('2d')!, W * k, H * k, items);
+    clear(stand, c, items.includes('rotten') ? h('span', { class: 'egg-stand-wisp', 'aria-hidden': 'true' }) : null);
+  };
 
   const refresh = async () => {
-    found = (await eggStates()).filter((e) => e.found);
+    const all = await eggStates();
+    found = all.filter((e) => e.found);
+    void refreshStand(all.length > 0 && found.length === all.length).catch(() => undefined);
     const key = found.map((e) => e.egg.game).join(',');
     if (key === shown) return;
     shown = key;
@@ -53,6 +89,19 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     }
   });
 
+  stand.addEventListener('click', async () => {
+    if (opening || !extra.length) return;
+    opening = true;
+    try {
+      const { openBonusViewer } = await import('./bonusViewer');
+      await openBonusViewer(extra);
+    } finally {
+      opening = false;
+      stand.focus();
+      void refresh();
+    }
+  });
+
   const onChange = () => void refresh();
   const onVisible = () => document.visibilityState === 'visible' && onChange();
   window.addEventListener(EGGS_CHANGED, onChange);
@@ -67,5 +116,6 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     window.removeEventListener('focus', onChange);
     document.removeEventListener('visibilitychange', onVisible);
     box.remove();
+    stand.remove();
   };
 }
