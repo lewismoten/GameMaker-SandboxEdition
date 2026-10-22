@@ -75,6 +75,18 @@ export async function greenRoom(bot: Bot, round: 1 | 2, ix: { hub: number; ivs: 
   if ((await bot.goto(out.x, out.y, 'leave the green room')) !== 'link') throw new Error('No way out');
 }
 
+/** At 2 AM, the green room's sofa: push on it with the lens in hand, then step into the seat. */
+export async function findEgg(bot: Bot, eggScene: number): Promise<void> {
+  const lens = bot.sim.meter(CTR.lens);
+  const egg = bot.sim.meter(CTR.egg);
+  await bot.goto(PL.sofa.x - 1, PL.sofa.y, 'beside the sofa');
+  for (let t = 0; t < 6 && bot.sim.scene !== eggScene; t++) await bot.push('right', 2, 4);
+  expectScene(bot, eggScene, 'the sofa');
+  if (bot.sim.meter(CTR.lens) !== lens - 1) throw new Error('The sofa did not take a lens charge');
+  if (bot.sim.meter(CTR.egg) !== egg + 1) throw new Error(`Egg counter ${bot.sim.meter(CTR.egg)}`);
+  bot.say('found the felt egg between the sofa cushions');
+}
+
 /** Act Two, up to the green room door. */
 export async function act2(bot: Bot): Promise<void> {
   const g = (x: number, y: number, label: string) => bot.goto(at(x, y).x, at(x, y).y, label);

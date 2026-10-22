@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GameSim } from './sim';
 import { Bot } from './bot';
-import { act1, act2, accuse, greenRoom } from './walkthrough';
+import { act1, act2, accuse, findEgg, greenRoom } from './walkthrough';
 import { buildGame } from '../src/game';
 import { buildActs } from '../src/levels/acts';
 import { buildTheatreBlocks } from '../src/blocks/tiles';
@@ -19,7 +19,7 @@ export function loadDisk(): Map<string, Uint8Array> {
   return new Map(readdirSync(dir).map((n) => [n, new Uint8Array(readFileSync(join(dir, n)))]));
 }
 
-export async function playWhole(files: Map<string, Uint8Array>, opts: { quick?: boolean; wrong?: string } = {}): Promise<Bot> {
+export async function playWhole(files: Map<string, Uint8Array>, opts: { quick?: boolean; wrong?: string; egg?: boolean } = {}): Promise<Bot> {
   const ix = sceneIndex();
   const bot = new Bot(new GameSim(files));
   try {
@@ -29,6 +29,7 @@ export async function playWhole(files: Map<string, Uint8Array>, opts: { quick?: 
     if (bot.sim.scene !== ix.act2) throw new Error(`The green room led to scene ${bot.sim.scene}`);
     await act2(bot);
     if (bot.sim.scene !== ix.gr2a) throw new Error(`Act Two led to scene ${bot.sim.scene}`);
+    if (opts.egg) await findEgg(bot, ix.egg);
     await greenRoom(bot, 2, { hub: ix.gr2, ivs: ix.iv2, evs: ix.ev2 }, !opts.quick);
     if (bot.sim.scene !== ix.acca) throw new Error(`The green room led to scene ${bot.sim.scene}`);
     await accuse(bot, ix, opts.wrong);
