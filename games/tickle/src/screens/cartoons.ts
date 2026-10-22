@@ -167,7 +167,7 @@ export function storyFli(cast: Cast): Uint8Array {
     // Doc Leo at the keyboard, then up and laughing
     const pose = k < 44 ? (k % 4 < 2 ? 'tickle0' : 'tickle1') : k < 62 ? 'grin' : k % 4 < 2 ? 'laugh0' : 'laugh1';
     scaleBlit(p, L(pose), 60, 50, 2);
-    if (k >= 64 && k % 8 < 6) say(p, pal, 100, 30, 'MWA-HA-HA-HA!', 'paint', 1);
+    if (k >= 64 && k % 8 < 6) say(p, pal, 175, 14, 'MWA-HA-HA-HA!', 'paint', 1);
     caption(p, pal, lines(k));
   };
   const first = new Pixels(W, H);
@@ -480,7 +480,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
         const scale = e === 0 ? 2 : 1;
         say(p, pal, 160 + (e % 2 ? 90 : -90) * (e ? 1 : 0), 20 + e * 30, e ? 'ha-ha-ha...' : 'MWA-HA-HA-HA!', e ? 'purple' : 'paint', e ? 2 : 1, scale);
       }
-      for (let b = 0; b < 3; b++) scaleBlit(p, M(`lab.giggle${(k + b) % 2}`), 20 + b * 110 + (b === 1 ? 160 : 0) - (b === 2 ? 30 : 0), 132, 2);
+      [20, 200, 262].forEach((x, b) => scaleBlit(p, M(`lab.giggle${(k + b) % 2}`), x, 132, 2));
       caption(p, pal, k < 30 ? ['Yes, I am a certified', 'rat tickler!'] : ['All because I learned', 'to tickle them by hand.']);
     };
     const first = new Pixels(W, H);
