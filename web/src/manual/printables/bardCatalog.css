@@ -165,9 +165,8 @@
 }
 
 .bard-stamp {
-  position: absolute;
-  top: -2cqw;
-  right: -1cqw;
+  align-self: flex-end;
+  margin: auto 6cqw 0 0;
   background: rgba(251, 239, 203, 0.7);
   padding: 1cqw 2.4cqw;
   border: 0.6cqw solid #b3121a;
@@ -219,7 +218,6 @@
 }
 
 .bard-coupon {
-  position: relative;
   padding: 3cqw 4cqw;
   border: 0.6cqw dashed #341445;
   background: #fff8e4;
@@ -271,7 +269,7 @@
 }
 
 .bard-small {
-  margin: auto 0 0;
+  margin: 0;
   padding-top: 1.4cqw;
   border-top: 0.3cqw solid #c9b98f;
   font:

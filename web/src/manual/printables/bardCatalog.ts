@@ -156,7 +156,6 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
     h(
       'section',
       { class: 'bard-coupon' },
-      stamp,
       h('h2', null, '✂ Registration coupon'),
       h('p', null, 'This is shareware: copy it, give it to friends, upload it to your favorite BBS. If it made you smile, register:'),
       h(
@@ -168,6 +167,7 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
       h('address', null, 'The Bard of Bizarre', h('br'), 'c/o The Sofa BBS', h('br'), 'Pittsburgh, PA'),
       h('p', { class: 'bard-story' }, '(In the story only: there is nothing to pay and nowhere to mail. The games are free.)'),
     ),
+    stamp,
     h('p', { class: 'bard-small' }, h('b', null, 'The small print, today: '), BARD_CREDIT, ' This flyer was made for Game-Maker: Sandbox Edition; Doc Leo never mailed one.'),
   );
   pages.push(back);
