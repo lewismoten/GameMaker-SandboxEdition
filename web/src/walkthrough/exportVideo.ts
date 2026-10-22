@@ -74,7 +74,7 @@ export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult>
     error: (e) => (fail = e instanceof Error ? e : new Error(String(e))),
   });
   // Pixel art with hard edges: enough bits that it stays sharp, without the whole game's worth of memory.
-  venc.configure({ codec: vcodec, width: W, height: H, bitrate: 1_200_000, framerate: WALKTHROUGH_FPS, avc: { format: 'avc' }, latencyMode: 'quality' });
+  venc.configure({ codec: vcodec, width: W, height: H, bitrate: 700_000, bitrateMode: 'variable', framerate: WALKTHROUGH_FPS, avc: { format: 'avc' }, latencyMode: 'quality' });
 
   const audio: AvSample[] = [];
   let aconfig: Uint8Array | undefined;
