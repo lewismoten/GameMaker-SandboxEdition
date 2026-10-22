@@ -7,7 +7,8 @@
 // GAME.BAK and puts a "patched" XFERPLAY in under the same GAME.EXE name, with the group's
 // intro before the game as cracked games of the day had (uncrack puts the .BAK back). The
 // game itself is not changed, and stays shareware (play only). It touches nothing but this
-// pretend PC.
+// pretend PC. Its real job is debugging: switching Game-Maker and games between unregistered
+// and registered to test both; the scene dress is for fun.
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { attr, COLS, ROWS } from '../text/textScreen';

@@ -8,6 +8,9 @@
 // a game never saved can be hacked too, and a save can be moved to another level (entered at its
 // start, as the game enters it: project/saveData changeSaveLevel).
 //
+// Its real job is debugging and testing games (setting up a save at any level or with any
+// stats); the 90s BBS dress is for fun.
+//
 // The saves and their fields come from project/saveData (the same ones the web's "Saves &
 // scores" panel edits); the game's own files name the levels, items and sequences.
 import type { RetroHost } from '../host';
