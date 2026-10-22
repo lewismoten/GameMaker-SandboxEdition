@@ -58,9 +58,11 @@ export class WalkAudio extends AudioEngine {
   }
 
   override async playSong(bytes: Uint8Array | undefined): Promise<boolean> {
+    // super stops the song playing first (and that is written down first)
+    const done = super.playSong(bytes);
     this.log({ t: this.now(), kind: 'song', bytes });
     this.song = bytes;
-    return super.playSong(bytes);
+    return done;
   }
 
   override stopSong(): void {
