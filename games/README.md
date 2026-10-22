@@ -70,6 +70,8 @@ The other play-testing tools:
 | goat      | `npx vite-node ../games/goat/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | mustard   | `npx vite-node ../games/mustard/tools/check.ts`      | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze |
 | mustard   | `npx vite-node ../games/mustard/tools/gendemo.ts`    | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
+| needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | logic     | `npx vite-node ../games/logic/tools/check.ts`        | plays every board's solution                                                    |
 | maximus   | `npx vite-node ../games/maximus/tools/check.ts`      | lands on every world, drives the rovers around, crosses the training deck       |
@@ -241,3 +243,18 @@ has no attack at all ("it don't shout"). The song's tools are shared: `kit/song/
 `kit/song/cutclips.py` (each game's `tools/analyze.py` and `tools/cutClips.py` name the song),
 `kit/song.ts` writes the arrangement and `kit/songPreview.ts` renders it; the title cartoon is the
 song's animated cover, its seven frames dithered into one palette (`tools/scans.ts`).
+
+**Thread the Needle, Brother Camel** (`needle`). The Bard of Bizarre's third game, another of his
+bizarre gospels (Matthew 19:24), shareware from The Sofa BBS (`"series": "bizarre"`). A side-on
+platformer: the rich man walked off and left his camel with saddlebags of gold. The camel is two
+blocks tall; kneeling and crawling (Down, Z, C) show no top block, so he is one block high and fits
+the narrow ways ("hump down"). Each level loads a lighter character file (saddle, bags and fancy
+shoes, then less, then nothing). The poor along the road are block chains that take a coin of gold
+(money, refused when there is none) and give a grace (counter 20); eye gates are solid blocks that
+take a grace to open into a gap one block high, and the eye of the needle at the top of the last
+level takes four. In the tailor's shop threads are no-gravity blocks to climb, entered past a fray
+that takes a spool (counter 21) to mend: bumped sideways, because PLAYGAME only changes a touched
+block that is fully on screen, and a block above a climbing two-high character often is not. Sandstorm
+gusts are air that pulls down and left, coming and going by next/ntime. The title cartoon dithers
+the song's fourteen cover frames (`tools/scans.ts`); the music and five sung clips come from the
+recording through the shared song tools.
