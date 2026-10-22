@@ -53,7 +53,6 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
   g.fillStyle = look.band;
   g.fillRect(0, waist - 12, TEX_W, 24);
   g.fillRect(0, TEX_H * 0.16 - 5, TEX_W, 10);
-  const palette = [look.band, look.patch, look.thread];
   switch (look.pattern) {
     case 'dots':
       scatter(46, 0.2, 0.95, (x, y, i) => {
@@ -67,7 +66,7 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
     case 'snowflakes': {
       const arms = look.pattern === 'stars' ? 4 : 6;
       scatter(look.pattern === 'stars' ? 60 : 34, 0.08, 0.98, (x, y, i) => {
-        g.strokeStyle = look.pattern === 'stars' ? look.band : look.band;
+        g.strokeStyle = look.band;
         g.lineWidth = 1.6;
         const r = look.pattern === 'stars' ? 3 + (i % 3) * 1.5 : 7;
         g.beginPath();
