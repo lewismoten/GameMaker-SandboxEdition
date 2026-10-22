@@ -381,6 +381,16 @@
   cursor: pointer;
 }
 
+.rs-reopen.rs-unreg {
+  border: 2px solid #6d0b10;
+  border-radius: 4px;
+  background: var(--rs-red);
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  rotate: 2deg;
+}
+
 .rs-reopen[hidden] {
   display: none;
 }

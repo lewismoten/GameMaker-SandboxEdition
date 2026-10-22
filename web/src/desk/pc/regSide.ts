@@ -34,7 +34,8 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   let narrowTab: 'manual' | 'card' = 'manual';
   let pageNo = 0;
   let mark = true; // the asked paragraph and word are marked until the user hides the marks
-  let cardClosed = false; // the user put the card away: GM's menu leaves it away
+  let cardClosed = false; // the user put the card away: while GM runs unregistered it stays a tab
+  let sheetOpened = false; // on a narrow window the unregistered card opens only when asked for
   let guide: Guide | undefined;
 
   const live = h('div', { class: 'rs-live', role: 'status', 'aria-live': 'polite' });
@@ -248,6 +249,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   function close(which: 'manual' | 'card'): void {
     shown = { ...shown, [which]: false };
     if (which === 'card' || root.classList.contains('rs-narrow')) cardClosed = true;
+    sheetOpened = false;
     // on a narrow window the sheet goes away whole
     if (root.classList.contains('rs-narrow')) shown = { manual: false, card: false };
     update();
@@ -264,6 +266,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   function open(): void {
     shown = { manual: ask?.kind === 'question', card: true };
     cardClosed = false;
+    sheetOpened = true;
     update();
   }
 
@@ -279,7 +282,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     const wide = !!m && m.width > 200 && left >= 300 && right >= 260 && vh >= 560 && m.top < vh / 3;
     root.classList.toggle('rs-narrow', !wide);
     root.classList.toggle('rs-wide', wide);
-    for (const el of [manual, card]) el.removeAttribute('style');
+    for (const el of [manual, card, reopen]) el.removeAttribute('style');
     if (!wide || !m) return;
     const top = Math.max(12, m.top);
     const mw = Math.min(460, left - 28);
@@ -287,6 +290,8 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     manual.style.cssText = `left:${left - 14 - mw}px;top:${top}px;width:${mw}px;height:${Math.min(vh - top - 12, chrome + (mw - 20) * (8.5 / 5.5))}px`;
     const cw = Math.min(360, right - 28);
     card.style.cssText = `left:${edge + 14}px;top:${top}px;width:${cw}px;max-height:${vh - top - 12}px`;
+    // put away, the card is a tab where it lay
+    reopen.style.cssText = `left:${edge + 14}px;top:${top}px;right:auto;bottom:auto`;
   }
 
   function update(): void {
@@ -298,7 +303,8 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     if (narrow) {
       // one at a time: the one asked for, if it is open
       if (!isQ) narrowTab = 'card';
-      const any = shown.manual || shown.card;
+      // GM running unregistered: a tab, not a sheet over the screen, until the tab is pressed
+      const any = (shown.manual || shown.card) && (ask?.kind !== 'unregistered' || sheetOpened);
       manual.hidden = !any || narrowTab !== 'manual';
       card.hidden = !any || narrowTab !== 'card';
     } else {
@@ -307,7 +313,9 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     }
     const closed = !!ask && manual.hidden && card.hidden;
     reopen.hidden = !closed;
-    reopen.textContent = isQ ? 'Owner’s Guide and registration card' : 'Registration card';
+    const unreg = ask?.kind === 'unregistered';
+    reopen.textContent = isQ ? 'Owner’s Guide and registration card' : unreg ? 'UNREGISTERED — Register' : 'Registration card';
+    reopen.classList.toggle('rs-unreg', unreg);
     answer.hidden = !isQ || !desk?.type;
     if (ask?.kind === 'question') {
       // where to type: the screen, or on a narrow window (a phone) the Word found box
@@ -337,6 +345,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     const same = before && JSON.stringify(before) === JSON.stringify(ask);
     if (!same) {
       if (ask.kind !== 'unregistered') cardClosed = false; // GM asks again: the card comes back
+      sheetOpened = false;
       shown = { manual: ask.kind === 'question', card: !cardClosed };
       narrowTab = ask.kind === 'question' ? 'manual' : 'card';
       mark = true;
