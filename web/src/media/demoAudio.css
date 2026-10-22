@@ -103,3 +103,25 @@
 .demo-audio.compact[role] label:has(input:focus-visible) {
   outline-color: #fff;
 }
+
+/* over a demo playing silently until the visitor taps or clicks the page (demoPreview.ts) */
+.demo-sound-hint {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 3;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid #ffd400;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.78);
+  color: #ffd400;
+  font: 600 13px/1.2 system-ui, sans-serif;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.demo-sound-hint:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

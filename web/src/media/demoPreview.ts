@@ -16,6 +16,7 @@ import { recordingTicks, titleDemo, withoutOpening } from './demo';
 import { attractRecording } from './attractDemo';
 import { extraDemoForGam, extraDemosLoaded, fetchExtraDemo, loadExtraDemos, type ExtraDemo } from './extraDemos';
 import { DEMO_KIND_TAG, type DemoKind } from './demoKind';
+import { onSoundUnlocked, soundUnlocked } from '../audio/context';
 
 // the index is small: fetched early, so a preview can tell at once whether a demo was added
 if (typeof window !== 'undefined') void loadExtraDemos();
@@ -63,8 +64,11 @@ function demoSource(files: GameFiles, gam: string, attract: boolean): DemoSource
   return loadExtraDemos().then((i) => added(extraDemoForGam(i, files.get(gam))));
 }
 
-/** True once the visitor has clicked or typed on the page: sound may start without asking. */
-const mayPlaySound = () => (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation?.hasBeenActive ?? false;
+/**
+ * True once the visitor has tapped, clicked or typed on the page: sound may start without
+ * asking (iOS: the page's AudioContext was resumed in that gesture, audio/context.ts).
+ */
+const mayPlaySound = () => soundUnlocked() || (navigator.userActivation?.hasBeenActive ?? false);
 
 /** The demos' sound, which never asks the browser for audio before the visitor has used the page (or for None). */
 class PreviewAudio extends DemoAudioEngine {
@@ -122,6 +126,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
 
   const start = () => {
     player?.stop();
+    audio?.dispose();
     session = undefined;
     const sound = (audio = new PreviewAudio(demoAudio()));
     let played = false;
@@ -135,6 +140,16 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
       tag.style.cssText =
         'position:absolute;top:6px;left:50%;transform:translateX(-50%);max-width:calc(100% - 12px);padding:2px 8px;border-radius:999px;background:rgb(0 0 0 / .72);color:#fff;font:600 11px/1.4 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;z-index:2';
       host.append(tag);
+    }
+    // silent until the visitor uses the page (iOS needs a tap for sound): say so, and a tap here does it
+    if (sound.mode !== 'none' && !mayPlaySound()) {
+      const hint = document.createElement('button');
+      hint.type = 'button';
+      hint.className = 'demo-sound-hint';
+      hint.textContent = `🔇 ${matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Click'} for sound`;
+      // the tap only turns the sound on (audio/context.ts hears it first); the card under it stays put
+      hint.addEventListener('click', (e) => (e.stopPropagation(), e.preventDefault()));
+      host.append(hint);
     }
     clearInterval(timer);
     // A second after the last recorded key (or once the playback is over) the demo is done.
@@ -181,7 +196,9 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
       if (current === entry) current = undefined;
       clearInterval(timer);
       seen.disconnect();
+      offUnlock();
       player?.stop();
+      audio?.dispose();
       host.replaceChildren();
       host.classList.remove('gm-player', 'gm-preview');
       o.onStop?.();
@@ -193,6 +210,11 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     if (!audio) return;
     if (m !== 'none' && !audio.context) start();
     else audio.setMode(m, session);
+  });
+  // the visitor's first tap or click anywhere (inside its handler): the sound starts now
+  const offUnlock = onSoundUnlocked(() => {
+    host.querySelector('.demo-sound-hint')?.remove();
+    if (audio && !stopped) void audio.wake();
   });
   const entry = { stop: () => handle.stop() };
   current = entry;

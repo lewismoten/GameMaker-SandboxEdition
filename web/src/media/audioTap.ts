@@ -9,11 +9,14 @@ export class AudioMix {
   private untap: () => void;
   private links: (() => void)[] = [];
 
-  /** Only the contexts `want` accepts (default: all, including ones made while recording). */
-  constructor(want?: (ctx: BaseAudioContext) => boolean) {
+  /**
+   * Only the contexts `want` accepts (default: all, including ones made while recording),
+   * or just one node's sound (a game's, audio/engine.ts `node`).
+   */
+  constructor(want?: ((ctx: BaseAudioContext) => boolean) | AudioNode) {
     void this.mix.resume().catch(() => undefined);
     const add = (ctx: BaseAudioContext, node: AudioNode) => {
-      if (want && !want(ctx)) return;
+      if (typeof want === 'function' && !want(ctx)) return;
       if (!('createMediaStreamDestination' in ctx)) return; // offline rendering
       const out = (ctx as AudioContext).createMediaStreamDestination();
       node.connect(out);
@@ -28,6 +31,11 @@ export class AudioMix {
         src.disconnect();
       });
     };
+    if (want instanceof AudioNode) {
+      add(want.context, want);
+      this.untap = () => undefined;
+      return;
+    }
     this.untap = tapOutputs(add);
   }
 

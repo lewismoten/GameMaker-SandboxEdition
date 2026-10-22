@@ -115,6 +115,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
   const start = (record: boolean) => {
     void stopVideo(false);
     player?.stop();
+    sound?.dispose();
     session = undefined;
     const gen = ++generation;
     const files = skip ? withoutOpening(o.files, o.gam, o.rec) : o.files.copy();
@@ -133,7 +134,8 @@ export function playDemo(o: DemoOptions): Promise<void> {
     status.textContent = skip ? 'Straight into the playing. Esc leaves.' : 'From the title screen. Esc leaves.';
     if (!record) return;
     const machine = player.machine;
-    const mix = new AudioMix((ctx) => ctx === machine.audio.context);
+    // just this game's sound (the page's other sounds share its AudioContext)
+    const mix = new AudioMix(machine.audio.node ?? ((ctx) => ctx === machine.audio.context));
     try {
       const rec = new LiveRecorder(machine.screen.canvas, mix.track, 70);
       const began = performance.now();
@@ -213,6 +215,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
     void stopVideo(true);
     below?.destroy();
     player?.stop();
+    sound?.dispose();
   });
 }
 
