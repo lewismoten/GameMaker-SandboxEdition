@@ -35,7 +35,19 @@ export interface Drive {
   root: () => Promise<DosNode[] | null>;
 }
 
+/** When Game-Maker was installed on the PC: the date of everything that came with it. */
 export const DOS_DATE = new Date(1994, 9, 20, 11, 42);
+
+/**
+ * The PC's clock. The desk lives in 1994-95: today's month, day and time (as the wall clock
+ * shows them), in the year after DOS_DATE, so nothing new is ever older than the install.
+ */
+export function deskDate(now: Date | number = new Date()): Date {
+  const d = new Date(now);
+  d.setFullYear(1994);
+  if (d < DOS_DATE) d.setFullYear(1995);
+  return d;
+}
 
 export function file(name: string, size: number, extra: Partial<DosNode> = {}): DosNode {
   return { name: name.toUpperCase(), dir: false, size, date: DOS_DATE, ...extra };

@@ -8,6 +8,8 @@ import type { FileSystem } from './dos/vfs';
 import type { HdGame } from './dos/hardDisk';
 import type { WorkArea } from './dos/workArea';
 import type { PictureScreen } from './view/picture';
+import { deskDate } from './dos/vfs';
+import { idbCDrive, type CDriveState, type CDriveStore } from './dos/cDriveStore';
 
 /**
  * A ported designer with work open. The desk asks it whether anything is unsaved before
@@ -84,47 +86,52 @@ export interface RetroHost extends Ui {
   transferToFloppy(game: FolderGame): Promise<boolean>;
 }
 
-const KEY = 'gm-bbs-downloads';
-/** Files DEL took out of a download's folder ("id/NAME"), and folders made on C: ("IMAGES"). */
-const DELETED = 'gm-bbs-deleted';
-const DIRS = 'gm-dos-dirs';
-
-function load(key: string): Set<string> {
-  try {
-    return new Set(JSON.parse(localStorage.getItem(key) ?? '[]'));
-  } catch {
-    return new Set(); // private mode
-  }
-}
-
-function save(key: string, set: Set<string>): void {
-  try {
-    localStorage.setItem(key, JSON.stringify([...set]));
-  } catch {
-    /* private mode */
-  }
-}
-
 /**
- * What the BBS downloaded to C: (shareware ids and picture names), kept in the browser:
- * DEL takes files out again, RD the folders.
+ * What the BBS downloaded to C: (shareware ids and picture names) and when, kept in the
+ * browser (retro/dos/cDriveStore.ts): DEL takes files out again, RD the folders. The lists
+ * load as the page opens; `ready` settles when they have.
  */
 export class Downloads {
-  private ids = load(KEY);
-  private deleted = load(DELETED);
-  private dirs = load(DIRS);
+  private ids = new Map<string, number>();
+  private deleted = new Set<string>();
+  private dirs = new Map<string, number>();
+  private saving: Promise<void> = Promise.resolve();
+  readonly ready: Promise<void>;
   onChange?: () => void;
+
+  constructor(
+    private store: CDriveStore = idbCDrive,
+    private now: () => number = Date.now,
+  ) {
+    this.ready = store
+      .load()
+      .then((s) => {
+        if (!s) return;
+        // anything done before the lists arrived wins over them
+        for (const [id, t] of s.ids) if (!this.ids.has(id)) this.ids.set(id, t);
+        for (const d of s.deleted) this.deleted.add(d);
+        for (const [d, t] of s.dirs) if (!this.dirs.has(d)) this.dirs.set(d, t);
+      })
+      .catch(() => undefined) // no IndexedDB (private mode): this visit only
+      .then(() => this.onChange?.());
+  }
 
   has(id: string): boolean {
     return this.ids.has(id);
   }
 
   list(): string[] {
-    return [...this.ids];
+    return [...this.ids.keys()];
+  }
+
+  /** When a download arrived, by the PC's clock. */
+  date(id: string): Date | undefined {
+    const t = this.ids.get(id);
+    return t === undefined ? undefined : deskDate(t);
   }
 
   add(id: string): void {
-    this.ids.add(id);
+    this.ids.set(id, this.now());
     // downloading again brings back every file of it
     for (const d of this.deleted) if (d.startsWith(`${id}/`)) this.deleted.delete(d);
     this.persist();
@@ -152,16 +159,35 @@ export class Downloads {
     return this.dirs.has(name);
   }
 
+  /** When a folder on C: was made, by the PC's clock. */
+  dirDate(name: string): Date | undefined {
+    const t = this.dirs.get(name);
+    return t === undefined ? undefined : deskDate(t);
+  }
+
   setDir(name: string, made: boolean): void {
-    if (made) this.dirs.add(name);
+    if (made === this.dirs.has(name)) return; // made once, dated then
+    if (made) this.dirs.set(name, this.now());
     else this.dirs.delete(name);
     this.persist();
   }
 
+  /** The lists as stored. */
+  state(): CDriveState {
+    return { ids: [...this.ids], deleted: [...this.deleted], dirs: [...this.dirs] };
+  }
+
+  /** Settles when every change so far is stored. */
+  saved(): Promise<void> {
+    return this.saving;
+  }
+
   private persist(): void {
-    save(KEY, this.ids);
-    save(DELETED, this.deleted);
-    save(DIRS, this.dirs);
+    // one write at a time, in order, once the stored lists have been merged in
+    this.saving = this.saving
+      .then(() => this.ready)
+      .then(() => this.store.save(this.state()))
+      .catch(() => undefined);
     this.onChange?.();
   }
 }
