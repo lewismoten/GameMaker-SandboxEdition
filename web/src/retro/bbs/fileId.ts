@@ -119,7 +119,7 @@ const SUMMARY: Record<string, string> = {
   tickle: 'Doc Leo has a rat tickling certificate and no rats yet. Pin first, then tickle, and raise a laughing carpet. MWA-HA-HA!',
   remote: "The remote is gone. Lift the cushions, the dog and the cat, call Mom, fall into the void between the cushions. Check your hand.",
   carl: "You are Carl, the fly in the room. Eat his snacks, buzz his ear, barrel-roll past the dish towel, see things. Take the aux cord.",
-  reckoning: "3:17 A.M. Lactose intolerant. Cheesecake in the fridge. Sneak past the wife, eat it anyway, outrun the gurgle, fight the Devil with almond milk.",
+  reckoning: '3:17 A.M., lactose intolerant, cheesecake in the fridge. Eat it anyway, outrun the gurgle, splash the Devil.',
 };
 
 const TAGLINES = [
