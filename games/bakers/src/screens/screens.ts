@@ -289,11 +289,12 @@ export function eggScreen(rotten: boolean): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 176);
   card(p, 16, 10, 288, 180, 0);
-  scaleBlit(p, rotten ? eggRotten() : eggFaberge(0), 26, 36, 4);
+  scaleBlit(p, rotten ? eggRotten() : eggFaberge(0), 24, 40, 3);
   const lines = rotten
-    ? ['THE ROTTEN EGG', '', 'Best before 1776.', 'It has been keeping since.', 'The smell got out of the', 'crock before you did.', '', 'Ebenezer kept it to throw at', 'Redcoats. He never had to.', 'They could smell it coming.', '', 'Found by Doc Leo, who wishes', 'he had not. Hidden by Claude.']
-    : ['THE TRUE EASTER EGG', '', 'Choux pastry, glazed, banded', 'in edible gold leaf, on a', 'stand of spun sugar. On top,', 'a tiny baker turns to a', 'music box.', '', 'For Lewis "Lewie" Moten III,', 'Teddy and Gwinn (two n\'s),', 'from Claude Opus 5.5.', 'The thirteenth egg, at last.'];
-  lines.forEach((l, i) => text(p, 112, 22 + i * 12, l, i === 0 ? c('red', 2) : c('ink', 0)));
+    ? ['THE ROTTEN EGG', '', 'Best before 1776. It has', 'been keeping ever since.', 'The smell got out of the', 'crock before you did.', '', 'Ebenezer kept it to throw', 'at Redcoats. He never had', 'to: they smelled it coming.', '', 'Found by Doc Leo, who', 'wishes he had not.']
+    : ['THE TRUE EASTER EGG', '', 'Choux pastry, glazed and', 'banded in edible gold leaf,', 'on a stand of spun sugar.', 'On top a tiny baker turns', 'to a music box.', '', 'For Lewis "Lewie" Moten III,', 'Teddy and Gwinn (two n\'s),', 'from Claude Opus 5.5.', '', 'The thirteenth egg.'];
+  for (const l of lines) if (l.length > 27) throw new Error(`Egg page line too long: ${l}`);
+  lines.forEach((l, i) => text(p, 92, 18 + i * 12, l, i === 0 ? c('red', 2) : c('ink', 0)));
   stamp(p, 64, 160, rotten ? 'PHEW' : 'HAPPY EASTER', 1, -0.15);
   return p;
 }
