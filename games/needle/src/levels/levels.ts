@@ -2,11 +2,12 @@
 // sound set and its monsters' options.
 import type { Light, Pal } from '../art/pal';
 import { cityBlocks } from '../blocks/city';
+import { desertBlocks } from '../blocks/desert';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
 import type { Form } from '../sprites/sprites';
-import { city, type Level } from './maps';
+import { city, desert, type Level } from './maps';
 
 export interface LevelDef {
   /** The level's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -24,4 +25,5 @@ export interface LevelDef {
 
 export const LEVELS: LevelDef[] = [
   { file: 'city', desc: 'The City Gate', light: 'morning', blocks: cityBlocks, build: city, form: 'loaded', snd: 'city', mons: { strut: 6, dog: 3 }, view: [16, 4] },
+  { file: 'desert', desc: 'The Desert Road', light: 'noon', blocks: desertBlocks, build: desert, form: 'saddled', snd: 'desert', mons: {}, view: [40, 4] },
 ];

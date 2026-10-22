@@ -83,3 +83,45 @@ export async function theCity(bot: Bot): Promise<void> {
     await leave(bot, bot.walk(77, 'the road'), 'the road');
   });
 }
+
+/** 2. The desert road: the sandstorm, the canyon's eye gates on his knees, the oasis, the tent. */
+export async function theDesert(bot: Bot): Promise<void> {
+  expect(bot, 3, 'the desert road');
+  await carefully(bot, 'the dunes', 12, async () => {
+    await must(bot, bot.walk(13, 'before the cactus'), 'dunes');
+    await must(bot, bot.hop('right', 12, 'right', 16.5), 'over the cactus');
+  });
+  await carefully(bot, 'the scorpion', 12, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 23), 'over the scorpion');
+    await must(bot, bot.walk(23, 'the traveler'), 'traveler');
+  });
+  // the sandstorm: cross each stretch in a calm
+  for (const [x, label] of [
+    [30, 'the first gusts'],
+    [36, 'the second gusts'],
+  ] as const) {
+    await carefully(bot, label, 12, async () => {
+      await must(bot, bot.walk(x - 0.1, label), label);
+      if (bot.px.x < (x - 1) * 20) throw new Error(`blown back to ${bot.px.x / 20}`);
+    });
+  }
+  await carefully(bot, 'the children', 12, async () => {
+    await must(bot, bot.walk(40, 'the canyon'), 'children');
+  });
+  await carefully(bot, 'the slot canyon', 10, async () => {
+    await must(bot, bot.crawl('right', 46, 'into the canyon'), 'canyon');
+    await must(bot, bot.crawl('right', 50, 'through the first eye gate'), 'gate 1');
+    await must(bot, bot.crawl('right', 55, 'through the second eye gate'), 'gate 2');
+  });
+  await carefully(bot, 'the oasis', 12, async () => {
+    await must(bot, bot.walk(58, 'the pool'), 'pool');
+    await must(bot, bot.walk(63, 'the traveler at the oasis'), 'traveler');
+  });
+  await carefully(bot, 'the dunes', 12, async () => {
+    await must(bot, bot.walk(69, 'the top of the dune'), 'top');
+  });
+  if (gold(bot) !== 3 || grace(bot) !== 5) throw new Error(`gold ${gold(bot)}, grace ${grace(bot)} at the tent`);
+  await carefully(bot, 'to the tent', 12, async () => {
+    await leave(bot, bot.walk(78, "the tailor's tent"), 'the tent');
+  });
+}

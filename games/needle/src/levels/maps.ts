@@ -153,6 +153,48 @@ const CITY: Record<string, string> = {
   '>': 'road',
 };
 
+const DESERT: Record<string, string> = {
+  '.': 'bg',
+  '^': 'skyHi',
+  '-': 'skyMid',
+  _: 'band1',
+  ',': 'band2',
+  O: 'sun',
+  '0': 'far0',
+  '1': 'far1',
+  '2': 'far2',
+  '=': 'sand',
+  '#': 'sandFill',
+  R: 'rock',
+  r: 'rockTop',
+  M: 'roofRock',
+  s: 'shade',
+  l: 'ledge',
+  g: 'gust0',
+  o: 'boulder',
+  x: 'cactus',
+  b: 'brush',
+  B: 'bones',
+  P: 'palm',
+  Y: 'palmTop',
+  w: 'pool',
+  n: 'nomad',
+  k: 'kids',
+  G: 'gate',
+  D: 'dates',
+  J: 'jar',
+  L: 'lamp',
+  j: 'jarS',
+  e: 'datesS',
+  '*': 'glint',
+  t: 'tentWall',
+  T: 'tentSign',
+  d: 'tentDoor',
+  '[': 'tent0',
+  '|': 'tent1',
+  ']': 'tent2',
+};
+
 /** 1. The city gate: through the morning market, the poor along the way, out the needle gate on his knees. */
 export function city(book: BlockBook): Level {
   const W = 80;
@@ -191,4 +233,48 @@ export function city(book: BlockBook): Level {
   m.mon(MON.pigeon, 31, 2).mon(MON.guard, 49, 9).mon(MON.dog, 59, 9).mon(MON.pigeon, 44, 3);
   m.link(76, 9, 'next');
   return { m, start: at(5, 9), size: [W, H] };
+}
+
+/** 2. The desert road: dunes, the sandstorm, the slot canyon's eye gates, the oasis, to the tailor's tent. */
+export function desert(book: BlockBook): Level {
+  const W = 84;
+  const H = 13;
+  const m = new MapBuilder(book, DESERT, 'sandFill');
+  m.fill(1, 0, W - 2, 1, '^').row(1, 1, W - 2, '_').fill(1, 2, W - 2, 2, '-').row(4, 1, W - 2, ',').fill(1, 5, W - 2, 6, '.').col(0, 0, 10, 'R').col(W - 1, 0, 10, 'R');
+  m.set(70, 2, 'O');
+  // the ground: [from x, to x, top row] (he stands on the row above)
+  const ground: [number, number, number][] = [
+    [1, 6, 10],
+    [7, 8, 9],
+    [9, 11, 8],
+    [12, 13, 9],
+    [14, 40, 10],
+    [41, 54, 10],
+    [55, 62, 10],
+    [63, 66, 9],
+    [67, 69, 8],
+    [70, 82, 10],
+  ];
+  for (const [x0, x1, top] of ground) m.row(top, x0, x1, '=').fill(x0, top + 1, x1 - x0 + 1, 12 - top, '#');
+  // far mesas and dunes in the haze
+  m.text(1, 9, '0200 200').text(14, 9, '02 00 20').text(55, 9, '0').text(59, 9, '02').text(74, 9, '20');
+  m.set(4, 9, 'B').set(15, 9, 'x').mon(MON.scorpion, 19, 9).set(20, 9, '*').set(22, 9, 'n');
+  // the sandstorm: gusts that blow him back; boulders to shelter behind
+  m.set(24, 9, 'o').fill(25, 7, 5, 3, 'g').set(30, 9, 'o').fill(31, 7, 5, 3, 'g').set(36, 9, 'o').set(33, 6, '*');
+  m.set(38, 9, 'k');
+  // the slot canyon: a passage one block high, two eye gates, two rooms to stand up in
+  m.fill(41, 2, 14, 7, 'R').row(2, 41, 54, 'r').row(8, 41, 44, 'M').row(9, 41, 44, 's');
+  m.fill(45, 5, 2, 4, 's').set(45, 9, 's').set(46, 9, 'j').row(8, 47, 49, 'M').set(47, 9, 'G').row(9, 48, 49, 's');
+  m.fill(50, 5, 2, 4, 's').set(50, 9, 's').set(51, 9, 'e').row(8, 52, 54, 'M').set(52, 9, 'G').row(9, 53, 54, 's');
+  // the oasis: palms, the pool, the third goat on her ledge, another traveler
+  m.col(56, 6, 9, 'P').set(56, 5, 'Y').row(9, 57, 58, 'w').col(61, 6, 9, 'P').set(61, 5, 'Y').set(60, 5, 'D');
+  m.row(6, 58, 60, 'l').set(59, 5, '*').set(62, 9, 'n');
+  // dunes and a vulture, the dry brush where tumbleweeds come from
+  m.set(65, 8, 'B').set(68, 7, '*').set(73, 9, 'b').set(71, 6, 'L');
+  m.row(7, 70, 72, 'l');
+  // the tailor's tent at the end of the road
+  m.text(76, 7, '[|]').text(76, 8, 'tTt').text(76, 9, 'tdt');
+  m.mon(MON.goat, 58, 5).mon(MON.vulture, 63, 3).mon(MON.vulture, 18, 3);
+  m.link(77, 9, 'next');
+  return { m, start: at(3, 9), size: [W, H] };
 }

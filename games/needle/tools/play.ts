@@ -1,11 +1,11 @@
 // The bot's whole game on the built disk, level after level, without losing a life, ending
 // through the eye of the needle (check.ts and walkthrough.ts run it).
 import { Bot } from './bot';
-import { theCity } from './route';
+import { theCity, theDesert } from './route';
 import { GameSim } from './sim';
 
 export const SEED = 1;
-export const LEVELS = [theCity];
+export const LEVELS = [theCity, theDesert];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {
   const sim = new GameSim(undefined, seed);
