@@ -162,37 +162,28 @@
               "a": "On The Garage Door Opener, roll down from the pad, left along the bottom row to the corner, and keep rolling down into the seam. You land in the house's main fuse box. Roll onto the felt egg and press the space bar to pick it up, then roll into the socket to get back.",
               "sketch": {
                 "rows": [
-                  "----------------",
-                  "|     |        |",
-                  "|     |        |",
-                  "|     -----=---|",
-                  "|              |",
-                  "|       @      |",
-                  "|       v      |",
-                  "|       v      |",
-                  "|v<<<<<<<      |",
-                  "|X--------------"
+                  "-------------",
+                  "|    ---=---|",
+                  "|      @    |",
+                  "|      v    |",
+                  "|v<<<<<<    |",
+                  "|X-----------"
                 ],
                 "labels": [
                   {
-                    "x": 9,
-                    "y": 5,
+                    "x": 1,
+                    "y": 2,
+                    "text": "BOARD 13"
+                  },
+                  {
+                    "x": 8,
+                    "y": 2,
                     "text": "PAD"
                   },
                   {
-                    "x": 2,
-                    "y": 1,
-                    "text": "BOARD"
-                  },
-                  {
-                    "x": 2,
-                    "y": 2,
-                    "text": "13"
-                  },
-                  {
-                    "x": 9,
-                    "y": 7,
-                    "text": "THE SEAM: X"
+                    "x": 8,
+                    "y": 4,
+                    "text": "X: SEAM"
                   }
                 ]
               }
