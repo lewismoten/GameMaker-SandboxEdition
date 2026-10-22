@@ -9,16 +9,14 @@ import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { attr, COLS, ROWS } from '../text/textScreen';
 import { toCp437 } from '../text/cp437';
-import { bigText, bigTextWidth, centered, fadeBar } from '../bbs/ansiArt';
+import { TOP, clearArea, frame, hint, sleep } from './cracktro';
 import { pcExtras } from './pcExtras';
 import { NAME_MAX, SERIAL, checkRegistration, regFile, registrationNumber } from '../gmReg/registration';
 import { QUESTIONS } from '../gmReg/copyCheck';
-import { GMCRACK_NFO, GREETINGS, GROUP, SCROLLER, VERSION, bakName } from './gmcrackText';
+import { GMCRACK_NFO, GREETINGS, GROUP, VERSION, bakName } from './gmcrackText';
 
 /** The keygen's name field: CHK.C's fgets keeps 28 letters of a 29-letter name, so 28 is the most that works. */
 const KEYGEN_MAX = NAME_MAX - 1;
-const TOP = 10; // first row under the logo
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** A key for a name, as CHK.EXE will check it against this PC's serial number. */
 export const keygen = (name: string): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), SERIAL));
@@ -40,36 +38,6 @@ function hash(s: string): number {
 
 const hex = (n: number, w: number) => n.toString(16).toUpperCase().padStart(w, '0');
 
-/** The logo, the bars and a scroller along the bottom; returns a function that stops the scroller. */
-function frame(h: RetroHost): () => void {
-  const s = h.screen;
-  s.resetPalette();
-  s.clear(attr(7, 0));
-  s.cursorVisible = false;
-  fadeBar(s, 0, 6);
-  bigText(s, Math.floor((COLS - bigTextWidth('GMCRACK')) / 2), 1, 'GMCRACK', [15, 14, 14, 6, 6]);
-  centered(s, 7, `|08-=|07*|08=- |14${GROUP} |07presents |15GMCRACK v${VERSION} |07for |11Game-Maker SE 3.00 |08-=|07*|08=-`);
-  fadeBar(s, 8, 6);
-  fadeBar(s, ROWS - 3, 4);
-  let at = 0;
-  const colors = [14, 14, 15, 14, 6];
-  const tick = () => {
-    const text = SCROLLER.repeat(2);
-    for (let x = 0; x < COLS; x++) {
-      const ch = text[(at + x) % SCROLLER.length];
-      s.put(x, ROWS - 2, toCp437(ch).charCodeAt(0), attr(colors[Math.floor((x + at) / 4) % colors.length], 0));
-    }
-    at = (at + 1) % SCROLLER.length;
-  };
-  tick();
-  const timer = setInterval(tick, 110);
-  return () => clearInterval(timer);
-}
-
-function clearArea(h: RetroHost): void {
-  h.screen.fill(0, TOP - 1, COLS - 1, ROWS - 4, attr(7, 0));
-}
-
 /** Writes text with |NN colors at a spot. */
 function put(h: RetroHost, x: number, y: number, text: string): void {
   let fg = 7;
@@ -79,11 +47,6 @@ function put(h: RetroHost, x: number, y: number, text: string): void {
       if (i % 2) fg = Number(p) & 15;
       else for (const ch of p) h.screen.put(x++, y, ch.charCodeAt(0), attr(fg, 0));
     });
-}
-
-function hint(h: RetroHost, text: string): void {
-  h.screen.fill(0, ROWS - 1, COLS - 1, ROWS - 1, attr(0, 6));
-  h.screen.write(1, ROWS - 1, attr(0, 6), toCp437(text).slice(0, COLS - 2));
 }
 
 /** A typed field; null for Esc. */
@@ -365,23 +328,4 @@ export async function runGmCrack(h: RetroHost, args: string[]): Promise<void> {
   h.screen.resetPalette();
   h.screen.clear();
   h.screen.print(toCp437(`GMCRACK v${VERSION} by ${GROUP}.  ${GREETINGS}\n`));
-}
-
-/** A cracked game's intro before it starts: who cracked it, the greetings, and a reminder to pay. */
-export async function cracktro(h: RetroHost, title: string, exe: string): Promise<void> {
-  const s = h.screen;
-  const stop = frame(h);
-  try {
-    clearArea(h);
-    centered(s, TOP + 1, `|15${toCp437(title).slice(0, 60)}`);
-    centered(s, TOP + 3, `|07${exe.toUpperCase()} cracked by |14${GROUP}|07 with GMCRACK v${VERSION}`);
-    centered(s, TOP + 5, '|11Cracked for fun on this desk PC. The author still needs you:');
-    centered(s, TOP + 6, '|15REGISTER the shareware you enjoy!');
-    centered(s, TOP + 8, '|08(GMCRACK [5] puts the original back)');
-    hint(h, 'Press any key to play');
-    await Promise.race([h.keys.next(), sleep(8000)]);
-  } finally {
-    stop();
-  }
-  s.clear();
 }

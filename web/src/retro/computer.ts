@@ -160,7 +160,8 @@ export class Computer extends ComputerFolders {
           const files = new GameFiles(await ref.files());
           // a catalog game keeps its saves and high scores where the play page does
           if (ref.saveId) for (const [name, bytes] of Object.entries(await loadSaveData(ref.saveId))) files.set(name, bytes);
-          if (ref.cracked) await (await import("./hacks/gmcrack")).cracktro(this, ref.title, ref.cracked);
+          // GMCRACK's intro first; whatever goes wrong with it, the game still plays
+          if (ref.cracked) await import("./hacks/cracktro").then((m) => m.cracktro(this, ref.title, ref.cracked!)).catch((e) => { if (e instanceof ProgramAborted) throw e; console.warn("cracktro", e); });
           await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId);
           break;
         }
