@@ -736,14 +736,13 @@
                   "oo   oo",
                   " oo::oo",
                   "  o^^o",
-                  "   ^",
                   "   @"
                 ],
                 "labels": [
                   { "x": 8, "y": 1, "text": "BEACON" },
                   { "x": 8, "y": 2, "text": "FELT EGG" },
                   { "x": 8, "y": 4, "text": "NOT ROCK" },
-                  { "x": 8, "y": 7, "text": "YOU" }
+                  { "x": 5, "y": 6, "text": "YOU" }
                 ]
               }
             }
