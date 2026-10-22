@@ -191,3 +191,17 @@
 .gm-player.has-touch.touch-landscape .gm-osk-key {
   min-height: 30px;
 }
+
+/* Upright: the corner buttons and the panel go under the screen (with the touch controls),
+   so the game's picture stays clear. The screen's height is the 4:3 of its width (player.css). */
+.gm-player.has-touch.touch-portrait {
+  --screen-bottom: calc(min(100cqw, (100cqh - env(safe-area-inset-top)) * 4 / 3) * 3 / 4 + env(safe-area-inset-top));
+}
+
+.gm-player.has-touch.touch-portrait .gm-corner {
+  top: calc(var(--screen-bottom) + 8px);
+}
+
+.gm-player.has-touch.touch-portrait .gm-osk {
+  top: calc(var(--screen-bottom) + 48px);
+}
