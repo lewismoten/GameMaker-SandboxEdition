@@ -136,7 +136,7 @@ export function coverRgb(t: number): Uint8Array {
   for (let i = 0; i < 70; i++) {
     const x = 44 + pr() * 52;
     const y = 150 + pr() * 14 - Math.max(0, 14 - Math.abs(x - 70) * 0.5);
-    ellipse(put, x, y, 3.4, 2.8, 0, (nx, ny, z) => mixc([226, 200, 140], [255, 252, 236], z * 0.7 - ny * 0.3 + 0.2));
+    ellipse(put, x, y, 3.4, 2.8, 0, (_nx, ny, z) => mixc([226, 200, 140], [255, 252, 236], z * 0.7 - ny * 0.3 + 0.2));
     if (pr() < 0.3) put(x + 1, y + 1, [230, 180, 60]);
   }
 
@@ -155,7 +155,7 @@ export function coverRgb(t: number): Uint8Array {
     }
   }
   // the top rim, where Carl sits
-  ellipse(put, SHADE.x, SHADE.top, SHADE.topW, 4, 0, (nx, ny) => (ny < 0 ? [255, 236, 170] : [200, 160, 100]));
+  ellipse(put, SHADE.x, SHADE.top, SHADE.topW, 4, 0, (_nx, ny) => (ny < 0 ? [255, 236, 170] : [200, 160, 100]));
 
   // ---- Carl
   carl(put, CARL.x, CARL.y, t);
