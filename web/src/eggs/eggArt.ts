@@ -142,6 +142,86 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
         g.fillRect(x, waist - 4, 5, 8);
       }
       break;
+    case 'ruled':
+      // a notebook page: pale ruled lines, and a red margin down the front and back
+      g.strokeStyle = look.band;
+      g.lineWidth = 1.5;
+      for (let y = TEX_H * 0.2; y < TEX_H * 0.98; y += 11) {
+        if (Math.abs(y - waist) < 14) continue;
+        g.beginPath();
+        g.moveTo(0, y);
+        g.lineTo(TEX_W, y);
+        g.stroke();
+      }
+      g.strokeStyle = '#d9483b';
+      g.lineWidth = 2;
+      for (const u of [0.1, 0.6]) {
+        g.beginPath();
+        g.moveTo(u * TEX_W, TEX_H * 0.17);
+        g.lineTo(u * TEX_W, TEX_H);
+        g.stroke();
+      }
+      break;
+    case 'pawprints':
+      scatter(30, 0.12, 0.95, (x, y, i) => {
+        g.fillStyle = look.thread;
+        g.save();
+        g.translate(x, y);
+        g.rotate((i % 5) * 0.5 - 1);
+        g.beginPath();
+        g.ellipse(0, 3, 5, 4, 0, 0, Math.PI * 2);
+        for (const [dx, dy] of [[-5, -3], [-2, -6], [2, -6], [5, -3]]) g.ellipse(dx, dy, 1.8, 2.2, 0, 0, Math.PI * 2);
+        g.fill();
+        g.restore();
+      });
+      // rickrack round the waist
+      g.strokeStyle = look.thread;
+      g.lineWidth = 3;
+      g.beginPath();
+      for (let x = 0; x <= TEX_W; x += 8) g.lineTo(x, waist + ((x / 8) % 2 ? -6 : 6));
+      g.stroke();
+      break;
+    case 'grid': {
+      // a checkerboard floor running away to the horizon (the waist), in chain stitch
+      g.strokeStyle = look.band;
+      g.lineWidth = 1.4;
+      for (let k = 1; k < 9; k++) {
+        const y = waist + 12 + (TEX_H - waist - 12) * (k / 8) ** 1.7;
+        g.beginPath();
+        g.moveTo(0, y);
+        g.lineTo(TEX_W, y);
+        g.stroke();
+      }
+      for (let x = 0; x < TEX_W; x += 32)
+        for (const dir of [-1, 1]) {
+          g.beginPath();
+          g.moveTo(x + 16, waist + 12);
+          g.lineTo(x + 16 + dir * 30, TEX_H);
+          g.stroke();
+        }
+      // a rainbow of floss above
+      ['#ff5a5a', '#ffb347', '#ffe66d', '#7bd88f', '#5ab0ff', '#b48bff'].forEach((c, i) => {
+        g.fillStyle = c;
+        g.fillRect(0, TEX_H * 0.2 + i * 3, TEX_W, 2);
+      });
+      break;
+    }
+    case 'diamonds':
+      // a herald's coat: gold lozenges, and a winding road of backstitch
+      g.fillStyle = look.band;
+      for (let x = 0; x < TEX_W; x += 28)
+        for (const v of [0.86, 0.95]) {
+          g.beginPath();
+          g.moveTo(x + 14, TEX_H * v - 8);
+          g.lineTo(x + 22, TEX_H * v);
+          g.lineTo(x + 14, TEX_H * v + 8);
+          g.lineTo(x + 6, TEX_H * v);
+          g.fill();
+        }
+      stitch(() => {
+        for (let x = 0; x <= TEX_W; x += 4) g.lineTo(x, TEX_H * 0.24 + Math.sin((x / TEX_W) * Math.PI * 6) * 6 + Math.sin((x / TEX_W) * Math.PI * 2) * 4);
+      }, '#8a5a2b', 3);
+      break;
   }
   // running stitches along the bands' edges
   for (const y of [waist - 13, waist + 13, TEX_H * 0.16 - 6, TEX_H * 0.16 + 6])
@@ -294,6 +374,126 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       g.beginPath();
       g.arc(0, -14, 7, 0, Math.PI * 2);
       g.fill();
+      break;
+    case 'book':
+      // an open book, its pages fanned
+      blob(() => {
+        g.moveTo(0, -12);
+        g.quadraticCurveTo(-12, -20, -26, -16);
+        g.lineTo(-26, 18);
+        g.quadraticCurveTo(-12, 14, 0, 22);
+        g.quadraticCurveTo(12, 14, 26, 18);
+        g.lineTo(26, -16);
+        g.quadraticCurveTo(12, -20, 0, -12);
+        g.closePath();
+      });
+      g.fillStyle = '#fbf6ea';
+      for (const s of [-1, 1]) {
+        g.beginPath();
+        g.moveTo(0, -9);
+        g.quadraticCurveTo(s * 11, -16, s * 22, -13);
+        g.lineTo(s * 22, 14);
+        g.quadraticCurveTo(s * 11, 11, 0, 18);
+        g.closePath();
+        g.fill();
+      }
+      g.strokeStyle = '#8a8070';
+      g.lineWidth = 1.4;
+      g.beginPath();
+      for (const s of [-1, 1])
+        for (let i = 0; i < 4; i++) {
+          g.moveTo(s * 4, -6 + i * 6);
+          g.lineTo(s * 18, -8 + i * 6);
+        }
+      g.stroke();
+      // the ribbon bookmark
+      g.fillStyle = '#d6a53a';
+      g.fillRect(-2, 16, 4, 14);
+      break;
+    case 'bone':
+      blob(() => {
+        g.moveTo(-18, -5);
+        g.lineTo(18, -5);
+        g.arc(22, -7, 6, Math.PI * 0.9, Math.PI * 0.4, false);
+        g.arc(22, 7, 6, -Math.PI * 0.4, Math.PI * 1.1, false);
+        g.lineTo(-18, 5);
+        g.arc(-22, 7, 6, Math.PI * 0.1, Math.PI * 1.6, false);
+        g.arc(-22, -7, 6, Math.PI * 0.6, Math.PI * 0.1, false);
+        g.closePath();
+      });
+      // a red bow round its middle
+      g.fillStyle = '#d23a2e';
+      for (const s of [-1, 1]) {
+        g.beginPath();
+        g.moveTo(0, 0);
+        g.lineTo(s * 9, -8);
+        g.lineTo(s * 9, 8);
+        g.closePath();
+        g.fill();
+      }
+      g.fillRect(-2.5, -4, 5, 8);
+      break;
+    case 'cube': {
+      // a cube in three shades, so it reads as solid
+      const top = [[0, -24], [22, -12], [0, 0], [-22, -12]];
+      const left = [[-22, -12], [0, 0], [0, 26], [-22, 14]];
+      const right = [[22, -12], [0, 0], [0, 26], [22, 14]];
+      const face = (pts: number[][], color: string) => {
+        g.fillStyle = color;
+        g.beginPath();
+        pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py)));
+        g.closePath();
+        g.fill();
+        stitch(() => {
+          pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py)));
+          g.closePath();
+        }, look.thread, 1.2);
+      };
+      face(top, '#b89cf2');
+      face(left, look.patch);
+      face(right, '#43287f');
+      break;
+    }
+    case 'sword':
+      // a scrap of treasure map, the sword laid over it
+      g.save();
+      g.rotate(-0.12);
+      g.fillStyle = '#e9d7a8';
+      g.fillRect(-24, -18, 48, 36);
+      g.strokeStyle = '#a03a2a';
+      g.lineWidth = 2;
+      g.setLineDash([4, 3]);
+      g.beginPath();
+      g.moveTo(-18, 12);
+      g.quadraticCurveTo(-4, -14, 14, 6);
+      g.stroke();
+      g.setLineDash([]);
+      g.beginPath();
+      g.moveTo(11, 3);
+      g.lineTo(17, 9);
+      g.moveTo(17, 3);
+      g.lineTo(11, 9);
+      g.stroke();
+      g.restore();
+      g.save();
+      g.rotate(0.7);
+      blob(() => {
+        g.moveTo(0, -32);
+        g.lineTo(4, -26);
+        g.lineTo(4, 14);
+        g.lineTo(-4, 14);
+        g.lineTo(-4, -26);
+        g.closePath();
+      });
+      g.fillStyle = look.band;
+      g.fillRect(-11, 14, 22, 4);
+      g.fillStyle = '#5a3216';
+      g.fillRect(-2.5, 18, 5, 10);
+      g.fillStyle = look.band;
+      g.beginPath();
+      g.arc(0, 30, 3.5, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
       break;
   }
   g.restore();
