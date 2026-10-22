@@ -20,6 +20,10 @@
 #     first word of each lyric section and snapped to bars
 #   - the sung melody: harmonic-sum pitch salience on vox.wav per sung word, folded into one
 #     octave around the previous note, quantized to the eighth-note grid as MIDI notes.
+#
+#   python3 -I games/goat/tools/analyze.py --compare render/title.wav [--from 47.375 --to 79.375]
+# compares a rendered song (games/goat/tools/songPreview.ts writes them) with the recording's two
+# choruses: both chroma vectors, their correlation and each one's key.
 import json
 import os
 import subprocess
@@ -294,15 +298,44 @@ def sections(ws, bar0, bpm, duration):
     return out
 
 
+def compare(mp3, out, wav, start, end):
+    x = decode(mp3, out)
+    seg = x[int(start * SR):int(end * SR)].mean(1)
+    sr, y = wavfile.read(wav)
+    y = y.astype(np.float32) / 32768
+    if y.ndim > 1:
+        y = y.mean(1)
+    if sr != SR:
+        y = sg.resample_poly(y, SR, sr)
+    vecs = []
+    for sig in (seg, y):
+        f, z, _, _ = stft(sig, 8192, 512)
+        c = np.sqrt(chroma(f, np.abs(z) ** 2, 60, 2000)).sum(1)
+        vecs.append(c / c.max())
+    for label, v in (('recording %.1f-%.1f s' % (start, end), vecs[0]), (os.path.basename(wav), vecs[1])):
+        k = find_key_from(v)
+        print('%-28s key %-9s ' % (label, '%s %s' % (NAMES[k[1]], k[2])) + ' '.join('%s %.2f' % (NAMES[i], v[i]) for i in range(12)))
+    print('chroma correlation %.3f' % np.corrcoef(vecs[0], vecs[1])[0, 1])
+
+
+def find_key_from(cs):
+    major = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
+    minor = np.array([6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
+    scores = [(float(np.corrcoef(cs, np.roll(major, k))[0, 1]), k, 'major') for k in range(12)]
+    scores += [(float(np.corrcoef(cs, np.roll(minor, k))[0, 1]), k, 'minor') for k in range(12)]
+    return max(scores)
+
+
 def main():
-    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    opt = lambda name, default: sys.argv[sys.argv.index(name) + 1] if name in sys.argv else default
+    skip = {opt(o, None) for o in ('--out', '--compare', '--from', '--to')}
+    args = [a for a in sys.argv[1:] if not a.startswith('--') and a not in skip]
     mp3 = args[0] if args else MP3
     out = os.environ.get('TMPDIR', '/tmp') + '/goat-audio'
-    if '--out' in sys.argv:
-        out = sys.argv[sys.argv.index('--out') + 1]
-        if out in args:
-            args.remove(out)
+    out = opt('--out', out)
     os.makedirs(out, exist_ok=True)
+    if '--compare' in sys.argv:
+        return compare(mp3, out, opt('--compare', ''), float(opt('--from', 47.375)), float(opt('--to', 79.375)))
     x = decode(mp3, out)
     mono = x.mean(1)
     duration = len(mono) / SR
