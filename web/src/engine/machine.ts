@@ -55,7 +55,7 @@ export class Machine {
     this.audio = audio;
     if (opts.input === false) {
       this.offDeskMouse = () => undefined;
-      this.keyboard.attach = () => undefined;
+      this.keyboard.attach = this.keyboard.detach = () => undefined;
     } else this.listen(canvas);
     if (opts.frames === 'manual') return;
     const loop = () => {
@@ -116,7 +116,7 @@ export class Machine {
 
   destroy(): void {
     this.aborted = true;
-    cancelAnimationFrame(this.raf);
+    if (this.raf) cancelAnimationFrame(this.raf);
     this.keyboard.detach();
     this.audio.stopAll();
     this.screen.canvas.removeEventListener('pointerdown', this.onPointer);
