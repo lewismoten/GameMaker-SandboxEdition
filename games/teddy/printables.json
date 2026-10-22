@@ -132,10 +132,6 @@
             {
               "q": "The kids on the porches hold out a hand.",
               "a": "That's a high five waiting to happen! Press 1 under the hand and they toss you a treat."
-            },
-            {
-              "q": "Some say the felt-maker left something behind on Maple Street.",
-              "a": "Some say a lot of things. But a raised paw reaches places a hop can't."
             }
           ]
         },
@@ -195,6 +191,37 @@
             {
               "q": "Gwinn won't give back the red nose!",
               "a": "Show her how it's done: sit pretty (2) near her. She sits too and drops the nose at her feet. Grab it and bring it to Doc Leo."
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind on Maple Street.",
+              "a": "Some say a lot of things. But a raised paw reaches places a hop can't. Fetch Doc Leo's bow tie first."
+            },
+            {
+              "q": "Where do I raise my paw?",
+              "a": "At the Dog House, the tiny little library on the lawn in front of the blue house. Once you've carried the bow tie past it, the right end of its rock cubby holds you up."
+            },
+            {
+              "q": "Paws and all, step by step?",
+              "a": "After fetching the bow tie, hop up onto the right end of the Dog House's rock cubby and give a high five (1) to the knot in the hedge just right of the red door. Inside, hop up to the shelf and fetch the felt egg (F). Leave by the red door.",
+              "sketch": {
+                "rows": [
+                  "  ==X",
+                  "  ==",
+                  "  =@",
+                  "--------",
+                  ""
+                ],
+                "labels": [
+                  { "x": 6, "y": 0, "text": "HEDGE KNOT" },
+                  { "x": 6, "y": 2, "text": "STAND HERE" },
+                  { "x": 0, "y": 4, "text": "THE DOG HOUSE" }
+                ]
+              }
             }
           ]
         }
