@@ -287,7 +287,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
     const p = blank();
     for (let i = 0; i < 16; i++) p.set(2 + i, 10 + Math.round(Math.sin(i / 2) * 3), c('ink', 0));
     p.rect(15, 6, 4, 4, c('grey', 4)).frame(15, 6, 4, 4, c('ink', 0));
-    p.rect(1, 13, 13, 6, c('paper', 4)).frame(1, 13, 13, 6, c('brass', 1));
+    p.rect(0, 13, 19, 7, c('paper', 4)).frame(0, 13, 19, 7, c('brass', 1));
     micro(p, 2, 14, 'CHEZ', c('red', 2));
     return p;
   })()));
