@@ -37,7 +37,8 @@ export const THROWSEQ = 9;
 export const PAPERS = 20;
 
 /** The pines behind the park: picking up what lies in the hollow there adds 2, and the
- * frozen toboggan beside it takes 1 to brush off (refused while the counter is at 0). */
+ * frozen toboggan beside it takes 1 to brush off. The counter starts at 1, and at 20 and up
+ * Game-Maker refuses a touch that would empty it, so the toboggan stays put until then. */
 export const THAW = 21;
 
 /** Sound effect numbers in SNOW.SND. */

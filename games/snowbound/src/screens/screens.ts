@@ -367,8 +367,8 @@ export function buildScreens(
   save('storybg.gif', pad('THE STORY'));
   // found in the pines: the felted egg, four times life size, beside the text
   const woods = pad('IN THE PINES');
-  blob(woods, 250, 134, 30, 5, pal.r('snow'), 2, 4);
-  scaleBlit(woods, feltEgg(c), 210, 58, 4);
+  blob(woods, 254, 134, 24, 4, pal.r('snow'), 2, 4);
+  scaleBlit(woods, feltEgg(c), 214, 58, 4);
   save('woods.gif', woods);
   const hs = pad('THE COFFEE CAN');
   save('hiscore.gif', hs);
