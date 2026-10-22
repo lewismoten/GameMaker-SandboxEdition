@@ -51,7 +51,7 @@ export const GMCRACK_NFO: string[] = [
   '  Game-Maker\'s CHK.EXE reads C:\\GM\\PLAYGAME.REG: your name, the serial number',
   '  stored in PLAYGAME.EXE, and the registration number from the card. A number',
   '  that matches the name says "Registered To:" and nothing else. One that does',
-  '  not means the copy protection: a word from the printed Owner\'s Manual (by',
+  '  not means the copy protection: a word from the SE Owner\'s Guide (by',
   '  page, paragraph and word) every time GM starts. No PLAYGAME.REG, no GM.',
   '',
   '  [1] REGiSTER ... writes PLAYGAME.REG with a name and a key.',

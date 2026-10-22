@@ -190,7 +190,7 @@ async function unregister(h: RetroHost): Promise<void> {
   await step(h, TOP + 3, 'Spoiling the registration number');
   pcExtras().setReg(regFile(name, SERIAL, '0'));
   put(h, 4, TOP + 5, '|07Game-Maker is |12UNREGISTERED|07. Next time GM starts it shows the serial');
-  put(h, 4, TOP + 6, '|07number and asks for a word from the |15Owner\'s Manual|07: see |14[7] Answer table|07.');
+  put(h, 4, TOP + 6, '|07number and asks for a word from the |15Owner\'s Guide|07: see |14[7] Answer table|07.');
   put(h, 4, TOP + 8, '|08Hint: DEL C:\\GM\\PLAYGAME.REG and GM won\'t start at all;');
   put(h, 4, TOP + 9, '|08GM REGISTER (or [1] here) brings it back.');
   await anyKey(h);
@@ -314,7 +314,7 @@ async function answerTable(h: RetroHost): Promise<void> {
   const pages = answerPages();
   for (let p = 0; p < pages.length; ) {
     clearArea(h);
-    put(h, 4, TOP - 1, `|14DOC CHECK BYPASS LIST |07for the printed Owner's Manual  |08(${p + 1}/${pages.length})`);
+    put(h, 4, TOP - 1, `|14DOC CHECK BYPASS LIST |07for the SE Owner's Guide  |08(${p + 1}/${pages.length})`);
     pages[p].forEach((row, i) => put(h, 4, TOP + 1 + i, row));
     const more = p + 1 < pages.length;
     hint(h, `${more ? 'Any key for more' : 'Any key goes back'}${p > 0 ? ', PgUp for the last screen' : ''}${more ? ', Esc goes back' : ''}`);
