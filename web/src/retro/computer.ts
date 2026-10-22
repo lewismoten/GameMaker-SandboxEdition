@@ -155,9 +155,13 @@ export class Computer extends ComputerFolders {
           const files = new GameFiles(await ref.files());
           // a catalog game keeps its saves and high scores where the play page does
           if (ref.saveId) for (const [name, bytes] of Object.entries(await loadSaveData(ref.saveId))) files.set(name, bytes);
+          if (ref.cracked) await (await import("./hacks/gmcrack")).cracktro(this, ref.title, ref.cracked);
           await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId);
           break;
         }
+        case "gmcrack":
+          await (await import("./hacks/gmcrack")).runGmCrack(this, _args);
+          break;
         case "egg":
           await (await import("../eggs/eggExe")).runEggExe(this);
           break;
