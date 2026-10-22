@@ -7,6 +7,7 @@ import { encodeGif } from '../../../../web/src/formats/gif';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { Pixels, rng } from '../../../kit/pixels';
+import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
@@ -347,7 +348,27 @@ export function homeFli(art: Art): Uint8Array {
     }
     frames.push(p);
   }
-  return fli(frames, 6);
+  // Once Watt is home, a snapshot on the board beside him: The Dog House, the little free
+  // library out front, a real photo dithered into palette entries no frame uses.
+  const lib = tone(resample(loadScan('library'), 92), (v) => v.map((x) => 255 * (x / 255) ** 0.85) as [number, number, number]);
+  const [lx, ly] = [36, 62];
+  const used = new Set<number>();
+  for (const f of frames) for (const v of f.px) used.add(v);
+  const last = frames[frames.length - 1];
+  const at = polaroid(last, lx, ly, lib.w, lib.h, { paper: c('paper', 3), edge: c('ink', 0), shadow: c('ink', 0), tape: c('yellow', 3) });
+  const label = 'THE DOG HOUSE';
+  micro(last, Math.round(at.cx - (label.length * 4) / 2), Math.round(at.cy - 2), label, c('ink', 0));
+  const { pal } = pastePhoto(last, PAL.pal, lib, lx, ly, { reserved: [...used] });
+  const box = { x: lx - 10, y: ly - 10, w: lib.w + 24, h: lib.h + 30 };
+  frames.forEach((f, t) => {
+    if (f === last || Math.min(222, -20 + t * 9) < 222) return;
+    for (let y = box.y; y < box.y + box.h; y++) for (let x = box.x; x < box.x + box.w; x++) f.set(x, y, last.get(x, y));
+  });
+  return encodeFli(
+    frames.map((f) => Uint8Array.from(f.px)),
+    pal,
+    { speed: 6 },
+  );
 }
 
 // ---------------------------------------------------------------- all files
