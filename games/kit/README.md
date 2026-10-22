@@ -18,6 +18,11 @@ Making the files:
   bar of tune each) laid out as tune, second voice, bass, three comping voices and drums; `songPreview.ts` renders a game's
   songs on the web app's OPL2 and checks them. `song/analyze.py` (tempo, key, chords, sections, sung melody) and
   `song/cutclips.py` (VOC clips) read a recording that is not in the repo; each game's tools name the song.
+- `songFx.ts` — tricks for those arrangements that stay plain CMF events PLAYGAME and SBFMDRV play: swells and filter
+  sweeps under held chords by program changes through copies of a patch (more than 16 timbres: extra patches from 16 up),
+  the rhythm section's bass drum tuned as a sub bass (a seventh melodic voice) and tuned toms, one-channel arpeggios and
+  ringing harps, stepped glides (no pitch bend), a two-voice choir from vibrato twins, echoes, stutters, rolls and section
+  markers (controller 0x66). Loaf #13's `src/sound/song.ts` uses all of them.
 - `sound.ts` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
 - `license.ts` — `LICENSE.TXT` for every disk (what's real, what's story, the MIT License), in 30-column pages.
