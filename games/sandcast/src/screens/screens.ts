@@ -200,18 +200,19 @@ export function messageScreen(subject: string, from = 'TEDDY', to = 'ALL'): Pixe
   text(p, 8, 12, `From: ${from}`, ANSI[11]);
   text(p, 168, 12, `To: ${to}`, ANSI[11]);
   text(p, 8, 22, `Subj: ${subject}`.slice(0, 38), ANSI[14]);
-  box(p, 28, 33, 266, 142, ANSI[1]);
-  shadeRect(p, 0, 180, W, 8, ANSI[8], 1);
+  // The box reaches below PLAYGAME's "MORE..." (y 168..175), so its frame never runs through it.
+  box(p, 28, 32, 266, 150, ANSI[1]);
+  shadeRect(p, 0, 184, W, 6, ANSI[8], 1);
   statusBar(p, ' [N]ext  [R]eply  [Q]uit  any key...');
   return p;
 }
 
-/** The high score backdrop: a "Hall of Fame" bulletin with sand pillars at the sides. */
+/** The high score backdrop: a "Hall of Fame" bulletin with sand pillars at the sides (clear of the rows at x 20..284). */
 export function scoreScreen(): Pixels {
   const p = screen();
-  for (const x0 of [0, 300]) {
-    shadeRect(p, x0, 0, 20, H, SAND[6], 3, SAND[4]);
-    for (let y = 0; y < H; y += 24) p.rect(x0, y, 20, 3, SAND[8]);
+  for (const x0 of [0, 304]) {
+    shadeRect(p, x0, 0, 16, H, SAND[6], 3, SAND[4]);
+    for (let y = 0; y < H; y += 24) p.rect(x0, y, 16, 3, SAND[8]);
   }
   return p;
 }
@@ -226,7 +227,8 @@ export function filesScreen(title: string): Pixels {
     text(p, 20, 40 + i * 14, `${String(i + 1).padStart(2)}.`, ANSI[8]);
     p.rect(78, 49 + i * 14, 168, 1, ANSI[1]);
   }
-  castleArt(p, 282, 196, 0.32, 9);
+  // Above PLAYGAME's message line (y 185, x 40..272), right of the slots.
+  castleArt(p, 282, 174, 0.32, 9);
   return p;
 }
 
