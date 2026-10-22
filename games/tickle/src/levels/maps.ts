@@ -217,20 +217,19 @@ export function lab(book: BlockBook): Level {
   m.set(21, 11, 'z').set(25, 11, 'z');
   m.row(8, 20, 27, 'h').fill(20, 9, 8, 1, 'g').set(26, 7, 'c');
   m.mon(MON.labTense, 21, 7);
-  // the floor buffer's run, the racks above it: up the bench and onto the racks
+  // the floor buffer's run, a bench over it and the racks beyond: down off the racks onto the bench
   m.mon(MON.buffer, 31, 11);
-  m.row(10, 29, 31, '_').set(29, 11, '|').set(31, 11, '|');
-  m.row(8, 33, 42, 'h').fill(33, 9, 10, 1, 'g').text(40, 6, 'o.o');
+  m.row(10, 28, 31, '_').set(28, 11, '|').set(31, 11, '|');
+  m.row(8, 33, 42, 'h').fill(33, 9, 10, 1, 'g').set(40, 7, 'o').set(42, 7, 'o');
   m.mon(MON.labRat, 34, 7).mon(MON.labRat, 38, 7);
   // Dean Dour of the Board of Serious Science, on his rounds
   m.mon(MON.deanA, 45, 10).mon(MON.deanB, 45, 11);
-  // the mustard seed in a petri dish on a bench
-  m.row(10, 52, 56, '_').set(52, 11, '|').set(56, 11, '|').set(55, 9, 'f');
-  m.mon(MON.seed, 53, 9);
-  // rats along the floor to the door, another rack
-  m.mon(MON.labTense, 58, 11).mon(MON.labRat, 66, 11);
+  // the mustard seed in a petri dish on a long bench
+  m.row(10, 52, 59, '_').set(52, 11, '|').set(59, 11, '|').set(55, 9, 'f');
+  m.mon(MON.seed, 54, 9);
+  // a rack with a rat on top and one under it, the rubber chicken; a rat by the door
   m.row(8, 60, 65, 'h').fill(60, 9, 6, 1, 'g').set(65, 7, 'k');
-  m.mon(MON.labRat, 61, 7);
+  m.mon(MON.labRat, 61, 7).mon(MON.labTense, 60, 11).mon(MON.labRat, 66, 11);
   m.set(70, 10, 'o').set(70, 11, 'c');
   // the door: ten rats in the carpet; out the window into the night
   m.door(72, 11, 'next', 'L');

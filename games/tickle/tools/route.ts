@@ -93,4 +93,49 @@ export async function theCourse(bot: Bot): Promise<void> {
   });
 }
 
-export const ROUTE = [theCourse];
+/** 2. The lab: benches, racks over the Tesla coils and the floor buffer, past Dean Dour. */
+export async function theLab(bot: Bot): Promise<void> {
+  expect(bot, 3, 'the lab');
+  await tickle(bot, 'right', 'the first lab rat');
+  await carefully(bot, 'up on the first bench', 0, async () => {
+    await must(bot, bot.walk(9.5, 'by the bench'), 'bench');
+    await upTo(bot, 'right', 11.2, 9, 'onto the bench', 6);
+  });
+  await tickle(bot, 'right', 'the rat on the bench');
+  await carefully(bot, 'up on the rack over the coils', 0, async () => {
+    await must(bot, bot.walk(18, 'the end of the bench'), 'bench end');
+    await upTo(bot, 'right', 20.2, 7, 'onto the rack', 10);
+  });
+  await tickle(bot, 'right', 'the tense rat on the rack');
+  await carefully(bot, 'over the floor buffer', 0, async () => {
+    await must(bot, bot.walk(27, 'the coffee'), 'coffee');
+    await must(bot, bot.walk(29, 'down onto the bench'), 'bench');
+    if (bot.at.y !== 9) throw new Error(`not on the bench (${bot.at.y})`);
+    await must(bot, bot.walk(31, 'the end of the bench'), 'bench end');
+    await upTo(bot, 'right', 33.2, 7, 'onto the second rack', 10);
+  });
+  await tickle(bot, 'right', 'the first rat on the second rack');
+  await tickle(bot, 'right', 'the second rat on the second rack');
+  await carefully(bot, 'over Dean Dour', 0, async () => {
+    await must(bot, bot.walk(43, 'the drops, and down'), 'down');
+    await must(bot, bot.hop('right', 12, 'right', 51.5), 'over the dean');
+    await upTo(bot, 'right', 52.5, 9, 'onto the long bench', 6);
+    await must(bot, bot.walk(59, 'hello, seed'), 'seed');
+    await upTo(bot, 'right', 60.2, 7, 'onto the last rack', 10);
+  });
+  await tickle(bot, 'right', 'the rat on the last rack');
+  await carefully(bot, 'the chicken, and down', 4, async () => {
+    await must(bot, bot.walk(65.6, 'the rubber chicken'), 'chicken');
+  });
+  await carefully(bot, 'down by the door', 6, async () => {
+    await must(bot, bot.walk(67.5, 'down'), 'down');
+  });
+  await tickle(bot, 'left', 'the rat under the rack');
+  await tickle(bot, 'right', 'the rat by the door');
+  enough(bot, 1);
+  await carefully(bot, 'the window', 10, async () => {
+    await leave(bot, bot.walk(75, 'out the window'), 'the window');
+  });
+}
+
+export const ROUTE = [theCourse, theLab];
