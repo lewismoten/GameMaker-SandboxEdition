@@ -34,20 +34,23 @@ export function meters(c: Character): void {
 }
 
 /**
- * The weapon sequences every vehicle has (the frames that fire are the same). Each starts
- * with a picture frame that lasts a tick: these sequences are uninterruptible, and PLAYGAME
- * only reads waiting keys when such a sequence stands on its first frame - a sequence
- * whose first frame fires (and so takes no time) would never let go of a held key.
+ * The weapon sequences every vehicle has (the frames that fire are the same). The ground
+ * (uninterruptible) ones - nova, shield, mine, med kit - start with a picture frame that
+ * lasts a tick: PLAYGAME only reads waiting keys when such a sequence stands on its first
+ * frame, so one whose first frame fires (and so takes no time) would never let go of a held
+ * key. The blaster, the lance and the flak cannon are not ground: letting go of the key pops
+ * them at once, so they fire on their first frame - with a picture frame first, a tap that
+ * let go before the next tick spent a round and fired nothing.
  */
 export function weapons(c: Character, pose: (name: string) => F, extra: { fireY?: number } = {}): void {
   const fy = extra.fireY ?? 0;
-  setSeq(c, SEQ.fire, { key: 'space', sound: SND.fire, joy: [9, 1], frames: [pose('fire'), { birth: MON.bolt, y: fy }, { ...pose('fire2'), pause: 3 }] });
+  setSeq(c, SEQ.fire, { key: 'space', sound: SND.fire, joy: [9, 1], frames: [{ birth: MON.bolt, y: fy }, pose('fire'), { ...pose('fire2'), pause: 3 }] });
   setSeq(c, SEQ.plasma, {
     key: 'z',
     sound: SND.plasma,
     bloc: itemBlock('plasma'),
     joy: [9, 2],
-    frames: [pose('lance'), { birth: MON.plasma, y: fy }, { ...pose('lance2'), pause: 5 }],
+    frames: [{ birth: MON.plasma, y: fy }, pose('lance'), { ...pose('lance2'), pause: 5 }],
   });
   setSeq(c, SEQ.nova, {
     key: 'x',
@@ -93,7 +96,7 @@ export function weapons(c: Character, pose: (name: string) => F, extra: { fireY?
     key: 'w',
     sound: SND.flak,
     bloc: itemBlock('flak'),
-    frames: [pose('flak'), { birth: MON.flakL, y: fy }, { birth: MON.nova, y: fy }, { birth: MON.flakR, y: fy }, { ...pose('flak'), pause: 4 }],
+    frames: [{ birth: MON.flakL, y: fy }, { birth: MON.nova, y: fy }, { birth: MON.flakR, y: fy }, pose('flak'), { ...pose('flak'), pause: 4 }],
   });
 }
 
