@@ -34,7 +34,7 @@ export interface SiteWorkerOptions {
   version: string;
   /** Installed up front: the pages and what they load before showing anything, the icons and manifest. */
   precache: string[];
-  /** Content hash of each group (groupOf) in this build. */
+  /** Content hash of each group in this build, by groupKey (the worker names no file or folder: a secret game's folder stays unnamed). */
   groups: Record<string, string>;
   /** Every hashed file in this build. */
   assets: string[];
@@ -61,8 +61,11 @@ function sitePath(url) {
   return decodeURIComponent(u.pathname.slice(new URL(SCOPE).pathname.length));
 }
 
-/** The pages are served as their path, and the home page as its index.html. */
-const groupFor = (path) => groupOf(path === '' ? 'index.html' : path);
+/** The key of a file's group in GROUPS (the home page is served as its index.html). */
+const groupFor = (path) => {
+  const g = groupOf(path === '' ? 'index.html' : path);
+  return g === undefined ? undefined : groupKey(g);
+};
 
 /** What the cache holds: { groups, assets } of the version that last took over. */
 async function cachedVersion(cache) {
@@ -159,8 +162,26 @@ self.addEventListener('fetch', (event) => {
 `;
 }
 
-/** isHashed and groupOf in the worker (test/siteWorker.test.ts checks they agree). */
-export const WORKER_GROUP_OF = `const isHashed = (path) => path.startsWith('assets/');
+/** A group's key in the worker's list: a short hash of its name. */
+export function groupKey(group: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < group.length; i++) {
+    h ^= group.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(36);
+}
+
+/** isHashed, groupOf and groupKey in the worker (test/siteWorker.test.ts checks they agree). */
+export const WORKER_GROUP_OF = `function groupKey(group) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < group.length; i++) {
+    h ^= group.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(36);
+}
+const isHashed = (path) => path.startsWith('assets/');
 function groupOf(path) {
   if (isHashed(path)) return undefined;
   const parts = path.split('/');

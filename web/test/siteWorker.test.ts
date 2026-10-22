@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { groupOf, siteWorkerSource, WORKER_GROUP_OF } from '../src/siteWorker';
+import { groupKey, groupOf, siteWorkerSource, WORKER_GROUP_OF } from '../src/siteWorker';
 
 const PATHS = [
   'assets/desk-CtzsCBvT.js',
@@ -30,8 +30,10 @@ describe('site service worker', () => {
   });
 
   it('runs the same grouping in the worker', () => {
-    const worker = new Function(`${WORKER_GROUP_OF}; return groupOf;`)() as (p: string) => string | undefined;
+    const [worker, key] = new Function(`${WORKER_GROUP_OF}; return [groupOf, groupKey];`)() as [(p: string) => string | undefined, (g: string) => string];
     for (const p of PATHS) expect(worker(p)).toBe(groupOf(p));
+    for (const p of PATHS) expect(key(p)).toBe(groupKey(p));
+    expect(groupKey('games/originals/teddy/')).not.toContain('teddy'); // names nothing
   });
 
   it('writes a worker that parses, with the shell, groups and hashed files in it', () => {

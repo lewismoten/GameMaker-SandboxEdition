@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { hashText } from './src/export/serviceWorker';
-import { groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
+import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
 import { cdGames } from './scripts/cdGames';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { seoPages } from './scripts/seoBuild';
@@ -74,7 +74,7 @@ function groupHashes(bundle: Bundle): Record<string, string> {
     if (g === undefined || f === 'sw.js') continue;
     groups.set(g, [...(groups.get(g) ?? []), `${f}:${h}`]);
   }
-  return Object.fromEntries([...groups].map(([g, lines]) => [g, digest(lines.join('\n'))]));
+  return Object.fromEntries([...groups].map(([g, lines]) => [groupKey(g), digest(lines.join('\n'))]));
 }
 
 /** The app shell, cached at install: the two pages and what they load up front, the icons and manifest. */
