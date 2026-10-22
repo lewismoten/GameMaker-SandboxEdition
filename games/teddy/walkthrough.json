@@ -8,19 +8,19 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "AU0eSAjICUgIyBrNAU0CSAjIBkgIyATNAU0BSAbIBs0KTRXNAU0HzQE5ArkQTRzNAVAC0BRLAcsHOQK5F0sfywFNJkgIyBFICMgYSAjIBM0BTQFIB8gEzQpNB80BSAjICkgIyApLBMsBIQKhCk0mzQFQAtAZTRzNAU0BSAjIBc0KTRDN"
+   "keys": "AU0UEgaSBhIGkhjNAU0CSAjIBkgIyATNAU0BSAbIBs0KTRXNAU0HzQE5ArkQTQgSBpIFSALICc0BUALQFEsByw05ArkUSx/LAU0mSAjIEUgIyBhICMgEzQFNAUgHyATNCk0HzQFICMgKSAjICksEywEhAqEKTSbNAVAC0BlNFBIKkgLNAU0BSAjIBc0KTRDN"
   },
   {
    "scene": 3,
-   "keys": "AU0OSAjIDM0BSwHLAwICghBLA8sBTQjNAU0BSAjIBM0KIQKhCk0FzRZNFM0BTQJICMgRSAjIGM0BTQHNAwICghRNB80BTQPNC00BzQM5ArkUTRVICMgMzQFLAcsDAgKCEEsDywFNE80BTURICMgNSAjICUgIyBfNAVAC0BRNGkgIyAzNAUsBywMCAoIQSwPLAU0ZSAjIFM0="
+   "keys": "AU0MEgqSBEgGyALNAUsBywMCAoIQSwTLAU0IzQFNAUgIyATNCiECoQpNBc0VTQASBpINzQFNAkgIyA1IAsgFSAjIBEgIyAsSBpIGSAbIAs0BTQHNAwICghRNBs0BTQPNC00BzQM5ArkUTQsSCpIESAbIBUgKyALNAUsBywMCAoIQSwTLAU0TzQFNJkgDyA1ICMgJSAjIF80BUALQFE0QEgqSBEgGyAVICsgCzQFLAcsDAgKCEEsEywFNGEgCyANICMgESAjIFM0="
   },
   {
    "scene": 4,
-   "keys": "AU0KSAjIBkgIyBDNAU0WzQFQAtAZTRTNAU0BSAjIBc0KTQJICMgHzR9NEM0BTRDNAU0LzQEDAoMoTQZICMgGSAjIBkgIyBDNATkCuRRNGM0BOQK5FE0aSAjIIEgIyBhICMg2zQ=="
+   "keys": "AU0KSAjIBEgCyARICMgCEgqSCc0BTRbNAVAC0BlNDBIKkgLNAU0BSAjIBc0KTQJICMgHzR9NEM0BTRDNAU0LzQEDAoMoTQZICMgGSAjIBkgIyBDNATkCuRRNGM0BOQK5FE0SEgaSBUgIyCBICMgsSAjIIs0="
   },
   {
    "scene": 5,
-   "keys": "AU0QzQE5ArkUTSTNGk0QzR8hAqEKTQfNEAQChAZNAkgIyBHNAU0CSAjIFUgIyBPNAQQChAZNAkgIyA3NDwUYhQFNEM0iBRSFAU0UzQFNFkgIyA5ICMgNSAjIDUgIyBFICMgwzQ=="
+   "keys": "AU0QzQE5ArkUTSTNGk0QzR8hAqEKTQfNEAQChAZNAkgIyBHNAU0CSAjIDRIDkgVICMgESAjIE80BBAKEBk0CSAjIDc0DBRiFAU0QzSIFFIUBTRTNAU0WSAjIDkgIyA1ICMgNSAjIEUgIyDDN"
   },
   {
    "scene": 6,
@@ -51,7 +51,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 25393,
+  "frames": 25469,
   "chapters": [
    {
     "title": "Opening",
@@ -67,27 +67,27 @@
    },
    {
     "title": "Level 2: Maple Street",
-    "frame": 8796
+    "frame": 8763
    },
    {
     "title": "Level 3: Puddlewick Park",
-    "frame": 11891
+    "frame": 11914
    },
    {
     "title": "Level 4: Downtown",
-    "frame": 14563
+    "frame": 14639
    },
    {
     "title": "Level 5: The Klown Klub",
-    "frame": 17367
+    "frame": 17443
    },
    {
     "title": "Ending",
-    "frame": 20404
+    "frame": 20480
    },
    {
     "title": "Credits",
-    "frame": 22509
+    "frame": 22585
    }
   ]
  }

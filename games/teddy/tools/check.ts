@@ -9,14 +9,14 @@ import { buildCharacter, CB } from '../src/characters/character';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { LEVELS } from '../src/game';
 import { ROUTES } from './routes';
-import { Recorder, runRoute } from './bot';
+import { Recorder, playLevel } from './bot';
 import { Sim } from '../../kit/sceneSim';
 import { CTR } from '../src/ids';
 
 const only = process.argv.slice(2);
 const chr = buildCharacter();
 const cbl = CB.build();
-const ci = newCharInfo();
+let ci = newCharInfo();
 const keys: RecordedKey[] = [];
 let offset = 0;
 let last = 0;
@@ -24,22 +24,30 @@ let failed = 0;
 for (const make of LEVELS) {
   const l = make();
   if (only.length && !only.includes(l.file)) continue;
-  const sim = new Sim(
-    {
-      map: l.map.done(),
-      bbl: l.bs.build(),
-      mbl: l.beasts.mb.build(),
-      mon: l.beasts.build(),
-      chr,
-      cbl,
-      links: [{ from: l.exit, to: l.exit }],
-      names: l.beasts.names,
+  const r = await playLevel(
+    (ci) => {
+      const sim = new Sim(
+        {
+          map: l.map.done(),
+          bbl: l.bs.build(),
+          mbl: l.beasts.mb.build(),
+          mon: l.beasts.build(),
+          chr,
+          cbl,
+          links: [{ from: l.exit, to: l.exit }],
+          names: l.beasts.names,
+        },
+        l.start,
+        ci,
+      );
+      return { sim, rec: new Recorder(sim, offset, last) };
     },
-    l.start,
+    ROUTES[l.file] ?? [],
+    `${l.file}: `,
     ci,
   );
-  const rec = new Recorder(sim, offset, last);
-  const r = await runRoute(sim, ROUTES[l.file] ?? [], `${l.file}: `, rec);
+  const { sim, rec } = r;
+  ci = r.ci;
   if (process.env.VERBOSE) console.log(r.log.join('\n'));
   keys.push(...rec.keys);
   offset += sim.ticks;
