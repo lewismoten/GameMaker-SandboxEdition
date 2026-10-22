@@ -1,21 +1,170 @@
-/* what comes out of the Game-Maker box in the box viewer (desk/boxes/gmBox.ts) */
+/* what comes out of the Game-Maker box in the box viewer (desk/boxes/gmBox.ts): the guide,
+   the program disks and the CD on the left, the paper inserts listed on the right */
 .gm-contents {
+  display: contents;
+}
+
+.gm-left,
+.gm-right {
   position: absolute;
-  left: 3vw;
   top: 50%;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4vh;
   transform: translateY(-55%);
+}
+
+.gm-left {
+  left: max(16px, 3vw);
+  gap: 2.6vh;
+}
+
+.gm-right {
+  right: max(16px, 3vw);
+  width: min(290px, 26vw);
+  max-height: calc(100vh - 150px);
+  align-items: stretch;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(239, 229, 204, 0.25);
+  border-radius: 10px;
+  background: rgba(20, 16, 10, 0.72);
+  color: #efe5cc;
+}
+
+.gm-right h2 {
+  margin: 0;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.gm-inserts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.gm-insert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gm-insert:hover {
+  background: rgba(239, 229, 204, 0.12);
+}
+
+.gm-insert-thumb {
+  display: grid;
+  flex: none;
+  place-items: start center;
+  width: 54px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #3a3226;
+  font-size: 20px;
+  line-height: 40px;
+}
+
+.gm-insert-thumb .pp-paper {
+  width: 54px;
+}
+
+.gm-insert-thumb .pp-paper.wide {
+  align-self: center;
+}
+
+.gm-insert-thumb .pp-sheet {
+  box-shadow: none;
+}
+
+.gm-insert-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font:
+    600 13px/1.25 system-ui,
+    sans-serif;
+}
+
+.gm-insert-name small {
+  color: #cfc4a8;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.gm-all {
+  padding: 8px 14px;
+  border: 1px solid #c9c1a6;
+  border-radius: 6px;
+  background: linear-gradient(#efe9d6, #cfc7ad);
+  color: #1d1a14;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.gm-insert:focus-visible,
+.gm-all:focus-visible,
+.gm-disks:focus-visible,
+.guide-book:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 2px;
+}
+
+/* the two program disks, disk 1 in front */
+.gm-disks {
+  display: grid;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.5));
+}
+
+.gm-disks .gmf {
+  grid-area: 1 / 1;
+  width: min(118px, 13vh);
+  transition: transform 0.2s;
+}
+
+.gm-disks .gmf:first-child {
+  transform: translate(14px, -10px) rotate(6deg);
+}
+
+.gm-disks .gmf:last-child {
+  transform: rotate(-3deg);
+}
+
+.gm-disks:hover .gmf:first-child,
+.gm-disks:focus-visible .gmf:first-child {
+  transform: translate(26px, -16px) rotate(10deg);
 }
 
 .guide-book {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: min(190px, 22vh);
+  width: min(170px, 20vh);
   aspect-ratio: 5.5 / 8.5;
   padding: 0 0 12px;
   overflow: hidden;
@@ -80,7 +229,7 @@
   --ly: 25%;
   position: relative;
   cursor: pointer;
-  width: min(200px, 24vh);
+  width: min(170px, 20vh);
   aspect-ratio: 1;
   border-radius: 50%;
   box-shadow: 0 14px 24px rgba(0, 0, 0, 0.55);
@@ -199,12 +348,55 @@
   }
 }
 
-@media (max-width: 700px) {
-  .gm-contents {
+@media (max-width: 760px) {
+  /* a phone: the guide, disks and CD in a row above the viewer's bar; the inserts behind one button */
+  .gm-left {
     top: auto;
-    bottom: 80px;
+    bottom: 190px;
+    left: 10px;
     flex-direction: row;
+    align-items: flex-end;
+    gap: 12px;
     transform: none;
+  }
+
+  .guide-book {
+    width: 62px;
+    gap: 4px;
+  }
+
+  .guide-book strong {
+    padding: 6px 4px;
+    font-size: 10px;
+  }
+
+  .guide-book span,
+  .guide-book em,
+  .guide-book small {
+    display: none;
+  }
+
+  .gm-disks .gmf {
+    width: 56px;
+  }
+
+  .holo-cd {
+    width: 78px;
+  }
+
+  .gm-right {
+    top: 12px;
+    right: 10px;
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    transform: none;
+  }
+
+  .gm-right h2,
+  .gm-inserts-list {
+    display: none;
   }
 }
 

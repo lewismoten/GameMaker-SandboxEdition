@@ -5,6 +5,8 @@ import './gmBox.css';
 import { h } from '../../editor/core/ui';
 import type { BoxFaces } from './gameBox';
 import { loadedShots, preloadShots } from './gmShots';
+import { priceSticker } from './boxSeals';
+import { GM_PRICE, gmFloppy } from '../../manual/printables/gmInserts';
 
 preloadShots();
 
@@ -154,6 +156,9 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
   f.fillText('3.0', 0, 30);
   f.restore();
 
+  // the list price is printed on the back; Bits & Bytes Software marked it down
+  priceSticker(f, W - 150, 200, GM_PRICE.store, GM_PRICE.sale, -0.05, GM_PRICE.msrp);
+
   // ---- back
   const [back, b] = canvas(W, H);
   b.fillStyle = PINK;
@@ -212,21 +217,41 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
     b.fillText(name, sx, y + 22 + (sw * 10) / 16 + 14);
   });
   y += 132;
-  // system requirements
+  // system requirements (as the Owner's Manual gives them) and what is in the box
   b.fillStyle = '#fff6ee';
-  b.fillRect(30, y, W - 60, 82);
+  b.fillRect(30, y, W - 60, 118);
   b.strokeStyle = '#1d1a14';
   b.lineWidth = 2;
-  b.strokeRect(30, y, W - 60, 82);
+  b.strokeRect(30, y, W - 60, 118);
   b.fillStyle = '#1d1a14';
   b.font = SANS(13, 900);
   b.fillText('SYSTEM REQUIREMENTS', 44, y + 20);
   b.font = SANS(13, 400);
   [
-    'IBM PC/AT or compatible (386 or better recommended)',
-    '640K RAM · VGA graphics · hard disk · DOS 3.3 or later',
-    'Mouse required · Sound Blaster optional · CD-ROM or 1.44 MB floppy',
+    'IBM AT, PS/2 or compatible, 286 or better · 512K free memory',
+    'Standard VGA (256 colors) · hard disk · MS-DOS 4.1 or later',
+    'Two-button Microsoft-compatible mouse · 3½" 1.44 MB drive',
+    'Optional: Sound Blaster compatible card, joystick, CD-ROM drive',
   ].forEach((l, i) => b.fillText(l, 44, y + 38 + i * 17));
+  b.font = SANS(12, 700);
+  b.fillText('IN THIS BOX: 2 program disks · bonus games CD-ROM · Owner’s Guide · inserts', 44, y + 108);
+  // the UPC block with the list price
+  const upcX = W - 196;
+  const upcY = H - 150;
+  b.fillStyle = '#fff';
+  b.fillRect(upcX, upcY, 166, 96);
+  b.fillStyle = '#111';
+  for (let i = 0, x = upcX + 12; x < upcX + 154; i++) {
+    const bw = [1, 2, 1, 3, 1, 1, 2, 4][(i * 5 + 3) % 8];
+    if (i % 2 === 0) b.fillRect(x, upcY + 8, bw, i < 3 || x > upcX + 146 ? 64 : 58);
+    x += bw + 1;
+  }
+  b.font = `12px 'Courier New', monospace`;
+  b.textAlign = 'center';
+  b.fillText('0 55501 30595 3', upcX + 83, upcY + 80);
+  b.font = SANS(10, 700);
+  b.fillText(`SUGG. RETAIL ${GM_PRICE.msrp}`, upcX + 83, upcY + 92);
+  b.textAlign = 'left';
   b.font = SANS(12, 400);
   b.fillText('Game-Maker © 1991–1994 Recreational Software Designs; released under the MIT License in 2014.', 30, H - 40);
   b.fillText('Sandbox Edition box art, made for this modified fork. Not the original RSD box.', 30, H - 22);
@@ -275,7 +300,59 @@ export function drawGmBox(sampleTiles: [HTMLCanvasElement, string][]): BoxFaces 
   return { front: front.toDataURL(), back: back.toDataURL(), left: spine(), right: spine(), top: end(), bottom: end() };
 }
 
-/** The Owner's Guide and the CD, laid beside the box in the viewer. */
+/**
+ * Opens the Owner's Guide with everything in the box (manual/dosManual.ts, through `openGuide`)
+ * and turns to one piece in its tray.
+ */
+function showInBox(openGuide: () => void, id: string): void {
+  openGuide();
+  const pick = () => {
+    const b = document.querySelector<HTMLButtonElement>(`.gmb-tray-list li[data-id="${id}"] button`);
+    b?.click();
+    b?.focus({ preventScroll: true });
+    return !!b;
+  };
+  if (pick()) return;
+  const watch = new MutationObserver(() => pick() && watch.disconnect());
+  watch.observe(document.body, { childList: true });
+  setTimeout(() => watch.disconnect(), 10_000);
+}
+
+/** The pieces of paper in the box, each a button that opens it to read; a small picture of each comes in when ready. */
+function insertList(openGuide: () => void): HTMLElement {
+  const list = h('ul', { class: 'gm-inserts-list' });
+  void Promise.all([import('../../manual/printables/gmItems'), import('../../project/files')]).then(async ([{ gmBoxItems }, { loadCatalog }]) => {
+    const family = (await loadCatalog().catch(() => [])).filter((g) => g.original);
+    const items = gmBoxItems(family).filter((i) => i.id !== 'disks');
+    for (const item of items) {
+      const thumb = h('span', { class: 'gm-insert-thumb', 'aria-hidden': 'true' }, item.icon);
+      list.append(
+        h(
+          'li',
+          null,
+          h(
+            'button',
+            { class: 'gm-insert', onclick: () => showInBox(openGuide, item.id), title: `Look at the ${item.title.toLowerCase()}` },
+            thumb,
+            h('span', { class: 'gm-insert-name' }, item.title, item.note ? h('small', null, item.note) : null),
+          ),
+        ),
+      );
+    }
+    // the pictures, one at a time so the box keeps turning smoothly
+    for (const [i, item] of items.entries()) {
+      const sheets = await item.render().catch(() => []);
+      const first = sheets[0];
+      const thumb = list.children[i]?.querySelector('.gm-insert-thumb');
+      if (!first || !thumb) continue;
+      first.el.classList.add(first.w >= first.h ? 'wide' : 'tall');
+      thumb.replaceChildren(first.el);
+    }
+  });
+  return list;
+}
+
+/** The Owner's Guide, the program disks, the bonus-games CD and the inserts, laid beside the box in the viewer. */
 export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTMLElement {
   // Click the CD to put it in the drive and start Game-Maker (same as the viewer's button).
   const disc = h(
@@ -293,7 +370,7 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
     </defs>
     <text class="cd-title"><textPath href="#holo-top" startOffset="50%" text-anchor="middle">GAME-MAKER 3.0</textPath></text>
     <text class="cd-edition"><textPath href="#holo-inner" startOffset="50%" text-anchor="middle">SANDBOX EDITION</textPath></text>
-    <text class="cd-small"><textPath href="#holo-bottom" startOffset="50%" text-anchor="middle">NOT AN ORIGINAL RSD DISC</textPath></text>
+    <text class="cd-small"><textPath href="#holo-bottom" startOffset="50%" text-anchor="middle">BONUS GAMES CD-ROM · NOT AN RSD DISC</textPath></text>
   </svg>`;
   // the sheen follows the light: move the pointer over the disc to tilt it
   disc.addEventListener('pointermove', (e) => {
@@ -301,17 +378,35 @@ export function gmBoxContents(openGuide: () => void, insertCd: () => void): HTML
     disc.style.setProperty('--lx', `${((e.clientX - r.left) / r.width) * 100}%`);
     disc.style.setProperty('--ly', `${((e.clientY - r.top) / r.height) * 100}%`);
   });
+  const disks = h(
+    'button',
+    { class: 'gm-disks', onclick: () => showInBox(openGuide, 'disks'), title: 'Look at the program disks', 'aria-label': 'Program disks: two 3½-inch disks' },
+    gmFloppy(2),
+    gmFloppy(1),
+  );
   return h(
     'div',
     { class: 'gm-contents' },
     h(
-      'button',
-      { class: 'guide-book', onclick: openGuide, title: 'Read the Owner’s Guide' },
-      h('strong', null, 'GAME-MAKER'),
-      h('span', null, 'Owner’s Guide'),
-      h('em', null, 'Sandbox Edition'),
-      h('small', null, 'Sandbox Edition · a new guide for this fork'),
+      'div',
+      { class: 'gm-left' },
+      h(
+        'button',
+        { class: 'guide-book', onclick: openGuide, title: 'Read the Owner’s Guide' },
+        h('strong', null, 'GAME-MAKER'),
+        h('span', null, 'Owner’s Guide'),
+        h('em', null, 'Sandbox Edition'),
+        h('small', null, 'Sandbox Edition · a new guide for this fork'),
+      ),
+      disks,
+      disc,
     ),
-    disc,
+    h(
+      'nav',
+      { class: 'gm-right', 'aria-label': 'What’s in the Game-Maker box' },
+      h('h2', null, 'In the box'),
+      insertList(openGuide),
+      h('button', { class: 'gm-all', onclick: openGuide }, 'Everything in the box'),
+    ),
   );
 }
