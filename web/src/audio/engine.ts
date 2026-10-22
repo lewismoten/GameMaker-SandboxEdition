@@ -12,6 +12,9 @@ import { TICK_RATE } from './cmfPlayer';
 import { output } from './output';
 import { audioContext, unlock } from './context';
 
+/** How long a game waits for the sound to start before it goes on without it. */
+const RESUME_WAIT_MS = 300;
+
 /** The music worklet's module, added once to the page's context. */
 let worklet: Promise<void> | undefined;
 
@@ -53,7 +56,10 @@ export class AudioEngine {
     }
     if (this.ctx.state !== 'running') {
       if (navigator.userActivation?.isActive) unlock();
-      await this.ctx.resume().catch(() => undefined);
+      // iOS leaves resume() pending until a gesture comes (or for good while another app has
+      // the audio): the game must not wait for it, or its screen stays black. The sound
+      // starts whenever the context does (context.ts resumes it on the next tap).
+      await Promise.race([this.ctx.resume().catch(() => undefined), new Promise((r) => setTimeout(r, RESUME_WAIT_MS))]);
     }
   }
 
@@ -90,12 +96,22 @@ export class AudioEngine {
     const cmf = parseCmf(bytes);
     // Playgame refused songs not converted to its 146 Hz clock.
     if (cmf.clockTicks !== CMF_GAMEMAKER_CLOCK) return false;
-    await this.musicReady;
-    this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
+    const song = ++this.songs;
+    const load = () => song === this.songs && this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
+    // the music worklet loads with the first sound; a game waits a moment for it, never
+    // for good (a phone still loading it, or never: its screen would stay black)
+    const ready = this.musicReady;
+    if (ready && !this.music) await Promise.race([ready, new Promise((r) => setTimeout(r, RESUME_WAIT_MS * 3))]);
+    if (this.music) load();
+    else void ready?.then(load);
     return true;
   }
 
+  /** Counts songs asked for, so one still waiting for the worklet doesn't start after a newer one (or a stop). */
+  private songs = 0;
+
   stopSong(): void {
+    this.songs++;
     this.post({ type: 'stop' });
   }
 
