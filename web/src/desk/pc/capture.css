@@ -132,3 +132,35 @@
   right: auto;
   left: 0;
 }
+
+/* Armed: waiting for the next game, a steady red dot */
+.desk-capture.armed .cap-rec {
+  color: #a01818;
+  border-color: #7a1010;
+}
+
+.desk-capture .cap-menu .cap-sep {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #5555ff;
+  color: #55ffff;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.desk-capture .cap-menu .cap-wait[aria-checked='true'] span {
+  color: #ffff55;
+}
+
+.desk-capture .cap-menu .cap-wait[aria-checked='true']:hover span,
+.desk-capture .cap-menu .cap-wait[aria-checked='true']:focus-visible span {
+  color: #000;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-capture.recording .cap-rec,
+  .desk-capture.flash::after {
+    animation: none;
+  }
+}
