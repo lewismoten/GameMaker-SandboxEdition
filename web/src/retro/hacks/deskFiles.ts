@@ -1,11 +1,11 @@
 // Files the BBS and GMCRACK add to the desk PC's C: drive (retro/computer/drives.ts lists
-// them): FILE_ID.DIZ beside every download, the Utilities area's tools in C:\DOWNLOAD, a
+// them): FILE_ID.DIZ beside every download, the Warez area's releases in C:\DOWNLOAD, a
 // cracked game's .EXE and .BAK, and C:\GM\PLAYGAME.REG.
 import { deskDate, file, DOS_DATE, type DosNode, type ProgramRef } from '../dos/vfs';
 import type { Downloads } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { DIZ_NAME, dizBytes, gameDiz, newestPicture, pictureDiz } from '../bbs/fileId';
-import { UTILITIES, fileSize, textBytes } from '../bbs/utilArea';
+import { WAREZ, fileSize, textBytes } from '../bbs/warezArea';
 import { pcExtras } from './pcExtras';
 import { bakName } from './gmcrackText';
 
@@ -34,9 +34,9 @@ export function gameDownloadNodes(g: CatalogEntry, date: Date, run: ProgramRef &
   return nodes;
 }
 
-/** The Utilities area's downloads, as folders in C:\DOWNLOAD (DEL and RD work as for games). */
+/** The Warez area's downloads, as folders in C:\DOWNLOAD (DEL and RD work as for games). */
 export function utilityFolders(dl: Downloads, liveFolder: (name: string, list: () => DosNode[], date?: Date) => DosNode): DosNode[] {
-  return UTILITIES.filter((u) => dl.has(u.id)).map((u) => {
+  return WAREZ.filter((u) => dl.has(u.id)).map((u) => {
     const date = dl.date(u.id) ?? DOS_DATE;
     const node = liveFolder(
       u.id,

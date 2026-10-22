@@ -188,7 +188,7 @@ export abstract class ComputerDrives {
             node.remove = () => dl.remove(id);
             return [node];
           });
-          // and the BBS's Utilities area (GMCRACK and friends)
+          // and the BBS's Warez area (GMCRACK, SAVEHACK, GM30)
           return [...games, ...utilityFolders(dl, liveFolder)];
         }),
         // pictures from the BBS's GIF Gallery; the folder is made with the first one

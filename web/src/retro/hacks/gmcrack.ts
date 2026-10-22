@@ -1,4 +1,4 @@
-// GMCRACK.EXE, from GMCRACK.ZIP in the BBS's Utilities area: a 1995 scene-style "registration
+// GMCRACK.EXE, from GMCRACK.ZIP in the BBS's Warez area: a 1995 scene-style "registration
 // doctor" for Game-Maker SE on the desk PC. It registers Game-Maker (writes C:\GM\PLAYGAME.REG
 // with a name and key), unregisters it (spoils the key, so CHK.EXE asks the manual again), has
 // a KEYGEN that works the key out as CHK.C checks it, and "cracks" shareware in C:\DOWNLOAD:

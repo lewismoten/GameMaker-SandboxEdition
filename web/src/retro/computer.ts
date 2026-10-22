@@ -146,6 +146,11 @@ export class Computer extends ComputerFolders {
           await (await import("./view/vpic")).runVpic(this, _args);
           break;
         case "install":
+          // GM30\INSTALL.EXE from the BBS's Warez area has an installer of its own
+          if (ref.from === "warez") {
+            await (await import("./hacks/gm30Install")).runWarezInstall(this);
+            break;
+          }
           this.screen.print(
             "Game-Maker SE 3.00 is already installed in C:\\GM.\nType GM to start it.\n",
           );

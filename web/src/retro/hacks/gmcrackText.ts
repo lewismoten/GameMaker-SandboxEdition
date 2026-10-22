@@ -1,7 +1,7 @@
 // GMCRACK's words: the .NFO and FILE_ID.DIZ in GMCRACK.ZIP, and the fictional scene group
 // behind it. All of it is make-believe for the desk PC: GMCRACK only changes files on this
 // simulated computer (C:\GM\PLAYGAME.REG, and which shareware in C:\DOWNLOAD shows its intro).
-import { DIZ_WIDTH, SYSOP_HANDLE } from '../bbs/fileId';
+import { DIZ_WIDTH, warezSignoff } from '../bbs/fileId';
 
 export const GROUP = 'DiGiTAL DUNE';
 
@@ -27,7 +27,7 @@ export const GMCRACK_DIZ: string[] = [
   'in C:\\DOWNLOAD (and take it out!). Read the',
   'GMCRACK.NFO first. For this desk PC only.',
   '-'.repeat(DIZ_WIDTH),
-  `Uploaded by ${SYSOP_HANDLE} to THE SANDBOX BBS`,
+  warezSignoff(),
 ];
 
 /** GMCRACK.NFO, in CP437 box characters like every .NFO of the day (≤ 79 columns). */

@@ -23,7 +23,7 @@ import {
 import { runSofa, SOFA_PHONE, sofaBusy } from "./sofa";
 import { gifGallery } from "./gifArea";
 import { gameDiz } from "./fileId";
-import { UTILITIES, utilityArea } from "./utilArea";
+import { WAREZ, warezArea, zipsOf } from "./warezArea";
 import { GALLERY } from "./gallery";
 import {
   account,
@@ -207,10 +207,14 @@ async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     } else if (k === "P") {
       await gifGallery(t, h);
       show = true;
-    } else if (k === "U") {
-      await utilityArea(t, h);
+    } else if (k === "W") {
+      // the Warez area: not on the menu, elite users only (bulletin 7)
+      await warezArea(t, h);
       show = true;
-    } else if (k === "B") {
+    } else if (k === "U")
+      t.line(
+        "|08Utilities? Never heard of them. |07(Word is, elite callers press a different letter.)",
+      ); else if (k === "B") {
       await bulletins(t, catalog);
       show = true;
     } else if (k === "S") await systemInfo(t, catalog.length);
@@ -244,10 +248,11 @@ function seedAccount(h: RetroHost, catalog: CatalogEntry[]): BbsAccount {
   let a = newAccount();
   for (const id of h.downloads.list()) {
     const g = catalog.find((c) => c.id === id);
-    const u = UTILITIES.find((x) => x.id === id);
+    const u = WAREZ.find((x) => x.id === id);
     const p = GALLERY.find((x) => x.name === id);
     if (g) a = recordDownload(a, zipSize(g), isFree(g));
-    else if (u) a = recordDownload(a, u.bytes, true);
+    else if (u)
+      for (const _zip of zipsOf(u)) a = recordDownload(a, u.bytes / zipsOf(u).length, true);
     else if (p) a = recordDownload(a, p.bytes, true);
   }
   return a;
@@ -345,12 +350,12 @@ function mainMenu(t: Term, s: RetroHost["screen"]): void {
     ["N", "New Files Scan", "S", "System Information"],
     ["Y", "Your Statistics", "C", "Page the SysOp"],
     ["P", "Picture Gallery (GIF files)", "?", "Redisplay this menu"],
-    ["U", "Utilities (DOS tools)", "G", "Goodbye (log off)"],
+    ["", "", "G", "Goodbye (log off)"],
   ];
   t.line(boxRow(""));
   for (const [a, la, b, lb] of rows)
     t.line(boxRow(`    ${a ? item(a, la) : " ".repeat(34)}${item(b, lb)}`));
-  t.line(boxRow(""));
+  t.line(boxRow("|08    There is no W)arez area on this board. Move along."));
   t.line(boxBottom());
   t.line();
 }
@@ -441,8 +446,8 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
       [
         `|07This board runs a |141:${RATIO}|07 ratio: upload one file, download ${RATIO}.`,
         `|07New callers get |14${NEW_USER_FILES}|07 files on the house, and every call earns |14${POINTS_PER_CALL}|07 more.`,
-        "|07Files the SysOp uploaded (Sandbox Software, Utilities, the GIF Gallery)",
-        "|07are |10FREE|07 and never count. Check |15Y|07 at the main menu for your stats.",
+        "|07Files the SysOp uploaded (Sandbox Software, the GIF Gallery) are",
+        "|10FREE|07 and never count. Check |15Y|07 at the main menu for your stats.",
         "|12Callers who only take and never give will be DELETED.",
         "|08Please tell your family before you upload. The SysOp's mom picks up too.",
       ],
@@ -486,6 +491,18 @@ async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
         "|07Feel like kicking back? Call |13The Sofa|07, a multi-line Major BBS",
         "|07with teleconference. It is in TERMINAL's dialing directory.",
         "|07Its lines are often busy; keep trying!",
+      ],
+    ],
+    [
+      "Elite users (lamers keep out)",
+      [
+        "|07Some areas of this board are not on the menu. You know the one.",
+        "|07Elite users press |15W|07 at the main menu. Access code: |15DUNE|07",
+        "|07(after the group that couriers for us, DiGiTAL DUNE).",
+        "|07Warez are |12not FREE|07: a file point a ZIP. Out of points? The SysOp",
+        "|07might look the other way. Once. Maybe. Upload something, leech!",
+        "|08If you are reading this, congratulations: you are now elite.",
+        "|08Tell no one. Especially not the SysOp's mom.",
       ],
     ],
   ];

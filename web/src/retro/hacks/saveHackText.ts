@@ -2,7 +2,7 @@
 // listing shows it) and SAVEHACK.DOC, the author's readme. vesuvian is Lewis's BBS handle,
 // short for Vesuvian Doppelganger, a Magic: The Gathering card.
 
-import { SYSOP_HANDLE } from '../bbs/fileId';
+import { warezSignoff } from '../bbs/fileId';
 
 export const SAVEHACK_DIZ: string[] = [
   'SAVEHACK v1.2a * SAVE GAME EDITOR       [1/1]',
@@ -14,7 +14,7 @@ export const SAVEHACK_DIZ: string[] = [
   'empty slots. Range checks. Backs up first.',
   '   Stuck on a level? Not anymore. ;-)',
   '---------------------------------------------',
-  `Uploaded by ${SYSOP_HANDLE} to THE SANDBOX BBS`,
+  warezSignoff(),
 ];
 
 export const SAVEHACK_DOC: string[] = [
