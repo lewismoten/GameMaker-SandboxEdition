@@ -3,7 +3,7 @@
 // that world's slide show: the hail, then the landing film, then the planet card.
 //   Galileo       an old Earth probe whose brain is an RCA 1802 (the chip that flew to Jupiter)
 //   Liberty       a cracked bell under a ring of thirteen stars
-//   Boxcar Flats  Dr. Leo, PhD (Comedic Science), a hobo clown with a rubber chicken on a leash
+//   Boxcar Flats  Doc Leo, PhD (Comedic Science), a hobo clown with a rubber chicken on a leash
 import { encodeGif } from '../../../../web/src/formats/gif';
 import { serializeBackdrop } from '../../../../web/src/formats/graphicScripts';
 import { Canvas } from '../art/canvas';
@@ -50,7 +50,7 @@ const key = (): Record<string, number> => ({
   x: C('red')[3],
 });
 
-// Dr. Leo, from the photos: a grey felt fedora, wire glasses, white around the eyes, a red
+// Doc Leo, from the photos: a grey felt fedora, wire glasses, white around the eyes, a red
 // nose and cheeks, a white mouth turned down sad, the hobo's ash beard, a purple shirt, a
 // green tie and a navy corduroy jacket. 32 x 40, drawn three times bigger.
 const LEO = [
@@ -250,7 +250,7 @@ export const HAILS: Hail[] = [
   {
     world: 'Boxcar Flats',
     from: 'INCOMING HAIL',
-    title: 'DR. LEO',
+    title: 'DOC LEO',
     sub: 'PhD COMEDIC SCIENCE',
     text: "\"A hobo takes a job if one's offered. A tramp won't. Got a parcel, courier? My chicken and I will walk it over.\" He puts his red nose on and tips his hat.",
     art: drawLeo,

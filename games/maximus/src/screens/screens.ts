@@ -356,10 +356,10 @@ export function wonScreens(): Map<string, Uint8Array> {
     col(118, 'OF NIGHT...', C('ice')[5], { shadow: 0 });
     col(144, 'THANK YOU FOR PLAYING', C('cyan')[6], { shadow: 0 });
     col(160, 'SANDBOX SOFTWARE 1995', C('grey')[4]);
-    // Dr. Leo, who walked a parcel over for Max at Boxcar Flats: his snapshot, scanned in
+    // Doc Leo, who walked a parcel over for Max at Boxcar Flats: his snapshot, scanned in
     const leo = resample(loadScan('leo'), 84);
     const at = polaroid(c, 26, 66, leo.w, leo.h, { paper: WHITE, edge: C('grey')[3], shadow: 0, tape: C('sand')[6] });
-    c.text(Math.round(at.cx - Canvas.width('DR. LEO') / 2), Math.round(at.cy - 3), 'DR. LEO', C('blue')[1]);
+    c.text(Math.round(at.cx - Canvas.width('DOC LEO') / 2), Math.round(at.cy - 3), 'DOC LEO', C('blue')[1]);
     const { pal } = pastePhoto(c, SCREEN.pal, leo, 26, 66);
     out.set('won3.gif', encodeGif({ width: c.w, height: c.h, pixels: c.px, palette: pal }));
   }
