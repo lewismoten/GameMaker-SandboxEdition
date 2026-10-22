@@ -69,10 +69,13 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Mustard Seed
-  Hustle": words by Lewis Moten
-  as The Bard of Bizarre.
-  Recording and cover art:
-  (credit pending).
+  Hustle": lyrics written by
+  ChatGPT from Lewis Moten's
+  prompt (as The Bard of
+  Bizarre); music made with
+  Riffusion (now Google Flow
+  Music); animated cover made
+  with Producer.ai.
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made

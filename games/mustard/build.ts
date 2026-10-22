@@ -25,7 +25,7 @@ import { ORIGIN } from './src/levels/maps';
 import { demoRecording } from './src/demo';
 import { cardFli, coverFli, howtoFli, lostFli, storyFli, wonFlis, type Cast, type CardView } from './src/screens/cartoons';
 import { buildScreens } from './src/screens/screens';
-import { CREDITS, INSTRUCTIONS, RECORDING_CREDIT, STORY, readme } from './src/screens/text';
+import { CREDITS, INSTRUCTIONS, SONG_CREDIT, STORY, readme } from './src/screens/text';
 import { levelSongs, lostSong, storySong, titleSong, wholeSong, wonSong } from './src/sound/song';
 import { buildSoundSet, buildVocs, type Place } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
@@ -127,7 +127,7 @@ disk.put(
   'license.txt',
   licenseText(
     'Mustard Seed Hustle',
-    `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song's words are Lewis Moten's (as The Bard of Bizarre). Recording and cover art: ${RECORDING_CREDIT}.`,
+    `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
   ),
 );
 disk.write();

@@ -14,11 +14,12 @@ export const TITLE = 'MUSTARD SEED HUSTLE';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /**
- * Who made the recording and the animated cover the game's music, clips and title cartoon come
- * from. Not confirmed yet for this song: ONE place to change it, used by the credits page, the
- * README and LICENSE.TXT (about.json says the same in its blurb).
+ * Who made the song: the lyrics, the recording the game's music and clips come from, and the
+ * animated cover its title cartoon comes from. Used by LICENSE.TXT (the credits page and the
+ * README spell it out to fit their columns; about.json says the same in its blurb).
  */
-export const RECORDING_CREDIT = '(credit pending)';
+export const SONG_CREDIT =
+  "lyrics written by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); animated cover made with Producer.ai";
 
 export const STORY = [
   page([
@@ -125,9 +126,9 @@ const CREDITS_TEXT = page(
     'hobo clown, Doc Leo), one of',
     "the Bard's gospel oddities.",
     '',
-    'Words: Lewis Moten.',
-    'Recording and cover art:',
-    RECORDING_CREDIT,
+    "Lyrics: ChatGPT, from Lewis's",
+    'prompt. Music: Riffusion.',
+    'Animated cover: Producer.ai.',
     "This game's FM music, its",
     'sung clips and the title',
     'cartoon are made from them.',
@@ -224,10 +225,13 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Mustard Seed
-  Hustle": words by Lewis Moten
-  as The Bard of Bizarre.
-  Recording and cover art:
-  ${RECORDING_CREDIT}.
+  Hustle": lyrics written by
+  ChatGPT from Lewis Moten's
+  prompt (as The Bard of
+  Bizarre); music made with
+  Riffusion (now Google Flow
+  Music); animated cover made
+  with Producer.ai.
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made
