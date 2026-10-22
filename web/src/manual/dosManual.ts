@@ -562,9 +562,16 @@ function pages(shots: GameShot[]): BookletPage[] {
   ];
 }
 
+/** The gallery's screenshots: give them a moment to load, and go without them if they can't. */
+const galleryShots = () => Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
+
+/** The guide's pages as the box shows them: index n is the page with n printed at its foot (the copy check's page numbers). */
+export async function dosManualPages(): Promise<BookPage[]> {
+  return bookPages(pages(await galleryShots()));
+}
+
 export async function openDosManual(): Promise<void> {
-  // the gallery's screenshots: give them a moment to load, and go without them if they can't
-  const shots = await Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
+  const shots = await galleryShots();
   const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
   return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb' });
 }
