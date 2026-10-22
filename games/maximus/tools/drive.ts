@@ -259,8 +259,10 @@ export interface SeekOpts {
   tall?: number;
   /** The plans to try: 'walk' (courier: left/right, jet taps, fire) or 'fly' (pod/sub: one thrust key). */
   mode?: 'walk' | 'fly';
-  /** The courier's weapon key for the plans that shoot (the blaster, Space, by default). */
-  fireKey?: number;
+  /** The courier's weapon keys for the plans that shoot (default: the blaster, and the Plasma Lance while it has ammunition to spare). */
+  fireKeys?: number[];
+  /** Plasma bolts to keep (for the Guardian). */
+  plasmaReserve?: number;
   /** false: the body moves only while a key is held (the diving bell), so plans can be shorter. */
   momentum?: boolean;
   log?: (m: string) => void;
@@ -276,24 +278,24 @@ const JETS: Record<string, (t: number) => boolean> = {
 };
 
 /** The courier's plans: a way to walk, a jet rhythm, maybe a shot; long plans change direction halfway. */
-function walkPlans(H: number, long = false, fireKey: number = SCAN.space): Plan[] {
+function walkPlans(H: number, long = false, fireKeys: number[] = [SCAN.space]): Plan[] {
   const plans: Plan[] = [];
   const hs = [0, SCAN.right, SCAN.left];
   const name = (h: number) => (h === SCAN.right ? 'R' : h === SCAN.left ? 'L' : '-');
   for (const h1 of hs)
     for (const h2 of long ? hs : [h1])
       for (const [jn, jet] of Object.entries(JETS))
-        for (const fire of long ? [false] : [false, true]) {
+        for (const fire of long ? [0] : [0, ...fireKeys]) {
           const held: number[][] = [];
           for (let t = 0; t < H; t++) {
             const k: number[] = [];
             const h = t < (long ? 12 : H) ? h1 : h2;
             if (h) k.push(h);
             if (jet(long && t >= 12 ? t - 12 : t)) k.push(SCAN.up);
-            if (fire && t === 0) k.push(fireKey);
+            if (fire && t === 0) k.push(fire);
             held.push(k);
           }
-          plans.push({ held, name: `${name(h1)}${long ? name(h2) : ''}${jn}${fire ? 'F' : ''}` });
+          plans.push({ held, name: `${name(h1)}${long ? name(h2) : ''}${jn}${fire === SCAN.space ? 'F' : fire ? 'Z' : ''}` });
         }
   return plans;
 }
@@ -381,7 +383,8 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
   };
   const H = mode === 'walk' ? 14 : tall === 1 && opts.momentum === false ? 12 : 24;
   const E = 4;
-  const plans = mode === 'walk' ? walkPlans(H, false, opts.fireKey) : flyPlans(H);
+  const lance = d.w.ci.seqon[10] && d.w.ci.meter[10] > (opts.plasmaReserve ?? 12);
+  const plans = mode === 'walk' ? walkPlans(H, false, opts.fireKeys ?? (lance ? [SCAN.space, SCAN.z] : [SCAN.space])) : flyPlans(H);
   const longPlans = mode === 'walk' ? walkPlans(30, true) : flyPlans(40);
   let seed = 12345;
   const rand = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
@@ -458,6 +461,7 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
   let bestSmooth = Infinity;
   let lastGain = 0;
   let stuck = 0;
+  let expect = '';
   for (; t < maxTicks; t++) {
     if (d.link >= 0 || d.dead) break;
     if (opts.done?.() || isGoal(d.w)) {
@@ -506,6 +510,11 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
     }
     best = Math.min(best, distOf(d.w));
     if (opts.log && t % 100 === 0) opts.log(`    seek t${t} at ${d.w.chr.x[0]},${d.w.chr.y[0]} dist ${distOf(d.w)} hp ${d.w.ci.hitpts} plan ${chosen?.name}`);
+    if (expect && t >= replanAt) {
+      const got = `${d.w.chr.x[0]}+${d.w.chr.x[1]},${d.w.chr.y[0]}+${d.w.chr.y[1]} hp ${d.w.ci.hitpts}`;
+      if (got !== expect) opts.log?.(`    forecast miss at t${t}: expected ${expect}, got ${got}`);
+      expect = '';
+    }
     if (t >= replanAt || !chosen) {
       // try every plan from the keys held now
       let bestCost = Infinity;
@@ -541,6 +550,7 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
         cost += lost * (hp0 < 50 ? 16 : 8);
         if (reached >= 0) cost += reached - 1000;
         else cost += smooth(f.w);
+        if (process.env.MAXIMUS_PLAN_LOG && t >= Number(process.env.MAXIMUS_PLAN_LOG) && t < Number(process.env.MAXIMUS_PLAN_LOG) + 60) opts.log?.(`      t${t} ${p.name} cost ${cost.toFixed(0)} lost ${lost} dist ${reached >= 0 ? 'goal' : smooth(f.w).toFixed(0)}`);
         if (cost < bestCost) {
           bestCost = cost;
           chosen = p;
@@ -548,6 +558,19 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
       }
       ci = 0;
       replanAt = t + (stuck === 2 ? 10 : E);
+      if (process.env.MAXIMUS_CHECK_FORECAST) {
+        // forecast the ticks about to be played, to compare with what the engine does
+        const f = forecast(d.w, true, avoid);
+        const h0 = new Set(held);
+        for (let s2 = 0; s2 < replanAt - t; s2++) {
+          const want = chosen!.held[s2] ?? [];
+          const evs: number[] = [];
+          for (const k of [...h0]) if (!want.includes(k)) (h0.delete(k), evs.push(k | 0x80));
+          for (const k of want) if (!h0.has(k)) (h0.add(k), evs.push(k));
+          await step(f, evs);
+        }
+        expect = `${f.w.chr.x[0]}+${f.w.chr.x[1]},${f.w.chr.y[0]}+${f.w.chr.y[1]} hp ${f.w.ci.hitpts}`;
+      }
     }
     apply(chosen!.held[ci++] ?? []);
     await d.tick();

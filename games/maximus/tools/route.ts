@@ -277,16 +277,77 @@ export class Route {
     await d.enter(SCENE.heart);
   }
 
-  /** The Heart: across the hall, through the Guardian's plates with the Plasma Lance (Z), to the exit. */
+  /** The Guardian's plates still standing (live monsters in its three columns), as "x,y". */
+  plates(): Set<string> {
+    const w = this.d.w;
+    const out = new Set<string>();
+    w.mm.forEach((m, i) => {
+      if (m.monnum >= 44) return;
+      const x = w.mi[i].curx[0];
+      if (x >= 76 && x <= 78) out.add(`${x},${w.mi[i].cury[0]}`);
+    });
+    return out;
+  }
+
+  /**
+   * The Heart: across the hall to the Guardian, then through its plates with the Plasma Lance
+   * (Z; each plate takes two bolts): the row at head height from the floor, then the row above
+   * it from a hop, then over on the jets, and on to the exit.
+   */
   async heart(): Promise<void> {
     const d = this.d;
-    const info = this.info(SCENE.heart);
     this.chapter(SCENE.heart, 'Heart of Maximus');
     this.status('in the Heart');
+    const wait = async (n: number) => {
+      for (let i = 0; i < n && !d.dead && d.link < 0; i++) await d.tick();
+    };
+    const tap = async (k: number, hold = 1) => {
+      d.press(k);
+      await wait(hold);
+      d.release(k);
+    };
     await this.inScene(SCENE.heart, async () => {
-      await seek(d, this.links(SCENE.heart)[0].from, this.opts({ mode: 'walk', tall: 2, fireKey: SCAN.z, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 10000 }));
+      const wall = { x: 74, y: 55 };
+      if (d.pos.bx < 79) {
+        await seek(d, wall, this.opts({ mode: 'walk', tall: 2, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 4000 }));
+        if (d.dead) return;
+        this.status(`at the Guardian (${this.plates().size} plates)`);
+        for (let round = 0; round < 80 && d.pos.bx < 79 && !d.dead; round++) {
+          const p = this.plates();
+          const row54 = [76, 77, 78].some((x) => p.has(`${x},54`));
+          const row53 = [76, 77, 78].some((x) => p.has(`${x},53`));
+          if (d.pos.bx > 75 || d.pos.bx < 72) {
+            await seek(d, wall, this.opts({ mode: 'walk', tall: 2, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 600 }));
+            continue;
+          }
+          // face the wall
+          await tap(SCAN.right, 2);
+          await wait(2);
+          if (row54) {
+            await tap(SCAN.z);
+            await wait(7);
+          } else if (row53) {
+            await tap(SCAN.up);
+            await wait(2);
+            await tap(SCAN.z);
+            await wait(8);
+          } else {
+            // through on the jets, under the row above
+            d.press(SCAN.right);
+            for (let t = 0; t < 40 && d.pos.bx < 79 && !d.dead; t++) {
+              if (t % 3 === 0) d.press(SCAN.up);
+              else d.release(SCAN.up);
+              await d.tick();
+            }
+            d.release(SCAN.up);
+            d.release(SCAN.right);
+          }
+        }
+        this.status(`past the Guardian at ${d.pos.bx},${d.pos.by}`);
+      }
+      if (d.dead) return;
+      await seek(d, this.links(SCENE.heart)[0].from, this.opts({ mode: 'walk', tall: 2, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 3000 }));
     });
-    void info;
   }
 
   async jump(sector: number): Promise<void> {
