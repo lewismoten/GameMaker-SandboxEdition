@@ -4,7 +4,8 @@
 // tick it reached the game, one segment each time play enters a scene. Played back from
 // those segments, the run comes out the same, since nothing else differs.
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough, type WalkSegment } from '../../../web/src/walkthrough/format';
-import { headlessCanvas, WalkRun } from '../../../web/src/walkthrough/runtime';
+import { headlessCanvas, seeded, WalkRun } from '../../../web/src/walkthrough/runtime';
+import { Mulberry } from './model';
 import type { World } from '../../../web/src/engine/world';
 import type { Block } from '../../../web/src/formats/blocks';
 import type { Session } from '../../../web/src/engine/scene';
@@ -113,6 +114,15 @@ export class Live implements Driver {
     await run.start();
     const s = run.session!;
     this.s = s;
+    // the monsters' random numbers: the same sequence the walkthrough seeds (runtime.ts seeded()),
+    // from a generator whose state the look-ahead can copy
+    {
+      const check = seeded(this.walk.rand.seed);
+      const probe = new Mulberry(this.walk.rand.seed);
+      for (let i = 0; i < 1000; i++) if (check() !== probe.next()) throw new Error('Mulberry does not match seeded()');
+      const shared = new Mulberry(this.walk.rand.seed).fn();
+      s.rand = () => (this.walk.rand.per === 'scene' ? new Mulberry(this.walk.rand.seed).fn() : shared);
+    }
     let won = false;
     const onScene = s.onScene!;
     s.onScene = (n) => {

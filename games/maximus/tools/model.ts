@@ -18,6 +18,29 @@ const SHARED = new Set(['palette', 'bg', 'mblk', 'cblk', 'mon']);
 
 let seedCounter = 1;
 
+/**
+ * Mulberry32, the same generator as the walkthrough's seeded() (web/src/walkthrough/runtime.ts),
+ * with its state in the open so a look-ahead copy can draw the very numbers the engine will.
+ */
+export class Mulberry {
+  constructor(public a: number) {
+    this.a = a >>> 0;
+  }
+  next(): number {
+    this.a = (this.a + 0x6d2b79f5) >>> 0;
+    let t = this.a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  /** A random() function backed by this generator (and carrying it, for copies). */
+  fn(): () => number {
+    const f = () => this.next();
+    (f as unknown as { gen: Mulberry }).gen = this;
+    return f;
+  }
+}
+
 /** A deep copy of plain data (arrays, typed arrays, objects), faster than structuredClone for many small objects. */
 function copy<T>(v: T): T {
   if (v === null || typeof v !== 'object') return v;
@@ -41,7 +64,9 @@ export function cloneWorld(w: World): World {
       out[k] = c;
     } else out[k] = copy(v);
   }
-  out.rand = rng(seedCounter++);
+  // the engine's own random numbers, from where they stand, when the live world carries them
+  const gen = (w.rand as unknown as { gen?: Mulberry }).gen;
+  out.rand = gen ? new Mulberry(gen.a).fn() : rng(seedCounter++);
   out.joystick = undefined;
   return out as unknown as World;
 }

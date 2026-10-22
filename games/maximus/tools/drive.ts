@@ -259,6 +259,8 @@ export interface SeekOpts {
   tall?: number;
   /** The plans to try: 'walk' (courier: left/right, jet taps, fire) or 'fly' (pod/sub: one thrust key). */
   mode?: 'walk' | 'fly';
+  /** The courier's weapon key for the plans that shoot (the blaster, Space, by default). */
+  fireKey?: number;
   /** false: the body moves only while a key is held (the diving bell), so plans can be shorter. */
   momentum?: boolean;
   log?: (m: string) => void;
@@ -274,7 +276,7 @@ const JETS: Record<string, (t: number) => boolean> = {
 };
 
 /** The courier's plans: a way to walk, a jet rhythm, maybe a shot; long plans change direction halfway. */
-function walkPlans(H: number, long = false): Plan[] {
+function walkPlans(H: number, long = false, fireKey: number = SCAN.space): Plan[] {
   const plans: Plan[] = [];
   const hs = [0, SCAN.right, SCAN.left];
   const name = (h: number) => (h === SCAN.right ? 'R' : h === SCAN.left ? 'L' : '-');
@@ -288,11 +290,33 @@ function walkPlans(H: number, long = false): Plan[] {
             const h = t < (long ? 12 : H) ? h1 : h2;
             if (h) k.push(h);
             if (jet(long && t >= 12 ? t - 12 : t)) k.push(SCAN.up);
-            if (fire && t === 0) k.push(SCAN.space);
+            if (fire && t === 0) k.push(fireKey);
             held.push(k);
           }
           plans.push({ held, name: `${name(h1)}${long ? name(h2) : ''}${jn}${fire ? 'F' : ''}` });
         }
+  return plans;
+}
+
+/** Plans made of random four-tick moves (a way to walk or a thrust, a jet tap), for getting unstuck. */
+function randomPlans(n: number, H: number, walk: boolean, rand: () => number): Plan[] {
+  const plans: Plan[] = [];
+  const moves = walk ? [0, SCAN.right, SCAN.left] : [0, SCAN.right, SCAN.left, SCAN.up, SCAN.down];
+  for (let p = 0; p < n; p++) {
+    const held: number[][] = [];
+    let h = 0;
+    let jet = false;
+    for (let t = 0; t < H; t++) {
+      if (t % 4 === 0) {
+        h = moves[Math.floor(rand() * moves.length)];
+        jet = walk && rand() < 0.5;
+      }
+      const k: number[] = h ? [h] : [];
+      if (jet && t % 4 === 0) k.push(SCAN.up);
+      held.push(k);
+    }
+    plans.push({ held, name: `rnd${p}` });
+  }
   return plans;
 }
 
@@ -328,11 +352,16 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
   const avoid = opts.avoid ?? (() => false);
   const bbl = d.scene.bbl;
   const map = d.w.map;
+  /** A hazard that blinks (a laser, a field on the clock) is safe part of the time: the plans time it. */
+  const blinks = (n: number) => {
+    for (let k = 0, m = bbl[n].nextBl; k < 8 && m !== n && bbl[m]; k++, m = bbl[m].nextBl) if (bbl[m].chHitPt >= 0 && !(bbl[m].solid & 14)) return true;
+    return false;
+  };
   const openCell = (x: number, y: number) => {
     const n = map[idx(x, y)];
     if (passable(n)) return true;
     const b = bbl[n];
-    if (b.chHitPt < 0) return false;
+    if (b.chHitPt < 0) return blinks(n) && !avoid(x, y);
     if (avoid(x, y)) return false;
     return (b.solid & 14) === 0 || b.solid === 1;
   };
@@ -352,8 +381,10 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
   };
   const H = mode === 'walk' ? 14 : tall === 1 && opts.momentum === false ? 12 : 24;
   const E = 4;
-  const plans = mode === 'walk' ? walkPlans(H) : flyPlans(H);
+  const plans = mode === 'walk' ? walkPlans(H, false, opts.fireKey) : flyPlans(H);
   const longPlans = mode === 'walk' ? walkPlans(30, true) : flyPlans(40);
+  let seed = 12345;
+  const rand = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
   const cellOf = (w: { chr: { x: number[]; y: number[] } }) => {
     const c = w.chr;
     return { x: (c.x[0] + (c.x[1] > 10 ? 1 : 0)) % 100, y: (c.y[0] + (c.y[1] > 10 ? 1 : 0)) % 100 };
@@ -407,6 +438,16 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
     }
     return evs;
   };
+  {
+    // no route at all from here: say so at once rather than wander
+    const c = d.w.chr;
+    let any = false;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (dist[idx(c.x[0] + dx, c.y[0] + dy)] >= 0) any = true;
+    if (!any) {
+      opts.log?.(`    seek: no route from ${c.x[0]},${c.y[0]} to ${goals.map((g) => `${g.x},${g.y}`).join(' ')}`);
+      return { arrived: false, ticks: 0, best: 400 };
+    }
+  }
   let best = 1e9;
   let t = 0;
   let arrived = false;
@@ -416,7 +457,7 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
   let ci = 0;
   let bestSmooth = Infinity;
   let lastGain = 0;
-  let stuck = false;
+  let stuck = 0;
   for (; t < maxTicks; t++) {
     if (d.link >= 0 || d.dead) break;
     if (opts.done?.() || isGoal(d.w)) {
@@ -427,16 +468,21 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
     if (now < bestSmooth - 4) {
       bestSmooth = now;
       lastGain = t;
-      stuck = false;
-    } else if (t - lastGain > 40 && !stuck) {
+      stuck = 0;
+    } else if (t - lastGain > 40 && stuck === 0) {
       // no headway: look further ahead, with plans that change their mind halfway
-      stuck = true;
+      stuck = 1;
       replanAt = t;
-    } else if (t - lastGain > 110 && !nearGate(d.w)) {
-      // still none: the next step of the route is a trap (an engine quirk a distance field can't see)
+    } else if (t - lastGain > 100 && stuck === 1) {
+      // still none: try wandering plans
+      stuck = 2;
+      replanAt = t;
+    } else if (t - lastGain > 220 && !nearGate(d.w)) {
+      // and still none: the next step of the route must be a trap (an engine quirk a distance
+      // field can't see), so route around it, unless that leaves no route at all
       const c = cellOf(d.w);
-      let nx = c.x;
-      let ny = c.y;
+      let nx = -1;
+      let ny = -1;
       let bd = dist[idx(c.x, c.y)];
       for (const [dx, dy] of DIRS) {
         const v = dist[idx(c.x + dx, c.y + dy)];
@@ -446,20 +492,25 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
           ny = c.y + dy;
         }
       }
-      traps.add(idx(nx, ny));
-      opts.log?.(`    seek: stuck at ${c.x},${c.y}, routing around ${nx},${ny}`);
-      dist = field(goals, fits);
+      if (nx >= 0) {
+        traps.add(idx(nx, ny));
+        const next = field(goals, fits);
+        if (next[idx(c.x, c.y)] >= 0 || [...DIRS].some(([dx, dy]) => next[idx(c.x + dx, c.y + dy)] >= 0)) {
+          dist = next;
+          opts.log?.(`    seek: stuck at ${c.x},${c.y}, routing around ${nx},${ny}`);
+        } else traps.delete(idx(nx, ny));
+      }
       bestSmooth = smooth(d.w);
       lastGain = t;
-      stuck = false;
+      stuck = 0;
     }
     best = Math.min(best, distOf(d.w));
     if (opts.log && t % 100 === 0) opts.log(`    seek t${t} at ${d.w.chr.x[0]},${d.w.chr.y[0]} dist ${distOf(d.w)} hp ${d.w.ci.hitpts} plan ${chosen?.name}`);
     if (t >= replanAt || !chosen) {
       // try every plan from the keys held now
       let bestCost = Infinity;
-      const tryPlans = stuck ? longPlans : plans;
-      const HH = stuck ? tryPlans[0].held.length : H;
+      const tryPlans = stuck === 2 ? randomPlans(40, 40, mode === 'walk', rand) : stuck === 1 ? longPlans : plans;
+      const HH = tryPlans[0].held.length;
       for (const p of tryPlans) {
         const f = forecast(d.w, true, avoid);
         const h0 = new Set(held);
@@ -496,7 +547,7 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
         }
       }
       ci = 0;
-      replanAt = t + E;
+      replanAt = t + (stuck === 2 ? 10 : E);
     }
     apply(chosen!.held[ci++] ?? []);
     await d.tick();

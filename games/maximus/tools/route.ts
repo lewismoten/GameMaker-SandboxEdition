@@ -7,7 +7,7 @@
 import { buildGame, type Built, type SceneInfo } from '../src/game';
 import { ITEM_BASE, SCAN, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
 import { SCENE } from '../src/universe';
-import { idx, seek, wrap, type P, type SeekOpts } from './drive';
+import { field, idx, seek, wrap, type P, type SeekOpts } from './drive';
 import type { Live } from './live';
 
 export interface Stop {
@@ -42,12 +42,12 @@ export class Route {
     if (!this.chapters.some((c) => c.scene === scene)) this.chapters.push({ scene, title });
   }
 
-  /** Map cells near any link of `scene` but `keep` (touching one would take it). */
+  /** The link cells of `scene` but `keep` (touching one would take it; the look-ahead sees when it would). */
   avoidLinks(scene: number, keep: number): (x: number, y: number) => boolean {
     const bad = new Set<number>();
     this.links(scene).forEach((l, i) => {
       if (i === keep || l.toScene === 0xffff) return;
-      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) bad.add(idx(l.from.x + dx, l.from.y + dy));
+      bad.add(idx(l.from.x, l.from.y));
     });
     const galaxy = scene === SCENE.galaxy;
     return (x, y) => bad.has(idx(x, y)) || (galaxy && Math.abs(wrap(x - KNOT.x)) <= KNOT.r && Math.abs(wrap(y - KNOT.y)) <= KNOT.r);
@@ -140,28 +140,57 @@ export class Route {
     const prize = info.shard !== undefined ? `the ${SHARDS[info.shard]} shard` : 'a module';
     this.chapter(scene, info.name);
     this.status(`landed on ${info.name} for ${prize}`);
-    const tall = info.chr === 'courier' ? 2 : 1;
-    const mode = info.chr === 'courier' ? 'walk' : 'fly';
-    await this.inScene(scene, async () => {
-      if (!this.has(info)) {
-        const r = await seek(d, info.vault!, this.opts({ mode, tall, passable: this.gates(info), avoid: this.avoidLinks(scene, -1), maxTicks: 8000 }));
-        if (d.dead) return;
-        if (!r.arrived) throw new Error(`${info.name}: the bot did not reach the vault (best ${r.best}, at ${d.pos.bx},${d.pos.by})`);
-        if (info.module !== undefined) {
-          d.press(SCAN.p);
-          for (let i = 0; i < 8; i++) await d.tick();
-          d.release(SCAN.p);
-          for (let i = 0; i < 4; i++) await d.tick();
-        }
-        if (!this.has(info)) throw new Error(`${info.name}: the prize was not taken`);
-        this.status(`took ${prize}`);
-      }
-      await this.heal(info);
-      if (d.dead) return;
-      await seek(d, this.links(scene)[0].from, this.opts({ mode, tall, passable: this.gates(info), maxTicks: 8000 }));
-    });
+    await this.inScene(scene, () => this.ground(info));
     await d.enter(sc);
     this.status('back in orbit');
+  }
+
+  /** Whether a route leads from the courier to `goal`, through doors or not (force fields always). */
+  reaches(info: SceneInfo, goal: P, doors: boolean): boolean {
+    const d = this.d;
+    const s = this.b.sets[info.bbl];
+    const pass = ['field:on', 'field:on2', 'field:off', ...(doors ? ['door'] : [])].filter((n) => s.has(n)).map((n) => s.id(n));
+    const tall = info.chr === 'courier' ? 2 : 1;
+    const open = (x: number, y: number) => {
+      for (let j = 0; j < tall; j++) {
+        const n = d.w.map[idx(x, y - j)];
+        const b = d.w.bg[n];
+        if (pass.includes(n)) continue;
+        if (!((b.solid & 14) === 0 || b.solid === 1) || b.chHitPt < 0) return false;
+      }
+      return true;
+    };
+    const c = d.w.chr;
+    return field(goal, open)[idx(c.x[0], c.y[0])] >= 0;
+  }
+
+  /** Picks up credit crates near the way until the courier carries `need` (a vault door takes 20). */
+  async credits(info: SceneInfo, need: number, within = 45): Promise<void> {
+    const d = this.d;
+    const s = this.b.sets[info.bbl];
+    const ids = ['p:credit', 'pc:credit'].filter((n) => s.has(n)).map((n) => s.id(n));
+    const tall = info.chr === 'courier' ? 2 : 1;
+    for (let k = 0; k < 6 && d.w.ci.meter[3] - 1 < need && !d.dead; k++) {
+      const c = d.w.chr;
+      const open = (x: number, y: number) => {
+        for (let j = 0; j < tall; j++) {
+          const b = d.w.bg[d.w.map[idx(x, y - j)]];
+          if (!((b.solid & 14) === 0 || b.solid === 1) || b.chHitPt < 0) return false;
+        }
+        return true;
+      };
+      const dist = field({ x: c.x[0], y: c.y[0] }, open);
+      let best = -1;
+      for (let i = 0; i < 10000; i++)
+        if (ids.includes(d.w.map[i]) && dist[i] >= 0 && dist[i] <= within && (best < 0 || dist[i] < dist[best])) best = i;
+      if (best < 0) return;
+      const at = { x: best % 100, y: Math.floor(best / 100) };
+      const before = d.w.ci.meter[3];
+      await seek(d, at, this.opts({ mode: info.chr === 'courier' ? 'walk' : 'fly', tall, avoid: this.avoidLinks(info.scene, -1), maxTicks: 800 }));
+      // the crate is taken by touching it; a little more if it is not gone yet
+      if (d.w.ci.meter[3] === before) for (let i = 0; i < 6 && !d.dead; i++) await d.tick();
+      this.status(`credits ${before - 1} -> ${d.w.ci.meter[3] - 1}`);
+    }
   }
 
   /**
@@ -190,12 +219,74 @@ export class Route {
     this.status(`healed ${hp0} -> ${d.w.ci.hitpts} at the spring`);
   }
 
+  /** On a world: the prize from its vault (credits for the door first if need be), a stop at the spring if hurt, back to the uplink. */
+  async ground(info: SceneInfo): Promise<void> {
+    const d = this.d;
+    const scene = info.scene;
+    const prize = info.shard !== undefined ? `the ${SHARDS[info.shard]} shard` : 'a module';
+    const tall = info.chr === 'courier' ? 2 : 1;
+    const mode = info.chr === 'courier' ? 'walk' : 'fly';
+    if (!this.has(info)) {
+      // a vault door wants 20 credits; when the force field's side can't be reached, find them
+      if (!this.reaches(info, info.vault!, false)) await this.credits(info, 20, 200);
+      else await this.credits(info, 20, 30);
+      if (d.dead) return;
+      const r = await seek(d, info.vault!, this.opts({ mode, tall, passable: this.gates(info), avoid: this.avoidLinks(scene, -1), maxTicks: 8000 }));
+      if (d.dead) return;
+      if (!r.arrived) throw new Error(`${info.name}: the bot did not reach the vault (best ${r.best}, at ${d.pos.bx},${d.pos.by})`);
+      if (info.module !== undefined) {
+        d.press(SCAN.p);
+        for (let i = 0; i < 8; i++) await d.tick();
+        d.release(SCAN.p);
+        for (let i = 0; i < 4; i++) await d.tick();
+      }
+      if (!this.has(info)) throw new Error(`${info.name}: the prize was not taken`);
+      this.status(`took ${prize}`);
+    }
+    await this.heal(info);
+    if (d.dead) return;
+    await seek(d, this.links(scene)[0].from, this.opts({ mode, tall, passable: this.gates(info), maxTicks: 8000 }));
+  }
+
   /** Doors (two cells, 10 credits each: only with 20 to spend) and force fields (wait for them to blink off). */
   gates(info: SceneInfo): (b: number) => boolean {
     const s = this.b.sets[info.bbl];
     const ids = ['field:on', 'field:on2', 'field:off'].filter((n) => s.has(n)).map((n) => s.id(n));
     if (this.d.w.ci.meter[3] - 1 >= 20 && s.has('door')) ids.push(s.id('door'));
     return (b) => ids.includes(b);
+  }
+
+  /** The Maelstrom: through the storm to the Citadel's dock. */
+  async maelstrom(): Promise<void> {
+    this.chapter(SCENE.maelstrom, 'The Maelstrom');
+    this.status('in the Maelstrom');
+    await this.flyLink(SCENE.maelstrom, 1, 8000);
+  }
+
+  /** The Citadel: down to its vault, where the teleporter to the Heart waits. */
+  async citadel(): Promise<void> {
+    const d = this.d;
+    const info = this.info(SCENE.citadel);
+    this.chapter(SCENE.citadel, 'The Citadel');
+    this.status('landed on the Citadel');
+    await this.inScene(SCENE.citadel, async () => {
+      await this.credits(info, 20);
+      if (d.dead) return;
+      await seek(d, this.links(SCENE.citadel)[1].from, this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(SCENE.citadel, 1), maxTicks: 10000 }));
+    });
+    await d.enter(SCENE.heart);
+  }
+
+  /** The Heart: across the hall, through the Guardian's plates with the Plasma Lance (Z), to the exit. */
+  async heart(): Promise<void> {
+    const d = this.d;
+    const info = this.info(SCENE.heart);
+    this.chapter(SCENE.heart, 'Heart of Maximus');
+    this.status('in the Heart');
+    await this.inScene(SCENE.heart, async () => {
+      await seek(d, this.links(SCENE.heart)[0].from, this.opts({ mode: 'walk', tall: 2, fireKey: SCAN.z, avoid: this.avoidLinks(SCENE.heart, 0), maxTicks: 10000 }));
+    });
+    void info;
   }
 
   async jump(sector: number): Promise<void> {
