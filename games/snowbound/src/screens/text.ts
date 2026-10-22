@@ -204,10 +204,12 @@ export const WOODS = [
     'A note was frozen to',
     'it:',
     '',
-    '"The Word Counter',
-    'jammed at ninety-nine.',
-    'Bring a shovel and',
-    'come quick."',
+    '"Bring every egg to the',
+    'kitchen before the root',
+    'beer goes flat.',
+    'All of them.',
+    'Yes, even that one.',
+    'ESPECIALLY that one."',
   ]),
 ].join('\n');
 
