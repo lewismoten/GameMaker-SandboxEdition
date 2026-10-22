@@ -367,3 +367,75 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
   for (let k = 0; k < 28; k++) r.frame(bg, (p) => (actors[i](p, k), frame(p, k)));
   return r.fli(SPEED);
 }
+
+/** A night field: banded sky with stars down to y `horizon`, dark grass to the caption band. */
+function nightField(pal: Pal, seed: number, horizon: number): Pixels {
+  const p = new Pixels(W, H, pal.c('night', 0));
+  bands(p, 0, 0, W, horizon, pal.r('night'), 0, 5);
+  stars(p, pal, seed, horizon - 10, 70);
+  for (let y = horizon; y < 172; y++) p.rect(0, y, W, 1, pal.c('olive', y < horizon + 2 ? 2 : y > 160 ? 0 : 1));
+  return p;
+}
+
+/**
+ * How to get past a cousin (faint.fli, before the instructions): the goat walks up to a
+ * fainting cousin standing on a narrow plank bridge, bonks into her, screams; the
+ * cousin keels over stiff, legs in the air, and the goat hops right over her.
+ */
+export function faintFli(cast: Cast): Uint8Array {
+  const pal = buildScreenPalette();
+  const c = pal.c;
+  const ink = c('ink', 0);
+  const bg = nightField(pal, 13, 120);
+  // a stream, and one narrow plank bridge over it
+  for (let y = 136; y < 172; y++) {
+    const half = 46 + Math.round((y - 136) * 0.4);
+    bg.rect(200 - half, y, half * 2, 1, c('water', y < 140 ? 0 : (y + Math.floor(y / 5)) % 6 === 0 ? 2 : 1));
+  }
+  bg.rect(142, 150, 116, 4, c('wood', 3)).rect(142, 154, 116, 2, c('wood', 1));
+  for (const x of [146, 250]) bg.rect(x, 154, 4, 18, c('wood', 0));
+  bg.rect(0, 0, W, 24, c('night', 0));
+  centered(bg, 8, 'HOW TO GET PAST A COUSIN', c('gold', 3));
+  const goat = (n: string) => cast.goat.get(n)!;
+  const mon = (n: string) => cast.mons.get(n)!;
+  const r = new Reel(pal.pal);
+  const scene = (p: Pixels, k: number) => {
+    // the cousin, in the gap
+    const fainted = k >= 25;
+    const cousin = fainted ? mon(k >= 38 && k % 4 < 2 ? 'goatFaint1' : 'goatFaint0') : mon(k === 15 || k === 23 || k === 24 ? 'goat1' : 'goat0');
+    scaleBlit(p, cousin, 180, fainted ? 112 : 110, 2);
+    if (k >= 25 && k < 28) {
+      say(p, 200, 92, 'THUD', 'cloth');
+      for (let d = 0; d < 4; d++) blob(p, 176 + d * 14, 148 - (k - 25), 5, 3, pal.r('stone'), 2, 4);
+    }
+    // the goat
+    if (k < 14) scaleBlit(p, goat(`side${k % 3}`), Math.min(134, -40 + k * 14), 110, 2);
+    else if (k < 17) {
+      scaleBlit(p, goat('side0'), k === 14 ? 142 : 134, 110, 2);
+      if (k > 14) say(p, 166, 92, 'BONK', 'cloth');
+    } else if (k < 27) {
+      scaleBlit(p, goat(k % 2 ? 'scream1' : 'scream0'), 134, 110, 2);
+      scaleBlit(p, mon(k % 2 ? 'wave1' : 'wave0'), 164 + (k % 3) * 4, 104, 2);
+      outlined(p, 160 - textWidth('AAAAAH!', 2) / 2, 40 + (k % 2), 'AAAAAH!', c('gold', 3), ink, 2);
+    } else if (k < 37) {
+      const t = (k - 27) / 9;
+      scaleBlit(p, goat(t < 1 ? 'side1' : 'side0'), Math.round(134 + t * 128), Math.round(110 - Math.sin(t * Math.PI) * 36), 2);
+    } else {
+      scaleBlit(p, goat(k >= 40 && k < 46 ? 'bleat' : 'side0'), 262, 110, 2);
+      if (k >= 40 && k < 46) say(p, 282, 92, 'BLEAT!', 'gold');
+    }
+    caption(
+      p,
+      pal,
+      k < 17 ? ['Fainting cousins stand in', 'the narrow places.'] : k < 27 ? ['SPACE screams (one BREATH).', 'They keel over, stiff.'] : ['Walk right over them.', "(They're fine. Honest.)"],
+      'mixed',
+    );
+  };
+  const say = (p: Pixels, x: number, y: number, words: string, color: string) => outlined(p, Math.round(x - textWidth(words) / 2), y, words, c(color, 3), ink);
+  const first = new Pixels(W, H);
+  first.px.set(bg.px);
+  scene(first, 0);
+  r.fadeIn(first, 3);
+  for (let k = 0; k < 48; k++) r.frame(bg, (p) => scene(p, k));
+  return r.fli(SPEED);
+}

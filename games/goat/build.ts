@@ -21,7 +21,7 @@ import { buildBlocks } from './src/blocks/blocks';
 import { buildGoat, buildMonsters, type MonsterOptions } from './src/characters';
 import { demoRecording } from './src/demo';
 import { caravan, field, stable, town, ORIGIN, type Level } from './src/levels/maps';
-import { cardFli, storyFli, type Cast, type CardView } from './src/screens/cartoons';
+import { cardFli, faintFli, storyFli, type Cast, type CardView } from './src/screens/cartoons';
 import { buildScreens } from './src/screens/screens';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { creditsSong, levelSongs, lostSong, storySong, titleSong, wonSong } from './src/sound/song';
@@ -131,7 +131,8 @@ const cast: Cast = {
 disk.put('story.fli', storyFli(cast));
 cards.forEach((card, i) => disk.put(`card${i + 1}.fli`, cardFli(i, card, cast)));
 disk.put('story.lst', serializeSlideList([{ name: 'story.fli', pause: 1 }, { name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
-disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
+disk.put('faint.fli', faintFli(cast));
+disk.put('howto.lst', serializeSlideList([{ name: 'faint.fli', pause: 2 }, { name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'bardpic.gif', pause: 8 }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 disk.put('won.lst', serializeSlideList([{ name: 'won1.gif', pause: 10 }, { name: 'won2.gif', pause: 12 }, { name: 'won3.gif', pause: 10 }]));
 disk.put('story.txt', STORY);
