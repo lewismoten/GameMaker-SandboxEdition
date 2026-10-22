@@ -351,6 +351,17 @@
   height: 62dvh;
 }
 
+/* the page as wide as the sheet, scrolled, so its words stay readable */
+.rs-narrow .rs-page {
+  display: block;
+  overflow-y: auto;
+  container-type: inline-size;
+}
+
+.rs-narrow .rs-page .mpage {
+  width: 100%;
+}
+
 .rs-swap[hidden] {
   display: none;
 }
