@@ -24,6 +24,7 @@ export class PcExtras {
   private saving: Promise<void> = Promise.resolve();
   readonly ready: Promise<void>;
   onChange?: () => void;
+  private listeners = new Set<() => void>();
 
   constructor(
     private store: RecordStore<PcExtrasState> = idbRecord<PcExtrasState>('EXTRAS'),
@@ -71,6 +72,13 @@ export class PcExtras {
     this.persist();
   }
 
+  /** Told after every change (and once the stored record has arrived); returns the way to stop listening. */
+  listen(l: () => void): () => void {
+    this.listeners.add(l);
+    void this.ready.then(() => this.listeners.has(l) && l());
+    return () => void this.listeners.delete(l);
+  }
+
   /** Settles when every change so far is stored. */
   saved(): Promise<void> {
     return this.saving;
@@ -83,6 +91,7 @@ export class PcExtras {
       .then(() => this.store.save({ ...this.s }))
       .catch(() => undefined);
     this.onChange?.();
+    this.listeners.forEach((l) => l());
   }
 }
 
