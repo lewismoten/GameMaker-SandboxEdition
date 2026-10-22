@@ -36,15 +36,15 @@ const MIT = [
   'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.',
 ];
 
-/** The disk's LICENSE.TXT for a game. */
-export function licenseText(title: string): string {
+const SANDBOX_STORY = 'Sandbox Software, its address and phone numbers, and the registration fee are part of the story: there is nothing to pay.';
+
+/** The disk's LICENSE.TXT for a game; `story` says which parts are make-believe (Sandbox Software's, by default). */
+export function licenseText(title: string, story = SANDBOX_STORY): string {
   return pages([
     'THIS GAME IS FREE',
     '',
     ...wrap30(title.toUpperCase()),
-    ...wrap30(
-      'is a 2026 tribute to mid-90s shareware. Sandbox Software, its address and phone numbers, and the registration fee are part of the story: there is nothing to pay.',
-    ),
+    ...wrap30(`is a 2026 tribute to mid-90s shareware. ${story}`),
     '',
     ...wrap30('Made in 2026 by Lewis Moten, with AI help from Claude.'),
     '',
