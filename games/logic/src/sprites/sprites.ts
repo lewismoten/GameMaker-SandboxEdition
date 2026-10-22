@@ -237,9 +237,6 @@ function boomPic(big: boolean): Pixels {
   return p;
 }
 
-export const SPARK_PICS = ['sparkA', 'sparkB'];
-export const CTRL_PICS = ['ctrlA', 'ctrlB'];
-
 export function buildMonsterBlocks(): BlockSet {
   const mb = new BlockSet(100, true);
   const add = (name: string, px: Pixels, def: BlockDef = {}) => mb.add(name, px, def);
