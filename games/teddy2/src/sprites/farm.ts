@@ -1,0 +1,59 @@
+// Farm animals and things (monster block art, facing right): hens and a rooster (Gwinn
+// thinks they are all Doc Leo's rubber chicken), a pig, a cow chewing, crows, hay bales,
+// and the goat who eats rope as well.
+import type { Pixels } from '../../../kit/pixels';
+import { sprite } from '../art/draw';
+import { P } from '../art/pal';
+
+const c = (n: string, k: number) => P.c(n, k);
+const K: Record<string, number> = {
+  o: c('ink', 0),
+  w: c('fur', 2),
+  W: c('paint', 3),
+  g: c('stone', 2),
+  r: c('red', 2),
+  R: c('red', 3),
+  y: c('yellow', 2),
+  Y: c('yellow', 3),
+  p: c('pink', 2),
+  P: c('pink', 3),
+  b: c('wood', 1),
+  B: c('wood', 3),
+  h: c('hay', 2),
+  H: c('hay', 3),
+  q: c('hay', 1),
+  m: c('mud', 1),
+  M: c('mud', 2),
+  k: c('ink', 1),
+  e: c('green', 2),
+};
+const S = (rows: string[], dx?: number, dy?: number) => sprite(rows, K, dx, dy);
+
+export const FARM: Record<string, Pixels> = {
+  hen1: S(['......rr.....', '.....oRRo....', '....owwwoy...', '....owowwoyy.', '.o..owwwwo...', 'owo.owwwwo...', 'owwwwwwwwo...', 'owwwwwwwo....', '.owwwwwo.....', '..oyo.oy.....', '..y...y......'], undefined, 9),
+  hen2: S(['.............', '......rr.....', '.....oRRo....', '....owwwoy...', '.o..owowwoyy.', 'owo.owwwwo...', 'owwwwwwwwo...', 'owwwwwwwo....', '.owwwwwo.....', '...oyoy......', '...y..y......'], undefined, 9),
+  henFlap: S(['.o.......o...', 'owo.rr..owo..', 'owwoRRoowwo..', '.owwwwwwwo.yy', '..owowwwo....', '..owwwwo.....', '...owwo......', '...y..y......']),
+  rooster1: S(['.....rRr.....', '....oRRRo....', '...obbbboy...', '...obobbboyy.', 'ee..obbbr....', 'eeo.obbbbr...', 'oeeobbbbbo...', '.oeebbbbbo...', '..obbbbbo....', '...oyo.oy....', '...y...y.....'], undefined, 9),
+  rooster2: S(['.....rRr.....', '....oRRRo....', '...obbbboYY..', '...obobbboYYY', 'ee..obbbr.YY.', 'eeo.obbbbr...', 'oeeobbbbbo...', '.oeebbbbbo...', '..obbbbbo....', '...oyo.oy....', '...y...y.....'], undefined, 9),
+  pig1: S(['..............', '.oo......oo...', 'oPPoooooopPo..', 'oPPPPPPPPPPPo.', 'oPPPPPPPPPkPPo', 'oPPPPPPPPPPpPo', '.oPPPPPPPPPPpo', '..mmMmmmMmmmo.', '.mMmmMmmMmmMm.'], 3, 11),
+  pig2: S(['..............', '..o......oo...', '.oPoooooopPo..', 'oPPPPPPPPPPPo.', 'oPPPPPPPPPoPPo', 'oPPPPPPPPPPpPo', '.oPPPPPPPPPPpo', '..mMmmMmmmMmo.', '.MmmMmmMmmMmm.'], 3, 11),
+  goat1: S(['.........g.g..', '........gwgw..', '.......owwwwo.', 'o......owkwwwo', 'wo....owwwwwwo', 'owooooowwwwww.', 'owwwwwwwwo..ww', '.owwwwwwwo....', '.owwwwwwo.....', '.oo.oo.oo.....', '.oo.oo.oo.....'], undefined, 9),
+  goat2: S(['.........g.g..', '........gwgw..', '.......owwwwo.', 'o......owkwwwo', 'wo....owwwwwwo', 'owooooowwwwhwh', 'owwwwwwwwo..hh', '.owwwwwwwo....', '.owwwwwwo.....', 'oo..oo.oo.....', 'oo...o..oo....'], undefined, 9),
+  crow1: S(['...ooo....', '..ookoo...', '.oooooooy', 'ooooooo..', '.ooooo...', '..o.o....'], 5, 9),
+  crow2: S(['o.......o.', 'oo.ooo.oo.', '.oookooo..', '..oooooy..', '...ooo....'], 5, 8),
+  bale: S([
+    'qqqqqqqqqqqqqqqqqqqq',
+    'qhHhhHhhhHhhhHhhHhhq',
+    'qhhhhhhHhhhhhhhhhhhq',
+    'qbbbbbbbbbbbbbbbbbbq',
+    'qhhHhhhhhhhHhhhhHhhq',
+    'qhhhhhHhhhhhhhhhhhhq',
+    'qhHhhhhhhHhhhHhhhhhq',
+    'qhhhhhhhhhhhhhhhhhhq',
+    'qbbbbbbbbbbbbbbbbbbq',
+    'qhhhhHhhhhhHhhhhhHhq',
+    'qhHhhhhhhhhhhhhhhhhq',
+    'qqqqqqqqqqqqqqqqqqqq',
+  ]),
+  baleDown: S(['..h..H...h...h.H....', '.hHhh.hh.H.hh..hHh..', 'qhhhhHhhhhhqhhhhhHhq', 'qqqqqqqqqqqqqqqqqqqq']),
+};

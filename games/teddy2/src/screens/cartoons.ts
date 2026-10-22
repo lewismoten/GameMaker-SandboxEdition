@@ -202,6 +202,28 @@ export function wagonFli(): Uint8Array {
   return r.fli(6);
 }
 
+/** After the farm: the Fair's ride truck rumbles off, a brown head in the Ferris wheel car. */
+export function truckFli(): Uint8Array {
+  const bg = landscape(13, false);
+  bg.rect(0, 160, W, 40, c('asphalt', 1));
+  for (let x = 0; x < W; x += 40) bg.rect(x + 8, 176, 20, 3, c('yellow', 3));
+  const r = new Reel(bg);
+  for (let f = 0; f < 44; f++)
+    r.frame((p) => {
+      const x = -180 + f * 11;
+      const bob = f % 2;
+      p.rect(x, 140 + bob, 120, 10, c('metal', 1));
+      for (const wx of [x + 14, x + 100, x + 150]) p.disc(wx, 156, 9, c('ink', 1)).ring(wx, 156, 4, c('metal', 2));
+      p.rect(x + 120, 110 + bob, 46, 40, c('blue', 2)).rect(x + 140, 114 + bob, 22, 14, c('sky', 6));
+      // the Ferris wheel car, and Gwinn in it, ears up
+      p.rect(x + 30, 100 + bob, 60, 6, c('red', 2)).rect(x + 34, 106 + bob, 52, 34, c('yellow', 2)).rect(x + 34, 106 + bob, 52, 12, c('sky', 5));
+      scaleBlit(p, GWINN[f % 4 < 2 ? 'gwinn1' : 'gwinn2'].crop(0, 0, 20, 12), x + 40, 92 + bob, 2);
+      caption(p, f < 22 ? 'THE RIDES ARE GOING TO THE FAIR,' : 'AND SO IS GWINN.', 10);
+      if (f >= 22) caption(p, 'SHE CAN SMELL THE CORN DOGS.', 22);
+    });
+  return r.fli(5);
+}
+
 export function buildCartoons(): Record<string, Uint8Array> {
-  return { 'leo.fli': leoFli(), 'car.fli': carFli(), 'parade.fli': paradeFli(), 'cast.fli': castFli(), 'wagon.fli': wagonFli() };
+  return { 'leo.fli': leoFli(), 'car.fli': carFli(), 'parade.fli': paradeFli(), 'cast.fli': castFli(), 'wagon.fli': wagonFli(), 'truck.fli': truckFli() };
 }
