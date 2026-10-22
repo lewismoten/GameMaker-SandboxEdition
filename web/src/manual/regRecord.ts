@@ -66,7 +66,7 @@ export function regRecord(kind: 'page' | 'cover'): HTMLElement {
           { class: 'rr rr-page' },
           h('div', { class: 'rr-head' }, 'This copy is registered to'),
           h('dl', null, line('Name', 'name'), line('Serial number', undefined, String(SERIAL)), line('Registration number', 'number')),
-          h('div', { class: 'rr-small' }, 'Write in your name and registration number when the reply card comes back. GM REGISTER asks for both.'),
+          h('div', { class: 'rr-small' }, 'Write them in when the reply card comes back: GM REGISTER asks for both.'),
         )
       : h('div', { class: 'rr rr-cover' }, h('dl', null, line('Registered to', 'name'), line('Registration number', 'number')));
   write(el, registeredTo(pcExtras().reg));
