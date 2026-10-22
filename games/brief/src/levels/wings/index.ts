@@ -6,5 +6,6 @@ import { DOCKS } from './docks';
 import { YARD } from './yard';
 import { LIVING } from './living';
 import { AFTER } from './after';
+import { OTHER } from './other';
 
-export const WING_SPECS: WingSpec[] = [CLOWN, LAB, DOCKS, YARD, LIVING, AFTER];
+export const WING_SPECS: WingSpec[] = [CLOWN, LAB, DOCKS, YARD, LIVING, AFTER, OTHER];
