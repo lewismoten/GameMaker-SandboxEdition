@@ -8,7 +8,7 @@ import { loadScan, resample } from '../../../kit/photo';
 import { Pixels, rng } from '../../../kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
 import { Reel } from '../../../kit/reel';
-import { blob } from '../../../snowbound/src/art/draw';
+import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { drawHand, HAND_W } from '../art/hand';
@@ -270,7 +270,7 @@ export function howtoFli(cast: Cast): Uint8Array {
   blob(bg, 240, 150, 10, 10, pal.r('water'), 1, 3, 1.3);
   const s = (n: string) => sprite(cast.seed, n);
   const scene = (p: Pixels, k: number) => {
-    const bx = 150 - ((k * 4) % 80);
+    const bx = k < 20 ? 150 - k * 4 : 70 - (k - 20) * 4;
     // a beetle walks left; the seed walks right and hops it
     scaleBlit(p, sprite(cast.mons, `beetle${k % 2}`), bx + 40, 70, 2, true);
     let x = 20 + k * 5;
@@ -309,7 +309,9 @@ export function lostFli(cast: Cast): Uint8Array {
   const r = new Reel(pal.pal);
   const bg = gardenBackdrop(pal, 150, 11);
   // a grey evening
-  bg.map((_x, y, v) => (y < 136 ? pal.r('stone')[Math.min(5, 1 + Math.floor(y / 34))] : v));
+  const sky = new Pixels(W, 136);
+  gradient(sky, 0, 0, W, 136, pal.r('stone'), 1, 4);
+  bg.map((x, y, v) => (y < 136 && v !== pal.c('grass', 3) && v !== pal.c('grass', 2) ? sky.get(x, y) : v));
   mound(bg, pal, 160, 150, 40, 20);
   const scene = (p: Pixels, k: number) => {
     const sinking = Math.max(0, k - 24) * 2;
