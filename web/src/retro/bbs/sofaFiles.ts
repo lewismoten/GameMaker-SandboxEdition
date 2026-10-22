@@ -8,6 +8,7 @@ import { toCp437 } from '../text/cp437';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { gameDiz, isSofaFile } from './fileId';
+import { Pager, pageLabel } from './pager';
 import { Term, sleep } from './term';
 
 /** 14,400 bps with V.42bis, in characters per second, and how much faster than life it runs. */
@@ -26,24 +27,28 @@ export function sofaLibrary(catalog: CatalogEntry[]): CatalogEntry[] {
 
 export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
   const files = sofaLibrary(await h.catalog());
-  t.line();
-  t.line('|13          ──────────────── |15The Sofa |13─ |15File Library |13────────────────');
-  t.line('|07  Free for every caller. Uploaded by our own regulars.');
-  t.line();
-  if (!files.length) t.line('|08  (the library is empty tonight)');
-  for (const [i, g] of files.entries()) {
+  const entries = files.map((g, i) => {
     const got = h.downloads.has(g.id) ? '|10*' : ' ';
     const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
-    desc.forEach((l, j) =>
-      t.line(j === 0 ? `|14${String(i + 1).padStart(2)} ${got}|15${sofaZipName(g).padEnd(12)}|14${commas(sofaZipSize(g)).padStart(8)} |07${l}` : `${' '.repeat(25)}|${j === desc.length - 1 ? '08' : '07'}${l}`),
+    return desc.map((l, j) =>
+      j === 0 ? `|14${String(i + 1).padStart(2)} ${got}|15${sofaZipName(g).padEnd(12)}|14${commas(sofaZipSize(g)).padStart(8)} |07${l}` : `${' '.repeat(25)}|${j === desc.length - 1 ? '08' : '07'}${l}`,
     );
-  }
-  t.line();
-  t.line('|10*|07 = already downloaded to C:\\DOWNLOAD');
+  });
+  if (!files.length) entries.push(['|08  (the library is empty tonight)']);
+  const pager = new Pager(t, {
+    header: (p, n) => [
+      '|13          ──────────────── |15The Sofa |13─ |15File Library |13────────────────',
+      `|07  Free for every caller. Uploaded by our own regulars.${n > 1 ? `|08   ${pageLabel(p, n)}` : ''}`,
+    ],
+    entries,
+    footer: ['|10*|07 = already downloaded to C:\\DOWNLOAD'],
+  });
+  pager.show();
   for (;;) {
-    t.print('|11File # to read about, D# to download, X to exit: |15');
+    t.print(`|11File # to read about, D# to download, ${pager.keys()}|11X to exit: |15`);
     const answer = ((await readLine(h.screen, h.keys, [], 6, attr(15, 0))) ?? 'X').trim().toUpperCase();
     t.line();
+    if (pager.turn(answer)) continue;
     if (!answer || answer === 'X' || answer === 'Q') return;
     const dl = answer.startsWith('D');
     const g = files[Number(dl ? answer.slice(1) : answer) - 1];
