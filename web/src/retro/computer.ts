@@ -15,6 +15,7 @@ import { Project } from "../editor/core/project";
 import { editors, fileInfo } from "../editor/editors/registry";
 import { kindOf } from "../editor/core/project";
 import { Vga } from "../vga/shared/vga";
+import { PictureScreen } from "./view/picture";
 import { output } from "../audio/output";
 import { h, clear } from "../editor/core/ui";
 import { AUTOEXEC } from "./computer/setup";
@@ -163,6 +164,7 @@ export class Computer extends ComputerFolders {
       this.keys.enabled = true;
       this.screen.clear();
     } finally {
+      if (this.picture) this.leavePictureMode();
       this.busy = false;
       this.program = undefined;
       this.designer = undefined;
@@ -336,6 +338,30 @@ export class Computer extends ComputerFolders {
     clear(this.layer);
     this.screen.gameMakerColors();
     this.screen.clear(attr(7, 0));
+    this.keys.enabled = true;
+    this.keys.clear();
+    this.setMode("text");
+  }
+
+  private picture?: PictureScreen;
+
+  /** A 256-color graphics mode for a picture (the BBS's GIF viewer, VPIC). */
+  pictureMode(width: number, height: number): PictureScreen {
+    this.picture?.destroy();
+    this.keys.enabled = false;
+    const holder = h("div", { class: "crt-vga" });
+    clear(this.layer, holder);
+    this.picture = new PictureScreen(holder, width, height);
+    this.setMode("vga");
+    this.picture.canvas.focus();
+    return this.picture;
+  }
+
+  /** Back to text mode from a picture, the text screen as it was left. */
+  leavePictureMode(): void {
+    this.picture?.destroy();
+    this.picture = undefined;
+    clear(this.layer);
     this.keys.enabled = true;
     this.keys.clear();
     this.setMode("text");

@@ -7,6 +7,7 @@ import type { Project } from '../editor/core/project';
 import type { FileSystem } from './dos/vfs';
 import type { HdGame } from './dos/hardDisk';
 import type { WorkArea } from './dos/workArea';
+import type { PictureScreen } from './view/picture';
 
 /**
  * A ported designer with work open. The desk asks it whether anything is unsaved before
@@ -51,6 +52,10 @@ export interface RetroHost extends Ui {
   graphMode(): Vga;
   /** Back to text mode, with a blank screen. */
   textMode(): void;
+  /** Switches to a 256-color graphics mode (320x200 or 640x400) for showing a picture. */
+  pictureMode(width: number, height: number): PictureScreen;
+  /** Back to text mode from pictureMode, with the text screen as it was. */
+  leavePictureMode(): void;
   /** Shows a graphic editor on the monitor; resolves when the user leaves it. */
   openEditor(project: Project, file: string, program: string): Promise<void>;
   /** Plays a game on the monitor; resolves when the player quits. */
