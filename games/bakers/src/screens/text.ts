@@ -42,12 +42,12 @@ F2 shows what you carry. "Money" is ingredients. Ebenezer paid his debts in sass
 Wooden spoons open spoon latches. Swing doors only push one way. Belts and greased boards slide you. Panels rise and fall in turn. Dough rises. Ice thaws. Burners get hot.
 
 Some walls are not walls.`,
-  `KEEP HEALTHY
-Root beer floats: hit points.
-Pie: a life.
-Bottle caps: 50 points.
+  `STAYING ALIVE
+Anything that is not a mouse or an ant is one touch: Doc Leo plays dead and the room starts over. Five lives.
 
-Mousetraps bite. Rolling pins keep rolling. Lean on the walls, not the stove.
+Pie: a life.
+Root beer float: 250.
+Bottle cap: 50.
 
 F5 saves. F6 loads.`,
 ]);

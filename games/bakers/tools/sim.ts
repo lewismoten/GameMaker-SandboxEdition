@@ -108,6 +108,11 @@ export class GameSim {
     return name ? this.files.get(name) : undefined;
   }
 
+  /** Starts play in a scene as if its link `link` from scene `prev` had just been taken (a check's shortcut). */
+  warp(scene: number, prev: number, link: number): void {
+    this.enter(scene, prev, link);
+  }
+
   /** loadscene + StartSceneInits, as playScene does them. */
   private enter(scene: number, prev: number, link: number, again = false): void {
     this.scene = scene;
