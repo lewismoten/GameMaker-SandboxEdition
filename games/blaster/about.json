@@ -7,6 +7,7 @@
   "blurb": "GLITCH, a virus off a bad BBS download, is eating the family 486. Shrink down, launch the BLASTER nano-fighter and blast your way up the motherboard, through memory, the sound card and the hard disk into the CPU itself.",
   "exe": "BLASTER.EXE",
   "sound": "sb",
+  "egg": { "block": 149 },
   "label": {
     "background": "#0b1a10",
     "band": "#36e07a",
