@@ -266,14 +266,14 @@ export function wonScreen(): [Pixels, Uint8Array] {
   blob(p, 190, 152, 70, 8, SP.r('glow'), 1, 3);
   leoBig(p, 236, 70, 2, undefined, true);
   teddyBig(p, 'frontBeg', 128, 92, 3);
-  scaleBlit(p, gwinnSits(false, 1), 180, 90, 3);
+  scaleBlit(p, gwinnSits(false, 1), 176, 72, 4);
   // the blue ribbon on her collar
-  p.disc(212, 136, 6, c('blue', 2)).disc(212, 136, 3, c('gold', 2)).rect(208, 142, 3, 10, c('blue', 2)).rect(214, 142, 3, 10, c('blue', 2));
+  p.disc(206, 118, 6, c('blue', 2)).disc(206, 118, 3, c('gold', 2)).rect(202, 124, 3, 10, c('blue', 2)).rect(208, 124, 3, 10, c('blue', 2));
   const R = rng(4);
   for (let i = 0; i < 90; i++) p.rect(Math.floor(R() * W), Math.floor(R() * 150), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
   outlined(p, 110, 166, 'GWINN SAT!', c('yellow', 3), c('ink', 0), 2);
   // taped up beside the ribbon board: a real snapshot of Teddy and Gwinn
-  const shot = tone(resample(loadScan('gwinn'), 92, 0, [0.0, 0.05, 1, 0.95]), (v) => v.map((x) => (x - 128) * 1.15 + 124) as [number, number, number]);
+  const shot = tone(resample(loadScan('gwinn'), 92, 0, [0.0, 0.02, 1, 0.8]), (v) => v.map((x) => (x - 128) * 1.15 + 124) as [number, number, number]);
   const at = polaroid(p, 12, 22, shot.w, shot.h, { paper: c('cream', 3), edge: c('ink', 0), shadow: c('ink', 0), tape: c('yellow', 3) });
   micro(p, Math.round(at.cx - microWidth('TEDDY & GWINN') / 2), Math.round(at.cy - 2), 'TEDDY & GWINN', c('ink', 0));
   return [p, pastePhoto(p, SP.pal, shot, 12, 22).pal];
