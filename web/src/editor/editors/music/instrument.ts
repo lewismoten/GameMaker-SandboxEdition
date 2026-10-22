@@ -267,7 +267,7 @@ export class InstrumentPanel {
     const head = h(
       'div',
       { class: 'mus-inst-head' },
-      h('h3', null, instLabel(doc, p)),
+      h('h2', null, instLabel(doc, p)),
       h(
         'div',
         { class: 'toolbar' },
@@ -407,7 +407,7 @@ export class InstrumentPanel {
       return h(
         'div',
         { class: `mus-op${half === 1 && singleOp ? ' off' : ''}` },
-        h('h4', null, title),
+        h('h3', null, title),
         // two halves, side by side when the card is wide: the envelope, and the tone
         h('div', { class: 'mus-op-half' }, env, ...sliders),
         h(
