@@ -79,10 +79,6 @@
               "a": "That's the 6502's stack in page one. It fills from $01FF on the right, then overflows and empties all at once. Hug the left side and slip through, or wait for the pop."
             },
             {
-              "q": "Is anything else up in Memory Lane?",
-              "a": "Some say the felt-maker left something behind in a corner of memory, where a gold finger ought to be."
-            },
-            {
               "q": "The slugs follow me everywhere.",
               "a": "Leak Slugs never give up. They take three hits; shoot them as they come at you from ahead, because they are slower than you and can't catch up from behind."
             },
@@ -132,6 +128,38 @@
             {
               "q": "Is there a secret ending?",
               "a": "Reboot the PC clean and you'll see it. Then try for a better score!"
+            }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "Some say the felt-maker left something behind. Where?",
+              "a": "In a corner of memory nobody maps, where a gold finger ought to be. Memory Lane is a good place to start looking."
+            },
+            {
+              "q": "I flew all of Memory Lane and saw nothing.",
+              "a": "Don't rush the gate at the top of 2-A, The Address Bus. Just under it, the SIMM's edge at the far left is missing one gold finger. A tiny bug sits in the gap."
+            },
+            {
+              "q": "Just give me the coordinates.",
+              "a": "Fly to the top of 2-A and hug the left wall. In the row right under the gate, fly onto the floor beside the missing finger (the first open cell from the left). You drop into A Corner of Memory. Fly over the pad and press Enter to pick up the felt egg, then fly up and out.",
+              "sketch": {
+                "rows": [
+                  "",
+                  "|==========",
+                  "|X <<<",
+                  "|    ^",
+                  "|    ^",
+                  "|    @"
+                ],
+                "labels": [
+                  { "x": 2, "y": 0, "text": "THE GATE TO 2-B" },
+                  { "x": 7, "y": 2, "text": "NO GOLD FINGER" },
+                  { "x": 6, "y": 5, "text": "YOU" }
+                ]
+              }
             }
           ]
         }
