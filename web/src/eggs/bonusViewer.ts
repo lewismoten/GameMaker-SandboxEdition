@@ -24,7 +24,7 @@ export function tapMessage(taps: number): string {
 }
 
 type Shard = { pts: [number, number][]; cx: number; cy: number; vx: number; vy: number; spin: number };
-type Puff = { born: number; life: number; x: number; phase: number; sprite: number; behind: boolean };
+type Puff = { born: number; life: number; x: number; phase: number; sprite: number; behind: boolean; /** held at this point of its rise (reduced motion) */ at?: number };
 
 export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
   return new Promise((resolve) => {
@@ -71,7 +71,8 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     // ---- drawing ----
     const layout = (w: number, hh: number) => {
       if (rotten()) {
-        const eh = Math.min(hh * 0.66, (w * 0.62) / EGG_ASPECT);
+        // low in the picture, with room above for what rises off it
+        const eh = Math.min(hh * 0.56, (w * 0.56) / EGG_ASPECT);
         const ew = eh * EGG_ASPECT;
         return { x: (w - ew) / 2, y: hh * 0.92 - eh, w: ew, h: eh };
       }
@@ -193,14 +194,16 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
       const drawPuffs = (behind: boolean) => {
         for (const p of puffs) {
           if (p.behind !== behind) continue;
-          const age = clock - p.born;
-          const t = age / p.life;
+          const t = p.at ?? (clock - p.born) / p.life;
+          const age = t * p.life;
           if (t < 0 || t > 1) continue;
           const size = box.w * (0.32 + t * 0.95);
           const x = cx + p.x * box.w * 0.32 + Math.sin(age * 1.3 + p.phase) * box.w * 0.1 * t;
-          const y = box.y + box.h * 0.18 - t * box.h * 0.75;
+          const y = box.y + box.h * 0.16 - t * box.h * 0.52;
           g.save();
-          g.globalAlpha = Math.min(1, Math.sin(Math.PI * t) * 0.75 * stink);
+          // thinning out toward the top of the picture, so no cloud is cut off by its edge
+          const edge = Math.max(0, Math.min(1, (y - size * 0.4) / (hh * 0.12)));
+          g.globalAlpha = Math.min(1, Math.sin(Math.PI * t) * 1.05 * stink * edge);
           g.translate(x, y);
           g.rotate(p.phase + age * 0.15);
           g.drawImage(sprites[p.sprite], -size / 2, -size / 2, size, size * 0.8);
@@ -223,7 +226,7 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
       if (!rotten() || hatched || crumble) return;
       if (still) {
         // a haze that holds still
-        if (!puffs.length) puffs = [0.2, 0.45, 0.7, 0.35, 0.6].map((t, i) => ({ born: clock - t * 4, life: 1e9, x: [-0.6, 0.3, -0.1, 0.7, -0.4][i], phase: i, sprite: i % 4, behind: i % 2 === 0 }));
+        if (!puffs.length) puffs = [0.12, 0.3, 0.46, 0.22, 0.38].map((t, i) => ({ born: 0, life: 4, at: t, x: [-0.6, 0.3, -0.1, 0.7, -0.4][i], phase: i, sprite: i % 4, behind: i % 2 === 0 }));
         return;
       }
       puffs = puffs.filter((p) => clock - p.born < p.life);

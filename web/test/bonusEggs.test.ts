@@ -8,6 +8,7 @@ vi.mock('../src/project/storage', () => ({ loadSaveData: async (id: string) => s
 import { BONUS_EGGS, bonusKey, bonusStates, bonusStatus, isHatched, setHatched, TAPS } from '../src/eggs/bonus';
 import { EGGS } from '../src/eggs/eggs';
 import { eggStates, OVERRIDES_KEY } from '../src/eggs/eggState';
+import { tapMessage } from '../src/eggs/bonusViewer';
 
 const save = (inv: number[]) => new TextEncoder().encode(JSON.stringify({ version: 1, world: { ci: { inv, meter: [] } } }));
 const store = new Map<string, string>();
@@ -55,5 +56,12 @@ describe('the two eggs kept apart from the dozen', () => {
     expect(isHatched()).toBe(true);
     setHatched(false);
     expect(isHatched()).toBe(false);
+  });
+
+  it('says what each tap does', () => {
+    expect(tapMessage(1)).toMatch(/^Tap 1 of 13\. .*wobbles/);
+    expect(tapMessage(9)).toMatch(/glints/);
+    expect(tapMessage(13)).toMatch(/crumbles.*diamond heart/);
+    expect(new Set(Array.from({ length: 13 }, (_, i) => tapMessage(i + 1))).size).toBe(13);
   });
 });
