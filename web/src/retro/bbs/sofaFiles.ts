@@ -8,7 +8,7 @@ import { toCp437 } from '../text/cp437';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { gameDiz, isSofaFile } from './fileId';
-import { Pager, pageLabel } from './pager';
+import { dizSummary, Pager, pageLabel, readNumber, uploadDate } from './pager';
 import { Term, sleep } from './term';
 
 /** 14,400 bps with V.42bis, in characters per second, and how much faster than life it runs. */
@@ -41,17 +41,20 @@ export async function sofaFiles(t: Term, h: RetroHost): Promise<void> {
       '',
     ],
     entries: () => (files.length ? entries() : [['|08  (the library is empty tonight)']]),
+    // once the Bard's uploads outrun three pages: one line a file, V# for the whole DIZ
+    compact: () =>
+      files.map((g, i) => `|14${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? '|10*' : ' '}|15${sofaZipName(g).padEnd(12)}|14${commas(sofaZipSize(g)).padStart(9)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g))}`),
     footer: ['', '|10*|07 = already downloaded to C:\\DOWNLOAD'],
   });
   pager.show();
   for (;;) {
-    t.print(`|11File # to read about, D# to download, ${pager.keys()}|11X to exit: |15`);
+    t.print(`|11V# to view, D# to download, ${pager.keys()}|11X to exit: |15`);
     const answer = ((await readLine(h.screen, h.keys, [], 6, attr(15, 0))) ?? 'X').trim().toUpperCase();
     t.line();
     if (pager.turn(answer)) continue;
     if (!answer || answer === 'X' || answer === 'Q') return;
     const dl = answer.startsWith('D');
-    const g = files[Number(dl ? answer.slice(1) : answer) - 1];
+    const g = files[(dl ? Number(answer.slice(1)) : readNumber(answer)) - 1];
     if (!g) {
       t.line('|12No such file.');
       continue;
