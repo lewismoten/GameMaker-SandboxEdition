@@ -9,6 +9,7 @@
 import { h, clear, modal, toast } from '../core/ui';
 import { loadCatalog, type CatalogEntry } from '../../project/files';
 import { listProjects } from '../../project/storage';
+import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
 import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../../edition';
 import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type HomeGame } from './homeCards';
@@ -93,7 +94,12 @@ function showPath(path: string[]): void {
   if (next !== location.hash) history.replaceState(history.state, '', `${location.pathname}${location.search}${next}`);
 }
 
+/** The last home page's watch on the catalog (one home page at a time). */
+let unwatchHome: (() => void) | undefined;
+
 export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
+  unwatchHome?.();
+  unwatchHome = undefined;
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
   const libTitle = h('h2', { id: 'lib-title' });
   const libLead = h('p', { class: 'lead' });
@@ -473,4 +479,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   if (CATEGORIES.some((c) => c.id === tab)) current = tab as Category;
   if (q) search.value = q;
   await select(current);
+
+  // a secret game revealed or hidden again (the felt eggs, EGG.EXE): the collections, their
+  // counts and the game at the top follow without a reload
+  const page = root.querySelector<HTMLElement>('main.home')!;
+  const unwatch = (unwatchHome = onCatalogChanged(async () => {
+    if (!page.isConnected) return unwatch();
+    try {
+      catalog = await loadCatalog();
+    } catch {
+      return;
+    }
+    if (!page.isConnected) return;
+    for (const k of [...games.keys()]) if (k.startsWith('cd:') && !catalog.some((g) => `cd:${g.id}` === k)) games.delete(k);
+    const key = top.game?.key;
+    if (key && !findGame(key)) showStart();
+    await select(current);
+  }));
 }
