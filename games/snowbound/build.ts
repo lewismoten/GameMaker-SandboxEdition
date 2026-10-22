@@ -182,11 +182,14 @@ console.log(`Total: $${totalMoney} before the mall lot snows over`);
 // Gale Street again (no monsters, no song) only for its intro, the page about what lay in
 // the hollow, and starts the kid on a link down to the top of Jamie Street, so it is gone
 // on the first tick and a crash on the sled run replays Jamie Street, not this page.
+// PLAYGAME still fades its map in and out around that tick, so it loads dark.pal (all
+// black) and Gale Street never flashes up between the page and Jamie Street.
 {
+  disk.put('dark.pal', serializePalette(new Uint8Array(768)));
   const pines = emptyScene(ADVTYPE);
   pines.desc = 'The Pines';
   pines.pos = { x: 90, y: 170 };
-  pines.files = ['morning.pal', 'gale.map', 'snow.bbl', '', '', 'kid.chr', 'kid.cbl', 'snow.snd', '', 'woods.lst', ...new Array(10).fill('')];
+  pines.files = ['dark.pal', 'gale.map', 'snow.bbl', '', '', 'kid.chr', 'kid.cbl', 'snow.snd', '', 'woods.lst', ...new Array(10).fill('')];
   const gale = game.scenes[2].links.find((l) => l.toScene === WOODS_SCENE)!;
   const jamie = built[1].start;
   pines.links = Array.from({ length: MAXSCENELINKS }, (_, k) =>
