@@ -1,7 +1,8 @@
-// cast.fli: "Starring...", the cast in close-up before the credits, painted big in the
-// screens' palette: Teddy grinning (his right ear always a little taller), Teddy and Gwinn in
-// the grass, Doc Leo the hobo clown and his rubber chicken, the CitiCar plugged in at a
-// charging station, and the Dog House library at dusk.
+// cast.fli: "Starring...", the cast in close-up before the credits, drawn big in the
+// screens' palette over the family's photos (the portraits are pixel art in castTeddy,
+// castGwinn, castLeo and castCar; see castArt.ts): Teddy grinning, Teddy and Gwinn in the
+// grass (then her zoomies), Doc Leo the hobo clown with his rubber chicken in his fist, the
+// CitiCar THE CHEZ plugged in at a charging station, and the Dog House library at dusk.
 //
 // The last two scenes animate the 1995 way, by palette cycling: the pictures stay still and
 // only the colors move (current running down the charging cable, fireflies blinking), so
