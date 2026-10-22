@@ -3,7 +3,7 @@
 Game-Maker: Sandbox Edition in the browser. Two pages load this code:
 
 - `index.html` → [`main.ts`](main.ts): the site. It opens on the **1994 desk** (`desk/`, a
-  look-alike DOS PC running the ported designers) or **today's web** interface
+  simulated DOS PC running the ported designers; no DOS or x86 code runs) or **today's web** interface
   (`editor/`), whichever the visitor used last (`localStorage` `gm-ui`).
   [`urlState.ts`](urlState.ts) keeps the place in the hash (`#/`, `#/game/cd:nebula`,
   `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/desk`), so a reload or a shared
@@ -33,7 +33,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`eggs/`](eggs) | The felt eggs hidden in the Sandbox games: which are found (`eggState.ts`, from saved games), the shadow box on the desk, its viewer, and `EGG.EXE`. |
 | [`editor/`](editor) | Today's web interface (see below). |
 | [`desk/`](desk) | The 1994 desk: `desk.ts` lays out the scene (`stage.ts` scales it to the window); `pc/` the case, CRT, keyboard, mouse tray, modem, speakers with the Sound Blaster switch, and capture card; `boxes/` the retail boxes and shelf; `disks/` the disk box; `mug/` the BBS mug; `room/` the window, poster, clipping, clock, door, the wall phone (`room/phone/`) and props. |
-| [`retro/`](retro) | What runs on the desk's PC: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound); `gm.ts` (GM.EXE's menus). |
+| [`retro/`](retro) | What runs on the desk's PC: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound); `gm.ts` (GM.EXE's menus); `hacks/` (the BBS's utilities, SAVEHACK, BACKUP, GMCRACK and the rest: debugging tools for registration modes, saved games and backups, dressed as 1990s scene programs). |
 | [`vga/`](vga) | Game-Maker's eight designers ported from their C source (PALCHOS, BLOCEDIT, MONEDIT, MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR). One file per `.EXE` at the top (each exports `program`); a large designer's parts are in a folder of the same name, and `shared/` has the VGA screen, block routines and Game-Maker's look. |
 | [`manual/`](manual) | The Owner's Guide (desk), the web Guide, and each original game's printed manual and box contents (`printables/`). |
 | [`seo/`](seo) | Page titles, descriptions and JSON-LD for the site and its game pages. |
