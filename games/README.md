@@ -337,7 +337,7 @@ the music is a kazoo, an island-strummed ukulele and Carl himself as a buzzing o
 **The Great Dairy Reckoning of 3:17 A.M.** (`reckoning`). The Bard of Bizarre's spoken monologue (from
 Lewis's own struggle: lactose intolerant, loves cheesecake), shareware from The Sofa BBS (`"series":
 "bizarre"`). A side-on platformer in four acts. Out of bed without waking her: the noisy things on
-the floor (a creaky board, a squeaky toy, the Lego) are air that costs dignity once and then goes
+the floor (a creaky board, a squeaky toy, the toy blocks) are air that costs dignity once and then goes
 quiet (a hurt holds the man still, so a floor that always hurt would hold him there), the dogs asleep
 are solid. Up the open fridge's glass shelves (ledges) past the dairy come to life for seven sticks
 of celery (counter 20): the cheesecake only lets him near with all seven, takes them, and is eaten.

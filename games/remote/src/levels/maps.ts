@@ -89,7 +89,7 @@ const ROOM: Record<string, string> = {
   ',': 'carpet2',
   r: 'rug',
   f: 'rugEdge',
-  L: 'lego',
+  L: 'toyBlock',
   P: 'paper',
   W: 'panel',
   '#': 'wallTop',

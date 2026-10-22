@@ -65,11 +65,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   rugEdge.rect(0, 0, 20, 12, c('rug', 1)).rect(0, 10, 20, 2, c('red', 1));
   for (let x = 1; x < 20; x += 2) rugEdge.line(x, 12, x, 15, c('wall', 3));
   book.add('rugEdge', rugEdge);
-  // a Lego brick, left on the carpet: OW (and it's gone)
-  const lego = carpet(4);
-  lego.rect(6, 8, 8, 5, c('red', 2)).rect(6, 12, 8, 1, c('red', 0));
-  for (const x of [7, 10]) lego.rect(x, 7, 2, 2, c('red', 3));
-  book.add('lego', lego, { hp: -6, touch: 'carpet' });
+  // a toy building block, left on the carpet: OW (and it's gone)
+  const toyBlock = carpet(4);
+  toyBlock.rect(6, 8, 8, 5, c('red', 2)).rect(6, 12, 8, 1, c('red', 0));
+  for (const x of [7, 10]) toyBlock.rect(x, 7, 2, 2, c('red', 3));
+  book.add('toyBlock', toyBlock, { hp: -6, touch: 'carpet' });
 
   // ---------- walls ----------
   const wallpaper = (seed: number) => {
