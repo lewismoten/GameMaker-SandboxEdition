@@ -116,7 +116,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
       await s.files.stream?.need(demoNeeds(s.files.get(g.gam ?? '')));
       return s.files;
     }),
-    hasDemo: async () => (await demoPreview()).catalogHasDemo(g),
+    hasDemo: async () => (await import('../../media/demoKind')).catalogHasDemo(g), // from the .gam: no player needed yet
   };
 }
 
