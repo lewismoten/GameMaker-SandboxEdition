@@ -228,38 +228,6 @@
   font-weight: 700;
 }
 
-/* ---- license card */
-.pp-gml {
-  padding: 5cqw 6cqw;
-  font:
-    3.1cqw/1.4 'Times New Roman',
-    serif;
-}
-
-.pp-gml h3 {
-  margin: 0 0 2cqw;
-  border-bottom: 0.5cqw solid #18150f;
-  font:
-    900 5cqw Arial,
-    sans-serif;
-  letter-spacing: 0.2em;
-}
-
-.pp-gml p {
-  margin: 0 0 2cqw;
-}
-
-.gml-mit {
-  font:
-    2.3cqw/1.35 'Courier New',
-    monospace;
-}
-
-.gml-small {
-  font-size: 2.3cqw;
-  font-style: italic;
-}
-
 @media print {
   .pp-gmk,
   .pp-gmp {

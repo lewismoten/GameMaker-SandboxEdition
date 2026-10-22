@@ -1,7 +1,8 @@
-// What's in the Game-Maker: Sandbox Edition box besides the Owner's Guide and the CD: a
-// registration card, a key card for Game-Maker's own design tools (from the original help
-// screens), Sandbox Software's catalog, the BBS ad, a poster of games made with Game-Maker,
-// a license card and a sticker sheet that mixes every Sandbox game's heroes.
+// What's in the Game-Maker: Sandbox Edition box besides the Owner's Guide and the bonus-games
+// CD: the program disks, a quick reference card for Game-Maker's own design tools (from the
+// original help screens), the inserts in gmInserts.ts (keyboard template, map grid pad,
+// registration card, license, customer support), Sandbox Software's catalog, the BBS ad, a
+// poster of games made with Game-Maker and a sticker sheet that mixes every Sandbox game's heroes.
 import './gmItems.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
@@ -9,7 +10,8 @@ import type { CatalogEntry } from '../../project/files';
 import { sandboxShots } from '../../desk/boxes/gmShots';
 import type { BoxItem } from './viewer';
 import { BBS_PHONE, sandboxBanner, sandboxLogo, sheet, shotCache, type PrintContext, type Sheet } from './kit';
-import { bbsAd, catalog, postcard } from './gen';
+import { bbsAd, catalog } from './gen';
+import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, supportCard } from './gmInserts';
 import { PLAYGAME_KEYS } from './keys';
 import { mixedStickers, stickerScreen, type MixedSticker } from './stickers';
 
@@ -108,7 +110,7 @@ async function keyCard(): Promise<Sheet[]> {
     8.5,
     5.5,
     'gmk',
-    h('header', { class: 'gmk-head' }, h('b', null, 'GAME-MAKER'), h('span', null, 'Designer’s Key Card'), h('em', null, SHORT)),
+    h('header', { class: 'gmk-head' }, h('b', null, 'GAME-MAKER'), h('span', null, 'Quick Reference Card'), h('em', null, SHORT)),
     h('div', { class: 'gmk-cols' }, col(DESIGNER_KEYS.slice(0, half)), col(DESIGNER_KEYS.slice(half))),
     h('p', { class: 'gmk-foot' }, 'From the help screens of Game-Maker 3.0 by Recreational Software Designs. Press the HELP! button in any tool for more.'),
   );
@@ -183,25 +185,6 @@ async function poster(): Promise<Sheet[]> {
   ];
 }
 
-async function license(): Promise<Sheet[]> {
-  return [
-    sheet(
-      6,
-      4,
-      'gml',
-      h('h3', null, 'LICENSE'),
-      h('p', null, 'Game-Maker 3.0 ©\u00a01991–1994 Recreational Software Designs. Its author, Andy Stone, released the source code under the MIT License in 2014.'),
-      h('p', null, `${PRODUCT} is a modified fork of it, MIT licensed too. The games you make are yours to share however you like.`),
-      h(
-        'p',
-        { class: 'gml-mit' },
-        'Permission is hereby granted, free of charge, to any person obtaining a copy of this software… THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND.',
-      ),
-      h('p', { class: 'gml-small' }, 'Sandbox Software, its address and the BBS phone numbers are make-believe.'),
-    ),
-  ];
-}
-
 /** Every Sandbox game's first hero or monster sticker, Game-Maker's own, and the BBS. */
 function gmStickerSpecs(family: CatalogEntry[]): MixedSticker[] {
   const own: MixedSticker[] = family.flatMap((g) => {
@@ -224,12 +207,16 @@ function gmStickerSpecs(family: CatalogEntry[]): MixedSticker[] {
 export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
   const ctx = contextFor(GM_ENTRY, family);
   return [
-    { id: 'gmkeys', title: 'Designer’s key card', note: 'Keys for every design tool', icon: '⌨️', render: keyCard },
-    { id: 'postcard', title: 'Registration card', note: 'Postcard, already marked paid', icon: '📮', render: () => postcard(ctx) },
-    { id: 'poster', title: 'Poster', note: 'Games made with Game-Maker', icon: '🖼️', render: poster },
+    { id: 'disks', title: 'Program disks', note: 'Two 3½" disks in their sleeve', icon: '💾', render: diskSleeve },
+    { id: 'gmkeys', title: 'Quick reference card', note: 'Keys for every design tool', icon: '⌨️', render: keyCard },
+    { id: 'template', title: 'Keyboard template', note: 'Sits above the function keys', icon: '🎹', render: keyTemplate },
+    { id: 'mapgrid', title: 'Map grid pad', note: 'Graph paper for planning maps', icon: '📐', render: mapGrid },
+    { id: 'regcard', title: 'Registration card', note: 'Business reply mail', icon: '📮', render: registrationCard },
+    { id: 'license', title: 'License agreement', note: 'MIT License', icon: '📜', render: licenseSheet },
+    { id: 'support', title: 'Customer support', note: 'Phone, fax, BBS, Internet; troubleshooting', icon: '☎️', render: supportCard },
     { id: 'catalog', title: 'Sandbox Software catalog', note: 'Games made with Game-Maker', icon: '🗂️', render: () => catalog(ctx) },
+    { id: 'poster', title: 'Poster', note: 'Games made with Game-Maker', icon: '🖼️', render: poster },
     { id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
-    { id: 'license', title: 'License card', note: 'MIT License', icon: '📜', render: license },
     {
       id: 'stickers',
       title: 'Sticker sheet',
