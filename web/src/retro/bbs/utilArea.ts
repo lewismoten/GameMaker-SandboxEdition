@@ -10,6 +10,7 @@ import { toCp437 } from '../text/cp437';
 import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
+import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
 
 export interface UtilityFile {
   name: string;
@@ -39,6 +40,16 @@ export const UTILITIES: BbsUtility[] = [
     files: [
       { name: 'GMCRACK.EXE', size: 42_667, run: { kind: 'gmcrack' } },
       { name: 'GMCRACK.NFO', size: 0, text: GMCRACK_NFO },
+    ],
+  },
+  {
+    id: 'savehack',
+    zip: 'SAVEHACK.ZIP',
+    bytes: 24_918,
+    diz: SAVEHACK_DIZ,
+    files: [
+      { name: 'SAVEHACK.EXE', size: 38_214, run: { kind: 'savehack' } },
+      { name: 'SAVEHACK.DOC', size: 0, text: SAVEHACK_DOC },
     ],
   },
 ];
@@ -117,6 +128,6 @@ async function download(t: Term, h: RetroHost, u: BbsUtility): Promise<void> {
   }
   h.downloads.add(u.id);
   const exe = u.files.find((f) => f.run)?.name.replace(/\.EXE$/i, '');
-  t.line(`|07Type |15CD \\DOWNLOAD\\${dir}|07${exe ? ` then |15${exe}|07` : ''} after you log off. Read the |15.NFO|07 first!`);
+  t.line(`|07Type |15CD \\DOWNLOAD\\${dir}|07${exe ? ` then |15${exe}|07` : ''} after you log off.${u.files.some((f) => /\.NFO$/i.test(f.name)) ? ' Read the |15.NFO|07 first!' : ''}`);
   t.line();
 }

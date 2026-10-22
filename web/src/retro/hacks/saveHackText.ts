@@ -1,0 +1,42 @@
+// SAVEHACK.ZIP's words: its FILE_ID.DIZ (10 lines of at most 45 columns, as the BBS's file
+// listing shows it) and SAVEHACK.DOC, the author's readme. vesuvian is Lewis's BBS handle,
+// short for Vesuvian Doppelganger, a Magic: The Gathering card.
+
+export const SAVEHACK_DIZ: string[] = [
+  'SAVEHACK v1.2a * SAVE GAME EDITOR       [1/1]',
+  'by vesuvian, 1995                   Freeware',
+  '---------------------------------------------',
+  'Edit Game-Maker saved games: score, lives,',
+  'hit points, money, counters and inventory.',
+  'Max all stats with one key! Range checks so',
+  'your save won\'t roll over. Backs up first.',
+  '   Stuck on a level? Not anymore. ;-)',
+  '---------------------------------------------',
+  'Uploaded by vesuvian * THE -= SANDBOX =- BBS',
+];
+
+export const SAVEHACK_DOC: string[] = [
+  'SAVEHACK v1.2a - DOS Save Game Editor',
+  'Written by: vesuvian',
+  '',
+  'WHAT IT DOES',
+  '  Edits the saved games (GAME0.SAV - GAME9.SAV) and the high-score',
+  '  table (.HIS) of games made with Game-Maker.',
+  '',
+  'HOW TO USE IT',
+  '  Type SAVEHACK. Pick a game, then a saved game or the high scores.',
+  '  Arrow keys move, Enter changes a value, Esc goes back.',
+  '    M     Max all stats (as high as the game handles well)',
+  '    U     Unlimited (counters and sequence uses)',
+  '    Del   Empty an inventory slot',
+  '    F2    Save',
+  '',
+  'IS IT SAFE?',
+  '  SAVEHACK checks every number against what the game can hold and',
+  '  warns you before a value that may overflow. Before its first change',
+  '  to a game it backs up your saves ("Original"); pick Restore original',
+  '  saves to put them back. BACKUP /L lists the backups too.',
+  '',
+  'Greetings to PIXEL WIZARD, THE BLOCKSMITH, NIGHT OWL and all SYSOPs.',
+  'Call THE -= S A N D B O X =- BBS, 412-555-SAND.',
+];

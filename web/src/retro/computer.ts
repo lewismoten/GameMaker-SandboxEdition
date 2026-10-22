@@ -162,6 +162,12 @@ export class Computer extends ComputerFolders {
         case "gmcrack":
           await (await import("./hacks/gmcrack")).runGmCrack(this, _args);
           break;
+        case "savehack":
+          await (await import("./hacks/saveHack")).runSaveHack(this);
+          break;
+        case "backup":
+          await (await import("./hacks/backupExe")).runBackup(this, _args);
+          break;
         case "egg":
           await (await import("../eggs/eggExe")).runEggExe(this);
           break;

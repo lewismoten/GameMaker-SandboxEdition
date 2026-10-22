@@ -328,6 +328,7 @@ export class Shell {
       'PLAYGAME    Play a Game-Maker game',
       'TERMINAL    Dial BBSes to download shareware',
       'VPIC        View a GIF or JPEG picture (VPIC \\IMAGES\\TEDDY.GIF)',
+      'BACKUP      Back up and restore saved games (BACKUP /? for help)',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);

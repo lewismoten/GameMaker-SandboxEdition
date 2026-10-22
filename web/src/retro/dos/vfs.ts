@@ -25,6 +25,8 @@ export type ProgramRef =
   | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string; /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string; /** GMCRACK patched this .EXE: its intro instead of the author's notice. */ cracked?: string }
   | { kind: 'install' }
   | { kind: 'gmcrack' }
+  | { kind: 'savehack' }
+  | { kind: 'backup' }
   | { kind: 'batch'; lines: string[] };
 
 export interface Drive {
