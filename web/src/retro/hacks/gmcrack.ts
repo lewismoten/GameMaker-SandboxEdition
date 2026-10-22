@@ -2,8 +2,9 @@
 // doctor" for Game-Maker SE on the desk PC. It registers Game-Maker (writes C:\GM\PLAYGAME.REG
 // with a name and key), unregisters it (spoils the key, so CHK.EXE asks the manual again), has
 // a KEYGEN that works the key out as CHK.C checks it, and "cracks" shareware in C:\DOWNLOAD:
-// GAME.EXE is kept as GAME.BAK and the patched GAME.EXE skips the author's notice, showing the
-// group's intro instead (uncrack puts the .BAK back). It touches nothing but this pretend PC.
+// GAME.EXE is kept as GAME.BAK and the "patched" GAME.EXE shows the group's intro before the
+// game, as cracked games of the day did (uncrack puts the .BAK back). The game itself is not
+// changed, and stays shareware (play only). It touches nothing but this pretend PC.
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { attr, COLS, ROWS } from '../text/textScreen';
@@ -242,11 +243,11 @@ async function crack(h: RetroHost): Promise<void> {
   clearArea(h);
   put(h, 4, TOP, `|14CRACKING |15${exe} |07(${g.title.slice(0, 48)})`);
   await step(h, TOP + 2, `Copying ${exe} to ${bakName(exe)}`);
-  await step(h, TOP + 3, 'Looking for the shareware notice', `|10found at ${hex(at & 0xffff, 4)}:${hex((at >>> 16) & 0xfff0, 4)}`, 900);
+  await step(h, TOP + 3, 'Looking for the entry point', `|10found at ${hex(at & 0xffff, 4)}:${hex((at >>> 16) & 0xfff0, 4)}`, 900);
   await step(h, TOP + 4, `Patching 75 ${hex(at & 0x7f, 2)} -> EB ${hex(at & 0x7f, 2)}`);
   await step(h, TOP + 5, `Adding the ${GROUP} intro`);
   pcExtras().setCracked(g.id, true);
-  put(h, 4, TOP + 7, `|10Cracked! |07${exe} skips the author's notice now.`);
+  put(h, 4, TOP + 7, `|10Cracked! |07${exe} starts with the ${GROUP} intro now.`);
   put(h, 4, TOP + 8, `|07Enjoy it? |14REGISTER it with its author|07${g.price && !/free/i.test(g.price) ? ` (${g.price})` : ''}!`);
   await anyKey(h);
 }
@@ -271,7 +272,7 @@ async function uncrack(h: RetroHost): Promise<void> {
   await step(h, TOP + 2, `Deleting the patched ${exe}`);
   await step(h, TOP + 3, `Renaming ${bakName(exe)} to ${exe}`);
   pcExtras().setCracked(g.id, false);
-  put(h, 4, TOP + 5, `|10Done. |07${exe} is as its author made it, notice and all.`);
+  put(h, 4, TOP + 5, `|10Done. |07${exe} is as its author made it.`);
   await anyKey(h);
 }
 
@@ -333,7 +334,7 @@ export async function cracktro(h: RetroHost, title: string, exe: string): Promis
     clearArea(h);
     centered(s, TOP + 1, `|15${toCp437(title).slice(0, 60)}`);
     centered(s, TOP + 3, `|07${exe.toUpperCase()} cracked by |14${GROUP}|07 with GMCRACK v${VERSION}`);
-    centered(s, TOP + 5, '|11The notice is gone, but the author still needs you:');
+    centered(s, TOP + 5, '|11Cracked for fun on this desk PC. The author still needs you:');
     centered(s, TOP + 6, '|15REGISTER the shareware you enjoy!');
     centered(s, TOP + 8, '|08(GMCRACK [5] puts the original back)');
     hint(h, 'Press any key to play');

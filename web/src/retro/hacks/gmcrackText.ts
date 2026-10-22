@@ -1,6 +1,6 @@
 // GMCRACK's words: the .NFO and FILE_ID.DIZ in GMCRACK.ZIP, and the fictional scene group
 // behind it. All of it is make-believe for the desk PC: GMCRACK only changes files on this
-// simulated computer (C:\GM\PLAYGAME.REG, and which shareware in C:\DOWNLOAD skips its notice).
+// simulated computer (C:\GM\PLAYGAME.REG, and which shareware in C:\DOWNLOAD shows its intro).
 import { DIZ_WIDTH, SYSOP_HANDLE } from '../bbs/fileId';
 
 export const GROUP = 'DiGiTAL DUNE';
@@ -23,8 +23,8 @@ export const GMCRACK_DIZ: string[] = [
   '-'.repeat(DIZ_WIDTH),
   'Register or unregister Game-Maker SE 3.00,',
   'KEYGEN for any name (valid per CHK.EXE),',
-  'and crack the nag out of shareware games',
-  'in C:\\DOWNLOAD (and put it back!). Read the',
+  'and add a crack intro to shareware games',
+  'in C:\\DOWNLOAD (and take it out!). Read the',
   'GMCRACK.NFO first. For this desk PC only.',
   '-'.repeat(DIZ_WIDTH),
   `Uploaded by ${SYSOP_HANDLE} to THE SANDBOX BBS`,
@@ -57,8 +57,8 @@ export const GMCRACK_NFO: string[] = [
   '  [1] REGiSTER ... writes PLAYGAME.REG with a name and a key.',
   '  [2] UNREGiSTER . keeps the name but spoils the key: hello, manual check!',
   '  [3] KEYGEN ..... works out the key CHK.EXE wants for any name.',
-  '  [4] CRACK ...... patches a shareware game in C:\\DOWNLOAD so it skips the',
-  '                   author\'s notice (the original is kept as <GAME>.BAK).',
+  '  [4] CRACK ...... gives a shareware game in C:\\DOWNLOAD our intro screen',
+  '                   (the original is kept as <GAME>.BAK).',
   '  [5] UNCRACK .... puts the .BAK back.  Download a game again: also original.',
   '',
   '  From DOS:   GMCRACK /K <name>   prints a key.     GMCRACK /?   help.',

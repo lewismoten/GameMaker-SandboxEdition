@@ -25,7 +25,7 @@ export function gameDownloadNodes(g: CatalogEntry, date: Date, run: ProgramRef &
   if (g.exe) {
     if (cracked === undefined) nodes.push(file(g.exe, EXE_SIZE, { date, run }));
     else {
-      // the patched .EXE: the group's intro instead of the author's notice
+      // the "patched" .EXE: the group's intro before the game
       nodes.push(file(g.exe, EXE_SIZE + INTRO_SIZE, { date: deskDate(cracked), run: { ...run, notice: undefined, cracked: g.exe.toUpperCase() } }));
       nodes.push(file(bakName(g.exe), EXE_SIZE, { date }));
     }
