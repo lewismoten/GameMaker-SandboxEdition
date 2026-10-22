@@ -13,6 +13,7 @@ import { download } from '../editor/core/ui';
 import { prefetchWhenIdle } from '../prefetch';
 import { soundBlaster } from './computer/soundBlaster';
 import type { Program } from '../vga/shared/designer';
+import { chk, registeredBox } from './gmReg/chk';
 
 /**
  * Designers ported to VGA graphics: they run their own menus, as the .EXEs did. Each .EXE is
@@ -73,10 +74,14 @@ function drawBars(h: RetroHost, bar: string): void {
   h.screen.write(0, 1, BARATTR, bar);
 }
 
+/** CHK.EXE's "Registered To:" box, left under the menus until a program clears the screen. */
+let registeredTo: string | undefined;
+
 function drawDesktop(h: RetroHost): void {
   const s = h.screen;
   s.gameMakerColors();
   s.fill(0, 2, 79, 24, attr(7, 0));
+  if (registeredTo !== undefined) registeredBox(h, registeredTo);
   const d = h.disk();
   const status = ` Game area: ${pathText(gameArea(h))}${d ? `     Drive A: ${d.disk.title}` : ''} `;
   s.write(0, 24, attr(8, 0), status.padEnd(80).slice(0, 80));
@@ -88,11 +93,21 @@ async function help(h: RetroHost, name: string): Promise<void> {
   else await errorBox(h, `Can't find ${name.toUpperCase()}!`, '(C)ontinue');
 }
 
-/** GM: runs until Quit. */
-export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'main'): Promise<void> {
+/** GM: runs until Quit. `args`: GM's command line (GM REGISTER). */
+export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'main', args: string[] = []): Promise<void> {
   // the designers, in Design-bar order, fetched ahead while the menu waits
   prefetchWhenIdle(TOOLS.map((t) => PORTED[t.exe]).filter((load) => !!load), 1500);
   h.screen.cursorVisible = false;
+  registeredTo = undefined;
+  if (start === 'main') {
+    // GM.EXE ran CHK.EXE first: the registration, or the manual check
+    registeredTo = await chk(h, args);
+    if (registeredTo === undefined) {
+      h.screen.resetPalette();
+      h.screen.clear();
+      return;
+    }
+  }
   drawDesktop(h);
   let ch = start === 'design' ? 2 : 1;
   if (start === 'design') await design(h);
@@ -102,12 +117,14 @@ export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'mai
     ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
     switch (ch) {
       case 1:
+        registeredTo = undefined; // PLAYGAME.EXE's own screen
         await playgame(h);
         break;
       case 2:
         await design(h);
         break;
       case 3:
+        registeredTo = undefined; // UTILITY.EXE's own screen
         await utilities(h);
         break;
       case 4:
@@ -117,6 +134,7 @@ export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'mai
         await help(h, 'gmmain.hlp');
         break;
       default:
+        registeredTo = undefined;
         h.screen.resetPalette();
         h.screen.clear();
         return;
@@ -141,6 +159,7 @@ async function design(h: RetroHost): Promise<void> {
 
 /** Picks a file in a game folder (or makes a new one), then shows the designer. */
 export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
+  registeredTo = undefined; // each designer was its own .EXE, in graphics mode
   drawDesktop(h);
   const ported = PORTED[tool.exe];
   if (ported) {

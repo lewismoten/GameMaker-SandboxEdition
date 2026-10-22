@@ -131,7 +131,7 @@ export class Computer extends ComputerFolders {
         case "gm":
           this.opts.onDriveAccess?.(this.shell.drive);
           // Game-Maker and its designers, the BBS: each loads when first run (see gm.ts)
-          await (await import("./gm")).runGameMaker(this);
+          await (await import("./gm")).runGameMaker(this, "main", _args);
           break;
         case "playgame":
           this.screen.gameMakerColors();
