@@ -168,7 +168,7 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
       layers: ['wall', 'pool'],
       base: (x, y) => {
         const h = cellHash(x, y, 9);
-        return h < 0.06 ? 'floor2' : h < 0.4 ? 'floor1' : 'floor';
+        return h < 0.4 ? 'floor1' : 'floor';
       },
       scenes: [{ id: s.theme, desc: s.desc, owns: () => true, extra, cmf: s.theme === 'keep' ? 'keep.cmf' : 'dungeon.cmf' }],
       mbl: `${s.theme}.mbl`,
