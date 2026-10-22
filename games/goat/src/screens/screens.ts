@@ -5,7 +5,7 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { blob, gradient, shadeAt } from '../../../snowbound/src/art/draw';
-import { centered, micro, outlined, text, textWidth } from '../../../snowbound/src/art/font';
+import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { AUTHOR, CARDS } from './text';
@@ -59,7 +59,6 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
   // ---------------- the publisher's logo
   {
     const p = new Pixels(W, H, c('purple', 0));
-    for (let y = 0; y < H; y++) for (let xx = 0; xx < W; xx++) p.set(xx, y, shadeAt(pal.r('purple'), 0, 1, 1 - Math.hypot(xx - 160, y - 100) / 190, xx, y));
     const text1 = 'presents';
     outlined(p, 160 - textWidth(text1) / 2, 186, text1, c('cloth', 3), ink);
     const logo = resample(loadScan('bardlogo'), 168, 0, [0.04, 0.02, 0.96, 0.98]);
@@ -93,8 +92,7 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     outlined(p, 160 - textWidth('FROM THE LEFT') / 2, 30, 'FROM THE LEFT', c('gold', 3), ink);
     p.rect(56, 92, 208, 90, c('wood', 0)).rect(58, 94, 204, 86, c('parch', 1));
     p.rect(62, 98, 196, 78, c('parch', 4)).frame(62, 98, 196, 78, c('parch', 2));
-    micro(p, 160 - 2 * 'WHAT WILL IT BE, GOAT?'.length, 104, 'WHAT WILL IT BE, GOAT?', c('brown', 1));
-    scaleBlit(p, side, 8, 136, 3);
+    scaleBlit(p, side, 258, 136, 3, true);
     save('menu.gif', p);
   }
 

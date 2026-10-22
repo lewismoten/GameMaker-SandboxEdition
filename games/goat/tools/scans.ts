@@ -14,8 +14,8 @@ const OUT = resolve(__dirname, '../../kit/scans');
 
 const SCANS: { name: string; file: string; size: number; matte: string }[] = [
   { name: 'goatcover', file: 'third-goat-from-the-left-cover-art.png', size: 256, matte: 'black' },
-  { name: 'bardlogo', file: 'bard-of-bizarre-logo_900x900_buffer.png', size: 200, matte: '0x2a1236' },
-  { name: 'docleo', file: 'the bard of bizarre.png', size: 160, matte: '0x2a1236' },
+  { name: 'bardlogo', file: 'bard-of-bizarre-logo_900x900_buffer.png', size: 200, matte: '0x341446' },
+  { name: 'docleo', file: 'the bard of bizarre.png', size: 160, matte: '0x341446' },
 ];
 
 for (const s of SCANS) {
