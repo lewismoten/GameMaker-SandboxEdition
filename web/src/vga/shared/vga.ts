@@ -6,6 +6,7 @@
 import { FONT_CP437 } from '../../retro/text/cp437';
 import { ProgramAborted } from '../../retro/text/textInput';
 import { Keyboard, type TypedKey } from '../../input/keyboard';
+import { listenDeskMouse, Mickeys } from '../../input/deskMouse';
 
 export const SIZEX = 320;
 export const SIZEY = 200;
@@ -72,6 +73,9 @@ export class Vga {
   private cursorShown = false;
   private listeners: [EventTarget, string, EventListener][] = [];
   private attachTimer: ReturnType<typeof setTimeout>;
+  /** The ball mouse on the desk rolls the pointer as well. */
+  private offDeskMouse: () => void;
+  private mickeys = new Mickeys();
 
   constructor(readonly holder: HTMLElement) {
     this.canvas = document.createElement('canvas');
@@ -110,6 +114,12 @@ export class Vga {
     });
     on(this.canvas, 'pointerup', move);
     on(this.canvas, 'contextmenu', (e) => e.preventDefault());
+    this.offDeskMouse = listenDeskMouse((dx, dy, buttons) => {
+      const [x, y] = this.mickeys.take(dx, dy);
+      this.goto(this.mx + x, this.my + y);
+      this.buttons = buttons & 3;
+      this.pressed |= this.buttons;
+    });
     // Not during the key press that started the graphics (it would be read twice).
     this.attachTimer = setTimeout(() => this.keyboard.attach(window));
     const loop = () => {
@@ -127,6 +137,7 @@ export class Vga {
     this.observer.disconnect();
     removeEventListener('resize', this.onResize);
     this.keyboard.detach();
+    this.offDeskMouse();
     for (const [t, type, f] of this.listeners) t.removeEventListener(type, f);
     this.canvas.remove();
   }

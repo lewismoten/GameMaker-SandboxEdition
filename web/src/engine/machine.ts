@@ -4,6 +4,7 @@
 // busy-waited, these await animation frames, so every wait is also a screen refresh.
 import { Screen } from '../gfx/screen';
 import { Keyboard, type TypedKey } from '../input/keyboard';
+import { listenDeskMouse, Mickeys } from '../input/deskMouse';
 import { AudioEngine } from '../audio/engine';
 import { GameFiles } from '../project/files';
 import { PALETTE_SIZE } from '../formats/palette';
@@ -34,6 +35,8 @@ export class Machine {
   aborted = false;
   private frameWaiters: (() => void)[] = [];
   private raf = 0;
+  /** The ball mouse on the desk moves the pointer and clicks too. */
+  private offDeskMouse: () => void;
 
   constructor(canvas: HTMLCanvasElement, files: GameFiles, audio = new AudioEngine()) {
     this.screen = new Screen(canvas);
@@ -41,6 +44,18 @@ export class Machine {
     this.audio = audio;
     canvas.addEventListener('pointerdown', this.onPointer);
     canvas.addEventListener('pointermove', this.onMove);
+    const mickeys = new Mickeys();
+    let held = 0;
+    this.offDeskMouse = listenDeskMouse((dx, dy, buttons) => {
+      const [x, y] = mickeys.take(dx, dy);
+      this.pointer.x = Math.max(0, Math.min(319, this.pointer.x + x));
+      this.pointer.y = Math.max(0, Math.min(199, this.pointer.y + y));
+      if (buttons & ~held) {
+        this.pointer.clicks++;
+        void this.audio.resume();
+      }
+      held = buttons;
+    });
     const loop = () => {
       this.screen.present();
       const w = this.frameWaiters;
@@ -72,6 +87,7 @@ export class Machine {
     this.audio.stopAll();
     this.screen.canvas.removeEventListener('pointerdown', this.onPointer);
     this.screen.canvas.removeEventListener('pointermove', this.onMove);
+    this.offDeskMouse();
     const w = this.frameWaiters;
     this.frameWaiters = [];
     w.forEach((f) => f());
