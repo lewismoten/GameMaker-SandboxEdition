@@ -37,7 +37,10 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <h3>Shareware</h3>
     <p>Games other people made and shared as shareware. They are play-only here, in their
     shareware form. <b>Shareware notice</b> shows the author’s terms. If you enjoy one,
-    register it with its author.</p>`,
+    register it with its author.</p>
+    <h3>Bizarre</h3>
+    <p>Games made from the songs of The Bard of Bizarre. They are listed with the shareware
+    until there are four or more, then get a tab of their own.</p>`,
   ],
   [
     'workspace',
@@ -164,9 +167,33 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     III: his blog writing, photos he provided, and conversations about his interests,
     experiences and hobbies. Lewis directed each game and played it as it came together, and
     his feedback shaped every one. Teddy, Gwinn and Doc Leo appear as themselves.</p>
+    <h3>The Bard of Bizarre</h3>
+    <p>The Bard of Bizarre is the name Lewis “Lewie” Moten III gives his Christian songs,
+    performed as his hobo clown, Doc Leo. Some of those songs have become games, shareware
+    “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>. Once there are four or
+    more, they get a Bizarre collection of their own on the home page.</p>
+    <p>The words are Lewis’s. The song recordings and cover art were made with Riffusion (now
+    Google Flow Music), the Bard’s logo with DeepAI, and the photo of Doc Leo is Lewis’s own.
+    Each game’s music and sounds are drawn from its song’s recording; its code, pictures and
+    levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
+    <h3>The desk PC, its BBSes and utilities</h3>
+    <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
+    and The Sofa BBS, and the programs on it (SAVEHACK, BACKUP, GMCRACK and its KEYGEN, EGG,
+    the GM30 release, PKUNZIP and VPIC look-alikes), was written for this project by
+    <b>Claude Opus 5.5</b> under Lewis’s direction. Their in-story authors are part of the
+    fiction: “vesuvian” is Lewis’s eight-letter BBS handle, from the Magic: The Gathering card
+    Vesuvian Doppelganger, and “DiGiTAL DUNE” is a made-up group.</p>
+    <p>They recreate a 1990s PC as nostalgia and history: dialing BBSes, trading shareware, and
+    the warez and cracking scene that was part of that world. They act only on the pretend PC
+    and this site’s own data. Nothing here cracks or generates keys for any real product:
+    GMCRACK’s key is worked out the way Game-Maker’s own code, now MIT licensed, checks it, and
+    the “warez” are this project’s own free files. They are here to show what that era felt
+    like, for testing and for fun, not to encourage software piracy. Please support the
+    authors of the software you use.</p>
     <p>GIF is a service mark of CompuServe; FLI is Autodesk Animator's format; Sound
     Blaster, CMF and VOC belong to Creative Technology; the OPL2 chip is Yamaha's. The CD's
-    sample and shareware games belong to their authors. Sandbox Software, its BBS and the
+    sample and shareware games belong to their authors. PKUNZIP was PKWARE's and VPIC Bob
+    Montgomery's; the ones on the desk are look-alikes. Sandbox Software, its BBS and the
     desk's hardware brands are made up.</p>
     <p>The full credits, history and license are in
     <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
