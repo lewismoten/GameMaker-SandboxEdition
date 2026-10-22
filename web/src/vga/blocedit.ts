@@ -62,8 +62,8 @@ import {
   COLPWID,
   inBox,
   trunc,
-  bytes2pal,
 } from './blocedit/layout';
+import { bytes2pal } from './shared/vga';
 import { BlockTransfer } from './blocedit/transfer';
 
 /** The whole Block Designer: the text menu, then the VGA edit screen. */

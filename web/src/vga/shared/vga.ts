@@ -17,6 +17,10 @@ export interface RGBdata {
   blue: number;
 }
 
+/** A .pal file's bytes as the DAC's 256 colors, 6 bits each (a short file leaves the rest black). */
+export const bytes2pal = (b: Uint8Array): RGBdata[] =>
+  Array.from({ length: 256 }, (_, i) => ({ red: (b[i * 3] ?? 0) & 63, green: (b[i * 3 + 1] ?? 0) & 63, blue: (b[i * 3 + 2] ?? 0) & 63 }));
+
 /** The standard Microsoft mouse arrow: 1 = black outline, 2 = white. Hot spot (1, 0). */
 const ARROW = [
   '1           ',

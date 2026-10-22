@@ -2,7 +2,7 @@
 // code/GM/BLOCEDIT.C), plus the small helpers the Block Designer's layers share.
 import { BLEN, type Block } from '../../formats/blocks';
 import { LASTMON } from '../../formats/monster';
-import { type RGBdata, SIZEX } from '../shared/vga';
+import { SIZEX } from '../shared/vga';
 
 export const TRANSCOL = 255; // The value that is transparent in _pic fns
 export const GLEN = 6; // Number of blocks in len in width of the grid
@@ -189,9 +189,6 @@ export function isqrt(x: number): number {
   if (Math.abs(squ - x) <= Math.abs(oldsqu - x)) return guess;
   return guess - 1;
 }
-
-export const bytes2pal = (b: Uint8Array): RGBdata[] =>
-  Array.from({ length: 256 }, (_, i) => ({ red: (b[i * 3] ?? 0) & 63, green: (b[i * 3 + 1] ?? 0) & 63, blue: (b[i * 3 + 2] ?? 0) & 63 }));
 
 /** A block as initalldata leaves it. */
 export function newBlock(l1: number): Block {
