@@ -2,6 +2,7 @@
 // behind text pages, and the endings. All drawn in code with the same ramps as the blocks.
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { encodeGif } from '../../../../web/src/formats/gif';
+import { matchColor } from '../../../../web/src/formats/palette';
 import { Pixels, rng } from '../../../kit/pixels';
 import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
 import { blob, gradient, shadeAt } from '../art/draw';
@@ -362,23 +363,37 @@ export function buildScreens(
   };
   save('howto.gif', pad('HOW TO PLAY'));
   save('credits.gif', pad('CREDITS'));
-  save('loadgame.gif', pad('LOAD GAME'));
-  save('savegame.gif', pad('SAVE GAME'));
+  // Load and save: PLAYGAME writes the names in yellow (x 80, y 40 + 14i), which vanishes on
+  // paper, so every slot is a strip of dark label tape.
+  const slots = (heading: string) => {
+    const p = pad(heading);
+    for (let i = 0; i < 10; i++) p.rect(75, 37 + i * 14, 170, 13, c('nightsky', 1)).rect(75, 49 + i * 14, 170, 1, c('nightsky', 0));
+    return p;
+  };
+  save('loadgame.gif', slots('LOAD GAME'));
+  save('savegame.gif', slots('SAVE GAME'));
   save('storybg.gif', pad('THE STORY'));
   // found in the pines: the felted egg, four times life size, beside the text
   const woods = pad('IN THE PINES');
-  blob(woods, 254, 134, 24, 4, pal.r('snow'), 2, 4);
-  scaleBlit(woods, feltEgg(c), 214, 58, 4);
-  save('woods.gif', woods);
+  blob(woods, 262, 134, 24, 4, pal.r('snow'), 2, 4);
+  scaleBlit(woods, feltEgg(c), 222, 58, 4);
+  // The Pines loads dark.pal (all black), where PLAYGAME's "MORE..." red matches index 0;
+  // this page doesn't paint index 0, so its palette makes that entry red.
+  if (woods.px.includes(0)) throw new Error('woods.gif paints palette index 0');
+  const woodsPal = pal.pal.slice();
+  const red = matchColor(pal.pal, 63, 10, 10);
+  woodsPal.set(pal.pal.subarray(red * 3, red * 3 + 3), 0);
+  save('woods.gif', woods, woodsPal);
   // the high scores: PLAYGAME prints "Top Ten Scores" in red at y 0, the rows from y 27 and
   // "Hit any key" at y 192 (HISCOREL.C), so the page runs off the top and bottom of the
   // screen for all of that to sit on paper, and the title is small, between the red line and the first row
   const hs = new Pixels(W, H);
   gradient(hs, 0, 0, W, H, pal.r('nightsky'), 2, 6);
   snowfall(hs, pal, 21, 90);
-  hs.rect(24, 0, 272, H, c('paper', 4)).rect(24, 0, 1, H, c('paper', 1)).rect(295, 0, 1, H, c('paper', 1));
-  hs.rect(34, 0, 1, H, c('coat', 3));
-  for (let y = 14; y < 196; y += 18) hs.rect(27, y, 4, 4, c('nightsky', 3));
+  // (the rows start at x 20, so the page is wider here: holes and the red line left of them)
+  hs.rect(4, 0, 308, H, c('paper', 4)).rect(4, 0, 1, H, c('paper', 1)).rect(311, 0, 1, H, c('paper', 1));
+  hs.rect(15, 0, 1, H, c('coat', 3));
+  for (let y = 14; y < 196; y += 18) hs.rect(7, y, 4, 4, c('nightsky', 3));
   centered(hs, 11, 'THE COFFEE CAN', c('menublue', 1));
   const rule = textWidth('THE COFFEE CAN', 1) + 16;
   hs.rect(160 - rule / 2, 21, rule, 1, c('menublue', 2));
