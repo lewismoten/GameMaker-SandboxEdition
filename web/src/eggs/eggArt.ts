@@ -143,8 +143,8 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
       }
       break;
     case 'ruled':
-      // a notebook page: pale ruled lines, and a red margin down the front and back
-      g.strokeStyle = look.band;
+      // a notebook page: pale blue ruled lines, and a red margin down the front and back
+      g.strokeStyle = '#a9c0dc';
       g.lineWidth = 1.5;
       for (let y = TEX_H * 0.2; y < TEX_H * 0.98; y += 11) {
         if (Math.abs(y - waist) < 14) continue;
@@ -375,41 +375,36 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       g.arc(0, -14, 7, 0, Math.PI * 2);
       g.fill();
       break;
-    case 'book':
-      // an open book, its pages fanned
-      blob(() => {
-        g.moveTo(0, -12);
-        g.quadraticCurveTo(-12, -20, -26, -16);
-        g.lineTo(-26, 18);
-        g.quadraticCurveTo(-12, 14, 0, 22);
-        g.quadraticCurveTo(12, 14, 26, 18);
-        g.lineTo(26, -16);
-        g.quadraticCurveTo(12, -20, 0, -12);
-        g.closePath();
-      });
-      g.fillStyle = '#fbf6ea';
-      for (const s of [-1, 1]) {
+    case 'bookworm': {
+      // a green bookworm curled in a hump, in red reading glasses
+      const segs: [number, number][] = [[-22, 14], [-14, 6], [-6, -2], [2, -4], [10, 2], [16, 10]];
+      for (const [sx, sy] of segs) blob(() => g.ellipse(sx, sy, 7, 7, 0, 0, Math.PI * 2));
+      blob(() => g.ellipse(20, -6, 9, 9, 0, 0, Math.PI * 2));
+      g.strokeStyle = '#d23a2e';
+      g.lineWidth = 1.8;
+      g.beginPath();
+      g.arc(17, -7, 3.2, 0, Math.PI * 2);
+      g.moveTo(26.2, -7);
+      g.arc(23, -7, 3.2, 0, Math.PI * 2);
+      g.moveTo(20.2, -7);
+      g.lineTo(19.8, -7);
+      g.stroke();
+      g.fillStyle = '#1a1a1a';
+      for (const ex of [17, 23]) {
         g.beginPath();
-        g.moveTo(0, -9);
-        g.quadraticCurveTo(s * 11, -16, s * 22, -13);
-        g.lineTo(s * 22, 14);
-        g.quadraticCurveTo(s * 11, 11, 0, 18);
-        g.closePath();
+        g.arc(ex, -7, 1.2, 0, Math.PI * 2);
         g.fill();
       }
-      g.strokeStyle = '#8a8070';
+      g.strokeStyle = '#1a1a1a';
       g.lineWidth = 1.4;
       g.beginPath();
-      for (const s of [-1, 1])
-        for (let i = 0; i < 4; i++) {
-          g.moveTo(s * 4, -6 + i * 6);
-          g.lineTo(s * 18, -8 + i * 6);
-        }
+      g.arc(20, -2, 3, 0.3, Math.PI - 0.3);
       g.stroke();
-      // the ribbon bookmark
-      g.fillStyle = '#d6a53a';
-      g.fillRect(-2, 16, 4, 14);
+      // the ribbon bookmark under it
+      g.fillStyle = '#c8241e';
+      g.fillRect(-4, 18, 5, 14);
       break;
+    }
     case 'bone':
       blob(() => {
         g.moveTo(-18, -5);

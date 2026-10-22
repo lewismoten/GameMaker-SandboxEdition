@@ -31,7 +31,7 @@ export interface EggLook {
   patch: string;
   thread: string;
   pattern: 'zigzag' | 'dots' | 'stars' | 'snowflakes' | 'scallops' | 'checks' | 'waves' | 'circuit' | 'ruled' | 'pawprints' | 'grid' | 'diamonds';
-  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'book' | 'bone' | 'cube' | 'sword';
+  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword';
 }
 
 export interface Egg {
@@ -63,11 +63,11 @@ export const EGGS: readonly Egg[] = [
   {
     game: 'brief',
     gameTitle: 'KEEP IT BRIEF! The Tiny Pockets Library',
-    name: 'The Bookmark Egg',
-    description: 'Cream felt ruled with pale blue lines like a notebook page, a red margin line down one side, a little red felt book appliquéd open on its belly, and a satin ribbon bookmark hanging from the top.',
-    credits: ['Every word by Lewis "Lewie" Moten III, exactly one hundred at a time', 'Shelved and counted by Claude Opus 5.5'],
-    lore: 'Pressed between two pages like a flower: a recipe card, exactly one hundred words, nearly all crossed out. One line survives: "A baker\'s dozen is thirteen. Never trust a cook who stops at twelve."',
-    look: { felt: '#f6efdc', band: '#8fb3d9', patch: '#c8241e', thread: '#2a1408', pattern: 'ruled', motif: 'book' },
+    name: 'The Bookworm Egg',
+    description: 'Cream felt ruled with pale lines like a notebook page and blanket-stitched in gold, a green felt bookworm in red reading glasses curled around its middle, and a red ribbon bookmark hanging from the top.',
+    credits: ['Felted by Lewis "Lewie" Moten III, who felted a Doc Leo clown egg first', 'Shelved by Claude Opus 5.5', 'Chewed (slightly) by Teddy, hidden by Gwinn, guarded by Doc Leo (facing the wrong way)'],
+    lore: 'Tucked under the ribbon, filed under 641.5 (cookbooks): a recipe card, stained brown and still a little fizzy. "ROOT BEER. Serves a baker\'s dozen. For ingredient 13, see other side." The other side is overdue.',
+    look: { felt: '#f6efdc', band: '#d6a53a', patch: '#4f9a3a', thread: '#2a1408', pattern: 'ruled', motif: 'bookworm' },
     detect: { block: 149 },
   },
   {
