@@ -765,6 +765,18 @@ a.button.with-ico {
   }
 }
 
+/* five tabs in a narrow row: no icons, tighter, so each name and count fits */
+@container library (min-width: 560px) and (max-width: 780px) {
+  .lib-cat {
+    gap: 5px;
+    padding: 5px 6px;
+  }
+
+  .lib-cat .ico {
+    display: none;
+  }
+}
+
 /* narrower still: the tabs two to a row */
 @container library (max-width: 559px) {
   .lib-cats {
