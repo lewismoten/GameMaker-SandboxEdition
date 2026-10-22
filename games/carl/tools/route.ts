@@ -226,4 +226,18 @@ export async function theWindow(bot: Bot): Promise<void> {
   });
 }
 
+/** 5. Carl has seen things: fourteen hourglasses (twenty-eight hours), past the frog, the dragonflies and the spider, to the clock. */
+export async function theWild(bot: Bot): Promise<void> {
+  expect(bot, 6, 'the wild');
+  await carefully(bot, 'the grass and the pond', 12, () => go(bot, [[4, 3], [8, 5], [15, 2], [17, 7], [22, 9]], 'hourglasses by the pond'));
+  await carefully(bot, 'under the dragonfly', 12, () => go(bot, [[27, 4], [31, 7], [35, 9]], 'hourglasses by the mushrooms'));
+  await carefully(bot, 'by the spider', 12, () => go(bot, [[38, 4], [43, 7], [47, 2]], 'hourglasses by the web'));
+  await carefully(bot, 'the desert', 12, () => go(bot, [[51, 7], [55, 9], [58, 4]], 'hourglasses by Brother Camel'));
+  need(bot, HOURS, 24, 'hours');
+  await carefully(bot, 'the clock', 12, async () => {
+    await go(bot, [[60, 6]], 'the clock');
+    await leave(bot, bot.fly(62, 6, 'broken time'), 'the clock');
+  });
+}
+
 export const counts = { snacks: (b: Bot) => count(b, SNACKS), smiles: (b: Bot) => count(b, SMILES), ears: (b: Bot) => count(b, EARS), hours: (b: Bot) => count(b, HOURS) };
