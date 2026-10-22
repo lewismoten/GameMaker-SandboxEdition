@@ -115,8 +115,10 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     m.screen.write(12 * 8, 13 * 8, blue, game.scenes[0].desc);
     ['Play', 'Read Instructions', 'Read Storyline', 'See Credits', 'See Highest Scores', 'Quit'].forEach((t, i) => m.screen.write(80, (15 + i) * 8, blue, t));
 
-    // 30 s idle timeout: GVertMenu then returns NumChoices+1 (7), the demo case.
-    choice = await gVertMenu(m, 70, 15 * 8 + 1, 8, 6, blue, 30, choice);
+    // 30 s idle timeout: GVertMenu then returns NumChoices+1 (7), the demo case. Keys
+    // typed while the menu faded in stay for it, as in DOS (only the first went to the
+    // menu picture's PauseTimeKey(0)).
+    choice = await gVertMenu(m, 70, 15 * 8 + 1, 8, 6, blue, 30, choice, false);
     switch (choice) {
       case 1:
         menuScreen = undefined;

@@ -9,12 +9,19 @@ import { PALETTE_SIZE } from '../formats/palette';
  * GVertMenu: a marker box left of `count` rows (`dy` pixels apart starting at y).
  * Returns 1..count, 0 for Esc, count+1 when idle for `idleSeconds`. The C timed the
  * idle wait in game ticks (IdleTime*18 of TimerCounter); this uses wall-clock time.
+ *
+ * The C cleared only the mouse buttons (mouclearbut), not the keyboard: a key typed
+ * while the menu picture faded in (after the one ShowGraphic's PauseTimeKey(0) took)
+ * was the menu's. `flushKeys` false keeps that; the default clears keys too, for menus
+ * opened mid-level, where this port's keyboard also queues the keys gameplay used
+ * (PLAYGAME's own keyboard interrupt kept those out of the BIOS buffer).
  */
-export async function gVertMenu(m: Machine, x: number, y: number, dy: number, count: number, color: number, idleSeconds = Infinity, choice = 1): Promise<number> {
+export async function gVertMenu(m: Machine, x: number, y: number, dy: number, count: number, color: number, idleSeconds = Infinity, choice = 1, flushKeys = true): Promise<number> {
   // Rows are 1-based, so the marker for row c sits at y - 8 + c*dy, as in the C.
   const rowY = (c: number) => y - 8 + c * dy;
   let prev = m.screen.getCol(x, rowY(choice));
-  m.flushKeys();
+  if (flushKeys) m.flushKeys();
+  else m.takeClick();
   let idleSince = m.now();
   for (;;) {
     m.screen.boxFill(x, rowY(choice), x + 5, rowY(choice) + 4, color);
