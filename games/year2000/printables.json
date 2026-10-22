@@ -76,11 +76,7 @@
               "q": "How do I get on the Moon Shuttle?",
               "a": "Walk up the boarding ramp right under the rocket. The booth on the launch pad only takes you back to the hall."
             },
-            { "q": "I'm hurt. Is there help?", "a": "Booth 1 goes to Grandma's condo in Florida. She gives a big hug that heals you." },
-            {
-              "q": "What's in the closet next to the launch pad?",
-              "a": "Some say the felt-maker left something behind. In the future not every brick is a brick, and some things you have to pick up yourself (P)."
-            }
+            { "q": "I'm hurt. Is there help?", "a": "Booth 1 goes to Grandma's condo in Florida. She gives a big hug that heals you." }
           ]
         },
         {
@@ -110,6 +106,42 @@
               "a": "Walk into the table with 20 pages to turn them in, then walk into the COVER table behind it with the cover page. Then step up to the podium!"
             },
             { "q": "The volcano projects keep erupting.", "a": "The lava blobs wander slowly. Keep moving, and grab a food pill if you get singed." }
+          ]
+        },
+        {
+          "head": "The Felt Egg",
+          "hints": [
+            {
+              "q": "What's in the closet next to the launch pad?",
+              "a": "Some say the felt-maker left something behind. In the future not every brick is a brick."
+            },
+            {
+              "q": "The closet has no door!",
+              "a": "It doesn't need one. Look along the Moon Shuttle pad's right wall for a brick with teal light glowing through its mortar."
+            },
+            {
+              "q": "Beam me the blueprints.",
+              "a": "On the Moon Shuttle pad, get into the row of the boarding ramp, on the ramp's right side (don't step on the ramp itself, or you're off to the Moon). Walk right into the glowing brick: you walk straight through it. Press P to pick up the felt egg, then walk on into the rocket hatch at the far end.",
+              "sketch": {
+                "rows": [
+                  "-----------",
+                  "  ==      |",
+                  "  ==      ------|",
+                  "  ==      |     |",
+                  "   = >>>>>: X   o",
+                  "     ^    |     |",
+                  "     @    ------|",
+                  "          |",
+                  "-----------"
+                ],
+                "labels": [
+                  { "x": 4, "y": 1, "text": "MOON SHUTTLE" },
+                  { "x": 0, "y": 4, "text": "RAMP" },
+                  { "x": 11, "y": 1, "text": "THE CLOSET" },
+                  { "x": 17, "y": 4, "text": "HATCH" }
+                ]
+              }
+            }
           ]
         }
       ]
