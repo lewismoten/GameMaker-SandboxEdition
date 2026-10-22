@@ -4,7 +4,7 @@
 // -= S A N D B O X =- BBS hands out comes with one: the shareware games (C:\DOWNLOAD\<GAME>),
 // the GIF Gallery's pictures (C:\IMAGES keeps the newest picture's, as each unzip wrote over
 // the last) and the Warez area's releases, which a courier signs instead.
-import type { CatalogEntry } from '../../project/files';
+import { isSandboxGame, type CatalogEntry } from '../../project/files';
 import type { GalleryFile } from './gallery';
 
 export const DIZ_WIDTH = 45;
@@ -16,6 +16,10 @@ export const SYSOP_HANDLE = 'vesuvian';
 
 const RULE = '-'.repeat(DIZ_WIDTH);
 const SIGNOFF = 'Uploaded by %s to THE SANDBOX BBS';
+
+/** The Sofa's own upload: a game from ../games under another publisher (The Bard of Bizarre's). */
+export const SOFA_UPLOADER = 'DOC LEO';
+export const isSofaFile = (g: CatalogEntry) => !!g.original && !isSandboxGame(g);
 
 /** The last line of a Warez release's DIZ: who couriered it to which board (the scene's way). */
 export const warezSignoff = (courier = SYSOP_HANDLE): string => `Couriered by ${courier} * SANDBOX BBS WHQ`;
@@ -108,6 +112,7 @@ const SUMMARY: Record<string, string> = {
   parsec3d: 'Find the power crystal of XON (say "zon") past a dangerous alien race.',
   signhdg: 'Hedrick H. Hogg must bring one hundred crumpets to tea with the Queen.',
   zoom: "A spell gone wrong makes A-J Bear's cousin Zoom super. As told by A-J himself.",
+  goat: 'The holy night, from the goat nobody painted. Eat anything, scream your fainting cousins stiff, find your place.',
 };
 
 const TAGLINES = [
@@ -125,6 +130,7 @@ const TAGLINES = [
 
 /** Who uploaded it: the SysOp his own Sandbox Software games, callers the rest. */
 export function uploader(g: CatalogEntry): string {
+  if (isSofaFile(g)) return SOFA_UPLOADER;
   return g.original ? SYSOP_HANDLE : pick(['MONSTER MASH', 'SAND CASTLE'], g.id);
 }
 
@@ -154,7 +160,7 @@ export function gameDiz(g: CatalogEntry): string[] {
     `Made with Game-Maker 3.0 * ${sound}`,
     center(pick(TAGLINES, g.id)),
     RULE,
-    SIGNOFF.replace('%s', uploader(g)),
+    isSofaFile(g) ? `Uploaded by ${uploader(g)} to THE SOFA BBS` : SIGNOFF.replace('%s', uploader(g)),
   ]);
 }
 
