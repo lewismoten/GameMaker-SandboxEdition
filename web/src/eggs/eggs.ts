@@ -116,6 +116,7 @@ export const EGGS: readonly Egg[] = [
     credits: ['Starring Teddy, a corgi who knows left from right', 'and Doc Leo, PhD (Comedic Science)'],
     lore: 'Teddy found it by the red door of The Dog House. Every book inside was there, but every page was blank.',
     look: { felt: '#fff3dc', band: '#d9381e', patch: '#e88a2c', thread: '#1d5fb8', pattern: 'dots', motif: 'paw' },
+    detect: { block: 149 },
   },
   {
     game: 'year2000',
