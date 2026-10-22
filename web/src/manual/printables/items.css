@@ -1366,6 +1366,10 @@
   font-size: 3cqw;
 }
 
+.hb-a .rf-code.rf-sketch-box {
+  display: inline-flex;
+}
+
 .hb-folio {
   position: absolute;
   bottom: 4cqw;

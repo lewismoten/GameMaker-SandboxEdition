@@ -613,6 +613,12 @@
   display: none;
 }
 
+/* a hint's drawing (redSketch): shrinks to fit the page, keeping its shape */
+.rf-word.rf-sketch {
+  max-width: 100%;
+  height: auto;
+}
+
 @media print {
   .rf-word.rf-screen {
     display: none;

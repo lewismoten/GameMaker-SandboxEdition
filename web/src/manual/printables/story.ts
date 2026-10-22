@@ -2,7 +2,7 @@
 // letters, newspapers, journals, ID cards, charts and fold-out star charts.
 import { h } from '../../editor/core/ui';
 import { sheet, html, mapPicture, hashString, rng, portrait, type PrintContext, type Sheet } from './kit';
-import { redCode } from './redFilm';
+import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
 import type { ChartItem, HintBookItem, IdCardItem, JournalItem, LetterItem, MapItem, MapPanel, NewspaperItem, PrintableItem, StarChartItem } from './types';
 
@@ -83,7 +83,7 @@ async function hintBook(ctx: PrintContext, it: HintBookItem): Promise<Sheet[]> {
   // flow the questions onto pages, measured in a real hint book page off screen
   const blocks: HTMLElement[] = it.sections.flatMap((s) => [
     h('h3', null, s.head),
-    ...s.hints.map((q) => h('div', { class: 'hb-q' }, h('p', null, h('b', null, 'Q. '), q.q), h('p', { class: 'hb-a' }, redCode(q.a)))),
+    ...s.hints.map((q) => h('div', { class: 'hb-q' }, h('p', null, h('b', null, 'Q. '), q.q), h('p', { class: 'hb-a' }, redCode(q.a)), q.sketch ? h('p', { class: 'hb-a' }, redSketch(q.sketch)) : null)),
   ]);
   const host = h('div', { class: 'gmb-measure' });
   document.body.append(host);

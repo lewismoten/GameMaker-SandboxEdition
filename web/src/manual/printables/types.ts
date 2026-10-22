@@ -60,7 +60,18 @@ export interface MapItem extends ItemBase {
 export interface HintBookItem extends ItemBase {
   kind: 'hintbook';
   intro?: string;
-  sections: { head: string; hints: { q: string; a: string }[] }[];
+  sections: { head: string; hints: { q: string; a: string; sketch?: HintSketch }[] }[];
+}
+
+/**
+ * A little drawing printed under the red film below a hint's answer: `rows` of cells, one
+ * character each (see SKETCH_GLYPHS in redFilm.ts: # wall, = brick, : faint seam, X the
+ * spot, @ you, T tree, o round thing, ~ water, . path, > < v ^ arrows, - | lines, space
+ * nothing), and `labels` written in at a cell (x across, y down).
+ */
+export interface HintSketch {
+  rows: string[];
+  labels?: { x: number; y: number; text: string }[];
 }
 
 /** A typed or handwritten letter. body is simple HTML (<p>, <b>, <i>). */

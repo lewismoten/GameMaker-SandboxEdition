@@ -13,6 +13,7 @@
 //   3. dense crossing red lines over everything, cutting every letter into pieces.
 // Every decoy and line has R = 255, so through the film only the letters are left.
 import { h } from '../../editor/core/ui';
+import type { HintSketch } from './types';
 
 /** The answer's ink on screen: a very pale cyan, hardly different from the white decoys. */
 export const CYAN_INK = 'rgb(204,250,255)';
@@ -95,6 +96,34 @@ function strokes(
   }
 }
 
+/**
+ * The three layers around whatever `ink` draws (see the top of this file): decoy strokes as
+ * thick as `stroke()` under and over it, then the red lines across everything.
+ */
+function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, hh: number, stroke: () => number, ink: () => void): void {
+  const area = ((w + PX) * (hh + PX)) / (PX * PX);
+  c.fillStyle = FIELD_INK;
+  c.fillRect(0, 0, w, hh);
+  const decoyLen = () => PX * (0.2 + rnd() * 0.45);
+  // 1. decoys under the ink
+  strokes(c, rnd, w, hh, Math.round(area * 12), DECOY_INKS, stroke, decoyLen);
+  // 2. the answer itself
+  ink();
+  // decoys over it, breaking it up
+  strokes(c, rnd, w, hh, Math.round(area * 0.6), DECOY_INKS, stroke, decoyLen);
+  // 3. the red lines: long and thin, crossing every which way
+  strokes(
+    c,
+    rnd,
+    w,
+    hh,
+    Math.round(area * 20),
+    LINE_INKS,
+    () => PX * (0.03 + rnd() * 0.03),
+    () => PX * (0.4 + rnd() * 1.2),
+  );
+}
+
 /** One word (with the space after it) hidden in noise, as a canvas `PX` pixels to the em. */
 export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -108,31 +137,12 @@ export function hiddenWord(word: string, seed = hashText(word), ink = CYAN_INK):
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
   const rnd = seeded(seed);
-  const area = ((w + PX) * (hh + PX)) / (PX * PX);
-  c.fillStyle = FIELD_INK;
-  c.fillRect(0, 0, w, hh);
-  const stroke = () => PX * STROKE * (0.8 + rnd() * 0.4);
-  const decoyLen = () => PX * (0.2 + rnd() * 0.45);
-  // 1. decoys under the letters
-  strokes(c, rnd, w, hh, Math.round(area * 12), DECOY_INKS, stroke, decoyLen);
-  // 2. the letters
-  c.font = FONT;
-  c.textBaseline = 'middle';
-  c.fillStyle = ink;
-  c.fillText(word, pad / 3, hh / 2 + PX * 0.04);
-  // decoys over the letters, breaking them up
-  strokes(c, rnd, w, hh, Math.round(area * 0.6), DECOY_INKS, stroke, decoyLen);
-  // 3. the red lines: long and thin, crossing every which way
-  strokes(
-    c,
-    rnd,
-    w,
-    hh,
-    Math.round(area * 20),
-    LINE_INKS,
-    () => PX * (0.03 + rnd() * 0.03),
-    () => PX * (0.4 + rnd() * 1.2),
-  );
+  camouflage(c, rnd, w, hh, () => PX * STROKE * (0.8 + rnd() * 0.4), () => {
+    c.font = FONT;
+    c.textBaseline = 'middle';
+    c.fillStyle = ink;
+    c.fillText(word, pad / 3, hh / 2 + PX * 0.04);
+  });
   return canvas;
 }
 
@@ -152,6 +162,174 @@ export function redCode(text: string): HTMLElement {
     'span',
     { class: 'rf-code', role: 'img', 'aria-label': 'Hidden answer: lay the red film over it' },
     ...words.flatMap((word, i) => [picture(word, base + i * 7919, CYAN_INK, 'rf-screen'), picture(word, base + i * 7919, PRINT_CYAN_INK, 'rf-print')]),
+  );
+}
+
+/** A sketch cell's size on the canvas, in pixels. */
+const CELL = PX * 0.5;
+/** How wide a sketch cell is shown, in ems of the answer's text. */
+const CELL_EM = 0.8;
+/** A sketch's pen: about as thick as the decoys, so neither gives the other away. */
+const PEN = PX * 0.11;
+const LABEL_FONT = `700 ${CELL * 0.85}px Arial, Helvetica, sans-serif`;
+
+/** What each character of a sketch's rows draws in its cell. */
+export const SKETCH_GLYPHS: Record<string, string> = {
+  ' ': 'nothing',
+  '.': 'a dot: a path or floor',
+  '#': 'a filled block: wall, rock or hedge',
+  '=': 'an outlined block: brick, box or shelf',
+  ':': 'a dashed block: a faint seam, or rock that is not rock',
+  X: 'the spot',
+  '@': 'you, or where to stand',
+  T: 'a tree',
+  o: 'something round',
+  '~': 'water',
+  '>': 'arrow right',
+  '<': 'arrow left',
+  v: 'arrow down',
+  '^': 'arrow up',
+  '-': 'a line across',
+  '|': 'a line up and down',
+};
+
+/** Characters in a sketch that SKETCH_GLYPHS does not know (none, for a good sketch). */
+export function unknownGlyphs(sketch: HintSketch): string[] {
+  return [...new Set(sketch.rows.join(''))].filter((ch) => !(ch in SKETCH_GLYPHS));
+}
+
+/** Draws one sketch cell's glyph with its top left at (x, y). */
+function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): void {
+  const s = CELL;
+  const m = PEN / 2 + 1;
+  const cx = x + s / 2;
+  const cy = y + s / 2;
+  const line = (pts: number[][]) => {
+    c.beginPath();
+    pts.forEach(([px, py], i) => (i ? c.lineTo(px, py) : c.moveTo(px, py)));
+    c.stroke();
+  };
+  const arrow = (dx: number, dy: number) => {
+    const r = s * 0.36;
+    const tip = [cx + dx * r, cy + dy * r];
+    line([[cx - dx * r, cy - dy * r], tip]);
+    line([[tip[0] - dx * r * 0.7 - dy * r * 0.6, tip[1] - dy * r * 0.7 - dx * r * 0.6], tip, [tip[0] - dx * r * 0.7 + dy * r * 0.6, tip[1] - dy * r * 0.7 + dx * r * 0.6]]);
+  };
+  switch (ch) {
+    case '.':
+      c.beginPath();
+      c.arc(cx, cy, s * 0.1, 0, Math.PI * 2);
+      c.fill();
+      break;
+    case '#':
+      c.fillRect(x + 1, y + 1, s - 2, s - 2);
+      break;
+    case '=':
+      c.strokeRect(x + m, y + m, s - 2 * m, s - 2 * m);
+      break;
+    case ':':
+      c.setLineDash([s * 0.18, s * 0.14]);
+      c.strokeRect(x + m, y + m, s - 2 * m, s - 2 * m);
+      c.setLineDash([]);
+      break;
+    case 'X':
+      c.lineWidth = PEN * 1.5;
+      line([[x + s * 0.12, y + s * 0.12], [x + s * 0.88, y + s * 0.88]]);
+      line([[x + s * 0.88, y + s * 0.12], [x + s * 0.12, y + s * 0.88]]);
+      c.lineWidth = PEN;
+      break;
+    case '@':
+      c.beginPath();
+      c.arc(cx, cy, s * 0.32, 0, Math.PI * 2);
+      c.fill();
+      break;
+    case 'T':
+      c.beginPath();
+      c.moveTo(cx, y + s * 0.06);
+      c.lineTo(x + s * 0.88, y + s * 0.78);
+      c.lineTo(x + s * 0.12, y + s * 0.78);
+      c.closePath();
+      c.fill();
+      c.fillRect(cx - s * 0.08, y + s * 0.7, s * 0.16, s * 0.26);
+      break;
+    case 'o':
+      c.beginPath();
+      c.arc(cx, cy, s * 0.32, 0, Math.PI * 2);
+      c.stroke();
+      break;
+    case '~':
+      c.beginPath();
+      c.moveTo(x, cy);
+      c.bezierCurveTo(x + s * 0.25, cy - s * 0.3, x + s * 0.25, cy + s * 0.3, cx, cy);
+      c.bezierCurveTo(x + s * 0.75, cy - s * 0.3, x + s * 0.75, cy + s * 0.3, x + s, cy);
+      c.stroke();
+      break;
+    case '>':
+      arrow(1, 0);
+      break;
+    case '<':
+      arrow(-1, 0);
+      break;
+    case 'v':
+      arrow(0, 1);
+      break;
+    case '^':
+      arrow(0, -1);
+      break;
+    case '-':
+      line([[x, cy], [x + s, cy]]);
+      break;
+    case '|':
+      line([[cx, y], [cx, y + s]]);
+      break;
+  }
+}
+
+/** A sketch hidden in noise, as a canvas `CELL` pixels to the cell. */
+export function hiddenSketch(sketch: HintSketch, seed = hashText(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  const c0 = canvas.getContext('2d');
+  if (!c0) return canvas;
+  c0.font = LABEL_FONT;
+  const pad = CELL * 0.25;
+  const cols = Math.max(...sketch.rows.map((r) => r.length));
+  let w = cols * CELL;
+  for (const l of sketch.labels ?? []) w = Math.max(w, l.x * CELL + c0.measureText(l.text).width);
+  w = Math.ceil(w + 2 * pad);
+  const hh = Math.ceil(sketch.rows.length * CELL + 2 * pad);
+  canvas.width = w;
+  canvas.height = hh;
+  const c = canvas.getContext('2d')!;
+  const rnd = seeded(seed);
+  camouflage(c, rnd, w, hh, () => PEN * (0.8 + rnd() * 0.5), () => {
+    c.fillStyle = ink;
+    c.strokeStyle = ink;
+    c.lineWidth = PEN;
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    sketch.rows.forEach((row, j) => [...row].forEach((ch, i) => glyph(c, ch, pad + i * CELL, pad + j * CELL)));
+    c.font = LABEL_FONT;
+    c.textBaseline = 'middle';
+    for (const l of sketch.labels ?? []) c.fillText(l.text, pad + l.x * CELL, pad + (l.y + 0.55) * CELL);
+  });
+  return canvas;
+}
+
+/** A drawing hidden among red lines, like an answer (a picture for the screen and one for printing). */
+export function redSketch(sketch: HintSketch): HTMLElement {
+  const seed = hashText(sketch.rows.join('/'));
+  const picture = (ink: string, cls: string) => {
+    const cv = hiddenSketch(sketch, seed, ink);
+    const img = h('img', { class: `rf-word rf-sketch ${cls}`, alt: '', draggable: false, src: cv.toDataURL('image/png') });
+    img.style.width = `${(cv.width / CELL) * CELL_EM}em`;
+    img.style.aspectRatio = `${cv.width} / ${cv.height}`;
+    return img;
+  };
+  return h(
+    'span',
+    { class: 'rf-code rf-sketch-box', role: 'img', 'aria-label': 'Hidden drawing: lay the red film over it' },
+    picture(CYAN_INK, 'rf-screen'),
+    picture(PRINT_CYAN_INK, 'rf-print'),
   );
 }
 
