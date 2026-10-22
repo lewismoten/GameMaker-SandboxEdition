@@ -1,7 +1,7 @@
 // Helpers every level's blocks use: hint signs on stakes, the sky band for a map row,
 // sidewalks and roads, wallpaper and floorboards for indoors, and scents for the sniff.
 import { Pixels, rng } from '../../../kit/pixels';
-import { micro, speckle, sprite } from '../art/draw';
+import { blob, micro, speckle, sprite } from '../art/draw';
 import { FLIP, type Bestiary } from '../characters/mons';
 import { POWER } from '../ids';
 import { c, r } from '../blocks/tiles';
@@ -159,3 +159,32 @@ export function pacer(b: Bestiary, name: string, pics: [string, number][], power
 }
 
 export { sprite };
+
+/** Water: deep below the surface; `phase` for the ripple animation. */
+export function water(surface: boolean, phase: number, base?: Pixels): Pixels {
+  const p = base ? copyOf(base) : new Pixels(20, 20, c('water', 1));
+  if (!base) for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x * 3 + y * 7 + phase * 5) % 13 === 0) p.set(x, y, c('water', 2));
+  if (surface) {
+    p.rect(0, 12, 20, 8, c('water', 1));
+    for (let x = 0; x < 20; x++) {
+      const y = 11 + Math.round(Math.sin((x + phase * 4) / 3));
+      p.set(x, y, c('water', 3)).set(x, y + 1, c('water', 2));
+    }
+  }
+  return p;
+}
+
+function copyOf(base: Pixels): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(base.px);
+  return p;
+}
+
+/** A rope knot tying something shut (chew it), over `base`. */
+export function ropeKnot(base: Pixels): Pixels {
+  const p = copyOf(base);
+  p.rect(0, 8, 20, 3, c('hay', 2)).rect(0, 8, 20, 1, c('hay', 3));
+  blob(p, 10, 9, 4, 4, r('hay'), 1, 3);
+  p.line(8, 12, 6, 18, c('hay', 1)).line(12, 12, 14, 18, c('hay', 1));
+  return p;
+}

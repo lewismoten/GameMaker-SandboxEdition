@@ -257,6 +257,7 @@ export const EGG = pages(
 /** Lines under each level card (yellow lines start with NEW). */
 export const CARDS: Record<string, string[]> = {
   house: ["Gwinn's bed is empty! Sniff", 'out her collar. Doc Leo waits.', 'NEW: SNIFF (S)'],
+  night: ['MEANWHILE... last night. YOU', 'are Gwinn. Follow your nose!', 'NEW: BOOF CHEW DIG ZOOMIES'],
   main: ['Her leash is on the gazebo!', 'Ring bells with a high five.', 'NEW: RING THE BELL (1)'],
 };
 

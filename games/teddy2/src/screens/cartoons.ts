@@ -168,6 +168,40 @@ export function paradeFli(): Uint8Array {
   return r.fli(5);
 }
 
+/**
+ * After Gwinn's night out: the Klown Klub's hay wagon rolls off into the night behind its
+ * pickup, a brown head and a pink tongue poking up out of the hay.
+ */
+export function wagonFli(): Uint8Array {
+  const bg = new Pixels(W, H, c('ink', 0));
+  for (let y = 0; y < 150; y++) for (let x = 0; x < W; x++) if ((x * 17 + y * 11) % 89 === 0) bg.set(x, y, c('glow', 3));
+  blob(bg, 260, 40, 18, 18, SP.r('glow'), 2, 3);
+  for (let x = 0; x < W; x++) {
+    const h = 130 + Math.sin(x / 40) * 6;
+    for (let y = Math.floor(h); y < 160; y++) bg.set(x, y, c('grass', 0));
+  }
+  bg.rect(0, 160, W, 40, c('asphalt', 0));
+  const r = new Reel(bg);
+  for (let f = 0; f < 46; f++)
+    r.frame((p) => {
+      const x = 330 - f * 9;
+      const bob = f % 2;
+      // the pickup in front, the wagon behind it
+      p.rect(x, 128 + bob, 70, 26, c('blue', 1)).rect(x + 6, 108 + bob, 34, 22, c('blue', 1)).rect(x + 10, 112 + bob, 22, 12, c('sky', 1));
+      p.rect(x, 140, 4, 4, c('glow', 3));
+      for (const wx of [x + 14, x + 56]) p.disc(wx, 158, 9, c('ink', 1)).ring(wx, 158, 4, c('metal', 2));
+      const wx = x + 80;
+      p.rect(wx, 136 + bob, 120, 16, c('wood', 2)).rect(wx, 136 + bob, 120, 2, c('wood', 3));
+      for (let k = 0; k < 6; k++) blob(p, wx + 12 + k * 19, 130 + bob, 13, 9, SP.r('hay'), 1, 3);
+      for (const ww of [wx + 20, wx + 100]) p.disc(ww, 158, 9, c('ink', 1)).ring(ww, 158, 4, c('wood', 2));
+      // Gwinn in the hay, ears flapping
+      if (f > 8) scaleBlit(p, GWINN[f % 4 < 2 ? 'gwinn1' : 'gwinn3'].crop(0, 0, 20, 11), wx + 60, 112 + bob - (f % 6 === 0 ? 2 : 0), 2);
+      caption(p, f < 24 ? 'MEANWHILE, THE KLOWN KLUB' : 'GWINN RIDES IN THE HAY.', 10);
+      caption(p, f < 24 ? 'WAGON HEADS FOR THE FAIR...' : 'ALL NIGHT. DOWN BACK ROADS.', 22);
+    });
+  return r.fli(6);
+}
+
 export function buildCartoons(): Record<string, Uint8Array> {
-  return { 'leo.fli': leoFli(), 'car.fli': carFli(), 'parade.fli': paradeFli(), 'cast.fli': castFli() };
+  return { 'leo.fli': leoFli(), 'car.fli': carFli(), 'parade.fli': paradeFli(), 'cast.fli': castFli(), 'wagon.fli': wagonFli() };
 }
