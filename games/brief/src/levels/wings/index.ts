@@ -2,5 +2,6 @@
 import type { WingSpec } from '../wing';
 import { CLOWN } from './clown';
 import { LAB } from './lab';
+import { DOCKS } from './docks';
 
-export const WING_SPECS: WingSpec[] = [CLOWN, LAB];
+export const WING_SPECS: WingSpec[] = [CLOWN, LAB, DOCKS];

@@ -261,7 +261,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
       const x = end.x + dx;
       const y = end.y + dy;
-      if ((x !== page.x || y !== page.y) && y <= 9 && !a.tiles.def(a.get(x, y)).solid) throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
+      if ((x !== page.x || y !== page.y) && y <= 9 && x >= ox && x < ox + WIN_W && !a.tiles.def(a.get(x, y)).solid) throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
     }
     return { spec: b, win, end, page, cover };
   });
