@@ -75,7 +75,7 @@ export function playLink(id: string): string {
 /** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
 const PREVIEW_AHEAD = 192 * 1024;
 
-export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware';
+export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -126,7 +126,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   const byline =
     kind === 'sandbox'
       ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
-      : kind === 'shareware'
+      : kind === 'shareware' || kind === 'bizarre'
         ? creditLine(g) || 'Shareware · play only'
         : !g.gam
           ? 'Pictures, monsters and sounds'
@@ -414,7 +414,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
   return (
     [
       play(href),
-      game.kind === 'shareware'
+      game.kind === 'shareware' || game.kind === 'bizarre'
         ? h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice')
         : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
       keys,

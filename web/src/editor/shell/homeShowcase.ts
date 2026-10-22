@@ -18,6 +18,7 @@ const KIND_LABEL: Record<GameKind, string> = {
   gameware: 'Gameware',
   sandbox: 'Sandbox',
   shareware: 'Shareware',
+  bizarre: 'Bizarre',
 };
 
 /** Movement is welcome and data is not scarce: demos may start by themselves. */

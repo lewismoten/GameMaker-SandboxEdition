@@ -1,6 +1,7 @@
 // Home page: one game shown large (a featured one, or the one you chose; see
 // homeShowcase.ts) and the library: tabs for the collections (your games, the CD's
-// gameware, our Sandbox games, the shareware) with search and "New game" beside them, and
+// gameware, our Sandbox games, the shareware, and The Bard of Bizarre's once there are enough
+// of them, bizarre.ts) with search and "New game" beside them, and
 // the chosen collection's games as small picture tiles (homeCards.ts). On a wide window
 // the game sits in a column beside the library and the page fits the window, the tiles
 // scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
@@ -8,6 +9,7 @@
 // (?tab=sandbox&q=snow), so a reload or a link shows the same.
 import { h, clear, modal, toast } from '../core/ui';
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../../project/files';
+import { hasBizarreTab, isBizarreGame } from '../../project/bizarre';
 import { listProjects } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
@@ -57,6 +59,12 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[]
     icon: 'lock',
     name: 'Shareware',
     lead: 'Games other people made with Game-Maker, from the CD and the BBSes. Most are copyrighted shareware that can only be played here, exactly as released; a few are free to share. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
+  },
+  {
+    id: 'bizarre',
+    icon: 'music',
+    name: 'Bizarre',
+    lead: 'Songs by The Bard of Bizarre, the name Lewis “Lewie” Moten III sings his Christian songs under as his hobo clown Doc Leo, turned into games. Shareware from The Sofa BBS: play them here as released, and read each one’s notice for the song behind it.',
   },
 ];
 
@@ -134,6 +142,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   let catalog: CatalogEntry[] = [];
   let catalogError = '';
   let projects: Awaited<ReturnType<typeof listProjects>> = [];
+  /** The collections this catalog has: Bizarre only with enough of the Bard's games. */
+  const shownCats = () => CATEGORIES.filter((c) => c.id !== 'bizarre' || hasBizarreTab(catalog));
   // RSD's own games first
   const gameware = () =>
     catalog
@@ -145,8 +155,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       : c === 'sandbox'
         ? catalog.filter((g) => isSandboxGame(g) && g.gam)
         : c === 'shareware'
-          ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && g.gam)
-          : [];
+          ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(catalog)))
+          : c === 'bizarre' && hasBizarreTab(catalog)
+            ? catalog.filter((g) => isBizarreGame(g) && g.gam)
+            : [];
   // one HomeGame per game for the page's life, so files load once
   const games = new Map<string, HomeGame>();
   const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
@@ -203,7 +215,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     tiles.querySelector('.lib-none')?.remove();
     if (!q || shown) return;
     // nothing here: point to the collections that have it
-    const elsewhere = CATEGORIES.filter((c) => c.id !== current)
+    const elsewhere = shownCats().filter((c) => c.id !== current)
       .map((c) => ({ c, n: gamesOf(c.id).filter((g) => g.search.includes(q)).length }))
       .filter((x) => x.n);
     tiles.append(
@@ -263,7 +275,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, isOwn(c.id) ? own(c.id).length : entriesOf(c.id).length]));
     clear(
       catNav,
-      ...CATEGORIES.map((c) =>
+      ...shownCats().map((c) =>
         h(
           'button',
           {
@@ -303,13 +315,16 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -99, End: 99 }[e.key];
     if (!step) return;
     e.preventDefault();
-    const i = CATEGORIES.findIndex((c) => c.id === current);
-    const next = CATEGORIES[Math.max(0, Math.min(CATEGORIES.length - 1, Math.abs(step) > 1 ? (step < 0 ? 0 : 99) : (i + step + CATEGORIES.length) % CATEGORIES.length))];
+    const cats = shownCats();
+    const i = cats.findIndex((c) => c.id === current);
+    const next = cats[Math.max(0, Math.min(cats.length - 1, Math.abs(step) > 1 ? (step < 0 ? 0 : 99) : (i + step + cats.length) % cats.length))];
     void select(next.id, true).then(() => catNav.querySelector<HTMLElement>(`#lib-tab-${next.id}`)?.focus());
   });
 
   /** Shows a collection; remembered when the visitor picked it. */
   const select = async (c: Category, picked = false) => {
+    // a Bizarre tab remembered from a catalog that had one: its games are with the shareware now
+    if (c === 'bizarre' && !hasBizarreTab(catalog)) c = 'shareware';
     current = c;
     if (picked) {
       keep({ tab: c });
