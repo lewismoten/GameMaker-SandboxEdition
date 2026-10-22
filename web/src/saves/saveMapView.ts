@@ -243,8 +243,7 @@ export function saveMapView(o: MapViewOptions): MapView {
     g.fits ? `Block ${g.x}, ${g.y}: he fits here` : `Block ${g.x}, ${g.y}: solid (his feet or the block above)`;
 
   const tryMove = (x: number, y: number) => {
-    const problem = o.onMove(x, y);
-    if (problem) say(problem);
+    say(o.onMove(x, y) ?? defaultHint);
   };
 
   // ---- pointer: drag the hero, drag (or middle-drag) to pan, pinch or Ctrl+wheel to zoom, click to place
@@ -262,8 +261,6 @@ export function saveMapView(o: MapViewOptions): MapView {
   };
   canvas.addEventListener('pointerdown', (e) => {
     if (e.button !== 0 && e.button !== 1) return;
-    e.preventDefault();
-    canvas.focus({ preventScroll: true });
     canvas.setPointerCapture(e.pointerId);
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.size === 2) {
@@ -312,6 +309,7 @@ export function saveMapView(o: MapViewOptions): MapView {
     if (mode === 'press' && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 4) {
       mode = 'pan';
       canvas.classList.add('panning');
+      say(defaultHint);
     }
     if (mode === 'pan') {
       const z = camera().zoom;
@@ -353,6 +351,8 @@ export function saveMapView(o: MapViewOptions): MapView {
       tryMove(b.x, b.y);
     }
   };
+  // the middle button pans here (not the browser's autoscroll)
+  canvas.addEventListener('mousedown', (e) => e.button === 1 && e.preventDefault());
   canvas.addEventListener('pointerup', (e) => end(e, false));
   canvas.addEventListener('pointercancel', (e) => end(e, true));
   canvas.addEventListener('lostpointercapture', (e) => end(e, true));
