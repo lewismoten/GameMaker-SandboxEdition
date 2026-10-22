@@ -114,6 +114,20 @@ export function page(heading: string, seed = 3): Pixels {
 }
 
 /**
+ * Load and save: Game-Maker writes the names in yellow at x 80, y 40 + 14i (yellow is lost
+ * on cream, so each slot is a dark strip) and its messages in blue at y 185, x 40..272, so
+ * the panel runs down past them, with its red dashes below.
+ */
+export function slotsPage(heading: string, seed: number): Pixels {
+  const p = page(heading, seed);
+  p.rect(30, 180, 260, 17, c('cream', 3));
+  p.rect(28, 186, 2, 13, c('ink', 0)).rect(290, 186, 2, 13, c('ink', 0)).rect(28, 197, 264, 2, c('ink', 0));
+  for (let x = 30; x < 290; x += 8) p.rect(x, 195, 4, 2, c('red', 2));
+  for (let i = 0; i < 10; i++) p.rect(75, 37 + i * 14, 170, 13, c('ink', 1));
+  return p;
+}
+
+/**
  * The high scores: Game-Maker writes "Top Ten Scores" in red at the top, the scores in
  * blue from x 20, and "Hit any key" in red at the bottom (x 116..203, y 192..199), so
  * each sits on a cream plate rather than the bunting or the grass.
@@ -127,7 +141,8 @@ export function scoresScreen(): Pixels {
     p.rect(x, y, w, h, c('cream', 3));
   };
   plate(96, 0, 128, 10);
-  plate(12, 22, 296, 160);
+  // (down to y 186: the "Your Latest Score" row is written at y 177..184)
+  plate(12, 22, 296, 165);
   plate(108, 190, 104, 10);
   p.rect(12, 22, 296, 2, c('paint', 3));
   return p;
@@ -214,8 +229,8 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
   textPage('help', 'HOW TO PLAY', HELP);
   textPage('credits', 'CREDITS', CREDITS);
   put('scores.gif', gif(scoresScreen()));
-  put('loadgame.gif', gif(page('LOAD A GAME', 13)));
-  put('savegame.gif', gif(page('SAVE THIS GAME', 17)));
+  put('loadgame.gif', gif(slotsPage('LOAD A GAME', 13)));
+  put('savegame.gif', gif(slotsPage('SAVE THIS GAME', 17)));
   put('won.gif', gif(...wonScreen()));
   put('wontxt.gif', gif(page('THE BIG SHOW', 19)));
   put('won.txt', WON);
