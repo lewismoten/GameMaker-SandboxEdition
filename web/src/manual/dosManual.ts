@@ -517,17 +517,19 @@ function pages(shots: GameShot[]): BookletPage[] {
       'Appendix C. The Copy Check',
       `<h1>Appendix C. The Copy Check</h1>
       <p>A copy of Game-Maker whose registration doesn\u2019t match asks a question each time
-      it starts: a page, a paragraph and a word to type in. The page numbers are those printed
-      at the foot of the pages of RSD\u2019s own book, the comb-bound <i>Game-Maker 3.0
-      Owner\u2019s Manual</i>, not this guide.</p>
-      <p>Count the paragraphs on that page from the top, including the words in a boxed note,
-      but not headings, menus, tables or picture captions. Then count words; \u201cGame-Maker\u201d
-      is one word.</p>
-      <p>The copy on this desk came registered, so you will only see the question if its
-      registration stops matching: for instance after <code>GM REGISTER</code> with a
-      different name. Typing the name and number from the registration card puts it right.</p>
+      it starts: a page of this guide, a paragraph and a word to type in. The page numbers are
+      the ones printed at the foot of these pages.</p>
+      <p>Count only the paragraphs of text on that page, from the top: not headings, tables,
+      lists, boxed notes or picture captions. Then count words; \u201cGame-Maker\u201d is one
+      word.</p>
+      <p>A new copy comes unregistered, so GM asks every time until you register it. While it
+      asks, this guide opens beside the monitor at the right page, and the registration card
+      lies next to it: write your name, <b>Mail</b> it for your registration number (the
+      reply comes right back) and choose <b>Apply</b>. Or type <code>GM REGISTER</code> and
+      enter the name and number as the program asks.</p>
       <div class="note"><strong>Why?</strong> Disks were easy to copy; a thick printed manual was
-      not. Many programs of the day asked for a word from the manual.</div>`,
+      not. Many programs of the day asked for a word from the manual. RSD\u2019s own questions
+      came from its printed book; this edition asks from this guide.</div>`,
     ),
     page(
       'Appendix D. About This Edition',

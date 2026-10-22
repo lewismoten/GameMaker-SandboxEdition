@@ -71,8 +71,10 @@ async function manualCheck(h: RetroHost): Promise<boolean> {
       s.write(15, 3, white, '   Please enter the following informantion.');
       s.write(15, 4, yellow, '       OR send in your registration card');
       s.write(15, 5, yellow, '             to skip this hassle!');
-      s.write(15, 7, white, 'Count every paragraph, not including headings');
-      s.write(15, 8, white, 'or captions. ("Game-maker" is one word).');
+      // RSD's lines asked about its printed manual; this edition asks about its own guide
+      s.write(15, 7, white, "Look in the Game-Maker SE Owner's Guide.");
+      s.write(15, 8, white, 'Count paragraphs, not headings, tables, lists,');
+      s.write(15, 9, white, 'notes or captions. ("Game-Maker" is one word.)');
       s.write(15, 10, yellow, `Page: ${q.page}`);
       s.write(15, 11, yellow, `Paragraph: ${q.paragraph}`);
       s.write(15, 12, yellow, `Word: ${q.word}`);
