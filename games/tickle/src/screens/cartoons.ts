@@ -264,7 +264,6 @@ export function certFli(cast: Cast): Uint8Array {
       micro(p, 100, 160, 'DORSAL DELIGHT', c('brown', 1));
       micro(p, 116, 166, '- 1995 -', c('brown', 1));
     }
-    if (k >= 48 && k % 10 < 7) say(p, pal, 250, 150, 'CERTIFIED!', 'red', 2);
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);
