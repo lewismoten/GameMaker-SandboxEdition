@@ -11,13 +11,22 @@ import { bakName } from './gmcrackText';
 
 const bytesNode = (name: string, bytes: Uint8Array, extra: Partial<DosNode> = {}): DosNode => file(name, bytes.length, { read: async () => bytes, ...extra });
 
-/** The original .EXE's size, and how much GMCRACK's patch (with its intro) adds. */
+/** The shareware's .EXE (its author's XFERPLAY.EXE, 155,156 bytes on the CD), and how much GMCRACK's patch (with its intro) adds. */
 const EXE_SIZE = 155_156;
 const INTRO_SIZE = 3_417;
 
+/** What Game-Maker's transfer put beside every game (UTILITY.C transfer_em; the CD's shareware has them). */
+const CONFIG_HLP_SIZE = 2_722;
+const SNDBLAST_SIZE = 2_493;
+
+/** CONFIG.BAT as the transfer wrote it: "<game> configure" (the player's sound card setup, then the game). */
+export const configBat = (gam: string): string => `${gam.replace(/\.gam$/i, '').toUpperCase()} configure\r\n`;
+
 /**
- * A shareware game's .EXE in C:\DOWNLOAD\<GAME>, and what else its folder holds besides the
- * game's files: FILE_ID.DIZ, and GAME.BAK once GMCRACK has cracked it.
+ * What C:\DOWNLOAD\<GAME> holds besides the game's files, laid out as Game-Maker's transfer
+ * left a game (UTILITY.C): XFERPLAY.EXE copied as <GAME>.EXE (it plays the .GAM named like
+ * itself), CONFIG.BAT, CONFIG.HLP and SNDBLAST.DRV; then FILE_ID.DIZ, and GAME.BAK once
+ * GMCRACK has cracked it.
  */
 export function gameDownloadNodes(g: CatalogEntry, date: Date, run: ProgramRef & { kind: 'game' }): DosNode[] {
   const cracked = pcExtras().cracked(g.id);
@@ -30,6 +39,11 @@ export function gameDownloadNodes(g: CatalogEntry, date: Date, run: ProgramRef &
       nodes.push(file(bakName(g.exe), EXE_SIZE, { date }));
     }
   }
+  if (g.gam) {
+    const bat = configBat(g.gam);
+    nodes.push(bytesNode('CONFIG.BAT', Uint8Array.from(bat, (c) => c.charCodeAt(0)), { date, run: { kind: 'batch', lines: [bat.trim()] } }));
+  }
+  nodes.push(file('CONFIG.HLP', CONFIG_HLP_SIZE, { date }), file('SNDBLAST.DRV', SNDBLAST_SIZE, { date }));
   nodes.push(bytesNode(DIZ_NAME, dizBytes(gameDiz(g)), { date }));
   return nodes;
 }
