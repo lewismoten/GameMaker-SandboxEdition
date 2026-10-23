@@ -5,7 +5,7 @@
 // - Twirly asks for a spin (113, beaten by the whirl, 115) and becomes a ticket;
 // - the bowling pins (117) fall only to a rolling fluff ball (120), into pins lying down
 //   that never die and nothing can beat (end -2, power 210);
-// - Professor Pratfall's pies are projectiles (play dead to let them pass);
+// - the Pie-O-Matic's pies are projectiles (play dead to let them pass);
 // - Gwinn holds the nose at 124: the heart beats her too, and she becomes Gwinn sitting
 //   with the nose at her feet, then (touched, at power 2) a happy Gwinn.
 import { Pixels } from '../../../kit/pixels';

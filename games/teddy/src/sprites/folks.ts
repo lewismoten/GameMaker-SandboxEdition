@@ -208,7 +208,7 @@ export function flyingDisc(phase: number): Pixels {
   return p;
 }
 
-/** A juggling busker from the Klown Klub (20x40): Juggles, tossing bowling pins. */
+/** A street busker in a flat cap (20x40): Juggles, tossing bowling pins. */
 export function juggler(phase: number): Pixels {
   return S(
     [
@@ -219,11 +219,11 @@ export function juggler(phase: number): Pixels {
       phase ? '...W...oGGGGGo......' : '.......oGGGGGo......',
       '......oGGGGGGGo.....',
       '......ooooooooo.....',
-      '.......owwwwwo......',
-      '.......owkwkwo......',
-      '.......owwRwwo......',
-      '.......owrrrwo......',
-      '........owwwo.......',
+      '.......ossssso......',
+      '.......oskskso......',
+      '.......osssSso......',
+      '.......ossosso......',
+      '........ossso.......',
       phase ? '.oSo..oVVVVVo.......' : '......oVVVVVo..oSo..',
       phase ? '..oSooVVyVVVVo......' : '.....oVVVyVVVooSo...',
       phase ? '....oVVVVyVVVVoSo...' : '...oSoVVVyVVVVo.....',
@@ -235,9 +235,9 @@ export function juggler(phase: number): Pixels {
       '.....obbbbobbbbo....',
       '.....obbbo.obbbo....',
       '.....obbbo.obbbo....',
+      '.....ohhho.ohhho....',
+      '....ohhhho.ohhhho...',
       '....oooooo.oooooo...',
-      '...oRRRRRo.oRRRRRo..',
-      '...oooooo...ooooooo.',
     ],
     0,
     14,

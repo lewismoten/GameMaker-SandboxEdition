@@ -1,7 +1,7 @@
 // The Klown Klub: Doc Leo's friends, two blocks tall and kind to dogs. Honker (a horn and
 // polka dots, always up for a high five), Bubbles (a bubble wand; she loves a good sit),
-// Twirly (a tutu; ask her about spinning), and Professor Pratfall (practicing pie throws,
-// for science). Plus the things around the ring: bowling pins, pies, bubbles.
+// Twirly (a tutu; ask her about spinning), and the Pie-O-Matic backstage (a pie launcher,
+// test-firing for the finale). Plus the things around the ring: bowling pins, pies, bubbles.
 import { Pixels } from '../../../kit/pixels';
 import { blob, sprite } from '../art/draw';
 import { CK } from './klown';
@@ -101,34 +101,34 @@ export const KLUB: Record<string, Pixels> = {
     '.....oLLoLLo........',
     '.....oooooooo.......',
   ]),
-  // Professor Pratfall: tweed, spectacles, a pie at the ready.
-  pratfall: S([
-    '....oooooooo........',
-    '....occccccco.......',
-    '...occccccccco......',
-    '...ooooooooooo......',
-    '....owwwwwwo........',
-    '...owoooooowo.......',
-    '...owomowmowo.......',
-    '...owwwRRwwwo.......',
-    '....owRRRRwo........',
-    '.....owwwwo.........',
-    '....ooccccoo........',
-    '..occcCcccCcco......',
-    '..occccCcccccooo....',
-    '..occcccCccccoxxxo..',
-    '..ocCcccccccCoddddo.',
-    '..occcccccccco.oSo..',
-    '..oSocccccccooSo....',
-    '..oSocccccco........',
-    '...o.occcccco.......',
-    '.....oCCCCCCo.......',
-    '.....oCCoCCCo.......',
-    '.....oCCoCCCo.......',
-    '.....oCCoCCCo.......',
-    '....ooooooooooo.....',
-    '...oRRRRRooRRRRo....',
-    '...oooooooooooooo...',
+  // The Pie-O-Matic: the Big Show's pie launcher (no one at the controls), test-firing
+  // cream pies across the tunnel for the finale.
+  launcher: S([
+    '..oooo..............',
+    '.oxxxxo.............',
+    'oddddddo............',
+    '.oMMMMMoo...........',
+    '...ooMMMMoo.........',
+    '.....ooMMMMoo.......',
+    '.......ooMMMMoo.....',
+    '.........ooMMMMo....',
+    '...........oMMMo....',
+    '..........omMMMo....',
+    '..........oMmMo.....',
+    '...ooooooooooooooo..',
+    '...oRRRRRRRRRRRRRo..',
+    '...oRYYRRYYRRYYRRo..',
+    '...oRYYRRYYRRYYRRo..',
+    '...oRRRRRRRRRRRRRo..',
+    '...ohHHHHHHHHHHHho..',
+    '...ohHmMMmHoxxxoho..',
+    '...ohHMooMHoddddho..',
+    '...ohHmMMmHHHHHHho..',
+    '...ohhhhhhhhhhhhho..',
+    '...ooooooooooooooo..',
+    '....omMo.....omMo...',
+    '....oMMo.....oMMo...',
+    '.....oo.......oo....',
   ]),
 };
 

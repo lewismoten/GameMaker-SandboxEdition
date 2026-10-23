@@ -1,7 +1,7 @@
 // Level 5: The Klown Klub, showtime. Earn three tickets from Doc Leo's friends with
 // tricks (a high five for Honker, a sit for Bubbles, a spin for Twirly), get through the
 // turnstile, roll a fluff ball into the bowling pins under the bleachers, play dead under
-// Professor Pratfall's practice pies, spin through the stage door, dig under the stage
+// the Pie-O-Matic's test pies, spin through the stage door, dig under the stage
 // and ride the stage lift up. Gwinn is in the spotlight with the red nose in her mouth:
 // sit pretty and she sits too, and drops it. Then give it to Doc Leo. Ta-daaa!
 //
@@ -20,8 +20,8 @@ export function klub(): Level {
   const beasts = klubBeasts();
   bs.def('bubblesBot').birthMon = beasts.id('bubble');
   bs.def('bubblesBot').birthTime = 30;
-  bs.def('pratfallBot').birthMon = beasts.id('pie');
-  bs.def('pratfallBot').birthTime = 40;
+  bs.def('launcherBot').birthMon = beasts.id('pie');
+  bs.def('launcherBot').birthTime = 40;
   const m = new LevelMap(bs, beasts, 'sky0');
   const pick = (() => {
     const R = rng(23);
@@ -74,13 +74,13 @@ export function klub(): Level {
   m.rect(back, 20, 1, 19, 'stageWall');
   m.set(back, 39, 'tunnel');
 
-  // Backstage: Professor Pratfall practicing pie throws into the tunnel; the stage door.
+  // Backstage: the Pie-O-Matic test-firing pies into the tunnel; the stage door.
   const sd = 54;
   m.rect(back + 1, 20, sd - back - 1, 20, 'backstage');
   m.set(back + 2, 36, 'mirror')
     .set(back + 4, 36, 'mirror')
     .set(back + 6, 36, 'rack');
-  m.set(back + 3, 38, 'pratfallTop').set(back + 3, 39, 'pratfallBot');
+  m.set(back + 3, 38, 'launcherTop').set(back + 3, 39, 'launcherBot');
   m.set(back + 7, 39, 'trunk')
     .set(back + 8, 39, 'trunk')
     .set(back + 8, 38, 'trunk');
