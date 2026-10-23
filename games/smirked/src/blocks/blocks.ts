@@ -8,14 +8,14 @@
 //   - fake spiderwebs are curtains you walk through and sneeze (nerve, a smirk), and they tear;
 //     fog lights and fake demon feet on the floor trip you once and stay knocked over;
 //   - the gift shop's register sells the $12 souvenir sword (money, counter 3) and lets you
-//     through to the last hall; the emergency exit only opens for the clown wig (counter 22);
+//     through to the last hall; the emergency exit only opens for the cardboard knight's helmet (counter 22);
 //   - dollars, candy corn, glow sticks, juice boxes and bites of caramel apple lie about.
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import type { Pal } from '../art/pal';
-import { BATTERIES, BATTERIES_NEEDED, MONEY, SMIRKS, SORRY, SORRY_NEEDED, SWORD_PRICE, WIG } from '../ids';
+import { BATTERIES, BATTERIES_NEEDED, MONEY, SMIRKS, SORRY, SORRY_NEEDED, SWORD_PRICE, HELMET } from '../ids';
 
 export { BlockBook, SOLID };
 /** Ticks a fog machine rests, and puffs. */
@@ -114,14 +114,17 @@ export function buildBlocks(pal: Pal): BlockBook {
   window.rect(3, 2, 14, 12, c('sky', 1)).disc(12, 6, 3, c('candle', 2));
   for (const [y, t] of [[4, 1], [8, -1], [11, 1]] as const) window.line(2, y - t, 17, y + t, c('board', 3)).line(2, y - t + 1, 17, y + t + 1, c('board', 1));
   book.add('window', window, solid);
-  /** A creepy portrait: a hobo clown in a fedora (Doc Leo, the Bard himself), eyes following you. */
+  /** The house's friendly portrait: Doc Leo, the Bard himself, in his fedora, smiling and winking at you. */
   const portrait = (look: number) => {
     const p = wallpaper(13);
-    p.rect(4, 1, 12, 13, c('gold', 0)).rect(5, 2, 10, 11, c('black', 1));
+    p.rect(4, 1, 12, 13, c('gold', 0)).rect(5, 2, 10, 11, c('purple', 1));
     blob(p, 10, 8, 3.4, 3.6, R('skin'), 1, 3);
     p.rect(6, 3, 8, 2, c('black', 0)).rect(7, 1, 6, 3, c('black', 0));
-    p.rect(8, 10, 4, 2, c('white', 2)).set(10, 9, c('red', 2));
-    p.set(8 + look, 7, ink).set(11 + look, 7, ink);
+    p.rect(8, 10, 4, 1, c('white', 2)).set(7, 9, c('white', 2)).set(12, 9, c('white', 2)).set(10, 9, c('red', 2));
+    // both eyes open, then a wink
+    p.set(8, 6, ink).set(8, 7, ink);
+    if (look) p.rect(11, 7, 2, 1, ink);
+    else p.set(11, 6, ink).set(11, 7, ink);
     return p;
   };
   book.add('portrait', portrait(0), { solid: SOLID, next: 'portrait2', ntime: 40 });
@@ -246,7 +249,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('register', register(false), { solid: SOLID, effect: MONEY, eamt: -SWORD_PRICE, score: 1200, touch: 'registerPaid' });
   book.add('registerPaid', register(true));
-  /** The emergency exit: the glowing sign, one block, right over the door, its arrow pointing down at it; only the wig gets you out. */
+  /** The emergency exit: the glowing sign, one block, right over the door, its arrow pointing down at it; only the knight's helmet gets you out. */
   const exitSign = (lit: boolean) => {
     const p = curtain(1);
     const on = lit ? c('white', 2) : c('exitred', 2);
@@ -263,11 +266,11 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = carpet(22);
     if (!open) {
       p.rect(1, 0, 18, 20, c('silver', 0)).rect(2, 1, 16, 19, c('silver', 1)).rect(2, 9, 16, 2, c('silver', 2)).rect(3, 9, 14, 1, c('red', 1));
-      micro(p, 4, 2, 'WIG?', c('exitred', 1));
+      micro(p, 4, 2, 'HELM', c('exitred', 1));
     } else p.rect(1, 0, 18, 20, c('candle', 2)).rect(1, 0, 2, 20, c('silver', 1));
     return p;
   };
-  book.add('exitDoor', exitDoor(false), { solid: SOLID, effect: WIG, eamt: -1, score: 2000, touch: 'exitOpen' });
+  book.add('exitDoor', exitDoor(false), { solid: SOLID, effect: HELMET, eamt: -1, score: 2000, touch: 'exitOpen' });
   book.add('exitOpen', exitDoor(true));
   /** The front desk: a bowl of Bravery Badges and the guy's bell. */
   const desk = (part: 0 | 1) => {

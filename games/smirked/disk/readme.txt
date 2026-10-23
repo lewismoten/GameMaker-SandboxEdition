@@ -18,10 +18,10 @@ witch ("GET DOWN!"), say sorry,
 strategically reposition away
 from the werewolf guy through a
 wall of fake spiderwebs, buy
-the $12 souvenir sword, defend
-yourself from an 11-year-old in
-a clown wig, and bond with the
-emergency exit sign.
+the $12 souvenir sword, duel
+an 11-year-old in a cardboard
+knight costume, and bond with
+the emergency exit sign.
 
 STARTING THE GAME
   Type SMIRKED and press Enter.

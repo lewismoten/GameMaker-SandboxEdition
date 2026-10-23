@@ -5,13 +5,13 @@
 // the tackle (power 120) knocks over an animatronic zombie or a papier-mache witch (110) but not
 // a rubber bat, the ghost on its wire or the werewolf guy (150): those you strategically
 // reposition away from. On the last level the tackle's slot holds the $12 foam sword's swing
-// (power 160), which knocks the clown wig off the 11-year-old (150). A monster under power 100
+// (power 160), which knocks the cardboard helmet off the 11-year-old knight (150). A monster under power 100
 // dies when it touches you (after its picture's effect lands: a sorry to a flattened witch, the
-// wig, a dollar); 100 and up stays and its picture's effect lands every touch (a sting, Lily's pat).
+// helmet, a dollar); 100 and up stays and its picture's effect lands every touch (a sting, Lily's pat).
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
 import { CHARBL } from '../../../web/src/formats/blocks';
 import { MAXMARCH, emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
-import { BATTERIES, KEY, MON, MONEY, SEQ, SMIRKS, SND, SORRY, WIG } from './ids';
+import { BATTERIES, KEY, MON, MONEY, SEQ, SMIRKS, SND, SORRY, HELMET } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
@@ -94,7 +94,7 @@ export function buildHero(cb: ReturnType<typeof buildCharBlocks>): Character {
   ch.meter[MONEY] = 1;
   ch.meter[BATTERIES] = 1;
   ch.meter[SORRY] = 1;
-  ch.meter[WIG] = 1;
+  ch.meter[HELMET] = 1;
   ch.meter[SMIRKS] = 1;
   ch.cseq = 0;
   ch.cframe = 0;
@@ -166,9 +166,9 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.carl] = mon(anim('carl0', 'carl1', 2), { power: 200, thru: 0, towards: wander(2) });
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 1, newmon: MON.seedBye }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.seedBye] = mon(anim('seed1', 'seed0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
-  set[MON.clown] = mon(stings('clown0', 'clown1', 4), { power: 150, thru: 1, towards: 1, newmon: MON.wig, upscore: 100 });
-  set[MON.clownRuns] = mon(anim('clownRuns0', 'clownRuns1', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(6, -2, 3, 0)]);
-  set[MON.wig] = mon(anim('wig0', 'wig1', 6), { power: 50, thru: 1, newmon: MON.clownRuns }, [corner(0, 0, 1), corner(0, 0, 1)]);
+  set[MON.knight] = mon(stings('knight0', 'knight1', 4), { power: 150, thru: 1, towards: 1, newmon: MON.helmet, upscore: 100 });
+  set[MON.knightRuns] = mon(anim('knightRuns0', 'knightRuns1', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(6, -2, 3, 0)]);
+  set[MON.helmet] = mon(anim('helmet0', 'helmet1', 6), { power: 50, thru: 1, newmon: MON.knightRuns }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.goat] = mon(anim('goat0', 'goat1', 12), { power: 200, thru: 1 }, pace(2, 1));
   set[MON.bill] = mon(anim('bill0', 'bill1', 6), { power: 50, thru: 0 }, [corner(0, 0, 1), corner(1, 0, 1), corner(0, 0, 1, 4)]);
   return set;

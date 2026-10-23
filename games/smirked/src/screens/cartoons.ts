@@ -211,16 +211,16 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
       if (k >= 6 && k < 16) words(p, x - 50, STRIP + 24, 'GRRR!');
       if (k >= 17) words(p, x + 20, STRIP + 20, 'ACHOO!');
     },
-    // 4. the last hall: the clown-wig kid; you swing the $12 foam sword; the wig flies
+    // 4. the last hall: the cardboard knight; you duel with the $12 foam sword; his helmet flies
     (p, k) => {
       const x = Math.min(110, 10 + k * 8);
-      if (k < 18) scaleBlit(p, M(`clown${k % 2}`), 200 - Math.min(40, k * 3), STRIP + 50, 2);
+      if (k < 18) scaleBlit(p, M(`knight${k % 2}`), 200 - Math.min(40, k * 3), STRIP + 50, 2);
       else {
-        scaleBlit(p, M(`clownRuns${k % 2}`), 160 + (k - 18) * 10, STRIP + 50, 2);
-        scaleBlit(p, M('wig0'), 170, STRIP + 40 - Math.min(30, (k - 18) * 6), 2);
+        scaleBlit(p, M(`knightRuns${k % 2}`), 160 + (k - 18) * 10, STRIP + 50, 2);
+        scaleBlit(p, M('helmet0'), 170, STRIP + 40 - Math.min(30, (k - 18) * 6), 2);
       }
       scaleBlit(p, S(k >= 14 && k < 20 ? 'tackle0' : k < 14 ? `side${k % 3}` : 'brave'), x, STRIP + 50, 2);
-      if (k >= 14) words(p, 160, STRIP + 4, k < 20 ? 'BONK!' : 'HA HA HA!');
+      if (k >= 14) words(p, 160, STRIP + 4, k < 20 ? 'BONK!' : 'GOOD DUEL!');
     },
   ];
   const r = new Reel(pal.pal);

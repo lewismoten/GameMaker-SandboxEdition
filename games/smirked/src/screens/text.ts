@@ -173,9 +173,9 @@ export const INSTRUCTIONS = [
   ]),
   page([
     'THE LAST HALL: the foam sword',
-    'knocks the clown wig off. The',
-    'emergency exit only opens',
-    'for the wig.',
+    "knocks the cardboard knight's",
+    'helmet off. The emergency',
+    'exit only opens for it.',
     '',
     'NERVE is your health. Scares',
     'cost nerve, and every scare',
@@ -269,10 +269,10 @@ witch ("GET DOWN!"), say sorry,
 strategically reposition away
 from the werewolf guy through a
 wall of fake spiderwebs, buy
-the $12 souvenir sword, defend
-yourself from an 11-year-old in
-a clown wig, and bond with the
-emergency exit sign.
+the $12 souvenir sword, duel
+an 11-year-old in a cardboard
+knight costume, and bond with
+the emergency exit sign.
 
 STARTING THE GAME
   Type SMIRKED and press Enter.

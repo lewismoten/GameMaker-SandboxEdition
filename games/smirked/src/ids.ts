@@ -28,12 +28,12 @@ export const MON = {
   /** The mustard seed in red sneakers, on a field trip. Say hi. */
   seed: 12,
   seedBye: 13,
-  /** The 11-year-old in a clown wig. Only the foam sword knocks the wig off. */
-  clown: 14,
-  /** The kid, wig off, running off laughing. */
-  clownRuns: 15,
-  /** The rainbow clown wig, left behind (counter 22). */
-  wig: 16,
+  /** The 11-year-old in a cardboard knight costume, waving his cardboard sword. Only your foam sword knocks his helmet off. */
+  knight: 14,
+  /** The kid, helmet off, running off laughing ("Good duel!"). */
+  knightRuns: 15,
+  /** The cardboard helmet, left behind (counter 22). */
+  helmet: 16,
   /** The third goat from the left, a long way from Bethlehem: a sheet over its head, it's a ghost goat this year. */
   goat: 17,
   /** Lily walking beside you on the last level, apple in hand. */
@@ -97,7 +97,7 @@ export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, b: 48, c
  *   BATTERIES: for the flashlight; the door to the dark hallway only opens with four.
  *   SORRY: witches you tackled and said sorry to; the STAFF ONLY door opens at five ("Not part
  *   of the show." "Pretty sure I broke her broomstick.").
- *   WIG: the clown wig, knocked off with the foam sword; the emergency exit only opens for it.
+ *   HELMET: the cardboard knight's helmet, knocked off with the foam sword; the emergency exit only opens for it.
  *   SMIRKS: Lily's judgment. Every time something gets you (a fog machine, a rubber bat, a fake
  *   spiderweb, a fog light underfoot), she smirks, and it counts. It never opens anything.
  * Dollars are Game-Maker's money (counter 3): the souvenir sword is $12.
@@ -106,7 +106,7 @@ export const BATTERIES = 20;
 export const BATTERIES_NEEDED = 4;
 export const SORRY = 21;
 export const SORRY_NEEDED = 5;
-export const WIG = 22;
+export const HELMET = 22;
 export const SMIRKS = 23;
 export const MONEY = 3;
 export const SWORD_PRICE = 12;
@@ -116,7 +116,7 @@ export const LIVES = 1;
 export const SND = {
   /** Nerve back (a juice box, a bite of caramel apple, Lily's pat). */
   help: 0,
-  /** A monster done in (a zombie knocked over, a witch flattened, the wig off). */
+  /** A monster done in (a zombie knocked over, a witch flattened, the helmet off). */
   kill: 1,
   /** A dollar. */
   money: 2,
@@ -128,7 +128,7 @@ export const SND = {
   score: 5,
   /** Points lost. */
   lose: 6,
-  /** A counter up (a battery, a sorry, the wig, a smirk). */
+  /** A counter up (a battery, a sorry, the helmet, a smirk). */
   gain: 7,
   /** A counter spent (a door opening). */
   spend: 8,

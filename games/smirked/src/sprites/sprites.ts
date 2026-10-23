@@ -6,8 +6,8 @@
 // everything else that moves: the tackle, animatronic zombies, papier-mache witches, Lily (8, a
 // lavender unicorn hoodie with a rainbow mane, glitter on her cheeks, a caramel apple as big as
 // her head), rubber bats, a bedsheet ghost on its wire, the guy in the werewolf mask, a plastic
-// spider, Carl the fly, the mustard seed in red sneakers, the 11-year-old in a rainbow clown
-// wig, the wig, and the third goat from the left under a sheet. Every sprite is drawn from
+// spider, Carl the fly, the mustard seed in red sneakers, the 11-year-old in a cardboard knight
+// costume, his helmet, and the third goat from the left under a sheet. Every sprite is drawn from
 // shapes and given a dark outline.
 import { Pixels } from '../../../kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
@@ -15,7 +15,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { MONEY, SORRY, WIG } from '../ids';
+import { MONEY, SORRY, HELMET } from '../ids';
 
 export { T, outline };
 
@@ -430,29 +430,41 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('seed0', seed(0), { scorePts: 100 });
   book.add('seed1', seed(1), { scorePts: 100 });
-  // The 11-year-old in a rainbow clown wig, a red nose, honking at you. Only the sword stops him.
-  const clown = (f: number, wig = true) => {
+  // The 11-year-old in a cardboard knight costume: box armor, a bucket helmet with a slit and a
+  // feather, a cardboard sword up. Only your foam sword knocks the helmet off.
+  const knight = (f: number, helmet = true) => {
     const p = P();
-    for (const [x, d] of [[6, f ? -1 : 0], [11, f ? 0 : -1]] as const) p.rect(x, 15 + d, 3, 3, c('blue', 1)).rect(x - 1, 18 + d, 5, 2, c('red', 2));
-    for (let y = 9; y <= 15; y++) for (let x = 5; x < 15; x++) p.set(x, y, ((x >> 1) + (y >> 1)) % 2 ? c('yellow', 2) : c('purple', 2));
-    p.rect(3, 9 - f, 3, 2, c('purple', 2)).rect(14, 9 + f, 3, 2, c('purple', 2)).rect(2, 7 - f, 2, 3, c('white', 2)).rect(16, 7 + f, 2, 3, c('white', 2));
+    for (const [x, d] of [[6, f ? -1 : 0], [11, f ? 0 : -1]] as const) p.rect(x, 15 + d, 3, 3, c('navy', 1)).rect(x - 1, 18 + d, 5, 2, c('shoe', 1));
+    // the box armor, a painted crest
+    p.rect(5, 9, 10, 7, c('cardboard', 2)).rect(5, 9, 10, 1, c('cardboard', 3)).rect(5, 15, 10, 1, c('cardboard', 0));
+    p.rect(9, 10, 2, 4, c('red', 2)).rect(8, 11, 4, 1, c('red', 2));
+    // arms, and the cardboard sword waving
+    p.rect(3, 10 - f, 2, 4, c('cardboard', 1)).rect(15, 10 + f, 2, 3, c('cardboard', 1));
+    p.rect(16, 2 + f * 2, 2, 9, c('cardboard', 3)).rect(14, 10 + f, 6, 1, c('foam', 1));
     blob(p, 10, 6, 3.6, 3.4, pal.r('skin'), 2, 3);
-    if (wig) for (let k = 0; k < 18; k++) blob(p, 10 + Math.cos(k * 0.75) * 5, 4 + Math.sin(k * 0.75) * 3 - 1, 1.6, 1.6, [c('rainbow', k % 6)], 0, 0);
-    p.disc(10, 7, 1.3, c('red', 3)).set(8, 5, ink).set(12, 5, ink).rect(8, 9, 5, 1, c('red', 2));
+    if (helmet) {
+      p.rect(6, 1, 8, 8, c('cardboard', 2)).rect(6, 1, 8, 1, c('cardboard', 3)).rect(7, 5, 6, 1, ink).rect(13, 1, 1, 8, c('cardboard', 0));
+      p.line(9, 0, 7, -3, c('red', 2)).line(10, 0, 8, -3, c('red', 3)).set(7, 0, c('red', 2));
+    } else {
+      p.rect(7, 2, 6, 2, c('hair', 1));
+      p.set(8, 6, ink).set(12, 6, ink).rect(9, 8, 3, 1, ink).set(9, 8, c('white', 2)).set(11, 8, c('white', 2));
+    }
     return done(p);
   };
-  sting('clown0', clown(0), -5);
-  book.add('clown1', clown(1));
-  book.add('clownRuns0', clown(0, false));
-  book.add('clownRuns1', clown(1, false));
-  // The rainbow clown wig, knocked off and lying there (counter 22).
-  const wig = (f: number) => {
+  sting('knight0', knight(0), -5);
+  book.add('knight1', knight(1));
+  book.add('knightRuns0', knight(0, false));
+  book.add('knightRuns1', knight(1, false));
+  // The cardboard helmet, knocked off and lying there (counter 22).
+  const helmet = (f: number) => {
     const p = P();
-    for (let k = 0; k < 20; k++) blob(p, 10 + Math.cos(k * 0.7) * (4 + (k % 3)), 11 + Math.sin(k * 0.7) * (3 + (k % 2)) - f, 1.8, 1.8, [c('rainbow', k % 6)], 0, 0);
+    p.rect(5, 7 - f, 10, 9, c('cardboard', 2)).rect(5, 7 - f, 10, 1, c('cardboard', 3)).rect(6, 11 - f, 8, 1, ink).rect(14, 7 - f, 1, 9, c('cardboard', 0));
+    p.line(9, 6 - f, 6, 2 - f, c('red', 2)).line(10, 6 - f, 7, 2 - f, c('red', 3));
+    micro(p, 7, 13 - f, '12', c('red', 1));
     return done(p);
   };
-  book.add('wig0', wig(0), { effect: WIG, eamt: 1, scorePts: 250 });
-  book.add('wig1', wig(1), { effect: WIG, eamt: 1, scorePts: 250 });
+  book.add('helmet0', helmet(0), { effect: HELMET, eamt: 1, scorePts: 250 });
+  book.add('helmet1', helmet(1), { effect: HELMET, eamt: 1, scorePts: 250 });
   // The third goat from the left, under a bedsheet this year: a ghost goat. Harmless, grazing.
   const goat = (f: number) => {
     const p = P();

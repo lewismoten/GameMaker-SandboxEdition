@@ -2,7 +2,7 @@
 // little noises are synthesized here (a fog machine's hiss, your scream like a cat being dipped
 // in a bathtub, a sneeze, the werewolf guy's howl, a creaky door, an animatronic zombie's servo
 // and groan, a papier-mache witch going flat, a flashlight battery clicking in, a dollar, candy
-// corn, a juice box slurped, the foam sword's whoosh, a clown horn, the kid's laugh, an "ow!"
+// corn, a juice box slurped, the foam sword's whoosh, a cardboard helmet's clonk, the kid's laugh, an "ow!"
 // and fainting onto a couch like a Victorian woman seeing a ghost); the singing is cut from the
 // song itself (clips.ts): "GET DOWN!" for SPACE, "Fog machine hisses, I scream like a cat" for
 // B in the fog hall, "You okay with that?" and "You know it's not real, right?" for C, "Turns
@@ -106,9 +106,9 @@ export function buildVocs(): Record<string, Uint8Array> {
   vocs.register = sample(0.7, mix([gate(lowNoise(40, 0.8), 0, 0.05), 0.8], [gate(osc.sine(2637), 0.08, 0.7), 0.5], [gate(osc.sine(3520), 0.08, 0.7), 0.3]), { envelope: env(0.01, 1.4) });
   // the $12 foam sword: a soft whoosh and a squeaky bonk
   vocs.whoosh = sample(0.4, mix([lowNoise(41, (t) => 0.1 + t * 1.6), 0.7], [gate(osc.sine((t) => 700 - t * 300), 0.28, 0.36), 0.5]), { envelope: env(0.2, 1) });
-  // a clown horn: HONK
-  vocs.honk = sample(0.35, (t) => Math.sign(Math.sin(2 * Math.PI * 330 * t)) * 0.4 + Math.sin(2 * Math.PI * 660 * t) * 0.3, { envelope: env(0.02, 0.8) });
-  // the 11-year-old laughing as he runs off, wig in your hand: ha-ha-ha!
+  // a cardboard helmet knocked off: a hollow clonk and a bounce
+  vocs.clonk = sample(0.5, mix([gate(lowNoise(46, 0.6), 0, 0.03), 0.9], [osc.sine((t) => 220 - t * 160), 0.7], [gate(osc.sine(180), 0.28, 0.34), 0.5]), { envelope: env(0.004, 1.6) });
+  // the 11-year-old laughing as he runs off, helmet in your hand: ha-ha-ha!
   vocs.laugh = sample(
     0.8,
     (() => {
@@ -141,7 +141,7 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.life, 'afraid', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
   add(SND.score, by({ foyer: 'crinkle', parade: 'crinkle', webs: 'crinkle', exit: 'chime' }), speaker((i) => (i < 6 ? 1568 : i < 14 ? 1319 : 0)));
   add(SND.lose, 'groan', SPEAKER.fall(300, 90));
-  add(SND.gain, by({ foyer: 'click', parade: 'cardbrd', webs: 'sneezing', exit: 'honk' }), speaker((i) => (i < 8 ? 600 + i * 90 : 0)));
+  add(SND.gain, by({ foyer: 'click', parade: 'cardbrd', webs: 'sneezing', exit: 'clonk' }), speaker((i) => (i < 8 ? 600 + i * 90 : 0)));
   add(SND.spend, by({ foyer: 'mild', parade: 'target', webs: 'creak', exit: 'exit' }), SPEAKER.noise(3, 60, 300));
   add(SND.tackle, place === 'exit' ? 'whoosh' : 'getdown', SPEAKER.warble(700, 250, 1.1));
   add(SND.hurt, by({ foyer: 'scream', parade: 'scream', webs: 'sneeze', exit: 'ow' }), SPEAKER.hurt());

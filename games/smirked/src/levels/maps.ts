@@ -9,8 +9,8 @@
 //   3. Strategic Repositioning: the fake woods. The guy in the werewolf mask growls after you,
 //      walls of fake spiderwebs make you sneeze, fog lights and fake demon feet trip you, and
 //      Lily pats you. Twelve dollars buy the souvenir sword at the gift shop's register.
-//   4. The Emergency Exit Sign: the last hall. An 11-year-old in a clown wig; your $12 foam
-//      sword knocks the wig off, and the emergency exit opens for it.
+//   4. The Emergency Exit Sign: the last hall. An 11-year-old in a cardboard knight costume; your
+//      $12 foam sword knocks his helmet off, and the emergency exit opens for it.
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
@@ -285,7 +285,7 @@ export function lastHall(book: BlockBook): Level {
   ]);
   const m = new MapBuilder(book, 'wallTop', HALL);
   m.patch(0, 0, map.lines);
-  m.mon(MON.clown, 22, 3).mon(MON.lilyNear, 16, 10).mon(MON.bat, 4, 5).mon(MON.bat, 25, 6);
+  m.mon(MON.knight, 22, 3).mon(MON.lilyNear, 16, 10).mon(MON.bat, 4, 5).mon(MON.bat, 25, 6);
   m.link(14, 1, 'won');
   return { m, start: at(14, 10), size: [map.w, map.h] };
 }
