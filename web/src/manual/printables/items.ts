@@ -68,6 +68,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
             note: 'Stuck? Get the hint book',
             icon: '💡',
             render: () => hintOffer(ctx, book.title),
+            redFilm: true,
           },
         ]
       : []),

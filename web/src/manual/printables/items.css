@@ -978,6 +978,9 @@
 }
 
 .ho-sample .rf-code {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
   margin-top: 0.6cqw;
   font-size: 2.3cqw;
 }
@@ -1369,11 +1372,14 @@
 
 .hb-a .rf-code {
   display: flex;
+  box-sizing: border-box;
+  width: 100%;
   font-size: 3cqw;
 }
 
 .hb-a .rf-code.rf-sketch-box {
   display: inline-flex;
+  width: auto;
 }
 
 .hb-folio {

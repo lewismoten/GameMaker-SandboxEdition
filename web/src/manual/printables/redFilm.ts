@@ -158,11 +158,28 @@ export function redCode(text: string): HTMLElement {
     img.style.height = `${LINE}em`;
     return img;
   };
-  return h(
+  const box = h(
     'span',
     { class: 'rf-code', role: 'img', 'aria-label': 'Hidden answer: lay the red film over it' },
     ...words.flatMap((word, i) => [picture(word, base + i * 7919, CYAN_INK, 'rf-screen'), picture(word, base + i * 7919, PRINT_CYAN_INK, 'rf-print')]),
   );
+  // the box is as wide as the column, so the space after the last word is filled with the
+  // same noise (no letters in it) and every answer box looks alike, whatever its length
+  const tile = filler();
+  if (tile) {
+    box.style.backgroundImage = `url(${tile.src})`;
+    box.style.backgroundSize = `${tile.width / PX}em ${LINE}em`;
+  }
+  return box;
+}
+
+let fillerTile: { src: string; width: number } | undefined;
+/** A strip of the answers' noise with nothing hidden in it (its "letters" are a decoy ink). */
+function filler(): { src: string; width: number } | undefined {
+  if (fillerTile || typeof document === 'undefined') return fillerTile;
+  const cv = hiddenWord('MWMWMWMW', 13, DECOY_INKS[1]);
+  if (!cv.width) return undefined;
+  return (fillerTile = { src: cv.toDataURL('image/png'), width: cv.width });
 }
 
 /** A sketch cell's size on the canvas, in pixels. */
