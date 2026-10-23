@@ -108,8 +108,7 @@ Sparky's).
 
   Sandbox Software
   Attn: Registrations
-  1234 Tomorrow Lane,
-  Suite 2000
+  P.O. Box 000
   Pittsburgh, PA 15213
 
 (This address is made up!

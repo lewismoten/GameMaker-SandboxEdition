@@ -192,8 +192,7 @@ You may copy it and give it to your friends, upload it to your favorite BBS, and
 
   Sandbox Software
   Attn: Registrations
-  1234 Tomorrow Lane,
-  Suite 2000
+  P.O. Box 000
   Pittsburgh, PA 15213
 
 (This address is made up! Sandbox Software is part of a 1990s-style recreation. Please don't mail anything; registration is free and everything is already in the box.)
