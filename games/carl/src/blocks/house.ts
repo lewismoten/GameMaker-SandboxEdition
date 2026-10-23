@@ -615,7 +615,7 @@ export function buildHouse(pal: Pal): BlockBook {
     else micro(p, 1, 2, 'AUX', c('led', 1));
     return p;
   };
-  book.add('aux', aux(false), { effect: SNACKS, eamt: 1, score: 2000, touch: 'auxHeld' });
+  book.add('aux', aux(false), { solid: SOLID, effect: SNACKS, eamt: 1, score: 2000, touch: 'auxHeld' });
   book.add('auxHeld', aux(true), AIR);
   const bucket = panel();
   bucket.rect(4, 8, 12, 12, c('ochre', 2)).rect(3, 7, 14, 2, c('ochre', 3)).line(4, 8, 10, 2, c('grey', 2)).line(16, 8, 10, 2, c('grey', 2));

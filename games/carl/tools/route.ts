@@ -271,8 +271,9 @@ export async function theAux(bot: Bot): Promise<void> {
     await go(bot, [[42, 1]], 'through');
   });
   await carefully(bot, 'the aux cord', 12, async () => {
-    await go(bot, [[42, 6], [47, 7], [49, 8]], 'the stereo');
-    await leave(bot, bot.fly(50, 8, 'the aux cord'), 'the aux cord');
+    await go(bot, [[42, 1], [49, 1]], 'over the stereo');
+    // straight down with the cord to the receiver: no new move, so nothing cuts "Carl's got the aux cord now" off
+    await leave(bot, bot.fly(49, 9, 'the aux cord'), 'the aux cord');
   });
 }
 

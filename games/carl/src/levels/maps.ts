@@ -380,9 +380,11 @@ export function theAux(book: BlockBook): Level {
   m.set(40, 2, 'shelfTop').col(40, 3, 10, 'shelf');
   m.mon(MON.clap, 40, 1);
   m.mon(MON.swatter, 45, 3);
-  // the stereo, and the aux cord
-  m.col(48, 9, 10, 'speaker').col(51, 9, 10, 'speaker').set(49, 10, 'sideTable').set(50, 10, 'sideTable').set(49, 9, 'receiver').set(50, 9, 'deck');
-  m.set(50, 8, 'aux');
-  m.link(50, 8, 'won');
+  // the stereo: tower speakers, the receiver on the floor between them, and the aux cord hanging
+  // at the top of the gap; Carl takes it and dives straight down with it to the receiver, long
+  // enough for "Carl's got the aux cord now" to play before the scene ends
+  m.col(48, 3, 10, 'speaker').col(50, 3, 10, 'speaker').set(49, 10, 'receiver');
+  m.set(49, 3, 'aux');
+  m.link(49, 9, 'won');
   return { m, start: at(4, 5), size: [W, H] };
 }
