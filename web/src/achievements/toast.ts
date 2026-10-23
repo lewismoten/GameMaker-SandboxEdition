@@ -12,6 +12,15 @@ let host: HTMLElement | undefined;
 
 const isDesk = () => document.documentElement.dataset.ui === 'desk';
 
+/** A page that places the notes itself (the DOS page: clear of its screen and the copy check's panels). */
+let placer: ((host: HTMLElement) => void) | undefined;
+
+/** Hands where the notes go to the page (placeNotes(undefined) gives it back). */
+export function placeNotes(f: ((host: HTMLElement) => void) | undefined): void {
+  placer = f;
+  if (host?.isConnected) place(host);
+}
+
 function ensureHost(): HTMLElement {
   if (host?.isConnected) return host;
   host = document.createElement('div');
@@ -42,6 +51,8 @@ function raise(el: HTMLElement): void {
  * column, has them at the bottom of the window.
  */
 function place(el: HTMLElement): void {
+  el.classList.toggle('ach-placed', !!placer);
+  if (placer) return placer(el);
   const desk = isDesk();
   el.classList.toggle('ach-desk', desk);
   el.style.removeProperty('top');
@@ -83,7 +94,7 @@ export function showUnlock(id: string): void {
   text.append(kicker, title, desc);
   if (!isDesk()) {
     const link = document.createElement('a');
-    link.href = '#/achievements';
+    link.href = placer ? './#/achievements' : '#/achievements'; // from a page of its own, the site's
     link.className = 'ach-toast-link';
     link.textContent = 'See all';
     link.addEventListener('click', () => close());

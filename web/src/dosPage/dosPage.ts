@@ -25,6 +25,7 @@ import { watchForUpdates } from '../devReload';
 import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
 import { viewSwitch } from '../viewSwitch';
+import { placeNotes } from '../achievements/toast';
 
 const root = document.querySelector<HTMLElement>('#dos')!;
 const speed: SpeedSetting = { slowPc: undefined };
@@ -39,6 +40,7 @@ function say(text: string): void {
 
 const hint = h('p', { class: 'dos-off' }, 'The PC is switched off. Press Power.');
 const crt = h('div', { class: 'crt dos-crt', role: 'region', 'aria-label': 'Computer monitor' }, hint);
+const stage = h('main', { class: 'dos-stage' }, crt);
 crt.addEventListener('click', () => (pc?.powered ? pc.focus() : void powerOn()));
 
 // ---- the case's buttons ----------------------------------------------------------------
@@ -234,11 +236,37 @@ clear(
       ),
       h('div', { class: 'dos-controls', role: 'group', 'aria-label': 'Disks and programs' }, disks.button, cdBtn, gmBtn, bbsBtn, guideBtn),
     ),
-    h('main', { class: 'dos-stage' }, crt),
+    stage,
     h('div', { class: 'dos-foot' }, keypad(crt), links),
     status,
   ),
 );
+
+// Achievement notes: in a band the screen makes room for at the top of the stage, as wide as
+// the screen, so they never cover it, the controls or the copy check's guide and card (which lie
+// beside the screen, or over the bottom of the window). Two at a time; clicks go through them.
+const NOTES_BAND = 48;
+let notesWatched = false;
+function placeNotesHere(host: HTMLElement): void {
+  const fit = () => {
+    const shown = host.childElementCount > 0;
+    stage.style.paddingTop = shown ? `${NOTES_BAND}px` : '';
+    if (!shown) return;
+    const s = stage.getBoundingClientRect();
+    const c = crt.getBoundingClientRect();
+    host.style.top = `${s.top + 4}px`;
+    host.style.left = `${Math.max(8, c.left)}px`;
+    host.style.right = 'auto';
+    host.style.width = `${Math.min(c.width, innerWidth - 16)}px`;
+  };
+  fit();
+  requestAnimationFrame(fit); // once the screen has made room
+  if (notesWatched) return;
+  notesWatched = true;
+  new MutationObserver(fit).observe(host, { childList: true });
+  new ResizeObserver(fit).observe(crt);
+}
+placeNotes(placeNotesHere);
 
 // GM's copy check and GM REGISTER: the Owner's Guide and the registration card beside the screen
 regSide(

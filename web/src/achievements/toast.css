@@ -168,6 +168,65 @@
   outline-color: #3a3100;
 }
 
+/* placed by the page (toast.ts placeNotes; the DOS page): two at a time, side by side, each
+   one line; clicks go through them to what is under them, all but the close button */
+.ach-toasts.ach-placed {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.ach-placed .ach-toast {
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 8px;
+  pointer-events: none;
+}
+
+.ach-placed .ach-toast:nth-last-child(n + 3) {
+  display: none;
+}
+
+.ach-placed .ach-toast-close {
+  pointer-events: auto;
+}
+
+.ach-placed .ach-toast-icon {
+  font-size: 20px;
+}
+
+.ach-placed .ach-toast-text {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ach-placed .ach-toast-text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ach-placed .ach-toast-text > strong {
+  flex: none;
+  max-width: 100%;
+}
+
+.ach-placed .ach-toast-link {
+  display: none;
+}
+
+/* "Achievement unlocked" is still read out */
+.ach-placed .ach-toast-kicker {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
 @keyframes ach-in {
   from {
     opacity: 0;
