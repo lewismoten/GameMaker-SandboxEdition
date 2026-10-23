@@ -18,10 +18,10 @@ export function buildHiveSprites(book: SpriteBook, pal: Pal): void {
     p.set(16, 7 + f, c('red', 1)).set(16, 8 + f, c('red', 1)).set(16, 9 + f, c('red', 1)).set(16, 11 + f, c('red', 1));
     return outline(p, c('ink', 0));
   };
-  book.add('shush0', shush(0), { chHitPt: -5 });
-  book.add('shush1', shush(1), { chHitPt: -5 });
+  book.add('shush0', shush(0), { chHitPt: -2 });
+  book.add('shush1', shush(1), { chHitPt: -2 });
 }
 
 export function hiveMonsters(set: Monster[], mb: SpriteBook): void {
-  set[HIVE_MON.shush] = mon(anim(mb, 'shush0', 'shush1', 4), { power: POWER.foe, thru: 1, end: -1 }, [corner(0, 0, 1), corner(0, -2, 1, 0), corner(1, -3, 1, 0)]);
+  set[HIVE_MON.shush] = mon(anim(mb, 'shush0', 'shush1', 4), { power: POWER.foe, thru: 1, end: -1 }, [corner(0, 0, 3), corner(0, -3, 3, 0), corner(1, -4, 1, 0)]);
 }
