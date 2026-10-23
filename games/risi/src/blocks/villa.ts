@@ -14,6 +14,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { AIR, AIR_NEEDED, CHEESE, CHEESE_NEEDED, MON } from '../ids';
 import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denarius, grapes, marble, outside, sparkle, wreath } from './common';
 
@@ -397,5 +398,14 @@ export function buildVilla(pal: Pal): BlockBook {
   };
   book.add('corona', corona(false), { solid: SOLID, effect: CHEESE, eamt: -CHEESE_NEEDED, score: 2000, touch: 'crowned' });
   book.add('crowned', corona(true), { grav: GRAV.none });
+  // the tin heart, on the kitchen floor under the shelf (points only, no sound of its own)
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(copy(kbase), { ink: c('ink', 0), tin: [c('iron', 0), c('iron', 1), c('iron', 2)], white: c('marble', 3), dark: c('grey', 0) }, k), {
+      score: 100,
+      touch: 'kbase',
+      grav: GRAV.down,
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+    });
   return book;
 }

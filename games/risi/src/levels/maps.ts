@@ -242,6 +242,8 @@ export function kitchen(book: BlockBook): Level {
   m.set(42, 9, 'hole').mon(MON.mouse, 41, 9);
   // the crown of cheese
   m.set(45, 9, 'corona');
+  // a tin heart on the floor under the shelf
+  m.set(23, 9, 'tinHeart');
   m.link(47, 9, 'next');
   return { m, start: at(4, 9), size: [W, H] };
 }
@@ -268,6 +270,8 @@ export function baths(book: BlockBook): Level {
   m.set(8, walk + 1, 'scalePool');
   // a bench of cheering mice, a scale between them
   m.row(8, 12, 14, 'bench').mon(MON.fan, 12, 7).set(13, 7, 'scale').mon(MON.fan, 14, 7);
+  // a painted egg rolled under it
+  m.set(14, walk, 'egg');
   // the steam vent up to a high bench: a scale and a wreath
   m.set(18, walk + 1, 'vent').col(18, 3, walk, 'steam0');
   m.row(4, 19, 21, 'bench').set(20, 3, 'scale').set(21, 3, 'bwreath');
@@ -313,6 +317,8 @@ export function theater(book: BlockBook): Level {
     for (let x = x0; x <= x1; x++) m.col(x, top + 1, 12, 'riser');
   }
   m.set(1, 5, 'cabbageRow');
+  // Mystery Robot Joe at the top of the stands, counting the laughs
+  m.set(1, 4, 'joe');
   // the audience: stone faces on every step, and one in the orchestra
   m.mon(MON.stony, 4, 4).mon(MON.stony, 8, 6).mon(MON.stony, 10, 8).mon(MON.stony, 12, 8).mon(MON.stony, 15, 10).mon(MON.stony, 20, 11);
   m.set(18, 9, 'mask').set(22, 8, 'tgrapes');

@@ -14,7 +14,9 @@
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
+import { joeCameo } from '../../../kit/cameos';
 import { CROWN, LAUGHS, LAUGHS_NEEDED, MON, SCALES, SCALES_NEEDED } from '../ids';
 import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denarius, grapes, marble, outside, sparkle, wreath } from './common';
 
@@ -279,6 +281,21 @@ export function buildThermae(pal: Pal): BlockBook {
   book.add('tgrapes', grapes(x, tsky(46)), { hp: 20, score: 10, touch: 'tsky' });
   book.add('tcup', cup(x, tsky(47)), { hp: 30, score: 10, touch: 'tsky' });
   book.add('tcoin', denarius(x, tsky(48)), { score: 100, touch: 'tsky' });
+  // a painted Easter egg, rolled under the bench of cheering mice in the baths (a few points, no sound of its own)
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`egg${k || ''}`, drawEasterEgg(copy(bbase), { ink: c('ink', 0), shell: [c('grass', 1), c('grass', 2), c('grass', 3)], paint: [c('pompeii', 2), c('pompeii', 3)], accent: c('gold', 3), white: c('marble', 3) }, 'dots', k), {
+      score: 50,
+      touch: 'bbase',
+      grav: GRAV.down,
+      next: `egg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 3 : 60,
+    });
+  // Mystery Robot Joe at the top of the stands, counting the laughs (scenery; recolored from the
+  // unlit palette, so the block is the same in every light)
+  const joe = tsky(31);
+  const robot = joeCameo(buildPalette('plain').pal, 'down', 0);
+  for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) if (robot.get(xx, y) !== 255) joe.set(xx, y, robot.get(xx, y));
+  book.add('joe', joe, air);
   return book;
 }
 
