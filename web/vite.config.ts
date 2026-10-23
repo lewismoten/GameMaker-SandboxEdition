@@ -214,6 +214,7 @@ function playChunks(): Rollup.GetManualChunk {
     ['desk', ['src/desk/desk.ts']],
     ['web', ['src/modernUi.ts']],
     ['play', ['src/play.ts']],
+    ['dos', ['src/dosPage/dosPage.ts']], // so the DOS page shares the PC's code, not the whole player chunk
   ];
   let closures: Set<string>[] | undefined;
   const closure = (entries: string[], info: Rollup.ManualChunkMeta['getModuleInfo']): Set<string> => {
@@ -252,6 +253,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         play: resolve(__dirname, 'play.html'),
+        dos: resolve(__dirname, 'dos.html'), // the PC on its own (src/dosPage)
       },
       output: { manualChunks: playChunks(), onlyExplicitManualChunks: true },
     },

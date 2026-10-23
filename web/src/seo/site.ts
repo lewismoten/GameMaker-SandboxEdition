@@ -25,6 +25,11 @@ export const ROUTES = {
     description:
       'Sit down at a mid-90s PC: switch it on, run Game-Maker from C:\\GM, pick a game from the disk box or the shareware catalog, and play or design it just like in 1994 — in your browser.',
   },
+  dos: {
+    title: `DOS Game-Maker · ${PRODUCT}`,
+    description:
+      'Go straight to the 1994 PC: it boots into Game-Maker from its CD, with a disk menu of games to play or change, the Owner’s Guide, and a BBS to call. No desk around it, and it shares the desk’s saves.',
+  },
   guide: {
     title: `Guide · ${PRODUCT}`,
     description: `How to use ${PRODUCT}: making blocks, monsters and characters, building maps and scenes, sounds and music, testing and exporting your game for the web or DOS.`,

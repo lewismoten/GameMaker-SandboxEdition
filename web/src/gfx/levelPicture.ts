@@ -1,7 +1,7 @@
 // A picture of a level as the player first sees it, as palette-indexed pixels: the map around
 // the block the hero arrives on, with its placed monsters and the hero. No canvas, so the
 // build draws the home page's game pictures with it too (scripts/gameShots.ts), exactly as
-// the page would (integratorArt.ts levelShot, desk/boxes/boxArt.ts renderShot).
+// the page would (integratorArt.ts levelShot, gameShots.ts renderShot).
 import { NOSCENE, type Game, type Point, type Scene } from '../formats/game';
 import { parseMap, MLEN, MWID } from '../formats/map';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../formats/blocks';
