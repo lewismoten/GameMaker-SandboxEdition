@@ -9,6 +9,7 @@
 import { LevelMap, type Level } from './level';
 import { ATTIC, BASE, G, UP, art, houseTiles } from './level1Tiles';
 import { houseBeasts } from './level1Beasts';
+import { addTinHeart } from '../sprites/hidden';
 import { bandAt } from './common';
 import { sky } from '../blocks/tiles';
 
@@ -240,6 +241,8 @@ export function house(): Level {
   for (const [x, y] of treats) m.treat(x, y);
   bs.def('toaster').birthMon = beasts.id('toast');
   bs.def('toaster').birthTime = 70;
+  // a tin heart tucked behind Teddy's bed, just behind where he starts (100 points)
+  m.set(2, 39, addTinHeart(bs, m.get(2, 39)));
   m.mark('start', 4, 39);
   m.mark('exit', car, 39);
   void art;

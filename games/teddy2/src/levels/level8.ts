@@ -8,6 +8,9 @@
 import { LevelMap, type Level } from './level';
 import { G, showTiles } from './level8Tiles';
 import { showBeasts } from './level8Beasts';
+import { STEADY, addGuest } from '../sprites/hidden';
+import { joeCameo } from '../../../kit/cameos';
+import { P } from '../art/pal';
 
 export function show(): Level {
   const bs = showTiles();
@@ -91,6 +94,9 @@ export function show(): Level {
     [74, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
+  // Mystery Robot Joe from Keep It Brief! in the front row of the stands over the judges'
+  // table, keeping count
+  m.set(57, 32, addGuest(bs, 'joe', joeCameo(P.pal, 'down', 0, { use: STEADY }), m.get(57, 32)));
   m.mark('start', 2, 39);
   m.mark('exit', 85, 38);
   return {
