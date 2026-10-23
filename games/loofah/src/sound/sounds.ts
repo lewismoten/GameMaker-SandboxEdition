@@ -227,7 +227,19 @@ const PLAYS: Record<Place, Partial<Record<keyof typeof SND, string>>> = {
   },
   aisle: { speak: 'rough', wail: 'wrong', hurt: 'squelch', die: 'drainnev', gain: 'chime', spend: 'kaching', kill: 'scrub', step: 'pat', score: 'mango' },
   home: { speak: 'rough', wail: 'line', hurt: 'towel', die: 'drainnev', gain: 'match', spend: 'bell', kill: 'pop', step: 'pat' },
-  shower: { speak: 'rough', wail: 'brine', hurt: 'worse', die: 'drainnev', gain: 'scrubbus', spend: 'hiss', kill: 'squelch', step: 'drip', score: 'shriek' },
+  // the sung "Scrubbus maximus" once (the first sprig), a chime for the rest
+  shower: {
+    speak: 'rough',
+    wail: 'brine',
+    help: 'scrubbus',
+    hurt: 'worse',
+    die: 'drainnev',
+    gain: 'chime',
+    spend: 'hiss',
+    kill: 'squelch',
+    step: 'drip',
+    score: 'shriek',
+  },
 };
 
 /** An act's .SND: which VOC each effect plays (a PC speaker tune for each, for no Sound Blaster). */

@@ -159,15 +159,15 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(2, 2, 2, 4),
     corner(0, 0, 2, 4),
   ]);
-  set[MON.carlOff] = mon(anim('carl0', 'carl1', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 5), corner(6, -6, 5, 0)]);
+  set[MON.carlOff] = mon(anim('carlOff0', 'carlOff1', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 5), corner(6, -6, 5, 0)]);
   // II. the forest-dark aisle: wild loofahs (brine, 220, beats them into tame ones)
   set[MON.feral] = mon(anim('feral0', 'feral1', 4), { power: 150, thru: 1, newmon: MON.tame }, pace(run, 1));
   set[MON.tame] = mon(anim('tame0', 'tame1', 8), { power: 50, thru: 1 }, still);
   set[MON.owl] = mon(anim('owl0', 'owl1', 30), { power: 200, thru: 0 }, still);
   set[MON.loaf] = mon(anim('loaf0', 'loaf1', 8), { power: 50, thru: 0, newmon: MON.loafOff }, still);
-  set[MON.loafOff] = mon(anim('loaf1', 'loaf0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
+  set[MON.loafOff] = mon(anim('loafOff1', 'loafOff0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 0, newmon: MON.seedOff }, still);
-  set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
+  set[MON.seedOff] = mon(anim('seedOff1', 'seedOff0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, 0, 3, 4)]);
   // III. home in the dark
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 20), { power: 200, thru: 1 }, still);
   set[MON.gwinn] = mon(anim('gwinn0', 'gwinn1', 24), { power: 200, thru: 1 }, still);

@@ -48,6 +48,10 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
   ['fog', 3, [150, 170, 180], [235, 245, 250], undefined, true],
   ['neon', 3, [140, 240, 200], [240, 255, 250], undefined, true],
   ['eye', 2, [255, 200, 40], [255, 255, 180], undefined, true],
+  // rims and floors that keep their own light, so the play row reads in the dark acts: a pale
+  // pink rim on the wild loofahs, and a cool slate for the shower's tiles
+  ['rim', 2, [230, 120, 170], [255, 200, 225], undefined, true],
+  ['slate', 3, [26, 30, 44], [156, 166, 190], undefined, true],
 ];
 
 /** Each act's backdrop ramp ("sky": the dark of a room, top to bottom) and how the rest is lit. */

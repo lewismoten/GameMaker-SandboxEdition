@@ -294,10 +294,9 @@ export function shower(book: BlockBook): Level {
     .col(W - 1, 0, 11, 'outside');
   // the drain, full of cursed water
   m.row(10, 12, 13, 'drain0');
-  // the caddy's shelves, rosemary on them, a dry washcloth on the floor
-  m.row(7, 4, 6, 'caddy').set(5, 6, 'rosemaryS');
+  // the caddy's shelves, rosemary on them
+  m.row(7, 4, 6, 'caddy').set(5, 6, 'rosemaryFirst');
   m.row(5, 8, 10, 'caddy').set(9, 4, 'rosemaryS');
-  m.set(8, 9, 'clothS');
   m.row(7, 15, 17, 'caddy').set(16, 6, 'rosemaryS');
   m.row(7, 19, 20, 'caddy').set(20, 6, 'rosemaryS');
   // Scrubbus Maximus, smug where it stands; the soap dish behind it up on its tiles

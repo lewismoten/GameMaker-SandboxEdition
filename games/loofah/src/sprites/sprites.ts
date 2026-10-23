@@ -312,7 +312,8 @@ export function buildMonsterBlocks(pal: Pal) {
     mesh(p, 4, 6 + y, 16, 20 + y, c('gourd', 0));
     p.line(10, 6 + y, 12, 3 + y, c('green', 1));
     face(p, 10, 12 + y, { angry: true, grin: true });
-    return done(p);
+    // a pale pink rim outside the ink, so it shows against the dark of the aisle
+    return outline(done(p), c('rim', 1));
   };
   book.add('feral0', feral(0), hurt(-8));
   book.add('feral1', feral(1), hurt(-8));
@@ -506,5 +507,13 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('steam0', puff(0));
   book.add('steam1', puff(1));
+  // (last, so every other block keeps its number) the friends flying off: the same pictures,
+  // worth nothing, so brushing past them as they go doesn't score every tick
+  book.add('carlOff0', carl(0));
+  book.add('carlOff1', carl(1));
+  book.add('loafOff0', loaf(0));
+  book.add('loafOff1', loaf(1));
+  book.add('seedOff0', seed(0));
+  book.add('seedOff1', seed(1));
   return book;
 }

@@ -378,8 +378,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   const vine = (gourd: boolean) => {
     const p = forest(49);
     for (let y = 0; y < 20; y++) p.set(9 + Math.round(Math.sin(y / 3) * 2), y, c('green', 2)).set(10 + Math.round(Math.sin(y / 3) * 2), y, c('green', 1));
-    blob(p, 5, 6, 3, 2, R('green'), 1, 3);
-    blob(p, 15, 14, 3, 2, R('green'), 1, 3);
+    blob(p, 5, 6, 3, 2, R('green'), 2, 4);
+    blob(p, 15, 14, 3, 2, R('green'), 2, 4);
     if (gourd) {
       blob(p, 14, 6, 3, 5, R('gourd'), 0, 3);
       for (let k = 0; k < 5; k++) p.set(13 + (k % 3), 3 + k * 2, c('gourd', 0));
@@ -656,7 +656,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const showerTile = (ledge: boolean) => {
     const p = ledge ? steamAir(93) : P();
     for (let y = ledge ? 2 : 0; y < (ledge ? 8 : 20); y++)
-      for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('tile', 2) : c('ink', 1));
+      for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('slate', 2) : c('slate', 0));
     if (ledge) p.rect(0, 8, 20, 1, c('metal', 3)).rect(2, 9, 16, 1, c('metal', 1));
     return p;
   };
@@ -677,7 +677,9 @@ export function buildBlocks(pal: Pal): BlockBook {
   blob(dish, 13, 10, 4, 2.4, R('mango'), 1, 3);
   book.add('soapDishB', dish, { solid: SOLID, birthMon: MON.suds, birthTime: SUDS_EVERY });
   // a dry washcloth on the caddy (dignity back), rosemary for the brine
-  book.add('clothS', cloth(steamAir(96)), { hp: 30, score: 100, touch: 'steamAir' });
+  // the first sprig in the shower gives dignity back too, so it sings "Scrubbus maximus" (the help
+  // sound) once, where the rest only chime; there's no washcloth here
+  book.add('rosemaryFirst', rosemary(steamAir(96)), { ...air, hp: 10, effect: SEQ.throw, eamt: SPRIG, score: 50, touch: 'rosemaryGone' });
   book.add('rosemaryS', rosemary(steamAir(97)), { ...air, effect: SEQ.throw, eamt: SPRIG, score: 50, touch: 'rosemaryGone' });
   book.add('rosemaryGone', steamAir(97), air);
   // her silver rack: it takes the pink one back, clean, beside his own black one
