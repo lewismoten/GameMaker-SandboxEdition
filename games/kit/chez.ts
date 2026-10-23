@@ -144,7 +144,7 @@ function profile(k: ChezInk, port: boolean, s: number): Pixels {
         const d = Math.abs(Y - (BAND - up)) / Math.sqrt(1 + dy * dy);
         if (X < BAND_END) {
           if (s >= 2 && d <= gap + w + px) c = pin; // the band's squared-off end
-        } else if (s < 0.75 ? d <= px / 2 : Math.abs(d - gap) <= w) c = stripe; // (far off, one line)
+        } else if (s < 0.75 ? d <= px / 2 : Math.abs(d - gap) <= w) c = s < 0.75 ? k.trim : stripe; // (far off, one deep red line)
         else if (s >= 2 && d > gap + w && d <= gap + w + px) c = pin;
       }
       p.set(x, y, c);

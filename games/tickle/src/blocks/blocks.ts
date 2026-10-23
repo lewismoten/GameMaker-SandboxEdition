@@ -474,6 +474,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     roof: c('ink', 1),
     tire: c('ink', 0),
     hub: c('grey', 3),
+    rim: c('paper', 2),
+    stripe: c('ink', 1),
     bumper: c('grey', 0),
     lamp: c('paper', 2),
     tail: c('flame', 1),
