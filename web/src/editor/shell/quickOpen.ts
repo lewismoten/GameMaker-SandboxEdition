@@ -1,10 +1,11 @@
 // The quick switcher (Ctrl+P or ⌘P): type part of a file's name, or a scene's, and press Enter
 // to open it. With nothing typed it lists the files opened most recently, kept in the
-// project's companion file (never among the game's files).
+// project's companion file (never among the game's files), saved with the next edit.
 import { h, modal } from '../core/ui';
 import { kindOf, KIND_LABELS, type Project } from '../core/project';
 import { KIND_ICON } from '../widgets/thumbs';
 import { sceneUses } from '../core/uses';
+import { emptyCompanion, setSection } from '../../project/companion';
 import './quickOpen.css';
 
 const RECENT = 'recent';
@@ -15,11 +16,15 @@ export function recentFiles(project: Project): string[] {
   return project.extras<string[]>(project.gam, RECENT, []).filter((f) => project.files.has(f));
 }
 
-/** Notes that a file was opened (written only when the order changes). */
+/**
+ * Notes that a file was opened. Only the companion in memory changes: it is stored with the
+ * next real save, so just looking at files never marks the game as edited.
+ */
 export function noteOpened(project: Project, file: string): void {
   const now = recentFiles(project);
   if (now[0] === file) return;
-  project.setExtras(project.gam, RECENT, [file, ...now.filter((f) => f !== file)].slice(0, KEEP));
+  project.companion ??= emptyCompanion();
+  setSection(project.companion, project.gam, RECENT, [file, ...now.filter((f) => f !== file)].slice(0, KEEP));
 }
 
 interface Hit {
