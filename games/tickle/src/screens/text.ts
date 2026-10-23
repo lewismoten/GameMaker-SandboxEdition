@@ -224,7 +224,7 @@ THIS IS SHAREWARE
 
   If it made you cackle,
   register for ${price}: you get a
-  tape of the song and your own
+  rat sticker and your own
   CERTIFIED RAT TICKLER wallet
   card. Send a check (US funds)
   to:
