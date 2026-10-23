@@ -91,18 +91,20 @@ function startModern(hash?: string): void {
         h('span', { 'aria-hidden': 'true' }, '💾'),
         ' 1994 desk',
       ),
+      h('button', { class: 'hide-narrow', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' }, 'Offline'),
       h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
       // phones: the cast, the desk and the source in a small menu, so the header stays one tidy row
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the cast, the 1994 desk and the source code', title: 'More' }, '⋯'),
+        h('summary', { 'aria-label': 'More: the cast, the 1994 desk, playing offline and the source code', title: 'More' }, '⋯'),
         h(
           'div',
           { class: 'topbar-menu' },
           h('a', { href: '#/cast' }, '🎭 The cast'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
+          h('button', { onclick: openOffline }, '⤓ Play offline'),
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
       ),
@@ -114,6 +116,9 @@ function startModern(hash?: string): void {
 }
 
 const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
+
+/** "Play offline": the whole site downloaded on request (offline/offlineDialog.ts). */
+const openOffline = () => void import('./offline/offlineDialog').then((m) => m.openOfflineDialog());
 
 // The header's ⋯ menu closes when something else is clicked or a choice is made.
 document.addEventListener('click', (e) => {

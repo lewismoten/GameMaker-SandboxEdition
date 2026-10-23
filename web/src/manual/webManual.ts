@@ -122,9 +122,13 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   [
     'offline',
     'Offline and installing',
-    `<p>After your first visit, Game-Maker: Sandbox Edition works without a connection. To install it
-    as an app, use your browser’s <b>Install</b> or <b>Add to Home Screen</b> command.
-    Your games stay in the browser you made them in.</p>`,
+    `<p>Each part of Game-Maker: Sandbox Edition works without a connection once you have
+    opened it: a game you played, the desk, an editor. To take all of it with you, choose
+    <b>Offline</b> at the top of the page (<b>⋯</b> on a phone) and download everything at
+    once: it says how big it is first, and can remove the copy again. On the 1994 desk, type
+    <code>OFFLINE</code> at the DOS prompt. To install it as an app, use your browser’s
+    <b>Install</b> or <b>Add to Home Screen</b> command. Your games stay in the browser you
+    made them in.</p>`,
   ],
   [
     'desk',
