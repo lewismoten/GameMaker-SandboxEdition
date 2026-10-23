@@ -29,6 +29,10 @@ the original source in [`code/GM`](../code/GM). It can:
 - **Publish games as web apps**: "Export web app" builds a ZIP with the player, the
   game's files, a web app manifest and a service worker. Unzipped onto any static host,
   the game can be installed on the desktop or home screen and played offline.
+- **Publish games for Mac**: "Download for Mac" builds a native Mac app of any game right
+  in the browser (a small Swift player from [`mac/`](../mac/README.md) plus the game's one-page
+  export), as a `.dmg` to drag to Applications or a `.zip`. It runs on Apple silicon and
+  Intel Macs (macOS 11+); it is not notarized, so macOS asks once before opening it.
 - **Publish games for DOS**: "Export for DOS" builds a ZIP with the game's files in
   their original formats plus the CD's stand-alone player (`cd/gm/XFERPLAY.EXE`)
   renamed after the game (`MYGAME.GAM` gets `MYGAME.EXE`), `SNDBLAST.DRV` and a
