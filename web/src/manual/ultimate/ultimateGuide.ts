@@ -76,15 +76,18 @@ export async function ultimatePages(): Promise<BookPage[]> {
   document.body.append(host);
   try {
     // the chapters flow on one after another; each opening is marked with its chapter
-    const blocks: HTMLElement[] = [];
+    // (a chapter marked newPage starts a fresh run of pages)
+    const runs: HTMLElement[][] = [[]];
     for (const [i, c] of CHAPTERS.entries()) {
       const el = document.createElement('div');
       el.innerHTML = c.html;
       await fillFigures(el);
       el.querySelector<HTMLElement>('.ug-open')?.setAttribute('data-ch', String(i));
-      blocks.push(...([...el.children] as HTMLElement[]));
+      if (c.newPage && runs[runs.length - 1].length) runs.push([]);
+      runs[runs.length - 1].push(...([...el.children] as HTMLElement[]));
     }
-    const text = paginate(blocks, measurer(host, PAGE_CLASS));
+    const next = measurer(host, PAGE_CLASS);
+    const text = runs.flatMap((blocks) => paginate(blocks, next));
     const opens = text.map((page) => page.flatMap((b) => (b.dataset.ch ? [Number(b.dataset.ch)] : [])));
     const starts = chapterStarts(opens, CHAPTERS.length);
     const plan = planBook(text.length);
