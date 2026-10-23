@@ -41,3 +41,33 @@ export const CASHIER_MON = {
   cashier: F + 8,
   cashierOff: F + 9,
 } as const;
+
+/** I Don't Work Here, But Emotionally I Do. */
+export const PLATES_MON = {
+  /** The wait staff floating by like dining-room phantoms (invisible but for their eyes). */
+  phantom: F,
+  /** A whisper out of the kitchen doors: "TABLE 7 STACKED BACKWARDS". */
+  whisper: F + 1,
+  /** A quiet chuckle from behind the host stand. */
+  chuckle: F + 2,
+  /** The grease stain that glues the dessert plate to the entree plate, sliding about. */
+  grease: F + 3,
+  /** The busboy: silent, but judging, always judging (a word can't move him: hop over). */
+  busboy: F + 4,
+  poof: F + 5,
+} as const;
+
+/** I Held in a Fart and Killed a Bird. */
+export const BANQUET_MON = {
+  /** The speeches that had not wilted: BLAH off the podium. */
+  blah: F,
+  /** The coughing duet: the man behind him coughs in sync. */
+  cough: F + 1,
+  /** "Are you cold?" from the woman next to him. */
+  cold: F + 2,
+  /** The uprising within, in three stages: a rumble from the depths, an angry balloon, a disappointed goose. */
+  rumble: F + 3,
+  balloon: F + 4,
+  goose: F + 5,
+  poof: F + 6,
+} as const;

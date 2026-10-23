@@ -1,6 +1,7 @@
 // The OUT AND ABOUT set's routes.
 import { SCARS } from '../../src/groups/errands/cashier';
 import { GROCERIES } from '../../src/groups/errands/checkout';
+import { PLATES } from '../../src/groups/errands/plates';
 import type { Bot } from '../bot';
 import { carefully, declaim, expect, leave, must, plot, tips, type Route } from '../route';
 
@@ -112,6 +113,63 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       if (tips(bot) < before + 6) throw new Error('no nod from the cashier');
       if (plot(bot) < SCARS) throw new Error(`only ${plot(bot)} scars of honor`);
       await leave(bot, bot.walk(68.5, 'cart return seven'), 'the gate');
+    });
+  },
+
+  /** Table Seven: the soup bowl off table seven, past the phantoms, the pasta plate, the goat, up the leaning tower for the dessert plate, the entree plate, past the kitchen's whispers, over the busboy, the bus tub. */
+  plates: async (bot) => {
+    expect(bot, 'plates');
+    await carefully(bot, 'table seven', 0, async () => {
+      await must(bot, bot.walk(3, 'by table seven'), 'table');
+      await must(bot, bot.hop('right', 12, 'right', 5), 'onto table seven');
+      floor(bot, 8, 'table seven');
+      await must(bot, bot.walk(6, 'the soup bowl'), 'soup');
+      await must(bot, bot.walk(8.5, 'down off the table'), 'down');
+      await declaim(bot, 'the dining-room phantom');
+    });
+    await carefully(bot, 'the second table', 0, async () => {
+      await must(bot, bot.walk(12, 'by the second table'), 'table');
+      await must(bot, bot.hop('right', 12, 'right', 13.2), 'onto it: the coin');
+      floor(bot, 8, 'the second table');
+      await must(bot, bot.walk(14, 'the pasta plate'), 'pasta');
+      await must(bot, bot.walk(16.5, 'down off it'), 'down');
+      const before = tips(bot);
+      await must(bot, bot.walk(18, 'the goat'), 'goat');
+      if (tips(bot) <= before) throw new Error('no hello from the goat');
+      await must(bot, bot.walk(17.5, 'out of the chuckle’s way'), 'back');
+    });
+    await carefully(bot, 'the leaning tower', 0, async () => {
+      await declaim(bot, 'the chuckle');
+      await must(bot, bot.walk(23, 'past the host stand, the coin'), 'coin');
+      await declaim(bot, 'the chuckle, the grease stain');
+      await must(bot, bot.walk(26, 'into the tower'), 'tower');
+      await must(bot, bot.hop('up', 12), 'up the tower');
+      await must(bot, bot.hop('up', 12), 'to the top: the dessert plate');
+      floor(bot, 6, 'the top of the tower');
+      await declaim(bot, 'from the top');
+    });
+    await carefully(bot, 'the third table', 0, async () => {
+      await must(bot, bot.walk(28, 'down off the tower'), 'down');
+      await declaim(bot, 'the grease stain, the phantom');
+      await must(bot, bot.walk(29, 'the coin'), 'coin');
+      await declaim(bot, 'the phantom');
+      await must(bot, bot.walk(33, 'by the third table'), 'table');
+      await must(bot, bot.hop('right', 12, 'right', 35), 'onto it: the coin');
+      floor(bot, 8, 'the third table');
+      await must(bot, bot.walk(37, 'the entree plate, the dollar'), 'plates');
+      await must(bot, bot.walk(38.5, 'down off it'), 'down');
+    });
+    await carefully(bot, 'the kitchen doors, the busboy', 0, async () => {
+      await declaim(bot, 'the whispers');
+      await must(bot, bot.walk(41, 'toward the kitchen'), 'kitchen');
+      await declaim(bot, 'the whispers');
+      await must(bot, bot.walk(46, 'past the doors: the coffee'), 'coffee');
+      await must(bot, bot.walk(47.5, 'by the busboy'), 'busboy');
+      await must(bot, bot.hop('right', 12, 'right', 52.5), 'over the busboy');
+      floor(bot, 10, 'over the busboy');
+      await must(bot, bot.walk(53, 'the coin'), 'coin');
+      if (plot(bot) < PLATES) throw new Error(`only ${plot(bot)} plates`);
+      await leave(bot, bot.walk(56.5, 'the bus tub'), 'the gate');
     });
   },
 };

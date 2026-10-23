@@ -7,6 +7,8 @@ import type { Group } from '../types';
 import { ERRANDS_RAMPS, poofSprites } from './art';
 import { cashier, cashierBlocks, cashierSprites } from './cashier';
 import { checkout, checkoutBlocks, checkoutSprites } from './checkout';
+import { diningBlocks } from './dining';
+import { plates, platesBlocks, platesSprites } from './plates';
 
 export const errands: Group = {
   id: 'errands',
@@ -15,11 +17,14 @@ export const errands: Group = {
   blocks: (book, pal) => {
     checkoutBlocks(book, pal);
     cashierBlocks(book, pal);
+    diningBlocks(book, pal);
+    platesBlocks(book, pal);
   },
   sprites: (book, pal) => {
     poofSprites(book, pal);
     checkoutSprites(book, pal);
     cashierSprites(book, pal);
+    platesSprites(book, pal);
   },
-  monologues: [checkout, cashier],
+  monologues: [checkout, cashier, plates],
 };
