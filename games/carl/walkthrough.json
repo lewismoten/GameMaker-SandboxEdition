@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 19102,
+  "frames": 19221,
   "chapters": [
    {
     "title": "Opening",
@@ -91,15 +91,15 @@
    },
    {
     "title": "Level 6: The Aux Cord",
-    "frame": 12630
+    "frame": 12749
    },
    {
     "title": "Ending",
-    "frame": 14271
+    "frame": 14390
    },
    {
     "title": "Credits",
-    "frame": 17014
+    "frame": 17133
    }
   ]
  }

@@ -256,7 +256,8 @@ export async function theWild(bot: Bot): Promise<void> {
   need(bot, HOURS, 24, 'hours');
   await carefully(bot, 'the clock', 12, async () => {
     await go(bot, [[60, 6]], 'the clock');
-    await leave(bot, bot.fly(62, 6, 'broken time'), 'the clock');
+    // straight through the clock and on: no new move, so nothing cuts "Carl has broken time" off
+    await leave(bot, bot.fly(71, 6, 'broken time'), 'the clock');
   });
 }
 

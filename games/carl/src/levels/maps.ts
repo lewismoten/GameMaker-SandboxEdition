@@ -296,7 +296,7 @@ export function theWindow(book: BlockBook): Level {
 
 /** 5. Carl has seen things: the documentary; twenty-four hours and the clock breaks. */
 export function theWild(book: BlockBook): Level {
-  const W = 64;
+  const W = 74;
   const H = 14;
   const m = new MapBuilder(book, 'earth');
   // the wild goes on past the stems and the rocks, under more sky
@@ -349,7 +349,10 @@ export function theWild(book: BlockBook): Level {
   ]);
   // the big clock: twenty-four hours and it breaks
   m.col(62, 1, 11, 'stem').set(62, 6, 'clock');
-  m.link(62, 6, 'next');
+  // past it the wild goes on into tall grass: Carl flies straight on through the broken clock,
+  // long enough for "Carl has broken time" to play before the scene ends
+  m.fill(68, 5, 5, 7, 'tall');
+  m.link(71, 6, 'next');
   return { m, start: at(3, 6), size: [W, H] };
 }
 
