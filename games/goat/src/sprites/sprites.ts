@@ -348,16 +348,16 @@ export function buildMonsterBlocks(pal: Pal) {
   blob(lineLamb, 10, 6, 3, 2.6, pal.r('ink'), 1, 1);
   book.add('lineLamb', outline(lineLamb, ink), solid);
 
-  // The Bard of Bizarre's rooster, spectacles and all, out for a stroll.
+  // The Bard of Bizarre, a white chicken with an orange beak, spectacles and all, out for a stroll.
   const rooster = (f: number) => {
     const p = new Pixels(20, 20, T);
-    p.line(9, 15, 9 - f, 19, c('gold', 1)).line(12, 15, 12 + f, 19, c('gold', 1));
-    blob(p, 10, 11, 5, 4.5, pal.r('cloth'), 1, 3, 1.1);
+    p.line(9, 15, 9 - f, 19, c('beak', 1)).line(12, 15, 12 + f, 19, c('beak', 1));
+    blob(p, 10, 11, 5, 4.5, pal.r('feather'), 1, 3, 1.1);
     p.line(4, 8, 3, 4, c('red', 2)).line(5, 8, 4, 5, c('blue', 2)).line(6, 8, 6, 5, c('red', 1));
-    blob(p, 14, 6, 3, 3, pal.r('cloth'), 1, 3, 1.1);
+    blob(p, 14, 6, 3, 3, pal.r('feather'), 1, 3, 1.1);
     p.rect(13, 1, 4, 2, c('red', 2)).set(14, 0, c('red', 2)).set(16, 0, c('red', 2));
     p.frame(12, 4, 3, 3, c('blue', 2)).frame(15, 4, 3, 3, c('blue', 2));
-    p.set(18, 7, c('gold', 3)).set(19, 7, c('gold', 2)).rect(15, 9, 2, 2, c('red', 2));
+    p.set(18, 7, c('beak', 2)).set(19, 7, c('beak', 1)).rect(15, 9, 2, 2, c('red', 2));
     return outline(p, ink);
   };
   book.add('rooster0', rooster(0));
