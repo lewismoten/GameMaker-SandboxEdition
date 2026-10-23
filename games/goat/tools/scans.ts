@@ -1,7 +1,9 @@
 // "Scanned" for THIRD GOAT FROM THE LEFT: the song's cover art, The Bard of Bizarre's logo and
-// Doc Leo's profile picture (Lewis's own, in .for-lewis/songs/goat, not in git) cut down to
+// Doc Leo's profile picture (Lewis's own, in .for-lewis/songs, not in git) cut down to
 // small JPEGs in games/kit/scans, which the build dithers into its pictures (kit/photo.ts).
-// Transparent corners are laid on the color each picture is pasted over.
+// Transparent corners are laid on the color each picture is pasted over. Doc Leo's picture is
+// the whole square photo, not the round-cropped profile picture, so the square instant prints
+// it is pasted into show the sky in their corners (it shows no house number or plate).
 //
 // Run once (needs ffmpeg and cjpeg): cd web && npx vite-node ../games/goat/tools/scans.ts
 import { spawnSync } from 'node:child_process';
@@ -9,20 +11,20 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const SONG = resolve(__dirname, '../../../.for-lewis/songs/goat');
+const SONGS = resolve(__dirname, '../../../.for-lewis/songs');
 const OUT = resolve(__dirname, '../../kit/scans');
 
 const SCANS: { name: string; file: string; size: number; matte: string }[] = [
-  { name: 'goatcover', file: 'third-goat-from-the-left-cover-art.png', size: 256, matte: 'black' },
-  { name: 'bardlogo', file: 'bard-of-bizarre-logo_900x900_buffer.png', size: 200, matte: '0x341446' },
-  { name: 'docleo', file: 'the bard of bizarre.png', size: 160, matte: '0x341446' },
+  { name: 'goatcover', file: 'goat/third-goat-from-the-left-cover-art.png', size: 256, matte: 'black' },
+  { name: 'bardlogo', file: 'goat/bard-of-bizarre-logo_900x900_buffer.png', size: 200, matte: '0x341446' },
+  { name: 'docleo', file: 'the-bard-of-bizarre-lewie.jpg', size: 160, matte: '0x341446' },
 ];
 
 for (const s of SCANS) {
   const r = spawnSync(
     'ffmpeg',
     [
-      '-v', 'error', '-i', join(SONG, s.file),
+      '-v', 'error', '-i', join(SONGS, s.file),
       '-f', 'lavfi', '-i', `color=c=${s.matte}:s=${s.size}x${s.size}`,
       '-filter_complex', `[0:v]scale=${s.size}:${s.size}:flags=area,format=rgba[f];[1:v][f]overlay=format=auto,format=rgb24`,
       '-frames:v', '1', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-',
