@@ -170,3 +170,29 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* the bar's page links (Cast, Achievements, Credits, Guide): each its own target, with a thin rule
+   centred between neighbours so they don't read as one phrase */
+.topbar-nav {
+  display: flex;
+  align-items: center;
+}
+
+.topbar-nav > a.nav-link {
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+.topbar-nav > a.nav-link + a.nav-link {
+  border-left: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+}
+
+@media (max-width: 900px) {
+  /* only Guide is left in the bar: no rule beside it */
+  .topbar-nav > a.nav-link {
+    padding: 4px 6px;
+  }
+  .topbar-nav > a.nav-link + a.nav-link {
+    border-left: 0;
+  }
+}

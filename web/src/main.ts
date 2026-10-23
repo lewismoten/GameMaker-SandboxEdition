@@ -93,10 +93,18 @@ function startModern(hash?: string): void {
       h('a', { href: '#/', title: FORK_NOTE }, h('span', { class: 'brand-title' }, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
       titleSlot,
       h('span', { class: 'spacer' }),
-      h('a', { class: 'hide-narrow', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
-      h('a', { class: 'hide-narrow', href: '#/achievements', title: 'What you’ve done: your achievements, here and on the 1994 desk' }, 'Achievements'),
-      h('a', { class: 'hide-narrow', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
-      h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
+      h(
+        'nav',
+        { class: 'topbar-nav', 'aria-label': 'Site pages' },
+        h('a', { class: 'hide-narrow nav-link', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
+        h(
+          'a',
+          { class: 'hide-narrow nav-link', href: '#/achievements', title: 'What you’ve done: your achievements, here and on the 1994 desk' },
+          'Achievements',
+        ),
+        h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
+        h('a', { class: 'nav-link', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
+      ),
       // Desk | DOS | Web: the game in front of you comes along (viewSwitch.ts)
       viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
       themeButton(),
