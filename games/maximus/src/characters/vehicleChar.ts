@@ -85,7 +85,7 @@ export function vehicle(kind: VehicleKind): CharSet {
     setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [B(hurt[0], { pause: 1 }), B(hurt[1])] });
     const docked = one(sparkles(beam(base, 1), 2, 'gold'));
     setSeq(c, SEQ.pickup, { key: 'p', sound: SND.pickup, frames: [...tractor, docked].map((t) => B(t, { pause: 2 })) });
-    setSeq(c, SEQ.drop, { key: 'd', sound: SND.drop, frames: [B(tractor[2], { pause: 2 }), B(tractor[0], { pause: 2 })] });
+    setSeq(c, SEQ.drop, { key: 'o', sound: SND.drop, frames: [B(tractor[2], { pause: 2 }), B(tractor[0], { pause: 2 })] });
     const move = (d: (typeof dirs)[number], x: number, y: number, joy: number) => ({
       key: ({ r: 'right', l: 'left', u: 'up', d: 'down' } as const)[d],
       momentum: true,
@@ -169,7 +169,7 @@ export function vehicle(kind: VehicleKind): CharSet {
     setSeq(c, SEQ.hurt, { sound: SND.hurt, momentum: true, frames: [B(hurt[0], { pause: 1 }), B(hurt[1]), B(hurt[2])] });
     setSeq(c, SEQ.pickup, { key: 'p', sound: SND.pickup, frames: claw.map((t) => B(t, { pause: 2 })) });
     setSeq(c, SEQ.drop, {
-      key: 'd',
+      key: 'o',
       sound: SND.drop,
       frames: [B(claw[2], { pause: 3 }), B(splashes[0], { pause: 2 }), B(splashes[2], { pause: 2 }), B(one(splash(drawDiver({ prop: 2 }), 3)), { pause: 2 })],
     });
@@ -245,7 +245,7 @@ export function vehicle(kind: VehicleKind): CharSet {
       frames: [B(hurt[0], { y: -5, pause: 1 }), B(hurt[1]), B(hurt[2]), B(one(smoke(drawRover({ bounce: 1 }), 2)))],
     });
     setSeq(c, SEQ.pickup, { key: 'p', sound: SND.pickup, frames: claw.map((t) => B(t, { pause: 2 })) });
-    setSeq(c, SEQ.drop, { key: 'd', sound: SND.drop, frames: [B(claw[2], { pause: 3 }), B(idle[1], { pause: 2 })] });
+    setSeq(c, SEQ.drop, { key: 'o', sound: SND.drop, frames: [B(claw[2], { pause: 3 }), B(idle[1], { pause: 2 })] });
     setSeq(c, SEQ.right, { key: 'right', sound: SND.rover, joy: [3, 0], frames: wheel.map((b) => B(b, { x: 7 })) });
     setSeq(c, SEQ.left, { key: 'left', sound: SND.rover, joy: [7, 0], frames: wheel.map((b) => B(b, { x: -7, o: L })) });
     const air = [0, 1, 2].map((k) => one(drawRover({ wheel: k, bounce: -1, spring: k === 1 })));

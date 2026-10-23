@@ -69,6 +69,18 @@ export interface MonsterSet {
 const ramp = (n: string) => shared.get(n) ?? R(n);
 const paintOf = (c: Creature): Paint => ({ hide: ramp(c.hide), accent: ramp(c.accent ?? 'accent'), eye: R('eye') });
 
+/** Hides painted in the ground's own colors: these creatures get a glowing rim so they don't vanish on rock or in caves. */
+const EARTHY = new Set(['deep', 'rock', 'soil', 'tech', 'ruin', 'stem']);
+
+/** Turns the dark outline along a creature's top edges into a rim of light. */
+function rimLight(p: Pixels): Pixels {
+  const rim = R('glow')[6];
+  const body = (x: number, y: number) => y < 20 && p.get(x, y) !== CLEAR && p.get(x, y) !== OUTLINE;
+  for (let y = 0; y < 19; y++)
+    for (let x = 0; x < 20; x++) if (p.get(x, y) === OUTLINE && body(x, y + 1) && (y === 0 || p.get(x, y - 1) === CLEAR)) p.set(x, y, rim);
+  return p;
+}
+
 /** Build the set. `creatures` fills slots 0..43. */
 export function monsterSet(name: string, creatures: Creature[]): MonsterSet {
   if (creatures.length !== MON.creatures) throw new Error(`${name}: ${creatures.length} creatures, need ${MON.creatures}`);
@@ -96,7 +108,7 @@ export function monsterSet(name: string, creatures: Creature[]): MonsterSet {
         0,
         c.frames ?? 2,
       );
-      pics = frames.map((f) => addBlock(f, props));
+      pics = frames.map((f) => addBlock(EARTHY.has(c.hide) ? rimLight(f) : f, props));
     }
     art.set(c.name, pics);
     mon[i] = makeMonster(c, pics, c.becomes === undefined ? undefined : typeof c.becomes === 'number' ? c.becomes : index.get(c.becomes));

@@ -171,7 +171,7 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / D ... pick up / drop
+  P / O ... pick up / drop
   Q / E ... dash left/right
   Z X C V H W  module weapons
   F ....... hover

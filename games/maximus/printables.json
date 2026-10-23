@@ -12,7 +12,7 @@
     "W": "Flak Cannon",
     "T": "Hail (say hello)",
     "P": "Pick up a module",
-    "D": "Drop a module"
+    "O": "Drop a module"
   },
   "items": [
     {
@@ -723,7 +723,7 @@
             },
             {
               "q": "I'm there. It's just a knot of asteroids.",
-              "a": "Rock is not always rock. Try the knot's south face. And keep a module slot free: if you're full, drop one with D first."
+              "a": "Rock is not always rock. Try the knot's south face. And keep a module slot free: if you're full, drop one with O first."
             },
             {
               "q": "Plot me a course.",

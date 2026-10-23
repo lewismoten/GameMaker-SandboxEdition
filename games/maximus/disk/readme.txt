@@ -12,7 +12,7 @@ it on a shareware CD, as long
 as all 512 files stay together
 and nobody charges money for
 it. (A hundred worlds take
-some room: 6.9 MB. Unzip it
+some room: 7.0 MB. Unzip it
 all to your hard disk.)
 
 If you enjoy Maximus, please
@@ -71,7 +71,7 @@ QUICK KEYS
   Up ...... jet hop (tap
             again to climb)
   Space ... fire
-  P / D ... pick up / drop
+  P / O ... pick up / drop
   Q / E ... dash left/right
   Z X C V H W  module weapons
   F ....... hover

@@ -308,7 +308,7 @@ export function buildGame(): Built {
           map: p.grid,
           bbl: setName,
           chr: chrOf(world.kind),
-          palette: buildPalette(ROLES, themeFor(world.biome, w.scene)).pal,
+          palette: buildPalette(ROLES, themeFor(world.biome, w.scene, sec.level)).pal,
         });
       });
   });
