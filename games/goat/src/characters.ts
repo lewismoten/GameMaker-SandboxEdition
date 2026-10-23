@@ -218,8 +218,20 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.donkey] = mon(anim('donkey0', 'donkey1', 12), { power: 200, thru: 1 });
   set[MON.ox] = mon(anim('ox0', 'ox1', 16), { power: 200, thru: 1 });
   set[MON.rooster] = mon(anim('rooster0', 'rooster1', 3), { power: 100, thru: 1, towards: 64 });
-  set[MON.lineGoat] = mon([[n('lineGoat'), 20]], { power: 200, thru: 1 });
-  set[MON.lineLamb] = mon([[n('lineLamb'), 20]], { power: 200, thru: 1 });
+  set[MON.lineGoat] = mon(
+    [
+      [n('lineGoat'), 40],
+      [n('lineGoat1'), 4],
+    ],
+    { power: 200, thru: 1 },
+  );
+  set[MON.lineLamb] = mon(
+    [
+      [n('lineLamb'), 26],
+      [n('lineLamb1'), 10],
+    ],
+    { power: 200, thru: 1 },
+  );
   return set;
 }
 

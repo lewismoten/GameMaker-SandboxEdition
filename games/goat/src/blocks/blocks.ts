@@ -59,13 +59,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   const floor = (seed: number) => speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 1, seed, 0.3);
-  const straw = (seed: number, base = floor(seed)) => {
+  // Straw on the stable floor: two quiet tones (earth, and strands of one straw color), so
+  // the brown and grey animals on it stand out.
+  const straw = (seed: number, base = speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 1, seed, 0.06)) => {
     const r = rng(seed + 50);
-    for (let k = 0; k < 16; k++) {
+    for (let k = 0; k < 10; k++) {
       const x = r() * 18 + 1;
       const y = r() * 18 + 1;
       const dx = r() < 0.5 ? 1 : -1;
-      base.line(x, y, x + dx * 3, y + (r() < 0.5 ? 1 : 0), c('hay', 1 + Math.floor(r() * 3)));
+      base.line(x, y, x + dx * 3, y + (r() < 0.5 ? 1 : 0), c('hay', 1));
     }
     return base;
   };
@@ -322,7 +324,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     }
     return bg;
   };
-  book.add('thistle', thistle(grass(125)), { solid: SOLID, effect: SCREAMSEQ, eamt: 2, score: 5, touch: 'grassB' });
+  // a thistle is a munch (the +1 is only so it plays the munch, not wool's bleat of joy)
+  book.add('thistle', thistle(grass(125)), { solid: SOLID, hp: 1, effect: SCREAMSEQ, eamt: 2, score: 5, touch: 'grassB' });
   // The sheepfold's gate is tied with rope. Goats eat rope.
   const gate = (tied: boolean) => {
     const p = grass(127);
