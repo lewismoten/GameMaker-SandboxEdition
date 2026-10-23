@@ -34,6 +34,11 @@ export const ROUTES = {
     description:
       'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
   },
+  mac: {
+    title: `Playing the games on a Mac · ${PRODUCT}`,
+    description:
+      'Download any game as a Mac app. Why macOS says Apple could not verify it (the apps are built in your browser, so they are not notarized), how to open it the first time, what the app does and how to remove it.',
+  },
   editor: {
     title: `Editor · ${PRODUCT}`,
     description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,

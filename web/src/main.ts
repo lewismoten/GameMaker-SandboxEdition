@@ -169,6 +169,13 @@ async function route(): Promise<void> {
     renderCast(content);
     return;
   }
+  if (kind === 'mac') {
+    const { renderMacHelp } = await import('./macHelp/macPage');
+    if (ui !== 'modern') return;
+    document.title = `Playing the games on a Mac · ${PRODUCT}`;
+    renderMacHelp(content);
+    return;
+  }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
     const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
@@ -207,11 +214,11 @@ function notHere(): void {
 window.addEventListener('hashchange', () => void route());
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the cast #/cast, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the Mac page #/mac, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast'].includes(startPath[0] ?? '');
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'mac'].includes(startPath[0] ?? '');
 if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 
