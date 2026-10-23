@@ -22,14 +22,16 @@
     { "game": "loofah", "as": "on her side of the bed at home, by her pillow" },
     { "game": "sandcast", "as": "dropped in the sandbox’s far corner" },
     { "game": "sweats", "as": "on a bookcase shelf at The Hive" },
-    { "game": "depth", "as": "in a corner of the Checkerboard’s first room" }
+    { "game": "depth", "as": "in a corner of the Checkerboard’s first room" },
+    { "game": "maximus", "as": "behind you at the start of Maxima Station’s training deck" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
     { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" },
     { "game": "smirked", "as": "peeking out of the gift shop’s curtains" },
     { "game": "snowbound", "as": "declaiming outside Bleeps at LaVale Mall" },
-    { "game": "remote", "as": "a signed head shot on the living room wall" }
+    { "game": "remote", "as": "a signed head shot on the living room wall" },
+    { "game": "maximus", "as": "visiting Maxima Station’s pod bay" }
   ],
   "watt": [
     { "game": "blaster", "as": "blinking on Memory Lane" },
@@ -49,7 +51,8 @@
     { "game": "tickle", "as": "counting rats by the course’s chalkboard" },
     { "game": "teddy2", "as": "in the Dog Show’s stands, keeping count" },
     { "game": "risi", "as": "at the top of the theater’s stands, counting the laughs" },
-    { "game": "loofah", "as": "taking stock in the forest-dark aisle at 3 a.m." }
+    { "game": "loofah", "as": "taking stock in the forest-dark aisle at 3 a.m." },
+    { "game": "maximus", "as": "keeping count at the training deck’s practice range" }
   ],
   "lewie": [
     { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },
