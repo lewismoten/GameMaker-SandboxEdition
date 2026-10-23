@@ -1,4 +1,4 @@
-// The mail-in registration card beside the monitor (desk/pc/regSide.ts), as a 1995 box held
+// The mail-in registration card beside the monitor (retro/gmReg/regSide.ts), as a 1995 box held
 // it: product, version and serial number printed on it, a Business Reply Mail face addressed
 // to Recreational Software Designs, and lines for the owner's name and address. You write
 // your name and mail it; a few days later RSD's reply comes back with the registration number

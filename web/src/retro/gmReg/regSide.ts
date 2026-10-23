@@ -1,26 +1,14 @@
-// Beside the monitor while Game-Maker's CHK.EXE asks (retro/gmReg/regDesk.ts): the Owner's
-// Guide, opened to the page the copy check names, and the product registration card, whose
-// Apply writes PLAYGAME.REG as GM REGISTER did. On a wide window they lie left and right of the
-// monitor; on a narrow one (or with the screen enlarged) they open as a sheet over the bottom
-// of the window, one at a time. Keyboard focus stays on the screen unless the user moves it, so
-// typing the answer still goes to GM.
+// Beside the monitor while Game-Maker's CHK.EXE asks (regDesk.ts): the Owner's Guide, opened to
+// the page the copy check names, and the product registration card, whose Apply writes
+// PLAYGAME.REG as GM REGISTER did. On a wide window they lie left and right of the monitor; on a
+// narrow one (or with the screen enlarged) they open as a sheet over the bottom of the window,
+// one at a time. Keyboard focus stays on the screen unless the user moves it, so typing the
+// answer still goes to GM. The desk and the DOS page (dosPage/) both put it beside their screen.
 import './regSide.css';
 import { h, clear } from '../../editor/core/ui';
-import { onRegDesk, type RegAsk, type RegDesk } from '../../retro/gmReg/regDesk';
-import { CARD_NAME_MAX, NUMBER_MAX, SERIAL } from '../../retro/gmReg/registration';
-import {
-  BOUGHT,
-  CD_NUMBER,
-  COMPUTERS,
-  MAIL_DAYS_MS,
-  OWNER_ADDRESS,
-  RSD_ADDRESS,
-  mailCheck,
-  replyTo,
-  savedReply,
-  saveReply,
-  type Reply,
-} from '../../retro/gmReg/mailCard';
+import { onRegDesk, type RegAsk, type RegDesk } from './regDesk';
+import { CARD_NAME_MAX, NUMBER_MAX, SERIAL } from './registration';
+import { BOUGHT, CD_NUMBER, COMPUTERS, MAIL_DAYS_MS, OWNER_ADDRESS, RSD_ADDRESS, mailCheck, replyTo, savedReply, saveReply, type Reply } from './mailCard';
 import { PRODUCT } from '../../edition';
 import type { BookPage } from '../../manual/printables/manualPages';
 
@@ -43,7 +31,16 @@ const loadGuide = (): Promise<Guide> =>
 /** Buttons that act without taking the keyboard from the screen (a click keeps GM typing). */
 const keepFocus = { onmousedown: (e: MouseEvent) => e.preventDefault() };
 
-export function regSide(monitor: () => HTMLElement | null, focusScreen: () => void): { dispose(): void } {
+/** What the page around the PC adds: news of the card going in the mail (the desk's window shows the mail truck). */
+export interface RegSideOptions {
+  onMailed?: () => void;
+}
+
+/**
+ * Shows the guide and the card while GM asks (onRegDesk), placed by the monitor's box.
+ * `focusScreen` gives the keyboard back to the PC when a panel closes.
+ */
+export function regSide(monitor: () => HTMLElement | null, focusScreen: () => void, opts: RegSideOptions = {}): { dispose(): void } {
   let desk: RegDesk | null = null;
   let ask: RegAsk | null = null;
   let shown = { manual: false, card: false };
@@ -384,8 +381,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     );
     stage('mailing');
     skipBtn.focus();
-    // the desk's window: the mail truck comes for the card and drives off with it
-    window.dispatchEvent(new CustomEvent('gm-window-event', { detail: { kind: 'mailtruck' } }));
+    opts.onMailed?.();
     say('Card mailed. The mail truck drives off with it. A few days later…');
     clearTimeout(days);
     days = setTimeout(arrive, MAIL_DAYS_MS);

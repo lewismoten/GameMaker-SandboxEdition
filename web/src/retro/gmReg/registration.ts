@@ -92,7 +92,7 @@ export const DEFAULT_REG = regFile('', SERIAL, '0');
 export const CARD_NAME_MAX = NAME_MAX - 1;
 
 /**
- * The desk's registration card (desk/pc/regSide.ts) checks the name and number in plain words
+ * The desk's registration card (retro/gmReg/regSide.ts) checks the name and number in plain words
  * before writing PLAYGAME.REG as regi() did. The number is the reply to the mailed card
  * (registrationNumber), so one that doesn't fit the name is turned away rather than written.
  */

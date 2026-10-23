@@ -23,7 +23,7 @@ import './boxes/gmBox.css';
 import { SANDBOX_SHOTS, sandboxShots } from './boxes/gmShots';
 import { fitStage } from './stage';
 import { keyCardSpot } from './pc/keyCard';
-import { regSide } from './pc/regSide';
+import { regSide } from '../retro/gmReg/regSide';
 import { newsClipping } from './room/newsClipping';
 import { phoneNotes } from './room/phoneNotes';
 import { wallClock } from './room/wallClock';
@@ -356,6 +356,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const reg = regSide(
     () => desk.querySelector<HTMLElement>('.monitor'),
     () => computer?.focus(),
+    // the desk's window: the mail truck comes for the card and drives off with it
+    { onMailed: () => window.dispatchEvent(new CustomEvent('gm-window-event', { detail: { kind: 'mailtruck' } })) },
   );
 
   function setTurbo(on: boolean): void {
