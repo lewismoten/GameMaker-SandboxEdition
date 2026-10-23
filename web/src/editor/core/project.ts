@@ -5,6 +5,7 @@ import { parseGame, serializeGame, newGame, type Game } from '../../formats/game
 import { defaultPalette, parsePalette, type Palette } from '../../formats/palette';
 import { decodeGif, isGif } from '../../formats/gif';
 import { debounce } from './ui';
+import { editedFile, unlockAchievement } from '../../achievements';
 
 export type FileKind = 'gam' | 'pal' | 'bbl' | 'mbl' | 'cbl' | 'mon' | 'chr' | 'map' | 'snd' | 'gif' | 'fli' | 'bkd' | 'txt' | 'lst' | 'cmf' | 'voc' | 'rec' | 'his' | 'other';
 
@@ -50,12 +51,14 @@ export class Project {
     this.gam = gam;
     this.files = files;
     files.onChange = (n) => {
+      editedFile(n);
       this.persist();
       for (const l of this.listeners) l(n);
     };
   }
 
   static create(name: string): Project {
+    unlockAchievement('make-new');
     const files = new GameFiles();
     const gam = `${normalize(name).replace(/[^a-z0-9]/g, '').slice(0, 8) || 'game'}.gam`;
     files.set(gam, serializeGame(newGame(name)));

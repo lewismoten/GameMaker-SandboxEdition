@@ -10,11 +10,15 @@ export { notePlayed, noteWatched } from './goals';
 
 /** A file of one of your games was changed: counts its kind (every block set counts as blocks). */
 export function editedFile(name: string): void {
-  unlockAchievement('make-edit');
   const ext = (/\.([^.]+)$/.exec(name)?.[1] ?? '').toLowerCase();
+  // what a designer changes (not a saved game, high scores or a recording written by playing)
+  if (!DESIGNED.has(ext)) return;
+  unlockAchievement('make-edit');
   const kind = ext === 'mbl' || ext === 'cbl' ? 'bbl' : ext;
   if ((EDIT_KINDS as readonly string[]).includes(kind)) tally('make-every-kind', kind);
 }
+
+const DESIGNED = new Set([...EDIT_KINDS, 'mbl', 'cbl', 'gif', 'fli', 'bkd', 'lst', 'cmf', 'voc']);
 
 /** A game was downloaded from the Download chooser (kind as download.ts names it). */
 export function downloaded(kind: string): void {

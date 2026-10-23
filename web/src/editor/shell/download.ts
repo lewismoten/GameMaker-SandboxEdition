@@ -15,6 +15,7 @@
 import './download.css';
 import { download, h, modal, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
+import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
 import type { GameFiles } from '../../project/files';
 
@@ -213,6 +214,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       const zip = await createZip(files.entries().map(([name, data]) => ({ name: name.toUpperCase(), data })));
       save(`${game.gam.replace(/\.gam$/i, '')}.zip`, zip, 'application/zip', 'Import it here again whenever you like.');
     }
+    downloaded(kind);
   } catch (e) {
     toast(plainError(e), 'error');
   }
