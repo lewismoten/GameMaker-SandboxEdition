@@ -92,15 +92,11 @@ export const FLOORS: Record<string, Painter> = {
     p.rect(0, 0, 20, 1, C('pink', 3)).rect(3, 0, 6, 1, C('pink', 5)).rect(13, 0, 4, 1, C('pink', 5));
     return p;
   },
-  /** Mall floor: big pastel checker tiles. */
+  /** Mall floor: big pale pink tiles with teal grout (calm enough for the shoppers to stand out). */
   tile: () => {
-    const p = new Pixels(20, 20);
-    for (let y = 0; y < 20; y++)
-      for (let x = 0; x < 20; x++) {
-        const a = (Math.floor(x / 10) + Math.floor(y / 10)) % 2 === 0;
-        p.set(x, y, a ? (x % 10 === 0 || y % 10 === 0 ? C('teal', 4) : C('teal', 5)) : x % 10 === 0 || y % 10 === 0 ? C('pink', 4) : C('pink', 5));
-      }
-    p.set(3, 3, C('grey', 7)).set(13, 13, C('grey', 7));
+    const p = new Pixels(20, 20, C('pink', 5));
+    p.rect(0, 0, 20, 1, C('teal', 4)).rect(0, 0, 1, 20, C('teal', 4));
+    p.set(1, 1, C('grey', 7)).set(10, 10, C('grey', 7));
     return p;
   },
   /** Arcade carpet: the black carpet with neon squiggles every arcade had. */
@@ -149,11 +145,11 @@ export const FLOORS: Record<string, Painter> = {
     speckle(p, 0, 0, 20, 20, R('orange'), 2, 1, seed, 0.5);
     return p;
   },
-  /** Inside the TV: the snow you get between channels. */
+  /** Inside the TV: the snow you get between channels, turned down so the static ghosts show. */
   static: (seed = 51) => {
     const p = new Pixels(20, 20);
     const r = rng(seed);
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, C('grey', 2 + Math.floor(r() * 5)));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, C('grey', 1 + Math.floor(r() * 3)));
     return p;
   },
   seafloor: (seed = 61) => {

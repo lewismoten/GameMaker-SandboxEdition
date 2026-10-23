@@ -357,9 +357,11 @@ function staticPic(k: number): Pixels {
       const ny = (y - 9) / 8;
       if (nx * nx + ny * ny > 1 && y < 13) continue;
       if (y >= 13 && (x + k * 2) % 4 === 0) continue;
-      p.set(x, y, C('grey', 2 + Math.floor(r() * 6)));
+      p.set(x, y, C('grey', 4 + Math.floor(r() * 4)));
     }
-  p.rect(7, 7, 2, 3, C('grey', 0)).rect(11, 7, 2, 3, C('grey', 0));
+  p.rect(7, 7, 2, 3, C('red', 2)).rect(11, 7, 2, 3, C('red', 2));
+  // A hot pink rim, so the ghost reads against the snow it lives in.
+  outline(p, C('pink', 3));
   return p;
 }
 

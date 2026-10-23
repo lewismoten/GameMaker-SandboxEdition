@@ -142,6 +142,7 @@ for (const [i, l] of LEVELS.entries()) {
   if (!exited) throw new Error(`${l.desc}: the bot did not reach the exit`);
 }
 console.log(`${deaths} deaths, ${segments.length} segments, egg ${ci.meter[CTR.tomorrow]}`);
+if (deaths) throw new Error(`year2000: the bot lost ${deaths} ${deaths === 1 ? 'life' : 'lives'}`);
 if (process.env.DRY) process.exit(0);
 const r = await writeWalkthrough('year2000', { rand: { seed: SEED, per: 'scene' }, segments, chapters });
 // The engine must enter the scenes just as the bot did (a death or a missed dial would show here).
