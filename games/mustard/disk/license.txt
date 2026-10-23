@@ -8,12 +8,12 @@ notice, its fee and its
 address are part of the story:
 there is nothing to pay. The
 song is The Bard of Bizarre's
-(Lewis Moten's): lyrics
-written by ChatGPT from Lewis
-Moten's prompt; music made
-with Riffusion (now Google
-Flow Music); animated cover
-made with Producer.ai.
+(Lewis Moten's): lyrics shaped
+by ChatGPT from Lewis Moten's
+prompt; music made with
+Riffusion (now Google Flow
+Music); animated cover made
+with Producer.ai.
 Made in 2026 by Lewis Moten,
 with AI help from Claude.
 

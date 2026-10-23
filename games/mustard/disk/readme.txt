@@ -70,7 +70,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Mustard Seed
-  Hustle": lyrics written by
+  Hustle": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompt (as The Bard of
   Bizarre); music made with

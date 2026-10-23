@@ -19,7 +19,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * README spell it out to fit their columns; about.json says the same in its blurb).
  */
 export const SONG_CREDIT =
-  "lyrics written by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); animated cover made with Producer.ai";
+  "lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); animated cover made with Producer.ai";
 
 export const STORY = [
   page([
@@ -226,7 +226,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Mustard Seed
-  Hustle": lyrics written by
+  Hustle": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompt (as The Bard of
   Bizarre); music made with
