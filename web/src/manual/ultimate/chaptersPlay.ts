@@ -30,8 +30,8 @@ export const ACTORS: Chapter = {
   touch the hero. A scene holds 200 monsters at once; when every place is taken, birth blocks
   and shots simply make nothing until one leaves.</p>
   <h2>Lifetimes and “becomes”</h2>
-  <p>A monster can live forever and never be killed, live until killed, die at the end of its
-  path, or live a set number of ticks. When it dies it can turn into another monster on the
+  <p>A monster can live forever and never be killed, live until killed, last until its
+  path runs out, or live a set number of ticks. When it dies it can turn into another monster on the
   same spot. Chains of these make a monster with stages. In Third Goat from the Left, a lamb
   you bump gives you wool and turns into a shorn lamb that runs away; after 240 ticks (about
   13 seconds) the shorn lamb turns back into a woolly one, ready to be bumped again.</p>
@@ -43,7 +43,7 @@ export const ACTORS: Chapter = {
     <li><b>Cue</b> the entrance with an attack path, which starts the moment the hero comes
     near, or with a birth block, whose first birth comes its set number of ticks after the
     scene begins (up to about 15 minutes).</li>
-    <li><b>Exit</b> by “dies at the end of its path”, or hand over to the next actor with
+    <li><b>Exit</b> with a lifetime that ends when the path runs out, or hand over to the next actor with
     “becomes”.</li>
     <li><b>Hold</b> the audience: give the hero a reason to stand and watch, such as a ledge
     whose way on is a block that animates open when the show is over.</li>
