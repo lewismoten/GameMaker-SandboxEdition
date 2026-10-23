@@ -168,20 +168,28 @@
   ],
   "stickers": [
     {
-      "text": "SPARKY 3000",
-      "sub": "ROBOT DOG",
-      "shape": "circle",
-      "color": "#3fe0d0",
-      "ink": "#1a0838",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[48]] }
-    },
-    {
       "text": "DEX DYNAMO",
       "sub": "AGE 11, HOVER HEIGHTS",
-      "shape": "badge",
-      "color": "#1a0838",
+      "shape": "cut",
+      "color": "#d0208a",
       "ink": "#ffffff",
-      "hero": { "chr": "dex.chr", "cbl": "dex.cbl", "pal": "y2k.pal" }
+      "hero": {
+        "chr": "dex.chr",
+        "cbl": "dex.cbl",
+        "pal": "y2k.pal"
+      }
+    },
+    {
+      "text": "SPARKY 3000",
+      "sub": "ROBOT DOG",
+      "shape": "cut",
+      "color": "#3fe0d0",
+      "ink": "#1a0838",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[48]]
+      }
     },
     {
       "text": "HUG AN ALIEN",
@@ -189,31 +197,109 @@
       "shape": "star",
       "color": "#d0208a",
       "ink": "#ffffff",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[12]] }
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[12]]
+      }
     },
     {
       "text": "NOT INTERESTED!",
       "sub": "TELEMARKETER ROBOT",
-      "shape": "rect",
-      "color": "#fdf6ff",
-      "ink": "#1a0838",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[30]] }
+      "shape": "cut",
+      "color": "#7a4fd0",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[30]]
+      }
     },
     {
       "text": "WRONG NUMBER",
       "sub": "GRANDMA IN FLORIDA",
-      "shape": "circle",
+      "shape": "cut",
       "color": "#ffd34a",
       "ink": "#1a0838",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[38]] }
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[38]]
+      }
     },
     {
       "text": "ROBO-MOWER",
       "sub": "KEEP OFF THE GRASS",
-      "shape": "badge",
+      "shape": "cut",
       "color": "#2f9e44",
       "ink": "#ffffff",
-      "sprite": { "blocks": "y2k.mbl", "pal": "y2k.pal", "grid": [[4]] }
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[4]]
+      }
+    },
+    {
+      "text": "RAWR.EXE",
+      "sub": "ROBO-DINO",
+      "shape": "burst",
+      "color": "#9ad81e",
+      "ink": "#1a0838",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[36]]
+      }
+    },
+    {
+      "text": "HOVER CAR",
+      "sub": "WHEELS ARE SO 1999",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[18]]
+      }
+    },
+    {
+      "text": "TOTALLY RADICAL",
+      "sub": "HOVERBOARD",
+      "shape": "cut",
+      "color": "#ff7a1a",
+      "ink": "#1a0838",
+      "sprite": {
+        "blocks": "y2k.mbl",
+        "pal": "y2k.pal",
+        "grid": [[56]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "city.bbl",
+        "pal": "y2k.pal",
+        "grid": [[125]],
+        "under": 0
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "city.bbl",
+        "pal": "y2k.pal",
+        "grid": [[129]],
+        "under": 3
+      }
     }
   ],
   "news": [
