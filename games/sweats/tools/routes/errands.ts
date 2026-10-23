@@ -1,4 +1,5 @@
 // The OUT AND ABOUT set's routes.
+import { DISTRACTIONS } from '../../src/groups/errands/banquet';
 import { SCARS } from '../../src/groups/errands/cashier';
 import { GROCERIES } from '../../src/groups/errands/checkout';
 import { PLATES } from '../../src/groups/errands/plates';
@@ -170,6 +171,57 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(53, 'the coin'), 'coin');
       if (plot(bot) < PLATES) throw new Error(`only ${plot(bot)} plates`);
       await leave(bot, bot.walk(56.5, 'the bus tub'), 'the gate');
+    });
+  },
+
+  /** The Banquet, 6:42: along the head table (Are you cold?, the coughing duet, imagined math), up the chandeliers (his ex), past the speeches, the uprising held in, the second table (thoughts of war), over Teddy, the bird on the sill. */
+  banquet: async (bot) => {
+    expect(bot, 'banquet');
+    await carefully(bot, 'the head table', 0, async () => {
+      await must(bot, bot.walk(3, 'by the head table'), 'table');
+      await must(bot, bot.hop('right', 12, 'right', 5.2), 'onto the table');
+      floor(bot, 8, 'the head table');
+      await declaim(bot, 'are you cold?');
+      await must(bot, bot.walk(8, 'under the chandelier'), 'chandelier');
+      await must(bot, bot.hop('up', 12), 'up onto the chandelier: the coin');
+      floor(bot, 5, 'the chandelier');
+      await must(bot, bot.walk(9, 'down: imagined math'), 'math');
+      floor(bot, 8, 'back on the table');
+      await declaim(bot, 'the coughing duet');
+      await must(bot, bot.walk(13, 'the coin'), 'coin');
+      await must(bot, bot.hop('up', 12), 'up onto the other chandelier: his ex');
+      floor(bot, 5, 'the other chandelier');
+      await must(bot, bot.walk(14, 'down'), 'down');
+      await declaim(bot, 'the coughing duet');
+      await must(bot, bot.walk(17.5, 'down off the table'), 'off');
+    });
+    await carefully(bot, 'the speeches, the uprising', 0, async () => {
+      await declaim(bot, 'the speeches');
+      await must(bot, bot.walk(18, 'the coin'), 'coin');
+      await declaim(bot, 'the speeches');
+      await must(bot, bot.walk(23, 'past the podium: the coffee'), 'coffee');
+      for (const s of ['a rumble from the depths', 'an angry balloon', 'a disappointed goose']) await declaim(bot, `held in: ${s}`);
+      await must(bot, bot.walk(29, 'the coin'), 'coin');
+    });
+    await carefully(bot, 'the second table', 0, async () => {
+      await must(bot, bot.walk(32, 'by the second table'), 'table');
+      await must(bot, bot.hop('right', 12, 'right', 34.2), 'onto it');
+      floor(bot, 8, 'the second table');
+      await declaim(bot, 'are you cold? again');
+      await must(bot, bot.walk(37, 'the coin, thoughts of war'), 'war');
+      await must(bot, bot.hop('up', 12), 'up onto the chandelier: the coin');
+      floor(bot, 5, 'the chandelier');
+      await must(bot, bot.walk(38, 'down'), 'down');
+      await declaim(bot, 'the coughing duet');
+      await must(bot, bot.walk(41, 'the dollar'), 'dollar');
+      await must(bot, bot.walk(42.5, 'down off the table'), 'off');
+    });
+    await carefully(bot, 'Teddy, the bird', 0, async () => {
+      await must(bot, bot.walk(43.5, 'the coin, by Teddy'), 'coin');
+      await must(bot, bot.hop('right', 12, 'right', 47), 'over Teddy');
+      floor(bot, 10, 'over Teddy');
+      if (plot(bot) < DISTRACTIONS) throw new Error(`only ${plot(bot)} distractions`);
+      await leave(bot, bot.walk(49.5, 'the bird on the sill: fly high'), 'the gate');
     });
   },
 };
