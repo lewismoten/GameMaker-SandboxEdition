@@ -70,8 +70,6 @@ export async function theField(bot: Bot): Promise<void> {
   await carefully(bot, 'the field', 12, async () => {
     await must(bot, bot.take(11, 4, 'down', 'a thistle'), 'thistle');
     await must(bot, bot.take(19, 4, 'left', 'wool on the thorns'), 'wool');
-    await must(bot, bot.take(13, 13, 'left', 'wool on the thorns'), 'wool');
-    await must(bot, bot.goto(4, 14, 'the thistles and the star in the lower field'), 'lower field');
     await must(bot, bot.take(17, 9, 'down', 'hay'), 'hay');
     await must(bot, bot.goto(24, 8, 'the gap in the wall'), 'gap');
   });
@@ -81,9 +79,7 @@ export async function theField(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'beyond the wall', 12, async () => {
     await must(bot, bot.take(31, 9, 'left', 'wool on the thorns'), 'wool');
-    await must(bot, bot.take(28, 16, 'up', 'wool on the thorns'), 'wool');
     await must(bot, bot.goto(36, 13, 'the goat bell'), 'bell');
-    await must(bot, bot.take(35, 1, 'down', 'wool on the thorns'), 'wool');
   });
   await carefully(bot, 'the double wall', 10, async () => {
     await must(bot, bot.goto(37, 8, 'the double wall'), 'wall');
@@ -94,8 +90,6 @@ export async function theField(bot: Bot): Promise<void> {
   });
   await carefully(bot, "the shepherds' camp", 12, async () => {
     await must(bot, bot.take(42, 5, 'down', 'wool on the thorns'), 'wool');
-    await must(bot, bot.goto(43, 16, 'hay and a thistle by the camp'), 'hay');
-    await must(bot, bot.take(50, 14, 'left', 'wool on the thorns'), 'wool');
   });
   if (bot.wool < 5) throw new Error(`only ${bot.wool} wool`);
   const r = await bot.goto(51, 8, 'the road to Bethlehem');

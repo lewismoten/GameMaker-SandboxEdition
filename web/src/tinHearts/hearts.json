@@ -4,7 +4,7 @@
     "brief": { "map": "other.map", "at": [34, 22] },
     "carl": { "map": "bed.map", "at": [5, 12] },
     "depth": { "map": "l2near.map", "at": [59, 59] },
-    "goat": { "map": "field.map", "at": [52, 20] },
+    "goat": { "map": "field.map", "at": [52, 16] },
     "loaf": { "map": "wicker.map", "at": [19, 3] },
     "logic": { "map": "attic.map", "at": [32, 44] },
     "loofah": { "map": "home.map", "at": [49, 6] },

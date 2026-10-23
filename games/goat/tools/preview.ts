@@ -23,7 +23,7 @@ writePng(join(out, 'blocks.png'), blockSheet(bbl.slice(0, book.index.size), 12),
 writePng(join(out, 'monsters.png'), blockSheet(mb.blocks.slice(0, mb.index.size), 12), day.pal, 3);
 writePng(join(out, 'goat.png'), blockSheet(cb.blocks.slice(0, cb.index.size), 12), day.pal, 3);
 const levels: [string, (b: typeof book) => Level, Light, number, number][] = [
-  ['field', field, 'field', 52, 20],
+  ['field', field, 'field', 52, 16],
   ['town', town, 'town', 40, 22],
   ['caravan', caravan, 'camp', 40, 23],
   ['stable', stable, 'stable', 30, 15],
