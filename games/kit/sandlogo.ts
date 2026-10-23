@@ -5,7 +5,7 @@
 // a letter at a time, spinning, in chunky beveled plastic in the colors of THE SANDBOX
 // BBS (retro/bbs/bbsName.ts: red, yellow, green, cyan, blue, magenta, brown, the ends
 // yellow), casting hard shadows on the sand. A bold yellow "SOFTWARE", outlined in black,
-// zooms in under it on a dark band, a highlight sweeps across, star glints sparkle, and
+// zooms in under it, a highlight sweeps across, star glints sparkle, and
 // it fades to black.
 //
 // It is ray traced here in software (raytrace.ts; the letters are sdftext.ts), quantized
@@ -640,8 +640,8 @@ const toBytes = (f: Float32Array): Uint8Array => {
 
 // ---- SOFTWARE ------------------------------------------------------------------------
 // Drawn flat on top of the dithered render, the way a 1995 animator lettered over a
-// render: bold yellow in three solid bands with a black outline and drop shadow, on a dark
-// band that calms the castle and sand behind it, so it reads at 320x200 in every frame.
+// render: bold yellow in three solid bands with a thick black outline and drop shadow, so
+// it reads over the castle and sky at 320x200 in every frame.
 
 /** Palette entries kept for the lettering: black, then light yellow, yellow and orange. */
 const FLAT: [number, number, number][] = [
@@ -654,7 +654,7 @@ const SOFT_CX = 160;
 const SOFT_MID = 80;
 /** Cap height in screen rows at full size. */
 const SOFT_ROWS = 17;
-const OUTLINE = 2.2;
+const OUTLINE = 3;
 
 let softText: { grid: DistanceGrid; x0: number; x1: number } | undefined;
 function softwareText() {
@@ -678,35 +678,16 @@ function softPlace(s: number) {
   return { rows, unit: rows * 1.2, base: SOFT_MID + rows / 2 };
 }
 
-/** Darkens a band behind SOFTWARE in the render (it is dithered with the rest). */
-function softwareBand(out: Float32Array, f: number): void {
-  const s = softScale(f);
-  if (!s) return;
-  const { rows, unit } = softPlace(s);
-  const t = softwareText();
-  const x0 = Math.max(0, Math.floor(SOFT_CX + t.x0 * unit - 12 * s));
-  const x1 = Math.min(W - 1, Math.ceil(SOFT_CX + t.x1 * unit + 12 * s));
-  const y0 = Math.max(0, Math.floor(SOFT_MID - rows / 2 - 6 * s));
-  const y1 = Math.min(H - 1, Math.ceil(SOFT_MID + rows / 2 + 6 * s));
-  for (let y = y0; y <= y1; y++)
-    for (let x = x0; x <= x1; x++) {
-      const i = (y * W + x) * 3;
-      out[i] = out[i] * 0.22 + 0.02;
-      out[i + 1] = out[i + 1] * 0.22 + 0.03;
-      out[i + 2] = out[i + 2] * 0.22 + 0.1;
-    }
-}
-
 /** Letters SOFTWARE over an indexed frame in the flat colors (no dither). */
 function drawSoftware(px: Uint8Array, f: number): Uint8Array {
   const s = softScale(f);
   if (!s) return px;
   const { rows, unit, base } = softPlace(s);
   const t = softwareText();
-  const x0 = Math.max(0, Math.floor(SOFT_CX + t.x0 * unit - 6));
-  const x1 = Math.min(W - 1, Math.ceil(SOFT_CX + t.x1 * unit + 6));
-  const y0 = Math.max(0, Math.floor(base - rows - 6));
-  const y1 = Math.min(H - 1, Math.ceil(base + 6));
+  const x0 = Math.max(0, Math.floor(SOFT_CX + t.x0 * unit - 8));
+  const x1 = Math.min(W - 1, Math.ceil(SOFT_CX + t.x1 * unit + 8));
+  const y0 = Math.max(0, Math.floor(base - rows - 8));
+  const y1 = Math.min(H - 1, Math.ceil(base + 8));
   // 0 nothing, 1 outline, 2.. the fill's palette entry + 1
   const kind = new Uint8Array(W * H);
   for (let y = y0; y <= y1; y++)
@@ -715,10 +696,10 @@ function drawSoftware(px: Uint8Array, f: number): Uint8Array {
       const uy = (base - (y + 0.5)) / rows;
       const d = t.grid.at(ux, uy) * unit;
       if (d < 0) kind[y * W + x] = 1 + (uy > 0.6 ? 1 : uy > 0.2 ? 2 : 3);
-      else if (d < OUTLINE * Math.min(1, s)) kind[y * W + x] = 1;
+      else if (d < Math.max(1.2, OUTLINE * Math.min(1, s))) kind[y * W + x] = 1;
     }
   // the drop shadow, then the outline and the fill
-  const sh = Math.max(1, Math.round(2 * s));
+  const sh = Math.max(1, Math.round(3 * s));
   for (let y = y0; y <= y1; y++)
     for (let x = x0; x <= x1; x++) if (kind[y * W + x] && x + sh < W && y + sh < H && !kind[(y + sh) * W + x + sh]) px[(y + sh) * W + x + sh] = 0;
   for (let i = 0; i < kind.length; i++) if (kind[i]) px[i] = kind[i] === 1 ? 0 : kind[i] - 1;
@@ -741,7 +722,6 @@ export function sandLogoFrames(): LogoFrames {
   const rgb: Uint8Array[] = [];
   for (let f = 0; f < FRAMES; f++) {
     const fl = renderFrame(f);
-    softwareBand(fl, f);
     rgb.push(toBytes(fl));
   }
   const palette = medianCutPalette(rgb, FLAT);
