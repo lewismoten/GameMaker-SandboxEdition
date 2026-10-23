@@ -1,6 +1,7 @@
 // The INTO THE WILD set's routes.
 import { SUPPLIES } from '../../src/groups/outside/ants';
 import { PROPS } from '../../src/groups/outside/cardbrd';
+import { MENDS } from '../../src/groups/outside/umbrella';
 import { SCRAPS } from '../../src/groups/outside/outside';
 import { carefully, declaim, expect, leave, must, plot, tips, type Route } from '../route';
 
@@ -129,6 +130,58 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await declaim(bot, 'the clown wig');
       if (plot(bot) < PROPS) throw new Error(`only ${plot(bot)} props`);
       await leave(bot, bot.walk(63, 'Lily, the emergency exit'), 'the exit');
+    });
+  },
+  /** Shelter Me Gently, You Wounded Beast: under the storm cloud, the patch on the lamp, the gusts, the store's two aisles (wrench, screwdriver, tape; the price tags, Teddy and Gwinn), the checkout, the goat, the storm again, the wounded beast. */
+  umbrella: async (bot) => {
+    expect(bot, 'umbrella');
+    await carefully(bot, 'under the storm cloud', 0, async () => {
+      await must(bot, bot.walk(9, 'the spotlight, a coin, under the cloud, to the lamp'), 'lamp');
+    });
+    await carefully(bot, 'the lamp, the gusts, into the store', 0, async () => {
+      await must(bot, bot.hop('up', 12), 'up onto the lamp: the patch');
+      await must(bot, bot.walk(20, 'through the gusts into the store'), 'store');
+    });
+    await carefully(bot, 'aisle one', 0, async () => {
+      await must(bot, bot.hop('up', 12), 'up onto the tool shelf');
+      await declaim(bot, 'the price tag on the shelf');
+      await must(bot, bot.walk(21.5, 'the coin'), 'coin');
+      await must(bot, bot.hop('up', 12), 'up onto the paint shelf');
+      await must(bot, bot.walk(22, 'the wrench'), 'wrench');
+      await must(bot, bot.walk(23.4, 'along the paint shelf'), 'paint');
+    });
+    await carefully(bot, 'down the aisle, Teddy', 0, async () => {
+      await must(bot, bot.walk(24.5, 'down onto the tool shelf'), 'down');
+      await declaim(bot, 'the price tag on the floor');
+      await must(bot, bot.walk(26, 'down to the floor'), 'floor');
+      await declaim(bot, 'the price tag on the floor');
+      await must(bot, bot.hop('right', 12, 'right', 30), 'over Teddy, the dollar');
+    });
+    await carefully(bot, 'aisle two', 0, async () => {
+      await declaim(bot, 'the price tag');
+      await must(bot, bot.walk(31.2, 'under the tape shelf'), 'shelf');
+      await must(bot, bot.hop('up', 12), 'up onto the tape shelf');
+      await must(bot, bot.walk(32.5, 'the coin'), 'coin');
+      await must(bot, bot.hop('up', 12), 'up onto the top shelf');
+      await must(bot, bot.walk(33, 'the screwdriver'), 'screwdriver');
+      await must(bot, bot.walk(35, 'down to the tape'), 'tape');
+      await must(bot, bot.walk(36, 'down to the floor'), 'floor');
+    });
+    await carefully(bot, 'Gwinn, the checkout', 0, async () => {
+      await must(bot, bot.hop('right', 12, 'right', 39), 'over Gwinn, a coin');
+      await declaim(bot, 'paper or plastic?');
+      await must(bot, bot.hop('right', 12, 'right', 43), 'over the checkout');
+    });
+    await carefully(bot, 'out the door', 0, async () => {
+      await must(bot, bot.walk(48, 'the coffee, the goat'), 'goat');
+    });
+    await carefully(bot, 'the storm', 0, async () => {
+      await must(bot, bot.walk(57, 'through the gusts, a coin, the coffee'), 'gusts');
+    });
+    await carefully(bot, 'the last stand', 0, async () => {
+      await must(bot, bot.walk(65, 'under the storm clouds, a coin, a dollar'), 'clouds');
+      if (plot(bot) < MENDS) throw new Error(`only ${plot(bot)} mends`);
+      await leave(bot, bot.walk(67, 'the wounded beast'), 'the beast');
     });
   },
 };
