@@ -2,13 +2,15 @@
 // or by night as the room's clock has it: the snow plow, kids with sleds, the dogs loose
 // (Gwinn up to something), THE CHEZ, a fainting goat, a rubber chicken flying past; a
 // shooting star or the northern lights after dark. Never while a game is playing on the PC
-// (it would only distract), never without motion, never while the page is hidden.
+// (it would only distract), never without motion, and only while the window can be seen
+// (visible.ts: not under a manual or a dialog, not with the tab put away).
 // Other code can send one now: dispatchEvent(new CustomEvent('gm-window-event', { detail:
 // { kind } })), as the registration card does for the mail truck ("mailtruck", which only
 // comes that way).
 import { daylight } from "../../room/daylight";
 import { stillMotion } from "../propKit";
 import { play, type OutsideEvent } from "./outside";
+import { windowVisible } from "./visible";
 import { plow } from "./plow";
 import { sleds } from "./sleds";
 import { dogs } from "./dogs";
@@ -37,7 +39,7 @@ export function outsideWindow(win: HTMLElement, pc: { gamePlaying(): boolean }):
   const later = () => {
     timer = window.setTimeout(() => {
       if (!win.isConnected) return;
-      if (!document.hidden && !stillMotion()) {
+      if (windowVisible(win) && !stillMotion()) {
         const night = daylight() < 0.5;
         const now = EVENTS.filter((e) => (e.when === "any" || (e.when === "night") === night) && e.kind !== last);
         const ev = now[Math.floor(Math.random() * now.length)];

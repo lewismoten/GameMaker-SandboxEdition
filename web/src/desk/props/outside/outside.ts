@@ -4,6 +4,12 @@
 // achievement the first time). index.ts picks one every few minutes.
 import { addSkyExtra, VIEW } from "../../room/snowWindow";
 import { hitArea, pressable, say, stillMotion } from "../propKit";
+import { ambient, muteAmbient } from "../propSound";
+import { windowVisible } from "./visible";
+
+let live = false;
+/** Whether something outside is playing and can be seen (for sounds it starts later on). */
+export const outsidePlaying = (): boolean => live;
 
 /** Where something is in the window's view, in its pixels: x, y, width, height. */
 export type Box = [number, number, number, number];
@@ -32,9 +38,12 @@ const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(2)}%`;
 
 /**
  * Plays `ev` in the window `win` (its buttons go in `layer`, under the moon's). Without
- * motion it stands still halfway through for a few seconds instead. Resolves when it is over.
+ * motion it stands still halfway through for a few seconds instead. Only while the window
+ * can be seen (visible.ts): not at all if it can't, and cut short, its sound silenced, the
+ * moment it can't any more (a manual opened over it, the tab put away). Resolves when over.
  */
 export function play(win: HTMLElement, layer: HTMLElement, ev: OutsideEvent): Promise<void> {
+  if (!windowVisible(win)) return Promise.resolve();
   const still = stillMotion();
   const button = hitArea(`sw-out sw-out-${ev.kind}`);
   const moon = layer.querySelector(".sw-moon");
@@ -42,10 +51,21 @@ export function play(win: HTMLElement, layer: HTMLElement, ev: OutsideEvent): Pr
   else layer.append(button);
   const off = pressable(button, ev.label, () => say(button, ev.press()), { id: ev.id });
   const ms = still ? 3500 : ev.ms;
-  ev.start?.();
+  muteAmbient(false);
+  live = true;
+  if (ev.start) ambient(ev.start);
+  let looked = 0;
+  let seen = true;
   return new Promise((done) => {
     addSkyExtra(win, (ctx, t) => {
-      if (t >= ms || !win.isConnected) {
+      // (looked at a few times a second, not every frame)
+      if (t - looked > 250) {
+        looked = t;
+        seen = windowVisible(win);
+      }
+      if (t >= ms || !win.isConnected || !seen) {
+        if (!seen) muteAmbient(true);
+        live = false;
         if (document.activeElement === button) win.querySelector<HTMLElement>(".sw-glass")?.focus();
         off();
         button.remove();

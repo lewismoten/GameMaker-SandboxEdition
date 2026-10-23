@@ -14,13 +14,43 @@ interface Out {
   t: number;
 }
 
+// What goes by outside the window plays its sounds through one gain of its own, so they
+// can be cut off at once when the window can no longer be seen (outside/outside.ts).
+let ambientGain: GainNode | undefined;
+let ambientNow = false;
+
+/** Runs `f` with its sounds going through the outside's own gain. */
+export function ambient(f: () => void): void {
+  const was = ambientNow;
+  ambientNow = true;
+  try {
+    f();
+  } finally {
+    ambientNow = was;
+  }
+}
+
+/** Silences (or lets through again) whatever is playing from outside the window. */
+export function muteAmbient(mute: boolean): void {
+  const g = ambientGain;
+  if (g) g.gain.setTargetAtTime(mute ? 0 : 1, g.context.currentTime, 0.03);
+}
+
 /** The page's audio, unlocked by this gesture; undefined where there is none. */
 function open(): Out | undefined {
   try {
     const ctx = audioContext();
     if (!ctx) return undefined;
     unlock();
-    return { ctx, out: output(ctx), t: ctx.currentTime + 0.02 };
+    let out = output(ctx);
+    if (ambientNow) {
+      if (!ambientGain || ambientGain.context !== ctx) {
+        ambientGain = ctx.createGain();
+        ambientGain.connect(out);
+      }
+      out = ambientGain;
+    }
+    return { ctx, out, t: ctx.currentTime + 0.02 };
   } catch {
     return undefined;
   }
