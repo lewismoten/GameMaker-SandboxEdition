@@ -211,7 +211,7 @@ THIS IS SHAREWARE
 
   If it fed your soul a little,
   register for ${price}: you get a
-  tape of the song and a recipe
+  Loaf #13 sticker and a recipe
   for the Bard's own crusty
   bread. Send a check (US
   funds) to:
