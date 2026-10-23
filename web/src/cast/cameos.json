@@ -10,7 +10,8 @@
     { "game": "needle", "as": "under the tailor’s sewing table" },
     { "game": "tickle", "as": "on the tower’s floor, in the far corner" },
     { "game": "teddy2", "as": "tucked behind Teddy’s bed at home" },
-    { "game": "mustard", "as": "tucked in the nook behind the seed’s mound" }
+    { "game": "mustard", "as": "tucked in the nook behind the seed’s mound" },
+    { "game": "carl", "as": "under the bedroom desk" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -19,7 +20,8 @@
   ],
   "watt": [
     { "game": "blaster", "as": "blinking on Memory Lane" },
-    { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" }
+    { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" },
+    { "game": "carl", "as": "seeing to the stereo’s left speaker" }
   ],
   "carl": [
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
