@@ -52,7 +52,7 @@ export const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as con
 /** The help pages for downloaded games. */
 export const HELP_PAGES = ['mac', 'windows', 'linux'] as const;
 /** The desk props another part of the room reports with a gm-achievement event. */
-export const DESK_PROPS = ['desk-clock', 'desk-wastebasket', 'desk-door', 'desk-moon', 'desk-window', 'desk-curtains', 'desk-speaker', 'desk-degauss'] as const;
+export const DESK_PROPS = ['desk-clock', 'desk-wastebasket', 'desk-door', 'desk-moon', 'desk-window', 'desk-curtains', 'desk-speaker', 'desk-degauss', 'desk-chez', 'desk-blacklight'] as const;
 
 export const ACHIEVEMENTS: readonly Achievement[] = [
   // making
@@ -106,7 +106,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'help-all', title: 'Read the fine print', desc: 'Read the Mac, Windows and Linux help pages.', icon: '🧾', category: 'fun', of: HELP_PAGES.length, items: HELP_PAGES, unit: 'pages' },
 
   // found it (the desk's room; reported by gm-achievement events)
-  { id: 'desk-clock', title: 'Time flies', desc: 'Pressed the giant wristwatch on the wall and heard it beep the hour (or met its cuckoo).', icon: '🕰️', category: 'found', hidden: true, hint: 'Keep an eye on the time.' },
+  { id: 'desk-clock', title: 'Time flies', desc: 'Pressed the giant wristwatch on the wall and heard it beep the hour (or met the rubber chicken living in it).', icon: '🕰️', category: 'found', hidden: true, hint: 'Keep an eye on the time.' },
   { id: 'desk-wastebasket', title: 'One man’s trash', desc: 'Rummaged in the waste basket and pulled out a crumpled first try.', icon: '🗑️', category: 'found', hidden: true, hint: 'Not everything thrown away is junk.' },
   { id: 'desk-door', title: 'Who’s there?', desc: 'Tried the bedroom doorknob: locked, a knock, a honk, or a dog looking in.', icon: '🚪', category: 'found', hidden: true, hint: 'The room has a way out.' },
   { id: 'desk-moon', title: 'Moonstruck', desc: 'Pressed tonight’s real moon in the window: a shooting star, a fly or a wink.', icon: '🌙', category: 'found', hidden: true, hint: 'Look outside after dark.' },
@@ -114,6 +114,8 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'desk-curtains', title: 'Behind the curtain', desc: 'Swished the curtains beside the window.', icon: '🪟', category: 'found', hidden: true, hint: 'Somebody might be hiding.' },
   { id: 'desk-speaker', title: 'Bass boost', desc: 'Tapped the speaker without the knob.', icon: '🔈', category: 'found', hidden: true, hint: 'One speaker gets all the attention.' },
   { id: 'desk-degauss', title: 'Degaussed', desc: 'Pressed the monitor’s DEGAUSS button by its name plate.', icon: '🌈', category: 'found', hidden: true, hint: 'Every 1994 monitor had a button just for fun.' },
+  { id: 'desk-chez', title: 'Honk honk', desc: 'Caught THE CHEZ driving past the window and got a honk from Doc Leo.', icon: '🚗', category: 'found', hidden: true, hint: 'Watch the street by day. Someone drives by now and then.' },
+  { id: 'desk-blacklight', title: 'Glow up', desc: 'Flickered the black light over Doc Leo’s velvet poster.', icon: '🟣', category: 'found', hidden: true, hint: 'One poster looks better after dark.' },
 ];
 
 const BY_ID = new Map(ACHIEVEMENTS.map((a) => [a.id, a]));
