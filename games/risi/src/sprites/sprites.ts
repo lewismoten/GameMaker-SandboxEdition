@@ -526,6 +526,8 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('stony0', spectator(false, 0), solid);
   book.add('stony1', spectator(false, 1), solid);
+  book.add('giggle0', spectator(true, 0));
+  book.add('giggle1', spectator(true, 1));
   book.add('laugher0', spectator(true, 0), { effect: LAUGHS, eamt: 1, scorePts: 300 });
   book.add('laugher1', spectator(true, 1), { effect: LAUGHS, eamt: 1, scorePts: 300 });
   const cabbage = (f: number) => {

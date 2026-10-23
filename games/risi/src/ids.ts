@@ -63,6 +63,9 @@ export const MON = {
   stony: 26,
   /** A spectator laughing at last: it comes down to Marcus, and a laugh counts (counter 24). */
   laugher: 27,
+  /** A stone face just cracked: it shakes with laughter where it sits a moment (no joke can stop
+   * it), then gets up and comes to Marcus as a laugher. */
+  giggle: 42,
   /** A cabbage thrown from the top of the stands. */
   cabbage: 28,
   /** Doc Leo again, the theater's jester. A hello is points. */

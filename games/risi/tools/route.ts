@@ -354,8 +354,63 @@ export async function baths(bot: Bot): Promise<void> {
 }
 
 const GRAVIS = [MON.gravisA0, MON.gravisA1, MON.gravisA2, MON.gravisA3, MON.gravisB0, MON.gravisB1, MON.gravisB2, MON.gravisB3];
+
+/** Jokes at the stone face ahead on his row until it laughs, then waits for the laugher to come to him. */
+async function crack(bot: Bot, what: string): Promise<void> {
+  const before = laughs(bot);
+  for (let k = 0; k < 4 && where(bot, MON.stony).some((m) => m.x > bot.px.x / 20 && m.x - bot.px.x / 20 < 9 && Math.abs(m.y - bot.px.y / 20) < 0.6); k++) {
+    await must(bot, bot.hold('space', 2), 'a joke');
+    for (let t = 0; t < 6; t++) {
+      if (process.env.BOT_THROW) bot.say(`jokes ${JSON.stringify(where(bot, MON.joke))} stony ${JSON.stringify(where(bot, MON.stony))}`);
+      await must(bot, bot.wait(1), 'the joke flies');
+    }
+  }
+  await must(bot, bot.until(undefined, () => laughs(bot) > before, `${what} laughs`, 200), what);
+}
+
+/** VI. The theater: five laughs in the stands (six faces), the stairs, Doc Leo, Emperor Gravis, the crown, the altar. */
 export async function theater(bot: Bot): Promise<void> {
   expect(bot, 7, 'the theater');
-  void alive(bot, GRAVIS);
-  throw new Error('todo');
+  await carefully(bot, 'the top row', 20, async () => {
+    await crack(bot, 'the face on the top row');
+  });
+  await carefully(bot, 'the second row', 20, async () => {
+    await must(bot, bot.walk(5.2, 'down a step'), 'step');
+    await crack(bot, 'the face on the second row');
+  });
+  await carefully(bot, 'the third row', 20, async () => {
+    await must(bot, bot.walk(9.2, 'down a step'), 'step');
+    await crack(bot, 'the first face on the third row');
+    await crack(bot, 'the second face on the third row');
+  });
+  await carefully(bot, 'the fourth row', 20, async () => {
+    await must(bot, bot.walk(13.2, 'down a step'), 'step');
+    await crack(bot, 'the face on the fourth row');
+    if (laughs(bot) < 5) throw new Error(`only ${laughs(bot)} laughs`);
+  });
+  await carefully(bot, 'the orchestra: the mask, the last face, the grapes', 20, async () => {
+    await must(bot, bot.walk(17.2, 'down into the orchestra'), 'orchestra');
+    await must(bot, bot.walk(18, 'under the mask'), 'mask');
+    await up(bot, 'the mask', 8);
+    await crack(bot, 'the face in the orchestra');
+    await must(bot, bot.walk(22, 'under the grapes'), 'grapes');
+    await up(bot, 'the grapes');
+  });
+  await carefully(bot, 'the stairs, up onto the stage, Doc Leo', 0, async () => {
+    await must(bot, bot.walk(24, 'the stairs open'), 'stairs');
+    await must(bot, bot.hop('right', 12, 'right', 25.6), 'up onto the stage');
+    await must(bot, bot.walk(29, 'Doc Leo the jester'), 'leo');
+  });
+  await carefully(bot, 'Emperor Gravis', 60, async () => {
+    await must(bot, bot.walk(33, 'before the Emperor'), 'emperor');
+    for (let k = 0; k < 30 && alive(bot, GRAVIS); k++) await joke(bot, 'right', 8);
+    if (alive(bot, GRAVIS)) throw new Error('the Emperor keeps a straight face');
+    bot.say('Emperor Gravis laughed');
+  });
+  await carefully(bot, 'the laurel crown, the altar', 30, async () => {
+    await must(bot, bot.walk(35.6, 'under the crown'), 'crown');
+    await up(bot, 'the laurel crown', 6);
+    if (crown(bot) < 1) throw new Error('no crown');
+    await leave(bot, bot.walk(41, 'the altar'), 'the altar');
+  });
 }

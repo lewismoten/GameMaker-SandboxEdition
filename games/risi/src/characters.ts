@@ -164,7 +164,9 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.bubble] = mon(sting('bubble', 4), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(0, -2, 1, 0), corner(1, -4, 1, 0)]);
   set[MON.bather] = mon(anim('bather0', 'bather1', 16), { power: 230, thru: 1 }, still);
   // VI. the theater: a joke makes a stone face laugh; the laugher comes down to Marcus
-  set[MON.stony] = mon(anim('stony0', 'stony1', 20), { power: 200, thru: 1, newmon: MON.laugher }, still);
+  set[MON.stony] = mon(anim('stony0', 'stony1', 20), { power: 200, thru: 1, newmon: MON.giggle }, still);
+  // shaking with laughter in its seat (stronger than a joke, so the next one flies by harmlessly), then up it gets
+  set[MON.giggle] = mon(anim('giggle0', 'giggle1', 2), { power: 230, thru: 0, end: -1, newmon: MON.laugher }, [corner(0, 0, 2), corner(1, 0, 2, 0), corner(0, 0, 2, 4), corner(1, 0, 2, 0), corner(0, 0, 2, 4)]);
   set[MON.laugher] = mon(anim('laugher0', 'laugher1', 4), { power: 50, thru: 0, towards: 2 });
   set[MON.cabbage] = mon(anim('cabbage0', 'cabbage1', 3), { power: 40, thru: 0, end: -1 }, [corner(0, 0, 3), corner(2, 0, 3, 0), corner(4, 2, 3, 0), corner(5, 5, 3, 0), corner(6, 9, 3, 0)]);
   set[MON.jester] = mon(anim('jester0', 'jester1', 7), { power: 50, thru: 0, newmon: MON.jesterOff }, still);
