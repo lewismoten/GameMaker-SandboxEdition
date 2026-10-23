@@ -407,6 +407,47 @@
   }
 }
 
+/* Phones upright (up to 599px wide, 640px+ tall): the page fits the screen too. The game
+   stays in view at the top (homeShowcase.css makes it compact) and the library under it
+   scrolls by itself, so choosing a tile shows the game without leaving the list. */
+@media (max-width: 599px) and (min-height: 640px) {
+  #app.modern:has(> .content > main.home) {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  #app.modern > .content > main.home {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+    padding: 10px 12px 0;
+  }
+
+  /* the padding leaves room for the selected tile's ring */
+  .home .library {
+    flex: 1 1 0;
+    min-height: 0;
+    gap: 8px;
+    margin: 0 -4px;
+    padding: 0 4px 12px;
+    overflow-y: auto;
+  }
+
+  .lib-about .lead {
+    font-size: 12px;
+  }
+
+  .home-start {
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .home-start.clipped {
+    display: none;
+  }
+}
+
 /* a game tile: its picture (with buttons over it) and its title */
 .game-tile {
   position: relative;
