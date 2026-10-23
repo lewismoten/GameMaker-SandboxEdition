@@ -50,8 +50,8 @@ describe('OPL2 instrument presets', () => {
   });
 
   it('reads the patch words as the chip registers', () => {
-    expect([...patch('x1 tl15 ksl3 ar15 dr1 sl5 rr3', 'x1 ar13 dr2 sl7 rr4', 'fb3').subarray(0, 11)]).toEqual([
-      0x01, 0x01, 0x4f, 0x00, 0xf1, 0xd2, 0x53, 0x74, 0, 0, 0x06,
+    expect([...patch('x1 tl26 ksl3 ar15 dr2 sl6 rr3', 'x1 ar15 dr3 sl6 rr5', 'fb4').subarray(0, 11)]).toEqual([
+      0x01, 0x01, 0x5a, 0x00, 0xf2, 0xf3, 0x63, 0x65, 0, 0, 0x08,
     ]);
     expect([...patch('x2 tl4 ksl6 hold vib trem ksr w2', 'x0.5 ar0', 'fb7 add').subarray(0, 11)]).toEqual([
       0xf2, 0x00, 0xc4, 0x00, 0xf0, 0x00, 0x00, 0x00, 2, 0, 0x0f,

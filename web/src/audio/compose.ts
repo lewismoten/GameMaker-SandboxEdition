@@ -38,12 +38,15 @@ export function sbi(o: {
   ]);
 }
 
-/** A few classic FM patches. */
+/**
+ * A few classic FM patches, written for this project. (The piano and the brass were once
+ * AdLib's STANDARD.BNK PIANO1 and BRASS1 register values; they are now our own.)
+ */
 export const INSTRUMENTS = {
-  piano: sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x4f, carLevel: 0x00, modAD: 0xf1, carAD: 0xd2, modSR: 0x53, carSR: 0x74, feedback: 0x06 }),
+  piano: sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x5a, carLevel: 0x00, modAD: 0xf2, carAD: 0xf3, modSR: 0x63, carSR: 0x65, feedback: 0x08 }),
   bass: sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x1a, carLevel: 0x00, modAD: 0xf6, carAD: 0xf5, modSR: 0x54, carSR: 0x45, feedback: 0x08 }),
   strings: sbi({ modChar: 0x61, carChar: 0x21, modLevel: 0x1d, carLevel: 0x00, modAD: 0x74, carAD: 0x63, modSR: 0x13, carSR: 0x15, feedback: 0x0e }),
-  brass: sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x16, carLevel: 0x00, modAD: 0x71, carAD: 0x81, modSR: 0xae, carSR: 0x9e, feedback: 0x0e }),
+  brass: sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1a, carLevel: 0x00, modAD: 0x63, carAD: 0x74, modSR: 0x28, carSR: 0x17, feedback: 0x0c }),
   lead: sbi({ modChar: 0x22, carChar: 0x21, modLevel: 0x1b, carLevel: 0x00, modAD: 0xf4, carAD: 0xf4, modSR: 0x44, carSR: 0x24, modWave: 2, feedback: 0x0c }),
   bell: sbi({ modChar: 0x07, carChar: 0x01, modLevel: 0x23, carLevel: 0x00, modAD: 0xf5, carAD: 0xf3, modSR: 0x22, carSR: 0x13, feedback: 0x04 }),
   organ: sbi({ modChar: 0x32, carChar: 0x31, modLevel: 0x44, carLevel: 0x00, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, feedback: 0x01 }),

@@ -240,9 +240,9 @@ describe('SBI instrument settings', () => {
     const level = ENVELOPE[0];
     expect(getOp(inst, level, 1)).toBe(63); // carrier level 0x00 attenuation = loudest
     setOp(inst, level, 0, 0);
-    expect(inst[2]).toBe(0x7f); // KSL bits kept (0x4f has KSL 1)
+    expect(inst[2]).toBe(0x7f); // KSL bits kept (0x5a has KSL 1)
     setOp(inst, ENVELOPE[1], 1, 3);
-    expect(inst[5]).toBe(0x32);
+    expect(inst[5]).toBe(0x33);
     setOp(inst, FLAGS[1], 0, 1);
     expect(inst[0]).toBe(0x81);
     setOp(inst, MULT, 1, 4);
