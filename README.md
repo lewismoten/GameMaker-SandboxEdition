@@ -95,7 +95,7 @@ the root of this repository, and type:
 ```
 mount c runtime
 c:
-cd c:\gm
+cd \run\gm
 gm
 ```
 
