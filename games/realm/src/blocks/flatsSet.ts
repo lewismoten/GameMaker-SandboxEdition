@@ -65,13 +65,19 @@ export function flatsBook(bridges: [number, number][]): BlockBook {
       paintBridge(wm, rm, (x, y) => cobble(x, y), channel),
       {},
     );
-  // the low causeway: dry for twenty seconds, under water for eight
+  // the low causeway: dry for seventeen seconds, then three seconds awash (puddles over the
+  // planks: still passable, a warning), then three under water
   const deck = (x: number, y: number): RGB => (y % 4 < 0.7 ? [86, 58, 34] : mix([150, 108, 62], [190, 146, 92], tnoise(x, y, 2.5, 20, 9)));
-  book.add('tideDry', plain(deck), { next: 'tideWet', ntime: 364 });
+  book.add('tideDry', plain(deck), { next: 'tideDamp', ntime: 310 });
+  book.add(
+    'tideDamp',
+    plain((x, y) => (tnoise(x, y, 4, 20, 13) > 0.55 ? mix(water(x, y, 6), deck(x, y), 0.45) : deck(x, y))),
+    { next: 'tideWet', ntime: 54 },
+  );
   book.add(
     'tideWet',
     plain((x, y) => mix(water(x, y, 6), deck(x, y), 0.25)),
-    { solid: ALL, next: 'tideDry', ntime: 146 },
+    { solid: ALL, next: 'tideDry', ntime: 54 },
   );
   book.add('charger', charger(false), { solid: ALL, hp: 30, score: 50, touch: 'chargerUsed' });
   book.add('chargerUsed', charger(true), { solid: ALL });

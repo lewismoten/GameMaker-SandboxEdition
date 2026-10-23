@@ -429,9 +429,10 @@ export function keepPlan(mons: MonBook): DungeonPlan {
     p.put('pillar', x, y);
   p.col('floor2', 50, 21, 34);
   p.col('floor2', 50, 43, 53);
-  p.put('heartpot', 30, 50);
+  // (the west hall carves a block further west than the east one: these sit against it)
+  p.put('heartpot', 29, 50);
   p.put('heartpot', 70, 50);
-  p.put('bigchest', 30, 60);
+  p.put('bigchest', 29, 60);
   p.put('chest', 70, 60);
   p.row('spikes', 43, 46, 80);
   p.row('spikes', 54, 57, 80);
@@ -441,7 +442,7 @@ export function keepPlan(mons: MonBook): DungeonPlan {
   foes(p, mons.n('goblin'), [
     [44, 58],
     [56, 58],
-    [30, 55],
+    [28, 55],
     [70, 55],
     [42, 46],
     [58, 46],

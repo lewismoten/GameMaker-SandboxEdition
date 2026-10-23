@@ -171,6 +171,8 @@ Here is one hundred gold: the Finder's Fee, which the library has been meaning t
 
 Wood does for slimes and bats. Crabs, eels, golems and anything in a helmet want steel. Anything Lord Deadline built wants steel twice.
 
+A boss won't let you walk into him. Tap the arrow toward him to face him, then swing.
+
 I'd make you a shield, but I've been putting it off.`,
   ),
   barkeep: t(
@@ -238,7 +240,9 @@ She runs on lightning. Her charge port is on the rear passenger side, for reason
 
 She'll cross the Dawdle Flats, forty leagues of tidal mud nobody has ever finished walking. But she's flat. Bring me anything with lightning in it and I'll open the garage door.
 
-They say there's lightning in the Soggy Vaults. Charging takes one mile per hour. Per hour.`,
+They say there's lightning in the Soggy Vaults. Charging takes one mile per hour. Per hour.
+
+Arrows drive her. SPACE squeezes the horn: ah-OOO-gah! Crabs can't stand it. And when the low causeway goes puddly, the tide's coming in: wait for it to drain.`,
   ),
   salt: t(
     'salt',
