@@ -216,7 +216,9 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     Sweatpants is seventeen spoken monologues, shaped with ChatGPT from Lewis’s prompts, with
     audio and vocals made with Riffusion (now Google Flow Music); its code, art and music were
     made by Claude Opus 5.5, and its coffee house, The Hive, is inspired by Lewis’s memories of
-    the Beehive in Oakland, Pittsburgh (drawn from memory, not an official picture of it). Third Goat from the
+    the Beehive in Oakland, Pittsburgh (drawn from memory, not an official picture of it).
+    Veni, Vidi, Risi! is Lewis’s group of comic songs in Latin: its lyrics were shaped with ChatGPT from Lewis’s prompts and its music and vocals made with Riffusion (now Google Flow Music); the
+    game Veni, Vidi, Risi! takes its sung clips and FM score from those recordings, and its code, pictures (the title and cover art among them) and FM arrangements were made by Claude Opus 5.5. Third Goat from the
     Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover
     came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai.
     The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly
