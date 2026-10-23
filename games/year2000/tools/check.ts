@@ -54,6 +54,8 @@ for (const [i, l] of LEVELS.entries()) {
   const map = lm.done();
   const names = set.names;
   const avoid = new Set(['booth_door'].map((n) => set.id(n)));
+  // never the tin heart or the Easter egg: they're left for the player to find
+  set.names.forEach((n, i) => /^(tinHeart|easterEgg)\d*$/.test(n) && avoid.add(i));
   const links: SimScene['links'] = [];
   if (l.file === 'exchange') for (const [from, to] of DIALS) links.push({ from: lm.at(from), to: lm.at(to) });
   links.push({ from: lm.at('exit'), to: { x: 0, y: 0 } });

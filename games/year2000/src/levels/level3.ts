@@ -95,5 +95,7 @@ const ROWS = [
 export function level3(set: BlockSet): LevelMap {
   const m = new LevelMap(set, 'void');
   m.stamp(0, 0, ROWS, LEGEND, 'tile');
+  // a tin heart tucked behind the food court's tables at PILLS
+  m.set_(42, 1, 'tinHeart');
   return m;
 }

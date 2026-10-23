@@ -231,5 +231,8 @@ export function level4(set: BlockSet): LevelMap {
   m.stamp(52, 16, JUNGLE, JUNGLE_LEGEND, 'jungle');
   m.stamp(0, 20, LAUNCH, LAUNCH_LEGEND, 'concrete');
   m.stamp(19, 23, CLOSET, CLOSET_LEGEND, 'concrete');
+  // Watt, the repair robot from Ohm Sweet Ohm, tinkering with the switchboard's far end, and
+  // a painted Easter egg in the sand in a corner of Florida
+  m.set_(22, 2, 'watt').set_(46, 9, 'easterEgg');
   return m;
 }
