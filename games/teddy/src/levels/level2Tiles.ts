@@ -99,16 +99,17 @@ export function streetTiles(): Tiles {
   t.air('roofR', roofRow(false, true, false));
   t.air('eave', roofRow(false, false, true));
   // the porch roof is an awning you can stand on; the porch floor is a step
-  t.ledge(
-    'awning',
-    (() => {
-      const p = sky(2);
-      for (let x = 0; x < 20; x++) p.rect(x, 0, 1, 10, (x >> 2) % 2 ? c('paint', 3) : c('green', 1));
-      p.rect(0, 10, 20, 2, c('green', 0));
-      for (let x = 0; x < 20; x += 4) blob(p, x + 2, 11, 2, 2, (x >> 2) % 2 ? [c('paint', 2), c('paint', 3)] : [c('green', 0), c('green', 1)], 0, 1);
-      return p;
-    })(),
-  );
+  for (const col of colors)
+    t.ledge(
+      `awning_${col}`,
+      (() => {
+        const p = wallOf(col);
+        for (let x = 0; x < 20; x++) p.rect(x, 0, 1, 10, (x >> 2) % 2 ? c('paint', 3) : c('green', 1));
+        p.rect(0, 10, 20, 2, c('green', 0));
+        for (let x = 0; x < 20; x += 4) blob(p, x + 2, 11, 2, 2, (x >> 2) % 2 ? [c('paint', 2), c('paint', 3)] : [c('green', 0), c('green', 1)], 0, 1);
+        return p;
+      })(),
+    );
   t.wall(
     'porch',
     (() => {
@@ -225,6 +226,7 @@ export function streetTiles(): Tiles {
   // A maple tree (Maple Street, after all).
   for (let k = 0; k < 4; k++) t.air(`leaf${k}`, leaves(80 + k, sky(k)));
   t.air('trunk', trunk(t.pic('hedge')));
+  t.air('trunkHedgeTop', trunk(t.pic('hedgeTop')));
   t.air('trunkLawn', trunk(lawn));
   t.air('trunkTop', trunk(leaves(85, sky(2))));
 

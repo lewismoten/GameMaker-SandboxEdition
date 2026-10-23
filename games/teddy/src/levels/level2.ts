@@ -61,7 +61,7 @@ export function street(): Level {
     m.rect(x0, 29, w, 1, 'eave');
     if (porch) {
       const [a, b] = porch;
-      m.rect(a, 36, b - a + 1, 1, 'awning');
+      m.rect(a, 36, b - a + 1, 1, `awning_${col}`);
       m.set(a, 37, `post_${col}`).set(a, 38, `post_${col}`).set(b, 37, `post_${col}`).set(b, 38, `post_${col}`);
       m.rect(a, 39, b - a + 1, 1, 'porch');
     }
@@ -113,7 +113,7 @@ export function street(): Level {
   // The mail carrier, a maple tree and a garden bed with bones buried in it.
   m.set(60, 38, 'mailTop').set(60, 39, 'mailBot').set(61, 39, 'mailbox');
   for (let y = 30; y < 37; y++) for (let x = 62; x < 67; x++) if (Math.abs(x - 64) + Math.abs(y - 32) < 4) m.set(x, y, `leaf${bandOf(y)}`);
-  m.set(64, 35, 'trunkTop').set(64, 36, 'trunkTop').set(64, 37, 'trunk').set(64, 38, 'trunk').set(64, 39, 'trunkLawn');
+  m.set(64, 35, 'trunkTop').set(64, 36, 'trunkTop').set(64, 37, 'trunkHedgeTop').set(64, 38, 'trunk').set(64, 39, 'trunkLawn');
   m.rect(63, G, 4, 1, 'bed');
 
   // House 4 (yellow) with a girl on the porch.
