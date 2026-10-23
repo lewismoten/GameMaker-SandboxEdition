@@ -13,6 +13,8 @@ import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import { drawHand, HAND_H, HAND_W } from '../art/hand';
 import type { Pal } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { FAITH, MON, WATER, WATER_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
@@ -448,5 +450,16 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('sunSpot', sunSpot(), air);
+
+  // Keepsakes, added last so every block before keeps its number: a tin heart tucked in the
+  // nook behind the seed's mound (a glint crosses it now and then) and a painted Easter egg at
+  // the foot of the great plant, far over on the left. Each is air like the sky around it, a
+  // few points, gone when touched (the sky is its touch block), with no sound of its own.
+  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('white', 2), dark: c('grey', 1) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(sky(1), tin, k), { ...air, next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'sky', score: 100 });
+  const egg = { ink: c('ink', 0), shell: R('blue'), paint: [c('red', 2), c('red', 3)], accent: c('sun', 3), white: c('white', 2) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(sky(1), egg, 'stars', k), { ...air, next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'sky', score: 50 });
   return book;
 }

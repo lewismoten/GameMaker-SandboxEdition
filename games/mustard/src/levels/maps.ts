@@ -196,6 +196,8 @@ export function mound(book: BlockBook): Level {
   m.mon(MON.beetleR, 8, 9);
   m.peacock(21, 9);
   m.mon(MON.crow, 40, 1).mon(MON.bee, 51, 7).mon(MON.beetleR, 48, 9).mon(MON.crow, 56, 1);
+  // a tin heart in the nook behind the mound
+  m.set(1, 9, 'tinHeart');
   m.link(67, 9, 'next');
   return { m, start: at(4, 7), size: [W, H] };
 }
@@ -289,6 +291,8 @@ export function sky(book: BlockBook): Level {
   m.row(3, 6, 19, 'g');
   for (let k = 0; k < 24; k++) m.set(9 + (k % 8), Math.floor(k / 8), `hand${k}`);
   m.mon(MON.squirrel, 9, 36).mon(MON.bird, 15, 36).mon(MON.bird, 16, 19).mon(MON.crow, 8, 10).mon(MON.squirrel, 9, 16).mon(MON.bee, 17, 27);
+  // a painted Easter egg at the foot of the great plant, far over on the left
+  m.set(1, 43, 'easterEgg');
   m.link(13, 1, 'won');
   return { m, start: at(12, 43), size: [W, H] };
 }
