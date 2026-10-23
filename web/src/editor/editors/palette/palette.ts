@@ -1,5 +1,6 @@
 // Palette editor (PALCHOS.EXE): 256 VGA colors with 0..63 red/green/blue.
 import { rovingGrid } from '../../widgets/rovingGrid';
+import { colorChoice } from '../../widgets/colorChoice';
 import { History } from '../../core/history';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
@@ -60,6 +61,16 @@ registerEditor(['pal'], (host, project, file) => {
     };
   });
 
+  const colorBox = colorChoice({
+    get: () => selected,
+    set: (i) => {
+      selected = i;
+      rangeEnd = undefined;
+      refresh();
+    },
+    css: (i) => paletteCss(pal, i),
+  });
+
   const buttons: HTMLButtonElement[] = [];
   for (let i = 0; i < 256; i++) {
     const b = h('button', {
@@ -85,6 +96,7 @@ registerEditor(['pal'], (host, project, file) => {
       b.classList.toggle('selected', i === selected || inRange);
     });
     preview.style.background = paletteCss(pal, selected);
+    colorBox.refresh();
     view.set({ color: selected });
     const hex = '#' + [0, 1, 2].map((c) => Math.round((pal[selected * 3 + c] * 255) / 63).toString(16).padStart(2, '0')).join('');
     clear(
@@ -127,6 +139,7 @@ registerEditor(['pal'], (host, project, file) => {
         'div',
         { class: 'panel stack', style: 'flex:1 1 260px;max-width:420px' },
         h('div', { class: 'row', style: 'align-items:center' }, preview, label),
+        colorBox.el,
         ...sliders.map((s) => s.row),
         h('div', { class: 'toolbar' }, h('button', { onclick: spread }, 'Spread range'), undoBtn, redoBtn),
         gifs.length

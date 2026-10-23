@@ -1,5 +1,6 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
 import { rovingGrid } from '../../widgets/rovingGrid';
+import { colorChoice } from '../../widgets/colorChoice';
 import './blocks.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
@@ -341,6 +342,15 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   // ---- colors ---------------------------------------------------------------
   const swatches = rovingGrid(h('div', { class: 'swatches' }), 'Drawing color');
   const colorLabel = h('div', { class: 'meta' });
+  const colorBox = colorChoice({
+    get: () => color,
+    set: (i) => {
+      color = i;
+      renderSwatches();
+    },
+    css: (i) => (sprites && i === TRANSPARENT ? 'transparent' : paletteCss(pal(), i)),
+    name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`),
+  });
   function renderSwatches(): void {
     clear(
       swatches,
@@ -356,6 +366,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         }),
       ),
     );
+    colorBox.refresh();
     colorLabel.textContent = `Drawing with color ${color}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.`;
   }
 
@@ -514,7 +525,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       { class: 'blk' },
       h('div', { class: 'blk-picker' }, picker),
       h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures),
-      h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorLabel), props),
+      h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
     ),
   );
   renderPicker();
