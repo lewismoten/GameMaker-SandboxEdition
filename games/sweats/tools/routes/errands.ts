@@ -63,7 +63,8 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(66, 'the coin'), 'coin');
       await must(bot, bot.walk(68.5, 'down, the coin'), 'down');
       if (plot(bot) < GROCERIES) throw new Error(`only ${plot(bot)} groceries`);
-      await leave(bot, bot.walk(70.5, 'the last self-checkout: SCAN, PAY, GO'), 'the gate');
+      await must(bot, bot.walk(71, 'the last self-checkout: SCAN, PAY, GO'), 'the gate');
+      await leave(bot, bot.walk(83.5, 'the walk-off'), 'the walk-off');
     });
   },
 

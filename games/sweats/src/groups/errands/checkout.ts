@@ -394,7 +394,10 @@ export const checkout: Monologue = {
     '4': 'eggs',
   },
   build: (m: MapBuilder) => {
-    const W = 74;
+    // the walk-off: OFF blocks more of the store past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 13;
+    const W = 74 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 2; x < W; x += 5) m.set(x, 0, '*');
     m.fill(0, 1, W, 9, '.').row(2, 0, W - 1, '-').row(3, 0, W - 1, 'pennants').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
@@ -439,7 +442,7 @@ export const checkout: Monologue = {
     m.set(70, 8, 'kioskC.0.0').set(70, 9, 'kioskC.0.1').set(70, 10, 'G');
     m.set(71, 9, 'kioskA.1.1').set(71, 10, 'kioskA.1.2');
     m.set(68, 10, '$');
-    m.link(70, 10, 'next');
+    m.link(70 + OFF, 10, 'next');
     return { start: [1, 10], size: [W, 13] };
   },
   monsters: checkoutMonsters,
