@@ -49,10 +49,9 @@ function floorMat(t: Theme): Material {
       if (e < 0.05) return f.line;
       return (Math.floor(p[0]) + Math.floor(p[1])) & 1 ? f.b : f.a;
     },
+    // no reflection: a mirrored sky would wash the diamonds out and lose Ray against them
     diffuse: 0.85,
-    reflect: 0.12,
-    fresnel: 0.25,
-    spec: 0.6,
+    spec: 0.4,
     shine: 50,
   };
 }

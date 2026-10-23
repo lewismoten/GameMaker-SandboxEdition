@@ -52,7 +52,15 @@
   },
   {
    "scene": 10,
-   "keys": "AVAK0AFLFMsBSBnIAU0PzQFIATkBuR/IAVAF0AFND80BSBTIAUseywFQD9ABTQrNAU0KzQFIBcgBTRnNAVAK0AFNBc0BSA/IAU0UzQFQBdABSyPLAVAP0AFLFMsBUBTQAUsFywFQFNABTQXNAVAP0AFLD8sBTQ/NAVAK0AFLDTkBuRXLAVAK0AFLBcsBSArIAUsUywFICTkBuQXIAUsKywFQCtABTQrNAU0IOQG5BzkBuRzNAVAK0AFNI80BSBTIAU0yzQFQBdABSw/LAVA="
+   "keys": "AVAK0AFLFMsBSBnIAU0PzQFIATkBuR/IAVAF0AFND80BSBTIAUseywFQD9ABTQrNAU0KzQFIBcgBTRnNAVAK0AFNBc0BSA/IAU0UzQFQBdABSyPLAVAP0AFLFMsBUBTQAUsFywFQFNABTQXNAVAP0AFLD8sBTQ/NAVAK0AFLDTkBuRXLAVAK0AFLBcsBSx7LAUgUyAFN"
+  },
+  {
+   "scene": 9,
+   "keys": "AVAK0AFLD8sBSArIAUsKywFQCtABTQrNAVAK0AFNFM0BSBTIAUs="
+  },
+  {
+   "scene": 10,
+   "keys": "AUsPywFQFNABTRY5AbkHOQG5BzkBuQbNATkASAG5BzkBuQc5AbkHOQG5BzkAyAG5BzkBuQFIDsgBTQ/NAUgKyAFNMs0BTSPNAVAF0AFLD8sBUA=="
   },
   {
    "scene": 11,
@@ -60,7 +68,7 @@
   },
   {
    "scene": 12,
-   "keys": "AU0PzQFQFNABSwrLAU0ZzQFNFM0BSA/IAUsFywFQBdABTQrNAU0DzSxQD9ABUAXQAUsFywFIBcgBTQ=="
+   "keys": "AVAU0AFNMs0BSA/IAUsFywFQBdABTQrNAU0DzSxQD9ABUAXQAUsFywFIBcgBTQ=="
   },
   {
    "scene": 13,
@@ -68,7 +76,15 @@
   },
   {
    "scene": 12,
-   "keys": "AUgKyAFLGcsBSAXIAUsKywFQCtABSyjLAUsFywFIBcgBSw/LAUgKyAFLCssBSAXIAUstywFQ"
+   "keys": "AUgKyAFLGcsBSAXIAUsKywFQCtABSyjLAUsFywFIBcgBSw/LAVAU0AFNBc0BSAE5AbkXyAFLGcsBSA/IAUsjywFQBdABTQ=="
+  },
+  {
+   "scene": 13,
+   "keys": "AUgFyAFLFMsBTRTNAVAF0AFNFDkBuQc5AbkGzQFQCtABTQrNAUgKyAFLCssBSw=="
+  },
+  {
+   "scene": 12,
+   "keys": "AUgFyAFLCssBUA=="
   },
   {
    "scene": 14,
@@ -104,7 +120,7 @@
   },
   {
    "scene": 19,
-   "keys": "AVAXOQG5BzkBuQc5AbkHOQDQAbkHOQG5BUsBywBQATkA0AG5BEsDywBQATkA0AG5BzkBuQRLCssATQrNAE0KzQBNCs0ATQrNAEsBOQG5BcsBUAE5AbkHOQG5BdABSxo5AbkQywNQAdAAUAHQAFAB0ABQAtADSAXIAU0="
+   "keys": "AVAXOQG5BzkBuQc5AbkHOQDQAbkHOQG5BUsBywBQATkA0AG5BEsDywBQATkA0AG5BzkBuQRLCssATQrNAE0KzQBNCs0ATQrNAEsBOQG5BcsBUAE5AbkHOQG5BdABSxo5AbkQywNQAdAAUAHQAFAB0ABQAtADSB7IAUsuywFIFMgBUC3QAU0="
   }
  ],
  "chapters": [
@@ -135,7 +151,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 31530,
+  "frames": 34006,
   "chapters": [
    {
     "title": "Opening",
@@ -159,23 +175,23 @@
    },
    {
     "title": "Scene 4: Fractal Peaks",
-    "frame": 16823
+    "frame": 17727
    },
    {
     "title": "Scene 5: Teapot Temple",
-    "frame": 20313
+    "frame": 22194
    },
    {
     "title": "Scene 6: The Vanishing Point",
-    "frame": 23885
+    "frame": 25766
    },
    {
     "title": "Ending",
-    "frame": 27879
+    "frame": 30349
    },
    {
     "title": "Credits",
-    "frame": 29442
+    "frame": 31914
    }
   ]
  }

@@ -216,7 +216,9 @@ export const ROUTES: Step[][] = [
     [14, 5, 'room B'],
     [26, 3, 'red lens'],
     [15, 18, 'room H'],
+    [6, 18, 'ring 3 to near'],
     [4, 20, 'green lens'],
+    [6, 18, 'ring 3 to far'],
     [25, 23, 'exit'],
   ],
   // 4. Fractal Peaks
@@ -230,7 +232,9 @@ export const ROUTES: Step[][] = [
     [30, 20, 'green lens'],
     [36, 22, 'ring 2 to near'],
     [20, 21, 'over the near bridge'],
+    [8, 18, 'ring 3 to far'],
     [14, 18, 'blue lens'],
+    [8, 18, 'ring 3 to near'],
     [5, 24, 'exit'],
   ],
   // 5. Teapot Temple

@@ -207,6 +207,10 @@
       {
        "q": "My double keeps rolling into me.",
        "a": "It wakes when you come close. Face it and fire first: one ray renders it to nothing."
+      },
+      {
+       "q": "The green lens is boxed in by cyan blocks.",
+       "a": "Cyan blocks are solid in the far plane, the only plane that gets you into that room. Roll onto the ring beside the box: in the near plane the box is a blur. Take the lens, then step back on the ring to get out."
       }
      ]
     },
@@ -216,6 +220,10 @@
       {
        "q": "The arrows carried me away!",
        "a": "Golden chevrons pull you the way they point until you hit something. Ride the two chutes on purpose; stay off the slopes beside the pit."
+      },
+      {
+       "q": "The blue lens is boxed in by amber blocks.",
+       "a": "You cross the glass bridge in the near plane, where amber is solid. The ring in that room pulls focus to the far plane, where the box is a blur. Take the lens and ride the ring back."
       }
      ]
     },
