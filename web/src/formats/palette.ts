@@ -60,8 +60,7 @@ export function defaultPalette(): Palette {
   // 6x6x6 color cube
   let i = 16;
   for (let r = 0; r < 6; r++)
-    for (let g = 0; g < 6; g++)
-      for (let b = 0; b < 6; b++) pal.set([Math.round((r * 63) / 5), Math.round((g * 63) / 5), Math.round((b * 63) / 5)], i++ * 3);
+    for (let g = 0; g < 6; g++) for (let b = 0; b < 6; b++) pal.set([Math.round((r * 63) / 5), Math.round((g * 63) / 5), Math.round((b * 63) / 5)], i++ * 3);
   // remaining: hue ramp
   for (; i < 255; i++) {
     const h = ((i - 232) / 23) * 6;

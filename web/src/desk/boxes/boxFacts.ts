@@ -26,7 +26,7 @@ export { DOS_EXTRA_BYTES, disksLine } from '../../project/diskFacts';
 
 /** How many 1.44 MB disks an original game ships on (its files plus the DOS player): project/diskFacts.ts gameDisks, from a size alone. */
 export function boxDisks(bytes: number | undefined): number {
-  return gameDisks({ bytes, original: {} as CatalogEntry['original'] });
+  return gameDisks({ bytes, original: {} });
 }
 
 const NICE_HOURS = [1, 2, 3, 5, 8, 10, 15, 20, 25, 30, 40, 50];

@@ -74,7 +74,11 @@ export const COLLECTIONS: { name: string; tag: string; games: Record<string, str
 /** The Bard's games sorted into his collections (in the collection's order); games not filed yet last, under `More song-games`. */
 export function byCollection<G extends { id: string }>(games: readonly G[]): { name: string; tag?: string; games: G[] }[] {
   const filed = new Set(COLLECTIONS.flatMap((c) => Object.keys(c.games)));
-  const out: { name: string; tag?: string; games: G[] }[] = COLLECTIONS.map((c) => ({ name: c.name, tag: c.tag, games: Object.keys(c.games).flatMap((id) => games.filter((g) => g.id === id)) }));
+  const out: { name: string; tag?: string; games: G[] }[] = COLLECTIONS.map((c) => ({
+    name: c.name,
+    tag: c.tag,
+    games: Object.keys(c.games).flatMap((id) => games.filter((g) => g.id === id)),
+  }));
   out.push({ name: 'More song-games', games: games.filter((g) => !filed.has(g.id)) });
   return out.filter((c) => c.games.length);
 }

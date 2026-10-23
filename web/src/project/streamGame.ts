@@ -247,7 +247,7 @@ export function streamHostedGame(entry: CatalogEntry, base = './', concurrency =
       const pending = list.map((x) => resolveName(names, x)).flatMap((n) => (n && waiting.has(n) ? [n] : []));
       if (!pending.length) return undefined;
       front(pending);
-      return Promise.all(pending.map((n) => waiting.get(n)?.promise)).then(() => undefined);
+      return Promise.all(pending.flatMap((n) => waiting.get(n)?.promise ?? [])).then(() => undefined);
     },
     want: (list) => front(list),
   };

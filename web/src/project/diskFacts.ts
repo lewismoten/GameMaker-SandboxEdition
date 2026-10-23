@@ -52,13 +52,29 @@ export function storageLine(g: Sized): string {
  * How much PKZIP 2.04g's deflate leaves of each kind of file, measured on the games' own disks
  * (only used when the catalog has no packBytes: the dev server's doesn't).
  */
-const SHRINK: Record<string, number> = { gif: 0.98, voc: 0.64, txt: 0.61, pal: 0.59, rec: 0.52, exe: 0.41, fli: 0.28, snd: 0.26, cmf: 0.24, gam: 0.16, bbl: 0.12 };
+const SHRINK: Record<string, number> = {
+  gif: 0.98,
+  voc: 0.64,
+  txt: 0.61,
+  pal: 0.59,
+  rec: 0.52,
+  exe: 0.41,
+  fli: 0.28,
+  snd: 0.26,
+  cmf: 0.24,
+  gam: 0.16,
+  bbl: 0.12,
+};
 const SHRINK_OTHER = 0.08;
 const shrink = (name: string) => SHRINK[name.split('.').pop()!.toLowerCase()] ?? SHRINK_OTHER;
 /** A ZIP's local header (30 bytes) and central directory entry (46), each with the name; then the 22-byte end record. */
 const zipHeaders = (names: string[]) => 22 + names.reduce((n, f) => n + 76 + 2 * f.length, 0);
 
-export const zipName = (g: Pick<CatalogEntry, 'exe' | 'id'>) => `${(g.exe ?? g.id).replace(/\.EXE$/i, '').slice(0, 8).toUpperCase()}.ZIP`;
+export const zipName = (g: Pick<CatalogEntry, 'exe' | 'id'>) =>
+  `${(g.exe ?? g.id)
+    .replace(/\.EXE$/i, '')
+    .slice(0, 8)
+    .toUpperCase()}.ZIP`;
 
 /** The ZIP's size on a BBS: the game's files (their real pack size when the build measured it), the release's extras, FILE_ID.DIZ and the ZIP's own headers. */
 export function zipBytes(g: Pick<CatalogEntry, 'bytes' | 'original' | 'exe' | 'files' | 'sizes' | 'packBytes' | 'id'>): number {

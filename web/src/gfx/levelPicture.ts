@@ -212,7 +212,9 @@ export interface HeroSpec {
 }
 
 /** The hero an original game's paper shows (its hero sticker, else its ID card's portrait): the disk label and manual cover draw him. */
-export function heroOf(original: { printables?: { stickers?: { hero?: HeroSpec }[]; items?: { kind: string; portrait?: HeroSpec }[] } } | undefined): HeroSpec | undefined {
+export function heroOf(
+  original: { printables?: { stickers?: { hero?: HeroSpec }[]; items?: { kind: string; portrait?: HeroSpec }[] } } | undefined,
+): HeroSpec | undefined {
   const p = original?.printables;
   return p?.stickers?.find((s) => s.hero)?.hero ?? p?.items?.flatMap((i) => (i.kind === 'idcard' && i.portrait ? [i.portrait] : []))[0];
 }

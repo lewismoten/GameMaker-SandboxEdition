@@ -137,7 +137,7 @@ export function checkGame(src: FileSource, gam: string | undefined, opts: { deep
       s.files.forEach((f, slot) => {
         const name = f?.trim();
         if (!name || slot >= slots.length) return;
-        const where = `${sceneName(game!, i)}, ${slots[slot].toLowerCase()}`;
+        const where = `${sceneName(game, i)}, ${slots[slot].toLowerCase()}`;
         const hit = find(name);
         if (hit) used.add(hit);
         if (!hit) {
@@ -151,18 +151,18 @@ export function checkGame(src: FileSource, gam: string | undefined, opts: { deep
             severity: 'warning',
             kind: 'game',
             file: normalize(name),
-            message: `${normalize(name)} is in the ${slots[slot].toLowerCase()} slot of ${sceneName(game!, i)}, which expects a .${want === 'graphic' ? 'gif/.fli/.lst/.txt/.bkd' : want} file.`,
+            message: `${normalize(name)} is in the ${slots[slot].toLowerCase()} slot of ${sceneName(game, i)}, which expects a .${want === 'graphic' ? 'gif/.fli/.lst/.txt/.bkd' : want} file.`,
           });
       });
       s.links.forEach((l, li) => {
         if (l.toScene === NOSCENE || li >= s.numLinks) return;
-        const to = game!.scenes[l.toScene];
+        const to = game.scenes[l.toScene];
         if (!to || sceneKind(to) === 'unused')
           issues.push({
             severity: 'error',
             kind: 'link',
             file: gamFile,
-            message: `Link ${li + 1} of ${sceneName(game!, i)} leads to scene ${l.toScene}, which doesn’t exist.`,
+            message: `Link ${li + 1} of ${sceneName(game, i)} leads to scene ${l.toScene}, which doesn’t exist.`,
           });
       });
     });

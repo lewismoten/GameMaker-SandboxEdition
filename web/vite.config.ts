@@ -55,7 +55,9 @@ const playerGraph = (bundle: Bundle) => pageGraph(bundle, 'play.html');
 /** Every file under the public folder (copied into the site as is), relative to it. */
 function publicTree(dir = publicDir, prefix = ''): string[] {
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => !f.startsWith('.')).flatMap((f) => (statSync(resolve(dir, f)).isDirectory() ? publicTree(resolve(dir, f), `${prefix}${f}/`) : [`${prefix}${f}`]));
+  return readdirSync(dir)
+    .filter((f) => !f.startsWith('.'))
+    .flatMap((f) => (statSync(resolve(dir, f)).isDirectory() ? publicTree(resolve(dir, f), `${prefix}${f}/`) : [`${prefix}${f}`]));
 }
 
 const digest = (data: string | Uint8Array) => createHash('sha1').update(data).digest('base64url').slice(0, 12);
@@ -186,13 +188,14 @@ function manualReload(): Plugin {
     configureServer(server) {
       const channels = new Set([server.ws, server.environments?.client?.hot].filter((c) => !!c));
       for (const channel of channels) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- bind() keeps the overloads; the wrapper below needs one plain signature
         const send = channel.send.bind(channel) as (...args: unknown[]) => void;
-        channel.send = ((...args: unknown[]) => {
+        channel.send = (...args: unknown[]) => {
           const payload = args[0] as { type?: string; path?: string } | undefined;
           if (payload && typeof payload === 'object' && payload.type === 'full-reload')
             return send({ type: 'custom', event: 'gm:source-changed', data: { file: payload.path ?? '' } });
           return send(...args);
-        }) as typeof channel.send;
+        };
       }
     },
   };
