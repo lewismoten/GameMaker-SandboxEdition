@@ -168,7 +168,10 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   const hatGag = (m: CastMember) => m.id === 'leo' && has('teddy', 'prop:hat') && !!spriteOf(m)?.acts.bareWalk;
   const loafGag = (m: CastMember) => m.id === 'loaf' && has('prop:girl');
   const needleGag = (m: CastMember) => m.id === 'camel' && has('prop:needle');
-  const needleX = () => W - 22 - (sprites.get('prop:needle')?.sprite.w ?? 0);
+  const needleX = () => W - 20 - (sprites.get('prop:needle')?.sprite.w ?? 0);
+  /** The needle's eye on the stage (castNeedle.ts NEEDLE_EYE: 8 across, 14 down its picture). */
+  const eyeX = () => needleX() + 8;
+  const eyeY = () => FLOOR + 1 - (sprites.get('prop:needle')?.sprite.h ?? 0) + 14;
   const speed = (m: CastMember) => (isGwinn(m) ? RUN : SPEED);
   const talkMs = (m: CastMember) => TALK_MS + m.hi.length * 25;
 
@@ -356,18 +359,42 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       else frames = s.front;
       ms = 120;
     }
+    // Brother Camel's needle: it stands at the right all through his turn; he tries its eye,
+    // squeezing in behind it so he shows through the hole
+    let behind = false;
+    let up = 0;
+    let drawNeedle = () => {};
     if (needleGag(m)) {
-      // the needle stands at the right all through his turn
       const needle = sprites.get('prop:needle')!.walk[0];
-      ctx.globalAlpha = phase === 'enter' ? Math.min(1, t / 700) : phase === 'exit' ? Math.max(0, 1 - t / 900) : 1;
-      put(needle, needleX());
-      ctx.globalAlpha = 1;
+      const alpha = phase === 'enter' ? Math.min(1, t / 700) : phase === 'exit' ? Math.max(0, 1 - t / 900) : 1;
+      drawNeedle = () => {
+        ctx.globalAlpha = alpha;
+        put(needle, needleX());
+        ctx.globalAlpha = 1;
+      };
       if (phase === 'post') {
-        frames = t < 1200 ? s.walk : s.front;
-        // a try at the eye: squeezing thinner and thinner, a wobble, then pop! back out
-        if (t >= 1200 && t < 2800) squeeze = 1 - 0.55 * Math.sin(((t - 1200) / 1600) * Math.PI * 0.5) + (Math.floor(t / 90) % 2) * 0.04;
-        else if (t >= 2800 && t < 3100) squeeze = 1.2;
+        // lifted so his middle is at the eye
+        const reach = Math.max(0, FLOOR + 1 - s.sprite.h / 2 - eyeY());
+        if (t < 1600) {
+          frames = s.walk;
+          const k = Math.max(0, (t - 1200) / 400);
+          up = reach * k;
+          squeeze = 1 - 0.4 * k;
+          behind = k > 0.4;
+        } else if (t < 2900) {
+          frames = s.walk;
+          up = reach;
+          // thinner and thinner, with a wobble
+          squeeze = 0.6 - 0.34 * Math.min(1, (t - 1600) / 900) + (Math.floor(t / 90) % 2) * 0.05;
+          behind = true;
+        } else if (t < 3200) {
+          // pop! back out
+          frames = s.front;
+          up = reach * (1 - (t - 2900) / 300);
+          squeeze = 1.2;
+        } else frames = s.front;
       }
+      if (!behind) drawNeedle();
     }
     if (loafGag(m) && carried) gone = true;
     if (props.length) drawProps(phase === 'exit' ? Math.max(0, 1 - t / 700) : 1);
@@ -377,7 +404,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       ctx.globalAlpha = phase === 'exit' && !s.sprite.walk ? 1 - fade : fade;
       // a waddle for one who walks on in a single frame, a hop for the tin heart
       const lift = moving ? (s.sprite.hop ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7) : s.walk.length === 1 ? Math.floor(now / 160) % 2 : 0) : 0;
-      const top = put(frame, x, lift, left, squeeze);
+      const top = put(frame, x, lift + Math.round(up), left, squeeze);
       ctx.globalAlpha = 1;
       // Gwinn has Doc Leo's hat in her mouth, all the way off
       if (isGwinn(m)) {
@@ -386,6 +413,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
         else ctx.drawImage(hat, Math.round(x), top + 8);
       }
     }
+    if (behind) drawNeedle();
     drawHelper(now);
     drawSnow();
     // sounds with the frames: footsteps, the tick-tock, the whirr
@@ -406,11 +434,14 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       return t > 3300;
     }
     if (needleGag(m)) {
-      if (t < 1200) x = Math.min(needleX() - 8, x + SPEED * dt);
-      else if (t < 1250) sound.effect('needle/squeeze');
-      else if (t >= 2800 && t - dt * 1000 < 2800) sound.effect('needle/sigh');
-      if (t >= 2800 && t < 3100) x -= 30 * dt;
-      return t > 3700;
+      // up to the needle, in line with its eye, and back out
+      const beside = eyeX() - 10 - 16;
+      if (t < 1200) x = Math.min(beside, x + SPEED * dt);
+      else if (t < 1600) x = Math.min(eyeX() - 10, x + 30 * dt);
+      else if (t >= 2900 && t < 3200) x = Math.max(beside, x - 60 * dt);
+      if (t >= 1200 && t - dt * 1000 < 1200) sound.effect('needle/squeeze');
+      if (t >= 2900 && t - dt * 1000 < 2900) sound.effect('needle/sigh');
+      return t > 3900;
     }
     if (loafGag(m)) {
       if (!helper) helper = { id: 'girl', x: -22, left: false, speed: SPEED };
