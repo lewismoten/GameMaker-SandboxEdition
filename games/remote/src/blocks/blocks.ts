@@ -13,11 +13,14 @@
 //     things are points, the fake remotes say NOPE, and the pay TV takes ten pennies (money);
 //   - on the living room ride the spinning rug carries you round (gravity), the VCR's PLAY
 //     button counts (counter 22) and the ride only lets you off to the couch with the tape playing.
+import { CLEAR, willCameo } from '../../../kit/cameos';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { Pixels, rng } from '../../../kit/pixels';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
 import { LIVES, MONEY, PLAY, SPOTS, SPOTS_NEEDED } from '../ids';
 import { kitchenBlocks } from './kitchen';
 import { rideBlocks } from './ride';
@@ -428,6 +431,25 @@ export function buildBlocks(pal: Pal): BlockBook {
   kitchenBlocks(ctx);
   voidBlocks(ctx, lr);
   rideBlocks(ctx, lr);
+
+  // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
+  // a tin heart on the carpet in the living room's far corner: a glint crosses it now and then; 100 points
+  const tin = { ink, tin: R('silver'), white: c('white', 2), dark: c('crt', 0) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(carpet(1), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'carpet', score: 100 });
+  // a dyed Easter egg at a far bend of the couch fabric in the void: 50 points
+  const fabric = () => book.pics.get('fabric')!.crop(0, 0, 20, 20);
+  const egg = { ink, shell: R('yellow'), paint: R('blue').slice(1), accent: c('red', 3), white: c('white', 2) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(fabric(), egg, 'stars', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'fabric', score: 50 });
+  // Will (Shakespeare in Sweatpants), the playwright, framed on the living room wall: a signed
+  // head shot, ruff and all (part of the wall)
+  const will = willCameo(buildPalette('plain').pal, { face: 'front' }, { use: ['ink', 'skin', 'hair', 'white', 'purple', 'silver', 'crt', 'pink', 'gold', 'red'].flatMap((n) => R(n)) });
+  const shot = wallpaper(8);
+  shot.rect(3, 3, 14, 16, c('gold', 0)).rect(4, 4, 12, 14, c('wall', 3));
+  shot.blit(will.crop(4, 0, 12, 14), 4, 4, CLEAR).rect(4, 17, 12, 1, c('wall', 3));
+  shot.line(5, 16, 9, 15, ink);
+  book.add('willShot', shot, solid);
   return book;
 }
 

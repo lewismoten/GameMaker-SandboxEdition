@@ -154,6 +154,8 @@ export function livingRoom(book: BlockBook): Level {
   m.patch(0, 0, map.lines);
   // dust bunnies under everything, and the cat prowling
   m.mon(MON.bunny, 4, 12).mon(MON.bunny, 20, 3).mon(MON.bunny, 14, 13).mon(MON.cat, 18, 9);
+  // Will the playwright's signed head shot on the wall, and a tin heart in the far corner
+  m.set(20, 0, 'willShot').set(28, 14, 'tinHeart');
   m.link(29, 10, 'next');
   return { m, start: at(8, 6), size: [map.w, map.h] };
 }
@@ -266,6 +268,8 @@ export function theVoid(book: BlockBook): Level {
   m.mon(MON.penny, 16, 6).mon(MON.penny, 12, 13).mon(MON.penny, 10, 18);
   m.mon(MON.raccoon, 4, 10).mon(MON.seed, 31, 9).mon(MON.goat, 17, 11);
   // the pay TV's picture is the way home: two steps on through it, so its warming up plays out
+  // an Easter egg at the far bend of the fabric, past the pen nobody wants
+  m.set(30, 2, 'easterEgg');
   m.link(33, 17, 'next');
   return { m, start: at(1, 1), size: [map.w, map.h] };
 }
