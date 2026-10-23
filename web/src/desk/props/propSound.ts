@@ -204,6 +204,15 @@ export const roomSound = {
       osc.stop(o.t + seconds + 0.05);
     }
   },
+  /** A fluorescent tube flickering on: two tinks of the starter and a buzz. */
+  flicker(): void {
+    const o = open();
+    if (!o) return;
+    noise(o, 0, 0.03, 4000, 0.15, 3);
+    noise(o, 0.18, 0.03, 4200, 0.15, 3);
+    tone(o, 0.2, 0.7, 120, 120, 0.05, "sawtooth");
+    tone(o, 0.2, 0.7, 240, 240, 0.02, "square");
+  },
   /** A curtain swished along its rod. */
   swish(): void {
     const o = open();

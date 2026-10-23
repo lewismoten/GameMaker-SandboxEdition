@@ -11,6 +11,7 @@ import { chezDriveBy } from "./chez";
 import { curtainProps } from "./curtains";
 import { speakerProp } from "./speaker";
 import { degaussProp } from "./degauss";
+import { blackLight } from "./blacklight";
 import { hideBubble } from "./propKit";
 
 export function deskProps(desk: HTMLElement): () => void {
@@ -31,6 +32,7 @@ export function deskProps(desk: HTMLElement): () => void {
   add(curtainProps, ".snow-window");
   add(speakerProp, ".speaker.left");
   add(degaussProp, ".monitor .brand", ".monitor .screen-bezel");
+  offs.push(blackLight(desk));
   return () => {
     offs.forEach((f) => f());
     hideBubble();
