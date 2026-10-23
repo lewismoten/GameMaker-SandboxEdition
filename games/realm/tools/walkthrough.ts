@@ -39,5 +39,5 @@ for (const s of sim.segments) {
   seen.add(s.scene);
   chapters.push({ scene: s.scene, title: chapterOf[desc] });
 }
-const r = await writeWalkthrough('realm', { rand: { seed: SEED, per: 'scene' }, segments, chapters });
+const r = await writeWalkthrough('realm', { rand: { seed: SEED, per: 'scene' }, segments, chapters }, { clips: true });
 console.log(`engine: ${r.scenes.length} scenes entered, ${r.keysLeft} keys unplayed`);

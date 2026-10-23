@@ -8,7 +8,7 @@
   "exe": "TUIT.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
-  "tinHeart": { "map": "port.map", "at": [10, 33] },
+  "tinHeart": { "map": "port.map", "at": [9, 25] },
   "easterEgg": { "map": "port.map", "at": [91, 42] },
   "label": {
     "background": "#f3ead2",

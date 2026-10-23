@@ -26,10 +26,10 @@ export function isLootBlock(sim: GameSim, b: number): boolean {
   return gives || B.chHitPt > 0 || B.scorePts > 0;
 }
 
-/** Whether map cell (x, y) holds the painted Easter egg (about.json): a find for players, not loot. */
+/** Whether map cell (x, y) holds the tin heart or the painted Easter egg (about.json): finds for players, not loot. */
 export function isKeepsake(sim: GameSim, x: number, y: number): boolean {
-  const egg = about.easterEgg;
-  return sim.game.scenes[sim.scene].files[1] === egg.map && x === egg.at[0] && y === egg.at[1];
+  const map = sim.game.scenes[sim.scene].files[1];
+  return [about.tinHeart, about.easterEgg].some((k) => map === k.map && x === k.at[0] && y === k.at[1]);
 }
 
 /** Whether a scene has loot worth looking for (not a conversation's pass-through scene). */

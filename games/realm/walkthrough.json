@@ -64,7 +64,7 @@
   },
   {
    "scene": 20,
-   "keys": "AVCbAdABSyjLAUgFyAFLHssBUArQAU0ezQFQ"
+   "keys": "AVCbAdABSyjLAVA="
   },
   {
    "scene": 34,
@@ -80,7 +80,7 @@
   },
   {
    "scene": 20,
-   "keys": "AUgoyABIGcgBSx7LAUgKyAFNBc0BSB7IAU0FzQFII8gBTQ/NAUgjyAFNUM0BSA=="
+   "keys": "AUivAcgBTUvNAUg="
   },
   {
    "scene": 39,
@@ -159,7 +159,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 44283,
+  "frames": 43816,
   "chapters": [
    {
     "title": "Opening",
@@ -187,31 +187,31 @@
    },
    {
     "title": "The Soggy Vaults",
-    "frame": 21821
+    "frame": 21578
    },
    {
     "title": "THE CHEZ and the Dawdle Flats",
-    "frame": 27077
+    "frame": 26610
    },
    {
     "title": "Eventually Falls",
-    "frame": 29012
+    "frame": 28545
    },
    {
     "title": "The Putoff Mines",
-    "frame": 31383
+    "frame": 30916
    },
    {
     "title": "Deadline Keep",
-    "frame": 35371
+    "frame": 34904
    },
    {
     "title": "Ending",
-    "frame": 38416
+    "frame": 37949
    },
    {
     "title": "Credits",
-    "frame": 42247
+    "frame": 41780
    }
   ]
  }

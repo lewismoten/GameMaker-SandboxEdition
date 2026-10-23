@@ -66,9 +66,10 @@ export function portMap(mons: MonBook): { plan: Plan; harbor: TownSpots; falls: 
   p.npc(npc('shopkeep'), [36, 20]);
   p.npc(npc('kid'), [20, 27]);
   // Will the playwright, visiting from Shakespeare in Sweatpants, at the end of the quay (Lyra
-  // tells you about him), and a tin heart in the grass by the lighthouse (100 points)
+  // tells you about him), and a tin heart in the grass up behind the lighthouse, under the
+  // tree by the hedge (100 points)
   p.npc(npc('poet'), [38, 32]);
-  p.put('tinHeart', 10, 33);
+  p.put('tinHeart', 9, 25);
   p.spot.vaults = [16, 49];
   p.spot.garage = [31, 10];
   const harbor = { arrive: [24, 3] as Pt };
