@@ -34,6 +34,8 @@ Making the files:
   only what changed (run-coded line deltas), so a cartoon costs little more than its first picture.
 - `photo.ts` — real photos for the endings: the small scans in `scans/` (made once from the owner's photos by
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
+- `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a
+  cameo in a game's lot or at its curb, drawn in the game's own palette; facing left shows the charge port for a cord.
 - `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.
 
