@@ -164,8 +164,8 @@ export function blanketSprites(book: SpriteBook, pal: Pal): void {
     face(p, pal, 10, 9, { angry: true });
     return outline(p, ink);
   };
-  book.add('chill0', chill(0), hurts(-4, 0));
-  book.add('chill1', chill(1), hurts(-4, 0));
+  book.add('chill0', chill(0), hurts(-4));
+  book.add('chill1', chill(1), hurts(-4));
   // an allen key off the flat-pack bookcase: an L of steel with a scowl, hopping
   const key = (f: number) => {
     const p = P();

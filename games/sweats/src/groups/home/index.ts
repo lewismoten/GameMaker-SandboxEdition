@@ -3,6 +3,7 @@
 // in its turn (the order is part of the file format: a block's number is the order it was added).
 import type { Group } from '../types';
 import { blanket, blanketBlocks, blanketSprites } from './blanket';
+import { socks, socksBlocks, socksSprites } from './socks';
 import { HOME_RAMPS, buildHouse, houseSprites } from './house';
 
 export const home: Group = {
@@ -12,10 +13,12 @@ export const home: Group = {
   blocks: (book, pal) => {
     buildHouse(book, pal);
     blanketBlocks(book, pal);
+    socksBlocks(book, pal);
   },
   sprites: (book, pal) => {
     houseSprites(book, pal);
     blanketSprites(book, pal);
+    socksSprites(book, pal);
   },
-  monologues: [blanket],
+  monologues: [blanket, socks],
 };

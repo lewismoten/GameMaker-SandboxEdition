@@ -6,8 +6,13 @@ import { ORIGIN } from '../../src/common/maps';
 import { MON } from '../../src/ids';
 import { home } from '../../src/groups/home';
 import { SOULS } from '../../src/groups/home/blanket';
+import { SOCKS } from '../../src/groups/home/socks';
+import { SOCKS_MON } from '../../src/groups/home/ids';
 import type { Bot } from '../bot';
-import { carefully, declaim, expect, leave, must, plot, type Route } from '../route';
+import { carefully as carefully0, declaim, expect, leave, must, plot, type Route } from '../route';
+
+// DEBUG
+const carefully: typeof carefully0 = (bot, label, max, f) => (process.env.HOME_RAW ? f() : carefully0(bot, label, max, f));
 
 let names: Map<number, string> | undefined;
 /** The home set's block names by number. */
@@ -38,6 +43,29 @@ function nothingLeft(bot: Bot, w: number, h: number): void {
 function greeted(bot: Bot, id: number, who: string): void {
   if (bot.sim.w.mm.some((m) => m.monnum === id)) throw new Error(`missed ${who}`);
   bot.say(`hello, ${who}`);
+}
+
+/** The foes `ids` on the poet's row, by how far they are (blocks; + to his right). */
+function foesOnRow(bot: Bot, ids: number[]): number[] {
+  const w = bot.sim.w;
+  const me = bot.px;
+  const out: number[] = [];
+  w.mm.forEach((m, i) => {
+    if (!ids.includes(m.monnum)) return;
+    const x = (w.mi[i].curx[0] - ORIGIN) * 20 + w.mi[i].curx[1];
+    const y = (w.mi[i].cury[0] - ORIGIN) * 20 + w.mi[i].cury[1];
+    if (Math.abs(y - me.y) < 14) out.push((x - me.x) / 20);
+  });
+  return out;
+}
+
+/** Waits (up to `max` ticks) for one of the foes `ids` to come within `reach` blocks on his row, and declaims. */
+async function waitAndDeclaim(bot: Bot, ids: number[], what: string, reach = 4, max = 400): Promise<void> {
+  for (let t = 0; t < max; t++) {
+    if (foesOnRow(bot, ids).some((d) => Math.abs(d) <= reach)) return declaim(bot, what);
+    await must(bot, bot.wait(1), what);
+  }
+  throw new Error(`${what}: never came`);
 }
 
 export const HOME_ROUTES: Record<string, Route> = {
@@ -96,6 +124,51 @@ export const HOME_ROUTES: Record<string, Route> = {
       if (plot(bot) < SOULS) throw new Error(`only ${plot(bot)} pieces of his soul`);
       nothingLeft(bot, 64, 12);
       await leave(bot, bot.walk(56.5, 'the colder side of the bed'), 'the bed');
+    });
+  },
+  /** Wore All the Weird Socks: the basket and the shelf, the matched pair, up the washer and dryer, along the clothesline, the ironing board, Doc Leo, the front door. */
+  socks: async (bot) => {
+    expect(bot, 'socks');
+    await carefully(bot, 'the basket, the galaxy', 0, async () => {
+      await must(bot, bot.walk(7, 'the carnival tent sock, the basket'), 'basket');
+      await must(bot, bot.hop('right', 12, 'right', 8), 'onto the basket');
+      await must(bot, bot.hop('right', 12, 'right', 9.5), 'up onto the shelf');
+      await must(bot, bot.walk(11, 'the galaxy sock, the coin'), 'shelf');
+      await must(bot, bot.walk(13, 'down, the coin'), 'down');
+    });
+    await carefully(bot, 'the matched pair', 0, async () => {
+      await declaim(bot, 'the whispers, the pair');
+      await must(bot, bot.walk(15, 'on'), 'on');
+      await declaim(bot, 'the pair');
+      await must(bot, bot.walk(20, 'the plain stubborn blue'), 'blue');
+    });
+    await carefully(bot, 'up the washer and dryer', 0, async () => {
+      await must(bot, bot.hop('right', 12, 'right', 21), 'onto the basket');
+      await must(bot, bot.hop('right', 12, 'right', 22.5), 'up onto the dryer');
+      await declaim(bot, 'the lint');
+    });
+    await carefully(bot, 'the clothesline', 0, async () => {
+      await waitAndDeclaim(bot, [SOCKS_MON.lint], 'the lint');
+      await must(bot, bot.walk(31, 'along the clothesline'), 'line');
+      await waitAndDeclaim(bot, [SOCKS_MON.lint], 'the lint out of the vent');
+      await must(bot, bot.hop('up', 12), 'the coin over the line');
+      await must(bot, bot.walk(34, 'down, the dollar'), 'down');
+    });
+    await carefully(bot, 'the second pair, the ironing board', 0, async () => {
+      await declaim(bot, 'the pair');
+      await must(bot, bot.walk(40, 'the floral swirl'), 'floral');
+      await declaim(bot, 'the whispers');
+      await must(bot, bot.walk(43, 'the ironing board'), 'board');
+      await must(bot, bot.hop('right', 12, 'right', 44.5), 'onto the ironing board');
+      await must(bot, bot.walk(46, 'the argyle'), 'argyle');
+      await must(bot, bot.walk(53, 'down, the mug, the coin'), 'mug');
+    });
+    await carefully(bot, 'Doc Leo, the door', 0, async () => {
+      await must(bot, bot.walk(57, 'Doc Leo: is it fashion?'), 'leo');
+      greeted(bot, MON.leo, 'Doc Leo');
+      if (plot(bot) < SOCKS) throw new Error(`only ${plot(bot)} socks`);
+      nothingLeft(bot, 62, 12);
+      await leave(bot, bot.walk(58.5, 'the front door'), 'the door');
     });
   },
 };

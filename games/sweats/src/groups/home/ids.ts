@@ -27,8 +27,6 @@ export const SOCKS_MON = {
   pair: F + 2,
   /** A whisper off a colleague: "WHY?" */
   why: F + 3,
-  /** The washing machine's suds, frothing out of the battlefield. */
-  suds: F + 4,
 } as const;
 
 export const PIZZA_MON = {
