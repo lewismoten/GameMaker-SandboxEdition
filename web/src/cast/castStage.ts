@@ -1,9 +1,16 @@
 // The cast page's stage: each regular walks on in turn as the games draw them (their real sprite
 // frames, public/cast/sprites.json), turns to face you in the spotlight, says hello in a speech
-// box under the stage, and walks off for the next. Gwinn runs on with Doc Leo's hat, the rest of
-// his costume tumbling out behind her (Teddy's Little Big Adventure's intro). Pause, step back
-// and forth, or pick someone; a pick is kept in the address (#/cast?on=carl). With reduced
-// motion nobody walks: each simply stands there. Sound: castSound.ts.
+// box under the stage, and walks off for the next. A few have a bit of business, after the games:
+//  - Gwinn zooms across with Doc Leo's hat in her mouth, his tie, sneakers, chicken and nose
+//    tumbling out behind her (Teddy's Little Big Adventure's intro), and runs off with it;
+//  - Doc Leo walks on without it, and Teddy runs up with the hat and gives it back;
+//  - the goat screams and faints, lies there a beat, and gets up (Third Goat from the Left);
+//  - Loaf #13 rolls into the light and the child carries it home (Loaf #13);
+//  - Brother Camel tries the eye of a giant needle (Thread the Needle, Brother Camel);
+//  - snow falls round Teenage Lewie (Snowbound's flakes).
+// Pause, step back and forth, or pick someone; a pick is kept in the address (#/cast?on=carl).
+// With reduced motion nobody walks and nothing happens: each simply stands there. Sound:
+// castSound.ts.
 import { h } from '../editor/core/ui';
 import { currentRoute, type ViewState } from '../urlState';
 import { spriteCanvases, type CastSprite } from './castSprite';
@@ -17,17 +24,18 @@ const FLOOR = 58;
 /** Logical pixels a second. */
 const SPEED = 40;
 const TALK_MS = 4200;
-/** Gwinn's zoomies. */
+/** Running (Gwinn's zoomies, Teddy with the hat). */
 const RUN = 100;
 
 /** What each one says out loud: on walking on, and on stopping in the light. */
 const ENTER_FX: Record<string, Effect> = { gwinn: 'yip' };
-const HELLO_FX: Record<string, Effect> = { teddy: 'woof', chicken: 'squeak', chez: 'honk', leo: 'giggle', bard: 'pop', rootbeer: 'pop' };
+const HELLO_FX: Record<string, Effect> = { chicken: 'squeak', chez: 'honk', leo: 'giggle', bard: 'pop', rootbeer: 'pop', teddy: 'woof' };
 
 interface Sprite {
   sprite: CastSprite;
   walk: HTMLCanvasElement[];
   front: HTMLCanvasElement[];
+  acts: Record<string, HTMLCanvasElement[]>;
 }
 
 /** A costume piece flying out behind Gwinn, then tumbling to a stop on the boards. */
@@ -47,7 +55,28 @@ const DROPS = [26, 50, 74, 98];
 /** Where she turns round to come back to the light. */
 const TURN = 122;
 
-type Phase = 'enter' | 'back' | 'talk' | 'exit';
+/** Someone helping out in another's turn: Teddy with the hat, the child who takes the loaf. */
+interface Helper {
+  id: string;
+  x: number;
+  /** Walking left (drawn turned round). */
+  left: boolean;
+  speed: number;
+  /** What they carry, and whether it is still theirs to carry. */
+  carry?: 'hat' | 'loaf';
+}
+
+/** Snowbound's flakes: a white pixel with a pale blue one below and to the right. */
+interface Flake {
+  x: number;
+  y: number;
+  v: number;
+  big: boolean;
+}
+
+// enter: walking on; back: Gwinn coming back; pre: business before hello (the hat); talk: hello;
+// post: business after it (scream, loaf, needle); exit: off they go
+type Phase = 'enter' | 'back' | 'pre' | 'talk' | 'post' | 'exit';
 
 function backdrop(ctx: CanvasRenderingContext2D): void {
   // the back wall, a spotlight, the boards and the curtains
@@ -105,6 +134,14 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   let lastFrame = -1;
   let props: Prop[] = [];
   let dropped = 0;
+  let helper: Helper | undefined;
+  /** Doc Leo has his hat back (or never lost it: a pick while paused). */
+  let hatOn = true;
+  /** Loaf #13 has been picked up. */
+  let carried = false;
+  /** The snow's strength, 0 to 1. */
+  let snow = 0;
+  const flakes: Flake[] = Array.from({ length: 70 }, (_, i) => ({ x: (i * 37) % W, y: (i * 53) % H, v: 9 + ((i * 7) % 6), big: i % 4 === 0 }));
 
   const soundBtn = h('button', {
     type: 'button',
@@ -124,10 +161,16 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   const pick = h('select', { 'aria-label': 'Pick a character', onchange: () => go(lineup.findIndex((m) => m.id === pick.value), true) });
 
   const current = () => lineup[at];
-  const spriteOf = (m: CastMember) => sprites.get(m.id);
+  const spriteOf = (m: CastMember | { id: string }) => sprites.get(m.id);
   const centre = (m: CastMember) => Math.round(W / 2 - (spriteOf(m)?.sprite.w ?? 0) / 2);
-  const isGwinn = (m: CastMember | undefined) => m?.id === 'gwinn' && sprites.has('prop:hat');
+  const has = (...ids: string[]) => ids.every((id) => sprites.has(id));
+  const isGwinn = (m: CastMember) => m.id === 'gwinn' && has('prop:hat');
+  const hatGag = (m: CastMember) => m.id === 'leo' && has('teddy', 'prop:hat') && !!spriteOf(m)?.acts.bareWalk;
+  const loafGag = (m: CastMember) => m.id === 'loaf' && has('prop:girl');
+  const needleGag = (m: CastMember) => m.id === 'camel' && has('prop:needle');
+  const needleX = () => W - 22 - (sprites.get('prop:needle')?.sprite.w ?? 0);
   const speed = (m: CastMember) => (isGwinn(m) ? RUN : SPEED);
+  const talkMs = (m: CastMember) => TALK_MS + m.hi.length * 25;
 
   function say(m: CastMember | undefined): void {
     name.textContent = m ? `${m.name}: ` : '';
@@ -145,13 +188,26 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     loop();
   }
 
-  function arrive(m: CastMember, now: number): void {
-    x = centre(m);
-    phase = 'talk';
+  function into(next: Phase, now: number): void {
+    phase = next;
     t0 = now;
+  }
+
+  function hello(m: CastMember, now: number): void {
+    x = centre(m);
+    into('talk', now);
     say(m);
     const fx = HELLO_FX[m.id];
     if (fx && playing) sound.effect(fx);
+  }
+
+  /** Stopped in the light: business first (Teddy with the hat), else hello. */
+  function arrive(m: CastMember, now: number): void {
+    x = centre(m);
+    if (hatGag(m) && !hatOn) {
+      into('pre', now);
+      helper = { id: 'teddy', x: -24, left: false, speed: RUN, carry: 'hat' };
+    } else hello(m, now);
   }
 
   /** Someone on stage now: walking on when playing, else standing in the light. */
@@ -162,9 +218,14 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     pick.value = m.id;
     props = [];
     dropped = 0;
+    helper = undefined;
+    carried = false;
     if (chosen) state.set({ on: m.id });
     t0 = performance.now();
-    if (playing && !still) {
+    const walking = playing && !still;
+    hatOn = !(walking && hatGag(m));
+    snow = m.id === 'lewie' && !walking ? 1 : 0;
+    if (walking) {
       phase = 'enter';
       x = -(spriteOf(m)?.sprite.w ?? 20) - (isGwinn(m) ? 10 : 0);
       say(undefined);
@@ -223,39 +284,110 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     ctx.globalAlpha = 1;
   }
 
+  /** A frame standing on the boards at x (bottom at the floor, `lift` above it), turned round or squeezed. */
+  function put(img: HTMLCanvasElement, px: number, lift = 0, left = false, squeeze = 1): number {
+    const top = FLOOR - img.height + 1 - lift;
+    const w = Math.max(1, Math.round(img.width * squeeze));
+    const ox = Math.round(px + (img.width - w) / 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(ox + 2, FLOOR, Math.max(1, w - 4), 2);
+    if (left) {
+      ctx.save();
+      ctx.translate(ox + w, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(img, 0, top, w, img.height);
+      ctx.restore();
+    } else ctx.drawImage(img, ox, top, w, img.height);
+    return top;
+  }
+
+  const cycle = (frames: HTMLCanvasElement[], now: number, ms: number) => frames[Math.floor(now / ms) % frames.length];
+
+  function drawSnow(): void {
+    if (snow <= 0) return;
+    ctx.globalAlpha = snow;
+    for (const f of flakes) {
+      const fx = Math.round(f.x);
+      const fy = Math.round(f.y);
+      ctx.fillStyle = '#a9b8d6';
+      ctx.fillRect(fx + 1, fy + 1, 1, 1);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(fx, fy, f.big ? 2 : 1, 1);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawHelper(now: number): void {
+    if (!helper) return;
+    const hs = sprites.get(helper.id === 'girl' ? 'prop:girl' : helper.id);
+    if (!hs) return;
+    const top = put(cycle(hs.walk, now, helper.id === 'teddy' ? 70 : hs.sprite.ms), helper.x, 0, helper.left);
+    if (helper.carry === 'hat') {
+      const hat = sprites.get('prop:hat')!.walk[0];
+      ctx.drawImage(hat, Math.round(helper.x) + (helper.left ? -6 : 8), top - 1);
+    } else if (helper.carry === 'loaf') {
+      const loaf = sprites.get('loaf')!.front[0];
+      ctx.drawImage(loaf, Math.round(helper.x) + 6, top + 10);
+    }
+  }
+
   function draw(now: number): void {
     backdrop(ctx);
     const m = current();
     const s = m && spriteOf(m);
     if (!s) return;
-    const moving = phase !== 'talk' && s.sprite.walk;
-    const left = phase === 'back';
-    const frames = moving ? s.walk : s.front;
-    const ms = isGwinn(m) && moving ? 70 : s.sprite.ms;
-    const frame = frames[still && !playing ? 0 : Math.floor(now / ms) % frames.length];
-    if (props.length) drawProps(phase === 'exit' ? Math.max(0, 1 - (now - t0) / 700) : 1);
-    const fade = !s.sprite.walk && phase !== 'talk' ? Math.min(1, Math.max(0, (now - t0) / 600)) : 1;
-    ctx.globalAlpha = phase === 'exit' && !s.sprite.walk ? 1 - fade : fade;
-    // a shadow under them, then the sprite standing on the boards (a waddle for one who walks
-    // on in a single frame, a hop for the tin heart)
-    const lift = moving ? (s.sprite.hop ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7) : s.walk.length === 1 ? Math.floor(now / 160) % 2 : 0) : 0;
-    const top = FLOOR - s.sprite.h + 1 - lift;
-    ctx.fillStyle = 'rgba(0,0,0,0.35)';
-    ctx.fillRect(Math.round(x) + 2, FLOOR, s.sprite.w - 4, 2);
-    if (left) {
-      ctx.save();
-      ctx.translate(Math.round(x) + s.sprite.w, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(frame, 0, top);
-      ctx.restore();
-    } else ctx.drawImage(frame, Math.round(x), top);
-    // Gwinn has Doc Leo's hat: in her mouth on the run, on her head to say hello
-    if (isGwinn(m)) {
-      const hat = sprites.get('prop:hat')!.walk[0];
-      if (!moving) ctx.drawImage(hat, Math.round(x), top - hat.height + 4);
-      else ctx.drawImage(hat, left ? Math.round(x) + s.sprite.w - 9 - hat.width : Math.round(x) + 9, top + 1);
+    const t = now - t0;
+    const moving = (phase === 'enter' || phase === 'back' || phase === 'exit') && s.sprite.walk;
+    let left = phase === 'back' || (phase === 'exit' && needleGag(m));
+    if (s.sprite.mirror) left = !left;
+    let frames = moving ? s.walk : s.front;
+    let ms = isGwinn(m) && moving ? 70 : s.sprite.ms;
+    let squeeze = 1;
+    let gone = false;
+    // the business
+    if (m.id === 'leo' && !hatOn) frames = moving ? s.acts.bareWalk : s.acts.bareSide;
+    else if (m.id === 'leo' && phase === 'pre') frames = s.acts.side;
+    if (m.id === 'goat' && phase === 'post') {
+      const scream = s.acts.scream ?? s.front;
+      const faint = s.acts.faint ?? s.front;
+      if (t < 900) frames = scream;
+      else if (t < 1300) frames = [faint[Math.min(faint.length - 1, Math.floor((t - 900) / 140))]];
+      else if (t < 2800) frames = [faint[faint.length - 1]];
+      else frames = s.front;
+      ms = 120;
     }
-    ctx.globalAlpha = 1;
+    if (needleGag(m)) {
+      // the needle stands at the right all through his turn
+      const needle = sprites.get('prop:needle')!.walk[0];
+      ctx.globalAlpha = phase === 'enter' ? Math.min(1, t / 700) : phase === 'exit' ? Math.max(0, 1 - t / 900) : 1;
+      put(needle, needleX());
+      ctx.globalAlpha = 1;
+      if (phase === 'post') {
+        frames = t < 1200 ? s.walk : s.front;
+        // a try at the eye: squeezing thinner and thinner, a wobble, then pop! back out
+        if (t >= 1200 && t < 2800) squeeze = 1 - 0.55 * Math.sin(((t - 1200) / 1600) * Math.PI * 0.5) + (Math.floor(t / 90) % 2) * 0.04;
+        else if (t >= 2800 && t < 3100) squeeze = 1.2;
+      }
+    }
+    if (loafGag(m) && carried) gone = true;
+    if (props.length) drawProps(phase === 'exit' ? Math.max(0, 1 - t / 700) : 1);
+    const fade = !s.sprite.walk && (phase === 'enter' || phase === 'exit') ? Math.min(1, Math.max(0, t / 600)) : 1;
+    const frame = still && !playing ? frames[0] : cycle(frames, now, ms);
+    if (!gone) {
+      ctx.globalAlpha = phase === 'exit' && !s.sprite.walk ? 1 - fade : fade;
+      // a waddle for one who walks on in a single frame, a hop for the tin heart
+      const lift = moving ? (s.sprite.hop ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7) : s.walk.length === 1 ? Math.floor(now / 160) % 2 : 0) : 0;
+      const top = put(frame, x, lift, left, squeeze);
+      ctx.globalAlpha = 1;
+      // Gwinn has Doc Leo's hat in her mouth, all the way off
+      if (isGwinn(m)) {
+        const hat = sprites.get('prop:hat')!.walk[0];
+        if (moving) ctx.drawImage(hat, left ? Math.round(x) + s.sprite.w - 9 - hat.width : Math.round(x) + 9, top + 1);
+        else ctx.drawImage(hat, Math.round(x), top + 8);
+      }
+    }
+    drawHelper(now);
+    drawSnow();
     // sounds with the frames: footsteps, the tick-tock, the whirr
     const n = frames.indexOf(frame) + (moving ? 0 : 100);
     if (n !== lastFrame && playing) {
@@ -266,6 +398,35 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     lastFrame = n;
   }
 
+  /** The business after hello; true when it is over. */
+  function post(m: CastMember, now: number, dt: number): boolean {
+    const t = now - t0;
+    if (m.id === 'goat') {
+      if (t >= 900 && t - dt * 1000 < 900) sound.effect('goat/faint');
+      return t > 3300;
+    }
+    if (needleGag(m)) {
+      if (t < 1200) x = Math.min(needleX() - 8, x + SPEED * dt);
+      else if (t < 1250) sound.effect('needle/squeeze');
+      else if (t >= 2800 && t - dt * 1000 < 2800) sound.effect('needle/sigh');
+      if (t >= 2800 && t < 3100) x -= 30 * dt;
+      return t > 3700;
+    }
+    if (loafGag(m)) {
+      if (!helper) helper = { id: 'girl', x: -22, left: false, speed: SPEED };
+      if (!carried) {
+        helper.x += helper.speed * dt;
+        if (helper.x >= x - 10) {
+          carried = true;
+          helper.carry = 'loaf';
+          sound.effect('loaf/mama');
+        }
+      } else helper.x += helper.speed * dt;
+      return helper.x > W;
+    }
+    return true;
+  }
+
   function tick(now: number): void {
     raf = 0;
     const dt = Math.min(0.1, (now - (last || now)) / 1000);
@@ -273,6 +434,8 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     const m = current();
     const s = m && spriteOf(m);
     if (playing && s) {
+      const t = now - t0;
+      if (m.id === 'lewie') snow = phase === 'exit' ? Math.max(0, snow - dt * 1.4) : Math.min(1, snow + dt * 1.2);
       if (phase === 'enter') {
         x = s.sprite.walk ? x + speed(m) * dt : centre(m);
         // the costume falls out behind her as she runs
@@ -281,23 +444,60 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
           dropped++;
         }
         // Gwinn runs right across first and comes back; everyone else stops in the light
-        if (isGwinn(m) && x >= TURN) phase = 'back';
-        else if (!isGwinn(m) && x >= centre(m) && (s.sprite.walk || now - t0 > 600)) arrive(m, now);
+        if (isGwinn(m) && x >= TURN) into('back', now);
+        else if (!isGwinn(m) && x >= centre(m) && (s.sprite.walk || t > 600)) arrive(m, now);
       } else if (phase === 'back') {
         x -= speed(m) * dt;
-        if (x <= centre(m)) arrive(m, now);
+        if (x <= centre(m)) hello(m, now);
+      } else if (phase === 'pre' && helper) {
+        // Teddy runs up with the hat, hands it over with a happy bark, and runs back off
+        if (helper.carry) {
+          helper.x += helper.speed * dt;
+          if (helper.x >= x - 15) {
+            helper.carry = undefined;
+            helper.left = true;
+            hatOn = true;
+            sound.effect('woof');
+            t0 = now;
+          }
+        } else if (t > 450) {
+          helper.x -= helper.speed * dt;
+          if (helper.x < -24) {
+            helper = undefined;
+            hello(m, now);
+          }
+        }
       } else if (phase === 'talk') {
-        if (now - t0 > TALK_MS + m.hi.length * 25) {
-          phase = 'exit';
-          t0 = now;
+        if (t > talkMs(m)) {
+          if (loafGag(m) || m.id === 'goat' || needleGag(m)) {
+            into('post', now);
+            if (m.id === 'goat') sound.effect('goat/scream');
+          }
+          else {
+            into('exit', now);
+            say(undefined);
+          }
+        }
+      } else if (phase === 'post') {
+        if (post(m, now, dt)) {
+          if (loafGag(m)) {
+            go(at + 1);
+            return;
+          }
+          into('exit', now);
           say(undefined);
         }
       } else {
-        x = s.sprite.walk ? x + speed(m) * dt : x;
-        if (x > W || (!s.sprite.walk && now - t0 > 600)) {
+        const off = needleGag(m) ? -1 : 1;
+        x = s.sprite.walk ? x + off * speed(m) * dt : x;
+        if (x > W || x < -s.sprite.w - 2 || (!s.sprite.walk && t > 600)) {
           go(at + 1);
           return;
         }
+      }
+      for (const f of flakes) {
+        f.y += f.v * dt;
+        if (f.y > H) [f.y, f.x] = [-2, (f.x + 61) % W];
       }
     }
     stepProps(dt);
@@ -351,7 +551,9 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       for (const [id, sprite] of Object.entries(all)) {
         const frames = spriteCanvases(sprite);
         const n = sprite.nWalk ?? frames.length;
-        sprites.set(id, { sprite, walk: frames.slice(0, n), front: n < frames.length ? frames.slice(n) : frames.length === 2 ? frames : [frames[0]] });
+        const acts = Object.fromEntries(Object.entries(sprite.acts ?? {}).map(([k, [a, c]]) => [k, frames.slice(a, a + c)]));
+        const end = Math.min(frames.length, ...Object.values(sprite.acts ?? {}).map(([a]) => a));
+        sprites.set(id, { sprite, walk: frames.slice(0, n), front: n < end ? frames.slice(n, end) : frames.length === 2 ? frames : [frames[0]], acts });
       }
       lineup = cast.filter((m) => sprites.has(m.id));
       pick.replaceChildren(...lineup.map((m) => h('option', { value: m.id }, m.name)));

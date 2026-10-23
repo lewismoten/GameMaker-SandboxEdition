@@ -8,7 +8,8 @@ import { demoAudio, setDemoAudio } from '../media/demoAudio';
 import { fetchGameFile, loadGameList } from '../project/files';
 
 const SONG = 'title.cmf';
-export type Effect = 'woof' | 'yip' | 'squeak' | 'honk' | 'giggle' | 'flop' | 'boing' | 'pop';
+/** A digitized effect: Teddy's own by name, or another game's as 'game/name' (goat/scream). */
+export type Effect = string;
 
 export class StageSound {
   private engine = new AudioEngine();
@@ -18,14 +19,15 @@ export class StageSound {
   /** Wanted: the demo sound choice isn't "None". */
   wanted = demoAudio() !== 'none';
 
-  private file(name: string): Promise<Uint8Array | undefined> {
-    let p = this.files.get(name);
+  private file(name: string, game = 'teddy'): Promise<Uint8Array | undefined> {
+    const key = `${game}/${name}`;
+    let p = this.files.get(key);
     if (!p) {
       p = loadGameList()
-        .then((list) => list.find((g) => g.id === 'teddy'))
+        .then((list) => list.find((g) => g.id === game))
         .then((entry) => (entry ? fetchGameFile(entry, name) : undefined))
         .catch(() => undefined);
-      this.files.set(name, p);
+      this.files.set(key, p);
     }
     return p;
   }
@@ -64,7 +66,8 @@ export class StageSound {
 
   effect(name: Effect): void {
     if (!this.live) return;
-    void this.file(`${name}.voc`).then((b) => this.live && this.engine.playVoc(b));
+    const [game, voc] = name.includes('/') ? name.split('/') : ['teddy', name];
+    void this.file(`${voc}.voc`, game).then((b) => this.live && this.engine.playVoc(b));
   }
 
   /** A short synthesized sound into the stage's output. */
