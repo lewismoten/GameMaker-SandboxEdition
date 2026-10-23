@@ -75,6 +75,40 @@ export const mite = (k: Record<string, number>): Pair =>
     ],
   );
 
+/** Brain Shard: a jagged splinter of GLITCH's brain with one glowing eye. */
+export const shard = (k: Record<string, number>): Pair =>
+  two(
+    k,
+    [
+      '......o...',
+      '.....o4o..',
+      '....o424o.',
+      '...o42224o',
+      '..o4222cc4',
+      '.o422cccww',
+      'o4222cccww',
+      '.o4222cc22',
+      '..o422222o',
+      '...o4224o.',
+      '....o42o..',
+      '.....oo...',
+    ],
+    [
+      '.....o....',
+      '....o4o...',
+      '...o424o..',
+      '..o42224oo',
+      '.o4222cc44',
+      'o422ccc22w',
+      '.o222ccc22',
+      '..o4222c22',
+      '...o42222o',
+      '....o424o.',
+      '.....o4o..',
+      '......o...',
+    ],
+  );
+
 /** Byte Biter: a chomping ball. */
 export const biter = (k: Record<string, number>): Pair => {
   const top = ['......oooo', '....oo4444', '...o444444', '..o4442444', '..o442cc44', '.o442coc42', '.o42222242', '.o22222222'];

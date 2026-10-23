@@ -26,14 +26,15 @@ export const opaque = (p: Pixels) => p.px.some((c) => c !== CLEAR);
 
 /**
  * A weak point: `hp` monsters in a chain. pics(h) gives the two animation frames for a
- * part with h hits left (the art can crack and glow as it weakens).
+ * part with h hits left (the art can crack and glow as it weakens). `last` is what the part
+ * turns into when it bursts (an explosion, unless the boss has more to come).
  */
 export function weakPoint(
   b: Bestiary,
   name: string,
   hp: number,
   frames: (h: number) => [Pixels, Pixels],
-  o: { score?: number; hurt?: number; anim?: number } = {},
+  o: { score?: number; hurt?: number; anim?: number; last?: string } = {},
 ): void {
   const made = new Map<string, string>();
   for (let h = hp; h >= 1; h--) {
@@ -48,7 +49,7 @@ export function weakPoint(
     }
     b.add(h === hp ? name : `${name}_${h}`, {
       power: POWER.core,
-      becomes: h === 1 ? 'bigBoom' : `${name}_${h - 1}`,
+      becomes: h === 1 ? (o.last ?? 'bigBoom') : `${name}_${h - 1}`,
       score: h === 1 ? (o.score ?? 1000) : 20,
       pics: [
         [`${pic}0`, o.anim ?? 5],

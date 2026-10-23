@@ -1,6 +1,8 @@
 // Boss 5: GLITCH, the virus itself, a skull of corrupted pixels the width of the die. Its
 // face is the arena's wall, its eye sockets and cheeks are turrets, its brain plugs the way
-// out behind a sliding grille, and its leak slugs hunt the ship around the arena.
+// out behind a sliding grille, and its leak slugs hunt the ship around the arena. When the
+// brain bursts, its top half is left as two bare cores still plugging the way out, and its
+// bottom half flickers and becomes two fast shards that hunt the ship.
 import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, bevel, blob, micro, shadeAt } from '../art/draw';
 import { armor, opaque, slicesOf, tint, weakPoint } from './boss';
@@ -8,7 +10,7 @@ import { mite, pics, stalker } from '../characters/enemies';
 import { arena } from '../stages/mapkit';
 import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
-import { keyOf, mite as miteArt, slug } from '../sprites/sprites';
+import { keyOf, mite as miteArt, shard, slug } from '../sprites/sprites';
 import { kit, type Leg } from '../stages/stage';
 import type { BlockSet } from '../art/draw';
 import type { StageArt } from '../blocks/tiles';
@@ -68,6 +70,16 @@ function brain(p: Pal, k: number): Pixels {
   return big;
 }
 
+/** A bare core of the brain (1 x 1): a pulsing kernel, red once it cracks. */
+function kernel(p: Pal, k: number, cracked: boolean): Pixels {
+  const t = new Pixels(20, 20, CLEAR);
+  const ramp = cracked ? p.r('red') : p.r('virus');
+  blob(t, 10, 10, 9, 9, ramp, 0, 4);
+  for (let a = 0; a < 8; a++) t.line(10, 10, 10 + Math.cos(a * 0.8 + k) * 8, 10 + Math.sin(a * 0.8 + k) * 8, p.c(cracked ? 'gold' : 'slime', 3 + k));
+  blob(t, 10, 10, 4 - k, 4 - k, p.r('glow'), 2, 4);
+  return t;
+}
+
 function bar(p: Pal): Pixels {
   const t = new Pixels(20, 20, CLEAR);
   bevel(t, 0, 6, 20, 8, p.r('trim'), 3, 1);
@@ -110,7 +122,34 @@ function bossVirus(b: Bestiary, p: Pal): void {
   const hurt = (q: Pixels) => tint(q, (c) => (p.r('virus').includes(c) ? p.c('red', 1 + (p.r('virus').indexOf(c) >> 1)) : c));
   for (let r = 0; r < 2; r++)
     for (let c = 0; c < 2; c++)
-      weakPoint(b, `head${r}${c}`, r === 0 ? 7 : 10, (h) => (h <= 3 ? [hurt(b0[r][c]), hurt(b1[r][c])] : [b0[r][c], b1[r][c]]), { score: 2500, anim: 3 });
+      weakPoint(b, `head${r}${c}`, r === 0 ? 5 : 9, (h) => (h <= 3 ? [hurt(b0[r][c]), hurt(b1[r][c])] : [b0[r][c], b1[r][c]]), {
+        score: 2500,
+        anim: 3,
+        // phase two: the top half (over the way out) is left as two bare cores; the bottom
+        // half bursts into shards
+        last: r === 0 ? 'core' : 'reboot',
+      });
+  // the bare cores: still plugging the way out, still burning, four more hits each
+  weakPoint(b, 'core', 4, (h) => [kernel(p, 0, h <= 2), kernel(p, 1, h <= 2)], { score: 1500, anim: 2 });
+  // each bottom quarter flickers for a moment (harmless: the warning), then becomes a shard
+  // that hunts the ship, faster than the leak slugs
+  pics(b, 'shard', ...shard(keyOf(p, { main: 'virus', accent: 'glow' })));
+  b.add('reboot', {
+    power: POWER.bigBoom,
+    end: 16,
+    becomes: 'shard',
+    pics: [
+      ['big0', 2],
+      ['big1', 2],
+      ['big2', 2],
+      ['shard0', 2],
+      ['big3', 2],
+      ['shard1', 2],
+      ['big3', 2],
+      ['shard0', 2],
+    ],
+  });
+  stalker(b, 'shard', { hp: 2, speed: 3, score: 600 });
   armor(b, 'grilleArt', bar(p));
   b.add('grille', {
     power: POWER.armor,
@@ -154,6 +193,6 @@ export function bossGlitch(art: StageArt): Leg {
     kind: 'boss',
     grid: g,
     kit: k,
-    card: ['The virus itself. Blast its', 'brain out through the', 'grille, then fly home!'],
+    card: ['The virus itself. Blast its', 'brain through the grille,', 'then its cores and shards.', 'Then fly home!'],
   };
 }
