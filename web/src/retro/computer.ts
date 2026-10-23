@@ -36,35 +36,37 @@ export class Computer extends ComputerFolders {
     s.clear(attr(7, 0));
     s.cursorVisible = false;
     const turbo = !this.opts.speed.slowPc;
+    // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
+    const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
     s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
-      await sleep(30);
+      await pause(30);
       if (!this.powered) return; // switched off while booting
     }
     this.postBeep(); // one short beep: the power-on self test passed
     s.print('\n\nStarting MS-DOS...\n\n');
-    await sleep(500);
+    await pause(500);
     if (!this.powered) return;
     // CONFIG.SYS
     s.print('HIMEM is testing extended memory...');
-    await sleep(turbo ? 350 : 1100);
+    await pause(turbo ? 350 : 1100);
     if (!this.powered) return;
     s.print('done.\n');
-    await sleep(150);
+    await pause(150);
     if (!this.powered) return;
     s.print('EMM386 successfully installed.\n  Available Upper Memory     :  91 KB\n\n');
-    await sleep(250);
+    await pause(250);
     if (!this.powered) return;
     s.print('  ATAPI CD-ROM Device Driver  Version 2.14\n  Drive 0: CD-ROM 2X (MSCD001)\n\n');
-    await sleep(turbo ? 400 : 900);
+    await pause(turbo ? 400 : 900);
     if (!this.powered) return;
     // AUTOEXEC.BAT
     for (const l of AUTOEXEC.slice(1)) {
       if (l.includes('MSCDEX')) {
         s.print('MSCDEX Version 2.23\n        Drive D: = Driver MSCD001 unit 0\n');
-        await sleep(300);
+        await pause(300);
         if (!this.powered) return;
       } else if (l.includes('DOSKEY')) s.print('DOSKEY installed.\n');
       else if (l.includes('MOUSE')) s.print('Mouse driver installed\n');
