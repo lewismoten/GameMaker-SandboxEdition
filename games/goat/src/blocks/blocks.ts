@@ -13,10 +13,15 @@ import type { Pal } from '../art/pal';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { lewieCameo } from '../../../kit/cameos';
+import { goatArt } from '../sprites/sprites';
 import { MON, SCREAMSEQ, WOOL, WOOL_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
 const LIFE = 1;
+/** Ticks the empty place in the line stays open, leans shut (still open) and stays shut. */
+export const GAP_OPEN = 44;
+export const GAP_LEAN = 18;
+export const GAP_SHUT = 36;
 /** Ticks between spits from a kneeling camel. */
 export const SPIT_EVERY = 46;
 
@@ -567,7 +572,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('place', place(false), { solid: SOLID, effect: WOOL, eamt: -WOOL_NEEDED, score: 500, touch: 'placeOpen' });
-  book.add('placeOpen', place(true));
+  // The line jostles: now and then the goats either side shuffle together and close the
+  // gap (solid) for a couple of seconds. First the goat on the right leans in, a warning
+  // you can see from the foot of the aisle; the gap is still open while she leans.
+  const liner = goatArt(pal).back({ fur: 'goat', lo: 0, hi: 4, horns: true, beard: false }, 0);
+  const lean = place(true).blit(liner, 13, 0, 255);
+  const shut = straw(189).blit(liner, -9, 0, 255).blit(liner, 9, 0, 255);
+  book.add('placeOpen', place(true), { next: 'placeLean', ntime: GAP_OPEN });
+  book.add('placeLean', lean, { next: 'placeShut', ntime: GAP_LEAN });
+  book.add('placeShut', shut, { solid: SOLID, next: 'placeOpen', ntime: GAP_SHUT });
   // A dark doorway out of each map (the link blocks).
   const exitWay = (bg: Pixels, arrow: string) => {
     const p = bg;

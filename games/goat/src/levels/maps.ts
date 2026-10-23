@@ -333,7 +333,8 @@ export function stable(book: BlockBook): Level {
     ],
     30,
   );
-  // the line, all facing the manger: goat, goat, (you), goat, lamb, then the donkey and the ox
+  // the line, all facing the manger: goat, goat, (you), goat, lamb, then the donkey and the ox;
+  // now and then the two goats either side jostle together and close the place (blocks.ts)
   // the empty place, up an aisle roped off at its foot: the rope drops for five wool and the
   // gift's "Hey..." plays out as she walks up into her place (four blocks, a second and a half)
   m.set(12, 4, 'placeOpen').set(9, 3, 'dusty');
@@ -342,6 +343,8 @@ export function stable(book: BlockBook): Level {
   m.mon(MON.donkey, 15, 4).mon(MON.ox, 16, 4);
   m.mon(MON.lamb, 2, 6).mon(MON.lamb, 25, 12).mon(MON.lamb, 3, 12);
   m.mon(MON.pigeon, 8, 7).mon(MON.pigeon, 20, 11).mon(MON.rooster, 17, 9);
+  // two more pigeons by the foot of the aisle, to peck at a goat who stands waiting there
+  m.mon(MON.pigeon, 8, 11).mon(MON.pigeon, 17, 6);
   // Teenage Lewie, visiting from Snowbound with his shovel, mucking out the back corner
   m.set(28, 12, 'lewie');
   m.link(12, 4, 'won');
