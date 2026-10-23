@@ -249,7 +249,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('register', register(false), { solid: SOLID, effect: MONEY, eamt: -SWORD_PRICE, score: 1200, touch: 'registerPaid' });
   book.add('registerPaid', register(true));
-  /** The emergency exit: the glowing sign, one block, right over the door, its arrow pointing down at it; only the knight's helmet gets you out. */
+  /** The emergency exit: the glowing sign, one block, at the top of the exit corridor behind the door, its arrow pointing down the way out; only the knight's helmet opens the door. */
   const exitSign = (lit: boolean) => {
     const p = curtain(1);
     const on = lit ? c('white', 2) : c('exitred', 2);
