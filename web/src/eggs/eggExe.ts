@@ -1,8 +1,8 @@
 // EGG.EXE: an unlisted program on the desk PC (not in HELP, not in any folder) for testing the
 // felt eggs. Lists all twelve (and, once all twelve are in, the two kept apart in bonus.ts),
 // where each stands, and adds or breaks them. On the rotten egg's row, ← → (or - +) crack it a
-// tap at a time, H crumbles it to the diamond heart and 0 makes it whole (bonus.ts eggTaps).
-// It only changes what is kept in localStorage (eggState.ts, bonus.ts), never a game's save.
+// tap at a time, O crumbles it open and 0 makes it whole (bonus.ts eggTaps). T opens the tin
+// heart ledger (tinHearts/tinHeartExe.ts), a page of its own. It only changes what is kept in localStorage (eggState.ts, bonus.ts), never a game's save.
 // Game-Maker's text UI style.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
@@ -31,7 +31,7 @@ interface Row {
   inSave: boolean;
   found: boolean;
   hidden: boolean;
-  /** The rotten egg's row only: how far it is tapped (0 whole .. 13 the diamond heart). */
+  /** The rotten egg's row only: how far it is tapped (0 whole .. 13 crumbled open). */
   taps?: number;
 }
 
@@ -93,7 +93,7 @@ export async function runEggExe(ui: Ui): Promise<void> {
     s.fill(x + 1, y + n + 2, x + w - 2, y + n + 2, MENUATTR);
     s.write(x + 2, y + n + 2, MENUATTR, toCp437(`${e.name}: ${STATE_TEXT[e.status]}${e.inSave ? '' : e.hidden ? ', not in any save' : ', not hidden in the game yet'}${cracks}`).slice(0, w - 4));
     // the keys, with the cracking ones on the rotten egg's row
-    const bar = e.taps !== undefined ? ' ↑↓ Choose  ←→ Crack  H Heart  0 Whole  Enter Add/Break  R Reset  Esc Quit' : ' ↑↓ Choose   Enter Add/Break   A Add   B Break   R Reset   Esc Quit';
+    const bar = e.taps !== undefined ? ' ↑↓ Choose  ←→ Crack  O Open  0 Whole  Enter Add/Break  R Reset  T Hearts  Esc' : ' ↑↓ Choose  Enter Add/Break  A Add  B Break  R Reset  T Tin hearts  Esc Quit';
     s.write(0, 24, BARATTR, toCp437(bar).padEnd(80).slice(0, 80));
     const k = await ui.keys.next();
     const key = k.key.length === 1 ? k.key.toUpperCase() : k.key;
@@ -108,13 +108,17 @@ export async function runEggExe(ui: Ui): Promise<void> {
       // the rotten egg goes back to whole, too
       if (e.taps !== undefined && e.taps) bonus?.setEggTaps(0);
       setOverride(e.key, undefined);
-    } else if (e.taps !== undefined && bonus) {
+    } else if (key === 'T') {
+      // the tin heart ledger, a page of its own; back here after
+      await (await import('../tinHearts/tinHeartExe')).runTinHeartExe(ui);
+      n = -1;
+    } else if (key === 'Escape' || key === 'Q') break;
+    else if (e.taps !== undefined && bonus) {
       if (key === 'ArrowRight' || key === '+' || key === '=') bonus.setEggTaps(e.taps + 1);
       else if (key === 'ArrowLeft' || key === '-' || key === '_') bonus.setEggTaps(e.taps - 1);
-      else if (key === 'H') bonus.setEggTaps(bonus.TAPS);
+      else if (key === 'O' || key === 'H') bonus.setEggTaps(bonus.TAPS);
       else if (key === '0') bonus.setEggTaps(0);
     }
-    else if (key === 'Escape' || key === 'Q') break;
   }
   s.resetPalette();
   s.clear();
