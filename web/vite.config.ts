@@ -130,16 +130,19 @@ function offline(): Plugin {
     name: 'gamemaker-offline',
     apply: 'build',
     enforce: 'post', // after Vite's HTML plugin has emitted the pages
-    generateBundle(_options, bundle) {
-      const built = Object.keys(bundle);
-      const precache = appShell(bundle);
-      const groups = groupHashes(bundle);
-      const assets = built.filter(isHashed).sort();
-      const version = hashText(JSON.stringify([groups, assets]));
-      this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
-      this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle) }) });
-      const player = playerGraph(bundle);
-      this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
+    generateBundle: {
+      order: 'post', // and after scripts/seoBuild.ts has made each game's play page from play.html
+      handler(_options, bundle) {
+        const built = Object.keys(bundle);
+        const precache = appShell(bundle);
+        const groups = groupHashes(bundle);
+        const assets = built.filter(isHashed).sort();
+        const version = hashText(JSON.stringify([groups, assets]));
+        this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
+        this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle) }) });
+        const player = playerGraph(bundle);
+        this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
+      },
     },
   };
 }
