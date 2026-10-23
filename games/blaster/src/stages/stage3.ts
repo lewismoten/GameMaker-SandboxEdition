@@ -3,7 +3,7 @@
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from '../characters/enemies';
 import { strip, type Grid } from './mapkit';
 import { buildPalette } from '../art/pal';
-import { soundArt, soundTiles, soundVirus } from '../blocks/sound3';
+import { soundArt, soundEgg, soundTiles, soundVirus } from '../blocks/sound3';
 import { kit, type Stage } from './stage';
 import { bossHowler } from '../bosses/boss3';
 
@@ -115,6 +115,7 @@ export function stage3(): Stage {
     (bs) => soundTiles(bs, art),
     (b) => virus3(b, pal),
     { mite: 'mite', turretEvery: 11, seekerEvery: 40, flakEvery: 30, hatchShut: 40, hatchOpen: 30, hatchEvery: 8, fenceOn: 26, fenceOff: 26 },
+    (bs) => soundEgg(bs, art),
   );
   const a = strip(ks.bs, ks.beasts, art, 301);
   legA(a);
@@ -143,6 +144,9 @@ export function stage3(): Stage {
     ],
     14,
   );
+  // the painted Easter egg, tucked against the right-hand edge halfway up The Woofer
+  const [ec, ed] = ([[14, 60], [14, 59], [14, 61]] as [number, number][]).find(([c, d]) => /^floor0$/.test(b.get(c, d)))!;
+  b.set(ec, ed, 'easterEgg');
   b.cardAt = 26;
   return {
     n: 3,

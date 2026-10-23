@@ -8,6 +8,7 @@ import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
 import { bomb, cluster, disc, keyOf, mite, note, wasp } from '../sprites/sprites';
 import { onFloor, slices, type StageArt } from './tiles';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 
 export function soundArt(p: Pal): StageArt {
   const floor = (v: number): Pixels => {
@@ -126,6 +127,18 @@ export function soundTiles(bs: BlockSet, a: StageArt): void {
   const levels = [2, 5, 3, 6, 1, 4];
   levels.forEach((l, i) => bs.add(`vu${i}`, vu(a, l), { next: `vu${(i + 1) % levels.length}`, ntime: 3 }));
   slices(bs, 'knob', knob(a));
+}
+
+/**
+ * The painted Easter egg (kit/easterEgg.ts), blue with gold sound waves, hidden against the
+ * right-hand edge of The Woofer; worth 50, and a glint crosses it now and then. Added after the
+ * shared tiles so no block before it moves.
+ */
+export function soundEgg(bs: BlockSet, a: StageArt): void {
+  const p = a.pal;
+  const egg = { ink: p.c('ink', 0), shell: [p.c('blue', 1), p.c('blue', 2), p.c('blue', 3)], paint: [p.c('gold', 2), p.c('gold', 4)], accent: p.c('pink', 3), white: p.c('grey', 7) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    bs.add(`easterEgg${k || ''}`, drawEasterEgg(a.floor(0), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'floor0', scorePts: 50 });
 }
 
 export function soundVirus(b: Bestiary, p: Pal): void {
