@@ -271,7 +271,7 @@ export function baskets(book: BlockBook): Level {
 
 /** 4. The way home: through the village at night, wrapped in the child's cloth, to her door. */
 export function home(book: BlockBook): Level {
-  const W = 66;
+  const W = 74;
   const H = 13;
   const m = new MapBuilder(book, 'earth');
   m.fill(1, 0, W - 2, 3, 't').fill(1, 3, W - 2, 7, '.').row(10, 0, W - 1, 'r').fill(0, 11, W, 2, 's').col(0, 0, 12, '#').col(W - 1, 0, 12, '#');
@@ -290,8 +290,10 @@ export function home(book: BlockBook): Level {
   m.mon(MON.moth, 48, 7).mon(MON.dog, 41, 9).mon(MON.owl, 44, 1);
   // the child, walking home ahead of you
   m.mon(MON.girlA, 52, 8).mon(MON.girlB, 52, 9);
-  // home: her door
-  m.fill(58, 5, 7, 5, 'A').row(4, 57, 64, 'p').set(59, 8, 'q').set(61, 9, '!').set(60, 3, 'k');
-  m.link(61, 9, 'won');
+  // home: her door, and the long lamplit room inside to Mama at the far end, so "Mama, look
+  // what I've got..." is sung to the end
+  m.row(4, 57, 72, 'p').row(5, 58, 71, 'M').col(58, 6, 8, 'M').set(58, 9, '!').col(71, 6, 9, 'M').set(60, 3, 'k');
+  m.fill(59, 6, 12, 3, 'room').row(9, 59, 70, 'roomFloor').set(62, 6, 'roomLamp').set(67, 6, 'roomLamp').set(70, 8, 'mamaTop').set(70, 9, 'mamaLow');
+  m.link(70, 9, 'won').link(70, 8, 'won');
   return { m, start: at(2, 9), size: [W, H] };
 }

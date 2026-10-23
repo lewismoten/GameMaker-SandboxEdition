@@ -248,6 +248,6 @@ export async function theWayHome(bot: Bot): Promise<void> {
   });
   if (crumbs(bot) < 1) throw new Error('no holy crumb for the door');
   await carefully(bot, 'home', 12, async () => {
-    await leave(bot, bot.walk(62, 'her door'), 'her door');
+    await leave(bot, bot.walk(71, 'her door'), 'her door and in to Mama');
   });
 }

@@ -417,5 +417,28 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('doorOpen', door(true), { grav: GRAV.none });
   // (last, so every other block keeps its number) the trunk standing in its own shade
   book.add('trunkShade', trunkOn(shadeCopy), air);
+  // inside home (after these, too): lamplit plaster over a board floor, an oil lamp hanging from
+  // a beam, and Mama waiting at the far end (scenery: roll on in)
+  const room = (seed: number, floor = false) => {
+    const p = P().rect(0, 0, 20, 20, c('sand', 2));
+    const r = rng(seed);
+    for (let i = 0; i < 14; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c(r() < 0.5 ? 'lamp' : 'sand', 1));
+    if (floor) p.rect(0, 17, 20, 3, c('wood', 2)).rect(0, 17, 20, 1, c('wood', 0)).rect(7, 18, 1, 2, c('wood', 1));
+    return p;
+  };
+  book.add('room', room(101), air);
+  book.add('roomFloor', room(105, true), air);
+  const roomLamp = room(102);
+  roomLamp.rect(9, 0, 2, 4, c('wood', 1)).rect(8, 4, 4, 1, c('wood', 0));
+  blob(roomLamp, 10, 7, 3.2, 2.4, R('lamp'), 1, 2);
+  roomLamp.disc(10, 6, 1.2, c('sun', 3));
+  book.add('roomLamp', roomLamp, air);
+  const mamaTop = room(103);
+  mamaTop.rect(7, 4, 6, 7, c('hair', 1)).rect(8, 6, 4, 5, c('skin', 2)).set(9, 8, c('ink', 0)).set(11, 8, c('ink', 0));
+  mamaTop.rect(6, 13, 8, 7, c('red', 2)).rect(4, 15, 3, 3, c('skin', 2)).rect(13, 15, 3, 3, c('skin', 2)).rect(9, 11, 2, 2, c('skin', 1));
+  book.add('mamaTop', mamaTop, air);
+  const mamaLow = room(104, true);
+  mamaLow.rect(5, 0, 10, 17, c('red', 2)).rect(5, 0, 2, 17, c('red', 1)).rect(8, 4, 1, 12, c('red', 1)).rect(6, 17, 3, 2, c('wood', 0)).rect(11, 17, 3, 2, c('wood', 0));
+  book.add('mamaLow', mamaLow, air);
   return book;
 }
