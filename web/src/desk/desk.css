@@ -62,6 +62,33 @@
   flex: 1;
 }
 
+/* the Desk | DOS | Web switch (src/viewSwitch.ts) on the desk's wall, at the same top right as in
+   today's web header (its height, padding and the theme button's room after the switch) */
+.desk-bar {
+  box-sizing: border-box;
+  min-height: 50px;
+}
+
+.desk-bar .view-switch-end {
+  flex: none;
+  width: 44px;
+}
+
+@media (max-width: 600px) {
+  .desk-bar {
+    min-height: 48px;
+    gap: 6px;
+    padding: 0 8px;
+  }
+  /* one row on a phone: the logo and the switch (the edition line and the touch tip go) */
+  .desk-bar > span:not(.view-switch-end):not(.spacer) {
+    display: none;
+  }
+  .desk-bar h1 {
+    white-space: nowrap;
+  }
+}
+
 /* the Desk | DOS | Web switch (src/viewSwitch.ts) on the desk's wall */
 .desk-bar .view-switch {
   color: #efe9d6;

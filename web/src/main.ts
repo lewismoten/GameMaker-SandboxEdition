@@ -105,9 +105,6 @@ function startModern(hash?: string): void {
         h('a', { class: 'hide-narrow nav-link', href: '#/credits', title: `Who and what made ${PRODUCT}` }, 'Credits'),
         h('a', { class: 'nav-link', href: '#/help', title: `How to use ${PRODUCT}` }, 'Guide'),
       ),
-      // Desk | DOS | Web: the game in front of you comes along (viewSwitch.ts)
-      viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
-      themeButton(),
       h(
         'button',
         { class: 'hide-narrow topbar-offline', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' },
@@ -130,6 +127,10 @@ function startModern(hash?: string): void {
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
       ),
+      // Desk | DOS | Web, at the top right in every view, the theme button after it; the game in
+      // front of you comes along (viewSwitch.ts)
+      viewSwitch('web', webShowing, { desk: (href) => void startDesk(href.slice(href.indexOf('#'))) }),
+      themeButton(),
     ),
     content,
   );

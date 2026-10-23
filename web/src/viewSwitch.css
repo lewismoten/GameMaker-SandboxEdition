@@ -11,6 +11,11 @@
     sans-serif;
 }
 
+.view-switch,
+.view-switch a {
+  box-sizing: border-box; /* the same size on every page, whatever its own stylesheet says */
+}
+
 .view-switch a {
   display: inline-flex;
   align-items: center;

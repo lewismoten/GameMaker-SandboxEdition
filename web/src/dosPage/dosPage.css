@@ -31,12 +31,16 @@ body:has(.dos-page) {
     sans-serif;
 }
 
+/* the same height and side padding as today's web header, so the view switch at its right end
+   sits where it does there (viewSwitch.ts) */
 .dos-bar {
+  box-sizing: border-box;
+  min-height: 50px;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   gap: 8px 12px;
-  padding: 6px 12px;
+  padding: 0 16px;
   background: var(--dos-bar);
   border-bottom: 1px solid #000;
 }
@@ -402,7 +406,15 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
 }
 
 /* the ⋯ menu (moreMenu.ts) */
+.dos-more {
+  flex: none;
+}
+
+/* as wide as today's web theme button, which follows the switch there */
 .dos-more > summary {
+  box-sizing: border-box;
+  width: 44px;
+  min-height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -477,8 +489,9 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
 /* phones: one row of icons that scrolls sideways if it must; the title is read, not shown */
 @media (max-width: 600px) {
   .dos-bar {
+    min-height: 48px;
     gap: 6px;
-    padding: 4px 8px;
+    padding: 0 8px;
     overflow-x: auto;
     scrollbar-width: none;
   }

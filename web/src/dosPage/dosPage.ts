@@ -255,9 +255,11 @@ clear(
       { class: 'dos-bar' },
       h('a', { class: 'dos-back', href: './', title: `Back to ${PRODUCT}`, 'aria-label': 'Back to the site' }, ...face('←', 'Site')),
       h('h1', null, 'DOS Game-Maker'),
-      // Desk | DOS | Web, with the disk in drive A: coming along
+      h('div', { class: 'dos-controls', role: 'group', 'aria-label': 'The PC' }, powerBtn, gmBtn, disks.button, turboBtn, soundBtn, fullBtn),
+      // Desk | DOS | Web at the top right, where every view has it, the ⋯ menu after it; the disk
+      // in drive A: comes along
       viewSwitch('dos', () => disks.current()),
-      h('div', { class: 'dos-controls', role: 'group', 'aria-label': 'The PC' }, powerBtn, gmBtn, disks.button, turboBtn, soundBtn, fullBtn, more),
+      more,
     ),
     stage,
     footer(

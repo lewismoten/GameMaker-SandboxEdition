@@ -147,6 +147,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       viewSwitch('desk', () => deskView.get('disk'), {
         web: (href) => (nav.toModernAt ? nav.toModernAt(href.slice(href.indexOf('#'))) : nav.toModern()),
       }),
+      // where today's web has its theme button: the switch sits at the same top right in every view
+      h('span', { class: 'view-switch-end', 'aria-hidden': 'true' }),
     ),
     h(
       'main',
