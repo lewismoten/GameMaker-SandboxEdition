@@ -271,7 +271,10 @@ export const umbrella: Monologue = {
     '!': 'spot@town',
   },
   build: (m: MapBuilder) => {
-    const W = 70;
+    // the walk-off: OFF blocks more of the street past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 22;
+    const W = 70 + OFF;
     m.fill(0, 0, W, 3, 'R').row(3, 0, W - 1, 'rainMid').fill(0, 4, W, 4, 'r').row(8, 0, W - 1, 'k').row(9, 0, W - 1, 't').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
     for (const x of [6, 11, 49, 57, 63]) m.set(x, 10, 'u');
     // the rain: the spotlight, a storm cloud, the street lamp (the patch blown onto it), a gust
@@ -306,7 +309,7 @@ export const umbrella: Monologue = {
     placePicture(m, 'storm', 63, 1, 2, 1);
     m.set(61, 9, '$').set(65, 9, '%');
     m.set(67, 9, 'beast');
-    m.link(67, 9, 'next');
+    m.link(67 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: umbrellaMonsters,

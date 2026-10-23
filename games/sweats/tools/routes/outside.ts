@@ -184,7 +184,8 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
     await carefully(bot, 'the last stand', 0, async () => {
       await must(bot, bot.walk(65, 'under the storm clouds, a coin, a dollar'), 'clouds');
       if (plot(bot) < MENDS) throw new Error(`only ${plot(bot)} mends`);
-      await leave(bot, bot.walk(67, 'the wounded beast'), 'the beast');
+      await must(bot, bot.walk(68, 'the wounded beast'), 'the beast');
+      await leave(bot, bot.walk(89.5, 'the walk-off'), 'the walk-off');
     });
   },
 };
