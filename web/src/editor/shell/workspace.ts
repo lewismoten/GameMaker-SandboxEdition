@@ -8,6 +8,7 @@ import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
 import { editors, fileInfo } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
+import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
@@ -547,6 +548,9 @@ export class Workspace {
   private async addFiles(): Promise<void> {
     const list = await pickFiles({ multiple: true });
     const files = await loadFileList(list);
+    // a backup's <game>.GMX adds its editor-only extras, not a file
+    const extras = takeCompanion(files);
+    for (const [file, sections] of Object.entries(extras?.files ?? {})) for (const [k, v] of Object.entries(sections)) this.project.setExtras(file, k, v);
     for (const [n, b] of files.entries()) this.project.files.set(n, b);
     if (files.size) toast(`Added ${files.size} file(s).`);
     this.renderSidebar();
@@ -559,6 +563,7 @@ export class Workspace {
     const p = this.project;
     p.files.set(name, p.files.get(file)!);
     p.files.delete(file);
+    p.renameExtras(file, name);
     // Point the scenes that used the old name at the new one.
     const game = p.game();
     let changed = false;
@@ -592,6 +597,6 @@ export class Workspace {
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
     const title = this.project.game().scenes[0]?.desc || this.project.name;
-    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true });
+    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
   }
 }

@@ -11,7 +11,7 @@ export { renderWebManual } from './manual/webManual';
 export async function openStored(id: string, host: HTMLElement, file?: string): Promise<Workspace | undefined> {
   const [stored, { Workspace }] = await Promise.all([loadProject(id), import('./editor/shell/workspace'), import('./editor/editors/all')]);
   if (!stored) return undefined;
-  const project = Project.fromFiles(stored.files, stored.record.name, id);
+  const project = Project.fromFiles(stored.files, stored.record.name, id, stored.record.companion);
   project.gam = stored.record.gam;
   return new Workspace(host, project, file);
 }
