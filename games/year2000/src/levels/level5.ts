@@ -1,6 +1,6 @@
 // Level 5: THE MOON. One small step for a kid... and then a big hop, because in a moon
 // suit Dex floats along in one-sixth gravity and drifts when he stops. The Moon is busy
-// in the year 2000: moon buggies, McMoon's, meteor showers every afternoon, and the
+// in the year 2000: moon buggies, the Crater Cafe, meteor showers every afternoon, and the
 // friendliest aliens you ever met. The Moon School airlock wants a Moon Pass, which is
 // waiting at the Visitor Center, up in meteor alley.
 import { LevelMap, type Legend } from './mapkit';

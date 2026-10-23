@@ -297,7 +297,7 @@ export function lostScreen(a: Art): Pixels {
   scaleBlit(p, a.dexUp, 40, 100, 3);
   scaleBlit(p, a.sparky, 10, 160, 1);
   chromeCentered(p, 8, 'GAME OVER', 4, true);
-  caption(p, ['YOU MISSED THE SCIENCE FAIR. SPARKY', 'IS VERY SORRY. HE ATE THE TV GUIDE', 'TOO. TRY AGAIN - THE FUTURE CAN WAIT!']);
+  caption(p, ['YOU MISSED THE SCIENCE FAIR. SPARKY', 'IS SORRY. HE ATE THE TV LISTINGS', 'TOO. TRY AGAIN - THE FUTURE CAN WAIT!']);
   return p;
 }
 
