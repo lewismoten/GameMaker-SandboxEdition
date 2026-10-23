@@ -42,13 +42,15 @@ describe('The Ultimate Owner’s Guide', () => {
     for (const c of CHAPTERS) expect(c.html).not.toMatch(/\blego\b/i);
   });
 
-  it('ends with designing with a goal, the numbers, then the upload checklist on a page of its own', () => {
-    expect(CHAPTERS.slice(-3).map((c) => c.id)).toEqual(['craft', 'numbers', 'upload']);
+  it('ends with designing with a goal, level design, the numbers, then the upload checklist on a page of its own', () => {
+    expect(CHAPTERS.slice(-4).map((c) => c.id)).toEqual(['craft', 'levels', 'numbers', 'upload']);
     expect(CHAPTERS.filter((c) => c.newPage).map((c) => c.id)).toEqual(['upload']);
   });
 
-  // the original manual's OCR, and the player reviews the design chapter learned from: no wording of theirs
-  const sources = ['manual-ocr/manual.txt', 'other-games.md'].map((f) => new URL(`../../../../.for-lewis/${f}`, import.meta.url));
+  // the original manual's OCR, and the player reviews the design chapters learned from: no wording of theirs
+  const sources = ['manual-ocr/manual.txt', 'other-games.md', 'bad-games/friction.md', 'bad-games/sherwood forest software.md'].map(
+    (f) => new URL(`../../../../.for-lewis/${f}`, import.meta.url),
+  );
   it.skipIf(!sources.every(existsSync))('shares no run of six words with the original manual or the reviews', () => {
     const theirs = words(sources.map((f) => readFileSync(f, 'utf8')).join(' '));
     const runs = new Set<string>();

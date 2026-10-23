@@ -100,20 +100,22 @@ export const UPLOAD: Chapter = {
   html: `${opening('Appendix B', 'Before You Upload', 'Tear this page out, or copy it. Tick every box before your game leaves your hard disk.')}
   <table class="ug-check">
     <tr><th aria-label="Done"></th><th>Check</th></tr>
-    <tr><td>☐</td><td>The first minute is fun, and the hero’s speed feels right to someone new</td></tr>
-    <tr><td>☐</td><td>Every jump has a block to spare; no passage pinches the hero</td></tr>
-    <tr><td>☐</td><td>Each level is a little harder than the last; the last one is the best, not the meanest</td></tr>
-    <tr><td>☐</td><td>Long levels are split into scenes, so a death costs a little, not a lot</td></tr>
-    <tr><td>☐</td><td>Every danger can be seen before it can kill</td></tr>
-    <tr><td>☐</td><td>No more than two or three enemies on a screen; every birth block rests</td></tr>
-    <tr><td>☐</td><td>Enemies stand out from the background in every palette</td></tr>
-    <tr><td>☐</td><td>One touch from an enemy costs a little, and the hero is pushed clear</td></tr>
-    <tr><td>☐</td><td>The final boss has stages and a reward</td></tr>
-    <tr><td>☐</td><td>New places, enemies or items every level or two; the gimmick has its own level</td></tr>
+    <tr><td>☐</td><td>The first minute is fun; the hero’s speed feels right to someone new</td></tr>
+    <tr><td>☐</td><td>Every jump has a block to spare; every landing is in sight before the jump</td></tr>
+    <tr><td>☐</td><td>Each level asks a little more; the last is the best, not the meanest</td></tr>
+    <tr><td>☐</td><td>Long levels are split into scenes, so a death costs little</td></tr>
+    <tr><td>☐</td><td>Every danger shows before it can kill; hazard blocks fill their cells</td></tr>
+    <tr><td>☐</td><td>Nowhere to get stuck: every pit has a way out, every lock its key</td></tr>
+    <tr><td>☐</td><td>Two or three enemies on a screen, each with a job; birth blocks rest</td></tr>
+    <tr><td>☐</td><td>Enemies stand out in every palette; a touch costs little and pushes clear</td></tr>
+    <tr><td>☐</td><td>Every item can be reached; mazes have landmarks; no wait over 3 seconds</td></tr>
+    <tr><td>☐</td><td>The final boss has stages; the ending is a real scene, not an ad</td></tr>
+    <tr><td>☐</td><td>Something new every level or two; the gimmick has its own level</td></tr>
+    <tr><td>☐</td><td>Any key beyond the arrows and fire is taught in the game itself</td></tr>
     <tr><td>☐</td><td>Animations loop smoothly; menu, <kbd>F2</kbd> and text screens are readable</td></tr>
-    <tr><td>☐</td><td>Frequent sounds are short; no voice line gets cut off; music fits</td></tr>
-    <tr><td>☐</td><td>Storyline, instructions, credits and the won and lost screens are filled in</td></tr>
+    <tr><td>☐</td><td>Frequent sounds are short; no voice line is cut off; music fits</td></tr>
+    <tr><td>☐</td><td>Storyline, instructions, credits, won and lost screens are filled in</td></tr>
     <tr><td>☐</td><td>The demo plays the same way twice</td></tr>
-    <tr><td>☐</td><td>Three friends have played it through, and you fixed where they got stuck</td></tr>
+    <tr><td>☐</td><td>Three friends played it through, and you fixed where they got stuck</td></tr>
   </table>`,
 };

@@ -8,10 +8,11 @@ import { ACTORS, LOGIC, SCENES } from './chaptersPlay';
 import { MUSIC, SOUND_SETS, VOICE } from './chaptersSound';
 import { NUMBERS, SHOW, TESTING } from './chaptersShow';
 import { CRAFT, UPLOAD } from './chaptersCraft';
+import { LEVELS } from './chaptersLevels';
 
 export const ULTIMATE_TITLE = 'The Ultimate Owner’s Guide';
 
-export const CHAPTERS: Chapter[] = [PALETTES, BLOCKS, ACTORS, LOGIC, SCENES, SOUND_SETS, VOICE, MUSIC, SHOW, TESTING, CRAFT, NUMBERS, UPLOAD];
+export const CHAPTERS: Chapter[] = [PALETTES, BLOCKS, ACTORS, LOGIC, SCENES, SOUND_SETS, VOICE, MUSIC, SHOW, TESTING, CRAFT, LEVELS, NUMBERS, UPLOAD];
 
 export interface BookPlan {
   /** Note pages added before the back cover. */
