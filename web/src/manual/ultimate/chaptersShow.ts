@@ -1,7 +1,6 @@
-// The Ultimate Owner's Guide, chapters 9 to 11 and the appendix: title screens and demos,
-// play-testing, the desk PC's power tools, and the numbers to remember. Checked against
-// PLAYGAME (code/GM/PLAYGAME.C), web/src/engine (game.ts, recorder.ts, showGraphic.ts) and
-// the desk's utilities (web/src/retro/hexedit, web/src/retro/hacks).
+// The Ultimate Owner's Guide, chapters 9 and 10 and the appendix: title screens and demos,
+// play-testing, and the numbers to remember. Checked against PLAYGAME (code/GM/PLAYGAME.C)
+// and web/src/engine (game.ts, recorder.ts, showGraphic.ts).
 import { opening, tip, type Chapter } from './chapter';
 
 export const SHOW: Chapter = {
@@ -80,33 +79,8 @@ export const TESTING: Chapter = {
   answers, from a gentle nudge to the full solution, so a reader can stop as soon as the light
   comes on. The Sandbox games print their answers under a red pattern that only shows through
   red film, so no one reads the next answer by accident.</p>
-  <p>Write it while you test: every place a tester got stuck is a question for the book.</p>`,
-};
-
-export const DESK: Chapter = {
-  id: 'desk',
-  title: 'Power Tools on the Desk',
-  head: '11. Power Tools',
-  html: `${opening(11, 'Power Tools on the Desk', 'The PC on your desk has a few utilities that a power user will enjoy. None of them is needed to make a game, but they show exactly what your files hold.')}
-  <h2>HEXEDIT</h2>
-  <p><code>HEXEDIT</code>, in <code>C:\\DOS</code>, shows any file byte by byte. For Game-Maker’s
-  own files it also names the field under the cursor and lets you jump between sections:
-  games (<code>.GAM</code>), maps, all three kinds of block set, characters, monsters, palettes,
-  sound sets, recordings (<code>.REC</code>), high scores (<code>.HIS</code>) and the saved game
-  names. Press <kbd>E</kbd> to type over bytes and <kbd>F10</kbd> to write the file back; a
-  <code>.BAK</code> copy is made first.</p>
-  <p>Things to try: read which <code>.VOC</code> name each slot of a sound set uses, read a
-  block’s solid sides and gravity as numbers, or count the key presses in a demo.</p>
-  <pre>C:\\GM\\SAMPLE&gt;HEXEDIT SAMPLE.SND</pre>
-  <h2>BACKUP</h2>
-  <p><code>BACKUP</code> copies a game’s saved games aside and puts them back. Before a test
-  that might ruin your saves, back them up; <code>BACKUP /L</code> lists the copies you have.</p>
-  <h2>SAVEHACK</h2>
-  <p>A freeware saved-game editor that turns up on the BBS. It changes the score, lives, hit
-  points, money, counters and inventory in a game’s saves, and can make a new save in an empty
-  slot that starts at the first level. For a designer it is a quick way to test a gate with
-  exactly the counter it needs. It backs up your saves before its first change.</p>
-  ${tip('Careful:', 'Edit a copy, never the only one. HEXEDIT writes exactly what you type, and Game-Maker trusts its files.')}`,
+  <p>Write it while you test: every place a tester got stuck is a question for the book.</p>
+  <p class="ug-wink">Looking for the really sneaky stuff? Some things aren’t in any official manual.</p>`,
 };
 
 export const NUMBERS: Chapter = {
