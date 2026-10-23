@@ -332,7 +332,7 @@ async function starChart(ctx: PrintContext, it: StarChartItem): Promise<Sheet[]>
       8.5,
       'sc',
       h('header', { class: 'sc-head' }, h('b', null, it.heading), h('span', null, 'FOLD-OUT GALAXY CHART · COURIER ISSUE')),
-      svg as unknown as HTMLElement,
+      svg,
       inset,
       legend,
       h('div', { class: 'sc-folds', 'aria-hidden': 'true' }, h('i'), h('i'), h('i')),
@@ -418,7 +418,7 @@ async function recipe(it: RecipeItem): Promise<Sheet[]> {
     5,
     'rc rc-back',
     h('header', { class: 'rc-head' }, h('b', null, 'Notes'), h('span', null, 'added by the family since')),
-    h('ol', { class: 'rc-notes' }, ...it.lines.filter((l) => l.note).map((l) => h('li', null, h('sup', null, `${l.n}`), ' ', l.note!))),
+    h('ol', { class: 'rc-notes' }, ...it.lines.filter((l) => l.note).map((l) => h('li', null, h('sup', null, `${l.n}`), ' ', l.note))),
     it.back ? h('p', { class: 'rc-last' }, it.back) : null,
     h('div', { class: 'rc-ring', 'aria-hidden': 'true' }),
   );

@@ -77,7 +77,7 @@ export async function runWarezInstall(h: RetroHost): Promise<void> {
   // the four parts must all be unzipped here
   const missing = GM30_PARTS.map((_, i) => `GM30.00${i + 1}`);
   const here = await findC(h, ['DOWNLOAD', 'GM30']);
-  const names = new Set(((here?.dir && here.list ? await here.list() : []) as DosNode[]).map((n) => n.name.toUpperCase()));
+  const names = new Set((here?.dir && here.list ? await here.list() : []).map((n) => n.name.toUpperCase()));
   const gone = missing.filter((n) => !names.has(n));
   if (gone.length) {
     await messageBox(h, [

@@ -57,7 +57,7 @@ export async function runTinHeartExe(ui: Ui): Promise<void> {
       const a = on ? CURATTR : MENUATTR;
       s.fill(x + 1, row, x + w - 2, row, a);
       if (!e && !p) continue;
-      s.write(x + 2, row, on ? a : e ? a : attr(8, 1), toCp437((e ?? p)!.title.slice(0, 40).padEnd(42)));
+      s.write(x + 2, row, on ? a : e ? a : attr(8, 1), toCp437((e ?? p).title.slice(0, 40).padEnd(42)));
       s.write(x + 44, row, on ? a : e ? STATE_ATTR[e.status] : attr(8, 1), toCp437(e ? STATE_TEXT[e.status] : 'not hidden yet').padEnd(15));
     }
     // more above or below: arrows on the frame

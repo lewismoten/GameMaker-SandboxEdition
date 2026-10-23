@@ -147,7 +147,7 @@ export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult>
           numberOfFrames: PER_FRAME,
           numberOfChannels: 1,
           timestamp: us,
-          data: pcm as Float32Array<ArrayBuffer>,
+          data: pcm,
         });
         aenc.encode(data);
         data.close();

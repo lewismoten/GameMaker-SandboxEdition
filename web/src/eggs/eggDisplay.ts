@@ -37,7 +37,7 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     extra = (await bonusStates()).filter((e) => e.found);
     // how far the rotten egg was tapped (the viewer, or EGG.EXE): its cracks, or the IOU inside
     const taps = eggTaps();
-    const items = extra.map((e) => (e.egg.id === 'rotten' ? (taps >= TAPS ? 'iou' : 'rotten') : 'pastry') as 'rotten' | 'iou' | 'pastry');
+    const items = extra.map((e) => (e.egg.id === 'rotten' ? (taps >= TAPS ? 'iou' : 'rotten') : 'pastry'));
     const key = `${items.join(',')}:${taps}`;
     if (key === standShown) return;
     standShown = key;

@@ -260,7 +260,7 @@ async function watch(
   const setPlaying = (on: boolean) => {
     if (on && run?.done) {
       fresh();
-      void run!
+      void run
         .start()
         .then(() => run!.step(true))
         .then(showTime);

@@ -164,7 +164,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
         break;
       case 7: // idle on the menu: run the demo recording
         await m.need(file(0, 11));
-        if (file(0, 11) && s.rec.initPlayback(m.files.get(file(0, 11)!))) {
+        if (file(0, 11) && s.rec.initPlayback(m.files.get(file(0, 11)))) {
           menuScreen = undefined;
           m.audio.stopSong();
           await play(s, 0);

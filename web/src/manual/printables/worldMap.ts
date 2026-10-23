@@ -310,7 +310,7 @@ function tileSheet(world: World, t: Rect & { name: string; col: number; row: num
     PAGE.w / 10,
     PAGE.h / 10,
     'wm wm-tile',
-    svg as unknown as HTMLElement,
+    svg,
     h(
       'div',
       { class: 'wm-tile-tag' },
@@ -335,7 +335,7 @@ export async function worldMap(ctx: PrintContext): Promise<Sheet[]> {
   const ts = tiles(world.W, world.H, PAGE.w, PAGE.h, PAGE.overlap);
   const cols = Math.max(...ts.map((t) => t.col)) + 1;
   const rows = Math.max(...ts.map((t) => t.row)) + 1;
-  const sheets = [sheet(world.W / 10, world.H / 10, 'wm', full as unknown as HTMLElement)];
+  const sheets = [sheet(world.W / 10, world.H / 10, 'wm', full)];
   if (ts.length > 1) sheets.push(...ts.map((t) => tileSheet(world, t, { cols, rows })));
   return sheets;
 }

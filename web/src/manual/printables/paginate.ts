@@ -79,7 +79,7 @@ function splitWords(node: HTMLElement, page: MeasurePage): HTMLElement | undefin
     break;
   }
   part.remove();
-  const enough = part.textContent!.trim().length > 0 && part.getBoundingClientRect().height >= 0;
+  const enough = part.textContent.trim().length > 0 && part.getBoundingClientRect().height >= 0;
   if (!enough || !node.textContent?.trim()) {
     // nothing (or everything) moved: undo
     node.prepend(...part.childNodes);

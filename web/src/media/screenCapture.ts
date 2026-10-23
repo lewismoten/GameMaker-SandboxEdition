@@ -43,7 +43,7 @@ export function drawText(screen: TextScreen, canvas: HTMLCanvasElement | Offscre
   const img = ctx.createImageData(TEXT_W, TEXT_H);
   // the palette and cursor blink are the screen's own (private) state
   const colors = screen['colors'] as Uint32Array;
-  const blinkOn = screen['blinkOn'] as boolean;
+  const blinkOn = screen['blinkOn'];
   const cursor: [number, number] | undefined = screen.cursorVisible && blinkOn ? [screen.cursorX, screen.cursorY] : undefined;
   textPixels(screen.chars, screen.attrs, colors, new Uint32Array(img.data.buffer), cursor);
   ctx.putImageData(img, 0, 0);

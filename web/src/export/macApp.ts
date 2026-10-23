@@ -216,5 +216,5 @@ export function boxColors(box: { background?: string } | undefined): IconColors 
         .padStart(2, '0'),
     )
     .join('');
-  return { top: box!.background!, bottom: `#${dark}` };
+  return { top: box.background!, bottom: `#${dark}` };
 }
