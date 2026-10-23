@@ -1,0 +1,269 @@
+/* The cast page (#/cast). */
+
+main.cast {
+  --fam-sandbox: #b8860b;
+  --fam-bizarre: #8e3bb5;
+  --fam-cd: #2f7d4f;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+:root[data-theme='dark'] main.cast {
+  --fam-sandbox: #f0c040;
+  --fam-bizarre: #d29bf0;
+  --fam-cd: #6fd39a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='auto'] main.cast {
+    --fam-sandbox: #f0c040;
+    --fam-bizarre: #d29bf0;
+    --fam-cd: #6fd39a;
+  }
+}
+
+main.cast h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+
+main.cast .lead {
+  margin: 0 0 24px;
+  font-size: 16px;
+}
+
+.cast h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+/* ---- the three kinds of games ---- */
+
+.cast-families {
+  margin-bottom: 32px;
+}
+
+.cast-fam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.cast-fam {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--fam, var(--accent));
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.cast-fam h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.cast-fam p {
+  margin: 0;
+  flex: 1;
+  line-height: 1.5;
+}
+
+.cast-fam-links {
+  display: flex;
+  gap: 16px;
+}
+
+.fam-sandbox {
+  --fam: var(--fam-sandbox);
+}
+
+.fam-bizarre {
+  --fam: var(--fam-bizarre);
+}
+
+.fam-cd {
+  --fam: var(--fam-cd);
+}
+
+/* ---- the regulars ---- */
+
+.cast-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.cast-bar h2 {
+  margin: 0;
+}
+
+.cast-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cast-filter {
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 14px;
+}
+
+.cast-filter[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.cast-count {
+  margin: 0 0 0 auto;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.cast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 420px) {
+  .cast-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cast-card {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  scroll-margin: 80px;
+}
+
+.cast-card[hidden] {
+  display: none;
+}
+
+.cast-card.cast-picked {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.cast-pic {
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  border-radius: 8px;
+  background: #000;
+  overflow: hidden;
+}
+
+.cast-pic img {
+  max-width: 96px;
+  max-height: 96px;
+  width: auto;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+/* small sprites are drawn at a whole multiple of their pixels */
+.cast-pic img[width='20'],
+.cast-pic img[width='40'] {
+  zoom: 2;
+}
+
+.cast-text h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.cast-anchor {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.cast-anchor:hover {
+  text-decoration: underline;
+}
+
+.cast-role {
+  margin: 2px 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.cast-bio {
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.cast-appears summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cast-appears ul {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.cast-appears li {
+  padding: 2px 0 2px 10px;
+  border-left: 3px solid var(--fam);
+  margin-bottom: 3px;
+}
+
+.cast-as {
+  color: var(--muted);
+}
+
+.cast-foot {
+  margin-top: 32px;
+}
+
+@media (max-width: 520px) {
+  .cast-card {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .cast-pic {
+    width: 72px;
+    height: 72px;
+  }
+
+  .cast-pic img {
+    max-width: 64px;
+    max-height: 64px;
+  }
+
+  .cast-pic img[width='20'],
+  .cast-pic img[width='40'] {
+    zoom: 1.5;
+  }
+}
+
+.cast-kicker {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
