@@ -7,7 +7,8 @@
     { "game": "smirked", "as": "in a corner of the fog hall" },
     { "game": "teddy", "as": "in the grass by Doc Leo’s back door" },
     { "game": "goat", "as": "in the grass in the far corner of the shepherds’ field" },
-    { "game": "needle", "as": "under the tailor’s sewing table" }
+    { "game": "needle", "as": "under the tailor’s sewing table" },
+    { "game": "tickle", "as": "on the tower’s floor, in the far corner" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -23,7 +24,8 @@
     { "game": "logic", "as": "the bug in The Home Computer’s chip" }
   ],
   "joe": [
-    { "game": "realm", "as": "night librarian by the Royal Library’s door" }
+    { "game": "realm", "as": "night librarian by the Royal Library’s door" },
+    { "game": "tickle", "as": "counting rats by the course’s chalkboard" }
   ],
   "lewie": [
     { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },

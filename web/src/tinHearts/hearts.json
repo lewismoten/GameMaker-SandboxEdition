@@ -7,7 +7,9 @@
     "realm": { "map": "port.map", "at": [10, 33] },
     "sleuth": { "map": "act1.map", "at": [11, 56] },
     "smirked": { "map": "foyer.map", "at": [30, 16] },
-    "teddy": { "map": "backyard.map", "at": [5, 39] }
+    "teddy": { "map": "backyard.map", "at": [5, 39] },
+    "teddy2": { "map": "house.map", "at": [2, 39] },
+    "tickle": { "map": "tower.map", "at": [43, 23] }
   },
-  "pending": ["brief", "carl", "depth", "loaf", "loofah", "maximus", "mustard", "reckoning", "remote", "risi", "sandcast", "snowbound", "sweats", "teddy2", "tickle", "year2000"]
+  "pending": ["brief", "carl", "depth", "loaf", "loofah", "maximus", "mustard", "reckoning", "remote", "risi", "sandcast", "snowbound", "sweats", "year2000"]
 }
