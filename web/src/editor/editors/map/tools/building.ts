@@ -74,7 +74,7 @@ export function buildingLayout(b: Building, w: number, h: number): BuildingPart[
     const row: BuildingPart[] = [];
     for (let x = 0; x < w; x++) {
       const side = w > 1 && x === 0 ? 'Left' : w > 1 && x === w - 1 ? 'Right' : '';
-      if (y < roofRows) row.push((y === 0 ? `roofTop${side}` : `roof${side}`) as BuildingPart);
+      if (y < roofRows) row.push(y === 0 ? `roofTop${side}` : `roof${side}`);
       else if (side) row.push(`wall${side}` as BuildingPart);
       else if (y === h - 1 && x === door) row.push('door');
       else if (windowAt(x, y, w, h, roofRows, every, door)) row.push('window');

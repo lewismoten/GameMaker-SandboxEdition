@@ -636,7 +636,7 @@ registerEditor(['lst'], (host, project, file) => {
   // Other editors may add or change the files shown here.
   const off = project.onChange((n) => {
     if (n === file || input.dragging()) return;
-    if (MEDIA_KINDS.includes(clipKind(n) as FileKind)) refreshSoon();
+    if (MEDIA_KINDS.includes(clipKind(n))) refreshSoon();
   });
   let soon: ReturnType<typeof setTimeout> | undefined;
   const refreshSoon = () => {

@@ -17,7 +17,7 @@ export interface FileTemplate {
 
 export const TEMPLATES: FileTemplate[] = [
   { kind: 'pal', label: 'Palette', make: (p) => serializePalette(p.paletteFor('').palette.slice() || defaultPalette()) },
-  ...(['bbl', 'mbl', 'cbl'] as BlockKind[]).map((k) => ({ kind: k as FileKind, label: KIND_LABELS[k], make: () => serializeBlocks(newBlockSet(k)) })),
+  ...(['bbl', 'mbl', 'cbl'] as BlockKind[]).map((k) => ({ kind: k, label: KIND_LABELS[k], make: () => serializeBlocks(newBlockSet(k)) })),
   { kind: 'mon', label: 'Monsters', make: () => serializeMonsters(newMonsterSet()) },
   { kind: 'chr', label: 'Character', make: () => serializeCharacter(newCharacter()) },
   { kind: 'map', label: 'Map', make: () => serializeMap(newMap()) },

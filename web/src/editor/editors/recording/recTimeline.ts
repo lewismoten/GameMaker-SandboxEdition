@@ -245,7 +245,7 @@ export function editTimeline(initial: RecEvent[], onEdit: (events: RecEvent[]) =
     canvas.setPointerCapture(e.pointerId);
     if (at?.grip === 'trim') drag = { kind: 'trim', t: duration(events) };
     else if (at?.grip === 'fold') drag = { kind: 'fold', seg: at.note };
-    else if (at) drag = { kind: 'note', note: at.note, grip: at.grip as Grip, t0: tickAt(x), dt: 0 };
+    else if (at) drag = { kind: 'note', note: at.note, grip: at.grip, t0: tickAt(x), dt: 0 };
     else drag = { kind: 'pan', x0: x, s0: scroll, moved: false };
     hover = at;
     render();

@@ -286,7 +286,7 @@ export class MapTools {
           m === 'paste'
             ? 'Click where the copied blocks go (Esc stops).'
             : has
-              ? `${this.selection!.w}×${this.selection!.h} blocks selected.`
+              ? `${this.selection.w}×${this.selection.h} blocks selected.`
               : 'Drag over the map to select blocks.',
         ),
         h(

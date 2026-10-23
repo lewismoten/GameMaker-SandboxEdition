@@ -39,7 +39,7 @@ const MAX = 220;
 function wholeSentences(text: string): string {
   const cut = text.endsWith('…') ? text.slice(0, -1) : text;
   if (cut === text && text.length <= MAX) return text;
-  const ends = [...`${cut} `.matchAll(/[.!?]["')]?(?=\s)/g)].map((m) => m.index! + m[0].length).filter((i) => i >= 40);
+  const ends = [...`${cut} `.matchAll(/[.!?]["')]?(?=\s)/g)].map((m) => m.index + m[0].length).filter((i) => i >= 40);
   const last = ends.filter((i) => i <= MAX).pop() ?? ends[0];
   return last ? cut.slice(0, last) : text;
 }

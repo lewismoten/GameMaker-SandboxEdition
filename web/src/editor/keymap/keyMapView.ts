@@ -175,7 +175,7 @@ function drawKeyboard(rows: Row[], info: (scan: number) => CapInfo | undefined, 
         g.append(act);
         g.addEventListener('click', () => onPick(scan));
         g.addEventListener('keydown', (e) => {
-          if ((e as KeyboardEvent).key === 'Enter' || (e as KeyboardEvent).key === ' ') {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             onPick(scan);
           }

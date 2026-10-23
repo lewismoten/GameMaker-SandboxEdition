@@ -73,7 +73,7 @@ export function pictureScreen(files: GameFiles, name: string): ScreenPicture | u
     const anim = parseFli(bytes);
     const c = newFliCanvas(anim);
     for (let f = 0; f < anim.frameCount; f++) applyFliFrame(anim, f, c);
-    img = { pixels: c.pixels, width: anim.width, height: anim.height, palette: c.palette } as IndexedImage;
+    img = { pixels: c.pixels, width: anim.width, height: anim.height, palette: c.palette };
   }
   if (!img) return undefined;
   const pixels = new Uint8Array(SIZEX * SIZEY);

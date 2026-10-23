@@ -31,7 +31,7 @@ const cache = new Map<string, Promise<Issue[]>>();
 function cached(key: string, run: () => Promise<Issue[]>): Promise<Issue[]> {
   let p = cache.get(key);
   if (!p) {
-    p = run().catch((e: Error) => [{ severity: 'warning', kind: 'unreadable', message: `The game could not be checked: ${e.message}` } as Issue]);
+    p = run().catch((e: Error) => [{ severity: 'warning', kind: 'unreadable', message: `The game could not be checked: ${e.message}` }]);
     cache.set(key, p);
   }
   return p;

@@ -127,14 +127,14 @@ registerEditor(['snd'], (host, project, file) => {
       playBtn.title = playBtn.disabled
         ? 'Nothing to play yet: draw some PC speaker steps or pick a .voc file'
         : voc
-          ? `With a Sound Blaster the game plays ${name!.toUpperCase()}.VOC (G)`
+          ? `With a Sound Blaster the game plays ${name.toUpperCase()}.VOC (G)`
           : 'The game plays the PC speaker sound (G)';
       speakerBtn.disabled = !hasSpeaker(current);
       speakerBtn.title = speakerBtn.disabled ? '' : 'Play only the PC speaker sound (P)';
       speakerState.hidden = !speakerBtn.disabled;
       speakerState.textContent = 'No PC speaker sound yet: draw the steps below or make one.';
       vocBtn.disabled = !voc;
-      vocBtn.title = voc ? `Play only ${name!.toUpperCase()}.VOC (V)` : '';
+      vocBtn.title = voc ? `Play only ${name.toUpperCase()}.VOC (V)` : '';
       vocState.classList.toggle('snd-empty', !voc);
       vocState.textContent = voc
         ? 'Played instead of the PC speaker sound on a Sound Blaster.'
