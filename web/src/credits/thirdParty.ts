@@ -167,9 +167,9 @@ export const PIECE_GROUPS: PieceGroup[] = [
       },
       {
         name: 'LHarc',
-        license: 'Credit line only (LHARC.EXE isn’t included)',
+        license: 'Its author’s (“(c)Yoshi, 1988-89”); not MIT',
         by: 'Haruyasu Yoshizaki',
-        what: 'The archiver the original floppy installer ran (code/GM/FLOPINST.CPP).',
+        what: 'The archiver the original floppy installer ran (code/GM/FLOPINST.CPP); LHarc 1.13 is on the CD in cd/backup, and LHA 2.13 with its manual in cd/sharware/tools. Not on this website.',
       },
     ],
   },

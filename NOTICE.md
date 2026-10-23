@@ -99,8 +99,14 @@ game folder opens in the browser unchanged.
 - **The BBS pictures** (`web/public/bbs`): THE CHEZ photos (THECHEZ1-3.GIF on The Sofa) and the
   Doc Leo photos (LEOCHICK.GIF, NEWNOSE.GIF) are Lewis's own; the Bard logo (BARDLOGO.GIF) was made with DeepAI.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
-  their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase and others).
-  Shareware games are shown play-only, with their authors' original notices.
+  their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase, Mark Hadley, Matt
+  Bell and others). Shareware games are shown play-only, with their authors' original
+  notices; they have no download, can't be edited, and the desk's make-believe GMCRACK
+  leaves them alone. The CD's tools are kept as it held them, each its author's: LHarc 1.13
+  (`cd/backup/LHARC.EXE`, "(c)Yoshi, 1988-89") and LHA 2.13 with its
+  documentation (`cd/sharware/tools`, Haruyasu Yoshizaki), and Alchemy Mindworks' Graphic
+  Workshop shareware for DOS and Windows (`cd/sharware/tools/GWSDOS.ZIP`, `GWSWIN.ZIP`).
+  None of them are on the website.
 
 ## About this fork
 
@@ -165,6 +171,12 @@ formats from their published descriptions and from Game-Maker's own source.
   All rights reserved") and is not covered by the MIT License. It is included as it came
   on the original Game-Maker CD, and "Export for DOS" adds it to exported games the way
   Game-Maker's own Transfer utility did. It will be removed if Creative asks.
+- **`XFERPLAY.EXE`** and Game-Maker's other DOS programs (`cd/gm`, `runtime/run/GM`) were
+  built by RSD with Borland C++ and Creative's library, so they hold Borland's run-time
+  code ("Borland C++ - Copyright 1991 Borland Intl.") and Creative's FM music functions
+  ("Copyright (c) Creative Technology Pte Ltd, 1990"), as every program built with them did.
+  "Export for DOS" ships `XFERPLAY.EXE` (renamed after the game) and `SNDBLAST.DRV` with
+  a README that gives Game-Maker's MIT License and names these parts.
 - The desk's hardware brands (BOOMTONE, PIXELMAX, SQUEAK, AwkWard BIOS) and its phone
   numbers are made up, as are the magazines and awards on the game boxes. Its two BBSes
   are named after real Pittsburgh boards, The Sofa and the Sandbox (Lewis's own); how they
@@ -246,8 +258,8 @@ Game-Maker's makefiles don't build.
 - Also kept as found: the Association of Shareware Professionals' ombudsman statement
   (`code/GM/OMBUDSMN.ASP`); a captured SunOS 5.4 `make` manual page
   (`code/Image/PNG/MAKEINFO.TXT`); and the installer's credit line for Haruyasu
-  Yoshizaki's LHarc (`code/GM/FLOPINST.CPP`), the archiver it ran (`LHARC.EXE` isn't
-  included).
+  Yoshizaki's LHarc (`code/GM/FLOPINST.CPP`), the archiver it ran (`LHARC.EXE` itself
+  is on the CD, in `cd/backup`; see above).
 
 **Bundled code by other authors** (all under `code/Image/`)
 
