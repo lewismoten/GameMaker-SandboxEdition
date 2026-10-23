@@ -85,9 +85,11 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
       frame('TAKE IT ALONG', room ? ' Y Download   N or Esc Quit' : ' Esc Quit');
       lines([
         [
-          st.wanted && partial
+          st.copy === 'outdated' && partial
             ? `Your offline copy needs an update: ${st.missing.length} files are new or changed.`
-            : `Copies the whole site to this computer, so it runs with no connection: all ${games(st)} games, this desk, Game-Maker, the editors, the manuals and the boxes.`,
+            : st.copy === 'unfinished' && partial
+              ? `Your offline copy is not finished: ${st.missing.length} files still to come.`
+              : `Copies the whole site to this computer, so it runs with no connection: all ${games(st)} games, this desk, Game-Maker, the editors, the manuals and the boxes.`,
         ],
         [''],
         [`Download: ${sizeText(st.wireMissing)}   Kept on disk: about ${sizeText(st.storedMissing)}`],

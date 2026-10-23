@@ -10,7 +10,7 @@ import { loadCatalogList } from '../project/files';
 
 /** The cache the site's service worker serves from (siteWorker.ts CACHE). */
 const CACHE = 'gm-site';
-/** localStorage: the copy was asked for (so a later visit says "update" rather than "make"). */
+/** localStorage: the copy was asked for: "started", or the version (offline.json) it was finished for. */
 const WANTED_KEY = 'gm-offline';
 
 export interface OfflineManifest {
@@ -33,6 +33,8 @@ export interface OfflineStatus {
   /** Why not, when it is not. */
   reason?: string;
   files: OfflineFile[];
+  /** offline.json's version. */
+  version?: string;
   /** The app shell (offline.json shell): kept when the copy is removed. */
   shell: string[];
   /** Files not in the cache yet, and what they cost. */
@@ -42,8 +44,8 @@ export interface OfflineStatus {
   storedMissing: number;
   /** Every file is in. */
   ready: boolean;
-  /** The visitor has made a copy here before (it may need updating after a new version). */
-  wanted: boolean;
+  /** A copy was asked for here: 'unfinished' (stopped partway), or 'outdated' (finished for an older version of the site), else 'none'. */
+  copy: 'none' | 'unfinished' | 'outdated';
   /** navigator.storage.estimate(), when the browser tells. */
   usage?: number;
   quota?: number;
@@ -78,18 +80,20 @@ async function wantedFiles(m: OfflineManifest): Promise<OfflineFile[]> {
   return files;
 }
 
-function wantedBefore(): boolean {
+function copyBefore(version: string): OfflineStatus['copy'] {
   try {
-    return localStorage.getItem(WANTED_KEY) !== null;
+    const v = localStorage.getItem(WANTED_KEY);
+    return v === null ? 'none' : v === 'started' || v === version ? 'unfinished' : 'outdated';
   } catch {
-    return false;
+    return 'none';
   }
 }
 
-function rememberWanted(on: boolean): void {
+/** `version`: the copy is finished for it; true: started; false: removed. */
+function rememberCopy(state: string | boolean): void {
   try {
-    if (on) localStorage.setItem(WANTED_KEY, String(Date.now()));
-    else localStorage.removeItem(WANTED_KEY);
+    if (state === false) localStorage.removeItem(WANTED_KEY);
+    else localStorage.setItem(WANTED_KEY, state === true ? 'started' : state);
   } catch {
     /* private mode: only the wording changes */
   }
@@ -108,7 +112,7 @@ async function cachedPaths(): Promise<Set<string>> {
   return new Set((await cache.keys()).map((r) => r.url.split('?')[0]).filter((u) => u.startsWith(base)).map((u) => decodeURIComponent(u.slice(base.length))));
 }
 
-const empty = (reason: string): OfflineStatus => ({ supported: false, reason, files: [], missing: [], wireTotal: 0, wireMissing: 0, storedMissing: 0, ready: false, wanted: false, shell: [] });
+const empty = (reason: string): OfflineStatus => ({ supported: false, reason, files: [], missing: [], wireTotal: 0, wireMissing: 0, storedMissing: 0, ready: false, copy: 'none', shell: [] });
 
 /** What a copy would cost, and how much of it is here already. */
 export async function offlineStatus(): Promise<OfflineStatus> {
@@ -127,7 +131,8 @@ export async function offlineStatus(): Promise<OfflineStatus> {
     wireMissing: sum(missing, 'wire'),
     storedMissing: sum(missing, 'stored'),
     ready: missing.length === 0,
-    wanted: wantedBefore(),
+    version: m.version,
+    copy: copyBefore(m.version),
     ...est,
   };
 }
@@ -157,7 +162,7 @@ export async function makeOffline(status: OfflineStatus, onProgress: (p: Offline
   if (!hasRoom(status, status.storedMissing)) return { ok: false, reason: 'space', message: 'There is not enough storage space for this browser to keep it.' };
   // ask the browser not to clear it when space runs low (it may say no; it still works)
   await navigator.storage?.persist?.().catch(() => false);
-  rememberWanted(true);
+  if (status.copy !== 'outdated') rememberCopy(true);
   const cache = await caches.open(CACHE);
   const queue = [...status.missing];
   const p: OfflineProgress = { done: 0, total: queue.length, bytes: 0, totalBytes: status.wireMissing };
@@ -186,12 +191,13 @@ export async function makeOffline(status: OfflineStatus, onProgress: (p: Offline
     }
   };
   await Promise.all([worker(), worker(), worker(), worker()]);
+  if (!failure && status.version) rememberCopy(status.version);
   return failure ?? { ok: true };
 }
 
 /** Takes the offline copy out of the cache (not the app shell, which the site keeps anyway). Parts used later are cached again as they are used. */
 export async function removeOffline(status: OfflineStatus): Promise<void> {
-  rememberWanted(false);
+  rememberCopy(false);
   const cache = await caches.open(CACHE);
   const keep = new Set(status.shell);
   await Promise.all(status.files.filter((f) => !keep.has(f.path)).map((f) => cache.delete(urlOf(f.path), { ignoreSearch: true })));

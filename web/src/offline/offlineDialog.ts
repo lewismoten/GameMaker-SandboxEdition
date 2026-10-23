@@ -45,12 +45,14 @@ export async function openOfflineDialog(): Promise<void> {
         return;
       }
       const partial = s.missing.length < s.files.length;
-      const lead = s.wanted && partial
-        ? `Your offline copy needs an update: ${s.missing.length} files have changed or are new (${sizeText(s.wireMissing)}).`
-        : `Download everything once, and the whole site works with no connection: all ${n} games, the 1994 desk, the editors, the manuals and the boxes.`;
+      const lead = s.copy === 'outdated' && partial
+        ? `Your offline copy needs an update: ${s.missing.length} files have changed or are new since you made it (${sizeText(s.wireMissing)}).`
+        : s.copy === 'unfinished' && partial
+          ? `Your offline copy is not finished: ${s.missing.length} files (${sizeText(s.wireMissing)}) still to come.`
+          : `Download everything once, and the whole site works with no connection: all ${n} games, the 1994 desk, the editors, the manuals and the boxes.`;
       status.textContent = lead;
       const room = hasRoom(s, s.storedMissing);
-      const go = h('button', { type: 'button', class: 'primary', onclick: () => void download(s) }, `Download ${sizeText(s.wireMissing)}`);
+      const go = h('button', { type: 'button', class: 'primary', onclick: () => void download(s) }, s.copy !== 'none' && partial ? `Download the rest (${sizeText(s.wireMissing)})` : `Download ${sizeText(s.wireMissing)}`);
       if (!room) go.setAttribute('disabled', '');
       clear(
         body,
