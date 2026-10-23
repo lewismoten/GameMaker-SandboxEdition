@@ -349,7 +349,7 @@
             },
             {
               "q": "Where is the fourth piece in Act Two?",
-              "a": "In the far south-east corner of the trap room maze. The rats are harmless, but they cost you points."
+              "a": "Beyond the trap room maze: a doorway in its far south-east corner, open only tonight, leads into the old prop vault. The rats are harmless, but they cost you points."
             },
             {
               "q": "The watchman keeps getting in my way.",
@@ -410,14 +410,7 @@
               "q": "I give up. Spell it out.",
               "a": "At 2 AM, carry the magnifying glass from the props room into the green room. Stand just left of the sofa in the bottom right corner and push right into it (it costs one lens charge). The egg shows between the cushions: push again to take it, then step into the empty seat.",
               "sketch": {
-                "rows": [
-                  "------------",
-                  "|o        o|",
-                  "|          |",
-                  "|o        o|",
-                  "|      o @X|",
-                  "-==---------"
-                ],
+                "rows": ["------------", "|o        o|", "|          |", "|o        o|", "|      o @X|", "-==---------"],
                 "labels": [
                   { "x": 2, "y": 2, "text": "GREEN ROOM, 2 AM" },
                   { "x": 8, "y": 3, "text": "SOFA" }

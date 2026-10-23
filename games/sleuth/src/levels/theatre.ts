@@ -9,13 +9,34 @@ import type { BlockSet } from '../blocks/blockset';
 /** Where the theatre sits on the 100x100 map. */
 export const OX = 10;
 export const OY = 10;
-const W = 68;
+const W = 84;
 const H = 48;
 
 /** A map cell in theatre-local coordinates → map coordinates. */
 export const at = (x: number, y: number) => ({ x: x + OX, y: y + OY });
 
 const rep = (ch: string, n: number) => ch.repeat(n);
+
+/**
+ * The prop vault (x 68..83, y 19..31), east of the trap room: a lit storeroom of old
+ * scenery, racks and trunks, bricked up in Act One. At 2 AM its door at the trap room's
+ * far corner stands open, and the umbrella is in there.
+ */
+const VAULT = [
+  '################',
+  '#K.OK....U..ccc#',
+  '#..............#',
+  '#.c....q.....c.#',
+  '#..............#',
+  '#.U...KK....U..#',
+  '#..............#',
+  '#.c..........c.#',
+  '#..............#',
+  '...............#',
+  '#c..U.....K..c.#',
+  '#..............#',
+  '################',
+];
 
 /** The trap room under the stage (x 51..66, y 9..30): a maze of posts and old flats. */
 const MAZE = [
@@ -161,8 +182,11 @@ function layout(act: 1 | 2): string[] {
     let east: string;
     if (y < 8 || y > 31) east = rep(' ', 18);
     else if (y === 8 || y === 31) east = rep('%', 18);
-    else east = (y === 18 ? 'T' : y === 23 ? '.' : '%') + MAZE[y - 9] + '%';
-    return r + east;
+    else east = (y === 18 ? 'T' : y === 23 ? '.' : '%') + MAZE[y - 9] + (y === 28 && act === 2 ? 't' : '%');
+    // the prop vault: its door (x 68, y 28) only opens in Act Two
+    let vault = y >= 19 && y <= 31 ? VAULT[y - 19] : rep(' ', 16);
+    if (y === 28 && act === 1) vault = '#' + vault.slice(1);
+    return r + east + vault;
   });
 }
 
@@ -344,7 +368,8 @@ const ITEMS_AT: Record<1 | 2, [string, number, number][]> = {
     ['lantern', 47, 3],
     ['ledger', 46, 42],
     ['cuesheet', 47, 46],
-    ['umb_dark', 66, 29],
+    // the umbrella, stood in a corner of the prop vault beyond the trap room
+    ['umbrella', 81, 21],
     // a painted Easter egg, rolled into the side aisle of the stalls
     ['easterEgg', 1, 34],
     // a tin heart glinting in the dark, in the far corner of the trap room's maze

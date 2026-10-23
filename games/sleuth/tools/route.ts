@@ -125,7 +125,7 @@ export async function act2(bot: Bot): Promise<void> {
   await g(37, 24, 'the pit gate');
   await g(39, 23, 'the pit door');
   await g(51, 23, 'under the stage');
-  await g(66, 29, 'the far corner');
+  await g(81, 21, 'the umbrella in the prop vault');
   await bot.pickup('the umbrella');
   await g(51, 18, 'the trap stairs');
   await g(48, 18, 'the stage-right wing');
