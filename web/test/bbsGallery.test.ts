@@ -8,11 +8,15 @@ import { decodeGif } from '../src/formats/gif';
 import { decodePartialGif } from '../src/formats/gifProgressive';
 import { modeFor, nearestColor, placeIn } from '../src/retro/view/picture';
 import { bytesAt, GIF_CPS, GIF_TIME_COMPRESSION } from '../src/retro/bbs/gifArea';
-import { decodePicture, GALLERY } from '../src/retro/bbs/gallery';
+import { decodePicture, GALLERY, SOFA_GIFS } from '../src/retro/bbs/gallery';
 import { decodePartialJpeg } from '../src/formats/jpeg';
 
+/** The Sandbox BBS's GIF Gallery (VGA-sized snapshots); The Sofa's 640x480 GIFs are tested below. */
+const sandbox = list.filter((f) => !f.board);
+const sofa = list.filter((f) => f.board === 'sofa');
+
 describe('GIF Gallery files', () => {
-  it.each(list)('$name is a 1994 download: 8.3 name, 320x200 or smaller, small', (f) => {
+  it.each(sandbox)('$name is a 1994 download: 8.3 name, 320x200 or smaller, small', (f) => {
     expect(f.name).toMatch(/^[A-Z0-9_]{1,8}\.(GIF|JPG)$/);
     const bytes = new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', f.name)));
     expect(bytes.length).toBe(f.bytes);
@@ -42,11 +46,41 @@ describe('GIF Gallery files', () => {
   });
 
   it('describes every file in two listing lines or less (the list fits one screen)', () => {
-    expect(GALLERY.length).toBe(list.length);
+    expect(GALLERY.length).toBe(sandbox.length);
     for (const f of GALLERY) {
       expect(f.desc, f.name).not.toBe('');
       expect(f.desc.length, f.name).toBeLessThanOrEqual(74);
     }
+  });
+});
+
+describe("The Sofa's GIF pictures", () => {
+  it.each(sofa)('$name is a 640x480 interlaced GIF, small enough for a 14.4k (or a patient 2400) caller', (f) => {
+    expect(f.name).toMatch(/^[A-Z0-9_]{1,8}\.GIF$/);
+    const bytes = new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', f.name)));
+    expect(bytes.length).toBe(f.bytes);
+    expect(bytes.length).toBeGreaterThan(30_000);
+    expect(bytes.length).toBeLessThanOrEqual(150_000);
+    expect(String.fromCharCode(...bytes.subarray(0, 6))).toMatch(/^GIF8[79]a$/);
+    const g = decodePartialGif(bytes)!;
+    expect(g.interlaced).toBe(true);
+    expect(g.complete).toBe(true);
+    expect([g.width, g.height]).toEqual([640, 480]);
+    expect(g.colors).toBeGreaterThanOrEqual(f.colors);
+    expect(g.colors).toBeLessThanOrEqual(256);
+    expect(decodeGif(bytes).pixels.length).toBe(640 * 480);
+    expect(f.bytes / GIF_CPS).toBeLessThan(110);
+  });
+
+  it('paints coarse first: a fifth of the file fills the whole picture in bands of rows', () => {
+    const f = sofa[0];
+    const bytes = new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', f.name)));
+    const pic = decodePicture(bytes.subarray(0, Math.floor(bytes.length * 0.2)))!;
+    expect(pic.complete).toBe(false);
+    const row = (y: number) => pic.pixels.subarray(y * 640, (y + 1) * 640);
+    expect(row(479).some((p) => p !== pic.blank)).toBe(true); // the bottom is there, roughly
+    expect(row(9)).toEqual(row(8)); // standing in for the rows still to come
+    expect(SOFA_GIFS.map((x) => x.name)).toEqual(sofa.map((x) => x.name));
   });
 });
 
@@ -56,6 +90,8 @@ describe('picture screen', () => {
     expect(modeFor(192, 200)).toEqual([320, 200]);
     expect(modeFor(321, 200)).toEqual([640, 400]);
     expect(modeFor(320, 201)).toEqual([640, 400]);
+    expect(modeFor(640, 400)).toEqual([640, 400]);
+    expect(modeFor(640, 480)).toEqual([640, 480]);
   });
 
   it('centers a picture, and shrinks one too big to fit, keeping its shape', () => {
@@ -83,7 +119,7 @@ describe('gallery download', () => {
   });
 
   it('takes about as long as it did at 14,400 bps', () => {
-    for (const f of list) {
+    for (const f of sandbox) {
       const seconds = f.bytes / (GIF_CPS * GIF_TIME_COMPRESSION);
       expect(seconds, f.name).toBeGreaterThan(3);
       expect(seconds, f.name).toBeLessThan(35);
