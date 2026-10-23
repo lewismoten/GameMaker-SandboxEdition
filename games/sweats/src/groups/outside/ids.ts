@@ -57,10 +57,12 @@ export const CARD_MON = {
   wolf: F + 6,
   /** The guy with his mask off, waving: just a guy. */
   wolfGuy: F + 7,
-  /** The eleven-year-old in the clown wig: a hello is a tip. */
+  /** The eleven-year-old in the clown wig with his horn (harmless): a word and he runs off giggling. */
   clown: F + 8,
   clownOff: F + 9,
   poof: F + 10,
+  /** A rubber bat on its string, flapping (harmless, out of reach). */
+  bat: F + 11,
 } as const;
 
 export const UMBR_MON = {

@@ -1,5 +1,6 @@
 // The INTO THE WILD set's routes.
 import { SUPPLIES } from '../../src/groups/outside/ants';
+import { PROPS } from '../../src/groups/outside/cardbrd';
 import { SCRAPS } from '../../src/groups/outside/outside';
 import { carefully, declaim, expect, leave, must, plot, tips, type Route } from '../route';
 
@@ -89,6 +90,45 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await declaim(bot, 'the king');
       if (plot(bot) < SUPPLIES) throw new Error(`only ${plot(bot)} supplies`);
       await leave(bot, bot.walk(63, 'the cupboard'), 'the cupboard');
+    });
+  },
+  /** The Day I Fought Cardboard: Doc Leo, Lily, the fog machine, the zombie (its axe), the witch (her broom, her hat on the beam), the werewolf mask, the webs, Lily's pat, the gift shop's sword, the clown wig, the exit. */
+  cardbrd: async (bot) => {
+    expect(bot, 'cardbrd');
+    await carefully(bot, 'the way in', 0, async () => {
+      await must(bot, bot.walk(12, 'Doc Leo, Lily, a coin'), 'in');
+    });
+    await carefully(bot, 'the fog, the zombie', 0, async () => {
+      await declaim(bot, 'the fog');
+      await must(bot, bot.walk(15, 'past the fog machine'), 'fogger');
+      await declaim(bot, 'the zombie');
+      await must(bot, bot.walk(23, 'the plastic axe'), 'axe');
+    });
+    await carefully(bot, 'GET DOWN!', 0, async () => {
+      await declaim(bot, 'the broomstick');
+      await declaim(bot, 'the witch');
+      await must(bot, bot.walk(31, 'the coin under the beam'), 'coin');
+      await must(bot, bot.walk(29, 'back under the beam'), 'beam');
+      await must(bot, bot.hop('up', 12), 'up onto the beam');
+      await must(bot, bot.walk(30, 'the witch\'s hat'), 'hat');
+      await must(bot, bot.walk(34, 'down, the broomstick'), 'broom');
+    });
+    await carefully(bot, 'the werewolf mask', 0, async () => {
+      await declaim(bot, 'the werewolf');
+      await must(bot, bot.walk(37, 'on'), 'on');
+      await declaim(bot, 'the werewolf');
+    });
+    await carefully(bot, 'the spiderwebs, Lily', 3, async () => {
+      await must(bot, bot.walk(49, 'through the webs, Lily\'s pat, the coffee'), 'webs');
+    });
+    await carefully(bot, 'the gift shop', 0, async () => {
+      await must(bot, bot.walk(54, 'under the gift shelf'), 'shelf');
+      await must(bot, bot.hop('up', 12), 'up onto the shelf');
+      await must(bot, bot.walk(55, 'the souvenir sword'), 'sword');
+      await must(bot, bot.walk(57, 'down, the dollar'), 'dollar');
+      await declaim(bot, 'the clown wig');
+      if (plot(bot) < PROPS) throw new Error(`only ${plot(bot)} props`);
+      await leave(bot, bot.walk(63, 'Lily, the emergency exit'), 'the exit');
     });
   },
 };

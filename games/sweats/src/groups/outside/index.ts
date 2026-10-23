@@ -6,6 +6,7 @@
 import type { Group } from '../types';
 import { outside as outsideMono, outsideBlocks, outsideSprites } from './outside';
 import { ants, antsBlocks, antsSprites } from './ants';
+import { cardBlocks, cardSprites, cardbrd } from './cardbrd';
 import { OUTSIDE_RAMPS, buildStreet, streetSprites } from './street';
 
 export const outside: Group = {
@@ -16,11 +17,13 @@ export const outside: Group = {
     buildStreet(book, pal);
     outsideBlocks(book, pal);
     antsBlocks(book, pal);
+    cardBlocks(book, pal);
   },
   sprites: (book, pal) => {
     streetSprites(book, pal);
     outsideSprites(book, pal);
     antsSprites(book, pal);
+    cardSprites(book, pal);
   },
-  monologues: [outsideMono, ants],
+  monologues: [outsideMono, ants, cardbrd],
 };
