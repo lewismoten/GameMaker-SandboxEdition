@@ -112,7 +112,7 @@ export const LEGEND: Legend = {
   o: 'pile',
   '*': 'shell',
   $: 'starfish',
-  h: 'popsicle',
+  h: 'icepop',
   L: 'juice',
   w: 'balloon',
   A: 'anthill',

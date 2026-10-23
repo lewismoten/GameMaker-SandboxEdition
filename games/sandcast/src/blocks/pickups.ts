@@ -1,5 +1,5 @@
 // Things Teddy picks up: piles of wet sand, shells and starfish, tennis balls, the golden
-// shells that open the sea gate, popsicles, juice (an extra life), water balloons, the
+// shells that open the sea gate, ice pops, juice (an extra life), water balloons, the
 // shovel and the bucket. Each is an object block whose touch adds to a counter
 // (effect/eamt) and turns it back into plain sand. Returns the juice art, which the BBS
 // room draws again over its own floor.
@@ -113,7 +113,7 @@ export function addPickups(): Pixels {
       ],
       { k: WOOD[0], B: WOOD[5], b: WOOD[4], w: WOOD[6], d: WOOD[3] },
     );
-    bg.add('popsicle', onSand(75, p), { hp: 40, touch: 'sand0' });
+    bg.add('icepop', onSand(75, p), { hp: 40, touch: 'sand0' });
   }
   {
     // A jar of peanut butter (extra life: no corgi can resist it).
