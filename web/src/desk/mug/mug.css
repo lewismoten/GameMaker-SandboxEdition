@@ -445,4 +445,14 @@
   .subl-side {
     overflow: visible;
   }
+
+  /* one scroll for the whole composer: the previews follow the controls at their full height */
+  .subl-side,
+  .subl-preview {
+    flex: none;
+  }
+
+  .subl-preview {
+    overflow: visible;
+  }
 }
