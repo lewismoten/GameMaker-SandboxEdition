@@ -7,10 +7,11 @@ import { buildLevel } from '../src/levels/map';
 import { TileBook } from '../src/tiles/book';
 import { rulesFor } from '../src/tiles/rules';
 import { farScene, nearScene } from '../src/game';
-import { CROWN, MON } from '../src/ids';
+import { COUNT_FAR, COUNT_NEAR, CROWN, MON, lensCounters } from '../src/ids';
 
 type D = 'up' | 'down' | 'left' | 'right';
-type Step = [number, number, string] | ['pickup'] | ['wait', number] | ['face', D] | ['ride', D, number, number] | ['boss'] | ['push', D, number];
+type Step =
+  [number, number, string] | ['pickup'] | ['wait', number] | ['face', D] | ['ride', D, number, number] | ['boss', 'near' | 'far'] | ['push', D, number];
 
 /** The level's offset in the 100x100 world. */
 function offset(level: Level): [number, number] {
@@ -104,7 +105,8 @@ async function follow(bot: Bot, level: Level, steps: Step[]): Promise<void> {
       continue;
     }
     if (s[0] === 'boss') {
-      await carefully(bot, 'Count Polygon', 80, () => countPolygon(bot));
+      const half = s[1] as 'near' | 'far';
+      await carefully(bot, `Count Polygon (${half})`, 80, () => countPolygon(bot, half));
       continue;
     }
     const [x, y, label] = s as [number, number, string];
@@ -123,38 +125,55 @@ const expectScene = (bot: Bot, scene: number, what: string) => {
 };
 
 /**
- * Count Polygon: wait on the arena's west side facing east and fire as he comes (the bot
- * fires at whatever is in line); five hits take him down to the last polygon, then roll over
- * to it.
+ * Count Polygon swoops round Ray and dives at him, so the bot duels the way a player would:
+ * it lines up with him across or down the arena, turns to face him and fires (shards that
+ * come in line are fired at too), and backs off when he comes too close. In the near plane
+ * six hits take him down to the blue lens he swallowed; in the far plane eight more take him
+ * down to the last polygon. Then it rolls over to what he left.
  */
-async function countPolygon(bot: Bot): Promise<void> {
-  const counts = new Set<number>([MON.count1, MON.count2, MON.count3, MON.count4, MON.count5]);
+async function countPolygon(bot: Bot, half: 'near' | 'far'): Promise<void> {
+  const counts = new Set<number>(half === 'near' ? COUNT_NEAR : COUNT_FAR);
+  const drop = half === 'near' ? MON.stolen : MON.crown;
   const where = (mons: Set<number>) => {
     const w = bot.sim.w;
     const i = w.mm.findIndex((m) => mons.has(m.monnum));
-    return i < 0 ? undefined : { x: w.mi[i].curx[0], y: w.mi[i].cury[0] };
+    return i < 0
+      ? undefined
+      : { x: w.mi[i].curx[0], y: w.mi[i].cury[0], px: w.mi[i].curx[0] * 20 + w.mi[i].curx[1], py: w.mi[i].cury[0] * 20 + w.mi[i].cury[1] };
   };
-  // step into his reach, facing him
   const c0 = where(counts);
-  if (!c0) throw new Error('no Count Polygon');
-  const r0 = await bot.goto(c0.x - 6, c0.y, 'in reach');
-  if (r0) throw new Error(`in reach: ${r0}`);
-  for (let t = 0; t < 1500 && where(counts); t++) {
-    if (process.env.DEBUG && t % 10 === 0) {
-      const w = bot.sim.w;
-      const ms = w.mm.map((m, i) => (m.monnum < 64 ? `${m.monnum}@${w.mi[i].curx[0]},${w.mi[i].cury[0]}` : '')).filter(Boolean);
-      console.log(`  t${t} ray ${bot.sim.pos.x},${bot.sim.pos.y} hp ${bot.sim.ci.hitpts} ${ms.join(' ')}`);
-    }
-    if (await bot.tick()) throw new Error('a scene change in the arena');
+  if (!c0) throw new Error(`no Count Polygon (${half})`);
+  // in the near plane, roll into his reach first; in the far plane he is already close
+  if (half === 'near') {
+    const r0 = await bot.goto(c0.x - 5, c0.y, 'in reach');
+    if (r0) throw new Error(`in reach: ${r0}`);
   }
-  if (where(counts)) throw new Error('Count Polygon is still there');
-  const c = where(new Set([MON.crown]));
-  if (!c) throw new Error('no crown');
-  bot.say('Count Polygon is down to his last polygon');
-  const r = await bot.goto(c.x, c.y, 'the crown');
-  if (r) throw new Error(`crown: ${r}`);
-  await bot.wait(4);
-  if (bot.sim.meter(CROWN) < 2) throw new Error('the crown did not count');
+  const t0 = bot.sim.ticks;
+  await bot.duel(() => where(counts), 2400);
+  if (where(counts)) throw new Error(`Count Polygon (${half}) is still there`);
+  await bot.settle();
+  bot.say(`${half === 'near' ? 'Count Polygon fled to the far plane' : 'Count Polygon is down to his last polygon'} after ${bot.sim.ticks - t0} ticks`);
+  const c = where(new Set([drop]));
+  if (!c) throw new Error(half === 'near' ? 'no blue lens' : 'no crown');
+  const counter = half === 'near' ? lensCounters(6)[2] : CROWN;
+  const before = bot.sim.meter(counter);
+  const r = await bot.goto(c.x, c.y, half === 'near' ? 'the blue lens' : 'the crown');
+  if (r) throw new Error(`${half} drop: ${r}`);
+  await bot.wait(2);
+  // it lies where he fell, maybe between cells: roll right over it, the way a player would
+  if (bot.sim.meter(counter) === before)
+    await bot.touch(
+      () => where(new Set([drop])),
+      () => bot.sim.meter(counter) !== before,
+    );
+  await bot.settle();
+  await bot.wait(2);
+  if (half === 'far' && bot.sim.meter(CROWN) < 2) {
+    const now = where(new Set([drop]));
+    throw new Error(
+      `the crown did not count (crown ${c.px},${c.py} now ${now?.px},${now?.py}; ray ${bot.sim.pos.x * 20 + bot.sim.pos.sx},${bot.sim.pos.y * 20 + bot.sim.pos.sy})`,
+    );
+  }
 }
 
 export const ROUTES: Step[][] = [
@@ -234,10 +253,11 @@ export const ROUTES: Step[][] = [
     [16, 15, 'green lens'],
     [17, 11, 'the edge'],
     [21, 11, 'across the panels'],
-    [22, 7, 'blue lens'],
-    [26, 11, 'the arena'],
-    ['boss'],
-    [48, 11, 'exit'],
+    [27, 11, 'the arena'],
+    ['boss', 'near'],
+    [34, 0, 'ring 3 to far'],
+    ['boss', 'far'],
+    [47, 11, 'exit'],
   ],
 ];
 

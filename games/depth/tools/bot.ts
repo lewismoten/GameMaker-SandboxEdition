@@ -3,7 +3,7 @@
 // straight run at a time, and fires at whatever wireframe, jaggy or double gets in its way.
 import { GameSim } from './sim';
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
-import { MON } from '../src/ids';
+import { COUNT_FAR, COUNT_NEAR, MON } from '../src/ids';
 import { INF_REPEAT } from '../../../web/src/formats/character';
 
 type Pt = { x: number; y: number };
@@ -12,21 +12,7 @@ const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left:
 export const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57 } as const;
 
 /** Monsters worth a shot. */
-const FOES = new Set<number>([
-  MON.wire,
-  MON.wireH,
-  MON.wireV,
-  MON.jaggy,
-  MON.jaggyV,
-  MON.mirror,
-  MON.bat,
-  MON.count1,
-  MON.count2,
-  MON.count3,
-  MON.count4,
-  MON.count5,
-  MON.steam,
-]);
+const FOES = new Set<number>([MON.wire, MON.wireH, MON.wireV, MON.jaggy, MON.jaggyV, MON.mirror, MON.bat, ...COUNT_NEAR, ...COUNT_FAR, MON.steam, MON.shard]);
 
 export class Bot {
   log: string[] = [];
@@ -392,6 +378,78 @@ export class Bot {
     await this.wait(ticks);
     this.sim.release(SCAN[dir]);
     await this.wait(2);
+  }
+
+  /**
+   * Duels a moving foe (`at` says where it is, in pixels too, or undefined once it is gone):
+   * line up with it across or down, turn to face it (a one-tick tap) and let defend() fire;
+   * back off when it comes within a block and a half.
+   */
+  async duel(at: () => { px: number; py: number } | undefined, maxTicks: number): Promise<void> {
+    const sim = this.sim;
+    let held: Dir | undefined;
+    let facing = 'right' as Dir;
+    const hold = (d: Dir | undefined) => {
+      if (held === d) return;
+      if (held) sim.release(SCAN[held]);
+      held = d;
+      if (d) {
+        sim.press(SCAN[d]);
+        facing = d;
+      }
+    };
+    for (let t = 0; t < maxTicks; t++) {
+      const f = at();
+      if (!f) break;
+      const rx = sim.pos.x * 20 + sim.pos.sx;
+      const ry = sim.pos.y * 20 + sim.pos.sy;
+      const dx = f.px - rx;
+      const dy = f.py - ry;
+      const h: Dir = dx > 0 ? 'right' : 'left';
+      const v: Dir = dy > 0 ? 'down' : 'up';
+      const away: Dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'left' : 'right') : dy > 0 ? 'up' : 'down';
+      let want: Dir | undefined;
+      if (Math.hypot(dx, dy) < 30) want = away;
+      else if (Math.abs(dy) <= 8) want = Math.abs(dx) > 70 || facing !== h ? h : undefined;
+      else if (Math.abs(dx) <= 8) want = Math.abs(dy) > 70 || facing !== v ? v : undefined;
+      else if (Math.abs(dy) < Math.abs(dx)) want = v;
+      else want = h;
+      hold(want);
+      if (process.env.DEBUG && t % 10 === 0)
+        console.log(`  duel t${t} ray ${rx},${ry} foe ${f.px},${f.py} want ${want} hp ${sim.ci.hitpts} shots ${this.shots} net ${sim.ci.netx},${sim.ci.nety}`);
+      const r = await this.tick();
+      if (r) {
+        hold(undefined);
+        throw new Error(`a scene change in a duel (${r}) at ${sim.pos.x},${sim.pos.y}`);
+      }
+    }
+    hold(undefined);
+  }
+
+  /** Rolls toward a thing (in pixels) a tick at a time until `done()`. */
+  async touch(at: () => { px: number; py: number } | undefined, done: () => boolean, maxTicks = 30): Promise<void> {
+    for (let t = 0; t < maxTicks && !done(); t++) {
+      const f = at();
+      if (!f) return;
+      const dx = f.px - (this.sim.pos.x * 20 + this.sim.pos.sx);
+      const dy = f.py - (this.sim.pos.y * 20 + this.sim.pos.sy);
+      const d: Dir = Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+      this.sim.press(SCAN[d]);
+      const r = await this.tick();
+      this.sim.release(SCAN[d]);
+      if (r) throw new Error(`touching: ${r}`);
+    }
+  }
+
+  /** Rolls back onto the nearest whole cell (after a duel leaves Ray between two). */
+  async settle(): Promise<void> {
+    for (let k = 0; k < 10 && (this.sim.pos.sx || this.sim.pos.sy); k++) {
+      const p = this.sim.pos;
+      const d: Dir = p.sx ? (p.sx >= 10 ? 'right' : 'left') : p.sy >= 10 ? 'down' : 'up';
+      const tx = p.x + (d === 'right' ? 1 : 0);
+      const ty = p.y + (d === 'down' ? 1 : 0);
+      await this.run(d, tx, ty, 10);
+    }
   }
 
   /** Presses Enter to pick up what Ray is on. */

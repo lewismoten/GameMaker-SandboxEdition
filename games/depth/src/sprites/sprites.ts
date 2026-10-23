@@ -61,9 +61,14 @@ function monsterEntries(): Entry[] {
   add('gwinn', 4, (f) => renderSprite(C.gwinn(f)));
   add('leo', 2, (f) => renderSprite(C.docLeo(f)));
   add('bat', 2, (f) => renderSprite(C.scaled(C.bat(f), 1.3), { noShadow: true, outline: RIM }));
-  for (let s = 0; s < 5; s++) add(`count${s}_`, 2, (f) => renderSprite(C.count(s, f)));
+  // the Count a size up from his model, rimmed, so his smaller stages still show on the dark grid
+  const big = (s: number, f: number) => C.scaled(C.count(s, f), s < 2 ? 1.1 : 1.3);
+  for (let s = 0; s < 5; s++) add(`count${s}_`, 2, (f) => renderSprite(big(s, f), { outline: RIM }));
+  // cracked: he blinks white
+  for (let s = 0; s < 5; s++) add(`count${s}_hit`, 2, (f) => renderSprite(big(s, f), { flash: f ? 0.5 : 0.15, outline: RIM }));
   add('crown', 2, (f) => renderSprite(C.crown(f)));
-  add('shard', 2, (f) => renderSprite(C.shard(f), { noShadow: true, outline: RIM }));
+  add('stolen', 2, (f) => renderSprite(C.stolenLens(f)));
+  add('shard', 2, (f) => renderSprite(C.scaled(C.shard(f), 1.7), { noShadow: true, outline: RIM }));
   add('pop', 3, (f) => renderSprite(C.pop(f), { noShadow: true }));
   return out;
 }

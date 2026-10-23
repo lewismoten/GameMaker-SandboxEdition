@@ -319,6 +319,7 @@ export function kinds(): Record<string, Kind> {
     gateR: gate('R'),
     gateG: gate('G'),
     gateB: gate('B'),
+    sealB: gate('B'),
     crowngate: {
       ground: () => 'floor',
       tall: () => true,
@@ -474,6 +475,11 @@ export function kinds(): Record<string, Kind> {
       shapes: (cx, cy) => citicar(cx, cy),
     },
     egg: item((x, y) => [eggShape(x, y, 0.22), new Cylinder(x, y, 0.2, 0, 0.04, MAT.chrome)]),
+    // drawn only in isometric parts of a level (tiles/iso.ts); oblique stand-ins otherwise
+    stair: { ground: () => 'floor', tall: () => true, shapes: (cx, cy, _p, t) => [cube(cx, cy, t.wall)] },
+    steps: floor(),
+    prism: { ground: () => 'floor', tall: () => false },
+    prismLit: { ground: () => 'floor', tall: () => false },
     // bare floor here: levels/hidden.ts draws the tin heart, the Easter egg and Watt over it
     tinHeart: floor(),
     tinHeart2: floor(),
@@ -485,7 +491,10 @@ export function kinds(): Record<string, Kind> {
 
 export const KINDS = kinds();
 
-/** A cell to render: its kind (and part of a multi-cell model), a variant, and its neighbors per plane. */
+/** The variant of a cell drawn isometrically (tiles/iso.ts). */
+export const ISO = 1;
+
+/** A cell to render: its kind (and part of a multi-cell model), a variant (ISO: drawn isometrically), and its neighbors per plane. */
 export interface CellKey {
   kind: string;
   part?: number;

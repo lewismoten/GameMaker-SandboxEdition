@@ -68,8 +68,9 @@ export const INSTRUCTIONS = [
   page([
     'Arrows on the ground pull you',
     'their way. Teapots steam at',
-    'you. Count Polygon loses a few',
-    'faces with every ray.',
+    'you. Three rays take faces off',
+    'Count Polygon; down to four,',
+    'he flees to the far plane.',
     '',
     'F1 help      F2 status',
     'F3 music     F4 sound',

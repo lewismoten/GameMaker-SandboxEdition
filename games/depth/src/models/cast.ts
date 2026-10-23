@@ -89,8 +89,8 @@ export function crystal(f: number): Shape[] {
 /** Count Polygon: twenty faces of vampire, losing faces with every hit. */
 export function count(stage: number, f: number): Shape[] {
   const c: V = [0.5, 0.58, 0.42 - stage * 0.03];
-  const purple = rgb(120, 50, 200);
-  const sizes = [0.3, 0.26, 0.24, 0.2, 0.06];
+  const purple = rgb(165, 85, 245);
+  const sizes = [0.3, 0.26, 0.24, 0.22, 0.09];
   const body: Shape[] = [];
   const a = f * 0.4 + 0.2;
   if (stage === 0) body.push(gem(ICO, c, sizes[0], a, purple));
@@ -101,19 +101,20 @@ export function count(stage: number, f: number): Shape[] {
     body.push(
       hull(
         [
-          add(c, [-t, 0.01, -t * 0.6]),
-          add(c, [t, 0.01, -t * 0.6]),
-          add(c, [0, 0.01, t]),
-          add(c, [-t, -0.03, -t * 0.6]),
-          add(c, [t, -0.03, -t * 0.6]),
-          add(c, [0, -0.03, t]),
+          // tipped back toward the light, so the camera above sees a triangle, not an edge
+          add(c, [-t, t * 0.55, -t * 0.45]),
+          add(c, [t, t * 0.55, -t * 0.45]),
+          add(c, [0, -t * 0.55, t * 0.6]),
+          add(c, [-t, t * 0.55 - 0.04, -t * 0.45 - 0.03]),
+          add(c, [t, t * 0.55 - 0.04, -t * 0.45 - 0.03]),
+          add(c, [0, -t * 0.55 - 0.04, t * 0.6 - 0.03]),
         ],
         { color: purple, diffuse: 0.8, spec: 1.2, shine: 60 },
       ),
     );
   } else body.push(new Sphere(c, sizes[4], glow(rgb(200, 120, 255), 1.2)));
   // the cape: two dark red sails behind him, flapping
-  const cape: Material = { color: rgb(150, 20, 40), diffuse: 0.9, spec: 0.6, shine: 30 };
+  const cape: Material = { color: rgb(215, 45, 80), diffuse: 0.9, spec: 0.6, shine: 30, emit: rgb(40, 5, 12) };
   const w = (stage === 4 ? 0.12 : 0.3) * (f ? 1.1 : 1);
   if (stage < 4)
     for (const k of [-1, 1])
@@ -155,6 +156,33 @@ export function crown(f: number): Shape[] {
   return [gem(TETRA, [0.5, 0.6, 0.32], 0.17, f * 0.8, rgb(255, 200, 60), 0.3)];
 }
 
+/** The blue lens the Count swallowed: glass in a gold ring, bobbing where he dropped it. */
+export function stolenLens(f: number): Shape[] {
+  const x = 0.5;
+  const y = 0.58;
+  const z = 0.3 + f * 0.05;
+  const blue = rgb(50, 90, 255);
+  // lying flat, tipped a little toward the camera, so it reads as a round blue lens from above
+  return [
+    new Sdf(
+      [
+        [x - 0.25, y - 0.25, z - 0.1],
+        [x + 0.25, y + 0.25, z + 0.1],
+      ],
+      (px, py, pz) => sd.ellipsoid(px - x, py - y, pz - z, 0.2, 0.2, 0.05),
+      [{ color: rgb(130, 175, 255), diffuse: 0.5, spec: 1.4, shine: 120, emit: mul(blue, 0.9) }],
+    ),
+    new Sdf(
+      [
+        [x - 0.28, y - 0.28, z - 0.06],
+        [x + 0.28, y + 0.28, z + 0.06],
+      ],
+      (px, py, pz) => sd.torus(px - x, py - y, pz - z, 0.22, 0.035),
+      [MAT.gold],
+    ),
+  ];
+}
+
 /** A shard the Count throws: a spinning purple triangle. */
 export function shard(f: number): Shape[] {
   const c: V = [0.5, 0.55, 0.3];
@@ -162,9 +190,9 @@ export function shard(f: number): Shape[] {
   const p = (ang: number): V => [c[0] + Math.cos(ang + a) * 0.15, c[1] + Math.sin(ang + a) * 0.15, c[2]];
   return [
     hull([p(0), p(2.09), p(4.19), add(p(0), [0, 0, 0.04]), add(p(2.09), [0, 0, 0.04]), add(p(4.19), [0, 0, 0.04])], {
-      color: rgb(190, 110, 255),
+      color: rgb(230, 140, 255),
       diffuse: 0.7,
-      emit: rgb(60, 20, 90),
+      emit: rgb(120, 40, 160),
       spec: 1,
       shine: 50,
     }),

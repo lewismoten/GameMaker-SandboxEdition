@@ -237,11 +237,15 @@
      "hints": [
       {
        "q": "How do I beat Count Polygon?",
-       "a": "He waits until you come within reach. Stand level with him a few blocks away, facing him, and fire again and again: twenty faces, eight, four, a triangle, a point."
+       "a": "He waits until you come within reach, then swoops: to one side of you, to the other, then straight at you. Line up with him across or down the arena, turn to face him and fire. A ray cracks him, a second shatters him and a third takes faces off. When his eight faces are gone he coughs up the blue lens he swallowed and flees into the far plane: take the lens, roll through the blue gate at the top of the arena and finish him there."
+      },
+      {
+       "q": "Purple shards keep hitting me.",
+       "a": "The four prisms in the arena throw them, a little faster in the far plane. A prism glows pink just before it throws. Shards are slow: roll away, put a cube between you, or shoot them."
       },
       {
        "q": "The last door won't open.",
-       "a": "It wants the last polygon the Count leaves behind. Roll over it, then go through the gold door and the red, green and blue gates."
+       "a": "It wants the last polygon the Count leaves behind in the far plane. Roll over it, then go through the gold door and the red and green gates."
       }
      ]
     },

@@ -10,6 +10,12 @@ export const FALL = -999;
 
 /** Ticks an auto-focus panel stays in focus, and out. */
 export const PULSE = 40;
+/** Ticks between shards from a prism, near and far. */
+export const SHARD_NEAR = 140;
+export const SHARD_FAR = 110;
+/** Ticks a prism glows before it throws. */
+export const SHARD_TELL = 16;
+
 /** The last ticks in focus flicker (warn, steady, warn), so a panel never vanishes unannounced. */
 export const FLICKER = 4;
 
@@ -56,6 +62,10 @@ export function rulesFor(o: LevelRules): Rules {
         return { solid: SOLID, effect: cg, eamt: -1, score: 100, touch: 'floor' };
       case 'gateB':
         return { solid: SOLID, effect: cb, eamt: -1, score: 100, touch: 'floor' };
+      case 'sealB':
+        // the Vanishing Point's blue gate: it opens from the near plane only, so there's no way
+        // back down from the Count's far half of the arena
+        return plane === 'near' ? { solid: SOLID, effect: cb, eamt: -1, score: 100, touch: 'floor' } : { solid: SOLID };
       case 'pulseA':
         return { next: { kind: 'pulseW', time: PULSE - 3 * FLICKER } };
       case 'pulseW':
@@ -74,6 +84,19 @@ export function rulesFor(o: LevelRules): Rules {
         return { grav: 4 };
       case 'slopeW':
         return { grav: 8 };
+      case 'prism':
+      case 'prismLit': {
+        // Count Polygon's shard prisms: they throw a shard now and then, faster in the far plane,
+        // and light up for the last ticks before each throw (both looks share the birth timer)
+        const every = plane === 'near' ? SHARD_NEAR : SHARD_FAR;
+        const lit = kind === 'prismLit';
+        return {
+          solid: SOLID,
+          birth: { mon: MON.shard, time: every },
+          next: { kind: lit ? 'prism' : 'prismLit', time: lit ? SHARD_TELL : every - SHARD_TELL },
+        };
+      }
+      case 'stair':
       case 'crystal':
       case 'pillar':
         return { solid: SOLID };

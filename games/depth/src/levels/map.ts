@@ -2,7 +2,7 @@
 // number; only the monsters differ), the scene links and where Ray starts.
 import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import { TileBook } from '../tiles/book';
-import { KINDS, PLANES, type Ctx, type Plane } from '../tiles/cells';
+import { ISO, KINDS, PLANES, type Ctx, type Plane } from '../tiles/cells';
 
 /** Text map characters every level understands. */
 export const LEGEND: Record<string, string> = {
@@ -67,6 +67,8 @@ export interface LevelText {
   rings?: Record<string, RingSpec>;
   /** Where the map sits in the 100x100 world (so the void wraps around it). */
   at?: [number, number];
+  /** Rectangles of cells drawn isometrically: [x0, y0, x1, y1], inclusive. */
+  iso?: [number, number, number, number][];
 }
 
 export interface BuiltLevel {
@@ -112,8 +114,12 @@ export function buildLevel(book: TileBook, lv: LevelText): BuiltLevel {
     nw: KINDS[kindAt(x - 1, y - 1)].tall(p),
     nPit: KINDS[kindAt(x, y - 1)].ground(p) === 'pit',
   });
+  const isIso = (x: number, y: number) =>
+    KINDS[kindAt(x, y)].ground('near') !== 'pit' &&
+    KINDS[kindAt(x, y)].ground('far') !== 'pit' &&
+    (lv.iso ?? []).some(([x0, y0, x1, y1]) => x >= x0 && x <= x1 && y >= y0 && y <= y1);
   const blockAt = (x: number, y: number, kind = kindAt(x, y)) =>
-    book.get({ kind, part: partAt(x, y), ctx: { near: ctxAt(x, y, 'near'), far: ctxAt(x, y, 'far') } });
+    book.get({ kind, part: partAt(x, y), variant: isIso(x, y) ? ISO : 0, ctx: { near: ctxAt(x, y, 'near'), far: ctxAt(x, y, 'far') } });
 
   const maps = { near: newMap(), far: newMap() };
   // the whole world is void first, then the level is laid in
