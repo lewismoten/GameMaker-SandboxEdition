@@ -123,7 +123,8 @@ export const HOME_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(55, 'his soul, the coin'), 'soul');
       if (plot(bot) < SOULS) throw new Error(`only ${plot(bot)} pieces of his soul`);
       nothingLeft(bot, 64, 12);
-      await leave(bot, bot.walk(56.5, 'the colder side of the bed'), 'the bed');
+      await must(bot, bot.walk(57, 'the colder side of the bed'), 'the bed');
+      await leave(bot, bot.walk(68.5, 'the walk-off'), 'the walk-off');
     });
   },
   /** Wore All the Weird Socks: the basket and the shelf, the matched pair, up the washer and dryer, along the clothesline, the ironing board, Doc Leo, the front door. */

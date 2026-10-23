@@ -247,7 +247,10 @@ export const blanket: Monologue = {
     '!': 'spot@wallB',
   },
   build: (m: MapBuilder) => {
-    const W = 64;
+    // the walk-off: OFF blocks more of the bedroom past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 12;
+    const W = 64 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 4; x < W; x += 10) m.set(x, 0, '*');
     m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
@@ -283,7 +286,7 @@ export const blanket: Monologue = {
     placePicture(m, 'bed', 56, 8, 4, 2);
     m.set(56, 9, 'D');
     m.mon(MON.gwinn, 58, 8);
-    m.link(56, 9, 'next');
+    m.link(56 + OFF, 9, 'next');
     win(61, 3, false);
     return { start: [1, 9], size: [W, 12] };
   },
