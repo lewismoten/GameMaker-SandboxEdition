@@ -136,7 +136,7 @@ export async function aisle(bot: Bot): Promise<void> {
   await carefully(bot, 'up the vine, over the first tree', 0, async () => {
     await must(bot, bot.hop('right', 4, 'right', 13), 'onto the vine');
     await must(bot, bot.dig('up', 3, 'up the vine'), 'climb');
-    await must(bot, bot.walk(14, 'the coin on the tree'), 'coin');
+    await must(bot, bot.walk(15, 'the coin by the treetop'), 'coin');
     await must(bot, bot.walk(16, 'down off the tree'), 'down');
     await must(bot, bot.hop('right', 12, 'right', 19.6), 'over the brambles');
   });
@@ -172,7 +172,7 @@ export async function aisle(bot: Bot): Promise<void> {
   await carefully(bot, 'over the brambles, up the third tree', 0, async () => {
     await must(bot, bot.hop('right', 10, 'right', 46), 'over the brambles onto the vine');
     await must(bot, bot.dig('up', 4.9, 'up the vine'), 'climb');
-    await must(bot, bot.walk(47, 'the coin on the tree'), 'coin');
+    await must(bot, bot.walk(48, 'the coin by the treetop'), 'coin');
     await must(bot, bot.walk(48.6, 'down off the tree'), 'down');
     await must(bot, bot.hop('right', 12, 'right', 51.6), 'over the brambles');
   });

@@ -174,7 +174,7 @@ export function bathroom(book: BlockBook): Level {
   // a bar of cursed grapefruit soap, sliding along the floor
   m.mon(MON.grapefruit, 20, 11);
   // the toilet, a jar on its tank
-  m.set(25, 11, 'l').col(26, 10, 11, 't').set(26, 9, '1');
+  m.set(25, 11, 'l').set(26, 10, 'tankTop').set(26, 11, 't').set(26, 9, '1');
   // the sink and the vanity, the mirror, the shelf above (candles, a jar, the mango soap)
   m.row(10, 29, 30, 'k').row(11, 29, 30, 'V');
   for (let q = 0; q < 4; q++) m.set(28 + q, 8, `mirror0${q}0`);
@@ -203,18 +203,18 @@ export function aisle(book: BlockBook): Level {
   m.row(9, 7, 11, 'e').row(6, 7, 11, 'e').fill(7, 7, 5, 2, 'o').set(9, 8, '$').set(11, 5, '5');
   m.mon(MON.feral, 7, 11);
   // the first tree, grown up through the aisle: climb the vine beside it, a coin on top
-  m.col(13, 3, 11, '|').col(14, 4, 11, 'X').row(2, 13, 15, 'C').set(14, 3, '$');
+  m.col(13, 3, 11, '|').col(14, 4, 11, 'X').row(2, 13, 15, 'C').set(14, 3, 'C').set(15, 3, '$');
   // brambles, owls, the second shelving (a wild loofah on it), rosemary
   m.set(18, 11, '%').mon(MON.owl, 19, 3).mon(MON.owl, 27, 2);
   m.row(9, 20, 23, 'E').row(6, 21, 24, 'E').set(22, 8, '$').set(24, 5, '5').mon(MON.feral, 20, 8);
   // the bakery's day-old bin: Loaf #13; a coin on the floor
   m.set(28, 11, 'n').mon(MON.loaf, 28, 10).set(30, 11, '$');
   // the second tree: its vine heavy with gourds, a coin at the top
-  m.col(33, 3, 11, ':').col(34, 5, 11, 'X').row(3, 34, 35, 'C').set(33, 2, '$');
+  m.col(33, 3, 11, ':').col(34, 5, 11, 'X').col(34, 3, 4, 'C').set(33, 2, '$');
   // the goat on the end cap, the spice rack (the mustard seed), rosemary, a wild loofah
   m.set(37, 5, 'P').row(9, 39, 42, 'p').mon(MON.seed, 40, 8).set(42, 8, '5').mon(MON.feral, 38, 11);
   // more brambles, the third tree
-  m.set(44, 11, '%').col(46, 5, 11, '|').col(47, 6, 11, 'X').set(47, 5, '$').row(4, 46, 48, 'C').set(50, 11, '%');
+  m.set(44, 11, '%').col(46, 5, 11, '|').col(47, 6, 11, 'X').row(4, 46, 48, 'C').set(47, 5, 'C').set(48, 5, '$').set(50, 11, '%');
   // the last shelving: rosemary up top, a wild loofah in front of it, a spare coin
   m.row(9, 53, 57, 'e').row(6, 53, 57, 'e').fill(53, 7, 5, 2, 'o').set(55, 5, '5').mon(MON.feral, 55, 11).set(59, 11, '$');
   // the checkout: the clerk; six coins
@@ -230,7 +230,7 @@ export function home(book: BlockBook): Level {
   const m = new MapBuilder(book, 'joists');
   m.row(0, 1, W - 2, 'crownMold').fill(1, 1, W - 2, 8, 'paper').row(9, 1, W - 2, 'base').row(10, 0, W - 1, 'boards').row(11, 0, W - 1, 'joists').col(0, 0, 11, 'joists').col(W - 1, 0, 11, 'joists');
   // the bed: her asleep, his pillow with the washcloth of shame on it; the night stand (a candle)
-  m.col(1, 6, 8, 'headboard').set(2, 8, 'wife').row(8, 3, 7, 'bedTop').set(5, 8, 'pillow').row(9, 2, 7, 'bedSide').set(1, 9, 'bedSide');
+  m.set(1, 6, 'headboardTop').col(1, 7, 8, 'headboard').set(2, 8, 'wife').row(8, 3, 7, 'bedTop').set(5, 8, 'pillow').row(9, 2, 7, 'bedSide').set(1, 9, 'bedSide');
   m.set(8, 9, 'stand').set(8, 8, 'unlit');
   m.set(10, 4, 'weddingPic').set(10, 9, 'creak');
   m.col(12, 8, 9, 'dresser').col(13, 8, 9, 'dresser').set(13, 7, 'unlit');

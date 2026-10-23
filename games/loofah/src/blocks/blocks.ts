@@ -156,12 +156,15 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('bathwater', water(15), { grav: GRAV.down, birthMon: MON.bubble, birthTime: 37 });
 
   // ---------- the toilet, the sink and the mirror ----------
-  const toilet = (part: 'tank' | 'lid') => {
-    const p = baseTile.crop(0, 0, 20, 20);
-    if (part === 'tank') p.rect(3, 0, 14, 16, c('white', 2)).rect(3, 0, 14, 2, c('white', 1)).rect(13, 4, 3, 1, c('metal', 3));
+  const toilet = (part: 'tankTop' | 'tank' | 'lid') => {
+    // the tank is two blocks: its lid and lever up top, then the rest of it down to the floor
+    const p = part === 'tankTop' ? tiles(26) : baseTile.crop(0, 0, 20, 20);
+    if (part === 'tankTop') p.rect(2, 4, 16, 2, c('white', 1)).rect(3, 6, 14, 14, c('white', 2)).rect(13, 9, 3, 1, c('metal', 3)).rect(3, 6, 14, 1, c('grey', 2));
+    else if (part === 'tank') p.rect(3, 0, 14, 12, c('white', 2)).rect(5, 12, 10, 8, c('white', 1)).rect(3, 11, 14, 1, c('grey', 2));
     else p.rect(1, 6, 18, 3, c('white', 2)).rect(1, 6, 18, 1, c('white', 1)).rect(4, 9, 12, 8, c('white', 1)).rect(6, 17, 8, 3, c('white', 0));
     return p;
   };
+  book.add('tankTop', toilet('tankTop'), { solid: SOLID });
   book.add('tank', toilet('tank'), { solid: SOLID });
   book.add('lid', toilet('lid'), { solid: LEDGE, grav: GRAV.down });
   const sink = tiles(21);
@@ -467,10 +470,15 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('bedTop', quilt(paper(66), true), { solid: LEDGE, grav: GRAV.down });
   book.add('bedSide', quilt(P(), false), { solid: SOLID });
-  const headboard = paper(67);
-  headboard.rect(2, 0, 16, 20, c('wood', 0)).rect(4, 2, 12, 16, c('wood', 1));
-  for (const x of [6, 10, 14]) headboard.rect(x, 0, 1, 3, c('wood', 2)).set(x, 0, c('gold', 1));
-  book.add('headboard', headboard, air);
+  // the headboard: carved finials on its top block only
+  const headboard = (top: boolean) => {
+    const p = paper(67);
+    p.rect(2, top ? 3 : 0, 16, top ? 17 : 20, c('wood', 0)).rect(4, top ? 5 : 0, 12, top ? 15 : 20, c('wood', 1));
+    if (top) for (const x of [3, 10, 16]) p.rect(x - 1, 0, 3, 3, c('wood', 2)).set(x, 0, c('gold', 1));
+    return p;
+  };
+  book.add('headboardTop', headboard(true), air);
+  book.add('headboard', headboard(false), air);
   // her, asleep (her snoring drifts up); his pillow with the washcloth of shame on it
   const wife = quilt(paper(68), true);
   blob(wife, 7, 9, 6, 3, R('white'), 1, 2);
