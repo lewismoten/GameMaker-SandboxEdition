@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 17504,
+  "frames": 17653,
   "chapters": [
    {
     "title": "Opening",
@@ -59,23 +59,23 @@
    },
    {
     "title": "Act II: The Forest-Dark Aisle",
-    "frame": 5101
+    "frame": 5184
    },
    {
     "title": "Act III: You Crossed a Line",
-    "frame": 8116
+    "frame": 8199
    },
    {
     "title": "Act IV: Scrubbus Maximus",
-    "frame": 10367
+    "frame": 10516
    },
    {
     "title": "Ending",
-    "frame": 12210
+    "frame": 12359
    },
    {
     "title": "Credits",
-    "frame": 14935
+    "frame": 15084
    }
   ]
  }
