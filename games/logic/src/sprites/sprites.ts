@@ -242,9 +242,9 @@ export function buildMonsterBlocks(): BlockSet {
 
 // ---------------------------------------------------------------- Watt (.CBL)
 
-type View = 'down' | 'up' | 'side';
+export type View = 'down' | 'up' | 'side';
 
-function watt(view: View, step: number, mood: 'ok' | 'blink' | 'zapped' | 'toast' = 'ok'): Pixels {
+export function watt(view: View, step: number, mood: 'ok' | 'blink' | 'zapped' | 'toast' = 'ok'): Pixels {
   const p = blank();
   const zapped = mood === 'zapped';
   const toast = mood === 'toast';
