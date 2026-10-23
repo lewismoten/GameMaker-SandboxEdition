@@ -53,7 +53,7 @@ export function addBurrows(): void {
       }
     }
     p.rect(7, 8, 6, 4, WOOD[1]).rect(8, 9, 4, 2, YELLOW[1]);
-    bg.add('rootDoor', p, { solid: SOLID, effect: CTR.acorns, eamt: -1, score: 100, touch: 'sand3' });
+    bg.add('rootDoor', p, { solid: SOLID, effect: CTR.acorns, eamt: -1, score: 100, touch: 'sand0' });
   }
   {
     const p = art(

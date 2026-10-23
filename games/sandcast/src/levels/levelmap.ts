@@ -7,7 +7,8 @@ import { BG } from '../blocks/bblocks';
 export type Cell = string | { tile?: string; mon?: number; mark?: string };
 export type Legend = Record<string, Cell>;
 
-const SAND_MIX = ['sand0', 'sand0', 'sand0', 'sand3', 'sand3', 'sand1', 'sand2'];
+// (seven entries still, so every map's random draws stay the same)
+const SAND_MIX = ['sand0', 'sand0', 'sand0', 'sand0', 'sand0', 'sand1', 'sand1'];
 
 export class LevelMap {
   readonly map: GameMap = newMap();

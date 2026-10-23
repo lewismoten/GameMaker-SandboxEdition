@@ -29,6 +29,9 @@ const DIRS = Object.keys(STEP) as Dir[];
 /** Monsters that hurt for as long as Teddy stands in them (strong enough not to die on touch). */
 const LINGER = new Set<number>([MON.crabH, MON.crabV, MON.crabBox, MON.rope, MON.tail, MON.slobber]);
 
+/** The tin heart and the Easter egg: left for the player to find (never taken or stepped on). */
+const KEEPSAKES = new Set([BG.id('tinHeart'), BG.id('easterEgg')]);
+
 export class Bot {
   log: string[] = [];
   /** Cells to keep off where possible (extra cost per step). */
@@ -106,7 +109,7 @@ export class Bot {
         if (nx < 0 || ny < 0 || nx > 99 || ny > 99) continue;
         const k = key(nx, ny);
         const target = nx === tx && ny === ty;
-        if (!target && (this.sim.solidAt(nx, ny) || links.has(k) || mons.solid.has(k))) continue;
+        if (!target && (this.sim.solidAt(nx, ny) || links.has(k) || mons.solid.has(k) || KEEPSAKES.has(this.sim.blockAt(nx, ny)))) continue;
         // turning costs a little, so runs stay long and straight
         const nd = d + 1 + (this.avoid.get(k) ?? 0) + (mons.hurt.has(k) ? 6 : 0) + (this.current(nx, ny) ? 20 : 0);
         if (nd < (dist.get(k) ?? Infinity)) {
@@ -136,7 +139,7 @@ export class Bot {
   private isPickup(x: number, y: number): boolean {
     const b = this.sim.blockAt(x, y);
     const k = bgBlock(this.sim.w, b);
-    if (b === BG.id('egg') || k.solid || k.touchBl === b || (k.effect && k.eamt < 0)) return false;
+    if (b === BG.id('egg') || KEEPSAKES.has(b) || k.solid || k.touchBl === b || (k.effect && k.eamt < 0)) return false;
     return k.scorePts > 0 || k.chHitPt > 0 || (k.effect > 0 && k.eamt > 0);
   }
 

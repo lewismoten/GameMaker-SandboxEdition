@@ -154,6 +154,8 @@ export function hub(): LevelMap {
   // was digging here; dig it out and see where it goes.
   m.set(46, 4, 'paws').set(47, 3, 'paws').set(48, 2, 'paws').mark('arriveDig', 48, 2);
   m.set(48, 1, 'dune').mark('holeDig', 48, 1);
+  // A tin heart dropped in the far southeast corner, and a painted Easter egg in the northwest one.
+  m.set(48, 34, 'tinHeart').set(1, 1, 'easterEgg');
   return m;
 }
 
