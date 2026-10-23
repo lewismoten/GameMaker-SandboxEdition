@@ -254,4 +254,11 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('leo0', leo(0), hello);
   book.add('leo1', leo(1), hello);
+  // the friends going on their way after a hello (no second tip as they pass him)
+  book.add('carlAway0', carl(0));
+  book.add('carlAway1', carl(1));
+  book.add('goatAway0', goat(0));
+  book.add('goatAway1', goat(1));
+  book.add('leoAway0', leo(0));
+  book.add('leoAway1', leo(1));
 }

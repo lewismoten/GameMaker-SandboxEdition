@@ -8,9 +8,9 @@ import { SCENES } from '../src/scenes';
 import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
-const title = (scene: number) => {
+const title = (scene: number): string => {
   const d = SCENES[scene - 2];
-  if (!d) return undefined;
+  if (!d) return 'The Curtain Call';
   if (d.monologue) return `${d.card}. ${d.monologue.title}`;
   return d.name === 'hive1' ? 'The Hive, Oakland' : d.next === 'won' ? 'The Curtain Call' : d.desc;
 };
