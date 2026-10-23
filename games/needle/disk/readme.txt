@@ -78,7 +78,7 @@ THIS IS SHAREWARE
 CREDITS (NOW)
   The song "Thread the Needle,
   Brother Camel": lyrics
-  written by ChatGPT from Lewis
+  shaped by ChatGPT from Lewis
   Moten's prompts (as The Bard
   of Bizarre); music and
   animated cover made with

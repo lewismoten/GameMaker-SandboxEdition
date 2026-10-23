@@ -19,7 +19,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * animated cover its title cartoon comes from. Used by LICENSE.TXT (the credits page and the
  * README spell it out to fit their columns; about.json says the same in its blurb).
  */
-export const SONG_CREDIT = "lyrics written by ChatGPT from Lewis Moten's prompts; music and animated cover made with Riffusion (now Google Flow Music)";
+export const SONG_CREDIT = "lyrics shaped by ChatGPT from Lewis Moten's prompts; music and animated cover made with Riffusion (now Google Flow Music)";
 
 export const STORY = [
   page([
@@ -243,7 +243,7 @@ THIS IS SHAREWARE
 CREDITS (NOW)
   The song "Thread the Needle,
   Brother Camel": lyrics
-  written by ChatGPT from Lewis
+  shaped by ChatGPT from Lewis
   Moten's prompts (as The Bard
   of Bizarre); music and
   animated cover made with
