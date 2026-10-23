@@ -22,7 +22,7 @@ function shown(m: CastMember): { width: number; height: number } {
   return { width: Math.round(w * k), height: Math.round(h * k) };
 }
 
-function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLElement {
+function card(m: CastMember, pick: (m: CastMember, e: Event) => void, wide: boolean): HTMLElement {
   const families = familiesOf(m);
   return h(
     'article',
@@ -30,7 +30,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
     h(
       'div',
       { class: 'cast-pic' },
-      h('img', { src: `./cast/${m.id}.png`, ...shown(m), alt: m.art.alt, loading: 'lazy', decoding: 'async', class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined }),
+      h('img', { src: `./cast/${m.id}.png`, ...shown(m), alt: m.art.alt, decoding: 'async', class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined }),
     ),
     h(
       'div',
@@ -41,7 +41,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
     ),
     h(
       'details',
-      { class: 'cast-appears', open: true },
+      { class: 'cast-appears', open: wide },
       h('summary', null, `Appears in ${m.appears.length} game${m.appears.length === 1 ? '' : 's'}`),
       h(
         'ul',
@@ -107,7 +107,9 @@ export function renderCast(el: HTMLElement): void {
     state.set({ who: m.id });
     cards.forEach((c, i) => c.classList.toggle('cast-picked', CAST[i] === m));
   };
-  const cards = CAST.map((m) => card(m, pick));
+  // on a phone the lists start closed, so the cast reads as a list of faces first
+  const wide = matchMedia('(min-width: 521px)').matches;
+  const cards = CAST.map((m) => card(m, pick, wide));
   const grid = h('div', { class: 'cast-grid', id: 'cast-grid' }, cards);
   const count = h('p', { class: 'cast-count', role: 'status' });
   const buttons = FILTERS.map(([f, label]) =>
