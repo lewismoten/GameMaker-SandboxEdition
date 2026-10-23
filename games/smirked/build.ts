@@ -173,11 +173,31 @@ disk.put('won.cmf', songs.won);
 disk.put('lost.cmf', songs.lost);
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme(PRICE));
+// the voice clips cut from the free-plan Riffusion recordings: personal, non-commercial only (kit/license.ts)
+const RECORDED_VOCS = [
+  'afraid',
+  'ashamed',
+  'cardbrd',
+  'dontrun',
+  'exit',
+  'fog',
+  'getdown',
+  'juice',
+  'mild',
+  'notreal',
+  'okay',
+  'pats',
+  'sneezing',
+  'sword',
+  'target',
+  'werewolf',
+];
 disk.put(
   'license.txt',
   licenseText(
     'I Screamed, She Smirked',
     `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}. Lily and her mom are characters in the song.`,
+    RECORDED_VOCS,
   ),
 );
 disk.write();
