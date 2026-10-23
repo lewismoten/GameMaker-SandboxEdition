@@ -365,7 +365,7 @@ export class WalkRun {
     audio.now = () => this.m.time;
     let resolve!: () => void;
     this.ended = new Promise((r) => (resolve = r));
-    this.ended.then(() => (this.done = true));
+    void this.ended.then(() => (this.done = true));
     this.run = () =>
       runWalkthrough(this.m, gam, walk, {
         onSession: (s) => (this.session = s),

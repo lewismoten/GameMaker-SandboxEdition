@@ -165,7 +165,7 @@ export class Shell {
     const wide = args.some((a) => /^\/W$/i.test(a));
     const pause = args.some((a) => /^\/P$/i.test(a));
     const target = args.find((a) => !a.startsWith('/')) ?? '';
-    let { drive, parts } = resolvePath(target, this.drive, this.cwdOf);
+    const { drive, parts } = resolvePath(target, this.drive, this.cwdOf);
     let pattern: RegExp | undefined;
     let list = await this.host.fs.listDir(drive, parts);
     // When the last part is not a folder but looks like a wildcard or file name, list its

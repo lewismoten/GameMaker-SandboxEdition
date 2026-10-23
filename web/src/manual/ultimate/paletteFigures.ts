@@ -106,7 +106,8 @@ function game(id: string): Promise<CatalogEntry | undefined> {
 
 async function files(id: string, names: string[]): Promise<(Uint8Array | undefined)[]> {
   const g = await game(id);
-  return Promise.all(names.map((n) => (g ? fetchGameFile(g, n).catch(() => undefined) : undefined)));
+  if (!g) return names.map(() => undefined);
+  return Promise.all(names.map((n) => fetchGameFile(g, n).catch(() => undefined)));
 }
 
 const same = (a: Palette, b: Palette, i: number) => a[i * 3] === b[i * 3] && a[i * 3 + 1] === b[i * 3 + 1] && a[i * 3 + 2] === b[i * 3 + 2];

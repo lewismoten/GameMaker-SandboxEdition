@@ -46,7 +46,7 @@ export function emptyCompanion(): Companion {
 const isObject = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 
 /** A companion from JSON text, bytes or an object; an empty one when it is not one. Unknown keys stay. */
-export function parseCompanion(src: string | Uint8Array | unknown): Companion {
+export function parseCompanion(src: unknown): Companion {
   let v: unknown = src;
   try {
     if (src instanceof Uint8Array) v = JSON.parse(new TextDecoder().decode(src));

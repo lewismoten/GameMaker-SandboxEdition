@@ -251,6 +251,7 @@ async function watch(
       if (r.done) {
         playing = false;
         showPlay();
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string -- whatever was thrown, as text
         status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : 'The end. Thanks for watching!';
         if (!r.error) watchedWalkthrough(entry.id);
       }
