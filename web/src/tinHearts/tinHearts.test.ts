@@ -29,17 +29,17 @@ describe('tin hearts', () => {
     const hook = heartHook('game:realm')!;
     const scenes = Array.from({ length: 25 }, (_, i) => ({ files: i === 19 ? ['', 'PORT.MAP'] : ['', 'town.map'] }));
     hook.onSession({ game: { scenes } } as unknown as Session);
-    hook.onTouched(19, 11, 33, 5);
-    hook.onTouched(3, 10, 33, 5);
+    hook.onTouched(19, 10, 25, 5);
+    hook.onTouched(3, 9, 25, 5);
     await flush();
     expect(saves['game:realm']).toBeUndefined();
-    hook.onTouched(19, 10, 33, 142);
+    hook.onTouched(19, 9, 25, 142);
     await flush();
     const note = parseFound(saves['game:realm'][FOUND_FILE]);
-    expect(note).toMatchObject({ scene: 19, at: [10, 33] });
+    expect(note).toMatchObject({ scene: 19, at: [9, 25] });
     // a second visit keeps the first find's date
     const first = saves['game:realm'][FOUND_FILE];
-    await heartHook('game:realm')!.onTouched(19, 10, 33, 142);
+    await heartHook('game:realm')!.onTouched(19, 9, 25, 142);
     expect(saves['game:realm'][FOUND_FILE]).toBe(first);
   });
 
@@ -52,7 +52,7 @@ describe('tin hearts', () => {
   it('counts a find in a save or added by hand, unless taken away', async () => {
     expect(statusOf(true, 'broken')).toEqual({ status: 'broken', found: false });
     expect(statusOf(false, 'added')).toEqual({ status: 'added', found: true });
-    saves['game:realm'] = { [FOUND_FILE]: new TextEncoder().encode('{"found":"2026-10-23T00:00:00Z","scene":19,"at":[10,33]}') };
+    saves['game:realm'] = { [FOUND_FILE]: new TextEncoder().encode('{"found":"2026-10-23T00:00:00Z","scene":19,"at":[9,25]}') };
     let s = await heartStates(games);
     expect(s.map((h) => h.found)).toEqual([true, false]);
     setOverride('sleuth', 'added');
