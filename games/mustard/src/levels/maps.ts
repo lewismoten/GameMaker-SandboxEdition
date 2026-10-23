@@ -196,8 +196,6 @@ export function mound(book: BlockBook): Level {
   m.mon(MON.beetleR, 8, 9);
   m.peacock(21, 9);
   m.mon(MON.crow, 40, 1).mon(MON.bee, 51, 7).mon(MON.beetleR, 48, 9).mon(MON.crow, 56, 1);
-  // a tin heart in the nook behind the mound
-  m.set(1, 9, 'tinHeart');
   m.link(67, 9, 'next');
   return { m, start: at(4, 7), size: [W, H] };
 }
@@ -223,6 +221,8 @@ export function dust(book: BlockBook): Level {
   m.fill(39, 9, 5, 2, 'c').row(11, 39, 43, '#').set(41, 10, 'o');
   // groundwater in the dust itself
   m.set(32, 4, 'O').set(45, 15, 'O');
+  // a tin heart in a pocket of air by the buried junk, a short dig from the last drop
+  m.set(41, 16, 'tinHeart');
   m.mon(MON.ant, 4, 8).mon(MON.worm, 12, 15).mon(MON.mole, 26, 15).mon(MON.ant, 20, 6).mon(MON.worm, 39, 10);
   // up through the crack into the daylight, and along the sidewalk to the sunny spot: the walk
   // there lets "Keep on hustlin'" (the crack opening) play out before the level ends

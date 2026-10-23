@@ -451,13 +451,13 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('sunSpot', sunSpot(), air);
 
-  // Keepsakes, added last so every block before keeps its number: a tin heart tucked in the
-  // nook behind the seed's mound (a glint crosses it now and then) and a painted Easter egg at
-  // the foot of the great plant, far over on the left. Each is air like the sky around it, a
-  // few points, gone when touched (the sky is its touch block), with no sound of its own.
+  // Keepsakes, added last so every block before keeps its number: a tin heart in a pocket of
+  // air down in the dust by the buried junk (a glint crosses it now and then) and a painted Easter
+  // egg at the foot of the great plant, far over on the left. Each is air like the cave or sky
+  // around it, a few points, gone when touched (that is its touch block), with no sound of its own.
   const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('white', 2), dark: c('grey', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(sky(1), tin, k), { ...air, next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'sky', score: 100 });
+    book.add(`tinHeart${k || ''}`, drawTinHeart(cave(4), tin, k), { ...air, next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'cave', score: 100 });
   const egg = { ink: c('ink', 0), shell: R('blue'), paint: [c('red', 2), c('red', 3)], accent: c('sun', 3), white: c('white', 2) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
     book.add(`easterEgg${k || ''}`, drawEasterEgg(sky(1), egg, 'stars', k), { ...air, next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'sky', score: 50 });
