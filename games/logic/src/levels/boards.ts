@@ -306,8 +306,8 @@ export const BOARDS: BoardSpec[] = [
       'Start the battery, and wait for the gate to open. Then bump the fuse next to the battery: it blows and the wire goes dead for good. Blow it too early and the gate never opens.',
   },
   {
-    file: 'shopvac',
-    title: 'The Shop Vac',
+    file: 'wetvac',
+    title: 'The Wet-Dry Vac',
     room: 'garage',
     card: ['It sucks up sawdust, nails,', 'socks, and small robots.'],
     rows: [
