@@ -212,7 +212,8 @@ export function bedroom(book: BlockBook): Level {
   m.set(28, 9, 'z');
   m.set(31, 9, 'U').set(33, 9, '%');
   m.set(36, 9, 'L');
-  m.row(7, 25, 26, 's').set(25, 6, '$').set(26, 6, '$');
+  // the hall shelf (coins up top) over a creaky board: the floor under it is the tempting way
+  m.row(7, 25, 26, 's').set(25, 6, '$').set(26, 6, '$').set(26, 9, '!');
   m.mon(MON.gwinn, 40, 9);
   m.set(42, 9, 'V');
   m.set(44, 9, 'd').set(44, 8, 't');
@@ -272,9 +273,11 @@ export function fridge(book: BlockBook): Level {
   return { m, start: at(2, 13), size: [W, H] };
 }
 
-/** 3. Oh no: the dash down the dark hall to the bathroom, the gurgle right behind him. */
+/** 3. Oh no: the dash down the dark hall to the bathroom, the gurgle right behind him. Short and
+ * crowded: every stop to hop costs ground, and the laundry pile and the toy pile under the linen
+ * shelf offer a quicker way up and over for a roll. */
 export function dash(book: BlockBook): Level {
-  const W = 96;
+  const W = 78;
   const H = 12;
   const m = new MapBuilder(book, 'under');
   rooms(m, W, 'r');
@@ -284,21 +287,25 @@ export function dash(book: BlockBook): Level {
   m.set(9, 9, '7').set(13, 9, '7').set(16, 9, 'd').set(16, 8, 't');
   m.set(19, 9, 'L');
   m.mon(MON.teddyUp, 23, 9);
-  m.set(30, 9, 'U').set(34, 9, 'z');
+  m.set(30, 9, 'U').set(33, 9, 'bowl');
   m.set(26, 5, 'g').set(36, 5, 'l');
-  // the linen closet: a roll on its top shelf
-  m.row(7, 39, 42, '8').set(41, 6, '9');
-  m.set(47, 9, '0');
-  m.mon(MON.gwinnUp, 50, 9);
-  m.set(57, 9, '!').set(61, 9, 'L').set(65, 9, '7').set(67, 9, 'V');
+  // the linen closet: a roll on its top shelf, over a spilled pile of toys (hop the two of them
+  // on the floor, or up onto the shelf for the roll and over)
+  m.row(7, 36, 40, '8').set(39, 6, '9');
+  m.set(37, 9, 'L').set(38, 9, 'z');
+  m.set(43, 9, '0');
+  m.mon(MON.gwinnUp, 45, 9);
+  // the laundry pile (the basket, heaped with towels): hop up onto it and off
+  m.set(51, 9, 'U').set(51, 8, '8');
+  m.set(54, 9, '!');
   // a roll on top of the laundry basket
-  m.set(72, 9, 'U').set(72, 8, '9');
-  m.set(78, 9, 'z').set(82, 9, '!').set(76, 5, 'm');
+  m.set(59, 9, 'U').set(59, 8, '9');
+  m.set(62, 9, 'bowl').set(65, 9, '!').set(60, 5, 'm');
   // the bathroom door: three rolls; then across the bathroom to the toilet (the walk lets the
   // slam and "IT'S NOT WORTH IT!" finish before the act ends)
-  m.set(85, 9, 'W').set(85, 8, 'I');
-  m.fill(86, 1, 9, 9, 'bathWall').row(10, 86, 94, '+').set(93, 9, 'toilet');
-  m.link(93, 9, 'next');
+  m.set(67, 9, 'W').set(67, 8, 'I');
+  m.fill(68, 1, 9, 9, 'bathWall').row(10, 68, 76, '+').set(75, 9, 'toilet');
+  m.link(75, 9, 'next');
   // the Swamp Demon, right behind him
   m.mon(MON.gurgle, 1, 8);
   return { m, start: at(4, 9), size: [W, H] };

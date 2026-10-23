@@ -245,10 +245,10 @@ export function buildMonsterBlocks(pal: Pal) {
     if (collar) p.rect(13, 11, 4, 1, c(collar, 2));
     return done(p);
   };
-  book.add('teddyUp0', dogAwake(0, 'fur', 'white', undefined, true), hurt(-4));
-  book.add('teddyUp1', dogAwake(1, 'fur', 'white', undefined, true), hurt(-4));
-  book.add('gwinnUp0', dogAwake(0, 'liver', 'liver', 'pink'), hurt(-4));
-  book.add('gwinnUp1', dogAwake(1, 'liver', 'liver', 'pink'), hurt(-4));
+  book.add('teddyUp0', dogAwake(0, 'fur', 'white', undefined, true), hurt(-2));
+  book.add('teddyUp1', dogAwake(1, 'fur', 'white', undefined, true), hurt(-2));
+  book.add('gwinnUp0', dogAwake(0, 'liver', 'liver', 'pink'), hurt(-2));
+  book.add('gwinnUp1', dogAwake(1, 'liver', 'liver', 'pink'), hurt(-2));
   // her snoring: a Z drifting up
   const zzz = (f: number) => {
     const p = P();

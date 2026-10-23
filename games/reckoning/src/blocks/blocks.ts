@@ -187,6 +187,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   const squeaked = base.crop(0, 0, 20, 20);
   blob(squeaked, 10, 18, 6, 1.8, R('pink'), 0, 2);
   book.add('squeaked', squeaked, air);
+  // the dogs' water bowl in the dark hall: a clatter and a slosh (hop it)
+  const bowl = base.crop(0, 0, 20, 20);
+  bowl.rect(3, 15, 14, 4, c('metal', 2)).rect(2, 14, 16, 1, c('metal', 3)).rect(5, 19, 10, 1, c('metal', 1)).rect(4, 14, 12, 1, c('sweat', 1));
+  micro(bowl, 7, 15, 'DOG', c('ink', 0));
+  book.add('bowl', bowl, { ...air, hp: -8, touch: 'bowlKicked' });
+  const bowlKicked = base.crop(0, 0, 20, 20);
+  bowlKicked.rect(1, 17, 9, 3, c('metal', 2)).rect(11, 19, 8, 1, c('sweat', 1));
+  book.add('bowlKicked', bowlKicked, air);
 
   // ---------- the hall ----------
   // the photos on the wall: the third goat from the left (a painting), Brother Camel, Doc Leo

@@ -37,6 +37,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
       await stretch();
     } catch (e) {
       why = String(e).split('\n').slice(0, 3).join(' / ');
+      if (process.env.BOT_WHY) console.log(`${label} (wait ${wait}): ${why}`);
       continue;
     }
     const loss = hp - bot.sim.ci.hitpts;
@@ -45,6 +46,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
       return;
     }
     why = `lost ${loss} dignity, ${bot.sim.deaths - deaths} lives`;
+    if (process.env.BOT_WHY) console.log(`${label} (wait ${wait}): ${why}`);
   }
   throw new Error(`${label}: no safe moment (${why})\n${bot.log.slice(-10).join('\n')}`);
 }
@@ -153,48 +155,45 @@ export async function dash(bot: Bot): Promise<void> {
     await over(9, 'the first chair', 10.4);
     await must(bot, bot.walk(11.8, 'by the second chair'), 'chair 2');
     await over(13, 'the second chair', 14.4);
-    await must(bot, bot.walk(18, 'before the toy blocks'), 'blocks');
-    await over(19, 'the toy blocks', 20.8);
+    await must(bot, bot.walk(17.4, 'before the toy blocks'), 'blocks');
+    await over(19, 'the toy blocks', 20.6);
   });
-  await carefully(bot, 'past Teddy, the basket, the squeaky toy', 16, async () => {
+  await carefully(bot, 'past Teddy, the basket, the dog bowl', 4, async () => {
     await must(bot, bot.walk(21, 'before Teddy'), 'teddy');
     await over(25, 'Teddy', 28.6);
     await must(bot, bot.walk(28.8, 'by the basket'), 'basket');
     await over(30, 'the basket', 31.6);
-    await must(bot, bot.walk(32.8, 'before the squeaky toy'), 'toy');
-    await over(34, 'the squeaky toy', 35.8);
+    await must(bot, bot.walk(31.8, 'before the dog bowl'), 'bowl');
+    await over(33, 'the dog bowl', 34.6);
   });
-  await carefully(bot, 'the linen closet', 16, async () => {
-    await must(bot, bot.walk(40, 'under the linen closet'), 'closet');
+  await carefully(bot, 'the linen shelf, over the toy pile', 16, async () => {
+    await must(bot, bot.walk(36, 'under the linen shelf'), 'closet');
     await must(bot, bot.hop('up', 12), 'up on the towels');
-    await must(bot, bot.walk(41, 'the roll on the shelf'), 'roll');
-    await must(bot, bot.hop('right', 6, 'right', 47), 'down off the shelf');
-    await must(bot, bot.walk(47, 'the roll on the floor'), 'roll 2');
+    await must(bot, bot.walk(39, 'the roll on the shelf'), 'roll');
+    await must(bot, bot.hop('right', 6, 'right', 43), 'down off the shelf, past the toy pile');
+    await must(bot, bot.walk(43, 'the roll on the floor'), 'roll 2');
   });
-  await carefully(bot, 'past Gwinn, the creaky board, the toy blocks, the chair', 16, async () => {
-    await must(bot, bot.walk(48.6, 'before Gwinn'), 'gwinn');
-    await over(51, 'Gwinn', 54.8);
-    await must(bot, bot.walk(55.8, 'before the creaky board'), 'board');
-    await over(57, 'the creaky board', 58.6);
-    await must(bot, bot.walk(59.8, 'before the toy blocks'), 'blocks');
-    await over(61, 'the toy blocks', 62.6);
-    await must(bot, bot.walk(63.8, 'before the chair'), 'chair');
-    await over(65, 'the chair', 66.4);
-    await must(bot, bot.walk(70.8, 'the glass of water, by the basket'), 'water');
+  await carefully(bot, 'past Gwinn, the laundry pile, the creaky board', 4, async () => {
+    await must(bot, bot.walk(43.6, 'before Gwinn'), 'gwinn');
+    await over(46, 'Gwinn', 49.4);
+    await must(bot, bot.walk(49.6, 'by the laundry pile'), 'pile');
+    await must(bot, bot.hop('right', 12, 'right', 51.2), 'up on the laundry pile');
+    await must(bot, bot.hop('right', 12, 'right', 55.6), 'off the pile, over the creaky board');
+    await must(bot, bot.walk(57.6, 'by the basket'), 'water');
   });
   await carefully(bot, 'the roll on the basket, the last of the noisy things', 16, async () => {
-    await must(bot, bot.hop('right', 12, 'right', 72), 'up on the basket');
-    await must(bot, bot.walk(72, 'the roll on the basket'), 'roll 3');
-    await must(bot, bot.hop('right', 6, 'right', 75), 'down off the basket');
-    await must(bot, bot.walk(76.8, 'before the squeaky toy'), 'toy');
-    await over(78, 'the squeaky toy', 79.6);
-    await must(bot, bot.walk(80.8, 'before the creaky board'), 'board');
-    await over(82, 'the creaky board', 83.6);
+    await must(bot, bot.hop('right', 12, 'right', 59), 'up on the basket');
+    await must(bot, bot.walk(59, 'the roll on the basket'), 'roll 3');
+    if (rolls(bot) - start < 3) throw new Error(`only ${rolls(bot) - start} rolls`);
+    await must(bot, bot.hop('right', 6, 'right', 60.6), 'down off the basket');
+    await must(bot, bot.walk(60.8, 'before the dog bowl'), 'bowl');
+    await over(62, 'the dog bowl', 63.6);
+    await must(bot, bot.walk(63.8, 'before the creaky board'), 'board');
+    await over(65, 'the creaky board', 66.6);
   });
-  if (rolls(bot) - start < 3) throw new Error(`only ${rolls(bot) - start} rolls`);
   await carefully(bot, 'the bathroom door', 16, async () => {
-    await must(bot, bot.walk(84, 'the bathroom door'), 'the bathroom door');
-    await leave(bot, bot.walk(94, 'across the bathroom to the toilet'), 'the bathroom');
+    await must(bot, bot.walk(66.6, 'the bathroom door'), 'the bathroom door');
+    await leave(bot, bot.walk(76, 'across the bathroom to the toilet'), 'the bathroom');
   });
 }
 

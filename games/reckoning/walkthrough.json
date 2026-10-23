@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0TzQYSDJIATQLNCE0HzQYSDJIATQLNCE0SzQYSDJIATQfNCU0BzQYSDJIATR7NA00BzQYSDJIATQPNB00GzQYSDJIATQPNBk0VzQZIDMgETQXNBhIGkgBNGM0DSwDLBk0IzQYSDJIATRPNA00FzQYSDJIATQLNB00GzQYSDJIATQLNB00GzQYSDJIATQLNCE0WzQYSDJIATQDNCksDSArIBcsGEgaSAE0JzQNNCc0GEgySAE0CzQdNBs0GEgySAE0CzQdNAs0GTQ=="
+   "keys": "AU0TzQYSDJIATQLNCE0HzQYSDJIATQLNCE0PzQYSDJIATQTNC00CzQYSDJIATSDNA00BzQYSDJIATQXNBE0BzQYSDJIATQLNB00HzQZIDMgETQ/NBhIGkgBNDs0DSwDLHk0DzQYSDJIATRbNA00BzQYSDJIATQDNCRIMkgBNBs0DTQrNBhIMkgBNAM0JSwNICsgFywYSBpIATQLNCU0BzQYSDJIATQLNB00BzQYSDJIATQLNB0sAywZN"
   },
   {
    "scene": 5,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18313,
+  "frames": 18047,
   "chapters": [
    {
     "title": "Opening",
@@ -67,15 +67,15 @@
    },
    {
     "title": "Act IV: The Reckoning",
-    "frame": 10681
+    "frame": 10415
    },
    {
     "title": "Ending",
-    "frame": 12886
+    "frame": 12620
    },
    {
     "title": "Credits",
-    "frame": 15745
+    "frame": 15479
    }
   ]
  }
