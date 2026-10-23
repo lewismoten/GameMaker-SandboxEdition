@@ -4,6 +4,7 @@
 import { h } from "../../editor/core/ui";
 import { addSkyExtra, MOON, VIEW, type SkyExtra } from "../room/snowWindow";
 import { daylight } from "../room/daylight";
+import { onDeskClock } from "../../retro/dos/deskClock";
 import { moonPhase } from "./moonPhase";
 import { hitArea, pressable, say, stillMotion, turns } from "./propKit";
 import { roomSound } from "./propSound";
@@ -161,9 +162,11 @@ export function windowProps(win: HTMLElement): () => void {
   };
   show();
   const timer = setInterval(show, 60_000);
+  const offClock = onDeskClock(show);
   return () => {
     offGlass();
     offMoon();
+    offClock();
     clearInterval(timer);
     clearTimeout(fogTimer);
   };

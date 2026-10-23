@@ -6,6 +6,7 @@
 import "./snowWindow.css";
 import { h } from "../../editor/core/ui";
 import { daylight } from "./daylight";
+import { onDeskClock } from "../../retro/dos/deskClock";
 import { PhoneSounds } from "./phone/sounds";
 import { moonPath, moonPhase } from "../props/moonPhase";
 
@@ -468,6 +469,14 @@ export function snowyWindow(): HTMLElement {
     shine();
     if (still) draw(false);
     else requestAnimationFrame(frame);
+  });
+  // DOS's TIME or DATE set the room's clock: day or night (and the moon) change at once
+  const offClock = onDeskClock(() => {
+    if (!el.isConnected) return offClock();
+    light = daylight();
+    label();
+    shine();
+    if (still) draw(false);
   });
   return el;
 }

@@ -1,6 +1,8 @@
 // The real moon tonight, near enough for a window: how far it is through its month (from a
 // known new moon, 6 January 2000 18:14 UTC, at the mean synodic month), how much of it is
 // lit, and the phase's name.
+import { deskNow } from "../../retro/dos/deskClock";
+
 const MONTH = 29.530588853; // days
 const NEW_MOON = Date.UTC(2000, 0, 6, 18, 14);
 
@@ -23,7 +25,7 @@ const NAMES = [
   "a waning crescent",
 ];
 
-export function moonPhase(when = new Date()): Moon {
+export function moonPhase(when = deskNow()): Moon {
   const days = (when.getTime() - NEW_MOON) / 86_400_000;
   const age = (((days / MONTH) % 1) + 1) % 1;
   const lit = (1 - Math.cos(age * 2 * Math.PI)) / 2;
