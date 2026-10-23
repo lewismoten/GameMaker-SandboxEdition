@@ -156,7 +156,7 @@ const CREDITS_TEXT = pages(
     '',
     'Sandbox Software',
     'Dept. WOOF',
-    'P.O. Box 1995',
+    'P.O. Box 000',
     'Pittsburgh, PA 15213',
     '',
     '(A made-up address. Please',
@@ -323,7 +323,7 @@ THIS IS SHAREWARE
 
     Sandbox Software
     Dept. WOOF
-    P.O. Box 1995
+    P.O. Box 000
     Pittsburgh, PA 15213
 
   (This is a fictional address
