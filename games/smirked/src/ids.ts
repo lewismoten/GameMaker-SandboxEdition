@@ -13,7 +13,7 @@ export const MON = {
   witch: 4,
   /** The witch, flat on her back, her broomstick broken: walk over and say sorry (counter 21). */
   witchFlat: 5,
-  /** Lily, eight, in a unicorn hoodie, strolling ahead with a caramel apple like it's Target. */
+  /** Lily, eight, in a unicorn hoodie, strolling ahead with a caramel apple like she's at a big-box store. */
   lily: 6,
   /** A rubber bat bobbing on a string. */
   bat: 7,
