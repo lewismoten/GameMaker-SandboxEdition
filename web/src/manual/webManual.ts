@@ -178,14 +178,18 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     become games, shareware “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>,
     <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b>, <b>Loaf #13 (Left in the
     Basket)</b>, <b>Certified Rat Tickler</b>, <b>Where’s the Remote?!</b>, <b>A Fly Named Carl</b>, <b>The Great
-    Dairy Reckoning of 3:17 A.M.</b>, <b>Cleanse Me, O Loofah, But Leave My Soul</b> and <b>I Screamed, She Smirked</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
+    Dairy Reckoning of 3:17 A.M.</b>, <b>Cleanse Me, O Loofah, But Leave My Soul</b>, <b>I Screamed, She Smirked</b> and <b>Shakespeare in Sweatpants</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each
     song’s words were written by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
     back and forth), and each recording was made with Riffusion (now Google Flow Music).
     Certified Rat Tickler came with no recording, so its music was composed for the game by
     Claude Opus 5.5. The Great Dairy Reckoning of 3:17 A.M. is a spoken piece from Lewis’s own
     struggle (he is lactose intolerant, and he loves cheesecake): its voice was made with
-    Riffusion, and its music was composed for the game by Claude Opus 5.5. Third Goat from the
+    Riffusion, and its music was composed for the game by Claude Opus 5.5. Shakespeare in
+    Sweatpants is seventeen spoken monologues, shaped with ChatGPT from Lewis’s prompts, with
+    audio and vocals made with Riffusion (now Google Flow Music); its code, art and music were
+    made by Claude Opus 5.5, and its coffee house, The Hive, is inspired by Lewis’s memories of
+    the Beehive in Oakland, Pittsburgh (drawn from memory, not an official picture of it). Third Goat from the
     Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover
     came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai.
     The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly
