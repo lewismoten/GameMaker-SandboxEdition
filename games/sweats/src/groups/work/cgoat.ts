@@ -111,7 +111,7 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   for (let k = 0; k < 10; k++) cup.disc(4 + rr() * 26, 10 + rr() * 2, 1 + rr(), c('coffee', 3));
   micro(cup, 8, 20, 'NON', c('ink', 1));
   micro(cup, 6, 27, 'DAIRY', c('ink', 1));
-  addPicture(book, 'fizzCup', cup, (_c, row) => (row ? officeBase(pal) : wall(36)), (_c, row) => ({ solid: SOLID, ...(row ? {} : { birthMon: CGOAT_MON.fizz, birthTime: 40 }) }));
+  addPicture(book, 'fizzCup', cup, (_c, row) => (row ? officeBase(pal) : wall(36)), (col, row) => ({ solid: SOLID, ...(row || col ? {} : { birthMon: CGOAT_MON.fizz, birthTime: 70 }) }));
   // employee of the month: a goat (he blinks, and there it is)
   const eom = wall(38);
   eom.rect(2, 1, 16, 18, c('wood', 1)).rect(4, 3, 12, 11, c('daylight', 2));
@@ -216,7 +216,7 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
 export function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
   set[CGOAT_MON.static] = mon(anim(mb, 'fuzz0', 'fuzz1', 3), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(3, 1));
   set[CGOAT_MON.creamer] = mon(anim(mb, 'creamer0', 'creamer1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [corner(0, 0, 1), corner(3, 0, 1)]);
-  set[CGOAT_MON.fizz] = mon(anim(mb, 'fizz0', 'fizz1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [corner(0, 0, 1), corner(0, -4, 1)]);
+  set[CGOAT_MON.fizz] = mon(anim(mb, 'fizz0', 'fizz1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [corner(0, 0, 2), corner(0, -4, 2)]);
   set[CGOAT_MON.mirage] = mon(anim(mb, 'mirage0', 'mirage1', 6), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(2, 1));
   set[CGOAT_MON.puff] = mon(anim(mb, 'ink0', 'ink1', 3), { power: POWER.friend, thru: 0, end: 8 });
 }
