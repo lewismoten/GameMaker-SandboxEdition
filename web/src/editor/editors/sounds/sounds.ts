@@ -48,6 +48,7 @@ registerEditor(['snd'], (host, project, file) => {
     save();
     render();
   }
+  let keyPlay: (k: string) => Promise<void> = async () => {};
   const list = h('div', { class: 'snd-list', role: 'list', 'aria-label': 'Sound effects' });
   const detail = h('div', { class: 'stack snd-detail' });
 
@@ -55,16 +56,26 @@ registerEditor(['snd'], (host, project, file) => {
     const name = snd.digital[i];
     return name && name[0] !== ' ' && project.files.has(`${name}.voc`) ? `${name}.voc` : undefined;
   };
+  const hasSpeaker = (i: number) => snd.freqs[i].some((v) => v > 0);
   // A slot is silent when it has neither a .voc file nor any PC speaker step.
-  const hasAudio = (i: number) => !!vocOf(i) || snd.freqs[i].some((v) => v > 0);
+  const hasAudio = (i: number) => !!vocOf(i) || hasSpeaker(i);
 
-  const play = async (i: number) => {
-    if (!hasAudio(i)) return;
+  // Each part can be heard on its own; starting one stops the other, as only one plays in the game.
+  const playSpeaker = async (i: number) => {
+    if (!hasSpeaker(i)) return;
     await audio.resume();
-    const voc = vocOf(i);
-    if (voc) audio.playVoc(project.files.get(voc));
-    else audio.playSpeaker(snd.freqs[i]);
+    audio.stopVoc();
+    audio.playSpeaker(snd.freqs[i]);
   };
+  const playVoc = async (i: number) => {
+    const voc = vocOf(i);
+    if (!voc) return;
+    await audio.resume();
+    audio.stopSpeaker();
+    audio.playVoc(project.files.get(voc));
+  };
+  // As PLAYGAME does with a Sound Blaster: the .voc when there is one, else the PC speaker sound.
+  const play = (i: number) => (vocOf(i) ? playVoc(i) : playSpeaker(i));
 
   function renderList(): void {
     clear(
@@ -86,8 +97,8 @@ registerEditor(['snd'], (host, project, file) => {
           h(
             'button',
             {
-              title: hasAudio(i) ? 'Play' : 'No sound yet: no PC speaker steps and no .voc file',
-              'aria-label': `Play effect ${i}`,
+              title: hasAudio(i) ? 'Play as the game would' : 'No sound yet: no PC speaker steps and no .voc file',
+              'aria-label': `Play effect ${i} as the game would`,
               disabled: !hasAudio(i),
               onclick: () => void play(i),
             },
@@ -100,12 +111,39 @@ registerEditor(['snd'], (host, project, file) => {
 
   function renderDetail(): void {
     const f = snd.freqs[current];
-    const playBtn = h('button', { class: 'primary', onclick: () => void play(current) }, '▶ Play');
+    const playBtn = h('button', { class: 'primary', 'aria-keyshortcuts': 'G', onclick: () => void play(current) }, '▶ Play as the game would');
+    const speakerBtn = h(
+      'button',
+      { 'aria-keyshortcuts': 'P', 'aria-describedby': 'snd-speaker-state', onclick: () => void playSpeaker(current) },
+      '▶ Play PC speaker',
+    );
+    const vocBtn = h('button', { 'aria-keyshortcuts': 'V', 'aria-describedby': 'snd-voc-state', onclick: () => void playVoc(current) }, '▶ Play VOC');
+    const speakerState = h('p', { id: 'snd-speaker-state', class: 'hint snd-state', 'aria-live': 'polite' });
+    const vocState = h('p', { id: 'snd-voc-state', class: 'hint snd-state', 'aria-live': 'polite' });
     const renderPlay = () => {
+      const name = snd.digital[current]?.trim();
+      const voc = vocOf(current);
       playBtn.disabled = !hasAudio(current);
-      playBtn.title = playBtn.disabled ? 'Nothing to play yet: draw some PC speaker steps or pick a .voc file' : '';
+      playBtn.title = playBtn.disabled
+        ? 'Nothing to play yet: draw some PC speaker steps or pick a .voc file'
+        : voc
+          ? `With a Sound Blaster the game plays ${name!.toUpperCase()}.VOC (G)`
+          : 'The game plays the PC speaker sound (G)';
+      speakerBtn.disabled = !hasSpeaker(current);
+      speakerBtn.title = speakerBtn.disabled ? '' : 'Play only the PC speaker sound (P)';
+      speakerState.hidden = !speakerBtn.disabled;
+      speakerState.textContent = 'No PC speaker sound yet: draw the steps below or make one.';
+      vocBtn.disabled = !voc;
+      vocBtn.title = voc ? `Play only ${name!.toUpperCase()}.VOC (V)` : '';
+      vocState.classList.toggle('snd-empty', !voc);
+      vocState.textContent = voc
+        ? 'Played instead of the PC speaker sound on a Sound Blaster.'
+        : name
+          ? `${name.toUpperCase()}.VOC is not in this project, so the game plays the PC speaker sound.`
+          : 'No .voc assigned: the game plays the PC speaker sound, even on a Sound Blaster.';
     };
     renderPlay();
+    keyPlay = (k) => (k === 'p' ? playSpeaker(current) : k === 'v' ? playVoc(current) : play(current));
     const W = 36 * 14;
     const H = 220;
     const canvas = h('canvas', {
@@ -193,11 +231,12 @@ registerEditor(['snd'], (host, project, file) => {
           },
           { noneLabel: ['PC speaker only', 'play the PC speaker sound below'] },
         ),
+        h('div', { class: 'snd-part' }, vocBtn, vocState),
       ),
       h(
         'div',
         { class: 'panel stack snd-speaker' },
-        h('strong', null, 'PC speaker'),
+        h('div', { class: 'snd-part' }, h('strong', null, 'PC speaker'), speakerBtn, speakerState),
         h('p', { class: 'hint', style: 'margin:0' }, 'Draw the pitch of each step (about 1/146 of a second each). Drag to the bottom for silence.'),
         canvas,
         h('strong', null, 'Make one'),
@@ -270,6 +309,21 @@ registerEditor(['snd'], (host, project, file) => {
   );
   render();
   const onKey = (e: KeyboardEvent) => {
+    const t = e.target;
+    const typing = t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || (t instanceof HTMLElement && t.isContentEditable);
+    // P, V and G play the PC speaker sound, the .voc, or the effect as the game would
+    if (!e.ctrlKey && !e.metaKey && !e.altKey && !typing && !document.querySelector('dialog[open]') && host.isConnected) {
+      const k = e.key.toLowerCase();
+      if (k === 'p' || k === 'v' || k === 'g') {
+        e.preventDefault();
+        void keyPlay(k);
+        return;
+      }
+      if (k === 'escape') {
+        audio.stopSpeaker();
+        audio.stopVoc();
+      }
+    }
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
     const k = e.key.toLowerCase();
     if (k === 'z' || k === 'y') {
