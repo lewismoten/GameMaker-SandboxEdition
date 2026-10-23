@@ -73,7 +73,8 @@ export function buildVocs(): Record<string, Uint8Array> {
       ],
       [lowNoise(2, 0.6), 0.15],
     ),
-    { envelope: env(0.005, 0.6) },
+    // softer than the singing: it is heard on every hop
+    { envelope: env(0.005, 0.6), gain: 0.6 },
   );
   // kneeling: a low camel grumble, "hrrrmph"
   vocs.grumble = sample(

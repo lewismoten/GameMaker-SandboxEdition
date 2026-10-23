@@ -33,7 +33,7 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
 ];
 
 /** Each place's sky (top to bottom) and how the rest is lit. */
-const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
+const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB; keep?: string[] }> = {
   // a soft gold morning over the city
   morning: {
     sky: [
@@ -73,6 +73,8 @@ const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
     ],
     mul: [0.78, 0.78, 0.92],
     add: [4, 4, 16],
+    // the bare camel stays moonlit, so he stands out against the night bands he climbs through
+    keep: ['camel'],
   },
   plain: {
     sky: [
@@ -111,7 +113,8 @@ export function buildPalette(light: Light): Pal {
   const t = LIGHT[light];
   b.ramp('sky', 6, t.sky[0], t.sky[1], t.sky[2]);
   for (const [name, n, from, to, mid, glows] of RAMPS) {
-    const f = (c: RGB): RGB => (glows ? c : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB));
+    const lit = glows || t.keep?.includes(name);
+    const f = (c: RGB): RGB => (lit ? c : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB));
     b.ramp(name, n, f(from), f(to), mid ? f(mid) : undefined);
   }
   return wrap(b);
