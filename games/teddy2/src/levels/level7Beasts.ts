@@ -1,6 +1,6 @@
 // Level 7's monsters. Tickets come from tricks: ring the High Striker's bell (climb its pegs,
 // high five), sit pretty for Bubbles at the ring toss, spin for Twirly at the wheel; a scent
-// under the bleachers hides one more. THE BIG DROP's car rides up its tower slowly and drops
+// under the bleachers hides one more. THE BIG DROP's car rides up its tower steadily and drops
 // fast. The carousel's horses go up and down (stand on one for a lift to the canopy). Bees
 // at the root beer stand.
 import { Pixels } from '../../../kit/pixels';
@@ -111,9 +111,9 @@ export function midwayBeasts() {
   b.add('dropCar', {
     pics: [['dropCar', 50]],
     power: POWER.friend,
-    // up slowly, a pause at the top, then the big drop; a pause at the bottom
+    // up steadily, a pause at the top, then the big drop; a pause at the bottom
     path: [
-      [0, -21, 2],
+      [0, -21, 3],
       [0, -20, 1],
       [0, -21, 1],
       [0, 0, 7],

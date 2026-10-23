@@ -38,13 +38,15 @@ export function riverBeasts() {
   b.add('hoist', {
     pics: [['hoist', 50]],
     power: POWER.friend,
+    // a bob at the bottom first (time to step on), up, a slow bob at the top (time to step
+    // off), and back down empty at twice the speed
     path: [
+      [0, -1, 1],
+      [0, 0, 1],
       [0, -6, 2],
       [0, -5, 1],
       [0, -6, 1],
-      [0, 0, 2],
-      [0, -1, 1],
-      [0, 0, 1],
+      [0, 0, 4],
     ],
   });
   pacer(
