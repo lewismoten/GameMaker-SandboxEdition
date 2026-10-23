@@ -16,6 +16,7 @@ export function startAchievements(): void {
   window.addEventListener(ACHIEVEMENT_EVENT, (e) => {
     const id = (e as CustomEvent<{ id?: unknown }>).detail?.id;
     if (typeof id === 'string') unlockAchievement(id);
+    // eslint-disable-next-line no-console -- a development-only note
     else if (import.meta.env?.DEV) console.info('[achievements] gm-achievement without an id', e);
   });
   listenToOtherTabs();

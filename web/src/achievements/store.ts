@@ -64,6 +64,7 @@ let loading: Promise<AchievementRecord> | undefined;
 /** Changes asked for before the record was read. */
 let held: ((r: AchievementRecord) => boolean)[] = [];
 let channel: BroadcastChannel | undefined;
+// eslint-disable-next-line no-console -- development only
 const devLog = (...a: unknown[]) => import.meta.env?.DEV && console.info('[achievements]', ...a);
 
 function tellOthers(): void {
