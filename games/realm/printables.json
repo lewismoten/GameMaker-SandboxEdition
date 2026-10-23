@@ -14,11 +14,134 @@
     "F4": "Sound effects on / off"
   },
   "stickers": [
-    { "text": "PIP", "sub": "OF NOWISH", "shape": "badge", "color": "#2f5d3a", "ink": "#ffffff", "hero": { "chr": "pip.chr", "cbl": "pip.cbl", "pal": "town.pal" } },
-    { "text": "I GOT AROUND TO IT", "shape": "circle", "color": "#e8b84a", "ink": "#2a1a10" },
-    { "text": "SQUEAK", "sub": "SIR REGINALD", "shape": "star", "color": "#ffd23f", "ink": "#7a1a10", "sprite": { "blocks": "people.mbl", "pal": "world.pal", "grid": [[54]] } },
-    { "text": "THE CHEZ", "sub": "1976 1/2", "shape": "rect", "color": "#d6362a", "ink": "#ffffff" },
-    { "text": "TWO N'S", "sub": "GWINN", "shape": "badge", "color": "#f6a9c8", "ink": "#3a1a20" }
+    {
+      "text": "PIP",
+      "sub": "OF NOWISH",
+      "shape": "cut",
+      "color": "#2f5d3a",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "pip.chr",
+        "cbl": "pip.cbl",
+        "pal": "town.pal"
+      }
+    },
+    {
+      "text": "TEDDY",
+      "sub": "ONE EAR SHORTER",
+      "shape": "cut",
+      "color": "#e8862a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[56]]
+      }
+    },
+    {
+      "text": "TWO N'S",
+      "sub": "GWINN",
+      "shape": "cut",
+      "color": "#f6a9c8",
+      "ink": "#3a1a20",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[58]]
+      }
+    },
+    {
+      "text": "BAWK!",
+      "sub": "THE RUBBER CHICKEN",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#7a1a10",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[60]]
+      }
+    },
+    {
+      "text": "SQUEAK",
+      "sub": "SIR REGINALD",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#7a1a10",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[54]]
+      }
+    },
+    {
+      "text": "BLORP",
+      "sub": "MOSTLY HARMLESS",
+      "shape": "cut",
+      "color": "#4cb33a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "people.mbl",
+        "pal": "world.pal",
+        "grid": [[62]]
+      }
+    },
+    {
+      "text": "THE CHEZ",
+      "sub": "1976½",
+      "shape": "cut",
+      "color": "#d6362a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "pip.cbl",
+        "pal": "town.pal",
+        "grid": [[19]]
+      }
+    },
+    {
+      "text": "ZOOM!",
+      "sub": "PIP'S SNEAKERS",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "pip.cbl",
+        "pal": "town.pal",
+        "grid": [[17]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "port.bbl",
+        "pal": "port.pal",
+        "grid": [[142]],
+        "under": 0
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "port.bbl",
+        "pal": "port.pal",
+        "grid": [[146]],
+        "under": 0
+      }
+    },
+    {
+      "text": "I GOT AROUND TO IT",
+      "shape": "circle",
+      "color": "#e8b84a",
+      "ink": "#2a1a10"
+    }
   ],
   "news": [
     {
