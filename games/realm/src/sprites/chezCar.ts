@@ -32,7 +32,7 @@ function side(bounce: number, spoke: number): Canvas {
     ],
     C('blue', 3),
   );
-  cv.rect(3.5, y + 2, 4, 3.6, C('blue', 2));
+  // (that door window is the only glass from the side: the panel behind the door is solid)
   cv.rect(3, y + 0.2, 8.5, 1.3, C('steel', 2));
   cv.rect(1.5, y + 9.4, 17.5, 1, C('ink'));
   cv.disc(18, y + 7.6, 1, C('white', 1));
