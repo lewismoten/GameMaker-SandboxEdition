@@ -694,5 +694,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (will.get(x, y) !== 255) p.set(x, y, will.get(x, y));
     book.add('willCurtain', p, solid);
   }
+  // The crypt's first sign, propped on the flagstones by the way in: how a tackle works (you walk over it).
+  {
+    const p = new Pixels(60, 20);
+    for (let k = 0; k < 3; k++) p.blit(flags(60 + k), k * 20, 0);
+    p.rect(1, 2, 58, 14, c('board', 1)).rect(2, 3, 56, 12, c('white', 2)).frame(2, 3, 56, 12, c('board', 0));
+    micro(p, 6, 4, 'FACE A WITCH,', c('red', 1));
+    micro(p, 8, 10, 'THEN SPACE!', ink);
+    p.rect(9, 16, 2, 3, c('board', 1)).rect(49, 16, 2, 3, c('board', 1));
+    cut(p, [['getDown0', 'getDown1', 'getDown2']], () => ({}));
+  }
   return book;
 }

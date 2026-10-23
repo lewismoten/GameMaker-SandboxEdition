@@ -178,6 +178,9 @@ const CRYPT: Record<string, string> = {
   g: 'glowstickS',
   S: 'staffDoor',
   h: 'tinHeart',
+  '1': 'getDown0',
+  '2': 'getDown1',
+  '3': 'getDown2',
 };
 
 /** Where the papier-mache witches stand. */
@@ -198,7 +201,7 @@ export function zombieParade(book: BlockBook): Level {
     '#..fff....,......c.........x...#',
     '#.........t.l.u.......*........#',
     '#.,..j.............,.......fff.#',
-    '#........c....x......t.u.t.....#',
+    '#.123....c....x........u.......#',
     '#....................g.........#',
     '#....,.....*.........,.........S',
     '#..t.u.t.......c.........$.....#',
