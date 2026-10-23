@@ -8,7 +8,7 @@ import { CAST, CAST_GAMES, familiesOf, type CastMember, type Family } from './ca
 import { castStage } from './castStage';
 import { seenIn } from './castThumbs';
 import { pageToc } from '../pageToc';
-import { heartProgress } from '../tinHearts/progress';
+import { heartProgress, joeAllAlong } from '../tinHearts/progress';
 import { unlockAchievement } from '../achievements';
 
 const FILTERS: [Family | 'all', string][] = [
@@ -44,6 +44,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
       h('p', { class: 'cast-role' }, m.role),
       h('p', { class: 'cast-bio' }, m.bio),
       m.id === 'tinHeart' && heartProgress(),
+      m.id === 'joe' && joeAllAlong(),
     ),
     m.appears.length
       ? h('div', { class: 'cast-seen-box' }, h('p', { class: 'cast-seen-h' }, 'Seen in:'), seenIn(m.appears))
