@@ -10,10 +10,12 @@ there is nothing to pay. The
 song is The Bard of Bizarre's
 (Lewis Moten's): lyrics
 written by ChatGPT from Lewis
-Moten's prompt; music: (credit
-pending); title and cover art
-drawn for this game by Claude
-Opus 5.5.
+Moten's prompt; music made
+with Riffusion (now Google
+Flow Music); title and cover
+art drawn for this game by
+Claude Opus 5.5.
+
 Made in 2026 by Lewis Moten,
 with AI help from Claude.
 
@@ -75,5 +77,3 @@ OTHERWISE, ARISING FROM, OUT
 OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
-
-

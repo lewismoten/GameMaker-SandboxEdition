@@ -14,8 +14,8 @@ const page = (lines: string[], pages = 1) => {
 export const TITLE = "WHERE'S THE REMOTE?!";
 export const AUTHOR = 'The Bard of Bizarre';
 
-/** Who made the music the game's FM songs and sung clips come from: not confirmed yet. */
-export const MUSIC_CREDIT = 'music: (credit pending)';
+/** Who made the music the game's FM songs and sung clips come from. */
+export const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
 
 /**
  * Who made the song and the pictures: the lyrics, the recording, and the title and cover art,
@@ -175,10 +175,10 @@ const CREDITS_TEXT = page(
     'should care about.',
     '',
     "Lyrics: ChatGPT, from Lewis's",
-    'prompt. Music: (credit',
-    "pending). This game's FM",
-    'music and sung clips are made',
-    'from the recording.',
+    'prompt. Music: Riffusion (now',
+    'Google Flow Music). This',
+    "game's FM music and sung clips",
+    'are made from the recording.',
     'Title and cover art: drawn',
     'for this game by Claude Opus',
     '5.5 (none came with the',
@@ -278,8 +278,9 @@ CREDITS (NOW)
   Remote?": lyrics written by
   ChatGPT from Lewis Moten's
   prompt (as The Bard of
-  Bizarre); music: (credit
-  pending). The FM music and
+  Bizarre); music made with
+  Riffusion (now Google Flow
+  Music). The FM music and
   sung clips here are made
   from the recording. The
   title and cover art were

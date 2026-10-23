@@ -90,10 +90,10 @@ about a mundane thing nobody
 should care about.
 
 Lyrics: ChatGPT, from Lewis's
-prompt. Music: (credit
-pending). This game's FM
-music and sung clips are made
-from the recording.
+prompt. Music: Riffusion (now
+Google Flow Music). This
+game's FM music and sung clips
+are made from the recording.
 Title and cover art: drawn
 for this game by Claude Opus
 5.5 (none came with the
