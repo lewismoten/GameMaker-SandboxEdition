@@ -176,7 +176,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     become games, shareware “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>,
     <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b>, <b>Loaf #13 (Left in the
     Basket)</b>, <b>Certified Rat Tickler</b>, <b>Where’s the Remote?!</b>, <b>A Fly Named Carl</b>, <b>The Great
-    Dairy Reckoning of 3:17 A.M.</b> and <b>Cleanse Me, O Loofah, But Leave My Soul</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
+    Dairy Reckoning of 3:17 A.M.</b>, <b>Cleanse Me, O Loofah, But Leave My Soul</b> and <b>I Screamed, She Smirked</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each
     song’s words were written by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
     back and forth), and each recording was made with Riffusion (now Google Flow Music).
@@ -187,7 +187,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover
     came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai.
     The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly
-    Named Carl and Cleanse Me, O Loofah, But Leave My Soul, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy
+    Named Carl, Cleanse Me, O Loofah, But Leave My Soul and I Screamed, She Smirked, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy
     Reckoning’s title art were drawn for the games by Claude Opus 5.5. The Bard’s logo was made
     with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn
     from its song’s recording (Certified Rat Tickler’s and The Great Dairy Reckoning’s music was
