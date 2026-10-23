@@ -34,6 +34,10 @@ export const ROUTES = {
     description:
       'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
   },
+  credits: {
+    title: `Credits · ${PRODUCT}`,
+    description: `Who and what made ${PRODUCT}: RSD and the Stone family, the CD games’ authors, the software and third-party pieces, the AI tools and the people, and who made what in The Bard of Bizarre’s games.`,
+  },
   achievements: {
     title: `What you’ve done · ${PRODUCT}`,
     description:
