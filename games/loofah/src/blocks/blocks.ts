@@ -75,6 +75,10 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('floor', checker(true), { solid: SOLID });
+  // outside the rooms: solid dark, the wall's black grout
+  const outside = P().rect(0, 0, 20, 20, c('ink', 0));
+  for (let y = 0; y < 20; y += 10) for (let x = 0; x < 20; x++) outside.set(x, y, c('ink', 1));
+  book.add('outside', outside, { solid: SOLID });
   book.add('under', checker(false), { solid: SOLID });
   // a cracked tile in the floor row: steps on it hurt once, then it's quiet
   const crack = baseTile.crop(0, 0, 20, 20);

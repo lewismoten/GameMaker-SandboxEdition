@@ -159,8 +159,8 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 export function bathroom(book: BlockBook): Level {
   const W = 49;
   const H = 14;
-  const m = new MapBuilder(book, 'under');
-  m.row(0, 1, W - 2, '^').fill(1, 1, W - 2, 10, '.').row(11, 1, W - 2, '_').row(12, 0, W - 1, '=').row(13, 0, W - 1, '#').col(0, 0, 13, '#').col(W - 1, 0, 13, '#');
+  const m = new MapBuilder(book, 'outside');
+  m.row(0, 1, W - 2, '^').fill(1, 1, W - 2, 10, '.').row(11, 1, W - 2, '_').row(12, 0, W - 1, '=').row(13, 0, W - 1, '#').col(0, 0, 13, 'outside').col(W - 1, 0, 13, 'outside');
   // the shower stall: glass, the shower head (drips), the steam rising out of the vents up to the silver rack
   m.fill(1, 1, 5, 11, 'g').set(5, 3, 'h').col(1, 4, 11, '~').col(2, 4, 11, '~').set(1, 12, 'v').set(2, 12, 'v');
   m.row(3, 1, 3, 'R').set(3, 2, '1');
@@ -193,8 +193,8 @@ export function bathroom(book: BlockBook): Level {
 export function aisle(book: BlockBook): Level {
   const W = 66;
   const H = 14;
-  const m = new MapBuilder(book, 'lino');
-  m.fill(1, 0, W - 2, 12, 'f').row(12, 0, W - 1, 'L').row(13, 0, W - 1, 'L').col(0, 0, 13, 'L').col(W - 1, 0, 13, 'L');
+  const m = new MapBuilder(book, 'outside');
+  m.fill(1, 0, W - 2, 12, 'f').row(12, 0, W - 1, 'L').row(13, 0, W - 1, 'L').col(0, 0, 13, 'outside').col(W - 1, 0, 13, 'outside');
   for (let x = 3; x < W - 2; x += 6) m.set(x, 0, '-');
   m.row(12, 14, 50, 'M');
   // the automatic doors, the sign
@@ -255,8 +255,8 @@ export function home(book: BlockBook): Level {
 export function shower(book: BlockBook): Level {
   const W = 34;
   const H = 12;
-  const m = new MapBuilder(book, 'showerFloor');
-  m.fill(1, 0, W - 2, 10, 'steamAir').row(10, 0, W - 1, 'showerFloor').row(11, 0, W - 1, 'showerFloor').col(0, 0, 11, 'showerFloor').col(W - 1, 0, 11, 'showerFloor');
+  const m = new MapBuilder(book, 'outside');
+  m.fill(1, 0, W - 2, 10, 'steamAir').row(10, 0, W - 1, 'showerFloor').row(11, 0, W - 1, 'showerFloor').col(0, 0, 11, 'outside').col(W - 1, 0, 11, 'outside');
   // the drain, full of cursed water
   m.row(10, 12, 13, 'drain0');
   // the caddy's shelves, rosemary on them, a dry washcloth on the floor
