@@ -75,8 +75,9 @@ CREDITS (NOW)
   the Basket)": lyrics written
   by ChatGPT from Lewis Moten's
   prompt (as The Bard of
-  Bizarre); music: (credit
-  pending). The FM music and
+  Bizarre); music made with
+  Riffusion (now Google Flow
+  Music). The FM music and
   sung clips here are made
   from the recording. The
   title and cover art were
