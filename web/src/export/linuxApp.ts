@@ -35,6 +35,8 @@ export interface LinuxAppOptions {
   players: Record<LinuxArch, Uint8Array>;
   author?: string;
   year?: number;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts), in the About text. */
+  fiction?: string;
   picture?: IndexedImage;
   colors?: IconColors;
 }
@@ -143,10 +145,10 @@ fi
 `;
 }
 
-export function readme(o: Pick<LinuxAppOptions, 'title' | 'id' | 'author' | 'year'>): string {
+export function readme(o: Pick<LinuxAppOptions, 'title' | 'id' | 'author' | 'year' | 'fiction'>): string {
   const by = byLine(o);
   return `${o.title}${by ? ` (${by})` : ''}
-Made with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs'
+${o.fiction ? `${o.fiction}\n` : ''}Made with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs'
 Game-Maker 3.0 (1994): ${SITE_URL}
 
 TO PLAY
@@ -165,7 +167,9 @@ IT NEEDS WebKitGTK (most desktops already have it):
 Without it, play.sh opens the game in your web browser instead.
 
 Saved games and high scores are kept in ~/.local/share/GameMaker/${linuxId(o.id)}.
-The game loads nothing from the internet. More: ${SITE_URL}#/linux
+The game loads nothing from the internet. It plays in WebKitGTK, so a future update
+to it or to your system could break or change the game; the DOS download, in DOSBox,
+is the most future-proof. More: ${SITE_URL}#/linux
 `;
 }
 

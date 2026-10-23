@@ -35,6 +35,8 @@ export interface WinAppOptions {
   version?: string;
   author?: string;
   year?: number;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts), in the About text. */
+  fiction?: string;
   /** Shown on the icon (macApp.ts's iconPicture). */
   picture?: IndexedImage;
   colors?: IconColors;
@@ -58,13 +60,13 @@ export function winId(id: string): string {
   return id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64) || 'game';
 }
 
-export function credits(o: Pick<WinAppOptions, 'author' | 'year'>): string {
+export function credits(o: Pick<WinAppOptions, 'author' | 'year' | 'fiction'>): string {
   const by = [o.author, o.year].filter(Boolean).join(', ');
-  return `${by ? `By ${by}.\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
+  return `${by ? `By ${by}.\n\n` : ''}${o.fiction ? `${o.fiction}\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
 }
 
 /** RCDATA "INFO": key=value lines (a value's backslashes and newlines escaped), read by win/Player/main.c. */
-export function infoText(o: Pick<WinAppOptions, 'title' | 'id' | 'author' | 'year'>): string {
+export function infoText(o: Pick<WinAppOptions, 'title' | 'id' | 'author' | 'year' | 'fiction'>): string {
   const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n');
   return `title=${esc(o.title)}\nid=${esc(winId(o.id))}\ncredits=${esc(credits(o))}\nsite=${esc(SITE_URL)}\n`;
 }

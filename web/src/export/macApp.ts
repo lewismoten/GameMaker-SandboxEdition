@@ -39,6 +39,8 @@ export interface MacAppOptions {
   version?: string;
   author?: string;
   year?: number;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts), in the About text. */
+  fiction?: string;
   /** Shown on the app's icon (iconPicture). */
   picture?: IndexedImage;
   colors?: IconColors;
@@ -64,10 +66,10 @@ export function bundleId(id: string): string {
   return `com.lewismoten.gamemaker.${clean}`;
 }
 
-export function infoPlist(o: Pick<MacAppOptions, 'title' | 'id' | 'version' | 'author' | 'year'>): string {
+export function infoPlist(o: Pick<MacAppOptions, 'title' | 'id' | 'version' | 'author' | 'year' | 'fiction'>): string {
   const version = o.version ?? '1.0';
   const by = [o.author, o.year].filter(Boolean).join(', ');
-  const credits = `${by ? `By ${by}.\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
+  const credits = `${by ? `By ${by}.\n\n` : ''}${o.fiction ? `${o.fiction}\n\n` : ''}Plays with Game-Maker: Sandbox Edition, a web port of Recreational Software Designs' Game-Maker 3.0 (1994).`;
   const copyright = by ? `© ${[o.year, o.author].filter(Boolean).join(' ')}` : '';
   const entries: [string, string][] = [
     ['CFBundleDevelopmentRegion', 'en'],
