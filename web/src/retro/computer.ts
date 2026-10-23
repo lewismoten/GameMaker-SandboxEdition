@@ -16,7 +16,7 @@ import { editors, fileInfo } from "../editor/editors/registry";
 import { kindOf } from "../editor/core/project";
 import { Vga } from "../vga/shared/vga";
 import { PictureScreen } from "./view/picture";
-import { output } from "../audio/output";
+import { cutPcSound, pcOutput } from "./computer/pcAudio";
 import { audioContext, unlock } from "../audio/context";
 import { h, clear } from "../editor/core/ui";
 import { AUTOEXEC } from "./computer/setup";
@@ -45,23 +45,29 @@ export class Computer extends ComputerFolders {
         `Memory Test: ${String(k).padStart(5)}K${k === 4096 ? " OK" : ""}`,
       );
       await sleep(30);
+      if (!this.powered) return; // switched off while booting
     }
     this.postBeep(); // one short beep: the power-on self test passed
     s.print("\n\nStarting MS-DOS...\n\n");
     await sleep(500);
+    if (!this.powered) return;
     // CONFIG.SYS
     s.print("HIMEM is testing extended memory...");
     await sleep(turbo ? 350 : 1100);
+    if (!this.powered) return;
     s.print("done.\n");
     await sleep(150);
+    if (!this.powered) return;
     s.print(
       "EMM386 successfully installed.\n  Available Upper Memory     :  91 KB\n\n",
     );
     await sleep(250);
+    if (!this.powered) return;
     s.print(
       "  ATAPI CD-ROM Device Driver  Version 2.14\n  Drive 0: CD-ROM 2X (MSCD001)\n\n",
     );
     await sleep(turbo ? 400 : 900);
+    if (!this.powered) return;
     // AUTOEXEC.BAT
     for (const l of AUTOEXEC.slice(1)) {
       if (l.includes("MSCDEX")) {
@@ -69,6 +75,7 @@ export class Computer extends ComputerFolders {
           "MSCDEX Version 2.23\n        Drive D: = Driver MSCD001 unit 0\n",
         );
         await sleep(300);
+        if (!this.powered) return;
       } else if (l.includes("DOSKEY")) s.print("DOSKEY installed.\n");
       else if (l.includes("MOUSE")) s.print("Mouse driver installed\n");
     }
@@ -76,7 +83,24 @@ export class Computer extends ComputerFolders {
       "\nType HELP for commands, GM to start Game-Maker, TERMINAL to call the BBS.\n\n",
     );
     s.cursorVisible = true;
-    void this.shell.loop();
+    // (switched off at the prompt, the line being typed is abandoned: ProgramAborted)
+    void this.shell.loop().catch(() => undefined);
+  }
+
+  /**
+   * The power switch, off: every sound the PC is making stops this instant (its own line is
+   * cut, a game's sound engine with the game), and whatever was running is stopped where it
+   * is. The desk then disposes of this PC (dispose) and makes a new one to switch on.
+   */
+  powerOff(): void {
+    this.powered = false;
+    cutPcSound();
+    this.player?.stop();
+    this.player = undefined;
+    this.keys.abort();
+    this.vgaScreen?.abort();
+    this.closeEditor?.();
+    this.shell.stop();
   }
 
   /** The BIOS's single beep through the PC speaker: a short square wave. */
@@ -92,7 +116,7 @@ export class Computer extends ComputerFolders {
     g.gain.linearRampToValueAtTime(0.06, t + 0.005);
     g.gain.setValueAtTime(0.06, t + 0.2);
     g.gain.linearRampToValueAtTime(0, t + 0.21);
-    o.connect(g).connect(output(ctx));
+    o.connect(g).connect(pcOutput(ctx));
     o.start(t);
     o.stop(t + 0.22);
   }

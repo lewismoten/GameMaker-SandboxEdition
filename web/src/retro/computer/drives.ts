@@ -53,8 +53,14 @@ export abstract class ComputerDrives {
     // Draw the text as large as it is shown, so it stays sharp at any size.
     // (measured as shown, after any scaling of the desk around it)
     const fit = () => this.screen.setScale((this.textEl.getBoundingClientRect().width * devicePixelRatio) / 640);
-    new ResizeObserver(fit).observe(this.textEl);
-    addEventListener('resize', () => requestAnimationFrame(fit));
+    const watch = new ResizeObserver(fit);
+    watch.observe(this.textEl);
+    const onResize = () => requestAnimationFrame(fit);
+    addEventListener('resize', onResize);
+    this.unwatch = () => {
+      watch.disconnect();
+      removeEventListener('resize', onResize);
+    };
     this.screen.clear(0);
     this.screen.cursorVisible = false;
     this.keys.attach(this.textEl);
@@ -69,6 +75,21 @@ export abstract class ComputerDrives {
     this.fs.onAccess = (drive) => this.opts.onDriveAccess?.(drive);
     this.buildDrives();
     this.setMode('off');
+  }
+
+  private unwatch: () => void;
+
+  /**
+   * Done with this PC (switched off): its screen's timers, its keyboard, its listeners and
+   * its picture on the monitor all go. Switching on again makes a new one.
+   */
+  dispose(): void {
+    this.unwatch();
+    this.keys.detach();
+    this.screen.destroy();
+    this.vgaScreen?.destroy();
+    this.vgaScreen = undefined;
+    this.textEl.closest('.crt-picture')?.remove();
   }
 
   focus(): void {
