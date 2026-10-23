@@ -30,6 +30,8 @@ export interface PartRule {
   need: Need | Need[] | ((m: RegExpExecArray) => Need);
   /** Name for the report (default: the part's name). */
   what?: string;
+  /** false: the neighbors it checks are not parts of its object (no art join to measure). */
+  joins?: boolean;
 }
 
 const ok = (want: Want, got: string) => (typeof want === 'string' ? got === want : want.test(got));
@@ -57,7 +59,7 @@ export function checkParts(at: NameAt, rules: PartRule[], w = MLEN, h = MWID, jo
             const Y = y + dy;
             const got = X < 0 || Y < 0 || X >= w || Y >= h ? 'off the map' : (at(X, Y) ?? '?');
             if (!ok(want, got)) fails.push(`${r.what ?? name} at ${x},${y}: wanted ${String(want)} at ${dx},${dy}, found ${got}`);
-            else if (Math.abs(dx) + Math.abs(dy) === 1) joins.push(JSON.stringify(dx + dy > 0 ? [name, got, dx ? 'h' : 'v'] : [got, name, dx ? 'h' : 'v']));
+            else if (r.joins !== false && Math.abs(dx) + Math.abs(dy) === 1) joins.push(JSON.stringify(dx + dy > 0 ? [name, got, dx ? 'h' : 'v'] : [got, name, dx ? 'h' : 'v']));
           }
           if (!fails.length) {
             best = [];
