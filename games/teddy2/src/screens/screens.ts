@@ -333,9 +333,10 @@ export function driveFli(): Uint8Array {
     const x = -130 + f * 11;
     const bob = f % 2;
     scaleBlit(p, carPic, x, 66 + bob, 3);
-    // Doc Leo at the wheel behind the door window; Teddy's head out of the back window, ears flapping
+    // Doc Leo at the wheel behind the door window; Teddy's head out of the back window (in the flat
+    // tail, so it pokes out behind the car), ears flapping
     scaleBlit(p, leoHead, x + 34, 86 + bob, 2);
-    scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x - 4, 92 + bob, 2);
+    scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x - 17, 93 + bob, 2);
     // the electric whirr
     for (let k = 0; k < 3; k++) p.rect(x - 14 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));
     if (f > 16 && f < 30) outlined(p, x + 124, 84, 'HONK!', c('yellow', 3), c('ink', 0), 2);

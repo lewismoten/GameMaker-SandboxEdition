@@ -128,8 +128,7 @@ export function citiCar(p: Pixels, x0: number, y0: number, open = false): void {
   // light along the roof and down the hood, and the pinstripe down the side
   for (let x = 4; x < noseX; x++) if (x <= shieldX || x > cowlX) p.set(x0 + x, y0 + top(x) + 1, c('red', 3));
   for (let x = 3; x < noseX - 1; x++) p.set(x0 + x, y0 + 25 - Math.floor(x / 14), c('yellow', 1));
-  // windows: the little back quarter window, the door window, the windshield edge-on
-  for (let y = roofY + 3; y <= 17; y++) for (let x = 4; x <= 7; x++) p.set(x0 + x, y0 + y, y < 12 ? c('sky', 7) : c('sky', 5));
+  // windows: from the side only the door has one (the panel behind the door is solid), then the windshield edge-on
   for (let y = roofY + 2; y <= 18; y++)
     for (let x = 11; x <= cowlX - 1; x++) if (y >= top(x) + 2) p.set(x0 + x, y0 + y, x - y > 0 ? c('sky', 7) : c('sky', 5));
   // the door: a seam round it and a little handle
