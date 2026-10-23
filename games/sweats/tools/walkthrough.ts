@@ -1,6 +1,7 @@
 // Writes games/sweats/walkthrough.json: the bot plays the whole evening on the built disk (one
 // key segment a scene, each scene's monsters seeded afresh), and games/kit/walkthrough.ts checks
-// the run on the real engine (title, story, every intermission and monologue, the curtain call).
+// the run on the real engine (title, story, every intermission and monologue, the curtain call)
+// and fails if a monologue's opening line or punch line is cut off (kit/clips.ts).
 //   cd web && npx vite-node ../games/sweats/tools/walkthrough.ts
 import { encodeKeys, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';
 import { writeWalkthrough } from '../../kit/walkthrough';
@@ -16,5 +17,5 @@ const title = (scene: number): string => {
 };
 const segments: WalkSegment[] = sim.segments.map((s) => ({ scene: s.scene, keys: encodeKeys(s.keys) }));
 const chapters: WalkChapterMark[] = sim.segments.map((s) => ({ scene: s.scene, title: title(s.scene) }));
-const r = await writeWalkthrough('sweats', { rand: { seed: SEED, per: 'scene' }, segments, chapters });
+const r = await writeWalkthrough('sweats', { rand: { seed: SEED, per: 'scene' }, segments, chapters }, { clips: true });
 console.log(`engine: scenes ${r.scenes.join(' ')}, ${r.keysLeft} keys unplayed`);
