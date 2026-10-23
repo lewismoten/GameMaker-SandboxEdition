@@ -62,11 +62,11 @@ export function park(): Level {
   for (let y = 31; y < 40; y++)
     for (const x of [26, 27]) {
       const top = y === 31;
-      const name = y === 39 ? 'jetLawn_0' : y >= 37 ? (top ? 'jetTop3_0' : 'jetFar_0') : `jet${top ? 'Top' : ''}${Math.max(1, bandOf(y))}_0`;
+      const name = y === 39 ? 'jetLawn_0' : y === 37 ? 'jetFarTop_0' : y === 38 ? 'jetFar_0' : `jet${top ? 'Top' : ''}${Math.max(1, bandOf(y))}_0`;
       m.set(x, y, name);
     }
   m.rect(28, 32, 3, 8, 'hedgeWall');
-  m.rect(28, 31, 3, 1, 'hedgeTopWall');
+  m.rect(28, 31, 3, 1, 'hedgeTopWall1');
   m.set(33, 39, 'parkSign');
 
   // Kids on the bench: one has Doc Leo's shoes, both would love to see a sit.
