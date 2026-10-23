@@ -2,9 +2,9 @@
 // to the dark hallway's door; the crypt's five papier-mache witches tackled (GET DOWN!) and
 // said sorry to, out the STAFF ONLY door; the fake woods' dollars, through the webs, to the
 // gift shop's register for the $12 souvenir sword; and the last hall: the foam sword at the
-// clown-wig kid, the wig, and the emergency exit. What it sees lying on the way it picks up
+// cardboard knight, his helmet, and the emergency exit. What it sees lying on the way it picks up
 // (bot.ts, grab()).
-import { BATTERIES, BATTERIES_NEEDED, MON, MONEY, SCAN, SORRY, SORRY_NEEDED, SWORD_PRICE, WIG } from '../src/ids';
+import { BATTERIES, BATTERIES_NEEDED, MON, MONEY, SCAN, SORRY, SORRY_NEEDED, SWORD_PRICE, HELMET } from '../src/ids';
 import { ORIGIN, WITCHES } from '../src/levels/maps';
 import { Bot, type Dir } from './bot';
 
@@ -178,12 +178,12 @@ export async function fakeWoods(bot: Bot): Promise<void> {
   });
 }
 
-/** 4. The last hall: the foam sword at the clown-wig kid, the wig, the emergency exit. */
+/** 4. The last hall: the foam sword at the cardboard knight, his helmet, the emergency exit. */
 export async function lastHall(bot: Bot): Promise<void> {
   expect(bot, 5, 'the last hall');
-  await carefully(bot, 'the clown wig', 20, async () => {
-    for (let tries = 0; tries < 30 && !mons(bot, MON.wig).length && bot.count(WIG) < 1; tries++) {
-      const kid = mons(bot, MON.clown)[0];
+  await carefully(bot, 'the knight\'s helmet', 20, async () => {
+    for (let tries = 0; tries < 30 && !mons(bot, MON.helmet).length && bot.count(HELMET) < 1; tries++) {
+      const kid = mons(bot, MON.knight)[0];
       if (!kid) break;
       const ky = Math.round(kid.y);
       const kx = Math.round(kid.x);
@@ -194,11 +194,11 @@ export async function lastHall(bot: Bot): Promise<void> {
       await arrive(bot, sx, ky, dir, 'facing the kid');
       await tackle(bot);
     }
-    const wig = mons(bot, MON.wig)[0];
-    if (!wig && bot.count(WIG) < 1) throw new Error('the wig is still on');
-    if (wig) await must(bot, bot.goto(Math.round(wig.x), Math.round(wig.y), 'the clown wig'), 'wig');
+    const helmet = mons(bot, MON.helmet)[0];
+    if (!helmet && bot.count(HELMET) < 1) throw new Error('the helmet is still on');
+    if (helmet) await must(bot, bot.goto(Math.round(helmet.x), Math.round(helmet.y), 'the cardboard helmet'), 'helmet');
     if (await bot.wait(4)) throw new Error('a scene change');
-    if (bot.count(WIG) < 1) throw new Error('no wig');
+    if (bot.count(HELMET) < 1) throw new Error('no helmet');
   });
   await gather(bot, [[3, 3, 'Loaf #13'], [25, 3, 'a lost TV remote'], [28, 10, 'a juice box']], 16);
   await carefully(bot, 'the emergency exit', 16, async () => {

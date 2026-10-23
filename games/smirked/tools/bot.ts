@@ -2,10 +2,10 @@
 // hurts costs more: a hissing fog machine, a fake spiderweb, a fog light; links it wasn't sent
 // to are walls), walks it one straight run at a time, pushes into doors to open them, picks up
 // what it sees on the way, and tackles (or swings the foam sword at) what's in the way. Moving
-// monsters (zombies, bats, the ghost, the werewolf guy, the clown-wig kid) are handled by trying
+// monsters (zombies, bats, the ghost, the werewolf guy, the cardboard knight) are handled by trying
 // a stretch again from a snapshot after a wait (route.ts, carefully()).
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
-import { BATTERIES, MONEY, SCAN, SMIRKS, SORRY, WIG } from '../src/ids';
+import { BATTERIES, MONEY, SCAN, SMIRKS, SORRY, HELMET } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { MLEN, bgBlock, type World } from '../../../web/src/engine/world';
 import type { GameSim } from './sim';
@@ -105,7 +105,7 @@ export class Bot {
 
   say(s: string): void {
     const p = this.sim.pos;
-    this.log.push(`[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} nerve ${this.sim.ci.hitpts} batteries ${this.count(BATTERIES)} sorry ${this.count(SORRY)} dollars ${this.count(MONEY)} wig ${this.count(WIG)} smirks ${this.count(SMIRKS)}`);
+    this.log.push(`[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} nerve ${this.sim.ci.hitpts} batteries ${this.count(BATTERIES)} sorry ${this.count(SORRY)} dollars ${this.count(MONEY)} helmet ${this.count(HELMET)} smirks ${this.count(SMIRKS)}`);
   }
 
   async wait(k: number): Promise<string | undefined> {
