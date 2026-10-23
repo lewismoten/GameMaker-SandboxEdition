@@ -3,6 +3,7 @@
 // in its turn (the order is part of the file format: a block's number is the order it was added).
 import type { Group } from '../types';
 import { cgoat, cgoatBlocks, cgoatSprites } from './cgoat';
+import { chair, chairBlocks, chairSprites } from './chair';
 import { meeting, meetingBlocks, meetingSprites } from './meeting';
 import { WORK_RAMPS, buildOffice } from './office';
 
@@ -14,10 +15,12 @@ export const work: Group = {
     buildOffice(book, pal);
     meetingBlocks(book, pal);
     cgoatBlocks(book, pal);
+    chairBlocks(book, pal);
   },
   sprites: (book, pal) => {
     meetingSprites(book, pal);
     cgoatSprites(book, pal);
+    chairSprites(book, pal);
   },
-  monologues: [meeting, cgoat],
+  monologues: [meeting, cgoat, chair],
 };

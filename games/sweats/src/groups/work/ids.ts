@@ -26,3 +26,17 @@ export const CGOAT_MON = {
   /** Something beaten: a puff. */
   puff: FIRST_GROUP_MON + 4,
 } as const;
+
+/** The Office Chair That Tried to Kill Me (its own .MON). */
+export const CHAIR_MON = {
+  /** A loose screw, rolling about the cubicle floor. */
+  screw: FIRST_GROUP_MON,
+  /** The chair's creak, a banshee with arthritis, wailing down the aisle. */
+  squeak: FIRST_GROUP_MON + 1,
+  /** The intern who stole the chair (it was "too loud"), rolling about on it: hop over. */
+  intern: FIRST_GROUP_MON + 2,
+  /** The janitor who lent him the wrench: "Good luck, you'll need it." A hello is a tip. */
+  janitor: FIRST_GROUP_MON + 3,
+  janitorOff: FIRST_GROUP_MON + 4,
+  puff: FIRST_GROUP_MON + 5,
+} as const;
