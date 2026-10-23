@@ -586,9 +586,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         pc.quiet = false;
       }
       const list = names.map((n) => n.toUpperCase()).join(' and ');
-      const where = pc.copiedTo
-        ? `${pc.copiedTo}, a copy of the game on the hard disk (the original can’t be changed)`
-        : (await lazy.saveFirst()).folderText(open);
+      // write() sets copiedTo when it copies a read-only game to the hard disk (TypeScript
+      // still thinks it is the undefined set above)
+      const copiedTo = pc.copiedTo as string | undefined;
+      const where = copiedTo ? `${copiedTo}, a copy of the game on the hard disk (the original can’t be changed)` : (await lazy.saveFirst()).folderText(open);
       if (ok) toast(`Saved ${list} in ${where}.`);
       else toast(`Couldn’t save ${list}.`, 'error');
     }
