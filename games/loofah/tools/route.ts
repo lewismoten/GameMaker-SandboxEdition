@@ -174,12 +174,12 @@ export async function aisle(bot: Bot): Promise<void> {
     await must(bot, bot.hop('right', 12, 'right', 51.6), 'over the brambles');
   });
   await carefully(bot, 'the last shelving', 0, async () => {
-    await must(bot, bot.walk(52, 'by the shelves'), 'shelves');
+    await tame(bot, 52, 60, 11, 'the last wild loofah');
+    await must(bot, bot.walk(52.4, 'by the shelves'), 'shelves');
     await must(bot, bot.hop('up', 12, 'right', 53), 'up on the shelf');
-    await tame(bot, 52, 58, 8, 'the last wild loofah');
-    await must(bot, bot.walk(56, 'the tame loofah'), 'tame');
-    await must(bot, bot.hop('up', 12, 'left', 55), 'up on the top shelf');
-    await must(bot, bot.hop('right', 6, 'right', 58), 'down to the spare coin');
+    await must(bot, bot.hop('up', 12, 'right', 55), 'up on the top shelf');
+    await must(bot, bot.hop('right', 6, 'right', 56), 'down to the tame loofah');
+    await must(bot, bot.walk(59, 'the spare coin'), 'coin');
     if (coins(bot) - start < 6) throw new Error(`only ${coins(bot) - start} coins`);
   });
   await carefully(bot, 'the checkout', 0, async () => {
@@ -187,10 +187,48 @@ export async function aisle(bot: Bot): Promise<void> {
   });
 }
 
+/** III. You Crossed a Line: home in the dark, seven candles lit (six needed), the bathroom door. */
 export async function home(bot: Bot): Promise<void> {
   expect(bot, 4, 'home');
-  throw new Error('todo');
+  const start = candles(bot);
+  await carefully(bot, 'the bedroom', 0, async () => {
+    await must(bot, bot.walk(8, 'the candle on the night stand'), 'stand');
+    await must(bot, bot.hop('right', 12, 'right', 12.2), 'over the creaky board onto the dresser');
+    await must(bot, bot.walk(13, 'the candle on the dresser'), 'dresser');
+    await must(bot, bot.walk(15, 'down off the dresser'), 'down');
+  });
+  await carefully(bot, 'past Teddy, the shelf, the hall table', 0, async () => {
+    await must(bot, bot.walk(19.4, 'before Teddy'), 'teddy');
+    await must(bot, bot.hop('right', 12, 'right', 23), 'over Teddy');
+    await must(bot, bot.walk(25.4, 'under the shelf'), 'shelf');
+    await must(bot, bot.hop('up', 12, 'right', 26), 'the candle on the shelf');
+    await must(bot, bot.hop('right', 6, 'right', 29), 'down off the shelf');
+    await must(bot, bot.walk(30.2, 'by the hall table'), 'table');
+    await must(bot, bot.hop('up', 12, 'right', 31), 'the candle on the hall table');
+  });
+  await carefully(bot, 'the linen closet, the screaming towel, Gwinn', 0, async () => {
+    await must(bot, bot.hop('right', 4, 'right', 34.4), 'down off the table');
+    await must(bot, bot.hop('up', 12, 'right', 36), 'up on the linen closet');
+    if (candles(bot) - start < 5) throw new Error(`only ${candles(bot) - start} candles by the linen closet`);
+    await must(bot, bot.hop('right', 12, 'right', 41.6), 'over the screaming towel');
+    await must(bot, bot.hop('right', 12, 'right', 45), 'over Gwinn');
+    await must(bot, bot.walk(45.8, 'before the creaky board'), 'board');
+    await must(bot, bot.hop('right', 12, 'right', 48.6), 'over the creaky board');
+  });
+  await carefully(bot, 'the bookcase', 0, async () => {
+    await must(bot, bot.walk(49.4, 'by the bookcase'), 'bookcase');
+    await must(bot, bot.hop('up', 12, 'right', 50), 'up on the bottom shelf');
+    await must(bot, bot.hop('up', 12, 'right', 51), 'the candle on the top shelf');
+  });
+  await carefully(bot, 'over the last towel, the candle on the floor', 0, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 58), 'over the screaming towel');
+    if (candles(bot) - start < 6) throw new Error(`only ${candles(bot) - start} candles`);
+  });
+  await carefully(bot, 'the bathroom door', 0, async () => {
+    await leave(bot, bot.walk(67, 'the bathroom door'), 'the bathroom');
+  });
 }
+
 export async function shower(bot: Bot): Promise<void> {
   expect(bot, 5, 'the shower');
   throw new Error('todo');

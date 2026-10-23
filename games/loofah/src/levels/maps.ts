@@ -215,8 +215,8 @@ export function aisle(book: BlockBook): Level {
   m.set(37, 5, 'P').row(9, 39, 42, 'p').mon(MON.seed, 40, 8).set(42, 8, '5').mon(MON.feral, 38, 11);
   // more brambles, the third tree
   m.set(44, 11, '%').col(46, 5, 11, '|').col(47, 6, 11, 'X').set(47, 5, '$').row(4, 46, 48, 'C').set(50, 11, '%');
-  // the last shelving: rosemary up top, a wild loofah on the shelf, a spare coin
-  m.row(9, 53, 57, 'e').row(6, 53, 57, 'e').fill(53, 7, 5, 2, 'o').set(55, 5, '5').mon(MON.feral, 53, 8).set(58, 11, '$');
+  // the last shelving: rosemary up top, a wild loofah in front of it, a spare coin
+  m.row(9, 53, 57, 'e').row(6, 53, 57, 'e').fill(53, 7, 5, 2, 'o').set(55, 5, '5').mon(MON.feral, 55, 11).set(59, 11, '$');
   // the checkout: the clerk; six coins
   m.set(61, 11, '@').set(62, 11, '&').set(62, 10, 'f');
   m.link(61, 11, 'next');
@@ -237,14 +237,14 @@ export function home(book: BlockBook): Level {
   m.set(17, 9, 'doorway').set(17, 8, 'doorwayTop');
   // the hall: Teddy, the Bard's picture, a shelf (a candle), the mirror, the hall table (a candle)
   m.mon(MON.teddy, 21, 9).set(22, 5, 'leoPic');
-  m.row(6, 25, 26, 'wallShelf').set(26, 5, 'unlit');
+  m.row(7, 25, 26, 'wallShelf').set(26, 6, 'unlit');
   for (let q = 0; q < 4; q++) m.set(29 + q, 5, `mirror1${q}0`);
   m.set(31, 9, 'table').set(31, 8, 'unlit');
   // the linen closet: its shelves, a candle on top, the screaming towels flapping out down the hall
-  m.row(7, 35, 37, 'linen').set(36, 6, 'unlit').mon(MON.flapper, 34, 9);
-  m.mon(MON.gwinn, 41, 9).set(44, 9, 'creak');
+  m.row(7, 35, 37, 'linen').set(36, 6, 'unlit').mon(MON.flapper, 38, 9);
+  m.mon(MON.gwinn, 43, 9).set(47, 9, 'creak');
   // the bookcase (a candle on top), another towel, a spare candle on the floor
-  m.row(7, 50, 51, 'wallShelf').row(5, 50, 51, 'wallShelf').set(51, 4, 'unlit').mon(MON.flapper, 54, 9).set(59, 9, 'unlitB');
+  m.row(7, 50, 51, 'wallShelf').row(5, 50, 51, 'wallShelf').set(51, 4, 'unlit').mon(MON.flapper, 54, 9).set(58, 9, 'unlitB');
   // the bathroom door: six candles burning
   m.set(66, 9, 'bathDoor').set(66, 8, 'bathTop');
   m.link(66, 9, 'next');
