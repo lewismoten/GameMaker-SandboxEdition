@@ -9,5 +9,5 @@
   "exe": "CARL.EXE",
   "sound": "sb",
   "tinHeart": { "map": "bed.map", "at": [5, 12] },
-  "easterEgg": { "map": "bed.map", "at": [12, 12] }
+  "easterEgg": { "map": "bed.map", "at": [34, 12] }
 }

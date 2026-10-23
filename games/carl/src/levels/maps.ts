@@ -228,8 +228,8 @@ export function theBed(book: BlockBook): Level {
   room(m, W, H);
   // the desk and the laptop ("Carl watches me work")
   m.row(9, 2, 6, 'desk').set(4, 8, 'laptop');
-  // a tin heart tucked under the desk, an Easter egg on the floor by the nightstand
-  m.set(3, 10, 'tinHeart').set(10, 10, 'easterEgg');
+  // a tin heart tucked under the desk, an Easter egg on the floor past the foot of the bed
+  m.set(3, 10, 'tinHeart').set(32, 10, 'easterEgg');
   // the nightstand: the alarm clock, a soda
   m.fill(12, 9, 2, 2, 'nightstand').set(12, 8, 'alarm').set(13, 8, 'soda');
   // the bed: his head on the pillow (his ear is up top), the blanket
