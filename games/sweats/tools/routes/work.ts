@@ -90,7 +90,7 @@ export const WORK_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the goats', 0, async () => {
       await declaim(bot, 'a goat');
-      await must(bot, bot.walk(47, 'the coin'), 'coin');
+      await must(bot, bot.walk(48, 'the coin'), 'coin');
       await declaim(bot, 'another goat');
       await must(bot, bot.walk(52, 'the dollar'), 'bill');
       await must(bot, bot.walk(55, 'the third goat from the left'), 'goat');

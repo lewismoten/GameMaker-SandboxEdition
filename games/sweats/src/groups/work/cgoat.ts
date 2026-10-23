@@ -112,6 +112,12 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   micro(cup, 8, 20, 'NON', c('ink', 1));
   micro(cup, 6, 27, 'DAIRY', c('ink', 1));
   addPicture(book, 'fizzCup', cup, (_c, row) => (row ? officeBase(pal) : wall(36)), (col, row) => ({ solid: SOLID, ...(row || col ? {} : { birthMon: CGOAT_MON.fizz, birthTime: 70 }) }));
+  // the breakroom table (its top a ledge), two chairs tucked under it, someone's lunch
+  const table = new Pixels(40, 20, 255);
+  table.rect(2, 4, 36, 3, c('white', 1)).rect(2, 4, 36, 1, c('white', 2)).rect(19, 7, 3, 12, c('metal', 1)).rect(13, 18, 15, 2, c('metal', 0));
+  for (const x of [3, 29]) table.rect(x, 2, 2, 9, c('teal', 0)).rect(x - 1, 10, 9, 2, c('teal', 1)).rect(x, 12, 1, 7, c('metal', 1)).rect(x + 6, 12, 1, 7, c('metal', 1));
+  table.rect(12, 1, 7, 3, c('wood', 4)).rect(23, 2, 4, 2, c('red', 2));
+  addPicture(book, 'bTable', table, officeBase(pal), () => ({ solid: LEDGE, grav: GRAV.down }));
   // employee of the month: a goat (he blinks, and there it is)
   const eom = wall(38);
   eom.rect(2, 1, 16, 18, c('wood', 1)).rect(4, 3, 12, 11, c('daylight', 2));
@@ -292,7 +298,9 @@ export const cgoat: Monologue = {
     m.set(40, 4, 'thermostat').set(44, 3, 'y');
     // every time he blinks: a goat, a goat, and the third goat from the left (the real one)
     m.mon(CGOAT_MON.mirage, 44, 9).mon(CGOAT_MON.mirage, 49, 9).mon(MON.goat, 55, 9);
-    m.set(47, 9, '$').set(52, 9, 'b').set(50, 3, 'y').set(55, 4, 'goatPortrait');
+    placePicture(m, 'bTable', 45, 9, 2, 1);
+    placePicture(m, 'credenza', 50, 9, 2, 1);
+    m.set(48, 9, '$').set(52, 9, 'b').set(50, 3, 'y').set(55, 4, 'goatPortrait');
     placePicture(m, 'plant', 58, 8, 1, 2);
     // the boss's door
     m.set(61, 9, 'D').set(61, 8, 'clock');
