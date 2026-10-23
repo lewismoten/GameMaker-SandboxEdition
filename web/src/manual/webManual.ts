@@ -203,10 +203,10 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       twister, a cat after the cheese, a golden fish who sings in the baths, and a Latin song so
       clever that nobody laughs.</li>
     </ul>
-    <p>Lewis dreams up each song and prompts AI tools to write and record it. Some of the songs
+    <p>Lewis dreams up each song and prompts AI tools to shape and record it. Some of the songs
     have become games, shareware “uploaded” to The Sofa BBS in the story.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each
-    song’s words were written by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
+    song’s words were shaped by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
     back and forth), and each recording was made with Riffusion (now Google Flow Music).
     Certified Rat Tickler came with no recording, so its music was composed for the game by
     Claude Opus 5.5. The Great Dairy Reckoning of 3:17 A.M. is a spoken piece from Lewis’s own
