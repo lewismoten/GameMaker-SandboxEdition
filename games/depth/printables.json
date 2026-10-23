@@ -18,105 +18,123 @@
   "F4": "Sound effects on / off"
  },
  "stickers": [
-  {
-   "text": "RAY",
-   "sub": "EVERY POLYGON INTACT",
-   "shape": "badge",
-   "color": "#120c34",
-   "ink": "#ffffff",
-   "hero": {
-    "chr": "near.chr",
-    "cbl": "ray.cbl",
-    "pal": "l1.pal"
-   }
-  },
-  {
-   "text": "COUNT POLYGON",
-   "sub": "TWENTY FACES, THEN FEWER",
-   "shape": "star",
-   "color": "#7a4fd0",
-   "ink": "#ffffff",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l1.pal",
-    "grid": [
-     [
-      28
-     ]
-    ]
-   }
-  },
-  {
-   "text": "TEDDY",
-   "sub": "ONE TALL EAR",
-   "shape": "circle",
-   "color": "#ffa63a",
-   "ink": "#120c34",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l1.pal",
-    "grid": [
-     [
-      18
-     ]
-    ]
-   }
-  },
-  {
-   "text": "GWINN",
-   "sub": "SITTING PRETTY",
-   "shape": "circle",
-   "color": "#ff8fc8",
-   "ink": "#120c34",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l2.pal",
-    "grid": [
-     [
-      22
-     ]
-    ]
-   }
-  },
-  {
-   "text": "DOC LEO",
-   "sub": "LIGHTING DIRECTOR",
-   "shape": "badge",
-   "color": "#2a3a7a",
-   "ink": "#ffffff",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l5.pal",
-    "grid": [
-     [
-      24
-     ]
-    ]
-   }
-  },
-  {
-   "text": "NOT RENDERED",
-   "sub": "WIREFRAME",
-   "shape": "rect",
-   "color": "#0c2a14",
-   "ink": "#7cff9a",
-   "sprite": {
-    "blocks": "depth.mbl",
-    "pal": "l1.pal",
-    "grid": [
-     [
-      1
-     ]
-    ]
-   }
-  },
-  {
-   "text": "NO GLASSES REQUIRED",
-   "shape": "rect",
-   "color": "#28c8ff",
-   "ink": "#120c34"
-  }
- ],
+    {
+      "text": "RAY",
+      "sub": "EVERY POLYGON INTACT",
+      "shape": "badge",
+      "color": "#120c34",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "near.chr",
+        "cbl": "ray.cbl",
+        "pal": "l1.pal"
+      }
+    },
+    {
+      "text": "COUNT POLYGON",
+      "sub": "TWENTY FACES, THEN FEWER",
+      "shape": "star",
+      "color": "#7a4fd0",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[28]]
+      }
+    },
+    {
+      "text": "TEDDY",
+      "sub": "ONE TALL EAR",
+      "shape": "circle",
+      "color": "#ffa63a",
+      "ink": "#120c34",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[18]]
+      }
+    },
+    {
+      "text": "GWINN",
+      "sub": "SITTING PRETTY",
+      "shape": "heart",
+      "color": "#ff8fc8",
+      "ink": "#120c34",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l2.pal",
+        "grid": [[22]]
+      }
+    },
+    {
+      "text": "DOC LEO",
+      "sub": "LIGHTING DIRECTOR",
+      "shape": "badge",
+      "color": "#2a3a7a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l5.pal",
+        "grid": [[24]]
+      }
+    },
+    {
+      "text": "NOT RENDERED",
+      "sub": "WIREFRAME",
+      "shape": "rect",
+      "color": "#0c2a14",
+      "ink": "#7cff9a",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[1]]
+      }
+    },
+    {
+      "text": "EYE SEE YOU",
+      "sub": "THE WATCHER",
+      "shape": "burst",
+      "color": "#d81e1e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "depth.mbl",
+        "pal": "l1.pal",
+        "grid": [[13]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "l2near.bbl",
+        "pal": "l2.pal",
+        "grid": [[140]],
+        "under": 7
+      }
+    },
+    {
+      "text": "ZIGZAGS!",
+      "sub": "A HAND-PAINTED EGG",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "l2near.bbl",
+        "pal": "l2.pal",
+        "grid": [[141]],
+        "under": 7
+      }
+    },
+    {
+      "text": "NO GLASSES REQUIRED",
+      "shape": "bubble",
+      "color": "#28c8ff",
+      "ink": "#120c34"
+    }
+  ],
  "news": [
   {
    "head": "We threw away the cardboard glasses",
