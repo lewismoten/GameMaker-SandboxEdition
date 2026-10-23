@@ -9,7 +9,7 @@ import type { addThings } from './things';
 
 type Treats = ReturnType<typeof addThings>;
 
-export function addSled(k: Ctx, { pine, mug, bill }: Treats) {
+export function addSled(k: Ctx, { mug, bill }: Treats) {
   const { book, R, c, snow, P } = k;
   // ---------- the Jamie Street sled run ----------
   const slope = (seed: number, tracks: boolean, steep = 0) => {
@@ -36,11 +36,21 @@ export function addSled(k: Ctx, { pine, mug, bill }: Treats) {
   const mogul = slope(4, false);
   blob(mogul, 10, 11, 8, 5, snow, 1, 6);
   book.add('mogul', mogul, { grav: 1 });
+  // Rocks and firs fill their whole block, so the sled only hits what it can see, and each
+  // one hurts once: the bump swaps in a look-alike that is still solid but harmless, so a
+  // sled stopped against it (or pushing off into it) isn't hurt again and again.
   const rock = slope(5, false);
-  blob(rock, 10, 12, 8, 6, R('grey'), 1, 4);
-  blob(rock, 9, 8, 6, 2.5, snow, 4, 6);
-  book.add('rock', rock, { solid: SOLID, hp: -8 });
-  book.add('slopeTree', pine(slope(6, false)), { solid: SOLID, hp: -10 });
+  blob(rock, 10, 10.5, 9.8, 9.4, R('grey'), 0, 3);
+  blob(rock, 9, 5, 7.5, 3.5, snow, 4, 6);
+  book.add('rock', rock, { solid: SOLID, hp: -8, touch: 'rockHit' });
+  book.add('rockHit', rock, { solid: SOLID });
+  const fir = slope(6, false);
+  blob(fir, 10, 10.5, 10, 9.6, R('pine'), 0, 4);
+  blob(fir, 8, 6, 6.5, 3.5, snow, 4, 6);
+  blob(fir, 13, 12, 4, 2, snow, 3, 5);
+  fir.rect(9, 18, 2, 2, c('wood', 1));
+  book.add('slopeTree', fir, { solid: SOLID, hp: -10, touch: 'slopeTreeHit' });
+  book.add('slopeTreeHit', fir, { solid: SOLID });
   const flag = (col: string) => {
     const p = slope(7, false);
     p.rect(9, 3, 1, 15, c('ink', 1));

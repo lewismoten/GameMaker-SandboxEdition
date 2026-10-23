@@ -98,7 +98,7 @@ const LEVELS: Level[] = [
     card: {
       title: '3. BOWDEN DRIVE',
       time: '4:30 PM. Everybody is home.',
-      lines: ['Two customers up here, two', 'over the creek footbridge,', 'past Big Pete. Then LaVale!'],
+      lines: ['Two customers up here, two', 'across the creek footbridge.', 'Big Pete? SPACE throws snow!'],
       view: [6, 23],
     },
   },

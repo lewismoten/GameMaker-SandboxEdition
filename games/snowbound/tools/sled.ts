@@ -17,6 +17,11 @@ export async function sledRun(bot: Bot, maxTicks = 3000): Promise<string | undef
   const { sim } = bot;
   let held = 0;
   const hold = (k: number) => {
+    // a push is one shove per press, so pushing again means letting go and tapping again
+    if (k === held && k === SCAN.down) {
+      sim.release(k);
+      held = 0;
+    }
     if (k === held) return;
     if (held) sim.release(held);
     if (k) sim.press(k);

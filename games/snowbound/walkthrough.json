@@ -12,7 +12,7 @@
     },
     {
       "scene": 3,
-      "keys": "AVAS0ABLA8sAUAPQA00DzQBQA9ADUBjQAEsDywBQBtADSwPLA1AD0ABNA80AUAPQAE0DzQBQCdADUAnQAE0DzQBQCdAASwPLAFAD0ABLA8sAUAnQ"
+      "keys": "AVAD0ABQA9AAUAPQAFAD0ABQA9AASwPLAFAD0ABQA9ADTQPNAFAD0ABNA80AUAPQAFAD0ANQA9AAUAPQAEsDywBQA9AASwbLA0sDywBQA9AATQbNAFAD0ABNCc0AUAPQA1AD0ABQA9AAUAPQAE0GzQBQA9AAUAPQBksJywBNBs0="
     },
     {
       "scene": 4,
@@ -20,7 +20,7 @@
     },
     {
       "scene": 5,
-      "keys": "AU0PzQFIFMgBSwXLAUsFywFNCs0BSAXIAU0KzQFIFMgBTQXNAU0FzQFNBc0BSAXIAU0KzQFIFMgBTQXNAU0FzQFNBc0BSAXIAU0KzQFQBdABTR7NAU0FzQFQBdABTSPNAUgFyAFNGc0BTQXNAVAP0AFNBc0BUArQAU0PzQFNBc0BTQXNAUgFyAFNCs0BSBTIAU0GzQFLBcsBSArIAUsPywFIHsgBSwXLAUgFyAFI"
+      "keys": "E00PzQFIFMgBSwXLAUsFywFNCs0BSAXIAU0KzQFIFMgBTQXNAU0FzQFNBc0BSAXIAU0KzQFIFMgBTQXNAU0FzQFNBc0BSAXIAU0KzQFQBdABTR7NAU0FzQFQBdABTSPNAUgFyAFNGc0BTQXNAVAP0AFNBc0BUArQAU0PzQFNBc0BTQXNAUgFyAFNC80BSwrLAUgeyAFLBcsBSB7IAUsFywFIBcgBSA=="
     }
   ],
   "chapters": [
@@ -43,7 +43,7 @@
   ],
   "timeline": {
     "fps": 60,
-    "frames": 19727,
+    "frames": 19740,
     "chapters": [
       {
         "title": "Opening",
@@ -63,19 +63,19 @@
       },
       {
         "title": "Level 3: Bowden Drive",
-        "frame": 9019
+        "frame": 9013
       },
       {
         "title": "Level 4: LaVale Mall",
-        "frame": 12974
+        "frame": 12968
       },
       {
         "title": "Ending",
-        "frame": 15255
+        "frame": 15268
       },
       {
         "title": "Credits",
-        "frame": 18175
+        "frame": 18188
       }
     ]
   }

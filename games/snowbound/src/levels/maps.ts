@@ -514,6 +514,9 @@ export function lavaleMall(book: BlockBook) {
     .set(X + 57, 37, 'T')
     .set(X, 36, 'u');
   m.set(X + 52, 27, 'c');
+  // meltwater frozen along the back of the lot: an icy lane that slides you east toward the
+  // stores (quick, but nothing to shovel on it and the lot's buried cars to steer past)
+  m.fill(X + 6, 37, 44, 1, '>');
   m.fill(X, 38, 60, 7, 'T');
   m.fill(X - 1, 11, 1, 34, 'T').fill(X + 60, 11, 1, 34, 'T');
   // traffic: the plow sweeps the fire lane; another works the middle aisle; carts roll free
@@ -525,6 +528,6 @@ export function lavaleMall(book: BlockBook) {
     [X + 30, 33],
   ])
     m.mon(MON.cart, x, y);
-  m.mon(MON.bully, X + 50, 31).mon(MON.dog, X + 20, 34);
+  m.mon(MON.bully, X + 50, 34).mon(MON.dog, X + 20, 34);
   return { m, start: [X + 1, 36] as [number, number] };
 }
