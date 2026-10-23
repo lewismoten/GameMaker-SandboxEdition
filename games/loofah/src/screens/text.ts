@@ -16,10 +16,10 @@ export const SUBTITLE = 'BUT LEAVE MY SOUL';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /**
- * Who made the song's words and its recording: not confirmed yet. Used by LICENSE.TXT, the
- * credits page and the README (about.json, the guide and the flyer say the same).
+ * Who made the song's words and its recording. Used by LICENSE.TXT (the credits page and the
+ * README spell it out to fit their columns; about.json, the guide and the flyer say the same).
  */
-export const SONG_CREDIT = 'lyrics and music: (credit pending)';
+export const SONG_CREDIT = "lyrics written by ChatGPT from Lewis Moten's prompts; music made with Riffusion (now Google Flow Music)";
 
 /** What was made for the game, as LICENSE.TXT says it. */
 export const ART_CREDIT = 'title and cover art drawn for this game by Claude Opus 5.5';
@@ -132,11 +132,13 @@ const CREDITS_TEXT = page(
     'clown, Doc Leo): a goth rock',
     'song about domestic life.',
     '',
-    'Lyrics and music: (credit',
-    "pending). This game's sung",
-    'clips are cut from the',
-    'recording, and its FM score',
-    'is arranged from it.',
+    'Lyrics: written by ChatGPT',
+    "from Lewis's prompts. Music:",
+    'made with Riffusion (now',
+    "Google Flow Music). This",
+    "game's sung clips are cut",
+    'from the recording, and its',
+    'FM score is arranged from it.',
     'Title and cover art: drawn',
     'for this game by Claude Opus',
     '5.5 (none came with the',
@@ -153,7 +155,7 @@ const CREDITS_TEXT = page(
     '',
     'Never touch the loofah.',
   ],
-  2,
+  3,
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
@@ -245,11 +247,13 @@ CREDITS (NOW)
   "Cleanse Me, O Loofah, But
   Leave My Soul", a song by The
   Bard of Bizarre (Lewis Moten):
-  lyrics and music: (credit
-  pending). The sung clips here
-  are cut from the recording,
-  and the FM score is arranged
-  from it. The title and cover
+  lyrics written by ChatGPT
+  from Lewis's prompts; music
+  made with Riffusion (now
+  Google Flow Music). The sung
+  clips here are cut from the
+  recording, and the FM score
+  is arranged from it. The title and cover
   art were drawn for this game
   by Claude Opus 5.5. The logo
   was made with DeepAI; the Doc

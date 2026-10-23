@@ -82,11 +82,13 @@ CREDITS (NOW)
   "Cleanse Me, O Loofah, But
   Leave My Soul", a song by The
   Bard of Bizarre (Lewis Moten):
-  lyrics and music: (credit
-  pending). The sung clips here
-  are cut from the recording,
-  and the FM score is arranged
-  from it. The title and cover
+  lyrics written by ChatGPT
+  from Lewis's prompts; music
+  made with Riffusion (now
+  Google Flow Music). The sung
+  clips here are cut from the
+  recording, and the FM score
+  is arranged from it. The title and cover
   art were drawn for this game
   by Claude Opus 5.5. The logo
   was made with DeepAI; the Doc

@@ -10,11 +10,13 @@ Soul" by The Bard of Bizarre
 clown, Doc Leo): a goth rock
 song about domestic life.
 
-Lyrics and music: (credit
-pending). This game's sung
-clips are cut from the
-recording, and its FM score
-is arranged from it.
+Lyrics: written by ChatGPT
+from Lewis's prompts. Music:
+made with Riffusion (now
+Google Flow Music). This
+game's sung clips are cut
+from the recording, and its
+FM score is arranged from it.
 Title and cover art: drawn
 for this game by Claude Opus
 5.5 (none came with the
@@ -30,6 +32,20 @@ GAME-MAKER by Recreational
 Software Designs.
 
 Never touch the loofah.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 FREE TO SHARE
 
 Made in 2026 by Lewis Moten
