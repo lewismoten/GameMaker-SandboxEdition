@@ -7,9 +7,10 @@ import { buildBlocks } from '../src/blocks/blocks';
 import { LEVELS } from '../src/levels/levels';
 
 const RULES: PartRule[] = [
-  ...pair('rain cloud', 'cloudL', 'cloudR', 1, 0),
-  ...pair('cloud ledge', 'cloudA', 'cloudB', 1, 0),
-  ...pair('stalk', /^(stalkL|branchStalkL)$/, /^(stalkR|branchStalkR)$/, 1, 0),
+  // (and their copies in the deeper evening sky, name~1 or name~2, blocks.ts DUSK_TONED)
+  ...pair('rain cloud', /^cloudL(~\d)?$/, /^cloudR(~\d)?$/, 1, 0),
+  ...pair('cloud ledge', /^cloudA(~\d)?$/, /^cloudB(~\d)?$/, 1, 0),
+  ...pair('stalk', /^(stalkL|branchStalkL)(~\d|~\dto\d)?$/, /^(stalkR|branchStalkR)(~\d|~\dto\d)?$/, 1, 0),
   { part: 'potTop', need: [[0, 1, 'pot']] },
   ...shape(
     'hand',

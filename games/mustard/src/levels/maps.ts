@@ -219,9 +219,11 @@ export function mound(book: BlockBook): Level {
   m.text(48, 9, 'p.,..q.x..,');
   for (const x of [50, 56]) m.row(7, x, x + 1, 'L');
   m.text(50, 4, '*..d..*').text(52, 1, '{}');
-  m.set(59, 6, 'U').col(59, 7, 9, 'u').set(60, 6, 'U').col(60, 7, 9, 'u').set(62, 4, 'L').set(62, 3, '1');
+  m.set(59, 6, 'U').col(59, 7, 9, 'u').set(60, 6, 'U').col(60, 7, 9, 'u');
+  // the flowerpot tower: two pots stacked, up to a leaf high over the garden and the golden flower
+  m.set(61, 7, 'U').col(61, 8, 9, 'u').set(61, 4, 'U').col(61, 5, 6, 'u').set(62, 2, 'L').set(62, 1, '1');
   // the sunny patch at the end of the garden: the way on
-  m.text(64, 9, ',..@.,').text(64, 6, '*');
+  m.text(64, 9, ',..@.,').text(64, 7, '*');
   m.mon(MON.beetleR, 8, 9);
   m.peacock(21, 9);
   m.mon(MON.crow, 40, 1).mon(MON.bee, 51, 7).mon(MON.beetleR, 48, 9).mon(MON.crow, 56, 1);

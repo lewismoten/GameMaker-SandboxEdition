@@ -136,11 +136,11 @@ export async function theMound(bot: Bot): Promise<void> {
     await must(bot, bot.hop('up', 14), 'up on the leaf');
     await must(bot, bot.hop('right', 8, 'right', 59.5), 'the tall pots');
     await must(bot, bot.walk(60.5, 'the tall pots'), 'the tall pots');
-    await grab(bot, 'the golden flower', [[62, 3]], () => must(bot, bot.hop('right', 8, 'right', 62.2), 'onto the leaf'));
-    await grab(bot, 'the sunbeam over the sunny patch', [[64, 6]], async () => {
-      await must(bot, bot.walk(64, 'the sunny patch'), 'the patch');
-      await must(bot, bot.hop('up', 12), 'the sunbeam');
-    });
+    // up the flowerpot tower, and onto the leaf high over the garden for the golden flower
+    await must(bot, bot.walk(61.3, 'up the flowerpot tower'), 'the tower');
+    if (bot.at.y !== 3) throw new Error(`not on the flowerpot tower (${bot.at.y})`);
+    await grab(bot, 'the golden flower', [[62, 1]], () => must(bot, bot.hop('right', 10, 'right', 62.2), 'onto the leaf'));
+    // (the sunbeam over the sunny patch is caught on the way down from the leaf)
     await leave(bot, bot.walk(68, 'the sunny patch'), 'the sunny patch');
   });
 }

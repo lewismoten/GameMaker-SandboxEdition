@@ -102,6 +102,10 @@ export const INSTRUCTIONS = [
     'coming that blows you off',
     'the branch: wait, and cross',
     "while it's calm.",
+    '',
+    'Cornered in a tunnel? Push',
+    'roots up into the dust and',
+    'let the mole go by.',
   ]),
   page([
     "It don't shout, it don't brag:",

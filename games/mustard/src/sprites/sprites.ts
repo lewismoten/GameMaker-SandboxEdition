@@ -260,8 +260,8 @@ export function buildMonsterBlocks(pal: Pal) {
     else for (let k = 0; k < 7; k++) p.line(7 + k, 13, 5 + k, 19 - k / 3, c('crow', 1));
     return done(p);
   };
-  book.add('crow0', crow(0), hurt(-8));
-  book.add('crow1', crow(1), hurt(-8));
+  book.add('crow0', crow(0), hurt(-5));
+  book.add('crow1', crow(1), hurt(-5));
   // The peacock, two blocks wide: A the tail fan (behind), B the head and the strut.
   const peaTail = (f: number) => {
     const p = P();
