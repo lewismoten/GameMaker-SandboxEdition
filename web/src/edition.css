@@ -70,7 +70,7 @@
   }
 }
 
-/* the header's ⋯ menu (the desk and the source), on phones only */
+/* the header's ⋯ menu (the cast, the desk, offline, the source), on phones and tablets */
 .topbar .show-narrow {
   display: none;
 }
@@ -125,7 +125,12 @@
 .topbar .topbar-menu > :hover {
   background: var(--panel-2);
 }
-@media (max-width: 600px) {
+/* below 900px the cast, achievements, desk, offline and source links move into it, so the
+   header stays one row on tablets too */
+@media (max-width: 900px) {
+  .topbar .hide-narrow {
+    display: none;
+  }
   .topbar .show-narrow {
     display: block;
   }

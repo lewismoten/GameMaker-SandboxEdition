@@ -91,9 +91,14 @@ function startModern(hash?: string): void {
         h('span', { 'aria-hidden': 'true' }, '💾'),
         ' 1994 desk',
       ),
-      h('button', { class: 'hide-narrow', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' }, 'Offline'),
+      h(
+        'button',
+        { class: 'hide-narrow topbar-offline', onclick: openOffline, title: 'Download the whole site to play and make games with no connection' },
+        h('span', { 'aria-hidden': 'true' }, '⤓'),
+        ' Offline',
+      ),
       h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
-      // phones: the cast, the desk and the source in a small menu, so the header stays one tidy row
+      // phones and tablets: the cast, the desk, offline and the source in a small menu, so the header stays one tidy row
       h(
         'details',
         { class: 'topbar-more show-narrow' },
