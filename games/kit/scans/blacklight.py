@@ -36,16 +36,27 @@ OUTLINE = [
 BRIM = [(100, 300), (124, 300), (220, 250), (350, 216), (480, 236), (560, 282), (600, 290)]  # its underside
 FACE = (344, 404, 182, 214)  # an ellipse: center, radii (the ears and neck join it by color)
 BAND = ((176, 172), (512, 184))  # the hat band's bottom edge, a line just above the brim
-# his face, drawn as a cartoon over the photo's shapes, traced on the photo (700-scale): the
-# glasses, the eyes, the painted eyebrows, the round red nose, the red cheeks, the white
-# makeup round the mouth and the hobo clown's turned-down mouth in it (sad, never mean)
+# his hobo makeup, drawn as a cartoon over the photo's shapes where it sits on his face
+# (700-scale; .for-lewis/clown/doc-leo-walking-rubber-chicken.webp shows it best): his
+# glasses, white patches round both eyes, bold painted eyebrows, his own nose and cheeks
+# sunburned red (a hobo wears no clown nose), the blue-gray painted stubble all round the
+# jaw, chin and upper lip, and the white mouth with the turned-down line in it (sad, never
+# mean)
 FEATURES = dict(
     lensL=(180, 290, 328, 386), lensR=(358, 286, 514, 383),
-    eyeL=(228, 316, 296, 346), eyeR=(392, 312, 462, 342),
-    browL=[(205, 276), (255, 262), (312, 268)], browR=[(382, 266), (440, 260), (492, 272)],
-    nose=(310, 354, 392, 438), cheekL=(180, 380, 290, 470), cheekR=(415, 368, 515, 455),
-    mouth=(262, 452, 420, 528), frown=[(300, 503), (318, 494), (342, 491), (366, 494), (384, 503)],
+    eyeL=(232, 322, 294, 344), eyeR=(396, 318, 458, 340),
+    patchL=(208, 312, 318, 376), patchR=(370, 308, 486, 372),
+    browL=[(202, 292), (232, 276), (272, 270), (312, 280)], browR=[(380, 278), (420, 268), (460, 270), (494, 288)],
+    nose=[(332, 318), (354, 318), (372, 380), (392, 414), (378, 438), (346, 444), (312, 438), (298, 414), (316, 380)],
+    nostrils=[(316, 432), (332, 440), (346, 442), (360, 440), (376, 432)],
+    cheekL=(176, 376, 296, 476), cheekR=(408, 364, 520, 462),
+    beard=[(184, 418), (196, 492), (234, 560), (294, 604), (345, 614), (398, 604), (456, 560), (494, 492), (508, 416),
+           (470, 440), (412, 452), (392, 446), (345, 448), (298, 446), (276, 452), (222, 442)],
+    mouth=[(258, 508), (272, 478), (304, 462), (342, 456), (380, 462), (412, 478), (426, 508), (410, 532), (378, 538),
+           (342, 540), (306, 538), (274, 532)],
+    frown=[(298, 512), (318, 500), (342, 496), (366, 500), (386, 512)],
 )
+UV_GREEN = (120, 255, 60)  # (the title's outer glow)
 
 INK = {
     'hat': (40, 110, 255),  # electric blue
@@ -54,9 +65,9 @@ INK = {
     'shade': (255, 100, 40),  # the skin: orange, dim to bright (see SHADE)
     'face': (255, 150, 60),
     'lit': (255, 200, 120),
-    'red': (255, 40, 200),  # magenta: the nose and the cheeks
-    'white': (120, 255, 60),  # UV green: the white makeup round the mouth
-    'stubble': (150, 100, 255),  # violet
+    'red': (255, 50, 110),  # hot pink-red: the sunburned nose and cheeks
+    'white': (238, 242, 255),  # the white makeup, a pale UV glow
+    'stubble': (100, 80, 230),  # deep blue-violet: the painted stubble
     'brow': (0, 0, 0),
     'shirt': (200, 60, 255),  # violet
     'jacket': (40, 110, 255),
@@ -106,7 +117,7 @@ def regions(rgb: np.ndarray, inside: np.ndarray) -> np.ndarray:
     # (the makeup, the glasses and the eyes are drawn over it: FEATURES)
     lab[face] = PARTS.index('shade')
     lab[face & (lum > 115)] = PARTS.index('face')
-    lab[face & ~skin & (lum > 80) & (ys > 430)] = PARTS.index('stubble')
+    lab[face & ~skin & (lum > 80) & (ys > 430)] = PARTS.index('face')  # (the stubble is drawn: FEATURES)
     return lab
 
 
@@ -188,27 +199,37 @@ def features(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
         ink[:] = ink * (1 - m[..., None]) + np.array(color, float) * m[..., None]
         level[:] = level * (1 - m) + lit * m
 
-    # the red cheeks, soft at the edges like rouge
+    def soft_fill(m: np.ndarray, blur: float) -> np.ndarray:
+        return np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(blur)), float) / 255
+
+    poly = lambda k: mask(lambda d, sc, k=k: d.polygon(pts(F[k]), fill=255))
+    # the painted stubble, all round the jaw, the chin and the upper lip, soft-edged
+    fill(soft_fill(poly('beard'), 5) * 0.95, INK['stubble'], 0.55)
+    # sunburned cheeks, and his own nose sunburned red (no clown nose on a hobo)
     for k in ('cheekL', 'cheekR'):
         m = mask(lambda d, sc, k=k: d.ellipse(sc(F[k]), fill=255))
-        m = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(10)), float) / 255
-        fill(m * 0.85, INK['red'], 0.8)
-    fill(mask(lambda d, sc: d.ellipse(sc(F['mouth']), fill=255)), INK['white'], 1.0)
-    fill(mask(lambda d, sc: d.ellipse(sc(F['nose']), fill=255)), INK['red'], 1.0)
+        fill(soft_fill(m, 12) * 0.85, INK['red'], 0.8)
+    fill(soft_fill(poly('nose'), 3), INK['red'], 0.95)
+    # the white makeup: patches round both eyes, and the mouth
+    for k in ('patchL', 'patchR'):
+        fill(soft_fill(mask(lambda d, sc, k=k: d.ellipse(sc(F[k]), fill=255)), 4), INK['white'], 0.95)
+    fill(soft_fill(poly('mouth'), 4), INK['white'], 1.0)
     for k in ('eyeL', 'eyeR'):
         fill(mask(lambda d, sc, k=k: d.ellipse(sc(F[k]), fill=255)), (225, 240, 255), 0.9)
     lines = mask(lambda d, sc: (
         [d.rounded_rectangle(sc(F[k]), 36, outline=255, width=14) for k in ('lensL', 'lensR')],
         d.line([(656, 640), (716, 630)], fill=255, width=12),  # the bridge
-        [d.ellipse(sc(F[k]), outline=255, width=10) for k in ('eyeL', 'eyeR', 'nose', 'mouth')],
-        [d.line(pts(F[k]), fill=255, width=22, joint='curve') for k in ('browL', 'browR')],
+        [d.ellipse(sc(F[k]), outline=255, width=8) for k in ('eyeL', 'eyeR')],
+        [d.arc(sc(F[k]), 180, 360, fill=255, width=16) for k in ('eyeL', 'eyeR')],  # the lids
+        [d.line(pts(F[k]), fill=255, width=34, joint='curve') for k in ('browL', 'browR')],
         d.line(pts(F['frown']), fill=255, width=12, joint='curve'),
+        d.line(pts(F['nostrils']), fill=255, width=8, joint='curve'),
     ))
     # the pupils, looking at you
     for k in ('eyeL', 'eyeR'):
         x0, y0, x1, y1 = F[k]
-        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2 + 2
-        lines = np.maximum(lines, mask(lambda d, sc, cx=cx, cy=cy: d.ellipse(sc((cx - 10, cy - 11, cx + 10, cy + 11)), fill=255)))
+        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2 - 1  # (up under the lid: a relaxed look)
+        lines = np.maximum(lines, mask(lambda d, sc, cx=cx, cy=cy: d.ellipse(sc((cx - 9, cy - 9, cx + 9, cy + 9)), fill=255)))
     soft_lines = np.asarray(Image.fromarray((lines * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.6)), float) / 255
     black[:] = np.maximum(black, soft_lines)
 
@@ -225,15 +246,16 @@ def bezier(*segments) -> list:
 
 
 # The fedora, drawn as one (700-scale, sized to his hat on the photo): the crown tapering up
-# to a pinched front with the teardrop crease down the middle of its top, the band round its
-# foot, and the brim dipping at the front and turning up at the sides.
+# with one soft crease down the middle of its top (no band: his hat has none), and the brim
+# dipping at the front and turning up at the sides.
 CROWN = bezier(
     ((196, 214), (186, 150), (208, 92), (236, 58)),
     ((236, 58), (262, 26), (310, 20), (340, 40)),
     ((340, 40), (370, 20), (418, 26), (444, 58)),
     ((444, 58), (472, 92), (494, 150), (484, 214)),
 )
-CREASE = bezier(((340, 42), (318, 70), (320, 116), (340, 132)), ((340, 132), (360, 116), (362, 70), (340, 42)))
+CREASE = bezier(((340, 42), (324, 66), (326, 112), (340, 126)), ((340, 126), (354, 112), (356, 66), (340, 42)))
+CREASE_LINE = bezier(((340, 44), (334, 70), (334, 100), (340, 122)))
 PINCHES = [bezier(((292, 58), (276, 76), (282, 108), (300, 118)), ((300, 118), (306, 96), (304, 72), (292, 58))),
            bezier(((388, 58), (404, 76), (398, 108), (380, 118)), ((380, 118), (374, 96), (376, 72), (388, 58)))]
 BAND_SHAPE = bezier(((192, 172), (290, 160), (390, 160), (488, 172)), ((488, 172), (490, 186), (490, 200), (487, 210)),
@@ -242,8 +264,8 @@ BRIM = bezier(
     ((96, 226), (130, 206), (220, 196), (340, 196)),  # its top, the sides turned up
     ((340, 196), (460, 196), (550, 206), (586, 226)),
     ((586, 226), (590, 240), (580, 254), (560, 250)),  # the right tip, curled
-    ((560, 250), (500, 234), (420, 240), (340, 262)),  # its underside, dipping at the front
-    ((340, 262), (260, 240), (180, 234), (120, 250)),
+    ((560, 250), (500, 232), (420, 236), (340, 252)),  # its underside, dipping at the front
+    ((340, 252), (260, 236), (180, 232), (120, 250)),
     ((120, 250), (100, 254), (90, 240), (96, 226)),
 )
 
@@ -266,12 +288,13 @@ def fedora(ink: np.ndarray, level: np.ndarray, black: np.ndarray) -> None:
         black[:] = black * (1 - m)
 
     fill(shape(CROWN), INK['hat'], 0.55)
-    for pinch in PINCHES:
-        fill(shape(pinch), INK['hat'], 0.32)
-    fill(shape(CREASE), INK['hat'], 0.3)
-    fill(shape(BAND_SHAPE), INK['band'], 0.95)
+    fill(shape(CREASE), INK['hat'], 0.4)
     fill(shape(BRIM), INK['hatlit'], 0.6)
-    lines = np.maximum.reduce([outline(CROWN, 14), outline(CREASE, 10), outline(BAND_SHAPE, 10), outline(BRIM, 14)] + [outline(p, 8) for p in PINCHES])
+    # the crease, one soft line down the middle of the crown's top
+    crease = Image.new('L', (1400, 1400), 0)
+    ImageDraw.Draw(crease).line([(x * 2, y * 2) for x, y in CREASE_LINE], fill=255, width=10, joint='curve')
+    crease = np.asarray(crease.resize((700, 700), Image.LANCZOS).filter(ImageFilter.GaussianBlur(2.4)), float) / 255
+    lines = np.maximum.reduce([outline(CROWN, 14), outline(BRIM, 14), crease * 0.85])
     black[:] = np.maximum(black, lines)
 
 
@@ -317,7 +340,7 @@ def title(size: tuple[int, int]) -> tuple[np.ndarray, np.ndarray]:
     w, h = size
     font = ImageFont.truetype('/System/Library/Fonts/Supplemental/Phosphate.ttc', 62, index=1)
     layers = []
-    for grow, color in ((8, INK['white']), (4, INK['band']), (0, INK['red'])):
+    for grow, color in ((8, UV_GREEN), (4, INK['band']), (0, (255, 40, 200))):
         m = Image.new('L', size, 0)
         ImageDraw.Draw(m).text((w / 2, h / 2 + 2), 'DOC LEO', font=font, anchor='mm', fill=255, stroke_width=grow, stroke_fill=255)
         layers.append((np.asarray(m, float) / 255, color))
