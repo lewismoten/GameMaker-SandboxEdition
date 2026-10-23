@@ -133,6 +133,9 @@ function layout(act: 1 | 2): string[] {
     // a playbill for Will, the bard in sweatpants: ALAS, BARD
     [10, 'S'],
     [11, 'S'],
+    // and one for Doc Leo, the hobo clown, and his rubber chicken
+    [32, 'b'],
+    [33, 'b'],
   ] as [number, string][])
     y39[x] = ch;
   rows.push(y39.join(''));
@@ -305,6 +308,8 @@ function blockFor(ch: string, act: 1 | 2, x: number, y: number, rows: string[]):
       return 'portrait';
     case 'S':
       return `will${run('S') % 2}`;
+    case 'b':
+      return `leo${run('b') % 2}`;
     case 'B':
       return `plaque${run('B')}`;
     case 'W':
