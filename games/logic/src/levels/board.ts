@@ -246,7 +246,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
   for (const rows of [...specs.map((s) => s.rows), CRAWL])
     rows.forEach((row, y) => [...row].forEach((ch, x) => ch === '!' && hatches.add(wallMask((x2, y2) => rows[y2]?.[x2] ?? ' ', x, y))));
   const crawling = specs.some((s) => s.rows.some((r) => r.includes('!')));
-  if (crawling && SLOTS.slice(0, specs.length).some(([x, y]) => y === CRAWL_AT[1])) throw new Error(`${room}: the crawlspace is in the way of a board`);
+  if (crawling && SLOTS.slice(0, specs.length).some(([, y]) => y === CRAWL_AT[1])) throw new Error(`${room}: the crawlspace is in the way of a board`);
   const easterEgg = specs.some((s) => s.rows.some((r) => r.includes('y'))) || crawling;
   const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard'), seams: [...seams], fusebox, easterEgg, hatches: crawling ? [...hatches] : [] });
   const map = newMap();
