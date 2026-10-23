@@ -470,9 +470,11 @@
   }
 }
 
-/* ---- THE CHEZ (chez.ts): its button rides along with the car */
-.sw-hits .sw-chez {
+/* ---- what goes by outside (outside/): each one's button rides along with it, under the
+   moon's */
+.sw-hits .sw-out {
   z-index: 3;
+  border-radius: 20%;
 }
 
 /* ---- the black-light poster (blacklight.ts): velvet by day; after dark the wall dims, the

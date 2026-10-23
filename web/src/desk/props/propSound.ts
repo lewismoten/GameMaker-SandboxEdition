@@ -6,6 +6,8 @@
 import { output } from "../../audio/output";
 import { audioContext, unlock } from "../../audio/context";
 
+let gameAudio: import("../../audio/engine").AudioEngine | undefined;
+
 interface Out {
   ctx: AudioContext;
   out: AudioNode;
@@ -203,6 +205,46 @@ export const roomSound = {
       osc.start(o.t);
       osc.stop(o.t + seconds + 0.05);
     }
+  },
+  /** A heavy truck's diesel rumble and a blade scraping, fading over `seconds`. */
+  rumble(seconds = 4): void {
+    const o = open();
+    if (!o) return;
+    tone(o, 0, seconds, 48, 44, 0.12, "sawtooth");
+    tone(o, 0, seconds, 96, 90, 0.04, "square");
+    noise(o, 0, seconds, 500, 0.06, 0.6);
+  },
+  /** Boots crunching through snow, a step every 0.4 s. */
+  crunch(seconds = 4): void {
+    const o = open();
+    if (!o) return;
+    for (let at = 0; at < seconds; at += 0.42) noise(o, at, 0.09, 1800 + Math.random() * 800, 0.07, 1.5);
+  },
+  /** Dogs barking: a couple of woofs and a yip. */
+  woof(times = 2): void {
+    const o = open();
+    if (!o) return;
+    for (let i = 0; i < times; i++) {
+      const hi = i % 2 ? 1.4 : 1;
+      tone(o, i * 0.32, 0.16, 420 * hi, 210 * hi, 0.12, "sawtooth");
+      noise(o, i * 0.32, 0.12, 900 * hi, 0.08, 2);
+    }
+  },
+  /** A soft shimmer, rising and falling (the northern lights). */
+  shimmer(seconds = 4): void {
+    const o = open();
+    if (!o) return;
+    [523, 659, 784, 1047].forEach((f, i) => tone(o, i * 0.4, seconds - i * 0.4, f, f * 1.01, 0.012));
+  },
+  /** One of a Sandbox game's own digitized sounds (goat/scream.voc), through the knob too. */
+  gameVoc(game: string, name: string): void {
+    void Promise.all([import("../../audio/engine"), import("../../project/files")]).then(async ([{ AudioEngine }, files]) => {
+      gameAudio ??= new AudioEngine();
+      const entry = (await files.loadGameList()).find((g) => g.id === game);
+      const bytes = entry && (await files.fetchGameFile(entry, name));
+      await gameAudio.resume();
+      gameAudio.playVoc(bytes);
+    }).catch(() => undefined);
   },
   /** A switch clicked. */
   click(): void {
