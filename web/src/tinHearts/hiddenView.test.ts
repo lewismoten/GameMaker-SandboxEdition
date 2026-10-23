@@ -18,7 +18,6 @@ const STILL_SHOWN = new Set([
   'maximus:easterEgg',
   'reckoning:tinHeart',
   'reckoning:easterEgg',
-  'sleuth:tinHeart',
   'smirked:tinHeart',
 ]);
 
