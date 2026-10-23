@@ -231,7 +231,10 @@ export const outside: Monologue = {
     '!': 'spot@town',
   },
   build: (m: MapBuilder) => {
-    const W = 70;
+    // the walk-off: OFF blocks more of the park past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 2;
+    const W = 70 + OFF;
     m.fill(0, 0, W, 3, 'H').row(3, 0, W - 1, 'skyMid').fill(0, 4, W, 4, 's').row(8, 0, W - 1, 'k').row(9, 0, W - 1, 't').row(11, 0, W - 1, '#');
     // the ground: the sidewalk, the parking lot, the park
     m.row(10, 0, 23, '=').row(10, 24, 47, 'a').row(10, 48, W - 1, 'g');
@@ -269,7 +272,7 @@ export const outside: Monologue = {
     m.mon(OUT_MON.ped, 63, 9);
     // the bush, and in it the rest of the receipt
     m.set(67, 9, 'B');
-    m.link(67, 9, 'next');
+    m.link(67 + OFF, 9, 'next');
     return { start: [3, 9], size: [W, 12] };
   },
   monsters: outsideMonsters,

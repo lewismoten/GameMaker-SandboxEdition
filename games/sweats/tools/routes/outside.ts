@@ -47,7 +47,8 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(64, 'the coin'), 'coin');
       if (plot(bot) < SCRAPS) throw new Error(`only ${plot(bot)} scraps`);
       bot.say(`tips ${tips(bot)}`);
-      await leave(bot, bot.walk(67, 'the bush'), 'the bush');
+      await must(bot, bot.walk(68, 'the bush'), 'the bush');
+      await leave(bot, bot.walk(69.5, 'the walk-off'), 'the walk-off');
     });
   },
   /** The Ants Have Spoken: the dust of 1978, the trenches (ants scattered, sandbags hopped), the counter (towels, bleach), over the picket line (gloves), the fridge (sponge), the bug disco and its king, the cupboard. */
