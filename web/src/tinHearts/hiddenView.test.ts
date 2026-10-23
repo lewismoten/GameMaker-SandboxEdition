@@ -23,8 +23,6 @@ const STILL_SHOWN = new Set([
   'realm:tinHeart',
   'reckoning:tinHeart',
   'reckoning:easterEgg',
-  'sandcast:tinHeart',
-  'sandcast:easterEgg',
   'sleuth:tinHeart',
   'smirked:tinHeart',
   'teddy2:tinHeart',
