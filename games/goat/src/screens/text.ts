@@ -211,9 +211,10 @@ THIS IS SHAREWARE
 
   If it made you smile,
   register for ${price}: you get
-  a tape of the song and a
-  hand-drawn goat. Send a check
-  (US funds) to:
+  a goat sticker (third from
+  the left) and a hand-drawn
+  goat. Send a check (US funds)
+  to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
