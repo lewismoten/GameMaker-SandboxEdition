@@ -9,6 +9,11 @@ import { BATTERIES, MONEY, SCAN, SMIRKS, SORRY, HELMET } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { MLEN, bgBlock, type World } from '../../../web/src/engine/world';
 import type { GameSim } from './sim';
+import { buildPalette } from '../src/art/pal';
+import { buildBlocks } from '../src/blocks/blocks';
+
+/** The tin heart's and the Easter egg's blocks: little secrets the bot leaves for the player (it never goes out of its way for them). */
+const SECRETS = new Set([...buildBlocks(buildPalette('plain')).index].filter(([name]) => /^(tinHeart|egg)\d*$/.test(name)).map(([, i]) => i));
 
 type Pt = { x: number; y: number };
 export type Dir = 'up' | 'down' | 'left' | 'right';
@@ -28,7 +33,7 @@ export class Bot {
   isLoot(x: number, y: number, w: World = this.sim.w): boolean {
     const b = w.map[y * MLEN + x];
     const blk = bgBlock(w, w.blkmap[b] ?? 0);
-    if (blk.solid || blk.touchBl === b || blk.chHitPt < 0) return false;
+    if (blk.solid || blk.touchBl === b || blk.chHitPt < 0 || SECRETS.has(b)) return false;
     return blk.scorePts > 0 || blk.chHitPt > 0 || (blk.effect > 0 && blk.eamt > 0);
   }
 

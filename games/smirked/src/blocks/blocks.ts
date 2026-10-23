@@ -14,7 +14,10 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
+import { willCameo } from '../../../kit/cameos';
 import { BATTERIES, BATTERIES_NEEDED, MONEY, SMIRKS, SORRY, SORRY_NEEDED, SWORD_PRICE, HELMET } from '../ids';
 
 export { BlockBook, SOLID };
@@ -496,5 +499,31 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(7, 3, 6, 14, c('black', 1)).rect(8, 4, 2, 1, c('red', 2));
     for (let k = 0; k < 6; k++) p.rect(8 + (k % 2) * 3, 7 + Math.floor(k / 2) * 3, 1, 1, c('white', 1));
   }, { score: 100 });
+
+  // ---------- friends from the other games (scenery and small bonuses) ----------
+  // the tin heart: in a corner of the fog hall, a glint crossing it now and then (score only, no sound of its own)
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(boards(1), { ink, tin: [c('silver', 0), c('silver', 1), c('silver', 2)], white: c('white', 2), dark: c('black', 1) }, k), {
+      score: 100,
+      touch: 'boards',
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+    });
+  // the Easter egg: a painted one dropped in the fake woods' far corner (a few points)
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`egg${k || ''}`, drawEasterEgg(dirt(6, 3), { ink, shell: [c('purple', 1), c('purple', 2), c('purple', 3)], paint: [c('orange', 1), c('orange', 2)], accent: c('yellow', 2), white: c('white', 2) }, 'zigzag', k), {
+      score: 50,
+      touch: 'dirt',
+      next: `egg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 3 : 60,
+    });
+  // Will, the playwright in sweatpants, peeking out of the last hall's curtains (taking notes on the haunted house)
+  {
+    const p = curtain(2);
+    // recolored from the unlit palette, so the block is the same in every room's light
+    const will = willCameo(buildPalette('plain').pal, { face: 'front', mood: 'smug' });
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (will.get(x, y) !== 255) p.set(x, y, will.get(x, y));
+    book.add('willCurtain', p, solid);
+  }
   return book;
 }

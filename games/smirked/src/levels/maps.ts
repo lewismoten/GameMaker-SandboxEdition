@@ -131,6 +131,7 @@ const FOYER: Record<string, string> = {
   k: 'hay',
   x: 'coffin',
   D: 'darkDoor',
+  h: 'tinHeart',
 };
 
 export function fogHall(book: BlockBook): Level {
@@ -149,7 +150,7 @@ export function fogHall(book: BlockBook): Level {
     '#.b......v....=.....,....$...#',
     '#.....J.b.....v........kk....#',
     '#..$......,...=...a.....v....#',
-    '#.............=..............#',
+    '#.............=.............h#',
     '##############################',
   ]);
   const m = new MapBuilder(book, 'wallTop', FOYER);
@@ -242,12 +243,13 @@ const WOODS: Record<string, string> = {
   p: 'plush',
   m: 'mugs',
   R: 'register',
+  E: 'egg',
 };
 
 export function fakeWoods(book: BlockBook): Level {
   const map = rows([
     '#HHhHHHhHHHHhHHHhHHHHhHHHhHHHHhHH#',
-    '#..,..T....,.w...B.....T..,..t...#',
+    '#..,..T....,.w...B.....T..,..t..E#',
     '#.$...t..l..,w..$..T....w..*..,..#',
     '#.,..wwww..T.w....l..k..w..B..j..#',
     '#..T...........e.....,..w....t$..#',
@@ -289,6 +291,7 @@ const HALL: Record<string, string> = {
   j: 'juiceC',
   L: 'loafC',
   r: 'remoteC',
+  W: 'willCurtain',
 };
 
 export function lastHall(book: BlockBook): Level {
@@ -296,7 +299,7 @@ export function lastHall(book: BlockBook): Level {
     '##############E###############',
     ...Array.from({ length: EXIT_HALL - 1 }, () => '##############.###############'),
     '#VVVVVVVVVVVVV.VVVVVVVVVVVVVV#',
-    '#sspmmVVVVVVVVXVVVVVVVVVsspmm#',
+    '#sspmmVVWVVVVVXVVVVVVVVVsspmm#',
     '#.....,......................#',
     '#..L....*.........*......r...#',
     '#.....pp.....,......mm.......#',
