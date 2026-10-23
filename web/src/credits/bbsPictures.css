@@ -1,0 +1,175 @@
+/* The Credits page's "Pictures on the BBS" (bbsPicturesSection.ts) and its modem download (modemTransfer.ts). */
+
+main.credits-page .bbs-pics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 16px;
+}
+
+main.credits-page .bbs-pic {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+main.credits-page .bbs-pic img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+main.credits-page .bbs-pic figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  color: var(--text);
+}
+
+main.credits-page .bbs-pic-facts,
+main.credits-page .bbs-pic-credit {
+  color: var(--muted);
+}
+
+main.credits-page .bbs-pic-credit {
+  font-style: italic;
+}
+
+main.credits-page .bbs-pic button {
+  align-self: flex-start;
+  min-height: 32px;
+  margin-top: auto;
+}
+
+/* ---- the transfer screen ---- */
+dialog.modal.bbs-xfer-dialog {
+  width: min(44rem, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 16px;
+}
+
+.bbs-xfer {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.bbs-xfer > .bbs-xfer-file,
+.bbs-xfer > .bbs-xfer-speeds,
+.bbs-xfer > .bbs-xfer-note,
+.bbs-xfer > .buttons {
+  grid-column: 1 / -1;
+}
+
+.bbs-xfer-file,
+.bbs-xfer-note {
+  margin: 0;
+}
+
+.bbs-xfer-note:empty {
+  display: none;
+}
+
+.bbs-xfer-screen {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bbs-xfer-picture {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: pixelated;
+}
+
+/* the terminal program's status box, as it looked */
+.bbs-xfer-status {
+  padding: 10px 12px;
+  color: #aaa;
+  background: #0000aa;
+  border: 3px double #fff;
+  font:
+    13px/1.45 ui-monospace,
+    'Cascadia Mono',
+    Menlo,
+    Consolas,
+    monospace;
+}
+
+.bbs-xfer-title {
+  margin: 0 0 6px;
+  color: #ff5;
+  text-align: center;
+  font-weight: bold;
+}
+
+.bbs-xfer-status dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 2px 10px;
+  margin: 0 0 8px;
+}
+
+.bbs-xfer-status dt {
+  color: #5ff;
+}
+
+.bbs-xfer-status dd {
+  margin: 0;
+  color: #fff;
+}
+
+.bbs-xfer-status progress {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.bbs-xfer-bar {
+  color: #5f5;
+  letter-spacing: -1px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.bbs-xfer-speeds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+dialog.modal .bbs-xfer-speeds label {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+}
+
+dialog.modal .bbs-xfer .buttons {
+  flex-wrap: wrap;
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .bbs-xfer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

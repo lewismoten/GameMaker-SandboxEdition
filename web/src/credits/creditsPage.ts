@@ -1,6 +1,6 @@
 // The Credits page (#/credits): the software the site is built with, the third-party pieces in
 // the engine and players, the original Game-Maker and its makers, the games' authors, the AI
-// tools and the people, and The Bard of Bizarre's table of who made what. NOTICE.md stays the
+// tools and the people, The Bard of Bizarre's table of who made what, and the BBSes' pictures. NOTICE.md stays the
 // legal text; this page links to it. Linked from the header's ⋯ menu, the Guide's credits and
 // the home page's Getting started.
 import './credits.css';
@@ -14,6 +14,7 @@ import { originalSection } from './originalSection';
 import { authorsSection } from './authorsSection';
 import { peopleSection } from './peopleSection';
 import { bardSection } from './bardTable';
+import { bbsPicturesSection } from './bbsPicturesSection';
 
 /** The sections, for a window too narrow for "On this page" beside the text (pageToc.css). */
 const SECTIONS: [id: string, title: string, what: string][] = [
@@ -21,6 +22,7 @@ const SECTIONS: [id: string, title: string, what: string][] = [
   ['credits-authors', 'Game authors', 'The CD’s games, Sandbox Software and the Bard'],
   ['credits-people', 'AI tools and the people', 'What each tool made, Lewis and the cast'],
   ['credits-bard-table', 'The Bard of Bizarre', 'Who made what, game by game'],
+  ['credits-bbs-pictures', 'Pictures on the BBS', 'Who took each one; download one by modem'],
   ['credits-pieces', 'Third-party pieces', 'Fonts, headers and runtimes in the site and players'],
   ['credits-software', 'Software', 'The build and test tools and what they use'],
 ];
@@ -82,6 +84,7 @@ export function renderCredits(el: HTMLElement): void {
       authorsSection(),
       peopleSection(),
       bardSection(),
+      bbsPicturesSection(),
       piecesSection(),
       softwareSection(),
     ),
