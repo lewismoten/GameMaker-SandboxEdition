@@ -151,6 +151,8 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
+  /** A swatting thing: the dark outline, then a pale rim round it, so it reads on the night's and the gloom's walls. */
+  const rimmed = (p: Pixels) => outline(done(p), c('rim', 0));
   /** A hazard: hurts on touch (half again what's written: a fly's patience is short) and shoves Carl back. */
   const hurt = (hp: number, solid = 15) => ({ chHitPt: -Math.round(hp * 1.5), solid });
 
@@ -173,7 +175,7 @@ export function buildMonsterBlocks(pal: Pal) {
         [16, 5],
       ])
         p.set(x, y, c('white', 3));
-    return done(p);
+    return rimmed(p);
   };
   book.add('towel0', towel(0), hurt(10));
   book.add('towel1', towel(1), hurt(10));
@@ -196,7 +198,7 @@ export function buildMonsterBlocks(pal: Pal) {
     const spread = f ? 0.4 : 1.4;
     for (let k = 0; k < 4; k++) p.line(7 + k * 2.4, 11, 7 + k * 2.4 + (k - 1.5) * spread, 17 - (f ? 2 : 0), c('skin', k % 2 ? 2 : 1));
     if (f) blob(p, 10, 18, 3, 1.6, R('chip'), 1, 3);
-    return done(p);
+    return rimmed(p);
   };
   book.add('reach0', reach(0), hurt(8));
   book.add('reach1', reach(1), hurt(8));
@@ -220,7 +222,7 @@ export function buildMonsterBlocks(pal: Pal) {
         [18, 14],
       ])
         p.set(x, y, c('white', 3));
-    return done(p);
+    return rimmed(p);
   };
   book.add('clap0', clap(false), hurt(12));
   book.add('clap1', clap(true), hurt(12));
@@ -240,7 +242,7 @@ export function buildMonsterBlocks(pal: Pal) {
         [17, 15],
       ])
         p.set(x, y, c('white', 3)).set(x, y + 1, c('white', 2));
-    return done(p);
+    return rimmed(p);
   };
   book.add('swat0', swatter(0), hurt(12));
   book.add('swat1', swatter(1), hurt(12));
@@ -384,7 +386,7 @@ export function buildMonsterBlocks(pal: Pal) {
     s.rect(4, 8, 8, 4, c('white', 3)).rect(3, 15, 15, 1, c('ink', 1));
     if (f) p.map((x, y) => s.get(y, 19 - x));
     else p.blit(s, 0, 0, T);
-    return done(p);
+    return rimmed(p);
   };
   book.add('slipper0', slipper(0), hurt(10, 0));
   book.add('slipper1', slipper(1), hurt(10, 0));
@@ -394,7 +396,7 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 7, 3, 2, R('wood'), 1, 3);
     const span = f ? 9 : 4;
     p.rect(10 - span, 8, span * 2, 2, c('wood', 2)).rect(10 - span, 8, span * 2, 1, c('wood', 3));
-    return done(p);
+    return rimmed(p);
   };
   book.add('fan0', fan(0), hurt(14));
   book.add('fan1', fan(1), hurt(14));
@@ -573,5 +575,11 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('buzz0', buzz(0));
   book.add('buzz1', buzz(1));
+  // (last, so every other block keeps its number) Loaf #13 and the seed flying off: the same
+  // pictures, worth nothing, so brushing past them as they go doesn't score every tick
+  book.add('loafOff0', loaf(0));
+  book.add('loafOff1', loaf(1));
+  book.add('seedOff0', seed(0));
+  book.add('seedOff1', seed(1));
   return book;
 }

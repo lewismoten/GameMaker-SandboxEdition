@@ -163,7 +163,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.missSwatter] = missed(MON.swatter);
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 6), { power: 200, thru: 0 }, [corner(0, 0, 3), corner(0, -2, 3, 0), corner(0, 0, 2, 0), corner(0, 0, 1)]);
   set[MON.loaf] = mon(anim('loaf0', 'loaf1', 12), { power: 50, thru: 0, newmon: MON.loafOff });
-  set[MON.loafOff] = mon(anim('loaf1', 'loaf0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(2, -3, 4, 0)]);
+  set[MON.loafOff] = mon(anim('loafOff1', 'loafOff0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(2, -3, 4, 0)]);
   // ears: asleep (power 105: a buzz, 110, wakes it), twitching (power 50: Carl flies in and it counts), asleep again for a while
   const ears = (asleep: string, t0: string, t1: string, zzz: string, ear: number, twitch: number, sleepy: number) => {
     set[ear] = mon([[n(asleep), 40]], { power: 105, thru: 0, newmon: twitch });
@@ -222,7 +222,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.spider] = mon(anim('spider0', 'spider1', 4), { power: 200, thru: 0 }, [corner(0, 0, 2), corner(0, 3, 2), corner(0, 3, 1), corner(0, 0, 1)]);
   set[MON.goat] = mon(anim('goat0', 'goat1', 10), { power: 200, thru: 1 }, pace(3, 1));
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 0, newmon: MON.seedOff });
-  set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
+  set[MON.seedOff] = mon(anim('seedOff1', 'seedOff0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
   set[MON.camelA] = mon(anim('camelA0', 'camelA1', 30), { power: 200, thru: 1 });
   set[MON.camelB] = mon(anim('camelB0', 'camelB1', 30), { power: 200, thru: 1 });
   // Carl's own: the whoosh and the buzz fly off the way he last flew; where the whoosh hits

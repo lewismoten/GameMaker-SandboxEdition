@@ -119,7 +119,7 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.spend, spend, SPEAKER.noise(3, 60, 300));
   // flying is the PC speaker's alone: every move starts it, and a .VOC there would cut off
   // whatever clip is playing (a lyric, the level's last line) the moment Carl changes course
-  set.freqs[SND.fly] = speaker((i) => (i < 6 ? 220 + (i % 2) * 30 : 0));
+  set.freqs[SND.fly] = speaker((i) => (i < 3 ? 220 + (i % 2) * 30 : 0));
   add(
     SND.roll,
     'roll',

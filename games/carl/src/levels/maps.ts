@@ -181,6 +181,7 @@ export function theCouch(book: BlockBook): Level {
   m.set(34, 6, 'rabbitEars').set(35, 6, 'pizzaP');
   // the dish towel, snapping (Space: a barrel roll makes it miss)
   m.mon(MON.towel, 39, 5).mon(MON.towel, 43, 2);
+  m.set(37, 3, 'signRoll');
   m.set(41, 1, 'donutW');
   m.set(44, 5, 'shelfTop').set(44, 4, 'candyP');
   m.set(46, 10, 'sideTable').set(46, 9, 'candy').set(50, 10, 'plant').set(51, 10, 'pizza');

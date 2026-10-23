@@ -44,6 +44,8 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
   ['fur', 4, [120, 54, 16], [250, 176, 90]],
   ['ochre', 3, [130, 90, 30], [240, 200, 100]],
   ['led', 2, [40, 230, 120], [200, 255, 210], undefined, true],
+  // a pale rim round the swatting things, lit the same in every room (they read in the dark)
+  ['rim', 2, [206, 200, 176], [250, 246, 226], undefined, true],
 ];
 
 /** Each place's sky or window light (top to bottom) and how the rest is lit. */

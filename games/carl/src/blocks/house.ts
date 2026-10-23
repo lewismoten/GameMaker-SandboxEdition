@@ -715,5 +715,12 @@ export function buildHouse(pal: Pal): BlockBook {
   // Watt (Ohm Sweet Ohm), the repair robot, seeing to the stereo's left speaker (scenery)
   const use = ['ink', 'grey', 'steel', 'white', 'gold', 'red', 'led', 'screen', 'shirt', 'chip'].flatMap((n) => R(n));
   book.add('watt', panel().blit(wattCameo(buildPalette('plain').pal, 'side', 0, 'ok', { use }), 0, 0, CLEAR), AIR);
+  // (last too) a card pinned on the living room wall by the first dish towel: fly at it, then
+  // Space for a barrel roll
+  const card = paper();
+  card.rect(2, 3, 16, 14, c('wood', 1)).rect(3, 4, 14, 12, c('white', 3));
+  micro(card, 4, 5, 'SPC', c('eye', 2));
+  micro(card, 3, 11, 'ROLL', c('ink', 0));
+  book.add('signRoll', card, AIR);
   return book;
 }
