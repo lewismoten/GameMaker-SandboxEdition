@@ -224,7 +224,8 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       await must(bot, bot.hop('right', 12, 'right', 47), 'over Teddy');
       floor(bot, 10, 'over Teddy');
       if (plot(bot) < DISTRACTIONS) throw new Error(`only ${plot(bot)} distractions`);
-      await leave(bot, bot.walk(49.5, 'the bird on the sill: fly high'), 'the gate');
+      await must(bot, bot.walk(50, 'the bird on the sill: fly high'), 'the gate');
+      await leave(bot, bot.walk(53.5, 'the walk-off'), 'the walk-off');
     });
   },
 };

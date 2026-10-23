@@ -241,7 +241,10 @@ export const banquet: Monologue = {
     '3': 'ex',
   },
   build: (m: MapBuilder) => {
-    const W = 54;
+    // the walk-off: OFF blocks more of the banquet hall past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 4;
+    const W = 54 + OFF;
     m.row(0, 0, W - 1, '^').fill(0, 1, W, 9, '.').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
     for (const x of [4, 16, 22, 28, 44, 51]) m.set(x, 1, 'p');
     m.set(36, 3, 'banner.0.0').set(37, 3, 'banner.1.0').set(47, 5, 's');
@@ -270,7 +273,7 @@ export const banquet: Monologue = {
     // the tall window, the sill, the bird
     m.set(49, 8, 'window.0.0').set(50, 8, 'window.1.0').set(49, 9, 'window.0.1').set(50, 9, 'window.1.1');
     m.set(49, 10, 'G').set(50, 10, 'window.1.2');
-    m.link(49, 10, 'next');
+    m.link(49 + OFF, 10, 'next');
     return { start: [1, 10], size: [W, 13] };
   },
   monsters: banquetMonsters,
