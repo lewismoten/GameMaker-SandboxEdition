@@ -33,7 +33,7 @@ export function cleanSetup(raw: unknown, start: PageMug): PageSetup {
   const side = (d: unknown): MugDesignId | '' => (typeof d === 'string' && isDesign(d) ? d : '');
   const mugs = (Array.isArray(v.mugs) ? v.mugs : [])
     .slice(0, MAX_MUGS)
-    .filter((m): m is PageMug => !!m && typeof m === 'object' && MUG_SIZES.some((s) => s.id === (m as PageMug).size))
+    .filter((m): m is PageMug => !!m && typeof m === 'object' && MUG_SIZES.some((s) => s.id === m.size))
     .map((m) => ({ size: m.size, front: side(m.front), back: side(m.back), lift: Number.isFinite(m.lift) ? Math.max(0, Math.min(12, m.lift)) : DEFAULT_LIFT }));
   return {
     paper: PAPERS.some((p) => p.id === v.paper) ? v.paper! : PAPERS[0].id,

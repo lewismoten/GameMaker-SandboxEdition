@@ -113,6 +113,7 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
  * the game but its .gam is downloaded (the shelf shows most boxes spine out).
  */
 export async function drawBox(entry: CatalogEntry, { shots: withShots = true } = {}): Promise<BoxFaces | undefined> {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- the catalog's box type lacks `sticker`, which Box has
   const box = entry.original?.box as Box | undefined;
   if (!box) return undefined;
   const [shots, info, art] = await Promise.all([

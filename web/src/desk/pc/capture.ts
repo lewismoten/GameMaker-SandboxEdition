@@ -7,8 +7,6 @@
 import './capture.css';
 import { h, toast } from '../../editor/core/ui';
 import type { Computer } from '../../retro/computer';
-import type { Vga } from '../../vga/shared/vga';
-import type { PictureScreen } from '../../retro/view/picture';
 import { drawText, drawVga, pngOf, saveBlob, stamp, TEXT_H, TEXT_W, VGA_H, VGA_W } from '../../media/screenCapture';
 import type { LiveRecorder } from '../../media/video';
 import { AudioMix } from '../../media/audioTap';
@@ -38,9 +36,9 @@ function sourceOf(pc: Computer): Source {
   if (mode === 'text' || mode === 'off') return { kind: 'text' };
   if (mode === 'vga') {
     // Game-Maker's designers and PLAYGAME's screens (mode 13h), or a picture mode (VPIC, the BBS's GIFs)
-    const vga = pc['vgaScreen'] as Vga | undefined;
+    const vga = pc['vgaScreen'];
     if (vga) return { kind: 'vga', draw: (c) => drawVga(vga, c) };
-    const pic = pc['picture'] as PictureScreen | undefined;
+    const pic = pc['picture'];
     if (pic) return { kind: 'vga', draw: (c) => drawIndexed(pic.mem, pic.dac, pic.width, pic.height, c) };
   }
   if (mode === 'game') {

@@ -62,7 +62,7 @@ export async function renderShot(entry: CatalogEntry, canvas: HTMLCanvasElement,
     levels.map(async ([i, at]) => {
       const names = game.scenes[i].files.slice(0, 7).filter(Boolean);
       const bytes = await Promise.all(names.map((n) => fetchFile(entry, n)));
-      const files = new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]!] as [string, Uint8Array]] : [])));
+      const files = new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]] as [string, Uint8Array]] : [])));
       return levelPixels(files, game.scenes[i], at, cols, rows);
     }),
   );
@@ -92,7 +92,7 @@ export async function mapShot(entry: CatalogEntry, mapName: string, x: number, y
   if (!scene) return undefined;
   const names = scene.files.slice(0, 5).filter(Boolean);
   const bytes = await Promise.all(names.map((n) => fetchFile(entry, n)));
-  const files = new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]!] as [string, Uint8Array]] : [])));
+  const files = new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]] as [string, Uint8Array]] : [])));
   const pic = mapPixels(files, game, mapName, x, y, w, h);
   if (!pic) return undefined;
   const canvas = document.createElement('canvas');

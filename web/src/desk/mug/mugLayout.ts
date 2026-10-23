@@ -73,7 +73,7 @@ export function stripLayout(input: StripInput, roomW: number): StripLayout {
     const w = Math.min(slot.w, slot.h * aspect);
     return { w, h: w / aspect };
   };
-  const sides = (['front', 'back'] as const).filter((s) => input[s] && input[s]! > 0);
+  const sides = (['front', 'back'] as const).filter((s) => input[s] && input[s] > 0);
   const sized = new Map(sides.map((s) => [s, fit(input[s]!)]));
   const tallest = Math.max(0, ...[...sized.values()].map((p) => p.h));
   let centerY = size.wrapH / 2;
