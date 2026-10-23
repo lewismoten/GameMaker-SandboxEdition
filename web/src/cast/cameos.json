@@ -18,7 +18,8 @@
     { "game": "remote", "as": "on the living room carpet, in the far corner" },
     { "game": "year2000", "as": "tucked behind the food court tables at Mega Mall 2000" },
     { "game": "brief", "as": "on the reading room floor by the west shelves" },
-    { "game": "reckoning", "as": "on her side of the bed, by her pillow" }
+    { "game": "reckoning", "as": "on her side of the bed, by her pillow" },
+    { "game": "loofah", "as": "on her side of the bed at home, by her pillow" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -42,7 +43,8 @@
     { "game": "realm", "as": "night librarian by the Royal Library’s door" },
     { "game": "tickle", "as": "counting rats by the course’s chalkboard" },
     { "game": "teddy2", "as": "in the Dog Show’s stands, keeping count" },
-    { "game": "risi", "as": "at the top of the theater’s stands, counting the laughs" }
+    { "game": "risi", "as": "at the top of the theater’s stands, counting the laughs" },
+    { "game": "loofah", "as": "taking stock in the forest-dark aisle at 3 a.m." }
   ],
   "lewie": [
     { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },
