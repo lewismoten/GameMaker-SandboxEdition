@@ -45,7 +45,8 @@ export const WORK_ROUTES: Record<string, Route> = {
       await must(bot, bot.hop('up', 12), 'up onto the whiteboard tray');
       if (plot(bot) < NOTES) throw new Error(`only ${plot(bot)} pages of notes`);
       await must(bot, bot.hop('right', 12, 'right', 53.5), 'over the water cooler');
-      await leave(bot, bot.walk(57.5, 'the door: MEETING ENDS'), 'the door');
+      await must(bot, bot.walk(58, 'the door: MEETING ENDS'), 'the door');
+      await leave(bot, bot.walk(74.5, 'the walk-off'), 'the walk-off');
     });
     void MON;
   },

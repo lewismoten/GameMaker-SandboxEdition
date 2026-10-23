@@ -254,7 +254,10 @@ export const meeting: Monologue = {
     '!': 'spot@base',
   },
   build: (m: MapBuilder) => {
-    const W = 60;
+    // the walk-off: OFF blocks more of the office past the door, so the punch line (the gate's)
+    // plays out before the scene ends
+    const OFF = 17;
+    const W = 60 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 3; x < W; x += 6) m.set(x, 0, '*');
     m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
@@ -286,7 +289,7 @@ export const meeting: Monologue = {
     m.set(49, 5, 'K').set(52, 9, 'c').set(54, 9, '$');
     m.set(57, 9, 'D').set(57, 8, 'k').set(53, 3, 'y').set(47, 3, 'thermostat');
     placePicture(m, 'plant', 55, 8, 1, 2);
-    m.link(57, 9, 'next');
+    m.link(57 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: meetingMonsters,

@@ -8,6 +8,16 @@ import { GameSim } from './sim';
 
 export const SEED = 1;
 
+/**
+ * A monologue starts with its opening line (the spotlight's, a few seconds long): the bot
+ * stands still until it has played out, so its first sip, clink or hop doesn't cut it off.
+ */
+async function opening(bot: Bot): Promise<void> {
+  for (let t = 0; t < 8 && !bot.sim.clipTicksLeft; t++) if (await bot.tick()) throw new Error('left the scene before the opening line');
+  if (await bot.sim.waitForClip()) throw new Error('left the scene during the opening line');
+  bot.say('the opening line played out');
+}
+
 export async function play(seed = SEED, upTo = process.env.SWEATS_UPTO, from = process.env.SWEATS_FROM): Promise<{ sim: GameSim; bot: Bot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new Bot(sim);
@@ -18,6 +28,7 @@ export async function play(seed = SEED, upTo = process.env.SWEATS_UPTO, from = p
     const route = ROUTES[def.name];
     if (!route) throw new Error(`No route for ${def.name}`);
     try {
+      if (def.monologue) await opening(bot);
       await route(bot);
     } finally {
       if (process.env.BOT_LOG) console.log(bot.log.join('\n'));
