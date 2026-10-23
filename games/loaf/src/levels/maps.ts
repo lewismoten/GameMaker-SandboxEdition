@@ -186,6 +186,8 @@ export function hillside(book: BlockBook): Level {
   // the fig tree and its shade, and the basket Loaf #13 was left in
   m.fill(1, 4, 9, 6, 'h').fill(1, 1, 11, 2, 'v').row(3, 2, 10, 'F').col(9, 4, 9, 'U');
   m.text(3, 2, '*.$').set(8, 2, '*');
+  // a low bough off the trunk, up from the basket's rim, so the crumbs on the branch can be reached
+  m.row(5, 6, 8, 'bough');
   m.set(2, 9, 'W').set(2, 8, 'm').set(6, 9, 'W').set(6, 8, 'm').fill(3, 8, 3, 2, 'i');
   // the first of the crowd: a hungry man stomping, crumbs dropped in the grass
   m.text(11, 6, '*..*').set(19, 7, '*');
@@ -228,6 +230,8 @@ export function wicker(book: BlockBook): Level {
   // down the weave into R3, the long room with a weevil and a mouse
   m.col(17, 5, 9, 'Y');
   m.fill(8, 8, 17, 5, 'o').set(9, 11, '%').set(22, 11, '%').text(12, 12, '+oo+').set(18, 8, '|');
+  // the weave hangs two blocks into R3, so a hop from under it catches hold and climbs back up
+  m.col(17, 8, 9, 'Y');
   m.mon(MON.weevil, 10, 12).mon(MON.mouse, 18, 12);
   // R4, through the chaff to the west, a holy crumb on a basket bottom
   m.col(7, 11, 12, 'z');
@@ -286,6 +290,8 @@ export function baskets(book: BlockBook): Level {
   // way on, so "Nothing's ever wasted." is sung to the end
   m.set(66, 9, 'B').set(64, 9, ',');
   m.row(6, 67, 77, 'm').row(7, 67, 77, 'W').fill(67, 8, 10, 2, 'i').col(77, 8, 9, 'W');
+  // (its mouth is only the twelfth basket: no hopping over it into the harvest basket)
+  m.set(67, 8, 'W');
   m.link(76, 9, 'next');
   return { m, start: at(2, 9), size: [W, H] };
 }
@@ -307,8 +313,8 @@ export function home(book: BlockBook): Level {
   // Teenage Lewie (Snowbound), out late with his shovel, helping out
   m.set(13, 9, 'Z');
   m.mon(MON.dog, 15, 9);
-  // the brook and its stepping stones
-  m.fill(23, 10, 7, 2, '-').set(24, 10, 'S').set(26, 10, 'S').set(28, 10, 'S');
+  // the brook and its stepping stones (one block deep: slip in and hop out again)
+  m.fill(23, 10, 7, 1, '-').set(24, 10, 'S').set(26, 10, 'S').set(28, 10, 'S');
   // the well, and Brother Camel kneeling by it
   m.set(33, 9, 'y').set(33, 8, '@');
   m.mon(MON.camelA, 35, 9).mon(MON.camelB, 36, 9);

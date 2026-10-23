@@ -201,13 +201,16 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
       const fx = 300 - k * 10;
       scaleBlit(p, M(`fish${k % 2}`), fx, STRIP + 10 + Math.round(((fx - 160) / 140) ** 2 * 40), 2, true);
       if (k >= 12) words(p, x + 20, STRIP + 60, 'ROLL!');
+      // the one control past the arrows a first level asks for, taught before it starts
+      if (k >= 16) words(p, 160, STRIP + 24, 'HOLD UP TO RISE HIGHER');
     },
     // 2. the wasteland: the loaf climbs the weave, a holy crumb above
     (p, k) => {
       const y = STRIP + 80 - Math.min(k, 20) * 3;
       scaleBlit(p, L(k % 4 < 2 ? 'loaf.rise' : 'loaf.front'), 140, y, 2);
       twinkle(p, pal, 160, STRIP + 8, 1 + (k % 3));
-      if (k >= 18) words(p, 160, STRIP + 22, 'A HOLY CRUMB!');
+      if (k >= 4 && k < 18) words(p, 160, STRIP + 110, 'UP AND DOWN CLIMB');
+      if (k >= 18) words(p, 160, STRIP + 22, 'SEVEN HOLY CRUMBS!');
     },
     // 3. twelve baskets: the empty baskets fill up one by one
     (p, k) => {

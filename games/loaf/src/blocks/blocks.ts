@@ -201,9 +201,10 @@ export function buildBlocks(pal: Pal): BlockBook {
     ])
       blob(p, x, y, 3.6, 2, R('stone'), 1, 3);
     p.rect(3, 15, 14, 2, c('wood', 1));
-    for (let k = 0; k < 5; k++) {
-      const x = 5 + k * 2.5;
-      const h = 6 + ((k * 3 + f * 2) % 5);
+    // tongues across the whole block and nearly to its top: it hurts wherever it is drawn
+    for (let k = 0; k < 6; k++) {
+      const x = 2 + k * 3;
+      const h = 9 + ((k * 3 + f * 2) % 5);
       for (let y = 0; y < h; y++) p.set(x + Math.round(Math.sin((y + f * 3) / 2)), 15 - y, c('fire', 3 - Math.floor((y / h) * 3)));
     }
     return p;
@@ -461,16 +462,18 @@ export function buildBlocks(pal: Pal): BlockBook {
   for (let y = 0; y < 6; y++) well.rect(0, y, 20, 1, c('sky', 3));
   well.rect(0, 6, 20, 2, c('stone', 4)).rect(2, 0, 2, 6, c('wood', 1)).rect(16, 0, 2, 6, c('wood', 1)).rect(2, 0, 16, 2, c('wood', 2));
   book.add('well', well, { solid: SOLID });
-  // the brook and its stepping stones (the water bites)
+  // the brook and its stepping stones: one block deep over the sand, cold but harmless. (A block
+  // that hurts holds the loaf in its hurt picture for as long as it touches it, so a loaf that
+  // slipped into water that bites could never hop out.) Slip in, and hop out to a stone or the bank.
   const brook = (f: number) => {
     const p = sky(91);
-    for (let y = 8; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, c('water', y === 8 ? 3 : (x + y * 2 + f * 3) % 9 === 0 ? 3 : 1));
+    for (let y = 3; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, c('water', y === 3 ? 3 : (x + y * 2 + f * 3) % 9 === 0 ? 3 : 1));
     return p;
   };
-  book.add('brook0', brook(0), { hp: -2, grav: GRAV.down, next: 'brook1', ntime: 6 });
-  book.add('brook1', brook(1), { hp: -2, grav: GRAV.down, next: 'brook0', ntime: 6 });
+  book.add('brook0', brook(0), { grav: GRAV.down, next: 'brook1', ntime: 6 });
+  book.add('brook1', brook(1), { grav: GRAV.down, next: 'brook0', ntime: 6 });
   const stone = brook(0);
-  blob(stone, 10, 9, 8, 4, R('stone'), 1, 4);
+  blob(stone, 10, 6, 8.5, 5, R('stone'), 2, 4);
   book.add('step', stone, { solid: SOLID });
   // holy crumbs and crumbs on the way home
   book.add(
@@ -570,5 +573,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   const kid = lewieCameo(buildPalette('plain').pal, 'down0');
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (kid.get(x, y) !== 255) lewie.set(x, y, kid.get(x, y));
   book.add('lewie', lewie, air);
+  // (after these, too) a low bough off the fig tree's trunk in its shade: a step up from the
+  // basket's rim to the branch with the crumbs on it
+  const bough = book.pics.get('shade')!.crop(0, 0, 20, 20);
+  bough.rect(0, 2, 20, 2, c('wood', 1)).rect(0, 2, 20, 1, c('wood', 2));
+  for (const x of [4, 13]) blob(bough, x, 7, 3, 2.4, R('leaf'), 0, 3);
+  book.add('bough', bough, { solid: LEDGE, grav: GRAV.down });
   return book;
 }
