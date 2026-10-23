@@ -7,7 +7,7 @@
 .stk-head b {
   display: block;
   font:
-    900 5cqw 'Arial Black',
+    900 4.4cqw 'Arial Black',
     Arial,
     sans-serif;
 }
@@ -29,7 +29,7 @@
 .stk-art {
   display: block;
   width: 79.41cqw;
-  margin: 1.2cqw auto 0;
+  margin: 0.6cqw auto 0;
 }
 
 .stk-cut {
@@ -78,7 +78,7 @@
 
 .stk-foot {
   position: absolute;
-  bottom: 3cqw;
+  bottom: 2.2cqw;
   left: 5cqw;
   font:
     italic 1.6cqw Georgia,
