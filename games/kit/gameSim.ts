@@ -9,6 +9,7 @@
 // time from the build's own data use sceneSim.ts instead.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { moveChars } from '../../web/src/engine/character';
 import { simKeyPress } from '../../web/src/engine/keys';
 import { blockBirthMonsters, moveAllMonsters } from '../../web/src/engine/monsters';
@@ -359,4 +360,17 @@ function copy<T>(v: T): T {
   const o: Record<string, unknown> = {};
   for (const k in v) o[k] = copy((v as Record<string, unknown>)[k]);
   return o as T;
+}
+
+/**
+ * A GameSim for one game's built disk: `diskSim(new URL('../disk', import.meta.url))` in the
+ * game's tools/sim.ts. It reads the disk when made without files; the seed defaults to 1.
+ */
+export function diskSim(disk: URL) {
+  const dir = fileURLToPath(disk);
+  return class extends GameSim {
+    constructor(files = readDisk(dir), seed = 1) {
+      super(files, seed);
+    }
+  };
 }
