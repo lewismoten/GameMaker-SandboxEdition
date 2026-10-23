@@ -37,11 +37,13 @@ export const PALETTES: Chapter = {
   five of stone, four of skin, and so on. Paint every block only from ramps, never from a
   stray color. Then a night palette is the same ramps, each shade darkened and nudged toward
   blue, and every block follows along.</p>
-  <figure data-fig="ramps"></figure>
+  <figure data-fig="compare"></figure>
   <p>Keep a few ramps out of the tint on purpose. Our games mark their lamp light, lit
   windows, stars and gold as <i>glowing</i> ramps that stay bright in every palette, so at
   night they shine instead of going dim. In Snowbound the window light even gets brighter
   after dark.</p>
+  <figure data-fig="goat"></figure>
+  <figure data-fig="loaf"></figure>
   <h2>Colors the program goes looking for</h2>
   <p>Game-Maker and PLAYGAME draw some things in whatever color of your palette is
   <i>nearest</i> to a color they have in mind. If your palette has nothing close, they settle
