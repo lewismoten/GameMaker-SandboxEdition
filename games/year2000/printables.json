@@ -96,7 +96,10 @@
         {
           "head": "6. The Science Fair",
           "hints": [
-            { "q": "How do I catch Sparky?", "a": "Zap him three times. Each zap makes him madder and faster, then he gets dizzy and drops the cover page." },
+            {
+              "q": "How do I catch Sparky?",
+              "a": "Zap him three times. Each zap changes his game: he roams, then plays keep-away (corner him), then gets the zoomies. Then he gets dizzy and drops the cover page."
+            },
             {
               "q": "The cover page vanished!",
               "a": "You zapped it. A zap burns the cover page up, so stop firing once Sparky drops it. Start the level over and try again."
@@ -123,14 +126,7 @@
               "q": "Beam me the blueprints.",
               "a": "On the Moon Shuttle pad, get into the row of the boarding ramp, on the ramp's right side (don't step on the ramp itself, or you're off to the Moon). Walk right into the glowing brick: you walk straight through it. Press P to pick up the felt egg, then walk on into the rocket hatch at the far end.",
               "sketch": {
-                "rows": [
-                  "",
-                  "  ==     ----|",
-                  "  ==     |   |",
-                  "   = >>>>: X o",
-                  "     ^   |   |",
-                  "     @   ----|"
-                ],
+                "rows": ["", "  ==     ----|", "  ==     |   |", "   = >>>>: X o", "     ^   |   |", "     @   ----|"],
                 "labels": [
                   { "x": 0, "y": 0, "text": "SHUTTLE" },
                   { "x": 9, "y": 0, "text": "THE CLOSET" },

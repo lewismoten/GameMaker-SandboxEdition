@@ -76,8 +76,9 @@ HINTS
   Keep one in your pocket!
 * Wait for the laser fences to
   blink off.
-* You can't zap a car. Don't
-  try. Seriously.
+* Zapping a car only makes it
+  swerve. Save your charge for
+  robots.
 * In the Teleport-A-Phone
   Exchange, booth number 4 is
   out of order. Try another

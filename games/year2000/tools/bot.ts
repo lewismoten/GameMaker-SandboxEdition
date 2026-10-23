@@ -4,7 +4,24 @@
 import { MLEN } from '../../../web/src/formats/map';
 import { INF_REPEAT } from '../../../web/src/formats/character';
 import type { Sim } from './sim';
-import { SEQ } from '../src/ids';
+import { MON, SEQ } from '../src/ids';
+
+/** Traffic and other unzappable movers that hurt on a bump: the bot looks both ways for these. */
+const TRAFFIC = new Set<number>([
+  MON.carR,
+  MON.carL,
+  MON.fastR,
+  MON.fastL,
+  MON.truckR,
+  MON.truckL,
+  MON.citicar,
+  MON.skater,
+  MON.skaterV,
+  MON.dino,
+  MON.dinoV,
+  MON.buggy,
+  MON.buggyV,
+]);
 
 export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
 const DIRS: [number, number, number][] = [
@@ -189,7 +206,7 @@ export class Bot {
     const w = this.w;
     for (let mm = 0; mm < w.mm.length; mm++) {
       const n = w.mm[mm].monnum;
-      if (n >= 64 || (w.mon[n]?.power ?? 0) < 200) continue;
+      if (!TRAFFIC.has(n)) continue;
       const mi = w.mi[mm];
       const mx = mi.curx[0] * 20 + mi.curx[1];
       const my = mi.cury[0] * 20 + mi.cury[1];

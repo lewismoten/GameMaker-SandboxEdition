@@ -492,26 +492,28 @@ export function buildMonsterBlocks(): BlockSet {
   two('dog', (k) => dogPic(k), { hp: -10 });
   two('paper', paperPic, { hp: -6 });
   two('paperbot', paperbotPic, { hp: -2 });
-  two('alien', (k) => alienPic(k, 'alien'), { hp: 25, score: 50 });
-  two('alien2', (k) => alienPic(k, 'purple'), { hp: 25, score: 50 });
+  two('alien', (k) => alienPic(k, 'alien'), { hp: 10, score: 50 });
+  two('alien2', (k) => alienPic(k, 'purple'), { hp: 10, score: 50 });
   two('beam', beamPic);
-  two('carR', (k) => carPic(k, 'red'), { hp: -3 });
-  two('carT', (k) => carPic(k, 'teal'), { hp: -5 });
-  two('truck', (k) => carPic(k, 'gold', true), { hp: -3 });
+  // Traffic, skaters, dinosaurs and buggies hurt once, then turn into a harmless copy
+  // (the "...Safe" blocks) that swerves on or backs off: one bump is one hit.
+  two('carR', (k) => carPic(k, 'red'), { hp: -12 });
+  two('carT', (k) => carPic(k, 'teal'), { hp: -16 });
+  two('truck', (k) => carPic(k, 'gold', true), { hp: -16 });
   two('faxbot', faxbotPic, { hp: -8 });
   two('secbot', secbotPic, { hp: -12 });
   two('cart', cartPic, { hp: -2 });
   two('tele', telemarketerPic, { hp: -10 });
   two('static', staticPic, { hp: -8 });
   two('fish', fishPic, { hp: -2 });
-  two('dino', dinoPic, { hp: -4 });
-  two('grandma', grandmaPic, { hp: 40, score: 100 });
-  two('meteor', meteorPic, { hp: -15 });
+  two('dino', dinoPic, { hp: -15 });
+  two('grandma', grandmaPic, { hp: 15, score: 100 });
+  two('meteor', meteorPic, { hp: -20 });
   two('boom', boomPic);
-  two('buggy', buggyPic, { hp: -2 });
-  two('lava', lavaPic, { hp: -8 });
-  two('sparky', (k) => dogPic(k, true), { hp: -4 });
-  two('sparkyMad', (k) => dogPic(k, true, true), { hp: -6 });
+  two('buggy', buggyPic, { hp: -15 });
+  two('lava', lavaPic, { hp: -12 });
+  two('sparky', (k) => dogPic(k, true));
+  two('sparkyMad', (k) => dogPic(k, true, true));
   two('dizzy', (k) => {
     const p = dogPic(0, true);
     // Seeing stars: three of them, going round.
@@ -527,7 +529,14 @@ export function buildMonsterBlocks(): BlockSet {
   });
   s.add('cover', coverMon(), { effect: CTR.cover, eamt: 1, score: 2000 });
   two('shopper', shopperPic, { hp: -6 });
-  two('skater', skaterPic, { hp: -4 });
-  two('citicar', flyingCiticar, { hp: -2 });
+  two('skater', skaterPic, { hp: -10 });
+  two('citicar', flyingCiticar, { hp: -8 });
+  two('carRSafe', (k) => carPic(k, 'red'));
+  two('carTSafe', (k) => carPic(k, 'teal'));
+  two('truckSafe', (k) => carPic(k, 'gold', true));
+  two('citicarSafe', flyingCiticar);
+  two('skaterSafe', skaterPic);
+  two('dinoSafe', dinoPic);
+  two('buggySafe', buggyPic);
   return s;
 }

@@ -57,7 +57,7 @@ export const LEVELS: Level[] = [
     size: [32, 30],
     card: {
       title: 'THE INFORMATION',
-      lines: ['SUPERHIGHWAY. 9:30 AM. Rush hour.', 'Fourteen lanes of hover traffic', 'hauling faxes. Look both ways!', "Cars can't be zapped. Don't try."],
+      lines: ['SUPERHIGHWAY. 9:30 AM. Rush hour.', 'Fourteen lanes of hover traffic', 'hauling faxes. Look both ways!', 'A bump hurts, then cars swerve.'],
       view: [0, 1],
     },
     intro: ['tele.fli'],
