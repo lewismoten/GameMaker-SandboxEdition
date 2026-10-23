@@ -118,6 +118,9 @@ creatall         (or "create palchos", "create blocedit"… for one program)
 ## Learn more
 
 - [Game-Maker on Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
+- ["RSD GameMaker"](https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html),
+  Andy Stone looking back on it in 2011: building it as a teenager with his family, and
+  leaving every game open in the editors so players could learn from and remix each other's work
 - [The Game-Maker wiki (archived)](https://web.archive.org/web/20260807223841/https://aderack.com/game-maker/index.php?title=Main_Page)
 - [The original 2014 source release](https://github.com/gandrewstone/GameMaker)
 
