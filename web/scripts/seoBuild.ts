@@ -230,7 +230,7 @@ export function gameBody(g: CdCatalogEntry): string {
   return `${BODY_START}<main class="seo-static">
       <h1>${escapeHtml(g.title)}</h1>
       <p>${escapeHtml(what)}${credit(g) ? ` · ${escapeHtml(credit(g))}` : ''}${g.price ? ` · registration ${escapeHtml(g.price)}` : ''}</p>
-      <p><img src="./${gameImagePath(g.id)}" width="600" height="315" alt="${escapeHtml(g.title)}: its title screen" style="max-width:100%;height:auto;image-rendering:pixelated" /></p>
+      <p><img src="./${gameImagePath(g.id)}" width="600" height="315" loading="lazy" alt="${escapeHtml(g.title)}: its title screen" style="max-width:100%;height:auto;image-rendering:pixelated" /></p>
       ${readable(g.blurb) ? `<p>${escapeHtml(g.blurb!)}</p>` : ''}
       <p>Play ${escapeHtml(g.title)} right here in your browser — nothing to download or install — with a keyboard, a game controller or touch controls.</p>
       <noscript><p><strong>The game runs in your browser: please turn on JavaScript to play.</strong></p></noscript>
