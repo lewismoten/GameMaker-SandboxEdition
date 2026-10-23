@@ -174,6 +174,9 @@ export function stage2(): Stage {
   // stream (placed after the sprinkles so they don't move)
   const [wc, wd] = ([[11, 13], [12, 13], [4, 13], [11, 12]] as [number, number][]).find(([c, d]) => /^floor\d$/.test(a.get(c, d)))!;
   a.set(wc, wd, 'watt');
+  // the tin heart, tucked against the right-hand edge past the first bats (500 points)
+  const [hc, hd] = ([[14, 24], [14, 25], [1, 24], [1, 27]] as [number, number][]).find(([c, d]) => /^floor\d$/.test(a.get(c, d)))!;
+  a.set(hc, hd, 'tinHeart');
   a.cardAt = 44;
   const gap = LENGTH - 1;
   // the way in: the floor cell beside the missing finger (the ship can't fly over the edge)

@@ -8,7 +8,8 @@ import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
 import { bat, crawler, eye, keyOf, mite, slug, cluster } from '../sprites/sprites';
 import { HURT } from '../characters/sharedMonsters';
-import { onFloor, slices, type StageArt } from './tiles';
+import { onFloor, pad, slices, type StageArt } from './tiles';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 
 export function ramArt(p: Pal): StageArt {
   const floor = (v: number): Pixels => {
@@ -100,6 +101,11 @@ export function ramTiles(bs: BlockSet, a: StageArt): void {
   bs.add('combEndR', comb(a, true).flipX());
   bs.add('watt', watt(a, false), { next: 'wattBlink', ntime: 60 });
   bs.add('wattBlink', watt(a, true), { next: 'watt', ntime: 3 });
+  // the tin heart, tucked away on a pickup pad: a glint crosses it now and then; worth 500
+  const p = a.pal;
+  const tin = { ink: p.c('ink', 0), tin: [p.c('steel', 2), p.c('steel', 4), p.c('steel', 6)], white: p.c('grey', 7), dark: p.c('steel', 1) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    bs.add(`tinHeart${k || ''}`, drawTinHeart(pad(a), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 40, touch: 'pad', scorePts: 500 });
 }
 
 /**

@@ -20,7 +20,7 @@
   },
   {
    "scene": 5,
-   "keys": "EUsMy05JEMkARwTHAE0CzQxIMMgARwzHIEcOxxhNDM0AOQG5ATkBuQE5AbkBSwbLKksGyxhICsgASQTJAE0CzQBIEMgASRbJCkgKyA=="
+   "keys": "EUsMy05JEMkARwTHAE0CzQxICMgATQrNDksEywBHDscATwTPAEcGxwBIDsgASRjJPksMywBQCNAAOQG5BVAE0AA5AbkBTwLPADkBuQFLCstKSQrJAE0CzQBJAskAUQjRAEcCxwBQAtAARwbHFEgEyABHCMcATQbNCE0GzSJICsg="
   },
   {
    "scene": 6,
@@ -131,7 +131,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 35173,
+  "frames": 35529,
   "chapters": [
    {
     "title": "Opening",
@@ -159,55 +159,55 @@
    },
    {
     "title": "Stage 2: Memory Lane — The Cache",
-    "frame": 10582
+    "frame": 10938
    },
    {
     "title": "Stage 2: Memory Lane — The Memory Leech",
-    "frame": 12712
+    "frame": 13068
    },
    {
     "title": "Stage 3: The Sound Card — The Mixer",
-    "frame": 14207
+    "frame": 14563
    },
    {
     "title": "Stage 3: The Sound Card — The Woofer",
-    "frame": 15710
+    "frame": 16066
    },
    {
     "title": "Stage 3: The Sound Card — The Feedback Howler",
-    "frame": 17423
+    "frame": 17779
    },
    {
     "title": "Stage 4: The Hard Disk — The Platter",
-    "frame": 19382
+    "frame": 19738
    },
    {
     "title": "Stage 4: The Hard Disk — Bad Sectors",
-    "frame": 22275
+    "frame": 22631
    },
    {
     "title": "Stage 4: The Hard Disk — The Head Crash",
-    "frame": 24212
+    "frame": 24568
    },
    {
     "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 25578
+    "frame": 25934
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 27950
+    "frame": 28306
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 29538
+    "frame": 29894
    },
    {
     "title": "Ending",
-    "frame": 31966
+    "frame": 32322
    },
    {
     "title": "Credits",
-    "frame": 33618
+    "frame": 33974
    }
   ]
  }
