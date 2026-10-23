@@ -4,7 +4,8 @@
     "logic": { "map": "attic.map", "at": [3, 7] },
     "realm": { "map": "port.map", "at": [10, 33] },
     "sleuth": { "map": "act1.map", "at": [11, 56] },
-    "smirked": { "map": "foyer.map", "at": [30, 16] }
+    "smirked": { "map": "foyer.map", "at": [30, 16] },
+    "teddy": { "map": "backyard.map", "at": [5, 39] }
   },
-  "pending": ["brief", "carl", "depth", "goat", "loaf", "loofah", "maximus", "mustard", "needle", "reckoning", "remote", "risi", "sandcast", "snowbound", "sweats", "teddy", "teddy2", "tickle", "year2000"]
+  "pending": ["brief", "carl", "depth", "goat", "loaf", "loofah", "maximus", "mustard", "needle", "reckoning", "remote", "risi", "sandcast", "snowbound", "sweats", "teddy2", "tickle", "year2000"]
 }
