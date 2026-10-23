@@ -5,7 +5,7 @@
     "carl": { "map": "bed.map", "at": [5, 12] },
     "depth": { "map": "l2near.map", "at": [59, 59] },
     "goat": { "map": "field.map", "at": [52, 20] },
-    "loaf": { "map": "hill.map", "at": [43, 11] },
+    "loaf": { "map": "wicker.map", "at": [19, 3] },
     "logic": { "map": "attic.map", "at": [3, 7] },
     "loofah": { "map": "home.map", "at": [49, 6] },
     "maximus": { "map": "home.map", "at": [8, 51] },
