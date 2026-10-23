@@ -158,7 +158,7 @@ const CREDITS_TEXT = page(
 );
 
 /** The credits, ending with the FREE TO SHARE page (kit/license.ts). */
-export const CREDITS = withCreditPage(CREDITS_TEXT);
+export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 
 export function readme(price: string): string {
   return `
@@ -230,7 +230,9 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  license); see LICENSE.TXT.)
+  license; its voice clips are
+  for personal, non-commercial
+  use only); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,
