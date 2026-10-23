@@ -23,6 +23,7 @@ import { udzo } from './udif';
 import { dsStore } from './dsStore';
 import { macIcon, type IconColors } from './macIcon';
 import { resealPlayer } from './macSign';
+import { thirdPartyNotices } from './notices';
 
 export const PLAYER_PATH = 'mac/GameMakerPlayer';
 const EXECUTABLE = 'GameMakerPlayer';
@@ -145,11 +146,20 @@ export async function macAppFiles(o: MacAppOptions): Promise<{ name: string; fil
   return { name, files };
 }
 
-/** The app in a .zip (Archive Utility makes the app from it, executable). */
+/** THIRD-PARTY-NOTICES.txt, beside the app in the .zip and on the .dmg (notices.ts). */
+export const NOTICES_FILE = 'THIRD-PARTY-NOTICES.txt';
+export const macNotices = () => new TextEncoder().encode(thirdPartyNotices('mac'));
+
+/** The disk image's Finder window: the app, an Applications shortcut to drag it onto, and the notices below. */
+export function dmgWindow(name: string): Uint8Array {
+  return dsStore({ x: 200, y: 140, width: 600, height: 440, iconSize: 128, icons: { [name]: [160, 170], Applications: [440, 170], [NOTICES_FILE]: [300, 330] } });
+}
+
+/** The app in a .zip (Archive Utility makes the app from it, executable), with its notices. */
 export async function macAppZip(o: MacAppOptions, date?: Date): Promise<Uint8Array> {
   const { files } = await macAppFiles(o);
   return createZip(
-    files.map((f) => ({ name: f.path, data: f.data!, mode: 0o100000 | f.mode })),
+    [...files.map((f) => ({ name: f.path, data: f.data!, mode: 0o100000 | f.mode })), { name: NOTICES_FILE, data: macNotices(), mode: 0o100644 }],
     date,
   );
 }
@@ -157,9 +167,13 @@ export async function macAppZip(o: MacAppOptions, date?: Date): Promise<Uint8Arr
 /** The app on a disk image (.dmg) that opens to the app and an Applications shortcut. */
 export async function macAppDmg(o: MacAppOptions, date?: Date): Promise<Uint8Array> {
   const { name, files } = await macAppFiles(o);
-  const window = dsStore({ x: 200, y: 140, width: 600, height: 380, iconSize: 128, icons: { [name]: [160, 170], Applications: [440, 170] } });
   const iso = createIso(
-    [...files.map((f) => ({ path: f.path, data: f.data, mode: f.mode })), { path: 'Applications', symlink: '/Applications', mode: 0o755 }, { path: '.DS_Store', data: window, mode: 0o644 }],
+    [
+      ...files.map((f) => ({ path: f.path, data: f.data, mode: f.mode })),
+      { path: 'Applications', symlink: '/Applications', mode: 0o755 },
+      { path: NOTICES_FILE, data: macNotices(), mode: 0o644 },
+      { path: '.DS_Store', data: dmgWindow(name), mode: 0o644 },
+    ],
     { volume: name.replace(/\.app$/, '').slice(0, 32), date, application: 'GAME-MAKER: SANDBOX EDITION' },
   );
   return udzo(iso);

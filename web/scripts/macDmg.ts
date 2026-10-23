@@ -26,8 +26,7 @@ import { dirname, join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
-import { appName, boxColors, iconPicture, macAppDmg, macAppFiles, macAppZip, type MacAppOptions } from '../src/export/macApp';
-import { dsStore } from '../src/export/dsStore';
+import { appName, boxColors, dmgWindow, iconPicture, macAppDmg, macAppFiles, macAppZip, macNotices, NOTICES_FILE, type MacAppOptions } from '../src/export/macApp';
 import { GameFiles } from '../src/project/files';
 import { catalogDownloadable } from '../src/export/downloadable';
 
@@ -58,7 +57,8 @@ async function hdiutilDmg(o: MacAppOptions, file: string): Promise<void> {
       writeFileSync(join(stage, f.path), f.data!, { mode: f.mode });
     }
     symlinkSync('/Applications', join(stage, 'Applications'));
-    writeFileSync(join(stage, '.DS_Store'), dsStore({ x: 200, y: 140, width: 600, height: 380, iconSize: 128, icons: { [name]: [160, 170], Applications: [440, 170] } }));
+    writeFileSync(join(stage, NOTICES_FILE), macNotices());
+    writeFileSync(join(stage, '.DS_Store'), dmgWindow(name));
     const app = join(stage, name);
     if (identity) execFileSync('codesign', ['--force', '--deep', '--options', 'runtime', '--timestamp', '--sign', identity, app], { stdio: 'inherit' });
     execFileSync('codesign', ['--verify', '--deep', '--strict', app], { stdio: 'inherit' });
