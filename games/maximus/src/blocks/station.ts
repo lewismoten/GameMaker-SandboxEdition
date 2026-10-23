@@ -9,7 +9,16 @@ import { Mask, outline, shade, sprite } from '../art/draw';
 import { G, SOLID, SetBuilder, TOP, over, tex } from './blockset';
 import { EGG_BLOCK, ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';
 import { PICKUPS, drawEgg, drawModule, drawPickup, drawShard } from './items';
-import { OUTLINE, WHITE } from '../art/palette';
+import { OUTLINE, S, SHARED_END, WHITE, buildPalette } from '../art/palette';
+import { ROLES, themeFor } from '../art/roles';
+import { drawTinHeart } from '../../../kit/tinHeart';
+import { drawEasterEgg } from '../../../kit/easterEgg';
+import { joeCameo, willCameo } from '../../../kit/cameos';
+
+/** Maxima Station's palette (the training deck's), for recoloring guests by nearest color. */
+const PAL = buildPalette(ROLES, themeFor('station', 1995)).pal;
+/** Guests take only the colors every Maximus palette shares (not black, kept for the background). */
+const SHARED_ONLY = { use: Array.from({ length: SHARED_END - 1 }, (_, i) => i + 1) };
 import { PICKUP_FX, R } from './common';
 import { airlock, arrowsOn, console_, conveyor, crate, deck, infoPanel, laser, panel, pipe, reactor, shrine, wall, windowView } from './stationArt';
 import { stationExtras } from './stationExtras';
@@ -37,11 +46,9 @@ export function stationSet(): SetBuilder {
   s.add('deck:plate', deck(30, 'plate'), { solid: SOLID });
   s.add('deck:grate', deck(31, 'grate'), { solid: TOP });
   s.add('deck:girder', deck(32, 'girder'), { solid: TOP });
-  s.add(
-    'deck:edge',
-    deck(33, 'plate').map((x, y, c) => (x > 15 && y > 1 ? panel(5).get(x, y) : c)),
-    { solid: SOLID },
-  );
+  // (slot 17 was a deck plate's edge no deck ever used) Will the playwright, visiting from
+  // Shakespeare in Sweatpants: a figure in front of the pod bay's consoles, scenery only.
+  s.add('will', over(panel(3, 2), willCameo(PAL, { face: 'front' }, SHARED_ONLY)));
   const bg = panel(1);
   s.add('pipe:v', pipe(true, bg));
   s.add('pipe:h', pipe(false, bg));
@@ -92,10 +99,18 @@ export function stationSet(): SetBuilder {
   s.add('belt:r2', conveyor('r', 1), { solid: TOP, grav: G.down | G.right, next: 'belt:r', ntime: 2 });
   s.add('belt:l', conveyor('l', 0), { solid: TOP, grav: G.down | G.left, next: 'belt:l2', ntime: 2 });
   s.add('belt:l2', conveyor('l', 1), { solid: TOP, grav: G.down | G.left, next: 'belt:l', ntime: 2 });
-  s.add('fan:r', arrowsOn('r', 0, panel(81), 'cloud'), { grav: G.right | G.down, next: 'fan:r2', ntime: 2 });
-  s.add('fan:r2', arrowsOn('r', 1, panel(81), 'cloud'), { grav: G.right | G.down, next: 'fan:r', ntime: 2 });
-  s.add('fan:l', arrowsOn('l', 0, panel(82), 'cloud'), { grav: G.left | G.down, next: 'fan:l2', ntime: 2 });
-  s.add('fan:l2', arrowsOn('l', 1, panel(82), 'cloud'), { grav: G.left | G.down, next: 'fan:l', ntime: 2 });
+  // (slots 39..42 were wind fans no deck ever used) Keepsakes for the training deck: a tin heart
+  // behind you at the start, by the potted plant (a glint crosses it now and then), and a
+  // painted Easter egg up on the catwalk by the practice range, each a few points and gone when
+  // touched (the panel behind is the touch block), with no sound of their own; and Mystery
+  // Robot Joe, visiting from Keep It Brief!, keeping count at the practice range (scenery).
+  // All four use only the colors every Maximus palette shares.
+  const tin = { ink: OUTLINE, tin: [S('metal', 3), S('metal', 4), S('metal', 5)], white: WHITE, dark: S('metal', 1) };
+  s.add('tinHeart', drawTinHeart(panel(1, 0), tin, 0), { scorePts: 100, next: 'tinHeart:1', ntime: 50, touch: 'panel:0' });
+  s.add('tinHeart:1', drawTinHeart(panel(1, 0), tin, 2), { scorePts: 100, next: 'tinHeart', ntime: 2, touch: 'panel:0' });
+  const egg = { ink: OUTLINE, shell: [S('jade', 0), S('jade', 1), S('jade', 2)], paint: [S('rose', 1), S('rose', 2)], accent: S('gold', 4), white: WHITE };
+  s.add('easterEgg', drawEasterEgg(panel(1, 0), egg, 'bands', 0), { scorePts: 50, touch: 'panel:0' });
+  s.add('joe', over(panel(1, 0), joeCameo(PAL, 'down', 0, SHARED_ONLY)));
   // timed hazards, all on the deck's one clock
   s.add('laser:v', laser(true, true, bg), { chHitPt: -3, next: 'laser:v0', ntime: 20 });
   s.add('laser:v0', laser(false, true, bg), { next: 'laser:v', ntime: 25 });

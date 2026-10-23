@@ -205,6 +205,9 @@ export function about(b: Built): object {
     exe: 'MAXIMUS.EXE',
     sound: 'sb',
     egg: { block: EGG_BLOCK },
+    // the training deck's keepsakes (src/levels/home.ts): the tin heart by the potted plant, the Easter egg on the catwalk
+    tinHeart: { map: 'home.map', at: [8, 51] },
+    easterEgg: { map: 'home.map', at: [33, 47] },
     label: { background: '#0b1030', band: '#f0a020', ink: '#ffffff', logo: 'SANDBOX SOFTWARE' },
     box: {
       background: '#0b1030',
