@@ -347,6 +347,8 @@ const ITEMS_AT: Record<1 | 2, [string, number, number][]> = {
     ['ledger', 46, 42],
     ['cuesheet', 47, 46],
     ['umb_dark', 66, 29],
+    // a painted Easter egg, rolled into the side aisle of the stalls
+    ['easterEgg', 1, 34],
   ],
 };
 
