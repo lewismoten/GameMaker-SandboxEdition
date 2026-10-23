@@ -6,6 +6,8 @@
   "price": "$10",
   "blurb": "Behind the little red door of The Dog House is a library much bigger than the box, and last night every word fell out of every book. As Mystery Robot Joe, the tin night librarian, pick up exactly one hundred words in each of thirty-two books and put Lewis Moten's 100 Word Stories back together, word for word.",
   "egg": { "block": 149 },
+  "tinHeart": { "map": "library.map", "at": [1, 4] },
+  "easterEgg": { "map": "library.map", "at": [17, 8] },
   "exe": "BRIEF.EXE",
   "sound": "sb",
   "label": {
