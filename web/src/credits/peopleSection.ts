@@ -25,15 +25,19 @@ export function peopleSection(): HTMLElement {
       tool(
         'Claude Opus 5.5',
         'Anthropic · the only model named in the project’s commits',
-        'Wrote the web port (the 1994 desk and today’s editor and player) from the original C source, and built the Sandbox Software and Bard of Bizarre games in code: their code, levels, art, sounds, FM arrangements and text, directed and reviewed by Lewis. It drew the title and cover art of the Bard games that came without any, and composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants.',
+        'Wrote the web port (the 1994 desk and today’s editor and player) from the original C source, and built the Sandbox Software and Bard of Bizarre games in code: their code, levels, art, sounds, FM arrangements and text, directed and reviewed by Lewis. It drew the title and cover art of the Bard games that came without any, and composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants. It also made the desk’s Doc Leo black-light poster from two of Lewis’s photos of himself, over many rounds of his corrections.',
       ),
       tool('ChatGPT', 'OpenAI', 'Shaped the Bard of Bizarre songs’ lyrics and monologues from Lewis’s prompts.'),
       tool(
         'Riffusion (renamed Producer.ai, now Google Flow Music, after Google bought it)',
         'One service under three names',
-        'Made the songs’ recordings and vocals, the covers of Third Goat from the Left and Thread the Needle, Brother Camel (an animated one), and Mustard Seed Hustle’s animated cover, made while it was called Producer.ai.',
+        'Made the songs’ recordings and vocals, the covers of Third Goat from the Left and Thread the Needle, Brother Camel (an animated one), and Mustard Seed Hustle’s animated cover, made while it was called Producer.ai. Lewis pays for it now and made the animated covers on a paid plan, but every recording was made on the free plan, whose terms allow “personal, non-commercial uses” only: so the voice clips are not MIT licensed.',
       ),
-      tool('DeepAI', 'DeepAI', 'Made The Bard of Bizarre’s logo, the rooster in spectacles.'),
+      tool(
+        'DeepAI',
+        'DeepAI · Lewis’s paid commercial plan',
+        'Made The Bard of Bizarre’s logo, the rooster in spectacles, and the desk’s “Moten Snow-to-Software Operations” poster.',
+      ),
       tool(
         'Whisper',
         'OpenAI · MIT License',
@@ -69,6 +73,11 @@ export function peopleSection(): HTMLElement {
           '. Laurence and the podcast’s writers and listeners chose the topics: each week’s winner picks the next one.',
         ),
         h('li', null, 'The Bard of Bizarre is his: the songs’ and monologues’ prompts, and the Doc Leo and THE CHEZ photos.'),
+        h(
+          'li',
+          null,
+          'The photos on the BBSes are his, except one shot of him holding Teddy in front of THE CHEZ, taken by Nicky Foster (see Pictures on the BBS, below).',
+        ),
         h('li', null, 'The Sandbox BBS is named after the board he ran in Pittsburgh in the 1990s.'),
       ),
     ),

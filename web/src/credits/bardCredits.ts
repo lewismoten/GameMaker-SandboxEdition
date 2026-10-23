@@ -20,7 +20,11 @@ export const BARD_COLUMNS: { key: BardColumn; short: string; long: string }[] = 
   { key: 'claudeArt', short: 'Art: Claude', long: 'Title and cover art drawn for the game by Claude Opus 5.5' },
   { key: 'arranged', short: 'FM arranged: Claude', long: 'FM (CMF) score arranged by Claude from the recording' },
   { key: 'composed', short: 'Music composed: Claude', long: 'Music composed for the game by Claude Opus 5.5' },
-  { key: 'clips', short: 'Voice clips', long: 'Sung or spoken clips cut from the recording' },
+  {
+    key: 'clips',
+    short: 'Voice clips (non-commercial)',
+    long: 'Sung or spoken clips cut from the recording, which was made on Riffusion’s free plan: personal, non-commercial use only, not MIT',
+  },
   { key: 'whisper', short: 'Timed: Whisper', long: 'Clip cues found with Whisper’s word timings' },
   { key: 'photo', short: 'Photo: Lewis', long: 'Doc Leo photo by Lewis Moten' },
   { key: 'logo', short: 'Logo: DeepAI', long: 'The Bard of Bizarre logo, made with DeepAI' },
