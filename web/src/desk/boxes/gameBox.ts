@@ -4,6 +4,7 @@
 // its maps on the back, and the MS-DOS platform badge on the spines and bottom (drawBox). The drawing helpers are in boxPaint.ts; the 3D box and the viewer that
 // turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
 // it comes forward in the viewer.
+import { drawSandboxMark } from '../../manual/printables/sandboxMark';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
@@ -338,16 +339,17 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
     const [c, s] = canvas(D, H);
     background(s, box, c.width, c.height);
     s.fillStyle = '#0b0b0b';
-    s.fillRect(0, 0, c.width, 70);
+    s.fillRect(0, 0, c.width, 96);
+    drawSandboxMark(s, c.width / 2 - 22, 5, 44);
     s.fillStyle = '#f5d000';
     s.font = SANS(15, 900);
     s.textAlign = 'center';
-    s.fillText('SANDBOX', c.width / 2, 32);
-    s.fillText('SOFTWARE', c.width / 2, 52);
+    s.fillText('SANDBOX', c.width / 2, 68);
+    s.fillText('SOFTWARE', c.width / 2, 86);
     // the platform badge near the foot, where a shopper's eye goes along a shelf
     const badgeH = platformBadgeHeight(s, c.width - 24, info.disks);
     platformBadge(s, 12, c.height - 50 - badgeH, c.width - 24, info.disks);
-    spineTitle(s, box, mainTitle.toUpperCase(), subTitle.toUpperCase(), c.width, 84, c.height - 150 - badgeH);
+    spineTitle(s, box, mainTitle.toUpperCase(), subTitle.toUpperCase(), c.width, 110, c.height - 176 - badgeH);
     s.fillStyle = box.ink;
     s.font = SANS(fit(s, sub, (p) => SANS(p, 700), c.width - 12, 13), 700); // a long price shrinks to the spine
     s.textAlign = 'center';

@@ -4,6 +4,7 @@
 import type { CatalogEntry } from '../../project/files';
 import { type BoxExtras } from './boxFacts';
 import { bbsNameWidth, paintBbsName } from '../../retro/bbs/bbsName';
+import { drawSandboxMark } from '../../manual/printables/sandboxMark';
 
 export type Box = NonNullable<NonNullable<CatalogEntry['original']>['box']> & BoxExtras;
 
@@ -158,9 +159,14 @@ export function publisherBand(ctx: CanvasRenderingContext2D, entry: CatalogEntry
   ctx.fillRect(0, y, w, hgt);
   ctx.fillStyle = '#f5d000';
   ctx.font = SANS(hgt * 0.5, 900);
-  ctx.textAlign = left ? 'left' : 'center';
-  ctx.fillText((entry.company ?? 'SANDBOX SOFTWARE').toUpperCase().split('').join(' '), left ? 28 : w / 2, y + hgt * 0.68);
+  const name = (entry.company ?? 'SANDBOX SOFTWARE').toUpperCase().split('').join(' ');
+  // Sandbox Software's own boxes carry its mark before the name
+  const mark = !entry.company || entry.company === 'Sandbox Software' ? hgt - 6 : 0;
+  const gap = mark ? hgt * 0.3 : 0;
+  const x = left ? 28 : (w - ctx.measureText(name).width - mark - gap) / 2;
+  if (mark) drawSandboxMark(ctx, x, y + 3, mark);
   ctx.textAlign = 'left';
+  ctx.fillText(name, x + mark + gap, y + hgt * 0.68);
 }
 
 export function framedShot(ctx: CanvasRenderingContext2D, shot: HTMLCanvasElement | undefined, x: number, y: number, w: number, tilt = 0): number {
