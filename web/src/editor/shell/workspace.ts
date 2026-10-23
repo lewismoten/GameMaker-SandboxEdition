@@ -13,6 +13,8 @@ import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
 import './workspace.css';
+import { fileActions } from './fileActions';
+import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 
 const ORDER: FileKind[] = [
@@ -363,10 +365,12 @@ export class Workspace {
             { class: 'keys-btn', title: 'Keyboard shortcuts (?)', 'aria-label': 'Keyboard shortcuts', 'aria-keyshortcuts': 'Shift+?', onclick: () => void showShortcuts(kindOf(file)) },
             keyboardIcon(),
           ),
-          !isGam && h('button', { onclick: () => void this.rename(file) }, 'Rename'),
-          h('button', { onclick: () => void this.duplicate(file) }, 'Duplicate'),
-          h('button', { onclick: () => download(file.toUpperCase(), this.project.files.get(file)!), title: `Save ${file.toUpperCase()} to your computer` }, 'Download file'),
-          !isGam && h('button', { class: 'danger', onclick: () => void this.remove(file) }, 'Delete'),
+          fileActions([
+            ...(isGam ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
+            { label: 'Duplicate', run: () => void this.duplicate(file) },
+            { label: 'Download file', run: () => download(file.toUpperCase(), this.project.files.get(file)!), title: `Save ${file.toUpperCase()} to your computer` },
+            ...(isGam ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
+          ]),
         ),
       ),
       isGam ? this.nextSteps() : null,
@@ -375,6 +379,7 @@ export class Workspace {
     const editor = editors[kindOf(file)] ?? fileInfo;
     try {
       this.cleanup = editor(body, this.project, file) || undefined;
+      foldHint(body.querySelector<HTMLElement>('p.hint'));
     } catch (e) {
       console.error(e);
       clear(body, h('p', { class: 'hint' }, `This file could not be opened: ${(e as Error).message}`));

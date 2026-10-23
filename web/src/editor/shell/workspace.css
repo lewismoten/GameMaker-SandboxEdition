@@ -224,3 +224,113 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+/* The open file's actions (fileActions.ts): buttons, or on a phone one ⋯ menu */
+.file-actions,
+.file-acts {
+  display: contents;
+}
+
+.file-more {
+  display: none;
+  position: relative;
+}
+
+.file-more > summary {
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  font-size: 18px;
+  line-height: 1;
+  list-style: none;
+  cursor: pointer;
+}
+
+.file-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.file-more-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.file-more-menu > button {
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.file-more-menu > button:hover {
+  background: var(--panel-2);
+}
+
+/* An editor's opening tip (hintFold.ts): More / Less only on a phone */
+.hint-toggle {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .file-acts {
+    display: none;
+  }
+
+  .file-more {
+    display: block;
+  }
+
+  .editor {
+    padding: 12px;
+  }
+
+  .hint-toggle {
+    display: inline-block;
+    float: right;
+    min-height: 24px;
+    margin: 0 0 0 8px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .hint-fold.hint-short .hint-toggle {
+    display: none;
+  }
+
+  .hint-fold.folded {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* file slots: two to a row, evenly, with smaller pictures */
+  .editor .file-field {
+    flex: 1 1 150px;
+    min-width: 0;
+  }
+
+  .editor .file-field-choose {
+    gap: 6px;
+    padding: 3px 6px 3px 3px;
+  }
+
+  .editor .file-field-choose .thumb {
+    width: 30px;
+    height: 24px;
+    font-size: 14px;
+  }
+}
