@@ -114,7 +114,8 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(66, 'the cashier behind the dumpsters, the dollar'), 'cashier');
       if (tips(bot) < before + 6) throw new Error('no nod from the cashier');
       if (plot(bot) < SCARS) throw new Error(`only ${plot(bot)} scars of honor`);
-      await leave(bot, bot.walk(68.5, 'cart return seven'), 'the gate');
+      await must(bot, bot.walk(69, 'cart return seven'), 'the gate');
+      await leave(bot, bot.walk(80.5, 'the walk-off'), 'the walk-off');
     });
   },
 

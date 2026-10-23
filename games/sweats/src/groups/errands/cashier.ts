@@ -360,7 +360,10 @@ export const cashier: Monologue = {
     '3': 'flipflop',
   },
   build: (m: MapBuilder) => {
-    const W = 72;
+    // the walk-off: OFF blocks more of the parking lot past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 12;
+    const W = 72 + OFF;
     const H = 14;
     m.fill(0, 0, W, 6, '.').fill(0, 6, W, H - 6, ',');
     // the lot steps up a row at x 28, 42 and 54: thirty feet uphill
@@ -408,7 +411,7 @@ export const cashier: Monologue = {
     m.mon(CM.cashier, 64, 8);
     m.set(66, 8, 'b');
     m.set(68, 7, 'cartReturn.0.0').set(69, 7, 'cartReturn.1.0').set(68, 8, 'G').set(69, 8, 'cartReturn.1.1');
-    m.link(68, 8, 'next');
+    m.link(68 + OFF, 8, 'next');
     return { start: [3, 11], size: [W, H] };
   },
   monsters: cashierMonsters,
