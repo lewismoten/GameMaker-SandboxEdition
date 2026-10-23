@@ -12,6 +12,9 @@ import { BOUGHT, CD_NUMBER, COMPUTERS, MAIL_DAYS_MS, OWNER_ADDRESS, RSD_ADDRESS,
 import { PRODUCT } from '../../edition';
 import type { BookPage } from '../../manual/printables/manualPages';
 
+/** The name already on the card, so it can be mailed as it comes. */
+const SAMPLE_NAME = 'John Smith';
+
 /** The guide's pages and how to draw one, loaded when GM first asks. */
 interface Guide {
   pages: BookPage[];
@@ -181,7 +184,10 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     h('fieldset', { class: 'rs-pick' }, h('legend', null, legend, ' ', h('small', null, '(optional)')), options.map((o) => h('label', null, h('input', { type: 'radio', name, value: o }), o)));
 
   // the front: the owner writes a name and mails it
-  const nameIn = h('input', { id: 'rs-name', class: 'rs-in', type: 'text', maxLength: CARD_NAME_MAX, autocomplete: 'name', spellcheck: false, 'aria-required': 'true' });
+  // filled in with a stand-in name, ready to mail (or type your own over it)
+  const nameIn = h('input', { id: 'rs-name', class: 'rs-in', type: 'text', maxLength: CARD_NAME_MAX, value: SAMPLE_NAME, autocomplete: 'off', spellcheck: false, 'aria-required': 'true' });
+  // focusing it selects the stand-in, so typing replaces it
+  nameIn.addEventListener('focus', () => nameIn.select());
   const postMsg = h('p', { id: 'rs-post-msg', class: 'rs-msg' });
   const postcard = h(
     'form',
@@ -332,7 +338,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   function again(): void {
     reply = undefined;
     saveReply(undefined);
-    nameIn.value = '';
+    nameIn.value = SAMPLE_NAME;
     noProblems();
     stage('card');
     nameIn.focus();
