@@ -217,7 +217,7 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
     { id: 'license', title: 'License agreement', note: 'MIT License', icon: '📜', render: licenseSheet },
     { id: 'support', title: 'Customer support', note: 'Phone, fax, BBS, Internet; troubleshooting', icon: '☎️', render: supportCard },
     { id: 'catalog', title: 'Sandbox Software catalog', note: 'Games made with Game-Maker', icon: '🗂️', render: () => catalog(ctx) },
-    { id: 'bard', title: 'The Bard of Bizarre catalog', note: 'Song-games from The Sofa BBS', icon: '🎸', render: () => bardCatalog() },
+    { id: 'bard', title: 'The Bard of Bizarre catalog', note: 'Bizarre gospels, mundane epics & more', icon: '🎸', render: () => bardCatalog() },
     { id: 'poster', title: 'Poster', note: 'Games made with Game-Maker', icon: '🖼️', render: poster },
     { id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     {
