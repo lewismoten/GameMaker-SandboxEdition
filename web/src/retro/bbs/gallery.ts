@@ -42,6 +42,8 @@ const DESC: Record<string, string> = {
   'THECHEZ2.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Doc Leo and Teddy the corgi out for a spin.',
   'THECHEZ3.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Plugged in at a public charger.',
   'BARDLOGO.GIF': "The Bard of Bizarre's logo: the rooster in glasses. Logo made with DeepAI.",
+  'LEOCHICK.GIF': 'Doc Leo, hobo clown, walking his rubber chicken down the middle of a parade. It heels. Mostly.',
+  'NEWNOSE.GIF': "Doc Leo's first day as a clown: he got to pick his own nose. (You can pick your nose, but you can't pick your friend's nose.)",
 };
 
 /** Every picture on either board (what C:\IMAGES can hold). */

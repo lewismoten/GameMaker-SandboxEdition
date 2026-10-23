@@ -3,8 +3,8 @@ import { DIZ_LINES, DIZ_WIDTH, pictureDiz } from './fileId';
 import { GALLERY, SOFA_GIFS } from './gallery';
 
 describe("The Sofa's GIF area", () => {
-  it('has THE CHEZ and the Bard logo, 8.3 names, 640x480, a plausible size for a modem', () => {
-    expect(SOFA_GIFS.map((f) => f.name)).toEqual(['THECHEZ1.GIF', 'THECHEZ2.GIF', 'THECHEZ3.GIF', 'BARDLOGO.GIF']);
+  it('has THE CHEZ, the Bard logo and Doc Leo, 8.3 names, 640x480, a plausible size for a modem', () => {
+    expect(SOFA_GIFS.map((f) => f.name)).toEqual(['THECHEZ1.GIF', 'THECHEZ2.GIF', 'THECHEZ3.GIF', 'BARDLOGO.GIF', 'LEOCHICK.GIF', 'NEWNOSE.GIF']);
     for (const f of SOFA_GIFS) {
       expect(f.name).toMatch(/^[A-Z0-9]{1,8}\.GIF$/);
       expect([f.width, f.height]).toEqual([640, 480]);
