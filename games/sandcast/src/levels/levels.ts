@@ -154,8 +154,6 @@ export function hub(): LevelMap {
   // was digging here; dig it out and see where it goes.
   m.set(46, 4, 'paws').set(47, 3, 'paws').set(48, 2, 'paws').mark('arriveDig', 48, 2);
   m.set(48, 1, 'dune').mark('holeDig', 48, 1);
-  // A tin heart dropped in the far southeast corner, and a painted Easter egg in the northwest one.
-  m.set(48, 34, 'tinHeart').set(1, 1, 'easterEgg');
   return m;
 }
 
@@ -231,6 +229,8 @@ export function keep(): LevelMap {
       '9': { tile: 'court', mon: MON.gwinNap },
     }),
   );
+  // A tin heart dropped in the far northeast corner, by the dunes.
+  m.set(32, 1, 'tinHeart');
   return m;
 }
 
@@ -284,6 +284,8 @@ export function moat(): LevelMap {
       q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
+  // A painted Easter egg in the far southwest corner, past the ice pop.
+  m.set(1, 28, 'easterEgg');
   return m;
 }
 

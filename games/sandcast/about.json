@@ -8,8 +8,8 @@
   "exe": "SANDCAST.EXE",
   "sound": "speaker",
   "egg": { "block": 146 },
-  "tinHeart": { "map": "sandbox.map", "at": [48, 34] },
-  "easterEgg": { "map": "sandbox.map", "at": [1, 1] },
+  "tinHeart": { "map": "keep.map", "at": [32, 1] },
+  "easterEgg": { "map": "moat.map", "at": [1, 28] },
   "label": {
     "background": "#f4dfa8",
     "band": "#1f4fa0",
