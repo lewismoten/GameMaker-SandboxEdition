@@ -29,7 +29,8 @@ export function klubBeasts() {
   b.pic('askSpin1', askBubble('SPIN', ticketIcon, 0)).pic('askSpin2', askBubble('SPIN', ticketIcon, 1));
   b.pic('pins', pinStack(), { solid: 15 });
   b.pic('pinsDown', pinsDown());
-  b.pic('pie1', pie(0), { hp: -8 }).pic('pie2', pie(1), { hp: -8 });
+  // the finale's pies sting the most (15): play dead in rhythm
+  b.pic('pie1', pie(0), { hp: -15 }).pic('pie2', pie(1), { hp: -15 });
   b.pic('bubble1', bubble(0)).pic('bubble2', bubble(1));
   // Gwinn with the nose in her mouth, then sitting nicely with it at her feet.
   const gn = (pose: string) => {

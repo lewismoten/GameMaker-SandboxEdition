@@ -106,9 +106,10 @@ export function revolvingDoor(b: Bestiary): void {
 
 export function cityBeasts() {
   const b = newBestiary();
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -8 });
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('pigeon')) b.pic(name, px, name.startsWith('pigeonFly') ? {} : { hp: -10 });
   revolvingDoor(b);
-  b.pic('pin1', pin(0), { hp: -8 }).pic('pin2', pin(1), { hp: -8 });
+  // downtown asks more of Teddy than the park: a pin or a peck costs more than a squirrel's nip
+  b.pic('pin1', pin(0), { hp: -12 }).pic('pin2', pin(1), { hp: -12 });
   b.pic('dove1', dove(0)).pic('dove2', dove(1));
   // Main Street is closed to traffic: the Klown Klub parade is marching to the Big Show.
   for (const kind of ['drum', 'banner', 'balloons'] as const)

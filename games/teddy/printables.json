@@ -169,7 +169,7 @@
             },
             {
               "q": "Bowling pins keep bonking me under the shed.",
-              "a": "That's Juggles practicing. Hold 4 to play dead until the pins fly over, then scoot ahead."
+              "a": "That's Juggles practicing. Hold 4 to play dead until the pins fly over, then scoot ahead. Pass Juggles himself right after he throws: each new pin starts just in front of him."
             }
           ]
         },
@@ -183,6 +183,10 @@
             {
               "q": "Bowling pins block the tunnel under the bleachers.",
               "a": "Press 5 to roll over. The fluff ball rolls ahead and knocks the stack down."
+            },
+            {
+              "q": "The pies keep coming!",
+              "a": "The Pie-O-Matic fires one every couple of seconds. Hold 4 to play dead as each one comes, then scoot ahead. Pass the machine right after it fires: each new pie starts just in front of it."
             },
             {
               "q": "How do I get up on the stage?",
