@@ -1,7 +1,7 @@
 // The DOS page's keys for a phone or tablet with no keyboard (dos.html): the keys DOS, Game-Maker's
 // menus and the games need most (Esc, Enter, the arrows, Space, Y and N, the F-keys), and a line
 // to type text into, all sent to the PC's screen as real key presses (input/virtualKeys.ts, as the
-// desk's drawn keyboard does). Folded away under a summary until it is wanted.
+// desk's drawn keyboard does). The footer folds it away until it is wanted (footer.ts).
 import { h } from '../editor/core/ui';
 import { VirtualKeys } from '../input/virtualKeys';
 
@@ -86,9 +86,8 @@ export function keypad(screen: HTMLElement): HTMLElement {
   }
 
   return h(
-    'details',
-    { class: 'dos-keys' },
-    h('summary', null, 'On-screen keys'),
+    'div',
+    { class: 'dos-keypad' },
     h(
       'div',
       { class: 'dos-keyrow', role: 'group', 'aria-label': 'Keys' },

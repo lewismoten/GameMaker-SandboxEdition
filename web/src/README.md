@@ -42,7 +42,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`eggs/`](eggs) | The felt eggs hidden in the Sandbox games: which are found (`eggState.ts`, from saved games), the shadow box on the desk, its viewer, and `EGG.EXE`. |
 | [`editor/`](editor) | Today's web interface (see below). |
 | [`desk/`](desk) | The 1994 desk: `desk.ts` lays out the scene (`stage.ts` scales it to the window); `pc/` the case, CRT, keyboard, mouse tray, modem, speakers with the Sound Blaster switch, and capture card; `boxes/` the retail boxes and shelf; `disks/` the disk box; `mug/` the BBS mug; `room/` the window, poster, clipping, clock, door, the wall phone (`room/phone/`) and props. |
-| [`dosPage/`](dosPage) | DOS Game-Maker (`dos.html`): the PC's page with its controls, disk menu (`diskMenu.ts`) and on-screen keys (`keypad.ts`). |
+| [`dosPage/`](dosPage) | DOS Game-Maker (`dos.html`): the PC's page with its one-row bar and ⋯ menu (`moreMenu.ts`), disk menu (`diskMenu.ts`), and one-row footer (`footer.ts`) with the on-screen keys (`keypad.ts`) and the status line. |
 | [`retro/`](retro) | The PC, shared by the desk and `dos.html`, importing nothing from `desk/` (the page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor.css` styles its picture; `gmReg/regSide.ts` puts the Owner's Guide and registration card beside its monitor for the copy check). What runs on it: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound); `gm.ts` (GM.EXE's menus); `hacks/` (the BBS's utilities, SAVEHACK, BACKUP, GMCRACK and the rest: debugging tools for registration modes, saved games and backups, dressed as 1990s scene programs). |
 | [`vga/`](vga) | Game-Maker's eight designers ported from their C source (PALCHOS, BLOCEDIT, MONEDIT, MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR). One file per `.EXE` at the top (each exports `program`); a large designer's parts are in a folder of the same name, and `shared/` has the VGA screen, block routines and Game-Maker's look. |
 | [`manual/`](manual) | The Owner's Guide (desk), the web Guide, and each original game's printed manual and box contents (`printables/`). |
@@ -73,7 +73,7 @@ gzipped in play order, `project/gamePack.ts`), read as it arrives so play starts
 build also puts in the catalog what pages would otherwise fetch files to work out (the
 quick health check, a box's captions). Lists load `games/catalog.json` (`loadCatalogList`), and a game's notice, manual and
 printables come from `games/details/<id>.json` when it is opened (`withDetails`); pictures of
-listed games are prebuilt in `games/shots/` (`gfx/levelPicture.ts`). `main.ts` starts one or
+listed games are prebuilt in `games/shots/` (`gfx/levelPicture.ts`; the tiles' title screens, `gfx/titlePicture.ts`). `main.ts` starts one or
 the other and switches between them;
 the desk's PC can also open today's editors full screen on its monitor
 (`retro/computer.ts` `openEditor`, through the same editor registry).

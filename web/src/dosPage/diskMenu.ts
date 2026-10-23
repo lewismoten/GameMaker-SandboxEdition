@@ -31,7 +31,7 @@ export function diskMenu(host: DiskMenuHost): {
 
   const button = h(
     'button',
-    { type: 'button', class: 'dos-btn', 'aria-haspopup': 'dialog', title: 'Choose a disk to put in drive A:', onclick: () => void open() },
+    { type: 'button', class: 'dos-btn dos-disks', 'aria-haspopup': 'dialog', title: 'Choose a disk to put in drive A:', onclick: () => void open() },
     h('span', { class: 'dos-ico', 'aria-hidden': 'true' }, '💾'),
     h('span', { class: 'dos-word' }, 'Disks'),
   );

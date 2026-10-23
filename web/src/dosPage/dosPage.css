@@ -1,6 +1,12 @@
 /* dos.html (dosPage.ts): the PC's screen filling the window, the controls in a bar above it.
    The picture inside the screen is retro/computer/monitor.css, as on the desk. */
 
+/* the page is the window: nothing scrolls it (the copy check's 1px live region, regSide.ts, sits
+   after the page in the flow) */
+body:has(.dos-page) {
+  overflow: hidden;
+}
+
 .dos-page {
   --dos-bg: #000;
   --dos-bar: #14161a;
@@ -23,9 +29,9 @@
 
 .dos-bar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 6px 14px;
+  gap: 8px 12px;
   padding: 6px 12px;
   background: var(--dos-bar);
   border-bottom: 1px solid #000;
@@ -33,26 +39,36 @@
 
 .dos-bar h1 {
   margin: 0;
+  flex: none;
   font:
     700 15px ui-monospace,
     'Courier New',
     monospace;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: #fff;
+  white-space: nowrap;
 }
 
 .dos-back {
-  color: var(--dos-text);
-  min-height: 24px;
+  flex: none;
+  min-height: 28px;
   display: inline-flex;
   align-items: center;
+  color: var(--dos-text);
+  white-space: nowrap;
 }
 
 .dos-controls {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.dos-controls > * {
+  flex: none;
 }
 
 .dos-btn {
@@ -135,61 +151,6 @@
 
 .dos-crt[data-power='on'] .dos-off {
   display: none;
-}
-
-.dos-status {
-  margin: 0;
-  padding: 0 12px;
-  min-height: 1.35em;
-  color: var(--dos-muted);
-  background: var(--dos-bar);
-}
-
-/* the keys for a phone or tablet */
-.dos-keys {
-  padding: 4px 12px;
-  background: var(--dos-bar);
-}
-
-.dos-keys summary {
-  min-height: 24px;
-  cursor: pointer;
-  color: var(--dos-muted);
-}
-
-.dos-keyrow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 6px 0;
-}
-
-.dos-key {
-  font:
-    600 13px ui-monospace,
-    monospace;
-}
-
-.dos-type {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  padding-bottom: 4px;
-}
-
-.dos-type input {
-  flex: 1;
-  min-width: 8em;
-  min-height: 28px;
-  padding: 2px 6px;
-  border: 1px solid var(--dos-edge);
-  border-radius: 4px;
-  background: #0b0c0e;
-  color: var(--dos-text);
-  font:
-    14px ui-monospace,
-    monospace;
 }
 
 /* the disk list */
@@ -279,19 +240,128 @@
   }
 }
 
+/* the footer (footer.ts): the toggles and the status line, one row */
 .dos-foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 2px 12px;
+  background: var(--dos-bar);
+  border-top: 1px solid #000;
+}
+
+.dos-fold {
+  flex: none;
+}
+
+.dos-fold > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  color: var(--dos-text);
+  list-style: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dos-fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dos-fold[open] > summary {
+  background: var(--dos-btn-hi);
+}
+
+/* an open toggle: its panel slides up over the bottom of the screen */
+.dos-fold-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  z-index: 20;
+  max-height: 60dvh;
+  overflow: auto;
+  padding: 8px 12px;
+  background: var(--dos-bar);
+  border-top: 1px solid var(--dos-edge);
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.5);
+  animation: dos-slide 0.15s ease-out;
+}
+
+.dos-fold:not([open]) .dos-fold-panel {
+  display: none;
+}
+
+@keyframes dos-slide {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dos-fold-panel {
+    animation: none;
+  }
+}
+
+.dos-status {
+  flex: 1;
+  min-width: 0;
+  margin: 0 0 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--dos-muted);
+}
+
+/* GM running unregistered: its tab sits at the bottom right (regSide.ts), so the line stops short of it */
+body:has(.rs-reopen:not([hidden])) .dos-foot {
+  padding-right: 270px;
+}
+
+.dos-keyrow {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
-  background: var(--dos-bar);
+  gap: 4px;
+  padding-bottom: 6px;
 }
 
-.dos-foot > .dos-keys {
-  flex: 1 1 280px;
+.dos-key {
+  font:
+    600 13px ui-monospace,
+    monospace;
 }
 
-.dos-links ul {
-  margin: 4px 0;
+.dos-type {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.dos-type input {
+  flex: 1;
+  min-width: 8em;
+  min-height: 28px;
+  padding: 2px 6px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  background: #0b0c0e;
+  color: var(--dos-text);
+  font:
+    14px ui-monospace,
+    monospace;
+}
+
+.dos-links {
+  margin: 0;
   padding-left: 1.2em;
   color: var(--dos-muted);
 }
@@ -301,40 +371,139 @@
   font-family: ui-monospace, monospace;
 }
 
-/* a button's icon and word (dosPage.ts face) */
+/* a button's icon and word (dosPage.ts face); some show the icon alone (the word still names them) */
 .dos-ico + .dos-word {
   margin-left: 0.35em;
 }
 
-.dos-word-short {
+.dos-icon-only .dos-word,
+.dos-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* the disk in drive A: names the Disks button, cut short */
+.dos-controls .dos-disks .dos-word {
+  display: inline-block;
+  max-width: 11em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+/* the ⋯ menu (moreMenu.ts) */
+.dos-more > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+}
+
+.dos-more > summary::-webkit-details-marker {
   display: none;
 }
 
-/* phones: icons alone (the words still name the buttons), so the bar keeps to two short rows */
-@media (max-width: 600px) {
-  .dos-bar {
-    gap: 4px 8px;
-    padding: 4px 8px;
-  }
-  .dos-bar h1 {
-    font-size: 13px;
-    letter-spacing: 0.04em;
-  }
-  .dos-bar .dos-word {
+.dos-menu {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+  padding: 6px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 6px;
+  background: var(--dos-bar);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.dos-menu > .dos-btn,
+.dos-menu > .dos-check {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.dos-menu > .dos-check {
+  gap: 8px;
+  padding: 0 10px;
+}
+
+/* narrower windows: Full screen as an icon, a shorter title */
+@media (max-width: 1279px) {
+  .dos-full .dos-word {
     position: absolute;
     width: 1px;
     height: 1px;
     overflow: hidden;
     clip-path: inset(50%);
-    white-space: nowrap;
   }
-  .dos-bar .dos-word-short {
-    display: inline;
+  .dos-controls .dos-disks .dos-word {
+    max-width: 7em;
+  }
+}
+
+/* tablets: the site link as an arrow */
+@media (max-width: 1100px) {
+  .dos-back .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+/* small tablets: the bar's buttons as icons, but Game-Maker */
+@media (max-width: 900px) {
+  .dos-controls > .dos-btn:not(.dos-primary) .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+/* phones: one row of icons that scrolls sideways if it must; the title is read, not shown */
+@media (max-width: 600px) {
+  .dos-bar {
+    gap: 6px;
+    padding: 4px 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .dos-bar h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
   }
   .dos-controls {
     gap: 4px;
   }
+  .dos-controls > .dos-primary .dos-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
   .dos-btn {
     padding: 2px 6px;
+  }
+  .dos-foot {
+    padding: 2px 8px;
+  }
+  .dos-fold > summary {
+    padding: 0 6px;
+  }
+  body:has(.rs-reopen:not([hidden])) .dos-foot {
+    padding-right: 8px;
   }
 }

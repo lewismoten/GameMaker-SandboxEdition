@@ -26,6 +26,8 @@ import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
 import { viewSwitch } from '../viewSwitch';
 import { placeNotes } from '../achievements/toast';
+import { footer } from './footer';
+import { moreMenu } from './moreMenu';
 
 const root = document.querySelector<HTMLElement>('#dos')!;
 const speed: SpeedSetting = { slowPc: undefined };
@@ -197,14 +199,21 @@ const LINKS: [href: string, what: string][] = [
   ['dos.html?run=dos', 'Stays at the C:\\> prompt.'],
   ['dos.html?run=bbs', 'Calls the BBS.'],
 ];
-const links = h(
-  'details',
-  { class: 'dos-keys dos-links' },
-  h('summary', null, 'Links to this page'),
-  h('ul', null, ...LINKS.map(([href, what]) => h('li', null, h('a', { href }, href), ' ', what))),
-);
+const links = h('ul', { class: 'dos-links' }, ...LINKS.map(([href, what]) => h('li', null, h('a', { href }, href), ' ', what)));
 
 // ---- the page --------------------------------------------------------------------------
+
+// the less used, in the ⋯ menu; turbo and sound as icons (named for screen readers, with tooltips)
+turboBtn.classList.add('dos-icon-only');
+soundBtn.classList.add('dos-icon-only');
+fullBtn.classList.add('dos-full');
+const more = moreMenu('More: reset, the Sound Blaster card, the Game-Maker CD, the BBS and the Owner’s Guide', [
+  resetBtn,
+  h('label', { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' }, blaster, 'Sound Blaster card'),
+  cdBtn,
+  bbsBtn,
+  guideBtn,
+]);
 
 clear(
   root,
@@ -214,31 +223,20 @@ clear(
     h(
       'header',
       { class: 'dos-bar' },
-      h('a', { class: 'dos-back', href: './', title: `Back to ${PRODUCT}` }, ...face('←', 'Back to the site')),
+      h('a', { class: 'dos-back', href: './', title: `Back to ${PRODUCT}`, 'aria-label': 'Back to the site' }, ...face('←', 'Site')),
       h('h1', null, 'DOS Game-Maker'),
       // Desk | DOS | Web, with the disk in drive A: coming along
       viewSwitch('dos', () => disks.current()),
-      h(
-        'div',
-        { class: 'dos-controls', role: 'group', 'aria-label': 'The PC' },
-        powerBtn,
-        resetBtn,
-        turboBtn,
-        soundBtn,
-        h(
-          'label',
-          { class: 'dos-check', for: 'dos-blaster', title: 'Without the card, games play their sounds on the PC speaker' },
-          blaster,
-          h('span', { class: 'dos-word-short', 'aria-hidden': 'true' }, 'SB'),
-          h('span', { class: 'dos-word' }, 'Sound Blaster'),
-        ),
-        fullBtn,
-      ),
-      h('div', { class: 'dos-controls', role: 'group', 'aria-label': 'Disks and programs' }, disks.button, cdBtn, gmBtn, bbsBtn, guideBtn),
+      h('div', { class: 'dos-controls', role: 'group', 'aria-label': 'The PC' }, powerBtn, gmBtn, disks.button, turboBtn, soundBtn, fullBtn, more),
     ),
     stage,
-    h('div', { class: 'dos-foot' }, keypad(crt), links),
-    status,
+    footer(
+      [
+        { icon: '⌨️', word: 'Keys', name: 'On-screen keys', content: keypad(crt) },
+        { icon: '🔗', word: 'Links', name: 'Links to this page', content: links },
+      ],
+      status,
+    ),
   ),
 );
 
