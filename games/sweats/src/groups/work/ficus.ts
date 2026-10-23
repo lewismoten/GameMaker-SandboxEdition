@@ -214,7 +214,7 @@ export function ficusBlocks(book: BlockBook, pal: Pal): void {
     p.line(10, 7, 10, 13, c('teal', 2)).line(7, 10, 13, 10, c('teal', 2));
     face(p, pal, 10, 9, { grin: true });
   });
-  plotThing(book, 'paperBase', 'postit@paperBase', (p) => {
+  plotThing(book, 'paperBase', 'stickynote@paperBase', (p) => {
     p.rect(5, 4, 10, 9, c('yellow', 2)).rect(5, 4, 10, 1, c('yellow', 1)).set(14, 12, c('yellow', 0));
     p.rect(6, 6, 7, 1, c('blue', 1)).rect(6, 8, 5, 1, c('blue', 1)).rect(6, 10, 6, 1, c('blue', 1)).set(12, 8, c('red', 2));
   });
@@ -308,7 +308,7 @@ export const ficus: Monologue = {
     P: 'spider@lot',
     F: 'fern@lot',
     Y: 'randy@lot',
-    K: 'postit@paperBase',
+    K: 'stickynote@paperBase',
     $: 'coin@paperBase',
     b: 'bill@paperBase',
     m: 'mug@paperBase',
