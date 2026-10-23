@@ -97,7 +97,7 @@ export async function bathroom(bot: Bot): Promise<void> {
     if (salt(bot) < 5) throw new Error(`only ${salt(bot)} salt`);
     await must(bot, bot.walk(40, 'the dry washcloth'), 'cloth');
     await must(bot, bot.hop('right', 12, 'right', 42.8), 'over the cracked tile');
-    await leave(bot, bot.walk(45, 'the mop bucket'), 'the bucket');
+    await leave(bot, bot.walk(50, 'the door past the mop bucket'), 'the bucket');
   });
 }
 
@@ -228,7 +228,7 @@ export async function home(bot: Bot): Promise<void> {
     if (candles(bot) - start < 6) throw new Error(`only ${candles(bot) - start} candles`);
   });
   await carefully(bot, 'the bathroom door', 0, async () => {
-    await leave(bot, bot.walk(67, 'the bathroom door'), 'the bathroom');
+    await leave(bot, bot.walk(71, 'through the bathroom door'), 'the bathroom');
   });
 }
 

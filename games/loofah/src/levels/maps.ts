@@ -157,7 +157,7 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
 /** 1. Cursed in the Shower: the haunted bathroom, five jars of bath salt, the mop bucket. */
 export function bathroom(book: BlockBook): Level {
-  const W = 49;
+  const W = 52;
   const H = 14;
   const m = new MapBuilder(book, 'outside');
   m.row(0, 1, W - 2, '^').fill(1, 1, W - 2, 10, '.').row(11, 1, W - 2, '_').row(12, 0, W - 1, '=').row(13, 0, W - 1, '#').col(0, 0, 13, 'outside').col(W - 1, 0, 13, 'outside');
@@ -183,9 +183,10 @@ export function bathroom(book: BlockBook): Level {
   m.col(34, 3, 4, 'O').mon(MON.carl, 33, 5);
   m.set(33, 11, '!').set(37, 11, 'H').set(37, 10, '1').set(40, 11, '4').set(42, 11, '!');
   m.row(6, 39, 41, 's').set(40, 5, '*');
-  // the door, and the mop bucket by it: five jars of salt in it make the brine
-  m.set(46, 11, 'D').set(46, 10, 'd').set(44, 11, 'B');
-  m.link(44, 11, 'next');
+  // the mop bucket, and the door a few steps past it: five jars of salt in the bucket make the
+  // brine, and the walk to the door gives "Lucifer" (the bucket's 2 s line) time to be heard
+  m.set(49, 11, 'D').set(49, 10, 'd').set(44, 11, 'B');
+  m.link(49, 11, 'next');
   return { m, start: at(4, 11), size: [W, H] };
 }
 
@@ -225,7 +226,7 @@ export function aisle(book: BlockBook): Level {
 
 /** 3. You Crossed a Line: home in the dark, six candles, the bathroom door. */
 export function home(book: BlockBook): Level {
-  const W = 69;
+  const W = 72;
   const H = 12;
   const m = new MapBuilder(book, 'joists');
   m.row(0, 1, W - 2, 'crownMold').fill(1, 1, W - 2, 8, 'paper').row(9, 1, W - 2, 'base').row(10, 0, W - 1, 'boards').row(11, 0, W - 1, 'joists').col(0, 0, 11, 'joists').col(W - 1, 0, 11, 'joists');
@@ -245,9 +246,11 @@ export function home(book: BlockBook): Level {
   m.mon(MON.gwinn, 43, 9).set(47, 9, 'creak');
   // the bookcase (a candle on top), another towel, a spare candle on the floor
   m.row(7, 50, 51, 'wallShelf').row(5, 50, 51, 'wallShelf').set(51, 4, 'unlit').mon(MON.flapper, 54, 9).set(58, 9, 'unlitB');
-  // the bathroom door: six candles burning
+  // the bathroom door: six candles burning; through it, the steam of the bathroom, where the
+  // walk to the shower gives the funeral bell (the door's 1.6 s toll) time to ring out
   m.set(66, 9, 'bathDoor').set(66, 8, 'bathTop');
-  m.link(66, 9, 'next');
+  m.fill(67, 0, 4, 10, 'steamAir').row(10, 67, 70, 'showerFloor');
+  m.link(70, 9, 'next');
   return { m, start: at(5, 7), size: [W, H] };
 }
 
