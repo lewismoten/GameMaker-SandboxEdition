@@ -34,6 +34,11 @@ export const ROUTES = {
     description:
       'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
   },
+  achievements: {
+    title: `What you’ve done · ${PRODUCT}`,
+    description:
+      'Your achievements: games made, played and finished, walkthroughs watched, tin hearts found and the programs tried on the 1994 desk, with when each was unlocked. Kept in your browser.',
+  },
   mac: {
     title: `Playing the games on a Mac · ${PRODUCT}`,
     description:

@@ -100,6 +100,7 @@ function startModern(hash?: string): void {
           'div',
           { class: 'topbar-menu' },
           h('a', { href: '#/cast' }, '🎭 The cast'),
+          h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
@@ -169,6 +170,13 @@ async function route(): Promise<void> {
     renderCast(content);
     return;
   }
+  if (kind === 'achievements') {
+    const { renderAchievements } = await import('./achievements/page');
+    if (ui !== 'modern') return;
+    document.title = `What you’ve done · ${PRODUCT}`;
+    renderAchievements(content);
+    return;
+  }
   if (kind === 'mac') {
     const { renderMacHelp } = await import('./macHelp/macPage');
     if (ui !== 'modern') return;
@@ -232,10 +240,12 @@ window.addEventListener('hashchange', () => void route());
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
 if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 
 registerServiceWorker();
+// achievements: the gm-achievement event, other tabs, and the counted ones kept current
+void import('./achievements/start').then((m) => m.startAchievements());
 
 watchForUpdates();

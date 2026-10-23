@@ -10,6 +10,7 @@ export function routeOf(hash: string, modern: boolean): RouteName {
   if (!modern) return 'desk';
   if (hash.startsWith('#/help')) return 'guide';
   if (hash.startsWith('#/cast')) return 'cast';
+  if (hash.startsWith('#/achievements')) return 'achievements';
   if (hash.startsWith('#/mac')) return 'mac';
   if (hash.startsWith('#/windows')) return 'windows';
   if (hash.startsWith('#/linux')) return 'linux';
