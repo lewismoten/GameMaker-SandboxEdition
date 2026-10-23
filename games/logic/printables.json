@@ -180,16 +180,16 @@
               "a": "Either switch opens the gate: two wires into one gate means either will do. The left switch puts live current right in front of the gate (turn it off again if you use it). The right one keeps its current inside the housing."
             },
             {
-              "q": "The Coffee Maker: I turned the top switch on and now I am stuck down by the bottom switch!",
-              "a": "Two switches in a row both have to be on. Turn on the bottom one FIRST, while the wire is still dead, then the top one. When the gate opens, turn the top switch off again so you can step over the wire."
-            },
-            {
               "q": "The Dishwasher: The second switch fences me away from the second gate!",
               "a": "Two gates, one after the other. Open the first with the switch at the top left. For the second, slip around behind its switch BEFORE you turn it on, and bump it from below: then the live wire is behind you."
             },
             {
               "q": "The Fridge: I rolled through the arrow and now I cannot get back to the switch.",
               "a": "The arrow is a diode: you can only go through it the way it points. Before you go through, turn the switch on, wait for the gate to open, and turn the switch OFF again."
+            },
+            {
+              "q": "The Coffee Maker: I turned the top switch on and now I am stuck down by the bottom switch!",
+              "a": "Two switches in a row both have to be on. Turn on the bottom one FIRST, while the wire is still dead, then the top one. When the gate opens, turn the top switch off again so you can step over the wire."
             }
           ]
         },

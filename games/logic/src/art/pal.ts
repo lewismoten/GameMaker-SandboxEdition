@@ -20,6 +20,8 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
   ['green', 4, [10, 80, 30], [150, 255, 140]],
   ['yellow', 4, [150, 104, 0], [255, 250, 140]],
   ['orange', 4, [140, 50, 0], [255, 180, 60]],
+  // the garage's board: a dark brown-orange phenolic, so copper and Watt (orange) stand out on it
+  ['rust', 4, [44, 18, 6], [110, 52, 20]],
   ['spark', 5, [60, 140, 255], [255, 255, 255], [160, 230, 255]],
   ['zap', 4, [255, 140, 0], [255, 255, 200], [255, 230, 60]],
   ['teal', 5, [10, 60, 70], [140, 240, 230]],

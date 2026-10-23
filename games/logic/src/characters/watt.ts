@@ -66,6 +66,6 @@ export function buildWatt(cb: BlockSet, bombMonster: number): Character {
   set(S[SEQ.reboot], [f('zapped', 2), bomb, f('zapped', 6)], { key: KEY.r, sound: SND.boing, ground: 1, norepeat: 1, jstkBut: 0 });
 
   ch.meter[0] = 1; // one hit point: any zap reboots
-  ch.meter[1] = 9; // spare batteries
+  ch.meter[1] = 20; // spare batteries: plenty, so a reboot to rethink a board is cheap
   return ch;
 }

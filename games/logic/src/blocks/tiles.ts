@@ -27,7 +27,7 @@ export interface Style {
 export const STYLES: Record<string, Style> = {
   kitchen: { id: 'kitchen', board: 'pcb', lo: 1, hi: 2, wall: 'plastic', face: 3, silk: c('paper', 3) },
   living: { id: 'living', board: 'mask', lo: 0, hi: 1, wall: 'wood', face: 2, silk: c('paper', 2) },
-  garage: { id: 'garage', board: 'orange', lo: 0, hi: 1, wall: 'metal', face: 3, silk: c('yellow', 3) },
+  garage: { id: 'garage', board: 'rust', lo: 0, hi: 1, wall: 'metal', face: 3, silk: c('yellow', 3) },
   attic: { id: 'attic', board: 'purple', lo: 0, hi: 1, wall: 'metal', face: 1, silk: c('teal', 4) },
 };
 
