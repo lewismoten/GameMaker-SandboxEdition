@@ -77,10 +77,14 @@ function groupHashes(bundle: Bundle): Record<string, string> {
   return Object.fromEntries([...groups].map(([g, lines]) => [groupKey(g), digest(lines.join('\n'))]));
 }
 
-/** The app shell, cached at install: the two pages and what they load up front, the icons and manifest. */
+/**
+ * The app shell, cached at install: the home page and what it loads up front, the icons and
+ * manifest. The play page, like everything else, is cached the first time it is used.
+ */
 function appShell(bundle: Bundle): string[] {
   const icons = publicFiles().filter((f) => /^(icon|apple-touch-icon).*\.(png|svg)$|\.webmanifest$/.test(f));
-  return [...new Set(['./', ...pageGraph(bundle, 'index.html', false), ...pageGraph(bundle, 'play.html', false), ...icons])];
+  // './' is index.html: fetched once, under the name the browser asks for
+  return [...new Set(['./', ...pageGraph(bundle, 'index.html', false).filter((f) => f !== 'index.html'), ...icons])];
 }
 
 /**
@@ -190,6 +194,11 @@ function playChunks(): Rollup.GetManualChunk {
   return (id, { getModuleInfo }) => {
     closures ??= pages.map(([, entries]) => closure(entries, getModuleInfo));
     if (/\.css($|\?)/.test(id)) return undefined; // styles stay with the code that imports them
+    // parts always loaded together, in one file each rather than one per module: the shelf's
+    // painted box covers (not a secret game's, covers/extra.ts, which stays apart) and
+    // Game-Maker's eight designers (loaded together when Game-Maker starts on the desk's PC)
+    if (/\/src\/desk\/boxes\/covers\/(?!extra\.|index\.|paint\.)[\w-]+\.ts$/.test(id)) return 'covers';
+    if (/\/src\/vga\/(?!shared\/)/.test(id)) return 'designers';
     if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
     const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
     if (!users.includes('play') || users.includes('main')) return undefined;
