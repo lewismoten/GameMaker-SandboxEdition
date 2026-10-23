@@ -1,7 +1,9 @@
 // Credits, "The original Game-Maker": RSD's own title screen, the Stone family, Andy Stone's
-// 2014 source release and 2011 look back, and who the source credits for each part (rsdParts.ts).
+// 2014 source release and 2011 look back, every distinct RSD intro screen the CD's games show
+// (rsdIntros.ts), and who the source credits for each part (rsdParts.ts).
 import { h } from '../editor/core/ui';
-import { section, ext, repoFile, banner, card } from './section';
+import { section, ext, repoFile, banner, card, thumb } from './section';
+import { RSD_INTROS } from './rsdIntros';
 import { RSD_PARTS, RSD_SAMPLE_CREDITS } from './rsdParts';
 
 export function originalSection(): HTMLElement {
@@ -58,6 +60,15 @@ export function originalSection(): HTMLElement {
             '.',
           ),
         ),
+      ),
+    ),
+    h('h3', { id: 'credits-rsd-intros' }, 'RSD’s intro screens'),
+    h('p', null, 'Not every game on the CD opens with the same RSD screen. These are all the different ones, each shown once however many games use it.'),
+    h(
+      'div',
+      { class: 'credits-thumbs' },
+      ...RSD_INTROS.map((r) =>
+        thumb(`./credits/${r.src}`, r.alt, [r.caption, h('br'), h('span', { class: 'muted' }, r.games.join(', ')), h('br'), repoFile(r.file)]),
       ),
     ),
     h('h3', { id: 'credits-parts' }, 'Who made each part'),
