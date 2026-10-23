@@ -273,9 +273,10 @@ export function desert(book: BlockBook): Level {
   m.set(65, 8, 'B').set(68, 7, '*').set(73, 9, 'b').set(71, 6, 'L');
   m.row(7, 70, 72, 'l');
   // the tailor's tent at the end of the road
-  m.text(76, 7, '[|]').text(76, 8, 'tTt').text(76, 9, 'tdt').col(78, 8, 9, 'tentWallR');
+  // (a few blocks on past the lamp, so the song's "Thread the needle" plays out on the way in)
+  m.text(79, 7, '[|]').text(79, 8, 'tTt').text(79, 9, 'tdt').col(81, 8, 9, 'tentWallR');
   m.mon(MON.goat, 58, 5).mon(MON.vulture, 63, 3).mon(MON.vulture, 18, 3);
-  m.link(77, 9, 'next');
+  m.link(80, 9, 'next');
   return { m, start: at(3, 9), size: [W, H] };
 }
 
@@ -402,9 +403,12 @@ export function eye(book: BlockBook): Level {
   cloud(11, 16, 19);
   cloud(8, 19, 22);
   cloud(6, 14, 18);
+  // out the back of the eye: on through a cloud bank, a way one block high (so "Hump down" plays
+  // out as he crawls on; and walled all round, so the eye is the only way in)
+  m.row(4, 7, 11, 'bank5').row(6, 7, 11, 'bank4').set(7, 5, 'bank5');
   // good things
   m.set(9, 29, 'jar2').set(8, 13, 'lamp4').set(21, 7, 'olive').set(17, 13, 'dates4');
   m.mon(MON.star, 7, 25).mon(MON.star, 20, 17).mon(MON.star, 16, 3).mon(MON.dove, 15, 30).mon(MON.dove, 4, 8).mon(MON.star, 9, 38);
-  m.link(13, 5, 'won');
+  m.link(8, 5, 'won');
   return { m, start: at(3, 43), size: [W, H] };
 }

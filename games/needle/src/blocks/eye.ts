@@ -63,6 +63,8 @@ export function eyeBlocks(pal: Pal): Kit {
     }
     return p;
   };
+  // a cloud bank (solid all through): the walls of the way out the back of the eye
+  for (const s of [4, 5]) book.add(`bank${s}`, starry(24 + s, s).map((x, y) => shadeAt(R('white'), 0, 2, 0.55 + Math.sin(x / 3 + y / 5 + s) * 0.3 - Math.abs(y - 10) / 40, x, y)), { solid: SOLID });
   for (let s = 0; s <= 5; s++) book.add(`cloud${s}`, cloud(20 + s, s), { solid: LEDGE, grav: GRAV.down });
   // the golden thread through the needle, hanging down to the sand: climb it
   const thread = (shade: number) => {
@@ -144,7 +146,8 @@ export function eyeBlocks(pal: Pal): Kit {
       // behind it, the sky the map has on that row: dawn (5) down to row 5, the band into 4 on row 6
       const p = y < 6 ? starry(60 + y * 2 + half, 5) : band(4);
       p.blit(head.crop(half * 20, y * 20, 20, 20), 0, 0, 255);
-      book.add(`head${y}${half ? 'R' : 'L'}`, p, y < 4 ? air : { solid: SOLID });
+      // the eye's left half at the pupil row opens (for free) once the right half has let him in
+      book.add(`head${y}${half ? 'R' : 'L'}`, p, y < 4 ? air : y === 5 && !half ? { solid: SOLID, touch: 'pupilOpen' } : { solid: SOLID });
     }
   // the pupil, open: a way through, one block high, full of light
   const open = P();

@@ -145,7 +145,7 @@ export async function theDesert(bot: Bot): Promise<void> {
   });
   if (gold(bot) !== 3 || grace(bot) !== 5) throw new Error(`gold ${gold(bot)}, grace ${grace(bot)} at the tent`);
   await carefully(bot, 'to the tent', 12, async () => {
-    await leave(bot, bot.walk(78, "the tailor's tent"), 'the tent');
+    await leave(bot, bot.walk(81, "the tailor's tent"), 'the tent');
   });
 }
 
@@ -157,7 +157,12 @@ export async function theTailor(bot: Bot): Promise<void> {
     await must(bot, bot.dig('up', row, label), label);
   };
   await carefully(bot, 'the first thread', 12, async () => {
-    await must(bot, bot.walk(7, 'the seamstress and a spool'), 'spool');
+    // the seamstress's "Drop that gold and run your race!" (gold.voc, 3.55 s) is the level's
+    // first sound: stand by her till it is sung out, before the spool's chime would cut it
+    await must(bot, bot.walk(5, 'the seamstress'), 'seamstress');
+    await must(bot, bot.sim.waitForClip(), 'the song');
+    await must(bot, bot.wait(3), 'the song');
+    await must(bot, bot.walk(7, 'a spool'), 'spool');
     await climb(8, 6, 'up the first thread');
     await must(bot, bot.walk(13, 'the widow on the shelf'), 'shelf');
   });
@@ -217,6 +222,6 @@ export async function theEye(bot: Bot): Promise<void> {
   if (grace(bot) < 4) throw new Error(`only ${grace(bot)} grace at the eye`);
   await carefully(bot, 'the eye of the needle', 12, async () => {
     await must(bot, bot.walk(14, 'the eye of the needle'), 'eye');
-    await leave(bot, bot.crawl('left', 12, 'through the eye of the needle'), 'the eye');
+    await leave(bot, bot.crawl('left', 8, 'through the eye of the needle and on through the clouds'), 'the eye');
   });
 }
