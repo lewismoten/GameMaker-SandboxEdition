@@ -362,7 +362,7 @@ export const FUTURE: WingSpec = {
           ['jarold', 'odesk', 'jaroldJr'],
           ['truck0', 'truck1', 'seller'],
         ],
-        caption: ['FIG. 27: Jarold Jr. is thriving.', 'Craigslist said it was healthy.'],
+        caption: ['FIG. 27: Jarold Jr. is thriving.', 'The ad said it was healthy.'],
       },
     },
     {

@@ -111,7 +111,7 @@ function subShop(): Pixels {
   return p;
 }
 
-function poupon(under: Pixels): Pixels {
+function mustardJar(under: Pixels): Pixels {
   const p = on(under);
   p.rect(6, 6, 8, 12, c('yellow', 1)).rect(6, 6, 8, 1, c('yellow', 3)).rect(5, 3, 10, 3, c('ink', 1));
   p.rect(7, 9, 6, 5, c('paper', 4));
@@ -212,7 +212,7 @@ function art(a: Area): void {
   a.solid('bldg0', building(1));
   a.solid('bldg1', building(2));
   a.solid('subshop', subShop());
-  a.solid('poupon', poupon(a.tiles.pic('street')));
+  a.solid('mustardJar', mustardJar(a.tiles.pic('street')));
   a.solid('lady', sandwichLady(a.tiles.pic('street')));
   sign(['SUBS: NO', 'CONDIMENTS', '(APPARENTLY)'], 3, { board: 'green', ink: 'paper' }).forEach((px, i) => a.solid(`subs${i}`, px));
   a.monster('underwood', [[underwood(0), 5], [underwood(1), 5]], { path: [[6, 0, 2], [0, 2, 2], [-6, 0, 2], [0, -2, 2]] });
@@ -337,7 +337,7 @@ export const OTHER: WingSpec = {
         B: 'bldg0',
         b: 'bldg1',
         S: 'subshop',
-        g: 'poupon',
+        g: 'mustardJar',
         l: 'lady',
         w: 'bldg1',
         '1': 'subs0',
@@ -349,7 +349,7 @@ export const OTHER: WingSpec = {
       twist: {
         grid: [
           ['subshop', 'm:underwood#0', 'bldg0'],
-          ['lady', 'poupon', 'street'],
+          ['lady', 'mustardJar', 'street'],
         ],
         caption: ['FIG. 4: "But your under wear', 'is over your pants."'],
       },

@@ -6,7 +6,7 @@ import type { Story } from '../stories';
 import { PAGE, page, wrap } from './pages';
 
 export const STORY = page([
-  `Behind the little red door of The Dog House, a little free library on a post, there is a library much bigger than the box.
+  `Behind the little red door of The Dog House, a little lending library on a post, there is a library much bigger than the box.
 
 Every book on its shelves holds exactly one hundred words.
 

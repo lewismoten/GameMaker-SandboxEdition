@@ -335,7 +335,7 @@ export function introFli(joe: BlockSet): Uint8Array {
   const say = (p: Pixels, lines: string[]) => lines.forEach((l, i) => centered(p, 172 + i * 11, l, c('paper', 4), 1, c('ink', 0)));
   for (let t = 0; t < 14; t++) {
     const p = base(0);
-    say(p, ['The Dog House.', 'A little free library on a post.']);
+    say(p, ['The Dog House.', 'A little lending library on a post.']);
     frames.push(p);
     palettes.push(PAL.pal);
   }

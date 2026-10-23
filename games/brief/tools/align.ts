@@ -8,7 +8,7 @@ import { compileAll } from '../src/compile';
 
 /** Joins drawn as edges on purpose (looked at): the water cooler's counter over its panel, the
  * cloning machine's halves, a banner's lettering. */
-const SEAM_OK = ['wc10099/wc11', 'wc20099/wc21', 'wc11|wc21', 'clone0|clone1', 'clone2|clone3', 'smokey1|smokey2'];
+const SEAM_OK = ['wc10099/wc11', 'wc20099/wc21', 'wc11|wc21', 'clone0|clone1', 'clone2|clone3', 'ranger1|ranger2'];
 
 export function align(): number {
   const { hub, wings } = compileAll();

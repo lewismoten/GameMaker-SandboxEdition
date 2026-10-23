@@ -174,7 +174,7 @@ function art(a: Area): void {
   a.solid('gnome', gnome(a.tiles.pic('yard')));
   a.prop('harry', 'yard', figure({ shirt: ['paper', 4], pants: ['red', 2], hair: ['brown', 2], arms: 'up', face: 'happy' }));
   a.solid('hedge', wall('hedge', 'green', 7));
-  sign(['BACKYARD', 'OLYMPICS', 'EST. TODAY'], 3, { board: 'blue', ink: 'paper' }).forEach((px, i) => a.solid(`olymp${i}`, px));
+  sign(['BACKYARD', 'GAMES', 'EST. TODAY'], 3, { board: 'blue', ink: 'paper' }).forEach((px, i) => a.solid(`yardGames${i}`, px));
   a.monster('spear', [[spear(0), 2], [spear(1), 2]], { hazard: true, path: [[8, 0, 3], [-8, 0, 3]] });
 
   // Hung Out to Dry
@@ -282,9 +282,9 @@ export const YARD: WingSpec = {
         t: 'target',
         m: 'medal',
         H: 'harry',
-        '1': 'olymp0',
-        '2': 'olymp1',
-        '3': 'olymp2',
+        '1': 'yardGames0',
+        '2': 'yardGames1',
+        '3': 'yardGames2',
         S: { tile: '.', mon: 'spear' },
       },
       note: 'Harry has a minty spear and a big red X. The garden gnomes are the crowd. The spear goes where it likes; stay out of its way.',

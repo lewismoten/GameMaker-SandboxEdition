@@ -159,7 +159,7 @@ function lightSwitch(): Pixels {
   return p;
 }
 
-function alexa(frame: number, under: Pixels): Pixels {
+function speaker(frame: number, under: Pixels): Pixels {
   const p = on(under);
   p.rect(6, 6, 8, 12, c('ink', 1)).rect(6, 6, 8, 2, frame ? c('sky', 4) : c('blue', 3));
   for (let y = 9; y < 17; y += 2) p.rect(7, y, 6, 1, c('ink', 0));
@@ -221,8 +221,8 @@ function art(a: Area): void {
   a.solid('closetShelf', closetShelf());
   a.solid('bulb', brokenBulb(a.tiles.pic('closet')));
   a.solid('switch', lightSwitch());
-  a.solid('alexa0', alexa(0, a.tiles.pic('closet')), { next: 'alexa1', ntime: 8 });
-  a.solid('alexa1', alexa(1, a.tiles.pic('closet')), { next: 'alexa0', ntime: 8 });
+  a.solid('speaker0', speaker(0, a.tiles.pic('closet')), { next: 'speaker1', ntime: 8 });
+  a.solid('speaker1', speaker(1, a.tiles.pic('closet')), { next: 'speaker0', ntime: 8 });
   a.prop('george', 'closet', figure({ shirt: ['grey', 3], pants: ['brown', 1], hair: ['grey', 2], arms: 'out', face: 'sad' }));
   sign(['IDEAS:', 'PLEASE', 'UPGRADE'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`idea${i}`, px));
   a.monster('moth', [[moth(0), 2], [moth(1), 2]], { hazard: true, path: [[2, 0, 2], [0, 2, 2], [-2, 0, 2], [0, -2, 2]] });
@@ -373,19 +373,19 @@ export const LIVING: WingSpec = {
         b: 'bulb',
         w: 'switch',
         g: 'george',
-        A: 'alexa0',
+        A: 'speaker0',
         M: { tile: '.', mon: 'moth' },
         '1': 'idea0',
         '2': 'idea1',
         '3': 'idea2',
       },
-      note: 'A closet. George, an idea, a broken bulb. It is very dark. Somewhere there is a light switch. Somewhere there is Alexa.',
+      note: 'A closet. George, an idea, a broken bulb. It is very dark. Somewhere there is a light switch. Somewhere there is a smart speaker.',
       twist: {
         grid: [
           ['bulb', 'closet', null],
-          ['george', 'switch', 'alexa0'],
+          ['george', 'switch', 'speaker0'],
         ],
-        caption: ['FIG. 14: Looking for a light switch.', 'Most people talk to Alexa.'],
+        caption: ['FIG. 14: Looking for a light switch.', 'Most people ask the speaker.'],
       },
     },
   ],

@@ -187,7 +187,7 @@ function art(a: Area): void {
   const joker = figure({ face: 'happy', shirt: ['purple', 3], pants: ['green', 3], hat: { kind: 'top', color: ['green', 2] } });
   joker.line(16, 8, 16, 19, c('brass', 3)).disc(16, 7, 1.5, c('brass', 4));
   a.prop('joker', 'lino', joker);
-  sign(['BUBBLE WRAP', 'AISLE 3', 'POP AT RANDOM'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`wrap${i}`, px));
+  sign(['BUBBLE PACK', 'AISLE 3', 'POP AT RANDOM'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`wrap${i}`, px));
   a.monster('bubbig', [[bubble(7), 6], [bubble(7, 'sky', 1), 6]], { power: 1, path: [[0, 2, 1], [0, -2, 1]] });
   a.monster('bubsmall', [[bubble(3), 4], [bubble(3, 'sky', 1), 4]], { power: 1, path: [[2, 0, 1], [-2, 0, 1]] });
 

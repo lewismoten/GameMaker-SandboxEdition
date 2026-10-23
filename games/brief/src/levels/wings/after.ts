@@ -195,7 +195,7 @@ function art(a: Area): void {
   a.solid('ledger', ledger(a.tiles.pic('forest')));
   a.solid('fire0', campfire(0, a.tiles.pic('forest')), { next: 'fire1', ntime: 4 });
   a.solid('fire1', campfire(1, a.tiles.pic('forest')), { next: 'fire0', ntime: 4 });
-  sign(['ONLY YOU CAN', 'BALANCE THE', 'BOOKS'], 3, { board: 'brown', ink: 'paper' }).forEach((px, i) => a.solid(`smokey${i}`, px));
+  sign(['ONLY YOU CAN', 'BALANCE THE', 'BOOKS'], 3, { board: 'brown', ink: 'paper' }).forEach((px, i) => a.solid(`ranger${i}`, px));
   a.monster('hoot', [[hoot(0), 4], [hoot(1), 4]], { hazard: true, path: [[0, 4, 2], [0, -4, 2]] });
   a.patrol('hoot', [[5, 0, 2], [-5, 0, 2]], 'hootH');
 
@@ -293,9 +293,9 @@ export const AFTER: WingSpec = {
         l: 'ledger',
         g: 'guild',
         f: 'fire0',
-        '1': 'smokey0',
-        '2': 'smokey1',
-        '3': 'smokey2',
+        '1': 'ranger0',
+        '2': 'ranger1',
+        '3': 'ranger2',
         H: { tile: '.', mon: 'hootH' },
         h: { tile: '.', mon: 'hoot' },
       },
