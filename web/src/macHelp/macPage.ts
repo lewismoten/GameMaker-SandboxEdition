@@ -78,7 +78,7 @@ export function renderMacHelp(el: HTMLElement): void {
             null,
             'Open ',
             h('strong', null, 'System Settings → Privacy & Security'),
-            ' and scroll down to Security. Next to ““Game” was blocked to protect your Mac”, click ',
+            ' and scroll down to Security. Next to the message that “Game” was blocked to protect your Mac, click ',
             kbd('Open Anyway'),
             '. The button is there for about an hour after you tried to open the game.',
           ),

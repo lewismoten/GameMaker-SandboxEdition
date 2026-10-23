@@ -32,6 +32,10 @@ own window on Apple silicon and Intel Macs with macOS 11 Big Sur or later.
 
 ## Opening the app the first time (Gatekeeper)
 
+The players' version of this, with why the apps can't be notarized, what the app does and
+how to remove it, is the site's [Mac downloads page](https://lewismoten.github.io/GameMaker-SandboxEdition/#/mac)
+(`web/src/macHelp/macPage.ts`, linked from the Download for Mac dialog).
+
 The apps are signed ad-hoc, not with an Apple Developer ID, and are not notarized by Apple
 (that needs a paid Apple Developer Program membership). So the first time a downloaded app
 is opened, macOS says it cannot check it for malicious software:
@@ -40,7 +44,7 @@ is opened, macOS says it cannot check it for malicious software:
 2. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to
    the game's name, then confirm.
 3. On macOS 14 Sonoma or earlier you can instead Control-click (right-click) the app, choose
-   **Open**, then **Open** again.
+   **Open**, then **Open** again. macOS 15 and later no longer allow that shortcut.
 
 After that it opens like any other app.
 
