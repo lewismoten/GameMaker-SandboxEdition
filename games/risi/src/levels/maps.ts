@@ -252,7 +252,7 @@ export function kitchen(book: BlockBook): Level {
   // the second mouse by its hole; a cupboard down low
   m.set(30, 9, 'hole').mon(MON.mouse, 29, 9).set(34, 9, 'armariumLow');
   // a shelf of jars, ants on it, a cupboard at its end; milk underneath
-  m.row(7, 36, 39, 'kshelfJars').mon(MON.ant, 36, 6).set(39, 6, 'armarium').set(37, 9, 'milk');
+  m.row(7, 36, 39, 'kshelfJars').mon(MON.ant, 36, 6).set(39, 6, 'armarium');
   // the third mouse
   m.set(42, 9, 'hole').mon(MON.mouse, 41, 9);
   // the crown of cheese
@@ -305,14 +305,16 @@ export function baths(book: BlockBook): Level {
   m.set(29, walk + 1, 'hot').set(34, walk + 1, 'hot');
   m.mon(MON.bather, 31, walk).set(33, walk + 1, 'scaleHot');
   m.set(38, 8, 'strigil');
+  // wet stains high on the wall, where the steam gathers: hot drips fall from them to the walkway
+  m.set(27, 1, 'bwallDrip').set(44, 1, 'bwallDrip');
   // the second drum: a bench, a scale
   m.set(40, walk, 'drum').col(40, 5, walk - 1, 'boing0');
   m.row(5, 41, 43, 'bench').set(42, 4, 'scale');
   // the second cold pool: a scale
   pool(m, 45, 49, false, walk);
   m.set(47, walk + 1, 'scalePool');
-  // another bench of mice, grapes
-  m.row(8, 50, 51, 'bench').mon(MON.fan, 50, 7).set(51, 7, 'bgrapes');
+  // another bench of mice
+  m.row(8, 50, 51, 'bench').mon(MON.fan, 50, 7);
   m.set(52, 8, 'bcoin');
   // her golden basin: six scales; the diva sings in it
   m.set(55, walk, 'basinL0').set(56, walk, 'basinR');
@@ -343,7 +345,7 @@ export function theater(book: BlockBook): Level {
   m.set(1, 4, 'joe');
   // the audience: stone faces on every step, and one in the orchestra
   m.mon(MON.stony, 4, 4).mon(MON.stony, 8, 6).mon(MON.stony, 10, 8).mon(MON.stony, 12, 8).mon(MON.stony, 15, 10).mon(MON.stony, 20, 11);
-  m.set(18, 9, 'mask').set(22, 8, 'tgrapes');
+  m.set(18, 9, 'mask').set(22, 8, 'tcoin');
   // the stairs up to the stage, shut until five laugh
   m.set(24, 11, 'stairs');
   // the stage and its painted front

@@ -158,12 +158,13 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     mon(anim(a, b, 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -1, 3, 4)]);
   set[MON.joke] = mon(anim('joke0', 'joke1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
   // I. the banquet: Rufus's clouds spread out from under the table and up
+  // (they hang along the floor past the bust before they rise, so the way on must be cleared or timed)
   set[MON.gas] = mon(sting('gas', 5), { power: 150, thru: 0, end: -1 }, [
     corner(0, 0, 1),
-    corner(2, 0, 1, 0),
-    corner(4, -1, 1, 0),
-    corner(5, -3, 1, 0),
-    corner(4, -5, 1, 4),
+    corner(3, 0, 1, 0),
+    corner(5, 0, 1, 0),
+    corner(6, -2, 1, 0),
+    corner(5, -5, 1, 4),
   ]);
   set[MON.flavia] = mon(anim('flavia0', 'flavia1', 6), { power: 50, thru: 0, newmon: MON.flaviaOff }, still);
   set[MON.flaviaOff] = away('flavia1', 'flavia0');
@@ -210,6 +211,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.fan] = mon(anim('fan0', 'fan1', 5), { power: 50, thru: 0, newmon: MON.fanOff }, still);
   set[MON.fanOff] = away('fan1', 'fan0');
   set[MON.bubble] = mon(sting('bubble', 4), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(0, -2, 1, 0), corner(1, -4, 1, 0)]);
+  // a hot drip: straight down from the stain to the walkway, then gone
+  set[MON.drip] = mon(sting('drip', 3), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 2), corner(0, 9, 2, 0)]);
   set[MON.bather] = mon(anim('bather0', 'bather1', 16), { power: 230, thru: 1 }, still);
   // VI. the theater: a joke makes a stone face laugh; the laugher comes down to Marcus
   set[MON.stony] = mon(anim('stony0', 'stony1', 20), { power: 200, thru: 1, newmon: MON.giggle }, still);

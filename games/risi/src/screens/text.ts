@@ -90,8 +90,8 @@ export const INSTRUCTIONS = [
     'cheese.',
     '',
     'DIGNITAS is your health.',
-    'Grapes, a cup or milk bring',
-    'it back. A laurel wreath is',
+    'Grapes, a cup or a towel',
+    'bring it back. A wreath is',
     'a life.',
   ]),
   page([

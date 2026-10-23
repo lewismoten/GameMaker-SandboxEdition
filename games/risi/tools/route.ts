@@ -329,8 +329,6 @@ export async function kitchen(bot: Bot): Promise<void> {
     await must(bot, bot.walk(40.4, 'down off the shelf'), 'down');
   });
   await carefully(bot, 'the third mouse', 0, async () => {
-    await must(bot, bot.walk(37, 'the milk'), 'milk');
-    await must(bot, bot.walk(40.4, 'back'), 'back');
     await mouse(bot, 6, 'the third mouse');
   });
   await must(bot, bot.walk(45.6, 'the crown of cheese'), 'crown');
@@ -412,11 +410,11 @@ export async function baths(bot: Bot): Promise<void> {
     await up(bot, 'the strigil');
     await drum(40, 41, 6);
   });
-  await carefully(bot, 'the second cold pool, the mouse, the grapes, the coin', 0, async () => {
+  await carefully(bot, 'the second cold pool, the mouse, the coin', 0, async () => {
     await must(bot, bot.walk(47, 'into the pool, the scale'), 'pool');
     await must(bot, bot.walk(49, 'the far side'), 'side');
     await must(bot, bot.hop('right', 10, 'right', 50), 'out, up onto the bench');
-    await must(bot, bot.walk(51, 'the mouse, the grapes'), 'grapes');
+    await must(bot, bot.walk(51, 'the cheering mouse'), 'mouse');
     await must(bot, bot.walk(52, 'under the coin'), 'coin');
     await up(bot, 'the coin');
   });
@@ -464,13 +462,13 @@ export async function theater(bot: Bot): Promise<void> {
     await crack(bot, 'the face on the fourth row');
     if (laughs(bot) < 5) throw new Error(`only ${laughs(bot)} laughs`);
   });
-  await carefully(bot, 'the orchestra: the mask, the last face, the grapes', 20, async () => {
+  await carefully(bot, 'the orchestra: the mask, the last face, the coin', 20, async () => {
     await must(bot, bot.walk(17.2, 'down into the orchestra'), 'orchestra');
     await must(bot, bot.walk(18, 'under the mask'), 'mask');
     await up(bot, 'the mask', 8);
     await crack(bot, 'the face in the orchestra');
-    await must(bot, bot.walk(22, 'under the grapes'), 'grapes');
-    await up(bot, 'the grapes');
+    await must(bot, bot.walk(22, 'under the coin'), 'coin');
+    await up(bot, 'the coin');
   });
   await carefully(bot, 'the stairs, up onto the stage, Doc Leo', 0, async () => {
     await must(bot, bot.walk(24, 'the stairs open'), 'stairs');

@@ -597,6 +597,17 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('bubble0', bubble(0), { solid: 0 });
   book.add('bubble1', bubble(1), { solid: 0 });
   book.add('bubbleS', bubble(0), hurt(-5, 0));
+  // a drop of hot water off the vault: a deep blue teardrop with a red-hot glint, outlined dark so it shows on the pale wall
+  const drip = (f: number) => {
+    const p = P();
+    p.disc(10, 13, 3.4, c('water', 1)).line(10, 7, 10, 12, c('water', 1)).line(9, 10, 11, 10, c('water', 1));
+    p.set(9, 12, c('marble', 3)).set(11, 15, c('tile', 3)).set(10, 15, c('tile', 2));
+    p.set(8 + f * 4, 4, c('water', 2)).set(10, 2 + f, c('water', 2));
+    return done(p);
+  };
+  book.add('drip0', drip(0), { solid: 0 });
+  book.add('drip1', drip(1), { solid: 0 });
+  book.add('dripS', drip(0), hurt(-6, 0));
   // a senator floating on his back, belly up, blissful (solid: stand on him)
   const bather = (f: number) => {
     const p = P();

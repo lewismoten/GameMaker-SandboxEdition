@@ -56,6 +56,8 @@ export const MON = {
   fanOff: 23,
   /** A scalding bubble rising out of the hot pool. */
   bubble: 24,
+  /** A drop of hot water off the steamy vault, falling to the walkway (it hisses). */
+  drip: 43,
   /** A senator floating on his back in the pool: solid, stand on him. */
   bather: 25,
   // ---- VI. the theater (Silentium Ridentium)

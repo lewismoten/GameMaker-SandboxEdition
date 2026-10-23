@@ -24,6 +24,8 @@ import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denari
 export const BUBBLE_EVERY = 40;
 /** Ticks between notes from the diva's basin. */
 export const NOTE_EVERY = 30;
+/** Ticks between drops of hot water off the steamy vault. */
+export const DRIP_EVERY = 54;
 /** Ticks between cabbages from the top of the stands. */
 export const CABBAGE_EVERY = 58;
 /** Ticks between the Emperor's decrees. */
@@ -52,6 +54,12 @@ export function buildThermae(pal: Pal): BlockBook {
   };
   book.add('bwall', bwall(1), air);
   book.add('bniche', bwall(2, true), air);
+  // a wet, dark stain high on the wall where the steam gathers: it gives birth to hot drips
+  const wet = bwall(3);
+  blob(wet, 10, 6, 6, 3, R('water'), 0, 1);
+  for (const sx of [7, 10, 13]) wet.line(sx, 8, sx, 13 + (sx % 3), c('water', 1));
+  wet.disc(10, 17, 1.4, c('steam', 2));
+  book.add('bwallDrip', wet, { ...air, birthMon: MON.drip, birthTime: DRIP_EVERY });
   // the vaulted ceiling: a coffered band in blue and gold
   const vault = P().rect(0, 0, 20, 20, c('blue', 0));
   for (let xx = 2; xx < 20; xx += 10) vault.rect(xx, 3, 7, 7, c('blue', 1)).rect(xx + 2, 5, 3, 3, c('gold', 0));
