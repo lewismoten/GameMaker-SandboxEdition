@@ -20,7 +20,8 @@ function offset(level: Level): [number, number] {
 
 /**
  * Where a detour for loot never goes: the two-way mirror, the felt egg and the room behind
- * the mirror (every cell reached from the egg without crossing a wall or the mirror).
+ * the mirror (every cell reached from the egg without crossing a wall or the mirror), and the
+ * tin heart and the Easter egg (levels/hidden.ts), which are for players to find.
  */
 export function eggRoom(level: Level): Set<string> {
   const b = buildLevel(new TileBook(level.theme, rulesFor({ level: level.n })), level);
@@ -31,6 +32,7 @@ export function eggRoom(level: Level): Set<string> {
     for (let x = 0; x < b.width; x++) {
       if (at(x, y) === 'mirrordoor') out.add(`${b.ox + x},${b.oy + y}`);
       if (at(x, y) === 'egg') todo.push([x, y]);
+      if (['tinHeart', 'easterEgg'].includes(at(x, y))) out.add(`${b.ox + x},${b.oy + y}`);
     }
   while (todo.length) {
     const [x, y] = todo.pop()!;

@@ -81,6 +81,13 @@ export function rulesFor(o: LevelRules): Rules {
       case 'egg':
         // an object: walking over it does nothing; the pick-up key (Enter) takes it
         return { obj: true, score: 1996, touch: 'floor' };
+      // the tin heart and the Easter egg (levels/hidden.ts): a few points, gone when touched
+      case 'tinHeart':
+        return { score: 100, touch: 'floor', next: { kind: 'tinHeart2', time: 50 } };
+      case 'tinHeart2':
+        return { score: 100, touch: 'floor', next: { kind: 'tinHeart', time: 3 } };
+      case 'easterEgg':
+        return { score: 25, touch: 'floor' };
       case 'crowngate':
         return { solid: SOLID, effect: CROWN, eamt: -1, score: 1000, touch: 'floor' };
       default:

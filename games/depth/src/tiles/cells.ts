@@ -439,6 +439,11 @@ export function kinds(): Record<string, Kind> {
       shapes: (cx, cy) => citicar(cx, cy),
     },
     egg: item((x, y) => [eggShape(x, y, 0.22), new Cylinder(x, y, 0.2, 0, 0.04, MAT.chrome)]),
+    // bare floor here: levels/hidden.ts draws the tin heart, the Easter egg and Watt over it
+    tinHeart: floor(),
+    tinHeart2: floor(),
+    easterEgg: floor(),
+    watt: floor(),
   };
   return K;
 }
