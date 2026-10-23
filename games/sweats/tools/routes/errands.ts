@@ -129,14 +129,14 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       await declaim(bot, 'the dining-room phantom');
     });
     await carefully(bot, 'the second table', 0, async () => {
+      const before = tips(bot);
       await must(bot, bot.walk(12, 'by the second table'), 'table');
       await must(bot, bot.hop('right', 12, 'right', 13.2), 'onto it: the coin');
       floor(bot, 8, 'the second table');
       await must(bot, bot.walk(14, 'the pasta plate'), 'pasta');
       await must(bot, bot.walk(16.5, 'down off it'), 'down');
-      const before = tips(bot);
       await must(bot, bot.walk(18, 'the goat'), 'goat');
-      if (tips(bot) <= before) throw new Error('no hello from the goat');
+      if (tips(bot) < before + 2) throw new Error('no hello from the goat');
       await must(bot, bot.walk(17.5, 'out of the chuckle’s way'), 'back');
     });
     await carefully(bot, 'the leaning tower', 0, async () => {
