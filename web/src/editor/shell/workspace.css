@@ -110,17 +110,6 @@
   display: none;
 }
 
-@media (max-width: 900px) {
-  /* editors' own sticky parts stay below the Files bar */
-  .workspace {
-    --ws-sticky-top: 52px;
-  }
-  .sidebar {
-    position: sticky;
-    top: 0;
-  }
-}
-
 /* Phones and tablets (below 1200px): the file list is a "Files" bar over the editor, so the
    editor gets the window's whole width. */
 @media (max-width: 1199px) {
