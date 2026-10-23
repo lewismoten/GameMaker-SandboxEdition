@@ -92,6 +92,11 @@ export async function grab(
   return false;
 }
 
+/** Throws unless the seed stands on level row `row`. */
+const onRow = (bot: Bot, row: number, what: string) => {
+  if (bot.at.y !== row) throw new Error(`not on ${what} (row ${bot.at.y})`);
+};
+
 export const water = (bot: Bot) => bot.sim.meter(WATER) - 1;
 export const faith = (bot: Bot) => bot.sim.meter(FAITH) - 1;
 
@@ -347,14 +352,14 @@ export async function theSky(bot: Bot): Promise<void> {
       async () => {
         await must(bot, bot.walk(10, 'under the side branch'), 'side branch');
         await must(bot, bot.hop('up', 14), 'up to the side branch');
-        if (bot.at.y !== 30) throw new Error(`not on the side branch (${bot.at.y})`);
+        onRow(bot, 30, 'the side branch');
         await must(bot, bot.walk(6, 'under the high side branch'), 'high side branch');
         await must(bot, bot.hop('up', 14), 'up to the high side branch and its sunbeam');
-        if (bot.at.y !== 27) throw new Error(`not on the high side branch (${bot.at.y})`);
+        onRow(bot, 27, 'the high side branch');
         await must(bot, bot.walk(3, 'the sunbeam'), 'the sunbeam');
         await must(bot, bot.walk(9, 'off the high side branch'), 'off');
         await must(bot, bot.walk(14, 'back by the stalk'), 'back');
-        if (bot.at.y !== 33) throw new Error(`not back on the long branch (${bot.at.y})`);
+        onRow(bot, 33, 'the long branch');
       },
       { ticks: 300, loss: 10 },
     );
