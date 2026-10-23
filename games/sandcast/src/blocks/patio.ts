@@ -157,8 +157,9 @@ export function addPatio(): void {
     c.rect(26, 50, 9, 5, STEEL[1]).rect(27, 50, 3, 1, STEEL[4]);
     c.line(30, 55, 30, 59, WOOD[0]).line(30, 59, 24, 62, WOOD[0]).line(30, 59, 37, 62, WOOD[0]);
     c.rect(30, 61, 5, 9, PINK[2]).rect(31, 62, 1, 6, PINK[1]).rect(30, 69, 5, 1, PINK[1]);
-    // Eyes (both inside one block: x 20..40, y 40..60).
-    for (const ex of [23, 38]) {
+    // Eyes (both inside the blinking block, x 20..39, y 40..59: an eye reaching x 40 would stay
+    // open in the next block while this one blinks).
+    for (const ex of [25, 36]) {
       if (eyes === 'open') {
         c.disc(ex, 43, 3.4, STEEL[7]).disc(ex, 43, 2.4, WOOD[1]).disc(ex, 43, 1.4, 0);
         c.set(ex - 1, 42, STEEL[7]);
