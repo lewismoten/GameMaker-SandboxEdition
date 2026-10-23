@@ -1,7 +1,7 @@
 // The note that says an achievement was just unlocked. A polite live region, so a screen
 // reader hears it without losing its place; each note can be closed, and goes on its own after
 // a while (not while it is pointed at or focused). On today's web it is a small card under the
-// header, at the right; on the 1994 desk a sticky note stuck to the monitor's top right corner,
+// header, at the right; on the 1994 desk a sticky note stuck to the monitor's top left corner,
 // off the screen itself. It goes in the top layer (a manual popover) so an open dialog (Saves &
 // scores) doesn't hide it.
 import './toast.css';
@@ -34,7 +34,12 @@ function raise(el: HTMLElement): void {
   }
 }
 
-/** On the desk: where the monitor's top right corner is now (the room is scaled and scrolled). */
+/**
+ * On the desk: on the monitor's top left corner, in the wall's gap between the newspaper
+ * clipping and the picture tube (the room is scaled and scrolled). Not the top right, where
+ * the "Too retro?" sticky note would take a stray click off the desk; clicks go through the
+ * notes to what is under them (toast.css), so they must not sit over anything that leaves.
+ */
 function place(el: HTMLElement): void {
   const desk = isDesk();
   el.classList.toggle('ach-desk', desk);
@@ -44,9 +49,10 @@ function place(el: HTMLElement): void {
   const monitor = document.querySelector('.desk[data-zoom="false"] .monitor, .monitor');
   const r = monitor?.getBoundingClientRect();
   if (!r || !r.width || r.bottom < 0 || r.top > innerHeight) return;
-  const width = Math.min(220, innerWidth - 32);
-  // over the plastic at the corner, clear of the picture tube
-  el.style.left = `${Math.max(16, Math.min(r.right - Math.min(90, r.width * 0.12), innerWidth - width - 16))}px`;
+  const width = Math.min(200, innerWidth - 32);
+  const clip = document.querySelector('.news-clipping')?.getBoundingClientRect();
+  const left = clip?.width ? clip.right + 8 : r.left + Math.min(90, r.width * 0.12) - width;
+  el.style.left = `${Math.max(16, Math.min(left, innerWidth - width - 16))}px`;
   el.style.top = `${Math.max(8, r.top - 18)}px`;
 }
 
