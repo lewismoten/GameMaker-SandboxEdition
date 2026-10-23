@@ -288,9 +288,9 @@ export function dash(book: BlockBook): Level {
   return { m, start: at(4, 9), size: [W, H] };
 }
 
-/** 4. The reckoning: the Devil in leisure wear, his milkshakes, almond milk, the porcelain throne. */
+/** 4. The reckoning: the Devil in leisure wear, his milkshakes, almond milk, the porcelain throne, the door home. */
 export function reckoning(book: BlockBook): Level {
-  const W = 34;
+  const W = 49;
   const H = 12;
   const m = new MapBuilder(book, 'hellFloor');
   m.fill(1, 0, W - 2, 10, '~').row(10, 0, W - 1, '+').row(11, 0, W - 1, '+').col(0, 0, 11, '+').col(W - 1, 0, 11, '+');
@@ -306,8 +306,11 @@ export function reckoning(book: BlockBook): Level {
   m.mon(MON.devilA0, 24, 8).mon(MON.devilB0, 24, 9);
   m.row(7, 26, 28, '@').set(27, 6, ':');
   m.set(20, 3, ',').set(30, 2, ',').set(3, 2, ',');
-  // the porcelain throne
+  // the porcelain throne; past it, the bathroom door home, where the act ends (the walk lets the
+  // flush and "...Is there Lactaid in hell?" finish)
   m.set(30, 9, '/');
-  m.link(30, 9, 'won');
+  m.set(36, 4, ',').set(42, 2, ',');
+  m.set(46, 9, 'bathOpen').set(46, 8, 'I');
+  m.link(46, 9, 'won');
   return { m, start: at(2, 9), size: [W, H] };
 }

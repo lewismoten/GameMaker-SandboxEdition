@@ -203,7 +203,7 @@ const alive = (bot: Bot, mons: number[]) => bot.sim.w.mm.some((m) => mons.includ
 const DEVIL_A = [MON.devilA0, MON.devilA1, MON.devilA2, MON.devilA3];
 const DEVIL_B = [MON.devilB0, MON.devilB1, MON.devilB2, MON.devilB3];
 
-/** IV. The reckoning: the almond milk, the oat milk and the lactase pills on the way, over the pit, the Devil splashed top and bottom, his last straw, the porcelain throne. */
+/** IV. The reckoning: the almond milk, the oat milk and the lactase pills on the way, over the pit, the Devil splashed top and bottom, his last straw, the porcelain throne, the door home. */
 export async function reckoning(bot: Bot): Promise<void> {
   expect(bot, 5, 'the reckoning');
   await carefully(bot, 'the milk on the tiles', 20, async () => {
@@ -241,6 +241,7 @@ export async function reckoning(bot: Bot): Promise<void> {
     await must(bot, bot.walk(23.6, 'under the straw'), 'straw');
     await must(bot, bot.hop('up', 6), 'the straw');
     if (straws(bot) < 1) throw new Error('no straw');
-    await leave(bot, bot.walk(31, 'the porcelain throne'), 'the throne');
+    await must(bot, bot.walk(29, 'the porcelain throne'), 'the throne');
+    await leave(bot, bot.walk(47, 'past the throne, the door home'), 'the door home');
   });
 }
