@@ -225,7 +225,7 @@ export function midwayTiles(): Tiles {
       return p;
     })(),
   );
-  t.air('signRoot', sign(sky(3), 'ROOT BEER'));
+  t.air('signRoot', sign(sky(3), 'ROOT\nBEER'));
 
   // The show barn (the dog show is inside) and its open door; THE CHEZ waits outside.
   t.air(

@@ -60,7 +60,7 @@ export function farmTiles(): Tiles {
   micro(coop, 8, 20, 'EGGS', c('paint', 3));
   const cc = cut(coop);
   for (let by = 0; by < 2; by++) for (let bx = 0; bx < 2; bx++) t.air(`coop${bx}${by}`, cc[by][bx]);
-  t.air('signEggs', sign(sky(3), 'EGGS 1$'));
+  t.air('signEggs', sign(sky(3), 'EGGS\n1$'));
 
   // The barn: red boards outside, dark boards inside, a white X on its doors, a gambrel roof.
   t.air('barnIn', planks(31, 'wood', 1));

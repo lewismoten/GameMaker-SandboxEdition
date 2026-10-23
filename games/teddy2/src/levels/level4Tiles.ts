@@ -199,7 +199,7 @@ export function riverTiles(): Tiles {
       return p;
     })(),
   );
-  t.air('signSwim', sign(sky(3), 'NO SWIM'));
+  t.air('signSwim', sign(sky(3), 'NO\nSWIM'));
   t.air('signMill', sign(sky(3), 'MILL'));
   t.air(
     'picnic',

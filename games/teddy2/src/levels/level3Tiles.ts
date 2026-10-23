@@ -103,7 +103,7 @@ export function nightTiles(): Tiles {
       return p;
     })(),
   );
-  t.air('signSit', sign(sky(3), 'NO DOGS'));
+  t.air('signSit', sign(sky(3), 'NO\nDOGS'));
 
   // The park: lamp posts (glowing at night), benches, the pond.
   for (const [name, top] of [
