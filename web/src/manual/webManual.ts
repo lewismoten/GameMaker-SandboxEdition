@@ -204,8 +204,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       clever that nobody laughs.</li>
     </ul>
     <p>Lewis dreams up each song and prompts AI tools to write and record it. Some of the songs
-    have become games, shareware “uploaded” to The Sofa BBS in the story, and with four or more
-    they got a Bizarre collection of their own on the home page.</p>
+    have become games, shareware “uploaded” to The Sofa BBS in the story.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each
     song’s words were written by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
     back and forth), and each recording was made with Riffusion (now Google Flow Music).
