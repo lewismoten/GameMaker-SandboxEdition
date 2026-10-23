@@ -36,6 +36,9 @@ Making the files:
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
 - `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a
   cameo in a game's lot or at its curb, drawn in the game's own palette; facing left shows the charge port for a cord.
+- `tinHeart.ts` — the tin heart, a small riveted heart that ticks, as a 20x20 block in any game's palette, with a
+  glint across its frames and a soft tick-tock on the PC speaker.
+- `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.
 
@@ -50,6 +53,13 @@ Checking the games:
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
   have the text on plain paper with enough contrast. Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
+- `clips.ts` — does every digitized clip play to the end? A walkthrough's run, with its sound written down, checked
+  for a clip cut off by the scene ending or by the next sound; `walkthrough.ts` runs it on every
+  walkthrough it writes (failing on a cut clip when the game asks), and `cd web && npx vite-node ../games/kit/clipCheck.ts <id>...` runs it alone.
+- `align.ts` — multi-block objects (trees, houses, cars, signs): every map puts their parts together, and the art
+  joins up across block edges. Each game's `tools/align.ts` names its objects; its `tools/check.ts` runs it.
+- `playtime.ts` — sets each box's "Over N hours of gameplay!" (`about.json` `box.hours`) from the walkthroughs:
+  `cd web && npx vite-node ../games/kit/playtime.ts` after any walkthrough changes.
 - `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
 
 `cdDemos/` is apart from the Sandbox games: a curious bot (`bot.ts`, `probe.ts`) that plays any Game-Maker
