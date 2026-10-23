@@ -12,9 +12,11 @@ const LINES = [
 
 export function degaussProp(plate: HTMLElement, screen: HTMLElement): () => void {
   const line = turns(LINES);
+  // the screen takes every key, Tab too, so it comes last: the plate goes before it
+  screen.before(plate);
   return pressable(
     plate,
-    "Degauss the monitor",
+    `${plate.textContent}: degauss the monitor`,
     () => {
       roomSound.degauss();
       flash(screen, stillMotion() ? "degauss-still" : "degauss", 1200);
