@@ -110,7 +110,8 @@
 .zine-ransom {
   margin: 0 0 14px;
   line-height: 1.5;
-  font-size: 26px;
+  /* small enough on a phone that the longest word (UNDERGROUND) fits on its own line */
+  font-size: clamp(17px, 5.4vw, 26px);
 }
 
 .zine-ransom .zr {
