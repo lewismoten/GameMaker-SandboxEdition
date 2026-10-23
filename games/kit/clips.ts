@@ -7,9 +7,8 @@
 //          the next scene's intro) calls FreeSoundSample, and a sound in the next scene cuts
 //          it too (PlaySbVocFile stops the one playing). So a level's last clip has to start
 //          early enough to finish before then.
-//   start  the clip a level starts with (its first: before the walkthrough's first key, or a
-//          voice in its first second) cut off by the next digital sound, often the bot's own
-//          first jump or pickup.
+//   start  the voice a level starts with (its first clip, in its first second, a second or
+//          longer) cut off by the next digital sound, often the bot's own first jump or pickup.
 //
 //   cd web && npx vite-node ../games/kit/clipCheck.ts <id>...   (exits 1 when a clip is cut)
 import { decodeVoc } from '../../web/src/formats/voc';
@@ -45,8 +44,6 @@ export interface ClipLog {
   scenes: { t: number; n: number }[];
   /** Each scene's first frame of play (after the intro and the fade in). */
   starts: { t: number; n: number }[];
-  /** When the walkthrough pressed or let go of keys in play. */
-  keys: number[];
   /** File names of the disk's clips, by their bytes. */
   names: Map<Uint8Array, string>;
 }
@@ -88,16 +85,15 @@ export function clipCuts(log: ClipLog): ClipCut[] {
     const clip = names.get(e.bytes) ?? '?';
     const crossed = by === 'picture' || sceneAt(end) !== scene;
     const start = [...starts].reverse().find((s) => s.t <= e.t);
-    // Only the level's own first clip: one it plays before the walkthrough's first key there,
-    // or a voice (a second or more) in its first second. Later ones are play's.
-    const firstKey = start && log.keys.find((k) => k >= start.t);
+    // Only the level's own first clip, and only a voice (a second or more): a short effect
+    // cut by the next (a blaster's shots landing) is play, not the level's opening line.
     const early =
       start &&
       start.n === scene &&
       e.t - start.t <= START_WINDOW_MS &&
       !scenes.some((s) => s.t > start.t && s.t <= e.t) &&
       !events.slice(0, i).some((f) => f.kind === 'voc' && f.t >= start.t) &&
-      (firstKey === undefined || e.t < firstKey || ms >= VOICE_MS);
+      ms >= VOICE_MS;
     if (crossed) cuts.push({ kind: 'end', scene, clip, ms, played, by, at: e.t });
     else if (early) cuts.push({ kind: 'start', scene, clip, ms, played, by, at: e.t, since: e.t - start.t });
   });

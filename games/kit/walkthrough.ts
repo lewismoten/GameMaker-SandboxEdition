@@ -43,7 +43,7 @@ export async function replay(id: string, walk: Walkthrough, opts: { maxMinutes?:
   await run.start();
   const s = run.session!;
   const onScene = s.onScene!;
-  const log: ClipLog = { events: run.audio.events, scenes: [], starts: [], keys: [], names: new Map() };
+  const log: ClipLog = { events: run.audio.events, scenes: [], starts: [], names: new Map() };
   for (const n of files.names()) log.names.set(files.get(n)!, n);
   run.audio.logging = !!opts.clips;
   let started = true;
@@ -52,13 +52,6 @@ export async function replay(id: string, walk: Walkthrough, opts: { maxMinutes?:
     log.scenes.push({ t: run.m.time, n });
     started = false;
     onScene(n);
-  };
-  const rec0 = s.rec as unknown as { doPlayback(): number[] };
-  const doPlayback = rec0.doPlayback.bind(rec0);
-  rec0.doPlayback = () => {
-    const keys = doPlayback();
-    if (keys.length) log.keys.push(run.m.time);
-    return keys;
   };
   const onFrame = s.onFrame;
   s.onFrame = (w) => {
