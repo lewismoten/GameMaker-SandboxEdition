@@ -2,7 +2,7 @@
 // left behind in the scene (tips, mugs, the plot).
 import { buildPalette } from '../../src/art/pal';
 import { BlockBook } from '../../src/common/blocks';
-import { ORIGIN } from '../../src/common/maps';
+import { ORIGIN } from '../../src/levels/maps';
 import { MON } from '../../src/ids';
 import { home } from '../../src/groups/home';
 import { SOULS } from '../../src/groups/home/blanket';

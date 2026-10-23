@@ -5,7 +5,7 @@
 import type { Monster } from '../../../../web/src/formats/monster';
 import type { Lighting, Pal, Ramp } from '../art/pal';
 import type { BlockBook } from '../common/blocks';
-import type { MapBuilder } from '../common/maps';
+import type { MapBuilder } from '../levels/maps';
 import type { SpriteBook } from '../common/sprites';
 
 export interface Monologue {

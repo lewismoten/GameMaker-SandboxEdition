@@ -4,7 +4,7 @@
 // again from a snapshot after a wait (route.ts, carefully()). The moves are kit/hopBot.ts's.
 import { HopBot } from '../../kit/hopBot';
 import { SCAN } from '../src/ids';
-import { ORIGIN } from '../src/common/maps';
+import { ORIGIN } from '../src/levels/maps';
 import type { GameSim } from './sim';
 
 export type { Dir } from '../../kit/hopBot';

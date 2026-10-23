@@ -4,7 +4,7 @@
 // others up on the stage, where the poet comes off after a set; each one's curtain leads to the
 // next set (or, after the last, to the bow).
 import { MON } from '../ids';
-import type { MapBuilder } from '../common/maps';
+import type { MapBuilder } from '../levels/maps';
 import { placePicture } from '../common/picture';
 
 export const HIVE_W = 80;

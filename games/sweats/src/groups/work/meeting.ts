@@ -15,7 +15,7 @@ import type { Monster } from '../../../../../web/src/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing, spotlight } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';
-import type { MapBuilder } from '../../common/maps';
+import type { MapBuilder } from '../../levels/maps';
 import { T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
 import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';

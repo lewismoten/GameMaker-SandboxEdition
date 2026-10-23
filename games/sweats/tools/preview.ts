@@ -10,7 +10,7 @@ import { renderRegion } from '../../snowbound/src/art/render';
 import { buildPalette } from '../src/art/pal';
 import { BlockBook } from '../src/common/blocks';
 import { commonMonsters } from '../src/common/characters';
-import { MapBuilder, ORIGIN } from '../src/common/maps';
+import { MapBuilder, ORIGIN } from '../src/levels/maps';
 import { buildCharBlocks, commonSprites, makeBook } from '../src/common/sprites';
 import { SCENES } from '../src/scenes';
 import type { Group } from '../src/groups/types';

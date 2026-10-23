@@ -22,7 +22,7 @@ import { licenseText } from '../kit/license';
 import { buildPalette, type Lighting, type Pal } from './src/art/pal';
 import { BlockBook } from './src/common/blocks';
 import { buildPoet, commonMonsters } from './src/common/characters';
-import { MapBuilder, type LinkSpec } from './src/common/maps';
+import { MapBuilder, type LinkSpec } from './src/levels/maps';
 import { buildCharBlocks, commonSprites, makeBook, type SpriteBook } from './src/common/sprites';
 import { demoRecording } from './src/demo';
 import { GROUPS, HIVE_GROUP, SCENES, type SceneDef } from './src/scenes';

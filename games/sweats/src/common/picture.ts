@@ -2,7 +2,7 @@
 // `<name>.<col>.<row>`, so a sign or a machine reads as one thing on the map.
 import { Pixels } from '../../../kit/pixels';
 import type { BlockBook } from './blocks';
-import type { MapBuilder } from './maps';
+import type { MapBuilder } from '../levels/maps';
 
 /**
  * Cuts `pic` (w x h blocks) into blocks over the backdrop `bg` (its own pixels show wherever
