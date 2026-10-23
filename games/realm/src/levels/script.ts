@@ -179,7 +179,7 @@ I'd make you a shield, but I've been putting it off.`,
     'Barnaby, the Pony',
     'laterburg',
     'The Procrastinating Pony',
-    `Welcome to the Procrastinating Pony! A bed's ten gold at the counter: sleep it off, wake up whole.
+    `Welcome to the Procrastinating Pony! A bed's ten gold at the counter: sleep it off, wake up a good deal better.
 
 Root beer? Family recipe. A dozen ingredients and a thirteenth nobody will name. Gran swore it's why we won a war once. Nobody talks about it.
 
@@ -427,7 +427,9 @@ Professor Fiddlesticks wanted anything with lightning in it. THE CHEZ will drink
 
 The third piece of the Round Tuit was the key that wound it up.
 
-Three pieces. One Round Tuit. All that's left is to get around to Deadline Keep, south of Eventually Falls, past the Gloomwood.`,
+Three pieces. One Round Tuit. All that's left is to get around to Deadline Keep, south of Eventually Falls, past the Gloomwood.
+
+A night at the Falls first, maybe. They say Lord Deadline fights twice: once in his armor, and once without it.`,
     'piece',
   ),
   // ---------------------------------------------------------------- the felt egg

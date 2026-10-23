@@ -112,7 +112,7 @@ export function townBook(): BlockBook {
   stall(book, 'stallG', [40, 120, 70]);
   buyChain(book, 'sword', 80, { effect: SEQ.steel, eamt: STEEL_SWINGS, score: 200 }, wares.sword);
   buyChain(book, 'tonic', 15, { effect: SEQ.tonic, eamt: 1 }, wares.tonicOne);
-  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 150, touch: 'bed2' });
+  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 60, touch: 'bed2' });
   book.add('bed2', counter(wares.bedUsed), { solid: ALL });
   fountain(book);
   eggBlocks(book, false);

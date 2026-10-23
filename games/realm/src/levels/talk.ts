@@ -59,7 +59,7 @@ export const GIFTS: Record<string, Attrs> = {
   library: { effect: C.money, eamt: 100, score: 1000 },
   kazoo: { effect: SEQ.kazoo, eamt: 25, score: 500 },
   heal: { hp: 100 },
-  piece: { score: 2500, hp: 100 },
+  piece: { score: 2500, hp: 40 },
   lore: { score: 1301 },
 };
 const GIFT_NAMES = Object.keys(GIFTS);

@@ -195,7 +195,8 @@ function clockHand(): Canvas {
 
 export type BossName = 'snoozalot' | 'kraken' | 'ticktock' | 'deadline';
 
-function bossCanvas(name: BossName): Canvas {
+/** A boss's picture; frame 1 is its idle beat (a snore bubble, a blink, the hand moved on, a glare). */
+function bossCanvas(name: BossName, frame = 0): Canvas {
   const cv = new Canvas(40, 40);
   if (name === 'snoozalot') {
     // Sir Snoozalot, the Barrow King: a vast bear in a dented helm, asleep sitting up
@@ -212,6 +213,7 @@ function bossCanvas(name: BossName): Canvas {
     for (const x of [14, 26]) cv.line(x - 2.5, 13, x + 2.5, 13, 0.9, C('ink'));
     cv.ellipse(20, 20.5, 2, 1, C('pink', 0));
     for (const x of [6, 34]) cv.ellipse(x, 36, 5, 3, fur[1]);
+    if (frame) cv.disc(25, 21, 2.4, C('ghost', 2)).disc(24.3, 20.3, 0.7, C('white', 1));
   } else if (name === 'kraken') {
     // the Kraken of Kinda-Later: a plum head with two sleepy saucer eyes and eight arms it means to use eventually
     const p: RGB[] = [C('purple', 0), C('purple', 1), C('purple', 3)];
@@ -224,7 +226,7 @@ function bossCanvas(name: BossName): Canvas {
     for (const x of [13, 27]) {
       cv.disc(x, 18, 5, C('white', 1));
       cv.disc(x + 1, 19, 2.5, C('ink'));
-      cv.rect(x - 5, 13, 10, 3.5, mix(p[1], p[0], 0.3));
+      cv.rect(x - 5, 13, 10, frame ? 6.5 : 3.5, mix(p[1], p[0], 0.3));
     }
     for (const [x, y] of [
       [10, 8],
@@ -244,7 +246,8 @@ function bossCanvas(name: BossName): Canvas {
       cv.disc(20 + Math.cos(a) * 6.3, 22 + Math.sin(a) * 6.3, 0.6, C('ink'));
     }
     cv.line(20, 22, 20, 16, 1, C('ink'));
-    cv.line(20, 22, 24, 25, 0.8, C('ink'));
+    if (frame) cv.line(20, 22, 15, 25, 0.8, C('ink'));
+    else cv.line(20, 22, 24, 25, 0.8, C('ink'));
     cv.rrect(12, 1, 16, 9, 2, b[1]);
     for (const x of [16, 24]) cv.disc(x, 5, 2, C('red', 3));
     cv.rect(10, 36, 7, 4, b[0]).rect(23, 36, 7, 4, b[0]);
@@ -263,8 +266,9 @@ function bossCanvas(name: BossName): Canvas {
     cv.rect(12, 34, 6, 6, C('ink')).rect(22, 34, 6, 6, C('ink'));
     cv.rrect(12, 1, 16, 15, 4, (x) => mix(C('steel', 1), C('night', 0), clamp01((x - 12) / 16)));
     cv.rect(13, 8, 14, 2.5, C('ink'));
-    cv.disc(16.5, 9.2, 1, C('red', 3));
-    cv.disc(23.5, 9.2, 1, C('red', 3));
+    const eye = frame ? C('gold', 3) : C('red', 3);
+    cv.disc(16.5, 9.2, frame ? 1.3 : 1, eye);
+    cv.disc(23.5, 9.2, frame ? 1.3 : 1, eye);
     cv.poly(
       [
         [16, 1],
@@ -281,17 +285,21 @@ function bossCanvas(name: BossName): Canvas {
       ],
       C('gold', 2),
     );
-    cv.line(32, 36, 38, 4, 1.6, C('steel', 3));
-    cv.line(29, 30, 35, 30, 1.4, C('gold', 2));
+    if (frame) cv.line(32, 36, 37, 4, 1.6, C('steel', 3)).line(29, 30, 35, 30.5, 1.4, C('gold', 2));
+    else cv.line(32, 36, 38, 4, 1.6, C('steel', 3)).line(29, 30, 35, 30, 1.4, C('gold', 2));
     cv.disc(20, 24, 3, C('gold', 2));
   }
   return cv.outline(C('ink'));
 }
 
-/** A boss's four blocks (`${name}TL`, TR, BL, BR) and their flashing copies (`${name}TLHit`...). */
+/**
+ * A boss's four blocks (`${name}TL`, TR, BL, BR), their idle beat (`${name}TLB`...) and their
+ * flashing copies (`${name}TLHit`...).
+ */
 export function bossPics(name: BossName): Map<string, Canvas> {
   const m = new Map<string, Canvas>();
   const big = bossCanvas(name);
+  const beat = bossCanvas(name, 1);
   const hit = flash(big, [255, 255, 255], 0.55);
   for (const [q, x, y] of [
     ['TL', 0, 0],
@@ -300,10 +308,58 @@ export function bossPics(name: BossName): Map<string, Canvas> {
     ['BR', 20, 20],
   ] as [string, number, number][]) {
     m.set(`${name}${q}`, big.crop(x, y, 20, 20));
+    m.set(`${name}${q}B`, beat.crop(x, y, 20, 20));
     m.set(`${name}${q}Hit`, hit.crop(x, y, 20, 20));
   }
   return m;
 }
 
 /** The whole boss, for the screens and the manual. */
-export const bossPicture = bossCanvas;
+export const bossPicture = (name: BossName): Canvas => bossCanvas(name);
+
+/**
+ * Lord Deadline on foot, one block tall: what hops out of the clockwork armor when its last
+ * crown block breaks. Two running frames and a hurt flash: `runner0`, `runner1`, `runnerHit`.
+ */
+export function runnerPics(): Map<string, Canvas> {
+  const draw = (stride: number): Canvas => {
+    const cv = new Canvas(20, 20);
+    // the red cape behind, swinging with the stride
+    cv.poly(
+      [
+        [5, 7],
+        [15, 7],
+        [17 + stride, 19],
+        [3 + stride, 19],
+      ],
+      (x) => mix(C('red', 2), C('red', 0), clamp01(Math.abs(x - 10) / 9)),
+    );
+    // legs, one forward, one back
+    cv.rect(7 + stride, 15, 2.5, 4.5, C('ink')).rect(11 - stride, 15, 2.5, 4.5, C('ink'));
+    // black plate, a gold buckle
+    cv.rrect(6, 8, 9, 8, 2, (x, y) => mix(C('night', 1), C('ink'), clamp01((x - 6) / 12 + (y - 8) / 16)));
+    cv.disc(10.5, 12, 1.3, C('gold', 2));
+    // the helm, its red eyes and the hourglass crest
+    cv.rrect(6.5, 1.5, 8, 7, 2, (x) => mix(C('steel', 2), C('night', 0), clamp01((x - 6.5) / 8)));
+    cv.rect(7, 4.5, 7, 1.4, C('ink'));
+    cv.disc(8.8, 5.2, 0.7, C('red', 3)).disc(12.2, 5.2, 0.7, C('red', 3));
+    cv.poly(
+      [
+        [8.5, 0],
+        [12.5, 0],
+        [10.5, 2],
+      ],
+      C('gold', 3),
+    );
+    // the clock-hand sword, held high
+    cv.line(15, 13, 18.5, 2 + stride, 1.1, C('steel', 3));
+    cv.line(14, 11, 17, 11, 0.9, C('gold', 2));
+    return cv.outline(C('ink'));
+  };
+  const a = draw(0);
+  return new Map([
+    ['runner0', a],
+    ['runner1', draw(1)],
+    ['runnerHit', flash(a, [255, 255, 255], 0.55)],
+  ]);
+}

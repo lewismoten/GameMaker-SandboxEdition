@@ -158,7 +158,7 @@ export function portBook(bridges: [number, number][]): BlockBook {
   buyChain(book, 'reeds', 10, { effect: SEQ.kazoo, eamt: 10 }, wares.reeds);
   buyChain(book, 'lamp', 40, { effect: C.lamp, eamt: 1, score: 100 }, wares.lamp);
   buyChain(book, 'feather', 100, { effect: 1, eamt: 1 }, wares.feather);
-  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 150, touch: 'bed2' });
+  book.add('bed', counter(wares.bed), { solid: ALL, effect: C.money, eamt: -10, hp: 60, touch: 'bed2' });
   book.add('bed2', counter(wares.bedUsed), { solid: ALL });
   // the hermit's stone: it has more to say to anyone carrying the egg
   gate(book, 'eggstone', C.egg, 1, gateArt.stone(false), gateArt.stone(true), true);

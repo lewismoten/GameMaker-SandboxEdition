@@ -6,7 +6,7 @@ import { LASTMON } from '../../../../web/src/formats/monster';
 import { SpriteSheet } from '../sprites/sheet';
 import { addFx } from '../sprites/fx';
 import { foePics } from '../sprites/foes';
-import { dungeonFoePics, bossPics, type BossName } from '../sprites/dungeonFoes';
+import { dungeonFoePics, bossPics, runnerPics, type BossName } from '../sprites/dungeonFoes';
 import { MonBook } from '../characters/monbook';
 import { addChaser } from './foes';
 import { dungeonBook, type Theme } from '../blocks/dungeonSet';
@@ -26,12 +26,19 @@ interface Spec {
   power: number;
   bossPower: number;
   bite: number;
+  /** What a boss's shot costs. */
+  shotHp: number;
   boss: BossName;
   bossHits: number;
   shot: string;
   foes: { name: string; wander: number; rush: number; hits: number; thru?: number; path?: [number, number, number][] }[];
   plan: (m: MonBook) => DungeonPlan;
   piece: string;
+  /**
+   * The boss's second act: when this part of the armor breaks, the boss himself hops out on
+   * foot and duels Pip (addDuelist), `hits` blows long; touching him costs `bite` a tick.
+   */
+  runner?: { part: 'TL' | 'TR' | 'BL' | 'BR'; hits: number; bite: number };
 }
 
 const SPECS: Spec[] = [
@@ -44,6 +51,7 @@ const SPECS: Spec[] = [
     boss: 'snoozalot',
     bossHits: 3,
     shot: 'zzz',
+    shotHp: -6,
     foes: [
       { name: 'slime', wander: 1, rush: 1, hits: 2 },
       { name: 'bat', wander: 2, rush: 2, hits: 1 },
@@ -57,10 +65,11 @@ const SPECS: Spec[] = [
     desc: 'The Soggy Vaults',
     power: 95,
     bossPower: 140,
-    bite: -6,
+    bite: -8,
     boss: 'kraken',
     bossHits: 3,
     shot: 'spark',
+    shotHp: -6,
     foes: [
       { name: 'crab', wander: 1, rush: 2, hits: 2 },
       {
@@ -83,10 +92,11 @@ const SPECS: Spec[] = [
     desc: 'The Putoff Mines',
     power: 97,
     bossPower: 150,
-    bite: -8,
+    bite: -10,
     boss: 'ticktock',
     bossHits: 4,
     shot: 'ember',
+    shotHp: -8,
     foes: [
       { name: 'golem', wander: 1, rush: 1, hits: 3 },
       { name: 'bat', wander: 2, rush: 2, hits: 1 },
@@ -99,18 +109,70 @@ const SPECS: Spec[] = [
     desc: 'Deadline Keep',
     power: 98,
     bossPower: 155,
-    bite: -8,
+    bite: -14,
     boss: 'deadline',
     bossHits: 5,
     shot: 'minute',
+    shotHp: -10,
     foes: [
       { name: 'goblin', wander: 2, rush: 2, hits: 2 },
       { name: 'tick', wander: 3, rush: 3, hits: 1 },
     ],
     plan: keepPlan,
     piece: 'won',
+    runner: { part: 'TR', hits: 6, bite: -2 },
   },
 ];
+
+/**
+ * The boss on foot: a joust he telegraphs. In reach he backs off three blocks above Pip,
+ * slowly, then charges straight down through where Pip stands, backs off and charges again,
+ * then backs right away and wanders before the next round. His power is the armor's, so only steel
+ * gets through and touching Pip never costs him a blow; it costs Pip his blocks' hit points
+ * every tick they touch. Each blow turns him into his flashing hurt self (same moves); the last
+ * leaves a heart.
+ */
+function addDuelist(mons: MonBook, power: number, hits: number): number {
+  const p = (l: [string, number][]) => l.map(([b, t]) => [mons.mb.n(b), t] as [number, number]);
+  const base = {
+    power,
+    towards: 64 * 2,
+    activate: 2,
+    attack: [
+      [0, 0, 0],
+      [0, -3, 2],
+      [0, 0, 4],
+      [0, -3, 2],
+      [0, 0, 4],
+      [0, -5, 2],
+    ] as [number, number, number][],
+    upscore: 1000,
+  };
+  let next: number = MON.heart;
+  for (let k = hits - 1; k >= 1; k--)
+    next = mons.add(
+      `runner${k}`,
+      {
+        ...base,
+        pics: p([
+          ['runnerHit', 2],
+          ['runner1', 3],
+        ]),
+      },
+      next,
+    );
+  return mons.add(
+    'runner',
+    {
+      ...base,
+      pics: p([
+        ['runner0', 4],
+        ['runner1', 4],
+      ]),
+    },
+    next,
+  );
+}
 
 /** Where each dungeon's stairs come out, and where you come in from. */
 export interface DungeonDoors {
@@ -131,9 +193,11 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
     addFx(mb);
     for (const f of s.foes)
       for (const k of ['0', '1', 'Hit']) mb.add(`${f.name}${k}`, (dfoes.get(`${f.name}${k}`) ?? world.get(`${f.name}${k}`))!, { hp: s.bite });
-    mb.add(s.shot, dfoes.get(s.shot)!, { hp: -6 });
+    mb.add(s.shot, dfoes.get(s.shot)!, { hp: s.shotHp });
     for (const [n, pic] of bossPics(s.boss)) mb.add(n, pic, { hp: -1, solid: ALL });
+    if (s.runner) for (const [n, pic] of runnerPics()) mb.add(n, pic, { hp: s.runner.bite });
     const mons = new MonBook(mb);
+    const runner = s.runner ? addDuelist(mons, s.bossPower, s.runner.hits) : LASTMON;
     for (const f of s.foes) {
       if (f.path) {
         // a path walker (eels leaping across their pool)
@@ -188,9 +252,9 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
       }
     }
     const shot = mons.add(s.shot, { pics: [[mb.n(s.shot), 99]], power: s.power, towards: 2, end: 70 });
-    // the boss: four parts, each a chain of hits ending in nothing
+    // the boss: four parts, each a chain of hits ending in nothing (or in the boss on foot)
     for (const q of ['TL', 'TR', 'BL', 'BR']) {
-      let next: number = LASTMON;
+      let next: number = s.runner?.part === q ? runner : LASTMON;
       const base = `${s.boss}${q}`;
       for (let k = s.bossHits - 1; k >= 1; k--)
         next = mons.add(
@@ -205,7 +269,18 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
           },
           next,
         );
-      mons.add(base, { pics: [[mb.n(base), 99]], power: s.bossPower, upscore: 100 }, next);
+      mons.add(
+        base,
+        {
+          pics: [
+            [mb.n(base), 12],
+            [mb.n(`${base}B`), 12],
+          ],
+          power: s.bossPower,
+          upscore: 100,
+        },
+        next,
+      );
     }
     const dp = s.plan(mons);
     const book = dungeonBook(s.theme);

@@ -1,6 +1,6 @@
 // The main quest, as the bot plays it: Nowish, the King's writ, the Snooze Barrows, a steel
-// sword, the Soggy Vaults, THE CHEZ across the Dawdle Flats, a lamp, the Putoff Mines and
-// Deadline Keep. No side quests beyond what the money needs, no egg.
+// sword, the Soggy Vaults, THE CHEZ across the Dawdle Flats, a lamp, the Putoff Mines, a
+// night's rest at the Falls and Deadline Keep, where Lord Deadline fights on foot. No side quests beyond what the money needs, no egg.
 import { Bot } from './bot';
 
 type Step = (b: Bot) => Promise<void>;
@@ -100,6 +100,26 @@ async function bossFight(b: Bot, x: number, y: number, name: string, face: 'up' 
   b.say(`${name} beaten (never more than ${far} blocks from where the fight began)`);
 }
 
+/** Lord Deadline on foot (the only monster whose attack has six corners: addDuelist in src/build/dungeons.ts). */
+function runnerSlot(b: Bot): number {
+  return b.sim.w.mm.findIndex((m) => {
+    const mon = m.monnum < 64 ? b.sim.w.mon[m.monnum] : undefined;
+    return mon?.activate === 2 && mon.march[1][5]?.pic === 2 && mon.march[1][2]?.pic === 4;
+  });
+}
+
+/** Lord Deadline's second act: out of his armor and on foot, he runs at Pip; swing till he drops. */
+async function onFoot(b: Bot): Promise<void> {
+  const runner = () => runnerSlot(b);
+  b.say('Lord Deadline, on foot');
+  for (let k = 0; k < 600 && runner() >= 0; k++) {
+    const r = (await b.fight(4)) ?? (await b.wait(1));
+    if (r) throw new Error(`Lord Deadline on foot: ${r}`);
+  }
+  if (runner() >= 0) throw new Error('Lord Deadline on foot: still running');
+  b.say('Lord Deadline caught');
+}
+
 export const steel: Step = async (b) => {
   await b.retry(() => b.enter(31, 45, 'Laterburg gate'));
   // Brokk's sword counter: walk in to pay, again to take it
@@ -149,11 +169,22 @@ export const mines: Step = async (b) => {
   });
 };
 
+export const rest: Step = async (b) => {
+  // a night at the Falls and a tonic for the road: the Keep is no place to arrive tired
+  await b.retry(() => b.enter(80, 61, 'Eventually Falls'));
+  await b.goto(63, 49, 'the bed');
+  await b.push('up', 6);
+  await b.goto(62, 49, 'a tonic');
+  await b.push('up', 6);
+  await b.retry(() => b.enter(71, 64, 'out of Eventually Falls'));
+};
+
 export const keep: Step = async (b) => {
   await b.retry(() => b.enter(76, 76, 'Deadline Keep'));
   await b.retry(async () => {
     await b.goto(50, 35, 'through the sockets', set([50, 39], [50, 38], [50, 37]));
     await bossFight(b, 50, 19, 'Lord Deadline');
+    await onFoot(b);
     await b.goto(50, 15, 'the Round Tuit');
   });
 };
@@ -167,5 +198,6 @@ export const ROUTE: [string, Step][] = [
   ['The Dawdle Flats', flats],
   ['A lamp', lamp],
   ['The Putoff Mines', mines],
+  ['A night at the Falls', rest],
   ['Deadline Keep', keep],
 ];

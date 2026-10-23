@@ -73,7 +73,7 @@ export function flatsBook(bridges: [number, number][]): BlockBook {
     plain((x, y) => mix(water(x, y, 6), deck(x, y), 0.25)),
     { solid: ALL, next: 'tideDry', ntime: 146 },
   );
-  book.add('charger', charger(false), { solid: ALL, hp: 60, score: 50, touch: 'chargerUsed' });
+  book.add('charger', charger(false), { solid: ALL, hp: 30, score: 50, touch: 'chargerUsed' });
   book.add('chargerUsed', charger(true), { solid: ALL });
   book.add('sign', sign(), { solid: ALL });
   book.add(

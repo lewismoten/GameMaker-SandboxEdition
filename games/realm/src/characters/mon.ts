@@ -74,13 +74,14 @@ export function baseMonsters(mb: SpriteSheet): Monster[] {
     end: 40,
   });
   // a tonic: a sparkle fired at Pip's feet that turns, a tick later, into one that can touch him
-  mons[MON.tonicA] = monster({ pics: [[n('sparkle'), 1]], power: POWER.drop, end: 1, newmon: MON.tonicB });
+  // (stronger than any foe or shot, so one brushing past can't snuff it before Pip drinks)
+  mons[MON.tonicA] = monster({ pics: [[n('sparkle'), 1]], power: POWER.tonic, end: 1, newmon: MON.tonicB });
   mons[MON.tonicB] = monster({
     pics: [
       [n('heal'), 2],
       [n('sparkle'), 2],
     ],
-    power: POWER.drop,
+    power: POWER.tonic,
     end: 30,
   });
   // what foes leave behind: gone in about 20 seconds

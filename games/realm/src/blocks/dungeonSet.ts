@@ -217,7 +217,7 @@ export function dungeonBook(theme: Theme): BlockBook {
   book.add('chest', chest(onFloor(), false), { solid: ALL, effect: C.money, eamt: 25, score: 100, touch: 'chestOpen' });
   book.add('bigchest', chest(onFloor(), false, true), { solid: ALL, effect: C.money, eamt: 75, score: 300, touch: 'chestOpen' });
   book.add('chestOpen', chest(onFloor(), true), { solid: ALL });
-  book.add('heartpot', pot(onFloor()), { solid: ALL, hp: 50, touch: 'potBroken' });
+  book.add('heartpot', pot(onFloor()), { solid: ALL, hp: 30, touch: 'potBroken' });
   book.add('potBroken', potBroken(onFloor()), {});
   // spikes: they hurt every step
   book.add('spikes', spikes(onFloor()), { hp: -3 });
