@@ -1,7 +1,8 @@
 // The way through the game, as orders for the bot: the paper route and every driveway on
-// Gale Street and Leota Street, the sled run down Jamie Street, the driveways along Bowden
-// Drive, and LaVale Mall's lot until there is $89 for the pink box at Bits & Bytes. It keeps
-// to the streets: the park behind Gale Street (and what lies in the pines) is left alone.
+// Gale Street and Leota Street, the sled run down Jamie Street, Bowden Drive's customers on
+// both sides of the creek, and LaVale Mall's lot until there is $89 for the pink box at
+// Bits & Bytes. It keeps to the streets: the park behind Gale Street (and what lies in the
+// pines) is left alone.
 import { Bot } from './bot';
 import { sledRun } from './sled';
 
@@ -84,22 +85,18 @@ export async function jamieStreet(bot: Bot): Promise<void> {
   expect(bot, 4, 'Bowden Drive');
 }
 
-/** Bowden Drive: the driveways and front walks along the north side, then east to LaVale. */
+/**
+ * Bowden Drive: the two north-side customers, then over the footbridge (past Big Pete) to
+ * the yellow house across the creek, back over, and east to LaVale. The blue house across
+ * the creek is left for a thorough player.
+ */
 export async function bowdenDrive(bot: Bot): Promise<void> {
-  // [door, garage] of each house with snow in its drive (two have theirs plowed already)
-  const houses: [number, number][] = [
-    [9, 11],
-    [18, 15],
-    [30, 32],
-    [37, 39],
-    [53, 50],
-    [61, 58],
-  ];
   await carefully(bot, 'Bowden Drive', 20, async (pause) => {
-    for (const [i, [door, garage]] of houses.entries()) {
-      await cells(bot, [[door, 24], ...drive(garage, 24, 25)], `Bowden Drive, house ${i + 1}`);
-      if (i === 2) await cells(bot, [[30, 25]], "the Kellers' tip");
-    }
+    await cells(bot, [[18, 24], ...drive(15, 24, 25)], 'Bowden Drive, the blue house');
+    await cells(bot, [[44, 38]], 'the footbridge');
+    await cells(bot, [[55, 44], ...drive(52, 44, 45)], 'across the creek, the yellow house');
+    await cells(bot, [[44, 38]], 'the footbridge, back');
+    await cells(bot, [[53, 24], ...drive(50, 24, 25)], 'Bowden Drive, the yellow house');
     await pause();
     const r = await bot.goto(80, 27, 'the road to LaVale');
     if (r !== 'link') throw new Error(`No way to LaVale: ${r}`);

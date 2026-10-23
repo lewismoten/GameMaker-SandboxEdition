@@ -40,21 +40,21 @@
               "kind": "start"
             },
             {
-              "x": 30,
-              "y": 25,
-              "label": "The Kellers leave a $5 tip on the walk",
+              "x": 44,
+              "y": 38,
+              "label": "The footbridge: the dry way over the creek",
               "kind": "shop"
             },
             {
               "x": 44,
               "y": 36,
-              "label": "The park: forts, Big Pete and Biscuit",
+              "label": "The park: forts, Biscuit, and Big Pete by the bridge",
               "kind": "note"
             },
             {
-              "x": 36,
-              "y": 44,
-              "label": "Two more customers across the frozen creek",
+              "x": 57,
+              "y": 42,
+              "label": "Two more customers across the creek, down paths through the pines",
               "kind": "note"
             },
             {
@@ -186,11 +186,11 @@
             },
             {
               "q": "I got to the register without $89.",
-              "a": "Go back out to the mall lot. A squall blows through every half minute and buries it again: more scoops, more dollars."
+              "a": "Go back out to the mall lot. A squall blows through every twenty seconds or so and buries it again: more scoops, more dollars. The streets alone rarely add up to $89."
             },
             {
               "q": "Where are the tips?",
-              "a": "A $5 envelope beside Mrs. Haines' porch on Gale Street, and another on the Kellers' walk on Bowden Drive."
+              "a": "A $5 envelope beside Mrs. Haines' porch on Gale Street."
             },
             {
               "q": "What are the door mats on Gale Street for?",
@@ -224,7 +224,7 @@
           "hints": [
             {
               "q": "Big Pete won't stop shoving me.",
-              "a": "Only a snowball makes him cry and go home. Scoop a plow bank for more snowballs."
+              "a": "He shoves once, strolls off and comes back a few seconds later. A snowball sends him off before he can shove. Scoop a plow bank for more snowballs."
             },
             {
               "q": "What does the bell at the mall do?",
@@ -255,15 +255,7 @@
               "q": "Just draw me a map.",
               "a": "In the park across Gale Street, find your snowman at the bottom of the park and the red mitten just below it. Walk down into the pines there: the trail runs down, right and down again to a hollow. Press Enter on the felt egg to pick it up, then push the frozen toboggan for a ride to Jamie Street.",
               "sketch": {
-                "rows": [
-                  "   o",
-                  "T  v  T",
-                  "T  ....  T",
-                  "T     v  T",
-                  " T      =",
-                  " T   X   T",
-                  "  TTTTTTT"
-                ],
+                "rows": ["   o", "T  v  T", "T  ....  T", "T     v  T", " T      =", " T   X   T", "  TTTTTTT"],
                 "labels": [
                   { "x": 5, "y": 0, "text": "SNOWMAN" },
                   { "x": 8, "y": 1, "text": "MITTEN" },

@@ -256,6 +256,7 @@ export function galeStreet(book: BlockBook) {
 export function jamieHill(book: BlockBook) {
   const m = new MapBuilder(book);
   const x0 = 30;
+  // Below the first steep band, four open rows to feel the drift before the first rock.
   const rows = [
     'TTTTTTTTTTTTTTTTTTTTTTTT',
     'T,,,,,,,,,,,,,,,,,,,,,,T',
@@ -265,8 +266,8 @@ export function jamieHill(book: BlockBook) {
     'T!!!!!!!!!!!!!!!!!!!!!!T',
     'T~~~~~~~~~~Q~~~~~~~~~~~T',
     'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'TY~~~~~R~~~~~~~~~~~~~YYT',
-    'T~~~~~~~~~~Q~~~~~~~~~~~T',
+    'TY~~~~~~~~~~~~~~~~~~~YYT',
+    'T~~~~~~~~~~~~~~~~~~~~~~T',
     'T~~~~~~~~~~~~~~R~~~~~~~T',
     'T~~~~~~Q~~~~~~~~~~~~~~~T',
     'T~~~~~~~~~~~~~~~~~~~~~~T',
@@ -366,8 +367,9 @@ export function jamieHill(book: BlockBook) {
 
 // ------------------------------------------------------------------ level 3
 /**
- * Bowden Drive, 4:30 PM: a long row of customers, two plows and a car, the snowball war in
- * the park, and the frozen creek. East end: the road to LaVale.
+ * Bowden Drive, 4:30 PM: two customers left on the long north side, two plows and a car,
+ * the snowball war in the park, Big Pete by the footbridge, and two more customers across
+ * the frozen creek. East end: the road to LaVale.
  */
 export function bowdenDrive(book: BlockBook) {
   const m = new MapBuilder(book);
@@ -376,15 +378,17 @@ export function bowdenDrive(book: BlockBook) {
   // houses all along the north side
   m.fill(X, 21, 74, 3, 'T');
   m.fill(X, 24, 74, 1, 's').fill(X, 25, 74, 1, 's');
+  // Most of Bowden Drive got home early and dug out its own: two customers are left on the
+  // north side, and two more wait across the creek.
   const north: [number, 'red' | 'blue' | 'yellow', boolean, 'D' | 'a'][] = [
-    [2, 'red', false, 'D'],
+    [2, 'red', false, 'a'],
     [9, 'blue', true, 'D'],
     [16, 'yellow', true, 'a'],
-    [23, 'red', false, 'D'],
-    [30, 'blue', false, 'D'],
+    [23, 'red', false, 'a'],
+    [30, 'blue', false, 'a'],
     [37, 'red', false, 'a'],
     [44, 'yellow', true, 'D'],
-    [52, 'blue', true, 'D'],
+    [52, 'blue', true, 'a'],
   ];
   north.forEach(([x, color, left, snow], i) => {
     const h = m.house(X + x, 21, color, left, i % 3 !== 2);
@@ -395,7 +399,6 @@ export function bowdenDrive(book: BlockBook) {
   m.set(X + 59, 23, 'b')
     .set(X + 62, 23, 'n')
     .set(X + 66, 23, 'b');
-  m.set(X + 24, 25, '5'); // the Kellers leave a tip on the walk
   m.set(X + 35, 25, 'y').set(X + 57, 25, 'y');
   m.patch(X + 13, 25, ['vv'])
     .patch(X + 42, 25, ['vv'])
@@ -412,9 +415,9 @@ export function bowdenDrive(book: BlockBook) {
     '..........T.........................c..........T..........................',
     'T....F.........b...........T...............................T......F....T..',
     '...............................................b...........................',
-    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
-    '>>>>>>>>$>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#>>>>>>>>>>>>>>$>>>>>>>>>>>>>>>>>>>',
-    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
+    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>##>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
+    '>>>>>>>>$>>>>>>>>>>>>>>>>>>>>>>>>>>>>##>>>>>>>>>>>>>>$>>>>>>>>>>>>>>>>>>>',
+    '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>##>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
     '..........................................................................',
   ]);
   // south of the creek: two more customers
@@ -424,6 +427,8 @@ export function bowdenDrive(book: BlockBook) {
     .fill(X + 25, 41, 21, 3, 'T')
     .fill(X + 51, 41, 23, 3, 'T');
   m.fill(X, 44, 74, 2, '.');
+  // a path through the pines beside each house, from the creek bank down to its driveway
+  m.fill(X + 19, 41, 1, 3, '.').fill(X + 51, 41, 1, 3, '.');
   for (const h of [s1, s2]) m.fill(h.garage, 44, 2, 2, 'D').set(h.door, 44, 'S');
   m.set(X + 30, 44, 'c')
     .set(X + 60, 45, 'n')

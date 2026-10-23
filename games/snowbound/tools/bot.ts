@@ -44,7 +44,7 @@ export class Bot {
   private throwing = false;
   constructor(readonly sim: GameSim) {}
 
-  /** Big Pete closing in: a snowball (power 120) beats him (110) and sends him off crying. */
+  /** Big Pete closing in: a snowball (power 120) beats him (90) and sends him off before he shoves. */
   private async defend(): Promise<void> {
     const { sim } = this;
     if (this.throwing) {

@@ -98,7 +98,7 @@ const LEVELS: Level[] = [
     card: {
       title: '3. BOWDEN DRIVE',
       time: '4:30 PM. Everybody is home.',
-      lines: ['Snow forts in the park, Big', 'Pete by the creek. East to', 'LaVale and the mall.'],
+      lines: ['Two customers up here, two', 'over the creek footbridge,', 'past Big Pete. Then LaVale!'],
       view: [6, 23],
     },
   },
@@ -113,7 +113,7 @@ const LEVELS: Level[] = [
     card: {
       title: '4. LAVALE MALL',
       time: '8:00 PM. One hour to closing.',
-      lines: ['The lot keeps snowing over.', 'Bleeps is open; Bits & Bytes', 'has the pink box for $89.'],
+      lines: ['Short of $89? Dig the lot:', 'it keeps snowing over. F2', 'counts the can. Then shop!'],
       view: [24, 10],
     },
   },

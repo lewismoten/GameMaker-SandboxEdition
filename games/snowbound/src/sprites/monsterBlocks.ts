@@ -1,11 +1,11 @@
 // SNOW.MBL: two frames each of everything that moves on its own: snowballs (theirs and
-// yours) and the poof they leave, Biscuit the dog, Pete the bully (walking, running, crying),
+// yours) and the poof they leave, Biscuit the dog, Pete the bully (walking, and strolling off),
 // the plow and cars (two blocks each, rear and front), shopping carts, other sledders and
 // the cardinal.
 import { Pixels } from '../../../kit/pixels';
 import { blob, sprite } from '../art/draw';
 import type { Pal } from '../art/pal';
-import { BODY_FRONT, BODY_SIDE, HEAD_DOWN, HEAD_SIDE, LEGS_A, LEGS_B, LEGS_SIDE_A, LEGS_SIDE_B, LEGS_STAND, T, keyFor, kidPic, makeBook } from './kidArt';
+import { BODY_FRONT, BODY_SIDE, HEAD_DOWN, HEAD_SIDE, LEGS_A, LEGS_B, LEGS_SIDE_A, LEGS_SIDE_B, T, keyFor, kidPic, makeBook } from './kidArt';
 
 // ---------------------------------------------------------------- monster blocks
 export function buildMonsterBlocks(pal: Pal) {
@@ -79,22 +79,11 @@ export function buildMonsterBlocks(pal: Pal) {
   // Big Pete, the bully: green coat, blue beanie, no shovel.
   const bk = keyFor(pal, 'bully');
   const pete = (legs: string[]) => rim(kidPic([...HEAD_DOWN, ...BODY_FRONT, ...legs], bk));
-  book.add('bully0', pete(LEGS_A), hurtBy(-2));
-  book.add('bully1', pete(LEGS_B), hurtBy(-2));
+  book.add('bully0', pete(LEGS_A), hurtBy(-10));
+  book.add('bully1', pete(LEGS_B), hurtBy(-10));
   const run = (legs: string[]) => rim(kidPic([...HEAD_SIDE, ...BODY_SIDE, ...legs], bk));
   book.add('bullyRun0', run(LEGS_SIDE_A));
   book.add('bullyRun1', run(LEGS_SIDE_B));
-  const cry = (k: number) => {
-    const p = pete(LEGS_STAND);
-    p.set(7, 7 + k, c('ice', 4))
-      .set(11, 7 + k, c('ice', 4))
-      .set(7, 8 + k, c('ice', 3))
-      .set(11, 8 + k, c('ice', 3));
-    p.rect(8, 7, 3, 1, c('ink', 0));
-    return p;
-  };
-  book.add('bullyCry0', cry(0));
-  book.add('bullyCry1', cry(1));
 
   // Snowplows and cars: two blocks each, drawn facing right (rear | front).
   const vehicle = (body: string, front: boolean, frame: number, plow: boolean) => {

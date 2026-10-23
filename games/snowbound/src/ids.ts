@@ -8,6 +8,7 @@ export const MON = {
   dogRun: 4,
   bully: 5,
   bullyRun: 6,
+  /** No longer used (Pete strolls off instead of crying); the number is kept free. */
   bullyCry: 7,
   // Two-block vehicles: A is the left half, B the right; R/L the direction of the leg.
   plowAR: 8,

@@ -2,7 +2,7 @@
 //
 // Game-Maker monster rules used here: when two monsters touch, the one with more power kills
 // the other (equal power ignore each other), so the kid's snowball (power 120) beats Pete
-// (110) but a thrown snowball (10) can't hurt a plow (200). A monster under power 100 dies
+// (90) but a thrown snowball (10) can't hurt a plow (200). A monster under power 100 dies
 // when it touches the kid (after its block's damage lands); 100 and up stays. When a monster
 // dies it is reborn as its newmon, which chains effects: a snowball dies into a poof, Biscuit
 // into a running-away dog. 'end' is a lifetime in ticks (or -1: die at the end of the march
@@ -56,15 +56,17 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     [corner(0, 0, 1), corner(0, 0, 3)],
   );
   set[MON.dogRun] = mon(anim('dogRun0', 'dogRun1', 2), { power: 100, thru: 0, towards: -5, end: 60 });
+  // Big Pete shoves you once (his block's damage) and then strolls off, pleased with himself,
+  // for five seconds before he comes looking again: power under 100, so touching the kid
+  // "kills" him into that walk-away. A snowball (power 120) beats him to it: he strolls off
+  // without the shove, and it's worth 150 points.
   set[MON.bully] = mon(
     anim('bully0', 'bully1', 4),
-    { power: 110, thru: 1, towards: 128, activate: 2, newmon: MON.bullyCry, upscore: 150 },
+    { power: 90, thru: 1, towards: 128, activate: 2, newmon: MON.bullyRun, upscore: 150 },
     [],
     [corner(0, 0, 1), corner(0, 0, 2)],
   );
-  // Pete is too big to bounce off you; only a snowball (power 120) makes him cry.
-  set[MON.bullyRun] = mon(anim('bullyRun0', 'bullyRun1', 2), { power: 100, thru: 0, towards: -4, end: 70 });
-  set[MON.bullyCry] = mon(anim('bullyCry0', 'bullyCry1', 6), { power: 100, thru: 0, end: 120 });
+  set[MON.bullyRun] = mon(anim('bullyRun0', 'bullyRun1', 2), { power: 100, thru: 0, towards: -4, end: 90, newmon: MON.bully });
 
   const legs = (run: number, speed: number, names: [string, string], ids: [number, number, number, number]) => {
     const [ar, al, br, bl] = ids;
