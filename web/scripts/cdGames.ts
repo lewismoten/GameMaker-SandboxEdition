@@ -9,6 +9,8 @@
 //   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
 //   games/originals/<id>/<file>  new games made for this project (../games/<id>/disk),
 //                                published as shareware, with box, label and manual data
+//   games/<kind>/<id>/<id>.<hash>.gmpak  each game's files in one gzipped file, what the site
+//                                fetches to play or open a game (src/project/gamePack.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
 //   gm/index.json, gm/<file>     the installed C:\GM folder (runtime/run/GM) for the retro
 //                                desk: a listing plus its text files (.HLP screens, .TXT)
@@ -16,6 +18,9 @@ import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
+import { encodePack } from '../src/project/gamePack';
+import { packOrder } from '../src/project/streamGame';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
 import { gameShots } from './gameShots';
@@ -57,6 +62,8 @@ export interface CdCatalogEntry {
   shots?: boolean;
   /** …and its hero (games/shots/<id>-hero.png). */
   heroShot?: boolean;
+  /** All its files in one gzipped file in its folder, named by a hash of them (packName, src/project/gamePack.ts). */
+  pack?: string;
 }
 
 /** What ../games/<id>/about.json and manual.json add for an original game. */
@@ -184,6 +191,24 @@ function blurbFor(names: string[], disk: Map<string, string>): string | undefine
   return pick ? blurbOf(dosText(readFileSync(disk.get(pick)!))) : undefined;
 }
 
+/** A game's pack file name: <id>.<hash of its files>.gmpak (a new name whenever a file changes). */
+function packName(id: string, names: string[], disk: ReadonlyMap<string, string>): string {
+  const h = createHash('sha1');
+  for (const n of names) h.update(`${n}\0${statSync(disk.get(n)!).size}\0`).update(readFileSync(disk.get(n)!));
+  return `${id}.${h.digest('hex').slice(0, 10)}.gmpak`;
+}
+
+/** A game's pack (src/project/gamePack.ts): its files in the order play needs them, gzipped. */
+export function gamePack(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'path'>, files: ReadonlyMap<string, string>, level = 9): Buffer {
+  const get = (n: string) => (files.has(`${e.path}${n}`) ? new Uint8Array(readFileSync(files.get(`${e.path}${n}`)!)) : undefined);
+  const entries: [string, Uint8Array][] = [];
+  for (const n of packOrder(e.gam, e.files, get)) {
+    const b = get(n);
+    if (b) entries.push([n, b]);
+  }
+  return gzipSync(encodePack(entries), { level });
+}
+
 interface Scan {
   gm: GmInstallEntry[];
   catalog: CdCatalogEntry[];
@@ -231,6 +256,7 @@ function scan(cdRoot: string): Scan {
         sizes: names.map((n) => statSync(disk.get(n)!).size),
         bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
         blurb: blurbFor(names, disk),
+        pack: packName(id, names, disk),
       };
       if (kind === 'shareware' && exe) entry.exe = exe.toUpperCase();
       if (kind === 'shareware') {
@@ -319,6 +345,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       original: { label: about.label, box: about.box, sound: about.sound, manual, printables },
       ...(about.series ? { series: about.series } : {}),
       ...(walkthrough ? { walkthrough } : {}),
+      pack: packName(id, names, disk),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
   }
@@ -404,6 +431,13 @@ export function cdGames(cdRoot: string): Plugin {
           res.end(JSON.stringify(catalogDetails(detailed)));
           return;
         }
+        const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.gmpak)$/.exec(url);
+        const owner = packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && e.pack === packed[2]);
+        if (owner) {
+          res.setHeader('Content-Type', 'application/octet-stream');
+          res.end(gamePack(owner, get().files, 1));
+          return;
+        }
         const file = get().files.get(url.toLowerCase());
         if (!file) return next();
         res.setHeader('Content-Type', 'application/octet-stream');
@@ -432,6 +466,7 @@ export function cdGames(cdRoot: string): Plugin {
       // Whole entries (no games/details/<id>.json), so nothing else the build writes names them.
       this.emitFile({ type: 'asset', fileName: 'games/extra.json', source: JSON.stringify(secret.map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
+      for (const e of [...catalog, ...secret]) if (e.pack) this.emitFile({ type: 'asset', fileName: `${e.path}${e.pack}`, source: gamePack(e, files) });
       for (const [site, disk] of files) {
         const bytes = readFileSync(disk);
         this.emitFile({ type: 'asset', fileName: site, source: bytes });
