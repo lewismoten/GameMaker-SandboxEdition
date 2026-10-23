@@ -29,6 +29,8 @@ export const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between milkshakes from the soda fountain. */
 export const SHAKE_EVERY = 40;
+/** Ticks between cartons set out on the crate in the reckoning. */
+export const CARTON_EVERY = 160;
 /** Ticks into the reckoning before the second spout starts to rattle (it throws SPOUT_WARN later). */
 export const SPOUT_WAKE = 200;
 /** Ticks the second spout rattles and steams, as a warning, before it throws. */
@@ -579,8 +581,13 @@ export function buildBlocks(pal: Pal): BlockBook {
     }
     return p;
   };
-  book.add('flames0', flames(0), { hp: -8, grav: GRAV.down, next: 'flames1', ntime: 4 });
-  book.add('flames1', flames(1), { hp: -8, grav: GRAV.down, next: 'flames0', ntime: 4 });
+  // (they burn once where they touch him, then that patch dies down to embers: a hurt holds him
+  // still, so flames that always burned would hold him in the pit)
+  book.add('flames0', flames(0), { hp: -8, grav: GRAV.down, next: 'flames1', ntime: 4, touch: 'embers' });
+  book.add('flames1', flames(1), { hp: -8, grav: GRAV.down, next: 'flames0', ntime: 4, touch: 'embers' });
+  const embers = voidAir(92);
+  for (let k = 0; k < 8; k++) embers.set(2 + k * 2, 18 + (k % 2), c('fire', 1));
+  book.add('embers', embers, { grav: GRAV.down });
   // the bathroom's black and white tiles (a cool slate, unlit by hell's red), floating: the floor (solid) and tiles (ledges)
   const hellTile = (ledge: boolean) => {
     const p = ledge ? voidAir(93) : P();
@@ -645,6 +652,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('almondFirst', carton(voidAir(98), 'ALM', 'crust'), { ...air, hp: 15, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'almondGone' });
   book.add('oat', carton(voidAir(99), 'OAT', 'cheese'), { ...air, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'oatGone' });
   book.add('oatGone', voidAir(99), air);
+  // a milk crate: now and then a carton is set out on it, so he never runs dry (past the pit, out of the milkshakes' way)
+  const crate = voidAir(89);
+  crate.rect(2, 12, 16, 8, c('pjs', 1)).rect(2, 12, 16, 1, c('pjs', 2));
+  for (let x = 4; x < 17; x += 4) crate.rect(x, 14, 2, 5, c('ink', 0));
+  book.add('crate', crate, { ...air, birthMon: MON.carton, birthTime: CARTON_EVERY });
   // lactase pills: dignity back
   const lactase = voidAir(96);
   lactase.rect(4, 7, 12, 10, c('white', 2)).rect(4, 7, 12, 3, c('pjs', 2));

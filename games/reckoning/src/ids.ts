@@ -64,6 +64,8 @@ export const MON = {
   devilB3m: 35,
   /** A milkshake from the second spout over the throne: a higher lob at the floor where he stands. */
   shake2: 36,
+  /** A carton of almond milk set on the crate past the pit, now and then: so he never runs dry. */
+  carton: 37,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

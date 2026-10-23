@@ -295,8 +295,8 @@ export function dash(book: BlockBook): Level {
   m.set(37, 9, 'L').set(38, 9, 'z');
   m.set(43, 9, '0');
   m.mon(MON.gwinnUp, 45, 9);
-  // the laundry pile (the basket, heaped with towels): hop up onto it and off
-  m.set(51, 9, 'U').set(51, 8, '8');
+  // the laundry pile (the basket, heaped with towels, a spare roll on top): hop up onto it and off
+  m.set(51, 9, 'U').set(51, 8, '8').set(51, 7, '9');
   m.set(54, 9, '!');
   // a roll on top of the laundry basket
   m.set(59, 9, 'U').set(59, 8, '9');
@@ -334,6 +334,8 @@ export function reckoning(book: BlockBook): Level {
   m.set(20, 3, ',').set(30, 2, ',').set(3, 2, ',');
   // the porcelain throne; past it, the bathroom door home, where the act ends (the walk lets the
   // flush and "...Is there Lactaid in hell?" finish)
+  // the milk crate past the pit (a carton set out on it now and then)
+  m.set(15, 9, 'crate');
   m.set(30, 9, '/');
   // the second spout up on its tiles past the throne: cold, until it rattles awake mid-fight
   m.row(7, 32, 34, '@').set(33, 6, 'spoutCold');

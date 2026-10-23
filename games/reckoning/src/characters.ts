@@ -214,6 +214,9 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.shake2] = mon(anim('shake0', 'shake1', 2), { power: 200, thru: 0, end: -1, newmon: MON.splat }, lob);
   set[MON.splat] = mon([[n('splat'), 4]], { power: 200, thru: 0, end: 18 });
   set[MON.splash] = mon(anim('splash0', 'splash1', 2), { power: 220, thru: 1, towards: 8, end: 20 });
+  // a carton on the crate past the pit, now and then (weaker than him: picked up at a touch),
+  // gone again if he doesn't come for it
+  set[MON.carton] = mon([[n('carton'), 30]], { power: 50, thru: 0, end: 150 }, still);
   set[MON.straw] = mon(anim('straw0', 'straw1', 4), { power: 230, thru: 1 }, still);
   set[MON.smoke] = mon(anim('smoke0', 'smoke1', 8), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -3, 1, 0), corner(-1, -6, 1, 4)]);
   return set;

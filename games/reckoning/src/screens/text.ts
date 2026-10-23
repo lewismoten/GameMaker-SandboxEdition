@@ -116,7 +116,7 @@ export const CARDS: { title: string; where: string; lines: [string, string] }[] 
   { title: 'I. 3:17 A.M.', where: 'The bedroom. She is asleep.', lines: ["I shouldn't.", "I can't."] },
   { title: 'II. THE FRIDGE', where: 'The kitchen. The glow.', lines: ['Graham-crackered by', 'angels themselves.'] },
   { title: 'III. OH NO', where: 'SMASH CUT. The hall.', lines: ['That was immediate.', 'That was TOO immediate.'] },
-  { title: 'IV. THE RECKONING', where: 'Lights turn blood red.', lines: ['Well, well, well...', "Couldn't resist, could ya?"] },
+  { title: 'IV. THE RECKONING', where: 'Blood red. SPACE throws milk.', lines: ['Well, well, well...', "Couldn't resist, could ya?"] },
 ];
 
 const CREDITS_TEXT = page(

@@ -13,7 +13,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { STRAW } from '../ids';
+import { SEQ, STRAW } from '../ids';
 
 export { T, outline };
 
@@ -502,5 +502,10 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('loafOff1', loaf(1));
   book.add('seedOff0', seed(0));
   book.add('seedOff1', seed(1));
+  // a carton of almond milk, set out on the crate in hell: two splashes
+  const carton = P();
+  carton.rect(5, 6, 10, 13, c('white', 2)).rect(5, 10, 10, 5, c('crust', 2));
+  for (let y = 2; y < 6; y++) carton.rect(5 + (6 - y), y, 10 - (6 - y) * 2, 1, c('white', 1));
+  book.add('carton', done(carton), { effect: SEQ.throw, eamt: 2 });
   return book;
 }
