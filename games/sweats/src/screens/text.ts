@@ -220,9 +220,9 @@ THIS IS SHAREWARE
   unchanged.
 
   If it made you laugh, register
-  for ${price}: you get a tape of
-  all seventeen monologues and a
-  gift certificate for one (1)
+  for ${price}: you get a sticker
+  that says SHAKESPEARE IN
+  SWEATPANTS and a gift certificate for one (1)
   small coffee at the counter.
   Send a check (US funds) to:
 
