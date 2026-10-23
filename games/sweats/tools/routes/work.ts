@@ -141,8 +141,11 @@ export const WORK_ROUTES: Record<string, Route> = {
     });
     if (plot(bot) < REPAIRS) throw new Error(`only ${plot(bot)} repairs`);
     await carefully(bot, 'the chair', 0, async () => {
-      await leave(bot, bot.walk(60.5, 'the chair'), 'the chair');
+      await declaim(bot, 'the creak');
+      await must(bot, bot.walk(61, 'the chair'), 'the chair');
+      await must(bot, bot.walk(66, 'the walk-off'), 'the walk-off');
     });
+    await leave(bot, bot.walk(67.5, 'the end of the aisle'), 'the walk-off');
   },
   /** Gerald the Ficus: past the gnats and the falling leaves, out into the night (Carl), over the runaway cart, Peggy's plants, back in to stage it, the boss home. */
   ficus: async (bot) => {

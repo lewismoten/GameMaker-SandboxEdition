@@ -246,7 +246,10 @@ export const chair: Monologue = {
     '!': 'spot@base',
   },
   build: (m: MapBuilder) => {
-    const W = 64;
+    // the walk-off: OFF blocks more of the cubicle aisle past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 7;
+    const W = 64 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 3; x < W; x += 6) m.set(x, 0, '*');
     m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, 'slab');
@@ -279,7 +282,7 @@ export const chair: Monologue = {
     placePicture(m, 'plant', 36, 8, 1, 2);
     m.set(56, 9, 'c').set(60, 8, 'creak').set(58, 3, 'poster');
     m.set(60, 9, 'G').set(60, 7, 'clock');
-    m.link(60, 9, 'next');
+    m.link(60 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: chairMonsters,
