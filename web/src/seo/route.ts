@@ -12,6 +12,7 @@ export function routeOf(hash: string, modern: boolean): RouteName {
   if (hash.startsWith('#/cast')) return 'cast';
   if (hash.startsWith('#/mac')) return 'mac';
   if (hash.startsWith('#/windows')) return 'windows';
+  if (hash.startsWith('#/linux')) return 'linux';
   if (hash.startsWith('#/p/')) return 'editor';
   return 'home';
 }

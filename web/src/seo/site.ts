@@ -44,6 +44,11 @@ export const ROUTES = {
     description:
       'Download any game as a Windows program. Why SmartScreen says “Windows protected your PC” (the programs are built in your browser, so they are not code-signed), how to run it the first time, what the program does and how to remove it.',
   },
+  linux: {
+    title: `Playing the games on Linux · ${PRODUCT}`,
+    description:
+      'Download any game for Linux: how to extract and play it, the WebKitGTK package it needs on Debian, Ubuntu, Fedora and Arch, the web browser fallback, adding it to the applications menu, what the program does and how to remove it.',
+  },
   editor: {
     title: `Editor · ${PRODUCT}`,
     description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,

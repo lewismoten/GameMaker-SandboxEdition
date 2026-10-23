@@ -183,6 +183,13 @@ async function route(): Promise<void> {
     renderWinHelp(content);
     return;
   }
+  if (kind === 'linux') {
+    const { renderLinuxHelp } = await import('./linuxHelp/linuxPage');
+    if (ui !== 'modern') return;
+    document.title = `Playing the games on Linux · ${PRODUCT}`;
+    renderLinuxHelp(content);
+    return;
+  }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
     const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
@@ -221,11 +228,11 @@ function notHere(): void {
 window.addEventListener('hashchange', () => void route());
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the cast #/cast, the Mac and Windows pages #/mac and #/windows, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'mac', 'windows'].includes(startPath[0] ?? '');
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
 if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 
