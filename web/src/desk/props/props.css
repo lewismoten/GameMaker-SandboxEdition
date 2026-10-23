@@ -1,0 +1,100 @@
+/* The room's little things you can click (desk/props/): their focus rings, the invisible
+   hit areas over parts of a drawing, and the speech bubble they answer in. */
+.room-prop,
+.prop-hit {
+  cursor: pointer;
+}
+
+.room-prop:focus-visible,
+.prop-hit:focus-visible {
+  outline: 2px solid #ffd400;
+  outline-offset: 4px;
+}
+
+.prop-hit {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* read out, not seen */
+.prop-live {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* a speech bubble on notebook-cream paper, with a tail pointing at what spoke */
+.prop-bubble {
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
+  max-width: min(300px, calc(100vw - 32px));
+  padding: 10px 14px;
+  border: 2px solid #2a2418;
+  border-radius: 14px;
+  background: #fffbe9;
+  color: #2a2418;
+  box-shadow: 3px 5px 0 rgba(0, 0, 0, 0.35);
+  font:
+    600 15px/1.35 "Trebuchet MS",
+    system-ui,
+    sans-serif;
+  text-align: left;
+  pointer-events: none;
+  animation: prop-pop 0.18s ease-out;
+}
+
+.prop-bubble p {
+  margin: 0;
+}
+
+.prop-bubble svg {
+  display: block;
+  margin: 0 auto 6px;
+}
+
+.prop-bubble::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--tail, 50%) - 9px);
+  width: 14px;
+  height: 14px;
+  border: 2px solid #2a2418;
+  background: #fffbe9;
+  transform: rotate(45deg);
+}
+
+.prop-bubble.above::after {
+  bottom: -9px;
+  border-top: 0;
+  border-left: 0;
+}
+
+.prop-bubble.below::after {
+  top: -9px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+@keyframes prop-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prop-bubble {
+    animation: none;
+  }
+}
