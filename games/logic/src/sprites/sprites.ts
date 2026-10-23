@@ -143,7 +143,7 @@ function lcdPic(half: number, booted: boolean, cursor = true): Pixels {
 
 /** The Bitmores' 1976½ CitiCar (the Bicentennial year: it still flies a little flag), in
  * profile across three blocks: part 0 the charging cord, 1 the car, 2 its nose and headlight
- * beams. A short tomato-red wedge: flat tail, tall boxy cabin with big flat windows and a grey
+ * beams. A short tomato-red wedge: flat tail, tall boxy cabin with a big flat door window and a grey
  * roof, a raked windshield running into a short steep hood, round headlight pods and little
  * round wheels. The cord plugs in at the tail and wraps around to the port on the far
  * (passenger) side. Charging current turns its headlights on; `flash` is the brighter frame. */
@@ -187,11 +187,11 @@ function citiCarPic(part: number, lit: boolean, flash = false): Pixels {
   // the cord: along the wire, up into the plug at the tail, and around to the far side
   w.rect(0, 9, 11, 2, c('ink', 0)).rect(0, 9, 11, 1, c('metal', 1));
   w.rect(10, 8, 3, 4, c('metal', 2)).rect(10, 8, 3, 1, c('metal', 4));
-  // grey roof, the big flat windows (door and rear quarter) and the windshield edge on
+  // grey roof, the door's big flat window (from the side the only glass: no quarter window
+  // behind the door) and the windshield edge on
   w.rect(Math.round(X(3.5)), Math.round(Y(6)), Math.round(15.5 * SX), 2, c('metal', 2));
   w.rect(Math.round(X(3.5)), Math.round(Y(6)), Math.round(15.5 * SX), 1, c('metal', 3));
   fill([[13.5, 9.3], [19.6, 9.3], [25.3, 16.3], [13.5, 16.3]], () => c('teal', 3));
-  fill([[4.5, 9.3], [11.5, 9.3], [11.5, 16.3], [4.5, 16.3]], () => c('teal', 2));
   w.line(Math.round(X(19.5)), Math.round(Y(8)), Math.round(X(26)), Math.round(Y(15.5)), c('teal', 4));
   w.set(Math.round(X(16)), Math.round(Y(15)), c('teal', 4)).set(Math.round(X(17)), Math.round(Y(14)), c('teal', 4));
   w.rect(Math.round(X(12.5)), Math.round(Y(9)), 1, 10, c('red', 0)); // the door seam
