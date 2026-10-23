@@ -195,8 +195,13 @@ export async function fakeWoods(bot: Bot): Promise<void> {
 export async function lastHall(bot: Bot): Promise<void> {
   expect(bot, 5, 'the last hall');
   await carefully(bot, "the knight's helmet", 20, async () => {
-    for (let tries = 0; tries < 30 && !mons(bot, MON.helmet).length && bot.count(HELMET) < 1; tries++) {
-      const kid = mons(bot, MON.knight)[0];
+    for (let tries = 0; tries < 40 && !mons(bot, MON.helmet).length && bot.count(HELMET) < 1; tries++) {
+      // the first knock: he scoops the helmet back up (wait for him), then comes on taped
+      if (mons(bot, MON.knightGrab).length) {
+        if (await bot.wait(2)) throw new Error('a scene change');
+        continue;
+      }
+      const kid = mons(bot, MON.knight)[0] ?? mons(bot, MON.knight2)[0];
       if (!kid) break;
       const ky = Math.round(kid.y);
       const kx = Math.round(kid.x);

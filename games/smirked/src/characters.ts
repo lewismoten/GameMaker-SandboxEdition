@@ -219,12 +219,19 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.lilyNear] = mon(lilyPics, { power: 200, thru: 1, towards: 1 });
   set[MON.bat] = mon(stings('bat0', 'bat1', 4), { power: 150, thru: 0 }, pace(2, 1, true));
   set[MON.ghost] = mon(stings('ghost0', 'ghost1', 8), { power: 150, thru: 0 }, pace(o.ghost ?? 5, 1));
-  set[MON.werewolf] = mon(stings('wolf0', 'wolf1', 5), { power: 150, thru: 1, towards: 1 });
+  // A tackle (120) floors the werewolf guy (115) for three seconds: stars, then he's up and after you again.
+  set[MON.werewolf] = mon(stings('wolf0', 'wolf1', 5), { power: 115, thru: 1, towards: 1, newmon: MON.wolfDazed, upscore: 25 });
+  set[MON.wolfDazed] = mon(anim('wolfDazed0', 'wolfDazed1', 4), { power: 150, thru: 0, end: 48, newmon: MON.werewolf }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.spider] = mon(stings('spider0', 'spider1', 6), { power: 150, thru: 0 }, pace(3, 1, true));
   set[MON.carl] = mon(anim('carl0', 'carl1', 2), { power: 200, thru: 0, towards: wander(2) });
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 1, newmon: MON.seedBye }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.seedBye] = mon(anim('seed1', 'seed0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
-  set[MON.knight] = mon(stings('knight0', 'knight1', 4), { power: 150, thru: 1, towards: 1, newmon: MON.helmet, upscore: 100 });
+  // The duel has two rounds: the first knock sends the helmet flying and he scoops it back up
+  // (two seconds when he can't be hit or hurt you), then he comes on quicker with it taped; the
+  // second knock leaves it on the carpet for you.
+  set[MON.knight] = mon(stings('knight0', 'knight1', 4), { power: 150, thru: 1, towards: 1, newmon: MON.knightGrab, upscore: 100 });
+  set[MON.knightGrab] = mon(anim('knightGrab0', 'knightGrab1', 8), { power: 200, thru: 0, end: 32, newmon: MON.knight2 }, [corner(0, 0, 1), corner(0, 0, 1)]);
+  set[MON.knight2] = mon(stings('knightTaped0', 'knightTaped1', 3), { power: 150, thru: 1, towards: 2, newmon: MON.helmet, upscore: 150 });
   set[MON.knightRuns] = mon(anim('knightRuns0', 'knightRuns1', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(6, -2, 3, 0)]);
   set[MON.helmet] = mon(anim('helmet0', 'helmet1', 6), { power: 50, thru: 1, newmon: MON.knightRuns }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.goat] = mon(anim('goat0', 'goat1', 12), { power: 200, thru: 1 }, pace(2, 1));

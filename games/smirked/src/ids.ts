@@ -42,6 +42,12 @@ export const MON = {
   bill: 19,
   /** The witch toppling over (the tackle passes on before she lands, so it doesn't knock her flat twice). */
   witchFalls: 20,
+  /** The kid, helmet knocked off the first time, scooping it up ("Not yet!"): he can't be hit or hurt you. */
+  knightGrab: 21,
+  /** The kid again, helmet jammed back on crooked with tape: quicker and stings harder. Knock it off once more. */
+  knight2: 22,
+  /** The werewolf guy, tackled: on his back, mask askew, seeing stars. Harmless, and back up after a moment. */
+  wolfDazed: 23,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

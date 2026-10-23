@@ -474,6 +474,21 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   sting('wolf0', wolf(0), -6);
   book.add('wolf1', wolf(1));
+  // The werewolf guy, tackled flat: mask askew, stars going round. He'll get up in a moment.
+  const dazed = (f: number) => {
+    const p = P();
+    p.rect(3, 10, 12, 6, c('navy', 2)).rect(3, 12, 12, 1, c('green', 0)).rect(14, 11, 4, 3, c('navy', 1));
+    blob(p, 4, 12, 3.4, 3.2, pal.r('fur'), 1, 3);
+    blob(p, 2, 13, 1.6, 1.2, pal.r('cardboard'), 2, 3);
+    p.set(4, 11, c('gold', 2)).set(5, 13, c('gold', 2));
+    for (let k = 0; k < 3; k++) {
+      const a = f * 1.05 + k * 2.1;
+      p.set(Math.round(5 + Math.cos(a) * 4), Math.round(6 + Math.sin(a) * 2), c('yellow', 2));
+    }
+    return lit(p);
+  };
+  book.add('wolfDazed0', dazed(0));
+  book.add('wolfDazed1', dazed(1));
   // A plastic spider dropping on its string.
   const spider = (f: number) => {
     const p = P();
@@ -513,7 +528,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('seed1', seed(1), { scorePts: 100 });
   // The 11-year-old in a cardboard knight costume: box armor, a bucket helmet with a slit and a
   // feather, a cardboard sword up. Only your foam sword knocks the helmet off.
-  const knight = (f: number, helmet = true) => {
+  const knightArt = (f: number, helmet = true, taped = false) => {
     const p = P();
     for (const [x, d] of [
       [6, f ? -1 : 0],
@@ -530,14 +545,31 @@ export function buildMonsterBlocks(pal: Pal) {
     if (helmet) {
       p.rect(6, 1, 8, 8, c('cardboard', 2)).rect(6, 1, 8, 1, c('cardboard', 3)).rect(7, 5, 6, 1, ink).rect(13, 1, 1, 8, c('cardboard', 0));
       p.line(9, 0, 7, -3, c('red', 2)).line(10, 0, 8, -3, c('red', 3)).set(7, 0, c('red', 2));
+      // jammed back on crooked, an X of tape holding it together, and a scowl under it
+      if (taped) p.line(6, 2, 13, 7, c('white', 2)).line(6, 7, 13, 2, c('white', 2)).rect(8, 8, 4, 1, c('red', 1));
     } else {
       p.rect(7, 2, 6, 2, c('hair', 1));
       p.set(8, 6, ink).set(12, 6, ink).rect(9, 8, 3, 1, ink).set(9, 8, c('white', 2)).set(11, 8, c('white', 2));
     }
-    return lit(p);
+    return p;
   };
+  const knight = (f: number, helmet = true, taped = false) => lit(knightArt(f, helmet, taped));
   sting('knight0', knight(0), -5);
   book.add('knight1', knight(1));
+  sting('knightTaped0', knight(0, true, true), -7);
+  book.add('knightTaped1', knight(1, true, true));
+  // The kid scooping his helmet back up off the carpet the first time ("Not yet!").
+  const grab = (f: number) => {
+    const p = knightArt(f, false);
+    // the helmet in both hands, coming up off the carpet
+    p.rect(2, 13 - f * 3, 8, 6, c('cardboard', 2))
+      .rect(2, 13 - f * 3, 8, 1, c('cardboard', 3))
+      .rect(3, 15 - f * 3, 6, 1, ink);
+    p.line(4, 12 - f * 3, 2, 9 - f * 3, c('red', 2));
+    return lit(p);
+  };
+  book.add('knightGrab0', grab(0));
+  book.add('knightGrab1', grab(1));
   book.add('knightRuns0', knight(0, false));
   book.add('knightRuns1', knight(1, false));
   // The cardboard helmet, knocked off and lying there (counter 22).
