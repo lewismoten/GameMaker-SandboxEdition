@@ -189,10 +189,12 @@ export function pictureDiz(f: GalleryFile): string[] {
   if (f.board === 'sofa')
     return fitDiz([
       headline(f.name),
-      `${f.width}x${f.height}, ${f.colors} colors, interlaced GIF`,
+      f.format === 'GIF'
+        ? `${f.width}x${f.height}, ${f.colors} ${f.gray ? 'grays' : 'colors'}, interlaced GIF`
+        : `${f.width}x${f.height}, JPEG${f.gray ? ', gray' : ''}`,
       RULE,
       ...clip(ascii(f.desc), 4),
-      center('Interlaced: watch it fill in!'),
+      center(f.format === 'GIF' ? 'Interlaced: watch it fill in!' : 'JPEG: worth the wait!'),
       RULE,
       `Uploaded by ${SOFA_UPLOADER} to THE SOFA BBS`,
     ]);

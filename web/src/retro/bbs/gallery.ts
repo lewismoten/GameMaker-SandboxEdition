@@ -1,8 +1,8 @@
 // The GIF Gallery file area on THE -= S A N D B O X =- BBS: the SysOp's snapshots as GIFs
 // and JPEGs, made by web/scripts/bbsGifs.ts into web/public/bbs (sizes and formats in
-// gallery.json). The Sofa's GIF area (board "sofa" in gallery.json: 640x480 interlaced
-// GIFs of THE CHEZ and the Bard's logo) shares the list. Downloaded pictures from either
-// board land in C:\IMAGES, where VPIC shows them again (retro/view/vpic.ts). The photos are
+// gallery.json), THE CHEZ's among them. The Sofa's GIF area (board "sofa" in gallery.json:
+// what Doc Leo uploaded there, the hobo clown pictures and the Bard's logo) shares the
+// list. Downloaded pictures from either board land in C:\IMAGES, where VPIC shows them again (retro/view/vpic.ts). The photos are
 // Lewis's own, except CHEZTED.GIF and THECHEZ2.GIF (one shot), taken by Nicky Foster (NOTICE.md).
 import list from './gallery.json';
 import { decodePartialGif, partialPixels } from '../../formats/gifProgressive';
@@ -31,25 +31,25 @@ const DESC: Record<string, string> = {
   'TEDDY.JPG': 'Teddy as a JPEG. Watch it sharpen!',
   'GWINN.JPG': 'Teddy and his pal Gwinn in the grass.',
   'GAZEBO.GIF': 'The SysOp and Teddy at the gazebo.',
-  'HOBO1.GIF': 'First time out as a hobo clown!',
-  'HOBO2.GIF': 'Hobo clown on a sunny Main Street.',
-  'HOBO3.JPG': 'Hobo clown and a rubber chicken.',
   'COLONIAL.GIF': 'The SysOp in colonial dress with General Washington. Huzzah!',
   'DOGHOUSE.JPG': "The Dog House: the SysOp's little lending library.",
   'LIBRARY.GIF': 'The Dog House again, in 16 colors.',
   'CHEZ.JPG': "THE CHEZ: the SysOp's red CitiCar!",
-  // The Sofa's GIF area
   'CHEZXMAS.GIF': 'THE CHEZ, the 1976 1/2 CitiCar, strung with Christmas lights.',
   'CHEZTED.GIF': 'Doc Leo, Teddy and THE CHEZ. Photo: Nicky Foster.',
   'CHEZPLUG.GIF': 'THE CHEZ plugged in at a public charger. Electric since 1976!',
-  'LEOWALK.GIF': 'Doc Leo walking his rubber chicken down the middle of a parade.',
-  'LEONOSE.GIF': "Doc Leo's first day as a clown: he got to pick his own nose.",
   'THECHEZ1.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Dressed in Christmas lights and a big gold bow.',
   'THECHEZ2.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Doc Leo and Teddy the corgi out for a spin. Photo: Nicky Foster.',
   'THECHEZ3.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Plugged in at a public charger.',
+  // The Sofa's GIF area: Doc Leo's uploads
   'BARDLOGO.GIF': "The Bard of Bizarre's logo: the rooster in glasses. Logo made with DeepAI.",
   'LEOCHICK.GIF': 'Doc Leo, hobo clown, walking his rubber chicken down the middle of a parade. It heels. Mostly.',
   'NEWNOSE.GIF': "Doc Leo's first day as a clown: he got to pick his own nose. (You can pick your nose, but you can't pick your friend's nose.)",
+  'LEOWALK.GIF': 'Doc Leo walking his rubber chicken down the middle of a parade.',
+  'LEONOSE.GIF': "Doc Leo's first day as a clown: he got to pick his own nose.",
+  'HOBO1.GIF': 'First time out as a hobo clown!',
+  'HOBO2.GIF': 'Hobo clown on a sunny Main Street.',
+  'HOBO3.JPG': 'Hobo clown and a rubber chicken.',
 };
 
 /** Every picture on either board (what C:\IMAGES can hold). */

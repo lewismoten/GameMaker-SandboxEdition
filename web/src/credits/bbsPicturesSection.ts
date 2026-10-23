@@ -53,8 +53,14 @@ export function bbsPicturesSection(): HTMLElement {
     h(
       'div',
       { class: 'bbs-boards' },
-      board(sheet, 'credits-bbs-sandbox', 'The Sandbox BBS: GIF Gallery', 'The SysOp’s snapshots, sized for a 320x200 VGA screen.', GALLERY),
-      board(sheet, 'credits-bbs-sofa', 'The Sofa: GIF Pictures', 'Doc Leo’s 640x480 interlaced GIFs.', SOFA_GIFS),
+      board(
+        sheet,
+        'credits-bbs-sandbox',
+        'The Sandbox BBS: GIF Gallery',
+        'The SysOp’s snapshots, THE CHEZ’s among them, mostly sized for a 320x200 VGA screen.',
+        GALLERY,
+      ),
+      board(sheet, 'credits-bbs-sofa', 'The Sofa: GIF Pictures', 'What Doc Leo uploaded: the hobo clown, and the Bard of Bizarre’s logo.', SOFA_GIFS),
     ),
   );
 }

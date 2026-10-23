@@ -1,6 +1,6 @@
-// The Sofa's GIF area: Doc Leo's pictures, 640x480 interlaced GIFs of THE CHEZ (his tomato
-// red 1976 1/2 CitiCar) and The Bard of Bizarre's logo (made with DeepAI). A download paints
-// in as the bytes arrive, the interlace's four passes coarse to fine (gifArea.ts), and lands
+// The Sofa's GIF area: what Doc Leo uploaded, his hobo clown pictures and The Bard of
+// Bizarre's logo (made with DeepAI). A download paints in as the bytes arrive, an interlaced
+// GIF's four passes coarse to fine, a JPEG top to bottom (gifArea.ts), and lands
 // in C:\IMAGES beside the Sandbox BBS's pictures. Free to everyone, like the rest of The Sofa.
 import type { RetroHost } from '../host';
 import { commas } from '../dos/vfs';
@@ -17,7 +17,7 @@ import type { Term } from './term';
 export function pictureEntry(f: GalleryFile, i: number, got: boolean): string[] {
   const desc = wrapWords(f.desc, 52);
   return [
-    `|14${String(i + 1).padStart(2)} ${got ? '|10*' : ' '}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(9)} |03${`${f.width}x${f.height}`} |13${formatLabel(f)}, interlaced`,
+    `|14${String(i + 1).padStart(2)} ${got ? '|10*' : ' '}|15${f.name.padEnd(12)}|14${commas(f.bytes).padStart(9)} |03${`${f.width}x${f.height}`} |13${formatLabel(f)}${f.format === 'GIF' ? ', interlaced' : ''}`,
     ...desc.map((l) => `${' '.repeat(26)}|07${l}`),
   ];
 }
@@ -26,7 +26,7 @@ export async function sofaPictures(t: Term, h: RetroHost): Promise<void> {
   const pager = new Pager(t, {
     header: (p, n) => [
       '|13          ──────────────── |15The Sofa |13─ |15GIF Pictures |13────────────────',
-      `|07  640x480 interlaced GIFs: they fill in as they arrive.${n > 1 ? `|08   ${pageLabel(p, n)}` : ''}`,
+      `|07  Doc Leo's uploads: they fill in as they arrive.${n > 1 ? `|08   ${pageLabel(p, n)}` : ''}`,
       '',
     ],
     entries: () => SOFA_GIFS.map((f, i) => pictureEntry(f, i, h.downloads.has(f.name))),
