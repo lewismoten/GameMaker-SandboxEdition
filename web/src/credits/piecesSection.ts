@@ -19,13 +19,18 @@ export function piecesSection(): HTMLElement {
   return section(
     'credits-pieces',
     'Engine, players and other third-party pieces',
+    'The engine, editors and players are this project’s own code. These are the few pieces from others.',
     h(
       'p',
       null,
-      'The engine, editors and players are this project’s own code, written from the original C source and the file formats’ published descriptions. These are the pieces from others, as ',
+      'The code is written from the original C source and the file formats’ published descriptions. The pieces below are listed as ',
       ext(NOTICE_URL, 'NOTICE.md'),
-      ' credits them. The downloads carry the notices that apply to them as THIRD-PARTY-NOTICES.txt.',
+      ' credits them; the downloads carry the notices that apply to them as THIRD-PARTY-NOTICES.txt.',
     ),
-    ...PIECE_GROUPS.map((g) => [h('h3', { id: g.id }, g.title), g.note && h('p', null, g.note), h('ul', { class: 'credits-deps' }, ...g.pieces.map(piece))]),
+    ...PIECE_GROUPS.map((g) => [
+      h('h3', { id: g.id }, g.title),
+      g.note && h('p', null, g.note),
+      h('ul', { class: 'credits-deps credits-deps-grid' }, ...g.pieces.map(piece)),
+    ]),
   );
 }

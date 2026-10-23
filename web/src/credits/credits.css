@@ -145,13 +145,20 @@ main.credits-page .bard-table thead th:not(:first-child) {
 }
 
 main.credits-page .bard-table tbody th {
-  min-width: 11rem;
+  min-width: 9rem;
+}
+
+main.credits-page .bard-table thead th {
+  font-size: 12px;
 }
 
 main.credits-page .bard-table td.yes {
-  color: var(--accent);
   font-weight: 700;
   font-size: 17px;
+}
+
+main.credits-page .bard-table td.yes > [aria-hidden] {
+  color: var(--accent);
 }
 
 main.credits-page .bard-table td.no {
@@ -175,6 +182,308 @@ main.credits-page .bard-key dt {
 
 main.credits-page .bard-key dd {
   margin: 0;
+}
+
+/* ---- rhythm: each section a band with a one-line intro ---- */
+
+main.credits-page section.credits-section {
+  margin: 0;
+  padding: 28px 0 32px;
+  border-top: 1px solid var(--border);
+}
+
+main.credits-page h2 {
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+main.credits-page .section-intro {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+main.credits-page h3 {
+  margin: 24px 0 8px;
+  font-size: 18px;
+}
+
+main.credits-page h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+main.credits-page :focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+main.credits-page .muted {
+  color: var(--muted);
+}
+
+main.credits-page q {
+  quotes: '“' '”';
+  margin-left: 0.3em;
+}
+
+/* the sections as cards to jump to, when "On this page" has no room beside the text */
+main.credits-page .credits-jump ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+main.credits-page .credits-jump li + li {
+  margin: 0;
+}
+
+main.credits-page .credits-jump a {
+  display: block;
+  min-height: 24px;
+  height: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  text-decoration: none;
+}
+
+main.credits-page .credits-jump a:hover {
+  border-color: var(--accent);
+}
+
+main.credits-page .credits-jump b {
+  display: block;
+  color: var(--accent);
+}
+
+main.credits-page .credits-jump span {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+@media (min-width: 1200px) {
+  main.credits-page .credits-jump {
+    display: none;
+  }
+}
+
+/* ---- pictures: a label's intro screen beside the section's first facts ---- */
+
+main.credits-page .credits-lead-row {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  margin: 0 0 8px;
+}
+
+main.credits-page .credits-lead-row > p {
+  margin: 0;
+}
+
+main.credits-page figure {
+  margin: 0;
+}
+
+main.credits-page .credits-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  image-rendering: pixelated;
+}
+
+main.credits-page figcaption {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+main.credits-page .credits-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+main.credits-page .credits-thumb {
+  width: 160px;
+}
+
+main.credits-page .credits-thumb img {
+  display: block;
+  width: 160px;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  image-rendering: pixelated;
+}
+
+main.credits-page .credits-thumbs .credits-banner {
+  width: 100%;
+  max-width: 22rem;
+}
+
+/* the cast: their sprites at a common height */
+main.credits-page .credits-cast .credits-thumb,
+main.credits-page .credits-person .credits-thumb {
+  width: 9rem;
+}
+
+main.credits-page .credits-cast .credits-thumb img,
+main.credits-page .credits-person .credits-thumb img {
+  width: auto;
+  max-width: 100%;
+  height: 88px;
+  object-fit: contain;
+  padding: 6px;
+  background: var(--panel);
+}
+
+main.credits-page .credits-person {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+/* ---- cards ---- */
+
+main.credits-page .credits-cards {
+  display: grid;
+  gap: 10px;
+}
+
+main.credits-page .credits-cards-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 12px;
+}
+
+/* the first card (Claude, who made the most) spans the row */
+main.credits-page .credits-cards-grid > .credits-card:first-child {
+  grid-column: 1 / -1;
+}
+
+main.credits-page .credits-card {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+main.credits-page .credits-card h3,
+main.credits-page .credits-card h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+main.credits-page .credits-card p {
+  margin: 0;
+}
+
+main.credits-page .credits-card .card-meta {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+main.credits-page .credits-callout {
+  padding: 12px 16px;
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  background: var(--panel);
+}
+
+main.credits-page .credits-callout p {
+  margin: 0;
+}
+
+main.credits-page .credits-callout p + p {
+  margin-top: 6px;
+}
+
+/* ---- game authors: a group's intro and two title screens, then its list ---- */
+
+main.credits-page .credits-group-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+
+main.credits-page .credits-group-head > .credits-group-text {
+  display: contents;
+}
+
+main.credits-page .credits-group-text > p {
+  margin: 0 0 12px;
+}
+
+main.credits-page .credits-group-head .credits-group-text > p {
+  margin: 0;
+}
+
+main.credits-page .credits-games-box {
+  margin-top: 8px;
+}
+
+/* ---- packages: a filter and two columns ---- */
+
+main.credits-page .credits-deps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  column-gap: 24px;
+}
+
+main.credits-page .credits-deps-grid li[hidden] {
+  display: none;
+}
+
+main.credits-page .dep-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+main.credits-page .dep-filter label {
+  font-weight: 600;
+}
+
+main.credits-page .dep-filter input {
+  flex: 1 1 14rem;
+  min-height: 36px;
+  max-width: 24rem;
+}
+
+main.credits-page .dep-count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+main.credits-page .dep-chip {
+  white-space: nowrap;
+}
+
+/* the Bard table's header row stays in view while the table scrolls by */
+main.credits-page .bard-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg);
+  box-shadow: inset 0 -2px 0 var(--border);
 }
 
 /* Phones and narrow windows: each table row becomes a card, its cells labelled. */
@@ -217,9 +526,13 @@ main.credits-page .bard-key dd {
     font-size: 16px;
   }
 
-  main.credits-page .credits-parts td::before {
-    content: attr(data-label) ': ';
+  main.credits-page .credits-parts td[data-label='Credited']::before {
+    content: 'Credited: ';
     color: var(--muted);
+  }
+
+  main.credits-page .credits-parts .credits-cite {
+    font-size: 13px;
   }
 
   /* the Bard's marks: a two-column grid of label and mark */
@@ -253,6 +566,7 @@ main.credits-page .bard-key dd {
 
   main.credits-page .bard-table td.yes {
     font-size: 14px;
+    font-weight: 600;
   }
 
   main.credits-page .bard-table td.no::before {
@@ -265,5 +579,30 @@ main.credits-page .bard-key dd {
 
   main.credits-page .bard-key dd {
     margin: 0 0 6px;
+  }
+
+  main.credits-page .credits-lead-row,
+  main.credits-page .credits-group-head,
+  main.credits-page .credits-person {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  main.credits-page .credits-thumb {
+    width: calc(50% - 6px);
+  }
+
+  main.credits-page .credits-thumb img {
+    width: 100%;
+  }
+
+  /* the section cards: two to a row, titles only */
+  main.credits-page .credits-jump ul {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  main.credits-page .credits-jump span {
+    display: none;
   }
 }

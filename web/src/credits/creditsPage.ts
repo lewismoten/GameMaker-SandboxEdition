@@ -15,6 +15,49 @@ import { authorsSection } from './authorsSection';
 import { peopleSection } from './peopleSection';
 import { bardSection } from './bardTable';
 
+/** The sections, for a window too narrow for "On this page" beside the text (pageToc.css). */
+const SECTIONS: [id: string, title: string, what: string][] = [
+  ['credits-original', 'The original Game-Maker', 'RSD and the Stone family, part by part'],
+  ['credits-authors', 'Game authors', 'The CD’s games, Sandbox Software and the Bard'],
+  ['credits-people', 'AI tools and the people', 'What each tool made, Lewis and the cast'],
+  ['credits-bard-table', 'The Bard of Bizarre', 'Who made what, game by game'],
+  ['credits-pieces', 'Third-party pieces', 'Fonts, headers and runtimes in the site and players'],
+  ['credits-software', 'Software', 'The build and test tools and what they use'],
+];
+
+function jumpList(): HTMLElement {
+  return h(
+    'nav',
+    { class: 'credits-jump', 'aria-label': 'Sections' },
+    h(
+      'ul',
+      null,
+      ...SECTIONS.map(([id, title, what]) =>
+        h(
+          'li',
+          null,
+          h(
+            'a',
+            {
+              href: '#/credits',
+              onclick: (e: Event) => {
+                e.preventDefault();
+                const head = document.getElementById(id);
+                if (!head) return;
+                head.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+                head.setAttribute('tabindex', '-1');
+                head.focus({ preventScroll: true });
+              },
+            },
+            h('b', null, title),
+            h('span', null, what),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 /** The page into `el`. */
 export function renderCredits(el: HTMLElement): void {
   const ext = { target: '_blank', rel: 'noopener' };
@@ -34,12 +77,13 @@ export function renderCredits(el: HTMLElement): void {
         h('a', { href: `${REPO_URL}/blob/master/LICENSE`, ...ext }, 'LICENSE'),
         ' (MIT).',
       ),
-      softwareSection(),
-      piecesSection(),
+      jumpList(),
       originalSection(),
       authorsSection(),
       peopleSection(),
       bardSection(),
+      piecesSection(),
+      softwareSection(),
     ),
   );
   pageToc(el.querySelector('main')!);

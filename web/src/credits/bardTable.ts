@@ -2,7 +2,7 @@
 // made part of that game (bardCredits.ts, checked against each game's credits by its test).
 // A real table with a caption and headers; on a phone each row becomes a card (credits.css).
 import { h } from '../editor/core/ui';
-import { section } from './section';
+import { section, banner } from './section';
 import { BARD_COLUMNS, BARD_GAMES } from './bardCredits';
 
 const cell = (yes: boolean, label: string) =>
@@ -17,10 +17,20 @@ export function bardSection(): HTMLElement {
   return section(
     'credits-bard-table',
     'The Bard of Bizarre: who made what',
+    'Every Bard game has many hands in it. Here is which tool or person made which part of each one.',
     h(
-      'p',
-      null,
-      'Every Bard game has many hands in it. Each row is a game, each column a tool or source, as the game’s own credits screen and LICENSE.TXT say. Claude Opus 5.5 built every game (code, levels and sprites), directed by Lewis.',
+      'div',
+      { class: 'credits-lead-row' },
+      banner(
+        'bard.webp',
+        'The Bard of Bizarre logo, a rooster in spectacles, on a stage between red curtains, with a photo of Doc Leo and a lute',
+        'The Bard of Bizarre’s intro, before each of his games',
+      ),
+      h(
+        'p',
+        null,
+        'Each row is a game and each column a tool or source, as the game’s own credits screen and LICENSE.TXT say. Claude Opus 5.5 built every game (code, levels and sprites), directed by Lewis. The headers stay at the top of the window as you scroll the table; on a phone each game is a card.',
+      ),
     ),
     h(
       'div',
