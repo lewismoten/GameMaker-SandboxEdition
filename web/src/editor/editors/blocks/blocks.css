@@ -188,3 +188,10 @@
   border-radius: 4px;
   flex: none;
 }
+dialog.modal label.recolor-check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  min-height: 24px;
+}

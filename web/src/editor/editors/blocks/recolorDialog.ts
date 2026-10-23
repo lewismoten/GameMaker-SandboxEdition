@@ -45,8 +45,8 @@ export function recolorDialog(pal: Palette, from: number, to: number): Promise<R
       },
       h('p', { class: 'meta' }, 'With more than one color, each shade goes to the matching shade of the other run: a whole ramp recolored at once.'),
       h('div', { class: 'grid-fields' }, f.el, t.el, n.el),
-      h('label', { class: 'check' }, swap, h('span', null, 'Swap: the second colors become the first, too')),
-      h('label', { class: 'check' }, every, h('span', null, 'In every block of this set (not just this one)')),
+      h('label', { class: 'check recolor-check' }, swap, h('span', null, 'Swap: the second colors become the first, too')),
+      h('label', { class: 'check recolor-check' }, every, h('span', null, 'In every block of this set (not just this one)')),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), h('button', { type: 'submit', class: 'primary' }, 'Replace')),
     );
   });
