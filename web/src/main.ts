@@ -98,11 +98,11 @@ function startModern(hash?: string): void {
         ' Offline',
       ),
       h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
-      // phones and tablets: the cast, the desk, offline and the source in a small menu, so the header stays one tidy row
+      // phones and tablets: the cast, the desk, offline, the credits and the source in a small menu, so the header stays one tidy row
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the cast, the 1994 desk, playing offline and the source code', title: 'More' }, '⋯'),
+        h('summary', { 'aria-label': 'More: the cast, the 1994 desk, playing offline, the credits and the source code', title: 'More' }, '⋯'),
         h(
           'div',
           { class: 'topbar-menu' },
@@ -110,6 +110,7 @@ function startModern(hash?: string): void {
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),
           h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
           h('button', { onclick: openOffline }, '⤓ Play offline'),
+          h('a', { href: '#/credits' }, '📜 Credits'),
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
       ),
@@ -181,6 +182,13 @@ async function route(): Promise<void> {
     renderCast(content);
     return;
   }
+  if (kind === 'credits') {
+    const { renderCredits } = await import('./credits/creditsPage');
+    if (ui !== 'modern') return;
+    document.title = `Credits · ${PRODUCT}`;
+    renderCredits(content);
+    return;
+  }
   if (kind === 'achievements') {
     const { renderAchievements } = await import('./achievements/page');
     if (ui !== 'modern') return;
@@ -249,13 +257,13 @@ function notHere(): void {
 window.addEventListener('hashchange', () => void route());
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the cast #/cast, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash)
   ? !!startHash
-  : ['p', 'game', 'help', 'cast', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
+  : ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
 if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 

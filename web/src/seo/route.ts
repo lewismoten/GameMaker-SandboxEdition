@@ -2,7 +2,7 @@
 // tags in step with what is on screen (the 1994 desk, today's home page, the Guide, a game
 // in the editor). It watches the page rather than being called by the app: main.ts sets
 // document.title and switches #app between the desk and the modern UI.
-import { ROUTES, type RouteName } from './site';
+import { PAGE_ROUTES as ROUTES, type PageRoute as RouteName } from './pageRoutes';
 
 const GENERIC_TITLES = new Set(['Game-Maker 1994', 'Game-Maker: Sandbox Edition', '']);
 
@@ -10,6 +10,7 @@ export function routeOf(hash: string, modern: boolean): RouteName {
   if (!modern) return 'desk';
   if (hash.startsWith('#/help')) return 'guide';
   if (hash.startsWith('#/cast')) return 'cast';
+  if (hash.startsWith('#/credits')) return 'credits';
   if (hash.startsWith('#/achievements')) return 'achievements';
   if (hash.startsWith('#/mac')) return 'mac';
   if (hash.startsWith('#/windows')) return 'windows';
