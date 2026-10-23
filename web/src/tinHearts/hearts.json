@@ -13,6 +13,7 @@
     "reckoning": { "map": "bedroom.map", "at": [5, 9] },
     "remote": { "map": "den.map", "at": [30, 16] },
     "risi": { "map": "kitchen.map", "at": [25, 11] },
+    "sandcast": { "map": "sandbox.map", "at": [48, 34] },
     "sleuth": { "map": "act1.map", "at": [11, 56] },
     "smirked": { "map": "foyer.map", "at": [30, 16] },
     "snowbound": { "map": "gale.map", "at": [13, 24] },
@@ -22,5 +23,5 @@
     "tickle": { "map": "tower.map", "at": [43, 23] },
     "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": ["depth", "maximus", "sandcast"]
+  "pending": ["depth", "maximus"]
 }
