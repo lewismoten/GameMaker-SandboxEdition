@@ -5,6 +5,7 @@ import { h } from '../../editor/core/ui';
 import { parseCharacter } from '../../formats/character';
 import { scanName } from '../../input/scancodes';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
+import { storageLine } from '../../project/diskFacts';
 import {
   shotCache,
   sheet,
@@ -274,7 +275,7 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
           h(
             'p',
             { class: 'cat-meta' },
-            `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster' : 'PC speaker'} · ${g.files.length} files · register ${price(g)}`,
+            `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster' : 'PC speaker'} · ${storageLine(g)} · register ${price(g)}`,
           ),
           h('p', null, g.original?.printables?.pitch ?? g.blurb ?? ''),
           h('ul', null, ...(g.original?.box?.features ?? []).slice(0, 3).map((f) => h('li', null, f))),
@@ -425,7 +426,7 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
         h('h3', null, real ? `Out now: ${real.title}` : `Next: ${c.title}`),
         pic,
         h('p', null, real?.blurb ?? c.blurb),
-        h('p', { class: 'nl-when' }, real ? `Register for ${price(real)}.` : `${c.when}. Registered players hear first.`),
+        h('p', { class: 'nl-when' }, real ? `${storageLine(real)}. Register for ${price(real)}.` : `${c.when}. Registered players hear first.`),
       );
     }),
   );
