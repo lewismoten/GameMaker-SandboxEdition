@@ -9,7 +9,7 @@
 // (?tab=sandbox&q=snow), so a reload or a link shows the same.
 import { h, clear, modal, toast } from '../core/ui';
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../../project/files';
-import { hasBizarreTab, isBizarreGame } from '../../project/bizarre';
+import { byCollection, hasBizarreTab, isBizarreGame } from '../../project/bizarre';
 import { listProjects } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
@@ -157,7 +157,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         : c === 'shareware'
           ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(catalog)))
           : c === 'bizarre' && hasBizarreTab(catalog)
-            ? catalog.filter((g) => isBizarreGame(g) && g.gam)
+            ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
             : [];
   // one HomeGame per game for the page's life, so files load once
   const games = new Map<string, HomeGame>();
@@ -211,6 +211,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       const hit = !q || (t.dataset.search ?? '').includes(q);
       t.hidden = !hit;
       if (hit) shown++;
+    }
+    // a collection's heading only while one of its games shows
+    for (const sub of tiles.querySelectorAll<HTMLElement>('.lib-sub')) {
+      let any = false;
+      for (let e = sub.nextElementSibling as HTMLElement | null; e && !e.classList.contains('lib-sub'); e = e.nextElementSibling as HTMLElement | null) any ||= e.classList.contains('card') && !e.hidden;
+      sub.hidden = !any;
     }
     tiles.querySelector('.lib-none')?.remove();
     if (!q || shown) return;
@@ -346,7 +352,15 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     );
     let cards: HTMLElement[];
     if (!isOwn(c) && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
-    else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) }));
+    else {
+      const tile = (g: HomeGame) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) });
+      // the Bard's games under his collections, in the flyer's order
+      const sections = c === 'bizarre' ? byCollection(gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))) : [];
+      cards =
+        sections.length > 1
+          ? sections.flatMap((sec) => [h('h3', { class: 'lib-sub' }, sec.name), ...sec.games.map((x) => tile(x.g))])
+          : gamesOf(c).map(tile);
+    }
     if (!cards.length)
       cards = [
         c === 'mine'
