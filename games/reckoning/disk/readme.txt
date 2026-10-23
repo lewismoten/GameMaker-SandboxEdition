@@ -85,7 +85,7 @@ CREDITS (NOW)
   Lewis Moten's own struggle
   (lactose intolerant, loves
   cheesecake): monologue
-  written by ChatGPT from
+  shaped by ChatGPT from
   Lewis's prompt; recording
   (voice) made with Riffusion
   (now Google Flow Music). The

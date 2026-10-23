@@ -10,7 +10,7 @@ address are part of the story:
 there is nothing to pay. The
 piece is The Bard of Bizarre's
 (Lewis Moten's): monologue
-written by ChatGPT from Lewis
+shaped by ChatGPT from Lewis
 Moten's prompt; recording
 (voice) made with Riffusion
 (now Google Flow Music); music

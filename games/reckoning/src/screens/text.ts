@@ -22,7 +22,7 @@ export const RECORDING_CREDIT = 'recording (voice) made with Riffusion (now Goog
  * music, which no one supplied and Claude made for the game. Used by LICENSE.TXT (the credits
  * page and the README spell it out to fit their columns; about.json says the same in its blurb).
  */
-export const SONG_CREDIT = `monologue written by ChatGPT from Lewis Moten's prompt; ${RECORDING_CREDIT}; music and title art made for this game by Claude Opus 5.5`;
+export const SONG_CREDIT = `monologue shaped by ChatGPT from Lewis Moten's prompt; ${RECORDING_CREDIT}; music and title art made for this game by Claude Opus 5.5`;
 
 export const STORY = [
   page([
@@ -253,7 +253,7 @@ CREDITS (NOW)
   Lewis Moten's own struggle
   (lactose intolerant, loves
   cheesecake): monologue
-  written by ChatGPT from
+  shaped by ChatGPT from
   Lewis's prompt; recording
   (voice) made with Riffusion
   (now Google Flow Music). The
