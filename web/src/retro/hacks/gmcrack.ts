@@ -7,8 +7,10 @@
 // GAME.BAK and puts a "patched" XFERPLAY in under the same GAME.EXE name, with the group's
 // intro before the game as cracked games of the day had (uncrack puts the .BAK back). The
 // game itself is not changed, and stays shareware (play only). It touches nothing but this
-// pretend PC. Its real job is debugging: switching Game-Maker and games between unregistered
-// and registered to test both; the scene dress is for fun.
+// pretend PC, and it only cracks this project's own shareware (the Sandbox Software and Bard
+// of Bizarre games): the CD's shareware by other authors asks not to be hacked, so it keeps
+// its author's notice. Its real job is debugging: switching Game-Maker and games between
+// unregistered and registered to test both; the scene dress is for fun.
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { attr, COLS, ROWS } from '../text/textScreen';
@@ -25,13 +27,19 @@ const KEYGEN_MAX = NAME_MAX - 1;
 /** A key for a name, as CHK.EXE will check it against this PC's serial number. */
 export const keygen = (name: string): string => String(registrationNumber(name.slice(0, KEYGEN_MAX), SERIAL));
 
-/** The shareware games in C:\DOWNLOAD whose .EXE is still there. */
-export async function crackable(h: RetroHost): Promise<CatalogEntry[]> {
+/**
+ * The shareware games in C:\DOWNLOAD whose .EXE is still there: this project's own (the only
+ * ones GMCRACK cracks), or with `any` every one, so a game cracked before can be uncracked.
+ */
+export async function crackable(h: RetroHost, any = false): Promise<CatalogEntry[]> {
   const cat = await h.catalog();
   return h.downloads
     .list()
     .map((id) => cat.find((g) => g.id === id))
-    .filter((g): g is CatalogEntry => !!g && g.kind === 'shareware' && !!g.exe && !!g.gam && !h.downloads.isDeleted(g.id, g.exe.toUpperCase()));
+    .filter(
+      (g): g is CatalogEntry =>
+        !!g && g.kind === 'shareware' && (any || !!g.original) && !!g.exe && !!g.gam && !h.downloads.isDeleted(g.id, g.exe.toUpperCase()),
+    );
 }
 
 function hash(s: string): number {
@@ -204,6 +212,7 @@ async function crack(h: RetroHost): Promise<void> {
     clearArea(h);
     put(h, 4, TOP, '|14CRACK |07a shareware game');
     put(h, 4, TOP + 2, '|07No uncracked shareware in |15C:\\DOWNLOAD|07. Download some from the BBS first!');
+    put(h, 4, TOP + 3, "|08We crack only Sandbox and Sofa games. Others' shareware: REGISTER it!");
     return anyKey(h);
   }
   const g = await pickGame(h, games, '|14CRACK |07which shareware game in |15C:\\DOWNLOAD|07?');
@@ -224,7 +233,7 @@ async function crack(h: RetroHost): Promise<void> {
 }
 
 async function uncrack(h: RetroHost): Promise<void> {
-  const games = (await crackable(h)).filter((g) => pcExtras().cracked(g.id) !== undefined);
+  const games = (await crackable(h, true)).filter((g) => pcExtras().cracked(g.id) !== undefined);
   if (!games.length) {
     clearArea(h);
     put(h, 4, TOP, '|14UNCRACK |07a game');
