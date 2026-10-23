@@ -90,8 +90,8 @@ game folder opens in the browser unchanged.
   spectacles) was made with DeepAI, and the Doc Leo photos are Lewis's own. Claude Opus 5.5
   wrote and built the games themselves (code, levels, art and arrangements), directed by
   Lewis.
-- **The BBS pictures** (`web/public/bbs`): THE CHEZ photos (THECHEZ1-3.GIF on The Sofa) are
-  Lewis's own; the Bard logo (BARDLOGO.GIF) was made with DeepAI.
+- **The BBS pictures** (`web/public/bbs`): THE CHEZ photos (THECHEZ1-3.GIF on The Sofa) and the
+  Doc Leo photos (LEOCHICK.GIF, NEWNOSE.GIF) are Lewis's own; the Bard logo (BARDLOGO.GIF) was made with DeepAI.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase and others).
   Shareware games are shown play-only, with their authors' original notices.
