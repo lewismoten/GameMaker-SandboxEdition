@@ -10,8 +10,6 @@ import { hiddenView } from '../../../games/kit/hiddenView';
  * fails while an entry here is hidden already, so the list only shrinks.
  */
 const STILL_SHOWN = new Set([
-  'brief:tinHeart',
-  'brief:easterEgg',
   'logic:tinHeart',
   'logic:easterEgg',
   'maximus:tinHeart',
