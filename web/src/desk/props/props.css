@@ -491,7 +491,7 @@
     position: absolute;
     inset: 0 -1400px -200px;
     z-index: -1;
-    background: radial-gradient(ellipse 30% 40% at calc(50% - 450px) 8%, rgba(120, 50, 220, 0.35), transparent 70%), rgba(10, 4, 26, 0.55);
+    background: radial-gradient(ellipse 30% 40% at calc(50% - 444px) 10%, rgba(120, 50, 220, 0.35), transparent 70%), rgba(10, 4, 26, 0.55);
     opacity: 0;
     transition: opacity 1.2s;
     pointer-events: none;
@@ -506,25 +506,25 @@
     opacity: 0.7;
   }
 
-  /* the tube in its white fixture, over the poster */
+  /* the tube in its black fixture, over the poster */
   .desk-scene > .bl-tube {
     display: block;
     position: absolute;
-    left: 222px;
+    left: 210px;
     top: 14px;
-    width: 98px;
-    height: 9px;
+    width: 132px;
+    height: 10px;
     border-radius: 5px;
-    background: linear-gradient(#f2efe6, #b9b4a6);
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(#3a3a40, #0e0e12);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   }
 
   .desk-scene > .bl-tube::after {
     content: "";
     position: absolute;
-    left: 6px;
-    right: 6px;
-    top: 5px;
+    left: 7px;
+    right: 7px;
+    top: 6px;
     height: 5px;
     border-radius: 3px;
     background: #4a3f63;
@@ -536,23 +536,19 @@
     background: #c9a8ff;
     box-shadow:
       0 0 6px 2px rgba(170, 110, 255, 0.9),
-      0 10px 50px 18px rgba(130, 60, 255, 0.35);
+      0 10px 60px 22px rgba(130, 60, 255, 0.35);
   }
 
+  /* 12" x 18", between the big poster and the clipping, clear of the egg frame below */
   .desk-scene > .bl-poster {
-    --bl-o: #c98a5a;
-    --bl-g: #7ea583;
-    --bl-m: #c7709f;
     display: block;
     position: absolute;
-    left: 226px;
-    top: 32px;
+    left: 216px;
+    top: 30px;
     z-index: 0;
-    width: 90px;
-    height: 136px;
-    background:
-      radial-gradient(120% 90% at 30% 20%, rgba(255, 255, 255, 0.06), transparent 60%),
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0 1px, transparent 1px 3px), #120e16;
+    width: 120px;
+    height: 180px;
+    background: #120e16;
     box-shadow: 3px 6px 8px rgba(0, 0, 0, 0.5);
     transform: rotate(-1.5deg);
     transition: transform 0.15s;
@@ -563,32 +559,43 @@
     transform: rotate(-0.5deg) scale(1.04);
   }
 
-  .bl-poster svg {
+  .bl-poster .bl-print {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
   }
 
-  .bl-poster .bl-o {
-    stroke: var(--bl-o);
-    color: var(--bl-o);
+  /* the glowing print, there after dark (and while the tube flickers) */
+  .bl-poster .bl-print.night {
+    opacity: 0;
+    transition: opacity 1.2s;
   }
 
-  .bl-poster .bl-g {
-    stroke: var(--bl-g);
-    color: var(--bl-g);
+  .desk.bl-night .bl-print.night,
+  .desk.bl-flicker .bl-print.night,
+  .desk.bl-blink .bl-print.night {
+    opacity: 1;
+    transition: none;
   }
 
-  .bl-poster .bl-m {
-    stroke: var(--bl-m);
-    color: var(--bl-m);
-    fill: var(--bl-m);
+  .desk.bl-night .bl-poster,
+  .desk.bl-flicker .bl-poster,
+  .desk.bl-blink .bl-poster {
+    box-shadow:
+      3px 6px 8px rgba(0, 0, 0, 0.5),
+      0 0 22px rgba(200, 80, 255, 0.35);
   }
 
-  .bl-poster g.bl-m,
-  .bl-poster g.bl-o,
-  .bl-poster g.bl-g {
-    fill: none;
+  .desk.bl-night .bl-print.night {
+    animation: bl-hum 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes bl-hum {
+    to {
+      filter: brightness(0.88);
+    }
   }
 
   /* a thumbtack in each top corner */
@@ -596,6 +603,7 @@
   .desk-scene > .bl-poster::after {
     content: "";
     position: absolute;
+    z-index: 1;
     top: 3px;
     width: 7px;
     height: 7px;
@@ -611,34 +619,9 @@
     right: 4px;
   }
 
-  /* lit by the tube: fluorescent magenta, green and orange */
-  .desk.bl-night .bl-poster,
-  .desk.bl-flicker .bl-poster,
-  .desk.bl-blink .bl-poster {
-    --bl-o: #ff8a1a;
-    --bl-g: #39ff6a;
-    --bl-m: #ff2fd6;
-  }
-
-  .desk.bl-night .bl-poster svg,
-  .desk.bl-flicker .bl-poster svg,
-  .desk.bl-blink .bl-poster svg {
-    filter: drop-shadow(0 0 2px currentColor) drop-shadow(0 0 3px rgba(255, 60, 220, 0.6)) drop-shadow(0 0 6px rgba(80, 255, 140, 0.35));
-  }
-
-  .desk.bl-night .bl-poster svg {
-    animation: bl-hum 4s ease-in-out infinite alternate;
-  }
-
-  @keyframes bl-hum {
-    to {
-      opacity: 0.88;
-    }
-  }
-
   /* pressed: the tube stutters (a few times a second at most) */
   .desk.bl-flicker .bl-tube::after,
-  .desk.bl-flicker .bl-poster svg {
+  .desk.bl-flicker .bl-print.night {
     animation: bl-stutter 1s steps(1) forwards;
   }
 
@@ -663,13 +646,14 @@
 }
 
 @media (min-width: 961px) and (prefers-reduced-motion: reduce) {
-  .desk.bl-night .bl-poster svg,
+  .desk.bl-night .bl-print.night,
   .desk.bl-flicker .bl-tube::after,
-  .desk.bl-flicker .bl-poster svg {
+  .desk.bl-flicker .bl-print.night {
     animation: none;
   }
 
-  .desk-scene > .bl-dim {
+  .desk-scene > .bl-dim,
+  .bl-poster .bl-print.night {
     transition: none;
   }
 }
