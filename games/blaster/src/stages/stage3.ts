@@ -86,7 +86,7 @@ function legB(g: Grid): void {
   g.hatch(4, 39).hatch(11, 40).hatch(7, 42);
   g.mon(7, 45, 'ampL').mon(9, 45, 'ampR');
   vuRow(g, 1, 14, 48);
-  g.pickup(3, 49, 'bit').pickup(12, 49, 'bit').pickup(8, 50, 'repair');
+  g.pickup(3, 49, 'bit').pickup(12, 49, 'bit').pickup(8, 50, 'bit');
   g.stamp(1, 52, 'spk', 4, 4).stamp(11, 52, 'spk', 4, 4);
   g.turret(7, 54, 'flak').turret(8, 57, 'sweep');
   conga(g, 8, 59, 5, 'noteZ');

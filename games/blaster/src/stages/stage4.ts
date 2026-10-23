@@ -103,7 +103,7 @@ function legB(g: Grid): void {
   g.hatch(2, 43).hatch(13, 44);
   g.mon(8, 46, 'slug');
   g.turret(7, 49, 'flak').turret(4, 51, 'sweep').turret(11, 51, 'sweep');
-  g.pickup(8, 53, 'repair').pickup(2, 54, 'bit').pickup(13, 54, 'bit');
+  g.pickup(8, 53, 'bit').pickup(2, 54, 'bit').pickup(13, 54, 'bit');
   spin(g, 56, 57, 'L');
   g.mon(8, 60, 'tank');
   conga(g, 7, 62, 4, 'skullR');

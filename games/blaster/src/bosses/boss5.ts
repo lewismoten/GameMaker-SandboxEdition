@@ -146,7 +146,7 @@ export function bossGlitch(art: StageArt): Leg {
   g.turret(6, 3, 'seeker').turret(9, 3, 'seeker');
   g.hatch(1, 4, false).hatch(14, 4, false);
   g.mon(2, 9, 'slug').mon(13, 9, 'slug');
-  g.pickup(1, 8, 'repair').pickup(14, 8, 'repair').pickup(1, 6, 'nova').pickup(14, 6, 'nova');
+  g.pickup(1, 8, 'repair').pickup(1, 6, 'nova').pickup(14, 6, 'nova');
   return {
     file: 's5c',
     kitFile: 'b5',

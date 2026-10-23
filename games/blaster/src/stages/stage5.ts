@@ -49,9 +49,9 @@ function legA(g: Grid): void {
   conga(g, 7, 9, 5, 'eyeR');
   conga(g, 9, 9, 5, 'eyeL');
   g.turret(3, 14, 'sweep').turret(12, 15, 'sweep');
-  g.mon(5, 18, 'wasp').mon(11, 18, 'wasp').mon(8, 20, 'wasp');
+  g.mon(5, 18, 'wasp').mon(11, 18, 'wasp');
   g.fence(1, 7, 23, 'A').fence(9, 14, 23, 'B');
-  g.pickup(4, 25, 'nova').pickup(11, 25, 'repair');
+  g.pickup(4, 25, 'nova').pickup(11, 25, 'bit');
   g.stamp(5, 27, 'alu', 4, 3);
   g.hatch(3, 28).hatch(12, 29);
   g.mon(8, 32, 'slug');
