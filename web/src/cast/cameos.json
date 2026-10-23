@@ -14,13 +14,15 @@
     { "game": "carl", "as": "under the bedroom desk" },
     { "game": "snowbound", "as": "in the snow by the backyard snowman" },
     { "game": "loaf", "as": "at the foot of a fig tree on the hillside" },
-    { "game": "risi", "as": "on the kitchen floor, under a shelf" }
+    { "game": "risi", "as": "on the kitchen floor, under a shelf" },
+    { "game": "remote", "as": "on the living room carpet, in the far corner" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
     { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" },
     { "game": "smirked", "as": "peeking out of the gift shop’s curtains" },
-    { "game": "snowbound", "as": "declaiming outside Bleeps at LaVale Mall" }
+    { "game": "snowbound", "as": "declaiming outside Bleeps at LaVale Mall" },
+    { "game": "remote", "as": "a signed head shot on the living room wall" }
   ],
   "watt": [
     { "game": "blaster", "as": "blinking on Memory Lane" },
