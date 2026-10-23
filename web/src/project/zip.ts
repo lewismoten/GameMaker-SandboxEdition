@@ -13,6 +13,8 @@
 export interface ZipEntry {
   name: string;
   data: Uint8Array;
+  /** Unix file mode (e.g. 0o100755 for a program); stored so unzipping keeps it executable. */
+  mode?: number;
 }
 
 // CRC-32 (reflected polynomial 0xEDB88320, initial value and final XOR 0xFFFFFFFF),
@@ -97,6 +99,11 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
     c.setUint32(20, body.length, true);
     c.setUint32(24, e.data.length, true);
     c.setUint16(28, name.length, true);
+    // A Unix mode goes in the high half of the external attributes, "made by" Unix (3).
+    if (e.mode !== undefined) {
+      c.setUint16(4, (3 << 8) | 20, true);
+      c.setUint32(38, (e.mode << 16) >>> 0, true);
+    }
     c.setUint32(42, offset, true);
     central.push(new Uint8Array(c.buffer), name);
     offset += 30 + name.length + body.length;
