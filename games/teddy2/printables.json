@@ -71,7 +71,7 @@
       "sprite": {
         "blocks": "show.mbl",
         "pal": "show.pal",
-        "grid": [[37]]
+        "grid": [[38]]
       }
     },
     {
@@ -83,7 +83,7 @@
       "sprite": {
         "blocks": "night.mbl",
         "pal": "night.pal",
-        "grid": [[33]]
+        "grid": [[39]]
       }
     },
     {
