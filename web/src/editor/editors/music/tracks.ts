@@ -4,7 +4,7 @@ import { h, clear, confirmDialog } from '../../core/ui';
 import { channelNotes, removeChannel, setStartProgram, startProgram } from '../../../formats/cmfEdit';
 import { RHYTHM_CHANNELS, DRUM_NAMES } from '../../../formats/cmfSong';
 import { TRACK_COLORS, type MusicDoc } from './doc';
-import { instLabel } from './instrument';
+import { instLabel, instShortLabel } from './instrument';
 import { PRESETS } from './sbi';
 
 export class TrackList {
@@ -80,8 +80,9 @@ export class TrackList {
       const p = startProgram(song, ch);
       const bank = h(
         'select',
-        { 'aria-label': `Instrument for ${doc.trackName(ch)}`, title: 'Instrument' },
-        ...song.instruments.map((_, i) => h('option', { value: String(i), selected: i === p }, instLabel(doc, i))),
+        { 'aria-label': `Instrument for ${doc.trackName(ch)}`, title: instLabel(doc, p) },
+        // short names fit the narrow header; the full one is each option's tooltip
+        ...song.instruments.map((_, i) => h('option', { value: String(i), selected: i === p, title: instLabel(doc, i) }, instShortLabel(doc, i))),
         song.instruments[p] ? null : h('option', { value: String(p), selected: true }, instLabel(doc, p)),
       );
       bank.addEventListener('change', () => {
