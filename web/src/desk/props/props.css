@@ -491,7 +491,7 @@
     position: absolute;
     inset: 0 -1400px -200px;
     z-index: -1;
-    background: radial-gradient(ellipse 30% 40% at calc(50% - 444px) 10%, rgba(120, 50, 220, 0.35), transparent 70%), rgba(10, 4, 26, 0.55);
+    background: radial-gradient(ellipse 30% 40% at calc(50% - 400px) 10%, rgba(120, 50, 220, 0.35), transparent 70%), rgba(10, 4, 26, 0.55);
     opacity: 0;
     transition: opacity 1.2s;
     pointer-events: none;
@@ -510,13 +510,24 @@
   .desk-scene > .bl-tube {
     display: block;
     position: absolute;
-    left: 210px;
-    top: 14px;
-    width: 132px;
+    left: 224px;
+    top: 13px;
+    width: 184px;
     height: 10px;
     border-radius: 5px;
     background: linear-gradient(#3a3a40, #0e0e12);
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  /* the switch's target: the fixture and a little room round it */
+  .desk-scene > .bl-tube::before {
+    content: "";
+    position: absolute;
+    inset: -10px -4px -12px;
+  }
+
+  .desk-scene > .bl-tube:focus-visible {
+    outline-offset: 6px;
   }
 
   .desk-scene > .bl-tube::after {
@@ -530,7 +541,7 @@
     background: #4a3f63;
   }
 
-  .desk.bl-night .bl-tube::after,
+  .desk.bl-uv .bl-tube::after,
   .desk.bl-flicker .bl-tube::after,
   .desk.bl-blink .bl-tube::after {
     background: #c9a8ff;
@@ -539,15 +550,16 @@
       0 10px 60px 22px rgba(130, 60, 255, 0.35);
   }
 
-  /* 12" x 18", between the big poster and the clipping, clear of the egg frame below */
+  /* the whole width of the wall between the big poster and the monitor, down to just over
+     the egg frame on the top shelf */
   .desk-scene > .bl-poster {
     display: block;
     position: absolute;
     left: 216px;
     top: 30px;
     z-index: 0;
-    width: 120px;
-    height: 180px;
+    width: 200px;
+    height: 204px;
     background: #120e16;
     box-shadow: 3px 6px 8px rgba(0, 0, 0, 0.5);
     transform: rotate(-1.5deg);
@@ -573,14 +585,24 @@
     transition: opacity 1.2s;
   }
 
-  .desk.bl-night .bl-print.night,
+  .desk.bl-uv .bl-print.night,
   .desk.bl-flicker .bl-print.night,
   .desk.bl-blink .bl-print.night {
     opacity: 1;
     transition: none;
   }
 
-  .desk.bl-night .bl-poster,
+  /* switched on by day, a black light only glows dimly */
+  .desk.bl-uv:not(.bl-night) .bl-print.night {
+    opacity: 0.5;
+  }
+
+  /* switched off at night, the poster is just in the dark */
+  .desk.bl-night:not(.bl-uv) .bl-print.day {
+    filter: brightness(0.6);
+  }
+
+  .desk.bl-uv .bl-poster,
   .desk.bl-flicker .bl-poster,
   .desk.bl-blink .bl-poster {
     box-shadow:
@@ -588,7 +610,7 @@
       0 0 22px rgba(200, 80, 255, 0.35);
   }
 
-  .desk.bl-night .bl-print.night {
+  .desk.bl-uv.bl-night .bl-print.night {
     animation: bl-hum 4s ease-in-out infinite alternate;
   }
 
@@ -646,7 +668,7 @@
 }
 
 @media (min-width: 961px) and (prefers-reduced-motion: reduce) {
-  .desk.bl-night .bl-print.night,
+  .desk.bl-uv .bl-print.night,
   .desk.bl-flicker .bl-tube::after,
   .desk.bl-flicker .bl-print.night {
     animation: none;
@@ -656,4 +678,17 @@
   .bl-poster .bl-print.night {
     transition: none;
   }
+}
+
+/* ---- the felt eggs under black light (eggGlow.ts): patterns only UV brings out */
+.egg-uv {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.egg-uv svg {
+  position: absolute;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.6));
 }

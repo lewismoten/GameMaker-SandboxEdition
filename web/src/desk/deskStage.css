@@ -277,7 +277,7 @@
   .desk-scene .wall-poster {
     left: 318px;
     top: 30px;
-    z-index: -1;
+    z-index: 0; /* pinned over the black-light poster while its game is in, behind the monitor */
   }
 
   .desk-scene .speaker.left {
@@ -297,11 +297,11 @@
   }
 
   /* small, on the wall between the egg frame (on the top shelf's right end) and the monitor,
-     under where a game's own poster hangs; its space by the poster is the black light's */
+     under the black-light poster (props/blacklight.ts) and over the left speaker */
   .desk-scene .news-clipping {
-    left: 344px;
-    top: 196px;
-    width: 58px;
+    left: 352px;
+    top: 254px;
+    width: 52px;
   }
 
   /* 36" x 48" (380 x 500 with its frame), its sill 36" up at y 410: it stands partly behind
