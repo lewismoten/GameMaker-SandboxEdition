@@ -62,7 +62,22 @@ export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
     { title: 'Characters', rows: [...UNDO, [['←', '→'], 'Switch between At the start and Sequences (on the tabs)'], GRID] },
     { title: 'A sequence’s key', rows: [[['Click', 'any key'], 'Click the key button, then press the key that runs the sequence']] },
   ],
-  map: [{ title: 'Map', rows: [...UNDO, GRID] }],
+  map: [
+    {
+      title: 'Map',
+      rows: [
+        ...UNDO,
+        [['B', 'L', 'R', 'F', 'I'], 'Paint, Line, Rectangle, Fill, Pick a block from the map'],
+        [['S', 'T', 'P', 'H', 'M'], 'Select, Terrain, Stamp, Building, Monsters'],
+        [['G'], 'Show or hide the block grid'],
+        [[`${MOD}+C`, `${MOD}+X`, `${MOD}+V`], 'Copy, cut or paste the selected blocks (on any map)'],
+        [['Delete'], 'Fill the selection with the chosen block'],
+        [['Esc'], 'Drop the selection, or stop pasting'],
+        [['Right-click'], 'Erase with a terrain; remove a monster'],
+        GRID,
+      ],
+    },
+  ],
   snd: [
     {
       title: 'Sound set',
