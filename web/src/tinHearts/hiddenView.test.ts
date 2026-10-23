@@ -24,8 +24,6 @@ const STILL_SHOWN = new Set([
   'reckoning:easterEgg',
   'sleuth:tinHeart',
   'smirked:tinHeart',
-  'teddy2:tinHeart',
-  'teddy2:easterEgg',
 ]);
 
 describe('tin hearts and Easter eggs out of sight', async () => {
