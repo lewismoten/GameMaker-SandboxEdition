@@ -74,8 +74,8 @@ export function utilityFolders(dl: Downloads, liveFolder: (name: string, list: (
 /** C:\IMAGES\FILE_ID.DIZ: the newest picture's (each unzip wrote over the one before). */
 export async function imagesDiz(dl: Downloads): Promise<DosNode[]> {
   // (the gallery's picture decoders load with it, so only when C:\IMAGES is listed)
-  const { GALLERY } = await import('../bbs/gallery');
-  const got = GALLERY.filter((f) => dl.has(f.name));
+  const { PICTURES } = await import('../bbs/gallery');
+  const got = PICTURES.filter((f) => dl.has(f.name));
   const newest = newestPicture(got, (n) => dl.date(n)?.getTime());
   if (!newest || dl.isDeleted(newest.name, DIZ_NAME)) return [];
   return [bytesNode(DIZ_NAME, dizBytes(pictureDiz(newest)), { date: dl.date(newest.name), remove: () => dl.deleteFile(newest.name, DIZ_NAME) })];
