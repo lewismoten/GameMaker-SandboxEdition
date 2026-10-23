@@ -156,6 +156,14 @@ export async function portrait(entry: CatalogEntry, p: Portrait): Promise<string
   }
 }
 
+/** Marks every pixel whose color shows along the picture's edge as ground. */
+function edgeGround(px: Uint8Array, ground: Int16Array, w: number, h: number): void {
+  const ring = new Set<number>();
+  for (let x = 0; x < w; x++) ring.add(px[x]).add(px[(h - 1) * w + x]);
+  for (let y = 0; y < h; y++) ring.add(px[y * w]).add(px[y * w + w - 1]);
+  for (let i = 0; i < px.length; i++) if (ring.has(px[i])) ground[i] = px[i];
+}
+
 /** Clears the ground round a thing drawn on it: pixels that match the plain ground, reached from the edge. */
 function cutAway(px: Uint8Array, ground: Int16Array, w: number, h: number): void {
   const seen = new Uint8Array(px.length);
@@ -195,7 +203,7 @@ export async function spriteArt(entry: CatalogEntry, s: SpriteArt): Promise<stri
       row.forEach((n, gx) => {
         const b = n >= 0 ? blocks[n] : undefined;
         if (!b) return;
-        const u = typeof s.under === 'number' ? s.under : s.under?.[gy]?.[s.flip ? row.length - 1 - gx : gx];
+        const u = typeof s.under === 'number' ? s.under : Array.isArray(s.under) ? s.under[gy]?.[s.flip ? row.length - 1 - gx : gx] : undefined;
         const under = u !== undefined && u >= 0 ? blocks[u] : undefined;
         for (let y = 0; y < BLEN; y++)
           for (let x = 0; x < BLEN; x++) {
@@ -205,6 +213,7 @@ export async function spriteArt(entry: CatalogEntry, s: SpriteArt): Promise<stri
           }
       }),
     );
+    if (s.under === 'edge') edgeGround(px, ground, W, rows * BLEN);
     if (s.under !== undefined) cutAway(px, ground, W, rows * BLEN);
     const c = document.createElement('canvas');
     paintIndexed(c, px, W, rows * BLEN, parsePalette(palB), true);

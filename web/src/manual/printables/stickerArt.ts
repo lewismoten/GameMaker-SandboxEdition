@@ -107,7 +107,7 @@ class Grid {
  * place it fits, so shapes nest into each other's gaps. Then `fillers` (small extras) go into
  * whatever room is left on every sheet, round and round, until none fits or `maxFill` are down.
  */
-export function layoutStickers(stickers: StickerGeom[], fillers: StickerGeom[] = [], maxFill = 48): Placed[][] {
+export function layoutStickers(stickers: StickerGeom[], fillers: StickerGeom[] = [], maxFill = 60): Placed[][] {
   const pages: { grid: Grid; placed: Placed[] }[] = [];
   const order = stickers.map((_, i) => i).sort((a, b) => stickers[b].w * stickers[b].h - stickers[a].w * stickers[a].h || a - b);
   const put = (page: { grid: Grid; placed: Placed[] }, g: StickerGeom, fp: Footprint, index: number): boolean => {

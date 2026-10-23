@@ -210,8 +210,12 @@ export interface SpriteArt {
   blocks: string;
   pal: string;
   grid: number[][];
-  /** The plain ground block a background thing is drawn on (or a grid of them, like `grid`): its pixels round the thing are cut away. */
-  under?: number | number[][];
+  /**
+   * The plain ground block a background thing is drawn on (or a grid of them, like `grid`): its
+   * pixels round the thing are cut away. "edge" cuts away the colors along the picture's edge instead
+   * (for a thing on speckled ground).
+   */
+  under?: number | number[][] | 'edge';
   /** Facing the other way. */
   flip?: boolean;
 }

@@ -25,11 +25,11 @@
     sans-serif;
 }
 
-/* the Print Then Cut area, 6.75 x 9.25 in, centered on the letter page */
+/* the Print Then Cut area, 6.75 x 9.25 in, centered on the letter page (cqw: the sheet's width, not the padded box's) */
 .stk-art {
   display: block;
-  width: 79.41%;
-  margin: 1.6cqw auto 0;
+  width: 79.41cqw;
+  margin: 1.2cqw auto 0;
 }
 
 .stk-cut {

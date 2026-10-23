@@ -245,7 +245,8 @@ export function shaped(name: string, shape: StickerShape, words: Words, img?: Ar
       if (img) {
         const labelled = !!(words.text || words.sub);
         const round = shape !== 'rect' && shape !== 'badge' && shape !== 'bubble';
-        const bandTop = labelled ? H * (shape === 'heart' ? 0.5 : round ? 0.64 : 0.72) : H;
+        const pointy = shape === 'star' || shape === 'burst';
+        const bandTop = labelled ? H * (shape === 'heart' ? 0.5 : pointy ? 0.6 : round ? 0.64 : 0.72) : H;
         const cx = W / 2;
         const cy = (Math.max(by * H, H * 0.06) + bandTop) / 2;
         sunburst(g, cx, cy, Math.max(W, H));
@@ -262,8 +263,8 @@ export function shaped(name: string, shape: StickerShape, words: Words, img?: Ar
           g.fillStyle = words.ink;
           g.fillRect(-bleed * S, bandTop, W + 2 * bleed * S, H + bleed * S - bandTop);
           // round stickers narrow toward the bottom, so their words sit higher and narrower
-          const inset = shape === 'heart' ? 0.36 : shape === 'star' || shape === 'burst' ? 0.46 : round ? 0.6 : 0.84;
-          const bandH = (H - bandTop) * (round ? 0.72 : 1);
+          const inset = shape === 'heart' ? 0.36 : shape === 'burst' ? 0.4 : shape === 'star' ? 0.46 : round ? 0.6 : 0.84;
+          const bandH = (H - bandTop) * (pointy ? 0.62 : round ? 0.72 : 1);
           wordsIn(g, words, W * (1 - inset) / 2, bandTop + bandH * 0.08, W * inset, bandH * 0.84, words.color);
         }
       } else wordsIn(g, words, bx * W, by * H, bw * W, bh * H, words.ink);
