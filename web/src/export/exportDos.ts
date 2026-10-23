@@ -18,7 +18,8 @@ export interface DosExportOptions {
 /** DOS 8.3 names that FAT and Game-Maker accept. */
 const DOS_NAME = /^[A-Z0-9_\-~!@#$%^&()]{1,8}(\.[A-Z0-9_\-~!@#$%^&()]{1,3})?$/;
 // Our saved games are JSON, which DOS Game-Maker can't read; SAVNAMES.DAT lists them.
-const WEB_ONLY = /^(game\d\.sav|savnames\.dat)$/i;
+// A .gmx is the editor's companion (project/companion.ts), never one of the game's files.
+const WEB_ONLY = /^(game\d\.sav|savnames\.dat|.*\.gmx)$/i;
 
 export function dosNameProblems(names: string[]): string[] {
   return names.filter((n) => !DOS_NAME.test(n.toUpperCase()));

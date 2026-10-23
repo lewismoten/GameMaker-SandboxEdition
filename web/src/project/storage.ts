@@ -6,6 +6,7 @@
 //   projects: ProjectRecord rows keyed by their `id`.
 //   saves: one object per game id mapping file name -> bytes (out-of-line keys).
 import { GameFiles } from './files';
+import type { Companion } from './companion';
 
 const DB_NAME = 'gamemaker-web';
 const DB_VERSION = 1;
@@ -21,6 +22,8 @@ export interface ProjectRecord {
   updated: number;
   /** The whole game directory: file name -> contents. */
   files: Record<string, Uint8Array>;
+  /** Editor-only extras (companion.ts): never one of the game's files, so no export but the backup carries it. */
+  companion?: Companion;
 }
 
 let dbPromise: Promise<IDBDatabase> | undefined;
@@ -64,9 +67,28 @@ export async function loadProject(id: string): Promise<{ record: ProjectRecord; 
   return { record, files: new GameFiles(Object.entries(record.files)) };
 }
 
-export async function saveProject(id: string, name: string, gam: string, files: GameFiles): Promise<void> {
-  const record: ProjectRecord = { id, name, gam, updated: Date.now(), files: Object.fromEntries(files.entries()) };
-  await request(PROJECTS, 'readwrite', (s) => s.put(record));
+/**
+ * Stores a project. `companion` undefined keeps the one stored already (many callers only
+ * know the files), so the record is read and written in one transaction.
+ */
+export async function saveProject(id: string, name: string, gam: string, files: GameFiles, companion?: Companion): Promise<void> {
+  const d = await db();
+  await new Promise<void>((resolve, reject) => {
+    const tx = d.transaction(PROJECTS, 'readwrite');
+    const store = tx.objectStore(PROJECTS);
+    const next: ProjectRecord = { id, name, gam, updated: Date.now(), files: Object.fromEntries(files.entries()) };
+    const get = store.get(id);
+    get.onsuccess = () => store.put(withCompanion(next, get.result as ProjectRecord | undefined, companion));
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+/** The record to store: the given companion, else the stored one, else none. */
+export function withCompanion(next: ProjectRecord, stored: ProjectRecord | undefined, companion?: Companion): ProjectRecord {
+  const c = companion ?? stored?.companion;
+  return c ? { ...next, companion: c } : next;
 }
 
 export async function deleteProject(id: string): Promise<void> {
