@@ -1,9 +1,9 @@
 // The note that says an achievement was just unlocked. A polite live region, so a screen
 // reader hears it without losing its place; each note can be closed, and goes on its own after
 // a while (not while it is pointed at or focused). On today's web it is a small card under the
-// header, at the right; on the 1994 desk a sticky note stuck to the monitor's top left corner,
-// off the screen itself. It goes in the top layer (a manual popover) so an open dialog (Saves &
-// scores) doesn't hide it.
+// header, at the right; on the 1994 desk a sticky note stuck to the front of the desk, left of
+// the keyboard tray, off the screen and the wall. It goes in the top layer (a manual popover)
+// so an open dialog (Saves & scores) doesn't hide it.
 import './toast.css';
 import { achievementById } from './catalog';
 
@@ -35,10 +35,11 @@ function raise(el: HTMLElement): void {
 }
 
 /**
- * On the desk: stuck on the monitor's top left corner, over the plastic and the picture's
- * edge (the room is scaled and scrolled). Not the top right, where the "Too retro?" sticky
- * note would take a stray click off the desk, and not on the wall beside it, where the
- * clipping and the black-light poster hang; clicks go through the notes (toast.css).
+ * On the desk: stuck to the front panel of the desk, left of the keyboard tray (stage x 64,
+ * y 736: the room is scaled and centered), well clear of the monitor's picture, the posters,
+ * the clipping and every prop. They stack there, the newest on top; pointing at or tabbing
+ * into the stack fans the older one out (toast.css). A narrow window, where the room is a
+ * column, has them at the bottom of the window.
  */
 function place(el: HTMLElement): void {
   const desk = isDesk();
@@ -46,12 +47,17 @@ function place(el: HTMLElement): void {
   el.style.removeProperty('top');
   el.style.removeProperty('left');
   if (!desk) return;
-  const monitor = document.querySelector('.desk[data-zoom="false"] .monitor, .monitor');
-  const r = monitor?.getBoundingClientRect();
-  if (!r || !r.width || r.bottom < 0 || r.top > innerHeight) return;
   const width = Math.min(200, innerWidth - 32);
-  el.style.left = `${Math.max(16, Math.min(r.left + Math.min(24, r.width * 0.04), innerWidth - width - 16))}px`;
-  el.style.top = `${Math.max(8, r.top - 18)}px`;
+  const scene = document.querySelector<HTMLElement>('.desk[data-zoom="false"] .desk-scene');
+  const s = scene?.getBoundingClientRect();
+  if (!s?.width || innerWidth < 961) {
+    el.style.left = '16px';
+    el.style.top = `${Math.max(8, innerHeight - 150)}px`;
+    return;
+  }
+  const k = s.width / 1440;
+  el.style.left = `${Math.max(16, Math.min(s.left + 64 * k, innerWidth - width - 16))}px`;
+  el.style.top = `${Math.max(8, Math.min(s.top + 736 * k, innerHeight - 150))}px`;
 }
 
 export function showUnlock(id: string): void {
