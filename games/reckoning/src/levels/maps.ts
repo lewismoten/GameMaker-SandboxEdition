@@ -200,6 +200,8 @@ export function bedroom(book: BlockBook): Level {
   // the laundry basket, the toy blocks, Gwinn asleep, a glass of water
   m.row(10, 19, 43, 'r');
   m.set(22, 5, 'g').set(27, 5, 'm').set(32, 5, 'l').set(20, 9, 'i');
+  // Teenage Lewie's photo with the family's, in his red knit hat
+  m.set(35, 5, 'lewiePic');
   m.mon(MON.teddy, 22, 9);
   m.set(28, 9, 'z');
   m.set(31, 9, 'U').set(33, 9, '%');
@@ -212,6 +214,8 @@ export function bedroom(book: BlockBook): Level {
   m.set(47, 9, 'A').row(9, 48, 51, 'S').row(8, 48, 51, 'C').set(52, 9, 'A').set(53, 9, 'R');
   m.set(49, 7, '$').set(55, 9, '!');
   m.set(57, 8, 'T').set(57, 9, 'b').set(59, 9, 'P');
+  // an Easter egg on top of the TV; a tin heart on her side of the bed, by her pillow
+  m.set(57, 7, 'easterEgg').set(3, 7, 'tinHeart');
   m.col(61, 4, 8, 'B').col(62, 4, 8, 'B').row(7, 61, 62, 's').row(5, 61, 62, 's').set(61, 4, '$').set(62, 4, 'v');
   m.set(64, 9, 'L');
   // the kitchen door: the fridge's glow spilling out

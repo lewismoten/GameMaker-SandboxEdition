@@ -12,11 +12,14 @@
 //     birth to milkshakes, and the porcelain throne takes the Devil's last straw (counter 22);
 //   - coins are points, a glass of water mends dignity, the TV remote under the couch cushion is
 //     an extra life.
+import { CLEAR, lewieCameo } from '../../../kit/cameos';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { Pixels, rng } from '../../../kit/pixels';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, text } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
 import { MILK_CARTON, MON, ROLLS, ROLLS_NEEDED, SEQ, STRAW, WILL, WILL_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
@@ -565,5 +568,18 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('throne', throne(false), { solid: SOLID, effect: STRAW, eamt: -1, score: 5000, touch: 'throneOpen' });
   book.add('throneOpen', throne(true), { grav: GRAV.none });
+
+  // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
+  // a tin heart on her side of the bed, by her pillow: a glint crosses it now and then; 100 points
+  const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('grey', 0) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(wall(1), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'wall', score: 100, ...air });
+  // a dyed Easter egg on top of the living room TV: 50 points
+  const egg = { ink: c('ink', 0), shell: R('celery'), paint: R('berry').slice(1), accent: c('gold', 3), white: c('white', 2) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(wall(1), egg, 'bands', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'wall', score: 50, ...air });
+  // Teenage Lewie (Snowbound) in the hall's family photos: red knit hat, red coat, the snow shovel
+  const lewie = lewieCameo(buildPalette('plain').pal, 'down0', { use: ['ink', 'skin', 'hair', 'red', 'white', 'grey', 'metal', 'wood', 'pjs', 'night'].flatMap((n) => R(n)) });
+  book.add('lewiePic', photo(43, (p) => p.blit(lewie.crop(4, 0, 12, 9), 4, 5, CLEAR)), air);
   return book;
 }
