@@ -58,7 +58,8 @@ describe('tin hearts', () => {
     expect(note).toMatchObject({ scene: 19, at: [9, 25] });
     // a second visit keeps the first find's date
     const first = saves['game:realm'][FOUND_FILE];
-    await heartHook('game:realm')!.onTouched(19, 9, 25, 142);
+    heartHook('game:realm')!.onTouched(19, 9, 25, 142);
+    await flush();
     expect(saves['game:realm'][FOUND_FILE]).toBe(first);
   });
 

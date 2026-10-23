@@ -71,7 +71,7 @@ function matchesParser(name: string, bytes: Uint8Array): number {
   for (const leaf of leaves(st, bytes)) {
     if (!leaf.key) continue;
     const want = at(parsed, leaf.key);
-    if (leaf.value !== want && wrong.length < 5) wrong.push(`${leaf.group} ${leaf.name} (${leaf.key}): ${leaf.value} != ${want}`);
+    if (leaf.value !== want && wrong.length < 5) wrong.push(`${leaf.group} ${leaf.name} (${leaf.key}): ${leaf.value} != ${String(want)}`);
     n++;
   }
   expect(wrong, name).toEqual([]);

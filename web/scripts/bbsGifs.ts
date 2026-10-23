@@ -85,7 +85,7 @@ function readPhoto(file: string, crop: Box, w: number, h: number): Uint8Array {
     ['-v', 'error', '-i', file, '-vf', `crop=${c.join(':')},scale=${w}:${h}:flags=lanczos`, '-frames:v', '1', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
     { maxBuffer: 64 << 20 },
   );
-  if (r.status !== 0) throw new Error(`ffmpeg: ${r.stderr}`);
+  if (r.status !== 0) throw new Error(`ffmpeg: ${r.stderr.toString()}`);
   return new Uint8Array(r.stdout);
 }
 
@@ -224,7 +224,7 @@ function jpeg(rgb: Uint8Array, w: number, h: number, o: NonNullable<Shot['jpeg']
   const args = ['-quality', String(o.quality), '-optimize', ...(o.progressive ? ['-progressive'] : []), ...(o.gray ? ['-grayscale'] : []), ppm];
   const r = spawnSync('cjpeg', args, { maxBuffer: 16 << 20 });
   rmSync(dir, { recursive: true });
-  if (r.status !== 0) throw new Error(`cjpeg: ${r.stderr}`);
+  if (r.status !== 0) throw new Error(`cjpeg: ${r.stderr.toString()}`);
   const out = new Uint8Array(r.stdout);
   if (out[6] === 0x4a && out[7] === 0x46) out.set([0, 0, 5, 0, 6], 13); // JFIF: units, Xdensity, Ydensity
   return out;
