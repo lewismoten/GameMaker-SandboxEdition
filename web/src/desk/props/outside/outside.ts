@@ -25,7 +25,7 @@ export interface OutsideEvent {
   /** How long it lasts. */
   ms: number;
   /** Its sound as it starts (through the speakers' knob). */
-  start?(): void;
+  start?: () => void;
   /** Draws it `p` of the way through (0 to 1), `t` ms in; where it is now, to press. */
   draw(ctx: CanvasRenderingContext2D, p: number, t: number): Box | undefined;
   /** Pressed: its sound, and what the bubble says. */

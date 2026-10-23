@@ -13,7 +13,7 @@ export interface ColorChoiceOptions {
   /** The CSS color a swatch shows. */
   css(i: number): string;
   /** A swatch's name (by default "Color 12"). */
-  name?(i: number): string;
+  name?: (i: number) => string;
 }
 
 export interface ColorChoice {

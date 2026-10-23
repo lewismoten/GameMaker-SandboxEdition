@@ -7,6 +7,7 @@ type Attrs = Record<string, unknown> & { class?: string; style?: string; dataset
 export function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs | null = null, ...children: Child[]): HTMLElementTagNameMap[K] {
   const el = document.createElement(tag);
   if (attrs) {
+    /* eslint-disable @typescript-eslint/no-base-to-string -- attribute values are strings, numbers or true */
     for (const [k, v] of Object.entries(attrs)) {
       if (v === undefined || v === null || v === false) continue;
       if (k === 'class') el.className = String(v);
@@ -16,6 +17,7 @@ export function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs | 
       else if (k in el && typeof v !== 'string') (el as unknown as Record<string, unknown>)[k] = v;
       else el.setAttribute(k, v === true ? '' : String(v));
     }
+    /* eslint-enable @typescript-eslint/no-base-to-string */
   }
   append(el, children);
   return el;
