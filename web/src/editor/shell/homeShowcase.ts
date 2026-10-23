@@ -12,6 +12,8 @@ import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
+import { macDownload, type MacGame } from './macDownload';
+import { isBizarreGame } from '../../project/bizarre';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -39,6 +41,23 @@ function whenIdleAndSeen(el: Element, f: () => void): void {
   const start = () => io.observe(el);
   if (document.readyState === 'complete') start();
   else addEventListener('load', start, { once: true });
+}
+
+/**
+ * "Mac": the game as a Mac app (macDownload.ts). For the CD's games that may be shared
+ * (gameware, the Sandbox and Bard of Bizarre games), not the other authors' shareware;
+ * a game of yours has it in its ⋯ More menu.
+ */
+function macButton(game: HomeGame): HTMLElement | null {
+  const e = game.entry;
+  if (!e?.gam || game.project || (game.kind === 'shareware' && !isBizarreGame(e))) return null;
+  const load = async (): Promise<MacGame> => ({ title: e.title, gam: e.gam!, files: await game.files(), id: e.id, author: e.author ?? e.company, year: e.year, box: e.original?.box });
+  return h(
+    'button',
+    { class: 'with-ico', title: 'Play it on a Mac: a Mac app of the game (.dmg or .zip), built here', 'aria-label': `Download ${game.title} for Mac`, onclick: () => void macDownload(game.title, load) },
+    icon('inbox'),
+    'Mac',
+  );
 }
 
 /** Copies the address that shows `game` here (#/game/…). */
@@ -143,6 +162,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
         : undefined,
     );
     if (saves) actions.insertBefore(saves.el, actions.querySelector('.card-more'));
+    const mac = macButton(game);
+    if (mac) actions.insertBefore(mac, actions.querySelector('.card-more'));
     clear(notes, game.health?.released ? healthNote(game.health) : null);
     void game.hasDemo().then((yes) => {
       if (gen !== generation || !yes) return;
