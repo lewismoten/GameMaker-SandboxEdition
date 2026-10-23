@@ -64,7 +64,7 @@ export function midwayBeasts() {
   b.pic('askSpin1', askBubble('SPIN?', undefined, 0)).pic('askSpin2', askBubble('SPIN?', undefined, 1));
   b.pic('horseR', horse('blue'), { solid: 15 }).pic('horseB', horse('purple'), { solid: 15 });
   b.pic('dropCar', dropCar(), { solid: 15 });
-  b.pic('bee1', bee(0), { hp: -4 }).pic('bee2', bee(1), { hp: -4 });
+  b.pic('bee1', bee(0), { hp: -10 }).pic('bee2', bee(1), { hp: -10 });
 
   b.add('strikerBell', { pics: [['bell0', 50]], power: POWER.paw - 1, becomes: 'strikerRing', upscore: 100 });
   b.add('strikerRing', {

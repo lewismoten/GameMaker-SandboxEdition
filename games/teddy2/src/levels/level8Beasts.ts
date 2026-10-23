@@ -128,7 +128,7 @@ export function showBeasts() {
   b.pic('turnstile', turnstile(false), { solid: 15 }).pic('turnstileOpen', turnstile(true));
   b.pic('poodleRival1', poodle(0), { solid: 15 }).pic('poodleRival2', poodle(1), { solid: 15 });
   b.pic('poodleHuff', poodle(1));
-  b.pic('pop1', popcorn(0), { hp: -6 }).pic('pop2', popcorn(1), { hp: -6 });
+  b.pic('pop1', popcorn(0), { hp: -10 }).pic('pop2', popcorn(1), { hp: -10 });
   for (let k = 0; k < 3; k++) b.pic(`bell${k}`, bell(k));
   b.pic('ding0', ding(0)).pic('ding1', ding(1));
   b.pic(

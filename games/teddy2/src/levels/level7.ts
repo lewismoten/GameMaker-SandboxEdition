@@ -116,11 +116,9 @@ export function midway(): Level {
     [72, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
-  for (const [x, y] of [
-    [62, 36],
-    [64, 36],
-  ])
-    m.treat(x, y, 'bone');
+  // one bone by the food row (the second half of the adventure heals less)
+  m.treat(62, 36);
+  m.treat(64, 36, 'bone');
   m.mark('start', 1, 39);
   m.mark('exit', car, 39);
   return {

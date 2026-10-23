@@ -55,8 +55,8 @@ function pawArrow(dir: 'up' | 'down' | 'left' | 'right'): Pixels {
 
 export function mazeBeasts() {
   const b = newBestiary();
-  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('rat')) b.pic(name, px, { hp: -5 });
-  for (const name of ['crow1', 'crow2'] as const) b.pic(name, FARM[name], { hp: -5 });
+  for (const [name, px] of Object.entries(CRITTERS)) if (name.startsWith('rat')) b.pic(name, px, { hp: -8 });
+  for (const name of ['crow1', 'crow2'] as const) b.pic(name, FARM[name], { hp: -8 });
   for (const d of ['up', 'down', 'left', 'right'] as const) b.pic(`paws_${d}`, pawArrow(d));
   b.pic('stick', propSprite('stick'), { effect: CTR.clues, eamt: 1, score: 500 });
   b.pic('stickAir', propSprite('stick'));

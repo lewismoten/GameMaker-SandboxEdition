@@ -133,11 +133,9 @@ export function farm(): Level {
     [69, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
-  for (const [x, y] of [
-    [71, 37],
-    [72, 37],
-  ])
-    m.treat(x, y, 'bone');
+  // one bone on the farm stand (the second half of the adventure heals less)
+  m.treat(71, 37);
+  m.treat(72, 37, 'bone');
   // a painted Easter egg in the hayloft's far corner, past the hay (50 points)
   m.set(b0 + 1, 32, addEasterEgg(bs, m.get(b0 + 1, 32), 'dots', 'yellow', 'blue'));
   m.mark('start', 4, 39);
