@@ -52,7 +52,7 @@ export function townBook(): BlockBook {
   });
   // the Garden Court
   addFamily(book, { layer: 'wall', shader: castleWall, rough: 0.2, seed: 37, attrs: (m) => (bitsOf(m) >= 1 ? { solid: ALL } : {}) });
-  cutBlocks(book, 'ctower', 2, 2, (cv) => tower(cv, 20, 6, 9, 30, STONE, BLUE, 7));
+  cutBlocks(book, 'ctower', 2, 2, (cv) => tower(cv, 20, 13, 8, 23, STONE, BLUE, 7));
   cutBlocks(
     book,
     'throne',

@@ -77,7 +77,7 @@ export function worldFeatures(book: BlockBook): void {
       // the keep
       cv.rect(20, 14, 20, 20, (x, y) => mix(stone[1], stone[2], clamp01(1 - (x - 20) / 30 - (y - 14) / 60)));
       house(cv, 19, 8, 22, 22, { ...STYLE.blueSlate, roof: blue, wall: stone, windows: 2 }, 5);
-      tower(cv, 30, 2, 4, 14, stone, blue, 4);
+      tower(cv, 30, 7, 4, 9, stone, blue, 4); // the spire's tip whole inside the picture
       // the front wall and its gate
       wallRun(cv, 6, 44, 48, 9, stone, 6);
       cv.rect(25, 46, 10, 9, [40, 30, 26]);
@@ -130,9 +130,9 @@ export function worldFeatures(book: BlockBook): void {
         [220, 220, 226],
         [255, 255, 255],
       ];
-      tower(cv, 9, 4, 4.5, 26, w, [[120, 30, 26], [180, 50, 40], [230, 100, 80]], 11);
+      tower(cv, 9, 8, 4.5, 22, w, [[120, 30, 26], [180, 50, 40], [230, 100, 80]], 11);
       for (const y of [16, 24]) cv.rect(4.5, y, 9, 2.4, [190, 50, 40]);
-      cv.rect(6, 7, 6, 3, [255, 236, 140]);
+      cv.rect(6, 11, 6, 3, [255, 236, 140]);
       // nets drying on poles
       cv.line(48, 26, 48, 34, 0.8, [100, 70, 40]);
       cv.line(56, 26, 56, 34, 0.8, [100, 70, 40]);
@@ -191,7 +191,7 @@ export function worldFeatures(book: BlockBook): void {
         [130, 50, 80],
       ];
       wallRun(cv, 8, 20, 44, 32, st, 21);
-      tower(cv, 30, 2, 7, 30, st, roof, 22);
+      tower(cv, 30, 12, 7, 20, st, roof, 22); // the spire's tip whole inside the picture
       tower(cv, 10, 10, 5, 26, st, roof, 23);
       tower(cv, 50, 10, 5, 26, st, roof, 24);
       for (const [x, y] of [

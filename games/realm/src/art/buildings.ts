@@ -99,7 +99,8 @@ export function house(cv: Canvas, x: number, y: number, w: number, h: number, st
   return { door: [dx + dw / 2, y + h] };
 }
 
-/** A round tower seen from above-front: a cylinder with a cone roof (or battlements). */
+/** A round tower seen from above-front: a cylinder with a cone roof (or battlements). The cone's
+ * tip is at top - 1.6 r and the base's rim at top + h + 0.45 r: keep both inside the canvas. */
 export function tower(cv: Canvas, cx: number, top: number, r: number, h: number, wall: RGB[], roof: RGB[] | null, seed = 3): void {
   shadow(cv, cx - r + 1, top + r, r * 2, h, 0.4);
   cv.rect(cx - r, top + r, r * 2, h - r, (px, py) => {

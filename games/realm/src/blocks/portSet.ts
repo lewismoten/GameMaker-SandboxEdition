@@ -29,9 +29,9 @@ export function portBook(bridges: [number, number][]): BlockBook {
       [222, 222, 228],
       [255, 255, 255],
     ];
-    tower(cv, 10, 6, 7, 52, w, [[120, 30, 26], [180, 50, 40], [230, 100, 80]], 11);
-    for (const y of [26, 42]) cv.rect(3, y, 14, 4, [190, 50, 40]);
-    cv.rect(5.5, 9, 9, 5, [255, 236, 140]);
+    tower(cv, 10, 12, 7, 42, w, [[120, 30, 26], [180, 50, 40], [230, 100, 80]], 11);
+    for (const y of [30, 44]) cv.rect(3, y, 14, 4, [190, 50, 40]);
+    cv.rect(5.5, 15, 9, 5, [255, 236, 140]);
   });
   // piers: planks over the water (walkable), the long pier's posts
   book.add('pier', pier(false));
