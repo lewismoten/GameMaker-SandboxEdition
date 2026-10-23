@@ -22,5 +22,5 @@ if (sim.deaths) throw new Error(`The bot lost ${sim.deaths} lives`);
 const titles: Record<number, string> = { 2: 'Level 1: Gale Street', 3: 'Level 2: Jamie Street', 4: 'Level 3: Bowden Drive', 5: 'Level 4: LaVale Mall' };
 const segments: WalkSegment[] = sim.segments.map((s) => ({ scene: s.scene, keys: encodeKeys(s.keys) }));
 const chapters: WalkChapterMark[] = sim.segments.map((s) => ({ scene: s.scene, title: titles[s.scene] }));
-const r = await writeWalkthrough('snowbound', { rand: { seed: SEED, per: 'scene' }, segments, chapters });
+const r = await writeWalkthrough('snowbound', { rand: { seed: SEED, per: 'scene' }, segments, chapters }, { clips: true });
 console.log(`engine: scenes ${r.scenes.join(' ')}, ${r.keysLeft} keys unplayed; the bot threw ${bot.throws} snowballs`);

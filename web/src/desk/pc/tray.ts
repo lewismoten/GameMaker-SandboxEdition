@@ -5,6 +5,7 @@
 import './tray.css';
 import { h } from '../../editor/core/ui';
 import { output } from '../../audio/output';
+import { audioContext, unlock } from '../../audio/context';
 import { SANDBOX_COLORS } from '../../retro/bbs/bbsName';
 import { deskMouse } from '../../input/deskMouse';
 
@@ -15,8 +16,9 @@ let squeakCtx: AudioContext | undefined;
 /** A rubbery squeak, the way the SQUEAK mouse would if it were a mouse. */
 function squeak(): void {
   try {
-    squeakCtx ??= new AudioContext();
-    void squeakCtx.resume();
+    squeakCtx ??= audioContext();
+    if (!squeakCtx) return;
+    unlock();
   } catch {
     return;
   }

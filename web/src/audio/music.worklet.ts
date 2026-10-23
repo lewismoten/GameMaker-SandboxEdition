@@ -13,13 +13,16 @@ declare class AudioWorkletProcessor {
 export type MusicMessage =
   | { type: 'load'; music: Uint8Array; instruments: Uint8Array[] }
   | { type: 'stop' }
-  | { type: 'pause'; paused: boolean };
+  | { type: 'pause'; paused: boolean }
+  /** The engine is done with this node (the page's context lives on): stop processing. */
+  | { type: 'end' };
 
 class MusicProcessor extends AudioWorkletProcessor {
   private opl = new Opl2(sampleRate);
   private player = new CmfPlayer(this.opl);
   private untilTick = 0;
   private paused = false;
+  private ended = false;
   private readonly samplesPerTick = sampleRate / TICK_RATE;
 
   constructor() {
@@ -31,10 +34,12 @@ class MusicProcessor extends AudioWorkletProcessor {
         this.untilTick = 0;
       } else if (m.type === 'stop') this.player.stop();
       else if (m.type === 'pause') this.paused = m.paused;
+      else if (m.type === 'end') this.ended = true;
     };
   }
 
   process(_inputs: Float32Array[][], outputs: Float32Array[][]): boolean {
+    if (this.ended) return false;
     const out = outputs[0][0];
     if (!out) return true;
     if (this.paused) return true;

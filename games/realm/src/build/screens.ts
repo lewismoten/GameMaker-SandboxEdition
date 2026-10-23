@@ -17,7 +17,9 @@ export function screenFiles(price: string): AreaFile[] {
   put('intro.fli', introFli());
   put('title.gif', S.titleScreen().gif());
   lst('title.lst', [{ name: SANDLOGO, pause: 0 }, { name: 'intro.fli', pause: 1 }, { name: 'title.gif', pause: 12 }]);
-  put('menu.gif', S.menuScreen().gif({ menu: S.MENU_INK }));
+  // the pages shown from the menu (and the ending) write MORE... in the menu palette's nearest
+  // red: reserve it in the menu at the same index (2) as in the pages' backdrops
+  put('menu.gif', S.menuScreen().gif({ menu: S.MENU_INK, more: S.RED_INK }));
   S.storyScreens().forEach((sc, i) => put(`story${i + 1}.gif`, sc.gif()));
   lst('story.lst', [1, 2, 3, 4].map((i) => ({ name: `story${i}.gif` })));
   put('howto.gif', S.textBackdrop('help').gif({ text: INK, more: S.RED_INK }));
@@ -27,8 +29,8 @@ export function screenFiles(price: string): AreaFile[] {
   put('credits.txt', CREDITS);
   lst('credits.lst', [{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]);
   put('scores.gif', S.scoresScreen().gif({ menu: S.MENU_INK, more: S.RED_INK }));
-  put('loadgame.gif', S.slotsScreen(false).gif({ names: S.SLOT_INK, more: S.RED_INK }));
-  put('savegame.gif', S.slotsScreen(true).gif({ names: S.SLOT_INK, more: S.RED_INK }));
+  put('loadgame.gif', S.slotsScreen(false).gif({ names: S.SLOT_INK, more: S.RED_INK, menu: S.MENU_INK }));
+  put('savegame.gif', S.slotsScreen(true).gif({ names: S.SLOT_INK, more: S.RED_INK, menu: S.MENU_INK }));
   const won = S.wonScreens();
   won.forEach((sc, i) => put(`won${i + 1}.gif`, sc.gif()));
   lst('won.lst', [{ name: 'won1.gif' }, { name: 'won2.gif' }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]);

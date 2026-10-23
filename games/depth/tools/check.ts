@@ -1,9 +1,13 @@
 // Plays the whole game on the built disk: the bot rolls every level, lenses, rings, gates and
-// the vanishing point, beats Count Polygon and reaches the end. Fails if it can't.
+// the vanishing point, beats Count Polygon and reaches the end. Fails if it can't (or if a
+// multi-cell model is out of line, tools/align.ts).
 //   cd web && npx vite-node ../games/depth/tools/check.ts
 import { Bot } from './bot';
 import { ROUTES, playLevel } from './route';
 import { GameSim } from './sim';
+import { align } from './align';
+
+if (align()) throw new Error('depth: a multi-cell model is out of line (above)');
 
 const sim = new GameSim(undefined, 1);
 const bot = new Bot(sim);

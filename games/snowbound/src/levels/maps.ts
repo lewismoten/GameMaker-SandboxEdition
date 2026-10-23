@@ -154,8 +154,8 @@ function bankRow(m: MapBuilder, x: number, y: number, w: number, gaps: number[])
 /**
  * Gale Street, 7 AM: home is the corner house at Gale Street and Dunn Drive. Leota Street
  * runs north between the neighbors, Leon Drive crosses the east end (and leads to the
- * top of Jamie Street). One plow, Biscuit the dog, and no mailboxes anywhere: the carrier
- * walks to every door, so every front walk needs digging out too. And the carrier is you:
+ * top of Jamie Street). One plow, Biscuit the dog, and front walks to dig out as well as
+ * driveways (neighbors want to reach the car, and the paper on the mat). The paper carrier is you:
  * the paper bundle by the porch at home holds one paper for each customer's door mat.
  */
 export function galeStreet(book: BlockBook) {
@@ -445,7 +445,7 @@ export function bowdenDrive(book: BlockBook) {
 }
 
 // ------------------------------------------------------------------ level 4
-/** LaVale Mall, 8 PM: the lot, the squall, the Timeout arcade and Bits & Bytes Software. */
+/** LaVale Mall, 8 PM: the lot, the squall, the Bleeps arcade and Bits & Bytes Software. */
 export function lavaleMall(book: BlockBook) {
   const m = new MapBuilder(book);
   const X = 10;
@@ -465,19 +465,19 @@ export function lavaleMall(book: BlockBook) {
     .set(X + 40, 13, 'storeDoor')
     .set(X + 42, 13, 'boxWindow');
   m.set(X + 24, 13, 'mallDoor').set(X + 25, 13, 'mallDoor');
-  // Timeout, the arcade, with its chasing marquee
+  // Bleeps, the arcade, with its chasing marquee
   for (let i = 0; i < 3; i++) m.set(X + 17 + i, 12, `arcade0${i}`);
   m.set(X + 17, 13, 'arcadeWin')
     .set(X + 18, 13, 'arcadeDoor')
     .set(X + 19, 13, 'arcadeWin');
-  m.link(X + 40, 13, 'won', 0, 0);
+  m.link(X + 40, 12, 'won', 0, 0); // under the sign, a step inside the door
   // walk in front of the mall
   m.fill(X, 14, 60, 2, 's');
   m.patch(X, 15, ['  SSS        SSS        SSS                  SSS      SSS']);
   // the History Fair table on the walk, and the corkboard on the wall behind it
   m.set(X + 27, 14, 'fairMan').set(X + 28, 14, 'fairBell').set(X + 29, 14, 'fairFlag');
   m.set(X + 32, 13, 'board0').set(X + 33, 13, 'board1');
-  // Timeout's snack bar: root beer, and only root beer
+  // Bleeps' snack bar: root beer, and only root beer
   m.set(X + 16, 14, 'rootBeer');
   m.patch(X, 16, ['BB_LB_BBBBLBBB_BBBLBBBB_BBBLBBBB__BBBLBBB_BBBBLBBB_BBBLBB_B']);
   // the fire lane
@@ -493,6 +493,8 @@ export function lavaleMall(book: BlockBook) {
     }
     m.set(X + 28, y, 'L').fill(X + 27, y + 1, 3, 1, 'B');
   }
+  // THE CHEZ, the CitiCar, buried with the rest in the back row by the way in
+  m.set(X + 2, 31, 'chezL').set(X + 3, 31, 'chezR');
   m.patch(X, 35, ['BBBB', 'u', '']).patch(X + 55, 35, ['BBBBB']);
   m.fill(X, 36, 4, 2, ',')
     .fill(X + 55, 36, 5, 2, ',')

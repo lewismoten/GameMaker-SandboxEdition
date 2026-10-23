@@ -12,10 +12,37 @@ export const bandAt = (y: number, ground: number) => {
   return d >= 10 ? 0 : d >= 7 ? 1 : d >= 4 ? 2 : 3;
 };
 
-/** A hint sign on a stake over `base`, with an optional arrow. */
+/**
+ * A sign board `w` pixels wide on stakes, drawn into p: one line of words, or two (a taller
+ * board) when one line would not fit.
+ */
+function board(p: Pixels, w: number, lines: string[]): void {
+  const two = lines.length > 1;
+  const h = two ? 16 : 12;
+  const y0 = two ? 0 : 1;
+  for (let x = 9; x < w; x += 20) p.rect(x, y0 + h - 1, 2, 20 - h - y0 + 1, c('wood', 1));
+  p.rect(0, y0, w, h, c('wood', 3)).frame(0, y0, w, h, c('wood', 0));
+  p.rect(1, y0 + 1, w - 2, 1, c('wood', 4));
+  lines.forEach((words, i) => micro(p, Math.floor(w / 2) - Math.floor((words.length * 4 - 1) / 2), two ? 3 + i * 6 : 5, words, c('ink', 0)));
+}
+
+/** A sign two blocks wide over `base` (left and right halves, cut from one picture); '\n' breaks a line. */
+export function wideSign(base: Pixels, words: string): [Pixels, Pixels] {
+  const p = new Pixels(40, 20);
+  p.blit(base, 0, 0);
+  p.blit(base, 20, 0);
+  board(p, 40, words.split('\n'));
+  return [p.crop(0, 0, 20, 20), p.crop(20, 0, 20, 20)];
+}
+
+/** A hint sign on a stake over `base`, with an optional arrow; '\n' puts the words on two lines. */
 export function sign(base: Pixels, words: string, arrow?: 'up' | 'down' | 'right' | 'left'): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(base.px);
+  if (words.includes('\n')) {
+    board(p, 20, words.split('\n'));
+    return p;
+  }
   p.rect(9, 12, 2, 8, c('wood', 1));
   p.rect(0, 1, 20, 12, c('wood', 3)).frame(0, 1, 20, 12, c('wood', 0));
   p.rect(1, 2, 18, 1, c('wood', 4));

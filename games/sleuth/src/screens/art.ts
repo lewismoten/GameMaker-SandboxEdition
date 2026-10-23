@@ -217,7 +217,8 @@ export function caseFile(heading: string, seed = 1): Pixels {
   }
   // a paper clip and a coffee ring
   p.rect(260, 18, 6, 18, c('grey', 5)).rect(261, 20, 4, 14, c('paper', 4));
-  p.ring(292, 176, 12, c('wood', 3));
+  // (the ring sits off the sheet's corner, clear of PLAYGAME's MORE... at x 224..280, y 168)
+  p.ring(300, 181, 12, c('wood', 3));
   return p;
 }
 

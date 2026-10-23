@@ -1,4 +1,4 @@
-// Writes games/year2000/walkthrough.json: the bot plays all six levels the way verify.ts
+// Writes games/year2000/walkthrough.json: the bot plays all six levels the way check.ts
 // does, carrying its counters from level to level, one key segment each time play enters a
 // scene (every dial in the exchange enters it again), and games/kit/walkthrough.ts checks
 // the whole run on the real engine (title, story, the six levels, the ending, the credits).

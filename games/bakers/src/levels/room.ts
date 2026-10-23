@@ -30,7 +30,7 @@ export type Cell = string | { tile?: string; mon?: (b: Bestiary) => string };
 export interface RoomSpec {
   /** File name (8.3 base): its .map, .mon and .pal. */
   file: string;
-  /** Level number 1..13, or 0 for the secret room. Egg cupboards carry their parent's. */
+  /** Level number 1..13, or 0 for the secret room. Egg cupboards carry their parent's, interludes the one before. */
   level: number;
   /** An egg cupboard: the scene it is, and where in its parent room the way back lands. */
   cupboard?: { scene: number; back: [number, number] };
@@ -39,6 +39,12 @@ export interface RoomSpec {
   theme: ThemeName;
   /** The ingredient its I holds (and J, where there is one). */
   ingredient: number;
+  /** A way out on I that is not the ingredient (the Bakehouse's: the gap under the stove). */
+  exitTile?: string;
+  /** An interlude: a scene of its own, played after its level's room and before the next. */
+  interlude?: { scene: number };
+  /** The character the room is played as (its .chr and .cbl); Doc Leo when not given. */
+  hero?: string;
   rows: string[];
   legend?: Record<string, Cell>;
   /** Sign letters: a run of the letter is the sign's blocks, left to right. */
@@ -160,7 +166,7 @@ export function buildRoom(spec: RoomSpec, set: TileSet, mb: BlockSet): Room {
         return;
       }
       if (ch === 'I' || ch === 'J') {
-        set1(`ing${spec.ingredient}`);
+        set1(ch === 'I' && spec.exitTile ? spec.exitTile : `ing${spec.ingredient}`);
         if (ch === 'I') exit = { x: mx, y: my };
         else secret = { x: mx, y: my };
         return;

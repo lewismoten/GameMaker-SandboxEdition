@@ -90,15 +90,14 @@ export function backyardTiles(): Tiles {
   // Doc Leo's house.
   t.wall('house', siding('siding'));
   t.wall('houseWin', windowOn(siding('siding'), false, 'red'));
-  t.wall(
-    'houseDoor',
-    (() => {
-      const p = siding('siding');
-      p.rect(3, 0, 14, 20, c('wood', 2)).frame(3, 0, 14, 20, c('wood', 0));
-      p.rect(13, 10, 2, 2, c('gold', 2));
-      return p;
-    })(),
-  );
+  // The back door, two blocks tall: the frame runs round both halves, the knob on the lower one.
+  const door = canvas(1, 2, siding('siding'));
+  door.rect(3, 4, 14, 36, c('wood', 2)).frame(3, 4, 14, 36, c('wood', 0));
+  door.rect(5, 7, 10, 10, c('wood', 1)).rect(5, 23, 10, 12, c('wood', 1));
+  door.rect(13, 20, 2, 2, c('gold', 2));
+  const [[doorT], [doorB]] = cut(door);
+  t.wall('houseDoor', doorT);
+  t.wall('houseDoorB', doorB);
   t.wall(
     'houseRoof',
     (() => {
@@ -158,15 +157,17 @@ export function backyardTiles(): Tiles {
   t.on('tomatoH', tomato, 'hedge');
 
   // The clothesline: poles (scenery), the line (stand on it), laundry below.
+  const pole = new Pixels(20, 20, 255).rect(9, 0, 3, 20, c('metal', 2)).rect(9, 0, 1, 20, c('metal', 4));
+  // The pole's foot, planted in the lawn.
   t.air(
     'pole',
     (() => {
-      const p = sky(2);
-      p.rect(9, 0, 3, 20, c('metal', 2)).rect(9, 0, 1, 20, c('metal', 4));
+      const p = tuft(sky(3), 11);
+      p.blit(pole, 0, 0, 255);
+      p.rect(7, 18, 7, 2, c('metal', 1));
       return p;
     })(),
   );
-  const pole = new Pixels(20, 20, 255).rect(9, 0, 3, 20, c('metal', 2)).rect(9, 0, 1, 20, c('metal', 4));
   t.on('poleT', pole, 'hedgeTop');
   t.on('poleH', pole, 'hedge');
   t.ledge(
@@ -197,17 +198,17 @@ export function backyardTiles(): Tiles {
       return p;
     })(),
   );
-  t.air(
-    'sheet',
-    (() => {
-      const p = new Pixels(20, 20);
-      p.px.set(t.pic('hedgeTop').px);
-      p.rect(0, 0, 20, 14, c('paint', 3));
-      for (let x = 0; x < 20; x += 6) p.rect(x, 0, 2, 14, c('pink', 2));
-      p.rect(0, 13, 20, 1, c('paint', 1));
-      return p;
-    })(),
-  );
+  // A sheet pegged over the line (a line block itself, stand on it) hanging down in front of the hedge.
+  const sheet = canvas(2, 2, (_bx, by) => (by === 0 ? t.pic('line') : t.pic('hedgeTop')));
+  sheet.rect(1, 2, 38, 24, c('paint', 3));
+  for (let x = 3; x < 39; x += 6) sheet.rect(x, 2, 2, 24, c('pink', 2));
+  sheet.rect(1, 25, 38, 1, c('paint', 1)).rect(1, 2, 38, 1, c('paint', 1));
+  for (const x of [3, 19, 35]) sheet.rect(x, 1, 2, 3, c('wood', 1));
+  const [[sheetL, sheetR], [sheetBL, sheetBR]] = cut(sheet);
+  t.ledge('lineSheetL', sheetL);
+  t.ledge('lineSheetR', sheetR);
+  t.air('sheet', sheetBL);
+  t.air('sheetR', sheetBR);
   t.wall(
     'basket',
     (() => {
@@ -261,7 +262,8 @@ export function backyardTiles(): Tiles {
   // The old oak: trunk, branches to stand on, leaves all around.
   for (let k = 0; k < 4; k++) t.air(`leaf${k}`, leaves(60 + k, sky(k)));
   t.air('leafDark', leaves(65, new Pixels(20, 20, c('leaf', 0))));
-  t.air('trunk', trunk(sky(3)));
+  t.air('trunk', trunk(t.pic('hedgeTop')));
+  t.air('trunkHedge', trunk(t.pic('hedge')));
   t.air('trunkLeaf', trunk(leaves(66, new Pixels(20, 20, c('leaf', 0)))));
   t.air(
     'roots',
@@ -302,5 +304,8 @@ export function backyardTiles(): Tiles {
     t.pic('hedgeTop'),
     (by) => (by === 0 ? t.pic('hedge') : tuft(sky(3), 95)),
   );
+  // (last, so every other block keeps its number) the alley hedge's top, up in the blue sky
+  t.air('hedgeTopHi', hedge(true, 21, sky(0)));
+  t.air('hedgeTopHi2', hedge(true, 22, sky(0)));
   return t;
 }

@@ -1,0 +1,82 @@
+name: Linux downloads
+
+# Builds the Linux download (<Title>.tar.gz) of every listed game with
+# web/scripts/linuxTar.ts, first trying one on Ubuntu with WebKitGTK under a virtual display:
+# it must open the game and keep a saved value between two launches, and without WebKitGTK
+# play.sh must fall back to the browser. Then attaches them to a GitHub release. Run it by
+# hand (Actions → Linux downloads → Run workflow; with no tag it only builds and tries them)
+# or by publishing a release.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to attach the downloads to (created if missing); empty to only build and test
+        required: false
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  try:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npx vite-node scripts/linuxTar.ts teddy --out ../dist/linux
+      - name: Without WebKitGTK, play.sh opens the browser
+        run: |
+          mkdir -p "$RUNNER_TEMP/try" "$RUNNER_TEMP/bin"
+          tar xzf ../dist/linux/*.tar.gz -C "$RUNNER_TEMP/try"
+          printf '#!/bin/sh\necho "browser: $1"\n' > "$RUNNER_TEMP/bin/xdg-open"
+          chmod +x "$RUNNER_TEMP/bin/xdg-open"
+          if ldconfig -p | grep -q libwebkit2gtk-4; then echo 'WebKitGTK is already installed here: skipped'; exit 0; fi
+          PATH="$RUNNER_TEMP/bin:$PATH" "$RUNNER_TEMP"/try/*/play.sh | tee "$RUNNER_TEMP/fallback.txt"
+          grep -q 'browser: .*game.html' "$RUNNER_TEMP/fallback.txt"
+      - run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-0 xvfb
+      - name: Play it twice
+        run: |
+          export GM_READY_FILE="$RUNNER_TEMP/ready.json" GM_TEST_SAVE=1 GM_TEST_EXIT=1 GM_READY_DELAY=6
+          for run in 1 2; do
+            rm -f "$GM_READY_FILE"
+            timeout 120 xvfb-run -a "$RUNNER_TEMP"/try/*/play.sh
+            echo "Run $run: $(cat "$GM_READY_FILE")"
+            grep -q '"title":"[^"]' "$GM_READY_FILE" || { echo "Run $run: the game page did not load"; exit 1; }
+          done
+          grep -q '"test":"[0-9]' "$GM_READY_FILE" || { echo 'The saved value did not survive a relaunch'; exit 1; }
+          ls -R ~/.local/share/GameMaker | head -20
+
+  build:
+    runs-on: ubuntu-latest
+    needs: try
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npx vite-node scripts/linuxTar.ts --all --out ../dist/linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-downloads
+          path: dist/linux/*.tar.gz
+      - name: Attach to the release
+        if: github.event.release.tag_name || inputs.tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "Linux downloads of the games (see linux/README.md)."
+          gh release upload "$TAG" ../dist/linux/*.tar.gz --clobber

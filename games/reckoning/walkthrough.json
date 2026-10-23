@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "reckoning",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0NzQwSCpIATQrNA00FzQZIDMgJTQNICsgKzQZNEs0GTQjNBhIMkgBNBc0ETQTNBkgMyARNCM0GEgaSAE0LzQNNAc0GEgySAE0FzQVNBc0GEgySAE0GzQNNAs0GEgySAE0GzQNNFs0GEgySAE0AzQdNBc0GSAjICU0SzQoSDJIATTzNCU0XzQZIDMgATQPNA0gMyAZNBM0GEgaSAE0MzQZN"
+  },
+  {
+   "scene": 3,
+   "keys": "ARIMkgBNAc0FTSXNBksUywZIDMgETRfNDksCywMSBpIATRDNA00ZzQYSBpIATQTNBE0HzQZLBcsGSAzIBE0jzSRNBc0GSAzIBBIDkgBNIM0DSwDLBkgMyARLFMsGTSPNBk0YzRxN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0TzQYSDJIATQLNCE0HzQYSDJIATQLNCE0SzQYSDJIATQfNCU0BzQYSDJIATR7NA00BzQYSDJIATQPNB00GzQYSDJIATQPNBk0VzQZIDMgETQXNBhIGkgBNGM0DSwDLBk0IzQYSDJIATRPNA00FzQYSDJIATQLNB00GzQYSDJIATQLNB00GzQYSDJIATQLNCE0WzQYSDJIATQDNCksDSArIBcsGEgaSAE0JzQNNCc0GEgySAE0CzQdNBs0GEgySAE0CzQdNAs0GTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0PzQZIDMgETQXNBhIKkgBNBc0DSwjLEk0BzQNNBM0STQ7NBhIMkgBNDs0GSAzIBE0FzQYSBJIATQvNA00DzRE5ArkMOQK5DDkCuQw5ArkMOQK5DDkCuQw5ArkMOQK5DE0NzQZIBsgJTRvNBk0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Act I: 3:17 A.M."
+  },
+  {
+   "scene": 3,
+   "title": "Act II: The Enemy-Lover"
+  },
+  {
+   "scene": 4,
+   "title": "Act III: Oh No No No"
+  },
+  {
+   "scene": 5,
+   "title": "Act IV: The Reckoning"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 18208,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1239
+   },
+   {
+    "title": "Act I: 3:17 A.M.",
+    "frame": 3132
+   },
+   {
+    "title": "Act II: The Enemy-Lover",
+    "frame": 5591
+   },
+   {
+    "title": "Act III: Oh No No No",
+    "frame": 7887
+   },
+   {
+    "title": "Act IV: The Reckoning",
+    "frame": 10681
+   },
+   {
+    "title": "Ending",
+    "frame": 12781
+   },
+   {
+    "title": "Credits",
+    "frame": 15640
+   }
+  ]
+ }
+}

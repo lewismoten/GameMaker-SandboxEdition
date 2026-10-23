@@ -11,6 +11,7 @@ import { parseBackdrop, serializeBackdrop } from '../../../formats/graphicScript
 import { cdName, normalize } from '../../../project/files';
 import { SIZEX, SIZEY } from '../../../gfx/screen';
 import { gamePreview } from '../../widgets/mediaShared';
+import { fileUndo } from '../../core/fileUndo';
 import { backdropInfo, blankScreen, pictureScreen, screenCanvas } from '../../widgets/mediaPictures';
 import { lut, paintIndexed } from '../../core/draw';
 import { encodeAnimatedGif, type GifFrame } from '../../../media/gifEncode';
@@ -58,7 +59,17 @@ async function bring(project: Project, item: LibraryItem, gif: string): Promise<
 
 registerEditor(['bkd'], (host, project, file) => {
   const bkd = parseBackdrop(project.files.get(file)!);
-  const save = () => project.files.set(file, serializeBackdrop(bkd));
+  // Undo takes back a moved window or another picture (steps of the arrow keys held down are one)
+  const undo = fileUndo(project.files, () => {
+    const now = project.files.get(file);
+    if (now) Object.assign(bkd, parseBackdrop(now));
+    refresh();
+  });
+  const stopKeys = undo.listenKeys();
+  const save = () => {
+    undo.before(file);
+    project.files.set(file, serializeBackdrop(bkd));
+  };
 
   const whole = h('canvas', { class: 'pixel bkd-whole', tabIndex: 0, 'aria-label': 'The whole picture: drag the window, or use the arrow keys' });
   const fields = h('div', { class: 'bkd-fields' });
@@ -96,6 +107,7 @@ registerEditor(['bkd'], (host, project, file) => {
     }
     whole.width = img.width;
     whole.height = img.height;
+    whole.style.setProperty('--ar', String(img.width / Math.max(1, img.height)));
     const data = ctx.createImageData(img.width, img.height);
     const out = new Uint32Array(data.data.buffer);
     const l = lut(img.palette);
@@ -292,15 +304,18 @@ registerEditor(['bkd'], (host, project, file) => {
       { class: 'hint' },
       'A backdrop shows a 320×200 window of a larger GIF picture. Drag the window over the picture (or use the arrow keys) to choose which part.',
     ),
-    h('div', { class: 'panel bkd-top' }, fields, status),
+    h('div', { class: 'panel bkd-top' }, fields, h('div', { class: 'toolbar bkd-undo' }, undo.undoBtn, undo.redoBtn), status),
     h(
       'div',
       { class: 'bkd-layout' },
-      h('div', { class: 'bkd-pane' }, h('h3', null, 'The whole picture'), whole, size),
-      h('div', { class: 'bkd-pane' }, h('h3', null, 'On the game screen'), preview.el),
+      h('div', { class: 'bkd-pane' }, h('h2', null, 'The whole picture'), whole, size),
+      h('div', { class: 'bkd-pane' }, h('h2', null, 'On the game screen'), preview.el),
     ),
     exports,
   );
   refresh();
-  return preview.stop;
+  return () => {
+    stopKeys();
+    preview.stop();
+  };
 });

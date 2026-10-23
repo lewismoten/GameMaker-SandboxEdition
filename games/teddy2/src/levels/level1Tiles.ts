@@ -9,7 +9,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { blob, gradient, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, r, sky, tuft, windowOn } from '../blocks/tiles';
-import { floorboards, road, sign, wallpaper } from './common';
+import { bandAt, floorboards, road, wallpaper, wideSign } from './common';
 
 /** The ground floor's floor row (Teddy walks on it at row 39). */
 export const G = 40;
@@ -65,7 +65,7 @@ export function houseTiles(): Tiles {
   t.wall('deep', dirt(5, true));
   t.wall('drive', road(false, 7));
   t.air('tuft', tuft(sky(3), 11));
-  t.air('hedgeTop', hedge(true, 21));
+  t.air('hedgeTop', hedge(true, 21, sky(bandAt(29, G))));
   t.wall('hedgeWall', hedge(false, 25));
 
   // The house outside: a shingled roof and a chimney.
@@ -640,7 +640,10 @@ export function houseTiles(): Tiles {
     // the cable runs off to THE CHEZ's port, low on its back at the passenger side
     p.line(14, 20, 18, 26, c('ink', 0)).line(18, 26, 20, 28, c('ink', 0));
   });
-  t.air('signSniff', sign(L(), 'SNIFF S'));
+  // two blocks wide: 'SNIFF S' is too long for one
+  const [sniffL, sniffR] = wideSign(L(), 'SNIFF S');
+  t.air('signSniff', sniffL);
+  t.air('signSniffR', sniffR);
   void gradient;
   return t;
 }

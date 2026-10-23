@@ -89,7 +89,20 @@ export const SAVES_CHANGED = 'gm-saves-changed';
  * Adds or replaces one save file by rewriting the game's whole save record (read, change,
  * put in separate transactions). Failures are logged, not thrown, so play goes on.
  */
-export async function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+  // one game's writes take turns: saving writes savnames.dat and gameN.sav back to back,
+  // and two overlapping read-change-puts would lose the first file (the slot's name)
+  const queued = (saveWrites.get(gameId) ?? Promise.resolve()).then(() => storeSaveFile(gameId, name, bytes));
+  saveWrites.set(gameId, queued);
+  void queued.then(() => {
+    if (saveWrites.get(gameId) === queued) saveWrites.delete(gameId);
+  });
+  return queued;
+}
+
+const saveWrites = new Map<string, Promise<void>>();
+
+async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
   try {
     const current = await loadSaveData(gameId);
     current[name] = bytes;
@@ -98,6 +111,16 @@ export async function writeSaveFile(gameId: string, name: string, bytes: Uint8Ar
   } catch (e) {
     console.warn('Could not store save data', e);
   }
+}
+
+/**
+ * Replaces a game's whole save record (restoring a backup, deleting a slot): files left out
+ * are gone afterwards. Fires SAVES_CHANGED. Unlike writeSaveFile, failures are thrown.
+ */
+export async function replaceSaveData(gameId: string, files: Record<string, Uint8Array>): Promise<void> {
+  if (Object.keys(files).length) await request(SAVES, 'readwrite', (s) => s.put({ ...files }, gameId));
+  else await request(SAVES, 'readwrite', (s) => s.delete(gameId));
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
 }
 
 /** A random id; falls back to time + random when crypto.randomUUID is missing (insecure contexts). */

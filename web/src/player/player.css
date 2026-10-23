@@ -110,25 +110,46 @@
 }
 
 /* ---- touch controls ------------------------------------------------------ */
-/* touch.ts sets .touch-portrait (screen on top, game-pad below) or .touch-landscape
-   (pad left, screen middle, buttons right) from the player's shape. .gm-touch is
-   display:contents so its three groups are laid out by the player's grid. */
+/* The screen takes all the room it can (the largest 4:3 that fits); the controls float
+   over the player, see-through until pressed, in its corners: the pad bottom left, the
+   game's buttons bottom right, Esc/F1/F2/Enter (and the switch that hides them) above
+   the pad when upright, top left when sideways. Upright, the screen sits at the top so the
+   controls float over the black below it; sideways they float over its edges. touch.ts
+   sets .touch-portrait or .touch-landscape from the player's shape. Nothing here moves
+   the screen, so showing, hiding or changing buttons never shifts the game. */
 
 .gm-player.has-touch {
-  display: grid;
-  gap: 10px;
-  padding: 0 0 env(safe-area-inset-bottom);
+  container-type: size;
   -webkit-touch-callout: none;
 }
 
 .gm-player.has-touch canvas {
-  grid-area: screen;
-  justify-self: center;
-  align-self: center;
+  width: min(100cqw, 100cqh * 4 / 3);
+  height: auto;
+  max-width: none;
+  max-height: none;
+}
+
+.gm-player.has-touch.touch-portrait {
+  align-items: flex-start;
+}
+
+.gm-player.has-touch.touch-portrait canvas {
+  width: min(100cqw, (100cqh - env(safe-area-inset-top)) * 4 / 3);
+  margin-top: env(safe-area-inset-top);
 }
 
 .gm-touch {
-  display: contents;
+  --touch-alpha: 0.42;
+  --touch-gap: 14px;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.gm-touch > * {
+  position: absolute;
+  pointer-events: auto;
 }
 
 .gm-touch button,
@@ -136,11 +157,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #5a5f88;
+  /* see-through backgrounds, the labels kept solid (readable over any picture) */
+  border: 2px solid rgb(138 144 200 / 0.6);
   border-bottom-width: 4px;
   border-radius: 12px;
-  background: linear-gradient(#2c3160, #1b1e3c);
-  color: #e8eaff;
+  background: rgb(27 30 60 / var(--touch-alpha));
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
   font:
     700 15px/1 system-ui,
     sans-serif;
@@ -156,18 +179,25 @@
 }
 
 .gm-touch .down {
-  background: linear-gradient(#ffe25a, #d8a800);
+  background: rgb(255 214 40 / 0.9);
   border-color: #fff3a6;
   color: #1b1e3c;
+  text-shadow: none;
   transform: translateY(2px);
   border-bottom-width: 2px;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .gm-touch .down {
+    transform: none;
+  }
+}
+
 /* The pad: one round touch area, slide a thumb around it (diagonals press two arrows). */
 .gm-pad {
-  grid-area: pad;
-  --pad: clamp(132px, 34vmin, 180px);
-  position: relative;
+  --pad: clamp(124px, 34vmin, 172px);
+  left: calc(var(--touch-gap) + env(safe-area-inset-left));
+  bottom: calc(var(--touch-gap) + env(safe-area-inset-bottom));
   display: grid;
   grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
   grid-template-areas: '. up .' 'left . right' '. down .';
@@ -176,12 +206,15 @@
   height: var(--pad);
   padding: 6px;
   border-radius: 50%;
-  background: radial-gradient(circle, #23264a 0 30%, #14162c 31% 100%);
-  border: 2px solid #3c4170;
+  background: radial-gradient(circle, rgb(35 38 74 / var(--touch-alpha)) 0 30%, rgb(20 22 44 / var(--touch-alpha)) 31% 100%);
+  border: 2px solid rgb(138 144 200 / 0.5);
   box-sizing: border-box;
   touch-action: none;
-  align-self: center;
-  justify-self: center;
+}
+
+/* a thumb on the pad: the pad grows clearer */
+.gm-pad:has(.down) {
+  --touch-alpha: 0.8;
 }
 
 .gm-pad .gm-arrow {
@@ -204,20 +237,21 @@
 }
 
 .gm-actions {
-  grid-area: act;
+  right: calc(var(--touch-gap) + env(safe-area-inset-right));
+  bottom: calc(var(--touch-gap) + env(safe-area-inset-bottom));
   display: grid;
   grid-template-columns: repeat(2, auto);
   gap: 10px;
-  align-content: center;
-  justify-content: center;
+  align-items: end;
+  justify-items: center;
 }
 
 .gm-actions button {
-  min-width: 68px;
-  min-height: 68px;
+  min-width: 64px;
+  min-height: 64px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #c0303a, #6b0f17);
-  border-color: #ff8a90;
+  background: radial-gradient(circle at 35% 30%, rgb(192 48 58 / var(--touch-alpha)), rgb(107 15 23 / var(--touch-alpha)));
+  border-color: rgb(255 138 144 / 0.7);
   font-size: 13px;
 }
 
@@ -226,77 +260,62 @@
 }
 
 .gm-sys {
-  grid-area: sys;
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
-  justify-content: center;
   align-items: center;
 }
 
 .gm-sys button {
   min-width: 48px;
-  min-height: 36px;
-  font-size: 12px;
-  border-radius: 18px;
-  background: #24263a;
-  border-color: #4a4d66;
+  min-height: 40px;
+  padding: 0 10px;
+  font-size: 13px;
+  border-radius: 20px;
+  background: rgb(36 38 58 / var(--touch-alpha));
+  border-color: rgb(138 141 172 / 0.6);
   border-bottom-width: 2px;
 }
 
-/* Upright phone: the screen fills the width at the top; the game-pad sits below. */
-.gm-player.touch-portrait {
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto 1fr;
-  grid-template-areas: 'screen screen' 'sys sys' 'pad act';
-  align-content: start;
+/* the switch that hides the controls: always there */
+.gm-sys .gm-touch-toggle {
+  font-size: 18px;
 }
 
-.gm-player.touch-portrait canvas {
-  width: 100%;
-  max-width: 100%;
-  max-height: none;
-  height: auto;
+.gm-touch.gm-touch-hidden > :not(.gm-sys),
+.gm-touch.gm-touch-hidden .gm-sys > :not(.gm-touch-toggle) {
+  visibility: hidden;
 }
 
-.gm-player.touch-portrait .gm-pad,
-.gm-player.touch-portrait .gm-actions {
-  align-self: center;
-  margin-bottom: 16px;
+/* Upright: Esc/F1/F2/Enter in a row above the pad and the buttons. */
+.gm-player.touch-portrait .gm-sys {
+  left: 50%;
+  /* (above the taller of the pad and two rows of buttons) */
+  bottom: calc(var(--touch-gap) * 2 + env(safe-area-inset-bottom) + max(clamp(124px, 34vmin, 172px), 138px));
+  translate: -50% 0;
 }
 
-/* Sideways phone: pad on the left, the screen as tall as it goes, buttons on the right. */
-.gm-player.touch-landscape {
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: auto 1fr;
-  grid-template-areas: 'sys screen .' 'pad screen act';
-  gap: 0 8px;
-  padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left);
+/* five or six buttons go three across, so they stay as low as the pad */
+.gm-player.touch-portrait .gm-actions:is([data-count='5'], [data-count='6']) {
+  grid-template-columns: repeat(3, auto);
 }
 
-.gm-player.touch-landscape canvas {
-  height: 100vh;
-  height: 100%;
-  max-height: 100%;
-  width: auto;
-  max-width: calc(100vw - 2 * (var(--side, 150px)));
-}
-
+/* Sideways: the system keys two by two in the top-left corner. */
 .gm-player.touch-landscape .gm-sys {
-  flex-direction: row;
-  padding-top: 6px;
-  justify-content: flex-start;
-  padding-left: 8px;
+  top: calc(10px + env(safe-area-inset-top));
+  left: calc(10px + env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 6px;
 }
 
 .gm-player.touch-landscape .gm-sys button {
-  min-width: 40px;
-  min-height: 30px;
+  min-width: 46px;
+  min-height: 36px;
   padding: 0 6px;
 }
 
 .gm-player.touch-landscape .gm-pad {
-  --pad: clamp(120px, 38vmin, 170px);
+  --pad: clamp(120px, 36vmin, 168px);
 }
 
 .gm-player.touch-landscape .gm-actions button {
@@ -346,6 +365,9 @@
   top: 8px;
   right: 8px;
   z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 4px 10px;
   border: 1px solid #ffd400;
   border-radius: 6px;

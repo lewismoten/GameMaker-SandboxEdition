@@ -17,6 +17,7 @@ import { kindOf } from "../editor/core/project";
 import { Vga } from "../vga/shared/vga";
 import { PictureScreen } from "./view/picture";
 import { output } from "../audio/output";
+import { audioContext, unlock } from "../audio/context";
 import { h, clear } from "../editor/core/ui";
 import { AUTOEXEC } from "./computer/setup";
 import { soundBlaster } from "./computer/soundBlaster";
@@ -96,8 +97,8 @@ export class Computer extends ComputerFolders {
 
   unlockAudio(): void {
     try {
-      this.audioCtx ??= new AudioContext();
-      void this.audioCtx.resume();
+      this.audioCtx ??= audioContext();
+      unlock();
     } catch {
       /* no audio */
     }
@@ -130,7 +131,7 @@ export class Computer extends ComputerFolders {
         case "gm":
           this.opts.onDriveAccess?.(this.shell.drive);
           // Game-Maker and its designers, the BBS: each loads when first run (see gm.ts)
-          await (await import("./gm")).runGameMaker(this);
+          await (await import("./gm")).runGameMaker(this, "main", _args);
           break;
         case "playgame":
           this.screen.gameMakerColors();
@@ -145,6 +146,11 @@ export class Computer extends ComputerFolders {
           await (await import("./view/vpic")).runVpic(this, _args);
           break;
         case "install":
+          // GM30\INSTALL.EXE from the BBS's Warez area has an installer of its own
+          if (ref.from === "warez") {
+            await (await import("./hacks/gm30Install")).runWarezInstall(this);
+            break;
+          }
           this.screen.print(
             "Game-Maker SE 3.00 is already installed in C:\\GM.\nType GM to start it.\n",
           );
@@ -154,9 +160,23 @@ export class Computer extends ComputerFolders {
           const files = new GameFiles(await ref.files());
           // a catalog game keeps its saves and high scores where the play page does
           if (ref.saveId) for (const [name, bytes] of Object.entries(await loadSaveData(ref.saveId))) files.set(name, bytes);
+          // GMCRACK's intro first; whatever goes wrong with it, the game still plays
+          if (ref.cracked) await import("./hacks/cracktro").then((m) => m.cracktro(this, ref.title, ref.cracked!)).catch((e) => { if (e instanceof ProgramAborted) throw e; console.warn("cracktro", e); });
           await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId);
           break;
         }
+        case "gmcrack":
+          await (await import("./hacks/gmcrack")).runGmCrack(this, _args);
+          break;
+        case "savehack":
+          await (await import("./hacks/saveHack")).runSaveHack(this);
+          break;
+        case "backup":
+          await (await import("./hacks/backupExe")).runBackup(this, _args);
+          break;
+        case "hexedit":
+          await (await import("./hexedit/hexEdit")).runHexEdit(this, _args);
+          break;
         case "egg":
           await (await import("../eggs/eggExe")).runEggExe(this);
           break;
@@ -271,6 +291,7 @@ export class Computer extends ComputerFolders {
         noSoundCard: !soundBlaster(),
         onQuit: () => false, // back to DOS
         onFileWrite: saveId ? (name, bytes) => void writeSaveFile(saveId, name, bytes) : undefined,
+        saveId,
         onExit: () => {
           this.player = undefined;
           if (this.restarting) {

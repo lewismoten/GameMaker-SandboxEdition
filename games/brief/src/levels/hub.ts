@@ -6,6 +6,7 @@
 // takes four of its wing's restored stories (counter 20 + w) and gives all four back the
 // moment Joe steps through it, so it only ever checks; Game-Maker refuses the touch while
 // the wing has fewer than four.
+import { chezSide } from '../../../kit/chez';
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { c, r } from '../art/pal';
@@ -82,8 +83,32 @@ function fern(under: Pixels): Pixels {
   return p;
 }
 
-/** The red door of The Dog House, from the inside: the way everybody came in. */
+/** The red door of The Dog House, from the inside: the way everybody came in. Out its glass,
+ * THE CHEZ is parked at the curb out front, on the charger's cord (it is always charging). */
 function redDoor(half: 0 | 1): Pixels {
+  const both = new Pixels(40, 20);
+  both.blit(redDoorHalf(0), 0, 0).blit(redDoorHalf(1), 20, 0);
+  both.rect(3, 10, 34, 1, c('grey', 4)).rect(3, 11, 34, 2, c('grey', 2));
+  const port = chezSide(both, 12, 3, {
+    body: [c('red', 2), c('red', 3), c('red', 4)],
+    trim: c('red', 1),
+    glass: [c('blue', 1), c('sky', 4)],
+    roof: c('ink', 2),
+    tire: c('ink', 0),
+    hub: c('grey', 5),
+    rim: c('paper', 4),
+    stripe: c('ink', 1),
+    bumper: c('ink', 1),
+    lamp: c('paper', 4),
+    tail: c('orange', 2),
+    outline: c('ink', 0),
+  }, 'left', 0.4);
+  both.rect(31, 5, 2, 5, c('grey', 1)).set(31, 6, c('green', 4));
+  both.line(port.portX + 1, port.portY, 30, 8, c('ink', 0));
+  return both.crop(half * 20, 0, 20, 20);
+}
+
+function redDoorHalf(half: 0 | 1): Pixels {
   const p = new Pixels(20, 20, c('red', 2));
   p.rect(0, 0, 20, 2, c('red', 1)).rect(half ? 18 : 0, 0, 2, 20, c('red', 1));
   p.rect(half ? 0 : 3, 3, 17, 10, c('sky', 1)).rect(half ? 0 : 3, 3, 17, 1, c('sky', 3));

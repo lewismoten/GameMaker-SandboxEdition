@@ -1,0 +1,33 @@
+// The template program's resources. winApp.ts replaces the icon and the version
+// information for each game and adds the game (RCDATA "GAME") and its info (RCDATA "INFO").
+#include <windows.h>
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+1 ICON "icon.ico"
+1 RT_MANIFEST "player.manifest"
+
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK 0x3F
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "FileDescription", "Game-Maker: Sandbox Edition player"
+      VALUE "FileVersion", "1.0"
+      VALUE "InternalName", "GameMakerPlayer"
+      VALUE "OriginalFilename", "GameMakerPlayer.exe"
+      VALUE "ProductName", "Game-Maker: Sandbox Edition"
+      VALUE "ProductVersion", "1.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

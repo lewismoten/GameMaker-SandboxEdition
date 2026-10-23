@@ -2,6 +2,7 @@
 // the stand, the stand itself, Doc Leo and the dogs scaled up, recipe card paper and the
 // CLASSIFIED stamp. All in the Pantry palette's fixed ramps.
 import { Pixels, rng } from '../../../kit/pixels';
+import { chezSide, CHEZ_WHEELS } from '../../../kit/chez';
 import { blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { c, r } from '../art/pal';
 
@@ -83,43 +84,33 @@ export function bigTricorn(p: Pixels, x: number, y: number, s: number): void {
 }
 
 /**
- * THE CHEZ: a 1976 CitiCar, a tomato-red wedge with a flat hood, round headlights in pods, a
- * huge upright windshield, a grey roof and little whitewall tires. Seen from the side, nose to
- * the right, about 60 x 34 units. (The charge port is at the rear, passenger side.)
+ * THE CHEZ: a 1976½ CitiCar, from the shared side view (games/kit/chez.ts): a short tomato-red
+ * wedge, the black roof, one door window, the racing stripes stepping up over the rear quarter,
+ * white wheels on black tires. Seen from the side, nose to the right, about 60 x 33 units, the
+ * back of the rear bumper at x and the tires on the ground at y + 33s. `wheel` turns them.
  */
 export function chez(p: Pixels, x: number, y: number, s: number, wheel = 0): void {
-  const R = (xx: number, yy: number, w: number, h: number, col: number) => p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
-  const red = c('red', 3);
-  // body: the wedge (low nose, tall square back)
-  for (let xx = 0; xx < 60; xx++) {
-    const top = xx < 30 ? 6 : 6 + (xx - 30) * 0.55;
-    R(xx, top, 1, 26 - top, xx < 2 || xx > 57 ? c('ink', 0) : red);
-  }
-  R(0, 25, 60, 2, c('ink', 0));
-  R(2, 8, 54, 1, c('red', 4));
-  // roof and windows
-  R(4, 0, 30, 6, c('grey', 3));
-  R(4, 0, 30, 1, c('grey', 5));
-  R(6, 6, 12, 10, c('sky', 2));
-  R(20, 6, 11, 10, c('sky', 3));
-  for (let k = 0; k < 10; k++) R(31 + k * 0.4, 6 + k, 1, 1, c('sky', 3));
-  R(18, 6, 2, 18, c('ink', 0));
-  R(7, 7, 4, 1, c('sky', 4));
-  // pinstripe, door handle, bumper, headlight, charge port at the back
-  R(2, 17, 56, 1, c('paper', 4));
-  R(14, 18, 3, 1, c('grey', 2));
-  R(56, 21, 5, 4, c('ink', 1));
-  R(53, 15, 4, 4, c('paper', 4));
-  R(55, 18, 2, 2, c('orange', 3));
-  R(1, 13, 2, 3, c('grey', 1));
-  // wheels with whitewalls
-  for (const wx of [12, 46]) {
-    p.disc(x + wx * s, y + 27 * s, 6 * s, c('ink', 0));
-    p.disc(x + wx * s, y + 27 * s, 3.4 * s, c('paper', 4));
-    p.disc(x + wx * s, y + 27 * s, 2.2 * s, c('grey', 3));
-    const a = wheel * 0.9;
-    p.set(x + wx * s + Math.cos(a) * 2 * s, y + 27 * s + Math.sin(a) * 2 * s, c('ink', 0));
-  }
+  const k = 1.5 * s;
+  const ox = Math.round(x - 3.9 * k);
+  const oy = Math.round(y + 33 * s - 20 * k);
+  chezSide(p, ox, oy, {
+    body: [c('red', 2), c('red', 3), c('red', 4)],
+    trim: c('red', 1),
+    glass: [c('sky', 0), c('sky', 4)],
+    roof: c('ink', 0),
+    tire: c('ink', 0),
+    hub: c('grey', 3),
+    rim: c('paper', 4),
+    bumper: c('ink', 1),
+    lamp: c('orange', 3),
+    tail: c('red', 5),
+    stripe: c('ink', 2),
+    pin: c('paper', 4),
+    chrome: c('grey', 4),
+  }, 'right', k);
+  // a mark on each wheel, going round
+  const a = wheel * 0.9;
+  for (const wx of CHEZ_WHEELS) p.set(ox + wx * k + Math.cos(a) * 1.4 * k, oy + 20 * k - 3.25 * k - 0.5 + Math.sin(a) * 1.4 * k, c('grey', 1));
 }
 
 /** Doc Leo's root beer stand on wheels, striped awning, a barrel and a sign: about 70 x 60 units. */
@@ -152,18 +143,21 @@ export function stand(p: Pixels, x: number, y: number, s: number, sign = "DOC LE
 }
 
 /** Index card paper: cream, a red header line and blue rules. */
-export function card(p: Pixels, x: number, y: number, w: number, h: number, tilt = 0): void {
+export function card(p: Pixels, x: number, y: number, w: number, h: number, tilt = 0, opts: { rule?: number; stain?: [number, number] | null } = {}): void {
   p.rect(x + 4, y + 4, w, h, c('dark', 0));
   for (let yy = 0; yy < h; yy++) {
     const dx = Math.round((tilt * yy) / h);
     p.rect(x + dx, y + yy, w, 1, c('paper', 4));
   }
-  p.rect(x, y + 18, w, 1, c('red', 3));
-  for (let yy = y + 30; yy < y + h - 4; yy += 11) p.rect(x + 2, yy, w - 4, 1, c('sky', 4));
+  const rule = opts.rule ?? 18;
+  p.rect(x, y + rule, w, 1, c('red', 3));
+  for (let yy = y + rule + 12; yy < y + h - 4; yy += 11) p.rect(x + 2, yy, w - 4, 1, c('sky', 4));
   p.frame(x, y, w, h, c('paper', 2));
-  // a ring stain (root beer)
-  p.ring(x + w - 28, y + h - 22, 12, c('rootbeer', 4));
-  p.ring(x + w - 28, y + h - 22, 11, c('paper', 3));
+  // a ring stain (root beer), by default near the bottom right corner
+  if (opts.stain === null) return;
+  const [sx, sy] = opts.stain ?? [x + w - 28, y + h - 22];
+  p.ring(sx, sy, 12, c('rootbeer', 4));
+  p.ring(sx, sy, 11, c('paper', 3));
 }
 
 /** A rubber stamp, red, at an angle, a little uneven. */

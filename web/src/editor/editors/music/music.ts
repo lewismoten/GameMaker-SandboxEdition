@@ -186,7 +186,7 @@ registerEditor(['cmf'], (host, project, file) => {
   const setPanel = h(
     'section',
     { class: 'mus-panel mus-panel-set', id: 'mus-set', role: 'tabpanel', 'aria-labelledby': 'mus-tab-set' },
-    h('div', { class: 'panel mus-song-box' }, h('h3', null, 'Song settings'), songPanel.el),
+    h('div', { class: 'panel mus-song-box' }, h('h2', null, 'Song settings'), songPanel.el),
   );
   const panels: Record<MusTab, HTMLElement> = { song: songPanel_, inst: instPanel, set: setPanel };
   const tabBar = h(

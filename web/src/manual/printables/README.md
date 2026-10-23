@@ -69,7 +69,9 @@ in blocks; it is drawn from the game's real blocks and monsters.
 | `starchart` | `heading`, `hub: { name, note }`, `sectors: [{ name, gate, color, worlds: [{ name, holds }] }]`, `notes`, `inset` (map window). Comes folded and unfolds on screen; prints landscape                                                                                                                                                                                                                            |
 | `recipe` | `heading`, `serves`, `lines: [{ n, name, line, note }]`, `blank` (line numbers left as an empty rule), `stamp`, `back`. An index card in a cook's hand, front and back (the notes) |
 
-The catalog and newsletter announce `year2000` and `teddy` as coming soon until they appear in
-the catalog; then their own entries (title, blurb, price, box shots, `pitch`) are used.
+The catalog and newsletter announce the games in `COMING` (`gen.ts`: `year2000`, `teddy`) as
+coming soon until they appear in the catalog; then their own entries (title, blurb, price, box
+shots, `pitch`) are used. Both are out now, so nothing is announced; add an entry there to
+announce the next one.
 
 Write en-US spelling, and keep every address and phone number obviously fictional.

@@ -8,6 +8,7 @@
   "exe": "TUIT.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
+  "tinHeart": { "map": "port.map", "at": [10, 33] },
   "label": {
     "background": "#f3ead2",
     "band": "#2f5d3a",
@@ -35,7 +36,7 @@
       ["port.map", 70, 1]
     ],
     "rating": "Ages 8 and up",
-    "hours": 6,
+    "hours": 4,
     "reviews": [
       { "quote": "The best RPG we got around to reviewing this year.", "source": "Modem Morning News" },
       { "quote": "Those rivers! Those shorelines! In Game-Maker?", "source": "Megapixel Monthly" }

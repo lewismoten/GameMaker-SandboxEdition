@@ -139,6 +139,13 @@ input[type='number'] {
   width: 6em;
 }
 
+/* sliders, drop-downs and folding headings are targets at least 24px tall (WCAG 2.5.8) */
+input[type='range'],
+select,
+summary {
+  min-height: 24px;
+}
+
 a {
   color: var(--accent);
 }
@@ -165,6 +172,10 @@ a {
 }
 
 .topbar a {
+  display: inline-flex;
+  align-items: center;
+  /* a target at least 24px tall (WCAG 2.5.8) */
+  min-height: 24px;
   color: inherit;
   text-decoration: none;
 }
@@ -301,8 +312,8 @@ main.home {
 }
 
 .sidebar h2.file-kind .add {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border-radius: 50%;
   font:
@@ -362,16 +373,6 @@ main.home {
   color: var(--muted);
   font-size: 12px;
   font-style: italic;
-}
-
-.sidebar .export-menu {
-  margin-top: 8px;
-}
-
-.sidebar .export-menu summary {
-  padding: 4px;
-  color: var(--muted);
-  cursor: pointer;
 }
 
 /* "Add a file": a grid of the kinds of files (editor/shell/workspace.ts) */
@@ -434,12 +435,22 @@ main.home {
   padding: 16px;
 }
 
-.editor h1.file-title,
-.editor h2 {
+.editor h1.file-title {
   margin: 0 0 4px;
   font:
     600 18px/1.3 ui-monospace,
     monospace;
+}
+
+/* an editor's own headings (h2 for its parts, h3 inside them) keep the sizes they had as
+   h3 and h4, so the outline goes h1 → h2 → h3 without changing how anything looks */
+.editor :where(h2) {
+  font-size: 1.17em;
+  margin-block: 1em;
+}
+.editor :where(h3) {
+  font-size: 1em;
+  margin-block: 1.33em;
 }
 
 .editor .hint {
@@ -713,21 +724,17 @@ dialog.modal .buttons {
   color: #fff;
 }
 
+/* Phones (up to 900px): the Files bar stays at the top and the editor below it scrolls by
+   itself, so the window never does (as on tablets). */
 @media (max-width: 900px) {
   .workspace {
-    grid-template-columns: 1fr;
-    /* the files bar and the editor keep their own heights (no stretched gap) */
-    grid-template-rows: auto auto;
-    align-content: start;
-    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
   }
   .sidebar {
+    position: relative;
     border-right: 0;
     border-bottom: 1px solid var(--border);
-  }
-  /* the window scrolls on phones, so the editor is always as tall as what it shows */
-  .workspace > .editor {
-    min-height: max-content;
   }
 }
 
@@ -1179,17 +1186,15 @@ button.big {
 }
 
 /* With the workspace open the window never scrolls: the file list and the editor do. */
-@media (min-width: 901px) {
-  #app.modern:has(.workspace) {
-    height: 100vh;
-    height: 100dvh;
-  }
+#app.modern:has(.workspace) {
+  height: 100vh;
+  height: 100dvh;
+}
 
-  #app.modern > .content > .workspace {
-    flex: 1 1 0;
-    height: auto;
-    min-height: 0;
-  }
+#app.modern > .content > .workspace {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
 }
 
 .skip-link {

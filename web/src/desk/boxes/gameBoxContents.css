@@ -1,6 +1,5 @@
 /* what came in a Sandbox Software box, beside it in the box viewer (desk/boxes/gameBoxContents.ts) */
-.box-contents .bc-left,
-.box-contents .bc-right {
+.box-contents .bc-left {
   position: absolute;
   top: 50%;
   z-index: 2;
@@ -9,17 +8,15 @@
   align-items: center;
   gap: 4vh;
   transform: translateY(-55%);
-}
-
-.box-contents .bc-left {
   left: calc(max(10px, 3vw) + 70px);
 }
 
-.box-contents .bc-right {
+/* the "In the box" list (boxList.css), clear of the shelf's ▶ */
+.box-contents .bc-list {
   right: calc(max(10px, 3vw) + 70px);
 }
 
-.box-contents button {
+.box-contents .bc-left button {
   padding: 0;
   border: 0;
   background: none;
@@ -100,49 +97,8 @@
   transform: rotate(0deg) scale(1.04);
 }
 
-/* the printed extras, fanned out */
-.bc-fan {
-  position: relative;
-  width: min(230px, 24vw);
-  height: min(300px, 40vh);
-}
-
-.bc-piece {
-  position: absolute;
-  left: 0;
-  top: calc(var(--i) * 18%);
-  width: 100%;
-  transform: rotate(calc((var(--i) - 1) * 7deg)) translateX(calc(var(--i) * 6%));
-  transition: transform 0.2s;
-}
-
-.bc-piece .pp-paper {
-  width: 100%;
-}
-
-.bc-fan:hover .bc-piece,
-.bc-fan:focus-visible .bc-piece {
-  transform: rotate(calc((var(--i) - 1) * 10deg)) translateX(calc(var(--i) * 10%));
-}
-
-.box-contents .bc-all {
-  padding: 8px 14px;
-  border: 1px solid #c9c1a6;
-  border-radius: 6px;
-  background: linear-gradient(#efe9d6, #cfc7ad);
-  color: #1d1a14;
-  font:
-    600 13px system-ui,
-    sans-serif;
-}
-
 @media (max-width: 760px) {
-  .box-contents .bc-right .bc-fan {
-    display: none;
-  }
-
-  .box-contents .bc-left,
-  .box-contents .bc-right {
+  .box-contents .bc-left {
     top: auto;
     /* above the viewer's bar, which wraps to several lines on a phone */
     bottom: 190px;
@@ -159,7 +115,7 @@
     align-items: flex-end;
   }
 
-  .box-contents .bc-right {
+  .box-contents .bc-list {
     right: 10px;
   }
 

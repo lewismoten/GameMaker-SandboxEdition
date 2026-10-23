@@ -68,6 +68,8 @@ export interface Session {
   rand?: () => () => number;
   /** Told the scene number each time play() enters a scene (before its picture). */
   onScene?: (scene: number) => void;
+  /** Not PLAYGAME's: a touch in `scene` changed map cell (x, y), shown as block `bnum` (World.onTouched). */
+  onTouched?: (scene: number, x: number, y: number, bnum: number) => void;
   /**
    * The last level played. loadscene loads into globals, so a level that leaves its
    * palette, block or character slot blank keeps the previous level's (PLAYGAME.C 4239).
@@ -85,17 +87,11 @@ export interface SpeedSetting {
   ticksPerSecond?: number;
 }
 
-export const SPEED_PRESETS: { id: string; label: string; ticksPerSecond?: number }[] = [
-  { id: 'turbo', label: 'Turbo (full 18.2 ticks/s)' },
-  { id: '386', label: '386-class PC (about 12 ticks/s)', ticksPerSecond: 12 },
-  { id: '286', label: '286-class PC (about 8 ticks/s)', ticksPerSecond: 8 },
-];
-
 export function sceneFile(game: Game, scene: number, slot: number): string | undefined {
   return game.scenes[scene]?.files[slot] || undefined;
 }
 
-interface LoadedScene {
+export interface LoadedScene {
   world: World;
   sounds?: SoundSet;
   song?: Uint8Array;
@@ -107,7 +103,7 @@ interface LoadedScene {
  * 6 character blocks, 7 sound set, 8 song. In the C a slot left blank keeps whatever
  * the previous scene loaded into the globals; `prev` stands in for those globals.
  */
-function loadScene(s: Session, scnum: number, prev?: World): LoadedScene | string[] {
+export function loadScene(s: Pick<Session, 'game' | 'rand' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, scnum: number, prev?: World): LoadedScene | string[] {
   const { m, game } = s;
   const file = (slot: number) => sceneFile(game, scnum, slot);
   const missing: string[] = [];
@@ -136,6 +132,8 @@ function loadScene(s: Session, scnum: number, prev?: World): LoadedScene | strin
   world.mon = mon ? parseMonsters(mon) : (prev?.mon ?? []);
   // loadscene sets NoMons when either the monster file or the monster blocks are absent.
   world.noMons = !file(3) || !file(4);
+  const told = s.onTouched;
+  if (told) world.onTouched = (x, y, bnum) => told(scnum, x, y, bnum);
   world.chr = chr ? parseCharacter(chr) : prev!.chr;
   if (!world.chr) return [file(5) ?? 'character'];
 
@@ -321,9 +319,16 @@ async function missingFiles(s: Session, files: string[]): Promise<void> {
 export interface SceneResult {
   ok: boolean;
   link: number;
+  /**
+   * The level played at the end and the one before it: another level's after F6 loaded a game
+   * saved there (LoadGame sets play's curscene and oldscene, globals in the C).
+   */
+  doscene?: number;
+  prevscene?: number;
 }
 
-interface Saved {
+/** What F5 writes to game<n>.sav (this port's JSON in place of SaveGame's binary records). */
+export interface Saved {
   version: 1;
   prevscene: number;
   doscene: number;
@@ -566,12 +571,36 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
       newlink = MAXSCENELINKS;
     } else newlink = MAXSCENELINKS + 2;
   }
-  return { ok: true, link: newlink };
+  return { ok: true, link: newlink, doscene, prevscene };
 }
 
 // Same game<n>.sav names as SaveGame/LoadGame, but the contents are this port's JSON,
 // not the original's binary records, so DOS save files cannot be loaded.
 const SAVE_FILE = (slot: number) => `game${slot}.sav`;
+
+/** The save of a game at this moment (F5; project/saveData's newGameSave makes one at the start). */
+export function savedState(w: World, where: { prevscene: number; doscene: number; linkin: number }, sndClock: number, rec: Pick<Recorder, 'snapshot'>): Saved {
+  return {
+    version: 1,
+    ...where,
+    sndClock,
+    world: {
+      nxtchg: w.nxtchg,
+      ci: w.ci,
+      mx: w.mx,
+      my: w.my,
+      mi: w.mi,
+      mm: w.mm,
+      noMons: w.noMons,
+      blkMon: w.blkMon,
+      blkmap: [...w.blkmap],
+      map: [...w.map],
+      mapMon: [...w.mapMon],
+      chr: { x: w.chr.x, y: w.chr.y, cframe: w.chr.cframe, cseq: w.chr.cseq },
+    },
+    rec: rec.snapshot(),
+  };
+}
 
 async function saveGame(s: Session, w: World, where: { prevscene: number; doscene: number; linkin: number }): Promise<void> {
   const { m, game } = s;
@@ -586,31 +615,37 @@ async function saveGame(s: Session, w: World, where: { prevscene: number; doscen
   }
   const slot = await pickSaveSlot(m, cols, true);
   if (slot >= 0) {
-    const data: Saved = {
-      version: 1,
-      ...where,
-      sndClock: s.sndClock,
-      world: {
-        nxtchg: w.nxtchg,
-        ci: w.ci,
-        mx: w.mx,
-        my: w.my,
-        mi: w.mi,
-        mm: w.mm,
-        noMons: w.noMons,
-        blkMon: w.blkMon,
-        blkmap: [...w.blkmap],
-        map: [...w.map],
-        mapMon: [...w.mapMon],
-        chr: { x: w.chr.x, y: w.chr.y, cframe: w.chr.cframe, cseq: w.chr.cseq },
-      },
-      rec: s.rec.snapshot(),
-    };
-    m.files.set(SAVE_FILE(slot), new TextEncoder().encode(JSON.stringify(data)));
+    m.files.set(SAVE_FILE(slot), new TextEncoder().encode(JSON.stringify(savedState(w, where, s.sndClock, s.rec))));
     m.screen.write(112, 185, match(cols, RGB_BLUE), 'Game Saved!');
     await m.pauseTimeKey(2);
   }
   s.rec.unpause();
+}
+
+/**
+ * F6's LoadGame once the save is read: the saved level loaded fresh, then the saved state put
+ * over it (also how project/saveData's tests check a save it made). Undefined when the
+ * level's files are missing.
+ */
+export function restoreSaved(s: Pick<Session, 'game' | 'rand' | 'ci' | 'rec' | 'sndClock' | 'onTouched'> & { m: { files: { get(name: string): Uint8Array | undefined } } }, w: World | undefined, data: Saved): LoadedScene | undefined {
+  const loaded = loadScene(s, data.doscene, w);
+  if (Array.isArray(loaded)) return undefined;
+  const nw = loaded.world;
+  const sw = data.world;
+  Object.assign(nw, { nxtchg: sw.nxtchg, mx: sw.mx, my: sw.my, mi: sw.mi, mm: sw.mm, noMons: sw.noMons, blkMon: sw.blkMon });
+  nw.blkmap = Uint8Array.from(sw.blkmap);
+  nw.map = Uint8Array.from(sw.map);
+  nw.mapMon = Uint8Array.from(sw.mapMon);
+  Object.assign(s.ci, sw.ci);
+  nw.ci = s.ci;
+  Object.assign(nw.chr, sw.chr);
+  initScroll(nw, s.game.scenes[data.doscene].scroll);
+  s.rec.restore(data.rec as Parameters<Recorder['restore']>[0]);
+  s.sndClock = data.sndClock;
+  nw.clock = s.sndClock >> 3;
+  moveCharGrav(nw, true);
+  handleJoystick(nw, true);
+  return loaded;
 }
 
 async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: number; doscene: number; linkin: number; song?: Uint8Array } | undefined> {
@@ -640,24 +675,10 @@ async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: nu
     return undefined;
   }
   await sceneReady(s, data.doscene);
-  const loaded = loadScene(s, data.doscene, w);
-  if (Array.isArray(loaded)) return undefined;
+  const loaded = restoreSaved(s, w, data);
+  if (!loaded) return undefined;
   const nw = loaded.world;
-  const sw = data.world;
-  Object.assign(nw, { nxtchg: sw.nxtchg, mx: sw.mx, my: sw.my, mi: sw.mi, mm: sw.mm, noMons: sw.noMons, blkMon: sw.blkMon });
-  nw.blkmap = Uint8Array.from(sw.blkmap);
-  nw.map = Uint8Array.from(sw.map);
-  nw.mapMon = Uint8Array.from(sw.mapMon);
-  Object.assign(s.ci, sw.ci);
-  nw.ci = s.ci;
-  Object.assign(nw.chr, sw.chr);
   attachSound(s, nw, loaded.sounds);
-  initScroll(nw, game.scenes[data.doscene].scroll);
-  s.rec.restore(data.rec as Parameters<Recorder['restore']>[0]);
-  s.sndClock = data.sndClock;
-  nw.clock = s.sndClock >> 3;
-  moveCharGrav(nw, true);
-  handleJoystick(nw, true);
   m.screen.write(88, 185, blue, 'Old Game Loaded!');
   await m.pauseTimeKey(2);
   if (s.musicOn) void m.audio.playSong(loaded.song);

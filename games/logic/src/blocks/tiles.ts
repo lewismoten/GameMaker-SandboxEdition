@@ -7,6 +7,8 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { bevel, blob, micro, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';
 import { BlockSet, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP, type BlockDef } from './sets';
+import { carlPic } from '../../../kit/carlCameo';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 
 export interface Style {
   id: string;
@@ -243,6 +245,27 @@ function decorPic(st: Style, kind: string, frame = 0): Pixels {
   return p;
 }
 
+/**
+ * Carl the fly (A Fly Named Carl) sitting smugly on a chip with BUG stamped on it: now and then
+ * the chip shorts out in sparks under him. Found the bug.
+ */
+function bugPic(st: Style, zap: number): Pixels {
+  const p = decorPic(st, 'ic');
+  const fly = carlPic(
+    { ink: c('ink', 0), fly: [c('metal', 0), c('metal', 1), c('metal', 2), c('metal', 3), c('metal', 4)], eye: [c('red', 0), c('red', 1), c('red', 2), c('red', 3)], wing: [c('paper', 1), c('paper', 2), c('paper', 3)], white: c('paper', 3), red: c('red', 2) },
+    { view: 'front', wing: zap, mood: zap ? 'grin' : 'smug' },
+  );
+  // he sits on the top half of the chip, over its stamp
+  for (let y = 0; y < 12; y++) for (let x = 0; x < 20; x++) if (fly.get(x, y + 2) !== 255) p.set(x, y, fly.get(x, y + 2));
+  if (zap)
+    for (const [x, y] of [
+      [1, 10], [0, 12], [2, 14], [18, 10], [19, 12], [17, 14],
+    ] as [number, number][])
+      p.set(x, y, (x + y) % 2 ? c('zap', 3) : c('spark', 4));
+  micro(p, 5, 12, 'BUG', c('paper', 3));
+  return p;
+}
+
 /** Block number of the felt egg in every room's set (an object: only the pickup key takes it). */
 export const EGG = 149;
 
@@ -346,6 +369,17 @@ export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadbo
   for (const k of ['cap', 'res', 'ic', 'xtal']) add(k, decorPic(st, k), { solid: SOLID });
   add('led', decorPic(st, 'led', 1), { solid: SOLID, next: 'ledOff', ntime: 9 });
   add('ledOff', decorPic(st, 'led', 0), { solid: SOLID, next: 'led', ntime: 9 });
+  // a cameo from A Fly Named Carl: the bug in the chip (housing, like any other part)
+  add('bug', bugPic(st, 0), { solid: SOLID, next: 'bugZap', ntime: 40 });
+  add('bugZap', bugPic(st, 1), { solid: SOLID, next: 'bug', ntime: 4 });
+  // the tin heart: a small bonus on the board, a glint crossing it now and then
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    add(`tinHeart${k || ''}`, drawTinHeart(floorPic(st, 0), { ink: c('ink', 0), tin: [c('metal', 2), c('metal', 3), c('metal', 4)], white: c('metal', 5), dark: c('metal', 1) }, k), {
+      score: 100,
+      touch: 'floor0',
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+    });
   // Batteries: each wire's battery gives birth to that wire's spark every SPARK_EVERY ticks
   // (only the batteries a room uses are drawn into its block set).
   for (const b of batteries) {

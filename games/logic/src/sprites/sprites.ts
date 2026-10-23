@@ -2,6 +2,7 @@
 // current itself, switches, timer buttons, force-field gates, fuses and relays.
 import { orientIndex } from '../../../../web/src/formats/blocks';
 import { Pixels, rng } from '../../../kit/pixels';
+import { chezSide, CHEZ_LAMP } from '../../../kit/chez';
 import { CLEAR, bevel, blob, micro, outline, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';
 import { BlockSet, SOLID, type BlockDef } from '../blocks/sets';
@@ -143,81 +144,42 @@ function lcdPic(half: number, booted: boolean, cursor = true): Pixels {
 
 /** The Bitmores' 1976½ CitiCar (the Bicentennial year: it still flies a little flag), in
  * profile across three blocks: part 0 the charging cord, 1 the car, 2 its nose and headlight
- * beams. A short tomato-red wedge: flat tail, tall boxy cabin with big flat windows and a grey
- * roof, a raked windshield running into a short steep hood, round headlight pods and little
- * round wheels. The cord plugs in at the tail and wraps around to the port on the far
- * (passenger) side. Charging current turns its headlights on; `flash` is the brighter frame. */
-const CITI_BODY: [number, number][] = [
-  [2.5, 8],
-  [3.5, 7],
-  [19, 7],
-  [26.5, 16],
-  [37.5, 22],
-  [38, 22.7],
-  [38, 30],
-  [2.5, 30],
-];
-
-function inPoly(poly: [number, number][], x: number, y: number): boolean {
-  let inside = false;
-  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const [xi, yi] = poly[i];
-    const [xj, yj] = poly[j];
-    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
-  }
-  return inside;
-}
-
+ * beams. THE CHEZ's shared side view (games/kit/chez.ts): a short tomato-red wedge, one straight
+ * line from the low nose over the hood and windshield to the short black roof, a flat tail, one
+ * door window, the racing stripes stepping up over the rear quarter, the headlight's pod on the
+ * hood and white wheels. The cord plugs in at the tail and wraps around to the port on the far
+ * (passenger) side. Charging current turns its headlight on; `flash` is the brighter frame. */
 function citiCarPic(part: number, lit: boolean, flash = false): Pixels {
   const w = new Pixels(60, 20, c('ink', 1));
   for (let x = 0; x < 60; x += 4) w.rect(x, 18, 2, 2, c('ink', 2)); // the garage floor
-  // Units (the car is 38 long, 23 tall, ground at 34) to pixels: tail at x=13, nose at x=42.
-  const SX = 0.82;
-  const SY = 0.68;
-  const ox = 13 - 2.5 * SX;
-  const oy = 19.5 - 34 * SY;
-  const X = (u: number) => ox + u * SX;
-  const Y = (v: number) => oy + v * SY;
-  const inside = (pts: [number, number][], x: number, y: number) => inPoly(pts, (x + 0.5 - ox) / SX, (y + 0.5 - oy) / SY);
-  const fill = (pts: [number, number][], col: (x: number, y: number) => number) => {
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 60; x++) if (inside(pts, x, y)) w.set(x, y, col(x, y));
-  };
-  const red = r('red');
-  fill(CITI_BODY, (x, y) => shadeAt(red, 1, 4, 1.05 - (y - 1) / 15, x, y));
+  const S = 0.85;
+  const ox = 10;
+  const oy = 3;
+  chezSide(w, ox, oy, {
+    body: [c('red', 1), c('red', 2), c('red', 3)],
+    trim: c('red', 0),
+    glass: [c('teal', 1), c('teal', 4)],
+    roof: c('ink', 0),
+    tire: c('ink', 0),
+    hub: c('metal', 3),
+    rim: c('paper', 3),
+    bumper: c('ink', 0),
+    lamp: c('orange', 3),
+    tail: c('red', 4),
+    stripe: c('ink', 2),
+    pin: c('paper', 3),
+    lens: lit ? c('yellow', 3) : c('metal', 4),
+  }, 'right', S);
   // the cord: along the wire, up into the plug at the tail, and around to the far side
-  w.rect(0, 9, 11, 2, c('ink', 0)).rect(0, 9, 11, 1, c('metal', 1));
-  w.rect(10, 8, 3, 4, c('metal', 2)).rect(10, 8, 3, 1, c('metal', 4));
-  // grey roof, the big flat windows (door and rear quarter) and the windshield edge on
-  w.rect(Math.round(X(3.5)), Math.round(Y(6)), Math.round(15.5 * SX), 2, c('metal', 2));
-  w.rect(Math.round(X(3.5)), Math.round(Y(6)), Math.round(15.5 * SX), 1, c('metal', 3));
-  fill([[13.5, 9.3], [19.6, 9.3], [25.3, 16.3], [13.5, 16.3]], () => c('teal', 3));
-  fill([[4.5, 9.3], [11.5, 9.3], [11.5, 16.3], [4.5, 16.3]], () => c('teal', 2));
-  w.line(Math.round(X(19.5)), Math.round(Y(8)), Math.round(X(26)), Math.round(Y(15.5)), c('teal', 4));
-  w.set(Math.round(X(16)), Math.round(Y(15)), c('teal', 4)).set(Math.round(X(17)), Math.round(Y(14)), c('teal', 4));
-  w.rect(Math.round(X(12.5)), Math.round(Y(9)), 1, 10, c('red', 0)); // the door seam
-  w.rect(Math.round(X(14)), Math.round(Y(19)), 2, 1, c('metal', 4)); // handle
-  w.rect(Math.round(X(3)), Math.round(Y(24)), Math.round(33 * SX), 1, c('red', 1)); // pinstripe
-  // black bumpers, the chunky one at the nose
-  w.rect(Math.round(X(36.3)), Math.round(Y(26)), 4, 3, c('ink', 0));
-  w.rect(Math.round(X(1)), Math.round(Y(26.5)), 2, 2, c('ink', 0));
-  w.set(Math.round(X(37)), Math.round(Y(24.5)), c('orange', 3)); // turn signal
-  // the round headlight pod standing up off the hood
-  const hx = Math.round(X(34.6));
-  const hy = Math.round(Y(19.8));
-  w.disc(hx, hy, 1.6, c('red', 1)).disc(hx, hy, 1, c('red', 4));
-  w.rect(hx + 2, hy - 1, 1, 3, lit ? c('yellow', 3) : c('metal', 4));
-  // little round wheels: black tires, white wheels, a chrome cap
-  for (const u of [8, 32]) {
-    const wx = Math.round(X(u));
-    w.disc(wx, 16, 3, c('ink', 0));
-    w.disc(wx, 16, 1.5, c('paper', 3));
-    w.set(wx, 16, c('metal', 2));
-  }
-  // the parade flag on its whip antenna
-  const fx = Math.round(X(4));
-  w.line(fx, 1, fx, 0, c('metal', 4)).set(fx + 1, 0, c('red', 3)).set(fx + 2, 0, c('paper', 3)).set(fx + 3, 0, c('red', 3));
+  w.rect(0, 9, 14, 2, c('ink', 0)).rect(0, 9, 14, 1, c('metal', 1));
+  w.rect(13, 8, 3, 4, c('metal', 2)).rect(13, 8, 3, 1, c('metal', 4));
+  // the parade flag on its whip antenna, at the back of the roof
+  const fx = Math.round(ox + 8.5 * S);
+  w.line(fx, 3, fx, 0, c('metal', 4)).set(fx + 1, 0, c('red', 3)).set(fx + 2, 0, c('paper', 3)).set(fx + 3, 0, c('red', 3));
   if (lit) {
-    w.set(hx + 2, hy - 1, c('paper', 3));
+    const hx = Math.round(ox + CHEZ_LAMP[0] * S);
+    const hy = Math.round(oy + CHEZ_LAMP[1] * S);
+    w.set(hx, hy, c('paper', 3));
     for (let i = 0; i < (flash ? 4 : 3); i++) w.line(hx + 4 + i * 2, hy - 1 - i, hx + 4 + i * 2, hy + 1 + i, c('yellow', flash ? 3 : 2));
   }
   const p = blank();
@@ -236,9 +198,6 @@ function boomPic(big: boolean): Pixels {
   p.disc(10, 10, big ? 3 : 2, c('paper', 3));
   return p;
 }
-
-export const SPARK_PICS = ['sparkA', 'sparkB'];
-export const CTRL_PICS = ['ctrlA', 'ctrlB'];
 
 export function buildMonsterBlocks(): BlockSet {
   const mb = new BlockSet(100, true);
@@ -283,9 +242,9 @@ export function buildMonsterBlocks(): BlockSet {
 
 // ---------------------------------------------------------------- Watt (.CBL)
 
-type View = 'down' | 'up' | 'side';
+export type View = 'down' | 'up' | 'side';
 
-function watt(view: View, step: number, mood: 'ok' | 'blink' | 'zapped' | 'toast' = 'ok'): Pixels {
+export function watt(view: View, step: number, mood: 'ok' | 'blink' | 'zapped' | 'toast' = 'ok'): Pixels {
   const p = blank();
   const zapped = mood === 'zapped';
   const toast = mood === 'toast';

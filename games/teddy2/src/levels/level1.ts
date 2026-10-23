@@ -16,7 +16,7 @@ export function house(): Level {
   const bs = houseTiles();
   const beasts = houseBeasts();
   // THE CHEZ in the driveway, Doc Leo beside it, waiting for the collar.
-  bs.chez(() => sky(3), 'collar', sky(2), () => sky(3));
+  bs.chez(() => sky(3), 'collar', sky(bandAt(37, G)), () => sky(3));
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => `sky${bandAt(y, G)}`);
   for (const [cx, cy] of [
@@ -98,7 +98,7 @@ export function house(): Level {
   m.set(8, 39, 'couch01').set(9, 39, 'couch11').set(10, 39, 'couch21');
   m.set(9, 36, 'klubPhoto');
   m.set(12, 38, 'tv00').set(12, 39, 'tv01');
-  m.set(6, 37, 'signSniff');
+  m.set(6, 37, 'signSniff').set(7, 37, 'signSniffR');
   for (const x of [2, 4, 6, 11, 13]) m.set(x, 39, x === 4 || x === 6 ? 'rug' : 'confetti');
   // The hall: stairs up (ledges), the coat on its hook.
   // (the stairwell's top is ledges too, so Teddy comes up through it and walks on it)

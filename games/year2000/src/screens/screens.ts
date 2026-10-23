@@ -7,6 +7,7 @@ import { blob, gradient, oval, shadeAt } from '../art/draw';
 import { micro, microWidth, outlined, text, textWidth } from '../art/font';
 import { C, PAL } from '../art/pal';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
+import { saveSlots } from '../../../kit/saveSlots';
 import { H, R, W, centeredText, chrome, chromeCentered, consoleTv, grid, scaleBlit, skyline, speedLines, stripedSun, sunsetSky, type Art } from './paint';
 
 // ------------------------------------------------------------------ title
@@ -56,7 +57,8 @@ export function paperScreen(heading: string, a: Art, deco: 'pages' | 'stars' | '
   // The paper.
   p.rect(30, 32, 266, 156, C('grey', 1));
   p.rect(28, 30, 266, 156, C('paper', 2));
-  for (let y = 46; y < 184; y += 8) p.rect(28, y, 266, 1, C('sky', 6));
+  // Pale rules on each text row's blank bottom pixel row, so only descenders touch them.
+  for (let y = 47; y < 184; y += 8) p.rect(28, y, 266, 1, C('sky', 7));
   p.rect(36, 30, 1, 156, C('red', 4));
   for (const y of [52, 108, 164]) oval(p, 32, y, 2.5, 2.5, C('purple', 1));
   chromeCentered(p, 6, heading, 2);
@@ -304,12 +306,13 @@ export function hiscoreScreen(a: Art): Pixels {
   // PLAYGAME writes 'Top Ten Scores' on rows 0-7 and 'Hit any key' on rows 192-199 in the
   // palette's nearest red, so both sit on plain dark bands with the frame kept between them.
   gradient(p, 0, 0, W, H, R('chrome'), 7, 5);
+  // The rows run from x 20 to 284 and down to the latest score at y 177..184: the frame
+  // stays below that and the icons stay right of it.
   p.rect(0, 0, W, 11, C('night', 0)).rect(0, 189, W, 11, C('night', 0));
   p.rect(0, 11, W, 1, C('pink', 3)).rect(0, 188, W, 1, C('pink', 3));
-  p.frame(4, 14, W - 8, 172, C('pink', 3)).frame(6, 16, W - 12, 168, C('teal', 4));
-  scaleBlit(p, a.quarter, 8, 18, 1);
+  p.frame(4, 13, W - 8, 176, C('pink', 3)).frame(6, 15, W - 12, 172, C('teal', 4));
   scaleBlit(p, a.quarter, 292, 18, 1);
-  scaleBlit(p, a.page, 8, 163, 1);
+  scaleBlit(p, a.page, 292, 90, 1);
   scaleBlit(p, a.pill, 292, 163, 1);
   return p;
 }
@@ -317,11 +320,13 @@ export function hiscoreScreen(a: Art): Pixels {
 export function filesScreen(heading: string, a: Art): Pixels {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, H, R('purple'), 0, 2);
-  p.rect(62, 34, 230, 148, C('paper', 2)).frame(62, 34, 230, 148, C('chrome', 6));
-  for (let i = 0; i < 10; i++) p.rect(80, 47 + i * 14, 200, 1, C('sky', 6));
+  // A phone book page: PLAYGAME writes the names in yellow, so each sits on a dark
+  // directory strip, and the blue message on the paper's white foot (kit/saveSlots.ts).
+  p.rect(30, 32, 262, 166, C('paper', 2)).frame(30, 32, 262, 166, C('chrome', 6));
+  saveSlots(p, C('night', 0), C('paper', 2), C('teal', 3));
   chromeCentered(p, 6, heading, 2);
-  scaleBlit(p, a.boothTop, 16, 120, 2);
-  scaleBlit(p, a.booth, 16, 160, 2);
+  scaleBlit(p, a.boothTop, 296, 150, 1);
+  scaleBlit(p, a.booth, 296, 170, 1);
   return p;
 }
 

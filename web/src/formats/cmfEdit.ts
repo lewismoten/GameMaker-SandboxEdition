@@ -3,7 +3,7 @@
 // melody/rhythm mode, the song end, and clearing out events PlayIt ignores. New events get
 // an order (seq) around the song's own, so a song that is not edited is written back byte
 // for byte.
-import { type Ev, type Note, type CmfSong, RHYTHM_CHANNELS, readSong, streamEvents, writeSong } from './cmfSong';
+import { type Ev, type Note, type CmfSong, RHYTHM_CHANNELS, streamEvents } from './cmfSong';
 
 // ---- editing ------------------------------------------------------------------------
 
@@ -12,10 +12,6 @@ const ORDER = { off: -1e9, mode: -6e8, program: -5e8, on: 1e9 } as const;
 
 function newSeq(song: CmfSong, kind: keyof typeof ORDER): number {
   return ORDER[kind] + ++song.counter;
-}
-
-export function cloneSong(song: CmfSong): CmfSong {
-  return readSong(writeSong(song));
 }
 
 /** Notes on one channel, by start. */

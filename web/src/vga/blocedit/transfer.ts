@@ -4,7 +4,8 @@ import { MENUATTR, SHADATTR, errorBox } from '../../retro/text/textUi';
 import { BACKBL, BLEN, MONBL, type Block } from '../../formats/blocks';
 import { LEFT, NONE, RIGHT, palFindCol } from '../shared/facelift';
 import { BLK_COUNT, drawblk, drawlist, getblk, getblktype, loadblks, scrollList } from '../shared/blocc';
-import { trunc, bytes2pal, newBlock, copyBlock } from './layout';
+import { trunc, newBlock, copyBlock } from './layout';
+import { bytes2pal } from '../shared/vga';
 import { BlockInfoScreen } from './info';
 
 export abstract class BlockTransfer extends BlockInfoScreen {

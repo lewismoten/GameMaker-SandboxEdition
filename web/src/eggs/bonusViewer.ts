@@ -1,22 +1,24 @@
 // A closer look at the eggs on the cake stand (bonus.ts). The rotten egg sits in a haze of
 // its own stench; tap it (click, touch, or Enter / Space) thirteen times and it wobbles,
-// cracks, and crumbles to a diamond heart that then turns in the light (and stays open after).
+// cracks, and crumbles to an IOU note (for a diamond heart: ask Mystery Robot Joe, who hands
+// it over for the tin hearts, tinHearts/trophy.ts) that then turns in the light. Every tap is kept
+// (bonus.ts eggTaps, which EGG.EXE can also set), so it opens as cracked as it was left.
 // The pastry egg turns on its spun-sugar holder while the clockwork baker on top spins and a
 // music box plays (with a mute button). Drag, or ← →, turns either; Esc closes. With reduced
 // motion: no wobble, no rising clouds, no falling shards, no spinning; the sound still plays.
 import { h, clear } from '../editor/core/ui';
-import { isHatched, setHatched, TAPS, type BonusState } from './bonus';
-import { drawHeart, drawPastryEgg, drawRestingShards, drawShell, EGG_ASPECT, rottenShell, stinkPuff, type Box } from './bonusArt';
+import { eggTaps, setEggTaps, TAPS, type BonusState } from './bonus';
+import { drawIouNote, drawPastryEgg, drawRestingShards, drawShell, EGG_ASPECT, rottenShell, stinkPuff, type Box } from './bonusArt';
 import { musicBox } from './musicBox';
 
-const HEART = {
-  name: 'The Diamond Heart',
-  description: 'Under thirteen taps of rotten shell: a heart cut from one flawless diamond, faceted in the Fabergé manner and caged in gold filigree scrolls, with a little gold loop on top for a chain. The smell, it turns out, was a guard dog.',
+const IOU = {
+  name: 'An IOU',
+  description: 'Under thirteen taps of rotten shell: no recipe, no jewel. Just a little folded note on yellowed onionskin in a very careful hand: "IOU one (1) diamond heart. Ask for it back: Joe." It is signed with a rivet. Mystery Robot Joe, it seems, borrowed the family\'s heart of the matter, and keeps a tally counter where his own should be. Whatever he is counting, he will hand it back when the count comes out right. The smell, it turns out, was a guard dog.',
 };
 
 /** What a tap says, for those who cannot see the egg crack. */
 export function tapMessage(taps: number): string {
-  if (taps >= TAPS) return `Tap ${TAPS} of ${TAPS}. The rotten egg crumbles to pieces! Inside is a diamond heart in gold filigree, turning in the light.`;
+  if (taps >= TAPS) return `Tap ${TAPS} of ${TAPS}. The rotten egg crumbles to pieces! Inside is a folded note: IOU one diamond heart. Ask for it back: Joe.`;
   if (taps <= 1) return `Tap 1 of ${TAPS}. The rotten egg wobbles. A hairline crack, and a smell.`;
   if (taps <= 4) return `Tap ${taps} of ${TAPS}. It wobbles and cracks a little more.`;
   if (taps <= 8) return `Tap ${taps} of ${TAPS}. The cracks spread, and the smell gets worse.`;
@@ -37,8 +39,9 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     let last = performance.now();
     let clock = 0;
     let dirty = true;
-    let taps = 0;
-    let hatched = isHatched();
+    // how far it was tapped before (or set in EGG.EXE): it carries on from there
+    let taps = eggTaps();
+    let hatched = taps >= TAPS;
     let wobbleAt = -10;
     let crumble: { at: number; shards: Shard[]; snap: HTMLCanvasElement; box: Box } | undefined;
     let puffs: Puff[] = [];
@@ -161,7 +164,7 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
         glow.addColorStop(1, 'rgba(255, 236, 244, 0)');
         g.fillStyle = glow;
         g.fillRect(0, 0, w, hh);
-        drawHeart(g, cx, hy, size, turn, still ? 0.3 : clock);
+        drawIouNote(g, cx, hy, size * 0.8, turn);
         if (crumble && !still) {
           const { snap, box: b0 } = crumble;
           const grav = box.h * 3.2;
@@ -262,16 +265,17 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
         hint.textContent = taps ? `${TAPS - taps} more ${TAPS - taps === 1 ? 'tap' : 'taps'}…` : 'Tap the egg · drag or ← → to turn it';
       } else {
         canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', rotten() ? 'A diamond heart in gold filigree, turning in the light' : 'A pastry egg in rose glaze and piped icing on a nest of spun sugar, a tiny clockwork baker turning on top');
+        canvas.setAttribute('aria-label', rotten() ? 'A folded note on yellowed paper: IOU one (1) diamond heart, ask for it back, Joe. Signed with a rivet' : 'A pastry egg in rose glaze and piped icing on a nest of spun sugar, a tiny clockwork baker turning on top');
         hint.textContent = 'Drag or use ← → to turn it';
       }
     };
 
     const show = () => {
       const e = found[at];
-      const open = rotten() && hatched;
       turn = 0;
-      taps = 0;
+      taps = rotten() ? eggTaps() : 0;
+      hatched = taps >= TAPS;
+      const open = rotten() && hatched;
       puffs = [];
       // already hazy when it comes into view
       nextPuff = clock - 4;
@@ -279,9 +283,9 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
       dirty = true;
       clear(
         card,
-        h('h2', { id: 'eggv-title' }, open ? HEART.name : e.egg.name),
+        h('h2', { id: 'eggv-title' }, open ? IOU.name : e.egg.name),
         h('p', { class: 'eggv-where' }, `${e.status === 'added' ? 'From' : 'Found in'} ${e.egg.gameTitle}${open ? ', inside the Rotten Egg' : ''}${e.status === 'added' ? ' (added by hand)' : ''}`),
-        h('p', null, open ? HEART.description : e.egg.description),
+        h('p', null, open ? IOU.description : e.egg.description),
         h('h3', null, 'Credits'),
         h('ul', null, ...e.egg.credits.map((c) => h('li', null, c))),
         h('h3', null, 'Tucked in with it'),
@@ -298,11 +302,10 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     const tap = () => {
       if (!tappable()) return;
       taps++;
+      setEggTaps(taps);
       wobbleAt = clock;
       say.textContent = tapMessage(taps);
       if (taps >= TAPS) {
-        hatched = true;
-        setHatched(true);
         const keep = turn;
         show();
         turn = keep;
@@ -317,8 +320,7 @@ export function openBonusViewer(found: BonusState[], start = 0): Promise<void> {
     };
 
     const mend = () => {
-      hatched = false;
-      setHatched(false);
+      setEggTaps(0);
       show();
       say.textContent = 'The shell is glued back together, smell and all.';
       canvas.focus();

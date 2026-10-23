@@ -1,7 +1,7 @@
 // Pictures bigger than one block (dome homes, billboards, the rocket...), drawn whole
 // and then cut into 20x20 blocks.
 import { Pixels, rng } from '../../../kit/pixels';
-import { T, blob, gradient, hgradient, oval, shadeAt } from './draw';
+import { blob, gradient, hgradient, oval, shadeAt } from './draw';
 import { micro, microWidth, text } from './font';
 import { C, PAL } from './pal';
 
@@ -132,12 +132,6 @@ export function banner(s: string, w: number, h: number, bg: string, ink: string)
   return p;
 }
 
-/** The Moon Base: a moon-grey hemisphere with a chrome airlock, 4x3. */
-export function moonDome(floor: (seed?: number) => Pixels): Pixels {
-  const p = domeHome(floor, 'purple');
-  return p;
-}
-
 /** A crater, 2x2, rim lit from the upper left. */
 export function crater(floor: (seed?: number) => Pixels, seed = 3): Pixels {
   const p = tiled(new Pixels(40, 40), floor);
@@ -152,11 +146,6 @@ export function crater(floor: (seed?: number) => Pixels, seed = 3): Pixels {
   const r = rng(seed);
   for (let i = 0; i < 6; i++) p.set(12 + r() * 16, 14 + r() * 12, C('moon', 4));
   return p;
-}
-
-/** A transparent copy: everything in color `key` becomes see-through. */
-export function keyOut(p: Pixels, key: number): Pixels {
-  return p.map((_, __, c) => (c === key ? T : c));
 }
 
 export { hgradient };

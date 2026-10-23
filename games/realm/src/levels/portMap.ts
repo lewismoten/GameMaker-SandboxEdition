@@ -58,12 +58,17 @@ export function portMap(mons: MonBook): { plan: Plan; harbor: TownSpots; falls: 
   p.put('barrels', 22, 32);
   p.put('barrels', 37, 33);
   p.npc(npc('harbor'), [17, 35], TALK.marlow, [17, 34]);
+  // Will the playwright, visiting from Shakespeare in Sweatpants, at the end of the quay
   p.npc(npc('tinker'), [29, 12], TALK.volta, [29, 13]);
   p.npc(npc('fisher'), [30, 40], TALK.salt, [30, 39]);
   p.npc(npc('docleo'), [12, 32], TALK.leo3, [13, 32]);
   p.npc(npc('minstrel'), [14, 17], TALK.minstr, [14, 18]);
   p.npc(npc('shopkeep'), [36, 20]);
   p.npc(npc('kid'), [20, 27]);
+  // Will the playwright, visiting from Shakespeare in Sweatpants, at the end of the quay (Lyra
+  // tells you about him), and a tin heart in the grass by the lighthouse (100 points)
+  p.npc(npc('poet'), [38, 32]);
+  p.put('tinHeart', 10, 33);
   p.spot.vaults = [16, 49];
   p.spot.garage = [31, 10];
   const harbor = { arrive: [24, 3] as Pt };

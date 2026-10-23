@@ -6,12 +6,12 @@
 // The arena's way out sits right behind the boss's weak points: the parts burn the ship
 // badly enough that the only way through is to shoot them away first.
 import { Pixels } from '../../../kit/pixels';
-import { BlockSet, CLEAR } from '../art/draw';
+import { CLEAR } from '../art/draw';
 import { HURT } from '../characters/sharedMonsters';
 import { POWER } from '../ids';
 import type { Bestiary } from '../characters/mons';
 
-/** Slices a big picture into 20x20 pieces named `${prefix}${row}${col}`. */
+/** Slices a big picture into 20x20 pieces, [row][column]. */
 export function slicesOf(big: Pixels, w: number, h: number): Pixels[][] {
   const out: Pixels[][] = [];
   for (let r = 0; r < h; r++) {
@@ -19,11 +19,6 @@ export function slicesOf(big: Pixels, w: number, h: number): Pixels[][] {
     for (let c = 0; c < w; c++) out[r].push(big.crop(c * 20, r * 20, 20, 20));
   }
   return out;
-}
-
-export function addSlices(bs: BlockSet, prefix: string, big: Pixels, w: number, h: number, props: object = {}, skip?: (r: number, c: number) => boolean): void {
-  const s = slicesOf(big, w, h);
-  for (let r = 0; r < h; r++) for (let c = 0; c < w; c++) if (!skip?.(r, c)) bs.add(`${prefix}${r}${c}`, s[r][c], props);
 }
 
 /** Is any pixel of this slice drawn? */

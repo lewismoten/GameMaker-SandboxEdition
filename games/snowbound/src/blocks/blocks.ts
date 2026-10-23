@@ -3,7 +3,7 @@
 // or after time) are what make the game: deep snow is solid and pays $1 when you push
 // into it, parking-lot asphalt quietly snows back over, ice slides you, forts throw.
 //
-// Each area draws its own blocks (ground.ts, things.ts, houses.ts, mall.ts, sled.ts, route.ts, fair.ts, woods.ts) into one
+// Each area draws its own blocks (ground.ts, things.ts, houses.ts, mall.ts, sled.ts, route.ts, fair.ts, woods.ts, chez.ts) into one
 // BlockBook. A block's number is the order it was added, so the areas are called in this order.
 import type { Pal } from '../art/pal';
 import { blockContext, type BlockBook } from './book';
@@ -15,6 +15,7 @@ import { addSled } from './sled';
 import { addRoute } from './route';
 import { addFair } from './fair';
 import { addWoods } from './woods';
+import { addChez } from './chez';
 
 export { BlockBook, SOLID } from './book';
 
@@ -29,5 +30,6 @@ export function buildBlocks(pal: Pal): BlockBook {
   addFair(k, painters, mall);
   addSnack(k, painters);
   addWoods(k, painters, treats);
+  addChez(k, painters);
   return k.book;
 }

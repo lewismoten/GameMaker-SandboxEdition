@@ -7,7 +7,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { c, canvas, copy, cut, dirt, planks, r } from '../blocks/tiles';
-import { sign } from './common';
+import { sign, wideSign } from './common';
 import { CTR } from '../ids';
 import { docLeo, halves } from '../sprites/people';
 
@@ -42,12 +42,12 @@ export function showTiles(): Tiles {
       return p;
     })(),
   );
-  // spotlights from the rafters
+  // spotlights from the rafters (shining down in front of the beam)
   for (const side of ['L', 'R'] as const)
     t.air(
       `spot${side}`,
       (() => {
-        const p = new Pixels(20, 20, c('ink', 1));
+        const p = copy(t.pic('rafter'));
         for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((side === 'L' ? x : 19 - x) <= y && (x + y) % 2 === 0) p.set(x, y, c('glow', 2));
         return p;
       })(),
@@ -123,7 +123,10 @@ export function showTiles(): Tiles {
   const hc = cut(hoop);
   t.air('hoopTop', hc[0][0]);
   t.air('hoopBot', hc[1][0]);
-  t.air('signHoop', sign(wall, 'RETIRED'));
+  // the long signs are two blocks wide
+  const [hoopL, hoopR] = wideSign(wall, 'RETIRED');
+  t.air('signHoop', hoopL);
+  t.air('signHoopR', hoopR);
   // the popcorn stand
   const pop = canvas(1, 2, () => wall);
   pop.rect(2, 4, 16, 20, c('red', 2)).rect(4, 6, 12, 14, c('glow', 2));
@@ -152,7 +155,9 @@ export function showTiles(): Tiles {
   const jc = cut(judge);
   t.air('judgeTop', jc[0][0]);
   t.air('judgeBot', jc[1][0]);
-  t.air('signBest', sign(wall, 'BEST BEHAVED'));
+  const [bestL, bestR] = wideSign(wall, 'BEST\nBEHAVED');
+  t.air('signBest', bestL);
+  t.air('signBestR', bestR);
   // the stage, Doc Leo waiting on it, its curtain (opens only for a blue ribbon: the way out)
   t.ledge(
     'stage',

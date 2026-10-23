@@ -6,7 +6,15 @@ import { ORIGIN } from '../src/levels/room';
 import { Bot } from './bot';
 
 /** A stop: a legend character (the nearest one not yet visited) or a room cell [x, y]. */
-export type Stop = string | [number, number] | { pickup: [number, number] };
+export type Stop = string | [number, number] | { pickup: [number, number] } | { push: [number, number] };
+
+/** The Clock Room's lazy Susan, clockwise from XII (blocks/susan.ts). */
+export const SUSAN: [number, number][] = [
+  [38, 2],
+  [39, 3],
+  [38, 4],
+  [37, 3],
+];
 
 export const ROUTE: Record<number, Stop[]> = {
   1: ['k', 'I'],
@@ -17,12 +25,15 @@ export const ROUTE: Record<number, Stop[]> = {
   6: ['k', 'I'],
   7: ['k', 'I'],
   8: ['k', 'I'],
-  9: ['k', 'I'],
+  9: [...SUSAN.map((push) => ({ push })), 'I'],
   10: ['k', 'I'],
   11: ['k', 'I'],
   12: [[29, 1], [15, 10], 'I'],
   13: ['k', 'I'],
 };
+
+/** Sir Reginald's way under the stove, to the molasses. */
+export const INTERLUDE_ROUTE: Stop[] = ['I'];
 
 /** The secret way out of the Cold Cellar, and the hidey-hole's own route. */
 export const SECRET_ROUTE: Record<number, Stop[]> = {
@@ -43,6 +54,11 @@ export async function playRoom(bot: Bot, stops: Stop[]): Promise<void> {
       if (!all.length) throw new Error(`${name}: no ${stop} left`);
       all.sort((a, b) => Math.abs(a.x - p.x) + Math.abs(a.y - p.y) - (Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));
       target = all[0];
+    } else if (!Array.isArray(stop) && 'push' in stop) {
+      const [x, y] = stop.push;
+      if (!(await bot.push(x + ORIGIN.x, y + ORIGIN.y, `${name} push ${x},${y}`))) throw new Error(`${name}: ${x},${y} would not budge`);
+      bot.say(`${name}: pushed ${x},${y}`);
+      continue;
     } else if (Array.isArray(stop)) target = { x: stop[0] + ORIGIN.x, y: stop[1] + ORIGIN.y };
     else {
       target = { x: stop.pickup[0] + ORIGIN.x, y: stop.pickup[1] + ORIGIN.y };

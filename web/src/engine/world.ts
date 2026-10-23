@@ -211,6 +211,12 @@ export interface World {
   /** GetJoyPos: position 0 (center) or 1..8 clockwise from up, buttons bit 0/1. */
   joystick?: () => { pos: number; buttons: number } | null;
   jstickOn: boolean;
+  /**
+   * Not PLAYGAME's: told when the character's touch did something to map cell (x, y), shown as
+   * block `bnum` (it changed into its touch block, or was picked up). The web's tin heart
+   * tracking listens here; nothing in play reads it.
+   */
+  onTouched?: (x: number, y: number, bnum: number) => void;
 }
 
 export function newCharInfo(): CharInfo {

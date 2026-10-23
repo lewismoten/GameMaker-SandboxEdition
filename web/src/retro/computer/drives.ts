@@ -16,6 +16,8 @@ import { h } from '../../editor/core/ui';
 import type { GmInstallEntry } from '../../../scripts/cdGames';
 import { MonitorMode, ComputerOptions, AUTOEXEC, CONFIG_SYS } from './setup';
 import bbsGifs from '../bbs/gallery.json';
+import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
+import { dosDir } from '../../project/dosDir';
 
 export abstract class ComputerDrives {
   // Defined by a later layer (see the chain in the header comment).
@@ -151,7 +153,7 @@ export abstract class ComputerDrives {
         folder('DOS', () =>
           ['COMMAND.COM', 'HIMEM.SYS', 'EMM386.EXE', 'MSCDEX.EXE', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM'].map((n) =>
             file(n, 20_000 + n.length * 1357),
-          ),
+          ).concat(file('BACKUP.EXE', 36_802, { run: { kind: 'backup' } }), file('HEXEDIT.EXE', 41_216, { run: { kind: 'hexedit' } })),
         ),
         folder('CDROM', () => [file('CDROM.SYS', 18_432)]),
         liveFolder('GM', () => this.gmFolder(true)),
@@ -166,7 +168,8 @@ export abstract class ComputerDrives {
         liveFolder('DOWNLOAD', async () => {
           const cat = await this.catalog();
           const dl = this.downloads;
-          return dl.list().flatMap((id) => {
+          await deskFilesReady(); // which games GMCRACK cracked
+          const games = dl.list().flatMap((id) => {
             const g = cat.find((c) => c.id === id);
             if (!g) return [];
             const date = dl.date(id) ?? DOS_DATE;
@@ -175,30 +178,25 @@ export abstract class ComputerDrives {
               n.remove = () => dl.deleteFile(id, n.name);
               return !dl.isDeleted(id, n.name);
             };
-            const node = liveFolder(g.id, async () =>
-              [
-                ...(g.exe
-                  ? [
-                      file(g.exe, 155_156, {
-                        date,
-                        run: { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` } as ProgramRef,
-                      }),
-                    ]
-                  : []),
-                ...(await gameFolder(g, date).list!()),
-              ].filter(gone),
-              date,
-            );
+            const node = liveFolder(dosDir(g), async () => {
+              // the .EXE (or GMCRACK's patched one and the .BAK), CONFIG.BAT and the rest, and FILE_ID.DIZ
+              const own = gameDownloadNodes(g, date, { kind: 'game', title: g.title, gam: g.gam!, files: () => this.catalogFiles(g), notice: g.notice, saveId: `game:${g.id}` });
+              // one of each name (a CD game brought its own FILE_ID.DIZ; the BBS's ZIP wrote over it)
+              const files = (await gameFolder(g, date).list!()).filter((n) => !own.some((o) => o.name === n.name));
+              return [...own, ...files].filter(gone);
+            }, date);
             node.remove = () => dl.remove(id);
             return [node];
           });
+          // and the BBS's Warez area (GMCRACK, SAVEHACK, GM30)
+          return [...games, ...utilityFolders(dl, liveFolder)];
         }),
         // pictures from the BBS's GIF Gallery; the folder is made with the first one
         ...(this.downloads.hasDir('IMAGES') || bbsGifs.some((f) => this.downloads.has(f.name))
           ? [
               Object.assign(
-                liveFolder('IMAGES', () =>
-                  bbsGifs
+                liveFolder('IMAGES', async () => [
+                  ...bbsGifs
                     .filter((f) => this.downloads.has(f.name))
                     .map((f) =>
                       file(f.name, f.bytes, {
@@ -207,6 +205,8 @@ export abstract class ComputerDrives {
                         remove: () => this.downloads.remove(f.name),
                       }),
                     ),
+                  ...(await imagesDiz(this.downloads)), // the newest picture's FILE_ID.DIZ
+                ],
                   this.downloads.dirDate('IMAGES'),
                 ),
                 { remove: () => this.downloads.setDir('IMAGES', false) },
@@ -277,7 +277,8 @@ export abstract class ComputerDrives {
         date,
       );
     });
-    return [...folders, ...programs];
+    // CHK.EXE's PLAYGAME.REG, made when Game-Maker was registered on this PC
+    return [...folders, ...programs, ...(hardDisk ? await playgameReg() : [])];
   }
 
   protected catalogFileCache = new Map<string, Promise<Map<string, Uint8Array>>>();

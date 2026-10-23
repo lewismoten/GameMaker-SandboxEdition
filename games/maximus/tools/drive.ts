@@ -60,7 +60,30 @@ export interface SeekOpts {
   plasmaReserve?: number;
   /** false: the body moves only while a key is held (the diving bell), so plans can be shorter. */
   momentum?: boolean;
+  /** Pick up loot seen on the way (as a player would): see Grab. */
+  grab?: Grab;
   log?: (m: string) => void;
+}
+
+/**
+ * Loot on screen worth a short detour: every few ticks the bot looks over the 16x10 view
+ * for a pickup it can reach without a door, a force field, a secret passage or a hazard
+ * beside it, costing at most `detour` cells more than the way it is going, and goes for it.
+ */
+export interface Grab {
+  /** Blocks worth picking up. */
+  loot: (n: number) => boolean;
+  /** Blocks never walked through on a detour (fake rock and crystal walls: the secret pockets). */
+  secret: (n: number) => boolean;
+  /** Map cells already gone for in this scene (taken, or given up on). */
+  tried: Set<number>;
+  /** Most extra cells a detour may cost (default 12 on foot, 16 flying), and how far off the loot may be (16, 20). */
+  detour?: number;
+  reach?: number;
+  /** Below this many hit points only healing is worth a detour (default 45). */
+  careful?: number;
+  /** Cells already logged as passed by (MAXIMUS_GRAB_LOG). */
+  passed?: Set<string>;
 }
 
 type Plan = { held: number[][]; name: string };
@@ -132,6 +155,77 @@ function flyPlans(H: number): Plan[] {
   // and a shot first, then one way
   for (const a of dirs) plans.push({ held: Array.from({ length: H }, (_, t) => (t === 0 ? [SCAN.space] : a ? [a] : [])), name: `F/${a}` });
   return plans;
+}
+
+/** The nearest loot in view worth the detour from `at` (on the way to the goal of `dist`), if any. */
+function grabNear(d: Driver, opts: SeekOpts, dist: Int32Array, at: P, tall: number, mode: 'walk' | 'fly'): { at: P; n: number; detour: number; ticks: number; avoid: (x: number, y: number) => boolean } | undefined {
+  const g = opts.grab!;
+  const w = d.w;
+  const map = w.map;
+  const bbl = d.scene.bbl;
+  const avoid0 = opts.avoid ?? (() => false);
+  const here = dist[idx(at.x, at.y)];
+  if (here < 0) return undefined;
+  const hazard = (n: number) => bbl[n].chHitPt < 0;
+  // MAXIMUS_GRAB_LOG=1: why loot in view was passed by (once a cell)
+  const why = (i: number, m: string) => {
+    if (!process.env.MAXIMUS_GRAB_LOG || g.passed?.has(`${i}${m}`)) return;
+    (g.passed ??= new Set()).add(`${i}${m}`);
+    console.log(`    grab: passed block ${map[i]} at ${i % 100},${Math.floor(i / 100)}: ${m}`);
+  };
+  const avoid = (x: number, y: number) => avoid0(x, y) || g.secret(map[idx(x, y)]);
+  // cells in view holding loot not gone for yet, with no hazard beside them
+  const cand: number[] = [];
+  for (let by = 0; by < 10; by++)
+    for (let bx = 0; bx < 16; bx++) {
+      const x = (w.mx + bx) % 100;
+      const y = (w.my + by) % 100;
+      const i = idx(x, y);
+      if (g.tried.has(i) || !g.loot(map[i]) || avoid(x, y) || dist[i] < 0) continue;
+      // hurt: only what mends
+      if (w.ci.hitpts < (g.careful ?? 45) && bbl[map[i]].chHitPt <= 0) continue;
+      let near = false;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (hazard(map[idx(x + dx, y + dy)])) near = true;
+      if (!near) cand.push(i);
+      else why(i, 'beside a hazard');
+    }
+  if (!cand.length) return undefined;
+  // the way there: open cells only (no doors or fields), never through a secret or a link it should not take
+  const open = (x: number, y: number) => {
+    for (let k = 0; k < tall; k++) {
+      const yy = y - k;
+      if (avoid(x, yy)) return false;
+      const b = bbl[map[idx(x, yy)]];
+      if (b.chHitPt < 0 || !((b.solid & 14) === 0 || b.solid === 1)) return false;
+    }
+    return true;
+  };
+  const from = field(at, open);
+  // the pod and the diving bell cover ground faster than the courier on foot
+  const maxDetour = g.detour ?? (mode === 'fly' ? 16 : 12);
+  const reach = g.reach ?? (mode === 'fly' ? 20 : 16);
+  let best: { i: number; detour: number; to: number } | undefined;
+  for (const i of cand) {
+    const to = from[i];
+    // a pile of loot is worth going further for than one chip: a few more cells for each other piece beside it
+    let pile = 0;
+    for (const j of cand) if (j !== i && Math.abs(wrap((j % 100) - (i % 100))) <= 3 && Math.abs(wrap(Math.floor(j / 100) - Math.floor(i / 100))) <= 3) pile++;
+    const more = 4 * Math.min(3, pile);
+    if (to < 0 || to > reach + more) {
+      why(i, to < 0 ? 'no open way' : `${to} cells off`);
+      continue;
+    }
+    const detour = to + dist[i] - here;
+    if (detour > maxDetour + more) {
+      why(i, `detour ${detour}`);
+      continue;
+    }
+    if (!best || detour < best.detour || (detour === best.detour && to < best.to)) best = { i, detour, to };
+  }
+  if (!best) return undefined;
+  g.tried.add(best.i);
+  const per = mode === 'walk' ? 10 : 8;
+  return { at: { x: best.i % 100, y: Math.floor(best.i / 100) }, n: map[best.i], detour: best.detour, ticks: Math.min(360, 60 + best.to * per), avoid };
 }
 
 /**
@@ -302,6 +396,26 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
       bestSmooth = smooth(d.w);
       lastGain = t;
       stuck = 0;
+    }
+    if (opts.grab && t % 12 === 0) {
+      const g = grabNear(d, opts, dist, cellOf(d.w), tall, mode);
+      if (g) {
+        apply([]);
+        // a detour that starts to hurt is given up
+        const hp0 = d.w.ci.hitpts;
+        const r = await seek(d, g.at, { ...opts, grab: undefined, passable: () => false, avoid: g.avoid, maxTicks: g.ticks, done: () => d.w.ci.hitpts < hp0 - 12 });
+        t += r.ticks;
+        // the touch takes it; a few more ticks if it is not gone yet
+        for (let i = 0; i < 6 && map[idx(g.at.x, g.at.y)] === g.n && d.link < 0 && !d.dead; i++, t++) await d.tick();
+        opts.log?.(`    grab: ${map[idx(g.at.x, g.at.y)] === g.n ? 'missed' : 'took'} block ${g.n} at ${g.at.x},${g.at.y} (detour ${g.detour})`);
+        if (d.link >= 0 || d.dead) break;
+        chosen = undefined;
+        replanAt = t;
+        bestSmooth = smooth(d.w);
+        lastGain = t;
+        stuck = 0;
+        continue;
+      }
     }
     best = Math.min(best, distOf(d.w));
     if (opts.log && t % 100 === 0) opts.log(`    seek t${t} at ${d.w.chr.x[0]},${d.w.chr.y[0]} dist ${distOf(d.w)} hp ${d.w.ci.hitpts} plan ${chosen?.name}`);

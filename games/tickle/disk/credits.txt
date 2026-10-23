@@ -1,0 +1,47 @@
+CERTIFIED RAT TICKLER
+by The Bard of Bizarre, 1995
+Shareware from The Sofa BBS
+
+Based on the song "Certified
+Rat Tickler" by The Bard of
+Bizarre (Lewis Moten as his
+hobo clown, Doc Leo, PhD in
+Comedic Science), about the
+day he earned his rat
+tickling certificate.
+
+Lyrics: ChatGPT, from Lewis's
+prompts (after much back and
+forth). No recording came
+with the song: the music was
+composed for this game by
+Claude Opus 5.5.
+Title, cover and certificate
+art: drawn for this game by
+Claude Opus 5.5. The Bard of
+Bizarre logo: DeepAI. Doc Leo
+photo: Lewis Moten.
+
+Game: blocks, maps, sprites,
+sounds and the FM tango by
+Claude, built as Game-Maker
+3.0 files. Made with GAME-
+MAKER by Recreational
+Software Designs.
+
+No rats were harmed. MWA-HA!
+FREE TO SHARE
+
+Made in 2026 by Lewis Moten
+with Claude. Free to share:
+see LICENSE.TXT on the disk.
+
+The shareware page is part
+of the 1995 story: there is
+no fee and nothing to mail.
+
+MIT License, (c) 2026
+Lewis Moten.
+
+
+

@@ -139,8 +139,6 @@ function rat(step: number, lit: boolean): Pixels {
 }
 
 export const MON = { dobbs: 0, cat: 1, sandbag: 2, wisp: 3, watchman: 4, rat: 5, wispWander: 6 } as const;
-export const MON_NAMES = ['dobbs', 'cat', 'sandbag', 'wisp', 'watchman', 'rat', 'wispWander'];
-
 export function buildCritters(): { mb: BlockSet; mon: Monster[] } {
   const mb = new BlockSet(100, true);
   mb.add('dobbs0', pic([...DOBBS_HEAD, ...DOBBS_BODY]), { solid: SOLID });

@@ -156,11 +156,29 @@ export interface CatalogEntry {
   sizes?: number[];
   /** Original games made for this project: label, box art, manual, sound card. */
   original?: OriginalExtras;
+  /** Original games: a series of their own ("bizarre": The Bard of Bizarre's, see bizarre.ts). */
+  series?: string;
   /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
   gz?: boolean;
   /** From games/catalog.json: its notice, manual and printables are in games/details/<id>.json (withDetails). */
   details?: boolean;  /** Original games: the site path of its walkthrough (src/walkthrough), when it has one. */
   walkthrough?: string;
+  /** Built sites: its pictures are drawn already (games/shots/, gfx/levelPicture.ts builtShotPath). */
+  shots?: boolean;
+  /** …and its hero (games/shots/<id>-hero.png, gfx/levelPicture.ts builtHeroPath). */
+  heroShot?: boolean;
+}
+
+/** The publisher of the games made for this project (games/<id>/about.json "company"). */
+export const SANDBOX_COMPANY = 'Sandbox Software';
+
+/**
+ * A Sandbox Software game: one of ours, with its box, disk and manual. Other games built in
+ * ../games under another publisher's name (a BBS download such as The Bard of Bizarre's)
+ * are listed with the shareware instead.
+ */
+export function isSandboxGame(g: Pick<CatalogEntry, 'original' | 'company'>): boolean {
+  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY;
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();
@@ -210,6 +228,16 @@ export function loadCatalogList(base = './games/'): Promise<CatalogEntry[]> {
     catalogs.set(key, p);
   }
   return p;
+}
+
+/**
+ * The list the home page, the shelf and the disk box draw from: games/catalog.json (a quarter
+ * of index.json; manuals hold only their title until withDetails). The development server
+ * hands out the full catalog instead: it serves catalog.json from whatever scripts/cdGames.ts
+ * it was started with, which may be older than this page.
+ */
+export function loadGameList(base = './games/'): Promise<CatalogEntry[]> {
+  return import.meta.env?.DEV ? loadCatalog(base) : loadCatalogList(base);
 }
 
 /** An entry with its shareware notice, manual and printables (games/details/<id>.json), for one from loadCatalogList. */
@@ -328,5 +356,7 @@ export async function loadFileList(list: Iterable<File>): Promise<GameFiles> {
 
 /** "Eric-Jon Waugh · A-J Games · 1993" */
 export function creditLine(g: Pick<CatalogEntry, 'author' | 'company' | 'year'>): string {
-  return [g.author, g.company, g.year].filter(Boolean).join(' · ');
+  // an author who is also the publisher (The Bard of Bizarre) is named once
+  const company = g.company && g.company.toLowerCase() !== g.author?.toLowerCase() ? g.company : undefined;
+  return [g.author, company, g.year].filter(Boolean).join(' · ');
 }

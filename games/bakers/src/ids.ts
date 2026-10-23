@@ -14,6 +14,8 @@ export const CTR = {
   ingredients: 3,
   /** Skeleton keys carried: a lock door takes one. */
   keys: 20,
+  /** Quarter turns of the Clock Room's lazy Susan (blocks/susan.ts). */
+  turns: 21,
 } as const;
 
 /** Ingredients in the recipe card's list. The thirteenth is not on it. */
@@ -42,6 +44,9 @@ export const SEQ = {
   salute: 15,
 } as const;
 
+/** Sir Reginald's own sequences (chick.chr): the walks and Space are Doc Leo's numbers, so the bot steers both alike. */
+export const CHICK_SEQ = { ...SEQ, bounce: 14 } as const;
+
 /** Sound set slots. PLAYGAME plays 0..8 by itself (2 when money goes up, 7 another counter...). */
 export const SND = {
   /** Hit points up: a root beer float. */
@@ -67,6 +72,9 @@ export const SND = {
   kazoo: 12,
   fife: 13,
   pickup: 14,
+  /** Sir Reginald's rubber squeak (his glide), and his boing (a bounce, or a nip). */
+  toy: 15,
+  boing: 16,
   none: 30,
 } as const;
 
@@ -83,6 +91,7 @@ export const KEY = {
   space: 0x3920,
   k: 0x256b,
   t: 0x1474,
+  b: 0x3062,
   enter: 0x1c0d,
 } as const;
 
@@ -113,3 +122,6 @@ export const FIXED_BLOCK = { void: 0, chicken: 1, kazoo: 2, tricorn: 3, eggRotte
 
 /** The scenes of the two egg cupboards. */
 export const EGG_SCENE = { rotten: 16, faberge: 17 } as const;
+
+/** Sir Reginald's interlude under the stove, between the Sugar Room and the Brewery. */
+export const STOVE_SCENE = 18;

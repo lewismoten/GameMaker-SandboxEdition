@@ -8,7 +8,7 @@
 import { GameSim } from './sim';
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../web/src/formats/blocks';
-import { MLEN } from '../../../web/src/formats/map';
+import { MLEN, MWID } from '../../../web/src/formats/map';
 import { CTR, SCAN } from '../src/ids';
 import type { Compiled } from '../src/compile';
 import { sceneOf } from '../src/game';
@@ -19,6 +19,13 @@ const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left:
 const DIRS: Dir[] = ['up', 'down', 'left', 'right'];
 /** The side of the target block that stops a step each way. */
 const SIDE: Record<Dir, number> = { up: SOLBOT, down: SOLTOP, left: SOLRIG, right: SOLLEF };
+/** What a passer-by picks up (touched, not carried): bottle caps, root beer floats, pies. */
+const LOOT = new Set(['cap', 'float', 'pie']);
+/** How far (in step costs) loot may be from Doc Leo, and how much longer the way may get for it. */
+const LOOT_REACH = 14;
+const LOOT_DETOUR = 24;
+/** The longest a walk to loot may take (ticks) before it is given up and undone. */
+const LOOT_TICKS = 150;
 
 export class Bot {
   log: string[] = [];
@@ -30,6 +37,15 @@ export class Bot {
   private lastSquawk = -100;
   /** Steps to take with no lookahead (e.g. through a crowd the bot has already decided on). */
   bold = false;
+  /** Picks up the loot it sees on the way (bottle caps, floats, pies) when the detour is short. */
+  greedy = false;
+  /** On a detour for loot: no false walls (secret ways), no mousetraps, no hot plates, no slides. */
+  private careful = false;
+  /** Loot fetched so far (scene:x,y), for the log. */
+  grabbed: string[] = [];
+  private lootSeen = new Map<string, string>();
+  /** Loot given up on (the detour took too long). */
+  private passed = new Set<string>();
 
   constructor(
     readonly sim: GameSim,
@@ -87,6 +103,7 @@ export class Bot {
     const ty = y + STEP[d].y;
     const name = this.nameAt(tx, ty);
     if (links.has(`${tx},${ty}`) && !(tx === goal.x && ty === goal.y)) return undefined;
+    if (this.careful && /^(fwall|trap|hot|belt_|grease_|vault|latch)/.test(name)) return undefined;
     if (name.startsWith('fwall')) return { cost: 1, to: { x: tx, y: ty } };
     if (name === 'trapHidden' || name === 'trapArmed') return { cost: 40, to: { x: tx, y: ty } };
     if (name.startsWith('panel_') || name.startsWith('opener')) return { cost: 6, to: { x: tx, y: ty } };
@@ -173,7 +190,12 @@ export class Bot {
   }
 
   private search(goal: Pt): { d: Dir; to: Pt }[] | undefined {
-    const { x: sx, y: sy } = this.sim.pos;
+    return this.searchFrom(this.sim.pos, goal)?.path;
+  }
+
+  /** Dijkstra from `start`: the way to `goal` and what it costs (or, with no goal, the cost of every cell). */
+  private searchFrom(start: Pt, goal: Pt | undefined): { path: { d: Dir; to: Pt }[]; cost: number; dist: Map<number, number> } | undefined {
+    const { x: sx, y: sy } = start;
     const links = this.linkCells();
     const danger = this.dangerMap();
     const key = (p: Pt) => p.y * MLEN + p.x;
@@ -185,7 +207,7 @@ export class Bot {
       for (let i = 1; i < open.length; i++) if (open[i][0] < open[bi][0]) bi = i;
       const [dd, p] = open.splice(bi, 1)[0];
       if (dd > (dist.get(key(p)) ?? Infinity)) continue;
-      if (p.x === goal.x && p.y === goal.y) {
+      if (goal && p.x === goal.x && p.y === goal.y) {
         const out: { d: Dir; to: Pt }[] = [];
         let k = key(p);
         while (from.has(k)) {
@@ -193,10 +215,10 @@ export class Bot {
           out.unshift({ d: f.d, to: f.to });
           k = f.prev;
         }
-        return out;
+        return { path: out, cost: dd, dist };
       }
       for (const d of DIRS) {
-        const e = this.edge(p.x, p.y, d, goal, links);
+        const e = this.edge(p.x, p.y, d, goal ?? { x: -1, y: -1 }, links);
         if (!e) continue;
         const k = key(e.to);
         const nd = dd + e.cost + (danger.get(k) ?? 0);
@@ -206,6 +228,50 @@ export class Bot {
           open.push([nd, e.to]);
         }
       }
+    }
+    return goal ? undefined : { path: [], cost: 0, dist };
+  }
+
+  /** Loot in the 16 by 10 block view right now (never an egg, a kazoo, a hat or the chicken). */
+  private lootInView(): Pt[] {
+    const w = this.sim.w;
+    const links = this.linkCells();
+    const out: Pt[] = [];
+    for (let by = 0; by < 10; by++)
+      for (let bx = 0; bx < 16; bx++) {
+        const x = (w.mx + bx) % MLEN;
+        const y = (w.my + by) % MWID;
+        if (LOOT.has(this.nameAt(x, y)) && !links.has(`${x},${y}`) && !this.passed.has(`${this.sim.scene}:${x},${y}`)) out.push({ x, y });
+      }
+    return out;
+  }
+
+  /**
+   * The loot worth a detour on the way to `goal`: reachable the careful way within a few
+   * steps, and costing only a few steps more than going straight there. The nearest one first.
+   */
+  private lootNear(goal: Pt): Pt | undefined {
+    const seen = this.lootInView();
+    if (!seen.length) return undefined;
+    const straight = this.searchFrom(this.sim.pos, goal)?.cost;
+    if (straight === undefined) return undefined;
+    this.careful = true;
+    const near = this.searchFrom(this.sim.pos, undefined)!.dist;
+    this.careful = false;
+    const cands = seen
+      .map((p) => ({ p, c: near.get(p.y * MLEN + p.x) ?? Infinity }))
+      .filter((o) => o.c <= LOOT_REACH)
+      .sort((a, b) => a.c - b.c);
+    if (process.env.BOT_LOOT) for (const p of seen) {
+      const k = `${this.sim.scene}:${p.x},${p.y}`;
+      const c = near.get(p.y * MLEN + p.x) ?? Infinity;
+      const back = c <= 40 ? this.searchFrom(p, goal)?.cost : undefined;
+      const line = `${k} ${this.nameAt(p.x, p.y)} reach ${c} detour ${back === undefined ? '-' : c + back - straight}`;
+      if (this.lootSeen.get(k) !== line) console.log(`loot ${line} (from ${this.sim.pos.x},${this.sim.pos.y})`), this.lootSeen.set(k, line);
+    }
+    for (const { p, c } of cands) {
+      const back = this.searchFrom(p, goal)?.cost;
+      if (back !== undefined && c + back - straight <= LOOT_DETOUR) return p;
     }
     return undefined;
   }
@@ -319,6 +385,34 @@ export class Bot {
       if (this.sim.scene !== scene) return 'link';
       const p = this.sim.pos;
       if (p.x === x && p.y === y) return undefined;
+      // loot in sight and close by: fetch it first (carefully), then carry on
+      if (this.greedy && !this.careful && p.sx === 0 && p.sy === 0) {
+        const loot = this.lootNear(goal);
+        if (loot) {
+          const at = `${this.sim.scene}:${loot.x},${loot.y}:${this.nameAt(loot.x, loot.y)}`;
+          const before = this.snapshot();
+          this.careful = true;
+          let r: string | undefined;
+          try {
+            r = await this.goto(loot.x, loot.y, `${label} (loot ${loot.x},${loot.y})`, 200);
+          } catch {
+            r = 'stuck';
+          } finally {
+            this.careful = false;
+          }
+          const took = this.sim.ticks - before.sim.ticks;
+          if (process.env.BOT_LOOT) console.log(`detour ${at} ${r ?? 'got'} in ${took} ticks`);
+          // a long wait on the way (a rolling pin, a Redcoat), a death or a link: think better of it
+          if (r || took > LOOT_TICKS) {
+            this.restore(before);
+            this.passed.add(`${this.sim.scene}:${loot.x},${loot.y}`);
+            continue;
+          }
+          this.grabbed.push(at);
+          this.say(`${label}: picked up ${at}`);
+          continue;
+        }
+      }
       const path = await this.path(goal);
       if (!path || !path.length) {
         const r = await this.wait(6);
@@ -398,6 +492,25 @@ export class Bot {
     if (shown === 'hot0') return left + 10;
     if (shown === 'hot1') return left;
     return 0;
+  }
+
+  /**
+   * Pushes the solid block at (x, y): walks to a free cell beside it and steps into it (a
+   * lazy Susan's handle). Returns true when the block changed (false: it would not budge).
+   */
+  async push(x: number, y: number, label: string): Promise<boolean> {
+    const before = this.nameAt(x, y);
+    const p0 = this.sim.pos;
+    const sides = DIRS.map((d) => ({ d, at: { x: x - STEP[d].x, y: y - STEP[d].y } }))
+      .filter((s) => !this.sim.solidAt(s.at.x, s.at.y))
+      .sort((a, b) => Math.abs(a.at.x - p0.x) + Math.abs(a.at.y - p0.y) - (Math.abs(b.at.x - p0.x) + Math.abs(b.at.y - p0.y)));
+    if (!sides.length) throw new Error(`${label}: nowhere to push ${x},${y} from`);
+    const { d, at } = sides[0];
+    const r = await this.goto(at.x, at.y, label);
+    if (r) throw new Error(`${label}: ${r} on the way to push ${x},${y}`);
+    await this.stepRaw(d);
+    await this.wait(2);
+    return this.nameAt(x, y) !== before;
   }
 
   /** Picks up what he is standing on (Enter). */

@@ -34,6 +34,8 @@ export interface RunOptions {
   onFrame?: Session['onFrame'];
   /** Emulated PC speed (shared object: change ticksPerSecond at any time). */
   speed?: SpeedSetting;
+  /** A touch changed a map cell while the player played (never during a demo's playback). */
+  onTouched?: Session['onTouched'];
 }
 
 export function gameNameOf(gamFile: string): string {
@@ -66,6 +68,8 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     onFrame: opts.onFrame,
     speed: opts.speed ?? {},
   };
+  const touched = opts.onTouched;
+  if (touched) s.onTouched = (scene, x, y, bnum) => void (!s.rec.playing && touched(scene, x, y, bnum));
   m.keyboard.attach();
   // Screens that wait for a key keep the demo recorder going, as PLAYGAME's GetKey did.
   m.keyPoll = (polls) => s.rec.advanceWait(polls);
@@ -115,8 +119,10 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     m.screen.write(12 * 8, 13 * 8, blue, game.scenes[0].desc);
     ['Play', 'Read Instructions', 'Read Storyline', 'See Credits', 'See Highest Scores', 'Quit'].forEach((t, i) => m.screen.write(80, (15 + i) * 8, blue, t));
 
-    // 30 s idle timeout: GVertMenu then returns NumChoices+1 (7), the demo case.
-    choice = await gVertMenu(m, 70, 15 * 8 + 1, 8, 6, blue, 30, choice);
+    // 30 s idle timeout: GVertMenu then returns NumChoices+1 (7), the demo case. Keys
+    // typed while the menu faded in stay for it, as in DOS (only the first went to the
+    // menu picture's PauseTimeKey(0)).
+    choice = await gVertMenu(m, 70, 15 * 8 + 1, 8, 6, blue, 30, choice, false);
     switch (choice) {
       case 1:
         menuScreen = undefined;
@@ -224,6 +230,10 @@ export async function play(s: Session, startLink: number): Promise<void> {
     const oldlink = curlink;
     const r = await playScene(s, curscene, oldscene, curlink);
     if (!r.ok) break;
+    // F6 may have loaded a game saved in another level: play goes on from there. (curlink
+    // still restarts by the link played before, as the C's oldlink does.)
+    if (r.doscene !== undefined) curscene = r.doscene;
+    if (r.prevscene !== undefined) oldscene = r.prevscene;
     // r.link: a link index to follow, MAXSCENELINKS to replay the scene after a death
     // (entering again by the same link), or above it for Esc / no lives left.
     curlink = r.link;

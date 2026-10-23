@@ -8,9 +8,10 @@ import { Ctx, SOLID } from './book';
 export function addHouses(k: Ctx): void {
   const { book, R, c, snow, P } = k;
   // ---------- houses (3/4 view: two rows of snowy roof over one row of wall) ----------
+  // the roof's snow darkens down the block to the shade the eave below starts at (no band)
   const roofTop = (edge: 'L' | 'M' | 'R') => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(snow, 3, 6, 0.95 - y / 30 + Math.sin(x * 0.8 + y) * 0.06, x, y));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(snow, 3, 6, 0.95 - y / 45 + Math.sin(x * 0.8 + y) * 0.06, x, y));
     p.rect(0, 0, 20, 2, c('brick', 0)).rect(0, 2, 20, 1, c('snow', 6));
     if (edge === 'L') for (let y = 0; y < 20; y++) p.set(0, y, c('ink', 0)).set(1, y, c('wood', 1));
     if (edge === 'R') for (let y = 0; y < 20; y++) p.set(19, y, c('ink', 0)).set(18, y, c('wood', 1));
@@ -18,7 +19,7 @@ export function addHouses(k: Ctx): void {
   };
   const eave = (edge: 'L' | 'M' | 'R', frame: number) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(snow, 2, 6, 0.75 - y / 22 + Math.sin(x * 0.7) * 0.05, x, y));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(snow, 2, 6, 0.65 - y / 22 + Math.sin(x * 0.7) * 0.05, x, y));
     // overhanging snow lip, fascia board and a string of Christmas lights
     for (let x = 0; x < 20; x++) p.set(x, 14 + (x % 5 === 2 ? 1 : 0), c('snow', 6));
     p.rect(0, 16, 20, 3, c('wood', 1)).rect(0, 19, 20, 1, c('ink', 0));

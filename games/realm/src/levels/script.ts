@@ -46,7 +46,9 @@ A hobo will take a job if it's offered. I'm offering YOU one. Find Reggie and I'
 
 Whack 'em with your sword. They drop gems, and gems are as good as gold in any shop in the kingdom.
 
-Bats come out up by the hills. You'll want a better sword than that stick for the bigger trouble. The smith in Laterburg sells steel.`,
+Bats come out up by the hills. You'll want a better sword than that stick for the bigger trouble. The smith in Laterburg sells steel.
+
+The lad with the shovel at the end of the turnips is Lewie. Hardest worker in Nowish, which isn't saying much. He's going to make games of his own one day, he says, with something called a Game-Maker. In Procrastia, "one day" is a big promise. He means it.`,
   ),
   nowsign: t(
     'nowsign',
@@ -134,7 +136,9 @@ The fine is nine thousand gold. I would settle for the book.
 
 It was last borrowed by a miner from Eventually Falls, and it has not been seen since they closed the Putoff Mines. The mines are as dark as a closed book. Take a lamp.
 
-Bring it to the library gate. We are open Monday through Someday.`,
+Bring it to the library gate. We are open Monday through Someday.
+
+The tin gentleman by the door in the bow tie? That is Joe, our night librarian, on loan from a little library down a dog house. He reshelves exactly one hundred books a night. He counts them. Twice.`,
   ),
   librew: t(
     'librew',
@@ -262,7 +266,11 @@ When you face him, fight like it's due today.`,
 
 No kazoo yet? Doc Leo teaches the Kazoo of Haste, if you do him a favor. Until then you can hum through the reeds and press K. People will stare.
 
-Tonics from Mother Tansy's cousin at the next stall, fifteen gold.`,
+Tonics from Mother Tansy's cousin at the next stall, fifteen gold.
+
+The bald fellow in the ruff and the sweatpants, down the end of the quay? That's Will, a playwright, visiting. Eleven years on one play. He has the title. ALAS, he says. FORSOOTH.
+
+He swears there's a little tin heart in the grass by the lighthouse, ticking away. "Found it! Ticks like it means it," he keeps saying. He hasn't gone to look.`,
   ),
   // ---------------------------------------------------------------- Eventually Falls
   duff: t(
@@ -440,5 +448,3 @@ The royal map ends at the edge of the kingdom with "Here Be Root Beer," and a li
     before: ['eggshow.gif'],
   },
 };
-
-export type TalkId = keyof typeof TALK;

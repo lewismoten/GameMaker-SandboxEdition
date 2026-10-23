@@ -13,7 +13,8 @@ On 12 July 2014 Andy Stone, Game-Maker's original programmer, published the sour
 the CD image and an installed copy on GitHub under the **MIT License**
 ([gandrewstone/GameMaker](https://github.com/gandrewstone/GameMaker)). This fork keeps
 that history and that license. Everything added here (the browser version in `web/`, the
-"1994 desk", and the Sandbox Software games in `games/`) is released under the same MIT
+"1994 desk", the Sandbox Software and Bard of Bizarre games in `games/`, and the Mac,
+Windows and Linux players in `mac/`, `win/` and `linux/`) is released under the same MIT
 License; see [LICENSE](LICENSE), whose original copyright notice is kept unchanged as the
 license requires.
 
@@ -28,7 +29,8 @@ program, and the pieces it draws are its own:
   RSD shipped;
 - the **Game-Maker box** and **CD** on the desk are this edition's own designs, marked
   "Sandbox Edition", not photographs or copies of the original box and disc;
-- the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original.
+- the DOS **Game-Maker** you run on the desk is a recreation drawn to look like the original,
+  rebuilt in TypeScript from its source on a simulated PC; no DOS or x86 code runs.
 
 Refer to this project as *Game-Maker: Sandbox Edition* (https://github.com/lewismoten/GameMaker-SandboxEdition)
 and to the original as *RSD Game-Maker 3.0* (Game-Maker 3.0 by Recreational Software Designs)
@@ -54,6 +56,9 @@ game folder opens in the browser unchanged.
 - **RSD Game-Maker 1.0–3.0** (1991–1995): Recreational Software Designs: G. Andrew Stone,
   G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Source released under the MIT License
   by Andy Stone in 2014.
+- **Peter (Pete) Savage** wrote Game-Maker's Sound Blaster voice-file routines
+  (`code/GM/SOUNDC.C`) and joystick routines (`code/GM/JSTICKC.C`, `code/GM/JSTICKA.ASM`),
+  and the Sound Designer's digitized speech with Andy Stone (`code/GM/SNDEDIT.C`).
 - **This fork**: Lewis Moten.
 - **The web port**: written with **Claude Opus 5.5** (Anthropic), covering both the
   *1994 desk* (the recreated PC, DOS prompt, Game-Maker's VGA designers, the BBS) and the
@@ -65,8 +70,26 @@ game folder opens in the browser unchanged.
   The games were written and built by **Claude Opus 5.5**: the code, art, music, sounds and
   text. Many are drawn from Lewis "Lewie" Moten III: his blog writing, photos he provided,
   and conversations about his interests, experiences and hobbies. Lewis directed each game
-  and played it as it came together, and his feedback shaped every one. Teddy, Gwinn and
-  Doc Leo appear as themselves.
+  and played it as it came together, and his feedback shaped every one. Teddy, Gwinn,
+  Doc Leo and THE CHEZ (Lewis's CitiCar) appear as themselves.
+- **The Bard of Bizarre games** (`games/`: Third Goat from the Left, Mustard Seed Hustle,
+  Thread the Needle, Brother Camel, Loaf #13, Certified Rat Tickler, Where's the Remote?!,
+  A Fly Named Carl, The Great Dairy Reckoning of 3:17 A.M., Cleanse Me, O Loofah, But Leave
+  My Soul, I Screamed, She Smirked, Shakespeare in Sweatpants, and Veni, Vidi, Risi! by
+  Lewis's group of that name): games made from Lewis's songs and monologues, presented as
+  1995 shareware from The Sofa BBS; their shareware fee and address are part of the story,
+  and they are free under the MIT License. The songs' lyrics and monologues were shaped with
+  ChatGPT from Lewis's prompts, and their music and vocals were made with Riffusion (now
+  Google Flow Music); the games' FM scores are arranged from those recordings, and their
+  voice clips are cut from them. The exceptions: Certified Rat Tickler came with no
+  recording, so its music was composed for the game by Claude Opus 5.5, as was the music
+  under The Great Dairy Reckoning's spoken recording; Mustard Seed
+  Hustle's animated cover was made with Producer.ai; the covers of Third Goat from the Left
+  and Thread the Needle, Brother Camel were made with Riffusion; the other games' title and
+  cover art was drawn for them by Claude Opus 5.5. The Bard's logo (the rooster in
+  spectacles) was made with DeepAI, and the Doc Leo photos are Lewis's own. Claude Opus 5.5
+  wrote and built the games themselves (code, levels, art and arrangements), directed by
+  Lewis.
 - **The sample and shareware games on the CD** (`cd/`) remain the work and copyright of
   their authors (RSD, A-J Games, KD Software, GameLynk, Sheldon Chase and others).
   Shareware games are shown play-only, with their authors' original notices.
@@ -103,6 +126,13 @@ formats from their published descriptions and from Game-Maker's own source.
   `web/src/audio/opl.ts` was written for this project.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, in the public domain, derived from
   the IBM PC BIOS font.
+- **Caveat** (the handwriting in the Owner's Guide's registration record,
+  `web/src/manual/regRecord.ts`), a font by Impallari Type under the SIL Open Font License
+  1.1, is loaded from Google Fonts when that page is shown; it isn't included in this
+  repository or in exported games.
+- **ChatGPT**, **Riffusion**, **Google Flow Music**, **Producer.ai** and **DeepAI** are
+  their owners' names for the tools used to make the Bard of Bizarre songs and art (see
+  Credits); none of their code is used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
 - **Borland C++** was included in the original 2014 repository (in `tools/`) to build the
@@ -128,6 +158,142 @@ formats from their published descriptions and from Game-Maker's own source.
   poison-warning sticker on the desk's phone is a simple drawing in tribute to it, not the
   original artwork.
 
+## The Mac, Windows and Linux players
+
+Download → Mac, Windows and Linux wrap a game's one web page in a small player program
+written for this project (`mac/`, `win/`, `linux/`; the prebuilt players are in
+`web/public/mac`, `web/public/win` and `web/public/linux`). Every such download carries the
+notices below that apply to it as `THIRD-PARTY-NOTICES.txt` (and the Windows `.exe` inside
+itself, under its window menu's "Third-party notices…"); the text is in
+`web/src/export/notices.ts`. What the players contain or use from others:
+
+- **Windows: the WebView2 interface header.** `win/Player/webview2.h` lists the vtable slots
+  and interface IDs the player calls, generated from `WebView2.h` of Microsoft's WebView2 SDK
+  (NuGet `Microsoft.Web.WebView2` 1.0.3485.44), which is under a BSD-style license:
+  "Copyright (C) Microsoft Corporation. All rights reserved." The license's full text is
+  kept at the top of that file. No other SDK file is included, nor Microsoft's
+  `WebView2Loader.dll`.
+- **Windows: finding the WebView2 runtime.** The player loads the runtime's own
+  `EmbeddedBrowserWebView.dll` from the folder Edge's updater records in the registry, the
+  approach of the open source [webview](https://github.com/webview/webview) library (MIT
+  License, Copyright (c) 2017 Serge Zaitsev, Copyright (c) 2022 Steffen André Langnes). The
+  approach is credited in `win/Player/main.c`; the player's code is written in C for this
+  project.
+- **Windows: the Microsoft Edge WebView2 Runtime** is Microsoft's software, part of Windows
+  10 and 11; it is not included. Microsoft Edge and WebView2 are trademarks of Microsoft.
+- **Windows: the C runtime startup code.** The `.exe` players are built by `win/build.sh`
+  with [Zig](https://ziglang.org/) (MIT License), whose MinGW-w64 libraries link a little of
+  the MinGW-w64 runtime's startup code into each program; the program otherwise calls only
+  Windows' own DLLs. In the runtime's words, such a program "was built using MinGW-w64 and
+  statically linked against the MinGW-w64 runtime. Some parts of the runtime are under
+  licenses which require that the copyright and license notices are included when
+  distributing the code in binary form." Those permissive notices (the mingw-w64 project's
+  own, copyright 2009–2013, and its contributors') are listed in
+  [COPYING.MinGW-w64-runtime.txt](https://github.com/mingw-w64/mingw-w64/blob/master/COPYING.MinGW-w64-runtime/COPYING.MinGW-w64-runtime.txt).
+- **Linux: GTK 3 and WebKitGTK** (`libwebkit2gtk-4.1` or `-4.0`, with GLib and GTK; GNU
+  LGPL 2.1 or later) are loaded with `dlopen` when the player starts, from the computer's own
+  packages. None of their code or headers is included: the few functions the player uses are
+  declared by hand in `linux/Player/main.c`. The program is built by `linux/build.sh` with
+  Zig against glibc 2.28, so it carries only glibc's small start files (GNU LGPL 2.1 or
+  later, with the exception that lets them be linked into any program).
+- **Mac: AppKit and WebKit**, Apple's frameworks that are part of macOS. The player
+  (`mac/Player/main.swift`) links only to the system's own libraries.
+- Zig itself is a build tool; beyond the runtime pieces above, the Windows and Linux
+  players may contain a few of its compiler support routines (compiler_rt, MIT License,
+  Copyright (c) Zig contributors). The `.dmg`, `.tar.gz` and `.zip` containers, the Mac code signature and the Windows
+  resources are written by this project's own code in `web/src/export/`.
+
+## Third-party code and acknowledgments in the original source
+
+The original source in `code/` is the Stones' work, but it also holds other people's code
+and documents, kept as Andy Stone published them. Each keeps its own terms, not the MIT
+License, and its notices stay in the files. Most of it is reference material that
+Game-Maker's makefiles don't build.
+
+**Documents and citations**
+
+- **CRC-32**: PKWARE's ZIP format description `code/GM/APPNOTE.TXT` (described in
+  `code/Image/PNG/INDEX` as from PKZIP 1.93a) says "The CRC-32 algorithm was generously
+  contributed by David Schwaderer and can be found in his excellent book 'C Programmers
+  Guide to NetBIOS' published by Howard W. Sams & Co. Inc." The same file credits Roger
+  Schlafly for PKZIP's encryption and Robert Mahoney for the `.ZIP` name, and cites
+  Storer, *Data Compression, Methods and Theory* (Computer Science Press, 1988) and Held,
+  *Data Compression, Techniques and Applications* (John Wiley & Sons, 1987). Game-Maker's
+  own C and assembly code computes no CRC.
+- **FLI format**: `code/Image/FLI/FLIDOC.TXT`, the *Turbo C FLI Library* document for
+  Autodesk Animator files, "Copyright 1989-1990 Dancing Flame, San Francisco. Program Code
+  and Library by Jim Kent. Documentation by Jim Kent and Heidi Brumbaugh." Andy Stone's
+  `FLI.CPP` quotes it in a comment.
+- **PNG specification**, tenth draft (`code/Image/PNG/PNG10.TXT`, `PNG.TXT`): copyright
+  1995 Thomas Boutell, which may be reproduced only "in complete and unaltered form".
+- **References in comments**: `code/GM/SVGAA.ASM` marks a commented-out ATI bank switch
+  "From svgakt30.zip", and `code/DRV/STLTH64.ASM` cites "vgadoc3" for an S3 register.
+- Also kept as found: the Association of Shareware Professionals' ombudsman statement
+  (`code/GM/OMBUDSMN.ASP`); a captured SunOS 5.4 `make` manual page
+  (`code/Image/PNG/MAKEINFO.TXT`); and the installer's credit line for Haruyasu
+  Yoshizaki's LHarc (`code/GM/FLOPINST.CPP`), the archiver it ran (`LHARC.EXE` isn't
+  included).
+
+**Bundled code by other authors** (all under `code/Image/`)
+
+- **Info-ZIP Zip 2.0.1 and UnZip 5.12** (`PNG/ZIP`, `PNG/UNZIP`, `PNG/ZIP201.ZIP`,
+  `PNG/UNZIP512.ZIP`). Zip: "Copyright (C) 1990-1993 Mark Adler, Richard B. Wales,
+  Jean-loup Gailly, Kai Uwe Rommel, Igor Mandrichenko and John Bush. Permission is granted
+  to any individual or institution to use, copy, or redistribute this software so long as
+  all of the original files are included, that it is not sold for profit, and that this
+  copyright notice is retained." UnZip's terms are in `PNG/UNZIP/COPYING`. They include
+  Samuel H. Smith's 1989 copyright on the code in `UNREDUCE.C` and the old unshrink, which
+  says "Do not use any of this in a commercial product"; Igor Mandrichenko's VMS code (not
+  for profit); and Greg Roelofs's `UNSHRINK.C`, which requires his name to stay with it.
+  Mark Adler put `inflate`, `explode`, `funzip` and `ship` 1.7 (`PNG/SHIP17.ZIP`) in the
+  public domain or left them uncopyrighted. `PNG/ZIP/MKTIME.C` is copyright 1988, 1989
+  David MacKenzie. Info-ZIP's comments also thank Haruhiko Okumura (`ar`/`ar002`).
+  `PNG/UNZIP/CONTRIBS` lists the other contributors.
+- **pnglib 0.6** (`PNG/T`, `PNG/PNGLIB06.ZIP`, 1 May 1995), the draft PNG reference
+  library: "Copyright (c) 1995 Guy Eric Schalnat, Group 42, Inc." It may be used, copied,
+  modified and distributed provided its origin isn't misrepresented, altered versions are
+  marked, and the notice in `png.h` stays. The zlib library it needs isn't included.
+- **GIFSAVE** 1.0 (`GIF`), by Sverre H. Huseby (1992): "dedicated to the Public Domain".
+  It isn't part of Game-Maker's build.
+- **BMP2BGI** 1.0 (`BMP2BGI1.ZIP`, 1991) by Richard G. Rasulis, Jr. ("(c) R.G.Rasulis
+  Consulting Services"). Its `BMP.H` is "(c) Ziff-Davis Publishing", from Charles
+  Petzold's article in *PC Magazine* (vol. 10, no. 10, pp. 365–370). No license is
+  given.
+
+**Unattributed, so flagged rather than credited**
+
+- `code/GM/SBC.H`, `SBCVOICE.H`, `SBCMUSIC.H`, `SBCTS.H` and `SBMIDI.H` declare the
+  functions of Creative's Sound Blaster library (`SBCL.LIB`, left out, above). They
+  carry no notice but appear to come from Creative's developer kit.
+- `code/Image/LZTIMER.H` declares `ZTimerOn`/`ZTimerOff`/`ZGetTime`, the names used by
+  Michael Abrash's "Zen timer". The timer itself isn't included, and its use in
+  `IMAGE1.CPP` is commented out.
+- `code/DRV/S3_BIOS.ASM` (not built) looks like code taken from a disassembled S3 video
+  BIOS.
+- `code/GM/APTE.TXT` appears to be a Borland technical note.
+- The sample pictures in `code/Image/PNG/PICS` are of unknown origin. One of them says so
+  itself ("Peppers").
+
+**What the web port uses**: none of this code. `web/src/project/zip.ts` writes its own
+table-driven CRC-32 (the standard ZIP polynomial that APPNOTE credits to Schwaderer) and
+follows APPNOTE's layout. The FLI reader `web/src/formats/fli.ts` follows Andy Stone's
+`FLI.CPP` and the format in Kent's `FLIDOC.TXT`. The GIF LZW coder in
+`web/src/formats/gif.ts` is new, not GIFSAVE. `web/src/formats/voc.ts` reproduces Peter
+Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
+
+## Tools used to build and test
+
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
-[Vite](https://vitejs.dev/) and [Vitest](https://vitest.dev/) (MIT), used only to build
-and test; none of their code ships in the app except Vite's small module runtime.
+[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT), and
+`@types/node` (MIT), the only packages in `web/package.json`, used only to build and test;
+none of their code ships in the app except Vite's small module runtime and preload helper
+(MIT). The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
+see above for what ends up in them.
+
+The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
+`tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,
+NumPy and SciPy (BSD), and OpenAI's Whisper (MIT) for word timings when it is installed.
+They read recordings that are not in the repository, and nothing of theirs is
+committed except the note data and clips they produce. Browser checks during development
+(Playwright, Apache-2.0, and any accessibility checker run with it) are run from outside the
+repository and are not dependencies of it.

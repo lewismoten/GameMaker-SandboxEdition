@@ -57,6 +57,8 @@ describe('box facts', () => {
     expect(tight.reviews).toBeGreaterThan(0);
     expect(tight.shots).toBeGreaterThan(0);
     expect(planBack(14 * 20, 7, 2, h)).toMatchObject({ features: 0, reviews: 0, shots: 0 });
-    expect(planBack(10, 7, 2, h)).toMatchObject({ bodyPx: 14, features: 0 });
+    // a story too long for any plan shrinks its type until it fits, down to 9 px
+    expect(planBack(12 * 20, 7, 2, h)).toMatchObject({ bodyPx: 12, features: 0, height: 240 });
+    expect(planBack(10, 7, 2, h)).toMatchObject({ bodyPx: 9, features: 0 });
   });
 });

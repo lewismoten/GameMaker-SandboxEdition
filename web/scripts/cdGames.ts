@@ -18,6 +18,8 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
+import { gameShots } from './gameShots';
+import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
 
 export interface CdCatalogEntry {
   id: string;
@@ -45,10 +47,16 @@ export interface CdCatalogEntry {
   price?: string;
   /** Original games (../games): the disk label, box art and manual, from about.json. */
   original?: OriginalExtras;
+  /** Original games: about.json "series" ("bizarre": The Bard of Bizarre's games, src/project/bizarre.ts). */
+  series?: string;
   /** games/catalog.json: the entry has a games/details/<id>.json (see slimCatalog). */
   details?: boolean;
   /** Original games: the site path of the game's walkthrough (../games/<id>/walkthrough.json, src/walkthrough). */
   walkthrough?: string;
+  /** The build drew its pictures (games/shots/<id>-<cols>x<rows>.png, scripts/gameShots.ts). */
+  shots?: boolean;
+  /** …and its hero (games/shots/<id>-hero.png). */
+  heroShot?: boolean;
 }
 
 /** What ../games/<id>/about.json and manual.json add for an original game. */
@@ -271,7 +279,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const base = join(root, dir);
     const diskDir = join(base, 'disk');
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
-    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string; secret?: boolean };
+    const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo & OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     const id = dir.toLowerCase();
@@ -309,6 +317,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       notice: notice.map((p) => dosText(readFileSync(p))).join('\n\n----\n\n'),
       gamCrc: crc32(gamBytes),
       original: { label: about.label, box: about.box, sound: about.sound, manual, printables },
+      ...(about.series ? { series: about.series } : {}),
       ...(walkthrough ? { walkthrough } : {}),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
@@ -323,9 +332,28 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
 export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
   return catalog.map(({ notice: _notice, original, ...e }, i) => ({
     ...e,
-    ...(original ? { original: { label: original.label, box: original.box, sound: original.sound } } : {}),
+    ...(original ? { original: slimOriginal(original) } : {}),
     ...(catalogDetails(catalog[i]) ? { details: true } : {}),
   }));
+}
+
+/**
+ * What the shelf, the disk box and the home page draw an original game with: its label, box and
+ * sound card, the manual's title (pages: [] until withDetails fills them in) and the hero from
+ * its paper (the disk label's portrait). The rest is in games/details/<id>.json.
+ */
+function slimOriginal(o: OriginalExtras): OriginalExtras {
+  const p = o.printables;
+  const stickers = p?.stickers?.filter((s) => s.hero);
+  const items = p?.items?.filter((i) => i.kind === 'idcard' && i.portrait);
+  const printables = stickers?.length || items?.length ? { ...(stickers?.length ? { stickers } : {}), ...(items?.length ? { items } : {}) } : undefined;
+  return {
+    label: o.label,
+    box: o.box,
+    sound: o.sound,
+    ...(o.manual ? { manual: { title: o.manual.title, pages: [] } } : {}),
+    ...(printables ? { printables } : {}),
+  };
 }
 
 /** An entry's games/details/<id>.json, or undefined when it has nothing slimCatalog leaves out. */
@@ -383,7 +411,14 @@ export function cdGames(cdRoot: string): Plugin {
       });
     },
     generateBundle() {
-      const { gm, catalog, secret, files } = get();
+      const { gm, secret, files } = get();
+      // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
+      const catalog = get().catalog.map((e) => {
+        const disk = new Map(e.files.flatMap((n) => (files.has(`${e.path}${n}`) ? [[n, files.get(`${e.path}${n}`)!] as [string, string]] : [])));
+        const shots = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
+        for (const [fileName, source] of shots) this.emitFile({ type: 'asset', fileName, source });
+        return shots.size ? { ...e, shots: true, ...(shots.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) } : e;
+      });
       // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
       // files shrink 3-20x: each game file but a GIF also gets a gzip copy, <file>.gz, which
       // the site fetches and unpacks instead (src/project/files.ts, fetchSiteFile). The

@@ -100,7 +100,7 @@ export function city(): Level {
   m.set(50, 38, 'jugTop').set(50, 39, 'jugBot');
 
   // The plaza: a steam vent up to the billboard, the hot dog cart, a kid.
-  for (let y = 30; y < 40; y++) m.set(55, y, y >= 33 ? 'steamS_0' : `steam${Math.max(1, bandOf(y))}_0`);
+  for (let y = 30; y < 40; y++) m.set(55, y, y >= 33 ? 'steamS_0' : y === 32 ? 'steamT_0' : `steam${bandOf(y)}_0`);
   m.set(55, G, 'grate');
   m.rect(56, 31, 3, 1, 'billboard');
   for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) m.set(56 + x, 28 + y, `bb${x}${y}`);
@@ -156,9 +156,10 @@ export function city(): Level {
     [c0 + 4, 39],
     [c0 + 6, 39],
     [52, 39],
-    [56, 30],
-    [57, 30],
-    [58, 30],
+    // off the billboard's right end (not over its words): a trail down for hopping off it
+    [59, 31],
+    [59, 33],
+    [59, 35],
     [59, 39],
     [63, 39],
     [67, 39],
@@ -171,7 +172,7 @@ export function city(): Level {
   for (const [x, y] of [
     [13, 35],
     [22, 30],
-    [58, 30],
+    [59, 31],
   ])
     m.mon(x, y, 'poodle');
   m.mon(66, G, 'buried');

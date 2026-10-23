@@ -2,7 +2,6 @@
 // out (the felt eggs' shadow box, once there is one, stands at the top shelf's right end). The box whose game is in the drive, or the one last taken down to look at, stands
 // face out. Click a box to take it down (the box viewer); in the viewer ◀ ▶ walk along
 // the shelf. While one of these games is in drive A: its poster hangs on the wall.
-import { sandboxBoxContents } from './gameBoxContents';
 import './shelf.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
@@ -115,7 +114,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
         manual: g.original?.manual && hooks.manual ? () => hooks.manual!(g, f.front) : undefined,
         insert: () => hooks.insert(g.id),
         // beside the box: the disks, the manual and the paper that came in it
-        extras: sandboxBoxContents(g, f.front, { insert: () => hooks.insert(g.id), open: () => hooks.manual?.(g, f.front) }),
+        extras: boxContents(g, f.front, { insert: () => hooks.insert(g.id), open: () => hooks.manual?.(g, f.front) }),
         step: async (dir) => {
           const list = onShelf();
           if (list.length < 2) return undefined;
@@ -180,4 +179,11 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       hideWallPoster();
     },
   };
+}
+
+/** What came in the box (gameBoxContents.ts, with the printed paper's code): loaded when a box is first opened. */
+function boxContents(...args: Parameters<typeof import('./gameBoxContents').sandboxBoxContents>): HTMLElement {
+  const slot = h('div', { style: 'display: contents' });
+  void import('./gameBoxContents').then(({ sandboxBoxContents }) => slot.append(sandboxBoxContents(...args)));
+  return slot;
 }

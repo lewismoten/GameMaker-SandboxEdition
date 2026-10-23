@@ -273,10 +273,13 @@ export function ratingSeal(ctx: CanvasRenderingContext2D, x: number, y: number, 
 /** The small print that goes with the seal on the back. */
 export const RATING_NOTE = 'HSRC: Home Software Rating Council. For information on ratings call 1-800-555-0142.';
 
-/** A store's price sticker, a little crooked, its corner starting to peel. */
-export function priceSticker(ctx: CanvasRenderingContext2D, x: number, y: number, store: string, price: string, tilt = 0.06): void {
+/**
+ * A store's price sticker, a little crooked, its corner starting to peel. With `was`, a
+ * markdown: the list price struck through in red above the store's price.
+ */
+export function priceSticker(ctx: CanvasRenderingContext2D, x: number, y: number, store: string, price: string, tilt = 0.06, was?: string): void {
   const w = 118;
-  const h = 58;
+  const h = was ? 76 : 58;
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(tilt);
@@ -307,9 +310,21 @@ export function priceSticker(ctx: CanvasRenderingContext2D, x: number, y: number
   ctx.textAlign = 'left';
   ctx.font = CONDENSED(fitPx(ctx, store.toUpperCase(), CONDENSED, w - 22, 12));
   ctx.fillText(store.toUpperCase(), 5, 12);
+  ctx.textAlign = 'center';
+  if (was) {
+    ctx.fillStyle = '#555';
+    ctx.font = `700 15px 'Courier New', monospace`;
+    ctx.fillText(was, w / 2, 34);
+    const tw = ctx.measureText(was).width;
+    ctx.strokeStyle = '#d81e1e';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(w / 2 - tw / 2 - 2, 31);
+    ctx.lineTo(w / 2 + tw / 2 + 2, 26);
+    ctx.stroke();
+  }
   ctx.fillStyle = '#222';
   ctx.font = `700 30px 'Courier New', monospace`;
-  ctx.textAlign = 'center';
   ctx.fillText(price, w / 2, h - 12);
   ctx.restore();
 }

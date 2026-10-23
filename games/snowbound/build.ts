@@ -113,7 +113,7 @@ const LEVELS: Level[] = [
     card: {
       title: '4. LAVALE MALL',
       time: '8:00 PM. One hour to closing.',
-      lines: ['The lot keeps snowing over.', 'Timeout is open; Bits & Bytes', 'has the pink box for $89.'],
+      lines: ['The lot keeps snowing over.', 'Bleeps is open; Bits & Bytes', 'has the pink box for $89.'],
       view: [24, 10],
     },
   },

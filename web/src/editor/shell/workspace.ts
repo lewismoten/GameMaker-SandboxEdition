@@ -8,13 +8,13 @@ import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
 import { editors, fileInfo } from '../editors/registry';
 import { GameFiles, loadFileList, normalize } from '../../project/files';
-import { createZip } from '../../project/zip';
-import { exportWebApp } from '../../export/exportWebApp';
-import { exportSinglePage } from '../../export/exportSinglePage';
+import { chooseDownload, downloadButton } from './download';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
 import './workspace.css';
+import { fileActions } from './fileActions';
+import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 
 const ORDER: FileKind[] = [
@@ -107,7 +107,7 @@ export class Workspace {
     this.project = project;
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     this.unlisten = project.onChange((name) => {
-      if (!this.listed.has(name)) this.renderSidebar();
+      if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
     });
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
@@ -200,21 +200,9 @@ export class Workspace {
           h('button', { onclick: () => void this.addFiles(), title: 'Bring in several files from your computer at once' }, '⬆ Import…'),
         ),
         h(
-          'details',
-          { class: 'export-menu' },
-          h('summary', null, 'Save & share'),
-          h(
-            'div',
-            { class: 'stack' },
-            h('button', { onclick: () => void this.downloadZip() }, 'Download .zip'),
-            h('button', { onclick: () => void this.exportApp() }, 'Export web app'),
-            h(
-              'button',
-              { onclick: () => void this.exportPage(), title: 'One .html file with the game and player inside: double-click to play, even offline' },
-              'Export as one web page',
-            ),
-            h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'),
-          ),
+          'div',
+          { class: 'toolbar side-actions' },
+          downloadButton(this.project.name, () => this.chooseDownload()),
         ),
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
@@ -377,10 +365,12 @@ export class Workspace {
             { class: 'keys-btn', title: 'Keyboard shortcuts (?)', 'aria-label': 'Keyboard shortcuts', 'aria-keyshortcuts': 'Shift+?', onclick: () => void showShortcuts(kindOf(file)) },
             keyboardIcon(),
           ),
-          !isGam && h('button', { onclick: () => void this.rename(file) }, 'Rename'),
-          h('button', { onclick: () => void this.duplicate(file) }, 'Duplicate'),
-          h('button', { onclick: () => download(file.toUpperCase(), this.project.files.get(file)!) }, 'Download'),
-          !isGam && h('button', { class: 'danger', onclick: () => void this.remove(file) }, 'Delete'),
+          fileActions([
+            ...(isGam ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
+            { label: 'Duplicate', run: () => void this.duplicate(file) },
+            { label: 'Download file', run: () => download(file.toUpperCase(), this.project.files.get(file)!), title: `Save ${file.toUpperCase()} to your computer` },
+            ...(isGam ? [] : [{ label: 'Delete', run: () => void this.remove(file), danger: true }]),
+          ]),
         ),
       ),
       isGam ? this.nextSteps() : null,
@@ -389,6 +379,7 @@ export class Workspace {
     const editor = editors[kindOf(file)] ?? fileInfo;
     try {
       this.cleanup = editor(body, this.project, file) || undefined;
+      foldHint(body.querySelector<HTMLElement>('p.hint'));
     } catch (e) {
       console.error(e);
       clear(body, h('p', { class: 'hint' }, `This file could not be opened: ${(e as Error).message}`));
@@ -428,17 +419,12 @@ export class Workspace {
       h(
         'button',
         {
-          title: 'Download it, or export it to play on the web or in DOS',
-          onclick: () => {
-            const menu = this.sidebar.querySelector<HTMLDetailsElement>('.export-menu');
-            if (!menu) return;
-            this.sidebar.classList.add('open');
-            menu.open = true;
-            menu.querySelector('button')?.focus();
-          },
+          title: 'Download it to play on Windows, a Mac, Linux, the web or DOS',
+          'aria-haspopup': 'dialog',
+          onclick: () => void this.chooseDownload(),
         },
         h('span', { 'aria-hidden': 'true' }, '💾 '),
-        'Save & share',
+        'Download',
       ),
       h(
         'button',
@@ -603,43 +589,9 @@ export class Workspace {
     this.open(this.project.gam);
   }
 
-  private async downloadZip(): Promise<void> {
-    const zip = await createZip(this.project.files.entries().map(([name, data]) => ({ name: name.toUpperCase(), data })));
-    download(`${this.project.gam.replace(/\.gam$/, '')}.zip`, zip, 'application/zip');
-  }
-
-  private async exportForDos(): Promise<void> {
-    try {
-      const title = this.project.game().scenes[0]?.desc || this.project.name;
-      const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(this.project.files, { title, gam: this.project.gam });
-      download(name, zip, 'application/zip');
-      toast(`Saved ${name}. In DOSBox, run ${exe} from the unzipped folder.`);
-    } catch (e) {
-      toast((e as Error).message, 'error');
-    }
-  }
-
-  private async exportPage(): Promise<void> {
-    try {
-      toast('Building web page…');
-      const title = this.project.game().scenes[0]?.desc || this.project.name;
-      const { name, html } = await exportSinglePage(this.project.files, { title, gam: this.project.gam });
-      download(name, html, 'text/html');
-      toast(`Saved ${name}. Open it in any browser to play — no internet needed.`);
-    } catch (e) {
-      toast((e as Error).message, 'error');
-    }
-  }
-
-  private async exportApp(): Promise<void> {
-    try {
-      toast('Building web app…');
-      const title = this.project.game().scenes[0]?.desc || this.project.name;
-      const { name, zip } = await exportWebApp(this.project.files, { title, gam: this.project.gam });
-      download(name, zip, 'application/zip');
-      toast(`Saved ${name}. Unzip it onto any static web host to publish it.`);
-    } catch (e) {
-      toast((e as Error).message, 'error');
-    }
+  /** The Download chooser (download.ts) for this game, as it is now. */
+  private chooseDownload(): Promise<void> {
+    const title = this.project.game().scenes[0]?.desc || this.project.name;
+    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true });
   }
 }

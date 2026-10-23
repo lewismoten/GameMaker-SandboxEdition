@@ -33,23 +33,24 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
       standShown = '';
       return;
     }
-    const [{ bonusStates, isHatched }, { drawCakeStand }] = await Promise.all([import('./bonus'), import('./bonusArt')]);
+    const [{ bonusStates, eggTaps, TAPS }, { drawCakeStand }] = await Promise.all([import('./bonus'), import('./bonusArt')]);
     extra = (await bonusStates()).filter((e) => e.found);
-    const hatched = isHatched();
-    const items = extra.map((e) => (e.egg.id === 'rotten' ? (hatched ? 'heart' : 'rotten') : 'pastry') as 'rotten' | 'heart' | 'pastry');
-    const key = items.join(',');
+    // how far the rotten egg was tapped (the viewer, or EGG.EXE): its cracks, or the IOU inside
+    const taps = eggTaps();
+    const items = extra.map((e) => (e.egg.id === 'rotten' ? (taps >= TAPS ? 'iou' : 'rotten') : 'pastry') as 'rotten' | 'iou' | 'pastry');
+    const key = `${items.join(',')}:${taps}`;
     if (key === standShown) return;
     standShown = key;
     stand.hidden = !items.length;
     if (!items.length) return;
-    const names = items.map((i) => (i === 'rotten' ? 'a rotten egg' : i === 'heart' ? 'a diamond heart' : 'a pastry egg'));
+    const names = items.map((i) => (i === 'rotten' ? (taps ? `a rotten egg, cracked by ${taps} of ${TAPS} taps` : 'a rotten egg') : i === 'iou' ? 'an IOU note' : 'a pastry egg'));
     stand.setAttribute('aria-label', `Cake stand with ${names.join(' and ')}: take a closer look`);
     stand.title = 'A cake stand';
     const W = 56;
     const H = 46;
     const k = Math.min(3, Math.max(1, window.devicePixelRatio || 1)) * 1.5;
     const c = h('canvas', { class: 'egg-stand-art', width: W * k, height: H * k, 'aria-hidden': 'true' });
-    drawCakeStand(c.getContext('2d')!, W * k, H * k, items);
+    drawCakeStand(c.getContext('2d')!, W * k, H * k, items, taps);
     clear(stand, c, items.includes('rotten') ? h('span', { class: 'egg-stand-wisp', 'aria-hidden': 'true' }) : null);
   };
 

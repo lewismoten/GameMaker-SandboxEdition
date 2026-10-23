@@ -13,6 +13,7 @@ import { download } from '../editor/core/ui';
 import { prefetchWhenIdle } from '../prefetch';
 import { soundBlaster } from './computer/soundBlaster';
 import type { Program } from '../vga/shared/designer';
+import { chk, offerCardAtMenu, registeredBox } from './gmReg/chk';
 
 /**
  * Designers ported to VGA graphics: they run their own menus, as the .EXEs did. Each .EXE is
@@ -73,10 +74,14 @@ function drawBars(h: RetroHost, bar: string): void {
   h.screen.write(0, 1, BARATTR, bar);
 }
 
+/** CHK.EXE's "Registered To:" box, left under the menus until a program clears the screen. */
+let registeredTo: string | undefined;
+
 function drawDesktop(h: RetroHost): void {
   const s = h.screen;
   s.gameMakerColors();
   s.fill(0, 2, 79, 24, attr(7, 0));
+  if (registeredTo !== undefined) registeredBox(h, registeredTo);
   const d = h.disk();
   const status = ` Game area: ${pathText(gameArea(h))}${d ? `     Drive A: ${d.disk.title}` : ''} `;
   s.write(0, 24, attr(8, 0), status.padEnd(80).slice(0, 80));
@@ -88,39 +93,68 @@ async function help(h: RetroHost, name: string): Promise<void> {
   else await errorBox(h, `Can't find ${name.toUpperCase()}!`, '(C)ontinue');
 }
 
-/** GM: runs until Quit. */
-export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'main'): Promise<void> {
+/** GM: runs until Quit. `args`: GM's command line (GM REGISTER). */
+export async function runGameMaker(h: RetroHost, start: 'main' | 'design' = 'main', args: string[] = []): Promise<void> {
   // the designers, in Design-bar order, fetched ahead while the menu waits
   prefetchWhenIdle(TOOLS.map((t) => PORTED[t.exe]).filter((load) => !!load), 1500);
   h.screen.cursorVisible = false;
-  drawDesktop(h);
-  let ch = start === 'design' ? 2 : 1;
-  if (start === 'design') await design(h);
-  for (;;) {
-    drawDesktop(h);
-    drawBars(h, MAIN_BAR);
-    ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
-    switch (ch) {
-      case 1:
-        await playgame(h);
-        break;
-      case 2:
-        await design(h);
-        break;
-      case 3:
-        await utilities(h);
-        break;
-      case 4:
-        await help(h, 'about.hlp');
-        break;
-      case 6:
-        await help(h, 'gmmain.hlp');
-        break;
-      default:
-        h.screen.resetPalette();
-        h.screen.clear();
-        return;
+  registeredTo = undefined;
+  if (start === 'main') {
+    // GM.EXE ran CHK.EXE first: the registration, or the manual check
+    registeredTo = await chk(h, args);
+    if (registeredTo === undefined) {
+      h.screen.resetPalette();
+      h.screen.clear();
+      return;
     }
+  }
+  // unregistered: the registration card stays beside the monitor as long as GM runs (its
+  // menus, designers and games); applied, the "Registered To:" box takes the name at once
+  let atMenu = false;
+  const takeCard = offerCardAtMenu(h, (name) => {
+    registeredTo = name;
+    if (atMenu) drawDesktop(h); // under the menu bar: the old box goes, the new one is drawn
+  });
+  try {
+    drawDesktop(h);
+    let ch = start === 'design' ? 2 : 1;
+    if (start === 'design') await design(h);
+    for (;;) {
+      drawDesktop(h);
+      drawBars(h, MAIN_BAR);
+      atMenu = true;
+      try {
+        ch = await horizMenu(h, 1, MAIN_XS, ch || 1);
+      } finally {
+        atMenu = false;
+      }
+      switch (ch) {
+        case 1:
+          registeredTo = undefined; // PLAYGAME.EXE's own screen
+          await playgame(h);
+          break;
+        case 2:
+          await design(h);
+          break;
+        case 3:
+          registeredTo = undefined; // UTILITY.EXE's own screen
+          await utilities(h);
+          break;
+        case 4:
+          await help(h, 'about.hlp');
+          break;
+        case 6:
+          await help(h, 'gmmain.hlp');
+          break;
+        default:
+          registeredTo = undefined;
+          h.screen.resetPalette();
+          h.screen.clear();
+          return;
+      }
+    }
+  } finally {
+    takeCard?.();
   }
 }
 
@@ -141,6 +175,7 @@ async function design(h: RetroHost): Promise<void> {
 
 /** Picks a file in a game folder (or makes a new one), then shows the designer. */
 export async function runTool(h: RetroHost, tool: Tool): Promise<void> {
+  registeredTo = undefined; // each designer was its own .EXE, in graphics mode
   drawDesktop(h);
   const ported = PORTED[tool.exe];
   if (ported) {
@@ -286,7 +321,7 @@ async function utilities(h: RetroHost): Promise<void> {
         }
       }
     } else if (ch === 3) {
-      if (game.kind === 'shareware') {
+      if (game.kind === 'shareware' && !game.free) {
         await errorBox(h, `${game.title} is shareware: get copies from the BBS`, 'or from its author.  (C)ontinue');
         continue;
       }

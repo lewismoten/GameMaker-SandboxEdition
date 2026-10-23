@@ -47,6 +47,8 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
   p.npc(npc('grandma'), [13, 13], TALK.gran, [13, 14]);
   p.npc(npc('docleo'), [16, 21], TALK.leo1, [16, 22]);
   p.npc(npc('farmer'), [24, 24], TALK.hodge, [23, 24]);
+  // Teenage Lewie, from Snowbound, with his shovel by the turnip field (Hodge tells you about him)
+  p.npc(npc('lewie'), [34, 24]);
   p.npc(npc('kid'), [26, 16]);
   p.put('signT', 23, 33);
   p.link([23, 33], 'nowsign', [0, 0]);
@@ -113,6 +115,8 @@ export function townMap(mons: MonBook): { plan: Plan; nowish: TownSpots; laterbu
   p.npc(npc('shopkeep'), [83, 32]);
   p.npc(npc('barkeep'), [62, 48], TALK.barkeep, [62, 49]);
   p.npc(npc('librarian'), [85, 48], TALK.librar, [85, 49]);
+  // Mystery Robot Joe, from Keep It Brief!, by the library door (Ms. Pagely tells you about him)
+  p.npc(npc('joe'), [89, 49]);
   p.npc(npc('docleo'), [77, 41], TALK.leo2, [77, 42]);
   p.npc(npc('guard'), [72, 62], TALK.guard, [72, 61]);
   p.npc(npc('kid'), [70, 41]);

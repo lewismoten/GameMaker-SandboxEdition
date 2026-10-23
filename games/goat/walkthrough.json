@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "goat",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "GVAF0AFQBdABSwXLAU0KzQFNA80CTQLNAUgPyAFNA80CTQLNAUgFyAFLBcsBSAPIAkgCyAFQBdABSw/LAVAP0AFNBc0BSAXIAU0PzQFNA80CTQLNAU0FzQFQBdABTQ/NAUgDyAJIAsgBSAXIAU0KzQFIA8gCSALIAUgFyAFNHs0BTQPNAk0CzQFLBcsBUArQAUsFywFQBdABTQPNAlAU0AFLCssBUBTQAUsUywFQBdABTQPNAkgFyAFLBcsBSyjLAUgDyAJLBcsBUArQAU0FzQFQA9ACUALQAVAK0AFID8gBTQXNAVAF0AFNCs0BUAPQAlAC0AFICsgBTTLNAU0DzQJNAs0BSBTIAUgDyAJIAsgBSAXIAU0jzQE5ArkMTQrNAUgKyAFNBc0BSAPIAkgCyAFIBcgBTQXNAUgDyAJIAsgBUBnQAUsFywFQCtABTRnNAU0DzQJNAs0BTRTNAVAD0AJQAtABUArQAUsFywFID8gBSx7LAUgFyAFNA80CUBTQAUsFywFQCtABSwXLAVAD0AJNBc0BUArQAU0UzQFIFMgBTQ/NAUg3yAFLBcsBSAPIAlAe0AFNCs0BTQPNAVAF0AFNAc0BOQK5DDkCuQxND80BSArIAU0FzQFIA8gCSwXLAUgKyAFNBc0BSAPIAkgCyAFQBdABSwXLAVAU0AFNGc0BUAPQAlAC0AFICsgBTQ/NAUseywFIBcgBSwXLAUgDyAJQMtABTQXNAUgDyAJIAsgBUAXQAUsFywFQA9ACUALQAUgPyAFNI80BTQPNAkgeyAFN"
+  },
+  {
+   "scene": 3,
+   "keys": "BlAF0AFNE80BSArIAU0KzQFIA8gCTQXNAUgDyAJNBc0BSAPIAk0FzQFIA8gCTQXNAUgDyAJNBc0BSAPIAkseywFID8gBSw/LAVAZ0AFNPM0BUAXQAU2lAc0MS0HLAUgeyAFNYM0BSAXIAUsPywFQI9ABTQ/NAVAK0AFICsgBSwXLAUgPyAFQGdABSxTLAVAF0AE5ArkMUA/QAVAU0AFQ"
+  },
+  {
+   "scene": 4,
+   "keys": "BlAF0AFNBc0BUAXQAU0KzQFIBcgBTR7NAVAD0AJQAtABSAXIAU0tzQFQBdABTTzNAU0DzQJIBcgBTRTNAUgFyAFND80BUCPQAUseywFQBdABSwXLAVAK0AFLGcsBUAXQAU0ezQFQBdABTQ/NAU0DzQJNAs0BS1DLAVAF0AE5ArkMUArQAUseywFQBdABSx7LAU08zQFIBcgBSx7LAVAF0AFNbs0BUAXQAU0OzQFQD9ABTQXNAU0="
+  },
+  {
+   "scene": 5,
+   "keys": "Bk0UzQFICsgBSwXLAUsDywJLAssBSAXIAUsFywFQBdABTRPNAVAZ0AFLCssBUAPQAlAC0AFIBcgBTQrNAUgeyAFLD8sBTQ/NAUgKyAFIA8gCSALIAUsKywFIA8gCSALIAVAK0AFNHs0BSAPIAkgCyAFQHtABTQ/NAUgEyAJIAcgBSA=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Shepherds' Field"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Bethlehem"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Caravan"
+  },
+  {
+   "scene": 5,
+   "title": "Level 4: The Stable"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 21722,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1008
+   },
+   {
+    "title": "Level 1: The Shepherds' Field",
+    "frame": 3014
+   },
+   {
+    "title": "Level 2: Bethlehem",
+    "frame": 8764
+   },
+   {
+    "title": "Level 3: The Caravan",
+    "frame": 12066
+   },
+   {
+    "title": "Level 4: The Stable",
+    "frame": 15404
+   },
+   {
+    "title": "Ending",
+    "frame": 17092
+   },
+   {
+    "title": "Credits",
+    "frame": 19634
+   }
+  ]
+ }
+}

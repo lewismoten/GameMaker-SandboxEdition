@@ -55,7 +55,7 @@ const PARTS: Record<string, string> = {
   c: 'relayNC',
 };
 const DIODES: Record<string, string> = { '>': 'diodeE', '<': 'diodeW', '^': 'diodeN', v: 'diodeS' };
-const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 'led', '~': 'xtal', '[': 'cpu0', '|': 'cpu1', ']': 'cpu2' };
+const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 'led', '~': 'xtal', '[': 'cpu0', '|': 'cpu1', ']': 'cpu2', b: 'bug' };
 /** Parts sunk in the housing over a wire that current lights up: the two halves of a
  * character LCD, and the CitiCar (tail, middle, nose). */
 const LCD: Record<string, string> = { '{': 'lcd0', '}': 'lcd1', K: 'car0', M: 'car1', N: 'car2' };
@@ -261,6 +261,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
           put(x, y, bb ? 'bbOutlet' : 'outlet');
           exit = { x: ox + x, y: oy + y };
         } else if (ch === '$') put(x, y, bb ? 'bbScrew' : 'screw');
+        else if (ch === 'h') put(x, y, 'tinHeart');
         else if (ch in DIODES) put(x, y, DIODES[ch]);
         else if (ch === '@') put(x, y, tb ? traceName(tb) : bb ? 'bbPad' : 'pad');
         else if (ch === '.' || ch in PARTS) put(x, y, tb ? traceName(tb) : floor(x, y));

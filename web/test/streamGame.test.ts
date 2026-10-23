@@ -88,6 +88,26 @@ describe('progressive game loading', () => {
     expect(g.files.stream).toBeUndefined();
   });
 
+  it('fetches only so far ahead of what is asked for, when told to', async () => {
+    const gam = sampleGame();
+    const calls: string[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        calls.push(url.replace('./games/budget/', ''));
+        return new Response((url.endsWith('.gam') ? gam : new Uint8Array([1])) as Uint8Array<ArrayBuffer>);
+      }),
+    );
+    const entry = { id: 'budget', title: 'B', kind: 'gameware' as const, path: 'games/budget/', gam: 'g.gam', files: NAMES, sizes: NAMES.map(() => 100) };
+    const g = streamHostedGame(entry, './', 4, 250);
+    await g.started;
+    for (let i = 0; i < 5; i++) await new Promise((r) => setTimeout(r));
+    expect(calls).toEqual(['g.gam', 't.cmf', 't.gif']); // two files ahead, in play order
+    await g.files.stream!.need(['c.map']); // asked for: always fetched
+    expect(calls.at(-1)).toBe('c.map');
+    expect(g.files.has('a.map')).toBe(false);
+  });
+
   it('keeps a file the game wrote before the hosted one arrived', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(new Uint8Array([7]))));
     const entry = { id: 'h', title: 'H', kind: 'gameware' as const, path: 'games/h/', gam: null, files: ['h.his'] };

@@ -91,11 +91,6 @@ export function mine(b: Bestiary, name: string, o: { score?: number; hp?: number
   chain(b, name, o.hp ?? 2, { power: POWER.enemy, pics: anim(name, 8) }, o.score ?? 75, 'burst');
 }
 
-/** Homes in on the ship for a while (born from a block); takes a few hits. */
-export function homer(b: Bestiary, name: string, o: { score?: number; hp?: number; speed?: number; life?: number } = {}): void {
-  chain(b, name, o.hp ?? 2, { power: POWER.enemy, pics: anim(name, 3), towards: o.speed ?? 2, end: o.life ?? 140 }, o.score ?? 150);
-}
-
 /** Drifts toward the ship slowly, forever, until it is shot. */
 export function stalker(b: Bestiary, name: string, o: { score?: number; hp?: number; speed?: number } = {}): void {
   chain(b, name, o.hp ?? 3, { power: POWER.enemy, pics: anim(name, 5), towards: o.speed ?? 1 }, o.score ?? 250);
@@ -132,12 +127,4 @@ export const ZIGZAG = (side: 1 | -1, speed = 3): Leg[] => [
 export const HOVER_DROP = (speed = 6): Leg[] => [
   [0, -3, 2],
   [0, 16, speed],
-];
-
-/** A hatch mite: scuttles out to one side and down. */
-export const SCUTTLE = (side: 1 | -1, speed = 3): Leg[] => [
-  [side * 2, 1, speed],
-  [side * 2, 3, speed],
-  [-side * 1, 3, speed],
-  [side * 1, 12, speed + 1],
 ];

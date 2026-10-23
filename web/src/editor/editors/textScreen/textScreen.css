@@ -51,7 +51,8 @@
   --ts-odd: #0d0d1c;
   --ts-text: #e09ce0;
   position: relative;
-  max-height: 70vh;
+  /* leaves room for the line count under it, so the editor fits a 1024×768 window */
+  max-height: min(70vh, calc(100dvh - 260px));
   min-height: 240px;
   overflow: auto;
   background: var(--ts-bg);
@@ -169,6 +170,8 @@
 }
 .ts-paper:focus-within {
   border-color: var(--focus);
+  /* the text box draws no ring of its own, so the paper wears a clear one */
+  box-shadow: 0 0 0 2px var(--focus);
 }
 
 .ts-status {

@@ -5,6 +5,8 @@ import type { RetroHost } from '../host';
 import { attr, COLS } from '../text/textScreen';
 import { readLine } from '../text/textInput';
 import { sofaLogin } from './ansiArt';
+import { sofaFiles } from './sofaFiles';
+import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
 
 export const SOFA_PHONE = '1-412-555-0177';
@@ -36,6 +38,8 @@ const PLEAS: [string, string][] = [
   ['REMOTE CONTROL', 'my 2400 baud modem cannot keep up with this'],
   ['CUSHION KING', 'ok I give up, see you guys in the forums'],
   ['INCLINE RIDER', 'is anyone else even reading this?'],
+  ['CUSHION KING', "anybody play DOC LEO's goat game yet? I screamed and my cousin fainted"],
+  ['REMOTE CONTROL', "DOC LEO's new game is about me. I was under his thigh the whole time"],
 ];
 
 const spamLine = () => Array.from({ length: 6 + Math.floor(Math.random() * 6) }, () => (Math.random() < 0.12 ? 'spam' : 'SPAM')).join(' ');
@@ -47,6 +51,7 @@ function menu(t: Term): void {
   t.line('|14   T |07... |15Teleconference |07(talk with the other callers)');
   t.line('|14   W |07... |15Who\'s on |07(see every line)');
   t.line('|14   L |07... |15The lounge |07(news from the SysOps)');
+  t.line('|14   F |07... |15File library |07(free downloads from our regulars)');
   t.line('|14   X |07... |15Exit |07(log off)');
   t.line();
 }
@@ -76,12 +81,13 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   t.line(`|07There are |14${CALLERS.length + 1}|07 users online right now.`);
   menu(t);
   for (;;) {
-    t.print('|11Make your selection (T,W,L or ? for help, X to exit): |15');
+    t.print('|11Make your selection (T,W,L,F or ? for help, X to exit): |15');
     const k = await t.key();
     t.line(k.length === 1 ? k : '');
     if (k === 'T') await teleconference(t, h, name);
     else if (k === 'W') whosOn(t, name, line);
     else if (k === 'L') lounge(t);
+    else if (k === 'F') await sofaFiles(t, h);
     else if (k === '?') menu(t);
     else if (k === 'X' || k === 'Escape') {
       t.line();
@@ -110,7 +116,15 @@ function lounge(t: Term): void {
   t.line('|14The lounge');
   t.line('|07Eight lines and no waiting! Pull up a cushion and stay a while.');
   t.line('|07Teleconference is open all night. Be nice, no flooding the channel.');
-  t.line('|07Looking for games? The Sandbox BBS has Game-Maker shareware.');
+  t.line('|07NEW in the File library: THIRD GOAT FROM THE LEFT, MUSTARD SEED HUSTLE,');
+  t.line('|07THREAD THE NEEDLE, BROTHER CAMEL, LOAF #13 (LEFT IN THE BASKET),');
+  t.line("|07CERTIFIED RAT TICKLER, WHERE'S THE REMOTE?!, A FLY NAMED CARL,");
+  t.line('|07THE GREAT DAIRY RECKONING OF 3:17 A.M., CLEANSE ME, O LOOFAH,');
+  t.line('|07I SCREAMED, SHE SMIRKED and SHAKESPEARE IN SWEATPANTS,');
+  t.line('|07Game-Maker games by our own DOC LEO (The Bard of Bizarre), from his songs.');
+  t.line("|07And VENI, VIDI, RISI!, six songs in Latin by Lewis's group Veni, Vidi, Risi!");
+  t.line('|07Free! Hit F.');
+  t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
   t.line();
 }
 
@@ -127,6 +141,10 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
   let spamAt = performance.now() + 600;
   let pleaAt = performance.now() + 3000;
   let plea = Math.floor(Math.random() * PLEAS.length);
+  let canAt = performance.now() + 4000;
+  let burst: BurstLine[] = [];
+  let burstAt = 0;
+  let round = 0;
   const prompt = () => t.print(`|11: |15${typed}`);
   const eraseLine = () => {
     s.fill(0, s.cursorY, COLS - 1, s.cursorY, attr(7, 0));
@@ -140,12 +158,29 @@ async function teleconference(t: Term, h: RetroHost, name: string): Promise<void
   prompt();
   for (;;) {
     const now = performance.now();
-    // The flood: far too fast to read.
-    while (now > spamAt) {
-      say(`|12From ${SPAMMER}: |15${spamLine()}`);
-      spamAt += 70 + Math.random() * 90;
+    // Now and then the flood turns into a whole can of SPAM, and the channel fights back.
+    if (!burst.length && now > canAt) {
+      burst = spamCanBurst(SPAMMER, round++);
+      burstAt = now;
     }
-    if (now > pleaAt) {
+    if (burst.length) {
+      while (burst.length && now >= burstAt + burst[0].wait) {
+        burstAt += burst[0].wait;
+        say(burst.shift()!.text);
+      }
+      if (!burst.length) {
+        spamAt = now + 2500;
+        pleaAt = now + 4000;
+        canAt = now + 20000 + Math.random() * 10000;
+      }
+    } else {
+      // The flood: far too fast to read.
+      while (now > spamAt) {
+        say(`|12From ${SPAMMER}: |15${spamLine()}`);
+        spamAt += 70 + Math.random() * 90;
+      }
+    }
+    if (!burst.length && now > pleaAt) {
       const [who, text] = PLEAS[plea++ % PLEAS.length];
       say(`|14From ${who}: |07${text}`);
       pleaAt = now + 2200 + Math.random() * 3000;

@@ -16,7 +16,7 @@
   gap: 8px;
   min-height: 100%;
 }
-.sl-inspector h3 {
+.sl-inspector h2 {
   margin: 0;
   font:
     700 16px/1.2 ui-monospace,
@@ -412,7 +412,7 @@
   align-items: center;
   margin-bottom: 10px;
 }
-.sl-bin-head h3 {
+.sl-bin-head h2 {
   margin: 0;
   font-size: 12px;
   text-transform: uppercase;
@@ -458,10 +458,13 @@
   touch-action: none;
   user-select: none;
 }
-.sl-media:hover,
+.sl-media:hover {
+  border-color: var(--accent);
+}
 .sl-media:focus-visible {
   border-color: var(--accent);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: -2px; /* inside: the list clips what sticks out */
 }
 .sl-media img,
 .sl-media .sl-icon {

@@ -5,7 +5,7 @@ import { buildGame } from './src/game';
 import { present } from './src/present';
 import { README } from './src/screens/text';
 import { about, limitsTxt, manual } from './src/docs';
-import { writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { licenseText } from '../kit/license';
 
 const t0 = Date.now();
@@ -17,7 +17,12 @@ const bytes = [...built.files.values()].reduce((n, f) => n + f.length, 0);
 disk.put('readme.txt', README('$15', built.files.size + 3, (bytes / 1e6).toFixed(1)));
 disk.put('limits.txt', limitsTxt(built));
 const here = (f: string) => new URL(`./${f}`, import.meta.url).pathname;
-writeFileSync(here('about.json'), JSON.stringify(about(built), null, 2) + '\n');
+// box.hours belongs to games/kit/playtime.ts (from the walkthrough): keep whatever it last wrote
+const aboutJson = about(built) as { box: { hours?: number } };
+const old = existsSync(here('about.json')) ? (JSON.parse(readFileSync(here('about.json'), 'utf8')) as { box?: { hours?: number } }) : {};
+if (old.box?.hours) aboutJson.box.hours = old.box.hours;
+else delete aboutJson.box.hours;
+writeFileSync(here('about.json'), JSON.stringify(aboutJson, null, 2) + '\n');
 writeFileSync(here('manual.json'), JSON.stringify(manual(built), null, 2) + '\n');
 disk.put('license.txt', licenseText("Maximus: The Hundred Worlds"));
 disk.write();

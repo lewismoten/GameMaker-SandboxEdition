@@ -7,7 +7,7 @@
 //
 // The blocks are in level3Tiles.ts, the monsters in level3Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
-import { G, nightRow, nightTiles } from './level3Tiles';
+import { G, nightBand, nightRow, nightTiles } from './level3Tiles';
 import { nightBeasts } from './level3Beasts';
 
 export function night(): Level {
@@ -37,8 +37,8 @@ export function night(): Level {
 
   // The park: trees (an owl in the big one), lamp posts, a bench, the pond.
   const tree = (x: number, h: number) => {
-    for (let y = 39 - h; y < 40; y++) m.set(x, y, y > 36 ? 'trunk' : 'trunk2');
-    for (let dy = -3; dy <= 0; dy++) for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + Math.abs(dy + 1) < 4) m.set(x + dx, 39 - h + dy, dy < -1 ? 'leaf' : 'leaf2');
+    for (let y = 39 - h; y < 40; y++) m.set(x, y, `trunk${nightBand(y)}`);
+    for (let dy = -3; dy <= 0; dy++) for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + Math.abs(dy + 1) < 4) m.set(x + dx, 39 - h + dy, `leaf${nightBand(39 - h + dy)}`);
   };
   tree(28, 4);
   tree(36, 5);
@@ -55,7 +55,7 @@ export function night(): Level {
   // the playground: its tall fence (seven high) with hard clay at its foot, a tunnel under
   const pf = 67;
   m.set(pf, 32, 'chainTop');
-  for (let y = 33; y < 40; y++) m.set(pf, y, 'chain');
+  for (let y = 33; y < 40; y++) m.set(pf, y, `chain${nightBand(y)}`);
   m.set(pf - 1, G, 'hole');
   m.rect(pf - 1, G + 1, 3, 1, 'tunnel');
   m.set(pf + 1, G, 'hole');

@@ -1,6 +1,6 @@
 // Pure helpers for the character editor: turning a block's orientation with rotate/flip
 // buttons, and editing a sequence's list of frames without breaking its end marker.
-import { BLEN, CHARBL, MONBL, orientIndex } from '../../../formats/blocks';
+import { BLEN, MONBL, orientIndex } from '../../../formats/blocks';
 import { MAXFRAME, emptyFrame, frameCount, type Frame, type Sequence } from '../../../formats/character';
 
 /** The orientation playgame actually draws (MEMBLOCA.ASM treats anything above 7 as 7). */
@@ -91,5 +91,3 @@ export const firesMonster = (f: Frame): boolean => f.pic2 === MONBL;
 export function travel(seq: Sequence): { x: number; y: number } {
   return activeFrames(seq).reduce((a, f) => (firesMonster(f) ? a : { x: a.x + f.x, y: a.y + f.y }), { x: 0, y: 0 });
 }
-
-export const hasPicture = (n: number): boolean => n < CHARBL;

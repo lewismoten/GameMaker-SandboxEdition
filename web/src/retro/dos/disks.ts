@@ -1,7 +1,8 @@
 // The 3.5" floppy disks in the desk's disk box: Recreational Software Designs' own
 // games first, the other gameware samples, your projects, and blank disks.
 import {
-  loadCatalog,
+  isSandboxGame,
+  loadGameList,
   loadHostedGame,
   type CatalogEntry,
   GameFiles,
@@ -121,7 +122,7 @@ export function diskCount(bytes: number): number {
 }
 
 export async function loadDisks(): Promise<Disk[]> {
-  const catalog = await loadCatalog().catch(() => [] as CatalogEntry[]);
+  const catalog = await loadGameList().catch(() => [] as CatalogEntry[]);
   const gameware = catalog.filter((g) => g.kind === "gameware");
   PUBLISHERS.length = 0;
   for (const g of gameware)
@@ -152,7 +153,7 @@ export async function loadDisks(): Promise<Disk[]> {
     });
   });
   // Our own games, on their printed shareware disks (open to change, unlike other shareware).
-  for (const g of catalog.filter((c) => c.original)) {
+  for (const g of catalog.filter(isSandboxGame)) {
     const label = g.original?.label;
     disks.push({
       id: `cd:${g.id}`,

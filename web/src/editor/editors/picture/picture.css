@@ -36,7 +36,7 @@
 .pic-copy {
   margin-top: 8px;
 }
-.pic-copy h3 {
+.pic-copy h2 {
   margin: 0 0 8px;
   font-size: 15px;
 }
@@ -203,4 +203,14 @@
 .pic-file-tools {
   align-items: flex-end;
   margin-top: 10px;
+}
+
+/* the picture's size and grab area, with Undo and Redo at the right */
+.pic-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+  margin-top: 4px;
 }

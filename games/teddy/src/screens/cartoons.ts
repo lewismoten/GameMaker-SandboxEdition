@@ -45,12 +45,36 @@ class Reel {
 
 const caption = (p: Pixels, words: string, y = 10) => centered(p, y, klubArt(words), c('paint', 3), 1, c('ink', 0));
 
-/** A long balloon being blown up and twisted into a dog: 0..1. */
+/** The balloon dog in the cartoon, green like the balloon it was twisted from. */
+const greenPoodle = (() => {
+  const swap = new Map([
+    [SP.c('pink', 0), c('green', 0)],
+    [SP.c('pink', 1), c('green', 0)],
+    [SP.c('pink', 2), c('green', 1)],
+    [SP.c('pink', 3), c('green', 2)],
+  ]);
+  const p = new Pixels(FX.poodle1.w, FX.poodle1.h, CLEAR);
+  p.px.set(FX.poodle1.px.map((v) => swap.get(v) ?? v));
+  return p;
+})();
+
+/**
+ * A round green balloon on a string from Doc Leo's hand (x, y), blowing up in the sky
+ * where it reads clearly against the tent and the town, then twisted into a dog: 0..1.
+ */
 function balloon(p: Pixels, x: number, y: number, t: number): void {
   if (t < 0.5) {
-    const len = Math.round(4 + t * 2 * 40);
-    for (let i = 0; i < len; i++) blob(p, x + i, y - i * 0.4, 3, 3, SP.r('pink'), 1, 3);
-  } else scaleBlit(p, FX.poodle1, x - 4, y - 30, 2);
+    const ry = 3 + t * 2 * 7;
+    const rx = ry * 0.85;
+    const kx = x + 14;
+    const ky = y - 26;
+    // the string, with a little curl, then the knot
+    for (let i = 0; i <= 26; i++) p.set(x + Math.round((i * 14) / 26 + Math.sin(i / 3) * 1.5), y - i, c('ink', 1));
+    p.rect(kx - 1, ky - 1, 3, 2, c('green', 0)).set(kx, ky - 2, c('green', 0));
+    blob(p, kx, ky - 1 - ry, rx + 1, ry + 1, [c('ink', 0)], 0, 0);
+    blob(p, kx, ky - 1 - ry, rx, ry, SP.r('green'), 0, 2);
+    p.set(Math.round(kx - rx * 0.45), Math.round(ky - 1 - ry * 1.45), c('paint', 3));
+  } else scaleBlit(p, greenPoodle, x - 5, y - 42, 2);
 }
 
 /** Clip 1: Doc Leo practices in the backyard: a balloon dog, a magic trick, a parade strut. */
@@ -63,7 +87,7 @@ export function leoFli(): Uint8Array {
     r.frame((p) => {
       leo(p);
       teddy(p, f < 16 ? 'front' : 'frontBeg');
-      balloon(p, 186, 128, f / 16);
+      balloon(p, 187, 140, f / 16);
       if (f >= 16) outlined(p, 222, 70, 'SQUEAK!', c('pink', 3), c('ink', 0), 1);
       caption(p, 'DOC LEO IS A HOBO CLOWN.');
       caption(p, 'HE TWISTS BALLOON ANIMALS...', 22);
@@ -115,7 +139,7 @@ export function carFli(): Uint8Array {
     r.frame(
       (p) => {
         scaleBlit(p, car, x, 80, 3);
-        scaleBlit(p, head, x + 34, 100 - (f > 12 ? f % 2 : 0), 2);
+        scaleBlit(p, head, x + 34, 112 - (f > 12 ? f % 2 : 0), 2);
         scaleBlit(p, POSES[f < 12 ? 'front' : f < 20 ? 'frontTilt' : 'frontBark'], 60, 140, 2);
         if (f >= 12) for (let k = 0; k < 3; k++) p.rect(x - 10 - k * 9 - (f % 2) * 3, 150 + k * 6, 7 - k * 2, 1, c('paint', 3));
         if (f < 12) {
@@ -159,7 +183,7 @@ export function paradeFli(): Uint8Array {
       const x0 = -260 + f * 7;
       (['drum', 'banner', 'balloons'] as const).forEach((kind, i) => scaleBlit(p, marcher(kind, (f + i) % 2), x0 + 240 + i * 46, 82 - ((f + i) % 2), 2));
       scaleBlit(p, car, x0 + 90, 72, 3);
-      scaleBlit(p, head, x0 + 124, 92 - (f % 2), 2);
+      scaleBlit(p, head, x0 + 124, 104 - (f % 2), 2);
       scaleBlit(p, POSES[f % 6 < 3 ? 'frontBeg' : 'frontReach'], x0 + 100, 52 - (f % 2), 2);
       scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 + 20, 150, 2);
       caption(p, f < 30 ? 'AND AFTER THE BIG SHOW...' : 'THE KLOWN KLUB PARADE!', 8);

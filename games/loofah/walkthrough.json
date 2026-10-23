@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "game": "loofah",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AUsKyydICMgATQXNA00XzQgSDJIATQDNDxIKkgBNBc0DTQzNBkgMyABNAc0DTQnNBk0GzQwSCJIATRPNAxIMkgBNAM0GTQbNFkgMyABNBc0DSAzIAEsDywNLAssGEgySAE0UzQVNB80GEgySAE0AzQpNCs0GEgySAE0CzQZN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0RzQZIDMgATQjNA00FzQZIDMgATQjNA00CzQYSBJIATQbNBEgEyABNCM0aTQXNBhIMkgBNBs0DSAzIAE0CzQM5ArkKTQrNBk0FzQZIDMgATQXNAxIGkgBNCc0LTQNICsgBzQ1NCs0DSAzIAE0FzQNNCM0HTQ/NBkgRyABQEdAATQHNBk0IzRM5ArkKOQK5Ck0YzQZLDMsGSAzIAE0DzQNND80GEgqSAE0KzQZIC8gATQjNFk0DzQYSDJIATQPNBjkCuQo5ArkKTQTNBkgMyABNA80DSAzIAE0KzQMSBpIATQDNCU0MzRFN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU0NzQwSDJIATTzNDE0DSArICs0GTQjNCk0WzQYSDJIATQbNA00MzQZIDMgATQPNAxIGkgBNCc0FTQbNBkgMyABNBM0EEgSSAE0NzQNIDMgATQjNAxIMkgBNEM0DEgySAE0FzQRNBM0GEgySAE0CzQdNBM0GSAzIAE0DzQNIDMgATQXNAxIMkgBNF80DTQ=="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0PzQZIDMgETQXNBhIKkgBNBc0DSwjLEk0BzQNNBM0GTQ7NBhIMkgBNDs0GSAzIBE0FzQYSBJIATRHNA00DzRE5ArkMOQK5DDkCuQw5ArkMOQK5DDkCuQw5ArkMOQK5DDkCuQxNDc0GSAbICU0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Act I: Cursed in the Shower"
+  },
+  {
+   "scene": 3,
+   "title": "Act II: The Forest-Dark Aisle"
+  },
+  {
+   "scene": 4,
+   "title": "Act III: You Crossed a Line"
+  },
+  {
+   "scene": 5,
+   "title": "Act IV: Scrubbus Maximus"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 17653,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1259
+   },
+   {
+    "title": "Act I: Cursed in the Shower",
+    "frame": 3183
+   },
+   {
+    "title": "Act II: The Forest-Dark Aisle",
+    "frame": 5184
+   },
+   {
+    "title": "Act III: You Crossed a Line",
+    "frame": 8199
+   },
+   {
+    "title": "Act IV: Scrubbus Maximus",
+    "frame": 10516
+   },
+   {
+    "title": "Ending",
+    "frame": 12359
+   },
+   {
+    "title": "Credits",
+    "frame": 15084
+   }
+  ]
+ }
+}

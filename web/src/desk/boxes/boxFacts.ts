@@ -7,7 +7,7 @@ import { diskCount } from '../../retro/dos/disks';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
 export interface BoxExtras {
-  /** Hours of play to finish; estimated from the number of levels when missing. */
+  /** Hours of play to finish, set from the walkthrough by games/kit/playtime.ts (playtime.ts); estimated from the number of levels when missing. */
   hours?: number;
   /** More selling points, printed with the ones worked out from the game's files. */
   claims?: string[];
@@ -15,7 +15,7 @@ export interface BoxExtras {
   reviews?: { quote: string; source: string }[];
   /** A laurel on the front, e.g. { title: 'Shareware Game of the Month', from: 'Diskette Digest' }. */
   award?: { title: string; from: string };
-  /** The store's price sticker; a shareware box sold for a few dollars. */
+  /** The store's price sticker ($4.99 at Bits & Bytes by default): what the store asked for the shareware disk, not the author's registration fee (CatalogEntry.price). */
   sticker?: { store?: string; price?: string };
   /** A poster or fold-out map for the wall while the game is played. */
   poster?: { gif?: string; map?: [string, number, number, number, number]; title?: string; caption?: string };
@@ -143,6 +143,8 @@ export function planBack(available: number, featureCount: number, reviewCount: n
           }
         }
   if (best) return best;
-  const last = { bodyPx: 14, features: 0, reviews: 0, shots: 0 };
+  // a long story alone: smaller type until it ends above the claims, never under them
+  let last = { bodyPx: 13, features: 0, reviews: 0, shots: 0 };
+  while (last.bodyPx > 9 && heightOf(last) > available) last = { ...last, bodyPx: last.bodyPx - 1 };
   return { ...last, height: heightOf(last) };
 }

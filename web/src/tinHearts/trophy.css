@@ -1,0 +1,56 @@
+/* The tin heart hunt's trophy (tinHearts/trophy.ts): on a phone it stands with the eggs under
+   the PC; on the desk, at the right end of the bottom shelf, left of the cake stand. */
+.heart-trophy {
+  order: 1;
+  justify-self: center;
+  margin: 0 auto 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: zoom-in;
+}
+
+.heart-trophy[hidden] {
+  display: none;
+}
+
+.heart-trophy:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 2px;
+}
+
+.heart-trophy-art {
+  display: block;
+  width: 66px;
+  height: 90px;
+  filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.45));
+}
+
+@media (min-width: 961px) {
+  .desk-scene > .heart-trophy {
+    position: absolute;
+    right: calc(1440px - 286px);
+    bottom: calc(880px - 430px);
+    z-index: 1;
+    margin: 0;
+    transform-origin: 50% 100%;
+    transition: transform 0.15s;
+  }
+
+  .desk-scene > .heart-trophy .heart-trophy-art {
+    width: 36px;
+    height: 49px;
+  }
+
+  .desk-scene > .heart-trophy:hover,
+  .desk-scene > .heart-trophy:focus-visible {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-scene > .heart-trophy {
+    transition: none;
+  }
+}

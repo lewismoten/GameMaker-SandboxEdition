@@ -208,6 +208,14 @@
   flex-direction: column;
   gap: 8px;
 }
+.mpath-side > * {
+  flex: none;
+}
+.mpath-side-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .mpath-count {
   font:
     bold 13px ui-monospace,
@@ -244,10 +252,10 @@
   border-radius: 6px;
   background: var(--panel-2);
 }
-.mpath-inspect h4 {
+.mpath-inspect h3 {
   margin: 0;
 }
-.mpath-inspect h4 small {
+.mpath-inspect h3 small {
   font:
     12px ui-monospace,
     Menlo,

@@ -94,14 +94,21 @@ export function page(heading: string, seed: number): Pixels {
 export function scoresScreen(): Pixels {
   const p = circuit(21);
   panel(p, 8, 0, 311, 199);
-  scaleBlit(p, SHIP, 268, 4, 2);
+  // Small ships in the top corners, clear of the widest row (a 22 letter name ends at x 284).
+  scaleBlit(p, SHIP, 12, 3, 1);
+  scaleBlit(p, SHIP, 288, 3, 1);
   return p;
 }
 
-/** Load and save backdrops: PLAYGAME writes the slots in yellow at x 80, so a dark panel. */
+/**
+ * Load and save backdrops: PLAYGAME writes the slots in yellow at x 80, so a dark panel, and
+ * its messages ("Game Saved!", "This game has not been saved!") in blue at y 185, x 40..272,
+ * so a pale strip under it.
+ */
 export function slotScreen(heading: string): Pixels {
   const p = circuit(heading.length);
-  panel(p, 52, 30, 300, 182, c('ink', 0), c('steel', 4));
+  panel(p, 52, 30, 300, 175, c('ink', 0), c('steel', 4));
+  panel(p, 34, 182, 286, 196);
   outlined(p, Math.round(160 - heading.length * 8), 8, heading, c('cyan', 5), c('ink', 0), 2);
   return p;
 }

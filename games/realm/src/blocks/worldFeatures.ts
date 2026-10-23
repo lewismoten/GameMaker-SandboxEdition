@@ -5,6 +5,7 @@ import { Canvas, type RGB, mix, clamp01 } from '../art/rgb';
 import { house, tower, wallRun, shadow, STYLE } from '../art/buildings';
 import { grass, rock, cliff, shapeSdf, TL, TR, paintTile, dirt } from '../art/terrain';
 import { ALL, type BlockBook } from './book';
+import { chezSideOn } from '../sprites/chezCar';
 
 type Painter = (cv: Canvas) => void;
 
@@ -77,7 +78,7 @@ export function worldFeatures(book: BlockBook): void {
       // the keep
       cv.rect(20, 14, 20, 20, (x, y) => mix(stone[1], stone[2], clamp01(1 - (x - 20) / 30 - (y - 14) / 60)));
       house(cv, 19, 8, 22, 22, { ...STYLE.blueSlate, roof: blue, wall: stone, windows: 2 }, 5);
-      tower(cv, 30, 2, 4, 14, stone, blue, 4);
+      tower(cv, 30, 7, 4, 9, stone, blue, 4); // the spire's tip whole inside the picture
       // the front wall and its gate
       wallRun(cv, 6, 44, 48, 9, stone, 6);
       cv.rect(25, 46, 10, 9, [40, 30, 26]);
@@ -130,9 +131,9 @@ export function worldFeatures(book: BlockBook): void {
         [220, 220, 226],
         [255, 255, 255],
       ];
-      tower(cv, 9, 4, 4.5, 26, w, [[120, 30, 26], [180, 50, 40], [230, 100, 80]], 11);
+      tower(cv, 9, 8, 4.5, 22, w, [[120, 30, 26], [180, 50, 40], [230, 100, 80]], 11);
       for (const y of [16, 24]) cv.rect(4.5, y, 9, 2.4, [190, 50, 40]);
-      cv.rect(6, 7, 6, 3, [255, 236, 140]);
+      cv.rect(6, 11, 6, 3, [255, 236, 140]);
       // nets drying on poles
       cv.line(48, 26, 48, 34, 0.8, [100, 70, 40]);
       cv.line(56, 26, 56, 34, 0.8, [100, 70, 40]);
@@ -191,7 +192,7 @@ export function worldFeatures(book: BlockBook): void {
         [130, 50, 80],
       ];
       wallRun(cv, 8, 20, 44, 32, st, 21);
-      tower(cv, 30, 2, 7, 30, st, roof, 22);
+      tower(cv, 30, 12, 7, 20, st, roof, 22); // the spire's tip whole inside the picture
       tower(cv, 10, 10, 5, 26, st, roof, 23);
       tower(cv, 50, 10, 5, 26, st, roof, 24);
       for (const [x, y] of [
@@ -268,40 +269,12 @@ export function worldFeatures(book: BlockBook): void {
   void [rock, paintTile];
 }
 
-/** THE CHEZ: a 1976 1/2 CitiCar, a tomato-red wedge with a flat hood, round lamps and a huge windshield. */
+/** THE CHEZ: a 1976 1/2 CitiCar, the shared side view (games/kit/chez.ts) 18 wide, nose to the
+ * left so the passenger side shows, plugged in at its charge port. */
 export function chez(cv: Canvas, x: number, y: number, s = 1): void {
-  const red: RGB = [214, 54, 40];
   cv.ellipse(x + 9 * s, y + 14.5 * s, 9 * s, 2.2 * s, [30, 36, 26]);
-  // body: a low wedge, nose to the left
-  cv.poly(
-    [
-      [x + 1 * s, y + 9 * s],
-      [x + 5 * s, y + 6 * s],
-      [x + 9 * s, y + 1.5 * s],
-      [x + 16 * s, y + 1.5 * s],
-      [x + 17.5 * s, y + 8 * s],
-      [x + 17.5 * s, y + 12.5 * s],
-      [x + 1 * s, y + 12.5 * s],
-    ],
-    (px, py) => mix([255, 120, 96], red, clamp01((py - y) / (11 * s) + (px - x) / (60 * s))),
-  );
-  // the windshield (nearly upright) and the grey roof
-  cv.poly(
-    [
-      [x + 6 * s, y + 6 * s],
-      [x + 9.5 * s, y + 2.5 * s],
-      [x + 12 * s, y + 2.5 * s],
-      [x + 11 * s, y + 7 * s],
-    ],
-    [150, 200, 230],
-  );
-  cv.rect(x + 9 * s, y + 1 * s, 7 * s, 1.4 * s, [170, 170, 176]);
-  cv.rect(x + 1 * s, y + 10.4 * s, 16.5 * s, 1 * s, [30, 30, 34]);
-  cv.disc(x + 2.4 * s, y + 8.6 * s, 1.1 * s, [255, 250, 210]);
-  cv.disc(x + 4.5 * s, y + 13 * s, 2 * s, [24, 24, 28]);
-  cv.disc(x + 4.5 * s, y + 13 * s, 1 * s, [220, 220, 220]);
-  cv.disc(x + 14.5 * s, y + 13 * s, 2 * s, [24, 24, 28]);
-  cv.disc(x + 14.5 * s, y + 13 * s, 1 * s, [220, 220, 220]);
-  // the charge cord to its port, rear passenger side
-  cv.line(x + 17.5 * s, y + 9 * s, x + 19.5 * s, y + 12 * s, 0.7, [30, 30, 30]);
+  const k = 0.45 * s;
+  const port = chezSideOn(cv, x, y + 14.5 * s - 20 * k, 'left', k);
+  // the charge cord from its port, rear passenger side
+  cv.line(port.portX + 0.5, port.portY + 0.5, x + 19.5 * s, y + 12 * s, 0.7, [30, 30, 30]);
 }

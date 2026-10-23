@@ -11,12 +11,16 @@ import { icon } from './homeIcons';
 import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
+import { savesButton } from '../../saves/button';
+import { chooseDownload, downloadButton } from './download';
+import { catalogDownloadable } from '../../export/downloadable';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
   gameware: 'Gameware',
   sandbox: 'Sandbox',
   shareware: 'Shareware',
+  bizarre: 'Bizarre',
 };
 
 /** Movement is welcome and data is not scarce: demos may start by themselves. */
@@ -39,6 +43,15 @@ function whenIdleAndSeen(el: Element, f: () => void): void {
   else addEventListener('load', start, { once: true });
 }
 
+/** "Download" (download.ts): for the catalog's games that may be shared (export/downloadable.ts); a game of yours has its own in gameActions. */
+function catalogDownload(game: HomeGame): HTMLElement | null {
+  const e = game.entry;
+  if (!e || game.project || !catalogDownloadable(e)) return null;
+  return downloadButton(game.title, () =>
+    chooseDownload({ title: e.title, gam: e.gam!, files: () => game.files(), id: e.id, author: e.author ?? e.company, year: e.year, box: e.original?.box }),
+  );
+}
+
 /** Copies the address that shows `game` here (#/game/…). */
 async function copyLink(game: HomeGame): Promise<void> {
   const url = `${location.origin}${location.pathname}#/game/${game.key}`;
@@ -57,6 +70,8 @@ export interface Showcase {
   show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;
   /** Opens the ⋯ More menu of the game shown and puts the keyboard on its first item. */
   openMore(): void;
+  /** Opens the game's Saves & scores (at a part named in the address: a slot, 'scores', 'backups'). */
+  openSaves(initial?: string): void;
   readonly game: HomeGame | undefined;
 }
 
@@ -78,6 +93,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
   let current: HomeGame | undefined;
   let demo: { stop(): void } | undefined;
   let generation = 0;
+  let saves: ReturnType<typeof savesButton> = null;
 
   const show: Showcase['show'] = (game, how) => {
     const gen = ++generation;
@@ -131,6 +147,15 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     clear(actions, ...gameActions(game, nav, refresh));
     const walk = walkthroughButton(game.entry, () => game.files());
     if (walk) actions.insertBefore(walk, actions.querySelector('.card-more'));
+    // saved games and high scores: a hosted game's are kept as game:<id>, yours as project:<id>
+    saves = savesButton(
+      game.entry || game.project
+        ? { saveId: game.project ? `project:${game.project.id}` : `game:${game.entry!.id}`, title: game.title, gam: game.gam, files: () => game.files(), key: game.key }
+        : undefined,
+    );
+    if (saves) actions.insertBefore(saves.el, actions.querySelector('.card-more'));
+    const dl = catalogDownload(game);
+    if (dl) actions.insertBefore(dl, actions.querySelector('.card-more'));
     clear(notes, game.health?.released ? healthNote(game.health) : null);
     void game.hasDemo().then((yes) => {
       if (gen !== generation || !yes) return;
@@ -157,6 +182,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     el,
     show,
     openMore,
+    openSaves: (initial) => void saves?.open(initial),
     get game() {
       return current;
     },

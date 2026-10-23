@@ -1,0 +1,106 @@
+{
+ "version": 1,
+ "game": "risi",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0KzQZIDMgJTRnNBkgMyAlNCs0GSAjIBxIMkgBNCM0DSAzICU0PzQZNCs0GOQK5ChIIkgBNAs0FTQbNCRIMkgBNBc0ETQXNBkgMyAkSDJIATQrNA0sHywZIDMgJEgaSAE0JzQNNA80GEgySAE0FzQRIDMgJEgySAE0XzQNIDMgEEgaSAE0EzQlICMgJTQPNDEgMyAlNCM0sTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0KzQYSCpIATQfNA00FzQZNBc0GEgqSAE0HzQNND80GTQrNBkgIyABNCs0GSAjICU0IzQ5NBc0GEgqSAE0HzQNNCs0GEgySAE0KzQNNDc0GEgqSAE0HzQNNF80KTQjNBhIMkgBNAM0GTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0PzSwSDJIATQPNB00FzQZIAsgATQrNBjkCuQpNFM0GTQXNBk0IzQpND80GTQXNBkgMyAlNDc0GSALIAE0ISArIBc0HOQK5Ck0NzQY5ArkKEgySAE0DzQZNAs0GEgySAE0AzQZNCM0GTQ/NBkgMyAlNCM0USAHIAE0SzQZNAs0GOQK5CjkCuQo5ArkKOQK5CjkCuQo5ArkKEgySAE0FzQVIDMgJTQbNBhIMkgBNAM0ITQrNBk0NzU5N"
+  },
+  {
+   "scene": 5,
+   "keys": "ATkCuQpNDM0GTRTNBkgKyABNA80DTQ/NBk0FzQYSBpIATQnNAxIMkgBNAM0EEgiSAE0AzQlNFM0GTQjNFTkCuQpNDM0GTRfNBk0DzQZIDMgATQLNAzkCuQpND80GTQXND0sRywZNC80DSwPLAzkCuQpNCs0GTRDNOE0="
+  },
+  {
+   "scene": 6,
+   "keys": "AU0KzQZIDMgJTRLNBk0KzQYSCpIATQDNBE0CzQZIDMgATQPNBk0HzQZNDc0HSwDLBk0FzRBIBsgATQfNB00IzQZNBM0YTQrNBksAywYSBpIATQHNDEgEyABNBc0PTQXNBk0IzRk5ArkKOQK5Ck0bSArIBM0ITQrNBhIKkgBNAM0ITQfNBkgMyAlNBc0GEgaSAE0BzQxIBMgATQXND00FzQZNCM0ZTQ3NBk0KzQYSCpIATQDNBE0CzQZNA80RSAzICU0XzS5N"
+  },
+  {
+   "scene": 7,
+   "keys": "ATkCuT9NDs0OOQK5BjkCuUBNEs0OOQK5BjkCuQY5ArkGOQK5GTkCuQY5ArlATRLNDjkCuTtNEs0LTQTNBkgIyAk5ArkGOQK5BjkCuThNFM0GSAzICU0KzQYSDJIATQPNA00RzQZNFM0GOQK5CDkCuQg5ArkIOQK5CE0NzQZIBsgJTRnNDE0="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "I: Canis Meus Flatum Dedit"
+  },
+  {
+   "scene": 3,
+   "title": "II: Laudes Ignavi"
+  },
+  {
+   "scene": 4,
+   "title": "III: Titus Torquet Lingua"
+  },
+  {
+   "scene": 5,
+   "title": "IV: Felis Fortissimus"
+  },
+  {
+   "scene": 6,
+   "title": "V: Canit Piscis Aureus"
+  },
+  {
+   "scene": 7,
+   "title": "VI: Silentium Ridentium"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 23624,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1337
+   },
+   {
+    "title": "I: Canis Meus Flatum Dedit",
+    "frame": 3210
+   },
+   {
+    "title": "II: Laudes Ignavi",
+    "frame": 5672
+   },
+   {
+    "title": "III: Titus Torquet Lingua",
+    "frame": 7352
+   },
+   {
+    "title": "IV: Felis Fortissimus",
+    "frame": 10274
+   },
+   {
+    "title": "V: Canit Piscis Aureus",
+    "frame": 12370
+   },
+   {
+    "title": "VI: Silentium Ridentium",
+    "frame": 15343
+   },
+   {
+    "title": "Ending",
+    "frame": 18418
+   },
+   {
+    "title": "Credits",
+    "frame": 21056
+   }
+  ]
+ }
+}

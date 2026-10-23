@@ -79,7 +79,7 @@
 
 /* over a picture: small, dark and see-through, in the demo button's yellow */
 .demo-audio.compact[role] label {
-  padding: 3px 8px;
+  padding: 4px 8px; /* 25px tall: a 24px target at least */
   border-color: rgb(255 212 0 / 0.7);
   background: rgb(10 10 40 / 0.75);
   color: #fff;
@@ -102,4 +102,32 @@
 
 .demo-audio.compact[role] label:has(input:focus-visible) {
   outline-color: #fff;
+}
+
+/* over a demo playing silently until the visitor taps or clicks the page (demoPreview.ts) */
+.demo-sound-hint {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 3;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid #ffd400;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.78);
+  color: #ffd400;
+  font: 600 13px/1.2 system-ui, sans-serif;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* while the pill shows, the recording's tag (demoPreview.ts, top center) steps down below it,
+   so the two never overlap on a narrow screen (!important: the tag's place is set inline) */
+.demo-kind-tag:has(~ .demo-sound-hint) {
+  top: 44px !important;
+}
+
+.demo-sound-hint:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }

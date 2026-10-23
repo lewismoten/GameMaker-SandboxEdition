@@ -2,6 +2,7 @@
 // the felt egg's page.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, type Scene } from '../../../../web/src/formats/game';
 import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { matchColor } from '../../../../web/src/formats/palette';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { farScene, nearScene, type Extra } from '../game';
 import type { LevelSet } from '../levels/blocks';
@@ -61,8 +62,10 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   files['credits.lst'] = serializeSlideList([{ name: 'cast.gif', pause: 8 }, { name: 'credbg.gif', pause: 0 }, { name: 'credits.txt' }]);
 
   gif('hiscore.gif', P.hiscorePicture());
-  gif('loadgame.gif', P.savePicture('LOAD GAME'));
-  gif('savegame.gif', P.savePicture('SAVE GAME'));
+  // the red pointer is on smoked glass here: a brighter red reads there
+  const slotsFixed = [GM_PURPLE, [255, 72, 72] as typeof GM_RED, GM_BLUE, GM_YELLOW];
+  files['loadgame.gif'] = toGif(P.savePicture('LOAD GAME'), slotsFixed);
+  files['savegame.gif'] = toGif(P.savePicture('SAVE GAME'), slotsFixed);
 
   // the level cards
   for (const s of input.sets) gif(`card${s.level.n}.gif`, P.cardPicture(s.level.n, s.level.name, s.level.tagline, s.level.advice));
@@ -81,7 +84,10 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   centered(eggTitled, 10, 'THE PRISM EGG', rgb(255, 255, 255), 2, { outline: rgb(30, 10, 50) });
   centered(eggTitled, 182, 'Behind the two-way mirror...', rgb(220, 200, 255), 1, { outline: rgb(30, 10, 50) });
   gif('egg.gif', eggTitled);
-  gif('eggbg.gif', P.textPage(egg, rgb(244, 236, 255)));
+  // PLAYGAME writes the page's MORE... in the color nearest red in the Hall of Mirrors'
+  // palette (the scene's), whatever this picture has at that index: keep red there
+  const red = matchColor(input.sets[2].pal, 63, 10, 10);
+  files['eggbg.gif'] = toGif(P.textPage(egg, rgb(250, 246, 255)), fixed, 1, red < fixed.length ? [] : [[red, GM_RED]]);
   files['egg.txt'] = EGG_TEXT;
   files['egg.lst'] = serializeSlideList([{ name: 'egg.gif' }, { name: 'eggbg.gif', pause: 0 }, { name: 'egg.txt' }]);
 

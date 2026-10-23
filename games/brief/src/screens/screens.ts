@@ -9,6 +9,7 @@ import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
 import { dosText } from '../../../kit/disk';
 import { Pixels, rng } from '../../../kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
+import { saveSlots } from '../../../kit/saveSlots';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { bookwormEgg, corgi, docLeo, gwinn, shusher, wordSlip } from '../art/kit';
 import { PAL, c, r } from '../art/pal';
@@ -23,6 +24,21 @@ const H = 200;
 
 export function gif(p: Pixels): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: PAL.pal });
+}
+
+/**
+ * A text page shown from a scene whose palette is dark.pal (all black): PLAYGAME writes its
+ * MORE... in the entry nearest red in that palette, which is index 0, so this picture gets a
+ * palette of its own with red at 0 and index 0's own pixels moved to a copy of its color.
+ */
+export function gifRedAtZero(p: Pixels): Uint8Array {
+  const pal = PAL.pal.slice();
+  const used = new Set(p.px);
+  let spare = 255;
+  while (used.has(spare)) spare--;
+  pal.copyWithin(spare * 3, 0, 3);
+  pal.set(pal.slice(PAL.ink.red * 3, PAL.ink.red * 3 + 3), 0);
+  return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px, (v) => (v === 0 ? spare : v)), palette: pal });
 }
 
 // ------------------------------------------------------------------ scenery
@@ -206,16 +222,20 @@ export function coverScreen(tint: string, title: string): Pixels {
 /** High scores: PLAYGAME writes the table from the top (x=20..300), "Hit any key" at y=192. */
 export function scoresScreen(): Pixels {
   const p = shelves(21);
-  panel(p, 10, 0, 300, 200, false);
+  // the paper runs off the top and bottom so its edges stay clear of the title and Hit any key
+  panel(p, 10, -4, 300, 208, false);
   return p;
 }
 
 /** Load and save: "Load Game" at (124,10) and ten slots from y=40, 14 apart, x=73... */
 export function slotsScreen(joe: BlockSet): Pixels {
+  // the names are written in yellow: each gets a dark strip, the blue message the paper
+  // (kit/saveSlots.ts); the paper is wide enough for the message from x 40
   const p = shelves(31);
-  panel(p, 50, 4, 220, 192, false);
-  bigJoe(p, joe, 4, 150, 2);
-  scaleBlit(p, corgi(0), 276, 160, 2);
+  panel(p, 30, 4, 262, 192, false);
+  saveSlots(p, c('ink', 0), c('paper', 4), c('wood', 1));
+  bigJoe(p, joe, 2, 150, 1);
+  scaleBlit(p, corgi(0), 296, 176, 1);
   return p;
 }
 
@@ -421,7 +441,7 @@ export function buildScreens(joe: BlockSet, wings: CompiledWing[]): Record<strin
   out['egg.txt'] = dosText(EGG);
   out['egg.lst'] = serializeSlideList([{ name: 'eggpic.gif', pause: 8 }, { name: 'egg.gif', pause: 0 }, { name: 'egg.txt' }]);
   // the thirty-third book
-  out['b33.gif'] = gif(pageScreen(joe, 'BOOK 33', 61, 'blink'));
+  out['b33.gif'] = gifRedAtZero(pageScreen(joe, 'BOOK 33', 61, 'blink'));
   out['b33.txt'] = dosText(book33Text());
   out['b33.lst'] = serializeSlideList([{ name: 'b33.gif', pause: 0 }, { name: 'b33.txt' }]);
   return out;

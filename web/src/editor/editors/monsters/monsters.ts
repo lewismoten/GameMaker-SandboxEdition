@@ -140,7 +140,7 @@ registerEditor(['mon'], (host, project, file) => {
           'div',
           { class: 'mon-who' },
           preview,
-          h('div', null, h('h3', null, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot')),
+          h('div', null, h('h2', null, `Monster ${current}`), h('div', { class: 'meta' }, m.used ? 'In use' : 'Unused slot')),
         ),
         h(
           'div',
@@ -149,7 +149,7 @@ registerEditor(['mon'], (host, project, file) => {
           h(
             'div',
             { class: 'mon-anim-head' },
-            h('h4', { id: 'mon-anim-head' }, 'Animation ', h('small', { class: 'meta' }, 'picture and ticks (1/18 s) of each frame')),
+            h('h3', { id: 'mon-anim-head' }, 'Animation ', h('small', { class: 'meta' }, 'picture and ticks (1/18 s) of each frame')),
             h(
               'div',
               { class: 'mon-frame-tools' },

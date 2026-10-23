@@ -7,7 +7,7 @@
 import { buildGame, type Built, type SceneInfo } from '../src/game';
 import { ITEM_BASE, MODULES, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
 import { SCENE } from '../src/universe';
-import { field, idx, seek, wrap, type P, type SeekOpts } from './drive';
+import { field, idx, seek, wrap, type Grab, type P, type SeekOpts } from './drive';
 import type { Live } from './live';
 
 export interface Stop {
@@ -70,6 +70,26 @@ export class Route {
     return this.trace ? { log: this.log, ...o } : o;
   }
 
+  /** Off for runs that should play the plain route (GRAB=0). */
+  grabbing = process.env.GRAB !== '0';
+  private tried = { entries: -1, cells: new Set<number>() };
+  /** Loot taken in passing: on view, a few steps off the way; never an egg, a shard or module, or anything in a secret pocket. */
+  grab(scene: number): Grab | undefined {
+    if (!this.grabbing) return undefined;
+    const d = this.d;
+    if (this.tried.entries !== d.entries) this.tried = { entries: d.entries, cells: new Set() };
+    const s = this.b.sets[this.info(scene).bbl];
+    const secret = new Set(['fake', 'glass', 'rock:fake', 'egg'].filter((n) => s.has(n)).map((n) => s.id(n)));
+    const bg = d.w.bg;
+    const loot = (n: number) => {
+      if (n >= 129 && n < 150) return false; // the egg, the shards, the modules: not loot
+      const b = bg[n];
+      if (!b || b.touchBl === n || b.chHitPt < 0 || (b.solid & 14) !== 0 || (b.effect > 0 && b.eamt < 0)) return false;
+      return b.scorePts > 0 || b.chHitPt > 0 || (b.effect > 0 && b.eamt > 0);
+    };
+    return { loot, secret: (n) => secret.has(n), tried: this.tried.cells };
+  }
+
   /**
    * Plays `scene` until `leave` takes a link out of it, starting over (as the engine does)
    * after a death. `leave` is run again each time the scene starts.
@@ -94,7 +114,7 @@ export class Route {
     const d = this.d;
     const l = this.links(scene)[link];
     await this.inScene(scene, async () => {
-      await seek(d, l.from, this.opts({ mode: 'fly', tall: 1, avoid: this.avoidLinks(scene, link), passable: this.shardGates(), maxTicks }));
+      await seek(d, l.from, this.opts({ mode: 'fly', tall: 1, avoid: this.avoidLinks(scene, link), passable: this.shardGates(), maxTicks, grab: this.grab(scene) }));
     });
     await d.enter(l.toScene);
     return l.toScene;
@@ -208,7 +228,7 @@ export class Route {
     const i = d.w.map.findIndex((n) => n === id);
     if (i < 0) return;
     const spring = { x: i % 100, y: Math.floor(i / 100) };
-    const r = await seek(d, spring, this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(info.scene, -1), maxTicks: 1500 }));
+    const r = await seek(d, spring, this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(info.scene, -1), maxTicks: 1500, grab: this.grab(info.scene) }));
     if (!r.arrived || d.dead) return;
     const hp0 = d.w.ci.hitpts;
     let last = hp0;
@@ -234,7 +254,7 @@ export class Route {
       if (!this.reaches(info, info.vault!, false)) await this.credits(info, 20, 200);
       else await this.credits(info, 20, 30);
       if (d.dead) return;
-      const r = await seek(d, info.vault!, this.opts({ mode, tall, passable: this.gates(info), avoid: this.avoidLinks(scene, -1), maxTicks: 8000 }));
+      const r = await seek(d, info.vault!, this.opts({ mode, tall, passable: this.gates(info), avoid: this.avoidLinks(scene, -1), maxTicks: 8000, grab: this.grab(scene) }));
       if (d.dead) return;
       if (!r.arrived) throw new Error(`${info.name}: the bot did not reach the vault (best ${r.best}, at ${d.pos.bx},${d.pos.by})`);
       if (info.module !== undefined) {
@@ -248,7 +268,7 @@ export class Route {
     }
     await this.heal(info, heal?.below, heal?.to);
     if (d.dead) return;
-    await seek(d, this.links(scene)[0].from, this.opts({ mode, tall, passable: this.gates(info), maxTicks: 8000 }));
+    await seek(d, this.links(scene)[0].from, this.opts({ mode, tall, passable: this.gates(info), maxTicks: 8000, grab: this.grab(scene) }));
   }
 
   /** Doors (two cells, 10 credits each: only with 20 to spend) and force fields (wait for them to blink off). */
@@ -275,7 +295,7 @@ export class Route {
     await this.inScene(SCENE.citadel, async () => {
       await this.credits(info, 20);
       if (d.dead) return;
-      await seek(d, this.links(SCENE.citadel)[1].from, this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(SCENE.citadel, 1), maxTicks: 10000 }));
+      await seek(d, this.links(SCENE.citadel)[1].from, this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(SCENE.citadel, 1), maxTicks: 10000, grab: this.grab(SCENE.citadel) }));
     });
     await d.enter(SCENE.heart);
   }

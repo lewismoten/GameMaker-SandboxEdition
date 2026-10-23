@@ -5,13 +5,14 @@
 // shows the same arrangement.
 //
 // The editor is one closure over the game. Its sections, in order: pictures (cached scene
-// shots), songs, the board (pan, zoom, dragging cards), the toolbar (Auto-arrange, Spread
-// out, zoom, PNG), the side panel (screens and music), scenes (adding, playing from one),
-// and the selected scene's panel. Drawing the board is in board.ts; the layout algorithms
-// are in integratorLayout.ts and layoutCells.ts.
+// shots), songs, the board, the toolbar (Auto-arrange, Spread out, zoom, PNG), the side
+// panel (screens and music: sideLists.ts), scenes (adding, playing from one), and the
+// selected scene's panel (its links table: sceneLinks.ts). Drawing the board is in board.ts,
+// its camera in boardCamera.ts and its pointer and keys in boardInput.ts; the layout
+// algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
 import { registerEditor } from '../registry';
-import { h, clear, selectField, textField, numberField, modal, confirmDialog, download, toast } from '../../core/ui';
+import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
 import { GameFiles } from '../../../project/files';
@@ -20,7 +21,6 @@ import {
   ADVTYPE,
   ENDTYPE,
   GRAPHIC_EXTS,
-  MAXSCENELINKS,
   NOSCENE,
   SCENEDESCLEN,
   STARTTYPE,
@@ -32,15 +32,19 @@ import {
   type Point,
   type Scene,
 } from '../../../formats/game';
-import { MLEN, MWID, newMap, parseMap, serializeMap } from '../../../formats/map';
+import { newMap, parseMap, serializeMap } from '../../../formats/map';
 import { WORLD, CARD_UNITS, clampPos } from './layoutCells';
 import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from './integratorLayout';
 import { graphicShot, levelShot } from './integratorArt';
 import { audio } from '../../widgets/mediaShared';
-import { pickOnMap } from './pickOnMap';
+import { linksPanel } from './sceneLinks';
+import { BoardCamera } from './boardCamera';
+import { boardInput } from './boardInput';
 import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
-import { END_SCREENS, END_SONGS, START_SCREENS, START_SONGS } from './sceneSlots';
+import { fileUndo } from '../../core/fileUndo';
+import { screensAndSongs } from './sceneSlots';
+import { screensGrid, songsList } from './sideLists';
 import {
   S,
   inRect,
@@ -59,10 +63,33 @@ registerEditor(['gam'], (host, project, file) => {
   const urlScene = view.num('scene');
   let selected = urlScene !== undefined && usedScenes(game).includes(urlScene) ? urlScene : 0;
   let playing: string | undefined;
-  let undoPositions: Map<number, Point> | undefined;
   /** Auto-arrange's layouts, best first, while the user steps through them. */
   let arranged: { list: Arrangement[]; k: number } | undefined;
-  const save = () => project.saveGame(game);
+  // Undo takes back any change to the .gam: cards moved, scenes added, files and links chosen
+  const undo = fileUndo(project.files, () => {
+    Object.assign(game, project.game());
+    arranged = undefined;
+    const gone = !usedScenes(game).includes(selected);
+    if (gone) selected = 0;
+    shots.clear();
+    renderTools();
+    renderSide();
+    renderPanel();
+    if (gone) fit();
+    else draw();
+  });
+  // small, so the toolbar keeps to one line
+  for (const [b, name] of [[undo.undoBtn, 'Undo'], [undo.redoBtn, 'Redo']] as const) {
+    b.textContent = name === 'Undo' ? '↶' : '↷';
+    b.setAttribute('aria-label', name);
+    b.classList.add('grator-undo');
+  }
+  const stopKeys = undo.listenKeys();
+  const save = (sameStep = false) => {
+    if (sameStep) undo.join(project.gam);
+    else undo.before(project.gam);
+    project.saveGame(game);
+  };
 
   // ---- pictures --------------------------------------------------------------------
   const shots = new Map<string, HTMLCanvasElement | undefined>();
@@ -125,9 +152,7 @@ registerEditor(['gam'], (host, project, file) => {
     'aria-label': 'Scenes and links: drag a card to move it, drag the background to pan, scroll to zoom',
   });
   const zoomLabel = h('span', { class: 'grator-zoom' }, '100%');
-  const cam = { x: 0, y: 0, z: 1 };
-  /** True while the view is still the "show every scene" fit: resizing the board fits it again. */
-  let fitted = true;
+  const cam = new BoardCamera(board, () => draw());
   const used = () => usedScenes(game);
   const cardRect = (i: number): Rect => cardRectOf(game, i);
   const boardBounds = (): Rect => {
@@ -164,21 +189,7 @@ registerEditor(['gam'], (host, project, file) => {
     });
   }
 
-  const toBoard = (clientX: number, clientY: number) => {
-    const r = board.getBoundingClientRect();
-    return { x: cam.x + (clientX - r.left) / cam.z, y: cam.y + (clientY - r.top) / cam.z };
-  };
-  function zoomAt(z: number, clientX?: number, clientY?: number): void {
-    const r = board.getBoundingClientRect();
-    const cx = clientX ?? r.left + r.width / 2;
-    const cy = clientY ?? r.top + r.height / 2;
-    const before = toBoard(cx, cy);
-    fitted = false;
-    cam.z = Math.max(0.15, Math.min(4, z));
-    cam.x = before.x - (cx - r.left) / cam.z;
-    cam.y = before.y - (cy - r.top) / cam.z;
-    draw();
-  }
+  const zoomAt = (z: number, clientX?: number, clientY?: number) => cam.zoomAt(z, clientX, clientY);
   function fit(): void {
     const rs = used().map(cardRect);
     const b = rs.length
@@ -188,59 +199,27 @@ registerEditor(['gam'], (host, project, file) => {
           return { x: x0, y: y0, w: Math.max(...rs.map((r) => r.x + r.w)) - x0, h: Math.max(...rs.map((r) => r.y + r.h)) - y0 };
         })()
       : boardBounds();
-    const w = board.clientWidth || 800;
-    const hh = board.clientHeight || 500;
-    const pad = 30;
-    fitted = true;
-    // no bigger than 125%: a game of one or two scenes shouldn't fill the board with giant cards
-    cam.z = Math.max(0.15, Math.min(1.25, Math.min((w - pad * 2) / b.w, (hh - pad * 2) / b.h)));
-    cam.x = b.x - (w / cam.z - b.w) / 2;
-    cam.y = b.y - (hh / cam.z - b.h) / 2;
-    draw();
+    cam.fit(b);
   }
-  function centerOn(i: number): void {
-    const r = cardRect(i);
-    const w = board.clientWidth / cam.z;
-    const hh = board.clientHeight / cam.z;
-    if (r.x >= cam.x && r.y >= cam.y && r.x + r.w <= cam.x + w && r.y + r.h <= cam.y + hh) return;
-    fitted = false;
-    cam.x = r.x + r.w / 2 - w / 2;
-    cam.y = r.y + r.h / 2 - hh / 2;
-    draw();
-  }
+  const centerOn = (i: number) => cam.centerOn(cardRect(i));
 
   function sceneAt(x: number, y: number): number {
     const order = used().sort((a, b) => Number(b === selected) - Number(a === selected));
     return order.find((i) => inRect(cardRect(i), x, y)) ?? -1;
   }
 
-  // pointers: one = drag a card or pan; two = pinch zoom
-  const pointers = new Map<number, { x: number; y: number }>();
-  let gesture:
-    | { type: 'card'; i: number; dx: number; dy: number; sx: number; sy: number; moved: boolean }
-    | { type: 'pan'; sx: number; sy: number; cx: number; cy: number }
-    | { type: 'pinch'; d: number; z: number }
-    | undefined;
-  board.addEventListener('pointerdown', (e) => {
-    board.focus({ preventScroll: true });
-    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    board.setPointerCapture(e.pointerId);
-    if (pointers.size === 2) {
-      const [a, b] = [...pointers.values()];
-      gesture = { type: 'pinch', d: Math.hypot(a.x - b.x, a.y - b.y), z: cam.z };
-      return;
-    }
-    const p = toBoard(e.clientX, e.clientY);
-    const i = sceneAt(p.x, p.y);
-    if (i >= 0) {
-      const btn = cardButtons(i, cardRect(i)).find((b) => inRect(b, p.x, p.y));
-      if (btn) {
-        void toggleSong(btn.file);
-        gesture = undefined;
-        return;
-      }
-      const pos = game.scenes[i].pos;
-      gesture = { type: 'card', i, dx: p.x - (pos.x + 2) * S, dy: p.y - (pos.y + 2) * S, sx: e.clientX, sy: e.clientY, moved: false };
+  // pointers, wheel and keys (boardInput.ts)
+  boardInput({
+    board,
+    cam,
+    game,
+    used,
+    selected: () => selected,
+    sceneAt,
+    cardRect,
+    cardButtons,
+    toggleSong: (f) => void toggleSong(f),
+    press: (i) => {
       if (selected !== i) {
         selected = i;
         renderPanel();
@@ -251,98 +230,23 @@ registerEditor(['gam'], (host, project, file) => {
         renderSide();
       }
       draw();
-    } else gesture = { type: 'pan', sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y };
-  });
-  board.addEventListener('pointermove', (e) => {
-    if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (!gesture) {
-      const p = toBoard(e.clientX, e.clientY);
-      const i = sceneAt(p.x, p.y);
-      board.style.cursor = i < 0 ? 'grab' : cardButtons(i, cardRect(i)).some((b) => inRect(b, p.x, p.y)) ? 'pointer' : 'move';
-      return;
-    }
-    if (gesture.type === 'pinch') {
-      const [a, b] = [...pointers.values()];
-      if (a && b) zoomAt((gesture.z * Math.hypot(a.x - b.x, a.y - b.y)) / gesture.d, (a.x + b.x) / 2, (a.y + b.y) / 2);
-    } else if (gesture.type === 'pan') {
-      fitted = false;
-      cam.x = gesture.cx - (e.clientX - gesture.sx) / cam.z;
-      cam.y = gesture.cy - (e.clientY - gesture.sy) / cam.z;
-      board.style.cursor = 'grabbing';
+    },
+    step: (i) => {
+      selected = i;
+      centerOn(i);
+      renderPanel();
       draw();
-    } else {
-      if (!gesture.moved && Math.hypot(e.clientX - gesture.sx, e.clientY - gesture.sy) < 4) return;
-      gesture.moved = true;
-      const p = toBoard(e.clientX, e.clientY);
-      game.scenes[gesture.i].pos = clampPos({ x: (p.x - gesture.dx) / S - 2, y: (p.y - gesture.dy) / S - 2 });
-      draw();
-    }
-  });
-  const endPointer = (e: PointerEvent) => {
-    pointers.delete(e.pointerId);
-    if (gesture?.type === 'card' && gesture.moved) {
-      undoPositions = undefined;
+    },
+    cardMoved: () => {
       arranged = undefined;
       renderTools();
       save();
-    }
-    if (gesture?.type === 'pinch' && pointers.size === 1) {
-      const [p] = [...pointers.values()];
-      gesture = { type: 'pan', sx: p.x, sy: p.y, cx: cam.x, cy: cam.y };
-      return;
-    }
-    gesture = undefined;
-  };
-  board.addEventListener('pointerup', endPointer);
-  board.addEventListener('pointercancel', endPointer);
-  board.addEventListener(
-    'wheel',
-    (e) => {
-      e.preventDefault();
-      if (e.ctrlKey || Math.abs(e.deltaY) >= Math.abs(e.deltaX)) zoomAt(cam.z * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX, e.clientY);
-      else {
-        fitted = false;
-        cam.x += e.deltaX / cam.z;
-        draw();
-      }
     },
-    { passive: false },
-  );
-  board.addEventListener('dblclick', (e) => {
-    const p = toBoard(e.clientX, e.clientY);
-    const i = sceneAt(p.x, p.y);
-    if (i >= 0 && game.scenes[i].gametype === ADVTYPE) playFrom(i);
+    playFrom,
+    draw,
+    fit,
   });
-  board.addEventListener('keydown', (e) => {
-    if (e.key === '+' || e.key === '=') zoomAt(cam.z * 1.25);
-    else if (e.key === '-') zoomAt(cam.z / 1.25);
-    else if (e.key === '0') fit();
-    else if (e.key === 'Tab') return;
-    else if (e.key.startsWith('Arrow')) {
-      // step the selection to the nearest scene in that direction
-      const here = game.scenes[selected]?.pos ?? { x: 0, y: 0 };
-      const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key] ?? [0, 0];
-      let best = -1;
-      let bestD = Infinity;
-      for (const i of used()) {
-        const p = game.scenes[i].pos;
-        const dx = p.x - here.x;
-        const dy = p.y - here.y;
-        const along = dx * dir[0] + dy * dir[1];
-        if (i === selected || along <= 0) continue;
-        const d = along + 2 * Math.abs(dx * dir[1] + dy * dir[0]);
-        if (d < bestD) [best, bestD] = [i, d];
-      }
-      if (best >= 0) {
-        selected = best;
-        centerOn(best);
-        renderPanel();
-        draw();
-      }
-    } else return;
-    e.preventDefault();
-  });
-  const resize = new ResizeObserver(() => (fitted ? fit() : draw()));
+  const resize = new ResizeObserver(() => (cam.fitted ? fit() : draw()));
   resize.observe(board);
 
   async function exportPng(): Promise<void> {
@@ -371,14 +275,16 @@ registerEditor(['gam'], (host, project, file) => {
     });
     return n;
   };
-  function relayout(positions: Map<number, Point>, keepArranged = false): void {
+  /** `again`: another of Auto-arrange's layouts, which Undo takes back with the first. */
+  function relayout(positions: Map<number, Point>, keepArranged = false, again = false): void {
     if (!keepArranged) arranged = undefined;
-    if (!undoPositions || !keepArranged) undoPositions = new Map(used().map((i) => [i, { ...game.scenes[i].pos }]));
     for (const [i, p] of positions) game.scenes[i].pos = p;
-    save();
+    save(again);
     renderTools();
     fit();
   }
+  /** A tool's symbol and name; on a narrow board only the symbol shows (the name stays its label). */
+  const toolFace = (symbol: string, name: string) => [h('span', { class: 'grator-sym', 'aria-hidden': 'true' }, symbol), h('span', { class: 'grator-label' }, name)];
   function renderTools(): void {
     const crowded = overlapping();
     const saved = gapSavings(game);
@@ -391,23 +297,27 @@ registerEditor(['gam'], (host, project, file) => {
         {
           class: crowded ? 'grator-attention' : undefined,
           title: `${crowded ? `${crowded} scenes are hiding one another. ` : ''}Move the cards apart so none hides another, keeping your arrangement`,
+          'aria-label': 'Spread out',
           onclick: () => relayout(spreadOut(game)),
         },
-        '✥ Spread out',
+        ...toolFace('✥', 'Spread out'),
       ),
       h(
         'button',
         {
+          class: arranged && arranged.list.length > 1 ? 'grator-arranging' : undefined,
           title: arranged
             ? 'Try the next best layout'
             : 'Lay the scenes out as a map of the game: the start first, each scene next to the one that leads there, the end last (press again for other layouts)',
+          'aria-label': arranged && arranged.list.length > 1 ? `Another layout, ${arranged.k + 1} of ${arranged.list.length}` : 'Auto-arrange',
           onclick: () => {
+            const again = !!arranged;
             if (arranged) arranged.k = (arranged.k + 1) % arranged.list.length;
             else arranged = { list: arrangements(game), k: 0 };
-            relayout(arranged.list[arranged.k].positions, true);
+            relayout(arranged.list[arranged.k].positions, true, again);
           },
         },
-        arranged && arranged.list.length > 1 ? `⇄ Another layout ${arranged.k + 1}/${arranged.list.length}` : '⇄ Auto-arrange',
+        ...toolFace('⇄', arranged && arranged.list.length > 1 ? `Another layout ${arranged.k + 1}/${arranged.list.length}` : 'Auto-arrange'),
       ),
       // only when the cards sit far apart (e.g. the DOS layout: title at the top, the end at the bottom)
       roomy >= 0.15
@@ -416,30 +326,16 @@ registerEditor(['gam'], (host, project, file) => {
             {
               class: roomy >= 0.3 ? 'grator-attention' : undefined,
               title: 'Bring the cards closer together, keeping your arrangement, so the board can show them bigger',
+              'aria-label': 'Close gaps',
               onclick: () => relayout(closeGaps(game)),
             },
-            '⇲ Close gaps',
+            ...toolFace('⇲', 'Close gaps'),
           )
         : null,
-      undoPositions
-        ? h(
-            'button',
-            {
-              title: 'Put the scenes back where they were',
-              onclick: () => {
-                for (const [i, p] of undoPositions!) if (game.scenes[i]) game.scenes[i].pos = p;
-                undoPositions = undefined;
-                arranged = undefined;
-                save();
-                renderTools();
-                fit();
-              },
-            },
-            '↶ Undo',
-          )
-        : null,
+      undo.undoBtn,
+      undo.redoBtn,
       h('span', { class: 'grator-spacer' }),
-      h('button', { title: 'Download a picture of all the scenes and links', onclick: () => void exportPng() }, '⬇ PNG'),
+      h('button', { title: 'Download a picture of all the scenes and links', 'aria-label': 'Download PNG', onclick: () => void exportPng() }, ...toolFace('⬇', 'PNG')),
     );
   }
   /** Zoom controls float over the board's corner, like a map's. */
@@ -540,28 +436,7 @@ registerEditor(['gam'], (host, project, file) => {
     setSideW(Math.max(160, Math.min(640, next[e.key])));
   });
   function renderSide(): void {
-    const screens: { label: string; file: string; scene: number }[] = [];
-    const songs: { label: string; file: string; scene: number }[] = [];
-    game.scenes.forEach((s, i) => {
-      const kind = sceneKind(s);
-      const add = (list: typeof screens, slots: [number, string][], prefix = '') => {
-        for (const [slot, label] of slots) if (s.files[slot]) list.push({ label: prefix + label, file: s.files[slot], scene: i });
-      };
-      if (kind === 'start') (add(screens, START_SCREENS), add(songs, START_SONGS));
-      else if (kind === 'end') (add(screens, END_SCREENS), add(songs, END_SONGS));
-      else if (kind === 'adventure') {
-        const name = s.desc || `Level ${i}`;
-        add(
-          screens,
-          [
-            [9, ' intro'],
-            [10, ' exit'],
-          ],
-          name,
-        );
-        add(songs, [[8, '']], name);
-      }
-    });
+    const { screens, songs } = screensAndSongs(game);
     const pick = (scene: number) => {
       selected = scene;
       centerOn(scene);
@@ -646,40 +521,7 @@ registerEditor(['gam'], (host, project, file) => {
     }
     clear(
       sideBody,
-      now === 'screens'
-        ? screens.length
-          ? h(
-              'div',
-              { class: 'grator-screens' },
-              ...screens.map((g) => {
-                const shot = screenOf(g.file);
-                const fig = h('figure', { class: 'grator-screen', title: `${g.label}: ${g.file}` });
-                const pic = h('button', { class: 'grator-screen-pic', 'aria-label': `Show the scene that uses ${g.file}`, onclick: () => pick(g.scene) });
-                if (shot) {
-                  const c = h('canvas', { class: 'pixel', width: shot.width, height: shot.height });
-                  c.getContext('2d')!.drawImage(shot, 0, 0);
-                  pic.append(c);
-                } else pic.append(h('span', { class: 'grator-noshot' }, g.file));
-                fig.append(pic, h('figcaption', null, h('b', null, g.label), h('span', null, g.file.toLowerCase(), ' ', edit(g.file))));
-                return fig;
-              }),
-            )
-          : h('p', { class: 'hint' }, 'No title, menu or between-level screens yet.')
-        : songs.length
-          ? h(
-              'ul',
-              { class: 'grator-songs' },
-              ...songs.map((m) =>
-                h(
-                  'li',
-                  null,
-                  project.files.has(m.file) ? songButton(m.file) : h('span', { class: 'grator-play' }, '·'),
-                  h('button', { class: 'linklike', onclick: () => pick(m.scene), title: 'Show the scene' }, h('b', null, m.label)),
-                  h('span', { class: 'meta' }, m.file.toLowerCase()),
-                ),
-              ),
-            )
-          : h('p', { class: 'hint' }, 'No Sound Blaster music yet.'),
+      now === 'screens' ? screensGrid(screens, screenOf, pick, edit) : songsList(songs, (f) => project.files.has(f), songButton, pick),
     );
   }
 
@@ -710,6 +552,8 @@ registerEditor(['gam'], (host, project, file) => {
         for (const b of parseMap(oldMap).blocks) counts.set(b, (counts.get(b) ?? 0) + 1);
         map.blocks.fill([...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0);
       }
+      // one step with the scene: Undo takes the new map away too
+      undo.before(project.gam, mapName);
       project.files.set(mapName, serializeMap(map));
       s.files[1] = mapName;
     }
@@ -763,47 +607,13 @@ registerEditor(['gam'], (host, project, file) => {
       [0, 'Never scroll'],
     ];
     const changed = () => (save(), draw());
-    const pointField = (p: Point, label: string, sceneForMap: number) =>
-      h(
-        'span',
-        { class: 'row', style: 'gap:4px;align-items:center;flex-wrap:nowrap' },
-        numberField(
-          `${label} x`,
-          () => p.x,
-          (v) => ((p.x = v), changed()),
-          { min: 0, max: MLEN - 1 },
-        ),
-        numberField(
-          'y',
-          () => p.y,
-          (v) => ((p.y = v), changed()),
-          { min: 0, max: MWID - 1 },
-        ),
-        h(
-          'button',
-          {
-            title: 'Pick on the map',
-            onclick: async () => {
-              const pick = await pickOnMap(project, game, sceneForMap, p, `${label}: click a map block`);
-              if (pick) {
-                p.x = pick.x;
-                p.y = pick.y;
-                changed();
-                renderPanel();
-              }
-            },
-          },
-          '⌖',
-        ),
-      );
-
     clear(
       panel,
       h(
         'div',
         { class: 'panel stack' },
         h(
-          'h3',
+          'h2',
           { style: 'margin:0' },
           kind === 'start' ? 'Start scene (title & menu)' : kind === 'end' ? 'End scene (game won / lost)' : `Level scene #${selected}`,
         ),
@@ -847,7 +657,7 @@ registerEditor(['gam'], (host, project, file) => {
       h(
         'div',
         { class: 'panel' },
-        h('h3', { style: 'margin-top:0' }, 'Files'),
+        h('h2', { style: 'margin-top:0' }, 'Files'),
         h(
           'div',
           { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(190px,1fr))' },
@@ -874,7 +684,7 @@ registerEditor(['gam'], (host, project, file) => {
         ? h(
             'div',
             { class: 'panel' },
-            h('h3', { style: 'margin-top:0' }, 'Scrolling'),
+            h('h2', { style: 'margin-top:0' }, 'Scrolling'),
             h(
               'div',
               { class: 'grid-fields', style: 'grid-template-columns:repeat(auto-fill,minmax(230px,1fr))' },
@@ -891,62 +701,7 @@ registerEditor(['gam'], (host, project, file) => {
         : null,
       kind === 'end'
         ? null
-        : h(
-            'div',
-            { class: 'panel' },
-            h('h3', { style: 'margin-top:0' }, kind === 'start' ? 'Where the game starts' : 'Links to other scenes'),
-            h(
-              'p',
-              { class: 'hint' },
-              kind === 'start'
-                ? 'Link 1 picks the first level and the block where the character starts in it.'
-                : 'When the character touches the “from” block, play continues in the linked scene at its “to” block. Link to “Game Won” to end the game.',
-            ),
-            h(
-              'div',
-              { class: 'grator-links' },
-              h(
-                'table',
-                { class: 'data' },
-                h(
-                  'thead',
-                  null,
-                  h(
-                    'tr',
-                    null,
-                    h('th', null, '#'),
-                    h('th', null, 'Go to scene'),
-                    kind === 'start' ? null : h('th', null, 'From block (this map)'),
-                    h('th', null, 'To block (its map)'),
-                  ),
-                ),
-                h(
-                  'tbody',
-                  null,
-                  ...s.links.slice(0, kind === 'start' ? 1 : MAXSCENELINKS).map((l, i) =>
-                    h(
-                      'tr',
-                      null,
-                      h('td', null, i + 1),
-                      h(
-                        'td',
-                        null,
-                        selectField(
-                          '',
-                          sceneOptions(),
-                          () => l.toScene,
-                          (v) => ((l.toScene = v), save(), draw(), renderPanel()),
-                          `Link ${i + 1} goes to`,
-                        ),
-                      ),
-                      kind === 'start' ? null : h('td', null, l.toScene === NOSCENE ? '' : pointField(l.from, 'From', selected)),
-                      h('td', null, l.toScene === NOSCENE ? '' : pointField(l.to, 'To', l.toScene)),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+        : linksPanel({ project, game, scene: selected, sceneOptions, changed, rerender: renderPanel }, s, kind),
     );
   }
 
@@ -978,10 +733,15 @@ registerEditor(['gam'], (host, project, file) => {
   renderTools();
   renderSide();
   renderPanel();
+  // the board gives up the height of a toolbar that wraps onto a second row
+  const toolsSize = new ResizeObserver(() => grator.style.setProperty('--grator-tools-h', `${tools.offsetHeight}px`));
+  toolsSize.observe(tools);
   requestAnimationFrame(fit);
   return () => {
+    stopKeys();
     stopWatching();
     resize.disconnect();
+    toolsSize.disconnect();
     wide?.removeEventListener?.('change', onWide);
     if (raf) cancelAnimationFrame(raf);
     audio.stopSong();

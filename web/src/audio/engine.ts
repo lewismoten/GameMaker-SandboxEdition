@@ -10,6 +10,13 @@ import { CMF_GAMEMAKER_CLOCK, isCmf, parseCmf } from '../formats/cmf';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { TICK_RATE } from './cmfPlayer';
 import { output } from './output';
+import { audioContext, unlock } from './context';
+
+/** How long a game waits for the sound to start before it goes on without it. */
+const RESUME_WAIT_MS = 300;
+
+/** The music worklet's module, added once to the page's context. */
+let worklet: Promise<void> | undefined;
 
 export class AudioEngine {
   private ctx?: AudioContext;
@@ -22,24 +29,56 @@ export class AudioEngine {
   musicEnabled = true;
   soundEnabled = true;
 
-  /** Must be called from a user gesture the first time (browser autoplay rules). */
+  /**
+   * Starts the sound. The first time, call it from a user gesture's handler (iOS: inside
+   * the touchend/click itself, before any await); the page's one AudioContext (context.ts)
+   * is resumed there.
+   */
   async resume(): Promise<void> {
     if (!this.ctx) {
-      this.ctx = new AudioContext();
-      this.master = this.ctx.createGain();
+      const ctx = audioContext();
+      if (!ctx) return;
+      this.ctx = ctx;
+      this.master = ctx.createGain();
       this.master.gain.value = 0.8;
-      this.master.connect(output(this.ctx));
+      this.master.connect(output(ctx));
       // The OPL2 emulator and CMF sequencer run inside the worklet (audio thread); this
       // side only posts load/stop/pause messages to it.
-      this.musicReady = this.ctx.audioWorklet
-        .addModule(workletUrl)
+      worklet ??= ctx.audioWorklet.addModule(workletUrl);
+      const master = this.master;
+      this.musicReady = worklet
         .then(() => {
-          this.music = new AudioWorkletNode(this.ctx!, 'gm-music', { outputChannelCount: [1] });
-          this.music.connect(this.master!);
+          if (this.master !== master) return; // disposed meanwhile
+          this.music = new AudioWorkletNode(ctx, 'gm-music', { outputChannelCount: [1] });
+          this.music.connect(master);
         })
         .catch((e) => console.warn('Music unavailable:', e));
     }
-    if (this.ctx.state !== 'running') await this.ctx.resume().catch(() => undefined);
+    if (this.ctx.state !== 'running') {
+      if (navigator.userActivation?.isActive) unlock();
+      // iOS leaves resume() pending until a gesture comes (or for good while another app has
+      // the audio): the game must not wait for it, or its screen stays black. The sound
+      // starts whenever the context does (context.ts resumes it on the next tap).
+      await Promise.race([this.ctx.resume().catch(() => undefined), new Promise((r) => setTimeout(r, RESUME_WAIT_MS))]);
+    }
+  }
+
+  /** Where this engine's sound leaves it (for recording just this game's sound). */
+  get node(): AudioNode | undefined {
+    return this.master;
+  }
+
+  /**
+   * Stops everything and lets go of the page's context (it is shared, so it stays open);
+   * a later resume() starts afresh.
+   */
+  dispose(): void {
+    this.stopAll();
+    this.music?.port.postMessage({ type: 'end' } satisfies MusicMessage);
+    this.music?.disconnect();
+    this.master?.disconnect();
+    this.music = this.master = this.ctx = undefined;
+    this.musicReady = undefined;
   }
 
   get context(): AudioContext | undefined {
@@ -57,12 +96,22 @@ export class AudioEngine {
     const cmf = parseCmf(bytes);
     // Playgame refused songs not converted to its 146 Hz clock.
     if (cmf.clockTicks !== CMF_GAMEMAKER_CLOCK) return false;
-    await this.musicReady;
-    this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
+    const song = ++this.songs;
+    const load = () => song === this.songs && this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
+    // the music worklet loads with the first sound; a game waits a moment for it, never
+    // for good (a phone still loading it, or never: its screen would stay black)
+    const ready = this.musicReady;
+    if (ready && !this.music) await Promise.race([ready, new Promise((r) => setTimeout(r, RESUME_WAIT_MS * 3))]);
+    if (this.music) load();
+    else void ready?.then(load);
     return true;
   }
 
+  /** Counts songs asked for, so one still waiting for the worklet doesn't start after a newer one (or a stop). */
+  private songs = 0;
+
   stopSong(): void {
+    this.songs++;
     this.post({ type: 'stop' });
   }
 
@@ -119,8 +168,7 @@ export class AudioEngine {
     if (!buffer) {
       const voc = decodeVoc(bytes);
       if (!voc.samples.length) return false;
-      buffer = this.ctx.createBuffer(1, voc.samples.length, voc.sampleRate);
-      buffer.copyToChannel(voc.samples as Float32Array<ArrayBuffer>, 0);
+      buffer = vocBuffer(this.ctx, voc.samples, voc.sampleRate);
       this.vocCache.set(bytes, buffer);
     }
     const src = this.ctx.createBufferSource();
@@ -144,5 +192,30 @@ export class AudioEngine {
     this.stopSong();
     this.stopSpeaker();
     this.stopVoc();
+  }
+}
+
+/**
+ * A VOC's samples at their own rate (Web Audio resamples them to the device's, 48000 on
+ * most phones). Older Safari refuses buffers below 22050 Hz: there they are resampled here.
+ */
+function vocBuffer(ctx: BaseAudioContext, samples: Float32Array, rate: number): AudioBuffer {
+  try {
+    const b = ctx.createBuffer(1, samples.length, rate);
+    b.copyToChannel(samples as Float32Array<ArrayBuffer>, 0);
+    return b;
+  } catch {
+    const to = ctx.sampleRate;
+    const n = Math.max(1, Math.floor((samples.length * to) / rate));
+    const b = ctx.createBuffer(1, n, to);
+    const out = b.getChannelData(0);
+    const r = rate / to;
+    for (let i = 0; i < n; i++) {
+      const x = i * r;
+      const a = Math.floor(x);
+      const f = x - a;
+      out[i] = (samples[a] ?? 0) * (1 - f) + (samples[a + 1] ?? samples[a] ?? 0) * f;
+    }
+    return b;
   }
 }

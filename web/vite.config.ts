@@ -1,8 +1,10 @@
 /// <reference types="vitest/config" />
 import { defineConfig, type Plugin, type Rollup } from 'vite';
 import { resolve } from 'node:path';
-import { existsSync, readdirSync, statSync } from 'node:fs';
-import { serviceWorkerSource, hashText } from './src/export/serviceWorker';
+import { existsSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { hashText } from './src/export/serviceWorker';
+import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
 import { cdGames } from './scripts/cdGames';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { seoPages } from './scripts/seoBuild';
@@ -49,6 +51,32 @@ function pageGraph(bundle: Bundle, page: string, lazy = true): string[] {
 /** play.html plus everything it can load: what an exported game web app needs. */
 const playerGraph = (bundle: Bundle) => pageGraph(bundle, 'play.html');
 
+/** Every file under the public folder (copied into the site as is), relative to it. */
+function publicTree(dir = publicDir, prefix = ''): string[] {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter((f) => !f.startsWith('.')).flatMap((f) => (statSync(resolve(dir, f)).isDirectory() ? publicTree(resolve(dir, f), `${prefix}${f}/`) : [`${prefix}${f}`]));
+}
+
+const digest = (data: string | Uint8Array) => createHash('sha1').update(data).digest('base64url').slice(0, 12);
+
+/**
+ * The content hash of each group of files the service worker versions together (siteWorker.ts
+ * groupOf: a game's folder, the desk's pictures, each page): the worker keeps a group's cached
+ * files from one deploy to the next while its hash stays the same.
+ */
+function groupHashes(bundle: Bundle): Record<string, string> {
+  const files = new Map<string, string>();
+  for (const f of publicTree()) files.set(f, digest(readFileSync(resolve(publicDir, f))));
+  for (const [f, item] of Object.entries(bundle)) files.set(f, digest(item.type === 'chunk' ? item.code : item.source));
+  const groups = new Map<string, string[]>();
+  for (const [f, h] of [...files].sort(([a], [b]) => (a < b ? -1 : 1))) {
+    const g = groupOf(f);
+    if (g === undefined || f === 'sw.js') continue;
+    groups.set(g, [...(groups.get(g) ?? []), `${f}:${h}`]);
+  }
+  return Object.fromEntries([...groups].map(([g, lines]) => [groupKey(g), digest(lines.join('\n'))]));
+}
+
 /** The app shell, cached at install: the two pages and what they load up front, the icons and manifest. */
 function appShell(bundle: Bundle): string[] {
   const icons = publicFiles().filter((f) => /^(icon|apple-touch-icon).*\.(png|svg)$|\.webmanifest$/.test(f));
@@ -61,7 +89,8 @@ function appShell(bundle: Bundle): string[] {
  *
  * The service worker installs only the app shell, so a first visit downloads nothing it
  * does not show. Everything else (the desk or today's web, the editors, games, the guide)
- * is cached the first time it is used and works offline from then on.
+ * is cached the first time it is used and works offline from then on; a deploy drops only
+ * the cached files that changed (src/siteWorker.ts).
  */
 function offline(): Plugin {
   return {
@@ -71,10 +100,34 @@ function offline(): Plugin {
     generateBundle(_options, bundle) {
       const built = Object.keys(bundle);
       const precache = appShell(bundle);
-      const version = hashText(built.sort().join('|'));
-      this.emitFile({ type: 'asset', fileName: 'sw.js', source: serviceWorkerSource(version, precache) });
+      const groups = groupHashes(bundle);
+      const assets = built.filter(isHashed).sort();
+      const version = hashText(JSON.stringify([groups, assets]));
+      this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
       const player = playerGraph(bundle);
       this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
+    },
+  };
+}
+
+/** Keeps dotfiles (a Mac's .DS_Store in public/, say) out of the built site. */
+function noDotfiles(): Plugin {
+  let outDir = '';
+  const sweep = (dir: string): void => {
+    for (const f of readdirSync(dir)) {
+      const p = resolve(dir, f);
+      if (f.startsWith('.')) rmSync(p, { recursive: true, force: true });
+      else if (statSync(p).isDirectory()) sweep(p);
+    }
+  };
+  return {
+    name: 'gamemaker-no-dotfiles',
+    apply: 'build',
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir);
+    },
+    closeBundle() {
+      if (existsSync(outDir)) sweep(outDir);
     },
   };
 }
@@ -108,10 +161,46 @@ function manualReload(): Plugin {
   };
 }
 
+/**
+ * The play page's code in a few files: each module play.ts loads up front goes in the chunk
+ * for exactly the pages that load it that way too ("player" for its own, "shared-web-play"
+ * for what today's web also loads before showing anything, …). Left to itself the bundler cut
+ * it into a dozen 1-5 kB files the play page waited on. No page loads code it does not use
+ * this way; everything else is split as the bundler likes.
+ */
+function playChunks(): Rollup.GetManualChunk {
+  const pages: [name: string, entries: string[]][] = [
+    ['main', ['src/main.ts', 'src/seo/route.ts']], // index.html's two scripts
+    ['desk', ['src/desk/desk.ts']],
+    ['web', ['src/modernUi.ts']],
+    ['play', ['src/play.ts']],
+  ];
+  let closures: Set<string>[] | undefined;
+  const closure = (entries: string[], info: Rollup.ManualChunkMeta['getModuleInfo']): Set<string> => {
+    const seen = new Set<string>();
+    const stack = entries.map((e) => resolve(__dirname, e));
+    while (stack.length) {
+      const id = stack.pop()!;
+      if (seen.has(id)) continue;
+      seen.add(id);
+      stack.push(...(info(id)?.importedIds ?? []));
+    }
+    return seen;
+  };
+  return (id, { getModuleInfo }) => {
+    closures ??= pages.map(([, entries]) => closure(entries, getModuleInfo));
+    if (/\.css($|\?)/.test(id)) return undefined; // styles stay with the code that imports them
+    if (pages.some(([, entries]) => entries.some((e) => id === resolve(__dirname, e)))) return undefined; // each page's own chunk
+    const users = pages.filter((_, i) => closures![i].has(id)).map(([name]) => name);
+    if (!users.includes('play') || users.includes('main')) return undefined;
+    return users.length === 1 ? 'player' : `shared-${users.join('-')}`;
+  };
+}
+
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
   base: './',
-  plugins: [cdGames(resolve(__dirname, '../cd')), seoPages(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), manualReload()],
+  plugins: [cdGames(resolve(__dirname, '../cd')), seoPages(resolve(__dirname, '../cd')), singlePagePlayer(), offline(), noDotfiles(), manualReload()],
   build: {
     target: 'es2022',
     rollupOptions: {
@@ -119,6 +208,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         play: resolve(__dirname, 'play.html'),
       },
+      output: { manualChunks: playChunks(), onlyExplicitManualChunks: true },
     },
   },
   worker: {

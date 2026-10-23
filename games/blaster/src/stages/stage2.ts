@@ -170,6 +170,16 @@ export function stage2(): Stage {
     ],
     14,
   );
+  // a cameo from Ohm Sweet Ohm: Watt the repair robot, on plain floor beside the first data
+  // stream (placed after the sprinkles so they don't move)
+  const [wc, wd] = ([[11, 13], [12, 13], [4, 13], [11, 12]] as [number, number][]).find(([c, d]) => /^floor\d$/.test(a.get(c, d)))!;
+  a.set(wc, wd, 'watt');
+  // the tin heart, tucked against the right-hand edge past the first bats (500 points)
+  const [hc, hd] = ([[14, 24], [14, 25], [1, 24], [1, 27]] as [number, number][]).find(([c, d]) => /^floor\d$/.test(a.get(c, d)))!;
+  a.set(hc, hd, 'tinHeart');
+  // a cameo from A Fly Named Carl: the bug in memory, with its silkscreen (FOUND IT: CARL)
+  const [cc, cd] = ([[11, 40], [3, 40], [11, 38], [3, 38], [10, 49]] as [number, number][]).find(([c, d]) => /^floor\d$/.test(a.get(c, d)) && /^floor\d$/.test(a.get(c + 1, d)))!;
+  a.set(cc, cd, 'carlBug').set(cc + 1, cd, 'carlNote');
   a.cardAt = 44;
   const gap = LENGTH - 1;
   // the way in: the floor cell beside the missing finger (the ship can't fly over the edge)

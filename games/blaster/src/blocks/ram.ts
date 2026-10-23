@@ -2,13 +2,15 @@
 // data), rows of DRAM chips, gold contact fingers, and the address bus whose data streams
 // shove the ship sideways.
 import { Pixels, rng } from '../../../kit/pixels';
-import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
+import { BlockSet, CLEAR, bevel, blob, micro, outline, shadeAt } from '../art/draw';
 import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
 import { bat, crawler, eye, keyOf, mite, slug, cluster } from '../sprites/sprites';
 import { HURT } from '../characters/sharedMonsters';
-import { onFloor, slices, type StageArt } from './tiles';
+import { onFloor, pad, slices, type StageArt } from './tiles';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { carlPic } from '../../../kit/carlCameo';
 
 export function ramArt(p: Pal): StageArt {
   const floor = (v: number): Pixels => {
@@ -98,6 +100,78 @@ export function ramTiles(bs: BlockSet, a: StageArt): void {
   bs.add('comb', comb(a, false));
   bs.add('combEnd', comb(a, true));
   bs.add('combEndR', comb(a, true).flipX());
+  bs.add('watt', watt(a, false), { next: 'wattBlink', ntime: 60 });
+  bs.add('wattBlink', watt(a, true), { next: 'watt', ntime: 3 });
+  // the tin heart, tucked away on a pickup pad: a glint crosses it now and then; worth 500
+  const p = a.pal;
+  const tin = { ink: p.c('ink', 0), tin: [p.c('steel', 2), p.c('steel', 4), p.c('steel', 6)], white: p.c('grey', 7), dark: p.c('steel', 1) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    bs.add(`tinHeart${k || ''}`, drawTinHeart(pad(a), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 40, touch: 'pad', scorePts: 500 });
+  // a cameo from A Fly Named Carl: the bug in the memory, found at last (plain floor, two blocks)
+  bs.add('carlBug', carlBug(a, 0), { next: 'carlBugZap', ntime: 30 });
+  bs.add('carlBugZap', carlBug(a, 1), { next: 'carlBug', ntime: 4 });
+  bs.add('carlNote', carlNote(a));
+}
+
+/**
+ * Carl the fly (A Fly Named Carl) sitting smugly on a memory cell's contact: every so often it
+ * shorts, and a spark jumps out from under him. He's the bug. Of course he is.
+ */
+function carlBug(a: StageArt, zap: number): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.px.set(a.floor(0).px);
+  // the contact he's sitting on
+  t.rect(4, 17, 12, 2, p.c('trim', 3)).rect(4, 18, 12, 1, p.c('trim', 1));
+  const fly = carlPic(
+    { ink: p.c('ink', 0), fly: [p.c('steel', 0), p.c('steel', 1), p.c('steel', 2), p.c('steel', 3), p.c('steel', 4)], eye: [p.c('red', 0), p.c('red', 1), p.c('red', 2), p.c('red', 3)], wing: [p.c('grey', 5), p.c('grey', 6), p.c('grey', 7)], white: p.c('grey', 7), red: p.c('red', 2) },
+    { view: 'front', wing: zap, mood: zap ? 'grin' : 'smug' },
+  );
+  t.blit(fly, 0, -1, CLEAR);
+  if (zap)
+    for (const [x, y] of [
+      [2, 15], [1, 13], [3, 12], [17, 15], [18, 13], [16, 12], [0, 16], [19, 16],
+    ] as [number, number][])
+      t.set(x, y, (x + y) % 2 ? p.c('gold', 4) : p.c('cyan', 5));
+  return t;
+}
+
+/** The silkscreen beside him: FOUND IT: CARL. */
+function carlNote(a: StageArt): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.px.set(a.floor(0).px);
+  const ink = p.c('grey', 6);
+  micro(t, 0, 2, 'FOUND', ink);
+  micro(t, 0, 8, 'IT:', ink);
+  micro(t, 0, 14, 'CARL', p.c('trim', 4));
+  return t;
+}
+
+/**
+ * A cameo from Ohm Sweet Ohm: Watt, the pocket-sized repair robot from the Bitmores' fuse box,
+ * rolled down Memory Lane to see what the fuss is about (teal head, big eyes, a bent antenna
+ * with its red bulb, an orange body with a yellow light, black treads). He blinks now and then.
+ * Plain floor underneath: the ship flies straight over him.
+ */
+function watt(a: StageArt, blink: boolean): Pixels {
+  const p = a.pal;
+  const t = new Pixels(20, 20);
+  t.px.set(a.floor(0).px);
+  const w = new Pixels(20, 20, CLEAR);
+  w.rect(3, 15, 14, 4, p.c('grey', 1));
+  for (let x = 4; x < 17; x += 2) w.set(x, 16, p.c('steel', 3)).set(x, 18, p.c('steel', 2));
+  bevel(w, 5, 11, 10, 5, p.r('fire'), 3);
+  w.rect(9, 12, 2, 2, p.c('gold', 4));
+  blob(w, 10, 8.2, 5.4, 3.8, p.r('cyan'), 1, 3);
+  w.line(12, 5, 13, 5, p.c('steel', 6));
+  w.rect(14, 4, 2, 2, p.c('red', 3));
+  for (const x of [7.5, 12.5]) {
+    if (blink) w.rect(Math.round(x) - 2, 8, 4, 1, p.c('ink', 0));
+    else w.disc(x, 8, 2.1, p.c('grey', 7)).rect(Math.round(x), 8, 2, 2, p.c('ink', 0));
+  }
+  outline(w, p.c('ink', 0));
+  return t.blit(w, 0, 0, CLEAR);
 }
 
 // ------------------------------------------------------------------ page one: the stack

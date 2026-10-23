@@ -1,0 +1,845 @@
+/* the inserts in the Game-Maker SE box (gmInserts.ts); sizes in cqw of the sheet's width */
+
+/* ---- a 3½" program disk (also laid beside the box in the box viewer) */
+.gmf {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 90 / 94;
+  border-radius: 3% 3% 3% 3%;
+  background: linear-gradient(160deg, #2b2b2e, #141416 60%, #232326);
+  box-shadow: inset 0 0 0 0.6px rgba(255, 255, 255, 0.12);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 5% 100%, 0 95%);
+}
+
+.gmf-shutter {
+  position: absolute;
+  left: 22%;
+  top: 0;
+  width: 56%;
+  height: 33%;
+  border-radius: 0 0 2cqw 2cqw;
+  background: linear-gradient(90deg, #9ea4ab, #e3e6ea 40%, #b4b9bf);
+}
+
+.gmf-shutter i {
+  position: absolute;
+  left: 58%;
+  top: 14%;
+  width: 18%;
+  height: 66%;
+  border-radius: 1cqw;
+  background: #141416;
+}
+
+.gmf-label {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 37%;
+  bottom: 4%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6cqw;
+  padding: 0 3cqw 2cqw;
+  overflow: hidden;
+  border-radius: 1.5cqw 1.5cqw 0 0;
+  background: #f6efe0;
+  color: #18150f;
+  font:
+    700 5cqw/1.15 Arial,
+    Helvetica,
+    sans-serif;
+  text-align: center;
+}
+
+.gmf-label b {
+  align-self: stretch;
+  margin: 0 -3cqw 0.6cqw;
+  padding: 2cqw 0 1.4cqw;
+  background: #0b0b0b;
+  color: #f2e600;
+  font:
+    italic 900 9cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+  text-shadow: 0.6cqw 0.6cqw 0 #1f9a3a;
+}
+
+.gmf-ed {
+  color: #1d3f7a;
+  font-size: 5cqw;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.gmf-disk {
+  margin-top: 1cqw;
+  padding: 0.4cqw 3cqw;
+  background: #d81e1e;
+  color: #fff;
+  font-size: 6.4cqw;
+  font-weight: 900;
+}
+
+.gmf-name {
+  font-size: 5.6cqw;
+  font-weight: 900;
+}
+
+.gmf-label small {
+  margin-top: auto;
+  font-size: 3.6cqw;
+  font-weight: 400;
+}
+
+.gmf-hub,
+.gmf-tab {
+  position: absolute;
+  bottom: 2%;
+  width: 6%;
+  height: 6%;
+  background: #0b0b0c;
+}
+
+.gmf-hub {
+  display: none;
+}
+
+.gmf-tab {
+  right: 2%;
+  border: 0.5cqw solid #3a3a3e;
+}
+
+/* ---- the disk sleeve */
+.pp-gmd {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 4cqw;
+  padding: 4cqw;
+  background: #f4efe2;
+  font:
+    1.65cqw/1.4 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.gmd-disks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3cqw;
+  align-content: center;
+}
+
+.gmd-disks figure {
+  margin: 0;
+}
+
+.gmd-disks figure:first-child .gmf {
+  transform: rotate(-2deg);
+}
+
+.gmd-disks figure:last-child .gmf {
+  transform: rotate(1.5deg);
+}
+
+.gmd-disks figcaption {
+  margin-top: 1.6cqw;
+  font-size: 1.55cqw;
+}
+
+.gmd-sleeve {
+  padding: 2.4cqw 2.8cqw;
+  border: 0.3cqw solid #18150f;
+  background: #fff;
+}
+
+.pp-gmd h3,
+.pp-gsc h3 {
+  margin: 0 0 0.8cqw;
+  padding: 0.3cqw 1cqw;
+  background: #d81e1e;
+  color: #fff;
+  font:
+    900 1.8cqw Arial,
+    sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.pp-gmd ol {
+  margin: 0 0 2cqw;
+  padding-left: 2.6cqw;
+}
+
+.pp-gmd li {
+  margin-bottom: 0.6cqw;
+}
+
+.pp-gmd p {
+  margin: 0 0 1cqw;
+}
+
+.pp-gmd code,
+.pp-gsc code {
+  padding: 0 0.3em;
+  background: #ece5d2;
+  font:
+    700 0.95em 'Courier New',
+    monospace;
+}
+
+.gmd-need {
+  font-style: italic;
+}
+
+/* ---- the product registration card */
+.pp-grc {
+  padding: 3.2cqw 4cqw;
+  background: #fbf8ef;
+  font:
+    2cqw/1.3 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.grc-head {
+  display: flex;
+  align-items: baseline;
+  gap: 2cqw;
+  margin: -3.2cqw -4cqw 1.6cqw;
+  padding: 1.8cqw 4cqw 1.2cqw;
+  background: #0b0b0b;
+  color: #fff;
+}
+
+.grc-head b {
+  color: #f2e600;
+  font:
+    italic 900 3.6cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.grc-head span {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.pp-grc .grc-lead {
+  margin: 0 0 1cqw;
+  padding-right: 32cqw;
+  font-style: italic;
+}
+
+.grc-serial {
+  position: absolute;
+  right: 4cqw;
+  top: 10.4cqw;
+  padding: 0.3cqw 1cqw;
+  border: 0.25cqw solid #18150f;
+  font-size: 1.7cqw;
+}
+
+.grc-serial b {
+  font-family: 'Courier New', monospace;
+}
+
+.grc-two {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3cqw;
+}
+
+.grc-line {
+  display: flex;
+  align-items: flex-end;
+  gap: 1cqw;
+  margin-top: 1.2cqw;
+}
+
+.grc-line span {
+  white-space: nowrap;
+}
+
+.grc-line i {
+  flex: 1;
+  border-bottom: 0.2cqw solid #18150f;
+}
+
+.grc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6cqw 2.4cqw;
+  margin-top: 1.1cqw;
+}
+
+.grc-row > span:first-child {
+  min-width: 16cqw;
+  font-weight: 700;
+}
+
+.grc-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8cqw;
+}
+
+.grc-box i,
+.gmg-box i {
+  width: 1.6cqw;
+  height: 1.6cqw;
+  border: 0.2cqw solid #18150f;
+}
+
+/* the business reply side */
+.pp-grc-reply {
+  font-size: 1.9cqw;
+}
+
+.grc-from {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4cqw;
+  width: 40%;
+}
+
+.grc-from i {
+  border-bottom: 0.2cqw solid #18150f;
+}
+
+.grc-nopost {
+  position: absolute;
+  right: 4cqw;
+  top: 3cqw;
+  width: 20cqw;
+  padding: 1cqw;
+  border: 0.25cqw solid #18150f;
+  font:
+    900 1.6cqw/1.2 Arial,
+    sans-serif;
+  text-align: center;
+}
+
+.grc-bars {
+  position: absolute;
+  right: 4cqw;
+  top: 19cqw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1cqw;
+  width: 20cqw;
+}
+
+.grc-bars i {
+  height: 0.9cqw;
+  background: #18150f;
+}
+
+.grc-brm {
+  display: flex;
+  flex-direction: column;
+  margin: 4cqw 0 0;
+  width: 66%;
+  padding: 1cqw 0;
+  border-top: 0.6cqw solid #18150f;
+  border-bottom: 0.6cqw solid #18150f;
+}
+
+.grc-brm b {
+  font:
+    900 3.6cqw/1.1 Arial,
+    sans-serif;
+}
+
+.grc-to {
+  display: flex;
+  flex-direction: column;
+  margin: 3cqw 0 0 18cqw;
+  font:
+    700 2.4cqw/1.35 Arial,
+    sans-serif;
+}
+
+.grc-note {
+  position: absolute;
+  left: 4cqw;
+  right: 4cqw;
+  bottom: 2cqw;
+  margin: 0;
+  font-size: 1.6cqw;
+  font-style: italic;
+}
+
+/* ---- the license agreement */
+.pp-gml2 {
+  padding: 6cqw 7cqw;
+  font:
+    2.05cqw/1.42 'Times New Roman',
+    Times,
+    serif;
+}
+
+.pp-gml2 h3 {
+  margin: 0 0 1.6cqw;
+  padding-bottom: 1cqw;
+  border-bottom: 0.5cqw double #18150f;
+  font:
+    900 3.6cqw Arial,
+    sans-serif;
+  letter-spacing: 0.14em;
+  text-align: center;
+}
+
+.gml2-read {
+  margin: 0 0 2.4cqw;
+  font-style: italic;
+  text-align: center;
+}
+
+.pp-gml2 ol {
+  margin: 0 0 2.4cqw;
+  padding-left: 3cqw;
+}
+
+.pp-gml2 li {
+  margin-bottom: 1.2cqw;
+}
+
+.gml2-mit {
+  padding: 2.4cqw 3cqw;
+  border: 0.25cqw solid #18150f;
+  font:
+    1.7cqw/1.4 'Courier New',
+    monospace;
+}
+
+.gml2-mit p {
+  margin: 1.2cqw 0 0;
+}
+
+.gml2-small {
+  margin: 2.4cqw 0 0;
+  font-size: 1.7cqw;
+  font-style: italic;
+}
+
+/* ---- the keyboard template: cardstock over the function keys */
+.pp-gkt {
+  display: flex;
+  flex-direction: column;
+  gap: 1cqw;
+  padding: 1.4cqw 2cqw;
+  border-radius: 1.2cqw;
+  background: #f0a090;
+  font:
+    1.3cqw/1.15 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.gkt-title {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6cqw;
+}
+
+.gkt-title b {
+  color: #0b0b0b;
+  font:
+    italic 900 2.2cqw/1 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.gkt-title span {
+  font-weight: 700;
+}
+
+.gkt-title em {
+  margin-left: auto;
+  padding: 0.2cqw 0.8cqw;
+  background: #1d3f7a;
+  color: #fff;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.gkt-row {
+  display: flex;
+  flex: 1;
+  gap: 1.6cqw;
+}
+
+.gkt-gap {
+  width: 3cqw;
+}
+
+.gkt-group {
+  display: flex;
+  flex: 4;
+  gap: 0.6cqw;
+}
+
+.gkt-row > .gkt-key {
+  flex: 0 0 6cqw;
+}
+
+.gkt-key {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3cqw;
+  min-width: 0;
+  justify-content: space-between;
+  padding: 0.6cqw 0.4cqw;
+  border: 0.15cqw dashed #18150f;
+  border-radius: 0.6cqw;
+  background: #fff8ee;
+  text-align: center;
+}
+
+.gkt-key b {
+  padding: 0.1cqw 0.6cqw;
+  border: 0.15cqw solid #18150f;
+  border-radius: 0.4cqw;
+  background: #18150f;
+  color: #fff;
+  font:
+    700 1.6cqw 'Courier New',
+    monospace;
+}
+
+.gkt-key.blank {
+  background: transparent;
+}
+
+.pp-gkt .gkt-design {
+  color: #1d3f7a;
+  font-weight: 700;
+}
+
+.pp-gkt .gkt-play {
+  color: #8a0a0a;
+  font-weight: 700;
+}
+
+.gkt-key span {
+  min-height: 2.4cqw;
+}
+
+.gkt-legend {
+  display: flex;
+  gap: 3cqw;
+}
+
+.gkt-legend span:last-child {
+  margin-left: auto;
+  font-style: italic;
+}
+
+/* ---- the map planning grid */
+.pp-gmg {
+  display: flex;
+  flex-direction: column;
+  padding: 4cqw 5cqw;
+  background: #fbfbf5;
+  font:
+    1.7cqw/1.35 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.gmg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 2cqw;
+  padding-bottom: 0.8cqw;
+  border-bottom: 0.4cqw solid #1b4f8a;
+  color: #1b4f8a;
+}
+
+.gmg-head b {
+  font:
+    900 3.4cqw Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.gmg-head span {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.gmg-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1cqw 3cqw;
+  margin: 1.4cqw 0;
+}
+
+.gmg-field {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  gap: 1cqw;
+}
+
+.gmg-field i {
+  flex: 1;
+  border-bottom: 0.2cqw solid #18150f;
+}
+
+.gmg-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6cqw;
+  margin-left: 1.6cqw;
+}
+
+.gmg-map svg,
+.gmg-block svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pp-gmg line {
+  stroke: #8dbbe3;
+  stroke-width: 0.09;
+}
+
+.pp-gmg line.md {
+  stroke: #4f8fc8;
+  stroke-width: 0.14;
+}
+
+.pp-gmg line.mj {
+  stroke: #1b4f8a;
+  stroke-width: 0.22;
+}
+
+.pp-gmg text {
+  fill: #1b4f8a;
+  font:
+    700 1.5px Arial,
+    sans-serif;
+}
+
+.pp-gmg .scr {
+  fill: rgba(216, 30, 30, 0.06);
+  stroke: #d81e1e;
+  stroke-width: 0.3;
+  stroke-dasharray: 1 0.6;
+}
+
+.pp-gmg .scr-t {
+  fill: #b01515;
+  font-size: 1.4px;
+}
+
+.gmg-how {
+  margin: 1.2cqw 0;
+  font-size: 1.6cqw;
+}
+
+.gmg-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.1fr;
+  gap: 3cqw;
+  align-items: start;
+}
+
+.gmg-bottom figure {
+  margin: 0;
+}
+
+.gmg-bottom figcaption {
+  margin-top: 0.6cqw;
+  color: #1b4f8a;
+  font-size: 1.5cqw;
+  font-weight: 700;
+}
+
+.gmg-key {
+  margin: 0;
+  padding: 1.2cqw 1.6cqw;
+  border: 0.25cqw solid #1b4f8a;
+  list-style: none;
+}
+
+.gmg-key b {
+  display: inline-block;
+  width: 2.4cqw;
+  color: #1b4f8a;
+  text-align: center;
+}
+
+/* ---- the customer support card */
+.pp-gsc {
+  display: flex;
+  flex-direction: column;
+  padding: 5cqw 6cqw;
+  background: #fff9e8;
+  font:
+    2.55cqw/1.3 Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.gsc-head {
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+  margin: -5cqw -6cqw 3cqw;
+  padding: 3cqw 6cqw;
+  background: #1d3f7a;
+  color: #fff;
+}
+
+.gsc-head div {
+  display: flex;
+  flex-direction: column;
+}
+
+.gsc-head b {
+  color: #f2e600;
+  font:
+    900 5.4cqw/1 Arial,
+    sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.gsc-head .gsc-logo {
+  flex: none;
+  width: 22cqw;
+  color: #fff;
+  font-size: 2.6cqw;
+}
+
+.pp-gsc h3 {
+  margin: 2.4cqw 0 1.2cqw;
+  font-size: 2.8cqw;
+}
+
+.gsc-lead {
+  margin: 0;
+  font-style: italic;
+}
+
+.gsc-num {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 2cqw;
+  margin-bottom: 1.4cqw;
+  padding-bottom: 1cqw;
+  border-bottom: 0.2cqw dotted #6b6250;
+}
+
+.gsc-num > b {
+  font:
+    900 3.3cqw 'Courier New',
+    monospace;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.gsc-num small {
+  grid-column: 1 / -1;
+  font-size: 2.1cqw;
+  color: #4a4334;
+}
+
+.gsc-num .pp-sandbox-banner {
+  padding: 0 1cqw;
+  background: #000;
+  font:
+    700 2.6cqw 'Courier New',
+    monospace;
+}
+
+.gsc-net {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6cqw 2cqw;
+  margin: 0.6cqw 0 0;
+}
+
+.gsc-net dt {
+  font-weight: 700;
+}
+
+.gsc-net dd {
+  margin: 0;
+  font:
+    700 2.3cqw 'Courier New',
+    monospace;
+  overflow-wrap: anywhere;
+}
+
+.pp-gsc .gsc-mail {
+  margin: 1.6cqw 0 0;
+}
+
+.pp-gsc .gsc-fake {
+  margin: auto 0 0;
+  padding: 1.2cqw 1.6cqw;
+  border: 0.25cqw dashed #6b6250;
+  font:
+    italic 2.2cqw/1.3 'Times New Roman',
+    serif;
+}
+
+.pp-gsc-back {
+  font-size: 2.35cqw;
+}
+
+.pp-gsc-back .gsc-head {
+  margin-bottom: 1cqw;
+}
+
+.pp-gsc ul {
+  margin: 0;
+  padding-left: 3cqw;
+}
+
+.pp-gsc li {
+  margin-bottom: 0.9cqw;
+}
+
+.pp-gsc p {
+  margin: 0;
+}
+
+.gsc-sb {
+  width: 100%;
+  margin-bottom: 1.4cqw;
+  border-collapse: collapse;
+}
+
+.gsc-sb th,
+.gsc-sb td {
+  padding: 0.5cqw 1cqw;
+  border: 0.2cqw solid #18150f;
+  text-align: left;
+}
+
+.gsc-sb th {
+  background: #18150f;
+  color: #fff;
+}
+
+.gsc-sb td:nth-child(2) {
+  font-weight: 700;
+}
+
+@media print {
+  .pp-gmd,
+  .pp-grc,
+  .pp-gkt,
+  .pp-gmg,
+  .pp-gsc {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

@@ -86,14 +86,14 @@ registerEditor(['map'], (host, project, file) => {
       tabindex: 0,
       role: 'region',
       'aria-label': 'The map (scroll with the arrow keys)',
-      style: 'overflow:auto;max-height:max(280px, calc(var(--ws-vh, 100dvh) - 300px));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
+      style: 'overflow:auto;max-height:max(280px, calc(var(--ws-vh, 100dvh) - 240px - var(--map-tools-h, 60px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
     },
     canvas,
   );
   const ctx = canvas.getContext('2d')!;
   const status = h('div', { class: 'meta' });
-  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(180px, calc((var(--ws-vh, 100dvh) - 340px) * 0.55))' }), 'Blocks to paint with');
-  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(140px, calc((var(--ws-vh, 100dvh) - 340px) * 0.4))' }), 'Monsters to place');
+  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(180px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px)) * 0.55))' }), 'Blocks to paint with');
+  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(140px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px)) * 0.4))' }), 'Monsters to place');
   const monCount = h('div', { class: 'meta' });
 
   // Links touching this map: where the character starts (to) and where scenes change (from).
@@ -586,6 +586,10 @@ registerEditor(['map'], (host, project, file) => {
     ),
   );
   rebuild();
+  // the map and the pickers give up the height of a file toolbar that wraps onto a second row
+  const fieldsBar = scroller.closest('.row')?.previousElementSibling as HTMLElement | null;
+  const barSize = new ResizeObserver(() => fieldsBar && host.style.setProperty('--map-tools-h', `${fieldsBar.offsetHeight}px`));
+  if (fieldsBar) barSize.observe(fieldsBar);
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
     const k = e.key.toLowerCase();
@@ -615,5 +619,8 @@ registerEditor(['map'], (host, project, file) => {
       }, 300);
     });
   });
-  return () => window.removeEventListener('keydown', onKey);
+  return () => {
+    window.removeEventListener('keydown', onKey);
+    barSize.disconnect();
+  };
 });

@@ -38,6 +38,7 @@ import {
   SITE_URL,
 } from '../src/seo/site';
 import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../src/edition';
+import { hasBizarreTab, isBizarreGame } from '../src/project/bizarre';
 
 export const HEAD_MARK = '<!--SEO:HEAD-->';
 export const BODY_MARK = '<!--SEO:BODY-->';
@@ -55,8 +56,11 @@ const pageHref = (g: CdCatalogEntry) => `./${gamePage(g.id)}`;
 
 function groups(catalog: CdCatalogEntry[]): [string, string, CdCatalogEntry[]][] {
   const games = playable(catalog);
+  // The Bard of Bizarre's games: a group of their own once there are enough (src/project/bizarre.ts)
+  const bizarre = hasBizarreTab(games) ? games.filter(isBizarreGame) : [];
   return [
-    ['New games', 'Made for this project with Game-Maker, released as shareware.', games.filter((g) => g.original)],
+    ['New games', 'Made for this project with Game-Maker, released as shareware.', games.filter((g) => g.original && !bizarre.includes(g))],
+    ['Bizarre', 'Songs by The Bard of Bizarre (Lewis Moten as his hobo clown Doc Leo), turned into games.', bizarre],
     [
       'Sample games',
       'The free games that came with Game-Maker 3.0 — open them in the editor to see how they work.',
@@ -100,8 +104,12 @@ const STYLE = `<style>
       .seo-static .seo-note { color: #aab; font-size: 0.9rem; }
     </style>`;
 
+/**
+ * The home page's structured data: the app, its source, and the games as a list of their own
+ * pages (each page carries the game's full JSON-LD, gameHead), which keeps index.html small.
+ */
 function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
-  const games = playable(catalog).map((g) => gameJsonLd(g, playUrl(g.id), imageUrl(g)));
+  const games = playable(catalog);
   return [
     appJsonLd(),
     repoJsonLd(),
@@ -110,7 +118,7 @@ function siteNodes(catalog: CdCatalogEntry[]): Record<string, unknown>[] {
       '@id': `${SITE_URL}#games`,
       name: `Games you can play with ${PRODUCT}`,
       numberOfItems: games.length,
-      itemListElement: games.map((item, i) => ({ '@type': 'ListItem', position: i + 1, item })),
+      itemListElement: games.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: playUrl(g.id), name: g.title })),
     },
   ];
 }
@@ -142,21 +150,19 @@ function indexBody(catalog: CdCatalogEntry[]): string {
 /** play.html: what each game is, so the page can name itself before the game loads. */
 function playHead(catalog: CdCatalogEntry[]): string {
   const meta = metaTags({ ...ROUTES.player, image: OG_IMAGE, imageAlt: OG_IMAGE_ALT });
-  const games = Object.fromEntries(
-    playable(catalog).map((g) => [
-      g.id,
-      { title: g.title, description: gameDescription(g), url: playUrl(g.id), image: imageUrl(g), ld: gameJsonLd(g, playUrl(g.id), imageUrl(g)) },
-    ]),
-  );
-  // Runs before the app: the page's title, description, picture, canonical address (the
-  // game's own page) and JSON-LD for ?game=<id> (search engines that run scripts see them;
-  // link previews see the defaults, which is why each game has its own page).
+  // each game's title and description; its addresses follow from its id (playUrl, gameImagePath)
+  const games = Object.fromEntries(playable(catalog).map((g) => [g.id, { title: g.title, description: gameDescription(g) }]));
+  // Runs before the app: the page's title, description, picture and canonical address (the
+  // game's own page, which has the game's JSON-LD) for ?game=<id> (search engines that run
+  // scripts see them; link previews see the defaults, which is why each game has its own page).
   const script = `<script>
       (function () {
         var games = ${scriptJson(games)};
         var id = new URLSearchParams(location.search).get('game');
         var g = id && Object.prototype.hasOwnProperty.call(games, id) ? games[id] : null;
-        var url = g ? g.url : null;
+        var site = ${JSON.stringify(SITE_URL)};
+        var url = g ? site + ${scriptJson(gamePage('GAMEID').split('GAMEID'))}.join(encodeURIComponent(id)) : null;
+        if (g) g.image = site + ${scriptJson(gameImagePath('GAMEID').split('GAMEID'))}.join(encodeURIComponent(id));
         var title = g ? g.title + ${JSON.stringify(` · play in your browser · ${PRODUCT}`)} : null;
         function set(sel, attr, value) { var el = document.head.querySelector(sel); if (el) el.setAttribute(attr, value); }
         if (g) {
@@ -169,8 +175,6 @@ function playHead(catalog: CdCatalogEntry[]): string {
           ['meta[property="og:image:alt"]', 'meta[name="twitter:image:alt"]'].forEach(function (s) { set(s, 'content', g.title + ': its title screen'); });
           var link = document.createElement('link'); link.rel = 'canonical'; link.href = url; document.head.appendChild(link);
           var og = document.createElement('meta'); og.setAttribute('property', 'og:url'); og.content = url; document.head.appendChild(og);
-          var ld = document.createElement('script'); ld.type = 'application/ld+json';
-          ld.textContent = JSON.stringify(Object.assign({ '@context': 'https://schema.org' }, g.ld)); document.head.appendChild(ld);
         }
       })();
     </script>`;
@@ -308,7 +312,7 @@ export function llmsTxt(catalog: CdCatalogEntry[]): string {
 
 > ${md(SITE_ABOUT)}
 
-${md(FORK_NOTE)}. It runs entirely in the browser (no account, no server): games are kept in the browser's storage and the site works offline. Every file it writes is in the original Game-Maker 3.0 / PLAYGAME formats (.gam, .pal, .bbl/.mbl/.cbl, .chr, .mon, .map, .snd and the standard .gif, .fli, .cmf, .voc), so games run in DOS (or DOSBox) as well. The site opens on a recreated 1994 desk with a DOS PC running the original designers; today's web interface is one click away.
+${md(FORK_NOTE)}. It runs entirely in the browser (no account, no server): games are kept in the browser's storage and the site works offline. Every file it writes is in the original Game-Maker 3.0 / PLAYGAME formats (.gam, .pal, .bbl/.mbl/.cbl, .chr, .mon, .map, .snd and the standard .gif, .fli, .cmf, .voc), so games run in DOS (or DOSBox) as well. Game-Maker and its PLAYGAME player are re-implemented in TypeScript from the released C source; it is not a PC emulator, and no DOS or x86 code runs (some hardware is emulated: VGA mode 13h and the OPL2 FM sound chip). The site opens on a recreated 1994 desk with a simulated DOS PC running Game-Maker's ported designers; today's web interface is one click away.
 
 ## The app
 

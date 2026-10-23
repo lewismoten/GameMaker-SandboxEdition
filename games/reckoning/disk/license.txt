@@ -1,0 +1,80 @@
+THIS GAME IS FREE
+
+THE GREAT DAIRY RECKONING OF
+3:17 A.M.
+is a 2026 tribute to mid-90s
+shareware. The Bard of
+Bizarre's 1995 shareware
+notice, its fee and its
+address are part of the story:
+there is nothing to pay. The
+piece is The Bard of Bizarre's
+(Lewis Moten's): monologue
+shaped by ChatGPT from Lewis
+Moten's prompt; recording
+(voice) made with Riffusion
+(now Google Flow Music); music
+and title art made for this
+game by Claude Opus 5.5.
+
+Made in 2026 by Lewis Moten,
+with AI help from Claude.
+
+Built with RSD Game-Maker (C)
+1991-95 Recreational Software
+Designs, MIT License 2014.
+
+In 1995 Game-Maker's license
+let you give a game free to up
+to ten people; shareware had
+to ask at least $5 and pay RSD
+10% of the fees. Since 2014
+Game-Maker is MIT licensed,
+and so is this game: free to
+share, change or even sell.
+
+MIT License
+
+Copyright (c) 2026
+Lewis Moten
+
+Permission is hereby granted,
+free of charge, to any person
+obtaining a copy of this
+software and associated
+documentation files (the
+"Software"), to deal in the
+Software without restriction,
+including without limitation
+the rights to use, copy,
+modify, merge, publish,
+distribute, sublicense, and/or
+sell copies of the Software,
+and to permit persons to whom
+the Software is furnished to
+do so, subject to the
+following conditions:
+
+The above copyright notice and
+this permission notice shall
+be included in all copies or
+substantial portions of the
+Software.
+
+THE SOFTWARE IS PROVIDED "AS
+IS", WITHOUT WARRANTY OF ANY
+KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO
+THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT
+OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.

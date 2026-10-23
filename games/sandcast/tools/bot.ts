@@ -1,8 +1,10 @@
 // A play-testing bot for GameSim: finds its way across a scene with a shortest-path search
 // over the blocks Teddy can walk on, walks it one straight run at a time, pushes into
-// blocks (digging dunes, building towers), picks things up and throws. What it presses is
-// recorded by the simulator, a key segment for every scene it enters.
-import { bgBlock } from '../../../web/src/engine/world';
+// blocks (digging dunes, building towers), picks things up and throws. On the way it picks
+// up what lies in sight a few steps off its path, as a player would (never the felt egg; the
+// path keeps off links it was not sent to). What it presses is recorded by the simulator, a
+// key segment for every scene it enters.
+import { SCRNBLEN, SCRNBWID, bgBlock } from '../../../web/src/engine/world';
 import { BG } from '../src/blocks/bblocks';
 import { MON } from '../src/rules';
 import { GameSim } from './sim';
@@ -80,8 +82,13 @@ export class Bot {
   }
 
   /** Shortest path (4 directions) to (tx, ty), avoiding solid blocks and links not asked for. */
-  path(tx: number, ty: number): Pt[] | undefined {
-    const { x: sx, y: sy } = this.sim.pos;
+  path(tx: number, ty: number, start: Pt = this.sim.pos): Pt[] | undefined {
+    return this.route(tx, ty, start)?.steps;
+  }
+
+  /** path() with what it costs (steps, plus turns into hurting or carrying cells). */
+  private route(tx: number, ty: number, start: Pt = this.sim.pos): { steps: Pt[]; cost: number } | undefined {
+    const { x: sx, y: sy } = start;
     const links = this.linkCells();
     const mons = this.monsterCells();
     const key = (x: number, y: number) => `${x},${y}`;
@@ -117,7 +124,46 @@ export class Bot {
       out.unshift({ x, y });
       k = from.get(k)!;
     }
-    return out;
+    return { steps: out, cost: dist.get(key(tx, ty))! };
+  }
+
+  /** Off for a stretch of the route where a detour could spoil the timing. */
+  grab = true;
+  /** How many steps out of the way a pickup in sight is worth. */
+  detour = 8;
+
+  /** A pickup lying on the open sand (shells, sand piles, balloons, juice...), never the felt egg. */
+  private isPickup(x: number, y: number): boolean {
+    const b = this.sim.blockAt(x, y);
+    const k = bgBlock(this.sim.w, b);
+    if (b === BG.id('egg') || k.solid || k.touchBl === b || (k.effect && k.eamt < 0)) return false;
+    return k.scorePts > 0 || k.chHitPt > 0 || (k.effect > 0 && k.eamt > 0);
+  }
+
+  /**
+   * On the way to (tx, ty): the pickup on screen that costs the fewest extra steps to take
+   * first, if that is no more than `detour` and the way there hurts nowhere.
+   */
+  private pickupNear(tx: number, ty: number): Pt | undefined {
+    const w = this.sim.w;
+    const direct = this.route(tx, ty);
+    if (!direct) return undefined;
+    const p = this.sim.pos;
+    let best: { pt: Pt; extra: number } | undefined;
+    for (let j = 0; j <= SCRNBWID; j++)
+      for (let i = 0; i <= SCRNBLEN; i++) {
+        const x = (w.mx + i) % 100;
+        const y = (w.my + j) % 100;
+        if ((x === tx && y === ty) || (x === p.x && y === p.y) || !this.isPickup(x, y)) continue;
+        if (Math.abs(x - p.x) + Math.abs(y - p.y) > direct.steps.length + this.detour) continue;
+        const there = this.route(x, y);
+        if (!there || there.cost > there.steps.length) continue;
+        const back = this.route(tx, ty, { x, y });
+        if (!back) continue;
+        const extra = there.cost + back.cost - direct.cost;
+        if (extra <= this.detour && (!best || extra < best.extra)) best = { pt: { x, y }, extra };
+      }
+    return best?.pt;
   }
 
   /** A block that carries Teddy along (a hose current, the tide). */
@@ -162,6 +208,20 @@ export class Bot {
 
   /** Walks to (x, y). Returns 'link' or 'end' if a scene change happened on the way. */
   async goto(x: number, y: number, label = ''): Promise<string | undefined> {
+    // like a player, pick up what lies in sight a few steps off the way first
+    for (let n = 0; this.grab && n < 20; n++) {
+      const p = this.sim.pos;
+      if (p.sx || p.sy) break;
+      const q = this.pickupNear(x, y);
+      if (!q) break;
+      this.grab = false;
+      try {
+        const r = await this.goto(q.x, q.y, `a ${this.name(q.x, q.y)} on the way`);
+        if (r) return r;
+      } finally {
+        this.grab = true;
+      }
+    }
     for (let attempt = 0; attempt < 12; attempt++) {
       const p = this.sim.pos;
       if (p.sx || p.sy) {

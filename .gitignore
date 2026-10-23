@@ -5,3 +5,10 @@
 
 # macOS Finder
 .DS_Store
+
+# Python bytecode from the kit song tools
+__pycache__/
+*.pyc
+
+# Mac apps and disk images built by web/scripts/macDmg.ts
+/dist/

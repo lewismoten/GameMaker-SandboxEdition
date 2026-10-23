@@ -1,4 +1,4 @@
-// Ebenezer Baker's kitchen in fourteen lights. Every palette has the same layout: the fixed
+// Ebenezer Baker's kitchen in fifteen lights. Every palette has the same layout: the fixed
 // ramps (Doc Leo, the dogs, the monsters, the text inks) never change, and the "role" ramps
 // the rooms are drawn in (floor, wall, wood, metal...) are recolored per room, so one block
 // set serves three rooms: the Pantry's tiles are the Bakehouse's tiles, red hot, and the
@@ -93,6 +93,20 @@ export const THEMES = {
     liquid: [[120, 60, 20], [255, 220, 170]],
     hazard: [[110, 20, 70], [255, 220, 250]],
     dark: [[30, 10, 24], [80, 40, 64]],
+  }),
+  // under the Bakehouse stove: the Pantry's tiles in soot and ember light (Sir Reginald's)
+  stove: T({
+    floor: [[34, 28, 26], [170, 150, 130], [90, 76, 66]],
+    floor2: [[44, 34, 30], [130, 110, 96]],
+    wall: [[12, 10, 12], [120, 116, 122], [50, 46, 52]],
+    trim: [[80, 40, 14], [240, 170, 90]],
+    wood: [[30, 16, 8], [170, 110, 70], [90, 50, 24]],
+    metal: [[20, 20, 24], [180, 184, 196]],
+    glass: [[80, 70, 70], [220, 210, 200]],
+    accent: [[110, 30, 0], [255, 190, 90]],
+    liquid: [[30, 12, 2], [190, 110, 40]],
+    hazard: [[120, 20, 0], [255, 240, 140]],
+    dark: [[4, 3, 3], [36, 30, 28]],
   }),
   // the CELLAR stones
   larder: T({

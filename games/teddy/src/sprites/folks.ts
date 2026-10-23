@@ -197,8 +197,8 @@ export function askBubble(word: string, icon?: Pixels, phase = 0): Pixels {
   return p;
 }
 
-/** A frisbee, spinning (flies at Teddy's head height: play dead or hop). */
-export function frisbee(phase: number): Pixels {
+/** A flying disc, spinning (flies at Teddy's head height: play dead or hop). */
+export function flyingDisc(phase: number): Pixels {
   const p = new Pixels(20, 20, 255);
   if (phase) {
     p.rect(3, 6, 14, 3, P.c('pink', 2)).rect(5, 5, 10, 1, P.c('pink', 3)).rect(4, 9, 12, 1, P.c('pink', 0));
@@ -208,7 +208,7 @@ export function frisbee(phase: number): Pixels {
   return p;
 }
 
-/** A juggling busker from the Klown Klub (20x40): Juggles, tossing bowling pins. */
+/** A street busker in a flat cap (20x40): Juggles, tossing bowling pins. */
 export function juggler(phase: number): Pixels {
   return S(
     [
@@ -219,11 +219,11 @@ export function juggler(phase: number): Pixels {
       phase ? '...W...oGGGGGo......' : '.......oGGGGGo......',
       '......oGGGGGGGo.....',
       '......ooooooooo.....',
-      '.......owwwwwo......',
-      '.......owkwkwo......',
-      '.......owwRwwo......',
-      '.......owrrrwo......',
-      '........owwwo.......',
+      '.......ossssso......',
+      '.......oskskso......',
+      '.......osssSso......',
+      '.......ossosso......',
+      '........ossso.......',
       phase ? '.oSo..oVVVVVo.......' : '......oVVVVVo..oSo..',
       phase ? '..oSooVVyVVVVo......' : '.....oVVVyVVVooSo...',
       phase ? '....oVVVVyVVVVoSo...' : '...oSoVVVyVVVVo.....',
@@ -235,9 +235,9 @@ export function juggler(phase: number): Pixels {
       '.....obbbbobbbbo....',
       '.....obbbo.obbbo....',
       '.....obbbo.obbbo....',
+      '.....ohhho.ohhho....',
+      '....ohhhho.ohhhho...',
       '....oooooo.oooooo...',
-      '...oRRRRRo.oRRRRRo..',
-      '...oooooo...ooooooo.',
     ],
     0,
     14,

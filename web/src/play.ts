@@ -88,6 +88,12 @@ async function main(): Promise<void> {
     return;
   }
   if (!pageGame) document.title = game.title;
+  // the page's heading, for screen readers (the game's screen is the page)
+  // (in a header: the player's <main> is replaced as each game starts)
+  const heading = document.createElement('header');
+  heading.append(Object.assign(document.createElement('h1'), { textContent: game.title }));
+  heading.style.cssText = 'position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
+  document.body.prepend(heading);
   for (const [name, bytes] of Object.entries(await loadSaveData(game.id))) game.files.set(name, bytes);
   const start = () =>
     mountPlayer(root, game.files, game.gam, {
@@ -96,6 +102,7 @@ async function main(): Promise<void> {
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
       onFileWrite: (name, bytes) => void writeSaveFile(game.id, name, bytes),
+      saveId: game.id,
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {
         if (game.back) location.href = game.back;

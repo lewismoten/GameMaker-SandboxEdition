@@ -3,6 +3,7 @@
 // small wooden box (a short echo). It plays "Yankee Doodle" round and round, through the desk
 // speakers' volume knob (audio/output.ts).
 import { output } from '../audio/output';
+import { audioContext, unlock } from '../audio/context';
 
 /** Eighth notes as MIDI numbers; 0 holds the note before. In G, up where music boxes sing. */
 const TUNE = [
@@ -61,9 +62,8 @@ export function musicBox(): MusicBox {
 
   const setup = () => {
     if (ctx) return ctx;
-    const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AC) return undefined;
-    ctx = new AC();
+    ctx = audioContext();
+    if (!ctx) return undefined;
     master = ctx.createGain();
     master.gain.value = 0.22;
     // the box: a short, darkened echo
@@ -137,7 +137,7 @@ export function musicBox(): MusicBox {
     if (off || playing) return;
     const c = setup();
     if (!c) return;
-    void c.resume();
+    unlock();
     playing = true;
     next = c.currentTime + 0.15;
     schedule();
@@ -170,9 +170,10 @@ export function musicBox(): MusicBox {
     },
     dispose: () => {
       stop();
-      const c = ctx;
-      ctx = undefined;
-      setTimeout(() => void c?.close().catch(() => undefined), 700);
+      // (the page's AudioContext is shared: only the box's own nodes go)
+      const m = master;
+      ctx = master = undefined;
+      setTimeout(() => m?.disconnect(), 700);
     },
   };
 }

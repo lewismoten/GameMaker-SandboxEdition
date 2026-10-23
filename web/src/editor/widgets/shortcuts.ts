@@ -19,6 +19,7 @@ const GRID: Row = [['←', '→', '↑', '↓', 'Home', 'End'], 'Move through a 
 /** Each editor's own keys, by the kind of file it edits. */
 export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
   gam: [
+    { title: 'Scenes', rows: UNDO },
     {
       title: 'On the scene board',
       rows: [
@@ -62,8 +63,21 @@ export const SHORTCUTS: Partial<Record<FileKind, Group[]>> = {
     { title: 'A sequence’s key', rows: [[['Click', 'any key'], 'Click the key button, then press the key that runs the sequence']] },
   ],
   map: [{ title: 'Map', rows: [...UNDO, GRID] }],
-  snd: [{ title: 'Sound set', rows: UNDO }],
-  bkd: [{ title: 'Backdrop', rows: [[['←', '→', '↑', '↓'], 'Move the view on the backdrop (Shift: 20 pixels at a time)']] }],
+  snd: [
+    {
+      title: 'Sound set',
+      rows: [
+        [['P'], 'Play the PC speaker sound'],
+        [['V'], 'Play the .voc'],
+        [['G'], 'Play it as the game would'],
+        [['Esc'], 'Stop'],
+        ...UNDO,
+      ],
+    },
+  ],
+  bkd: [{ title: 'Backdrop', rows: [...UNDO, [['←', '→', '↑', '↓'], 'Move the view on the backdrop (Shift: 20 pixels at a time)']] }],
+  gif: [{ title: 'Picture', rows: UNDO }],
+  his: [{ title: 'High scores', rows: UNDO }],
   fli: [
     {
       title: 'Animation',

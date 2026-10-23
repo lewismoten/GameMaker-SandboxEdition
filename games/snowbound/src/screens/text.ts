@@ -55,7 +55,7 @@ export const INSTRUCTIONS = [
     'Shovel it again for more. The',
     'register at Bits & Bytes only',
     'opens with $89 in your can.',
-    'TIMEOUT, the arcade, eats $1',
+    'BLEEPS, the arcade, eats $1',
     'a push - but warms you up.',
     'F1 help      F2 coffee can',
     'F3 music     F4 sound',

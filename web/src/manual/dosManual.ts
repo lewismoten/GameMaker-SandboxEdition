@@ -4,19 +4,22 @@
 import { type BookletPage } from './booklet';
 import './booklet.css';
 import { h } from '../editor/core/ui';
-import { loadCatalog, type CatalogEntry } from '../project/files';
+import { isSandboxGame, loadCatalog, type CatalogEntry } from '../project/files';
 import { openBox } from './printables/viewer';
 import { bookletPageCount } from './printables/imposition';
 import type { BookPage } from './printables/manualPages';
 import { gmBoxItems } from './printables/gmItems';
 import * as fig from './figures';
 import { sandboxShots, type GameShot } from '../desk/boxes/gmShots';
+import { gmCover } from './printables/gmCover';
+import { regRecord } from './regRecord';
 
 const TITLE = 'Game-Maker 3.0 Owner\u2019s Guide';
 
-function div(html: string): HTMLElement {
+function div(html: string, ...more: HTMLElement[]): HTMLElement {
   const el = document.createElement('div');
   el.innerHTML = html;
+  el.append(...more);
   return el;
 }
 
@@ -24,7 +27,7 @@ function figure(draw: Parameters<typeof fig.shot>[0], caption: string, rows?: [n
   return `<figure><img alt="${caption}" src="${fig.shot(draw, rows)}"><figcaption>${caption}</figcaption></figure>`;
 }
 
-const page = (chapter: string, html: string): BookletPage => ({ head: [TITLE, chapter], body: div(html) });
+const page = (chapter: string, html: string, ...more: HTMLElement[]): BookletPage => ({ head: [TITLE, chapter], body: div(html, ...more) });
 
 /** What each Sandbox Software game shows a designer, for its figure's caption. */
 const GAME_NOTES: Record<string, string> = {
@@ -47,41 +50,45 @@ function gallery(shots: GameShot[], first: number): string {
     .join('')}</div>`;
 }
 
+/** The blueprint cover, peeled back to show Teddy's game (or whichever game loaded). */
+function coverOf(shots: GameShot[]): HTMLElement {
+  const g = shots.find((s) => s.id === 'teddy') ?? shots[0];
+  return gmCover(g?.canvas.toDataURL(), g?.title);
+}
+
 function pages(shots: GameShot[]): BookletPage[] {
   return [
     {
       cover: true,
-      body: div(`
-        <div class="cover-banner"><em>Make Your Own Computer Games!</em><strong>GAME-MAKER</strong></div>
-        <div class="cover-tag">VGA 256 colors \u00b7 Sound Blaster \u00b7 No programming</div>
-        <div class="cover-title">Owner\u2019s Guide</div>
-        <div class="cover-sub">Sandbox Edition, based on Version 3.0 for IBM PC and compatibles<br>Includes the CD-ROM edition and the shareware BBS</div>
-        <div class="cover-fork">A new guide written for this modified fork of RSD Game-Maker. It is not the manual RSD shipped in 1994.</div>
-        <div class="cover-foot">Game-Maker by Recreational Software Designs \u00b7 Sandbox Edition</div>`),
+      body: coverOf(shots),
     },
     page(
       'Contents',
       `<h1>Contents</h1>
       <table>
         <tr><td>1. Getting Started</td><td>2</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Your computer and its drives</td><td>3</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;DOS commands you will need</td><td>4</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Drives and DOS commands</td><td>3</td></tr>
         <tr><td>2. The Main Menu</td><td>5</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Playing games</td><td>6</td></tr>
-        <tr><td>3. Designing Games</td><td>7</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Choosing files</td><td>8</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Your first game</td><td>9</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;Games made with Game-Maker</td><td>10</td></tr>
-        <tr><td>4. Utilities</td><td>12</td></tr>
-        <tr><td>&nbsp;&nbsp;&nbsp;When something goes wrong</td><td>13</td></tr>
-        <tr><td>5. The Game-Maker BBS</td><td>14</td></tr>
-        <tr><td>Appendix A. Specifications</td><td>15</td></tr>
-        <tr><td>Appendix B. About This Edition</td><td>17</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Playing, saving and high scores</td><td>6</td></tr>
+        <tr><td>3. Designing Games</td><td>8</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Game-Maker words</td><td>9</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Your first game</td><td>11</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;The tools at a glance</td><td>12</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Games made with Game-Maker</td><td>15</td></tr>
+        <tr><td>4. Utilities</td><td>17</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;Troubleshooting a real PC</td><td>19</td></tr>
+        <tr><td>5. The Game-Maker BBS</td><td>20</td></tr>
+        <tr><td>6. Sharing Your Games</td><td>21</td></tr>
+        <tr><td>Appendix A. Specifications</td><td>23</td></tr>
+        <tr><td>Appendix B. Files and Folders</td><td>25</td></tr>
+        <tr><td>Appendix C. The Copy Check</td><td>26</td></tr>
+        <tr><td>Appendix D. About This Edition</td><td>27</td></tr>
       </table>
       <div class="note"><strong>Welcome!</strong> It\u2019s as much fun to create computer games as it is to play them.
       Game-Maker lets you turn your game ideas into great games with no programming at all.
       We suggest you start by playing a few of the sample games, then read Chapter 3 and try
       the tools in the order given there.</div>`,
+      regRecord('page'),
     ),
     page(
       '1. Getting Started',
@@ -147,7 +154,7 @@ function pages(shots: GameShot[]): BookletPage[] {
       <table>
         <tr><td><b>Play</b></td><td>Choose a game and play it.</td></tr>
         <tr><td><b>Design</b></td><td>The design tools (Chapter 3).</td></tr>
-        <tr><td><b>Utilities</b></td><td>Backup, Restore and Transfer (Chapter 4).</td></tr>
+        <tr><td><b>Utilities</b></td><td>Backup, Restore, Transfer, Joystick Setup and Joystick Diagnostic (Chapter 4).</td></tr>
         <tr><td><b>About</b></td><td>About Game-Maker and how to order it.</td></tr>
         <tr><td><b>Quit</b></td><td>Return to DOS.</td></tr>
         <tr><td><b>Help</b></td><td>A help screen for this menu. Every menu has one.</td></tr>
@@ -159,23 +166,45 @@ function pages(shots: GameShot[]): BookletPage[] {
       `<h2>Playing games</h2>
       <p>Choose <b>Play</b>, then pick a game\u2019s <code>.GAM</code> file. The sample games
       <i>Sample</i>, <i>Pipemare</i> and <i>Nebula</i> are good ones to start with.</p>
-      <p>The arrow keys move your character. Other actions (jumping, shooting, and so on) use
+      <p>The arrow keys move your character four ways; in games whose hero moves diagonally, the
+      corner keys of the numeric keypad (<kbd>Home</kbd>, <kbd>PgUp</kbd>, <kbd>End</kbd>,
+      <kbd>PgDn</kbd>) move it the other four. Other actions (jumping, shooting, and so on) use
       the keys the game\u2019s designer chose; press <kbd>F1</kbd> to see the game\u2019s own help.</p>
       <table>
         <tr><th>Key</th><th>During a game</th></tr>
-        <tr><td><kbd>Esc</kbd></td><td>End the game, or close a help screen</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Stop the game and go back to its title menu; also leaves the F1, F2 and F10 screens</td></tr>
         <tr><td><kbd>F1</kbd></td><td>Help</td></tr>
-        <tr><td><kbd>F2</kbd></td><td>Status and inventory</td></tr>
+        <tr><td><kbd>F2</kbd></td><td>Status and inventory (press it again to go back to the game)</td></tr>
         <tr><td><kbd>F3</kbd></td><td>Music on or off</td></tr>
         <tr><td><kbd>F4</kbd></td><td>Sound on or off</td></tr>
         <tr><td><kbd>F5</kbd></td><td>Save the game</td></tr>
         <tr><td><kbd>F6</kbd></td><td>Restore a saved game</td></tr>
+        <tr><td><kbd>F7</kbd></td><td>Not used (kept for a later version)</td></tr>
         <tr><td><kbd>F8</kbd></td><td>Joystick on or off</td></tr>
         <tr><td><kbd>F9</kbd></td><td>Calibrate the joystick</td></tr>
         <tr><td><kbd>F10</kbd></td><td>About Game-Maker</td></tr>
       </table>
       <div class="note"><strong>Note.</strong> A joystick or game pad plugged into your computer works
       in every game. Press <kbd>F8</kbd> to switch to it.</div>`,
+    ),
+    page(
+      '2. The Main Menu',
+      `<h2>A game\u2019s title menu</h2>
+      <p>Every game starts at its own title screen with the same menu: <b>Play</b>, <b>Read
+      Instructions</b>, <b>Read Storyline</b>, <b>See Credits</b>, <b>See Highest Scores</b> and
+      <b>Quit</b>. Move the bar with the arrow keys and press <kbd>Enter</kbd>.</p>
+      <h3>Saving your place</h3>
+      <p><kbd>F5</kbd> saves the game in one of ten slots; type a name for it so you know it
+      again. <kbd>F6</kbd> lists the slots and picks up where you left off.</p>
+      <h3>Lives and levels</h3>
+      <p>When your hero dies, a life is used up and the level starts over. Your score, money,
+      counters and inventory go with you from level to level; hit points are filled up again
+      after each death. When the last life is gone the game is over.</p>
+      <h3>High scores and demos</h3>
+      <p>Each game keeps its own top ten. A game that makes the list is recorded as it was
+      played, in <code>DATA1.REC</code> through <code>DATA10.REC</code>. If nobody touches the
+      title menu for 30 seconds, the game plays its demo: a recording its designer made with the
+      Integrator.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -194,6 +223,24 @@ function pages(shots: GameShot[]): BookletPage[] {
         <tr><td><b>Sound</b></td><td>Design sound effects.</td></tr>
         <tr><td><b>Integrator</b></td><td>Put scenes, characters, music and pictures together into a game.</td></tr>
       </table>`,
+    ),
+    page(
+      '3. Designing Games',
+      `<h2>Game-Maker words</h2>
+      <table>
+        <tr><td><b>Block</b></td><td>A small square picture, 20 by 20 dots (pixels). Scenery, monsters and heroes are all drawn as blocks.</td></tr>
+        <tr><td><b>Map</b></td><td>One scene of a game: a grid of background blocks up to 100 by 100, with monsters placed on it.</td></tr>
+        <tr><td><b>Character</b></td><td>The hero the player controls.</td></tr>
+        <tr><td><b>Monster</b></td><td>Anything else that moves: enemies, friends, shots, doors that open, birds overhead.</td></tr>
+        <tr><td><b>Gameware</b></td><td>The pieces a game is made of (palettes, block sets, monsters, characters, maps, sounds). You can borrow gameware from one game for another.</td></tr>
+        <tr><td><b>Game area</b></td><td>The folder that holds one game\u2019s files, such as <code>C:\\GM\\SAMPLE</code>.</td></tr>
+        <tr><td><b>MB1 / MB2</b></td><td>The left and right mouse buttons. MB2 often does a second job, such as picking a color for the right button.</td></tr>
+      </table>
+      <h3>From dot to world</h3>
+      <p>A VGA screen is 320 dots across and 200 down, in 256 colors. Sixteen blocks fit across
+      it and ten down, so a full 100 by 100 map is about 62 screens. The map scrolls as the hero
+      moves, and its right edge joins its left (and its top its bottom), so a hero can walk all
+      the way around a world.</p>`,
     ),
     page(
       '3. Designing Games',
@@ -234,6 +281,67 @@ function pages(shots: GameShot[]): BookletPage[] {
     ),
     page(
       '3. Designing Games',
+      `<h2>The tools at a glance</h2>
+      <h3>Palette Designer</h3>
+      <p>A palette is 256 colors, each mixed from red, green and blue (0 to 63 each). Keep color 0
+      black: it is the background of every design screen. Color 15 is the mouse pointer, and
+      color 255 is \u201cclear\u201d: monsters and characters show the scenery through it.</p>
+      <h3>Block Designer</h3>
+      <p>A background set holds 150 blocks, a monster set 100 and a character set 50. Draw with
+      the dot, line, box, filled box, circle, disk and fill tools; shift, rotate and flip a block
+      with the buttons below it. Block 0 is what a new map is filled with.</p>
+      <p>The <b>INFO</b> screen gives a background block its <i>attributes</i>: which sides are
+      solid, which way gravity pulls (two directions make a diagonal, opposite ones a glide
+      area), whether it is an object to pick up, what it becomes after a time or when touched,
+      what it adds to score, hit points, money, lives or a counter, and which monster it gives
+      birth to. Drag one block onto another to copy its attributes.</p>
+      <div class="note"><strong>Time.</strong> Game time runs at about 18 ticks a second: 1092 ticks
+      is a minute, and the longest wait, 9999 ticks, is about nine minutes.</div>`,
+    ),
+    page(
+      '3. Designing Games',
+      `<h3>Character Maker</h3>
+      <p>A hero has 20 animation sequences: standing idle, dying, being hurt, picking up and
+      dropping an object, and fifteen more you tie to keys or the joystick. Each sequence has up
+      to ten frames of one or two blocks, and can need an object in the inventory or use up a
+      counter (arrows, for instance). Set the hero\u2019s hit points, lives and starting
+      inventory (up to ten objects). A frame can give birth to a monster: that is how a hero
+      shoots.</p>
+      <h3>Monster Maker</h3>
+      <p>A monster set has up to 64 monsters of up to 20 frames each. Each one moves toward the
+      hero, away, at random or along a path you draw; it can attack when the hero comes close,
+      pass through walls or be stopped by them, and die when killed, at the end of its path,
+      after a time or never. A dying monster can leave another behind, and killing it can add to
+      the score.</p>
+      <h3>Map Maker</h3>
+      <p>Paint a map with background blocks and place up to 200 monsters on it (up to 50 are
+      shown on the screen at once). <b>Z</b> zooms out to see the whole map. You can limit
+      scrolling to part of the map.</p>`,
+    ),
+    page(
+      '3. Designing Games',
+      `<h3>Image Reader</h3>
+      <p>Opens a GIF picture and cuts blocks out of it, up to 9 by 15 blocks at a time: a quick
+      way to turn a drawing from a paint program into scenery. (Game-Maker 3.0 shows GIF
+      pictures directly, so the older backdrop files, <code>.BKD</code>, are seldom needed.)</p>
+      <h3>Sound Designer</h3>
+      <p>A sound set holds 30 PC speaker sounds; each can also name a Sound Blaster
+      <code>.VOC</code> recording to play instead. The first nine are played by the game itself:
+      hit points gained, a monster dies, money gained and spent, a life gained, score up and
+      down, and a counter up and down. The Sound Designer also converts <code>.CMF</code> music
+      for Game-Maker.</p>
+      <h3>Integrator</h3>
+      <p>Each square on the Integrator\u2019s screen is a scene. The green ones are the title
+      screen and the end of the game. Give each scene its palette, map, block sets, monsters,
+      character, sounds and music, then draw links between scenes: a link is a door on one map
+      that leads to a spot on another.</p>
+      <p>Pictures and words between levels are <i>multimedia displays</i>: a <code>.GIF</code>,
+      an <code>.FLI</code> animation, a <code>.TXT</code> file (30 characters to a line) or a
+      <code>.LST</code> list that shows several of them in turn. Each line of a list is a file
+      name and the seconds to show it.</p>`,
+    ),
+    page(
+      '3. Designing Games',
       `<h2>Games made with Game-Maker</h2>
       <p>Every one of these Sandbox Software games was built with the tools in this box: no
       programming, just blocks, monsters, maps and the Integrator. The pictures are their
@@ -254,10 +362,12 @@ function pages(shots: GameShot[]): BookletPage[] {
       ${figure(fig.utilityMenu, 'Figure 4-1. The Utilities menu.', [0, 2])}
       <h3>Backup</h3>
       <p>Copies every file of a game into a <code>.ZIP</code> archive, saved in the Downloads
-      folder of the computer you are using today.</p>
+      folder of the computer you are using today. (In 1994 Backup copied a game to diskettes
+      in drive A:, and Restore copied it back.)</p>
       <h3>Restore</h3>
       <p>Puts a game that came with Game-Maker back the way it was on the CD. Your changes to
-      it are lost.</p>
+      it are lost. (On a 1994 PC you did this by copying the game\u2019s folder from the CD
+      with <code>COPY</code>.)</p>
       <h3>Transfer</h3>
       <p>Packages a game for others to play. Put a blank diskette from the disk box in
       drive A:, choose Transfer and the game, and answer <code>A:\\</code>. When the transfer
@@ -284,6 +394,21 @@ function pages(shots: GameShot[]): BookletPage[] {
       exception: open them in Game-Maker and see how they work.</p>`,
     ),
     page(
+      '4. Utilities',
+      `<h2>Troubleshooting a real PC</h2>
+      <p>The PC on this desk is set up for you, so none of these come up here. They are what
+      owners of a real 1994 PC ran into most.</p>
+      <table>
+        <tr><th>Problem</th><th>What helped</th></tr>
+        <tr><td>Out of memory</td><td>Game-Maker needs about 512K of the 640K below the first megabyte. Type <code>MEM</code>; take memory-resident programs out of <code>AUTOEXEC.BAT</code> and <code>CONFIG.SYS</code>, or start MS-DOS 6 \u201cclean\u201d (press <kbd>F5</kbd> or hold <kbd>Shift</kbd> at \u201cStarting MS-DOS\u2026\u201d).</td></tr>
+        <tr><td>Won\u2019t start</td><td>MS-DOS 4.1 or later is needed; OS/2 and Windows NT won\u2019t do. From Windows 3.1, run it as a full-screen DOS program (not under Windows 3.0). Turn off QEMM\u2019s Stealth mode.</td></tr>
+        <tr><td>The menus can\u2019t start a tool</td><td>Some PCs can\u2019t run one program from inside another. Type <code>GMBAT</code> for the plain batch-file menu.</td></tr>
+        <tr><td>Strange colors or a broken picture</td><td>Choose standard VGA, or your Super VGA card\u2019s chip set, on the configuration screen. Deleting <code>C:\\GM\\CONFIG.DAT</code> starts the configuration over.</td></tr>
+        <tr><td>No mouse pointer</td><td>Load the mouse driver (<code>MOUSE</code>) before starting Game-Maker.</td></tr>
+        <tr><td>No sound</td><td>Check the Sound Blaster\u2019s address, IRQ and DMA settings. Other cards, such as the Pro Audio Spectrum 16, need their Sound Blaster mode turned on.</td></tr>
+      </table>`,
+    ),
+    page(
       '5. The Game-Maker BBS',
       `<span class="chapter">5</span>
       <h1>The Game-Maker BBS</h1>
@@ -296,34 +421,64 @@ function pages(shots: GameShot[]): BookletPage[] {
       <h3>What is shareware?</h3>
       <p>Shareware is try-before-you-buy. You may play a shareware game and share copies of it.
       If you enjoy it, send the author the registration fee shown in its text files and in the
-      paper catalog on the desk. Many authors sent registered users more levels.</p>`,
+      paper catalog on the desk. Many authors sent registered users more levels. The few
+      dollars a store or a mail-order library charged for a shareware disk paid for the disk
+      and the copying, not the game: the registration fee was the author\u2019s.</p>`,
+    ),
+    page(
+      '6. Sharing Your Games',
+      `<span class="chapter">6</span>
+      <h1>Sharing Your Games</h1>
+      <h3>In 1994</h3>
+      <p>Game-Maker\u2019s license let you install it on one computer at a time and keep a
+      backup copy. Games you made could be <i>transferred</i> and given away free to no more
+      than ten people, who could not pass them on; the gameware you drew could go to anyone.
+      Giving a game to more people, or for money, took a license from Recreational Software
+      Designs:</p>
+      <ul>
+        <li><b>Shareware.</b> Every owner had one, as long as the game asked its players a
+        registration fee of at least $5.00 and the author paid RSD 10% of the fees, every
+        quarter.</li>
+        <li><b>Selling games.</b> A commercial license, with a royalty per copy.</li>
+      </ul>
+      <p>The license was printed on the sealed disk envelope, and opening it meant you agreed.</p>`,
+    ),
+    page(
+      '6. Sharing Your Games',
+      `<h3>Today</h3>
+      <p>In 2014 Andy Stone released Game-Maker\u2019s source code under the <b>MIT
+      License</b>, and this edition keeps it. Use, copy, change, share or sell Game-Maker and the
+      games you make with it, with no limit on people and nothing to pay: just keep the
+      copyright and license notice with the program. Sandbox Software\u2019s registration fees
+      are part of their 1995 story; the games are free.</p>`,
     ),
     page(
       'Appendix A. Specifications',
       `<h1>Appendix A. Specifications</h1>
       <h3>Hardware</h3>
       <ul>
-        <li>Standard VGA (256 color mode)</li>
-        <li>Two button Microsoft compatible mouse</li>
-        <li>286 or better, AT or PS/2 compatible; 512K memory available</li>
-        <li>Hard disk; joystick and Sound Blaster compatible sound card optional</li>
+        <li>286 or better, IBM AT or PS/2 compatible (a 286 runs some games slowly); 512K memory available</li>
+        <li>MS-DOS 4.1 or later; runs full screen from Windows 3.1</li>
+        <li>Standard VGA (320 by 200, 256 colors); Super VGA cards with ATI, Trident 8800 and 8900, Paradise, Tseng ET3000 and ET4000 chip sets</li>
+        <li>Two button Microsoft compatible mouse; 102 key keyboard (most others work)</li>
+        <li>Hard disk; 3\u00bd\u2033 1.44 MB drive; double-spin CD-ROM drive for the bonus CD. Optional: joystick, Sound Blaster compatible sound card</li>
       </ul>
       <h3>Maps (scenes)</h3>
       <ul>
         <li>100 by 100 blocks (2000 by 2000 pixels), or a smaller area you choose. A VGA screen is 16 by 10 blocks.</li>
         <li>Scrolling in all directions; the right side joins the left and the top joins the bottom.</li>
         <li>255 colors plus \u201cclear\u201d. Doors take the character to other scenes.</li>
-      </ul>
-      <h3>Picture blocks</h3>
-      <ul>
-        <li>Solid on each side separately, or passable. Gravity in any of eight directions.</li>
-        <li>Objects can be picked up and put down. Touching a block can play a sound and change money, hit points, lives, ammunition and other counters.</li>
-        <li>Blocks can change with time or when touched, and can give birth to monsters.</li>
       </ul>`,
     ),
     page(
       'Appendix A. Specifications',
-      `<h3>Characters</h3>
+      `<h3>Picture blocks</h3>
+      <ul>
+        <li>Solid on each side separately, or passable. Gravity in any of eight directions.</li>
+        <li>Objects can be picked up and put down. Touching a block can play a sound and change money, hit points, lives, ammunition and other counters.</li>
+        <li>Blocks can change with time or when touched, and can give birth to monsters.</li>
+      </ul>
+      <h3>Characters</h3>
       <ul>
         <li>Twenty animation sequences of up to ten frames; one or two blocks in size.</li>
         <li>Inventory, and an initial inventory. An object or counter can enable a sequence.</li>
@@ -332,7 +487,7 @@ function pages(shots: GameShot[]): BookletPage[] {
       </ul>
       <h3>Monsters</h3>
       <ul>
-        <li>Up to 60 monster types and 200 monsters per scene, 20 frames each.</li>
+        <li>Up to 64 monsters in a set, 20 frames each; up to 200 monsters per scene.</li>
         <li>Move toward or away from the character, at random, along a path, or attack along a path when in range.</li>
         <li>Live until killed, until the end of a path, for a set time, or forever. Can give birth to another monster when they die.</li>
       </ul>
@@ -343,12 +498,54 @@ function pages(shots: GameShot[]): BookletPage[] {
       </ul>`,
     ),
     page(
-      'Appendix B. About This Edition',
-      `<h1>Appendix B. About This Edition</h1>
-      <p>Game-Maker was written by Recreational Software Designs and sold in a pink box from
-      1991. This guide describes a recreation that runs in a web browser. Nothing here is an
-      emulator: the DOS prompt, the menus and the BBS are drawn to look as they did, and the
-      games are played by a new engine that reads the original files.</p>
+      'Appendix B. Files and Folders',
+      `<h1>Appendix B. Files and Folders</h1>
+      <p>Game-Maker lives in <code>C:\\GM</code>, with one folder (game area) for each game.
+      Keep all of a game\u2019s files in its folder, with DOS names of up to eight letters.</p>
+      <table>
+        <tr><th>Ending</th><th>What it holds</th></tr>
+        <tr><td><code>.GAM</code></td><td>The game itself, made by the Integrator</td></tr>
+        <tr><td><code>.MAP</code></td><td>A map (scene)</td></tr>
+        <tr><td><code>.BBL</code> <code>.MBL</code> <code>.CBL</code></td><td>Background, monster and character block sets</td></tr>
+        <tr><td><code>.MON</code> <code>.CHR</code></td><td>Monsters; a character</td></tr>
+        <tr><td><code>.PAL</code></td><td>A palette</td></tr>
+        <tr><td><code>.SND</code></td><td>A sound set</td></tr>
+        <tr><td><code>.CMF</code> <code>.VOC</code></td><td>Sound Blaster music; a digitized sound</td></tr>
+        <tr><td><code>.GIF</code> <code>.FLI</code> <code>.BKD</code></td><td>A picture, an animation, an old-style backdrop</td></tr>
+        <tr><td><code>.TXT</code> <code>.LST</code></td><td>Text screens; a list of displays to show in turn</td></tr>
+        <tr><td><code>.REC</code></td><td>A recorded game: a demo or a high score</td></tr>
+      </table>`,
+    ),
+    page(
+      'Appendix C. The Copy Check',
+      `<h1>Appendix C. The Copy Check</h1>
+      <p>A copy of Game-Maker whose registration doesn\u2019t match asks a question each time
+      it starts: a page of this guide, a paragraph and a word to type in. The page numbers are
+      the ones printed at the foot of these pages.</p>
+      <p>Count only the paragraphs of text on that page, from the top: not headings, tables,
+      lists, boxed notes or picture captions. Then count words; \u201cGame-Maker\u201d is one
+      word.</p>
+      <p>A new copy comes unregistered, so GM asks every time until you register it. While it
+      asks, this guide opens beside the monitor at the right page, and the registration card
+      lies next to it: write your name, <b>Mail the card</b> for your registration number (the
+      reply comes right back) and choose <b>Apply</b>. Or type <code>GM REGISTER</code> and
+      enter the name and number as the program asks.</p>
+      <div class="note"><strong>Why?</strong> Disks were easy to copy; a thick printed manual was
+      not. Many programs of the day asked for a word from the manual. RSD\u2019s own questions
+      came from its printed book; this edition asks from this guide.</div>`,
+    ),
+    page(
+      'Appendix D. About This Edition',
+      `<h1>Appendix D. About This Edition</h1>
+      <p>Game-Maker was written by Recreational Software Designs of Amherst, New Hampshire, and
+      sold from 1991, first on diskettes and in 1994, as version 3.0, on CD-ROM with a
+      comb-bound manual. This guide describes a recreation that runs in a web browser, in its
+      own Sandbox Edition box. It is not a PC emulator, and no DOS program runs: the DOS
+      prompt, the BBS and the utilities are a simulation made to look and act as they did,
+      Game-Maker\u2019s menus and designers are rebuilt from their original source code, and
+      the games are played by a new engine, ported from PLAYGAME\u2019s source, that reads
+      the original files. Only a few parts of the hardware are emulated, such as the VGA
+      screen and the Sound Blaster\u2019s FM music chip.</p>
       <p>Games you make here are saved in the original formats, so they also play in DOSBox
       or on a real PC.</p>
       <p>The shareware on the BBS and in the disk box belongs to its authors and is shown in
@@ -356,7 +553,7 @@ function pages(shots: GameShot[]): BookletPage[] {
       <p>In 2014 Game-Maker\u2019s author, Andy Stone, released its source code under the
       <b>MIT License</b>. This edition is a modified fork of it by Lewis Moten, ported to the
       browser with Claude Opus 5.5, and it is MIT licensed too: the games you make are yours to
-      share however you like.</p>
+      share however you like (Chapter 6).</p>
       <div class="note"><strong>Make-believe:</strong> Sandbox Software, its address, the BBS
       phone numbers and the brands on this desk are made up.</div>`,
     ),
@@ -364,18 +561,27 @@ function pages(shots: GameShot[]): BookletPage[] {
       cover: true,
       body: div(`
         <div class="cover-banner"><em>It’s as much fun to create computer games as it is to play them.</em></div>
-        <div class="cover-title">Notes</div>
-        <div class="cover-sub">Game name: ____________________<br><br>Folder: C:\\GM\\____________<br><br>Registration code: ______________</div>
-        <div class="cover-foot">GAME-MAKER · Recreational Software Designs</div>`),
+        <div class="cover-title">Notes</div>`,
+        regRecord('cover'),
+        h('div', { class: 'rr-notes', 'aria-hidden': 'true' }),
+        h('div', { class: 'cover-foot' }, 'GAME-MAKER · Recreational Software Designs'),
+      ),
     },
   ];
 }
 
+/** The gallery's screenshots: give them a moment to load, and go without them if they can't. */
+const galleryShots = () => Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
+
+/** The guide's pages as the box shows them: index n is the page with n printed at its foot (the copy check's page numbers). */
+export async function dosManualPages(): Promise<BookPage[]> {
+  return bookPages(pages(await galleryShots()));
+}
+
 export async function openDosManual(): Promise<void> {
-  // the gallery's screenshots: give them a moment to load, and go without them if they can't
-  const shots = await Promise.race([sandboxShots(), new Promise<GameShot[]>((r) => setTimeout(() => r([]), 4000))]);
-  const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.original);
-  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family));
+  const shots = await galleryShots();
+  const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
+  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb' });
 }
 
 /** The guide as a stapled booklet for the box viewer: note pages fill it out to whole folded sheets. */

@@ -15,6 +15,7 @@ import { DemoAudioEngine, demoAudio, demoAudioPicker, onDemoAudio } from './demo
 import { saveBlob } from './screenCapture';
 import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
+import { claimMediaFocus } from './mediaFocus';
 
 const SKIP_KEY = 'gm-demo-skip-intro';
 
@@ -95,6 +96,13 @@ export function playDemo(o: DemoOptions): Promise<void> {
   const skipBox = h('input', { type: 'checkbox', checked: skip });
   const tick = () => (session?.rec.playing ? session.rec.tick : 0);
   const below = o.below?.(tick);
+  // the page's other demos stop while this one plays (another player taking over stops this one)
+  const release = claimMediaFocus('player', () => {
+    void stopVideo(true);
+    player?.stop();
+    sound?.dispose();
+    status.textContent = 'Stopped: another player started. ↺ Restart plays it again.';
+  });
 
   const stopVideo = async (keep: boolean) => {
     const v = video;
@@ -115,6 +123,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
   const start = (record: boolean) => {
     void stopVideo(false);
     player?.stop();
+    sound?.dispose();
     session = undefined;
     const gen = ++generation;
     const files = skip ? withoutOpening(o.files, o.gam, o.rec) : o.files.copy();
@@ -133,7 +142,8 @@ export function playDemo(o: DemoOptions): Promise<void> {
     status.textContent = skip ? 'Straight into the playing. Esc leaves.' : 'From the title screen. Esc leaves.';
     if (!record) return;
     const machine = player.machine;
-    const mix = new AudioMix((ctx) => ctx === machine.audio.context);
+    // just this game's sound (the page's other sounds share its AudioContext)
+    const mix = new AudioMix(machine.audio.node ?? ((ctx) => ctx === machine.audio.context));
     try {
       const rec = new LiveRecorder(machine.screen.canvas, mix.track, 70);
       const began = performance.now();
@@ -209,10 +219,12 @@ export function playDemo(o: DemoOptions): Promise<void> {
       ),
     );
   }).then(() => {
+    release?.();
     offAudio();
     void stopVideo(true);
     below?.destroy();
     player?.stop();
+    sound?.dispose();
   });
 }
 

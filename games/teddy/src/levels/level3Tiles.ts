@@ -50,11 +50,12 @@ export function parkTiles(): Tiles {
   t.air('lawnFlower', tuft(new Pixels(20, 20, c('grass', 3)), 54, 'yellow'));
   t.air('lawnFlower2', tuft(new Pixels(20, 20, c('grass', 3)), 55, 'pink'));
   t.wall('hedgeWall', hedge(false, 56));
-  t.wall('hedgeTopWall', hedge(true, 57));
+  t.wall('hedgeTopWall', hedge(true, 57, sky(0)));
+  t.wall('hedgeTopWall1', hedge(true, 57, sky(1)));
 
   // The squirrel tree.
   for (let k = 0; k < 4; k++) t.air(`leaf${k}`, leaves(90 + k, sky(k)));
-  t.air('trunk', trunk(t.pic('far')));
+  t.air('trunk', trunk(t.pic('farTop')));
   t.air('trunkLawn', trunk(t.pic('lawn')));
   t.air('trunkTop', trunk(leaves(95, sky(2))));
   for (let k = 1; k < 4; k++) t.ledge(`branch${k}`, branch(leaves(96 + k, sky(k))));
@@ -119,6 +120,7 @@ export function parkTiles(): Tiles {
       t.air(`jetTop${k}_${ph}`, jet(sky(k), true), { grav: GRAV.up, next: `jetTop${k}_${1 - ph}`, ntime: 3 });
     }
     t.air(`jetFar_${ph}`, jet(t.pic('far'), false), { grav: GRAV.up, next: `jetFar_${1 - ph}`, ntime: 3 });
+    t.air(`jetFarTop_${ph}`, jet(t.pic('farTop'), false), { grav: GRAV.up, next: `jetFarTop_${1 - ph}`, ntime: 3 });
     t.air(`jetLawn_${ph}`, jet(t.pic('lawn'), false), { grav: GRAV.up, next: `jetLawn_${1 - ph}`, ntime: 3 });
   }
 
@@ -192,7 +194,7 @@ export function parkTiles(): Tiles {
   t.wall(
     'bridgeRoof',
     (() => {
-      const p = copy(sky(1));
+      const p = copy(sky(2));
       for (let y = 6; y < 20; y++) p.rect(0, y, 20, 1, (y >> 1) % 3 ? c('roof', 2) : c('roof', 1));
       p.rect(0, 17, 20, 3, c('wood', 1));
       return p;
@@ -208,8 +210,8 @@ export function parkTiles(): Tiles {
       return p;
     })(),
   );
-  t.on('kidBench', kid('boy'), 'lawn');
-  t.on('kidBench2', kid('girl'), 'lawn');
+  t.on('kidBench', kid('boy'), 'far');
+  t.on('kidBench2', kid('girl'), 'far');
   t.air(
     'lamp',
     (() => {
@@ -257,7 +259,7 @@ export function parkTiles(): Tiles {
       return p;
     })(),
   );
-  t.on('frisbeeKid', kid('girl'), 'lawn', 'air', { birthMon: 0, birthTime: 0 });
+  t.on('discKid', kid('girl'), 'lawn', 'air', { birthMon: 0, birthTime: 0 });
   t.air('parkSign', sign(t.pic('lawn'), 'PARK'));
   t.wall(
     'gatePost',
@@ -271,7 +273,7 @@ export function parkTiles(): Tiles {
   t.air(
     'gateTop',
     (() => {
-      const p = copy(sky(2));
+      const p = copy(sky(1));
       p.rect(0, 10, 20, 10, c('brick', 2)).rect(0, 8, 20, 3, c('stone', 3));
       micro(p, 1, 13, 'PARK', c('paint', 3));
       return p;

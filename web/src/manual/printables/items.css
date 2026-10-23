@@ -546,6 +546,12 @@
   text-align: left;
 }
 
+.cat-price-note {
+  margin: 1cqw 0 0;
+  font-size: 1.7cqw;
+  font-style: italic;
+}
+
 /* ---------------------------------------------------------------- BBS ad */
 .pp-sheet.pp-bbs {
   padding: 3cqw;

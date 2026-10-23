@@ -1,0 +1,74 @@
+/* The Mac downloads page (#/mac). */
+
+main.mac-help {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+main.mac-help h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+
+main.mac-help .lead {
+  margin: 0 0 24px;
+  font-size: 17px;
+}
+
+main.mac-help .mac-back {
+  margin: 0 0 12px;
+}
+
+main.mac-help section {
+  margin: 0 0 28px;
+}
+
+main.mac-help h2 {
+  margin: 0 0 8px;
+  font-size: 21px;
+}
+
+main.mac-help h3 {
+  margin: 16px 0 6px;
+  font-size: 17px;
+}
+
+main.mac-help ul,
+main.mac-help ol {
+  padding-left: 1.4em;
+}
+
+main.mac-help li + li {
+  margin-top: 0.45em;
+}
+
+main.mac-help kbd {
+  font: inherit;
+  font-weight: 600;
+  padding: 0 0.35em;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel-2);
+}
+
+main.mac-help code {
+  font: 0.92em/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+main.mac-help .mac-cmd {
+  margin: 8px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+main.mac-help .mac-caution {
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+}

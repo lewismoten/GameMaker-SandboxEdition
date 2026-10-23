@@ -20,6 +20,8 @@ import { bevel, blob, micro, outline, shadeAt } from '../art/draw';
 import { blank, cap, chickenItem, eggFaberge, eggRotten, float, ingredient, kazoo, on, pie, spoon, tricorn } from '../art/kit';
 import { c, r } from '../art/pal';
 import { CTR, MON } from '../ids';
+import { addLazySusan } from './susan';
+import { addStoveGap } from './stove';
 import { BlockSet, GRAV, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP } from './sets';
 
 export type Style = 'kitchen' | 'cellar' | 'parlor' | 'works';
@@ -634,6 +636,9 @@ export function buildTileSet(style: Style): TileSet {
   const crack = on(wallFace(style));
   crack.line(6, 4, 9, 10, c('dark', 0)).line(9, 10, 7, 16, c('dark', 0)).line(9, 10, 13, 12, c('dark', 0));
   t.add('fwallCrack', crack);
+  // added last, so every other block keeps its number
+  if (style === 'parlor') addLazySusan(t, fl);
+  if (style === 'kitchen') addStoveGap(t, fl);
   void outline;
   void blank;
   void SOLTOP;

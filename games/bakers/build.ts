@@ -26,10 +26,12 @@ import { printables } from './src/printables';
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 const all = compileAll();
-const { cb, chr, mb, sets, rooms, game } = all;
+const { cb, chr, chickBlocks, chick, mb, sets, rooms, game } = all;
 
 disk.put('leo.chr', serializeCharacter(chr));
 disk.put('leo.cbl', serializeBlocks(cb.build()));
+disk.put('chick.chr', serializeCharacter(chick));
+disk.put('chick.cbl', serializeBlocks(chickBlocks.build()));
 disk.put('mons.mbl', serializeBlocks(mb.build()));
 for (const set of Object.values(sets)) disk.put(`${set.style}.bbl`, serializeBlocks(set.tiles.build()));
 for (const room of rooms) {

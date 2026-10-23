@@ -34,18 +34,20 @@ export function mainTiles(): Tiles {
   t.wall('grass', grassTop(6));
   t.air('lawn', tuft(sky(3), 31));
   t.air('picket', picket(tuft(sky(3), 32), true));
-  t.air('hedgeTop', hedge(true, 21));
+  t.air('hedgeTop', hedge(true, 21, skyRow(30)));
   t.wall('hedgeWall', hedge(false, 25));
   t.air('leaf', leaves(7, sky(2)));
-  t.air('leafLow', leaves(8, sky(3)));
+  t.air('leafHi', leaves(8, skyRow(33)));
   t.air('trunk', trunk(sky(3)));
 
   // The Dog House, the tiny library on Maple Street (a book, the paw-knob snack drawer).
-  const lib = cut(dogHouseLibrary(canvas(2, 3, (_bx, by) => (by < 2 ? sky(3) : t.pic('lawn')))));
+  const libOf = (st: { open?: boolean } = {}) => cut(dogHouseLibrary(canvas(2, 3, (_bx, by) => (by < 2 ? sky(3) : t.pic('lawn'))), st));
+  const lib = libOf();
   t.air('libRoofL', lib[0][0]);
   t.air('libRoofR', lib[0][1]);
   t.air('libBooks', lib[1][0]);
-  t.air('libDrawer', lib[1][1], { effect: CTR.treats, eamt: 3, score: 30, touch: 'libBooks' });
+  t.air('libDrawerOpen', libOf({ open: true })[1][1]);
+  t.air('libDrawer', lib[1][1], { effect: CTR.treats, eamt: 3, score: 30, touch: 'libDrawerOpen' });
   t.ledge('libRocksL', lib[2][0]);
   t.ledge('libRocksR', lib[2][1]);
   // a lamp post

@@ -9,6 +9,10 @@ const GENERIC_TITLES = new Set(['Game-Maker 1994', 'Game-Maker: Sandbox Edition'
 export function routeOf(hash: string, modern: boolean): RouteName {
   if (!modern) return 'desk';
   if (hash.startsWith('#/help')) return 'guide';
+  if (hash.startsWith('#/cast')) return 'cast';
+  if (hash.startsWith('#/mac')) return 'mac';
+  if (hash.startsWith('#/windows')) return 'windows';
+  if (hash.startsWith('#/linux')) return 'linux';
   if (hash.startsWith('#/p/')) return 'editor';
   return 'home';
 }

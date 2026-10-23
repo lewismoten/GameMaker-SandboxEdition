@@ -1,0 +1,298 @@
+{
+ "version": 1,
+ "game": "sweats",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0jzQZICsgATQXNA00NzQYSDJIATQDNCE0fzQZNLc0GTQbNBksBywZNGc0GOQO5DBIMkgBNPM0JTQ/NBhIMkgBNAM0HTQPNDxIMkgBNAc0DEgySAE0AzQdNJs0GTS3NBhIMkgBNBs0DSArICU0CzQYSDJIATQbNDEgOyAkSDJIATQbNCU0FzQZLDcsGEAyQAEsCywdLBkgKyCHLBhAKkABLAMsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsIEAqQAEsAywkQCpAASwDLCRAKkABLAMsJTRnNBkgMyABLFMsDSAjIB0smywYQDJAASwLLBkgIyAkQDJAASwXLBEsSywYQDJAASwDLCEsKywZIDMgJSxnLBks="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0BzUtNE80kTRnNBjkDuQxNI80GOQO5DE1LzQYQDJAASwDLBDkDuQxLEssGOQO5DEseywY5A7kMTTfNBk0NzQdNDc0GOQO5DE0MzQZIDMgETQXNBhIMkgBNAM0ETQPNBk0NzRFND80GSAzICRIMkgBNCc0GTRbNBk0="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0BzSJNDs0GTQhICsgFzQY5A7kMTQXNBkgMyARLAMsGTRDNDk0CzQYSDJIATQDNBU0FzQZNCM0TTQXNBkgMyARNBc0GTQjNDDkDuQxND80GTQrNBjkDuQxNFM0GSwXLBkgMyARNBc0GEgySAE0AzQRNA80GTRLNDE0FzQYSDJIATQvNBzkDuQxNHs0GOQO5DE0UzQZND80GTSPNBk0="
+  },
+  {
+   "scene": 5,
+   "keys": "AU0BzVRNE80GTQXNBjkDuQxNA0gKyBfNBk0FzQZIDMgITQhICsgIzQ9NDUgKyAhICsgISArIBc0GTQPNETkDuQxNA0gKyBLNBk0XSArIDc0KTRnNSE0FzQYSDJIATSHNA00KzQZIDMgGTQXNBk0IzQo5A7kMTRTNBjkDuQw5A7kMTRnNBk0ZzQZN"
+  },
+  {
+   "scene": 6,
+   "keys": "AU0BzSVNDs0GTQrNBjkDuQxNHs0GTR7NME0ezQZNLc0MEgySAE0SzQNNHs0GTUvNBk0PzQZN"
+  },
+  {
+   "scene": 7,
+   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+  },
+  {
+   "scene": 8,
+   "keys": "AU0BzVZNE80GTQ/NBkgMyAo5A7kMTQXNBjkDuQxNBc0GSAzIBE0PzQZND80GTQrNBhIMkgBNBs0DTQzNBk0LzRVLEssGOQO5DE0PzQY5A7kMTQrNBjkDuQxNCs0GOQO5DE0NzQYSDJIATQ3NA00PzQY5A7kMTQrNBk0ZzQw5A7kMOQO5DDkDuQxNKM0GTRTNBkgMyARNFM0GTQrNBk0LzQ5NDM0GTQ=="
+  },
+  {
+   "scene": 9,
+   "keys": "AU0BzUxNDs0GOQO5DE0PzQY5A7kMTRTNBk0FzQYSDJIATQDNJDkDuQxNC80KOQO5DE0NzQYSDJIATTzNA00DSArIFM0GOQO5DE0ezQYSDJIATQDNBk0JzQlNB80GOQO5DE0KzQY5A7kMTSjNEjkDuQxNA0gKyArNBjkDuQxND80GOQO5DE0KzQZNHs0GTQ/NBk0="
+  },
+  {
+   "scene": 10,
+   "keys": "AU0BzS1NCc0GEgySAE0AzQZNA80GTQvNDDkDuVpNEc0GEgySAE0AzQZLAssGTQvNDE0HzQZLA8sMOQO5DE0czQY5A7kMTQ/NBkgMyARIDMgIOQO5VE0IzQ45A7kMTQXNBjkDuQxNFM0GEgySAE0AzQZNCM0GTQbNDDkDuQxNDM0GOQO5DE0ZzQZNCM0GEgySAE0NzQNNAs0GTRTNBk0="
+  },
+  {
+   "scene": 11,
+   "keys": "AU0BzU5NCc0GEgySAE0AzQY5A7kMTQ3NBkgMyARNA80ROQO5DE0UzQZIDMgETQPNETkDuQxNEM0YOQO5DE0CzQY5A7kMTRnNBjkDuQw5A7kMOQO5DE0ezVRND80GEgySAE0AzQY5A7kMTQ3NBkgMyARNA80ROQO5DE0PzQZNBs0MTQXNBhIMkgBNBc0ETQ/NBk0="
+  },
+  {
+   "scene": 12,
+   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+  },
+  {
+   "scene": 13,
+   "keys": "AU0BzVlNE80GEgySAE0AzQgSDJIATQDNBE0DzQZNA80TOQO5DE0ZzQY5A7kMTQXNBhIMkgBNAM0FSAzICUgMyAlLAMsGEgySAE0BzQNNB80YTQbNEzkDuQxNB80GOQO5DE0KzRJNFM0GTQNICsgSzQZLAMsGEgySAE0BzQhNDM0GTQNICsgFzQYSDJIATQHNA00CzQZNBs0QOQO5DE0CzQY5A7kMTQXNBjkDuQxNBc0GOQO5DE0FzQY5A7kMTRnNBk0KzQZN"
+  },
+  {
+   "scene": 14,
+   "keys": "AU0BzX1NHc0GEgySAE0AzQQSDJIATQDNCUsCywZNCM0OOQO5DE0KzQY5A7kMTRnNBhIMkgBNAM0PEgySAE0DzQM5A7kpOQO5DE0qzR05A7kMSAzICU0NzQk5A7kMTR7NBjkDuQxND80GEgySAE0AzQRNA80GTSHNBk0UzQZNCs0GTQ=="
+  },
+  {
+   "scene": 15,
+   "keys": "AU0BzSxNE82gATkDuQxNGc1sEgySAE0AzQRNA80GOQO5DE0ZzQY5A7kMTRnNBjkDuQxND80GTRLNBhIMkgBNA80GTQfNBhIMkgBNAM0ETQPNBk0NzQw5A7kMTSjNBhIMkgBNCM0DTRHNBk0PzQZN"
+  },
+  {
+   "scene": 16,
+   "keys": "AU0BzTtNE80GEgySAE0AzTc5A7mEATkDuQxNHM0GTRzNBk0NzQYSDJIATQPNBk0RzQY5A7kMTQrNBjkDuQxNI82IATkDuQxNHM0GEgySAE0AzQhLAMsGTRLNBjkDuQxNCs0qOQO5DE0PzQY5A7kMTRTNBk0="
+  },
+  {
+   "scene": 17,
+   "keys": "AU0BzStNCc0GEgySAE0GzQRNB80GEgySAE0DzQZNFs0GEgySAE0AzQRNA80GEgySAE0BzQNNAs0GTQvNEzkDuQxNB818OQO5DE0KzQY5A7kMTRnNBjkDuQxNCM0GEgySAE0AzQQ5A7kMTQrNBhIMkgBNA80DTQrNBk0GzRhNDM0uOQO5DE0czQYSDJIATQjNA00MzQZN"
+  },
+  {
+   "scene": 18,
+   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+  },
+  {
+   "scene": 19,
+   "keys": "AU0BzS9NIs0GSAzIBk0XzRhNCs0GOQO5DE0ozQYSDJIATQPNA00FzSQSDJIATRfNA00DSArIBc0GTQXNBkgMyAlNCM0PTQPNBhIMkgBNBc0ETQrNBkgMyAlNH80GTQNICsgFzQYSDJIATQDNBEsAywZNH80GOQO5DE0UzQZNFM0GTQ=="
+  },
+  {
+   "scene": 20,
+   "keys": "AU0BzSxNE80GOQO5DE0ZzXg5A7kMTQhICsgFzQZNDc0GOQO5DE0NSArIBc0GTRLNBk0ISArIBc0GTRzNBkgMyARND80GTQ/NChIMkgBNDs0DTQVICsgFzQZNC80HOQO5DE0lzQY5A7kMTRnNBjkDuQw5A7kMTR7NBk0="
+  },
+  {
+   "scene": 21,
+   "keys": "AU0BzUNNNUgKyATNDjkDuQxND80GOQO5DE0ozQY5A7kMOQO5DE0ozQZLCssGSAzIBE0FzQZNEs0HOQO5DE0PzQY5A7kMTR1ICsglzQZNGc0GSAzIBE0FzQZNCM0ROQO5DE0jzQZN"
+  },
+  {
+   "scene": 22,
+   "keys": "AU0BzTNNJ80GSAzIBk1GzQZIDMgEOQO5DE0IzQZIDMgDTQLNBk0HzQZNBM0WSwLLAzkDuQxNB80GOQO5DBIMkgBNCM0DOQO5DE0GzQZIDMgETQfNBkgMyANNAs0GTQjNEU0DzTsSDJIATQPNBjkDuQwSDJIATQbNCU0ZzQZNOM0MTSjNBk0PzQZN"
+  },
+  {
+   "scene": 23,
+   "keys": "AUsKywZIDMgJTRzNBhIMkgBNPM0JEgySAE0SzQlNPM0GTSjNB0soyyRLI8sGSA7IAEs8yw5LA0gKyA9ICsgPywYQBpAASwLLBjkDuQxLD8sGSw3LBhAMkABLCMsDSw/LBksGywZLBMsGSwrLDE0jzQY5A7kMEgySAE08zQlND80GEgySAE0AzQdNA80PEgySAE0BzQMSDJIATQDNB00mzQZNLc0GEgySAE0GzQNICsgJTQLNBhIMkgBNBs0MSA7ICRIMkgBNBs0JTQXNBksNywYQDJAASwLLB0sGSArIIcsGEAqQAEsAywYQCpAASwDLBhAKkABLAMsGEAqQAEsAywgQCpAASwDLCRAKkABLAMsJEAqQAEsAywlNGc0GSAzIAEsUywNICMgHSybLBhAMkABLAssGSAjICRAMkABLBcsESxLLBhAMkABLAMsISyPLBks="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "The Hive, Oakland"
+  },
+  {
+   "scene": 3,
+   "title": "1. A Totally Normal Meeting"
+  },
+  {
+   "scene": 4,
+   "title": "2. The Coffee Goat in the Breakroom"
+  },
+  {
+   "scene": 5,
+   "title": "3. The Office Chair That Tried to Kill Me"
+  },
+  {
+   "scene": 6,
+   "title": "4. Gerald the Ficus is Dead"
+  },
+  {
+   "scene": 7,
+   "title": "Intermission 1"
+  },
+  {
+   "scene": 8,
+   "title": "5. The Day the Self-Checkout Tried to Destroy Me"
+  },
+  {
+   "scene": 9,
+   "title": "6. How I Earned a Nod from the Smoking Cashier"
+  },
+  {
+   "scene": 10,
+   "title": "7. I Don’t Work Here, But Emotionally I Do"
+  },
+  {
+   "scene": 11,
+   "title": "8. I Held in a Fart and Killed a Bird"
+  },
+  {
+   "scene": 12,
+   "title": "Intermission 2"
+  },
+  {
+   "scene": 13,
+   "title": "9. She Took the Blanket (and Left My Soul on the Floor)"
+  },
+  {
+   "scene": 14,
+   "title": "10. Wore All the Weird Socks"
+  },
+  {
+   "scene": 15,
+   "title": "11. How the Cat Won the Pizza War"
+  },
+  {
+   "scene": 16,
+   "title": "12. Janet, This Is Not About You (It’s About the Itch)"
+  },
+  {
+   "scene": 17,
+   "title": "13. Double Tap for Justice"
+  },
+  {
+   "scene": 18,
+   "title": "Intermission 3"
+  },
+  {
+   "scene": 19,
+   "title": "14. This Is Why I Don’t Go Outside"
+  },
+  {
+   "scene": 20,
+   "title": "15. The Ants Have Spoken"
+  },
+  {
+   "scene": 21,
+   "title": "16. The Day I Fought Cardboard"
+  },
+  {
+   "scene": 22,
+   "title": "17. Shelter Me Gently, You Wounded Beast"
+  },
+  {
+   "scene": 23,
+   "title": "The Curtain Call"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 93236,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1239
+   },
+   {
+    "title": "The Hive, Oakland",
+    "frame": 2962
+   },
+   {
+    "title": "1. A Totally Normal Meeting",
+    "frame": 7376
+   },
+   {
+    "title": "2. The Coffee Goat in the Breakroom",
+    "frame": 10807
+   },
+   {
+    "title": "3. The Office Chair That Tried to Kill Me",
+    "frame": 13785
+   },
+   {
+    "title": "4. Gerald the Ficus is Dead",
+    "frame": 17144
+   },
+   {
+    "title": "Intermission 1",
+    "frame": 19471
+   },
+   {
+    "title": "5. The Day the Self-Checkout Tried to Destroy Me",
+    "frame": 25561
+   },
+   {
+    "title": "6. How I Earned a Nod from the Smoking Cashier",
+    "frame": 29242
+   },
+   {
+    "title": "7. I Don’t Work Here, But Emotionally I Do",
+    "frame": 32729
+   },
+   {
+    "title": "8. I Held in a Fart and Killed a Bird",
+    "frame": 36290
+   },
+   {
+    "title": "Intermission 2",
+    "frame": 39544
+   },
+   {
+    "title": "9. She Took the Blanket (and Left My Soul on the Floor)",
+    "frame": 45635
+   },
+   {
+    "title": "10. Wore All the Weird Socks",
+    "frame": 49170
+   },
+   {
+    "title": "11. How the Cat Won the Pizza War",
+    "frame": 52566
+   },
+   {
+    "title": "12. Janet, This Is Not About You (It’s About the Itch)",
+    "frame": 55863
+   },
+   {
+    "title": "13. Double Tap for Justice",
+    "frame": 59760
+   },
+   {
+    "title": "Intermission 3",
+    "frame": 62941
+   },
+   {
+    "title": "14. This Is Why I Don’t Go Outside",
+    "frame": 69031
+   },
+   {
+    "title": "15. The Ants Have Spoken",
+    "frame": 71928
+   },
+   {
+    "title": "16. The Day I Fought Cardboard",
+    "frame": 75250
+   },
+   {
+    "title": "17. Shelter Me Gently, You Wounded Beast",
+    "frame": 78334
+   },
+   {
+    "title": "The Curtain Call",
+    "frame": 81899
+   },
+   {
+    "title": "Ending",
+    "frame": 87989
+   },
+   {
+    "title": "Credits",
+    "frame": 90668
+   }
+  ]
+ }
+}

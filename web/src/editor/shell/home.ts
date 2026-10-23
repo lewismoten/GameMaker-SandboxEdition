@@ -1,13 +1,15 @@
 // Home page: one game shown large (a featured one, or the one you chose; see
 // homeShowcase.ts) and the library: tabs for the collections (your games, the CD's
-// gameware, our Sandbox games, the shareware) with search and "New game" beside them, and
+// gameware, our Sandbox games, the shareware, and The Bard of Bizarre's once there are enough
+// of them, bizarre.ts) with search and "New game" beside them, and
 // the chosen collection's games as small picture tiles (homeCards.ts). On a wide window
 // the game sits in a column beside the library and the page fits the window, the tiles
 // scrolling by themselves when there are many; narrower, everything stacks. A chosen game is
 // kept in the address (#/game/cd:<id> or #/game/my:<id>), with the collection and search
 // (?tab=sandbox&q=snow), so a reload or a link shows the same.
 import { h, clear, modal, toast } from '../core/ui';
-import { loadCatalog, type CatalogEntry } from '../../project/files';
+import { isSandboxGame, loadGameList, type CatalogEntry } from '../../project/files';
+import { byCollection, hasBizarreTab, isBizarreGame } from '../../project/bizarre';
 import { listProjects } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
@@ -16,6 +18,7 @@ import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type Home
 import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
 import { icon, type IconName } from './homeIcons';
+import { packCollections } from './homePack';
 import { wantsTouchControls } from '../../player/touch';
 import { findOriginal, isImported } from './homeOrigin';
 import { currentRoute, formatHash, setHashParams, type ParamValue } from '../../urlState';
@@ -27,36 +30,49 @@ export interface HomeNav {
 /** A collection: a kind of game, with your own games split into those made here and those imported. */
 type Category = GameKind | 'imported';
 
-const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[] = [
+/** Each collection: `short` is the one line shown above its games, `lead` the whole of it (More, and the tab's tip). */
+const CATEGORIES: { id: Category; icon: IconName; name: string; short: string; lead: string }[] = [
   {
     id: 'mine',
     icon: 'edit',
     name: 'My games',
+    short: 'Games you made or copied, kept in this browser.',
     lead: 'Games you made here or copied from the collections, kept in this browser. Download a .zip now and then to keep them safe.',
   },
   {
     id: 'imported',
     icon: 'inbox',
     name: 'Imported',
+    short: 'Games brought in from folders, files, .zips or .html exports.',
     lead: 'Games brought in from a folder, files, a .zip or a one-page export, often made by someone else. Kept in this browser; ⋯ More moves one to My games.',
   },
   {
     id: 'gameware',
     icon: 'disk',
     name: 'Gameware',
+    short: 'Free games that came with Game-Maker. Play or edit a copy.',
     lead: 'The free “gameware” that came with Game-Maker. Play them, or edit a copy to see how they were made and reuse their pictures, monsters and sounds in your own games.',
   },
   {
     id: 'sandbox',
     icon: 'star',
     name: 'Sandbox',
+    short: 'New games in the original formats, so they play in DOS too.',
     lead: 'New games from Sandbox Software, made with Game-Maker in the original formats, so they also play in DOS. Play them, read their manuals, or edit a copy to see how they were made.',
   },
   {
     id: 'shareware',
     icon: 'lock',
     name: 'Shareware',
-    lead: 'Games other people made with Game-Maker, as distributed on the CD. They are copyrighted by their authors and can only be played here, exactly as released. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
+    short: 'Other people’s games from the CD and BBSes, as released.',
+    lead: 'Games other people made with Game-Maker, from the CD and the BBSes. Most are copyrighted shareware that can only be played here, exactly as released; a few are free to share. If you enjoy one, read its notice to see how the author asked to be registered or thanked.',
+  },
+  {
+    id: 'bizarre',
+    icon: 'music',
+    name: 'Bizarre',
+    short: 'Heartfelt songs about all the wrong things, made into games.',
+    lead: 'Big, heartfelt songs about all the wrong things (the goat nobody painted, the loaf nobody picked, a fly named Carl, the TV remote), made into games. The Bard of Bizarre is Lewis “Lewie” Moten III, with Doc Leo the hobo clown as his face: he dreams up each song, AI tools shape and record it, and you can play it, read its notice, or edit a copy (they’re MIT) to see how it was made.',
   },
 ];
 
@@ -109,8 +125,19 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   unwatchHome = undefined;
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
   const libTitle = h('h2', { id: 'lib-title' });
-  const libLead = h('p', { class: 'lead' });
-  const libTools = h('div', { class: 'lib-tools' });
+  // the collection in a line (cut short with … if it must be); More shows all of it
+  const libLeadText = h('span', { class: 'lib-lead-text' });
+  const leadMore = h('button', { type: 'button', class: 'lib-lead-more', 'aria-expanded': 'false', 'aria-controls': 'lib-lead', onclick: () => showLead(leadMore.getAttribute('aria-expanded') !== 'true') });
+  const libLead = h('p', { class: 'lead', id: 'lib-lead' }, libLeadText, leadMore);
+  const showLead = (all: boolean) => {
+    const info = CATEGORIES.find((x) => x.id === current)!;
+    libLeadText.textContent = all ? info.lead : info.short;
+    libLead.title = all ? '' : info.lead;
+    libLead.classList.toggle('open', all);
+    leadMore.setAttribute('aria-expanded', String(all));
+    leadMore.textContent = all ? 'Less' : 'More';
+    leadMore.setAttribute('aria-label', all ? `Less about ${info.name}` : `More about ${info.name}`);
+  };
   const tiles = h('div', { id: 'lib-panel', class: 'cards lib-tiles', role: 'tabpanel' }, h('p', { class: 'meta' }, 'Loading…'));
   const search = h('input', {
     type: 'search',
@@ -122,18 +149,29 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       keep({ q: search.value.trim() });
     },
   }) as HTMLInputElement;
-  // where games come in: drop them, or pick them
-  const drop = h(
+  // where games come in, as one more tile: drop them on it (or anywhere in the library), or pick them
+  const dropTile = h(
     'div',
-    { class: 'dropzone lib-drop' },
-    h('span', null, 'Drop a game folder, its files, a .zip or a one-page .html export here, or'),
-    h('button', { type: 'button', onclick: () => void importPicked(nav, { directory: true }) }, 'Open a game folder…'),
-    h('button', { type: 'button', onclick: () => void importPicked(nav, {}) }, 'Open files, .zip or .html…'),
+    { class: 'card dropzone lib-drop-tile' },
+    h(
+      'button',
+      { type: 'button', class: 'lib-drop-pick', 'aria-describedby': 'lib-drop-hint', onclick: () => void importPicked(nav, {}) },
+      h('span', { class: 'lib-drop-art', 'aria-hidden': 'true' }, icon('inbox')),
+      h('span', { class: 'tile-title' }, 'Drop files or click to import'),
+    ),
+    h('span', { class: 'vh', id: 'lib-drop-hint' }, 'A game’s files, a .zip or a one-page .html export'),
+    h(
+      'p',
+      { class: 'lib-drop-hint' },
+      h('button', { type: 'button', class: 'lib-drop-folder', 'aria-label': 'Open a game folder to import', onclick: () => void importPicked(nav, { directory: true }) }, 'or open a folder…'),
+    ),
   );
 
   let catalog: CatalogEntry[] = [];
   let catalogError = '';
   let projects: Awaited<ReturnType<typeof listProjects>> = [];
+  /** The collections this catalog has: Bizarre only with enough of the Bard's games. */
+  const shownCats = () => CATEGORIES.filter((c) => c.id !== 'bizarre' || hasBizarreTab(catalog));
   // RSD's own games first
   const gameware = () =>
     catalog
@@ -143,10 +181,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     c === 'gameware'
       ? gameware()
       : c === 'sandbox'
-        ? catalog.filter((g) => g.original && g.gam)
+        ? catalog.filter((g) => isSandboxGame(g) && g.gam)
         : c === 'shareware'
-          ? catalog.filter((g) => g.kind === 'shareware' && !g.original && g.gam)
-          : [];
+          ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(catalog)))
+          : c === 'bizarre' && hasBizarreTab(catalog)
+            ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
+            : [];
   // one HomeGame per game for the page's life, so files load once
   const games = new Map<string, HomeGame>();
   const remember = (g: HomeGame) => games.get(g.key) ?? (games.set(g.key, g), g);
@@ -195,15 +235,22 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const filterTiles = () => {
     const q = search.value.trim().toLowerCase();
     let shown = 0;
-    for (const t of tiles.querySelectorAll<HTMLElement>('.card')) {
+    for (const t of tiles.querySelectorAll<HTMLElement>('.card:not(.lib-drop-tile)')) {
       const hit = !q || (t.dataset.search ?? '').includes(q);
       t.hidden = !hit;
       if (hit) shown++;
     }
+    // a collection's heading only while one of its games shows
+    for (const sub of tiles.querySelectorAll<HTMLElement>('.lib-sub')) {
+      let any = false;
+      for (let e = sub.nextElementSibling as HTMLElement | null; e && !e.classList.contains('lib-sub'); e = e.nextElementSibling as HTMLElement | null) any ||= e.classList.contains('card') && !e.hidden;
+      sub.hidden = !any;
+    }
     tiles.querySelector('.lib-none')?.remove();
+    pack();
     if (!q || shown) return;
     // nothing here: point to the collections that have it
-    const elsewhere = CATEGORIES.filter((c) => c.id !== current)
+    const elsewhere = shownCats().filter((c) => c.id !== current)
       .map((c) => ({ c, n: gamesOf(c.id).filter((g) => g.search.includes(q)).length }))
       .filter((x) => x.n);
     tiles.append(
@@ -217,6 +264,37 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       ),
     );
   };
+
+  /** The grid's columns when the collections were last packed into it (0: not packed). */
+  let packedCols = 0;
+  /**
+   * The Bard's collections packed into as few rows as they fit (homePack.ts), the page in the
+   * same order as the rows; while searching, back in the plain flow, a heading over each.
+   */
+  const pack = () => {
+    const heads = [...tiles.querySelectorAll<HTMLElement>(':scope > .lib-sub')];
+    if (!heads.length || search.value.trim()) {
+      if (packedCols) for (const el of tiles.children) (el as HTMLElement).style.gridArea = '';
+      packedCols = 0;
+      return;
+    }
+    const cols = getComputedStyle(tiles).gridTemplateColumns.split(' ').filter(Boolean).length;
+    if (!cols || cols === packedCols) return;
+    packedCols = cols;
+    const groups = heads.map((head) => ({ head, items: [...tiles.querySelectorAll<HTMLElement>(`:scope > .card[data-group="${head.dataset.group}"]`)] }));
+    const order: HTMLElement[] = [];
+    for (const p of packCollections(groups.map((g) => g.items.length), cols)) {
+      const { head, items } = groups[p.index];
+      head.style.gridArea = `${p.head.row} / ${p.head.col} / auto / span ${p.head.span}`;
+      items.forEach((el, i) => (el.style.gridArea = `${p.tiles[i].row} / ${p.tiles[i].col}`));
+      order.push(head, ...items);
+    }
+    if (order.every((el, i) => tiles.children[i] === el)) return;
+    const focused = document.activeElement;
+    tiles.append(...order);
+    if (focused instanceof HTMLElement && tiles.contains(focused)) focused.focus({ preventScroll: true });
+  };
+  new ResizeObserver(() => pack()).observe(tiles);
 
   const markSelected = () => {
     const key = top.game?.key;
@@ -263,7 +341,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, isOwn(c.id) ? own(c.id).length : entriesOf(c.id).length]));
     clear(
       catNav,
-      ...CATEGORIES.map((c) =>
+      ...shownCats().map((c) =>
         h(
           'button',
           {
@@ -286,13 +364,24 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   };
   // Arrow keys move between the tiles (Tab stops once per tile); Home and End go to the ends.
   tiles.addEventListener('keydown', (e) => {
-    const from = (e.target as HTMLElement).closest('.tile-select');
+    const from = (e.target as HTMLElement).closest<HTMLElement>('.tile-select, .lib-drop-pick');
     if (!from || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
-    const all = [...tiles.querySelectorAll<HTMLElement>('.game-tile:not([hidden]) .tile-select')];
-    const i = all.indexOf(from as HTMLElement);
-    const top = (el: HTMLElement) => el.closest('.game-tile')!.getBoundingClientRect().top;
-    const cols = Math.max(1, all.filter((el) => top(el) === top(all[0])).length);
-    const j = { ArrowLeft: i - 1, ArrowRight: i + 1, ArrowUp: i - cols, ArrowDown: i + cols, Home: 0, End: all.length - 1 }[e.key]!;
+    const all = [...tiles.querySelectorAll<HTMLElement>('.game-tile:not([hidden]) .tile-select, .lib-drop-pick')];
+    const i = all.indexOf(from);
+    const box = (el: HTMLElement) => el.closest('.card')!.getBoundingClientRect();
+    // up and down: the tile in the next row that way nearest straight above or below (the
+    // Bard's collections share rows, so the tiles' order is not always row by row)
+    const vertical = (down: boolean) => {
+      const r = box(from);
+      const x = r.left + r.width / 2;
+      const way = all.map((el) => ({ el, b: box(el) })).filter(({ b }) => (down ? b.top > r.top + 4 : b.top < r.top - 4));
+      if (!way.length) return -1;
+      const row = down ? Math.min(...way.map(({ b }) => b.top)) : Math.max(...way.map(({ b }) => b.top));
+      const near = way.filter(({ b }) => Math.abs(b.top - row) < 4).sort((a, b) => Math.abs(a.b.left + a.b.width / 2 - x) - Math.abs(b.b.left + b.b.width / 2 - x));
+      return all.indexOf(near[0].el);
+    };
+    const j =
+      e.key === 'ArrowUp' || e.key === 'ArrowDown' ? vertical(e.key === 'ArrowDown') : { ArrowLeft: i - 1, ArrowRight: i + 1, Home: 0, End: all.length - 1 }[e.key]!;
     if (j < 0 || j >= all.length) return;
     e.preventDefault();
     all[j].focus();
@@ -303,13 +392,16 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1, Home: -99, End: 99 }[e.key];
     if (!step) return;
     e.preventDefault();
-    const i = CATEGORIES.findIndex((c) => c.id === current);
-    const next = CATEGORIES[Math.max(0, Math.min(CATEGORIES.length - 1, Math.abs(step) > 1 ? (step < 0 ? 0 : 99) : (i + step + CATEGORIES.length) % CATEGORIES.length))];
+    const cats = shownCats();
+    const i = cats.findIndex((c) => c.id === current);
+    const next = cats[Math.max(0, Math.min(cats.length - 1, Math.abs(step) > 1 ? (step < 0 ? 0 : 99) : (i + step + cats.length) % cats.length))];
     void select(next.id, true).then(() => catNav.querySelector<HTMLElement>(`#lib-tab-${next.id}`)?.focus());
   });
 
   /** Shows a collection; remembered when the visitor picked it. */
   const select = async (c: Category, picked = false) => {
+    // a Bizarre tab remembered from a catalog that had one: its games are with the shareware now
+    if (c === 'bizarre' && !hasBizarreTab(catalog)) c = 'shareware';
     current = c;
     if (picked) {
       keep({ tab: c });
@@ -323,15 +415,28 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     tiles.setAttribute('aria-labelledby', `lib-tab-${c}`);
     const info = CATEGORIES.find((x) => x.id === c)!;
     libTitle.textContent = info.name;
-    libLead.textContent = info.lead;
+    showLead(false);
     sortBox.hidden = !isOwn(c) || own(c).length < 2;
-    clear(
-      libTools,
-      isOwn(c) ? drop : null,
-    );
     let cards: HTMLElement[];
     if (!isOwn(c) && catalogError) cards = [h('p', { class: 'meta' }, catalogError)];
-    else cards = gamesOf(c).map((g) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) }));
+    else {
+      const tile = (g: HomeGame) => gameTile(g, { onSelect: choose, onMore: (game) => (choose(game), top.openMore()) });
+      // the Bard's games under his collections, in the flyer's order
+      // (packed into as few rows as they fit, pack() above), each tile telling its collection
+      const sections = c === 'bizarre' ? byCollection(gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))) : [];
+      cards =
+        sections.length > 1
+          ? sections.flatMap((sec, n) => [
+              h('h3', { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } }, sec.name),
+              ...sec.games.map((x) => {
+                const t = tile(x.g);
+                t.dataset.group = String(n);
+                t.querySelector('.tile-select')?.setAttribute('aria-describedby', `lib-sub-${n}`);
+                return t;
+              }),
+            ])
+          : gamesOf(c).map(tile);
+    }
     if (!cards.length)
       cards = [
         c === 'mine'
@@ -353,12 +458,19 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
                 'div',
                 { class: 'lib-empty' },
                 h('p', { class: 'lib-empty-title' }, 'No imported games yet'),
-                h('p', { class: 'meta' }, 'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you open it above.'),
+                h('p', { class: 'meta' }, 'A game someone sends you (a folder, its files, a .zip or a one-page .html export) is listed here when you drop it on the import tile or open it.'),
               )
             : h('p', { class: 'meta' }, 'No games of this kind were bundled with this build.'),
       ];
+    // your own collections take more games in: the import tile, first while there are none
+    if (isOwn(c)) {
+      dropTile.classList.remove('over');
+      if (cards.some((el) => el.classList.contains('game-tile'))) cards.push(dropTile);
+      else cards.unshift(dropTile);
+    }
     // Keep the page from jumping while the tiles are swapped.
     tiles.style.minHeight = `${tiles.offsetHeight}px`;
+    packedCols = 0;
     clear(tiles, ...cards);
     filterTiles();
     markSelected();
@@ -395,7 +507,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         ? 'Playing: slide a thumb around the pad to move and tap the buttons to act; Esc, F1 help and F2 status have buttons too. '
         : // each key with its word, the dot after it, so a line never starts with one
           `Playing: ${['F1 help', 'F2 status', 'F3 music', 'F4 sound', 'F5 save', 'F6 load', 'Esc leaves a level'].map((k) => k.replace(/ /g, '\u00a0')).join('\u00a0· ')}. `,
-      h('a', { href: '#/help', onclick: onGuide }, 'Read the Guide →'),
+      h('a', { href: '#/help', onclick: onGuide }, 'Read the Guide\u00a0→'),
+      ' · ',
+      h('a', { href: '#/cast' }, 'Meet the cast\u00a0→'),
     ),
   ];
   // when Getting started has no room beside the library, a link in the library's header opens it
@@ -443,7 +557,6 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           h('div', { class: 'lib-find' }, search, h('button', { class: 'primary lib-new', type: 'button', onclick: () => void newGame(nav) }, '+ New game')),
         ),
         h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, howBtn),
-        libTools,
         tiles,
       ),
       h(
@@ -465,14 +578,21 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   new ResizeObserver(fitStart).observe(start.parentElement!);
   new ResizeObserver(fitStart).observe(top.el);
 
-  drop.addEventListener('dragover', (e) => {
+  // on My games and Imported, files dropped anywhere in the library come in (the tile lights up)
+  const library = root.querySelector<HTMLElement>('#library')!;
+  const takesDrop = (e: DragEvent) => isOwn(current) && !!e.dataTransfer?.types.includes('Files');
+  library.addEventListener('dragover', (e) => {
+    if (!takesDrop(e)) return;
     e.preventDefault();
-    drop.classList.add('over');
+    dropTile.classList.add('over');
   });
-  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
-  drop.addEventListener('drop', (e) => {
+  library.addEventListener('dragleave', (e) => {
+    if (!library.contains(e.relatedTarget as Node | null)) dropTile.classList.remove('over');
+  });
+  library.addEventListener('drop', (e) => {
+    if (!takesDrop(e)) return;
     e.preventDefault();
-    drop.classList.remove('over');
+    dropTile.classList.remove('over');
     void importDropped(nav, e.dataTransfer!);
   });
 
@@ -480,7 +600,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   if (!savedCategory() && projects.length) current = own('mine').length ? 'mine' : 'imported';
   renderCats();
   try {
-    catalog = await loadCatalog();
+    catalog = await loadGameList();
   } catch {
     catalogError = 'These games are unavailable offline until they have been opened once.';
   }
@@ -489,9 +609,12 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   if (chosen) {
     top.show(chosen, {});
     current = categoryOf(chosen);
+    // …and its Saves & scores, when the address had it open (#/game/<key>?saves=3)
+    const saves = currentRoute().params.saves;
+    if (saves) top.openSaves(saves);
   } else {
     // your own games live in the browser that made them: a link to one opens only there
-    if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: “Save & share” downloads it.');
+    if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: its Download button saves it.');
     showStart();
   }
   // …and the collection and search in the address (#/?tab=sandbox&q=snow) come back too
@@ -506,7 +629,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const unwatch = (unwatchHome = onCatalogChanged(async () => {
     if (!page.isConnected) return unwatch();
     try {
-      catalog = await loadCatalog();
+      catalog = await loadGameList();
     } catch {
       return;
     }

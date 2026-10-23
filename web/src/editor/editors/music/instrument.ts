@@ -34,6 +34,13 @@ export function instLabel(doc: MusicDoc, i: number): string {
   return `Instrument ${i + 1}${p ? ` · ${cap(p)}` : ''}`;
 }
 
+/** instLabel short enough for a track's narrow header: "2 · Brass" (the full label goes in its tooltip). */
+export function instShortLabel(doc: MusicDoc, i: number): string {
+  const inst = doc.song.instruments[i];
+  const p = inst ? presetName(inst) : '';
+  return p ? `${i + 1} · ${cap(p)}` : instLabel(doc, i);
+}
+
 /** Tracks whose notes use instrument i. */
 function usersOf(doc: MusicDoc, i: number): number[] {
   return doc.tracks().filter((c) => startProgram(doc.song, c) === i || programChanges(doc.song, c).some((e) => e.a === i));
@@ -267,7 +274,7 @@ export class InstrumentPanel {
     const head = h(
       'div',
       { class: 'mus-inst-head' },
-      h('h3', null, instLabel(doc, p)),
+      h('h2', null, instLabel(doc, p)),
       h(
         'div',
         { class: 'toolbar' },
@@ -407,7 +414,7 @@ export class InstrumentPanel {
       return h(
         'div',
         { class: `mus-op${half === 1 && singleOp ? ' off' : ''}` },
-        h('h4', null, title),
+        h('h3', null, title),
         // two halves, side by side when the card is wide: the envelope, and the tone
         h('div', { class: 'mus-op-half' }, env, ...sliders),
         h(

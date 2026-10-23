@@ -116,7 +116,7 @@
   min-width: 0;
 }
 
-.chr-group > h4 {
+.chr-group > h2 {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -379,7 +379,7 @@
   min-width: 0;
 }
 
-.chr-detail-head h3 {
+.chr-detail-head h2 {
   margin: 0;
   font-size: 18px;
 }
@@ -429,7 +429,7 @@
   border-radius: 8px;
 }
 
-.chr-frames-wrap > h4 {
+.chr-frames-wrap > h3 {
   margin: 0 0 10px;
   display: flex;
   flex-wrap: wrap;
@@ -719,14 +719,14 @@
   .chr-groups .chr-group {
     padding: 8px 12px;
   }
-  .chr-groups .chr-group > h4 {
+  .chr-groups .chr-group > h2 {
     margin-bottom: 6px;
   }
   .chr-frames-wrap {
     grid-row: 3;
     padding: 8px 12px;
   }
-  .chr-frames-wrap > h4 {
+  .chr-frames-wrap > h3 {
     margin-bottom: 6px;
   }
   /* the sequence's name and what it does share a line */

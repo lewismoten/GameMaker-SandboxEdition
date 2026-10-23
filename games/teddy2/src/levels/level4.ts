@@ -7,13 +7,13 @@
 //
 // The blocks are in level4Tiles.ts, the monsters in level4Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
-import { G, riverTiles, skyAt } from './level4Tiles';
+import { G, bandRow, riverTiles, skyAt } from './level4Tiles';
 import { riverBeasts } from './level4Beasts';
 
 export function river(): Level {
   const bs = riverTiles();
   const beasts = riverBeasts();
-  bs.chez(() => bs.pic('sky3'), 'chicken', bs.pic('sky3'), () => bs.pic('sky3'));
+  bs.chez(() => bs.pic('sky3'), 'chicken', bs.pic(skyAt(37)), () => bs.pic('sky3'));
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => skyAt(y));
   for (const [cx, cy] of [
@@ -31,8 +31,8 @@ export function river(): Level {
 
   // The start: the bank, a tree, a picnic table, a sign.
   const tree = (x: number, ground = G) => {
-    for (let y = ground - 5; y < ground; y++) m.set(x, y, y < 37 ? 'trunk2' : 'trunk');
-    for (let dy = 0; dy < 3; dy++) for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + dy < 4) m.set(x + dx, ground - 8 + dy, ground - 8 + dy < 35 ? 'leaf1' : 'leaf2');
+    for (let y = ground - 5; y < ground; y++) m.set(x, y, bandRow(y) === 3 ? 'trunk' : `trunk${bandRow(y)}`);
+    for (let dy = 0; dy < 3; dy++) for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + dy < 4) m.set(x + dx, ground - 8 + dy, `leaf${bandRow(ground - 8 + dy)}`);
   };
   tree(2);
   m.set(7, 39, 'picnic');

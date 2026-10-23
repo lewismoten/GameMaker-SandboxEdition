@@ -4,14 +4,16 @@
 import './booklet.css';
 import { h } from '../editor/core/ui';
 import type { CatalogEntry } from '../project/files';
-import { loadCatalog } from '../project/files';
+import { isSandboxGame, loadCatalog, withDetails } from '../project/files';
 import { drawBox } from '../desk/boxes/gameBox';
 import { buildBooklet } from './printables/manualPages';
 import { openBox } from './printables/viewer';
 import { boxItems } from './printables/items';
 import { shotCache, type PrintContext } from './printables/kit';
 
-export async function openGameManual(entry: CatalogEntry, coverImage?: string): Promise<void> {
+/** Opens the game's manual box; `onReady` hears when it has loaded and is about to show. */
+export async function openGameManual(listed: CatalogEntry, coverImage?: string, onReady?: () => void): Promise<void> {
+  const entry = await withDetails(listed); // a listed entry holds only the manual's title
   const manual = entry.original?.manual;
   if (!manual) return;
   const title = manual.title || `${entry.title} Manual`;
@@ -20,9 +22,11 @@ export async function openGameManual(entry: CatalogEntry, coverImage?: string): 
   document.body.append(host);
   try {
     const pages = await buildBooklet(entry, cover, host);
-    const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter((g) => g.original);
+    const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
     const ctx: PrintContext = { entry, family, printables: entry.original?.printables ?? {}, manual, shot: shotCache(entry) };
-    await openBox(title, pages, boxItems(ctx));
+    const items = boxItems(ctx);
+    onReady?.();
+    await openBox(title, pages, items);
   } finally {
     host.remove();
   }

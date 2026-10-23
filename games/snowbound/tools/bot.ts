@@ -1,11 +1,13 @@
 // A play-testing bot for GameSim: finds its way across a street with a shortest-path search
 // (deep snow and plow banks count as ground it can dig through, ice and the road cost
-// extra), walks it one straight run at a time and shovels whatever is in the way. On the
+// extra), walks it one straight run at a time and shovels whatever is in the way, and picks
+// up the cocoa and tips in sight a few steps off the way (never in the park). On the
 // sled run it steers by trying each move a few ticks ahead on a snapshot of the game.
 import { GameSim } from './sim';
 import { buildBlocks } from '../src/blocks/blocks';
 import { buildPalette } from '../src/art/pal';
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
+import { SCRNBLEN, SCRNBWID } from '../../../web/src/engine/world';
 import { MON, THROWSEQ } from '../src/ids';
 
 type Pt = { x: number; y: number };
@@ -28,6 +30,9 @@ const DIG = new Map([
   [n('bank2'), 18],
 ]);
 const ICE = new Set(['iceN', 'iceE', 'iceS', 'iceW'].map(n));
+/** Never picked up on the way: the felt egg and the mitten that leads to it. */
+const KEEP_OUT = new Set(['feltEgg', 'mitten', 'toboggan'].map(n));
+const NAME = new Map([...BLOCK].map(([k, v]) => [v, k]));
 
 export class Bot {
   log: string[] = [];
@@ -127,8 +132,8 @@ export class Bot {
   }
 
   /** Shortest path (4 directions) to (tx, ty), digging where it has to, avoiding links not asked for. */
-  path(tx: number, ty: number): Pt[] | undefined {
-    const { x: sx, y: sy } = this.sim.pos;
+  path(tx: number, ty: number, start: Pt = this.sim.pos): Pt[] | undefined {
+    const { x: sx, y: sy } = start;
     const links = this.linkCells();
     const key = (x: number, y: number) => y * 100 + x;
     const dist = new Map<number, number>([[key(sx, sy), 0]]);
@@ -233,8 +238,71 @@ export class Bot {
     return this.wait(1);
   }
 
+  /** Off where a detour could spoil a stretch. */
+  grab = true;
+  /** How many steps out of the way a cocoa mug or a tip in sight is worth. */
+  detour = 8;
+
+  /** A pickup lying out in the open (cocoa, a tip, a root beer), never the felt egg or what lies in the pines. */
+  private isPickup(x: number, y: number): boolean {
+    // the park and the pines behind Gale Street are left alone
+    if (this.sim.scene === 2 && y >= 23) return false;
+    const b = this.sim.blockAt(x, y);
+    const k = this.sim.shown(x, y);
+    if (KEEP_OUT.has(b) || k.solid || k.touchBl === b || (k.effect && k.eamt < 0)) return false;
+    return k.scorePts > 0 || k.chHitPt > 0 || (k.effect > 0 && k.eamt > 0);
+  }
+
+  /** What walking (and shoveling) `steps` costs. */
+  private walkCost(steps: Pt[]): number {
+    return steps.reduce((c, s) => c + (this.cost(s.x, s.y) ?? 1), 0);
+  }
+
+  /** Steps on the road, the ice or in a fort's line of fire. */
+  private risky(steps: Pt[]): boolean {
+    return steps.some((s) => this.avoid.has(`${s.x},${s.y}`) || ICE.has(this.sim.blockAt(s.x, s.y)));
+  }
+
+  /** The pickup on screen fewest steps out of the way to (tx, ty) (shoveling counted), if no more than `detour` and nothing risky on the way there. */
+  private pickupNear(tx: number, ty: number): Pt | undefined {
+    const w = this.sim.w;
+    const direct = this.path(tx, ty);
+    if (!direct) return undefined;
+    const dc = this.walkCost(direct);
+    const p = this.sim.pos;
+    let best: { pt: Pt; extra: number } | undefined;
+    for (let j = 0; j <= SCRNBWID; j++)
+      for (let i = 0; i <= SCRNBLEN; i++) {
+        const x = (w.mx + i) % 100;
+        const y = (w.my + j) % 100;
+        if ((x === tx && y === ty) || (x === p.x && y === p.y) || !this.isPickup(x, y)) continue;
+        if (Math.abs(x - p.x) + Math.abs(y - p.y) > direct.length + this.detour) continue;
+        const there = this.path(x, y);
+        if (!there || this.risky(there)) continue;
+        const back = this.path(tx, ty, { x, y });
+        if (!back) continue;
+        const extra = this.walkCost(there) + this.walkCost(back) - dc;
+        if (extra <= this.detour && (!best || extra < best.extra)) best = { pt: { x, y }, extra };
+      }
+    return best?.pt;
+  }
+
   /** Walks to (x, y). Returns 'link'/'dead'/'end' if a scene change happened on the way. */
   async goto(x: number, y: number, label = ''): Promise<string | undefined> {
+    // like a player, pick up what lies in sight a few steps off the way first
+    for (let k = 0; this.grab && k < 10; k++) {
+      const p = this.sim.pos;
+      if (p.sx || p.sy) break;
+      const q = this.pickupNear(x, y);
+      if (!q) break;
+      this.grab = false;
+      try {
+        const r = await this.goto(q.x, q.y, `a ${NAME.get(this.sim.blockAt(q.x, q.y))} on the way`);
+        if (r) return r;
+      } finally {
+        this.grab = true;
+      }
+    }
     for (let attempt = 0; attempt < 8; attempt++) {
       const steps = this.path(x, y);
       if (!steps) throw new Error(`No path to ${x},${y} ${label} from ${this.sim.pos.x},${this.sim.pos.y} in scene ${this.sim.scene}`);

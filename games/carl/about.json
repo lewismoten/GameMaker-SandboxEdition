@@ -1,0 +1,11 @@
+{
+  "title": "A Fly Named Carl",
+  "author": "The Bard of Bizarre",
+  "company": "The Bard of Bizarre",
+  "series": "bizarre",
+  "year": 1995,
+  "price": "$5",
+  "blurb": "You are Carl, the fly in the room, and you're winning. Eat his TV snacks, flash a smile from every wall, buzz his ear at 3:47 AM, barrel-roll past the dish towel and the old clap, go out the window into a nature documentary where time breaks, then come back for the aux cord. Shareware from The Sofa BBS, based on the song by The Bard of Bizarre (lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); title and cover art drawn for the game by Claude Opus 5.5).",
+  "exe": "CARL.EXE",
+  "sound": "sb"
+}

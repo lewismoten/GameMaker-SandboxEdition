@@ -24,17 +24,17 @@
   align-items: center;
   gap: 12px;
 }
-.mon-who h3 {
+.mon-who h2 {
   margin: 0;
 }
 .mon-anim {
   flex: 1 1 300px;
   min-width: 0;
 }
-.mon-anim h4 {
+.mon-anim h3 {
   margin: 0;
 }
-.mon-anim h4 small {
+.mon-anim h3 small {
   font-weight: 400;
 }
 .mon-frames {
@@ -68,7 +68,7 @@
   gap: 4px 12px;
   margin-bottom: 6px;
 }
-.mon-anim-head h4 {
+.mon-anim-head h3 {
   margin: 0;
 }
 .mon-frame-tools {
@@ -113,8 +113,10 @@
     gap: 8px 10px;
     align-items: end;
   }
-  /* the monster it becomes and the solid-blocks switch take a whole row */
+  /* the monster it becomes, the solid-blocks switch and the choices (Lives, Movement: their
+     words would be cut off at half width) take a whole row */
   .mon-detail > .mon-stats > :nth-child(3),
+  .mon-detail > .mon-stats > :has(select),
   .mon-detail > .mon-stats > .check,
   .mon-detail > .mon-stats > label:has(input[type='checkbox']) {
     grid-column: 1 / -1;
@@ -148,14 +150,14 @@
     align-items: stretch;
   }
   .mon-detail .mpath-toolbar select {
-    max-width: 190px;
+    max-width: 160px;
   }
 }
 
 /* tablets in landscape: a narrower map choice keeps the path toolbar on one row */
 @media (min-width: 1000px) and (max-width: 1199px) and (min-height: 640px) {
   .mon-detail .mpath-toolbar select {
-    max-width: 140px;
+    max-width: 120px;
   }
   .mon-detail .mpath-left {
     width: clamp(170px, calc(var(--ws-vh, 100dvh) - 600px), 760px);

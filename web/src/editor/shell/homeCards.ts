@@ -6,18 +6,13 @@
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
 import { renderShot } from '../../desk/boxes/boxArt';
-import { openGameManual } from '../../manual/gameManual';
-import { GameFiles, creditLine, loadHostedGame, type CatalogEntry } from '../../project/files';
+import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
 import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
 import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
-import { showKeyMap } from '../keymap/keyMapView';
-import { demoButton } from '../../media/demo';
-import { demoAudioPicker } from '../../media/demoAudio';
-import { offerAddedDemo } from '../../media/addedDemo';
-import { catalogHasDemo, filesDemoKind, playDemoPreview, type DemoPreview } from '../../media/demoPreview';
+import type { DemoPreview } from '../../media/demoPreview';
 import type { HomeNav } from './home';
 import { gamePage } from '../../seo/site';
 import { icon as svgIcon, type IconName } from './homeIcons';
@@ -25,7 +20,50 @@ import { editedWhen } from './homeTime';
 import { readableBlurb } from './homeBlurb';
 import { rememberOrigin } from './homeOrigin';
 import { projectMenuItems } from './homeProjectActions';
+import { projectDownloadButton } from './projectExport';
 import { chooseCopy } from './homeCopies';
+import { plainError } from '../core/plainError';
+import { isBizarreGame } from '../../project/bizarre';
+
+// Loaded when first used, so the list of games shows without them: the demo player (and
+// the game engine with it), the keyboard map and the manual with the paper in the box.
+const demoPreview = () => import('../../media/demoPreview');
+const openGameManual = async (entry: CatalogEntry, onReady?: () => void) => (await import('../../manual/gameManual')).openGameManual(entry, undefined, onReady);
+
+/**
+ * A button that loads something before it opens (the manual's box, made from the game's
+ * files): it says “Loading…” meanwhile and ignores more presses.
+ */
+function loadingButton(ico: IconName, name: string, ariaLabel: string, open: (ready: () => void) => Promise<unknown>): HTMLButtonElement {
+  const label = h('span', null, name);
+  const ready = () => {
+    b.removeAttribute('aria-busy');
+    label.textContent = name;
+  };
+  const b = h(
+    'button',
+    {
+      type: 'button',
+      class: 'with-ico',
+      'aria-label': ariaLabel,
+      onclick: async () => {
+        if (b.getAttribute('aria-busy') === 'true') return;
+        b.setAttribute('aria-busy', 'true');
+        label.textContent = 'Loading…';
+        try {
+          await open(ready);
+        } catch (e) {
+          toast(plainError(e), 'error');
+        } finally {
+          ready();
+        }
+      },
+    },
+    svgIcon(ico),
+    label,
+  );
+  return b;
+}
 
 /**
  * Where ▶ Play goes: the game's own page (play-<id>.html, made at build time with its link
@@ -36,7 +74,10 @@ export function playLink(id: string): string {
   return import.meta.env?.DEV ? `./play.html?game=${encodeURIComponent(id)}` : `./${gamePage(id)}`;
 }
 
-export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware';
+/** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
+const PREVIEW_AHEAD = 192 * 1024;
+
+export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -87,8 +128,8 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   const byline =
     kind === 'sandbox'
       ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
-      : kind === 'shareware'
-        ? creditLine(g) || 'Shareware · play only'
+      : kind === 'shareware' || kind === 'bizarre'
+        ? creditLine(g) || (isBizarreGame(g) ? 'The Bard of Bizarre · free to change' : 'Shareware · play only')
         : !g.gam
           ? 'Pictures, monsters and sounds'
           : [g.company ?? g.author, g.year].filter(Boolean).join(' · ') || 'Gameware from the Game-Maker CD';
@@ -107,12 +148,13 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
     drawShot: (c) => renderShot(g, c, Math.round(c.width / 20), Math.round(c.height / 20)),
     files: once(() => loadHostedGame(g)),
     previewFiles: once(async () => {
-      const s = streamHostedGame(g);
+      // the demo's files as it asks for them, and a little ahead (not the whole game)
+      const s = streamHostedGame(g, './', 4, PREVIEW_AHEAD);
       await s.started;
       await s.files.stream?.need(demoNeeds(s.files.get(g.gam ?? '')));
       return s.files;
     }),
-    hasDemo: () => catalogHasDemo(g),
+    hasDemo: async () => (await import('../../media/demoKind')).catalogHasDemo(g), // from the .gam: no player needed yet
   };
 }
 
@@ -129,7 +171,8 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
     title: p.name,
     // the game it began as, when it is a copy
     byline: [editedWhen(p.updated), original?.gam ? `copy of ${original.title}` : null, p.gam].filter(Boolean).join(' · '),
-    tileByline: original?.gam ? `${editedWhen(p.updated)} · from ${original.title}` : undefined,
+    // two lines (pre-line in home.css), so a narrow tile never ends a line with a lone “·”
+    tileByline: original?.gam ? `${editedWhen(p.updated)}\nfrom ${original.title}` : undefined,
     gam: p.gam,
     search: searchText(p.name, p.gam),
     project: p,
@@ -150,7 +193,7 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
     },
     files: load,
     // its own demo, one added for the CD game it still is, or the attract mode (demoPreview.ts)
-    hasDemo: async () => !!(await filesDemoKind(await load(), p.gam)),
+    hasDemo: async () => !!(await (await demoPreview()).filesDemoKind(await load(), p.gam)),
   };
 }
 
@@ -188,7 +231,7 @@ export function gameShot(game: HomeGame, width: number, height: number, classNam
 
 /** ⌨ Keys: a keyboard map of what each key does in the game, worked out from its files. */
 export function openKeys(game: HomeGame): void {
-  showKeyMap(game.files(), game.gam ?? undefined, game.title);
+  void import('../keymap/keyMapView').then(({ showKeyMap }) => showKeyMap(game.files(), game.gam ?? undefined, game.title));
 }
 
 /** The manual, for games that have one printed. */
@@ -208,21 +251,26 @@ export function demoInPicture(
   let preview: DemoPreview | undefined;
   let stopped = false;
   const host = h('div', { class: 'demo-screen', 'aria-hidden': 'true' });
-  const sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
+  let sound: HTMLElement | undefined;
   const stop = () => {
     if (stopped) return;
     stopped = true;
     preview?.stop();
     host.remove();
-    sound.remove();
+    sound?.remove();
     screen.classList.remove('demo-playing');
     o.onState?.(false);
   };
   const ready = (async () => {
     screen.classList.add('demo-loading');
     try {
-      const files = await (game.previewFiles ?? game.files)();
+      const [files, { playDemoPreview }, { demoAudioPicker }] = await Promise.all([
+        (game.previewFiles ?? game.files)(),
+        demoPreview(),
+        import('../../media/demoAudio'),
+      ]);
       if (stopped || !game.gam) return false;
+      sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
       screen.append(host, sound);
       preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop });
       if (!preview) {
@@ -233,7 +281,7 @@ export function demoInPicture(
       o.onState?.(true);
       return true;
     } catch (e) {
-      toast((e as Error).message, 'error');
+      toast(plainError(e), 'error');
       stop();
       return false;
     } finally {
@@ -305,6 +353,7 @@ async function copyGame(game: HomeGame, nav: HomeNav, name = game.title): Promis
     if (pick !== 'new') return nav.openProject(pick.id);
   }
   // a demo added for this edition goes in only if asked for (offerAddedDemo, media/addedDemo.ts)
+  const { offerAddedDemo } = await import('../../media/addedDemo');
   const files = await offerAddedDemo(game.entry, await game.files(), game.gam);
   if (!files) return;
   toast(`Copying ${game.title}…`);
@@ -345,6 +394,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
       h('button', { class: 'primary with-ico', onclick: () => nav.openProject(p.id) }, svgIcon('edit'), 'Open'),
       h('a', { class: 'button with-ico', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
       keys,
+      projectDownloadButton(p.id, game.title),
       moreMenu(...projectMenuItems(p, refresh)),
     ].filter((x): x is HTMLElement => !!x);
   }
@@ -364,36 +414,49 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
       ),
     ];
   const href = playLink(e.id);
+  // the Bard of Bizarre's games are this project's own (MIT, like the Sandbox games): editable, with their notice as well
+  const playOnly = (game.kind === 'shareware' || game.kind === 'bizarre') && !isBizarreGame(e);
+  const notice = h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice');
   return (
     [
       play(href),
-      game.kind === 'shareware'
-        ? h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice')
-        : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
+      playOnly ? notice : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
       keys,
-      hasManual(game) ? h('button', { class: 'with-ico', onclick: () => void openGameManual(e) }, svgIcon('manual'), 'Manual') : null,
+      isBizarreGame(e) ? notice : null,
+      hasManual(game) ? loadingButton('manual', 'Manual', `Read the ${game.title} manual`, (ready) => openGameManual(e, ready)) : null,
     ] as (HTMLElement | null)[]
   ).filter((x): x is HTMLElement => !!x);
 }
 
 /** “Demo video”: the demo in a dialog, where it can also be saved as a video. */
 export function demoDialogButton(game: HomeGame): HTMLElement | null {
-  const b = demoButton(game.title, () => game.files(), game.gam);
-  if (!b) return null;
-  b.replaceChildren(svgIcon('film'), 'Demo video');
-  b.classList.add('with-ico');
-  b.title = 'Watch the demo with its music and sounds, or save it as a video';
-  return b;
+  if (!game.gam) return null;
+  // the dialog and the video maker load when it is pressed (media/demo.ts does the rest)
+  const press = async () => (await import('../../media/demo')).demoButton(game.title, () => game.files(), game.gam)?.click();
+  return h(
+    'button',
+    { class: 'with-ico', title: 'Watch the demo with its music and sounds, or save it as a video', onclick: () => void press() },
+    svgIcon('film'),
+    'Demo video',
+  );
 }
 
-export function showNotice(g: CatalogEntry): Promise<unknown> {
-  return modal(`${g.title}: shareware notice`, (close) => [
+export async function showNotice(listed: CatalogEntry): Promise<unknown> {
+  const g = await withDetails(listed).catch(() => listed); // the notice is in games/details/<id>.json
+  const bard = isBizarreGame(g);
+  return modal(`${g.title}: ${bard ? 'notice' : 'shareware notice'}`, (close) => [
     h(
       'pre',
       { style: 'white-space:pre-wrap;max-height:60vh;overflow:auto;font:13px/1.4 ui-monospace,monospace' },
       g.notice || 'This game is shareware. It is copyrighted by its author.',
     ),
-    h('p', { class: 'meta' }, 'These notices are from 1993–1994; the addresses and prices may no longer be current.'),
+    h(
+      'p',
+      { class: 'meta' },
+      bard
+        ? 'The Bard of Bizarre’s games are this project’s own: free to play, share and change (MIT license). Edit a copy to see how it was made.'
+        : 'These notices are from 1993–1994; the addresses and prices may no longer be current.',
+    ),
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
   ]);
 }

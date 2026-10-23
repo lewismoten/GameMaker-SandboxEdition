@@ -4,7 +4,7 @@ import "./desk.css";
 import "./deskStage.css";
 import "./pc/crtOff.css";
 import { h, clear, toast } from "../editor/core/ui";
-import { Computer } from "../retro/computer";
+import type { Computer } from "../retro/computer";
 import type { MonitorMode } from "../retro/computer/setup";
 import { loadDisks, type Disk } from "../retro/dos/disks";
 import {
@@ -28,14 +28,15 @@ import "./boxes/gmBox.css";
 import { SANDBOX_SHOTS, sandboxShots } from "./boxes/gmShots";
 import { fitStage } from "./stage";
 import { keyCardSpot } from "./pc/keyCard";
+import { regSide } from "./pc/regSide";
 import { newsClipping } from "./room/newsClipping";
 import { phoneNotes } from "./room/phoneNotes";
 import { wallClock } from "./room/wallClock";
 import { wasteBasket } from "./room/wasteBasket";
 import { roomDoor } from "./room/roomDoor";
-import { deskCapture } from "./pc/capture";
+import { captureStub } from "./pc/captureStub";
 import { EDITION, FORK_NOTE } from "../edition";
-import { loadCatalog, type CatalogEntry } from "../project/files";
+import { loadCatalog, loadGameList, type CatalogEntry } from "../project/files";
 import { Project } from "../editor/core/project";
 import type { SpeedSetting } from "../engine/scene";
 import { viewState } from "../urlState";
@@ -125,8 +126,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     crt.querySelector<HTMLElement>(".crt-game canvas[tabindex]")?.focus(),
   );
   const spk = speakers({
-    gamePlaying: () => computer.gamePlaying,
-    restartGame: () => computer.restartGame(),
+    gamePlaying: () => computer?.gamePlaying ?? false,
+    restartGame: () => computer?.restartGame() ?? false,
   });
   const lamp = deskLamp();
   const modem = deskModem(() => void command("C:\nTERMINAL"));
@@ -347,69 +348,95 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   clear(root, desk);
   const unfit = fitStage(desk);
 
-  let pc: Computer | undefined;
   let enlarged = false; // the user pressed the enlarge button
-  const computer = new Computer(crt, {
-    speed,
-    openModern: (projectId, file) => nav.toModern(projectId, file),
-    // The designers take the whole window; afterwards, go back to how the user had it.
-    // vga stays in the monitor like the real thing.
-    onModeChange: (mode: MonitorMode) =>
-      setZoom(mode === "gfx" ? "gfx" : enlarged ? "manual" : false),
-    onDisksChanged: (insert) => void refreshDisks(insert),
-    onGame: (game) => keyCard.show(game),
-    // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
-    onProgram: (p) =>
-      deskView.set({
-        run: !p
-          ? "dos"
-          : p.kind === "game"
-            ? "play"
-            : p.kind === "gm"
-              ? p.drive === "A"
-                ? "design"
-                : "gm"
-              : p.kind === "terminal"
-                ? "bbs"
-                : "dos",
-      }),
-    // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
-    onDriveAccess: (drive) => {
-      if (drive === "A") floppy.busy(700);
-      else if (drive === "D") cd.busy(900);
-    },
+  // The PC's insides (DOS, Game-Maker, the BBS, the VGA): loaded when the PC is first needed
+  // (switched on, a disk put in, the shareware catalog opened), and fetched ahead when the
+  // desk is idle or the pointer comes to the power button, so switching on stays instant.
+  let computer: Computer | undefined;
+  let pcLoad: Promise<Computer> | undefined;
+  let removeWarp = () => {};
+  const pcCode = () => import("../retro/computer");
+  const loadPc = (): Promise<Computer> =>
+    (pcLoad ??= pcCode().then(({ Computer }) => {
+      computer = new Computer(crt, {
+        speed,
+        openModern: (projectId, file) => nav.toModern(projectId, file),
+        // The designers take the whole window; afterwards, go back to how the user had it.
+        // vga stays in the monitor like the real thing.
+        onModeChange: (mode: MonitorMode) =>
+          setZoom(mode === "gfx" ? "gfx" : enlarged ? "manual" : false),
+        onDisksChanged: (insert) => void refreshDisks(insert),
+        onGame: (game) => keyCard.show(game),
+        // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
+        onProgram: (p) =>
+          deskView.set({
+            run: !p
+              ? "dos"
+              : p.kind === "game"
+                ? "play"
+                : p.kind === "gm"
+                  ? p.drive === "A"
+                    ? "design"
+                    : "gm"
+                  : p.kind === "terminal"
+                    ? "bbs"
+                    : "dos",
+          }),
+        // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
+        onDriveAccess: (drive) => {
+          if (drive === "A") floppy.busy(700);
+          else if (drive === "D") cd.busy(900);
+        },
+      });
+      removeWarp = installCrtWarp(
+        crt.querySelector<HTMLElement>(".crt-picture")!,
+      );
+      return computer;
+    }));
+  powerBtn.addEventListener("pointerenter", () => void pcCode(), { once: true });
+  powerBtn.addEventListener("focus", () => void pcCode(), { once: true });
+  // the screenshot and record buttons: the capture tool loads on the first press
+  let capture: { el: HTMLElement; dispose(): void } | undefined;
+  const captureCode = () => import("./pc/capture");
+  const captureButtons = captureStub(async () => {
+    const [pc, { deskCapture }] = await Promise.all([loadPc(), captureCode()]);
+    capture ??= deskCapture(pc);
+    return capture.el;
   });
-  pc = computer;
-  const capture = deskCapture(computer);
-  desk.querySelector(".monitor .screen-bezel")?.before(capture.el); // before the screen, for Tab
-  const removeWarp = installCrtWarp(
-    crt.querySelector<HTMLElement>(".crt-picture")!,
-  );
+  desk.querySelector(".monitor .screen-bezel")?.before(captureButtons); // before the screen, for Tab
   crt.addEventListener("click", () => void power(true));
 
   /** 'gfx': the designers need the whole window; 'manual': the user enlarged the screen. */
   function setZoom(zoom: "gfx" | "manual" | false): void {
     if (zoom !== "gfx") enlarged = zoom === "manual";
     desk.dataset.zoom = zoom || "false";
-    pc?.focus(); // undefined while the PC is still being built
+    computer?.focus(); // undefined until the PC is first needed
   }
   const onKey = (e: KeyboardEvent) => {
     // Esc leaves a manual zoom only when nothing on the PC is running (games use Esc).
-    if (e.key === "Escape" && desk.dataset.zoom === "manual" && !computer.busy)
+    if (e.key === "Escape" && desk.dataset.zoom === "manual" && !computer?.busy)
       setZoom(false);
   };
   window.addEventListener("keydown", onKey);
+  // GM's copy check and GM REGISTER: the Owner's Guide and the registration card beside the monitor
+  const reg = regSide(
+    () => desk.querySelector<HTMLElement>(".monitor"),
+    () => computer?.focus(),
+  );
 
   function setTurbo(on: boolean): void {
     turbo = on;
     speed.ticksPerSecond = on ? undefined : SLOW_TICKS;
     turboBtn.setAttribute("aria-pressed", String(on));
-    turboLed.classList.toggle("on", on && computer.powered);
-    mhz.show(computer.powered ? (on ? "66" : "8") : "");
+    turboLed.classList.toggle("on", on && !!computer?.powered);
+    mhz.show(computer?.powered ? (on ? "66" : "8") : "");
   }
 
+  let poweringOn: Promise<void> | undefined;
   async function power(onlyOn = false): Promise<void> {
-    if (computer.powered) {
+    // still loading the PC's insides from the first press: that press switches it on
+    if (poweringOn && !computer?.powered) return poweringOn;
+    if (computer?.powered) {
       if (!onlyOn) {
         // switching off: the tube collapses to a line, then a dot; then the simplest honest "reset"
         crt.classList.add("switching-off");
@@ -427,7 +454,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     modem.power(true);
     spk.power(true);
     setTurbo(turbo);
-    await computer.powerOn();
+    poweringOn = loadPc().then((pc) => pc.powerOn());
+    await poweringOn;
     setTurbo(turbo);
     if (!deskView.get("run")) deskView.set({ run: "dos" });
   }
@@ -435,7 +463,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   /** Types a command at the prompt (booting first if needed). */
   async function command(cmd: string): Promise<void> {
     await power(true);
-    if (!computer.typeCommand(cmd))
+    if (!(await loadPc()).typeCommand(cmd))
       toast("Quit the program that is running first (Esc usually does it).");
   }
 
@@ -550,18 +578,18 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   async function insert(d: Disk): Promise<void> {
     const files = await d.load();
-    computer.insertDisk(d, files);
+    (await loadPc()).insertDisk(d, files);
     showInDrive(d);
     lastDisk = d.id;
     deskView.set({ disk: d.id });
   }
 
   function eject(): void {
-    if (computer.busy) {
+    if (computer?.busy) {
       toast("The drive light is on — quit the running program first.");
       return;
     }
-    computer.eject();
+    computer?.eject();
     showInDrive(undefined);
     deskView.set({ disk: undefined });
   }
@@ -579,13 +607,14 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
    * (or something else, like the BBS terminal, is running).
    */
   async function leaveProgram(): Promise<boolean> {
-    if (!computer.busy) return true;
-    if (await computer.stopGame()) return true;
-    if (!computer.inGameMaker) {
+    const pc = computer;
+    if (!pc?.busy) return true;
+    if (await pc.stopGame()) return true;
+    if (!pc.inGameMaker) {
       toast("Quit the program that is running first (Esc usually does it).");
       return false;
     }
-    const open = computer.designer;
+    const open = pc.designer;
     let saveAs = "";
     if (open && !open.saved && open.contents().length) {
       // the disk in A: is write-protected, or the work is on the CD
@@ -596,25 +625,25 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       if (answer === null) return false;
       saveAs = answer;
     }
-    if (!(await computer.stopProgram())) {
+    if (!(await pc.stopProgram())) {
       toast("Game-Maker didn’t close. Quit it with Esc first.", "error");
       return false;
     }
     if (open && saveAs) {
       const names = open.contents().map((c) => `${saveAs}.${c.ext}`);
       // nobody's at Game-Maker now: a read-only game is copied to the hard disk unasked
-      computer.quiet = true;
-      computer.copiedTo = undefined;
+      pc.quiet = true;
+      pc.copiedTo = undefined;
       let ok = true;
       try {
         for (const c of open.contents())
           ok = (await open.work.write(`${saveAs}.${c.ext}`, c.bytes)) && ok;
       } finally {
-        computer.quiet = false;
+        pc.quiet = false;
       }
       const list = names.map((n) => n.toUpperCase()).join(" and ");
-      const where = computer.copiedTo
-        ? `${computer.copiedTo}, a copy of the game on the hard disk (the original can’t be changed)`
+      const where = pc.copiedTo
+        ? `${pc.copiedTo}, a copy of the game on the hard disk (the original can’t be changed)`
         : (await lazy.saveFirst()).folderText(open);
       if (ok) toast(`Saved ${list} in ${where}.`);
       else toast(`Couldn’t save ${list}.`, "error");
@@ -697,6 +726,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   async function startGameMaker(): Promise<void> {
+    const computer = await loadPc();
     if (!computer.cdInserted) {
       await openTray(cd);
       computer.insertCd();
@@ -709,11 +739,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** The CD-ROM's eject button: out comes the tray (and the Game-Maker CD, back to its box). */
   async function ejectCd(): Promise<void> {
-    if (computer.busy && computer.cdInserted) {
+    if (computer?.busy && computer.cdInserted) {
       toast("The CD-ROM is in use — quit the running program first.");
       return;
     }
-    computer.ejectCd();
+    computer?.ejectCd();
     cd.setDisc(undefined);
     desk.querySelector(".gm-box")?.classList.remove("cd-in");
     await openTray(cd);
@@ -756,12 +786,13 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   async function catalog(): Promise<void> {
-    const entries = await loadCatalog().catch(() => []);
+    // the catalog marks what came from the BBS: the PC's downloads
+    const [entries, pc] = await Promise.all([loadCatalog().catch(() => []), loadPc()]);
     const { openCatalog } = await lazy.catalog();
     await opened("catalog", () =>
       openCatalog(entries, {
         callBbs: () => void command("C:\nTERMINAL"),
-        downloaded: (id) => computer.downloads.has(id),
+        downloaded: (id) => pc.downloads.has(id),
       }),
     );
   }
@@ -801,11 +832,14 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   void refreshDisks().then(restore);
   // what is likely next: Game-Maker and the BBS on the PC, then what opens on the desk
   prefetchWhenIdle([
+    pcCode, // the PC itself first, so switching it on is instant
+    captureCode,
     () => import("../player/player"),
     () => import("../retro/gm"),
     () => fetch("./gm/index.json"), // C:\GM's listing, so GM starts offline too
     lazy.gmBox,
     lazy.boxViewer,
+    () => import("./boxes/gameBoxContents"), // what a box holds, shown when it is opened
     lazy.catalog,
     () => import("./room/phone/phone"),
     lazy.dosManual,
@@ -815,13 +849,13 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     // last, Game-Maker's eight designers (so a later visit can design offline too)
     () => import("../retro/gm").then((m) => m.loadDesigners()),
   ]);
-  void loadCatalog().then((cat) =>
+  void loadGameList().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
   );
   // a secret game revealed or hidden again (all twelve eggs found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
-    const cat = await loadCatalog().catch(() => [] as CatalogEntry[]);
+    const cat = await loadGameList().catch(() => [] as CatalogEntry[]);
     if (!desk.isConnected) return;
     const viewer = document.querySelector<HTMLElement>(".box-viewer");
     const showing = viewer?.getAttribute("aria-label");
@@ -841,6 +875,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       else desk.querySelector(".desk-scene")?.append(el);
     });
   });
+  // the tin heart hunt's trophy, once every heart is found (nothing at all until then)
+  let unTrophy: (() => void) | undefined;
+  void import("../tinHearts/trophy").then(({ heartTrophy }) => {
+    if (!desk.isConnected) return;
+    unTrophy = heartTrophy((el) => {
+      const clip = desk.querySelector(".news-clipping");
+      if (clip) clip.after(el);
+      else desk.querySelector(".desk-scene")?.append(el);
+    });
+  });
   void sandboxShots().then((shots) => {
     for (const t of boxTiles.querySelectorAll<HTMLElement>(".tile")) {
       const shot = shots.find((s) => s.id === t.dataset.game);
@@ -853,14 +897,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   return () => {
     window.removeEventListener("keydown", onKey);
+    reg.dispose();
     unfit();
     lamp.dispose();
     shelf?.dispose();
     unCatalog();
     unEggs?.();
+    unTrophy?.();
     removeWarp();
-    capture.dispose();
-    computer.screen.destroy();
-    computer.keys.detach();
+    capture?.dispose();
+    computer?.screen.destroy();
+    computer?.keys.detach();
   };
 }

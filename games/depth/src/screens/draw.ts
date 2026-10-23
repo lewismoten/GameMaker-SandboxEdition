@@ -58,26 +58,37 @@ export function panel(p: Picture, x0: number, y0: number, x1: number, y1: number
  * come out in the colors chosen for them.
  */
 export const GM_PURPLE: Col = [200, 40, 200];
-export const GM_RED: Col = [252, 40, 40];
+// a deeper red than (63,10,10) itself, still the nearest entry to it, so MORE... reads at 3:1 on
+// the frosted glass (the GIFs' highlights stop short of white)
+export const GM_RED: Col = [200, 16, 16];
 export const GM_BLUE: Col = [40, 40, 252];
 /** Save names are written nearest (63,63,0). */
 export const GM_YELLOW: Col = [252, 252, 0];
 
-/** Reduces a picture to a 256-color GIF (error diffusion), with `fixed` colors kept first. */
-export function toGif(p: Picture, fixed: Col[] = [], exposure = 1): Uint8Array {
-  const { pixels, pal } = indexed(p, fixed, exposure);
+/**
+ * Reduces a picture to a 256-color GIF (error diffusion), with `fixed` colors kept first and
+ * `pins` (index, color) kept at their own indices, out of the picture.
+ */
+export function toGif(p: Picture, fixed: Col[] = [], exposure = 1, pins: [number, Col][] = []): Uint8Array {
+  const { pixels, pal } = indexed(p, fixed, exposure, false, pins);
   return encodeGif({ width: p.w, height: p.h, pixels, palette: pal });
 }
 
-export function indexed(p: Picture, fixed: Col[] = [], exposure = 1, ordered = false): { pixels: Uint8Array; pal: Uint8Array } {
+export function indexed(p: Picture, fixed: Col[] = [], exposure = 1, ordered = false, pins: [number, Col][] = []): { pixels: Uint8Array; pal: Uint8Array } {
   const bytes = toBytes(p, exposure);
   const pal = new Uint8Array(768);
   putColors(pal, 0, fixed);
-  putColors(pal, fixed.length, medianCut([bytes], 256 - fixed.length));
+  const pinned = new Set(pins.map(([i]) => i));
+  let at = fixed.length;
+  for (const col of medianCut([bytes], 256 - fixed.length - pins.length)) {
+    while (pinned.has(at)) at++;
+    putColors(pal, at++, [col]);
+  }
+  for (const [i, col] of pins) putColors(pal, i, [col]);
   // the fixed colors are for lettering PLAYGAME draws; keep them out of the picture
   const m = new Matcher(
     pal,
-    Array.from({ length: 256 }, (_, i) => i).filter((i) => i >= fixed.length),
+    Array.from({ length: 256 }, (_, i) => i).filter((i) => i >= fixed.length && !pinned.has(i)),
   );
   const pixels = ordered ? m.ordered(bytes, p.w, p.h, 8) : m.diffuse(bytes, p.w, p.h);
   return { pixels, pal };

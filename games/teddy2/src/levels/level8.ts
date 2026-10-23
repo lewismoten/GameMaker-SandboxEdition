@@ -35,7 +35,7 @@ export function show(): Level {
   m.set(af + 5, 39, 'aframeR');
   for (let x = 22; x < 27; x++) m.set(x, 38, 'tunnelTop').set(x, 39, 'tunnel');
   m.set(29, 38, 'hoopTop').set(29, 39, 'hoopBot');
-  m.set(28, 37, 'signHoop');
+  m.set(28, 37, 'signHoop').set(29, 37, 'signHoopR');
   // The popcorn stand, which pops popcorn across the ring.
   m.set(40, 38, 'popTop').set(40, 39, 'popBot');
   bs.def('popBot').birthMon = beasts.id('popcorn');
@@ -43,7 +43,7 @@ export function show(): Level {
   // The judges' table and bell; the velvet rope (a monster) across the Best Behaved ring.
   m.set(55, 39, 'table').set(56, 39, 'table');
   m.set(57, 38, 'judgeTop').set(57, 39, 'judgeBot');
-  m.set(61, 37, 'signBest');
+  m.set(61, 37, 'signBest').set(62, 37, 'signBestR');
   for (const x of [59, 70]) m.set(x, 39, 'rail');
   // The stage, Doc Leo by the curtain; the curtain door is the way out (it takes the ribbon).
   m.rect(76, 39, 16, 1, 'stage');

@@ -1,0 +1,385 @@
+/* The cast page (#/cast). */
+
+main.cast {
+  --fam-sandbox: #b8860b;
+  --fam-bizarre: #8e3bb5;
+  --fam-cd: #2f7d4f;
+  /* beside "On this page" on a wide window (pageToc.css) */
+  --toc-body: 1040px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+:root[data-theme='dark'] main.cast {
+  --fam-sandbox: #f0c040;
+  --fam-bizarre: #d29bf0;
+  --fam-cd: #6fd39a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='auto'] main.cast {
+    --fam-sandbox: #f0c040;
+    --fam-bizarre: #d29bf0;
+    --fam-cd: #6fd39a;
+  }
+}
+
+main.cast h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+
+main.cast .lead {
+  margin: 0 0 24px;
+  font-size: 16px;
+}
+
+.cast h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+/* ---- the three kinds of games ---- */
+
+.cast-families {
+  margin-bottom: 32px;
+}
+
+.cast-fam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.cast-fam {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--fam, var(--accent));
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.cast-fam h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.cast-fam p {
+  margin: 0;
+  flex: 1;
+  line-height: 1.5;
+}
+
+.cast-fam-links {
+  display: flex;
+  gap: 16px;
+}
+
+.fam-sandbox {
+  --fam: var(--fam-sandbox);
+}
+
+.fam-bizarre {
+  --fam: var(--fam-bizarre);
+}
+
+.fam-cd {
+  --fam: var(--fam-cd);
+}
+
+/* ---- the regulars ---- */
+
+.cast-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.cast-bar h2 {
+  margin: 0;
+}
+
+.cast-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cast-filter {
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 14px;
+}
+
+.cast-filter[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.cast-count {
+  margin: 0 0 0 auto;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.cast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
+  gap: 16px;
+}
+
+.cast-card {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  scroll-margin: 80px;
+}
+
+.cast-card[hidden] {
+  display: none;
+}
+
+.cast-card.cast-picked {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.cast-pic {
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  border-radius: 8px;
+  background: #0b0b18;
+  overflow: hidden;
+}
+
+.cast-pic img {
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.cast-pic img.sprite {
+  image-rendering: pixelated;
+}
+
+.cast-text h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.cast-anchor {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.cast-anchor:hover {
+  text-decoration: underline;
+}
+
+.cast-role {
+  margin: 2px 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.cast-bio {
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.cast-appears {
+  grid-column: 1 / -1;
+}
+
+.cast-appears summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cast-appears ul {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.45;
+  columns: 2 15rem;
+  column-gap: 16px;
+}
+
+.cast-appears li {
+  padding: 2px 0 2px 10px;
+  border-left: 3px solid var(--fam);
+  margin-bottom: 3px;
+  break-inside: avoid;
+}
+
+.cast-as {
+  color: var(--muted);
+}
+
+.cast-foot {
+  margin-top: 32px;
+}
+
+@media (max-width: 520px) {
+  .cast-card {
+    grid-template-columns: 88px minmax(0, 1fr);
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .cast-pic {
+    width: 88px;
+    height: 88px;
+  }
+}
+
+.cast-kicker {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- the stage ---- */
+
+.cast-stage {
+  margin-bottom: 32px;
+}
+
+.cast-stage-box {
+  position: relative;
+  max-width: 720px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #1b1430;
+}
+
+.cast-stage-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 160 / 70;
+  image-rendering: pixelated;
+}
+
+.cast-say {
+  position: relative;
+  min-height: 3.6em;
+  margin: 0;
+  padding: 8px 12px;
+  border-top: 2px solid #1a1d29;
+  background: #fffbe6;
+  color: #1a1d29;
+  font-size: clamp(13px, 1.6vw, 16px);
+  line-height: 1.4;
+}
+
+/* the speech box's tail, pointing up at whoever is in the light */
+.cast-say::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: calc(50% - 8px);
+  border: 8px solid transparent;
+  border-top: 0;
+  border-bottom-color: #fffbe6;
+}
+
+.cast-say.quiet > * {
+  visibility: hidden;
+}
+
+.cast-say.quiet::before {
+  display: none;
+}
+
+.cast-stage-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  max-width: 720px;
+}
+
+.cast-stage-controls select {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.cast-stage-play {
+  min-width: 6.5rem;
+}
+
+
+/* ---- seen in ---- */
+
+.cast-seen-box {
+  grid-column: 1 / -1;
+}
+
+.cast-seen-h {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cast-seen {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cast-seen a {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: var(--text);
+  font-size: 11.5px;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.cast-seen canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  border-radius: 4px;
+  border-bottom: 3px solid var(--fam);
+  background: var(--checker-b);
+  image-rendering: pixelated;
+}
+
+.cast-seen a:hover .cast-seen-title {
+  text-decoration: underline;
+}
+
+.cast-seen-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

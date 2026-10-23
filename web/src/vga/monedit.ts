@@ -41,8 +41,8 @@ import {
   MONHELPFILE,
   pad,
   idiv,
-  bytes2pal,
 } from './monedit/layout';
+import { bytes2pal } from './shared/vga';
 import { MonsterMovement } from './monedit/movement';
 
 class MonsterMaker extends MonsterMovement {

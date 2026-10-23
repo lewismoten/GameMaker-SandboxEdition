@@ -1,7 +1,8 @@
 // What came in a Sandbox Software game's box, laid out beside it in the box viewer (like the
 // Game-Maker box's Owner's Guide and CD, desk/boxes/gmBox.ts): the disk set to play right away,
-// the manual (its own cover, manual/printables/manualCover.ts), a few of the printed extras fanned out (manual/printables, read only) and a
-// way to look through all of it.
+// the manual (its own cover, manual/printables/manualCover.ts) and, on the right, the printed
+// extras listed as the Game-Maker box lists its inserts (boxList.ts), each opening the manual's
+// box at that piece.
 import './gameBoxContents.css';
 import '../../manual/printables/paper.css';
 import { h } from '../../editor/core/ui';
@@ -11,6 +12,7 @@ import { loadDisks, type Disk } from '../../retro/dos/disks';
 import { boxItems } from '../../manual/printables/items';
 import { floppyElement, disksIn } from '../disks/diskBox';
 import { printContext } from './printContext';
+import { boxList } from './boxList';
 import { manualCover } from '../../manual/printables/manualCover';
 import '../../manual/booklet.css';
 
@@ -63,35 +65,13 @@ export function sandboxBoxContents(entry: CatalogEntry, _front: string | undefin
       )
     : null;
 
-  // a few of the printed pieces, fanned out like they came out of the box
-  const fan = h('button', { class: 'bc-fan', onclick: open, title: 'Look at everything in the box' });
-  void printContext(entry).then(async (ctx) => {
-    if (!ctx) return fan.remove();
-    const items = boxItems(ctx);
-    const pick = ['keycard', 'postcard', items[0]?.id, 'newsletter'].filter((id, i, a): id is string => !!id && a.indexOf(id) === i);
-    const chosen = pick
-      .map((id) => items.find((i) => i.id === id))
-      .filter((i) => !!i)
-      .slice(0, 3);
-    const sheets = await Promise.all(
-      chosen.map((i) =>
-        i!
-          .render()
-          .then((s) => s[0])
-          .catch(() => undefined),
-      ),
-    );
-    sheets.forEach((s, i) => {
-      if (!s) return;
-      const piece = h('div', { class: 'bc-piece', style: `--i:${i}` }, s.el);
-      fan.append(piece);
-    });
-  });
+  // the printed pieces, as the manual's box lists them
+  const items = printContext(entry).then((ctx) => (ctx ? boxItems(ctx) : []));
 
   return h(
     'div',
     { class: 'box-contents' },
     h('div', { class: 'bc-left' }, diskSet, manual),
-    h('div', { class: 'bc-right' }, fan, h('button', { class: 'bc-all', onclick: open }, 'View everything in the box')),
+    entry.original?.manual ? boxList({ label: `What’s in the ${entry.title} box`, items, open, class: 'bc-list' }) : null,
   );
 }

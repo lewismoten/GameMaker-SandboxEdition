@@ -1,21 +1,61 @@
-/* what comes out of the Game-Maker box in the box viewer (desk/boxes/gmBox.ts) */
+/* what comes out of the Game-Maker box in the box viewer (desk/boxes/gmBox.ts): the guide,
+   the program disks and the CD on the left (the paper inserts are listed on the right, boxList.css) */
 .gm-contents {
+  display: contents;
+}
+
+.gm-left {
   position: absolute;
-  left: 3vw;
   top: 50%;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4vh;
+  left: max(16px, 3vw);
+  gap: 2.6vh;
   transform: translateY(-55%);
+}
+
+.gm-disks:focus-visible,
+.guide-book:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 2px;
+}
+
+/* the two program disks, disk 1 in front */
+.gm-disks {
+  display: grid;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.5));
+}
+
+.gm-disks .gmf {
+  grid-area: 1 / 1;
+  width: min(118px, 13vh);
+  transition: transform 0.2s;
+}
+
+.gm-disks .gmf:first-child {
+  transform: translate(14px, -10px) rotate(6deg);
+}
+
+.gm-disks .gmf:last-child {
+  transform: rotate(-3deg);
+}
+
+.gm-disks:hover .gmf:first-child,
+.gm-disks:focus-visible .gmf:first-child {
+  transform: translate(26px, -16px) rotate(10deg);
 }
 
 .guide-book {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: min(190px, 22vh);
+  width: min(170px, 20vh);
   aspect-ratio: 5.5 / 8.5;
   padding: 0 0 12px;
   overflow: hidden;
@@ -80,7 +120,7 @@
   --ly: 25%;
   position: relative;
   cursor: pointer;
-  width: min(200px, 24vh);
+  width: min(170px, 20vh);
   aspect-ratio: 1;
   border-radius: 50%;
   box-shadow: 0 14px 24px rgba(0, 0, 0, 0.55);
@@ -199,12 +239,40 @@
   }
 }
 
-@media (max-width: 700px) {
-  .gm-contents {
+@media (max-width: 760px) {
+  /* a phone: the guide, disks and CD in a row above the viewer's bar */
+  .gm-left {
     top: auto;
-    bottom: 80px;
+    bottom: 190px;
+    left: 10px;
     flex-direction: row;
+    align-items: flex-end;
+    gap: 12px;
     transform: none;
+  }
+
+  .guide-book {
+    width: 62px;
+    gap: 4px;
+  }
+
+  .guide-book strong {
+    padding: 6px 4px;
+    font-size: 10px;
+  }
+
+  .guide-book span,
+  .guide-book em,
+  .guide-book small {
+    display: none;
+  }
+
+  .gm-disks .gmf {
+    width: 56px;
+  }
+
+  .holo-cd {
+    width: 78px;
   }
 }
 
@@ -231,4 +299,127 @@
 .holo-cd:focus-visible {
   outline: 3px solid #ffd400;
   outline-offset: 4px;
+}
+
+/* the Owner's Guide as it really looks (manual/printables/gmCover.ts): a blueprint cover on
+   a white plastic comb, a red technical support sticker, the bottom peeled back over a game */
+.guide-book {
+  position: relative;
+  container-type: inline-size;
+  margin-left: 12px;
+  overflow: visible;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px) 0 0 / 100% 10px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px) 0 0 / 10px 100%,
+    linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px) 0 0 / 100% 50px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px) 0 0 / 50px 100%,
+    radial-gradient(120% 90% at 45% 30%, #2f6cc0, #1f4f9a 60%, #143a76);
+  box-shadow:
+    3px 3px 0 #f4efdf,
+    5px 5px 0 #d9d2bc,
+    0 18px 26px rgba(0, 0, 0, 0.55);
+  color: #fff;
+}
+
+/* the comb, around the bound edge */
+.guide-book::before {
+  content: '';
+  position: absolute;
+  top: 2%;
+  bottom: 2%;
+  left: -7cqw;
+  width: 13cqw;
+  background: linear-gradient(90deg, #8f8a7f, #f4f2ec 35%, #fff 55%, #cfcabf 85%, #5f5a50);
+  -webkit-mask: linear-gradient(#000 0 50%, transparent 50%) 0 0 / 100% 6.25% repeat-y;
+  mask: linear-gradient(#000 0 50%, transparent 50%) 0 0 / 100% 6.25% repeat-y;
+  border-radius: 5px 0 0 5px;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.45));
+}
+
+/* the bottom corner peeled back over a game screen (sky, hills, grass) */
+.guide-book::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 26%;
+  background:
+    linear-gradient(162deg, transparent 0 38%, #e9eff7 38% 52%, #8ea6c6 52% 55%, transparent 55%),
+    linear-gradient(transparent 0 55%, #3d8a2e 55% 70%, #6b4a22 70%),
+    radial-gradient(60% 50% at 70% 62%, #4fa83a 60%, transparent 61%),
+    linear-gradient(#9cc8f0, #e7d9f2);
+  clip-path: polygon(0 62%, 100% 0, 100% 100%, 0 100%);
+}
+
+.guide-book strong {
+  background: none;
+  color: #fff;
+  font:
+    900 17.5cqw/0.95 Impact,
+    'Arial Black',
+    sans-serif;
+  text-shadow: 2px 3px 0 rgba(6, 20, 50, 0.6);
+  -webkit-text-stroke: 1px #0c2550;
+}
+
+.guide-book span {
+  margin-top: 2cqw;
+  font-size: 9.5cqw;
+}
+
+.guide-book em {
+  font:
+    italic 700 8.5cqw Georgia,
+    serif;
+}
+
+.guide-book small {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 27%;
+  font-size: 6cqw;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+}
+
+/* the red technical support sticker */
+.guide-book strong::after {
+  content: 'TECHNICAL\A SUPPORT\A 1-800-\A 555-0176';
+  white-space: pre;
+  position: absolute;
+  z-index: 1;
+  right: 5cqw;
+  bottom: 30%;
+  display: grid;
+  place-items: center;
+  width: 30cqw;
+  height: 30cqw;
+  padding: 1cqw;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #ef3b33, #b3121a);
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font: 800 3.9cqw/1.2 Arial, sans-serif;
+  text-align: center;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+  transform: rotate(12deg);
+}
+
+/* with the guide's real cover (gmCover.ts) the picture fills the button: no drawn peel or sticker */
+.guide-book.has-cover {
+  padding: 0;
+  background: #143a76;
+}
+
+.guide-book.has-cover::after {
+  content: none;
+}
+
+.guide-book.has-cover .gmc {
+  border-radius: inherit;
+}
+
+.guide-book.has-cover::before {
+  z-index: 1;
 }

@@ -1,5 +1,6 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
 import { rovingGrid } from '../../widgets/rovingGrid';
+import { colorChoice } from '../../widgets/colorChoice';
 import './blocks.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
@@ -341,6 +342,15 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   // ---- colors ---------------------------------------------------------------
   const swatches = rovingGrid(h('div', { class: 'swatches' }), 'Drawing color');
   const colorLabel = h('div', { class: 'meta' });
+  const colorBox = colorChoice({
+    get: () => color,
+    set: (i) => {
+      color = i;
+      renderSwatches();
+    },
+    css: (i) => (sprites && i === TRANSPARENT ? 'transparent' : paletteCss(pal(), i)),
+    name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`),
+  });
   function renderSwatches(): void {
     clear(
       swatches,
@@ -356,6 +366,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         }),
       ),
     );
+    colorBox.refresh();
     colorLabel.textContent = `Drawing with color ${color}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.`;
   }
 
@@ -416,7 +427,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     if (kind === 'mbl') {
       clear(
         props,
-        h('h3', null, `Block ${current}: when a monster showing this picture touches the character`),
+        h('h2', null, `Block ${current}: when a monster showing this picture touches the character`),
         sides(
           'Solid (pushes the character)',
           () => b.solid,
@@ -429,7 +440,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
     clear(
       props,
-      h('h3', null, `Block ${current}`),
+      h('h2', null, `Block ${current}`),
       sides(
         'Solid sides',
         () => b.solid,
@@ -452,7 +463,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           'Goes into the inventory with the pick-up sequence',
         ),
       ),
-      h('h4', null, 'When touched'),
+      h('h3', null, 'When touched'),
       h(
         'div',
         { class: 'grid-fields' },
@@ -464,7 +475,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           'Set to this block’s own number to stay the same',
         ),
       ),
-      h('h4', null, 'Over time'),
+      h('h3', null, 'Over time'),
       h(
         'div',
         { class: 'grid-fields' },
@@ -514,7 +525,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       { class: 'blk' },
       h('div', { class: 'blk-picker' }, picker),
       h('div', { class: 'blk-paint stack' }, tools, canvas, actions, sprites ? null : textures),
-      h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorLabel), props),
+      h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
     ),
   );
   renderPicker();

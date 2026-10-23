@@ -81,6 +81,7 @@ function startModern(hash?: string): void {
       h('a', { href: '#/', title: FORK_NOTE }, h('span', { class: 'brand-title' }, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
       titleSlot,
       h('span', { class: 'spacer' }),
+      h('a', { class: 'hide-narrow', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
       themeButton(),
       h(
@@ -90,14 +91,15 @@ function startModern(hash?: string): void {
         ' 1994 desk',
       ),
       h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
-      // phones: the desk and the source in a small menu, so the header stays one tidy row
+      // phones: the cast, the desk and the source in a small menu, so the header stays one tidy row
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the 1994 desk and the source code', title: 'More' }, '⋯'),
+        h('summary', { 'aria-label': 'More: the cast, the 1994 desk and the source code', title: 'More' }, '⋯'),
         h(
           'div',
           { class: 'topbar-menu' },
+          h('a', { href: '#/cast' }, '🎭 The cast'),
           h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
@@ -160,6 +162,34 @@ async function route(): Promise<void> {
   workspace?.dispose();
   workspace = undefined;
   clear(titleSlot);
+  if (kind === 'cast') {
+    const { renderCast } = await import('./cast/castPage');
+    if (ui !== 'modern') return;
+    document.title = `The cast · ${PRODUCT}`;
+    renderCast(content);
+    return;
+  }
+  if (kind === 'mac') {
+    const { renderMacHelp } = await import('./macHelp/macPage');
+    if (ui !== 'modern') return;
+    document.title = `Playing the games on a Mac · ${PRODUCT}`;
+    renderMacHelp(content);
+    return;
+  }
+  if (kind === 'windows') {
+    const { renderWinHelp } = await import('./winHelp/winPage');
+    if (ui !== 'modern') return;
+    document.title = `Playing the games on Windows · ${PRODUCT}`;
+    renderWinHelp(content);
+    return;
+  }
+  if (kind === 'linux') {
+    const { renderLinuxHelp } = await import('./linuxHelp/linuxPage');
+    if (ui !== 'modern') return;
+    document.title = `Playing the games on Linux · ${PRODUCT}`;
+    renderLinuxHelp(content);
+    return;
+  }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
     const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
@@ -187,7 +217,7 @@ function notHere(): void {
       h(
         'p',
         null,
-        'Games you make are kept in the browser that made them, so a link to one only opens there. If someone shared this link, ask them to send the game itself: in the editor, “Save & share” downloads it as a .zip or a one-page .html you can open here.',
+        'Games you make are kept in the browser that made them, so a link to one only opens there. If someone shared this link, ask them to send the game itself: its Download button saves its files as a .zip, or a one-page .html you can open here.',
       ),
       h('p', null, 'Links to the finished games on the home page work everywhere.'),
       h('p', null, h('a', { class: 'button primary', href: '#/' }, 'See all games')),
@@ -198,11 +228,11 @@ function notHere(): void {
 window.addEventListener('hashchange', () => void route());
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help'].includes(startPath[0] ?? '');
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast', 'mac', 'windows', 'linux'].includes(startPath[0] ?? '');
 if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 

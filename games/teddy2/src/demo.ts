@@ -6,8 +6,8 @@ import { serializeRecording } from '../../../web/src/formats/recording';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { buildCharacter, CB } from './characters/character';
 import { Recorder, runRoute } from '../tools/bot';
-import { ROUTES } from '../tools/routes';
-import { Sim } from '../tools/sim';
+import { ROUTES } from '../tools/route';
+import { Sim } from '../../kit/sceneSim';
 import type { Level } from './levels/level';
 import { SCAN } from './ids';
 
@@ -23,7 +23,8 @@ export async function demoRecording(l: Level): Promise<Uint8Array> {
   const rec = new Recorder(sim);
   const route = ROUTES[l.file];
   const upto = route.findIndex((o) => 'until' in o && o.until === DEMO_ENDS) + 1 || route.length;
-  await runRoute(sim, route.slice(0, upto), '', rec);
+  // (no hopping for treats: the title demo stays as it was recorded)
+  await runRoute(sim, route.slice(0, upto), '', rec, false);
   // a little victory spin, then Esc back to the menu
   const at = rec.lastTick;
   rec.keys.push({ delta: sim.ticks + 8 - at, key: SCAN.spin }, { delta: 3, key: SCAN.spin | 0x80 }, { delta: 40, key: 0x01 }, { delta: 2, key: 0x81 });

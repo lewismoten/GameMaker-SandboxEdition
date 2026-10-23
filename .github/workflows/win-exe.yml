@@ -1,0 +1,78 @@
+name: Windows programs
+
+# Builds a Windows program (.exe, and a .zip of it) of every listed game with
+# web/scripts/winExe.ts (plain JavaScript, so it runs on Linux), first trying one on a real
+# Windows machine: it must open the game in WebView2 and keep a saved value between two
+# launches. Then attaches them to a GitHub release. Run it by hand (Actions → Windows
+# programs → Run workflow; with no tag it only builds and tries them) or by publishing a release.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to attach the programs to (created if missing); empty to only build and test
+        required: false
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  try:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npx vite-node scripts/winExe.ts teddy --out ../dist/win
+      - name: Play it twice
+        shell: pwsh
+        run: |
+          $exe = (Get-ChildItem ../dist/win/*.exe | Select-Object -First 1).FullName
+          $env:GM_READY_FILE = "$env:RUNNER_TEMP\ready.json"
+          $env:GM_TEST_SAVE = '1'
+          $env:GM_TEST_EXIT = '1'
+          foreach ($run in 1, 2) {
+            Remove-Item $env:GM_READY_FILE -ErrorAction SilentlyContinue
+            $p = Start-Process -FilePath $exe -PassThru
+            if (-not $p.WaitForExit(90000)) { Stop-Process $p; throw "Run $run did not finish" }
+            $ready = Get-Content $env:GM_READY_FILE -Raw
+            Write-Output "Run ${run}: $ready"
+            $r = $ready | ConvertFrom-Json
+            if ($r.origin -ne 'https://game.gamemaker.example') { throw "Run ${run}: the game page did not load" }
+            if ($run -eq 2 -and -not $r.test) { throw 'The saved value did not survive a relaunch' }
+          }
+          Get-ChildItem "$env:LOCALAPPDATA\GameMaker"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: try
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npx vite-node scripts/winExe.ts --all --zip --out ../dist/win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-programs
+          path: dist/win/*.zip
+      - name: Attach to the release
+        if: github.event.release.tag_name || inputs.tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "Windows programs of the games (not code-signed: see win/README.md)."
+          gh release upload "$TAG" ../dist/win/*.exe ../dist/win/*.zip --clobber

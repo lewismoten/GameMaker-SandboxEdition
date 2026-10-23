@@ -1,6 +1,5 @@
 // MONEDIT.EXE's screen layout, tables and small helpers (the #defines and arrays at the top
 // of code/GM/MONEDIT.C), shared by the Monster Maker's layers.
-import { type RGBdata } from '../shared/vga';
 import { BLEN } from '../shared/facelift';
 import { LASTMON, LASTSL, emptyMonster, type Monster } from '../../formats/monster';
 import { MONBL } from '../../formats/blocks';
@@ -77,9 +76,6 @@ export type Ref = { v: number };
 
 export const pad = (n: number, w: number) => String(n).padStart(w);
 export const idiv = (a: number, b: number) => Math.trunc(a / b);
-
-export const bytes2pal = (b: Uint8Array): RGBdata[] =>
-  Array.from({ length: 256 }, (_, i) => ({ red: (b[i * 3] ?? 0) & 63, green: (b[i * 3 + 1] ?? 0) & 63, blue: (b[i * 3 + 2] ?? 0) & 63 }));
 
 /** fread of a whole file into a fixed-size buffer: short files leave the rest as it was (zeros here). */
 export function padTo(bytes: Uint8Array, size: number): Uint8Array {

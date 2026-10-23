@@ -102,6 +102,20 @@ export class DemoAudioEngine extends AudioEngine {
     return this.current === 'blaster' && super.playVoc(bytes);
   }
 
+  /**
+   * Starts sound held back until the visitor used the page (call it from the gesture's
+   * handler): the song the game asked for meanwhile starts over (it can't be joined midway).
+   */
+  async wake(): Promise<void> {
+    if (this.context || this.current === 'none') return;
+    await this.resume();
+    const song = this.wanted;
+    if (this.current === 'blaster' && song && this.context) {
+      await super.playSong(song);
+      this.wanted = song;
+    }
+  }
+
   /** Switches the sound while the game plays (`session` is the game's, for its speakerOnly). */
   setMode(m: DemoAudio, session?: Session): void {
     const was = this.current;

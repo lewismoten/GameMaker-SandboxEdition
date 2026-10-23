@@ -6,6 +6,7 @@
 import { GameSim } from './sim';
 import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
 import { POWER, SEQ } from '../src/ids';
+import { LOOT_MONS, cellOnScreen, isLootBlock, lootScene, monPos } from './lootwatch';
 
 type Pt = { x: number; y: number };
 export type Dir = 'up' | 'down' | 'left' | 'right';
@@ -25,6 +26,10 @@ export class Bot {
   pacifist = false;
   /** Fights only within this many blocks. */
   reach = 2.2;
+  /** Grab loot seen on the way (tools/lootwatch.ts) when it's a short detour. */
+  loot = false;
+  /** In a boss fight: the boss's parts are left to the fight (fight() and walking ignore them). */
+  boss = false;
   constructor(readonly sim: GameSim) {}
 
   say(s: string): void {
@@ -52,6 +57,7 @@ export class Bot {
       if (!mon || mon.power <= POWER.drop || mon.power >= POWER.note) return;
       const mi = w.mi[i];
       if (mi.fromchar) return;
+      if (this.boss && mon.power >= 100) return;
       // a wight inside the rock can't be reached (a slash dies on the wall)
       if (this.sim.solidAt(mi.curx[0] + (mi.curx[1] > 10 ? 1 : 0), mi.cury[0] + (mi.cury[1] > 10 ? 1 : 0)) && w.mblk[w.mon[m.monnum].pic[0][0]]?.solid === 0) return;
       let dx = mi.curx[0] + mi.curx[1] / 20 - px;
@@ -109,6 +115,16 @@ export class Bot {
     return undefined;
   }
 
+  /** Whether Pip stands on (any part of) a block that hurts. */
+  sore(dx = 0, dy = 0): boolean {
+    const c = this.sim.w.chr;
+    const px = c.x[0] * 20 + c.x[1] + dx;
+    const py = c.y[0] * 20 + c.y[1] + dy;
+    for (const x of new Set([Math.floor(px / 20), Math.floor((px + 19) / 20)]))
+      for (const y of new Set([Math.floor(py / 20), Math.floor((py + 19) / 20)])) if (this.sim.shown((x + 100) % 100, (y + 100) % 100).chHitPt < 0) return true;
+    return false;
+  }
+
   /** Swings at the nearest foe within reach until none is left (or `max` swings). */
   async fight(max = 40): Promise<string | undefined> {
     if (this.pacifist) return undefined;
@@ -117,12 +133,14 @@ export class Bot {
       if (h) return h;
       const f = this.foes()[0];
       if (!f || Math.hypot(f[0], f[1]) > this.reach) return undefined;
+      // on spikes: walk on first (the caller plans the way off them)
+      if (this.sore()) return undefined;
       // face it: a one-tick step its way (the slash flies the way Pip last stepped)
       const dir: Dir = Math.abs(f[0]) >= Math.abs(f[1]) ? (f[0] > 0 ? 'right' : 'left') : f[1] > 0 ? 'down' : 'up';
       this.sim.releaseAll();
       let r: string | undefined;
       // (never a step that would touch a link: a fight is no reason to leave the room)
-      if (!this.stepTouchesLink(dir)) {
+      if (!this.stepTouchesLink(dir) && !this.sore(STEP[dir].x * 4, STEP[dir].y * 4)) {
         this.sim.press(SCAN[dir]);
         r = await this.wait(1);
         this.sim.release(SCAN[dir]);
@@ -205,7 +223,12 @@ export class Bot {
   }
 
   /** Holds a direction until Pip stands exactly on (x, y), fighting anything that comes close. */
-  private async run(dir: Dir, x: number, y: number, maxTicks = 900): Promise<string | undefined> {
+  private async run(dir: Dir, x: number, y: number, maxTicks = 900, axisOnly = false): Promise<string | undefined> {
+    const vert = dir === 'up' || dir === 'down';
+    const there = () => {
+      const p = this.sim.pos;
+      return axisOnly ? (vert ? p.y === y && p.sy === 0 : p.x === x && p.sx === 0) : p.x === x && p.y === y && p.sx === 0 && p.sy === 0;
+    };
     const scan = SCAN[dir];
     this.sim.press(scan);
     let last = '';
@@ -217,12 +240,17 @@ export class Bot {
         return r;
       }
       const p = this.sim.pos;
-      if (p.x === x && p.y === y && p.sx === 0 && p.sy === 0) break;
+      if (there()) break;
       const near = this.foes()[0];
-      if (!this.pacifist && near && Math.hypot(near[0], near[1]) < this.reach) {
+      // (never stop to fight on something that hurts: spikes cost more than a bite)
+      if (!this.pacifist && !this.sore() && near && Math.hypot(near[0], near[1]) < this.reach) {
         const f = await this.fight();
         if (f) return f;
         return 'stuck';
+      }
+      if (!axisOnly && t % 4 === 3 && !p.sx && !p.sy && this.lootNews()) {
+        this.sim.release(scan);
+        return 'look';
       }
       const now = `${p.x},${p.y},${p.sx},${p.sy}`;
       stuck = now === last ? stuck + 1 : 0;
@@ -233,29 +261,65 @@ export class Bot {
       }
     }
     this.sim.release(scan);
-    const p = this.sim.pos;
-    if (!(p.x === x && p.y === y && p.sx === 0 && p.sy === 0)) return 'stuck';
+    if (!there()) return 'stuck';
     return this.wait(1);
+  }
+
+  /** Off a block's edge: steps onto the nearest whole block (each axis). */
+  private async settle(): Promise<string | undefined> {
+    for (let k = 0; k < 2; k++) {
+      const p = this.sim.pos;
+      if (!p.sx && !p.sy) return undefined;
+      const back: Dir = p.sx ? (p.sx < 10 ? 'left' : 'right') : p.sy < 10 ? 'up' : 'down';
+      const bx = back === 'right' ? p.x + 1 : p.x;
+      const by = back === 'down' ? p.y + 1 : p.y;
+      // (the other axis's offset stays as it is: run stops on the block, not the exact spot)
+      const r = await this.run(back, bx, by, 20, true);
+      if (r && r !== 'stuck') return r;
+      if (r === 'stuck') return undefined;
+    }
+    return undefined;
   }
 
   /** Walks to (x, y). Returns 'link' / 'dead' / 'end' if a scene change happened on the way. */
   async goto(x: number, y: number, label = '', through: Set<string> = new Set()): Promise<string | undefined> {
     const scene = this.sim.scene;
+    let detours = 0;
     for (let attempt = 0; attempt < 40; attempt++) {
       if (this.sim.scene !== scene) return 'link';
+      // off a block's edge (a fight's one-tick turn leaves him there): settle onto the nearest
+      // whole block first, or a straight run the other way never lines up and walks on past
+      const s = await this.settle();
+      if (s) return s;
       const steps = this.path(x, y, through);
       if (!steps) throw new Error(`No path to ${x},${y} ${label} from ${this.sim.pos.x},${this.sim.pos.y} in ${this.sim.game.scenes[this.sim.scene].desc}`);
       if (!steps.length) return undefined;
       let i = 0;
       let cur = this.sim.pos;
       let blocked = false;
+      let looked = false;
       while (i < steps.length) {
         const dx = Math.sign(((steps[i].x - cur.x + 150) % 100) - 50);
         const dy = Math.sign(((steps[i].y - cur.y + 150) % 100) - 50);
         let j = i;
         while (j + 1 < steps.length && (steps[j + 1].x - steps[j].x + 100) % 100 === (dx + 100) % 100 && (steps[j + 1].y - steps[j].y + 100) % 100 === (dy + 100) % 100) j++;
         const dir: Dir = dx > 0 ? 'right' : dx < 0 ? 'left' : dy > 0 ? 'down' : 'up';
+        // loot in sight a few steps off the way: fetch it, then plan the way on from there
+        if (this.loot && !this.grabbing && !this.boss) {
+          const g = await this.grabLoot(x, y, through);
+          if (g === 'took') {
+            blocked = looked = true;
+            if (++detours < 60) attempt--;
+            break;
+          }
+          if (g) return g;
+        }
         const r = await this.run(dir, steps[j].x, steps[j].y);
+        if (r === 'look') {
+          blocked = looked = true;
+          if (++detours < 60) attempt--;
+          break;
+        }
         if (r === 'stuck') {
           blocked = true;
           break;
@@ -271,19 +335,151 @@ export class Bot {
         if (label) this.say(`at ${label}`);
         return undefined;
       }
-      // off a block's edge: settle onto the nearest whole block before planning again
-      const p = this.sim.pos;
-      if (p.sx || p.sy) {
-        const back: Dir = p.sx ? (p.sx < 10 ? 'left' : 'right') : p.sy < 10 ? 'up' : 'down';
-        const bx = back === 'right' ? p.x + 1 : p.x;
-        const by = back === 'down' ? p.y + 1 : p.y;
-        const r = await this.run(back, bx, by, 20);
-        if (r && r !== 'stuck') return r;
-      }
+      if (looked) continue;
       const r = await this.wait(2);
       if (r) return r;
     }
     throw new Error(`Could not reach ${x},${y} ${label} in ${this.sim.game.scenes[this.sim.scene].desc}`);
+  }
+
+  /** Loot on screen not yet fetched or given up on, and the blocks to fetch it from. */
+  private lootCands(links: Set<string>): { id: string; ax: number; ay: number; push?: Dir }[] {
+    const sim = this.sim;
+    if (!lootScene(sim)) return [];
+    const visit = `${sim.segments.length}.${sim.deaths}`;
+    const cands: { id: string; ax: number; ay: number; push?: Dir }[] = [];
+    const free = (x: number, y: number) => !sim.solidAt(x, y) && !links.has(`${x},${y}`) && sim.shown(x, y).chHitPt >= 0;
+    for (let dy = -1; dy <= 10; dy++)
+      for (let dx = -1; dx <= 16; dx++) {
+        const x = (sim.w.mx + dx + 100) % 100;
+        const y = (sim.w.my + dy + 100) % 100;
+        if (!cellOnScreen(sim, x, y) || !isLootBlock(sim, sim.blockAt(x, y))) continue;
+        const id = `${visit}:b${x},${y}`;
+        if (this.tried.has(id)) continue;
+        const solid = sim.solidAt(x, y);
+        if (!solid) {
+          if (free(x, y)) cands.push({ id, ax: x, ay: y });
+          continue;
+        }
+        for (const [d, s] of Object.entries(STEP) as [Dir, Pt][]) {
+          const ax = (x - s.x + 100) % 100;
+          const ay = (y - s.y + 100) % 100;
+          if (free(ax, ay)) cands.push({ id, ax, ay, push: d });
+        }
+      }
+    if (!this.pacifist)
+      sim.w.mm.forEach((m, i) => {
+        if (!LOOT_MONS.has(m.monnum) || sim.w.mi[i].fromchar) return;
+        const p = monPos(sim, i);
+        const ax = Math.round(p.x) % 100;
+        const ay = Math.round(p.y) % 100;
+        const id = `${visit}:m${i}@${ax},${ay}`;
+        if (this.tried.has(id) || !cellOnScreen(sim, ax, ay) || !free(ax, ay)) return;
+        cands.push({ id, ax, ay });
+      });
+    return cands;
+  }
+
+  /** Where Pip stood when he last weighed each piece of loot up. */
+  private weighed = new Map<string, Pt>();
+
+  /** Loot in sight he hasn't weighed up yet (or not since he came a few blocks closer). */
+  private lootNews(): boolean {
+    if (!this.loot || this.grabbing || this.boss) return false;
+    const p = this.sim.pos;
+    return this.lootCands(this.linkCells()).some((c) => {
+      const w = this.weighed.get(c.id);
+      return !w || Math.abs(w.x - p.x) + Math.abs(w.y - p.y) >= 4;
+    });
+  }
+
+  /** Loot already gone after (or given up on) in this scene visit. */
+  private tried = new Set<string>();
+  private grabbing = false;
+
+  /**
+   * Fetches the loot on screen that's a short detour on the way to (tx, ty): a chest or a pot
+   * (walk into it from the next block) or a gem, ruby or heart a foe left (walk onto it). Only
+   * what's in view, only a few steps off the way, never round anything that hurts, never through
+   * a secret way or into a link, never the felt egg. Returns 'took' after a detour, a scene
+   * change if one happened, or undefined when there's nothing worth the walk.
+   */
+  async grabLoot(tx: number, ty: number, through: Set<string>): Promise<string | undefined> {
+    const sim = this.sim;
+    const links = this.linkCells();
+    const cands = this.lootCands(links);
+    if (!cands.length) return undefined;
+    const here = sim.pos;
+    const fromPip = this.field(here.x, here.y, new Set(), links);
+    const fromGoal = this.field(tx, ty, through, links, true);
+    const key = (x: number, y: number) => y * 100 + x;
+    const base = fromGoal[key(here.x, here.y)];
+    let best: (typeof cands)[number] | undefined;
+    let bestCost = Infinity;
+    for (const c of cands) {
+      this.weighed.set(c.id, { x: here.x, y: here.y });
+      const a = fromPip[key(c.ax, c.ay)];
+      const detour = a + fromGoal[key(c.ax, c.ay)] - base;
+      // close by (it's on screen) and only a little out of the way
+      if (process.env.LOOT_LOG) this.say(`loot ${c.id} from ${c.ax},${c.ay}: ${a} away, ${detour} out of the way`);
+      // a chest is worth a little more of a walk than a gem
+      if (a > 14 || detour > (c.id.includes(':b') ? 24 : 16)) continue;
+      if (detour < bestCost) {
+        bestCost = detour;
+        best = c;
+      }
+    }
+    if (!best) return undefined;
+    for (const c of cands) if (c.id === best.id) this.tried.add(c.id);
+    this.grabbing = true;
+    try {
+      const r = await this.goto(best.ax, best.ay, process.env.BOT_LOG ? `loot ${best.id}` : '');
+      if (r) return r;
+      if (best.push) {
+        const r2 = await this.push(best.push, 4);
+        if (r2) return r2;
+      }
+    } catch (e) {
+      if (e instanceof Died) throw e;
+      // no way there after all: leave it
+    } finally {
+      this.grabbing = false;
+    }
+    return 'took';
+  }
+
+  /** Path costs from (sx, sy) to every block, by path()'s rules (links closed but `open` is the goal's own). */
+  private field(sx: number, sy: number, through: Set<string>, links: Set<string>, goal = false): Float64Array {
+    const sim = this.sim;
+    const dist = new Float64Array(10000).fill(Infinity);
+    const start = sy * 100 + sx;
+    dist[start] = 0;
+    // a bucket queue: costs are small whole numbers
+    const buckets: number[][] = [[start]];
+    for (let d = 0; d < buckets.length; d++) {
+      const b = buckets[d];
+      if (!b) continue;
+      for (const k of b) {
+        if (dist[k] !== d) continue;
+        const x = k % 100;
+        const y = (k - x) / 100;
+        // the goal may be a link; nothing goes on through one
+        if (links.has(`${x},${y}`) && !(goal && k === start)) continue;
+        for (const s of Object.values(STEP)) {
+          const nx = (x + s.x + 100) % 100;
+          const ny = (y + s.y + 100) % 100;
+          if (!through.has(`${nx},${ny}`) && sim.solidAt(nx, ny)) continue;
+          const shown = sim.shown(nx, ny);
+          const nd = d + 1 + (shown.chHitPt < 0 ? 40 : 0) + (shown.grav ? 12 : 0);
+          const nk = ny * 100 + nx;
+          if (nd < dist[nk]) {
+            dist[nk] = nd;
+            (buckets[nd] ??= []).push(nk);
+          }
+        }
+      }
+    }
+    return dist;
   }
 
   /** Walks into a solid block beside Pip (a counter, a gate, a pedestal) for `ticks`. */

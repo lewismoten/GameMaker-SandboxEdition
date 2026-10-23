@@ -1,0 +1,31 @@
+{
+  "tinHeart": [
+    { "game": "blaster", "as": "tucked against the edge of the Address Bus" },
+    { "game": "sleuth", "as": "dropped behind the lobby bar" },
+    { "game": "realm", "as": "in the grass by Someday Harbor’s lighthouse" },
+    { "game": "logic", "as": "on The Home Computer’s board" }
+  ],
+  "will": [
+    { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
+    { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" }
+  ],
+  "watt": [
+    { "game": "blaster", "as": "blinking on Memory Lane" }
+  ],
+  "carl": [
+    { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
+    { "game": "logic", "as": "the bug in The Home Computer’s chip" }
+  ],
+  "joe": [
+    { "game": "realm", "as": "night librarian by the Royal Library’s door" }
+  ],
+  "lewie": [
+    { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" }
+  ],
+  "leo": [
+    { "game": "sleuth", "as": "a playbill in the lobby" }
+  ],
+  "chicken": [
+    { "game": "sleuth", "as": "on the leash in Doc Leo’s playbill" }
+  ]
+}

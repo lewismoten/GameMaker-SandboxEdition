@@ -57,9 +57,11 @@ export function parchment(cv: Canvas, x0: number, y0: number, x1: number, y1: nu
   cv.rrect(x0, y0, x1 - x0, y1 - y0, 3, (x, y) => {
     const e = Math.min(x - x0, x1 - x, y - y0, y1 - y);
     const n = tnoise(x, y, 10, 320, seed) * 0.6 + tnoise(x, y, 2.5, 320, seed + 1) * 0.4;
-    let c = mix([206, 178, 128], [246, 232, 196], clamp01(n * 0.9 + 0.25));
-    c = mix([150, 108, 60], c, clamp01(e / 7));
-    if (speck(x, y, 320, seed) > 0.985) c = mix(c, [170, 130, 80], 0.5);
+    // mottled only softly and scorched only in a narrow band, so the words that Game-Maker
+    // writes from 6 pixels inside the edge sit on plain-looking paper
+    let c = mix([224, 200, 152], [246, 232, 196], clamp01(n * 0.9 + 0.25));
+    c = mix([150, 108, 60], c, clamp01(e / 4));
+    if (speck(x, y, 320, seed) > 0.985) c = mix(c, [170, 130, 80], 0.25);
     return c;
   });
   for (const y of [y0, y1]) {
@@ -81,9 +83,10 @@ export function talkPage(name: string, portrait: Canvas, theme: Theme, place = '
   });
   for (let x = 6; x < 314; x += 6) {
     cv.rect(x, 3, 3, 1, mix(theme.ribbon, [255, 230, 160], 0.5));
-    cv.rect(x, 196, 3, 1, mix(theme.ribbon, [255, 230, 160], 0.5));
+    cv.rect(x, 198, 3, 1, mix(theme.ribbon, [255, 230, 160], 0.5));
   }
-  parchment(cv, 32, 33, 296, 178, name.length);
+  // the bottom roller clears MORE... (y 168..175)
+  parchment(cv, 32, 33, 296, 184, name.length);
   // the ribbon with the name
   const scale = name.length <= 14 ? 2 : 1.5;
   const tw = name.length * 8 * scale;
@@ -102,16 +105,23 @@ export function talkPage(name: string, portrait: Canvas, theme: Theme, place = '
   cv.line(rx0, 10, rx1 - 2, 10, 0.6, mix(theme.ribbon, [255, 230, 160], 0.6));
   cv.line(rx0, 27, rx1 - 2, 27, 0.6, mix(theme.ribbon, [255, 230, 160], 0.6));
   sc.text(rx0 + 12, 18.5 - 4 * scale, name, (_x, y) => mix([255, 246, 210], [232, 190, 90], clamp01((y - 10) / 16)), scale, [30, 16, 10]);
-  // the portrait in a gilt frame
+  // the portrait in a gilt frame, head and shoulders: the frame and its shadow end above
+  // y 37, clear of the first line of words (from x 38, y 38)
   const big = bigSprite(portrait);
   const fw = 44;
-  const fh = 42;
+  const fh = 34;
   const fx = 4;
   const fy = 0;
   cv.rrect(fx + 2, fy + 3, fw, fh, 6, [0, 0, 0]);
   cv.rrect(fx, fy, fw, fh, 6, (x, y) => mix([255, 226, 120], [150, 100, 30], clamp01(((x - fx) + (y - fy)) / 80)));
   cv.rrect(fx + 3, fy + 3, fw - 6, fh - 6, 4, (_x, y) => mix(mix(theme.bg[0], [255, 255, 255], 0.25), theme.bg[0], clamp01((y - fy) / fh)));
-  cv.draw(big, Math.round(fx + fw / 2 - big.w / 2), Math.round(fy + fh - 3 - big.h));
-  if (place) sc.text(306 - place.length * 8, 184, place, mix(theme.ribbon, [255, 236, 190], 0.7));
+  const bx = Math.round(fx + fw / 2 - big.w / 2);
+  const by = fy + 4;
+  for (let y = 0; y < big.h && by + y < fy + fh - 3; y++)
+    for (let x = 0; x < big.w; x++) {
+      const k = big.alpha(x, y);
+      if (k > 0 && bx + x >= fx + 3 && bx + x < fx + fw - 3) cv.blend(bx + x, by + y, big.get(x, y), k);
+    }
+  if (place) sc.text(306 - place.length * 8, 189, place, mix(theme.ribbon, [255, 236, 190], 0.7));
   return sc;
 }

@@ -43,7 +43,7 @@
   align-items: center;
   gap: 4px 12px;
 }
-.snd-title h3 {
+.snd-title h2 {
   margin: 0;
 }
 .editor .snd-title .hint {
@@ -99,4 +99,24 @@
   .snd-pitch {
     max-height: clamp(100px, calc(var(--ws-vh, 100dvh) - 650px), 220px);
   }
+}
+/* each part's own play button, with what the game does with it (or that it is empty) */
+.snd-part {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+.snd-top .snd-part {
+  flex: 1 1 100%;
+}
+.editor .snd-part .snd-state {
+  flex: 1 1 200px;
+  margin: 0;
+}
+.editor .snd-part .snd-state.snd-empty,
+.editor .snd-speaker .snd-state {
+  padding: 3px 8px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
 }

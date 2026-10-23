@@ -8,7 +8,7 @@
 //
 // This file is the menus, the edit loop and the mouse and keys (edit, domouse, dokeys).
 // The rest of the designer is in blocedit/, as a chain of classes each extending the
-// one before: state -> paint -> screen -> info -> transfer -> BlockDesigner; the
+// one before: state -> paint -> screen -> infoScreen -> info -> transfer -> BlockDesigner; the
 // screen layout constants are in blocedit/layout.ts.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
@@ -62,8 +62,8 @@ import {
   COLPWID,
   inBox,
   trunc,
-  bytes2pal,
 } from './blocedit/layout';
+import { bytes2pal } from './shared/vga';
 import { BlockTransfer } from './blocedit/transfer';
 
 /** The whole Block Designer: the text menu, then the VGA edit screen. */

@@ -22,8 +22,12 @@ export type ProgramRef =
   | { kind: 'egg' }
   | { kind: 'terminal' }
   | { kind: 'vpic' }
-  | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string; /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string }
-  | { kind: 'install' }
+  | { kind: 'game'; title: string; gam: string; files: () => Promise<Map<string, Uint8Array>>; notice?: string; editable?: boolean; diskId?: string; /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string; /** GMCRACK "patched" this .EXE: the group's intro first. */ cracked?: string }
+  | { kind: 'install'; /** GM30\INSTALL.EXE from the BBS's Warez area, not the CD's. */ from?: 'warez' }
+  | { kind: 'gmcrack' }
+  | { kind: 'savehack' }
+  | { kind: 'backup' }
+  | { kind: 'hexedit' }
   | { kind: 'batch'; lines: string[] };
 
 export interface Drive {

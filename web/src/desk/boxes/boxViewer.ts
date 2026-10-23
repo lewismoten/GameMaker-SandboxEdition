@@ -60,6 +60,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       cancelAnimationFrame(raf);
       window.removeEventListener('keydown', onKey, true);
       overlay.remove();
+      opener?.focus({ preventScroll: true });
       resolve();
     };
     /** Puts the shelf's next or previous box in place of this one. */
@@ -170,7 +171,9 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       );
     const extrasSlot = h('div', { class: 'box-extras-slot' });
     const bar = h('div', { class: 'box-viewer-bar' });
-    const overlay = h('div', { class: 'box-viewer', role: 'dialog' }, stage, extrasSlot, bar);
+    // keyboard: focus moves into the viewer (Tab reaches what came in the box first) and back on close
+    const opener = document.activeElement as HTMLElement | null;
+    const overlay = h('div', { class: 'box-viewer', role: 'dialog', tabindex: -1 }, stage, extrasSlot, bar);
     /** The title, buttons and extras for the box being shown. */
     const fill = () => {
       const { entry: e, actions: a } = current;
@@ -194,6 +197,7 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
     };
     fill();
     document.body.append(overlay);
+    overlay.focus({ preventScroll: true });
     apply();
     raf = requestAnimationFrame(spin);
   });

@@ -1,0 +1,63 @@
+VENI, VIDI, RISI!
+I Came, I Saw, I Laughed
+by Veni, Vidi, Risi!, 1995
+Shareware from The Sofa BBS
+
+Veni, Vidi, Risi! is Lewis
+Moten's group: six comic
+songs in Latin, sung as an
+opera, a march, a patter
+song, a hymn to a cat, an
+aria and a lament. Its games
+sit with The Bard of
+Bizarre's on The Sofa BBS.
+
+Lyrics: shaped with ChatGPT
+from Lewis's prompts. Music
+and vocals: made with
+Riffusion (now Google Flow
+Music). This game's sung
+clips are cut from the
+recordings, and its FM score
+is arranged from them.
+Title and cover art: drawn
+for this game by Claude Opus
+5.5. The Bard of Bizarre
+logo: DeepAI. Doc Leo photo:
+Lewis Moten.
+
+Game: code, blocks, maps,
+sprites and the FM
+arrangement by Claude Opus
+5.5, built as Game-Maker 3.0
+files. Made with GAME-MAKER
+by Recreational Software
+Designs. Teddy, Gwinn and
+Doc Leo appear as themselves.
+
+Risus erit... forsitan cras?
+
+
+
+
+
+
+
+
+
+
+FREE TO SHARE
+
+Made in 2026 by Lewis Moten
+with Claude. Free to share:
+see LICENSE.TXT on the disk.
+
+The shareware page is part
+of the 1995 story: there is
+no fee and nothing to mail.
+
+MIT License, (c) 2026
+Lewis Moten.
+
+
+

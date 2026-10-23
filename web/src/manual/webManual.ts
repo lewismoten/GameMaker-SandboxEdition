@@ -24,13 +24,25 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     as you like; <b>Empty</b> gives you just a title and an ending. <b>Open game folder…</b>, <b>Open files or
     .zip…</b>, or dropping files on the page imports an original game: the folder with its
     <code>.GAM</code>, <code>.MAP</code>, <code>.BBL</code> and other files.</p>
-    <h3>Sample games</h3>
+    <p>Games you open from elsewhere are listed under <b>Imported</b>; the rest are under
+    <b>My games</b>.</p>
+    <h3>Gameware</h3>
     <p>The free “gameware” from the Game-Maker CD. <b>▶ Play</b> plays it;
-    <b>Edit a copy</b> adds a copy to your games.</p>
+    <b>Edit a copy</b> adds a copy to your games. <b>Demo video</b> shows a game’s demo with its
+    music and sound, and can save it as a video.</p>
+    <h3>Sandbox</h3>
+    <p>New games made for this edition in the original formats, so they also play in DOS. Each
+    has a <b>Manual</b> to read or print, and <b>Walkthrough</b> plays the whole game from start
+    to finish, with chapters to jump to and an MP4 to download.</p>
     <h3>Shareware</h3>
     <p>Games other people made and shared as shareware. They are play-only here, in their
     shareware form. <b>Shareware notice</b> shows the author’s terms. If you enjoy one,
-    register it with its author.</p>`,
+    register it with its author.</p>
+    <h3>Bizarre</h3>
+    <p>Games made from the songs of The Bard of Bizarre. They are listed with the shareware
+    until there are four or more, then get a tab of their own. Unlike the shareware they are
+    this project’s own and free to change (MIT): <b>Edit a copy</b> works as it does for the
+    Sandbox games, and <b>Notice</b> tells the song behind each one.</p>`,
   ],
   [
     'workspace',
@@ -47,6 +59,8 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       you see its picture; click it to choose another, or ✎ to edit it.</li>
       <li><b>+ Add level scene</b> starts a level with the last level’s palette, blocks,
       monsters and hero, on a fresh map of its own.</li>
+      <li><b>↶ Undo</b> and <b>↷ Redo</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd> and
+      <kbd>Ctrl</kbd>+<kbd>Y</kbd>) take back changes in the editor you are in.</li>
     </ul>`,
   ],
   [
@@ -117,8 +131,9 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     'The 1994 desk',
     `<p><b>💾 1994 desk</b> shows Game-Maker the way it was used in DOS: a PC with a DOS
     prompt, Game-Maker’s text menus, a box of diskettes, the CD, a shareware catalog and
-    a BBS to call. It is not an emulator; it is drawn to look the way it did. The
-    <b>Owner’s Guide</b> on the desk explains it.</p>
+    a BBS to call. It is a simulation, not a PC emulator: no DOS program runs. Game-Maker’s
+    tools are rebuilt from their original source code, and the rest is made to look and act
+    the way it did. The <b>Owner’s Guide</b> on the desk explains it.</p>
     <p>The games you change on the desk are the same games you see here, so you can switch
     between the two at any time.</p>`,
   ],
@@ -135,15 +150,105 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     games made today still play in DOS and DOSBox. The web port, both the 1994 desk and
     today's web editor, was written with <b>Claude Opus 5.5</b>: AI assistance did most of the
     porting and code generation. It is MIT licensed too.</p>
+    <h3>The 1994 license and today</h3>
+    <p>When Game-Maker was sold, its license let you install it on one computer at a time and
+    give a game you made, free, to no more than ten people. Wider sharing needed RSD's
+    permission: for shareware, its manual granted every owner a license as long as the game
+    asked a registration fee of at least $5 and the author paid RSD 10% of the fees each
+    quarter, and selling games meant a commercial license with royalties per copy. The
+    shareware disks sold in stores for a few dollars paid for the disk, not the game; the
+    registration fee went to the author.</p>
+    <p>None of that applies to this edition. Under the MIT License you may use, copy, change,
+    share and sell Game-Maker and the games you make with it, with no limit on people, fees
+    or royalties; just keep the copyright and license notice with the program. The
+    registration fees, order forms and Sandbox Software's address in the Sandbox games are part
+    of their 1990s story: the games are free. The CD's shareware games are still their
+    authors' own, which is why they are play-only here.</p>
     <h3>Sandbox Software games</h3>
     <p>The Sandbox games were written and built by <b>Claude Opus 5.5</b>: the code that builds
     them, their pictures, music, sounds and words. Many are drawn from Lewis “Lewie” Moten
     III: his blog writing, photos he provided, and conversations about his interests,
     experiences and hobbies. Lewis directed each game and played it as it came together, and
     his feedback shaped every one. Teddy, Gwinn and Doc Leo appear as themselves.</p>
+    <h3>The Bard of Bizarre</h3>
+    <p>The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, and his hobo clown, Doc
+    Leo, PhD (Comedic Science), is its face. The Bard has one rule: the smaller and more
+    overlooked the thing, the bigger the song it deserves. So the goat at the edge of the
+    manger, the loaf left in the basket, the fly in the room and the remote lost in the couch
+    each get the full treatment (a gospel choir, a goth anthem, an opera, a trembling
+    monologue), sung with a straight face and a lot of love. The songs are silly but never
+    mean, and fine for the whole family. It began with Christian songs and grew from there;
+    so far the songs fall into five collections:</p>
+    <ul>
+      <li><b>Bizarre gospels</b>: the wrong detail of a Bible story, taken very seriously. The
+      goat nobody painted in <b>Third Goat from the Left</b>, the smallest seed with the biggest
+      dreams in <b>Mustard Seed Hustle</b>, the camel left holding the rich man’s gold in
+      <b>Thread the Needle, Brother Camel</b>, and the bread nobody picked when the five
+      thousand were fed in <b>Loaf #13 (Left in the Basket)</b>. They sort of make sense, and
+      that’s the trouble.</li>
+      <li><b>Mundane epics</b>: tiny everyday disasters sung like the end of the world. <b>A Fly
+      Named Carl</b>, <b>Where’s the Remote?!</b>, a slice of cheesecake in <b>The Great Dairy
+      Reckoning of 3:17 A.M.</b>, a borrowed pink loofah in <b>Cleanse Me, O Loofah, But Leave
+      My Soul</b>, and a haunted house with an eight-year-old who isn’t scared in <b>I Screamed, She
+      Smirked</b>.</li>
+      <li><b>Villain anthems</b>: evil plans on a very small scale, with maniacal laughter. In
+      <b>Certified Rat Tickler</b>, Doc Leo turns mad scientist with a real certificate in rat
+      tickling (Lewis earned one) and plots to raise a legion of giggling rats.</li>
+      <li><b>Shakespeare in Sweatpants</b>: seventeen spoken monologues by a man in a starched
+      ruff and grey sweatpants about the most dramatic things that ever happened to him, like a
+      lost pen, a dead ficus named Gerald and the self-checkout. The game puts him on stage at
+      open-mic night.</li>
+      <li><b>Veni, Vidi, Risi!</b>: six songs in Latin, as grand as Rome, about a dog who breaks
+      wind at a senators’ dinner, a coward who wins every battle with his feet, a tongue
+      twister, a cat after the cheese, a golden fish who sings in the baths, and a Latin song so
+      clever that nobody laughs.</li>
+    </ul>
+    <p>Lewis dreams up each song and prompts AI tools to shape and record it. Some of the songs
+    have become games, shareware “uploaded” to The Sofa BBS in the story.</p>
+    <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each
+    song’s words were shaped by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
+    back and forth), and each recording was made with Riffusion (now Google Flow Music).
+    Certified Rat Tickler came with no recording, so its music was composed for the game by
+    Claude Opus 5.5. The Great Dairy Reckoning of 3:17 A.M. is a spoken piece from Lewis’s own
+    struggle (he is lactose intolerant, and he loves cheesecake): its voice was made with
+    Riffusion, and its music was composed for the game by Claude Opus 5.5. Shakespeare in
+    Sweatpants is seventeen spoken monologues, shaped with ChatGPT from Lewis’s prompts, with
+    audio and vocals made with Riffusion (now Google Flow Music); its code, art and music were
+    made by Claude Opus 5.5, and its coffee house, The Hive, is inspired by Lewis’s memories of
+    the Beehive in Oakland, Pittsburgh (drawn from memory, not an official picture of it).
+    Veni, Vidi, Risi! is Lewis’s group of comic songs in Latin: its lyrics were shaped with ChatGPT from Lewis’s prompts and its music and vocals made with Riffusion (now Google Flow Music); the
+    game Veni, Vidi, Risi! takes its sung clips and FM score from those recordings, and its code, pictures (the title and cover art among them) and FM arrangements were made by Claude Opus 5.5. Third Goat from the
+    Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover
+    came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai.
+    The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly
+    Named Carl, Cleanse Me, O Loofah, But Leave My Soul and I Screamed, She Smirked, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy
+    Reckoning’s title art were drawn for the games by Claude Opus 5.5. The Bard’s logo was made
+    with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn
+    from its song’s recording (Certified Rat Tickler’s and The Great Dairy Reckoning’s music was
+    made for the game); its code, pictures and levels were made by <b>Claude Opus 5.5</b>, with
+    Lewis directing and playtesting.</p>
+    <h3>The desk PC, its BBSes and utilities</h3>
+    <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
+    and The Sofa BBS, and the programs on it (SAVEHACK, BACKUP, GMCRACK and its KEYGEN,
+    HEXEDIT, EGG, the GM30 release, PKUNZIP and VPIC look-alikes), was written for this project by
+    <b>Claude Opus 5.5</b> under Lewis’s direction. Their in-story authors are part of the
+    fiction: “vesuvian” is Lewis’s eight-letter BBS handle, from the Magic: The Gathering card
+    Vesuvian Doppelganger, and “DiGiTAL DUNE” is a made-up group.</p>
+    <p>The hacking, cracking and editing tools are mainly for debugging: switching a game
+    between shareware and registered to test both, editing and backing up saved games, and
+    looking inside Game-Maker’s files (HEXEDIT is a hex viewer that names each field of
+    Game-Maker’s file formats). They are dressed in 1990s scene style for fun. With the rest
+    of the desk they recreate a 1990s PC as nostalgia and history: dialing BBSes, trading
+    shareware, and the warez and cracking scene that was part of that world. They act only on
+    the pretend PC and this site’s own data. Nothing here cracks or generates keys for any real product:
+    GMCRACK’s key is worked out the way Game-Maker’s own code, now MIT licensed, checks it, and
+    the “warez” are this project’s own free files. They are here to show what that era felt
+    like, for testing and for fun, not to encourage software piracy. Please support the
+    authors of the software you use.</p>
     <p>GIF is a service mark of CompuServe; FLI is Autodesk Animator's format; Sound
     Blaster, CMF and VOC belong to Creative Technology; the OPL2 chip is Yamaha's. The CD's
-    sample and shareware games belong to their authors. Sandbox Software, its BBS and the
+    sample and shareware games belong to their authors. PKUNZIP was PKWARE's and VPIC Bob
+    Montgomery's; the ones on the desk are look-alikes. Sandbox Software, its BBS and the
     desk's hardware brands are made up.</p>
     <p>The full credits, history and license are in
     <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>

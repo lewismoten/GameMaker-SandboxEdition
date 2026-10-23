@@ -94,8 +94,3 @@ export function presetName(inst: Uint8Array): string | undefined {
   }
   return undefined;
 }
-
-/** A blank-ish instrument when a song has none. */
-export function newInstrument(preset = 'piano'): Uint8Array {
-  return (PRESETS[preset] ?? PRESETS.piano).slice();
-}

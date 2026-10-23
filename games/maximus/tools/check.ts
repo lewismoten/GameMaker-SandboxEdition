@@ -3,16 +3,24 @@
 // - every world: land, wait three seconds (nothing should kill you at the landing site),
 //   and the uplink back to orbit is reachable;
 // - rover worlds: the rover can drive all the way around the planet;
-// - the training deck can be crossed by "hold right, hop when stuck".
+// - the training deck can be crossed by "hold right, hop when stuck";
+// - every multi-block object (trees, planets, the core...) is put together right (--align: only this).
 import { ITEM_BASE, MON, MONEY, SCAN, SEQ, SHARD_BASE, SHARD_COUNTER } from '../src/ids';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { reachable } from '../src/levels/mapkit';
 import { buildGame } from '../src/game';
 import { autoWalk, navigate, simFor, standStill } from './verify';
+import { misaligned } from './align';
 
 const only = process.argv.slice(2);
 const b = buildGame();
 const report: string[] = [];
+for (const [name, list] of misaligned(b)) report.push(`${name}: ${list.length} misplaced block parts (${list.slice(0, 3).join('; ')})`);
+if (only.includes('--align')) {
+  for (const line of report) console.log(line);
+  console.log(`alignment: ${b.scenes.length} maps, ${report.length} with misplaced parts`);
+  process.exit(report.length ? 1 : 0);
+}
 let checked = 0;
 for (const info of b.scenes) {
   if (only.length && !only.includes(info.name) && !only.includes(info.file)) continue;

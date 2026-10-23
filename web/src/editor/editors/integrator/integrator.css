@@ -14,6 +14,7 @@
 }
 .grator-main {
   min-width: 0;
+  container: grator-main / inline-size;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -23,6 +24,17 @@
 }
 .grator-spacer {
   flex: 1;
+}
+.grator-sym + .grator-label {
+  margin-left: 0.35em;
+}
+/* a narrow board: the arranging tools and PNG show only their symbols (their names are
+   still their labels, and the tooltips say what they do), so the toolbar keeps to one row;
+   a tool asking for attention, or stepping through layouts, keeps its name */
+@container grator-main (max-width: 720px) {
+  .grator-tools button:not(.grator-attention, .grator-arranging) .grator-label {
+    display: none;
+  }
 }
 .grator-zoom {
   min-width: 3.5em;
@@ -46,8 +58,9 @@
 .grator-board {
   display: block;
   width: 100%;
-  /* fills the window under the toolbar; the selected scene's panel follows below */
-  height: clamp(320px, calc(var(--ws-vh, 100dvh) - 236px), 900px);
+  /* fills the window under the toolbar (however many rows it takes: --grator-tools-h, set
+     from integrator.ts); the selected scene's panel follows below */
+  height: clamp(320px, calc(var(--ws-vh, 100dvh) - 199px - var(--grator-tools-h, 37px)), 900px);
   touch-action: none;
   cursor: grab;
   outline: none;
@@ -76,7 +89,7 @@
 }
 .grator-side {
   min-width: 0;
-  max-height: calc(clamp(320px, calc(var(--ws-vh, 100dvh) - 236px), 900px) + 48px);
+  max-height: calc(clamp(320px, calc(var(--ws-vh, 100dvh) - 199px - var(--grator-tools-h, 37px)), 900px) + var(--grator-tools-h, 37px) + 11px);
   display: flex;
   flex-direction: column;
   background: var(--panel);
@@ -306,7 +319,7 @@ button.grator-play.playing {
     max-height: 50vh;
   }
   .grator-board {
-    height: clamp(280px, calc(var(--ws-vh, 100dvh) - 236px), 640px);
+    height: clamp(280px, calc(var(--ws-vh, 100dvh) - 199px - var(--grator-tools-h, 37px)), 640px);
   }
   .grator-side-open {
     flex-direction: row;
@@ -422,7 +435,7 @@ button.grator-play.playing {
 .grator-side-scene .grator-panel > .panel + .panel {
   border-top: 1px solid var(--border);
 }
-.grator-side-scene .grator-panel h3 {
+.grator-side-scene .grator-panel h2 {
   font-size: 15px;
 }
 .grator-side-scene .grid-fields {

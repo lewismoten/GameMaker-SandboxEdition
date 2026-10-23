@@ -10,12 +10,15 @@ import { loadScan, pastePhoto, polaroid, resample, sepia } from '../../../kit/ph
 import { Pixels, rng } from '../../../kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { corgi, docLeo, eggFaberge, eggRotten, gwinn, ingredient, mouse, redcoat } from '../art/kit';
-import { arrivedWith, introName } from '../game';
+import { arrivedWith, introName, outroName } from '../game';
+import { reggie } from '../sprites/chicken';
+import { stoveInFli, stoveOutFli } from './chicken';
 import { EGG_SCENE } from '../ids';
 import { PAL, buildPalette, c } from '../art/pal';
 import type { TileSet } from '../blocks/tiles';
 import type { Room } from '../levels/room';
 import { RECIPE, ROOM_NAMES, THIRTEENTH } from '../recipe';
+import { saveSlots } from '../../../kit/saveSlots';
 import { H, W, bigLeo, blob, card, centered, chez, gradient, headline, kitchenWall, mainStreet, micro, mug, outlined, scaleBlit, stamp, stand, starCircle, bigTricorn, text } from './art';
 import { wrap } from './pages';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
@@ -71,8 +74,9 @@ export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pi
   kitchenWall(p, 186);
   p.rect(0, 0, W, 28, c('wood', 1));
   headline(p, 7, title, 2, c('yellow', 3), c('red', 2));
-  card(p, 28, 32, 264, 148);
-  p.rect(30, 34, 260, 2, c('paper', 4));
+  // PLAYGAME writes from y 40 to 175 (MORE... at the bottom right): the card's red rule sits
+  // above the first line, and no ring stain on these
+  card(p, 28, 30, 264, 150, 0, { rule: 6, stain: null });
   scaleBlit(p, who, 296, 162, 1);
   micro(p, 4, 192, 'BAKER FAMILY EYES ONLY', c('paper', 3));
   void seed;
@@ -82,16 +86,20 @@ export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pi
 export function scoresScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 190);
-  card(p, 10, 0, 300, 200);
+  // the ring stain goes right of the rows (x 20..285), below the last full one
+  card(p, 10, 0, 300, 200, 0, { stain: [296, 186] });
   return p;
 }
 
 export function slotsScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 176);
-  card(p, 50, 4, 220, 192);
-  scaleBlit(p, leo('down'), 4, 150, 2);
-  scaleBlit(p, corgi(0, true), 276, 160, 2);
+  // the names are written in yellow: each gets a dark strip, the blue message the card
+  // (kit/saveSlots.ts); the card is wide enough for the message from x 40
+  card(p, 30, 4, 262, 192, 0, { stain: [266, 20] });
+  saveSlots(p, c('ink', 0), c('paper', 4), c('rootbeer', 2));
+  scaleBlit(p, leo('down'), 4, 160, 1);
+  scaleBlit(p, corgi(0, true), 296, 176, 1);
   return p;
 }
 
@@ -108,7 +116,7 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   strip.forEach((n, i) => p.blit(tiles.pic(n), i * 20, 180));
   const lvl = room.spec.level;
   card(p, 40, 22, 240, 146, 0);
-  centered(p, 28, lvl ? `ROOM ${lvl} OF 13` : 'ROOM ? OF 13', c('red', 2));
+  centered(p, 28, room.spec.interlude ? `BETWEEN ROOMS ${lvl} AND ${lvl + 1}` : lvl ? `ROOM ${lvl} OF 13` : 'ROOM ? OF 13', c('red', 2));
   const name = room.spec.name.toUpperCase();
   centered(p, 46, name, c('ink', 0), name.length > 14 ? 1 : 2);
   room.spec.card.forEach((l, i) => centered(p, 78 + i * 11, l, c('blue', 1)));
@@ -116,7 +124,8 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   scaleBlit(p, ingredient(n, 0), 56, 120, 2);
   text(p, 100, 128, 'FIND:', c('ink', 1));
   text(p, 100, 140, RECIPE[n - 1]?.name ?? '???', c('red', 2));
-  bigLeo(p, 236, 116, 0.75);
+  if (room.spec.hero === 'chick') scaleBlit(p, reggie('down'), 234, 118, 2);
+  else bigLeo(p, 236, 116, 0.75);
   return { px: p, pal: pal.pal };
 }
 
@@ -154,7 +163,7 @@ export function introFli(): Uint8Array {
     mainStreet(p, 3);
     const x = -150 + t * 8;
     stand(p, x, 100, 1, "LEO'S");
-    p.rect(x + 70, 140, 14, 2, c('ink', 0));
+    p.rect(x + 70, 146, 14, 2, c('ink', 0));
     chez(p, x + 84, 122, 1.1, t);
     say(p, ['July the Fourth.', "Doc Leo's root beer stand rolls in."]);
     frames.push(p);
@@ -254,7 +263,7 @@ export function paradeScreen(): { px: Pixels; pal: Uint8Array } {
     for (let a = 0; a < 13; a++) p.line(fx, fy, fx + Math.cos(a / 2.07) * 16, fy + Math.sin(a / 2.07) * 16, col);
   }
   stand(p, 20, 96, 1, "LEO'S");
-  p.rect(90, 136, 14, 2, c('ink', 0));
+  p.rect(90, 142, 14, 2, c('ink', 0));
   chez(p, 104, 118, 1.1);
   scaleBlit(p, corgi(0), 180, 150, 2);
   bigLeo(p, 232, 112, 1.1, true);
@@ -349,6 +358,16 @@ export function buildScreens(rooms: Room[], sets: Record<string, TileSet>): Reco
       const name = `egg${room.spec.cupboard.scene}.gif`;
       out[name] = gif(eggScreen(rotten));
       out[introName(room)] = serializeSlideList([{ name, pause: 30 }]);
+      continue;
+    }
+    if (room.spec.interlude) {
+      const f = room.spec.file;
+      const { px, pal } = roomCard(room, sets[room.spec.style]);
+      out[`card${f.slice(0, 4)}.gif`] = gif(px, pal);
+      out[`${f}in.fli`] = stoveInFli();
+      out[`${f}out.fli`] = stoveOutFli();
+      out[introName(room)] = serializeSlideList([{ name: `${f}in.fli`, pause: 1 }, { name: `card${f.slice(0, 4)}.gif`, pause: 5 }]);
+      out[outroName(room)] = serializeSlideList([{ name: `${f}out.fli`, pause: 1 }]);
       continue;
     }
     const n = String(room.spec.level).padStart(2, '0');
