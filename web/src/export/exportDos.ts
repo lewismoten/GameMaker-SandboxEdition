@@ -7,6 +7,7 @@ import { textBytes } from '../formats/binary';
 import { parseGame } from '../formats/game';
 import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
 import { parseSoundSet } from '../formats/sound';
+import { recordedAudioNotice, recordedClips } from './recordedAudio';
 
 export interface DosExportOptions {
   title: string;
@@ -96,13 +97,13 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     // (beside the game's own README.TXT, if it has one, under another name)
     {
       name: names.some((n) => n.toUpperCase() === 'README.TXT') ? 'PLAYER.TXT' : 'README.TXT',
-      data: textBytes(readme(opts.title, stem).replace(/\n/g, '\r\n')),
+      data: textBytes(readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  ')).replace(/\n/g, '\r\n')),
     },
   ];
   return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries), exe };
 }
 
-function readme(title: string, stem: string): string {
+function readme(title: string, stem: string, audio?: string): string {
   return `${title}
 ${'='.repeat(title.length)}
 
@@ -140,7 +141,7 @@ ${MIT_NOTICE}
   included it with every game. These parts are their owners' and are not
   covered by the MIT License. Sound Blaster is a trademark of Creative
   Technology Ltd.
-`;
+${audio ? `\n${audio}\n` : ''}`;
 }
 
 /** Game-Maker's MIT License, as Andy Stone released the source (LICENSE). */
