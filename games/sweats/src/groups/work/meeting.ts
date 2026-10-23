@@ -20,6 +20,7 @@ import { T, face, hurts, outline, type SpriteBook } from '../../common/sprites';
 import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';
 import { officeWall } from './office';
+import { addPicture, placePicture } from '../../common/picture';
 import { WORK_MON } from './ids';
 
 /** Pages of notes to find before the meeting ends. */
@@ -28,39 +29,57 @@ export const NOTES = 5;
 export function meetingBlocks(book: BlockBook, pal: Pal): void {
   const { c, r: R } = pal;
   const wall = (seed: number) => officeWall(pal, seed);
-  // the long conference table: its top (a ledge) and the dark under it, legs and all
-  const top = wall(11);
-  top.rect(0, 10, 20, 4, c('wood', 3)).rect(0, 10, 20, 1, c('wood', 4)).rect(0, 14, 20, 1, c('wood', 0));
-  book.add('tableTop', top, { solid: LEDGE, grav: GRAV.down });
-  const under = (leg: boolean) => {
+  // the long conference table: its top (a ledge: the polished edge right where he stands), the
+  // shadow under it, its legs
+  const under = (leg: boolean, top: boolean) => {
     const p = wall(12);
     p.rect(0, 0, 20, 20, c('cube', 0));
     for (let y = 0; y < 20; y += 2) p.rect(0, y, 20, 1, c('ink2', 1));
     if (leg) p.rect(8, 0, 4, 20, c('metal', 1)).rect(9, 0, 1, 20, c('metal', 2));
+    if (top) {
+      p.rect(0, 0, 20, 7, c('wood', 3)).rect(0, 0, 20, 1, c('wood', 4)).rect(0, 4, 20, 1, c('wood', 2)).rect(0, 7, 20, 1, c('wood', 0));
+      p.rect(0, 8, 20, 2, c('ink2', 0));
+    }
     return p;
   };
-  book.add('underTable', under(false), AIR);
-  book.add('tableLeg', under(true), AIR);
-  // the coworkers along the far side, heads over the table, droning: buzzwords drift off them
+  book.add('tableTop', under(false, true), { solid: LEDGE, grav: GRAV.down });
+  book.add('underTable', under(false, false), AIR);
+  book.add('tableLeg', under(true, false), AIR);
+  // the coworkers along the far side, each in a high-backed chair, elbows on the table, droning:
+  // buzzwords drift off them
   const coworker = (hair: string, shirt: string, seed: number, droning: boolean) => {
     const p = wall(seed);
-    p.rect(3, 12, 14, 8, c(shirt, 1)).rect(3, 12, 14, 2, c(shirt, 2));
-    blob(p, 10, 7, 4.4, 4.6, R('skin'), 1, 3);
-    p.rect(6, 2, 9, 3, c(hair, 1)).set(5, 4, c(hair, 1)).set(15, 4, c(hair, 1));
-    p.set(8, 7, c('ink', 0)).set(12, 7, c('ink', 0));
-    if (droning) p.rect(9, 10, 3, 1, c('ink', 0));
-    else p.rect(8, 9, 1, 1, c('ink', 0)).rect(12, 9, 1, 1, c('ink', 0));
+    // the chair's high back behind them
+    p.rect(3, 3, 14, 17, c('ink2', 1)).rect(4, 2, 12, 1, c('ink2', 1)).rect(4, 4, 12, 15, c('cube', 0)).rect(5, 4, 1, 15, c('cube', 1));
+    // shoulders and arms down to the table, hands folded on it
+    p.rect(2, 14, 16, 6, c(shirt, 1)).rect(3, 13, 14, 2, c(shirt, 2)).rect(9, 13, 2, 3, c('white', 2));
+    p.rect(1, 17, 3, 3, c(shirt, 0)).rect(16, 17, 3, 3, c(shirt, 0)).rect(7, 18, 6, 2, c('skin', 2));
+    blob(p, 10, 8, 4.2, 4.6, R('skin'), 1, 3);
+    p.rect(6, 3, 9, 3, c(hair, 1)).set(5, 5, c(hair, 1)).set(15, 5, c(hair, 1)).rect(7, 3, 6, 1, c(hair, 2));
+    p.set(8, 8, c('ink', 0)).set(12, 8, c('ink', 0)).set(10, 9, c('skin', 1));
+    if (droning) p.rect(9, 11, 3, 1, c('ink', 0));
+    else p.set(8, 7, c('ink', 0)).set(12, 7, c('ink', 0)).rect(9, 11, 2, 1, c('ink', 0));
     return p;
   };
   book.add('boss', coworker('grey', 'navy', 13, true), { ...AIR, birthMon: WORK_MON.buzz, birthTime: 110 });
   book.add('coworker', coworker('hair', 'teal', 14, false), AIR);
   book.add('coworker2', coworker('yellow', 'red', 15, true), { ...AIR, birthMon: WORK_MON.buzz, birthTime: 130 });
-  // the projector screen with its chart, the clock, the whiteboard (its tray is a ledge)
-  const chart = wall(16);
-  chart.rect(1, 1, 18, 15, c('white', 2)).frame(1, 1, 18, 15, c('metal', 1));
-  for (const [x, h] of [[4, 4], [8, 7], [12, 5], [15, 10]]) chart.rect(x, 14 - h, 2, h, c('blue', 2));
-  chart.line(3, 12, 17, 3, c('red', 2));
-  book.add('chart', chart, AIR);
+  // the pull-down projector screen with this quarter's chart (2 x 2), and the projector hanging
+  // from the ceiling with its beam
+  const screen = new Pixels(40, 40, 255);
+  screen.rect(0, 0, 40, 3, c('metal', 1)).rect(0, 0, 40, 1, c('metal', 2)).rect(1, 3, 38, 31, c('white', 2)).rect(1, 3, 1, 31, c('white', 1));
+  screen.rect(1, 33, 38, 2, c('ink', 1)).rect(19, 35, 2, 3, c('ink', 1));
+  for (let x = 2; x < 38; x++) screen.set(x, 3, c('white', 1));
+  micro(screen, 6, 6, 'SYNERGY', c('navy', 1));
+  for (const [x, h] of [[6, 7], [12, 11], [18, 8], [24, 15], [30, 18]]) screen.rect(x, 31 - h, 4, h, c('blue', 2)).rect(x, 31 - h, 1, h, c('blue', 3));
+  screen.rect(4, 31, 32, 1, c('ink', 0)).rect(4, 13, 1, 18, c('ink', 0));
+  screen.line(5, 27, 34, 12, c('red', 2)).line(5, 28, 34, 13, c('red', 1)).line(31, 12, 34, 12, c('red', 2)).line(34, 12, 34, 15, c('red', 2));
+  addPicture(book, 'screen', screen, wall(16), () => AIR);
+  const proj = new Pixels(20, 20);
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) proj.set(x, y, x % 10 === 0 || y % 10 === 0 ? c('beige', 1) : c('white', 1));
+  proj.rect(0, 18, 20, 2, c('beige', 0)).rect(9, 0, 2, 9, c('metal', 1)).rect(4, 9, 12, 6, c('grey', 1)).rect(4, 9, 12, 1, c('grey', 2)).rect(4, 14, 12, 1, c('grey', 0));
+  proj.disc(15, 12, 2, c('ink', 0)).set(15, 12, c('fluor', 0)).set(7, 11, c('green', 3));
+  book.add('projector', proj, { solid: SOLID });
   const clock = (end: boolean) => {
     const p = wall(17);
     p.disc(10, 9, 6, c('white', 2)).ring(10, 9, 6, c('ink', 0)).line(10, 9, 10, 4, c('ink', 0)).line(10, 9, end ? 14 : 13, end ? 9 : 12, c('ink', 0));
@@ -69,8 +88,10 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
   book.add('clock', clock(false), AIR);
   const board = wall(18);
   board.rect(0, 2, 20, 14, c('white', 2)).rect(0, 2, 20, 1, c('metal', 1)).rect(0, 15, 20, 2, c('metal', 1));
-  micro(board, 2, 5, 'Q3', c('blue', 1));
-  micro(board, 2, 10, 'SYNRG', c('red', 1));
+  for (const [y, w, col] of [[5, 14, 'blue'], [8, 10, 'blue'], [11, 16, 'red']] as const) {
+    board.rect(2, y, 2, 2, c(col, 1));
+    for (let x = 6; x < 4 + w; x++) if ((x * 5 + y) % 7 < 5) board.set(x, y + (x % 3 === 0 ? 1 : 0), c(col, 1));
+  }
   book.add('board', board, { solid: LEDGE, grav: GRAV.down });
   const board2 = wall(19);
   board2.rect(0, 2, 20, 14, c('white', 2)).rect(0, 2, 20, 1, c('metal', 1)).rect(0, 15, 20, 2, c('metal', 1));
@@ -94,10 +115,19 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
   book.add('shelf', shelf('none'), { solid: LEDGE, grav: GRAV.down });
   book.add('shelfPens', shelf('pens'), { solid: LEDGE, grav: GRAV.down });
   book.add('shelfNotes', shelf('notes'), { solid: LEDGE, grav: GRAV.down });
-  const closetDoor = wall(20);
-  closetDoor.rect(2, 0, 16, 20, c('cube', 0)).rect(2, 0, 2, 20, c('wood', 2)).rect(16, 0, 2, 20, c('wood', 2));
-  micro(closetDoor, 5, 2, 'SUP', c('white', 1));
-  book.add('closetDoor', closetDoor, AIR);
+  const closetDoor = (sign: boolean) => {
+    const p = wall(20);
+    p.rect(2, 0, 16, 20, c('cube', 0)).rect(2, 0, 2, 20, c('wood', 2)).rect(16, 0, 2, 20, c('wood', 2));
+    if (sign) p.rect(4, 2, 13, 7, c('white', 1)).frame(4, 2, 13, 7, c('metal', 0)), micro(p, 5, 3, 'SUP', c('red', 1));
+    else p.disc(14, 9, 1.2, c('gold', 2));
+    return p;
+  };
+  book.add('closetDoor', closetDoor(true), AIR);
+  book.add('closetDoor2', closetDoor(false), AIR);
+  // cartons of copier paper stacked on the closet floor
+  const boxes = closet();
+  for (const [x, y, w] of [[1, 12, 9], [10, 12, 9], [4, 4, 10]]) boxes.rect(x, y, w, 8, c('beige', 3)).frame(x, y, w, 8, c('beige', 0)).rect(x, y + 3, w, 1, c('beige', 1));
+  book.add('closetBoxes', boxes, AIR);
   // a potted plant by the door, a water cooler (solid)
   const cooler = wall(21);
   cooler.rect(5, 8, 10, 12, c('white', 1)).rect(6, 0, 8, 8, c('blue', 2)).rect(7, 1, 3, 6, c('blue', 3)).set(9, 13, c('red', 2));
@@ -107,8 +137,8 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
     const p = wall(22);
     p.rect(2, 0, 16, 20, open ? c('fluor', 0) : c('wood', 2)).rect(2, 0, 16, 1, c('wood', 0)).rect(2, 0, 1, 20, c('wood', 0)).rect(17, 0, 1, 20, c('wood', 0));
     if (!open) {
-      p.disc(14, 11, 1.2, c('gold', 2)).rect(5, 3, 10, 7, c('white', 2));
-      micro(p, 6, 4, 'END', c('red', 1));
+      p.disc(14, 11, 1.2, c('gold', 2)).rect(4, 3, 13, 7, c('white', 2));
+      micro(p, 5, 4, 'END', c('red', 1));
     }
     return p;
   };
@@ -200,7 +230,8 @@ export const meeting: Monologue = {
     O: 'coworker2',
     w: 'window',
     k: 'clock',
-    h: 'chart',
+    P: 'projector',
+    y: 'blinds',
     C: 'closet',
     s: 'shelf',
     p: 'shelfPens',
@@ -234,7 +265,9 @@ export const meeting: Monologue = {
     m.fill(7, 8, 25, 2, 'u');
     for (const x of [8, 19, 30]) m.col(x, 8, 9, 'l');
     m.set(10, 6, 'o').set(13, 6, 'B').set(17, 6, 'O').set(22, 6, 'o').set(25, 6, 'B').set(29, 6, 'O');
-    m.set(19, 2, 'h').set(20, 2, 'h').set(15, 2, 'k').set(26, 3, 'w');
+    placePicture(m, 'screen', 19, 2, 2, 2);
+    m.set(15, 0, 'P').set(13, 2, 'k').set(26, 3, 'y').set(4, 4, 'y').set(34, 4, 'poster').set(5, 6, 'thermostat');
+    placePicture(m, 'credenza', 3, 9, 2, 1);
     // under the table: his notes, scuttling footprints, a coin; on the table: more notes, a dollar
     m.set(12, 9, 'M').set(24, 9, 'M').set(16, 9, '%').set(27, 9, 'b');
     m.set(20, 6, 'K').set(26, 6, '&');
@@ -242,15 +275,17 @@ export const meeting: Monologue = {
     m.mon(WORK_MON.spider, 13, 9).mon(WORK_MON.spider, 21, 9);
     m.mon(MON.carl, 20, 3);
     // the supply closet: its shelves (ledges), the backup pen, notes on the top shelf
-    m.set(36, 9, 'd').set(36, 8, 'd');
+    m.set(36, 9, 'closetDoor2').set(36, 8, 'd');
     m.fill(37, 1, 9, 9, 'C');
     m.row(7, 38, 40, 'p').row(4, 41, 44, 'n').row(7, 43, 45, 's');
     m.set(43, 3, 'L').set(39, 6, '(');
     m.mon(WORK_MON.pen, 38, 9);
+    m.set(44, 9, 'closetBoxes').set(45, 9, 'closetBoxes').set(45, 8, 'closetBoxes');
     // the whiteboard (its tray a ledge), the water cooler, the door out
     m.row(6, 48, 49, 'W').set(50, 6, 'V');
     m.set(49, 5, 'K').set(52, 9, 'c').set(54, 9, '$');
-    m.set(57, 9, 'D').set(57, 8, 'k');
+    m.set(57, 9, 'D').set(57, 8, 'k').set(53, 3, 'y').set(47, 3, 'thermostat');
+    placePicture(m, 'plant', 55, 8, 1, 2);
     m.link(57, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
