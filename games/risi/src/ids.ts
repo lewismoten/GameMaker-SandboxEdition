@@ -36,6 +36,9 @@ export const MON = {
   gaul2: 13,
   /** An arrow loosed from the hill, falling. */
   arrow: 14,
+  /** The second wave: two more warriors who rally at the edge of the field, then charge to the wide ditch. */
+  gaulW: 50,
+  gaulW2: 51,
   /** A crow over the field. Harmless. */
   crow: 15,
   // ---- III. the rooftops (Titus Torquet Lingua)

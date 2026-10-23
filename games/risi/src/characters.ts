@@ -137,6 +137,8 @@ export interface MonsterOptions {
   chargeSpeed?: number;
   /** Rows below the tower's top an arrow comes down to. */
   fall?: number;
+  /** The second wave: blocks right to its ditch, rally legs (each a block up or down) before it charges, and its speed. */
+  wave?: [number, number, number];
 }
 
 /** A level's .MON (the slots are the same in every level; each fills the ones it uses). */
@@ -180,6 +182,16 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   const charge = [corner(0, 0, o.chargeSpeed ?? 3), ...(o.charge ?? [[40, 0]]).map(([cx, cy]) => corner(cx, cy, o.chargeSpeed ?? 3, 0))];
   set[MON.gaul] = mon(sting('gaul', 3), { power: 230, thru: 0, end: -1 }, charge);
   set[MON.gaul2] = mon(sting('gaulB', 3), { power: 230, thru: 0, end: -1 }, charge);
+  // the second wave: they rally where they stand (shaking their spears, up and down a block),
+  // then charge faster than the first to the wide ditch, and tumble in
+  if (o.wave) {
+    const [wx, delay, ws] = o.wave;
+    const rally: March[] = Array.from({ length: delay }, (_, k) => corner(0, k % 2 ? 0 : -1, 1, 0));
+    // (the charge in two legs: PLAYGAME takes the short way round the 100-block world)
+    const second = [corner(0, 0, 1), ...rally, corner(wx / 2, 0, ws, 0), corner(wx, 0, ws, 0), corner(wx + 2, 2, ws, 0)];
+    set[MON.gaulW] = mon(sting('gaul', 3), { power: 230, thru: 0, end: -1 }, second);
+    set[MON.gaulW2] = mon(sting('gaulB', 3), { power: 230, thru: 0, end: -1 }, second);
+  }
   // an arrow loosed from the tower: up and over, down into the field ahead of it
   set[MON.arrow] = mon(sting('arrow', 2), { power: 150, thru: 0, end: -1 }, [
     corner(0, 0, 4),

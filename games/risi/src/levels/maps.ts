@@ -141,7 +141,7 @@ export function banquet(book: BlockBook): Level {
 
 /** II. The battle: the horde behind, the ladder and palisade, the archers, the ditch, the gate. */
 export function battle(book: BlockBook): Level {
-  const W = 56;
+  const W = 74;
   const H = 13;
   const m = new MapBuilder(book, 'outside');
   m.fill(1, 0, W - 2, 2, 'skyHi');
@@ -152,6 +152,8 @@ export function battle(book: BlockBook): Level {
     [29, 4],
     [38, 2],
     [47, 3],
+    [58, 2],
+    [67, 4],
   ])
     m.set(x, y, 'skyCloud');
   m.row(8, 1, W - 2, 'hills')
@@ -171,13 +173,21 @@ export function battle(book: BlockBook): Level {
   m.mon(MON.crow, 30, 3);
   // the ditch: in, along, out (melius est hic manere!)
   m.fill(43, 10, 4, 2, 'ditch').set(44, 11, 'ditchSign');
+  // the second field: a rock, a coin, the eagle, the second archers' tower, a bush
+  m.set(49, 9, 'rock').set(51, 9, 'wcoin').set(53, 9, 'aquila');
+  m.set(55, 8, 'towerTop').set(55, 9, 'tower');
+  m.set(57, 9, 'bush');
+  // the wide ditch: in, along, out, with the second wave on his heels
+  m.fill(59, 10, 5, 2, 'ditch').set(61, 11, 'ditchSign');
   // THE CHEZ, parked by the gate: QVID EST?
-  m.set(48, 9, 'chezL').set(49, 9, 'chezR').set(50, 9, 'quid');
+  m.set(66, 9, 'chezL').set(67, 9, 'chezR').set(68, 9, 'quid');
   // the gate
-  m.col(51, 5, 7, 'gateTower').set(51, 8, 'gateTop').set(51, 9, 'gateWay').fill(52, 5, 3, 5, 'gateTower');
-  m.link(51, 9, 'next');
-  // the Gaulish horde, right behind him
+  m.col(69, 5, 7, 'gateTower').set(69, 8, 'gateTop').set(69, 9, 'gateWay').fill(70, 5, 3, 5, 'gateTower');
+  m.link(69, 9, 'next');
+  // the Gaulish horde, right behind him; the second wave rallies at the edge of the field, then
+  // charges after him to the wide ditch
   m.mon(MON.gaul, 0, 9).mon(MON.gaul2, -2, 9);
+  m.mon(MON.gaulW, -1, 9).mon(MON.gaulW2, -2, 9);
   return { m, start: at(4, 9), size: [W, H] };
 }
 

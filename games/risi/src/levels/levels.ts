@@ -51,6 +51,7 @@ export const LEVELS: LevelDef[] = [
       ],
       chargeSpeed: 2,
       fall: 1,
+      wave: [60, 4, 3],
     },
     view: [16, 4],
   },

@@ -206,7 +206,30 @@ export async function battle(bot: Bot): Promise<void> {
     },
     W,
   );
-  await leave(bot, bot.walk(52, 'the gate'), 'the gate');
+  await carefully(
+    bot,
+    'the second field: the rock, the coin, the eagle, the second tower',
+    0,
+    async () => {
+      await must(bot, bot.walk(48, 'before the rock'), 'rock');
+      await must(bot, bot.hop('right', 10, 'right', 51), 'over the rock');
+      await must(bot, bot.walk(53.4, 'the coin, the eagle, before the tower'), 'eagle');
+      await must(bot, bot.hop('right', 12, 'right', 57.4), 'over the second tower');
+    },
+    W,
+  );
+  await carefully(
+    bot,
+    'the wide ditch, the second wave behind',
+    0,
+    async () => {
+      await must(bot, bot.walk(60, 'down into the wide ditch'), 'into the ditch');
+      await must(bot, bot.walk(62.6, 'along the bottom of the ditch'), 'ditch');
+      await must(bot, bot.hop('right', 12, 'right', 64.4), 'out of the wide ditch');
+    },
+    W,
+  );
+  await leave(bot, bot.walk(70, 'the gate'), 'the gate');
 }
 
 /** Jokes at the monsters numbered `mons` while any is within `range` blocks ahead on his rows. */
