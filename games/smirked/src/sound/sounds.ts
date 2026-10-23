@@ -141,7 +141,7 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.life, 'afraid', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
   add(SND.score, by({ foyer: 'crinkle', parade: 'crinkle', webs: 'crinkle', exit: 'chime' }), speaker((i) => (i < 6 ? 1568 : i < 14 ? 1319 : 0)));
   add(SND.lose, 'groan', SPEAKER.fall(300, 90));
-  add(SND.gain, by({ foyer: 'click', parade: 'cardboard', webs: 'sneezing', exit: 'honk' }), speaker((i) => (i < 8 ? 600 + i * 90 : 0)));
+  add(SND.gain, by({ foyer: 'click', parade: 'cardbrd', webs: 'sneezing', exit: 'honk' }), speaker((i) => (i < 8 ? 600 + i * 90 : 0)));
   add(SND.spend, by({ foyer: 'mild', parade: 'target', webs: 'creak', exit: 'exit' }), SPEAKER.noise(3, 60, 300));
   add(SND.tackle, place === 'exit' ? 'whoosh' : 'getdown', SPEAKER.warble(700, 250, 1.1));
   add(SND.hurt, by({ foyer: 'scream', parade: 'scream', webs: 'sneeze', exit: 'ow' }), SPEAKER.hurt());

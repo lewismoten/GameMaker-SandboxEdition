@@ -27,7 +27,7 @@ SONG = {
         'okay': (39.30, 40.26, 0.01, 0.10),  # verse 3: "You okay with that?"
         'afraid': (46.05, 48.40, 0.01, 0.25),  # chorus 1: "She's eight, and I'm afraid"
         'getdown': (54.72, 55.78, 0.01, 0.15),  # chorus 1: "GET DOWN!"
-        'cardboard': (57.25, 59.62, 0.01, 0.20),  # chorus 1: "Turns out she was cardboard"
+        'cardbrd': (57.25, 59.62, 0.01, 0.20),  # chorus 1: "Turns out she was cardboard"
         'target': (62.40, 65.28, 0.01, 0.25),  # chorus 1: "She strolls like it's Target"
         'exit': (70.30, 72.30, 0.01, 0.30),  # chorus 1: "the emergency exit sign"
         'werewolf': (80.42, 83.28, 0.01, 0.20),  # verse 4: "There's a guy in a werewolf mask, he growls"

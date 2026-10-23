@@ -10,7 +10,7 @@
 //   okay        39.27   40.27   1.00 s    11058    verse 3: "You okay with that?"
 //   afraid      45.93   48.52   2.59 s    28588    chorus 1: "She's eight, and I'm afraid"
 //   getdown     54.60   55.90   1.30 s    14366    chorus 1: "GET DOWN!"
-//   cardboard   57.13   59.74   2.61 s    28809    chorus 1: "Turns out she was cardboard"
+//   cardbrd     57.13   59.74   2.61 s    28809    chorus 1: "Turns out she was cardboard"
 //   target      62.28   65.39   3.11 s    34321    chorus 1: "She strolls like it's Target"
 //   exit        70.18   72.42   2.24 s    24729    chorus 1: "the emergency exit sign"
 //   werewolf    80.30   83.23   2.93 s    32337    verse 4: "There's a guy in a werewolf mask, he growls"
@@ -29,7 +29,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encodeVoc } from '../../../../web/src/formats/voc';
 
-export const CLIPS = ['mild', 'fog', 'okay', 'afraid', 'getdown', 'cardboard', 'target', 'exit', 'werewolf', 'dontrun', 'sneezing', 'notreal', 'pats', 'juice', 'badge', 'sword', 'ashamed', 'datewell'] as const;
+export const CLIPS = ['mild', 'fog', 'okay', 'afraid', 'getdown', 'cardbrd', 'target', 'exit', 'werewolf', 'dontrun', 'sneezing', 'notreal', 'pats', 'juice', 'badge', 'sword', 'ashamed', 'datewell'] as const;
 export type ClipName = (typeof CLIPS)[number];
 const RATE = 11025;
 
