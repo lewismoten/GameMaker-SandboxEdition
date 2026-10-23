@@ -123,6 +123,7 @@ const SUMMARY: Record<string, string> = {
   loofah: "You touched the pink one. Now the towel screams. Light the candles, cleanse the demon sponge with brine.",
   smirked: "Lily is eight and not scared. You are. Tackle a cardboard witch, sneeze through fake webs, bond with the exit sign.",
   sweats: 'Open mic at The Hive: 17 monologues about a pen, a chair, a blanket, a cart. Each one an EPIC. Declaim!',
+  risi: "Veni, Vidi, Risi!'s six Latin songs: Rufus farts at the banquet, the brave coward runs, a cat hunts cheese. Make the Emperor laugh.",
 };
 
 const TAGLINES = [
