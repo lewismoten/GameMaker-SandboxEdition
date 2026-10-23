@@ -38,4 +38,18 @@ export const RSD_INTROS: RsdIntro[] = [
     file: 'cd/gameware/heart/gmtitle1.gif',
     games: ['The Patchwork Heart', 'Peach the Lobster'],
   },
+  {
+    src: 'rsd-tutor-game.webp',
+    alt: 'The word “GAME” in large serif capitals shading from gold to green, near the top of a black screen',
+    caption: 'Tutor’s animated intro, first half: GAME (1 game)',
+    file: 'cd/gameware/tutor/gm3a.fli',
+    games: ['Tutor'],
+  },
+  {
+    src: 'rsd-tutor-maker.webp',
+    alt: 'The word “MAKER” in large serif capitals shading from cyan to blue, across the middle of a black screen',
+    caption: 'Tutor’s animated intro, second half: MAKER (1 game)',
+    file: 'cd/gameware/tutor/gm3b.fli',
+    games: ['Tutor'],
+  },
 ];
