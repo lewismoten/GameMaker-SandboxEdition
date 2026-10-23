@@ -7,5 +7,7 @@
   "price": "$5",
   "blurb": "The rich man walked away from Jesus with his coins and his frown, and left his camel behind with saddlebags full of gold. Was He talkin' 'bout you? Give the gold away to the poor along the road, slim down on the spiritual side, crawl the narrow ways on your knees, ask a tailor what thread feel feels and squeeze through the eye of a needle. Shareware from The Sofa BBS, based on the song by The Bard of Bizarre, one of his bizarre gospels (lyrics shaped by ChatGPT from Lewis Moten's prompts; music and animated cover made with Riffusion (now Google Flow Music)).",
   "exe": "NEEDLE.EXE",
-  "sound": "sb"
+  "sound": "sb",
+  "tinHeart": { "map": "tailor.map", "at": [35, 17] },
+  "easterEgg": { "map": "city.map", "at": [4, 11] }
 }

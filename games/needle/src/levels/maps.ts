@@ -151,6 +151,7 @@ const CITY: Record<string, string> = {
   O: 'lamp',
   '*': 'glint',
   '>': 'road',
+  E: 'egg',
 };
 
 const DESERT: Record<string, string> = {
@@ -205,6 +206,8 @@ export function city(book: BlockBook): Level {
   m.set(12, 2, '~').set(36, 3, '~').set(61, 2, '~');
   // the great city gate behind him, where he was mindin' his humps
   m.row(1, 1, 3, 'T').fill(1, 2, 3, 3, 'W').text(1, 5, '(|)').fill(1, 6, 3, 4, 'g');
+  // a painted egg in the gate's shadow, behind where he starts
+  m.set(2, 9, 'E');
   m.col(7, 6, 9, 'P').set(7, 5, 'Y');
   // the city in the morning haze, where the rich man struts with his moneybags
   // the city in the haze behind the market, all along the street
@@ -322,6 +325,8 @@ const TAILOR: Record<string, string> = {
   '2': 'robe1',
   K: 'cloak0',
   '3': 'cloak1',
+  h: 'tinHeart',
+  Z: 'watt',
 };
 
 /** 3. The tailor's shop: spools, threads to climb and mend, needles' eyes to crawl through, the sewing machine. */
@@ -340,6 +345,8 @@ export function tailor(book: BlockBook): Level {
   m.col(22, 1, 5, 'N').set(22, 6, 'A').set(22, 7, 'G').set(22, 8, 'V').col(22, 9, 14, 'N').set(22, 15, 'v').row(8, 23, 25, '-');
   // the sewing machine's table: its needle stabs down (kneel under it); a spool, the beggar
   m.row(10, 26, 35, 'T').col(26, 11, 15, 't').col(35, 11, 15, 't').set(28, 9, 's').set(34, 9, 'B');
+  // under the table: Watt seeing to the treadle, and a tin heart someone dropped
+  m.set(28, 15, 'Z').set(33, 15, 'h');
   // the machine on the table: its head over the needle at the end of the arm, the pillar and wheel
   m.text(31, 4, 'mM').set(33, 4, 'machineArm').set(33, 5, 'machineWheel').col(33, 6, 8, 'machinePillar');
   m.set(31, 9, 'machineBedL').set(32, 9, 'machineBed').set(33, 9, 'machineBase');

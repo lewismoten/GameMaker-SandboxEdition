@@ -8,6 +8,8 @@ import { dither, Pixels } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
 import { THREAD } from '../ids';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { wattCameo } from '../../../kit/cameos';
 import { addGate, addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 export function tailorBlocks(pal: Pal): Kit {
@@ -204,5 +206,23 @@ export function tailorBlocks(pal: Pal): Kit {
   book.add('machineBedL', machinePart(0, 5), air);
   book.add('machineBed', machinePart(1, 5), air);
   book.add('machineBase', machinePart(2, 5), air);
+  // the tin heart, dropped on the floor under the sewing machine's table (points only, no sound of its own)
+  for (let f = 0; f < SHINE_FRAMES; f++)
+    book.add(`tinHeart${f || ''}`, drawTinHeart(panel(1), { ink: c('ink', 0), tin: [c('steel', 1), c('steel', 2), c('steel', 3)], white: c('white', 2), dark: c('steel', 0) }, f), {
+      score: 100,
+      touch: 'bg',
+      grav: GRAV.down,
+      next: `tinHeart${(f + 1) % SHINE_FRAMES || ''}`,
+      ntime: f ? 2 : 50,
+    });
+  // Watt, the repair robot from Ohm Sweet Ohm, under the table seeing to the treadle (scenery)
+  const watt = (blink: boolean) => {
+    const p = panel(1);
+    const w = wattCameo(pal.pal, 'side', 0, blink ? 'blink' : 'ok');
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (w.get(x, y) !== 255) p.set(x, y, w.get(x, y));
+    return p;
+  };
+  book.add('watt', watt(false), { ...air, next: 'wattBlink', ntime: 70 });
+  book.add('wattBlink', watt(true), { ...air, next: 'watt', ntime: 3 });
   return k;
 }
