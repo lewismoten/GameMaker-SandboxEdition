@@ -17,7 +17,7 @@ builds towers.
 TOWERS: walk into a tower ring
 with sand to build it, then
 walk into it again to plant
-your flag. Four flags lift a
+your flag. Enough flags lift a
 castle gate.
 
 GWINN won't budge for sand or
@@ -31,11 +31,12 @@ sand that bowls over ants and
 beetles.
 
 WATER: balloons and Gwinn's
-bowls fill your bucket. Only
-water (or a ball) flips a
-crab. With the bucket, walk
-into a dashed outline to pack
-a wall of wet sand.
+bowls fill your bucket. Water
+(or a ball) flips a crab
+without a pinch. With the
+bucket, walk into a dashed
+outline to pack a wall of wet
+sand.
 
 CURRENTS carry you. CRUMBLY
 BRIDGES fall in behind you.

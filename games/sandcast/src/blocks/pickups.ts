@@ -6,7 +6,7 @@
 import { GRASS, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
 import { CTR, SEQ } from '../rules';
 import { Pixels, art, ball, dither, shade } from '../art/draw';
-import { bg, onSand, sprite20 } from './common';
+import { SOLID, bg, onSand, sprite20 } from './common';
 
 export function addPickups(): Pixels {
   let juiceArt!: Pixels;
@@ -75,6 +75,23 @@ export function addPickups(): Pixels {
     for (let t = -5; t <= 5; t += 0.5) p.set(10 + t, 11 + Math.cos(t / 1.7) * 2 - 1, STEEL[7]);
     p.set(8, 8, STEEL[7]);
     bg.add('tennis', onSand(70, p), { effect: SEQ.fetch, eamt: 1, score: 25, touch: 'sand0' });
+  }
+  {
+    // A can of tennis balls, seen from above, set down wherever Gwinn naps across the way:
+    // walk into it for another ball, as many times as you like, so throwing every ball away
+    // can never leave Teddy stuck behind her.
+    const p = sprite20();
+    p.disc(10, 10, 9, STEEL[6]).disc(10, 10, 8, STEEL[2]);
+    for (const [x, y] of [
+      [7, 7],
+      [13, 8],
+      [9, 13],
+    ]) {
+      ball(p, x, y, 3.2, YELLOW, 3);
+      p.set(x - 1, y - 1, STEEL[7]);
+    }
+    p.rect(3, 9, 1, 3, STEEL[7]);
+    bg.add('ballCan', onSand(80, p), { solid: SOLID, effect: SEQ.fetch, eamt: 1 });
   }
   {
     // Golden conch shell.

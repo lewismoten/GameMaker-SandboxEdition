@@ -182,7 +182,8 @@ export function addWater(): void {
       .map((x, y, c) => ((x + y * 3) % 5 === 0 ? WATER[5] : (x * 7 + y * 11) % 13 === 0 ? WATER[7] : c === OCHRE[3] ? OCHRE[2] : c))
       .map((x, y, c) => (y < 3 + Math.round(Math.sin(x / 2.5) * 1.2) ? (y === 0 || (x + y) % 4 ? WATER[8] : WATER[9]) : c));
     bg.add('flatWet', wet, { next: 'flatSea', ntime: 25 });
-    bg.add('flatSea', water(0, 133, 3), { next: 'flatEbb', ntime: 110, grav: UP, hp: -1 });
+    // (flooded for under three seconds: long enough to respect, short enough not to stand about)
+    bg.add('flatSea', water(0, 133, 3), { next: 'flatEbb', ntime: 50, grav: UP, hp: -1 });
     const ebb = water(1, 134, 4).map((x, y, c) => ((x * 3 + y * 5) % 4 === 0 ? OCHRE[3] : c));
     bg.add('flatEbb', ebb, { next: 'flat', ntime: 25, grav: UP });
   }

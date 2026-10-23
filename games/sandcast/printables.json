@@ -188,7 +188,7 @@
             },
             {
               "q": "Sand bounces off the crabs.",
-              "a": "Only water flips a crab. Or, with the bucket, walk into a dashed outline to pack a wall the crab can't pass."
+              "a": "Water flips a crab without a pinch (walking into one pinches, once). Or, with the bucket, walk into a dashed outline to pack a wall the crab can't pass."
             },
             {
               "q": "The lagoon gate won't open.",

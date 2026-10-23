@@ -213,13 +213,17 @@ export function addPatio(): void {
     const shut = drawCat('shut');
     for (let by = 0; by < CAT_H; by++)
       for (let bx = 0; bx < CAT_W; bx++) {
-        const p = flagstone(180 + bx + by * CAT_W).blit(open.crop(bx * 20, by * 20, 20, 20), 0, 0, 255);
+        const part = open.crop(bx * 20, by * 20, 20, 20);
+        const p = flagstone(180 + bx + by * CAT_W).blit(part, 0, 0, 255);
         const name = `cat${bx}${by}`;
+        // Every block of her is solid, but only the ones mostly covered by dog hurt to bump
+        // into: a corner that is nearly all flagstone shouldn't sting.
+        const fur = part.px.filter((c) => c !== 255).length / 400;
         const eyeBlock = bx === 1 && by === 2;
         const mouth = bx === 1 && by === 3;
         bg.add(name, p, {
           solid: SOLID,
-          hp: -3,
+          hp: fur >= 0.3 ? -3 : 0,
           ...(eyeBlock ? { next: 'catBlink', ntime: 70 } : {}),
           ...(mouth ? { birthMon: MON.slobber, birthTime: 64 } : {}),
         });

@@ -58,13 +58,13 @@ export const HELP = wrap(`
 
 SAND: scoop sand piles, and dig dunes by walking into them with the shovel. F2 shows your sand as Money. Sand plugs anthills, fills fords and builds towers.
 
-TOWERS: walk into a tower ring with sand to build it, then walk into it again to plant your flag. Four flags lift a castle gate.
+TOWERS: walk into a tower ring with sand to build it, then walk into it again to plant your flag. Enough flags lift a castle gate.
 
 GWINN won't budge for sand or water. Toss her a tennis ball (F) and she trots off happy. Walk toward her first: things fly the way you last walked.
 
 SPIN (3) kicks up a whirl of sand that bowls over ants and beetles.
 
-WATER: balloons and Gwinn's bowls fill your bucket. Only water (or a ball) flips a crab. With the bucket, walk into a dashed outline to pack a wall of wet sand.
+WATER: balloons and Gwinn's bowls fill your bucket. Water (or a ball) flips a crab without a pinch. With the bucket, walk into a dashed outline to pack a wall of wet sand.
 
 CURRENTS carry you. CRUMBLY BRIDGES fall in behind you. The tidal flat floods: wait on a sandbar.
 
@@ -90,11 +90,11 @@ export const INTRO = {
 
 Gwinn's zoomies knocked the keep flat, and ants moved in.
 
-Bring sand to each of the four tower rings (walk into the ring), then touch it again to plant your flag. Four flags lift the gate.
+Walk into each of the four tower rings with sand, then again to plant a flag. Four flags lift the gate.
 
-Plug anthills with sand. SPACE flings sand at ants.
+Plug anthills with sand. SPACE flings it at ants.
 
-Gwinn is asleep in the doorway. Find a tennis ball!
+Gwinn naps in the doorway: toss her a ball (F). The can by her has more.
 `),
   moat: wrap(`
 |2. HOSEWATER MOAT
@@ -128,13 +128,13 @@ The far ladder climbs to the patio.
   patio: wrap(`
 |5. GWINN'S NAP
 
-The patio, at sunset. Gwinn is snoring on the Crown of the Sandbox.
+The patio, at sunset. Gwinn is snoring on the Crown.
 
-Splash a paw twice and she tucks it in: the left one by her side, then the right one by the crown.
+Splash a paw twice (B) and she tucks it in: left paw, then right.
 
-Her snores blow down the path. When the dust stirs, wait.
+When the dust stirs, a snore blows down the path. Wait.
 
-Her bowls never run dry. Mind the slobbery balls and rope toys!
+Her bowls never run dry. Mind the slobbery balls!
 `),
   bbs: wrap(`
 |CONNECT 2400

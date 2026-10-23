@@ -51,8 +51,8 @@ export function addBbs(juiceArt: Pixels): void {
   ['T', 'H', 'E', 'S', 'A', 'N', 'D', 'B', 'O', 'X'].forEach((ch, i) =>
     bg.add(`ltr${ch}`, letterBlock(ch, LETTER_COLORS[i % LETTER_COLORS.length], ANSI[i % 2 ? 5 : 1]), { solid: SOLID }),
   );
-  bg.add('ltrDashEq', letterBlock('-=', ANSI[12], ANSI[4]), { solid: SOLID });
-  bg.add('ltrEqDash', letterBlock('=-', ANSI[12], ANSI[4]), { solid: SOLID });
+  // one '=' block on both sides of SANDBOX (it was '-=' and '=-': the slot went to the ball can)
+  bg.add('ltrEq', letterBlock('==', ANSI[12], ANSI[4]), { solid: SOLID });
   {
     // A 3.5" floppy disk: shareware! Points.
     const p = art(

@@ -65,7 +65,7 @@ export function hub(): LevelMap {
       '.~~~~~~~~~~~~~.........',
       '.~~~~~~~~~~~~~..MTTM...',
       '..~~~~~~~~~~~...#!##...',
-      '...~~~~~~~~...r........',
+      '...~~~~~~~~............',
       '...........r...........',
       '..o....................',
       '.......d.......$.......',
@@ -222,6 +222,8 @@ export function keep(): LevelMap {
   );
   // A tin heart dropped in the far northeast corner, by the dunes.
   m.set(32, 1, 'tinHeart');
+  // A can of tennis balls beside Gwinn's doorway nap, so a ball is always at hand for her.
+  m.set(15, 6, 'ballCan');
   return m;
 }
 
@@ -249,7 +251,7 @@ export function moat(): LevelMap {
       'G........~~..#____#!##____#..~~...o...vG',
       'G..*.....~~..#____________#..~~.......vG',
       'G........~~..#__*______*__#..~~..*....vG',
-      'G...o....bb..#_____h______#..>>>>.....vG',
+      'G...o....bb..#____________#..>>>>.....vG',
       'G........~~..#____________#..~~.......vG',
       'G....o...~~..#____________#..~~....A..vG',
       'G........~~.o######P#######o.~~.......vG',
@@ -348,6 +350,8 @@ export function lagoon(): LevelMap {
       '9': { tile: 'sand', mon: MON.gwinNap },
     }),
   );
+  // A can of tennis balls by Gwinn's nap in the barrier gap.
+  m.set(14, 11, 'ballCan');
   // The sea runs on past the bottom of the map.
   m.rect(0, 29, 40, 8, 'water');
   return m;
@@ -406,8 +410,6 @@ export function burrows(): LevelMap {
     }),
   );
   roughen(m, 51);
-  // an ice pop in the last gallery, before the ladder up to Gwinn's patio
-  m.set(41, 24, 'icepop');
   // where a beetle patrols, the gallery stays a full three blocks high, so there is room to pass it
   for (const [x0, x1, y0, y1] of [
     [9, 16, 3, 5],
@@ -483,7 +485,7 @@ export function patio(): LevelMap {
 export function bbs(): LevelMap {
   const m = new LevelMap('ansiWall', 7);
   m.rect(1, 1, 22, 12, 'ansiFloor');
-  const letters = ['ltrT', 'ltrH', 'ltrE', 'ltrDashEq', 'ltrS', 'ltrA', 'ltrN', 'ltrD', 'ltrB', 'ltrO', 'ltrX', 'ltrEqDash', 'ltrB', 'ltrB', 'ltrS'];
+  const letters = ['ltrT', 'ltrH', 'ltrE', 'ltrEq', 'ltrS', 'ltrA', 'ltrN', 'ltrD', 'ltrB', 'ltrO', 'ltrX', 'ltrEq', 'ltrB', 'ltrB', 'ltrS'];
   letters.forEach((name, i) => m.set(4 + i, 1, name));
   m.stamp(
     1,

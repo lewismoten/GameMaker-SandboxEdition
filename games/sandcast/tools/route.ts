@@ -181,7 +181,7 @@ export async function lagoon(bot: Bot): Promise<void> {
 
 /**
  * Gwinn on the loose: from `stand`, Teddy goes after her a block at a time (keeping clear of
- * her, since bumping into her hurts), and when she is in line two to four blocks off he
+ * her, as a player would), and when she is in line two to four blocks off he
  * steps toward her (so the ball flies her way) and tosses it. When she comes too close from
  * the side, he steps out of her way.
  */

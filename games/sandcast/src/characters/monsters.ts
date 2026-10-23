@@ -147,13 +147,16 @@ export function buildMonsters(): Monster[] {
   def(MON.beetleChase, { ...beetle, towards: 1, end: 330 });
   def(MON.beetleFlip, { pics: [['beetleFlip', 40]], power: 60, end: 30 });
 
-  // Crabs: only a splash of water flips them.
+  // Crabs: sand bounces off, a splash of water flips them. Walk into one and it pinches, once,
+  // and tumbles over too (power under Teddy's 100): a strong monster would pinch every tick
+  // while it overlapped him, and each pinch restarts his hurt sequence, so he couldn't walk
+  // out of it.
   const crab = {
     pics: [
       ['crab0', 3],
       ['crab1', 3],
     ] as [string, number][],
-    power: 105,
+    power: 99,
     becomes: MON.crabFlip,
     score: 150,
   };
@@ -200,7 +203,8 @@ export function buildMonsters(): Monster[] {
       ['rope0', 3],
       ['rope1', 3],
     ],
-    power: 120,
+    // (one bonk and it's gone: under Teddy's 100, so it can't pin him and pinch every tick)
+    power: 99,
     towards: 128,
     end: 320,
     becomes: MON.puff,
