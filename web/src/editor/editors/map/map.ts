@@ -4,6 +4,7 @@ import { History } from '../../core/history';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { h, clear, selectField, toast, debounce, modal, download } from '../../core/ui';
+import { blockButton } from '../../widgets/blockChooser';
 import { blockCanvas, blockImages } from '../../core/draw';
 import { paletteChooser } from '../blocks/blocks';
 import type { FileKind, Project } from '../../core/project';
@@ -13,9 +14,47 @@ import { LASTMM, MLEN, MWID, parseMap, reindexMonsters, serializeMap } from '../
 import { LASTMON, parseMonsters, type Monster } from '../../../formats/monster';
 import { normalize } from '../../../project/files';
 import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from './mapClip';
+import { drawOverlay, type OverlayState } from './tools/overlay';
+import { MapTools, type ToolMode } from './tools/toolController';
+import { findBlock, floodCells, replaceAll } from './tools/cellOps';
 import './mapExport.css';
+import './tools/mapTools.css';
 
-type Mode = 'paint' | 'rect' | 'fill' | 'pick' | 'monster';
+type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | ToolMode;
+const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp', 'building', 'paste']);
+const isTool = (m: Mode): m is ToolMode => TOOL_MODES.has(m);
+
+/** The tool buttons: mode, icon, name, key, what it does. */
+const TOOLS: [Mode, string, string, string, string][] = [
+  ['paint', '✎', 'Paint', 'B', 'Drag to paint the chosen block'],
+  ['line', '╱', 'Line', 'L', 'Drag a straight line of the chosen block'],
+  ['rect', '▭', 'Rectangle', 'R', 'Drag out a rectangle of the chosen block'],
+  ['fill', '▣', 'Fill', 'F', 'Fill the area of one block with the chosen block'],
+  ['pick', '⌖', 'Pick', 'I', 'Click a block on the map to paint with it (eyedropper)'],
+  ['select', '⬚', 'Select', 'S', 'Drag over blocks to copy, cut, paste or save them as a stamp'],
+  ['terrain', '⛰', 'Terrain', 'T', 'Paint grass, water or paths: edges and corners are chosen for you'],
+  ['stamp', '★', 'Stamp', 'P', 'Place a saved stamp (a house, a tree…)'],
+  ['building', '⌂', 'Building', 'H', 'Drag out a rectangle to build a house of that size from its parts'],
+  ['monster', '👾', 'Monsters', 'M', 'Click to place the chosen monster; right-click to remove one'],
+  ['pan', '✋', 'Scroll', '', 'Touch screens: drag to scroll the map instead of drawing'],
+];
+
+/** A remembered on/off choice (the grid); off when storage is unavailable. */
+function readPref(key: string): boolean {
+  try {
+    return localStorage.getItem(key) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writePref(key: string, on: boolean): void {
+  try {
+    localStorage.setItem(key, on ? '1' : '0');
+  } catch {
+    /* remembered for this visit only */
+  }
+}
 
 /** The block set, monsters and monster blocks of the scene that uses this map. */
 function sceneSet(project: Project, file: string): { bbl?: string; mon?: string; mbl?: string; scenes: number[] } {
@@ -53,6 +92,8 @@ registerEditor(['map'], (host, project, file) => {
   const urlZoom = Number(view.get('zoom'));
   let zoom = [0.5, 1, 2].includes(urlZoom) ? urlZoom : 1;
   let bgImgs: HTMLCanvasElement[] = [];
+  const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
+  let finding = false;
   let monImgs: HTMLCanvasElement[] = [];
   const save = debounce(() => project.files.set(file, serializeMap(map)), 300);
   // undo: a snapshot of the whole map (about 22 KB) before each stroke, fill or monster change
@@ -80,6 +121,7 @@ registerEditor(['map'], (host, project, file) => {
   const chooser = paletteChooser(project, set.bbl ?? file, () => rebuild());
 
   const canvas = h('canvas', { class: 'pixel', style: 'cursor:crosshair;display:block' });
+  const over = h('canvas', { class: 'pixel mt-overlay', 'aria-hidden': 'true' });
   const scroller = h(
     'div',
     {
@@ -88,9 +130,13 @@ registerEditor(['map'], (host, project, file) => {
       'aria-label': 'The map (scroll with the arrow keys)',
       style: 'overflow:auto;max-height:max(280px, calc(var(--ws-vh, 100dvh) - 240px - var(--map-tools-h, 60px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
     },
-    canvas,
+    h('div', { class: 'mt-stack' }, canvas, over),
   );
   const ctx = canvas.getContext('2d')!;
+  const redrawOverlay = () => {
+    overlay.found = finding ? findBlock(map.blocks, brush) : [];
+    drawOverlay(over, zoom, overlay, bgImgs);
+  };
   const status = h('div', { class: 'meta' });
   const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(180px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px)) * 0.55))' }), 'Blocks to paint with');
   const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(140px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px)) * 0.4))' }), 'Monsters to place');
@@ -122,7 +168,7 @@ registerEditor(['map'], (host, project, file) => {
           {
             class: i === brush ? 'selected' : '',
             title: `Block ${i}`,
-            onclick: () => ((brush = i), setMode(mode === 'monster' ? 'paint' : mode), rebuildPickers()),
+            onclick: () => ((brush = i), setMode(['paint', 'line', 'rect', 'fill', 'select'].includes(mode) ? mode : 'paint'), rebuildPickers(), redrawOverlay()),
           },
           blockCanvas(b.pixels, chooser.palette),
           h('small', null, i),
@@ -182,6 +228,7 @@ registerEditor(['map'], (host, project, file) => {
       ctx.strokeStyle = mk.kind === 'from' ? '#ffd400' : '#00e0ff';
       ctx.strokeRect(mk.x * s + 1, mk.y * s + 1, s - 2, s - 2);
     }
+    redrawOverlay();
   }
 
   /** The map (or the part of it in `area`) at one pixel per block pixel, as the scene draws it. */
@@ -374,9 +421,10 @@ registerEditor(['map'], (host, project, file) => {
 
   const cell = (e: PointerEvent) => {
     const r = canvas.getBoundingClientRect();
-    return { x: Math.floor(((e.clientX - r.left) / r.width) * MLEN), y: Math.floor(((e.clientY - r.top) / r.height) * MWID) };
+    const clamp = (v: number, n: number) => Math.max(0, Math.min(n - 1, v));
+    return { x: clamp(Math.floor(((e.clientX - r.left) / r.width) * MLEN), MLEN), y: clamp(Math.floor(((e.clientY - r.top) / r.height) * MWID), MWID) };
   };
-  let start: { x: number; y: number } | undefined;
+  let painting = false;
 
   function paintCell(x: number, y: number, v = brush): void {
     if (x < 0 || y < 0 || x >= MLEN || y >= MWID) return;
@@ -384,6 +432,37 @@ registerEditor(['map'], (host, project, file) => {
     const s = BLEN * zoom;
     ctx.drawImage(bgImgs[v], x * s, y * s, s, s);
   }
+
+  /** Cells the tools changed: draw just them (with the links over them) and save. */
+  function changedCells(cells: number[]): void {
+    if (!cells.length) return;
+    const s = BLEN * zoom;
+    for (const i of cells) ctx.drawImage(bgImgs[map.blocks[i]] ?? bgImgs[0], (i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
+    if (cells.length > 400) draw();
+    else redrawOverlay();
+    save();
+  }
+
+  const tools = new MapTools(
+    {
+      project,
+      // undo swaps in a new array: always the current one
+      get blocksArr() {
+        return map.blocks;
+      },
+      bbl: () => bblName,
+      blocks: () => bg,
+      palette: () => chooser.palette,
+      imgs: () => bgImgs,
+      brush: () => brush,
+      remember,
+      changed: changedCells,
+      overlay,
+      drawOverlay: redrawOverlay,
+      setMode: (m) => setMode(m),
+    },
+    h('div', { class: 'stack mt-panel', role: 'region', 'aria-label': 'Tool options' }),
+  );
 
   function placeMonster(x: number, y: number, remove: boolean): void {
     const at = map.monsters.findIndex((m) => m.monnum < LASTMON && m.curx === x && m.cury === y);
@@ -402,20 +481,20 @@ registerEditor(['map'], (host, project, file) => {
   }
 
   function floodFill(x: number, y: number): void {
-    const target = map.blocks[y * MLEN + x];
-    if (target === brush) return;
-    const stack = [[x, y]];
-    while (stack.length) {
-      const [cx, cy] = stack.pop()!;
-      if (cx < 0 || cy < 0 || cx >= MLEN || cy >= MWID || map.blocks[cy * MLEN + cx] !== target) continue;
-      map.blocks[cy * MLEN + cx] = brush;
-      stack.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]);
-    }
-    draw();
+    if (map.blocks[y * MLEN + x] === brush) return;
+    const cells = floodCells(map.blocks, { x, y }).map((c) => c.y * MLEN + c.x);
+    for (const i of cells) map.blocks[i] = brush;
+    changedCells(cells);
   }
 
   canvas.addEventListener('pointerdown', (e) => {
+    if (mode === 'pan') return;
     const p = cell(e);
+    if (isTool(mode)) {
+      canvas.setPointerCapture(e.pointerId);
+      tools.pointerDown(p, e.button);
+      return;
+    }
     if (mode !== 'pick') remember();
     if (mode === 'monster') {
       placeMonster(p.x, p.y, e.button === 2);
@@ -425,64 +504,134 @@ registerEditor(['map'], (host, project, file) => {
       brush = map.blocks[p.y * MLEN + p.x];
       rebuildPickers();
       setMode('paint');
+      redrawOverlay();
       return;
     }
     if (mode === 'fill') {
       floodFill(p.x, p.y);
-      save();
       return;
     }
     canvas.setPointerCapture(e.pointerId);
-    start = p;
-    if (mode === 'paint') paintCell(p.x, p.y);
+    painting = true;
+    paintCell(p.x, p.y);
   });
+  let lastPaint: { x: number; y: number } | undefined;
   canvas.addEventListener('pointermove', (e) => {
     const p = cell(e);
     const b = map.blocks[p.y * MLEN + p.x];
     const mon = map.monsters.find((m) => m.monnum < LASTMON && m.curx === p.x && m.cury === p.y);
     const marks = linkMarks().filter((m) => m.x === p.x && m.y === p.y);
-    status.textContent = `(${p.x}, ${p.y}) block ${b}${mon ? ` · monster ${mon.monnum}` : ''}${marks.map((m) => ` · link ${m.label}`).join('')}`;
-    if (!canvas.hasPointerCapture(e.pointerId) || !start) return;
-    if (mode === 'paint') paintCell(p.x, p.y);
-    if (mode === 'rect') {
-      draw();
-      const s = BLEN * zoom;
-      ctx.strokeStyle = '#fff';
-      ctx.strokeRect(Math.min(start.x, p.x) * s, Math.min(start.y, p.y) * s, (Math.abs(p.x - start.x) + 1) * s, (Math.abs(p.y - start.y) + 1) * s);
-    }
+    status.textContent = `(${p.x}, ${p.y}) block ${b}${mon ? ` · monster ${mon.monnum}` : ''}${marks.map((m) => ` · link ${m.label}`).join('')}${finding ? ` · block ${brush} is used ${overlay.found.length} times` : ''}`;
+    if (isTool(mode)) return tools.pointerMove(p, e.buttons);
+    if (!painting || !canvas.hasPointerCapture(e.pointerId)) return;
+    // a fast stroke skips cells: fill them in along a line
+    const from = lastPaint ?? p;
+    const n = Math.max(Math.abs(p.x - from.x), Math.abs(p.y - from.y));
+    for (let k = 1; k <= n; k++) paintCell(Math.round(from.x + ((p.x - from.x) * k) / n), Math.round(from.y + ((p.y - from.y) * k) / n));
+    paintCell(p.x, p.y);
+    lastPaint = p;
   });
-  canvas.addEventListener('pointerup', (e) => {
-    if (mode === 'rect' && start) {
-      const p = cell(e);
-      for (let y = Math.min(start.y, p.y); y <= Math.max(start.y, p.y); y++)
-        for (let x = Math.min(start.x, p.x); x <= Math.max(start.x, p.x); x++) map.blocks[y * MLEN + x] = brush;
-      draw();
+  canvas.addEventListener('pointerdown', (e) => (lastPaint = cell(e)));
+  const endStroke = (e: PointerEvent) => {
+    if (isTool(mode)) return tools.pointerUp(cell(e));
+    if (painting) {
+      painting = false;
+      lastPaint = undefined;
+      redrawOverlay();
+      save();
     }
-    start = undefined;
-    save();
-  });
+  };
+  canvas.addEventListener('pointerup', endStroke);
+  canvas.addEventListener('pointercancel', endStroke);
+  canvas.addEventListener('pointerleave', () => tools.leave());
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
-  const modeBar = h('div', { class: 'toolbar' });
+  const pressed = (on: boolean) => ({ 'aria-pressed': String(on) });
+  const gridBtn = h('button', { type: 'button', class: 'mt-tool', title: 'Show the block grid (G)', onclick: () => toggleGrid() }, '#', h('span', { class: 'mt-label' }, 'Grid'));
+  const findBtn = h('button', { type: 'button', class: 'mt-tool', title: 'Highlight every use of the chosen block', onclick: () => toggleFind() }, '🔍', h('span', { class: 'mt-label' }, 'Find'));
+  const replaceBtn = h('button', { type: 'button', class: 'mt-tool', title: 'Replace every use of one block with another', onclick: () => void replaceDialog() }, '⇄', h('span', { class: 'mt-label' }, 'Replace…'));
+  function syncToggles(): void {
+    for (const [b, on] of [
+      [gridBtn, overlay.grid],
+      [findBtn, finding],
+    ] as const)
+      Object.entries(pressed(on)).forEach(([k, v]) => b.setAttribute(k, v));
+  }
+  function toggleGrid(): void {
+    overlay.grid = !overlay.grid;
+    writePref('gm-map-grid', overlay.grid);
+    syncToggles();
+    redrawOverlay();
+  }
+  function toggleFind(): void {
+    finding = !finding;
+    syncToggles();
+    redrawOverlay();
+    if (finding) toast(`Block ${brush} is used ${overlay.found.length} time${overlay.found.length === 1 ? '' : 's'} on this map.`);
+  }
+  async function replaceDialog(): Promise<void> {
+    let from = brush;
+    let to = brush;
+    const go = await modal<boolean>('Replace a block everywhere', (close) => {
+      const count = h('p', { class: 'meta', 'aria-live': 'polite' });
+      const sync = () => (count.textContent = `Block ${from} is used ${findBlock(map.blocks, from).length} times on this map.`);
+      const pick = (label: string, get: () => number, set: (v: number) => void) => {
+        const b = blockButton(() => bg, () => chooser.palette, get, (v) => (set(v), sync()), { title: label, transparent: false });
+        b.setAttribute('aria-label', label);
+        return h('div', { class: 'field' }, h('span', null, label), b);
+      };
+      sync();
+      return h(
+        'div',
+        { class: 'stack' },
+        h('div', { class: 'toolbar' }, pick('Replace block', () => from, (v) => (from = v)), h('span', { 'aria-hidden': 'true' }, '→'), pick('With block', () => to, (v) => (to = v))),
+        count,
+        h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(false) }, 'Cancel'), h('button', { type: 'button', class: 'primary', onclick: () => close(true) }, 'Replace all')),
+      );
+    });
+    if (!go || from === to) return;
+    remember();
+    const n = replaceAll(map.blocks, from, to);
+    draw();
+    save();
+    toast(`Replaced block ${from} with block ${to} in ${n} place${n === 1 ? '' : 's'}.`);
+  }
+  syncToggles();
+
+  const modeBar = h('div', { class: 'toolbar mt-modes' });
   function setMode(m: Mode): void {
     mode = m;
+    canvas.style.touchAction = m === 'pan' ? 'auto' : 'none';
     clear(
       modeBar,
-      ...(
-        [
-          ['paint', 'Paint'],
-          ['rect', 'Rectangle'],
-          ['fill', 'Fill'],
-          ['pick', 'Pick block'],
-          ['monster', 'Place monsters'],
-        ] as [Mode, string][]
-      ).map(([k, label]) =>
-        h('button', { class: k === mode ? 'primary' : '', 'aria-pressed': String(k === mode), onclick: () => (setMode(k), rebuildMonsters()) }, label),
+      h(
+        'div',
+        { class: 'mt-toolset', role: 'group', 'aria-label': 'Map tools' },
+        ...TOOLS.map(([k, icon, label, key, what]) =>
+          h(
+            'button',
+            {
+              type: 'button',
+              class: `mt-tool${k === mode ? ' primary' : ''}${k === 'pan' ? ' mt-touch-only' : ''}`,
+              'aria-pressed': String(k === mode),
+              'aria-label': label,
+              title: `${label}${key ? ` (${key})` : ''}: ${what}`,
+              onclick: () => (setMode(k), rebuildMonsters()),
+            },
+            icon,
+            h('span', { class: 'mt-label' }, label),
+          ),
+        ),
       ),
       h('span', { style: 'flex:1' }),
+      gridBtn,
+      findBtn,
+      replaceBtn,
       undoBtn,
       redoBtn,
     );
+    tools.enter(isTool(m) ? m : undefined);
+    canvas.style.cursor = m === 'pan' ? 'grab' : m === 'pick' ? 'copy' : 'crosshair';
   }
   setMode('paint');
 
@@ -505,7 +654,7 @@ registerEditor(['map'], (host, project, file) => {
     h(
       'p',
       { class: 'hint' },
-      'Drag to paint blocks. In “Place monsters” mode, click to place the chosen monster and right-click to remove one. Yellow squares are links to other scenes; blue squares are where the character starts.',
+      'Drag to paint blocks. Terrain paints edges and corners for you, Building drags out a house of any size, and Select copies blocks to paste or keep as a stamp. In Monsters, click to place the chosen monster and right-click to remove one. Yellow squares are links to other scenes; blue squares are where the character starts.',
     ),
     // Nothing to paint with yet: say so, and offer the quickest ways to get blocks.
     !bblName || !project.files.has(bblName)
@@ -551,7 +700,7 @@ registerEditor(['map'], (host, project, file) => {
         'Background blocks',
         'bbl',
         () => bblName,
-        (v) => ((bblName = v), (bg = loadBlocks(v, 'bbl'))),
+        (v) => ((bblName = v), (bg = loadBlocks(v, 'bbl')), tools.renderPanel()),
       ),
       fileSelect(
         'Monsters',
@@ -582,7 +731,7 @@ registerEditor(['map'], (host, project, file) => {
       'div',
       { class: 'row' },
       h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, scroller, status),
-      h('div', { class: 'stack', style: 'flex:0 1 260px' }, h('strong', null, 'Blocks'), picker, h('strong', null, 'Monsters'), monPicker, monCount),
+      h('div', { class: 'stack mt-side-col', style: 'flex:0 1 260px' }, tools.panel, h('strong', null, 'Blocks'), picker, h('strong', null, 'Monsters'), monPicker, monCount),
     ),
   );
   rebuild();
@@ -591,11 +740,33 @@ registerEditor(['map'], (host, project, file) => {
   const barSize = new ResizeObserver(() => fieldsBar && host.style.setProperty('--map-tools-h', `${fieldsBar.offsetHeight}px`));
   if (fieldsBar) barSize.observe(fieldsBar);
   const onKey = (e: KeyboardEvent) => {
-    if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+    const t = e.target as HTMLElement | null;
+    if (t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || t?.closest('dialog')) return;
     const k = e.key.toLowerCase();
-    if (k === 'z' || k === 'y') {
+    if (e.ctrlKey || e.metaKey) {
+      if (k === 'z' || k === 'y') {
+        e.preventDefault();
+        step(k === 'z' && !e.shiftKey);
+      } else if ((k === 'c' || k === 'x') && tools.selection && !window.getSelection()?.toString()) {
+        e.preventDefault();
+        tools.copy(k === 'x');
+      } else if (k === 'v') {
+        e.preventDefault();
+        tools.paste();
+      }
+      return;
+    }
+    if (e.altKey) return;
+    if (e.key === 'Escape' && tools.cancel()) return e.preventDefault();
+    if ((e.key === 'Delete' || e.key === 'Backspace') && tools.selection && mode === 'select') {
       e.preventDefault();
-      step(k === 'z' && !e.shiftKey);
+      return tools.fillSelection();
+    }
+    if (k === 'g' && !e.shiftKey) return toggleGrid();
+    const tool = TOOLS.find(([, , , key]) => key && key.toLowerCase() === k);
+    if (tool && !e.shiftKey) {
+      setMode(tool[0]);
+      rebuildMonsters();
     }
   };
   window.addEventListener('keydown', onKey);
