@@ -8,7 +8,7 @@
     "loaf": { "map": "wicker.map", "at": [19, 3] },
     "logic": { "map": "attic.map", "at": [32, 44] },
     "loofah": { "map": "home.map", "at": [49, 6] },
-    "maximus": { "map": "home.map", "at": [8, 51] },
+    "maximus": { "map": "home.map", "at": [53, 43] },
     "mustard": { "map": "dust.map", "at": [43, 18] },
     "needle": { "map": "tailor.map", "at": [35, 17] },
     "realm": { "map": "port.map", "at": [9, 25] },
