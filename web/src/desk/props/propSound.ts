@@ -1,4 +1,4 @@
-// The room's little sounds, made on the spot (no files): a watch's beeps and a cuckoo,
+// The room's little sounds, made on the spot (no files): a watch's beeps, a rubber chicken,
 // crumpled paper, a door's rattle and a knock, a speaker's thump, a monitor's degauss, a
 // fly's buzz, a twinkle. They go out through the speakers' volume knob (audio/output.ts),
 // so a knob turned all the way down keeps the room quiet too, and they start only from
@@ -95,6 +95,18 @@ export const roomSound = {
     for (let i = 0; i < times; i++) {
       tone(o, i * 0.7, 0.25, 784, 770, 0.12, "triangle");
       tone(o, i * 0.7 + 0.28, 0.35, 622, 610, 0.12, "triangle");
+    }
+  },
+  /** A rubber chicken's squawk, `times` times: a squeeze in, the wheezy honk out. */
+  squawk(times = 2): void {
+    const o = open();
+    if (!o) return;
+    for (let i = 0; i < times; i++) {
+      const at = i * 0.55;
+      tone(o, at, 0.08, 900, 1400, 0.05, "triangle");
+      tone(o, at + 0.1, 0.38, 1250, 700, 0.09, "sawtooth");
+      tone(o, at + 0.1, 0.38, 1880, 1050, 0.04, "square");
+      noise(o, at + 0.1, 0.35, 1600, 0.06, 1.2);
     }
   },
   /** Paper crumpling as it is pulled out of the basket. */

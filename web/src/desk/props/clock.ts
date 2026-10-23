@@ -1,7 +1,8 @@
 // The giant wristwatch on the wall (room/wallClock.ts), pressed: it ticks and beeps the
-// hour like a sport watch, and now and then a cuckoo nobody can explain pops out of it. At
-// 3:17 a.m. the fridge downstairs stirs (The Great Dairy Reckoning of 3:17 A.M.); at
-// midnight the cuckoo comes out in a party hat for the brand-new day.
+// hour like a sport watch, and now and then, where a cuckoo would be, Sir Reginald
+// Cluckington III (Doc Leo's rubber chicken) pops out of it and squawks. At 3:17 a.m. the
+// fridge downstairs stirs (The Great Dairy Reckoning of 3:17 A.M.); at midnight the chicken
+// comes out in a party hat for the brand-new day.
 import { h } from "../../editor/core/ui";
 import { flash, pressable, say } from "./propKit";
 import { roomSound } from "./propSound";
@@ -16,24 +17,27 @@ const BEEPS = [
   (t: string) => `Beep-beep! ${t}, and it’s still water resistant (please don’t test that).`,
 ];
 
-function cuckooArt(party: boolean): SVGElement {
+/** Sir Reginald Cluckington III: a yellow rubber chicken with a red comb, beak open. */
+function chickenArt(party: boolean): SVGElement {
   const el = h("span");
-  el.innerHTML = `<svg viewBox="0 0 60 44" width="78" height="57" aria-hidden="true">
-    <rect x="2" y="10" width="20" height="26" fill="#6b4423"/>
-    <path d="M22 26 h10" stroke="#6b4423" stroke-width="3"/>
-    <ellipse cx="40" cy="26" rx="12" ry="9" fill="#8c6a43"/>
-    <circle cx="49" cy="19" r="7" fill="#a07a4c"/>
-    <circle cx="51" cy="17" r="1.6" fill="#111"/>
-    <path d="M55 19 l6 -1 -6 3 z" fill="#f2b632"/>
-    <path d="M34 22 q6 -6 12 2" fill="none" stroke="#5e4022" stroke-width="2"/>
-    ${party ? '<path d="M45 13 l5 -12 5 11 z" fill="#e8336d" stroke="#fff" stroke-width="1"/><circle cx="50" cy="1.5" r="2" fill="#ffd400"/>' : ""}
+  el.innerHTML = `<svg viewBox="0 0 60 60" width="66" height="66" aria-hidden="true">
+    <path d="M14 34 q-8 -4 -6 -14 q6 4 10 6 z" fill="#f2c522" stroke="#8a6a00" stroke-width="1"/>
+    <path d="M14 30 q2 -14 18 -14 q12 0 14 10 q2 12 -8 18 q-14 6 -24 -14 z" fill="#ffd93a" stroke="#8a6a00" stroke-width="1.2"/>
+    <path d="M24 34 q8 4 14 -2" fill="none" stroke="#c99a00" stroke-width="1.2"/>
+    <path d="M36 22 q0 -12 8 -14 q8 0 8 10 q0 6 -6 8 z" fill="#ffd93a" stroke="#8a6a00" stroke-width="1.2"/>
+    <path d="M40 9 q1 -6 4 -4 q2 -5 5 -1 q3 -3 4 2 q-6 0 -13 3 z" fill="#e0242c"/>
+    <path d="M51 14 l9 -2 -9 4 9 2 -9 1 z" fill="#f08a1c" stroke="#a65000" stroke-width="0.6"/>
+    <path d="M49 20 q2 6 -1 7 q-3 -2 -1 -7 z" fill="#e0242c"/>
+    <circle cx="47" cy="13" r="1.8" fill="#111"/>
+    <path d="M26 46 l-2 10 M34 46 l2 10 M21 56 h6 M33 56 h6" stroke="#f08a1c" stroke-width="2" stroke-linecap="round"/>
+    ${party ? '<path d="M41 7 l5 -7 4 8 z" fill="#3a6ee8" stroke="#fff" stroke-width="0.8"/><circle cx="45.5" cy="0.8" r="1.8" fill="#ffd400"/>' : ""}
   </svg>`;
   return el.firstElementChild as SVGElement;
 }
 
 export function clockProp(clock: HTMLElement): () => void {
   let presses = 0;
-  // the cuckoo, ready to pop out from behind the watch's face
+  // the rubber chicken, ready to pop out from behind the watch's face like a cuckoo
   const bird = h("div", { class: "clock-cuckoo", "aria-hidden": "true" });
   clock.append(bird);
   const use = () => {
@@ -50,15 +54,15 @@ export function clockProp(clock: HTMLElement): () => void {
     }
     const midnight = hr === 0 && min < 5;
     if (midnight || presses % 3 === 0) {
-      bird.replaceChildren(cuckooArt(midnight));
+      bird.replaceChildren(chickenArt(midnight));
       flash(bird, "out", 1900);
-      roomSound.cuckoo(midnight ? 3 : 2);
+      roomSound.squawk(midnight ? 3 : 2);
       say(
         clock,
         midnight
-          ? `Midnight! The date flips to the ${now.getDate()}${ordinal(now.getDate())}. Cuckoo! Happy brand-new day.`
-          : `Cuckoo! Cuckoo! (Nobody knows how a wristwatch got a cuckoo.) It’s ${t}.`,
-        cuckooArt(midnight),
+          ? `Midnight! The date flips to the ${now.getDate()}${ordinal(now.getDate())}. SQUAWK! Sir Reginald Cluckington III, in a party hat: happy brand-new day.`
+          : `SQUAWK! Sir Reginald Cluckington III pops out of the watch. (Nobody knows how a rubber chicken got in there.) It’s ${t}.`,
+        chickenArt(midnight),
       );
       return;
     }
