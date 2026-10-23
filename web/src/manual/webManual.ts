@@ -142,6 +142,17 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     between the two at any time.</p>`,
   ],
   [
+    'ultimate',
+    'The Ultimate Owner’s Guide',
+    `<p>The Game-Maker box on the desk holds a second, advanced manual for power users: palette
+    swaps, blocks that act as switches and timers, gates that need a counter, monsters as actors,
+    sound sets slot by slot, voice clips that aren’t cut off, FM music tricks, demos and
+    play-testing. Every tip is how PLAYGAME really plays a game, so it holds here and in DOS.</p>
+    <p><button type="button" class="guide-open-ultimate">📒 Open The Ultimate Owner’s Guide</button></p>
+    <p>It opens in the box with everything else that came in it, and prints as a booklet: choose
+    <b>🖨 Print…</b>, then <b>This booklet, two pages a side</b>.</p>`,
+  ],
+  [
     'credits',
     'Credits and license',
     `<p>RSD Game-Maker was made from 1991 to 1995 by Recreational Software Designs: G. Andrew
@@ -293,6 +304,7 @@ export function renderWebManual(el: HTMLElement, sectionId?: string): void {
     h('summary', null, h('span', null, 'Contents: '), title),
     h('nav', { 'aria-label': 'Guide contents' }, h('a', { href: '#/' }, '← Home'), ...SECTIONS.map(([, t], i) => link(i, t))),
   );
+  article.querySelector('.guide-open-ultimate')?.addEventListener('click', () => void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide()));
   decorateBbsName(article);
   clear(el, h('div', { class: 'guide' }, toc, article));
 }
