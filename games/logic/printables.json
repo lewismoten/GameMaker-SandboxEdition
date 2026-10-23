@@ -44,7 +44,7 @@
       "sprite": {
         "blocks": "parts.mbl",
         "pal": "watt.pal",
-        "grid": [[45]]
+        "grid": [[35]]
       }
     },
     {
@@ -56,7 +56,7 @@
       "sprite": {
         "blocks": "parts.mbl",
         "pal": "watt.pal",
-        "grid": [[44]]
+        "grid": [[34]]
       }
     },
     {
@@ -80,7 +80,7 @@
       "sprite": {
         "blocks": "parts.mbl",
         "pal": "watt.pal",
-        "grid": [[50]]
+        "grid": [[40]]
       }
     },
     {

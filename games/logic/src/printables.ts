@@ -30,10 +30,10 @@ export function printables(): unknown {
     stickers: [
       { text: 'WATT', sub: 'OHM SWEET OHM', shape: 'cut', color: '#e08a3c', ink: '#0d3a24', sprite: { blocks: 'watt.cbl', pal: 'watt.pal', grid: [[0]] } },
       { text: 'ZAP!', sub: 'WATT HAPPENED?', shape: 'burst', color: '#ffd23c', ink: '#111111', sprite: { blocks: 'watt.cbl', pal: 'watt.pal', grid: [[7]] } },
-      { text: 'NORMALLY OPEN', sub: "A RELAY'S MOTTO", shape: 'cut', color: '#1d5fb8', ink: '#ffffff', sprite: { blocks: 'parts.mbl', pal: 'watt.pal', grid: [[45]] } },
-      { text: 'REDLINE!', sub: 'TOO MUCH CURRENT', shape: 'cut', color: '#d81e1e', ink: '#ffffff', sprite: { blocks: 'parts.mbl', pal: 'watt.pal', grid: [[44]] } },
+      { text: 'NORMALLY OPEN', sub: "A RELAY'S MOTTO", shape: 'cut', color: '#1d5fb8', ink: '#ffffff', sprite: { blocks: 'parts.mbl', pal: 'watt.pal', grid: [[35]] } },
+      { text: 'REDLINE!', sub: 'TOO MUCH CURRENT', shape: 'cut', color: '#d81e1e', ink: '#ffffff', sprite: { blocks: 'parts.mbl', pal: 'watt.pal', grid: [[34]] } },
       { text: 'ALL GREEN', sub: 'THE GAUGE SAYS SO', shape: 'circle', color: '#2f9e44', ink: '#ffffff', sprite: { blocks: 'parts.mbl', pal: 'watt.pal', grid: [[27]] } },
-      { text: 'READY.', sub: 'PRESS ANY KEY', shape: 'cut', color: '#0d3a24', ink: '#7cff9a', sprite: { blocks: 'parts.mbl', pal: 'watt.pal', grid: [[50]] } },
+      { text: 'READY.', sub: 'PRESS ANY KEY', shape: 'cut', color: '#0d3a24', ink: '#7cff9a', sprite: { blocks: 'parts.mbl', pal: 'watt.pal', grid: [[40]] } },
       { text: 'TIN HEART', sub: 'TICKS LIKE IT MEANS IT', shape: 'cut', color: '#6b7280', ink: '#ffffff', sprite: { blocks: 'attic.bbl', pal: 'watt.pal', grid: [[65]], under: 1 } },
       { text: 'ZIGZAGS!', sub: 'A HAND-PAINTED EGG', shape: 'cut', color: '#e0569a', ink: '#ffffff', sprite: { blocks: 'attic.bbl', pal: 'watt.pal', grid: [[115]], under: 1 } },
       { text: 'THINK BEFORE YOU ROLL', sub: 'Ohm Sweet Ohm', shape: 'badge', color: '#0d3a24', ink: '#ffd23c' },
