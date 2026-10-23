@@ -46,8 +46,8 @@ async function upToTheStage(bot: Bot): Promise<void> {
 /** The first: along the avenue, in through the castle door, a coffee, through the theater, to the hall. */
 async function inOffTheAvenue(bot: Bot): Promise<void> {
   await carefully(bot, 'the avenue', 0, async () => {
-    await must(bot, bot.walk(9, 'the coin on the sidewalk'), 'sidewalk');
-    await must(bot, bot.hop('up', 10, 'right', 10), 'onto the bench');
+    await must(bot, bot.walk(8, 'the coin on the sidewalk'), 'sidewalk');
+    await must(bot, bot.hop('up', 10, 'right', 9), 'onto the bench');
     await must(bot, bot.walk(12, 'off the bench'), 'bench');
     await must(bot, bot.hop('right', 12, 'right', 14), 'onto the newspaper box');
     await must(bot, bot.walk(21, 'in through the castle door'), 'door');

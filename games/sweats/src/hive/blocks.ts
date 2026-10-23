@@ -10,7 +10,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal, Ramp } from '../art/pal';
-import { AIR, BlockBook, GRAV, LEDGE, SOLID, loot } from '../common/blocks';
+import { AIR, BlockBook, GRAV, LEDGE, SOLID, drawBill, loot } from '../common/blocks';
 import { addPicture } from '../common/picture';
 import { COFFEE, COFFEE_PRICE, MONEY } from '../ids';
 import { HIVE_MON } from './ids';
@@ -102,6 +102,17 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   const slit = stone(25);
   slit.rect(8, 3, 4, 13, c('stone', 0)).rect(9, 4, 2, 11, c('amber', 2)).rect(7, 8, 6, 2, c('stone', 0)).rect(8, 8, 4, 1, c('amber', 1));
   book.add('slit', slit, { solid: SOLID });
+  // the same stone as the castle's front wall seen from the avenue (scenery: walk along it)
+  book.add('stoneBack', stone(29), AIR);
+  book.add('stoneBack2', stone(30), AIR);
+  const lit = stone(31);
+  for (let y = 3; y < 18; y++) for (let x = 5; x < 15; x++) if ((x - 10) ** 2 / 25 + (y - 8) ** 2 / 36 <= 1 || y > 8) lit.set(x, y, c('amber', y < 8 ? 1 : 2));
+  lit.rect(9, 3, 2, 15, c('stone', 0)).rect(5, 11, 10, 1, c('stone', 0)).rect(4, 17, 12, 2, c('stone', 4));
+  book.add('castleWindow', lit, AIR);
+  const merlonBack = night(32);
+  merlonBack.blit(stone(33).crop(0, 0, 20, 20), 0, 8);
+  merlonBack.rect(0, 8, 4, 8, c('night', 1)).rect(12, 8, 8, 8, c('night', 1)).rect(4, 8, 8, 1, c('stone', 4));
+  book.add('merlonBack', merlonBack, AIR);
   // the turret: a round tower with a pointed slate cap and a pennant
   const turret = (part: 'cap' | 'top' | 'body') => {
     const p = night(26);
@@ -407,4 +418,5 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
 
   // ---------- the tips about the place ----------
   for (const bg of ['night', 'wall', 'wallHi', 'dark', 'drape', 'brickWall']) loot(book, pal, bg);
+  book.add('bill@stoneBack2', drawBill(book.pics.get('stoneBack2')!.crop(0, 0, 20, 20), pal), { ...AIR, effect: MONEY, eamt: 5, score: 50, touch: 'stoneBack2' });
 }
