@@ -1,6 +1,7 @@
 // The Bard of Bizarre: Lewis "Lewie" Moten III's name for his songs, with his hobo clown Doc Leo
-// as their face: big, heartfelt songs about small, overlooked things, in four collections so far
-// (bizarre gospels, mundane epics, Shakespeare in Sweatpants and the Latin Veni, Vidi, Risi!;
+// as their face: big, heartfelt songs about small, overlooked things, in five collections so far
+// (bizarre gospels, mundane epics, villain anthems, Shakespeare in Sweatpants and the Latin
+// Veni, Vidi, Risi!;
 // COLLECTIONS below files each game for the flyer and the home tab). Games built from those songs (../games/<id>/about.json "series":
 // "bizarre") are shareware from The Sofa BBS. A handful get a collection of their own: with
 // BIZARRE_MIN or more in the catalog, the home page shows a Bizarre tab (and the site's game
@@ -45,7 +46,13 @@ export const COLLECTIONS: { name: string; tag: string; games: Record<string, str
       reckoning: 'Lactose intolerant, 3:17 a.m., one slice of cheesecake, and the willpower of seven celery sticks. The Devil waits in leisure wear.',
       loofah: 'She said don’t touch the pink one. You did. Now the soap has teeth, and only six candles can save you.',
       smirked: 'MILD SCARES FOR ALL AGES, says the sign. The eight-year-old isn’t scared. You are.',
-      tickle: 'Doc Leo has the certificate; now he needs the rats. Pin first, then tickle, and grow a laughing carpet. No rats are harmed.',
+    },
+  },
+  {
+    name: 'Villain Anthems',
+    tag: 'Evil plans on a very small scale, with maniacal laughter.',
+    games: {
+      tickle: 'Doc Leo has the certificate, the method and no rats… yet. Pin first, then tickle, and raise a laughing legion. No rats are harmed.',
     },
   },
   {

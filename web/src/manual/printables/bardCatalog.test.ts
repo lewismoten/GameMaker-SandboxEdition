@@ -15,10 +15,11 @@ describe('The Bard of Bizarre flyer', () => {
   });
 
   it('sorts the games into the Bard’s collections, with any not filed yet last', () => {
-    const got = byCollection([{ id: 'remote' }, { id: 'newsong' }, { id: 'goat' }, { id: 'carl' }]);
+    const got = byCollection([{ id: 'remote' }, { id: 'newsong' }, { id: 'tickle' }, { id: 'goat' }, { id: 'carl' }]);
     expect(got.map((c) => [c.name, c.games.map((g) => g.id)])).toEqual([
       ['Bizarre Gospels', ['goat']],
       ['Mundane Epics', ['carl', 'remote']],
+      ['Villain Anthems', ['tickle']],
       ['More song-games', ['newsong']],
     ]);
   });

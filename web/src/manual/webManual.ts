@@ -178,7 +178,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     each get the full treatment (a gospel choir, a goth anthem, an opera, a trembling
     monologue), sung with a straight face and a lot of love. The songs are silly but never
     mean, and fine for the whole family. It began with Christian songs and grew from there;
-    so far the songs fall into four collections:</p>
+    so far the songs fall into five collections:</p>
     <ul>
       <li><b>Bizarre gospels</b>: the wrong detail of a Bible story, taken very seriously. The
       goat nobody painted in <b>Third Goat from the Left</b>, the smallest seed with the biggest
@@ -189,9 +189,11 @@ const SECTIONS: [id: string, title: string, html: string][] = [
       <li><b>Mundane epics</b>: tiny everyday disasters sung like the end of the world. <b>A Fly
       Named Carl</b>, <b>Where’s the Remote?!</b>, a slice of cheesecake in <b>The Great Dairy
       Reckoning of 3:17 A.M.</b>, a borrowed pink loofah in <b>Cleanse Me, O Loofah, But Leave
-      My Soul</b>, a haunted house and an eight-year-old who isn’t scared in <b>I Screamed, She
-      Smirked</b>, and <b>Certified Rat Tickler</b>, from the real certificate in rat tickling
-      Lewis earned.</li>
+      My Soul</b>, and a haunted house with an eight-year-old who isn’t scared in <b>I Screamed, She
+      Smirked</b>.</li>
+      <li><b>Villain anthems</b>: evil plans on a very small scale, with maniacal laughter. In
+      <b>Certified Rat Tickler</b>, Doc Leo turns mad scientist with a real certificate in rat
+      tickling (Lewis earned one) and plots to raise a legion of giggling rats.</li>
       <li><b>Shakespeare in Sweatpants</b>: seventeen spoken monologues by a man in a starched
       ruff and grey sweatpants about the most dramatic things that ever happened to him, like a
       lost pen, a dead ficus named Gerald and the self-checkout. The game puts him on stage at
