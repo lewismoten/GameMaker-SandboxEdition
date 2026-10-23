@@ -315,3 +315,17 @@ main.credits-page details.credits-mini summary {
     gap: 0 12px;
   }
 }
+
+/* the AI tools: five short cards, a row of them on a wide window */
+main.credits-page .credits-cards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+}
+
+main.credits-page .credits-cards-grid > .credits-card:first-child {
+  grid-column: auto;
+}
+
+main.credits-page .credits-card details.credits-mini {
+  margin-top: 6px;
+  font-size: 14px;
+}

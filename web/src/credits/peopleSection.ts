@@ -3,9 +3,18 @@
 // (their pictures are the cast page's, public/cast/<id>.png).
 import { h } from '../editor/core/ui';
 import { section, ext, card, thumb } from './section';
+import { NOTICE_URL } from '../edition';
 import { CAST, type CastMember } from '../cast/castData';
 
-const tool = (name: string, maker: string, made: string) => card('h4', name, h('p', { class: 'card-meta' }, maker), h('p', null, made));
+/** One tool's card: its name, a short subtitle, two or three short lines, and any longer story in a small disclosure. */
+const tool = (name: string, maker: string, made: string, story?: Parameters<typeof h>[2]) =>
+  card(
+    'h4',
+    name,
+    h('p', { class: 'card-meta' }, maker),
+    h('p', null, made),
+    story && h('details', { class: 'credits-mini' }, h('summary', null, 'More', h('span', { class: 'sr-only' }, ` about ${name}`)), h('p', null, story)),
+  );
 
 /** Who appears as themselves, as the cast page shows them (public/cast/<id>.png). */
 const SELVES = ['teddy', 'gwinn', 'leo', 'chez'];
@@ -24,25 +33,23 @@ export function peopleSection(): HTMLElement {
       { class: 'credits-cards credits-cards-grid' },
       tool(
         'Claude Opus 5.5',
-        'Anthropic · the only model named in the project’s commits',
-        'Wrote the web port (the 1994 desk and today’s editor and player) from the original C source, and built the Sandbox Software and Bard of Bizarre games in code: their code, levels, art, sounds, FM arrangements and text, directed and reviewed by Lewis. It drew the title and cover art of the Bard games that came without any, and composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants. It also made the desk’s Doc Leo black-light poster from two of Lewis’s photos of himself, over many rounds of his corrections.',
+        'Anthropic',
+        'The web port and every new game: code, levels, art, sounds, FM music and text, directed by Lewis.',
+        'It ported the 1994 desk and today’s editor and player from the original C source; drew the title and cover art of the Bard games that came without any; composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants; and made the desk’s Doc Leo black-light poster from two of Lewis’s photos, over many rounds of his corrections. It is the only model named in the project’s commits.',
       ),
-      tool('ChatGPT', 'OpenAI', 'Shaped the Bard of Bizarre songs’ lyrics and monologues from Lewis’s prompts.'),
+      tool('ChatGPT', 'OpenAI', 'The Bard songs’ lyrics and monologues, shaped from Lewis’s prompts.'),
       tool(
-        'Riffusion (renamed Producer.ai, now Google Flow Music, after Google bought it)',
-        'One service under three names',
-        'Made the songs’ recordings and vocals, the covers of Third Goat from the Left and Thread the Needle, Brother Camel (an animated one), and Mustard Seed Hustle’s animated cover, made while it was called Producer.ai. Lewis pays for it now and made the animated covers on a paid plan, but every recording was made on the free plan, whose terms allow “personal, non-commercial uses” only: so the voice clips are not MIT licensed.',
+        'Riffusion',
+        'now Google Flow Music',
+        'Song recordings, vocals and covers. Later called Producer.ai (Mustard Seed Hustle’s animated cover). Free-plan audio is non-commercial.',
+        [
+          'One service under three names: Riffusion renamed itself Producer.ai, and Google bought it and made it Google Flow Music. Lewis pays for it now and made the animated covers on a paid plan, but every recording was made on the free plan, whose terms allow “personal, non-commercial uses” only, so the voice clips are not MIT licensed. ',
+          ext(NOTICE_URL, 'NOTICE.md'),
+          ' lists them.',
+        ],
       ),
-      tool(
-        'DeepAI',
-        'DeepAI · Lewis’s paid commercial plan',
-        'Made The Bard of Bizarre’s logo, the rooster in spectacles, and the desk’s “Moten Snow-to-Software Operations” poster.',
-      ),
-      tool(
-        'Whisper',
-        'OpenAI · MIT License',
-        'Gave the word timings used to find where each voice clip starts and ends. It runs on the developer’s computer; none of it ships.',
-      ),
+      tool('DeepAI', 'paid commercial plan', 'The Bard of Bizarre’s rooster logo and the desk’s “Moten Snow-to-Software Operations” poster.'),
+      tool('Whisper', 'OpenAI · MIT License', 'Word timings for cutting the voice clips. Runs on the developer’s computer; nothing ships.'),
     ),
     h('p', { class: 'muted' }, 'None of these tools’ code is used in the site or the games.'),
     h(
