@@ -3,11 +3,13 @@
     { "game": "blaster", "as": "tucked against the edge of the Address Bus" },
     { "game": "sleuth", "as": "dropped behind the lobby bar" },
     { "game": "realm", "as": "in the grass by Someday Harbor’s lighthouse" },
-    { "game": "logic", "as": "on The Home Computer’s board" }
+    { "game": "logic", "as": "on The Home Computer’s board" },
+    { "game": "smirked", "as": "in a corner of the fog hall" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
-    { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" }
+    { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" },
+    { "game": "smirked", "as": "peeking out of the gift shop’s curtains" }
   ],
   "watt": [
     { "game": "blaster", "as": "blinking on Memory Lane" }
