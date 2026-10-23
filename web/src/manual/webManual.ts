@@ -2,6 +2,7 @@
 import './webManual.css';
 import { h, clear } from '../editor/core/ui';
 import { decorateBbsName } from '../retro/bbs/bbsName';
+import { MORE_GAMES_TITLE, moreGamesHtml } from '../credits/moreGames';
 
 const SECTIONS: [id: string, title: string, html: string][] = [
   [
@@ -279,6 +280,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
     and <a href="https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/LICENSE" target="_blank" rel="noopener">LICENSE</a>.</p>`,
   ],
+  ['more-games', MORE_GAMES_TITLE, moreGamesHtml()],
 ];
 
 /**
