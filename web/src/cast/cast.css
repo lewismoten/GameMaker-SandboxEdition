@@ -256,3 +256,84 @@ main.cast .lead {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+/* ---- the stage ---- */
+
+.cast-stage {
+  margin-bottom: 32px;
+}
+
+.cast-stage-box {
+  position: relative;
+  max-width: 720px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #1b1430;
+}
+
+.cast-stage-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 160 / 70;
+  image-rendering: pixelated;
+}
+
+.cast-say {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: min(92%, 34rem);
+  margin: 0;
+  padding: 8px 12px;
+  transform: translateX(-50%);
+  border: 2px solid #1a1d29;
+  border-radius: 10px;
+  background: #fffbe6;
+  color: #1a1d29;
+  font-size: clamp(12px, 2.2vw, 16px);
+  line-height: 1.35;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+}
+
+.cast-say[hidden] {
+  display: none;
+}
+
+.cast-stage-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  max-width: 720px;
+}
+
+.cast-stage-controls select {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.cast-stage-play {
+  min-width: 6.5rem;
+}
+
+@media (max-width: 520px) {
+  /* on a phone the speech box sits under the stage, not over the sprites */
+  .cast-say {
+    position: static;
+    width: auto;
+    min-height: 3.6em;
+    transform: none;
+    border-width: 0;
+    border-top: 2px solid #1a1d29;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .cast-say[hidden] {
+    display: block;
+    visibility: hidden;
+  }
+}

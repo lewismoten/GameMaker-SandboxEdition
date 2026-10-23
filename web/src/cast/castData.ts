@@ -46,6 +46,8 @@ export interface CastMember {
   name: string;
   /** One line under the name: what they are. */
   role: string;
+  /** What they say when they walk on stage (castStage.ts). */
+  hi: string;
   /** public/cast/<id>.png, drawn from this game's files (scripts/castArt.ts). */
   art: { game: CastGame; width: number; height: number; alt: string };
   bio: string;
@@ -57,6 +59,7 @@ export const CAST: CastMember[] = [
     id: 'teddy',
     name: 'Teddy',
     role: 'Pembroke Welsh Corgi, red-gold, one ear taller',
+    hi: 'Hi! I know left from right. Snacks go on the left. Or the right. Both. Snacks.',
     art: { game: 'teddy', width: 156, height: 156, alt: 'Teddy the corgi grinning, red-gold with a white blaze, his right ear a little taller than his left' },
     bio: 'A red-gold corgi with a white blaze, a big grin and one ear that stands a little taller than the other. He knows left from right, rings the bell, balances a treat on his nose, and will happily star in any game that has a snack in it. In his own adventures he fetches Doc Leo’s scattered costume before the Big Show and sniffs his way to the county fair; elsewhere he naps, supervises and follows you round the kitchen in case anything falls.',
     appears: [
@@ -79,6 +82,7 @@ export const CAST: CastMember[] = [
     id: 'gwinn',
     name: 'Gwinn',
     role: 'Teddy’s big sister and sister-in-mischief (two n’s)',
+    hi: 'It wasn’t me. (It was me.) Zoomies!',
     art: { game: 'teddy', width: 146, height: 146, alt: 'Gwinn, a chocolate-brown dog with amber eyes, a big grin and a pink collar' },
     bio: 'Chocolate-brown, amber-eyed, pink collar, adopted, and the reason most of these games have a plot. She scattered the costume, flattened the sandcastles with her zoomies and ate a recipe card. She knows one trick (zoomies) and a SIT she has not quite learned. She is not allowed in the library, and she is in the library.',
     appears: [
@@ -98,6 +102,7 @@ export const CAST: CastMember[] = [
     id: 'leo',
     name: 'Doc Leo',
     role: 'Hobo clown, PhD in Comedic Science',
+    hi: 'Nose on: showtime! Has anyone seen my chicken? He answers to Reggie. On Tuesdays.',
     art: { game: 'teddy', width: 212, height: 160, alt: 'Doc Leo, a smiling hobo clown with a fedora, red nose, stubble beard, purple shirt and green tie, holding a yellow rubber chicken on a leash' },
     bio: 'Lewis’s friendly hobo clown: a chewed-up fedora, a red nose, a purple shirt, a green tie, a corduroy jacket, blue suspenders, red sneakers and a rubber chicken on a dog leash. Nose on: showtime. A hobo takes a job if one’s offered (a tramp won’t), so he hosts open mics, juggles three rubber chickens (one real), tickles rats with a certificate to prove it, and always orders root beer.',
     appears: [
@@ -120,6 +125,7 @@ export const CAST: CastMember[] = [
     id: 'chez',
     name: 'THE CHEZ',
     role: 'A tomato-red 1976½ CitiCar. Always charging.',
+    hi: 'Ah-OOO-gah! Don’t mind me, I’m charging. I am always charging.',
     art: { game: 'teddy', width: 120, height: 56, alt: 'THE CHEZ from the side: a short tomato-red wedge of a car with a black roof, racing stripes along its side and white steel wheels' },
     bio: 'Lewis’s own electric car: a tomato-red 1976½ CitiCar, about half the length of anything parked next to it, with a black roof and racing stripes (they make the car go faster). It pulls a parade float at its usual few miles an hour, clears the road with an ah-OOO-gah, and turns up at a curb in nearly every Sandbox game. It is charging. It is always charging.',
     appears: [
@@ -140,6 +146,7 @@ export const CAST: CastMember[] = [
     id: 'chicken',
     name: 'Sir Reginald Cluckington III',
     role: 'A rubber chicken on a dog leash',
+    hi: 'SQUAWK. (That counts as an extra life.)',
     art: { game: 'teddy', width: 60, height: 112, alt: 'Sir Reginald Cluckington III, a yellow rubber chicken with a red comb, standing tall' },
     bio: 'Doc Leo’s rubber chicken, walked on a dog leash wherever Doc Leo goes. Answers to “Reggie”, but only on Tuesdays. He has slipped his leash more than once (do not ask how a rubber chicken swims), and when he squawks, it counts as an extra life.',
     appears: [
@@ -158,6 +165,7 @@ export const CAST: CastMember[] = [
     id: 'doghouse',
     name: 'The Dog House',
     role: 'A little free library on a post',
+    hi: 'Take a book, share a book. Snacks in the drawer. Woof!',
     art: { game: 'teddy', width: 164, height: 182, alt: 'The Dog House, a white library box with a dark roof and a red door full of dog books, over a cubby of painted rocks' },
     bio: 'Lewis’s little free library, with a red door, a dog-bone handle, a paw-print knob, dog books inside and painted rocks in the cubby underneath. Take a book, share a book; there are snacks in the drawer. Behind its red door is a library much bigger than the box.',
     appears: [
@@ -171,6 +179,7 @@ export const CAST: CastMember[] = [
     id: 'joe',
     name: 'Mystery Robot Joe',
     role: 'Night librarian, The Dog House',
+    hi: 'Exactly one hundred words. I counted. Twice.',
     art: { game: 'brief', width: 20, height: 20, alt: 'Mystery Robot Joe, a tin box robot with a bulb on his antenna, reading glasses and a red bow tie' },
     bio: 'A tin box of a robot with a bulb on his antenna, reading glasses he does not need, a red bow tie and a tally counter for a heart. When every word fell out of every book, he put them back, exactly one hundred at a time. Two of the stories first went up under his name. He has a job now.',
     appears: [{ game: 'brief', as: 'the hero, restoring thirty-two stories' }],
@@ -179,6 +188,7 @@ export const CAST: CastMember[] = [
     id: 'lewis',
     name: 'Lewis “Lewie” Moten III',
     role: 'The person behind all of them',
+    hi: 'Hi, I’m Lewis. The dogs are mine, the car is mine, and the clown… is also me.',
     art: { game: 'sandcast', width: 180, height: 180, alt: 'A pixel selfie of Lewis in violet sunglasses and a red polo beside Teddy, in front of a white gazebo' },
     bio: 'Teddy and Gwinn’s person, THE CHEZ’s driver, the man under Doc Leo’s fedora and the Bard behind the songs. He drew 3D art for BBSes in 1995 and has been making things for screens ever since. In the games he mostly stays behind the camera, except for one selfie with Teddy, waiting on a secret BBS.',
     appears: [
@@ -191,6 +201,7 @@ export const CAST: CastMember[] = [
     id: 'bard',
     name: 'The Bard of Bizarre',
     role: 'Songwriter, game publisher, keeper of the rooster',
+    hi: 'Hark! A song about a goat nobody painted. You’ll love it. Carl won’t.',
     art: { game: 'carl', width: 120, height: 112, alt: 'The Bard of Bizarre’s logo: a rooster in spectacles over the words The Bard of Bizarre' },
     bio: 'Big, heartfelt songs about all the wrong things: the goat nobody painted, the loaf nobody picked, a fly named Carl. The Bard is Lewis’s name for his songs, with Doc Leo as his face, and his rooster in spectacles struts out at the start of every one of his games. His slide sums him up: writes songs, makes games, hates Carl.',
     appears: [
@@ -212,6 +223,7 @@ export const CAST: CastMember[] = [
     id: 'carl',
     name: 'Carl',
     role: 'A fly. Just a fly. (He would disagree.)',
+    hi: 'Bzzzz. I broke time. Also your sandwich.',
     art: { game: 'carl', width: 20, height: 19, alt: 'Carl the fly: big red eyes, striped body, smug little wings' },
     bio: 'Big red eyes, a smug grin and a barrel roll that makes every swatter miss. Some say flies live twenty-four hours; Carl has broken time, and he keeps buzzing into other people’s songs: the bath, the fridge at 3:17 A.M., a haunted house and an open-mic night, where a hello is a tip.',
     appears: [
@@ -226,6 +238,7 @@ export const CAST: CastMember[] = [
     id: 'goat',
     name: 'The third goat from the left',
     role: 'The least-painted goat in Bethlehem',
+    hi: 'AAAAAAH! (Sorry. I scream when I’m happy. Also when I’m not.)',
     art: { game: 'goat', width: 20, height: 20, alt: 'The third goat from the left, facing you with her ears out' },
     bio: 'Nobody put her in the nativity painting, so she put herself in every song since. She screams when her breath is full, faints stiff with her legs in the air, and eats rope, including the gate’s. Look for her grazing on lost socks, haunting a parade under a sheet, or framed on a hallway wall.',
     appears: [
@@ -246,6 +259,7 @@ export const CAST: CastMember[] = [
     id: 'seed',
     name: 'The mustard seed',
     role: 'The smallest seed with the biggest dreams',
+    hi: 'Small seed, big dreams, red sneakers. Watch me move a mountain.',
     art: { game: 'mustard', width: 20, height: 18, alt: 'The mustard seed: a round yellow seed with a face and tiny red sneakers' },
     bio: 'A round yellow seed in tiny red sneakers, “the greatest feet there are”. It sprouts, grows, and moves a mountain, then goes everywhere on a field trip: the spice rack, the fridge door, between the sofa cushions. Say hello for points.',
     appears: [
@@ -264,6 +278,7 @@ export const CAST: CastMember[] = [
     id: 'loaf',
     name: 'Loaf #13',
     role: 'The bread nobody picked',
+    hi: 'Nobody picked me. I’m still bread. That’s the point.',
     art: { game: 'loaf', width: 20, height: 14, alt: 'Loaf #13: a round crusty loaf with a little face' },
     bio: 'Five thousand were fed, twelve baskets were gathered, and one round crusty loaf with three score marks was left in the basket. It rolls, it rises, it gets carried home, and at the end it is still bread. It has since turned up on a coffee table, in a bread box and on a lunch tray.',
     appears: [
@@ -279,6 +294,7 @@ export const CAST: CastMember[] = [
     id: 'camel',
     name: 'Brother Camel',
     role: 'Left holding the rich man’s gold',
+    hi: 'Lord, I got knees that don’t even bend… but I’m going through that needle.',
     art: { game: 'needle', width: 20, height: 32, alt: 'Brother Camel standing tall, loaded with red saddlebags' },
     bio: 'The rich man walked away; the camel stayed. He gives the gold away, slims down from saddlebags to fancy curled shoes to nothing at all, and kneels hump-down to crawl through the eye of the needle. Even a camel can dream. Off duty he rests in a nature documentary and kneels by a well.',
     appears: [

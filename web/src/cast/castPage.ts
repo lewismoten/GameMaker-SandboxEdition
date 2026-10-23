@@ -5,6 +5,7 @@ import './cast.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
 import { CAST, CAST_GAMES, familiesOf, type CastMember, type Family } from './castData';
+import { castStage } from './castStage';
 
 const FILTERS: [Family | 'all', string][] = [
   ['all', 'Everyone'],
@@ -151,6 +152,7 @@ export function renderCast(el: HTMLElement): void {
         { class: 'lead' },
         'The same faces keep turning up in this edition’s new games: a corgi with one ear taller than the other, his sister-in-mischief, a friendly hobo clown, a tomato-red electric car that is always charging, and a goat nobody painted. Here is who they are, and where to find them.',
       ),
+      castStage(CAST, state),
       families(),
       h(
         'section',

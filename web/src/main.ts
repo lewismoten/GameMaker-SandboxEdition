@@ -81,7 +81,7 @@ function startModern(hash?: string): void {
       h('a', { href: '#/', title: FORK_NOTE }, h('span', { class: 'brand-title' }, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
       titleSlot,
       h('span', { class: 'spacer' }),
-      h('a', { href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
+      h('a', { class: 'hide-narrow', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
       themeButton(),
       h(
@@ -91,14 +91,15 @@ function startModern(hash?: string): void {
         ' 1994 desk',
       ),
       h('a', { class: 'hide-narrow', href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source'),
-      // phones: the desk and the source in a small menu, so the header stays one tidy row
+      // phones: the cast, the desk and the source in a small menu, so the header stays one tidy row
       h(
         'details',
         { class: 'topbar-more show-narrow' },
-        h('summary', { 'aria-label': 'More: the 1994 desk and the source code', title: 'More' }, '⋯'),
+        h('summary', { 'aria-label': 'More: the cast, the 1994 desk and the source code', title: 'More' }, '⋯'),
         h(
           'div',
           { class: 'topbar-menu' },
+          h('a', { href: '#/cast' }, '🎭 The cast'),
           h('button', { onclick: () => void startDesk() }, '💾 1994 desk'),
           h('a', { href: SOURCE_URL, target: '_blank', rel: 'noopener' }, 'Source on GitHub'),
         ),
