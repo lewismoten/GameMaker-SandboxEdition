@@ -1,5 +1,5 @@
 // Foes of Procrastia in ASCII art: Procrastislimes (they'll attack you later), Snooze Bats,
-// Dust Bunnies, Barrow Wights, Tide Crabs, Bog Eels, Rust Golems, Gloom Goblins, Clockwork
+// Dust Bunnies, Barrow Ghosts, Tide Crabs, Bog Eels, Rust Golems, Gloom Goblins, Clockwork
 // Ticks... Each is drawn once; the hurt frame is the same drawing flashed pale.
 import { art, baseKey, type Key } from '../art/sprite';
 import { C } from '../art/pal';

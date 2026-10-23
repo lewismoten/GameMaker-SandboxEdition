@@ -1,4 +1,4 @@
-// What lives in the dungeons: Barrow Wights, Tide Crabs, Bog Eels, Rust Golems, Gloom Goblins
+// What lives in the dungeons: Barrow Ghosts, Tide Crabs, Bog Eels, Rust Golems, Gloom Goblins
 // and Clockwork Ticks in ASCII art; the snores, sparks and embers the bosses let out; and the
 // four bosses themselves, painted big (two blocks square, cut into four monster blocks).
 import { art, baseKey, type Key } from '../art/sprite';
