@@ -6,7 +6,7 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
 
 **▶ Play it: https://lewismoten.github.io/GameMaker-SandboxEdition/**
 
-![The 1994 desk: a PC running Game-Maker, with disks, games and manuals](web/public/og-image.png)
+![The 1994 desk: a PC showing the Snowbound title screen, a shelf of game boxes, a disk box, a night window with the moon, a wristwatch clock and a door](web/public/og-image.png)
 
 ## What's in it
 
@@ -48,6 +48,15 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
   or a Linux folder that plays offline in its own window (built in the browser; see the
   [Mac](mac/README.md), [Windows](win/README.md) and [Linux](linux/README.md) notes).
   Everything is saved in your browser and works offline.
+
+## Screenshots
+
+| | |
+| --- | --- |
+| ![Today's web home page with the Sandbox tab open: twelve new games, and Snowbound's demo playing in the side panel](docs/screenshots/web-home-sandbox.png) | ![The map editor with Snowbound open on its Gale Street neighborhood, the file list on the left and block and monster pickers on the right](docs/screenshots/web-editor-snowbound.png) |
+| The home page's Sandbox games | Editing Snowbound's neighborhood map |
+| ![Snowbound being played: the kid with his shovel on a snowy street, under the level's "1. Gale Street" briefing](docs/screenshots/web-play.png) | ![The Bizarre tab: twelve games from comic songs, with Third Goat from the Left's demo in the side panel](docs/screenshots/web-bizarre.png) |
+| Playing Snowbound | The Bizarre games |
 
 ## Run it yourself
 
