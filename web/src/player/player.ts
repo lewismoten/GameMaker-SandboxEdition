@@ -191,6 +191,11 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || container.querySelector('dialog[open]')) return;
+      // Tab (and Shift for Shift+Tab) moves between the start screen's links and buttons, and a
+      // key pressed on one of them (Enter on ← All games, Keys…) is that control's, not a start
+      if (e.key === 'Tab' || e.key === 'Shift' || e.key === 'Alt') return;
+      const on = e.target instanceof Element ? e.target.closest('a[href], button, input, select, textarea, summary') : null;
+      if (on && on !== start) return;
       e.preventDefault();
       void begin();
     };
@@ -199,7 +204,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
       return;
     }
     start.addEventListener('click', () => void begin(), { once: true });
-    window.addEventListener('keydown', onKey, { once: true });
+    // (begin() stops listening)
+    window.addEventListener('keydown', onKey);
   });
 
   return {
