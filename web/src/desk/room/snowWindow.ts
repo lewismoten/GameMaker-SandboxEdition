@@ -7,6 +7,7 @@ import "./snowWindow.css";
 import { h } from "../../editor/core/ui";
 import { daylight } from "./daylight";
 import { PhoneSounds } from "./phone/sounds";
+import { moonPath, moonPhase } from "../props/moonPhase";
 
 type RGB = [number, number, number];
 const mix = (night: RGB, day: RGB, t: number) =>
@@ -24,6 +25,17 @@ interface Flake {
 const W = 320;
 const H = 427;
 const GROUND = H - 230; // the hills and houses are drawn for a 230-pixel-high view
+/** Where the moon hangs in the view (its size in the canvas's pixels). */
+export const MOON = { x: 250, y: 150, r: 15 };
+export const VIEW = { w: W, h: H };
+
+/** Something drawn over the view for a while (a shooting star, a fly going by): false when done. */
+export type SkyExtra = (ctx: CanvasRenderingContext2D, ms: number) => boolean;
+const skyExtras = new WeakMap<HTMLElement, (f: SkyExtra) => void>();
+/** Draws `f` over the window `win` each frame until it says it is done (desk/props/window.ts). */
+export function addSkyExtra(win: HTMLElement, f: SkyExtra): void {
+  skyExtras.get(win)?.(f);
+}
 
 export function snowyWindow(): HTMLElement {
   const canvas = h("canvas", { width: W, height: H, "aria-hidden": "true" });
@@ -122,17 +134,14 @@ export function snowyWindow(): HTMLElement {
       ctx.globalAlpha = 1 - d * 2;
       ctx.fillStyle = "#fff";
       for (const [x, y, r] of stars) ctx.fillRect(x, y, r, r);
-      // a crescent: the full moon with its shadowed side cut away, so the sky shows there
-      ctx.save();
+      // tonight's real moon (props/moonPhase.ts): its lit part, and the rest just showing
+      ctx.fillStyle = "rgba(244,240,220,0.13)";
       ctx.beginPath();
-      ctx.rect(0, 0, W, H);
-      ctx.arc(257, 145, 13, 0, Math.PI * 2);
-      ctx.clip("evenodd");
-      ctx.fillStyle = "#f4f0dc";
-      ctx.beginPath();
-      ctx.arc(250, 150, 15, 0, Math.PI * 2);
+      ctx.arc(MOON.x, MOON.y, MOON.r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
+      ctx.fillStyle = "#f4f0dc";
+      moonPath(ctx, MOON.x, MOON.y, MOON.r, moonPhase().age);
+      ctx.fill();
       ctx.globalAlpha = 1;
     }
     // far hills, then pines along them
@@ -422,7 +431,22 @@ export function snowyWindow(): HTMLElement {
       ctx.fill();
     }
     ctx.globalAlpha = 1;
+    const now = performance.now();
+    for (const x of [...extras])
+      if (!x.f(ctx, now - x.at)) extras.splice(extras.indexOf(x), 1);
   };
+  const extras: { f: SkyExtra; at: number }[] = [];
+  skyExtras.set(el, (f) => {
+    extras.push({ f, at: performance.now() });
+    // without motion the window isn't redrawn each frame: draw until the extras are done
+    if (still && extras.length === 1) {
+      const loop = () => {
+        draw(false);
+        if (extras.length && el.isConnected) requestAnimationFrame(loop);
+      };
+      requestAnimationFrame(loop);
+    }
+  });
   const frame = () => {
     if (!el.isConnected) return;
     t += 1;
