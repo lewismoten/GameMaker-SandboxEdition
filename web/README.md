@@ -29,10 +29,16 @@ the original source in [`code/GM`](../code/GM). It can:
 - **Publish games as web apps**: "Export web app" builds a ZIP with the player, the
   game's files, a web app manifest and a service worker. Unzipped onto any static host,
   the game can be installed on the desktop or home screen and played offline.
-- **Publish games for Mac**: "Download for Mac" builds a native Mac app of any game right
-  in the browser (a small Swift player from [`mac/`](../mac/README.md) plus the game's one-page
-  export), as a `.dmg` to drag to Applications or a `.zip`. It runs on Apple silicon and
-  Intel Macs (macOS 11+); it is not notarized, so macOS asks once before opening it.
+- **Publish games for Mac, Windows and Linux**: "Download for Mac", "for Windows" and "for
+  Linux" build a game that plays offline in its own window right in the browser: a small
+  native player plus the game's one-page export (`src/export/macApp.ts`, `winApp.ts`,
+  `linuxApp.ts`). For Mac, a Swift player ([`mac/`](../mac/README.md)) in a `.dmg` to drag to
+  Applications or a `.zip`, for Apple silicon and Intel Macs (macOS 11+); for Windows, one
+  `.exe` with WebView2 ([`win/`](../win/README.md)), for Windows 10 and 11 on x64 or Arm; for
+  Linux, a `.tar.gz` folder with a WebKitGTK player ([`linux/`](../linux/README.md)), for x86_64
+  and aarch64, that opens the game in the web browser when WebKitGTK is missing. None is
+  notarized or code-signed, so macOS and Windows ask once before the first run; the site's
+  `#/mac`, `#/windows` and `#/linux` pages explain it to players.
 - **Publish games for DOS**: "Export for DOS" builds a ZIP with the game's files in
   their original formats plus the CD's stand-alone player (`cd/gm/XFERPLAY.EXE`)
   renamed after the game (`MYGAME.GAM` gets `MYGAME.EXE`), `SNDBLAST.DRV` and a
@@ -109,8 +115,11 @@ written in TypeScript to look and act the way they did, from the original source
 
 ## Original games
 
-`../games` holds the Sandbox Software games made for this edition (see
-[`../games/README.md`](../games/README.md)). Each is built in code by its `build.ts` with the
+`../games` holds the games made for this edition: the Sandbox Software games, and the
+"bizarre" shareware games made from Lewis's songs (The Bard of Bizarre's, and Veni, Vidi,
+Risi!), which get a Bizarre tab of their own on the home page (see
+[`../games/README.md`](../games/README.md)). The Cast page (`#/cast`, `src/cast`) shows the
+characters who appear in more than one of them. Each is built in code by its `build.ts` with the
 format encoders and `games/kit`, into a `disk/` folder that the site serves like the CD's
 shareware, with box art, a printed label and a manual from `about.json`/`manual.json`, and a
 `walkthrough.json` that plays the whole game. Rebuild one with
@@ -122,7 +131,7 @@ shareware, with box art, a printed label and a manual from `about.json`/`manual.
 cd web
 npm install
 npm run dev        # http://localhost:5173
-npm test           # every test in test/ (vitest), about 10 s
+npm test           # every *.test.ts in test/ and src/ (vitest), about 25 s
 npm run typecheck  # tsc --noEmit (strict)
 npm run build      # typecheck, then the static site in web/dist
 npm run preview    # serve the build (the service worker and "Export web app" need it)
@@ -145,6 +154,8 @@ them straight from `../cd` and `../games` while developing, and only the product
 | `games/shots/<id>-*.png` | each game's pictures for tiles, boxes and the play page, drawn at build time (`scripts/gameShots.ts`) |
 | `gm/index.json`, `gm/<file>` | the installed `C:\GM` folder (`runtime/run/GM`) for the desk's PC |
 | `dos/xferplay.exe`, `dos/sndblast.drv` | `cd/gm/`, for "Export for DOS" |
+| `mac/`, `win/`, `linux/` | the prebuilt native players, for the Mac, Windows and Linux downloads (in `public/`, built by `../mac`, `../win` and `../linux`) |
+| `cast/` | the Cast page's pictures and walk cycles (in `public/`, drawn by `scripts/castArt.ts` and `scripts/castSprites.ts`) |
 | `extras/demos.json`, `extras/demos/<id>.rec` | demos recorded for CD games that shipped without one (in `public/`) |
 
 Every game file but a GIF also gets a gzip copy (`<file>.gz`), which the site fetches and
@@ -167,7 +178,10 @@ detail. In short:
 | `src/gfx`, `src/input` | Mode 13h screen and the 8×8 font; keyboard scan codes and the gamepad. |
 | `src/player` | The embeddable player (canvas, start overlay, touch controls). |
 | `src/project` | Game file store and the catalog, streaming a hosted game, IndexedDB storage, ZIP reader/writer, health check. |
-| `src/export` | Web app, single-page and DOS exporters, and the service worker generator. |
+| `src/export` | Web app, single-page and DOS exporters, the service worker generator, and the Mac app (`.dmg`/`.zip`), Windows `.exe` and Linux `.tar.gz` writers. |
+| `src/macHelp`, `src/winHelp`, `src/linuxHelp` | The `#/mac`, `#/windows` and `#/linux` pages: opening a downloaded game the first time, and removing it. |
+| `src/cast` | The Cast page (`#/cast`): the characters who turn up in more than one new game. |
+| `src/saves` | The home page's "Saves & scores" panel: a game's saved games and high scores. |
 | `src/media` | Demo playback and previews, the demo sound choice, and saving video, animated GIFs and WAV. |
 | `src/walkthrough` | Playing a Sandbox game's walkthrough on the engine, and rendering it to MP4. |
 | `src/eggs` | The felt eggs: which are found (from saved games), their shadow box and viewer, and `EGG.EXE`. |
@@ -178,15 +192,16 @@ detail. In short:
 | `src/manual` | The Owner's Guide, the web Guide, and the original games' manuals and box contents. |
 | `src/seo` | Page titles, descriptions and JSON-LD. |
 | `src/*.ts` | Entries (`main.ts`, `play.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`. |
-| `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. |
-| `test` | Vitest tests, one file per subject, each starting with a line saying what it covers. |
+| `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. Run by hand: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` (native downloads of catalog games, into `../dist`), `castArt.ts` and `castSprites.ts` (the Cast page's pictures, with the other `cast*.ts` drawings they use). |
+| `test` | Vitest tests, one file per subject, each starting with a line saying what it covers (a few `*.test.ts` sit beside their source in `src/`). |
 
 ## How the site works
 
 - **Addresses** (`src/urlState.ts`): both interfaces keep their place in the hash, so a
   reload or a shared link comes back to it: `#/` (home, `?tab=…`), `#/game/cd:nebula` (a game
   on the home page), `#/p/<project>/<file>?scene=3` (a file open in the workspace, with what is
-  selected in it), `#/help/<section>` (the web Guide) and `#/desk`. Small changes replace the
+  selected in it), `#/help/<section>` (the web Guide), `#/cast`, `#/mac`, `#/windows`,
+  `#/linux` and `#/desk`. Small changes replace the
   history entry; opening a page or file pushes one. `play.html?game=<id>` (and each game's
   own `play-<id>.html`) plays one game full window.
 - **Loading** (`src/main.ts`): the desk and today's web are separate downloads, and the
@@ -213,7 +228,7 @@ detail. In short:
 - **Editors** (`src/editor/editors/<kind>`): one per file type, each with Undo and Redo
   (Ctrl+Z / Ctrl+Y; `editor/core/history.ts`, or `editor/core/fileUndo.ts` for editors that
   rewrite whole files). Work is saved to IndexedDB as you go.
-- **Tests** (`test/`): one Vitest file per subject, each starting with a line saying what
+- **Tests** (`test/`, and a few beside their source): one Vitest file per subject, each starting with a line saying what
   it covers; they run in Node (`npm test`). Many check formats against the CD's own files.
 
 ## File formats
@@ -275,5 +290,5 @@ like "Title Screen" or "V1.0".
 
 A modified fork of RSD Game-Maker (Recreational Software Designs, 1991–1995), whose source Andy
 Stone released under the MIT License in 2014. The web port, the 1994 desk and today's web
-editor, was written with Claude Opus 5.5. See [../NOTICE.md](../NOTICE.md) and
+editor were written with Claude Opus 5.5. See [../NOTICE.md](../NOTICE.md) and
 [../LICENSE](../LICENSE).
