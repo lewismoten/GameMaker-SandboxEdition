@@ -4,6 +4,7 @@
 // Download chooser (editor/shell/download.ts) and mac/README.md.
 import './macPage.css';
 import { h, clear } from '../editor/core/ui';
+import { pageToc } from '../pageToc';
 import { REPO_URL } from '../seo/site';
 
 const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
@@ -152,4 +153,5 @@ export function renderMacHelp(el: HTMLElement): void {
       ),
     ),
   );
+  pageToc(el.querySelector('main')!);
 }

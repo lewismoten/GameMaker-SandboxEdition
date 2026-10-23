@@ -5,6 +5,7 @@
 // and linux/README.md. It shares the Mac page's look (macPage.css).
 import '../macHelp/macPage.css';
 import { h, clear } from '../editor/core/ui';
+import { pageToc } from '../pageToc';
 import { REPO_URL } from '../seo/site';
 
 const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
@@ -136,4 +137,5 @@ export function renderLinuxHelp(el: HTMLElement): void {
       ),
     ),
   );
+  pageToc(el.querySelector('main')!);
 }
