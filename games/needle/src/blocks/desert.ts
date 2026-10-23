@@ -139,7 +139,7 @@ export function desertBlocks(pal: Pal): Kit {
   }
   crown.rect(8, 12, 4, 8, c('wood', 2)); // as wide as the trunk's top, where it meets it
   book.add('palmTop', crown, air);
-  // the oasis pool: one long drink, then it is just a pool (both are water you can stand in)
+  // the oasis pool: one drink a block (the road is long, the water is shared), then it is just a pool (both are water you can stand in)
   const pool = (drunk: boolean) => {
     const p = sky(43);
     for (let x = 0; x < 20; x++) p.rect(x, 12, 1, 8, c('water', (x + (drunk ? 1 : 0)) % 5 === 0 ? 3 : 2));
@@ -148,7 +148,7 @@ export function desertBlocks(pal: Pal): Kit {
     blob(p, 2, 11, 3, 2, R('leaf'), 1, 3);
     return p;
   };
-  book.add('pool', pool(false), { hp: 40, score: 10, grav: GRAV.down, touch: 'poolDrunk' });
+  book.add('pool', pool(false), { hp: 15, score: 10, grav: GRAV.down, touch: 'poolDrunk' });
   book.add('poolDrunk', pool(true), { grav: GRAV.down });
 
   // ---------- the poor, the gates, good things ----------

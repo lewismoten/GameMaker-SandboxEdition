@@ -3,11 +3,18 @@
 // its eye: an actual eye, as on the song's cover, looking back at him. A golden thread to
 // climb, clouds to stand on, the Spirit's updraft (air that lifts), a small eye gate through
 // the needle's shaft, and the eye itself, which takes EYE_GRACE graces to open its pupil for
-// a camel on his knees.
+// a camel on his knees. It blinks on a slow rhythm (its lid droops first, as a warning) and
+// only lets him in while it is wide open.
 import { dither, Pixels } from '../../../kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
 import { EYE_GRACE, GRACE } from '../ids';
+
+/** Ticks the eye stays wide open, droops (the warning), stays shut and lifts again. */
+export const EYE_OPEN = 64;
+export const EYE_DROOP = 14;
+export const EYE_SHUT = 24;
+export const EYE_LIFT = 8;
 import { addGate, addGoodThings, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 export function eyeBlocks(pal: Pal): Kit {
@@ -162,13 +169,44 @@ export function eyeBlocks(pal: Pal): Kit {
     }
   head.disc(ex - 4, ey - 4, 1.6, c('white', 2));
   for (let a = 0; a < 7; a++) head.line(ex - 12 + a * 4, ey - 13, ex - 13 + a * 4.2, ey - 17, c('ink', 0));
+  // The eye blinks: its lid droops (the warning), shuts, and lifts again, on a slow rhythm. Only
+  // while it is wide open will it look at a camel on his knees and take his graces.
+  const lidded = (frac: number): Pixels => {
+    const h = head.crop(0, 0, 40, HEAD_H);
+    const edge = ey - 14 + frac * 28;
+    for (let y = ey - 14; y <= ey + 14; y++)
+      for (let x = 0; x < 40; x++) {
+        if (((x - ex) / 16) ** 2 + ((y - ey) / 13) ** 2 > 1) continue;
+        if (y < edge - 1) h.set(x, y, needle(x, y, 0));
+        else if (y < edge + 1) h.set(x, y, c('ink', 0));
+      }
+    // the lashes along the lid's edge
+    if (frac > 0) for (let a = 0; a < 7; a++) h.line(ex - 12 + a * 4, Math.round(edge), ex - 13 + a * 4.2, Math.round(edge) + 3, c('ink', 0));
+    return h;
+  };
+  const BLINK: [string, Pixels, number][] = [
+    ['', head, EYE_OPEN],
+    ['Droop', lidded(0.45), EYE_DROOP],
+    ['Shut', lidded(1), EYE_SHUT],
+    ['Lift', lidded(0.45), EYE_LIFT],
+  ];
+  const next = (i: number) => BLINK[(i + 1) % BLINK.length][0];
   for (let y = 0; y < 7; y++)
     for (const half of [0, 1] as const) {
       // behind it, the sky the map has on that row: dawn (5) down to row 5, the band into 4 on row 6
-      const p = y < 6 ? starry(60 + y * 2 + half, 5) : band(4);
+      const bgAt = () => (y < 6 ? starry(60 + y * 2 + half, 5) : band(4));
+      if (y === 5 && !half) {
+        // the eye's left half at the pupil row opens (for free) once the right half has let him in
+        BLINK.forEach(([name, pic, ntime], i) => {
+          const p = bgAt();
+          p.blit(pic.crop(0, 100, 20, 20), 0, 0, 255);
+          book.add(`head5L${name}`, p, { solid: SOLID, touch: 'pupilOpen', next: `head5L${next(i)}`, ntime });
+        });
+        continue;
+      }
+      const p = bgAt();
       p.blit(head.crop(half * 20, y * 20, 20, 20), 0, 0, 255);
-      // the eye's left half at the pupil row opens (for free) once the right half has let him in
-      book.add(`head${y}${half ? 'R' : 'L'}`, p, y < 4 ? air : y === 5 && !half ? { solid: SOLID, touch: 'pupilOpen' } : { solid: SOLID });
+      book.add(`head${y}${half ? 'R' : 'L'}`, p, y < 4 ? air : { solid: SOLID });
     }
   // the pupil, open: a way through, one block high, full of light
   const open = P();
@@ -176,9 +214,17 @@ export function eyeBlocks(pal: Pal): Kit {
   open.rect(0, 0, 20, 2, c('purple', 2)).rect(0, 18, 20, 2, c('purple', 2));
   book.add('pupilOpen', open, { grav: GRAV.down });
   // the right half of the eye at its pupil row is the gate: EYE_GRACE graces open it
-  const shut = starry(70, 5);
-  shut.blit(head.crop(20, 100, 20, 20), 0, 0, 255);
-  book.add('pupil', shut, { solid: SOLID, effect: GRACE, eamt: -EYE_GRACE, score: 1000, touch: 'pupilOpen' });
+  // (and blinks with the left half: drooping, shut or lifting, it takes nothing and lets no one in)
+  BLINK.forEach(([name, pic, ntime], i) => {
+    const shut = starry(70, 5);
+    shut.blit(pic.crop(20, 100, 20, 20), 0, 0, 255);
+    const blink = { next: `pupil${next(i)}`, ntime };
+    book.add(
+      `pupil${name}`,
+      shut,
+      name ? { solid: SOLID, ...blink } : { solid: SOLID, effect: GRACE, eamt: -EYE_GRACE, score: 1000, touch: 'pupilOpen', ...blink },
+    );
+  });
 
   // a small eye gate through the shaft (one grace), and its hole
   addGate(

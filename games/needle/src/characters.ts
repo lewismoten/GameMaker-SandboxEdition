@@ -150,6 +150,8 @@ export interface MonsterOptions {
   guard?: number;
   /** Blocks the scissors snip across. */
   snip?: number;
+  /** Blocks a thimble rolls, and its speed. */
+  roll?: [number, number];
 }
 
 export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: MonsterOptions = {}): Monster[] {
@@ -198,7 +200,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   ]);
   // The sewing machine's needle stabs down three blocks and back up.
   set[MON.needle] = mon(anim('needle0', 'needle1', 2), { power: 150, thru: 1 }, [corner(0, 0, 2), corner(0, 3, 4), corner(0, 0, 2)]);
-  set[MON.thimble] = mon(anim('thimble0', 'thimble1', 3), { power: 150, thru: 1 }, pace(3, 2));
+  set[MON.thimble] = mon(anim('thimble0', 'thimble1', 3), { power: 150, thru: 1 }, pace(...(o.roll ?? [3, 2])));
   // Falling stars bob in the night: catch one for points.
   set[MON.star] = mon(anim('star0', 'star1', 6), { power: 50, thru: 1, newmon: MON.starOff }, [corner(0, 0, 1), corner(0, 1, 1), corner(0, 0, 1)]);
   set[MON.starOff] = mon(anim('starOff0', 'starOff1', 3), { power: 100, thru: 1, end: 12 });

@@ -6,7 +6,8 @@
 //      the narrow ways (eye gates), to the tailor's tent.
 //   3. The Tailor's Shop: "I asked a tailor what thread feel feels"; spools of thread, threads
 //      to climb, pins, scissors, the sewing machine, needles to crawl through.
-//   4. The Eye of the Needle: up the great golden needle in the night, and through its eye.
+//   4. The Eye of the Needle: up the great golden needle in the night, past a rolling thimble,
+//      and through its eye while it is open (it blinks).
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockBook } from '../blocks/common';
 import { MON } from '../ids';
@@ -244,7 +245,7 @@ export function city(book: BlockBook): Level {
   // outside: the road
   m.row(9, 72, 78, 'u').set(76, 9, '>');
   m.richMan(10, 9);
-  m.mon(MON.pigeon, 31, 2).mon(MON.guard, 49, 9).mon(MON.dog, 59, 9).mon(MON.pigeon, 44, 3);
+  m.mon(MON.pigeon, 31, 2).mon(MON.guard, 50, 9).mon(MON.dog, 59, 9).mon(MON.pigeon, 44, 3);
   m.link(76, 9, 'next');
   return { m, start: at(5, 9), size: [W, H] };
 }
@@ -284,7 +285,7 @@ export function desert(book: BlockBook): Level {
   m.set(38, 9, 'k');
   // the slot canyon: a passage one block high, two eye gates, two rooms to stand up in
   m.fill(41, 2, 14, 7, 'R').row(2, 41, 54, 'r').row(8, 41, 44, 'M').row(9, 41, 44, 's');
-  m.fill(45, 5, 2, 4, 's').set(45, 9, 's').set(46, 9, 'j').row(8, 47, 49, 'M').set(47, 9, 'G').row(9, 48, 49, 's');
+  m.fill(45, 5, 2, 4, 's').set(45, 9, 's').set(46, 9, 's').row(8, 47, 49, 'M').set(47, 9, 'G').row(9, 48, 49, 's');
   m.fill(50, 5, 2, 4, 's').set(50, 9, 's').set(51, 9, 'e').row(8, 52, 54, 'M').set(52, 9, 'G').row(9, 53, 54, 's');
   // a painted egg up in the shade of the first room, where he can stand up (a hop to reach it)
   m.set(46, 6, 'E');
@@ -360,8 +361,8 @@ export function tailor(book: BlockBook): Level {
   m.set(4, 6, 'L').set(20, 12, 'w').set(30, 3, 'L').set(40, 6, 'w').set(44, 11, 'L').set(52, 7, 'w');
   // the seamstress by the door, a spool on the floor; the first thread, frayed halfway up
   m.set(5, 15, 'q').set(7, 15, 's').col(8, 1, 15, '|').set(8, 15, 'f').fill(9, 12, 2, 4, 'r').set(3, 15, 'c');
-  // the first shelf: the widow, a moth, a spool; cloth and scraps under it, and the scissors
-  m.row(8, 9, 21, '-').set(13, 7, 'W').set(18, 7, 'S').set(11, 11, 'p').fill(19, 13, 3, 3, 'b').set(15, 15, 'c');
+  // the first shelf: the widow, a pincushion to hop, a moth, a spool; cloth and scraps under it, and the scissors
+  m.row(8, 9, 21, '-').set(13, 7, 'W').set(16, 7, 'x').set(18, 7, 'S').set(11, 11, 'p').fill(19, 13, 3, 3, 'b').set(15, 15, 'c');
   // the first great needle: its eye (an eye gate) at the shelf, the shelf on through it
   m.col(22, 1, 5, 'N').set(22, 6, 'A').set(22, 7, 'G').set(22, 8, 'V').col(22, 9, 14, 'N').set(22, 15, 'v').row(8, 23, 25, '-');
   // the sewing machine's table: its needle stabs down (kneel under it); a spool, the beggar
@@ -374,9 +375,9 @@ export function tailor(book: BlockBook): Level {
   // the floor: a thimble, dates; the second thread, frayed where he steps on
   m.set(37, 15, 'c').set(40, 15, 's').set(43, 15, 'D').col(46, 1, 15, '|').set(46, 15, 'f').fill(47, 12, 1, 4, 'p');
   // a middle shelf, and a third thread, frayed where he steps on from it
-  m.row(9, 47, 50, '-').set(49, 8, 'J').col(51, 1, 12, '|').set(51, 8, 'f').fill(48, 13, 3, 3, 'r');
-  // the high shelf: a golden lamp, a mustard seed
-  m.row(4, 52, 57, '-').set(54, 3, '1');
+  m.row(9, 47, 50, '-').set(49, 8, 'D').col(51, 1, 12, '|').set(51, 8, 'f').fill(48, 13, 3, 3, 'r');
+  // the high shelf: a pincushion, a golden lamp, a mustard seed
+  m.row(4, 52, 57, '-').set(54, 3, '1').set(53, 3, 'x');
   // the last needle: crawl through its eye at the floor to the back door
   m.col(59, 1, 13, 'N').set(59, 14, 'A').set(59, 15, 'e').set(61, 14, 'n').set(61, 15, 'd');
   m.mon(MON.moth, 15, 5).mon(MON.scissors, 12, 15).mon(MON.needle, 31, 5).mon(MON.thimble, 38, 15).mon(MON.moth, 54, 10).mon(MON.seed, 56, 3);
@@ -437,7 +438,9 @@ export function eye(book: BlockBook): Level {
   // out as he crawls on; and walled all round, so the eye is the only way in)
   m.row(4, 7, 11, 'bankRoof').row(6, 7, 11, 'bankFloor').set(7, 5, 'bankEnd');
   // good things
-  m.set(9, 29, 'jar2').set(8, 13, 'lamp4').set(21, 7, 'olive').set(17, 13, 'dates4');
+  m.set(9, 29, 'dates2').set(8, 13, 'lamp4').set(21, 7, 'olive').set(17, 13, 'dates4');
+  // a thimble rolling to and fro on the cloud past the shaft's gate
+  m.mon(MON.thimble, 15, 13);
   m.mon(MON.star, 7, 25).mon(MON.star, 20, 17).mon(MON.star, 16, 3).mon(MON.dove, 15, 30).mon(MON.dove, 4, 8).mon(MON.star, 9, 38);
   m.link(8, 5, 'won');
   return { m, start: at(3, 43), size: [W, H] };

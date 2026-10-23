@@ -167,6 +167,8 @@ export async function theTailor(bot: Bot): Promise<void> {
     await must(bot, bot.walk(13, 'the widow on the shelf'), 'shelf');
   });
   await carefully(bot, 'the first shelf', 12, async () => {
+    await must(bot, bot.walk(14.6, 'before the pincushion'), 'pins');
+    await must(bot, bot.hop('right', 12, 'right', 17.4), 'over the pincushion');
     await must(bot, bot.walk(21, 'a spool, to the great needle'), 'needle');
     await must(bot, bot.crawl('right', 24, "through the needle's eye"), 'eye');
   });
@@ -181,6 +183,8 @@ export async function theTailor(bot: Bot): Promise<void> {
     await climb(46, 7, 'up the second thread');
     await must(bot, bot.walk(50, 'the middle shelf'), 'middle shelf');
     await climb(51, 2, 'up the third thread');
+    await must(bot, bot.walk(51.6, 'before the pincushion'), 'pins');
+    await must(bot, bot.hop('right', 12, 'right', 54.4), 'over the pincushion to the lamp');
     await must(bot, bot.walk(56, 'along the high shelf'), 'high shelf');
   });
   if (gold(bot) !== 0 || grace(bot) !== 7) throw new Error(`gold ${gold(bot)}, grace ${grace(bot)} at the back door`);
@@ -212,9 +216,12 @@ export async function theEye(bot: Bot): Promise<void> {
     await must(bot, bot.hop('right', 4, 'right', 6), 'onto the cloud by the needle');
     await must(bot, bot.walk(11, 'the golden lamp, to the shaft'), 'lamp');
   });
-  await carefully(bot, "through the needle's shaft", 12, async () => {
+  // out of the shaft's gate onto the thimble's cloud: set out as it rolls away, and hop it
+  await carefully(bot, "through the needle's shaft, past the thimble", 3, async () => {
     await must(bot, bot.crawl('right', 14, 'through the eye gate in the shaft'), 'gate');
     await must(bot, bot.walk(17, 'the dates'), 'dates');
+    picked(bot, 17, 13, 'the dates past the shaft');
+    if (bot.at.y !== 13) throw new Error(`not on the thimble's cloud (${bot.at.y})`);
   });
   await carefully(bot, 'up the clouds', 12, async () => {
     const row = () => bot.at.y;

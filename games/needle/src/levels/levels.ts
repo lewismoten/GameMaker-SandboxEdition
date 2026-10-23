@@ -34,7 +34,7 @@ export const LEVELS: LevelDef[] = [
     build: city,
     form: 'loaded',
     snd: 'city',
-    mons: { strut: 6, dog: 3 },
+    mons: { strut: 6, dog: 3, guard: 2 },
     view: [16, 4],
   },
   { file: 'desert', desc: 'The Desert Road', light: 'noon', blocks: desertBlocks, build: desert, form: 'saddled', snd: 'desert', mons: {}, view: [47, 4] },
@@ -49,5 +49,5 @@ export const LEVELS: LevelDef[] = [
     mons: { snip: 4 },
     view: [20, 4],
   },
-  { file: 'eye', desc: 'The Eye of the Needle', light: 'night', blocks: eyeBlocks, build: eye, form: 'bare', snd: 'eye', mons: {}, view: [2, 1] },
+  { file: 'eye', desc: 'The Eye of the Needle', light: 'night', blocks: eyeBlocks, build: eye, form: 'bare', snd: 'eye', mons: { roll: [3, 1] }, view: [2, 1] },
 ];
