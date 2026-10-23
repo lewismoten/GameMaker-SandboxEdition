@@ -12,7 +12,7 @@
   },
   {
    "scene": 3,
-   "keys": "AU1QzQBQNdAASzzLAE0OzQBQEtAATRPNBk1TzQBQT9AASxvLAEsbywZLDcsGSAXICU0ezQZIBcgJTQTNBkgGyABQAdAATWTNAEsOywBID8gqTSjNAFBR0ABNCM0ATSvNBk1szQZNCs0AUEPQAEgayABLB8sASA=="
+   "keys": "AU1QzQBQNdAASzzLAE0OzQBQEtAATRPNBk1TzQBQT9AASxvLAEsbywZLDcsGSAXICU0ezQZIBcgJTQTNBkgGyABQAdAATWTNAEsOywBID8gqTSjNAFBR0ABNCM0ATSvNBk1szQZNCs0AUEPQAEgayABLB8sASATIAEs="
   },
   {
    "scene": 4,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 20272,
+  "frames": 20351,
   "chapters": [
    {
     "title": "Opening",
@@ -63,19 +63,19 @@
    },
    {
     "title": "Level 3: The Mountain",
-    "frame": 10117
+    "frame": 10196
    },
    {
     "title": "Level 4: The Palm of God's Hand",
-    "frame": 13027
+    "frame": 13106
    },
    {
     "title": "Ending",
-    "frame": 15426
+    "frame": 15505
    },
    {
     "title": "Credits",
-    "frame": 18184
+    "frame": 18263
    }
   ]
  }
