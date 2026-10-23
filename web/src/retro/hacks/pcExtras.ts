@@ -3,7 +3,8 @@
 // deleted), the copy-protection question PLAYGAME.EXE remembers for the next start, and the
 // shareware games GMCRACK "cracked" in C:\DOWNLOAD (with when, for DIR's date).
 import { idbRecord } from '../dos/cDriveStore';
-import { DEFAULT_REG } from '../gmReg/registration';
+import { DEFAULT_REG, checkRegistration } from '../gmReg/registration';
+import { unlockAchievement } from '../../achievements';
 
 export interface PcExtrasState {
   /** PLAYGAME.REG's text; null once deleted; undefined: as the PC came (DEFAULT_REG, unregistered). */
@@ -48,6 +49,7 @@ export class PcExtras {
   }
 
   setReg(text: string | null): void {
+    if (text && checkRegistration(text).kind === 'registered') unlockAchievement('desk-register');
     this.s.reg = text;
     this.persist();
   }

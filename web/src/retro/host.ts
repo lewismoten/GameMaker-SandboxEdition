@@ -10,6 +10,7 @@ import type { WorkArea } from './dos/workArea';
 import type { PictureScreen } from './view/picture';
 import { deskDate } from './dos/vfs';
 import { idbCDrive, type CDriveState, type CDriveStore } from './dos/cDriveStore';
+import { unlockAchievement } from '../achievements';
 
 /**
  * A ported designer with work open. The desk asks it whether anything is unsaved before
@@ -133,6 +134,7 @@ export class Downloads {
   }
 
   add(id: string): void {
+    unlockAchievement('desk-bbs-file');
     this.ids.set(id, this.now());
     // downloading again brings back every file of it
     for (const d of this.deleted) if (d.startsWith(`${id}/`)) this.deleted.delete(d);

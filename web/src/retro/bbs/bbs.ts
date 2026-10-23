@@ -43,6 +43,7 @@ import {
 import { pickUpExtension, type Overheard } from "./pickup";
 import { resolvePath, type DosNode } from "../dos/vfs";
 import { pcExtras } from "../hacks/pcExtras";
+import { unlockAchievement } from "../../achievements";
 import { output } from "../../audio/output";
 import { dosDir } from "../../project/dosDir";
 
@@ -130,6 +131,7 @@ export async function runTerminal(h: RetroHost): Promise<void> {
     t.status(statusLine("Online"));
     await sleep(700);
     t.connected = true;
+    if (entry.run === runSofa) unlockAchievement("desk-bbs");
     try {
       await entry.run(t, h);
     } catch (e) {
