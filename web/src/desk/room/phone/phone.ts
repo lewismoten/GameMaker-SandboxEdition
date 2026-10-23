@@ -6,7 +6,7 @@ import { lineInterrupted, phoneLine } from '../../../retro/bbs/term';
 import { callFor, dialComplete, HungUp, type Call, type CallLine } from './calls';
 import { openDialPad, type DialPad } from './dialPad';
 import { PhoneSounds } from './sounds';
-import { speak } from './voice';
+import { speak } from '../../../audio/voices';
 
 type State = 'hung-up' | 'dialing' | 'call' | 'ended';
 

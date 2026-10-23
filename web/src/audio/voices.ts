@@ -1,6 +1,7 @@
-// The people on the other end of the line, spoken by the browser's own speech synthesis
-// (each with their own pitch and pace). Without speech, the caption alone tells it and the
-// line waits about as long as the words would take to say.
+// The people on the other end of the line (the desk's wall phone, and whoever picks up an
+// extension during a BBS call), spoken by the browser's own speech synthesis (each with their
+// own pitch and pace). Without speech, the caption alone tells it and the line waits about as
+// long as the words would take to say.
 
 export interface Voice {
   /** Shown before the caption: "Grandma". */

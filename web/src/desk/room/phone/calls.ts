@@ -5,7 +5,7 @@
 // digits; 1 + area code + number works too.
 import type { PhoneSounds } from './sounds';
 import { deskMs } from '../../../retro/dos/deskClock';
-import { VOICES, type Voice } from './voice';
+import { VOICES, type Voice } from '../../../audio/voices';
 
 /** What a call can do on the line; the dial pad provides it (phone.ts). */
 export interface CallLine {

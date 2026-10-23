@@ -1,6 +1,6 @@
 // Somebody in the house picks up the kitchen phone in the middle of an upload: the click of
 // the extension, the line going ragged, then a voice yelling about the noise (spoken by the
-// wall phone's speech voices, desk/room/phone/voice.ts). The modems lose each other and the
+// wall phone's speech voices, audio/voices.ts). The modems lose each other and the
 // call drops. Returns what was said, for the screen.
 import { pcOutput } from '../computer/pcAudio';
 import { Line } from './modem';
@@ -47,7 +47,7 @@ function click(ctx: AudioContext): number {
 export async function pickUpExtension(ctx: AudioContext | undefined): Promise<Overheard> {
   const [who, words] = YELLS[Math.floor(Math.random() * YELLS.length)];
   const wait = ctx ? click(ctx) : 0.6;
-  const { speak, VOICES } = await import('../../desk/room/phone/voice');
+  const { speak, VOICES } = await import('../../audio/voices');
   const v = VOICES[who];
   await new Promise((r) => setTimeout(r, wait * 1000));
   // louder and faster than on the phone: they are upset
