@@ -204,7 +204,7 @@ If you enjoy it, register for $10 with Sandbox Software. You'll get:
 Send a check or money order for $10 (US funds) to:
 
 |    Sandbox Software
-|    P.O. Box 4215
+|    P.O. Box 000
 |    Pittsburgh, PA 15213
 
 (This address is fictional, made up for this game. Please don't mail anything to it!)

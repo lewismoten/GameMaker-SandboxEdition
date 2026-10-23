@@ -28,7 +28,7 @@ Send a check or money order for
 $10 (US funds) to:
 
     Sandbox Software
-    P.O. Box 4215
+    P.O. Box 000
     Pittsburgh, PA 15213
 
 (This address is fictional,
