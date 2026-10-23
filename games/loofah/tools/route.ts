@@ -150,7 +150,8 @@ export async function aisle(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the bakery bin, Loaf #13', 0, async () => {
     await must(bot, bot.hop('right', 6, 'right', 27), 'down off the shelves');
-    await must(bot, bot.hop('right', 12, 'right', 28.2), 'up on the bin');
+    await must(bot, bot.walk(27.2, 'by the bin'), 'bin');
+    await must(bot, bot.hop('up', 12, 'right', 28), 'hello, Loaf #13');
     await must(bot, bot.walk(30, 'the coin by the bin'), 'coin');
   });
   await carefully(bot, 'up the gourd vine, over the second tree', 0, async () => {
@@ -162,6 +163,8 @@ export async function aisle(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the wild loofah in the spices', 0, async () => {
     await tame(bot, 36, 42, 11, 'the wild loofah by the spices');
+    const t = where(bot, MON.tame).find((m) => m.x > 36 && m.x < 43 && Math.round(m.y) === 11);
+    if (t) await must(bot, bot.walk(Math.min(41, t.x + 0.6), 'the tame loofah'), 'tame');
     await must(bot, bot.walk(38.4, 'by the spice rack'), 'spices');
     await must(bot, bot.hop('up', 12, 'right', 39), 'up on the spice rack');
     await must(bot, bot.walk(42, 'the rosemary by the mustard seed'), 'rosemary');
