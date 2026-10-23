@@ -127,7 +127,9 @@ export async function banquet(bot: Bot): Promise<void> {
     await up(bot, 'the last shutter');
     if (air(bot) < 5) throw new Error(`only ${air(bot)} shutters`);
   });
-  await leave(bot, bot.walk(52, 'the door'), 'the door');
+  await must(bot, bot.walk(50.6, 'through the door'), 'door');
+  await must(bot, bot.sim.waitForClip(), 'the door\'s song');
+  await leave(bot, bot.walk(53, 'out'), 'the door');
 }
 
 /** II. The battle: run. Up the ladder, over the palisade, past the archers, through the ditch, to the gate. */
@@ -182,6 +184,7 @@ export async function roofs(bot: Bot): Promise<void> {
   await carefully(bot, 'the first house', 0, async () => {
     await must(bot, bot.walk(5, 'past the first titulus'), 'titulus');
     if (titles(bot) < 1) throw new Error('the first titulus untouched');
+    await must(bot, bot.sim.waitForClip(), 'titulus ter');
     await must(bot, bot.hop('right', 12, 'right', 7.6), 'over the chimney');
     await must(bot, bot.walk(9, 'into the alley ladder'), 'alley');
     await must(bot, bot.dig('up', 5.9, 'up the ladder'), 'climb');
@@ -232,7 +235,9 @@ export async function roofs(bot: Bot): Promise<void> {
   await carefully(bot, 'the last house, SAXA, the tavern', 0, async () => {
     await must(bot, bot.hop('right', 12, 'right', 51.4), 'up onto the last house');
     await must(bot, bot.walk(54, 'the titulus, through SAXA'), 'saxa');
-    await leave(bot, bot.walk(58, "Titus's tavern"), 'the tavern');
+    await must(bot, bot.walk(56.6, "into Titus's tavern"), 'tavern');
+    await must(bot, bot.sim.waitForClip(), 'the tavern\'s song');
+    await leave(bot, bot.walk(59, 'in'), 'the tavern');
   });
 }
 
@@ -285,7 +290,9 @@ export async function kitchen(bot: Bot): Promise<void> {
     await must(bot, bot.walk(40.4, 'back'), 'back');
     await mouse(bot, 6, 'the third mouse');
   });
-  await leave(bot, bot.walk(48, 'the crown of cheese'), 'the crown of cheese');
+  await must(bot, bot.walk(45.6, 'the crown of cheese'), 'crown');
+  await must(bot, bot.sim.waitForClip(), 'corona casei');
+  await leave(bot, bot.walk(48, 'away with it'), 'the crown of cheese');
 }
 
 /** V. The baths: seven golden scales (six needed), the cheering mice, steam and drums, the hot pool, her basin. */
@@ -347,10 +354,12 @@ export async function baths(bot: Bot): Promise<void> {
     await must(bot, bot.walk(49, 'the far side'), 'side');
     await must(bot, bot.hop('right', 10, 'right', 50), 'out, up onto the bench');
     await must(bot, bot.walk(51, 'the mouse, the grapes'), 'grapes');
-    await must(bot, bot.walk(55, 'under the coin'), 'coin');
+    await must(bot, bot.walk(52, 'under the coin'), 'coin');
     await up(bot, 'the coin');
   });
-  await leave(bot, bot.walk(58, 'her golden basin'), 'the basin');
+  await must(bot, bot.walk(56.6, 'past the diva into her basin'), 'basin');
+  await must(bot, bot.sim.waitForClip(), 'cantemus omnes');
+  await leave(bot, bot.walk(59, 'on'), 'the basin');
 }
 
 const GRAVIS = [MON.gravisA0, MON.gravisA1, MON.gravisA2, MON.gravisA3, MON.gravisB0, MON.gravisB1, MON.gravisB2, MON.gravisB3];
@@ -411,6 +420,8 @@ export async function theater(bot: Bot): Promise<void> {
     await must(bot, bot.walk(35.6, 'under the crown'), 'crown');
     await up(bot, 'the laurel crown', 6);
     if (crown(bot) < 1) throw new Error('no crown');
-    await leave(bot, bot.walk(41, 'the altar'), 'the altar');
+    await must(bot, bot.walk(40.6, 'the altar'), 'altar');
+    await must(bot, bot.sim.waitForClip(), 'the rimshot');
+    await leave(bot, bot.walk(43, 'bow'), 'the altar');
   });
 }

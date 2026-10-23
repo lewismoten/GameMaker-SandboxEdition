@@ -25,11 +25,11 @@ const RULES: PartRule[] = [
   ...pair('gate', 'gateTop', 'gateWay', 0, 1),
   ...pair('THE CHEZ', 'chezL', 'chezR', 1, 0),
   ...pair('tavern', 'tavernSign', /^tavern(Open)?$/, 0, 1),
-  ...pair('basin', /^basin(R|Done)$/, /^basinL[01]$/, 1, 0),
+  ...pair('basin', /^basinL[01]$/, /^basin(R|Done)$/, 1, 0),
 ];
 
 /** Joins drawn as edges on purpose (looked at). */
-const SEAM_OK = ['colTop/col', 'bcolTop/bcol', 'col/colBase', 'bcol/bcolBase', 'bust/pedestal', 'tavernSign/tavern', 'towerTop/tower', 'stakeTop/stakes', 'gateTop/gateWay', 'basinR|basinL0', 'scrollTop/scrolls', 'doorTop/door', 'entryTop/entry', 'lucius0|amphora', 'tentL|tentR', 'senL0|senR', 'senL1|senR'];
+const SEAM_OK = ['colTop/col', 'bcolTop/bcol', 'col/colBase', 'bcol/bcolBase', 'bust/pedestal', 'tavernSign/tavern', 'towerTop/tower', 'stakeTop/stakes', 'gateTop/gateWay', 'basinL0|basinR', 'scrollTop/scrolls', 'doorTop/door', 'entryTop/entry', 'lucius0|amphora', 'tentL|tentR', 'senL0|senR', 'senL1|senR'];
 
 export function align(): number {
   const names = new Map(LEVELS.map((l) => [`${l.file}.map`, namesOf(buildBlocks(l.set, buildPalette(l.light)).index)]));

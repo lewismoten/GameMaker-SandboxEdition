@@ -131,9 +131,9 @@ export function banquet(book: BlockBook): Level {
   m.set(46, 7, 'lararium').set(46, 6, 'wreath');
   m.set(48, 9, 'table').set(48, 8, 'cup');
   m.set(49, 7, 'shutter');
-  // the door out: five shutters open
-  m.set(51, 9, 'door').set(51, 8, 'doorTop');
-  m.link(51, 9, 'next');
+  // the door out: five shutters open (the way on is a step past it, so its song can finish)
+  m.set(50, 9, 'door').set(50, 8, 'doorTop');
+  m.link(52, 9, 'next');
   return { m, start: at(3, 9), size: [W, H] };
 }
 
@@ -210,8 +210,8 @@ export function roofs(book: BlockBook): Level {
   m.set(44, 7, 'titulus1').set(46, 7, 'chimney').mon(MON.pigeon, 47, 7).set(48, 5, 'rgrapes').set(50, 7, 'titulus2');
   // G: SAXA on the step up, a titulus, the tavern
   m.set(52, 6, 'titulus3').set(54, 6, 'saxa');
-  m.set(57, 5, 'tavernSign').set(57, 6, 'tavern');
-  m.link(57, 6, 'next');
+  m.set(56, 5, 'tavernSign').set(56, 6, 'tavern');
+  m.link(58, 6, 'next');
   return { m, start: at(2, 7), size: [W, H] };
 }
 
@@ -241,7 +241,7 @@ export function kitchen(book: BlockBook): Level {
   // the third mouse
   m.set(42, 9, 'hole').mon(MON.mouse, 41, 9);
   // the crown of cheese
-  m.set(47, 9, 'corona');
+  m.set(45, 9, 'corona');
   m.link(47, 9, 'next');
   return { m, start: at(4, 9), size: [W, H] };
 }
@@ -287,9 +287,9 @@ export function baths(book: BlockBook): Level {
   m.set(47, walk + 1, 'scalePool');
   // another bench of mice, grapes
   m.row(8, 50, 51, 'bench').mon(MON.fan, 50, 7).set(51, 7, 'bgrapes');
-  m.set(55, 8, 'bcoin');
+  m.set(52, 8, 'bcoin');
   // her golden basin: six scales; the diva sings in it
-  m.set(58, walk, 'basinR').set(59, walk, 'basinL0');
+  m.set(55, walk, 'basinL0').set(56, walk, 'basinR');
   m.link(58, walk, 'next');
   return { m, start: at(2, walk), size: [W, H] };
 }
@@ -328,6 +328,6 @@ export function theater(book: BlockBook): Level {
   m.mon(MON.gravisA0, 36, 7).mon(MON.gravisB0, 36, 8);
   m.set(38, 4, 'decreeBox');
   m.set(40, 8, 'altar');
-  m.link(40, 8, 'won');
+  m.link(42, 8, 'won');
   return { m, start: at(2, 4), size: [W, H] };
 }

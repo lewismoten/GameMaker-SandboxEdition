@@ -4,7 +4,7 @@
 //      gives birth to scalding bubbles), steam vents that lift you, benches where the mice of
 //      the baths cheer (clamant mures), drums that bounce you (tympana tremunt), golden scales
 //      (counter 23: cantus tuus, aurum nostrum), and her golden basin (labrum), which gives
-//      birth to the notes of her song and takes six scales.
+//      birth to the notes of her song (walk past her) and takes six scales.
 //   VI. Silentium Ridentium: the theater in the afternoon. The stands (cavea) are stone steps
 //      (ledges) where the audience sits stone-faced (omnes spectant, nemo ridet), the awning
 //      (velarium) over them, cabbages thrown from the top row, the orchestra's floor, the stairs
@@ -175,8 +175,8 @@ export function buildThermae(pal: Pal): BlockBook {
     else micro(p, 6, 8, String(SCALES_NEEDED), c('ink', 0));
     return p;
   };
-  book.add('basinL0', basin('L', false, 0), { solid: SOLID, birthMon: MON.note, birthTime: NOTE_EVERY, next: 'basinL1', ntime: 12 });
-  book.add('basinL1', basin('L', false, 1), { solid: SOLID, birthMon: MON.note, birthTime: NOTE_EVERY, next: 'basinL0', ntime: 12 });
+  book.add('basinL0', basin('L', false, 0), { ...air, birthMon: MON.note, birthTime: NOTE_EVERY, next: 'basinL1', ntime: 12 });
+  book.add('basinL1', basin('L', false, 1), { ...air, birthMon: MON.note, birthTime: NOTE_EVERY, next: 'basinL0', ntime: 12 });
   book.add('basinR', basin('R', false), { solid: SOLID, effect: SCALES, eamt: -SCALES_NEEDED, score: 2000, touch: 'basinDone' });
   book.add('basinDone', basin('R', true), { grav: GRAV.none });
 
