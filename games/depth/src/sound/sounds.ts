@@ -35,12 +35,12 @@ export function buildSounds(): SoundFiles {
     set.digital[n] = name;
     vocs[name] = voc;
   };
-  // a photon: a high glass ting
+  // a photon: a short, soft glass ting (it is the sound heard most, so it stays quiet)
   add(
     SND.score,
     'photon',
-    speaker((i) => (i < 5 ? 2093 : i < 14 ? 3136 : 0)),
-    sample(0.35, mix([bell(2093), 0.4], [bell(3136, 0.05, 0.6), 0.35]), { envelope: () => 1 }),
+    speaker((i) => (i < 4 ? 2093 : i < 10 ? 3136 : 0)),
+    sample(0.25, mix([bell(2093, 0, 0.7), 0.22], [bell(3136, 0.04, 0.45), 0.18]), { envelope: () => 1 }),
   );
   // a lens: a rising three-note chime
   add(

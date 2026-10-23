@@ -82,7 +82,7 @@ export const THEMES: Record<ThemeId, Theme> = {
       spec: 0.7,
       shine: 50,
     },
-    wall: { color: rgb(150, 228, 205), diffuse: 0.65, reflect: 0.22, fresnel: 0.55, spec: 1.5, shine: 140, emit: rgb(14, 30, 24) },
+    wall: { color: rgb(70, 150, 135), diffuse: 0.65, reflect: 0.22, fresnel: 0.55, spec: 1.5, shine: 140, emit: rgb(8, 22, 18) },
     cliff: rgb(40, 90, 80),
     abyss: rgb(4, 20, 24),
     sky: rgb(130, 180, 170),

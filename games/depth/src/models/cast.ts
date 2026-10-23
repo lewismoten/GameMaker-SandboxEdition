@@ -175,8 +175,9 @@ export function shard(f: number): Shape[] {
 export function bat(f: number): Shape[] {
   const c: V = [0.5, 0.6, 0.45];
   const up = f ? 0.15 : -0.08;
-  const wing: Material = { color: rgb(70, 40, 110), diffuse: 0.8, spec: 0.8, shine: 40 };
-  const out: Shape[] = [gem(TETRA, c, 0.11, 0.8, rgb(40, 30, 60))];
+  // lit violet wings with a glow of their own, so a bat shows up on the darkest grid
+  const wing: Material = { color: rgb(205, 120, 255), diffuse: 0.8, spec: 0.9, shine: 40, emit: rgb(70, 30, 110) };
+  const out: Shape[] = [gem(TETRA, c, 0.11, 0.8, rgb(150, 110, 210))];
   for (const k of [-1, 1])
     out.push(hull([add(c, [k * 0.04, 0.02, 0]), add(c, [k * 0.04, -0.06, 0.02]), add(c, [k * 0.38, -0.02, up]), add(c, [k * 0.04, 0.02, 0.02])], wing));
   for (const k of [-1, 1]) out.push(new Sphere([c[0] + k * 0.035, c[1] + 0.09, c[2] + 0.02], 0.022, glow(rgb(255, 230, 60), 1.2)));

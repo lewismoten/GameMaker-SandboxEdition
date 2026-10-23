@@ -245,6 +245,13 @@ export function kinds(): Record<string, Kind> {
     out.push(new Box([cx, cy + f, H - 0.05], [cx + 1, cy + f + 0.04, H], MAT.chrome));
     return out;
   };
+  const panel = (c: V, emit: V): Kind => ({
+    ground: () => 'floor',
+    tall: () => false,
+    shapes: (cx, cy) => [
+      new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], { color: c, diffuse: 0.6, reflect: 0.3, fresnel: 0.4, spec: 1.2, shine: 90, emit }),
+    ],
+  });
   const K: Record<string, Kind> = {
     floor: floor(),
     pit: pit(),
@@ -285,9 +292,10 @@ export function kinds(): Record<string, Kind> {
         ];
       },
     },
+    // a photon: a gold spark in a wide halo, so it never reads as a pale floor square
     photon: item(
-      (x, y) => [new Sphere([x, y, 0.3], 0.13, { color: rgb(255, 250, 200), diffuse: 0.3, emit: rgb(255, 230, 150), noShadow: true })],
-      () => [[0.5, 0.58, 0.3, 8, rgb(255, 220, 120)]],
+      (x, y) => [new Sphere([x, y, 0.3], 0.13, { color: rgb(255, 214, 70), diffuse: 0.3, emit: rgb(255, 190, 40), noShadow: true })],
+      () => [[0.5, 0.58, 0.3, 10, rgb(255, 200, 60)]],
     ),
     bulb: item(
       (x, y) => [
@@ -377,22 +385,12 @@ export function kinds(): Record<string, Kind> {
         ];
       },
     },
-    // auto-focus panels: the focus drifts on its own, so these come and go together
-    pulseA: {
-      ground: () => 'floor',
-      tall: () => false,
-      shapes: (cx, cy) => [
-        new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], {
-          color: rgb(220, 200, 255),
-          diffuse: 0.6,
-          reflect: 0.3,
-          fresnel: 0.4,
-          spec: 1.2,
-          shine: 90,
-          emit: rgb(50, 30, 80),
-        }),
-      ],
-    },
+    // auto-focus panels: the focus drifts on its own, so these come and go together; they
+    // flicker hot pink twice just before they blur out
+    pulseA: panel(rgb(220, 200, 255), rgb(50, 30, 80)),
+    pulseA2: panel(rgb(220, 200, 255), rgb(50, 30, 80)),
+    pulseW: panel(rgb(255, 120, 170), rgb(150, 30, 70)),
+    pulseW2: panel(rgb(255, 120, 170), rgb(150, 30, 70)),
     pulseB: {
       ground: () => 'pit',
       tall: () => false,
@@ -446,7 +444,8 @@ export function kinds(): Record<string, Kind> {
               [x, y + 0.36, 0],
               [x, y - 0.05, 0.6],
             ],
-            (f) => ({ color: f % 2 ? rgb(60, 30, 90) : rgb(40, 20, 60), diffuse: 0.8, spec: 1, shine: 60 }),
+            // lit violet faces (the Vanishing Point's floor is near black)
+            (f) => ({ color: f % 2 ? rgb(190, 120, 255) : rgb(130, 80, 200), diffuse: 0.8, spec: 1, shine: 60, emit: rgb(45, 20, 75) }),
           ),
           new Sphere([x, y + 0.06, 0.24], 0.06, { color: rgb(255, 60, 60), emit: rgb(255, 40, 40), noShadow: true }),
         ];

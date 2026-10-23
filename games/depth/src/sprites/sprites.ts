@@ -50,7 +50,9 @@ function monsterEntries(): Entry[] {
     for (let f = 0; f < n; f++) out.push([`${name}${f}`, () => make(f)]);
   };
   add('shot', 1, () => renderSprite(C.shot(), { noShadow: true }));
-  add('wire', 4, (f) => renderSprite(C.wire(f)));
+  // henchmen get a dark rim: a green wireframe on the Glass Garden's mint, a bat on the dark grid
+  const RIM = rgb(14, 10, 30);
+  add('wire', 4, (f) => renderSprite(C.wire(f), { outline: RIM }));
   add('crystal', 2, (f) => renderSprite(C.crystal(f)));
   add('jaggy', 2, (f) => renderSprite(C.jaggy(f)));
   add('steam', 3, (f) => renderSprite(C.steam(f), { noShadow: true }));
@@ -58,10 +60,10 @@ function monsterEntries(): Entry[] {
   add('teddy', 4, (f) => renderSprite(C.teddy(f)));
   add('gwinn', 4, (f) => renderSprite(C.gwinn(f)));
   add('leo', 2, (f) => renderSprite(C.docLeo(f)));
-  add('bat', 2, (f) => renderSprite(C.scaled(C.bat(f), 1.3), { noShadow: true }));
+  add('bat', 2, (f) => renderSprite(C.scaled(C.bat(f), 1.3), { noShadow: true, outline: RIM }));
   for (let s = 0; s < 5; s++) add(`count${s}_`, 2, (f) => renderSprite(C.count(s, f)));
   add('crown', 2, (f) => renderSprite(C.crown(f)));
-  add('shard', 2, (f) => renderSprite(C.shard(f), { noShadow: true }));
+  add('shard', 2, (f) => renderSprite(C.shard(f), { noShadow: true, outline: RIM }));
   add('pop', 3, (f) => renderSprite(C.pop(f), { noShadow: true }));
   return out;
 }

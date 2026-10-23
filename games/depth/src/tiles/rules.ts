@@ -10,6 +10,8 @@ export const FALL = -999;
 
 /** Ticks an auto-focus panel stays in focus, and out. */
 export const PULSE = 40;
+/** The last ticks in focus flicker (warn, steady, warn), so a panel never vanishes unannounced. */
+export const FLICKER = 4;
 
 export interface LevelRules {
   level: number;
@@ -54,7 +56,13 @@ export function rulesFor(o: LevelRules): Rules {
       case 'gateB':
         return { solid: SOLID, effect: cb, eamt: -1, score: 100, touch: 'floor' };
       case 'pulseA':
-        return { next: { kind: 'pulseB', time: PULSE } };
+        return { next: { kind: 'pulseW', time: PULSE - 3 * FLICKER } };
+      case 'pulseW':
+        return { next: { kind: 'pulseA2', time: FLICKER } };
+      case 'pulseA2':
+        return { next: { kind: 'pulseW2', time: FLICKER } };
+      case 'pulseW2':
+        return { next: { kind: 'pulseB', time: FLICKER } };
       case 'pulseB':
         return { hp: FALL, next: { kind: 'pulseA', time: PULSE } };
       case 'slopeN':

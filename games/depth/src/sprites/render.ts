@@ -28,6 +28,8 @@ export interface SpriteLook {
   flash?: number;
   /** Render into a bigger picture (story screens) instead of 20x20. */
   size?: number;
+  /** A dark rim one pixel round the model, so it shows on floors of its own color. */
+  outline?: V;
 }
 
 export function spriteWorld(shapes: Shape[], look: SpriteLook = {}): World {
@@ -79,5 +81,30 @@ export function renderSprite(shapes: Shape[], look: SpriteLook = {}): SpritePic 
       const f = look.flash ?? 0;
       for (let c = 0; c < 3; c++) out.rgb[i * 3 + c] = cover ? (acc[c] / cover) * (1 - f) + f * 1.2 : 0;
     }
+  if (look.outline) addOutline(out, size, look.outline);
   return out;
+}
+
+/** Fills the clear pixels touching the model (4 ways) with a dark rim color. */
+function addOutline(p: SpritePic, size: number, c: V): void {
+  const solid = p.alpha.map((a) => (a >= 0.5 ? 1 : 0));
+  for (let y = 0; y < size; y++)
+    for (let x = 0; x < size; x++) {
+      const i = y * size + x;
+      if (solid[i]) continue;
+      const near = [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ].some(([dx, dy]) => {
+        const nx = x + dx;
+        const ny = y + dy;
+        return nx >= 0 && ny >= 0 && nx < size && ny < size && solid[ny * size + nx];
+      });
+      if (!near) continue;
+      p.alpha[i] = 1;
+      p.shadow[i] = 0;
+      for (let k = 0; k < 3; k++) p.rgb[i * 3 + k] = c[k];
+    }
 }
