@@ -101,6 +101,16 @@
     serif;
 }
 
+.eggv.uv {
+  /* the desk's black light is on: a dark room, and the glow is the egg's own */
+  background: radial-gradient(ellipse at 35% 45%, #2a1446, #0b0614 75%);
+}
+
+.eggv-uv-note {
+  color: #d9b8ff;
+  font-style: italic;
+}
+
 .eggv-bar {
   display: flex;
   align-items: center;

@@ -1,15 +1,21 @@
 // A closer look at the felt eggs found so far: each turns slowly (drag, or the arrow keys, to
 // turn it yourself; still when the system asks for reduced motion), with the game it was
-// found in, the egg itself, the names it carries and its piece of the mystery.
+// found in, the egg itself, the names it carries and its piece of the mystery. With the desk's
+// black light on, the room stays dark and each egg shows its fluorescent ink (eggUv.ts).
 import { h, clear } from '../editor/core/ui';
 import { drawEgg, eggTexture, EGG_ASPECT } from './eggArt';
+import { uvInk, uvTexture } from './eggUv';
 import type { EggState } from './eggState';
+
+const UV_WORDS = ['dots', 'stripes', 'a zigzag', 'little stars', 'a tiny smiling face'];
 
 export function openEggViewer(found: EggState[], start = 0): Promise<void> {
   return new Promise((resolve) => {
     const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let at = Math.max(0, Math.min(found.length - 1, start));
-    let tex = eggTexture(found[at].egg.look);
+    const uv = !!document.querySelector('.desk.bl-uv');
+    const textureOf = (i: number) => (uv ? uvTexture(eggTexture(found[i].egg.look), i) : eggTexture(found[i].egg.look));
+    let tex = textureOf(at);
     let turn = 0;
     let spin = still ? 0 : 0.6; // radians a second
     let drag: { x: number; turn: number } | undefined;
@@ -39,7 +45,7 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
       const ew = eh * EGG_ASPECT;
       const top = (hh - eh) / 2 - hh * 0.03;
       // its shadow on the table
-      g.fillStyle = 'rgba(0,0,0,0.4)';
+      g.fillStyle = uv ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.4)';
       g.beginPath();
       g.ellipse(w / 2 + ew * 0.06, top + eh * 0.98, ew * 0.42, eh * 0.06, 0, 0, Math.PI * 2);
       g.fill();
@@ -59,15 +65,26 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
 
     const show = () => {
       const e = found[at];
-      tex = eggTexture(e.egg.look);
+      tex = textureOf(at);
       turn = 0;
       dirty = true;
-      canvas.setAttribute('aria-label', `${e.egg.name}, a felt egg, turning`);
+      const ink = uv ? uvInk(at) : undefined;
+      canvas.setAttribute(
+        'aria-label',
+        `${e.egg.name}, a felt egg, turning${uv ? (ink ? ', glowing under the black light' : ', dark under the black light') : ''}`,
+      );
       clear(
         card,
         h('h2', { id: 'eggv-title' }, e.egg.name),
         h('p', { class: 'eggv-where' }, e.status === 'added' ? `From ${e.egg.gameTitle} (added by hand)` : `Found in ${e.egg.gameTitle}`),
         h('p', null, e.egg.description),
+        uv
+          ? h(
+              'p',
+              { class: 'eggv-uv-note' },
+              ink ? `Under the black light: ${UV_WORDS[ink.pattern]} in glowing ink.` : 'Under the black light: nothing hidden on this one.',
+            )
+          : null,
         h('h3', null, 'Stitched inside'),
         h('ul', null, ...e.egg.credits.map((c) => h('li', null, c))),
         h('h3', null, 'Tucked in with it'),
@@ -135,7 +152,7 @@ export function openEggViewer(found: EggState[], start = 0): Promise<void> {
     const closeBtn = h('button', { type: 'button', onclick: close }, 'Close (Esc)');
     const overlay = h(
       'div',
-      { class: 'eggv', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'eggv-title' },
+      { class: uv ? 'eggv uv' : 'eggv', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'eggv-title' },
       h('div', { class: 'eggv-bar' }, h('strong', null, 'Felt eggs'), closeBtn),
       h('div', { class: 'eggv-main' }, stage, h('div', null, card, h('div', { class: 'eggv-nav' }, prev, next, count))),
     );
