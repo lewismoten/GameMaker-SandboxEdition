@@ -8,6 +8,8 @@ export interface Chapter {
   /** The running head over its pages. */
   head: string;
   html: string;
+  /** Starts on a fresh page (a page meant to be torn out or copied). */
+  newPage?: boolean;
 }
 
 /** The chapter's opening, kept together on one page: its number in big type, its heading and a lead. */
