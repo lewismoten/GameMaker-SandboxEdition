@@ -65,6 +65,31 @@ export async function hub2(bot: Bot): Promise<void> {
   if ((await bot.goto(45, 21, 'the Hosewater Moat')) !== 'link') throw new Error('No way in');
 }
 
+/** Steps into a current going `dir`, rides it until it lets go, then steps onto (x, y). */
+async function ride(bot: Bot, dir: Dir, x: number, y: number, label: string): Promise<void> {
+  await bot.push(dir, 4, 0);
+  let last = '';
+  let still = 0;
+  for (let t = 0; t < 150 && still < 3; t++) {
+    await bot.wait(1);
+    const p = bot.sim.pos;
+    const now = `${p.x},${p.y},${p.sx},${p.sy}`;
+    still = now === last && !bot.current(p.x, p.y) ? still + 1 : 0;
+    last = now;
+  }
+  if (still < 3) throw new Error(`${label}: the current never let go`);
+  // the current leaves Teddy between two blocks: step on to the nearer one, as a player would
+  const p = bot.sim.pos;
+  const nudge: Dir | undefined = p.sx ? (p.sx >= 10 ? 'right' : 'left') : p.sy ? (p.sy >= 10 ? 'down' : 'up') : undefined;
+  if (nudge) {
+    bot.sim.press(SCAN[nudge]);
+    for (let t = 0; t < 8 && (bot.sim.pos.sx || bot.sim.pos.sy); t++) await bot.wait(1);
+    bot.sim.release(SCAN[nudge]);
+    await bot.wait(2);
+  }
+  await bot.goto(x, y, label);
+}
+
 export async function moat(bot: Bot): Promise<void> {
   expect(bot, S.moat, 'the Hosewater Moat');
   await bot.goto(23, 22, 'sand');
@@ -73,12 +98,16 @@ export async function moat(bot: Bot): Promise<void> {
   await bot.digFrom(19, 21, 'down', 'the ford', (n) => n === 'causeway');
   await bot.digFrom(19, 20, 'down', 'the ford', (n) => n === 'causeway');
   await tower(bot, 11, 17, 'down', 'the southwest tower');
-  await bot.goto(12, 15, 'sand');
-  await tower(bot, 11, 7, 'down', 'the northwest tower');
+  // off the island on the east current, round to the north bank, down the north current
+  await bot.goto(28, 12, 'the east current');
+  await ride(bot, 'right', 33, 12, 'carried off the island');
+  await bot.goto(20, 3, 'above the north current');
+  await ride(bot, 'down', 20, 6, 'carried onto the north half');
   await tower(bot, 28, 7, 'down', 'the northeast tower');
-  await bot.goto(27, 15, 'sand');
-  await tower(bot, 28, 17, 'down', 'the southeast tower');
-  if (bot.sim.meter(CTR.flags2) !== 5) throw new Error(`Flags: ${bot.sim.meter(CTR.flags2) - 1}`);
+  // down the west channel to the gate
+  await bot.goto(11, 9, 'above the west channel');
+  await ride(bot, 'down', 11, 12, 'carried back to the south half');
+  if (bot.sim.meter(CTR.flags2) !== 3) throw new Error(`Flags: ${bot.sim.meter(CTR.flags2) - 1}`);
   await bot.digFrom(19, 15, 'down', 'the gate');
   if ((await bot.goto(19, 9, 'the castle door')) !== 'link') throw new Error('No way out');
 }
@@ -238,9 +267,10 @@ export async function burrows(bot: Bot): Promise<void> {
   await bot.goto(1, 12, 'an acorn');
   await bot.digFrom(2, 15, 'up', 'a root door');
   await bot.goto(1, 20, 'sand');
+  // Gwinn galumphs about the lower gallery: send her off first, then plug the beetle nests
+  await ambush(bot, { x: 8, y: 19 }, 'Gwinn trots off');
   await bot.digFrom(12, 21, 'up', 'a beetle nest', (n) => n.startsWith('plugged'));
   await bot.digFrom(12, 17, 'down', 'a beetle nest', (n) => n.startsWith('plugged'));
-  await ambush(bot, { x: 8, y: 19 }, 'Gwinn trots off');
   await bot.goto(23, 19, 'an acorn');
   await bot.digFrom(40, 22, 'up', 'a root door');
   if ((await bot.goto(40, 27, 'the ladder up')) !== 'link') throw new Error('No way out');

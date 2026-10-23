@@ -122,7 +122,7 @@ export function addCastles(): void {
     return p;
   }
   bg.add('gate', portcullis(false), { solid: SOLID, effect: CTR.flags, eamt: -4, score: 500, touch: 'gateOpen' });
-  bg.add('gate2', portcullis(false), { solid: SOLID, effect: CTR.flags2, eamt: -4, score: 500, touch: 'gateOpen' });
+  bg.add('gate2', portcullis(false), { solid: SOLID, effect: CTR.flags2, eamt: -2, score: 500, touch: 'gateOpen' });
   bg.add('gateOpen', portcullis(true));
   {
     // The lagoon's sea gate opens for three golden shells (its emblem shows one).

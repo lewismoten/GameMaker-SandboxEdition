@@ -226,8 +226,11 @@ export function keep(): LevelMap {
 }
 
 // ================================================================= 2. Hosewater Moat
-// The castle stands on an island. Fill the ford with sand, or run the crumbling bridge;
-// the hose current carries you out again. A lazy river runs around the edge.
+// The castle stands on an island, and the hose has cut the island in two. Fill the ford with
+// sand (or run the crumbling bridge) to reach the south half and its tower; the east current
+// carries you off again. Round on the north bank, a current runs down across the moat to the
+// north half and its tower, and a channel down the west side carries you back south to the
+// gate. Two flags lift it. A lazy river runs around the edge.
 export function moat(): LevelMap {
   const m = new LevelMap('grass', 3);
   m.stamp(
@@ -275,6 +278,15 @@ export function moat(): LevelMap {
       q: { tile: 'sand', mon: MON.gwinRoam },
     }),
   );
+  // Only two towers here (the keep had four): the northwest and southeast rings are plain sand.
+  m.set(11, 7, 'sand').set(28, 17, 'sand');
+  // The hose cuts the island in two: a channel runs down the west side (north to south only)
+  // and the moat floods the east side.
+  m.rect(11, 10, 2, 2, 'flow_down').rect(27, 10, 2, 2, 'water');
+  // The current from the north bank down across the moat, and a clear way to it from the east.
+  m.rect(20, 4, 1, 2, 'flow_down').set(31, 3, 'sand');
+  // A toy pail where the east current lets go, so Teddy comes to rest square against it.
+  m.set(34, 12, 'pail');
   // A painted Easter egg in the far southwest corner, past the ice pop.
   m.set(1, 28, 'easterEgg');
   return m;
@@ -394,6 +406,13 @@ export function burrows(): LevelMap {
     }),
   );
   roughen(m, 51);
+  // where a beetle patrols, the gallery stays a full three blocks high, so there is room to pass it
+  for (const [x0, x1, y0, y1] of [
+    [9, 16, 3, 5],
+    [4, 11, 18, 20],
+    [32, 39, 18, 20],
+  ])
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (['roots', 'earth', 'glow'].includes(m.get(x, y))) m.set(x, y, 'sand');
   return m;
 }
 
