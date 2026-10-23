@@ -186,6 +186,9 @@ export class Computer extends ComputerFolders {
         case "achieve":
           await (await import("../achievements/achieveExe")).runAchieveExe(this);
           break;
+        case "offline":
+          await (await import("../offline/offlineExe")).runOfflineExe(this);
+          break;
         case "batch":
           for (const l of ref.lines) await this.shell.execute(l);
           break;

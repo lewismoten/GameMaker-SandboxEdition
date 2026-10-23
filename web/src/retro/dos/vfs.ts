@@ -29,6 +29,7 @@ export type ProgramRef =
   | { kind: 'backup' }
   | { kind: 'hexedit' }
   | { kind: 'achieve' }
+  | { kind: 'offline' }
   | { kind: 'batch'; lines: string[] };
 
 export interface Drive {

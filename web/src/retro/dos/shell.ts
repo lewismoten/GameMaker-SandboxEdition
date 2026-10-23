@@ -331,6 +331,7 @@ export class Shell {
       'BACKUP      Back up and restore saved games (BACKUP /? for help)',
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',
       'ACHIEVE     What you\'ve done so far: your merit badges',
+      'OFFLINE     Copy the whole site here, to use with no connection',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);
