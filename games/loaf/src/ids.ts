@@ -28,7 +28,7 @@ export const MON = {
   camelA: 15,
   camelB: 16,
   moth: 17,
-  /** The child, walking home ahead of you, two blocks tall (A her head, B her robe). */
+  /** The child, home ahead of you and waiting at her door, two blocks tall (A her head, B her robe). */
   girlA: 18,
   girlB: 19,
   /** The mustard seed hopping off after a hello. */

@@ -157,13 +157,15 @@ export interface MonsterOptions {
   feet?: number;
   /** Blocks a mouse runs before it sits up and turns round. */
   mouse?: number;
+  /** Blocks a dog trots before it stops to sniff and turns round. */
+  dog?: number;
   /** Blocks the fox trots before it stops to sniff and turns round. */
   fox?: number;
   /** How far a hand reaches down (blocks). */
   reach?: number;
   /** How far the fish fly (blocks). */
   fish?: number;
-  /** Blocks the girl walks before turning back. */
+  /** Blocks the girl walks before turning back (0: she waits where she is). */
   girl?: number;
 }
 
@@ -223,7 +225,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(4, 3, 3, 4),
     corner(0, 0, 2, 4),
   ]);
-  set[MON.dog] = walker(4, 2, 'dog', 'dogSniff', 3);
+  // as strong as the child and the camel, so none of them knocks another out of the way
+  set[MON.dog] = walker(o.dog ?? 4, 2, 'dog', 'dogSniff', 3, { power: 200 });
   set[MON.moth] = mon(anim('moth0', 'moth1', 2), { power: 150, thru: 0 }, [
     corner(0, 0, 1),
     corner(1, -1, 1, 0),
@@ -234,8 +237,9 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.camelA] = mon(anim('camelA0', 'camelA1', 30), { power: 200, thru: 1 }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.camelB] = mon(anim('camelB0', 'camelB1', 30), { power: 200, thru: 1 }, [corner(0, 0, 1), corner(0, 0, 1)]);
   const girl = o.girl ?? 6;
-  set[MON.girlA] = mon(anim('girlA0', 'girlA1', 6), { power: 200, thru: 0 }, pace(girl, 1));
-  set[MON.girlB] = mon(anim('girlB0', 'girlB1', 6), { power: 200, thru: 0 }, pace(girl, 1));
+  const girlPath = girl ? pace(girl, 1) : [corner(0, 0, 1), corner(0, 0, 1)];
+  set[MON.girlA] = mon(anim('girlA0', 'girlA1', 6), { power: 200, thru: 0 }, girlPath);
+  set[MON.girlB] = mon(anim('girlB0', 'girlB1', 6), { power: 200, thru: 0 }, girlPath);
   return set;
 }
 

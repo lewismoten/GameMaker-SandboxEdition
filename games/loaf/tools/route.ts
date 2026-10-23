@@ -287,14 +287,16 @@ export async function theWayHome(bot: Bot): Promise<void> {
     // up on the roofs, along them over the dog and its crumbs, and down past the moth
     await must(bot, bot.hop('up', 14), 'up on the roof');
     if (bot.at.y !== 5) throw new Error(`not on the roof (${bot.at.y})`);
-    await must(bot, bot.walk(46.5, 'along the roofs'), 'roofs');
+    await must(bot, bot.walk(48, 'to the end of the roofs'), 'roofs');
     picked(bot, 40, 5, 'the first crumb on the roofs');
     picked(bot, 44, 5, 'the second crumb on the roofs');
-    await must(bot, bot.walk(51, 'by the lamp'), 'lamp');
-    await must(bot, bot.hop('up', 6), 'a holy crumb');
+    picked(bot, 48, 5, 'the holy crumb at the end of the roofs');
+    if (bot.at.y !== 5) throw new Error(`not on the roof (${bot.at.y})`);
   });
   if (crumbs(bot) < 1) throw new Error('no holy crumb for the door');
-  await carefully(bot, 'home', 12, async () => {
+  // the last beat: down off the roof past the doorstep dog while it stops at the near end
+  await carefully(bot, 'past the doorstep dog', 0, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 56), 'over the doorstep dog');
     await leave(bot, bot.walk(73, 'her door'), 'her door and in to Mama');
   });
 }

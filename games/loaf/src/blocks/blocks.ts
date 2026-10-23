@@ -266,7 +266,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     bg.set(10, 3, c('water', 3)).set(9, 2, c('water', 2));
     return bg;
   };
-  book.add('jar', jar(sky(55)), { hp: 25, score: 10, touch: 'sky' });
+  // a sip out in the open mends a little; the jars down in the wicker mend more
+  book.add('jar', jar(sky(55)), { hp: 10, score: 10, touch: 'sky' });
   // a pot of honey: an extra life
   const honey = (bg: Pixels) => {
     blob(bg, 10, 13, 6, 5.6, R('ochre'), 1, 3);

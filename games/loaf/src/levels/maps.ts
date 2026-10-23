@@ -310,15 +310,18 @@ export function home(book: BlockBook): Level {
   // the well, and Brother Camel kneeling by it
   m.set(33, 9, 'y').set(33, 8, '@');
   m.mon(MON.camelA, 35, 9).mon(MON.camelB, 36, 9);
-  // more houses; a lamp with its moth
-  m.fill(39, 7, 9, 3, 'A').row(6, 38, 48, 'p').set(41, 8, 'q').set(45, 8, 'q').text(40, 5, '*...*');
-  m.set(49, 9, 'k').set(51, 8, '@');
-  m.mon(MON.moth, 48, 7).mon(MON.dog, 41, 9).mon(MON.owl, 44, 1);
-  // the child, walking home ahead of you
-  m.mon(MON.girlA, 52, 8).mon(MON.girlB, 52, 9);
+  // more houses, a holy crumb at the end of their roofs, and a lamp
+  m.fill(39, 7, 9, 3, 'A').row(6, 38, 48, 'p').set(41, 8, 'q').set(45, 8, 'q').text(40, 5, '*...*').set(48, 5, '@');
+  m.set(49, 9, 'k');
+  m.mon(MON.dog, 41, 9).mon(MON.owl, 44, 1);
+  // the last beat: her family's dog minds the doorstep, sniffing at each end of it, while the
+  // child waits at the door; from the roof's end, hop down past the dog when it stops
+  m.mon(MON.dog, 50, 9);
+  m.mon(MON.girlA, 57, 8).mon(MON.girlB, 57, 9);
   // home: her door, and the long lamplit room inside to Mama at the far end, so "Mama, look
   // what I've got..." is sung to the end
   m.row(4, 57, 74, 'p').row(5, 58, 73, 'M').col(58, 6, 8, 'M').set(58, 9, '!').col(73, 6, 9, 'M').set(60, 3, 'k');
+  m.mon(MON.moth, 61, 2);
   m.fill(59, 6, 14, 3, 'room').row(9, 59, 72, 'roomFloor').set(62, 6, 'roomLamp').set(68, 6, 'roomLamp').set(72, 8, 'mamaTop').set(72, 9, 'mamaLow');
   m.link(72, 9, 'won').link(72, 8, 'won');
   return { m, start: at(2, 9), size: [W, H] };

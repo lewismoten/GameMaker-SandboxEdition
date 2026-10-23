@@ -5,7 +5,8 @@
 // gulls, the sandaled feet of a hungry man stomping by (to a loaf, people are mostly feet), the
 // third goat, weevils and a mouse in the wicker, a tiny mustard seed in red sneakers, a fox and
 // an owl at dusk, a village dog, a moth, Brother Camel kneeling (two blocks wide) and the child
-// walking home (two blocks tall). Every sprite is drawn from shapes and given a dark outline.
+// waiting at her door (two blocks tall). Every sprite is drawn from shapes and given a dark outline
+// (the critters that hide in the wicker and the dusk a pale one).
 import { Pixels } from '../../../kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
@@ -494,7 +495,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('camelA1', camelA(1));
   book.add('camelB0', camelB(0));
   book.add('camelB1', camelB(1));
-  // The child, walking home ahead of you (two blocks: A her head and shawl, B her robe and feet).
+  // The child, waiting at her door (two blocks: A her head and shawl, B her robe and feet).
   const girlA = (f: number) => {
     const p = P();
     blob(p, 10, 13, 5, 6, pal.r('purple'), 0, 2);
