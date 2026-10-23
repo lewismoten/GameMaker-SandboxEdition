@@ -147,6 +147,8 @@ export function buildVocs(): Record<string, Uint8Array> {
     ),
     { envelope: env(0.05, 1) },
   );
+  // a sock's soft bump in the void: a muffled cloth thump, no voice (it happens a lot there)
+  vocs.boff = sample(0.16, mix([lowNoise(23, (t) => 0.12 - t * 0.5), 1], [osc.sine((t) => 140 - t * 300), 0.4]), { envelope: env(0.01, 1.8), gain: 0.6 });
   // flopping back into the couch, defeated
   vocs.flop = sample(0.7, mix([lowNoise(22, (t) => 0.2 - t * 0.18), 0.9], [voice((t) => 200 - t * 120, 600, 1000, 10), 0.3]), { envelope: env(0.03, 1.4) });
   // the song itself
@@ -186,7 +188,7 @@ export function buildSoundSet(place: Place): SoundSet {
   );
   add(SND.spend, den ? 'gate' : kitchen ? 'mom' : 'sneaky', SPEAKER.noise(3, 60, 300));
   add(SND.shout, 'remote', SPEAKER.warble(700, 250, 1.1));
-  add(SND.hurt, den || kitchen ? 'hiss' : 'ow', SPEAKER.hurt());
+  add(SND.hurt, den || kitchen ? 'hiss' : voidLevel ? 'boff' : 'ow', SPEAKER.hurt());
   add(SND.die, 'flop', SPEAKER.fall(500, 80));
   add(
     SND.click,

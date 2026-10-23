@@ -204,7 +204,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.raccoon] = mon(anim('raccoon0', 'raccoon1', 4), { power: 50, thru: 1, towards: wander(1), newmon: MON.raccoonBye });
   set[MON.raccoonBye] = mon([[n('raccoonBye'), 4]], { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(4, -3, 3, 0)]);
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 1, newmon: MON.seedBye }, [corner(0, 0, 1), corner(0, 0, 1)]);
-  set[MON.seedBye] = mon(anim('seed1', 'seed0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
+  set[MON.seedBye] = mon(anim('seedBye1', 'seedBye0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
   set[MON.lint] = mon(stings('lint0', 'lint1', 4), { power: 110, thru: 1, towards: wander(1), newmon: MON.poof, upscore: 15 });
   set[MON.goat] = mon(anim('goat0', 'goat1', 12), { power: 200, thru: 1 }, pace(2, 1));
   const [rw, rh] = o.ride ?? [8, 2];

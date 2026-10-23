@@ -238,33 +238,36 @@ const VOID: Record<string, string> = {
   '>': 'sign',
 };
 
-/** 3. The void between the cushions: ten pennies and the pay TV. */
+/**
+ * 3. The void between the cushions: ten pennies and the pay TV. Its fabric runs two blocks wide
+ * (one-wide halls left no room to step round a sock), and two socks drift through it, not three.
+ */
 export function theVoid(book: BlockBook): Level {
   const map = rows([
     '~~~~~~~~-~~~~~~~~~~i~~~~~~~~~-~~~~~~',
-    '~oo8o$o~~~~~~-~~~~~~~~~~~I~~~~~~~~~~',
-    '~o~~~~o~~oo8oo$oo~~~~~~o8oo/ooo~~-~~',
-    '~o~-~~oo%o~~~~~~o~~~~~~o~~~~~~o~~~~~',
-    '~$~~~~~~~o~~-~~~&~~~~oo8~~~~~~$~~~~~',
-    '~o~~~U~~~7~~~~~~o~~~~o~~~~~~~~o~~~~~',
-    '~oo/o~~~~o~~~~~~oo%oo8oooo$~~~oo~~~~',
-    '~~~~o~~~~ooo~~~~~~~~~~~~~~o~~~~o~~-~',
-    '~-~~o~~~~~~o~~~-~~~~~i~~~~o~~~~6~~~~',
-    '~~~~$~~~~~~oo8o!o~~~~~~~~~o~~~~o~~~~',
-    '~~oo%ooooN~~~~~~o~~~~~~~~~s~~~~o~~~~',
-    '~~o~~~~~o~~~~~~~ooo$oo8oooo~~~~o~~~~',
-    '~~o~-~~~o~~~I~~~~~~~~~~~~~~~~~~^~~~~',
-    '~~/~~~~~ooo9oo$oo%o~~~~~~~~~~~~o~~~~',
-    '~~o~~~~~~~~~~~~~~~o~~~-~~~oooo8o~~~~',
-    '~~$oo+o8~~~~~~U~~~o~~~~~~~o~~~~~~~-~',
-    '~~~~~~~o~~~~~~~~~~oo&o$ooo~~~~~~~~~~',
-    '~~i~~~~o~~~~-~~~~~~~~~~~~~~~>oo<oo~~',
+    '~oo8o$oo~~~~~-~~~~~~~~~~~I~~~~~~~~~~',
+    '~ooo8oo8~oo8oo$ooo~~~~~o8oo/ooo8~-~~',
+    '~oo-~~oo%ooo8oo8oo~~~~~o8oo8oooo~~~~',
+    '~$8~~~oo8oo~-~~~&8~~~oo8o~~~~~$o~~~~',
+    '~oo~~U~~~78~~~~~oo~~~o8o~~~~~~o8~~~~',
+    '~oo/oo~~~oo~~~~~oo%oo8oooo$8~~ooo~~~',
+    '~o8oo8~~~oooo~~~o8oo8oo8oooo~~oo8~-~',
+    '~-~~oo~~~o8oo~~-~~~~~i~~~~oo~~~6o~~~',
+    '~~~~$o~~~~~oo8o!oo~~~~~~~~o8~~~oo~~~',
+    '~~oo%ooooNo8oo8oo8~~~~~~~~so~~~o8~~~',
+    '~~oo8oo8oo~~~~~~ooo$oo8ooooo~~~oo~~~',
+    '~~o8-~~~o8~~I~~~oo8oo8oo8oo~~~~^o~~~',
+    '~~/o~~~~ooo9oo$oo%oo~~~~~~~~~~~o8~~~',
+    '~~oo~~~~oo8oo8oo8oo8~~-~~~oooo8oo~~~',
+    '~~$oo+o8o~~~~~U~~~oo~~~~~~o8oo8o~~-~',
+    '~~8oo8oo8~~~~~~~~~oo&o$ooo8~~~~~~~~~',
+    '~~i~~~~oo~~~-~~~~~o8oo8oo8~~>oo<oo~~',
     '~~~~~~~oooooooooooo$oooooooooo~~~~~~',
     '~~~~-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
   ]);
   const m = new MapBuilder(book, 'void', VOID);
   m.patch(0, 0, map.lines);
-  m.mon(MON.sock, 12, 2).mon(MON.sock, 20, 11).mon(MON.sock, 26, 2).mon(MON.lint, 9, 10).mon(MON.lint, 22, 18);
+  m.mon(MON.sock, 12, 2).mon(MON.sock, 20, 11).mon(MON.lint, 9, 10).mon(MON.lint, 22, 18);
   m.mon(MON.penny, 16, 6).mon(MON.penny, 12, 13).mon(MON.penny, 10, 18);
   m.mon(MON.raccoon, 4, 10).mon(MON.seed, 31, 9).mon(MON.goat, 17, 11);
   // the pay TV's picture is the way home: two steps on through it, so its warming up plays out
@@ -291,16 +294,18 @@ const RIDE: Record<string, string> = {
 };
 
 /**
- * 4. The living room ride: in at the gap, press PLAY on the VCR, off at the EXIT (the tape must
- * be playing) and along the front of the couch to sit back down: the walk from the EXIT lets
- * "There you are, you sneaky guy." play out before the fade.
+ * 4. The living room ride: in at the gap, round with the whirling furniture to the only way out
+ * at the top (by the far corner), along the shelf wall past the popcorn to press PLAY on the
+ * VCR, back down through the ride, off at the EXIT (the tape must be playing) and along the
+ * front of the couch to sit back down: the walk from the EXIT lets "There you are, you sneaky
+ * guy." play out before the fade.
  */
 export function theRide(book: BlockBook): Level {
   const map = rows([
     '#PPPPOPPPPPPKPPPPTPPPPPOPPPPP#',
     '#WQQWWWWWWWW{}yWWWWWWWWWlWWWW#',
     '#.....,............,.........#',
-    '#ooooooooooo...oooooooooooooo#',
+    '#oooooooooooooooooooooo...ooo#',
     '#o>>>>>>>>>>>>>>>>>>>>>>>>>Vo#',
     '#o^.......................,Vo#',
     '#o^.....,.....H............Vo#',
@@ -316,7 +321,13 @@ export function theRide(book: BlockBook): Level {
   ]);
   const m = new MapBuilder(book, 'wallTop', RIDE);
   m.patch(0, 0, map.lines);
-  m.mon(MON.recliner, 4, 5).mon(MON.ottoman, 24, 8).mon(MON.lampshade, 16, 6).mon(MON.popcorn, 20, 2).mon(MON.popcorn, 7, 11).mon(MON.rider, 6, 6);
+  m.mon(MON.recliner, 4, 5)
+    .mon(MON.ottoman, 24, 8)
+    .mon(MON.lampshade, 16, 6)
+    .mon(MON.popcorn, 20, 2)
+    .mon(MON.popcorn, 7, 11)
+    .mon(MON.popcorn, 9, 2)
+    .mon(MON.rider, 6, 6);
   m.link(21, 12, 'won');
   return { m, start: at(13, 14), size: [map.w, map.h] };
 }

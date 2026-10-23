@@ -153,12 +153,20 @@ export async function theVoid(bot: Bot): Promise<void> {
 /** 4. The living room ride: in at the gap, up through the ride to the VCR, PLAY, off at the EXIT and along to the couch. */
 export async function theRide(bot: Bot): Promise<void> {
   expect(bot, 5, 'the ride');
-  await carefully(bot, 'up through the ride', 14, async () => {
+  await carefully(bot, 'in at the gap', 14, async () => {
     await must(bot, bot.goto(13, 11, 'the gap in the bulbs'), 'gap');
+  });
+  await carefully(bot, 'round the ride to the top gap', 14, async () => {
+    await must(bot, bot.goto(24, 2, 'out at the top, by the far corner'), 'top gap');
+  });
+  await carefully(bot, 'along the shelves to the VCR', 14, async () => {
     await must(bot, bot.goto(14, 2, 'the VCR'), 'VCR');
     await must(bot, bot.push('up'), 'PLAY');
   });
   if (bot.count(PLAY) < 1) throw new Error('PLAY never pressed');
+  await carefully(bot, 'back into the ride', 14, async () => {
+    await must(bot, bot.goto(24, 3, 'back in at the top gap'), 'top gap');
+  });
   await carefully(bot, 'back down to the couch', 14, async () => {
     await must(bot, bot.take(16, 10, 'up', 'the EXIT'), 'the EXIT');
     await through(bot, 21, 12, 'up', 'the couch');

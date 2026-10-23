@@ -352,7 +352,8 @@ export function buildMonsterBlocks(pal: Pal) {
     const tilt = f ? 1 : -1;
     for (let y = 3; y < 13; y++) p.rect(7 + Math.round((y - 3) * 0.1 * tilt), y, 6, 1, c('blue', y % 4 < 2 ? 2 : 3));
     blob(p, 11 + tilt, 14, 5, 3, pal.r('blue'), 1, 3);
-    p.rect(7, 3, 6, 2, c('white', 2));
+    // a bright striped cuff, so a sock reads against the void's purple
+    p.rect(6, 2, 8, 3, c('yellow', 2)).rect(6, 3, 8, 1, c('red', 2));
     for (const [x, y] of [
       [9, 7],
       [11, 10],
@@ -408,6 +409,9 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('seed0', seed(0), { scorePts: 100 });
   book.add('seed1', seed(1), { scorePts: 100 });
+  // waving bye: the same pictures, worth nothing (brushing past it as it goes scored every tick)
+  book.add('seedBye0', seed(0));
+  book.add('seedBye1', seed(1));
 
   // Lint: a grey wisp with a frown, drifting after you.
   const lint = (f: number) => {
