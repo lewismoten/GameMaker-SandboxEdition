@@ -16,7 +16,7 @@ export function house(): Level {
   const bs = houseTiles();
   const beasts = houseBeasts();
   // THE CHEZ in the driveway, Doc Leo beside it, waiting for the collar.
-  bs.chez(() => sky(3), 'collar', sky(2), () => sky(3));
+  bs.chez(() => sky(3), 'collar', sky(bandAt(37, G)), () => sky(3));
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => `sky${bandAt(y, G)}`);
   for (const [cx, cy] of [
