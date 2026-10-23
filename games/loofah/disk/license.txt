@@ -30,8 +30,34 @@ to ten people; shareware had
 to ask at least $5 and pay RSD
 10% of the fees. Since 2014
 Game-Maker is MIT licensed,
-and so is this game: free to
-share, change or even sell.
+and so is this game, except
+its voice clips (below): free
+to share, change or even sell.
+
+VOICE CLIPS: NOT MIT
+
+These 12 voice clips are cut
+from recordings made on the
+free plan of Riffusion (now
+Google Flow Music): BRINE.VOC,
+DRAINNEV.VOC, LINE.VOC,
+LUCIFER.VOC, MANGO.VOC,
+NEVER.VOC, PINK.VOC,
+ROUGH.VOC, SCRUBBUS.VOC,
+TOWEL.VOC, WORSE.VOC,
+WRONG.VOC.
+That service's terms allow
+free-plan songs only
+"personal, non-commercial
+uses", so these clips are not
+under the MIT License: don't
+sell them or use them
+commercially.
+
+The rest of the game is MIT
+licensed: its code, levels,
+art, text, and FM music
+arranged by Claude.
 
 MIT License
 
@@ -78,3 +104,8 @@ OTHERWISE, ARISING FROM, OUT
 OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+
+
+
+
+

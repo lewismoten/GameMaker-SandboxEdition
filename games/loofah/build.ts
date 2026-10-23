@@ -165,11 +165,14 @@ disk.put('won.cmf', songs.won);
 disk.put('lost.cmf', songs.lost);
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme(PRICE));
+// the voice clips cut from the free-plan Riffusion recordings: personal, non-commercial only (kit/license.ts)
+const RECORDED_VOCS = ['brine', 'drainnev', 'line', 'lucifer', 'mango', 'never', 'pink', 'rough', 'scrubbus', 'towel', 'worse', 'wrong'];
 disk.put(
   'license.txt',
   licenseText(
     'Cleanse Me, O Loofah, But Leave My Soul',
     `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}; ${ART_CREDIT}.`,
+    RECORDED_VOCS,
   ),
 );
 disk.write();
