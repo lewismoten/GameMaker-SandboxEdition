@@ -5,6 +5,7 @@
 // the GIF Gallery's pictures (C:\IMAGES keeps the newest picture's, as each unzip wrote over
 // the last) and the Warez area's releases, which a courier signs instead.
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
+import { installedBytes, sizeText } from '../../project/diskFacts';
 import type { GalleryFile } from './gallery';
 
 export const DIZ_WIDTH = 45;
@@ -168,7 +169,8 @@ export function gameDiz(g: CatalogEntry): string[] {
     second,
     RULE,
     ...clip(ascii(about), 3),
-    `Made with Game-Maker 3.0 * ${sound}`,
+    // what the caller has to clear on the hard disk, as uploaders put it
+    `Game-Maker 3.0 * ${sound} * ${sizeText(installedBytes(g), false)} HD`,
     // the Bard's games are free to change for real (MIT), whatever the price line says
     center(isSofaFile(g) ? 'Free to play, share & change (MIT)' : pick(TAGLINES, g.id)),
     RULE,
