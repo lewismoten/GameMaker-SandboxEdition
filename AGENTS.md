@@ -116,7 +116,9 @@ preserve what was there.
     at the rear passenger side. Draw it with `games/kit/chez.ts`.
 - **Bard of Bizarre credits:** music and vocals made with Riffusion (now Google Flow
   Music); lyrics shaped by ChatGPT from the maintainer's prompts. Exceptions are noted in
-  NOTICE.md.
+  NOTICE.md. Riffusion, Producer.ai and Google Flow Music are one service under successive
+  names (Riffusion renamed itself Producer.ai; Google bought it); never present them as
+  different companies.
 - **Originality:**
   - Write manuals and text fresh. Don't copy RSD's printed manual.
   - The maintainer's reference photos are reference only, unless they're asked for.
@@ -132,7 +134,7 @@ Credit honestly, and as soon as you use anything that isn't this project's own. 
   short note in the file that uses it. The downloads carry their notices
   (`web/src/export/notices.ts`).
 - **AI tools and models** used to make anything: music, voices, art, logos, words or code.
-  Name the tool (e.g. Riffusion/Google Flow Music, ChatGPT, DeepAI, Producer.ai, Claude)
+  Name the tool (e.g. Riffusion/Google Flow Music, ChatGPT, DeepAI, Claude)
   and what it made. If you use a new tool or model, add it to NOTICE.md and to the game's
   credits.
 - **Source material:** the maintainer's own photos and recordings, public-domain works,

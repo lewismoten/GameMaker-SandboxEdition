@@ -87,13 +87,14 @@ game folder opens in the browser unchanged.
   Lewis's group of that name): games made from Lewis's songs and monologues, presented as
   1995 shareware from The Sofa BBS; their shareware fee and address are part of the story,
   and they are free under the MIT License. The songs' lyrics and monologues were shaped with
-  ChatGPT from Lewis's prompts, and their music and vocals were made with Riffusion (now
-  Google Flow Music); the games' FM scores are arranged from those recordings, and their
+  ChatGPT from Lewis's prompts, and their music and vocals were made with Riffusion (one
+  service under three names: Riffusion renamed itself Producer.ai, and Google bought it and
+  made it Google Flow Music); the games' FM scores are arranged from those recordings, and their
   voice clips are cut from them. The exceptions: Certified Rat Tickler came with no
   recording, so its music was composed for the game by Claude Opus 5.5, as was the music
   under The Great Dairy Reckoning's spoken recording and Shakespeare in Sweatpants' FM score
   (composed from the tempo, key and chords of its recordings' music beds); Mustard Seed
-  Hustle's animated cover was made with Producer.ai; the covers of Third Goat from the Left
+  Hustle's animated cover was made with Producer.ai (Riffusion's later name); the covers of Third Goat from the Left
   and Thread the Needle, Brother Camel were made with Riffusion; the other games' title and
   cover art was drawn for them by Claude Opus 5.5. The Bard's logo (the rooster in
   spectacles) was made with DeepAI, and the Doc Leo photos are Lewis's own. Claude Opus 5.5
@@ -147,9 +148,10 @@ formats from their published descriptions and from Game-Maker's own source.
   `web/src/manual/regRecord.ts`), a font by Impallari Type under the SIL Open Font License
   1.1, is loaded from Google Fonts when that page is shown; it isn't included in this
   repository or in exported games.
-- **ChatGPT**, **Riffusion**, **Google Flow Music**, **Producer.ai** and **DeepAI** are
-  their owners' names for the tools used to make the Bard of Bizarre songs and art (see
-  Credits); none of their code is used.
+- **ChatGPT**, **Riffusion** (later **Producer.ai**, now Google's **Google Flow Music**:
+  one service under its successive names) and **DeepAI** are their owners' names for the
+  tools used to make the Bard of Bizarre songs and art (see Credits); none of their code is
+  used.
 - **MS-DOS** is a trademark of Microsoft Corporation; **IBM PC** of IBM; **DOSBox** is a
   separate GPL program and is not included.
 - **Real names in the games.** The games name some real hardware, software and products of
