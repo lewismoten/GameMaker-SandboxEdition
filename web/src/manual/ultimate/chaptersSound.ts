@@ -125,12 +125,12 @@ export const MUSIC: Chapter = {
   the waveform, <code>vib trem</code> the chip’s vibrato and tremolo, <code>fb</code> feedback, and
   <code>add</code> to hear both operators side by side. A few from the list:</p>
   <table class="ug-patches">
-    <tr><th>Instrument</th><th>Modulator / carrier / voice</th><th>The idea</th></tr>
-    <tr><td>Square Lead</td><td><code>x2 tl24 ar15 dr0 sl0 rr5 hold</code><br><code>x1 ar15 dr0 sl0 rr5 hold</code><br><code>fb0</code></td><td>a modulator at twice the pitch leaves only odd harmonics: hollow, like a square wave or a clarinet</td></tr>
-    <tr><td>Pipe Organ</td><td><code>x2 tl8 ar9 dr0 sl0 rr5 hold</code><br><code>x1 ar8 dr0 sl0 rr5 hold</code><br><code>fb2 add</code></td><td>both operators heard: two pipes an octave apart</td></tr>
-    <tr><td>Tubular Bells</td><td><code>x7 tl30 ar15 dr3 sl4 rr3</code><br><code>x2 ar15 dr2 sl3 rr3</code><br><code>fb0</code></td><td>a 2 : 7 ratio is out of tune with itself, which is what makes a bell clang</td></tr>
-    <tr><td>Vocal “Aah”</td><td><code>x2 tl29 ar6 dr4 sl1 rr6 hold vib</code><br><code>x1 ar7 dr5 sl1 rr7 hold vib</code><br><code>fb6</code></td><td>a slow attack and vibrato on both operators: the games’ singing voice</td></tr>
-    <tr><td>Deep Sub-Bass</td><td><code>x1 tl44 ar15 dr4 sl6 rr6</code><br><code>x1 ar15 dr1 sl1 rr6 hold</code><br><code>fb0</code></td><td>a quiet modulator leaves a nearly pure, deep tone that holds</td></tr>
+    <tr><th>Instrument</th><th>Modulator / carrier / voice</th></tr>
+    <tr><td><b>Square Lead</b><br><small>a modulator at twice the pitch leaves only odd harmonics: hollow, like a square wave or a clarinet</small></td><td><code>x2 tl24 ar15 dr0 sl0 rr5 hold</code><br><code>x1 ar15 dr0 sl0 rr5 hold</code><br><code>fb0</code></td></tr>
+    <tr><td><b>Pipe Organ</b><br><small>both operators heard: two pipes an octave apart</small></td><td><code>x2 tl8 ar9 dr0 sl0 rr5 hold</code><br><code>x1 ar8 dr0 sl0 rr5 hold</code><br><code>fb2 add</code></td></tr>
+    <tr><td><b>Tubular Bells</b><br><small>a 2 : 7 ratio is out of tune with itself, which is what makes a bell clang</small></td><td><code>x7 tl30 ar15 dr3 sl4 rr3</code><br><code>x2 ar15 dr2 sl3 rr3</code><br><code>fb0</code></td></tr>
+    <tr><td><b>Vocal “Aah”</b><br><small>a slow attack and vibrato on both operators: the games’ singing voice</small></td><td><code>x2 tl29 ar6 dr4 sl1 rr6 hold vib</code><br><code>x1 ar7 dr5 sl1 rr7 hold vib</code><br><code>fb6</code></td></tr>
+    <tr><td><b>Deep Sub-Bass</b><br><small>a quiet modulator leaves a nearly pure, deep tone that holds</small></td><td><code>x1 tl44 ar15 dr4 sl6 rr6</code><br><code>x1 ar15 dr1 sl1 rr6 hold</code><br><code>fb0</code></td></tr>
   </table>
   <h2>Tricks that push a CMF</h2>
   <p>The Bard of Bizarre songs use these, all made of plain events that PLAYGAME understands:</p>
