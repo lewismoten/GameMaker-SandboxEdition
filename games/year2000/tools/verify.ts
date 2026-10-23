@@ -1,6 +1,6 @@
 // Play-tests every level in the simulator: a bot collects what it can reach, opens the
 // doors, dials the right phone booths and walks out the exit, carrying its counters
-// from level to level like the real game does.
+// from level to level like the real game does. The multi-block objects are checked first (tools/align.ts).
 //   cd web && npx vite-node ../games/year2000/tools/verify.ts      (GOD=1 keeps the bot alive)
 import { newCharInfo } from '../../../web/src/engine/world';
 import { buildCharacter } from '../src/characters/character';
@@ -11,6 +11,9 @@ import { buildMonsters } from '../src/characters/monsters';
 import { Sim, type SimScene } from './sim';
 import { Bot } from './bot';
 import { buildCharBlocks, buildMonsterBlocks } from '../src/sprites/sprites';
+import { align } from './align';
+
+if (align()) throw new Error('year2000: a multi-block object is out of line (above)');
 
 const god = !!process.env.GOD;
 const mb = buildMonsterBlocks();
