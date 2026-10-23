@@ -29,6 +29,23 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
   let why = '';
+  // BOT_SCAN=1: how forgiving is the stretch? Tries every start over 10 seconds (6 ticks apart)
+  // and counts the ones that come through, to show where a player has to time things.
+  if (process.env.BOT_SCAN) {
+    let safe = 0;
+    let tries = 0;
+    for (let wait = 0; wait < 144; wait += 6, tries++) {
+      bot.restore(start);
+      try {
+        if (wait && (await bot.wait(wait))) continue;
+        await stretch();
+      } catch {
+        continue;
+      }
+      if (bot.sim.deaths === deaths && hp - bot.sim.ci.hitpts <= maxLoss) safe++;
+    }
+    console.log(`scan: ${label}: ${safe} of ${tries} starts come through`);
+  }
   for (let wait = 0; wait <= 300; wait += 6) {
     bot.restore(start);
     try {
@@ -152,7 +169,7 @@ export async function theWasteland(bot: Bot): Promise<void> {
     await must(bot, bot.land(), 'land');
   });
   await carefully(bot, 'the bottom room', 12, async () => {
-    await reach(20, 'a holy crumb by the mouse');
+    await reach(23, 'a holy crumb by the mouse');
     await reach(28, 'a holy crumb by the moth');
     await must(bot, bot.walk(31, 'the east weave'), 'weave');
   });
@@ -197,12 +214,14 @@ export async function theBaskets(bot: Bot): Promise<void> {
     gathered(4, 'the olive tree');
   });
   await carefully(bot, 'the basket on the stones', 12, async () => {
-    await must(bot, bot.walk(23, 'up the rocks'), 'rocks');
+    await must(bot, bot.walk(22, 'up the rocks'), 'rocks');
+    if (bot.at.y !== 7) throw new Error(`not on the rocks (${bot.at.y})`);
+    await must(bot, bot.hop('up', 12, 'right', 23), 'up on the slab');
     await must(bot, bot.walk(23.5, 'against the basket'), 'basket 5');
     gathered(5, 'the rocks');
   });
   await carefully(bot, 'past the fox', 14, async () => {
-    await must(bot, bot.hop('right', 12, 'right', 31), 'over the fox');
+    await must(bot, bot.hop('right', 12, 'right', 29), 'over the fox');
     await must(bot, bot.walk(36, 'the baskets by the seed'), 'baskets 6 and 7');
     gathered(7, 'the fire');
   });
@@ -230,8 +249,10 @@ export async function theBaskets(bot: Bot): Promise<void> {
     await must(bot, bot.land(), 'land');
     gathered(11, 'the twelfth');
   });
-  await carefully(bot, 'into the twelfth basket', 12, async () => {
-    await must(bot, bot.hop('right', 12, 'right', 64.5), 'over the disciple');
+  await carefully(bot, 'into the twelfth basket', 0, async () => {
+    // he stops at the left end of his beat before he turns: hop him then, from close by
+    await must(bot, bot.walk(60.5, 'up to the disciple'), 'up to him');
+    await must(bot, bot.hop('right', 12, 'right', 65), 'over the disciple');
     await leave(bot, bot.walk(77, 'the twelfth basket'), 'into the twelfth basket and through it');
   });
   bot.patient = false;
@@ -274,6 +295,6 @@ export async function theWayHome(bot: Bot): Promise<void> {
   });
   if (crumbs(bot) < 1) throw new Error('no holy crumb for the door');
   await carefully(bot, 'home', 12, async () => {
-    await leave(bot, bot.walk(71, 'her door'), 'her door and in to Mama');
+    await leave(bot, bot.walk(73, 'her door'), 'her door and in to Mama');
   });
 }

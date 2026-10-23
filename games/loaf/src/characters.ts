@@ -1,4 +1,4 @@
-// LOAF.CHR and BUNDLE.CHR (Loaf #13: roll slow and steady, rise as high as good dough will, hunker
+// LOAF.CHR and BUNDLE.CHR (Loaf #13: roll steady, rise as high as good dough will, hunker
 // down, and sing "I'm still bread!"; its crust, lives, holy crumbs and baskets) and the .MON file
 // each level loads.
 //
@@ -18,8 +18,8 @@ export type { Form };
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right
 
-/** Pixels a tick rolling: slow and steady. */
-export const STEP = 3;
+/** Pixels a tick rolling: steady (a block in five ticks), as quick as rising sideways. */
+export const STEP = 4;
 /** Pixels a tick sideways while rising. */
 export const RISE_STEP = 4;
 /** Upward push a tick while Up is held (gravity takes one more away every tick). */
@@ -115,9 +115,50 @@ function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []):
 /** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */
 const pace = (run: number, speed: number, dy = 0): March[] => [corner(0, 0, speed), corner(run, dy, speed, 0), corner(0, 0, speed, 4)];
 
+/** Game ticks a march segment of `blocks` takes at `speed` (PLAYGAME's Bresenhams: one more tick to see it's done). */
+const segTicks = (blocks: number, speed: number): number => {
+  const px = Math.abs(blocks) * 20;
+  return px % speed === 0 ? px / speed + 1 : Math.ceil(px / speed);
+};
+
+type Pic = [number, number];
+
+/** Pictures for a run of `ticks`: `frames` in turn, `t` ticks each, the last taking what is left. */
+function phase(ticks: number, frames: number[], t: number): Pic[] {
+  const out: Pic[] = [];
+  for (let left = ticks, i = 0; left > 0; i++) {
+    const n = left < 2 * t ? left : t;
+    out.push([frames[i % frames.length], n]);
+    left -= n;
+  }
+  return out;
+}
+
+/**
+ * A walker that stops at each end of its beat before it turns: back and forth `run` blocks at
+ * `speed`, and at each end it pushes down against the ground it stands on (a march corner a block
+ * down: it can't go, so it stands still for 21 ticks) and shows its `stop` picture, so you see it
+ * stop and know when it sets off. Its pictures run in step with the march (MOVEALLMONS animates
+ * and moves every monster each tick, from the moment the level starts), `t` ticks a step or more
+ * so they fit Game-Maker's 20 picture slots.
+ */
+function patrol(run: number, speed: number, walk: [number, number], stop: number, t: number): { path: March[]; pics: Pic[] } {
+  const go = segTicks(run, speed);
+  const rest = segTicks(1, 1);
+  const path = [corner(0, 0, speed), corner(run, 0, speed, 0), corner(run, 1, 1, 0), corner(0, 1, speed, 4), corner(0, 2, 1, 4)];
+  for (let tt = t; ; tt++) {
+    const pics = [...phase(1 + go, walk, tt), [stop, rest] as Pic, ...phase(go, walk, tt), [stop, rest] as Pic];
+    if (pics.length <= 20) return { path, pics };
+  }
+}
+
 export interface MonsterOptions {
   /** Blocks a hungry man stomps before turning round. */
   feet?: number;
+  /** Blocks a mouse runs before it sits up and turns round. */
+  mouse?: number;
+  /** Blocks the fox trots before it stops to sniff and turns round. */
+  fox?: number;
   /** How far a hand reaches down (blocks). */
   reach?: number;
   /** How far the fish fly (blocks). */
@@ -134,12 +175,14 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     [n(b), t],
   ];
   const reach = o.reach ?? 3;
-  set[MON.hand] = mon(anim('hand0', 'hand1', 8), { power: 150, thru: 0 }, [
-    corner(0, 0, 2),
-    corner(0, reach, 2, 1),
-    corner(0, reach, 1, 1),
-    corner(0, 0, 2, 3),
-  ]);
+  // A hand winds up first: it draws back a block, a fist shaking, then reaches down open and
+  // comes back up closing on nothing.
+  const windUp = 1 + segTicks(1, 1);
+  set[MON.hand] = mon(
+    [...phase(windUp, [n('fist0'), n('fist1')], 3), [n('hand0'), segTicks(reach + 1, 2)], [n('hand1'), segTicks(reach, 2)]],
+    { power: 150, thru: 0 },
+    [corner(0, 0, 1), corner(0, -1, 1), corner(0, reach, 2), corner(0, 0, 2)],
+  );
   // Fish fly out of a fish basket in an arc and flop where they land.
   const far = o.fish ?? 7;
   const arc = (dir: number): March[] => [
@@ -162,13 +205,17 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   ]);
   set[MON.brotherOff] = mon(anim('brotherOff0', 'brotherOff1', 2), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 5), corner(5, -6, 5, 0)]);
   set[MON.gull] = mon(anim('gull0', 'gull1', 3), { power: 150, thru: 0 }, [corner(0, 0, 2), corner(6, -1, 2, 0), corner(6, 1, 2, 0), corner(0, 0, 2, 4)]);
-  set[MON.man] = mon(anim('feet0', 'feet1', 5), { power: 150, thru: 1 }, pace(o.feet ?? 4, 1));
+  const walker = (run: number, speed: number, a: string, stop: string, t: number, o2: Partial<Monster> = {}) => {
+    const p = patrol(run, speed, [n(`${a}0`), n(`${a}1`)], n(stop), t);
+    return mon(p.pics, { power: 150, thru: 1, ...o2 }, p.path);
+  };
+  set[MON.man] = walker(o.feet ?? 4, 1, 'feet', 'feetStand', 5);
   set[MON.goat] = mon(anim('goat0', 'goat1', 10), { power: 200, thru: 1 }, pace(3, 1));
-  set[MON.weevil] = mon(anim('weevil0', 'weevil1', 4), { power: 150, thru: 1 }, pace(3, 1));
-  set[MON.mouse] = mon(anim('mouse0', 'mouse1', 3), { power: 150, thru: 1 }, pace(4, 2));
+  set[MON.weevil] = walker(3, 1, 'weevil', 'weevilStop', 4);
+  set[MON.mouse] = walker(o.mouse ?? 4, 2, 'mouse', 'mouseSit', 3);
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 0, newmon: MON.seedOff }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
-  set[MON.fox] = mon(anim('fox0', 'fox1', 3), { power: 150, thru: 1 }, pace(5, 2));
+  set[MON.fox] = walker(o.fox ?? 5, 2, 'fox', 'foxSniff', 3);
   set[MON.owl] = mon(anim('owl0', 'owl1', 4), { power: 150, thru: 0 }, [
     corner(0, 0, 2),
     corner(4, 3, 3, 0),
@@ -176,7 +223,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(4, 3, 3, 4),
     corner(0, 0, 2, 4),
   ]);
-  set[MON.dog] = mon(anim('dog0', 'dog1', 3), { power: 150, thru: 1 }, pace(4, 2));
+  set[MON.dog] = walker(4, 2, 'dog', 'dogSniff', 3);
   set[MON.moth] = mon(anim('moth0', 'moth1', 2), { power: 150, thru: 0 }, [
     corner(0, 0, 1),
     corner(1, -1, 1, 0),

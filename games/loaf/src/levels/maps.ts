@@ -234,11 +234,12 @@ export function wicker(book: BlockBook): Level {
   m.fill(1, 7, 6, 6, 'o').row(10, 1, 4, 'b').set(2, 9, '%').set(5, 12, 'J');
   // the weave down from R3 to R5, the bottom room
   m.col(25, 10, 19, 'Y');
-  m.fill(18, 17, 13, 4, 'o').set(20, 19, '%').set(28, 19, '%').set(24, 20, 'J').text(21, 17, '|oo|');
-  m.mon(MON.mouse, 19, 20).mon(MON.moth, 26, 18);
+  m.fill(18, 17, 13, 4, 'o').set(23, 19, '%').set(28, 19, '%').set(24, 20, 'J').text(21, 17, '|oo|');
+  m.mon(MON.mouse, 18, 20).mon(MON.moth, 26, 18);
   // the weave up the east wall to the lid, a side room on the way
   m.col(31, 3, 20, 'Y');
-  m.fill(26, 6, 5, 3, 'o').set(28, 7, '%').set(26, 8, '+');
+  // (four rows tall, so the weevil can be hopped where it turns)
+  m.fill(26, 5, 5, 4, 'o').set(28, 7, '%').set(26, 8, '+');
   m.mon(MON.weevil, 26, 8);
   // the lid, and out on top of the basket in the light coming in (no gravity, like the weave):
   // a few rolls along its rim to the way on, so "I'm still bread!" is sung to the end
@@ -265,8 +266,9 @@ export function baskets(book: BlockBook): Level {
   // the baskets: on the grass, on stones, up in an olive tree, over the fire
   m.set(5, 9, 'e').set(9, 7, '_').set(9, 6, 'e');
   m.set(13, 9, 'e').set(16, 9, 'O').set(18, 9, 'e');
+  // the fox's den under the stones: it trots out and back, and stops to sniff at each end
   m.set(22, 8, 'R').set(22, 9, 'R').set(23, 7, '_').set(24, 7, '_').set(24, 6, 'e');
-  m.mon(MON.fox, 25, 9);
+  m.mon(MON.fox, 23, 9);
   m.set(30, 9, 'e').set(34, 9, 'e');
   m.mon(MON.seed, 32, 9);
   // the fire and its warm air up to the fig branches, a basket at the top
@@ -275,7 +277,7 @@ export function baskets(book: BlockBook): Level {
   m.set(48, 9, 'e').set(51, 9, 'l').set(52, 9, 'j').set(54, 9, 'e');
   // a painted egg at the foot of the fig tree
   m.set(41, 9, 'E');
-  m.mon(MON.gull, 48, 3).mon(MON.man, 61, 9);
+  m.mon(MON.gull, 48, 3).mon(MON.man, 62, 9);
   m.set(58, 7, '_').set(59, 7, '_').set(59, 6, 'e');
   m.mon(MON.owl, 60, 2);
   // the twelfth basket, and the big harvest basket it opens into: a long roll inside to the
@@ -288,7 +290,7 @@ export function baskets(book: BlockBook): Level {
 
 /** 4. The way home: through the village at night, wrapped in the child's cloth, to her door. */
 export function home(book: BlockBook): Level {
-  const W = 74;
+  const W = 76;
   const H = 13;
   const m = new MapBuilder(book, 'earth');
   m.fill(1, 0, W - 2, 3, 't')
@@ -316,8 +318,8 @@ export function home(book: BlockBook): Level {
   m.mon(MON.girlA, 52, 8).mon(MON.girlB, 52, 9);
   // home: her door, and the long lamplit room inside to Mama at the far end, so "Mama, look
   // what I've got..." is sung to the end
-  m.row(4, 57, 72, 'p').row(5, 58, 71, 'M').col(58, 6, 8, 'M').set(58, 9, '!').col(71, 6, 9, 'M').set(60, 3, 'k');
-  m.fill(59, 6, 12, 3, 'room').row(9, 59, 70, 'roomFloor').set(62, 6, 'roomLamp').set(67, 6, 'roomLamp').set(70, 8, 'mamaTop').set(70, 9, 'mamaLow');
-  m.link(70, 9, 'won').link(70, 8, 'won');
+  m.row(4, 57, 74, 'p').row(5, 58, 73, 'M').col(58, 6, 8, 'M').set(58, 9, '!').col(73, 6, 9, 'M').set(60, 3, 'k');
+  m.fill(59, 6, 14, 3, 'room').row(9, 59, 72, 'roomFloor').set(62, 6, 'roomLamp').set(68, 6, 'roomLamp').set(72, 8, 'mamaTop').set(72, 9, 'mamaLow');
+  m.link(72, 9, 'won').link(72, 8, 'won');
   return { m, start: at(2, 9), size: [W, H] };
 }

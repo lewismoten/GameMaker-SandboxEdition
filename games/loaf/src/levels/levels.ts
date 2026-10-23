@@ -22,7 +22,17 @@ export interface LevelDef {
 
 export const LEVELS: LevelDef[] = [
   { file: 'hill', desc: 'The Hungry Crowd', light: 'noon', build: hillside, form: 'loaf', snd: 'hill', song: 'hill', mons: { reach: 5 }, view: [10, 4] },
-  { file: 'wicker', desc: 'The Wicker Wasteland', light: 'shade', build: wicker, form: 'loaf', snd: 'wicker', song: 'wicker', mons: {}, view: [6, 8] },
+  {
+    file: 'wicker',
+    desc: 'The Wicker Wasteland',
+    light: 'shade',
+    build: wicker,
+    form: 'loaf',
+    snd: 'wicker',
+    song: 'wicker',
+    mons: { mouse: 2 },
+    view: [6, 8],
+  },
   {
     file: 'baskets',
     desc: 'Twelve Baskets Full',
@@ -31,7 +41,7 @@ export const LEVELS: LevelDef[] = [
     form: 'loaf',
     snd: 'baskets',
     song: 'baskets',
-    mons: { feet: 4 },
+    mons: { feet: 2, fox: 5 },
     view: [1, 4],
   },
   { file: 'home', desc: 'The Way Home', light: 'night', build: home, form: 'bundle', snd: 'home', song: 'home', mons: { girl: 6 }, view: [24, 4] },
