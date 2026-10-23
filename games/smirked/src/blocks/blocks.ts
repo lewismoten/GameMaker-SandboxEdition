@@ -501,11 +501,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   }, { score: 100 });
 
   // ---------- friends from the other games (scenery and small bonuses) ----------
-  // the tin heart: in a corner of the fog hall, a glint crossing it now and then (score only, no sound of its own)
+  // the tin heart: in the crypt's far top corner, behind the start of the parade, a glint crossing it now and then (score only, no sound of its own)
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(boards(1), { ink, tin: [c('silver', 0), c('silver', 1), c('silver', 2)], white: c('white', 2), dark: c('black', 1) }, k), {
+    book.add(`tinHeart${k || ''}`, drawTinHeart(flags(4), { ink, tin: [c('silver', 0), c('silver', 1), c('silver', 2)], white: c('white', 2), dark: c('black', 1) }, k), {
       score: 100,
-      touch: 'boards',
+      touch: 'flags',
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
       ntime: k ? 2 : 50,
     });

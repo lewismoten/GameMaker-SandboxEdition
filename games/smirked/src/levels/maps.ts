@@ -131,7 +131,6 @@ const FOYER: Record<string, string> = {
   k: 'hay',
   x: 'coffin',
   D: 'darkDoor',
-  h: 'tinHeart',
 };
 
 export function fogHall(book: BlockBook): Level {
@@ -150,7 +149,7 @@ export function fogHall(book: BlockBook): Level {
     '#.b......v....=.....,....$...#',
     '#.....J.b.....v........kk....#',
     '#..$......,...=...a.....v....#',
-    '#.............=.............h#',
+    '#.............=..............#',
     '##############################',
   ]);
   const m = new MapBuilder(book, 'wallTop', FOYER);
@@ -179,6 +178,7 @@ const CRYPT: Record<string, string> = {
   j: 'juiceS',
   g: 'glowstickS',
   S: 'staffDoor',
+  h: 'tinHeart',
 };
 
 /** Where the papier-mache witches stand. */
@@ -194,7 +194,7 @@ export const WITCHES: [number, number][] = [
 export function zombieParade(book: BlockBook): Level {
   const map = rows([
     '#WWLWWWWLWWWWWLWWWWLWWWWWLWWWWW#',
-    '#.....t.u.t.......,.....c....$.#',
+    '#h....t.u.t.......,.....c....$.#',
     '#..$..........*........l.u....,#',
     '#..fff....,......c.........x...#',
     '#.........t.l.u.......*........#',
