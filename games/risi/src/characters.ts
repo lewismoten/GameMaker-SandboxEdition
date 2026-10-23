@@ -171,7 +171,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(5, -5, 1, 4),
   ]);
   set[MON.flavia] = mon(anim('flavia0', 'flavia1', 6), { power: 50, thru: 0, newmon: MON.flaviaOff }, still);
-  set[MON.flaviaOff] = away('flavia1', 'flavia0');
+  set[MON.flaviaOff] = away('flaviaOff', 'flaviaOff');
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 14), { power: 230, thru: 1 }, still);
   set[MON.gwinn] = mon(anim('gwinn0', 'gwinn1', 17), { power: 230, thru: 1 }, still);
   set[MON.servus] = mon(anim('servus0', 'servus1', 4), { power: 230, thru: 1 }, pace(run, 1));
@@ -214,7 +214,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.spell] = mon(sting('spell', 3), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-3, -1, 2, 4), corner(-6, 0, 2, 4), corner(-9, -1, 2, 4)]);
   set[MON.pigeon] = mon(sting('pigeon', 5), { power: 150, thru: 1, newmon: NONE }, pace(Math.min(run, 2), 1));
   set[MON.leo] = mon(anim('leo0', 'leo1', 9), { power: 50, thru: 0, newmon: MON.leoOff }, still);
-  set[MON.leoOff] = away('leo1', 'leo0');
+  set[MON.leoOff] = away('leoOff', 'leoOff');
   set[MON.sagax] = mon(anim('sagax0', 'sagax1', 12), { power: 230, thru: 1 }, still);
   // V. the baths
   set[MON.note] = mon(anim('note0', 'note1', 6), { power: 50, thru: 0, end: -1 }, [
@@ -224,7 +224,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(-1, -6, 1, 4),
   ]);
   set[MON.fan] = mon(anim('fan0', 'fan1', 5), { power: 50, thru: 0, newmon: MON.fanOff }, still);
-  set[MON.fanOff] = away('fan1', 'fan0');
+  set[MON.fanOff] = away('fanOff', 'fanOff');
   set[MON.bubble] = mon(sting('bubble', 4), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(0, -2, 1, 0), corner(1, -4, 1, 0)]);
   // a hot drip: straight down from the stain to the walkway, then gone
   set[MON.drip] = mon(sting('drip', 3), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 2), corner(0, 9, 2, 0)]);
@@ -248,7 +248,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(6, 9, 3, 0),
   ]);
   set[MON.jester] = mon(anim('jester0', 'jester1', 7), { power: 50, thru: 0, newmon: MON.jesterOff }, still);
-  set[MON.jesterOff] = away('jester1', 'jester0');
+  set[MON.jesterOff] = away('jesterOff', 'jesterOff');
   // Emperor Gravis: a joke a stage; after the second and the third he shuffles his throne two
   // blocks back toward his heralds (power 230 while he shuffles, so jokes bounce off), then sits
   // still again. Both halves shuffle the same two blocks, so they line up again whichever is hit

@@ -757,5 +757,11 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('crown0', crown(0), { effect: CROWN, eamt: 1, scorePts: 1000 });
   book.add('crown1', crown(1), { effect: CROWN, eamt: 1, scorePts: 1000 });
+  // (last, so every other block keeps its number) the friends going off: one picture each, worth
+  // nothing, so brushing past them as they go doesn't score every tick
+  book.add('flaviaOff', flavia(1));
+  book.add('leoOff', leo(1));
+  book.add('fanOff', fan(1));
+  book.add('jesterOff', jester(1));
   return book;
 }
