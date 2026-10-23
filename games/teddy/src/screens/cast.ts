@@ -321,7 +321,7 @@ function libraryScene(reel: Reel): void {
     q.px.set(p.px);
     scaleBlit(q, POSES[f % 10 < 5 ? 'front' : 'frontTilt'], 196, 120, 4);
     say(q, 'TAKE A BOOK.', 54, undefined, 250);
-    if (f >= 10) say(q, 'SHARE A BOOK.', 66, undefined, 250);
+    if (f >= 10) say(q, 'LEAVE A BOOK.', 66, undefined, 250);
     if (f >= 22) say(q, 'SNACKS IN THE', 84, c('yellow', 3), 250);
     if (f >= 22) say(q, 'DRAWER. WOOF!', 96, c('yellow', 3), 250);
     reel.add(q, 1, cycled('fly', f % fly.length));

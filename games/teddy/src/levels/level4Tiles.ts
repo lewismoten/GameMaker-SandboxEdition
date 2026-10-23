@@ -2,7 +2,7 @@
 // lit windows, brick and stone facades and shop fronts, the subway steam vent and fire
 // escape, the inside of Biggles Department Store (Gwinn's shoe-department mess), the
 // construction site's sidewalk shed, Juggles and Presto (blocks that give birth to pins and
-// doves), the plaza and its billboard, and the Odeon's blinking marquee.
+// doves), the plaza and its billboard, and the Bijou's blinking marquee.
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, klubArt, micro, scaleBlit, speckle } from '../art/draw';
 import { FULL, docLeo } from '../sprites/people';
@@ -362,7 +362,7 @@ export function cityTiles(): Tiles {
     })(),
   );
 
-  // The Odeon: marquee lights blink.
+  // The Bijou: marquee lights blink.
   for (const ph of [0, 1]) {
     t.air(
       `marquee_${ph}`,
