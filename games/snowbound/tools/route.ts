@@ -118,7 +118,8 @@ export async function lavaleMall(bot: Bot): Promise<void> {
       if (!next) throw new Error(`Only $${sim.money} and nothing left to shovel`);
       await cells(bot, [next], `the lot ($${sim.money})`);
     }
-    const r = await bot.goto(door[0], door[1], 'Bits & Bytes');
+    // through the register's door and on in under the sign, where the link is
+    const r = (await bot.goto(door[0], door[1], 'the door of Bits & Bytes')) ?? (await bot.goto(door[0], door[1] - 1, 'Bits & Bytes'));
     if (r !== 'end' || sim.ended !== 'won') throw new Error(`The store did not open: ${r}, $${sim.money}`);
   });
 }

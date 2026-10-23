@@ -46,7 +46,9 @@ export function addMall(k: Ctx) {
     micro(big, x + 1, 6, label, c('pink', 1), 2);
     micro(big, x, 5, label, c('pink', 4), 2);
     big.rect(0, 2, tiles * 20, 1, c('snow', 6));
-    for (let t = 0; t < tiles; t++) book.add(`store${t}`, big.crop(t * 20, 0, 20, 20), { solid: SOLID });
+    // The middle tile, over the door, lets you through: once the door is open you walk in under
+    // the sign, and the link is there, a step past the register, so its ka-CHING plays out.
+    for (let t = 0; t < tiles; t++) book.add(`store${t}`, big.crop(t * 20, 0, 20, 20), t === 2 ? {} : { solid: SOLID });
   }
   // The window with THE box in it: pink, $89.
   const boxWin = mallWall(21);

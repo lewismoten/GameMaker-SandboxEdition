@@ -470,7 +470,7 @@ export function lavaleMall(book: BlockBook) {
   m.set(X + 17, 13, 'arcadeWin')
     .set(X + 18, 13, 'arcadeDoor')
     .set(X + 19, 13, 'arcadeWin');
-  m.link(X + 40, 13, 'won', 0, 0);
+  m.link(X + 40, 12, 'won', 0, 0); // under the sign, a step inside the door
   // walk in front of the mall
   m.fill(X, 14, 60, 2, 's');
   m.patch(X, 15, ['  SSS        SSS        SSS                  SSS      SSS']);
