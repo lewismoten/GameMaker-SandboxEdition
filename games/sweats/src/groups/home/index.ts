@@ -4,6 +4,7 @@
 import type { Group } from '../types';
 import { blanket, blanketBlocks, blanketSprites } from './blanket';
 import { socks, socksBlocks, socksSprites } from './socks';
+import { pizza, pizzaBlocks, pizzaSprites } from './pizza';
 import { HOME_RAMPS, buildHouse, houseSprites } from './house';
 
 export const home: Group = {
@@ -14,11 +15,13 @@ export const home: Group = {
     buildHouse(book, pal);
     blanketBlocks(book, pal);
     socksBlocks(book, pal);
+    pizzaBlocks(book, pal);
   },
   sprites: (book, pal) => {
     houseSprites(book, pal);
     blanketSprites(book, pal);
     socksSprites(book, pal);
+    pizzaSprites(book, pal);
   },
-  monologues: [blanket, socks],
+  monologues: [blanket, socks, pizza],
 };

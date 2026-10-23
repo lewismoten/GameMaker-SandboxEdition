@@ -7,7 +7,8 @@ import { MON } from '../../src/ids';
 import { home } from '../../src/groups/home';
 import { SOULS } from '../../src/groups/home/blanket';
 import { SOCKS } from '../../src/groups/home/socks';
-import { SOCKS_MON } from '../../src/groups/home/ids';
+import { PIZZA_MON, SOCKS_MON } from '../../src/groups/home/ids';
+import { PLOYS } from '../../src/groups/home/pizza';
 import type { Bot } from '../bot';
 import { carefully as carefully0, declaim, expect, leave, must, plot, type Route } from '../route';
 
@@ -169,6 +170,45 @@ export const HOME_ROUTES: Record<string, Route> = {
       if (plot(bot) < SOCKS) throw new Error(`only ${plot(bot)} socks`);
       nothingLeft(bot, 62, 12);
       await leave(bot, bot.walk(58.5, 'the front door'), 'the door');
+    });
+  },
+  /** How the Cat Won the Pizza War: the smoke alarm's beep, up on the table past the napkin, the fork, Aunt Marge's question, over the cat, the cactus on the shelf, the pizza cutter, the spatula, the goat, the box. */
+  pizza: async (bot) => {
+    expect(bot, 'pizza');
+    await carefully(bot, 'the smoke alarm', 0, async () => {
+      await must(bot, bot.walk(5, 'the coin'), 'coin');
+      await waitAndDeclaim(bot, [PIZZA_MON.beep], 'the beep');
+      await must(bot, bot.walk(10, 'the table'), 'table');
+    });
+    await carefully(bot, 'up on the table', 0, async () => {
+      await must(bot, bot.hop('right', 12, 'right', 12), 'onto the table');
+      await must(bot, bot.walk(13, 'the glasses: the slow reach'), 'glasses');
+      await declaim(bot, 'the sticky napkin');
+      await must(bot, bot.walk(18, 'the coin'), 'coin');
+      await declaim(bot, 'the fork');
+      await must(bot, bot.walk(23, 'past Kevin, the tissues: the sneeze ploy'), 'tissues');
+    });
+    await carefully(bot, 'Aunt Marge', 0, async () => {
+      await waitAndDeclaim(bot, [PIZZA_MON.dip], 'who sneezed on the dip?');
+      await must(bot, bot.walk(26, 'the dollar'), 'dollar');
+      await must(bot, bot.walk(29.5, 'up to the cat'), 'cat');
+      await must(bot, bot.hop('right', 12, 'right', 32.5), 'over the cat');
+      await must(bot, bot.walk(34, 'the cheesecake'), 'cheesecake');
+    });
+    await carefully(bot, 'the cactus, the pizza cutter', 0, async () => {
+      await must(bot, bot.hop('right', 12, 'right', 35.5), 'up onto the shelf');
+      await must(bot, bot.walk(37, 'the cactus, the coin'), 'cactus');
+      await must(bot, bot.walk(40, 'down off the table'), 'down');
+      await declaim(bot, 'the pizza cutter');
+      await must(bot, bot.walk(48, 'the dollar, the spatula, the mug'), 'spatula');
+    });
+    await carefully(bot, 'the goat, the box', 0, async () => {
+      await must(bot, bot.hop('right', 12, 'right', 51.5), 'over the armchair');
+      await must(bot, bot.walk(55, 'the goat, the coin'), 'goat');
+      greeted(bot, MON.goat, 'the goat');
+      if (plot(bot) < PLOYS) throw new Error(`only ${plot(bot)} ploys`);
+      nothingLeft(bot, 60, 12);
+      await leave(bot, bot.walk(57.5, 'the box: make your move'), 'the box');
     });
   },
 };
