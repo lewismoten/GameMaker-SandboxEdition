@@ -27,7 +27,8 @@ export function eyeBlocks(pal: Pal): Kit {
   };
   book.add('bg', starry(1, 0), air);
   for (let s = 1; s <= 5; s++) book.add(`sky${s}`, starry(1 + s, s), air);
-  for (let s = 0; s < 5; s++) book.add(`band${s}`, P().map((x, y) => (dither(x, y, y / 20) ? c('sky', s) : c('sky', s + 1))), air);
+  const band = (s: number) => P().map((x, y) => (dither(x, y, y / 20) ? c('sky', s) : c('sky', s + 1)));
+  for (let s = 0; s < 5; s++) book.add(`band${s}`, band(s), air);
   // the moon (scenery)
   const moon = starry(9, 1);
   moon.disc(10, 10, 7, c('white', 1)).disc(13, 8, 6, c('sky', 1));
@@ -140,7 +141,8 @@ export function eyeBlocks(pal: Pal): Kit {
   for (let a = 0; a < 7; a++) head.line(ex - 12 + a * 4, ey - 13, ex - 13 + a * 4.2, ey - 17, c('ink', 0));
   for (let y = 0; y < 7; y++)
     for (const half of [0, 1] as const) {
-      const p = starry(60 + y * 2 + half, y < 4 ? 5 : 4);
+      // behind it, the sky the map has on that row: dawn (5) down to row 5, the band into 4 on row 6
+      const p = y < 6 ? starry(60 + y * 2 + half, 5) : band(4);
       p.blit(head.crop(half * 20, y * 20, 20, 20), 0, 0, 255);
       book.add(`head${y}${half ? 'R' : 'L'}`, p, y < 4 ? air : { solid: SOLID });
     }
@@ -150,7 +152,7 @@ export function eyeBlocks(pal: Pal): Kit {
   open.rect(0, 0, 20, 2, c('purple', 2)).rect(0, 18, 20, 2, c('purple', 2));
   book.add('pupilOpen', open, { grav: GRAV.down });
   // the right half of the eye at its pupil row is the gate: EYE_GRACE graces open it
-  const shut = starry(70, 4);
+  const shut = starry(70, 5);
   shut.blit(head.crop(20, 100, 20, 20), 0, 0, 255);
   book.add('pupil', shut, { solid: SOLID, effect: GRACE, eamt: -EYE_GRACE, score: 1000, touch: 'pupilOpen' });
 
