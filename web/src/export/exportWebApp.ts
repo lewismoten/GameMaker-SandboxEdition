@@ -18,6 +18,8 @@ export interface ExportOptions {
   themeColor?: string;
   /** Where the Game-Maker: Sandbox Edition app is served from (its standalone.html player is used). */
   appBase?: string;
+  /** Our own games: made now, presented as a 1990s release (fiction.ts). */
+  fiction?: string;
 }
 
 const ICONS = ['icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'icon.svg', 'apple-touch-icon.png'];
@@ -60,7 +62,7 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   const gameEntries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(gameEntries);
   const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, gameEntries);
-  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb }), theme)) });
+  entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb, fiction: opts.fiction }), theme)) });
 
   for (const icon of ICONS) {
     try {
