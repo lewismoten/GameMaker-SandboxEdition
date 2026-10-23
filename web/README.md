@@ -26,11 +26,11 @@ the original source in [`code/GM`](../code/GM). It can:
   play-only, exactly as distributed on the CD, with each author's shareware notice
   shown beside the game. Importing a shareware game's folder (recognized by its
   `.gam` file) offers to play it rather than opening it in the editor.
-- **Publish games as web apps**: "Export web app" builds a ZIP with the player, the
+- **Publish games as web apps**: Download → Web, as a web app (.zip), builds a ZIP with the player, the
   game's files, a web app manifest and a service worker. Unzipped onto any static host,
   the game can be installed on the desktop or home screen and played offline.
-- **Publish games for Mac, Windows and Linux**: "Download for Mac", "for Windows" and "for
-  Linux" build a game that plays offline in its own window right in the browser: a small
+- **Publish games for Mac, Windows and Linux**: Download → Mac, Windows and
+  Linux build a game that plays offline in its own window right in the browser: a small
   native player plus the game's one-page export (`src/export/macApp.ts`, `winApp.ts`,
   `linuxApp.ts`). For Mac, a Swift player ([`mac/`](../mac/README.md)) in a `.dmg` to drag to
   Applications or a `.zip`, for Apple silicon and Intel Macs (macOS 11+); for Windows, one
@@ -39,7 +39,7 @@ the original source in [`code/GM`](../code/GM). It can:
   and aarch64, that opens the game in the web browser when WebKitGTK is missing. None is
   notarized or code-signed, so macOS and Windows ask once before the first run; the site's
   `#/mac`, `#/windows` and `#/linux` pages explain it to players.
-- **Publish games for DOS**: "Export for DOS" builds a ZIP with the game's files in
+- **Publish games for DOS**: Download → DOS builds a ZIP with the game's files in
   their original formats plus the CD's stand-alone player (`cd/gm/XFERPLAY.EXE`)
   renamed after the game (`MYGAME.GAM` gets `MYGAME.EXE`), `SNDBLAST.DRV` and a
   `CONFIG.BAT`, so anyone can unzip it and run the game in DOSBox. File names must be
@@ -134,7 +134,7 @@ npm run dev        # http://localhost:5173
 npm test           # every *.test.ts in test/ and src/ (vitest), about 25 s
 npm run typecheck  # tsc --noEmit (strict)
 npm run build      # typecheck, then the static site in web/dist
-npm run preview    # serve the build (the service worker and "Export web app" need it)
+npm run preview    # serve the build (the service worker and the web app download need it)
 npx vitest run test/formats.test.ts   # one test file
 ```
 
@@ -153,7 +153,7 @@ them straight from `../cd` and `../games` while developing, and only the product
 | `games/originals/<id>/` | `../games/<id>/disk/` and its `walkthrough.json` |
 | `games/shots/<id>-*.png` | each game's pictures for tiles, boxes and the play page, drawn at build time (`scripts/gameShots.ts`) |
 | `gm/index.json`, `gm/<file>` | the installed `C:\GM` folder (`runtime/run/GM`) for the desk's PC |
-| `dos/xferplay.exe`, `dos/sndblast.drv` | `cd/gm/`, for "Export for DOS" |
+| `dos/xferplay.exe`, `dos/sndblast.drv` | `cd/gm/`, for Download → DOS |
 | `mac/`, `win/`, `linux/` | the prebuilt native players, for the Mac, Windows and Linux downloads (in `public/`, built by `../mac`, `../win` and `../linux`) |
 | `cast/` | the Cast page's pictures and walk cycles (in `public/`, drawn by `scripts/castArt.ts` and `scripts/castSprites.ts`) |
 | `extras/demos.json`, `extras/demos/<id>.rec` | demos recorded for CD games that shipped without one (in `public/`) |

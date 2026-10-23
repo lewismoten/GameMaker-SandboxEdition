@@ -1,8 +1,8 @@
 # win/ — playing the games as Windows programs
 
 Any game, including your own, can be downloaded as a Windows program: on a game's panel on
-the home page press **Windows**, or in the editor use **Save & share → Download for Windows**
-(also in a game's **⋯ More** menu). The program is built right there in the browser and saved
+the home page, in the editor or in a game's **⋯ More** menu, press **Download** and choose
+**Windows**. The program is built right there in the browser and saved
 as one `.exe` (double-click it to play; nothing is installed) or a `.zip` holding it. It plays
 offline in its own window on Windows 10 and 11, x64 or Arm.
 
@@ -48,7 +48,7 @@ offline in its own window on Windows 10 and 11, x64 or Arm.
 The players' version of this, with why the programs can't be signed, what the program does
 and how to remove it, is the site's
 [Windows downloads page](https://lewismoten.github.io/GameMaker-SandboxEdition/#/windows)
-(`web/src/winHelp/winPage.ts`, linked from the Download for Windows dialog).
+(`web/src/winHelp/winPage.ts`, linked from the Download chooser).
 
 The programs are not code-signed: a certificate is paid for every year and signing needs
 the author's private key, which a web page cannot hold. So the first time a downloaded

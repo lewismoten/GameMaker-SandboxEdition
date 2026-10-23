@@ -1,8 +1,8 @@
 # mac/ — playing the games as Mac apps
 
 Any game, including your own, can be downloaded as a native Mac app: on a game's panel on
-the home page press **Mac**, or in the editor use **Save & share → Download for Mac** (also in
-a game's **⋯ More** menu). The app is built right there in the browser and saved as a disk
+the home page, in the editor or in a game's **⋯ More** menu, press **Download** and choose
+**Mac**. The app is built right there in the browser and saved as a disk
 image (`.dmg`: open it, drag the game onto Applications) or a `.zip`. It plays offline in its
 own window on Apple silicon and Intel Macs with macOS 11 Big Sur or later.
 
@@ -34,7 +34,7 @@ own window on Apple silicon and Intel Macs with macOS 11 Big Sur or later.
 
 The players' version of this, with why the apps can't be notarized, what the app does and
 how to remove it, is the site's [Mac downloads page](https://lewismoten.github.io/GameMaker-SandboxEdition/#/mac)
-(`web/src/macHelp/macPage.ts`, linked from the Download for Mac dialog).
+(`web/src/macHelp/macPage.ts`, linked from the Download chooser).
 
 The apps are signed ad-hoc, not with an Apple Developer ID, and are not notarized by Apple
 (that needs a paid Apple Developer Program membership). So the first time a downloaded app

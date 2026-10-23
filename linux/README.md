@@ -1,8 +1,7 @@
 # linux/ — playing the games on Linux
 
 Any game, including your own, can be downloaded for Linux: on a game's panel on the home
-page press **Linux**, or in the editor use **Save & share → Download for Linux** (also in a
-game's **⋯ More** menu). It is built right there in the browser and saved as
+page, in the editor or in a game's **⋯ More** menu, press **Download** and choose **Linux**. It is built right there in the browser and saved as
 `<Title>.tar.gz`: a folder that plays the game offline in a window of its own, on x86_64 and
 aarch64 PCs. The players' guide is the site's
 [Linux downloads page](https://lewismoten.github.io/GameMaker-SandboxEdition/#/linux)
