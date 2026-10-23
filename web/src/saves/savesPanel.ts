@@ -273,7 +273,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
                   max: BACKBL,
                   value: String(n),
                   'aria-label': 'Block number (150 = empty)',
-                }) as HTMLInputElement;
+                });
                 return [input, h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(input.value) }, 'OK'))];
               });
               next = s === undefined ? undefined : Number(s);
@@ -312,7 +312,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         showWarn();
         refresh();
       },
-    }) as HTMLInputElement;
+    });
     const box = f.canBeUnlimited
       ? h(
           'label',
@@ -415,7 +415,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
         w.name = nameInput.value.replace(/[^\x20-\x7e]/g, '');
         refreshState();
       },
-    }) as HTMLInputElement;
+    });
 
     const fields = saveFields(save, labels);
     const groups = new Map<FieldGroup, SaveField[]>();
@@ -586,7 +586,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
             { value: String(save.doscene), selected: true, disabled: true },
             labels?.sceneName(save.doscene) ? `Level ${save.doscene}: ${labels.sceneName(save.doscene)}` : `Level ${save.doscene}`,
           ),
-    ) as HTMLSelectElement;
+    );
     const restart = h(
       'button',
       {
@@ -945,7 +945,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
 
   // ------------------------------------------------------------------ backups
   const renderBackups = () => {
-    const label = h('input', { type: 'text', id: 'sv-backup-label', placeholder: 'Label (optional)', maxlength: 60 }) as HTMLInputElement;
+    const label = h('input', { type: 'text', id: 'sv-backup-label', placeholder: 'Label (optional)', maxlength: 60 });
     const hasSaves = saves!.slots.some((s) => s.bytes) || (!!saves!.highScoreFile && !saves!.highScoresFromDisk);
     const rows = backups.map((b) => {
       const when = new Date(b.when);
@@ -1011,7 +1011,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
               'aria-label': `Rename ${b.label}`,
               onclick: async () => {
                 const name = await modal<string>('Rename backup', (close) => {
-                  const input = h('input', { type: 'text', value: b.label, maxlength: 60, 'aria-label': 'Label', autofocus: true }) as HTMLInputElement;
+                  const input = h('input', { type: 'text', value: b.label, maxlength: 60, 'aria-label': 'Label', autofocus: true });
                   return h(
                     'form',
                     { method: 'dialog', onsubmit: (e: Event) => (e.preventDefault(), close(input.value)) },

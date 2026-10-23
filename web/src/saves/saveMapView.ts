@@ -74,7 +74,7 @@ export function saveMapView(o: MapViewOptions): MapView {
     'aria-roledescription': 'level map',
     'aria-label': label,
     'aria-describedby': o.describedBy,
-  }) as HTMLCanvasElement;
+  });
   const hint = h('p', { class: 'sv-map-hint', 'aria-hidden': 'true' });
   const box = h('div', { class: 'sv-map' }, canvas, hint);
   const ctx = canvas.getContext('2d')!;
