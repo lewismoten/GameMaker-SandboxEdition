@@ -11,12 +11,14 @@
     { "game": "tickle", "as": "on the tower’s floor, in the far corner" },
     { "game": "teddy2", "as": "tucked behind Teddy’s bed at home" },
     { "game": "mustard", "as": "tucked in the nook behind the seed’s mound" },
-    { "game": "carl", "as": "under the bedroom desk" }
+    { "game": "carl", "as": "under the bedroom desk" },
+    { "game": "snowbound", "as": "in the snow by the backyard snowman" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
     { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" },
-    { "game": "smirked", "as": "peeking out of the gift shop’s curtains" }
+    { "game": "smirked", "as": "peeking out of the gift shop’s curtains" },
+    { "game": "snowbound", "as": "declaiming outside Bleeps at LaVale Mall" }
   ],
   "watt": [
     { "game": "blaster", "as": "blinking on Memory Lane" },
