@@ -12,10 +12,7 @@ import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
-import { macDownload, type MacGame } from './macDownload';
-import { winDownload } from './winDownload';
-import { linuxDownload } from './linuxDownload';
-import { isBizarreGame } from '../../project/bizarre';
+import { catalogDownloadable, chooseDownload, downloadButton } from './download';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -45,36 +42,13 @@ function whenIdleAndSeen(el: Element, f: () => void): void {
   else addEventListener('load', start, { once: true });
 }
 
-/**
- * "Mac", "Windows" and "Linux": the game as a Mac app (macDownload.ts), a Windows program
- * (winDownload.ts) or a Linux folder (linuxDownload.ts). For the CD's games that may be shared (gameware, the Sandbox and Bard
- * of Bizarre games), not the other authors' shareware; a game of yours has them in its
- * ⋯ More menu.
- */
-function appButtons(game: HomeGame): HTMLElement[] {
+/** "Download" (download.ts): for the catalog's games that may be shared; a game of yours has its own in gameActions. */
+function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
-  if (!e?.gam || game.project || (game.kind === 'shareware' && !isBizarreGame(e))) return [];
-  const load = async (): Promise<MacGame> => ({ title: e.title, gam: e.gam!, files: await game.files(), id: e.id, author: e.author ?? e.company, year: e.year, box: e.original?.box });
-  return [
-    h(
-      'button',
-      { class: 'with-ico', title: 'Play it on a Mac: a Mac app of the game (.dmg or .zip), built here', 'aria-label': `Download ${game.title} for Mac`, onclick: () => void macDownload(game.title, load) },
-      icon('inbox'),
-      'Mac',
-    ),
-    h(
-      'button',
-      { class: 'with-ico', title: 'Play it on Windows: a Windows program of the game (.exe or .zip), built here', 'aria-label': `Download ${game.title} for Windows`, onclick: () => void winDownload(game.title, load) },
-      icon('inbox'),
-      'Windows',
-    ),
-    h(
-      'button',
-      { class: 'with-ico', title: 'Play it on Linux: the game in a folder with a small player (.tar.gz), built here', 'aria-label': `Download ${game.title} for Linux`, onclick: () => void linuxDownload(game.title, load) },
-      icon('inbox'),
-      'Linux',
-    ),
-  ];
+  if (!e || game.project || !catalogDownloadable(e)) return null;
+  return downloadButton(game.title, () =>
+    chooseDownload({ title: e.title, gam: e.gam!, files: () => game.files(), id: e.id, author: e.author ?? e.company, year: e.year, box: e.original?.box }),
+  );
 }
 
 /** Copies the address that shows `game` here (#/game/…). */
@@ -179,7 +153,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
         : undefined,
     );
     if (saves) actions.insertBefore(saves.el, actions.querySelector('.card-more'));
-    for (const app of appButtons(game)) actions.insertBefore(app, actions.querySelector('.card-more'));
+    const dl = catalogDownload(game);
+    if (dl) actions.insertBefore(dl, actions.querySelector('.card-more'));
     clear(notes, game.health?.released ? healthNote(game.health) : null);
     void game.hasDemo().then((yes) => {
       if (gen !== generation || !yes) return;

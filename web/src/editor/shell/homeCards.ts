@@ -20,6 +20,7 @@ import { editedWhen } from './homeTime';
 import { readableBlurb } from './homeBlurb';
 import { rememberOrigin } from './homeOrigin';
 import { projectMenuItems } from './homeProjectActions';
+import { projectDownloadButton } from './projectExport';
 import { chooseCopy } from './homeCopies';
 import { plainError } from '../core/plainError';
 import { isBizarreGame } from '../../project/bizarre';
@@ -393,6 +394,7 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
       h('button', { class: 'primary with-ico', onclick: () => nav.openProject(p.id) }, svgIcon('edit'), 'Open'),
       h('a', { class: 'button with-ico', href: `./play.html?project=${encodeURIComponent(p.id)}` }, svgIcon('play'), 'Play'),
       keys,
+      projectDownloadButton(p.id, game.title),
       moreMenu(...projectMenuItems(p, refresh)),
     ].filter((x): x is HTMLElement => !!x);
   }
