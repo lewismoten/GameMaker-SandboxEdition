@@ -224,7 +224,7 @@ const VOID: Record<string, string> = {
   '/': 'pen',
   s: 'spoon',
   '!': 'xmasSock',
-  '&': 'pog',
+  '&': 'milkcap',
   N: 'guide',
   '^': 'crumb',
   '7': 'calc',

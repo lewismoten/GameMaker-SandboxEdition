@@ -63,7 +63,7 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
     p.rect(6, 2, 7, 9, c('red', 2)).rect(6, 10, 10, 6, c('red', 2)).rect(6, 2, 7, 3, c('white', 2));
     p.set(9, 7, c('green', 2)).set(11, 12, c('green', 2)).set(8, 13, c('gold', 2));
   }, 250);
-  lost('pog', (p) => {
+  lost('milkcap', (p) => {
     p.disc(10, 10, 6, c('yellow', 2)).ring(10, 10, 6, c('red', 1));
     for (let a = 0; a < 6.28; a += 0.8) p.line(10, 10, 10 + Math.cos(a) * 5, 10 + Math.sin(a) * 5, c('red', 2));
     p.disc(10, 10, 2, c('blue', 2));
