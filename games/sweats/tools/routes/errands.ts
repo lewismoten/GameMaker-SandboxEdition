@@ -1,7 +1,8 @@
 // The OUT AND ABOUT set's routes.
+import { SCARS } from '../../src/groups/errands/cashier';
 import { GROCERIES } from '../../src/groups/errands/checkout';
 import type { Bot } from '../bot';
-import { carefully, declaim, expect, leave, must, plot, type Route } from '../route';
+import { carefully, declaim, expect, leave, must, plot, tips, type Route } from '../route';
 
 /** Throws unless the poet stands on row `row` (a solid foe can push him down into the floor). */
 function floor(bot: Bot, row: number, what: string): void {
@@ -61,6 +62,56 @@ export const ERRANDS_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(68.5, 'down, the coin'), 'down');
       if (plot(bot) < GROCERIES) throw new Error(`only ${plot(bot)} groceries`);
       await leave(bot, bot.walk(70.5, 'the last self-checkout: SCAN, PAY, GO'), 'the gate');
+    });
+  },
+
+  /** Cart Return Seven: the rogue cart, past the devil, onto a car's roof, over the reversing minivan, up the lot (the receipt, the balloon, the goose, the flip-flop, the wind), the cashier's nod. */
+  cashier: async (bot) => {
+    expect(bot, 'cashier');
+    await carefully(bot, 'the rogue cart', 0, async () => {
+      await must(bot, bot.walk(6, 'the rogue cart'), 'cart');
+      await declaim(bot, 'the devil on his shoulder');
+      await must(bot, bot.walk(9, 'the coin'), 'coin');
+      await declaim(bot, 'the devil again');
+      await must(bot, bot.walk(13, 'the coin by the lamp'), 'coin');
+      await must(bot, bot.walk(14, 'by the parked car'), 'car');
+      await must(bot, bot.hop('right', 12, 'right', 16), 'onto the roof: the dollar');
+      floor(bot, 9, 'the roof');
+    });
+    await carefully(bot, 'the gnats and the minivan', 0, async () => {
+      await declaim(bot, 'the gnats');
+      await must(bot, bot.walk(19, 'down off the roof'), 'roof end');
+      await declaim(bot, 'the gnats again');
+      await must(bot, bot.walk(21.5, 'up to the minivan'), 'van');
+      await must(bot, bot.hop('right', 12, 'right', 27.5), 'over the minivan, the coin');
+      floor(bot, 11, 'past the minivan');
+    });
+    await carefully(bot, 'up the lot', 0, async () => {
+      await must(bot, bot.walk(31, 'up a step, the receipt'), 'receipt');
+      await declaim(bot, 'the balloon');
+      await must(bot, bot.walk(37, 'by the child'), 'child');
+      await must(bot, bot.hop('right', 12, 'right', 39), 'onto the car roof: the coin');
+      await must(bot, bot.walk(41.5, 'down, the coin'), 'coin');
+      await must(bot, bot.walk(43, 'up a step'), 'step');
+      await declaim(bot, 'the goose');
+      await must(bot, bot.walk(45, 'the coin'), 'coin');
+      await declaim(bot, 'the goose again');
+      await must(bot, bot.walk(53, 'the flip-flop, the coffee'), 'flip-flop');
+    });
+    await carefully(bot, 'the top of the lot', 0, async () => {
+      await declaim(bot, 'the wind');
+      await must(bot, bot.walk(55, 'up the last step'), 'step');
+      await declaim(bot, 'the wind');
+      await must(bot, bot.walk(58, 'the coin'), 'coin');
+      await declaim(bot, 'the wind');
+      await must(bot, bot.walk(60, 'the coin, Carl'), 'coin');
+    });
+    await carefully(bot, 'the cashier, cart return seven', 0, async () => {
+      const before = tips(bot);
+      await must(bot, bot.walk(66, 'the cashier behind the dumpsters, the dollar'), 'cashier');
+      if (tips(bot) < before + 6) throw new Error('no nod from the cashier');
+      if (plot(bot) < SCARS) throw new Error(`only ${plot(bot)} scars of honor`);
+      await leave(bot, bot.walk(68.5, 'cart return seven'), 'the gate');
     });
   },
 };

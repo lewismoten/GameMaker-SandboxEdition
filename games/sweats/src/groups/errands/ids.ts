@@ -20,3 +20,24 @@ export const CHECKOUT_MON = {
   jugC: F + 6,
   poof: F + 7,
 } as const;
+
+/** How I Earned a Nod from the Smoking Cashier. */
+export const CASHIER_MON = {
+  /** The devil on his shoulder: "Everyone else leaves it." */
+  devil: F,
+  /** A swarm of gnats, vengeful soup fairies. */
+  gnats: F + 1,
+  /** The beige minivan reversing into his personal space (two halves, the driver eating corn on the cob): no word stops it. */
+  vanRear: F + 2,
+  vanFront: F + 3,
+  /** The balloon the child screams at, bobbing just out of reach. */
+  balloon: F + 4,
+  /** The goose hissing in the distance. */
+  goose: F + 5,
+  /** A gust off the hill: thirty feet uphill against the wind. */
+  gust: F + 6,
+  poof: F + 7,
+  /** The cashier smoking behind the dumpsters: a nod (a tip). */
+  cashier: F + 8,
+  cashierOff: F + 9,
+} as const;

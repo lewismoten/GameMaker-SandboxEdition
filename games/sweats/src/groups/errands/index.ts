@@ -5,6 +5,7 @@
 // added).
 import type { Group } from '../types';
 import { ERRANDS_RAMPS, poofSprites } from './art';
+import { cashier, cashierBlocks, cashierSprites } from './cashier';
 import { checkout, checkoutBlocks, checkoutSprites } from './checkout';
 
 export const errands: Group = {
@@ -13,10 +14,12 @@ export const errands: Group = {
   ramps: ERRANDS_RAMPS,
   blocks: (book, pal) => {
     checkoutBlocks(book, pal);
+    cashierBlocks(book, pal);
   },
   sprites: (book, pal) => {
     poofSprites(book, pal);
     checkoutSprites(book, pal);
+    cashierSprites(book, pal);
   },
-  monologues: [checkout],
+  monologues: [checkout, cashier],
 };
