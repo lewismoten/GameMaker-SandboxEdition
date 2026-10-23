@@ -4,8 +4,9 @@
 // that pats a mound of sand twice, kicking up grains. Then "-= S A N D B O X =-" drops in
 // a letter at a time, spinning, in chunky beveled plastic in the colors of THE SANDBOX
 // BBS (retro/bbs/bbsName.ts: red, yellow, green, cyan, blue, magenta, brown, the ends
-// yellow), casting hard shadows on the sand; chrome "SOFTWARE" zooms in under it, a
-// highlight sweeps across and star glints sparkle, and it fades to black.
+// yellow), casting hard shadows on the sand. A bold yellow "SOFTWARE", outlined in black,
+// zooms in under it on a dark band, a highlight sweeps across, star glints sparkle, and
+// it fades to black.
 //
 // It is ray traced here in software (raytrace.ts; the letters are sdftext.ts), quantized
 // to one 256-color palette (quantize.ts) and written as an Autodesk Animator FLI, which
@@ -67,8 +68,9 @@ const PAT = 8;
 const DROP_START = 13;
 const DROP_STAGGER = 2;
 const DROP = 8;
-const SOFT_START = 32; // SOFTWARE zooms in
-const SOFT = 8;
+/** SOFTWARE zooms in, flat on top of the render, these scales a frame, then holds. */
+const SOFT_START = 30;
+const SOFT_ZOOM = [0.35, 0.7, 1.1, 1];
 const SWEEP_START = 37; // the highlight crosses the letters
 const SWEEP = 8;
 const SPARKLES: [number, number][] = [
@@ -368,8 +370,6 @@ const PIECES = ['-=', 'S', 'A', 'N', 'D', 'B', 'O', 'X', '=-'];
 const LOGO_C: V = add(add(cam.eye, scale(cam.fw, 4.3)), scale(cam.up, 1.02));
 const LOGO_ROT = mulM(fromAxes(cam.right, cam.up, cam.fw), rotX(-0.22));
 const LOGO_SIZE = 0.43; // world height of a capital
-const SOFT_C: V = add(add(cam.eye, scale(cam.fw, 4.3)), scale(cam.up, 0.38));
-const SOFT_SIZE = 0.25;
 
 const fatter = (segs: Seg[], k: number): Seg[] => segs.map(([a, b, c, d, r]) => [a, b, c, d, r * k]);
 
@@ -380,9 +380,8 @@ interface Piece {
 }
 
 let pieces: Piece[] | undefined;
-let software: ExtrudedText | undefined;
-function logo(): { pieces: Piece[]; software: ExtrudedText } {
-  if (!pieces || !software) {
+function logo(): { pieces: Piece[] } {
+  if (!pieces) {
     const widths: number[] = [];
     const glyphs = PIECES.map((s) => {
       const segs = fatter(textStrokes(s, 1, -0.5, 0.06), 1.3);
@@ -398,9 +397,8 @@ function logo(): { pieces: Piece[]; software: ExtrudedText } {
       pen += widths[i] + gap;
       return { text: new ExtrudedText(new DistanceGrid(segs, 0.01, 0.2), 0.42, 0.07), x };
     });
-    software = new ExtrudedText(new DistanceGrid(fatter(textStrokes('SOFTWARE', 1, -0.5, 0.42), 1.2), 0.012, 0.2), 0.3, 0.06);
   }
-  return { pieces, software };
+  return { pieces };
 }
 
 /** How far across the logo (world units from its middle) a point is. */
@@ -422,25 +420,11 @@ function pieceMaterial(color: V, band: number | undefined): Material {
   };
 }
 
-/** Polished chrome. */
-function chrome(band: number | undefined): Material {
-  return (h: Hit) => {
-    // the classic chrome lettering: sky in the top half, a hot horizon, dark ground below
-    const y = h.local[1] - 0.25 * apply(LOGO_ROT, [0, 1, 0]).reduce((a, v, i) => a + v * h.n[i], 0) + 0.05;
-    const c: V =
-      y > 0
-        ? mix([0.95, 0.97, 1.0], [0.25, 0.45, 0.95], clamp01(y * 2.4))
-        : mix([1.0, 0.82, 0.55], [0.2, 0.12, 0.08], clamp01(-y * 4.5));
-    const g = bandGlow(h.p, band);
-    return surface(c, { kd: 0.45, ks: 1, shine: 60, mirror: 0, glow: add(scale(c, 0.45), scale(WHITE, g)) });
-  };
-}
-
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
 
 /** The pieces in the air or landed at frame f (none before they start falling). */
 function logoShapes(f: number, glow = true): { key: string; shape: Shape }[] {
-  const { pieces: ps, software: soft } = logo();
+  const { pieces: ps } = logo();
   const band = glow && f >= SWEEP_START && f < SWEEP_START + SWEEP ? -3.4 + (6.8 * (f - SWEEP_START)) / (SWEEP - 1) : undefined;
   const out: { key: string; shape: Shape }[] = [];
   ps.forEach((p, i) => {
@@ -456,13 +440,6 @@ function logoShapes(f: number, glow = true): { key: string; shape: Shape }[] {
     const pos = add(LOGO_C, apply(LOGO_ROT, [p.x * LOGO_SIZE, drop * LOGO_SIZE, 0]));
     out.push({ key: `piece${i}`, shape: new Lettering(p.text, placed(pos, rot, LOGO_SIZE), pieceMaterial(PIECE_COLORS[i], band)) });
   });
-  const st = (f - SOFT_START) / SOFT;
-  if (st > 0) {
-    const k = Math.min(1, st);
-    // zooms up from nothing, overshooting a little
-    const s = k < 1 ? easeOut(k) * (1 + 0.25 * Math.sin(Math.PI * k)) : 1;
-    if (s > 0.02) out.push({ key: 'software', shape: new Lettering(soft, placed(SOFT_C, mulM(LOGO_ROT, rotX(-0.5 * (1 - k))), SOFT_SIZE * s), chrome(band)) });
-  }
   return out;
 }
 
@@ -562,9 +539,6 @@ function movers(f: number): Mover[] {
     const landed = f >= DROP_START + i * DROP_STAGGER + DROP;
     if (s) out.push({ key: s.key, shapes: [s.shape], rest: !band && landed, glowOnly: band && landed, restAs: plain(s.key) });
   });
-  const soft = logoParts.find((l) => l.key === 'software');
-  const zoomed = f >= SOFT_START + SOFT;
-  if (soft) out.push({ key: 'software', shapes: [soft.shape], rest: !band && zoomed, glowOnly: band && zoomed, restAs: plain('software') });
   return out;
 }
 
@@ -664,6 +638,93 @@ const toBytes = (f: Float32Array): Uint8Array => {
   return out;
 };
 
+// ---- SOFTWARE ------------------------------------------------------------------------
+// Drawn flat on top of the dithered render, the way a 1995 animator lettered over a
+// render: bold yellow in three solid bands with a black outline and drop shadow, on a dark
+// band that calms the castle and sand behind it, so it reads at 320x200 in every frame.
+
+/** Palette entries kept for the lettering: black, then light yellow, yellow and orange. */
+const FLAT: [number, number, number][] = [
+  [0, 0, 0],
+  [255, 250, 170],
+  [255, 214, 0],
+  [235, 128, 0],
+];
+const SOFT_CX = 160;
+const SOFT_MID = 80;
+/** Cap height in screen rows at full size. */
+const SOFT_ROWS = 17;
+const OUTLINE = 2.2;
+
+let softText: { grid: DistanceGrid; x0: number; x1: number } | undefined;
+function softwareText() {
+  if (!softText) {
+    const segs = fatter(textStrokes('SOFTWARE', 1, 0, 0.32), 1.55);
+    const xs = segs.flatMap(([a, , b, , r]) => [a - r, b + r]);
+    softText = { grid: new DistanceGrid(segs, 0.01, 0.3), x0: Math.min(...xs), x1: Math.max(...xs) };
+  }
+  return softText;
+}
+
+/** SOFTWARE's size at frame f (0 = not shown yet). */
+function softScale(f: number): number {
+  const k = f - SOFT_START;
+  return k < 0 ? 0 : SOFT_ZOOM[Math.min(k, SOFT_ZOOM.length - 1)];
+}
+
+/** Where SOFTWARE sits at a scale: its baseline, pixels per unit across and rows per unit up. */
+function softPlace(s: number) {
+  const rows = SOFT_ROWS * s;
+  return { rows, unit: rows * 1.2, base: SOFT_MID + rows / 2 };
+}
+
+/** Darkens a band behind SOFTWARE in the render (it is dithered with the rest). */
+function softwareBand(out: Float32Array, f: number): void {
+  const s = softScale(f);
+  if (!s) return;
+  const { rows, unit } = softPlace(s);
+  const t = softwareText();
+  const x0 = Math.max(0, Math.floor(SOFT_CX + t.x0 * unit - 12 * s));
+  const x1 = Math.min(W - 1, Math.ceil(SOFT_CX + t.x1 * unit + 12 * s));
+  const y0 = Math.max(0, Math.floor(SOFT_MID - rows / 2 - 6 * s));
+  const y1 = Math.min(H - 1, Math.ceil(SOFT_MID + rows / 2 + 6 * s));
+  for (let y = y0; y <= y1; y++)
+    for (let x = x0; x <= x1; x++) {
+      const i = (y * W + x) * 3;
+      out[i] = out[i] * 0.22 + 0.02;
+      out[i + 1] = out[i + 1] * 0.22 + 0.03;
+      out[i + 2] = out[i + 2] * 0.22 + 0.1;
+    }
+}
+
+/** Letters SOFTWARE over an indexed frame in the flat colors (no dither). */
+function drawSoftware(px: Uint8Array, f: number): Uint8Array {
+  const s = softScale(f);
+  if (!s) return px;
+  const { rows, unit, base } = softPlace(s);
+  const t = softwareText();
+  const x0 = Math.max(0, Math.floor(SOFT_CX + t.x0 * unit - 6));
+  const x1 = Math.min(W - 1, Math.ceil(SOFT_CX + t.x1 * unit + 6));
+  const y0 = Math.max(0, Math.floor(base - rows - 6));
+  const y1 = Math.min(H - 1, Math.ceil(base + 6));
+  // 0 nothing, 1 outline, 2.. the fill's palette entry + 1
+  const kind = new Uint8Array(W * H);
+  for (let y = y0; y <= y1; y++)
+    for (let x = x0; x <= x1; x++) {
+      const ux = (x + 0.5 - SOFT_CX) / unit;
+      const uy = (base - (y + 0.5)) / rows;
+      const d = t.grid.at(ux, uy) * unit;
+      if (d < 0) kind[y * W + x] = 1 + (uy > 0.6 ? 1 : uy > 0.2 ? 2 : 3);
+      else if (d < OUTLINE * Math.min(1, s)) kind[y * W + x] = 1;
+    }
+  // the drop shadow, then the outline and the fill
+  const sh = Math.max(1, Math.round(2 * s));
+  for (let y = y0; y <= y1; y++)
+    for (let x = x0; x <= x1; x++) if (kind[y * W + x] && x + sh < W && y + sh < H && !kind[(y + sh) * W + x + sh]) px[(y + sh) * W + x + sh] = 0;
+  for (let i = 0; i < kind.length; i++) if (kind[i]) px[i] = kind[i] === 1 ? 0 : kind[i] - 1;
+  return px;
+}
+
 export interface LogoFrames {
   frames: Uint8Array[];
   /** A palette per frame (the fades). */
@@ -678,10 +739,14 @@ let cached: LogoFrames | undefined;
 export function sandLogoFrames(): LogoFrames {
   if (cached) return cached;
   const rgb: Uint8Array[] = [];
-  for (let f = 0; f < FRAMES; f++) rgb.push(toBytes(renderFrame(f)));
-  const palette = medianCutPalette(rgb);
+  for (let f = 0; f < FRAMES; f++) {
+    const fl = renderFrame(f);
+    softwareBand(fl, f);
+    rgb.push(toBytes(fl));
+  }
+  const palette = medianCutPalette(rgb, FLAT);
   const q = new Quantizer(palette, 5);
-  const frames = rgb.map((c) => q.apply(c, W, H));
+  const frames = rgb.map((c, f) => drawSoftware(q.apply(c, W, H), f));
   const palettes = frames.map((_, f) => {
     const k = f < FADE_IN ? (f + 1) / (FADE_IN + 1) : f >= FRAMES - FADE ? (FRAMES - 1 - f) / FADE : 1;
     return palette.map((v) => Math.round(v * k));
