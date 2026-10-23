@@ -16,8 +16,6 @@ const STILL_SHOWN = new Set([
   'loaf:tinHeart',
   'logic:tinHeart',
   'logic:easterEgg',
-  'loofah:tinHeart',
-  'loofah:easterEgg',
   'maximus:tinHeart',
   'maximus:easterEgg',
   'mustard:tinHeart',
