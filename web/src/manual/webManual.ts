@@ -40,7 +40,9 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     register it with its author.</p>
     <h3>Bizarre</h3>
     <p>Games made from the songs of The Bard of Bizarre. They are listed with the shareware
-    until there are four or more, then get a tab of their own.</p>`,
+    until there are four or more, then get a tab of their own. Unlike the shareware they are
+    this project’s own and free to change (MIT): <b>Edit a copy</b> works as it does for the
+    Sandbox games, and <b>Notice</b> tells the song behind each one.</p>`,
   ],
   [
     'workspace',

@@ -167,7 +167,8 @@ export function gameDiz(g: CatalogEntry): string[] {
     RULE,
     ...clip(ascii(about), 3),
     `Made with Game-Maker 3.0 * ${sound}`,
-    center(pick(TAGLINES, g.id)),
+    // the Bard's games are free to change for real (MIT), whatever the price line says
+    center(isSofaFile(g) ? 'Free to play, share & change (MIT)' : pick(TAGLINES, g.id)),
     RULE,
     isSofaFile(g) ? `Uploaded by ${uploader(g)} to THE SOFA BBS` : SIGNOFF.replace('%s', uploader(g)),
   ]);
