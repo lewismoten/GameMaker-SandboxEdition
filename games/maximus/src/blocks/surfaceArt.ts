@@ -105,8 +105,9 @@ export function topTex(seed: number, kind: 'mid' | 'left' | 'right' | 'cave'): P
 
 // ------------------------------------------------------------------ decorations (sprites)
 
-export function tree(part: 'tl' | 'tr' | 'bl' | 'br' | 'trunk' | 'root'): Pixels {
-  // a 2x3 block tree drawn on a 40x60 canvas and cut up
+export function tree(part: 'tl' | 'tr' | 'bl' | 'br' | 'trunk' | 'trunk:r'): Pixels {
+  // a 2x3 block tree drawn on a 40x60 canvas and cut up: the trunk stands on the line
+  // between the two columns, so its bottom row is two blocks too (trunk, trunk:r)
   const c = new Pixels(40, 60, CLEAR);
   const plant = R('plant');
   const stem = R('stem');
@@ -128,8 +129,7 @@ export function tree(part: 'tl' | 'tr' | 'bl' | 'br' | 'trunk' | 'root'): Pixels
     if (crown.get(Math.round(x), Math.round(y))) c.set(x, y, bloom[3]).set(x + 1, y, bloom[4]);
   }
   outline(c, OUTLINE);
-  const at = { tl: [0, 0], tr: [20, 0], bl: [0, 20], br: [20, 20], trunk: [10, 40], root: [10, 40] }[part];
-  if (part === 'trunk') return c.crop(10, 20 + 10, 20, 20);
+  const at = { tl: [0, 0], tr: [20, 0], bl: [0, 20], br: [20, 20], trunk: [0, 40], 'trunk:r': [20, 40] }[part];
   return c.crop(at[0], at[1], 20, 20);
 }
 

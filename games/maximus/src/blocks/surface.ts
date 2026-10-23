@@ -55,7 +55,10 @@ export function surfaceSet(): SetBuilder {
   for (let k = 0; k < 8; k++) s.add(`sky:${k}`, skyBand(k, k < 3 ? 6 - k * 2 : 0));
   s.add('ceiling', skyBand(0, 2), { solid: SOLID }); // the solid top of the sky (map rows wrap)
   for (const part of ['l', 'm', 'r', 'puff'] as const) s.add(`cloud:${part}`, cloud(part));
-  for (const part of ['peak', 'l', 'r', 'fill'] as const) s.add(`far:${part}`, farHills(part));
+  for (const part of ['peak', 'l', 'r'] as const) s.add(`far:${part}`, farHills(part));
+  // the right half of a tree's trunk, in the slot the far hills' fill had (never placed), so
+  // every other block keeps its number
+  s.add('tree:trunk:r', over(hz, tree('trunk:r')));
   for (let k = 0; k < 3; k++) s.add(`cave:${k}`, caveWall(50 + k));
   s.add(
     'cave:roots',
