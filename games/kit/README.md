@@ -17,7 +17,8 @@ Making the files:
 - `song.ts` — the Bard of Bizarre games' OPL2 arrangement writer: patches, drum grooves, and sections (a chord or two and a
   bar of tune each) laid out as tune, second voice, bass, three comping voices and drums; `songPreview.ts` renders a game's
   songs on the web app's OPL2 and checks them. `song/analyze.py` (tempo, key, chords, sections, sung melody) and
-  `song/cutclips.py` (VOC clips) read a recording that is not in the repo; each game's tools name the song.
+  `song/cutclips.py` (VOC clips; slow cues and splices kept at a lower rate) read a recording that is not in the repo;
+  each game's tools name the song.
 - `songFx.ts` — tricks for those arrangements that stay plain CMF events PLAYGAME and SBFMDRV play: swells and filter
   sweeps under held chords by program changes through copies of a patch (more than 16 timbres: extra patches from 16 up),
   the rhythm section's bass drum tuned as a sub bass (a seventh melodic voice) and tuned toms, one-channel arpeggios and
@@ -48,13 +49,15 @@ Checking the games:
   (no disk). The bots of teddy, teddy2, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
   keeps the keys per scene and can snapshot and restore. depth, realm and snowbound play on it.
+  `diskSim(new URL('../disk', import.meta.url))` is a game's whole `tools/sim.ts`.
 - `hopBot.ts` — the play-testing bot of the games whose hero hops (walk to a column hopping what blocks it, hop
   and steer, land, hold a key, climb): reckoning, risi, loofah, sweats, mustard, needle and loaf extend it.
 - `levelRun.ts` — `playLevels()`, a game's `tools/play.ts` run: its levels' routes in a row, `BOT_LOG`, and the
   rule that a whole run wins without losing a life.
 - `demoRecord.ts` — `recordDemo()`, what a game's `tools/gendemo.ts` does: the bot's first ticks into `src/demo.ts`.
 - `walkthrough.ts` — writes a game's `walkthrough.json` from its bot's keys, after replaying them on the web
-  app's real engine to check the run reaches the ending and to time its chapters.
+  app's real engine to check the run reaches the ending and to time its chapters. `writeSimWalkthrough()`
+  does it for a GameSim run (a segment and a chapter a scene), the body of most games' `tools/walkthrough.ts`.
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
   have the text on plain paper with enough contrast. Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
