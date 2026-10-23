@@ -122,6 +122,7 @@ const SUMMARY: Record<string, string> = {
   reckoning: '3:17 A.M., lactose intolerant, cheesecake in the fridge. Eat it anyway, outrun the gurgle, splash the Devil.',
   loofah: "You touched the pink one. Now the towel screams. Light the candles, cleanse the demon sponge with brine.",
   smirked: "Lily is eight and not scared. You are. Tackle a cardboard witch, sneeze through fake webs, bond with the exit sign.",
+  sweats: 'Open mic at The Hive: 17 monologues about a pen, a chair, a blanket, a cart. Each one an EPIC. Declaim!',
 };
 
 const TAGLINES = [
