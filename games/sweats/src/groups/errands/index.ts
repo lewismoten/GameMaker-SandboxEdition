@@ -1,15 +1,22 @@
-// The errands set (not laid out yet).
-import { Pixels } from '../../../../kit/pixels';
-import { SOLID } from '../../common/blocks';
+// OUT AND ABOUT: the second set, the monologues of errands and evenings out (the grocery
+// store's self-checkout, the parking lot's cart return, the restaurant's plates, the banquet).
+// One block set (ERRANDS.BBL) and one monster block set (ERRANDS.MBL) for all of them; each
+// monologue adds its own blocks and sprites in its turn (a block's number is the order it was
+// added).
 import type { Group } from '../types';
+import { ERRANDS_RAMPS, poofSprites } from './art';
+import { checkout, checkoutBlocks, checkoutSprites } from './checkout';
 
 export const errands: Group = {
   id: 'errands',
-  name: 'errands',
-  ramps: [],
+  name: 'Out and About',
+  ramps: ERRANDS_RAMPS,
   blocks: (book, pal) => {
-    book.add('errandsVoid', new Pixels(20, 20, pal.c('ink', 0)), { solid: SOLID });
+    checkoutBlocks(book, pal);
   },
-  sprites: () => {},
-  monologues: [],
+  sprites: (book, pal) => {
+    poofSprites(book, pal);
+    checkoutSprites(book, pal);
+  },
+  monologues: [checkout],
 };
