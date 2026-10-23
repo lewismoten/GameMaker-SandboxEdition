@@ -11,6 +11,7 @@ import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { createZip } from '../../project/zip';
 import { exportWebApp } from '../../export/exportWebApp';
 import { exportSinglePage } from '../../export/exportSinglePage';
+import { macDownload } from './macDownload';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
@@ -215,6 +216,7 @@ export class Workspace {
               'Export as one web page',
             ),
             h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'),
+            h('button', { onclick: () => void this.exportForMac(), title: 'A Mac app of the game (.dmg or .zip), built here' }, 'Download for Mac'),
           ),
         ),
         this.search,
@@ -618,6 +620,11 @@ export class Workspace {
     } catch (e) {
       toast(plainError(e), 'error');
     }
+  }
+
+  private exportForMac(): Promise<void> {
+    const title = this.project.game().scenes[0]?.desc || this.project.name;
+    return macDownload(title, async () => ({ title, gam: this.project.gam, files: this.project.files }));
   }
 
   private async exportPage(): Promise<void> {
