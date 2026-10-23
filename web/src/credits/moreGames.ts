@@ -6,7 +6,7 @@ import { section, ext } from './section';
 
 export const MORE_GAMES_TITLE = 'Find more Game-Maker games';
 export const MORE_GAMES_INTRO = 'Game-Maker players made hundreds of games. These sites keep them.';
-export const MORE_GAMES_NOTE = 'These are other sites; their games belong to their authors. We don’t host them.';
+export const MORE_GAMES_NOTE = 'These are other sites; their games belong to their authors. They are not hosted here.';
 
 /** Each site: its name, link and what it has. */
 export const MORE_GAMES: [name: string, href: string, what: string][] = [
