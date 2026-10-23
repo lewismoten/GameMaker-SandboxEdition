@@ -42,8 +42,8 @@ describe('The Ultimate Owner’s Guide', () => {
     for (const c of CHAPTERS) expect(c.html).not.toMatch(/\blego\b/i);
   });
 
-  it('ends with designing with a goal, then the upload checklist on a page of its own, then the numbers', () => {
-    expect(CHAPTERS.slice(-3).map((c) => c.id)).toEqual(['craft', 'upload', 'numbers']);
+  it('ends with designing with a goal, the numbers, then the upload checklist on a page of its own', () => {
+    expect(CHAPTERS.slice(-3).map((c) => c.id)).toEqual(['craft', 'numbers', 'upload']);
     expect(CHAPTERS.filter((c) => c.newPage).map((c) => c.id)).toEqual(['upload']);
   });
 

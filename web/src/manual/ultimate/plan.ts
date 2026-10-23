@@ -11,7 +11,7 @@ import { CRAFT, UPLOAD } from './chaptersCraft';
 
 export const ULTIMATE_TITLE = 'The Ultimate Owner’s Guide';
 
-export const CHAPTERS: Chapter[] = [PALETTES, BLOCKS, ACTORS, LOGIC, SCENES, SOUND_SETS, VOICE, MUSIC, SHOW, TESTING, CRAFT, UPLOAD, NUMBERS];
+export const CHAPTERS: Chapter[] = [PALETTES, BLOCKS, ACTORS, LOGIC, SCENES, SOUND_SETS, VOICE, MUSIC, SHOW, TESTING, CRAFT, NUMBERS, UPLOAD];
 
 export interface BookPlan {
   /** Note pages added before the back cover. */

@@ -1,4 +1,4 @@
-// The Ultimate Owner's Guide, chapters 11 and 12: designing with a goal (what makes players
+// The Ultimate Owner's Guide, chapter 11 and appendix B: designing with a goal (what makes players
 // stay, put in terms of Game-Maker's own settings) and the checklist before a game goes out.
 // The engine facts are checked against web/src/engine (character.ts, monsters.ts, touch.ts,
 // scroll.ts, scene.ts); the advice is our own.
@@ -95,9 +95,9 @@ export const CRAFT: Chapter = {
 export const UPLOAD: Chapter = {
   id: 'upload',
   title: 'Before You Upload',
-  head: '12. Before You Upload',
+  head: 'Appendix B',
   newPage: true,
-  html: `${opening(12, 'Before You Upload', 'Tear this page out, or copy it. Tick every box before your game leaves your hard disk.')}
+  html: `${opening('Appendix B', 'Before You Upload', 'Tear this page out, or copy it. Tick every box before your game leaves your hard disk.')}
   <table class="ug-check">
     <tr><th aria-label="Done"></th><th>Check</th></tr>
     <tr><td>☐</td><td>The first minute is fun, and the hero’s speed feels right to someone new</td></tr>
