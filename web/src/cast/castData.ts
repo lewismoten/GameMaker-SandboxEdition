@@ -66,7 +66,7 @@ const LISTED: CastMember[] = [
     role: 'Pembroke Welsh Corgi, red-gold, knows left from right',
     hi: 'Hi! I know left from right. Snacks go on the left. Or the right. Both. Snacks.',
     art: { game: 'teddy', width: 156, height: 156, alt: 'Teddy the corgi grinning, red-gold with a white blaze, his right ear a little taller than his left' },
-    bio: 'A red-gold corgi with a white blaze, a big grin and, in the games, one ear a little taller than the other (in real life they match; the lopsided ear just reads better in twenty pixels). He knows left from right, rings the bell, balances a treat on his nose, and will happily star in any game that has a snack in it. In his own adventures he fetches Doc Leo’s scattered costume before the Big Show and sniffs his way to the county fair; elsewhere he naps, supervises and follows you round the kitchen in case anything falls.',
+    bio: 'A red-gold corgi with a white blaze, a big grin and, in the games, one ear a little shorter than the other (in real life they match; the lopsided ear just reads better in twenty pixels). He knows left from right, rings the bell, balances a treat on his nose, and will happily star in any game that has a snack in it. In his own adventures he fetches Doc Leo’s scattered costume before the Big Show and sniffs his way to the county fair; elsewhere he naps, supervises and follows you round the kitchen in case anything falls.',
     appears: [
       { game: 'teddy', as: 'the hero, fetching Doc Leo’s costume' },
       { game: 'teddy2', as: 'the hero, on Gwinn’s trail to the fair' },
