@@ -33,9 +33,62 @@ export interface PoetPose {
 export function poetArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
-  const body = (o: PoetPose): Pixels => {
+  /** Walking right, in profile: he faces the way he goes (mirror for left). */
+  const profile = (o: PoetPose): Pixels => {
     const p = new Pixels(20, 20, T);
-    const side = o.face === 'side';
+    const cr = o.crouch ? 2 : 0;
+    const step = o.step ?? 0;
+    const arms = o.arms ?? 'down';
+    const mood = o.mood ?? 'calm';
+    // legs: the far one first (a shade darker), then the near one; slippers point the way he goes
+    const stride = step === 1 ? 3 : step === 3 ? -3 : 0;
+    const leg = (dx: number, k: number) => {
+      for (let y = 13 + cr; y < 18; y++) p.rect(9 + Math.round(((y - 13) / 5) * dx), y, 3, 1, c('sweats', k));
+      const fx = 9 + dx;
+      p.rect(fx, 18, 5, 2, c('pink', k === 2 ? 1 : 0)).set(fx + 4, 19, c('pink', 2));
+    };
+    leg(-stride, 1);
+    leg(stride, 2);
+    // the seat of the sweatpants, the waistband
+    p.rect(7, 12 + cr, 6, 2, c('sweats', 2)).rect(7, 12 + cr, 6, 1, c('white', 0));
+    // the doublet, its front edge and buttons
+    for (let y = 8 + cr; y < 12 + cr; y++) p.rect(7, y, 6, 1, c('velvet', y === 8 + cr ? 3 : 2));
+    p.rect(7, 8 + cr, 1, 4, c('velvet', 1));
+    for (let y = 9 + cr; y < 12 + cr; y += 2) p.set(12, y, c('gold', 2));
+    // the head in profile: bald dome, the fringe at the back, the ear and its earring, the nose, the beard
+    const hx = 10.5;
+    const hy = 3.5 + cr;
+    blob(p, hx, hy, 3.4, 3.4, pal.r('skin'), 1, 4);
+    p.set(10, hy - 3, c('skin', 4)).set(11, hy - 3, c('skin', 4));
+    for (let y = Math.round(hy) - 1; y <= Math.round(hy) + 2; y++) p.set(7, y, c('hair', 1)).set(8, y, c('hair', y % 2 ? 2 : 1));
+    p.set(9, Math.round(hy) + 1, c('skin', 1)).set(9, Math.round(hy) + 3, c('gold', 3));
+    const ey = Math.round(hy);
+    if (mood === 'blink' || mood === 'swoon') p.set(12, ey, ink).set(13, ey, ink);
+    else p.set(12, ey, ink).set(12, ey - 1, mood === 'worry' || mood === 'shout' ? ink : c('white', 2));
+    p.set(14, ey + 1, c('skin', 2)).set(14, ey, c('skin', 3));
+    p.set(12, ey + 2, c('hair', 0)).set(13, ey + 2, c('hair', 0));
+    if (mood === 'shout') p.set(13, ey + 3, ink);
+    p.set(12, ey + 3, c('hair', 1)).set(13, ey + 4, c('hair', 0));
+    // the ruff, seen from the side: a starched wheel sticking out front and back
+    const ry = 7 + cr;
+    for (let x = 5; x <= 15; x++) {
+      const up = x % 2;
+      p.set(x, ry + up, c('white', up ? 1 : 2)).set(x, ry + 1 - up, c('white', 2));
+    }
+    // the near arm, swinging against the near leg (up for a hop, out ahead when sneaking)
+    const sleeve = c('velvet', 2);
+    const hand = c('skin', 2);
+    const sy = 9 + cr;
+    const swing = arms === 'up' ? [12, sy - 7] : o.crouch ? [14, sy + 1] : step === 1 ? [7, sy + 3] : step === 3 ? [13, sy + 3] : [10, sy + 4];
+    p.line(10, sy, swing[0], swing[1], sleeve).line(9, sy, swing[0] - 1, swing[1], c('velvet', 1));
+    p.set(swing[0], swing[1], hand).set(swing[0], swing[1] + (arms === 'up' ? -1 : 1), hand);
+    return outline(p, ink);
+  };
+
+  const body = (o: PoetPose): Pixels => {
+    if (o.face === 'side') return profile(o);
+    const p = new Pixels(20, 20, T);
+    const side = (o.face as string) === 'side';
     const cr = o.crouch ? 2 : 0;
     const bow = o.arms === 'bow' ? 3 : 0;
     const step = o.step ?? 0;
