@@ -71,7 +71,7 @@ Send a check or money order
 
     Sandbox Software
     Dept. BLAST
-    P.O. Box 1995
+    P.O. Box 000
     Pittsburgh, PA 15213
 
 This is a fictional address
