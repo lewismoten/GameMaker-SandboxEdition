@@ -114,6 +114,37 @@ export function shape(what: string, rows: (Want | null)[][]): PartRule[] {
 /** Pairs: every `a` has a `b` at dx, dy and every `b` an `a` the other way. */
 export const pair = (what: string, a: Want, b: Want, dx: number, dy: number): PartRule[] => shape(what, dy === 0 ? (dx === 1 ? [[a, b]] : [[b, a]]) : dy === 1 ? [[a], [b]] : [[b], [a]]);
 
+/** Rules read off the maps themselves, for a game whose objects are numbered parts (sign0
+ * sign1 sign2, or sign00 sign01 down a column): where part n mostly stands (`share` of the
+ * time) with part n+1 just right of it (or just below it), that is how the object goes
+ * together, and every part n and n+1 must be so. Numbered animation frames and patterns don't
+ * stand that way, so they get no rule.
+ * `skip` leaves out stems that only look like objects. */
+export function autoParts(maps: NameAt[], names: Iterable<string>, skip: RegExp = /$^/, share = 0.75): PartRule[] {
+  const all = new Set(names);
+  const seen = new Map<string, { n: number; h: number; v: number }>();
+  for (const at of maps)
+    for (let y = 0; y < MWID; y++)
+      for (let x = 0; x < MLEN; x++) {
+        const m = /^(.*?)(\d)$/.exec(at(x, y) ?? '');
+        if (!m || skip.test(m[1])) continue;
+        const next = `${m[1]}${Number(m[2]) + 1}`;
+        if (!all.has(next)) continue;
+        const c = seen.get(m[0]) ?? { n: 0, h: 0, v: 0 };
+        c.n++;
+        if (x + 1 < MLEN && at(x + 1, y) === next) c.h++;
+        if (y + 1 < MWID && at(x, y + 1) === next) c.v++;
+        seen.set(m[0], c);
+      }
+  // an object's parts stand together nearly everywhere; a pattern's tiles only now and then
+  const found = new Map<string, [number, number]>();
+  for (const [k, c] of seen) {
+    if (c.h >= share * c.n) found.set(k, [1, 0]);
+    else if (c.v >= share * c.n) found.set(k, [0, 1]);
+  }
+  return [...found].flatMap(([a, [dx, dy]]) => pair(`${a.replace(/\d$/, '')} (found on the maps)`, a, a.replace(/\d$/, (d) => String(Number(d) + 1)), dx, dy));
+}
+
 /** A block book's names by block number. */
 export function namesOf(index: Map<string, number>): string[] {
   const out: string[] = [];
@@ -238,12 +269,15 @@ export function writeParts(file: string, pic: (name: string) => Pic, pal: Uint8A
 export function auditDisk(disk: string, names: (map: string) => string[] | undefined, rules: PartRule[], opts: { factor?: number; floor?: number } = {}): { maps: [string, string[]][]; seams: Seam[]; broken: Seam[] } {
   const maps: [string, string[]][] = [];
   const pairs = new Map<string, { sc: DiskScene; ids: Map<string, number> }>();
+  const done = new Set<string>();
   for (const sc of diskScenes(disk)) {
     const n = names(sc.map.toLowerCase());
-    if (!n) continue;
+    if (!n || done.has(sc.map.toLowerCase())) continue;
+    done.add(sc.map.toLowerCase());
     const joined = new Set<string>();
     maps.push([sc.map.toLowerCase(), checkParts((x, y) => n[sc.blocks[y * MLEN + x]], rules, MLEN, MWID, joined)]);
-    const ids = new Map(n.map((v, i) => [v, i]));
+    const ids = new Map<string, number>();
+    n.forEach((v, i) => v !== undefined && ids.set(v, i));
     for (const j of joined) if (!pairs.has(j)) pairs.set(j, { sc, ids });
   }
   const seamsOut: Seam[] = [];

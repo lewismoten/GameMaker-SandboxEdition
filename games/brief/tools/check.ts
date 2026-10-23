@@ -1,6 +1,7 @@
 // Proves the library can be finished: the bot plays the whole game (tools/play.ts), every
 // wing and book, the Reserve Stacks' gates, the thirty-third book and the ending. Then it
-// checks that a gate stays shut for a wing with only three stories back.
+// checks that a gate stays shut for a wing with only three stories back. The multi-block
+// objects are checked first (tools/align.ts).
 //   cd web && npx vite-node ../games/brief/tools/check.ts [wing id]
 import { compileAll } from '../src/compile';
 import { sceneIds } from '../src/game';
@@ -8,6 +9,7 @@ import { EGG_BLOCK, wingCounter } from '../src/ids';
 import { BACKBL } from '../../../web/src/formats/blocks';
 import { Bot, hazardsOf, windowBox } from './bot';
 import { playThrough } from './play';
+import { align } from './align';
 
 async function gateHolds(): Promise<void> {
   const { game, hub, chr, cb } = compileAll();
@@ -43,6 +45,8 @@ async function eggPocketed(): Promise<void> {
   if (bot.follow() !== id.stacks || bot.ci.inv[0] !== EGG_BLOCK) throw new Error('The egg did not come out of the Lost and Found');
   console.log(`ok   the felt egg: loose shelf, P, block ${EGG_BLOCK} in the pocket, back in the Stacks`);
 }
+
+if (align()) throw new Error('brief: a multi-block object is out of line (above)');
 
 await playThrough(process.argv[2])
   .then(() => (process.argv[2] ? undefined : gateHolds().then(eggPocketed)))
