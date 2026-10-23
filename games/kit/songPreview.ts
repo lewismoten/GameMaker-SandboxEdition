@@ -163,3 +163,30 @@ export function previewSongs(game: string, songs: [string, Uint8Array][]): void 
   console.log(`wrote ${songs.length} WAVs and songs.json to ${out}`);
   if (failed) process.exitCode = 1;
 }
+
+/** Lists each song's sections from its CMF markers (controller 0x66, which PLAYGAME skips) with the time each starts. */
+export function listSections(songs: [string, Uint8Array][]): void {
+  for (const [name, bytes] of songs) {
+    const cmf = parseCmf(bytes);
+    const m = cmf.music;
+    const marks: string[] = [];
+    let p = 0;
+    let tick = 0;
+    let programs = 0;
+    while (p < m.length) {
+      let v = 0;
+      let c: number;
+      do {
+        c = m[p++];
+        v = (v << 7) | (c & 0x7f);
+      } while (c & 0x80);
+      tick += v;
+      const s = m[p];
+      if (s === 0xff) break;
+      if ((s & 0xf0) === 0xc0) programs++;
+      if (s === 0xb0 && m[p + 1] === 0x66) marks.push(`${m[p + 2]}@${(tick / TICK_RATE).toFixed(1)}s`);
+      p += (s & 0xf0) === 0xc0 ? 2 : 3;
+    }
+    console.log(`${name.padEnd(8)} ${cmf.instruments.length} instruments, ${programs} program changes, sections ${marks.join(' ')}`);
+  }
+}
