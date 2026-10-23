@@ -149,7 +149,7 @@ Send ${price} (check or money order, US funds) to:
 
   Sandbox Software
   Attn: Maximus Registration
-  P.O. Box 4217
+  P.O. Box 000
   Pittsburgh, PA 15213
 
 Please tell us where you got your copy.
