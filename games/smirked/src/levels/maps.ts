@@ -259,8 +259,7 @@ const HALL: Record<string, string> = {
   m: 'mugs',
   d: 'desk0',
   D: 'desk1',
-  E: 'exitL',
-  F: 'exitR',
+  E: 'exitSign',
   X: 'exitDoor',
   $: 'dollarC',
   '*': 'candyC',
@@ -271,7 +270,7 @@ const HALL: Record<string, string> = {
 
 export function lastHall(book: BlockBook): Level {
   const map = rows([
-    '#VVVVVVVVVVVVVEFVVVVVVVVVVVVV#',
+    '#VVVVVVVVVVVVVEVVVVVVVVVVVVVV#',
     '#sspmmVVVVVVVVXVVVVVVVVVsspmm#',
     '#.....,......................#',
     '#..L....*.........*......r...#',

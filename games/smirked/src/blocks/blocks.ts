@@ -246,24 +246,19 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('register', register(false), { solid: SOLID, effect: MONEY, eamt: -SWORD_PRICE, score: 1200, touch: 'registerPaid' });
   book.add('registerPaid', register(true));
-  /** The emergency exit: the glowing sign (two blocks) over the door; only the wig gets you out. */
+  /** The emergency exit: the glowing sign, one block, right over the door, its arrow pointing down at it; only the wig gets you out. */
   const exitSign = (lit: boolean) => {
-    const p = new Pixels(40, 20);
-    p.rect(0, 0, 40, 20, c('velvet', 0)).rect(4, 4, 32, 12, ink).rect(5, 5, 30, 10, lit ? c('exitred', 1) : c('exitred', 0));
-    micro(p, 9, 7, 'EXIT', lit ? c('white', 2) : c('exitred', 2), 1);
-    p.rect(30, 7, 3, 1, lit ? c('white', 2) : c('exitred', 2)).set(32, 6, lit ? c('white', 2) : c('exitred', 2)).set(32, 8, lit ? c('white', 2) : c('exitred', 2));
-    if (lit) for (let x = 0; x < 40; x++) for (const y of [2, 17]) if ((x * 7) % 5 === 0) p.set(x, y, c('exitred', 0));
+    const p = curtain(1);
+    const on = lit ? c('white', 2) : c('exitred', 2);
+    p.rect(1, 3, 18, 15, ink).rect(2, 4, 16, 13, lit ? c('exitred', 1) : c('exitred', 0));
+    micro(p, 3, 5, 'EXIT', on, 1);
+    p.rect(9, 11, 2, 3, on).rect(7, 14, 6, 1, on).rect(8, 15, 4, 1, on);
+    if (lit) for (let x = 0; x < 20; x++) if ((x * 7) % 5 === 0) p.set(x, 1, c('exitred', 0)).set(x, 19, c('exitred', 0));
     return p;
   };
-  {
-    const a = exitSign(true);
-    const b = exitSign(false);
-    // it buzzes: lit, lit, lit, a flicker
-    book.add('exitL', a.crop(0, 0, 20, 20), { solid: SOLID, next: 'exitL2', ntime: 60 });
-    book.add('exitL2', b.crop(0, 0, 20, 20), { solid: SOLID, next: 'exitL', ntime: 2 });
-    book.add('exitR', a.crop(20, 0, 20, 20), { solid: SOLID, next: 'exitR2', ntime: 60 });
-    book.add('exitR2', b.crop(20, 0, 20, 20), { solid: SOLID, next: 'exitR', ntime: 2 });
-  }
+  // it buzzes: lit, lit, lit, a flicker
+  book.add('exitSign', exitSign(true), { solid: SOLID, next: 'exitSign2', ntime: 60 });
+  book.add('exitSign2', exitSign(false), { solid: SOLID, next: 'exitSign', ntime: 2 });
   const exitDoor = (open: boolean) => {
     const p = carpet(22);
     if (!open) {
