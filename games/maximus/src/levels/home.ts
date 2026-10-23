@@ -30,8 +30,6 @@ export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {
   g.set(L + 1, y, id('plant'));
   g.set(L + 1, y - 1, id('console:0'));
   info(L + 4, 'walk');
-  // a tin heart behind you at the start, by the potted plant
-  g.set(L + 2, y, id('tinHeart'));
   // 2. hop the crates
   info(L + 10, 'hop');
   g.set(L + 13, y, id('crate:0'));
@@ -53,9 +51,12 @@ export function homeMap(s: SetBuilder, ms: MonsterSet): PlanetResult {
   g.place(ms.index.get('Deck Rat')!, L + 37, y);
   g.place(ms.index.get('Crawler')!, L + 42, y);
   g.set(L + 44, y - 5, id('p:heart'));
-  // Mystery Robot Joe keeps count at the practice range; a painted Easter egg up on the catwalk
+  // Mystery Robot Joe keeps count at the practice range
   g.set(L + 31, y, id('joe'));
-  g.set(L + 27, y - 4, id('easterEgg'));
+  // up under the windows past the range, for a courier who jets up to look: a tin heart, and a
+  // painted Easter egg over the steam pipe
+  g.set(L + 47, top + 1, id('tinHeart'));
+  g.set(L + 58, top + 1, id('easterEgg'));
   // 5. crouch under the steam pipe (a low gap: roll through or hop over)
   for (let x = L + 53; x <= L + 55; x++) g.set(x, y - 2, id('pipe:wall'));
   g.set(L + 54, y, id('p:credit'));

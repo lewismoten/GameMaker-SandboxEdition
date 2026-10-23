@@ -13,15 +13,15 @@
   "tinHeart": {
     "map": "home.map",
     "at": [
-      8,
-      51
+      53,
+      43
     ]
   },
   "easterEgg": {
     "map": "home.map",
     "at": [
-      33,
-      47
+      64,
+      43
     ]
   },
   "label": {
