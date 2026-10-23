@@ -98,7 +98,7 @@ export function banquet(book: BlockBook): Level {
   const H = 12;
   const m = new MapBuilder(book, 'outside');
   m.row(0, 1, W - 2, 'frieze');
-  for (let x = 1; x < W - 1; x++) m.col(x, 1, 8, x % 6 < 3 ? 'wall' : 'wallB');
+  for (let x = 1; x < W - 1; x++) m.col(x, 1, 8, x % 8 === 3 ? 'wallB' : 'wall');
   m.row(9, 1, W - 2, 'base').row(10, 0, W - 1, 'floor').row(11, 0, W - 1, 'under');
   // columns and hanging lamps
   for (const x of [7, 21, 34, 44]) m.set(x, 0, 'colTop').col(x, 1, 8, 'col').set(x, 9, 'colBase');
@@ -143,7 +143,8 @@ export function battle(book: BlockBook): Level {
   const H = 13;
   const m = new MapBuilder(book, 'outside');
   m.fill(1, 0, W - 2, 2, 'skyHi');
-  for (let x = 1; x < W - 1; x++) m.col(x, 2, 7, x % 7 === 3 ? 'skyCloud' : 'sky');
+  for (let x = 1; x < W - 1; x++) m.col(x, 2, 7, 'sky');
+  for (const [x, y] of [[6, 3], [17, 2], [29, 4], [38, 2], [47, 3]]) m.set(x, y, 'skyCloud');
   m.row(8, 1, W - 2, 'hills').row(9, 1, W - 2, 'field').row(10, 0, W - 1, 'grass').fill(0, 11, W, 2, 'dirt');
   // rocks, the eagle standard, the camp's tents and a cup
   m.set(7, 9, 'rock').set(10, 9, 'aquila').set(12, 9, 'rock');
@@ -161,10 +162,10 @@ export function battle(book: BlockBook): Level {
   // THE CHEZ, parked by the gate: QVID EST?
   m.set(48, 9, 'chezL').set(49, 9, 'chezR').set(50, 9, 'quid');
   // the gate
-  m.col(51, 5, 9, 'gateTower').set(52, 7, 'gateTop').set(52, 8, 'gateTop').set(52, 9, 'gateWay').col(53, 5, 9, 'gateTower').col(54, 5, 9, 'gateTower');
-  m.link(52, 9, 'next');
+  m.col(51, 5, 7, 'gateTower').set(51, 8, 'gateTop').set(51, 9, 'gateWay').fill(52, 5, 3, 5, 'gateTower');
+  m.link(51, 9, 'next');
   // the Gaulish horde, right behind him
-  m.mon(MON.gaul, 1, 9).mon(MON.gaul2, -1, 9);
+  m.mon(MON.gaul, 0, 9).mon(MON.gaul2, -2, 9);
   return { m, start: at(4, 9), size: [W, H] };
 }
 
@@ -257,7 +258,8 @@ export function baths(book: BlockBook): Level {
   const walk = 10;
   const m = new MapBuilder(book, 'outside');
   m.row(0, 1, W - 2, 'vault');
-  for (let x = 1; x < W - 1; x++) m.col(x, 1, walk - 1, x % 9 === 4 ? 'bniche' : 'bwall');
+  m.fill(1, 1, W - 2, walk - 1, 'bwall');
+  for (const x of [4, 13, 26, 46, 57]) m.set(x, 5, 'bniche');
   m.row(walk, 1, W - 2, 'bbase').row(walk + 1, 0, W - 1, 'bfloor').row(walk + 2, 0, W - 1, 'bfloor2');
   for (const x of [16, 37, 53]) m.set(x, 0, 'bcolTop').col(x, 1, walk - 1, 'bcol').set(x, walk, 'bcolBase');
   m.set(4, 8, 'linteum');

@@ -24,7 +24,7 @@ export interface LevelDef {
 export const LEVELS: LevelDef[] = [
   { file: 'banquet', desc: 'Canis Meus Flatum Dedit', set: 'villa', who: 'marcus', light: 'banquet', build: banquet, snd: 'banquet', song: 'canis', mons: { run: 3 }, view: [9, 4] },
   // the horde charges along the ground from where it starts to the ditch, and tumbles in
-  { file: 'battle', desc: 'Laudes Ignavi', set: 'campus', who: 'marcus', light: 'battle', build: battle, snd: 'battle', song: 'ignavi', mons: { charge: [[41, 0], [43, 2]], chargeSpeed: 3, fall: 1 }, view: [16, 4] },
+  { file: 'battle', desc: 'Laudes Ignavi', set: 'campus', who: 'marcus', light: 'battle', build: battle, snd: 'battle', song: 'ignavi', mons: { charge: [[41, 0], [43, 2]], chargeSpeed: 2, fall: 1 }, view: [16, 4] },
   { file: 'roofs', desc: 'Titus Torquet Lingua', set: 'campus', who: 'marcus', light: 'roofs', build: roofs, snd: 'roofs', song: 'titus', mons: { run: 2 }, view: [24, 3] },
   { file: 'kitchen', desc: 'Felis Fortissimus', set: 'villa', who: 'felix', light: 'kitchen', build: kitchen, snd: 'kitchen', song: 'felis', mons: { run: 3 }, view: [14, 3] },
   { file: 'baths', desc: 'Canit Piscis Aureus', set: 'thermae', who: 'marcus', light: 'baths', build: baths, snd: 'baths', song: 'piscis', mons: {}, view: [22, 4] },

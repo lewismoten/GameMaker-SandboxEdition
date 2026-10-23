@@ -39,11 +39,11 @@ export function buildCampus(pal: Pal): BlockBook {
 
   // ---------- II. the battlefield ----------
   /** The sky (the backdrop ramp), with a wisp of cloud now and then. */
-  const sky = (seed: number, row = 2) => {
+  const sky = (seed: number, row = 2, clouds: boolean | 'always' = true) => {
     const p = P();
     for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) p.set(xx, y, shadeAt(R('sky'), row, row + 1, 0.3 + y / 40, xx, y));
     const r = rng(seed);
-    if (r() < 0.5) {
+    if (clouds === 'always' || (clouds && r() < 0.5)) {
       const cx = 3 + r() * 14;
       const cy = 4 + r() * 8;
       blob(p, cx, cy, 5, 2, R('marble'), 2, 3);
@@ -51,9 +51,9 @@ export function buildCampus(pal: Pal): BlockBook {
     }
     return p;
   };
-  book.add('sky', sky(1), air);
-  book.add('skyHi', sky(2, 0), air);
-  book.add('skyCloud', sky(3, 1), air);
+  book.add('sky', sky(1, 2, false), air);
+  book.add('skyHi', sky(2, 0, false), air);
+  book.add('skyCloud', sky(5, 2, 'always'), air);
   // the far hills (scenery on the walk row's upper half)
   const hills = (seed: number) => {
     const p = sky(seed, 3);
@@ -212,7 +212,7 @@ export function buildCampus(pal: Pal): BlockBook {
   // ---------- III. the rooftops of Rome ----------
   /** The sky at sunset over the city: domes and the far hills in silhouette low down. */
   const dusk = (seed: number, row: number, skyline = false) => {
-    const p = sky(seed, row);
+    const p = sky(seed, row, false);
     if (skyline) {
       const r = rng(seed);
       for (let xx = 0; xx < 20; xx++) {
@@ -279,7 +279,7 @@ export function buildCampus(pal: Pal): BlockBook {
   book.add('rcup', cup(x, dusk(42, 3, true)), { hp: 30, score: 10, touch: 'duskCity' });
   book.add('rcoin', denarius(x, dusk(43, 3, true)), { score: 100, touch: 'duskCity' });
   book.add('rgrapes', grapes(x, dusk(44, 3, true)), { hp: 20, score: 10, touch: 'duskCity' });
-  book.add('rwreath', wreath(x, dusk(45, 2)), { effect: LIFE, eamt: 1, score: 500, touch: 'dusk2' });
+  book.add('rwreath', wreath(x, dusk(45, 0)), { effect: LIFE, eamt: 1, score: 500, touch: 'dusk' });
   // the tituli: a painted sign on a post; touched, Titus's tongue twists it (counter 22)
   TITULI.forEach(([said, twisted], k) => {
     const sign = (twist: boolean) => {
