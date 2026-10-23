@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "BlAF0AFNBc0BUAXQAU0KzQFIBcgBTR7NAVAD0AJQAtABSAXIAU0tzQFQBdABTTzNAU0DzQJIBcgBTRTNAUgFyAFND80BUCPQAUseywFQBdABSwXLAVAK0AFLGcsBUAXQAU0ezQFQBdABTQ/NAU0DzQJNAs0BS1DLAVAF0AE5ArkMUArQAUseywFQBdABSx7LAU08zQFIBcgBSx7LAVAF0AFNbs0BUAXQAU0OzQFQD9ABTQXNAU0="
+   "keys": "BlAF0AFNBc0BUAXQAU0KzQFIBcgBTR7NAVAD0AJQAtABSAXIAU0tzQFQBdABTTzNAU0DzQJIBcgBTRTNAUgFyAFND80BUCPQAUseywFQBdABSwXLAVAK0AFLGcsBUAXQAU0ezQFIA8gCUAXQAU0PzQFNA80CTQLNAUtQywFQBdABOQK5DFAK0AFLHssBUAXQAUseywFNPM0BSAXIAUseywFQBdABTW7NAVAF0AFNCs0BUA/QAU0FzQFN"
   },
   {
    "scene": 5,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 20297,
+  "frames": 20301,
   "chapters": [
    {
     "title": "Opening",
@@ -67,15 +67,15 @@
    },
    {
     "title": "Level 4: The Stable",
-    "frame": 13825
+    "frame": 13829
    },
    {
     "title": "Ending",
-    "frame": 15667
+    "frame": 15671
    },
    {
     "title": "Credits",
-    "frame": 18209
+    "frame": 18213
    }
   ]
  }

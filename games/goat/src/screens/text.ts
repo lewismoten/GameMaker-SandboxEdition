@@ -66,7 +66,6 @@ export const INSTRUCTIONS = [
     'and take your place in the',
     'line at the manger: third',
     'from the left.',
-    '',
     'ARROWS or W A S D walk; Q/E',
     'and keypad 1/3 go diagonally.',
     '',
@@ -76,6 +75,8 @@ export const INSTRUCTIONS = [
     'cabbages and figs your',
     'health. Rope, laundry, a',
     'sandal... a goat eats it all.',
+    'Out of breath? Lean on a well',
+    'or trough; sip when it glints.',
   ]),
   page([
     'SPACE: SCREAM the way you',

@@ -24,6 +24,14 @@ export const GAP_LEAN = 18;
 export const GAP_SHUT = 36;
 /** Ticks between spits from a kneeling camel. */
 export const SPIT_EVERY = 46;
+/** Ticks a kneeling camel puffs its cheeks before each spit. */
+export const SPIT_WINDUP = 10;
+/**
+ * Water never runs out: a well, the oasis or a trough glints for one tick in every
+ * SIP_EVERY + 1, and a goat pushing into it then takes a sip (one breath and one hit point),
+ * so a goat who screamed her breath away can always get it back.
+ */
+export const SIP_EVERY = 28;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -259,7 +267,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.disc(8, 8, 1.5, c('water', 2));
     return p;
   };
-  book.add('well', well(), { solid: SOLID });
+  book.add('well', well(), { solid: SOLID, next: 'wellSip', ntime: SIP_EVERY });
   // The census: Caesar Augustus wants everyone counted. A goat can fix that.
   const census = (scroll: boolean) => {
     const p = cobble(111);
@@ -456,9 +464,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('water'), 0, 3, 0.4 + Math.sin((x + y * 2) / 3) * 0.2, x, y));
     return p;
   };
-  book.add('water', oasis(), { solid: SOLID });
+  book.add('water', oasis(), { solid: SOLID, next: 'waterSip', ntime: SIP_EVERY });
   // A camel kneeling at rest, spitting at whatever passes; facing left or right.
-  const camelKneel = (left: boolean) => {
+  const camelKneel = (left: boolean, windUp = false) => {
     const p = sand(155);
     blob(p, 10, 16, 9, 3, R('ink'), 0, 1, 0.4);
     blob(p, 11, 12, 8, 5, R('camel'), 0, 3);
@@ -467,10 +475,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     blob(p, 3, 5, 3, 2, R('camel'), 1, 3);
     p.set(1, 5, c('ink', 0)).set(2, 4, c('ink', 0));
     p.rect(8, 11, 8, 2, c('red', 2)).rect(8, 11, 8, 1, c('gold', 2));
+    // winding up to spit: cheeks puffed out and a bead of spit at the lips
+    if (windUp) blob(p, 3, 5, 4, 3, R('camel'), 1, 3).set(1, 5, c('ink', 0)).set(2, 3, c('ink', 0)).disc(0.5, 7, 1.5, c('star', 2));
     return left ? p : p.flipX();
   };
-  book.add('camelL', camelKneel(true), { solid: SOLID, hp: -3, birthMon: MON.spitL, birthTime: SPIT_EVERY });
-  book.add('camelR', camelKneel(false), { solid: SOLID, hp: -3, birthMon: MON.spitR, birthTime: SPIT_EVERY });
+  // Each kneeling camel rests, winds up for SPIT_WINDUP ticks (puffed cheeks), then spits: the
+  // spit is born from camelL/camelR, shown for one tick at the end of each SPIT_EVERY cycle.
+  // The maps place camelLRest/camelRRest (added at the end), whose animation runs the cycle.
+  book.add('camelL', camelKneel(true), { solid: SOLID, hp: -3, birthMon: MON.spitL, birthTime: SPIT_EVERY, next: 'camelLRest', ntime: 1 });
+  book.add('camelR', camelKneel(false), { solid: SOLID, hp: -3, birthMon: MON.spitR, birthTime: SPIT_EVERY, next: 'camelRRest', ntime: 1 });
   book.add('thornSand', thorn(sand(157), false), { solid: SOLID, hp: -4 });
   book.add('woolBushSand', thorn(sand(159), true), { solid: SOLID, effect: WOOL, eamt: 1, score: 20, touch: 'thornSand' });
   book.add('haySand', hayPile(sand(161), 161), { solid: SOLID, hp: 5, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'sand' });
@@ -522,7 +535,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   // A drink from the trough: always there, always a little health.
-  book.add('trough', trough(), { solid: SOLID, hp: 2 });
+  book.add('trough', trough(), { solid: SOLID, hp: 2, effect: SCREAMSEQ, eamt: 1 });
   // The pail: kicking it over costs points (and makes a terrible noise).
   const pail = (up: boolean) => {
     const p = straw(183);
@@ -673,5 +686,38 @@ export function buildBlocks(pal: Pal): BlockBook {
     'grey',
   ].flatMap((k) => R(k));
   book.add('lewie', straw(203).blit(lewieCameo(pal.pal, 'down0', { use: lit }), 0, 0, 255), { solid: SOLID });
+
+  // Sips (added last, so every block before keeps its number): the well and the oasis glint,
+  // and a stone trough by the field's path, so breath can always be had again (SIP_EVERY).
+  const glint = (p: Pixels, x: number, y: number) =>
+    p
+      .set(x, y, c('star', 2))
+      .set(x - 1, y, c('water', 3))
+      .set(x + 1, y, c('water', 3))
+      .set(x, y - 1, c('water', 3))
+      .set(x, y + 1, c('water', 3));
+  const sip = { solid: SOLID, hp: 1, effect: SCREAMSEQ, eamt: 1, ntime: 1 };
+  book.add('wellSip', glint(well(), 12, 11), { ...sip, next: 'well', touch: 'well' });
+  book.add('waterSip', glint(glint(oasis(), 6, 7), 14, 13), { ...sip, next: 'water', touch: 'water' });
+  const stoneTrough = (wet: boolean) => {
+    const p = grass(205);
+    blob(p, 10, 16, 9, 2, R('ink'), 0, 1, 0.4);
+    p.rect(1, 6, 18, 10, c('stone', 1)).rect(1, 6, 18, 2, c('stone', 4)).rect(3, 8, 14, 6, c('water', 1)).rect(4, 9, 5, 1, c('water', 3));
+    return wet ? glint(p, 13, 11) : p;
+  };
+  book.add('troughField', stoneTrough(false), { solid: SOLID, next: 'troughFieldSip', ntime: SIP_EVERY });
+  for (const side of ['L', 'R'] as const) {
+    const art = (w: boolean) => camelKneel(side === 'L', w);
+    book.add(`camel${side}Rest`, art(false), { solid: SOLID, hp: -3, next: `camel${side}Wind`, ntime: SPIT_EVERY - SPIT_WINDUP - 1 });
+    book.add(`camel${side}Wind`, art(true), { solid: SOLID, hp: -3, next: `camel${side}`, ntime: SPIT_WINDUP });
+  }
+  // A board on a stake by the first cousin in the field: SPACE, the scream key, taught where
+  // it is first needed.
+  const screamSign = grass(207);
+  blob(screamSign, 10, 18, 4, 1.5, R('ink'), 0, 1, 0.4);
+  screamSign.rect(9, 11, 2, 7, c('wood', 1)).rect(0, 3, 20, 9, c('cloth', 3)).rect(0, 3, 20, 1, c('wood', 2)).rect(0, 11, 20, 1, c('wood', 1));
+  micro(screamSign, 1, 5, 'SPACE', c('red', 1));
+  book.add('signScream', screamSign, { solid: SOLID });
+  book.add('troughFieldSip', stoneTrough(true), { ...sip, next: 'troughField', touch: 'troughField' });
   return book;
 }

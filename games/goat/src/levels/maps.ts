@@ -55,6 +55,8 @@ const LEGEND: Record<string, string> = {
   o: 'well',
   q: 'sandal',
   T: 'tentP',
+  '&': 'troughField',
+  $: 'signScream',
   U: 'tentB',
   Y: 'tentR',
   D: 'tentDoor',
@@ -62,8 +64,8 @@ const LEGEND: Record<string, string> = {
   '2': 'giftFrank',
   '3': 'giftMyrrh',
   '=': 'water',
-  '<': 'camelL',
-  '>': 'camelR',
+  '<': 'camelLRest',
+  '>': 'camelRRest',
   S: 'stall',
   '-': 'beam',
   '|': 'rail',
@@ -184,6 +186,10 @@ export function field(book: BlockBook): Level {
     ],
     52,
   );
+  // a stone trough beside the path before each wall the cousins stand in: a sip of breath
+  m.set(22, 7, '&').set(35, 7, '&');
+  // and a sign by the first cousin: SPACE screams
+  m.set(24, 7, '$');
   // the lambs in the fold, a cousin in the gap, more cousins grazing beyond
   m.mon(MON.lamb, 3, 3).mon(MON.lamb, 5, 2).mon(MON.lamb, 4, 6);
   m.mon(MON.goat, 25, 8);
