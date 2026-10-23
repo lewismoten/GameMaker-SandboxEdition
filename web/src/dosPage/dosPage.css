@@ -1,0 +1,302 @@
+/* dos.html (dosPage.ts): the PC's screen filling the window, the controls in a bar above it.
+   The picture inside the screen is retro/computer/monitor.css, as on the desk. */
+
+.dos-page {
+  --dos-bg: #000;
+  --dos-bar: #14161a;
+  --dos-text: #d8d8d8;
+  --dos-muted: #a8acb4;
+  --dos-btn: #2a2e36;
+  --dos-btn-hi: #3a404b;
+  --dos-edge: #555c68;
+  --dos-on: #2e7d4f;
+  --dos-accent: #ffd400;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--dos-bg);
+  color: var(--dos-text);
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
+}
+
+.dos-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 6px 12px;
+  background: var(--dos-bar);
+  border-bottom: 1px solid #000;
+}
+
+.dos-bar h1 {
+  margin: 0;
+  font:
+    700 15px ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+.dos-back {
+  color: var(--dos-text);
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dos-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.dos-btn {
+  min-height: 28px;
+  min-width: 28px;
+  padding: 3px 10px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  background: var(--dos-btn);
+  color: var(--dos-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.dos-btn:hover {
+  background: var(--dos-btn-hi);
+}
+
+.dos-btn[aria-pressed='true'] {
+  background: var(--dos-on);
+  border-color: #6fcf97;
+  color: #fff;
+}
+
+.dos-btn.dos-primary {
+  background: #8a1414;
+  border-color: #d06060;
+  color: #fff;
+}
+
+.dos-page :focus-visible,
+.dos-dialog :focus-visible {
+  outline: 2px solid var(--dos-accent);
+  outline-offset: 2px;
+}
+
+.dos-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+}
+
+.dos-check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+/* the screen: as large as the window allows, 4:3 */
+.dos-stage {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  container-type: size;
+}
+
+.dos-crt {
+  position: relative;
+  width: min(100cqw, 100cqh * 4 / 3);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #000;
+  cursor: text;
+}
+
+.dos-crt .dos-off {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--dos-muted);
+  font:
+    15px ui-monospace,
+    monospace;
+}
+
+.dos-crt[data-power='on'] .dos-off {
+  display: none;
+}
+
+.dos-status {
+  margin: 0;
+  padding: 0 12px;
+  min-height: 1.35em;
+  color: var(--dos-muted);
+  background: var(--dos-bar);
+}
+
+/* the keys for a phone or tablet */
+.dos-keys {
+  padding: 4px 12px;
+  background: var(--dos-bar);
+}
+
+.dos-keys summary {
+  min-height: 24px;
+  cursor: pointer;
+  color: var(--dos-muted);
+}
+
+.dos-keyrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 0;
+}
+
+.dos-key {
+  font:
+    600 13px ui-monospace,
+    monospace;
+}
+
+.dos-type {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 4px;
+}
+
+.dos-type input {
+  flex: 1;
+  min-width: 8em;
+  min-height: 28px;
+  padding: 2px 6px;
+  border: 1px solid var(--dos-edge);
+  border-radius: 4px;
+  background: #0b0c0e;
+  color: var(--dos-text);
+  font:
+    14px ui-monospace,
+    monospace;
+}
+
+/* the disk list */
+.dos-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0 16px 16px;
+  border: 1px solid var(--dos-edge, #555c68);
+  border-radius: 6px;
+  background: #14161a;
+  color: #d8d8d8;
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
+}
+
+.dos-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dos-dialog-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 8px;
+  background: #14161a;
+}
+
+.dos-dialog h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.dos-dialog h3 {
+  margin: 12px 0 6px;
+  font-size: 15px;
+  color: #a8acb4;
+}
+
+.dos-drive-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.dos-drive {
+  margin: 0;
+  flex: 1;
+}
+
+.dos-dialog ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dos-disk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #262a31;
+}
+
+.dos-disk-swatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.dos-disk-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* GM's copy check on a wide window: the screen makes room for the Owner's Guide on its left and
+   the registration card on its right (retro/gmReg/regSide.ts places them by the screen's box) */
+@media (min-width: 1100px) and (min-height: 600px) {
+  body:has(.rs.rs-on .rs-manual:not([hidden])) .dos-crt {
+    width: min(100cqw - 640px, 100cqh * 4 / 3);
+  }
+}
+
+.dos-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  background: var(--dos-bar);
+}
+
+.dos-foot > .dos-keys {
+  flex: 1 1 280px;
+}
+
+.dos-links ul {
+  margin: 4px 0;
+  padding-left: 1.2em;
+  color: var(--dos-muted);
+}
+
+.dos-links a {
+  color: #9cc4ff;
+  font-family: ui-monospace, monospace;
+}
