@@ -17,6 +17,8 @@ export interface BookPage {
   kind: 'cover' | 'text' | 'notes' | 'scores' | 'back';
   head?: [string, string];
   body: HTMLElement[];
+  /** A class for the page, for a booklet with a style of its own (measure it with the same class). */
+  cls?: string;
 }
 
 async function fillShots(entry: CatalogEntry, markup: string): Promise<HTMLElement> {
@@ -59,13 +61,13 @@ export function markFictionalAddresses(root: HTMLElement): number {
   return n;
 }
 
-/** A blank booklet page to measure content in, attached off screen. */
-function measurer(host: HTMLElement): () => { flow: HTMLElement; limit: number } {
+/** A blank booklet page to measure content in, attached off screen (with the pages' own class, if any). */
+export function measurer(host: HTMLElement, cls = ''): () => { flow: HTMLElement; limit: number } {
   return () => {
     host.replaceChildren();
     const flow = h('div', { class: 'mp-flow' });
     const inner = h('div', { class: 'mpage-in' }, h('div', { class: 'runhead' }, h('span', null, 'x'), h('span', null, 'x')), flow);
-    const page = h('section', { class: 'mpage' }, inner);
+    const page = h('section', { class: `mpage ${cls}` }, inner);
     host.append(page);
     const cs = getComputedStyle(inner);
     const limit = (inner.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)) * 0.985;
@@ -160,5 +162,5 @@ export function pageElement(p: BookPage, index: number): HTMLElement {
   if (p.head) inner.append(h('div', { class: 'runhead' }, h('span', null, p.head[0]), h('span', null, p.head[1])));
   inner.append(h('div', { class: 'mp-flow' }, ...p.body.map((b) => b.cloneNode(true))));
   if (p.kind !== 'cover' && p.kind !== 'back') inner.append(h('div', { class: 'folio' }, String(index)));
-  return h('section', { class: `mpage mp-${p.kind} ${p.kind === 'cover' ? 'cover' : ''} ${index % 2 ? 'mp-odd' : 'mp-even'}` }, inner);
+  return h('section', { class: `mpage mp-${p.kind} ${p.kind === 'cover' ? 'cover' : ''} ${index % 2 ? 'mp-odd' : 'mp-even'} ${p.cls ?? ''}` }, inner);
 }
