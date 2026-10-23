@@ -203,7 +203,7 @@ const LISTED: CastMember[] = [
     role: 'Small, riveted, ticking. Hidden somewhere.',
     hi: 'Tick… tock… Yes, I have a heart. I am a heart. Find me!',
     art: { game: 'teddy', width: 14, height: 12, alt: 'The tin heart: a small grey riveted tin heart with a shine on its corner' },
-    bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one. One is tucked away in many of the games, so it is something to look for: listen for the tick-tock.',
+    bio: 'A little riveted tin heart that ticks, a nod to the Tin Man, who went all the way to Oz to get one. One is hidden in every Sandbox and Bard of Bizarre game, so it is something to look for: listen for the tick-tock.',
     appears: [],
   },
   {
