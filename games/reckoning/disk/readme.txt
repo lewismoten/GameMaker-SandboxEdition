@@ -85,17 +85,18 @@ CREDITS (NOW)
   (lactose intolerant, loves
   cheesecake): monologue
   written by ChatGPT from
-  Lewis's prompt; recording:
-  (credit pending). The voice
-  clips here are cut from the
-  recording. The music and the
-  title art were made for this
-  game by Claude Opus 5.5. The
-  logo was made with DeepAI;
-  the Doc Leo photo is Lewis's
-  own. Built by Claude with
-  GAME-MAKER 3.0 by
-  Recreational Software
+  Lewis's prompt; recording
+  (voice) made with Riffusion
+  (now Google Flow Music). The
+  voice clips here are cut
+  from the recording. The
+  music and the title art were
+  made for this game by Claude
+  Opus 5.5. The logo was made
+  with DeepAI; the Doc Leo
+  photo is Lewis's own. Built
+  by Claude with GAME-MAKER 3.0
+  by Recreational Software
   Designs.
 
 Is there Lactaid in hell?

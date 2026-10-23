@@ -14,8 +14,8 @@ export const TITLE = 'THE GREAT DAIRY';
 export const SUBTITLE = 'RECKONING OF 3:17 A.M.';
 export const AUTHOR = 'The Bard of Bizarre';
 
-/** Who made the spoken recording the game's voice clips come from: not confirmed yet. */
-export const RECORDING_CREDIT = 'recording: (credit pending)';
+/** Who made the spoken recording the game's voice clips come from. */
+export const RECORDING_CREDIT = 'recording (voice) made with Riffusion (now Google Flow Music)';
 
 /**
  * Who made the monologue and the pictures: the words, the recording, and the title art and the
@@ -138,9 +138,10 @@ const CREDITS_TEXT = page(
     "Monologue: ChatGPT, from",
     "Lewis's prompt (it called it",
     '"The Cheesecake Temptation: A',
-    'Lactose Odyssey"). Recording:',
-    "(credit pending). This game's",
-    'voice clips are cut from it.',
+    'Lactose Odyssey"). Recording',
+    '(voice): Riffusion (now',
+    'Google Flow Music). Voice',
+    'clips here are cut from it.',
     'Music and title art: made for',
     'this game by Claude Opus 5.5',
     '(none came with the piece).',
@@ -252,17 +253,18 @@ CREDITS (NOW)
   (lactose intolerant, loves
   cheesecake): monologue
   written by ChatGPT from
-  Lewis's prompt; recording:
-  (credit pending). The voice
-  clips here are cut from the
-  recording. The music and the
-  title art were made for this
-  game by Claude Opus 5.5. The
-  logo was made with DeepAI;
-  the Doc Leo photo is Lewis's
-  own. Built by Claude with
-  GAME-MAKER 3.0 by
-  Recreational Software
+  Lewis's prompt; recording
+  (voice) made with Riffusion
+  (now Google Flow Music). The
+  voice clips here are cut
+  from the recording. The
+  music and the title art were
+  made for this game by Claude
+  Opus 5.5. The logo was made
+  with DeepAI; the Doc Leo
+  photo is Lewis's own. Built
+  by Claude with GAME-MAKER 3.0
+  by Recreational Software
   Designs.
 
 Is there Lactaid in hell?

@@ -11,10 +11,11 @@ there is nothing to pay. The
 piece is The Bard of Bizarre's
 (Lewis Moten's): monologue
 written by ChatGPT from Lewis
-Moten's prompt; recording:
-(credit pending); music and
-title art made for this game
-by Claude Opus 5.5.
+Moten's prompt; recording
+(voice) made with Riffusion
+(now Google Flow Music); music
+and title art made for this
+game by Claude Opus 5.5.
 
 Made in 2026 by Lewis Moten,
 with AI help from Claude.
