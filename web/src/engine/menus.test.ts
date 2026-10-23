@@ -1,3 +1,4 @@
+// Tests for gVertMenu (menus.ts): which keys typed before a menu opens it takes, as PLAYGAME's did.
 import { describe, expect, it } from 'vitest';
 import { gVertMenu } from './menus';
 import { Keyboard } from '../input/keyboard';
