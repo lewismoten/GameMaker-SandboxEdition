@@ -38,9 +38,9 @@ const DESC: Record<string, string> = {
   'CHEZXMAS.GIF': 'THE CHEZ, the 1976 1/2 CitiCar, strung with Christmas lights.',
   'CHEZTED.GIF': 'Doc Leo, Teddy and THE CHEZ. Photo: Nicky Foster.',
   'CHEZPLUG.GIF': 'THE CHEZ plugged in at a public charger. Electric since 1976!',
-  'THECHEZ1.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Dressed in Christmas lights and a big gold bow.',
-  'THECHEZ2.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Doc Leo and Teddy the corgi out for a spin. Photo: Nicky Foster.',
-  'THECHEZ3.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Plugged in at a public charger.',
+  'THECHEZ1.GIF': 'THE CHEZ in Christmas lights and a big gold bow, at 640x480.',
+  'THECHEZ2.GIF': 'Doc Leo and Teddy out for a spin in THE CHEZ. Photo: Nicky Foster.',
+  'THECHEZ3.GIF': 'THE CHEZ plugged in at a public charger, at 640x480.',
   // The Sofa's GIF area: Doc Leo's uploads
   'BARDLOGO.GIF': "The Bard of Bizarre's logo: the rooster in glasses. Logo made with DeepAI.",
   'LEOCHICK.GIF': 'Doc Leo, hobo clown, walking his rubber chicken down the middle of a parade. It heels. Mostly.',

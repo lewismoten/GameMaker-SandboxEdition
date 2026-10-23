@@ -11,12 +11,13 @@ import { bytesAt, GIF_CPS, GIF_TIME_COMPRESSION } from '../src/retro/bbs/gifArea
 import { decodePicture, GALLERY, SOFA_GIFS } from '../src/retro/bbs/gallery';
 import { decodePartialJpeg } from '../src/formats/jpeg';
 
-/** The Sandbox BBS's GIF Gallery (VGA-sized snapshots); The Sofa's 640x480 GIFs are tested below. */
+/** The VGA-sized snapshots (scripts/bbsGifs.ts), on either board; the 640x480 GIFs are tested below. */
 const sandbox = list.filter((f) => !f.board);
-const sofa = list.filter((f) => f.board === 'sofa');
+const small = list.filter((f) => f.width <= 320);
+const big = list.filter((f) => f.width > 320);
 
 describe('GIF Gallery files', () => {
-  it.each(sandbox)('$name is a 1994 download: 8.3 name, 320x200 or smaller, small', (f) => {
+  it.each(small)('$name is a 1994 download: 8.3 name, 320x200 or smaller, small', (f) => {
     expect(f.name).toMatch(/^[A-Z0-9_]{1,8}\.(GIF|JPG)$/);
     const bytes = new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', f.name)));
     expect(bytes.length).toBe(f.bytes);
@@ -54,8 +55,8 @@ describe('GIF Gallery files', () => {
   });
 });
 
-describe("The Sofa's GIF pictures", () => {
-  it.each(sofa)('$name is a 640x480 interlaced GIF, small enough for a 14.4k (or a patient 2400) caller', (f) => {
+describe('The 640x480 GIF pictures', () => {
+  it.each(big)('$name is a 640x480 interlaced GIF, small enough for a 14.4k (or a patient 2400) caller', (f) => {
     expect(f.name).toMatch(/^[A-Z0-9_]{1,8}\.GIF$/);
     const bytes = new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', f.name)));
     expect(bytes.length).toBe(f.bytes);
@@ -73,14 +74,14 @@ describe("The Sofa's GIF pictures", () => {
   });
 
   it('paints coarse first: a fifth of the file fills the whole picture in bands of rows', () => {
-    const f = sofa[0];
+    const f = big[0];
     const bytes = new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', f.name)));
     const pic = decodePicture(bytes.subarray(0, Math.floor(bytes.length * 0.2)))!;
     expect(pic.complete).toBe(false);
     const row = (y: number) => pic.pixels.subarray(y * 640, (y + 1) * 640);
     expect(row(479).some((p) => p !== pic.blank)).toBe(true); // the bottom is there, roughly
     expect(row(9)).toEqual(row(8)); // standing in for the rows still to come
-    expect(SOFA_GIFS.map((x) => x.name)).toEqual(sofa.map((x) => x.name));
+    expect(SOFA_GIFS.map((x) => x.name)).toEqual(list.filter((x) => x.board === 'sofa').map((x) => x.name));
   });
 });
 
@@ -119,7 +120,7 @@ describe('gallery download', () => {
   });
 
   it('takes about as long as it did at 14,400 bps', () => {
-    for (const f of sandbox) {
+    for (const f of small) {
       const seconds = f.bytes / (GIF_CPS * GIF_TIME_COMPRESSION);
       expect(seconds, f.name).toBeGreaterThan(3);
       expect(seconds, f.name).toBeLessThan(35);
