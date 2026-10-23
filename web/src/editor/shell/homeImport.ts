@@ -10,6 +10,7 @@ import { gameFromPageFiles } from '../../project/importPage';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
+import { takeCompanion } from '../../project/companion';
 
 export async function newGame(nav: HomeNav): Promise<void> {
   const choice = await modal<{ name: string; starter: boolean }>('New game', (close) => {
@@ -104,8 +105,10 @@ async function importFiles(nav: HomeNav, { files, name, gam }: Imported): Promis
     ]);
     return;
   }
+  // a backup's editor-only extras (<game>.GMX) go back beside the files, not among them
+  const companion = takeCompanion(files);
   if (!files.mainGame()) toast('No .gam file found — a new one was created for these files.');
-  const p = Project.fromFiles(files, name);
+  const p = Project.fromFiles(files, name, undefined, companion);
   if (gam && files.has(gam)) p.gam = gam;
   await p.saveNow();
   // listed under Imported, apart from the games made here (⋯ More can move it to My games)

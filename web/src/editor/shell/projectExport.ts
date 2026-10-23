@@ -13,7 +13,7 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
     return undefined;
   }
   const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
-  return { title, gam: p.record.gam, files: async () => p.files, project: true };
+  return { title, gam: p.record.gam, files: async () => p.files, project: true, companion: () => p.record.companion };
 }
 
 /** Opens the chooser for a game of yours. */

@@ -18,6 +18,7 @@ import { plainError } from '../core/plainError';
 import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
 import type { GameFiles } from '../../project/files';
+import type { Companion } from '../../project/companion';
 
 export interface DownloadGame {
   title: string;
@@ -32,6 +33,8 @@ export interface DownloadGame {
   box?: { background?: string };
   /** A game of yours: its files can be downloaded as they are, too. */
   project?: boolean;
+  /** A game of yours: its editor-only extras, which only the "Game files" backup carries (project/companion.ts). */
+  companion?: () => Companion | undefined;
   /** Our own games: made now, presented as a 1990s release (export/fiction.ts), for the About text. */
   fiction?: string;
 }
@@ -219,8 +222,8 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(files, { title: game.title, gam: game.gam });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {
-      const { createZip } = await import('../../project/zip');
-      const zip = await createZip(files.entries().map(([name, data]) => ({ name: name.toUpperCase(), data })));
+      const [{ createZip }, { backupEntries }] = await Promise.all([import('../../project/zip'), import('../../project/companion')]);
+      const zip = await createZip(backupEntries(files, game.gam, game.companion?.()));
       save(`${game.gam.replace(/\.gam$/i, '')}.zip`, zip, 'application/zip', 'Import it here again whenever you like.');
     }
     downloaded(kind);
