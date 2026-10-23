@@ -236,7 +236,7 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     Veni, Vidi, Risi! is Lewis’s group of comic songs in Latin: its lyrics were shaped with ChatGPT from Lewis’s prompts and its music and vocals made with Riffusion (now Google Flow Music); the
     game Veni, Vidi, Risi! takes its sung clips and FM score from those recordings, and its code, pictures (the title and cover art among them) and FM arrangements were made by Claude Opus 5.5. Third Goat from the
     Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover
-    came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai.
+    came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai, Riffusion’s later name (Google bought it, and it is now Google Flow Music).
     The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly
     Named Carl, Cleanse Me, O Loofah, But Leave My Soul and I Screamed, She Smirked, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy
     Reckoning’s title art were drawn for the games by Claude Opus 5.5. The Bard’s logo was made
