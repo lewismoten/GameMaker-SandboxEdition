@@ -2,7 +2,8 @@
 // same code the web app's "Download for Mac" runs (src/export/macApp.ts). Run from web/:
 //
 //   npx vite-node scripts/macDmg.ts teddy goat realm      some catalog games, by id
-//   npx vite-node scripts/macDmg.ts --all                 every listed game
+//   npx vite-node scripts/macDmg.ts --all                 every gameware, Sandbox and Bard game (not
+//                                                         the other authors' shareware)
 //   npx vite-node scripts/macDmg.ts --html mygame.html --title "My Game" --id mygame
 //   ... --zip                                              a .zip of the app as well
 //   ... --out <dir>                                        instead of ../dist/mac
@@ -90,7 +91,7 @@ async function main(): Promise<void> {
     return;
   }
   const catalog = cdCatalog(cd);
-  const picked = process.argv.includes('--all') ? catalog.filter((e) => e.gam) : ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  const picked = process.argv.includes('--all') ? catalog.filter((e) => e.gam && (e.kind === 'gameware' || e.original)) : ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
   if (!picked.length) throw new Error('Name the games (catalog ids), --all, or --html <file>.');
   const template = await buildSinglePageTemplate();
   const where = cdFiles(cd);
