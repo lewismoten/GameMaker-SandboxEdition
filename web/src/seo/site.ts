@@ -29,6 +29,11 @@ export const ROUTES = {
     title: `Guide · ${PRODUCT}`,
     description: `How to use ${PRODUCT}: making blocks, monsters and characters, building maps and scenes, sounds and music, testing and exporting your game for the web or DOS.`,
   },
+  cast: {
+    title: `The cast · ${PRODUCT}`,
+    description:
+      'Who keeps turning up in the new games: Teddy the corgi, Gwinn, Doc Leo the friendly hobo clown, THE CHEZ the tomato-red CitiCar, Carl the fly and more, with where to find each one, and how the Sandbox Software games differ from The Bard of Bizarre’s.',
+  },
   editor: {
     title: `Editor · ${PRODUCT}`,
     description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,

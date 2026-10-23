@@ -81,6 +81,7 @@ function startModern(hash?: string): void {
       h('a', { href: '#/', title: FORK_NOTE }, h('span', { class: 'brand-title' }, 'GAME-MAKER', h('small', { class: 'edition' }, EDITION))),
       titleSlot,
       h('span', { class: 'spacer' }),
+      h('a', { href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
       themeButton(),
       h(
@@ -160,6 +161,13 @@ async function route(): Promise<void> {
   workspace?.dispose();
   workspace = undefined;
   clear(titleSlot);
+  if (kind === 'cast') {
+    const { renderCast } = await import('./cast/castPage');
+    if (ui !== 'modern') return;
+    document.title = `The cast · ${PRODUCT}`;
+    renderCast(content);
+    return;
+  }
   if (kind === 'help') {
     content.setAttribute('role', 'main');
     const { title } = { title: id ? decodeURIComponent(id).replace(/-/g, ' ') : '' };
@@ -198,11 +206,11 @@ function notHere(): void {
 window.addEventListener('hashchange', () => void route());
 
 // Links into today's web (a project #/p/…, a game on the home page #/game/…, the guide
-// #/help, the home page #/) open it, #/desk the desk; otherwise use the last choice.
+// #/help, the cast #/cast, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
-const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help'].includes(startPath[0] ?? '');
+const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : ['p', 'game', 'help', 'cast'].includes(startPath[0] ?? '');
 if (modernLink || (startPath[0] !== 'desk' && savedUi() === 'modern')) startModern();
 else void startDesk();
 

@@ -15,7 +15,7 @@
       (function (d, h) {
         var ui = 'desk';
         try {
-          ui = /^#\/?(\?|$)|^#\/(p|game|help)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
+          ui = /^#\/?(\?|$)|^#\/(p|game|help|cast)(\/|\?|$)/.test(h) || (!/^#\/desk(\?|$)/.test(h) && localStorage.getItem('gm-ui') === 'modern') ? 'modern' : 'desk';
         } catch (e) {}
         var t = 'dark';
         try {
