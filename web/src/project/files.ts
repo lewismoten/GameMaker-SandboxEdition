@@ -127,6 +127,7 @@ export const IGNORED_FILE = /\.(exe|com|bat|drv|ico|bak|obj|map\.bak)$/i;
 import type { OriginalExtras } from '../../scripts/cdGames';
 import { withSecretGames } from './secretGames';
 import { PackReader } from './gamePack';
+import type { Issue } from './health';
 
 export interface CatalogEntry {
   id: string;
@@ -163,6 +164,8 @@ export interface CatalogEntry {
   gz?: boolean;
   /** Built sites: all its files in one gzipped file in its folder (project/gamePack.ts, openPack), named with a hash of its content. */
   pack?: string;
+  /** Built sites: what the quick check (project/health.ts) finds in it, so no file need be fetched to know. */
+  health?: Issue[];
   /** From games/catalog.json: its notice, manual and printables are in games/details/<id>.json (withDetails). */
   details?: boolean;  /** Original games: the site path of its walkthrough (src/walkthrough), when it has one. */
   walkthrough?: string;

@@ -38,6 +38,7 @@ function cached(key: string, run: () => Promise<Issue[]>): Promise<Issue[]> {
 /** A game from the CD or the Sandbox collection, served from ./games/. */
 export function catalogTarget(g: CatalogEntry): HealthTarget {
   const quick = async (): Promise<Issue[]> => {
+    if (g.health) return g.health; // checked when the site was built
     const wanted = g.files.filter((n) => QUICK_CHECK_FILE.test(n));
     const loaded = new Map<string, Uint8Array>();
     await Promise.all(
