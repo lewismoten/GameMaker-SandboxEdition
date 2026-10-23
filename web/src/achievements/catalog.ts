@@ -6,6 +6,8 @@
 //
 // No text here names a game that the catalog keeps out of sight, or says how many there are.
 
+import type { AchievementRecord } from './store';
+
 export type Category = 'making' | 'playing' | 'watching' | 'desk' | 'fun' | 'found';
 
 export const CATEGORIES: { id: Category; title: string; blurb: string }[] = [
@@ -116,4 +118,13 @@ export const achievementById = (id: string): Achievement | undefined => BY_ID.ge
 export function shownText(a: Achievement, unlocked: boolean): { title: string; desc: string; icon: string } {
   if (unlocked || !a.hidden) return { title: a.title, desc: a.desc, icon: a.icon };
   return { title: '???', desc: a.hint ?? 'Keep looking.', icon: '❔' };
+}
+
+/** What a card says about how far along it is, or undefined when it shows no count. */
+export function progressOf(a: Achievement, r: AchievementRecord): { n: number; of: number } | undefined {
+  if (a.hidden && !r.unlocked[a.id]) return undefined;
+  if (!a.of && !a.from) return undefined;
+  const p = r.progress[a.id];
+  if (r.unlocked[a.id]) return p ? { n: Math.max(p.n, p.of), of: p.of } : undefined;
+  return p ?? (a.of ? { n: 0, of: a.of } : undefined);
 }

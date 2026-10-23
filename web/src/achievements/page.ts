@@ -5,21 +5,12 @@
 import './page.css';
 import { h, clear, confirmDialog } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
-import { ACHIEVEMENTS, CATEGORIES, shownText, type Achievement } from './catalog';
+import { ACHIEVEMENTS, CATEGORIES, progressOf, shownText, type Achievement } from './catalog';
 import { refreshGoals } from './goals';
 import { ACHIEVEMENTS_CHANGED, loadAchievements, resetAchievements, type AchievementRecord } from './store';
 
 const dateOf = (t: number) => new Date(t);
 const longDate = (t: number) => dateOf(t).toLocaleDateString('en-US', { dateStyle: 'medium' } as Intl.DateTimeFormatOptions);
-
-/** What a card says about how far along it is, or undefined when it shows no count. */
-export function progressOf(a: Achievement, r: AchievementRecord): { n: number; of: number } | undefined {
-  if (a.hidden && !r.unlocked[a.id]) return undefined;
-  if (!a.of && !a.from) return undefined;
-  const p = r.progress[a.id];
-  if (r.unlocked[a.id]) return p ? { n: Math.max(p.n, p.of), of: p.of } : undefined;
-  return p ?? (a.of ? { n: 0, of: a.of } : undefined);
-}
 
 function bar(n: number, of: number, label: string): HTMLElement {
   const pct = of ? Math.round((n / of) * 100) : 0;
