@@ -875,6 +875,16 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       else desk.querySelector(".desk-scene")?.append(el);
     });
   });
+  // the tin heart hunt's trophy, once every heart is found (nothing at all until then)
+  let unTrophy: (() => void) | undefined;
+  void import("../tinHearts/trophy").then(({ heartTrophy }) => {
+    if (!desk.isConnected) return;
+    unTrophy = heartTrophy((el) => {
+      const clip = desk.querySelector(".news-clipping");
+      if (clip) clip.after(el);
+      else desk.querySelector(".desk-scene")?.append(el);
+    });
+  });
   void sandboxShots().then((shots) => {
     for (const t of boxTiles.querySelectorAll<HTMLElement>(".tile")) {
       const shot = shots.find((s) => s.id === t.dataset.game);
@@ -893,6 +903,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     shelf?.dispose();
     unCatalog();
     unEggs?.();
+    unTrophy?.();
     removeWarp();
     capture?.dispose();
     computer?.screen.destroy();
