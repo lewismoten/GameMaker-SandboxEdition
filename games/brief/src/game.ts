@@ -4,6 +4,9 @@
 //   2  the reading room  3  the Reserve Stacks  4  the thirty-third book's card
 //   then for each wing: its hallway and its four books;
 //   45 the Lost and Found (behind the loose shelf in the Stacks; the felt egg).
+//   46 the reading nook (behind a gap in the Other Dimensions hallway's shelves; the tin
+//      heart and the Easter egg). The only scene that scrolls: two windows wide, so its far
+//      end is off screen as Joe comes in.
 //
 // PLAYGAME shows a scene's intro graphic on every way in and its exit graphic on every way
 // out, so the hallways and the reading room have neither. A book's intro is its cover page
@@ -54,6 +57,7 @@ export interface SceneIds {
   hall: (w: number) => number;
   book: (w: number, k: number) => number;
   lost: number;
+  nook: number;
 }
 
 export function sceneIds(): SceneIds {
@@ -64,6 +68,7 @@ export function sceneIds(): SceneIds {
     hall: (w) => 5 + w * 5,
     book: (w, k) => 5 + w * 5 + 1 + k,
     lost: 5 + 8 * 5,
+    nook: 5 + 8 * 5 + 1,
   };
 }
 
@@ -124,6 +129,15 @@ export function buildGame(hub: CompiledHub, wings: CompiledWing[]): Game {
   game.scenes.push(lost);
   stacks.links[2] = { toScene: id.lost, from: hub.looseShelf, to: hub.lost.entry };
   lost.links[0] = { toScene: id.stacks, from: hub.lostOut, to: hub.stacks.entry };
+  // the reading nook: in through the gap in a hallway's shelves, out by its door to the hallway
+  const wi = wings.findIndex((w) => w.nook);
+  const nook = wings[wi].nook!;
+  const nookScene = scene('Reading Nook', files(wings[wi].area.file, `${wings[wi].area.file}.cmf`), 310, 110);
+  nookScene.scroll = { ...nookScene.scroll, left: 0xff, right: 0xff };
+  if (game.scenes.length !== id.nook) throw new Error('Scene numbers out of step');
+  game.scenes.push(nookScene);
+  game.scenes[id.hall(wi)].links[5] = { toScene: id.nook, from: nook.gap, to: nook.entry };
+  nookScene.links[0] = { toScene: id.hall(wi), from: nook.out, to: wings[wi].hall.entry };
   title.links[0] = { toScene: id.room, from: { x: 0, y: 0 }, to: hub.room.entry };
   return game;
 }

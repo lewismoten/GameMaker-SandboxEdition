@@ -71,6 +71,17 @@ export interface CompiledWing {
   spines: { x: number; y: number }[];
   door: { x: number; y: number };
   books: CompiledBook[];
+  /** A quiet nook behind a gap in the hallway's shelves (levels/hidden.ts), if the wing has one. */
+  nook?: Nook;
+}
+
+/** The nook: its own scene, two screens wide and scrolling, so its far end is never on screen as Joe comes in. */
+export interface Nook {
+  /** The gap in the hallway's shelves (a link into the nook). */
+  gap: { x: number; y: number };
+  /** Where Joe comes in, and the way back out to the hallway. */
+  entry: { x: number; y: number };
+  out: { x: number; y: number };
 }
 
 /** A bookshelf: three shelves of books of every color. */
