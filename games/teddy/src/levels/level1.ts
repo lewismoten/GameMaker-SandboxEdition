@@ -51,7 +51,7 @@ export function backyard(): Level {
   };
   house(88, 12);
   house(0, 5);
-  m.set(4, 38, 'houseDoor').set(4, 39, 'houseDoor');
+  m.set(4, 38, 'houseDoor').set(4, 39, 'houseDoorB');
   m.set(2, 28, 'chimney');
 
   // Teddy's doghouse.
@@ -68,9 +68,9 @@ export function backyard(): Level {
   m.set(24, 39, 'box').set(24, 38, 'box');
   m.rect(25, 36, 7, 1, 'line');
   m.set(27, 36, 'lineSock').set(30, 36, 'lineSock');
-  m.set(25, 36, 'poleTop').set(25, 37, 'poleT').set(25, 38, 'poleH');
-  m.set(31, 36, 'poleTop').set(31, 37, 'poleT').set(31, 38, 'poleH');
-  m.set(28, 37, 'sheet').set(29, 37, 'sheet');
+  m.set(25, 36, 'poleTop').set(25, 37, 'poleT').set(25, 38, 'poleH').set(25, 39, 'pole');
+  m.set(31, 36, 'poleTop').set(31, 37, 'poleT').set(31, 38, 'poleH').set(31, 39, 'pole');
+  m.set(28, 36, 'lineSheetL').set(29, 36, 'lineSheetR').set(28, 37, 'sheet').set(29, 37, 'sheetR');
 
   // The squirrel's stretch, and a hint.
   m.set(34, 39, 'signWoof');
@@ -82,7 +82,7 @@ export function backyard(): Level {
   const oak = 56;
   m.rect(oak - 4, 28, 9, 9, (x, y) => (Math.abs(x - oak) + Math.abs(y - 32) > 6 ? `sky${bandOf(y)}` : `leaf${bandOf(y)}`));
   m.rect(oak - 2, 30, 5, 5, (x, y) => (Math.abs(x - oak) + Math.abs(y - 32) < 3 ? 'leafDark' : `leaf${bandOf(y)}`));
-  m.rect(oak, 33, 1, 6, (_x, y) => (y < 37 ? 'trunkLeaf' : 'trunk'));
+  m.rect(oak, 33, 1, 6, (_x, y) => (y < 37 ? 'trunkLeaf' : y === 37 ? 'trunk' : 'trunkHedge'));
   m.set(oak, 39, 'roots');
   m.set(oak - 4, 39, 'stump');
   m.set(oak - 5, 39, 'signFetch');
