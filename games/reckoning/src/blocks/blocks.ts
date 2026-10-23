@@ -233,8 +233,9 @@ export function buildBlocks(pal: Pal): BlockBook {
   const couch = (part: 'seat' | 'back' | 'arm', seed: number) => {
     const p = part === 'back' ? wall(seed) : base.crop(0, 0, 20, 20);
     if (part === 'back') p.rect(0, 6, 20, 14, c('green', 1)).rect(0, 6, 20, 3, c('green', 2)).rect(0, 6, 20, 1, c('green', 3));
-    else if (part === 'arm') blob(p.rect(2, 4, 16, 16, c('green', 1)), 10, 6, 8, 4, R('green'), 1, 3);
-    else p.rect(0, 6, 20, 14, c('green', 1)).rect(0, 6, 20, 4, c('green', 3)).rect(0, 10, 20, 1, c('green', 0)).rect(9, 6, 1, 4, c('green', 0));
+    else if (part === 'arm') blob(p.rect(1, 5, 18, 15, c('green', 1)), 10, 6, 9, 4, R('green'), 1, 3);
+    // the seat: the back runs on down behind the cushions (no strip of wall between them)
+    else p.rect(0, 0, 20, 20, c('green', 1)).rect(0, 6, 20, 4, c('green', 3)).rect(0, 10, 20, 1, c('green', 0)).rect(9, 6, 1, 4, c('green', 0));
     return p;
   };
   book.add('couchBack', couch('back', 61), { solid: LEDGE, grav: GRAV.down });
