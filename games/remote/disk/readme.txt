@@ -50,9 +50,9 @@ THIS IS SHAREWARE
 
   If it made you check your own
   couch, register for $5: you
-  get a tape of the song and a
-  roll of duct tape for your
-  remote. Send a check (US
+  get a couch-cushion sticker
+  and a roll of duct tape for
+  your remote. Send a check (US
   funds) to:
 
     The Bard of Bizarre
