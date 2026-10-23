@@ -3,10 +3,11 @@
     "blaster": { "map": "s2a.map", "at": [16, 70] },
     "goat": { "map": "field.map", "at": [52, 20] },
     "logic": { "map": "attic.map", "at": [3, 7] },
+    "needle": { "map": "tailor.map", "at": [35, 17] },
     "realm": { "map": "port.map", "at": [10, 33] },
     "sleuth": { "map": "act1.map", "at": [11, 56] },
     "smirked": { "map": "foyer.map", "at": [30, 16] },
     "teddy": { "map": "backyard.map", "at": [5, 39] }
   },
-  "pending": ["brief", "carl", "depth", "loaf", "loofah", "maximus", "mustard", "needle", "reckoning", "remote", "risi", "sandcast", "snowbound", "sweats", "teddy2", "tickle", "year2000"]
+  "pending": ["brief", "carl", "depth", "loaf", "loofah", "maximus", "mustard", "reckoning", "remote", "risi", "sandcast", "snowbound", "sweats", "teddy2", "tickle", "year2000"]
 }
