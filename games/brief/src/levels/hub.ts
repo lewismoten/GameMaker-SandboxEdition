@@ -96,6 +96,8 @@ function redDoor(half: 0 | 1): Pixels {
     roof: c('ink', 2),
     tire: c('ink', 0),
     hub: c('grey', 5),
+    rim: c('paper', 4),
+    stripe: c('ink', 1),
     bumper: c('ink', 1),
     lamp: c('paper', 4),
     tail: c('orange', 2),
