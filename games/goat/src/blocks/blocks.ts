@@ -10,6 +10,9 @@ import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import type { Pal } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
+import { lewieCameo } from '../../../kit/cameos';
 import { MON, SCREAMSEQ, WOOL, WOOL_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
@@ -544,5 +547,21 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('rope', rope(), { solid: SOLID, effect: WOOL, eamt: -WOOL_NEEDED, score: 500, touch: 'straw' });
+
+  // Keepsakes, added last so every block before keeps its number. A tin heart in the grass in
+  // the far corner of the shepherds' field (a glint crosses it now and then) and a painted
+  // Easter egg half in the sand by the caravan's west rocks: each a few points, gone when
+  // touched (the ground under it is its touch block), with no sound of its own.
+  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('star', 2), dark: c('grey', 1) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(grass(23), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'grassB', score: 100 });
+  const egg = { ink: c('ink', 0), shell: R('pink'), paint: [c('blue', 1), c('blue', 2)], accent: c('gold', 3), white: c('star', 2) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(sand(43), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'sand', score: 50 });
+  // Teenage Lewie (Snowbound: red knit hat, red coat, his snow shovel) helping muck out the
+  // stable's back corner. Scenery: he stands where the stall wall was, so he is solid like it.
+  // Drawn in the lit ramps only, so the stable's lamplight falls on him as on everyone else.
+  const lit = ['ink', 'grass', 'dirt', 'sand', 'stone', 'brick', 'wood', 'hay', 'goat', 'horn', 'wool', 'camel', 'donkey', 'ox', 'blue', 'red', 'purple', 'skin', 'olive', 'thorn', 'water', 'cloth', 'pink', 'grey'].flatMap((k) => R(k));
+  book.add('lewie', straw(203).blit(lewieCameo(pal.pal, 'down0', { use: lit }), 0, 0, 255), { solid: SOLID });
   return book;
 }

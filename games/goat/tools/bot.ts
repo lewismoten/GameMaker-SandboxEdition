@@ -32,6 +32,9 @@ const EAT = new Map([
   [n('dusty'), 3],
 ]);
 
+/** The tin heart and the Easter egg: left for the player to find (the bot never takes or steps on them). */
+const KEEPSAKES = new Set([...BLOCK].filter(([name]) => /^(tinHeart|easterEgg)\d*$/.test(name)).map(([, i]) => i));
+
 export class Bot {
   log: string[] = [];
   /** Extra cost per cell (a camel's line of spit). */
@@ -84,6 +87,7 @@ export class Bot {
     const shown = this.sim.shown(x, y);
     const b = this.sim.blockAt(x, y);
     const extra = (this.avoid.get(`${x},${y}`) ?? 0) + (this.crowd?.has(y * 100 + x) ? 30 : 0);
+    if (KEEPSAKES.has(b)) return undefined;
     if (shown.solid) {
       const d = EAT.get(this.sim.w.blkmap[b]) ?? EAT.get(b);
       return d === undefined ? undefined : 1 + d + extra;
@@ -173,6 +177,7 @@ export class Bot {
         const y = (my + by) % 100;
         const n = this.sim.blockAt(x, y);
         const b = this.sim.shown(x, y);
+        if (KEEPSAKES.has(n)) continue;
         if (b.touchBl === (this.sim.w.blkmap[n] ?? n) || b.chHitPt < 0 || b.scorePts < 0 || (b.effect && b.eamt < 0)) continue;
         if (b.scorePts > 0 || b.chHitPt > 0 || (b.effect && b.eamt > 0)) out.push({ x, y });
       }

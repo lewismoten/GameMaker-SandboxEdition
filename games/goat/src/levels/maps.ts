@@ -195,6 +195,8 @@ export function field(book: BlockBook): Level {
   m.mon(MON.goat, 39, 8).mon(MON.goat, 40, 8);
   m.mon(MON.cousin, 30, 4).mon(MON.cousin, 33, 15);
   m.mon(MON.lamb, 10, 16).mon(MON.lamb, 30, 12);
+  // a tin heart in the grass, in the far corner past the shepherds' camp
+  m.set(50, 18, 'tinHeart');
   m.link(51, 8, 'next');
   return { m, start: at(3, 4) };
 }
@@ -296,6 +298,8 @@ export function caravan(book: BlockBook): Level {
   m.mon(MON.wiseman, 12, 13);
   m.mon(MON.goat, 19, 15);
   m.mon(MON.cousin, 8, 17).mon(MON.rooster, 30, 3);
+  // a painted Easter egg half in the sand by the west rocks
+  m.set(1, 16, 'easterEgg');
   m.link(39, 21, 'next');
   return { m, start: at(0, 1) };
 }
@@ -334,6 +338,8 @@ export function stable(book: BlockBook): Level {
   m.mon(MON.donkey, 15, 4).mon(MON.ox, 16, 4);
   m.mon(MON.lamb, 2, 6).mon(MON.lamb, 25, 12).mon(MON.lamb, 3, 12);
   m.mon(MON.pigeon, 8, 7).mon(MON.pigeon, 20, 11).mon(MON.rooster, 17, 9);
+  // Teenage Lewie, visiting from Snowbound with his shovel, mucking out the back corner
+  m.set(28, 12, 'lewie');
   m.link(12, 4, 'won');
   return { m, start: at(1, 9) };
 }
