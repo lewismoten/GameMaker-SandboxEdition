@@ -17,6 +17,8 @@ import './workspace.css';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
+import { noteOpened, quickOpen } from './quickOpen';
+import { usedByLine, deleteMessage } from './usedBy';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -134,6 +136,12 @@ export class Workspace {
     document.addEventListener('pointerdown', onDown);
     // ? lists the open editor's keyboard shortcuts (not while typing or play testing)
     const onHelpKey = (e: KeyboardEvent) => {
+      // Ctrl+P / ⌘P: the quick switcher (instead of printing the page)
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'p' && !this.player && !document.querySelector('dialog[open]')) {
+        e.preventDefault();
+        void this.quickOpen();
+        return;
+      }
       if (this.player || !wantsShortcuts(e)) return;
       e.preventDefault();
       void showShortcuts(this.current ? kindOf(this.current) : undefined);
@@ -143,6 +151,12 @@ export class Workspace {
   }
 
   private unbind?: () => void;
+
+  /** The quick switcher (Ctrl+P): opens the file chosen. */
+  private async quickOpen(): Promise<void> {
+    const f = await quickOpen(this.project);
+    if (f) this.open(f);
+  }
 
   private listed = new Set<string>();
 
@@ -334,6 +348,7 @@ export class Workspace {
     this.player?.stop();
     this.player = undefined;
     this.current = file;
+    noteOpened(this.project, file);
     this.sidebar.classList.remove('open');
     // a new file starts at its top (phones scroll the window, wide screens the editor)
     window.scrollTo(0, 0);
@@ -363,6 +378,11 @@ export class Workspace {
           { class: 'toolbar' },
           h(
             'button',
+            { class: 'keys-btn', title: 'Open a file by name (Ctrl+P)', 'aria-label': 'Open a file by name', 'aria-keyshortcuts': 'Control+P Meta+P', onclick: () => void this.quickOpen() },
+            h('span', { 'aria-hidden': 'true' }, '⌕'),
+          ),
+          h(
+            'button',
             { class: 'keys-btn', title: 'Keyboard shortcuts (?)', 'aria-label': 'Keyboard shortcuts', 'aria-keyshortcuts': 'Shift+?', onclick: () => void showShortcuts(kindOf(file)) },
             keyboardIcon(),
           ),
@@ -374,7 +394,7 @@ export class Workspace {
           ]),
         ),
       ),
-      isGam ? this.nextSteps() : null,
+      isGam ? this.nextSteps() : usedByLine(this.project, file),
       body,
     );
     const editor = editors[kindOf(file)] ?? fileInfo;
@@ -587,9 +607,7 @@ export class Workspace {
   }
 
   private async remove(file: string): Promise<void> {
-    const uses = this.project.usesOf(file);
-    const note = uses.length ? ` It is used by ${uses.length} scene slot(s).` : '';
-    if (!(await confirmDialog('Delete file', `Delete ${file}?${note}`, 'Delete'))) return;
+    if (!(await confirmDialog('Delete file', deleteMessage(this.project, file), 'Delete'))) return;
     this.project.files.delete(file);
     this.open(this.project.gam);
   }

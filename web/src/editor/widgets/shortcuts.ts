@@ -162,6 +162,7 @@ const COMMON: Group = {
   title: 'Everywhere',
   rows: [
     [['?'], 'Show this list'],
+    [[`${MOD}+P`], 'Open a file by name (recent files first)'],
     [['Tab', 'Shift+Tab'], 'Move between controls'],
     [['Esc'], 'Close a dialog or the Files list'],
   ],

@@ -6,6 +6,7 @@ import { parseMap } from '../../formats/map';
 import { parseMonsters } from '../../formats/monster';
 import { parseCharacter, frameCount } from '../../formats/character';
 import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '../../formats/game';
+import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
 import type { Project } from './project';
 import { formatHash } from '../../urlState';
 
@@ -38,6 +39,19 @@ export function slotName(project: Project, scene: number, slot: number): string 
 /** Every scene slot that names the file, as readable lines. */
 export function sceneUses(project: Project, file: string): Use[] {
   return project.usesOf(file).map((u) => ({ file: project.gam, text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`, count: 1 }));
+}
+
+/** Slide shows (.lst) and backdrops (.bkd) that show the file. */
+export function scriptUses(project: Project, file: string): Use[] {
+  const n = normalize(file);
+  const out: Use[] = [];
+  for (const f of project.files.byExtension('lst')) {
+    const k = tryParse(() => parseSlideList(project.files.get(f)!))?.filter((e) => normalize(e.name) === n).length ?? 0;
+    if (k) out.push({ file: f, text: `slide show ${f}`, count: k });
+  }
+  for (const f of project.files.byExtension('bkd'))
+    if (normalize(tryParse(() => parseBackdrop(project.files.get(f)!))?.gif ?? '') === n) out.push({ file: f, text: `backdrop ${f}`, count: 1 });
+  return out;
 }
 
 /** The level scenes that use `file` in `slot`, with the file each has in `other`. */
