@@ -185,7 +185,7 @@ THIS IS SHAREWARE
   Eventually.
 
     Sandbox Software
-    P.O. Box 1995
+    P.O. Box 000
     Pittsburgh, PA 15213
 
   Or call THE SANDBOX BBS, open
