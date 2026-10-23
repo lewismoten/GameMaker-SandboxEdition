@@ -1,19 +1,10 @@
-// "Screenshots" for the Game-Maker box on the desk, drawn from the free sample games'
-// real maps: the area where each game's first level starts.
-import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
-import { parseGame } from '../../formats/game';
-import {
-  BUILT_SHOTS,
-  builtMapShotPath,
-  builtMapViews,
-  builtShotPath,
-  busiest,
-  firstLevels,
-  levelPixels,
-  mapPixels,
-  type MapView,
-} from '../../gfx/levelPicture';
-import { paintIndexed } from '../../editor/core/draw';
+// "Screenshots" of a game drawn from its real maps (the area where its first level starts):
+// for the desk's boxes and disk labels, the play page's poster, the home page's cards, the
+// cast and the printed manuals.
+import { GameFiles, fetchGameFile, type CatalogEntry } from '../project/files';
+import { parseGame } from '../formats/game';
+import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, mapPixels, type MapView } from './levelPicture';
+import { paintIndexed } from '../editor/core/draw';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
   // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names); fetched once, shared

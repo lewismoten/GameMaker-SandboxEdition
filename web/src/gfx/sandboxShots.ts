@@ -1,7 +1,7 @@
 // Screenshots of the Sandbox Software games, all made with Game-Maker, for the Game-Maker
 // SE box art and its Owner's Guide: each drawn from the game's own map (its box's first view).
-import { loadGameList, type CatalogEntry } from '../../project/files';
-import { mapShot, renderShot } from './boxArt';
+import { loadGameList, type CatalogEntry } from '../project/files';
+import { mapShot, renderShot } from './gameShots';
 
 export interface GameShot {
   id: string;

@@ -42,7 +42,7 @@ async function loadBundle(): Promise<{ id: string; title: string; gam: string; f
 
 /** A shot of the game's first level, for the start screen (drawn while you read it). */
 async function posterOf(entry: CatalogEntry): Promise<string | undefined> {
-  const { renderShot } = await import('./desk/boxes/boxArt');
+  const { renderShot } = await import('./gfx/gameShots');
   const c = document.createElement('canvas');
   c.width = 320;
   c.height = 200;

@@ -6,7 +6,7 @@
 import './manualCover.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { mapShot } from '../../desk/boxes/boxArt';
+import { mapShot } from '../../gfx/gameShots';
 import { portrait, sandboxLogo, splitTitle } from './kit';
 
 /** What the manual is called on its cover: "Courier Manual" from "Maximus - Courier Manual". */

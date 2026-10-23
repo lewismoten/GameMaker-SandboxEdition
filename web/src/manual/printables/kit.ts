@@ -1,7 +1,7 @@
 // Shared bits for the paper in the box: sheets of a given size, map pictures, and the
 // note that says the addresses are made up.
 import { h } from '../../editor/core/ui';
-import { mapShot } from '../../desk/boxes/boxArt';
+import { mapShot } from '../../gfx/gameShots';
 import { builtHeroPath, heroOf } from '../../gfx/levelPicture';
 import type { CatalogEntry } from '../../project/files';
 import type { MapPanel, PrintablesFile, Portrait, SpriteArt } from './types';

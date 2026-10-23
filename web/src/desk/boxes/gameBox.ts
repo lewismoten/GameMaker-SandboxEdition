@@ -8,7 +8,7 @@ import { drawSandboxMark } from '../../manual/printables/sandboxMark';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
-import { mapShot, renderShot } from './boxArt';
+import { mapShot, renderShot } from '../../gfx/gameShots';
 import { parseGame, type Game } from '../../formats/game';
 import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBack, playHours, shotCaption, type BoxGame } from './boxFacts';
 import { wear } from './boxWear';

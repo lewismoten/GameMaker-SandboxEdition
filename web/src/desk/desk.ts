@@ -22,7 +22,7 @@ import { onCatalogChanged } from '../project/catalogWatch';
 import { snowyWindow } from './room/snowWindow';
 // the box on the desk wears gmBox.css's ribbon; the box's insides load when it is opened
 import './boxes/gmBox.css';
-import { SANDBOX_SHOTS, sandboxShots } from './boxes/gmShots';
+import { SANDBOX_SHOTS, sandboxShots } from '../gfx/sandboxShots';
 import { fitStage } from './stage';
 import { keyCardSpot } from './pc/keyCard';
 import { regSide } from '../retro/gmReg/regSide';
@@ -122,7 +122,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   });
   const lamp = deskLamp();
   const modem = deskModem(() => void command('C:\nTERMINAL'));
-  // The same Sandbox games as the box's 3D front (boxes/gmShots.ts), each with what it shows off.
+  // The same Sandbox games as the box's 3D front (gfx/sandboxShots.ts), each with what it shows off.
   const BOX_TILES = SANDBOX_SHOTS.slice(0, 6).map(([id, feature]) => [id, feature] as [string, string]);
   const boxTiles = h(
     'div',

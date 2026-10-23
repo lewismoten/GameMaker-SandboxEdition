@@ -5,7 +5,7 @@
 import './rsdLabel.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { renderShot } from '../boxes/boxArt';
+import { renderShot } from '../../gfx/gameShots';
 
 const shots = new Map<string, Promise<string | undefined>>();
 

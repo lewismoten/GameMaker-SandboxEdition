@@ -5,7 +5,7 @@
 // at the top (homeShowcase.ts), which plays its demo and offers everything else with gameActions().
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
-import { renderShot } from '../../desk/boxes/boxArt';
+import { renderShot } from '../../gfx/gameShots';
 import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';

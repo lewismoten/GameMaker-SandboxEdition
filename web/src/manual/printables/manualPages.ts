@@ -2,7 +2,7 @@
 // stapled manuals in shareware boxes), padded with note pages to whole folded sheets, with
 // its own front cover (manualCover.ts) and a back cover.
 import { h } from '../../editor/core/ui';
-import { mapShot } from '../../desk/boxes/boxArt';
+import { mapShot } from '../../gfx/gameShots';
 import type { CatalogEntry } from '../../project/files';
 import { bookletPageCount } from './imposition';
 import { paginate } from './paginate';

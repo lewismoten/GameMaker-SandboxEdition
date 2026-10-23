@@ -8,7 +8,7 @@ import './gmItems.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
 import type { CatalogEntry } from '../../project/files';
-import { sandboxShots } from '../../desk/boxes/gmShots';
+import { sandboxShots } from '../../gfx/sandboxShots';
 import type { BoxItem } from './viewer';
 import { BBS_PHONE, sandboxBanner, sandboxLogo, sheet, shotCache, type PrintContext, type Sheet } from './kit';
 import { bbsAd, catalog } from './gen';

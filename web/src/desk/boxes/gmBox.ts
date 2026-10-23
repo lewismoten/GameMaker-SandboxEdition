@@ -4,7 +4,7 @@
 import './gmBox.css';
 import { h } from '../../editor/core/ui';
 import type { BoxFaces } from './gameBox';
-import { loadedShots, preloadShots, sandboxShots } from './gmShots';
+import { loadedShots, preloadShots, sandboxShots } from '../../gfx/sandboxShots';
 import { gmCover } from '../../manual/printables/gmCover';
 import { priceSticker } from './boxSeals';
 import { GM_PRICE, gmFloppy } from '../../manual/printables/gmInserts';

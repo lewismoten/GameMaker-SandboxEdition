@@ -7,7 +7,7 @@
 import './wallPoster.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
-import { mapShot } from '../boxes/boxArt';
+import { mapShot } from '../../gfx/gameShots';
 import type { BoxExtras } from '../boxes/boxFacts';
 import { seeded } from '../boxes/boxFacts';
 
