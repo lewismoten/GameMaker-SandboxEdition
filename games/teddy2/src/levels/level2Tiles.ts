@@ -34,10 +34,10 @@ export function mainTiles(): Tiles {
   t.wall('grass', grassTop(6));
   t.air('lawn', tuft(sky(3), 31));
   t.air('picket', picket(tuft(sky(3), 32), true));
-  t.air('hedgeTop', hedge(true, 21));
+  t.air('hedgeTop', hedge(true, 21, skyRow(30)));
   t.wall('hedgeWall', hedge(false, 25));
   t.air('leaf', leaves(7, sky(2)));
-  t.air('leafLow', leaves(8, sky(3)));
+  t.air('leafHi', leaves(8, skyRow(33)));
   t.air('trunk', trunk(sky(3)));
 
   // The Dog House, the tiny library on Maple Street (a book, the paw-knob snack drawer).

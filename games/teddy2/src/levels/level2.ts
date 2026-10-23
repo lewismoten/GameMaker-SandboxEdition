@@ -12,7 +12,7 @@
 // The blocks are in level2Tiles.ts, the monsters in level2Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
 import { reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
-import { G, mainTiles, skyAt } from './level2Tiles';
+import { G, bandRow, mainTiles, skyAt } from './level2Tiles';
 import { mainBeasts } from './level2Beasts';
 
 /** The street after the den: the egg taken, Gwinn's dirt dug out. */
@@ -60,7 +60,7 @@ export function main(): Level {
     [0, 36],
     [2, 36],
   ])
-    m.set(x, y, y >= 36 ? 'leafLow' : 'leaf');
+    m.set(x, y, bandRow(y) === 1 ? 'leafHi' : 'leaf');
   m.set(4, 37, 'libRoofL').set(5, 37, 'libRoofR');
   m.set(4, 38, 'libBooks').set(5, 38, 'libDrawer');
   m.set(4, 39, 'libRocksL').set(5, 39, 'libRocksR');

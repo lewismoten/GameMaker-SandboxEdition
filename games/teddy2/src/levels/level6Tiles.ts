@@ -37,7 +37,7 @@ export function mazeTiles(): Tiles {
   t.wall('dirt', dirt(3));
   t.wall('deep', dirt(5, true));
   t.air('tuft', tuft(sky(3), 11));
-  t.air('hedgeTop', hedge(true, 21));
+  t.air('hedgeTop', hedge(true, 21, sky(bandRow(29))));
   t.wall('hedgeWall', hedge(false, 25));
   t.wall('lot', road(false, 4));
   t.wall('lotLine', (() => {
