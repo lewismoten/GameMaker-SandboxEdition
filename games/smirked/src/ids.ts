@@ -38,6 +38,8 @@ export const MON = {
   goat: 17,
   /** Lily walking beside you on the last level, apple in hand. */
   lilyNear: 18,
+  /** A loose dollar bill blowing about (money). */
+  bill: 19,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */
