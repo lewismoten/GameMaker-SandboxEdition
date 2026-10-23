@@ -18,6 +18,32 @@ import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { FAITH, MON, WATER, WATER_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
+type Attrs = NonNullable<Parameters<BlockBook['add']>[2]>;
+
+/** A BlockBook that keeps each block's attributes, so a block can be copied in a deeper sky. */
+class ToneBook extends BlockBook {
+  readonly attrs = new Map<string, Attrs>();
+  override add(name: string, pic: Pixels, a: Attrs = {}): number {
+    this.attrs.set(name, a);
+    return super.add(name, pic, a);
+  }
+}
+
+/**
+ * The blocks the evening sky shows up the great plant, copied with the sky a shade or two
+ * darker (`name~1`, `name~2`): the sky deepens toward the top, so the plant stands out and the
+ * height reads (MapBuilder.tone lays them). Each shift lists only what its rows show.
+ */
+export const DUSK_TONED: Record<number, string[]> = {
+  2: ['sky', 'wisp', 'branch', 'breeze0', 'breeze1', 'cloudA', 'cloudB', 'cloudL', 'cloudR', 'waterSky', 'life', 'sun0', 'sun1'],
+  1: ['sky', 'wisp', 'branch', 'nest', 'breeze0', 'breeze1', 'sun0', 'sun1', 'stalkL', 'stalkR'],
+};
+/** Blocks that blend one tone into the next down the block where two bands meet (`name~2to1`): [shift at the top, at the bottom, the blocks that row shows]. */
+export const SKY_BLENDS: [number, number, string[]][] = [
+  [0, 2, ['sky']],
+  [2, 1, ['sky', 'sun0', 'sun1']],
+  [1, 0, ['sky', 'stalkL', 'stalkR', 'breeze0', 'breeze1']],
+];
 /** Solid on top only: stand on it, hop up through it. */
 export const LEDGE = 1;
 export const GRAV = { none: 0, up: 1, down: 4 } as const;
@@ -27,7 +53,7 @@ export const RAIN_EVERY = 40;
 export const SCREE_EVERY = 90;
 
 export function buildBlocks(pal: Pal): BlockBook {
-  const book = new BlockBook();
+  const book = new ToneBook();
   const { r: R, c } = pal;
   const P = () => new Pixels(20, 20);
   const air = { grav: GRAV.down };
@@ -523,5 +549,25 @@ export function buildBlocks(pal: Pal): BlockBook {
       touch: 'sky',
       score: 50,
     });
+
+  // The deeper evening sky (DUSK_TONED, SKY_BLENDS), added after the keepsakes so every block
+  // before keeps its number. A copy's touch and next blocks are copies in the same tone too.
+  const skyShades = R('sky');
+  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  const copy = (names: string[], suffix: string, shiftAt: (x: number, y: number) => number) => {
+    const named = (n?: string) => (n && names.includes(n) ? `${n}${suffix}` : n);
+    for (const name of names) {
+      const p = book.pics.get(name)!.crop(0, 0, 20, 20);
+      p.px.forEach((v, i) => {
+        const k = skyShades.indexOf(v);
+        if (k >= 0) p.px[i] = skyShades[Math.max(0, k - shiftAt(i % 20, Math.floor(i / 20)))];
+      });
+      const a = book.attrs.get(name)!;
+      book.add(`${name}${suffix}`, p, { ...a, touch: named(a.touch), next: named(a.next) });
+    }
+  };
+  for (const [shift, names] of Object.entries(DUSK_TONED)) copy(names, `~${shift}`, () => Number(shift));
+  for (const [from, to, names] of SKY_BLENDS)
+    copy(names, `~${from}to${to}`, (x, y) => ((y + 0.5) / 20 > (BAYER[(y % 4) * 4 + (x % 4)] + 0.5) / 16 ? to : from));
   return book;
 }

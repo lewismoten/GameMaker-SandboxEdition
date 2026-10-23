@@ -6,7 +6,7 @@
 import { PaletteBuilder } from '../../../kit/palette';
 
 type RGB = [number, number, number];
-export type Light = 'dawn' | 'under' | 'day' | 'gold' | 'plain';
+export type Light = 'dawn' | 'garden' | 'under' | 'day' | 'gold' | 'plain';
 
 /** [name, shades, dark, light, mid?, glows?] */
 const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
@@ -43,6 +43,16 @@ const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
       [150, 62, 70],
       [246, 176, 172],
       [216, 120, 122],
+    ],
+    mul: [1, 0.92, 0.9],
+    add: [16, 4, 6],
+  },
+  // the garden level: the cover's rose a step deeper, so the yellow seed stands out against it
+  garden: {
+    sky: [
+      [124, 46, 62],
+      [228, 146, 150],
+      [184, 86, 100],
     ],
     mul: [1, 0.92, 0.9],
     add: [16, 4, 6],

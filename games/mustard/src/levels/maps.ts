@@ -132,6 +132,29 @@ export class MapBuilder {
     return this;
   }
 
+  /** Rows y0..y1 in a deeper sky: each block with a `~shift` copy (blocks.ts DUSK_TONED) becomes it. */
+  tone(y0: number, y1: number, shift: number): this {
+    const names = new Map([...this.book.index].map(([name, n]) => [n, name]));
+    for (let y = y0; y <= y1; y++)
+      for (let x = 0; x < 100 - ORIGIN; x++) {
+        const i = (y + ORIGIN) * 100 + x + ORIGIN;
+        const deeper = this.book.index.get(`${names.get(this.map.blocks[i])}~${shift}`);
+        if (deeper !== undefined) this.map.blocks[i] = deeper;
+      }
+    return this;
+  }
+
+  /** Row y blended from tone `from` (top) to `to` (bottom): each block with a `~from` + `to` copy (blocks.ts SKY_BLENDS) becomes it. */
+  blend(y: number, from: number, to: number): this {
+    const names = new Map([...this.book.index].map(([name, n]) => [n, name.replace(/~\d$/, '')]));
+    for (let x = 0; x < 100 - ORIGIN; x++) {
+      const i = (y + ORIGIN) * 100 + x + ORIGIN;
+      const blended = this.book.index.get(`${names.get(this.map.blocks[i])}~${from}to${to}`);
+      if (blended !== undefined) this.map.blocks[i] = blended;
+    }
+    return this;
+  }
+
   mon(id: number, x: number, y: number): this {
     if (this.monCount >= 200) throw new Error('Too many monsters');
     this.map.monsters[this.monCount++] = { monnum: id, status: 0, xtra: 0, curx: x + ORIGIN, cury: y + ORIGIN, extra: 0 };
@@ -290,7 +313,7 @@ export function sky(book: BlockBook): Level {
     .col(W - 1, 0, 45, '#')
     .row(44, 1, W - 2, '=')
     .row(45, 0, W - 1, '#');
-  m.set(5, 30, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
+  m.set(5, 31, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
   // the great plant's stalk, up the middle
   m.col(12, 18, 43, '[').col(13, 18, 43, ']');
   // its branches, every three rows (hop up through them)
@@ -308,6 +331,9 @@ export function sky(book: BlockBook): Level {
   m.mon(MON.squirrel, 9, 36).mon(MON.bird, 15, 36).mon(MON.bird, 16, 19).mon(MON.crow, 8, 10).mon(MON.squirrel, 9, 16).mon(MON.bee, 17, 27);
   // a painted Easter egg at the foot of the great plant, far over on the left
   m.set(1, 43, 'easterEgg');
+  // the evening deepens toward the top (the light around the palm stays bright)
+  m.tone(4, 15, 2).tone(16, 29, 1);
+  m.blend(4, 0, 2).blend(16, 2, 1).blend(30, 1, 0);
   m.link(13, 1, 'won');
   return { m, start: at(12, 43), size: [W, H] };
 }

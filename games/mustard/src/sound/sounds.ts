@@ -1,5 +1,5 @@
 // The sound sets: a PC speaker sound for every effect, each backed by a Sound Blaster .VOC.
-// The little noises are synthesized here (a boing for every hop, the scritch of a root, a
+// The little noises are synthesized here (a soft spring for every hop, the scritch of a root, a
 // drip, a chime, a sip of dew, an "eep!", a wilting sigh, a pop, stone crumbling); the singing
 // is cut from the song itself (clips.ts): "...the mustard seed hustle!" or "...got the greatest
 // feet!" for an extra life, "Hallelujah!" for Space and H (up in the sky, "keep the mustard
@@ -51,12 +51,11 @@ export type Place = 'garden' | 'dust' | 'mountain' | 'sky';
 /** Every VOC on the disk, by name. */
 export function buildVocs(): Record<string, Uint8Array> {
   const vocs: Record<string, Uint8Array> = {};
-  // the greatest feet: a springy boing
-  vocs.boing = sample(
-    0.32,
-    mix([osc.sine((t) => 260 + 520 * Math.exp(-t * 9) + 40 * Math.sin(t * 70)), 0.8], [osc.sine((t) => 520 + 1040 * Math.exp(-t * 9)), 0.2]),
-    { envelope: env(0.02, 1.4) },
-  );
+  // the greatest feet: a small, soft spring (it plays on every hop, so it stays short and quiet)
+  vocs.boing = sample(0.14, mix([osc.sine((t) => 300 + 340 * Math.exp(-t * 22)), 0.85], [osc.sine((t) => 600 + 680 * Math.exp(-t * 22)), 0.15]), {
+    envelope: env(0.015, 2.2),
+    gain: 0.42,
+  });
   // a root pushing down into the dust: a gritty scritch
   vocs.scritch = sample(0.24, mix([gate(lowNoise(3, 0.55), 0, 0.08), 0.8], [gate(lowNoise(4, 0.35), 0.1, 0.2), 0.7]), { envelope: () => 1, gain: 0.7 });
   // a drop of water (or of faith)
@@ -135,7 +134,7 @@ export function buildSoundSet(place: Place): SoundSet {
   add(
     SND.hop,
     'boing',
-    speaker((i) => (i < 14 ? 300 + Math.sin(i * 0.9) * 60 + (14 - i) * 40 : 0)),
+    speaker((i) => (i < 5 ? 320 + (5 - i) * 50 : 0)),
   );
   add(SND.root, 'scritch', SPEAKER.noise(4, 90, 260));
   add(SND.hurt, 'eep', SPEAKER.warble(900, 120, 2.4));
