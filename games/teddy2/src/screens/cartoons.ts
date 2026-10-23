@@ -137,7 +137,7 @@ export function finaleFli(): Uint8Array {
       burst(p, 110, 70, (f + 15) % 22, 'blue');
       const x0 = -150 + f * 6;
       scaleBlit(p, car, x0 + 90, 72, 3);
-      scaleBlit(p, head, x0 + 124, 92 - (f % 2), 2);
+      scaleBlit(p, head, x0 + 124, 104 - (f % 2), 2);
       scaleBlit(p, POSES[f % 6 < 3 ? 'frontBeg' : 'frontReach'], x0 + 100, 52 - (f % 2), 2);
       scaleBlit(p, GWINN[f % 2 ? 'gwinnRun1' : 'gwinnRun2'], x0 + 20, 150, 2);
       // her blue ribbon

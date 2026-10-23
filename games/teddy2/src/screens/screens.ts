@@ -335,7 +335,7 @@ export function driveFli(): Uint8Array {
     scaleBlit(p, carPic, x, 66 + bob, 3);
     // Doc Leo at the wheel behind the door window; Teddy's head out of the back window (in the flat
     // tail, so it pokes out behind the car), ears flapping
-    scaleBlit(p, leoHead, x + 34, 86 + bob, 2);
+    scaleBlit(p, leoHead, x + 34, 98 + bob, 2);
     scaleBlit(p, POSES[f % 4 < 2 ? 'front' : 'frontTilt'].crop(0, 4, 20, 10), x - 17, 93 + bob, 2);
     // the electric whirr
     for (let k = 0; k < 3; k++) p.rect(x - 14 - k * 10 - (f % 2) * 3, 150 + k * 7, 8 - k * 2, 1, c('paint', 3));

@@ -3,6 +3,7 @@
 // what Gwinn dropped on that stop), the things she dropped, and Doc Leo's costume pieces
 // (for the cartoons). Pockets drove it in the first adventure; he is still in the code.
 import { Pixels } from '../../../kit/pixels';
+import { chezSide, type ChezInk } from '../../../kit/chez';
 import { CLEAR, blob, over, sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { canvas, cut } from '../blocks/tiles';
@@ -96,12 +97,12 @@ export function propOn(base: Pixels, name: string): Pixels {
 }
 
 /**
- * Doc Leo's car: a red 1976 CitiCar, the tiny electric wedge (a doorstop on wheels), 2x2
- * blocks [roof L, roof R], [door, back]. It faces right, so it shows its passenger side:
- * a flat back with the charging port low on it, a short flat roof, a steep windshield, then
- * the long flat hood sloping down to the pointed nose, big black bumpers at both ends and
- * small round whitewall wheels. `open` swings the door open (only the lower left block
- * changes, as that is the block Teddy walks into).
+ * Doc Leo's car: THE CHEZ, a red 1976½ CitiCar, 2x2 blocks [roof L, roof R], [door, back],
+ * drawn from the shared side view (games/kit/chez.ts) stretched up so its roof meets the top
+ * blocks and Doc Leo fits in it beside the people. It faces right, so it shows the driver's
+ * side: the black roof, the one door window, the racing stripes stepping up over the rear
+ * quarter. `open` opens the door (only the lower left block changes, as that is the block
+ * Teddy walks into).
  */
 export function klownCar(base: (bx: number, by: number) => Pixels, open: boolean): Pixels[][] {
   const p = canvas(2, 2, base);
@@ -109,49 +110,34 @@ export function klownCar(base: (bx: number, by: number) => Pixels, open: boolean
   return cut(p);
 }
 
+/** THE CHEZ in this game's colors. */
+const CHEZ: ChezInk = {
+  body: [c('red', 1), c('red', 2), c('red', 3)],
+  trim: c('red', 0),
+  glass: [c('blue', 1), c('sky', 6)],
+  roof: c('ink', 0),
+  tire: c('ink', 0),
+  hub: c('metal', 4),
+  rim: c('paint', 3),
+  bumper: c('ink', 1),
+  lamp: c('gold', 1),
+  tail: c('red', 3),
+  stripe: c('ink', 1),
+  pin: c('paint', 3),
+  chrome: c('metal', 4),
+};
+/** How much taller than true it is drawn, to fill its two rows of blocks. */
+const TALL = 1.6;
+
 /** Draws the CitiCar into a 40x40 area at (x0, y0) (also used, scaled, in the cartoons). */
 export function citiCar(p: Pixels, x0: number, y0: number, open = false): void {
-  const roofY = 7;
-  const shieldX = 18; // the roof ends and the windshield starts
-  const cowlX = 25; // the windshield meets the hood
-  const cowlY = 17;
-  const noseX = 38;
-  const noseY = 24;
-  const sill = 31;
-  const top = (x: number) =>
-    x <= shieldX ? roofY + (x < 4 ? 4 - x : 0) : x <= cowlX ? roofY + Math.round(((x - shieldX) * (cowlY - roofY)) / (cowlX - shieldX)) : cowlY + Math.round(((x - cowlX) * (noseY - cowlY)) / (noseX - cowlX));
-  for (let x = 2; x <= noseX; x++)
-    for (let y = top(x); y <= sill; y++) {
-      const edge = y === top(x) || x === 2 || x === noseX || y === sill;
-      p.set(x0 + x, y0 + y, edge ? c('red', 0) : y > 26 ? c('red', 1) : c('red', 2));
-    }
-  // light along the roof and down the hood, and the pinstripe down the side
-  for (let x = 4; x < noseX; x++) if (x <= shieldX || x > cowlX) p.set(x0 + x, y0 + top(x) + 1, c('red', 3));
-  for (let x = 3; x < noseX - 1; x++) p.set(x0 + x, y0 + 25 - Math.floor(x / 14), c('yellow', 1));
-  // windows: from the side only the door has one (the panel behind the door is solid), then the windshield edge-on
-  for (let y = roofY + 2; y <= 18; y++)
-    for (let x = 11; x <= cowlX - 1; x++) if (y >= top(x) + 2) p.set(x0 + x, y0 + y, x - y > 0 ? c('sky', 7) : c('sky', 5));
-  // the door: a seam round it and a little handle
-  const dx0 = 10;
-  const dx1 = 19;
-  for (let y = roofY + 1; y <= sill - 1; y++) p.set(x0 + dx0, y0 + y, c('red', 0)).set(x0 + dx1, y0 + y, c('red', 0));
-  p.rect(x0 + 17, y0 + 21, 2, 1, c('metal', 3));
-  // the charging port, low at the back on this (the passenger) side
-  p.rect(x0 + 4, y0 + 19, 3, 3, c('ink', 0)).set(x0 + 5, y0 + 20, c('metal', 3));
+  const top = 40 - Math.round(20 * TALL);
+  chezSide(p, x0, y0 + top, CHEZ, 'right', 1, TALL);
   if (open) {
-    p.rect(x0 + dx0, y0 + 20, dx1 - dx0 + 1, sill - 20, c('ink', 0));
-    p.rect(x0 + 3, y0 + 20, 6, sill - 20, c('red', 2)).frame(x0 + 3, y0 + 20, 6, sill - 20, c('red', 0));
-  }
-  // the big black bumpers, back and front, a headlight in the nose, a tail light
-  p.rect(x0 + 0, y0 + 26, 4, 6, c('ink', 0)).rect(x0 + 0, y0 + 26, 4, 1, c('ink', 1));
-  p.rect(x0 + noseX - 2, y0 + 27, 4, 6, c('ink', 0)).rect(x0 + noseX - 2, y0 + 27, 4, 1, c('ink', 1));
-  p.rect(x0 + noseX - 3, y0 + 25, 2, 2, c('paint', 3)).set(x0 + noseX - 1, y0 + 26, c('yellow', 3));
-  p.rect(x0 + 3, y0 + 23, 1, 2, c('red', 3));
-  // small round wheels: black tires, whitewalls, silver hubcaps
-  for (const x of [9, 30]) {
-    blob(p, x0 + x, y0 + 35, 4.5, 4.5, P.r('ink'), 0, 1);
-    p.ring(x0 + x, y0 + 35, 2, c('fur', 1));
-    p.rect(x0 + x - 1, y0 + 34, 3, 3, c('metal', 3)).set(x0 + x, y0 + 35, c('metal', 1));
+    // the door open: the dark inside and the edge of the seat (the left block's half of it)
+    const y = (v: number) => y0 + top + Math.round(v * TALL);
+    p.rect(x0 + 14, y(8.6), 6, y(17.8) - y(8.6), c('ink', 0));
+    p.rect(x0 + 14, y(11.5), 6, 2, c('red', 0));
   }
 }
 
