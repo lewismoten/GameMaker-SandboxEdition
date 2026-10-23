@@ -43,11 +43,11 @@ export function buildVocs(): Record<string, Uint8Array> {
   const vocs: Record<string, Uint8Array> = {};
   // a footstep in fuzzy slippers
   vocs.pat = sample(0.1, gate(lowNoise(11, 0.15), 0, 0.05), { envelope: env(0.01, 2), gain: 0.5 });
-  // a hop: a whoosh
+  // a hop: a whoosh (soft: it is the sound heard most, 30-odd times a visit to The Hive)
   vocs.hop = sample(
     0.22,
     lowNoise(12, (t) => 0.05 + t * 0.7),
-    { envelope: env(0.1, 1.5), gain: 0.6 },
+    { envelope: env(0.1, 1.5), gain: 0.4 },
   );
   // a coin in the tip jar
   vocs.clink = sample(0.35, mix([osc.sine(2093), 0.5], [osc.sine(3136), 0.3], [gate(lowNoise(13, 0.9), 0, 0.01), 0.4]), { envelope: env(0.002, 2.4) });

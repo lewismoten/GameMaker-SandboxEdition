@@ -358,3 +358,17 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   book.add('leoAway0', leo(0));
   book.add('leoAway1', leo(1));
 }
+
+/**
+ * Every sprite that costs composure gets a pale parchment rim outside its dark outline (paper
+ * keeps its light in every scene), so a thrown plate, an ant or a raindrop reads on any set's
+ * backdrop, and danger looks the same all evening.
+ */
+export function rimFoes(mb: SpriteBook, pal: Pal): void {
+  for (const [name, i] of mb.index) {
+    if (!(mb.blocks[i].chHitPt < 0)) continue;
+    const pic = outline(mb.pics.get(name)!.crop(0, 0, 20, 20), pal.c('paper', 2));
+    mb.pics.set(name, pic);
+    mb.blocks[i].pixels = Uint8Array.from(pic.px);
+  }
+}

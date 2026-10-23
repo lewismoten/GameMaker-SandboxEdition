@@ -13,6 +13,9 @@ import { T, type SpriteBook } from '../../common/sprites';
 import { POWER } from '../../ids';
 import { FLUFF } from './ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 export const HOME_RAMPS: Ramp[] = [
   // the wallpaper: dusty rose with cream stripes
   ['rose', 4, [96, 56, 64], [232, 196, 190]],
@@ -108,7 +111,7 @@ export function buildHouse(book: BlockBook, pal: Pal): void {
       .line(x, 4, x + (x < 10 ? 4 : -4), 4, c('metal', 1))
       .line(x, 10, x + (x < 10 ? 4 : -4), 4, c('metal', 0));
   book.add('shelf', shelf, { solid: LEDGE, grav: GRAV.down });
-  for (const bg of ['wall', 'wallB']) loot(book, pal, bg);
+  for (const bg of ['wall', 'wallB']) loot(book, pal, bg, LATE);
   spotlight(book, pal, 'wallB');
 }
 

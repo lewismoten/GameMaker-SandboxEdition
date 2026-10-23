@@ -23,7 +23,7 @@ import { buildPalette, type Lighting, type Pal } from './src/art/pal';
 import { BlockBook } from './src/common/blocks';
 import { buildPoet, commonMonsters } from './src/common/characters';
 import { MapBuilder, type LinkSpec } from './src/levels/maps';
-import { buildCharBlocks, commonSprites, makeBook, type SpriteBook } from './src/common/sprites';
+import { buildCharBlocks, commonSprites, makeBook, rimFoes, type SpriteBook } from './src/common/sprites';
 import { demoRecording } from './src/demo';
 import { GROUPS, HIVE_GROUP, SCENES, type SceneDef } from './src/scenes';
 import { buildArt, type CardView } from './src/screens/art';
@@ -46,6 +46,7 @@ function blockSets(g: Group, pal: Pal) {
   const mb: SpriteBook = makeBook('mbl');
   commonSprites(mb, pal);
   g.sprites(mb, pal);
+  rimFoes(mb, pal);
   if (mb.index.size > 100) throw new Error(`${g.id}.mbl: ${mb.index.size} monster blocks (100 at most)`);
   return { book, bbl: book.finish(), mb };
 }

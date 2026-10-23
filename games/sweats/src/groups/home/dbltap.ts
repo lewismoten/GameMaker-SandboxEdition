@@ -27,6 +27,9 @@ import { NIGHT } from './blanket';
 import { baseboard, houseMonsters, wallpaper } from './house';
 import { DBLTAP_MON } from './ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** The bowl of cereal, a like, the papaya, the pomelo, the mushroom pin. */
 export const CAUSES = 5;
 
@@ -53,7 +56,7 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
   bar.rect(0, 0, 20, 20, c('glow', 1)).rect(0, 0, 20, 2, c('glow', 3)).rect(0, 2, 20, 1, c('glow', 2));
   for (let x = 2; x < 20; x += 5) bar.rect(x, 8, 3, 3, c('glow', 0));
   book.add('feedFloor', bar, { solid: SOLID });
-  loot(book, pal, 'feed');
+  loot(book, pal, 'feed', LATE);
   const post = (kind: 'text' | 'heart') => {
     const p = feedBack(pal);
     p.rect(0, 0, 20, 9, c('white', 2)).rect(0, 0, 20, 1, c('white', 1)).rect(0, 8, 20, 1, c('glow', 0));

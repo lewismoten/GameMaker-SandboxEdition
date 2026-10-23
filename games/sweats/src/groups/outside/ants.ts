@@ -25,6 +25,9 @@ import type { Monologue } from '../types';
 import { ANTS_MON } from './ids';
 import { coinOn } from './street';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** Things for a clean kitchen someday. */
 export const SUPPLIES = 4;
 
@@ -245,7 +248,7 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
     p.rect(6, 7, 8, 12, c('white', 1)).rect(7, 9, 6, 7, c('purple', 1)).rect(9, 10, 2, 5, c('gold', 2)).rect(8, 12, 4, 1, c('gold', 2));
     p.rect(9, 4, 2, 3, c('gold', 3)).set(9, 3, c('gold', 2));
   });
-  loot(book, pal, 'kBase');
+  loot(book, pal, 'kBase', LATE);
   coinOn(book, pal, 'kWall');
   spotlight(book, pal, 'kBase');
 }

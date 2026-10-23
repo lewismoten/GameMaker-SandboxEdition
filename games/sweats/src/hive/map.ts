@@ -1,8 +1,9 @@
 // THE HIVE's map: the avenue outside, the castle front, the counter, the little movie theater
 // past it, the stairs and the tall front room downstairs, and upstairs the seating and the
 // stage. Every intermission is a scene on this one map: the first starts out on the avenue, the
-// others up on the stage, where the poet comes off after a set; each one's curtain leads to the
-// next set (or, after the last, to the bow).
+// others up on the stage, where the poet comes off after a set (the coffee cart by the stage is
+// a few steps away; the counter, the theater and the front room are there to wander); each
+// one's curtain leads to the next set (or, after the last, to the bow).
 import { MON } from '../ids';
 import type { MapBuilder } from '../levels/maps';
 import { placePicture } from '../common/picture';
@@ -62,6 +63,9 @@ export function buildHive(m: MapBuilder): void {
   m.set(40, 1, 'pendant').set(48, 1, 'pendant').set(36, 3, 'poster').set(54, 3, 'poster2').set(45, 3, 'goatArt').set(50, 3, 'playbill').set(35, 6, 'fern');
   m.set(38, 6, 'table').set(44, 6, 'table').set(52, 6, 'table');
   m.set(40, 6, 'couchArm').row(6, 41, 42, 'couch').set(43, 6, 'couchArm');
+  // the coffee cart by the stage, for the poet between sets: the same register and cups as
+  // the counter downstairs, a few steps off the boards (walk into it with five tips)
+  m.set(37, 6, 'register');
   m.set(36, 6, 'coin@wall').set(41, 4, 'coin@wallHi').set(50, 6, 'mug@wall').set(52, 4, 'bill@wallHi').set(56, 6, 'coin@wall');
   m.mon(MON.goat, 47, 6);
   // Teenage Lewie (Snowbound) in the audience

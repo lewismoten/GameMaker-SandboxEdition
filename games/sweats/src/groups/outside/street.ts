@@ -10,6 +10,9 @@ import { AIR, BlockBook, GRAV, LEDGE, SOLID, drawCoin, loot, spotlight } from '.
 import { T, type SpriteBook } from '../../common/sprites';
 import { MONEY } from '../../ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 export const OUTSIDE_RAMPS: Ramp[] = [
   ['asphalt', 3, [36, 36, 44], [112, 112, 122]],
   ['concrete', 3, [112, 106, 98], [214, 208, 196]],
@@ -142,7 +145,7 @@ export function buildStreet(book: BlockBook, pal: Pal): void {
   book.add('calmTown', townAt(pal, 44), { grav: GRAV.down, next: 'gustTown', ntime: GUST_OFF });
   book.add('gustTown', streaks(townAt(pal, 44), 1), { grav: blow, next: 'calmTown', ntime: GUST_ON });
   // tips along the sidewalk, a coin up in the air, the spotlight on the pavement
-  loot(book, pal, 'town');
+  loot(book, pal, 'town', LATE);
   coinOn(book, pal, 'sky');
   spotlight(book, pal, 'town');
 }

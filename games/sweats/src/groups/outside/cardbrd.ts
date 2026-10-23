@@ -28,6 +28,9 @@ import { CARD_MON } from './ids';
 import { person } from './people';
 import { coinOn } from './street';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** Proof it was all fake. */
 export const PROPS = 4;
 
@@ -169,7 +172,7 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
     p.rect(12, 14, 6, 4, c('white', 2));
     micro(p, 12, 13, '$12', c('red', 1));
   });
-  loot(book, pal, 'hBase');
+  loot(book, pal, 'hBase', LATE);
   coinOn(book, pal, 'hWall');
   spotlight(book, pal, 'hBase');
 }

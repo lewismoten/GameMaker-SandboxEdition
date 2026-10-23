@@ -26,6 +26,9 @@ import type { Monologue } from '../types';
 import { houseMonsters, wallpaper } from './house';
 import { ITCH_MON } from './ids';
 
+/** The last two sets' mugs mend less (common/blocks.ts loot()). */
+const LATE = { mugHp: 10 };
+
 /** The napkin, the car keys, the tinted glasses, the hand sanitizer. */
 export const KIT = 4;
 
@@ -72,7 +75,7 @@ export function itchBlocks(book: BlockBook, pal: Pal): void {
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) lot.set(x, y, c('asphalt', r() < 0.3 ? 0 : 1));
   lot.rect(0, 0, 20, 1, c('asphalt', 2)).rect(8, 4, 12, 2, c('yellow', 1));
   book.add('lot', lot, { solid: SOLID });
-  loot(book, pal, 'brickB');
+  loot(book, pal, 'brickB', LATE);
   // the bank's sign over its back door, in stone
   {
     const pic = new Pixels(60, 20, 255);

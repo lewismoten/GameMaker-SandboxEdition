@@ -2,6 +2,8 @@
 import { SUPPLIES } from '../../src/groups/outside/ants';
 import { PROPS } from '../../src/groups/outside/cardbrd';
 import { MENDS } from '../../src/groups/outside/umbrella';
+import { UMBR_MON } from '../../src/groups/outside/ids';
+import { ORIGIN } from '../../src/levels/maps';
 import { SCRAPS } from '../../src/groups/outside/outside';
 import { carefully, declaim, expect, leave, must, plot, tips, type Route } from '../route';
 
@@ -180,6 +182,22 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the storm', 0, async () => {
       await must(bot, bot.walk(57, 'through the gusts, a coin, the coffee'), 'gusts');
+    });
+    await carefully(bot, 'the wounded beast, thrashing', 0, async () => {
+      await must(bot, bot.walk(59, 'up to the thrashing canopy'), 'canopy');
+      // a word at a time, stepping after it as the wind drags it about, until it settles
+      const words = ['there, there', 'shelter me gently', 'you wounded beast', 'hush now', 'easy'];
+      for (const word of words) {
+        const w = bot.sim.w;
+        const wild = w.mi
+          .map((mi, i) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, n: w.mm[i].monnum }))
+          .find((m) => m.n >= UMBR_MON.canopy && m.n < UMBR_MON.canopyCalm);
+        if (!wild) break;
+        if (wild.x - bot.px.x / 20 > 3) await must(bot, bot.walk(wild.x - 2.5, 'after the canopy'), 'after it');
+        await declaim(bot, word);
+      }
+      const w = bot.sim.w;
+      if (w.mm.some((m) => m.monnum >= UMBR_MON.canopy && m.monnum < UMBR_MON.canopyCalm)) throw new Error('the canopy is still thrashing');
     });
     await carefully(bot, 'the last stand', 0, async () => {
       await must(bot, bot.walk(65, 'under the storm clouds, a coin, a dollar'), 'clouds');

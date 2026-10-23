@@ -2,7 +2,8 @@
 // up, drawn over whichever backdrop they sit on (a block has no see-through pixels, so a coin on
 // the office carpet and a coin on the kitchen tiles are two blocks):
 //   - tips (money): a coin (+1) and a dollar bill (+5), with a few points;
-//   - a mug of coffee mends composure (+20);
+//   - a mug of coffee mends composure (+20; +10 in the last two sets, home and outside, so the
+//     night's end has some bite);
 //   - the spotlight where the poet starts each monologue: the only block in a monologue's scene
 //     that gives points alone, so it plays the score sound, which each scene's .SND fills with
 //     the monologue's opening line. It goes dark once he steps out of it.
@@ -78,13 +79,13 @@ export function drawSpot(p: Pixels, pal: Pal, on: boolean): Pixels {
  * Adds the pick-ups over a backdrop: coin@bg, bill@bg, mug@bg (each turns back into `bg` when
  * taken). `bg` must already be in the book.
  */
-export function loot(book: BlockBook, pal: Pal, bg: string, extra: { attrs?: object } = {}): void {
+export function loot(book: BlockBook, pal: Pal, bg: string, extra: { attrs?: object; mugHp?: number } = {}): void {
   const pic = book.pics.get(bg);
   if (!pic) throw new Error(`No backdrop ${bg}`);
   const a = extra.attrs ?? AIR;
   book.add(`coin@${bg}`, drawCoin(copy(pic), pal), { ...a, effect: MONEY, eamt: 1, score: 10, touch: bg });
   book.add(`bill@${bg}`, drawBill(copy(pic), pal), { ...a, effect: MONEY, eamt: 5, score: 50, touch: bg });
-  book.add(`mug@${bg}`, drawMug(copy(pic), pal), { ...a, hp: 20, score: 10, touch: bg });
+  book.add(`mug@${bg}`, drawMug(copy(pic), pal), { ...a, hp: extra.mugHp ?? 20, score: 10, touch: bg });
 }
 
 /** Adds the spotlight over a backdrop: spot@bg (points alone: the opening line), going dark into spotOff@bg. */

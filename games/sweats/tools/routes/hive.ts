@@ -94,8 +94,28 @@ async function theater(bot: Bot, dir: 'right' | 'left'): Promise<void> {
     });
 }
 
-/** The later ones: off the stage, down the stairs, back through to the counter, a coffee, and up again. */
-async function downForACoffee(bot: Bot): Promise<void> {
+/** The later ones: off the stage to the coffee cart by it, and back to the curtain. */
+async function toTheCart(bot: Bot): Promise<void> {
+  await carefully(bot, 'off the stage to the coffee cart', 0, async () => {
+    await must(bot, bot.walk(30, 'under the coin by the drapes'), 'drapes');
+    await must(bot, bot.hop('up', 12), 'the coin up by the drapes');
+    await must(bot, bot.walk(36, 'off the stage'), 'off');
+    if (tips(bot) < 5) throw new Error(`only ${tips(bot)} tips for the coffee`);
+    await must(bot, bot.walk(37.2, 'the coffee cart'), 'cart');
+    await must(bot, bot.walk(37, 'the cup'), 'cup');
+    if (coffee(bot) < 1) throw new Error('no coffee');
+  });
+  await carefully(bot, 'back to the curtain', 10, async () => {
+    await must(bot, bot.walk(34, 'by the stage'), 'stage');
+    await must(bot, bot.hop('left', 12, 'left', 32), 'up onto the stage');
+    await must(bot, bot.walk(25, 'past Doc Leo, the mic'), 'mic');
+    if (coffee(bot) < 1) throw new Error('no coffee for the curtain');
+    await leave(bot, bot.walk(21.5, 'the curtain'), 'through the curtain');
+  });
+}
+
+/** (The long way, no longer taken: off the stage, down the stairs, back through to the counter, a coffee, and up again.) */
+export async function downForACoffee(bot: Bot): Promise<void> {
   await carefully(bot, 'off the stage', 0, async () => {
     await must(bot, bot.walk(30, 'under the coin by the drapes'), 'drapes');
     await must(bot, bot.hop('up', 12), 'the coin up by the drapes');
@@ -121,7 +141,8 @@ export const HIVE_ROUTES: Record<string, Route> = {};
 for (let k = 1; k <= 5; k++)
   HIVE_ROUTES[`hive${k}`] = async (bot) => {
     expect(bot, `hive${k}`);
-    if (k === 1) await inOffTheAvenue(bot);
-    else await downForACoffee(bot);
-    await upToTheStage(bot);
+    if (k === 1) {
+      await inOffTheAvenue(bot);
+      await upToTheStage(bot);
+    } else await toTheCart(bot);
   };
