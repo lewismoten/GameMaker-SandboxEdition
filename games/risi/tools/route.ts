@@ -236,9 +236,56 @@ export async function roofs(bot: Bot): Promise<void> {
   });
 }
 
+/** Meows a mouse within `range` ahead into dropping its cheese, then walks to the cheese and eats it. */
+async function mouse(bot: Bot, range: number, what: string): Promise<void> {
+  const before = cheese(bot);
+  await clear(bot, [MON.mouse], range);
+  const crumb = where(bot, MON.crumb).filter((m) => Math.abs(m.x - bot.px.x / 20) < range + 1 && Math.abs(m.y - bot.px.y / 20) < 1);
+  if (!crumb.length) throw new Error(`${what}: no cheese dropped`);
+  await must(bot, bot.walk(Math.round(crumb[0].x * 5) / 5, `${what}'s cheese`), 'cheese');
+  if (cheese(bot) <= before) throw new Error(`${what}: the cheese is still on the floor`);
+}
+
+/** IV. The kitchen, as Felix: three mice, four cupboards, the scrolls and the lamp, the will, the crown of cheese. */
 export async function kitchen(bot: Bot): Promise<void> {
   expect(bot, 5, 'the kitchen');
-  throw new Error('todo');
+  await carefully(bot, 'the first mouse', 0, async () => {
+    await mouse(bot, 6, 'the first mouse');
+  });
+  await carefully(bot, 'the table: the bones, a cupboard', 0, async () => {
+    await must(bot, bot.walk(10.4, 'by the table'), 'table');
+    await must(bot, bot.hop('up', 10, 'right', 11), 'up on the table');
+    await must(bot, bot.walk(14, 'the fish bones, the cupboard'), 'cupboard');
+    await must(bot, bot.walk(15, 'the end of the table'), 'end');
+    if (cheese(bot) < 2) throw new Error(`only ${cheese(bot)} cheese`);
+  });
+  await carefully(bot, 'the scrolls, the lamp, the shelf', 0, async () => {
+    await must(bot, bot.hop('right', 6, 'right', 18), 'onto the scrolls');
+    await must(bot, bot.hop('right', 12, 'right', 20), 'into the lamp');
+    await must(bot, bot.hop('right', 8, 'right', 22), 'onto the shelf');
+    await must(bot, bot.walk(26, 'the cupboard, the will (oops)'), 'will');
+    if (cheese(bot) < 3) throw new Error(`only ${cheese(bot)} cheese`);
+    await must(bot, bot.walk(28, 'down off the shelf'), 'down');
+  });
+  await carefully(bot, 'the second mouse, the cupboard down low', 0, async () => {
+    await mouse(bot, 6, 'the second mouse');
+    await must(bot, bot.walk(35, 'through the cupboard down low'), 'cupboard');
+    if (cheese(bot) < 5) throw new Error(`only ${cheese(bot)} cheese`);
+  });
+  await carefully(bot, 'the shelf of jars: the ants, a cupboard', 0, async () => {
+    await must(bot, bot.walk(35.6, 'by the shelf of jars'), 'jars');
+    await must(bot, bot.hop('up', 12, 'right', 36), 'up on the shelf');
+    await clear(bot, [MON.ant], 4);
+    await must(bot, bot.walk(39, 'the cupboard on the shelf'), 'cupboard');
+    if (cheese(bot) < 6) throw new Error(`only ${cheese(bot)} cheese`);
+    await must(bot, bot.walk(40.4, 'down off the shelf'), 'down');
+  });
+  await carefully(bot, 'the third mouse', 0, async () => {
+    await must(bot, bot.walk(37, 'the milk'), 'milk');
+    await must(bot, bot.walk(40.4, 'back'), 'back');
+    await mouse(bot, 6, 'the third mouse');
+  });
+  await leave(bot, bot.walk(48, 'the crown of cheese'), 'the crown of cheese');
 }
 
 export async function baths(bot: Bot): Promise<void> {
