@@ -411,13 +411,13 @@ export const AFTER: WingSpec = {
       floor: 'cellfloor',
       rows: [
         '#wwwBww123wBwww#',
-        '#o............+#',
-        '#.~..........o.#',
+        '#o..........#*+#',
+        '#.~.........o#%#',
         '#*.c....S......#',
         '#..............#',
         '#+..o...@.....~#',
         '#..............#',
-        '#o..+.....*..o.#',
+        '#o..+........o.#',
         '#~...........+.E',
         '#X######D######L',
       ],
@@ -431,7 +431,7 @@ export const AFTER: WingSpec = {
         '3': 'quiet2',
         S: { tile: '.', mon: 'echo' },
       },
-      note: 'Alone. In the dark. No one to tell to be quiet. The echoes are the noisiest thing in the universe, and they fine you for listening.',
+      note: 'Alone. In the dark. No one to tell to be quiet. The echoes fine you for listening. The corner has a word lock: carry 20 words and it lets you in.',
       twist: {
         grid: [
           ['bars', 'cellwall', 'celldoor'],

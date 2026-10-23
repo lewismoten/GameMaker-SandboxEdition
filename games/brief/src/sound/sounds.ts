@@ -25,7 +25,9 @@ function flutter(): Uint8Array {
 /** Shhhh. */
 function shh(): Uint8Array {
   const n = band(osc.noise(9), 0.25, 0.95);
-  return sample(0.55, n, { envelope: (u) => Math.min(1, u * 8) * (1 - u) ** 0.8, gain: 0.8 });
+  // A fine plays again every tick Joe stands in a shusher's way: a quick attack and a flat
+  // start make those restarts one steady hiss instead of a stutter, then it fades out.
+  return sample(0.55, n, { envelope: (u) => Math.min(1, u * 40) * (u < 0.4 ? 1 : (1 - u) / 0.6), gain: 0.7 });
 }
 
 function pop(): Uint8Array {

@@ -1,7 +1,7 @@
 // joe.chr: Mystery Robot Joe walks exactly one block per step (five frames of four pixels
 // that can't be cut short), so he always stands squarely on the library's grid. Hold an
 // arrow to keep walking. Arrows, W A S D and the number pad all steer. Nothing in the
-// library can hurt him; the worst a shusher can do is confiscate words.
+// library can hurt him; the worst a shusher can do is fine him a point a tick.
 import { CHARBL } from '../../../../web/src/formats/blocks';
 import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
 import { KEY, SND } from '../ids';

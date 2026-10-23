@@ -61,7 +61,12 @@ export function floor(kind: FloorKind, seed = 1, tint = 'red'): Pixels {
     case 'tile':
       for (let y = 0; y < 20; y++)
         for (let x = 0; x < 20; x++)
-          p.set(x, y, x % 10 === 0 || y % 10 === 0 ? c('grey', 2) : (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? c('grey', 5) : k[k.length - 2]);
+          // two close tones, so the white word slips stand out on them
+          p.set(
+            x,
+            y,
+            x % 10 === 0 || y % 10 === 0 ? k[Math.max(0, k.length - 4)] : (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? k[k.length - 3] : k[k.length - 2],
+          );
       break;
     case 'marble':
       for (let y = 0; y < 20; y++)

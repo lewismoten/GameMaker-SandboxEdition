@@ -42,7 +42,10 @@ function cloneSim(sim: Sim): Sim {
 const solidAt = (sim: Sim, x: number, y: number) => {
   const w = sim.w;
   const b = w.bg[w.map[y * MLEN + x]];
-  return !!b && b.solid !== 0;
+  if (!b || b.solid === 0) return false;
+  // a word lock opens for Joe once he carries enough words (it takes them, then gives them back)
+  if (b.effect === CTR.words && b.eamt < 0 && b.eamt > -100 && w.ci.meter[CTR.words] + b.eamt > 0) return false;
+  return true;
 };
 
 /** Live monsters whose names start with `prefix`, at their nearest cells. */

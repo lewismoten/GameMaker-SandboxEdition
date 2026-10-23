@@ -1,7 +1,7 @@
 // The Laboratory: Great Minds, Strange Priorities;
 // Duplicate Daughters, Divided Dad; Becoming Purple; and Church of the First of Zero.
 import { Pixels } from '../../../../kit/pixels';
-import { bevel, blob, micro } from '../../art/draw';
+import { outline, bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, corgi, figure, floor, on, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
@@ -108,15 +108,16 @@ function oozeFloor(): Pixels {
 /** The ooze, wearing one of its three silly cartoon masks. */
 function ooze(mask: number): Pixels {
   const p = blank();
-  blob(p, 10, 12, 8, 7, r('purple'), 0, 4);
-  p.rect(2, 17, 16, 2, c('purple', 1));
+  // bright violet with a dark rim, so it reads on the purple lab floor
+  blob(p, 10, 12, 8, 7, r('pink'), 1, 4);
+  p.rect(2, 17, 16, 2, c('pink', 1));
   const face = [
     () => p.disc(10, 10, 4, c('yellow', 3)).set(8, 9, c('ink', 0)).set(12, 9, c('ink', 0)).rect(8, 12, 5, 1, c('ink', 0)),
     () => p.disc(10, 10, 4, c('paper', 4)).disc(6, 6, 2, c('ink', 0)).disc(14, 6, 2, c('ink', 0)).set(10, 11, c('red', 3)),
     () => p.disc(10, 10, 4, c('orange', 3)).rect(7, 8, 6, 1, c('ink', 0)).rect(9, 12, 3, 1, c('red', 2)).set(5, 7, c('orange', 3)).set(15, 7, c('orange', 3)),
   ];
   face[mask % 3]();
-  return p;
+  return outline(p, c('ink', 0));
 }
 
 function masks(): Pixels {

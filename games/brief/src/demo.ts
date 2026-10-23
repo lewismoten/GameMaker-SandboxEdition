@@ -23,7 +23,13 @@ export async function demoRecording(all: Compiled): Promise<Uint8Array> {
     [9, 8],
     [3, 3],
   ] as const) {
-    await bot.walk(() => [{ x, y }], box, () => false, false, 600);
+    await bot.walk(
+      () => [{ x, y }],
+      box,
+      () => false,
+      false,
+      600,
+    );
     await bot.ticks(6);
   }
   if (bot.sim.link >= 0) throw new Error('The demo walked through a door');

@@ -6,6 +6,7 @@
 import { MLEN, LASTMM, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import { Pixels } from '../../../kit/pixels';
 import { c } from '../art/pal';
+import { outline } from '../art/draw';
 import { BlockSet, Bestiary, SOLID, type BlockDef, type MonDef } from '../blocks/sets';
 import { bookwormEgg, floor, on, shusher, wordSlip } from '../art/kit';
 import { CTR, EGG_BLOCK, WORDS_PER_BOOK } from '../ids';
@@ -66,7 +67,10 @@ export class Area {
    * (score; the shushers and their friends never touch the words he carries).
    */
   monster(name: string, frames: [Pixels, number][], def: Partial<MonDef> & { hazard?: boolean; pickup?: number } = {}): string {
-    const pics: [string, number][] = frames.map(([px, t], i) => {
+    const pics: [string, number][] = frames.map(([px0, t], i) => {
+      // Every hazard shares one tell: a red outline flashes on its odd frames, so a finer
+      // never looks like the friendly folk who walk the same kind of loop.
+      const px = def.hazard && i % 2 === 1 ? outline(px0, c('red', 3)) : px0;
       const pn = `${name}#${i}`;
       const bd: BlockDef = def.hazard ? { score: -1 } : def.pickup ? { effect: CTR.words, eamt: def.pickup, score: def.pickup } : {};
       if (!this.mb.has(pn)) this.mb.add(pn, px, bd);

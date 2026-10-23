@@ -124,6 +124,22 @@ function edge(tint: string): Pixels {
 }
 
 /** THE END: a closed book with a brass lock reading 100, then open, then open and counted. */
+/** Words a word lock wants to see before it turns. */
+export const LOCK_WORDS = 20;
+
+/** A word lock: a brass turnstile with a slot, stamped with the words it wants to see. */
+function lockPic(under: Pixels, tint: string): Pixels {
+  const p = new Pixels(20, 20);
+  p.px.set(under.px);
+  bevel(p, 2, 1, 16, 18, r('brass'), 3, 1);
+  p.rect(4, 3, 12, 7, c(tint, 1)).frame(4, 3, 12, 7, c('ink', 0));
+  micro(p, 6, 4, String(LOCK_WORDS), c('paper', 4));
+  // the turnstile's arms
+  p.rect(3, 12, 14, 2, c('tin', 4)).rect(9, 10, 2, 8, c('tin', 3));
+  p.disc(10, 13, 1.5, c('ink', 0));
+  return p;
+}
+
 function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): Pixels {
   const p = new Pixels(20, 20);
   p.px.set(under.px);
@@ -193,17 +209,56 @@ function table(under: Pixels, half: 0 | 1): Pixels {
   return p;
 }
 
-const HALL = [
-  'SSSSSSNNNNSSSSSS',
-  'SS1SS2SSSS3SS4SS',
-  'S..............S',
-  'S.Tt........G..S',
-  'S..............S',
-  'S.......@......S',
-  'S..........Tt..S',
-  'S..............S',
-  'S..............S',
-  'SSKKKSSSDSQQQSSS',
+/** The hallway, in four furniture arrangements (wing by wing), so no two halls in a row match. */
+const HALLS = [
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S.Tt........G..S',
+    'S..............S',
+    'S.......@......S',
+    'S..........Tt..S',
+    'S..............S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S..G........Tt.S',
+    'S..............S',
+    'S.......@......S',
+    'S.Tt...........S',
+    'S.....ss..ss...S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S..............S',
+    'S.ss..Tt..G.ss.S',
+    'S.......@......S',
+    'S..............S',
+    'S..........Tt..S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
+  [
+    'SSSSSSNNNNSSSSSS',
+    'SS1SS2SSSS3SS4SS',
+    'S..............S',
+    'S.G..ss..ss.Tt.S',
+    'S..............S',
+    'S.......@......S',
+    'S.Tt...........S',
+    'S..........Tt..S',
+    'S..............S',
+    'SSKKKSSSDSQQQSSS',
+  ],
 ];
 
 export function compileWing(spec: WingSpec, index: number): CompiledWing {
@@ -246,7 +301,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     Q: 'shelf',
   };
   for (let k = 0; k < 4; k++) hallLegend[String(k + 1)] = { tile: `spine${k}`, mark: `spine${k}` };
-  const hall = a.window(0, 0, HALL, hallLegend, 'hall');
+  const hall = a.window(0, 0, HALLS[index % HALLS.length], hallLegend, 'hall');
   for (let i = 0; i < 4; i++) a.set(6 + i, 0, `name${i}`);
   for (let i = 0; i < 3; i++) (a.set(2 + i, 9, `sign0${i}`), a.set(10 + i, 9, `sign1${i}`));
   if (spec.guest) a.monAt(4, 7, spec.guest);
@@ -261,7 +316,14 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     a.tile(`endOpen${tag}`, endPage('open', under, tint), { effect: wingCounter(index), eamt: 1, touch: `endDone${tag}`, score: 0 });
     a.tile(`endLink${tag}`, bookmark(under));
     a.solid(`end${tag}`, endPage('shut', under, tint), { effect: CTR.words, eamt: -WORDS_PER_BOOK, touch: `endOpen${tag}` });
-    for (const ch of ['#', '.', 'E', 'L', 'X', '@', '*', '+', '~', 'o'])
+    // A word lock (%): a turnstile into a nook that only turns for a reader carrying
+    // LOCK_WORDS words. It takes them, and the floor behind it hands them straight back.
+    const locked = b.rows.some((row) => row.includes('%'));
+    if (locked) {
+      a.tile(`unlock${tag}`, on(under), { effect: CTR.words, eamt: LOCK_WORDS, touch: b.floor });
+      a.solid(`lock${tag}`, lockPic(under, tint), { effect: CTR.words, eamt: -LOCK_WORDS, touch: `unlock${tag}` });
+    }
+    for (const ch of ['#', '.', 'E', 'L', 'X', '@', '*', '+', '~', 'o', '%'])
       if (ch in b.legend) throw new Error(`${wing.id} book ${k + 1}: "${ch}" means something else in every book`);
     const legend: Record<string, Cell> = {
       '#': 'edge',
@@ -269,6 +331,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
       E: { tile: `end${tag}`, mark: 'page' },
       L: { tile: `endLink${tag}`, mark: 'end' },
       X: 'edge',
+      ...(locked ? { '%': `lock${tag}` } : {}),
       ...b.legend,
     };
     const win = a.window(ox, 0, b.rows, legend, b.floor);

@@ -77,6 +77,18 @@ Walk into a door, a book or a page to use it.`,
  librarian's love
  language. Stay out of
  their way.`,
+  `WORD LOCKS
+ Late in the library, a
+ brass turnstile marked 20
+ guards a corner of a book.
+ It turns only for a reader
+ carrying 20 words. It
+ takes them, and the floor
+ behind it hands them
+ straight back.
+
+ So pick up what you can
+ reach first.`,
   `THE RESERVE STACKS
  The purple STAX door in
  the reading room leads

@@ -453,7 +453,7 @@ export const FUTURE: WingSpec = {
         '#o.....d.j...+.#',
         '#~...........o.#',
         '#*...F.........#',
-        '#BBBBBBB..BBBBB#',
+        '#BBBBBBB%BBBBBB#',
         '#+..o...@......#',
         '#..TU.......~..#',
         '#o..+...s..*...#',
