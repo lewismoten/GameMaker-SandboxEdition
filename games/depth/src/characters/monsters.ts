@@ -106,12 +106,12 @@ export function monsterTouches(sp: SpriteSet, mbl: Block[]): void {
   each('wire', 4, { chHitPt: -15 });
   each('crystal', 2, { scorePts: 100 });
   each('jaggy', 2, { chHitPt: -20 });
-  each('steam', 3, { chHitPt: -10 });
+  each('steam', 3, { chHitPt: -15 });
   each('double', 4, { chHitPt: -25 });
   each('teddy', 4, { chHitPt: 1 });
   each('gwinn', 4, { chHitPt: 1 });
   each('leo', 2, { chHitPt: 1 });
-  each('bat', 2, { chHitPt: -10 });
+  each('bat', 2, { chHitPt: -15 });
   for (let s = 0; s < 5; s++) each(`count${s}_`, 2, { chHitPt: -6 });
   each('crown', 2, { effect: CROWN, eamt: 1 });
   each('shard', 2, { chHitPt: -15 });

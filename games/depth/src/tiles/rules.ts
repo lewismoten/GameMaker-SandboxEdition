@@ -42,7 +42,8 @@ export function rulesFor(o: LevelRules): Rules {
       case 'photon':
         return { score: 25, touch: 'floor' };
       case 'bulb':
-        return { hp: 30, score: 10, touch: 'floor' };
+        // light gets scarcer as the render nears done: 30 a bulb early, 20 midway, 15 at the end
+        return { hp: o.level <= 2 ? 30 : o.level <= 4 ? 20 : 15, score: 10, touch: 'floor' };
       case 'lensR':
         return { effect: cr, eamt: 1, score: 250, touch: 'floor' };
       case 'lensG':
@@ -82,7 +83,7 @@ export function rulesFor(o: LevelRules): Rules {
         return { solid: SOLID, birth: { mon: MON.bat, time: 160 } };
       case 'chez':
         // plugged in at the rear passenger side: push against it to charge up
-        return part === 2 ? { solid: SOLID, hp: 2 } : { solid: SOLID };
+        return part === 2 ? { solid: SOLID, hp: 1 } : { solid: SOLID };
       case 'mirrordoor':
         // the two-way mirror: a wall while the near plane is in focus, a way through in the far
         return plane === 'near' ? { solid: SOLID } : {};

@@ -44,8 +44,8 @@ export const INSTRUCTIONS = [
     'Glass walkways hold you only',
     'in their own plane. Violet',
     'panels come and go: wait for',
-    'them. The void is a long way',
-    'down.',
+    'them. A pink flicker means one',
+    'is about to blur out.',
   ]),
   page([
     'Find the RED, GREEN and BLUE',
