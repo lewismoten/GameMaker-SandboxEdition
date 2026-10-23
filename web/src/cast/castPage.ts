@@ -6,6 +6,7 @@ import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
 import { CAST, CAST_GAMES, familiesOf, type CastMember, type Family } from './castData';
 import { castStage } from './castStage';
+import { seenIn } from './castThumbs';
 
 const FILTERS: [Family | 'all', string][] = [
   ['all', 'Everyone'],
@@ -23,7 +24,7 @@ function shown(m: CastMember): { width: number; height: number } {
   return { width: Math.round(w * k), height: Math.round(h * k) };
 }
 
-function card(m: CastMember, pick: (m: CastMember, e: Event) => void, wide: boolean): HTMLElement {
+function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLElement {
   const families = familiesOf(m);
   return h(
     'article',
@@ -40,10 +41,11 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void, wide: bool
       h('p', { class: 'cast-role' }, m.role),
       h('p', { class: 'cast-bio' }, m.bio),
     ),
+    h('div', { class: 'cast-seen-box' }, h('p', { class: 'cast-seen-h' }, 'Seen in:'), seenIn(m.appears)),
     h(
       'details',
-      { class: 'cast-appears', open: wide },
-      h('summary', null, `Appears in ${m.appears.length} game${m.appears.length === 1 ? '' : 's'}`),
+      { class: 'cast-appears' },
+      h('summary', null, `What ${m.appears.length === 1 ? 'they do there' : `they do in each of the ${m.appears.length} games`}`),
       h(
         'ul',
         null,
@@ -108,9 +110,7 @@ export function renderCast(el: HTMLElement): void {
     state.set({ who: m.id });
     cards.forEach((c, i) => c.classList.toggle('cast-picked', CAST[i] === m));
   };
-  // on a phone the lists start closed, so the cast reads as a list of faces first
-  const wide = matchMedia('(min-width: 521px)').matches;
-  const cards = CAST.map((m) => card(m, pick, wide));
+  const cards = CAST.map((m) => card(m, pick));
   const grid = h('div', { class: 'cast-grid', id: 'cast-grid' }, cards);
   const count = h('p', { class: 'cast-count', role: 'status' });
   const buttons = FILTERS.map(([f, label]) =>
