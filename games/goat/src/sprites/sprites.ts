@@ -319,7 +319,7 @@ export function buildMonsterBlocks(pal: Pal) {
     }
     return outline(p, ink);
   };
-  for (const part of ['rear', 'front'] as const) for (const f of [0, 1]) book.add(`${part}${f}`, camel(part, f), { ...solid, ...hurt(-6) });
+  for (const part of ['rear', 'front'] as const) for (const f of [0, 1]) book.add(`${part}${f}`, camel(part, f), { ...solid, ...hurt(-8) });
   const spit = (f: number) => {
     const p = new Pixels(20, 20, T);
     blob(p, 10, 10, 3, 2.4, pal.r('cloth'), 1, 3, 1.2);
@@ -327,8 +327,8 @@ export function buildMonsterBlocks(pal: Pal) {
     // edged in green-brown, so it shows on the pale sand
     return inline(p, c('olive', 0));
   };
-  book.add('spit0', spit(0), hurt(-4));
-  book.add('spit1', spit(1), hurt(-4));
+  book.add('spit0', spit(0), hurt(-5));
+  book.add('spit1', spit(1), hurt(-5));
   const splat = new Pixels(20, 20, T);
   for (let a = 0; a < 6.28; a += 0.7) splat.line(10, 12, 10 + Math.cos(a) * 5, 12 + Math.sin(a) * 3, c('cloth', 2));
   book.add('splat', splat);
@@ -383,8 +383,8 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   // lantern light along their backs
   const lamp = c('glow', 2);
-  book.add('donkey0', rim(beast('donkey', 'donkey', 0), lamp), { ...solid, ...hurt(-5) });
-  book.add('donkey1', rim(beast('donkey', 'donkey', 1), lamp), { ...solid, ...hurt(-5) });
+  book.add('donkey0', rim(beast('donkey', 'donkey', 0), lamp), { ...solid, ...hurt(-6) });
+  book.add('donkey1', rim(beast('donkey', 'donkey', 1), lamp), { ...solid, ...hurt(-6) });
   book.add('ox0', rim(beast('ox', 'ox', 0), lamp), solid);
   book.add('ox1', rim(beast('ox', 'ox', 1), lamp), solid);
 

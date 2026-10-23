@@ -233,8 +233,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('crate', crate(null), { solid: SOLID });
-  book.add('cabbage', crate('cabbage'), { solid: SOLID, hp: 12, score: 10, touch: 'crate' });
-  book.add('figs', crate('figs'), { solid: SOLID, hp: 12, score: 10, touch: 'crate' });
+  book.add('cabbage', crate('cabbage'), { solid: SOLID, hp: 4, score: 10, touch: 'crate' });
+  book.add('figs', crate('figs'), { solid: SOLID, hp: 4, score: 10, touch: 'crate' });
   // A washing line across the alley: the tunics are solid until eaten.
   const laundry = (full: boolean) => {
     const p = cobble(107);
@@ -310,8 +310,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     return bg;
   };
   // Hay: health and breath. Pushing into a pile eats it.
-  book.add('hay', hayPile(grass(121), 121), { solid: SOLID, hp: 8, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'grassA' });
-  book.add('hayIn', hayPile(straw(123), 123), { solid: SOLID, hp: 8, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'straw' });
+  book.add('hay', hayPile(grass(121), 121), { solid: SOLID, hp: 5, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'grassA' });
+  book.add('hayIn', hayPile(straw(123), 123), { solid: SOLID, hp: 5, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'straw' });
   const thistle = (bg: Pixels) => {
     for (let k = 0; k < 5; k++) bg.line(10, 18, 4 + k * 3, 9 + (k % 2) * 3, c('olive', 1));
     for (const [x, y] of [
@@ -468,7 +468,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('camelR', camelKneel(false), { solid: SOLID, hp: -3, birthMon: MON.spitR, birthTime: SPIT_EVERY });
   book.add('thornSand', thorn(sand(157), false), { solid: SOLID, hp: -4 });
   book.add('woolBushSand', thorn(sand(159), true), { solid: SOLID, effect: WOOL, eamt: 1, score: 20, touch: 'thornSand' });
-  book.add('haySand', hayPile(sand(161), 161), { solid: SOLID, hp: 8, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'sand' });
+  book.add('haySand', hayPile(sand(161), 161), { solid: SOLID, hp: 5, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'sand' });
 
   // ---------- the stable ----------
   const planks = (seed: number) => {
