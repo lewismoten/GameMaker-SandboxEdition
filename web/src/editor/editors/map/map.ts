@@ -547,9 +547,9 @@ registerEditor(['map'], (host, project, file) => {
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
   const pressed = (on: boolean) => ({ 'aria-pressed': String(on) });
-  const gridBtn = h('button', { type: 'button', class: 'mt-tool', title: 'Show the block grid (G)', onclick: () => toggleGrid() }, '#', h('span', { class: 'mt-label' }, 'Grid'));
-  const findBtn = h('button', { type: 'button', class: 'mt-tool', title: 'Highlight every use of the chosen block', onclick: () => toggleFind() }, '🔍', h('span', { class: 'mt-label' }, 'Find'));
-  const replaceBtn = h('button', { type: 'button', class: 'mt-tool', title: 'Replace every use of one block with another', onclick: () => void replaceDialog() }, '⇄', h('span', { class: 'mt-label' }, 'Replace…'));
+  const gridBtn = h('button', { type: 'button', class: 'mt-tool', 'aria-label': 'Grid', title: 'Show the block grid (G)', onclick: () => toggleGrid() }, '#', h('span', { class: 'mt-label' }, 'Grid'));
+  const findBtn = h('button', { type: 'button', class: 'mt-tool', 'aria-label': 'Find', title: 'Highlight every use of the chosen block', onclick: () => toggleFind() }, '🔍', h('span', { class: 'mt-label' }, 'Find'));
+  const replaceBtn = h('button', { type: 'button', class: 'mt-tool', 'aria-label': 'Replace…', title: 'Replace every use of one block with another', onclick: () => void replaceDialog() }, '⇄', h('span', { class: 'mt-label' }, 'Replace…'));
   function syncToggles(): void {
     for (const [b, on] of [
       [gridBtn, overlay.grid],
