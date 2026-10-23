@@ -88,3 +88,34 @@ export const TICK_TOCK = (): Uint16Array => speaker((i) => (i % 9 < 2 ? (i % 18 
 
 /** A line an NPC can say about it. */
 export const TIN_HEART_LINE = 'Found it! Ticks like it means it.';
+
+/** The heart's parts by pixel (frame 0): 0 outside, 1 outline, 2..4 tin, 5 glint and clock face, 6 hands. */
+let partsMap: Uint8Array | undefined;
+function parts(): Uint8Array {
+  partsMap ??= drawTinHeart(new Pixels(20, 20, 0), { ink: 1, tin: [2, 3, 4], white: 5, dark: 6 }, 0).px;
+  return partsMap;
+}
+
+/**
+ * Does a 20x20 block (palette indices, row major, as a .BBL block's pixels) show the tin heart
+ * at its usual place? Its outline is one color all round, its clock face another, and its tin
+ * is neither: true for drawTinHeart in any palette and over any ground, at any frame of the
+ * shine. How the web player's tin heart checks know the block at a game's declared place is one.
+ */
+export function looksLikeTinHeart(pixels: ArrayLike<number>): boolean {
+  const map = parts();
+  const tally = (part: number) => {
+    const n = new Map<number, number>();
+    let all = 0;
+    for (let i = 0; i < 400; i++) if (map[i] === part) (all++, n.set(pixels[i], (n.get(pixels[i]) ?? 0) + 1));
+    const [color, count] = [...n].sort((a, b) => b[1] - a[1])[0] ?? [-1, 0];
+    return { color, share: all ? count / all : 0 };
+  };
+  const ink = tally(1);
+  const face = tally(5);
+  if (ink.share < 0.9 || face.share < 0.6 || ink.color === face.color) return false;
+  let tin = 0;
+  let other = 0;
+  for (let i = 0; i < 400; i++) if (map[i] >= 2 && map[i] <= 4) (pixels[i] === ink.color ? other++ : tin++);
+  return tin > other * 9;
+}
