@@ -9,6 +9,7 @@ import type { HdGame } from './dos/hardDisk';
 import type { WorkArea } from './dos/workArea';
 import type { PictureScreen } from './view/picture';
 import { deskDate } from './dos/vfs';
+import { deskMs } from './dos/deskClock';
 import { idbCDrive, type CDriveState, type CDriveStore } from './dos/cDriveStore';
 import { unlockAchievement } from '../achievements';
 
@@ -104,7 +105,7 @@ export class Downloads {
 
   constructor(
     private store: CDriveStore = idbCDrive,
-    private now: () => number = Date.now,
+    private now: () => number = deskMs, // the room's clock (TIME and DATE can set it)
   ) {
     this.ready = store
       .load()

@@ -1,5 +1,6 @@
 // A small DOS file system for the retro PC: drives of 8.3 named files and folders,
 // filled lazily from game disks, the installed Game-Maker and the CD.
+import { deskNow } from './deskClock';
 
 export interface DosNode {
   name: string; // upper case 8.3
@@ -45,10 +46,11 @@ export interface Drive {
 export const DOS_DATE = new Date(1994, 9, 20, 11, 42);
 
 /**
- * The PC's clock. The desk lives in 1994-95: today's month, day and time (as the wall clock
- * shows them), in the year after DOS_DATE, so nothing new is ever older than the install.
+ * The PC's clock (deskClock.ts: TIME and DATE can set it). The desk lives in 1994-95: today's
+ * month, day and time (as the wall clock shows them), in the year after DOS_DATE, so nothing
+ * new is ever older than the install.
  */
-export function deskDate(now: Date | number = new Date()): Date {
+export function deskDate(now: Date | number = deskNow()): Date {
   const d = new Date(now);
   d.setFullYear(1994);
   if (d < DOS_DATE) d.setFullYear(1995);

@@ -5,6 +5,7 @@ import type { TextScreen } from '../text/textScreen';
 import { readLine, type TextKeys } from '../text/textInput';
 import { commas, deskDate, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
 import { toCp437 } from '../text/cp437';
+import { deskNow, dosDate, dosTime, parseDosDate, parseDosTime, resetDeskClock, setDeskClock } from './deskClock';
 
 export interface ShellHost {
   screen: TextScreen;
@@ -112,11 +113,9 @@ export class Shell {
         this.out('Largest executable program size        567K (580,112 bytes)');
         return;
       case 'DATE':
-        this.out(`Current date is ${deskDate().toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' }).replace(',', '')}`);
-        return;
+        return this.setClock('date', rest);
       case 'TIME':
-        this.out(`Current time is ${new Date().toLocaleTimeString('en-US')}`);
-        return;
+        return this.setClock('time', rest);
       case 'HELP':
       case '?':
         return this.help();
@@ -316,6 +315,53 @@ export class Shell {
     this.screen.print(text.endsWith('\n') ? text : text + '\n');
   }
 
+  /**
+   * TIME and DATE, as in DOS 6.22: show the room's clock and ask for a new one (Enter keeps
+   * it), or take it on the command line (TIME 11:30p, DATE 12-25-94). /LOCAL, this PC's own
+   * switch, goes back to the real local time.
+   */
+  private async setClock(what: 'time' | 'date', arg: string): Promise<void> {
+    const time = what === 'time';
+    const show = () => (time ? dosTime(deskNow()) : dosDate(deskDate()));
+    if (/^\/\?$/.test(arg)) {
+      this.out(time ? 'Displays or sets the system time.' : 'Displays or sets the system date.');
+      this.out();
+      this.out(time ? 'TIME [time] [/LOCAL]' : 'DATE [date] [/LOCAL]');
+      this.out();
+      this.out(time ? '  time    hours:minutes[:seconds[.hundredths]][a|p]' : '  date    month-day-year');
+      this.out('  /LOCAL  Go back to the real local time');
+      this.out();
+      this.out(`Type ${time ? 'TIME' : 'DATE'} with no parameters to display the current ${what} and a prompt for a new one. Press ENTER to keep the same ${what}.`);
+      return;
+    }
+    if (/^\/local$/i.test(arg)) {
+      resetDeskClock();
+      this.out(`Current ${what} is ${show()}`);
+      this.out('(the real local time)');
+      return;
+    }
+    const set = (text: string): boolean => {
+      const to = time ? parseDosTime(text, deskNow()) : parseDosDate(text, deskNow());
+      if (!to) {
+        this.out(time ? 'Invalid time' : 'Invalid date');
+        return false;
+      }
+      setDeskClock(to);
+      return true;
+    };
+    if (arg) {
+      set(arg);
+      return;
+    }
+    this.out(`Current ${what} is ${show()}`);
+    for (;;) {
+      this.screen.print(time ? 'Enter new time: ' : 'Enter new date (mm-dd-yy): ');
+      const line = await readLine(this.screen, this.host.keys, [], 20);
+      this.screen.print('\n');
+      if (line === null || !line.trim() || set(line)) return;
+    }
+  }
+
   private help(): void {
     for (const l of [
       'DIR [path] [/W] [/P]   List files          CD [path]   Change folder',
@@ -323,6 +369,7 @@ export class Shell {
       'A:  C:  D:             Change drive         TYPE file   Show a text file',
       'DEL file (*.GIF)       Delete files        RD [path]   Remove an empty folder',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
+      'TIME [11:30p]  DATE [12-25-94]  Set the clock    TIME /LOCAL  Real time again',
       '',
       'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',
