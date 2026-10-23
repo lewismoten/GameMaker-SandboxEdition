@@ -120,7 +120,7 @@
         "blocks": "port.bbl",
         "pal": "port.pal",
         "grid": [[142]],
-        "under": 0
+        "under": "edge"
       }
     },
     {
@@ -133,7 +133,7 @@
         "blocks": "port.bbl",
         "pal": "port.pal",
         "grid": [[146]],
-        "under": 0
+        "under": "edge"
       }
     },
     {
