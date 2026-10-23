@@ -2,7 +2,8 @@
 // and JPEGs, made by web/scripts/bbsGifs.ts into web/public/bbs (sizes and formats in
 // gallery.json). The Sofa's GIF area (board "sofa" in gallery.json: 640x480 interlaced
 // GIFs of THE CHEZ and the Bard's logo) shares the list. Downloaded pictures from either
-// board land in C:\IMAGES, where VPIC shows them again (retro/view/vpic.ts).
+// board land in C:\IMAGES, where VPIC shows them again (retro/view/vpic.ts). The photos are
+// Lewis's own, except CHEZTED.GIF and THECHEZ2.GIF (one shot), taken by Nicky Foster (NOTICE.md).
 import list from './gallery.json';
 import { decodePartialGif, partialPixels } from '../../formats/gifProgressive';
 import { decodePartialJpeg, isJpeg, type PartialJpeg } from '../../formats/jpeg';
@@ -39,12 +40,12 @@ const DESC: Record<string, string> = {
   'CHEZ.JPG': "THE CHEZ: the SysOp's red CitiCar!",
   // The Sofa's GIF area
   'CHEZXMAS.GIF': 'THE CHEZ, the 1976 1/2 CitiCar, strung with Christmas lights.',
-  'CHEZTED.GIF': 'Doc Leo and Teddy the corgi with THE CHEZ, out for a spin.',
+  'CHEZTED.GIF': 'Doc Leo, Teddy and THE CHEZ. Photo: Nicky Foster.',
   'CHEZPLUG.GIF': 'THE CHEZ plugged in at a public charger. Electric since 1976!',
   'LEOWALK.GIF': 'Doc Leo walking his rubber chicken down the middle of a parade.',
   'LEONOSE.GIF': "Doc Leo's first day as a clown: he got to pick his own nose.",
   'THECHEZ1.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Dressed in Christmas lights and a big gold bow.',
-  'THECHEZ2.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Doc Leo and Teddy the corgi out for a spin.',
+  'THECHEZ2.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Doc Leo and Teddy the corgi out for a spin. Photo: Nicky Foster.',
   'THECHEZ3.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Plugged in at a public charger.',
   'BARDLOGO.GIF': "The Bard of Bizarre's logo: the rooster in glasses. Logo made with DeepAI.",
   'LEOCHICK.GIF': 'Doc Leo, hobo clown, walking his rubber chicken down the middle of a parade. It heels. Mostly.',
