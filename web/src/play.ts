@@ -102,6 +102,7 @@ async function main(): Promise<void> {
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
       onFileWrite: (name, bytes) => void writeSaveFile(game.id, name, bytes),
+      saveId: game.id,
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {
         if (game.back) location.href = game.back;

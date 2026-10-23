@@ -13,6 +13,7 @@ import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
 import { parseGame } from '../formats/game';
 import { icon } from '../editor/shell/homeIcons';
+import { heartHook } from '../tinHearts/tinHearts';
 
 export interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -42,6 +43,8 @@ export interface PlayerOptions extends RunOptions {
    * the focus or the pointer, so the page around it keeps scrolling and typing as usual.
    */
   preview?: boolean;
+  /** Where the game's saves are kept ('game:<id>'): a catalog game's tin heart is looked for (tinHearts/tinHearts.ts). */
+  saveId?: string;
 }
 
 export interface PlayerHandle {
@@ -149,6 +152,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     unkeys = screenKeys(container, corner, canvas);
   }
 
+  // a catalog game's tin heart: a touch at its place is kept as a find (never in a preview)
+  const hearts = opts.preview ? undefined : heartHook(opts.saveId);
   let stopped = false;
   let unhide: (() => void) | undefined;
   const done = new Promise<void>((resolve) => {
@@ -169,6 +174,10 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
           onQuit: () => true,
           onFrame: touch ? (w) => touch.setKeys(w.chr.sequences.map((s) => s.key >> 8)) : undefined,
           ...opts,
+          ...(hearts && {
+            onSession: (s) => (hearts.onSession(s), opts.onSession?.(s)),
+            onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)),
+          }),
         });
       } catch (e) {
         if (!(e instanceof GameAborted)) {

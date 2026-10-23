@@ -291,6 +291,7 @@ export class Computer extends ComputerFolders {
         noSoundCard: !soundBlaster(),
         onQuit: () => false, // back to DOS
         onFileWrite: saveId ? (name, bytes) => void writeSaveFile(saveId, name, bytes) : undefined,
+        saveId,
         onExit: () => {
           this.player = undefined;
           if (this.restarting) {
