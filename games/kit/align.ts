@@ -7,7 +7,7 @@
 //   seams(...)       how much each joined pair's colors jump across the shared edge
 //   diskScenes(...)  a built disk's scenes (palette, map, background blocks) for pictures
 //   writeArea(...)   a PNG of a map's rectangle, for before/after pictures of an object
-import { readFileSync, readdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseGame, ADVTYPE, ADV_EXTS } from '../../web/src/formats/game';
 import { parseMap, MLEN, MWID } from '../../web/src/formats/map';
@@ -310,6 +310,7 @@ export function alignGame(id: string, names: (map: string) => string[] | undefin
   }
   // ALIGN_DRAW=<folder> draws each flagged join there, for a look
   const draw = opts.draw ?? process.env.ALIGN_DRAW;
+  if (draw && broken.length) mkdirSync(draw, { recursive: true });
   if (draw) for (const x of broken) x.draw?.(`${draw}/${id}-${x.a}${x.dir === 'h' ? '-' : '_'}${x.b}.png`);
   for (const x of broken) console.log(`${id} seam ${x.a}${x.dir === 'h' ? '|' : '/'}${x.b}: colors jump ${x.across.toFixed(1)} across the edge, ${x.within.toFixed(1)} beside it`);
   n += broken.length;
