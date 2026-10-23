@@ -257,7 +257,7 @@ export const chair: Monologue = {
     // the maze of cubicles: partitions to hop, a desk with the loose screw, rolling screws
     const partition = (x: number) => m.set(x, 8, 'R').set(x, 9, 'I');
     for (const x of [7, 14, 22, 30]) partition(x);
-    m.set(10, 9, 'c').set(12, 9, 'K').set(13, 9, 'K').set(12, 8, 'S').set(13, 8, 'v').set(10, 3, 'y');
+    m.set(11, 9, 'c').set(12, 9, 'K').set(13, 9, 'K').set(12, 8, 'S').set(13, 8, 'v').set(10, 3, 'y');
     m.mon(CHAIR_MON.screw, 9, 9);
     // the suspicious stack of unused printer paper, the tape on top; the poster he doesn't believe in
     m.set(18, 9, 'r').col(19, 8, 9, 'r').col(20, 7, 9, 'r').set(20, 6, 'A').set(16, 3, 'poster');

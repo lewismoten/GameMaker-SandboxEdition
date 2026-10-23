@@ -2,6 +2,7 @@
 import { MON } from '../../src/ids';
 import { NOTES } from '../../src/groups/work/meeting';
 import { COFFEE_THINGS } from '../../src/groups/work/cgoat';
+import { REPAIRS } from '../../src/groups/work/chair';
 import { carefully, declaim, expect, leave, must, plot, type Route } from '../route';
 
 export const WORK_ROUTES: Record<string, Route> = {
@@ -97,5 +98,47 @@ export const WORK_ROUTES: Record<string, Route> = {
     });
     if (plot(bot) < COFFEE_THINGS) throw new Error(`only ${plot(bot)} of the coffee things`);
     await leave(bot, bot.walk(61.5, "the boss's door"), 'the door');
+  },
+  /** The Office Chair: the cubicle maze (the screws, the loose screw on a desk), the paper tower (the tape), the janitor (the wrench), over the intern, the memo pile (the gum), the creaks, the chair. */
+  chair: async (bot) => {
+    expect(bot, 'chair');
+    await carefully(bot, 'into the spotlight, his cubicle', 0, async () => {
+      await must(bot, bot.walk(5, 'his desk'), 'desk');
+    });
+    await carefully(bot, 'the first cubicle', 0, async () => {
+      await must(bot, bot.walk(6, 'the partition'), 'partition');
+      await declaim(bot, 'the loose screw');
+      await must(bot, bot.walk(11, 'over the partition, the coin'), 'coin');
+      await must(bot, bot.walk(12, 'the desk'), 'desk');
+      await must(bot, bot.hop('up', 12), 'up on the desk: the loose screw');
+      await must(bot, bot.walk(15, 'over the next partition'), 'over');
+    });
+    await carefully(bot, 'the printer paper', 0, async () => {
+      await must(bot, bot.walk(20, 'up the paper: the tape'), 'tape');
+      await must(bot, bot.walk(21, 'down'), 'down');
+      await declaim(bot, 'another screw');
+      await must(bot, bot.walk(25, 'over the partition, the coin'), 'coin');
+      await must(bot, bot.walk(32, 'past the desk, over the partition: the janitor'), 'janitor');
+      await must(bot, bot.walk(37, 'the wrench, the coffee'), 'wrench');
+    });
+    await carefully(bot, 'the intern', 0, async () => {
+      await must(bot, bot.walk(38, 'up to the intern'), 'intern');
+      await must(bot, bot.hop('right', 12, 'right', 47), 'over the intern, the dollar');
+    });
+    await carefully(bot, 'the memo pile', 0, async () => {
+      await must(bot, bot.walk(49, 'into the memos'), 'memos');
+      await must(bot, bot.hop('up', 12), 'up onto the memos');
+      await must(bot, bot.walk(50, 'the gum'), 'gum');
+      await must(bot, bot.walk(52, 'down'), 'down');
+    });
+    await carefully(bot, 'the creaks', 0, async () => {
+      await declaim(bot, 'the creak');
+      await must(bot, bot.walk(56, 'the coin'), 'coin');
+      await declaim(bot, 'the creak');
+    });
+    if (plot(bot) < REPAIRS) throw new Error(`only ${plot(bot)} repairs`);
+    await carefully(bot, 'the chair', 0, async () => {
+      await leave(bot, bot.walk(60.5, 'the chair'), 'the chair');
+    });
   },
 };
