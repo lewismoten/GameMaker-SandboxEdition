@@ -58,6 +58,8 @@ export const MON = {
   pink: 29,
   /** Steam curling up off the water. Harmless. */
   steam: 30,
+  /** A screaming towel that has flapped into him: it snaps him once, then flutters off up the hall. */
+  flapperOff: 31,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

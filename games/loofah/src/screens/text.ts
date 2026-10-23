@@ -89,7 +89,7 @@ export const INSTRUCTIONS = [
     'loofah of your own.',
     'CANDLES: touch one to light',
     'it. Six burning open the',
-    'bathroom door.',
+    'bathroom door upstairs.',
     'The rubber duck: a life.',
   ]),
   page([

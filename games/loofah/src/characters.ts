@@ -171,7 +171,10 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   // III. home in the dark
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 20), { power: 200, thru: 1 }, still);
   set[MON.gwinn] = mon(anim('gwinn0', 'gwinn1', 24), { power: 200, thru: 1 }, still);
-  set[MON.flapper] = mon(anim('flapper0', 'flapper1', 3), { power: 200, thru: 1 }, pace(run, 1, 0));
+  // a screaming towel snaps him once (weaker than he is, it's done in by the touch) and flutters
+  // off, so it never pins him while it paces through him
+  set[MON.flapper] = mon(anim('flapper0', 'flapper1', 3), { power: 90, thru: 1, newmon: MON.flapperOff }, pace(run, 1, 0));
+  set[MON.flapperOff] = mon(anim('flapperOff0', 'flapperOff1', 2), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(3, -5, 4, 0)]);
   set[MON.zzz] = mon(anim('zzz0', 'zzz1', 6), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -2, 1, 0), corner(0, -4, 1, 0)]);
   // IV. Scrubbus Maximus (both halves, four stages each), smug where it stands
   for (const half of ['A', 'B'] as const)

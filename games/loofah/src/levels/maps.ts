@@ -238,48 +238,61 @@ export function aisle(book: BlockBook): Level {
   return { m, start: at(3, 11), size: [W, H] };
 }
 
-/** 3. You Crossed a Line: home in the dark, six candles, the bathroom door. */
+/** 3. You Crossed a Line: home in the dark, on two floors: out of bed and along the hall
+ * downstairs, up the stairs at its end, and back along the landing upstairs to the bathroom,
+ * lighting six candles on the way (seven burn in all, so one can be missed). The screaming
+ * towels flap along both halls. */
 export function home(book: BlockBook): Level {
-  const W = 72;
-  const H = 12;
+  const W = 50;
+  const H = 16;
+  const UP = 33; // the upstairs landing runs from x 1 to here; past it the stairwell is open to the ceiling
   const m = new MapBuilder(book, 'joists');
   m.row(0, 1, W - 2, 'crownMold')
-    .fill(1, 1, W - 2, 8, 'paper')
-    .row(9, 1, W - 2, 'base')
-    .row(10, 0, W - 1, 'boards')
-    .row(11, 0, W - 1, 'joists')
-    .col(0, 0, 11, 'joists')
-    .col(W - 1, 0, 11, 'joists');
+    .fill(1, 1, W - 2, 12, 'paper')
+    .row(13, 1, W - 2, 'base')
+    .row(14, 0, W - 1, 'boards')
+    .row(15, 0, W - 1, 'joists')
+    .col(0, 0, 15, 'joists')
+    .col(W - 1, 0, 15, 'joists');
+  // the landing upstairs (its floor is the hall's ceiling)
+  m.row(6, 1, UP, 'base').row(7, 1, UP, 'boards');
   // the bed: her asleep, his pillow with the washcloth of shame on it; the night stand (a candle)
-  m.set(1, 6, 'headboardTop')
-    .col(1, 7, 8, 'headboard')
-    .set(2, 8, 'wife')
-    .row(8, 3, 7, 'bedTop')
-    .set(5, 8, 'pillow')
-    .row(9, 2, 7, 'bedSide')
-    .set(1, 9, 'bedSide');
-  m.set(8, 9, 'stand').set(8, 8, 'unlit');
-  m.set(10, 4, 'weddingPic').set(10, 9, 'creak');
-  m.col(12, 8, 9, 'dresser').col(13, 8, 9, 'dresser').set(13, 7, 'unlit');
-  m.set(17, 9, 'doorway').set(17, 8, 'doorwayTop');
-  // the hall: Teddy, the Bard's picture, a shelf (a candle), the mirror, the hall table (a candle)
-  m.mon(MON.teddy, 21, 9).set(22, 5, 'leoPic');
-  m.row(7, 25, 26, 'wallShelf').set(26, 6, 'unlit');
-  for (let q = 0; q < 4; q++) m.set(29 + q, 5, `mirror1${q}0`);
-  m.set(31, 9, 'table').set(31, 8, 'unlit');
-  // the linen closet: its shelves, a candle on top, the screaming towels flapping out down the hall
-  m.row(7, 35, 37, 'linen').set(36, 6, 'unlit').mon(MON.flapper, 38, 9);
-  m.mon(MON.gwinn, 43, 9).set(47, 9, 'creak');
-  // the bookcase (a candle on top), another towel, a spare candle on the floor
-  m.row(7, 50, 51, 'wallShelf').row(5, 50, 51, 'wallShelf').set(51, 4, 'unlit').mon(MON.flapper, 54, 9).set(58, 9, 'unlitB');
-  // a little shelf on the wall, a hop back left from the top of the bookcase: a tin heart at its far end
-  m.row(5, 47, 48, 'wallShelf').set(47, 4, 'tinHeart');
+  m.set(1, 10, 'headboardTop')
+    .col(1, 11, 12, 'headboard')
+    .set(2, 12, 'wife')
+    .row(12, 3, 7, 'bedTop')
+    .set(5, 12, 'pillow')
+    .row(13, 2, 7, 'bedSide')
+    .set(1, 13, 'bedSide');
+  m.set(8, 13, 'stand').set(8, 12, 'unlit');
+  m.set(10, 9, 'weddingPic');
+  m.col(12, 12, 13, 'dresser').col(13, 12, 13, 'dresser').set(13, 11, 'unlit');
+  m.set(17, 13, 'doorway').set(17, 12, 'doorwayTop');
+  // the hall downstairs: a towel flapping, the Bard's picture, the hall table (a candle), another towel
+  m.mon(MON.flapper, 19, 13).set(22, 9, 'leoPic');
+  m.set(25, 13, 'table').set(25, 12, 'unlit');
+  m.mon(MON.flapper, 28, 13);
+  // the stairwell: the hall mirror ("YOU MADE IT WORSE") up its wall, a spare candle on the floor
+  // at the far end, and the stairs climbing left to the landing
+  for (let q = 0; q < 4; q++) m.set(42 + q, 4, `mirror1${q}0`);
+  m.set(46, 13, 'unlitB');
+  // (open treads, so the hall runs on underneath and you hop up through them)
+  m.row(12, 38, 39, 'wallShelf').row(10, 36, 37, 'wallShelf').row(8, 34, 35, 'wallShelf');
+  // a little shelf on the stairwell wall, a hop up and right off the top of the stairs: a tin heart
+  m.row(4, 37, 38, 'wallShelf').set(38, 3, 'tinHeart');
+  // upstairs, back to the left: a shelf (a candle), the landing table (a candle), a towel, the
+  // linen closet (a candle on top) and its last towel, the bathroom door
+  m.row(4, 28, 29, 'wallShelf').set(28, 3, 'unlit');
+  m.set(20, 6, 'table').set(20, 5, 'unlit');
+  m.mon(MON.flapper, 16, 6);
+  m.row(4, 12, 14, 'linen').set(13, 3, 'unlit');
+  m.mon(MON.flapper, 8, 6);
   // the bathroom door: six candles burning; through it, the steam of the bathroom, where the
   // walk to the shower gives the funeral bell (the door's 1.6 s toll) time to ring out
-  m.set(66, 9, 'bathDoor').set(66, 8, 'bathTop');
-  m.fill(67, 0, 4, 10, 'steamAir').row(10, 67, 70, 'showerFloor');
-  m.link(70, 9, 'next');
-  return { m, start: at(5, 7), size: [W, H] };
+  m.set(6, 6, 'bathDoor').set(6, 5, 'bathTop');
+  m.fill(1, 1, 5, 6, 'steamAir').row(7, 1, 5, 'showerFloor');
+  m.link(1, 6, 'next');
+  return { m, start: at(5, 11), size: [W, H] };
 }
 
 /** 4. Scrubbus Maximus: the demon sponge, its citrus suds, rosemary brine, her silver rack. */

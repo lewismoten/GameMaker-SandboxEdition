@@ -8,6 +8,6 @@
   "blurb": "She said, \"Don't touch the pink one. It's mine!\" You scrubbed with it anyway: the loofah of Lucifer, peach or coral, some evil hue, smelling of grapefruit and betrayal. Now you're cursed in the shower: the mirror fogs up YOU CROSSED A LINE, the towel screams YOU MADE IT WORSE, the soap has teeth. Gather bath salt for the brine, pick rosemary in a forest-dark store aisle where wild loofahs grow on the vine, buy a loofah of your own, light six candles at home, and cleanse Scrubbus Maximus, the demon sponge, back into the pink one. Shareware from The Sofa BBS, a goth rock song by The Bard of Bizarre (lyrics shaped by ChatGPT from Lewis Moten's prompts; music made with Riffusion, now Google Flow Music; title and cover art drawn for the game by Claude Opus 5.5).",
   "exe": "LOOFAH.EXE",
   "sound": "sb",
-  "tinHeart": { "map": "home.map", "at": [49, 6] },
+  "tinHeart": { "map": "home.map", "at": [40, 5] },
   "easterEgg": { "map": "aisle.map", "at": [23, 7] }
 }

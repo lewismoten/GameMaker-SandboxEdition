@@ -515,5 +515,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('loafOff1', loaf(1));
   book.add('seedOff0', seed(0));
   book.add('seedOff1', seed(1));
+  book.add('flapperOff0', flapper(0));
+  book.add('flapperOff1', flapper(1));
   return book;
 }
