@@ -23,7 +23,7 @@ export const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
  * which no one supplied and Claude drew for the game. Used by LICENSE.TXT (the credits page and
  * the README spell it out to fit their columns; about.json says the same in its blurb).
  */
-export const SONG_CREDIT = `lyrics written by ChatGPT from Lewis Moten's prompt; ${MUSIC_CREDIT}; title and cover art drawn for this game by Claude Opus 5.5`;
+export const SONG_CREDIT = `lyrics shaped by ChatGPT from Lewis Moten's prompt; ${MUSIC_CREDIT}; title and cover art drawn for this game by Claude Opus 5.5`;
 
 export const STORY = [
   page([
@@ -240,7 +240,7 @@ CREDITS (NOW)
   The song "There's a Fly in
   the Room (And It's Winning)",
   recorded as "A Fly Named
-  Carl": lyrics written by
+  Carl": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompt (as The Bard of
   Bizarre); music made with

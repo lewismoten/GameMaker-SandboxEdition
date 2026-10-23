@@ -76,7 +76,7 @@ CREDITS (NOW)
   The song "There's a Fly in
   the Room (And It's Winning)",
   recorded as "A Fly Named
-  Carl": lyrics written by
+  Carl": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompt (as The Bard of
   Bizarre); music made with
