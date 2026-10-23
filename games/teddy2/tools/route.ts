@@ -39,7 +39,7 @@ export const ROUTES: Record<string, Order[]> = {
     { hop: 8, dir: 'right', dirFor: 4 },
     { walk: 71 },
     { until: 'the skunk comes back', maxTicks: 400, check: (s) => s.monsters('skunk').some((k) => k.x === 76) },
-    { trick: 'e', hold: 9, after: 0 },
+    { trick: 'e', hold: 10, after: 0 },
     { walk: 82 },
     { face: 'right' },
     { trick: 'five', after: 20 },

@@ -126,11 +126,9 @@ export function night(): Level {
     [80, 39],
   ];
   for (const [x, y] of treats) m.treat(x, y);
-  for (const [x, y] of [
-    [34, 39],
-    [64, 39],
-  ])
-    m.treat(x, y, 'bone');
+  // one bone in the park (bones get scarcer the farther from home)
+  m.treat(34, 39, 'bone');
+  m.treat(64, 39);
   m.mark('start', 4, 39);
   m.mark('exit', wagon + 1, 39);
   return {

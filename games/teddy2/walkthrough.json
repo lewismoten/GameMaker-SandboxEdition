@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0GSALIDc0BTQHNAwICghRNCc0BOQK5FE0CSAjIDUgIyARICMgHSAjIPkgKyAYSApIVzQEEAoQeTSbNAVAC0BlNAhIGkgLNAU0BSAjIBM0KTQJICMgJzTYSCZIATQZICMgFSAjIEc0BTQHNAwICghRNBc0="
+   "keys": "AU0HSALIEM0BTQHNAwICghRNCs0BOQK5FE0CSAjIDkgIyAhICMhOEgqSEs0BBAKEHk0uzQFQAtAZTQMSBpICzQFNAUgIyATNCk0CSAjICs0sEgqSAE0GSAjIF80BTQHNAwICghRNBs0="
   },
   {
    "scene": 5,
@@ -24,7 +24,7 @@
   },
   {
    "scene": 6,
-   "keys": "AU0USAjICM0BOQK5FE0WSAjIEc0BTQXNDEsDywEEAoQeTRbNAU0PSAbICkgIyAbNAU0BzQM5ArkeTQvNAQICghRNDM0BOQK5FE0aEgOSBUgKyA7NAU0BSAbIAs0="
+   "keys": "AU0WSAjICs0BOQK5FE0ZSAjIBhIKkgTNAU0FzQ5LA8sBBAKEHk0azQFNDkgGyAhIBsgHSAjIBEgIyAfNAU0BzQM5ArkeTQzNAQICghRNDs0BOQK5FE0eEgaSBkgCyA7NAU0BSAbIA80="
   },
   {
    "scene": 7,
@@ -75,7 +75,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 31529,
+  "frames": 31654,
   "chapters": [
    {
     "title": "Opening",
@@ -99,31 +99,31 @@
    },
    {
     "title": "Level 4: The River",
-    "frame": 12141
+    "frame": 12124
    },
    {
     "title": "Level 5: Gwinn on the Farm",
-    "frame": 14559
+    "frame": 14542
    },
    {
     "title": "Level 6: The Corn Maze",
-    "frame": 16722
+    "frame": 16847
    },
    {
     "title": "Level 7: The Fair Midway",
-    "frame": 19677
+    "frame": 19802
    },
    {
     "title": "Level 8: The Dog Show",
-    "frame": 23129
+    "frame": 23254
    },
    {
     "title": "Ending",
-    "frame": 25563
+    "frame": 25688
    },
    {
     "title": "Credits",
-    "frame": 28165
+    "frame": 28290
    }
   ]
  }

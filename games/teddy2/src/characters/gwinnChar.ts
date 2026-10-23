@@ -32,7 +32,7 @@ function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> 
 }
 
 /** Gwinn's walking speed in pixels per tick (Teddy's is 5). */
-export const GSTEP = 7;
+export const GSTEP = 6;
 /** Her hop: a stronger push per tick while Up is held (Teddy's is 11). */
 export const GHOP = 12;
 
