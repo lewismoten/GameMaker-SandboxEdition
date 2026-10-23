@@ -123,31 +123,37 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     [n(a), t],
     [n(b), t],
   ];
+  /** A hurting monster's round: its stinging picture for one tick, then its two harmless ones. */
+  const sting = (stem: string, t = 3, a = `${stem}0`, b = `${stem}1`, st = `${stem}S`): [number, number][] => [
+    [n(st), 1],
+    [n(a), t],
+    [n(b), t],
+  ];
   const run = o.run ?? 3;
   const away = (a: string, b: string): Monster => mon(anim(a, b, 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -1, 3, 4)]);
   set[MON.joke] = mon(anim('joke0', 'joke1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
   // I. the banquet: Rufus's clouds spread out from under the table and up
-  set[MON.gas] = mon(anim('gas0', 'gas1', 5), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(2, 0, 1, 0), corner(4, -1, 1, 0), corner(5, -3, 1, 0), corner(4, -5, 1, 4)]);
+  set[MON.gas] = mon(sting('gas', 5), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(2, 0, 1, 0), corner(4, -1, 1, 0), corner(5, -3, 1, 0), corner(4, -5, 1, 4)]);
   set[MON.flavia] = mon(anim('flavia0', 'flavia1', 6), { power: 50, thru: 0, newmon: MON.flaviaOff }, still);
   set[MON.flaviaOff] = away('flavia1', 'flavia0');
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 14), { power: 230, thru: 1 }, still);
   set[MON.gwinn] = mon(anim('gwinn0', 'gwinn1', 17), { power: 230, thru: 1 }, still);
   set[MON.servus] = mon(anim('servus0', 'servus1', 4), { power: 230, thru: 1 }, pace(run, 1));
   // IV. the kitchen
-  set[MON.mouse] = mon(anim('mouse0', 'mouse1', 3), { power: 150, thru: 1, newmon: MON.crumb }, pace(run, 1));
+  set[MON.mouse] = mon(sting('mouse', 3), { power: 150, thru: 1, newmon: MON.crumb }, pace(run, 1));
   set[MON.crumb] = mon(anim('crumb0', 'crumb1', 6), { power: 50, thru: 1 }, still);
   set[MON.meow] = mon(anim('meow0', 'meow1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
-  set[MON.ant] = mon(anim('ant0', 'ant1', 3), { power: 150, thru: 1, newmon: NONE }, pace(Math.min(run, 2), 1));
+  set[MON.ant] = mon(sting('ant', 3), { power: 150, thru: 1, newmon: NONE }, pace(Math.min(run, 2), 1));
   // II. the battle: the horde charges along the ground to the gate, whatever is in the way
   const charge = [corner(0, 0, o.chargeSpeed ?? 3), ...(o.charge ?? [[40, 0]]).map(([cx, cy]) => corner(cx, cy, o.chargeSpeed ?? 3, 0))];
-  set[MON.gaul] = mon(anim('gaul0', 'gaul1', 3), { power: 230, thru: 0, end: -1 }, charge);
-  set[MON.gaul2] = mon(anim('gaulB0', 'gaulB1', 3), { power: 230, thru: 0, end: -1 }, charge);
+  set[MON.gaul] = mon(sting('gaul', 3), { power: 230, thru: 0, end: -1 }, charge);
+  set[MON.gaul2] = mon(sting('gaulB', 3), { power: 230, thru: 0, end: -1 }, charge);
   // an arrow loosed from the tower: up and over, down into the field ahead of it
-  set[MON.arrow] = mon(anim('arrow0', 'arrow1', 2), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 4), corner(2, -2, 4, 0), corner(4, -2, 4, 0), corner(6, 0, 4, 0), corner(7, o.fall ?? 2, 4, 0)]);
+  set[MON.arrow] = mon(sting('arrow', 2), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 4), corner(2, -2, 4, 0), corner(4, -2, 4, 0), corner(6, 0, 4, 0), corner(7, o.fall ?? 2, 4, 0)]);
   set[MON.crow] = mon(anim('crow0', 'crow1', 4), { power: 150, thru: 0 }, [corner(0, 0, 2), corner(6, 1, 2, 0), corner(10, -1, 2, 0), corner(4, 0, 2, 4), corner(0, 0, 2, 4)]);
   // III. the rooftops
-  set[MON.spell] = mon(anim('spell0', 'spell1', 2), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-3, -1, 2, 4), corner(-6, 0, 2, 4), corner(-9, -1, 2, 4)]);
-  set[MON.pigeon] = mon(anim('pigeon0', 'pigeon1', 5), { power: 150, thru: 1, newmon: NONE }, pace(Math.min(run, 2), 1));
+  set[MON.spell] = mon(sting('spell', 3), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-3, -1, 2, 4), corner(-6, 0, 2, 4), corner(-9, -1, 2, 4)]);
+  set[MON.pigeon] = mon(sting('pigeon', 5), { power: 150, thru: 1, newmon: NONE }, pace(Math.min(run, 2), 1));
   set[MON.leo] = mon(anim('leo0', 'leo1', 9), { power: 50, thru: 0, newmon: MON.leoOff }, still);
   set[MON.leoOff] = away('leo1', 'leo0');
   set[MON.sagax] = mon(anim('sagax0', 'sagax1', 12), { power: 230, thru: 1 }, still);
@@ -155,7 +161,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.note] = mon(anim('note0', 'note1', 6), { power: 50, thru: 0, end: -1 }, [corner(0, 0, 1), corner(-1, -2, 1, 4), corner(0, -4, 1, 0), corner(-1, -6, 1, 4)]);
   set[MON.fan] = mon(anim('fan0', 'fan1', 5), { power: 50, thru: 0, newmon: MON.fanOff }, still);
   set[MON.fanOff] = away('fan1', 'fan0');
-  set[MON.bubble] = mon(anim('bubble0', 'bubble1', 4), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(0, -2, 1, 0), corner(1, -4, 1, 0)]);
+  set[MON.bubble] = mon(sting('bubble', 4), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(0, -2, 1, 0), corner(1, -4, 1, 0)]);
   set[MON.bather] = mon(anim('bather0', 'bather1', 16), { power: 230, thru: 1 }, still);
   // VI. the theater: a joke makes a stone face laugh; the laugher comes down to Marcus
   set[MON.stony] = mon(anim('stony0', 'stony1', 20), { power: 200, thru: 1, newmon: MON.laugher }, still);
@@ -167,10 +173,10 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     for (let s = 0; s < 4; s++) {
       const slot = MON[`gravis${half}${s}` as keyof typeof MON];
       const next = s < 3 ? MON[`gravis${half}${s + 1}` as keyof typeof MON] : half === 'A' ? MON.crown : NONE;
-      set[slot] = mon(anim(`gravis${half}${s}a`, `gravis${half}${s}b`, 11 - s * 2), { power: 200, thru: 1, newmon: next }, still);
+      set[slot] = mon(sting('', 11 - s * 2, `gravis${half}${s}a`, `gravis${half}${s}b`, `gravis${half}${s}s`), { power: 200, thru: 1, newmon: next }, still);
     }
   const arc: March[] = [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -3, 3, 4), corner(-7, -2, 3, 4), corner(-9, 1, 3, 4), corner(-11, 3, 3, 4)];
-  set[MON.decree] = mon(anim('decree0', 'decree1', 2), { power: 200, thru: 0, end: -1, newmon: MON.thud }, arc);
+  set[MON.decree] = mon(sting('decree', 2), { power: 200, thru: 0, end: -1, newmon: MON.thud }, arc);
   set[MON.thud] = mon([[n('thud'), 4]], { power: 200, thru: 0, end: 18 });
   set[MON.crown] = mon(anim('crown0', 'crown1', 4), { power: 230, thru: 1 }, still);
   return set;

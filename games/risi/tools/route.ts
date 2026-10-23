@@ -39,6 +39,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
       await stretch();
     } catch (e) {
       why = String(e).split('\n').slice(0, 3).join(' / ');
+      if (process.env.BOT_WHY) console.log(`${label} wait ${wait}: ${why}`);
       continue;
     }
     const loss = hp - bot.sim.ci.hitpts;
@@ -165,9 +166,74 @@ export async function battle(bot: Bot): Promise<void> {
   await leave(bot, bot.walk(52, 'the gate'), 'the gate');
 }
 
+/** Jokes at the monsters numbered `mons` while any is within `range` blocks ahead on his rows. */
+async function clear(bot: Bot, mons: number[], range = 6, dir: 'right' | 'left' = 'right'): Promise<void> {
+  for (let k = 0; k < 6; k++) {
+    const me = bot.px;
+    const ahead = mons.flatMap((n) => where(bot, n)).filter((m) => (dir === 'right' ? m.x - me.x / 20 : me.x / 20 - m.x) > -0.5 && Math.abs(m.x - me.x / 20) < range && Math.abs(m.y - me.y / 20) < 1.5);
+    if (!ahead.length) return;
+    await joke(bot, dir);
+  }
+}
+
+/** III. The rooftops: eight tituli (seven needed), three heaps of SAXA, Doc Leo, the wise man's spells, the tavern. */
 export async function roofs(bot: Bot): Promise<void> {
   expect(bot, 4, 'the rooftops');
-  throw new Error('todo');
+  await carefully(bot, 'the first house', 0, async () => {
+    await must(bot, bot.walk(5, 'past the first titulus'), 'titulus');
+    if (titles(bot) < 1) throw new Error('the first titulus untouched');
+    await must(bot, bot.hop('right', 12, 'right', 7.6), 'over the chimney');
+    await must(bot, bot.walk(9, 'into the alley ladder'), 'alley');
+    await must(bot, bot.dig('up', 5.9, 'up the ladder'), 'climb');
+    await must(bot, bot.walk(11, 'onto the second house'), 'house');
+  });
+  await carefully(bot, 'the pigeon, SAXA', 0, async () => {
+    await clear(bot, [MON.pigeon]);
+    await must(bot, bot.walk(15, 'the titulus, up to SAXA'), 'saxa');
+    if (titles(bot) < 2) throw new Error('the second titulus untouched');
+    await must(bot, bot.walk(16, 'through SAGA'), 'saga');
+    await must(bot, bot.walk(18, 'down onto the third house'), 'down');
+  });
+  await carefully(bot, 'Doc Leo, the titulus, the cup', 0, async () => {
+    await must(bot, bot.walk(21, 'Doc Leo, the titulus'), 'leo');
+    await must(bot, bot.walk(22, 'under the cup'), 'cup');
+    await up(bot, 'the cup');
+    await must(bot, bot.walk(25, 'into the alley ladder'), 'alley');
+    await must(bot, bot.dig('up', 6.9, 'up the ladder'), 'climb');
+    await must(bot, bot.walk(27, 'onto the fourth house, the titulus'), 'house');
+    if (titles(bot) < 4) throw new Error(`only ${titles(bot)} tituli`);
+  });
+  await carefully(bot, "the wise man's spells, his chimney", 0, async () => {
+    await clear(bot, [MON.spell], 5);
+    await must(bot, bot.walk(29.6, 'before the chimney'), 'chimney');
+    await clear(bot, [MON.spell], 3);
+    await must(bot, bot.hop('right', 12, 'right', 32.6), 'over the wise man');
+    await must(bot, bot.walk(33, 'the coin'), 'coin');
+  });
+  await carefully(bot, 'the tall house: SAXA, a titulus, the wreath', 0, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 34), 'up onto the tall house');
+    await must(bot, bot.walk(36, 'through SAXA'), 'saxa');
+    await must(bot, bot.walk(39, 'the titulus, under the wreath'), 'wreath');
+    if (titles(bot) < 5) throw new Error(`only ${titles(bot)} tituli`);
+    await up(bot, 'the wreath');
+    await must(bot, bot.walk(41, 'into the alley'), 'alley');
+    await must(bot, bot.land(), 'land');
+    await must(bot, bot.dig('up', 6.9, 'up the ladder'), 'climb');
+    await must(bot, bot.walk(44.6, 'onto the next house, the titulus'), 'house');
+  });
+  await carefully(bot, 'the chimney, the pigeon, the grapes, the titulus', 0, async () => {
+    await must(bot, bot.walk(45, 'before the chimney'), 'chimney');
+    await clear(bot, [MON.pigeon], 5);
+    await must(bot, bot.hop('right', 12, 'right', 48), 'over the chimney');
+    await up(bot, 'the grapes');
+    await must(bot, bot.walk(50, 'the titulus'), 'titulus');
+    if (titles(bot) < 7) throw new Error(`only ${titles(bot)} tituli`);
+  });
+  await carefully(bot, 'the last house, SAXA, the tavern', 0, async () => {
+    await must(bot, bot.hop('right', 12, 'right', 51.4), 'up onto the last house');
+    await must(bot, bot.walk(54, 'the titulus, through SAXA'), 'saxa');
+    await leave(bot, bot.walk(58, "Titus's tavern"), 'the tavern');
+  });
 }
 
 export async function kitchen(bot: Bot): Promise<void> {

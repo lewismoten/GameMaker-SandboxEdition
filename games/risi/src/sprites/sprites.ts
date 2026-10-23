@@ -232,7 +232,9 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
-  // Hurting things are solid (they push him away) and cost dignity.
+  // Hurting things are solid (they push him away) and cost dignity, but only on their "S" picture,
+  // which each shows for one tick a round of its animation (characters.ts sting()): a hurt holds
+  // the hero still, so a monster that hurt on every tick would hold him there.
   const hurt = (hp: number, solid = 15) => ({ chHitPt: hp, solid });
   const solid = { solid: 15 };
   /** Two dot eyes and a mouth on a face at (x, y). */
@@ -267,8 +269,9 @@ export function buildMonsterBlocks(pal: Pal) {
     for (let k = 0; k < 3; k++) p.line(5 + k * 5, 4 - f, 6 + k * 5, 1, c('gas', 1)).set(6 + k * 5, 0, c('gas', 0));
     return done(p);
   };
-  book.add('gas0', gas(0), hurt(-6, 0));
-  book.add('gas1', gas(1), hurt(-6, 0));
+  book.add('gas0', gas(0), { solid: 0 });
+  book.add('gas1', gas(1), { solid: 0 });
+  book.add('gasS', gas(0), hurt(-6, 0));
   // Lady Flavia, aghast behind her fan (a bow is points)
   const flavia = (f: number) => {
     const p = P();
@@ -329,8 +332,9 @@ export function buildMonsterBlocks(pal: Pal) {
     if (cheese) p.rect(15, 15, 4, 3, c('cheese', 2)).set(16, 16, c('cheese', 0));
     return done(p);
   };
-  book.add('mouse0', mouse(0, true), hurt(-6));
-  book.add('mouse1', mouse(1, true), hurt(-6));
+  book.add('mouse0', mouse(0, true), solid);
+  book.add('mouse1', mouse(1, true), solid);
+  book.add('mouseS', mouse(0, true), hurt(-6));
   const crumb = (f: number) => {
     const p = P();
     p.rect(5, 10, 10, 7, c('cheese', 2)).line(5, 10, 15, 10, c('cheese', 3)).line(5, 10, 10, 6, c('cheese', 3)).line(10, 6, 15, 10, c('cheese', 1));
@@ -349,8 +353,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(15, 15, 18, 12, ink);
     return done(p);
   };
-  book.add('ant0', ant(0), hurt(-3));
-  book.add('ant1', ant(1), hurt(-3));
+  book.add('ant0', ant(0), solid);
+  book.add('ant1', ant(1), solid);
+  book.add('antS', ant(0), hurt(-3));
 
   // ---- II. the battle: the Gaulish horde (winged helmets, moustaches, braids)
   const gaul = (f: number, kind: 0 | 1) => {
@@ -368,18 +373,21 @@ export function buildMonsterBlocks(pal: Pal) {
     else blob(p, 4, 12, 3, 5, R('wood'), 1, 3);
     return done(p);
   };
-  book.add('gaul0', gaul(0, 0), hurt(-20));
-  book.add('gaul1', gaul(1, 0), hurt(-20));
-  book.add('gaulB0', gaul(0, 1), hurt(-20));
-  book.add('gaulB1', gaul(1, 1), hurt(-20));
+  book.add('gaul0', gaul(0, 0), solid);
+  book.add('gaul1', gaul(1, 0), solid);
+  book.add('gaulS', gaul(0, 0), hurt(-20));
+  book.add('gaulB0', gaul(0, 1), solid);
+  book.add('gaulB1', gaul(1, 1), solid);
+  book.add('gaulBS', gaul(0, 1), hurt(-20));
   const arrow = (f: number) => {
     const p = P();
     p.line(10, 2, 10, 16, c('wood', 2)).line(8, 14, 10, 18, c('iron', 2)).line(12, 14, 10, 18, c('iron', 2)).set(10, 19, c('iron', 1));
     p.line(8, 2 + f, 10, 5, c('red', 2)).line(12, 2 + f, 10, 5, c('red', 2));
     return done(p);
   };
-  book.add('arrow0', arrow(0), hurt(-8, 0));
-  book.add('arrow1', arrow(1), hurt(-8, 0));
+  book.add('arrow0', arrow(0), { solid: 0 });
+  book.add('arrow1', arrow(1), { solid: 0 });
+  book.add('arrowS', arrow(0), hurt(-8, 0));
   const crow = (f: number) => {
     const p = P();
     blob(p, 10, 11, 4, 2.4, R('ink'), 0, 1);
@@ -400,8 +408,9 @@ export function buildMonsterBlocks(pal: Pal) {
     micro(p, 8, 8, 'S', c('marble', 3));
     return done(p);
   };
-  book.add('spell0', spell(0), hurt(-6, 0));
-  book.add('spell1', spell(1), hurt(-6, 0));
+  book.add('spell0', spell(0), { solid: 0 });
+  book.add('spell1', spell(1), { solid: 0 });
+  book.add('spellS', spell(0), hurt(-6, 0));
   const pigeon = (f: number) => {
     const p = P();
     blob(p, 9, 14, 5, 3.6, R('grey'), 1, 3);
@@ -410,8 +419,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(8, 18, 8, 19, c('red', 2)).line(11, 18, 11, 19, c('red', 2)).line(3, 13, 1, 15, c('grey', 1));
     return done(p);
   };
-  book.add('pigeon0', pigeon(0), hurt(-4));
-  book.add('pigeon1', pigeon(1), hurt(-4));
+  book.add('pigeon0', pigeon(0), solid);
+  book.add('pigeon1', pigeon(1), solid);
+  book.add('pigeonS', pigeon(0), hurt(-4));
   /** Doc Leo's face: rose-red nose and cheeks, white mouth and eyes, a heavy ash beard. */
   const leoFace = (p: Pixels, x: number, y: number, f: number) => {
     blob(p, x, y, 3.6, 3.8, R('skin'), 2, 4);
@@ -481,8 +491,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(10, 3 - f, c('steam', 2)).set(12, 2, c('steam', 1));
     return done(p);
   };
-  book.add('bubble0', bubble(0), hurt(-5, 0));
-  book.add('bubble1', bubble(1), hurt(-5, 0));
+  book.add('bubble0', bubble(0), { solid: 0 });
+  book.add('bubble1', bubble(1), { solid: 0 });
+  book.add('bubbleS', bubble(0), hurt(-5, 0));
   // a senator floating on his back, belly up, blissful (solid: stand on him)
   const bather = (f: number) => {
     const p = P();
@@ -566,8 +577,9 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   for (const half of ['A', 'B'] as const)
     for (let s = 0; s < 4; s++) {
-      book.add(`gravis${half}${s}a`, gravis(half, s, 0), hurt(-10));
-      book.add(`gravis${half}${s}b`, gravis(half, s, 1), hurt(-10));
+      book.add(`gravis${half}${s}a`, gravis(half, s, 0), solid);
+      book.add(`gravis${half}${s}b`, gravis(half, s, 1), solid);
+      book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10));
     }
   // a decree, rolled, flying ("SILENTIUM!"), and where it lands
   const decree = (f: number) => {
@@ -575,8 +587,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(4, 7, 12, 7, c('toga', 3)).disc(4, 10.5, 2, c('toga', 2)).disc(16, 10.5, 2, c('toga', 2)).rect(8, 9 + f, 4, 3, c('red', 2));
     return done(p);
   };
-  book.add('decree0', decree(0), hurt(-6, 0));
-  book.add('decree1', decree(1), hurt(-6, 0));
+  book.add('decree0', decree(0), { solid: 0 });
+  book.add('decree1', decree(1), { solid: 0 });
+  book.add('decreeS', decree(0), hurt(-6, 0));
   const thud = P();
   thud.rect(2, 15, 16, 4, c('toga', 3)).rect(8, 15, 4, 2, c('red', 2));
   micro(thud, 1, 9, 'SHH', c('red', 3));
