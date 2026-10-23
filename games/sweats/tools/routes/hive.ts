@@ -36,7 +36,10 @@ async function upToTheStage(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the stage', 10, async () => {
     await must(bot, bot.hop('left', 12, 'left', 32), 'up onto the stage');
-    await must(bot, bot.hop('up', 12), 'the coin up by the drapes');
+    if (bot.sim.shown(30 + 2, 3 + 2).effect === 3) {
+      await must(bot, bot.walk(30, 'under the coin by the drapes'), 'drapes');
+      await must(bot, bot.hop('up', 12), 'the coin up by the drapes');
+    }
     await must(bot, bot.walk(25, 'past Doc Leo, the mic'), 'mic');
     if (coffee(bot) < 1) throw new Error('no coffee for the curtain');
     await leave(bot, bot.walk(21.5, 'the curtain'), 'through the curtain');
@@ -94,6 +97,8 @@ async function theater(bot: Bot, dir: 'right' | 'left'): Promise<void> {
 /** The later ones: off the stage, down the stairs, back through to the counter, a coffee, and up again. */
 async function downForACoffee(bot: Bot): Promise<void> {
   await carefully(bot, 'off the stage', 0, async () => {
+    await must(bot, bot.walk(30, 'under the coin by the drapes'), 'drapes');
+    await must(bot, bot.hop('up', 12), 'the coin up by the drapes');
     await must(bot, bot.walk(36, 'off the stage'), 'off');
     await must(bot, bot.hop('right', 12, 'right', 41.5), 'over the couch arm');
     await must(bot, bot.hop('right', 12, 'right', 44.5), 'over the other arm');
