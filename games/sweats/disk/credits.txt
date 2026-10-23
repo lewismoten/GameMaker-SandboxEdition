@@ -1,0 +1,63 @@
+SHAKESPEARE IN SWEATPANTS
+by The Bard of Bizarre, 1995
+Shareware from The Sofa BBS
+
+Seventeen monologues about
+overly dramatic boring
+events, by The Bard of
+Bizarre (Lewis Moten as his
+hobo clown, Doc Leo).
+
+Monologues: shaped with
+ChatGPT from Lewis's
+prompts. Audio and vocals:
+Riffusion (now Google Flow
+Music). Voice clips here are
+cut from the recordings.
+The Bard of Bizarre logo:
+DeepAI. Doc Leo photo: Lewis
+Moten.
+
+THE HIVE is made up, but it
+is inspired by Lewis's
+memories of the Beehive
+coffee house in Oakland,
+Pittsburgh: a castle for a
+front, a little movie
+theater past the counter, a
+stage upstairs. Drawn from
+memory for this game; not an
+official picture of it.
+
+Game code, art, levels and
+the FM score: Claude Opus
+5.5, built as Game-Maker 3.0
+files. Made with GAME-MAKER
+by Recreational Software
+Designs.
+
+Take your spatula.
+Make your move.
+
+
+
+
+
+
+
+
+FREE TO SHARE
+
+Made in 2026 by Lewis Moten
+with Claude. Free to share:
+see LICENSE.TXT on the disk.
+
+The shareware page is part
+of the 1995 story: there is
+no fee and nothing to mail.
+
+MIT License, (c) 2026
+Lewis Moten.
+
+
+
