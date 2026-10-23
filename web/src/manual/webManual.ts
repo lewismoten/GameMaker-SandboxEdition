@@ -133,13 +133,16 @@ const SECTIONS: [id: string, title: string, html: string][] = [
   [
     'desk',
     'The 1994 desk',
-    `<p><b>💾 1994 desk</b> shows Game-Maker the way it was used in DOS: a PC with a DOS
-    prompt, Game-Maker’s text menus, a box of diskettes, the CD, a shareware catalog and
-    a BBS to call. It is a simulation, not a PC emulator: no DOS program runs. Game-Maker’s
+    `<p><b>Desk</b>, in the header’s <b>Desk | DOS | Web</b> switch, shows Game-Maker the way
+    it was used in DOS: a PC with a DOS prompt, Game-Maker’s text menus, a box of diskettes,
+    the CD, a shareware catalog and a BBS to call. It is a simulation, not a PC emulator: no DOS program runs. Game-Maker’s
     tools are rebuilt from their original source code, and the rest is made to look and act
     the way it did. The <b>Owner’s Guide</b> on the desk explains it.</p>
-    <p>The games you change on the desk are the same games you see here, so you can switch
-    between the two at any time.</p>`,
+    <p><b>DOS</b> is the same PC on its own, without the desk: it starts straight in
+    Game-Maker, and <code>dos.html?game=</code> with a game’s id opens that game in it.
+    <b>Web</b> brings you back here.</p>
+    <p>The games you change on the desk or in DOS are the same games you see here, so you can
+    switch between them at any time.</p>`,
   ],
   [
     'ultimate',

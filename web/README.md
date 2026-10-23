@@ -60,8 +60,10 @@ PC's skipped ticks).
 
 ## The 1994 desk
 
-The site opens on a mid-90s desk; "Switch to today's web" (remembered per visitor)
-goes to the modern interface and its "💾 1994 desk" button comes back. The desk's PC is
+The site opens on a mid-90s desk or today's web, whichever the visitor used last. Every
+header has the same **Desk | DOS | Web** switch (`src/viewSwitch.ts`), which takes the game
+in front of you along: Desk is this desk, Web today's interface, and DOS the desk's PC on
+a page of its own (see [DOS Game-Maker](#dos-game-maker) below). The desk's PC is
 a simulation, not a PC emulator: the DOS prompt, Game-Maker's menus and the BBS are
 written in TypeScript to look and act the way they did, from the original source and files.
 
@@ -112,6 +114,33 @@ written in TypeScript to look and act the way they did, from the original source
 - **The Owner's Guide** is a manual for the desk, typeset like a 1994 printed manual,
   with screen shots drawn by the same text-mode screen (`src/manual`). It can be
   printed. Today's web interface has its own guide at `#/help`.
+
+## DOS Game-Maker
+
+`dos.html` (`src/dosPage`) is the desk's PC without the desk: the same `Computer`
+(`src/retro/computer.ts`) with the same drives, saves, downloads and registration, so a game
+made on one shows up on the other. It boots quickly straight into Game-Maker from its CD;
+quitting GM leaves you at DOS. A bar above the screen has power, reset, turbo, sound and the
+Sound Blaster card, full screen, a disk menu in place of the disk box, the CD, Game-Maker, the
+BBS and the Owner's Guide; on-screen keys fold out for a phone. When GM's copy check asks for
+a word, the Owner's Guide and the registration card open beside the screen as on the desk
+(`src/retro/gmReg/regSide.ts`). The page loads none of the desk's code or pictures
+(`src/dosPage/boundary.test.ts` walks its imports to make sure).
+
+| Address | What it does |
+| --- | --- |
+| `dos.html` | Boots straight into Game-Maker. |
+| `dos.html?game=<id>` | Puts that game's disk in drive A: and opens it in Game-Maker, to play or change (the ids `play.html?game=<id>` uses). An unknown id, or a secret game not yet found in this browser, gets plain Game-Maker. |
+| `dos.html?run=dos` | Stays at the `C:\>` prompt. |
+| `dos.html?run=bbs` | Calls the BBS. |
+| `#/dos`, `#/dos/<id>` | On the site's own page: lead to `dos.html` and `dos.html?game=<id>`. |
+
+The PC's code takes nothing from the desk: what the page around it supplies is
+`ComputerOptions` (`src/retro/computer/setup.ts`): the turbo setting, a quick boot, and
+callbacks for the monitor's mode, the disks, the drive lights, the game and the program
+running. The desk adds its room around the same core; the volume, the Sound Blaster switch,
+achievements and the copy check's questions (`retro/gmReg/regDesk.ts`) are shared by every
+page.
 
 ## Original games
 
@@ -191,11 +220,12 @@ detail. In short:
 | `src/eggs` | The felt eggs: which are found (from saved games), their shadow box and viewer, and `EGG.EXE`. |
 | `src/editor` | Today's web interface: `shell/` (home page, workspace), `core/` (DOM helpers, the open project, undo), `widgets/` (pickers, thumbnails, previews), `editors/<kind>/` (one folder per file type, registered in `editors/registry.ts`), `tools/` (making pictures, songs and sounds), `keymap/` (the ⌨ Keys map). |
 | `src/desk` | The 1994 desk: `desk.ts`, and `pc/`, `boxes/`, `disks/`, `mug/`, `room/` for the things on it. |
-| `src/retro` | The desk's PC: `computer.ts` (with `computer/`), `dos/` (COMMAND.COM, files, disks), `text/` (text mode and Game-Maker's text UI), `bbs/` (terminal and BBSes), `gm.ts` (GM.EXE's menus). |
+| `src/dosPage` | DOS Game-Maker (`dos.html`): the PC on its own page, its disk menu and on-screen keys. |
+| `src/retro` | The PC, shared by the desk and `dos.html` (it imports nothing from `src/desk`): `computer.ts` (with `computer/`), `dos/` (COMMAND.COM, files, disks), `text/` (text mode and Game-Maker's text UI), `bbs/` (terminal and BBSes), `gm.ts` (GM.EXE's menus). |
 | `src/vga` | The eight designers ported from their C source, one file per `.EXE` (a big one's parts in a folder of the same name), and `shared/` (VGA screen, block routines, Game-Maker's look). |
 | `src/manual` | The Owner's Guide, the web Guide, and the original games' manuals and box contents. |
 | `src/seo` | Page titles, descriptions and JSON-LD. |
-| `src/*.ts` | Entries (`main.ts`, `play.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`. |
+| `src/*.ts` | Entries (`main.ts`, `play.ts`), the Desk | DOS | Web switch (`viewSwitch.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`. |
 | `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. Run by hand: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` (native downloads of catalog games, into `../dist`), `castArt.ts` and `castSprites.ts` (the Cast page's pictures, with the other `cast*.ts` drawings they use). |
 | `test` | Vitest tests, one file per subject, each starting with a line saying what it covers (a few `*.test.ts` sit beside their source in `src/`). |
 
@@ -205,9 +235,10 @@ detail. In short:
   reload or a shared link comes back to it: `#/` (home, `?tab=…`), `#/game/cd:nebula` (a game
   on the home page), `#/p/<project>/<file>?scene=3` (a file open in the workspace, with what is
   selected in it), `#/help/<section>` (the web Guide), `#/cast`, `#/mac`, `#/windows`,
-  `#/linux` and `#/desk`. Small changes replace the
+  `#/linux` and `#/desk` (`?disk=cd:<id>` puts a disk in drive A:). Small changes replace the
   history entry; opening a page or file pushes one. `play.html?game=<id>` (and each game's
-  own `play-<id>.html`) plays one game full window.
+  own `play-<id>.html`) plays one game full window; `dos.html?game=<id>` opens it in DOS
+  Game-Maker (see above).
 - **Loading** (`src/main.ts`): the desk and today's web are separate downloads, and the
   editors load only when a game is opened. Lists come from `games/catalog.json`; a game's
   manual and notice from `games/details/<id>.json` when it is opened. Tiles and boxes show

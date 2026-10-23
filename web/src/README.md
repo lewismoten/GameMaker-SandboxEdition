@@ -10,6 +10,10 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   `#/linux`, `#/desk`), so a reload or a shared
   link comes back to it; [`seo/route.ts`](seo/route.ts) keeps the page's title and share
   tags in step with what is on screen.
+- `dos.html` → [`dosPage/dosPage.ts`](dosPage/dosPage.ts): DOS Game-Maker, the desk's PC on
+  its own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`). It loads no
+  desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the site lead to it.
+  [`viewSwitch.ts`](viewSwitch.ts) is the Desk | DOS | Web switch in all three headers.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game
   (`?game=<id>`, `?project=<id>`, or the game bundled in an exported web app). Each
   bundled game also has its own copy of the page, `play-<id>.html` (made at build time,
@@ -25,7 +29,7 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`formats/`](formats) | Readers and writers for every Game-Maker file (`.gam .pal .bbl/.mbl/.cbl .chr .mon .map .snd .his .rec .bkd .lst .txt`) and the standard ones it uses (`.gif .fli .cmf .voc`). Borland C++ 16-bit layout: `int` is 2 bytes, structs are byte-packed. `cmfSong.ts`/`cmfEdit.ts`/`cmfPreview.ts` are the music editor's model of a CMF song. |
 | [`engine/`](engine) | The game engine, a TypeScript port of `PLAYGAME.C`: `game.ts` (`DoGame`), `scene.ts` (`playscene`), `character.ts`, `monsters.ts`, `scroll.ts`, `world.ts`, menus, function keys, recordings and the "machine" (screen, keyboard, timers). |
 | [`audio/`](audio) | `opl.ts` (OPL2 FM emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV calls), the AudioWorklet, Web Audio output, PC speaker sound sets and sample editing. |
-| [`gfx/`](gfx), [`input/`](input) | The mode 13h screen and 8×8 font; keyboard scan codes and the gamepad. |
+| [`gfx/`](gfx), [`input/`](input) | The mode 13h screen and 8×8 font, and game screenshots drawn from a game's maps (`gameShots.ts`, `sandboxShots.ts`); keyboard scan codes and the gamepad. |
 | [`player/`](player) | The embeddable player: canvas, start overlay, whole-pixel scaling, touch controls. Used by `play.ts`, the editor's play test, the desk and exports. |
 | [`project/`](project) | A game's files (`GameFiles`, 8.3 names, the CD catalog), streaming a hosted game (`streamGame.ts`), the secret games (`secretGames.ts`, `catalogWatch.ts`), IndexedDB storage, zip, the health check, importing an exported page. |
 | [`export/`](export) | Publishing a game: as an offline web app, a single web page, or a DOS folder with PLAYGAME; plus the service worker. The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`), `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`). |
@@ -38,7 +42,8 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`eggs/`](eggs) | The felt eggs hidden in the Sandbox games: which are found (`eggState.ts`, from saved games), the shadow box on the desk, its viewer, and `EGG.EXE`. |
 | [`editor/`](editor) | Today's web interface (see below). |
 | [`desk/`](desk) | The 1994 desk: `desk.ts` lays out the scene (`stage.ts` scales it to the window); `pc/` the case, CRT, keyboard, mouse tray, modem, speakers with the Sound Blaster switch, and capture card; `boxes/` the retail boxes and shelf; `disks/` the disk box; `mug/` the BBS mug; `room/` the window, poster, clipping, clock, door, the wall phone (`room/phone/`) and props. |
-| [`retro/`](retro) | What runs on the desk's PC: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound); `gm.ts` (GM.EXE's menus); `hacks/` (the BBS's utilities, SAVEHACK, BACKUP, GMCRACK and the rest: debugging tools for registration modes, saved games and backups, dressed as 1990s scene programs). |
+| [`dosPage/`](dosPage) | DOS Game-Maker (`dos.html`): the PC's page with its controls, disk menu (`diskMenu.ts`) and on-screen keys (`keypad.ts`). |
+| [`retro/`](retro) | The PC, shared by the desk and `dos.html`, importing nothing from `desk/` (the page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor.css` styles its picture; `gmReg/regSide.ts` puts the Owner's Guide and registration card beside its monitor for the copy check). What runs on it: `computer.ts` (power, programs) with `computer/` (drives, game folders); `dos/` (COMMAND.COM, file system, disks); `text/` (80×25 text mode, Game-Maker's text UI); `bbs/` (the terminal, BBSes, modem sound); `gm.ts` (GM.EXE's menus); `hacks/` (the BBS's utilities, SAVEHACK, BACKUP, GMCRACK and the rest: debugging tools for registration modes, saved games and backups, dressed as 1990s scene programs). |
 | [`vga/`](vga) | Game-Maker's eight designers ported from their C source (PALCHOS, BLOCEDIT, MONEDIT, MAPMAKER, CHAREDIT, IMAGE, SNDEDIT, GRATOR). One file per `.EXE` at the top (each exports `program`); a large designer's parts are in a folder of the same name, and `shared/` has the VGA screen, block routines and Game-Maker's look. |
 | [`manual/`](manual) | The Owner's Guide (desk), the web Guide, and each original game's printed manual and box contents (`printables/`). |
 | [`seo/`](seo) | Page titles, descriptions and JSON-LD for the site and its game pages. |
