@@ -293,10 +293,13 @@ static HRESULT STDMETHODCALLTYPE onKey(Handler *h, void *sender, void *args) {
   UINT key = 0;
   VT(args, KEYARGS_get_KeyEventKind, FnP)(args, &kind);
   VT(args, KEYARGS_get_VirtualKey, FnP)(args, &key);
+  INT lparam = 0;
+  VT(args, KEYARGS_get_KeyEventLParam, FnP)(args, &lparam);
+  BOOL repeat = (lparam & 0x40000000) != 0; // held down: toggle once
   BOOL handled = TRUE;
-  if (kind == KEY_EVENT_KIND_KEY_DOWN && key == VK_F11) setFullscreen(!fullscreen);
-  else if (kind == KEY_EVENT_KIND_SYSTEM_KEY_DOWN && key == VK_RETURN) setFullscreen(!fullscreen);
-  else if (kind == KEY_EVENT_KIND_SYSTEM_KEY_DOWN && key == VK_F4) PostMessageW(win, WM_CLOSE, 0, 0);
+  if ((kind == KEY_EVENT_KIND_KEY_DOWN && key == VK_F11) || (kind == KEY_EVENT_KIND_SYSTEM_KEY_DOWN && key == VK_RETURN)) {
+    if (!repeat) setFullscreen(!fullscreen);
+  } else if (kind == KEY_EVENT_KIND_SYSTEM_KEY_DOWN && key == VK_F4) PostMessageW(win, WM_CLOSE, 0, 0);
   else if (kind == KEY_EVENT_KIND_KEY_DOWN && key == 'R' && (GetAsyncKeyState(VK_CONTROL) & 0x8000) && !(GetAsyncKeyState(VK_MENU) & 0x8000)) restartGame();
   else handled = FALSE;
   if (handled) VT(args, KEYARGS_put_Handled, FnB)(args, TRUE);

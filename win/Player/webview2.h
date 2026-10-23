@@ -82,6 +82,7 @@
 // ICoreWebView2AcceleratorKeyPressedEventArgs
 #define KEYARGS_get_KeyEventKind 3
 #define KEYARGS_get_VirtualKey 4
+#define KEYARGS_get_KeyEventLParam 5
 #define KEYARGS_put_Handled 8
 
 static const IID IID_ICoreWebView2Controller2 = {0xc979903e,0xd4ca,0x4228,{0x92,0xeb,0x47,0xee,0x3f,0xa9,0x6e,0xab}};
