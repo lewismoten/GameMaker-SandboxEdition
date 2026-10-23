@@ -163,7 +163,7 @@ export function gameDiz(g: CatalogEntry): string[] {
   const by = ascii(g.company ?? g.author ?? 'Unknown author');
   const second = spread(by, g.year ? `, ${g.year}` : '', priceText(ascii(g.price ?? '')));
   const about = SUMMARY[g.id] ?? (g.blurb ?? g.title).replace(/^\([^)]*\)\s*/, '');
-  const sound = g.original ? 'VGA * SB music' : 'VGA * PC speaker';
+  const sound = g.original && g.original.sound !== 'speaker' ? 'VGA * SB music' : 'VGA * PC speaker';
   return fitDiz([
     headline(g.title),
     second,
