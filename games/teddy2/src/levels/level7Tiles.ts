@@ -36,7 +36,7 @@ export function midwayTiles(): Tiles {
     t.air(
       `lights${ph}`,
       (() => {
-        const p = sky(1);
+        const p = sky(bandRow(33));
         for (let x = 0; x < 20; x++) p.set(x, 4 + Math.round(Math.sin((x / 20) * Math.PI) * 3), c('ink', 1));
         for (let i = 0; i < 4; i++) {
           const x = 2 + i * 5;
@@ -49,7 +49,7 @@ export function midwayTiles(): Tiles {
     );
 
   // The gate arch: TRI-COUNTY FAIR, two posts and a sign across.
-  const arch = canvas(5, 2, (_bx, by) => sky(by + 1));
+  const arch = canvas(5, 2, (_bx, by) => sky(bandRow(38 + by)));
   arch.rect(2, 4, 6, 36, c('red', 2)).rect(92, 4, 6, 36, c('red', 2));
   arch.rect(0, 2, 100, 14, c('yellow', 2)).frame(0, 2, 100, 14, c('red', 1));
   micro(arch, 14, 7, 'TRI-COUNTY FAIR', c('red', 1));
@@ -57,23 +57,27 @@ export function midwayTiles(): Tiles {
   for (let bx = 0; bx < 5; bx++) for (let by = 0; by < 2; by++) t.air(`arch${bx}${by}`, ac[by][bx]);
 
   // The High Striker: a tall pole with a scale, pegs to stand on, the bell at the top.
-  t.air(
-    'striker',
-    (() => {
-      const p = sky(2);
-      p.rect(7, 0, 6, 20, c('paint', 3)).rect(9, 0, 2, 20, c('red', 2));
-      for (let y = 2; y < 20; y += 5) p.rect(7, y, 6, 1, c('ink', 1));
-      return p;
-    })(),
-  );
-  t.ledge(
-    'peg',
-    (() => {
-      const p = copy(t.pic('striker'));
-      p.rect(0, 0, 20, 4, c('wood', 3)).rect(0, 0, 20, 1, c('wood', 4)).rect(0, 4, 20, 1, c('ink', 0));
-      return p;
-    })(),
-  );
+  // (the pole and the tower below cross several sky bands: one picture over each band, by
+  // the map row's band; the canvases are drawn over the sky of the rows they stand on)
+  for (let k = 1; k < 4; k++) {
+    t.air(
+      `striker${k}`,
+      (() => {
+        const p = sky(k);
+        p.rect(7, 0, 6, 20, c('paint', 3)).rect(9, 0, 2, 20, c('red', 2));
+        for (let y = 2; y < 20; y += 5) p.rect(7, y, 6, 1, c('ink', 1));
+        return p;
+      })(),
+    );
+    t.ledge(
+      `peg${k}`,
+      (() => {
+        const p = copy(t.pic(`striker${k}`));
+        p.rect(0, 0, 20, 4, c('wood', 3)).rect(0, 0, 20, 1, c('wood', 4)).rect(0, 4, 20, 1, c('ink', 0));
+        return p;
+      })(),
+    );
+  }
   t.air(
     'strikerBase',
     (() => {
@@ -87,7 +91,7 @@ export function midwayTiles(): Tiles {
 
   // Booths: a striped awning on posts, a counter with prizes.
   const booth = (name: string, col: string, words: string) => {
-    const b = canvas(3, 3, (_bx, by) => sky(by + 1));
+    const b = canvas(3, 3, (_bx, by) => sky(bandRow(37 + by)));
     for (let x = 0; x < 60; x++) b.rect(x, 4, 1, 10, (x >> 3) % 2 ? c('paint', 3) : c(col, 2));
     for (let x = 0; x < 60; x += 8) blob(b, x + 4, 14, 4, 3, (x >> 3) % 2 ? [c('paint', 2), c('paint', 3)] : [c(col, 1), c(col, 2)], 0, 1);
     b.rect(2, 14, 3, 46, c('wood', 1)).rect(55, 14, 3, 46, c('wood', 1));
@@ -120,7 +124,7 @@ export function midwayTiles(): Tiles {
   fig('pratfall', KLUB.pratfall);
 
   // The carousel: a striped canopy (its roof is a ledge) on a center pole.
-  const car = canvas(5, 4, (_bx, by) => sky(by < 1 ? 2 : 3));
+  const car = canvas(5, 4, (_bx, by) => sky(bandRow(36 + by)));
   for (let y = 0; y < 22; y++) {
     const half = 8 + y * 2;
     for (let x = 50 - half; x < 50 + half; x++) car.set(x, 4 + y, Math.floor((x + 200) / 10) % 2 ? c('red', 2) : c('yellow', 2));
@@ -134,49 +138,34 @@ export function midwayTiles(): Tiles {
   for (let bx = 0; bx < 5; bx++) for (let by = 0; by < 4; by++) t.add(`carousel${bx}${by}`, cc[by][bx], by === 1 ? { solid: 1 } : {});
 
   // THE BIG DROP: a lattice tower, its sign, the deck at the top, the ticket gate.
-  t.air(
-    'lattice',
-    (() => {
-      const p = sky(1);
-      p.rect(0, 0, 2, 20, c('metal', 2)).rect(18, 0, 2, 20, c('metal', 2));
-      for (let y = 0; y < 20; y += 10) p.line(2, y, 17, y + 9, c('metal', 1)).line(17, y, 2, y + 9, c('metal', 1));
-      return p;
-    })(),
-  );
-  t.air(
-    'latticeLow',
-    (() => {
-      const p = sky(3);
-      p.rect(0, 0, 2, 20, c('metal', 2)).rect(18, 0, 2, 20, c('metal', 2));
-      for (let y = 0; y < 20; y += 10) p.line(2, y, 17, y + 9, c('metal', 1)).line(17, y, 2, y + 9, c('metal', 1));
-      return p;
-    })(),
-  );
-  t.wall(
-    'latticeWall',
-    (() => {
-      const p = sky(2);
-      p.rect(0, 0, 2, 20, c('metal', 2)).rect(18, 0, 2, 20, c('metal', 2));
-      for (let y = 0; y < 20; y += 5) p.rect(2, y, 16, 2, c('metal', 1));
-      return p;
-    })(),
-  );
-  t.air(
-    'track',
-    (() => {
-      const p = sky(1);
-      p.rect(8, 0, 4, 20, c('metal', 3)).rect(9, 0, 2, 20, c('metal', 1));
-      return p;
-    })(),
-  );
-  t.air(
-    'trackLow',
-    (() => {
-      const p = sky(3);
-      p.rect(8, 0, 4, 20, c('metal', 3)).rect(9, 0, 2, 20, c('metal', 1));
-      return p;
-    })(),
-  );
+  for (let k = 0; k < 4; k++) {
+    t.air(
+      `lattice${k}`,
+      (() => {
+        const p = sky(k);
+        p.rect(0, 0, 2, 20, c('metal', 2)).rect(18, 0, 2, 20, c('metal', 2));
+        for (let y = 0; y < 20; y += 10) p.line(2, y, 17, y + 9, c('metal', 1)).line(17, y, 2, y + 9, c('metal', 1));
+        return p;
+      })(),
+    );
+    t.wall(
+      `latticeWall${k}`,
+      (() => {
+        const p = sky(k);
+        p.rect(0, 0, 2, 20, c('metal', 2)).rect(18, 0, 2, 20, c('metal', 2));
+        for (let y = 0; y < 20; y += 5) p.rect(2, y, 16, 2, c('metal', 1));
+        return p;
+      })(),
+    );
+    t.air(
+      `track${k}`,
+      (() => {
+        const p = sky(k);
+        p.rect(8, 0, 4, 20, c('metal', 3)).rect(9, 0, 2, 20, c('metal', 1));
+        return p;
+      })(),
+    );
+  }
   t.ledge(
     'deck',
     (() => {
@@ -215,7 +204,16 @@ export function midwayTiles(): Tiles {
     })(),
     { effect: CTR.tickets, eamt: -3, touch: 'gateOpen', score: 100 },
   );
-  t.air('sign3', sign(sky(3), '3 TIX'));
+  t.air(
+    'sign3',
+    (() => {
+      // '3 TIX' is one letter too wide for a sign plate: the 3 and TIX a little closer
+      const p = sign(sky(3), '');
+      micro(p, 2, 5, '3', c('ink', 0));
+      micro(p, 7, 5, 'TIX', c('ink', 0));
+      return p;
+    })(),
+  );
 
   // The food row: the root beer stand (Doc Leo's favorite), a picnic bench.
   t.air(

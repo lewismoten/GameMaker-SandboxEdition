@@ -6,7 +6,7 @@
 //
 // The blocks are in level7Tiles.ts, the monsters in level7Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
-import { G, midwayTiles, skyAt } from './level7Tiles';
+import { G, bandRow, midwayTiles, skyAt } from './level7Tiles';
 import { midwayBeasts } from './level7Beasts';
 
 export function midway(): Level {
@@ -29,9 +29,9 @@ export function midway(): Level {
   // The gate.
   for (let bx = 0; bx < 5; bx++) for (let by = 0; by < 2; by++) m.set(2 + bx, 38 + by, `arch${bx}${by}`);
   // The High Striker: pegs up the pole, its bell at the top (a monster).
-  for (let y = 29; y < 39; y++) m.set(12, y, 'striker');
+  for (let y = 29; y < 39; y++) m.set(12, y, `striker${bandRow(y)}`);
   m.set(12, 39, 'strikerBase');
-  for (const y of [38, 36, 34, 32, 30]) m.set(11, y, 'peg');
+  for (const y of [38, 36, 34, 32, 30]) m.set(11, y, `peg${bandRow(y)}`);
   m.set(14, 38, 'honkerTop').set(14, 39, 'honkerBot');
   // The ring toss and Bubbles.
   for (let bx = 0; bx < 3; bx++) for (let by = 0; by < 3; by++) m.set(18 + bx, 37 + by, `toss${bx}${by}`);
@@ -46,12 +46,12 @@ export function midway(): Level {
   m.set(tower - 3, 38, 'pratfallTop').set(tower - 3, 39, 'pratfallBot');
   m.set(tower - 2, 39, 'sign3');
   m.set(tower - 1, 39, 'gate');
-  for (let y = 26; y < 39; y++) m.set(tower - 1, y, 'latticeWall');
+  for (let y = 26; y < 39; y++) m.set(tower - 1, y, `latticeWall${bandRow(y)}`);
   for (let y = 16; y < 40; y++) {
-    m.set(tower, y, y < 37 ? 'lattice' : 'latticeLow');
-    m.set(tower + 1, y, y < 37 ? 'track' : 'trackLow');
+    m.set(tower, y, `lattice${bandRow(y)}`);
+    m.set(tower + 1, y, `track${bandRow(y)}`);
   }
-  for (let y = 19; y < 40; y++) m.set(tower + 2, y, 'latticeWall');
+  for (let y = 19; y < 40; y++) m.set(tower + 2, y, `latticeWall${bandRow(y)}`);
   m.rect(tower + 2, 18, 4, 1, 'deck');
   m.rect(tower + 2, 17, 4, 1, 'rail');
   m.set(tower + 4, 17, 'tagDeck');
