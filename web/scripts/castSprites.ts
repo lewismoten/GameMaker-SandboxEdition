@@ -16,6 +16,7 @@ import { docLeo, FULL } from '../../games/teddy/src/sprites/people';
 import { propSprite } from '../../games/teddy/src/sprites/klown';
 import { docLeoWalk } from './castLeoSide';
 import { NEEDLE_PAL, camelFront, needlePicture } from './castNeedle';
+import { EGG_PAL, eggShine, eggTurning } from './castEgg';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 
 /**
@@ -25,7 +26,7 @@ import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castT
  */
 type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number; front?: number[][][]; frontArt?: Pixels[]; acts?: Record<string, number> };
 /** Drawn here in colors of its own (6-bit VGA). */
-type PaintSource = { paint: Pixels[]; colors: [number, number, number][]; still?: boolean };
+type PaintSource = { paint: Pixels[]; front?: Pixels[]; colors: [number, number, number][]; still?: boolean; wobble?: boolean; ms?: number };
 /** Drawn by a game's own drawing code (in its palette `pal`): walking frames, then facing you. */
 type DrawnSource = { game: string; pal: string; walk: Pixels[]; front?: Pixels[]; acts?: Record<string, Pixels[]>; ms?: number; still?: boolean };
 /**
@@ -54,6 +55,7 @@ export const CAST_SPRITES: Record<string, Source> = {
   chicken: { game: 'teddy2', file: 'river.mbl', pal: 'river.pal', frames: [[[45]], [[46]]], ms: 200, mirror: true },
   rootbeer: { game: 'teddy', file: 'klub.bbl', pal: 'klub.pal', frames: [[[76, 77], [79, 81]], [[76, 77], [80, 81]]], ms: 160, still: true },
   tinHeart: { tinHeart: true },
+  easterEgg: { paint: eggTurning(), front: eggShine(), colors: EGG_PAL, wobble: true, ms: 160 },
   // the costume Gwinn runs off with on stage (Teddy's Little Big Adventure's intro)
   'prop:hat': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('hat')], still: true },
   'prop:tie': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('tie')], still: true },
@@ -130,6 +132,7 @@ interface Raw {
   /** Named extra sequences (a scream, a faint) after the walk and the front: [first frame, count]. */
   acts?: Record<string, [number, number]>;
   mirror?: boolean;
+  wobble?: boolean;
   hop?: boolean;
   tick?: boolean;
 }
@@ -149,8 +152,8 @@ function raw(s: Source): Raw {
   if ('paint' in s) {
     const palette = new Uint8Array(768);
     s.colors.forEach((c, i) => palette.set(c, i * 3));
-    const f = s.paint[0];
-    return { width: f.w, height: f.h, frames: s.paint.map((p) => Uint8Array.from(p.px)), palette, ms: 200, walk: !s.still };
+    const all = [...s.paint, ...(s.front ?? [])];
+    return { width: all[0].w, height: all[0].h, frames: all.map((p) => Uint8Array.from(p.px)), ...(s.front ? { nWalk: s.paint.length } : {}), palette, ms: s.ms ?? 200, walk: !s.still, wobble: s.wobble };
   }
   const palette = parsePalette(disk(s.game, s.pal));
   if ('chr' in s) {
@@ -226,6 +229,7 @@ export function castSprite(s: Source): CastSprite {
     ...(r.nWalk !== undefined && r.nWalk < r.frames.length ? { nWalk: r.nWalk } : {}),
     ...(r.acts ? { acts: r.acts } : {}),
     ...(r.mirror ? { mirror: true } : {}),
+    ...(r.wobble ? { wobble: true } : {}),
     ...(r.hop ? { hop: true } : {}),
     ...(r.tick ? { tick: true } : {}),
   };

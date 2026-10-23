@@ -18,6 +18,8 @@ export interface CastSprite {
   acts?: Record<string, [number, number]>;
   /** Drawn facing left: turned round on stage. */
   mirror?: boolean;
+  /** Rocks from side to side as it goes (the Easter egg). */
+  wobble?: boolean;
   /** Hops along instead of walking (the tin heart). */
   hop?: boolean;
   /** Ticks as it goes: a tick-tock on each frame (when the stage's sound is on). */
