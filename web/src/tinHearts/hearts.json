@@ -3,6 +3,7 @@
     "blaster": { "map": "s2a.map", "at": [16, 70] },
     "brief": { "map": "library.map", "at": [1, 4] },
     "carl": { "map": "bed.map", "at": [5, 12] },
+    "depth": { "map": "l1near.map", "at": [29, 51] },
     "goat": { "map": "field.map", "at": [52, 20] },
     "loaf": { "map": "hill.map", "at": [43, 11] },
     "logic": { "map": "attic.map", "at": [3, 7] },
@@ -23,5 +24,5 @@
     "tickle": { "map": "tower.map", "at": [43, 23] },
     "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": ["depth", "maximus"]
+  "pending": ["maximus"]
 }
