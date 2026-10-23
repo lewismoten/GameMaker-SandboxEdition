@@ -27,8 +27,6 @@ const STILL_SHOWN = new Set([
   'sandcast:easterEgg',
   'sleuth:tinHeart',
   'smirked:tinHeart',
-  'teddy:tinHeart',
-  'teddy:easterEgg',
   'teddy2:tinHeart',
   'teddy2:easterEgg',
 ]);
