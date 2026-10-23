@@ -15,8 +15,8 @@ export type Area = 'course' | 'lab' | 'sewer' | 'tower';
 
 /** Each place's wall, filler, floor, ceiling and ledge. */
 const PLACE: Record<Area, Record<string, string>> = {
-  course: { '.': 'wallC', '#': 'under', '=': 'floorW', '^': 'ceilC', _: 'desk', '|': 'deskLeg' },
-  lab: { '.': 'wallL', '#': 'under', '=': 'floorL', '^': 'ceilL', _: 'bench', '|': 'benchLeg' },
+  course: { '.': 'wallC', '#': 'under', '=': 'floorW', '^': 'ceilC', _: 'desk', '-': 'deskMid', '|': 'deskLeg' },
+  lab: { '.': 'wallL', '#': 'under', '=': 'floorL', '^': 'ceilL', _: 'bench', '-': 'benchMid', '|': 'benchLeg' },
   sewer: { '.': 'wallS', '#': 'stoneS', '=': 'walkS', '^': 'stoneS', _: 'pipe', '|': 'wallS' },
   tower: { '.': 'wallT', '#': 'blockT', '=': 'blockT', '^': 'blockT', _: 'ledgeT', '|': 'wallT' },
 };
@@ -170,6 +170,9 @@ function ratCount(m: MapBuilder): number {
   return m.map.monsters.filter((s) => s && ids.includes(s.monnum)).length;
 }
 
+/** A desk or bench from x0 to x1 on row y: its ends over legs, the tops between them legless. */
+const table = (m: MapBuilder, y: number, x0: number, x1: number) => m.row(y, x0, x1, '-').set(x0, y, '_').set(x1, y, '_');
+
 /** 1. The course: the night classroom, the practice rats, the door to the certificate. */
 export function course(book: BlockBook): Level {
   const W = 64;
@@ -183,20 +186,20 @@ export function course(book: BlockBook): Level {
   // practice rat 1, on the floor
   m.mon(MON.labRat, 9, 9);
   // a desk with practice rat 2 on it, drops at its end
-  m.row(8, 16, 20, '_').set(16, 9, '|').set(20, 9, '|').set(20, 7, 'o');
+  table(m, 8, 16, 20).set(16, 9, '|').set(20, 9, '|').set(20, 7, 'o');
   m.mon(MON.labRat, 16, 7);
   // the course on the TV cart
   m.set(23, 9, 'V');
   // practice rat 3 is a tense one
   m.mon(MON.labTense, 26, 9);
   // Loaf #13 on a lunch tray, on a desk; a cup of coffee
-  m.row(8, 32, 35, '_').set(32, 9, '|').set(35, 9, '|').set(35, 7, 'c');
+  table(m, 8, 32, 35).set(32, 9, '|').set(35, 9, '|').set(35, 7, 'c');
   m.mon(MON.loaf, 33, 7);
   // the Bunsen burner on a desk, a rat padding under it
-  m.row(8, 39, 42, '_').set(39, 9, '|').set(42, 9, '|').set(41, 7, 'b');
+  table(m, 8, 39, 42).set(39, 9, '|').set(42, 9, '|').set(41, 7, 'b');
   m.mon(MON.labRat, 38, 9);
   // the last desk: rat 5, and the rubber chicken
-  m.row(8, 45, 50, '_').set(45, 9, '|').set(50, 9, '|').set(50, 7, 'k').set(46, 6, 'o');
+  table(m, 8, 45, 50).set(45, 9, '|').set(50, 9, '|').set(50, 7, 'k').set(46, 6, 'o');
   m.mon(MON.labRat, 47, 7);
   // the door: three rats in the carpet
   m.door(57, 9, 'next');
@@ -211,7 +214,7 @@ export function lab(book: BlockBook): Level {
   m.set(4, 5, 'p').set(8, 4, 'd').set(30, 4, 'd').set(47, 3, 'p').set(64, 4, 'd');
   // the first bench, flasks bubbling, a rat on the floor and one on the bench
   m.mon(MON.labRat, 7, 11);
-  m.row(10, 11, 18, '_').set(11, 11, '|').set(18, 11, '|').set(12, 9, 'f').set(17, 9, 'o');
+  table(m, 10, 11, 18).set(11, 11, '|').set(18, 11, '|').set(12, 9, 'f').set(17, 9, 'o');
   m.mon(MON.labRat, 13, 9);
   // the Tesla coils, and a cage rack over them with a tense rat on top
   m.set(21, 11, 'z').set(25, 11, 'z');
@@ -219,13 +222,13 @@ export function lab(book: BlockBook): Level {
   m.mon(MON.labTense, 21, 7);
   // the floor buffer's run, a bench over it and the racks beyond: down off the racks onto the bench
   m.mon(MON.buffer, 31, 11);
-  m.row(10, 28, 31, '_').set(28, 11, '|').set(31, 11, '|');
+  table(m, 10, 28, 31).set(28, 11, '|').set(31, 11, '|');
   m.row(8, 33, 42, 'h').fill(33, 9, 10, 1, 'g').set(40, 7, 'o').set(42, 7, 'o');
   m.mon(MON.labRat, 34, 7).mon(MON.labRat, 38, 7);
   // Dean Dour of the Board of Serious Science, on his rounds
   m.mon(MON.deanA, 45, 10).mon(MON.deanB, 45, 11);
   // the mustard seed in a petri dish on a long bench
-  m.row(10, 52, 59, '_').set(52, 11, '|').set(59, 11, '|').set(55, 9, 'f');
+  table(m, 10, 52, 59).set(52, 11, '|').set(59, 11, '|').set(55, 9, 'f');
   m.mon(MON.seed, 54, 9);
   // a rack with a rat on top and one under it, the rubber chicken; a rat by the door
   m.row(8, 60, 65, 'h').fill(60, 9, 6, 1, 'g').set(65, 7, 'k');

@@ -116,15 +116,14 @@ export function buildBlocks(pal: Pal): BlockBook {
 
   // ---------- ledges: stand on them, hop up through them ----------
   const ledge = (bg: Pixels, draw: (p: Pixels) => void) => (draw(bg), bg);
-  // a classroom desk top (and its legs below)
-  book.add(
-    'desk',
-    ledge(wall('course'), (p) => {
+  // a classroom desk top (and its legs below), on the wainscot it stands against; the desks'
+  // ends have legs down to the leg blocks under them, the tops between them (deskMid) none
+  const deskTop = (legs: boolean) =>
+    ledge(wains(), (p) => {
       p.rect(0, 1, 20, 4, c('wood', 3)).rect(0, 1, 20, 1, c('wood', 2)).rect(0, 5, 20, 1, c('wood', 0));
-      p.rect(2, 6, 2, 14, c('wood', 1)).rect(16, 6, 2, 14, c('wood', 1));
-    }),
-    { solid: LEDGE, grav: GRAV.down },
-  );
+      if (legs) p.rect(2, 6, 2, 14, c('wood', 1)).rect(16, 6, 2, 14, c('wood', 1));
+    });
+  book.add('desk', deskTop(true), { solid: LEDGE, grav: GRAV.down });
   const deskLeg = wains();
   deskLeg.rect(2, 0, 2, 20, c('wood', 1)).rect(16, 0, 2, 20, c('wood', 1)).rect(2, 0, 16, 2, c('wood', 2));
   book.add('deskLeg', deskLeg, air);
@@ -139,15 +138,13 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('cage', cage(false), air);
   book.add('cageTop', cage(true), { solid: LEDGE, grav: GRAV.down });
-  // a steel lab bench top (and the legs and shelf under it)
-  book.add(
-    'bench',
+  // a steel lab bench top (and the legs and shelf under it); benchMid between the ends, no legs
+  const benchTop = (legs: boolean) =>
     ledge(wall('lab'), (p) => {
       p.rect(0, 1, 20, 4, c('steel', 3)).rect(0, 1, 20, 1, c('steel', 4)).rect(0, 5, 20, 1, c('steel', 0));
-      p.rect(1, 6, 2, 14, c('steel', 1)).rect(17, 6, 2, 14, c('steel', 1));
-    }),
-    { solid: LEDGE, grav: GRAV.down },
-  );
+      if (legs) p.rect(1, 6, 2, 14, c('steel', 1)).rect(17, 6, 2, 14, c('steel', 1));
+    });
+  book.add('bench', benchTop(true), { solid: LEDGE, grav: GRAV.down });
   const benchLeg = wall('lab');
   benchLeg.rect(1, 0, 2, 20, c('steel', 1)).rect(17, 0, 2, 20, c('steel', 1)).rect(1, 10, 18, 2, c('steel', 2));
   book.add('benchLeg', benchLeg, air);
@@ -452,5 +449,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   const exit = P();
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) exit.set(x, y, shadeAt(R('cheese'), 0, 2, 0.4 + Math.sin((x + y) / 3) * 0.2, x, y));
   book.add('exit', exit, { grav: GRAV.none });
+  // (last, so every other block keeps its number) the desk and bench tops between their ends
+  book.add('deskMid', deskTop(false), { solid: LEDGE, grav: GRAV.down });
+  book.add('benchMid', benchTop(false), { solid: LEDGE, grav: GRAV.down });
   return book;
 }
