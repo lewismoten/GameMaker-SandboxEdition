@@ -46,10 +46,12 @@ import { pcExtras } from "../hacks/pcExtras";
 import { unlockAchievement } from "../../achievements";
 import { output } from "../../audio/output";
 import { dosDir } from "../../project/dosDir";
+import { MODEM_CPS, PLAYER_EXE_BYTES, downloadLine, zipBytes as zipSize, zipName } from "../../project/diskFacts";
+import { sizeAbout } from "./sofaFiles";
 
 const BBS_NAME = "THE -= S A N D B O X =- BBS";
 const PHONE = "1-412-555-SAND";
-const CPS = 1650; // 14,400 bps with V.42bis, in characters per second
+const CPS = MODEM_CPS[14400]; // 14,400 bps with V.42bis, in characters per second
 const TIME_COMPRESSION = 25; // nobody wants to wait ten minutes
 
 // ---- the dialing directory -----------------------------------------------------------
@@ -274,17 +276,6 @@ function leechWarning(t: Term): void {
   t.line(
     `|07  The SysOp's own files are |10FREE|07.   Your file points: |14${filePoints(a)}|07   U/D: |14${ratioText(a)}`,
   );
-}
-
-function zipName(g: CatalogEntry): string {
-  return `${(g.exe ?? g.id)
-    .replace(/\.EXE$/i, "")
-    .slice(0, 8)
-    .toUpperCase()}.ZIP`;
-}
-
-function zipSize(g: CatalogEntry): number {
-  return Math.round((g.bytes ?? 0) * 0.58);
 }
 
 function wrap(text: string, width: number): string[] {
@@ -596,6 +587,7 @@ async function files(
 
 async function readAbout(t: Term, g: CatalogEntry): Promise<void> {
   t.line(`|14${zipName(g)} |15${g.title}`);
+  t.line(sizeAbout(g));
   t.line("|11FILE_ID.DIZ:");
   for (const l of gameDiz(g)) t.line(`|07  ${l}`);
   t.line();
@@ -622,7 +614,7 @@ async function download(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   }
   const seconds = size / CPS;
   t.line(
-    `|07Protocol: |15Zmodem|07.  ${zipName(g)} is |14${commas(size)}|07 bytes, about |14${Math.ceil(seconds / 60)}|07 minute(s) at 14,400 bps.`,
+    `|07Protocol: |15Zmodem|07.  ${zipName(g)} is |14${commas(size)}|07 bytes: about |14${downloadLine(size, "|07, |14")}|07.`,
   );
   t.line("|07Starting transfer... (Esc to abort)");
   const s = h.screen;
@@ -670,7 +662,7 @@ async function unzip(t: Term, h: RetroHost, g: CatalogEntry): Promise<void> {
   );
   t.line(`|07Searching ZIP: ${zipName(g)}`);
   const files: [string, number][] = [
-    ...(g.exe ? [[g.exe, 60_000] as [string, number]] : []),
+    ...(g.exe ? [[g.exe, PLAYER_EXE_BYTES] as [string, number]] : []),
     ...g.files.map((f, i): [string, number] => [
       f.toUpperCase(),
       g.sizes?.[i] ?? Math.round((g.bytes ?? 0) / g.files.length),
