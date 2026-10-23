@@ -216,11 +216,11 @@ THIS IS SHAREWARE
 
   If Carl made you laugh,
   register for ${price}: you get a
-  tape of the song and a
-  genuine rolled-up magazine
-  (lightly used, never hit
-  anything). Send a check (US
-  funds) to:
+  Carl sticker (he will land on
+  it) and a genuine rolled-up
+  magazine (lightly used, never
+  hit anything). Send a check
+  (US funds) to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
