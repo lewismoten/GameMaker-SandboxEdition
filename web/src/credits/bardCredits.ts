@@ -3,15 +3,20 @@
 // LICENSE.TXT (games/<id>/disk/credits.txt, license.txt, written from its SONG_CREDIT) and
 // NOTICE.md; bardCredits.test.ts checks every cell against those texts.
 
-export type BardColumn =
-  'chatgpt' | 'riffusionMusic' | 'riffusionCover' | 'producerCover' | 'claudeArt' | 'arranged' | 'composed' | 'clips' | 'whisper' | 'photo' | 'logo';
+export type BardColumn = 'chatgpt' | 'riffusionMusic' | 'riffusionCover' | 'claudeArt' | 'arranged' | 'composed' | 'clips' | 'whisper' | 'photo' | 'logo';
+
+/**
+ * Riffusion, Producer.ai and Google Flow Music are one service under three names: Riffusion
+ * renamed itself Producer.ai, and Google bought it and made it Google Flow Music. It is one
+ * column here, whichever name a game's credits use for when its part was made.
+ */
+export const RIFFUSION_NAMES = /Riffusion|Producer\.ai|Google Flow Music/;
 
 /** The columns in order: a short header, and the full meaning for the caption's key and screen readers. */
 export const BARD_COLUMNS: { key: BardColumn; short: string; long: string }[] = [
   { key: 'chatgpt', short: 'Words: ChatGPT', long: 'Lyrics or monologue shaped by ChatGPT from Lewis’s prompts' },
   { key: 'riffusionMusic', short: 'Recording: Riffusion', long: 'Music and vocals (or the spoken recording) made with Riffusion, now Google Flow Music' },
-  { key: 'riffusionCover', short: 'Cover: Riffusion', long: 'Cover art made with Riffusion' },
-  { key: 'producerCover', short: 'Cover: Producer.ai', long: 'Animated cover made with Producer.ai' },
+  { key: 'riffusionCover', short: 'Cover: Riffusion', long: 'Cover art made with Riffusion (Mustard Seed Hustle’s while it was called Producer.ai)' },
   { key: 'claudeArt', short: 'Art: Claude', long: 'Title and cover art drawn for the game by Claude Opus 5.5' },
   { key: 'arranged', short: 'FM arranged: Claude', long: 'FM (CMF) score arranged by Claude from the recording' },
   { key: 'composed', short: 'Music composed: Claude', long: 'Music composed for the game by Claude Opus 5.5' },
@@ -33,7 +38,12 @@ const RECORDED: BardColumn[] = ['chatgpt', 'riffusionMusic', 'arranged', 'clips'
 
 export const BARD_GAMES: BardGame[] = [
   { id: 'goat', title: 'Third Goat from the Left', made: [...RECORDED, 'riffusionCover'] },
-  { id: 'mustard', title: 'Mustard Seed Hustle', made: [...RECORDED, 'producerCover'], note: 'The title cartoon is made from the animated cover.' },
+  {
+    id: 'mustard',
+    title: 'Mustard Seed Hustle',
+    made: [...RECORDED, 'riffusionCover'],
+    note: 'Its animated cover was made with Riffusion while it was called Producer.ai; the title cartoon is made from it.',
+  },
   {
     id: 'needle',
     title: 'Thread the Needle, Brother Camel',

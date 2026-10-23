@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { BARD_COLUMNS, BARD_GAMES, type BardColumn } from './bardCredits';
+import { BARD_COLUMNS, BARD_GAMES, RIFFUSION_NAMES, type BardColumn } from './bardCredits';
 
 const repo = join(import.meta.dirname, '../../..');
 const read = (path: string) => readFileSync(join(repo, path), 'latin1').replace(/\s+/g, ' ');
@@ -11,9 +11,9 @@ const read = (path: string) => readFileSync(join(repo, path), 'latin1').replace(
 /** What a game's credits text says, per column. */
 const SAYS: Record<BardColumn, (text: string, id: string) => boolean> = {
   chatgpt: (t) => /ChatGPT/.test(t),
-  riffusionMusic: (t) => /Riffusion/.test(t) && !/no recording came/i.test(t),
-  riffusionCover: (t) => /cover[^.;]*(made with|:) Riffusion/i.test(t),
-  producerCover: (t) => /Producer\.ai/.test(t),
+  // one service under three names (Riffusion, Producer.ai, Google Flow Music): any of them counts
+  riffusionMusic: (t) => RIFFUSION_NAMES.test(t) && !/no recording came/i.test(t),
+  riffusionCover: (t) => new RegExp(`cover[^.;]*(made with|:|called) (${RIFFUSION_NAMES.source})`, 'i').test(t),
   claudeArt: (t) => /art[^.;]*(drawn|made)[^.;]* by Claude/i.test(t) || /code, art, [^.;]* by Claude/i.test(t),
   arranged: (t) => /FM arrangement/i.test(t),
   composed: (t) => /music[^.;]*(composed|made)[^.;]* by Claude/i.test(t),

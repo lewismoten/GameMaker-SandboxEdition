@@ -65,6 +65,11 @@ export function bardSection(): HTMLElement {
       'ul',
       { class: 'credits-list' },
       ...BARD_GAMES.filter((g) => g.note).map((g) => h('li', null, h('b', null, g.title), ': ', g.note)),
+      h(
+        'li',
+        null,
+        'Riffusion is one service under three names: it renamed itself Producer.ai, then Google bought it and it became Google Flow Music. The Riffusion columns count all three; each game’s credits use the name it had when its part was made.',
+      ),
       h('li', null, 'Whisper’s word timings come from the clip tools in each game’s tools folder; they run on the developer’s computer.'),
     ),
   );

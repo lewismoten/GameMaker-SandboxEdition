@@ -29,11 +29,10 @@ export function peopleSection(): HTMLElement {
       ),
       tool('ChatGPT', 'OpenAI', 'Shaped the Bard of Bizarre songs’ lyrics and monologues from Lewis’s prompts.'),
       tool(
-        'Riffusion, now Google Flow Music',
-        'Riffusion; Google',
-        'Made the songs’ recordings, music and vocals, and the covers of Third Goat from the Left and Thread the Needle, Brother Camel (an animated one).',
+        'Riffusion (renamed Producer.ai, now Google Flow Music, after Google bought it)',
+        'One service under three names',
+        'Made the songs’ recordings and vocals, the covers of Third Goat from the Left and Thread the Needle, Brother Camel (an animated one), and Mustard Seed Hustle’s animated cover, made while it was called Producer.ai.',
       ),
-      tool('Producer.ai', 'Producer.ai', 'Made Mustard Seed Hustle’s animated cover.'),
       tool('DeepAI', 'DeepAI', 'Made The Bard of Bizarre’s logo, the rooster in spectacles.'),
       tool(
         'Whisper',
