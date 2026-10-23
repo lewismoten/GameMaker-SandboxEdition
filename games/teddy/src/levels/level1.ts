@@ -23,7 +23,7 @@ export function backyard(): Level {
     [33, 27],
     [44, 32],
     [62, 29],
-    [78, 31],
+    [76, 31], // (clear of the alley's hedge)
     [90, 28],
   ])
     for (let part = 0; part < 3; part++) m.set(cx + part, cy, `cloud${bandOf(cy)}${part}`);
@@ -111,7 +111,7 @@ export function backyard(): Level {
     .set(car, 39, 'carDoor')
     .set(car + 1, 39, 'carBack');
   m.rect(car + 3, 30, 5, 10, 'hedgeWall');
-  m.rect(car + 3, 29, 5, 1, () => pick('hedgeTop', 'hedgeTop2'));
+  m.rect(car + 3, 29, 5, 1, () => pick('hedgeTopHi', 'hedgeTopHi2'));
 
   // Monsters: treats along the way, buried bones, the squirrel, Gwinn with Teddy's wobble
   // ball, the soft dirt.

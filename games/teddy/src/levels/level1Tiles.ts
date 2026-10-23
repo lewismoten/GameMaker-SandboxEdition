@@ -304,5 +304,8 @@ export function backyardTiles(): Tiles {
     t.pic('hedgeTop'),
     (by) => (by === 0 ? t.pic('hedge') : tuft(sky(3), 95)),
   );
+  // (last, so every other block keeps its number) the alley hedge's top, up in the blue sky
+  t.air('hedgeTopHi', hedge(true, 21, sky(0)));
+  t.air('hedgeTopHi2', hedge(true, 22, sky(0)));
   return t;
 }
