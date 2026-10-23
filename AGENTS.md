@@ -43,6 +43,18 @@ npx vite-node ../games/kit/playtime.ts             # the only writer of box play
 After changing a game, rebuild it and run its checks. Commit the source and the rebuilt
 `disk/` together. A refactor must not change any `disk/`, `walkthrough.json` or demo bytes.
 
+## The original repository's files
+
+`code/`, `cd/` and `runtime/` came from the original 2014 source release. They are kept to
+preserve what was there.
+
+- Don't edit, move, rename, reformat or delete anything in them unless the maintainer
+  directly asks you to.
+- Don't lint, format or "fix" them.
+- Read them freely.
+- A few files were removed on purpose: third-party libraries and binaries not covered by the
+  MIT License. Each removal is documented in its commit and in NOTICE.md, so don't restore them.
+
 ## Working rules
 
 - **Commits:** commit small and often: one game or one feature per commit, with no more
@@ -99,6 +111,24 @@ After changing a game, rebuild it and run its checks. Commit the source and the 
   - The maintainer's reference photos are reference only, unless they're asked for.
 - **Voice clips:** a level's ending voice must play to the end (the next scene's intro cuts
   it). Bots wait for clips (`sim.waitForClip()`). Score and pickup sounds must not cut voices.
+
+## Credits
+
+Credit honestly, and as soon as you use anything that isn't this project's own. That covers:
+
+- **Third-party code or data:** a library, an algorithm or approach you adapted, a header,
+  a font, a file format spec, or a sample. Give its license and author in NOTICE.md, plus a
+  short note in the file that uses it. The downloads carry their notices
+  (`web/src/export/notices.ts`).
+- **AI tools and models** used to make anything: music, voices, art, logos, words or code.
+  Name the tool (e.g. Riffusion/Google Flow Music, ChatGPT, DeepAI, Producer.ai, Claude)
+  and what it made. If you use a new tool or model, add it to NOTICE.md and to the game's
+  credits.
+- **Source material:** the maintainer's own photos and recordings, public-domain works,
+  and the original RSD files.
+
+Check NOTICE.md before adding something, keep it in step with what actually ships, and say
+in your report what credits you added.
 
 ## Before you finish
 
