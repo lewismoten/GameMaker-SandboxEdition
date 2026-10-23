@@ -136,15 +136,16 @@ function profile(k: ChezInk, port: boolean, s: number, t = s): Pixels {
   const cy = H - r - 0.5;
   for (const wx of CHEZ_WHEELS) {
     p.disc(wx * s - 0.5, cy, r, k.tire);
-    p.disc(wx * s - 0.5, cy, Math.max(0.6, (r * 2.15) / TIRE), rim);
+    p.disc(wx * s - 0.5, cy, Math.max(0.6, (r * 2.0) / TIRE), rim);
     if (s >= 0.8) p.disc(wx * s - 0.5, cy, Math.max(0.5, r / TIRE), k.hub);
   }
   // plain square black bumpers at both ends (not the later CommutaCar's long thick ones)
   box(35.2, 13.0, 2.0, 1.8, k.bumper);
   box(3.9, 12.8, 2.0, 1.8, k.bumper);
   const px = 1 / t; // one pixel (up and down), in units
-  const w = Math.max(STRIPE_W, px) / 2;
-  const gap = Math.max(STRIPE_GAP, 2 * px) / 2;
+  // the stripes in whole pixels: each dark stripe, and the red between them
+  const st = Math.max(1, Math.round(STRIPE_W * t));
+  const g = Math.max(1, Math.round((STRIPE_GAP - STRIPE_W) * t)) / 2;
   const fall = 11.9 / 18.1; // the windshield-hood line
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
@@ -158,11 +159,15 @@ function profile(k: ChezInk, port: boolean, s: number, t = s): Pixels {
       else if (X >= BAND_END - (s >= 2 ? px : 0)) {
         // the stripes: a dark pair, the red between them, a white pinstripe round the band
         const [up, dy] = step(X);
-        const d = Math.abs(Y - (BAND - up)) / Math.sqrt(1 + dy * dy);
+        let mid = (BAND - up) * t; // the band's middle, in pixels
+        if (!dy) mid = Math.round(mid - g) + g; // (on whole pixels where it runs flat)
+        const o = Math.abs(y + 0.5 - mid) / Math.sqrt(1 + ((dy * t) / s) ** 2);
         if (X < BAND_END) {
-          if (s >= 2 && d <= gap + w + px) c = pin; // the band's squared-off end
-        } else if (s < 0.75 ? d <= px / 2 : Math.abs(d - gap) <= w) c = s < 0.75 ? k.trim : stripe; // (far off, one deep red line)
-        else if (s >= 2 && d > gap + w && d <= gap + w + px) c = pin;
+          if (s >= 2 && o < g + st + 1) c = pin; // the band's squared-off end
+        } else if (s < 0.75) {
+          if (o <= 0.5) c = k.trim; // (far off, one deep red line)
+        } else if (o >= g && o < g + st) c = stripe;
+        else if (s >= 2 && o >= g + st && o < g + st + 1) c = pin;
       }
       p.set(x, y, c);
     }
