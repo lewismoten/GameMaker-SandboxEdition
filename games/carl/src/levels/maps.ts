@@ -246,10 +246,14 @@ export function theBed(book: BlockBook): Level {
   m.mon(MON.dogEar, 36, 9);
   m.mon(MON.towel, 40, 6);
   m.set(41, 10, 'plant');
-  // the window: three ears and he gets up and opens it
-  m.set(44, 3, 'nwinTL').set(45, 3, 'nwinTR').set(44, 4, 'nwinBL').set(45, 4, 'nwin');
-  m.link(45, 4, 'next');
-  return { m, start: at(4, 5), size: [W, H] };
+  // the window in the end wall: three ears and he gets up and opens it, and Carl flies straight
+  // out into the night, long enough for "I've opened the window" to play before the scene ends
+  m.set(W - 1, 3, 'sashTop').set(W - 1, 4, 'sash');
+  const OUT = 7;
+  m.fill(W, 0, OUT, H, 'night').row(4, W, W + OUT - 2, 'nightAir').set(W + 4, 1, 'moon');
+  m.surround(W + OUT, H, (x, y) => (x >= W || x <= -30 ? 'night' : y <= 0 ? 'ceil' : y <= 6 ? 'paper' : y === 7 ? 'rail' : y < H - 1 ? 'panel' : 'shag'));
+  m.link(W + OUT - 2, 4, 'next');
+  return { m, start: at(4, 5), size: [W + OUT, H] };
 }
 
 /** 4. The open window: the backyard, to the tall grass. */

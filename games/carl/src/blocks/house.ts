@@ -539,19 +539,37 @@ export function buildHouse(pal: Pal): BlockBook {
   dogBed.rect(26, 13, 6, 2, c('white', 3)).set(31, 10, c('ink', 0)).rect(27, 10, 3, 1, c('ink', 0));
   book.add('dogBedL', cut(dogBed, 0, 0), { solid: SOLID });
   book.add('dogBedR', cut(dogBed, 1, 0), { solid: SOLID });
-  // the bedroom window: shut, it only opens when he's had enough (three ears buzzed)
-  const night = windowArt(() => paper(), true);
-  book.add('nwinTL', cut(night, 0, 0), AIR);
-  book.add('nwinTR', cut(night, 1, 0), AIR);
-  book.add('nwinBL', cut(night, 0, 1), AIR);
-  const latch = (open: boolean) => {
-    const p = cut(night, 1, 1);
-    if (open) for (let y = 0; y < 14; y++) for (let x = 0; x < 14; x++) p.set(x, y, (x + y) % 6 === 0 ? c('sky', 3) : c('sky', 0));
-    else micro(p, 3, 4, String(EARS_NEEDED), c('gold', 3));
+  // the bedroom window, in the end wall: shut (the upper sash over the lower one, the latch on
+  // it), it only opens when he's had enough (three ears buzzed): the lower sash goes up and the
+  // night is out there
+  const sashArt = (part: 'top' | 'shut' | 'open') => {
+    const p = side.crop(0, 0, 20, 20);
+    const glassTo = part === 'top' ? 20 : 15;
+    for (let y = part === 'top' ? 3 : 0; y < glassTo; y++) for (let x = 6; x < 14; x++) p.set(x, y, part === 'open' ? c('sky', 0) : shadeAt(R('sky'), 0, 2, y / 20, x, y));
+    p.rect(5, part === 'top' ? 2 : 0, 1, 20, c('white', 3)).rect(14, part === 'top' ? 2 : 0, 1, 20, c('white', 1));
+    if (part === 'top') p.rect(5, 2, 10, 1, c('white', 3)).line(7, 5, 9, 9, c('sky', 3));
+    else {
+      if (part === 'shut') p.rect(6, 0, 8, 2, c('white', 3)).rect(6, 2, 8, 1, c('white', 1));
+      else p.set(9, 4, c('white', 3)).set(12, 9, c('sky', 3));
+      p.rect(3, 15, 14, 2, c('white', 3)).rect(3, 17, 14, 1, c('white', 0));
+    }
+    if (part === 'shut') micro(p, 8, 5, String(EARS_NEEDED), c('gold', 3));
     return p;
   };
-  book.add('nwin', latch(false), { solid: SOLID, effect: EARS, eamt: -EARS_NEEDED, score: 500, touch: 'nwinOpen' });
-  book.add('nwinOpen', latch(true), AIR);
+  book.add('sashTop', sashArt('top'), { solid: SOLID });
+  book.add('sash', sashArt('shut'), { solid: SOLID, effect: EARS, eamt: -EARS_NEEDED, score: 500, touch: 'sashOpen' });
+  book.add('sashOpen', sashArt('open'), AIR);
+  // the night outside it: stars, and the moon (Carl flies out the open window into it)
+  const night = (moon: boolean) => {
+    const p = P().rect(0, 0, 20, 20, c('sky', 0));
+    const r = rng(moon ? 31 : 32);
+    for (let i = 0; i < 4; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('sky', i ? 2 : 3));
+    if (moon) p.disc(10, 10, 5, c('gold', 3)).disc(12, 9, 4.4, c('sky', 0));
+    return p;
+  };
+  book.add('night', night(false), { solid: SOLID });
+  book.add('nightAir', night(false), AIR);
+  book.add('moon', night(true), { solid: SOLID });
 
   // ---------- the living room in gloom: sage, oils, the mop, and the stereo ----------
   // a smudge bowl of burning sage (gives birth to smoke) and the oil diffuser (gives birth to mist)

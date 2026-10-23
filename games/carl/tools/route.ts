@@ -228,8 +228,9 @@ export async function theBed(bot: Bot): Promise<void> {
       need(bot, EARS, n, 'ears');
     });
   await carefully(bot, 'the window', 10, async () => {
-    await go(bot, [[42, 8], [43, 4]], 'the window');
-    await leave(bot, bot.fly(45, 4, 'out'), 'the window');
+    await go(bot, [[42, 8], [44, 4]], 'the window');
+    // straight out the window into the night: no new move, so nothing cuts "I've opened the window" off
+    await leave(bot, bot.fly(55, 4, 'out'), 'the window');
   });
 }
 
