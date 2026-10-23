@@ -81,7 +81,7 @@ export function catalogDownloadable(e: Pick<CatalogEntry, 'gam' | 'kind' | 'orig
 export function visitorSystem(nav: Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'> & { userAgentData?: { platform?: string } } = navigator): DownloadKind {
   const ua = `${nav.userAgentData?.platform ?? ''} ${nav.platform ?? ''} ${nav.userAgent ?? ''}`;
   if (/android|iphone|ipad|ipod|cros/i.test(ua)) return 'web';
-  if (/win/i.test(ua)) return 'windows';
+  if (/windows|win32|win64/i.test(ua)) return 'windows';
   if (/mac/i.test(ua)) return nav.maxTouchPoints > 1 ? 'web' : 'mac'; // an iPad asks for the desktop site as a Mac
   if (/linux|x11/i.test(ua)) return 'linux';
   return 'web';
