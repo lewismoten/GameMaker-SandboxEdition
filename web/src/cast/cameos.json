@@ -1,3 +1,8 @@
 {
-  "tinHeart": []
+  "tinHeart": [
+    { "game": "blaster", "as": "tucked against the edge of the Address Bus" },
+    { "game": "sleuth", "as": "dropped behind the lobby bar" }
+  ],
+  "will": [{ "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" }],
+  "watt": [{ "game": "blaster", "as": "blinking on Memory Lane" }]
 }
