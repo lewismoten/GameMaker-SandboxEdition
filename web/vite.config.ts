@@ -5,7 +5,8 @@ import { existsSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs
 import { createHash } from 'node:crypto';
 import { hashText } from './src/export/serviceWorker';
 import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
-import { cdGames } from './scripts/cdGames';
+import { cdGames, cdSecretCatalog } from './scripts/cdGames';
+import { gzipSync } from 'node:zlib';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { seoPages } from './scripts/seoBuild';
 
@@ -87,8 +88,36 @@ function appShell(bundle: Bundle): string[] {
   return [...new Set(['./', ...pageGraph(bundle, 'index.html', false).filter((f) => f !== 'index.html'), ...icons])];
 }
 
+const TEXT_FILE = /\.(html|js|css|json|svg|txt|xml|webmanifest)$/i;
+
 /**
- * Emits sw.js, and player-files.json: the files the exporter copies to build a
+ * What "Make available offline" downloads (src/offline/offlineCopy.ts): every file of the site
+ * but the pictures for link previews and the files for crawlers, with each game as its pack
+ * (its own files and their .gz copies are left out) and none of a secret game's (a page that
+ * has revealed one adds its pack itself). Each as [path, bytes on the wire, bytes stored]:
+ * GitHub Pages gzips text.
+ */
+function offlineFiles(bundle: Bundle): [string, number, number][] {
+  const secret = cdSecretCatalog(resolve(__dirname, '../cd')).map((e) => e.path);
+  const sources = new Map<string, () => Uint8Array | string>();
+  for (const f of publicTree()) sources.set(f, () => readFileSync(resolve(publicDir, f)));
+  for (const [f, item] of Object.entries(bundle)) sources.set(f, () => (item.type === 'chunk' ? item.code : item.source));
+  const wanted = (f: string) =>
+    !secret.some((dir) => f.startsWith(dir)) &&
+    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$)/.test(f) &&
+    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.gmpak$|\/walkthrough\.json\.gz$/.test(f));
+  return [...sources]
+    .filter(([f]) => wanted(f))
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([f, read]) => {
+      const data = read();
+      const bytes = typeof data === 'string' ? Buffer.from(data) : data;
+      return [f, TEXT_FILE.test(f) ? gzipSync(bytes, { level: 6 }).length : bytes.length, bytes.length];
+    });
+}
+
+/**
+ * Emits sw.js, offline.json (offlineFiles), and player-files.json: the files the exporter copies to build a
  * stand-alone game web app.
  *
  * The service worker installs only the app shell, so a first visit downloads nothing it
@@ -108,6 +137,7 @@ function offline(): Plugin {
       const assets = built.filter(isHashed).sort();
       const version = hashText(JSON.stringify([groups, assets]));
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: siteWorkerSource({ version, precache, groups, assets }) });
+      this.emitFile({ type: 'asset', fileName: 'offline.json', source: JSON.stringify({ version, shell: precache, files: offlineFiles(bundle) }) });
       const player = playerGraph(bundle);
       this.emitFile({ type: 'asset', fileName: 'player-files.json', source: JSON.stringify({ version, files: player }) });
     },
