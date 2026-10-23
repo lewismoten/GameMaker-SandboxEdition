@@ -44,7 +44,7 @@ describe('tin hearts', () => {
   });
 
   it('has no hook for a game without a heart, or a project', () => {
-    expect(heartHook('game:carl')).toBeUndefined();
+    expect(heartHook('game:no-heart-yet')).toBeUndefined();
     expect(heartHook('project:abc')).toBeUndefined();
     expect(heartHook(undefined)).toBeUndefined();
   });
@@ -69,11 +69,11 @@ describe('tin hearts', () => {
   it('counts only catalog games that declare a heart; the rest are pending (dev only)', () => {
     const catalog = [
       { id: 'realm', title: 'Quest', original: {} },
-      { id: 'carl', title: 'Carl', original: {}, series: 'bizarre' },
+      { id: 'no-heart-yet', title: 'No Heart Yet', original: {}, series: 'bizarre' },
       { id: 'nebula', title: 'Shareware' },
     ];
     expect(countedOf(catalog).map((g) => g.id)).toEqual(['realm']);
-    expect(pendingOf(catalog).map((g) => g.id)).toEqual(MANIFEST.pending.includes('carl') ? ['carl'] : []);
+    expect(pendingOf(catalog).map((g) => g.id)).toEqual(MANIFEST.pending.includes('no-heart-yet') ? ['no-heart-yet'] : []);
   });
 
   it('has Joe write the count out', () => {
