@@ -205,7 +205,10 @@ export async function theDust(bot: Bot): Promise<void> {
       await go('up', 1, 'under the sidewalk');
       await go('right', 44);
     }
-    await leave(bot, bot.hold('up', 30), 'through the crack');
+    // up through the crack (five drops of water open it: "Keep on hustlin'") and along the
+    // sidewalk to the sunny spot, while the clip plays
+    await must(bot, bot.until('up', () => bot.px.y <= -20, 'up through the crack', 40), 'the crack');
+    await leave(bot, bot.walk(40, 'the sunny spot'), 'the sunny spot');
   });
 }
 

@@ -429,5 +429,24 @@ export function buildBlocks(pal: Pal): BlockBook {
   // Where a branch crosses the stalk: the stalk carries on behind the branch.
   book.add('branchStalkL', branch(stalk('L')), { solid: LEDGE, grav: GRAV.down });
   book.add('branchStalkR', branch(stalk('R')), { solid: LEDGE, grav: GRAV.down });
+  // Daylight over the sidewalk, up through the crack (drawn in the water's blues and the sun's
+  // glow, since the dust's palette has no sky), and the sunny spot on the sidewalk: the way on.
+  const daylight = (seed: number) => {
+    const p = P().rect(0, 0, 20, 20, c('water', 3));
+    const r = rng(seed);
+    for (let i = 0; i < 3; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('white', 1));
+    return p;
+  };
+  book.add('daylight', daylight(121), air);
+  // just over the crack: no gravity yet, so the sprout can step out onto the sidewalk
+  book.add('daylightUp', daylight(121), { grav: GRAV.none });
+  const sunSpot = () => {
+    const p = daylight(123);
+    for (const dx of [-6, -3, 0, 3, 6]) p.line(10, 5, 10 + dx, 19, c('sun', 1));
+    p.disc(10, 5, 5, c('sun', 2)).disc(10, 5, 3, c('sun', 3));
+    p.rect(3, 18, 14, 2, c('sun', 2)).rect(6, 19, 8, 1, c('sun', 3));
+    return p;
+  };
+  book.add('sunSpot', sunSpot(), air);
   return book;
 }

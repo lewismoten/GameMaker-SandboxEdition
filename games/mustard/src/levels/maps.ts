@@ -67,6 +67,8 @@ const LEGEND: Record<string, string> = {
   h: 'palm',
   '@': 'sunPatch',
   '>': 'pass',
+  Y: 'daylight',
+  y: 'sunSpot',
 };
 
 export interface LinkSpec {
@@ -220,7 +222,10 @@ export function dust(book: BlockBook): Level {
   // groundwater in the dust itself
   m.set(32, 4, 'O').set(45, 15, 'O');
   m.mon(MON.ant, 4, 8).mon(MON.worm, 12, 15).mon(MON.mole, 26, 15).mon(MON.ant, 20, 6).mon(MON.worm, 39, 10);
-  m.link(44, 0, 'next');
+  // up through the crack into the daylight, and along the sidewalk to the sunny spot: the walk
+  // there lets "Keep on hustlin'" (the crack opening) play out before the level ends
+  m.fill(36, -2, W - 37, 2, 'Y').set(44, -1, 'daylightUp').set(40, -1, 'y');
+  m.link(40, -1, 'next');
   return { m, start: at(2, 2), size: [W, H] };
 }
 
