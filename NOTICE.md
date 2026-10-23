@@ -196,6 +196,12 @@ formats from their published descriptions and from Game-Maker's own source.
   `SBMUSIC.C` and of the behavior of Creative's SBFMDRV driver; no Creative code is used.
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
+- **The music editor and its FM instruments** were made for this project. The editor is an
+  original design, not based on AdLib's Visual Composer, and no AdLib or Creative instrument
+  bank is included. The classic piano and brass, and one kick drum used in two games, matched
+  AdLib's `STANDARD.BNK` settings (PIANO1, BRASS1, BDRUM1). They were replaced with our own
+  patches in October 2026. Some of the original RSD songs in `cd/` and `runtime/` use
+  AdLib's BRASS1 settings; they are kept as RSD released them.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, in the public domain, derived from
   the IBM PC BIOS font.
 - **Caveat** (the handwriting in the Owner's Guide's registration record,
