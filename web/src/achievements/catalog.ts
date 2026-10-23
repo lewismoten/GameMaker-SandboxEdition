@@ -52,7 +52,7 @@ export const EXPORT_PLATFORMS = ['web', 'dos', 'windows', 'mac', 'linux'] as con
 /** The help pages for downloaded games. */
 export const HELP_PAGES = ['mac', 'windows', 'linux'] as const;
 /** The desk props another part of the room reports with a gm-achievement event. */
-export const DESK_PROPS = ['desk-clock', 'desk-wastebasket', 'desk-door', 'desk-moon', 'desk-window', 'desk-curtains', 'desk-speaker', 'desk-degauss', 'desk-chez', 'desk-blacklight'] as const;
+export const DESK_PROPS = ['desk-clock', 'desk-wastebasket', 'desk-door', 'desk-moon', 'desk-window', 'desk-curtains', 'desk-speaker', 'desk-degauss', 'desk-chez', 'desk-blacklight', 'desk-uv', 'desk-plow', 'desk-sleds', 'desk-dogs', 'desk-goat', 'desk-chicken', 'desk-star', 'desk-aurora', 'desk-mailtruck'] as const;
 
 export const ACHIEVEMENTS: readonly Achievement[] = [
   // making
@@ -116,6 +116,15 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'desk-degauss', title: 'Degaussed', desc: 'Pressed the monitor’s DEGAUSS button by its name plate.', icon: '🌈', category: 'found', hidden: true, hint: 'Every 1994 monitor had a button just for fun.' },
   { id: 'desk-chez', title: 'Honk honk', desc: 'Caught THE CHEZ driving past the window and got a honk from Doc Leo.', icon: '🚗', category: 'found', hidden: true, hint: 'Watch the street by day. Someone drives by now and then.' },
   { id: 'desk-blacklight', title: 'Glow up', desc: 'Flickered the black light over Doc Leo’s velvet poster.', icon: '🟣', category: 'found', hidden: true, hint: 'One poster looks better after dark.' },
+  { id: 'desk-uv', title: 'Lights out, lights on', desc: 'Switched the black-light tube yourself.', icon: '💡', category: 'found', hidden: true, hint: 'The tube over the poster has a switch.' },
+  { id: 'desk-plow', title: 'Plowed in', desc: 'Watched the snow plow bury the driveway again.', icon: '🚜', category: 'found', hidden: true, hint: 'Keep an eye on the street on a snowy day.' },
+  { id: 'desk-sleds', title: 'Snow day', desc: 'Waved at the kids heading for the sledding hill.', icon: '🛷', category: 'found', hidden: true, hint: 'Somebody’s going sledding.' },
+  { id: 'desk-dogs', title: 'Loose again', desc: 'Saw Gwinn run off with a mitten, Teddy right behind.', icon: '🐕', category: 'found', hidden: true, hint: 'Who left the gate open?' },
+  { id: 'desk-goat', title: 'Third goat from the left', desc: 'Watched a goat scream, faint and get back up.', icon: '🐐', category: 'found', hidden: true, hint: 'Something in the street is easily startled.' },
+  { id: 'desk-chicken', title: 'Fowl flight', desc: 'Caught Sir Reginald Cluckington III flying past the window.', icon: '🐔', category: 'found', hidden: true, hint: 'Rubber chickens can’t fly. Or can they?' },
+  { id: 'desk-star', title: 'Make a wish', desc: 'Caught a shooting star from the window.', icon: '🌠', category: 'found', hidden: true, hint: 'Watch the night sky.' },
+  { id: 'desk-aurora', title: 'Northern lights', desc: 'Saw the aurora ripple over the hills.', icon: '🌌', category: 'found', hidden: true, hint: 'Some nights the sky puts on a show.' },
+  { id: 'desk-mailtruck', title: 'In the mail', desc: 'Saw the mail truck pull away with your registration card.', icon: '📮', category: 'found', hidden: true, hint: 'Some things go out with the mail.' },
 ];
 
 const BY_ID = new Map(ACHIEVEMENTS.map((a) => [a.id, a]));
