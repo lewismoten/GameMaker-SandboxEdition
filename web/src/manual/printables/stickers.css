@@ -1,0 +1,87 @@
+/* The sticker sheets (stickers.ts): a game box's and the Game-Maker box's, so they load with the sheet itself */
+.pp-sheet.pp-stk {
+  padding: 3.5cqw 5cqw;
+  background: var(--grain, none), #fbfbf7;
+}
+
+.stk-head b {
+  display: block;
+  font:
+    900 5cqw 'Arial Black',
+    Arial,
+    sans-serif;
+}
+
+.stk-head span {
+  font:
+    italic 2cqw Georgia,
+    serif;
+}
+
+.stk-head em {
+  float: right;
+  font:
+    700 1.8cqw Arial,
+    sans-serif;
+}
+
+/* the Print Then Cut area, 6.75 x 9.25 in, centered on the letter page */
+.stk-art {
+  display: block;
+  width: 79.41%;
+  margin: 1.6cqw auto 0;
+}
+
+.stk-cut {
+  width: min(100%, 980px);
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid #b9ad8c;
+  border-radius: 8px;
+  background: #fffaf0;
+  color: #222;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+
+.stk-cut summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.stk-cut-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.stk-cut-row button {
+  padding: 4px 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.stk-cut-row small {
+  color: #555;
+}
+
+.stk-cut ol {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.stk-foot {
+  position: absolute;
+  bottom: 3cqw;
+  left: 5cqw;
+  font:
+    italic 1.6cqw Georgia,
+    serif;
+  opacity: 0.7;
+}

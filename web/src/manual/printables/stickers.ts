@@ -2,6 +2,7 @@
 // block files, Sandbox Software's own stickers, the Sandbox BBS and Game-Maker: Sandbox
 // Edition. Every sticker is drawn on a canvas, so the same art makes the sheet you see and
 // print, and the files for a cutting machine (a PNG with bleed and an SVG of cut lines).
+import './stickers.css';
 import { h } from '../../editor/core/ui';
 import { PRODUCT } from '../../edition';
 import { BBS_PHONE, portrait, sheet, spriteArt, splitTitle, type PrintContext, type Sheet } from './kit';
