@@ -8,7 +8,7 @@ import { commas } from '../retro/dos/vfs';
 import { formatLabel, GALLERY, SOFA_GIFS, type GalleryFile } from '../retro/bbs/gallery';
 import { PICTURE_CREDITS, thumbOf } from './bbsPictureCredits';
 import { downloadPicture } from './modemTransfer';
-import { section } from './section';
+import { section, more } from './section';
 
 function picture(f: GalleryFile): HTMLElement {
   const { alt, credit } = PICTURE_CREDITS[f.name];
@@ -28,11 +28,32 @@ function picture(f: GalleryFile): HTMLElement {
   );
 }
 
-const board = (id: string, title: string, intro: string, files: GalleryFile[]) => [
-  h('h3', { id }, title),
-  h('p', null, intro),
-  h('div', { class: 'bbs-pics' }, ...files.map(picture)),
-];
+/** A picture as a small button that downloads it at modem speed: the board's contact sheet. */
+function sheetItem(f: GalleryFile): HTMLElement {
+  const { alt } = PICTURE_CREDITS[f.name];
+  return h(
+    'li',
+    null,
+    h(
+      'button',
+      { type: 'button', class: 'bbs-sheet-pic', title: `${f.name}: download at modem speed`, onclick: () => downloadPicture(f, alt) },
+      h('img', { src: thumbOf(f.name), alt: '', loading: 'lazy', decoding: 'async' }),
+      h('span', { class: 'bbs-sheet-name' }, f.name),
+      h('span', { class: 'sr-only' }, `: download at modem speed. ${alt}`),
+    ),
+  );
+}
+
+/** A board: its pictures as a contact sheet to download from, and each one's credit behind a disclosure. */
+const board = (id: string, title: string, intro: string, files: GalleryFile[]) =>
+  h(
+    'div',
+    { class: 'bbs-board' },
+    h('h3', { id }, title),
+    h('p', null, intro),
+    h('ul', { class: 'bbs-sheet', 'aria-label': `${title}: pictures to download at modem speed` }, ...files.map(sheetItem)),
+    more(`Who made each of the ${files.length} pictures, with sizes and descriptions`, h('div', { class: 'bbs-pics' }, ...files.map(picture))),
+  );
 
 export function bbsPicturesSection(): HTMLElement {
   return section(
@@ -44,7 +65,11 @@ export function bbsPicturesSection(): HTMLElement {
       null,
       'The photos are Lewis’s own, except CHEZTED.GIF and THECHEZ2.GIF, one shot of Lewis holding Teddy in front of THE CHEZ, which Nicky Foster of the Front Royal-Warren County Chamber of Commerce took as a promotional photo of Lewis as a sponsor of its upcoming Revitalize or Die Civic Pride Workshop. The Bard of Bizarre’s logo was made with DeepAI. Interlaced GIFs arrive in coarse bands that fill in pass by pass; a progressive JPEG sharpens scan by scan; the others draw top to bottom.',
     ),
-    ...board('credits-bbs-sandbox', 'The Sandbox BBS: GIF Gallery', 'The SysOp’s snapshots, sized for a 320x200 VGA screen.', GALLERY),
-    ...board('credits-bbs-sofa', 'The Sofa: GIF Pictures', 'Doc Leo’s 640x480 interlaced GIFs.', SOFA_GIFS),
+    h(
+      'div',
+      { class: 'bbs-boards' },
+      board('credits-bbs-sandbox', 'The Sandbox BBS: GIF Gallery', 'The SysOp’s snapshots, sized for a 320x200 VGA screen. Pick one to download it.', GALLERY),
+      board('credits-bbs-sofa', 'The Sofa: GIF Pictures', 'Doc Leo’s 640x480 interlaced GIFs. Pick one to download it.', SOFA_GIFS),
+    ),
   );
 }

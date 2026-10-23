@@ -3,8 +3,13 @@
    disclosures. Loaded after credits.css and bbsPictures.css. */
 
 main.credits-page {
-  --toc-body: 84rem;
-  max-width: 84rem;
+  --toc-body: 96rem;
+  max-width: 96rem;
+}
+
+/* beside "On this page" (pageToc.css): the body column grows to --toc-body */
+main.credits-page.with-toc {
+  max-width: calc(var(--toc-body) + 14rem + 48px);
 }
 
 /* paragraphs read at about 75 characters; grids, tables and cards use the full width */
@@ -98,7 +103,7 @@ main.credits-page .credits-gallery {
 }
 
 main.credits-page .credits-gallery-small {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
   gap: 10px;
 }
 
@@ -218,4 +223,80 @@ main.credits-page .credits-more-games li {
   main.credits-page .credits-gallery .credits-thumb {
     width: auto;
   }
+}
+
+/* ---- the BBS pictures: each board a contact sheet of download buttons, the boards side by side ---- */
+
+main.credits-page .bbs-boards {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1.4fr);
+  gap: 8px 32px;
+  align-items: start;
+}
+
+main.credits-page .bbs-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+main.credits-page .bbs-sheet li + li {
+  margin: 0;
+}
+
+main.credits-page .bbs-sheet-pic {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: 24px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+main.credits-page .bbs-sheet-pic:hover {
+  border-color: var(--accent);
+}
+
+main.credits-page .bbs-sheet-pic img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #000;
+}
+
+main.credits-page .bbs-sheet-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  main.credits-page .bbs-boards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  main.credits-page .bbs-sheet {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* a figure's own small disclosure (which games show an RSD intro) */
+main.credits-page details.credits-mini summary {
+  min-height: 24px;
+  color: var(--accent);
+  cursor: pointer;
 }

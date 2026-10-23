@@ -59,7 +59,12 @@ export function originalSection(): HTMLElement {
       'div',
       { class: 'credits-gallery' },
       ...RSD_INTROS.map((r) =>
-        thumb(`./credits/${r.src}`, r.alt, [r.caption, h('br'), h('span', { class: 'muted' }, r.games.join(', ')), h('br'), repoFile(r.file)]),
+        thumb(`./credits/${r.src}`, r.alt, [
+          r.caption,
+          h('br'),
+          repoFile(r.file),
+          h('details', { class: 'credits-mini' }, h('summary', null, `Which ${r.games.length === 1 ? 'game' : `${r.games.length} games`}`), r.games.join(', ')),
+        ]),
       ),
     ),
     h('h3', { id: 'credits-parts' }, 'Who made each part'),
