@@ -35,6 +35,15 @@
   inset: 3.5% 4%;
 }
 
+.crt-vga .vga-screen {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: none;
+  touch-action: none;
+}
+
 /* graphic designers shown "in VGA" on the PC */
 .vga-editor {
   display: flex;
