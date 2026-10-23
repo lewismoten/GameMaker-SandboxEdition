@@ -1,0 +1,56 @@
+# What Prettier formats, for the whole repository (npm run format, from web/):
+# web/'s code (TypeScript, JavaScript, CSS), the TypeScript in games/, and code/README.md.
+# Everything else is left exactly as written.
+
+# Start from nothing, then let in web/, games/ and code/.
+/*
+!/web/
+!/games/
+!/code/
+
+# The original release (code/, cd/, runtime/) is preserved as is and never formatted.
+# The one exception is code/README.md, a doc this fork added.
+/code/*
+!/code/README.md
+
+# ---- games/: TypeScript only, never the DOS disk files ----
+/games/**/*.*
+!/games/**/*.ts
+/games/*/disk/
+# title demos: each game's tools/gendemo.ts rewrites src/demo.ts, so keep it as written
+/games/*/src/demo.ts
+
+# ---- web/ ----
+# built output and dependencies
+node_modules/
+dist/
+coverage/
+
+# public/ is copied into the site as is: generated data (cast/sprites.json,
+# extras/demos.json, bbs/*), the manifest and binary downloads
+/web/public/
+
+# generated JSON, rewritten by scripts and game tools (web/scripts/castHidden.ts,
+# web/scripts/bbsGifs.ts, games/kit/tinHearts.ts, …); keep their bytes as their writers make them
+/web/**/*.json
+!/web/package.json
+!/web/tsconfig.json
+
+# hand-written pages and docs: index.html and play.html are Vite entries (editing them
+# reloads open dev pages), and the READMEs are prose with hand-made tables
+/web/**/*.html
+/web/**/*.md
+
+# Pending: vite.config.ts and the files it imports. Writing any of them restarts the dev
+# server, which reloads every open page, so these were left unformatted. Format them while
+# the dev server is stopped (npx prettier --write <these files>), then delete this block.
+/web/vite.config.ts
+/web/src/eggs/eggs.ts
+/web/src/project/files.ts
+/web/src/formats/graphicScripts.ts
+/web/src/formats/palette.ts
+/web/src/gfx/levelPicture.ts
+/web/src/formats/voc.ts
+/web/src/retro/dos/disks.ts
+/web/src/project/diskFacts.ts
+/web/src/project/bizarre.ts
