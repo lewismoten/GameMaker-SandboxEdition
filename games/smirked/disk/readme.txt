@@ -72,7 +72,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "I Screamed, She
-  Smirked": lyrics written by
+  Smirked": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompts (as The Bard of
   Bizarre); music made with
