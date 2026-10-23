@@ -161,6 +161,9 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.missClap] = missed(MON.clap);
   set[MON.swatter] = swing('swat0', 'swat1', MON.missSwatter, 12);
   set[MON.missSwatter] = missed(MON.swatter);
+  // the finale: his hand grabbing for the aux cord, open and closing (a roll makes it miss too)
+  set[MON.grab] = swing('grab0', 'grab1', MON.missGrab, 3);
+  set[MON.missGrab] = missed(MON.grab);
   set[MON.teddy] = mon(anim('teddy0', 'teddy1', 6), { power: 200, thru: 0 }, [corner(0, 0, 3), corner(0, -2, 3, 0), corner(0, 0, 2, 0), corner(0, 0, 1)]);
   set[MON.loaf] = mon(anim('loaf0', 'loaf1', 12), { power: 50, thru: 0, newmon: MON.loafOff });
   set[MON.loafOff] = mon(anim('loafOff1', 'loafOff0', 3), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(2, -3, 4, 0)]);

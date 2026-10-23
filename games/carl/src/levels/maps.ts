@@ -272,7 +272,7 @@ export function theBed(book: BlockBook): Level {
     [24, 3],
     [33, 2],
   ]);
-  m.set(30, 4, 'shelfTop').set(30, 3, 'sodaW');
+  m.set(30, 4, 'shelfTop');
   // Teddy asleep in his dog bed (his big ear counts too)
   m.set(35, 10, 'dogBedL').set(36, 10, 'dogBedR');
   m.mon(MON.dogEar, 36, 9);
@@ -292,7 +292,7 @@ export function theBed(book: BlockBook): Level {
 
 /** 4. The open window: the backyard, to the tall grass. */
 export function theWindow(book: BlockBook): Level {
-  const W = 60;
+  const W = 74;
   const H = 14;
   const m = new MapBuilder(book, 'earth');
   // the rest of the house to the left, more sky over the yard, the ground going on
@@ -324,13 +324,18 @@ export function theWindow(book: BlockBook): Level {
   m.col(37, 6, 11, 'trunk').fill(34, 2, 7, 3, 'leaves').row(5, 34, 40, 'branch');
   m.mon(MON.bird, 32, 1);
   // the picnic table: pie and lemonade
-  m.row(10, 42, 45, 'picnic').set(42, 11, 'picnicLeg').set(45, 11, 'picnicLeg').set(43, 9, 'pie').set(45, 9, 'lemonade');
+  m.row(10, 42, 45, 'picnic').set(42, 11, 'picnicLeg').set(45, 11, 'picnicLeg').set(43, 9, 'pie');
   m.set(50, 11, 'birdbath');
   m.mon(MON.wasp, 47, 3).mon(MON.bird, 44, 6);
-  // gusts again, and the tall grass: the wild
+  // gusts again, and the neighbor's clothesline: two more towels snapping, a robin over it
   m.fill(52, 2, 2, 9, 'calm');
-  m.fill(56, 6, 3, 6, 'tall').set(57, 9, 'wild');
-  m.link(57, 9, 'next');
+  m.set(55, 6, 'postTop').col(55, 7, 11, 'post').set(64, 6, 'postTop').col(64, 7, 11, 'post');
+  m.row(6, 56, 63, 'line').set(57, 6, 'towelB').set(62, 6, 'towelR');
+  m.mon(MON.towel, 59, 7).mon(MON.towel, 61, 4).mon(MON.bird, 56, 2);
+  // a last gust, and the tall grass: the wild
+  m.fill(66, 2, 2, 9, 'calm');
+  m.fill(70, 6, 3, 6, 'tall').set(71, 9, 'wild');
+  m.link(71, 9, 'next');
   return { m, start: at(6, 5), size: [W, H] };
 }
 
@@ -368,7 +373,6 @@ export function theWild(book: BlockBook): Level {
   m.row(11, 33, 36, 'log');
   m.mon(MON.spider, 34, 2);
   m.set(40, 1, 'web');
-  m.set(42, 11, 'flower');
   // the desert: Brother Camel resting, a cactus
   m.row(12, 46, 57, 'dune').row(13, 46, 57, 'sand');
   m.set(50, 11, 'cactus').set(50, 10, 'cactusTop');
@@ -431,6 +435,9 @@ export function theAux(book: BlockBook): Level {
   // Watt (Ohm Sweet Ohm) at the left speaker's foot, seeing to its wiring
   m.set(47, 10, 'watt');
   m.set(49, 3, 'aux');
+  // the last stand: his hand reaches out over the stereo, and again right over the cord (roll
+  // past each)
+  m.mon(MON.grab, 44, 1).mon(MON.grab, 49, 2);
   m.link(49, 9, 'won');
   return { m, start: at(4, 5), size: [W, H] };
 }

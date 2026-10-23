@@ -575,6 +575,9 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('buzz0', buzz(0));
   book.add('buzz1', buzz(1));
+  // (last too) his hand grabbing for the aux cord at the stereo: fingers spread, then snatching
+  book.add('grab0', reach(0), hurt(8));
+  book.add('grab1', reach(1), hurt(8));
   // (last, so every other block keeps its number) Loaf #13 and the seed flying off: the same
   // pictures, worth nothing, so brushing past them as they go doesn't score every tick
   book.add('loafOff0', loaf(0));

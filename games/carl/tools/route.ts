@@ -326,16 +326,21 @@ export async function theWindow(bot: Bot): Promise<void> {
       'the pie and the lemonade',
     ),
   );
-  await carefully(bot, 'into the wild', 12, async () => {
-    await go(
+  await carefully(bot, 'the gusts again', 12, () =>
+    go(
       bot,
       [
         [47, 9],
-        [55, 9],
+        [53, 9],
+        [54, 5],
       ],
       'the gusts again',
-    );
-    await leave(bot, bot.fly(57, 9, 'the tall grass'), 'the wild');
+    ),
+  );
+  await carefully(bot, "over the neighbor's clothesline", 12, () => go(bot, [[65, 5]], 'the second clothesline'));
+  await carefully(bot, 'into the wild', 12, async () => {
+    await go(bot, [[69, 9]], 'the last gust');
+    await leave(bot, bot.fly(71, 9, 'the tall grass'), 'the wild');
   });
 }
 
@@ -422,15 +427,18 @@ export async function theAux(bot: Bot): Promise<void> {
     await rollAhead(bot, 'right');
     await go(bot, [[42, 1]], 'through');
   });
+  await carefully(bot, 'his hand over the stereo', 12, async () => {
+    await go(bot, [[42, 1]], 'by the gap');
+    await rollAhead(bot, 'right');
+    await go(bot, [[46, 1]], 'past his hand');
+  });
+  await carefully(bot, 'his hand over the cord', 12, async () => {
+    await go(bot, [[47, 2]], 'beside the speaker');
+    await must(bot, bot.hold('right', 1), 'face');
+    await must(bot, bot.tap('space', 6), 'roll');
+    await go(bot, [[49, 1]], 'over the stereo');
+  });
   await carefully(bot, 'the aux cord', 12, async () => {
-    await go(
-      bot,
-      [
-        [42, 1],
-        [49, 1],
-      ],
-      'over the stereo',
-    );
     // straight down with the cord to the receiver: no new move, so nothing cuts "Carl's got the aux cord now" off
     await leave(bot, bot.fly(49, 9, 'the aux cord'), 'the aux cord');
   });

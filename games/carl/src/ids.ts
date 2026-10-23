@@ -71,6 +71,9 @@ export const MON = {
   /** The man, mopping, gloomy (two blocks tall: A his head, B his body). */
   mopperA: 38,
   mopperB: 39,
+  /** His hand reaching for the aux cord before Carl can take it (a barrel roll makes it miss). */
+  grab: 40,
+  missGrab: 41,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */
