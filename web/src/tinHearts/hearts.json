@@ -6,7 +6,7 @@
     "depth": { "map": "l2near.map", "at": [59, 59] },
     "goat": { "map": "field.map", "at": [52, 20] },
     "loaf": { "map": "wicker.map", "at": [19, 3] },
-    "logic": { "map": "attic.map", "at": [3, 7] },
+    "logic": { "map": "attic.map", "at": [32, 44] },
     "loofah": { "map": "home.map", "at": [49, 6] },
     "maximus": { "map": "home.map", "at": [8, 51] },
     "mustard": { "map": "dust.map", "at": [43, 18] },
