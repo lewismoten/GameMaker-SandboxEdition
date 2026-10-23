@@ -6,9 +6,10 @@
 // it comes forward in the viewer.
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
+import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
 import { mapShot, renderShot } from './boxArt';
 import { parseGame, type Game } from '../../formats/game';
-import { boxAward, boxClaims, boxDisks, boxGame, boxReviews, disksLine, hoursLine, planBack, playHours, shotCaption, type BoxGame } from './boxFacts';
+import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBack, playHours, shotCaption, type BoxGame } from './boxFacts';
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
 import { coverArt, SEALS } from './covers';
@@ -92,7 +93,8 @@ export async function boxInfo(entry: CatalogEntry) {
   const { levels } = await gameFacts(entry, box);
   return {
     levels,
-    disks: boxDisks(entry.bytes),
+    disks: gameDisks(entry),
+    installed: installedBytes(entry),
     hours: playHours(levels, box.hours),
     claims: boxClaims(entry, levels),
     reviews: boxReviews(entry.id, box),
@@ -305,15 +307,17 @@ export async function drawBox(entry: CatalogEntry, { shots: withShots = true } =
   b.fillStyle = '#fff';
   b.font = SANS(14, 900);
   b.fillText('SYSTEM REQUIREMENTS', 36, reqY + 20);
-  b.font = SANS(12.5, 400);
-  wrap(
-    b,
-    `IBM PC/AT or compatible, 286 or better · 640K RAM · VGA · hard disk · ${sb ? 'Sound Blaster or compatible (PC speaker also supported)' : 'PC speaker sound'} · keyboard, joystick optional · 1 player · ${disksLine(info.disks)}`,
-    36,
-    reqY + 40,
-    bw - 272,
-    16,
-  );
+  // what it needs, then (in bold) what a buyer checked first: the disks and the room on the hard disk
+  const req = `IBM PC/AT or compatible, 286 or better · 640K RAM · VGA · ${sb ? 'Sound Blaster or compatible (PC speaker also supported)' : 'PC speaker sound'} · keyboard, joystick optional · 1 player`;
+  const storage = `${disksLine(info.disks)} · ${sizeText(info.installed)} free on hard disk`;
+  let reqPx = 12.5;
+  for (; reqPx > 10; reqPx -= 0.5) {
+    b.font = SANS(reqPx, 400);
+    if (wrapLines(b, req, bw - 272) * reqPx * 1.28 <= reqH - 44) break;
+  }
+  const storageY = wrap(b, req, 36, reqY + 40, bw - 272, reqPx * 1.28);
+  b.font = SANS(fit(b, storage, (px) => SANS(px, 700), bw - 272, reqPx), 700);
+  b.fillText(storage, 36, storageY);
   barcode(b, bw - 208, reqY, 128, 64, entry.id);
   ratingSeal(b, bw - 68, reqY, 48, box.rating);
   b.fillStyle = box.ink;

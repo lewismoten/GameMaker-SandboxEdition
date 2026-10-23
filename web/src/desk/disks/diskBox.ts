@@ -3,13 +3,13 @@ import "./diskBox.css";
 import { h, clear } from "../../editor/core/ui";
 import { diskCount, type Disk } from "../../retro/dos/disks";
 import { creditLine } from "../../project/files";
-import { boxDisks } from "../boxes/boxFacts";
+import { gameDisks } from "../../project/diskFacts";
 import { printedDiskLabel } from "./diskLabel";
 import { rsdDiskLabel } from "./rsdLabel";
 
-/** How many disks it takes: an original ships with the DOS player too (as its box says). */
+/** How many disks it takes: an original ships with the DOS player too (as its box and every catalog say). */
 export function disksIn(d: Disk): number {
-  return d.kind === "original" ? boxDisks(d.bytes) : diskCount(d.bytes);
+  return d.kind === "original" && d.catalog ? gameDisks(d.catalog) : diskCount(d.bytes);
 }
 
 export type DiskAction = "play" | "design" | "modern";

@@ -3,7 +3,7 @@
 // true of it (no claiming digitized sound for a PC speaker game), its rating seal, and
 // how the back cover's copy, reviews, features and screenshots fit the space they have.
 import type { CatalogEntry } from '../../project/files';
-import { diskCount } from '../../retro/dos/disks';
+import { gameDisks } from '../../project/diskFacts';
 import { ADVTYPE, type Game } from '../../formats/game';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
@@ -22,16 +22,11 @@ export interface BoxExtras {
   poster?: { gif?: string; map?: [string, number, number, number, number]; title?: string; caption?: string };
 }
 
-/** Bytes the DOS release adds to the game's files: the player .EXE, sound driver, CONFIG.BAT, README. */
-export const DOS_EXTRA_BYTES = 160_598 + 2_493 + 3_000;
+export { DOS_EXTRA_BYTES, disksLine } from '../../project/diskFacts';
 
-/** How many 1.44 MB disks the game ships on (its files plus the DOS player). */
+/** How many 1.44 MB disks an original game ships on (its files plus the DOS player): project/diskFacts.ts gameDisks, from a size alone. */
 export function boxDisks(bytes: number | undefined): number {
-  return diskCount((bytes ?? 0) + DOS_EXTRA_BYTES);
-}
-
-export function disksLine(n: number): string {
-  return n === 1 ? 'One 3½" 1.44 MB disk' : `${n} × 3½" 1.44 MB disks`;
+  return gameDisks({ bytes, original: {} as CatalogEntry['original'] });
 }
 
 const NICE_HOURS = [1, 2, 3, 5, 8, 10, 15, 20, 25, 30, 40, 50];
