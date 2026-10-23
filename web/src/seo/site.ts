@@ -39,6 +39,11 @@ export const ROUTES = {
     description:
       'Download any game as a Mac app. Why macOS says Apple could not verify it (the apps are built in your browser, so they are not notarized), how to open it the first time, what the app does and how to remove it.',
   },
+  windows: {
+    title: `Playing the games on Windows · ${PRODUCT}`,
+    description:
+      'Download any game as a Windows program. Why SmartScreen says “Windows protected your PC” (the programs are built in your browser, so they are not code-signed), how to run it the first time, what the program does and how to remove it.',
+  },
   editor: {
     title: `Editor · ${PRODUCT}`,
     description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,
