@@ -1,7 +1,7 @@
 // Drawing the two eggs kept apart from the dozen (bonus.ts): a rotten egg (mottled, pitted,
 // cracking a little more with every tap, stench rising), the IOU note inside it, the diamond
 // heart that note is for (cut with facets, caged in gold filigree, turning: Mystery Robot Joe's
-// trophy for the tin heart hunt, tinHearts/trophy.ts), and a pastry egg in the Fabergé manner
+// trophy for the tin heart hunt, tinHearts/trophy.ts), and a pastry egg like a jeweled imperial egg
 // (rose glaze, piped icing, gold leaf, a nest of spun sugar, a clockwork baker on top).
 // The shells are painted flat and wrapped round the egg shape pixel by pixel, like the felt
 // eggs (eggArt.ts), but lit with a sheen and a bump map so icing stands up and cracks sink.

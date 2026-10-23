@@ -245,7 +245,7 @@ export async function openTrophy(n: number): Promise<void> {
       { class: 'eggv-card' },
       h('h2', { id: 'trophy-title' }, 'The Diamond Heart'),
       h('p', { class: 'eggv-where' }, `Presented by Mystery Robot Joe, for finding all ${n} tin hearts`),
-      h('p', null, 'A heart cut from one flawless diamond, faceted in the Fabergé manner and caged in gold filigree, sitting in a tin cup on a riveted tin box that Joe made himself. The brass plate reads: PRESENTED BY MYSTERY ROBOT JOE.'),
+      h('p', null, 'A heart cut from one flawless diamond, faceted like an imperial jeweled egg and caged in gold filigree, sitting in a tin cup on a riveted tin box that Joe made himself. The brass plate reads: PRESENTED BY MYSTERY ROBOT JOE.'),
       h('h3', null, 'A note from Joe'),
       h('p', { class: 'eggv-lore' }, `“${joeNote(n)}” — Joe`),
     );

@@ -39,7 +39,7 @@ export const BONUS_EGGS: readonly BonusEgg[] = [
     id: 'faberge',
     gameTitle: "Baker's Dozen",
     name: 'The True Easter Egg',
-    description: 'A Fabergé egg you could eat, if you dared: a pastry shell glazed in rose icing with a mirror sheen, piped with royal-icing swags, pearls and a trellis, flecked with edible gold leaf, resting in a nest of spun sugar. On top a tiny clockwork baker turns and turns while a music box plays "Yankee Doodle".',
+    description: 'A jeweled egg you could eat, if you dared: a pastry shell glazed in rose icing with a mirror sheen, piped with royal-icing swags, pearls and a trellis, flecked with edible gold leaf, resting in a nest of spun sugar. On top a tiny clockwork baker turns and turns while a music box plays "Yankee Doodle".',
     credits: ['Baked by Lewis "Lewie" Moten III and Claude Opus 5.5 (one kept the oven, one kept count)', 'Clockwork baker modeled on Doc Leo, who insists the hat is regulation', 'Taste-tested by Teddy and Gwinn (two n\'s), against strict orders'],
     lore: 'The thirteenth egg of a baker\'s dozen, right where the recipe always said it would be. Ingredient 13 was never an ingredient: "Pour one for whoever is still waiting at the table." The Redcoats had the recipe; the patriots had the root beer, and refills. History calls it a revolution. The family calls it a second glass.',
     detect: { block: 5 },
