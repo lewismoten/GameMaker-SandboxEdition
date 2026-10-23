@@ -7,7 +7,7 @@ import { Pixels, rng } from '../../../../kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import type { Pal, Ramp } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, drawCoin, loot, spotlight } from '../../common/blocks';
-import { T, outline, type SpriteBook } from '../../common/sprites';
+import { T, type SpriteBook } from '../../common/sprites';
 import { MONEY } from '../../ids';
 
 export const OUTSIDE_RAMPS: Ramp[] = [
@@ -75,7 +75,7 @@ export function coinOn(book: BlockBook, pal: Pal, bg: string): void {
 }
 
 export function buildStreet(book: BlockBook, pal: Pal): void {
-  const { c, r: R } = pal;
+  const c = pal.c;
   book.add('soil', (() => {
     const p = new Pixels(20, 20, c('soil', 1));
     const r = rng(40);
@@ -84,6 +84,7 @@ export function buildStreet(book: BlockBook, pal: Pal): void {
   })(), { solid: SOLID });
   book.add('skyHi', skyAt(pal, 41, 2), AIR);
   book.add('sky', skyAt(pal, 42, 3), AIR);
+  book.add('skyMid', skyAt(pal, 48, 2).map((x, y, v) => (y > 4 && ((x * 7 + y * 3) % 16) < (y - 4) ? c('sky', 3) : v)), AIR);
   book.add('skyline', skylineAt(pal, 43), AIR);
   book.add('town', townAt(pal, 44), AIR);
   // the sidewalk: slabs of concrete with their seams and the curb's lip
@@ -115,7 +116,6 @@ export function buildStreet(book: BlockBook, pal: Pal): void {
   loot(book, pal, 'town');
   coinOn(book, pal, 'sky');
   spotlight(book, pal, 'town');
-  void R;
 }
 
 /** The puff every scattered foe of the set leaves (both frames). */
@@ -129,5 +129,4 @@ export function streetSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('poof0', puff(0));
   book.add('poof1', puff(1));
-  void outline;
 }

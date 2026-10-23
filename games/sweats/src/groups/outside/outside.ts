@@ -128,9 +128,10 @@ export function outsideBlocks(book: BlockBook, pal: Pal): void {
   gate(book, 'bush', bush(false), 'bushOpen', SCRAPS);
   // the receipt's scraps, each with its awful truth
   const scrap = (lines: string[]) => (p: Pixels) => {
-    p.rect(2, 2, 16, 17, c('white', 2)).frame(2, 2, 16, 17, c('white', 0));
-    for (let x = 2; x < 18; x += 2) p.set(x, 18, c('sky', 3));
-    lines.forEach((s, i) => micro(p, 4, 4 + i * 5, s, c('ink', 1)));
+    p.rect(1, 2, 18, 17, c('white', 2)).frame(1, 2, 18, 17, c('white', 0));
+    for (let x = 1; x < 19; x += 2) p.set(x, 18, c('sky', 3));
+    p.line(15, 2, 18, 5, c('sky', 3)).line(15, 3, 17, 5, c('white', 0));
+    lines.forEach((s, i) => micro(p, 2, 4 + i * 5, s, c('ink', 1)));
   };
   plotThing(book, 'sky', 'scrap1', scrap(['FOOT', 'PWD', 'X3']));
   plotThing(book, 'sky', 'scrap2', scrap(['CHAF', 'CRM', 'XL']));
@@ -185,6 +186,9 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
   // the jogger in his headband (the receipt stuck to his calf a moment)
   book.add('jog0', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 0, band: true, shorts: true }), hello);
   book.add('jog1', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 1, band: true, shorts: true, scrap: true }), hello);
+  // jogging on (no more hellos)
+  book.add('jogOn0', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 0, band: true, shorts: true, arms: 'up' }));
+  book.add('jogOn1', person(pal, { hair: 'hair', shirt: 'yellow', pants: 'navy', step: 1, band: true, shorts: true, arms: 'up' }));
 }
 
 export function outsideMonsters(set: Monster[], mb: SpriteBook): void {
@@ -194,13 +198,15 @@ export function outsideMonsters(set: Monster[], mb: SpriteBook): void {
   set[OUT_MON.granny] = mon(anim(mb, 'granny0', 'granny1', 14), { power: POWER.tough, thru: 1 }, still);
   set[OUT_MON.cart] = mon(anim(mb, 'cart0', 'cart1', 2), { power: POWER.tough, thru: 1 }, pace(3, 2));
   set[OUT_MON.jogger] = mon(anim(mb, 'jog0', 'jog1', 3), { power: POWER.friend, thru: 1, newmon: OUT_MON.jogOff }, pace(5, 3));
-  set[OUT_MON.jogOff] = mon(anim(mb, 'jog0', 'jog1', 2), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 4), corner(9, 0, 4, 0)]);
+  set[OUT_MON.jogOff] = mon(anim(mb, 'jogOn0', 'jogOn1', 2), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 4), corner(9, 0, 4, 0)]);
 }
 
 export const outside: Monologue = {
   file: 'outside',
   title: 'This Is Why I Don’t Go Outside',
   desc: 'Don\'t Go Outside',
+  // a dull Thursday afternoon: a pale, washed-out sky
+  light: { sky: [[96, 132, 178], [222, 230, 236], [160, 186, 212]], mul: [1, 1, 1], add: [0, 0, 0] },
   filler: 'soil',
   legend: {
     H: 'skyHi',
@@ -226,7 +232,7 @@ export const outside: Monologue = {
   },
   build: (m: MapBuilder) => {
     const W = 70;
-    m.fill(0, 0, W, 4, 'H').fill(0, 4, W, 4, 's').row(8, 0, W - 1, 'k').row(9, 0, W - 1, 't').row(11, 0, W - 1, '#');
+    m.fill(0, 0, W, 3, 'H').row(3, 0, W - 1, 'skyMid').fill(0, 4, W, 4, 's').row(8, 0, W - 1, 'k').row(9, 0, W - 1, 't').row(11, 0, W - 1, '#');
     // the ground: the sidewalk, the parking lot, the park
     m.row(10, 0, 23, '=').row(10, 24, 47, 'a').row(10, 48, W - 1, 'g');
     for (const x of [24, 31, 32, 40, 47]) m.set(x, 10, 'A');
