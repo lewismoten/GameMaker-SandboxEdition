@@ -31,7 +31,7 @@
   background: rgba(127, 127, 127, 0.25);
 }
 
-.view-switch a[aria-current='page'] {
+.view-switch a[aria-current] {
   background: var(--view-switch-on, #ffd400);
   color: var(--view-switch-on-text, #000);
   cursor: default;

@@ -28,9 +28,9 @@ export function viewHref(view: View, showing: Showing): string {
 }
 
 /**
- * The switch: a link per view, the current one marked (aria-current). `showing` says what is in
- * front of you when a link is used; `go` switches without loading a page (the desk and today's
- * web share index.html), given the address it would have gone to.
+ * The switch: a link per view, the current one marked (aria-current="true"). `showing` says
+ * what is in front of you when a link is used; `go` switches without loading a page (the desk
+ * and today's web share index.html), given the address it would have gone to.
  */
 export function viewSwitch(current: View, showing: () => Showing, go: Partial<Record<View, (href: string) => void>> = {}): HTMLElement {
   return h(
@@ -39,8 +39,13 @@ export function viewSwitch(current: View, showing: () => Showing, go: Partial<Re
     ...VIEWS.map(([view, label, name, title]) => {
       const a = h('a', { href: viewHref(view, undefined), 'aria-label': name, title, dataset: { view } }, label);
       if (view === current) {
-        a.setAttribute('aria-current', 'page');
-        a.addEventListener('click', (e) => e.preventDefault());
+        // the view you are in ("true", not "page": today's web has pages of its own). Web still
+        // goes to the game list from a page of it (the Credits, the Guide, an editor), and does
+        // nothing only on the list itself; the desk and the DOS page are one page each.
+        a.setAttribute('aria-current', 'true');
+        a.addEventListener('click', (e) => {
+          if (view !== 'web' || /^#?\/?(\?.*)?$/.test(location.hash)) e.preventDefault();
+        });
         return a;
       }
       // the address follows what is showing (for opening it in a new tab, too)
