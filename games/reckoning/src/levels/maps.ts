@@ -328,6 +328,8 @@ export function reckoning(book: BlockBook): Level {
   // the porcelain throne; past it, the bathroom door home, where the act ends (the walk lets the
   // flush and "...Is there Lactaid in hell?" finish)
   m.set(30, 9, '/');
+  // the second spout up on its tiles past the throne: cold, until it rattles awake mid-fight
+  m.row(7, 32, 34, '@').set(33, 6, 'spoutCold');
   m.set(36, 4, ',').set(42, 2, ',');
   m.set(46, 9, 'bathOpen').set(46, 8, 'I');
   m.link(46, 9, 'won');

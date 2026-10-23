@@ -28,7 +28,13 @@ export const LEDGE = 1;
 export const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between milkshakes from the soda fountain. */
-export const SHAKE_EVERY = 46;
+export const SHAKE_EVERY = 40;
+/** Ticks into the reckoning before the second spout starts to rattle (it throws SPOUT_WARN later). */
+export const SPOUT_WAKE = 200;
+/** Ticks the second spout rattles and steams, as a warning, before it throws. */
+export const SPOUT_WARN = 48;
+/** Ticks between milkshakes from the second spout, once it's awake. */
+export const SPOUT_EVERY = 56;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -596,6 +602,25 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('fountain', fountain(0), { solid: SOLID, birthMon: MON.shake, birthTime: SHAKE_EVERY });
+  // the second spout, over the throne: cold at first; partway into the fight it rattles, steams
+  // and flashes (a warning) then lobs its own milkshakes, higher, at the floor where he stands
+  const spout = (heat: number) => {
+    const p = voidAir(90);
+    const jig = heat === 1 ? 1 : 0;
+    p.rect(4 + jig, 8, 12, 12, c('metal', heat ? 2 : 1))
+      .rect(4 + jig, 8, 12, 2, c('metal', 3))
+      .rect(6 + jig, 12, 8, 5, c(heat ? 'berry' : 'grey', heat ? 2 : 1));
+    p.rect(14 + jig, 3, 3, 6, c('metal', 1)).rect(10 + jig, 3, 7, 2, c('metal', 1));
+    if (heat) for (let k = 0; k < 3; k++) blob(p, 6 + k * 4 - jig, 4 - (k % 2) * 2, 2, 1.4, R('smoke'), 1, 2);
+    if (heat === 2) p.set(11, 6, c('berry', 3)).set(11, 7, c('berry', 3));
+    return p;
+  };
+  book.add('spoutCold', spout(0), { solid: SOLID, next: 'spoutWarm0', ntime: SPOUT_WAKE });
+  book.add('spoutWarm0', spout(1), { solid: SOLID, next: 'spoutWarm1', ntime: SPOUT_WARN / 4 });
+  book.add('spoutWarm1', spout(2), { solid: SOLID, next: 'spoutWarm2', ntime: SPOUT_WARN / 4 });
+  book.add('spoutWarm2', spout(1), { solid: SOLID, next: 'spoutWarm3', ntime: SPOUT_WARN / 4 });
+  book.add('spoutWarm3', spout(2), { solid: SOLID, next: 'spoutHot', ntime: SPOUT_WARN / 4 });
+  book.add('spoutHot', spout(2), { solid: SOLID, birthMon: MON.shake2, birthTime: SPOUT_EVERY });
   // almond milk and oat milk: splashes for the throw (the throw sequence's own counter). They don't
   // grow back: a block's next/ntime runs on one clock for all its copies, so they would come back at once
   const carton = (bg: Pixels, label: string, col: string) => {

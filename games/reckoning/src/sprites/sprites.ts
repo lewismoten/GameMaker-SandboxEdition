@@ -447,8 +447,8 @@ export function buildMonsterBlocks(pal: Pal) {
     // a white rim outside the ink, so it reads against hell's reds
     return outline(done(p), c('white', 2));
   };
-  book.add('shake0', shake(0), hurt(-3, 0));
-  book.add('shake1', shake(1), hurt(-3, 0));
+  book.add('shake0', shake(0), hurt(-5, 0));
+  book.add('shake1', shake(1), hurt(-5, 0));
   const splat = P();
   blob(splat, 10, 17, 8, 2.6, pal.r('berry'), 1, 3);
   for (const [x, y] of [

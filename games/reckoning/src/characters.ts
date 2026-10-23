@@ -187,19 +187,33 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.gurgle] = mon(anim('gurgle0', 'gurgle1', 4), { power: 150, thru: 0, towards: o.gurgle ?? 2 });
   set[MON.teddyUp] = mon(anim('teddyUp0', 'teddyUp1', 3), { power: 150, thru: 1 }, pace(4, 2));
   set[MON.gwinnUp] = mon(anim('gwinnUp0', 'gwinnUp1', 3), { power: 150, thru: 1 }, pace(3, 2));
-  // the reckoning: the Devil (both halves, four stages each), lounging where he stands
+  // the reckoning: the Devil (both halves, four stages each). After each splash but the last he
+  // strides to a new spot (power 230 while he strides, so splashes bounce off), then lounges
+  // there again: right, back left past where he began, then right. Both halves stride the same
+  // blocks, so they line up again whichever half is splashed first.
+  const STRIDE = [0, 2, -3, 2];
   const stages = ['A', 'B'] as const;
   for (const half of stages)
     for (let s = 0; s < 4; s++) {
-      const slot = MON[`devil${half}${s}` as keyof typeof MON];
-      const next = s < 3 ? MON[`devil${half}${s + 1}` as keyof typeof MON] : half === 'A' ? MON.straw : 64;
-      set[slot] = mon(anim(`devil${half}${s}a`, `devil${half}${s}b`, 9 - s * 2), { power: 200, thru: 1, newmon: next }, still);
+      const key = (k: string) => MON[`devil${half}${k}` as keyof typeof MON];
+      const next = s < 3 ? key(`${s + 1}m`) : half === 'A' ? MON.straw : 64;
+      const pics = anim(`devil${half}${s}a`, `devil${half}${s}b`, 9 - s * 2);
+      set[key(`${s}`)] = mon(pics, { power: 200, thru: 1, newmon: next }, still);
+      if (s > 0)
+        set[key(`${s}m`)] = mon(anim(`devil${half}${s}a`, `devil${half}${s}b`, 2), { power: 230, thru: 1, end: -1, newmon: key(`${s}`) }, [
+          corner(0, 0, 2),
+          corner(STRIDE[s], 0, 2, STRIDE[s] < 0 ? 4 : 0),
+        ]);
     }
-  // milkshakes: out of the soda fountain in an arc to the left, a splat where they land
-  const arc: March[] = [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -3, 3, 4), corner(-7, -2, 3, 4), corner(-9, 1, 3, 4), corner(-11, 4, 3, 4)];
+  // milkshakes: out of the soda fountain in an arc to the left, down on the floor a few blocks in
+  // front of him (where he'd stand to throw), a splat where they land
+  const arc: March[] = [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -2, 3, 4), corner(-6, 0, 3, 4), corner(-7, 3, 3, 4), corner(-8, 5, 3, 4)];
   set[MON.shake] = mon(anim('shake0', 'shake1', 2), { power: 200, thru: 0, end: -1, newmon: MON.splat }, arc);
+  // the second spout's: a higher lob, landing on the floor in front of the Devil
+  const lob: March[] = [corner(0, 0, 3), corner(-3, -3, 3, 4), corner(-6, -4, 3, 4), corner(-9, -3, 3, 4), corner(-11, 0, 3, 4), corner(-12, 4, 3, 4)];
+  set[MON.shake2] = mon(anim('shake0', 'shake1', 2), { power: 200, thru: 0, end: -1, newmon: MON.splat }, lob);
   set[MON.splat] = mon([[n('splat'), 4]], { power: 200, thru: 0, end: 18 });
-  set[MON.splash] = mon(anim('splash0', 'splash1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
+  set[MON.splash] = mon(anim('splash0', 'splash1', 2), { power: 220, thru: 1, towards: 8, end: 20 });
   set[MON.straw] = mon(anim('straw0', 'straw1', 4), { power: 230, thru: 1 }, still);
   set[MON.smoke] = mon(anim('smoke0', 'smoke1', 8), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -3, 1, 0), corner(-1, -6, 1, 4)]);
   return set;
