@@ -15,6 +15,7 @@ import type { Pixels } from '../../games/kit/pixels';
 import { docLeo, FULL } from '../../games/teddy/src/sprites/people';
 import { propSprite } from '../../games/teddy/src/sprites/klown';
 import { docLeoWalk } from './castLeoSide';
+import { NEEDLE_PAL, camelFront, needlePicture } from './castNeedle';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 
 /**
@@ -22,12 +23,14 @@ import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castT
  * right); on stage it turns to face you with its idle sequence (0), or `front`, blocks of its
  * .CBL one grid per frame.
  */
-type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number; front?: number[][][]; acts?: Record<string, number> };
+type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: number; ms?: number; front?: number[][][]; frontArt?: Pixels[]; acts?: Record<string, number> };
+/** Drawn here in colors of its own (6-bit VGA). */
+type PaintSource = { paint: Pixels[]; colors: [number, number, number][]; still?: boolean };
 /** Drawn by a game's own drawing code (in its palette `pal`): walking frames, then facing you. */
 type DrawnSource = { game: string; pal: string; walk: Pixels[]; front?: Pixels[]; acts?: Record<string, Pixels[]>; ms?: number; still?: boolean };
 /** Blocks of a .bbl/.mbl laid out in rows (-1 for none), one grid per frame. */
 type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean; mirror?: boolean; height?: number };
-type Source = ChrSource | BlockSource | DrawnSource | { chez: true } | { tinHeart: true };
+type Source = ChrSource | BlockSource | DrawnSource | PaintSource | { chez: true } | { tinHeart: true };
 
 export const CAST_SPRITES: Record<string, Source> = {
   teddy: { game: 'teddy', chr: 'teddy.chr', cbl: 'teddy.cbl', pal: 'backyard.pal', seq: 5 },
@@ -56,7 +59,7 @@ export const CAST_SPRITES: Record<string, Source> = {
   // the child who carries Loaf #13 home (Loaf #13's home level), and the needle Brother Camel
   // tries (the eye level's needle, its eye and a little of its shaft)
   'prop:girl': { game: 'loaf', file: 'loaf.mbl', pal: 'home.pal', frames: [[[33], [35]], [[34], [36]]], ms: 180 },
-  'prop:needle': { game: 'needle', file: 'eye.bbl', pal: 'eye.pal', frames: [[[60, 65], [62, 63], [44, 45]]], still: true, height: 52 },
+  'prop:needle': { paint: [needlePicture()], colors: NEEDLE_PAL, still: true },
   'prop:nose': { game: 'teddy', pal: 'klub.pal', walk: [propSprite('nose')], still: true },
   doghouse: { game: 'teddy', file: 'street.bbl', pal: 'street.pal', frames: [[[86, 87], [89, 91], [92, 95]]], still: true },
   joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal', seq: 8 },
@@ -68,7 +71,8 @@ export const CAST_SPRITES: Record<string, Source> = {
   goat: { game: 'goat', chr: 'goat.chr', cbl: 'goat.cbl', pal: 'town.pal', seq: 8, acts: { scream: 9, faint: 1 } },
   seed: { game: 'mustard', chr: 'seed.chr', cbl: 'mustard.cbl', pal: 'mound.pal', seq: 5 },
   loaf: { game: 'loaf', chr: 'loaf.chr', cbl: 'loaf.cbl', pal: 'hill.pal', seq: 5 },
-  camel: { game: 'needle', chr: 'loaded.chr', cbl: 'loaded.cbl', pal: 'city.pal', seq: 5 },
+  // turning to face you: drawn here, as his game only has him from the side
+  camel: { game: 'needle', chr: 'loaded.chr', cbl: 'loaded.cbl', pal: 'city.pal', seq: 5, frontArt: [...Array(9).fill(0).map(() => camelFront()), camelFront(true)], ms: 150 },
 };
 
 const disk = (game: string, file: string) => readFileSync(join(__dirname, '../../games', game, 'disk', file));
@@ -130,6 +134,12 @@ function raw(s: Source): Raw {
     TIN_HEART_PAL.forEach((c, i) => palette.set(c, i * 3));
     return { width: TIN_HEART_W, height: TIN_HEART_H, frames: tinHeartFrames(TRANSPARENT), palette, ms: 500, walk: true, hop: true, tick: true };
   }
+  if ('paint' in s) {
+    const palette = new Uint8Array(768);
+    s.colors.forEach((c, i) => palette.set(c, i * 3));
+    const f = s.paint[0];
+    return { width: f.w, height: f.h, frames: s.paint.map((p) => Uint8Array.from(p.px)), palette, ms: 200, walk: !s.still };
+  }
   const palette = parsePalette(disk(s.game, s.pal));
   if ('chr' in s) {
     const seqs = parseCharacter(disk(s.game, s.chr)).sequences;
@@ -142,7 +152,9 @@ function raw(s: Source): Raw {
     };
     const walk = played(seqs[s.seq ?? walkRight(seqs)]).map(draw);
     // facing you: the grids given (bottom-aligned in the 20x40 frame), or the idle sequence
-    const front = s.front
+    const front = s.frontArt
+      ? s.frontArt.map((p) => Uint8Array.from(p.px))
+      : s.front
       ? s.front.map((grid) => {
           const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
           grid.forEach((row, r) => put(px, BLEN, blocks[row[0]], 0, 0, (2 - grid.length + r) * BLEN));
