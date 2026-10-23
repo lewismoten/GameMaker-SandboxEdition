@@ -28,11 +28,26 @@ Designs, whose source Andy Stone released under the MIT License in 2014.
   Ohm Sweet Ohm, Virus Blaster, Final Curtain, KEEP IT BRIEF! The Tiny Pockets Library,
   Depth Perception and Quest for the Round Tuit. Each comes with a manual, box art,
   printable extras and hidden felt eggs to find.
+- **Twelve "bizarre" games**, also built in code from Lewis's own comic songs and
+  monologues, dressed as 1995 shareware from The Sofa BBS: eleven by The Bard of Bizarre
+  (Third Goat from the Left, Mustard Seed Hustle, Thread the Needle, Brother Camel, Loaf
+  #13, Certified Rat Tickler, Where's the Remote?!, A Fly Named Carl, The Great Dairy
+  Reckoning of 3:17 A.M., Cleanse Me, O Loofah, But Leave My Soul, I Screamed, She Smirked,
+  and Shakespeare in Sweatpants) and Veni, Vidi, Risi! by Lewis's group of that name. Their
+  FM music is arranged from the songs' recordings, and they are free to share.
+- **The cast** ([#/cast](https://lewismoten.github.io/GameMaker-SandboxEdition/#/cast)):
+  the characters who turn up in more than one of the new games, walking on with their own
+  game sprites.
 - **Demos and walkthroughs:** title demos play with Sound Blaster music, the PC speaker or
-  no sound, and every Sandbox game has a walkthrough that plays it from power-on to the
+  no sound, and every new game has a walkthrough that plays it from power-on to the
   credits on the real engine, with chapters, ready to download as an MP4.
+- **The desk PC's utilities:** HEXEDIT, BACKUP, SAVEHACK and GMCRACK, in 1990s dress but
+  mainly for looking inside game files, saved games and registration while debugging.
 - **Sharing:** export a game as a one-page web game, an installable web app, or a folder
-  that runs in DOSBox. Everything is saved in your browser and works offline.
+  that runs in DOSBox, or download any game, your own too, as a Mac app, a Windows program
+  or a Linux folder that plays offline in its own window (built in the browser; see the
+  [Mac](mac/README.md), [Windows](win/README.md) and [Linux](linux/README.md) notes).
+  Everything is saved in your browser and works offline.
 
 ## Run it yourself
 
@@ -41,22 +56,35 @@ You need [Node.js](https://nodejs.org/) 22 or later.
 ```sh
 cd web
 npm install
-npm run dev      # http://localhost:5173
-npm test         # the test suite
-npm run build    # the static site, in web/dist
+npm run dev        # http://localhost:5173
+npm test           # the test suite (vitest)
+npm run typecheck  # tsc --noEmit
+npm run build      # typecheck, then the static site in web/dist
+```
+
+The new games are rebuilt from their code, also from `web/`:
+
+```sh
+npx vite-node ../games/teddy/build.ts             # rebuild games/teddy/disk
+npx vite-node ../games/teddy/tools/check.ts       # play-test it headlessly
+npx vite-node scripts/macDmg.ts teddy             # a Mac .dmg of it, in ../dist/mac
+npx vite-node scripts/winExe.ts teddy             # a Windows .exe, in ../dist/win
+npx vite-node scripts/linuxTar.ts teddy           # a Linux .tar.gz, in ../dist/linux
 ```
 
 Pushes to `master` are published to GitHub Pages by
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml).
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml). The `mac-dmg`, `win-exe` and
+`linux-tar` workflows build every game for each system and attach them to a GitHub release.
 
 ## Where things are
 
 | Folder | What it holds |
 | --- | --- |
-| [`web/`](web) | The browser app. [web/src/README.md](web/src/README.md) maps the source. |
-| [`games/`](games) | The Sandbox Software games, built in code, and the shared kit that builds and play-tests them. See [games/README.md](games/README.md). |
+| [`web/`](web) | The browser app. [web/README.md](web/README.md) explains it; [web/src/README.md](web/src/README.md) maps the source. |
+| [`games/`](games) | The Sandbox Software and Bard of Bizarre games, built in code, and the shared kit that builds and play-tests them. See [games/README.md](games/README.md) and [games/kit/README.md](games/kit/README.md). |
+| [`mac/`](mac), [`win/`](win), [`linux/`](linux) | The small native players that a downloaded game runs in, and how they are built. See [mac/README.md](mac/README.md), [win/README.md](win/README.md) and [linux/README.md](linux/README.md). |
 | `cd/` | The original Game-Maker CD image, with its sample and shareware games. |
-| `code/` | The original DOS C/C++ source. |
+| [`code/`](code) | The original DOS C/C++ source. See [code/README.md](code/README.md). |
 | `runtime/` | A DOS `C:` drive with Game-Maker installed, for DOSBox. |
 
 ## The original DOS version
@@ -97,8 +125,9 @@ creatall         (or "create palchos", "create blocedit"… for one program)
 
 RSD Game-Maker was created by G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan
 Stone. This fork is by Lewis Moten; the web port was written with Claude Opus 5.5, with AI
-assistance doing most of the porting and code generation. The CD's games belong to their
-authors. See [NOTICE.md](NOTICE.md) for full credits, the story behind this fork and
+assistance doing most of the porting and code generation. The Bard of Bizarre songs'
+lyrics were shaped with ChatGPT from Lewis's prompts and their music made with Riffusion
+(now Google Flow Music). The CD's games belong to their authors. See [NOTICE.md](NOTICE.md) for full credits, the story behind this fork and
 third-party trademarks.
 
 Released under the [MIT License](LICENSE).
