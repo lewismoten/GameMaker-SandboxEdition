@@ -105,8 +105,8 @@ game folder opens in the browser unchanged.
   The Sofa's GIF area): the photos are Lewis's own (Teddy, Gwinn, the gazebo, the hobo clown
   and Doc Leo, colonial dress, the Dog House library and THE CHEZ), except **CHEZTED.GIF** and
   **THECHEZ2.GIF**, one shot of Lewis holding Teddy in front of THE CHEZ, which was taken by
-  **Nicky Foster** at the Front Royal-Warren County Chamber of Commerce, at the Revitalize or
-  Die Civic Pride Workshop that Lewis sponsored. The Bard logo (BARDLOGO.GIF) was made with
+  **Nicky Foster** of the Front Royal-Warren County Chamber of Commerce as a promotional photo
+  of Lewis as one of the sponsors of its upcoming Revitalize or Die Civic Pride Workshop. The Bard logo (BARDLOGO.GIF) was made with
   DeepAI.
 - **The desk's posters** (`web/public/desk`): the "Moten Snow-to-Software Operations" poster
   (`moten-snow-to-software.*`) was made with **DeepAI**, on Lewis's paid commercial plan. The

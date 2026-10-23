@@ -42,7 +42,7 @@ export function bbsPicturesSection(): HTMLElement {
     h(
       'p',
       null,
-      'The photos are Lewis’s own, except CHEZTED.GIF and THECHEZ2.GIF, one shot of Lewis holding Teddy in front of THE CHEZ, which Nicky Foster took at the Front Royal-Warren County Chamber of Commerce, at the Revitalize or Die Civic Pride Workshop that Lewis sponsored. The Bard of Bizarre’s logo was made with DeepAI. Interlaced GIFs arrive in coarse bands that fill in pass by pass; a progressive JPEG sharpens scan by scan; the others draw top to bottom.',
+      'The photos are Lewis’s own, except CHEZTED.GIF and THECHEZ2.GIF, one shot of Lewis holding Teddy in front of THE CHEZ, which Nicky Foster of the Front Royal-Warren County Chamber of Commerce took as a promotional photo of Lewis as a sponsor of its upcoming Revitalize or Die Civic Pride Workshop. The Bard of Bizarre’s logo was made with DeepAI. Interlaced GIFs arrive in coarse bands that fill in pass by pass; a progressive JPEG sharpens scan by scan; the others draw top to bottom.',
     ),
     ...board('credits-bbs-sandbox', 'The Sandbox BBS: GIF Gallery', 'The SysOp’s snapshots, sized for a 320x200 VGA screen.', GALLERY),
     ...board('credits-bbs-sofa', 'The Sofa: GIF Pictures', 'Doc Leo’s 640x480 interlaced GIFs.', SOFA_GIFS),

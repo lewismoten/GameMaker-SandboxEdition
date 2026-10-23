@@ -3,7 +3,8 @@
 // The photos are Lewis's own, except one shot taken by Nicky Foster (NOTICE.md).
 
 /** Nicky Foster's shot of Lewis holding Teddy in front of THE CHEZ, in two sizes. */
-const NICKY = 'Photo: Nicky Foster, at the Front Royal-Warren County Chamber of Commerce’s Revitalize or Die Civic Pride Workshop, which Lewis sponsored';
+const NICKY =
+  'Photo: Nicky Foster, Front Royal-Warren County Chamber of Commerce: a promotional photo of Lewis as a sponsor of its upcoming Revitalize or Die Civic Pride Workshop';
 const LEWIS = 'Photo: Lewis Moten';
 
 export interface PictureCredit {
