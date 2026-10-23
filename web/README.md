@@ -133,6 +133,10 @@ npm install
 npm run dev        # http://localhost:5173
 npm test           # every *.test.ts in test/ and src/ (vitest), about 25 s
 npm run typecheck  # tsc --noEmit (strict)
+npm run format     # Prettier on web/'s code, games/*.ts and code/README.md (config at the repo root)
+npm run format:check  # the same, only checking (CI runs it)
+npm run lint       # ESLint 9 with typescript-eslint's type-aware rules (web/eslint.config.js)
+npm run lint:fix   # lint, fixing what it can
 npm run build      # typecheck, then the static site in web/dist
 npm run preview    # serve the build (the service worker and the web app download need it)
 npx vitest run test/formats.test.ts   # one test file

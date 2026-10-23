@@ -28,6 +28,9 @@ The original DOS source is in `code/` and the CD in `cd/`. The rest is new.
 
 ```sh
 npm install
+npm run format                                     # Prettier: web/, games/*.ts, code/README.md
+npm run format:check                               # what CI runs
+npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes
 npx tsc --noEmit -p .                              # typecheck
 npx vitest run                                     # tests
 npx vite-node ../games/<id>/build.ts               # rebuild a game's disk/
@@ -50,7 +53,9 @@ preserve what was there.
 
 - Don't edit, move, rename, reformat or delete anything in them unless the maintainer
   directly asks you to.
-- Don't lint, format or "fix" them.
+- Don't lint, format or "fix" them. The one exception is `code/README.md`, a doc this fork
+  added, which Prettier formats. The root `.prettierignore` leaves everything else in these
+  folders out.
 - Read them freely.
 - A few files were removed on purpose: third-party libraries and binaries not covered by the
   MIT License. Each removal is documented in its commit and in NOTICE.md, so don't restore them.
@@ -65,8 +70,11 @@ preserve what was there.
   channel `chrome`) against it. For production checks, use a scratch build
   (`vite build --outDir <tmp>`) previewed on another port, and stop it afterwards. Edits to
   `web/index.html` and `web/vite.config.ts` should be rare and deliberate.
-- **Formatting:** don't run `prettier --write` on existing files. There's no config, and it
-  restyles whole files. Match the surrounding style instead.
+- **Formatting and lint:** run `npm run format` and `npm run lint` (from `web/`) before
+  committing. The configs are the style source of truth: `.prettierrc.json` and
+  `.prettierignore` at the root, and `web/eslint.config.js`. A few files that
+  `web/vite.config.ts` imports wait in a "Pending" block in both, because writing them
+  restarts the dev server; leave them until the maintainer has it stopped.
 - **Files:** keep them small, one purpose each, with a short header comment.
 - **DOS fidelity:**
   - The engine matches PLAYGAME, so check `code/GM` before changing engine behavior.
@@ -132,5 +140,5 @@ in your report what credits you added.
 
 ## Before you finish
 
-Run tsc and vitest. Run the game checks above for any game you touched. Then report what
+Run format, lint, tsc and vitest. Run the game checks above for any game you touched. Then report what
 changed, the commits, how you verified it, and anything left undone.
