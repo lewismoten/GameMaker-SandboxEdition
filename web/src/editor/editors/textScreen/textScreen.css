@@ -170,6 +170,8 @@
 }
 .ts-paper:focus-within {
   border-color: var(--focus);
+  /* the text box draws no ring of its own, so the paper wears a clear one */
+  box-shadow: 0 0 0 2px var(--focus);
 }
 
 .ts-status {

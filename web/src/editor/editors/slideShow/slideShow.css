@@ -458,10 +458,13 @@
   touch-action: none;
   user-select: none;
 }
-.sl-media:hover,
+.sl-media:hover {
+  border-color: var(--accent);
+}
 .sl-media:focus-visible {
   border-color: var(--accent);
-  outline: none;
+  outline: 2px solid var(--focus);
+  outline-offset: -2px; /* inside: the list clips what sticks out */
 }
 .sl-media img,
 .sl-media .sl-icon {
