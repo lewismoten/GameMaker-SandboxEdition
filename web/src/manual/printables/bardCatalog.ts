@@ -205,7 +205,7 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
       h('h2', null, '✂ Registration coupon'),
       h('p', null, 'This is shareware: copy it, give it to friends, upload it to your favorite BBS. If it made you smile, register:'),
       h('table', null, ...bard.map((g) => h('tr', null, h('td', null, '☐'), h('td', null, g.title), h('td', null, price(g))))),
-      h('p', null, 'Registered players get a tape of the song and a hand-drawn surprise. Send a check (US funds) to:'),
+      h('p', null, 'Registered players get a Bard of Bizarre sticker and a hand-drawn surprise. Send a check (US funds) to:'),
       h('div', { class: 'bard-mail' }, h('address', null, 'The Bard of Bizarre', h('br'), 'c/o The Sofa BBS', h('br'), 'Pittsburgh, PA'), stamp),
       h('p', { class: 'bard-story' }, '(In the story only: there is nothing to pay and nowhere to mail. The games are free.)'),
     ),
