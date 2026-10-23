@@ -132,8 +132,16 @@
 }
 .mt-grid {
   display: grid;
-  grid-template-columns: repeat(var(--cols, 3), 44px);
+  grid-template-columns: repeat(var(--cols, 3), var(--cell, 44px));
   gap: 4px;
+}
+.mt-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  font-size: 11px;
+  color: var(--muted);
 }
 .mt-slot {
   width: 44px;
@@ -172,4 +180,10 @@
   border-radius: 4px;
   background: #000;
   image-rendering: pixelated;
+}
+/* the 47-tile template fits a phone in six columns */
+@media (max-width: 480px) {
+  .mt-grid[style*='--cols:8'] {
+    grid-template-columns: repeat(6, 44px);
+  }
 }

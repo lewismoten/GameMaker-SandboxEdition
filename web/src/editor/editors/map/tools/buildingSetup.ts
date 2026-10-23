@@ -4,12 +4,12 @@ import { newId } from '../../../../project/storage';
 import { BUILDING_PARTS, assembleBuilding, newBuilding, type Building, type BuildingPart } from './building';
 import { drawPreview, slotButton, type SetupCtx } from './setupKit';
 
-// the parts laid out the way they sit on a house
-const LAYOUT: (BuildingPart | null)[][] = [
-  ['roofTopLeft', 'roofTop', 'roofTopRight'],
-  ['roofLeft', 'roof', 'roofRight'],
-  ['wallLeft', 'window', 'wallRight'],
-  [null, 'wall', 'door'],
+// the parts laid out the way they sit on a house, with a short caption each
+const LAYOUT: ([BuildingPart, string] | null)[][] = [
+  [['roofTopLeft', 'Corner'], ['roofTop', 'Roof top'], ['roofTopRight', 'Corner']],
+  [['roofLeft', 'Side'], ['roof', 'Roof'], ['roofRight', 'Side']],
+  [['wallLeft', 'Wall left'], ['window', 'Window'], ['wallRight', 'Wall right']],
+  [null, ['wall', 'Wall'], ['door', 'Door']],
 ];
 
 /** The setup dialog. Resolves with the building to keep, or undefined. */
@@ -31,8 +31,12 @@ export function editBuilding(ctx: SetupCtx, start: Building | undefined, ground:
     const label = (p: BuildingPart) => BUILDING_PARTS.find((x) => x.part === p)!.label;
     const grid = h(
       'div',
-      { class: 'mt-grid', style: '--cols:3' },
-      ...LAYOUT.flat().map((p) => (p ? slotButton(ctx, label(p), undefined, () => b.parts[p], (v) => ((b.parts[p] = v), refresh())) : h('span', { 'aria-hidden': 'true' }))),
+      { class: 'mt-grid', style: '--cols:3;--cell:64px' },
+      ...LAYOUT.flat().map((x) =>
+        x
+          ? h('div', { class: 'mt-part' }, slotButton(ctx, label(x[0]), undefined, () => b.parts[x[0]], (v) => ((b.parts[x[0]] = v), refresh())), h('small', { 'aria-hidden': 'true' }, x[1]))
+          : h('span', { 'aria-hidden': 'true' }),
+      ),
     );
     refresh();
     return h(
