@@ -64,6 +64,8 @@ export function buildHive(m: MapBuilder): void {
   m.set(40, 6, 'couchArm').row(6, 41, 42, 'couch').set(43, 6, 'couchArm');
   m.set(36, 6, 'coin@wall').set(41, 4, 'coin@wallHi').set(50, 6, 'mug@wall').set(52, 4, 'bill@wallHi').set(56, 6, 'coin@wall');
   m.mon(MON.goat, 47, 6);
+  // Teenage Lewie (Snowbound) in the audience
+  m.set(49, 6, 'lewie');
   m.mon(MON.carl, 34, 3);
 
   // ---------------- downstairs under the seating (rows 8..13)
@@ -98,5 +100,7 @@ export function buildHive(m: MapBuilder): void {
   m.mon(MON.gwinn, 74, 13);
   m.set(76, 13, 'table').set(65, 13, 'fern').set(69, 9, 'goatArt').set(75, 9, 'playbill');
   m.col(79, 9, 12, 'books').set(79, 13, 'books2');
+  // the tin heart, on the bookcase's bottom shelf in the corner
+  m.set(79, 13, 'tinHeart');
   m.set(69, 11, 'coin@wallHi').set(70, 11, 'coin@wallHi').set(78, 13, 'mug@wall').set(73, 10, 'bill@wallHi').set(66, 13, 'coin@wall');
 }

@@ -25,6 +25,7 @@ import { MON, POWER } from '../../ids';
 import type { Monologue } from '../types';
 import { houseMonsters, wallpaper } from './house';
 import { PIZZA_MON } from './ids';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../../kit/easterEgg';
 
 /** The ploys: the slow reach, the sneeze, the cheesecake, the cactus, the spatula. */
 export const PLOYS = 5;
@@ -35,6 +36,24 @@ function drawSlice(p: Pixels, pal: Pal, x: number, y: number): void {
   for (let k = 0; k < 12; k++) p.rect(x, y + k, Math.max(1, 14 - Math.floor(k * 1.15)), 1, c('yellow', k % 3 ? 2 : 1));
   p.rect(x, y, 14, 2, c('crust', 2)).rect(x, y + 2, 14, 1, c('crust', 0));
   for (const [dx, dy] of [[3, 4], [8, 4], [5, 7], [2, 9]]) p.disc(x + dx, y + dy, 1.3, c('red', 1)).set(x + dx - 1, y + dy - 1, c('red', 2));
+}
+
+/**
+ * A painted Easter egg rolled under the dinner table (added after every other HOME.BBL block, so
+ * they keep their numbers). Decoration only: no points, so no sound (the score sound here is a
+ * monologue's opening line).
+ */
+export function pizzaEggBlocks(book: BlockBook, pal: Pal): void {
+  const c = pal.c;
+  // two frames of its shine (the plain egg and one glint): HOME.BBL has room for just two
+  const frames = Math.min(2, EGG_SHINE_FRAMES);
+  for (let k = 0; k < frames; k++)
+    book.add(`egg${k || ''}`, drawEasterEgg(book.pics.get('underTable')!.crop(0, 0, 20, 20), { ink: c('ink', 0), shell: [c('teal', 0), c('teal', 1), c('teal', 2)], paint: [c('yellow', 1), c('yellow', 2)], accent: c('pink', 2), white: c('white', 2) }, 'zigzag', k), {
+      ...AIR,
+      touch: 'underTable',
+      next: `egg${(k + 1) % frames || ''}`,
+      ntime: k ? 3 : 60,
+    });
 }
 
 export function pizzaBlocks(book: BlockBook, pal: Pal): void {
@@ -278,6 +297,7 @@ export const pizza: Monologue = {
     B: 'bill@wall',
     m: 'mug@wallB',
     '!': 'spot@wallB',
+    E: 'egg',
   },
   build: (m: MapBuilder) => {
     // the walk-off: OFF blocks more of the living room past the gate, so its punch line plays out before
@@ -304,6 +324,8 @@ export const pizza: Monologue = {
     m.set(23, 6, 'ploy2').set(26, 6, 'B');
     m.mon(PIZZA_MON.fork, 21, 6);
     m.mon(PIZZA_MON.cat, 31, 6);
+    // under the table: a painted egg
+    m.set(30, 9, 'E');
     m.set(33, 6, 'ploy3');
     // the shelf over the end of the table: the pet cactus
     m.row(4, 35, 37, 'h').set(36, 3, 'ploy4').set(37, 3, '&');

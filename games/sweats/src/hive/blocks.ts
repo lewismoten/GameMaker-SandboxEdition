@@ -15,6 +15,8 @@ import { addPicture } from '../common/picture';
 import { chezSide } from '../../../kit/chez';
 import { COFFEE, COFFEE_PRICE, MONEY } from '../ids';
 import { HIVE_MON } from './ids';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { lewieCameo } from '../../../kit/cameos';
 
 export const HIVE_RAMPS: Ramp[] = [
   ['stone', 5, [60, 58, 64], [196, 190, 180], [124, 120, 120]],
@@ -442,4 +444,21 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   // ---------- the tips about the place ----------
   for (const bg of ['night', 'wall', 'wallHi', 'dark', 'drape', 'brickWall']) loot(book, pal, bg);
   book.add('bill@stoneBack2', drawBill(book.pics.get('stoneBack2')!.crop(0, 0, 20, 20), pal), { ...AIR, effect: MONEY, eamt: 5, score: 50, touch: 'stoneBack2' });
+
+  // ---------- friends from the other games (added last, so every other block keeps its number) ----------
+  // the tin heart, tucked on the bottom shelf of the bookcase in the front room (points: the
+  // crowd's cheer, never a line of a monologue)
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(book.pics.get('books2')!.crop(0, 0, 20, 20), { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 2)], white: c('white', 2), dark: c('grey', 0) }, k), {
+      ...AIR,
+      score: 100,
+      touch: 'books2',
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+    });
+  // Teenage Lewie from Snowbound in the audience upstairs, red knit hat and all (scenery)
+  const lewie = book.pics.get('wallHi')!.crop(0, 0, 20, 20);
+  const kid = lewieCameo(pal.pal, 'down0');
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (kid.get(x, y) !== 255) lewie.set(x, y, kid.get(x, y));
+  book.add('lewie', lewie, AIR);
 }
