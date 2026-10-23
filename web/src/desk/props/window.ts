@@ -23,8 +23,8 @@ const timed = (ms: number, f: (ctx: CanvasRenderingContext2D, p: number) => void
 
 const shootingStar = timed(900, (ctx, p) => {
   // across the right of the view, where the monitor doesn't hide it
-  const x = 120 + p * 180;
-  const y = 30 + p * 70;
+  const x = 110 + p * 170;
+  const y = 85 + p * 60;
   const g = ctx.createLinearGradient(x - 60, y - 25, x, y);
   g.addColorStop(0, "rgba(255,255,255,0)");
   g.addColorStop(1, "rgba(255,255,255,0.95)");

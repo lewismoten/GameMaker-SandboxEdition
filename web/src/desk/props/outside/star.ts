@@ -11,8 +11,8 @@ export const star: OutsideEvent = {
   ms: 2_400,
   start: () => roomSound.twinkle(),
   draw(c, p) {
-    const x = 110 + p * 190;
-    const y = 30 + p * 80;
+    const x = 100 + p * 170;
+    const y = 90 + p * 70; // (the view's top is cut off by the wall)
     const g = c.createLinearGradient(x - 60, y - 25, x, y);
     g.addColorStop(0, "rgba(255,255,255,0)");
     g.addColorStop(1, "rgba(255,255,255,0.95)");

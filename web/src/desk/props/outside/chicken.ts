@@ -13,7 +13,7 @@ export const chicken: OutsideEvent = {
   start: () => roomSound.squawk(1),
   draw(c, p) {
     const x = 70 + p * (VIEW.w - 20);
-    const y = 230 - Math.sin(p * Math.PI) * 170;
+    const y = 280 - Math.sin(p * Math.PI) * 150; // (the view's top is cut off by the wall)
     c.save();
     c.translate(x, y);
     c.rotate(p * Math.PI * 5);

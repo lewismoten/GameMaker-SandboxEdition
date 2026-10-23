@@ -15,9 +15,9 @@ export const aurora: OutsideEvent = {
     c.save();
     c.globalCompositeOperation = "lighter";
     for (const [color, base, amp, phase] of [
-      ["60,255,140", 120, 26, 0],
-      ["150,90,255", 96, 20, 2],
-      ["80,220,200", 140, 18, 4],
+      ["60,255,140", 160, 26, 0],
+      ["150,90,255", 136, 20, 2],
+      ["80,220,200", 180, 18, 4],
     ] as const) {
       for (let x = 80; x < 320; x += 3) {
         const top = base - 60 + Math.sin(x / 34 + t / 1800 + phase) * amp;
@@ -32,7 +32,7 @@ export const aurora: OutsideEvent = {
       }
     }
     c.restore();
-    return fade > 0.2 ? [90, 40, 220, 120] : undefined;
+    return fade > 0.2 ? [90, 80, 220, 120] : undefined;
   },
   press() {
     roomSound.shimmer(2);
