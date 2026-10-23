@@ -588,6 +588,11 @@
     height: 100%;
   }
 
+  /* a game's poster up in its place: the tube only casts a dim violet light on it */
+  .desk.bl-uv .wall-poster img {
+    filter: brightness(0.92) saturate(0.95) drop-shadow(0 0 14px rgba(150, 80, 255, 0.35));
+  }
+
   /* the glowing print, there after dark (and while the tube flickers) */
   .bl-poster .bl-print.night {
     opacity: 0;
