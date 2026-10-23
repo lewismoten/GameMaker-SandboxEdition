@@ -111,6 +111,8 @@ export function backyard(): Level {
     .set(car + 1, 38, 'carRoofR')
     .set(car, 39, 'carDoor')
     .set(car + 1, 39, 'carBack');
+  // a tin heart up on the Klown Car's roof, for a dog who hops up instead of in (100 points)
+  m.set(car + 1, 37, addTinHeart(bs, m.get(car + 1, 37)));
   m.rect(car + 3, 30, 5, 10, 'hedgeWall');
   m.rect(car + 3, 29, 5, 1, () => pick('hedgeTopHi', 'hedgeTopHi2'));
 
@@ -156,8 +158,6 @@ export function backyard(): Level {
   m.mon(41, 39, 'gwinnBall');
   m.mon(fence - 2, GROUND, 'plug');
   m.mon(fence - 1, GROUND, 'plug');
-  // a tin heart in the grass by Doc Leo's back door, just behind where Teddy starts (100 points)
-  m.set(5, 39, addTinHeart(bs, m.get(5, 39)));
   m.mark('start', 6, 39);
   m.mark('exit', car, 39);
   void P;
