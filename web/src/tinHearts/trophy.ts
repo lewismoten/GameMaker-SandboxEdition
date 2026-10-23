@@ -165,7 +165,7 @@ export const joeNote = (n: number): string =>
   `${countWord(n)} tin hearts, counted twice on my tally counter, and every one of them ticking. The Tin Man walked all the way to Oz for a heart and found he had been kind the whole way there. You went looking in every corner of every game, which is much the same thing. Here is the one I borrowed. Keep it where it can catch the light.`;
 
 /** What the trophy view says happened, once the scene has played. */
-export const ALL_ALONG = 'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man.';
+export const ALL_ALONG = 'Then the little hatch on Joe’s tin chest, where his tally counter sits, creaked open. Behind it was a golden heart, glowing warm and ticking away. He had one all along, just like the Tin Man. The brass plate has a new line now: WHO HAD ONE ALL ALONG.';
 
 /**
  * A closer look: the diamond heart on its stand, Mystery Robot Joe beside it, and his note.
@@ -196,9 +196,10 @@ export async function openTrophy(n: number, scene = !seenReveal()): Promise<void
           ? 'Mystery Robot Joe, a tin box robot, stands beside a diamond heart on a riveted tin stand. The little hatch on his chest is open, and a golden heart glows inside it. The brass plate reads: Presented by Mystery Robot Joe, who had one all along.'
           : 'Mystery Robot Joe walks in carrying a diamond heart and sets it on a riveted tin stand.',
       );
-    const speak = (k: number) => {
+    /** Joe's words: the latest as the scene plays; `all` of them at once when it is skipped or still. */
+    const speak = (k: number, all = false) => {
       said = k;
-      say.textContent = LINES.slice(0, k).map((l) => `Joe: “${l.text}”`).join(' ');
+      say.textContent = (all ? LINES.slice(0, k) : LINES.slice(k - 1, k)).map((l) => `Joe: “${l.text}”`).join('\n');
       say.hidden = !k;
     };
 
@@ -230,7 +231,7 @@ export async function openTrophy(n: number, scene = !seenReveal()): Promise<void
       g.ellipse(sx, floor + 2, sw * 0.6, sw * 0.06, 0, 0, Math.PI * 2);
       g.fill();
       const { top } = drawStand(g, sx, floor, sw, pose.hatch >= 1 && at === undefined);
-      const px = Math.max(2, Math.floor(Math.min((hh * 0.5) / 20, (w * 0.32) / 20)));
+      const px = Math.max(2, Math.floor(Math.min((hh * 0.6) / 20, (w * 0.34) / 20)));
       const jx = w * 0.27 - 10 * px;
       const x = -20 * px + (jx + 20 * px) * pose.walk + pose.shake * px;
       const y = floor - 20 * px;
@@ -240,7 +241,7 @@ export async function openTrophy(n: number, scene = !seenReveal()): Promise<void
       g.fill();
       drawJoe(g, x, y, px, { frame: pose.frame, mirror: pose.mirror, hatch: pose.hatch, glow: pose.glow, time: clock });
       // the diamond heart: carried in front of him, then set in the cup
-      const size = Math.min(sw * 0.95, (top - hh * 0.04) * 1.05);
+      const size = Math.min(sw * 0.7, (top - hh * 0.12) * 0.9);
       const hand = { x: x + (pose.mirror ? 17 : 10) * px, y: y + 12 * px, s: 7 * px };
       const cup = { x: sx, y: top - size * 0.42, s: size };
       const f = pose.heart;
@@ -248,10 +249,11 @@ export async function openTrophy(n: number, scene = !seenReveal()): Promise<void
     };
 
     const finish = () => {
+      // played to the end, the last words are said already; skipped (or still), both are
+      if (said < LINES.length || at === undefined) speak(LINES.length, true);
       at = undefined;
       sounds?.stop();
       sounds = undefined;
-      speak(LINES.length);
       setSeenReveal(true);
       clear(controls, still ? null : again);
       clear(more, h('h3', null, 'And then'), h('p', null, ALL_ALONG));
