@@ -277,7 +277,7 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
       scaleBlit(p, N(`spongeA0${k % 4 < 2 ? 'a' : 'b'}`), 220, STRIP + 40, 2);
       scaleBlit(p, N(`spongeB0${k % 4 < 2 ? 'a' : 'b'}`), 220, STRIP + 80, 2);
       scaleBlit(p, M('hurt'), 60, STRIP + 80, 2);
-      if (k >= 18) words(p, 240, STRIP + 20, 'SCRUBBUS MAXIMUS!', 'demon');
+      if (k >= 18) words(p, 170, STRIP + 14, 'SCRUBBUS MAXIMUS!', 'demon');
     },
   ];
   const first = new Pixels(W, H);
