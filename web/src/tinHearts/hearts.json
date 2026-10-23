@@ -1,7 +1,7 @@
 {
   "hearts": {
     "blaster": { "map": "s2a.map", "at": [16, 70] },
-    "brief": { "map": "library.map", "at": [1, 4] },
+    "brief": { "map": "other.map", "at": [34, 22] },
     "carl": { "map": "bed.map", "at": [5, 12] },
     "depth": { "map": "l2near.map", "at": [59, 59] },
     "goat": { "map": "field.map", "at": [52, 20] },
