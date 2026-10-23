@@ -209,7 +209,8 @@ export const HOME_ROUTES: Record<string, Route> = {
       greeted(bot, MON.goat, 'the goat');
       if (plot(bot) < PLOYS) throw new Error(`only ${plot(bot)} ploys`);
       nothingLeft(bot, 60, 12);
-      await leave(bot, bot.walk(57.5, 'the box: make your move'), 'the box');
+      await must(bot, bot.walk(58, 'the box: make your move'), 'the box');
+      await leave(bot, bot.walk(63.5, 'the walk-off'), 'the walk-off');
     });
   },
   /** Janet, This Is Not About You: up on Janet's table past the itch and her TSKs for the napkin, out the door, over the toddler, the keys, the eyebrow hair, the glasses, the itch's ghosts, up the dumpster for the sanitizer, Carl, the HONKs, the car. */
