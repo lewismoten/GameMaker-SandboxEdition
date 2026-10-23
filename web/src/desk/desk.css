@@ -217,20 +217,7 @@
 
 /* the picture bulges with the glass (desk/pc/crtWarp.ts) */
 .crt .crt-picture {
-  position: absolute;
-  inset: 0;
   filter: url(#crt-warp);
-}
-
-.crt canvas.crt-text {
-  position: absolute;
-  /* overscan: real monitors showed a black border around the picture */
-  inset: 3.5% 4%;
-  width: 92%;
-  height: 93%;
-  image-rendering: pixelated;
-  outline: none;
-  filter: saturate(1.15) contrast(1.05);
 }
 
 /* On the desk the screen is smaller than the 640x400 picture: blend pixels rather than
@@ -245,12 +232,6 @@
 
 .desk[data-power='off'] .crt canvas.crt-text {
   opacity: 0;
-}
-
-.crt .crt-layer {
-  position: absolute;
-  inset: 0;
-  background: #000;
 }
 
 /* scanlines and glass glare */
@@ -288,15 +269,148 @@
   display: none;
 }
 
-.crt-game {
-  width: 100%;
-  height: 100%;
+.desk[data-zoom='false'] .crt .crt-vga {
+  inset: 6% 6.5%;
 }
 
-/* the designers' 320x200 VGA picture, filling the tube like the text does (vga/shared/vga.ts) */
-.crt .crt-vga {
+.monitor-stand {
+  order: 1;
+}
+
+.pc > .case {
+  order: 2;
+  z-index: 1; /* the modem on top of it stays in front of the monitor */
+}
+
+.pc > .kb-tray {
+  order: 3;
+}
+
+.monitor {
+  position: relative;
+  width: 92%;
+  padding: 5.5% 5.5% 9%;
+  border-radius: 22px 22px 16px 16px;
+  background: linear-gradient(160deg, var(--plastic-hi), var(--plastic) 40%, var(--plastic-lo));
+  box-shadow:
+    inset 0 2px 0 #fff8,
+    inset 0 -4px 0 var(--plastic-edge),
+    0 18px 30px rgba(0, 0, 0, 0.45);
+}
+
+.monitor .brand {
   position: absolute;
-  inset: 3.5% 4%;
+  left: 7%;
+  bottom: 3%;
+  font:
+    700 11px/1 ui-monospace,
+    monospace;
+  letter-spacing: 0.3em;
+  color: #6d6553;
+}
+
+.monitor .enlarge {
+  position: absolute;
+  right: 13%;
+  bottom: 1.6%;
+  padding: 1px 6px;
+  border: 1px solid var(--plastic-edge);
+  border-radius: 3px;
+  background: linear-gradient(#f1ecdc, #c9c0a5);
+  color: #3c372b;
+  font:
+    700 12px/1.2 system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.monitor .monitor-led {
+  position: absolute;
+  right: 8%;
+  bottom: 3.6%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #253;
+}
+
+.desk[data-power='on'] .monitor .monitor-led {
+  background: var(--led-green);
+  box-shadow: 0 0 8px var(--led-green);
+}
+
+.screen-bezel {
+  position: relative;
+  padding: 3.5%;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #4c473c, #2e2a22);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+
+.crt {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 18px / 22px;
+  background: var(--glass);
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px #000;
+  cursor: text;
+}
+
+/* the picture bulges with the glass (desk/pc/crtWarp.ts) */
+.crt .crt-picture {
+  filter: url(#crt-warp);
+}
+
+/* On the desk the screen is smaller than the 640x400 picture: blend pixels rather than
+   dropping rows of them, so text stays readable. A wider black border leaves room for
+   the bulge of the glass. */
+.desk[data-zoom='false'] .crt canvas.crt-text {
+  inset: 4% 4.5%;
+  width: 91%;
+  height: 92%;
+  image-rendering: auto;
+}
+
+.desk[data-power='off'] .crt canvas.crt-text {
+  opacity: 0;
+}
+
+/* scanlines and glass glare */
+.crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 4px),
+    radial-gradient(120% 90% at 30% 15%, rgba(255, 255, 255, 0.09), transparent 45%),
+    /* the tube curves away from you: darker toward the corners */
+    radial-gradient(farthest-corner at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.18) 85%, rgba(0, 0, 0, 0.45) 100%);
+  box-shadow:
+    inset 0 0 30px 6px rgba(0, 0, 0, 0.55),
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.08);
+  z-index: 3;
+}
+
+.crt .power-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c7d70;
+  font:
+    15px ui-monospace,
+    monospace;
+  z-index: 2;
+}
+
+.desk[data-power='on'] .crt .power-hint {
+  display: none;
 }
 
 .desk[data-zoom='false'] .crt .crt-vga {
@@ -1260,101 +1374,6 @@
   bottom: 12px;
   z-index: 61;
   display: block;
-}
-
-/* graphic designers shown "in VGA" on the PC */
-.vga-editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: #000;
-  color: #c8c8c8;
-}
-
-.vga-titlebar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  background: #840000;
-  color: #fff;
-  font:
-    700 13px/1.4 ui-monospace,
-    'Courier New',
-    monospace;
-  letter-spacing: 0.06em;
-}
-
-.vga-titlebar .spacer {
-  flex: 1;
-}
-
-.vga-titlebar button {
-  padding: 2px 8px;
-  border: 2px outset #d0d0d0;
-  border-radius: 0;
-  background: #b8b8b8;
-  color: #000;
-  font:
-    700 12px ui-monospace,
-    monospace;
-  cursor: pointer;
-}
-
-.vga-body {
-  flex: 1;
-  overflow: auto;
-  padding: 12px;
-  /* Game-Maker's FACELIFT greys for the designers' surfaces */
-  --bg: #000;
-  --panel: #858585;
-  --panel-2: #707070;
-  --text: #000;
-  --muted: #1d1d1d;
-  --border: #4a4a4a;
-  --accent: #ae0000;
-  --accent-text: #fff;
-  --accent-soft: #b9b9b9;
-  --focus: #ffd400;
-  background: #000;
-  color: #000;
-  font:
-    13px/1.35 ui-monospace,
-    'Courier New',
-    monospace;
-}
-
-.vga-body .hint {
-  color: #c8c8c8;
-}
-
-.vga-body .panel,
-.vga-body .block-picker,
-.vga-body .swatches {
-  border: 3px outset #b0b0b0;
-  border-radius: 0;
-  background: var(--panel);
-}
-
-.vga-body button {
-  border: 2px outset #d0d0d0;
-  border-radius: 0;
-  background: #b4b4b4;
-  color: #000;
-}
-
-.vga-body button.primary {
-  background: #ae0000;
-  color: #fff;
-}
-
-.vga-body input,
-.vga-body select,
-.vga-body textarea {
-  border: 2px inset #9a9a9a;
-  border-radius: 0;
-  background: #d8d8d8;
-  color: #000;
 }
 
 /* ---- overlays (disk box, catalog) --------------------------------------------------- */

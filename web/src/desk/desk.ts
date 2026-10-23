@@ -1,5 +1,7 @@
 // The mid-90s desk: a PC running a DOS look-alike, a box of floppy disks, the
 // Game-Maker CD and a paper shareware catalog.
+// the PC's picture first (retro/computer/monitor.css), then the desk's tube and room around it
+import '../retro/computer/monitor.css';
 import './desk.css';
 import './deskStage.css';
 import './pc/crtOff.css';

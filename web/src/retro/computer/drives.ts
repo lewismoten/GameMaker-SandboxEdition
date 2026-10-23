@@ -3,6 +3,7 @@
 // and your games) and D: (the Game-Maker CD), filled lazily from the game files.
 // The PC is one class in layers, each extending the one before: drives -> folders (game
 // folders on the disks) -> Computer (power, running programs, in computer.ts).
+import './monitor.css';
 import { TextScreen } from '../text/textScreen';
 import { TextKeys } from '../text/textInput';
 import { Shell } from '../dos/shell';
