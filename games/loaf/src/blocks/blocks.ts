@@ -13,7 +13,10 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
+import { lewieCameo } from '../../../kit/cameos';
 import { BASKETS, BASKETS_NEEDED, CRUMBS, CRUMBS_NEEDED, MON } from '../ids';
 
 export { BlockBook, SOLID };
@@ -440,5 +443,29 @@ export function buildBlocks(pal: Pal): BlockBook {
   const mamaLow = room(104, true);
   mamaLow.rect(5, 0, 10, 17, c('red', 2)).rect(5, 0, 2, 17, c('red', 1)).rect(8, 4, 1, 12, c('red', 1)).rect(6, 17, 3, 2, c('wood', 0)).rect(11, 17, 3, 2, c('wood', 0));
   book.add('mamaLow', mamaLow, air);
+  // (after these, too) friends from the other games: the tin heart at the foot of the second fig
+  // tree, a painted Easter egg in the far crowd at dusk (points only, no sounds of their own), and Teenage Lewie from
+  // Snowbound, shovel and all, out in the village at night
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(sky(1), { ink: c('ink', 0), tin: [c('grey', 1), c('grey', 2), c('grey', 3)], white: c('white', 2), dark: c('grey', 0) }, k), {
+      score: 100,
+      touch: 'sky',
+      grav: GRAV.down,
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+    });
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`egg${k || ''}`, drawEasterEgg(book.pics.get('crowd1')!.crop(0, 0, 20, 20), { ink: c('ink', 0), shell: [c('red', 1), c('red', 2), c('red', 3)], paint: [c('gold', 1), c('gold', 2)], accent: c('white', 2), white: c('white', 2) }, 'bands', k), {
+      score: 50,
+      touch: 'crowd1',
+      grav: GRAV.down,
+      next: `egg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 3 : 60,
+    });
+  // Lewie, recolored from the unlit palette so the block is the same in every light
+  const lewie = sky(1);
+  const kid = lewieCameo(buildPalette('plain').pal, 'down0');
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (kid.get(x, y) !== 255) lewie.set(x, y, kid.get(x, y));
+  book.add('lewie', lewie, air);
   return book;
 }

@@ -73,6 +73,9 @@ const LEGEND: Record<string, string> = {
   S: 'step',
   '@': 'holyN0',
   '!': 'door',
+  '1': 'tinHeart',
+  E: 'egg',
+  Z: 'lewie',
 };
 
 export interface LinkSpec {
@@ -195,6 +198,8 @@ export function hillside(book: BlockBook): Level {
   // the third goat from the left, grazing; a jar of water
   m.text(45, 9, 'l.,.L').set(52, 9, 'j');
   m.mon(MON.goat, 47, 9);
+  // a tin heart at the foot of the second fig tree
+  m.set(41, 9, '1');
   // another hungry man, and a fish basket throwing to the left
   m.text(54, 6, '*.*.*');
   m.mon(MON.man, 54, 9);
@@ -258,6 +263,8 @@ export function baskets(book: BlockBook): Level {
   m.set(37, 8, 'R').set(37, 9, 'R').set(38, 9, 'x').col(38, 2, 8, 'u');
   m.col(43, 3, 9, 'T').fill(39, 0, 8, 2, 'v').row(2, 39, 44, 'F').set(45, 2, 'e').set(42, 1, '$');
   m.set(48, 9, 'e').set(51, 9, 'l').set(52, 9, 'j').set(54, 9, 'e');
+  // a painted egg at the foot of the fig tree
+  m.set(41, 9, 'E');
   m.mon(MON.gull, 48, 3).mon(MON.man, 61, 9);
   m.set(58, 7, '_').set(59, 7, '_').set(59, 6, 'e');
   m.mon(MON.owl, 60, 2);
@@ -278,6 +285,8 @@ export function home(book: BlockBook): Level {
   // the first houses: their roofs to stand on, lamplight in the windows
   m.fill(4, 7, 8, 3, 'A').row(6, 3, 12, 'p').set(6, 8, 'q').set(9, 8, 'd').set(7, 5, '@').set(10, 5, '*');
   m.set(14, 9, 'k').set(16, 9, 'P').set(16, 8, 'Q');
+  // Teenage Lewie (Snowbound), out late with his shovel, helping out
+  m.set(13, 9, 'Z');
   m.mon(MON.dog, 15, 9);
   // the brook and its stepping stones
   m.fill(23, 10, 7, 2, '-').set(24, 10, 'S').set(26, 10, 'S').set(28, 10, 'S');
