@@ -18,6 +18,7 @@ const LEGEND: Record<string, string> = {
   '=': 'grassTop',
   ':': 'dust',
   ';': 'dustTop',
+  '~': 'gustCalm',
   r: 'root',
   R: 'rock',
   K: 'rockDust',
@@ -313,7 +314,7 @@ export function sky(book: BlockBook): Level {
     .col(W - 1, 0, 45, '#')
     .row(44, 1, W - 2, '=')
     .row(45, 0, W - 1, '#');
-  m.set(5, 31, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
+  m.set(2, 33, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
   // the great plant's stalk, up the middle
   m.col(12, 18, 43, '[').col(13, 18, 43, ']');
   // its branches, every three rows (hop up through them)
@@ -323,6 +324,11 @@ export function sky(book: BlockBook): Level {
   // the evening breeze lifts on the right, to the nest branch
   m.col(22, 20, 33, 'z').row(20, 14, 20, '-').set(16, 20, 'n').set(20, 23, '*');
   m.row(17, 9, 15, '-').row(14, 4, 15, '-').set(15, 13, '1').set(9, 16, '*');
+  // the top branch, where the breeze gusts on a rhythm and blows a plant off its right end:
+  // hop up and cross while it's calm
+  m.fill(6, 12, 9, 2, '~');
+  // side branches off the long one, up to the left, with two sunbeams
+  m.row(31, 5, 10, '-').row(28, 2, 7, '-').set(3, 27, '*').set(6, 26, '*');
   // and on the left, up past the rain cloud to the clouds
   m.col(5, 5, 13, 'z').text(16, 9, '{}').text(8, 6, '()()').set(9, 5, 'Q');
   // the palm of God's hand: light that lifts into it

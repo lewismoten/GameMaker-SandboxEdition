@@ -336,6 +336,28 @@ export async function theSky(bot: Bot): Promise<void> {
         await must(bot, bot.walk(back, 'back by the stalk'), 'back');
       });
     }
+    // the side branches up to the left: two sunbeams, and down again
+    await grab(
+      bot,
+      'the side branches',
+      [
+        [6, 26],
+        [3, 27],
+      ],
+      async () => {
+        await must(bot, bot.walk(10, 'under the side branch'), 'side branch');
+        await must(bot, bot.hop('up', 14), 'up to the side branch');
+        if (bot.at.y !== 30) throw new Error(`not on the side branch (${bot.at.y})`);
+        await must(bot, bot.walk(6, 'under the high side branch'), 'high side branch');
+        await must(bot, bot.hop('up', 14), 'up to the high side branch and its sunbeam');
+        if (bot.at.y !== 27) throw new Error(`not on the high side branch (${bot.at.y})`);
+        await must(bot, bot.walk(3, 'the sunbeam'), 'the sunbeam');
+        await must(bot, bot.walk(9, 'off the high side branch'), 'off');
+        await must(bot, bot.walk(14, 'back by the stalk'), 'back');
+        if (bot.at.y !== 33) throw new Error(`not back on the long branch (${bot.at.y})`);
+      },
+      { ticks: 300, loss: 10 },
+    );
   });
   await carefully(bot, 'the evening breeze', 10, async () => {
     await must(
@@ -362,15 +384,20 @@ export async function theSky(bot: Bot): Promise<void> {
     await must(bot, bot.hop('left', 4, 'left', 18.5), 'onto the nest branch');
     if (bot.at.y !== 19) throw new Error(`not on the nest branch (${bot.at.y})`);
   });
-  await carefully(bot, 'the upper branches', 10, async () => {
-    await must(bot, bot.walk(14.5, 'under the next branch'), 'branch');
+  await must(bot, bot.walk(14.5, 'under the next branch'), 'branch');
+  // the top branch, where the breeze gusts on a rhythm and blows the plant off its right end:
+  // watch it from the branch below, hop up as a gust dies down and cross while it's calm
+  await carefully(bot, 'the gusts on the top branch', 10, async () => {
     for (const row of [16, 13]) {
       await must(bot, bot.hop('up', 14), `up to ${row}`);
       if (bot.at.y !== row) throw new Error(`not on the branch at ${row} (${bot.at.y})`);
     }
+    const t0 = bot.sim.ticks;
+    await must(bot, bot.walk(6, 'the left breeze'), 'breeze');
+    if (bot.at.y !== 13) throw new Error(`blown off the top branch (${bot.at.y})`);
+    if (bot.sim.ticks - t0 > 70) throw new Error(`blown back along the top branch (${bot.sim.ticks - t0} ticks)`);
   });
   await carefully(bot, 'the breeze to the clouds', 10, async () => {
-    await must(bot, bot.walk(6, 'the left breeze'), 'breeze');
     await must(
       bot,
       bot.until('left', () => bot.px.x <= 5 * 20, 'into the breeze', 60),

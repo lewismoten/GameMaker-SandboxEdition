@@ -46,7 +46,9 @@ export const SKY_BLENDS: [number, number, string[]][] = [
 ];
 /** Solid on top only: stand on it, hop up through it. */
 export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+export const GRAV = { none: 0, up: 1, right: 2, down: 4 } as const;
+/** Ticks the gust over the top branch stays calm, gathers (the warning) and blows. */
+export const GUST = { calm: 80, warn: 24, gust: 28 } as const;
 const LIFE = 1;
 /** Ticks between raindrops from a rain cloud, and between pebbles from the scree. */
 export const RAIN_EVERY = 120;
@@ -569,5 +571,32 @@ export function buildBlocks(pal: Pal): BlockBook {
   for (const [shift, names] of Object.entries(DUSK_TONED)) copy(names, `~${shift}`, () => Number(shift));
   for (const [from, to, names] of SKY_BLENDS)
     copy(names, `~${from}to${to}`, (x, y) => ((y + 0.5) / 20 > (BAYER[(y % 4) * 4 + (x % 4)] + 0.5) / 16 ? to : from));
+
+  // The evening breeze over the top branch, on a rhythm: calm (a few faint strokes), then the
+  // leaves shiver as it gathers (the warning), then a gust that blows a plant off the branch to
+  // the right. It is drawn on the deepest band of the sky (DUSK_TONED shift 2).
+  const gust = (stage: 'calm' | 'warn' | 'gust') => {
+    const p = sky(131, 1);
+    const r = rng(131);
+    const strokes = stage === 'calm' ? 1 : stage === 'warn' ? 4 : 7;
+    for (let k = 0; k < strokes; k++) {
+      const y = 2 + Math.floor(r() * 16);
+      const x = Math.floor(r() * 8);
+      const len = stage === 'gust' ? 10 + Math.floor(r() * 8) : 4 + Math.floor(r() * 4);
+      const ink = stage === 'calm' ? c('sky', 3) : stage === 'warn' ? c('white', 0) : c('white', 2);
+      p.line(x, y, Math.min(19, x + len), y + (stage === 'gust' ? 0 : 1), ink);
+      if (stage === 'gust') p.line(x + 2, y + 1, Math.min(19, x + len - 3), y + 1, c('white', 0));
+    }
+    // a leaf shivering as the gust gathers, then blown along
+    if (stage !== 'calm') {
+      const [lx, ly] = stage === 'gust' ? [14, 8] : [6, 12];
+      blob(p, lx, ly, stage === 'gust' ? 2.4 : 2, stage === 'gust' ? 1.2 : 1.6, R('leaf'), 1, 3);
+      if (stage === 'warn') p.set(lx - 3, ly - 2, c('white', 1)).set(lx + 3, ly - 2, c('white', 1));
+    }
+    return p;
+  };
+  book.add('gustCalm', gust('calm'), { grav: GRAV.down, next: 'gustWarn', ntime: GUST.calm });
+  book.add('gustWarn', gust('warn'), { grav: GRAV.down, next: 'gust', ntime: GUST.warn });
+  book.add('gust', gust('gust'), { grav: GRAV.down | GRAV.right, next: 'gustCalm', ntime: GUST.gust });
   return book;
 }
