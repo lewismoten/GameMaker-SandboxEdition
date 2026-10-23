@@ -6,6 +6,7 @@
 import { h } from "../../editor/core/ui";
 import { flash, pressable, say } from "./propKit";
 import { roomSound } from "./propSound";
+import { deskNow } from "../../retro/dos/deskClock";
 
 const time = (d: Date) =>
   d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
@@ -42,7 +43,7 @@ export function clockProp(clock: HTMLElement): () => void {
   clock.append(bird);
   const use = () => {
     presses++;
-    const now = new Date();
+    const now = deskNow();
     const t = time(now);
     const hr = now.getHours();
     const min = now.getMinutes();

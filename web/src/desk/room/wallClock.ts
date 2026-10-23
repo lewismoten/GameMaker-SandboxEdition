@@ -1,10 +1,12 @@
 // A giant wristwatch hung on the wall as a clock, as everybody's big sister had in the 90s:
 // a black sport strap hanging from a nail, a chrome case and a white face, keeping the
-// visitor's own time (ticking each second, the date in its window). It hangs on the wall
-// left of the desk, so it only shows when the window is wide enough to have wall there
-// (stage.ts sets .wide-wall).
+// room's time (ticking each second, the date in its window): the visitor's own, unless DOS's
+// TIME or DATE set it (retro/dos/deskClock.ts), and then a little red SET shows on the face.
+// It hangs on the wall left of the desk, so it only shows when the window is wide enough to
+// have wall there (stage.ts sets .wide-wall).
 import "./wallClock.css";
 import { h } from "../../editor/core/ui";
+import { deskClockSet, deskNow } from "../../retro/dos/deskClock";
 
 const CX = 90;
 const CY = 262;
@@ -70,6 +72,8 @@ export function wallClock(): HTMLElement {
     ${numbers}
     <text x="${CX}" y="${CY - 20}" text-anchor="middle" font-size="7" font-weight="700" letter-spacing="2" font-family="Arial, sans-serif" fill="#139c93">QUARTZ</text>
     <text x="${CX}" y="${CY + 30}" text-anchor="middle" font-size="5.5" letter-spacing="1" font-family="Arial, sans-serif" fill="#777">WATER RESISTANT</text>
+    <!-- lit while DOS's TIME or DATE has set the room's clock away from the real time -->
+    <text class="wc-set" x="${CX}" y="${CY + 44}" text-anchor="middle" font-size="9" font-weight="800" letter-spacing="1.5" font-family="Arial, sans-serif" fill="#d3141c" visibility="hidden">SET</text>
     <rect x="${CX + 22}" y="${CY - 7}" width="18" height="14" fill="#fff" stroke="#888" stroke-width="1"/>
     <text class="wc-date" x="${CX + 31}" y="${CY + 4}" text-anchor="middle" font-size="10" font-weight="700" font-family="Arial, sans-serif" fill="#222"></text>
     ${hand("wc-hour", 36, 8, 7, "#222")}
@@ -85,21 +89,33 @@ export function wallClock(): HTMLElement {
       .querySelector(`.${cls}`)
       ?.setAttribute("transform", `rotate(${deg} ${CX} ${CY})`);
   const date = el.querySelector(".wc-date")!;
-  let minute = -1;
+  const setMark = el.querySelector(".wc-set")!;
+  let shown = "";
   const tick = () => {
-    const now = new Date();
+    const now = deskNow();
+    const set = deskClockSet();
     const s = now.getSeconds();
     const m = now.getMinutes() + s / 60;
     turn("wc-sec", s * 6);
     turn("wc-min", m * 6);
     turn("wc-hour", ((now.getHours() % 12) + m / 60) * 30);
     date.textContent = String(now.getDate());
-    if (now.getMinutes() !== minute) {
-      minute = now.getMinutes();
+    const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    if (`${time}${set}` !== shown) {
+      shown = `${time}${set}`;
+      setMark.setAttribute("visibility", set ? "visible" : "hidden");
       el.setAttribute(
         "aria-label",
-        `A giant wristwatch hung on the wall as a clock: ${now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`,
+        `A giant wristwatch hung on the wall as a clock: ${time}${set ? " (set at the DOS prompt, not the real time)" : ""}`,
       );
+      // and a tooltip on the watch saying how to put it back
+      const svg = el.querySelector("svg")!;
+      svg.querySelector(":scope > title")?.remove();
+      if (set) {
+        const tip = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        tip.textContent = "Set with TIME at the DOS prompt, not the real time (TIME /LOCAL puts it back)";
+        svg.prepend(tip);
+      }
     }
   };
   tick();
