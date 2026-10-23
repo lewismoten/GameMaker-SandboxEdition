@@ -16,7 +16,6 @@ const STILL_SHOWN = new Set([
   'logic:easterEgg',
   'maximus:tinHeart',
   'maximus:easterEgg',
-  'needle:easterEgg',
   'reckoning:tinHeart',
   'reckoning:easterEgg',
   'sleuth:tinHeart',
