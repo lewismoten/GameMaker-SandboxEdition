@@ -3,6 +3,7 @@
 // in front of or behind the body, and a band of glaze shine where the light catches it.
 import { printPlacement, type MugSize } from './mugSizes';
 import { designCanvas, type MugDesignId } from './mugArt';
+import type { Side, StripLayout } from './mugLayout';
 
 /**
  * The printed wrap at `ppi` pixels an inch: the design on the front and the same on the back
@@ -26,6 +27,21 @@ export function wrapCanvas(id: MugDesignId, size: Pick<MugSize, 'wrapW' | 'wrapH
     g.scale(-1, 1);
   }
   for (const x of at.centers) g.drawImage(art, Math.round(x * ppi - w / 2), Math.round((size.wrapH * ppi - h) / 2), w, h);
+  return c;
+}
+
+/** A print page's strip on its mug (mugLayout.ts), for the preview: each side's picture where the page puts it, the rest clear. */
+export function stripTexture(strip: Pick<StripLayout, 'size' | 'art'>, designs: Partial<Record<Side, MugDesignId>>, ppi: number): HTMLCanvasElement {
+  const c = document.createElement('canvas');
+  c.width = Math.round(strip.size.wrapW * ppi);
+  c.height = Math.round(strip.size.wrapH * ppi);
+  const g = c.getContext('2d')!;
+  g.imageSmoothingEnabled = false;
+  for (const side of ['front', 'back'] as const) {
+    const r = strip.art[side];
+    const id = designs[side];
+    if (r && id) g.drawImage(designCanvas(id), Math.round(r.x * ppi), Math.round(r.y * ppi), Math.round(r.w * ppi), Math.round(r.h * ppi));
+  }
   return c;
 }
 
