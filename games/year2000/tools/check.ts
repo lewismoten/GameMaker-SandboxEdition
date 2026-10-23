@@ -1,7 +1,7 @@
 // Play-tests every level in the simulator: a bot collects what it can reach, opens the
 // doors, dials the right phone booths and walks out the exit, carrying its counters
 // from level to level like the real game does. The multi-block objects are checked first (tools/align.ts).
-//   cd web && npx vite-node ../games/year2000/tools/verify.ts      (GOD=1 keeps the bot alive)
+//   cd web && npx vite-node ../games/year2000/tools/check.ts      (GOD=1 keeps the bot alive)
 import { newCharInfo } from '../../../web/src/engine/world';
 import { buildCharacter } from '../src/characters/character';
 import { CTR, MON, PAGES_NEEDED, SEQ } from '../src/ids';

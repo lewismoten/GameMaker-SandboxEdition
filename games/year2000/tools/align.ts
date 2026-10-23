@@ -1,7 +1,7 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the domes, the
 // CitiCar, the billboards and neon signs, the crater, the rocket, the banner, the pinball
 // machines, the teletype and the ticker, and that their art joins up across the block edges.
-// Run by tools/verify.ts.
+// Run by tools/check.ts.
 import { alignGame, namesOf, type Need, type PartRule } from '../../kit/align';
 import { LEVELS, SETS } from '../src/levels/levels';
 

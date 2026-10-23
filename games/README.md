@@ -108,7 +108,7 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | sleuth    | `npx vite-node ../games/sleuth/tools/check.ts`       | plays the whole case (`--quick`, `--wrong <who>`, `--walk out.rec`)             |
 | teddy     | `npx vite-node ../games/teddy/tools/check.ts`        | the bot plays every level (`TEDDY_WALK=<file>` writes the run as a .rec)        |
 | teddy2    | `npx vite-node ../games/teddy2/tools/check.ts`       | the bot plays all eight levels, Teddy's and Gwinn's (`TEDDY2_WALK=<file>`)      |
-| year2000  | `npx vite-node ../games/year2000/tools/verify.ts`    | the bot plays all six levels in a row (`GOD=1` keeps it alive)                  |
+| year2000  | `npx vite-node ../games/year2000/tools/check.ts`     | the bot plays all six levels in a row (`GOD=1` keeps it alive)                  |
 | year2000  | `npx vite-node ../games/year2000/tools/gendemo.ts`   | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 
 Sandcastle Knight's and Snowbound's `tools/check.ts` only check their multi-block objects: their
