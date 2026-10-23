@@ -267,10 +267,20 @@ export async function burrows(bot: Bot): Promise<void> {
   await bot.goto(1, 12, 'an acorn');
   await bot.digFrom(2, 15, 'up', 'a root door');
   await bot.goto(1, 20, 'sand');
-  // Gwinn galumphs about the lower gallery: send her off first, then plug the beetle nests
+  // plug the beetle nests first (they keep sending beetles); if Gwinn is galumphing in the
+  // way, send her off and then plug them
+  const nests = async () => {
+    await bot.digFrom(12, 21, 'up', 'a beetle nest', (n) => n.startsWith('plugged'));
+    await bot.digFrom(12, 17, 'down', 'a beetle nest', (n) => n.startsWith('plugged'));
+  };
+  try {
+    await nests();
+  } catch (e) {
+    if (!String(e).includes('No path')) throw e;
+    bot.say('Gwinn is in the way');
+  }
   await ambush(bot, { x: 8, y: 19 }, 'Gwinn trots off');
-  await bot.digFrom(12, 21, 'up', 'a beetle nest', (n) => n.startsWith('plugged'));
-  await bot.digFrom(12, 17, 'down', 'a beetle nest', (n) => n.startsWith('plugged'));
+  if (bot.name(12, 21) === 'nest' || bot.name(12, 17) === 'nest') await nests();
   await bot.goto(23, 19, 'an acorn');
   await bot.digFrom(40, 22, 'up', 'a root door');
   if ((await bot.goto(40, 27, 'the ladder up')) !== 'link') throw new Error('No way out');

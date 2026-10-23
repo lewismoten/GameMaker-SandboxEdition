@@ -249,7 +249,7 @@ export function moat(): LevelMap {
       'G........~~..#____#!##____#..~~...o...vG',
       'G..*.....~~..#____________#..~~.......vG',
       'G........~~..#__*______*__#..~~..*....vG',
-      'G...o....bb..#____________#..>>>>.....vG',
+      'G...o....bb..#_____h______#..>>>>.....vG',
       'G........~~..#____________#..~~.......vG',
       'G....o...~~..#____________#..~~....A..vG',
       'G........~~.o######P#######o.~~.......vG',
@@ -406,6 +406,8 @@ export function burrows(): LevelMap {
     }),
   );
   roughen(m, 51);
+  // an ice pop in the last gallery, before the ladder up to Gwinn's patio
+  m.set(41, 24, 'icepop');
   // where a beetle patrols, the gallery stays a full three blocks high, so there is room to pass it
   for (const [x0, x1, y0, y1] of [
     [9, 16, 3, 5],
