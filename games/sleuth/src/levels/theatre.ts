@@ -339,8 +339,6 @@ const ITEMS_AT: Record<1 | 2, [string, number, number][]> = {
     ['chart', 2, 43],
     ['key', 6, 40],
     ['policy', 42, 4],
-    // a tin heart, dropped behind the bar
-    ['tinHeart', 1, 46],
   ],
   2: [
     ['lantern', 47, 3],
@@ -349,6 +347,8 @@ const ITEMS_AT: Record<1 | 2, [string, number, number][]> = {
     ['umb_dark', 66, 29],
     // a painted Easter egg, rolled into the side aisle of the stalls
     ['easterEgg', 1, 34],
+    // a tin heart glinting in the dark, in the far corner of the trap room's maze
+    ['tinHeart', 65, 9],
   ],
 };
 

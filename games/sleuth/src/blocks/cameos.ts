@@ -2,14 +2,14 @@
 //   - a playbill for Will, the bald bard of SHAKESPEARE IN SWEATPANTS, in his starched ruff,
 //     velvet doublet, grey sweatpants and fuzzy slippers: ALAS, BARD (two blocks, on the lobby wall)
 //   - a playbill for Doc Leo, the friendly hobo clown, with his rubber chicken on its leash
-//   - a tin heart with a little clock face, dropped behind the bar (100 points; a glint
-//     crosses it now and then)
+//   - a tin heart with a little clock face, glinting on a flagstone in a far corner of the
+//     dark trap room (100 points; a glint crosses it now and then)
 //   - a painted Easter egg, rolled into the side aisle of the stalls (50 points)
 import { microC } from '../art/draw';
 import { c } from '../art/pal';
 import { drawTinHeart } from '../../../kit/tinHeart';
 import { drawEasterEgg } from '../../../kit/easterEgg';
-import { Add, S, carpet, marble, on, wallFace } from './painters';
+import { Add, S, carpet, flagstones, on, wallFace } from './painters';
 
 export function addCameos(add: Add) {
   add(
@@ -78,8 +78,8 @@ export function addCameos(add: Add) {
   );
   const tin = { ink: c('black', 0), tin: [c('grey', 3), c('grey', 5), c('grey', 6)], white: c('grey', 7), dark: c('grey', 1) };
   // (two frames, plain and glinting: the block set has room for no more)
-  add('tinHeart', on(marble(), (p) => drawTinHeart(p, tin, 0)), { next: 'tinHeart1', ntime: 50, touch: 'marble', score: 100 });
-  add('tinHeart1', on(marble(), (p) => drawTinHeart(p, tin, 2)), { next: 'tinHeart', ntime: 3, touch: 'marble', score: 100 });
+  add('tinHeart', on(flagstones(5), (p) => drawTinHeart(p, tin, 0)), { next: 'tinHeart1', ntime: 50, touch: 'litfloor', score: 100 });
+  add('tinHeart1', on(flagstones(5), (p) => drawTinHeart(p, tin, 2)), { next: 'tinHeart', ntime: 3, touch: 'litfloor', score: 100 });
   // the painted Easter egg on the stalls' carpet (one frame: it takes the set's last free block)
   const egg = { ink: c('black', 0), shell: [c('teal', 1), c('teal', 2), c('teal', 3)], paint: [c('gold', 3), c('gold', 5)], accent: c('paper', 5), white: c('paper', 5) };
   add('easterEgg', on(carpet(0), (p) => drawEasterEgg(p, egg, 'bands', 0)), { touch: 'carpet', score: 50 });
