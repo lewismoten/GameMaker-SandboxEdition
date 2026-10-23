@@ -47,8 +47,18 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
   throw new Error(`${label}: no safe moment (${why})\n${bot.log.slice(-10).join('\n')}`);
 }
 
-/** Pins and tickles the next rat that way. */
-const tickle = (bot: Bot, dir: 'left' | 'right', label: string) => carefully(bot, label, 8, () => must(bot, bot.tickleNext(dir, label), label));
+/** Pins and tickles the next rat that way (or, when none is left that way, the other way). */
+const tickle = (bot: Bot, dir: 'left' | 'right', label: string) =>
+  carefully(bot, label, 8, async () => {
+    const out = await bot.tickleNext(dir, label);
+    if (out?.startsWith('no rat to the')) {
+      const other = await bot.tickleNext(dir === 'left' ? 'right' : 'left', label);
+      // none left on this row either: the last pin and tickle caught it too (hands go both ways)
+      if (other?.startsWith('no rat to the')) return must(bot, bot.wait(30), `${label}: already laughing`);
+      return must(bot, Promise.resolve(other), label);
+    }
+    if (out) await must(bot, Promise.resolve(out), label);
+  });
 
 /** Hops from where Doc Leo stands up onto a ledge, landing at column `to` on row `row` (his bottom block). */
 async function upTo(bot: Bot, dir: 'left' | 'right' | 'up', to: number, row: number, label: string, hold = 10): Promise<void> {
@@ -102,6 +112,16 @@ export async function theLab(bot: Bot): Promise<void> {
     await upTo(bot, 'right', 11.2, 9, 'onto the bench', 6);
   });
   await tickle(bot, 'right', 'the rat on the bench');
+  // down between the Tesla coils for the rat there, timed between their arcs, and back
+  await carefully(bot, 'down off the bench', 0, async () => {
+    await must(bot, bot.walk(19.6, 'off the end of the bench'), 'off');
+    if (bot.at.y !== 11) throw new Error(`not on the floor (${bot.at.y})`);
+  });
+  await tickle(bot, 'right', 'the rat between the coils');
+  await carefully(bot, 'back up on the bench', 0, async () => {
+    await must(bot, bot.walk(19.6, 'back from the coils'), 'back');
+    await upTo(bot, 'left', 17, 9, 'back onto the bench', 8);
+  });
   await carefully(bot, 'up on the rack over the coils', 0, async () => {
     await must(bot, bot.walk(18, 'the end of the bench'), 'bench end');
     await upTo(bot, 'right', 20.2, 7, 'onto the rack', 10);
@@ -164,8 +184,6 @@ export async function theSewers(bot: Bot): Promise<void> {
   await tickle(bot, 'right', 'the tense wild rat');
   await tickle(bot, 'right', 'the rat by the cheese');
   await carefully(bot, 'the step and the low pipe', 0, async () => {
-    await must(bot, bot.walk(38, 'the coffee'), 'coffee');
-    await must(bot, bot.hop('up', 8), 'the coffee');
     await must(bot, bot.walk(40, 'up on the step'), 'step');
     if (bot.at.y !== 10) throw new Error(`not on the step (${bot.at.y})`);
     await upTo(bot, 'right', 41.2, 8, 'onto the low pipe', 8);
@@ -203,7 +221,7 @@ export async function theTower(bot: Bot): Promise<void> {
   });
   await tickle(bot, 'right', 'the rat on the first ledge');
   await carefully(bot, 'the second ledge', 0, async () => {
-    await must(bot, bot.walk(30, 'the coffee'), 'coffee');
+    await must(bot, bot.walk(30, 'along the first ledge'), 'ledge');
     await upTo(bot, 'right', 32.2, 17, 'onto the second ledge', 8);
   });
   await tickle(bot, 'right', 'the rat by Dean Dour');
@@ -237,6 +255,8 @@ export async function theTower(bot: Bot): Promise<void> {
     await must(bot, bot.walk(32, 'the end of the ledge'), 'end');
     await upTo(bot, 'right', 34.2, 5, 'onto the top ledge', 8);
   });
+  await tickle(bot, 'right', 'Mortimer, round one');
+  await tickle(bot, 'right', 'Mortimer, round two');
   enough(bot, 3);
   await carefully(bot, 'the balcony', 10, async () => {
     await bot.tap('l', 20);

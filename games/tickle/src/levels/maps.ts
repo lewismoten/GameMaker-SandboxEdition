@@ -179,7 +179,7 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
 /** Counts the rats put in a level. */
 function ratCount(m: MapBuilder): number {
-  const ids: number[] = [MON.labRat, MON.labTense, MON.wildRat, MON.wildTense];
+  const ids: number[] = [MON.labRat, MON.labTense, MON.wildRat, MON.wildTense, MON.mort];
   return m.map.monsters.filter((s) => s && ids.includes(s.monnum)).length;
 }
 
@@ -193,8 +193,8 @@ export function course(book: BlockBook): Level {
   const m = new MapBuilder(book, 'course', 0).room(W, H);
   // the wainscot along the bottom of the wall
   m.fill(1, 8, W - 2, 2, 'w');
-  // the lesson: the keys on signs, the chalkboard, the clock and the window
-  m.text(3, 4, 'P.K.F');
+  // the lesson: the keys on signs at eye level by the first rat, the chalkboard, the clock and the window
+  m.text(3, 6, 'P.K.F');
   m.patch(13, 2, ['1234', 'tttt']).set(10, 2, 'O').set(25, 3, 'W').set(53, 3, 'W');
   // Mystery Robot Joe (Keep It Brief!) by the chalkboard, counting rats on his tally counter
   m.set(12, 9, 'joe');
@@ -235,6 +235,8 @@ export function lab(book: BlockBook): Level {
   m.mon(MON.labRat, 13, 9);
   // the Tesla coils, and a cage rack over them with a tense rat on top
   m.set(21, 11, 'z').set(25, 11, 'z');
+  // a rat padding between the coils: step down between the arcs to win it over
+  m.mon(MON.labRat, 23, 11);
   m.row(8, 20, 27, 'h').fill(20, 9, 8, 1, 'g').set(26, 7, 'c');
   m.mon(MON.labTense, 21, 7);
   // the floor buffer's run, a bench over it and the racks beyond: down off the racks onto the bench
@@ -250,7 +252,7 @@ export function lab(book: BlockBook): Level {
   // a rack with a rat on top and one under it, the rubber chicken; a rat by the door
   m.row(8, 60, 65, 'h').fill(60, 9, 6, 1, 'g').set(65, 7, 'k');
   m.mon(MON.labRat, 61, 7).mon(MON.labTense, 60, 11).mon(MON.labRat, 66, 11);
-  m.set(70, 10, 'o').set(70, 11, 'c');
+  m.set(70, 10, 'o');
   // an Easter egg rolled under the first bench (walk under it, past the flasks)
   m.set(15, 11, 'easterEgg');
   // the door: ten rats in the carpet; out the window into the night
@@ -274,7 +276,7 @@ export function sewer(book: BlockBook): Level {
   m.mon(MON.wildRat, 16, 4);
   // the long walkway: rats, cheese, a bat
   m.mon(MON.wildTense, 28, 11).mon(MON.wildRat, 33, 11).mon(MON.bat, 34, 5);
-  m.set(31, 10, 'Q').set(38, 9, 'c');
+  m.set(31, 10, 'Q');
   // a step up to the low pipe over the second channel
   m.set(40, 11, '#').row(9, 41, 49, '_').fill(42, 11, 7, 1, '~').fill(42, 12, 7, 1, 'v');
   m.mon(MON.wildRat, 43, 8);
@@ -297,7 +299,7 @@ export function tower(book: BlockBook): Level {
   m.mon(MON.wildRat, 4, 21).mon(MON.labTense, 12, 21).mon(MON.wildRat, 30, 21);
   m.set(9, 21, 'j');
   // the ledges zigzagging up, two blocks apart
-  m.row(20, 20, 30, '_').set(29, 19, 'c');
+  m.row(20, 20, 30, '_');
   m.mon(MON.wildRat, 22, 19);
   m.row(18, 32, 41, '_');
   m.mon(MON.labRat, 33, 17).mon(MON.deanA, 38, 16).mon(MON.deanB, 38, 17);
@@ -311,8 +313,12 @@ export function tower(book: BlockBook): Level {
   m.mon(MON.wildRat, 12, 9).set(21, 6, 'j');
   m.row(8, 22, 32, '_');
   m.mon(MON.labTense, 25, 7);
-  // the top ledge, and the balcony
-  m.row(6, 34, 42, '_');
+  // a second pigeon crossing the last hop up, in and out of the rain
+  m.mon(MON.pigeon, 27, 4);
+  // the top ledge, and the balcony: Mortimer, Dean Dour's own rat, pacing before the door
+  // (pin and tickle him twice: the sign says so)
+  m.row(6, 34, 42, '_').set(36, 3, 'signTwice');
+  m.mon(MON.mort, 36, 5);
   // a tin heart in the far corner of the floor, under the dean's ledge
   m.set(41, 21, 'tinHeart');
   m.door(39, 5, 'won', 'y');

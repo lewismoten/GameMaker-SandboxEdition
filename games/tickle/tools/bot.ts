@@ -193,15 +193,21 @@ export class Bot {
    * Pins and tickles the rat beside Doc Leo, then waits for it to come to his hand; fails unless
    * the laughing carpet grows by one.
    */
-  async tickleRat(label = 'a rat'): Promise<Result> {
+  async tickleRat(label = 'a rat', slot = -1): Promise<Result> {
     const before = this.carpet;
     let r = await this.tap('z', 12);
     if (r) return r;
     r = await this.tap('x', 4);
     if (r) return r;
-    for (let t = 0; t < 40 && this.carpet === before; t++) {
+    // Mortimer's first round: he is only half won over (no laugh yet)
+    const half = () => slot >= 0 && this.sim.w.mm[slot].monnum === MON.mortHalf;
+    for (let t = 0; t < 40 && this.carpet === before && !half(); t++) {
       r = await this.tick();
       if (r) return r;
+    }
+    if (half()) {
+      this.say(`${label}: half won over`);
+      return this.wait(3);
     }
     if (this.carpet === before) return `${label} didn't laugh`;
     this.say(`tickled ${label}: carpet ${this.carpet}`);
@@ -210,7 +216,7 @@ export class Bot {
 
   /** The wary rats (level blocks, fractional), with their monster slots. */
   rats(): { x: number; y: number; slot: number }[] {
-    const wary: number[] = [MON.labRat, MON.labTense, MON.wildRat, MON.wildTense];
+    const wary: number[] = [MON.labRat, MON.labTense, MON.wildRat, MON.wildTense, MON.mort, MON.mortHalf];
     const w = this.sim.w;
     return w.mi
       .map((mi, slot) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20, slot, n: w.mm[slot].monnum }))
@@ -231,7 +237,10 @@ export class Bot {
       return mine[0];
     };
     const first = find();
-    if (!first) return `no rat to the ${dir} for ${label}`;
+    if (!first)
+      return `no rat to the ${dir} for ${label} (rats ${this.rats()
+        .map((r) => `${r.x.toFixed(1)},${r.y.toFixed(1)}`)
+        .join(' ')})`;
     const slot = first.slot;
     for (let t = 0; t < max; t++) {
       const rat = this.rats().find((r) => r.slot === slot);
@@ -239,7 +248,7 @@ export class Bot {
       const gap = Math.abs(rat.x - this.px.x / 20);
       if (gap <= 1.45) {
         this.sim.releaseAll();
-        return this.tickleRat(label);
+        return this.tickleRat(label, slot);
       }
       // walk toward it (it may be walking away), but never into it
       if (!this.sim.isHeld(SCAN[dir])) this.sim.press(SCAN[dir]);

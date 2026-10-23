@@ -539,6 +539,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('windowLotL', lotWin.crop(0, 0, 20, 20), air);
   book.add('windowLotR', lotWin.crop(20, 0, 20, 20), air);
 
+  // (last too) the sign over Mortimer on the tower's top ledge: pin and tickle him twice
+  book.add('signTwice', sign(wall('tower'), 'x2!', 'P+T'), air);
   // (last too) a tin heart on the tower's floor, tucked in the far corner under the dean's ledge:
   // a glint crosses it now and then; 100 points
   const tin = { ink: c('ink', 0), tin: [c('steel', 1), c('steel', 2), c('steel', 4)], white: c('paint', 1), dark: c('steel', 0) };

@@ -384,7 +384,7 @@ export function spriteRules(mb: ReturnType<typeof buildMonsterBlocks>): void {
     return { lo, hi };
   };
   for (const fur of ['lab', 'wild'])
-    for (const name of [`${fur}.rat0`, `${fur}.rat1`, `${fur}.tense0`, `${fur}.tense1`])
+    for (const name of [`${fur}.rat0`, `${fur}.rat1`, `${fur}.tense0`, `${fur}.tense1`, 'mort.rat0', 'mort.rat1', 'mort.half0', 'mort.half1'])
       if (rows(name).lo < RAT_HIGH) throw new Error(`${name} reaches up to row ${rows(name).lo}: a tickle would touch it`);
   for (const name of ['tickle0', 'tickle1'])
     if (rows(name).hi > TICKLE_LOW) throw new Error(`${name} reaches down to row ${rows(name).hi}: it would touch a wary rat`);
@@ -451,6 +451,29 @@ export function buildMonsterBlocks(pal: Pal) {
     book.add(`${fur}.giggle1`, a.giggle(1), { effect: 20, eamt: 1, scorePts: 100 });
     book.add(`${fur}.off0`, a.off(0));
     book.add(`${fur}.off1`, a.off(1));
+  }
+
+  // ---- Mortimer, Dean Dour's own rat: a lab rat in a little mortarboard (kept low, like any
+  // wary rat's), a red bow tie; half won over, he grins and his cap goes askew
+  {
+    const a = ratArt(pal, 'lab');
+    const cap = (p: Pixels, tilt: number) => {
+      p.rect(12, 12 + tilt, 5, 1, ink)
+        .rect(13, 13, 3, 1, ink)
+        .set(17, 13 + tilt, c('gold', 3))
+        .set(17, 14 + tilt, c('gold', 2));
+      p.set(11, 17, c('red', 2)).set(11, 18, c('red', 2)).set(12, 17, c('red', 3));
+      return p;
+    };
+    const grin = (p: Pixels) => p.set(16, 17, ink).set(17, 17, c('pink', 2));
+    book.add('mort.rat0', cap(a.wary(0), 0), hurt(-6));
+    book.add('mort.rat1', cap(a.wary(1), 0), hurt(-6));
+    book.add('mort.half0', grin(cap(a.wary(0, true), 1)), hurt(-6));
+    book.add('mort.half1', grin(cap(a.wary(1, true), 1)), hurt(-6));
+    // pinned, paws up, the mortarboard fallen off beside him
+    const fallen = (p: Pixels) => p.rect(0, 18, 4, 1, ink).rect(1, 17, 2, 1, ink).set(4, 18, c('gold', 3));
+    book.add('mort.pinned0', fallen(a.pinned(0)), { solid: 15 });
+    book.add('mort.pinned1', fallen(a.pinned(1)), { solid: 15 });
   }
 
   // ---- the night janitor's floor buffer

@@ -147,6 +147,8 @@ export interface MonsterOptions {
   gator?: number;
   /** Blocks the pigeon flies. */
   pigeon?: number;
+  /** Blocks Mortimer, the dean's rat, paces before the balcony door. */
+  mort?: number;
 }
 
 export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: MonsterOptions = {}): Monster[] {
@@ -174,6 +176,11 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   };
   rats('lab', { rat: MON.labRat, tense: MON.labTense, pinned: MON.labPinned, giggle: MON.labGiggle, off: MON.labOff });
   rats('wild', { rat: MON.wildRat, tense: MON.wildTense, pinned: MON.wildPinned, giggle: MON.wildGiggle, off: MON.wildOff });
+  // Mortimer, the dean's rat: two rounds of pin and tickle, then he giggles like any lab rat
+  set[MON.mort] = mon(anim('mort.rat0', 'mort.rat1', 4), { power: POWER.rat, thru: 1, newmon: MON.mortPinned }, pace(o.mort ?? 2, 1));
+  set[MON.mortPinned] = mon(anim('mort.pinned0', 'mort.pinned1', 3), { power: POWER.pinned, thru: 1, newmon: MON.mortHalf }, still);
+  set[MON.mortHalf] = mon(anim('mort.half0', 'mort.half1', 2), { power: POWER.rat, thru: 1, newmon: MON.mortPinned2 }, pace(o.mort ?? 2, 2));
+  set[MON.mortPinned2] = mon(anim('mort.pinned0', 'mort.pinned1', 2), { power: POWER.pinned, thru: 1, newmon: MON.labGiggle }, still);
   // hazards
   set[MON.buffer] = mon(anim('buffer0', 'buffer1', 2), { power: POWER.hazard, thru: 1 }, pace(o.buffer ?? 4, 2));
   set[MON.deanA] = mon(anim('deanA0', 'deanA1', 8), { power: POWER.hazard, thru: 0 }, pace(o.dean ?? 4, 1));

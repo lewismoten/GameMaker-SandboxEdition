@@ -1,7 +1,7 @@
 Tickle every rat you can into
 the laughing carpet. Each door
 opens for a carpet big enough:
-3, 10, 18, 26 rats in all.
+3, 11, 19, 27 rats in all.
 
 LEFT/RIGHT or A D walk. UP or
 W hops: hold it to go higher.
@@ -45,3 +45,19 @@ Steam from a grate lifts you.
 F1 help      F2 counters
 F3 music     F4 sound
 F5 save F6 load  ESC quit
+
+AT THE TOP OF THE TOWER
+Mortimer, Dean Dour's own rat,
+guards the balcony door in a
+little mortarboard. He is the
+most serious rat in the city:
+one pin and tickle only half
+wins him over. He wriggles
+free, grinning, still wary.
+Pin him and tickle him again.
+
+
+
+
+
+

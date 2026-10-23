@@ -18,7 +18,9 @@ the city and up a tower in a
 storm, every rat you tickle
 joins the laughing carpet. Doors
 open only for a carpet big
-enough. Avoid Dean Dour.
+enough. Avoid Dean Dour, and at
+the top win over his own rat,
+Mortimer: it takes two goes.
 
 No rats are harmed. They love
 it. Listen: 50 kHz!

@@ -57,6 +57,15 @@ export const MON = {
   spark: 27,
   /** A pigeon in the storm on the tower. */
   pigeon: 28,
+  /**
+   * Mortimer, Dean Dour's own rat, in a little mortarboard: the most serious rat in the city,
+   * guarding the balcony door. One pin and tickle only half convinces him (he wriggles free,
+   * grinning, still wary), so it takes two: wary, pinned, half won over, pinned again, giggling.
+   */
+  mort: 29,
+  mortPinned: 30,
+  mortHalf: 31,
+  mortPinned2: 32,
 } as const;
 
 /** Monster powers: a stronger monster turns a weaker one it touches into its next. */
@@ -123,7 +132,7 @@ export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e
  */
 export const CARPET = 20;
 /** The laughing carpet each level's door asks for (all game long, not just that level). */
-export const NEEDED = [3, 10, 18, 26] as const;
+export const NEEDED = [3, 11, 19, 27] as const;
 
 /** Sound effect numbers in each .SND (0..8 are the ones PLAYGAME plays by itself). */
 export const SND = {
