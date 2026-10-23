@@ -26,6 +26,7 @@ import { dirname, join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
+import { recordedAudioNotice, recordedClips } from '../src/export/recordedAudio';
 import { fictionNote } from '../src/export/fiction';
 import {
   appName,
@@ -69,7 +70,7 @@ async function hdiutilDmg(o: MacAppOptions, file: string): Promise<void> {
       writeFileSync(join(stage, f.path), f.data!, { mode: f.mode });
     }
     symlinkSync('/Applications', join(stage, 'Applications'));
-    writeFileSync(join(stage, NOTICES_FILE), macNotices());
+    writeFileSync(join(stage, NOTICES_FILE), macNotices(o.audio));
     writeFileSync(join(stage, '.DS_Store'), dmgWindow(name));
     const app = join(stage, name);
     if (identity) execFileSync('codesign', ['--force', '--deep', '--options', 'runtime', '--timestamp', '--sign', identity, app], { stdio: 'inherit' });
@@ -132,6 +133,7 @@ async function main(): Promise<void> {
       year: e.year,
       fiction: fictionNote(e),
       picture: iconPicture(new GameFiles(entries), e.gam!),
+      audio: recordedAudioNotice(recordedClips(new GameFiles(entries))),
       colors: boxColors(e.original?.box),
     });
   }

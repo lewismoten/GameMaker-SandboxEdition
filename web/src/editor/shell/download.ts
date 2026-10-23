@@ -198,10 +198,11 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
 
 /** The options the native downloads share. */
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
-  const [{ exportSinglePage }, { slug }, mac] = await Promise.all([
+  const [{ exportSinglePage }, { slug }, mac, audio] = await Promise.all([
     import('../../export/exportSinglePage'),
     import('../../export/exportWebApp'),
     import('../../export/macApp'),
+    import('../../export/recordedAudio'),
   ]);
   const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
   return {
@@ -212,6 +213,7 @@ async function nativeOptions(game: DownloadGame, files: GameFiles) {
     year: game.year,
     fiction: game.fiction,
     picture: mac.iconPicture(files, game.gam),
+    audio: audio.recordedAudioNotice(audio.recordedClips(files)),
     colors: mac.boxColors(game.box),
   };
 }

@@ -19,6 +19,7 @@ import { join, resolve } from 'node:path';
 import { cdCatalog, cdFiles } from './cdGames';
 import { buildSinglePageTemplate } from './singlePageBuild';
 import { encodeGame, fillPage } from '../src/export/singlePage';
+import { recordedAudioNotice, recordedClips } from '../src/export/recordedAudio';
 import { fictionNote } from '../src/export/fiction';
 import { boxColors, iconPicture } from '../src/export/macApp';
 import { exeName, winExe, winExeZip, type WinAppOptions, type WinArch } from '../src/export/winApp';
@@ -88,6 +89,7 @@ async function main(): Promise<void> {
       year: e.year,
       fiction: fictionNote(e),
       picture: iconPicture(new GameFiles(entries), e.gam!),
+      audio: recordedAudioNotice(recordedClips(new GameFiles(entries))),
       colors: boxColors(e.original?.box),
     });
   }
