@@ -29,6 +29,7 @@ const LEGEND: Record<string, string> = {
   L: 'lilyP',
   ',': 'tuft',
   T: 'trunk',
+  U: 'trunkShade',
   F: 'fig',
   v: 'leaves',
   h: 'shade',
@@ -175,7 +176,7 @@ export function hillside(book: BlockBook): Level {
   crowdBand(m, 22, 31);
   crowdBand(m, 46, 60, true);
   // the fig tree and its shade, and the basket Loaf #13 was left in
-  m.fill(1, 4, 9, 6, 'h').fill(1, 1, 11, 2, 'v').row(3, 2, 10, 'F').col(9, 4, 9, 'T');
+  m.fill(1, 4, 9, 6, 'h').fill(1, 1, 11, 2, 'v').row(3, 2, 10, 'F').col(9, 4, 9, 'U');
   m.text(3, 2, '*.$').set(8, 2, '*');
   m.set(2, 9, 'W').set(2, 8, 'm').set(6, 9, 'W').set(6, 8, 'm').fill(3, 8, 3, 2, 'i');
   // the first of the crowd: a hungry man stomping, crumbs dropped in the grass
@@ -189,7 +190,7 @@ export function hillside(book: BlockBook): Level {
   m.set(33, 9, 'R').set(33, 8, 'R').set(31, 7, '_').text(30, 6, '*');
   // the cooking fire: its warm air lifts you up into another fig tree
   m.set(36, 9, 'R').set(36, 8, 'R').set(37, 9, 'x').col(37, 2, 8, 'u');
-  m.col(42, 4, 9, 'T').fill(38, 0, 8, 2, 'v').row(2, 38, 45, 'F').text(39, 1, '$.H.$');
+  m.col(42, 3, 9, 'T').fill(38, 0, 8, 2, 'v').row(2, 38, 45, 'F').text(39, 1, '$.H.$');
   m.mon(MON.gull, 46, 3);
   // the third goat from the left, grazing; a jar of water
   m.text(45, 9, 'l.,.L').set(52, 9, 'j');
@@ -252,7 +253,7 @@ export function baskets(book: BlockBook): Level {
   m.mon(MON.seed, 32, 9);
   // the fire and its warm air up to the fig branches, a basket at the top
   m.set(37, 8, 'R').set(37, 9, 'R').set(38, 9, 'x').col(38, 2, 8, 'u');
-  m.col(43, 4, 9, 'T').fill(39, 0, 8, 2, 'v').row(2, 39, 44, 'F').set(45, 2, 'e').set(42, 1, '$');
+  m.col(43, 3, 9, 'T').fill(39, 0, 8, 2, 'v').row(2, 39, 44, 'F').set(45, 2, 'e').set(42, 1, '$');
   m.set(48, 9, 'e').set(51, 9, 'l').set(52, 9, 'j').set(54, 9, 'e');
   m.mon(MON.gull, 48, 3).mon(MON.man, 61, 9);
   m.set(58, 7, '_').set(59, 7, '_').set(59, 6, 'e');

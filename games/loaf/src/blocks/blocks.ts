@@ -118,9 +118,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   for (let x = 1; x < 20; x += 2) tuft.line(x, 19, x + (x % 4 ? 1 : -1), 13 + (x % 3) * 2, c('grass', 2 + (x % 2)));
   book.add('tuft', tuft, air);
   // the fig tree: trunk (scenery) and leafy branches to stand on
-  const trunk = sky(44);
-  for (let y = 0; y < 20; y++) for (let x = 6; x < 14; x++) trunk.set(x + Math.round(Math.sin(y / 5)), y, shadeAt(R('wood'), 0, 3, (x - 6) / 8, x, y));
-  book.add('trunk', trunk, air);
+  // (its sway repeats every block, so stacked trunks join without a notch)
+  const trunkOn = (bg: Pixels) => {
+    for (let y = 0; y < 20; y++) for (let x = 6; x < 14; x++) bg.set(x + Math.round(Math.sin((y * Math.PI) / 10)), y, shadeAt(R('wood'), 0, 3, (x - 6) / 8, x, y));
+    return bg;
+  };
+  book.add('trunk', trunkOn(sky(44)), air);
   const canopy = (bg: Pixels, seed: number, ledge: boolean) => {
     const r = rng(seed);
     for (let i = 0; i < 7; i++) blob(bg, r() * 20, 4 + r() * 12, 4 + r() * 3, 3 + r() * 2, R('leaf'), 0, 3);
@@ -138,6 +141,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let i = 0; i < 7; i++) shade.set(Math.floor(r() * 20), Math.floor(r() * 20), c('leaf', 1));
   }
   book.add('shade', shade, air);
+  const shadeCopy = P();
+  shadeCopy.px.set(shade.px);
   // the wicker basket Loaf #13 was left in (an open top to climb out of, its sides, its rim)
   const weave = (bg: Pixels, dense = 1) => {
     for (let y = 0; y < 20; y++)
@@ -410,5 +415,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('door', door(false), { solid: SOLID, effect: CRUMBS, eamt: -1, score: 1000, touch: 'doorOpen' });
   book.add('doorOpen', door(true), { grav: GRAV.none });
+  // (last, so every other block keeps its number) the trunk standing in its own shade
+  book.add('trunkShade', trunkOn(shadeCopy), air);
   return book;
 }
