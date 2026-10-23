@@ -493,6 +493,8 @@ export function lavaleMall(book: BlockBook) {
     }
     m.set(X + 28, y, 'L').fill(X + 27, y + 1, 3, 1, 'B');
   }
+  // THE CHEZ, the CitiCar, buried with the rest in the back row by the way in
+  m.set(X + 2, 31, 'chezL').set(X + 3, 31, 'chezR');
   m.patch(X, 35, ['BBBB', 'u', '']).patch(X + 55, 35, ['BBBBB']);
   m.fill(X, 36, 4, 2, ',')
     .fill(X + 55, 36, 5, 2, ',')

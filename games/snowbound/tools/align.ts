@@ -1,6 +1,6 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the houses (roof
 // over eaves over a one-colored front), garages, the mall, the stores, the arcade, the signs,
-// the parked car, the fair's strongman bell, and that their art joins up across the block edges.
+// the parked cars (and THE CHEZ), the fair's strongman bell, and that their art joins up across the block edges.
 // Run by tools/check.ts.
 import { alignGame, namesOf, type Need, type PartRule } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
@@ -34,6 +34,7 @@ export function align(): number {
     ...[...book.index.keys()].filter((n) => /^st.*0$/.test(n) && book.index.has(n.slice(0, -1) + '1')).flatMap((n) => run([n, n.slice(0, -1) + '1'])),
     ...run(['board0', 'board1']),
     ...run(['parkedL', 'parkedR']),
+    ...run(['chezL', 'chezR']),
     { part: 'fairMan', need: [[1, 0, /^fairBell[LR]?$/]] },
     { part: /^fairBell[LR]?$/, need: [[-1, 0, 'fairMan'], [1, 0, 'fairFlag']] },
     { part: 'fairFlag', need: [[-1, 0, /^fairBell[LR]?$/]] },
