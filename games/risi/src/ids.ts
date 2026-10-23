@@ -13,8 +13,6 @@ export const MON = {
   // ---- I. the banquet (Canis Meus Flatum Dedit)
   /** A cloud of Rufus's wind, drifting up from under the table. Jokes clear the air. */
   gas: 1,
-  /** A senator reclining at dinner, coughing: solid, harmless. */
-  senator: 2,
   /** Lady Flavia, horrified behind her fan. A bow is points. */
   flavia: 3,
   flaviaOff: 4,
