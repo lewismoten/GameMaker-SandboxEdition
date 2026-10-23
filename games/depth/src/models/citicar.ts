@@ -20,7 +20,13 @@ export function citicar(cx: number, cy: number, s = 1, at?: V): Shape[] {
       // the J1772 port: rear quarter, passenger side
       if (y > W - 0.01 && Math.abs(x - 0.26) < 0.07 && Math.abs(z - 0.5) < 0.07) return Math.hypot(x - 0.26, z - 0.5) < 0.045 ? rgb(60, 255, 120) : rgb(20, 20, 24);
       if (z > 0.93) return rgb(150, 150, 155); // the grey roof
-      if (z > 0.6 && x > 0.12 && x < 1.08 && (y < 0.02 || y > W - 0.02)) return rgb(40, 52, 70); // side windows
+      const side = y < 0.02 || y > W - 0.02;
+      // from the side the only glass is the door's window: its front edge follows the
+      // windshield's pillar, and the panel behind the door is solid red (no quarter window)
+      if (side && z > 0.6 && z < 0.92 && x > 0.5 && x < 0.95 + (1 - z) * 0.27) return rgb(40, 52, 70);
+      if (side && Math.abs(x - 0.45) < 0.008 && z > 0.16 && z < 0.95) return rgb(120, 22, 14); // the door's back seam
+      // the rear window, in the flat back
+      if (x < 0.04 && y > 0.1 && y < W - 0.1 && z > 0.6 && z < 0.9) return rgb(40, 52, 70);
       if (Math.abs(z - 0.42) < 0.012) return rgb(250, 240, 230); // pinstripe
       return red;
     },
