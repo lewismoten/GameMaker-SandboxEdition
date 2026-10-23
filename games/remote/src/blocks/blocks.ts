@@ -352,7 +352,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('blanket', blanket(false), { effect: SPOTS, eamt: 1, score: 50, touch: 'blanketUp' });
   book.add('blanketUp', blanket(true));
-  // the magazines (and a TV Guide from 1993)
+  // the magazines (and the TV listings from 1993)
   const mags = (spread: boolean) => {
     const p = carpet(16);
     const list: [number, number, string][] = spread ? [[1, 3, 'red'], [10, 2, 'blue'], [4, 10, 'yellow'], [11, 11, 'white']] : [[4, 5, 'red'], [5, 7, 'blue'], [4, 9, 'yellow']];

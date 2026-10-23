@@ -77,7 +77,7 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
     p.line(4, 10, 16, 10, c('gold', 1)).line(10, 4, 10, 16, c('gold', 1));
     blob(p, 10, 10, 3, 2.6, R('wood'), 3, 4, 1.2);
   }, 77);
-  // fake remotes: a calculator, the garage door opener, a Game Boy. NOPE.
+  // fake remotes: a calculator, the garage door opener, a handheld game. NOPE.
   const fake = (name: string, draw: (p: Pixels) => void) => {
     const p = fabric(60 + book.index.size);
     draw(p);
@@ -90,7 +90,7 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
   fake('opener', (p) => {
     p.rect(5, 5, 10, 10, c('crt', 1)).rect(5, 5, 10, 2, c('crt', 2)).disc(10, 11, 2.4, c('red', 2));
   });
-  fake('gameboy', (p) => {
+  fake('handheld', (p) => {
     p.rect(5, 1, 11, 18, c('crt', 3)).rect(7, 3, 7, 6, c('crt', 0)).rect(8, 4, 5, 4, c('green', 0));
     p.rect(7, 12, 3, 1, ink).rect(8, 11, 1, 3, ink).disc(13, 13, 1, c('purple', 2)).disc(14, 11, 1, c('purple', 2));
   });

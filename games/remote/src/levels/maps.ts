@@ -229,7 +229,7 @@ const VOID: Record<string, string> = {
   '^': 'crumb',
   '7': 'calc',
   '6': 'opener',
-  '9': 'gameboy',
+  '9': 'handheld',
   '+': 'candy',
   $: 'pennyF',
   '<': 'payTv',

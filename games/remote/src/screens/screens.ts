@@ -121,7 +121,7 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     save('menu.gif', p);
   }
 
-  // ---------------- paper behind text pages: a TV Guide-ish listing page
+  // ---------------- paper behind text pages: a TV listings page
   const paper = (heading: string) => {
     const p = new Pixels(W, H);
     gradient(p, 0, 0, W, H, pal.r('night'), 1, 4);
