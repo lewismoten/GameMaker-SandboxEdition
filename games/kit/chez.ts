@@ -148,7 +148,7 @@ function profile(k: ChezInk, port: boolean, s: number): Pixels {
       if (!onChez(X, Y)) continue;
       // flat red sides, lit along the top of the hood's slope, shadowed under the door
       let c = k.body[Y > 16.9 ? 0 : X > 17.9 && Y - 1.3 - (X - 17.9) * fall < Math.max(0.9, 1.5 * px) ? 2 : 1];
-      if (Y < ROOF_EDGE) c = k.roof;
+      if (Y < ROOF_EDGE || (Y < 1.3 + px && X < 17.9 + px)) c = k.roof; // (at least a pixel of it)
       else if (inPoly(CHEZ_WINDOW, X, Y)) c = k.glass[0];
       else if (X >= BAND_END - (s >= 2 ? px : 0)) {
         // the stripes: a dark pair, the red between them, a white pinstripe round the band
