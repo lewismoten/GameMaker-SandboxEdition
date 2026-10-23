@@ -188,9 +188,9 @@ const KITCHEN: Record<string, string> = {
 /** 2. The kitchen: open the fridge, find Mom's number, call her. */
 export function kitchen(book: BlockBook): Level {
   const map = rows([
-    '#XXXXXXXXXXXXXXXXXXXXXXX@X#',
+    '#XXXXXXXXXXXXXXXXXXXXXXXXX#',
     '#QQSQYQMMQZQRQEQ.F.x.....Q#',
-    '#.....5..........H.....1..#',
+    '#.....5..........H.....1..@',
     '#.........................#',
     '#...q.....j.j.....w.......#',
     '#........jJJJj............#',
@@ -203,9 +203,12 @@ export function kitchen(book: BlockBook): Level {
   ]);
   const m = new MapBuilder(book, 'wallTop', KITCHEN);
   m.patch(0, 0, map.lines);
+  // the phone hangs in the doorway to the hall on its long curly cord: once Mom's on the line
+  // you walk on down the hall, so "Called my mom..." plays out before you fall into the void
+  m.patch(27, 2, ['....']);
   m.mon(MON.teddy, 6, 8).mon(MON.cat, 20, 6).mon(MON.roach, 3, 9).mon(MON.roach, 17, 3).mon(MON.roach, 24, 8);
-  m.link(24, 0, 'next');
-  return { m, start: at(1, 3), size: [map.w, map.h] };
+  m.link(30, 2, 'next');
+  return { m, start: at(1, 3), size: [map.w + 4, map.h] };
 }
 
 /** The void between the cushions. */
@@ -253,7 +256,7 @@ export function theVoid(book: BlockBook): Level {
     '~~o~~~~~~~~~~~~~~~o~~~-~~~oooo8o~~~~',
     '~~$oo+o8~~~~~~U~~~o~~~~~~~o~~~~~~~-~',
     '~~~~~~~o~~~~~~~~~~oo&o$ooo~~~~~~~~~~',
-    '~~i~~~~o~~~~-~~~~~~~~~~~~~~~>oo<~~~~',
+    '~~i~~~~o~~~~-~~~~~~~~~~~~~~~>oo<oo~~',
     '~~~~~~~oooooooooooo$oooooooooo~~~~~~',
     '~~~~-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
   ]);
@@ -262,7 +265,8 @@ export function theVoid(book: BlockBook): Level {
   m.mon(MON.sock, 12, 2).mon(MON.sock, 20, 11).mon(MON.sock, 26, 2).mon(MON.lint, 9, 10).mon(MON.lint, 22, 18);
   m.mon(MON.penny, 16, 6).mon(MON.penny, 12, 13).mon(MON.penny, 10, 18);
   m.mon(MON.raccoon, 4, 10).mon(MON.seed, 31, 9).mon(MON.goat, 17, 11);
-  m.link(31, 17, 'next');
+  // the pay TV's picture is the way home: two steps on through it, so its warming up plays out
+  m.link(33, 17, 'next');
   return { m, start: at(1, 1), size: [map.w, map.h] };
 }
 

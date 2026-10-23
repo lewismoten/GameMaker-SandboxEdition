@@ -109,7 +109,8 @@ export async function theKitchen(bot: Bot): Promise<void> {
   });
   if (bot.count(DIGITS) < DIGITS_NEEDED) throw new Error(`only ${bot.count(DIGITS)} digits`);
   await carefully(bot, 'calling Mom', 10, async () => {
-    await through(bot, 24, 0, 'down', 'the phone');
+    await must(bot, bot.take(26, 2, 'left', 'the phone'), 'the phone');
+    await leave(bot, bot.goto(30, 2, 'down the hall'), 'the phone');
   });
 }
 
@@ -144,7 +145,8 @@ export async function theVoid(bot: Bot): Promise<void> {
     });
   if (bot.count(MONEY) < PENNIES_NEEDED) throw new Error(`only ${bot.count(MONEY)} pennies`);
   await carefully(bot, 'the pay TV', 12, async () => {
-    await through(bot, 31, 17, 'left', 'the pay TV');
+    await must(bot, bot.take(31, 17, 'left', 'the pay TV'), 'the pay TV');
+    await leave(bot, bot.goto(33, 17, 'through the pay TV'), 'the pay TV');
   });
 }
 
