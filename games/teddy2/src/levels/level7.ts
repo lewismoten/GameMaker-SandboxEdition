@@ -2,7 +2,7 @@
 // and her entry card blew to the top of THE BIG DROP. The ride takes three tickets, and the
 // Klown Klub's booths pay tickets for tricks: ring the High Striker's bell (climb its pegs
 // and high five it), sit pretty for Bubbles, spin for Twirly, and sniff under the bleachers.
-// The carousel's horses lift Teddy to its canopy. THE CHEZ is parked by the show barn.
+// The carousel's horses lift Teddy to its canopy, and a trampoline bounces him up to a perch. THE CHEZ is parked by the show barn.
 //
 // The blocks are in level7Tiles.ts, the monsters in level7Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
@@ -63,6 +63,13 @@ export function midway(): Level {
   m.set(tower - 1, 15, 'dropSign0')
     .set(tower, 15, 'dropSign1')
     .set(tower + 1, 15, 'dropSign2');
+  // The trampoline, between Twirly and THE BIG DROP: hop onto its bed and ride the air up
+  // to the perch of treats (a detour, never on the way).
+  const tramp = 47;
+  m.set(tramp, 39, 'trampoline');
+  for (let y = 30; y < 39; y++) m.set(tramp, y, `boing${y}a`);
+  // (the perch spans the column: Teddy flies up through it and lands on it coming down)
+  m.rect(tramp - 1, 29, 3, 1, 'perch');
   // The food row: corn dogs, the root beer stand.
   for (let bx = 0; bx < 3; bx++) for (let by = 0; by < 3; by++) m.set(62 + bx, 37 + by, `food${bx}${by}`);
   m.set(67, 39, 'rootBeer').set(68, 39, 'signRoot');
@@ -107,8 +114,10 @@ export function midway(): Level {
     [34, 39],
     [36, 39],
     [45, 39],
-    [47, 39],
     [49, 39],
+    [46, 28],
+    [47, 28],
+    [48, 28],
     [59, 39],
     [61, 39],
     [65, 39],
