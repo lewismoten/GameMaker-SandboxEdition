@@ -1,0 +1,175 @@
+/* The map editor's tools: the tool bar, the overlay over the map, the tool panel and the terrain and building setup dialogs. */
+.mt-stack {
+  position: relative;
+  width: max-content;
+}
+.mt-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mt-modes {
+  gap: 4px 8px;
+}
+.mt-toolset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.mt-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 4px 7px;
+  line-height: 1;
+}
+.mt-tool[aria-pressed='true']:not(.primary) {
+  border-color: var(--accent);
+  background: var(--accent-soft, var(--panel-2));
+}
+/* names beside the icons only where there is room; the buttons are named for screen readers either way */
+.mt-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (min-width: 1680px) {
+  .mt-label {
+    position: static;
+    width: auto;
+    height: auto;
+    clip: auto;
+  }
+}
+.mt-touch-only {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) {
+  .mt-tool.mt-touch-only {
+    display: inline-flex;
+  }
+}
+
+.mt-panel {
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  max-height: 34vh;
+  overflow: auto;
+  gap: 6px;
+}
+.mt-panel[hidden] {
+  display: none;
+}
+.mt-panel p {
+  margin: 0;
+}
+.mt-brush-actions {
+  gap: 4px;
+}
+.mt-brush-actions button {
+  min-height: 28px;
+  padding: 3px 8px;
+}
+.block-picker.mt-brushes {
+  grid-template-columns: repeat(auto-fill, 68px);
+  max-height: 150px;
+}
+.block-picker.mt-brushes button {
+  width: 68px;
+  height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.block-picker.mt-brushes button canvas {
+  width: auto;
+  height: auto;
+  max-width: 40px;
+  max-height: 40px;
+  image-rendering: pixelated;
+}
+.block-picker.mt-brushes button small {
+  position: static;
+  max-width: 64px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* setup dialogs */
+.mt-setup {
+  width: min(780px, 88vw);
+}
+.mt-setup .hint {
+  margin: 0;
+}
+.mt-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+.mt-template {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.mt-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mt-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), 44px);
+  gap: 4px;
+}
+.mt-slot {
+  width: 44px;
+  height: 44px;
+  padding: 1px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+}
+.mt-slot canvas {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+}
+.mt-slot.empty {
+  border-style: dashed;
+}
+.mt-slot.empty.needed {
+  border-color: var(--accent);
+  border-width: 2px;
+}
+.mt-slot .mt-diagram {
+  width: 30px;
+  height: 30px;
+  opacity: 0.85;
+}
+.mt-side {
+  flex: 1 1 220px;
+  min-width: 0;
+  gap: 8px;
+}
+.mt-preview {
+  width: min(100%, 288px);
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #000;
+  image-rendering: pixelated;
+}
