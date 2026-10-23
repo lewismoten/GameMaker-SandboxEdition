@@ -8,7 +8,9 @@ import type { Computer } from '../retro/computer';
 
 export interface DiskMenuHost {
   pc(): Computer | undefined;
-  /** The PC switched on and at its prompt, or undefined (something else is running). */
+  /** The PC, switched on (whatever it is running). */
+  on(): Promise<Computer | undefined>;
+  /** The PC switched on and at its prompt (a game quits, Game-Maker closes after asking to save), or undefined if you'd rather keep going. */
   atPrompt(): Promise<Computer | undefined>;
   command(cmd: string): Promise<void>;
   say(text: string): void;
@@ -23,6 +25,8 @@ export function diskMenu(host: DiskMenuHost): {
   button: HTMLElement;
   refresh(insertId?: string): Promise<void>;
   openGame(id: string): Promise<boolean>;
+  light(ms?: number): void;
+  protectedA(): boolean;
   current(): string | undefined;
   forget(): void;
 } {
@@ -53,6 +57,17 @@ export function diskMenu(host: DiskMenuHost): {
   );
   document.body.append(dialog);
   dialog.addEventListener('close', () => host.pc()?.focus());
+  // Esc closes it even while a game plays (the game's keyboard may have claimed the key first)
+  window.addEventListener(
+    'keydown',
+    (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || !dialog.open) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      dialog.close();
+    },
+    true,
+  );
 
   function showDrive(): void {
     driveLine.textContent = inDrive ? `In drive A: ${inDrive.kind === 'blank' ? 'a blank disk' : inDrive.title}` : 'Drive A: is empty.';
@@ -92,6 +107,18 @@ export function diskMenu(host: DiskMenuHost): {
                   },
                   d.kind === 'blank' ? '✎ New game' : '✎ Design',
                 ),
+                // a swap and nothing more, whatever is running: it reads the new disk next time it looks
+                h(
+                  'button',
+                  {
+                    type: 'button',
+                    class: 'dos-btn',
+                    'aria-label': `Put ${d.kind === 'blank' ? 'the blank disk' : d.title} in drive A:`,
+                    title: 'Just swap the disk: whatever is running sees it the next time it reads drive A:',
+                    onclick: () => void swapIn(d),
+                  },
+                  '⇥ A:',
+                ),
               ),
             ),
           ),
@@ -115,17 +142,29 @@ export function diskMenu(host: DiskMenuHost): {
     dialog.showModal();
   }
 
-  async function use(d: Disk, action: 'play' | 'design'): Promise<void> {
-    const pc = await host.atPrompt();
-    if (!pc) return dialog.close();
-    if (inDrive?.id !== d.id || !pc.disk()) {
-      host.say(`Loading ${d.kind === 'blank' ? 'the blank disk' : d.title}…`);
-      pc.insertDisk(d, await d.load());
-      inDrive = d;
-      showDrive();
-    }
+  /** Puts a disk in drive A: (the one there comes out), whatever the PC is doing. */
+  async function putIn(pc: Computer, d: Disk): Promise<void> {
+    if (inDrive?.id === d.id && pc.disk()) return;
+    host.say(`Loading ${d.kind === 'blank' ? 'the blank disk' : d.title}…`);
+    pc.insertDisk(d, await d.load());
+    inDrive = d;
+    showDrive();
+    light();
+    host.say(`${d.kind === 'blank' ? 'A blank disk' : d.title} is in drive A:.`);
+  }
+
+  async function swapIn(d: Disk): Promise<void> {
     dialog.close();
-    host.say('');
+    const pc = await host.on();
+    if (pc) await putIn(pc, d);
+  }
+
+  async function use(d: Disk, action: 'play' | 'design'): Promise<void> {
+    // closed first: Game-Maker may ask to save a designer's work
+    dialog.close();
+    const pc = await host.atPrompt();
+    if (!pc) return;
+    await putIn(pc, d);
     if (action === 'play' && d.gam) await host.command(`A:\n${d.gam.replace(/\.gam$/i, '').toUpperCase()}`);
     else await host.command(d.kind === 'blank' ? 'C:\nCD \\GM\nGM' : 'A:\nGM');
   }
@@ -139,12 +178,22 @@ export function diskMenu(host: DiskMenuHost): {
     return true;
   }
 
+  /** Out it comes, whatever is running (as on a real PC): the program finds drive A: empty the next time it looks. */
   function eject(): void {
-    const pc = host.pc();
-    if (pc?.busy) return host.say('The drive light is on: quit the running program first.');
-    pc?.eject();
+    host.pc()?.eject();
     inDrive = undefined;
     showDrive();
+    // the Eject button has gone: the keyboard stays in the list
+    if (dialog.open) dialog.querySelector<HTMLElement>('.dos-dialog-head button')?.focus();
+    host.say('Drive A: is empty.');
+  }
+
+  /** Drive A:'s light, on the Disks button, while the PC reads it. */
+  let lightOff: ReturnType<typeof setTimeout> | undefined;
+  function light(ms = 700): void {
+    button.classList.add('dos-busy');
+    clearTimeout(lightOff);
+    lightOff = setTimeout(() => button.classList.remove('dos-busy'), ms);
   }
 
   showDrive();
@@ -152,6 +201,9 @@ export function diskMenu(host: DiskMenuHost): {
     button,
     refresh,
     openGame,
+    light,
+    /** The disk in drive A: has its write-protect tab open (an original). */
+    protectedA: () => !!inDrive?.writeProtected,
     /** The disk in drive A: (cd:<id>, project:<id>, blank), for the view switch. */
     current: () => inDrive?.id,
     /** The PC was switched off: the disk came out with it. */

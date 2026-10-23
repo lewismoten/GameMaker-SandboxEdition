@@ -28,6 +28,7 @@ import { viewSwitch } from '../viewSwitch';
 import { placeNotes } from '../achievements/toast';
 import { footer } from './footer';
 import { moreMenu } from './moreMenu';
+import { leaveProgram } from '../retro/leaveProgram';
 
 const root = document.querySelector<HTMLElement>('#dos')!;
 const speed: SpeedSetting = { slowPc: undefined };
@@ -93,6 +94,8 @@ function makePc(): Computer {
     speed,
     quickBoot: true,
     onDisksChanged: (insert) => void disks.refresh(insert),
+    // drive A:'s light, on the Disks button
+    onDriveAccess: (drive) => drive === 'A' && disks.light(),
   });
 }
 
@@ -134,12 +137,38 @@ async function atPrompt(): Promise<Computer | undefined> {
   await powerOn();
   const on = pc;
   if (!on) return undefined;
-  if (on.busy) await on.stopGame();
-  if (on.busy) {
-    say('Quit the program that is running first (Esc usually does it).');
-    return undefined;
-  }
-  return on;
+  // as on the desk (retro/leaveProgram.ts); the BBS or a utility is stopped once you say so
+  const left = await leaveProgram(on, {
+    readOnlyA: disks.protectedA(),
+    say,
+    other: async (p) => (await confirmStop()) && p.stopAnyProgram(),
+  });
+  return left && pc === on ? on : undefined;
+}
+
+/** Another program (the BBS, a utility) is running: stop it? A clear choice, not a dead end. */
+function confirmStop(): Promise<boolean> {
+  return new Promise((resolve) => {
+    const done = (yes: boolean) => {
+      dlg.close();
+      dlg.remove();
+      resolve(yes);
+    };
+    const dlg = h(
+      'dialog',
+      { class: 'dos-dialog dos-confirm', 'aria-labelledby': 'dos-confirm-h', oncancel: () => done(false) },
+      h('h2', { id: 'dos-confirm-h' }, 'Stop the program that’s running?'),
+      h('p', null, 'Another program has the PC (the BBS, say). Stop it and go back to the DOS prompt?'),
+      h(
+        'div',
+        { class: 'dos-confirm-buttons' },
+        h('button', { type: 'button', class: 'dos-btn dos-primary', onclick: () => done(true) }, 'Stop it and go on'),
+        h('button', { type: 'button', class: 'dos-btn', onclick: () => done(false) }, 'Keep it running'),
+      ),
+    );
+    document.body.append(dlg);
+    dlg.showModal();
+  });
 }
 
 /** Types commands at the prompt, one line each. */
@@ -152,6 +181,7 @@ async function command(cmd: string): Promise<void> {
 
 const disks = diskMenu({
   pc: () => pc,
+  on: async () => (await powerOn(), pc),
   atPrompt,
   command,
   say,
@@ -162,7 +192,7 @@ const cdBtn = toggle('💿', 'Game-Maker CD', 'Put the Game-Maker CD in drive D:
 async function setCd(on: boolean): Promise<void> {
   await powerOn();
   if (!pc) return;
-  if (!on && pc.busy) return say('The CD-ROM is in use. Quit the running program first.');
+  // in or out whenever you like, as on a real PC: a program finds D: empty the next time it looks
   if (on) pc.insertCd();
   else pc.ejectCd();
   cdBtn.setAttribute('aria-pressed', String(on));
