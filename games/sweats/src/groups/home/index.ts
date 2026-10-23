@@ -5,6 +5,8 @@ import type { Group } from '../types';
 import { blanket, blanketBlocks, blanketSprites } from './blanket';
 import { socks, socksBlocks, socksSprites } from './socks';
 import { pizza, pizzaBlocks, pizzaSprites } from './pizza';
+import { itch, itchBlocks, itchSprites } from './itch';
+import { dbltap, dbltapBlocks, dbltapSprites } from './dbltap';
 import { HOME_RAMPS, buildHouse, houseSprites } from './house';
 
 export const home: Group = {
@@ -16,12 +18,16 @@ export const home: Group = {
     blanketBlocks(book, pal);
     socksBlocks(book, pal);
     pizzaBlocks(book, pal);
+    itchBlocks(book, pal);
+    dbltapBlocks(book, pal);
   },
   sprites: (book, pal) => {
     houseSprites(book, pal);
     blanketSprites(book, pal);
     socksSprites(book, pal);
     pizzaSprites(book, pal);
+    itchSprites(book, pal);
+    dbltapSprites(book, pal);
   },
-  monologues: [blanket, socks, pizza],
+  monologues: [blanket, socks, pizza, itch, dbltap],
 };

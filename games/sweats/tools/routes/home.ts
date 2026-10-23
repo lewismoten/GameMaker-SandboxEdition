@@ -7,8 +7,10 @@ import { MON } from '../../src/ids';
 import { home } from '../../src/groups/home';
 import { SOULS } from '../../src/groups/home/blanket';
 import { SOCKS } from '../../src/groups/home/socks';
-import { PIZZA_MON, SOCKS_MON } from '../../src/groups/home/ids';
+import { DBLTAP_MON, ITCH_MON, PIZZA_MON, SOCKS_MON } from '../../src/groups/home/ids';
 import { PLOYS } from '../../src/groups/home/pizza';
+import { KIT } from '../../src/groups/home/itch';
+import { CAUSES } from '../../src/groups/home/dbltap';
 import type { Bot } from '../bot';
 import { carefully as carefully0, declaim, expect, leave, must, plot, type Route } from '../route';
 
@@ -33,7 +35,7 @@ function nothingLeft(bot: Bot, w: number, h: number): void {
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
       const name = n.get(bot.sim.blockAt(x + ORIGIN, y + ORIGIN)) ?? '';
-      if (/^(coin|bill|mug)@/.test(name) || /^(soul|sock|ploy|kit|like)/.test(name)) left.push(`${name} at ${x},${y}`);
+      if (/^(coin|bill|mug)@/.test(name) || /^(soul@|sock\d|ploy\d|kit\d|like\d)/.test(name)) left.push(`${name} at ${x},${y}`);
     }
   const friends: number[] = [MON.carl, MON.goat, MON.leo];
   for (const m of bot.sim.w.mm) if (friends.includes(m.monnum)) left.push(`friend ${m.monnum} at ${m.curx - ORIGIN},${m.cury - ORIGIN}`);
@@ -61,7 +63,7 @@ function foesOnRow(bot: Bot, ids: number[]): number[] {
 }
 
 /** Waits (up to `max` ticks) for one of the foes `ids` to come within `reach` blocks on his row, and declaims. */
-async function waitAndDeclaim(bot: Bot, ids: number[], what: string, reach = 4, max = 400): Promise<void> {
+async function waitAndDeclaim(bot: Bot, ids: number[], what: string, reach = 4, max = 200): Promise<void> {
   for (let t = 0; t < max; t++) {
     if (foesOnRow(bot, ids).some((d) => Math.abs(d) <= reach)) return declaim(bot, what);
     await must(bot, bot.wait(1), what);
@@ -209,6 +211,92 @@ export const HOME_ROUTES: Record<string, Route> = {
       if (plot(bot) < PLOYS) throw new Error(`only ${plot(bot)} ploys`);
       nothingLeft(bot, 60, 12);
       await leave(bot, bot.walk(57.5, 'the box: make your move'), 'the box');
+    });
+  },
+  /** Janet, This Is Not About You: up on Janet's table past the itch and her TSKs for the napkin, out the door, over the toddler, the keys, the eyebrow hair, the glasses, the itch's ghosts, up the dumpster for the sanitizer, Carl, the HONKs, the car. */
+  itch: async (bot) => {
+    expect(bot, 'itch');
+    await carefully(bot, "Janet's table", 0, async () => {
+      await must(bot, bot.walk(5, 'the table'), 'table');
+      await must(bot, bot.hop('right', 12, 'right', 6.5), 'onto the table');
+      await waitAndDeclaim(bot, [ITCH_MON.ghost, ITCH_MON.tsk], 'the itch, TSK');
+      await must(bot, bot.walk(10, 'on'), 'on');
+      await waitAndDeclaim(bot, [ITCH_MON.ghost, ITCH_MON.tsk], 'the itch, TSK');
+      await must(bot, bot.walk(13, 'the napkin'), 'napkin');
+      await must(bot, bot.walk(19, 'the mug, out the door'), 'door');
+    });
+    await carefully(bot, 'the toddler, the keys, the eyebrow hair', 0, async () => {
+      await must(bot, bot.walk(21.5, 'the coin, the toddler'), 'toddler');
+      await must(bot, bot.hop('right', 12, 'right', 24.5), 'over the toddler');
+      await must(bot, bot.walk(28, 'the keys, the dollar'), 'keys');
+      await declaim(bot, 'the eyebrow hair');
+      await must(bot, bot.walk(30, 'on'), 'on');
+      await declaim(bot, 'the eyebrow hair');
+      await must(bot, bot.walk(37, 'the tinted glasses'), 'glasses');
+    });
+    await carefully(bot, 'the itch, the dumpster', 0, async () => {
+      await waitAndDeclaim(bot, [ITCH_MON.ghost], 'the itch');
+      await must(bot, bot.walk(42.5, 'the coin, the dumpster'), 'dumpster');
+      await must(bot, bot.hop('right', 12, 'right', 44.5), 'onto the dumpster');
+      await must(bot, bot.walk(45, 'the sanitizer'), 'sanitizer');
+      await must(bot, bot.walk(49, 'down, the mug, Carl'), 'mug');
+      greeted(bot, MON.carl, 'Carl');
+    });
+    await carefully(bot, 'the last itch, the HONKs, the car', 0, async () => {
+      await waitAndDeclaim(bot, [ITCH_MON.ghost, ITCH_MON.honk], 'the itch, HONK');
+      await must(bot, bot.walk(51, 'the coin'), 'coin');
+      await waitAndDeclaim(bot, [ITCH_MON.ghost, ITCH_MON.honk], 'the itch, HONK');
+      await must(bot, bot.walk(54, 'on'), 'on');
+      await waitAndDeclaim(bot, [ITCH_MON.honk], 'HONK');
+      if (plot(bot) < KIT) throw new Error(`only ${plot(bot)} of the kit`);
+      nothingLeft(bot, 64, 12);
+      await leave(bot, bot.walk(57.5, 'the car behind the bank'), 'the car');
+    });
+  },
+  /** Double Tap for Justice: over the couch and Teddy, in through the phone, up the posts to page six, the petitions, the trending tags, the newsletters, the outlier, Doc Leo, the turtles, POST. */
+  dbltap: async (bot) => {
+    expect(bot, 'dbltap');
+    await carefully(bot, 'the couch, the phone', 0, async () => {
+      await must(bot, bot.walk(3, 'the couch'), 'couch');
+      await must(bot, bot.hop('right', 12, 'right', 6.5), 'over the couch');
+      await must(bot, bot.walk(7, 'the bowl of cereal'), 'cereal');
+      await must(bot, bot.hop('right', 12, 'right', 9.5), 'over Teddy');
+      await must(bot, bot.walk(15, 'the coin, in through the phone'), 'phone');
+    });
+    await carefully(bot, 'up to page six', 0, async () => {
+      await must(bot, bot.hop('right', 12, 'right', 16.5), 'onto a post');
+      await must(bot, bot.walk(18, 'the coin'), 'coin');
+      await must(bot, bot.hop('right', 12, 'right', 20.5), 'up to the next post');
+      await must(bot, bot.walk(21, 'a like'), 'like');
+      await must(bot, bot.walk(23.5, 'down off the posts'), 'down');
+    });
+    await carefully(bot, 'the petitions, the trends', 0, async () => {
+      await declaim(bot, 'the petition');
+      await must(bot, bot.walk(25, 'the dollar'), 'dollar');
+      await waitAndDeclaim(bot, [DBLTAP_MON.trend, DBLTAP_MON.petition], 'the trend, the petition');
+      await must(bot, bot.walk(27, 'on'), 'on');
+      await waitAndDeclaim(bot, [DBLTAP_MON.trend, DBLTAP_MON.petition], 'the trend, the petition');
+      await must(bot, bot.walk(32, 'the papaya'), 'papaya');
+      await declaim(bot, 'the newsletter');
+    });
+    await carefully(bot, 'the outlier on the post', 0, async () => {
+      await must(bot, bot.walk(33.5, 'by the post'), 'post');
+      await must(bot, bot.hop('right', 12, 'right', 35), 'onto the post');
+      await waitAndDeclaim(bot, [DBLTAP_MON.shroom], 'the outlier');
+      await must(bot, bot.walk(38, 'the pomelo, the coin'), 'pomelo');
+      await must(bot, bot.hop('right', 12, 'right', 41), 'up to the high post');
+      await must(bot, bot.walk(43, 'the mug'), 'mug');
+      await must(bot, bot.walk(44.5, 'down'), 'down');
+    });
+    await carefully(bot, 'Doc Leo, the turtles, POST', 0, async () => {
+      await must(bot, bot.walk(47, 'Doc Leo, the mushroom pin'), 'pin');
+      greeted(bot, MON.leo, 'Doc Leo');
+      await waitAndDeclaim(bot, [DBLTAP_MON.shroom], 'the outlier');
+      await must(bot, bot.walk(52.5, 'the coin'), 'coin');
+      await must(bot, bot.hop('right', 12, 'right', 56.5), 'over the turtle');
+      if (plot(bot) < CAUSES) throw new Error(`only ${plot(bot)} causes`);
+      nothingLeft(bot, 64, 12);
+      await leave(bot, bot.walk(58.5, 'POST'), 'POST');
     });
   },
 };
