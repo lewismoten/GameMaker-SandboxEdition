@@ -11,7 +11,7 @@ import { byCollection, COLLECTIONS, isBizarreGame } from '../../project/bizarre'
 
 export { byCollection, COLLECTIONS };
 import { SOFA_PHONE } from '../../retro/bbs/sofa';
-import { sofaZipName, sofaZipSize } from '../../retro/bbs/sofaFiles';
+import { downloadLine, hardDiskLine, sizeText, zipBytes, zipName } from '../../project/diskFacts';
 import { sheet, type Sheet } from './kit';
 
 const ISSUE = 'Winter 1995';
@@ -70,8 +70,10 @@ async function gameBlock(g: CatalogEntry): Promise<HTMLElement> {
       h(
         'p',
         { class: 'bard-meta' },
-        `${g.year ?? 1995} · ${sofaZipName(g)} ${sofaZipSize(g).toLocaleString('en-US')} bytes · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`,
+        `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`,
       ),
+      // what a caller weighed before tying up the phone line: the ZIP's size and time, and the room it takes
+      h('p', { class: 'bard-meta' }, `${zipName(g)} · ${sizeText(zipBytes(g))}: ${downloadLine(zipBytes(g), ', ')} · ${hardDiskLine(g)}`),
       h('p', null, pitch(g)),
     ),
   );
