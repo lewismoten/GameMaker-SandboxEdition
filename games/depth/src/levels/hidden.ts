@@ -1,5 +1,5 @@
 // The Sandbox Software regulars tucked into the render (games/kit/TIN-HEARTS.md): the tin heart
-// in the Checkerboard's first room, a painted Easter egg in the Glass Garden's first room, and
+// in a corner of the Glass Garden's pond room, a painted Easter egg in its first room, and
 // Watt from Ohm Sweet Ohm beside THE CHEZ in Teapot Temple, keeping an eye on its charge port.
 // Each is a floor cell, ray traced like any other, with the kit's pixel art laid over it in the
 // level's own colors (nearest match; the palette is picked without them, so no other block

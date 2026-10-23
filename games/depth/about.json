@@ -10,7 +10,7 @@
   "egg": {
     "block": 149
   },
-  "tinHeart": { "map": "l1near.map", "at": [29, 51] },
+  "tinHeart": { "map": "l2near.map", "at": [59, 59] },
   "easterEgg": { "map": "l2near.map", "at": [35, 46] },
   "label": {
     "background": "#f2f0ff",
