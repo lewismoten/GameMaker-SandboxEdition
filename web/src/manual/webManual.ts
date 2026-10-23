@@ -171,14 +171,39 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     experiences and hobbies. Lewis directed each game and played it as it came together, and
     his feedback shaped every one. Teddy, Gwinn and Doc Leo appear as themselves.</p>
     <h3>The Bard of Bizarre</h3>
-    <p>The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, with his hobo clown, Doc
-    Leo, as its face. It started with Christian songs, his “bizarre gospels” that dwell on the
-    wrong thing in the Bible but sort of make sense, but the Bard isn’t limited to them. Lewis
-    dreams up each song and prompts AI tools to write and record it. Some of those songs have
-    become games, shareware “uploaded” to The Sofa BBS: so far <b>Third Goat from the Left</b>,
-    <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b>, <b>Loaf #13 (Left in the
-    Basket)</b>, <b>Certified Rat Tickler</b>, <b>Where’s the Remote?!</b>, <b>A Fly Named Carl</b>, <b>The Great
-    Dairy Reckoning of 3:17 A.M.</b>, <b>Cleanse Me, O Loofah, But Leave My Soul</b>, <b>I Screamed, She Smirked</b> and <b>Shakespeare in Sweatpants</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
+    <p>The Bard of Bizarre is Lewis “Lewie” Moten III’s song project, and his hobo clown, Doc
+    Leo, PhD (Comedic Science), is its face. The Bard has one rule: the smaller and more
+    overlooked the thing, the bigger the song it deserves. So the goat at the edge of the
+    manger, the loaf left in the basket, the fly in the room and the remote lost in the couch
+    each get the full treatment (a gospel choir, a goth anthem, an opera, a trembling
+    monologue), sung with a straight face and a lot of love. The songs are silly but never
+    mean, and fine for the whole family. It began with Christian songs and grew from there;
+    so far the songs fall into four collections:</p>
+    <ul>
+      <li><b>Bizarre gospels</b>: the wrong detail of a Bible story, taken very seriously. The
+      goat nobody painted in <b>Third Goat from the Left</b>, the smallest seed with the biggest
+      dreams in <b>Mustard Seed Hustle</b>, the camel left holding the rich man’s gold in
+      <b>Thread the Needle, Brother Camel</b>, and the bread nobody picked when the five
+      thousand were fed in <b>Loaf #13 (Left in the Basket)</b>. They sort of make sense, and
+      that’s the trouble.</li>
+      <li><b>Mundane epics</b>: tiny everyday disasters sung like the end of the world. <b>A Fly
+      Named Carl</b>, <b>Where’s the Remote?!</b>, a slice of cheesecake in <b>The Great Dairy
+      Reckoning of 3:17 A.M.</b>, a borrowed pink loofah in <b>Cleanse Me, O Loofah, But Leave
+      My Soul</b>, a haunted house and an eight-year-old who isn’t scared in <b>I Screamed, She
+      Smirked</b>, and <b>Certified Rat Tickler</b>, from the real certificate in rat tickling
+      Lewis earned.</li>
+      <li><b>Shakespeare in Sweatpants</b>: seventeen spoken monologues by a man in a starched
+      ruff and grey sweatpants about the most dramatic things that ever happened to him, like a
+      lost pen, a dead ficus named Gerald and the self-checkout. The game puts him on stage at
+      open-mic night.</li>
+      <li><b>Veni, Vidi, Risi!</b>: six songs in Latin, as grand as Rome, about a dog who breaks
+      wind at a senators’ dinner, a coward who wins every battle with his feet, a tongue
+      twister, a cat after the cheese, a golden fish who sings in the baths, and a Latin song so
+      clever that nobody laughs.</li>
+    </ul>
+    <p>Lewis dreams up each song and prompts AI tools to write and record it. Some of the songs
+    have become games, shareware “uploaded” to The Sofa BBS in the story, and with four or more
+    they got a Bizarre collection of their own on the home page.</p>
     <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each
     song’s words were written by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
     back and forth), and each recording was made with Riffusion (now Google Flow Music).
