@@ -89,10 +89,10 @@ export const SAVES_CHANGED = 'gm-saves-changed';
  * Adds or replaces one save file by rewriting the game's whole save record (read, change,
  * put in separate transactions). Failures are logged, not thrown, so play goes on.
  */
-export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array, o: { quiet?: boolean } = {}): Promise<void> {
   // one game's writes take turns: saving writes savnames.dat and gameN.sav back to back,
   // and two overlapping read-change-puts would lose the first file (the slot's name)
-  const queued = (saveWrites.get(gameId) ?? Promise.resolve()).then(() => storeSaveFile(gameId, name, bytes));
+  const queued = (saveWrites.get(gameId) ?? Promise.resolve()).then(() => storeSaveFile(gameId, name, bytes, o.quiet));
   saveWrites.set(gameId, queued);
   void queued.then(() => {
     if (saveWrites.get(gameId) === queued) saveWrites.delete(gameId);
@@ -102,12 +102,13 @@ export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): 
 
 const saveWrites = new Map<string, Promise<void>>();
 
-async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+// quiet: no SAVES_CHANGED (the achievements' record is no game's save; an open Saves & scores need not reload)
+async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array, quiet = false): Promise<void> {
   try {
     const current = await loadSaveData(gameId);
     current[name] = bytes;
     await request(SAVES, 'readwrite', (s) => s.put(current, gameId));
-    if (typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
+    if (!quiet && typeof window !== 'undefined') window.dispatchEvent(new Event(SAVES_CHANGED));
   } catch (e) {
     console.warn('Could not store save data', e);
   }
