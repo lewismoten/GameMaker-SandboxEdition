@@ -347,18 +347,25 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('fire1', fire(1), { solid: SOLID, hp: -6, next: 'fire0', ntime: 3 });
 
   // ---------- the caravan ----------
+  // A tent is two blocks tall, drawn whole and cut in two: the gold band only along its top,
+  // and a doorway that runs from under the band down to the ground.
   const tent = (k: string, doorway: boolean) => {
-    const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R(k), 0, 3, 0.35 + ((x + y) % 10) / 22, x, y));
-    for (let x = 0; x < 20; x += 5) p.rect(x, 0, 1, 20, c(k, 0));
+    const p = new Pixels(20, 40);
+    for (let y = 0; y < 40; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R(k), 0, 3, 0.35 + ((x + y) % 10) / 22, x, y));
+    for (let x = 0; x < 20; x += 5) p.rect(x, 0, 1, 40, c(k, 0));
     p.rect(0, 0, 20, 2, c('gold', 1));
-    if (doorway) p.rect(6, 6, 8, 14, c('ink', 0)).line(6, 6, 2, 19, c(k, 1)).line(13, 6, 17, 19, c(k, 1)).rect(9, 12, 2, 2, c('glow', 2));
-    return p;
+    if (doorway) p.rect(6, 6, 8, 34, c('ink', 0)).line(6, 6, 1, 39, c(k, 1)).line(13, 6, 18, 39, c(k, 1)).rect(9, 14, 2, 2, c('glow', 2));
+    return [p.crop(0, 0, 20, 20), p.crop(0, 20, 20, 20)];
   };
-  book.add('tentP', tent('purple', false), { solid: SOLID });
-  book.add('tentB', tent('blue', false), { solid: SOLID });
-  book.add('tentR', tent('red', false), { solid: SOLID });
-  book.add('tentDoor', tent('purple', true), { solid: SOLID });
+  const tents = {
+    purple: [tent('purple', false), tent('purple', true)],
+    blue: [tent('blue', false), tent('blue', true)],
+    red: [tent('red', false), tent('red', true)],
+  };
+  book.add('tentP', tents.purple[0][0], { solid: SOLID });
+  book.add('tentB', tents.blue[0][0], { solid: SOLID });
+  book.add('tentR', tents.red[0][0], { solid: SOLID });
+  book.add('tentDoor', tents.purple[1][0], { solid: SOLID });
   // The gifts: not for eating, even by a goat.
   const gift = (kind: 'gold' | 'frank' | 'myrrh') => {
     const p = sand(151);
@@ -511,5 +518,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('exitS', exitWay(cobble(193), 'V'));
   book.add('exitN', exitWay(sand(195), 'A'));
   book.add('stableDoor', exitWay(straw(197), '>'));
+  // the caravan tents' lower halves, and the blue and red tents' doorways (added last, so the
+  // blocks before keep their numbers)
+  for (const [k, n] of [['purple', 'P'], ['blue', 'B'], ['red', 'R']] as const) {
+    book.add(`tent${n}Low`, tents[k][0][1], { solid: SOLID });
+    book.add(`tentDoor${n}Low`, tents[k][1][1], { solid: SOLID });
+    if (n !== 'P') book.add(`tentDoor${n}`, tents[k][1][0], { solid: SOLID });
+  }
   return book;
 }

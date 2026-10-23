@@ -283,6 +283,11 @@ export function caravan(book: BlockBook): Level {
     ],
     40,
   );
+  // the tents' lower halves, and each tent's own doorway down to the ground
+  for (const [x0, n] of [[3, 'P'], [12, 'B'], [21, 'R']] as const) {
+    for (let x = x0; x < x0 + 6; x++) m.set(x, 10, x === x0 + 3 ? `tentDoor${n}Low` : `tent${n}Low`);
+    if (n !== 'P') m.set(x0 + 3, 9, `tentDoor${n}`);
+  }
   // camels strutting along two lanes, and a wise man pacing before the tents
   // the stable door is in a pocket of rocks, and the only way in is through the spitting camel's line
   for (let y = 16; y <= 21; y++) if (y !== 18) m.set(36, y, 'rockSand');
