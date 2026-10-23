@@ -12,6 +12,32 @@ import { BLEN, TRANSPARENT, parseBlocks, BLOCK_COUNTS, type BlockKind } from '..
 import { parsePalette } from '../src/formats/palette';
 import { heroPixels, type LevelPicture } from '../src/gfx/levelPicture';
 import { encodeIndexedPng } from './gameShots';
+import { chezPicture } from '../../games/kit/chez';
+
+/** THE CHEZ's colors (6-bit VGA): tomato red, a black roof, white steel wheels. */
+const CHEZ_PAL: [number, number, number][] = [
+  [0, 0, 0],
+  [42, 8, 4], // 1 body shadow
+  [58, 16, 9], // 2 body
+  [63, 32, 22], // 3 body highlight
+  [34, 4, 3], // 4 door seams
+  [8, 12, 20], // 5 dark glass
+  [40, 48, 56], // 6 light glass
+  [4, 4, 6], // 7 roof
+  [6, 6, 7], // 8 tires, stripes
+  [50, 52, 56], // 9 chrome
+  [12, 12, 14], // 10 bumpers
+  [63, 44, 0], // 11 amber marker
+  [52, 4, 4], // 12 red marker
+  [61, 61, 60], // 13 white: lens, pinstripes, rims
+];
+
+function chezArt(scale: number): LevelPicture {
+  const car = chezPicture({ body: [1, 2, 3], trim: 4, glass: [5, 6], roof: 7, tire: 8, hub: 9, bumper: 10, lamp: 11, tail: 12, lens: 13, pin: 13, rim: 13 }, 'right', scale);
+  const palette = new Uint8Array(768);
+  CHEZ_PAL.forEach((c, i) => palette.set(c, i * 3));
+  return { width: car.w, height: car.h, pixels: Uint8Array.from(car.px), palette };
+}
 
 type Crop = [x: number, y: number, w: number, h: number];
 
@@ -20,6 +46,8 @@ type Source =
   | { game: string; fli: string; frame: number; crop: Crop }
   | { game: string; gif: string; crop: Crop }
   | { game: string; chr: string; cbl: string; pal: string; seq?: number }
+  /** THE CHEZ's shared side view (games/kit/chez.ts) at `chez` times its 40x20, in its own colors. */
+  | { game: string; chez: number }
   /** Blocks of a .bbl/.mbl/.cbl laid out in rows (-1 for none), in a palette. */
   | { game: string; blocks: string; pal: string; grid: number[][] };
 
@@ -28,9 +56,16 @@ export const CAST_ART: Record<string, Source> = {
   gwinn: { game: 'teddy', fli: 'cast.fli', frame: 62, crop: [168, 26, 146, 146] },
   leo: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [56, 8, 212, 160] },
   chicken: { game: 'teddy', fli: 'cast.fli', frame: 125, crop: [206, 56, 60, 112] },
-  chez: { game: 'teddy', fli: 'cast.fli', frame: 150, crop: [0, 38, 196, 160] },
+  chez: { game: 'teddy', chez: 3 },
   doghouse: { game: 'teddy', fli: 'cast.fli', frame: 185, crop: [36, 14, 164, 182] },
+  lewis: { game: 'sandcast', fli: 'sysop.fli', frame: 182, crop: [6, 16, 180, 180] },
   bard: { game: 'carl', gif: 'bardpic.gif', crop: [178, 12, 120, 112] },
+  joe: { game: 'brief', chr: 'joe.chr', cbl: 'joe.cbl', pal: 'brief.pal' },
+  carl: { game: 'carl', chr: 'carl.chr', cbl: 'carl.cbl', pal: 'couch.pal' },
+  goat: { game: 'goat', chr: 'goat.chr', cbl: 'goat.cbl', pal: 'town.pal' },
+  seed: { game: 'mustard', chr: 'seed.chr', cbl: 'mustard.cbl', pal: 'mound.pal' },
+  loaf: { game: 'loaf', chr: 'loaf.chr', cbl: 'loaf.cbl', pal: 'hill.pal' },
+  camel: { game: 'needle', chr: 'loaded.chr', cbl: 'loaded.cbl', pal: 'city.pal' },
 };
 
 const disk = (game: string, file: string) => readFileSync(join(__dirname, '../../games', game, 'disk', file));
@@ -41,7 +76,26 @@ function crop(width: number, pixels: Uint8Array, palette: Uint8Array, [x0, y0, w
   return { width: w, height: h, pixels: out, palette };
 }
 
+/** A sprite without the see-through rows round it (a one-block hero stands in a two-block frame). */
+function trim(pic: LevelPicture): LevelPicture {
+  const row = (y: number) => pic.pixels.subarray(y * pic.width, (y + 1) * pic.width).some((c) => c !== TRANSPARENT);
+  let top = 0;
+  let bottom = pic.height;
+  while (top < bottom - 1 && !row(top)) top++;
+  while (bottom > top + 1 && !row(bottom - 1)) bottom--;
+  return { ...pic, height: bottom - top, pixels: pic.pixels.slice(top * pic.width, bottom * pic.width) };
+}
+
 export function castPicture(s: Source): LevelPicture | undefined {
+  if ('chez' in s) return trim(chezArt(s.chez));
+  if ('chr' in s || 'blocks' in s) {
+    const pic = sprite(s);
+    return pic && trim(pic);
+  }
+  return picture(s);
+}
+
+function picture(s: Source): LevelPicture | undefined {
   if ('fli' in s) {
     const anim = parseFli(disk(s.game, s.fli));
     const canvas = newFliCanvas(anim);
@@ -52,7 +106,12 @@ export function castPicture(s: Source): LevelPicture | undefined {
     const img = decodeGif(disk(s.game, s.gif));
     return crop(img.width, img.pixels, img.palette, s.crop);
   }
+  return undefined;
+}
+
+function sprite(s: Source): LevelPicture | undefined {
   if ('chr' in s) return heroPixels({ get: (name) => disk(s.game, name) }, s);
+  if (!('blocks' in s)) return undefined;
   const kind = s.blocks.split('.').pop()!.toLowerCase() as BlockKind;
   const blocks = parseBlocks(disk(s.game, s.blocks), BLOCK_COUNTS[kind]);
   const cols = Math.max(...s.grid.map((r) => r.length));
@@ -74,7 +133,7 @@ export function castPicture(s: Source): LevelPicture | undefined {
   for (const [id, s] of Object.entries(CAST_ART)) {
     const pic = castPicture(s);
     if (!pic) throw new Error(`${id}: nothing to draw from ${s.game}`);
-    const png = encodeIndexedPng(pic, 'blocks' in s || 'chr' in s ? TRANSPARENT : undefined);
+    const png = encodeIndexedPng(pic, 'blocks' in s || 'chr' in s || 'chez' in s ? TRANSPARENT : undefined);
     writeFileSync(join(dir, `${id}.png`), png);
     console.log(`${id}.png ${pic.width}x${pic.height} ${png.length} bytes`);
   }

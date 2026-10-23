@@ -129,19 +129,13 @@ main.cast .lead {
 
 .cast-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
   gap: 16px;
-}
-
-@media (max-width: 420px) {
-  .cast-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 .cast-card {
   display: grid;
-  grid-template-columns: 104px minmax(0, 1fr);
+  grid-template-columns: 128px minmax(0, 1fr);
   gap: 14px;
   padding: 14px;
   border: 1px solid var(--border);
@@ -162,25 +156,22 @@ main.cast .lead {
 .cast-pic {
   display: grid;
   place-items: center;
-  width: 104px;
-  height: 104px;
+  width: 128px;
+  height: 128px;
   border-radius: 8px;
-  background: #000;
+  background: #0b0b18;
   overflow: hidden;
 }
 
 .cast-pic img {
-  max-width: 96px;
-  max-height: 96px;
-  width: auto;
+  max-width: 100%;
   height: auto;
-  image-rendering: pixelated;
+  max-height: 100%;
+  object-fit: contain;
 }
 
-/* small sprites are drawn at a whole multiple of their pixels */
-.cast-pic img[width='20'],
-.cast-pic img[width='40'] {
-  zoom: 2;
+.cast-pic img.sprite {
+  image-rendering: pixelated;
 }
 
 .cast-text h3 {
@@ -209,6 +200,10 @@ main.cast .lead {
   line-height: 1.5;
 }
 
+.cast-appears {
+  grid-column: 1 / -1;
+}
+
 .cast-appears summary {
   cursor: pointer;
   font-size: 14px;
@@ -221,12 +216,15 @@ main.cast .lead {
   list-style: none;
   font-size: 14px;
   line-height: 1.45;
+  columns: 2 15rem;
+  column-gap: 16px;
 }
 
 .cast-appears li {
   padding: 2px 0 2px 10px;
   border-left: 3px solid var(--fam);
   margin-bottom: 3px;
+  break-inside: avoid;
 }
 
 .cast-as {
@@ -239,23 +237,14 @@ main.cast .lead {
 
 @media (max-width: 520px) {
   .cast-card {
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: 88px minmax(0, 1fr);
+    padding: 12px;
     gap: 12px;
   }
 
   .cast-pic {
-    width: 72px;
-    height: 72px;
-  }
-
-  .cast-pic img {
-    max-width: 64px;
-    max-height: 64px;
-  }
-
-  .cast-pic img[width='20'],
-  .cast-pic img[width='40'] {
-    zoom: 1.5;
+    width: 88px;
+    height: 88px;
   }
 }
 

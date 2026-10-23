@@ -15,6 +15,13 @@ const FILTERS: [Family | 'all', string][] = [
 const gameHref = (id: string) => `#/game/cd:${id}`;
 const tabHref = (tab: string) => `#/?tab=${tab}`;
 
+/** A sprite at a whole multiple of its pixels; a bigger picture fitted to the frame. */
+function shown(m: CastMember): { width: number; height: number } {
+  const { width: w, height: h } = m.art;
+  const k = Math.max(w, h) <= 40 ? Math.min(4, Math.floor(96 / Math.max(w, h))) : Math.min(1, 128 / Math.max(w, h));
+  return { width: Math.round(w * k), height: Math.round(h * k) };
+}
+
 function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLElement {
   const families = familiesOf(m);
   return h(
@@ -23,7 +30,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
     h(
       'div',
       { class: 'cast-pic' },
-      h('img', { src: `./cast/${m.id}.png`, width: m.art.width, height: m.art.height, alt: m.art.alt, loading: 'lazy', decoding: 'async' }),
+      h('img', { src: `./cast/${m.id}.png`, ...shown(m), alt: m.art.alt, loading: 'lazy', decoding: 'async', class: Math.max(m.art.width, m.art.height) <= 128 ? 'sprite' : undefined }),
     ),
     h(
       'div',
@@ -31,15 +38,15 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
       h('h3', { id: `cast-${m.id}-name` }, h('a', { href: `#/cast?who=${m.id}`, class: 'cast-anchor', onclick: (e: Event) => pick(m, e) }, m.name)),
       h('p', { class: 'cast-role' }, m.role),
       h('p', { class: 'cast-bio' }, m.bio),
+    ),
+    h(
+      'details',
+      { class: 'cast-appears', open: true },
+      h('summary', null, `Appears in ${m.appears.length} game${m.appears.length === 1 ? '' : 's'}`),
       h(
-        'details',
-        { class: 'cast-appears', open: true },
-        h('summary', null, `Appears in ${m.appears.length} game${m.appears.length === 1 ? '' : 's'}`),
-        h(
-          'ul',
-          null,
-          m.appears.map((a) => h('li', { class: `fam-${CAST_GAMES[a.game][1]}` }, h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]), h('span', { class: 'cast-as' }, ` — ${a.as}`))),
-        ),
+        'ul',
+        null,
+        m.appears.map((a) => h('li', { class: `fam-${CAST_GAMES[a.game][1]}` }, h('a', { href: gameHref(a.game) }, CAST_GAMES[a.game][0]), h('span', { class: 'cast-as' }, ` — ${a.as}`))),
       ),
     ),
   );
