@@ -164,6 +164,8 @@ export async function theWasteland(bot: Bot): Promise<void> {
 /** 3. Twelve baskets full: every empty basket on the hillside touched and gathered up full, then into the twelfth. */
 export async function theBaskets(bot: Bot): Promise<void> {
   expect(bot, 4, 'the baskets');
+  // every basket gathered sings "twelve baskets full": the bot lets each finish before it hops
+  bot.patient = true;
   const start = baskets(bot);
   const gathered = (n: number, where: string) => {
     if (baskets(bot) - start < n) throw new Error(`${baskets(bot) - start} baskets gathered by ${where}`);
@@ -171,7 +173,6 @@ export async function theBaskets(bot: Bot): Promise<void> {
   await carefully(bot, 'the first baskets', 10, async () => {
     // the first basket sings "twelve baskets full": let it, before the next hop puffs over it
     await must(bot, bot.until('right', () => baskets(bot) - start >= 1, 'the first basket', 60), 'basket 1');
-    await must(bot, bot.sim.waitForClip(), 'the first basket sings');
     await must(bot, bot.walk(7, 'over the first basket'), 'over basket 1');
     await must(bot, bot.walk(9, 'under the stone'), 'stone');
     await must(bot, bot.hop('up', 10), 'up to the basket on the stone');
@@ -209,6 +210,7 @@ export async function theBaskets(bot: Bot): Promise<void> {
     await must(bot, bot.hop('right', 12, 'right', 64.5), 'over the disciple');
     await leave(bot, bot.walk(77, 'the twelfth basket'), 'into the twelfth basket and through it');
   });
+  bot.patient = false;
 }
 
 /** 4. The way home: over the roofs, the dogs and the brook, by the well and Brother Camel, to her door. */

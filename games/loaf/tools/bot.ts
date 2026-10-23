@@ -2,7 +2,7 @@
 // in the way), hops straight or sideways and steers while it falls, climbs the weave,
 // and waits. Moving monsters (the peacock, crows, beetles) are handled by trying a stretch
 // again from a snapshot after a wait (route.ts, carefully()).
-import { SCAN } from '../src/ids';
+import { BASKETS, SCAN } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import type { GameSim } from './sim';
 
@@ -11,7 +11,15 @@ type Result = string | undefined;
 
 export class Bot {
   log: string[] = [];
+  /** Let a clip that is playing (a basket's "twelve baskets full") finish before a hop's puff. */
+  patient = false;
   constructor(readonly sim: GameSim) {}
+
+  /** When patient: stands still until the playing clip ends (keys let go). */
+  async letClipFinish(): Promise<Result> {
+    if (!this.patient || this.sim.clipTicksLeft <= 0) return undefined;
+    return (await this.sim.waitForClip()) ?? undefined;
+  }
 
   snapshot() {
     return { sim: this.sim.snapshot(), log: this.log.length };
@@ -75,6 +83,18 @@ export class Bot {
     return 'never landed';
   }
 
+  /** An empty basket (one that sings when gathered) within a step of the loaf's side, or under that step. */
+  basketAhead(dir: Dir): boolean {
+    const p = this.px;
+    const x = Math.floor((dir === 'right' ? p.x + 20 + 4 : p.x - 4) / 20);
+    // its rows, and the row under its feet (a basket at the end of a branch is gathered from above)
+    const ys = [Math.floor(p.y / 20), Math.ceil(p.y / 20), Math.ceil(p.y / 20) + 1];
+    return ys.some((y) => {
+      const b = this.sim.shown(x + ORIGIN, y + ORIGIN);
+      return b.effect === BASKETS && b.eamt > 0;
+    });
+  }
+
   /** Walks to level column `bx` (its left edge at bx * 20 px), hopping over whatever stops it. */
   async walk(bx: number, label = '', max = 900): Promise<Result> {
     const goal = bx * 20;
@@ -84,12 +104,21 @@ export class Bot {
     let stuck = 0;
     let lastX = this.px.x;
     for (let t = 0; t < max && !done(); t++) {
+      if (this.patient && this.sim.clipTicksLeft > 0 && this.basketAhead(dir)) {
+        // the next basket would sing over this one: wait for it, then roll on
+        const rc = await this.letClipFinish();
+        if (rc) return (this.sim.releaseAll(), rc);
+        this.sim.press(SCAN[dir]);
+      }
       const r = await this.tick();
       if (r) return (this.sim.releaseAll(), r);
       stuck = this.px.x === lastX ? stuck + 1 : 0;
       lastX = this.px.x;
       if (stuck >= 3) {
         // blocked: hop while still pushing (Up wins the key stack), then let go of Up
+        const rc = await this.letClipFinish();
+        if (rc) return (this.sim.releaseAll(), rc);
+        this.sim.press(SCAN[dir]);
         this.sim.press(SCAN.up);
         const r2 = await this.wait(10);
         this.sim.release(SCAN.up);
@@ -121,6 +150,8 @@ export class Bot {
    */
   async hop(dir: Dir | 'up', hold = 12, steer?: Dir, steerTo?: number): Promise<Result> {
     const key = dir === 'up' ? SCAN.up : dir === 'left' ? SCAN.q : SCAN.e;
+    const rc = await this.letClipFinish();
+    if (rc) return rc;
     this.sim.press(key);
     let r = await this.wait(hold);
     this.sim.release(key);
