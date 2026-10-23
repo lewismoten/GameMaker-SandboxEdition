@@ -160,10 +160,12 @@ formats from their published descriptions and from Game-Maker's own source.
 
 ## The Mac, Windows and Linux players
 
-"Download for Mac", "for Windows" and "for Linux" wrap a game's one web page in a small
-player program written for this project (`mac/`, `win/`, `linux/`; the prebuilt players are
-in `web/public/mac`, `web/public/win` and `web/public/linux`). What they contain or use from
-others:
+Download → Mac, Windows and Linux wrap a game's one web page in a small player program
+written for this project (`mac/`, `win/`, `linux/`; the prebuilt players are in
+`web/public/mac`, `web/public/win` and `web/public/linux`). Every such download carries the
+notices below that apply to it as `THIRD-PARTY-NOTICES.txt` (and the Windows `.exe` inside
+itself, under its window menu's "Third-party notices…"); the text is in
+`web/src/export/notices.ts`. What the players contain or use from others:
 
 - **Windows: the WebView2 interface header.** `win/Player/webview2.h` lists the vtable slots
   and interface IDs the player calls, generated from `WebView2.h` of Microsoft's WebView2 SDK
@@ -196,8 +198,9 @@ others:
   later, with the exception that lets them be linked into any program).
 - **Mac: AppKit and WebKit**, Apple's frameworks that are part of macOS. The player
   (`mac/Player/main.swift`) links only to the system's own libraries.
-- Zig itself is a build tool and none of it is redistributed beyond the runtime pieces
-  above. The `.dmg`, `.tar.gz` and `.zip` containers, the Mac code signature and the Windows
+- Zig itself is a build tool; beyond the runtime pieces above, the Windows and Linux
+  players may contain a few of its compiler support routines (compiler_rt, MIT License,
+  Copyright (c) Zig contributors). The `.dmg`, `.tar.gz` and `.zip` containers, the Mac code signature and the Windows
   resources are written by this project's own code in `web/src/export/`.
 
 ## Third-party code and acknowledgments in the original source
