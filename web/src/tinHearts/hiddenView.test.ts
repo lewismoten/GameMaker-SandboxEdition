@@ -14,7 +14,6 @@ const STILL_SHOWN = new Set([
   'logic:easterEgg',
   'maximus:tinHeart',
   'maximus:easterEgg',
-  'smirked:tinHeart',
 ]);
 
 describe('tin hearts and Easter eggs out of sight', async () => {
