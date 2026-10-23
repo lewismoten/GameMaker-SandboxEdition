@@ -71,7 +71,7 @@ const THEME =
 
 const muted = sbi({ modChar: 0x21, carChar: 0x21, modLevel: 0x1e, carLevel: 0x04, modAD: 0x71, carAD: 0x82, modSR: 0x9e, carSR: 0x8e, feedback: 0x0a });
 const clock = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x10, carLevel: 0x08, modAD: 0xfa, carAD: 0xf9, modSR: 0x88, carSR: 0x88, feedback: 0x0e });
-const drum = sbi({ modChar: 0x00, carChar: 0x00, modLevel: 0x0b, carLevel: 0x00, modAD: 0xa8, carAD: 0xd6, modSR: 0x4c, carSR: 0x4f, feedback: 0x0e });
+const drum = sbi({ modChar: 0x00, carChar: 0x00, modLevel: 0x0f, carLevel: 0x00, modAD: 0xf9, carAD: 0xf7, modSR: 0x6b, carSR: 0x5a, feedback: 0x0c });
 
 const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 100, transpose = 0): Voice => ({
   channel,
