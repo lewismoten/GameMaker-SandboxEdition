@@ -16,7 +16,7 @@
   },
   {
    "scene": 4,
-   "keys": "AU0ZzQZNBc0GSBHIAE0ZzQZNKM0GLh+uAE0XzQYuKK4ATRLNEU0VSArICUgKyBrNBk0PzQZID8gATRTNBk0DzQZIC8gATRnNBk0IzSEu"
+   "keys": "AU0PzUBNCs0GTQXNBkgRyABNGc0GTSjNBi4frgBNF80GLiiuAE0SzRdNEkgKyAlICsgXzQZND80GSA/IAE0UzQZNA80GSAvIAE0ZzQZNCM0pLg=="
   },
   {
    "scene": 5,
@@ -43,7 +43,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18287,
+  "frames": 18738,
   "chapters": [
    {
     "title": "Opening",
@@ -63,19 +63,19 @@
    },
    {
     "title": "Level 3: The Tailor's Shop",
-    "frame": 9585
+    "frame": 9634
    },
    {
     "title": "Level 4: The Eye of the Needle",
-    "frame": 11787
+    "frame": 12073
    },
    {
     "title": "Ending",
-    "frame": 13428
+    "frame": 13879
    },
    {
     "title": "Credits",
-    "frame": 16199
+    "frame": 16650
    }
   ]
  }

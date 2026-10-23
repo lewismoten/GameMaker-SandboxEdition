@@ -57,7 +57,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   vocs.grumble = sample(0.5, voice((t) => 95 + 20 * Math.sin(t * 40) - t * 30, 500, 1100, 4, 0.12), { envelope: env(0.04, 1.2) });
   // a coin given: a bright clink
   vocs.clink = sample(0.35, mix([osc.sine(2093), 0.5], [osc.sine(3136), 0.3], [osc.sine(4186), 0.15]), { envelope: env(0.002, 2.6) });
-  // a chime (points, grace)
+  // a chime (points)
   vocs.chime = sample(0.5, mix([osc.sine(1319), 0.5], [osc.sine(1976), 0.3], [osc.sine(2637), 0.15]), { envelope: env(0.005, 2.4) });
   // a long drink of water
   vocs.sip = sample(0.36, mix([gate(lowNoise(5, 0.2), 0, 0.16), 0.4], [osc.sine((t) => 380 + t * 700), 0.4]), { envelope: env(0.05, 1) });
@@ -85,7 +85,9 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.life, 'thread', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
   add(SND.score, 'chime', speaker((i) => (i < 6 ? 1319 : i < 14 ? 1976 : 0)));
   add(SND.lose, 'sigh', SPEAKER.fall(600, 200));
-  add(SND.gain, 'chime', speaker((i) => (i < 8 ? 900 + i * 120 : 0)));
+  // a counter up (a grace, a spool) is the PC speaker's alone: a soul's thanks (a grace) comes
+  // the very tick after the coin, and a .VOC there would cut "Drop that gold..." 50 ms in
+  set.freqs[SND.gain] = speaker((i) => (i < 8 ? 900 + i * 120 : 0));
   add(SND.spend, place === 'eye' ? 'humpdown' : 'squeeze', SPEAKER.noise(3, 60, 300));
   add(SND.hop, 'clop', speaker((i) => (i < 3 ? 500 : i < 6 ? 0 : i < 9 ? 600 : 0)));
   add(SND.kneel, 'grumble', SPEAKER.noise(4, 70, 160));
