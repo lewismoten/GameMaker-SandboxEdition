@@ -5,3 +5,7 @@
 
 # macOS Finder
 .DS_Store
+
+# Python bytecode from the kit song tools
+__pycache__/
+*.pyc
