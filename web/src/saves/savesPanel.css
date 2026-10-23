@@ -74,6 +74,10 @@ dialog.modal.sv-dialog[open] {
 .sv-nav-item:hover {
   background: var(--panel-2);
 }
+.sv-nav-item.sv-nav-note {
+  cursor: default;
+  background: transparent;
+}
 .sv-nav-item.on {
   background: var(--accent-soft);
   border-color: var(--accent);

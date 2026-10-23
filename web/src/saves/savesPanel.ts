@@ -65,6 +65,7 @@ import {
 import { saveMapView, type Camera, type MapView } from './saveMapView';
 import { tip } from './tip';
 import { BACKBL } from '../formats/blocks';
+import { FOUND_FILE, heartOf, parseFound } from '../tinHearts/tinHearts';
 
 export interface SavesTarget {
   /** The save id ('game:<catalog id>' or 'project:<id>'). */
@@ -186,7 +187,17 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
       h('h3', { class: 'sv-nav-head' }, 'More'),
       item('scores', 'High scores', `${saves.highScores.entries.filter((e) => e.score !== 0).length} of ${HIGH_SCORES}`, dirtyScores() ? '●' : undefined),
       item('backups', 'Backups', backups.length ? `${backups.length} · last ${new Date(backups[0].when).toLocaleDateString('en-US')}` : 'None yet'),
+      heartNote(),
     );
+  };
+
+  /** The game's tin heart, once found (or still to find, in a game that hides one): kept with its saves. */
+  const heartNote = () => {
+    const found = parseFound(saves?.files[FOUND_FILE]);
+    if (!found && !heartOf(target.saveId.replace(/^game:/, ''))) return null;
+    const when = new Date(found?.found ?? '');
+    const sub = found ? (isNaN(+when) ? 'Found' : `Found ${when.toLocaleDateString('en-US', { dateStyle: 'medium' })}`) : 'Not found yet';
+    return h('div', { class: 'sv-nav-item sv-nav-note' }, h('span', { class: 'sv-nav-title' }, 'Tin heart'), h('span', { class: 'sv-nav-sub' }, sub));
   };
 
   const go = (v: View) => {
@@ -808,7 +819,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     const hasSaves = saves!.slots.some((s) => s.bytes) || !!saves!.highScoreFile && !saves!.highScoresFromDisk;
     const rows = backups.map((b) => {
       const when = new Date(b.when);
-      const what = [b.slots.length ? `slot${b.slots.length === 1 ? '' : 's'} ${b.slots.map((s) => s + 1).join(', ')}` : null, b.names.some((n) => /\.his$/i.test(n)) ? 'high scores' : null, kb(b.bytes)].filter(Boolean).join(' · ');
+      const what = [b.slots.length ? `slot${b.slots.length === 1 ? '' : 's'} ${b.slots.map((s) => s + 1).join(', ')}` : null, b.names.some((n) => /\.his$/i.test(n)) ? 'high scores' : null, b.names.includes(FOUND_FILE) ? 'tin heart' : null, kb(b.bytes)].filter(Boolean).join(' · ');
       return h(
         'li',
         { class: 'sv-backup' },
