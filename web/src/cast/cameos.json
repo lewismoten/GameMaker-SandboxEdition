@@ -16,7 +16,8 @@
     { "game": "loaf", "as": "at the foot of a fig tree on the hillside" },
     { "game": "risi", "as": "on the kitchen floor, under a shelf" },
     { "game": "remote", "as": "on the living room carpet, in the far corner" },
-    { "game": "year2000", "as": "tucked behind the food court tables at Mega Mall 2000" }
+    { "game": "year2000", "as": "tucked behind the food court tables at Mega Mall 2000" },
+    { "game": "brief", "as": "on the reading room floor by the west shelves" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -29,7 +30,8 @@
     { "game": "blaster", "as": "blinking on Memory Lane" },
     { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" },
     { "game": "carl", "as": "seeing to the stereo’s left speaker" },
-    { "game": "year2000", "as": "tinkering with the Teleport Exchange’s switchboard" }
+    { "game": "year2000", "as": "tinkering with the Teleport Exchange’s switchboard" },
+    { "game": "brief", "as": "seeing to the inventor’s wiring in the Laboratory" }
   ],
   "carl": [
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
