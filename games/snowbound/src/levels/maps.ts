@@ -224,6 +224,8 @@ export function galeStreet(book: BlockBook) {
     m.set(x, y, 'pineDrawn');
   m.patch(18, 36, ['TT....TTT', 'T......TT', 'T......TT', 'TT....TTT']);
   m.set(22, 38, 'feltEgg').set(25, 37, 'toboggan');
+  // a tin heart in the snow by your backyard snowman, off the paper route
+  m.set(13, 24, 'tinHeart');
   m.link(25, 37, 'woods', 24, 37);
   // Dunn Drive runs north-south past the house, plowed down to the asphalt.
   m.fill(8, 4, 2, 27, 'a');
@@ -437,6 +439,8 @@ export function bowdenDrive(book: BlockBook) {
   m.vehicle(MON.plowAR, MON.plowBR, X + 1, 27);
   m.vehicle(MON.plow2AR, MON.plow2BR, X + 40, 27);
   m.vehicle(MON.carAR, MON.carBR, X + 20, 28);
+  // a painted Easter egg by the park's snowman, through the gap in the far bank
+  m.set(X + 53, 31, 'easterEgg');
   m.mon(MON.bully, X + 40, 33)
     .mon(MON.dog, X + 12, 34)
     .mon(MON.dog, X + 60, 32)
@@ -465,6 +469,8 @@ export function lavaleMall(book: BlockBook) {
     .set(X + 40, 13, 'storeDoor')
     .set(X + 42, 13, 'boxWindow');
   m.set(X + 24, 13, 'mallDoor').set(X + 25, 13, 'mallDoor');
+  // Will the playwright, visiting from Shakespeare in Sweatpants, declaiming outside Bleeps
+  m.set(X + 21, 13, 'will');
   // Bleeps, the arcade, with its chasing marquee
   for (let i = 0; i < 3; i++) m.set(X + 17 + i, 12, `arcade0${i}`);
   m.set(X + 17, 13, 'arcadeWin')
