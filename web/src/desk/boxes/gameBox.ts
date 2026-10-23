@@ -7,8 +7,8 @@
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { mapShot, renderShot } from './boxArt';
-import { parseGame, ADVTYPE, type Game } from '../../formats/game';
-import { boxAward, boxClaims, boxDisks, boxReviews, disksLine, hoursLine, planBack, playHours } from './boxFacts';
+import { parseGame, type Game } from '../../formats/game';
+import { boxAward, boxClaims, boxDisks, boxGame, boxReviews, disksLine, hoursLine, planBack, playHours, shotCaption, type BoxGame } from './boxFacts';
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
 import { coverArt, SEALS } from './covers';
@@ -54,10 +54,11 @@ async function readGame(entry: CatalogEntry): Promise<Game | undefined> {
   }
 }
 
-/** A screenshot's caption: the name of the level its map belongs to ("1a The Data Bus" -> "Stage 1: The Data Bus"). */
-export function shotCaption(game: Game | undefined, map: string): string {
-  const desc = game?.scenes.find((s) => s.files.some((f) => f.toLowerCase() === map.toLowerCase()))?.desc.trim() ?? '';
-  return desc.replace(/^(\d+)[a-z]\s+/i, 'Stage $1: ');
+export { shotCaption };
+
+/** The box's facts from the .gam: from the catalog when the site's build worked them out, else read from it. */
+async function gameFacts(entry: CatalogEntry, box: Box): Promise<BoxGame> {
+  return entry.boxGame ?? boxGame(await readGame(entry), box.shots);
 }
 
 interface Shot {
@@ -71,10 +72,10 @@ interface Shot {
  * `pictures` only the captions (the shelf shows most boxes spine out).
  */
 async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promise<Shot[]> {
-  const game = await readGame(entry);
+  const { captions } = await gameFacts(entry, box);
   const views = (box.shots ?? []).slice(0, 3);
   const shots: Shot[] = await Promise.all(
-    views.map(async ([m, x, y]) => ({ shot: pictures ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined, caption: shotCaption(game, m) })),
+    views.map(async ([m, x, y], i) => ({ shot: pictures ? await mapShot(entry, m, x, y, 16, 10).catch(() => undefined) : undefined, caption: captions[i] ?? '' })),
   );
   const good = shots.filter((s) => s.shot);
   if (pictures && !good.length) {
@@ -88,7 +89,7 @@ async function boxShots(entry: CatalogEntry, box: Box, pictures: boolean): Promi
 /** Everything a box says about its game beyond its art and copy. */
 export async function boxInfo(entry: CatalogEntry) {
   const box = entry.original!.box! as Box;
-  const levels = (await readGame(entry))?.scenes.filter((s) => s.gametype === ADVTYPE).length ?? 0;
+  const { levels } = await gameFacts(entry, box);
   return {
     levels,
     disks: boxDisks(entry.bytes),

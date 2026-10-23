@@ -128,6 +128,7 @@ import type { OriginalExtras } from '../../scripts/cdGames';
 import { withSecretGames } from './secretGames';
 import { PackReader } from './gamePack';
 import type { Issue } from './health';
+import type { BoxGame } from '../desk/boxes/boxFacts';
 
 export interface CatalogEntry {
   id: string;
@@ -166,6 +167,8 @@ export interface CatalogEntry {
   pack?: string;
   /** Built sites: what the quick check (project/health.ts) finds in it, so no file need be fetched to know. */
   health?: Issue[];
+  /** Built sites, games with a box: its level count and screenshot captions from the .gam (desk/boxes/boxFacts.ts boxGame). */
+  boxGame?: BoxGame;
   /** From games/catalog.json: its notice, manual and printables are in games/details/<id>.json (withDetails). */
   details?: boolean;  /** Original games: the site path of its walkthrough (src/walkthrough), when it has one. */
   walkthrough?: string;

@@ -26,6 +26,8 @@ import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
 import { gameShots } from './gameShots';
 import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
 import { checkGame, QUICK_CHECK_FILE, type Issue } from '../src/project/health';
+import { boxGame, type BoxGame } from '../src/desk/boxes/boxFacts';
+import { parseGame } from '../src/formats/game';
 
 export interface CdCatalogEntry {
   id: string;
@@ -67,6 +69,8 @@ export interface CdCatalogEntry {
   pack?: string;
   /** Built sites: what the home page's quick check finds in it (src/editor/shell/gameHealth.ts), so the page need not fetch files to know. */
   health?: Issue[];
+  /** Built sites, games with a box: what the box reads from the .gam (src/desk/boxes/boxFacts.ts). */
+  boxGame?: BoxGame;
 }
 
 /** What ../games/<id>/about.json and manual.json add for an original game. */
@@ -205,6 +209,17 @@ function packName(id: string, names: string[], disk: ReadonlyMap<string, string>
 function quickHealth(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'sizes' | 'path'>, files: ReadonlyMap<string, string>): Issue[] {
   const loaded = new Map(e.files.filter((n) => QUICK_CHECK_FILE.test(n) && files.has(`${e.path}${n}`)).map((n) => [n, new Uint8Array(readFileSync(files.get(`${e.path}${n}`)!))]));
   return checkGame({ names: () => [...e.files].sort(), get: (n) => loaded.get(n), byteSize: (n) => e.sizes[e.files.indexOf(n)] }, e.gam ?? undefined);
+}
+
+/** What a game's box reads from its .gam (levels, screenshot captions), so the desk's shelf fetches none. */
+function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original'>, files: ReadonlyMap<string, string>): BoxGame | undefined {
+  const at = e.gam && files.get(`${e.path}${e.gam}`);
+  if (!e.original?.box || !at) return undefined;
+  try {
+    return boxGame(parseGame(new Uint8Array(readFileSync(at))), e.original.box.shots);
+  } catch {
+    return undefined;
+  }
 }
 
 /** A game's pack (src/project/gamePack.ts): its files in the order play needs them, gzipped. */
@@ -455,15 +470,19 @@ export function cdGames(cdRoot: string): Plugin {
     },
     generateBundle() {
       const { gm, files } = get();
+      // what the pages would otherwise fetch game files to work out: the quick check, the box's facts
+      const known = (e: CdCatalogEntry): CdCatalogEntry => {
+        const box = boxGameOf(e, files);
+        return { ...e, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}) };
+      };
       // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
       const catalog = get().catalog.map((e) => {
         const disk = new Map(e.files.flatMap((n) => (files.has(`${e.path}${n}`) ? [[n, files.get(`${e.path}${n}`)!] as [string, string]] : [])));
         const shots = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
         for (const [fileName, source] of shots) this.emitFile({ type: 'asset', fileName, source });
-        const health = quickHealth(e, files);
-        return shots.size ? { ...e, health, shots: true, ...(shots.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) } : { ...e, health };
+        return shots.size ? { ...known(e), shots: true, ...(shots.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) } : known(e);
       });
-      const secret = get().secret.map((e) => ({ ...e, health: quickHealth(e, files) }));
+      const secret = get().secret.map(known);
       // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
       // files shrink 3-20x: each game file but a GIF also gets a gzip copy, <file>.gz, which
       // the site fetches and unpacks instead (src/project/files.ts, fetchSiteFile). The

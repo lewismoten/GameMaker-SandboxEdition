@@ -4,6 +4,7 @@
 // how the back cover's copy, reviews, features and screenshots fit the space they have.
 import type { CatalogEntry } from '../../project/files';
 import { diskCount } from '../../retro/dos/disks';
+import { ADVTYPE, type Game } from '../../formats/game';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */
 export interface BoxExtras {
@@ -147,4 +148,23 @@ export function planBack(available: number, featureCount: number, reviewCount: n
   let last = { bodyPx: 13, features: 0, reviews: 0, shots: 0 };
   while (last.bodyPx > 9 && heightOf(last) > available) last = { ...last, bodyPx: last.bodyPx - 1 };
   return { ...last, height: heightOf(last) };
+}
+
+/** A screenshot's caption: the name of the level its map belongs to ("1a The Data Bus" -> "Stage 1: The Data Bus"). */
+export function shotCaption(game: Game | undefined, map: string): string {
+  const desc = game?.scenes.find((s) => s.files.some((f) => f.toLowerCase() === map.toLowerCase()))?.desc.trim() ?? '';
+  return desc.replace(/^(\d+)[a-z]\s+/i, 'Stage $1: ');
+}
+
+/** What a box reads from the game's .gam: its number of levels and its screenshots' captions (CatalogEntry.boxGame, worked out when the site is built). */
+export interface BoxGame {
+  levels: number;
+  captions: string[];
+}
+
+export function boxGame(game: Game | undefined, shots: [string, number, number][] | undefined): BoxGame {
+  return {
+    levels: game?.scenes.filter((s) => s.gametype === ADVTYPE).length ?? 0,
+    captions: (shots ?? []).slice(0, 3).map(([m]) => shotCaption(game, m)),
+  };
 }
