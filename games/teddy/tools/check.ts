@@ -9,7 +9,7 @@ import { serializeRecording, type RecordedKey } from '../../../web/src/formats/r
 import { buildCharacter, CB } from '../src/characters/character';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { LEVELS } from '../src/game';
-import { ROUTES } from './routes';
+import { ROUTES } from './route';
 import { Recorder, playLevel } from './bot';
 import { Sim } from '../../kit/sceneSim';
 import { CTR } from '../src/ids';

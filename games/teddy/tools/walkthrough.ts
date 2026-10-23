@@ -1,11 +1,11 @@
-// Writes games/teddy/walkthrough.json: the bot plays every level's route (tools/routes.ts)
+// Writes games/teddy/walkthrough.json: the bot plays every level's route (tools/route.ts)
 // the way check.ts does, one key segment a level, and games/kit/walkthrough.ts checks the
 // whole run on the real engine (title, story, all five levels, the Big Show, the credits).
 //   cd web && npx vite-node ../games/teddy/tools/walkthrough.ts
 import { buildCharacter, CB } from '../src/characters/character';
 import { newCharInfo, type CharInfo } from '../../../web/src/engine/world';
 import { LEVELS } from '../src/game';
-import { ROUTES } from './routes';
+import { ROUTES } from './route';
 import { Recorder, playLevel } from './bot';
 import { Sim } from '../../kit/sceneSim';
 import { encodeKeys, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';

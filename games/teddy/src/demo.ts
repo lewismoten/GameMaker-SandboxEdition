@@ -6,7 +6,7 @@ import { serializeRecording } from '../../../web/src/formats/recording';
 import { newCharInfo } from '../../../web/src/engine/world';
 import { buildCharacter, CB } from './characters/character';
 import { Recorder, runRoute } from '../tools/bot';
-import { ROUTES } from '../tools/routes';
+import { ROUTES } from '../tools/route';
 import { Sim } from '../../kit/sceneSim';
 import type { Level } from './levels/level';
 
