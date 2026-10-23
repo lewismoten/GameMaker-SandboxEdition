@@ -170,7 +170,7 @@
       "title": "A letter from the SysOp",
       "note": "Found in the box, typed on a dot matrix",
       "style": "type",
-      "letterhead": "THE BIT BUCKET BBS - 300/1200/2400 BAUD - SYSOP: \"DIALTONE\"",
+      "letterhead": "THE STATIC LINE BBS - 300/1200/2400 BAUD - SYSOP: \"DIALTONE\"",
       "address": "(A made-up BBS; the number on our ads is fictional too.)",
       "date": "June 3, 1995",
       "to": "To every caller who downloaded COOLGAME.ZIP last week:",
@@ -261,36 +261,131 @@
   ],
   "stickers": [
     {
-      "text": "VIRUS BLASTER",
-      "sub": "Sandbox Software",
-      "shape": "badge",
-      "color": "#ff7a1a",
-      "ink": "#0a0f24"
-    },
-    {
-      "text": "SCAN EVERY DOWNLOAD",
-      "shape": "rect",
-      "color": "#36e07a",
-      "ink": "#0a0f24"
-    },
-    {
-      "text": "GLITCH",
-      "sub": "WANTED",
-      "shape": "badge",
-      "color": "#b03cd0",
-      "ink": "#ffffff"
-    },
-    {
       "text": "BLASTER",
-      "sub": "nano-fighter",
-      "shape": "circle",
-      "color": "#0a0f24",
-      "ink": "#ffffff",
+      "sub": "NANO-FIGHTER",
+      "shape": "cut",
+      "color": "#36e07a",
+      "ink": "#0a0f24",
       "hero": {
         "chr": "ship.chr",
         "cbl": "ship.cbl",
         "pal": "s1.pal"
       }
+    },
+    {
+      "text": "GLITCH",
+      "sub": "WANTED",
+      "shape": "cut",
+      "color": "#b03cd0",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "s1.mbl",
+        "pal": "s1.pal",
+        "grid": [[37]]
+      }
+    },
+    {
+      "text": "BUG!",
+      "sub": "SQUASH IT",
+      "shape": "burst",
+      "color": "#ff7a1a",
+      "ink": "#0a0f24",
+      "sprite": {
+        "blocks": "s1.mbl",
+        "pal": "s1.pal",
+        "grid": [[25]]
+      }
+    },
+    {
+      "text": "CHOMPER",
+      "sub": "DO NOT FEED",
+      "shape": "cut",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "s1.mbl",
+        "pal": "s1.pal",
+        "grid": [[27]]
+      }
+    },
+    {
+      "text": "FIRST BUG",
+      "sub": "A REAL MOTH",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "s1.mbl",
+        "pal": "s1.pal",
+        "grid": [[29]]
+      }
+    },
+    {
+      "text": "EARWORM",
+      "sub": "CATCHY VIRUS",
+      "shape": "cut",
+      "color": "#7a4fd0",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "s3.mbl",
+        "pal": "s3.pal",
+        "grid": [[27]]
+      }
+    },
+    {
+      "text": "BUZZ!",
+      "sub": "WORKER BEE",
+      "shape": "star",
+      "color": "#ffd23f",
+      "ink": "#0a0f24",
+      "sprite": {
+        "blocks": "s3.mbl",
+        "pal": "s3.pal",
+        "grid": [[31]]
+      }
+    },
+    {
+      "text": "DONUT CLICK!",
+      "sub": "SPRINKLED GLITCH",
+      "shape": "cut",
+      "color": "#ff8fc8",
+      "ink": "#0a0f24",
+      "sprite": {
+        "blocks": "s3.mbl",
+        "pal": "s3.pal",
+        "grid": [[37]]
+      }
+    },
+    {
+      "text": "PLAY ME?",
+      "sub": "SUSPICIOUS TAPE",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "s1.mbl",
+        "pal": "s1.pal",
+        "grid": [[31]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "s2.bbl",
+        "pal": "s2.pal",
+        "grid": [[38]],
+        "under": 93
+      }
+    },
+    {
+      "text": "SCAN EVERY DOWNLOAD",
+      "shape": "bubble",
+      "color": "#36e07a",
+      "ink": "#0a0f24"
     }
   ],
   "news": [
