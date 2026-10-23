@@ -121,6 +121,7 @@ const SUMMARY: Record<string, string> = {
   carl: "You are Carl, the fly in the room. Eat his snacks, buzz his ear, barrel-roll past the dish towel, see things. Take the aux cord.",
   reckoning: '3:17 A.M., lactose intolerant, cheesecake in the fridge. Eat it anyway, outrun the gurgle, splash the Devil.',
   loofah: "You touched the pink one. Now the towel screams. Light the candles, cleanse the demon sponge with brine.",
+  smirked: "Lily is eight and not scared. You are. Tackle a cardboard witch, sneeze through fake webs, bond with the exit sign.",
 };
 
 const TAGLINES = [
