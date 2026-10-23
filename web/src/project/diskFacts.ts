@@ -34,7 +34,7 @@ export function disksLine(n: number): string {
 /** A size as a 1995 catalog printed it: "812K" up to a megabyte, then "1.8 MB" (rounded up: it's what you need free). */
 export function sizeText(bytes: number, space = true): string {
   if (bytes < 1000 * 1024) return `${Math.max(1, Math.ceil(bytes / 1024))}K`;
-  return `${(Math.ceil(bytes / 104_857.6) / 10).toFixed(1)}${space ? ' ' : ''}MB`;
+  return `${(Math.ceil((bytes * 10) / 1_048_576) / 10).toFixed(1)}${space ? ' ' : ''}MB`;
 }
 
 export function hardDiskLine(g: Sized): string {
