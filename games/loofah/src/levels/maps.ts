@@ -164,6 +164,8 @@ export function bathroom(book: BlockBook): Level {
   // the shower stall: glass, the shower head (drips), the steam rising out of the vents up to the silver rack
   m.fill(1, 1, 5, 11, 'g').set(5, 3, 'h').col(1, 4, 11, '~').col(2, 4, 11, '~').set(1, 12, 'v').set(2, 12, 'v');
   m.row(3, 1, 3, 'R').set(3, 2, '1');
+  // an Easter egg in the stall's corner
+  m.set(5, 11, 'easterEgg');
   // the screaming towel on its bar
   m.set(9, 10, 'b').mon(MON.towel, 9, 11);
   // the tub: its rim at either end, the cursed bathwater (the rubber duck, bubbles)
@@ -219,6 +221,8 @@ export function aisle(book: BlockBook): Level {
   // the last shelving: rosemary up top, a wild loofah in front of it, a spare coin
   m.row(9, 53, 57, 'e').row(6, 53, 57, 'e').fill(53, 7, 5, 2, 'o').set(55, 5, '5').mon(MON.feral, 55, 11).set(59, 11, '$');
   // the checkout: the clerk; six coins
+  // Mystery Robot Joe, taking stock before the last shelves
+  m.set(52, 11, 'joe');
   m.set(61, 11, '@').set(62, 11, '&').set(62, 10, 'f');
   m.link(61, 11, 'next');
   return { m, start: at(3, 11), size: [W, H] };
@@ -233,6 +237,8 @@ export function home(book: BlockBook): Level {
   // the bed: her asleep, his pillow with the washcloth of shame on it; the night stand (a candle)
   m.set(1, 6, 'headboardTop').col(1, 7, 8, 'headboard').set(2, 8, 'wife').row(8, 3, 7, 'bedTop').set(5, 8, 'pillow').row(9, 2, 7, 'bedSide').set(1, 9, 'bedSide');
   m.set(8, 9, 'stand').set(8, 8, 'unlit');
+  // a tin heart on her side of the bed, by her pillow
+  m.set(3, 7, 'tinHeart');
   m.set(10, 4, 'weddingPic').set(10, 9, 'creak');
   m.col(12, 8, 9, 'dresser').col(13, 8, 9, 'dresser').set(13, 7, 'unlit');
   m.set(17, 9, 'doorway').set(17, 8, 'doorwayTop');

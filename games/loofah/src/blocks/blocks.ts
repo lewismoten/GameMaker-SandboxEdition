@@ -13,11 +13,14 @@
 //   - rosemary is three splashes of brine (the throw sequence's own counter), a dry washcloth
 //     mends dignity, a rubber duck is an extra life; the shower head gives birth to drips, the
 //     tub to bubbles, the soap dish behind the demon sponge to cursed citrus suds.
+import { CLEAR, joeCameo } from '../../../kit/cameos';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { Pixels, rng } from '../../../kit/pixels';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth, text } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
 import { CANDLES, CANDLES_NEEDED, COINS, COINS_NEEDED, MON, PINK, SALT, SALT_NEEDED, SEQ, SPRIG } from '../ids';
 
 export { BlockBook, SOLID };
@@ -637,5 +640,19 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('herRack', herRack(false), { solid: SOLID, effect: PINK, eamt: -1, score: 5000, touch: 'rackBack' });
   book.add('rackBack', herRack(true), { grav: GRAV.none });
+
+  // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
+  const pic = (name: string) => book.pics.get(name)!.crop(0, 0, 20, 20);
+  // a tin heart on her side of the bed at home, by her pillow: a glint crosses it now and then; 100 points
+  const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('grey', 0) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(pic('paper'), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'paper', score: 100, ...air });
+  // a dyed Easter egg in the corner of the shower stall: 50 points
+  const egg = { ink: c('ink', 0), shell: R('mango'), paint: R('rosemary').slice(1), accent: c('pink', 3), white: c('white', 2) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(pic('stall'), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'stall', score: 50, ...air });
+  // Mystery Robot Joe (Keep It Brief!), taking stock in the forest-dark aisle at 3 a.m. (scenery)
+  const use = ['ink', 'grey', 'metal', 'white', 'gold', 'red', 'skin', 'night', 'steam'].flatMap((n) => R(n));
+  book.add('joe', pic('forest').blit(joeCameo(buildPalette('plain').pal, 'side', 0, { use }), 0, 0, CLEAR), air);
   return book;
 }
