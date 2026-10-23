@@ -48,6 +48,11 @@ Checking the games:
   (no disk). The bots of teddy, teddy2, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
   keeps the keys per scene and can snapshot and restore. depth, realm and snowbound play on it.
+- `hopBot.ts` — the play-testing bot of the games whose hero hops (walk to a column hopping what blocks it, hop
+  and steer, land, hold a key, climb): reckoning, risi, loofah, sweats, mustard, needle and loaf extend it.
+- `levelRun.ts` — `playLevels()`, a game's `tools/play.ts` run: its levels' routes in a row, `BOT_LOG`, and the
+  rule that a whole run wins without losing a life.
+- `demoRecord.ts` — `recordDemo()`, what a game's `tools/gendemo.ts` does: the bot's first ticks into `src/demo.ts`.
 - `walkthrough.ts` — writes a game's `walkthrough.json` from its bot's keys, after replaying them on the web
   app's real engine to check the run reaches the ending and to time its chapters.
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
