@@ -234,7 +234,7 @@ THIS IS SHAREWARE
   nothing to pay and nowhere to
   mail. The game is free to
   play, share and change (MIT
-  License); see LICENSE.TXT.)
+  license); see LICENSE.TXT.)
 
   Leave a message for DOC LEO
   on The Sofa BBS,

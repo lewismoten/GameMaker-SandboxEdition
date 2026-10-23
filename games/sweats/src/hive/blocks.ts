@@ -12,6 +12,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import type { Pal, Ramp } from '../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, drawBill, loot } from '../common/blocks';
 import { addPicture } from '../common/picture';
+import { chezSide } from '../../../kit/chez';
 import { COFFEE, COFFEE_PRICE, MONEY } from '../ids';
 import { HIVE_MON } from './ids';
 
@@ -59,6 +60,12 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) sidewalk.set(x, y, shadeAt(R('stone'), 1, 2, 0.6 - y / 40, x, y));
   sidewalk.rect(0, 0, 20, 2, c('stone', 3)).rect(19, 0, 1, 20, c('stone', 0));
   book.add('sidewalk', sidewalk, { solid: SOLID });
+  // THE CHEZ, Lewis's red CitiCar, parked at the curb (scenery)
+  {
+    const car = new Pixels(40, 20, 255);
+    chezSide(car, 0, 1, { body: [c('red', 1), c('red', 2), c('red', 3)], trim: c('red', 0), glass: [c('night', 0), c('glass', 2)], roof: c('grey', 2), tire: c('ink', 0), hub: c('grey', 3), bumper: c('ink', 1), lamp: c('lamp', 2), tail: c('red', 3), outline: c('ink', 0) }, 'right');
+    addPicture(book, 'chez', car, book.pics.get('cityLow')!, () => AIR);
+  }
   // the street lamp: its post and its glowing lantern
   const post = night(6);
   post.rect(9, 0, 3, 20, c('ink', 1)).rect(10, 0, 1, 20, c('grey', 1));

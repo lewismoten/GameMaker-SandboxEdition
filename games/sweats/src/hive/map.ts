@@ -24,6 +24,7 @@ export function buildHive(m: MapBuilder): void {
     m.set(x, 14, 'sidewalk').set(x, 15, 'sidewalk');
   }
   m.col(6, 10, 13, 'post').set(6, 9, 'lantern');
+  m.set(2, 13, 'chez.0.0').set(3, 13, 'chez.1.0');
   // the castle's long front along the avenue: battlements, lit windows, stone
   for (let x = 11; x <= 16; x++) {
     m.set(x, 4, 'merlonBack');
@@ -31,7 +32,7 @@ export function buildHive(m: MapBuilder): void {
   }
   for (const x of [12, 15]) m.set(x, 7, 'castleWindow').set(x, 11, 'castleWindow');
   m.set(9, 13, 'bench').set(14, 13, 'news');
-  m.set(3, 13, 'coin@night').set(9, 12, 'coin@night').set(14, 12, 'bill@stoneBack2');
+  m.set(5, 13, 'coin@night').set(9, 12, 'coin@night').set(14, 12, 'bill@stoneBack2');
   // the castle front: a turret, the battlements, the wall with its arrow slits, the sign, the arched door
   m.set(17, 0, 'turretCap').set(17, 1, 'turretTop').col(17, 2, 13, 'turret').set(18, 0, 'night').set(18, 1, 'night');
   m.col(18, 2, 13, 'turret');
