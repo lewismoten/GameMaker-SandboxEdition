@@ -18,7 +18,7 @@ export function fileActions(acts: FileAction[]): HTMLElement {
     ...acts.map((a) => h('button', { type: 'button', class: cls(a), title: a.title, onclick: () => a.run() }, a.label)),
   );
   const summary = h('summary', { title: 'More actions', 'aria-label': `File actions: ${acts.map((a) => a.label.toLowerCase()).join(', ')}` }, '⋯');
-  const more = h('details', { class: 'file-more' }) as HTMLDetailsElement;
+  const more = h('details', { class: 'file-more' });
   const shut = () => {
     more.open = false;
     summary.focus();

@@ -33,13 +33,13 @@ const LAYOUT: [slot: number | 'fill', x: number, y: number][] = [
 export function edgeSetDialog(blocks: Block[], current: number, pal: Palette): Promise<EdgeSetChoice | undefined> {
   return modal<EdgeSetChoice>('Make an edge set', (close) => {
     const num = (label: string, value: number, min: number, max: number, title?: string) =>
-      h('input', { type: 'number', min, max, value: String(value), required: true, 'aria-label': label, title }) as HTMLInputElement;
+      h('input', { type: 'number', min, max, value: String(value), required: true, 'aria-label': label, title });
     const outside = num('Ground round it (block)', current === 0 ? 1 : 0, 0, blocks.length - 1);
     const depth = num('Border depth (pixels)', 4, 1, 9);
     const start = freeRun(blocks);
     const at = num('First new block', start < 0 ? Math.max(0, blocks.length - EDGE_SLOTS.length) : start, 0, blocks.length - EDGE_SLOTS.length);
-    const wavy = h('input', { type: 'checkbox', checked: true }) as HTMLInputElement;
-    const outline = h('input', { type: 'checkbox', checked: true }) as HTMLInputElement;
+    const wavy = h('input', { type: 'checkbox', checked: true });
+    const outline = h('input', { type: 'checkbox', checked: true });
     const canvas = h('canvas', {
       class: 'pixel edge-preview',
       role: 'img',

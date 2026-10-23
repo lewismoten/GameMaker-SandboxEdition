@@ -402,11 +402,7 @@ registerEditor(['chr'], (host, project, file) => {
   function mirrorFrom(seq: Sequence, n: number): HTMLElement | null {
     const sources = chr.sequences.map((_, i) => i).filter((i) => i !== current && frameCount(chr.sequences[i]) > 0);
     if (!sources.length) return null;
-    const sel = h(
-      'select',
-      { 'aria-label': 'Sequence to mirror' },
-      ...sources.map((i) => h('option', { value: String(i) }, `${i}. ${seqName(i)}`)),
-    ) as HTMLSelectElement;
+    const sel = h('select', { 'aria-label': 'Sequence to mirror' }, ...sources.map((i) => h('option', { value: String(i) }, `${i}. ${seqName(i)}`)));
     const go = h(
       'button',
       {

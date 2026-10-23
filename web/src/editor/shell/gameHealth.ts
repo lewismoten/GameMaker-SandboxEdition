@@ -139,7 +139,7 @@ function countLabel(issues: Issue[]): string {
  * something worth knowing, that opens the report. Nothing to fix there: it plays as it did.
  */
 export function healthNote(target: HealthTarget): HTMLElement {
-  const note = h('button', { class: 'health-note', type: 'button', hidden: true, onclick: () => void showHealthReport(target) }) as HTMLButtonElement;
+  const note = h('button', { class: 'health-note', type: 'button', hidden: true, onclick: () => void showHealthReport(target) });
   // checked straight away: the panel shows one game at a time
   void Promise.all([target.quick(), target.notes?.() ?? []]).then(([issues, notes]) => {
     const n = issues.length + notes.length;

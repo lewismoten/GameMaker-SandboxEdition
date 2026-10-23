@@ -20,7 +20,7 @@ export function applyRecolor(px: Uint8Array, r: Recolor): Uint8Array {
 export function recolorDialog(pal: Palette, from: number, to: number): Promise<Recolor | undefined> {
   return modal<Recolor>('Replace colors', (close) => {
     const num = (label: string, value: number, max = 255, min = 0) => {
-      const input = h('input', { type: 'number', min, max, value: String(value), required: true }) as HTMLInputElement;
+      const input = h('input', { type: 'number', min, max, value: String(value), required: true });
       const chip = h('span', { class: 'recolor-chip', 'aria-hidden': 'true' });
       const show = () => (chip.style.background = paletteCss(pal, Math.max(0, Math.min(255, Number(input.value) || 0))));
       input.addEventListener('input', show);
@@ -38,8 +38,8 @@ export function recolorDialog(pal: Palette, from: number, to: number): Promise<R
     const f = num('Color', from);
     const t = num('becomes color', to);
     const n = num('How many colors in a row (a ramp)', 1, 256, 1);
-    const swap = h('input', { type: 'checkbox' }) as HTMLInputElement;
-    const every = h('input', { type: 'checkbox' }) as HTMLInputElement;
+    const swap = h('input', { type: 'checkbox' });
+    const every = h('input', { type: 'checkbox' });
     return h(
       'form',
       {

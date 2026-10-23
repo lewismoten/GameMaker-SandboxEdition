@@ -242,7 +242,7 @@ export class Workspace {
           first?.click();
         }
       },
-    }) as HTMLInputElement;
+    });
     return h('div', { class: 'file-search' }, input, h('span', { class: 'file-search-count', 'aria-live': 'polite' }));
   })();
 

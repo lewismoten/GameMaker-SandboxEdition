@@ -148,7 +148,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     blurb.textContent = game.blurb ?? '';
     blurb.hidden = !game.blurb;
 
-    const canvas = h('canvas', { class: 'sc-shot pixel', width: 320, height: 200, 'aria-hidden': 'true' }) as HTMLCanvasElement;
+    const canvas = h('canvas', { class: 'sc-shot pixel', width: 320, height: 200, 'aria-hidden': 'true' });
     const playBtn = h('button', { class: 'sc-demo-btn', type: 'button', hidden: true });
     clear(screen, canvas, playBtn, game.health && !game.health.released ? healthBadge(game.health, true) : null);
     if (game.gam || game.kind === 'mine') void game.drawShot(canvas).catch(() => undefined);

@@ -70,7 +70,7 @@ export function quickOpen(project: Project): Promise<string | undefined> {
       'aria-expanded': 'true',
       'aria-autocomplete': 'list',
       autocomplete: 'off',
-    }) as HTMLInputElement;
+    });
     const status = h('p', { class: 'meta qo-status', 'aria-live': 'polite' });
     let hits: Hit[] = [];
     let at = 0;

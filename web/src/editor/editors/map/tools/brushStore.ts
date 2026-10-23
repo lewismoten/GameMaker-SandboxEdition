@@ -43,7 +43,7 @@ export function loadBrushes<T extends Item>(project: Project, bbl: string, kind:
   if (!bbl) return [];
   return asArray<never>(project.extras(bbl, kind, []))
     .map((x) => CLEAN[kind](x))
-    .filter((x): x is T => !!x) as T[];
+    .filter((x): x is T => !!x);
 }
 
 /** Adds or replaces (by id) one brush, or with `remove` deletes it; saved with the project. */

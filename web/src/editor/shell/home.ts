@@ -154,7 +154,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       filterTiles();
       keep({ q: search.value.trim() });
     },
-  }) as HTMLInputElement;
+  });
   // where games come in, as one more tile: drop them on it (or anywhere in the library), or pick them
   const dropTile = h(
     'div',
