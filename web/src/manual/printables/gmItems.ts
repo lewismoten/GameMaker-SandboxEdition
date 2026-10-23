@@ -15,7 +15,8 @@ import { bbsAd, catalog } from './gen';
 import { bardCatalog } from './bardCatalog';
 import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, supportCard } from './gmInserts';
 import { PLAYGAME_KEYS } from './keys';
-import { mixedStickers, stickerScreen, type MixedSticker } from './stickers';
+import { mixedStickers, stickerScreen } from './stickers';
+import { gmStickerSpecs } from './gmStickers';
 import { ultimateItem } from '../ultimate/ultimateGuide';
 
 /** Game-Maker SE as if it were one more catalog entry, for the generic cards. */
@@ -188,24 +189,6 @@ async function poster(): Promise<Sheet[]> {
   ];
 }
 
-/** Every Sandbox game's first hero or monster sticker, Game-Maker's own, and the BBS. */
-function gmStickerSpecs(family: CatalogEntry[]): MixedSticker[] {
-  const own: MixedSticker[] = family.flatMap((g) => {
-    const s = (g.original?.printables?.stickers ?? []).find((x) => x.hero) ?? (g.original?.printables?.stickers ?? []).find((x) => x.sprite);
-    return s ? [{ ...s, from: contextFor(g, family) }] : [];
-  });
-  return [
-    { text: '', shape: 'badge', special: 'gm' },
-    ...own,
-    { text: 'I MADE THIS', sub: 'WITH GAME-MAKER', shape: 'star', color: '#f2e600', ink: '#0b0b0b' },
-    { text: 'MB1', sub: 'DRAW', shape: 'circle', color: '#1d3f7a', ink: '#fff' },
-    { text: 'NO PROGRAMMING', sub: 'NEEDED', shape: 'rect', color: '#d81e1e', ink: '#fff' },
-    { text: '256 COLORS', sub: 'VGA', shape: 'circle', color: '#1f9a3a', ink: '#fff' },
-    { text: '', shape: 'rect', special: 'bbs' },
-    { text: 'SANDBOX', sub: 'SOFTWARE', shape: 'circle', color: '#f2b632', ink: '#1a1208' },
-  ];
-}
-
 /** The paper in the Game-Maker SE box, in tray order. */
 export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
   const ctx = contextFor(GM_ENTRY, family);
@@ -227,7 +210,7 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
       title: 'Sticker sheet',
       note: 'Heroes from every Sandbox game',
       icon: '⭐',
-      render: () => mixedStickers(gmStickerSpecs(family), 'game-maker-se'),
+      render: () => mixedStickers(gmStickerSpecs(family, (g) => contextFor(g, family)), 'game-maker-se'),
       screen: stickerScreen,
     },
   ];
