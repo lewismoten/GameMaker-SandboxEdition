@@ -5,7 +5,7 @@
 // cardboard knight, his helmet, and the emergency exit. What it sees lying on the way it picks up
 // (bot.ts, grab()).
 import { BATTERIES, BATTERIES_NEEDED, MON, MONEY, SCAN, SORRY, SORRY_NEEDED, SWORD_PRICE, HELMET } from '../src/ids';
-import { ORIGIN, WITCHES } from '../src/levels/maps';
+import { EXIT_HALL, FOG_HALL, HALL_TOP, ORIGIN, SHOP_HALL, STAFF_HALL, WITCHES } from '../src/levels/maps';
 import { Bot, type Dir } from './bot';
 
 const expect = (bot: Bot, scene: number, what: string) => {
@@ -24,12 +24,22 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
-/** Opens a solid door at (x, y) by pushing into it from `side`, and steps through it into the next scene. */
-async function through(bot: Bot, x: number, y: number, side: Dir, what: string): Promise<void> {
+/**
+ * Opens a solid door at (x, y) by pushing into it from `side`, and walks through it and down the
+ * hall behind it (`hall` blocks the way `dir`) to the link at its end, into the next scene,
+ * making no sound on the way so the door's voice plays out.
+ */
+async function through(bot: Bot, x: number, y: number, side: Dir, what: string, dir: Dir, hall: number): Promise<void> {
   const r = await bot.take(x, y, side, what);
   if (r === 'link' || r === 'end') return;
   if (r) throw new Error(`${what}: ${r}\n${bot.log.slice(-8).join('\n')}`);
-  await leave(bot, bot.goto(x, y, `through ${what}`), what);
+  const [dx, dy] = STEP[dir];
+  bot.greedy = false;
+  try {
+    await leave(bot, bot.goto(x + dx * hall, y + dy * hall, `through ${what}`), what);
+  } finally {
+    bot.greedy = !process.env.NO_LOOT;
+  }
 }
 
 /**
@@ -114,7 +124,7 @@ export async function fogHall(bot: Bot): Promise<void> {
   ]);
   if (bot.count(BATTERIES) < BATTERIES_NEEDED) throw new Error(`only ${bot.count(BATTERIES)} batteries`);
   await carefully(bot, 'the dark hallway', 12, async () => {
-    await through(bot, 29, 2, 'left', 'the door to the dark hallway');
+    await through(bot, 29, 2, 'left', 'the door to the dark hallway', 'right', FOG_HALL);
   });
 }
 
@@ -148,7 +158,7 @@ export async function zombieParade(bot: Bot): Promise<void> {
   ]);
   if (bot.count(SORRY) < SORRY_NEEDED) throw new Error(`only ${bot.count(SORRY)} sorries`);
   await carefully(bot, 'the STAFF ONLY door', 12, async () => {
-    await through(bot, 31, 8, 'left', 'the STAFF ONLY door');
+    await through(bot, 31, 8, 'left', 'the STAFF ONLY door', 'right', STAFF_HALL);
   });
 }
 
@@ -174,7 +184,7 @@ export async function fakeWoods(bot: Bot): Promise<void> {
   );
   if (bot.count(MONEY) < SWORD_PRICE) throw new Error(`only $${bot.count(MONEY)}`);
   await carefully(bot, 'the register', 16, async () => {
-    await through(bot, 33, 13, 'left', 'the gift shop register');
+    await through(bot, 33, 13, 'left', 'the gift shop register', 'right', SHOP_HALL);
   });
 }
 
@@ -200,8 +210,8 @@ export async function lastHall(bot: Bot): Promise<void> {
     if (await bot.wait(4)) throw new Error('a scene change');
     if (bot.count(HELMET) < 1) throw new Error('no helmet');
   });
-  await gather(bot, [[3, 3, 'Loaf #13'], [25, 3, 'a lost TV remote'], [28, 10, 'a juice box']], 16);
+  await gather(bot, [[3, 3 + HALL_TOP, 'Loaf #13'], [25, 3 + HALL_TOP, 'a lost TV remote'], [28, 10 + HALL_TOP, 'a juice box']], 16);
   await carefully(bot, 'the emergency exit', 16, async () => {
-    await through(bot, 14, 1, 'down', 'the emergency exit');
+    await through(bot, 14, 1 + HALL_TOP, 'down', 'the emergency exit', 'up', EXIT_HALL);
   });
 }

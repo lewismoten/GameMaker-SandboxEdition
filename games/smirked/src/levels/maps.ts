@@ -55,6 +55,16 @@ export class MapBuilder {
     return this;
   }
 
+  /**
+   * A walk-in hall of `len` blocks of `floor` from (x, y) the way (dx, dy), with the link at
+   * its far end: the door's voice (a counter spent) plays on while you walk it, so it has
+   * finished before the scene changes (the next picture cuts a clip still playing).
+   */
+  hall(x: number, y: number, dx: number, dy: number, len: number, floor: string, toScene: LinkSpec['toScene']): this {
+    for (let i = 0; i < len; i++) this.set(x + dx * i, y + dy * i, floor);
+    return this.link(x + dx * (len - 1), y + dy * (len - 1), toScene);
+  }
+
   link(x: number, y: number, toScene: LinkSpec['toScene']): this {
     this.links.push({ from: [x + ORIGIN, y + ORIGIN], toScene });
     return this;
@@ -85,6 +95,16 @@ function rows(lines: string[]): { w: number; h: number; lines: string[] } {
   return { w, h: lines.length, lines };
 }
 
+
+// How many blocks of walk-in hall lie behind each level's door, link at the far end: at five
+// ticks a block, enough for the door's voice to finish before the scene changes.
+export const FOG_HALL = 7;
+export const STAFF_HALL = 9;
+export const SHOP_HALL = 4;
+/** The last hall's exit corridor: the emergency exit's door, then this many blocks up to the sign. */
+export const EXIT_HALL = 5;
+/** The last hall's rows sit this far down, below its exit corridor. */
+export const HALL_TOP = EXIT_HALL;
 
 /** 1. The fog hall. */
 const FOYER: Record<string, string> = {
@@ -135,8 +155,9 @@ export function fogHall(book: BlockBook): Level {
   const m = new MapBuilder(book, 'wallTop', FOYER);
   m.patch(0, 0, map.lines);
   m.mon(MON.lily, 15, 13).mon(MON.bat, 5, 7).mon(MON.bat, 20, 3).mon(MON.bat, 11, 11).mon(MON.ghost, 18, 9).mon(MON.ghost, 3, 4);
-  m.link(29, 2, 'next');
-  return { m, start: at(14, 14), size: [map.w, map.h] };
+  // the dark hallway, behind its door: "the sign said mild scares for all ages" plays out
+  m.hall(30, 2, 1, 0, FOG_HALL, '.', 'next');
+  return { m, start: at(14, 14), size: [map.w + FOG_HALL, map.h] };
 }
 
 /** 2. The zombie parade. */
@@ -193,8 +214,9 @@ export function zombieParade(book: BlockBook): Level {
   for (const [x, y] of WITCHES) m.mon(MON.witch, x, y);
   m.mon(MON.zombie, 3, 7).mon(MON.zombie, 15, 5).mon(MON.zombie, 24, 4).mon(MON.zombie, 11, 14).mon(MON.zombie, 25, 10);
   m.mon(MON.lily, 2, 14).mon(MON.goat, 17, 8).mon(MON.seed, 29, 12).mon(MON.bat, 8, 9);
-  m.link(31, 8, 'next');
-  return { m, start: at(1, 8), size: [map.w, map.h] };
+  // the staff corridor, behind the STAFF ONLY door: "She strolls like it's Target"
+  m.hall(32, 8, 1, 0, STAFF_HALL, '.', 'next');
+  return { m, start: at(1, 8), size: [map.w + STAFF_HALL, map.h] };
 }
 
 /** 3. The fake woods, and the gift shop. */
@@ -244,8 +266,9 @@ export function fakeWoods(book: BlockBook): Level {
   const m = new MapBuilder(book, 'wallTop', WOODS);
   m.patch(0, 0, map.lines);
   m.mon(MON.lily, 2, 1).mon(MON.werewolf, 20, 9).mon(MON.spider, 9, 1).mon(MON.spider, 24, 9).mon(MON.carl, 15, 11).mon(MON.bill, 7, 9).mon(MON.bill, 19, 13).mon(MON.bill, 27, 3);
-  m.link(33, 13, 'next');
-  return { m, start: at(1, 2), size: [map.w, map.h] };
+  // the way through, past the register: "I get a souvenir sword"
+  m.hall(34, 13, 1, 0, SHOP_HALL, '.', 'next');
+  return { m, start: at(1, 2), size: [map.w + SHOP_HALL, map.h] };
 }
 
 /** 4. The last hall. */
@@ -270,7 +293,9 @@ const HALL: Record<string, string> = {
 
 export function lastHall(book: BlockBook): Level {
   const map = rows([
-    '#VVVVVVVVVVVVVEVVVVVVVVVVVVVV#',
+    '##############E###############',
+    ...Array.from({ length: EXIT_HALL - 1 }, () => '##############.###############'),
+    '#VVVVVVVVVVVVV.VVVVVVVVVVVVVV#',
     '#sspmmVVVVVVVVXVVVVVVVVVsspmm#',
     '#.....,......................#',
     '#..L....*.........*......r...#',
@@ -285,7 +310,9 @@ export function lastHall(book: BlockBook): Level {
   ]);
   const m = new MapBuilder(book, 'wallTop', HALL);
   m.patch(0, 0, map.lines);
-  m.mon(MON.knight, 22, 3).mon(MON.lilyNear, 16, 10).mon(MON.bat, 4, 5).mon(MON.bat, 25, 6);
+  const y = HALL_TOP;
+  m.mon(MON.knight, 22, 3 + y).mon(MON.lilyNear, 16, 10 + y).mon(MON.bat, 4, 5 + y).mon(MON.bat, 25, 6 + y);
+  // up the exit corridor to the sign at its end: "the emergency exit sign"
   m.link(14, 1, 'won');
-  return { m, start: at(14, 10), size: [map.w, map.h] };
+  return { m, start: at(14, 10 + y), size: [map.w, map.h] };
 }
