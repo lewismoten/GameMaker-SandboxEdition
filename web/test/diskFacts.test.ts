@@ -32,7 +32,7 @@ const game = (bytes: number, over: Partial<CatalogEntry> = {}): CatalogEntry => 
   bytes,
   files: ['goat.gam', 'title.gif', 'song.cmf'],
   sizes: [bytes / 2, bytes / 4, bytes / 4],
-  original: {} as CatalogEntry['original'],
+  original: {},
   ...over,
 });
 

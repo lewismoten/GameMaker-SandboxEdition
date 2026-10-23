@@ -44,7 +44,7 @@ describe('a new saved game', () => {
       expect(save.linkin).toBe(0);
       expect(save.world.chr.x[0]).toBe(link.to.x);
       expect(save.world.chr.y[0]).toBe(link.to.y);
-      const chr = parseCharacter(files.get(game.scenes[link.toScene].files[5]!)!);
+      const chr = parseCharacter(files.get(game.scenes[link.toScene].files[5])!);
       const ci = save.world.ci;
       expect(ci.score).toBe(0);
       expect(ci.hitpts).toBe(chr.meter[0]);

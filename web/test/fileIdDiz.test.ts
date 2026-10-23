@@ -28,7 +28,7 @@ describe('FILE_ID.DIZ', () => {
       company: 'Sandbox Software',
       year: 1995,
       price: '$7–$15',
-      original: {} as CatalogEntry['original'],
+      original: {},
       blurb: '“Hi.” '.repeat(80),
     });
     const lines = gameDiz(long);
