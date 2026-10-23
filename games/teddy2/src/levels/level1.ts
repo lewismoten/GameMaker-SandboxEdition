@@ -105,6 +105,7 @@ export function house(): Level {
   m.set(9, 36, 'klubPhoto');
   m.set(12, 38, 'tv00').set(12, 39, 'tv01');
   m.set(6, 37, 'signSniff').set(7, 37, 'signSniffR');
+  m.set(2, 37, 'signWoof').set(3, 37, 'signWoofR');
   for (const x of [2, 4, 6, 11, 13]) m.set(x, 39, x === 4 || x === 6 ? 'rug' : 'confetti');
   // The hall: stairs up (ledges), the coat on its hook.
   // (the stairwell's top is ledges too, so Teddy comes up through it and walks on it)

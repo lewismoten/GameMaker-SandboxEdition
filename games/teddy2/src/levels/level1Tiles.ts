@@ -659,6 +659,10 @@ export function houseTiles(): Tiles {
   const [sniffL, sniffR] = wideSign(L(), 'SNIFF S');
   t.air('signSniff', sniffL);
   t.air('signSniffR', sniffR);
+  // and by the dog beds, the bark that clears the dust bunny just ahead (SPACE)
+  const [woofL, woofR] = wideSign(L(), 'WOOF\nSPACE');
+  t.air('signWoof', woofL);
+  t.air('signWoofR', woofR);
   void gradient;
   return t;
 }
