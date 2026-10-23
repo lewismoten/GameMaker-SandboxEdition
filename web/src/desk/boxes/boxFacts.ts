@@ -143,6 +143,8 @@ export function planBack(available: number, featureCount: number, reviewCount: n
           }
         }
   if (best) return best;
-  const last = { bodyPx: 14, features: 0, reviews: 0, shots: 0 };
+  // a long story alone: smaller type until it ends above the claims, never under them
+  let last = { bodyPx: 13, features: 0, reviews: 0, shots: 0 };
+  while (last.bodyPx > 9 && heightOf(last) > available) last = { ...last, bodyPx: last.bodyPx - 1 };
   return { ...last, height: heightOf(last) };
 }
