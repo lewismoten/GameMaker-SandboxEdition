@@ -99,8 +99,8 @@ The Tiny Pockets Library
 
 Thirty-two 100 Word Stories by Lewis Moten, word for word.
 
-He wrote every one of them for Laurence Simon's weekly 100 Word Stories challenge, in 2009-2014 and 2026.`,
-  `Thank you, Laurence Simon, for one hundred words a week, every week, for more than a thousand weeks.
+He wrote every one of them for Laurence Simon's weekly 100 Word Stories challenge on the 100 Word Stories Podcast, in 2009-2014 and 2026.`,
+  `Thank you, Laurence Simon, for one hundred words a week, every week, for more than a thousand weeks, and the podcast's writers and listeners, whose weekly winners chose the next topic.
 
 Two of these stories first went up under the name Mystery Robot Joe. He has a job now.`,
   `Game design, art, music and every block of the library: Claude Opus 5.5
@@ -244,7 +244,7 @@ Type BRIEF at the DOS prompt (it runs PLAYGAME with BRIEF.GAM).
 WHAT IS IT?
 Every book in the library behind The Dog House's red door holds exactly one hundred words, and last night every word fell out of every book. As Mystery Robot Joe, the night librarian, pick the words up and put thirty-two stories back together.
 
-The stories are Lewis Moten's 100 Word Stories, written for Laurence Simon's weekly 100 Word Stories challenge, word for word.
+The stories are Lewis Moten's 100 Word Stories, written for Laurence Simon's weekly 100 Word Stories challenge on the 100 Word Stories Podcast, word for word. Each week's topic was set by Laurence or chosen by the last week's winner.
 
 THIS IS SHAREWARE
 Copy this disk for a friend, upload it to your favorite BBS, put it on a shareware disk: all of the files, unchanged. Please return it on time.
