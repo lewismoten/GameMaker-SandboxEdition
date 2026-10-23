@@ -128,7 +128,7 @@ export const BOARDS: BoardSpec[] = [
     card: ['Does the light stay on when', 'the door is shut? Find out!'],
     rows: [
       '######0#########',
-      '#.....o.#......#',
+      '#y....o.#......#',
       '#.......#..X...#',
       '#..%....#......#',
       '#.......#####g##',

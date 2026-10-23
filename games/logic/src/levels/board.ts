@@ -211,7 +211,8 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     spec.rows.forEach((row, y) => [...row].forEach((ch, x) => ch === '?' && seams.add(wallMask((x2, y2) => spec.rows[y2]?.[x2] ?? ' ', x, y))));
   const fusebox = seams.size > 0;
   if (fusebox && specs.length >= SLOTS.length) throw new Error(`${room}: no slot left for the fuse box`);
-  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard'), seams: [...seams], fusebox });
+  const easterEgg = specs.some((s) => s.rows.some((r) => r.includes('y')));
+  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard'), seams: [...seams], fusebox, easterEgg });
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
   let placed = 0;
@@ -262,6 +263,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
           exit = { x: ox + x, y: oy + y };
         } else if (ch === '$') put(x, y, bb ? 'bbScrew' : 'screw');
         else if (ch === 'h') put(x, y, 'tinHeart');
+        else if (ch === 'y') put(x, y, 'easterEgg');
         else if (ch in DIODES) put(x, y, DIODES[ch]);
         else if (ch === '@') put(x, y, tb ? traceName(tb) : bb ? 'bbPad' : 'pad');
         else if (ch === '.' || ch in PARTS) put(x, y, tb ? traceName(tb) : floor(x, y));

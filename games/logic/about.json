@@ -9,6 +9,7 @@
   "sound": "sb",
   "egg": { "block": 149 },
   "tinHeart": { "map": "attic.map", "at": [3, 7] },
+  "easterEgg": { "map": "kitchen.map", "at": [71, 23] },
   "label": {
     "background": "#0d3a24",
     "band": "#e08a3c",
