@@ -8,6 +8,7 @@ import { CAST, CAST_GAMES, familiesOf, type CastMember, type Family } from './ca
 import { castStage } from './castStage';
 import { seenIn } from './castThumbs';
 import { pageToc } from '../pageToc';
+import { heartProgress } from '../tinHearts/progress';
 
 const FILTERS: [Family | 'all', string][] = [
   ['all', 'Everyone'],
@@ -41,6 +42,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
       h('h3', { id: `cast-${m.id}-name` }, h('a', { href: `#/cast?who=${m.id}`, class: 'cast-anchor', onclick: (e: Event) => pick(m, e) }, m.name)),
       h('p', { class: 'cast-role' }, m.role),
       h('p', { class: 'cast-bio' }, m.bio),
+      m.id === 'tinHeart' && heartProgress(),
     ),
     m.appears.length
       ? h('div', { class: 'cast-seen-box' }, h('p', { class: 'cast-seen-h' }, 'Seen in:'), seenIn(m.appears))
