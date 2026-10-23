@@ -64,7 +64,7 @@ const CATEGORIES: { id: Category; icon: IconName; name: string; lead: string }[]
     id: 'bizarre',
     icon: 'music',
     name: 'Bizarre',
-    lead: 'Big, heartfelt songs about all the wrong things (the goat nobody painted, the loaf nobody picked, a fly named Carl, the TV remote), made into games. The Bard of Bizarre is Lewis “Lewie” Moten III, with Doc Leo the hobo clown as his face: he dreams up each song, AI tools write and record it, and you can play it, read its notice, or edit a copy (they’re MIT) to see how it was made.',
+    lead: 'Big, heartfelt songs about all the wrong things (the goat nobody painted, the loaf nobody picked, a fly named Carl, the TV remote), made into games. The Bard of Bizarre is Lewis “Lewie” Moten III, with Doc Leo the hobo clown as his face: he dreams up each song, AI tools shape and record it, and you can play it, read its notice, or edit a copy (they’re MIT) to see how it was made.',
   },
 ];
 
