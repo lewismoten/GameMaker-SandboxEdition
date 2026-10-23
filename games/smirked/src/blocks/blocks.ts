@@ -69,7 +69,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('runner', runner);
   /** Flagstones in the crypt. */
   const flags = (seed: number) => {
-    const p = speckle(P(), 0, 0, 20, 20, R('stone'), 1, 2, seed, 0.3);
+    // two quiet tones, so the witches and zombies read against it
+    const p = speckle(P(), 0, 0, 20, 20, R('stone'), 1, 1, seed, 0.1).map((_x, _y, v) => (v === c('stone', 0) ? c('stone', 2) : v));
     p.rect(0, 9, 20, 1, c('stone', 0)).rect(0, 19, 20, 1, c('stone', 0));
     p.rect(((seed * 7) % 13) + 3, 0, 1, 9, c('stone', 0)).rect(((seed * 5) % 11) + 5, 10, 1, 9, c('stone', 0));
     return p;
@@ -78,7 +79,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('flags2', flags(5));
   /** The fake woods' path: packed dirt and fallen leaves. */
   const dirt = (seed: number, leaves: number) => {
-    const p = speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 2, seed, 0.18);
+    // packed dark earth with a few lighter crumbs: two quiet tones under the werewolf
+    const p = speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 1, seed, 0.08).map((_x, _y, v) => (v === c('dirt', 0) ? c('dirt', 2) : v));
     const r = rng(seed + 9);
     for (let i = 0; i < leaves; i++) {
       const x = Math.floor(r() * 18) + 1;

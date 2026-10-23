@@ -19,6 +19,29 @@ import { MONEY, SORRY, HELMET } from '../ids';
 
 export { T, outline };
 
+/**
+ * A lit edge for the things that can get you, so they stand out on any floor: the outline is
+ * pale (moonlight on fog) and the art just inside it goes dark. The same pixels as a plain
+ * outline, so what touches you is exactly what you see.
+ */
+export function rim(p: Pixels, ink: number, pale: number): Pixels {
+  outline(p, pale);
+  const src = p.px.slice();
+  for (let y = 0; y < p.h; y++)
+    for (let x = 0; x < p.w; x++) {
+      const v = src[y * p.w + x];
+      if (v === T || v === pale) continue;
+      const near = [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ].some(([dx, dy]) => src[(y + dy) * p.w + x + dx] === pale && x + dx >= 0 && x + dx < p.w && y + dy >= 0 && y + dy < p.h);
+      if (near) p.px[y * p.w + x] = ink;
+    }
+  return p;
+}
+
 export type Facing = 'down' | 'up' | 'side';
 
 export interface HeroPose {
@@ -263,6 +286,8 @@ export function buildMonsterBlocks(pal: Pal) {
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
   const done = (p: Pixels) => outline(p, ink);
+  /** The things that can get you (and the witch you flattened), with a lit edge. */
+  const lit = (p: Pixels) => rim(p, ink, c('fog', 2));
   /**
    * A monster that hurts to touch: its pictures don't, but each also has a stinging copy
    * (name + "!") that its animation shows for one tick in every round. Touching hurts only on
@@ -330,7 +355,7 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 5, 3.8, 3.6, pal.r('zombie'), 1, 3);
     p.set(8, 4, ink).set(12, 5, c('red', 2)).rect(8, 7, 4, 1, ink).set(9, 7, c('white', 2)).set(11, 7, c('white', 2));
     p.set(7, 2, c('zombie', 0)).set(12, 2, c('zombie', 0));
-    return done(p);
+    return lit(p);
   };
   sting('zombie0', zombie(0), -4);
   book.add('zombie1', zombie(1));
@@ -364,7 +389,7 @@ export function buildMonsterBlocks(pal: Pal) {
     // the hat (tilted a little more each time something walks past)
     for (let y = 0; y < 6; y++) p.rect(10 - y * 0.7 + f * (5 - y) * 0.2, y, 1 + y * 1.4, 1, c('black', 1));
     p.rect(5, 5, 10, 1, c('black', 2)).rect(8, 4, 5, 1, c('purple', 2));
-    return done(p);
+    return lit(p);
   };
   book.add('witch0', witch(0));
   book.add('witch1', witch(1));
@@ -381,7 +406,7 @@ export function buildMonsterBlocks(pal: Pal) {
       .rect(15, 15 + f, 3, 3, c('yellow', 1));
     p.rect(3, 4, 7, 4, c('white', 2));
     micro(p, 4, 3, 'OW', c('red', 1));
-    return done(p);
+    return lit(p);
   };
   book.add('flat0', flat(0), { effect: SORRY, eamt: 1, scorePts: 100 });
   book.add('flat1', flat(1), { effect: SORRY, eamt: 1, scorePts: 100 });
@@ -411,7 +436,7 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 9, 2.2, 2.6, pal.r('black'), 0, 2);
     p.set(9, 6, c('black', 2)).set(11, 6, c('black', 2));
     p.set(9, 8, c('red', 3)).set(11, 8, c('red', 3)).set(10, 10, c('white', 2));
-    return done(p);
+    return lit(p);
   };
   sting('bat0', bat(0), -3);
   book.add('bat1', bat(1));
@@ -440,11 +465,12 @@ export function buildMonsterBlocks(pal: Pal) {
     for (const x of [3, 5, 14, 16]) p.set(x, 6 - (x < 10 ? f : -f), c('white', 2));
     blob(p, 10, 5, 4.4, 4, pal.r('fur'), 1, 3);
     p.line(6, 2, 5, -1, c('fur', 1)).line(14, 2, 15, -1, c('fur', 1));
-    blob(p, 10, 7, 2.4, 1.6, pal.r('fur'), 2, 3);
-    p.set(8, 4, c('yellow', 2)).set(12, 4, c('yellow', 2)).set(10, 6, ink).rect(9, 8, 3, 1, ink).set(9, 9, c('white', 2)).set(11, 9, c('white', 2));
+    // a pale muzzle and glowing eyes, so you can see him coming in the dark woods
+    blob(p, 10, 7, 2.4, 1.6, pal.r('cardboard'), 2, 3);
+    p.rect(8, 4, 1, 2, c('gold', 2)).rect(12, 4, 1, 2, c('gold', 2)).set(10, 6, ink).rect(9, 8, 3, 1, ink).set(9, 9, c('white', 2)).set(11, 9, c('white', 2));
     // the mask's seam at the neck (it's a guy)
     p.rect(7, 9, 6, 1, c('skin', 2));
-    return done(p);
+    return lit(p);
   };
   sting('wolf0', wolf(0), -6);
   book.add('wolf1', wolf(1));
@@ -455,7 +481,7 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 11, 3.4, 3, pal.r('black'), 0, 2);
     for (const s of [-1, 1]) for (let k = 0; k < 4; k++) p.line(10 + s * 2, 10 + k, 10 + s * (6 + (k % 2)), 7 + k * 3 + (f ? 1 : -1) * (k % 2), c('black', 1));
     p.set(9, 10, c('red', 3)).set(11, 10, c('red', 3)).set(10, 13, c('orange', 2));
-    return done(p);
+    return lit(p);
   };
   sting('spider0', spider(0), -3);
   book.add('spider1', spider(1));
@@ -508,7 +534,7 @@ export function buildMonsterBlocks(pal: Pal) {
       p.rect(7, 2, 6, 2, c('hair', 1));
       p.set(8, 6, ink).set(12, 6, ink).rect(9, 8, 3, 1, ink).set(9, 8, c('white', 2)).set(11, 8, c('white', 2));
     }
-    return done(p);
+    return lit(p);
   };
   sting('knight0', knight(0), -5);
   book.add('knight1', knight(1));
