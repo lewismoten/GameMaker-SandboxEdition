@@ -68,8 +68,9 @@ export type MixedSticker = StickerSpec & { special?: Special; from?: PrintContex
 const nameOf = (s: StickerSpec) => [s.text, s.sub].filter(Boolean).join(' ') || 'Picture';
 const wordsOf = (s: StickerSpec): Words => ({ text: s.text, sub: s.sub, color: s.color ?? '#ffffff', ink: s.ink ?? '#111111' });
 
-/** A die-cut's pixel size: about 1.3" tall, never more than 9/150" a pixel. */
-const dieCutPx = (img: HTMLCanvasElement, words: boolean) => Math.max(3, Math.min(9, Math.round(((words ? 1.15 : 1.3) * 150) / img.height)));
+/** A die-cut's pixel size: about 1.15" tall (smaller by `shrink` steps, to fit one sheet), never more than 9/150" a pixel. */
+const dieCutPx = (img: HTMLCanvasElement, words: boolean, shrink: number) =>
+  Math.max(3, Math.min(9, Math.round(((words ? 1.15 : 1.3) * 150) / img.height)) - shrink);
 
 /** The little cut-out of a character that fills a gap: no words, about half an inch. */
 function mini(name: string, img: HTMLCanvasElement, color: string): Sticker {
@@ -77,7 +78,7 @@ function mini(name: string, img: HTMLCanvasElement, color: string): Sticker {
 }
 
 /** A spec made ready: its picture loaded, its kind and shape chosen. Also its mini, if it has a character. */
-async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined): Promise<{ sticker: Sticker; mini?: Sticker }> {
+async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined, shrink = 0): Promise<{ sticker: Sticker; mini?: Sticker }> {
   if (spec.special === 'bbs') return { sticker: bbsSticker() };
   if (spec.special === 'gm') return { sticker: gmSticker() };
   if (spec.special === 'sandbox') return { sticker: sandboxSticker() };
@@ -89,7 +90,8 @@ async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined)
     const loaded = await loadImage(src);
     const img = loaded && trim(loaded);
     if (img) {
-      const sticker = shape === 'cut' ? dieCut(name, img, spec.px ?? dieCutPx(img, !!(spec.text || spec.sub)), words) : shaped(name, shape, words, img);
+      const px = spec.px ? Math.max(3, spec.px - shrink) : dieCutPx(img, !!(spec.text || spec.sub), shrink);
+      const sticker = shape === 'cut' ? dieCut(name, img, px, words) : shaped(name, shape, words, img);
       return { sticker, mini: spec.noMini ? undefined : mini(name, img, words.color) };
     }
   }
@@ -160,8 +162,24 @@ export async function stickers(ctx: PrintContext): Promise<Sheet[]> {
   const box = ctx.entry.original?.box;
   const [main, sub] = splitTitle(ctx.entry.title);
   const title = floppy(`${ctx.entry.title} disk`, main.toUpperCase(), sub, box?.background ?? '#1d3f7a', box?.accent && box.accent !== box.background ? darkOf(box) : '#111');
-  const made = await Promise.all(gameSpecs(ctx).map((spec) => resolveSticker(spec, ctx)));
-  return stickerSheets([title, ...made.map((m) => m.sticker)], made.flatMap((m) => (m.mini ? [m.mini] : [])), ctx.entry.id);
+  return fitted(
+    gameSpecs(ctx).map((spec): MixedSticker => ({ ...spec, from: ctx })),
+    ctx.entry.id,
+    [title],
+  );
+}
+
+/**
+ * The stickers on as few sheets as they fit: if they spill onto a second sheet, the die-cuts are
+ * drawn a step smaller (fewer 1/150" per pixel, so still crisp) and laid out again.
+ */
+async function fitted(specs: MixedSticker[], id: string, extra: Sticker[] = []): Promise<Sheet[]> {
+  for (let shrink = 0; ; shrink++) {
+    const made = await Promise.all(specs.map((spec) => resolveSticker(spec, spec.from, shrink)));
+    const list = [...extra, ...made.map((m) => m.sticker)];
+    const minis = made.flatMap((m) => (m.mini ? [m.mini] : []));
+    if (shrink >= 3 || layoutStickers(list.map((s) => s.geom)).length === 1) return stickerSheets(list, minis, id);
+  }
 }
 
 /** The title's ink on the floppy's cream label: the box's darker color. */
@@ -176,12 +194,7 @@ function darkOf(box: { background?: string; accent?: string }): string {
 
 /** A sheet of stickers whose pictures come from several games: each spec names the game it is drawn from. */
 export async function mixedStickers(specs: MixedSticker[], base: string): Promise<Sheet[]> {
-  const made = await Promise.all(specs.map((spec) => resolveSticker(spec, spec.from)));
-  return stickerSheets(
-    made.map((m) => m.sticker),
-    made.flatMap((m) => (m.mini ? [m.mini] : [])),
-    base,
-  );
+  return fitted(specs, base);
 }
 
 function stickerSheets(list: Sticker[], minis: Sticker[], id: string): Sheet[] {
