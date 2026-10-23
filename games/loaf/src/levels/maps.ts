@@ -264,7 +264,7 @@ export function baskets(book: BlockBook): Level {
   // the twelfth basket, and the big harvest basket it opens into: a long roll inside to the
   // way on, so "Nothing's ever wasted." is sung to the end
   m.set(66, 9, 'B').set(64, 9, ',');
-  m.row(7, 67, 77, 'm').fill(67, 8, 10, 2, 'i').col(77, 8, 9, 'W');
+  m.row(6, 67, 77, 'm').row(7, 67, 77, 'W').fill(67, 8, 10, 2, 'i').col(77, 8, 9, 'W');
   m.link(76, 9, 'next');
   return { m, start: at(2, 9), size: [W, H] };
 }
