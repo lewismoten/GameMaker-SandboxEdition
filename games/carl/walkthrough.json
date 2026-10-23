@@ -8,7 +8,7 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "ARIFkgBNBM0CTQTNAhIKkgBNBM0CLgquAE0kzQIuBa4AUAzQAk0IzQJNCM0CTQTNAk0EzQISBZIASATIAhIFkgBIDMgCUAjQAk0EzQJNCM0CLgWuAE0EzQJQBNACLgiuAk0QzQJIGMgCUAzQAk0MzQIuA64AUAzQAi4FrgBQBNACSCDIAkgGyABNAc0AOQK5Bk0PzQIuBa4AUCDQAhIKkgBIEMgCTQ=="
+   "keys": "ARIFkgBNBM0CTQTNAhIKkgBNBM0CLgquAE0kzQIuBa4AUAzQAk0IzQJNCM0CTQTNAk0EzQISBZIASATIAhIFkgBIDMgCUAjQAk0EzQJNCM0CLgWuAE0EzQJQBNACLgiuAk0QzQJIGMgCUAzQAk0MzQIuA64AUAzQAi4FrgBQBNACSCDIAkgGyABNAc0AOQK5Bk0PzQIuBa4AUCDQAhIFkgBIHMgCTRDNAlA="
   },
   {
    "scene": 3,
@@ -59,7 +59,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 18819,
+  "frames": 18980,
   "chapters": [
    {
     "title": "Opening",
@@ -75,31 +75,31 @@
    },
    {
     "title": "Level 2: The Walls",
-    "frame": 4946
+    "frame": 5107
    },
    {
     "title": "Level 3: Joins Me in Bed",
-    "frame": 7038
+    "frame": 7199
    },
    {
     "title": "Level 4: The Open Window",
-    "frame": 9051
+    "frame": 9212
    },
    {
     "title": "Level 5: Carl Has Seen Things",
-    "frame": 10340
+    "frame": 10501
    },
    {
     "title": "Level 6: The Aux Cord",
-    "frame": 12347
+    "frame": 12508
    },
    {
     "title": "Ending",
-    "frame": 13988
+    "frame": 14149
    },
    {
     "title": "Credits",
-    "frame": 16731
+    "frame": 16892
    }
   ]
  }

@@ -168,9 +168,11 @@ export function theCouch(book: BlockBook): Level {
   // a tall bookcase right up to the ceiling but for one gap, where the towel snaps (roll!)
   m.set(48, 2, 'shelfTop').col(48, 3, 10, 'shelf');
   m.mon(MON.towel, 48, 1);
-  // the floor lamp: eight snacks and it's Carl's
-  lamp(m, 54, 4);
-  m.link(54, 4, 'next');
+  // the floor lamp in the corner by a bookcase: eight snacks and its shade lights; Carl drops in
+  // and down the pole, long enough for "On my lamp" to play before the scene ends
+  m.set(55, 4, 'shelfTop').col(55, 5, 10, 'shelf');
+  lamp(m, 56, 4);
+  m.link(56, 9, 'next');
   return { m, start: at(4, 5), size: [W, H] };
 }
 

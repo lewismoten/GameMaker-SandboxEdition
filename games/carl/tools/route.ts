@@ -130,9 +130,10 @@ export async function theCouch(bot: Bot): Promise<void> {
   await carefully(bot, 'the towel in the bookcase gap', 10, async () => {
     await go(bot, [[46, 1]], 'the gap');
     await rollAhead(bot, 'right');
-    await go(bot, [[50, 1], [51, 10], [53, 4]], 'through, and the pizza on the floor');
+    await go(bot, [[50, 1], [51, 10], [52, 2], [56, 2]], 'through, the pizza on the floor, over the lamp');
   });
-  await carefully(bot, 'the lamp', 10, () => leave(bot, bot.fly(55, 4, 'the shade'), 'the lamp'));
+  // straight down into the shade and the pole: no new move, so nothing cuts "On my lamp" off
+  await carefully(bot, 'the lamp', 10, () => leave(bot, bot.fly(56, 9, 'the shade'), 'the lamp'));
 }
 
 /** 2. The walls: smiles from the kitchen walls, past the clap at the floor and the swatter over the fridge, to the door. */
