@@ -149,6 +149,9 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
       const hint = document.createElement('button');
       hint.type = 'button';
       hint.className = 'demo-sound-hint';
+      // a pointer convenience: any key turns the sound on too, so it stays out of the Tab order
+      // (and out of the aria-hidden demo on the home page)
+      hint.tabIndex = -1;
       hint.textContent = `🔇 ${matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Click'} for sound`;
       // the tap only turns the sound on (audio/context.ts hears it first); the card under it stays put
       hint.addEventListener('click', (e) => (e.stopPropagation(), e.preventDefault()));
