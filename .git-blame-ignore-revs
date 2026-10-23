@@ -4,3 +4,6 @@
 
 # Format web/ with Prettier
 b23f8278c1268c7bce52782d68bf73ab938d51db
+
+# Format games/ TypeScript with Prettier
+20cff94d64b593e43a38f4b6fd18a20ec885d097
