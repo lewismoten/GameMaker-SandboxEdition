@@ -29,6 +29,8 @@ export interface ChezInk {
   lamp: number;
   /** The red marker at the back. */
   tail: number;
+  /** The headlight's lens, on the front of its pod on the hood (default: the pinstripe white). */
+  lens?: number;
   /** The racing stripes (default: the tire's black). */
   stripe?: number;
   /** Their white pinstripes, drawn at scale 2 and up (default: the light glass). */
@@ -64,6 +66,16 @@ export const CHEZ_WINDOW: Pt[] = [
   [24.5, 8.3],
   [13.0, 8.3],
 ];
+/** The headlight's pod, standing up off the hood near the nose. */
+export const CHEZ_POD: Pt[] = [
+  [30.0, 9.1],
+  [30.5, 8.6],
+  [32.0, 8.6],
+  [32.4, 9.2],
+  [32.4, 10.6],
+];
+/** Where the headlight shines from (its lens, facing right). */
+export const CHEZ_LAMP: Pt = [32.4, 9.4];
 export const CHEZ_WHEELS = [9.35, 31.1];
 export const CHEZ_AXLE = 16.75;
 const TIRE = 3.25;
@@ -102,7 +114,7 @@ function step(x: number): [number, number] {
 
 /** Whether (x, y) is on the body (in units). */
 export function onChez(x: number, y: number): boolean {
-  return inPoly(CHEZ_BODY, x, y);
+  return inPoly(CHEZ_BODY, x, y) || inPoly(CHEZ_POD, x, y);
 }
 
 /** The car alone on a picture (HOLE where there is no car), facing right, `s` pixels per unit
@@ -166,6 +178,7 @@ function profile(k: ChezInk, port: boolean, s: number): Pixels {
     if (s >= 3) for (let x = 28.4; x < 31.8; x += 0.5) p.set(at(x), at(BAND) - (Math.round(x * 2) % 3 === 0 ? 1 : 0), pin); // "electric"
     if (s >= 2) box(13.7, 18.1, 12.4, 0.5, k.bumper); // the black rocker under the door
   }
+  box(32.1, 8.9, 0.5, 1.1, k.lens ?? pin); // the headlight
   // the markers: amber up front over the stripes, red at the back under them
   box(30.4, 10.9, 1.2, 0.8, k.lamp);
   box(7.1, 12.4, 1.2, 0.8, k.tail);
