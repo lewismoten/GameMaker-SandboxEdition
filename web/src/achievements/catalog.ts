@@ -88,7 +88,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'desk-bbs', title: 'Handshake', desc: 'Dialed The Sofa BBS on the modem.', icon: '📞', category: 'desk' },
   { id: 'desk-bbs-file', title: 'Downloading…', desc: 'Downloaded a file from the BBS.', icon: '📥', category: 'desk' },
   { id: 'desk-hexedit', title: 'Byte by byte', desc: 'Looked inside a file with HEXEDIT.', icon: '🔢', category: 'desk' },
-  { id: 'desk-savehack', title: 'Save scummer', desc: 'Changed a saved game with SAVEHACK.', icon: '🛠️', category: 'desk' },
+  { id: 'desk-savehack', title: 'Save scummer', desc: 'Ran SAVEHACK, the saved game editor.', icon: '🛠️', category: 'desk' },
   { id: 'desk-backup', title: 'Safe and sound', desc: 'Ran BACKUP.', icon: '🗄️', category: 'desk' },
   { id: 'desk-gmcrack', title: 'Party like it’s 1994', desc: 'Ran GMCRACK.', icon: '🏴‍☠️', category: 'desk' },
   { id: 'desk-register', title: 'Registered user', desc: 'Registered Game-Maker.', icon: '📝', category: 'desk' },

@@ -22,11 +22,13 @@ import { h, clear } from "../editor/core/ui";
 import { AUTOEXEC } from "./computer/setup";
 import { soundBlaster } from "./computer/soundBlaster";
 import { ComputerFolders } from "./computer/folders";
+import { deskProgram, playAchievements, playWrote, unlockAchievement } from "../achievements";
 
 export class Computer extends ComputerFolders {
   async powerOn(): Promise<void> {
     if (this.powered) return;
     this.powered = true;
+    unlockAchievement("desk-power");
     this.unlockAudio();
     this.setMode("text");
     const s = this.screen;
@@ -126,6 +128,7 @@ export class Computer extends ComputerFolders {
     this.busy = true;
     this.program = ref.kind;
     this.opts.onProgram?.({ kind: ref.kind, drive: this.shell.drive });
+    deskProgram(ref.kind);
     try {
       switch (ref.kind) {
         case "gm":
@@ -290,8 +293,9 @@ export class Computer extends ComputerFolders {
         // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)
         noSoundCard: !soundBlaster(),
         onQuit: () => false, // back to DOS
-        onFileWrite: saveId ? (name, bytes) => void writeSaveFile(saveId, name, bytes) : undefined,
+        onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
         saveId,
+        ...playAchievements(saveId),
         onExit: () => {
           this.player = undefined;
           if (this.restarting) {

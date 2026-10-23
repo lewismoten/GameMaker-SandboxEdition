@@ -56,3 +56,19 @@ export function playAchievements(saveId: string | undefined): { onSession?: (s: 
 export function playWrote(saveId: string | undefined, name: string): void {
   if (!saveId?.startsWith('bundle:') && /^game\d\.sav$/i.test(name)) unlockAchievement('play-save');
 }
+
+/** The desk PC ran a program (ProgramRef kinds, retro/dos/vfs.ts). */
+export function deskProgram(kind: string): void {
+  const id = DESK_PROGRAMS[kind];
+  if (id) unlockAchievement(id);
+}
+
+const DESK_PROGRAMS: Record<string, string> = {
+  gm: 'desk-gm',
+  hexedit: 'desk-hexedit',
+  savehack: 'desk-savehack',
+  backup: 'desk-backup',
+  gmcrack: 'desk-gmcrack',
+  egg: 'desk-egg',
+  achieve: 'desk-achieve',
+};
