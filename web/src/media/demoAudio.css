@@ -121,6 +121,12 @@
   cursor: pointer;
 }
 
+/* while the pill shows, the recording's tag (demoPreview.ts, top center) steps down below it,
+   so the two never overlap on a narrow screen (!important: the tag's place is set inline) */
+.demo-kind-tag:has(~ .demo-sound-hint) {
+  top: 44px !important;
+}
+
 .demo-sound-hint:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
