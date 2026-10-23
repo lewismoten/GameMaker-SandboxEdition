@@ -88,6 +88,8 @@ fails until it is rerun. The other play-testing tools:
 | reckoning | `npx vite-node ../games/reckoning/tools/gendemo.ts`  | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | loofah    | `npx vite-node ../games/loofah/tools/check.ts`       | the bot rides the steam for bath salt, tames wild loofahs in the forest-dark aisle, lights six candles, cleanses Scrubbus Maximus |
 | loofah    | `npx vite-node ../games/loofah/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| risi      | `npx vite-node ../games/risi/tools/check.ts`         | the bot airs the banquet, outruns the horde, twists seven tituli, meows six cheeses as Felix, gathers golden scales, makes the Emperor laugh |
+| risi      | `npx vite-node ../games/risi/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | sweats    | `npx vite-node ../games/sweats/tools/check.ts`       | the bot plays the open mic: four intermissions and seventeen monologues (`SWEATS_FROM`/`SWEATS_UPTO=<scene>` for one) |
 | sweats    | `npx vite-node ../games/sweats/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
@@ -390,3 +392,19 @@ sound); B and Space say two more lines (`tools/cutClips.py`, 68 clips from Whisp
 Each set is a group (`src/groups/<id>`) with one block set and one monster block set of its own, its
 ramps after the common ones, so every scene shares POET.CBL. The coffee-house jazz score derives four of
 its songs from the recordings' music beds (`tools/analyze.py`).
+
+**Veni, Vidi, Risi!** (`risi`). Six comic songs in Latin by Veni, Vidi, Risi!, Lewis's group (lyrics
+shaped with ChatGPT from his prompts, music and vocals made with Riffusion), shareware from The Sofa BBS
+beside the Bard's (`"series": "bizarre"`). A side-on platformer, one level a song, the six levels in three
+pairs that share a block set each (VILLA, CAMPUS, THERMAE: a .BBL holds 150) and one monster set. Marcus
+the poet must make Emperor Gravis laugh. Space and Z tell a joke each way (two "HA!"s, power 220, never
+running out); a stone face hit by one becomes a spectator shaking with laughter in its seat (230, so the
+second joke flies by harmlessly) whose path ends in a laugher (50) that comes to him and counts. Shutters
+are air a touch throws open (counter 20), Rufus's table gives birth to clouds, the Gaulish horde is a
+charge along a fixed path at a walk (the level is the retreat), tituli twist into tongue twisters when
+touched (counter 22) and SAXA turns into SAGA, the kitchen loads a second character file (Felix the
+cat, whose meow scares mice into dropping their cheese), steam and drums are air that lifts, and the
+Emperor is two monsters in four stages. Hurting monsters sting on one picture a round. Every gate opens a
+step before the way on, so its sung line plays out. The FM score is arranged from the recordings'
+analysis (`tools/analyze.py`: an opera, a march, a patter song, an aria, an ironic bounce), seventeen
+Latin clips are cut from them (`tools/cutClips.py`), and the cover is painted in code (`src/art/cover.ts`).
