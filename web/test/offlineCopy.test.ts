@@ -6,6 +6,7 @@ describe('offline copy', () => {
     expect(sizeText(300)).toBe('1 KB');
     expect(sizeText(512 * 1024)).toBe('512 KB');
     expect(sizeText(31.25 * 1024 * 1024)).toBe('31.3 MB');
+    expect(sizeText(10 * 1024 ** 3)).toBe('10.0 GB');
   });
 
   it('checks there is room, with a little to spare, when the browser says how much', () => {
