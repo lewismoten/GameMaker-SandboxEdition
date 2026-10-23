@@ -178,7 +178,7 @@ export function main(): Level {
   for (const [x, y] of [
     [14, 35],
     [gz + 1, 33],
-    [73, 29],
+    [60, 33],
   ])
     m.mon(x, y, 'poodle');
   const treats: [number, number][] = [
