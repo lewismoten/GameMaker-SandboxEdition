@@ -6,7 +6,8 @@
     { "game": "logic", "as": "on The Home Computer’s board" },
     { "game": "smirked", "as": "in a corner of the fog hall" },
     { "game": "teddy", "as": "in the grass by Doc Leo’s back door" },
-    { "game": "goat", "as": "in the grass in the far corner of the shepherds’ field" }
+    { "game": "goat", "as": "in the grass in the far corner of the shepherds’ field" },
+    { "game": "needle", "as": "under the tailor’s sewing table" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -14,7 +15,8 @@
     { "game": "smirked", "as": "peeking out of the gift shop’s curtains" }
   ],
   "watt": [
-    { "game": "blaster", "as": "blinking on Memory Lane" }
+    { "game": "blaster", "as": "blinking on Memory Lane" },
+    { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" }
   ],
   "carl": [
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
