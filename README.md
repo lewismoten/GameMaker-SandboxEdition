@@ -69,6 +69,16 @@ npm run dev        # http://localhost:5173
 npm test           # the test suite (vitest)
 npm run typecheck  # tsc --noEmit
 npm run build      # typecheck, then the static site in web/dist
+npm run format     # Prettier (config at the repo root)
+npm run lint       # ESLint
+```
+
+The repository was reformatted with Prettier in a few big commits. They are listed in
+[`.git-blame-ignore-revs`](.git-blame-ignore-revs), which GitHub's blame view already skips.
+To make `git blame` on your own computer skip them too, run this once in your clone:
+
+```sh
+git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
 The new games are rebuilt from their code, also from `web/`:

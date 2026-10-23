@@ -72,9 +72,12 @@ preserve what was there.
   `web/index.html` and `web/vite.config.ts` should be rare and deliberate.
 - **Formatting and lint:** run `npm run format` and `npm run lint` (from `web/`) before
   committing. The configs are the style source of truth: `.prettierrc.json` and
-  `.prettierignore` at the root, and `web/eslint.config.js`. A few files that
-  `web/vite.config.ts` imports wait in a "Pending" block in both, because writing them
-  restarts the dev server; leave them until the maintainer has it stopped.
+  `.prettierignore` at the root, and `web/eslint.config.js`. Writing
+  `web/vite.config.ts` or a file it imports restarts the dev server and reloads every open
+  page, so change those only when the maintainer has it stopped.
+- **Formatting-only commits:** a commit that only reformats goes in `.git-blame-ignore-revs`
+  (its full hash, with a comment line). For local `git blame` to honor it, run
+  `git config blame.ignoreRevsFile .git-blame-ignore-revs` once in the clone.
 - **Files:** keep them small, one purpose each, with a short header comment.
 - **DOS fidelity:**
   - The engine matches PLAYGAME, so check `code/GM` before changing engine behavior.
