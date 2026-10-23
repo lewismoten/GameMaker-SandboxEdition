@@ -16,13 +16,7 @@ export const ROTTEN: RoomSpec = {
   ingredient: 2,
   song: 'larder',
   card: [],
-  rows: [
-    '##########',
-    '#B..H...B#',
-    '#O.@...q.#',
-    '#B......B#',
-    '##########',
-  ],
+  rows: ['##########', '#B..H...B#', '#O.@...q.#', '#B......B#', '##########'],
 };
 
 export const FABERGE: RoomSpec = {
@@ -35,12 +29,5 @@ export const FABERGE: RoomSpec = {
   ingredient: 13,
   song: 'hidey',
   card: [],
-  rows: [
-    '############',
-    '#K....,,,.K#',
-    '#O.@..,f,..#',
-    '#K....,.,.K#',
-    '#....$.$...#',
-    '############',
-  ],
+  rows: ['############', '#K....,,,.K#', '#O.@..,f,..#', '#K....,.,.K#', '#....$.$...#', '############'],
 };

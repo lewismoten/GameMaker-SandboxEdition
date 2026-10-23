@@ -47,7 +47,16 @@ export function checkParts(at: NameAt, rules: PartRule[], w = MLEN, h = MWID, jo
       const name = at(x, y);
       if (!name) continue;
       for (const r of rules) {
-        const m = typeof r.part === 'string' ? (name === r.part ? /^.*$/.exec(name) : null) : r.part instanceof RegExp ? r.part.exec(name) : r.part.test(name) ? /^.*$/.exec(name) : null;
+        const m =
+          typeof r.part === 'string'
+            ? name === r.part
+              ? /^.*$/.exec(name)
+              : null
+            : r.part instanceof RegExp
+              ? r.part.exec(name)
+              : r.part.test(name)
+                ? /^.*$/.exec(name)
+                : null;
         if (!m) continue;
         const needs: Need[] = typeof r.need === 'function' ? [r.need(m)] : Array.isArray(r.need[0]?.[0]) ? (r.need as Need[]) : [r.need as Need];
         let best: string[] | undefined;
@@ -59,7 +68,8 @@ export function checkParts(at: NameAt, rules: PartRule[], w = MLEN, h = MWID, jo
             const Y = y + dy;
             const got = X < 0 || Y < 0 || X >= w || Y >= h ? 'off the map' : (at(X, Y) ?? '?');
             if (!ok(want, got)) fails.push(`${r.what ?? name} at ${x},${y}: wanted ${String(want)} at ${dx},${dy}, found ${got}`);
-            else if (r.joins !== false && Math.abs(dx) + Math.abs(dy) === 1) joins.push(JSON.stringify(dx + dy > 0 ? [name, got, dx ? 'h' : 'v'] : [got, name, dx ? 'h' : 'v']));
+            else if (r.joins !== false && Math.abs(dx) + Math.abs(dy) === 1)
+              joins.push(JSON.stringify(dx + dy > 0 ? [name, got, dx ? 'h' : 'v'] : [got, name, dx ? 'h' : 'v']));
           }
           if (!fails.length) {
             best = [];
@@ -78,7 +88,12 @@ export function checkParts(at: NameAt, rules: PartRule[], w = MLEN, h = MWID, jo
  * wants every other part of its object. `sizes` gives each object's columns and rows; `name`
  * turns object, column and row back into a part name. `alias` lets an animation frame stand
  * in for a part. */
-export function gridParts(re: RegExp, sizes: Map<string, [number, number]>, name: (obj: string, c: number, r: number) => string, alias: (got: string) => string = (g) => g): PartRule {
+export function gridParts(
+  re: RegExp,
+  sizes: Map<string, [number, number]>,
+  name: (obj: string, c: number, r: number) => string,
+  alias: (got: string) => string = (g) => g,
+): PartRule {
   return {
     part: re,
     need: (m) => {
@@ -114,7 +129,8 @@ export function shape(what: string, rows: (Want | null)[][]): PartRule[] {
 }
 
 /** Pairs: every `a` has a `b` at dx, dy and every `b` an `a` the other way. */
-export const pair = (what: string, a: Want, b: Want, dx: number, dy: number): PartRule[] => shape(what, dy === 0 ? (dx === 1 ? [[a, b]] : [[b, a]]) : dy === 1 ? [[a], [b]] : [[b], [a]]);
+export const pair = (what: string, a: Want, b: Want, dx: number, dy: number): PartRule[] =>
+  shape(what, dy === 0 ? (dx === 1 ? [[a, b]] : [[b, a]]) : dy === 1 ? [[a], [b]] : [[b], [a]]);
 
 /** Rules read off the maps themselves, for a game whose objects are numbered parts (sign0
  * sign1 sign2, or sign00 sign01 down a column): where part n mostly stands (`share` of the
@@ -144,7 +160,15 @@ export function autoParts(maps: NameAt[], names: Iterable<string>, skip: RegExp 
     if (c.h >= share * c.n) found.set(k, [1, 0]);
     else if (c.v >= share * c.n) found.set(k, [0, 1]);
   }
-  return [...found].flatMap(([a, [dx, dy]]) => pair(`${a.replace(/\d$/, '')} (found on the maps)`, a, a.replace(/\d$/, (d) => String(Number(d) + 1)), dx, dy));
+  return [...found].flatMap(([a, [dx, dy]]) =>
+    pair(
+      `${a.replace(/\d$/, '')} (found on the maps)`,
+      a,
+      a.replace(/\d$/, (d) => String(Number(d) + 1)),
+      dx,
+      dy,
+    ),
+  );
 }
 
 /** A block book's names by block number. */
@@ -235,7 +259,13 @@ export function diskScenes(disk: string): DiskScene[] {
     if (s.gametype !== ADVTYPE) continue;
     const f = (ext: string) => s.files[ADV_EXTS.indexOf(ext as (typeof ADV_EXTS)[number])];
     if (!f('map') || !f('bbl') || !f('pal')) continue;
-    out.push({ desc: s.desc, map: f('map'), pal: parsePalette(read(f('pal'))), blocks: parseMap(read(f('map'))).blocks, bbl: parseBlocks(read(f('bbl')), BACKBL) });
+    out.push({
+      desc: s.desc,
+      map: f('map'),
+      pal: parsePalette(read(f('pal'))),
+      blocks: parseMap(read(f('map'))).blocks,
+      bbl: parseBlocks(read(f('bbl')), BACKBL),
+    });
   }
   return out;
 }
@@ -268,7 +298,12 @@ export function writeParts(file: string, pic: (name: string) => Pic, pal: Uint8A
 
 /** Checks a built disk: every map's multi-block objects (names: each map file's block names by
  * number, undefined to skip the map) by the rules (or each map's own rules), and the art of every pair the maps join. */
-export function auditDisk(disk: string, names: (map: string) => string[] | undefined, rules: PartRule[] | ((map: string) => PartRule[]), opts: { factor?: number; floor?: number } = {}): { maps: [string, string[]][]; seams: Seam[]; broken: Seam[] } {
+export function auditDisk(
+  disk: string,
+  names: (map: string) => string[] | undefined,
+  rules: PartRule[] | ((map: string) => PartRule[]),
+  opts: { factor?: number; floor?: number } = {},
+): { maps: [string, string[]][]; seams: Seam[]; broken: Seam[] } {
   const maps: [string, string[]][] = [];
   const pairs = new Map<string, { sc: DiskScene; ids: Map<string, number> }>();
   const done = new Set<string>();
@@ -277,7 +312,10 @@ export function auditDisk(disk: string, names: (map: string) => string[] | undef
     if (!n || done.has(sc.map.toLowerCase())) continue;
     done.add(sc.map.toLowerCase());
     const joined = new Set<string>();
-    maps.push([sc.map.toLowerCase(), checkParts((x, y) => n[sc.blocks[y * MLEN + x]], typeof rules === 'function' ? rules(sc.map.toLowerCase()) : rules, MLEN, MWID, joined)]);
+    maps.push([
+      sc.map.toLowerCase(),
+      checkParts((x, y) => n[sc.blocks[y * MLEN + x]], typeof rules === 'function' ? rules(sc.map.toLowerCase()) : rules, MLEN, MWID, joined),
+    ]);
     const ids = new Map<string, number>();
     n.forEach((v, i) => v !== undefined && ids.set(v, i));
     for (const j of joined) if (!pairs.has(j)) pairs.set(j, { sc, ids });
@@ -289,7 +327,8 @@ export function auditDisk(disk: string, names: (map: string) => string[] | undef
       const px = sc.bbl[ids.get(name)!].pixels;
       return (x, y) => px[y * 20 + x];
     };
-    for (const x of seams(pic, sc.pal, [[a, b, dir]])) seamsOut.push({ ...x, draw: (file, s = 8) => writeParts(file, pic, sc.pal, dir === 'h' ? [[a, b]] : [[a], [b]], s) });
+    for (const x of seams(pic, sc.pal, [[a, b, dir]]))
+      seamsOut.push({ ...x, draw: (file, s = 8) => writeParts(file, pic, sc.pal, dir === 'h' ? [[a, b]] : [[a], [b]], s) });
   }
   return { maps, seams: seamsOut, broken: brokenSeams(seamsOut, opts.factor, opts.floor) };
 }
@@ -298,7 +337,12 @@ export function auditDisk(disk: string, names: (map: string) => string[] | undef
  * misplaced parts per map, and joined pairs whose art jumps at the shared edge (`seamOk` lists
  * the ones drawn that way on purpose, as "a|b" side by side or "a/b" a over b). Returns how
  * many problems it found. */
-export function alignGame(id: string, names: (map: string) => string[] | undefined, rules: PartRule[] | ((map: string) => PartRule[]), opts: { seamOk?: string[]; factor?: number; floor?: number; draw?: string } = {}): number {
+export function alignGame(
+  id: string,
+  names: (map: string) => string[] | undefined,
+  rules: PartRule[] | ((map: string) => PartRule[]),
+  opts: { seamOk?: string[]; factor?: number; floor?: number; draw?: string } = {},
+): number {
   const r = auditDisk(new URL(`../${id}/disk`, import.meta.url).pathname, names, rules, opts);
   const okSeams = new Set(opts.seamOk ?? []);
   const broken = r.broken.filter((x) => !okSeams.has(`${x.a}${x.dir === 'h' ? '|' : '/'}${x.b}`));
@@ -314,7 +358,8 @@ export function alignGame(id: string, names: (map: string) => string[] | undefin
   const draw = opts.draw ?? process.env.ALIGN_DRAW;
   if (draw && broken.length) mkdirSync(draw, { recursive: true });
   if (draw) for (const x of broken) x.draw?.(`${draw}/${id}-${x.a}${x.dir === 'h' ? '-' : '_'}${x.b}.png`);
-  for (const x of broken) console.log(`${id} seam ${x.a}${x.dir === 'h' ? '|' : '/'}${x.b}: colors jump ${x.across.toFixed(1)} across the edge, ${x.within.toFixed(1)} beside it`);
+  for (const x of broken)
+    console.log(`${id} seam ${x.a}${x.dir === 'h' ? '|' : '/'}${x.b}: colors jump ${x.across.toFixed(1)} across the edge, ${x.within.toFixed(1)} beside it`);
   n += broken.length;
   if (!n) console.log(`${id}: multi-block objects whole on ${r.maps.length} maps (${r.seams.length} joins)`);
   return n;

@@ -19,7 +19,28 @@ import type { TileSet } from '../blocks/tiles';
 import type { Room } from '../levels/room';
 import { RECIPE, ROOM_NAMES, THIRTEENTH } from '../recipe';
 import { saveSlots } from '../../../kit/saveSlots';
-import { H, W, bigLeo, blob, card, centered, chez, gradient, headline, kitchenWall, mainStreet, micro, mug, outlined, scaleBlit, stamp, stand, starCircle, bigTricorn, text } from './art';
+import {
+  H,
+  W,
+  bigLeo,
+  blob,
+  card,
+  centered,
+  chez,
+  gradient,
+  headline,
+  kitchenWall,
+  mainStreet,
+  micro,
+  mug,
+  outlined,
+  scaleBlit,
+  stamp,
+  stand,
+  starCircle,
+  bigTricorn,
+  text,
+} from './art';
 import { wrap } from './pages';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
 
@@ -110,7 +131,24 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   const pal = buildPalette(room.spec.theme);
   const p = new Pixels(W, H, c('dark', 0));
   const tiles = set.tiles;
-  const strip = ['wallFace', 'floor', 'floor2', 'prop0', 'door_e', 'belt_e', 'panel_a0', 'spout_e', 'hot2', 'latch', 'prop1', 'prop3', 'riser2', 'opener0', 'prop2', 'wallFace'];
+  const strip = [
+    'wallFace',
+    'floor',
+    'floor2',
+    'prop0',
+    'door_e',
+    'belt_e',
+    'panel_a0',
+    'spout_e',
+    'hot2',
+    'latch',
+    'prop1',
+    'prop3',
+    'riser2',
+    'opener0',
+    'prop2',
+    'wallFace',
+  ];
   // the room's floor all over, darkened round a card
   for (let by = 0; by < 10; by++) for (let bx = 0; bx < 16; bx++) p.blit(tiles.pic(by === 0 || by === 9 ? 'wallFace' : 'floor'), bx * 20, by * 20);
   strip.forEach((n, i) => p.blit(tiles.pic(n), i * 20, 180));
@@ -182,7 +220,7 @@ export function introFli(): Uint8Array {
   for (let t = 0; t < 14; t++) {
     const p = counter();
     scaleBlit(p, gwinn(t % 2), 230 - t * 4, 100 - Math.min(t, 6) * 3, 3, true);
-    say(p, ['The family recipe. Twelve ingredients.', '(Gwinn has two n\'s.)']);
+    say(p, ['The family recipe. Twelve ingredients.', "(Gwinn has two n's.)"]);
     frames.push(p);
   }
   for (let t = 0; t < 12; t++) {
@@ -212,12 +250,13 @@ export function introFli(): Uint8Array {
     p.rect(106, 26, 108, 144, c('night', 0));
     p.rect(106, 26, Math.round(108 * (1 - open)), 144, c('wood', 2));
     if (t >= 8) starCircle(p, 160, 94, 40, 4, c('night', 1), Math.min(12, t - 9), c('yellow', 3));
-    if (t >= 8) for (let k = 0; k <= Math.min(12, t - 9); k++) {
-      const a = -Math.PI / 2 + (k * 2 * Math.PI) / 13;
-      const sx = 160 + Math.cos(a) * 40;
-      const sy = 94 + Math.sin(a) * 36;
-      p.disc(sx, sy, 2.5, c('yellow', 3));
-    }
+    if (t >= 8)
+      for (let k = 0; k <= Math.min(12, t - 9); k++) {
+        const a = -Math.PI / 2 + (k * 2 * Math.PI) / 13;
+        const sx = 160 + Math.cos(a) * 40;
+        const sy = 94 + Math.sin(a) * 36;
+        p.disc(sx, sy, 2.5, c('yellow', 3));
+      }
     say(p, ['Built in 1777 to keep out the Redcoats.', t > 16 ? 'It still works. Much too well.' : '']);
     frames.push(p);
   }
@@ -282,7 +321,12 @@ export function lostScreen(): Pixels {
   scaleBlit(p, docLeo('down'), 120, 60, 1);
   // Doc Leo playing dead, scaled
   const dead = new Pixels(20, 20, 255);
-  dead.rect(1, 9, 18, 7, c('ink', 0)).rect(2, 10, 6, 5, c('grey', 2)).rect(8, 10, 5, 5, c('skin', 2)).rect(13, 10, 5, 5, c('blue', 1)).rect(14, 7, 4, 3, c('yellow', 3));
+  dead
+    .rect(1, 9, 18, 7, c('ink', 0))
+    .rect(2, 10, 6, 5, c('grey', 2))
+    .rect(8, 10, 5, 5, c('skin', 2))
+    .rect(13, 10, 5, 5, c('blue', 1))
+    .rect(14, 7, 4, 3, c('yellow', 3));
   p.rect(100, 40, 120, 80, c('paper', 4));
   scaleBlit(p, dead, 110, 60, 5);
   scaleBlit(p, redcoat(0), 240, 120, 3);
@@ -300,8 +344,36 @@ export function eggScreen(rotten: boolean): Pixels {
   card(p, 16, 10, 288, 180, 0);
   scaleBlit(p, rotten ? eggRotten() : eggFaberge(0), 24, 40, 3);
   const lines = rotten
-    ? ['THE ROTTEN EGG', '', 'Best before 1776. It has', 'been keeping ever since.', 'The smell got out of the', 'crock before you did.', '', 'Ebenezer kept it to throw', 'at Redcoats. He never had', 'to: they smelled it coming.', '', 'Found by Doc Leo, who', 'wishes he had not.']
-    : ['THE TRUE EASTER EGG', '', 'Choux pastry, glazed and', 'banded in edible gold leaf,', 'on a stand of spun sugar.', 'On top a tiny baker turns', 'to a music box.', '', 'For Lewis "Lewie" Moten', 'III, Teddy and Gwinn (two', 'n\'s), from Claude Opus 5.5.', '', 'The thirteenth egg.'];
+    ? [
+        'THE ROTTEN EGG',
+        '',
+        'Best before 1776. It has',
+        'been keeping ever since.',
+        'The smell got out of the',
+        'crock before you did.',
+        '',
+        'Ebenezer kept it to throw',
+        'at Redcoats. He never had',
+        'to: they smelled it coming.',
+        '',
+        'Found by Doc Leo, who',
+        'wishes he had not.',
+      ]
+    : [
+        'THE TRUE EASTER EGG',
+        '',
+        'Choux pastry, glazed and',
+        'banded in edible gold leaf,',
+        'on a stand of spun sugar.',
+        'On top a tiny baker turns',
+        'to a music box.',
+        '',
+        'For Lewis "Lewie" Moten',
+        'III, Teddy and Gwinn (two',
+        "n's), from Claude Opus 5.5.",
+        '',
+        'The thirteenth egg.',
+      ];
   for (const l of lines) if (l.length > 27) throw new Error(`Egg page line too long: ${l}`);
   lines.forEach((l, i) => text(p, 92, 18 + i * 12, l, i === 0 ? c('red', 2) : c('ink', 0)));
   stamp(p, 64, 160, rotten ? 'PHEW' : 'HAPPY EASTER', 1, -0.15);
@@ -366,7 +438,10 @@ export function buildScreens(rooms: Room[], sets: Record<string, TileSet>): Reco
       out[`card${f.slice(0, 4)}.gif`] = gif(px, pal);
       out[`${f}in.fli`] = stoveInFli();
       out[`${f}out.fli`] = stoveOutFli();
-      out[introName(room)] = serializeSlideList([{ name: `${f}in.fli`, pause: 1 }, { name: `card${f.slice(0, 4)}.gif`, pause: 5 }]);
+      out[introName(room)] = serializeSlideList([
+        { name: `${f}in.fli`, pause: 1 },
+        { name: `card${f.slice(0, 4)}.gif`, pause: 5 },
+      ]);
       out[outroName(room)] = serializeSlideList([{ name: `${f}out.fli`, pause: 1 }]);
       continue;
     }
@@ -374,7 +449,10 @@ export function buildScreens(rooms: Room[], sets: Record<string, TileSet>): Reco
     const { px, pal } = roomCard(room, sets[room.spec.style]);
     out[`card${n}.gif`] = gif(px, pal);
     const came = arrivedWith(room.spec.level);
-    out[introName(room)] = serializeSlideList([...(came ? [{ name: `rcp${String(came).padStart(2, '0')}.gif`, pause: 20 }] : []), { name: `card${n}.gif`, pause: 5 }]);
+    out[introName(room)] = serializeSlideList([
+      ...(came ? [{ name: `rcp${String(came).padStart(2, '0')}.gif`, pause: 20 }] : []),
+      { name: `card${n}.gif`, pause: 5 },
+    ]);
   }
   void ROOM_NAMES;
   void blob;

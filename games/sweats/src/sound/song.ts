@@ -52,7 +52,10 @@ const squeak = (bars: number[]) => (a: Arranger, at: number) => {
 const beeps = (bar: number) => (a: Arranger, at: number) => {
   const t = at + bar * 4;
   a.fx.program(TWIN, t, CELESTA);
-  a.fx.note(TWIN, t, 0.4, 88, 96).note(TWIN, t + 0.5, 0.4, 88, 96).note(TWIN, t + 1.5, 1.2, 64, 104);
+  a.fx
+    .note(TWIN, t, 0.4, 88, 96)
+    .note(TWIN, t + 0.5, 0.4, 88, 96)
+    .note(TWIN, t + 1.5, 1.2, 64, 104);
   a.fx.note(TWIN, t + 3, 0.4, 88, 80);
 };
 
@@ -65,7 +68,10 @@ const bee = (bar: number) => (a: Arranger, at: number) => {
 /** The fanfare: the timpani rolling up out of nothing, then the brass's "ta-ta-ta TAAA" with a crash. */
 function fanfare(a: Arranger, key: string, pick: string, land: string): void {
   const r = PC[key];
-  a.section({ name: 'fanfare', chords: [key, key], tune: ['r w', `${pick} t!, ${pick} t!, ${pick} t!, ${land} h.!`] }, { lead: BRASS, twin: 'below', twinPatch: BRASS, comp: 'shout', compPatch: BRASS, bass: 'pedal', drums: 'none', fill: false });
+  a.section(
+    { name: 'fanfare', chords: [key, key], tune: ['r w', `${pick} t!, ${pick} t!, ${pick} t!, ${land} h.!`] },
+    { lead: BRASS, twin: 'below', twinPatch: BRASS, comp: 'shout', compPatch: BRASS, bass: 'pedal', drums: 'none', fill: false },
+  );
   a.fx.drumRoll(DRUM.tom, a.beat - 8, 4, 1 / 6, 24, 112, [fold(r, 38)]);
   a.fx.drumRoll(DRUM.cymbal, a.beat - 8, 4, 1 / 4, 12, 90);
   a.crash(a.beat - 3, 124);
@@ -75,7 +81,10 @@ function fanfare(a: Arranger, key: string, pick: string, land: string): void {
 
 /** The sad trombone: wah, wah, wah, wahhh (the last one wobbling). */
 function trombone(a: Arranger): void {
-  a.section({ name: 'wah wah', chords: ['Cm', 'Cm'], tune: ['G4 q, F#4 q, F4 q, ~E4 q', 'E4 h., _ q\\\\\\'] }, { lead: BRASS, twin: 'below', twinPatch: BRASS, comp: 'none', compPatch: RHODES, bass: 'none', drums: 'none', fill: false, vel: 104 });
+  a.section(
+    { name: 'wah wah', chords: ['Cm', 'Cm'], tune: ['G4 q, F#4 q, F4 q, ~E4 q', 'E4 h., _ q\\\\\\'] },
+    { lead: BRASS, twin: 'below', twinPatch: BRASS, comp: 'none', compPatch: RHODES, bass: 'none', drums: 'none', fill: false, vel: 104 },
+  );
   a.fx.note(BASSCH, a.beat - 8, 3, 43, 90).note(BASSCH, a.beat - 5, 4.5, 40, 96);
 }
 
@@ -114,7 +123,18 @@ function shop(): Uint8Array {
 function home(): Uint8Array {
   const a = new Arranger(122.64);
   a.section(slice(HOME, 0, 8), { lead: TENOR, comp: 'roll', compPatch: RHODES, bass: 'two', drums: 'brush', stretch: 2, swing: 0.6, vel: 96 });
-  a.section(slice(HOME, 8), { lead: TENOR, twin: 'harm', twinPatch: VIBES, comp: 'roll', compPatch: RHODES, bass: 'two', drums: 'brush', stretch: 2, swing: 0.6, vel: 98 });
+  a.section(slice(HOME, 8), {
+    lead: TENOR,
+    twin: 'harm',
+    twinPatch: VIBES,
+    comp: 'roll',
+    compPatch: RHODES,
+    bass: 'two',
+    drums: 'brush',
+    stretch: 2,
+    swing: 0.6,
+    vel: 98,
+  });
   return a.cmf();
 }
 
@@ -125,14 +145,27 @@ function outside(): Uint8Array {
   a.section(OUTSIDE, { lead: CLARINET, comp: 'charleston', compPatch: PIANO, bass: 'walk', drums: 'ride', swing: s });
   a.section(OUTSIDE, { lead: CLARINET, twin: 'below', twinPatch: TENOR, comp: 'charleston', compPatch: PIANO, bass: 'walk', drums: 'ride', swing: s });
   a.section(BRIDGE, { lead: MUTE, comp: 'red', compPatch: PIANO, bass: 'walk', drums: 'ride', swing: s });
-  a.section(OUTSIDE, { lead: CLARINET, twin: 'harm', twinPatch: BRASS, comp: 'charleston', compPatch: PIANO, bass: 'walk', drums: 'ride', swing: s, crash: true });
+  a.section(OUTSIDE, {
+    lead: CLARINET,
+    twin: 'harm',
+    twinPatch: BRASS,
+    comp: 'charleston',
+    compPatch: PIANO,
+    bass: 'walk',
+    drums: 'ride',
+    swing: s,
+    crash: true,
+  });
   return a.cmf();
 }
 
 /** Epic: noir first (muted trumpet, strings, a soft ride and the low tom), then pompous (brass and trombones, the pipe organ swelling, a march, the timpani). */
 function epic(): Uint8Array {
   const a = new Arranger(89.09);
-  a.section({ name: 'storm', chords: ['Dm'], tune: ['r w'] }, { lead: MUTE, comp: 'swell', compPatch: PIPE, bass: 'pedal', drums: 'none', fill: false, vel: 90 });
+  a.section(
+    { name: 'storm', chords: ['Dm'], tune: ['r w'] },
+    { lead: MUTE, comp: 'swell', compPatch: PIPE, bass: 'pedal', drums: 'none', fill: false, vel: 90 },
+  );
   a.roll(38, 4, 100);
   a.section(EPIC, { lead: MUTE, comp: 'pad', compPatch: STRINGS, bass: 'two', drums: 'noir', swing: 0.6, vel: 94 });
   a.section(EPIC, { lead: BRASS, twin: 'below', twinPatch: BRASS, comp: 'swell', compPatch: PIPE, bass: 'pedal', drums: 'march', crash: true, vel: 108 });
@@ -145,7 +178,17 @@ function chase(): Uint8Array {
   const s = 0.58;
   a.section(CHASE, { lead: BRASS, twin: 'below', twinPatch: TENOR, comp: 'red', compPatch: PIANO, bass: 'walk', drums: 'bebop', swing: s });
   a.section(CHASE, { lead: VIBES, comp: 'charleston', compPatch: PIANO, bass: 'walk', drums: 'bebop', swing: s });
-  a.section(slice(CHASE, 0, 4), { lead: BRASS, twin: 'below', twinPatch: TENOR, comp: 'stop', compPatch: BRASS, bass: 'stop', drums: 'stop', swing: s, crash: true });
+  a.section(slice(CHASE, 0, 4), {
+    lead: BRASS,
+    twin: 'below',
+    twinPatch: TENOR,
+    comp: 'stop',
+    compPatch: BRASS,
+    bass: 'stop',
+    drums: 'stop',
+    swing: s,
+    crash: true,
+  });
   a.section(slice(CHASE, 4), { lead: BRASS, twin: 'below', twinPatch: TENOR, comp: 'red', compPatch: PIANO, bass: 'walk', drums: 'bebop', swing: s });
   return a.cmf();
 }
@@ -162,7 +205,19 @@ function blues(): Uint8Array {
 function triumph(): Uint8Array {
   const a = new Arranger(179.44);
   a.section(TRIUMPH, { lead: BRASS, comp: 'shout', compPatch: TENOR, bass: 'walk', drums: 'shout', swing: 0.6, crash: true, vel: 104 });
-  a.section(TRIUMPH, { lead: CLARINET, up: 12, twin: 'below', twinPatch: BRASS, comp: 'shout', compPatch: BRASS, bass: 'walk', drums: 'shout', swing: 0.6, crash: true, vel: 104 });
+  a.section(TRIUMPH, {
+    lead: CLARINET,
+    up: 12,
+    twin: 'below',
+    twinPatch: BRASS,
+    comp: 'shout',
+    compPatch: BRASS,
+    bass: 'walk',
+    drums: 'shout',
+    swing: 0.6,
+    crash: true,
+    vel: 104,
+  });
   return a.cmf();
 }
 
@@ -191,7 +246,18 @@ function won(): Uint8Array {
   const a = new Arranger(179.44);
   fanfare(a, 'D', 'A4', 'D5');
   a.section(TRIUMPH, { lead: BRASS, comp: 'shout', compPatch: TENOR, bass: 'walk', drums: 'shout', swing: 0.6, crash: true, vel: 106 });
-  a.section(slice(TRIUMPH, 8), { lead: CLARINET, up: 12, twin: 'below', twinPatch: BRASS, comp: 'shout', compPatch: BRASS, bass: 'walk', drums: 'shout', swing: 0.6, vel: 106 });
+  a.section(slice(TRIUMPH, 8), {
+    lead: CLARINET,
+    up: 12,
+    twin: 'below',
+    twinPatch: BRASS,
+    comp: 'shout',
+    compPatch: BRASS,
+    bass: 'walk',
+    drums: 'shout',
+    swing: 0.6,
+    vel: 106,
+  });
   return a.cmf();
 }
 
@@ -243,7 +309,18 @@ function finale(): Uint8Array {
   const a = new Arranger(160);
   fanfare(a, 'F', 'C5', 'F5');
   a.section(STROLL, { lead: BRASS, comp: 'shout', compPatch: TENOR, bass: 'walk', drums: 'shout', swing: 0.62, crash: true, vel: 104 });
-  a.section(STROLL, { lead: CLARINET, up: 12, twin: 'below', twinPatch: BRASS, comp: 'shout', compPatch: BRASS, bass: 'walk', drums: 'shout', swing: 0.62, vel: 104 });
+  a.section(STROLL, {
+    lead: CLARINET,
+    up: 12,
+    twin: 'below',
+    twinPatch: BRASS,
+    comp: 'shout',
+    compPatch: BRASS,
+    bass: 'walk',
+    drums: 'shout',
+    swing: 0.62,
+    vel: 104,
+  });
   a.section(TRIUMPH, { lead: BRASS, comp: 'shout', compPatch: TENOR, bass: 'walk', drums: 'shout', swing: 0.62, crash: true, vel: 106 });
   bows(a, { name: 'bows', chords: ['D', 'A7 D'], tune: ['D6 q!, r q, D6 q!, r q', 'C#6 q!, r q, D6 h!'] });
   return a.cmf();
@@ -264,7 +341,26 @@ function menu(): Uint8Array {
   return a.cmf();
 }
 
-const SONGS: Record<SongName, () => Uint8Array> = { office, shop, home, outside, epic, chase, blues, triumph, title, menu, story, won, lost, hive, inter1, inter2, inter3, finale };
+const SONGS: Record<SongName, () => Uint8Array> = {
+  office,
+  shop,
+  home,
+  outside,
+  epic,
+  chase,
+  blues,
+  triumph,
+  title,
+  menu,
+  story,
+  won,
+  lost,
+  hive,
+  inter1,
+  inter2,
+  inter3,
+  finale,
+};
 
 export function buildSongs(): Record<string, Uint8Array> {
   const out: Record<string, Uint8Array> = {};

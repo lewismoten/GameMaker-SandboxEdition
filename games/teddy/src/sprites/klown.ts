@@ -44,16 +44,7 @@ export const CK: Record<string, number> = {
 /** Doc Leo's costume pieces: Gwinn scattered them all over town. */
 export const PROPS: Record<string, string[]> = {
   // His felt fedora, chewed at the brim (Gwinn again).
-  hat: [
-    '....oooooo....',
-    '...okkOkkko...',
-    '...okkkkkko...',
-    '...oooooooo...',
-    '..okkkkkkkko..',
-    'ooOkkkkkkkkOoo',
-    'okkkkkkkkkk.oo',
-    '.ooooooooo....',
-  ],
+  hat: ['....oooooo....', '...okkOkkko...', '...okkkkkko...', '...oooooooo...', '..okkkkkkkko..', 'ooOkkkkkkkkOoo', 'okkkkkkkkkk.oo', '.ooooooooo....'],
   // His green tie, with a little pattern.
   tie: ['.ooooo.', 'oGgGgGo', '.oGGGo.', '..oGo..', '.oGgGo.', '.oGGGo.', 'oGGgGGo', 'oGGGGgo', 'ogGGGGo', 'oGGgGGo', '.oGGGo.', '..oGo..', '...o...'],
   // Red sneakers, white laces, white soles.

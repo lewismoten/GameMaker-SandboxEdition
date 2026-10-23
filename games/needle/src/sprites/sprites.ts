@@ -100,7 +100,9 @@ export function camelArt(pal: Pal) {
 
   const shoe = (p: Pixels, x: number, y: number) => {
     // a fancy curled slipper, purple with a gold tip
-    p.rect(x - 1, y - 1, 3, 2, c('purple', 2)).set(x, y - 1, c('purple', 3)).set(x + 2, y - 2, c('gold', 3));
+    p.rect(x - 1, y - 1, 3, 2, c('purple', 2))
+      .set(x, y - 1, c('purple', 3))
+      .set(x + 2, y - 2, c('gold', 3));
   };
 
   const pose = (o: CamelPose): Pixels => {
@@ -121,7 +123,9 @@ export function camelArt(pal: Pal) {
         const top = by + 2;
         const foot = 39 - up - lift;
         const knee = Math.round((top + foot) / 2);
-        p.line(x, top, x, foot, c('camel', 2)).set(x + 1, top, c('camel', 3)).set(x + 1, top + 1, c('camel', 3));
+        p.line(x, top, x, foot, c('camel', 2))
+          .set(x + 1, top, c('camel', 3))
+          .set(x + 1, top + 1, c('camel', 3));
         p.set(x - 1, knee, c('camel', 1)).set(x + 1, knee, c('camel', 1));
         if (load.shoes) shoe(p, x, foot);
         else p.rect(x - 1, foot, 3, 1, c('camel', 0));
@@ -156,7 +160,10 @@ export function camelArt(pal: Pal) {
     if (load.bags) {
       // saddlebags full of the rich man's gold
       blob(p, bx - 1, by + 1.5, 3, 2.6, pal.r('wood'), 1, 4);
-      p.set(bx - 2, by - 1, c('gold', 4)).set(bx - 1, by - 1, c('gold', 3)).set(bx, by - 1, c('gold', 4)).set(bx - 1, by + 1, c('gold', 3));
+      p.set(bx - 2, by - 1, c('gold', 4))
+        .set(bx - 1, by - 1, c('gold', 3))
+        .set(bx, by - 1, c('gold', 4))
+        .set(bx - 1, by + 1, c('gold', 3));
     }
     // the neck curves up and forward from his chest; the head points right
     const head = o.head ?? 'up';
@@ -173,7 +180,12 @@ export function camelArt(pal: Pal) {
     const up = dream ? -1 : 0;
     blob(p, hx + 2.6, hy + 1 + up, 1.8, 1.5, fur, 2, 4);
     p.set(hx - 2, hy - 2, c('camel', 2)).set(hx - 2, hy - 3, c('camel', 1));
-    if (head === 'faint') p.set(hx, hy - 1, ink).set(hx - 1, hy - 2, ink).set(hx + 1, hy - 2, ink).set(hx - 1, hy, ink).set(hx + 1, hy, ink);
+    if (head === 'faint')
+      p.set(hx, hy - 1, ink)
+        .set(hx - 1, hy - 2, ink)
+        .set(hx + 1, hy - 2, ink)
+        .set(hx - 1, hy, ink)
+        .set(hx + 1, hy, ink);
     else if (o.blink || dream) p.rect(hx - 1, hy - 1, 2, 1, ink);
     else p.rect(hx, hy - 2, 1, 2, ink).set(hx - 1, hy - 2, c('white', 2));
     p.set(hx + 4, hy + up, ink);
@@ -193,7 +205,11 @@ export function camelArt(pal: Pal) {
       [15, 5, k],
     ]) {
       p.set(x, y, c('star', 2));
-      if (s) p.set(x - 1, y, c('star', 1)).set(x + 1, y, c('star', 1)).set(x, y - 1, c('star', 1)).set(x, y + 1, c('star', 1));
+      if (s)
+        p.set(x - 1, y, c('star', 1))
+          .set(x + 1, y, c('star', 1))
+          .set(x, y - 1, c('star', 1))
+          .set(x, y + 1, c('star', 1));
     }
     return p;
   };
@@ -298,7 +314,10 @@ export function buildMonsterBlocks(pal: Pal) {
       p.line(x, 14, x + d, 19, c('wood', 1));
     blob(p, 10, 12, 6.5, 3.4, pal.r('sand'), 0, 3);
     blob(p, 16, 9, 3, 2.8, pal.r('sand'), 0, 3);
-    p.rect(18, 10, 2, 1, ink).set(16, 8, ink).line(15, 6, 14, 4, c('sand', 1)).line(3, 10, 1, 7 - f, c('sand', 2));
+    p.rect(18, 10, 2, 1, ink)
+      .set(16, 8, ink)
+      .line(15, 6, 14, 4, c('sand', 1))
+      .line(3, 10, 1, 7 - f, c('sand', 2));
     if (f) micro(p, 13, 0, '!', c('red', 3));
     return done(p);
   };
@@ -344,7 +363,9 @@ export function buildMonsterBlocks(pal: Pal) {
     }
     p.line(13, 8, 14, 10 + f, c('ink', 1));
     // pincers
-    p.line(16, 15, 18, 13, c('wood', 2)).line(18, 13, 19, 12 - f, c('wood', 1)).line(18, 13, 19, 14 + f, c('wood', 1));
+    p.line(16, 15, 18, 13, c('wood', 2))
+      .line(18, 13, 19, 12 - f, c('wood', 1))
+      .line(18, 13, 19, 14 + f, c('wood', 1));
     p.set(15, 14, ink);
     return done(p);
   };
@@ -397,7 +418,9 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     const y = 13 - f * 4;
     blob(p, 10, y, 3.4, 4, pal.r('seed'), 0, 2, 1.2);
-    p.set(9, y - 1, ink).set(11, y - 1, ink).set(10, y + 1, ink);
+    p.set(9, y - 1, ink)
+      .set(11, y - 1, ink)
+      .set(10, y + 1, ink);
     p.rect(7, y + 4, 3, 1, c('red', 2)).rect(11, y + 4, 3, 1, c('red', 2));
     if (f) micro(p, 13, 1, '!', c('gold', 3));
     return done(p);
@@ -473,7 +496,9 @@ export function buildMonsterBlocks(pal: Pal) {
       [15, 7],
       [9, 14],
     ])
-      p.set(x, y, c('star', 2)).set(x + (f ? 2 : 1), y, c('star', 1)).set(x, y + (f ? 2 : 1), c('star', 1));
+      p.set(x, y, c('star', 2))
+        .set(x + (f ? 2 : 1), y, c('star', 1))
+        .set(x, y + (f ? 2 : 1), c('star', 1));
     return p;
   };
   book.add('starOff0', sparkle(0));

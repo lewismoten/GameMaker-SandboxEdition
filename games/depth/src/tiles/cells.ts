@@ -150,7 +150,6 @@ export function eggShape(x: number, y: number, z: number, s = 1): Shape {
   );
 }
 
-
 /** A slope: floor tilted downhill toward (dx, dy), with chevrons pointing the way it pulls. */
 function slope(dx: number, dy: number): Kind {
   return {
@@ -220,7 +219,20 @@ export function kinds(): Record<string, Kind> {
     ground: () => 'floor',
     tall: () => true,
     shapes: (cx, cy) => [
-      cube(cx, cy, { color: mix(LENS_COL[c], [1, 1, 1], 0.15), diffuse: 0.55, reflect: 0.2, fresnel: 0.45, spec: 1.3, shine: 110, emit: [LENS_COL[c][0] * 0.3, LENS_COL[c][1] * 0.3, LENS_COL[c][2] * 0.3] }, { round: 0.03, inset: 0.04 }),
+      cube(
+        cx,
+        cy,
+        {
+          color: mix(LENS_COL[c], [1, 1, 1], 0.15),
+          diffuse: 0.55,
+          reflect: 0.2,
+          fresnel: 0.45,
+          spec: 1.3,
+          shine: 110,
+          emit: [LENS_COL[c][0] * 0.3, LENS_COL[c][1] * 0.3, LENS_COL[c][2] * 0.3],
+        },
+        { round: 0.03, inset: 0.04 },
+      ),
       ...frame(cx, cy),
     ],
   });
@@ -254,7 +266,11 @@ export function kinds(): Record<string, Kind> {
       tall: () => false,
       shapes: (cx, cy, p) => {
         const panel = new Box([cx + 0.04, cy + 0.04, -0.12], [cx + 0.96, cy + 0.96, 0], walkway(NEAR_COL));
-        return [p === 'near' ? panel : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: NEAR_COL, diffuse: 0.8, emit: [0.15, 0.07, 0] }))];
+        return [
+          p === 'near'
+            ? panel
+            : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: NEAR_COL, diffuse: 0.8, emit: [0.15, 0.07, 0] })),
+        ];
       },
     },
     fbridge: {
@@ -262,7 +278,11 @@ export function kinds(): Record<string, Kind> {
       tall: () => false,
       shapes: (cx, cy, p) => {
         const panel = new Box([cx + 0.04, cy + 0.04, -0.12], [cx + 0.96, cy + 0.96, 0], walkway(FAR_COL));
-        return [p === 'far' ? panel : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: FAR_COL, diffuse: 0.8, emit: [0, 0.07, 0.15] }))];
+        return [
+          p === 'far'
+            ? panel
+            : ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: FAR_COL, diffuse: 0.8, emit: [0, 0.07, 0.15] })),
+        ];
       },
     },
     photon: item(
@@ -351,19 +371,34 @@ export function kinds(): Record<string, Kind> {
       tall: () => false,
       shapes: (cx, cy) => {
         const [x, y] = mid(cx, cy);
-        return [new Sphere([x, y - 0.05, 0.5], 0.36, { ...MAT.chrome, diffuse: 0.15 }), new Cylinder(x, y - 0.05, 0.22, 0, 0.16, MAT.marble(rgb(230, 225, 235), rgb(120, 110, 140)))];
+        return [
+          new Sphere([x, y - 0.05, 0.5], 0.36, { ...MAT.chrome, diffuse: 0.15 }),
+          new Cylinder(x, y - 0.05, 0.22, 0, 0.16, MAT.marble(rgb(230, 225, 235), rgb(120, 110, 140))),
+        ];
       },
     },
     // auto-focus panels: the focus drifts on its own, so these come and go together
     pulseA: {
       ground: () => 'floor',
       tall: () => false,
-      shapes: (cx, cy) => [new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], { color: rgb(220, 200, 255), diffuse: 0.6, reflect: 0.3, fresnel: 0.4, spec: 1.2, shine: 90, emit: rgb(50, 30, 80) })],
+      shapes: (cx, cy) => [
+        new Box([cx + 0.02, cy + 0.02, -0.08], [cx + 0.98, cy + 0.98, 0], {
+          color: rgb(220, 200, 255),
+          diffuse: 0.6,
+          reflect: 0.3,
+          fresnel: 0.4,
+          spec: 1.2,
+          shine: 90,
+          emit: rgb(50, 30, 80),
+        }),
+      ],
     },
     pulseB: {
       ground: () => 'pit',
       tall: () => false,
-      shapes: (cx, cy) => [ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: rgb(200, 170, 255), diffuse: 0.8, emit: rgb(60, 30, 90) }))],
+      shapes: (cx, cy) => [
+        ghost(new Box([cx + 0.12, cy + 0.12, -0.3], [cx + 0.88, cy + 0.88, -0.22], { color: rgb(200, 170, 255), diffuse: 0.8, emit: rgb(60, 30, 90) })),
+      ],
     },
     slopeN: slope(0, -1),
     slopeE: slope(1, 0),
@@ -383,7 +418,11 @@ export function kinds(): Record<string, Kind> {
             ],
             { color: c, diffuse: 0.45, spec: 1.5, shine: 120, reflect: 0.2, fresnel: 0.4, emit: [c[0] * 0.2, c[1] * 0.2, c[2] * 0.2] },
           );
-        return [prism(0, -0.02, 0.55, 0.11, rgb(140, 240, 220)), prism(-0.2, 0.08, 0.32, 0.08, rgb(170, 140, 255)), prism(0.19, 0.1, 0.38, 0.08, rgb(120, 220, 255))];
+        return [
+          prism(0, -0.02, 0.55, 0.11, rgb(140, 240, 220)),
+          prism(-0.2, 0.08, 0.32, 0.08, rgb(170, 140, 255)),
+          prism(0.19, 0.1, 0.38, 0.08, rgb(120, 220, 255)),
+        ];
       },
     },
     teapot: {
@@ -427,10 +466,7 @@ export function kinds(): Record<string, Kind> {
     mirrordoor: {
       ground: () => 'floor',
       tall: () => true,
-      shapes: (cx, cy, _p, t) => [
-        cube(cx, cy, { ...t.wall, reflect: 0.62, color: rgb(200, 205, 230) }),
-        eggShape(cx + 0.5, cy + 0.72, 0.36, 0.7),
-      ],
+      shapes: (cx, cy, _p, t) => [cube(cx, cy, { ...t.wall, reflect: 0.62, color: rgb(200, 205, 230) }), eggShape(cx + 0.5, cy + 0.72, 0.36, 0.7)],
     },
     chez: {
       ground: () => 'floor',

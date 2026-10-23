@@ -136,9 +136,20 @@ export function soundTiles(bs: BlockSet, a: StageArt): void {
  */
 export function soundEgg(bs: BlockSet, a: StageArt): void {
   const p = a.pal;
-  const egg = { ink: p.c('ink', 0), shell: [p.c('blue', 1), p.c('blue', 2), p.c('blue', 3)], paint: [p.c('gold', 2), p.c('gold', 4)], accent: p.c('pink', 3), white: p.c('grey', 7) };
+  const egg = {
+    ink: p.c('ink', 0),
+    shell: [p.c('blue', 1), p.c('blue', 2), p.c('blue', 3)],
+    paint: [p.c('gold', 2), p.c('gold', 4)],
+    accent: p.c('pink', 3),
+    white: p.c('grey', 7),
+  };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    bs.add(`easterEgg${k || ''}`, drawEasterEgg(a.floor(0), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'floor0', scorePts: 50 });
+    bs.add(`easterEgg${k || ''}`, drawEasterEgg(a.floor(0), egg, 'zigzag', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'floor0',
+      scorePts: 50,
+    });
 }
 
 export function soundVirus(b: Bestiary, p: Pal): void {

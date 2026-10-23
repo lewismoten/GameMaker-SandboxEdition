@@ -61,7 +61,7 @@ export const STORY = [
 
 export const INSTRUCTIONS = [
   page([
-    'Get from the shepherds\' field',
+    "Get from the shepherds' field",
     'to the stable in Bethlehem',
     'and take your place in the',
     'line at the manger: third',
@@ -92,7 +92,7 @@ export const INSTRUCTIONS = [
     'B bleats for joy, C chews',
     'quietly. All night long.',
     '',
-    'Thorns, the shepherds\' fire,',
+    "Thorns, the shepherds' fire,",
     'camels and spit hurt.',
   ]),
   page([

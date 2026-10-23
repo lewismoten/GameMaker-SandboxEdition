@@ -74,51 +74,139 @@ export function buildVocs(): Record<string, Uint8Array> {
   vocs.pop = sample(0.12, mix([osc.sine((t) => 1300 - t * 6000), 0.6], [gate(lowNoise(19, 0.9), 0, 0.012), 0.6]), { envelope: env(0.002, 2.4) });
   // a laugh: "ha ha ha" (Space), and a whole audience laughing (a stone face cracking)
   vocs.ha = sample(0.55, laugh(21, 190, 4), { envelope: env(0.01, 0.4) });
-  vocs.crowd = sample(1.1, mix([laugh(22, 210, 7, 0.14), 0.4], [laugh(23, 160, 8, 0.12), 0.35], [laugh(24, 260, 6, 0.16), 0.3], [lowNoise(25, 0.4), 0.06]), { envelope: env(0.05, 0.6) });
+  vocs.crowd = sample(1.1, mix([laugh(22, 210, 7, 0.14), 0.4], [laugh(23, 160, 8, 0.12), 0.35], [laugh(24, 260, 6, 0.16), 0.3], [lowNoise(25, 0.4), 0.06]), {
+    envelope: env(0.05, 0.6),
+  });
   // a senator's cough
-  vocs.cough = sample(0.45, mix([gate(lowNoise(26, 0.7), 0, 0.12), 0.7], [gate(lowNoise(27, 0.6), 0.2, 0.32), 0.6], [voice(() => 120, 500, 1500, 28, 0.2), 0.15]), { envelope: env(0.005, 0.6) });
+  vocs.cough = sample(
+    0.45,
+    mix([gate(lowNoise(26, 0.7), 0, 0.12), 0.7], [gate(lowNoise(27, 0.6), 0.2, 0.32), 0.6], [voice(() => 120, 500, 1500, 28, 0.2), 0.15]),
+    { envelope: env(0.005, 0.6) },
+  );
   // a shutter thrown open: a wooden clack and fresh air rushing in
-  vocs.shutter = sample(0.7, mix([gate(lowNoise(29, 0.8), 0, 0.03), 1], [gate(lowNoise(30, (t) => 0.05 + 0.25 * Math.exp(-(t - 0.05) * 4)), 0.03, 0.7), 0.5]), { envelope: env(0.003, 0.7) });
+  vocs.shutter = sample(
+    0.7,
+    mix(
+      [gate(lowNoise(29, 0.8), 0, 0.03), 1],
+      [
+        gate(
+          lowNoise(30, (t) => 0.05 + 0.25 * Math.exp(-(t - 0.05) * 4)),
+          0.03,
+          0.7,
+        ),
+        0.5,
+      ],
+    ),
+    { envelope: env(0.003, 0.7) },
+  );
   // the brass raspberry: a low buzzing blat that sags (Rufus's contribution, played for the clouds)
   vocs.blat = sample(0.7, mix([osc.square((t) => 70 - t * 25 + Math.sin(t * 60) * 4), 0.35], [lowNoise(31, 0.3), 0.25]), { envelope: env(0.03, 0.5) });
   // a gulp of wine and water
   vocs.gulp = sample(0.3, mix([osc.sine((t) => 300 + Math.sin(t * 30) * 120), 0.5], [gate(lowNoise(32, 0.4), 0.1, 0.16), 0.4]), { envelope: env(0.02, 1) });
   // a fanfare for a laurel wreath
-  vocs.tantara = sample(0.8, mix([gate(osc.square(523), 0, 0.15), 0.18], [gate(osc.square(659), 0.15, 0.3), 0.18], [gate(osc.square(784), 0.3, 0.8), 0.2]), { envelope: env(0.01, 0.6) });
+  vocs.tantara = sample(0.8, mix([gate(osc.square(523), 0, 0.15), 0.18], [gate(osc.square(659), 0.15, 0.3), 0.18], [gate(osc.square(784), 0.3, 0.8), 0.2]), {
+    envelope: env(0.01, 0.6),
+  });
   // a clang (an arrow on a shield, a sword)
-  vocs.clang = sample(0.6, mix([osc.sine(1180), 0.4], [osc.sine(1876), 0.3], [osc.sine(2711), 0.2], [gate(lowNoise(33, 0.9), 0, 0.01), 0.5]), { envelope: env(0.002, 2) });
+  vocs.clang = sample(0.6, mix([osc.sine(1180), 0.4], [osc.sine(1876), 0.3], [osc.sine(2711), 0.2], [gate(lowNoise(33, 0.9), 0, 0.01), 0.5]), {
+    envelope: env(0.002, 2),
+  });
   // a pigeon's coo
-  vocs.coo = sample(0.5, voice((t) => 330 - Math.abs(Math.sin(t * 9)) * 60, 300, 700, 34, 0.02), { envelope: env(0.1, 0.8) });
+  vocs.coo = sample(
+    0.5,
+    voice((t) => 330 - Math.abs(Math.sin(t * 9)) * 60, 300, 700, 34, 0.02),
+    { envelope: env(0.1, 0.8) },
+  );
   // a spell: a rising sparkle
-  vocs.sparkle = sample(0.5, mix([osc.sine((t) => 1800 + t * 3000 + Math.sin(t * 90) * 200), 0.4], [osc.sine((t) => 2400 + t * 2600), 0.2]), { envelope: env(0.01, 1.2) });
+  vocs.sparkle = sample(0.5, mix([osc.sine((t) => 1800 + t * 3000 + Math.sin(t * 90) * 200), 0.4], [osc.sine((t) => 2400 + t * 2600), 0.2]), {
+    envelope: env(0.01, 1.2),
+  });
   // a meow, and a yowl
-  vocs.meow = sample(0.5, voice((t) => 520 + Math.sin(Math.PI * t * 2) * 260, (t) => 500 + t * 1400, (t) => 1600 + t * 600, 35, 0.04), { envelope: env(0.05, 0.6) });
-  vocs.yowl = sample(0.9, voice((t) => 420 + Math.sin(t * 9) * 90, (t) => 700 + t * 600, 1900, 36, 0.06), { envelope: env(0.06, 0.6) });
+  vocs.meow = sample(
+    0.5,
+    voice(
+      (t) => 520 + Math.sin(Math.PI * t * 2) * 260,
+      (t) => 500 + t * 1400,
+      (t) => 1600 + t * 600,
+      35,
+      0.04,
+    ),
+    { envelope: env(0.05, 0.6) },
+  );
+  vocs.yowl = sample(
+    0.9,
+    voice(
+      (t) => 420 + Math.sin(t * 9) * 90,
+      (t) => 700 + t * 600,
+      1900,
+      36,
+      0.06,
+    ),
+    { envelope: env(0.06, 0.6) },
+  );
   // a mouse's squeak
-  vocs.squeak = sample(0.2, osc.sine((t) => 3200 + Math.sin(t * 80) * 400), { envelope: env(0.01, 1), gain: 0.5 });
+  vocs.squeak = sample(
+    0.2,
+    osc.sine((t) => 3200 + Math.sin(t * 80) * 400),
+    { envelope: env(0.01, 1), gain: 0.5 },
+  );
   // a chomp (cheese)
   vocs.chomp = sample(0.3, mix([gate(lowNoise(37, 0.6), 0, 0.06), 0.8], [gate(lowNoise(38, 0.5), 0.14, 0.2), 0.6]), { envelope: env(0.004, 0.8) });
   // a wax tablet breaking
   vocs.crack = sample(0.3, mix([gate(lowNoise(39, 0.95), 0, 0.02), 1], [gate(lowNoise(40, 0.5), 0.02, 0.3), 0.4]), { envelope: env(0.002, 1.5) });
   // a splash in a pool
-  vocs.splash = sample(0.5, lowNoise(41, (t) => 0.7 * Math.exp(-t * 6) + 0.05), { envelope: env(0.004, 1.2) });
+  vocs.splash = sample(
+    0.5,
+    lowNoise(41, (t) => 0.7 * Math.exp(-t * 6) + 0.05),
+    { envelope: env(0.004, 1.2) },
+  );
   // a drum's boing
-  vocs.boing = sample(0.5, osc.sine((t) => 160 + Math.sin(t * 40) * 40 * Math.exp(-t * 4) + t * 120), { envelope: env(0.003, 1) });
+  vocs.boing = sample(
+    0.5,
+    osc.sine((t) => 160 + Math.sin(t * 40) * 40 * Math.exp(-t * 4) + t * 120),
+    { envelope: env(0.003, 1) },
+  );
   // a drip of hot water hissing
-  vocs.hiss = sample(0.5, (() => {
-    const r = rng(42);
-    let last = 0;
-    return () => {
-      const n = r() * 2 - 1;
-      const hp = n - last * 0.85;
-      last = n;
-      return hp * 0.6;
-    };
-  })(), { envelope: env(0.05, 0.8), gain: 0.6 });
+  vocs.hiss = sample(
+    0.5,
+    (() => {
+      const r = rng(42);
+      let last = 0;
+      return () => {
+        const n = r() * 2 - 1;
+        const hp = n - last * 0.85;
+        last = n;
+        return hp * 0.6;
+      };
+    })(),
+    { envelope: env(0.05, 0.8), gain: 0.6 },
+  );
   // a cabbage's thud
   vocs.thud = sample(0.3, mix([osc.sine((t) => 110 - t * 120), 0.7], [gate(lowNoise(43, 0.3), 0, 0.08), 0.6]), { envelope: env(0.003, 1.2) });
   // a rimshot: ba-dum-tss
-  vocs.rimshot = sample(1.0, mix([gate(osc.sine((t) => 200 - t * 300), 0, 0.12), 0.6], [gate(osc.sine((t) => 120 - (t - 0.22) * 100), 0.22, 0.4), 0.7], [gate(lowNoise(44, 0.95), 0.45, 1), 0.35]), { envelope: env(0.003, 0.4) });
+  vocs.rimshot = sample(
+    1.0,
+    mix(
+      [
+        gate(
+          osc.sine((t) => 200 - t * 300),
+          0,
+          0.12,
+        ),
+        0.6,
+      ],
+      [
+        gate(
+          osc.sine((t) => 120 - (t - 0.22) * 100),
+          0.22,
+          0.4,
+        ),
+        0.7,
+      ],
+      [gate(lowNoise(44, 0.95), 0.45, 1), 0.35],
+    ),
+    { envelope: env(0.003, 0.4) },
+  );
   // the songs themselves
   for (const name of Object.keys(CLIPS) as ClipName[]) vocs[name] = clipVoc(name);
   return vocs;
@@ -126,12 +214,83 @@ export function buildVocs(): Record<string, Uint8Array> {
 
 /** Which VOC each effect plays, level by level. */
 const PLAYS: Record<Place, Partial<Record<keyof typeof SND, string>>> = {
-  banquet: { speak: 'ha', wail: 'canis', hurt: 'cough', die: 'dii', gain: 'shutter', spend: 'flatus', kill: 'blat', step: 'pat', life: 'tantara', help: 'gulp', score: 'chime' },
-  battle: { speak: 'ha', wail: 'currimus', hurt: 'clang', die: 'dii', gain: 'chime', spend: 'victoria', kill: 'pop', step: 'pat', life: 'tantara', help: 'gulp', score: 'summa' },
-  roofs: { speak: 'ha', wail: 'titus', hurt: 'coo', die: 'dii', gain: 'ter', spend: 'tecta', kill: 'sparkle', step: 'pat', life: 'tantara', help: 'gulp', score: 'chime' },
-  kitchen: { speak: 'meow', wail: 'felis', hurt: 'squeak', die: 'yowl', gain: 'cheddar', spend: 'corona', kill: 'squeak', step: 'pat', help: 'gulp', score: 'crack' },
-  baths: { speak: 'ha', wail: 'piscis', hurt: 'hiss', die: 'dii', gain: 'splash', spend: 'cantemus', kill: 'pop', step: 'pat', life: 'tantara', help: 'gulp', score: 'boing' },
-  theater: { speak: 'ha', wail: 'nemo', hurt: 'thud', die: 'ridetis', gain: 'crowd', spend: 'rimshot', kill: 'quis', step: 'pat', life: 'tantara', help: 'gulp', score: 'chime' },
+  banquet: {
+    speak: 'ha',
+    wail: 'canis',
+    hurt: 'cough',
+    die: 'dii',
+    gain: 'shutter',
+    spend: 'flatus',
+    kill: 'blat',
+    step: 'pat',
+    life: 'tantara',
+    help: 'gulp',
+    score: 'chime',
+  },
+  battle: {
+    speak: 'ha',
+    wail: 'currimus',
+    hurt: 'clang',
+    die: 'dii',
+    gain: 'chime',
+    spend: 'victoria',
+    kill: 'pop',
+    step: 'pat',
+    life: 'tantara',
+    help: 'gulp',
+    score: 'summa',
+  },
+  roofs: {
+    speak: 'ha',
+    wail: 'titus',
+    hurt: 'coo',
+    die: 'dii',
+    gain: 'ter',
+    spend: 'tecta',
+    kill: 'sparkle',
+    step: 'pat',
+    life: 'tantara',
+    help: 'gulp',
+    score: 'chime',
+  },
+  kitchen: {
+    speak: 'meow',
+    wail: 'felis',
+    hurt: 'squeak',
+    die: 'yowl',
+    gain: 'cheddar',
+    spend: 'corona',
+    kill: 'squeak',
+    step: 'pat',
+    help: 'gulp',
+    score: 'crack',
+  },
+  baths: {
+    speak: 'ha',
+    wail: 'piscis',
+    hurt: 'hiss',
+    die: 'dii',
+    gain: 'splash',
+    spend: 'cantemus',
+    kill: 'pop',
+    step: 'pat',
+    life: 'tantara',
+    help: 'gulp',
+    score: 'boing',
+  },
+  theater: {
+    speak: 'ha',
+    wail: 'nemo',
+    hurt: 'thud',
+    die: 'ridetis',
+    gain: 'crowd',
+    spend: 'rimshot',
+    kill: 'quis',
+    step: 'pat',
+    life: 'tantara',
+    help: 'gulp',
+    score: 'chime',
+  },
 };
 
 /** A level's .SND: which VOC each effect plays (a PC speaker tune for each, for no Sound Blaster). */
@@ -143,19 +302,43 @@ export function buildSoundSet(place: Place): SoundSet {
     set.digital[SND[n]] = plays[n] ?? fallback;
   };
   add('help', 'gulp', SPEAKER.rise(400, 900));
-  add('kill', 'pop', speaker((i) => (i < 4 ? 900 - i * 150 : 0)));
+  add(
+    'kill',
+    'pop',
+    speaker((i) => (i < 4 ? 900 - i * 150 : 0)),
+  );
   add('money', 'chime', SPEAKER.coin());
   add('pay', 'chime', SPEAKER.noise(2, 80, 400));
   add('life', 'tantara', SPEAKER.arpeggio([523, 659, 784, 1047]));
-  add('score', 'chime', speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0)));
+  add(
+    'score',
+    'chime',
+    speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0)),
+  );
   add('lose', 'dii', SPEAKER.fall(400, 90));
-  add('gain', 'chime', speaker((i) => (i < 8 ? 1100 + i * 120 : 0)));
+  add(
+    'gain',
+    'chime',
+    speaker((i) => (i < 8 ? 1100 + i * 120 : 0)),
+  );
   add('spend', 'rimshot', SPEAKER.arpeggio([392, 523, 659]));
-  add('hop', 'hop', speaker((i) => (i < 10 ? 220 + i * 40 : 0)));
-  add('step', 'pat', speaker((i) => (i < 3 ? 120 : 0)));
+  add(
+    'hop',
+    'hop',
+    speaker((i) => (i < 10 ? 220 + i * 40 : 0)),
+  );
+  add(
+    'step',
+    'pat',
+    speaker((i) => (i < 3 ? 120 : 0)),
+  );
   add('hurt', 'cough', SPEAKER.warble(260, 100, 2.4));
   add('die', 'dii', SPEAKER.fall(500, 70));
-  add('speak', 'ha', speaker((i) => (i < 24 ? (Math.floor(i / 6) % 2 ? 0 : 440 - i * 6) : 0)));
+  add(
+    'speak',
+    'ha',
+    speaker((i) => (i < 24 ? (Math.floor(i / 6) % 2 ? 0 : 440 - i * 6) : 0)),
+  );
   add('wail', 'canis', SPEAKER.warble(330, 120, 0.5));
   return set;
 }

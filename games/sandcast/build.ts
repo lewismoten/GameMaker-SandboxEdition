@@ -18,7 +18,19 @@ import { buildSounds } from './src/sound/sounds';
 import { BURROW, DAY, DUSK } from './src/art/palette';
 import * as levels from './src/levels/levels';
 import { buildGame } from './src/game';
-import { filesScreen, gif, introFli, zoomiesFli, lostScreen, menuScreen, messageScreen, scoreScreen, snapFli, titleScreen, wonFli } from './src/screens/screens';
+import {
+  filesScreen,
+  gif,
+  introFli,
+  zoomiesFli,
+  lostScreen,
+  menuScreen,
+  messageScreen,
+  scoreScreen,
+  snapFli,
+  titleScreen,
+  wonFli,
+} from './src/screens/screens';
 import { sysopFli } from './src/screens/sysop';
 import { CREDITS, DUG, HELP, INTRO, LOST, README, STORY, WON } from './src/screens/texts';
 import { buildDemo } from './src/demo';
@@ -134,5 +146,5 @@ const game = buildGame(L, {
 });
 disk.put('sandcast.gam', serializeGame(game));
 disk.put('readme.txt', README);
-disk.put('license.txt', licenseText("Sandcastle Knight"));
+disk.put('license.txt', licenseText('Sandcastle Knight'));
 disk.write();

@@ -69,7 +69,8 @@ export class Plan {
     if (bad.length) console.log(`${this.name}: layers meet in ${bad.length} blocks, e.g.`, JSON.stringify(bad.slice(0, 6)));
     const map = newMap();
     map.blocks.set(ground.blocks);
-    for (const s of this.stamps) for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * N + s.x + x] = book.n(`${s.name}:${x},${y}`);
+    for (const s of this.stamps)
+      for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * N + s.x + x] = book.n(`${s.name}:${x},${y}`);
     for (const s of this.singles) map.blocks[s.y * N + s.x] = book.n(s.name);
     void [bridgeName, cellHash];
     return map;

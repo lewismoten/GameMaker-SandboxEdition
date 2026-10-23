@@ -99,7 +99,9 @@ export function banquet(book: BlockBook): Level {
   const m = new MapBuilder(book, 'outside');
   m.row(0, 1, W - 2, 'frieze');
   for (let x = 1; x < W - 1; x++) m.col(x, 1, 8, x % 8 === 3 ? 'wallB' : 'wall');
-  m.row(9, 1, W - 2, 'base').row(10, 0, W - 1, 'floor').row(11, 0, W - 1, 'under');
+  m.row(9, 1, W - 2, 'base')
+    .row(10, 0, W - 1, 'floor')
+    .row(11, 0, W - 1, 'under');
   // columns and hanging lamps
   for (const x of [7, 21, 34, 44]) m.set(x, 0, 'colTop').col(x, 1, 8, 'col').set(x, 9, 'colBase');
   for (const x of [11, 27, 40]) m.set(x, 1, 'hang0');
@@ -144,8 +146,18 @@ export function battle(book: BlockBook): Level {
   const m = new MapBuilder(book, 'outside');
   m.fill(1, 0, W - 2, 2, 'skyHi');
   for (let x = 1; x < W - 1; x++) m.col(x, 2, 7, 'sky');
-  for (const [x, y] of [[6, 3], [17, 2], [29, 4], [38, 2], [47, 3]]) m.set(x, y, 'skyCloud');
-  m.row(8, 1, W - 2, 'hills').row(9, 1, W - 2, 'field').row(10, 0, W - 1, 'grass').fill(0, 11, W, 2, 'dirt');
+  for (const [x, y] of [
+    [6, 3],
+    [17, 2],
+    [29, 4],
+    [38, 2],
+    [47, 3],
+  ])
+    m.set(x, y, 'skyCloud');
+  m.row(8, 1, W - 2, 'hills')
+    .row(9, 1, W - 2, 'field')
+    .row(10, 0, W - 1, 'grass')
+    .fill(0, 11, W, 2, 'dirt');
   // rocks, the eagle standard, the camp's tents and a cup
   m.set(7, 9, 'rock').set(10, 9, 'aquila').set(12, 9, 'rock');
   m.set(14, 9, 'tentL').set(15, 9, 'tentR').set(17, 9, 'wcup');
@@ -220,7 +232,10 @@ export function kitchen(book: BlockBook): Level {
   const W = 50;
   const H = 12;
   const m = new MapBuilder(book, 'outside');
-  m.row(0, 1, W - 2, 'beams').fill(1, 1, W - 2, 8, 'kwall').row(9, 1, W - 2, 'kbase').fill(0, 10, W, 2, 'kfloor');
+  m.row(0, 1, W - 2, 'beams')
+    .fill(1, 1, W - 2, 8, 'kwall')
+    .row(9, 1, W - 2, 'kbase')
+    .fill(0, 10, W, 2, 'kfloor');
   for (const x of [8, 19, 33]) m.set(x, 0, 'garlic');
   for (const x of [14, 27, 43]) m.set(x, 0, 'pots');
   // the hearth by the door; the first mouse
@@ -250,7 +265,9 @@ export function kitchen(book: BlockBook): Level {
 
 /** One pool from x0 to x1: the surface on the walk row, the water, the pool's floor. */
 function pool(m: MapBuilder, x0: number, x1: number, hot: boolean, walk: number): void {
-  m.row(walk, x0, x1, hot ? 'hotTop' : 'poolTop').row(walk + 1, x0, x1, hot ? 'hotPlain' : 'pool').row(walk + 2, x0, x1, 'poolFloor');
+  m.row(walk, x0, x1, hot ? 'hotTop' : 'poolTop')
+    .row(walk + 1, x0, x1, hot ? 'hotPlain' : 'pool')
+    .row(walk + 2, x0, x1, 'poolFloor');
 }
 
 /** V. The baths: pools, steam, drums, benches of cheering mice, seven golden scales, her basin. */
@@ -262,8 +279,13 @@ export function baths(book: BlockBook): Level {
   m.row(0, 1, W - 2, 'vault');
   m.fill(1, 1, W - 2, walk - 1, 'bwall');
   for (const x of [4, 13, 26, 46, 57]) m.set(x, 5, 'bniche');
-  m.row(walk, 1, W - 2, 'bbase').row(walk + 1, 0, W - 1, 'bfloor').row(walk + 2, 0, W - 1, 'bfloor2');
-  for (const x of [16, 37, 53]) m.set(x, 0, 'bcolTop').col(x, 1, walk - 1, 'bcol').set(x, walk, 'bcolBase');
+  m.row(walk, 1, W - 2, 'bbase')
+    .row(walk + 1, 0, W - 1, 'bfloor')
+    .row(walk + 2, 0, W - 1, 'bfloor2');
+  for (const x of [16, 37, 53])
+    m.set(x, 0, 'bcolTop')
+      .col(x, 1, walk - 1, 'bcol')
+      .set(x, walk, 'bcolBase');
   m.set(4, 8, 'linteum');
   // the cold pool: a scale on its floor
   pool(m, 6, 10, false, walk);

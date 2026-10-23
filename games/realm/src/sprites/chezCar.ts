@@ -8,7 +8,20 @@ import { Pixels } from '../../../kit/pixels';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 
 /** THE CHEZ's side (the shared side view, games/kit/chez.ts) in this game's colors. */
-const INK: RGB[] = [C('red', 1), C('red', 2), C('red', 3), C('red', 0), C('blue', 1), C('blue', 3), C('ink'), C('steel', 2), C('white', 0), C('orange', 2), C('red', 3), C('steel', 0)];
+const INK: RGB[] = [
+  C('red', 1),
+  C('red', 2),
+  C('red', 3),
+  C('red', 0),
+  C('blue', 1),
+  C('blue', 3),
+  C('ink'),
+  C('steel', 2),
+  C('white', 0),
+  C('orange', 2),
+  C('red', 3),
+  C('steel', 0),
+];
 const KIT: ChezInk = { body: [0, 1, 2], trim: 3, glass: [4, 5], roof: 6, tire: 6, hub: 7, rim: 8, bumper: 6, lamp: 9, tail: 10, stripe: 11, pin: 8, lens: 8 };
 
 /** Parks THE CHEZ's side view on a canvas, its box's top left at (x, y), `s` pixels per unit

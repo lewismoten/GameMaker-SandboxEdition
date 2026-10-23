@@ -72,11 +72,23 @@ export function buildCamel(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pic: 'stand', pause: 20 }),
     f({ pic: 'blink', pause: 3 }),
   ]);
-  set(S[SEQ.die], [f({ pic: 'hurt', pause: 3 }), f({ pic: 'faint0', top: null, pause: 8 }), f({ pic: 'faint1', top: 'stars0', pause: 10 }), f({ pic: 'faint1', top: 'stars1', pause: 24 })], {
-    sound: SND.faint,
+  set(
+    S[SEQ.die],
+    [
+      f({ pic: 'hurt', pause: 3 }),
+      f({ pic: 'faint0', top: null, pause: 8 }),
+      f({ pic: 'faint1', top: 'stars0', pause: 10 }),
+      f({ pic: 'faint1', top: 'stars1', pause: 24 }),
+    ],
+    {
+      sound: SND.faint,
+      jstkBut: 0,
+    },
+  );
+  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'stand', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'stand', pause: 1 })], {
+    sound: SND.hurt,
     jstkBut: 0,
   });
-  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'stand', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'stand', pause: 1 })], { sound: SND.hurt, jstkBut: 0 });
   set(S[3], [f({ pic: 'stand' })], { key: 0 });
   set(S[4], [f({ pic: 'stand' })], { key: 0 });
 
@@ -163,7 +175,13 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.melon] = mon(anim('melon0', 'melon1', 2), { power: 150, thru: 0, end: 60, newmon: MON.splat }, [corner(0, 0, 3, 4), corner(-30, 0, 3, 4)]);
   set[MON.splat] = mon([[n('splat'), 5]], { power: 100, thru: 0, end: 8 });
   set[MON.scorpion] = mon(anim('scorpion0', 'scorpion1', 3), { power: 150, thru: 1 }, pace(3, 1));
-  set[MON.vulture] = mon(anim('vulture0', 'vulture1', 4), { power: 150, thru: 0 }, [corner(0, 0, 3), corner(7, 2, 3, 0), corner(12, 0, 3, 0), corner(5, -2, 3, 4), corner(0, 0, 3, 4)]);
+  set[MON.vulture] = mon(anim('vulture0', 'vulture1', 4), { power: 150, thru: 0 }, [
+    corner(0, 0, 3),
+    corner(7, 2, 3, 0),
+    corner(12, 0, 3, 0),
+    corner(5, -2, 3, 4),
+    corner(0, 0, 3, 4),
+  ]);
   // The third goat from the left, a long way from Bethlehem, pacing her ledge. Harmless.
   set[MON.goat] = mon(anim('goat0', 'goat1', 6), { power: 200, thru: 1 }, pace(3, 1));
   // Tumbleweeds blow in from the dry brush, leftward, and are gone.
@@ -171,7 +189,13 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   // A mustard seed of faith, hopping in place: say hello and it is an extra life.
   set[MON.seed] = mon(anim('seed0', 'seed1', 5), { power: 50, thru: 0, newmon: MON.starOff });
   set[MON.scissors] = mon(anim('scissors0', 'scissors1', 2), { power: 150, thru: 1 }, pace(o.snip ?? 4, 2));
-  set[MON.moth] = mon(anim('moth0', 'moth1', 2), { power: 150, thru: 1 }, [corner(0, 0, 2), corner(2, -2, 2, 0), corner(4, 0, 2, 0), corner(2, 2, 2, 4), corner(0, 0, 2, 4)]);
+  set[MON.moth] = mon(anim('moth0', 'moth1', 2), { power: 150, thru: 1 }, [
+    corner(0, 0, 2),
+    corner(2, -2, 2, 0),
+    corner(4, 0, 2, 0),
+    corner(2, 2, 2, 4),
+    corner(0, 0, 2, 4),
+  ]);
   // The sewing machine's needle stabs down three blocks and back up.
   set[MON.needle] = mon(anim('needle0', 'needle1', 2), { power: 150, thru: 1 }, [corner(0, 0, 2), corner(0, 3, 4), corner(0, 0, 2)]);
   set[MON.thimble] = mon(anim('thimble0', 'thimble1', 3), { power: 150, thru: 1 }, pace(3, 2));

@@ -231,7 +231,10 @@ export class Convex implements Shape {
 /** A convex solid from its corner points (the hull's faces found by brute force). */
 export function hull(points: V[], mat: Material | ((face: number) => Material)): Convex {
   const planes: { n: V; d: number }[] = [];
-  const c = mul(points.reduce((s, p) => add(s, p), [0, 0, 0] as V), 1 / points.length);
+  const c = mul(
+    points.reduce((s, p) => add(s, p), [0, 0, 0] as V),
+    1 / points.length,
+  );
   for (let i = 0; i < points.length; i++)
     for (let j = i + 1; j < points.length; j++)
       for (let k = j + 1; k < points.length; k++) {

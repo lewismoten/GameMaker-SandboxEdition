@@ -12,7 +12,12 @@ import { mazeBeasts } from './level6Beasts';
 export function maze(): Level {
   const bs = mazeTiles();
   const beasts = mazeBeasts();
-  bs.chez(() => bs.pic('sky3'), 'stick', bs.pic('sky3'), () => bs.pic('sky3'));
+  bs.chez(
+    () => bs.pic('sky3'),
+    'stick',
+    bs.pic('sky3'),
+    () => bs.pic('sky3'),
+  );
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => skyAt(y));
   for (const [cx, cy] of [
@@ -57,8 +62,13 @@ export function maze(): Level {
   for (let bx = 0; bx < 4; bx++) for (let by = 0; by < 4; by++) m.set(86 + bx, 32 + by, `wheel${bx}${by}`);
   m.set(76, 39, 'signFair');
   const car = 80;
-  m.set(car, 38, 'carRoofL').set(car + 1, 38, 'carRoofR').set(car, 39, 'carDoor').set(car + 1, 39, 'carBack');
-  m.set(car + 3, 37, 'leoWant').set(car + 3, 38, 'leoHead').set(car + 3, 39, 'leoBody');
+  m.set(car, 38, 'carRoofL')
+    .set(car + 1, 38, 'carRoofR')
+    .set(car, 39, 'carDoor')
+    .set(car + 1, 39, 'carBack');
+  m.set(car + 3, 37, 'leoWant')
+    .set(car + 3, 38, 'leoHead')
+    .set(car + 3, 39, 'leoBody');
   m.rect(92, 30, 8, 10, 'hedgeWall');
   m.rect(92, 29, 8, 1, 'hedgeTop');
   m.rect(0, 30, 1, 10, 'hedgeWall');

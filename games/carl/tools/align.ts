@@ -8,12 +8,20 @@ import { buildHouse } from '../src/blocks/house';
 import { buildYard } from '../src/blocks/yard';
 import { LEVELS } from '../src/levels/levels';
 
-const quad = (what: string, tl: string | RegExp, tr: string | RegExp, bl: string | RegExp, br: string | RegExp) => shape(what, [[tl, tr], [bl, br]]);
+const quad = (what: string, tl: string | RegExp, tr: string | RegExp, bl: string | RegExp, br: string | RegExp) =>
+  shape(what, [
+    [tl, tr],
+    [bl, br],
+  ]);
 const RULES: PartRule[] = [
   ...quad('window', 'winTL', 'winTR', 'winBL', 'winBR'),
   ...quad('open window', 'owTL', 'owTR', 'owBL', 'owBR'),
   ...quad('TV', /^tvTL[01]$/, /^tvTR[01]$/, 'tvBL', 'tvBR'),
-  ...shape('man on the couch', [[/^(man|glum)TL$/, /^(man|glum)TR$/], ['manML', 'manMR'], ['manBL', 'manBR']]),
+  ...shape('man on the couch', [
+    [/^(man|glum)TL$/, /^(man|glum)TR$/],
+    ['manML', 'manMR'],
+    ['manBL', 'manBR'],
+  ]),
   ...shape('sleeper', [['sleepL', 'sleepR']]),
   ...shape('dog bed', [['dogBedL', 'dogBedR']]),
   { part: 'postTop', need: [[0, 1, 'post']] },
@@ -25,7 +33,13 @@ const RULES: PartRule[] = [
   { part: 'fridgeTop', need: [[0, 1, /^fridge(Art)?$/]] },
   { part: /^fridge(Art)?$/, need: [[0, -1, /^fridge(Top|Art)?$/]] },
   { part: /^shade(On)?$/, need: [[0, 1, /^(pole[RP]?|lampBase)$/]] },
-  { part: /^pole[RP]?$/, need: [[0, -1, /^(pole[RP]?|shade(On)?)$/], [0, 1, /^(pole[RP]?|lampBase)$/]] },
+  {
+    part: /^pole[RP]?$/,
+    need: [
+      [0, -1, /^(pole[RP]?|shade(On)?)$/],
+      [0, 1, /^(pole[RP]?|lampBase)$/],
+    ],
+  },
   { part: 'trunk', need: [[0, -1, /^(trunk|branch|leaves)$/]] },
   { part: 'cactusTop', need: [[0, 1, 'cactus']] },
   { part: 'cactus', need: [[0, -1, { test: (g) => g !== 'cactus', toString: () => 'no whole cactus' }]] },

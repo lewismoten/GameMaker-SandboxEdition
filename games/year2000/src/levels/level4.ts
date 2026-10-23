@@ -207,13 +207,7 @@ const LAUNCH_LEGEND: Legend = {
 // Beside the launch pad, a storage closet with no door. One brick of the shared wall is only
 // a hologram (light shows through its mortar); inside, something has to be picked up by
 // hand, and the round hatch past it opens only for whoever carries it.
-const CLOSET = [
-  'XXXXXXXX',
-  'X......X',
-  'g..e...h',
-  'X......X',
-  'XXXXXXXX',
-];
+const CLOSET = ['XXXXXXXX', 'X......X', 'g..e...h', 'X......X', 'XXXXXXXX'];
 const CLOSET_LEGEND: Legend = {
   ...BASE,
   '.': 'concrete',

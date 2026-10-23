@@ -35,14 +35,54 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
 /** Each place's sky (top to bottom) and how the rest is lit. */
 const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
   // a soft gold morning over the city
-  morning: { sky: [[96, 140, 210], [252, 226, 176], [184, 196, 222]], mul: [1, 0.97, 0.92], add: [10, 6, 0] },
+  morning: {
+    sky: [
+      [96, 140, 210],
+      [252, 226, 176],
+      [184, 196, 222],
+    ],
+    mul: [1, 0.97, 0.92],
+    add: [10, 6, 0],
+  },
   // white-hot noon over the desert
-  noon: { sky: [[110, 170, 230], [250, 244, 220], [180, 214, 240]], mul: [1.04, 1.02, 0.96], add: [8, 6, 0] },
+  noon: {
+    sky: [
+      [110, 170, 230],
+      [250, 244, 220],
+      [180, 214, 240],
+    ],
+    mul: [1.04, 1.02, 0.96],
+    add: [8, 6, 0],
+  },
   // the tailor's shop: lamplight on dark wood paneling
-  lamp: { sky: [[46, 26, 18], [140, 92, 56], [92, 58, 36]], mul: [1, 0.9, 0.76], add: [14, 6, 0] },
+  lamp: {
+    sky: [
+      [46, 26, 18],
+      [140, 92, 56],
+      [92, 58, 36],
+    ],
+    mul: [1, 0.9, 0.76],
+    add: [14, 6, 0],
+  },
   // night over the needle, turning to dawn at the top
-  night: { sky: [[14, 12, 48], [250, 196, 150], [80, 60, 140]], mul: [0.78, 0.78, 0.92], add: [4, 4, 16] },
-  plain: { sky: [[96, 140, 210], [252, 226, 176], [184, 196, 222]], mul: [1, 1, 1], add: [0, 0, 0] },
+  night: {
+    sky: [
+      [14, 12, 48],
+      [250, 196, 150],
+      [80, 60, 140],
+    ],
+    mul: [0.78, 0.78, 0.92],
+    add: [4, 4, 16],
+  },
+  plain: {
+    sky: [
+      [96, 140, 210],
+      [252, 226, 176],
+      [184, 196, 222],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
 };
 
 export interface Pal {

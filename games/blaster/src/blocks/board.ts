@@ -190,8 +190,7 @@ function capacitor(a: StageArt, ramp: string, name: string, value: string): Pixe
   // the vent, scored in a cross
   big.rect(19, 16, 2, 13, p.c('steel', 1)).rect(14, 21, 13, 2, p.c('steel', 1));
   // the minus stripe, with its minus signs
-  for (let y = 7; y < 38; y++)
-    for (let x = 5; x < 10; x++) if (Math.hypot(x - 20, y - 22) < 14.5) big.set(x, y, p.c('grey', 6));
+  for (let y = 7; y < 38; y++) for (let x = 5; x < 10; x++) if (Math.hypot(x - 20, y - 22) < 14.5) big.set(x, y, p.c('grey', 6));
   for (const y of [14, 21, 28]) big.rect(6, y, 3, 1, p.c('ink', 0));
   micro(big, 20 - value.length * 2, 31, value, ramp === 'slime' ? p.c('ink', 0) : p.c('grey', 7));
   return big;
@@ -298,7 +297,7 @@ function breadboard(a: StageArt, kind: 'H' | 'C' | 'R'): Pixels {
   const hole = (x: number, y: number) => t.rect(x, y, 2, 2, p.c('grey', 2)).set(x + 1, y + 1, p.c('grey', 4));
   if (kind === 'R') {
     t.rect(1, 0, 1, 20, p.c('red', 2)).rect(18, 0, 1, 20, p.c('blue', 2));
-    for (let y = 1; y < 20; y += 4) if (y % 20 !== 17) hole(5, y), hole(12, y);
+    for (let y = 1; y < 20; y += 4) if (y % 20 !== 17) (hole(5, y), hole(12, y));
   } else
     for (let y = 1; y < 20; y += 4)
       for (let x = 1; x < 20; x += 4) {

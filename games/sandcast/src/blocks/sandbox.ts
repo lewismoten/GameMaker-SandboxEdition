@@ -15,8 +15,15 @@ export function addSandbox(): void {
   // Blocks 2 and 3 were two more sand floors (pebbles, and a plain one like sand0); the floors
   // mix sand0 and sand1 now, and the two slots hold the keepsakes: a tin heart and a painted
   // Easter egg, each lying on the sand, a few points, gone when touched, no sound of their own.
-  bg.add('tinHeart', drawTinHeart(sand(11), { ink: STEEL[0], tin: [STEEL[3], STEEL[5], STEEL[6]], white: STEEL[7], dark: STEEL[1] }), { score: 100, touch: 'sand0' });
-  bg.add('easterEgg', drawEasterEgg(sand(11), { ink: WATER[0], shell: WATER.slice(5, 9), paint: [PINK[1], PINK[2]], accent: YELLOW[4], white: STEEL[7] }, 'dots'), { score: 50, touch: 'sand0' });
+  bg.add('tinHeart', drawTinHeart(sand(11), { ink: STEEL[0], tin: [STEEL[3], STEEL[5], STEEL[6]], white: STEEL[7], dark: STEEL[1] }), {
+    score: 100,
+    touch: 'sand0',
+  });
+  bg.add(
+    'easterEgg',
+    drawEasterEgg(sand(11), { ink: WATER[0], shell: WATER.slice(5, 9), paint: [PINK[1], PINK[2]], accent: YELLOW[4], white: STEEL[7] }, 'dots'),
+    { score: 50, touch: 'sand0' },
+  );
   // Packed courtyard sand inside the castles: pressed squares.
   bg.add(
     'court',

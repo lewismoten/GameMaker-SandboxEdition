@@ -42,7 +42,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('sky', sky(1), air);
   const skyHi = sky(2, 2);
-  for (const [x, y] of [[4, 6], [15, 13]]) skyHi.set(x, y, c('sky', 5));
+  for (const [x, y] of [
+    [4, 6],
+    [15, 13],
+  ])
+    skyHi.set(x, y, c('sky', 5));
   book.add('skyHi', skyHi, air);
   const wisp = sky(3);
   for (let x = 2; x < 18; x++) wisp.set(x, 9 + Math.round(Math.sin(x / 3)), c('sky', 5)).set(x + 1, 10 + Math.round(Math.sin(x / 3)), c('sky', 4));
@@ -60,7 +64,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let i = 0; i < 9; i++) {
       const x = Math.floor(r() * 19);
       const y = 11 + Math.floor(r() * 7);
-      p.set(x, y, c(robes[Math.floor(r() * robes.length)], 2)).set(x, y + 1, c(robes[Math.floor(r() * robes.length)], 1)).set(x, y - 1, c('skin', 2));
+      p.set(x, y, c(robes[Math.floor(r() * robes.length)], 2))
+        .set(x, y + 1, c(robes[Math.floor(r() * robes.length)], 1))
+        .set(x, y - 1, c('skin', 2));
     }
     return p;
   };
@@ -123,7 +129,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the fig tree: trunk (scenery) and leafy branches to stand on
   // (its sway repeats every block, so stacked trunks join without a notch)
   const trunkOn = (bg: Pixels) => {
-    for (let y = 0; y < 20; y++) for (let x = 6; x < 14; x++) bg.set(x + Math.round(Math.sin((y * Math.PI) / 10)), y, shadeAt(R('wood'), 0, 3, (x - 6) / 8, x, y));
+    for (let y = 0; y < 20; y++)
+      for (let x = 6; x < 14; x++) bg.set(x + Math.round(Math.sin((y * Math.PI) / 10)), y, shadeAt(R('wood'), 0, 3, (x - 6) / 8, x, y));
     return bg;
   };
   book.add('trunk', trunkOn(sky(44)), air);
@@ -174,7 +181,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a fish basket: it gives birth to flying fish
   const fishBasket = weave(P());
   fishBasket.rect(0, 0, 20, 6, c('sky', 3));
-  for (const [x, y] of [[5, 5], [10, 3], [15, 5]]) blob(fishBasket, x, y, 3.4, 1.6, R('fish'), 1, 3);
+  for (const [x, y] of [
+    [5, 5],
+    [10, 3],
+    [15, 5],
+  ])
+    blob(fishBasket, x, y, 3.4, 1.6, R('fish'), 1, 3);
   fishBasket.rect(0, 6, 20, 2, c('wicker', 4));
   book.add('fishBasket', fishBasket, { solid: SOLID, birthMon: MON.fishR, birthTime: FISH_EVERY });
   const fishBasketL = fishBasket.flipX();
@@ -182,7 +194,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a cooking fire, and the warm air over it that lifts a loaf (it rises)
   const fire = (f: number) => {
     const p = sky(48);
-    for (const [x, y] of [[4, 17], [10, 18], [16, 17]]) blob(p, x, y, 3.6, 2, R('stone'), 1, 3);
+    for (const [x, y] of [
+      [4, 17],
+      [10, 18],
+      [16, 17],
+    ])
+      blob(p, x, y, 3.6, 2, R('stone'), 1, 3);
     p.rect(3, 15, 14, 2, c('wood', 1));
     for (let k = 0; k < 5; k++) {
       const x = 5 + k * 2.5;
@@ -217,7 +234,11 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   // crumbs: points
-  book.add('crumb', crumb(() => sky(51), 51), { score: 10, touch: 'sky' });
+  book.add(
+    'crumb',
+    crumb(() => sky(51), 51),
+    { score: 10, touch: 'sky' },
+  );
   const holy = (bg: () => Pixels, f: number) => {
     const p = bg();
     const s = f ? 5 : 4;
@@ -227,8 +248,16 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   // holy crumbs: counter 20
-  book.add('holy0', holy(() => sky(53), 0), { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holy1', ntime: 7 });
-  book.add('holy1', holy(() => sky(53), 1), { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holy0', ntime: 5 });
+  book.add(
+    'holy0',
+    holy(() => sky(53), 0),
+    { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holy1', ntime: 7 },
+  );
+  book.add(
+    'holy1',
+    holy(() => sky(53), 1),
+    { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holy0', ntime: 5 },
+  );
   // a jar of water: health
   const jar = (bg: Pixels) => {
     blob(bg, 10, 13, 5.4, 6, R('earth'), 1, 4);
@@ -284,10 +313,26 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('chaff', chaff(65), { solid: SOLID, touch: 'weave' });
-  book.add('crumbG', crumb(() => gloom(66), 66), { score: 10, touch: 'gloom' });
-  book.add('holyG0', holy(() => gloom(67), 0), { effect: CRUMBS, eamt: 1, score: 25, touch: 'gloom', next: 'holyG1', ntime: 7 });
-  book.add('holyG1', holy(() => gloom(67), 1), { effect: CRUMBS, eamt: 1, score: 25, touch: 'gloom', next: 'holyG0', ntime: 5 });
-  book.add('holyW', holy(() => weaveIn(68), 0), { effect: CRUMBS, eamt: 1, score: 25, touch: 'weave', grav: GRAV.none });
+  book.add(
+    'crumbG',
+    crumb(() => gloom(66), 66),
+    { score: 10, touch: 'gloom' },
+  );
+  book.add(
+    'holyG0',
+    holy(() => gloom(67), 0),
+    { effect: CRUMBS, eamt: 1, score: 25, touch: 'gloom', next: 'holyG1', ntime: 7 },
+  );
+  book.add(
+    'holyG1',
+    holy(() => gloom(67), 1),
+    { effect: CRUMBS, eamt: 1, score: 25, touch: 'gloom', next: 'holyG0', ntime: 5 },
+  );
+  book.add(
+    'holyW',
+    holy(() => weaveIn(68), 0),
+    { effect: CRUMBS, eamt: 1, score: 25, touch: 'weave', grav: GRAV.none },
+  );
   book.add('jarG', jar(gloom(69)), { hp: 25, score: 10, touch: 'gloom' });
   // the lid on the top basket: seven holy crumbs open it, and the light comes in
   const lid = (open: boolean) => {
@@ -317,7 +362,14 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(2, 6, 16, 2, c('wicker', 4)).rect(2, 8, 16, 1, c('wicker', 0));
     p.line(3, 6, 6, 1, c('wicker', 2)).line(6, 1, 14, 1, c('wicker', 2)).line(14, 1, 17, 6, c('wicker', 2));
     if (full) {
-      for (const [x, y, rx] of [[6, 5, 3.4], [10, 4, 3.6], [14, 5, 3.4], [8, 6, 2.4], [12, 6, 2.4]] as const) blob(p, x, y, rx, 2.2, R('crust'), 1, 5);
+      for (const [x, y, rx] of [
+        [6, 5, 3.4],
+        [10, 4, 3.6],
+        [14, 5, 3.4],
+        [8, 6, 2.4],
+        [12, 6, 2.4],
+      ] as const)
+        blob(p, x, y, rx, 2.2, R('crust'), 1, 5);
       p.set(10, 3, c('crumb', 2));
     }
     if (n !== undefined) micro(p, 7, 12, String(n), c(full ? 'gold' : 'ink', full ? 3 : 0));
@@ -335,7 +387,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   // an olive tree (scenery), stones
   const olive = sky(75);
   olive.rect(9, 12, 3, 8, c('wood', 1)).line(10, 12, 5, 7, c('wood', 1)).line(11, 12, 15, 6, c('wood', 1));
-  for (const [x, y] of [[5, 6], [10, 4], [15, 6], [8, 8], [13, 8]]) blob(olive, x, y, 3.6, 2.4, R('olive'), 0, 3);
+  for (const [x, y] of [
+    [5, 6],
+    [10, 4],
+    [15, 6],
+    [8, 8],
+    [13, 8],
+  ])
+    blob(olive, x, y, 3.6, 2.4, R('olive'), 0, 3);
   book.add('olive', olive, air);
 
   // ---------- the way home (night) ----------
@@ -369,10 +428,22 @@ export function buildBlocks(pal: Pal): BlockBook {
   lamp.rect(9, 8, 2, 12, c('wood', 1));
   blob(lamp, 10, 5, 3.4, 3, R('lamp'), 1, 2);
   lamp.disc(10, 4, 1.4, c('lamp', 2)).set(10, 0, c('lamp', 0));
-  for (const [x, y] of [[3, 3], [17, 4], [5, 9], [15, 10]]) lamp.set(x, y, c('lamp', 0));
+  for (const [x, y] of [
+    [3, 3],
+    [17, 4],
+    [5, 9],
+    [15, 10],
+  ])
+    lamp.set(x, y, c('lamp', 0));
   book.add('lamp', lamp, air);
   const stars = sky(87, 2);
-  for (const [x, y] of [[3, 4], [12, 2], [16, 11], [7, 15]]) stars.set(x, y, c('sun', 3));
+  for (const [x, y] of [
+    [3, 4],
+    [12, 2],
+    [16, 11],
+    [7, 15],
+  ])
+    stars.set(x, y, c('sun', 3));
   stars.set(12, 1, c('sun', 1)).set(11, 2, c('sun', 1)).set(13, 2, c('sun', 1)).set(12, 3, c('sun', 1));
   book.add('stars', stars, air);
   // a palm (scenery: trunk and crown)
@@ -380,7 +451,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   for (let y = 0; y < 20; y++) palmT.rect(9 + Math.round(Math.sin(y / 6) * 1.5), y, 3, 1, c('wood', y % 3 ? 1 : 2));
   book.add('palmT', palmT, air);
   const palmC = sky(89);
-  for (let a = 0; a < 7; a++) for (let t = 0; t < 10; t++) palmC.set(10 + Math.cos(a * 0.9 + 0.2) * t, 12 - Math.sin(a * 0.9 + 0.2) * t * 0.7 + (t * t) / 16, c('leaf', 1 + (t % 2)));
+  for (let a = 0; a < 7; a++)
+    for (let t = 0; t < 10; t++) palmC.set(10 + Math.cos(a * 0.9 + 0.2) * t, 12 - Math.sin(a * 0.9 + 0.2) * t * 0.7 + (t * t) / 16, c('leaf', 1 + (t % 2)));
   palmC.rect(9, 12, 3, 8, c('wood', 1));
   book.add('palmC', palmC, air);
   // the well: stone, solid, with a jar on it
@@ -400,8 +472,16 @@ export function buildBlocks(pal: Pal): BlockBook {
   blob(stone, 10, 9, 8, 4, R('stone'), 1, 4);
   book.add('step', stone, { solid: SOLID });
   // holy crumbs and crumbs on the way home
-  book.add('holyN0', holy(() => sky(93), 0), { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holyN1', ntime: 7 });
-  book.add('holyN1', holy(() => sky(93), 1), { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holyN0', ntime: 5 });
+  book.add(
+    'holyN0',
+    holy(() => sky(93), 0),
+    { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holyN1', ntime: 7 },
+  );
+  book.add(
+    'holyN1',
+    holy(() => sky(93), 1),
+    { effect: CRUMBS, eamt: 1, score: 25, touch: 'sky', next: 'holyN0', ntime: 5 },
+  );
   // home: its door takes one holy crumb, a gift for Mama, and opens on the lamplight
   const door = (open: boolean) => {
     const p = brick(false, 95);
@@ -441,27 +521,49 @@ export function buildBlocks(pal: Pal): BlockBook {
   mamaTop.rect(6, 13, 8, 7, c('red', 2)).rect(4, 15, 3, 3, c('skin', 2)).rect(13, 15, 3, 3, c('skin', 2)).rect(9, 11, 2, 2, c('skin', 1));
   book.add('mamaTop', mamaTop, air);
   const mamaLow = room(104, true);
-  mamaLow.rect(5, 0, 10, 17, c('red', 2)).rect(5, 0, 2, 17, c('red', 1)).rect(8, 4, 1, 12, c('red', 1)).rect(6, 17, 3, 2, c('wood', 0)).rect(11, 17, 3, 2, c('wood', 0));
+  mamaLow
+    .rect(5, 0, 10, 17, c('red', 2))
+    .rect(5, 0, 2, 17, c('red', 1))
+    .rect(8, 4, 1, 12, c('red', 1))
+    .rect(6, 17, 3, 2, c('wood', 0))
+    .rect(11, 17, 3, 2, c('wood', 0));
   book.add('mamaLow', mamaLow, air);
   // (after these, too) friends from the other games: the tin heart up in the second basket's far
   // corner (in the gloom of the wicker wasteland), a painted Easter egg in the far crowd at dusk (points only, no sounds of their own), and Teenage Lewie from
   // Snowbound, shovel and all, out in the village at night
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(book.pics.get('gloom')!.crop(0, 0, 20, 20), { ink: c('ink', 0), tin: [c('grey', 1), c('grey', 2), c('grey', 3)], white: c('white', 2), dark: c('grey', 0) }, k), {
-      score: 100,
-      touch: 'gloom',
-      grav: GRAV.down,
-      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
-      ntime: k ? 2 : 50,
-    });
+    book.add(
+      `tinHeart${k || ''}`,
+      drawTinHeart(
+        book.pics.get('gloom')!.crop(0, 0, 20, 20),
+        { ink: c('ink', 0), tin: [c('grey', 1), c('grey', 2), c('grey', 3)], white: c('white', 2), dark: c('grey', 0) },
+        k,
+      ),
+      {
+        score: 100,
+        touch: 'gloom',
+        grav: GRAV.down,
+        next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+        ntime: k ? 2 : 50,
+      },
+    );
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`egg${k || ''}`, drawEasterEgg(book.pics.get('crowd1')!.crop(0, 0, 20, 20), { ink: c('ink', 0), shell: [c('red', 1), c('red', 2), c('red', 3)], paint: [c('gold', 1), c('gold', 2)], accent: c('white', 2), white: c('white', 2) }, 'bands', k), {
-      score: 50,
-      touch: 'crowd1',
-      grav: GRAV.down,
-      next: `egg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
-      ntime: k ? 3 : 60,
-    });
+    book.add(
+      `egg${k || ''}`,
+      drawEasterEgg(
+        book.pics.get('crowd1')!.crop(0, 0, 20, 20),
+        { ink: c('ink', 0), shell: [c('red', 1), c('red', 2), c('red', 3)], paint: [c('gold', 1), c('gold', 2)], accent: c('white', 2), white: c('white', 2) },
+        'bands',
+        k,
+      ),
+      {
+        score: 50,
+        touch: 'crowd1',
+        grav: GRAV.down,
+        next: `egg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+        ntime: k ? 3 : 60,
+      },
+    );
   // Lewie, recolored from the unlit palette so the block is the same in every light
   const lewie = sky(1);
   const kid = lewieCameo(buildPalette('plain').pal, 'down0');

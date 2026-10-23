@@ -5,10 +5,22 @@
 import type { Built } from '../src/game';
 
 const QUAD: Record<string, [number, number, string][]> = {
-  tl: [[1, 0, 'tr'], [0, 1, 'bl']],
-  tr: [[-1, 0, 'tl'], [0, 1, 'br']],
-  bl: [[1, 0, 'br'], [0, -1, 'tl']],
-  br: [[-1, 0, 'bl'], [0, -1, 'tr']],
+  tl: [
+    [1, 0, 'tr'],
+    [0, 1, 'bl'],
+  ],
+  tr: [
+    [-1, 0, 'tl'],
+    [0, 1, 'br'],
+  ],
+  bl: [
+    [1, 0, 'br'],
+    [0, -1, 'tl'],
+  ],
+  br: [
+    [-1, 0, 'bl'],
+    [0, -1, 'tr'],
+  ],
 };
 
 /** Misplaced parts of multi-block objects, by scene name. */
@@ -45,4 +57,3 @@ export function misaligned(b: Built): Map<string, string[]> {
   }
   return out;
 }
-

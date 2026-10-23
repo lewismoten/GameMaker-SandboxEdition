@@ -63,7 +63,8 @@ function grass(p: Pixels, y: number, seed: number): void {
  * knob; dog books inside; under it, a cubby grid of painted rocks.
  */
 export function dogHouse(p: Pixels, x: number, y: number, s: number, open = 0): void {
-  const R = (xx: number, yy: number, w: number, h: number, col: number) => p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
+  const R = (xx: number, yy: number, w: number, h: number, col: number) =>
+    p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), col);
   // post
   R(18, 40, 8, 40, c('brown', 0));
   R(19, 40, 2, 40, c('brown', 1));
@@ -86,7 +87,7 @@ export function dogHouse(p: Pixels, x: number, y: number, s: number, open = 0): 
   // inside: shelves of dog books (seen through the door when it opens)
   R(4, 10, 36, 26, c('wood', 1));
   const books = ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'teal', 'pink'];
-  for (let i = 0; i < 8; i++) R(6 + i * 4, 14, 3, 9, c(books[i], 3)), R(6 + i * 4, 25, 3, 9, c(books[(i + 3) % 8], 2));
+  for (let i = 0; i < 8; i++) (R(6 + i * 4, 14, 3, 9, c(books[i], 3)), R(6 + i * 4, 25, 3, 9, c(books[(i + 3) % 8], 2)));
   R(4, 23, 36, 1, c('wood', 3));
   R(4, 34, 36, 1, c('wood', 3));
   if (open < 1) {

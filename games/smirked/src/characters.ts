@@ -27,7 +27,10 @@ export const DIAG = 3;
 type F = Partial<Frame> & { pic: number };
 function frames(list: F[]): Frame[] {
   const out = Array.from({ length: 10 }, () => emptyFrame(true));
-  list.forEach((f, i) => (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? CHARBL, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }));
+  list.forEach(
+    (f, i) =>
+      (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? CHARBL, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }),
+  );
   return out;
 }
 
@@ -49,8 +52,27 @@ export function buildHero(cb: ReturnType<typeof buildCharBlocks>): Character {
     { pic: n('blink'), pause: 3 },
   ]);
   // Fainting dead away (a life lost), like a Victorian woman seeing a ghost.
-  set(SEQ.die, [{ pic: n('ouch'), pause: 4 }, { pic: n('faint0'), pause: 6 }, { pic: n('faint1'), pause: 5 }, { pic: n('faint2'), pause: 5 }, { pic: n('faint3'), pause: 30 }], { sound: SND.die });
-  set(SEQ.hurt, [{ pic: n('hurt'), pause: 1 }, { pic: n('ouch'), pause: 2 }, { pic: n('hurt'), pause: 1 }, { pic: n('down0'), pause: 1 }], { sound: SND.hurt });
+  set(
+    SEQ.die,
+    [
+      { pic: n('ouch'), pause: 4 },
+      { pic: n('faint0'), pause: 6 },
+      { pic: n('faint1'), pause: 5 },
+      { pic: n('faint2'), pause: 5 },
+      { pic: n('faint3'), pause: 30 },
+    ],
+    { sound: SND.die },
+  );
+  set(
+    SEQ.hurt,
+    [
+      { pic: n('hurt'), pause: 1 },
+      { pic: n('ouch'), pause: 2 },
+      { pic: n('hurt'), pause: 1 },
+      { pic: n('down0'), pause: 1 },
+    ],
+    { sound: SND.hurt },
+  );
   set(3, [{ pic: n('down0') }], { key: 0 });
   set(4, [{ pic: n('down0') }], { key: 0 });
   const walk = (i: number, key: number, joy: number, dx: number, dy: number, view: 'up' | 'down' | 'side', mirror = false) =>
@@ -83,9 +105,28 @@ export function buildHero(cb: ReturnType<typeof buildCharBlocks>): Character {
     { key: KEY.space, sound: SND.tackle, norepeat: 1, ground: 1, jstkMov: JOY.any, jstkBut: 1 },
   );
   // B: scream like a cat being dipped in a bathtub.
-  set(SEQ.scream, [{ pic: n('scream0'), pause: 4 }, { pic: n('scream1'), pause: 4 }, { pic: n('scream0'), pause: 4 }, { pic: n('scream1'), pause: 4 }, { pic: n('down0'), pause: 2 }], { key: KEY.b, sound: SND.scream, norepeat: 1, jstkBut: 2 });
+  set(
+    SEQ.scream,
+    [
+      { pic: n('scream0'), pause: 4 },
+      { pic: n('scream1'), pause: 4 },
+      { pic: n('scream0'), pause: 4 },
+      { pic: n('scream1'), pause: 4 },
+      { pic: n('down0'), pause: 2 },
+    ],
+    { key: KEY.b, sound: SND.scream, norepeat: 1, jstkBut: 2 },
+  );
   // C: ask Lily if it's real. ("You know it's not real, right?")
-  set(SEQ.ask, [{ pic: n('ask'), pause: 14 }, { pic: n('blink'), pause: 3 }, { pic: n('ask'), pause: 8 }, { pic: n('down0'), pause: 2 }], { key: KEY.c, sound: SND.ask, norepeat: 1, jstkBut: 4 });
+  set(
+    SEQ.ask,
+    [
+      { pic: n('ask'), pause: 14 },
+      { pic: n('blink'), pause: 3 },
+      { pic: n('ask'), pause: 8 },
+      { pic: n('down0'), pause: 2 },
+    ],
+    { key: KEY.c, sound: SND.ask, norepeat: 1, jstkBut: 4 },
+  );
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // nerve (hit points)
@@ -152,11 +193,28 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.witchFlat] = mon(anim('flat0', 'flat1', 12), { power: 50, thru: 1 }, [corner(0, 0, 1), corner(0, 0, 1)]);
   // Lily strolls her route and back, whistling, smirking now and then; in the woods she pats you
   const lilyPics: [number, number][] = o.pats
-    ? [[n('lilyPat!'), 1], [n('lilyPat'), 4], [n('lily0'), 5], [n('lily1'), 5], [n('lilySmirk'), 10], [n('lily0'), 5], [n('lily1'), 5]]
-    : [[n('lily0'), 5], [n('lily1'), 5], [n('lily0'), 5], [n('lily1'), 5], [n('lilySmirk'), 12]];
+    ? [
+        [n('lilyPat!'), 1],
+        [n('lilyPat'), 4],
+        [n('lily0'), 5],
+        [n('lily1'), 5],
+        [n('lilySmirk'), 10],
+        [n('lily0'), 5],
+        [n('lily1'), 5],
+      ]
+    : [
+        [n('lily0'), 5],
+        [n('lily1'), 5],
+        [n('lily0'), 5],
+        [n('lily1'), 5],
+        [n('lilySmirk'), 12],
+      ];
   const route = o.lily ?? [[4, 0]];
   const there = [corner(0, 0, 1), ...route.map(([x, y], i) => corner(x, y, 1, x < (route[i - 1]?.[0] ?? 0) ? 4 : 0))];
-  const back = [...route].reverse().slice(1).map(([x, y]) => corner(x, y, 1, 4));
+  const back = [...route]
+    .reverse()
+    .slice(1)
+    .map(([x, y]) => corner(x, y, 1, 4));
   set[MON.lily] = mon(lilyPics, { power: 200, thru: 0 }, [...there, ...back, corner(0, 0, 1, 4)]);
   set[MON.lilyNear] = mon(lilyPics, { power: 200, thru: 1, towards: 1 });
   set[MON.bat] = mon(stings('bat0', 'bat1', 4), { power: 150, thru: 0 }, pace(2, 1, true));

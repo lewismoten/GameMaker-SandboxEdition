@@ -12,7 +12,21 @@ const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left:
 export const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57 } as const;
 
 /** Monsters worth a shot. */
-const FOES = new Set<number>([MON.wire, MON.wireH, MON.wireV, MON.jaggy, MON.jaggyV, MON.mirror, MON.bat, MON.count1, MON.count2, MON.count3, MON.count4, MON.count5, MON.steam]);
+const FOES = new Set<number>([
+  MON.wire,
+  MON.wireH,
+  MON.wireV,
+  MON.jaggy,
+  MON.jaggyV,
+  MON.mirror,
+  MON.bat,
+  MON.count1,
+  MON.count2,
+  MON.count3,
+  MON.count4,
+  MON.count5,
+  MON.steam,
+]);
 
 export class Bot {
   log: string[] = [];
@@ -276,7 +290,8 @@ export class Bot {
       let best: { p: Pt; a: number } | undefined;
       for (const p of this.visibleLoot()) {
         const a = this.path(p.x, p.y, here, true)?.length;
-        if (process.env.DEBUG_LOOT && (a === undefined || a > 12)) console.log(`  [${this.sim.scene}] loot ${p.x},${p.y} from ${here.x},${here.y}: ${a ?? 'no path'}`);
+        if (process.env.DEBUG_LOOT && (a === undefined || a > 12))
+          console.log(`  [${this.sim.scene}] loot ${p.x},${p.y} from ${here.x},${here.y}: ${a ?? 'no path'}`);
         if (a === undefined || a > 12) continue;
         const b = this.path(tx, ty, p)?.length;
         if (b === undefined) continue;

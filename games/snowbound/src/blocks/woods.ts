@@ -59,28 +59,33 @@ export function feltEgg(c: Ctx['c']): Pixels {
   };
   // lazy-daisy snowflakes, a striped scarf with its tail, and the red mitten with a yarn cuff
   const f = new Pixels(20, 20, 255);
-  f.draw(0, 0, [
-    '                    ',
-    '                    ',
-    '                    ',
-    '         b          ',
-    '       b B b  B     ',
-    '        BBB  BbB    ',
-    '       b B b  B     ',
-    '         b          ',
-    '   RRGGRRGGRRGGRR   ',
-    '   RGGRRGGRRGGRRGG  ',
-    '            gRR     ',
-    '      hR    RGG     ',
-    '     hRRR   GRR     ',
-    '     RRRRr  RG      ',
-    '     RRRrRr         ',
-    '     RRRrr     b    ',
-    '     YyYy     bBb   ',
-    '     yYyY      b    ',
-    '                    ',
-    '                    ',
-  ], key);
+  f.draw(
+    0,
+    0,
+    [
+      '                    ',
+      '                    ',
+      '                    ',
+      '         b          ',
+      '       b B b  B     ',
+      '        BBB  BbB    ',
+      '       b B b  B     ',
+      '         b          ',
+      '   RRGGRRGGRRGGRR   ',
+      '   RGGRRGGRRGGRRGG  ',
+      '            gRR     ',
+      '      hR    RGG     ',
+      '     hRRR   GRR     ',
+      '     RRRRr  RG      ',
+      '     RRRrRr         ',
+      '     RRRrr     b    ',
+      '     YyYy     bBb   ',
+      '     yYyY      b    ',
+      '                    ',
+      '                    ',
+    ],
+    key,
+  );
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (f.get(x, y) !== 255 && inside(x, y)) p.set(x, y, f.get(x, y));
   return p;
 }
@@ -93,15 +98,13 @@ export function addWoods(k: Ctx, { yardBase }: Painters, { pine }: Treats): void
   // A kid's red mitten dropped in the snow, cuff and all.
   const mitten = yardBase(151);
   blob(mitten, 10, 15, 6, 1.6, snow, 2, 3);
-  mitten.draw(6, 7, [
-    '  hRR   ',
-    ' hRRRR  ',
-    ' RRRRRhR',
-    ' RRRRRRr',
-    ' RRRRRr ',
-    ' YyYyY  ',
-    '  yYyY  ',
-  ], { R: c('coat', 2), r: c('coat', 1), h: c('coat', 3), Y: c('butter', 3), y: c('snow', 6) });
+  mitten.draw(6, 7, ['  hRR   ', ' hRRRR  ', ' RRRRRhR', ' RRRRRRr', ' RRRRRr ', ' YyYyY  ', '  yYyY  '], {
+    R: c('coat', 2),
+    r: c('coat', 1),
+    h: c('coat', 3),
+    Y: c('butter', 3),
+    y: c('snow', 6),
+  });
   book.add('mitten', mitten);
 
   // The felted egg, nestled in the snow of the hollow.

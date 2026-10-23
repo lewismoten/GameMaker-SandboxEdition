@@ -51,7 +51,7 @@ export class TileBook {
       const c = key.ctx[p];
       const pit = kind.ground(p) === 'pit';
       // a cube in focus covers its whole cell; a pit only shows the wall north of it
-      const fills = kind.tall(p) || (kind.span !== undefined);
+      const fills = kind.tall(p) || kind.span !== undefined;
       ctx[p] = fills ? { w: false, n: false, nw: false, nPit: false } : pit ? { w: false, n: c.n, nw: false, nPit: c.nPit } : { ...c, nPit: false };
     }
     return { kind: key.kind, part: key.part ?? 0, variant: key.variant ?? 0, ctx };

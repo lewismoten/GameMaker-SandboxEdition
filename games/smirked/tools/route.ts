@@ -74,7 +74,10 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
 /** Where the monsters numbered `n` are now (level coordinates, fractions of a block). */
 function mons(bot: Bot, n: number): { x: number; y: number }[] {
   const w = bot.sim.w;
-  return w.mi.map((mi, i) => ({ mi, m: w.mm[i]?.monnum })).filter((o) => o.m === n).map(({ mi }) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20 }));
+  return w.mi
+    .map((mi, i) => ({ mi, m: w.mm[i]?.monnum }))
+    .filter((o) => o.m === n)
+    .map(({ mi }) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20 }));
 }
 
 const STEP: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -191,7 +194,7 @@ export async function fakeWoods(bot: Bot): Promise<void> {
 /** 4. The last hall: the foam sword at the cardboard knight, his helmet, the emergency exit. */
 export async function lastHall(bot: Bot): Promise<void> {
   expect(bot, 5, 'the last hall');
-  await carefully(bot, 'the knight\'s helmet', 20, async () => {
+  await carefully(bot, "the knight's helmet", 20, async () => {
     for (let tries = 0; tries < 30 && !mons(bot, MON.helmet).length && bot.count(HELMET) < 1; tries++) {
       const kid = mons(bot, MON.knight)[0];
       if (!kid) break;
@@ -210,7 +213,15 @@ export async function lastHall(bot: Bot): Promise<void> {
     if (await bot.wait(4)) throw new Error('a scene change');
     if (bot.count(HELMET) < 1) throw new Error('no helmet');
   });
-  await gather(bot, [[3, 3 + HALL_TOP, 'Loaf #13'], [25, 3 + HALL_TOP, 'a lost TV remote'], [28, 10 + HALL_TOP, 'a juice box']], 16);
+  await gather(
+    bot,
+    [
+      [3, 3 + HALL_TOP, 'Loaf #13'],
+      [25, 3 + HALL_TOP, 'a lost TV remote'],
+      [28, 10 + HALL_TOP, 'a juice box'],
+    ],
+    16,
+  );
   await carefully(bot, 'the emergency exit', 16, async () => {
     await through(bot, 14, 1 + HALL_TOP, 'down', 'the emergency exit', 'up', EXIT_HALL);
   });

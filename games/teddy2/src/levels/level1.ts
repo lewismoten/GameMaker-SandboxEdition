@@ -17,7 +17,12 @@ export function house(): Level {
   const bs = houseTiles();
   const beasts = houseBeasts();
   // THE CHEZ in the driveway, Doc Leo beside it, waiting for the collar.
-  bs.chez(() => sky(3), 'collar', sky(bandAt(37, G)), () => sky(3));
+  bs.chez(
+    () => sky(3),
+    'collar',
+    sky(bandAt(37, G)),
+    () => sky(3),
+  );
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => `sky${bandAt(y, G)}`);
   for (const [cx, cy] of [
@@ -168,8 +173,13 @@ export function house(): Level {
   m.rect(72, G, 20, 1, 'drive');
   const car = 77;
   m.set(car - 2, 38, 'charger00').set(car - 2, 39, 'charger01');
-  m.set(car, 38, 'carRoofL').set(car + 1, 38, 'carRoofR').set(car, 39, 'carDoor').set(car + 1, 39, 'carBack');
-  m.set(car + 3, 37, 'leoWant').set(car + 3, 38, 'leoHead').set(car + 3, 39, 'leoBody');
+  m.set(car, 38, 'carRoofL')
+    .set(car + 1, 38, 'carRoofR')
+    .set(car, 39, 'carDoor')
+    .set(car + 1, 39, 'carBack');
+  m.set(car + 3, 37, 'leoWant')
+    .set(car + 3, 38, 'leoHead')
+    .set(car + 3, 39, 'leoBody');
   // a hedge closes the yard off at both ends (the map wraps around)
   m.rect(90, 30, 10, 10, 'hedgeWall');
   m.rect(90, 29, 10, 1, 'hedgeTop');

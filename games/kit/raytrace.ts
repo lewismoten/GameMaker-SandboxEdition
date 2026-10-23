@@ -45,8 +45,16 @@ export function mulM(a: M3, b: M3): M3 {
 }
 /** The rotation whose columns are these axes (object x, y, z in world space). */
 export const fromAxes = (x: V, y: V, z: V): M3 => [x[0], y[0], z[0], x[1], y[1], z[1], x[2], y[2], z[2]];
-export const apply = (m: M3, v: V): V => [m[0] * v[0] + m[1] * v[1] + m[2] * v[2], m[3] * v[0] + m[4] * v[1] + m[5] * v[2], m[6] * v[0] + m[7] * v[1] + m[8] * v[2]];
-export const applyT = (m: M3, v: V): V => [m[0] * v[0] + m[3] * v[1] + m[6] * v[2], m[1] * v[0] + m[4] * v[1] + m[7] * v[2], m[2] * v[0] + m[5] * v[1] + m[8] * v[2]];
+export const apply = (m: M3, v: V): V => [
+  m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
+  m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
+  m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
+];
+export const applyT = (m: M3, v: V): V => [
+  m[0] * v[0] + m[3] * v[1] + m[6] * v[2],
+  m[1] * v[0] + m[4] * v[1] + m[7] * v[2],
+  m[2] * v[0] + m[5] * v[1] + m[8] * v[2],
+];
 
 /** Where a shape sits: object point p is at rot * (p * size) + pos in the world. */
 export interface Place {
@@ -410,10 +418,7 @@ export class Tri extends Shape {
   }
   protected bounds(): [V, V] {
     const xs = [this.a, this.b, this.c];
-    return [
-      [0, 1, 2].map((i) => Math.min(...xs.map((p) => p[i])) - 0.001) as V,
-      [0, 1, 2].map((i) => Math.max(...xs.map((p) => p[i])) + 0.001) as V,
-    ];
+    return [[0, 1, 2].map((i) => Math.min(...xs.map((p) => p[i])) - 0.001) as V, [0, 1, 2].map((i) => Math.max(...xs.map((p) => p[i])) + 0.001) as V];
   }
   protected local(o: V, d: V, tmax: number): LocalHit | undefined {
     const e1 = sub(this.b, this.a);
@@ -554,9 +559,7 @@ export function noise(x: number, y: number, z: number): number {
   const w = s(z - zi);
   const l = (a: number, b: number, t: number) => a + (b - a) * t;
   const c = (dx: number, dy: number, dz: number) => hash3(xi + dx, yi + dy, zi + dz);
-  return (
-    l(l(l(c(0, 0, 0), c(1, 0, 0), u), l(c(0, 1, 0), c(1, 1, 0), u), v), l(l(c(0, 0, 1), c(1, 0, 1), u), l(c(0, 1, 1), c(1, 1, 1), u), v), w) * 2 - 1
-  );
+  return l(l(l(c(0, 0, 0), c(1, 0, 0), u), l(c(0, 1, 0), c(1, 1, 0), u), v), l(l(c(0, 0, 1), c(1, 0, 1), u), l(c(0, 1, 1), c(1, 1, 1), u), v), w) * 2 - 1;
 }
 export function fbm(x: number, y: number, z: number, octaves = 4): number {
   let sum = 0;

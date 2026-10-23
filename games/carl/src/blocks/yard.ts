@@ -42,7 +42,9 @@ export function buildYard(pal: Pal): BlockBook {
   // gusts: wind blowing to the left, then calm (the calm frame looks like plain sky)
   const gust = (f: number) => {
     const p = sky(4);
-    if (f) for (let k = 0; k < 3; k++) for (let x = 0; x < 20; x++) if ((x + k * 7) % 20 < 11) p.set(x, 4 + k * 6 + Math.round(Math.sin((x + k * 3) / 3)), c('white', 2 + (x % 2)));
+    if (f)
+      for (let k = 0; k < 3; k++)
+        for (let x = 0; x < 20; x++) if ((x + k * 7) % 20 < 11) p.set(x, 4 + k * 6 + Math.round(Math.sin((x + k * 3) / 3)), c('white', 2 + (x % 2)));
     return p;
   };
   book.add('calm', gust(0), { grav: GRAV.none, next: 'gust', ntime: GUST_OFF });
@@ -50,7 +52,8 @@ export function buildYard(pal: Pal): BlockBook {
 
   // ---------- the house, from outside ----------
   const sidingAt = (p: Pixels, x0 = 0, y0 = 0, w = 20, h = 20) => {
-    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) p.set(x, y, ((y % 20) + 20) % 5 === 4 ? c('white', 0) : shadeAt(R('white'), 1, 2, (((y % 5) + 5) % 5) / 4, x, y));
+    for (let y = y0; y < y0 + h; y++)
+      for (let x = x0; x < x0 + w; x++) p.set(x, y, ((y % 20) + 20) % 5 === 4 ? c('white', 0) : shadeAt(R('white'), 1, 2, (((y % 5) + 5) % 5) / 4, x, y));
     return p;
   };
   book.add('siding', sidingAt(P()), AIR);
@@ -80,7 +83,11 @@ export function buildYard(pal: Pal): BlockBook {
   // a window box of flowers (solid)
   const box = sidingAt(P());
   box.rect(0, 10, 20, 10, c('wood', 2)).rect(0, 10, 20, 2, c('wood', 3));
-  for (let x = 2; x < 20; x += 4) box.line(x, 10, x, 5, c('leaf', 2)).disc(x, 4, 1.6, c(x % 8 === 2 ? 'red' : 'purple', 2)).set(x, 4, c('gold', 3));
+  for (let x = 2; x < 20; x += 4)
+    box
+      .line(x, 10, x, 5, c('leaf', 2))
+      .disc(x, 4, 1.6, c(x % 8 === 2 ? 'red' : 'purple', 2))
+      .set(x, 4, c('gold', 3));
   book.add('flowerBox', box, { solid: SOLID });
   // the wasp nest under the eave: it gives birth to wasps
   const nest = sidingAt(P());
@@ -101,7 +108,11 @@ export function buildYard(pal: Pal): BlockBook {
   book.add('grass', grass(12), { solid: SOLID });
   const fence = sky(13);
   for (let x = 1; x < 20; x += 5) {
-    fence.rect(x, 4, 4, 16, c('wood', 3)).rect(x, 4, 1, 16, c('wood', 4)).set(x + 1, 3, c('wood', 3)).set(x + 2, 3, c('wood', 3));
+    fence
+      .rect(x, 4, 4, 16, c('wood', 3))
+      .rect(x, 4, 1, 16, c('wood', 4))
+      .set(x + 1, 3, c('wood', 3))
+      .set(x + 2, 3, c('wood', 3));
   }
   fence.rect(0, 8, 20, 2, c('wood', 1)).rect(0, 15, 20, 2, c('wood', 1));
   book.add('fence', fence, AIR);
@@ -118,7 +129,8 @@ export function buildYard(pal: Pal): BlockBook {
   const pegged = (k: string) => {
     const p = sky(17);
     p.line(0, 5, 20, 5, c('grey', 1));
-    for (let y = 5; y < 19; y++) for (let x = 4; x < 16; x++) p.set(x + Math.round(Math.sin(y / 4)), y, (x + Math.floor(y / 3)) % 4 === 0 ? c('white', 3) : c(k, 2));
+    for (let y = 5; y < 19; y++)
+      for (let x = 4; x < 16; x++) p.set(x + Math.round(Math.sin(y / 4)), y, (x + Math.floor(y / 3)) % 4 === 0 ? c('white', 3) : c(k, 2));
     p.rect(6, 4, 2, 3, c('wood', 3)).rect(13, 4, 2, 3, c('wood', 3));
     return p;
   };
@@ -226,7 +238,12 @@ export function buildYard(pal: Pal): BlockBook {
   // mushrooms (solid caps) and a log
   const shroom = sky(34);
   blob(shroom, 10, 7, 9, 5, R('red'), 1, 3);
-  for (const [x, y] of [[6, 5], [12, 4], [15, 7]]) shroom.disc(x, y, 1.2, c('white', 3));
+  for (const [x, y] of [
+    [6, 5],
+    [12, 4],
+    [15, 7],
+  ])
+    shroom.disc(x, y, 1.2, c('white', 3));
   shroom.rect(7, 11, 6, 9, c('white', 2));
   book.add('shroom', shroom, { solid: SOLID });
   const log = P().rect(0, 0, 20, 20, c('wood', 1));
@@ -248,15 +265,23 @@ export function buildYard(pal: Pal): BlockBook {
     p.rect(5, 2, 10, 2, c('wood', 2)).rect(5, 16, 10, 2, c('wood', 2));
     for (let y = 4; y < 16; y++) {
       const w = Math.round(1 + Math.abs(y - 10) * 0.6);
-      for (let x = 10 - w; x <= 9 + w; x++) p.set(x, y, (y < 10) === (f === 0) && Math.abs(y - 10) > 1 ? c('sand', 2) : c('wing', 2));
+      for (let x = 10 - w; x <= 9 + w; x++) p.set(x, y, y < 10 === (f === 0) && Math.abs(y - 10) > 1 ? c('sand', 2) : c('wing', 2));
     }
     p.set(10, 10, c('sand', 2)).set(9, 11 + f, c('sand', 1));
     if (f) p.set(4, 3, c('gold', 3)).set(16, 15, c('gold', 3));
     return p;
   };
   const hour = { effect: HOURS, eamt: 2, score: 100 };
-  book.add('hour0', glass(() => sky(36), 0), { ...hour, touch: 'sky', next: 'hour1', ntime: 12 });
-  book.add('hour1', glass(() => sky(36), 1), { ...hour, touch: 'sky', next: 'hour0', ntime: 12 });
+  book.add(
+    'hour0',
+    glass(() => sky(36), 0),
+    { ...hour, touch: 'sky', next: 'hour1', ntime: 12 },
+  );
+  book.add(
+    'hour1',
+    glass(() => sky(36), 1),
+    { ...hour, touch: 'sky', next: 'hour0', ntime: 12 },
+  );
   // the desert where Brother Camel rests: sand, a cactus (it pricks)
   const sandAt = (top: boolean) => {
     const p = speckle(P(), 0, 0, 20, 20, R('sand'), 1, 1, 37, 0.3);
@@ -267,7 +292,13 @@ export function buildYard(pal: Pal): BlockBook {
   book.add('sand', sandAt(false), { solid: SOLID });
   // (its trunk runs from the top edge: the desert's cactus is two blocks tall, cactusTop over it)
   const cactus = sky(38);
-  cactus.rect(8, 0, 5, 20, c('leaf', 2)).rect(8, 0, 1, 20, c('leaf', 3)).rect(3, 8, 5, 3, c('leaf', 2)).rect(3, 4, 3, 5, c('leaf', 2)).rect(13, 10, 4, 3, c('leaf', 2)).rect(15, 6, 3, 5, c('leaf', 2));
+  cactus
+    .rect(8, 0, 5, 20, c('leaf', 2))
+    .rect(8, 0, 1, 20, c('leaf', 3))
+    .rect(3, 8, 5, 3, c('leaf', 2))
+    .rect(3, 4, 3, 5, c('leaf', 2))
+    .rect(13, 10, 4, 3, c('leaf', 2))
+    .rect(15, 6, 3, 5, c('leaf', 2));
   for (let y = 4; y < 20; y += 3) cactus.set(7, y, c('white', 3)).set(13, y + 1, c('white', 3));
   book.add('cactus', cactus, { solid: SOLID, hp: -6 });
   // a tall cactus's top (over a cactus): its trunk runs on down into the block below

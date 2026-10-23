@@ -31,9 +31,15 @@ export function show(): Level {
   for (const x of [5, 6, 7, 9, 10]) m.set(x, 39, 'rail');
   // The agility course: the A-frame, the tunnel, the hoop.
   const af = 13;
-  m.set(af, 39, 'aframeL').set(af + 1, 38, 'aframeL').set(af + 1, 39, 'aframeT');
-  m.set(af + 2, 37, 'aframeL').set(af + 2, 38, 'aframeT').set(af + 2, 39, 'aframeT');
-  m.set(af + 3, 37, 'aframeR').set(af + 3, 38, 'aframeT').set(af + 3, 39, 'aframeT');
+  m.set(af, 39, 'aframeL')
+    .set(af + 1, 38, 'aframeL')
+    .set(af + 1, 39, 'aframeT');
+  m.set(af + 2, 37, 'aframeL')
+    .set(af + 2, 38, 'aframeT')
+    .set(af + 2, 39, 'aframeT');
+  m.set(af + 3, 37, 'aframeR')
+    .set(af + 3, 38, 'aframeT')
+    .set(af + 3, 39, 'aframeT');
   m.set(af + 4, 38, 'aframeR').set(af + 4, 39, 'aframeT');
   m.set(af + 5, 39, 'aframeR');
   for (let x = 22; x < 27; x++) m.set(x, 38, 'tunnelTop').set(x, 39, 'tunnel');

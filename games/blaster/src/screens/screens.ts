@@ -237,11 +237,13 @@ export function wonFli(): Uint8Array {
   const [px, py] = [16, 110];
   const box = { x: px - 5, y: py - 5, w: pet.w + 10, h: pet.h + 14 };
   top.rect(box.x + 3, box.y + 3, box.w, box.h, c('ink', 0));
-  top.rect(box.x, box.y, box.w, box.h, c('gold', 2)).frame(box.x, box.y, box.w, box.h, c('gold', 0)).frame(box.x + 1, box.y + 1, box.w - 2, box.h - 2, c('gold', 4));
+  top
+    .rect(box.x, box.y, box.w, box.h, c('gold', 2))
+    .frame(box.x, box.y, box.w, box.h, c('gold', 0))
+    .frame(box.x + 1, box.y + 1, box.w - 2, box.h - 2, c('gold', 4));
   top.rect(px + pet.w / 2 - 10, py + pet.h + 2, 20, 4, c('gold', 4));
   const { pal } = pastePhoto(top, SP.pal, pet, px, py, { reserved: [...used] });
-  for (const f of frames)
-    for (let y = box.y; y < box.y + box.h + 3; y++) for (let x = box.x; x < box.x + box.w + 3; x++) f[y * W + x] = top.px[y * W + x];
+  for (const f of frames) for (let y = box.y; y < box.y + box.h + 3; y++) for (let x = box.x; x < box.x + box.w + 3; x++) f[y * W + x] = top.px[y * W + x];
   return encodeFli(frames, pal, { speed: 6 });
 }
 

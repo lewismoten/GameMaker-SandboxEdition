@@ -170,7 +170,12 @@ export function mound(book: BlockBook): Level {
   const H = 13;
   const m = new MapBuilder(book, 'soil');
   // sky, the ground (standing row 9), soil under it, a soil border all round
-  m.fill(1, 0, W - 2, 2, '^').fill(1, 2, W - 2, 8, '.').row(10, 1, W - 2, '=').fill(0, 11, W, 2, '#').col(0, 0, 10, '#').col(W - 1, 0, 10, '#');
+  m.fill(1, 0, W - 2, 2, '^')
+    .fill(1, 2, W - 2, 8, '.')
+    .row(10, 1, W - 2, '=')
+    .fill(0, 11, W, 2, '#')
+    .col(0, 0, 10, '#')
+    .col(W - 1, 0, 10, '#');
   m.set(9, 2, 'w').set(41, 3, 'w').set(66, 2, 'w');
   // the mound the seed hops out of
   m.row(8, 3, 5, '#').row(9, 2, 6, '#').set(3, 7, ',').set(5, 7, ',');
@@ -226,7 +231,9 @@ export function dust(book: BlockBook): Level {
   m.mon(MON.ant, 4, 8).mon(MON.worm, 12, 15).mon(MON.mole, 26, 15).mon(MON.ant, 20, 6).mon(MON.worm, 39, 10);
   // up through the crack into the daylight, and along the sidewalk to the sunny spot: the walk
   // there lets "Keep on hustlin'" (the crack opening) play out before the level ends
-  m.fill(36, -2, W - 37, 2, 'Y').set(44, -1, 'daylightUp').set(40, -1, 'y');
+  m.fill(36, -2, W - 37, 2, 'Y')
+    .set(44, -1, 'daylightUp')
+    .set(40, -1, 'y');
   m.link(40, -1, 'next');
   return { m, start: at(2, 2), size: [W, H] };
 }
@@ -236,7 +243,11 @@ export function mountain(book: BlockBook): Level {
   const W = 64;
   const H = 20;
   const m = new MapBuilder(book, 'crag');
-  m.fill(1, 0, W - 2, 3, '^').fill(1, 3, W - 2, 16, '.').col(0, 0, 19, 'M').col(W - 1, 0, 19, 'M').row(19, 0, W - 1, 'M');
+  m.fill(1, 0, W - 2, 3, '^')
+    .fill(1, 3, W - 2, 16, '.')
+    .col(0, 0, 19, 'M')
+    .col(W - 1, 0, 19, 'M')
+    .row(19, 0, W - 1, 'M');
   m.set(6, 2, 'w').set(30, 3, 'w').set(52, 2, 'w');
   // the ground under each stretch: [from x, to x, top row]
   const steps: [number, number, number][] = [
@@ -274,7 +285,11 @@ export function sky(book: BlockBook): Level {
   const W = 26;
   const H = 46;
   const m = new MapBuilder(book, 'soil');
-  m.fill(1, 0, W - 2, 44, '.').col(0, 0, 45, '#').col(W - 1, 0, 45, '#').row(44, 1, W - 2, '=').row(45, 0, W - 1, '#');
+  m.fill(1, 0, W - 2, 44, '.')
+    .col(0, 0, 45, '#')
+    .col(W - 1, 0, 45, '#')
+    .row(44, 1, W - 2, '=')
+    .row(45, 0, W - 1, '#');
   m.set(5, 30, 'w').set(19, 12, 'w').set(4, 22, 'w').set(20, 40, 'w');
   // the great plant's stalk, up the middle
   m.col(12, 18, 43, '[').col(13, 18, 43, ']');

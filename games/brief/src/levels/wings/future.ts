@@ -31,13 +31,21 @@ function studioLight(under: Pixels): Pixels {
 }
 
 const royal = (queen: boolean) =>
-  figure(queen ? { shirt: ['purple', 3], dress: true, hair: ['grey', 4], hairStyle: 'bun', hat: { kind: 'crown', color: ['brass', 3] }, face: 'happy' } : { shirt: ['red', 3], pants: ['ink', 1], beard: ['grey', 4], hat: { kind: 'crown', color: ['brass', 3] } });
+  figure(
+    queen
+      ? { shirt: ['purple', 3], dress: true, hair: ['grey', 4], hairStyle: 'bun', hat: { kind: 'crown', color: ['brass', 3] }, face: 'happy' }
+      : { shirt: ['red', 3], pants: ['ink', 1], beard: ['grey', 4], hat: { kind: 'crown', color: ['brass', 3] } },
+  );
 
 function laptop(under: Pixels, portrait: boolean): Pixels {
   const p = on(under);
   p.rect(2, 13, 16, 3, c('grey', 3));
   p.rect(3, 3, 14, 10, c('ink', 1)).rect(4, 4, 12, 8, portrait ? c('sky', 3) : c('blue', 1));
-  if (portrait) for (let i = 0; i < 4; i++) p.rect(5 + i * 3, 7, 2, 4, c(['red', 'purple', 'green', 'orange'][i], 3)).set(5 + i * 3, 6, c('skin', 3)).set(6 + i * 3, 6, c('brass', 4));
+  if (portrait)
+    for (let i = 0; i < 4; i++)
+      p.rect(5 + i * 3, 7, 2, 4, c(['red', 'purple', 'green', 'orange'][i], 3))
+        .set(5 + i * 3, 6, c('skin', 3))
+        .set(6 + i * 3, 6, c('brass', 4));
   else micro(p, 5, 6, 'AI', c('green', 4));
   return p;
 }
@@ -67,8 +75,7 @@ function onigiri(): Pixels {
 function teaFridge(): Pixels {
   const p = new Pixels(20, 20, c('grey', 4));
   p.rect(1, 1, 18, 18, c('sky', 4));
-  for (const y of [2, 10])
-    for (let x = 2; x < 18; x += 4) p.rect(x, y, 3, 7, c('green', 3)).rect(x, y, 3, 2, c('paper', 4));
+  for (const y of [2, 10]) for (let x = 2; x < 18; x += 4) p.rect(x, y, 3, 7, c('green', 3)).rect(x, y, 3, 2, c('paper', 4));
   return p;
 }
 
@@ -91,7 +98,9 @@ function socks(under: Pixels): Pixels {
 /** The tea: the one thing in the store you can never get. It keeps its distance. */
 function teaBottle(frame: number): Pixels {
   const p = blank();
-  p.rect(7, 5 + frame, 6, 13, c('green', 3)).rect(8, 2 + frame, 4, 3, c('green', 4)).rect(8, 1 + frame, 4, 1, c('paper', 4));
+  p.rect(7, 5 + frame, 6, 13, c('green', 3))
+    .rect(8, 2 + frame, 4, 3, c('green', 4))
+    .rect(8, 1 + frame, 4, 1, c('paper', 4));
   p.rect(7, 9 + frame, 6, 4, c('paper', 4));
   micro(p, 8, 10 + frame, 'TE', c('green', 1));
   return p;
@@ -127,7 +136,13 @@ function officeDesk(under: Pixels): Pixels {
 function truck(part: number): Pixels {
   const big = new Pixels(40, 20, c('grey', 1));
   big.rect(0, 4, 26, 12, c('paper', 2)).rect(26, 7, 12, 9, c('red', 2)).rect(29, 8, 6, 4, c('sky', 3));
-  for (const [x, col] of [[3, 'brown'], [9, 'green'], [15, 'blue'], [20, 'yellow']] as const) big.rect(x, 1, 4, 4, c(col, 2));
+  for (const [x, col] of [
+    [3, 'brown'],
+    [9, 'green'],
+    [15, 'blue'],
+    [20, 'yellow'],
+  ] as const)
+    big.rect(x, 1, 4, 4, c(col, 2));
   big.disc(8, 17, 3, c('ink', 0)).disc(31, 17, 3, c('ink', 0));
   return big.crop(part * 20, 0, 20, 20);
 }
@@ -156,16 +171,27 @@ function bridge(): Pixels {
 function bob(half: 0 | 1, under: Pixels): Pixels {
   const tall = new Pixels(20, 40, 255);
   const f = figure({ shirt: ['green', 3], pants: ['blue', 2], hair: ['brown', 1], face: 'happy', arms: 'out' });
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) {
-    const v = f.get(x, y);
-    if (v !== 255) tall.rect(x, y * 2, 1, 2, v);
-  }
-  return on(under, tall.crop(0, half * 20, 20, 20).map((_, __, v) => v));
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) {
+      const v = f.get(x, y);
+      if (v !== 255) tall.rect(x, y * 2, 1, 2, v);
+    }
+  return on(
+    under,
+    tall.crop(0, half * 20, 20, 20).map((_, __, v) => v),
+  );
 }
 
 function shards(under: Pixels): Pixels {
   const p = on(under);
-  for (const [x, y] of [[4, 12], [9, 15], [13, 11], [15, 16], [7, 9]]) p.rect(x, y, 3, 2, c('blue', 4)).set(x, y, c('paper', 4));
+  for (const [x, y] of [
+    [4, 12],
+    [9, 15],
+    [13, 11],
+    [15, 16],
+    [7, 9],
+  ])
+    p.rect(x, y, 3, 2, c('blue', 4)).set(x, y, c('paper', 4));
   return p;
 }
 
@@ -189,9 +215,29 @@ function art(a: Area): void {
   a.solid('portrait', laptop(a.tiles.pic('studio'), true));
   a.solid('sniper', roofSniper());
   a.prop('nancyP', 'studio', figure({ shirt: ['orange', 3], pants: ['ink', 1], hair: ['brown', 1], hairStyle: 'long', glasses: true }));
-  sign(['PORTRAITS', 'WHILE YOU', 'DON\'T WAIT'], 3, { board: 'sky' }).forEach((px, i) => a.solid(`portraits${i}`, px));
-  a.monster('agent', [[agent(0), 5], [agent(1), 5]], { hazard: true, path: [[0, 3, 1], [0, -3, 1]] });
-  a.patrol('agent', [[5, 0, 1], [-5, 0, 1]], 'agentH');
+  sign(['PORTRAITS', 'WHILE YOU', "DON'T WAIT"], 3, { board: 'sky' }).forEach((px, i) => a.solid(`portraits${i}`, px));
+  a.monster(
+    'agent',
+    [
+      [agent(0), 5],
+      [agent(1), 5],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 3, 1],
+        [0, -3, 1],
+      ],
+    },
+  );
+  a.patrol(
+    'agent',
+    [
+      [5, 0, 1],
+      [-5, 0, 1],
+    ],
+    'agentH',
+  );
 
   // Everything But the Tea
   a.tile('konbini', floor('lino', 4, 'sky'));
@@ -202,8 +248,35 @@ function art(a: Area): void {
   a.solid('socks', socks(a.tiles.pic('konbini')));
   a.prop('cashier', 'konbini', figure({ shirt: ['sky', 3], pants: ['ink', 1], hair: ['ink', 0], hat: { kind: 'cap', color: ['sky', 3] }, face: 'happy' }));
   sign(['30 RICE BALLS', 'NO TEA LEFT', 'GOOD LUCK'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`konbiniSign${i}`, px));
-  a.monster('tea', [[teaBottle(0), 4], [teaBottle(1), 4]], { path: [[3, 0, 2], [0, 2, 2], [-3, 0, 2], [0, -2, 2]] });
-  a.monster('question', [[question(0), 5], [question(1), 5]], { hazard: true, path: [[4, 0, 1], [-4, 0, 1]] });
+  a.monster(
+    'tea',
+    [
+      [teaBottle(0), 4],
+      [teaBottle(1), 4],
+    ],
+    {
+      path: [
+        [3, 0, 2],
+        [0, 2, 2],
+        [-3, 0, 2],
+        [0, -2, 2],
+      ],
+    },
+  );
+  a.monster(
+    'question',
+    [
+      [question(0), 5],
+      [question(1), 5],
+    ],
+    {
+      hazard: true,
+      path: [
+        [4, 0, 1],
+        [-4, 0, 1],
+      ],
+    },
+  );
 
   // Craigslist Said It Was Healthy
   a.tile('cube', floor('carpet', 8, 'grey'));
@@ -217,7 +290,22 @@ function art(a: Area): void {
   a.solid('alleywall', wall('brick', 'brown', 12));
   a.prop('seller', 'alley', figure({ shirt: ['purple', 2], pants: ['ink', 1], hair: ['grey', 4], hairStyle: 'wild', arms: 'out' }));
   sign(['TAKE CARE OF', 'JAROLD', '-MANAGEMENT'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`jaroldSign${i}`, px));
-  a.monster('leaf', [[leaf(0), 4], [leaf(1), 4]], { hazard: true, path: [[0, 3, 1], [3, 0, 1], [0, -3, 1], [-3, 0, 1]] });
+  a.monster(
+    'leaf',
+    [
+      [leaf(0), 4],
+      [leaf(1), 4],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 3, 1],
+        [3, 0, 1],
+        [0, -3, 1],
+        [-3, 0, 1],
+      ],
+    },
+  );
 
   // The Day the Vase Fell
   a.tile('green', floor('grass', 12));
@@ -231,7 +319,20 @@ function art(a: Area): void {
   a.solid('router1', router(1, a.tiles.pic('green')), { next: 'router0', ntime: 6 });
   sign(['WATER UNDER', 'THE BRIDGE'], 3, { board: 'blue', ink: 'paper' }).forEach((px, i) => a.solid(`bridgeSign${i}`, px));
   const little = (s: number) => figure({ shirt: ['red', 3], pants: ['brown', 1], hair: ['brown', 2], small: true, arms: 'up', face: 'sad' }, s);
-  a.monster('little', [[little(0), 3], [little(1), 3]], { hazard: true, path: [[4, 0, 2], [-4, 0, 2]] });
+  a.monster(
+    'little',
+    [
+      [little(0), 3],
+      [little(1), 3],
+    ],
+    {
+      hazard: true,
+      path: [
+        [4, 0, 2],
+        [-4, 0, 2],
+      ],
+    },
+  );
 
   // the hallway's guest: Teddy, in the sunglasses of the future
   const cool = (s: number) => {
@@ -239,13 +340,29 @@ function art(a: Area): void {
     p.rect(14, 8, 5, 2, c('ink', 0));
     return p;
   };
-  a.monster('teddyCool', [[cool(0), 4], [cool(1), 4]], { path: [[6, 0, 2], [-6, 0, 2]] });
+  a.monster(
+    'teddyCool',
+    [
+      [cool(0), 4],
+      [cool(1), 4],
+    ],
+    {
+      path: [
+        [6, 0, 2],
+        [-6, 0, 2],
+      ],
+    },
+  );
 }
 
 export const FUTURE: WingSpec = {
   wing: WINGS[7],
   tint: 'sky',
-  stamp: [['teal', 3], ['grey', 5], ['red', 3]],
+  stamp: [
+    ['teal', 3],
+    ['grey', 5],
+    ['red', 3],
+  ],
   signs: [
     ['BOOKS FROM', 'THE FUTURE:', 'NO SPOILERS'],
     ['WHO IS', 'CHATGPT?', ''],
@@ -319,7 +436,7 @@ export const FUTURE: WingSpec = {
         T: { tile: '.', mon: 'tea' },
         Q: { tile: '.', mon: 'question' },
       },
-      note: 'A konbini in Tokyo. Thirty kinds of rice ball. The tea is the one thing you can never get. The cashier\'s questions cost you points.',
+      note: "A konbini in Tokyo. Thirty kinds of rice ball. The tea is the one thing you can never get. The cashier's questions cost you points.",
       twist: {
         grid: [
           ['onigiri', 'm:tea#0', 'teafridge'],

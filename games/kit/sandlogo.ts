@@ -554,8 +554,7 @@ function markDirty(mask: Uint8Array, shapes: Shape[], shadows = true): void {
 }
 
 function retrace(out: Float32Array, mask: Uint8Array, shapes: Shape[]): void {
-  for (let y = 0; y < H; y++)
-    for (let x = 0; x < W; x++) if (mask[y * W + x]) out.set(pixel(shapes, x, y), (y * W + x) * 3);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (mask[y * W + x]) out.set(pixel(shapes, x, y), (y * W + x) * 3);
 }
 
 /** Pictures of the still scene with some movers at rest in it, keyed by which ones. */

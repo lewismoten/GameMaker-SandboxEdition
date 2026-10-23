@@ -56,23 +56,48 @@ export function buildSounds(): SoundFiles {
     SND.kill,
     'puff',
     SPEAKER.noise(7, 100, 900),
-    sample(
-      0.32,
-      mix([lowNoise(9, (t) => 0.6 - t), 0.8], [osc.sine((t) => 900 - t * 1800), 0.25]),
-      { envelope: env(0.01, 2) },
-    ),
+    sample(0.32, mix([lowNoise(9, (t) => 0.6 - t), 0.8], [osc.sine((t) => 900 - t * 1800), 0.25]), { envelope: env(0.01, 2) }),
   );
   // Coins in the purse.
-  add(SND.addMoney, 'coins', speaker((i) => (i < 5 ? 1568 : i < 9 ? 0 : i < 16 ? 2093 : i < 20 ? 0 : i < 28 ? 2637 : 0)), chime([1568, 2093, 2637], 0.05, 0.5));
+  add(
+    SND.addMoney,
+    'coins',
+    speaker((i) => (i < 5 ? 1568 : i < 9 ? 0 : i < 16 ? 2093 : i < 20 ? 0 : i < 28 ? 2637 : 0)),
+    chime([1568, 2093, 2637], 0.05, 0.5),
+  );
   // Paying: the purse strings and a sad little clink.
-  add(SND.subMoney, 'pay', speaker((i) => (i < 8 ? 900 - i * 40 : i < 12 ? 0 : i < 20 ? 660 : 0)), sample(0.4, mix([lowNoise(11, 0.3), 0.3], [bell(1319, 0.08, 0.5), 0.35], [bell(988, 0.16, 0.4), 0.3]), { envelope: () => 1 }));
+  add(
+    SND.subMoney,
+    'pay',
+    speaker((i) => (i < 8 ? 900 - i * 40 : i < 12 ? 0 : i < 20 ? 660 : 0)),
+    sample(0.4, mix([lowNoise(11, 0.3), 0.3], [bell(1319, 0.08, 0.5), 0.35], [bell(988, 0.16, 0.4), 0.3]), { envelope: () => 1 }),
+  );
   add(SND.addLife, 'feather', SPEAKER.arpeggio([523, 659, 784, 1047]), chime([523, 659, 784, 1047, 1319, 1568], 0.08, 1.0));
   add(SND.addScore, 'ding', SPEAKER.coin(), chime([1319, 1976], 0.06, 0.4));
-  add(SND.subScore, 'bonk', SPEAKER.fall(500, 140), sample(0.25, osc.sine((t) => 320 - t * 700), { envelope: env(0.005, 2) }));
+  add(
+    SND.subScore,
+    'bonk',
+    SPEAKER.fall(500, 140),
+    sample(
+      0.25,
+      osc.sine((t) => 320 - t * 700),
+      { envelope: env(0.005, 2) },
+    ),
+  );
   // A quest item, a key, a gate opening: a bright fanfare figure.
-  add(SND.addOther, 'fanfare', SPEAKER.arpeggio([659, 784, 1047, 1319]), sample(0.7, mix([reed((t) => (t < 0.12 ? 523 : t < 0.24 ? 659 : 784), 3), 0.3], [bell(1568, 0.24, 0.6), 0.2]), { envelope: env(0.02, 0.8) }));
+  add(
+    SND.addOther,
+    'fanfare',
+    SPEAKER.arpeggio([659, 784, 1047, 1319]),
+    sample(0.7, mix([reed((t) => (t < 0.12 ? 523 : t < 0.24 ? 659 : 784), 3), 0.3], [bell(1568, 0.24, 0.6), 0.2]), { envelope: env(0.02, 0.8) }),
+  );
   // Something handed over, a gate unlocked: a low "clunk".
-  add(SND.subOther, 'clunk', SPEAKER.fall(300, 90), sample(0.3, mix([osc.sine((t) => 160 - t * 200), 0.7], [lowNoise(13, 0.3), 0.4]), { envelope: env(0.003, 2) }));
+  add(
+    SND.subOther,
+    'clunk',
+    SPEAKER.fall(300, 90),
+    sample(0.3, mix([osc.sine((t) => 160 - t * 200), 0.7], [lowNoise(13, 0.3), 0.4]), { envelope: env(0.003, 2) }),
+  );
   // The sword: a swish of air.
   add(
     SND.slash,
@@ -84,22 +109,42 @@ export function buildSounds(): SoundFiles {
       { envelope: (u) => Math.sin(Math.PI * u) ** 2 },
     ),
   );
-  add(SND.hurt, 'ouch', SPEAKER.hurt(), sample(0.28, mix([osc.sine((t) => 330 - t * 500), 0.6], [osc.sine((t) => 660 - t * 900), 0.25], [lowNoise(23, 0.1), 0.2]), { envelope: env(0.01, 1.5) }));
+  add(
+    SND.hurt,
+    'ouch',
+    SPEAKER.hurt(),
+    sample(0.28, mix([osc.sine((t) => 330 - t * 500), 0.6], [osc.sine((t) => 660 - t * 900), 0.25], [lowNoise(23, 0.1), 0.2]), { envelope: env(0.01, 1.5) }),
+  );
   // Down for the count: a slide whistle, all the way down.
-  add(SND.die, 'slide', SPEAKER.fall(1600, 200), sample(1.0, osc.sine((t) => 1200 * Math.exp(-t * 1.9) * (1 + 0.04 * Math.sin(t * 40))), { envelope: env(0.02, 0.8), gain: 0.7 }));
+  add(
+    SND.die,
+    'slide',
+    SPEAKER.fall(1600, 200),
+    sample(
+      1.0,
+      osc.sine((t) => 1200 * Math.exp(-t * 1.9) * (1 + 0.04 * Math.sin(t * 40))),
+      { envelope: env(0.02, 0.8), gain: 0.7 },
+    ),
+  );
   // The kazoo: bwaaa-ap.
   add(
     SND.kazoo,
     'kazoo',
     speaker((i) => (i < 30 ? (i < 10 ? 392 : 523) + Math.sin(i * 2) * 20 : 0)),
-    sample(0.45, reed((t) => (t < 0.12 ? 392 : 523) * (1 + 0.02 * Math.sin(t * 60)), 29), { envelope: env(0.02, 0.6), gain: 0.55 }),
+    sample(
+      0.45,
+      reed((t) => (t < 0.12 ? 392 : 523) * (1 + 0.02 * Math.sin(t * 60)), 29),
+      { envelope: env(0.02, 0.6), gain: 0.55 },
+    ),
   );
   // A tonic: glug, glug, ahh.
   add(
     SND.tonic,
     'glug',
     speaker((i) => (i % 8 < 4 ? 200 + (i % 8) * 30 : 0)),
-    sample(0.5, mix([osc.sine((t) => 180 + 120 * Math.abs(Math.sin(t * 22))), 0.6], [lowNoise(31, 0.15), 0.25]), { envelope: (u) => (Math.sin(u * 22) > 0 ? 1 : 0.2) * (1 - u) }),
+    sample(0.5, mix([osc.sine((t) => 180 + 120 * Math.abs(Math.sin(t * 22))), 0.6], [lowNoise(31, 0.15), 0.25]), {
+      envelope: (u) => (Math.sin(u * 22) > 0 ? 1 : 0.2) * (1 - u),
+    }),
   );
   add(SND.pickup, 'pickup', SPEAKER.chirp(), chime([1047, 1568], 0.05, 0.3));
   // THE CHEZ's horn: a squeeze-bulb "ah-OOO-gah".
@@ -107,7 +152,11 @@ export function buildSounds(): SoundFiles {
     SND.honk,
     'ahooga',
     speaker((i) => (i < 30 ? 220 + Math.min(i, 15) * 18 : 0)),
-    sample(0.7, reed((t) => 180 + 160 * Math.min(1, t * 3) - (t > 0.45 ? (t - 0.45) * 300 : 0), 37), { envelope: env(0.03, 0.4), gain: 0.6 }),
+    sample(
+      0.7,
+      reed((t) => 180 + 160 * Math.min(1, t * 3) - (t > 0.45 ? (t - 0.45) * 300 : 0), 37),
+      { envelope: env(0.03, 0.4), gain: 0.6 },
+    ),
   );
   return { set, vocs };
 }

@@ -134,10 +134,20 @@ export function storyFli(cast: Cast): Uint8Array {
   const bg = roomBackdrop(pal, 100, 180);
   couch2x(bg, cast, 20);
   // the TV on the right, the snacks on the table
-  blocks2x(bg, cast, 250, 60, [['tvTL0', 'tvTR0'], ['tvBL', 'tvBR'], ['sideTable', 'sideTable']]);
+  blocks2x(bg, cast, 250, 60, [
+    ['tvTL0', 'tvTR0'],
+    ['tvBL', 'tvBR'],
+    ['sideTable', 'sideTable'],
+  ]);
   blocks2x(bg, cast, 120, 140, [['', 'popcorn', 'chips', '']]);
   const lines = (k: number) =>
-    k < 22 ? ['I sat down with my snacks', 'and my Netflix queue...'] : k < 44 ? ['Then came a buzz', 'like a judgmental tune.'] : k < 64 ? ["Now there's a fly in the room,", "and it's louder than June."] : ["I've named it Carl.", 'I hate Carl.'];
+    k < 22
+      ? ['I sat down with my snacks', 'and my Netflix queue...']
+      : k < 44
+        ? ['Then came a buzz', 'like a judgmental tune.']
+        : k < 64
+          ? ["Now there's a fly in the room,", "and it's louder than June."]
+          : ["I've named it Carl.", 'I hate Carl.'];
   const scene = (p: Pixels, k: number) => {
     // the TV flickers (the goat)
     if (k % 6 < 3) scaleBlit(p, cast.block('tvTL1'), 250, 60, 2);

@@ -104,7 +104,8 @@ export function bardIntroFli(o: BardIntroOptions = {}): Uint8Array {
       const lv = d < 0.5 ? 2 : d < 0.75 ? 1 : 0;
       if (lv) back.set(x, y, stage[lv]);
     }
-  for (let y = FLOOR; y < H; y++) for (let x = 0; x < W; x++) back.set(x, y, wood[y === FLOOR ? 3 : (y - FLOOR) % 8 === 0 ? 0 : 1 + ((x + (y > 185 ? 37 : 0)) % 61 === 0 ? 0 : 1)]);
+  for (let y = FLOOR; y < H; y++)
+    for (let x = 0; x < W; x++) back.set(x, y, wood[y === FLOOR ? 3 : (y - FLOOR) % 8 === 0 ? 0 : 1 + ((x + (y > 185 ? 37 : 0)) % 61 === 0 ? 0 : 1)]);
   const behind = backdrop(logo);
   for (let y = 0; y < logo.h; y++) for (let x = 0; x < logo.w; x++) if (!behind[y * logo.w + x]) back.set(LX + x, LY + y, logoPx[y * logo.w + x]);
 
@@ -170,8 +171,13 @@ export function bardIntroFli(o: BardIntroOptions = {}): Uint8Array {
       [2, -1],
     ])
       p.set(x + dx, y + dy, gold[3]);
-    p.rect(x + 3, y - 7, 1, 8, gold[3]).rect(x + 4, y - 7, 2, 1, gold[2]).rect(x + 5, y - 6, 1, 2, gold[2]);
-    if (double) p.rect(x + 3 + 5, y - 7, 1, 7, gold[3]).rect(x + 4, y - 7, 5, 1, gold[3]).rect(x + 5, y, 3, 2, gold[3]);
+    p.rect(x + 3, y - 7, 1, 8, gold[3])
+      .rect(x + 4, y - 7, 2, 1, gold[2])
+      .rect(x + 5, y - 6, 1, 2, gold[2]);
+    if (double)
+      p.rect(x + 3 + 5, y - 7, 1, 7, gold[3])
+        .rect(x + 4, y - 7, 5, 1, gold[3])
+        .rect(x + 5, y, 3, 2, gold[3]);
   };
 
   /** A four-point twinkle of size 0..3. */
@@ -180,9 +186,16 @@ export function bardIntroFli(o: BardIntroOptions = {}): Uint8Array {
     p.set(x, y, star[2]);
     for (let k = 1; k <= size; k++) {
       const c = star[Math.max(0, 2 - k)];
-      p.set(x + k, y, c).set(x - k, y, c).set(x, y + k, c).set(x, y - k, c);
+      p.set(x + k, y, c)
+        .set(x - k, y, c)
+        .set(x, y + k, c)
+        .set(x, y - k, c);
     }
-    if (size >= 2) p.set(x + 1, y + 1, star[0]).set(x - 1, y - 1, star[0]).set(x + 1, y - 1, star[0]).set(x - 1, y + 1, star[0]);
+    if (size >= 2)
+      p.set(x + 1, y + 1, star[0])
+        .set(x - 1, y - 1, star[0])
+        .set(x + 1, y - 1, star[0])
+        .set(x - 1, y + 1, star[0]);
   };
   const SPARKS: [number, number][] = [
     [86, 34],
@@ -239,7 +252,8 @@ export function bardIntroFli(o: BardIntroOptions = {}): Uint8Array {
   // Doc Leo pops in
   for (const s of [0.2, 0.5, 0.85, 1.14, 0.95, 1]) r.frame(back, (p) => open(p, { leo: s }));
   // the strum, and the tagline typing itself out
-  for (let k = 0; k <= tagline.length + 4; k++) r.frame(back, (p) => open(p, { leo: 1, strum: k < 6 ? 2 - (k % 2) * 3 : k < 10 ? (k % 2 ? 1 : -1) : 0, typed: k, notes: 6 }));
+  for (let k = 0; k <= tagline.length + 4; k++)
+    r.frame(back, (p) => open(p, { leo: 1, strum: k < 6 ? 2 - (k % 2) * 3 : k < 10 ? (k % 2 ? 1 : -1) : 0, typed: k, notes: 6 }));
   for (let k = 0; k < 14; k++) r.frame(back, (p) => open(p, { leo: 1, typed: tagline.length, notes: 6 }));
   r.fadeOut(6);
   return r.fli(SPEED);

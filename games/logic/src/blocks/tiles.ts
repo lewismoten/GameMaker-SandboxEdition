@@ -253,14 +253,26 @@ function decorPic(st: Style, kind: string, frame = 0): Pixels {
 function bugPic(st: Style, zap: number): Pixels {
   const p = decorPic(st, 'ic');
   const fly = carlPic(
-    { ink: c('ink', 0), fly: [c('metal', 0), c('metal', 1), c('metal', 2), c('metal', 3), c('metal', 4)], eye: [c('red', 0), c('red', 1), c('red', 2), c('red', 3)], wing: [c('paper', 1), c('paper', 2), c('paper', 3)], white: c('paper', 3), red: c('red', 2) },
+    {
+      ink: c('ink', 0),
+      fly: [c('metal', 0), c('metal', 1), c('metal', 2), c('metal', 3), c('metal', 4)],
+      eye: [c('red', 0), c('red', 1), c('red', 2), c('red', 3)],
+      wing: [c('paper', 1), c('paper', 2), c('paper', 3)],
+      white: c('paper', 3),
+      red: c('red', 2),
+    },
     { view: 'front', wing: zap, mood: zap ? 'grin' : 'smug' },
   );
   // he sits on the top half of the chip, over its stamp
   for (let y = 0; y < 12; y++) for (let x = 0; x < 20; x++) if (fly.get(x, y + 2) !== 255) p.set(x, y, fly.get(x, y + 2));
   if (zap)
     for (const [x, y] of [
-      [1, 10], [0, 12], [2, 14], [18, 10], [19, 12], [17, 14],
+      [1, 10],
+      [0, 12],
+      [2, 14],
+      [18, 10],
+      [19, 12],
+      [17, 14],
     ] as [number, number][])
       p.set(x, y, (x + y) % 2 ? c('zap', 3) : c('spark', 4));
   micro(p, 5, 12, 'BUG', c('paper', 3));
@@ -297,8 +309,7 @@ export function eggPic(st: Style, under = floorPic(st, 0)): Pixels {
       p.set(x, y, shadeAt(felt, 1, 3, l, x, y));
     }
   // blanket stitch just inside the edge in pale thread
-  for (let y = 0; y < 20; y++)
-    for (let x = 0; x < 20; x++) if (inside(x, y) && !inside(x, y, -1) && (x + y) % 3 === 0) p.set(x, y, c('paper', 3));
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (inside(x, y) && !inside(x, y, -1) && (x + y) % 3 === 0) p.set(x, y, c('paper', 3));
   // the zigzag of black running stitch around the waist, like a resistor's leads
   for (let x = 4; x < 17; x++) {
     const y = 13 + [0, 1, 0, -1][x % 4];
@@ -344,7 +355,11 @@ export interface Battery {
   high?: number;
 }
 
-export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadboard?: boolean; seams?: number[]; fusebox?: boolean; easterEgg?: boolean; hatches?: number[] } = {}): BlockSet {
+export function buildTiles(
+  st: Style,
+  batteries: Battery[] = [],
+  opts: { breadboard?: boolean; seams?: number[]; fusebox?: boolean; easterEgg?: boolean; hatches?: number[] } = {},
+): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, px: Pixels, def: BlockDef = {}) => bs.add(name, px, def);
   const vp = new Pixels(20, 20, c('night', 0));
@@ -375,12 +390,16 @@ export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadbo
   add('bugZap', bugPic(st, 1), { solid: SOLID, next: 'bug', ntime: 4 });
   // the tin heart: a small bonus on the board, a glint crossing it now and then
   for (let k = 0; k < SHINE_FRAMES; k++)
-    add(`tinHeart${k || ''}`, drawTinHeart(floorPic(st, 0), { ink: c('ink', 0), tin: [c('metal', 2), c('metal', 3), c('metal', 4)], white: c('metal', 5), dark: c('metal', 1) }, k), {
-      score: 100,
-      touch: 'floor0',
-      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
-      ntime: k ? 2 : 50,
-    });
+    add(
+      `tinHeart${k || ''}`,
+      drawTinHeart(floorPic(st, 0), { ink: c('ink', 0), tin: [c('metal', 2), c('metal', 3), c('metal', 4)], white: c('metal', 5), dark: c('metal', 1) }, k),
+      {
+        score: 100,
+        touch: 'floor0',
+        next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+        ntime: k ? 2 : 50,
+      },
+    );
   // Batteries: each wire's battery gives birth to that wire's spark every SPARK_EVERY ticks
   // (only the batteries a room uses are drawn into its block set).
   for (const b of batteries) {
@@ -431,9 +450,20 @@ export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadbo
   // the painted Easter egg (kit/easterEgg.ts), only in the room that hides it: a few points, a
   // glint crossing it now and then, and no sound (added last, so no block before it moves)
   if (opts.easterEgg) {
-    const egg = { ink: c('ink', 0), shell: [c('pink', 0), c('pink', 1), c('pink', 2)], paint: [c('teal', 2), c('teal', 4)], accent: c('yellow', 3), white: c('paper', 3) };
+    const egg = {
+      ink: c('ink', 0),
+      shell: [c('pink', 0), c('pink', 1), c('pink', 2)],
+      paint: [c('teal', 2), c('teal', 4)],
+      accent: c('yellow', 3),
+      white: c('paper', 3),
+    };
     for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-      add(`easterEgg${k || ''}`, drawEasterEgg(floorPic(st, 0), egg, 'dots', k), { score: 50, touch: 'floor0', next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60 });
+      add(`easterEgg${k || ''}`, drawEasterEgg(floorPic(st, 0), egg, 'dots', k), {
+        score: 50,
+        touch: 'floor0',
+        next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+        ntime: k ? 2 : 60,
+      });
   }
   // a hatch in the housing (a panel like the seam's) into the crawlspace behind a board, and
   // back out of it (added last, so no block before it moves)

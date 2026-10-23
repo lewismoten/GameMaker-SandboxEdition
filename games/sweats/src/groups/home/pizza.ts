@@ -35,7 +35,13 @@ function drawSlice(p: Pixels, pal: Pal, x: number, y: number): void {
   const c = pal.c;
   for (let k = 0; k < 12; k++) p.rect(x, y + k, Math.max(1, 14 - Math.floor(k * 1.15)), 1, c('yellow', k % 3 ? 2 : 1));
   p.rect(x, y, 14, 2, c('crust', 2)).rect(x, y + 2, 14, 1, c('crust', 0));
-  for (const [dx, dy] of [[3, 4], [8, 4], [5, 7], [2, 9]]) p.disc(x + dx, y + dy, 1.3, c('red', 1)).set(x + dx - 1, y + dy - 1, c('red', 2));
+  for (const [dx, dy] of [
+    [3, 4],
+    [8, 4],
+    [5, 7],
+    [2, 9],
+  ])
+    p.disc(x + dx, y + dy, 1.3, c('red', 1)).set(x + dx - 1, y + dy - 1, c('red', 2));
 }
 
 /**
@@ -48,12 +54,27 @@ export function pizzaEggBlocks(book: BlockBook, pal: Pal): void {
   // two frames of its shine (the plain egg and one glint): HOME.BBL has room for just two
   const frames = Math.min(2, EGG_SHINE_FRAMES);
   for (let k = 0; k < frames; k++)
-    book.add(`egg${k || ''}`, drawEasterEgg(book.pics.get('underTable')!.crop(0, 0, 20, 20), { ink: c('ink', 0), shell: [c('teal', 0), c('teal', 1), c('teal', 2)], paint: [c('yellow', 1), c('yellow', 2)], accent: c('pink', 2), white: c('white', 2) }, 'zigzag', k), {
-      ...AIR,
-      touch: 'underTable',
-      next: `egg${(k + 1) % frames || ''}`,
-      ntime: k ? 3 : 60,
-    });
+    book.add(
+      `egg${k || ''}`,
+      drawEasterEgg(
+        book.pics.get('underTable')!.crop(0, 0, 20, 20),
+        {
+          ink: c('ink', 0),
+          shell: [c('teal', 0), c('teal', 1), c('teal', 2)],
+          paint: [c('yellow', 1), c('yellow', 2)],
+          accent: c('pink', 2),
+          white: c('white', 2),
+        },
+        'zigzag',
+        k,
+      ),
+      {
+        ...AIR,
+        touch: 'underTable',
+        next: `egg${(k + 1) % frames || ''}`,
+        ntime: k ? 3 : 60,
+      },
+    );
 }
 
 export function pizzaBlocks(book: BlockBook, pal: Pal): void {
@@ -69,12 +90,16 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
     return p;
   };
   book.add('tableTop', top('plain'), { solid: LEDGE, grav: GRAV.down });
-  book.add('underTable', (() => {
-    const p = new Pixels(20, 20);
-    p.rect(0, 0, 20, 20, c('rose', 0));
-    for (let y = 1; y < 20; y += 3) p.rect(0, y, 20, 1, c('ink', 1));
-    return p;
-  })(), AIR);
+  book.add(
+    'underTable',
+    (() => {
+      const p = new Pixels(20, 20);
+      p.rect(0, 0, 20, 20, c('rose', 0));
+      for (let y = 1; y < 20; y += 3) p.rect(0, y, 20, 1, c('ink', 1));
+      return p;
+    })(),
+    AIR,
+  );
   const leg = book.pics.get('underTable')!.crop(0, 0, 20, 20);
   leg.rect(7, 0, 6, 20, c('wood', 2)).rect(8, 0, 1, 20, c('wood', 3)).rect(6, 17, 8, 3, c('wood', 1));
   book.add('tableLeg', leg, AIR);
@@ -83,7 +108,14 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
     const p = wall(61);
     p.rect(0, 16, 20, 4, c('wood', 3)).rect(0, 16, 20, 1, c('wood', 4));
     if (cans) {
-      for (const [x, k] of [[2, 'red'], [8, 'teal'], [13, 'red']] as const) p.rect(x, 7, 5, 9, c(k, 2)).rect(x, 7, 5, 1, c('metal', 2)).rect(x + 1, 10, 1, 4, c('white', 1));
+      for (const [x, k] of [
+        [2, 'red'],
+        [8, 'teal'],
+        [13, 'red'],
+      ] as const)
+        p.rect(x, 7, 5, 9, c(k, 2))
+          .rect(x, 7, 5, 1, c('metal', 2))
+          .rect(x + 1, 10, 1, 4, c('white', 1));
       p.rect(14, 13, 6, 3, c('metal', 1));
     } else {
       p.rect(7, 6, 6, 10, c('ice', 2)).rect(8, 9, 4, 6, c('ice', 1)).rect(7, 6, 6, 1, c('white', 2));
@@ -102,7 +134,11 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
     // the beard, the cap on backward, the cat's eyes narrowed on the slice
     blob(pic, 20, 20, 8, 5, R('hair'), 0, 2);
     pic.rect(11, 3, 18, 5, c('navy', 1)).rect(11, 3, 18, 1, c('navy', 2)).rect(7, 6, 6, 2, c('navy', 0));
-    for (const ex of [16, 25]) pic.rect(ex - 2, 12, 5, 2, c('white', 2)).rect(ex, 12, 2, 2, c('green', 1)).set(ex + 1, 12, c('ink', 0));
+    for (const ex of [16, 25])
+      pic
+        .rect(ex - 2, 12, 5, 2, c('white', 2))
+        .rect(ex, 12, 2, 2, c('green', 1))
+        .set(ex + 1, 12, c('ink', 0));
     pic.line(13, 10, 18, 11, c('hair', 0)).line(22, 11, 27, 10, c('hair', 0));
     pic.rect(17, 18, 6, 1, c('red', 1)).set(23, 17, c('red', 1));
     addPicture(book, 'kevin', pic, wall(62), () => AIR);
@@ -114,7 +150,13 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
     blob(pic, 10, 14, 6, 7, R('skin'), 1, 4);
     blob(pic, 10, 5, 5, 4, R('grey'), 2, 3);
     blob(pic, 10, 1.5, 2.6, 2.2, R('grey'), 2, 3);
-    pic.frame(5, 12, 4, 3, c('teal', 0)).frame(11, 12, 4, 3, c('teal', 0)).set(4, 11, c('teal', 0)).set(15, 11, c('teal', 0)).set(7, 13, c('ink', 0)).set(13, 13, c('ink', 0));
+    pic
+      .frame(5, 12, 4, 3, c('teal', 0))
+      .frame(11, 12, 4, 3, c('teal', 0))
+      .set(4, 11, c('teal', 0))
+      .set(15, 11, c('teal', 0))
+      .set(7, 13, c('ink', 0))
+      .set(13, 13, c('ink', 0));
     pic.rect(8, 18, 4, 2, c('ink', 0)).set(9, 19, c('red', 2));
     for (let x = 5; x < 16; x += 2) pic.set(x, 23 + (x === 9 || x === 11 ? 1 : 0), c('white', 2));
     pic.line(17, 26, 19, 21, c('skin', 2));
@@ -129,7 +171,13 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
     if (!on) {
       p.rect(9, 14, 2, 3, c('gold', 0));
       blob(p, 10, 19, 5, 3, R('grey'), 0, 1);
-    } else for (const [x, y] of [[3, 17], [17, 17], [10, 12]]) p.set(x, y, c('spot', 1));
+    } else
+      for (const [x, y] of [
+        [3, 17],
+        [17, 17],
+        [10, 12],
+      ])
+        p.set(x, y, c('spot', 1));
     return p;
   };
   book.add('lightOn', flicker(true), { solid: SOLID, next: 'lightOff', ntime: 40 });
@@ -144,7 +192,13 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
     p.rect(0, 11, 20, 7, c('crust', 2)).rect(0, 11, 20, 1, c('crust', 0)).rect(2, 12, 16, 5, c('white', 1));
     if (empty) {
       p.ring(10, 14, 3, c('crust', 1));
-      for (const [x, y] of [[5, 13], [14, 15], [8, 16], [12, 13]]) p.set(x, y, c('crust', 0));
+      for (const [x, y] of [
+        [5, 13],
+        [14, 15],
+        [8, 16],
+        [12, 13],
+      ])
+        p.set(x, y, c('crust', 0));
     } else drawSlice(p, pal, 3, 12);
     return p;
   };
@@ -153,7 +207,11 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
   // the five ploys
   plotThing(book, 'wall', 'ploy1', (p) => {
     // the slow reach: his glasses, as if adjusting them
-    p.ring(6, 12, 3.4, c('ink', 0)).ring(14, 12, 3.4, c('ink', 0)).line(9, 11, 11, 11, c('ink', 0)).line(2, 11, 0, 9, c('ink', 0)).line(18, 11, 20, 9, c('ink', 0));
+    p.ring(6, 12, 3.4, c('ink', 0))
+      .ring(14, 12, 3.4, c('ink', 0))
+      .line(9, 11, 11, 11, c('ink', 0))
+      .line(2, 11, 0, 9, c('ink', 0))
+      .line(18, 11, 20, 9, c('ink', 0));
     p.disc(6, 12, 2.4, c('ice', 2)).disc(14, 12, 2.4, c('ice', 2)).set(5, 11, c('white', 2)).set(13, 11, c('white', 2));
   });
   plotThing(book, 'wall', 'ploy2', (p) => {
@@ -170,7 +228,12 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
   plotThing(book, 'wall', 'ploy4', (p) => {
     // "I'll adopt your pet cactus": a cactus in a terracotta pot
     p.rect(5, 13, 10, 6, c('brick', 2)).rect(4, 12, 12, 2, c('brick', 1));
-    p.rect(8, 3, 4, 10, c('green', 2)).rect(9, 3, 1, 10, c('green', 3)).rect(4, 6, 2, 4, c('green', 2)).rect(4, 9, 4, 2, c('green', 2)).rect(14, 5, 2, 4, c('green', 2)).rect(12, 8, 4, 2, c('green', 2));
+    p.rect(8, 3, 4, 10, c('green', 2))
+      .rect(9, 3, 1, 10, c('green', 3))
+      .rect(4, 6, 2, 4, c('green', 2))
+      .rect(4, 9, 4, 2, c('green', 2))
+      .rect(14, 5, 2, 4, c('green', 2))
+      .rect(12, 8, 4, 2, c('green', 2));
     p.disc(10, 2.5, 1.4, c('pink', 2));
   });
   plotThing(book, 'wallB', 'ploy5', (p) => {
@@ -190,7 +253,9 @@ export function pizzaSprites(book: SpriteBook, pal: Pal): void {
     const p = P();
     const y = f ? 1 : 4;
     for (const x of [7, 9, 11, 13]) p.rect(x, y, 1, 6, c('metal', 2));
-    p.rect(7, y + 6, 7, 2, c('metal', 2)).rect(9, y + 8, 3, 7, c('metal', 1)).rect(10, y + 8, 1, 7, c('metal', 2));
+    p.rect(7, y + 6, 7, 2, c('metal', 2))
+      .rect(9, y + 8, 3, 7, c('metal', 1))
+      .rect(10, y + 8, 1, 7, c('metal', 2));
     face(p, pal, 10, y + 11, { angry: true });
     return outline(p, ink);
   };
@@ -201,7 +266,12 @@ export function pizzaSprites(book: SpriteBook, pal: Pal): void {
     const p = P();
     for (let y = 9; y < 19; y++) p.rect(3 - (y > 15 && f ? 1 : 0), y, 14 + (y > 15 && f ? 2 : 0), 1, c('white', y % 3 ? 2 : 1));
     p.line(3, 9, 16, 18, c('white', 0));
-    for (const [x, y] of [[6, 16], [13, 12], [9, 11]]) p.disc(x, y, 1.4, c('gold', 1));
+    for (const [x, y] of [
+      [6, 16],
+      [13, 12],
+      [9, 11],
+    ])
+      p.disc(x, y, 1.4, c('gold', 1));
     p.rect(2 + f, 19, 3, 1, c('gold', 1)).rect(14 - f, 19, 3, 1, c('gold', 1));
     face(p, pal, 10, 13, { wink: f === 1 });
     return outline(p, ink);
@@ -264,9 +334,17 @@ export function pizzaMonsters(set: Monster[], mb: SpriteBook): void {
   set[PIZZA_MON.napkin] = mon(anim(mb, 'napkin0', 'napkin1', 8), { power: POWER.foe, thru: 1, newmon: PIZZA_MON.fluff }, pace(2, 1));
   set[PIZZA_MON.cutter] = mon(anim(mb, 'cutter0', 'cutter1', 3), { power: POWER.foe, thru: 1, newmon: PIZZA_MON.fluff }, pace(3, 2));
   // Aunt Marge's question drifts left along the table at whoever's there
-  set[PIZZA_MON.dip] = mon(anim(mb, 'dip0', 'dip1', 8), { power: POWER.foe, thru: 1, end: -1, newmon: PIZZA_MON.fluff }, [corner(0, 0, 1), corner(-1, 1, 1), corner(-7, 1, 1, 4)]);
+  set[PIZZA_MON.dip] = mon(anim(mb, 'dip0', 'dip1', 8), { power: POWER.foe, thru: 1, end: -1, newmon: PIZZA_MON.fluff }, [
+    corner(0, 0, 1),
+    corner(-1, 1, 1),
+    corner(-7, 1, 1, 4),
+  ]);
   // the BEEP drops off the ceiling to the floor and away left
-  set[PIZZA_MON.beep] = mon(anim(mb, 'beep0', 'beep1', 5), { power: POWER.foe, thru: 1, end: -1, newmon: PIZZA_MON.fluff }, [corner(0, 0, 2), corner(0, 9, 2), corner(-7, 9, 2, 4)]);
+  set[PIZZA_MON.beep] = mon(anim(mb, 'beep0', 'beep1', 5), { power: POWER.foe, thru: 1, end: -1, newmon: PIZZA_MON.fluff }, [
+    corner(0, 0, 2),
+    corner(0, 9, 2),
+    corner(-7, 9, 2, 4),
+  ]);
   set[PIZZA_MON.cat] = mon(anim(mb, 'cat0', 'cat1', 12), { power: POWER.tough, thru: 1 }, still);
 }
 
@@ -306,7 +384,10 @@ export const pizza: Monologue = {
     const W = 60 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 4; x < W; x += 10) m.set(x, 0, '*');
-    m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
+    m.fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, '#');
     // the way in: the smoke alarm beeping, a window
     m.set(2, 9, '!').set(5, 9, '$').set(8, 0, 'a');
     placePicture(m, 'win', 4, 3, 2, 2);

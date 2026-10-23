@@ -33,8 +33,25 @@ export function overlayHidden(book: TileBook, blocks: Record<Plane, Block[]>, pa
       const px = new Pixels(20, 20);
       px.px.set(blk.pixels);
       // the heart and its shine (a glint crossing it now and then)
-      if (kind.startsWith('tinHeart')) drawTinHeart(px, { ink: at(14, 14, 22), tin: [at(96, 102, 116), at(150, 156, 170), at(208, 212, 222)], white: at(252, 252, 250), dark: at(48, 50, 60) }, kind === 'tinHeart' ? 0 : 2);
-      if (kind === 'easterEgg') drawEasterEgg(px, { ink: at(14, 14, 22), shell: [at(170, 40, 120), at(220, 90, 170), at(250, 160, 210)], paint: [at(40, 120, 220), at(110, 190, 255)], accent: at(255, 220, 90), white: at(252, 252, 250) }, 'bands', 0);
+      if (kind.startsWith('tinHeart'))
+        drawTinHeart(
+          px,
+          { ink: at(14, 14, 22), tin: [at(96, 102, 116), at(150, 156, 170), at(208, 212, 222)], white: at(252, 252, 250), dark: at(48, 50, 60) },
+          kind === 'tinHeart' ? 0 : 2,
+        );
+      if (kind === 'easterEgg')
+        drawEasterEgg(
+          px,
+          {
+            ink: at(14, 14, 22),
+            shell: [at(170, 40, 120), at(220, 90, 170), at(250, 160, 210)],
+            paint: [at(40, 120, 220), at(110, 190, 255)],
+            accent: at(255, 220, 90),
+            white: at(252, 252, 250),
+          },
+          'bands',
+          0,
+        );
       if (kind === 'watt') px.blit(wattCameo(pal, 'down', 0, 'ok', { use: m.allowed }), 0, 0, 255);
       blk.pixels = Uint8Array.from(px.px);
     }

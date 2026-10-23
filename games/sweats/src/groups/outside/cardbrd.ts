@@ -37,8 +37,14 @@ function hauntWall(pal: Pal, seed: number): Pixels {
   const p = new Pixels(20, 20, c('haunt', 1));
   const r = rng(seed);
   for (let i = 0; i < 14; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('haunt', 0));
-  for (const [cx, cy] of [[5, 5], [15, 15]]) {
-    p.set(cx, cy - 3, c('haunt', 2)).set(cx, cy + 3, c('haunt', 2)).set(cx - 3, cy, c('haunt', 2)).set(cx + 3, cy, c('haunt', 2));
+  for (const [cx, cy] of [
+    [5, 5],
+    [15, 15],
+  ]) {
+    p.set(cx, cy - 3, c('haunt', 2))
+      .set(cx, cy + 3, c('haunt', 2))
+      .set(cx - 3, cy, c('haunt', 2))
+      .set(cx + 3, cy, c('haunt', 2));
     p.ring(cx, cy, 1.6, c('haunt', 2));
   }
   return p;
@@ -73,7 +79,12 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
   const fogger = base.crop(0, 0, 20, 20);
   fogger.rect(3, 9, 14, 10, c('metal', 0)).rect(3, 9, 14, 2, c('metal', 1)).rect(0, 12, 4, 3, c('metal', 1)).disc(12, 14, 2, c('red', 2));
   fogger.rect(5, 15, 6, 1, c('metal', 2));
-  for (const [x, y] of [[1, 9], [0, 6], [3, 5]]) fogger.disc(x, y, 1.4, c('fog', 2));
+  for (const [x, y] of [
+    [1, 9],
+    [0, 6],
+    [3, 5],
+  ])
+    fogger.disc(x, y, 1.4, c('fog', 2));
   book.add('fogger', fogger, { ...AIR, birthMon: CARD_MON.fog, birthTime: 70 });
   // the zombie's coffin, standing open
   const coffin = base.crop(0, 0, 20, 20);
@@ -91,7 +102,12 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
   book.add('portrait', portrait, AIR);
   const candles = wall(104);
   candles.rect(6, 17, 8, 3, c('gold', 1)).rect(9, 9, 2, 8, c('gold', 1)).rect(4, 11, 12, 1, c('gold', 1));
-  for (const x of [4, 9, 15]) candles.rect(x, 6, 2, 5, c('white', 2)).set(x, 4, c('yellow', 2)).set(x, 5, c('orange', 2)).set(x + 1, 5, c('yellow', 2));
+  for (const x of [4, 9, 15])
+    candles
+      .rect(x, 6, 2, 5, c('white', 2))
+      .set(x, 4, c('yellow', 2))
+      .set(x, 5, c('orange', 2))
+      .set(x + 1, 5, c('yellow', 2));
   book.add('candles', candles, AIR);
   // the wall of fake spiderwebs (a sneeze each, then torn)
   const web = (torn: boolean) => {
@@ -167,11 +183,18 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
     const p = person(pal, { hair: 'yellow', shirt: 'white', pants: 'pink', step: f, short: true, raw: true });
     p.rect(7, 2, 7, 3, c('white', 2)).set(7, 5, c('white', 2)).set(13, 5, c('white', 2));
     p.line(10, 2, 12, -1, c('gold', 3)).set(11, 1, c('gold', 2));
-    for (const [x, y, col] of [[6, 3, 'pink'], [6, 4, 'purple'], [6, 5, 'teal']] as const) p.set(x, y, c(col, 2));
+    for (const [x, y, col] of [
+      [6, 3, 'pink'],
+      [6, 4, 'purple'],
+      [6, 5, 'teal'],
+    ] as const)
+      p.set(x, y, c(col, 2));
     p.set(8, 7, c('pink', 2)).set(12, 7, c('gold', 3));
     p.rect(9, 11, 3, 2, c('gold', 3)).set(10, 10, c('gold', 3));
     p.line(16, 14, 16, 9 + f, c('wood', 2));
-    p.disc(16, 7 + f, 3.2, c('red', 1)).rect(13, 7 + f, 7, 3, c('coffee', 3)).set(15, 6 + f, c('white', 2));
+    p.disc(16, 7 + f, 3.2, c('red', 1))
+      .rect(13, 7 + f, 7, 3, c('coffee', 3))
+      .set(15, 6 + f, c('white', 2));
     return outline(p, ink);
   };
   book.add('lily0', lily(0), { chHitPt: 10 });
@@ -190,10 +213,15 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   // the animatronic zombie: cardboard-green, arms out, a plastic axe
   const zombie = (f: number) => {
     const p = person(pal, { hair: 'grey', shirt: 'grey', pants: 'navy', step: 0, raw: true });
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ([c('skin', 1), c('skin', 2), c('skin', 3), c('skin', 4)].includes(p.get(x, y))) p.set(x, y, c('green', 2 - ((x + y) % 2)));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++)
+        if ([c('skin', 1), c('skin', 2), c('skin', 3), c('skin', 4)].includes(p.get(x, y))) p.set(x, y, c('green', 2 - ((x + y) % 2)));
     p.rect(4, 9, 3, 1, c('green', 2)).rect(14, 9, 3, 1, c('green', 2));
     p.rect(8, 11, 1, 3, c('grey', 0)).rect(12, 10, 1, 2, c('grey', 0));
-    p.line(16, 9 - f, 19, 3 - f, c('wood', 2)).rect(17, 1 - f, 3, 4, c('grey', 2)).set(9, 5, c('red', 3)).set(12, 5, c('red', 3));
+    p.line(16, 9 - f, 19, 3 - f, c('wood', 2))
+      .rect(17, 1 - f, 3, 4, c('grey', 2))
+      .set(9, 5, c('red', 3))
+      .set(12, 5, c('red', 3));
     return outline(p, ink);
   };
   book.add('zombie0', zombie(0), hurts(-5));
@@ -208,8 +236,14 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
     }
     p.rect(6, 8 + y, 8, 7, c('purple', 1)).rect(5, 14 + y, 10, 2, c('purple', 0));
     blob(p, 10, 6 + y, 3, 3, pal.r('green'), 1, 3);
-    p.set(12, 7 + y, c('green', 0)).set(13, 7 + y, c('green', 0)).set(9, 5 + y, ink).set(11, 5 + y, ink);
-    p.rect(5, 3 + y, 11, 1, ink).line(8, 3 + y, 10 + (broom ? 0 : 3), -2 + y, ink).line(12, 3 + y, 10 + (broom ? 0 : 3), -2 + y, ink).rect(9, 0 + y, 3, 3, ink);
+    p.set(12, 7 + y, c('green', 0))
+      .set(13, 7 + y, c('green', 0))
+      .set(9, 5 + y, ink)
+      .set(11, 5 + y, ink);
+    p.rect(5, 3 + y, 11, 1, ink)
+      .line(8, 3 + y, 10 + (broom ? 0 : 3), -2 + y, ink)
+      .line(12, 3 + y, 10 + (broom ? 0 : 3), -2 + y, ink)
+      .rect(9, 0 + y, 3, 3, ink);
     for (let k = 0; k < 4; k++) p.set(6 + k * 3, 16 + y, c('white', 1));
     if (!broom) p.line(3, 9 + y, 6, 11 + y, c('purple', 1)).line(17, 9 + y, 14, 11 + y, c('purple', 1));
     return outline(p, ink);
@@ -241,7 +275,10 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
     p.line(10, 0, 10, 8, c('grey', 0));
     blob(p, 10, 11, 2.5, 3, pal.r('ink'), 0, 1);
     const w = f ? -3 : 3;
-    p.line(8, 10, 2, 10 + w, c('ink', 1)).line(12, 10, 18, 10 + w, c('ink', 1)).line(2, 10 + w, 5, 13, c('ink', 1)).line(18, 10 + w, 15, 13, c('ink', 1));
+    p.line(8, 10, 2, 10 + w, c('ink', 1))
+      .line(12, 10, 18, 10 + w, c('ink', 1))
+      .line(2, 10 + w, 5, 13, c('ink', 1))
+      .line(18, 10 + w, 15, 13, c('ink', 1));
     p.set(9, 10, c('red', 3)).set(11, 10, c('red', 3));
     return outline(p, ink);
   };
@@ -250,7 +287,16 @@ export function cardSprites(book: SpriteBook, pal: Pal): void {
   // the eleven-year-old in the clown wig, his horn, harmless (and running off giggling)
   const clown = (f: number, run: boolean) => {
     const p = person(pal, { hair: 'red', shirt: 'teal', pants: 'yellow', step: f, short: true, raw: true, arms: run ? 'up' : undefined });
-    for (const [x, y, col] of [[6, 3, 'red'], [14, 3, 'yellow'], [8, 2, 'teal'], [12, 2, 'red'], [10, 1, 'yellow'], [5, 5, 'teal'], [15, 5, 'red']] as const) p.disc(x, y + 1, 1.6, c(col, 2));
+    for (const [x, y, col] of [
+      [6, 3, 'red'],
+      [14, 3, 'yellow'],
+      [8, 2, 'teal'],
+      [12, 2, 'red'],
+      [10, 1, 'yellow'],
+      [5, 5, 'teal'],
+      [15, 5, 'red'],
+    ] as const)
+      p.disc(x, y + 1, 1.6, c(col, 2));
     p.disc(10.5, 7.5, 1, c('red', 3));
     if (!run) p.rect(15, 10, 3, 2, c('gold', 2)).disc(17, 13, 1.6, c('red', 2));
     else micro(p, 15, 0, '!', c('white', 2));
@@ -283,7 +329,15 @@ export const cardbrd: Monologue = {
   desc: 'I Fought Cardboard',
   filler: 'soil',
   // inside the haunted house: dim and purple (the exit sign keeps its glow)
-  light: { sky: [[10, 4, 20], [90, 50, 90], [40, 20, 50]], mul: [0.74, 0.66, 0.86], add: [8, 0, 18] },
+  light: {
+    sky: [
+      [10, 4, 20],
+      [90, 50, 90],
+      [40, 20, 50],
+    ],
+    mul: [0.74, 0.66, 0.86],
+    add: [8, 0, 18],
+  },
   legend: {
     '^': 'hCeil',
     '.': 'hWall',
@@ -309,7 +363,11 @@ export const cardbrd: Monologue = {
     // the scene ends
     const OFF = 13;
     const W = 66 + OFF;
-    m.row(0, 0, W - 1, '^').fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
+    m.row(0, 0, W - 1, '^')
+      .fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, '#');
     // the way in: the spotlight, the sign, Doc Leo taking tickets, Lily walking ahead
     m.set(2, 9, '!');
     placePicture(m, 'scareSign', 3, 5, 3, 1);
@@ -346,5 +404,5 @@ export const cardbrd: Monologue = {
   song: 'chase',
   clips: { open: 'lily_o', line: 'lily_l', punch: 'lily_p', word: 'lily_w' },
   view: [15, 4],
-  card: ['You know it\'s not real,', 'right?'],
+  card: ["You know it's not real,", 'right?'],
 };

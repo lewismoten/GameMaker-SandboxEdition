@@ -35,7 +35,9 @@ for (const a of [hub.area, ...wings.map((w) => w.area)]) {
   disk.put(`${a.file}.bbl`, serializeBlocks(a.tiles.build()));
   disk.put(`${a.file}.mbl`, serializeBlocks(a.mb.build()));
   disk.put(`${a.file}.mon`, serializeMonsters(a.mons.build()));
-  console.log(`${a.file}: ${a.tiles.names.filter(Boolean).length} blocks, ${a.mb.names.length} monster blocks, ${a.mons.names.filter(Boolean).length} monsters`);
+  console.log(
+    `${a.file}: ${a.tiles.names.filter(Boolean).length} blocks, ${a.mb.names.length} monster blocks, ${a.mons.names.filter(Boolean).length} monsters`,
+  );
 }
 
 const sounds = buildSounds();

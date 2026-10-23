@@ -38,7 +38,8 @@ export function marble(x: Ctx, seed: number, lo = 1, hi = 3): Pixels {
   const p = x.P();
   const r = rng(seed);
   const a = r() * 6;
-  for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) p.set(xx, y, shadeAt(x.R('marble'), lo, hi, 0.55 + Math.sin((xx + y * 0.6 + a) / 3.4) * 0.12, xx, y));
+  for (let y = 0; y < 20; y++)
+    for (let xx = 0; xx < 20; xx++) p.set(xx, y, shadeAt(x.R('marble'), lo, hi, 0.55 + Math.sin((xx + y * 0.6 + a) / 3.4) * 0.12, xx, y));
   for (let k = 0; k < 2; k++) {
     let vx = Math.floor(r() * 20);
     for (let y = 0; y < 20; y++) {
@@ -54,7 +55,8 @@ export function column(x: Ctx, bg: Pixels, capital = false, base = false): Pixel
   const p = copy(bg);
   const { c } = x;
   for (let y = 0; y < 20; y++) for (let xx = 5; xx < 15; xx++) p.set(xx, y, (xx - 5) % 3 === 2 ? c('marble', 1) : c('marble', xx < 9 ? 3 : 2));
-  if (capital) p.rect(2, 0, 16, 3, c('marble', 3)).rect(3, 3, 14, 2, c('marble', 2)).set(3, 1, c('vein', 0)).set(16, 1, c('vein', 0)).rect(2, 5, 16, 1, c('marble', 1));
+  if (capital)
+    p.rect(2, 0, 16, 3, c('marble', 3)).rect(3, 3, 14, 2, c('marble', 2)).set(3, 1, c('vein', 0)).set(16, 1, c('vein', 0)).rect(2, 5, 16, 1, c('marble', 1));
   if (base) p.rect(3, 15, 14, 2, c('marble', 2)).rect(2, 17, 16, 3, c('marble', 3)).rect(2, 17, 16, 1, c('marble', 1));
   return p;
 }
@@ -65,7 +67,18 @@ export function grapes(x: Ctx, bg: Pixels): Pixels {
   const { c } = x;
   p.line(10, 4, 11, 7, c('wood', 2));
   blob(p, 13, 6, 3, 1.6, x.R('laurel'), 1, 3);
-  for (const [gx, gy] of [[7, 9], [10, 9], [13, 9], [8, 12], [11, 12], [14, 12], [9, 15], [12, 15], [10, 18]]) p.disc(gx, gy, 1.9, c('grape', 1)).set(gx - 1, gy - 1, c('grape', 2));
+  for (const [gx, gy] of [
+    [7, 9],
+    [10, 9],
+    [13, 9],
+    [8, 12],
+    [11, 12],
+    [14, 12],
+    [9, 15],
+    [12, 15],
+    [10, 18],
+  ])
+    p.disc(gx, gy, 1.9, c('grape', 1)).set(gx - 1, gy - 1, c('grape', 2));
   return p;
 }
 
@@ -73,7 +86,11 @@ export function grapes(x: Ctx, bg: Pixels): Pixels {
 export function cup(x: Ctx, bg: Pixels): Pixels {
   const p = copy(bg);
   const { c } = x;
-  p.rect(5, 6, 10, 2, c('bronze', 3)).rect(6, 8, 8, 5, c('bronze', 2)).rect(7, 13, 6, 1, c('bronze', 1)).rect(9, 14, 2, 3, c('bronze', 1)).rect(6, 17, 8, 2, c('bronze', 2));
+  p.rect(5, 6, 10, 2, c('bronze', 3))
+    .rect(6, 8, 8, 5, c('bronze', 2))
+    .rect(7, 13, 6, 1, c('bronze', 1))
+    .rect(9, 14, 2, 3, c('bronze', 1))
+    .rect(6, 17, 8, 2, c('bronze', 2));
   p.ring(4, 9, 1.6, c('bronze', 1)).ring(16, 9, 1.6, c('bronze', 1)).rect(7, 7, 6, 1, c('pompeii', 1));
   return p;
 }
@@ -109,7 +126,11 @@ export function sparkle(x: Ctx, p: Pixels, seed: number, n = 5, ramp = 'gold'): 
   for (let i = 0; i < n; i++) {
     const sx = 2 + Math.floor(r() * 16);
     const sy = 2 + Math.floor(r() * 16);
-    p.set(sx, sy, x.c(ramp, 3)).set(sx - 1, sy, x.c(ramp, 1)).set(sx + 1, sy, x.c(ramp, 1)).set(sx, sy - 1, x.c(ramp, 1)).set(sx, sy + 1, x.c(ramp, 1));
+    p.set(sx, sy, x.c(ramp, 3))
+      .set(sx - 1, sy, x.c(ramp, 1))
+      .set(sx + 1, sy, x.c(ramp, 1))
+      .set(sx, sy - 1, x.c(ramp, 1))
+      .set(sx, sy + 1, x.c(ramp, 1));
   }
   return p;
 }

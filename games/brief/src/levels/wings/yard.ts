@@ -97,7 +97,14 @@ function pole(): Pixels {
 function tiedJohn(under: Pixels): Pixels {
   const p = on(under, figure({ shirt: ['blue', 2], pants: ['brown', 1], hair: ['brown', 1], face: 'sad' }));
   for (let y = 9; y < 19; y += 3) p.rect(4, y, 12, 1, c('grey', 5));
-  for (const [x, y] of [[5, 10], [13, 13], [8, 16], [11, 7], [6, 3]]) p.rect(x, y, 1, 3, c('wood', 4));
+  for (const [x, y] of [
+    [5, 10],
+    [13, 13],
+    [8, 16],
+    [11, 7],
+    [6, 3],
+  ])
+    p.rect(x, y, 1, 3, c('wood', 4));
   return p;
 }
 
@@ -153,18 +160,40 @@ function art(a: Area): void {
   // Superpowers of Spooker Boy
   a.tile('walk', floor('road', 3));
   const g = (k: number) => c('green', k);
-  a.tile('lawnN', floor('grass', 2).map((_, __, v) => (v === g(3) ? g(1) : v === g(2) ? g(0) : v === g(1) ? c('night', 1) : v)));
+  a.tile(
+    'lawnN',
+    floor('grass', 2).map((_, __, v) => (v === g(3) ? g(1) : v === g(2) ? g(0) : v === g(1) ? c('night', 1) : v)),
+  );
   a.solid('fence', wall('fence', 'green', 5));
   a.solid('house', house());
   a.tile('ice', ice());
   a.solid('ball', ball(a.tiles.pic('lawnN')));
   // the street lights come on one by one, on their own timers, and stay on
   a.solid('lampOn', streetLight(a.tiles.pic('walk'), true));
-  for (const [k, t] of [[1, 90], [2, 160], [3, 230], [4, 300]] as const) a.solid(`lamp${k}`, streetLight(a.tiles.pic('walk'), false), { next: 'lampOn', ntime: t });
+  for (const [k, t] of [
+    [1, 90],
+    [2, 160],
+    [3, 230],
+    [4, 300],
+  ] as const)
+    a.solid(`lamp${k}`, streetLight(a.tiles.pic('walk'), false), { next: 'lampOn', ntime: t });
   a.prop('spooker', 'walk', figure({ shirt: ['purple', 3], pants: ['blue', 1], hair: ['ink', 1], hairStyle: 'wild', small: true, arms: 'up' }));
   a.prop('billy', 'walk', figure({ shirt: ['orange', 3], pants: ['blue', 2], hair: ['yellow', 3], small: true, hat: { kind: 'cap', color: ['red', 3] } }));
-  sign(['MRS.', 'HENDERSON\'S', 'KEEP OUT'], 3, { board: 'wood', ink: 'paper' }).forEach((px, i) => a.solid(`hend${i}`, px));
-  a.monster('cat', [[cat(0), 4], [cat(1), 4]], { hazard: true, path: [[4, 0, 2], [-4, 0, 2]] });
+  sign(['MRS.', "HENDERSON'S", 'KEEP OUT'], 3, { board: 'wood', ink: 'paper' }).forEach((px, i) => a.solid(`hend${i}`, px));
+  a.monster(
+    'cat',
+    [
+      [cat(0), 4],
+      [cat(1), 4],
+    ],
+    {
+      hazard: true,
+      path: [
+        [4, 0, 2],
+        [-4, 0, 2],
+      ],
+    },
+  );
 
   // Champion of the Backyard Games
   a.tile('yard', floor('grass', 7));
@@ -175,7 +204,20 @@ function art(a: Area): void {
   a.prop('harry', 'yard', figure({ shirt: ['paper', 4], pants: ['red', 2], hair: ['brown', 2], arms: 'up', face: 'happy' }));
   a.solid('hedge', wall('hedge', 'green', 7));
   sign(['BACKYARD', 'GAMES', 'EST. TODAY'], 3, { board: 'blue', ink: 'paper' }).forEach((px, i) => a.solid(`yardGames${i}`, px));
-  a.monster('spear', [[spear(0), 2], [spear(1), 2]], { hazard: true, path: [[8, 0, 3], [-8, 0, 3]] });
+  a.monster(
+    'spear',
+    [
+      [spear(0), 2],
+      [spear(1), 2],
+    ],
+    {
+      hazard: true,
+      path: [
+        [8, 0, 3],
+        [-8, 0, 3],
+      ],
+    },
+  );
 
   // Hung Out to Dry
   a.tile('dryyard', floor('grass', 9));
@@ -186,8 +228,28 @@ function art(a: Area): void {
   nancy.rect(14, 15, 6, 4, c('wood', 3));
   a.prop('nancy', 'dryyard', nancy);
   sign(['WE ARE OVER.', '(WERE WE', 'TOGETHER?)'], 3, { board: 'pink' }).forEach((px, i) => a.solid(`over${i}`, px));
-  a.monster('peg', [[peg(0), 2], [peg(1), 2]], { hazard: true, path: [[0, 4, 3], [0, -4, 3]] });
-  a.patrol('peg', [[5, 0, 2], [-5, 0, 2]], 'pegH');
+  a.monster(
+    'peg',
+    [
+      [peg(0), 2],
+      [peg(1), 2],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 4, 3],
+        [0, -4, 3],
+      ],
+    },
+  );
+  a.patrol(
+    'peg',
+    [
+      [5, 0, 2],
+      [-5, 0, 2],
+    ],
+    'pegH',
+  );
 
   // Santa's Little OSHA Violation
   a.tile('garage', floor('tile', 8, 'grey'));
@@ -196,7 +258,22 @@ function art(a: Area): void {
   a.prop('timmy', 'garage', figure({ shirt: ['green', 3], pants: ['blue', 1], hair: ['brown', 2], small: true, face: 'happy' }));
   sign(['MORE POWER!', 'NEVER GIVE UP', '-SANTA'], 3, { board: 'red', ink: 'paper' }).forEach((px, i) => a.solid(`power${i}`, px));
   a.solid('garageWall', wall('panel'));
-  a.monster('spark', [[spark(0), 2], [spark(1), 2]], { hazard: true, path: [[3, 0, 2], [0, 2, 2], [-3, 0, 2], [0, -2, 2]] });
+  a.monster(
+    'spark',
+    [
+      [spark(0), 2],
+      [spark(1), 2],
+    ],
+    {
+      hazard: true,
+      path: [
+        [3, 0, 2],
+        [0, 2, 2],
+        [-3, 0, 2],
+        [0, -2, 2],
+      ],
+    },
+  );
 
   // the hallway's guest: Teddy, wearing a Santa hat
   const hat = (s: number) => {
@@ -204,14 +281,30 @@ function art(a: Area): void {
     p.rect(13, 1, 5, 2, c('red', 3)).rect(12, 3, 7, 1, c('paper', 4)).set(18, 0, c('paper', 4));
     return p;
   };
-  a.monster('teddySanta', [[hat(0), 4], [hat(1), 4]], { path: [[6, 0, 2], [-6, 0, 2]] });
+  a.monster(
+    'teddySanta',
+    [
+      [hat(0), 4],
+      [hat(1), 4],
+    ],
+    {
+      path: [
+        [6, 0, 2],
+        [-6, 0, 2],
+      ],
+    },
+  );
   void rot90;
 }
 
 export const YARD: WingSpec = {
   wing: WINGS[3],
   tint: 'green',
-  stamp: [['grey', 5], ['blue', 3], ['red', 3]],
+  stamp: [
+    ['grey', 5],
+    ['blue', 3],
+    ['red', 3],
+  ],
   signs: [
     ['KEEP OFF THE', 'GRASS. KEEP', 'ON READING.'],
     ['LIGHTS ON?', 'TIME TO GO', 'HOME, BILLY'],
@@ -252,13 +345,13 @@ export const YARD: WingSpec = {
         '6': 'hend2',
         C: { tile: '.', mon: 'cat' },
       },
-      note: 'A street at dusk, and old Mrs. Henderson\'s yard. Spooker Boy has superpowers. The street lights have timers. Watch them.',
+      note: "A street at dusk, and old Mrs. Henderson's yard. Spooker Boy has superpowers. The street lights have timers. Watch them.",
       twist: {
         grid: [
           ['lampOn', 'lampOn', 'lampOn'],
           ['spooker', 'walk', 'billy'],
         ],
-        caption: ['FIG. 15: He hadn\'t noticed', 'the street lights.'],
+        caption: ["FIG. 15: He hadn't noticed", 'the street lights.'],
       },
     },
     {

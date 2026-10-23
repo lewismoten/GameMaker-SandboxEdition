@@ -109,7 +109,7 @@ export function render(world: World, cam: Camera, w: number, h: number, opts: Re
       const shoot = (k: number, total: number) => {
         const g = Math.ceil(Math.sqrt(total));
         const sx = x + ((k % g) + rs.next()) / g;
-        const sy = y + (Math.floor(k / g) % g + rs.next()) / g;
+        const sy = y + ((Math.floor(k / g) % g) + rs.next()) / g;
         const [o, d] = cam.ray(sx, sy, rs.next(), rs.next());
         let c: V;
         if (opts.ghost) {

@@ -38,7 +38,10 @@ function twinkle(p: Pixels, pal: Pal, x: number, y: number, size: number, ramp =
   p.set(x, y, pal.c(ramp, 2));
   for (let k = 1; k <= size; k++) {
     const col = pal.c(ramp, Math.max(0, 2 - k));
-    p.set(x + k, y, col).set(x - k, y, col).set(x, y + k, col).set(x, y - k, col);
+    p.set(x + k, y, col)
+      .set(x - k, y, col)
+      .set(x, y + k, col)
+      .set(x, y - k, col);
   }
 }
 
@@ -156,7 +159,13 @@ export function storyFli(cast: Cast): Uint8Array {
     scaleBlit(p, sprite(cast.seed, pose), 100, 104 - hop, 1);
   };
   const lines = (k: number) =>
-    k < 20 ? ["While we're lookin' for miracles,", 'big and loud and grand,'] : k < 40 ? ['the peacock struts, the crow hollers,', 'the mole digs for treasure...'] : k < 52 ? ['Nobody looks down', 'at a mustard seed.'] : ['That suits it fine.', 'It has some growing to do.'];
+    k < 20
+      ? ["While we're lookin' for miracles,", 'big and loud and grand,']
+      : k < 40
+        ? ['the peacock struts, the crow hollers,', 'the mole digs for treasure...']
+        : k < 52
+          ? ['Nobody looks down', 'at a mustard seed.']
+          : ['That suits it fine.', 'It has some growing to do.'];
   const scene = (p: Pixels, k: number) => {
     // the peacock struts across, shouting
     const px = 330 - k * 7;
@@ -231,7 +240,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     // 2. the dust: the sprout pushes a root down into the dirt
     (p, k) => {
       const y = STRIP + 20 + Math.min(k, 16) * 3;
-      for (let d = 0; d < Math.min(k, 16) * 3; d += 2) p.set(158 + Math.round(Math.sin(d / 5) * 2), STRIP + 58 + d, c('root', 3)).set(162 + Math.round(Math.cos(d / 4) * 3), STRIP + 60 + d, c('root', 2));
+      for (let d = 0; d < Math.min(k, 16) * 3; d += 2)
+        p.set(158 + Math.round(Math.sin(d / 5) * 2), STRIP + 58 + d, c('root', 3)).set(162 + Math.round(Math.cos(d / 4) * 3), STRIP + 60 + d, c('root', 2));
       scaleBlit(p, s(k % 4 < 2 ? 'sprout.root0' : 'sprout.root1'), 140, y - 20, 2);
       if (k >= 16) say(p, 160, STRIP + 6, k % 6 < 3 ? 'scritch...' : '...scritch');
     },
@@ -303,7 +313,15 @@ export function howtoFli(cast: Cast): Uint8Array {
     scaleBlit(p, s(pose), x, y, 2);
     if (k >= 12 && k < 18) outlined(p, x + 6, y - 14, 'BOING!', c('seed', 4), c('ink', 0));
     if (k >= 46) outlined(p, 210, 124, 'DRIP!', c('water', 3), c('ink', 0));
-    caption(p, pal, k < 24 ? ['UP hops, Q and E hop sideways.', 'Hop over big loud things.'] : k < 46 ? ['Soft dust gives way to roots:', 'DOWN pushes them deeper.'] : ['Five drops of water', 'open the crack.']);
+    caption(
+      p,
+      pal,
+      k < 24
+        ? ['UP hops, Q and E hop sideways.', 'Hop over big loud things.']
+        : k < 46
+          ? ['Soft dust gives way to roots:', 'DOWN pushes them deeper.']
+          : ['Five drops of water', 'open the crack.'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);
@@ -363,7 +381,12 @@ function tree(p: Pixels, pal: Pal, cx: number, base: number, g: number): void {
   if (g > 0.35) {
     // branches out to the sides as it grows
     const reach = (g - 0.35) / 0.65;
-    for (const [dy, dir, len] of [[0.55, -1, 46], [0.62, 1, 50], [0.78, -1, 34], [0.82, 1, 38]] as const) {
+    for (const [dy, dir, len] of [
+      [0.55, -1, 46],
+      [0.62, 1, 50],
+      [0.78, -1, 34],
+      [0.82, 1, 38],
+    ] as const) {
       const y0 = base - Math.round(h * dy);
       p.line(cx, y0, cx + dir * len * reach, y0 - 18 * reach, c('bark', 1)).line(cx, y0 + 1, cx + dir * len * reach, y0 - 17 * reach, c('bark', 2));
     }
@@ -371,9 +394,23 @@ function tree(p: Pixels, pal: Pal, cx: number, base: number, g: number): void {
   if (g > 0.5) {
     const leaf = (g - 0.5) / 0.5;
     const top = base - h;
-    for (const [dx, dy, rx, ry] of [[0, 0, 44, 22], [-38, 26, 34, 18], [40, 24, 36, 18], [-20, 12, 30, 16], [22, 10, 30, 16]] as const)
+    for (const [dx, dy, rx, ry] of [
+      [0, 0, 44, 22],
+      [-38, 26, 34, 18],
+      [40, 24, 36, 18],
+      [-20, 12, 30, 16],
+      [22, 10, 30, 16],
+    ] as const)
       blob(p, cx + dx, top + dy, rx * leaf, ry * leaf, pal.r('leaf'), 0, 4);
-    if (leaf > 0.8) for (const [dx, dy] of [[-30, 8], [20, -4], [36, 30], [-44, 34], [4, 18]]) blob(p, cx + dx, top + dy, 3, 3.6, pal.r('seed'), 1, 4, 1.2);
+    if (leaf > 0.8)
+      for (const [dx, dy] of [
+        [-30, 8],
+        [20, -4],
+        [36, 30],
+        [-44, 34],
+        [4, 18],
+      ])
+        blob(p, cx + dx, top + dy, 3, 3.6, pal.r('seed'), 1, 4, 1.2);
   } else {
     // a sprout, then a plant with the cover's yellow bud
     p.disc(cx + 3, base - h + 4, 3, c('leaf', 3)).disc(cx - 3, base - h + 8, 2.4, c('leaf', 3));

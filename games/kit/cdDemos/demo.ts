@@ -36,7 +36,7 @@ export async function recordDemo(files: GameFiles, gam: string, ticks: number, o
   const held = new Set<number>();
   for (const k of keys) k.key < 0x80 ? held.add(k.key) : held.delete(k.key & 0x7f);
   let gap = Math.max(1, ticks - used);
-  for (const k of held) keys.push({ delta: gap, key: k | 0x80 }), (gap = 0);
+  for (const k of held) (keys.push({ delta: gap, key: k | 0x80 }), (gap = 0));
   keys.push({ delta: gap + 9, key: ESC }, { delta: 2, key: ESC | 0x80 });
   return { rec: serializeRecording(keys), bot };
 }

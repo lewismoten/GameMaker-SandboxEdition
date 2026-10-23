@@ -34,20 +34,30 @@ function pop(): Uint8Array {
 
 /** The Word Counter's bell: ding-ding! */
 function bell(): Uint8Array {
-  const tone = (f: number, t0: number): Synth => (t) => (t < t0 ? 0 : (Math.sin(2 * Math.PI * f * (t - t0)) + 0.4 * Math.sin(2 * Math.PI * f * 2.76 * (t - t0))) * Math.exp(-(t - t0) * 5));
+  const tone =
+    (f: number, t0: number): Synth =>
+    (t) =>
+      t < t0 ? 0 : (Math.sin(2 * Math.PI * f * (t - t0)) + 0.4 * Math.sin(2 * Math.PI * f * 2.76 * (t - t0))) * Math.exp(-(t - t0) * 5);
   return sample(0.9, mix([tone(1568, 0), 0.45], [tone(2093, 0.16), 0.45]), { envelope: () => 1, gain: 0.9 });
 }
 
 function clunk(): Uint8Array {
-  return sample(0.22, mix([osc.sine((t) => 140 - t * 200), 0.8], [band(osc.noise(5), 0.1, 0.4), 0.5]), { envelope: (u) => (u < 0.02 ? 1 : (1 - u) ** 4), gain: 1 });
+  return sample(0.22, mix([osc.sine((t) => 140 - t * 200), 0.8], [band(osc.noise(5), 0.1, 0.4), 0.5]), {
+    envelope: (u) => (u < 0.02 ? 1 : (1 - u) ** 4),
+    gain: 1,
+  });
 }
 
 function fanfare(): Uint8Array {
   const notes = [523, 659, 784, 1047];
-  return sample(0.6, (t) => {
-    const i = Math.min(notes.length - 1, Math.floor(t / 0.11));
-    return Math.sin(2 * Math.PI * notes[i] * t) > 0 ? 0.5 : -0.5;
-  }, { envelope: (u) => (1 - u) ** 0.5, gain: 0.7 });
+  return sample(
+    0.6,
+    (t) => {
+      const i = Math.min(notes.length - 1, Math.floor(t / 0.11));
+      return Math.sin(2 * Math.PI * notes[i] * t) > 0 ? 0.5 : -0.5;
+    },
+    { envelope: (u) => (1 - u) ** 0.5, gain: 0.7 },
+  );
 }
 
 export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array> } {
@@ -61,12 +71,27 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
     }
   };
   put(SND.kill, SPEAKER.chirp(), 'pop', pop());
-  put(SND.word, speaker((i) => (i < 6 ? 1800 + i * 200 : 0)), 'flutter', flutter());
-  put(SND.spend, speaker((i) => (i < 6 ? 220 : i < 10 ? 0 : i < 16 ? 160 : 0)), 'clunk', clunk());
+  put(
+    SND.word,
+    speaker((i) => (i < 6 ? 1800 + i * 200 : 0)),
+    'flutter',
+    flutter(),
+  );
+  put(
+    SND.spend,
+    speaker((i) => (i < 6 ? 220 : i < 10 ? 0 : i < 16 ? 160 : 0)),
+    'clunk',
+    clunk(),
+  );
   put(SND.fine, SPEAKER.noise(3, 2000, 6000), 'shhh', shh());
   put(SND.life, SPEAKER.arpeggio(), 'fanfare', fanfare());
   put(SND.score, SPEAKER.coin());
   put(SND.shelved, SPEAKER.arpeggio([1568, 2093, 1568, 2093]), 'ding', bell());
-  put(SND.unlock, speaker((i) => (i < 8 ? 120 : 0)), 'clunk', clunk());
+  put(
+    SND.unlock,
+    speaker((i) => (i < 8 ? 120 : 0)),
+    'clunk',
+    clunk(),
+  );
   return { set, vocs };
 }

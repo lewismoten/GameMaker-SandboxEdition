@@ -165,16 +165,7 @@ export function dig(): LevelMap {
   m.stamp(
     0,
     0,
-    [
-      'WWWWWWWWW',
-      'WWWWLWWWW',
-      'WWW,c,WWW',
-      'WW,,,,,WW',
-      'W,,,E,,,W',
-      'W,,,@,,,W',
-      'WW,,,,,WW',
-      'WWWWWWWWW',
-    ],
+    ['WWWWWWWWW', 'WWWWLWWWW', 'WWW,c,WWW', 'WW,,,,,WW', 'W,,,E,,,W', 'W,,,@,,,W', 'WW,,,,,WW', 'WWWWWWWWW'],
     L({
       ',': 'damp',
       W: 'packed',

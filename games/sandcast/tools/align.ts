@@ -6,8 +6,21 @@ import { BG } from '../src/blocks/bblocks';
 
 const RULES: PartRule[] = [
   ...pair('truck', 'truckL', 'truckR', 1, 0),
-  gridParts(/^(cat)(\d)(\d)$/, new Map([['cat', [6, 4]]]), (o, c, r) => `${o}${c}${r}`, (g) => (g === 'catBlink' ? 'cat12' : g)),
-  { part: 'catBlink', need: [[-1, 0, 'cat02'], [1, 0, 'cat22'], [0, -1, 'cat11'], [0, 1, 'cat13']] },
+  gridParts(
+    /^(cat)(\d)(\d)$/,
+    new Map([['cat', [6, 4]]]),
+    (o, c, r) => `${o}${c}${r}`,
+    (g) => (g === 'catBlink' ? 'cat12' : g),
+  ),
+  {
+    part: 'catBlink',
+    need: [
+      [-1, 0, 'cat02'],
+      [1, 0, 'cat22'],
+      [0, -1, 'cat11'],
+      [0, 1, 'cat13'],
+    ],
+  },
 ];
 
 export function align(): number {

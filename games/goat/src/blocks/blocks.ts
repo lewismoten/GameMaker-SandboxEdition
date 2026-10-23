@@ -77,7 +77,12 @@ export function buildBlocks(pal: Pal): BlockBook {
     [13, 12, 'gold'],
     [8, 15, 'cloth'],
   ] as const)
-    flowers.set(x, y, c(k, 3)).set(x - 1, y, c(k, 2)).set(x + 1, y, c(k, 2)).set(x, y - 1, c(k, 2)).set(x, y + 1, c(k, 2));
+    flowers
+      .set(x, y, c(k, 3))
+      .set(x - 1, y, c(k, 2))
+      .set(x + 1, y, c(k, 2))
+      .set(x, y - 1, c(k, 2))
+      .set(x, y + 1, c(k, 2));
   book.add('flowers', flowers);
   book.add('path', path(41));
   book.add('sand', sand(43));
@@ -204,9 +209,24 @@ export function buildBlocks(pal: Pal): BlockBook {
   const crate = (full: string | null) => {
     const p = cobble(105);
     p.rect(2, 3, 16, 15, c('wood', 1)).frame(2, 3, 16, 15, c('wood', 0)).rect(3, 4, 14, 2, c('wood', 3));
-    if (full === 'cabbage') for (const [x, y] of [[6, 10], [13, 10], [9, 13], [10, 8]]) blob(p, x, y, 3.5, 3.2, R('olive'), 1, 3, 1.1);
+    if (full === 'cabbage')
+      for (const [x, y] of [
+        [6, 10],
+        [13, 10],
+        [9, 13],
+        [10, 8],
+      ])
+        blob(p, x, y, 3.5, 3.2, R('olive'), 1, 3, 1.1);
     if (full === 'figs')
-      for (const [x, y] of [[6, 9], [10, 11], [14, 9], [8, 14], [13, 14], [11, 7]]) blob(p, x, y, 2.4, 2.4, R('purple'), 0, 3, 1);
+      for (const [x, y] of [
+        [6, 9],
+        [10, 11],
+        [14, 9],
+        [8, 14],
+        [13, 14],
+        [11, 7],
+      ])
+        blob(p, x, y, 2.4, 2.4, R('purple'), 0, 3, 1);
     if (!full) p.rect(4, 7, 12, 9, c('wood', 0));
     return p;
   };
@@ -242,7 +262,14 @@ export function buildBlocks(pal: Pal): BlockBook {
       p.rect(4, 8, 12, 7, c('cloth', 3)).rect(3, 8, 2, 7, c('wood', 3)).rect(15, 8, 2, 7, c('wood', 3));
       for (let y = 9; y < 14; y += 2) p.rect(6, y, 7, 1, c('ink', 1));
       p.rect(9, 13, 3, 2, c('red', 2));
-    } else for (const [x, y] of [[5, 10], [9, 9], [12, 12], [7, 13]]) p.set(x, y, c('cloth', 2));
+    } else
+      for (const [x, y] of [
+        [5, 10],
+        [9, 9],
+        [12, 12],
+        [7, 13],
+      ])
+        p.set(x, y, c('cloth', 2));
     return p;
   };
   book.add('census', census(true), { solid: SOLID, score: 100, touch: 'censusEaten' });
@@ -285,7 +312,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('hayIn', hayPile(straw(123), 123), { solid: SOLID, hp: 8, effect: SCREAMSEQ, eamt: 3, score: 10, touch: 'straw' });
   const thistle = (bg: Pixels) => {
     for (let k = 0; k < 5; k++) bg.line(10, 18, 4 + k * 3, 9 + (k % 2) * 3, c('olive', 1));
-    for (const [x, y] of [[5, 8], [10, 5], [15, 9]]) {
+    for (const [x, y] of [
+      [5, 8],
+      [10, 5],
+      [15, 9],
+    ]) {
       blob(bg, x, y + 2, 2.5, 2, R('olive'), 1, 2);
       bg.disc(x, y, 2.2, c('purple', 2)).set(x, y - 1, c('purple', 3));
     }
@@ -332,12 +363,36 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.set(10, 10, c('star', 2)).set(9, 10, c('star', 2)).set(11, 10, c('star', 2)).set(10, 9, c('star', 2)).set(10, 11, c('star', 2));
     return p;
   };
-  book.add('star0', sparkle(() => grass(141), 0), { score: 50, touch: 'grassB', next: 'star1', ntime: 6 });
-  book.add('star1', sparkle(() => grass(141), 1), { score: 50, touch: 'grassB', next: 'star0', ntime: 4 });
-  book.add('starS0', sparkle(() => sand(142), 0), { score: 50, touch: 'sand', next: 'starS1', ntime: 6 });
-  book.add('starS1', sparkle(() => sand(142), 1), { score: 50, touch: 'sand', next: 'starS0', ntime: 4 });
-  book.add('starC0', sparkle(() => cobble(143), 0), { score: 50, touch: 'cobble', next: 'starC1', ntime: 6 });
-  book.add('starC1', sparkle(() => cobble(143), 1), { score: 50, touch: 'cobble', next: 'starC0', ntime: 4 });
+  book.add(
+    'star0',
+    sparkle(() => grass(141), 0),
+    { score: 50, touch: 'grassB', next: 'star1', ntime: 6 },
+  );
+  book.add(
+    'star1',
+    sparkle(() => grass(141), 1),
+    { score: 50, touch: 'grassB', next: 'star0', ntime: 4 },
+  );
+  book.add(
+    'starS0',
+    sparkle(() => sand(142), 0),
+    { score: 50, touch: 'sand', next: 'starS1', ntime: 6 },
+  );
+  book.add(
+    'starS1',
+    sparkle(() => sand(142), 1),
+    { score: 50, touch: 'sand', next: 'starS0', ntime: 4 },
+  );
+  book.add(
+    'starC0',
+    sparkle(() => cobble(143), 0),
+    { score: 50, touch: 'cobble', next: 'starC1', ntime: 6 },
+  );
+  book.add(
+    'starC1',
+    sparkle(() => cobble(143), 1),
+    { score: 50, touch: 'cobble', next: 'starC0', ntime: 4 },
+  );
   const fire = (f: number) => {
     const p = grass(145);
     p.disc(10, 12, 7, c('stone', 1)).disc(10, 12, 5, c('ink', 0));
@@ -523,7 +578,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('stableDoor', exitWay(straw(197), '>'));
   // the caravan tents' lower halves, and the blue and red tents' doorways (added last, so the
   // blocks before keep their numbers)
-  for (const [k, n] of [['purple', 'P'], ['blue', 'B'], ['red', 'R']] as const) {
+  for (const [k, n] of [
+    ['purple', 'P'],
+    ['blue', 'B'],
+    ['red', 'R'],
+  ] as const) {
     book.add(`tent${n}Low`, tents[k][0][1], { solid: SOLID });
     book.add(`tentDoor${n}Low`, tents[k][1][1], { solid: SOLID });
     if (n !== 'P') book.add(`tentDoor${n}`, tents[k][1][0], { solid: SOLID });
@@ -554,14 +613,49 @@ export function buildBlocks(pal: Pal): BlockBook {
   // touched (the ground under it is its touch block), with no sound of its own.
   const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('star', 2), dark: c('grey', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(grass(23), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'grassB', score: 100 });
+    book.add(`tinHeart${k || ''}`, drawTinHeart(grass(23), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'grassB',
+      score: 100,
+    });
   const egg = { ink: c('ink', 0), shell: R('pink'), paint: [c('blue', 1), c('blue', 2)], accent: c('gold', 3), white: c('star', 2) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(sand(43), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'sand', score: 50 });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(sand(43), egg, 'zigzag', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'sand',
+      score: 50,
+    });
   // Teenage Lewie (Snowbound: red knit hat, red coat, his snow shovel) helping muck out the
   // stable's back corner. Scenery: he stands where the stall wall was, so he is solid like it.
   // Drawn in the lit ramps only, so the stable's lamplight falls on him as on everyone else.
-  const lit = ['ink', 'grass', 'dirt', 'sand', 'stone', 'brick', 'wood', 'hay', 'goat', 'horn', 'wool', 'camel', 'donkey', 'ox', 'blue', 'red', 'purple', 'skin', 'olive', 'thorn', 'water', 'cloth', 'pink', 'grey'].flatMap((k) => R(k));
+  const lit = [
+    'ink',
+    'grass',
+    'dirt',
+    'sand',
+    'stone',
+    'brick',
+    'wood',
+    'hay',
+    'goat',
+    'horn',
+    'wool',
+    'camel',
+    'donkey',
+    'ox',
+    'blue',
+    'red',
+    'purple',
+    'skin',
+    'olive',
+    'thorn',
+    'water',
+    'cloth',
+    'pink',
+    'grey',
+  ].flatMap((k) => R(k));
   book.add('lewie', straw(203).blit(lewieCameo(pal.pal, 'down0', { use: lit }), 0, 0, 255), { solid: SOLID });
   return book;
 }

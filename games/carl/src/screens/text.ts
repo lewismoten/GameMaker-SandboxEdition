@@ -117,7 +117,7 @@ export const CARDS: { title: string; where: string; lines: [string, string] }[] 
   { title: '3. IN BED', where: 'The bedroom, 3:47 AM', lines: ['Carl buzzes near my ear', "like he's reading my head."] },
   { title: '4. THE WINDOW', where: 'The backyard', lines: ["I've opened the window.", "I've begged him to leave."] },
   { title: '5. SEEN THINGS', where: 'The wild (a documentary)', lines: ['Some say flies live', '24 hours. Carl...'] },
-  { title: '6. THE AUX CORD', where: 'The living room, in gloom', lines: ["I tried sage, essential", 'oils... now I mop the floor.'] },
+  { title: '6. THE AUX CORD', where: 'The living room, in gloom', lines: ['I tried sage, essential', 'oils... now I mop the floor.'] },
 ];
 
 const CREDITS_TEXT = page(
@@ -126,8 +126,8 @@ const CREDITS_TEXT = page(
     'by The Bard of Bizarre, 1995',
     'Shareware from The Sofa BBS',
     '',
-    "Based on the song \"There's a",
-    'Fly in the Room (And It\'s',
+    'Based on the song "There\'s a',
+    "Fly in the Room (And It's",
     'Winning)", recorded as "A Fly',
     'Named Carl", by The Bard of',
     'Bizarre (Lewis Moten as his',

@@ -63,7 +63,9 @@ export class Route {
     const d = this.d;
     const ci = d.w.ci;
     const shards = ci.meter.slice(SHARD_COUNTER, SHARD_COUNTER + 10).join('');
-    this.log(`${(d.ticks / 18.2).toFixed(0).padStart(5)} s  ${what}: hp ${ci.hitpts} lives ${ci.lives} credits ${ci.meter[3] - 1} shards ${shards} deaths ${d.deaths}`);
+    this.log(
+      `${(d.ticks / 18.2).toFixed(0).padStart(5)} s  ${what}: hp ${ci.hitpts} lives ${ci.lives} credits ${ci.meter[3] - 1} shards ${shards} deaths ${d.deaths}`,
+    );
   }
 
   private opts(o: SeekOpts): SeekOpts {
@@ -114,7 +116,11 @@ export class Route {
     const d = this.d;
     const l = this.links(scene)[link];
     await this.inScene(scene, async () => {
-      await seek(d, l.from, this.opts({ mode: 'fly', tall: 1, avoid: this.avoidLinks(scene, link), passable: this.shardGates(), maxTicks, grab: this.grab(scene) }));
+      await seek(
+        d,
+        l.from,
+        this.opts({ mode: 'fly', tall: 1, avoid: this.avoidLinks(scene, link), passable: this.shardGates(), maxTicks, grab: this.grab(scene) }),
+      );
     });
     await d.enter(l.toScene);
     return l.toScene;
@@ -228,7 +234,11 @@ export class Route {
     const i = d.w.map.findIndex((n) => n === id);
     if (i < 0) return;
     const spring = { x: i % 100, y: Math.floor(i / 100) };
-    const r = await seek(d, spring, this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(info.scene, -1), maxTicks: 1500, grab: this.grab(info.scene) }));
+    const r = await seek(
+      d,
+      spring,
+      this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(info.scene, -1), maxTicks: 1500, grab: this.grab(info.scene) }),
+    );
     if (!r.arrived || d.dead) return;
     const hp0 = d.w.ci.hitpts;
     let last = hp0;
@@ -254,7 +264,11 @@ export class Route {
       if (!this.reaches(info, info.vault!, false)) await this.credits(info, 20, 200);
       else await this.credits(info, 20, 30);
       if (d.dead) return;
-      const r = await seek(d, info.vault!, this.opts({ mode, tall, passable: this.gates(info), avoid: this.avoidLinks(scene, -1), maxTicks: 8000, grab: this.grab(scene) }));
+      const r = await seek(
+        d,
+        info.vault!,
+        this.opts({ mode, tall, passable: this.gates(info), avoid: this.avoidLinks(scene, -1), maxTicks: 8000, grab: this.grab(scene) }),
+      );
       if (d.dead) return;
       if (!r.arrived) throw new Error(`${info.name}: the bot did not reach the vault (best ${r.best}, at ${d.pos.bx},${d.pos.by})`);
       if (info.module !== undefined) {
@@ -295,7 +309,18 @@ export class Route {
     await this.inScene(SCENE.citadel, async () => {
       await this.credits(info, 20);
       if (d.dead) return;
-      await seek(d, this.links(SCENE.citadel)[1].from, this.opts({ mode: 'walk', tall: 2, passable: this.gates(info), avoid: this.avoidLinks(SCENE.citadel, 1), maxTicks: 10000, grab: this.grab(SCENE.citadel) }));
+      await seek(
+        d,
+        this.links(SCENE.citadel)[1].from,
+        this.opts({
+          mode: 'walk',
+          tall: 2,
+          passable: this.gates(info),
+          avoid: this.avoidLinks(SCENE.citadel, 1),
+          maxTicks: 10000,
+          grab: this.grab(SCENE.citadel),
+        }),
+      );
     });
     await d.enter(SCENE.heart);
   }
@@ -349,7 +374,10 @@ export class Route {
           const p = this.plates();
           // the plates at the courier's height (rows 54 and 55)
           const low = [...p].map((c) => c.split(',').map(Number)).filter(([, y]) => y >= 54);
-          if (this.trace) this.log(`    guardian round ${round}: at ${d.pos.bx},${d.pos.by} plasma ${d.w.ci.meter[SEQ.plasma]} hp ${d.w.ci.hitpts} plates ${low.map((c) => c.join(',')).join(' ')}`);
+          if (this.trace)
+            this.log(
+              `    guardian round ${round}: at ${d.pos.bx},${d.pos.by} plasma ${d.w.ci.meter[SEQ.plasma]} hp ${d.w.ci.hitpts} plates ${low.map((c) => c.join(',')).join(' ')}`,
+            );
           if (!low.length) {
             // a way through at floor level: walk it
             d.press(SCAN.right);

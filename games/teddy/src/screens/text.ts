@@ -217,15 +217,7 @@ export const DOGHOUSE = pages(
     'kitchen and was told, firmly,',
     '"Not yet."',
   ],
-  [
-    'STARRING',
-    '',
-    'Teddy, a corgi who knows',
-    'left from right',
-    '',
-    'and Doc Leo, PhD',
-    '(Comedic Science)',
-  ],
+  ['STARRING', '', 'Teddy, a corgi who knows', 'left from right', '', 'and Doc Leo, PhD', '(Comedic Science)'],
 );
 
 /** Lines under each level card (yellow lines start with NEW). */

@@ -208,7 +208,7 @@ end.files = ['won.lst', 'won.cmf', 'lost.gif', 'lost.cmf', ...new Array(16).fill
 disk.put('year2000.gam', serializeGame(game));
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
-disk.put('license.txt', licenseText("In The Year 2000!"));
+disk.put('license.txt', licenseText('In The Year 2000!'));
 disk.write();
 console.log(
   `${Object.entries(sets)

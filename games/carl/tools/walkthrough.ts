@@ -6,5 +6,12 @@ import { writeSimWalkthrough } from '../../kit/walkthrough';
 import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
-const titles: Record<number, string> = { 2: 'Level 1: The Couch', 3: 'Level 2: The Walls', 4: 'Level 3: Joins Me in Bed', 5: 'Level 4: The Open Window', 6: 'Level 5: Carl Has Seen Things', 7: 'Level 6: The Aux Cord' };
+const titles: Record<number, string> = {
+  2: 'Level 1: The Couch',
+  3: 'Level 2: The Walls',
+  4: 'Level 3: Joins Me in Bed',
+  5: 'Level 4: The Open Window',
+  6: 'Level 5: Carl Has Seen Things',
+  7: 'Level 6: The Aux Cord',
+};
 await writeSimWalkthrough('carl', sim, SEED, titles);

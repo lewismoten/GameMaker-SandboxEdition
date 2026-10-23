@@ -103,14 +103,25 @@ export function buildMonsters(mb: BlockSet, wires: (Wire | undefined)[]): Bestia
   // the sparks pass straight on through it to whatever is next.
   for (const h of [0, 1]) {
     b.add(`lcd${h}`, { pics: [[`lcd${h}`, 50]], power: POWER.gate, becomes: `lcdReady${h}` });
-    const pics: [string, number][] = h ? [['lcdReady1', 6], ['lcdBlank1', 6]] : [['lcdReady0', 50]];
+    const pics: [string, number][] = h
+      ? [
+          ['lcdReady1', 6],
+          ['lcdBlank1', 6],
+        ]
+      : [['lcdReady0', 50]];
     b.add(`lcdReady${h}`, { pics, power: POWER.current, end: -2 });
   }
   // The CitiCar, three blocks parked over a wire: charging current turns its headlights on
   // (the same trick as the LCD) and runs on through it.
   for (const k of [0, 1, 2]) {
     b.add(`car${k}`, { pics: [[`car${k}`, 50]], power: POWER.gate, becomes: `carOn${k}` });
-    const pics: [string, number][] = k === 2 ? [['carOn2', 4], ['carFlash2', 4]] : [[`carOn${k}`, 50]];
+    const pics: [string, number][] =
+      k === 2
+        ? [
+            ['carOn2', 4],
+            ['carFlash2', 4],
+          ]
+        : [[`carOn${k}`, 50]];
     b.add(`carOn${k}`, { pics, power: POWER.current, end: -2 });
   }
   // Watt's reboot: a little burst that turns into a big one a tick later.

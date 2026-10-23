@@ -110,7 +110,9 @@ export class Bot {
 
   say(s: string): void {
     const p = this.sim.pos;
-    this.log.push(`[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} nerve ${this.sim.ci.hitpts} batteries ${this.count(BATTERIES)} sorry ${this.count(SORRY)} dollars ${this.count(MONEY)} helmet ${this.count(HELMET)} smirks ${this.count(SMIRKS)}`);
+    this.log.push(
+      `[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} nerve ${this.sim.ci.hitpts} batteries ${this.count(BATTERIES)} sorry ${this.count(SORRY)} dollars ${this.count(MONEY)} helmet ${this.count(HELMET)} smirks ${this.count(SMIRKS)}`,
+    );
   }
 
   async wait(k: number): Promise<string | undefined> {

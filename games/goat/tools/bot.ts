@@ -64,7 +64,9 @@ export class Bot {
 
   say(s: string): void {
     const p = this.sim.pos;
-    this.log.push(`[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} hp ${this.sim.ci.hitpts} wool ${this.wool} breath ${this.breath}`);
+    this.log.push(
+      `[${this.sim.scene}] ${s} @${p.x - ORIGIN},${p.y - ORIGIN} t${this.sim.ticks} hp ${this.sim.ci.hitpts} wool ${this.wool} breath ${this.breath}`,
+    );
   }
 
   async wait(k: number): Promise<string | undefined> {
@@ -223,7 +225,12 @@ export class Bot {
           if (!best || extra < best.extra || (extra === best.extra && a < best.d)) best = { at: c, stand: s, d: a, extra };
         }
       }
-      if (process.env.BOT_GATHER) console.log(`[${this.sim.scene}] gather to ${tx - ORIGIN},${ty - ORIGIN} from ${p.x - ORIGIN},${p.y - ORIGIN} view ${this.sim.w.mx},${this.sim.w.my}: ${this.lootInView().map((c) => `${c.x - ORIGIN},${c.y - ORIGIN}`).join(' ')} -> ${best ? `${best.at.x - ORIGIN},${best.at.y - ORIGIN} +${best.extra}` : 'none'}`);
+      if (process.env.BOT_GATHER)
+        console.log(
+          `[${this.sim.scene}] gather to ${tx - ORIGIN},${ty - ORIGIN} from ${p.x - ORIGIN},${p.y - ORIGIN} view ${this.sim.w.mx},${this.sim.w.my}: ${this.lootInView()
+            .map((c) => `${c.x - ORIGIN},${c.y - ORIGIN}`)
+            .join(' ')} -> ${best ? `${best.at.x - ORIGIN},${best.at.y - ORIGIN} +${best.extra}` : 'none'}`,
+        );
       if (!best) return undefined;
       spent += best.extra;
       const { at, stand } = best;
@@ -231,7 +238,8 @@ export class Bot {
       this.forage = false;
       try {
         let r = await this.goto(stand.x - ORIGIN, stand.y - ORIGIN, `loot at ${at.x - ORIGIN},${at.y - ORIGIN}`);
-        if (!r && (stand.x !== at.x || stand.y !== at.y)) r = await this.push(stand.x < at.x ? 'right' : stand.x > at.x ? 'left' : stand.y < at.y ? 'down' : 'up');
+        if (!r && (stand.x !== at.x || stand.y !== at.y))
+          r = await this.push(stand.x < at.x ? 'right' : stand.x > at.x ? 'left' : stand.y < at.y ? 'down' : 'up');
         if (r) return r;
       } finally {
         this.forage = was;

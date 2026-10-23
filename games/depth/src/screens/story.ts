@@ -74,7 +74,12 @@ function slide1(render: Picture): Picture {
   });
   const pic = still(world, cam([0.6, -6.5, 2.6], [0.2, 0, 1.8], 0.8), 4, 20, 41);
   bloom(pic, 0.8, 3, 0.6);
-  return caption(pic, ['3:00 AM at Sandbox Software. The render', 'of the century, the box art for DEPTH', 'PERCEPTION, is 99% done. Everybody', 'went home. Doc Leo left the light on.']);
+  return caption(pic, [
+    '3:00 AM at Sandbox Software. The render',
+    'of the century, the box art for DEPTH',
+    'PERCEPTION, is 99% done. Everybody',
+    'went home. Doc Leo left the light on.',
+  ]);
 }
 
 /** Count Polygon in the render, the props going low-poly. */
@@ -82,16 +87,27 @@ function slide2(): Picture {
   const gold = hull(
     (() => {
       const pts: V[] = [];
-      for (let k = 0; k < 8; k++) for (const z of [-1, 1]) pts.push([-2.4 + Math.cos((k * Math.PI) / 4) * 0.5, 0.8 + Math.sin((k * Math.PI) / 4) * 0.5, 2.05 + z * 0.4]);
+      for (let k = 0; k < 8; k++)
+        for (const z of [-1, 1]) pts.push([-2.4 + Math.cos((k * Math.PI) / 4) * 0.5, 0.8 + Math.sin((k * Math.PI) / 4) * 0.5, 2.05 + z * 0.4]);
       return pts;
     })(),
     MAT.gold,
   );
-  const shapes: Shape[] = [floor(), gold, cube(-0.5, 0.5, { color: rgb(220, 40, 50), diffuse: 0.9, spec: 0.8, shine: 50 }, { h: 1, round: 0 }), ...place(C.count(0, 1), 0.6, -0.6, 4.5, Math.PI, 0.6), new Sphere([2.6, 0.4, 0.5], 0.5, MAT.chrome)];
+  const shapes: Shape[] = [
+    floor(),
+    gold,
+    cube(-0.5, 0.5, { color: rgb(220, 40, 50), diffuse: 0.9, spec: 0.8, shine: 50 }, { h: 1, round: 0 }),
+    ...place(C.count(0, 1), 0.6, -0.6, 4.5, Math.PI, 0.6),
+    new Sphere([2.6, 0.4, 0.5], 0.5, MAT.chrome),
+  ];
   const world = stage(shapes, { keyColor: rgb(200, 160, 255), env: (d) => studio(d, { top: rgb(40, 10, 60), horizon: rgb(200, 90, 160) }) });
   const pic = still(world, cam([0.4, -7, 2.4], [0.4, 0, 1.4], 0.8), 4, 20, 42);
   bloom(pic, 0.9, 2.5, 0.5);
-  return caption(pic, ['Then COUNT POLYGON crept in through', 'the modem and started stealing', 'polygons. Spheres went octagonal.', 'The teapot went square.'], rgb(255, 200, 255));
+  return caption(
+    pic,
+    ['Then COUNT POLYGON crept in through', 'the modem and started stealing', 'polygons. Spheres went octagonal.', 'The teapot went square.'],
+    rgb(255, 200, 255),
+  );
 }
 
 /** Ray, close up, every polygon still his. */
@@ -100,20 +116,46 @@ function slide3(): Picture {
   const world = stage(shapes, { env: (d) => studio(d, { top: rgb(90, 120, 210), horizon: rgb(255, 214, 180) }) });
   const pic = still(world, cam([0.8, -5, 2.0], [0, 0, 1.15], 0.75), 4, 20, 43);
   flare(pic, 128, 58, 0.5);
-  return caption(pic, ['He missed one. RAY, the chrome sphere', 'from every ray tracing demo ever made,', 'still had every polygon. And a job to', 'finish by morning.']);
+  return caption(pic, [
+    'He missed one. RAY, the chrome sphere',
+    'from every ray tracing demo ever made,',
+    'still had every polygon. And a job to',
+    'finish by morning.',
+  ]);
 }
 
 /** Two planes, three lenses. */
 function slide4(): Picture {
   const lens = (x: number, c: 'R' | 'G' | 'B') =>
-    new Sphere([x, 0, 1.6], 0.55, { color: LENS_COL[c], diffuse: 0.3, spec: 1.5, shine: 140, glass: { ior: 1.4, tint: mix(LENS_COL[c], [1, 1, 1], 0.4) }, emit: [LENS_COL[c][0] * 0.3, LENS_COL[c][1] * 0.3, LENS_COL[c][2] * 0.3] });
+    new Sphere([x, 0, 1.6], 0.55, {
+      color: LENS_COL[c],
+      diffuse: 0.3,
+      spec: 1.5,
+      shine: 140,
+      glass: { ior: 1.4, tint: mix(LENS_COL[c], [1, 1, 1], 0.4) },
+      emit: [LENS_COL[c][0] * 0.3, LENS_COL[c][1] * 0.3, LENS_COL[c][2] * 0.3],
+    });
   const near: Material = { color: NEAR_COL, diffuse: 0.85, spec: 1, shine: 70 };
   const far: Material = { color: FAR_COL, diffuse: 0.8, spec: 1.2, shine: 90 };
-  const shapes: Shape[] = [floor(), lens(-1.6, 'R'), lens(0, 'G'), lens(1.6, 'B'), cube(-3.2, -1.5, near), cube(-2.2, -1.5, near), cube(2.2, -6, far, { h: 1.5 }), cube(3.2, -6, far, { h: 1.5 })];
+  const shapes: Shape[] = [
+    floor(),
+    lens(-1.6, 'R'),
+    lens(0, 'G'),
+    lens(1.6, 'B'),
+    cube(-3.2, -1.5, near),
+    cube(-2.2, -1.5, near),
+    cube(2.2, -6, far, { h: 1.5 }),
+    cube(3.2, -6, far, { h: 1.5 }),
+  ];
   const world = stage(shapes);
   const pic = still(world, cam([0, 6.5, 2.4], [0, 0, 1.0], 0.8, { aperture: 0.18, focus: 6.8 }), 8, 40, 44);
   bloom(pic, 0.9, 2.5, 0.5);
-  return caption(pic, ['Six scenes, two planes each: sharp is', "solid, a blur isn't there. Find the", 'red, green and blue lenses, and get', 'Ray to every vanishing point.']);
+  return caption(pic, [
+    'Six scenes, two planes each: sharp is',
+    "solid, a blur isn't there. Find the",
+    'red, green and blue lenses, and get',
+    'Ray to every vanishing point.',
+  ]);
 }
 
 export function storyPictures(render: Picture): Picture[] {
@@ -123,7 +165,11 @@ export function storyPictures(render: Picture): Picture[] {
 /** The ending's slide after the cartoon. */
 export function wonPicture(cast: Picture): Picture {
   const pic: Picture = { w: W, h: H, rgb: cast.rgb.slice() };
-  return caption(pic, ['The box art went to the printer at 9.', 'Count Polygon is a single pixel now,', 'somewhere in the corner of the box.', 'Thanks for playing!'], rgb(255, 230, 160));
+  return caption(
+    pic,
+    ['The box art went to the printer at 9.', 'Count Polygon is a single pixel now,', 'somewhere in the corner of the box.', 'Thanks for playing!'],
+    rgb(255, 230, 160),
+  );
 }
 
 export { glowMat };

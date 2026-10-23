@@ -29,7 +29,10 @@ export function gardenBackdrop(pal: Pal, ground = 150, seed = 3): Pixels {
   for (let i = 0; i < 18; i++) {
     const x = Math.floor(r() * W);
     const y = ground - 4 - Math.floor(r() * 8);
-    p.line(x, y + 6, x, y, c('leaf', 1)).set(x, y - 1, c(r() < 0.5 ? 'pink' : 'sun', 2)).set(x - 1, y, c('pink', 3)).set(x + 1, y, c('pink', 3));
+    p.line(x, y + 6, x, y, c('leaf', 1))
+      .set(x, y - 1, c(r() < 0.5 ? 'pink' : 'sun', 2))
+      .set(x - 1, y, c('pink', 3))
+      .set(x + 1, y, c('pink', 3));
   }
   return p;
 }
@@ -72,7 +75,11 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     for (let y = 8; y < 194; y += 3) p.set(25, y, c('parch', 2)).set(294, y + 1, c('parch', 2));
     // a sprig in the corner
     p.line(282, 190, 288, 176, c('leaf', 1));
-    for (const [lx, ly] of [[284, 184], [289, 179]]) p.disc(lx, ly, 2, c('leaf', 3));
+    for (const [lx, ly] of [
+      [284, 184],
+      [289, 179],
+    ])
+      p.disc(lx, ly, 2, c('leaf', 3));
     p.disc(288, 174, 2, c('seed', 3));
     centered(p, 14, heading, c('brown', 1), 2);
     return p;

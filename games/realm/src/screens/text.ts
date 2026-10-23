@@ -96,7 +96,7 @@ export const CREDITS = withCreditPage(
       '  .......... a rubber chicken',
       'Teddy ..... a corgi who knows',
       '  his left from his right',
-      'Gwinn .. two n\'s, one sock',
+      "Gwinn .. two n's, one sock",
       'THE CHEZ .. a 1976 1/2 CitiCar',
       '  (charge port: rear passenger',
       '  side, for reasons)',
@@ -104,13 +104,7 @@ export const CREDITS = withCreditPage(
       'Lord Deadline ..... himself',
       '',
     ]),
-    page([
-      'For Lewis "Lewie" Moten III,',
-      'who always gets around to it.',
-      '',
-      'No kings were rushed in the',
-      'making of this game.',
-    ]),
+    page(['For Lewis "Lewie" Moten III,', 'who always gets around to it.', '', 'No kings were rushed in the', 'making of this game.']),
   ].join('\n'),
 );
 

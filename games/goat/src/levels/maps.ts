@@ -286,7 +286,11 @@ export function caravan(book: BlockBook): Level {
     40,
   );
   // the tents' lower halves, and each tent's own doorway down to the ground
-  for (const [x0, n] of [[3, 'P'], [12, 'B'], [21, 'R']] as const) {
+  for (const [x0, n] of [
+    [3, 'P'],
+    [12, 'B'],
+    [21, 'R'],
+  ] as const) {
     for (let x = x0; x < x0 + 6; x++) m.set(x, 10, x === x0 + 3 ? `tentDoor${n}Low` : `tent${n}Low`);
     if (n !== 'P') m.set(x0 + 3, 9, `tentDoor${n}`);
   }

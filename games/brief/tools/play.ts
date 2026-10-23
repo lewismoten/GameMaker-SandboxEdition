@@ -21,42 +21,88 @@ export async function playThrough(only?: string, verbose = true) {
     if (only && w.spec.wing.id !== only) continue;
     // reading room -> the wing's door
     if (bot.scene !== id.room) throw new Error('Not in the reading room');
-    await bot.walk(() => [hub.doors[w.index]], windowBox(0, 0), () => false, false);
+    await bot.walk(
+      () => [hub.doors[w.index]],
+      windowBox(0, 0),
+      () => false,
+      false,
+    );
     if (bot.follow() !== id.hall(w.index)) throw new Error(`Door ${w.index} leads elsewhere`);
     for (const [k, b] of w.books.entries()) {
-      await bot.walk(() => [w.spines[k]], windowBox(0, 0), () => false, false);
+      await bot.walk(
+        () => [w.spines[k]],
+        windowBox(0, 0),
+        () => false,
+        false,
+      );
       if (bot.follow() !== id.book(w.index, k)) throw new Error(`Spine ${k} leads elsewhere`);
       const box = windowBox(b.win.ox, b.win.oy);
       const before = bot.words;
       const t0 = bot.sim.ticks;
-      await bot.walk(() => wordCells(bot.sim, w.area, box), box, () => false);
+      await bot.walk(
+        () => wordCells(bot.sim, w.area, box),
+        box,
+        () => false,
+      );
       const got = bot.words - before;
       const secs = (bot.sim.ticks - t0) / 18.2;
       if (bot.words < WORDS_PER_BOOK) throw new Error(`${w.spec.wing.id} book ${b.spec.n}: only ${bot.words} words`);
       const shelved = bot.ci.meter[wingCounter(w.index)];
-      await bot.walk(() => [b.page], box, () => bot.ci.meter[wingCounter(w.index)] > shelved);
-      await bot.walk(() => [b.end], box, () => false);
+      await bot.walk(
+        () => [b.page],
+        box,
+        () => bot.ci.meter[wingCounter(w.index)] > shelved,
+      );
+      await bot.walk(
+        () => [b.end],
+        box,
+        () => false,
+      );
       if (bot.ci.meter[wingCounter(w.index)] !== shelved + 1) throw new Error(`${w.spec.wing.id} book ${b.spec.n}: the story was not counted`);
       if (bot.follow() !== id.hall(w.index)) throw new Error(`THE END of ${b.spec.n} leads elsewhere`);
       score = bot.ci.score;
       say(`ok   ${w.spec.wing.id.padEnd(7)} story ${String(b.spec.n).padStart(2)}: ${got} words picked up in ${secs.toFixed(0)}s, score ${score}`);
     }
-    await bot.walk(() => [w.door], windowBox(0, 0), () => false, false);
+    await bot.walk(
+      () => [w.door],
+      windowBox(0, 0),
+      () => false,
+      false,
+    );
     if (bot.follow() !== id.room) throw new Error('The hallway door leads elsewhere');
   }
   // the Reserve Stacks
-  await bot.walk(() => [hub.toStacks], windowBox(0, 0), () => false, false);
+  await bot.walk(
+    () => [hub.toStacks],
+    windowBox(0, 0),
+    () => false,
+    false,
+  );
   if (bot.follow() !== id.stacks) throw new Error('The Stacks door leads elsewhere');
   const counts = wings.map((w) => bot.ci.meter[wingCounter(w.index)] - 1);
   if (only) return { bot, counts };
-  for (const g of hub.gates.slice(0, wings.length)) await bot.walk(() => [g], windowBox(16, 0), () => false, false, 3000);
-  await bot.walk(() => [hub.book33], windowBox(16, 0), () => false, false, 3000);
+  for (const g of hub.gates.slice(0, wings.length))
+    await bot.walk(
+      () => [g],
+      windowBox(16, 0),
+      () => false,
+      false,
+      3000,
+    );
+  await bot.walk(
+    () => [hub.book33],
+    windowBox(16, 0),
+    () => false,
+    false,
+    3000,
+  );
   if (bot.follow() !== id.card33) throw new Error('The thirty-third book leads elsewhere');
   const after = wings.map((w) => bot.ci.meter[wingCounter(w.index)] - 1);
   if (after.join() !== counts.join()) throw new Error(`The gates kept stories: ${counts} -> ${after}`);
   await bot.ticks(3);
   if (bot.follow() !== 1) throw new Error('The thirty-third book does not end the game');
-  say(`ok   the Reserve Stacks: ${counts.join(' ')} stories a wing; the 33rd book; THE END. Score ${bot.ci.score}, ${bot.ci.meter[CTR.words] - 1} words left over.`);
+  say(
+    `ok   the Reserve Stacks: ${counts.join(' ')} stories a wing; the 33rd book; THE END. Score ${bot.ci.score}, ${bot.ci.meter[CTR.words] - 1} words left over.`,
+  );
   return { bot, counts };
 }
-

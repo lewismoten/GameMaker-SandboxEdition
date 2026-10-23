@@ -15,7 +15,12 @@ import { propSprite } from '../sprites/klown';
 function pawArrow(dir: 'up' | 'down' | 'left' | 'right'): Pixels {
   const ink = P.c('gwinn', 1);
   const p = new Pixels(20, 20, 255);
-  const paw = (x: number, y: number) => p.rect(x, y + 1, 3, 2, ink).set(x - 1, y, ink).set(x + 1, y - 1, ink).set(x + 3, y, ink);
+  const paw = (x: number, y: number) =>
+    p
+      .rect(x, y + 1, 3, 2, ink)
+      .set(x - 1, y, ink)
+      .set(x + 1, y - 1, ink)
+      .set(x + 3, y, ink);
   const pts: [number, number][] =
     dir === 'right'
       ? [

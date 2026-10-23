@@ -158,7 +158,13 @@ export function coverRgb(t: number): Uint8Array {
   loaf(put, cx, 129 - t * 3, 44 + t * 1.5, 30 + t * 3, t);
   basket(put, cx, 150, 74, 50, false, t, true);
   // crumbs on the rim
-  for (const [x, y] of [[96, 149], [104, 151], [198, 150], [206, 148]]) for (let k = 0; k < 4; k++) put(x + (k % 2), y + (k >> 1), k ? [240, 210, 150] : [180, 110, 50]);
+  for (const [x, y] of [
+    [96, 149],
+    [104, 151],
+    [198, 150],
+    [206, 148],
+  ])
+    for (let k = 0; k < 4; k++) put(x + (k % 2), y + (k >> 1), k ? [240, 210, 150] : [180, 110, 50]);
   // steam, rising
   for (let k = 0; k < 3; k++)
     for (let s = 0; s < 22; s++) {
@@ -182,7 +188,9 @@ type Put = (x: number, y: number, c: RGB, a?: number) => void;
 function basket(put: Put, cx: number, top: number, rw: number, h: number, full: boolean, t: number, backless = false): void {
   const rh = Math.max(2, rw * 0.22);
   // the shadow on the grass
-  for (let y = 0; y < rh * 1.4; y++) for (let x = -rw * 1.3; x < rw * 1.3; x++) if ((x / (rw * 1.3)) ** 2 + (y / (rh * 1.4)) ** 2 < 1) put(Math.round(cx + x - rw * 0.3), Math.round(top + h + y - rh * 0.4), [30, 40, 20], 0.35);
+  for (let y = 0; y < rh * 1.4; y++)
+    for (let x = -rw * 1.3; x < rw * 1.3; x++)
+      if ((x / (rw * 1.3)) ** 2 + (y / (rh * 1.4)) ** 2 < 1) put(Math.round(cx + x - rw * 0.3), Math.round(top + h + y - rh * 0.4), [30, 40, 20], 0.35);
   for (let y = 0; y < h; y++) {
     const u = y / h;
     const w = rw * (1 - u * 0.2) - (u > 0.85 ? (u - 0.85) * rw * 1.2 : 0);
@@ -221,7 +229,9 @@ function basketBack(put: Put, cx: number, top: number, rw: number, rh: number): 
   for (let y = -rh; y <= rh; y++)
     for (let x = -rw; x <= rw; x++) if ((x / rw) ** 2 + (y / rh) ** 2 <= 1) put(cx + x, top + y, mixc([40, 24, 12], [110, 70, 30], (y + rh) / (2 * rh)));
   // the back of the rim
-  for (let a = Math.PI; a < Math.PI * 2; a += 0.4 / rw) for (let k = 0; k < 4; k++) put(Math.round(cx + Math.cos(a) * rw), Math.round(top + Math.sin(a) * rh) + k - 1, mixc([110, 70, 30], [230, 180, 100], 0.5 + Math.cos(a) * 0.4));
+  for (let a = Math.PI; a < Math.PI * 2; a += 0.4 / rw)
+    for (let k = 0; k < 4; k++)
+      put(Math.round(cx + Math.cos(a) * rw), Math.round(top + Math.sin(a) * rh) + k - 1, mixc([110, 70, 30], [230, 180, 100], 0.5 + Math.cos(a) * 0.4));
 }
 
 /** A small loaf in a far basket: a lit dome. */
@@ -271,5 +281,6 @@ function loaf(put: Put, cx: number, cy: number, rx: number, ry: number, t: numbe
   const ink: RGB = [50, 20, 6];
   for (const ex of [-0.33, 0.3]) for (let k = -3; k <= 3; k++) put(Math.round(cx + ex * rx + k), Math.round(cy + 0.12 * ry + Math.abs(k) * 0.5 - 1), ink);
   for (let k = -5; k <= 5; k++) put(Math.round(cx + k), Math.round(cy + 0.42 * ry - Math.abs(k) * 0.35 + 1.5), ink);
-  for (const ex of [-0.55, 0.52]) for (let k = 0; k < 6; k++) put(Math.round(cx + ex * rx + (k % 3)), Math.round(cy + 0.3 * ry + (k >> 1)), [235, 120, 90], 0.5);
+  for (const ex of [-0.55, 0.52])
+    for (let k = 0; k < 6; k++) put(Math.round(cx + ex * rx + (k % 3)), Math.round(cy + 0.3 * ry + (k >> 1)), [235, 120, 90], 0.5);
 }

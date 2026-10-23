@@ -102,7 +102,13 @@ export function storyScreens(): Screen[] {
         cv.rect(0, 120, 320, 80, (x, y) => mix([70, 120, 60], [40, 80, 40], clamp01((y - 120) / 40 + tnoise(x, y, 10, 320, 2) * 0.2)));
         stand(cv, people('king'), 160, 124, 2);
       },
-      ['In the Kingdom of Procrastia,', 'everything gets done. Eventually.', 'The castle has waited forty years', 'for its roof. King Dillydally IX', 'has been meaning to see to it.'],
+      [
+        'In the Kingdom of Procrastia,',
+        'everything gets done. Eventually.',
+        'The castle has waited forty years',
+        'for its roof. King Dillydally IX',
+        'has been meaning to see to it.',
+      ],
       1,
     ),
     storyPage(
@@ -118,7 +124,13 @@ export function storyScreens(): Screen[] {
         tuit(cv, 160, 52, 22, 1);
         stand(cv, people('king'), 236, 122, 2);
       },
-      ['Every King of Procrastia got', 'around to things by the Royal', 'Round Tuit. It sat on the Tuit', 'Table in the Garden Court, and', 'things got done. Mostly.'],
+      [
+        'Every King of Procrastia got',
+        'around to things by the Royal',
+        'Round Tuit. It sat on the Tuit',
+        'Table in the Garden Court, and',
+        'things got done. Mostly.',
+      ],
       2,
     ),
     storyPage(
@@ -135,7 +147,13 @@ export function storyScreens(): Screen[] {
         const d = bossPicture('deadline');
         cv.draw(bigSprite(d, 2), 120, 40);
       },
-      ['Then LORD DEADLINE, who hates a', 'thing put off more than anything,', 'stole the Tuit, broke it in three', 'and hid the pieces. Now nobody', 'gets around to stopping him.'],
+      [
+        'Then LORD DEADLINE, who hates a',
+        'thing put off more than anything,',
+        'stole the Tuit, broke it in three',
+        'and hid the pieces. Now nobody',
+        'gets around to stopping him.',
+      ],
       3,
     ),
     storyPage(
@@ -149,7 +167,13 @@ export function storyScreens(): Screen[] {
         stand(cv, people('grandma'), 120, 126, 2);
         stand(cv, hero.get('side0')!, 196, 126, 2);
       },
-      ['Except Pip, the stable hand of', 'Nowish, who does things the very', 'day he is asked. His grandmother', 'is very proud. And a little', 'worried. Get to it, Pip!'],
+      [
+        'Except Pip, the stable hand of',
+        'Nowish, who does things the very',
+        'day he is asked. His grandmother',
+        'is very proud. And a little',
+        'worried. Get to it, Pip!',
+      ],
       4,
     ),
   ];
@@ -213,7 +237,9 @@ export function wonScreens(): Screen[] {
   stand(a.cv, hero.get('down0')!, 110, 196, 3);
   stand(a.cv, people('king'), 210, 196, 3);
   parchment(a.cv, 30, 4, 290, 50, 11);
-  ['THE ROUND TUIT IS WHOLE AGAIN!', 'King Dillydally gets around to', 'everything at once. Even the roof.'].forEach((l, i) => a.text(160 - l.length * 4, 12 + i * 12, l, INK));
+  ['THE ROUND TUIT IS WHOLE AGAIN!', 'King Dillydally gets around to', 'everything at once. Even the roof.'].forEach((l, i) =>
+    a.text(160 - l.length * 4, 12 + i * 12, l, INK),
+  );
   const b = new Screen();
   sky(b.cv, [
     [0, [120, 180, 240]],
@@ -235,7 +261,9 @@ export function wonScreens(): Screen[] {
   const car = chezPics().get('carSide0')!;
   stand(b.cv, car, 160, 196, 2);
   parchment(b.cv, 14, 4, 306, 56, 12);
-  ['A feast in the Garden Court!', 'Teddy rings the bell, Gwinn eats', 'the sausages, and Doc Leo juggles', 'three rubber chickens. One real.'].forEach((l, i) => b.text(160 - l.length * 4, 10 + i * 11, l, INK));
+  ['A feast in the Garden Court!', 'Teddy rings the bell, Gwinn eats', 'the sausages, and Doc Leo juggles', 'three rubber chickens. One real.'].forEach(
+    (l, i) => b.text(160 - l.length * 4, 10 + i * 11, l, INK),
+  );
   return [a, b];
 }
 

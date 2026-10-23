@@ -17,7 +17,13 @@ export function addHidden(k: Ctx, { yardBase }: ReturnType<typeof addGround>, pa
   book.add('tinHeart', drawTinHeart(yardBase(111), tin, 0), { score: 100, touch: 'yardA0', next: 'tinHeart2', ntime: 50 });
   book.add('tinHeart2', drawTinHeart(yardBase(111), tin, 2), { score: 100, touch: 'yardA0', next: 'tinHeart', ntime: 3 });
   // the Easter egg, dyed Christmas red with gold zigzags
-  const egg = { ink: c('ink', 0), shell: [c('coat', 1), c('coat', 2), c('coat', 3)], paint: [c('gold', 2), c('gold', 3)], accent: c('snow', 6), white: c('snow', 6) };
+  const egg = {
+    ink: c('ink', 0),
+    shell: [c('coat', 1), c('coat', 2), c('coat', 3)],
+    paint: [c('gold', 2), c('gold', 3)],
+    accent: c('snow', 6),
+    white: c('snow', 6),
+  };
   book.add('easterEgg', drawEasterEgg(yardBase(113), egg, 'zigzag', 0), { score: 25, touch: 'yardA0' });
   // Will, bundled up in his ruff and sweatpants, out front of Bleeps (never the Christmas bulbs)
   const bulbs = new Set(R('bulbs'));

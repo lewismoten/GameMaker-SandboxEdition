@@ -18,10 +18,18 @@ async function gateHolds(): Promise<void> {
   await bot.ticks(2);
   bot.ci.meter[wingCounter(0)] = 4; // three stories (counters read one more than they hold)
   const gate = hub.gates[0];
-  const stuck = await bot.walk(() => [gate], windowBox(16, 0), () => false, false, 300).then(
-    () => false,
-    () => true,
-  );
+  const stuck = await bot
+    .walk(
+      () => [gate],
+      windowBox(16, 0),
+      () => false,
+      false,
+      300,
+    )
+    .then(
+      () => false,
+      () => true,
+    );
   if (!stuck || bot.sim.pos.bx === gate.x || bot.ci.meter[wingCounter(0)] !== 4) throw new Error('A gate opened for three stories');
   console.log('ok   a stamp gate stays shut for a wing with three stories');
 }
@@ -32,16 +40,34 @@ async function eggPocketed(): Promise<void> {
   const id = sceneIds();
   const bot = new Bot(game, { library: { area: hub.area, names: hub.area.mons.names, hazards: hazardsOf(hub.area) } }, chr, cb.build());
   bot.enter(id.stacks, hub.stacks.entry);
-  await bot.walk(() => [hub.looseShelf], windowBox(16, 0), () => false, false, 3000);
+  await bot.walk(
+    () => [hub.looseShelf],
+    windowBox(16, 0),
+    () => false,
+    false,
+    3000,
+  );
   if (bot.follow() !== id.lost) throw new Error('The loose shelf does not lead to the Lost and Found');
-  await bot.walk(() => [hub.egg], windowBox(32, 0), () => false, false, 3000);
+  await bot.walk(
+    () => [hub.egg],
+    windowBox(32, 0),
+    () => false,
+    false,
+    3000,
+  );
   if (bot.ci.inv.includes(EGG_BLOCK)) throw new Error('The egg was pocketed without P');
   bot.sim.press(0x19);
   await bot.ticks(2);
   bot.sim.release(0x19);
   await bot.ticks(12);
   if (bot.ci.inv[0] !== EGG_BLOCK || bot.ci.inv.slice(1).some((b) => b !== BACKBL)) throw new Error(`P did not pocket the egg: ${bot.ci.inv}`);
-  await bot.walk(() => [hub.lostOut], windowBox(32, 0), () => false, false, 3000);
+  await bot.walk(
+    () => [hub.lostOut],
+    windowBox(32, 0),
+    () => false,
+    false,
+    3000,
+  );
   if (bot.follow() !== id.stacks || bot.ci.inv[0] !== EGG_BLOCK) throw new Error('The egg did not come out of the Lost and Found');
   console.log(`ok   the felt egg: loose shelf, P, block ${EGG_BLOCK} in the pocket, back in the Stacks`);
 }

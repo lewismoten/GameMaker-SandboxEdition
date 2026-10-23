@@ -103,12 +103,18 @@ export function heroPics(): Map<string, Canvas> {
   strike.set(12, 14, C('gold', 2)).set(12, 13, C('gold', 2));
   m.set('strike', strike);
   // hurt: flushed red, eyes squeezed shut
-  const ouch = lookKey({ hair: R('hairBrown', 0, 1, 2), coat: R('green', 1, 2, 3), pants: R('leather', 2, 3), hat: R('red', 1, 2, 3) }, { s: C('red', 3), S: C('pink', 2), d: C('red', 2) });
+  const ouch = lookKey(
+    { hair: R('hairBrown', 0, 1, 2), coat: R('green', 1, 2, 3), pants: R('leather', 2, 3), hat: R('red', 1, 2, 3) },
+    { s: C('red', 3), S: C('pink', 2), d: C('red', 2) },
+  );
   m.set('hurt', pose([...FRONT_TOP.slice(0, 8), ...BLINK], FRONT_BODY, FRONT_LEGS.a, ouch));
   // lying flat (the character file turns it on its side)
   m.set('down', pose([...FRONT_TOP.slice(0, 8), ...BLINK], FRONT_BODY, FRONT_LEGS.stand));
   // stooping for something at his feet
-  m.set('stoop', pose(['....................', ...FRONT_TOP.slice(0, 11)], FRONT_BODY, ['.....KnNNKKNNnK.....', '......KKK..KKK......', '....................']));
+  m.set(
+    'stoop',
+    pose(['....................', ...FRONT_TOP.slice(0, 11)], FRONT_BODY, ['.....KnNNKKNNnK.....', '......KKK..KKK......', '....................']),
+  );
   // a toot on the kazoo and a swig of tonic
   const toot = pose(FRONT_TOP, FRONT_BODY, FRONT_LEGS.stand);
   for (let k = 0; k < 5; k++) toot.set(11 + k, 10, C('gold', k % 2 ? 2 : 3));

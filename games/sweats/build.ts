@@ -116,7 +116,20 @@ built.forEach(({ def, map, links }) => {
   const scene: Scene = emptyScene(ADVTYPE);
   scene.desc = def.desc.slice(0, 19);
   scene.pos = { x: def.pos[0], y: def.pos[1] };
-  scene.files = [`${def.pal}.pal`, `${def.mapFile}.map`, `${g.id}.bbl`, `${def.mapFile}.mon`, `${g.id}.mbl`, 'poet.chr', 'poet.cbl', `${def.snd}.snd`, `${def.song}.cmf`, def.intro ?? '', def.exit ?? '', ...new Array(9).fill('')];
+  scene.files = [
+    `${def.pal}.pal`,
+    `${def.mapFile}.map`,
+    `${g.id}.bbl`,
+    `${def.mapFile}.mon`,
+    `${g.id}.mbl`,
+    'poet.chr',
+    'poet.cbl',
+    `${def.snd}.snd`,
+    `${def.song}.cmf`,
+    def.intro ?? '',
+    def.exit ?? '',
+    ...new Array(9).fill(''),
+  ];
   if (links.length > MAXSCENELINKS) throw new Error(`${def.file}: too many links`);
   scene.links = Array.from({ length: MAXSCENELINKS }, (_, k) => {
     const spec = links[k];
@@ -133,7 +146,21 @@ built.forEach(({ def, map, links }) => {
 });
 
 const start = game.scenes[0];
-start.files = ['title.lst', 'title.cmf', 'menu.gif', 'menu.cmf', 'story.lst', 'story.cmf', 'howto.lst', 'credits.lst', 'hiscore.gif', 'loadgame.gif', 'savegame.gif', 'demo.rec', ...new Array(8).fill('')];
+start.files = [
+  'title.lst',
+  'title.cmf',
+  'menu.gif',
+  'menu.cmf',
+  'story.lst',
+  'story.cmf',
+  'howto.lst',
+  'credits.lst',
+  'hiscore.gif',
+  'loadgame.gif',
+  'savegame.gif',
+  'demo.rec',
+  ...new Array(8).fill(''),
+];
 start.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: built[0].start[0], y: built[0].start[1] } };
 const end = game.scenes[1];
 end.files = ['won.lst', 'won.cmf', 'lost.lst', 'lost.cmf', ...new Array(16).fill('')];

@@ -34,15 +34,48 @@ export const BPM = 62;
 // ---- the patches --------------------------------------------------------------------------
 
 /** The soloist: a warm, breathy voice with vibrato (half-sine modulator). */
-const SOUL = sbi({ modChar: 0x61, carChar: 0x61, modLevel: 0x1c, carLevel: 0x00, modAD: 0x63, carAD: 0x74, modSR: 0x15, carSR: 0x16, modWave: 1, feedback: 0x0c });
+const SOUL = sbi({
+  modChar: 0x61,
+  carChar: 0x61,
+  modLevel: 0x1c,
+  carLevel: 0x00,
+  modAD: 0x63,
+  carAD: 0x74,
+  modSR: 0x15,
+  carSR: 0x16,
+  modWave: 1,
+  feedback: 0x0c,
+});
 /** Her twin: the same voice without the vibrato, a hair apart all the time. */
 const SOUL2 = detuned(SOUL);
 /** The gospel organ: two drawbars heard at once (additive), the upper one with the Leslie's tremolo. */
-const ORGAN = sbi({ modChar: 0x21, carChar: 0xa2, modLevel: 0x12, carLevel: 0x0a, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, carWave: 1, feedback: 0x03 });
+const ORGAN = sbi({
+  modChar: 0x21,
+  carChar: 0xa2,
+  modLevel: 0x12,
+  carLevel: 0x0a,
+  modAD: 0xf0,
+  carAD: 0xf0,
+  modSR: 0x0f,
+  carSR: 0x0f,
+  carWave: 1,
+  feedback: 0x03,
+});
 /** The organ swelling from a whisper to full, opening up as it goes (8 steps). */
 const SWELL = sweep(ORGAN, 8, { mod: 46, car: 44 }, { mod: 14, car: 8 });
 /** Choir "ooh": a slow, soft vowel; its twin beats against it. */
-const OOH = sbi({ modChar: 0x61, carChar: 0x21, modLevel: 0x2a, carLevel: 0x00, modAD: 0x52, carAD: 0x53, modSR: 0x14, carSR: 0x15, modWave: 1, feedback: 0x06 });
+const OOH = sbi({
+  modChar: 0x61,
+  carChar: 0x21,
+  modLevel: 0x2a,
+  carLevel: 0x00,
+  modAD: 0x52,
+  carAD: 0x53,
+  modSR: 0x14,
+  carSR: 0x15,
+  modWave: 1,
+  feedback: 0x06,
+});
 const OOH2 = detuned(OOH);
 /** Choir "aah", brighter, for the shouts (the same voice opened up). */
 const AAH = waved(leveled(OOH, { mod: 0x1e }), 2, 0);
@@ -83,7 +116,10 @@ const fold = (pc: number, lo: number) => lo + ((pc - lo + 120) % 12);
 /** Four choir/organ voices, low to high, in F3..E5 (a seventh chord keeps its seventh on top). */
 function voicing(name: string, shift = 0): number[] {
   const { pc, iv } = shape(name);
-  const low = iv.slice(0, 3).map((i) => fold(pc + i + shift, 55)).sort((a, b) => a - b);
+  const low = iv
+    .slice(0, 3)
+    .map((i) => fold(pc + i + shift, 55))
+    .sort((a, b) => a - b);
   const top = iv[3] === 12 ? low[0] + 12 : fold(pc + iv[3] + shift, 63);
   return [...low, top];
 }
@@ -342,7 +378,10 @@ class Arranger {
   hit(chord: string, shift = 0): this {
     const at = this.bar * 4;
     // the bass drum changes patch for the one hit (a deeper thud), then goes back to the bass
-    this.fx.program(DRUM.kick, at, THUD).boom(at, 1, root(chord, shift), 127).program(DRUM.kick, at + 1, BOOM);
+    this.fx
+      .program(DRUM.kick, at, THUD)
+      .boom(at, 1, root(chord, shift), 127)
+      .program(DRUM.kick, at + 1, BOOM);
     this.fx.drumRoll(DRUM.cymbal, at, 1 / 3, 1 / 3, 120, 120);
     return this;
   }
@@ -379,7 +418,10 @@ export function titleSong(): Uint8Array {
   intro(a, false);
   a.roll(2).hit('Bb');
   chorus(a, CHORUS);
-  a.section({ name: 'tag', chords: ['Bb', 'Bb'], tune: ['r q, D4 e, C4 e, ~Bb3 h', 'r w'] }, { comp: 'swell', sing: 'solo', bass: 'long', drums: ['hush', 'none'], vel: 86 });
+  a.section(
+    { name: 'tag', chords: ['Bb', 'Bb'], tune: ['r q, D4 e, C4 e, ~Bb3 h', 'r w'] },
+    { comp: 'swell', sing: 'solo', bass: 'long', drums: ['hush', 'none'], vel: 86 },
+  );
   return a.cmf();
 }
 
@@ -445,8 +487,14 @@ function outro(a: Arranger): void {
 /** Lost: "Loaf number thirteen, left in the shade", slow and alone, then "...bread... bread". */
 export function lostSong(): Uint8Array {
   const a = new Arranger(52);
-  a.section({ name: 'left in the shade', chords: ['Gm', 'Eb', 'Cm', 'F7'], tune: VERSE2.tune.slice(0, 4) }, { comp: 'harp', sing: 'solo', bass: 'long', drums: ['none'], vel: 84 });
-  a.section({ name: 'still', chords: ['Bb', 'Bb'], tune: ['r q, D4 e, C4 e, Bb3 h', 'r w'] }, { comp: 'choir', sing: 'solo', bass: 'long', drums: ['none'], vel: 80 });
+  a.section(
+    { name: 'left in the shade', chords: ['Gm', 'Eb', 'Cm', 'F7'], tune: VERSE2.tune.slice(0, 4) },
+    { comp: 'harp', sing: 'solo', bass: 'long', drums: ['none'], vel: 84 },
+  );
+  a.section(
+    { name: 'still', chords: ['Bb', 'Bb'], tune: ['r q, D4 e, C4 e, Bb3 h', 'r w'] },
+    { comp: 'choir', sing: 'solo', bass: 'long', drums: ['none'], vel: 80 },
+  );
   a.fx.stutter(TWIN, (a.bar - 1) * 4, 58, 4, 2 / 3, 60);
   a.fx.swell(VOICES, (a.bar - 1) * 4, 3.5, HUSH);
   return a.cmf();
@@ -474,7 +522,17 @@ export function wholeSong(): Uint8Array {
 /** Every song, by file name, for the build and the preview. */
 export function allSongs(): Record<string, Uint8Array> {
   const levels = levelSongs();
-  return { title: titleSong(), story: storySong(), hill: levels[0], wicker: levels[1], baskets: levels[2], home: levels[3], won: wonSong(), lost: lostSong(), menu: wholeSong() };
+  return {
+    title: titleSong(),
+    story: storySong(),
+    hill: levels[0],
+    wicker: levels[1],
+    baskets: levels[2],
+    home: levels[3],
+    won: wonSong(),
+    lost: lostSong(),
+    menu: wholeSong(),
+  };
 }
 
 export { voicing, root };

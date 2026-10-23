@@ -127,12 +127,13 @@ function profile(k: ChezInk, port: boolean, s: number, t = s): Pixels {
   const stripe = k.stripe ?? k.tire;
   const pin = k.pin ?? k.glass[1];
   const rim = k.rim ?? pin;
-  const box = (x: number, y: number, w: number, h: number, c: number) => p.rect(Math.round(x * s), Math.round(y * t), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * t)), c);
+  const box = (x: number, y: number, w: number, h: number, c: number) =>
+    p.rect(Math.round(x * s), Math.round(y * t), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * t)), c);
   const at = (x: number) => Math.round(x * s);
   const atY = (y: number) => Math.round(y * t);
   // white steel wheels and chrome caps on black tires (round however tall the car), on the
   // ground and tucked up behind the quarters
-  const r = TIRE * (s + t) / 2;
+  const r = (TIRE * (s + t)) / 2;
   const cy = H - r - 0.5;
   for (const wx of CHEZ_WHEELS) {
     p.disc(wx * s - 0.5, cy, r, k.tire);
@@ -154,7 +155,8 @@ function profile(k: ChezInk, port: boolean, s: number, t = s): Pixels {
       if (!onChez(X, Y)) continue;
       // flat red sides, lit along the top of the hood's slope, shadowed under the door
       let c = k.body[Y > 16.9 ? 0 : X > 17.9 && Y - 1.3 - (X - 17.9) * fall < Math.max(0.9, 1.5 * px) ? 2 : 1];
-      if (Y < ROOF_EDGE || (Y < 1.3 + px && X < 17.9 + 1 / s)) c = k.roof; // (at least a pixel of it)
+      if (Y < ROOF_EDGE || (Y < 1.3 + px && X < 17.9 + 1 / s))
+        c = k.roof; // (at least a pixel of it)
       else if (inPoly(CHEZ_WINDOW, X, Y)) c = k.glass[0];
       else if (X >= BAND_END - (s >= 2 ? px : 0)) {
         // the stripes: a dark pair, the red between them, a white pinstripe round the band
@@ -198,7 +200,19 @@ function profile(k: ChezInk, port: boolean, s: number, t = s): Pixels {
     const edge: Pt[] = [];
     for (let y = 0; y < H; y++)
       for (let x = 0; x < W; x++)
-        if (p.get(x, y) === HOLE && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const v = p.get(x + dx, y + dy); return v !== HOLE && v !== -1; })) edge.push([x, y]);
+        if (
+          p.get(x, y) === HOLE &&
+          [
+            [1, 0],
+            [-1, 0],
+            [0, 1],
+            [0, -1],
+          ].some(([dx, dy]) => {
+            const v = p.get(x + dx, y + dy);
+            return v !== HOLE && v !== -1;
+          })
+        )
+          edge.push([x, y]);
     for (const [x, y] of edge) p.set(x, y, o);
   }
   return p;
@@ -215,7 +229,15 @@ export function chezPicture(k: ChezInk, facing: 'left' | 'right' = 'right', scal
  * scale s (20s x tall high when stretched). Facing 'left' shows the passenger side and its
  * charge port; returns where the port is, for a charger's cord.
  */
-export function chezSide(p: Pixels, ox: number, oy: number, k: ChezInk, facing: 'left' | 'right' = 'right', scale = 1, tall = 1): { portX: number; portY: number } {
+export function chezSide(
+  p: Pixels,
+  ox: number,
+  oy: number,
+  k: ChezInk,
+  facing: 'left' | 'right' = 'right',
+  scale = 1,
+  tall = 1,
+): { portX: number; portY: number } {
   const left = facing === 'left';
   const car = chezPicture(k, facing, scale, tall);
   p.blit(car, ox, oy, HOLE);

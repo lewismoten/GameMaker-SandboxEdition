@@ -33,7 +33,13 @@ export function outsideBlocks(book: BlockBook, pal: Pal): void {
   // the pharmacy he just left: its sign, the striped awning, the window, the door
   {
     const pic = new Pixels(60, 60, T);
-    for (let y = 0; y < 60; y++) for (let x = 0; x < 60; x++) pic.set(x, y, (y % 6 === 5 || (x + (Math.floor(y / 6) % 2) * 5) % 10 === 0) && y > 2 ? c('brick2', 0) : c('brick2', 1 + ((x * 3 + y) % 7 === 0 ? 1 : 0)));
+    for (let y = 0; y < 60; y++)
+      for (let x = 0; x < 60; x++)
+        pic.set(
+          x,
+          y,
+          (y % 6 === 5 || (x + (Math.floor(y / 6) % 2) * 5) % 10 === 0) && y > 2 ? c('brick2', 0) : c('brick2', 1 + ((x * 3 + y) % 7 === 0 ? 1 : 0)),
+        );
     pic.rect(0, 0, 60, 2, c('concrete', 2));
     pic.rect(5, 3, 50, 10, c('white', 2)).frame(5, 3, 50, 10, c('green', 1));
     micro(pic, 14, 5, 'PHARMACY', c('red', 1));
@@ -47,7 +53,9 @@ export function outsideBlocks(book: BlockBook, pal: Pal): void {
     pic.rect(3, 24, 30, 28, c('glass', 1)).frame(3, 24, 30, 28, c('metal', 1));
     for (const y of [33, 42, 50]) pic.rect(4, y, 28, 1, c('metal', 2));
     const r = rng(60);
-    for (const y of [27, 36, 45]) for (let x = 5; x < 31; x += 3) pic.rect(x, y + (r() < 0.3 ? 1 : 0), 2, 6 - (y === 45 ? 1 : 0), c(['red', 'teal', 'white', 'yellow', 'pink'][Math.floor(r() * 5)], 2));
+    for (const y of [27, 36, 45])
+      for (let x = 5; x < 31; x += 3)
+        pic.rect(x, y + (r() < 0.3 ? 1 : 0), 2, 6 - (y === 45 ? 1 : 0), c(['red', 'teal', 'white', 'yellow', 'pink'][Math.floor(r() * 5)], 2));
     pic.line(6, 25, 12, 31, c('glass', 2)).line(8, 25, 14, 31, c('glass', 2));
     // the glass door, OPEN
     pic.rect(38, 23, 18, 37, c('metal', 1)).rect(40, 25, 14, 35, c('glass', 1)).rect(40, 25, 14, 1, c('glass', 2));
@@ -90,7 +98,13 @@ export function outsideBlocks(book: BlockBook, pal: Pal): void {
     pic.rect(55, 22, 3, 3, c('yellow', 2)).rect(2, 20, 2, 4, c('red', 2));
     pic.rect(2, 30, 56, 3, c('metal', 0));
     for (const x of [14, 46]) pic.disc(x, 33, 6, c('ink', 0)).disc(x, 33, 3, c('metal', 1)).disc(x, 33, 1.2, c('metal', 2));
-    addPicture(book, 'van', pic, (_col, row) => (row ? townAt(pal, 65) : skylineAt(pal, 66)), () => ({ solid: SOLID }));
+    addPicture(
+      book,
+      'van',
+      pic,
+      (_col, row) => (row ? townAt(pal, 65) : skylineAt(pal, 66)),
+      () => ({ solid: SOLID }),
+    );
   }
   // a park bin to climb, and the park's tree: a broad, flat crown to stand on, its trunk
   const bin = townAt(pal, 67);
@@ -103,13 +117,30 @@ export function outsideBlocks(book: BlockBook, pal: Pal): void {
     pic.line(13, 22, 24, 12, c('wood', 1)).line(13, 23, 24, 13, c('wood', 0));
     for (let y = 30; y < 78; y += 9) pic.rect(9, y, 3, 1, c('wood', 0));
     pic.rect(4, 77, 14, 3, c('wood', 0));
-    for (const [x, y, rx, ry] of [[10, 9, 10, 8], [22, 7, 11, 7], [32, 10, 8, 7], [17, 13, 12, 6]]) blob(pic, x, y, rx, ry, R('green'), 0, 3);
-    addPicture(book, 'tree', pic, (_col, row) => (row === 0 ? sky(68) : row === 1 ? sky(69) : row === 2 ? skylineAt(pal, 70) : townAt(pal, 71)), (_col, row) => (row === 0 ? { solid: LEDGE, grav: GRAV.down } : AIR));
+    for (const [x, y, rx, ry] of [
+      [10, 9, 10, 8],
+      [22, 7, 11, 7],
+      [32, 10, 8, 7],
+      [17, 13, 12, 6],
+    ])
+      blob(pic, x, y, rx, ry, R('green'), 0, 3);
+    addPicture(
+      book,
+      'tree',
+      pic,
+      (_col, row) => (row === 0 ? sky(68) : row === 1 ? sky(69) : row === 2 ? skylineAt(pal, 70) : townAt(pal, 71)),
+      (_col, row) => (row === 0 ? { solid: LEDGE, grav: GRAV.down } : AIR),
+    );
   }
   // the clouds, too bored to bother: one long cloud, half asleep
   {
     const pic = new Pixels(40, 20, T);
-    for (const [x, y, rx, ry] of [[9, 12, 8, 5], [19, 9, 9, 7], [30, 12, 8, 5]]) blob(pic, x, y, rx, ry, R('white'), 0, 2);
+    for (const [x, y, rx, ry] of [
+      [9, 12, 8, 5],
+      [19, 9, 9, 7],
+      [30, 12, 8, 5],
+    ])
+      blob(pic, x, y, rx, ry, R('white'), 0, 2);
     pic.rect(14, 10, 3, 1, c('grey', 1)).rect(22, 10, 3, 1, c('grey', 1)).rect(18, 14, 4, 1, c('grey', 1));
     addPicture(book, 'cloud', pic, skyAt(pal, 72, 2), () => AIR);
   }
@@ -164,7 +195,9 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
   // the elderly woman, clutching her purse tighter
   const granny = (f: number) => {
     const p = person(pal, { hair: 'white', shirt: 'purple', pants: 'purple', step: 0, skirt: true, bun: true, glasses: true, raw: true });
-    p.rect(8 - f, 10, 6 + f, 5 - f, c('red', 1)).rect(8 - f, 10, 6 + f, 1, c('red', 2)).line(9, 9, 12, 9, c('red', 0));
+    p.rect(8 - f, 10, 6 + f, 5 - f, c('red', 1))
+      .rect(8 - f, 10, 6 + f, 1, c('red', 2))
+      .line(9, 9, 12, 9, c('red', 0));
     if (f) p.set(7, 6, ink).set(13, 6, ink);
     return outline(p, ink);
   };
@@ -192,7 +225,13 @@ export function outsideSprites(book: SpriteBook, pal: Pal): void {
 }
 
 export function outsideMonsters(set: Monster[], mb: SpriteBook): void {
-  set[OUT_MON.receipt] = mon(anim(mb, 'receipt0', 'receipt1', 6), { power: POWER.tough, thru: 0 }, [corner(0, 0, 1), corner(2, -1, 1), corner(4, 0, 1), corner(2, 1, 1, 4), corner(0, 0, 1, 4)]);
+  set[OUT_MON.receipt] = mon(anim(mb, 'receipt0', 'receipt1', 6), { power: POWER.tough, thru: 0 }, [
+    corner(0, 0, 1),
+    corner(2, -1, 1),
+    corner(4, 0, 1),
+    corner(2, 1, 1, 4),
+    corner(0, 0, 1, 4),
+  ]);
   set[OUT_MON.ped] = mon(anim(mb, 'ped0', 'ped1', 5), { power: POWER.foe, thru: 1, newmon: OUT_MON.pedRun }, pace(3, 1));
   set[OUT_MON.pedRun] = mon(anim(mb, 'pedRun0', 'pedRun1', 2), { power: POWER.tough, thru: 0, end: 26 }, [corner(0, 0, 4), corner(8, -1, 4, 0)]);
   set[OUT_MON.granny] = mon(anim(mb, 'granny0', 'granny1', 14), { power: POWER.tough, thru: 1 }, still);
@@ -204,9 +243,17 @@ export function outsideMonsters(set: Monster[], mb: SpriteBook): void {
 export const outside: Monologue = {
   file: 'outside',
   title: 'This Is Why I Don’t Go Outside',
-  desc: 'Don\'t Go Outside',
+  desc: "Don't Go Outside",
   // a dull Thursday afternoon: a pale, washed-out sky
-  light: { sky: [[96, 132, 178], [222, 230, 236], [160, 186, 212]], mul: [1, 1, 1], add: [0, 0, 0] },
+  light: {
+    sky: [
+      [96, 132, 178],
+      [222, 230, 236],
+      [160, 186, 212],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
   filler: 'soil',
   legend: {
     H: 'skyHi',
@@ -235,9 +282,16 @@ export const outside: Monologue = {
     // the scene ends
     const OFF = 2;
     const W = 70 + OFF;
-    m.fill(0, 0, W, 3, 'H').row(3, 0, W - 1, 'skyMid').fill(0, 4, W, 4, 's').row(8, 0, W - 1, 'k').row(9, 0, W - 1, 't').row(11, 0, W - 1, '#');
+    m.fill(0, 0, W, 3, 'H')
+      .row(3, 0, W - 1, 'skyMid')
+      .fill(0, 4, W, 4, 's')
+      .row(8, 0, W - 1, 'k')
+      .row(9, 0, W - 1, 't')
+      .row(11, 0, W - 1, '#');
     // the ground: the sidewalk, the parking lot, the park
-    m.row(10, 0, 23, '=').row(10, 24, 47, 'a').row(10, 48, W - 1, 'g');
+    m.row(10, 0, 23, '=')
+      .row(10, 24, 47, 'a')
+      .row(10, 48, W - 1, 'g');
     for (const x of [24, 31, 32, 40, 47]) m.set(x, 10, 'A');
     // too bored to bother
     placePicture(m, 'cloud', 12, 1, 2, 1);

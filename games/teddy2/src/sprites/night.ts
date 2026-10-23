@@ -64,7 +64,16 @@ export const NIGHT: Record<string, Pixels> = {
     '..ogo...ogo..ogo....',
     '..ogo....ogo.ogo....',
   ]),
-  raccoonRun: S(['.........oo.oo......', '........oGGoGGo.....', '.o.o...okkwGGwkko...', 'oGhGooooGGGGGGGGok..', '.ohGGGGGGGGGGGGo....', '..oGGGGGGGGGGGo.....', '.ogo...........ogo..', 'ogo.............ogo.']),
+  raccoonRun: S([
+    '.........oo.oo......',
+    '........oGGoGGo.....',
+    '.o.o...okkwGGwkko...',
+    'oGhGooooGGGGGGGGok..',
+    '.ohGGGGGGGGGGGGo....',
+    '..oGGGGGGGGGGGo.....',
+    '.ogo...........ogo..',
+    'ogo.............ogo.',
+  ]),
   skunk1: S([
     '..ooo...............',
     '.oWWWo..............',
@@ -91,8 +100,25 @@ export const NIGHT: Record<string, Pixels> = {
     '.....oOOOOOOOOOOOo..',
     '....oko..oko..oko...',
   ]),
-  owl1: S(['....ooooooo.....', '...obbBBBbbo....', '..obYoBoYobo....', '..obbbyybbbo....', '.obbBbbbbBbbo...', 'obBbbBbbbBbbbo..', '.oooobbbbboooo..', '.....oyoyo......'], undefined, 1),
-  owl2: S(['oo.........oo...', 'obo..ooo..obo...', '.obbobBBobbo....', '..obbYyYbbo.....', '...obbbbbo......', '....obbbo.......', '.....oyo........'], undefined, 1),
+  owl1: S(
+    [
+      '....ooooooo.....',
+      '...obbBBBbbo....',
+      '..obYoBoYobo....',
+      '..obbbyybbbo....',
+      '.obbBbbbbBbbo...',
+      'obBbbBbbbBbbbo..',
+      '.oooobbbbboooo..',
+      '.....oyoyo......',
+    ],
+    undefined,
+    1,
+  ),
+  owl2: S(
+    ['oo.........oo...', 'obo..ooo..obo...', '.obbobBBobbo....', '..obbYyYbbo.....', '...obbbbbo......', '....obbbo.......', '.....oyo........'],
+    undefined,
+    1,
+  ),
   firefly1: S(['..Y..', '.YyY.', '..Y..'], 8, 9),
   firefly2: S(['.....', '..y..', '.....'], 8, 9),
   boxes: S([
@@ -123,7 +149,8 @@ export const NIGHT: Record<string, Pixels> = {
   ropeChewed: S(['qqqqqq........qqqqqq', 'rRrRr..........RrRrR', 'qqqq............qqqq', '.....r.......q......', '......q.....r.......'], 0, 8),
   clay: (() => {
     const p = new Pixels(20, 20, 255);
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (x * 7 + y * 13) % 5 === 0 ? c('brick', 0) : (x + y * 3) % 7 === 0 ? c('brick', 2) : c('brick', 1));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) p.set(x, y, (x * 7 + y * 13) % 5 === 0 ? c('brick', 0) : (x + y * 3) % 7 === 0 ? c('brick', 2) : c('brick', 1));
     p.rect(0, 0, 20, 2, c('grass', 1));
     return p;
   })(),

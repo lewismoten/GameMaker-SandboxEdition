@@ -219,6 +219,11 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
       { envelope: (u) => Math.sin(u * Math.PI) },
     ),
   );
-  put(SND.splash, SPEAKER.noise(5, 200, 900), 'splash', noiseBurst(0.4, 0.55, 53, (u) => Math.min(1, u * 30) * (1 - u) ** 2));
+  put(
+    SND.splash,
+    SPEAKER.noise(5, 200, 900),
+    'splash',
+    noiseBurst(0.4, 0.55, 53, (u) => Math.min(1, u * 30) * (1 - u) ** 2),
+  );
   return { set, vocs };
 }

@@ -8,7 +8,14 @@ import type { MapBuilder } from '../levels/maps';
  * Cuts `pic` (w x h blocks) into blocks over the backdrop `bg` (its own pixels show wherever
  * the picture has `clear`). `attrs(col, row)` gives each block's attributes.
  */
-export function addPicture(book: BlockBook, name: string, pic: Pixels, bg: Pixels | ((col: number, row: number) => Pixels), attrs: (col: number, row: number) => object, clear = 255): void {
+export function addPicture(
+  book: BlockBook,
+  name: string,
+  pic: Pixels,
+  bg: Pixels | ((col: number, row: number) => Pixels),
+  attrs: (col: number, row: number) => object,
+  clear = 255,
+): void {
   const cols = Math.ceil(pic.w / 20);
   const rows = Math.ceil(pic.h / 20);
   for (let r = 0; r < rows; r++)

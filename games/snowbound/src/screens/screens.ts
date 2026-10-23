@@ -364,11 +364,7 @@ export function buildScreens(
   const fair = sepia(resample(loadScan('colonial'), 80), rgb8(c('newsink', 0)), rgb8(c('paper', 4)), 1.15);
   won3.frame(9, 144, fair.w + 2, fair.h + 2, c('newsink', 0));
   text(won3, 98, 148, 'HISTORY FAIR AT THE MALL', c('newsink', 0));
-  body(won3, 98, 160, 212, [
-    'A VOLUNTEER IN COLONIAL DRESS GREETS',
-    'SHOPPERS BESIDE GENERAL WASHINGTON AT',
-    "LAVALE MALL'S HISTORY FAIR.",
-  ]);
+  body(won3, 98, 160, 212, ['A VOLUNTEER IN COLONIAL DRESS GREETS', 'SHOPPERS BESIDE GENERAL WASHINGTON AT', "LAVALE MALL'S HISTORY FAIR."]);
   micro(won3, 238, 189, 'THANKS FOR PLAYING!', c('newsink', 0));
   const { pal: won3pal } = pastePhoto(won3, pal.pal, fair, 10, 145, { colors: 24 });
   save('won3.gif', won3, won3pal);
@@ -451,7 +447,9 @@ export function buildScreens(
       // the porch with a puff of snow (the carrier this morning is the founder)
       const paperAt = (x: number, y: number, flat: boolean) => {
         if (flat) {
-          p.rect(x - 9, y - 4, 19, 6, c('snow', 6)).rect(x - 9, y + 1, 19, 1, c('grey', 3)).rect(x - 10, y - 4, 1, 6, c('grey', 4));
+          p.rect(x - 9, y - 4, 19, 6, c('snow', 6))
+            .rect(x - 9, y + 1, 19, 1, c('grey', 3))
+            .rect(x - 10, y - 4, 1, 6, c('grey', 4));
           for (let k = -6; k < 8; k += 3) p.rect(x + k, y - 2, 2, 1, c('grey', 4));
           p.rect(x - 1, y - 4, 3, 6, c('coat', 3));
         } else {

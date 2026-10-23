@@ -383,9 +383,19 @@ export function citySet(): BlockSet {
 function addKeepsakes(s: BlockSet): void {
   const tin = { ink: C('grey', 0), tin: [C('chrome', 3), C('chrome', 5), C('chrome', 6)], white: C('grey', 7), dark: C('chrome', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    s.add(`tinHeart${k || ''}`, drawTinHeart(on('tile'), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'tile', score: 100 });
+    s.add(`tinHeart${k || ''}`, drawTinHeart(on('tile'), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'tile',
+      score: 100,
+    });
   const egg = { ink: C('purple', 0), shell: PAL.r('pink').slice(2), paint: [C('teal', 2), C('teal', 4)], accent: C('gold', 4), white: C('grey', 7) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    s.add(`easterEgg${k || ''}`, drawEasterEgg(on('beach'), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'beach', score: 50 });
+    s.add(`easterEgg${k || ''}`, drawEasterEgg(on('beach'), egg, 'zigzag', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'beach',
+      score: 50,
+    });
   s.add('watt', on('marble').blit(wattCameo(PAL.pal, 'up', 0), 0, 0, T), { solid: SOLID });
 }

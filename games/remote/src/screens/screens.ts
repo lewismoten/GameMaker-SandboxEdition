@@ -21,9 +21,11 @@ export function roomBackdrop(pal: Pal, floor = 150, seed = 3): Pixels {
   const c = pal.c;
   const p = new Pixels(W, H);
   const r = rng(seed);
-  for (let y = 0; y < floor - 40; y++) for (let x = 0; x < W; x++) p.set(x, y, x % 14 < 2 ? c('wall', 1) : (x % 14 === 8 && y % 16 === 5) || r() < 0.01 ? c('flora', 1) : c('wall', 2));
+  for (let y = 0; y < floor - 40; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, x % 14 < 2 ? c('wall', 1) : (x % 14 === 8 && y % 16 === 5) || r() < 0.01 ? c('flora', 1) : c('wall', 2));
   p.rect(0, 0, W, 5, c('wood', 1));
-  for (let y = floor - 40; y < floor; y++) for (let x = 0; x < W; x++) p.set(x, y, x % 28 === 0 ? c('wood', 0) : (x * 7 + y * 3) % 23 === 0 ? c('wood', 3) : c('wood', 2));
+  for (let y = floor - 40; y < floor; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, x % 28 === 0 ? c('wood', 0) : (x * 7 + y * 3) % 23 === 0 ? c('wood', 3) : c('wood', 2));
   p.rect(0, floor - 41, W, 2, c('wood', 1)).rect(0, floor - 4, W, 4, c('wood', 1));
   for (let y = floor; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, r() < 0.2 ? c('carpet', 2) : c('carpet', 3));
   return p;
@@ -42,7 +44,9 @@ export function couchArt(p: Pixels, pal: Pal, x: number, y: number, w: number): 
     for (let yy = y + 30; yy < y + 48; yy++) for (let xx = cx; xx < cx + cw - 2; xx++) p.set(xx, yy, fabric(xx, yy, yy < y + 33 ? 4 : yy > y + 44 ? 1 : 3));
   }
   // arms
-  for (const ax of [x, x + w - 16]) for (let yy = y + 16; yy < y + 54; yy++) for (let xx = ax; xx < ax + 16; xx++) p.set(xx, yy, fabric(xx, yy, yy < y + 20 ? 4 : xx === ax || xx === ax + 15 ? 1 : 3));
+  for (const ax of [x, x + w - 16])
+    for (let yy = y + 16; yy < y + 54; yy++)
+      for (let xx = ax; xx < ax + 16; xx++) p.set(xx, yy, fabric(xx, yy, yy < y + 20 ? 4 : xx === ax || xx === ax + 15 ? 1 : 3));
   p.rect(x + 10, y + 48, w - 20, 6, c('couch', 1));
   p.rect(x + 6, y + 54, 4, 4, c('wood', 0)).rect(x + w - 10, y + 54, 4, 4, c('wood', 0));
 }
@@ -50,7 +54,9 @@ export function couchArt(p: Pixels, pal: Pal, x: number, y: number, w: number): 
 /** The console TV: `x, y` its top-left (92 x 64); the screen shows snow, blue, or channel 13's cooking show. */
 export function tvArt(p: Pixels, pal: Pal, x: number, y: number, show: 'snow' | 'blue' | 'cook' | 'off', k = 0): void {
   const c = pal.c;
-  p.rect(x, y, 92, 64, c('wood', 2)).rect(x, y, 92, 3, c('wood', 4)).rect(x, y + 60, 92, 4, c('wood', 0));
+  p.rect(x, y, 92, 64, c('wood', 2))
+    .rect(x, y, 92, 3, c('wood', 4))
+    .rect(x, y + 60, 92, 4, c('wood', 0));
   p.rect(x + 5, y + 6, 62, 50, c('crt', 0));
   const r = rng(k * 101 + 7);
   for (let yy = 0; yy < 42; yy++)
@@ -66,7 +72,9 @@ export function tvArt(p: Pixels, pal: Pal, x: number, y: number, show: 'snow' | 
   if (show === 'cook') {
     // the chef in a tall white hat over a steaming pot: channel 13
     blob(p, x + 26, y + 38, 10, 5, pal.r('silver'), 0, 2);
-    p.rect(x + 40, y + 22, 12, 18, c('white', 2)).rect(x + 42, y + 12, 8, 8, c('white', 2)).rect(x + 42, y + 20, 8, 5, c('skin', 2));
+    p.rect(x + 40, y + 22, 12, 18, c('white', 2))
+      .rect(x + 42, y + 12, 8, 8, c('white', 2))
+      .rect(x + 42, y + 20, 8, 5, c('skin', 2));
     for (let s = 0; s < 4; s++) p.set(x + 22 + s * 3, y + 30 - ((s + k) % 3) * 2, c('white', 1));
     text(p, x + 11, y + 12, '13', c('yellow', 2));
   }
@@ -88,7 +96,8 @@ export function vcrArt(p: Pixels, pal: Pal, x: number, y: number, lit: boolean, 
 export function remoteArt(p: Pixels, pal: Pal, x: number, y: number, s = 1, glow = false): void {
   const c = pal.c;
   const R = (u: number, v: number, w: number, h: number, col: number) => p.rect(x + u * s, y + v * s, w * s, h * s, col);
-  if (glow) for (let a = 0; a < 6.28; a += 0.4) p.line(x + 6 * s, y + 15 * s, x + 6 * s + Math.cos(a) * 20 * s, y + 15 * s + Math.sin(a) * 22 * s, c('yellow', 2));
+  if (glow)
+    for (let a = 0; a < 6.28; a += 0.4) p.line(x + 6 * s, y + 15 * s, x + 6 * s + Math.cos(a) * 20 * s, y + 15 * s + Math.sin(a) * 22 * s, c('yellow', 2));
   R(0, 0, 12, 30, c('ink', 0));
   R(1, 1, 10, 28, c('crt', 2));
   R(1, 1, 10, 2, c('crt', 3));

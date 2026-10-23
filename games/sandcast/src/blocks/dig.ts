@@ -48,7 +48,14 @@ function feltEgg(p: Pixels): Pixels {
   // One brown paw print by the moat.
   p.rect(14, 12, 2, 1, WOOD[1]).set(14, 11, WOOD[1]).set(15, 10, WOOD[1]).set(16, 11, WOOD[1]);
   // Stitches around the castle.
-  for (const [x, y] of [[5, 9], [5, 11], [14, 9], [8, 6], [11, 7]]) p.set(x, y, SAND[9]);
+  for (const [x, y] of [
+    [5, 9],
+    [5, 11],
+    [14, 9],
+    [8, 6],
+    [11, 7],
+  ])
+    p.set(x, y, SAND[9]);
   // A little light on the felt.
   p.set(4, 4, SAND[9]).set(5, 3, SAND[9]);
   return p;
@@ -100,7 +107,10 @@ function tinyCastle(p: Pixels): Pixels {
 function pawPrints(p: Pixels): Pixels {
   const paw = (x: number, y: number) => {
     p.rect(x, y + 2, 3, 2, SAND[3]).set(x + 1, y + 4, SAND[3]);
-    p.set(x - 1, y + 1, SAND[3]).set(x, y, SAND[3]).set(x + 2, y, SAND[3]).set(x + 3, y + 1, SAND[3]);
+    p.set(x - 1, y + 1, SAND[3])
+      .set(x, y, SAND[3])
+      .set(x + 2, y, SAND[3])
+      .set(x + 3, y + 1, SAND[3]);
     p.rect(x, y + 4, 3, 1, SAND[8]);
   };
   paw(4, 11);

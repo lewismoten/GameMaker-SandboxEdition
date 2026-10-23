@@ -13,7 +13,16 @@ import { NIGHT } from '../sprites/night';
 export function nightBeasts() {
   const b = newBestiary();
   for (const [name, px] of Object.entries(NIGHT)) {
-    const hurt = name.startsWith('raccoon1') || name.startsWith('raccoon2') ? -5 : name.startsWith('skunk') ? -3 : name.startsWith('owl') ? -8 : name.startsWith('stink') ? -1 : 0;
+    const hurt =
+      name.startsWith('raccoon1') || name.startsWith('raccoon2')
+        ? -5
+        : name.startsWith('skunk')
+          ? -3
+          : name.startsWith('owl')
+            ? -8
+            : name.startsWith('stink')
+              ? -1
+              : 0;
     const solid = name === 'boxes' || name === 'ropeKnot' || name === 'clay' ? { solid: 15 } : {};
     const score = name.startsWith('firefly') ? { score: 50 } : {};
     b.pic(name, px, { ...(hurt ? { hp: hurt } : {}), ...solid, ...score });

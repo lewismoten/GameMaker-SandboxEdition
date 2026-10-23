@@ -68,7 +68,10 @@ export function goatArt(pal: Pal) {
     p.rect(12, 6 + oy, 3, 5, c(k.fur, k.hi - 1));
     blob(p, 15, 6 + oy, 3.4 * s, 2.7 * s, fur(k), k.lo, k.hi, 1.1);
     p.rect(16, 6 + oy + chew, 3, 2, c(k.fur, k.hi - 1));
-    if (k.horns) p.line(13, 4 + oy, 12, 2 + oy, c('horn', 1)).line(14, 4 + oy, 13, 1 + oy, c('horn', 2)).set(11, 3 + oy, c('horn', 1));
+    if (k.horns)
+      p.line(13, 4 + oy, 12, 2 + oy, c('horn', 1))
+        .line(14, 4 + oy, 13, 1 + oy, c('horn', 2))
+        .set(11, 3 + oy, c('horn', 1));
     p.line(13, 6 + oy, 11, 8 + oy, c(k.fur, k.lo)); // the ear, hanging back
     p.set(16, 5 + oy, ink);
     p.set(18, 6 + oy + chew, c('pink', 1));
@@ -208,7 +211,15 @@ export function buildMonsterBlocks(pal: Pal) {
       p.line(x, 14, x + d, 18, c('ink', 1)).set(x + d, 19, ink);
     const body = shorn ? pal.r('pink') : pal.r('wool');
     blob(p, 9, 12, shorn ? 5 : 6.5, shorn ? 3.2 : 4.5, body, 0, shorn ? 2 : 3, 1.1);
-    if (!shorn) for (const [x, y] of [[5, 9], [8, 8], [11, 8], [13, 10], [6, 14]]) blob(p, x, y, 2, 2, pal.r('wool'), 1, 3, 1.2);
+    if (!shorn)
+      for (const [x, y] of [
+        [5, 9],
+        [8, 8],
+        [11, 8],
+        [13, 10],
+        [6, 14],
+      ])
+        blob(p, x, y, 2, 2, pal.r('wool'), 1, 3, 1.2);
     blob(p, 15, 9, 2.6, 2.3, pal.r('ink'), 1, 1);
     p.set(16, 8, c('cloth', 3)).line(14, 8, 12, 10, c('ink', 1));
     return outline(p, ink);
@@ -325,12 +336,21 @@ export function buildMonsterBlocks(pal: Pal) {
   // The donkey (in all the paintings) and the ox (who gets the praise).
   const beast = (fur: string, kind: 'donkey' | 'ox', f: number) => {
     const p = new Pixels(20, 20, T);
-    for (const x of [4, 6, 12, 14]) p.rect(x, 14, 2, 5, c(fur, 0)).set(x, 19, ink).set(x + 1, 19, ink);
+    for (const x of [4, 6, 12, 14])
+      p.rect(x, 14, 2, 5, c(fur, 0))
+        .set(x, 19, ink)
+        .set(x + 1, 19, ink);
     blob(p, 9, 10, 8, 5, pal.r(fur), 0, 3, 1.1);
     blob(p, 16, 7 - f, 3.5, 3, pal.r(fur), 1, 3, 1.1);
     p.set(17, 6 - f, ink);
-    if (kind === 'donkey') p.line(15, 4 - f, 14, 0, c(fur, 2)).line(16, 4 - f, 16, 0, c(fur, 2)).rect(17, 8 - f, 3, 2, c('cloth', 2));
-    else p.line(14, 4 - f, 12, 1, c('horn', 2)).line(17, 4 - f, 19, 1, c('horn', 2)).rect(17, 8 - f, 3, 2, c('pink', 1));
+    if (kind === 'donkey')
+      p.line(15, 4 - f, 14, 0, c(fur, 2))
+        .line(16, 4 - f, 16, 0, c(fur, 2))
+        .rect(17, 8 - f, 3, 2, c('cloth', 2));
+    else
+      p.line(14, 4 - f, 12, 1, c('horn', 2))
+        .line(17, 4 - f, 19, 1, c('horn', 2))
+        .rect(17, 8 - f, 3, 2, c('pink', 1));
     p.line(1, 7, 0, 12, c(fur, 1));
     return outline(p, ink);
   };

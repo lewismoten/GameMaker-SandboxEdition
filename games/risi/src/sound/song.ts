@@ -23,7 +23,28 @@
 // (PLAYGAME skips them; tools/songPreview.ts reads them).
 import { detuned } from '../../../kit/songFx';
 import { arranger, Arranger, BANDS, COLOR, COMP, LEAD, rep, TWIN_CH } from './band';
-import { CANIS_ARIA, CANIS_FINALE, CANIS_REFRAIN, FANFARE, FELIS_BRIDGE, FELIS_REFRAIN, FELIS_VERSE, IGNAVI_GALLOP, IGNAVI_REFRAIN, IGNAVI_VERSE, PISCIS_ARIA, PISCIS_FINALE, PISCIS_REFRAIN, type Section, SILENT_BRIDGE, SILENT_REFRAIN, SILENT_VERSE, TITUS_REFRAIN, TITUS_SAGAX, TITUS_VERSE } from './material';
+import {
+  CANIS_ARIA,
+  CANIS_FINALE,
+  CANIS_REFRAIN,
+  FANFARE,
+  FELIS_BRIDGE,
+  FELIS_REFRAIN,
+  FELIS_VERSE,
+  IGNAVI_GALLOP,
+  IGNAVI_REFRAIN,
+  IGNAVI_VERSE,
+  PISCIS_ARIA,
+  PISCIS_FINALE,
+  PISCIS_REFRAIN,
+  type Section,
+  SILENT_BRIDGE,
+  SILENT_REFRAIN,
+  SILENT_VERSE,
+  TITUS_REFRAIN,
+  TITUS_SAGAX,
+  TITUS_VERSE,
+} from './material';
 import { HARPSICHORD, STRINGS, TENOR, TWIN } from './patches';
 
 export type SongName = 'canis' | 'ignavi' | 'titus' | 'felis' | 'piscis' | 'silentium';
@@ -159,7 +180,29 @@ export function medley(): Uint8Array {
     a.fx.program(LEAD, at, band.lead).program(TWIN_CH, at, band.lead === TENOR ? TWIN : detuned(band.lead));
     COMP.forEach((ch) => a.fx.program(ch, at, band.comp));
     a.fx.program(COLOR, at, band.color);
-    a.section({ ...s, name }, { sing: 'choir', comp: name === 'canis' || name === 'felis' ? 'hold' : 'pah', color: 'none', bass: name === 'canis' ? 'long' : 'march', drums: [name === 'canis' ? 'opera' : name === 'ignavi' ? 'march' : name === 'titus' ? 'patter' : name === 'felis' ? 'felis' : name === 'piscis' ? 'aria' : 'bounce'], vel: 100 });
+    a.section(
+      { ...s, name },
+      {
+        sing: 'choir',
+        comp: name === 'canis' || name === 'felis' ? 'hold' : 'pah',
+        color: 'none',
+        bass: name === 'canis' ? 'long' : 'march',
+        drums: [
+          name === 'canis'
+            ? 'opera'
+            : name === 'ignavi'
+              ? 'march'
+              : name === 'titus'
+                ? 'patter'
+                : name === 'felis'
+                  ? 'felis'
+                  : name === 'piscis'
+                    ? 'aria'
+                    : 'bounce',
+        ],
+        vel: 100,
+      },
+    );
     if (name === 'canis') a.event();
   }
   a.rimshot();

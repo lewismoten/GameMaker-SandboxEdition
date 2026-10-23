@@ -29,7 +29,25 @@ const RULES: PartRule[] = [
 ];
 
 /** Joins drawn as edges on purpose (looked at). */
-const SEAM_OK = ['colTop/col', 'bcolTop/bcol', 'col/colBase', 'bcol/bcolBase', 'bust/pedestal', 'tavernSign/tavern', 'towerTop/tower', 'stakeTop/stakes', 'gateTop/gateWay', 'basinL0|basinR', 'scrollTop/scrolls', 'doorTop/door', 'entryTop/entry', 'lucius0|amphora', 'tentL|tentR', 'senL0|senR', 'senL1|senR'];
+const SEAM_OK = [
+  'colTop/col',
+  'bcolTop/bcol',
+  'col/colBase',
+  'bcol/bcolBase',
+  'bust/pedestal',
+  'tavernSign/tavern',
+  'towerTop/tower',
+  'stakeTop/stakes',
+  'gateTop/gateWay',
+  'basinL0|basinR',
+  'scrollTop/scrolls',
+  'doorTop/door',
+  'entryTop/entry',
+  'lucius0|amphora',
+  'tentL|tentR',
+  'senL0|senR',
+  'senL1|senR',
+];
 
 export function align(): number {
   const names = new Map(LEVELS.map((l) => [`${l.file}.map`, namesOf(buildBlocks(l.set, buildPalette(l.light)).index)]));

@@ -145,7 +145,7 @@ const CREDITS_TEXT = pages(
   [
     'No dogs were rushed. Gwinn',
     'did all of her own stunts,',
-    'and some of everybody else\'s.',
+    "and some of everybody else's.",
     '',
     'Made with GAME-MAKER 3.0 by',
     'Recreational Software',
@@ -160,17 +160,7 @@ const CREDITS_TEXT = pages(
     'the next adventure, a poster',
     'of Teddy AND Gwinn, and our',
   ],
-  [
-    'thanks.',
-    '',
-    'Sandbox Software',
-    'Dept. WOOF WOOF',
-    'P.O. Box 000',
-    'Pittsburgh, PA 15213',
-    '',
-    '(A made-up address. Please',
-    'do not mail anything.)',
-  ],
+  ['thanks.', '', 'Sandbox Software', 'Dept. WOOF WOOF', 'P.O. Box 000', 'Pittsburgh, PA 15213', '', '(A made-up address. Please', 'do not mail anything.)'],
 );
 
 export const WON = pages(

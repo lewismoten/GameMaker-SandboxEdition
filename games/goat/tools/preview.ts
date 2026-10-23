@@ -32,7 +32,9 @@ for (const [name, fn, light, w, h] of levels) {
   const pal = buildPalette(light);
   const { m, start } = fn(book);
   const map = m.build();
-  const pic = renderRegion(map, bbl, mb.blocks, buildMonsters(mb), ORIGIN, ORIGIN, w, h, [{ pixels: cb.blocks[cb.n('down0')].pixels, x: start[0], y: start[1] }]);
+  const pic = renderRegion(map, bbl, mb.blocks, buildMonsters(mb), ORIGIN, ORIGIN, w, h, [
+    { pixels: cb.blocks[cb.n('down0')].pixels, x: start[0], y: start[1] },
+  ]);
   writePng(join(out, `${name}.png`), pic, pal.pal, 2);
 }
 console.log(`previews in ${out}`);

@@ -232,7 +232,13 @@ export async function reckoning(bot: Bot): Promise<void> {
       if (milk(bot) <= 0) throw new Error('out of almond milk');
       await must(bot, bot.hold('space', 2), 'a throw');
       await must(bot, bot.wait(12), 'the splash flies');
-      if (process.env.BOT_THROW) bot.say(`threw: milk ${milk(bot)} devil ${bot.sim.w.mm.filter((m) => m.monnum >= MON.devilA0 && m.monnum <= MON.devilB3).map((m) => m.monnum).join(',')} splash ${bot.sim.w.mm.filter((m) => m.monnum === MON.splash).length}`);
+      if (process.env.BOT_THROW)
+        bot.say(
+          `threw: milk ${milk(bot)} devil ${bot.sim.w.mm
+            .filter((m) => m.monnum >= MON.devilA0 && m.monnum <= MON.devilB3)
+            .map((m) => m.monnum)
+            .join(',')} splash ${bot.sim.w.mm.filter((m) => m.monnum === MON.splash).length}`,
+        );
     }
     if (alive(bot, DEVIL_A) || alive(bot, DEVIL_B)) throw new Error('the Devil still stands');
     bot.say('the Devil splashed away');

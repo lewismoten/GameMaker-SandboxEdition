@@ -42,7 +42,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
         await stretch();
       } catch (e) {
         why = String(e).split('\n')[0];
-        if (process.env.BOT_WHY) console.log(`${label} forage ${forage} wait ${wait}: ${String(e).split("\n")[0]}\n${bot.log.slice(-40).join("\n")}`);
+        if (process.env.BOT_WHY) console.log(`${label} forage ${forage} wait ${wait}: ${String(e).split('\n')[0]}\n${bot.log.slice(-40).join('\n')}`);
         continue;
       } finally {
         bot.forage = true;

@@ -179,7 +179,9 @@ export function buildCampus(pal: Pal): BlockBook {
   const gate = (part: 'top' | 'way' | 'tower') => {
     const p = part === 'way' ? field(21) : sky(21);
     const stone = (yy0: number, yy1: number) => {
-      for (let y = yy0; y < yy1; y++) for (let xx = 0; xx < 20; xx++) p.set(xx, y, (Math.floor(y / 5) + Math.floor((xx + (Math.floor(y / 5) % 2) * 5) / 10)) % 2 ? c('stone', 3) : c('stone', 2));
+      for (let y = yy0; y < yy1; y++)
+        for (let xx = 0; xx < 20; xx++)
+          p.set(xx, y, (Math.floor(y / 5) + Math.floor((xx + (Math.floor(y / 5) % 2) * 5) / 10)) % 2 ? c('stone', 3) : c('stone', 2));
     };
     if (part === 'tower') {
       stone(4, 20);
@@ -200,7 +202,18 @@ export function buildCampus(pal: Pal): BlockBook {
   // THE CHEZ by the gate (an anachronism: a red chariot with no horses), and the puzzled sign
   const chez = new Pixels(40, 20);
   chez.blit(field(22), 0, 0).blit(field(22), 20, 0);
-  chezSide(chez, 0, 0, { body: [c('red', 1), c('red', 2), c('red', 3)], trim: c('red', 0), glass: [c('blue', 1), c('blue', 3)], roof: c('ink', 0), tire: c('ink', 0), hub: c('iron', 2), bumper: c('ink', 1), lamp: c('ochre', 3), tail: c('red', 3), pin: c('marble', 3) });
+  chezSide(chez, 0, 0, {
+    body: [c('red', 1), c('red', 2), c('red', 3)],
+    trim: c('red', 0),
+    glass: [c('blue', 1), c('blue', 3)],
+    roof: c('ink', 0),
+    tire: c('ink', 0),
+    hub: c('iron', 2),
+    bumper: c('ink', 1),
+    lamp: c('ochre', 3),
+    tail: c('red', 3),
+    pin: c('marble', 3),
+  });
   book.add('chezL', chez.crop(0, 0, 20, 20), air);
   book.add('chezR', chez.crop(20, 0, 20, 20), air);
   const quid = field(23);
@@ -241,14 +254,16 @@ export function buildCampus(pal: Pal): BlockBook {
     const p = P();
     const r = rng(seed);
     for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) p.set(xx, y, shadeAt(R('ochre'), 1, 2, 0.5 + (r() - 0.5) * 0.3, xx, y));
-    if (window) p.rect(6, 4, 8, 10, c('ink', 0)).rect(6, 4, 8, 1, c('wood', 2)).rect(6, 14, 8, 2, c('wood', 2)).set(9, 8, c('flame', 2)).set(10, 9, c('flame', 1));
+    if (window)
+      p.rect(6, 4, 8, 10, c('ink', 0)).rect(6, 4, 8, 1, c('wood', 2)).rect(6, 14, 8, 2, c('wood', 2)).set(9, 8, c('flame', 2)).set(10, 9, c('flame', 1));
     return p;
   };
   book.add('house', house(36, false), { solid: SOLID });
   book.add('houseWin', house(37, true), { solid: SOLID });
   // the street far below (solid cobbles) and the street's air
   const cobbles = P();
-  for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) cobbles.set(xx, y, (xx % 6 === 0 || y % 5 === 0) && (xx + y) % 2 ? c('stone', 0) : c('stone', 2));
+  for (let y = 0; y < 20; y++)
+    for (let xx = 0; xx < 20; xx++) cobbles.set(xx, y, (xx % 6 === 0 || y % 5 === 0) && (xx + y) % 2 ? c('stone', 0) : c('stone', 2));
   cobbles.rect(0, 0, 20, 2, c('stone', 3));
   book.add('cobbles', cobbles, { solid: SOLID });
   const alley = P();
@@ -269,7 +284,11 @@ export function buildCampus(pal: Pal): BlockBook {
   // a washing line between two poles (scenery) with togas drying
   const washing = dusk(40, 2, true);
   washing.line(0, 6, 20, 8, c('ink', 1));
-  for (const [wx, col] of [[3, 'toga'], [11, 'purple']] as const) washing.rect(wx, 7, 6, 8, c(col, 2)).rect(wx, 7, 6, 1, c(col, 3));
+  for (const [wx, col] of [
+    [3, 'toga'],
+    [11, 'purple'],
+  ] as const)
+    washing.rect(wx, 7, 6, 8, c(col, 2)).rect(wx, 7, 6, 1, c(col, 3));
   book.add('washing', washing, air);
   // a pot of herbs on the roof (scenery) and a cup on a roof (dignity back), coins, grapes
   const herbs = dusk(41, 3, true);
@@ -284,7 +303,9 @@ export function buildCampus(pal: Pal): BlockBook {
   TITULI.forEach(([said, twisted], k) => {
     const sign = (twist: boolean) => {
       const p = dusk(46 + k, 3, true);
-      p.rect(9, 10, 2, 10, c('wood', 1)).rect(0, 2, 20, 9, twist ? c('ochre', 3) : c('marble', 3)).frame(0, 2, 20, 9, c('pompeii', 1));
+      p.rect(9, 10, 2, 10, c('wood', 1))
+        .rect(0, 2, 20, 9, twist ? c('ochre', 3) : c('marble', 3))
+        .frame(0, 2, 20, 9, c('pompeii', 1));
       const word = twist ? twisted : said;
       micro(p, Math.round(10 - microWidth(word) / 2), 4, word, twist ? c('pompeii', 1) : c('ink', 0));
       if (twist) sparkle(x, p, 50 + k, 3, 'spell');
@@ -297,7 +318,12 @@ export function buildCampus(pal: Pal): BlockBook {
   const saxa = (said: boolean) => {
     const p = dusk(55, 3, true);
     if (said) {
-      for (const [sx, sy, rr] of [[6, 14, 5], [14, 15, 5], [10, 8, 5]] as const) blob(p, sx, sy, rr, rr - 1, R('stone'), 0, 3);
+      for (const [sx, sy, rr] of [
+        [6, 14, 5],
+        [14, 15, 5],
+        [10, 8, 5],
+      ] as const)
+        blob(p, sx, sy, rr, rr - 1, R('stone'), 0, 3);
       p.rect(2, 9, 16, 6, c('marble', 3)).frame(2, 9, 16, 6, c('ink', 0));
       micro(p, 3, 10, 'SAXA', c('ink', 0));
     } else {

@@ -85,8 +85,16 @@ export async function theCrowd(bot: Bot): Promise<void> {
   await carefully(bot, 'over the rock and up on the warm air', 12, async () => {
     await must(bot, bot.walk(35, 'over the rock'), 'rock');
     await must(bot, bot.walk(36, 'up on the second rock'), 'rock 2');
-    await must(bot, bot.until('right', () => bot.px.x >= 37 * 20, 'into the warm air', 60), 'warm');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 2 * 20, 'up on the warm air', 160), 'lift');
+    await must(
+      bot,
+      bot.until('right', () => bot.px.x >= 37 * 20, 'into the warm air', 60),
+      'warm',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 2 * 20, 'up on the warm air', 160),
+      'lift',
+    );
     await must(bot, bot.hop('right', 4, 'right', 39), 'onto the fig branch');
     await must(bot, bot.walk(45, 'along the branch'), 'branch');
     await must(bot, bot.walk(48, 'down to the grass'), 'down');
@@ -156,7 +164,11 @@ export async function theWasteland(bot: Bot): Promise<void> {
   });
   if (crumbs(bot) - start < 7) throw new Error(`only ${crumbs(bot) - start} holy crumbs here`);
   await carefully(bot, 'up to the lid', 10, async () => {
-    await must(bot, bot.until('up', () => bot.px.y <= 1 * 20, 'up the weave and through the lid', 80), 'the lid');
+    await must(
+      bot,
+      bot.until('up', () => bot.px.y <= 1 * 20, 'up the weave and through the lid', 80),
+      'the lid',
+    );
     await leave(bot, bot.walk(24, 'along the rim'), 'along the rim to the way on');
   });
 }
@@ -172,7 +184,11 @@ export async function theBaskets(bot: Bot): Promise<void> {
   };
   await carefully(bot, 'the first baskets', 10, async () => {
     // the first basket sings "twelve baskets full": let it, before the next hop puffs over it
-    await must(bot, bot.until('right', () => baskets(bot) - start >= 1, 'the first basket', 60), 'basket 1');
+    await must(
+      bot,
+      bot.until('right', () => baskets(bot) - start >= 1, 'the first basket', 60),
+      'basket 1',
+    );
     await must(bot, bot.walk(7, 'over the first basket'), 'over basket 1');
     await must(bot, bot.walk(9, 'under the stone'), 'stone');
     await must(bot, bot.hop('up', 10), 'up to the basket on the stone');
@@ -192,8 +208,16 @@ export async function theBaskets(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'up on the warm air', 12, async () => {
     await must(bot, bot.walk(37, 'up on the rock'), 'rock');
-    await must(bot, bot.until('right', () => bot.px.x >= 38 * 20, 'into the warm air', 60), 'warm');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 2 * 20, 'up on the warm air', 160), 'lift');
+    await must(
+      bot,
+      bot.until('right', () => bot.px.x >= 38 * 20, 'into the warm air', 60),
+      'warm',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 2 * 20, 'up on the warm air', 160),
+      'lift',
+    );
     await must(bot, bot.hop('right', 4, 'right', 40), 'onto the fig branch');
     await must(bot, bot.walk(46, 'past the basket in the tree'), 'basket 8');
     await must(bot, bot.walk(50, 'down to the grass'), 'down');

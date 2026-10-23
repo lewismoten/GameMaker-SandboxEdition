@@ -41,7 +41,15 @@ const birth = (mon: number, row = 0): Frame => ({ ...emptyFrame(), x: 0, y: (row
 export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
   const ch = newCharacter();
   const S = ch.sequences;
-  const f = (o: F): Frame => ({ ...emptyFrame(), x: o.x ?? 0, y: o.y ?? 0, pic1: CHARBL, pic2: cb.n(o.pic), pause: o.pause ?? 1, orient: o.mirror ? MIRROR : 0 });
+  const f = (o: F): Frame => ({
+    ...emptyFrame(),
+    x: o.x ?? 0,
+    y: o.y ?? 0,
+    pic1: CHARBL,
+    pic2: cb.n(o.pic),
+    pause: o.pause ?? 1,
+    orient: o.mirror ? MIRROR : 0,
+  });
 
   set(S[SEQ.idle], [
     f({ pic: 'front', pause: 30 }),
@@ -53,7 +61,10 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pic: 'front', pause: 22 }),
   ]);
   set(S[SEQ.die], [f({ pic: 'hurt', pause: 3 }), f({ pic: 'faint0', pause: 8 }), f({ pic: 'faint1', pause: 30 })], { sound: SND.die, jstkBut: 0 });
-  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'worry', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], { sound: SND.hurt, jstkBut: 0 });
+  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'worry', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], {
+    sound: SND.hurt,
+    jstkBut: 0,
+  });
   set(S[3], [f({ pic: 'front' })], { key: 0 });
   set(S[4], [f({ pic: 'front' })], { key: 0 });
 
@@ -78,14 +89,18 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.downS], down, { key: KEY.s, sound: SND.step });
   // Space throws rosemary brine to the right (it plays through: "ground", or the joystick's idle
   // would cut in); its first frame steps right a pixel (and back), so the splashes fly to the right
-  set(S[SEQ.throw], [f({ pic: 'throw0', x: 1, pause: 3 }), birth(MON.brine, 0), birth(MON.brine, -1), f({ pic: 'throw1', x: -1, pause: 4 }), f({ pic: 'front', pause: 2 })], {
-    key: KEY.space,
-    sound: SND.speak,
-    ground: 1,
-    norepeat: 1,
-    jstkMov: JOY.any,
-    jstkBut: 1,
-  });
+  set(
+    S[SEQ.throw],
+    [f({ pic: 'throw0', x: 1, pause: 3 }), birth(MON.brine, 0), birth(MON.brine, -1), f({ pic: 'throw1', x: -1, pause: 4 }), f({ pic: 'front', pause: 2 })],
+    {
+      key: KEY.space,
+      sound: SND.speak,
+      ground: 1,
+      norepeat: 1,
+      jstkMov: JOY.any,
+      jstkBut: 1,
+    },
+  );
   // B: he sings a line
   const sing = [f({ pic: 'sing0', pause: 8 }), f({ pic: 'sing1', pause: 10 }), f({ pic: 'sing0', pause: 6 }), f({ pic: 'front', pause: 2 })];
   set(S[SEQ.sing], sing, { key: KEY.b, sound: SND.wail, ground: 1, norepeat: 1 });
@@ -137,7 +152,13 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.mango] = mon(anim('mango0', 'mango1', 3), { power: 150, thru: 1 }, pace(1, 1));
   set[MON.towel] = mon(anim('towel0', 'towel1', 14), { power: 200, thru: 1 }, still);
   set[MON.bubble] = mon(anim('bubble0', 'bubble1', 6), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -3, 1, 0), corner(0, -6, 1, 4)]);
-  set[MON.carl] = mon(anim('carl0', 'carl1', 1), { power: 50, thru: 0, newmon: MON.carlOff }, [corner(0, 0, 2), corner(3, -1, 2, 0), corner(5, 1, 2, 0), corner(2, 2, 2, 4), corner(0, 0, 2, 4)]);
+  set[MON.carl] = mon(anim('carl0', 'carl1', 1), { power: 50, thru: 0, newmon: MON.carlOff }, [
+    corner(0, 0, 2),
+    corner(3, -1, 2, 0),
+    corner(5, 1, 2, 0),
+    corner(2, 2, 2, 4),
+    corner(0, 0, 2, 4),
+  ]);
   set[MON.carlOff] = mon(anim('carl0', 'carl1', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 5), corner(6, -6, 5, 0)]);
   // II. the forest-dark aisle: wild loofahs (brine, 220, beats them into tame ones)
   set[MON.feral] = mon(anim('feral0', 'feral1', 4), { power: 150, thru: 1, newmon: MON.tame }, pace(run, 1));

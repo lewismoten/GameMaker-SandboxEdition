@@ -29,7 +29,18 @@ export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1,
   let cx = x;
   for (const ch of str) {
     if (o.shadow) glyph(cx, ch, o.shadow, s, s, 0.7);
-    if (o.outline) for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, 1], [-1, 1], [1, -1]]) glyph(cx, ch, o.outline, dx, dy);
+    if (o.outline)
+      for (const [dx, dy] of [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1],
+        [-1, -1],
+        [1, 1],
+        [-1, 1],
+        [1, -1],
+      ])
+        glyph(cx, ch, o.outline, dx, dy);
     glyph(cx, ch, c, 0, 0, o.alpha ?? 1);
     cx += 8 * s;
   }

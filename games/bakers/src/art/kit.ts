@@ -75,7 +75,13 @@ export function docLeo(facing: Facing, step = 0, squawk = false): Pixels {
   }
   // facing down (toward you)
   // a fedora: a low pinched crown, a red band, a wide chewed brim
-  p.rect(6, 2, 8, 4, ink).rect(7, 2, 6, 3, hat).set(10, 2, ink).rect(7, 4, 6, 1, c('red', 1)).rect(2, 5, 16, 2, ink).rect(3, 5, 14, 1, hatD).set(16, 6, c('dark', 1));
+  p.rect(6, 2, 8, 4, ink)
+    .rect(7, 2, 6, 3, hat)
+    .set(10, 2, ink)
+    .rect(7, 4, 6, 1, c('red', 1))
+    .rect(2, 5, 16, 2, ink)
+    .rect(3, 5, 14, 1, hatD)
+    .set(16, 6, c('dark', 1));
   p.rect(6, 7, 8, 6, ink).rect(7, 7, 6, 5, skin);
   p.rect(7, 10, 6, 2, c('night', 2)).rect(9, 10, 2, 1, c('paper', 4)); // ash beard, white mouth (turned down)
   p.set(8, 11, c('paper', 4)).set(11, 11, c('paper', 4));
@@ -101,11 +107,19 @@ export function chicken(p: Pixels, x: number, y: number, squeezed: boolean): voi
   const y2 = c('yellow', 3);
   const y1 = c('yellow', 1);
   if (squeezed) {
-    p.rect(x, y + 1, 3, 4, y2).rect(x, y + 4, 3, 1, y1).set(x + 1, y, c('red', 3)).set(x + 3, y + 2, c('orange', 2)).set(x + 4, y + 2, c('orange', 2));
+    p.rect(x, y + 1, 3, 4, y2)
+      .rect(x, y + 4, 3, 1, y1)
+      .set(x + 1, y, c('red', 3))
+      .set(x + 3, y + 2, c('orange', 2))
+      .set(x + 4, y + 2, c('orange', 2));
     p.set(x + 2, y + 1, O());
     return;
   }
-  p.rect(x, y, 4, 2, y2).rect(x, y + 1, 4, 1, y1).set(x + 4, y, c('orange', 2)).set(x + 3, y - 1, c('red', 3)).set(x + 3, y, O());
+  p.rect(x, y, 4, 2, y2)
+    .rect(x, y + 1, 4, 1, y1)
+    .set(x + 4, y, c('orange', 2))
+    .set(x + 3, y - 1, c('red', 3))
+    .set(x + 3, y, O());
 }
 
 // ------------------------------------------------------------------ the household
@@ -122,7 +136,10 @@ export function corgi(step = 0, flip = false): Pixels {
   p.rect(13, 6, 6, 7, ink).rect(14, 7, 4, 5, fur).rect(16, 9, 3, 3, white).set(18, 10, ink).set(15, 8, ink);
   p.rect(13, 2, 2, 5, ink).rect(16, 1, 2, 6, ink).set(13, 3, c('pink', 2)).set(16, 3, c('pink', 2));
   const a = step ? 1 : 0;
-  p.rect(5 + a, 16, 2, 3, fur).rect(12 - a, 16, 2, 3, fur).rect(5 + a, 19, 2, 1, white).rect(12 - a, 19, 2, 1, white);
+  p.rect(5 + a, 16, 2, 3, fur)
+    .rect(12 - a, 16, 2, 3, fur)
+    .rect(5 + a, 19, 2, 1, white)
+    .rect(12 - a, 19, 2, 1, white);
   p.rect(2, 11, 2, 3, lite);
   return flip ? p.flipX() : p;
 }
@@ -453,7 +470,9 @@ export function ingredient(n: number, frame = 0): Pixels {
         [12, 11],
         [10, 15],
       ]) {
-        q.line(x, y, x, y + 4, c('rootbeer', 1)).disc(x, y, 1.6, c('rootbeer', 2)).set(x, y - 1, c('rootbeer', 3));
+        q.line(x, y, x, y + 4, c('rootbeer', 1))
+          .disc(x, y, 1.6, c('rootbeer', 2))
+          .set(x, y - 1, c('rootbeer', 3));
       }
       break;
     case 10: // licorice: twisted black sticks

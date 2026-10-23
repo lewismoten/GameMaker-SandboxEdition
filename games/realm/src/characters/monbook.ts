@@ -39,7 +39,7 @@ export class MonBook {
     const b = this.mb;
     return this.add(`npc:${key}`, {
       pics: [
-        [b.n(`${key}0`), 60 + (key.length * 7) % 30],
+        [b.n(`${key}0`), 60 + ((key.length * 7) % 30)],
         [b.n(`${key}1`), 3],
       ],
       power: POWER.npc,

@@ -38,12 +38,20 @@ function drawChair(p: Pixels, pal: Pal, x: number, y: number, ok: boolean): void
   const c = pal.c;
   const tilt = ok ? 0 : 1;
   // the back, a little crooked
-  p.rect(x + 3 + tilt, y, 10, 9, c('ink2', 1)).rect(x + 4 + tilt, y + 1, 8, 7, c('cube', 1)).rect(x + 5 + tilt, y + 2, 1, 5, c('cube', 2));
+  p.rect(x + 3 + tilt, y, 10, 9, c('ink2', 1))
+    .rect(x + 4 + tilt, y + 1, 8, 7, c('cube', 1))
+    .rect(x + 5 + tilt, y + 2, 1, 5, c('cube', 2));
   p.rect(x + 7, y + 9, 2, 2, c('metal', 0));
   // the seat and the armrests, taped (grey, white, and the gummy worm)
   p.rect(x + 1, y + 11, 14, 3, c('cube', 1)).rect(x + 1, y + 11, 14, 1, c('cube', 2));
-  p.rect(x, y + 7, 3, 2, c('ink', 1)).rect(x + 13, y + 7, 3, 2, c('ink', 1)).rect(x + 1, y + 9, 1, 2, c('ink', 1)).rect(x + 14, y + 9, 1, 2, c('ink', 1));
-  p.rect(x, y + 7, 2, 2, c('grey', 2)).rect(x + 14, y + 7, 2, 2, c('white', 2)).set(x + 13, y + 8, c('green', 3)).set(x + 12, y + 8, c('red', 3));
+  p.rect(x, y + 7, 3, 2, c('ink', 1))
+    .rect(x + 13, y + 7, 3, 2, c('ink', 1))
+    .rect(x + 1, y + 9, 1, 2, c('ink', 1))
+    .rect(x + 14, y + 9, 1, 2, c('ink', 1));
+  p.rect(x, y + 7, 2, 2, c('grey', 2))
+    .rect(x + 14, y + 7, 2, 2, c('white', 2))
+    .set(x + 13, y + 8, c('green', 3))
+    .set(x + 12, y + 8, c('red', 3));
   // the post, the star base, the wheels
   p.rect(x + 7, y + 14, 2, 3, c('metal', 1)).line(x + 1, y + 17, x + 14, y + 17, c('ink', 1));
   for (const wx of [x + 1, x + 7, x + 13]) p.rect(wx, y + 18, 2, 2, c('ink', 0));
@@ -78,19 +86,38 @@ export function chairBlocks(book: BlockBook, pal: Pal): void {
   loot(book, pal, 'cubeBase');
   // a desk (a ledge on the walking row) and its monitor with a video call of tiny faces
   const desk = cubeBase.crop(0, 0, 20, 20);
-  desk.rect(0, 0, 20, 3, c('wood', 4)).rect(0, 3, 20, 1, c('wood', 1)).rect(1, 4, 2, 16, c('metal', 1)).rect(13, 4, 6, 14, c('wood', 2)).frame(13, 4, 6, 7, c('wood', 1)).frame(13, 10, 6, 8, c('wood', 1));
+  desk
+    .rect(0, 0, 20, 3, c('wood', 4))
+    .rect(0, 3, 20, 1, c('wood', 1))
+    .rect(1, 4, 2, 16, c('metal', 1))
+    .rect(13, 4, 6, 14, c('wood', 2))
+    .frame(13, 4, 6, 7, c('wood', 1))
+    .frame(13, 10, 6, 8, c('wood', 1));
   desk.rect(15, 7, 2, 1, c('metal', 2)).rect(15, 13, 2, 1, c('metal', 2));
   book.add('desk', desk, { solid: LEDGE, grav: GRAV.down });
   const monitor = back(false, false);
   monitor.rect(3, 3, 14, 11, c('ink', 1)).rect(4, 4, 12, 9, c('daylight', 0)).rect(9, 14, 2, 4, c('ink', 1)).rect(6, 18, 8, 2, c('ink', 1));
-  for (const [fx, fy, h] of [[4, 4, 'hair'], [10, 4, 'yellow'], [4, 8, 'grey'], [10, 8, 'liver']] as const) {
-    monitor.rect(fx, fy, 6, 4, c('daylight', (fx + fy) % 3 ? 1 : 2)).rect(fx + 2, fy + 1, 2, 3, c('skin', 3)).rect(fx + 2, fy + 1, 2, 1, c(h, 1));
+  for (const [fx, fy, h] of [
+    [4, 4, 'hair'],
+    [10, 4, 'yellow'],
+    [4, 8, 'grey'],
+    [10, 8, 'liver'],
+  ] as const) {
+    monitor
+      .rect(fx, fy, 6, 4, c('daylight', (fx + fy) % 3 ? 1 : 2))
+      .rect(fx + 2, fy + 1, 2, 3, c('skin', 3))
+      .rect(fx + 2, fy + 1, 2, 1, c(h, 1));
   }
   monitor.rect(3, 15, 6, 2, c('white', 1)).rect(14, 16, 3, 2, c('white', 2));
   book.add('monitor', monitor, AIR);
   // the suspicious stack of unused printer paper (solid: climb it)
   const reams = new Pixels(20, 20);
-  for (let y = 0; y < 20; y += 5) reams.rect(0, y, 20, 5, c('white', 2)).rect(0, y + 4, 20, 1, c('white', 0)).rect(0, y + 1, 20, 2, c('blue', 2)).rect(7, y + 1, 6, 2, c('white', 2));
+  for (let y = 0; y < 20; y += 5)
+    reams
+      .rect(0, y, 20, 5, c('white', 2))
+      .rect(0, y + 4, 20, 1, c('white', 0))
+      .rect(0, y + 1, 20, 2, c('blue', 2))
+      .rect(7, y + 1, 6, 2, c('white', 2));
   reams.rect(0, 0, 1, 20, c('white', 0));
   book.add('reams', reams, { solid: SOLID });
   // the janitor's cart: a mop in its bucket, a trash bag, spray bottles (scenery)
@@ -116,11 +143,28 @@ export function chairBlocks(book: BlockBook, pal: Pal): void {
     const y = 18 + r() * 22;
     const dx = (x - 20) / 19;
     const dy = (y - 32) / 16;
-    if (dx * dx + dy * dy < 1) pile.line(x, y, x + 1 + r() * 2, y + (r() < 0.5 ? 1 : 0), c(r() < 0.2 ? 'yellow' : r() < 0.3 ? 'blue' : 'white', r() < 0.5 ? 1 : 2));
+    if (dx * dx + dy * dy < 1)
+      pile.line(x, y, x + 1 + r() * 2, y + (r() < 0.5 ? 1 : 0), c(r() < 0.2 ? 'yellow' : r() < 0.3 ? 'blue' : 'white', r() < 0.5 ? 1 : 2));
   }
-  pile.rect(8, 22, 16, 9, c('red', 1)).rect(8, 22, 16, 1, c('red', 2)).rect(4, 23, 4, 4, c('red', 1)).rect(24, 24, 6, 3, c('red', 1)).rect(8, 26, 16, 2, c('green', 1));
-  for (const x of [11, 16, 21]) pile.set(x, 24, c('white', 2)).set(x - 1, 25, c('white', 2)).set(x + 1, 25, c('white', 2)).set(x, 26, c('white', 2));
-  addPicture(book, 'memos', pile, (_c, row) => (row ? officeBase(pal) : wall(42)), (_c, row) => (row ? AIR : { solid: LEDGE, grav: GRAV.down }));
+  pile
+    .rect(8, 22, 16, 9, c('red', 1))
+    .rect(8, 22, 16, 1, c('red', 2))
+    .rect(4, 23, 4, 4, c('red', 1))
+    .rect(24, 24, 6, 3, c('red', 1))
+    .rect(8, 26, 16, 2, c('green', 1));
+  for (const x of [11, 16, 21])
+    pile
+      .set(x, 24, c('white', 2))
+      .set(x - 1, 25, c('white', 2))
+      .set(x + 1, 25, c('white', 2))
+      .set(x, 26, c('white', 2));
+  addPicture(
+    book,
+    'memos',
+    pile,
+    (_c, row) => (row ? officeBase(pal) : wall(42)),
+    (_c, row) => (row ? AIR : { solid: LEDGE, grav: GRAV.down }),
+  );
   // the chair's creak, haunting the aisle: a crack of sound lines over its spot
   const creak = wall(43);
   for (const rr of [4, 7]) for (let a = -0.8; a <= 0.8; a += 0.1) creak.set(10 - Math.cos(a) * rr, 14 + Math.sin(a) * rr, c('cube', 0));
@@ -144,7 +188,11 @@ export function chairBlocks(book: BlockBook, pal: Pal): void {
     p.rect(9, 10, 2, 1, c('ink', 0));
   });
   plotThing(book, 'base', 'wrench@base', (p) => {
-    p.line(4, 15, 14, 9, c('metal', 2)).line(4, 16, 14, 10, c('metal', 1)).disc(15, 9, 3, c('metal', 2)).rect(15, 7, 3, 2, c('beige', 2)).disc(3.5, 16, 2, c('metal', 1));
+    p.line(4, 15, 14, 9, c('metal', 2))
+      .line(4, 16, 14, 10, c('metal', 1))
+      .disc(15, 9, 3, c('metal', 2))
+      .rect(15, 7, 3, 2, c('beige', 2))
+      .disc(3.5, 16, 2, c('metal', 1));
   });
   plotThing(book, 'officeWall', 'gum@officeWall', (p) => {
     blob(p, 10, 15, 5, 3.6, R('pink'), 0, 2);
@@ -193,10 +241,17 @@ export function chairSprites(book: SpriteBook, pal: Pal): void {
   // the janitor: grey coveralls, a cap, a ring of keys; leaning on the mop
   const janitor = (f: number) => {
     const p = P();
-    p.rect(6, 7, 8, 8, c('grey', 1)).rect(6, 7, 8, 1, c('grey', 2)).rect(6, 15, 3, 4, c('grey', 0)).rect(11, 15, 3, 4, c('grey', 0)).rect(5, 19, 4, 1, ink).rect(11, 19, 4, 1, ink);
+    p.rect(6, 7, 8, 8, c('grey', 1))
+      .rect(6, 7, 8, 1, c('grey', 2))
+      .rect(6, 15, 3, 4, c('grey', 0))
+      .rect(11, 15, 3, 4, c('grey', 0))
+      .rect(5, 19, 4, 1, ink)
+      .rect(11, 19, 4, 1, ink);
     blob(p, 10, 4, 3, 3, pal.r('skin'), 1, 3);
     p.rect(6, 0, 8, 2, c('navy', 2)).rect(10, 2, 6, 1, c('navy', 1)).set(9, 4, ink).set(12, 4, ink).rect(9, 6, 3, 1, c('hair', 1));
-    p.line(16, 1 + f, 16, 19, c('wood', 3)).rect(14, 9, 3, 2, c('skin', 3)).disc(7, 13, 1.5, c('gold', 2));
+    p.line(16, 1 + f, 16, 19, c('wood', 3))
+      .rect(14, 9, 3, 2, c('skin', 3))
+      .disc(7, 13, 1.5, c('gold', 2));
     return outline(p, ink);
   };
   book.add('janitor0', janitor(0), hello);
@@ -205,7 +260,11 @@ export function chairSprites(book: SpriteBook, pal: Pal): void {
 
 export function chairMonsters(set: Monster[], mb: SpriteBook): void {
   set[CHAIR_MON.screw] = mon(anim(mb, 'screw0', 'screw1', 3), { power: POWER.foe, thru: 1, newmon: CHAIR_MON.puff }, pace(3, 1));
-  set[CHAIR_MON.squeak] = mon(anim(mb, 'squeak0', 'squeak1', 3), { power: POWER.foe, thru: 0, end: -1, newmon: CHAIR_MON.puff }, [corner(0, 0, 2), corner(0, 1, 1, 4), corner(-8, 0, 2, 4)]);
+  set[CHAIR_MON.squeak] = mon(anim(mb, 'squeak0', 'squeak1', 3), { power: POWER.foe, thru: 0, end: -1, newmon: CHAIR_MON.puff }, [
+    corner(0, 0, 2),
+    corner(0, 1, 1, 4),
+    corner(-8, 0, 2, 4),
+  ]);
   set[CHAIR_MON.intern] = mon(anim(mb, 'intern0', 'intern1', 3), { power: POWER.tough, thru: 1 }, pace(4, 2));
   set[CHAIR_MON.janitor] = mon(anim(mb, 'janitor0', 'janitor1', 20), { power: POWER.friend, thru: 0, newmon: CHAIR_MON.janitorOff }, still);
   set[CHAIR_MON.janitorOff] = mon(anim(mb, 'janitor1', 'janitor0', 4), { power: POWER.tough, thru: 0, end: 30 }, [corner(0, 0, 2), corner(-3, 0, 2, 4)]);
@@ -252,9 +311,17 @@ export const chair: Monologue = {
     const W = 64 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 3; x < W; x += 6) m.set(x, 0, '*');
-    m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, 'slab');
+    m.fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, 'slab');
     // the sea of cubicles behind it all
-    for (const [x0, x1] of [[3, 29], [38, 46], [52, 58]]) m.row(7, x0, x1, '-').row(8, x0, x1, '%').row(9, x0, x1, ',');
+    for (const [x0, x1] of [
+      [3, 29],
+      [38, 46],
+      [52, 58],
+    ])
+      m.row(7, x0, x1, '-').row(8, x0, x1, '%').row(9, x0, x1, ',');
     // his cubicle: the desk and its video call (the chair: gone)
     m.set(2, 9, '!').set(4, 9, 'K').set(5, 9, 'K').set(5, 8, 'v').set(3, 4, 'poster');
     // the maze of cubicles: partitions to hop, a desk with the loose screw, rolling screws

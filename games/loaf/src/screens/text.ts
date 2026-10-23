@@ -32,7 +32,7 @@ export const STORY = [
     'the proud. They fed the masses',
     'with grace and awe...',
     '',
-    "But me? I stayed behind, with",
+    'But me? I stayed behind, with',
     'a crust and a flaw.',
     '',
     '        - The Bard of Bizarre',

@@ -270,7 +270,7 @@ const MICRO: Record<string, string> = {
   '=': '000111000111000',
   '>': '100010001010100',
   '<': '001010100010001',
-  '_': '000000000000111',
+  _: '000000000000111',
 };
 
 export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pixels {

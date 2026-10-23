@@ -78,7 +78,8 @@ export function buildPalette(light: Light): Pal {
   // light without its color (the same brightness on every channel), so the stable's gold
   // doesn't turn him straw yellow; his beak and feet take the light as everything else does.
   // These come after every shared ramp, so no other color moves.
-  const grey = (c: RGB): RGB => c.map((v) => Math.min(255, Math.round((v * (t.mul[0] + t.mul[1] + t.mul[2])) / 3 + (t.add[0] + t.add[1] + t.add[2]) / 3))) as RGB;
+  const grey = (c: RGB): RGB =>
+    c.map((v) => Math.min(255, Math.round((v * (t.mul[0] + t.mul[1] + t.mul[2])) / 3 + (t.add[0] + t.add[1] + t.add[2]) / 3))) as RGB;
   b.ramp('feather', 4, grey([150, 146, 140]), grey([252, 252, 248]));
   const lit = (c: RGB): RGB => c.map((v, i) => Math.min(255, Math.round(v * t.mul[i] + t.add[i]))) as RGB;
   b.ramp('beak', 3, lit([176, 72, 10]), lit([250, 156, 40]));

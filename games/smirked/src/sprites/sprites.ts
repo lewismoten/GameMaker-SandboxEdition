@@ -59,7 +59,15 @@ export function heroArt(pal: Pal) {
     const cx = 10;
     const hy = 5;
     // sneakers and khakis
-    const feet: [number, number][] = side ? [[cx - 2 + (step === 1 ? 2 : step === 2 ? -2 : 0), 18], [cx + 1 - (step === 1 ? 2 : step === 2 ? -2 : 0), 18]] : [[cx - 3, 18 - (step === 1 ? 1 : 0)], [cx + 2, 18 - (step === 2 ? 1 : 0)]];
+    const feet: [number, number][] = side
+      ? [
+          [cx - 2 + (step === 1 ? 2 : step === 2 ? -2 : 0), 18],
+          [cx + 1 - (step === 1 ? 2 : step === 2 ? -2 : 0), 18],
+        ]
+      : [
+          [cx - 3, 18 - (step === 1 ? 1 : 0)],
+          [cx + 2, 18 - (step === 2 ? 1 : 0)],
+        ];
     for (const [fx, fy] of feet) {
       p.rect(fx - 1, fy - 4, 3, 4, c('khaki', 2)).rect(fx - 1, fy - 4, 1, 4, c('khaki', 1));
       p.rect(fx - 1 + (side ? 1 : 0), fy, 3, 2, c('shoe', 1)).set(fx + (side ? 2 : 1), fy, c('shoe', 0));
@@ -72,7 +80,10 @@ export function heroArt(pal: Pal) {
         p.set(x, y, line ? c('navy', 1) : c('flannel', x === cx - w || x === cx + w - 1 ? 1 : 2));
       }
     p.rect(cx - w, 13, w * 2, 1, c('board', 0)).set(cx, 13, c('gold', 2));
-    if (o.facing === 'down') p.rect(cx - 1, 8, 2, 2, c('skin', 2)).set(cx - 2, 8, c('flannel', 3)).set(cx + 1, 8, c('flannel', 3));
+    if (o.facing === 'down')
+      p.rect(cx - 1, 8, 2, 2, c('skin', 2))
+        .set(cx - 2, 8, c('flannel', 3))
+        .set(cx + 1, 8, c('flannel', 3));
     // arms
     const swing = step === 1 ? 1 : step === 2 ? -1 : 0;
     const sleeve = (x: number, y0: number, y1: number) => {
@@ -107,9 +118,15 @@ export function heroArt(pal: Pal) {
     // the foam sword: grey blade, yellow guard, red grip
     if (o.sword === 'held') {
       const [hx, hy2] = hand;
-      p.rect(hx, hy2 - 1, 2, 2, c('red', 1)).rect(hx - 1, hy2 - 2, 4, 1, c('yellow', 2)).rect(hx, hy2 - 10, 2, 8, c('foam', 2)).set(hx, hy2 - 10, c('foam', 1));
+      p.rect(hx, hy2 - 1, 2, 2, c('red', 1))
+        .rect(hx - 1, hy2 - 2, 4, 1, c('yellow', 2))
+        .rect(hx, hy2 - 10, 2, 8, c('foam', 2))
+        .set(hx, hy2 - 10, c('foam', 1));
     } else if (o.sword === 'swing') {
-      p.rect(cx + 2, 9, 3, 2, c('red', 1)).rect(cx + 5, 7, 1, 5, c('yellow', 2)).rect(cx + 6, 8, 8, 3, c('foam', 2)).rect(cx + 6, 10, 8, 1, c('foam', 1));
+      p.rect(cx + 2, 9, 3, 2, c('red', 1))
+        .rect(cx + 5, 7, 1, 5, c('yellow', 2))
+        .rect(cx + 6, 8, 8, 3, c('foam', 2))
+        .rect(cx + 6, 10, 8, 1, c('foam', 1));
     }
     // the head
     const face = o.facing !== 'up';
@@ -120,7 +137,10 @@ export function heroArt(pal: Pal) {
       const ey = hy;
       for (const x of eyes) {
         if (o.mood === 'blink' || o.mood === 'faint') p.set(x, ey + 1, ink).set(x + 1, ey + 1, ink);
-        else if (o.mood === 'ouch') p.set(x, ey, ink).set(x + 1, ey + 1, ink).set(x, ey + 2, ink);
+        else if (o.mood === 'ouch')
+          p.set(x, ey, ink)
+            .set(x + 1, ey + 1, ink)
+            .set(x, ey + 2, ink);
         else if (o.mood === 'scream') p.rect(x, ey - 1, 2, 3, c('white', 2)).set(x, ey, ink);
         else p.set(x, ey, ink).set(x, ey + 1, ink);
         if (o.mood === 'brave') p.set(x - 1, ey - 2, c('hair', 0)).set(x + 1, ey - 1, c('hair', 0));
@@ -129,8 +149,14 @@ export function heroArt(pal: Pal) {
       const mx = side ? cx + 3 : cx;
       if (o.mood === 'scream') p.rect(mx - 1, hy + 2, 3, 3, ink).set(mx, hy + 3, c('red', 1));
       else if (o.mood === 'ouch' || o.mood === 'faint') p.rect(mx - 1, hy + 3, 3, 1, ink);
-      else if (o.mood === 'brave') p.rect(mx - 1, hy + 3, 3, 1, c('white', 2)).set(mx - 2, hy + 2, ink).set(mx + 2, hy + 2, ink);
-      else p.set(mx - 1, hy + 3, c('skin', 0)).set(mx, hy + 3, c('skin', 0)).set(mx + 1, hy + 2, c('skin', 0));
+      else if (o.mood === 'brave')
+        p.rect(mx - 1, hy + 3, 3, 1, c('white', 2))
+          .set(mx - 2, hy + 2, ink)
+          .set(mx + 2, hy + 2, ink);
+      else
+        p.set(mx - 1, hy + 3, c('skin', 0))
+          .set(mx, hy + 3, c('skin', 0))
+          .set(mx + 1, hy + 2, c('skin', 0));
       // a bead of sweat
       if (o.mood !== 'brave') p.set(cx - 4, hy - 1, c('blue', 3)).set(cx - 4, hy, c('blue', 2));
     }
@@ -193,7 +219,11 @@ export function lilyArt(pal: Pal) {
     const p = new Pixels(20, 20, T);
     const step = o.step ?? 0;
     // little sneakers, leggings
-    for (const [x, d] of [[7, step === 1 ? -1 : 0], [11, step === 2 ? -1 : 0]] as const) p.rect(x, 15 + d, 2, 3, c('purple', 1)).rect(x - 1 + (x > 9 ? 1 : 0), 18 + d, 3, 2, c('white', 2));
+    for (const [x, d] of [
+      [7, step === 1 ? -1 : 0],
+      [11, step === 2 ? -1 : 0],
+    ] as const)
+      p.rect(x, 15 + d, 2, 3, c('purple', 1)).rect(x - 1 + (x > 9 ? 1 : 0), 18 + d, 3, 2, c('white', 2));
     // the hoodie
     for (let y = 9; y <= 15; y++) for (let x = 6; x < 14; x++) p.set(x, y, c('hoodie', x === 6 || x === 13 ? 1 : 2));
     p.rect(9, 9, 2, 6, c('hoodie', 3)).set(9, 12, c('white', 2));
@@ -216,7 +246,9 @@ export function lilyArt(pal: Pal) {
     if (o.apple !== false) {
       const ax = o.mood === 'pat' ? 3 : 16;
       blob(p, ax, 11, 3.4, 3.2, pal.r('apple'), 0, 2);
-      p.rect(ax - 3, 12, 7, 3, c('caramel', 1)).rect(ax - 3, 12, 7, 1, c('caramel', 2)).line(ax, 15, ax, 18, c('board', 3));
+      p.rect(ax - 3, 12, 7, 3, c('caramel', 1))
+        .rect(ax - 3, 12, 7, 1, c('caramel', 2))
+        .line(ax, 15, ax, 18, c('board', 3));
     }
     // a pat: her hand reaching out (to the right)
     if (o.mood === 'pat') p.rect(13, 9, 4, 2, c('hoodie', 2)).rect(17, 8, 3, 3, c('skin', 3));
@@ -246,7 +278,7 @@ export function buildMonsterBlocks(pal: Pal) {
     const p = P();
     for (let a = 0; a < 6.28; a += 0.4) {
       const r0 = 4 + f * 2;
-      p.line(10 + Math.cos(a) * r0, 10 + Math.sin(a) * r0, 10 + Math.cos(a) * (r0 + 4), 10 + Math.sin(a) * (r0 + 4), c('yellow', 2 - ((a * 3) | 0) % 2));
+      p.line(10 + Math.cos(a) * r0, 10 + Math.sin(a) * r0, 10 + Math.cos(a) * (r0 + 4), 10 + Math.sin(a) * (r0 + 4), c('yellow', 2 - (((a * 3) | 0) % 2)));
     }
     p.rect(3, 6, 14, 8, c('red', 2));
     micro(p, 4, 7, 'GET', c('white', 2));
@@ -258,7 +290,8 @@ export function buildMonsterBlocks(pal: Pal) {
   // The foam sword's swing (the last level's tackle): an arc of grey foam, a squeak of motion lines.
   const swing = (f: number) => {
     const p = P();
-    for (let a = -1.2; a < 1.2; a += 0.04) for (let r = 6; r < 9; r++) p.set(6 + Math.cos(a + f * 0.4) * r * 1.3, 10 + Math.sin(a + f * 0.4) * r, c('foam', r === 8 ? 1 : 2));
+    for (let a = -1.2; a < 1.2; a += 0.04)
+      for (let r = 6; r < 9; r++) p.set(6 + Math.cos(a + f * 0.4) * r * 1.3, 10 + Math.sin(a + f * 0.4) * r, c('foam', r === 8 ? 1 : 2));
     p.rect(3, 9, 4, 2, c('red', 1)).rect(6, 7, 1, 6, c('yellow', 2));
     for (let k = 0; k < 3; k++) p.line(12 + k * 2, 3 + k * 5, 17 + k, 4 + k * 5, c('white', 1));
     return done(p);
@@ -267,7 +300,14 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('swing1', swing(1));
   const dust = (f: number) => {
     const p = P();
-    for (const [x, y, r] of [[6, 12, 3], [12, 10, 3.4], [14, 14, 2.6], [8, 15, 2.4], [10, 12, 3]] as const) blob(p, x + (f ? (x - 10) * 0.5 : 0), y + (f ? (y - 12) * 0.5 : 0), r + f, r + f, pal.r('cardboard'), 2, 3);
+    for (const [x, y, r] of [
+      [6, 12, 3],
+      [12, 10, 3.4],
+      [14, 14, 2.6],
+      [8, 15, 2.4],
+      [10, 12, 3],
+    ] as const)
+      blob(p, x + (f ? (x - 10) * 0.5 : 0), y + (f ? (y - 12) * 0.5 : 0), r + f, r + f, pal.r('cardboard'), 2, 3);
     return p;
   };
   book.add('dust0', dust(0));
@@ -276,7 +316,11 @@ export function buildMonsterBlocks(pal: Pal) {
   // An animatronic zombie: grey-green, tattered shirt, foam guts, a plastic axe, a jerky shuffle.
   const zombie = (f: number) => {
     const p = P();
-    for (const [x, d] of [[7, f ? -1 : 0], [11, f ? 0 : -1]] as const) p.rect(x, 15 + d, 2, 4, c('navy', 0)).rect(x - 1, 18 + d, 3, 2, c('black', 1));
+    for (const [x, d] of [
+      [7, f ? -1 : 0],
+      [11, f ? 0 : -1],
+    ] as const)
+      p.rect(x, 15 + d, 2, 4, c('navy', 0)).rect(x - 1, 18 + d, 3, 2, c('black', 1));
     for (let y = 8; y <= 15; y++) for (let x = 6; x < 14; x++) p.set(x, y, (x + y) % 5 === 0 ? c('khaki', 0) : c('khaki', 1));
     blob(p, 9, 12, 2.4, 1.8, pal.r('guts'), 0, 2);
     // arms out stiff in front
@@ -332,7 +376,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(16, 12, ink).set(17, 14, ink);
     p.line(4, 8, 17, 10, c('black', 1)).line(5, 7, 15, 9, c('black', 1));
     // the broomstick, snapped in two
-    p.line(1, 18, 8, 17, c('board', 3)).line(10, 19, 16, 16 + f, c('board', 3)).rect(15, 15 + f, 3, 3, c('yellow', 1));
+    p.line(1, 18, 8, 17, c('board', 3))
+      .line(10, 19, 16, 16 + f, c('board', 3))
+      .rect(15, 15 + f, 3, 3, c('yellow', 1));
     p.rect(3, 4, 7, 4, c('white', 2));
     micro(p, 4, 3, 'OW', c('red', 1));
     return done(p);
@@ -359,7 +405,7 @@ export function buildMonsterBlocks(pal: Pal) {
       const d = Math.abs(x - 10);
       if (d < 2) continue;
       const top = 8 + lift * (d / 9) - (d > 6 ? (d - 6) * 0.6 : 0);
-      const bottom = 11 + lift * (d / 9) - ((d % 3) === 0 ? 1.5 : 0);
+      const bottom = 11 + lift * (d / 9) - (d % 3 === 0 ? 1.5 : 0);
       for (let y = Math.round(top); y <= Math.round(bottom); y++) p.set(x, y, c('black', y === Math.round(top) ? 2 : 1));
     }
     blob(p, 10, 9, 2.2, 2.6, pal.r('black'), 0, 2);
@@ -384,8 +430,12 @@ export function buildMonsterBlocks(pal: Pal) {
   // The guy in the werewolf mask (and a flannel shirt, like yours; and gloves with plastic claws).
   const wolf = (f: number) => {
     const p = P();
-    for (const [x, d] of [[7, f ? -1 : 0], [11, f ? 0 : -1]] as const) p.rect(x, 15 + d, 2, 4, c('navy', 1)).rect(x - 1, 18 + d, 3, 2, c('shoe', 0));
-    for (let y = 8; y <= 15; y++) for (let x = 6; x < 14; x++) p.set(x, y, (x % 4 === 0 || y === 11) ? c('green', 0) : c('navy', 2));
+    for (const [x, d] of [
+      [7, f ? -1 : 0],
+      [11, f ? 0 : -1],
+    ] as const)
+      p.rect(x, 15 + d, 2, 4, c('navy', 1)).rect(x - 1, 18 + d, 3, 2, c('shoe', 0));
+    for (let y = 8; y <= 15; y++) for (let x = 6; x < 14; x++) p.set(x, y, x % 4 === 0 || y === 11 ? c('green', 0) : c('navy', 2));
     p.rect(3, 7 - f, 3, 3, c('fur', 2)).rect(14, 7 + f, 3, 3, c('fur', 2));
     for (const x of [3, 5, 14, 16]) p.set(x, 6 - (x < 10 ? f : -f), c('white', 2));
     blob(p, 10, 5, 4.4, 4, pal.r('fur'), 1, 3);
@@ -424,8 +474,13 @@ export function buildMonsterBlocks(pal: Pal) {
   const seed = (f: number) => {
     const p = P();
     blob(p, 10, 10 - f, 4.4, 4.2, pal.r('yellow'), 0, 2);
-    p.set(9, 9 - f, ink).set(11, 9 - f, ink).set(10, 11 - f, c('orange', 0));
-    p.rect(6 - f, 15, 3, 2, c('red', 2)).rect(11 + f, 15, 3, 2, c('red', 2)).set(7 - f, 15, c('white', 2)).set(12 + f, 15, c('white', 2));
+    p.set(9, 9 - f, ink)
+      .set(11, 9 - f, ink)
+      .set(10, 11 - f, c('orange', 0));
+    p.rect(6 - f, 15, 3, 2, c('red', 2))
+      .rect(11 + f, 15, 3, 2, c('red', 2))
+      .set(7 - f, 15, c('white', 2))
+      .set(12 + f, 15, c('white', 2));
     return done(p);
   };
   book.add('seed0', seed(0), { scorePts: 100 });
@@ -434,7 +489,11 @@ export function buildMonsterBlocks(pal: Pal) {
   // feather, a cardboard sword up. Only your foam sword knocks the helmet off.
   const knight = (f: number, helmet = true) => {
     const p = P();
-    for (const [x, d] of [[6, f ? -1 : 0], [11, f ? 0 : -1]] as const) p.rect(x, 15 + d, 3, 3, c('navy', 1)).rect(x - 1, 18 + d, 5, 2, c('shoe', 1));
+    for (const [x, d] of [
+      [6, f ? -1 : 0],
+      [11, f ? 0 : -1],
+    ] as const)
+      p.rect(x, 15 + d, 3, 3, c('navy', 1)).rect(x - 1, 18 + d, 5, 2, c('shoe', 1));
     // the box armor, a painted crest
     p.rect(5, 9, 10, 7, c('cardboard', 2)).rect(5, 9, 10, 1, c('cardboard', 3)).rect(5, 15, 10, 1, c('cardboard', 0));
     p.rect(9, 10, 2, 4, c('red', 2)).rect(8, 11, 4, 1, c('red', 2));
@@ -458,7 +517,10 @@ export function buildMonsterBlocks(pal: Pal) {
   // The cardboard helmet, knocked off and lying there (counter 22).
   const helmet = (f: number) => {
     const p = P();
-    p.rect(5, 7 - f, 10, 9, c('cardboard', 2)).rect(5, 7 - f, 10, 1, c('cardboard', 3)).rect(6, 11 - f, 8, 1, ink).rect(14, 7 - f, 1, 9, c('cardboard', 0));
+    p.rect(5, 7 - f, 10, 9, c('cardboard', 2))
+      .rect(5, 7 - f, 10, 1, c('cardboard', 3))
+      .rect(6, 11 - f, 8, 1, ink)
+      .rect(14, 7 - f, 1, 9, c('cardboard', 0));
     p.line(9, 6 - f, 6, 2 - f, c('red', 2)).line(10, 6 - f, 7, 2 - f, c('red', 3));
     micro(p, 7, 13 - f, '12', c('red', 1));
     return done(p);

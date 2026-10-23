@@ -319,7 +319,9 @@ function nook(t: Tiles): void {
     const w = 14 + Math.floor(R() * 4);
     const x0 = Math.floor((20 - w) / 2);
     const top = 4 + Math.floor(R() * 6);
-    p.rect(x0, top, w, 40 - top, c(ramp, 2)).rect(x0, top, 2, 40 - top, c(ramp, 3)).rect(x0 + w - 2, top, 2, 40 - top, c(ramp, 1));
+    p.rect(x0, top, w, 40 - top, c(ramp, 2))
+      .rect(x0, top, 2, 40 - top, c(ramp, 3))
+      .rect(x0 + w - 2, top, 2, 40 - top, c(ramp, 1));
     p.frame(x0, top, w, 40 - top, c('ink', 0));
     p.rect(x0 + 1, top + 5, w - 2, 2, c('gold', 2)).rect(x0 + 1, 33, w - 2, 2, c('gold', 2));
     return cut(p);

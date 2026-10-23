@@ -145,7 +145,13 @@ export function stage3(): Stage {
     14,
   );
   // the painted Easter egg, tucked against the right-hand edge halfway up The Woofer
-  const [ec, ed] = ([[14, 60], [14, 59], [14, 61]] as [number, number][]).find(([c, d]) => /^floor0$/.test(b.get(c, d)))!;
+  const [ec, ed] = (
+    [
+      [14, 60],
+      [14, 59],
+      [14, 61],
+    ] as [number, number][]
+  ).find(([c, d]) => /^floor0$/.test(b.get(c, d)))!;
   b.set(ec, ed, 'easterEgg');
   b.cardAt = 26;
   return {

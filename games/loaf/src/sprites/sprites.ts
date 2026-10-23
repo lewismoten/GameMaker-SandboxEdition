@@ -99,7 +99,16 @@ export function loafArt(pal: Pal) {
     // the face
     if (o.face !== 'none') {
       const fu = o.face === 'side' ? 0.38 : 0;
-      const eyes: [number, number][] = o.face === 'side' ? [[fu - 0.05, -0.12], [fu + 0.35, -0.12]] : [[-0.32, -0.12], [0.32, -0.12]];
+      const eyes: [number, number][] =
+        o.face === 'side'
+          ? [
+              [fu - 0.05, -0.12],
+              [fu + 0.35, -0.12],
+            ]
+          : [
+              [-0.32, -0.12],
+              [0.32, -0.12],
+            ];
       for (const [u, v] of eyes) {
         if (o.mood === 'blink' || o.mood === 'joy' || o.mood === 'sing') {
           dot(u - 0.08, v + 0.05, ink);
@@ -171,7 +180,9 @@ export function loafArt(pal: Pal) {
         [10, 2],
         [15, 4],
       ])
-        p.set(x, y, c('white', 1)).set(x + 1, y - 1, c('white', 0)).set(x, y - 2, c('white', 1));
+        p.set(x, y, c('white', 1))
+          .set(x + 1, y - 1, c('white', 0))
+          .set(x, y - 2, c('white', 1));
     if (o.mood === 'ouch') p.px.forEach((v, i) => v !== T && v !== ink && v !== c('white', 2) && (p.px[i] = c('red', 3)));
     return outline(p, ink);
   };
@@ -189,7 +200,8 @@ export function buildCharBlocks(pal: Pal) {
     book.add(k('front'), a.body({ face: 'front', wrapped }));
     book.add(k('blink'), a.body({ face: 'front', wrapped, mood: 'blink' }));
     // rolling: the loaf turns over (its face goes round); the bundle waddles instead
-    for (let t = 0; t < 4; t++) book.add(k(`roll${t}`), wrapped ? a.body({ face: 'side', wrapped, lean: [0, 2, 0, -2][t] }) : a.body({ face: 'side', turn: t }));
+    for (let t = 0; t < 4; t++)
+      book.add(k(`roll${t}`), wrapped ? a.body({ face: 'side', wrapped, lean: [0, 2, 0, -2][t] }) : a.body({ face: 'side', turn: t }));
     book.add(k('rise'), a.body({ face: 'front', wrapped, mood: 'joy', rise: 1.6 }));
     book.add(k('riseSide'), a.body({ face: 'side', wrapped, mood: 'joy', rise: 1.4 }));
     book.add(k('hunker'), a.body({ face: 'front', wrapped, mood: 'blink', rise: -1.4 }));
@@ -232,7 +244,9 @@ export function buildMonsterBlocks(pal: Pal) {
   const fish = (f: number) => {
     const p = P();
     blob(p, 10, 10, 7, 3.6, pal.r('fish'), 0, 3, 1.2);
-    p.line(3, 10, 0, 6 + f * 2, c('fish', 1)).line(3, 10, 0, 14 - f * 2, c('fish', 1)).line(1, 7 + f * 2, 1, 13 - f * 2, c('fish', 0));
+    p.line(3, 10, 0, 6 + f * 2, c('fish', 1))
+      .line(3, 10, 0, 14 - f * 2, c('fish', 1))
+      .line(1, 7 + f * 2, 1, 13 - f * 2, c('fish', 0));
     p.set(14, 9, ink).set(15, 8, c('white', 2)).line(16, 11, 17, 11, ink);
     p.line(8, 7, 11, 5 + f, c('fish', 2)).line(7, 13, 9, 15, c('fish', 1));
     return done(p);
@@ -241,7 +255,13 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('fish1', fish(1), hurt(-6));
   const flop = P();
   blob(flop, 10, 16, 7, 2.4, pal.r('fish'), 0, 3);
-  for (const [x, y] of [[4, 11], [8, 9], [13, 10], [16, 12]]) flop.set(x, y, c('water', 3)).set(x, y + 1, c('water', 2));
+  for (const [x, y] of [
+    [4, 11],
+    [8, 9],
+    [13, 10],
+    [16, 12],
+  ])
+    flop.set(x, y, c('water', 3)).set(x, y + 1, c('water', 2));
   book.add('flop', done(flop));
   // A brother loaf, passed hand to hand overhead, spinning.
   const art = loafArt(pal);
@@ -320,7 +340,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(2, 15, 6, 13 + f, c('grey', 2)).line(1, 13 - f, 2, 15, c('grey', 2));
     blob(p, 10, 13, 5.5, 4, pal.r('grey'), 1, 3);
     blob(p, 15, 12, 3, 2.6, pal.r('grey'), 1, 3);
-    p.disc(13, 9, 1.8, c('red', 3)).set(18, 12 + f, c('red', 2)).set(15, 11, ink);
+    p.disc(13, 9, 1.8, c('red', 3))
+      .set(18, 12 + f, c('red', 2))
+      .set(15, 11, ink);
     p.line(17, 13, 19, 12 - f, c('white', 1)).line(17, 13, 19, 14 + f, c('white', 1));
     p.line(8, 17, 7 + f, 18, c('grey', 1)).line(12, 17, 13 - f, 18, c('grey', 1));
     return done(p);
@@ -331,9 +353,15 @@ export function buildMonsterBlocks(pal: Pal) {
   const seed = (f: number) => {
     const p = P();
     const y = f ? 10 : 13;
-    p.rect(7, y + 5, 3, 2, c('red', 2)).rect(11, y + 5, 3, 2, c('red', 2)).set(9, y + 5, c('white', 2)).set(13, y + 5, c('white', 2));
+    p.rect(7, y + 5, 3, 2, c('red', 2))
+      .rect(11, y + 5, 3, 2, c('red', 2))
+      .set(9, y + 5, c('white', 2))
+      .set(13, y + 5, c('white', 2));
     blob(p, 10, y, 4, 4.6, pal.r('gold'), 0, 3, 1.2);
-    p.set(9, y - 1, ink).set(12, y - 1, ink).set(10, y + 2, ink).set(11, y + 2, ink);
+    p.set(9, y - 1, ink)
+      .set(12, y - 1, ink)
+      .set(10, y + 2, ink)
+      .set(11, y + 2, ink);
     p.line(11, y - 5, 12, y - 7, c('leaf', 2));
     return done(p);
   };
@@ -371,8 +399,17 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(3, 9, 1, 6 - f, c('sand', 1));
     blob(p, 9, 11, 6, 3.4, pal.r('sand'), 0, 3);
     blob(p, 15, 9 + f, 3, 2.6, pal.r('sand'), 0, 3);
-    p.rect(17, 10 + f, 3, 2, c('sand', 2)).set(19, 10 + f, ink).set(15, 8 + f, ink).line(13, 7 + f, 12, 10 + f, c('sand', 0));
-    for (const [x, d] of [[5, 1], [8, -1], [11, 1], [13, -1]]) p.line(x, 14, x + (f ? d : 0), 18, c('sand', 0));
+    p.rect(17, 10 + f, 3, 2, c('sand', 2))
+      .set(19, 10 + f, ink)
+      .set(15, 8 + f, ink)
+      .line(13, 7 + f, 12, 10 + f, c('sand', 0));
+    for (const [x, d] of [
+      [5, 1],
+      [8, -1],
+      [11, 1],
+      [13, -1],
+    ])
+      p.line(x, 14, x + (f ? d : 0), 18, c('sand', 0));
     return done(p);
   };
   book.add('dog0', dog(0), hurt(-7));
@@ -400,7 +437,9 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(0, 13, 8, 5, c('ochre', 2)).line(0, 18, 8, 18, c('ochre', 0));
     for (let k = 0; k < 8; k++) p.rect(4 + k, 12 - k * 1.2 + (f ? 1 : 0), 3, 4, c('ochre', 2));
     blob(p, 13, 3 + f, 4, 2.6, pal.r('ochre'), 0, 3);
-    p.set(14, 2 + f, ink).set(17, 4 + f, ink).line(12, 0 + f, 11, -1, c('ochre', 0));
+    p.set(14, 2 + f, ink)
+      .set(17, 4 + f, ink)
+      .line(12, 0 + f, 11, -1, c('ochre', 0));
     p.line(15, 5 + f, 17, 5 + f, c('ochre', 0));
     if (f) micro(p, 2, 1, 'Z', c('white', 2));
     return done(p);

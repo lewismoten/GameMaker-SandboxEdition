@@ -158,7 +158,14 @@ function flyPlans(H: number): Plan[] {
 }
 
 /** The nearest loot in view worth the detour from `at` (on the way to the goal of `dist`), if any. */
-function grabNear(d: Driver, opts: SeekOpts, dist: Int32Array, at: P, tall: number, mode: 'walk' | 'fly'): { at: P; n: number; detour: number; ticks: number; avoid: (x: number, y: number) => boolean } | undefined {
+function grabNear(
+  d: Driver,
+  opts: SeekOpts,
+  dist: Int32Array,
+  at: P,
+  tall: number,
+  mode: 'walk' | 'fly',
+): { at: P; n: number; detour: number; ticks: number; avoid: (x: number, y: number) => boolean } | undefined {
   const g = opts.grab!;
   const w = d.w;
   const map = w.map;
@@ -276,7 +283,7 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
   const plans = mode === 'walk' ? walkPlans(H, false, opts.fireKeys ?? (lance ? [SCAN.space, SCAN.z] : [SCAN.space])) : flyPlans(H);
   const longPlans = mode === 'walk' ? walkPlans(30, true) : flyPlans(40);
   let seed = 12345;
-  const rand = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  const rand = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
   const cellOf = (w: { chr: { x: number[]; y: number[] } }) => {
     const c = w.chr;
     return { x: (c.x[0] + (c.x[1] > 10 ? 1 : 0)) % 100, y: (c.y[0] + (c.y[1] > 10 ? 1 : 0)) % 100 };
@@ -318,16 +325,18 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
   const held = new Set<number>();
   const apply = (want: number[]) => {
     const evs: number[] = [];
-    for (const k of [...held]) if (!want.includes(k)) {
-      held.delete(k);
-      d.release(k);
-      evs.push(k | 0x80);
-    }
-    for (const k of want) if (!held.has(k)) {
-      held.add(k);
-      d.press(k);
-      evs.push(k);
-    }
+    for (const k of [...held])
+      if (!want.includes(k)) {
+        held.delete(k);
+        d.release(k);
+        evs.push(k | 0x80);
+      }
+    for (const k of want)
+      if (!held.has(k)) {
+        held.add(k);
+        d.press(k);
+        evs.push(k);
+      }
     return evs;
   };
   {
@@ -403,7 +412,14 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
         apply([]);
         // a detour that starts to hurt is given up
         const hp0 = d.w.ci.hitpts;
-        const r = await seek(d, g.at, { ...opts, grab: undefined, passable: () => false, avoid: g.avoid, maxTicks: g.ticks, done: () => d.w.ci.hitpts < hp0 - 12 });
+        const r = await seek(d, g.at, {
+          ...opts,
+          grab: undefined,
+          passable: () => false,
+          avoid: g.avoid,
+          maxTicks: g.ticks,
+          done: () => d.w.ci.hitpts < hp0 - 12,
+        });
         t += r.ticks;
         // the touch takes it; a few more ticks if it is not gone yet
         for (let i = 0; i < 6 && map[idx(g.at.x, g.at.y)] === g.n && d.link < 0 && !d.dead; i++, t++) await d.tick();
@@ -438,14 +454,16 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
         for (let s = 0; s < HH; s++) {
           const want = p.held[s];
           const evs: number[] = [];
-          for (const k of [...h0]) if (!want.includes(k)) {
-            h0.delete(k);
-            evs.push(k | 0x80);
-          }
-          for (const k of want) if (!h0.has(k)) {
-            h0.add(k);
-            evs.push(k);
-          }
+          for (const k of [...h0])
+            if (!want.includes(k)) {
+              h0.delete(k);
+              evs.push(k | 0x80);
+            }
+          for (const k of want)
+            if (!h0.has(k)) {
+              h0.add(k);
+              evs.push(k);
+            }
           await step(f, evs);
           if (f.dead || f.link) break;
           if (isGoal(f.w)) {
@@ -459,7 +477,8 @@ export async function seek(d: Driver, goal: P | P[], opts: SeekOpts = {}): Promi
         cost += lost * (hp0 < 50 ? 16 : 8);
         if (reached >= 0) cost += reached - 1000;
         else cost += smooth(f.w);
-        if (process.env.MAXIMUS_PLAN_LOG && t >= Number(process.env.MAXIMUS_PLAN_LOG) && t < Number(process.env.MAXIMUS_PLAN_LOG) + 60) opts.log?.(`      t${t} ${p.name} cost ${cost.toFixed(0)} lost ${lost} dist ${reached >= 0 ? 'goal' : smooth(f.w).toFixed(0)}`);
+        if (process.env.MAXIMUS_PLAN_LOG && t >= Number(process.env.MAXIMUS_PLAN_LOG) && t < Number(process.env.MAXIMUS_PLAN_LOG) + 60)
+          opts.log?.(`      t${t} ${p.name} cost ${cost.toFixed(0)} lost ${lost} dist ${reached >= 0 ? 'goal' : smooth(f.w).toFixed(0)}`);
         if (cost < bestCost) {
           bestCost = cost;
           chosen = p;

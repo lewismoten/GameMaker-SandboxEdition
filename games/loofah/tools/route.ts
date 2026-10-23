@@ -62,7 +62,11 @@ export async function bathroom(bot: Bot): Promise<void> {
   expect(bot, 2, 'the bathroom');
   await carefully(bot, 'up the steam to the silver rack', 0, async () => {
     await must(bot, bot.walk(2, 'into the steam'), 'steam');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 4 * 20 + 4, 'lifted by the steam', 120), 'lift');
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 4 * 20 + 4, 'lifted by the steam', 120),
+      'lift',
+    );
     await must(bot, bot.hop('up', 8, 'right', 3), 'onto the rack');
     if (salt(bot) < 1) throw new Error(`no salt on the rack (${salt(bot)})`);
   });
@@ -104,7 +108,10 @@ export async function bathroom(bot: Bot): Promise<void> {
 /** Where the monsters numbered `n` are (level blocks, their left edges). */
 export function where(bot: Bot, n: number): { x: number; y: number }[] {
   const w = bot.sim.w;
-  return w.mi.map((mi, i) => ({ mi, n: w.mm[i]?.monnum })).filter((m) => m.n === n).map(({ mi }) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20 }));
+  return w.mi
+    .map((mi, i) => ({ mi, n: w.mm[i]?.monnum }))
+    .filter((m) => m.n === n)
+    .map(({ mi }) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20 }));
 }
 
 /** Throws brine to the right until no wild loofah is left between columns `x0` and `x1` on row `y`. */
@@ -266,7 +273,13 @@ export async function shower(bot: Bot): Promise<void> {
       if (brine(bot) <= 0) throw new Error('out of brine');
       await must(bot, bot.hold('space', 2), 'a throw');
       await must(bot, bot.wait(12), 'the splash flies');
-      if (process.env.BOT_THROW) bot.say(`threw: brine ${brine(bot)} sponge ${bot.sim.w.mm.filter((m) => m.monnum >= MON.spongeA0 && m.monnum <= MON.spongeB3).map((m) => m.monnum).join(',')} splash ${bot.sim.w.mm.filter((m) => m.monnum === MON.brine).length}`);
+      if (process.env.BOT_THROW)
+        bot.say(
+          `threw: brine ${brine(bot)} sponge ${bot.sim.w.mm
+            .filter((m) => m.monnum >= MON.spongeA0 && m.monnum <= MON.spongeB3)
+            .map((m) => m.monnum)
+            .join(',')} splash ${bot.sim.w.mm.filter((m) => m.monnum === MON.brine).length}`,
+        );
     }
     if (alive(bot, SPONGE_A) || alive(bot, SPONGE_B)) throw new Error('the demon sponge still stands');
     bot.say('Scrubbus Maximus cleansed');

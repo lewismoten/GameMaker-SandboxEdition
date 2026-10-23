@@ -167,7 +167,9 @@ export function wagonFli(): Uint8Array {
       const x = 330 - f * 9;
       const bob = f % 2;
       // the pickup in front, the wagon behind it
-      p.rect(x, 128 + bob, 70, 26, c('blue', 1)).rect(x + 6, 108 + bob, 34, 22, c('blue', 1)).rect(x + 10, 112 + bob, 22, 12, c('sky', 1));
+      p.rect(x, 128 + bob, 70, 26, c('blue', 1))
+        .rect(x + 6, 108 + bob, 34, 22, c('blue', 1))
+        .rect(x + 10, 112 + bob, 22, 12, c('sky', 1));
       p.rect(x, 140, 4, 4, c('glow', 3));
       for (const wx of [x + 14, x + 56]) p.disc(wx, 158, 9, c('ink', 1)).ring(wx, 158, 4, c('metal', 2));
       const wx = x + 80;
@@ -196,7 +198,9 @@ export function truckFli(): Uint8Array {
       for (const wx of [x + 14, x + 100, x + 150]) p.disc(wx, 156, 9, c('ink', 1)).ring(wx, 156, 4, c('metal', 2));
       p.rect(x + 120, 110 + bob, 46, 40, c('blue', 2)).rect(x + 140, 114 + bob, 22, 14, c('sky', 6));
       // the Ferris wheel car, and Gwinn in it, ears up
-      p.rect(x + 30, 100 + bob, 60, 6, c('red', 2)).rect(x + 34, 106 + bob, 52, 34, c('yellow', 2)).rect(x + 34, 106 + bob, 52, 12, c('sky', 5));
+      p.rect(x + 30, 100 + bob, 60, 6, c('red', 2))
+        .rect(x + 34, 106 + bob, 52, 34, c('yellow', 2))
+        .rect(x + 34, 106 + bob, 52, 12, c('sky', 5));
       scaleBlit(p, GWINN[f % 4 < 2 ? 'gwinn1' : 'gwinn2'].crop(0, 0, 20, 12), x + 40, 92 + bob, 2);
       caption(p, f < 22 ? 'THE RIDES ARE GOING TO THE FAIR,' : 'AND SO IS GWINN.', 10);
       if (f >= 22) caption(p, 'SHE CAN SMELL THE CORN DOGS.', 22);

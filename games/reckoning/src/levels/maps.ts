@@ -178,7 +178,13 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
 /** The house's rooms: the ceiling's molding, the wall, the baseboard row he walks along, the floor. */
 function rooms(m: MapBuilder, W: number, floor = '='): void {
-  m.row(0, 1, W - 2, '^').fill(1, 1, W - 2, 8, '.').row(9, 1, W - 2, '_').row(10, 0, W - 1, floor).row(11, 0, W - 1, '#').col(0, 0, 11, '#').col(W - 1, 0, 11, '#');
+  m.row(0, 1, W - 2, '^')
+    .fill(1, 1, W - 2, 8, '.')
+    .row(9, 1, W - 2, '_')
+    .row(10, 0, W - 1, floor)
+    .row(11, 0, W - 1, '#')
+    .col(0, 0, 11, '#')
+    .col(W - 1, 0, 11, '#');
 }
 
 /** 1. 3:17 a.m.: the bedroom, the hall, the living room, to the kitchen door. */
@@ -227,7 +233,11 @@ export function fridge(book: BlockBook): Level {
   const W = 56;
   const H = 16;
   const m = new MapBuilder(book, 'cabinet');
-  m.fill(1, 0, W - 2, 14, 'x').row(14, 0, W - 1, '-').row(15, 0, W - 1, 'Y').col(0, 0, 15, 'Y').col(W - 1, 0, 15, 'Y');
+  m.fill(1, 0, W - 2, 14, 'x')
+    .row(14, 0, W - 1, '-')
+    .row(15, 0, W - 1, 'Y')
+    .col(0, 0, 15, 'Y')
+    .col(W - 1, 0, 15, 'Y');
   // the counter, its cabinets, the bread box (Loaf #13), the sink, the upper cabinets
   m.row(12, 4, 13, 'X').row(13, 4, 13, 'Y');
   m.set(6, 11, 'j').set(9, 11, 'J').set(12, 11, '2');
@@ -299,7 +309,11 @@ export function reckoning(book: BlockBook): Level {
   const W = 49;
   const H = 12;
   const m = new MapBuilder(book, 'hellFloor');
-  m.fill(1, 0, W - 2, 10, '~').row(10, 0, W - 1, '+').row(11, 0, W - 1, '+').col(0, 0, 11, '+').col(W - 1, 0, 11, '+');
+  m.fill(1, 0, W - 2, 10, '~')
+    .row(10, 0, W - 1, '+')
+    .row(11, 0, W - 1, '+')
+    .col(0, 0, 11, '+')
+    .col(W - 1, 0, 11, '+');
   // the pit (flames) in the floor
   m.row(10, 12, 13, '&');
   // floating tiles, the milk on them, lactase pills on the floor

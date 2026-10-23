@@ -26,10 +26,91 @@ interface Mat {
 }
 
 export const MATS: Record<Theme, Mat> = {
-  barrows: { floor: [[86, 70, 52], [120, 100, 74]], pattern: 'dirt', wallTop: [[26, 20, 16], [44, 34, 26]], face: [[120, 94, 66], [70, 54, 40]], faceKind: 'earth', liquid: [[40, 60, 40], [70, 96, 60], [140, 170, 110]] },
-  vaults: { floor: [[64, 92, 96], [100, 132, 132]], pattern: 'flags', wallTop: [[14, 30, 36], [26, 48, 54]], face: [[90, 140, 140], [50, 90, 96]], faceKind: 'brick', liquid: [[16, 60, 110], [40, 120, 160], [170, 230, 240]] },
-  mines: { floor: [[70, 62, 60], [104, 92, 86]], pattern: 'gravel', wallTop: [[20, 16, 18], [36, 30, 30]], face: [[120, 104, 96], [66, 56, 54]], faceKind: 'rock', liquid: [[150, 30, 10], [240, 110, 20], [255, 230, 120]], glow: true },
-  keep: { floor: [[56, 40, 70], [86, 66, 104]], pattern: 'flags', wallTop: [[10, 6, 14], [24, 18, 30]], face: [[90, 80, 110], [50, 44, 64]], faceKind: 'brick', liquid: [[8, 4, 16], [36, 20, 60], [120, 60, 160]] },
+  barrows: {
+    floor: [
+      [86, 70, 52],
+      [120, 100, 74],
+    ],
+    pattern: 'dirt',
+    wallTop: [
+      [26, 20, 16],
+      [44, 34, 26],
+    ],
+    face: [
+      [120, 94, 66],
+      [70, 54, 40],
+    ],
+    faceKind: 'earth',
+    liquid: [
+      [40, 60, 40],
+      [70, 96, 60],
+      [140, 170, 110],
+    ],
+  },
+  vaults: {
+    floor: [
+      [64, 92, 96],
+      [100, 132, 132],
+    ],
+    pattern: 'flags',
+    wallTop: [
+      [14, 30, 36],
+      [26, 48, 54],
+    ],
+    face: [
+      [90, 140, 140],
+      [50, 90, 96],
+    ],
+    faceKind: 'brick',
+    liquid: [
+      [16, 60, 110],
+      [40, 120, 160],
+      [170, 230, 240],
+    ],
+  },
+  mines: {
+    floor: [
+      [70, 62, 60],
+      [104, 92, 86],
+    ],
+    pattern: 'gravel',
+    wallTop: [
+      [20, 16, 18],
+      [36, 30, 30],
+    ],
+    face: [
+      [120, 104, 96],
+      [66, 56, 54],
+    ],
+    faceKind: 'rock',
+    liquid: [
+      [150, 30, 10],
+      [240, 110, 20],
+      [255, 230, 120],
+    ],
+    glow: true,
+  },
+  keep: {
+    floor: [
+      [56, 40, 70],
+      [86, 66, 104],
+    ],
+    pattern: 'flags',
+    wallTop: [
+      [10, 6, 14],
+      [24, 18, 30],
+    ],
+    face: [
+      [90, 80, 110],
+      [50, 44, 64],
+    ],
+    faceKind: 'brick',
+    liquid: [
+      [8, 4, 16],
+      [36, 20, 60],
+      [120, 60, 160],
+    ],
+  },
 };
 
 const bitsOf = (m: number) => [1, 2, 4, 8].filter((b) => m & b).length;
@@ -108,10 +189,25 @@ export function dungeonBook(theme: Theme): BlockBook {
   const book = new BlockBook(theme, { [BLK.egg]: 'egg' });
   const onFloor = () => new Canvas(20, 20).shade((x, y) => floor(x, y), 2);
   book.add('floor', onFloor());
-  book.add('floor1', new Canvas(20, 20).shade((x, y) => (Math.min(x, y, 20 - x, 20 - y) > 4 ? mix(floor(x, y), [0, 0, 0], tnoise(x, y, 5, 20, 51) * 0.25) : floor(x, y)), 2));
+  book.add(
+    'floor1',
+    new Canvas(20, 20).shade((x, y) => (Math.min(x, y, 20 - x, 20 - y) > 4 ? mix(floor(x, y), [0, 0, 0], tnoise(x, y, 5, 20, 51) * 0.25) : floor(x, y)), 2),
+  );
   book.add('floor2', decorate(onFloor(), theme));
-  addFamily(book, { layer: 'wall', shader: wallShader(m, floor), rough: theme === 'barrows' || theme === 'mines' ? 1.6 : 0.4, seed: 61, attrs: (k) => (bitsOf(k) >= 2 ? { solid: ALL } : {}) });
-  addFamily(book, { layer: 'pool', shader: liquidShader(m, floor), rough: 0.8, seed: 63, attrs: (k) => (bitsOf(k) >= 2 ? { solid: ALL, ...(theme === 'mines' ? { hp: -4 } : {}) } : {}) });
+  addFamily(book, {
+    layer: 'wall',
+    shader: wallShader(m, floor),
+    rough: theme === 'barrows' || theme === 'mines' ? 1.6 : 0.4,
+    seed: 61,
+    attrs: (k) => (bitsOf(k) >= 2 ? { solid: ALL } : {}),
+  });
+  addFamily(book, {
+    layer: 'pool',
+    shader: liquidShader(m, floor),
+    rough: 0.8,
+    seed: 63,
+    attrs: (k) => (bitsOf(k) >= 2 ? { solid: ALL, ...(theme === 'mines' ? { hp: -4 } : {}) } : {}),
+  });
   // stairs up (the way out), and a lit torch, a pillar, rubble
   book.add('stairs', stairs(onFloor(), m));
   book.add('torch', torch(onFloor(), m), { solid: ALL });

@@ -72,7 +72,14 @@ export function buildHive(m: MapBuilder): void {
   // the counter: the espresso machine, the pastry case, the tip jar, the register
   m.set(22, 13, 'counter');
   placePicture(m, 'espresso0', 23, 13, 2, 1);
-  m.set(25, 13, 'counter').set(26, 13, 'pastry').set(27, 13, 'pastry').set(28, 13, 'counter').set(29, 13, 'jar').set(30, 13, 'counter').set(31, 13, 'register').row(13, 32, 33, 'counter');
+  m.set(25, 13, 'counter')
+    .set(26, 13, 'pastry')
+    .set(27, 13, 'pastry')
+    .set(28, 13, 'counter')
+    .set(29, 13, 'jar')
+    .set(30, 13, 'counter')
+    .set(31, 13, 'register')
+    .row(13, 32, 33, 'counter');
   m.set(24, 10, 'menu').set(26, 10, 'menu2').set(29, 8, 'pendant').set(31, 10, 'playbill').set(21, 13, 'fern');
   // the little movie theater past the counter: the screen, the seats up the rake, the booth
   m.set(34, 13, 'doorway').set(34, 12, 'doorTop');

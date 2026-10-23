@@ -12,7 +12,12 @@ import { midwayBeasts } from './level7Beasts';
 export function midway(): Level {
   const bs = midwayTiles();
   const beasts = midwayBeasts();
-  bs.chez(() => bs.pic('sky3'), 'tag', bs.pic('sky3'), () => bs.pic('sky3'));
+  bs.chez(
+    () => bs.pic('sky3'),
+    'tag',
+    bs.pic('sky3'),
+    () => bs.pic('sky3'),
+  );
   bs.clue('tagDeck', 'tag', 'sky0');
   const m = new LevelMap(bs, beasts, 'sky0');
   m.rect(0, 0, 100, G, (_x, y) => skyAt(y));
@@ -55,7 +60,9 @@ export function midway(): Level {
   m.rect(tower + 2, 18, 4, 1, 'deck');
   m.rect(tower + 2, 17, 4, 1, 'rail');
   m.set(tower + 4, 17, 'tagDeck');
-  m.set(tower - 1, 15, 'dropSign0').set(tower, 15, 'dropSign1').set(tower + 1, 15, 'dropSign2');
+  m.set(tower - 1, 15, 'dropSign0')
+    .set(tower, 15, 'dropSign1')
+    .set(tower + 1, 15, 'dropSign2');
   // The food row: corn dogs, the root beer stand.
   for (let bx = 0; bx < 3; bx++) for (let by = 0; by < 3; by++) m.set(62 + bx, 37 + by, `food${bx}${by}`);
   m.set(67, 39, 'rootBeer').set(68, 39, 'signRoot');
@@ -64,8 +71,13 @@ export function midway(): Level {
   m.rect(80, 31, 12, 1, 'barnRoof');
   m.set(83, 34, 'showSign0').set(84, 34, 'showSign1').set(85, 34, 'showSign2');
   const car = 74;
-  m.set(car, 38, 'carRoofL').set(car + 1, 38, 'carRoofR').set(car, 39, 'carDoor').set(car + 1, 39, 'carBack');
-  m.set(car + 3, 37, 'leoWant').set(car + 3, 38, 'leoHead').set(car + 3, 39, 'leoBody');
+  m.set(car, 38, 'carRoofL')
+    .set(car + 1, 38, 'carRoofR')
+    .set(car, 39, 'carDoor')
+    .set(car + 1, 39, 'carBack');
+  m.set(car + 3, 37, 'leoWant')
+    .set(car + 3, 38, 'leoHead')
+    .set(car + 3, 39, 'leoBody');
   m.rect(92, 28, 8, 12, 'hedgeWall');
   m.rect(0, 28, 1, 12, 'hedgeWall');
 

@@ -48,7 +48,13 @@ function sparkle(big: boolean): Canvas {
     ],
     (x, y) => mix(C('white', 1), c, Math.min(1, Math.hypot(x - 10, y - 10) / r)),
   );
-  if (big) for (const [x, y] of [[4, 5], [15, 14], [15, 5]]) cv.disc(x, y, 1, C('white', 1));
+  if (big)
+    for (const [x, y] of [
+      [4, 5],
+      [15, 14],
+      [15, 5],
+    ])
+      cv.disc(x, y, 1, C('white', 1));
   return cv;
 }
 

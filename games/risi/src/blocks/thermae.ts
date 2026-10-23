@@ -39,7 +39,10 @@ export function buildThermae(pal: Pal): BlockBook {
   /** Marble walls in big slabs, a niche now and then. */
   const bwall = (seed: number, niche = false) => {
     const p = marble(x, seed, 1, 2);
-    p.rect(0, 0, 20, 1, c('vein', 0)).rect(0, 10, 20, 1, c('vein', 0)).rect(seed % 2 ? 9 : 0, 0, 1, 10, c('vein', 0)).rect(seed % 2 ? 0 : 9, 10, 1, 10, c('vein', 0));
+    p.rect(0, 0, 20, 1, c('vein', 0))
+      .rect(0, 10, 20, 1, c('vein', 0))
+      .rect(seed % 2 ? 9 : 0, 0, 1, 10, c('vein', 0))
+      .rect(seed % 2 ? 0 : 9, 10, 1, 10, c('vein', 0));
     if (niche) {
       p.rect(5, 4, 10, 14, c('blue', 0)).disc(10, 4, 5, c('blue', 0));
       blob(p, 10, 12, 3, 5, R('marble'), 2, 3);
@@ -78,12 +81,14 @@ export function buildThermae(pal: Pal): BlockBook {
   book.add('bfloor', seaMosaic(4), { solid: SOLID });
   book.add('bfloor2', seaMosaic(5), { solid: SOLID });
   const poolFloor = P();
-  for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) poolFloor.set(xx, y, (xx % 5 === 0 || y % 5 === 0) ? c('water', 1) : c('water', 2));
+  for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) poolFloor.set(xx, y, xx % 5 === 0 || y % 5 === 0 ? c('water', 1) : c('water', 2));
   book.add('poolFloor', poolFloor, { solid: SOLID });
   // the water you wade (it falls like air; the hot pool gives birth to bubbles)
   const water = (hot: boolean, seed: number) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) p.set(xx, y, shadeAt(R(hot ? 'tile' : 'water'), hot ? 1 : 2, hot ? 2 : 3, 0.45 + Math.sin((xx + seed) / 3) * 0.12 - y / 70, xx, y));
+    for (let y = 0; y < 20; y++)
+      for (let xx = 0; xx < 20; xx++)
+        p.set(xx, y, shadeAt(R(hot ? 'tile' : 'water'), hot ? 1 : 2, hot ? 2 : 3, 0.45 + Math.sin((xx + seed) / 3) * 0.12 - y / 70, xx, y));
     return p;
   };
   // the surface row shows the wall behind its top: draw the wall, then the water line
@@ -171,7 +176,9 @@ export function buildThermae(pal: Pal): BlockBook {
       // the goldfish herself, with a diva's lashes, singing
       blob(p, 11, 4 - f, 5, 3.4, R('fish'), 1, 3);
       p.line(5, 4 - f, 2, 1 - f, c('fish', 2)).line(5, 4 - f, 2, 7 - f, c('fish', 2));
-      p.set(14, 3 - f, c('ink', 0)).line(13, 1 - f, 15, 1 - f, c('ink', 0)).disc(16, 5 - f, 1, c('ink', 0));
+      p.set(14, 3 - f, c('ink', 0))
+        .line(13, 1 - f, 15, 1 - f, c('ink', 0))
+        .disc(16, 5 - f, 1, c('ink', 0));
       micro(p, 15, 0, f ? 'O!' : '', c('gold', 3));
     } else if (done) sparkle(x, p, 27, 6);
     else micro(p, 6, 8, String(SCALES_NEEDED), c('ink', 0));
@@ -219,7 +226,8 @@ export function buildThermae(pal: Pal): BlockBook {
   book.add('cabbageRow', rowTop, { solid: LEDGE, grav: GRAV.down, birthMon: MON.cabbage, birthTime: CABBAGE_EVERY });
   // the orchestra's floor (solid flagstones) and the air over it
   const orchestra = P();
-  for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) orchestra.set(xx, y, (Math.floor(xx / 10) + Math.floor(y / 10)) % 2 ? c('marble', 2) : c('pompeii', 2));
+  for (let y = 0; y < 20; y++)
+    for (let xx = 0; xx < 20; xx++) orchestra.set(xx, y, (Math.floor(xx / 10) + Math.floor(y / 10)) % 2 ? c('marble', 2) : c('pompeii', 2));
   orchestra.rect(0, 0, 20, 2, c('marble', 3));
   book.add('orchestra', orchestra, { solid: SOLID });
   // the stage front (scaenae frons): columns and doors painted in red and gold (scenery)
@@ -229,7 +237,10 @@ export function buildThermae(pal: Pal): BlockBook {
     if (part === 'top') p.rect(0, 10, 20, 4, c('marble', 3)).rect(0, 14, 20, 1, c('gold', 1)).rect(0, 0, 20, 10, c('sky', 3));
     if (part === 'door') p.rect(4, 2, 12, 18, c('wood', 1)).rect(4, 2, 12, 2, c('gold', 1)).disc(14, 12, 1, c('gold', 2));
     if (part === 'col') return column(x, p);
-    if (part === 'wall') p.rect(3, 3, 14, 14, c('ochre', 1)).frame(3, 3, 14, 14, c('gold', 1)).set(4 + (seed % 12), 4, c('gold', 2));
+    if (part === 'wall')
+      p.rect(3, 3, 14, 14, c('ochre', 1))
+        .frame(3, 3, 14, 14, c('gold', 1))
+        .set(4 + (seed % 12), 4, c('gold', 2));
     return p;
   };
   book.add('frons', frons(37, 'wall'), air);
@@ -238,7 +249,8 @@ export function buildThermae(pal: Pal): BlockBook {
   book.add('fronsTop', frons(40, 'top'), air);
   // the stage (wooden boards, solid)
   const stage = P();
-  for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) stage.set(xx, y, shadeAt(R('wood'), 1, 3, 0.4 + ((xx * 7 + Math.floor(y / 5) * 3) % 20) / 60, xx, y));
+  for (let y = 0; y < 20; y++)
+    for (let xx = 0; xx < 20; xx++) stage.set(xx, y, shadeAt(R('wood'), 1, 3, 0.4 + ((xx * 7 + Math.floor(y / 5) * 3) % 20) / 60, xx, y));
   for (let y = 4; y < 20; y += 5) stage.rect(0, y, 20, 1, c('wood', 0));
   stage.rect(0, 0, 20, 2, c('wood', 4));
   book.add('stage', stage, { solid: SOLID });
@@ -257,7 +269,12 @@ export function buildThermae(pal: Pal): BlockBook {
   // the box behind the Emperor (solid): it gives birth to his decrees
   const box = frons(42, 'wall');
   box.rect(1, 6, 18, 14, c('purple', 1)).rect(1, 6, 18, 2, c('gold', 2));
-  for (const [sx, sy] of [[5, 11], [10, 13], [14, 10]]) box.rect(sx, sy, 4, 3, c('marble', 3)).set(sx, sy + 1, c('red', 2));
+  for (const [sx, sy] of [
+    [5, 11],
+    [10, 13],
+    [14, 10],
+  ])
+    box.rect(sx, sy, 4, 3, c('marble', 3)).set(sx, sy + 1, c('red', 2));
   book.add('decreeBox', box, { solid: SOLID, birthMon: MON.decree, birthTime: DECREE_EVERY });
   // the altar on the stage: the laurel crown laid on it ends the game
   const altar = (crowned: boolean) => {
@@ -283,13 +300,28 @@ export function buildThermae(pal: Pal): BlockBook {
   book.add('tcoin', denarius(x, tsky(48)), { score: 100, touch: 'tsky' });
   // a painted Easter egg, rolled under the bench of cheering mice in the baths (a few points, no sound of its own)
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`egg${k || ''}`, drawEasterEgg(copy(bbase), { ink: c('ink', 0), shell: [c('grass', 1), c('grass', 2), c('grass', 3)], paint: [c('pompeii', 2), c('pompeii', 3)], accent: c('gold', 3), white: c('marble', 3) }, 'dots', k), {
-      score: 50,
-      touch: 'bbase',
-      grav: GRAV.down,
-      next: `egg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
-      ntime: k ? 3 : 60,
-    });
+    book.add(
+      `egg${k || ''}`,
+      drawEasterEgg(
+        copy(bbase),
+        {
+          ink: c('ink', 0),
+          shell: [c('grass', 1), c('grass', 2), c('grass', 3)],
+          paint: [c('pompeii', 2), c('pompeii', 3)],
+          accent: c('gold', 3),
+          white: c('marble', 3),
+        },
+        'dots',
+        k,
+      ),
+      {
+        score: 50,
+        touch: 'bbase',
+        grav: GRAV.down,
+        next: `egg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+        ntime: k ? 3 : 60,
+      },
+    );
   // Mystery Robot Joe at the top of the stands, counting the laughs (scenery; recolored from the
   // unlit palette, so the block is the same in every light)
   const joe = tsky(31);
@@ -298,4 +330,3 @@ export function buildThermae(pal: Pal): BlockBook {
   book.add('joe', joe, air);
   return book;
 }
-

@@ -116,8 +116,7 @@ export function wallpaper(ramp: string, pattern: 'stripes' | 'sprig' | 'stars' |
         .set(x + 1, y, c(accent, 3))
         .set(x, y + 1, c(accent, 3));
   if (pattern === 'diamonds')
-    for (let y = 0; y < 20; y++)
-      for (let x = 0; x < 20; x++) if ((x + y) % 10 === 0 || (x - y + 20) % 10 === 0) p.set(x, y, c(ramp, 1));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y) % 10 === 0 || (x - y + 20) % 10 === 0) p.set(x, y, c(ramp, 1));
   if (pattern === 'tiles') {
     p.rect(0, 0, 20, 20, c(accent, 3));
     for (let k = 0; k < 20; k += 5) p.rect(0, k, 20, 1, c(accent, 1)).rect(k, 0, 1, 20, c(accent, 1));
@@ -137,7 +136,6 @@ export function floorboards(seed: number, ramp = 'wood'): Pixels {
   for (let y = 9; y < 20; y += 4) p.rect(0, y, 20, 1, c(ramp, 0));
   return p;
 }
-
 
 /**
  * Scents: wisps on the air that only a sniff (S) can beat. Each one turns into what is

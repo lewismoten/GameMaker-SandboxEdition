@@ -17,7 +17,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the pedestrian', 0, async () => {
       await must(bot, bot.walk(17, 'the coin'), 'coin');
-      await declaim(bot, 'IT\'S MY RECEIPT!');
+      await declaim(bot, "IT'S MY RECEIPT!");
       await must(bot, bot.walk(25, 'to the first minivan'), 'van');
       await must(bot, bot.hop('right', 12, 'right', 27), 'onto the first minivan');
       await must(bot, bot.walk(28, 'the coin on its roof'), 'roof');
@@ -43,7 +43,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the jogger, the last pedestrian', 0, async () => {
       await must(bot, bot.walk(60, 'the jogger, the dollar'), 'jogger');
-      await declaim(bot, 'IT\'S MY RECEIPT!');
+      await declaim(bot, "IT'S MY RECEIPT!");
       await must(bot, bot.walk(64, 'the coin'), 'coin');
       if (plot(bot) < SCRAPS) throw new Error(`only ${plot(bot)} scraps`);
       bot.say(`tips ${tips(bot)}`);
@@ -88,7 +88,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(53, 'the coin, the prayer candle'), 'candle');
       await declaim(bot, 'opera');
       await must(bot, bot.walk(58, 'the coin'), 'coin');
-      await declaim(bot, 'the king\'s hat');
+      await declaim(bot, "the king's hat");
       await declaim(bot, 'the king');
       if (plot(bot) < SUPPLIES) throw new Error(`only ${plot(bot)} supplies`);
       await must(bot, bot.walk(64, 'the cupboard'), 'the cupboard');
@@ -113,7 +113,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(31, 'the coin under the beam'), 'coin');
       await must(bot, bot.walk(29, 'back under the beam'), 'beam');
       await must(bot, bot.hop('up', 12), 'up onto the beam');
-      await must(bot, bot.walk(30, 'the witch\'s hat'), 'hat');
+      await must(bot, bot.walk(30, "the witch's hat"), 'hat');
       await must(bot, bot.walk(34, 'down, the broomstick'), 'broom');
     });
     await carefully(bot, 'the werewolf mask', 0, async () => {
@@ -122,7 +122,7 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await declaim(bot, 'the werewolf');
     });
     await carefully(bot, 'the spiderwebs, Lily', 3, async () => {
-      await must(bot, bot.walk(49, 'through the webs, Lily\'s pat, the coffee'), 'webs');
+      await must(bot, bot.walk(49, "through the webs, Lily's pat, the coffee"), 'webs');
     });
     await carefully(bot, 'the gift shop', 0, async () => {
       await must(bot, bot.walk(54, 'under the gift shelf'), 'shelf');

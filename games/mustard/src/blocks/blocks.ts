@@ -148,7 +148,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   const fence = () => {
     const p = sky(45);
     p.rect(0, 6, 20, 2, c('white', 1)).rect(0, 13, 20, 2, c('white', 1));
-    for (const x of [3, 13]) p.rect(x, 2, 4, 18, c('white', 2)).rect(x, 2, 1, 18, c('white', 0)).set(x + 1, 1, c('white', 2)).set(x + 2, 1, c('white', 2));
+    for (const x of [3, 13])
+      p.rect(x, 2, 4, 18, c('white', 2))
+        .rect(x, 2, 1, 18, c('white', 0))
+        .set(x + 1, 1, c('white', 2))
+        .set(x + 2, 1, c('white', 2));
     return p;
   };
   book.add('fence', fence(), air);
@@ -190,7 +194,13 @@ export function buildBlocks(pal: Pal): BlockBook {
   // Rain clouds: they give birth to raindrops.
   const cloud = (part: number, rain: boolean) => {
     const p = sky(55 + part);
-    for (const [x, y, rr] of [[part * -20 + 9, 12, 8], [part * -20 + 19, 9, 9], [part * -20 + 29, 12, 8], [part * -20 + 34, 10, 5]]) blob(p, x, y, rr, rr * 0.75, R(rain ? 'stone' : 'white'), rain ? 2 : 0, rain ? 4 : 2, 1.2);
+    for (const [x, y, rr] of [
+      [part * -20 + 9, 12, 8],
+      [part * -20 + 19, 9, 9],
+      [part * -20 + 29, 12, 8],
+      [part * -20 + 34, 10, 5],
+    ])
+      blob(p, x, y, rr, rr * 0.75, R(rain ? 'stone' : 'white'), rain ? 2 : 0, rain ? 4 : 2, 1.2);
     p.rect(0, 16, 20, 4, c('sky', 3));
     for (let x = 0; x < 20; x++) if (x % 5 === 2) p.set(x, 17, c('water', 3)).set(x, 18, c('water', 2));
     return p;
@@ -220,18 +230,42 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   // Sunbeams: points.
-  book.add('sun0', sparkle(() => sky(61), 0, 'sun'), { score: 50, touch: 'sky', next: 'sun1', ntime: 6 });
-  book.add('sun1', sparkle(() => sky(61), 1, 'sun'), { score: 50, touch: 'sky', next: 'sun0', ntime: 4 });
-  book.add('sunC0', sparkle(() => cave(62), 0, 'sun'), { score: 50, touch: 'cave', next: 'sunC1', ntime: 6 });
-  book.add('sunC1', sparkle(() => cave(62), 1, 'sun'), { score: 50, touch: 'cave', next: 'sunC0', ntime: 4 });
+  book.add(
+    'sun0',
+    sparkle(() => sky(61), 0, 'sun'),
+    { score: 50, touch: 'sky', next: 'sun1', ntime: 6 },
+  );
+  book.add(
+    'sun1',
+    sparkle(() => sky(61), 1, 'sun'),
+    { score: 50, touch: 'sky', next: 'sun0', ntime: 4 },
+  );
+  book.add(
+    'sunC0',
+    sparkle(() => cave(62), 0, 'sun'),
+    { score: 50, touch: 'cave', next: 'sunC1', ntime: 6 },
+  );
+  book.add(
+    'sunC1',
+    sparkle(() => cave(62), 1, 'sun'),
+    { score: 50, touch: 'cave', next: 'sunC0', ntime: 4 },
+  );
   // Faith: a golden glimmer, a tiny mustard seed of light.
   const glimmer = (bg: () => Pixels, f: number) => {
     const p = sparkle(bg, f, 'faith');
     blob(p, 10, 10, 2.4, 2.8, R('seed'), 2, 4, 1.3);
     return p;
   };
-  book.add('faith0', glimmer(() => sky(63), 0), { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith1', ntime: 7 });
-  book.add('faith1', glimmer(() => sky(63), 1), { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith0', ntime: 5 });
+  book.add(
+    'faith0',
+    glimmer(() => sky(63), 0),
+    { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith1', ntime: 7 },
+  );
+  book.add(
+    'faith1',
+    glimmer(() => sky(63), 1),
+    { effect: FAITH, eamt: 1, score: 25, touch: 'sky', next: 'faith0', ntime: 5 },
+  );
   // Groundwater: a drop of water in the dirt.
   const waterDrop = (bg: Pixels) => {
     for (let k = 0; k < 5; k++) bg.rect(10 - Math.floor(k / 2), 4 + k, 1 + Math.floor(k / 2) * 2, 1, c('water', 2));
@@ -263,7 +297,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   // Thistles prick.
   const thistle = (bg: Pixels) => {
     for (let k = 0; k < 4; k++) bg.line(10, 19, 4 + k * 4, 10 + (k % 2) * 3, c('leaf', 1));
-    for (const [x, y] of [[5, 9], [10, 6], [15, 9]]) {
+    for (const [x, y] of [
+      [5, 9],
+      [10, 6],
+      [15, 9],
+    ]) {
       blob(bg, x, y + 2, 2.6, 2, R('leaf'), 0, 2);
       bg.disc(x, y, 2.2, c('purple', 1)).set(x, y - 1, c('purple', 2));
       bg.set(x - 3, y + 1, c('white', 1)).set(x + 3, y + 1, c('white', 1));
@@ -274,7 +312,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('thistle', thistle(sky(73)), { grav: GRAV.down, hp: -8, touch: 'thistleDown' });
   const drooped = sky(74);
   for (let k = 0; k < 4; k++) drooped.line(10, 19, 2 + k * 5, 15 + (k % 2), c('leaf', 1));
-  for (const [x, y] of [[4, 14], [10, 13], [16, 14]]) drooped.disc(x, y, 2, c('purple', 1));
+  for (const [x, y] of [
+    [4, 14],
+    [10, 13],
+    [16, 14],
+  ])
+    drooped.disc(x, y, 2, c('purple', 1));
   book.add('thistleDown', drooped, { grav: GRAV.down });
 
   // ---------- underground ----------
@@ -349,7 +392,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('crumble2', boulder(sky(95), 2), { grav: GRAV.down, next: 'sky', ntime: 4 });
   // Loose scree: pebbles come rolling out of it.
   const scree = mountain(96, true);
-  for (const [x, y] of [[4, 8], [10, 11], [15, 7], [7, 15], [14, 16]]) blob(scree, x, y, 2.4, 2, R('stone'), 2, 5);
+  for (const [x, y] of [
+    [4, 8],
+    [10, 11],
+    [15, 7],
+    [7, 15],
+    [14, 16],
+  ])
+    blob(scree, x, y, 2.4, 2, R('stone'), 2, 5);
   book.add('scree', scree, { solid: SOLID, birthMon: MON.pebble, birthTime: SCREE_EVERY });
   // A pine, and snow on the peak (scenery).
   const pine = sky(97);
@@ -457,9 +507,21 @@ export function buildBlocks(pal: Pal): BlockBook {
   // around it, a few points, gone when touched (that is its touch block), with no sound of its own.
   const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('white', 2), dark: c('grey', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(cave(4), tin, k), { ...air, next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'cave', score: 100 });
+    book.add(`tinHeart${k || ''}`, drawTinHeart(cave(4), tin, k), {
+      ...air,
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'cave',
+      score: 100,
+    });
   const egg = { ink: c('ink', 0), shell: R('blue'), paint: [c('red', 2), c('red', 3)], accent: c('sun', 3), white: c('white', 2) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(sky(1), egg, 'stars', k), { ...air, next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60, touch: 'sky', score: 50 });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(sky(1), egg, 'stars', k), {
+      ...air,
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 60,
+      touch: 'sky',
+      score: 50,
+    });
   return book;
 }

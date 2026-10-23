@@ -149,7 +149,10 @@ function breadboard(g: Grid, c: number, d: number): void {
     for (let k = 0; k < 3; k++) g.set(c + 2 + k, d + 10 - i, `m65${r}${k}`);
   });
   g.stamp(c + 6, d + 7, 't555', 2, 2);
-  g.set(c + 5, d + 7, 'jwH').set(c + 7, d + 6, 'jwV').set(c + 7, d + 5, 'clkOn').set(c + 6, d + 5, 'runStep');
+  g.set(c + 5, d + 7, 'jwH')
+    .set(c + 7, d + 6, 'jwV')
+    .set(c + 7, d + 5, 'clkOn')
+    .set(c + 6, d + 5, 'runStep');
 }
 
 function legB(g: Grid): void {

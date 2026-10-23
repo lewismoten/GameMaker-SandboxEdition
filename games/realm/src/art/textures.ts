@@ -128,7 +128,10 @@ export function rockTex(seed = 5): Sampler {
       const rr = rad * (0.75 + r() * 0.35);
       pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.8]);
     }
-    t.poly(pts.map(([x, y]) => [x + 0.8, y + 1.1] as [number, number]), [54, 46, 42]);
+    t.poly(
+      pts.map(([x, y]) => [x + 0.8, y + 1.1] as [number, number]),
+      [54, 46, 42],
+    );
     t.poly(pts, (x, y) => {
       const l = clamp01(0.55 - ((x - cx) / rad) * 0.4 - ((y - cy) / rad) * 0.55);
       return mix([112, 100, 86], [190, 178, 156], clamp01(l + (tnoise(x, y, 2.5, B, seed + 3) - 0.5) * 0.3));

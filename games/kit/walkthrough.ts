@@ -73,7 +73,11 @@ export async function replay(id: string, walk: Walkthrough, opts: { maxMinutes?:
  * does not reach the ending, or (`clips: true`) when it cuts off a level's end or start clip
  * (kit/clips.ts; without it those are only listed).
  */
-export async function writeWalkthrough(id: string, walk: Omit<Walkthrough, 'version' | 'game' | 'timeline'>, opts: { log?: boolean; clips?: boolean } = {}): Promise<ReplayResult> {
+export async function writeWalkthrough(
+  id: string,
+  walk: Omit<Walkthrough, 'version' | 'game' | 'timeline'>,
+  opts: { log?: boolean; clips?: boolean } = {},
+): Promise<ReplayResult> {
   const full: Walkthrough = { version: 1, game: id, ...walk, timeline: { fps: WALKTHROUGH_FPS, frames: 0, chapters: [] } };
   const r = await replay(id, full, { log: opts.log ?? true, clips: true });
   if (r.error) throw r.error;
@@ -84,7 +88,9 @@ export async function writeWalkthrough(id: string, walk: Omit<Walkthrough, 'vers
   const path = join(gamesDir, id, 'walkthrough.json');
   writeFileSync(path, JSON.stringify(full, null, 1) + '\n');
   const sec = r.frames / WALKTHROUGH_FPS;
-  console.log(`${id}: walkthrough reaches the ending; video ${Math.floor(Math.round(sec) / 60)}:${String(Math.round(sec) % 60).padStart(2, '0')}, ${r.chapters.length} chapters -> ${path}`);
+  console.log(
+    `${id}: walkthrough reaches the ending; video ${Math.floor(Math.round(sec) / 60)}:${String(Math.round(sec) % 60).padStart(2, '0')}, ${r.chapters.length} chapters -> ${path}`,
+  );
   return r;
 }
 

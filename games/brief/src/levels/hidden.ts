@@ -83,10 +83,26 @@ function addNook(wing: CompiledWing): void {
   a.set(wing.hall.ox + GAP.x, wing.hall.oy + GAP.y, 'nookGap');
   const tin = { ink: c('ink', 0), tin: [c('tin', 2), c('tin', 3), c('tin', 4)], white: c('paper', 4), dark: c('ink', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    a.tile(`tinHeart${k || ''}`, drawTinHeart(on(floor), tin, k), { score: 100, touch: 'hall', next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50 });
-  const egg = { ink: c('ink', 0), shell: [c('teal', 1), c('teal', 2), c('teal', 3)], paint: [c('brass', 2), c('brass', 3)], accent: c('pink', 3), white: c('paper', 4) };
+    a.tile(`tinHeart${k || ''}`, drawTinHeart(on(floor), tin, k), {
+      score: 100,
+      touch: 'hall',
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+    });
+  const egg = {
+    ink: c('ink', 0),
+    shell: [c('teal', 1), c('teal', 2), c('teal', 3)],
+    paint: [c('brass', 2), c('brass', 3)],
+    accent: c('pink', 3),
+    white: c('paper', 4),
+  };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    a.tile(`easterEgg${k || ''}`, drawEasterEgg(on(floor), egg, 'stars', k), { score: 25, touch: 'hall', next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 70 });
+    a.tile(`easterEgg${k || ''}`, drawEasterEgg(on(floor), egg, 'stars', k), {
+      score: 25,
+      touch: 'hall',
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 70,
+    });
   // shelves all round, so the view never scrolls past them onto bare carpet (it can run on
   // about half a screen past either end, round the map's left edge too)
   for (let y = NOOK_AT.y - 2; y < NOOK_AT.y + 12; y++) for (let x = NOOK_AT.x - 16; x < NOOK_AT.x + 48; x++) a.set((x + 100) % 100, y, 'shelf');

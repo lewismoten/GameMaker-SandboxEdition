@@ -199,8 +199,16 @@ export async function theEye(bot: Bot): Promise<void> {
     await must(bot, bot.walk(9, 'the cloud'), 'cloud');
   });
   await carefully(bot, 'the updraft', 12, async () => {
-    await must(bot, bot.until('left', () => bot.px.x <= 3 * 20, "into the Spirit's updraft", 80), 'updraft');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 13 * 20, 'up on the updraft', 200), 'rise');
+    await must(
+      bot,
+      bot.until('left', () => bot.px.x <= 3 * 20, "into the Spirit's updraft", 80),
+      'updraft',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 13 * 20, 'up on the updraft', 200),
+      'rise',
+    );
     await must(bot, bot.hop('right', 4, 'right', 6), 'onto the cloud by the needle');
     await must(bot, bot.walk(11, 'the golden lamp, to the shaft'), 'lamp');
   });

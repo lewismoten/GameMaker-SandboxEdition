@@ -42,7 +42,11 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = P();
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, c('wall', x % 10 < 5 ? 1 : 2));
     const r = rng(seed);
-    for (let x = 2; x < 20; x += 10) p.set(x, 6, c('paper', 1)).set(x + 1, 7, c('paper', 1)).set(x - 1, 7, c('paper', 1)).set(x, 8, c('paper', 1));
+    for (let x = 2; x < 20; x += 10)
+      p.set(x, 6, c('paper', 1))
+        .set(x + 1, 7, c('paper', 1))
+        .set(x - 1, 7, c('paper', 1))
+        .set(x, 8, c('paper', 1));
     for (let i = 0; i < 4; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('wall', 0));
     return p;
   };
@@ -134,7 +138,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the dresser: solid, hop over it (coins on top)
   const dresser = wall(27);
   dresser.rect(0, 0, 20, 20, c('wood', 1)).rect(0, 0, 20, 2, c('wood', 3));
-  for (const y of [4, 11]) dresser.rect(2, y, 16, 6, c('wood', 2)).disc(7, y + 3, 1, c('gold', 2)).disc(13, y + 3, 1, c('gold', 2));
+  for (const y of [4, 11])
+    dresser
+      .rect(2, y, 16, 6, c('wood', 2))
+      .disc(7, y + 3, 1, c('gold', 2))
+      .disc(13, y + 3, 1, c('gold', 2));
   book.add('dresser', dresser, { solid: SOLID });
   // a doorway (scenery: walk through it)
   const doorway = wall(28);
@@ -156,7 +164,10 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let i = 0; i < 4; i++) {
       const x = 2 + Math.floor(r() * 14);
       const col = ['red', 'pjs', 'cheese', 'green'][i];
-      bg.rect(x, 16, 4, 4, c(col, 2)).rect(x, 16, 4, 1, c(col, 3)).set(x + 1, 15, c(col, 3)).set(x + 3, 15, c(col, 3));
+      bg.rect(x, 16, 4, 4, c(col, 2))
+        .rect(x, 16, 4, 1, c(col, 3))
+        .set(x + 1, 15, c(col, 3))
+        .set(x + 3, 15, c(col, 3));
     }
     return bg;
   };
@@ -209,7 +220,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a night light in the outlet (it glows)
   const nightLight = base.crop(0, 0, 20, 20);
   nightLight.rect(8, 8, 4, 6, c('white', 1)).disc(10, 10, 2, c('moon', 2));
-  for (const [x, y] of [[6, 7], [14, 7], [10, 5], [6, 13], [14, 13]]) nightLight.set(x, y, c('moon', 0));
+  for (const [x, y] of [
+    [6, 7],
+    [14, 7],
+    [10, 5],
+    [6, 13],
+    [14, 13],
+  ])
+    nightLight.set(x, y, c('moon', 0));
   book.add('nightLight', nightLight, air);
   // the laundry basket: solid
   const basket = base.crop(0, 0, 20, 20);
@@ -220,7 +238,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('basket', basket, { solid: SOLID });
   // coins on the dresser and under the couch (points) and a glass of water (dignity back)
   const coins = (bg: Pixels) => {
-    for (const [x, y] of [[6, 15], [11, 16], [14, 14]]) bg.disc(x, y, 2, c('gold', 2)).set(x - 1, y - 1, c('gold', 3)).set(x + 1, y + 1, c('gold', 0));
+    for (const [x, y] of [
+      [6, 15],
+      [11, 16],
+      [14, 14],
+    ])
+      bg.disc(x, y, 2, c('gold', 2))
+        .set(x - 1, y - 1, c('gold', 3))
+        .set(x + 1, y + 1, c('gold', 0));
     return bg;
   };
   book.add('coins', coins(wall(51)), { score: 25, touch: 'wall' });
@@ -246,7 +271,13 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('couch', couch('seat', 63), { solid: SOLID });
   // the TV remote, lost down the side of the couch (from another song): an extra life
   const remote = base.crop(0, 0, 20, 20);
-  remote.rect(3, 13, 14, 4, c('ink', 1)).rect(3, 13, 14, 1, c('grey', 1)).set(5, 15, c('red', 3)).set(8, 15, c('white', 1)).set(11, 15, c('white', 1)).set(14, 15, c('white', 1));
+  remote
+    .rect(3, 13, 14, 4, c('ink', 1))
+    .rect(3, 13, 14, 1, c('grey', 1))
+    .set(5, 15, c('red', 3))
+    .set(8, 15, c('white', 1))
+    .set(11, 15, c('white', 1))
+    .set(14, 15, c('white', 1));
   micro(remote, 4, 6, '?!', c('cheese', 3));
   book.add('remote', remote, { ...air, effect: LIFE, eamt: 1, score: 500, touch: 'base' });
   // the TV, glowing with snow (scenery)
@@ -374,7 +405,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('freezer', freezer, air);
   // celery: willpower (counter 20)
   const celery = (bg: Pixels) => {
-    for (const [x, d] of [[7, -1], [10, 0], [13, 1]]) {
+    for (const [x, d] of [
+      [7, -1],
+      [10, 0],
+      [13, 1],
+    ]) {
       bg.line(x, 18, x + d * 2, 6, c('celery', 1)).line(x + 1, 18, x + 1 + d * 2, 6, c('celery', 2));
       blob(bg, x + d * 2, 5, 2.4, 2, R('green'), 2, 4);
     }
@@ -400,14 +435,20 @@ export function buildBlocks(pal: Pal): BlockBook {
     // the plate
     p.rect(1, 16, 18, 2, c('white', 2)).rect(3, 18, 14, 1, c('white', 0));
     if (eaten) {
-      for (const [x, y] of [[6, 15], [9, 14], [13, 15]]) p.set(x, y, c('crust', 2));
+      for (const [x, y] of [
+        [6, 15],
+        [9, 14],
+        [13, 15],
+      ])
+        p.set(x, y, c('crust', 2));
       p.rect(12, 15, 3, 1, c('cream', 2));
       return p;
     }
     // a wedge, side on: the graham crust, the cream, the strawberry on top
     for (let y = 8; y < 16; y++) {
       const w = Math.round(3 + (y - 8) * 1.6);
-      for (let x = 10 - w; x < 10 + w; x++) p.set(x, y, y >= 14 ? c('crust', 2 + ((x + y) % 2)) : shadeAt(R('cream'), 1, 3, 0.8 - (x - 10 + w) / (w * 3), x, y));
+      for (let x = 10 - w; x < 10 + w; x++)
+        p.set(x, y, y >= 14 ? c('crust', 2 + ((x + y) % 2)) : shadeAt(R('cream'), 1, 3, 0.8 - (x - 10 + w) / (w * 3), x, y));
     }
     p.line(4, 15, 16, 15, c('crust', 1));
     p.disc(10, 6, 2.2, c('berry', 2)).set(9, 5, c('berry', 3)).set(10, 3, c('celery', 1));
@@ -432,7 +473,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = crown.crop(0, 0, 20, 20);
     p.rect(6, 5, 8, 3, c('metal', 1));
     p.disc(10, 9, 3.4, on ? c('moon', 2) : c('grey', 1));
-    if (on) for (const [x, y] of [[4, 12], [16, 12], [10, 15], [6, 15], [14, 15]]) p.set(x, y, c('moon', 0));
+    if (on)
+      for (const [x, y] of [
+        [4, 12],
+        [16, 12],
+        [10, 15],
+        [6, 15],
+        [14, 15],
+      ])
+        p.set(x, y, c('moon', 0));
     return p;
   };
   book.add('light0', ceilingLight(true), { ...air, next: 'light1', ntime: 23 });
@@ -445,7 +494,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('chair', chair, { solid: SOLID });
   // the linen closet's shelf (a ledge) and towels (scenery)
   const towels = shelf(false, 81);
-  for (const [x, col] of [[1, 'pink'], [7, 'pjs'], [13, 'white']] as const) towels.rect(x, 10, 6, 10, c(col, 1)).rect(x, 10, 6, 2, c(col, 2));
+  for (const [x, col] of [
+    [1, 'pink'],
+    [7, 'pjs'],
+    [13, 'white'],
+  ] as const)
+    towels.rect(x, 10, 6, 10, c(col, 1)).rect(x, 10, 6, 2, c(col, 2));
   book.add('towels', towels, { solid: LEDGE, grav: GRAV.down });
   // a roll of toilet paper: counter 21 (never go in without three)
   const roll = (bg: Pixels) => {
@@ -516,7 +570,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the bathroom's black and white tiles, floating: the floor (solid) and tiles (ledges)
   const hellTile = (ledge: boolean) => {
     const p = ledge ? voidAir(93) : P();
-    for (let y = ledge ? 2 : 0; y < (ledge ? 8 : 20); y++) for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('tile', 2) : c('ink', 1));
+    for (let y = ledge ? 2 : 0; y < (ledge ? 8 : 20); y++)
+      for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('tile', 2) : c('ink', 1));
     if (ledge) p.rect(0, 8, 20, 1, c('ink', 0)).rect(2, 9, 16, 1, c('fire', 0));
     return p;
   };
@@ -535,7 +590,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = voidAir(95);
     p.rect(3, 6, 14, 14, c('metal', 2)).rect(3, 6, 14, 2, c('metal', 3)).rect(5, 10, 10, 6, c('berry', 1));
     micro(p, 5, 11, 'MOO', c('white', 2));
-    p.rect(1, 2, 3, 6, c('metal', 1)).rect(1, 2, 7, 2, c('metal', 1)).set(2, 9 + f, c('berry', 3));
+    p.rect(1, 2, 3, 6, c('metal', 1))
+      .rect(1, 2, 7, 2, c('metal', 1))
+      .set(2, 9 + f, c('berry', 3));
     return p;
   };
   book.add('fountain', fountain(0), { solid: SOLID, birthMon: MON.shake, birthTime: SHAKE_EVERY });
@@ -562,8 +619,11 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = voidAir(97);
     blob(p, 10, 16, 8, 4, R('tile'), 0, 2);
     p.rect(4, 3, 12, 8, c('tile', 2)).rect(4, 3, 12, 1, c('tile', 1)).rect(6, 11, 8, 5, c('tile', 1));
-    if (open) for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y) % 5 === 0) p.set(x, y, c('aura', 2));
-    else micro(p, 6, 5, '1', c('gold', 1));
+    if (open)
+      for (let y = 0; y < 20; y++)
+        for (let x = 0; x < 20; x++)
+          if ((x + y) % 5 === 0) p.set(x, y, c('aura', 2));
+          else micro(p, 6, 5, '1', c('gold', 1));
     return p;
   };
   book.add('throne', throne(false), { solid: SOLID, effect: STRAW, eamt: -1, score: 5000, touch: 'throneOpen' });
@@ -573,13 +633,31 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a tin heart at the back of the fridge's bottom, in the cold glow: a glint crosses it now and then; 100 points
   const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('grey', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(inside(0), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'cold', score: 100, ...air });
+    book.add(`tinHeart${k || ''}`, drawTinHeart(inside(0), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'cold',
+      score: 100,
+      ...air,
+    });
   // a dyed Easter egg up in the kitchen's corner over the end of the counter: 50 points
   const egg = { ink: c('ink', 0), shell: R('celery'), paint: R('berry').slice(1), accent: c('gold', 3), white: c('white', 2) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(tileWall(71), egg, 'bands', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'backsplash', score: 50, ...air });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(tileWall(71), egg, 'bands', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 3 : 60,
+      touch: 'backsplash',
+      score: 50,
+      ...air,
+    });
   // Teenage Lewie (Snowbound) in the hall's family photos: red knit hat, red coat, the snow shovel
-  const lewie = lewieCameo(buildPalette('plain').pal, 'down0', { use: ['ink', 'skin', 'hair', 'red', 'white', 'grey', 'metal', 'wood', 'pjs', 'night'].flatMap((n) => R(n)) });
-  book.add('lewiePic', photo(43, (p) => p.blit(lewie.crop(4, 0, 12, 9), 4, 5, CLEAR)), air);
+  const lewie = lewieCameo(buildPalette('plain').pal, 'down0', {
+    use: ['ink', 'skin', 'hair', 'red', 'white', 'grey', 'metal', 'wood', 'pjs', 'night'].flatMap((n) => R(n)),
+  });
+  book.add(
+    'lewiePic',
+    photo(43, (p) => p.blit(lewie.crop(4, 0, 12, 9), 4, 5, CLEAR)),
+    air,
+  );
   return book;
 }

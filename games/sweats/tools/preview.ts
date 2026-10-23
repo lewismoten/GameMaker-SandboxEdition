@@ -47,7 +47,9 @@ for (const def of SCENES) {
   def.monsters(mons, s.mb);
   const cb = buildCharBlocks(pal);
   const [w, h] = size ?? [60, 12];
-  const pic = renderRegion(m.build(), s.bbl, s.mb.blocks, mons, ORIGIN, ORIGIN, w, h, [{ pixels: cb.blocks[cb.n('front')].pixels, x: start[0] + ORIGIN, y: start[1] + ORIGIN }]);
+  const pic = renderRegion(m.build(), s.bbl, s.mb.blocks, mons, ORIGIN, ORIGIN, w, h, [
+    { pixels: cb.blocks[cb.n('front')].pixels, x: start[0] + ORIGIN, y: start[1] + ORIGIN },
+  ]);
   writePng(join(out, `${def.name}.png`), pic, pal.pal, 1);
 }
 console.log(`previews in ${out}`);

@@ -189,11 +189,14 @@ export function midwayTiles(): Tiles {
   micro(dropSign, 8, 7, 'THE BIG DROP', c('yellow', 3));
   const dc = cut(dropSign);
   for (let bx = 0; bx < 3; bx++) t.air(`dropSign${bx}`, dc[0][bx]);
-  t.air('gateOpen', (() => {
-    const p = sky(3);
-    p.rect(0, 0, 3, 20, c('metal', 2)).rect(17, 0, 3, 20, c('metal', 2));
-    return p;
-  })());
+  t.air(
+    'gateOpen',
+    (() => {
+      const p = sky(3);
+      p.rect(0, 0, 3, 20, c('metal', 2)).rect(17, 0, 3, 20, c('metal', 2));
+      return p;
+    })(),
+  );
   t.wall(
     'gate',
     (() => {
@@ -249,10 +252,13 @@ export function midwayTiles(): Tiles {
   micro(show, 8, 8, 'DOG SHOW', c('blue', 1));
   const sc = cut(show);
   for (let bx = 0; bx < 3; bx++) t.air(`showSign${bx}`, sc[0][bx]);
-  t.wall('hedgeWall', (() => {
-    const p = new Pixels(20, 20, c('leaf', 1));
-    for (let i = 0; i < 6; i++) blob(p, (i * 7) % 20, (i * 5) % 20, 4, 4, r('leaf'), 0, 3);
-    return p;
-  })());
+  t.wall(
+    'hedgeWall',
+    (() => {
+      const p = new Pixels(20, 20, c('leaf', 1));
+      for (let i = 0; i < 6; i++) blob(p, (i * 7) % 20, (i * 5) % 20, 4, 4, r('leaf'), 0, 3);
+      return p;
+    })(),
+  );
   return t;
 }

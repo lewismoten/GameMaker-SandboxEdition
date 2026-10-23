@@ -661,7 +661,15 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     for (let xx = 0; xx < W; xx++) {
       if (g.get(xx, yy) !== id('tree:trunk')) continue;
       if (g.get(xx + 1, yy) === id('air')) g.set(xx + 1, yy, id('tree:trunk:r'));
-      else for (const [dx, dy] of [[0, 0], [0, -1], [1, -1], [0, -2], [1, -2]]) g.set(xx + dx, yy + dy, id('air'));
+      else
+        for (const [dx, dy] of [
+          [0, 0],
+          [0, -1],
+          [1, -1],
+          [0, -2],
+          [1, -2],
+        ])
+          g.set(xx + dx, yy + dy, id('air'));
     }
 
   return { grid: g, arrive, uplink, vault, ground, caveFloor, sky, caveAir, ceilings, surfaceH: h, treasure };

@@ -48,7 +48,15 @@ export interface Lighting {
   add: RGB;
 }
 
-export const PLAIN: Lighting = { sky: [[30, 26, 40], [150, 130, 120], [80, 66, 70]], mul: [1, 1, 1], add: [0, 0, 0] };
+export const PLAIN: Lighting = {
+  sky: [
+    [30, 26, 40],
+    [150, 130, 120],
+    [80, 66, 70],
+  ],
+  mul: [1, 1, 1],
+  add: [0, 0, 0],
+};
 
 export interface Pal {
   pal: Uint8Array;
@@ -71,7 +79,10 @@ function wrap(b: PaletteBuilder): Pal {
   };
 }
 
-const lit = (t: Lighting, glows?: boolean) => (c: RGB): RGB => (glows ? c : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB));
+const lit =
+  (t: Lighting, glows?: boolean) =>
+  (c: RGB): RGB =>
+    glows ? c : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB);
 
 /** A scene's palette: the common ramps and a group's ramps, all lit by `light`. */
 export function buildPalette(group: Ramp[], light: Lighting = PLAIN): Pal {

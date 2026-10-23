@@ -56,7 +56,9 @@ export function introFli(): Uint8Array {
         const x = 160 + Math.cos(a) * k * 190;
         const y = 96 + Math.sin(a) * k * 130 - Math.sin(k * Math.PI) * 30;
         if (x > -20 && x < 340 && y > -20 && y < 220) {
-          cv.disc(x, y, 12 * (1 - k * 0.5), (px, py) => mix(cv.get(Math.max(0, Math.min(319, Math.floor(px))), Math.max(0, Math.min(199, Math.floor(py)))), [255, 220, 140], 0.6));
+          cv.disc(x, y, 12 * (1 - k * 0.5), (px, py) =>
+            mix(cv.get(Math.max(0, Math.min(319, Math.floor(px))), Math.max(0, Math.min(199, Math.floor(py)))), [255, 220, 140], 0.6),
+          );
           cv.disc(x, y, 6 * (1 - k * 0.4), [200, 140, 70]);
         }
       }
@@ -78,7 +80,10 @@ export function introFli(): Uint8Array {
     for (let i = 0; i < 320 * 200 * 3; i++) out[i] = Math.max(0, Math.min(255, Math.round(cv.c[i])));
     return out;
   });
-  const pal = medianCutPalette(rgb.filter((_, i) => i % 6 === 0), [[0, 0, 0]]);
+  const pal = medianCutPalette(
+    rgb.filter((_, i) => i % 6 === 0),
+    [[0, 0, 0]],
+  );
   const q = new Quantizer(pal, 6);
   const indexed = rgb.map((f) => q.apply(f, 320, 200));
   return encodeFli(indexed, pal, { speed: 5 });

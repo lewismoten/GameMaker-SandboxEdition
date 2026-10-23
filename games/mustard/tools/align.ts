@@ -11,7 +11,10 @@ const RULES: PartRule[] = [
   ...pair('cloud ledge', 'cloudA', 'cloudB', 1, 0),
   ...pair('stalk', /^(stalkL|branchStalkL)$/, /^(stalkR|branchStalkR)$/, 1, 0),
   { part: 'potTop', need: [[0, 1, 'pot']] },
-  ...shape('hand', [0, 1, 2].map((r) => Array.from({ length: 8 }, (_, c) => `hand${r * 8 + c}`))),
+  ...shape(
+    'hand',
+    [0, 1, 2].map((r) => Array.from({ length: 8 }, (_, c) => `hand${r * 8 + c}`)),
+  ),
 ];
 
 export function align(): number {

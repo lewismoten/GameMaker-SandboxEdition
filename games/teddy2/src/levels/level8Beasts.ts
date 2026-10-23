@@ -20,15 +20,54 @@ const c = (n: string, k: number) => P.c(n, k);
 
 function ribbon(): Pixels {
   const K = { o: c('ink', 0), b: c('blue', 2), B: c('blue', 3), y: c('gold', 2), Y: c('yellow', 3) };
-  return sprite(['...ooooo...', '..obBbBbo..', '.obByYyBbo.', '.oBbYYYbBo.', '.obByYyBbo.', '..obBbBbo..', '...oooooo..', '...obo.obo.', '...obo.obo.', '..obo...obo', '..oo.....oo'], K, undefined, 4);
+  return sprite(
+    [
+      '...ooooo...',
+      '..obBbBbo..',
+      '.obByYyBbo.',
+      '.oBbYYYbBo.',
+      '.obByYyBbo.',
+      '..obBbBbo..',
+      '...oooooo..',
+      '...obo.obo.',
+      '...obo.obo.',
+      '..obo...obo',
+      '..oo.....oo',
+    ],
+    K,
+    undefined,
+    4,
+  );
 }
 
 function poodle(k: number): Pixels {
   const K = { o: c('ink', 0), w: c('paint', 3), W: c('fur', 1), p: c('pink', 2), k: c('ink', 0) };
   return sprite(
     k
-      ? ['.........www........', '........wwwww.......', '.ww.....wwkwwo......', 'wwww....wwwwwwk.....', '.ww.oooowww.p.......', '....wwwwwwww........', '....wwwwwwww........', '....w.w...w.w.......', '....w.w...w.w.......', '...ww.ww.ww.ww......']
-      : ['.........www........', '........wwwww.......', '.........wwkwwo.....', '.ww.....wwwwwwk.....', 'wwww.oooowww.p......', '.ww.wwwwwwww........', '....wwwwwwww........', '....w.w...w.w.......', '...ww.w...w.ww......', '......ww.ww.........'],
+      ? [
+          '.........www........',
+          '........wwwww.......',
+          '.ww.....wwkwwo......',
+          'wwww....wwwwwwk.....',
+          '.ww.oooowww.p.......',
+          '....wwwwwwww........',
+          '....wwwwwwww........',
+          '....w.w...w.w.......',
+          '....w.w...w.w.......',
+          '...ww.ww.ww.ww......',
+        ]
+      : [
+          '.........www........',
+          '........wwwww.......',
+          '.........wwkwwo.....',
+          '.ww.....wwwwwwk.....',
+          'wwww.oooowww.p......',
+          '.ww.wwwwwwww........',
+          '....wwwwwwww........',
+          '....w.w...w.w.......',
+          '...ww.w...w.ww......',
+          '......ww.ww.........',
+        ],
     K,
     0,
     10,
@@ -45,8 +84,39 @@ function turnstile(open: boolean): Pixels {
   const K = { m: c('metal', 2), M: c('metal', 3), o: c('ink', 0) };
   return sprite(
     open
-      ? ['.........mm.........', '.........mm.........', '.........mm.........', '....MMMMMmmMMMMM....', '.........mm.........', '.........mm.........', '.........mm.........', '.........mm.........', '........mmmm........']
-      : ['MMMMMMMMMMMMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'MMMMMMMMMmmMMMMMMMMM', 'M........mm........M', 'M........mm........M', 'M.......mmmm.......M', 'MMMMMMMMMMMMMMMMMMMM'],
+      ? [
+          '.........mm.........',
+          '.........mm.........',
+          '.........mm.........',
+          '....MMMMMmmMMMMM....',
+          '.........mm.........',
+          '.........mm.........',
+          '.........mm.........',
+          '.........mm.........',
+          '........mmmm........',
+        ]
+      : [
+          'MMMMMMMMMMMMMMMMMMMM',
+          'M........mm........M',
+          'M........mm........M',
+          'MMMMMMMMMmmMMMMMMMMM',
+          'M........mm........M',
+          'M........mm........M',
+          'MMMMMMMMMmmMMMMMMMMM',
+          'M........mm........M',
+          'M........mm........M',
+          'MMMMMMMMMmmMMMMMMMMM',
+          'M........mm........M',
+          'M........mm........M',
+          'MMMMMMMMMmmMMMMMMMMM',
+          'M........mm........M',
+          'M........mm........M',
+          'MMMMMMMMMmmMMMMMMMMM',
+          'M........mm........M',
+          'M........mm........M',
+          'M.......mmmm.......M',
+          'MMMMMMMMMMMMMMMMMMMM',
+        ],
     K,
     0,
     open ? 11 : 0,
@@ -61,7 +131,25 @@ export function showBeasts() {
   b.pic('pop1', popcorn(0), { hp: -6 }).pic('pop2', popcorn(1), { hp: -6 });
   for (let k = 0; k < 3; k++) b.pic(`bell${k}`, bell(k));
   b.pic('ding0', ding(0)).pic('ding1', ding(1));
-  b.pic('velvet', sprite(['r..................r', 'r.rrrrrrrrrrrrrrr.r', 'rr...............rr', 'r..................r', 'g..................g', 'g..................g', 'g..................g', 'ggg..............ggg'], { r: c('red', 1), g: c('gold', 2) }, 0, 12), { solid: 15 });
+  b.pic(
+    'velvet',
+    sprite(
+      [
+        'r..................r',
+        'r.rrrrrrrrrrrrrrr.r',
+        'rr...............rr',
+        'r..................r',
+        'g..................g',
+        'g..................g',
+        'g..................g',
+        'ggg..............ggg',
+      ],
+      { r: c('red', 1), g: c('gold', 2) },
+      0,
+      12,
+    ),
+    { solid: 15 },
+  );
   b.pic('askSit1', askBubble('SIT?', undefined, 0)).pic('askSit2', askBubble('SIT?', undefined, 1));
   for (const n of ['gwinn1', 'gwinn2', 'gwinn3'] as const) b.pic(n, GWINN[n]);
   b.pic('gwinnSit1', gwinnSits(false, 0)).pic('gwinnSit2', gwinnSits(false, 1));
@@ -162,7 +250,16 @@ export function showBeasts() {
     ],
     power: POWER.friend,
   });
-  b.add('ribbonPop', { pics: [['ribbonAir', 2]], power: 2, path: [[-1, -1, 4], [-1, 0, 4]], end: -1, becomes: 'ribbon' });
+  b.add('ribbonPop', {
+    pics: [['ribbonAir', 2]],
+    power: 2,
+    path: [
+      [-1, -1, 4],
+      [-1, 0, 4],
+    ],
+    end: -1,
+    becomes: 'ribbon',
+  });
   b.add('ribbon', { pics: [['ribbon', 50]], power: POWER.pickup });
   scent(b, 'scentBone', 'bonePop');
   scent(b, 'scentPoodle', 'poodle');

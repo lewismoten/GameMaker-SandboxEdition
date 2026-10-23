@@ -20,7 +20,18 @@ const c = (n: string, k: number) => P.c(n, k);
 function horse(col: string): Pixels {
   const K = { o: c('ink', 0), w: c('paint', 3), W: c('paint', 2), g: c('gold', 2), r: c(col, 2), y: c('yellow', 3) };
   return sprite(
-    ['.........g..........', '.........g..........', 'oooooooooooooooo....', 'owwwwwwwwwwwwwwwoo..', 'owwwrrrrrwwwwwwwwwo.', '.owwwwwwwwwwwwwwwwwo', '..owwwwwwwwwwwo.owo.', '..owo.ow.owo.wo.oo..', '..oo..oo..oo..oo....', '.........g..........'],
+    [
+      '.........g..........',
+      '.........g..........',
+      'oooooooooooooooo....',
+      'owwwwwwwwwwwwwwwoo..',
+      'owwwrrrrrwwwwwwwwwo.',
+      '.owwwwwwwwwwwwwwwwwo',
+      '..owwwwwwwwwwwo.owo.',
+      '..owo.ow.owo.wo.oo..',
+      '..oo..oo..oo..oo....',
+      '.........g..........',
+    ],
     K,
     0,
     0,
@@ -30,10 +41,21 @@ function horse(col: string): Pixels {
 /** THE BIG DROP's car: a ring of seats around the tower. */
 function dropCar(): Pixels {
   const K = { o: c('ink', 0), r: c('red', 2), R: c('red', 3), y: c('yellow', 3), m: c('metal', 2) };
-  return sprite(['oooooooooooooooooooo', 'oRRRRRRRRRRRRRRRRRRo', 'orrrrrrrrrrrrrrrrrro', 'oyoyoyoyoyoyoyoyoyoo', 'oooooooooooooooooooo', '.m.m.m.m.m.m.m.m.m..'], K, 0, 0);
+  return sprite(
+    ['oooooooooooooooooooo', 'oRRRRRRRRRRRRRRRRRRo', 'orrrrrrrrrrrrrrrrrro', 'oyoyoyoyoyoyoyoyoyoo', 'oooooooooooooooooooo', '.m.m.m.m.m.m.m.m.m..'],
+    K,
+    0,
+    0,
+  );
 }
 
-const bee = (k: number) => sprite(k ? ['.ww.ww.', '..www..', '.yoyoy.', 'yoyoyo.', '.yoyo..'] : ['.......', 'wwwwww.', '.yoyoy.', 'yoyoyo.', '.yoyo..'], { w: c('paint', 3), y: c('yellow', 3), o: c('ink', 0) }, 7, 8);
+const bee = (k: number) =>
+  sprite(
+    k ? ['.ww.ww.', '..www..', '.yoyoy.', 'yoyoyo.', '.yoyo..'] : ['.......', 'wwwwww.', '.yoyoy.', 'yoyoyo.', '.yoyo..'],
+    { w: c('paint', 3), y: c('yellow', 3), o: c('ink', 0) },
+    7,
+    8,
+  );
 
 export function midwayBeasts() {
   const b = newBestiary();

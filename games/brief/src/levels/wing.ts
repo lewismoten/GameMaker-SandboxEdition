@@ -140,7 +140,14 @@ function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): 
     p.rect(9, 5, 2, 11, c('paper', 1));
     micro(p, 3, 7, 'THE', c('ink', 0));
     micro(p, 11, 7, 'END', c('ink', 0));
-    if (state === 'done') for (const [x, y] of [[4, 2], [15, 2], [1, 1], [18, 17]]) p.set(x, y, c('yellow', 3));
+    if (state === 'done')
+      for (const [x, y] of [
+        [4, 2],
+        [15, 2],
+        [1, 1],
+        [18, 17],
+      ])
+        p.set(x, y, c('yellow', 3));
     p.rect(3, 12, 6, 1, c('grey', 3)).rect(11, 12, 6, 1, c('grey', 3));
   }
   return p;
@@ -155,7 +162,6 @@ function bookmark(under: Pixels): Pixels {
   p.rect(8, 0, 1, 16, c('red', 4));
   return p;
 }
-
 
 /** The wing's rubber stamp on its ink pad, and a fresh SHELVED impression beside it. */
 function stampDesk(spec: WingSpec, under: Pixels): Pixels {
@@ -214,7 +220,9 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
   door.rect(5, 3, 10, 6, c('sky', 4)).rect(14, 11, 2, 2, c('brass', 3));
   micro(door, 4, 14, 'OUT', c('ink', 0));
   a.tile('door', on(shelf(index * 13 + 9, tint), door));
-  sign([wing.name.toUpperCase()], 4, { board: tint, ink: 'paper', edge: 'brass' }).forEach((px, i) => a.solid(`name${i}`, on(shelf(index * 13 + 11, tint), px)));
+  sign([wing.name.toUpperCase()], 4, { board: tint, ink: 'paper', edge: 'brass' }).forEach((px, i) =>
+    a.solid(`name${i}`, on(shelf(index * 13 + 11, tint), px)),
+  );
   spec.signs.forEach((lines, s) => sign(lines, 3).forEach((px, i) => a.solid(`sign${s}${i}`, on(shelf(index * 13 + 5, tint), px))));
   a.solid('tableL', table(hallFloor, 0));
   a.solid('tableR', table(hallFloor, 1));
@@ -240,7 +248,7 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
   for (let k = 0; k < 4; k++) hallLegend[String(k + 1)] = { tile: `spine${k}`, mark: `spine${k}` };
   const hall = a.window(0, 0, HALL, hallLegend, 'hall');
   for (let i = 0; i < 4; i++) a.set(6 + i, 0, `name${i}`);
-  for (let i = 0; i < 3; i++) a.set(2 + i, 9, `sign0${i}`), a.set(10 + i, 9, `sign1${i}`);
+  for (let i = 0; i < 3; i++) (a.set(2 + i, 9, `sign0${i}`), a.set(10 + i, 9, `sign1${i}`));
   if (spec.guest) a.monAt(4, 7, spec.guest);
 
   if (spec.books.length !== 4 || spec.books.some((b, i) => b.n !== wing.books[i])) throw new Error(`${wing.id}: books out of order`);
@@ -253,7 +261,8 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     a.tile(`endOpen${tag}`, endPage('open', under, tint), { effect: wingCounter(index), eamt: 1, touch: `endDone${tag}`, score: 0 });
     a.tile(`endLink${tag}`, bookmark(under));
     a.solid(`end${tag}`, endPage('shut', under, tint), { effect: CTR.words, eamt: -WORDS_PER_BOOK, touch: `endOpen${tag}` });
-    for (const ch of ['#', '.', 'E', 'L', 'X', '@', '*', '+', '~', 'o']) if (ch in b.legend) throw new Error(`${wing.id} book ${k + 1}: "${ch}" means something else in every book`);
+    for (const ch of ['#', '.', 'E', 'L', 'X', '@', '*', '+', '~', 'o'])
+      if (ch in b.legend) throw new Error(`${wing.id} book ${k + 1}: "${ch}" means something else in every book`);
     const legend: Record<string, Cell> = {
       '#': 'edge',
       '.': '.',
@@ -269,10 +278,16 @@ export function compileWing(spec: WingSpec, index: number): CompiledWing {
     if (!end || !page) throw new Error(`${wing.id} book ${k + 1}: needs an E and an L`);
     if (Math.abs(end.x - page.x) + Math.abs(end.y - page.y) !== 1) throw new Error(`${wing.id} book ${k + 1}: L goes right behind E`);
     // the bookmark is walled in: the only way onto it is through the open page
-    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
       const x = end.x + dx;
       const y = end.y + dy;
-      if ((x !== page.x || y !== page.y) && y <= 9 && x >= ox && x < ox + WIN_W && !a.tiles.def(a.get(x, y)).solid) throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
+      if ((x !== page.x || y !== page.y) && y <= 9 && x >= ox && x < ox + WIN_W && !a.tiles.def(a.get(x, y)).solid)
+        throw new Error(`${wing.id} book ${k + 1}: the bookmark can be reached from ${x - ox},${y} without opening THE END`);
     }
     return { spec: b, win, end, page };
   });

@@ -12,15 +12,47 @@ import { INSTRUMENTS, midi, sbi } from './music';
 /** A reedy, slightly bleating lead with vibrato (the singer). */
 export const VOICE = sbi({ modChar: 0x62, carChar: 0x61, modLevel: 0x1d, carLevel: 0x00, modAD: 0x64, carAD: 0x75, modSR: 0x16, carSR: 0x17, feedback: 0x0c });
 /** Oboe-ish double reed. */
-export const REED = sbi({ modChar: 0x31, carChar: 0x22, modLevel: 0x1e, carLevel: 0x00, modAD: 0x72, carAD: 0x73, modSR: 0x06, carSR: 0x07, modWave: 1, feedback: 0x0a });
+export const REED = sbi({
+  modChar: 0x31,
+  carChar: 0x22,
+  modLevel: 0x1e,
+  carLevel: 0x00,
+  modAD: 0x72,
+  carAD: 0x73,
+  modSR: 0x06,
+  carSR: 0x07,
+  modWave: 1,
+  feedback: 0x0a,
+});
 /** Gospel drawbar organ for the comping. */
 export const ORGAN = sbi({ modChar: 0x22, carChar: 0x21, modLevel: 0x4a, carLevel: 0x05, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, feedback: 0x01 });
 /** A soft flute. */
 export const FLUTE = sbi({ modChar: 0x61, carChar: 0x61, modLevel: 0x24, carLevel: 0x00, modAD: 0x54, carAD: 0x75, modSR: 0x06, carSR: 0x06, feedback: 0x0e });
 /** A plucked "oud". */
-export const OUD = sbi({ modChar: 0x03, carChar: 0x01, modLevel: 0x16, carLevel: 0x00, modAD: 0xf6, carAD: 0xf4, modSR: 0x44, carSR: 0x45, modWave: 2, feedback: 0x0c });
+export const OUD = sbi({
+  modChar: 0x03,
+  carChar: 0x01,
+  modLevel: 0x16,
+  carLevel: 0x00,
+  modAD: 0xf6,
+  carAD: 0xf4,
+  modSR: 0x44,
+  carSR: 0x45,
+  modWave: 2,
+  feedback: 0x0c,
+});
 /** Celesta / music box. */
-export const CELESTA = sbi({ modChar: 0x05, carChar: 0x01, modLevel: 0x1c, carLevel: 0x00, modAD: 0xf6, carAD: 0xf4, modSR: 0x34, carSR: 0x25, feedback: 0x06 });
+export const CELESTA = sbi({
+  modChar: 0x05,
+  carChar: 0x01,
+  modLevel: 0x1c,
+  carLevel: 0x00,
+  modAD: 0xf6,
+  carAD: 0xf4,
+  modSR: 0x34,
+  carSR: 0x25,
+  feedback: 0x06,
+});
 /** Electric piano for comping. */
 export const EPIANO = sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x55, carLevel: 0x05, modAD: 0xf2, carAD: 0xd3, modSR: 0x63, carSR: 0x74, feedback: 0x08 });
 /** A rounder fingered bass. */
@@ -51,7 +83,11 @@ export const ending = (s: Section, last: string): Section => ({ chords: s.chords
 export const vamp = (chords: string[], tune = 'r w'): Section => ({ chords, tune: chords.map(() => tune) });
 
 const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25 };
-const tokens = (s: string) => s.split(',').map((t) => t.trim()).filter(Boolean);
+const tokens = (s: string) =>
+  s
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean);
 
 /** Notes as [midi or null for a rest, beats]. */
 export function parse(s: string): [number | null, number][] {
@@ -64,7 +100,25 @@ export function parse(s: string): [number | null, number][] {
 
 // ---- chords -------------------------------------------------------------------------------
 
-const PITCH: Record<string, number> = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
+const PITCH: Record<string, number> = {
+  C: 0,
+  'C#': 1,
+  Db: 1,
+  D: 2,
+  'D#': 3,
+  Eb: 3,
+  E: 4,
+  F: 5,
+  'F#': 6,
+  Gb: 6,
+  G: 7,
+  'G#': 8,
+  Ab: 8,
+  A: 9,
+  'A#': 10,
+  Bb: 10,
+  B: 11,
+};
 
 /** A chord name ("A", "F#m", "E7", "Bm") as its root's pitch class and its intervals (a seventh replaces the fifth). */
 function chordShape(name: string): { pc: number; iv: number[] } {

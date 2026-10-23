@@ -30,7 +30,12 @@ export function stars(cv: Canvas, n: number, maxY: number, seed = 1): void {
 
 /** A ridge of hills: its top a sum of waves and noise; lit from `light` (x) a little. */
 export function hills(cv: Canvas, base: number, amp: number, col: RGB, seed: number, rim?: RGB, freq = 1): (x: number) => number {
-  const top = (x: number) => base - amp * (0.55 * Math.sin((x / cv.w) * Math.PI * 2 * freq + seed) + 0.3 * Math.sin((x / cv.w) * Math.PI * 5.3 * freq + seed * 2) + 0.15 * (tnoise(x, seed * 7, 20, 640, seed) * 2 - 1));
+  const top = (x: number) =>
+    base -
+    amp *
+      (0.55 * Math.sin((x / cv.w) * Math.PI * 2 * freq + seed) +
+        0.3 * Math.sin((x / cv.w) * Math.PI * 5.3 * freq + seed * 2) +
+        0.15 * (tnoise(x, seed * 7, 20, 640, seed) * 2 - 1));
   cv.shade((x, y) => {
     const t = top(x);
     if (y < t) return undefined;
@@ -85,8 +90,7 @@ export function tuit(cv: Canvas, cx: number, cy: number, r: number, glow = 1, br
       const s = Math.max(1, r / 22);
       const base = word.charCodeAt(i) * 8;
       for (let row = 0; row < 8; row++)
-        for (let b = 0; b < 8; b++)
-          if ((FONT8X8[base + row] >> b) & 1) cv.rect(lx - 4 * s + b * s, ly - 4 * s + row * s, s, s, [90, 54, 24]);
+        for (let b = 0; b < 8; b++) if ((FONT8X8[base + row] >> b) & 1) cv.rect(lx - 4 * s + b * s, ly - 4 * s + row * s, s, s, [90, 54, 24]);
     }
     cv.disc(cx, cy, r * 0.16, [120, 80, 36]);
     cv.disc(cx - r * 0.04, cy - r * 0.04, r * 0.1, [220, 170, 90]);

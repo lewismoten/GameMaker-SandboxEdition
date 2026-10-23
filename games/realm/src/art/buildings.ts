@@ -16,11 +16,84 @@ export interface HouseStyle {
 }
 
 export const STYLE = {
-  thatch: { roof: [[120, 88, 40], [176, 136, 70], [216, 182, 108]], wall: [[150, 130, 104], [214, 198, 168], [236, 226, 204]], trim: [[96, 64, 36]][0], door: [92, 56, 30], roofKind: 'thatch', chimney: true } as HouseStyle,
-  redTile: { roof: [[110, 34, 26], [170, 60, 40], [214, 104, 72]], wall: [[156, 140, 120], [222, 210, 188], [244, 236, 220]], trim: [80, 56, 40], door: [70, 46, 30], roofKind: 'tile', chimney: true } as HouseStyle,
-  blueSlate: { roof: [[40, 52, 84], [64, 84, 124], [110, 132, 170]], wall: [[150, 136, 118], [214, 202, 182], [238, 230, 214]], trim: [76, 56, 42], door: [60, 40, 28], roofKind: 'slate' } as HouseStyle,
-  greenTile: { roof: [[34, 74, 50], [54, 112, 70], [96, 156, 98]], wall: [[150, 136, 118], [218, 206, 186], [240, 232, 216]], trim: [80, 60, 40], door: [74, 50, 32], roofKind: 'tile', chimney: true } as HouseStyle,
-  stone: { roof: [[70, 66, 70], [110, 104, 108], [150, 146, 148]], wall: [[100, 96, 92], [150, 144, 136], [190, 184, 174]], trim: [60, 56, 54], door: [70, 46, 30], roofKind: 'slate' } as HouseStyle,
+  thatch: {
+    roof: [
+      [120, 88, 40],
+      [176, 136, 70],
+      [216, 182, 108],
+    ],
+    wall: [
+      [150, 130, 104],
+      [214, 198, 168],
+      [236, 226, 204],
+    ],
+    trim: [[96, 64, 36]][0],
+    door: [92, 56, 30],
+    roofKind: 'thatch',
+    chimney: true,
+  } as HouseStyle,
+  redTile: {
+    roof: [
+      [110, 34, 26],
+      [170, 60, 40],
+      [214, 104, 72],
+    ],
+    wall: [
+      [156, 140, 120],
+      [222, 210, 188],
+      [244, 236, 220],
+    ],
+    trim: [80, 56, 40],
+    door: [70, 46, 30],
+    roofKind: 'tile',
+    chimney: true,
+  } as HouseStyle,
+  blueSlate: {
+    roof: [
+      [40, 52, 84],
+      [64, 84, 124],
+      [110, 132, 170],
+    ],
+    wall: [
+      [150, 136, 118],
+      [214, 202, 182],
+      [238, 230, 214],
+    ],
+    trim: [76, 56, 42],
+    door: [60, 40, 28],
+    roofKind: 'slate',
+  } as HouseStyle,
+  greenTile: {
+    roof: [
+      [34, 74, 50],
+      [54, 112, 70],
+      [96, 156, 98],
+    ],
+    wall: [
+      [150, 136, 118],
+      [218, 206, 186],
+      [240, 232, 216],
+    ],
+    trim: [80, 60, 40],
+    door: [74, 50, 32],
+    roofKind: 'tile',
+    chimney: true,
+  } as HouseStyle,
+  stone: {
+    roof: [
+      [70, 66, 70],
+      [110, 104, 108],
+      [150, 146, 148],
+    ],
+    wall: [
+      [100, 96, 92],
+      [150, 144, 136],
+      [190, 184, 174],
+    ],
+    trim: [60, 56, 54],
+    door: [70, 46, 30],
+    roofKind: 'slate',
+  } as HouseStyle,
 };
 
 /** Soft drop shadow of a rectangle (down and right), painted onto what's already there. */
@@ -119,7 +192,7 @@ export function tower(cv: Canvas, cx: number, top: number, r: number, h: number,
         [cx, top - r * 1.6],
         [cx + r + 1, top + r + 0.5],
       ],
-      (px, py) => mix(roof[2], roof[0], clamp01((px - (cx - r)) / (2 * r) * 0.9 + (py - top) * 0.02)),
+      (px, py) => mix(roof[2], roof[0], clamp01(((px - (cx - r)) / (2 * r)) * 0.9 + (py - top) * 0.02)),
     );
     cv.ellipse(cx, top + r + 0.5, r + 1, r * 0.4, roof[0]);
   } else {

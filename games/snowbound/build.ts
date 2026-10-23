@@ -250,7 +250,7 @@ disk.put('won.cmf', wonSong());
 disk.put('lost.cmf', lostSong());
 disk.put('demo.rec', demoRecording());
 disk.put('readme.txt', readme('$12'));
-disk.put('license.txt', licenseText("Snowbound: The $89 Shovel"));
+disk.put('license.txt', licenseText('Snowbound: The $89 Shovel'));
 disk.write();
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,

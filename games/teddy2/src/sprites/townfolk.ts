@@ -110,7 +110,17 @@ export function bubble(words: string[], base = new Pixels(20, 20, 255)): Pixels 
 /** The electric company's bucket: open-topped, its rim the thing to stand on. */
 export function bucket(): Pixels {
   return sprite(
-    ['ooooooooooooooooooo.', 'oyyyyyyyyyyyyyyyyyo.', '.oYYYYYYYYYYYYYYYo..', '.oYYYyyyYYYYYYYYYo..', '.oYYYYYYYYYYYYYYYo..', '..oYYYYYYYYYYYYYo...', '..ooooooooooooooo...', '........omo.........', '........omo.........'],
+    [
+      'ooooooooooooooooooo.',
+      'oyyyyyyyyyyyyyyyyyo.',
+      '.oYYYYYYYYYYYYYYYo..',
+      '.oYYYyyyYYYYYYYYYo..',
+      '.oYYYYYYYYYYYYYYYo..',
+      '..oYYYYYYYYYYYYYo...',
+      '..ooooooooooooooo...',
+      '........omo.........',
+      '........omo.........',
+    ],
     { ...K, y: c('yellow', 3), Y: c('yellow', 2) },
     0,
     0,

@@ -54,11 +54,16 @@ export function addFair(k: Ctx, { sidewalk }: Painters, { mallWall }: ReturnType
     const lip = 10 + Math.round((tilt * 7) / 3);
     p.rect(lip - 6, 10, 12, 1, c('wood', 0));
     // the crack
-    p.set(lip - 1, 6, ink).set(lip, 7, ink).set(lip - 1, 8, ink).set(lip, 9, ink);
+    p.set(lip - 1, 6, ink)
+      .set(lip, 7, ink)
+      .set(lip - 1, 8, ink)
+      .set(lip, 9, ink);
     if (tilt) {
       // ringing: little sound lines on the side it swings toward
       const sx = tilt > 0 ? 18 : 1;
-      p.set(sx, 4, c('snow', 6)).set(sx, 6, c('snow', 6)).set(sx + tilt, 5, c('snow', 6));
+      p.set(sx, 4, c('snow', 6))
+        .set(sx, 6, c('snow', 6))
+        .set(sx + tilt, 5, c('snow', 6));
     }
     return p;
   };
@@ -95,17 +100,10 @@ export function addFair(k: Ctx, { sidewalk }: Painters, { mallWall }: ReturnType
     if (!right) {
       // the 4-H poster: white, a green clover with an H on each leaf
       p.rect(5, 4, 13, 12, c('snow', 6)).set(11, 4, c('coat', 3));
-      p.draw(7, 5, [
-        '.GG...GG.',
-        'GGGG.GGGG',
-        'GGWGGGWGG',
-        '.GGGGGGG.',
-        '...GGG...',
-        '.GGGGGGG.',
-        'GGWGGGWGG',
-        'GGGG.GGGG',
-        '.GG...GG.',
-      ], { G: c('pine', 3), W: c('snow', 6) });
+      p.draw(7, 5, ['.GG...GG.', 'GGGG.GGGG', 'GGWGGGWGG', '.GGGGGGG.', '...GGG...', '.GGGGGGG.', 'GGWGGGWGG', 'GGGG.GGGG', '.GG...GG.'], {
+        G: c('pine', 3),
+        W: c('snow', 6),
+      });
       p.rect(11, 14, 1, 1, c('pine', 1));
     } else {
       // HISTORY FAIR flyer, red white and blue, and a lost-mitten card

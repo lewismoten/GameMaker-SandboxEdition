@@ -32,8 +32,15 @@ export function buildVilla(pal: Pal): BlockBook {
   const wall = (seed: number, panel: 'red' | 'black' = 'red') => {
     const p = P();
     const r = rng(seed);
-    for (let y = 0; y < 20; y++) for (let xx = 0; xx < 20; xx++) p.set(xx, y, shadeAt(R(panel === 'red' ? 'pompeii' : 'ink'), panel === 'red' ? 1 : 0, panel === 'red' ? 2 : 1, 0.5 + (r() - 0.5) * 0.3, xx, y));
-    p.rect(0, 0, 1, 20, c('ink', 0)).rect(19, 0, 1, 20, c('ink', 0)).rect(2, 2, 16, 1, c('ochre', 2)).rect(2, 17, 16, 1, c('ochre', 2)).rect(2, 2, 1, 16, c('ochre', 2)).rect(17, 2, 1, 16, c('ochre', 2));
+    for (let y = 0; y < 20; y++)
+      for (let xx = 0; xx < 20; xx++)
+        p.set(xx, y, shadeAt(R(panel === 'red' ? 'pompeii' : 'ink'), panel === 'red' ? 1 : 0, panel === 'red' ? 2 : 1, 0.5 + (r() - 0.5) * 0.3, xx, y));
+    p.rect(0, 0, 1, 20, c('ink', 0))
+      .rect(19, 0, 1, 20, c('ink', 0))
+      .rect(2, 2, 16, 1, c('ochre', 2))
+      .rect(2, 17, 16, 1, c('ochre', 2))
+      .rect(2, 2, 1, 16, c('ochre', 2))
+      .rect(17, 2, 1, 16, c('ochre', 2));
     if (panel === 'black') {
       // a slender painted candelabrum
       p.rect(10, 4, 1, 12, c('ochre', 3)).rect(7, 5, 7, 1, c('ochre', 3)).set(7, 4, c('flame', 2)).set(13, 4, c('flame', 2)).rect(8, 15, 5, 1, c('ochre', 2));
@@ -88,7 +95,14 @@ export function buildVilla(pal: Pal): BlockBook {
     const p = wall(5, 'black');
     if (open) {
       p.rect(4, 3, 12, 14, c('blue', 0));
-      for (const [sx, sy] of [[7, 6], [12, 5], [10, 11], [6, 13], [14, 12]]) p.set(sx, sy, c('marble', 3));
+      for (const [sx, sy] of [
+        [7, 6],
+        [12, 5],
+        [10, 11],
+        [6, 13],
+        [14, 12],
+      ])
+        p.set(sx, sy, c('marble', 3));
       p.disc(13, 8, 2, c('marble', 3)).disc(14, 7, 1.6, c('blue', 0));
       p.rect(1, 3, 3, 14, c('wood', 2)).rect(16, 3, 3, 14, c('wood', 2));
       // fresh air streaming in
@@ -115,8 +129,14 @@ export function buildVilla(pal: Pal): BlockBook {
       p.rect(9, 8, 8, 1, c('purple', 1));
       const hy = f ? 4 : 5;
       blob(p, 7, hy, 3.2, 3, R('skin'), 2, 4);
-      p.set(6, hy, c('ink', 0)).set(8, hy, c('ink', 0)).line(4, hy - 2, 9, hy - 3, c('laurel', 2));
-      if (f) p.rect(6, hy + 2, 3, 2, c('ink', 0)).set(10, hy, c('steam', 2)).set(12, hy - 1, c('steam', 1)).set(11, hy + 2, c('steam', 2));
+      p.set(6, hy, c('ink', 0))
+        .set(8, hy, c('ink', 0))
+        .line(4, hy - 2, 9, hy - 3, c('laurel', 2));
+      if (f)
+        p.rect(6, hy + 2, 3, 2, c('ink', 0))
+          .set(10, hy, c('steam', 2))
+          .set(12, hy - 1, c('steam', 1))
+          .set(11, hy + 2, c('steam', 2));
       else p.rect(6, hy + 2, 3, 1, c('ink', 0));
       p.line(5, 9, 3, 12, c('skin', 2));
     } else {
@@ -151,14 +171,28 @@ export function buildVilla(pal: Pal): BlockBook {
   const figs = (bg: Pixels) => {
     const p = copy(bg);
     p.rect(3, 15, 14, 3, c('bronze', 2)).rect(4, 18, 12, 1, c('bronze', 1));
-    for (const [fx, fy] of [[6, 13], [10, 12], [14, 13], [8, 10]]) blob(p, fx, fy, 2.2, 2.4, R('grape'), 0, 2);
+    for (const [fx, fy] of [
+      [6, 13],
+      [10, 12],
+      [14, 13],
+      [8, 10],
+    ])
+      blob(p, fx, fy, 2.2, 2.4, R('grape'), 0, 2);
     return p;
   };
   book.add('figs', figs(wall(6)), { score: 50, touch: 'wall' });
   const olives = (bg: Pixels) => {
     const p = copy(bg);
     p.rect(4, 16, 12, 2, c('marble', 2)).rect(5, 18, 10, 1, c('marble', 1));
-    for (const [ox, oy] of [[6, 14], [9, 15], [12, 14], [14, 15], [8, 12], [11, 12]]) p.disc(ox, oy, 1.3, c('olive', (ox + oy) % 2 ? 1 : 2));
+    for (const [ox, oy] of [
+      [6, 14],
+      [9, 15],
+      [12, 14],
+      [14, 15],
+      [8, 12],
+      [11, 12],
+    ])
+      p.disc(ox, oy, 1.3, c('olive', (ox + oy) % 2 ? 1 : 2));
     return p;
   };
   book.add('olives', olives(wall(7)), { score: 50, touch: 'wall' });
@@ -186,7 +220,9 @@ export function buildVilla(pal: Pal): BlockBook {
     p.rect(4, 13, 10, 1, c('purple', 1));
     const hx = 14 + f;
     blob(p, hx, 9 + f, 3.4, 3.2, R('gas'), 2, 3);
-    p.set(hx + 1, 8 + f, c('ink', 0)).set(hx - 1, 8 + f, c('ink', 0)).rect(hx, 11 + f, 2, 1, c('ink', 0));
+    p.set(hx + 1, 8 + f, c('ink', 0))
+      .set(hx - 1, 8 + f, c('ink', 0))
+      .rect(hx, 11 + f, 2, 1, c('ink', 0));
     p.line(12, 12, 18, 14, c('skin', 2));
     return p;
   };
@@ -194,13 +230,24 @@ export function buildVilla(pal: Pal): BlockBook {
   book.add('lucius1', lucius(1), { ...air, next: 'lucius0', ntime: 12 });
   const amphora = copy(base);
   blob(amphora, 10, 11, 5, 7, R('tile'), 0, 3);
-  amphora.rect(8, 1, 4, 4, c('tile', 2)).rect(7, 1, 6, 1, c('tile', 3)).line(6, 6, 6, 3, c('tile', 1)).line(14, 6, 14, 3, c('tile', 1)).rect(9, 17, 2, 3, c('tile', 1));
+  amphora
+    .rect(8, 1, 4, 4, c('tile', 2))
+    .rect(7, 1, 6, 1, c('tile', 3))
+    .line(6, 6, 6, 3, c('tile', 1))
+    .line(14, 6, 14, 3, c('tile', 1))
+    .rect(9, 17, 2, 3, c('tile', 1));
   book.add('amphora', amphora, { solid: SOLID });
   // a marble bust on its pedestal, laughing (the group's emblem): the pedestal is solid
   const bust = copy(wall(14));
   blob(bust, 10, 16, 6, 4, R('marble'), 1, 3);
   blob(bust, 10, 9, 4.4, 5, R('marble'), 1, 3);
-  bust.set(8, 8, c('vein', 0)).set(12, 8, c('vein', 0)).line(8, 11, 12, 11, c('vein', 0)).set(7, 10, c('vein', 0)).set(13, 10, c('vein', 0)).rect(9, 12, 3, 1, c('vein', 1));
+  bust
+    .set(8, 8, c('vein', 0))
+    .set(12, 8, c('vein', 0))
+    .line(8, 11, 12, 11, c('vein', 0))
+    .set(7, 10, c('vein', 0))
+    .set(13, 10, c('vein', 0))
+    .rect(9, 12, 3, 1, c('vein', 1));
   for (let k = 0; k < 7; k++) bust.set(6 + k, 4 + (k % 2), c('laurel', 2));
   book.add('bust', bust, air);
   const pedestal = copy(base);
@@ -269,7 +316,12 @@ export function buildVilla(pal: Pal): BlockBook {
   const hangs = (what: 'garlic' | 'pots') => {
     const p = copy(beams);
     if (what === 'garlic')
-      for (const [gx, gy] of [[4, 14], [6, 16], [8, 14]]) blob(p, gx, gy, 1.8, 2, R('marble'), 1, 3);
+      for (const [gx, gy] of [
+        [4, 14],
+        [6, 16],
+        [8, 14],
+      ])
+        blob(p, gx, gy, 1.8, 2, R('marble'), 1, 3);
     else {
       blob(p, 14, 15, 4, 3, R('bronze'), 0, 3);
       p.rect(10, 13, 8, 1, c('bronze', 3));
@@ -317,7 +369,9 @@ export function buildVilla(pal: Pal): BlockBook {
     rows.forEach((y, k) => {
       const off = (k % 2) * 3;
       for (let sx = 1 + off; sx < 18; sx += 6) {
-        p.rect(sx, y, 5, 4, c('toga', 2)).disc(sx + 1, y + 2, 1.4, c('ochre', 2)).set(sx + 1, y + 2, c('ink', 0));
+        p.rect(sx, y, 5, 4, c('toga', 2))
+          .disc(sx + 1, y + 2, 1.4, c('ochre', 2))
+          .set(sx + 1, y + 2, c('ink', 0));
       }
     });
     return p;
@@ -336,7 +390,13 @@ export function buildVilla(pal: Pal): BlockBook {
   // a wall shelf (a ledge), with jars on it or bare
   const kshelf = (jars: boolean) => {
     const p = kwall(48);
-    if (jars) for (const [jx, col] of [[4, 'tile'], [10, 'bronze'], [15, 'tile']] as const) blob(p, jx, 9, 2.6, 4, R(col), 0, 3);
+    if (jars)
+      for (const [jx, col] of [
+        [4, 'tile'],
+        [10, 'bronze'],
+        [15, 'tile'],
+      ] as const)
+        blob(p, jx, 9, 2.6, 4, R(col), 0, 3);
     p.rect(0, 13, 20, 3, c('wood', 3)).rect(0, 13, 20, 1, c('wood', 4)).rect(3, 16, 2, 4, c('wood', 1)).rect(15, 16, 2, 4, c('wood', 1));
     return p;
   };
@@ -400,12 +460,16 @@ export function buildVilla(pal: Pal): BlockBook {
   book.add('crowned', corona(true), { grav: GRAV.none });
   // the tin heart, on the kitchen floor under the shelf (points only, no sound of its own)
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(copy(kbase), { ink: c('ink', 0), tin: [c('iron', 0), c('iron', 1), c('iron', 2)], white: c('marble', 3), dark: c('grey', 0) }, k), {
-      score: 100,
-      touch: 'kbase',
-      grav: GRAV.down,
-      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
-      ntime: k ? 2 : 50,
-    });
+    book.add(
+      `tinHeart${k || ''}`,
+      drawTinHeart(copy(kbase), { ink: c('ink', 0), tin: [c('iron', 0), c('iron', 1), c('iron', 2)], white: c('marble', 3), dark: c('grey', 0) }, k),
+      {
+        score: 100,
+        touch: 'kbase',
+        grav: GRAV.down,
+        next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+        ntime: k ? 2 : 50,
+      },
+    );
   return book;
 }

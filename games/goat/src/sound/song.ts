@@ -186,28 +186,77 @@ export function titleSong(): Uint8Array {
   w.part({ ...BAND, section: vamp(['G', 'G'], 'r w'), drums: ['crash', 'rockFill'] });
   w.part({ ...BAND, section: { chords: ['G'], tune: [CHORUS.tune[7]] }, drums: ['rock'] });
   w.part({ ...BAND, section: CHORUS, drums: ['crash', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rockFill'] });
-  w.part({ ...BAND, section: ending(CHORUS, 'r w'), second: 'octave', secondPatch: CELESTA, secondVel: 50, drums: ['crash', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rockFill'] });
+  w.part({
+    ...BAND,
+    section: ending(CHORUS, 'r w'),
+    second: 'octave',
+    secondPatch: CELESTA,
+    secondVel: 50,
+    drums: ['crash', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rockFill'],
+  });
   return w.cmf();
 }
 
 /** Menu: the chorus as a gentle instrumental (flute, celesta, soft bass, kick and a whisper of hi-hat). */
 export function menuSong(): Uint8Array {
   const w = new Writer(100, CHORDS);
-  const soft = { lead: FLUTE, up: 12, leadVel: 100, second: 'double' as const, secondPatch: CELESTA, secondVel: 45, bass: 'half' as const, bassVel: 85, comp: 'x h, x h', compPatch: INSTRUMENTS.pad, compVel: 50, drumVel: 70 };
+  const soft = {
+    lead: FLUTE,
+    up: 12,
+    leadVel: 100,
+    second: 'double' as const,
+    secondPatch: CELESTA,
+    secondVel: 45,
+    bass: 'half' as const,
+    bassVel: 85,
+    comp: 'x h, x h',
+    compPatch: INSTRUMENTS.pad,
+    compVel: 50,
+    drumVel: 70,
+  };
   w.part({ ...soft, section: { chords: ['G'], tune: [CHORUS.tune[7]] }, drums: ['soft'] });
   w.part({ ...soft, section: CHORUS, drums: ['soft'] });
-  w.part({ ...soft, section: ending(CHORUS, 'r w'), second: 'none', comp: 'x e, x e, x e, x e, x e, x e, x e, x e', compPatch: CELESTA, compVel: 40, drums: ['soft'] });
+  w.part({
+    ...soft,
+    section: ending(CHORUS, 'r w'),
+    second: 'none',
+    comp: 'x e, x e, x e, x e, x e, x e, x e, x e',
+    compPatch: CELESTA,
+    compVel: 40,
+    drums: ['soft'],
+  });
   return w.cmf();
 }
 
 /** Story pages: the soft intro and verse 1 ("I was there that night in Bethlehem"). */
 export function storySong(): Uint8Array {
   const w = new Writer(100, CHORDS);
-  const soft = { lead: FLUTE, up: 12, leadVel: 95, second: 'none' as const, bass: 'whole' as const, bassVel: 80, comp: 'x q, x q, x q, x q', compPatch: CELESTA, compVel: 45, drums: ['none'] };
+  const soft = {
+    lead: FLUTE,
+    up: 12,
+    leadVel: 95,
+    second: 'none' as const,
+    bass: 'whole' as const,
+    bassVel: 80,
+    comp: 'x q, x q, x q, x q',
+    compPatch: CELESTA,
+    compVel: 45,
+    drums: ['none'],
+  };
   w.part({ ...soft, section: slice(INTRO, 0, 5), comp: 'x w', compPatch: INSTRUMENTS.pad });
   w.part({ ...soft, section: { chords: ['G', 'G'], tune: ['r w', INTRO.tune[7]] }, comp: 'x w', compPatch: INSTRUMENTS.pad });
   w.part({ ...soft, section: VERSE1, drums: ['soft'], drumVel: 55 });
-  w.part({ ...soft, section: ending(VERSE1, 'G4 h, r h'), lead: REED, up: 0, second: 'octave', secondPatch: CELESTA, secondVel: 35, drums: ['soft'], drumVel: 55 });
+  w.part({
+    ...soft,
+    section: ending(VERSE1, 'G4 h, r h'),
+    lead: REED,
+    up: 0,
+    second: 'octave',
+    secondPatch: CELESTA,
+    secondVel: 35,
+    drums: ['soft'],
+    drumVel: 55,
+  });
   return w.cmf();
 }
 
@@ -217,25 +266,70 @@ export function levelSongs(): Uint8Array[] {
   const one = new Writer(120, CHORDS);
   const l1 = { lead: REED, second: 'none' as const, bass: 'pump' as const, comp: 'x q, x q, x q, x q', compPatch: EPIANO, compVel: 58 };
   one.part({ ...l1, section: VERSE1, drums: ['rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rockFill'] });
-  one.part({ ...l1, section: VERSE1, second: 'double', secondPatch: VOICE, secondVel: 60, drums: ['crash', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rockFill'] });
+  one.part({
+    ...l1,
+    section: VERSE1,
+    second: 'double',
+    secondPatch: VOICE,
+    secondVel: 60,
+    drums: ['crash', 'rock', 'rock', 'rock', 'rock', 'rock', 'rock', 'rockFill'],
+  });
 
   // Level 2: verse 2, brass over organ and a walking bass with a shuffle.
   const two = new Writer(120, CHORDS);
-  const l2 = { lead: INSTRUMENTS.brass, second: 'none' as const, bass: 'walk' as const, comp: 'r e, x e, r e, x e, r e, x e, r e, x e', compPatch: ORGAN, compVel: 60 };
+  const l2 = {
+    lead: INSTRUMENTS.brass,
+    second: 'none' as const,
+    bass: 'walk' as const,
+    comp: 'r e, x e, r e, x e, r e, x e, r e, x e',
+    compPatch: ORGAN,
+    compVel: 60,
+  };
   two.part({ ...l2, section: vamp(['G', 'G']), drums: ['shuffle'] });
   two.part({ ...l2, section: VERSE2, drums: ['shuffle', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'rockFill'] });
-  two.part({ ...l2, section: VERSE2, lead: VOICE, second: 'octave', secondPatch: INSTRUMENTS.bell, secondVel: 45, drums: ['crash', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'rockFill'] });
+  two.part({
+    ...l2,
+    section: VERSE2,
+    lead: VOICE,
+    second: 'octave',
+    secondPatch: INSTRUMENTS.bell,
+    secondVel: 45,
+    drums: ['crash', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'shuffle', 'rockFill'],
+  });
 
   // Level 3: the wise men's strut, a plucked oud over toms, brass stabs.
   const three = new Writer(116, CHORDS);
-  const l3 = { lead: OUD, leadVel: 118, second: 'double' as const, secondPatch: INSTRUMENTS.pluck, secondVel: 60, bass: 'eighths' as const, bassVel: 95, comp: 'x e, r e, r q, x e, r e, r q', compPatch: INSTRUMENTS.brass, compVel: 60 };
+  const l3 = {
+    lead: OUD,
+    leadVel: 118,
+    second: 'double' as const,
+    secondPatch: INSTRUMENTS.pluck,
+    secondVel: 60,
+    bass: 'eighths' as const,
+    bassVel: 95,
+    comp: 'x e, r e, r q, x e, r e, r q',
+    compPatch: INSTRUMENTS.brass,
+    compVel: 60,
+  };
   three.part({ ...l3, section: vamp(['G', 'G']), drums: ['camel'] });
   three.part({ ...l3, section: BRIDGE, drums: ['camel'] });
   three.part({ ...l3, section: BRIDGE, lead: INSTRUMENTS.lead, shift: 0, drums: ['camel', 'camel', 'camel', 'camel', 'camel', 'camel', 'camel', 'rockFill'] });
 
   // Level 4: the spoken section as a hymn: celesta tune, strings, ride cymbal.
   const four = new Writer(108, CHORDS);
-  const l4 = { lead: CELESTA, up: 12, leadVel: 115, second: 'double' as const, secondPatch: FLUTE, secondVel: 45, bass: 'half' as const, bassVel: 90, comp: 'x h, x h', compPatch: INSTRUMENTS.strings, compVel: 55 };
+  const l4 = {
+    lead: CELESTA,
+    up: 12,
+    leadVel: 115,
+    second: 'double' as const,
+    secondPatch: FLUTE,
+    secondVel: 45,
+    bass: 'half' as const,
+    bassVel: 90,
+    comp: 'x h, x h',
+    compPatch: INSTRUMENTS.strings,
+    compVel: 55,
+  };
   four.part({ ...l4, section: SPOKEN, second: 'none', drums: ['half'], drumVel: 80 });
   four.part({ ...l4, section: SPOKEN, lead: FLUTE, secondPatch: CELESTA, drums: ['ride'], drumVel: 80 });
 
@@ -245,7 +339,11 @@ export function levelSongs(): Uint8Array[] {
 /** Won: the final chorus ("Third goat from the left! I claim my space!") into the outro's cadence ("He sees you... the third goat from the left"). */
 export function wonSong(): Uint8Array {
   const w = new Writer(120, CHORDS);
-  w.part({ ...BAND, section: FINAL, drums: ['crash', 'gospel', 'gospel', 'gospel', 'gospel', 'rockFill', 'crash', 'gospel', 'gospel', 'gospel', 'half', 'half', 'half'] });
+  w.part({
+    ...BAND,
+    section: FINAL,
+    drums: ['crash', 'gospel', 'gospel', 'gospel', 'gospel', 'rockFill', 'crash', 'gospel', 'gospel', 'gospel', 'half', 'half', 'half'],
+  });
   w.part({ ...BAND, section: slice(OUTRO, 5), comp: 'x w', compPatch: INSTRUMENTS.strings, bass: 'whole', drums: ['half', 'half', 'half', 'crash'] });
   w.part({ ...BAND, section: vamp(['G']), comp: 'x w', compPatch: INSTRUMENTS.strings, bass: 'whole', drums: ['none'] });
   return w.cmf();
@@ -275,16 +373,47 @@ export function creditsSong(): Uint8Array {
   const w = new Writer(120, CHORDS);
   const band = { ...BAND, comp: 'x h, x h', bass: 'half' as const };
   const r8 = (last = 'rockFill', first = 'rock4') => [first, 'rock4', 'rock4', 'rock4', 'rock4', 'rock4', 'rock4', last];
-  w.part({ ...band, section: INTRO, lead: VOICE, comp: 'x w', compPatch: INSTRUMENTS.pad, bass: 'whole', second: 'none', drums: ['none', 'none', 'none', 'none', 'half', 'half', 'half', 'rockFill'] });
+  w.part({
+    ...band,
+    section: INTRO,
+    lead: VOICE,
+    comp: 'x w',
+    compPatch: INSTRUMENTS.pad,
+    bass: 'whole',
+    second: 'none',
+    drums: ['none', 'none', 'none', 'none', 'half', 'half', 'half', 'rockFill'],
+  });
   w.part({ ...band, section: VERSE1, lead: REED, second: 'none', comp: 'x q, x q, x q, x q', compPatch: EPIANO, drums: r8() });
   w.part({ ...band, section: ending(VERSE2, CHORUS.tune[7]), lead: INSTRUMENTS.brass, second: 'none', bass: 'walk', drums: r8() });
   w.part({ ...band, section: CHORUS, drums: r8('rockFill', 'crash') });
   w.part({ ...band, section: ending(CHORUS, 'r h, r q, r e, G4 e'), second: 'octave', secondPatch: CELESTA, secondVel: 50, drums: r8('rockFill', 'crash') });
-  w.part({ ...band, section: BRIDGE, lead: OUD, second: 'none', bass: 'eighths', comp: 'x e, r e, r q, x e, r e, r q', compPatch: INSTRUMENTS.brass, drums: ['camel'] });
+  w.part({
+    ...band,
+    section: BRIDGE,
+    lead: OUD,
+    second: 'none',
+    bass: 'eighths',
+    comp: 'x e, r e, r q, x e, r e, r q',
+    compPatch: INSTRUMENTS.brass,
+    drums: ['camel'],
+  });
   w.part({ ...band, section: vamp(['G', 'G']), comp: 'x w', compPatch: INSTRUMENTS.strings, bass: 'whole', drums: ['half', 'rockFill'] });
   w.part({ ...band, section: SPOKEN, lead: CELESTA, up: 12, second: 'none', bass: 'half', comp: 'x h, x h', compPatch: INSTRUMENTS.strings, drums: ['ride'] });
-  w.part({ ...band, section: FINAL, drums: ['crash', 'rock4', 'rock4', 'rock4', 'rock4', 'rockFill', 'crash', 'rock4', 'rock4', 'rock4', 'half', 'half', 'half'] });
+  w.part({
+    ...band,
+    section: FINAL,
+    drums: ['crash', 'rock4', 'rock4', 'rock4', 'rock4', 'rockFill', 'crash', 'rock4', 'rock4', 'rock4', 'half', 'half', 'half'],
+  });
   w.part({ ...band, section: OUTRO, lead: VOICE, second: 'none', comp: 'x h, x h', compPatch: INSTRUMENTS.strings, bass: 'half', drums: ['half'] });
-  w.part({ ...band, section: { chords: ['G', 'G'], tune: ['r h, B4 h', 'G4 h, r h'] }, lead: VOICE, second: 'none', comp: 'x w', compPatch: INSTRUMENTS.pad, bass: 'whole', drums: ['none', 'crash'] }); // Hey...
+  w.part({
+    ...band,
+    section: { chords: ['G', 'G'], tune: ['r h, B4 h', 'G4 h, r h'] },
+    lead: VOICE,
+    second: 'none',
+    comp: 'x w',
+    compPatch: INSTRUMENTS.pad,
+    bass: 'whole',
+    drums: ['none', 'crash'],
+  }); // Hey...
   return w.cmf();
 }

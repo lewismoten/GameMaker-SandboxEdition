@@ -71,24 +71,43 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
   screen.rect(1, 33, 38, 2, c('ink', 1)).rect(19, 35, 2, 3, c('ink', 1));
   for (let x = 2; x < 38; x++) screen.set(x, 3, c('white', 1));
   micro(screen, 6, 6, 'SYNERGY', c('navy', 1));
-  for (const [x, h] of [[6, 7], [12, 11], [18, 8], [24, 15], [30, 18]]) screen.rect(x, 31 - h, 4, h, c('blue', 2)).rect(x, 31 - h, 1, h, c('blue', 3));
+  for (const [x, h] of [
+    [6, 7],
+    [12, 11],
+    [18, 8],
+    [24, 15],
+    [30, 18],
+  ])
+    screen.rect(x, 31 - h, 4, h, c('blue', 2)).rect(x, 31 - h, 1, h, c('blue', 3));
   screen.rect(4, 31, 32, 1, c('ink', 0)).rect(4, 13, 1, 18, c('ink', 0));
   screen.line(5, 27, 34, 12, c('red', 2)).line(5, 28, 34, 13, c('red', 1)).line(31, 12, 34, 12, c('red', 2)).line(34, 12, 34, 15, c('red', 2));
   addPicture(book, 'screen', screen, wall(16), () => AIR);
   const proj = new Pixels(20, 20);
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) proj.set(x, y, x % 10 === 0 || y % 10 === 0 ? c('beige', 1) : c('white', 1));
-  proj.rect(0, 18, 20, 2, c('beige', 0)).rect(9, 0, 2, 9, c('metal', 1)).rect(4, 9, 12, 6, c('grey', 1)).rect(4, 9, 12, 1, c('grey', 2)).rect(4, 14, 12, 1, c('grey', 0));
+  proj
+    .rect(0, 18, 20, 2, c('beige', 0))
+    .rect(9, 0, 2, 9, c('metal', 1))
+    .rect(4, 9, 12, 6, c('grey', 1))
+    .rect(4, 9, 12, 1, c('grey', 2))
+    .rect(4, 14, 12, 1, c('grey', 0));
   proj.disc(15, 12, 2, c('ink', 0)).set(15, 12, c('fluor', 0)).set(7, 11, c('green', 3));
   book.add('projector', proj, { solid: SOLID });
   const clock = (end: boolean) => {
     const p = wall(17);
-    p.disc(10, 9, 6, c('white', 2)).ring(10, 9, 6, c('ink', 0)).line(10, 9, 10, 4, c('ink', 0)).line(10, 9, end ? 14 : 13, end ? 9 : 12, c('ink', 0));
+    p.disc(10, 9, 6, c('white', 2))
+      .ring(10, 9, 6, c('ink', 0))
+      .line(10, 9, 10, 4, c('ink', 0))
+      .line(10, 9, end ? 14 : 13, end ? 9 : 12, c('ink', 0));
     return p;
   };
   book.add('clock', clock(false), AIR);
   const board = wall(18);
   board.rect(0, 2, 20, 14, c('white', 2)).rect(0, 2, 20, 1, c('metal', 1)).rect(0, 15, 20, 2, c('metal', 1));
-  for (const [y, w, col] of [[5, 14, 'blue'], [8, 10, 'blue'], [11, 16, 'red']] as const) {
+  for (const [y, w, col] of [
+    [5, 14, 'blue'],
+    [8, 10, 'blue'],
+    [11, 16, 'red'],
+  ] as const) {
     board.rect(2, y, 2, 2, c(col, 1));
     for (let x = 6; x < 4 + w; x++) if ((x * 5 + y) % 7 < 5) board.set(x, y + (x % 3 === 0 ? 1 : 0), c(col, 1));
   }
@@ -118,7 +137,7 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
   const closetDoor = (sign: boolean) => {
     const p = wall(20);
     p.rect(2, 0, 16, 20, c('cube', 0)).rect(2, 0, 2, 20, c('wood', 2)).rect(16, 0, 2, 20, c('wood', 2));
-    if (sign) p.rect(4, 2, 13, 7, c('white', 1)).frame(4, 2, 13, 7, c('metal', 0)), micro(p, 5, 3, 'SUP', c('red', 1));
+    if (sign) (p.rect(4, 2, 13, 7, c('white', 1)).frame(4, 2, 13, 7, c('metal', 0)), micro(p, 5, 3, 'SUP', c('red', 1)));
     else p.disc(14, 9, 1.2, c('gold', 2));
     return p;
   };
@@ -126,7 +145,15 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
   book.add('closetDoor2', closetDoor(false), AIR);
   // cartons of copier paper stacked on the closet floor
   const boxes = closet();
-  for (const [x, y, w] of [[1, 12, 9], [10, 12, 9], [4, 4, 10]]) boxes.rect(x, y, w, 8, c('beige', 3)).frame(x, y, w, 8, c('beige', 0)).rect(x, y + 3, w, 1, c('beige', 1));
+  for (const [x, y, w] of [
+    [1, 12, 9],
+    [10, 12, 9],
+    [4, 4, 10],
+  ])
+    boxes
+      .rect(x, y, w, 8, c('beige', 3))
+      .frame(x, y, w, 8, c('beige', 0))
+      .rect(x, y + 3, w, 1, c('beige', 1));
   book.add('closetBoxes', boxes, AIR);
   // a potted plant by the door, a water cooler (solid)
   const cooler = wall(21);
@@ -135,7 +162,10 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
   // the door out: MEETING ENDS. It takes the five pages of notes, and opens.
   const door = (open: boolean) => {
     const p = wall(22);
-    p.rect(2, 0, 16, 20, open ? c('fluor', 0) : c('wood', 2)).rect(2, 0, 16, 1, c('wood', 0)).rect(2, 0, 1, 20, c('wood', 0)).rect(17, 0, 1, 20, c('wood', 0));
+    p.rect(2, 0, 16, 20, open ? c('fluor', 0) : c('wood', 2))
+      .rect(2, 0, 16, 1, c('wood', 0))
+      .rect(2, 0, 1, 20, c('wood', 0))
+      .rect(17, 0, 1, 20, c('wood', 0));
     if (!open) {
       p.disc(14, 11, 1.2, c('gold', 2)).rect(4, 3, 13, 7, c('white', 2));
       micro(p, 5, 4, 'END', c('red', 1));
@@ -185,7 +215,9 @@ export function meetingSprites(book: SpriteBook, pal: Pal): void {
   const pen = (f: number) => {
     const p = P();
     const y = f ? 2 : 4;
-    p.line(6, y + 13, 14, y, c('white', 2)).line(7, y + 13, 15, y, c('white', 1)).line(5, y + 15, 6, y + 13, c('ink', 1));
+    p.line(6, y + 13, 14, y, c('white', 2))
+      .line(7, y + 13, 15, y, c('white', 1))
+      .line(5, y + 15, 6, y + 13, c('ink', 1));
     p.line(14, y, 15, y - 1, c('blue', 1));
     face(p, pal, 11, y + 6, { angry: true });
     if (f) p.rect(1, 18, 3, 1, c('blue', 1)).rect(6, 18, 1, 1, c('blue', 1)).rect(9, 18, 3, 1, c('blue', 1));
@@ -204,7 +236,12 @@ export function meetingSprites(book: SpriteBook, pal: Pal): void {
 
 export function meetingMonsters(set: Monster[], mb: SpriteBook): void {
   // buzzwords drift up and away to the left off the coworkers, and pop at the end of their path
-  set[WORK_MON.buzz] = mon(anim(mb, 'buzz0', 'buzz1', 10), { power: POWER.foe, thru: 1, end: -1, newmon: WORK_MON.inkPuff }, [corner(0, 0, 2), corner(0, -2, 2, 4), corner(-3, -3, 1, 4), corner(-6, -4, 1, 4)]);
+  set[WORK_MON.buzz] = mon(anim(mb, 'buzz0', 'buzz1', 10), { power: POWER.foe, thru: 1, end: -1, newmon: WORK_MON.inkPuff }, [
+    corner(0, 0, 2),
+    corner(0, -2, 2, 4),
+    corner(-3, -3, 1, 4),
+    corner(-6, -4, 1, 4),
+  ]);
   set[WORK_MON.spider] = mon(anim(mb, 'spider0', 'spider1', 3), { power: POWER.foe, thru: 1, newmon: WORK_MON.inkPuff }, pace(3, 2));
   set[WORK_MON.pen] = mon(anim(mb, 'pen0', 'pen1', 5), { power: POWER.foe, thru: 1, newmon: WORK_MON.inkPuff }, pace(2, 1));
   set[WORK_MON.inkPuff] = mon(anim(mb, 'ink0', 'ink1', 3), { power: POWER.friend, thru: 0, end: 8 });
@@ -260,7 +297,10 @@ export const meeting: Monologue = {
     const W = 60 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 3; x < W; x += 6) m.set(x, 0, '*');
-    m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
+    m.fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, '#');
     // the way in: the spotlight, a window
     m.set(2, 9, '!').set(1, 4, 'w').set(4, 4, 'w');
     // the conference room: the long table, the coworkers, the projector's chart, the clock
@@ -296,5 +336,5 @@ export const meeting: Monologue = {
   song: 'office',
   clips: { open: 'pen_o', line: 'pen_l', punch: 'pen_p', word: 'pen_w' },
   view: [6, 4],
-  card: ['It wasn\'t just a pen.', 'It was MY pen.'],
+  card: ["It wasn't just a pen.", 'It was MY pen.'],
 };

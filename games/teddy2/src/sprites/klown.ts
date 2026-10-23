@@ -45,16 +45,7 @@ export const CK: Record<string, number> = {
 /** Doc Leo's costume pieces: Gwinn scattered them all over town. */
 export const PROPS: Record<string, string[]> = {
   // His felt fedora, chewed at the brim (Gwinn again).
-  hat: [
-    '....oooooo....',
-    '...okkOkkko...',
-    '...okkkkkko...',
-    '...oooooooo...',
-    '..okkkkkkkko..',
-    'ooOkkkkkkkkOoo',
-    'okkkkkkkkkk.oo',
-    '.ooooooooo....',
-  ],
+  hat: ['....oooooo....', '...okkOkkko...', '...okkkkkko...', '...oooooooo...', '..okkkkkkkko..', 'ooOkkkkkkkkOoo', 'okkkkkkkkkk.oo', '.ooooooooo....'],
   // His green tie, with a little pattern.
   tie: ['.ooooo.', 'oGgGgGo', '.oGGGo.', '..oGo..', '.oGgGo.', '.oGGGo.', 'oGGgGGo', 'oGGGGgo', 'ogGGGGo', 'oGGgGGo', '.oGGGo.', '..oGo..', '...o...'],
   // Red sneakers, white laces, white soles.
@@ -74,13 +65,60 @@ export const PROPS: Record<string, string[]> = {
     '....qqq...qq..',
   ],
   // The things Gwinn dropped along her way. Her pink collar, the tag still on it.
-  collar: ['...ppppp....', '..pP...Pp...', '.pP.....Pp..', '.p.......p..', '.pP.....Pp..', '..pP...Pp...', '...ppppp....', '.....oeo....', '.....oeeo...', '......oo....'],
+  collar: [
+    '...ppppp....',
+    '..pP...Pp...',
+    '.pP.....Pp..',
+    '.p.......p..',
+    '.pP.....Pp..',
+    '..pP...Pp...',
+    '...ppppp....',
+    '.....oeo....',
+    '.....oeeo...',
+    '......oo....',
+  ],
   // Her pink rope leash, in a tangle.
-  leash: ['....pppp......', '..ppPPPPpp....', '.pP......Pp...', 'pP..pppp..Pp..', 'p..pP..Pp..p..', 'pP.p....p.Pp..', '.pPp...pP.p...', '..ppPPPp..p...', '.........pP..m', '.........pPmmm', '..........ppm.'],
+  leash: [
+    '....pppp......',
+    '..ppPPPPpp....',
+    '.pP......Pp...',
+    'pP..pppp..Pp..',
+    'p..pP..Pp..p..',
+    'pP.p....p.Pp..',
+    '.pPp...pP.p...',
+    '..ppPPPp..p...',
+    '.........pP..m',
+    '.........pPmmm',
+    '..........ppm.',
+  ],
   // A corn dog stick, licked clean. She has been at the corn dogs.
-  stick: ['.........yyo', '........yyjo', '.......yjjo.', '......yjjo..', '.....hHo....', '....hHo.....', '...hHo......', '..hHo.......', '.hHo........', 'hHo.........'],
+  stick: [
+    '.........yyo',
+    '........yyjo',
+    '.......yjjo.',
+    '......yjjo..',
+    '.....hHo....',
+    '....hHo.....',
+    '...hHo......',
+    '..hHo.......',
+    '.hHo........',
+    'hHo.........',
+  ],
   // Her dog show entry card: number 13. (She has entered herself.)
-  tag: ['oooooooooooo', 'owwwwwwwwwwo', 'owbbwbbbbwwo', 'owwbwwwwbwwo', 'owwbwwbbbwwo', 'owwbwwwwbwwo', 'owbbbwbbbwwo', 'owwwwwwwwwwo', 'oqqqqqqqqqqo', 'oooooooooooo', '.....rr.....', '....r..r....'],
+  tag: [
+    'oooooooooooo',
+    'owwwwwwwwwwo',
+    'owbbwbbbbwwo',
+    'owwbwwwwbwwo',
+    'owwbwwbbbwwo',
+    'owwbwwwwbwwo',
+    'owbbbwbbbwwo',
+    'owwwwwwwwwwo',
+    'oqqqqqqqqqqo',
+    'oooooooooooo',
+    '.....rr.....',
+    '....r..r....',
+  ],
   // The red nose (on means showtime).
   nose: ['..oooo..', '.oRRRRo.', 'oRwRRRRo', 'oRRRRRRo', 'oRRRRRqo', 'oqRRRqqo', '.oqqqqo.', '..oooo..'],
 };

@@ -99,28 +99,88 @@ export function buildVocs(): Record<string, Uint8Array> {
   // a sip of water
   vocs.sip = sample(0.3, mix([gate(lowNoise(13, 0.2), 0, 0.14), 0.4], [osc.sine((t) => 500 + t * 900), 0.4]), { envelope: env(0.05, 1) });
   // the remote found: a fanfare
-  vocs.tada = sample(0.7, (t) => [523, 659, 784, 1047].reduce((s, f, i) => s + (t > i * 0.08 ? Math.sign(Math.sin(2 * Math.PI * f * t)) * 0.12 * Math.exp(-(t - i * 0.08) * 3) : 0), 0), { envelope: env(0.005, 0.8) });
+  vocs.tada = sample(
+    0.7,
+    (t) =>
+      [523, 659, 784, 1047].reduce((s, f, i) => s + (t > i * 0.08 ? Math.sign(Math.sin(2 * Math.PI * f * t)) * 0.12 * Math.exp(-(t - i * 0.08) * 3) : 0), 0),
+    { envelope: env(0.005, 0.8) },
+  );
   // a hello (a friend from another song)
-  vocs.hello = sample(0.24, voice((t) => 520 + t * 600, 700, 2100, 5), { envelope: env(0.03, 1.2) });
+  vocs.hello = sample(
+    0.24,
+    voice((t) => 520 + t * 600, 700, 2100, 5),
+    { envelope: env(0.03, 1.2) },
+  );
   // a creaky board, and her sleepy "mm?" (rising)
   vocs.creak = sample(
     0.95,
     mix(
       [gate((t) => Math.sin(2 * Math.PI * (130 + Math.sin(t * 40) * 30) * t) * (Math.sin(t * 380) > 0.2 ? 1 : 0.25), 0, 0.42), 0.6],
-      [gate(voice((t) => 190 + Math.max(0, t - 0.55) * 260, 300, 900, 6, 0.01), 0.5, 0.95), 0.5],
+      [
+        gate(
+          voice((t) => 190 + Math.max(0, t - 0.55) * 260, 300, 900, 6, 0.01),
+          0.5,
+          0.95,
+        ),
+        0.5,
+      ],
     ),
     { envelope: env(0.02, 0.3) },
   );
   // "Honey?": she's awake (two syllables, the second rising)
   vocs.wake = sample(
     0.8,
-    mix([gate(voice(() => 230, (t) => 520 + t * 200, 1300, 7), 0.02, 0.32), 0.6], [gate(voice((t) => 240 + (t - 0.4) * 300, 300, (t) => 2200 + t * 100, 8), 0.4, 0.78), 0.6]),
+    mix(
+      [
+        gate(
+          voice(
+            () => 230,
+            (t) => 520 + t * 200,
+            1300,
+            7,
+          ),
+          0.02,
+          0.32,
+        ),
+        0.6,
+      ],
+      [
+        gate(
+          voice(
+            (t) => 240 + (t - 0.4) * 300,
+            300,
+            (t) => 2200 + t * 100,
+            8,
+          ),
+          0.4,
+          0.78,
+        ),
+        0.6,
+      ],
+    ),
     { envelope: env(0.02, 0.4) },
   );
   // a dairy "nom" and a guilty "mmm"
-  vocs.nom = sample(0.6, mix([gate(lowNoise(14, 0.6), 0, 0.05), 0.6], [gate(voice((t) => 160 - t * 40, 280, 800, 9, 0.005), 0.08, 0.6), 0.7]), { envelope: env(0.01, 0.6) });
+  vocs.nom = sample(
+    0.6,
+    mix(
+      [gate(lowNoise(14, 0.6), 0, 0.05), 0.6],
+      [
+        gate(
+          voice((t) => 160 - t * 40, 280, 800, 9, 0.005),
+          0.08,
+          0.6,
+        ),
+        0.7,
+      ],
+    ),
+    { envelope: env(0.01, 0.6) },
+  );
   // the fridge's hum
-  vocs.hum = sample(0.8, mix([osc.sine(60), 0.4], [osc.sine(120), 0.3], [osc.square(180), 0.05], [lowNoise(15, 0.02), 0.1]), { envelope: env(0.2, 0.5), gain: 0.7 });
+  vocs.hum = sample(0.8, mix([osc.sine(60), 0.4], [osc.sine(120), 0.3], [osc.square(180), 0.05], [lowNoise(15, 0.02), 0.1]), {
+    envelope: env(0.2, 0.5),
+    gain: 0.7,
+  });
   // somewhere, a cow moos ominously (a low "mmmooOOO", falling away)
   vocs.moo = sample(
     1.3,
@@ -140,18 +200,27 @@ export function buildVocs(): Record<string, Uint8Array> {
     const growl = voice((t) => 70 + Math.sin(t * 13) * 12, 220, 500, 17, 0.08);
     vocs.gurgle = sample(
       0.9,
-      (t) => growl(t) * 0.5 + bubbles.reduce((s, b) => s + (t > b.at && t < b.at + b.d ? Math.sin(2 * Math.PI * (b.f + (t - b.at) * 900) * (t - b.at)) * 0.7 : 0), 0),
+      (t) =>
+        growl(t) * 0.5 +
+        bubbles.reduce((s, b) => s + (t > b.at && t < b.at + b.d ? Math.sin(2 * Math.PI * (b.f + (t - b.at) * 900) * (t - b.at)) * 0.7 : 0), 0),
       { envelope: env(0.02, 0.5) },
     );
   }
   // a roll of toilet paper: a soft squeak and a pat
-  vocs.squeak = sample(0.3, mix([osc.sine((t) => 1400 + Math.sin(t * 60) * 300), 0.3], [gate(lowNoise(18, 0.3), 0.15, 0.2), 0.5]), { envelope: env(0.02, 1.2) });
+  vocs.squeak = sample(0.3, mix([osc.sine((t) => 1400 + Math.sin(t * 60) * 300), 0.3], [gate(lowNoise(18, 0.3), 0.15, 0.2), 0.5]), {
+    envelope: env(0.02, 1.2),
+  });
   // thunder: a crack and its roll
   vocs.thunder = sample(1.6, mix([gate(lowNoise(19, 0.9), 0, 0.06), 0.9], [thunder(20), 1]), { envelope: env(0.003, 0.9) });
   // the bathroom door slamming, then "IT'S NOT WORTH IT!"
   {
     const rate = CLIPS.worth;
-    const slam = render(0.35, mix([gate(lowNoise(21, 0.8), 0, 0.03), 1], [osc.sine((t) => 90 - t * 100), 0.6], [lowNoise(22, 0.1), 0.4]), rate, env(0.002, 1.4));
+    const slam = render(
+      0.35,
+      mix([gate(lowNoise(21, 0.8), 0, 0.03), 1], [osc.sine((t) => 90 - t * 100), 0.6], [lowNoise(22, 0.1), 0.4]),
+      rate,
+      env(0.002, 1.4),
+    );
     vocs.slamwrth = vocOf('slamwrth', join(slam, new Float32Array(Math.round(rate * 0.05)), clipSamples('worth')), rate);
   }
   // the thunderous flush, then softly: "...Is there Lactaid in hell?" (kept at 8000 Hz to fit)
@@ -161,7 +230,23 @@ export function buildVocs(): Record<string, Uint8Array> {
     vocs.flushlac = vocOf('flushlac', join(roar, new Float32Array(Math.round(rate * 0.25)), resampled(clipSamples('lactaid'), CLIPS.lactaid, rate)), rate);
   }
   // the monologue itself
-  for (const name of ['enemy', 'cant', 'intol', 'better', 'betray', 'ohno', 'demon', 'colon', 'coward', 'begone', 'almond', 'suffer', 'shins', 'lactaid'] as const) vocs[name] = clipVoc(name);
+  for (const name of [
+    'enemy',
+    'cant',
+    'intol',
+    'better',
+    'betray',
+    'ohno',
+    'demon',
+    'colon',
+    'coward',
+    'begone',
+    'almond',
+    'suffer',
+    'shins',
+    'lactaid',
+  ] as const)
+    vocs[name] = clipVoc(name);
   return vocs;
 }
 
@@ -182,16 +267,36 @@ export function buildSoundSet(place: Place): SoundSet {
     set.digital[SND[n]] = plays[n] ?? fallback;
   };
   add('help', 'sip', SPEAKER.rise(400, 900));
-  add('kill', 'hello', speaker((i) => (i < 4 ? 700 - i * 100 : 0)));
+  add(
+    'kill',
+    'hello',
+    speaker((i) => (i < 4 ? 700 - i * 100 : 0)),
+  );
   add('money', 'chime', SPEAKER.coin());
   add('pay', 'chime', SPEAKER.noise(2, 80, 400));
   add('life', 'tada', SPEAKER.arpeggio([523, 659, 784, 1047, 784, 1047]));
-  add('score', 'chime', speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0)));
+  add(
+    'score',
+    'chime',
+    speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0)),
+  );
   add('lose', 'moo', SPEAKER.fall(600, 120));
-  add('gain', 'chime', speaker((i) => (i < 8 ? 1100 + i * 120 : 0)));
+  add(
+    'gain',
+    'chime',
+    speaker((i) => (i < 8 ? 1100 + i * 120 : 0)),
+  );
   add('spend', 'chime', SPEAKER.noise(3, 60, 300));
-  add('hop', 'hop', speaker((i) => (i < 10 ? 220 + i * 40 : 0)));
-  add('step', 'pat', speaker((i) => (i < 3 ? 120 : 0)));
+  add(
+    'hop',
+    'hop',
+    speaker((i) => (i < 10 ? 220 + i * 40 : 0)),
+  );
+  add(
+    'step',
+    'pat',
+    speaker((i) => (i < 3 ? 120 : 0)),
+  );
   add('hurt', 'creak', SPEAKER.warble(300, 120, 2.4));
   add('die', 'moo', SPEAKER.fall(500, 90));
   add('speak', 'cant', SPEAKER.warble(440, 160, 0.7));

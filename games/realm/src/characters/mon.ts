@@ -46,15 +46,67 @@ export function baseMonsters(mb: SpriteSheet): Monster[] {
   const mons = newMonsterSet();
   const n = (s: string) => mb.n(s);
   // the slashes fly a block the way Pip last walked and are gone in 5 ticks
-  mons[MON.slashWood] = monster({ pics: [[n('slash'), 2], [n('slash2'), 3]], power: POWER.slashWood, towards: 4, end: 5 });
-  mons[MON.slashSteel] = monster({ pics: [[n('steel'), 2], [n('steel2'), 3]], power: POWER.slashSteel, towards: 4, end: 5 });
-  mons[MON.note] = monster({ pics: [[n('note'), 3], [n('note2'), 3]], power: POWER.note, towards: 6, end: 40 });
+  mons[MON.slashWood] = monster({
+    pics: [
+      [n('slash'), 2],
+      [n('slash2'), 3],
+    ],
+    power: POWER.slashWood,
+    towards: 4,
+    end: 5,
+  });
+  mons[MON.slashSteel] = monster({
+    pics: [
+      [n('steel'), 2],
+      [n('steel2'), 3],
+    ],
+    power: POWER.slashSteel,
+    towards: 4,
+    end: 5,
+  });
+  mons[MON.note] = monster({
+    pics: [
+      [n('note'), 3],
+      [n('note2'), 3],
+    ],
+    power: POWER.note,
+    towards: 6,
+    end: 40,
+  });
   // a tonic: a sparkle fired at Pip's feet that turns, a tick later, into one that can touch him
   mons[MON.tonicA] = monster({ pics: [[n('sparkle'), 1]], power: POWER.drop, end: 1, newmon: MON.tonicB });
-  mons[MON.tonicB] = monster({ pics: [[n('heal'), 2], [n('sparkle'), 2]], power: POWER.drop, end: 30 });
+  mons[MON.tonicB] = monster({
+    pics: [
+      [n('heal'), 2],
+      [n('sparkle'), 2],
+    ],
+    power: POWER.drop,
+    end: 30,
+  });
   // what foes leave behind: gone in about 20 seconds
-  mons[MON.gem] = monster({ pics: [[n('gem'), 9], [n('gem2'), 3]], power: POWER.drop, end: 360 });
-  mons[MON.bigGem] = monster({ pics: [[n('ruby'), 9], [n('ruby2'), 3]], power: POWER.drop, end: 360 });
-  mons[MON.heart] = monster({ pics: [[n('heart'), 6], [n('heart2'), 6]], power: POWER.drop, end: 360 });
+  mons[MON.gem] = monster({
+    pics: [
+      [n('gem'), 9],
+      [n('gem2'), 3],
+    ],
+    power: POWER.drop,
+    end: 360,
+  });
+  mons[MON.bigGem] = monster({
+    pics: [
+      [n('ruby'), 9],
+      [n('ruby2'), 3],
+    ],
+    power: POWER.drop,
+    end: 360,
+  });
+  mons[MON.heart] = monster({
+    pics: [
+      [n('heart'), 6],
+      [n('heart2'), 6],
+    ],
+    power: POWER.drop,
+    end: 360,
+  });
   return mons;
 }

@@ -173,7 +173,12 @@ export function hillside(book: BlockBook): Level {
   const W = 70;
   const H = 12;
   const m = new MapBuilder(book, 'earth');
-  m.fill(1, 0, W - 2, 2, '^').fill(1, 2, W - 2, 8, '.').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#').col(0, 0, 11, '#').col(W - 1, 0, 11, '#');
+  m.fill(1, 0, W - 2, 2, '^')
+    .fill(1, 2, W - 2, 8, '.')
+    .row(10, 0, W - 1, '=')
+    .row(11, 0, W - 1, '#')
+    .col(0, 0, 11, '#')
+    .col(W - 1, 0, 11, '#');
   m.set(15, 1, 'w').set(33, 2, 'w').set(55, 1, 'w');
   crowdBand(m, 9, 18, true);
   crowdBand(m, 22, 31);
@@ -248,7 +253,12 @@ export function baskets(book: BlockBook): Level {
   const W = 79;
   const H = 12;
   const m = new MapBuilder(book, 'earth');
-  m.fill(1, 0, W - 2, 2, '^').fill(1, 2, W - 2, 8, '.').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#').col(0, 0, 11, '#').col(W - 1, 0, 11, '#');
+  m.fill(1, 0, W - 2, 2, '^')
+    .fill(1, 2, W - 2, 8, '.')
+    .row(10, 0, W - 1, '=')
+    .row(11, 0, W - 1, '#')
+    .col(0, 0, 11, '#')
+    .col(W - 1, 0, 11, '#');
   m.set(12, 1, 'w').set(40, 2, 'w');
   crowdBand(m, 14, 22, true);
   crowdBand(m, 40, 50);
@@ -281,7 +291,12 @@ export function home(book: BlockBook): Level {
   const W = 74;
   const H = 13;
   const m = new MapBuilder(book, 'earth');
-  m.fill(1, 0, W - 2, 3, 't').fill(1, 3, W - 2, 7, '.').row(10, 0, W - 1, 'r').fill(0, 11, W, 2, 's').col(0, 0, 12, '#').col(W - 1, 0, 12, '#');
+  m.fill(1, 0, W - 2, 3, 't')
+    .fill(1, 3, W - 2, 7, '.')
+    .row(10, 0, W - 1, 'r')
+    .fill(0, 11, W, 2, 's')
+    .col(0, 0, 12, '#')
+    .col(W - 1, 0, 12, '#');
   // the first houses: their roofs to stand on, lamplight in the windows
   m.fill(4, 7, 8, 3, 'A').row(6, 3, 12, 'p').set(6, 8, 'q').set(9, 8, 'd').set(7, 5, '@').set(10, 5, '*');
   m.set(14, 9, 'k').set(16, 9, 'P').set(16, 8, 'Q');

@@ -53,14 +53,54 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
 /** Each act's backdrop ramp ("sky": the dark of a room, top to bottom) and how the rest is lit. */
 const LIGHT: Record<Light, { sky: [RGB, RGB, RGB]; mul: RGB; add: RGB }> = {
   // the bathroom by candlelight: plum dark, the light warm
-  bath: { sky: [[18, 8, 24], [80, 50, 90], [44, 24, 54]], mul: [0.9, 0.78, 0.82], add: [12, 4, 10] },
+  bath: {
+    sky: [
+      [18, 8, 24],
+      [80, 50, 90],
+      [44, 24, 54],
+    ],
+    mul: [0.9, 0.78, 0.82],
+    add: [12, 4, 10],
+  },
   // the forest-dark aisle: green-black
-  aisle: { sky: [[4, 12, 8], [40, 70, 50], [16, 34, 22]], mul: [0.62, 0.78, 0.66], add: [2, 8, 4] },
+  aisle: {
+    sky: [
+      [4, 12, 8],
+      [40, 70, 50],
+      [16, 34, 22],
+    ],
+    mul: [0.62, 0.78, 0.66],
+    add: [2, 8, 4],
+  },
   // home at night: moonlight
-  home: { sky: [[8, 10, 30], [56, 64, 120], [26, 30, 70]], mul: [0.62, 0.68, 0.94], add: [4, 6, 22] },
+  home: {
+    sky: [
+      [8, 10, 30],
+      [56, 64, 120],
+      [26, 30, 70],
+    ],
+    mul: [0.62, 0.68, 0.94],
+    add: [4, 6, 22],
+  },
   // the shower of Scrubbus Maximus: steam over blood-dark tile
-  shower: { sky: [[30, 4, 12], [150, 110, 120], [80, 30, 44]], mul: [1.0, 0.74, 0.8], add: [26, 8, 12] },
-  plain: { sky: [[30, 20, 50], [140, 120, 170], [70, 50, 100]], mul: [1, 1, 1], add: [0, 0, 0] },
+  shower: {
+    sky: [
+      [30, 4, 12],
+      [150, 110, 120],
+      [80, 30, 44],
+    ],
+    mul: [1.0, 0.74, 0.8],
+    add: [26, 8, 12],
+  },
+  plain: {
+    sky: [
+      [30, 20, 50],
+      [140, 120, 170],
+      [70, 50, 100],
+    ],
+    mul: [1, 1, 1],
+    add: [0, 0, 0],
+  },
 };
 
 export interface Pal {

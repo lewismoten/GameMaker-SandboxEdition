@@ -50,7 +50,8 @@ function cannon(under: Pixels): Pixels {
   return p;
 }
 
-const pirate = (step: number, color: string) => figure({ shirt: [color, 3], pants: ['brown', 1], hat: { kind: 'bandana', color: ['red', 3] }, beard: ['ink', 1], face: 'eyepatch' }, step);
+const pirate = (step: number, color: string) =>
+  figure({ shirt: [color, 3], pants: ['brown', 1], hat: { kind: 'bandana', color: ['red', 3] }, beard: ['ink', 1], face: 'eyepatch' }, step);
 
 function parrot(frame: number): Pixels {
   const p = blank();
@@ -67,7 +68,14 @@ function table(under: Pixels, coins: boolean): Pixels {
   const p = on(under);
   p.rect(0, 6, 20, 8, c('wood', 3)).rect(0, 13, 20, 2, c('wood', 1)).rect(2, 15, 2, 4, c('wood', 1)).rect(16, 15, 2, 4, c('wood', 1));
   if (coins) {
-    for (const [x, y, rr] of [[5, 9, 2], [9, 8, 1.5], [12, 10, 3.5], [15, 8, 1.5], [7, 11, 1.5]] as const) p.disc(x, y, rr, c('brass', 4)).ring(x, y, rr, c('brass', 1));
+    for (const [x, y, rr] of [
+      [5, 9, 2],
+      [9, 8, 1.5],
+      [12, 10, 3.5],
+      [15, 8, 1.5],
+      [7, 11, 1.5],
+    ] as const)
+      p.disc(x, y, rr, c('brass', 4)).ring(x, y, rr, c('brass', 1));
     p.rect(3, 4, 4, 4, c('brown', 2)); // the little brown bag
   }
   return p;
@@ -76,7 +84,8 @@ function table(under: Pixels, coins: boolean): Pixels {
 function bigCoin(frame: number): Pixels {
   const p = blank();
   const w = frame ? 4 : 7;
-  for (let y = 3; y < 17; y++) for (let x = 10 - w; x <= 10 + w; x++) if (((x - 10) / w) ** 2 + ((y - 10) / 7) ** 2 <= 1) p.set(x, y, c('brass', x < 10 ? 4 : 2));
+  for (let y = 3; y < 17; y++)
+    for (let x = 10 - w; x <= 10 + w; x++) if (((x - 10) / w) ** 2 + ((y - 10) / 7) ** 2 <= 1) p.set(x, y, c('brass', x < 10 ? 4 : 2));
   if (!frame) micro(p, 7, 8, '$', c('brass', 0));
   return p;
 }
@@ -120,7 +129,9 @@ function fish(frame: number): Pixels {
 function note(frame: number): Pixels {
   const p = blank();
   const dy = frame ? 2 : 0;
-  p.disc(7, 14 - dy, 2.5, c('purple', 3)).rect(9, 4 - dy, 1, 10, c('purple', 3)).rect(9, 4 - dy, 5, 2, c('purple', 3));
+  p.disc(7, 14 - dy, 2.5, c('purple', 3))
+    .rect(9, 4 - dy, 1, 10, c('purple', 3))
+    .rect(9, 4 - dy, 5, 2, c('purple', 3));
   return p;
 }
 
@@ -159,7 +170,9 @@ function steam(frame: number): Pixels {
 }
 
 const couple = (k: number) =>
-  k ? figure({ shirt: ['pink', 2], dress: true, hair: ['brown', 1], hairStyle: 'long', hat: { kind: 'beret', color: ['blue', 3] } }) : figure({ shirt: ['paper', 4], pants: ['blue', 1], hair: ['brown', 0], tie: ['red', 3] });
+  k
+    ? figure({ shirt: ['pink', 2], dress: true, hair: ['brown', 1], hairStyle: 'long', hat: { kind: 'beret', color: ['blue', 3] } })
+    : figure({ shirt: ['paper', 4], pants: ['blue', 1], hair: ['brown', 0], tie: ['red', 3] });
 
 function art(a: Area): void {
   // A Pirate's Worst Surprise
@@ -173,8 +186,35 @@ function art(a: Area): void {
   a.solid('cannon', cannon(a.tiles.pic('plank')));
   a.solid('barrel', barrel(a.tiles.pic('plank')));
   sign(['SUGAR & SPICE', 'AND NOTHING', 'ELSE, MATEY'], 3, { board: 'wood', ink: 'paper' }).forEach((px, i) => a.solid(`spicy${i}`, px));
-  a.monster('parrot', [[parrot(0), 5], [parrot(1), 5]], { hazard: true, path: [[4, 0, 2], [0, 2, 2], [-4, 0, 2], [0, -2, 2]] });
-  a.monster('jim', [[pirate(0, 'blue'), 6], [pirate(1, 'blue'), 6]], { path: [[0, 3, 1], [0, -3, 1]] });
+  a.monster(
+    'parrot',
+    [
+      [parrot(0), 5],
+      [parrot(1), 5],
+    ],
+    {
+      hazard: true,
+      path: [
+        [4, 0, 2],
+        [0, 2, 2],
+        [-4, 0, 2],
+        [0, -2, 2],
+      ],
+    },
+  );
+  a.monster(
+    'jim',
+    [
+      [pirate(0, 'blue'), 6],
+      [pirate(1, 'blue'), 6],
+    ],
+    {
+      path: [
+        [0, 3, 1],
+        [0, -3, 1],
+      ],
+    },
+  );
 
   // Except Those Ones
   a.tile('tavern', floor('boards', 4));
@@ -185,8 +225,28 @@ function art(a: Area): void {
   a.solid('stabbed', stabbedHat(a.tiles.pic('tavern')));
   a.solid('tavernWall', wall('panel'));
   sign(['WHATEVER YOU', 'CHOOSE...', 'NOT THAT ONE'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`choose${i}`, px));
-  a.monster('coin', [[bigCoin(0), 4], [bigCoin(1), 4]], { hazard: true, path: [[3, 0, 1], [-3, 0, 1]] });
-  a.patrol('coin', [[0, 3, 1], [0, -3, 1]], 'coinV');
+  a.monster(
+    'coin',
+    [
+      [bigCoin(0), 4],
+      [bigCoin(1), 4],
+    ],
+    {
+      hazard: true,
+      path: [
+        [3, 0, 1],
+        [-3, 0, 1],
+      ],
+    },
+  );
+  a.patrol(
+    'coin',
+    [
+      [0, 3, 1],
+      [0, -3, 1],
+    ],
+    'coinV',
+  );
 
   // Legend at the Water's Edge
   a.tile('lawn', floor('grass', 5));
@@ -196,8 +256,36 @@ function art(a: Area): void {
   a.solid('flutist', on(a.tiles.pic('lawn'), flutist()));
   a.prop('programmer', 'lawn', figure({ shirt: ['grey', 3], pants: ['blue', 1], hair: ['brown', 1], glasses: true }), true);
   sign(['NO FISHING', 'FOR', 'COMPLIMENTS'], 3, { board: 'green', ink: 'paper' }).forEach((px, i) => a.solid(`fishing${i}`, px));
-  a.monster('fish', [[fish(0), 6], [fish(1), 6]], { path: [[3, 0, 1], [0, 1, 1], [-3, 0, 1], [0, -1, 1]] });
-  a.monster('note', [[note(0), 5], [note(1), 5]], { path: [[0, -2, 1], [2, 0, 1], [0, 2, 1], [-2, 0, 1]] });
+  a.monster(
+    'fish',
+    [
+      [fish(0), 6],
+      [fish(1), 6],
+    ],
+    {
+      path: [
+        [3, 0, 1],
+        [0, 1, 1],
+        [-3, 0, 1],
+        [0, -1, 1],
+      ],
+    },
+  );
+  a.monster(
+    'note',
+    [
+      [note(0), 5],
+      [note(1), 5],
+    ],
+    {
+      path: [
+        [0, -2, 1],
+        [2, 0, 1],
+        [0, 2, 1],
+        [-2, 0, 1],
+      ],
+    },
+  );
 
   // Steam-Powered Summer
   a.tile('qdeck', floor('deck', 7));
@@ -211,7 +299,20 @@ function art(a: Area): void {
   a.prop('her', 'qdeck', couple(1));
   a.solid('photo', framedPhoto(a.tiles.pic('qdeck')));
   sign(['CALLIOPE', 'LESSONS TODAY', 'CERTIFICATES!'], 3, { board: 'red', ink: 'paper' }).forEach((px, i) => a.solid(`lesson${i}`, px));
-  a.monster('steam', [[steam(0), 5], [steam(1), 5]], { hazard: true, path: [[0, -3, 1], [0, 3, 1]] });
+  a.monster(
+    'steam',
+    [
+      [steam(0), 5],
+      [steam(1), 5],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, -3, 1],
+        [0, 3, 1],
+      ],
+    },
+  );
 
   // the hallway's guest: Gwinn, who is not allowed in the library, with a fish
   const fishy = (s: number) => {
@@ -219,13 +320,29 @@ function art(a: Area): void {
     p.rect(0, 7, 4, 2, c('orange', 3));
     return p;
   };
-  a.monster('gwinnFish', [[fishy(0), 3], [fishy(1), 3]], { path: [[6, 0, 3], [-6, 0, 3]] });
+  a.monster(
+    'gwinnFish',
+    [
+      [fishy(0), 3],
+      [fishy(1), 3],
+    ],
+    {
+      path: [
+        [6, 0, 3],
+        [-6, 0, 3],
+      ],
+    },
+  );
 }
 
 export const DOCKS: WingSpec = {
   wing: WINGS[2],
   tint: 'blue',
-  stamp: [['sand', 3], ['blue', 3], ['pink', 2]],
+  stamp: [
+    ['sand', 3],
+    ['blue', 3],
+    ['pink', 2],
+  ],
   signs: [
     ['ALL HANDS', 'ON DECK', '(QUIETLY)'],
     ['NO PARROTING', 'THE BOOKS', ''],
@@ -262,13 +379,13 @@ export const DOCKS: WingSpec = {
         P: { tile: '.', mon: 'parrot' },
         J: { tile: '.', mon: 'jim' },
       },
-      note: 'The ship flying the queen\'s flag. Mind the parrot; it repeats everything you say, and charges for it.',
+      note: "The ship flying the queen's flag. Mind the parrot; it repeats everything you say, and charges for it.",
       twist: {
         grid: [
           ['sugar', 'mast', 'spice'],
           ['m:jim#0', 'chestOpen', 'barrel'],
         ],
-        caption: ['FIG. 6: A large chest, no booty.', 'Tis only fer the capn\'s squire.'],
+        caption: ['FIG. 6: A large chest, no booty.', "Tis only fer the capn's squire."],
       },
     },
     {

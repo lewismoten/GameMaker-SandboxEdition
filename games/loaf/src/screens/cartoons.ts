@@ -37,7 +37,10 @@ function twinkle(p: Pixels, pal: Pal, x: number, y: number, size: number, ramp =
   p.set(x, y, pal.c(ramp, 3));
   for (let k = 1; k <= size; k++) {
     const col = pal.c(ramp, Math.max(0, 3 - k));
-    p.set(x + k, y, col).set(x - k, y, col).set(x, y + k, col).set(x, y - k, col);
+    p.set(x + k, y, col)
+      .set(x - k, y, col)
+      .set(x, y + k, col)
+      .set(x, y - k, col);
   }
 }
 
@@ -110,7 +113,10 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
 /** The fig tree's shade at the left of a picture, a basket under it. */
 function figShade(p: Pixels, pal: Pal, ground: number): void {
   const c = pal.c;
-  for (let x = 0; x < 110; x++) for (let y = 0; y < ground; y++) if (y < 40 + Math.sin(x / 9) * 6 || (x < 100 && y > 60)) p.set(x, y, y < 46 ? c('leaf', (x + y) % 5 === 0 ? 3 : 1) : (x + y) % 2 ? p.get(x, y) : c('olive', 0));
+  for (let x = 0; x < 110; x++)
+    for (let y = 0; y < ground; y++)
+      if (y < 40 + Math.sin(x / 9) * 6 || (x < 100 && y > 60))
+        p.set(x, y, y < 46 ? c('leaf', (x + y) % 5 === 0 ? 3 : 1) : (x + y) % 2 ? p.get(x, y) : c('olive', 0));
   p.rect(92, 30, 8, ground - 30, c('wood', 1)).rect(92, 30, 2, ground - 30, c('wood', 0));
 }
 
@@ -121,7 +127,13 @@ export function storyFli(cast: Cast): Uint8Array {
   figShade(bg, pal, 160);
   const L = (n: string) => sprite(cast.loaf, n);
   const lines = (k: number) =>
-    k < 24 ? ['Watched my brothers pass', 'from hand to hand...'] : k < 46 ? ['While I sat lonely', 'in a wicker wasteland.'] : k < 60 ? ['Nobody picked', 'Loaf #13.'] : ["But I'm still bread!", "Don't count me out!"];
+    k < 24
+      ? ['Watched my brothers pass', 'from hand to hand...']
+      : k < 46
+        ? ['While I sat lonely', 'in a wicker wasteland.']
+        : k < 60
+          ? ['Nobody picked', 'Loaf #13.']
+          : ["But I'm still bread!", "Don't count me out!"];
   const scene = (p: Pixels, k: number) => {
     // hands reach in from the top, passing brother loaves along over the crowd
     for (let h = 0; h < 4; h++) {
@@ -230,12 +242,19 @@ export function howtoFli(cast: Cast): Uint8Array {
   const r = new Reel(pal.pal);
   const bg = hillBackdrop(pal, 140, 7);
   // a cooking fire at the right
-  for (const [x, y] of [[236, 150], [250, 152], [264, 150]]) blob(bg, x, y, 7, 4, pal.r('stone'), 1, 3);
+  for (const [x, y] of [
+    [236, 150],
+    [250, 152],
+    [264, 150],
+  ])
+    blob(bg, x, y, 7, 4, pal.r('stone'), 1, 3);
   const L = (n: string) => sprite(cast.loaf, n);
   const scene = (p: Pixels, k: number) => {
     // the flames and the warm air over them
-    for (let f = 0; f < 6; f++) for (let y = 0; y < 14 + ((f * 5 + k * 3) % 8); y++) p.set(238 + f * 5 + Math.round(Math.sin((y + k) / 2)), 148 - y, c('fire', 3 - Math.floor(y / 6)));
-    for (let w = 0; w < 3; w++) for (let y = 30; y < 130; y += 3) if ((y + k * 4 + w * 7) % 18 < 7) p.set(240 + w * 10 + Math.round(Math.sin((y + w) / 6) * 2), y, c('white', 1));
+    for (let f = 0; f < 6; f++)
+      for (let y = 0; y < 14 + ((f * 5 + k * 3) % 8); y++) p.set(238 + f * 5 + Math.round(Math.sin((y + k) / 2)), 148 - y, c('fire', 3 - Math.floor(y / 6)));
+    for (let w = 0; w < 3; w++)
+      for (let y = 30; y < 130; y += 3) if ((y + k * 4 + w * 7) % 18 < 7) p.set(240 + w * 10 + Math.round(Math.sin((y + w) / 6) * 2), y, c('white', 1));
     // the feet stomp left; the loaf rolls right and rises over them
     const fx = k < 22 ? 150 - k * 3 : 84 - (k - 22) * 3;
     scaleBlit(p, sprite(cast.mons, `feet${(k >> 1) % 2}`), fx, 112, 2);
@@ -254,7 +273,11 @@ export function howtoFli(cast: Cast): Uint8Array {
     }
     scaleBlit(p, L(pose), x, y, 2);
     if (k >= 12 && k < 18) say(p, pal, x + 20, y - 14, 'RISE!');
-    caption(p, pal, k < 30 ? ['UP rises, Q and E rise sideways.', 'Rise over hungry things.'] : ['Warm air over a fire lifts you,', 'the way warm makes dough rise.']);
+    caption(
+      p,
+      pal,
+      k < 30 ? ['UP rises, Q and E rise sideways.', 'Rise over hungry things.'] : ['Warm air over a fire lifts you,', 'the way warm makes dough rise.'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);

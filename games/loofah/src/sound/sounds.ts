@@ -66,7 +66,20 @@ const join = (...parts: Float32Array[]): Float32Array => {
 export type Place = 'bath' | 'aisle' | 'home' | 'shower';
 
 /** A wet squelch: a falling formant over gurgled noise. */
-const squelch = (seed: number): Synth => mix([lowNoise(seed, (t) => 0.3 * Math.exp(-t * 8) + 0.03), 0.7], [voice((t) => 120 - t * 140, (t) => 700 - t * 1600, 1400, seed + 1, 0.1), 0.5]);
+const squelch = (seed: number): Synth =>
+  mix(
+    [lowNoise(seed, (t) => 0.3 * Math.exp(-t * 8) + 0.03), 0.7],
+    [
+      voice(
+        (t) => 120 - t * 140,
+        (t) => 700 - t * 1600,
+        1400,
+        seed + 1,
+        0.1,
+      ),
+      0.5,
+    ],
+  );
 /** Steam hissing out (high noise, swelling, then fading). */
 const hiss = (seed: number): Synth => {
   const r = rng(seed);
@@ -104,25 +117,87 @@ export function buildVocs(): Record<string, Uint8Array> {
     { envelope: env(0.02, 0.4) },
   );
   // the towel's scream: a shrill, wavering shriek
-  vocs.shriek = sample(0.7, mix([voice((t) => 620 + Math.sin(t * 50) * 70 + t * 200, 900, 2600, 17, 0.15), 0.8], [lowNoise(18, 0.6), 0.1]), { envelope: env(0.03, 0.5) });
+  vocs.shriek = sample(0.7, mix([voice((t) => 620 + Math.sin(t * 50) * 70 + t * 200, 900, 2600, 17, 0.15), 0.8], [lowNoise(18, 0.6), 0.1]), {
+    envelope: env(0.03, 0.5),
+  });
   // a soap bubble popping
   vocs.pop = sample(0.12, mix([osc.sine((t) => 1300 - t * 6000), 0.6], [gate(lowNoise(19, 0.9), 0, 0.012), 0.6]), { envelope: env(0.002, 2.4) });
   // a match struck, and the candle catching
-  vocs.match = sample(0.6, mix([gate(lowNoise(20, 0.8), 0, 0.12), 0.8], [gate(lowNoise(21, (t) => 0.05 + 0.1 * Math.exp(-(t - 0.15) * 6)), 0.12, 0.6), 0.5]), { envelope: env(0.005, 0.8) });
+  vocs.match = sample(
+    0.6,
+    mix(
+      [gate(lowNoise(20, 0.8), 0, 0.12), 0.8],
+      [
+        gate(
+          lowNoise(21, (t) => 0.05 + 0.1 * Math.exp(-(t - 0.15) * 6)),
+          0.12,
+          0.6,
+        ),
+        0.5,
+      ],
+    ),
+    { envelope: env(0.005, 0.8) },
+  );
   // the checkout's register: ka-ching
-  vocs.kaching = sample(0.7, mix([gate(lowNoise(22, 0.7), 0, 0.05), 0.6], [gate(osc.sine(2093), 0.08, 0.7), 0.4], [gate(osc.sine(3136), 0.08, 0.7), 0.25]), { envelope: env(0.003, 1) });
+  vocs.kaching = sample(0.7, mix([gate(lowNoise(22, 0.7), 0, 0.05), 0.6], [gate(osc.sine(2093), 0.08, 0.7), 0.4], [gate(osc.sine(3136), 0.08, 0.7), 0.25]), {
+    envelope: env(0.003, 1),
+  });
   // a rubber duck: squeak squeak
-  vocs.duck = sample(0.55, mix([gate(osc.square((t) => 1100 + Math.sin(t * 30) * 200), 0, 0.2), 0.3], [gate(osc.square((t) => 1250 - (t - 0.28) * 600), 0.28, 0.52), 0.3]), { envelope: env(0.01, 0.4) });
+  vocs.duck = sample(
+    0.55,
+    mix(
+      [
+        gate(
+          osc.square((t) => 1100 + Math.sin(t * 30) * 200),
+          0,
+          0.2,
+        ),
+        0.3,
+      ],
+      [
+        gate(
+          osc.square((t) => 1250 - (t - 0.28) * 600),
+          0.28,
+          0.52,
+        ),
+        0.3,
+      ],
+    ),
+    { envelope: env(0.01, 0.4) },
+  );
   // a washcloth wrung out: drips and a squeeze
-  vocs.wring = sample(0.5, mix([squelch(23), 0.6], [gate(osc.sine((t) => 900 + t * 3000), 0.3, 0.42), 0.3]), { envelope: env(0.02, 0.8) });
+  vocs.wring = sample(
+    0.5,
+    mix(
+      [squelch(23), 0.6],
+      [
+        gate(
+          osc.sine((t) => 900 + t * 3000),
+          0.3,
+          0.42,
+        ),
+        0.3,
+      ],
+    ),
+    { envelope: env(0.02, 0.8) },
+  );
   // a splash of brine
-  vocs.splash = sample(0.4, lowNoise(24, (t) => 0.7 * Math.exp(-t * 7) + 0.05), { envelope: env(0.004, 1.3) });
+  vocs.splash = sample(
+    0.4,
+    lowNoise(24, (t) => 0.7 * Math.exp(-t * 7) + 0.05),
+    { envelope: env(0.004, 1.3) },
+  );
   // the funeral bell
   vocs.bell = sample(1.6, mix([osc.sine(196), 0.5], [osc.sine(392 * 1.19), 0.25], [osc.sine(523 * 1.5), 0.15]), { envelope: env(0.003, 1.6), gain: 0.8 });
   // the screaming towel: a shriek, then "My towel screams, YOU MADE IT WORSE!" (8000 Hz to fit)
   {
     const rate = CLIPS.scream;
-    const shriek = render(0.4, voice((t) => 640 + Math.sin(t * 50) * 70, 900, 2600, 25, 0.15), rate, env(0.02, 0.6));
+    const shriek = render(
+      0.4,
+      voice((t) => 640 + Math.sin(t * 50) * 70, 900, 2600, 25, 0.15),
+      rate,
+      env(0.02, 0.6),
+    );
     vocs.towel = vocOf('towel', join(shriek, clipSamples('scream')), rate);
   }
   // the drain gurgling, then softly: "Never touch the loofah."
@@ -138,7 +213,18 @@ export function buildVocs(): Record<string, Uint8Array> {
 
 /** Which VOC each effect plays, act by act. */
 const PLAYS: Record<Place, Partial<Record<keyof typeof SND, string>>> = {
-  bath: { speak: 'rough', wail: 'pink', hurt: 'squelch', die: 'drainnev', gain: 'drip', spend: 'lucifer', kill: 'pop', step: 'pat', life: 'duck', help: 'wring' },
+  bath: {
+    speak: 'rough',
+    wail: 'pink',
+    hurt: 'squelch',
+    die: 'drainnev',
+    gain: 'drip',
+    spend: 'lucifer',
+    kill: 'pop',
+    step: 'pat',
+    life: 'duck',
+    help: 'wring',
+  },
   aisle: { speak: 'rough', wail: 'wrong', hurt: 'squelch', die: 'drainnev', gain: 'chime', spend: 'kaching', kill: 'scrub', step: 'pat', score: 'mango' },
   home: { speak: 'rough', wail: 'line', hurt: 'towel', die: 'drainnev', gain: 'match', spend: 'bell', kill: 'pop', step: 'pat' },
   shower: { speak: 'rough', wail: 'brine', hurt: 'worse', die: 'drainnev', gain: 'scrubbus', spend: 'hiss', kill: 'squelch', step: 'drip', score: 'shriek' },
@@ -153,16 +239,36 @@ export function buildSoundSet(place: Place): SoundSet {
     set.digital[SND[n]] = plays[n] ?? fallback;
   };
   add('help', 'wring', SPEAKER.rise(400, 900));
-  add('kill', 'pop', speaker((i) => (i < 4 ? 900 - i * 150 : 0)));
+  add(
+    'kill',
+    'pop',
+    speaker((i) => (i < 4 ? 900 - i * 150 : 0)),
+  );
   add('money', 'chime', SPEAKER.coin());
   add('pay', 'chime', SPEAKER.noise(2, 80, 400));
   add('life', 'duck', SPEAKER.arpeggio([1100, 1300, 1100, 1300]));
-  add('score', 'chime', speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0)));
+  add(
+    'score',
+    'chime',
+    speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0)),
+  );
   add('lose', 'bell', SPEAKER.fall(400, 90));
-  add('gain', 'chime', speaker((i) => (i < 8 ? 1100 + i * 120 : 0)));
+  add(
+    'gain',
+    'chime',
+    speaker((i) => (i < 8 ? 1100 + i * 120 : 0)),
+  );
   add('spend', 'hiss', SPEAKER.noise(3, 1500, 4000));
-  add('hop', 'hop', speaker((i) => (i < 10 ? 220 + i * 40 : 0)));
-  add('step', 'pat', speaker((i) => (i < 3 ? 120 : 0)));
+  add(
+    'hop',
+    'hop',
+    speaker((i) => (i < 10 ? 220 + i * 40 : 0)),
+  );
+  add(
+    'step',
+    'pat',
+    speaker((i) => (i < 3 ? 120 : 0)),
+  );
   add('hurt', 'squelch', SPEAKER.warble(260, 100, 2.4));
   add('die', 'drainnev', SPEAKER.fall(500, 70));
   add('speak', 'rough', SPEAKER.noise(4, 300, 1200));

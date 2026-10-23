@@ -31,7 +31,8 @@ export const SOCKS = 7;
 /** A sock (toe to the right, cuff at the top) at (x, y): `pattern` paints its knit. */
 function drawSock(p: Pixels, pal: Pal, x: number, y: number, base: [string, number], pattern: (px: number, py: number) => number | undefined): void {
   const c = pal.c;
-  const inSock = (px: number, py: number) => (px >= 0 && px < 6 && py >= 0 && py < 11) || (px >= 0 && px < 11 && py >= 8 && py < 14 && !(px > 8 && py === 8) && !(px === 10 && (py === 9 || py === 13)));
+  const inSock = (px: number, py: number) =>
+    (px >= 0 && px < 6 && py >= 0 && py < 11) || (px >= 0 && px < 11 && py >= 8 && py < 14 && !(px > 8 && py === 8) && !(px === 10 && (py === 9 || py === 13)));
   for (let py = 0; py < 14; py++)
     for (let px = 0; px < 11; px++) {
       if (!inSock(px, py)) continue;
@@ -42,7 +43,8 @@ function drawSock(p: Pixels, pal: Pal, x: number, y: number, base: [string, numb
   p.rect(x, y, 6, 2, c('white', 2)).rect(x, y + 1, 6, 1, c('white', 1));
   p.rect(x, y + 11, 2, 3, c('white', 1)).rect(x + 9, y + 9, 2, 4, c('white', 1));
   for (let py = 0; py < 14; py++)
-    for (let px = -1; px < 12; px++) if (!inSock(px, py) && (inSock(px - 1, py) || inSock(px + 1, py) || inSock(px, py - 1) || inSock(px, py + 1))) p.set(x + px, y + py, c('ink', 0));
+    for (let px = -1; px < 12; px++)
+      if (!inSock(px, py) && (inSock(px - 1, py) || inSock(px + 1, py) || inSock(px, py - 1) || inSock(px, py + 1))) p.set(x + px, y + py, c('ink', 0));
 }
 
 export function socksBlocks(book: BlockBook, pal: Pal): void {
@@ -51,19 +53,42 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
   // the washer (its porthole full of suds) with the dryer stacked on top (its drum turning)
   {
     const pic = new Pixels(40, 80, 255);
-    for (const [y0, dryer] of [[0, true], [40, false]] as const) {
-      pic.rect(1, y0 + 1, 38, 38, c('white', 2)).frame(1, y0 + 1, 38, 38, c('grey', 1)).rect(2, y0 + 2, 36, 7, c('white', 1)).rect(2, y0 + 9, 36, 1, c('grey', 2));
-      pic.disc(8, y0 + 5, 2, c('grey', 1)).disc(14, y0 + 5, 2, c('grey', 1)).rect(24, y0 + 3, 10, 4, c('night', 1));
+    for (const [y0, dryer] of [
+      [0, true],
+      [40, false],
+    ] as const) {
+      pic
+        .rect(1, y0 + 1, 38, 38, c('white', 2))
+        .frame(1, y0 + 1, 38, 38, c('grey', 1))
+        .rect(2, y0 + 2, 36, 7, c('white', 1))
+        .rect(2, y0 + 9, 36, 1, c('grey', 2));
+      pic
+        .disc(8, y0 + 5, 2, c('grey', 1))
+        .disc(14, y0 + 5, 2, c('grey', 1))
+        .rect(24, y0 + 3, 10, 4, c('night', 1));
       micro(pic, 25, y0 + 3, dryer ? 'HOT' : 'WAR', c(dryer ? 'red' : 'ice', 2));
-      pic.disc(20, y0 + 24, 12, c('grey', 2)).disc(20, y0 + 24, 10, c('grey', 0)).disc(20, y0 + 24, 9, c(dryer ? 'night' : 'ice', dryer ? 1 : 0));
+      pic
+        .disc(20, y0 + 24, 12, c('grey', 2))
+        .disc(20, y0 + 24, 10, c('grey', 0))
+        .disc(20, y0 + 24, 9, c(dryer ? 'night' : 'ice', dryer ? 1 : 0));
       if (dryer) {
         // the drum tumbling: a lone sock flung round in careless heat, and the heat
         drawSock(pic, pal, 15, y0 + 17, ['red', 2], (x, y) => ((x + y) % 4 < 2 ? c('gold', 2) : undefined));
         for (const x of [12, 20, 28]) pic.line(x, y0 + 35, x + 1, y0 + 33, c('red', 2)).line(x + 1, y0 + 33, x, y0 + 31, c('red', 2));
       } else {
-        for (const [x, y, r] of [[15, 22, 3], [22, 20, 4], [25, 27, 3], [17, 29, 2.5], [21, 25, 2]]) pic.disc(x, y0 + y, r, c('white', 2)).set(x - 1, y0 + y - 1, c('ice', 2));
+        for (const [x, y, r] of [
+          [15, 22, 3],
+          [22, 20, 4],
+          [25, 27, 3],
+          [17, 29, 2.5],
+          [21, 25, 2],
+        ])
+          pic.disc(x, y0 + y, r, c('white', 2)).set(x - 1, y0 + y - 1, c('ice', 2));
       }
-      pic.ring(20, y0 + 24, 12, c('grey', 2)).ring(20, y0 + 24, 11.5, c('grey', 2)).ring(20, y0 + 24, 9.6, c('white', 2));
+      pic
+        .ring(20, y0 + 24, 12, c('grey', 2))
+        .ring(20, y0 + 24, 11.5, c('grey', 2))
+        .ring(20, y0 + 24, 9.6, c('white', 2));
       pic.rect(3, y0 + 36, 34, 2, c('grey', 1));
     }
     addPicture(book, 'tower', pic, wall(50), () => ({ solid: SOLID }));
@@ -100,15 +125,25 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
   book.add('boardLegs', board(true), { solid: LEDGE, grav: GRAV.down });
   // the neighbors at the window, peering in and whispering: WHY THE MISMATCH?
   const peer = book.pics.get('win.0.0')!.crop(0, 0, 20, 20);
-  for (const [x, hair] of [[10, 'hair'], [16, 'grey']] as const) {
+  for (const [x, hair] of [
+    [10, 'hair'],
+    [16, 'grey'],
+  ] as const) {
     blob(peer, x, 13, 3, 3.4, R('skin'), 1, 3);
-    peer.rect(x - 3, 9, 7, 2, c(hair, 1)).set(x - 1, 13, c('ink', 0)).set(x + 1, 13, c('ink', 0)).rect(x - 1, 16, 2, 1, c('ink', 0));
+    peer
+      .rect(x - 3, 9, 7, 2, c(hair, 1))
+      .set(x - 1, 13, c('ink', 0))
+      .set(x + 1, 13, c('ink', 0))
+      .rect(x - 1, 16, 2, 1, c('ink', 0));
   }
   book.add('peer', peer, { ...AIR, birthMon: SOCKS_MON.why, birthTime: 110 });
   // the front door out: closed, then open onto the daylight
   const door = (open: boolean) => {
     const p = wall(54);
-    p.rect(2, 0, 16, 20, open ? c('spot', 1) : c('wood', 3)).rect(2, 0, 16, 1, c('wood', 0)).rect(2, 0, 1, 20, c('wood', 0)).rect(17, 0, 1, 20, c('wood', 0));
+    p.rect(2, 0, 16, 20, open ? c('spot', 1) : c('wood', 3))
+      .rect(2, 0, 16, 1, c('wood', 0))
+      .rect(2, 0, 1, 20, c('wood', 0))
+      .rect(17, 0, 1, 20, c('wood', 0));
     if (!open) {
       p.frame(5, 3, 10, 6, c('wood', 2)).frame(5, 11, 10, 7, c('wood', 2)).disc(14, 10, 1.2, c('gold', 2)).rect(7, 9, 6, 1, c('metal', 1));
       // the doormat says it all
@@ -129,7 +164,9 @@ export function socksBlocks(book: BlockBook, pal: Pal): void {
   sock('sock3', 'wallB', ['navy', 2], () => undefined);
   sock('sock4', 'line', ['pink', 1], (x, y) => ((x % 4 === 1 && y % 4 === 1) || (x % 4 === 3 && y % 4 === 3) ? c('white', 2) : undefined), true);
   sock('sock5', 'line', ['teal', 1], (x) => (x % 3 === 0 ? c('yellow', 2) : undefined), true);
-  sock('sock6', 'wallB', ['green', 2], (x, y) => ((x - 3) ** 2 + (y - 6) ** 2 < 3 || (x - 7) ** 2 + (y - 11) ** 2 < 3 ? c('pink', 2) : (x + y) % 5 === 0 ? c('green', 3) : undefined));
+  sock('sock6', 'wallB', ['green', 2], (x, y) =>
+    (x - 3) ** 2 + (y - 6) ** 2 < 3 || (x - 7) ** 2 + (y - 11) ** 2 < 3 ? c('pink', 2) : (x + y) % 5 === 0 ? c('green', 3) : undefined,
+  );
   sock('sock7', 'wall', ['purple', 1], (x, y) => (Math.abs(((x + y) % 6) - 3) + Math.abs(((x - y + 60) % 6) - 3) < 2 ? c('yellow', 2) : undefined));
 }
 
@@ -155,7 +192,10 @@ export function socksSprites(book: SpriteBook, pal: Pal): void {
   const pair = (f: number) => {
     const p = P();
     for (const x of [1, 9]) drawSock(p, pal, x, 5 - (f ? 1 : 0), ['grey', 2], (_x, y) => (y === 4 || y === 6 ? c('navy', 1) : undefined));
-    p.set(3, 9 - f, ink).set(5, 9 - f, ink).set(11, 9 - f, ink).set(13, 9 - f, ink);
+    p.set(3, 9 - f, ink)
+      .set(5, 9 - f, ink)
+      .set(11, 9 - f, ink)
+      .set(13, 9 - f, ink);
     return outline(p, ink);
   };
   book.add('pair0', pair(0), hurts(-6));
@@ -175,9 +215,17 @@ export function socksSprites(book: SpriteBook, pal: Pal): void {
 export function socksMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   // lint out of the dryer, under the shelves and up, and back along the clothesline at him
-  set[SOCKS_MON.lint] = mon(anim(mb, 'lint0', 'lint1', 3), { power: POWER.foe, thru: 1, end: -1, newmon: SOCKS_MON.fluff }, [corner(0, 0, 2), corner(-10, 0, 2, 4)]);
+  set[SOCKS_MON.lint] = mon(anim(mb, 'lint0', 'lint1', 3), { power: POWER.foe, thru: 1, end: -1, newmon: SOCKS_MON.fluff }, [
+    corner(0, 0, 2),
+    corner(-10, 0, 2, 4),
+  ]);
   set[SOCKS_MON.pair] = mon(anim(mb, 'pair0', 'pair1', 4), { power: POWER.foe, thru: 1, newmon: SOCKS_MON.fluff }, pace(3, 1));
-  set[SOCKS_MON.why] = mon(anim(mb, 'why0', 'why1', 8), { power: POWER.foe, thru: 1, end: -1, newmon: SOCKS_MON.fluff }, [corner(0, 0, 1), corner(-1, 3, 1), corner(-2, 6, 1), corner(-8, 6, 1, 4)]);
+  set[SOCKS_MON.why] = mon(anim(mb, 'why0', 'why1', 8), { power: POWER.foe, thru: 1, end: -1, newmon: SOCKS_MON.fluff }, [
+    corner(0, 0, 1),
+    corner(-1, 3, 1),
+    corner(-2, 6, 1),
+    corner(-8, 6, 1, 4),
+  ]);
 }
 
 export const socks: Monologue = {
@@ -214,7 +262,10 @@ export const socks: Monologue = {
     const W = 62 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 5; x < W; x += 10) m.set(x, 0, '*');
-    m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
+    m.fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, '#');
     const win = (x: number, y: number, peer: boolean) => (placePicture(m, 'win', x, y, 2, 2), peer && m.set(x, y, 'p'));
     // seven socks: the carnival tent by the start; the basket and the shelf with the galaxy
     m.set(2, 9, '!').set(5, 9, 'sock1');

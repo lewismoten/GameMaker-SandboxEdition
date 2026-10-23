@@ -142,7 +142,18 @@ export class LootWatch {
       if (!LOOT_MONS.has(s.monnum) || w.mi[i].fromchar) return;
       const p = monPos(sim, i);
       let m = this.mons.get(i);
-      if (!m) this.mons.set(i, (m = { num: s.monnum, what: `${s.monnum === MON.heart ? 'heart' : s.monnum === MON.gem ? 'gem' : 'ruby'} near ${Math.round(p.x)},${Math.round(p.y)}`, x: p.x, y: p.y, seen: false, taken: false }));
+      if (!m)
+        this.mons.set(
+          i,
+          (m = {
+            num: s.monnum,
+            what: `${s.monnum === MON.heart ? 'heart' : s.monnum === MON.gem ? 'gem' : 'ruby'} near ${Math.round(p.x)},${Math.round(p.y)}`,
+            x: p.x,
+            y: p.y,
+            seen: false,
+            taken: false,
+          }),
+        );
       m.x = p.x;
       m.y = p.y;
       if (cellOnScreen(sim, Math.floor(p.x), Math.floor(p.y))) m.seen = true;

@@ -59,7 +59,11 @@ function armchair(under: Pixels): Pixels {
 
 function cardCatalog(): Pixels {
   const p = new Pixels(20, 20, c('wood', 2));
-  for (let y = 1; y < 19; y += 6) for (let x = 1; x < 19; x += 6) p.rect(x, y, 5, 5, c('wood', 3)).rect(x + 1, y + 1, 3, 1, c('paper', 4)).set(x + 2, y + 3, c('brass', 3));
+  for (let y = 1; y < 19; y += 6)
+    for (let x = 1; x < 19; x += 6)
+      p.rect(x, y, 5, 5, c('wood', 3))
+        .rect(x + 1, y + 1, 3, 1, c('paper', 4))
+        .set(x + 2, y + 3, c('brass', 3));
   return p;
 }
 
@@ -89,20 +93,27 @@ function redDoor(half: 0 | 1): Pixels {
   const both = new Pixels(40, 20);
   both.blit(redDoorHalf(0), 0, 0).blit(redDoorHalf(1), 20, 0);
   both.rect(3, 10, 34, 1, c('grey', 4)).rect(3, 11, 34, 2, c('grey', 2));
-  const port = chezSide(both, 12, 3, {
-    body: [c('red', 2), c('red', 3), c('red', 4)],
-    trim: c('red', 1),
-    glass: [c('blue', 1), c('sky', 4)],
-    roof: c('ink', 2),
-    tire: c('ink', 0),
-    hub: c('grey', 5),
-    rim: c('paper', 4),
-    stripe: c('ink', 1),
-    bumper: c('ink', 1),
-    lamp: c('paper', 4),
-    tail: c('orange', 2),
-    outline: c('ink', 0),
-  }, 'left', 0.4);
+  const port = chezSide(
+    both,
+    12,
+    3,
+    {
+      body: [c('red', 2), c('red', 3), c('red', 4)],
+      trim: c('red', 1),
+      glass: [c('blue', 1), c('sky', 4)],
+      roof: c('ink', 2),
+      tire: c('ink', 0),
+      hub: c('grey', 5),
+      rim: c('paper', 4),
+      stripe: c('ink', 1),
+      bumper: c('ink', 1),
+      lamp: c('paper', 4),
+      tail: c('orange', 2),
+      outline: c('ink', 0),
+    },
+    'left',
+    0.4,
+  );
   both.rect(31, 5, 2, 5, c('grey', 1)).set(31, 6, c('green', 4));
   both.line(port.portX + 1, port.portY, 30, 8, c('ink', 0));
   return both.crop(half * 20, 0, 20, 20);
@@ -221,7 +232,19 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   a.tile('rug', rug);
   a.solid('shelf', shelf(101, 'red'));
   wings.forEach((w, i) => a.tile(`door${i}`, wingDoor(DOOR_LABELS[i], w.stamp, 110 + i)));
-  for (let i = wings.length; i < 8; i++) a.solid(`door${i}`, wingDoor('SOON', [['grey', 3], ['grey', 1], ['grey', 4]], 110 + i));
+  for (let i = wings.length; i < 8; i++)
+    a.solid(
+      `door${i}`,
+      wingDoor(
+        'SOON',
+        [
+          ['grey', 3],
+          ['grey', 1],
+          ['grey', 4],
+        ],
+        110 + i,
+      ),
+    );
   // the Word Counter's display: jammed, it flips between 099, 101 and STOP forever
   const shows = ['099', '101', 'STOP', '000'];
   shows.forEach((s, k) => {
@@ -238,26 +261,46 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   a.solid('fern', fern(parquet));
   a.solid('red0', redDoor(0));
   a.solid('red1', redDoor(1));
-  a.solid('tableL', on(parquet, (() => {
-    const p = blank();
-    p.rect(0, 6, 20, 8, c('wood', 3)).rect(0, 13, 20, 2, c('wood', 1)).rect(3, 15, 2, 4, c('wood', 1));
-    p.rect(5, 2, 8, 3, c('green', 2)).rect(8, 5, 2, 1, c('brass', 2));
-    return p;
-  })()));
-  a.solid('tableR', on(parquet, (() => {
-    const p = blank();
-    p.rect(0, 6, 20, 8, c('wood', 3)).rect(0, 13, 20, 2, c('wood', 1)).rect(15, 15, 2, 4, c('wood', 1));
-    p.rect(3, 7, 6, 4, c('blue', 2)).rect(10, 8, 6, 3, c('red', 2));
-    return p;
-  })()));
-  a.tile('toStacks', on(shelf(120, 'purple'), (() => {
-    const p = blank();
-    bevel(p, 2, 2, 16, 18, r('purple'), 2, 1);
-    micro(p, 4, 6, 'STAX', c('brass', 4));
-    micro(p, 4, 12, '-->', c('brass', 4));
-    return p;
-  })()));
-  sign(['QUIET PLEASE', 'WORDS AT WORK'], 4, { board: 'green', ink: 'paper', edge: 'brass' }).forEach((px, i) => a.solid(`quiet${i}`, on(shelf(130 + i, 'red'), px)));
+  a.solid(
+    'tableL',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        p.rect(0, 6, 20, 8, c('wood', 3)).rect(0, 13, 20, 2, c('wood', 1)).rect(3, 15, 2, 4, c('wood', 1));
+        p.rect(5, 2, 8, 3, c('green', 2)).rect(8, 5, 2, 1, c('brass', 2));
+        return p;
+      })(),
+    ),
+  );
+  a.solid(
+    'tableR',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        p.rect(0, 6, 20, 8, c('wood', 3)).rect(0, 13, 20, 2, c('wood', 1)).rect(15, 15, 2, 4, c('wood', 1));
+        p.rect(3, 7, 6, 4, c('blue', 2)).rect(10, 8, 6, 3, c('red', 2));
+        return p;
+      })(),
+    ),
+  );
+  a.tile(
+    'toStacks',
+    on(
+      shelf(120, 'purple'),
+      (() => {
+        const p = blank();
+        bevel(p, 2, 2, 16, 18, r('purple'), 2, 1);
+        micro(p, 4, 6, 'STAX', c('brass', 4));
+        micro(p, 4, 12, '-->', c('brass', 4));
+        return p;
+      })(),
+    ),
+  );
+  sign(['QUIET PLEASE', 'WORDS AT WORK'], 4, { board: 'green', ink: 'paper', edge: 'brass' }).forEach((px, i) =>
+    a.solid(`quiet${i}`, on(shelf(130 + i, 'red'), px)),
+  );
   sign(['OVERDUE FINE:', 'ONE WORD', 'PER DAY'], 3).forEach((px, i) => a.solid(`fine${i}`, on(parquet, px)));
   sign(['BOOKS ARE NOT', 'CHEW TOYS.', 'YES, GWINN.'], 3).forEach((px, i) => a.solid(`chew${i}`, on(parquet, px)));
   // the Reserve Stacks
@@ -270,71 +313,126 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   const lectern = blank();
   lectern.rect(6, 8, 8, 11, c('wood', 2)).rect(3, 4, 14, 5, c('wood', 3)).rect(5, 5, 10, 3, c('paper', 4));
   a.solid('lectern', on(parquet, lectern));
-  sign(['RESERVE STACKS', 'STAFF AND', 'ROBOTS ONLY'], 3, { board: 'purple', ink: 'paper', edge: 'brass' }).forEach((px, i) => a.solid(`stax${i}`, on(parquet, px)));
+  sign(['RESERVE STACKS', 'STAFF AND', 'ROBOTS ONLY'], 3, { board: 'purple', ink: 'paper', edge: 'brass' }).forEach((px, i) =>
+    a.solid(`stax${i}`, on(parquet, px)),
+  );
   sign(['PLEASE FORM', 'A LINE', 'FACING FRONT'], 3).forEach((px, i) => a.solid(`line${i}`, on(parquet, px)));
-  a.tile('back', on(shelf(140, 'purple'), (() => {
-    const p = blank();
-    bevel(p, 2, 2, 16, 18, r('wood'), 3, 1);
-    micro(p, 3, 8, '<--', c('ink', 0));
-    return p;
-  })()));
+  a.tile(
+    'back',
+    on(
+      shelf(140, 'purple'),
+      (() => {
+        const p = blank();
+        bevel(p, 2, 2, 16, 18, r('wood'), 3, 1);
+        micro(p, 3, 8, '<--', c('ink', 0));
+        return p;
+      })(),
+    ),
+  );
   // the loose shelf: one book pulled half out, a red ribbon hanging from it; it is not solid
-  a.tile('looseShelf', (() => {
-    const p = shelf(101, 'red');
-    p.rect(13, 7, 3, 6, c('purple', 3)).rect(13, 8, 3, 1, c('brass', 4)).rect(16, 7, 1, 6, c('ink', 0));
-    p.rect(14, 13, 1, 5, c('red', 3)).set(13, 18, c('red', 3)).set(15, 18, c('red', 3));
-    return p;
-  })());
+  a.tile(
+    'looseShelf',
+    (() => {
+      const p = shelf(101, 'red');
+      p.rect(13, 7, 3, 6, c('purple', 3)).rect(13, 8, 3, 1, c('brass', 4)).rect(16, 7, 1, 6, c('ink', 0));
+      p.rect(14, 13, 1, 5, c('red', 3)).set(13, 18, c('red', 3)).set(15, 18, c('red', 3));
+      return p;
+    })(),
+  );
   // the Lost and Found
-  sign(['LOST & FOUND', 'CLAIM BY 1995'], 4, { board: 'brown', ink: 'paper', edge: 'brass' }).forEach((px, i) => a.solid(`lostSign${i}`, on(shelf(150 + i, 'red'), px)));
+  sign(['LOST & FOUND', 'CLAIM BY 1995'], 4, { board: 'brown', ink: 'paper', edge: 'brass' }).forEach((px, i) =>
+    a.solid(`lostSign${i}`, on(shelf(150 + i, 'red'), px)),
+  );
   sign(['FINDERS', 'POCKETERS'], 3).forEach((px, i) => a.solid(`pocket${i}`, on(parquet, px)));
-  a.solid('umbrellas', on(parquet, (() => {
-    const p = blank();
-    p.rect(5, 12, 10, 7, c('tin', 2)).rect(5, 12, 10, 1, c('tin', 4));
-    p.line(7, 12, 5, 2, c('red', 3)).line(10, 12, 10, 1, c('blue', 3)).line(13, 12, 15, 3, c('yellow', 3));
-    p.rect(4, 1, 3, 2, c('red', 3)).rect(9, 0, 3, 2, c('blue', 3)).rect(14, 2, 3, 2, c('yellow', 3));
-    return p;
-  })()));
-  a.solid('sock', on(parquet, (() => {
-    const p = blank();
-    p.rect(8, 4, 4, 10, c('green', 3)).rect(8, 12, 8, 4, c('green', 3)).rect(8, 4, 4, 2, c('paper', 4)).rect(14, 12, 2, 4, c('red', 3));
-    micro(p, 2, 16, 'ONE', c('ink', 0));
-    return p;
-  })()));
-  a.solid('chicken', on(parquet, (() => {
-    const p = blank();
-    p.rect(4, 8, 11, 5, c('yellow', 3)).rect(14, 5, 3, 4, c('yellow', 3)).set(17, 6, c('orange', 3)).set(15, 4, c('red', 3)).set(16, 4, c('red', 3));
-    p.line(5, 13, 4, 17, c('orange', 2)).line(9, 13, 9, 17, c('orange', 2));
-    micro(p, 1, 1, 'LEO', c('ink', 0));
-    return p;
-  })()));
-  a.solid('cable', on(parquet, (() => {
-    const p = blank();
-    for (let i = 0; i < 16; i++) p.set(2 + i, 10 + Math.round(Math.sin(i / 2) * 3), c('ink', 0));
-    p.rect(15, 6, 4, 4, c('grey', 4)).frame(15, 6, 4, 4, c('ink', 0));
-    p.rect(0, 13, 19, 7, c('paper', 4)).frame(0, 13, 19, 7, c('brass', 1));
-    micro(p, 2, 14, 'CHEZ', c('red', 2));
-    return p;
-  })()));
-  a.solid('teddyNap', on(parquet, (() => {
-    const p = blank();
-    p.rect(1, 14, 18, 5, c('blue', 2)).rect(1, 14, 18, 1, c('blue', 4));
-    p.blit(corgi(0), 0, -2, CLEAR);
-    micro(p, 13, 0, 'Z', c('sky', 4));
-    return p;
-  })()));
-  a.tile('shoebox', on(parquet, (() => {
-    const p = blank();
-    p.rect(2, 12, 16, 7, c('brown', 1)).rect(3, 12, 14, 2, c('brown', 0)).rect(2, 18, 16, 1, c('brown', 0));
-    return p;
-  })()));
+  a.solid(
+    'umbrellas',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        p.rect(5, 12, 10, 7, c('tin', 2)).rect(5, 12, 10, 1, c('tin', 4));
+        p.line(7, 12, 5, 2, c('red', 3)).line(10, 12, 10, 1, c('blue', 3)).line(13, 12, 15, 3, c('yellow', 3));
+        p.rect(4, 1, 3, 2, c('red', 3)).rect(9, 0, 3, 2, c('blue', 3)).rect(14, 2, 3, 2, c('yellow', 3));
+        return p;
+      })(),
+    ),
+  );
+  a.solid(
+    'sock',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        p.rect(8, 4, 4, 10, c('green', 3)).rect(8, 12, 8, 4, c('green', 3)).rect(8, 4, 4, 2, c('paper', 4)).rect(14, 12, 2, 4, c('red', 3));
+        micro(p, 2, 16, 'ONE', c('ink', 0));
+        return p;
+      })(),
+    ),
+  );
+  a.solid(
+    'chicken',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        p.rect(4, 8, 11, 5, c('yellow', 3)).rect(14, 5, 3, 4, c('yellow', 3)).set(17, 6, c('orange', 3)).set(15, 4, c('red', 3)).set(16, 4, c('red', 3));
+        p.line(5, 13, 4, 17, c('orange', 2)).line(9, 13, 9, 17, c('orange', 2));
+        micro(p, 1, 1, 'LEO', c('ink', 0));
+        return p;
+      })(),
+    ),
+  );
+  a.solid(
+    'cable',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        for (let i = 0; i < 16; i++) p.set(2 + i, 10 + Math.round(Math.sin(i / 2) * 3), c('ink', 0));
+        p.rect(15, 6, 4, 4, c('grey', 4)).frame(15, 6, 4, 4, c('ink', 0));
+        p.rect(0, 13, 19, 7, c('paper', 4)).frame(0, 13, 19, 7, c('brass', 1));
+        micro(p, 2, 14, 'CHEZ', c('red', 2));
+        return p;
+      })(),
+    ),
+  );
+  a.solid(
+    'teddyNap',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        p.rect(1, 14, 18, 5, c('blue', 2)).rect(1, 14, 18, 1, c('blue', 4));
+        p.blit(corgi(0), 0, -2, CLEAR);
+        micro(p, 13, 0, 'Z', c('sky', 4));
+        return p;
+      })(),
+    ),
+  );
+  a.tile(
+    'shoebox',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        p.rect(2, 12, 16, 7, c('brown', 1)).rect(3, 12, 14, 2, c('brown', 0)).rect(2, 18, 16, 1, c('brown', 0));
+        return p;
+      })(),
+    ),
+  );
   a.tiles.def('egg').touch = 'shoebox';
-  a.tile('lostOut', on(parquet, (() => {
-    const p = blank();
-    bevel(p, 3, 2, 14, 18, r('wood'), 3, 1);
-    micro(p, 4, 8, 'OUT', c('ink', 0));
-    return p;
-  })()));
+  a.tile(
+    'lostOut',
+    on(
+      parquet,
+      (() => {
+        const p = blank();
+        bevel(p, 3, 2, 14, 18, r('wood'), 3, 1);
+        micro(p, 4, 8, 'OUT', c('ink', 0));
+        return p;
+      })(),
+    ),
+  );
   // Doc Leo, standing backward in line (as usual), and the rest of the line
   a.prop('leoBack', 'floor', mirror(docLeo(0)));
   a.prop('patron', 'floor', figure({ shirt: ['teal', 3], hair: ['ink', 1], pants: ['brown', 1] }));
@@ -342,65 +440,107 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
 
   // monsters
   a.addShusher();
-  a.monster('teddy', [[corgi(0), 4], [corgi(1), 4]], { path: [[5, 0, 2], [-5, 0, 2]] });
-  a.monster('gwinn', [[gwinn(0, true), 3], [gwinn(1, true), 3]], { path: [[-5, 0, 3], [5, 0, 3]] });
+  a.monster(
+    'teddy',
+    [
+      [corgi(0), 4],
+      [corgi(1), 4],
+    ],
+    {
+      path: [
+        [5, 0, 2],
+        [-5, 0, 2],
+      ],
+    },
+  );
+  a.monster(
+    'gwinn',
+    [
+      [gwinn(0, true), 3],
+      [gwinn(1, true), 3],
+    ],
+    {
+      path: [
+        [-5, 0, 3],
+        [5, 0, 3],
+      ],
+    },
+  );
 
   const shelfCells = { S: 'shelf', '.': 'floor' };
-  const room = a.window(0, 0, READING_ROOM, {
-    ...shelfCells,
-    a: 'chair',
-    h: { tile: '.', mon: 'shh' },
-    w: 'wc30',
-    '1': { tile: 'door0', mark: 'door0' },
-    T: 'tableL',
-    t: 'tableR',
-    Z: { tile: 'toStacks', mark: 'toStacks' },
-    c: 'catalog',
-    g: 'globe',
-    Q: 'fine0',
-    K: 'chew0',
-    f: 'fern',
-    d: 'red0',
-    e: 'red1',
-    N: 'shelf',
-    ...Object.fromEntries([2, 3, 4, 5, 6, 7, 8].map((n) => [String(n), { tile: `door${n - 1}`, mark: `door${n - 1}` }])),
-  } as Record<string, Cell>, 'floor');
+  const room = a.window(
+    0,
+    0,
+    READING_ROOM,
+    {
+      ...shelfCells,
+      a: 'chair',
+      h: { tile: '.', mon: 'shh' },
+      w: 'wc30',
+      '1': { tile: 'door0', mark: 'door0' },
+      T: 'tableL',
+      t: 'tableR',
+      Z: { tile: 'toStacks', mark: 'toStacks' },
+      c: 'catalog',
+      g: 'globe',
+      Q: 'fine0',
+      K: 'chew0',
+      f: 'fern',
+      d: 'red0',
+      e: 'red1',
+      N: 'shelf',
+      ...Object.fromEntries([2, 3, 4, 5, 6, 7, 8].map((n) => [String(n), { tile: `door${n - 1}`, mark: `door${n - 1}` }])),
+    } as Record<string, Cell>,
+    'floor',
+  );
   // the Word Counter (4x2) and the signs, set block by block
-  a.set(6, 3, 'wc00099'), a.set(7, 3, 'wc10099'), a.set(8, 3, 'wc20099'), a.set(9, 3, 'wc30');
-  a.set(6, 4, 'wc01'), a.set(7, 4, 'wc11'), a.set(8, 4, 'wc21'), a.set(9, 4, 'wc31');
+  (a.set(6, 3, 'wc00099'), a.set(7, 3, 'wc10099'), a.set(8, 3, 'wc20099'), a.set(9, 3, 'wc30'));
+  (a.set(6, 4, 'wc01'), a.set(7, 4, 'wc11'), a.set(8, 4, 'wc21'), a.set(9, 4, 'wc31'));
   for (let i = 0; i < 4; i++) a.set(6 + i, 0, `quiet${i}`);
-  for (let i = 0; i < 3; i++) a.set(2 + i, 7, `fine${i}`), a.set(11 + i, 7, `chew${i}`);
+  for (let i = 0; i < 3; i++) (a.set(2 + i, 7, `fine${i}`), a.set(11 + i, 7, `chew${i}`));
   a.monAt(2, 2, 'teddy');
   a.monAt(12, 8, 'gwinn');
 
-  const stacks = a.window(16, 0, STACKS, {
-    ...shelfCells,
-    B: { tile: 'book33', mark: 'book33' },
-    l: 'lectern',
-    X: { tile: 'back', mark: 'back' },
-    A: 'stax0',
-    J: 'leoBack',
-    b: 'patron',
-    q: 'patron2',
-    C: 'line0',
-    f: 'fern',
-    Y: { tile: 'looseShelf', mark: 'looseShelf' },
-    ...Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 7].map((w) => [String(w), { tile: w < wings.length ? `gate${w}` : 'floor', mark: `gate${w}` }])),
-  } as Record<string, Cell>, 'floor');
-  for (let i = 0; i < 3; i++) a.set(17 + i, 3, `stax${i}`), a.set(16 + 6 + i, 7, `line${i}`);
+  const stacks = a.window(
+    16,
+    0,
+    STACKS,
+    {
+      ...shelfCells,
+      B: { tile: 'book33', mark: 'book33' },
+      l: 'lectern',
+      X: { tile: 'back', mark: 'back' },
+      A: 'stax0',
+      J: 'leoBack',
+      b: 'patron',
+      q: 'patron2',
+      C: 'line0',
+      f: 'fern',
+      Y: { tile: 'looseShelf', mark: 'looseShelf' },
+      ...Object.fromEntries([0, 1, 2, 3, 4, 5, 6, 7].map((w) => [String(w), { tile: w < wings.length ? `gate${w}` : 'floor', mark: `gate${w}` }])),
+    } as Record<string, Cell>,
+    'floor',
+  );
+  for (let i = 0; i < 3; i++) (a.set(17 + i, 3, `stax${i}`), a.set(16 + 6 + i, 7, `line${i}`));
 
-  const lost = a.window(32, 0, LOST, {
-    ...shelfCells,
-    L: 'shelf',
-    F: 'shelf',
-    u: 'umbrellas',
-    r: 'chicken',
-    h: 'cable',
-    s: 'sock',
-    t: 'teddyNap',
-    E: { tile: 'egg', mark: 'egg' },
-    D: { tile: 'lostOut', mark: 'lostOut' },
-  } as Record<string, Cell>, 'floor');
+  const lost = a.window(
+    32,
+    0,
+    LOST,
+    {
+      ...shelfCells,
+      L: 'shelf',
+      F: 'shelf',
+      u: 'umbrellas',
+      r: 'chicken',
+      h: 'cable',
+      s: 'sock',
+      t: 'teddyNap',
+      E: { tile: 'egg', mark: 'egg' },
+      D: { tile: 'lostOut', mark: 'lostOut' },
+    } as Record<string, Cell>,
+    'floor',
+  );
   for (let i = 0; i < 4; i++) a.set(32 + 6 + i, 0, `lostSign${i}`);
   for (let i = 0; i < 3; i++) a.set(32 + 2 + i, 8, `pocket${i}`);
 

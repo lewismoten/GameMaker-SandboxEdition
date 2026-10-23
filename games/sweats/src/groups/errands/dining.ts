@@ -37,7 +37,8 @@ export function diningBlocks(book: BlockBook, pal: Pal): void {
   // the parquet floor, and under it
   const parquet = new Pixels(20, 20);
   const r = rng(91);
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) parquet.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('wood', r() < 0.2 ? 2 : 3) : c('wood', r() < 0.2 ? 3 : 2));
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++) parquet.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('wood', r() < 0.2 ? 2 : 3) : c('wood', r() < 0.2 ? 3 : 2));
   parquet.rect(0, 0, 20, 1, c('wood', 4));
   book.add('parquet', parquet, { solid: SOLID });
   const under = new Pixels(20, 20);
@@ -63,7 +64,12 @@ export function diningBlocks(book: BlockBook, pal: Pal): void {
   book.add('tableM', table('m'), { solid: LEDGE, grav: GRAV.down });
   book.add('tableR', table('r'), { solid: LEDGE, grav: GRAV.down });
   const legs = wainscot.crop(0, 0, 20, 20);
-  legs.rect(0, 0, 20, 4, c('wallpaper', 0)).rect(3, 0, 3, 20, c('wood', 1)).rect(14, 0, 3, 20, c('wood', 1)).rect(4, 0, 1, 20, c('wood', 3)).rect(15, 0, 1, 20, c('wood', 3));
+  legs
+    .rect(0, 0, 20, 4, c('wallpaper', 0))
+    .rect(3, 0, 3, 20, c('wood', 1))
+    .rect(14, 0, 3, 20, c('wood', 1))
+    .rect(4, 0, 1, 20, c('wood', 3))
+    .rect(15, 0, 1, 20, c('wood', 3));
   book.add('tableLegs', legs, AIR);
   // a chair pulled out
   const chair = over(wainscot, pal, (p) => {
@@ -77,7 +83,13 @@ export function diningBlocks(book: BlockBook, pal: Pal): void {
     p.rect(8, 10, 4, 6, c('gold', 1)).rect(7, 15, 6, 2, c('gold', 2));
     p.rect(6, 4, 8, 6, c('spot', 1)).rect(7, 3, 6, 1, c('spot', 2)).rect(8, 5, 4, 3, c('spot', 2));
   });
-  for (const [x, y] of [[3, 2], [16, 3], [2, 17], [17, 16]]) sconce.set(x, y, c('spot', 0));
+  for (const [x, y] of [
+    [3, 2],
+    [16, 3],
+    [2, 17],
+    [17, 16],
+  ])
+    sconce.set(x, y, c('spot', 0));
   book.add('sconce', sconce, AIR);
   const art = over(wall(), pal, (p) => {
     p.rect(2, 3, 16, 14, c('gold', 1)).rect(4, 5, 12, 10, c('teal', 0));
@@ -96,7 +108,12 @@ export function diningBlocks(book: BlockBook, pal: Pal): void {
     for (let y = 0; y < 6; y++) p.rect(10 - 3 - y, 8 + y, 6 + y * 2, 1, c('wallpaper', 3));
     p.rect(4, 14, 12, 1, c('gold', 2)).rect(7, 15, 6, 2, c('spot', 1));
   });
-  for (const [x, y] of [[3, 18], [10, 19], [16, 18]]) pendant.set(x, y, c('spot', 0));
+  for (const [x, y] of [
+    [3, 18],
+    [10, 19],
+    [16, 18],
+  ])
+    pendant.set(x, y, c('spot', 0));
   book.add('pendant', pendant, AIR);
   void ink;
   for (const bg of ['wainscot', 'wallpaper']) loot(book, pal, bg);

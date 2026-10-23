@@ -63,7 +63,15 @@ export interface SceneDef {
   monologue?: Monologue;
 }
 
-const HIVE_LIGHT: Lighting = { sky: [[10, 8, 24], [70, 60, 110], [36, 30, 60]], mul: [1, 0.96, 0.9], add: [6, 2, 0] };
+const HIVE_LIGHT: Lighting = {
+  sky: [
+    [10, 8, 24],
+    [70, 60, 110],
+    [36, 30, 60],
+  ],
+  mul: [1, 0.96, 0.9],
+  add: [6, 2, 0],
+};
 
 function intermission(k: number, set?: Group): SceneDef {
   return {

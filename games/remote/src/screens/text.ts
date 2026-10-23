@@ -26,7 +26,16 @@ export const SONG_CREDIT = `lyrics shaped by ChatGPT from Lewis Moten's prompt; 
 
 /** The song, word for word (the clean lyrics; each line broken in two at its comma or dash). */
 export const LYRICS: Record<string, string[]> = {
-  verse1: ['I sat down with snacks,', '  the couch is a throne,', 'Netflix is loaded,', "  I'm in the zone.", 'But fate has struck', '  with cruel delight-', 'The remote is gone,', '  it vanished from sight.'],
+  verse1: [
+    'I sat down with snacks,',
+    '  the couch is a throne,',
+    'Netflix is loaded,',
+    "  I'm in the zone.",
+    'But fate has struck',
+    '  with cruel delight-',
+    'The remote is gone,',
+    '  it vanished from sight.',
+  ],
   chorus1: [
     "Where's the remote?!",
     '  I just had it here!',
@@ -41,7 +50,16 @@ export const LYRICS: Record<string, string[]> = {
     'Where remotes disappear',
     '  and dreams are blown.',
   ],
-  verse2: ['I flipped the blanket,', '  I kicked the floor,', 'Opened the fridge-', '  who knows anymore?', 'Called my mom', '  just in case she knew,', 'She said "Check your hand,"', '  but nope, not true.'],
+  verse2: [
+    'I flipped the blanket,',
+    '  I kicked the floor,',
+    'Opened the fridge-',
+    '  who knows anymore?',
+    'Called my mom',
+    '  just in case she knew,',
+    'She said "Check your hand,"',
+    '  but nope, not true.',
+  ],
   chorus2: [
     "Where's the remote?!",
     '  Is it playing a game?',
@@ -56,7 +74,16 @@ export const LYRICS: Record<string, string[]> = {
     'Straight into the void',
     '  of eternal doom.',
   ],
-  bridge: ['I found ten pennies,', '  three pens, a spoon,', 'A sock from Christmas,', '  a tiny raccoon (??)', 'But no clicker,', '  no buttons, no guide-', 'Just existential panic', '  on the living room ride.'],
+  bridge: [
+    'I found ten pennies,',
+    '  three pens, a spoon,',
+    'A sock from Christmas,',
+    '  a tiny raccoon (??)',
+    'But no clicker,',
+    '  no buttons, no guide-',
+    'Just existential panic',
+    '  on the living room ride.',
+  ],
   final: [
     "Where's the remote?!",
     "  My will's worn thin.",

@@ -36,23 +36,72 @@ export const BPM = 120;
 // ---- the patches --------------------------------------------------------------------------
 
 /** The singer as a kazoo: a buzzing, nasal reed (feedback up, a pulse-sine carrier). */
-const KAZOO = sbi({ modChar: 0x21, carChar: 0x61, modLevel: 0x16, carLevel: 0x00, modAD: 0x95, carAD: 0x84, modSR: 0x16, carSR: 0x17, modWave: 1, carWave: 3, feedback: 0x0e });
+const KAZOO = sbi({
+  modChar: 0x21,
+  carChar: 0x61,
+  modLevel: 0x16,
+  carLevel: 0x00,
+  modAD: 0x95,
+  carAD: 0x84,
+  modSR: 0x16,
+  carSR: 0x17,
+  modWave: 1,
+  carWave: 3,
+  feedback: 0x0e,
+});
 /** Its twin: the vibrato bit flipped, so the two beat like a gang of kazoos. */
 const KAZOO2 = detuned(KAZOO);
 /** Crunchy rhythm guitar: a short, bright pluck with a bit of growl. */
-const GUITAR = sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x14, carLevel: 0x03, modAD: 0xf4, carAD: 0xf5, modSR: 0x25, carSR: 0x46, modWave: 1, feedback: 0x0e });
+const GUITAR = sbi({
+  modChar: 0x01,
+  carChar: 0x01,
+  modLevel: 0x14,
+  carLevel: 0x03,
+  modAD: 0xf4,
+  carAD: 0xf5,
+  modSR: 0x25,
+  carSR: 0x46,
+  modWave: 1,
+  feedback: 0x0e,
+});
 /** A combo organ (the VCR's whirr is this, swept). */
-const ORGAN = sbi({ modChar: 0x22, carChar: 0x21, modLevel: 0x18, carLevel: 0x06, modAD: 0xf0, carAD: 0xf0, modSR: 0x0f, carSR: 0x0f, carWave: 1, feedback: 0x06 });
+const ORGAN = sbi({
+  modChar: 0x22,
+  carChar: 0x21,
+  modLevel: 0x18,
+  carLevel: 0x06,
+  modAD: 0xf0,
+  carAD: 0xf0,
+  modSR: 0x0f,
+  carSR: 0x0f,
+  carWave: 1,
+  feedback: 0x06,
+});
 /** The VCR whirring up: the organ swept from muffled to bright in 8 steps. */
 const WHIRR = sweep(ORGAN, 8, { mod: 50, car: 30 }, { mod: 12, car: 6 });
 /** The calliope on the living room ride: a breathy, piping organ. */
-const CALLIOPE = waved(sbi({ modChar: 0x62, carChar: 0x21, modLevel: 0x1a, carLevel: 0x04, modAD: 0xf2, carAD: 0xf2, modSR: 0x0f, carSR: 0x0f, feedback: 0x08 }), 2, 1);
+const CALLIOPE = waved(
+  sbi({ modChar: 0x62, carChar: 0x21, modLevel: 0x1a, carLevel: 0x04, modAD: 0xf2, carAD: 0xf2, modSR: 0x0f, carSR: 0x0f, feedback: 0x08 }),
+  2,
+  1,
+);
 /** Fingered bass. */
 const BASS = sbi({ modChar: 0x01, carChar: 0x01, modLevel: 0x18, carLevel: 0x00, modAD: 0xf5, carAD: 0xf4, modSR: 0x35, carSR: 0x46, feedback: 0x0a });
 /** The theremin in the void: a pure, wobbling sine (vibrato on). */
 const THEREMIN = sbi({ modChar: 0x60, carChar: 0x61, modLevel: 0x3f, carLevel: 0x00, modAD: 0x52, carAD: 0x63, modSR: 0x06, carSR: 0x07, feedback: 0x00 });
 /** A cold pad for the void (soft attack, half-sine). */
-const VOID = sbi({ modChar: 0xa1, carChar: 0x21, modLevel: 0x26, carLevel: 0x02, modAD: 0x42, carAD: 0x43, modSR: 0x05, carSR: 0x06, modWave: 1, feedback: 0x0a });
+const VOID = sbi({
+  modChar: 0xa1,
+  carChar: 0x21,
+  modLevel: 0x26,
+  carLevel: 0x02,
+  modAD: 0x42,
+  carAD: 0x43,
+  modSR: 0x05,
+  carSR: 0x06,
+  modWave: 1,
+  feedback: 0x0a,
+});
 /** The void's pad dissolving to nothing (8 steps). */
 const DISSOLVE = sweep(VOID, 8, { car: 2 }, { car: 40 });
 /** The bass drum as an 808 boom in the void. */
@@ -247,7 +296,12 @@ class Arranger {
     this.fx = new Fx(w);
     this.fx.open(LEAD, KAZOO).open(TWIN, KAZOO2).open(BASSCH, BASS);
     CHORD.forEach((ch) => this.fx.open(ch, GUITAR));
-    this.fx.open(DRUM.kick, voidKick ? BOOM : KICK).open(DRUM.snare, SNARE).open(DRUM.tom, TOM).open(DRUM.cymbal, CRASH).open(DRUM.hat, HAT);
+    this.fx
+      .open(DRUM.kick, voidKick ? BOOM : KICK)
+      .open(DRUM.snare, SNARE)
+      .open(DRUM.tom, TOM)
+      .open(DRUM.cymbal, CRASH)
+      .open(DRUM.hat, HAT);
   }
 
   get w(): Writer {
@@ -359,12 +413,22 @@ function verse(a: Arranger, s: Section, vel = 98): void {
 }
 
 function chorus(a: Arranger, s: Section, o: { vel?: number; shift?: number; comp?: Comp; sing?: Play['sing'] } = {}): void {
-  a.section(s, { comp: o.comp ?? 'chug', sing: o.sing ?? 'twin', bass: 'eighths', drums: [...rock(s.tune.length - 1, 'push'), 'fill'], vel: o.vel ?? 106, shift: o.shift });
+  a.section(s, {
+    comp: o.comp ?? 'chug',
+    sing: o.sing ?? 'twin',
+    bass: 'eighths',
+    drums: [...rock(s.tune.length - 1, 'push'), 'fill'],
+    vel: o.vel ?? 106,
+    shift: o.shift,
+  });
 }
 
 /** A break: the VCR whirrs (or the organ just holds), the band vamps. */
 function vamp(a: Arranger, name: string, bars: number, comp: Comp = 'whirr'): void {
-  a.section({ name, chords: new Array(bars).fill('Am'), tune: new Array(bars).fill('r w') }, { comp, sing: 'none', bass: 'eighths', drums: rock(bars), vel: 96 });
+  a.section(
+    { name, chords: new Array(bars).fill('Am'), tune: new Array(bars).fill('r w') },
+    { comp, sing: 'none', bass: 'eighths', drums: rock(bars), vel: 96 },
+  );
 }
 
 /** The void: the bridge over the 808 boom, the arpeggio twinkling, a theremin wailing. */
@@ -373,7 +437,13 @@ function bridge(a: Arranger, vel = 96): void {
   a.section(BRIDGE, { comp: 'void', sing: 'solo', bass: 'boom', drums: ['boom'], vel });
   // the theremin glides up and down between the lines (semitone steps on the twin's channel)
   a.fx.program(TWIN, at, THEREMIN);
-  for (const [beat, from, to] of [[1, 57, 69], [12.5, 69, 62], [17, 64, 76], [26, 76, 64]] as const) a.fx.slide(TWIN, at + beat, from, to, 6, vel - 24);
+  for (const [beat, from, to] of [
+    [1, 57, 69],
+    [12.5, 69, 62],
+    [17, 64, 76],
+    [26, 76, 64],
+  ] as const)
+    a.fx.slide(TWIN, at + beat, from, to, 6, vel - 24);
 }
 
 /** Title: the VCR whirrs, the hook glitches "re-re-re-MOTE?!", and the first chorus. */
@@ -386,7 +456,10 @@ export function titleSong(): Uint8Array {
   a.fx.stutter(LEAD, at + 1, 69, 4, 0.25, 112, 0.85);
   a.roll(1).hit('Am');
   chorus(a, CHORUS1);
-  a.section({ name: 'tag', chords: ['Am', 'Am'], tune: ['r h, C5 e, B4 e, A4 e, ~E5 e', 'E5 q, r q, r h'] }, { comp: 'organ', sing: 'twin', bass: 'eighths', drums: ['half', 'none'], vel: 100 });
+  a.section(
+    { name: 'tag', chords: ['Am', 'Am'], tune: ['r h, C5 e, B4 e, A4 e, ~E5 e', 'E5 q, r q, r h'] },
+    { comp: 'organ', sing: 'twin', bass: 'eighths', drums: ['half', 'none'], vel: 100 },
+  );
   return a.cmf();
 }
 
@@ -451,7 +524,10 @@ export function wonSong(): Uint8Array {
 /** Lost: "The remote is gone, it vanished from sight." slow and alone. */
 export function lostSong(): Uint8Array {
   const a = new Arranger(84);
-  a.section({ name: 'gone', chords: ['Am', 'Dm', 'Dm Am'], tune: ['r h, r e, D5 e, E5 e, r e', VERSE1.tune[7], 'F4 e, D4 e, E4 q, r h'] }, { comp: 'organ', sing: 'solo', bass: 'walk', drums: ['none'], vel: 86 });
+  a.section(
+    { name: 'gone', chords: ['Am', 'Dm', 'Dm Am'], tune: ['r h, r e, D5 e, E5 e, r e', VERSE1.tune[7], 'F4 e, D4 e, E4 q, r h'] },
+    { comp: 'organ', sing: 'solo', bass: 'walk', drums: ['none'], vel: 86 },
+  );
   a.section({ name: 'doom', chords: ['Am'], tune: ['A4 h\\\\, r h'] }, { comp: 'whirr', sing: 'solo', bass: 'walk', drums: ['tick'], vel: 80 });
   a.fx.swell(CHORD, (a.bar - 1) * 4, 3.5, DISSOLVE);
   return a.cmf();
@@ -481,7 +557,17 @@ export function wholeSong(): Uint8Array {
 /** Every song, by file name, for the build and the preview. */
 export function allSongs(): Record<string, Uint8Array> {
   const levels = levelSongs();
-  return { title: titleSong(), story: storySong(), den: levels[0], kitchen: levels[1], void: levels[2], ride: levels[3], won: wonSong(), lost: lostSong(), menu: wholeSong() };
+  return {
+    title: titleSong(),
+    story: storySong(),
+    den: levels[0],
+    kitchen: levels[1],
+    void: levels[2],
+    ride: levels[3],
+    won: wonSong(),
+    lost: lostSong(),
+    menu: wholeSong(),
+  };
 }
 
 export { voicing, root };

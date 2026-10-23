@@ -15,7 +15,9 @@ const sim = new GameSim(loadDisk(), 1);
 const bot = new Bot(sim);
 await playAll(bot);
 if (sim.ended !== 'won' || sim.deaths) throw new Error(`The bot did not win cleanly (${sim.ended}, ${sim.deaths} deaths)`);
-console.log(`sandcast: the bot won in ${sim.total} ticks (${(sim.total / 18.2 / 60).toFixed(1)} min of play), scenes ${sim.trail.join(' ')}, hit points left ${sim.ci.hitpts}`);
+console.log(
+  `sandcast: the bot won in ${sim.total} ticks (${(sim.total / 18.2 / 60).toFixed(1)} min of play), scenes ${sim.trail.join(' ')}, hit points left ${sim.ci.hitpts}`,
+);
 
 const segments: WalkSegment[] = sim.segments.map((s) => ({ scene: s.scene, keys: encodeKeys(s.keys) }));
 // the sandbox between castles is part of the castle before it (the first stop there is a few seconds)

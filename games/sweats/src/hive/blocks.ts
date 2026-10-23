@@ -65,7 +65,27 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   // THE CHEZ, Lewis's red CitiCar, parked at the curb (scenery)
   {
     const car = new Pixels(40, 20, 255);
-    chezSide(car, 0, 1, { body: [c('red', 1), c('red', 2), c('red', 3)], trim: c('red', 0), glass: [c('night', 0), c('glass', 2)], roof: c('ink', 0), tire: c('ink', 0), hub: c('grey', 3), stripe: c('grey', 0), pin: c('white', 2), rim: c('white', 2), bumper: c('ink', 1), lamp: c('lamp', 2), tail: c('red', 3), outline: c('ink', 0) }, 'right');
+    chezSide(
+      car,
+      0,
+      1,
+      {
+        body: [c('red', 1), c('red', 2), c('red', 3)],
+        trim: c('red', 0),
+        glass: [c('night', 0), c('glass', 2)],
+        roof: c('ink', 0),
+        tire: c('ink', 0),
+        hub: c('grey', 3),
+        stripe: c('grey', 0),
+        pin: c('white', 2),
+        rim: c('white', 2),
+        bumper: c('ink', 1),
+        lamp: c('lamp', 2),
+        tail: c('red', 3),
+        outline: c('ink', 0),
+      },
+      'right',
+    );
     addPicture(book, 'chez', car, book.pics.get('cityLow')!, () => AIR);
   }
   // the street lamp: its post and its glowing lantern
@@ -74,11 +94,21 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   book.add('post', post, AIR);
   const lantern = night(7);
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x - 10) ** 2 + (y - 10) ** 2 < 90 && (x + y) % 2 === 0) lantern.set(x, y, c('lamp', 0));
-  lantern.rect(6, 4, 9, 10, c('ink', 1)).rect(7, 5, 7, 8, c('lamp', 1)).rect(9, 6, 3, 6, c('lamp', 2)).rect(5, 3, 11, 2, c('ink', 1)).rect(9, 14, 3, 6, c('ink', 1));
+  lantern
+    .rect(6, 4, 9, 10, c('ink', 1))
+    .rect(7, 5, 7, 8, c('lamp', 1))
+    .rect(9, 6, 3, 6, c('lamp', 2))
+    .rect(5, 3, 11, 2, c('ink', 1))
+    .rect(9, 14, 3, 6, c('ink', 1));
   book.add('lantern', lantern, AIR);
   // a bench (a ledge) and a newspaper box (solid)
   const bench = night(8);
-  bench.rect(1, 10, 18, 3, c('wood', 2)).rect(1, 10, 18, 1, c('wood', 4)).rect(2, 13, 2, 7, c('ink', 1)).rect(16, 13, 2, 7, c('ink', 1)).rect(1, 4, 18, 2, c('wood', 2));
+  bench
+    .rect(1, 10, 18, 3, c('wood', 2))
+    .rect(1, 10, 18, 1, c('wood', 4))
+    .rect(2, 13, 2, 7, c('ink', 1))
+    .rect(16, 13, 2, 7, c('ink', 1))
+    .rect(1, 4, 18, 2, c('wood', 2));
   book.add('bench', bench, { solid: LEDGE, grav: GRAV.down });
   const news = night(9);
   news.rect(4, 4, 12, 16, c('red', 1)).rect(5, 5, 10, 6, c('glass', 1)).rect(6, 6, 8, 4, c('white', 1));
@@ -94,7 +124,8 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
       const off = row % 2 ? 0 : 7;
       for (let x0 = -off; x0 < 20; x0 += 14) {
         const k = 1 + Math.floor(r() * 3);
-        for (let y = row * 5; y < row * 5 + 5; y++) for (let x = Math.max(0, x0); x < Math.min(20, x0 + 14); x++) p.set(x, y, shadeAt(R('stone'), k - 1, k, 0.7 - (y - row * 5) / 10, x, y));
+        for (let y = row * 5; y < row * 5 + 5; y++)
+          for (let x = Math.max(0, x0); x < Math.min(20, x0 + 14); x++) p.set(x, y, shadeAt(R('stone'), k - 1, k, 0.7 - (y - row * 5) / 10, x, y));
         p.rect(Math.max(0, x0), row * 5, 1, 5, c('stone', 0));
       }
       p.rect(0, row * 5 + 4, 20, 1, c('stone', 0));
@@ -106,7 +137,12 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   // the battlements: merlons against the night sky
   const merlon = night(23);
   merlon.blit(stone(24).crop(0, 0, 20, 20), 0, 0);
-  merlon.rect(0, 0, 4, 8, c('night', 1)).rect(12, 0, 8, 8, c('night', 1)).rect(4, 0, 8, 1, c('stone', 4)).rect(0, 8, 4, 1, c('stone', 4)).rect(12, 8, 8, 1, c('stone', 4));
+  merlon
+    .rect(0, 0, 4, 8, c('night', 1))
+    .rect(12, 0, 8, 8, c('night', 1))
+    .rect(4, 0, 8, 1, c('stone', 4))
+    .rect(0, 8, 4, 1, c('stone', 4))
+    .rect(12, 8, 8, 1, c('stone', 4));
   book.add('merlon', merlon, { solid: SOLID });
   // an arrow-slit window with warm light inside
   const slit = stone(25);
@@ -161,7 +197,19 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   {
     const sign = new Pixels(40, 20, 255);
     sign.rect(2, 2, 36, 16, c('wood', 1)).rect(3, 3, 34, 14, c('amber', 1)).frame(2, 2, 36, 16, c('ink', 0));
-    for (const [hx, hy] of [[8, 7], [12, 10], [8, 13]]) for (let k = 0; k < 6; k++) sign.line(hx + Math.cos((k * Math.PI) / 3) * 2.5, hy + Math.sin((k * Math.PI) / 3) * 2.5, hx + Math.cos(((k + 1) * Math.PI) / 3) * 2.5, hy + Math.sin(((k + 1) * Math.PI) / 3) * 2.5, c('amber', 3));
+    for (const [hx, hy] of [
+      [8, 7],
+      [12, 10],
+      [8, 13],
+    ])
+      for (let k = 0; k < 6; k++)
+        sign.line(
+          hx + Math.cos((k * Math.PI) / 3) * 2.5,
+          hy + Math.sin((k * Math.PI) / 3) * 2.5,
+          hx + Math.cos(((k + 1) * Math.PI) / 3) * 2.5,
+          hy + Math.sin(((k + 1) * Math.PI) / 3) * 2.5,
+          c('amber', 3),
+        );
     micro(sign, 17, 5, 'THE', c('ink', 0));
     micro(sign, 17, 11, 'HIVE', c('ink', 0));
     addPicture(book, 'sign', sign, stone(28), () => ({ solid: SOLID }));
@@ -246,7 +294,11 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   for (const f of [0, 1]) {
     const pic = new Pixels(40, 20, 255);
     pic.rect(4, 6, 32, 14, c('metal', 1)).rect(5, 7, 30, 4, c('metal', 2)).rect(4, 6, 32, 1, c('metal', 2));
-    for (const x of [10, 26]) pic.rect(x, 11, 4, 3, c('ink', 1)).rect(x, 16, 4, 3, c('white', 2)).rect(x + 1, 16, 2, 1, c('coffee', 2));
+    for (const x of [10, 26])
+      pic
+        .rect(x, 11, 4, 3, c('ink', 1))
+        .rect(x, 16, 4, 3, c('white', 2))
+        .rect(x + 1, 16, 2, 1, c('coffee', 2));
     pic.disc(20, 9, 2, c('red', 2)).rect(18, 12, 4, 2, c('gold', 2));
     for (let k = 0; k < 4; k++) pic.set(36 + (k % 2) + f, 5 - k * 1 - f, c('white', 1)).set(37 - (k % 2) + f, 3 - k - f, c('white', 0));
     addPicture(book, `espresso${f}`, pic, counterFront, (col) => ({ ...AIR, next: `espresso${1 - f}.${col}.0`, ntime: 8 }));
@@ -319,10 +371,20 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y * 2) % 5 === 0 && y > x / 2 - 4) beamLight.set(x, y, c('screen', 0));
   book.add('projBeam', beamLight, AIR);
   const seat = dark(56);
-  seat.rect(2, 6, 16, 8, c('seat', 1)).rect(2, 6, 16, 2, c('seat', 2)).rect(2, 14, 3, 6, c('ink', 1)).rect(15, 14, 3, 6, c('ink', 1)).rect(2, 12, 16, 2, c('seat', 0));
+  seat
+    .rect(2, 6, 16, 8, c('seat', 1))
+    .rect(2, 6, 16, 2, c('seat', 2))
+    .rect(2, 14, 3, 6, c('ink', 1))
+    .rect(15, 14, 3, 6, c('ink', 1))
+    .rect(2, 12, 16, 2, c('seat', 0));
   book.add('seat', seat, { solid: LEDGE, grav: GRAV.down });
   // a moviegoer's seat: every so often a "SHHH!" rises out of it
-  book.add('seatShush', seat.crop(0, 0, 20, 20).rect(8, 2, 4, 4, c('skin', 1)).rect(7, 1, 6, 2, c('hair', 1)), { solid: LEDGE, grav: GRAV.down, birthMon: HIVE_MON.shush, birthTime: 64 });
+  book.add('seatShush', seat.crop(0, 0, 20, 20).rect(8, 2, 4, 4, c('skin', 1)).rect(7, 1, 6, 2, c('hair', 1)), {
+    solid: LEDGE,
+    grav: GRAV.down,
+    birthMon: HIVE_MON.shush,
+    birthTime: 64,
+  });
   const riser = dark(57);
   riser.rect(0, 0, 20, 3, c('seat', 0)).rect(0, 3, 20, 17, c('night', 1));
   book.add('riser', riser, { solid: SOLID });
@@ -443,19 +505,33 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
 
   // ---------- the tips about the place ----------
   for (const bg of ['night', 'wall', 'wallHi', 'dark', 'drape', 'brickWall']) loot(book, pal, bg);
-  book.add('bill@stoneBack2', drawBill(book.pics.get('stoneBack2')!.crop(0, 0, 20, 20), pal), { ...AIR, effect: MONEY, eamt: 5, score: 50, touch: 'stoneBack2' });
+  book.add('bill@stoneBack2', drawBill(book.pics.get('stoneBack2')!.crop(0, 0, 20, 20), pal), {
+    ...AIR,
+    effect: MONEY,
+    eamt: 5,
+    score: 50,
+    touch: 'stoneBack2',
+  });
 
   // ---------- friends from the other games (added last, so every other block keeps its number) ----------
   // the tin heart, tucked on the bottom shelf of the bookcase in the front room (points: the
   // crowd's cheer, never a line of a monologue)
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(book.pics.get('books2')!.crop(0, 0, 20, 20), { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 2)], white: c('white', 2), dark: c('grey', 0) }, k), {
-      ...AIR,
-      score: 100,
-      touch: 'books2',
-      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
-      ntime: k ? 2 : 50,
-    });
+    book.add(
+      `tinHeart${k || ''}`,
+      drawTinHeart(
+        book.pics.get('books2')!.crop(0, 0, 20, 20),
+        { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 2)], white: c('white', 2), dark: c('grey', 0) },
+        k,
+      ),
+      {
+        ...AIR,
+        score: 100,
+        touch: 'books2',
+        next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+        ntime: k ? 2 : 50,
+      },
+    );
   // Teenage Lewie from Snowbound in the audience upstairs, red knit hat and all (scenery)
   const lewie = book.pics.get('wallHi')!.crop(0, 0, 20, 20);
   const kid = lewieCameo(pal.pal, 'down0');

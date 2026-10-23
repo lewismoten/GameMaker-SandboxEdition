@@ -41,7 +41,7 @@ export function recolor(src: Pixels, from: Uint8Array, to: Uint8Array, o: Recolo
     for (const j of use) {
       // weighted for the eye: green counts most, blue least
       const d = 3 * (from[i * 3] - to[j * 3]) ** 2 + 4 * (from[i * 3 + 1] - to[j * 3 + 1]) ** 2 + 2 * (from[i * 3 + 2] - to[j * 3 + 2]) ** 2;
-      if (d < bd) (bd = d), (best = j);
+      if (d < bd) ((bd = d), (best = j));
     }
     return best;
   };
@@ -59,7 +59,8 @@ export function recolor(src: Pixels, from: Uint8Array, to: Uint8Array, o: Recolo
 export const joeCameo = (to: Uint8Array, dir: 'down' | 'up' | 'side', step = 0, o?: RecolorOptions): Pixels => recolor(joe(dir, step), BRIEF.pal, to, o);
 
 /** Watt, the pocket-sized repair robot on treads. */
-export const wattCameo = (to: Uint8Array, view: View, step = 0, mood: 'ok' | 'blink' = 'ok', o?: RecolorOptions): Pixels => recolor(watt(view, step, mood), LOGIC.pal, to, o);
+export const wattCameo = (to: Uint8Array, view: View, step = 0, mood: 'ok' | 'blink' = 'ok', o?: RecolorOptions): Pixels =>
+  recolor(watt(view, step, mood), LOGIC.pal, to, o);
 
 let sweats: ReturnType<typeof sweatsPalette> | undefined;
 /** Will the playwright: bald, ruff, velvet doublet, grey sweatpants, fuzzy slippers. */
@@ -71,7 +72,11 @@ export function willCameo(to: Uint8Array, pose: PoetPose = { face: 'front' }, o?
 let snow: ReturnType<typeof snowPalette> | undefined;
 let kid: ReturnType<typeof kidBlocks> | undefined;
 /** Teenage Lewie from Snowbound: red knit hat, red coat, the snow shovel. `pose` is a KID.CBL frame name. */
-export function lewieCameo(to: Uint8Array, pose: 'down0' | 'down1' | 'down2' | 'blink' | 'up0' | 'up1' | 'up2' | 'side0' | 'side1' = 'down0', o?: RecolorOptions): Pixels {
+export function lewieCameo(
+  to: Uint8Array,
+  pose: 'down0' | 'down1' | 'down2' | 'blink' | 'up0' | 'up1' | 'up2' | 'side0' | 'side1' = 'down0',
+  o?: RecolorOptions,
+): Pixels {
   snow ??= snowPalette('noon');
   kid ??= kidBlocks(snow);
   const pic = kid.pics.get(pose);

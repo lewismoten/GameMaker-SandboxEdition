@@ -58,10 +58,19 @@ export function coverRgb(t: number): Uint8Array {
     return [img[i], img[i + 1], img[i + 2]];
   };
   const rect = (x0: number, y0: number, w: number, h: number, c: RGB | ((x: number, y: number) => RGB)) => {
-    for (let y = Math.max(0, Math.floor(y0)); y < Math.min(H, y0 + h); y++) for (let x = Math.max(0, Math.floor(x0)); x < Math.min(W, x0 + w); x++) put(x, y, typeof c === 'function' ? c(x, y) : c);
+    for (let y = Math.max(0, Math.floor(y0)); y < Math.min(H, y0 + h); y++)
+      for (let x = Math.max(0, Math.floor(x0)); x < Math.min(W, x0 + w); x++) put(x, y, typeof c === 'function' ? c(x, y) : c);
   };
   /** A rounded box shaded from the light at the upper right. */
-  const box = (x0: number, y0: number, w: number, h: number, r: number, base: RGB, o: { light?: RGB; dark?: RGB; tex?: (x: number, y: number) => RGB | undefined } = {}) => {
+  const box = (
+    x0: number,
+    y0: number,
+    w: number,
+    h: number,
+    r: number,
+    base: RGB,
+    o: { light?: RGB; dark?: RGB; tex?: (x: number, y: number) => RGB | undefined } = {},
+  ) => {
     for (let y = Math.floor(y0); y < y0 + h; y++)
       for (let x = Math.floor(x0); x < x0 + w; x++) {
         const dx = Math.max(x0 + r - x, 0, x - (x0 + w - 1 - r));
@@ -124,7 +133,14 @@ export function coverRgb(t: number): Uint8Array {
   rect(44, 26, 52, 48, (_x, y) => mixc([10, 12, 40], [40, 40, 90], (y - 26) / 48));
   rect(68, 26, 3, 48, [80, 50, 30]);
   rect(44, 48, 52, 3, [80, 50, 30]);
-  for (const [x, y] of [[50, 32], [86, 30], [60, 60], [90, 64], [76, 40]]) put(x, y, [255, 255, 230]);
+  for (const [x, y] of [
+    [50, 32],
+    [86, 30],
+    [60, 60],
+    [90, 64],
+    [76, 40],
+  ])
+    put(x, y, [255, 255, 230]);
   ellipse(84, 36, 5, 5, () => [240, 236, 200]);
   for (let y = 18; y < 84; y++) {
     rect(30, y, 14 + Math.sin(y / 5) * 2, 1, [150, 30, 44]);
@@ -184,18 +200,33 @@ export function coverRgb(t: number): Uint8Array {
     }
 
   // ---- the couch: dusty rose, teal flowers
-  const fabric = (base: RGB) => (x: number, y: number): RGB | undefined => {
-    const flower = (x % 14 === 5 && y % 12 === 4) || (x % 14 === 12 && y % 12 === 10);
-    if (flower) return TEAL;
-    const petal = ((x % 14 === 4 || x % 14 === 6) && y % 12 === 4) || (x % 14 === 5 && (y % 12 === 3 || y % 12 === 5));
-    if (petal) return [120, 200, 180];
-    const n = N2(x / 4, y / 4) * 18;
-    return [base[0] - n, base[1] - n, base[2] - n];
-  };
+  const fabric =
+    (base: RGB) =>
+    (x: number, y: number): RGB | undefined => {
+      const flower = (x % 14 === 5 && y % 12 === 4) || (x % 14 === 12 && y % 12 === 10);
+      if (flower) return TEAL;
+      const petal = ((x % 14 === 4 || x % 14 === 6) && y % 12 === 4) || (x % 14 === 5 && (y % 12 === 3 || y % 12 === 5));
+      if (petal) return [120, 200, 180];
+      const n = N2(x / 4, y / 4) * 18;
+      return [base[0] - n, base[1] - n, base[2] - n];
+    };
   // the back
-  box(70, 92, 180, 50, 10, ROSE, { light: ROSE_LIGHT, dark: ROSE_DARK, tex: (x, y) => (y < 132 ? fabric(mixc(ROSE_LIGHT, ROSE, Math.min(1, (y - 92) / 20)))(x, y) : undefined) });
+  box(70, 92, 180, 50, 10, ROSE, {
+    light: ROSE_LIGHT,
+    dark: ROSE_DARK,
+    tex: (x, y) => (y < 132 ? fabric(mixc(ROSE_LIGHT, ROSE, Math.min(1, (y - 92) / 20)))(x, y) : undefined),
+  });
   // the seat cushions
-  for (const [x0, w] of [[86, 50], [138, 44], [184, 50]] as const) box(x0, 132, w, 26, 5, ROSE, { light: ROSE_LIGHT, dark: ROSE_DARK, tex: (x, y) => (y < 150 ? fabric(mixc(ROSE_LIGHT, ROSE, Math.min(1, (y - 132) / 14)))(x, y) : undefined) });
+  for (const [x0, w] of [
+    [86, 50],
+    [138, 44],
+    [184, 50],
+  ] as const)
+    box(x0, 132, w, 26, 5, ROSE, {
+      light: ROSE_LIGHT,
+      dark: ROSE_DARK,
+      tex: (x, y) => (y < 150 ? fabric(mixc(ROSE_LIGHT, ROSE, Math.min(1, (y - 132) / 14)))(x, y) : undefined),
+    });
   // the arms
   box(58, 108, 30, 60, 10, ROSE, { light: ROSE_LIGHT, dark: ROSE_DARK, tex: (x, y) => (y < 150 ? fabric(ROSE)(x, y) : undefined) });
   box(232, 108, 30, 60, 10, ROSE, { light: ROSE_LIGHT, dark: ROSE_DARK, tex: (x, y) => (y < 150 ? fabric(ROSE)(x, y) : undefined) });

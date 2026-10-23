@@ -78,7 +78,8 @@ function halfProfessor(): Pixels {
   return p;
 }
 
-const sally = (step: number) => figure({ shirt: ['pink', 2], dress: true, hair: ['yellow', 3], hairStyle: 'pigtails', skin: 'tin', face: 'happy', small: true }, step);
+const sally = (step: number) =>
+  figure({ shirt: ['pink', 2], dress: true, hair: ['yellow', 3], hairStyle: 'pigtails', skin: 'tin', face: 'happy', small: true }, step);
 
 function peapod(under: Pixels): Pixels {
   const p = on(under);
@@ -183,8 +184,33 @@ function art(a: Area): void {
   tools.line(8, 17, 17, 14, c('red', 3)).rect(14, 12, 4, 3, c('grey', 4));
   a.prop('tools', 'labtile', tools, false);
   sign(['EUREKA!', 'PLEASE STAND', 'BACK'], 3, { board: 'yellow' }).forEach((px, i) => a.solid(`eureka${i}`, px));
-  a.monster('inventor', [[professor(0, 'up'), 6], [professor(1, 'up'), 6]], { path: [[0, 3, 1], [0, -3, 1]] });
-  a.monster('reporter', [[reporter(0), 4], [reporter(1), 4]], { hazard: true, path: [[5, 0, 1], [-5, 0, 1]] });
+  a.monster(
+    'inventor',
+    [
+      [professor(0, 'up'), 6],
+      [professor(1, 'up'), 6],
+    ],
+    {
+      path: [
+        [0, 3, 1],
+        [0, -3, 1],
+      ],
+    },
+  );
+  a.monster(
+    'reporter',
+    [
+      [reporter(0), 4],
+      [reporter(1), 4],
+    ],
+    {
+      hazard: true,
+      path: [
+        [5, 0, 1],
+        [-5, 0, 1],
+      ],
+    },
+  );
 
   // Duplicate Daughters, Divided Dad
   a.tile('pinktile', floor('tile', 2, 'pink'));
@@ -192,8 +218,31 @@ function art(a: Area): void {
   a.prop('halfprof', 'pinktile', halfProfessor());
   a.solid('peapod', peapod(a.tiles.pic('pinktile')));
   sign(['CLONING:', 'ONE AT A TIME', 'PLEASE'], 3, { board: 'teal', ink: 'paper' }).forEach((px, i) => a.solid(`clone${i}s`, px));
-  a.monster('sally', [[sally(0), 5], [sally(1), 5]], { path: [[3, 0, 1], [0, 2, 1], [-3, 0, 1], [0, -2, 1]] });
-  a.patrol('sally', [[0, 3, 1], [3, 0, 1], [0, -3, 1], [-3, 0, 1]], 'sally2');
+  a.monster(
+    'sally',
+    [
+      [sally(0), 5],
+      [sally(1), 5],
+    ],
+    {
+      path: [
+        [3, 0, 1],
+        [0, 2, 1],
+        [-3, 0, 1],
+        [0, -2, 1],
+      ],
+    },
+  );
+  a.patrol(
+    'sally',
+    [
+      [0, 3, 1],
+      [3, 0, 1],
+      [0, -3, 1],
+      [-3, 0, 1],
+    ],
+    'sally2',
+  );
 
   // Becoming Purple
   a.tile('vtile', floor('tile', 4, 'purple'));
@@ -202,7 +251,23 @@ function art(a: Area): void {
   a.solid('benchOoze', bench(a.tiles.pic('vtile'), true));
   a.solid('masks', masks());
   sign(['NANITES:', 'DO NOT INJECT', 'ANYONE'], 3, { board: 'purple', ink: 'paper' }).forEach((px, i) => a.solid(`nano${i}`, px));
-  a.monster('ooze', [[ooze(0), 10], [ooze(1), 10], [ooze(2), 10]], { hazard: true, path: [[0, 2, 1], [4, 0, 1], [0, -2, 1], [-4, 0, 1]] });
+  a.monster(
+    'ooze',
+    [
+      [ooze(0), 10],
+      [ooze(1), 10],
+      [ooze(2), 10],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 2, 1],
+        [4, 0, 1],
+        [0, -2, 1],
+        [-4, 0, 1],
+      ],
+    },
+  );
   a.monster('doctor', [[figure({ shirt: ['paper', 4], pants: ['ink', 1], hair: ['brown', 1], glasses: true, skin: 'purple' }), 8]]);
 
   // Church of the First of Zero
@@ -214,8 +279,28 @@ function art(a: Area): void {
   a.solid('candle0', candle(0, a.tiles.pic('nave')), { next: 'candle1', ntime: 6 });
   a.solid('candle1', candle(1, a.tiles.pic('nave')), { next: 'candle0', ntime: 7 });
   sign(['ALL CLASSES', 'WELCOME', 'NO EXCEPTIONS*'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`zero${i}`, px));
-  a.monster('thrown', [[exception(0), 3], [exception(1), 3]], { hazard: true, path: [[0, 4, 2], [0, -4, 2]] });
-  a.patrol('thrown', [[6, 0, 1], [-6, 0, 1]], 'thrownH');
+  a.monster(
+    'thrown',
+    [
+      [exception(0), 3],
+      [exception(1), 3],
+    ],
+    {
+      hazard: true,
+      path: [
+        [0, 4, 2],
+        [0, -4, 2],
+      ],
+    },
+  );
+  a.patrol(
+    'thrown',
+    [
+      [6, 0, 1],
+      [-6, 0, 1],
+    ],
+    'thrownH',
+  );
 
   // the hallway's guest: Teddy in safety goggles
   const goggled = (s: number) => {
@@ -223,13 +308,29 @@ function art(a: Area): void {
     p.rect(14, 7, 4, 2, c('teal', 4));
     return p;
   };
-  a.monster('teddyLab', [[goggled(0), 4], [goggled(1), 4]], { path: [[5, 0, 2], [-5, 0, 2]] });
+  a.monster(
+    'teddyLab',
+    [
+      [goggled(0), 4],
+      [goggled(1), 4],
+    ],
+    {
+      path: [
+        [5, 0, 2],
+        [-5, 0, 2],
+      ],
+    },
+  );
 }
 
 export const LAB: WingSpec = {
   wing: WINGS[1],
   tint: 'teal',
-  stamp: [['grey', 1], ['green', 4], ['red', 3]],
+  stamp: [
+    ['grey', 1],
+    ['green', 4],
+    ['red', 3],
+  ],
   signs: [
     ['DO NOT FEED', 'THE OOZE', ''],
     ['MAD SCIENCE', 'IS A PHASE', '(HOPEFULLY)'],

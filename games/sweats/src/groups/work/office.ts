@@ -104,12 +104,24 @@ export function buildOffice(book: BlockBook, pal: Pal): void {
     const d = r() * 8;
     blob(plant, 10 + Math.cos(a) * d * 1.1, 13 + Math.sin(a) * d * 1.3, 3, 1.6, R('green'), 0, 3);
   }
-  addPicture(book, 'plant', plant, (_c, row) => (row ? officeBase(pal) : officeWall(pal, 9)), () => AIR);
+  addPicture(
+    book,
+    'plant',
+    plant,
+    (_c, row) => (row ? officeBase(pal) : officeWall(pal, 9)),
+    () => AIR,
+  );
   // a low credenza along the wall (two blocks, on the baseboard row): drawers, binders, a phone
   const cred = new Pixels(40, 20, 255);
   cred.rect(0, 6, 40, 13, c('wood', 2)).rect(0, 5, 40, 2, c('wood', 4)).rect(0, 18, 40, 2, c('wood', 0));
   for (const x of [1, 14, 27]) cred.frame(x, 8, 12, 9, c('wood', 1)).rect(x + 5, 10, 2, 1, c('metal', 2));
-  for (const [x, col] of [[3, 'red'], [6, 'navy'], [9, 'teal'], [12, 'navy']] as const) cred.rect(x, 0, 3, 5, c(col, 1)).rect(x, 1, 3, 1, c('white', 1));
+  for (const [x, col] of [
+    [3, 'red'],
+    [6, 'navy'],
+    [9, 'teal'],
+    [12, 'navy'],
+  ] as const)
+    cred.rect(x, 0, 3, 5, c(col, 1)).rect(x, 1, 3, 1, c('white', 1));
   cred.rect(27, 2, 9, 3, c('grey', 1)).rect(26, 1, 4, 2, c('grey', 0)).rect(33, 1, 4, 2, c('grey', 0)).rect(29, 3, 4, 1, c('grey', 2));
   addPicture(book, 'credenza', cred, officeBase(pal), () => AIR);
 }

@@ -51,21 +51,37 @@ export type Place = 'house' | 'kitchen' | 'bed' | 'yard' | 'wild' | 'aux';
 export function buildVocs(): Record<string, Uint8Array> {
   const vocs: Record<string, Uint8Array> = {};
   // Carl's buzz going by, close to your ear: rising as he comes, dropping as he passes (Doppler)
-  vocs.buzz = sample(0.9, buzzer((t) => 205 + 55 * Math.tanh((0.45 - t) * 7), 2), { envelope: (u) => Math.exp(-(((u - 0.45) / 0.28) ** 2)), gain: 0.9 });
+  vocs.buzz = sample(
+    0.9,
+    buzzer((t) => 205 + 55 * Math.tanh((0.45 - t) * 7), 2),
+    { envelope: (u) => Math.exp(-(((u - 0.45) / 0.28) ** 2)), gain: 0.9 },
+  );
   // the barrel roll: a whoosh up and over
-  vocs.roll = sample(0.4, mix([lowNoise(21, (t) => 0.08 + Math.sin(t * Math.PI * 2.5) ** 2 * 0.4), 0.7], [buzzer((t) => 220 + Math.sin(t * Math.PI * 2.5) * 80, 4), 0.25]), { envelope: env(0.15, 1.2) });
+  vocs.roll = sample(
+    0.4,
+    mix([lowNoise(21, (t) => 0.08 + Math.sin(t * Math.PI * 2.5) ** 2 * 0.4), 0.7], [buzzer((t) => 220 + Math.sin(t * Math.PI * 2.5) * 80, 4), 0.25]),
+    { envelope: env(0.15, 1.2) },
+  );
   // a smack (the towel, the magazine) and Carl's "ow"
   vocs.smack = sample(0.3, mix([gate(lowNoise(22, 0.9), 0, 0.03), 1], [buzzer((t) => 320 - t * 400, 5), 0.4]), { envelope: env(0.003, 1.4) });
   // splat
-  vocs.splat = sample(0.55, mix([gate(lowNoise(23, 0.7), 0, 0.06), 1], [lowNoise(24, (t) => 0.3 - t * 0.4), 0.4], [buzzer((t) => 260 - t * 300, 6), 0.3]), { envelope: env(0.004, 1.3) });
+  vocs.splat = sample(0.55, mix([gate(lowNoise(23, 0.7), 0, 0.06), 1], [lowNoise(24, (t) => 0.3 - t * 0.4), 0.4], [buzzer((t) => 260 - t * 300, 6), 0.3]), {
+    envelope: env(0.004, 1.3),
+  });
   // a crunch of a snack
-  vocs.crunch = sample(0.24, mix([gate(lowNoise(25, 0.8), 0, 0.03), 0.9], [gate(lowNoise(26, 0.7), 0.07, 0.1), 0.8], [gate(lowNoise(27, 0.6), 0.14, 0.17), 0.6]), { envelope: env(0.005, 1) });
+  vocs.crunch = sample(
+    0.24,
+    mix([gate(lowNoise(25, 0.8), 0, 0.03), 0.9], [gate(lowNoise(26, 0.7), 0.07, 0.1), 0.8], [gate(lowNoise(27, 0.6), 0.14, 0.17), 0.6]),
+    { envelope: env(0.005, 1) },
+  );
   // a ding (crumbs, points)
   vocs.ding = sample(0.4, mix([osc.sine(1568), 0.5], [osc.sine(2349), 0.3]), { envelope: env(0.005, 2.6) });
   // a sip
   vocs.sip = sample(0.28, mix([gate(lowNoise(29, 0.2), 0, 0.12), 0.4], [osc.sine((t) => 500 + t * 900), 0.4]), { envelope: env(0.05, 1) });
   // a creak (the kitchen door)
-  vocs.creak = sample(0.5, (t) => Math.sin(2 * Math.PI * (160 + Math.sin(t * 30) * 40) * t) * (Math.sin(t * 300) > 0.2 ? 1 : 0.2) * 0.7, { envelope: env(0.03, 1) });
+  vocs.creak = sample(0.5, (t) => Math.sin(2 * Math.PI * (160 + Math.sin(t * 30) * 40) * t) * (Math.sin(t * 300) > 0.2 ? 1 : 0.2) * 0.7, {
+    envelope: env(0.03, 1),
+  });
   for (const name of CLIPS) vocs[name] = clipVoc(name);
   return vocs;
 }
@@ -78,7 +94,11 @@ export function buildSoundSet(place: Place): SoundSet {
     set.digital[n] = name;
   };
   add(SND.help, 'sip', SPEAKER.rise(400, 900));
-  add(SND.kill, 'miss', speaker((i) => (i < 4 ? 700 - i * 100 : 0)));
+  add(
+    SND.kill,
+    'miss',
+    speaker((i) => (i < 4 ? 700 - i * 100 : 0)),
+  );
   add(SND.money, 'ding', SPEAKER.coin());
   add(SND.pay, 'creak', SPEAKER.noise(2, 80, 400));
   add(SND.life, place === 'wild' ? 'seen' : 'hook', SPEAKER.arpeggio([587, 698, 880, 1175]));
@@ -90,13 +110,21 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.lose, 'named', SPEAKER.fall(600, 200));
   // a counter up: a snack crunched, a smile flashed (kitchen), an ear buzzed (bed), an hour (wild), the aux cord
   const gain = { house: 'crunch', kitchen: 'smile', bed: 'buzz', yard: 'crunch', wild: 'ding', aux: 'aux' }[place];
-  add(SND.gain, gain, speaker((i) => (i < 8 ? 1175 + i * 120 : 0)));
+  add(
+    SND.gain,
+    gain,
+    speaker((i) => (i < 8 ? 1175 + i * 120 : 0)),
+  );
   const spend = { house: 'lamp', kitchen: 'creak', bed: 'window', yard: 'creak', wild: 'time', aux: 'creak' }[place];
   add(SND.spend, spend, SPEAKER.noise(3, 60, 300));
   // flying is the PC speaker's alone: every move starts it, and a .VOC there would cut off
   // whatever clip is playing (a lyric, the level's last line) the moment Carl changes course
   set.freqs[SND.fly] = speaker((i) => (i < 6 ? 220 + (i % 2) * 30 : 0));
-  add(SND.roll, 'roll', speaker((i) => (i < 12 ? 300 + Math.sin(i / 2) * 200 : 0)));
+  add(
+    SND.roll,
+    'roll',
+    speaker((i) => (i < 12 ? 300 + Math.sin(i / 2) * 200 : 0)),
+  );
   add(SND.hurt, 'smack', SPEAKER.warble(500, 120, 2.4));
   add(SND.splat, 'splat', SPEAKER.fall(700, 120));
   // Carl's buzz (B) is the PC speaker's alone: the ear it wakes says "I swing and I miss" a

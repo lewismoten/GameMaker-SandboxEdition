@@ -18,10 +18,46 @@ import { SOLID, type BlockSet } from './sets';
 
 /** The four handles clockwise from twelve: the cell (in blocks) and where its numeral and arrow go. */
 const HANDLES = [
-  { name: 'susan12', cell: [1, 0], label: 'XII', at: [25, 10], arrow: [[23, 16], [37, 16]] },
-  { name: 'susan3', cell: [2, 1], label: 'III', at: [43, 28], arrow: [[49, 23], [49, 37]] },
-  { name: 'susan6', cell: [1, 2], label: 'VI', at: [27, 44], arrow: [[37, 51], [23, 51]] },
-  { name: 'susan9', cell: [0, 1], label: 'IX', at: [10, 28], arrow: [[13, 37], [13, 23]] },
+  {
+    name: 'susan12',
+    cell: [1, 0],
+    label: 'XII',
+    at: [25, 10],
+    arrow: [
+      [23, 16],
+      [37, 16],
+    ],
+  },
+  {
+    name: 'susan3',
+    cell: [2, 1],
+    label: 'III',
+    at: [43, 28],
+    arrow: [
+      [49, 23],
+      [49, 37],
+    ],
+  },
+  {
+    name: 'susan6',
+    cell: [1, 2],
+    label: 'VI',
+    at: [27, 44],
+    arrow: [
+      [37, 51],
+      [23, 51],
+    ],
+  },
+  {
+    name: 'susan9',
+    cell: [0, 1],
+    label: 'IX',
+    at: [10, 28],
+    arrow: [
+      [13, 37],
+      [13, 23],
+    ],
+  },
 ] as const;
 
 const CORNERS = [
@@ -49,7 +85,10 @@ function counter(fl: Pixels, lit: number, phase: number): Pixels {
     const t = (deg * Math.PI) / 180;
     const x = Math.round(30 + Math.cos(t) * 18) - 2;
     const y = Math.round(30 + Math.sin(t) * 18) - 3;
-    p.rect(x, y, 5, 6, c('ink', 0)).rect(x + 1, y + 1, 3, 4, c('glass', 3)).rect(x + 1, y + 3, 3, 2, c(jars[i], 2)).rect(x + 1, y, 3, 1, c('trim', 3));
+    p.rect(x, y, 5, 6, c('ink', 0))
+      .rect(x + 1, y + 1, 3, 4, c('glass', 3))
+      .rect(x + 1, y + 3, 3, 2, c(jars[i], 2))
+      .rect(x + 1, y, 3, 1, c('trim', 3));
   });
   // the hub: a brass caddy with the wooden spoon standing in it
   p.disc(30, 31, 6, c('ink', 0)).disc(30, 30, 5, c('trim', 2)).ring(30, 30, 5, c('trim', 4)).disc(30, 30, 3, c('dark', 1));
@@ -62,7 +101,9 @@ function counter(fl: Pixels, lit: number, phase: number): Pixels {
     // the brass peg, out at the rim
     const px = Math.round(30 + (cx - 30) * 1.25);
     const py = Math.round(30 + (cy - 30) * 1.25);
-    p.disc(px, py, 2.6, c('ink', 0)).disc(px, py, 2, on ? c('hazard', 4) : c('trim', 3)).set(px - 1, py - 1, c('paper', 4));
+    p.disc(px, py, 2.6, c('ink', 0))
+      .disc(px, py, 2, on ? c('hazard', 4) : c('trim', 3))
+      .set(px - 1, py - 1, c('paper', 4));
     micro(p, h.at[0], h.at[1], h.label, on ? c('accent', 3) : c('ink', 0));
     if (!on) return;
     // the arrow, clockwise, crawling one pixel a frame

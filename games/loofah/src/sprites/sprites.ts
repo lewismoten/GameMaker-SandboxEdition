@@ -44,13 +44,24 @@ export function manArt(pal: Pal) {
     const step = o.step ?? 0;
     const arms = o.arms ?? 'down';
     // bare legs and feet under a bath towel wrapped round his middle
-    const legs = side && step % 2 ? [[7, -2], [12, 2]] : [[7, 0], [12, 0]];
+    const legs =
+      side && step % 2
+        ? [
+            [7, -2],
+            [12, 2],
+          ]
+        : [
+            [7, 0],
+            [12, 0],
+          ];
     for (const [lx, d] of legs) {
       for (let y = 16 + crouch; y < 19; y++) p.rect(lx + Math.round(((y - 16) / 3) * d) - 1, y, 2, 1, c('skin', 2));
       p.rect(lx + d - 2, 19, 4 + (side ? 1 : 0), 1, c('skin', 3));
     }
     for (let y = 13 + crouch; y < 17 + crouch; y++) p.rect(5, y, 11, 1, c('towel', y % 2 ? 2 : 1));
-    p.rect(5, 13 + crouch, 11, 1, c('towel', 3)).set(side ? 14 : 12, 14 + crouch, c('towel', 0)).set(side ? 14 : 12, 15 + crouch, c('towel', 0));
+    p.rect(5, 13 + crouch, 11, 1, c('towel', 3))
+      .set(side ? 14 : 12, 14 + crouch, c('towel', 0))
+      .set(side ? 14 : 12, 15 + crouch, c('towel', 0));
     // the round bare belly
     blob(p, 10.5, 10.5 + crouch, 4.6, 3.4, pal.r('skin'), 1, 4);
     p.set(side ? 12 : 10, 12 + crouch, c('skin', 0));
@@ -58,24 +69,48 @@ export function manArt(pal: Pal) {
     const hx = side ? 11 : 10;
     const hy = 5 + crouch;
     blob(p, hx + 0.5, hy, 4.4, 4.2, pal.r('skin'), 1, 4);
-    for (let x = hx - 4; x <= hx + 4; x++) for (let y = hy - 5; y <= hy - 2 + (x % 3 === 0 ? 1 : 0); y++) if ((x - hx - 0.5) ** 2 / 22 + (y - hy + 1) ** 2 / 18 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
+    for (let x = hx - 4; x <= hx + 4; x++)
+      for (let y = hy - 5; y <= hy - 2 + (x % 3 === 0 ? 1 : 0); y++)
+        if ((x - hx - 0.5) ** 2 / 22 + (y - hy + 1) ** 2 / 18 <= 1) p.set(x, y, c('hair', (x + y) % 3 ? 1 : 2));
     if (side) p.rect(hx - 4, hy - 2, 2, 4, c('hair', 1));
     const eyes = side ? [hx + 1, hx + 3] : [hx - 2, hx + 2];
     const ey = hy;
     for (const ex of eyes) {
-      p.set(ex - 1, ey - 1, c('metal', 2)).set(ex + 1, ey - 1, c('metal', 2)).set(ex - 1, ey + 1, c('metal', 2)).set(ex + 1, ey + 1, c('metal', 2));
+      p.set(ex - 1, ey - 1, c('metal', 2))
+        .set(ex + 1, ey - 1, c('metal', 2))
+        .set(ex - 1, ey + 1, c('metal', 2))
+        .set(ex + 1, ey + 1, c('metal', 2));
       const m = o.mood ?? 'calm';
-      if (m === 'blink' || m === 'bliss' || m === 'swoon') p.set(ex - 1, ey, ink).set(ex, ey, ink).set(ex + 1, ey, ink);
-      else if (m === 'ouch') p.set(ex - 1, ey - 1, ink).set(ex, ey, ink).set(ex + 1, ey + 1, ink);
+      if (m === 'blink' || m === 'bliss' || m === 'swoon')
+        p.set(ex - 1, ey, ink)
+          .set(ex, ey, ink)
+          .set(ex + 1, ey, ink);
+      else if (m === 'ouch')
+        p.set(ex - 1, ey - 1, ink)
+          .set(ex, ey, ink)
+          .set(ex + 1, ey + 1, ink);
       else p.set(ex, ey, ink).set(ex, ey - 1, m === 'worry' || m === 'shout' ? ink : c('white', 2));
     }
-    if (!side) p.set(hx - 1, ey - 1, c('metal', 2)).set(hx + 1, ey - 1, c('metal', 2)).set(hx, ey - 1, c('metal', 2));
+    if (!side)
+      p.set(hx - 1, ey - 1, c('metal', 2))
+        .set(hx + 1, ey - 1, c('metal', 2))
+        .set(hx, ey - 1, c('metal', 2));
     const mx = side ? hx + 2 : hx;
     const mood = o.mood ?? 'calm';
     if (mood === 'shout' || mood === 'ouch') p.rect(mx - 1, hy + 2, 3, 2, ink).set(mx, hy + 3, c('red', 2));
-    else if (mood === 'worry') p.set(mx - 1, hy + 3, ink).set(mx, hy + 2, ink).set(mx + 1, hy + 3, ink);
-    else if (mood === 'bliss') p.set(mx - 1, hy + 2, ink).set(mx, hy + 3, ink).set(mx + 1, hy + 2, ink).set(mx + 2, hy + 1, c('wax', 2));
-    else p.set(mx - 1, hy + 2, ink).set(mx, hy + 2, ink).set(mx + 1, hy + 2, ink);
+    else if (mood === 'worry')
+      p.set(mx - 1, hy + 3, ink)
+        .set(mx, hy + 2, ink)
+        .set(mx + 1, hy + 3, ink);
+    else if (mood === 'bliss')
+      p.set(mx - 1, hy + 2, ink)
+        .set(mx, hy + 3, ink)
+        .set(mx + 1, hy + 2, ink)
+        .set(mx + 2, hy + 1, c('wax', 2));
+    else
+      p.set(mx - 1, hy + 2, ink)
+        .set(mx, hy + 2, ink)
+        .set(mx + 1, hy + 2, ink);
     if (!side) p.set(hx - 4, hy + 1, c('skin', 3)).set(hx + 4, hy + 1, c('skin', 3));
     // arms
     const skin = c('skin', 2);
@@ -86,11 +121,22 @@ export function manArt(pal: Pal) {
     if (arms === 'forehead') (arm(5, sy, 4, sy + 4), arm(15, sy, hx + 3, hy - 2));
     if (arms === 'fist') (arm(5, sy, 4, sy + 4), arm(15, sy, 17, sy - 7), p.disc(17, sy - 8, 1.4, skin));
     if (arms === 'gut') (arm(5, sy, 8, sy + 3), arm(15, sy, 12, sy + 3));
-    if (arms === 'throw') (arm(5, sy, 3, sy + 3), arm(15, sy, 13, sy - 6), p.rect(11, sy - 11, 4, 6, c('rosemary', 1)).rect(12, sy - 13, 2, 2, c('wood', 2)).set(12, sy - 9, c('suds', 2)));
+    if (arms === 'throw')
+      (arm(5, sy, 3, sy + 3),
+        arm(15, sy, 13, sy - 6),
+        p
+          .rect(11, sy - 11, 4, 6, c('rosemary', 1))
+          .rect(12, sy - 13, 2, 2, c('wood', 2))
+          .set(12, sy - 9, c('suds', 2)));
     if (arms === 'toss') (arm(5, sy, 3, sy + 3), arm(15, sy, 19, sy - 2));
     // drops of water
     for (let k = 0; k < (o.sweat ?? 0); k++) {
-      const [x, y] = [[3, 3], [17, 5], [2, 9], [18, 1]][k % 4];
+      const [x, y] = [
+        [3, 3],
+        [17, 5],
+        [2, 9],
+        [18, 1],
+      ][k % 4];
       p.set(x, y, c('wet', 1)).set(x, y + 1, c('wet', 0));
     }
     // fainting: tip him over (about his middle), then settle what's left onto the floor
@@ -155,12 +201,30 @@ export function buildMonsterBlocks(pal: Pal) {
   const face = (p: Pixels, x: number, y: number, o: { wink?: boolean; grin?: boolean; angry?: boolean; scream?: boolean; smug?: boolean } = {}) => {
     p.set(x - 2, y, ink).set(x + 2, y, o.wink ? c('white', 2) : ink);
     if (o.wink) p.set(x + 1, y, ink).set(x + 3, y, ink);
-    if (o.angry) p.set(x - 3, y - 2, ink).set(x - 2, y - 1, ink).set(x + 3, y - 2, ink).set(x + 2, y - 1, ink);
+    if (o.angry)
+      p.set(x - 3, y - 2, ink)
+        .set(x - 2, y - 1, ink)
+        .set(x + 3, y - 2, ink)
+        .set(x + 2, y - 1, ink);
     if (o.smug) p.line(x - 3, y - 1, x - 1, y - 1, ink).line(x + 1, y - 1, x + 3, y - 1, ink);
     if (o.scream) p.rect(x - 1, y + 2, 3, 3, ink).set(x, y + 3, c('red', 2));
-    else if (o.smug) p.set(x - 2, y + 2, ink).set(x - 1, y + 3, ink).set(x, y + 3, ink).set(x + 1, y + 3, ink).set(x + 2, y + 3, ink).set(x + 3, y + 2, ink);
-    else if (o.grin) p.set(x - 2, y + 2, ink).set(x - 1, y + 3, ink).set(x, y + 3, ink).set(x + 1, y + 3, ink).set(x + 2, y + 2, ink);
-    else p.set(x - 1, y + 2, ink).set(x, y + 2, ink).set(x + 1, y + 2, ink);
+    else if (o.smug)
+      p.set(x - 2, y + 2, ink)
+        .set(x - 1, y + 3, ink)
+        .set(x, y + 3, ink)
+        .set(x + 1, y + 3, ink)
+        .set(x + 2, y + 3, ink)
+        .set(x + 3, y + 2, ink);
+    else if (o.grin)
+      p.set(x - 2, y + 2, ink)
+        .set(x - 1, y + 3, ink)
+        .set(x, y + 3, ink)
+        .set(x + 1, y + 3, ink)
+        .set(x + 2, y + 2, ink);
+    else
+      p.set(x - 1, y + 2, ink)
+        .set(x, y + 2, ink)
+        .set(x + 1, y + 2, ink);
   };
   /** Loofah mesh: a net of darker threads over a blob. */
   const mesh = (p: Pixels, x0: number, y0: number, x1: number, y1: number, col: number, step = 3) => {
@@ -181,9 +245,16 @@ export function buildMonsterBlocks(pal: Pal) {
   const soap = (ramp: string, f: number) => {
     const p = P();
     const y = f ? 1 : 0;
-    p.rect(3, 9 + y, 14, 9, c(ramp, 2)).rect(3, 9 + y, 14, 2, c(ramp, 3)).rect(3, 16 + y, 14, 2, c(ramp, 1));
+    p.rect(3, 9 + y, 14, 9, c(ramp, 2))
+      .rect(3, 9 + y, 14, 2, c(ramp, 3))
+      .rect(3, 16 + y, 14, 2, c(ramp, 1));
     face(p, 10, 13 + y, { angry: true, grin: f === 1 });
-    for (const [x, yy] of [[4, 5 - f], [15, 4 + f], [10, 3]]) p.ring(x, yy, 1.4, c('suds', 2));
+    for (const [x, yy] of [
+      [4, 5 - f],
+      [15, 4 + f],
+      [10, 3],
+    ])
+      p.ring(x, yy, 1.4, c('suds', 2));
     return done(p);
   };
   book.add('grapefruit0', soap('citrus', 0), hurt(-8));
@@ -196,7 +267,14 @@ export function buildMonsterBlocks(pal: Pal) {
     for (let y = 4; y < 20; y++) p.rect(4 + (y > 16 && f ? 1 : 0), y, 12, 1, c('towel', y % 4 < 2 ? 2 : 1));
     p.rect(4, 4, 12, 2, c('towel', 3)).rect(4, 17, 12, 1, c('white', 2));
     face(p, 10, 9, { angry: true, scream: f === 1 });
-    if (f) for (const [x, y] of [[1, 6], [18, 7], [0, 12], [19, 12]]) p.set(x, y, c('white', 2));
+    if (f)
+      for (const [x, y] of [
+        [1, 6],
+        [18, 7],
+        [0, 12],
+        [19, 12],
+      ])
+        p.set(x, y, c('white', 2));
     return done(p);
   };
   book.add('towel0', towel(0), hurt(-10));
@@ -204,7 +282,10 @@ export function buildMonsterBlocks(pal: Pal) {
   // a soap bubble drifting up
   const bubble = (f: number) => {
     const p = P();
-    p.ring(10, 10, 4 + f * 0.5, c('suds', 2)).set(8, 8, c('white', 2)).set(12, 7, c('pink', 3)).set(13, 12, c('towel', 3));
+    p.ring(10, 10, 4 + f * 0.5, c('suds', 2))
+      .set(8, 8, c('white', 2))
+      .set(12, 7, c('pink', 3))
+      .set(13, 12, c('towel', 3));
     return p;
   };
   book.add('bubble0', bubble(0));
@@ -269,9 +350,15 @@ export function buildMonsterBlocks(pal: Pal) {
   const seed = (f: number) => {
     const p = P();
     const y = f ? 10 : 13;
-    p.rect(7, y + 5, 3, 2, c('red', 2)).rect(11, y + 5, 3, 2, c('red', 2)).set(9, y + 5, c('white', 2)).set(13, y + 5, c('white', 2));
+    p.rect(7, y + 5, 3, 2, c('red', 2))
+      .rect(11, y + 5, 3, 2, c('red', 2))
+      .set(9, y + 5, c('white', 2))
+      .set(13, y + 5, c('white', 2));
     blob(p, 10, y, 4, 4.6, pal.r('cheese'), 0, 3, 1.2);
-    p.set(9, y - 1, ink).set(12, y - 1, ink).set(10, y + 2, ink).set(11, y + 2, ink);
+    p.set(9, y - 1, ink)
+      .set(12, y - 1, ink)
+      .set(10, y + 2, ink)
+      .set(11, y + 2, ink);
     p.line(11, y - 5, 12, y - 7, c('green', 2));
     return done(p);
   };
@@ -324,11 +411,20 @@ export function buildMonsterBlocks(pal: Pal) {
       blob(p, 10, 13, 8, 7, pal.r(ramp), 1, light + 1);
       // the horns (they droop as it's cleansed)
       const droop = stage >= 2 ? 3 : 0;
-      p.line(4, 8, 2, 1 + droop, c('demon', 1)).line(5, 8, 3, 1 + droop, c('demon', 2)).line(16, 8, 18, 1 + droop, c('demon', 1)).line(15, 8, 17, 1 + droop, c('demon', 2));
+      p.line(4, 8, 2, 1 + droop, c('demon', 1))
+        .line(5, 8, 3, 1 + droop, c('demon', 2))
+        .line(16, 8, 18, 1 + droop, c('demon', 1))
+        .line(15, 8, 17, 1 + droop, c('demon', 2));
       mesh(p, 2, 6, 19, 20, c(ramp, 0));
       p.set(7, 11, c('eye', stage >= 3 ? 0 : 1)).set(13, 11, c('eye', stage >= 3 ? 0 : 1));
       face(p, 10, 11, { smug: stage < 2, grin: stage >= 2 && f === 0 });
-      if (stage >= 1) for (const [x, y] of [[5, 15], [15, 9], [9, 17]]) p.set(x, y, c('suds', 2));
+      if (stage >= 1)
+        for (const [x, y] of [
+          [5, 15],
+          [15, 9],
+          [9, 17],
+        ])
+          p.set(x, y, c('suds', 2));
       // a wisp of grapefruit scent
       if (stage < 3) p.set(18, 4 + f, c('citrus', 3)).set(19, 2 + f, c('citrus', 2));
     } else {
@@ -352,20 +448,39 @@ export function buildMonsterBlocks(pal: Pal) {
   const suds = (f: number) => {
     const p = P();
     blob(p, 10, 10, 5, 5, pal.r('citrus'), 1, 3);
-    for (const [x, y] of [[6, 7], [13, 8], [9, 13], [12, 12]]) p.ring(x + f, y, 1.6, c('suds', 2));
+    for (const [x, y] of [
+      [6, 7],
+      [13, 8],
+      [9, 13],
+      [12, 12],
+    ])
+      p.ring(x + f, y, 1.6, c('suds', 2));
     return done(p);
   };
   book.add('suds0', suds(0), hurt(-4, 0));
   book.add('suds1', suds(1), hurt(-4, 0));
   const splat = P();
   blob(splat, 10, 17, 8, 2.6, pal.r('citrus'), 1, 3);
-  for (const [x, y] of [[3, 12], [7, 10], [13, 11], [17, 13]]) splat.ring(x, y, 1.2, c('suds', 2));
+  for (const [x, y] of [
+    [3, 12],
+    [7, 10],
+    [13, 11],
+    [17, 13],
+  ])
+    splat.ring(x, y, 1.2, c('suds', 2));
   book.add('splat', done(splat), hurt(-1, 0));
   // the brine he throws: salt water with a sprig of rosemary in it
   const brine = (f: number) => {
     const p = P();
     blob(p, 10, 10, 6 - f, 4 + f, pal.r('suds'), 0, 2);
-    for (const [x, y] of [[3, 6 + f], [16, 5 - f], [4, 15 - f], [17, 14 + f], [10, 3 + f]]) p.disc(x, y, 1.2, c('wet', 1));
+    for (const [x, y] of [
+      [3, 6 + f],
+      [16, 5 - f],
+      [4, 15 - f],
+      [17, 14 + f],
+      [10, 3 + f],
+    ])
+      p.disc(x, y, 1.2, c('wet', 1));
     p.line(7, 11, 13, 9, c('rosemary', 1)).set(9, 9, c('rosemary', 2)).set(11, 11, c('rosemary', 2));
     return done(p);
   };

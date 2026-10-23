@@ -129,7 +129,8 @@ function contains(img: { width: number; height: number; rgb: Uint32Array }, tile
     for (let x = 0; x + BLEN <= W; x++) {
       if (rgb[y * W + x] !== first || rgb[(y + 10) * W + x + 10] !== mid) continue;
       let ok = true;
-      for (let yy = 0; yy < BLEN && ok; yy++) for (let xx = 0; xx < BLEN; xx++) if (rgb[(y + yy) * W + x + xx] !== tile[yy * BLEN + xx]) ((ok = false), (xx = BLEN));
+      for (let yy = 0; yy < BLEN && ok; yy++)
+        for (let xx = 0; xx < BLEN; xx++) if (rgb[(y + yy) * W + x + xx] !== tile[yy * BLEN + xx]) ((ok = false), (xx = BLEN));
       if (ok) return true;
     }
   return false;
@@ -171,7 +172,9 @@ export async function gameSightings(id: string, items: Item[], diskPictures = tr
           if (l.toScene !== scene) continue;
           const sim = new GameSim(disk);
           (sim as unknown as { enter(scene: number, prev: number, link: number): void }).enter(scene, prev, link);
-          await watch(sim, OPENING_TICKS, s.map, s.at[1] * MLEN + s.at[0], () => note(s, `start of scene ${scene} (from scene ${prev} link ${link}, at ${l.to.x},${l.to.y})`));
+          await watch(sim, OPENING_TICKS, s.map, s.at[1] * MLEN + s.at[0], () =>
+            note(s, `start of scene ${scene} (from scene ${prev} link ${link}, at ${l.to.x},${l.to.y})`),
+          );
         }
 
   // (b) the level shots renderShot / gamePicture draw: the busiest of the first levels, per size
@@ -187,7 +190,10 @@ export async function gameSightings(id: string, items: Item[], diskPictures = tr
     for (const s of out) if (game.scenes[i].files[1]?.toLowerCase() === s.map && inWindow(s.at, x0, y0, cols, rows)) note(s, `shot ${cols}x${rows} (${where})`);
   }
   // box.shots (and the disk label strip of the first), box.poster
-  const box = (JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')).box ?? {}) as { shots?: [string, number, number][]; poster?: { map?: [string, number, number, number, number] } };
+  const box = (JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')).box ?? {}) as {
+    shots?: [string, number, number][];
+    poster?: { map?: [string, number, number, number, number] };
+  };
   builtMapViews(box.shots).forEach(([m, x, y, w, h], k) => {
     const what = k < (box.shots?.length ?? 0) ? `box.shots[${k}]` : 'box.shots label strip';
     for (const s of out) if (m.toLowerCase() === s.map && inWindow(s.at, x, y, w, h)) note(s, what);
@@ -243,7 +249,14 @@ export async function gameSightings(id: string, items: Item[], diskPictures = tr
 export async function hiddenView(ids?: string[], diskPictures = true): Promise<Sighting[]> {
   const items = declaredItems(ids);
   const out: Sighting[] = [];
-  for (const id of [...new Set(items.map((i) => i.game))]) out.push(...(await gameSightings(id, items.filter((i) => i.game === id), diskPictures)));
+  for (const id of [...new Set(items.map((i) => i.game))])
+    out.push(
+      ...(await gameSightings(
+        id,
+        items.filter((i) => i.game === id),
+        diskPictures,
+      )),
+    );
   return out;
 }
 

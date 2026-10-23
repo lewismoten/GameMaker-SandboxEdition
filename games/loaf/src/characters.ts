@@ -54,7 +54,10 @@ export function buildLoaf(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
     f({ pic: 'front', pause: 20 }),
   ]);
   set(S[SEQ.die], [f({ pic: 'hurt', pause: 3 }), f({ pic: 'crumble0', pause: 8 }), f({ pic: 'crumble1', pause: 30 })], { sound: SND.crumble, jstkBut: 0 });
-  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], { sound: SND.hurt, jstkBut: 0 });
+  set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 }), f({ pic: 'hurt', pause: 2 }), f({ pic: 'front', pause: 1 })], {
+    sound: SND.hurt,
+    jstkBut: 0,
+  });
   set(S[3], [f({ pic: 'front' })], { key: 0 });
   set(S[4], [f({ pic: 'front' })], { key: 0 });
 
@@ -78,7 +81,13 @@ export function buildLoaf(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   set(S[SEQ.down], down, { key: KEY.down, jstkMov: JOY.down, sound: SND.roll });
   set(S[SEQ.downS], down, { key: KEY.s, sound: SND.roll });
   // "I'm still bread!": it puffs up and sings
-  const bread = [f({ pic: 'bread0', pause: 5 }), f({ pic: 'bread1', pause: 6 }), f({ pic: 'bread0', pause: 5 }), f({ pic: 'bread1', pause: 8 }), f({ pic: 'front', pause: 2 })];
+  const bread = [
+    f({ pic: 'bread0', pause: 5 }),
+    f({ pic: 'bread1', pause: 6 }),
+    f({ pic: 'bread0', pause: 5 }),
+    f({ pic: 'bread1', pause: 8 }),
+    f({ pic: 'front', pause: 2 }),
+  ];
   set(S[SEQ.bread], bread, { key: KEY.space, sound: SND.bread, norepeat: 1, jstkMov: JOY.any, jstkBut: 1 });
   set(S[SEQ.breadB], bread, { key: KEY.b, sound: SND.bread, norepeat: 1 });
 
@@ -125,15 +134,32 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     [n(b), t],
   ];
   const reach = o.reach ?? 3;
-  set[MON.hand] = mon(anim('hand0', 'hand1', 8), { power: 150, thru: 0 }, [corner(0, 0, 2), corner(0, reach, 2, 1), corner(0, reach, 1, 1), corner(0, 0, 2, 3)]);
+  set[MON.hand] = mon(anim('hand0', 'hand1', 8), { power: 150, thru: 0 }, [
+    corner(0, 0, 2),
+    corner(0, reach, 2, 1),
+    corner(0, reach, 1, 1),
+    corner(0, 0, 2, 3),
+  ]);
   // Fish fly out of a fish basket in an arc and flop where they land.
   const far = o.fish ?? 7;
-  const arc = (dir: number): March[] => [corner(0, 0, 4), corner(dir, -2, 4, dir > 0 ? 0 : 4), corner(dir * 3, -4, 4, dir > 0 ? 0 : 4), corner(dir * (far - 2), -3, 4, dir > 0 ? 0 : 4), corner(dir * far, 0, 4, dir > 0 ? 0 : 4)];
+  const arc = (dir: number): March[] => [
+    corner(0, 0, 4),
+    corner(dir, -2, 4, dir > 0 ? 0 : 4),
+    corner(dir * 3, -4, 4, dir > 0 ? 0 : 4),
+    corner(dir * (far - 2), -3, 4, dir > 0 ? 0 : 4),
+    corner(dir * far, 0, 4, dir > 0 ? 0 : 4),
+  ];
   set[MON.fishR] = mon(anim('fish0', 'fish1', 2), { power: 150, thru: 0, end: -1, newmon: MON.flop }, arc(1));
   set[MON.fishL] = mon(anim('fish0', 'fish1', 2), { power: 150, thru: 0, end: -1, newmon: MON.flop }, arc(-1));
   set[MON.flop] = mon([[n('flop'), 4]], { power: 100, thru: 0, end: 10 });
   // Brother loaves passed hand to hand overhead: say hello and off he goes.
-  set[MON.brother] = mon(anim('brother0', 'brother1', 4), { power: 50, thru: 0, newmon: MON.brotherOff }, [corner(0, 0, 2), corner(4, -1, 2, 0), corner(8, 0, 2, 0), corner(4, -1, 2, 4), corner(0, 0, 2, 4)]);
+  set[MON.brother] = mon(anim('brother0', 'brother1', 4), { power: 50, thru: 0, newmon: MON.brotherOff }, [
+    corner(0, 0, 2),
+    corner(4, -1, 2, 0),
+    corner(8, 0, 2, 0),
+    corner(4, -1, 2, 4),
+    corner(0, 0, 2, 4),
+  ]);
   set[MON.brotherOff] = mon(anim('brotherOff0', 'brotherOff1', 2), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 5), corner(5, -6, 5, 0)]);
   set[MON.gull] = mon(anim('gull0', 'gull1', 3), { power: 150, thru: 0 }, [corner(0, 0, 2), corner(6, -1, 2, 0), corner(6, 1, 2, 0), corner(0, 0, 2, 4)]);
   set[MON.man] = mon(anim('feet0', 'feet1', 5), { power: 150, thru: 1 }, pace(o.feet ?? 4, 1));
@@ -143,9 +169,21 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 0, newmon: MON.seedOff }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.seedOff] = mon(anim('seed1', 'seed0', 3), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(3, -2, 3, 0), corner(6, 0, 3, 0)]);
   set[MON.fox] = mon(anim('fox0', 'fox1', 3), { power: 150, thru: 1 }, pace(5, 2));
-  set[MON.owl] = mon(anim('owl0', 'owl1', 4), { power: 150, thru: 0 }, [corner(0, 0, 2), corner(4, 3, 3, 0), corner(8, 0, 2, 0), corner(4, 3, 3, 4), corner(0, 0, 2, 4)]);
+  set[MON.owl] = mon(anim('owl0', 'owl1', 4), { power: 150, thru: 0 }, [
+    corner(0, 0, 2),
+    corner(4, 3, 3, 0),
+    corner(8, 0, 2, 0),
+    corner(4, 3, 3, 4),
+    corner(0, 0, 2, 4),
+  ]);
   set[MON.dog] = mon(anim('dog0', 'dog1', 3), { power: 150, thru: 1 }, pace(4, 2));
-  set[MON.moth] = mon(anim('moth0', 'moth1', 2), { power: 150, thru: 0 }, [corner(0, 0, 1), corner(1, -1, 1, 0), corner(2, 0, 1, 0), corner(1, 1, 1, 4), corner(0, 0, 1, 4)]);
+  set[MON.moth] = mon(anim('moth0', 'moth1', 2), { power: 150, thru: 0 }, [
+    corner(0, 0, 1),
+    corner(1, -1, 1, 0),
+    corner(2, 0, 1, 0),
+    corner(1, 1, 1, 4),
+    corner(0, 0, 1, 4),
+  ]);
   set[MON.camelA] = mon(anim('camelA0', 'camelA1', 30), { power: 200, thru: 1 }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.camelB] = mon(anim('camelB0', 'camelB1', 30), { power: 200, thru: 1 }, [corner(0, 0, 1), corner(0, 0, 1)]);
   const girl = o.girl ?? 6;

@@ -56,9 +56,21 @@ export function buildChicken(cb: BlockSet): Character {
   set(S[SEQ.d], glide(1, 0, 'flapSide0', 'flapSide1'), { key: KEY.d, sound: SND.toy, ...move });
 
   // Space: SQUAWK, the way he last went
-  set(S[SEQ.squawk], [f('squawk', 2), birth(MON.squawk), f('squawk', 4), f('down0', 2)], { key: KEY.space, sound: SND.squawk, ground: 1, norepeat: 1, jstkBut: 1 });
+  set(S[SEQ.squawk], [f('squawk', 2), birth(MON.squawk), f('squawk', 4), f('down0', 2)], {
+    key: KEY.space,
+    sound: SND.squawk,
+    ground: 1,
+    norepeat: 1,
+    jstkBut: 1,
+  });
   // B: boing
-  set(S[SEQ.bounce], [f('squash', 2), f('stretch', 3), f('squash', 2), f('stretch', 2), f('down0', 2)], { key: KEY.b, sound: SND.boing, ground: 1, norepeat: 1, jstkBut: 2 });
+  set(S[SEQ.bounce], [f('squash', 2), f('stretch', 3), f('squash', 2), f('stretch', 2), f('down0', 2)], {
+    key: KEY.b,
+    sound: SND.boing,
+    ground: 1,
+    norepeat: 1,
+    jstkBut: 2,
+  });
 
   ch.meter[0] = HIT_POINTS;
   ch.meter[1] = 5;

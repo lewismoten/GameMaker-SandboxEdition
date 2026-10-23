@@ -39,7 +39,8 @@ export function starCircle(p: Pixels, cx: number, cy: number, rad: number, size:
 
 /** A frosty glass mug of root beer, foam on top, `s` pixels per unit (about 30 x 40 units). */
 export function mug(p: Pixels, x: number, y: number, s: number): void {
-  const R = (xx: number, yy: number, w: number, h: number, col: number) => p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
+  const R = (xx: number, yy: number, w: number, h: number, col: number) =>
+    p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
   // handle
   for (let a = -1.4; a < 1.4; a += 0.05) {
     const hx = x + (30 + Math.cos(a) * 9) * s;
@@ -73,7 +74,8 @@ export function mug(p: Pixels, x: number, y: number, s: number): void {
 
 /** The colonial tricorn, `s` per unit (about 30 x 10 units). */
 export function bigTricorn(p: Pixels, x: number, y: number, s: number): void {
-  const R = (xx: number, yy: number, w: number, h: number, col: number) => p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
+  const R = (xx: number, yy: number, w: number, h: number, col: number) =>
+    p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
   R(0, 5, 30, 5, c('ink', 0));
   R(1, 3, 3, 3, c('ink', 0));
   R(26, 3, 3, 3, c('ink', 0));
@@ -93,21 +95,28 @@ export function chez(p: Pixels, x: number, y: number, s: number, wheel = 0): voi
   const k = 1.5 * s;
   const ox = Math.round(x - 3.9 * k);
   const oy = Math.round(y + 33 * s - 20 * k);
-  chezSide(p, ox, oy, {
-    body: [c('red', 2), c('red', 3), c('red', 4)],
-    trim: c('red', 1),
-    glass: [c('sky', 0), c('sky', 4)],
-    roof: c('ink', 0),
-    tire: c('ink', 0),
-    hub: c('grey', 3),
-    rim: c('paper', 4),
-    bumper: c('ink', 1),
-    lamp: c('orange', 3),
-    tail: c('red', 5),
-    stripe: c('ink', 2),
-    pin: c('paper', 4),
-    chrome: c('grey', 4),
-  }, 'right', k);
+  chezSide(
+    p,
+    ox,
+    oy,
+    {
+      body: [c('red', 2), c('red', 3), c('red', 4)],
+      trim: c('red', 1),
+      glass: [c('sky', 0), c('sky', 4)],
+      roof: c('ink', 0),
+      tire: c('ink', 0),
+      hub: c('grey', 3),
+      rim: c('paper', 4),
+      bumper: c('ink', 1),
+      lamp: c('orange', 3),
+      tail: c('red', 5),
+      stripe: c('ink', 2),
+      pin: c('paper', 4),
+      chrome: c('grey', 4),
+    },
+    'right',
+    k,
+  );
   // a mark on each wheel, going round
   const a = wheel * 0.9;
   for (const wx of CHEZ_WHEELS) p.set(ox + wx * k + Math.cos(a) * 1.4 * k, oy + 20 * k - 3.25 * k - 0.5 + Math.sin(a) * 1.4 * k, c('grey', 1));
@@ -115,7 +124,8 @@ export function chez(p: Pixels, x: number, y: number, s: number, wheel = 0): voi
 
 /** Doc Leo's root beer stand on wheels, striped awning, a barrel and a sign: about 70 x 60 units. */
 export function stand(p: Pixels, x: number, y: number, s: number, sign = "DOC LEO'S"): void {
-  const R = (xx: number, yy: number, w: number, h: number, col: number) => p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
+  const R = (xx: number, yy: number, w: number, h: number, col: number) =>
+    p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
   // awning
   for (let i = 0; i < 7; i++) R(i * 10, 0, 10, 10, i % 2 ? c('paper', 4) : c('red', 3));
   for (let i = 0; i < 7; i++) p.disc(x + (i * 10 + 5) * s, y + 10 * s, 5 * s, i % 2 ? c('paper', 4) : c('red', 3));
@@ -196,7 +206,8 @@ export function kitchenWall(p: Pixels, floorY = 150): void {
     for (let x = 0; x < W; x++) p.set(x, y, y % 8 === 7 || (x + (Math.floor(y / 8) % 2) * 8) % 16 === 0 ? c('grey', 4) : c('paper', 4));
   p.rect(0, floorY - 30, W, 4, c('wood', 3)).rect(0, floorY - 26, W, 26, c('wood', 2));
   for (let x = 6; x < W; x += 26) p.rect(x, floorY - 22, 18, 18, c('wood', 1));
-  for (let y = floorY; y < H; y++) for (let x = 0; x < W; x++) p.set(x, y, (Math.floor(x / 16) + Math.floor((y - floorY) / 10)) % 2 ? c('floor', 4) : c('floor2', 3));
+  for (let y = floorY; y < H; y++)
+    for (let x = 0; x < W; x++) p.set(x, y, (Math.floor(x / 16) + Math.floor((y - floorY) / 10)) % 2 ? c('floor', 4) : c('floor2', 3));
 }
 
 /** A night sky over Main Street: brick fronts, flags, a string of lights. */
@@ -209,9 +220,11 @@ export function mainStreet(p: Pixels, seed = 1): void {
     const h = 60 + Math.floor(R() * 40);
     const top = 128 - h;
     const brick = R() < 0.5 ? 'red' : 'brown';
-    for (let yy = top; yy < 128; yy++) for (let xx = x; xx < x + w; xx++) p.set(xx, yy, yy % 4 === 3 || (xx + (Math.floor(yy / 4) % 2) * 3) % 6 === 0 ? c(brick, 1) : c(brick, 2));
+    for (let yy = top; yy < 128; yy++)
+      for (let xx = x; xx < x + w; xx++) p.set(xx, yy, yy % 4 === 3 || (xx + (Math.floor(yy / 4) % 2) * 3) % 6 === 0 ? c(brick, 1) : c(brick, 2));
     p.rect(x, top, w, 3, c('paper', 3));
-    for (let wy = top + 10; wy < 110; wy += 22) for (let wx = x + 8; wx < x + w - 12; wx += 18) p.rect(wx, wy, 10, 14, c('sky', 1)).rect(wx, wy, 10, 1, c('paper', 4));
+    for (let wy = top + 10; wy < 110; wy += 22)
+      for (let wx = x + 8; wx < x + w - 12; wx += 18) p.rect(wx, wy, 10, 14, c('sky', 1)).rect(wx, wy, 10, 1, c('paper', 4));
     // a flag on a pole
     p.rect(x + w - 6, top - 14, 1, 16, c('grey', 3));
     for (let i = 0; i < 6; i++) p.rect(x + w - 5, top - 14 + i, 12, 1, i % 2 ? c('paper', 4) : c('red', 3));
@@ -232,7 +245,8 @@ export { centered, scaleBlit, text, micro, outlined, gradient, blob, textWidth }
  * chicken held up or hanging on its red leash. 40 x 64 units of `s` pixels, top-left at (x, y).
  */
 export function bigLeo(p: Pixels, x: number, y: number, s: number, chickenUp = false): void {
-  const R = (xx: number, yy: number, w: number, h: number, col: number) => p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
+  const R = (xx: number, yy: number, w: number, h: number, col: number) =>
+    p.rect(Math.round(x + xx * s), Math.round(y + yy * s), Math.ceil(w * s), Math.ceil(h * s), col);
   const D = (xx: number, yy: number, r0: number, col: number) => p.disc(x + xx * s, y + yy * s, r0 * s, col);
   const ink = c('ink', 0);
   // legs and red sneakers

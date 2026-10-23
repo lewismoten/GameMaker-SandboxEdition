@@ -178,11 +178,14 @@ export function nightTiles(): Tiles {
       return p;
     })(),
   );
-  t.wall('clay', (() => {
-    const p = new Pixels(20, 20);
-    speckle(p, 0, 0, 20, 20, r('brick'), 1, 1, 62, 0.3);
-    return p;
-  })());
+  t.wall(
+    'clay',
+    (() => {
+      const p = new Pixels(20, 20);
+      speckle(p, 0, 0, 20, 20, r('brick'), 1, 1, 62, 0.3);
+      return p;
+    })(),
+  );
   // playground things behind the fence: a slide, swings
   const play = canvas(3, 3, (_bx, by) => skyAt(37 + by));
   play.rect(4, 10, 2, 50, c('red', 1)).rect(24, 10, 2, 50, c('red', 1)).rect(4, 10, 22, 2, c('red', 2));

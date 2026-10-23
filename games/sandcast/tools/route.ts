@@ -192,7 +192,9 @@ async function ambush(bot: Bot, stand: { x: number; y: number }, label: string):
       const away = dirs
         .map((d) => ({ d, x: p.x + STEP[d].x, y: p.y + STEP[d].y }))
         .filter((c) => !bot.sim.solidAt(c.x, c.y) && !bot.current(c.x, c.y))
-        .sort((a, b) => Math.hypot(b.x * 20 - g.x * 20 - g.sx, b.y * 20 - g.y * 20 - g.sy) - Math.hypot(a.x * 20 - g.x * 20 - g.sx, a.y * 20 - g.y * 20 - g.sy))[0];
+        .sort(
+          (a, b) => Math.hypot(b.x * 20 - g.x * 20 - g.sx, b.y * 20 - g.y * 20 - g.sy) - Math.hypot(a.x * 20 - g.x * 20 - g.sx, a.y * 20 - g.y * 20 - g.sy),
+        )[0];
       if (away) await bot.goto(away.x, away.y);
       continue;
     }

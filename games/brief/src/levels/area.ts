@@ -93,7 +93,14 @@ export class Area {
 
   /** The shusher every area has. */
   addShusher(): void {
-    this.monster('shh', [[shusher(0), 9], [shusher(1), 9]], { hazard: true });
+    this.monster(
+      'shh',
+      [
+        [shusher(0), 9],
+        [shusher(1), 9],
+      ],
+      { hazard: true },
+    );
   }
 
   /**

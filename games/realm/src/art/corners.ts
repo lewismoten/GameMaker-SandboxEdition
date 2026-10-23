@@ -154,7 +154,12 @@ export class CornerMap {
 
   /** The corner mask of block (bx, by) in a layer: TL TR BR BL bits. */
   mask(layer: string, bx: number, by: number): number {
-    return (this.in(layer, bx, by) ? TL : 0) | (this.in(layer, bx + 1, by) ? TR : 0) | (this.in(layer, bx + 1, by + 1) ? BR : 0) | (this.in(layer, bx, by + 1) ? BL : 0);
+    return (
+      (this.in(layer, bx, by) ? TL : 0) |
+      (this.in(layer, bx + 1, by) ? TR : 0) |
+      (this.in(layer, bx + 1, by + 1) ? BR : 0) |
+      (this.in(layer, bx, by + 1) ? BL : 0)
+    );
   }
 
   /**

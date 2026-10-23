@@ -21,7 +21,10 @@ export function align(): number {
     ...pair('table', 'tableL', 'tableR', 1, 0),
     ...pair('couch', 'couchL', 'couchR', 1, 0),
     ...pair('Bob', 'bobTop', 'bobBot', 0, 1),
-    ...shape('water cooler', [[/^wc00/, /^wc10/, /^wc20/, 'wc30'], ['wc01', 'wc11', 'wc21', 'wc31']]),
+    ...shape('water cooler', [
+      [/^wc00/, /^wc10/, /^wc20/, 'wc30'],
+      ['wc01', 'wc11', 'wc21', 'wc31'],
+    ]),
   ];
   return alignGame('brief', (m) => names.get(m), RULES, { seamOk: SEAM_OK });
 }

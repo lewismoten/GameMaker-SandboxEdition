@@ -82,7 +82,13 @@ export class MapBuilder {
   }
 
   private block(ch: string): number {
-    const items: Record<string, string> = { o: `drops.${this.area}`, c: `coffee.${this.area}`, k: `chicken.${this.area}`, D: `doorTop${this.level}`, G: `gate${this.level}` };
+    const items: Record<string, string> = {
+      o: `drops.${this.area}`,
+      c: `coffee.${this.area}`,
+      k: `chicken.${this.area}`,
+      D: `doorTop${this.level}`,
+      G: `gate${this.level}`,
+    };
     const name = PLACE[this.area][ch] ?? items[ch] ?? LEGEND[ch];
     if (!name) throw new Error(`Unknown map char "${ch}"`);
     return this.book.n(name);
@@ -132,7 +138,12 @@ export class MapBuilder {
 
   /** The level's room: walls round the edge, a ceiling, the floor at row h - 2. */
   room(w: number, h: number): this {
-    this.fill(1, 1, w - 2, h - 3, '.').row(0, 0, w - 1, '^').row(h - 2, 0, w - 1, '=').row(h - 1, 0, w - 1, '#').col(0, 0, h - 1, '#').col(w - 1, 0, h - 1, '#');
+    this.fill(1, 1, w - 2, h - 3, '.')
+      .row(0, 0, w - 1, '^')
+      .row(h - 2, 0, w - 1, '=')
+      .row(h - 1, 0, w - 1, '#')
+      .col(0, 0, h - 1, '#')
+      .col(w - 1, 0, h - 1, '#');
     return this;
   }
 
@@ -141,7 +152,9 @@ export class MapBuilder {
    * half, the bottom half that asks for the carpet; and the exit two blocks on, with its link.
    */
   door(x: number, y: number, toScene: LinkSpec['toScene'], exit = 'X'): this {
-    this.col(x, 0, y - 2, '#').set(x, y - 1, 'D').set(x, y, 'G');
+    this.col(x, 0, y - 2, '#')
+      .set(x, y - 1, 'D')
+      .set(x, y, 'G');
     this.fill(x + 2, y - 1, 1, 2, exit);
     return this.link(x + 2, y, toScene);
   }

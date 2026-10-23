@@ -38,7 +38,8 @@ export function night(): Level {
   // The park: trees (an owl in the big one), lamp posts, a bench, the pond.
   const tree = (x: number, h: number) => {
     for (let y = 39 - h; y < 40; y++) m.set(x, y, `trunk${nightBand(y)}`);
-    for (let dy = -3; dy <= 0; dy++) for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + Math.abs(dy + 1) < 4) m.set(x + dx, 39 - h + dy, `leaf${nightBand(39 - h + dy)}`);
+    for (let dy = -3; dy <= 0; dy++)
+      for (let dx = -2; dx <= 2; dx++) if (Math.abs(dx) + Math.abs(dy + 1) < 4) m.set(x + dx, 39 - h + dy, `leaf${nightBand(39 - h + dy)}`);
   };
   tree(28, 4);
   tree(36, 5);
@@ -64,7 +65,10 @@ export function night(): Level {
   // The park's east gate: the hay wagon behind a pickup. The tailgate is tied with rope.
   const wagon = 84;
   for (let bx = 0; bx < 4; bx++) for (let by = 0; by < 2; by++) m.set(wagon + bx, 38 + by, `wagon${bx}${by}`);
-  m.set(wagon + 4, 38, 'pickup00').set(wagon + 5, 38, 'pickup10').set(wagon + 4, 39, 'pickup01').set(wagon + 5, 39, 'pickup11');
+  m.set(wagon + 4, 38, 'pickup00')
+    .set(wagon + 5, 38, 'pickup10')
+    .set(wagon + 4, 39, 'pickup01')
+    .set(wagon + 5, 39, 'pickup11');
   m.set(wagon - 2, 39, 'signFair');
   m.rect(92, 30, 8, 10, 'hedgeWall');
   m.rect(92, 29, 8, 1, 'hedgeTop');

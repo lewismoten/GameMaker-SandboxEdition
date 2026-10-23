@@ -37,7 +37,14 @@ export function endingFrames(): { frames: Picture[]; speed: number } {
     const t = f / (DRIVE - 1);
     const y = 2.2 - 34 * t * t;
     const shapes = [floor(), sun, ...leo, ...chez(0.4, y, 1.3, f * 0.6)];
-    const world = stage(shapes, { env: SUNRISE, backdrop: SUNRISE, keyColor: rgb(255, 222, 186), key: [-0.5, 0.7, 0.6], sky: rgb(110, 110, 160), fog: { color: rgb(255, 200, 150), scale: 40, from: 10 } });
+    const world = stage(shapes, {
+      env: SUNRISE,
+      backdrop: SUNRISE,
+      keyColor: rgb(255, 222, 186),
+      key: [-0.5, 0.7, 0.6],
+      sky: rgb(110, 110, 160),
+      fog: { color: rgb(255, 200, 150), scale: 40, from: 10 },
+    });
     const pic = still(world, camera, 4, 16, 31);
     flare(pic, 163, 86, 0.25 + 0.5 * t);
     frames.push(pic);

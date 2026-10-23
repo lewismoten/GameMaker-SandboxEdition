@@ -217,7 +217,12 @@ export async function runRoute(sim: Sim, route: Order[], label = '', rec = new R
  * builds the level's Sim and Recorder afresh around a copy of the character's info; the
  * copy that finished is returned for the next level.
  */
-export async function playLevel(make: (ci: CharInfo) => { sim: Sim; rec: Recorder }, route: Order[], label: string, ci: CharInfo): Promise<RunResult & { sim: Sim; rec: Recorder; ci: CharInfo }> {
+export async function playLevel(
+  make: (ci: CharInfo) => { sim: Sim; rec: Recorder },
+  route: Order[],
+  label: string,
+  ci: CharInfo,
+): Promise<RunResult & { sim: Sim; rec: Recorder; ci: CharInfo }> {
   const ban = new Set<string>();
   for (;;) {
     const mine = structuredClone(ci);

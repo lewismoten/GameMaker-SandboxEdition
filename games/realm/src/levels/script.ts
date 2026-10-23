@@ -2,7 +2,15 @@
 // pages (talk.ts); a blank line starts a new paragraph.
 import type { Talk } from './talk';
 
-const t = (id: string, who: string, name: string, theme: Talk['theme'], place: string, text: string, gift?: Talk['gift']): Talk => ({ id, who, name, theme, place, text, gift });
+const t = (id: string, who: string, name: string, theme: Talk['theme'], place: string, text: string, gift?: Talk['gift']): Talk => ({
+  id,
+  who,
+  name,
+  theme,
+  place,
+  text,
+  gift,
+});
 
 export const TALK = {
   // ---------------------------------------------------------------- Nowish

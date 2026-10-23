@@ -68,13 +68,23 @@ const sprite = (set: Map<string, Pixels>, name: string) => {
 /** A dining couch with a senator on it, at (x, y: the couch's top), scaled 2. */
 function couch(p: Pixels, pal: Pal, x: number, y: number, cough: boolean): void {
   const c = pal.c;
-  p.rect(x, y + 10, 70, 12, c('purple', 1)).rect(x, y + 10, 70, 2, c('purple', 2)).rect(x + 4, y + 22, 4, 10, c('wood', 2)).rect(x + 62, y + 22, 4, 10, c('wood', 2));
+  p.rect(x, y + 10, 70, 12, c('purple', 1))
+    .rect(x, y + 10, 70, 2, c('purple', 2))
+    .rect(x + 4, y + 22, 4, 10, c('wood', 2))
+    .rect(x + 62, y + 22, 4, 10, c('wood', 2));
   blob(p, x + 30, y + 4, 22, 8, pal.r('toga'), 1, 3);
   blob(p, x + 12, y - 8 + (cough ? -2 : 0), 8, 8, pal.r('skin'), 2, 4);
-  p.line(x + 4, y - 14, x + 18, y - 16, c('laurel', 2)).set(x + 9, y - 9, c('ink', 0)).set(x + 15, y - 9, c('ink', 0));
+  p.line(x + 4, y - 14, x + 18, y - 16, c('laurel', 2))
+    .set(x + 9, y - 9, c('ink', 0))
+    .set(x + 15, y - 9, c('ink', 0));
   if (cough) {
     p.rect(x + 10, y - 4, 5, 4, c('ink', 0));
-    for (const [dx, dy] of [[20, -10], [24, -14], [22, -6]]) p.disc(x + dx, y + dy, 1.5, c('steam', 2));
+    for (const [dx, dy] of [
+      [20, -10],
+      [24, -14],
+      [22, -6],
+    ])
+      p.disc(x + dx, y + dy, 1.5, c('steam', 2));
   } else p.rect(x + 10, y - 3, 5, 1, c('ink', 0));
 }
 
@@ -152,7 +162,11 @@ export function storyFli(cast: Cast): Uint8Array {
     for (let i = 0; i < 4; i++) scaleBlit(p, N(`stony${(k >> 3) % 2}`), 150 + i * 36, 116, 2);
     if (k < 14) say(p, pal, 80, 84, 'COGITO... SCRIBO...', 'marble', 3);
     if (k >= 20 && k % 6 < 3) say(p, pal, 220, 96, '...', 'marble', 3);
-    caption(p, pal, k < 16 ? ['Cogito, scribo, quaero iocum.', 'I think, I write, I seek the joke.'] : ['Omnes spectant, nemo ridet.', 'Everyone watches. No one laughs.']);
+    caption(
+      p,
+      pal,
+      k < 16 ? ['Cogito, scribo, quaero iocum.', 'I think, I write, I seek the joke.'] : ['Omnes spectant, nemo ridet.', 'Everyone watches. No one laughs.'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(hall.px);
@@ -166,7 +180,13 @@ export function storyFli(cast: Cast): Uint8Array {
     couch(p, pal, 230, 110, k >= 22 && k % 4 >= 2);
     // the table and Rufus asleep beneath it
     p.rect(110, 120, 100, 6, c('marble', 3)).rect(156, 126, 8, 24, c('bronze', 2));
-    for (const [fx, fy] of [[126, 116], [140, 114], [176, 116], [190, 115]]) blob(p, fx, fy, 4, 4, pal.r('grape'), 0, 2);
+    for (const [fx, fy] of [
+      [126, 116],
+      [140, 114],
+      [176, 116],
+      [190, 115],
+    ])
+      blob(p, fx, fy, 4, 4, pal.r('grape'), 0, 2);
     p.rect(110, 126, 100, 24, c('ink', 1));
     blob(p, 160, 142, 30, 8, pal.r('rufus'), 0, 2);
     blob(p, 136, 138, 9, 7, pal.r('rufus'), 1, 3);
@@ -180,7 +200,8 @@ export function storyFli(cast: Cast): Uint8Array {
     if (k >= 22) scaleBlit(p, N(k % 4 < 2 ? 'flavia0' : 'flavia1'), 140, 60, 2);
     caption(p, pal, k < 12 ? ['Sub mensa... in tenebris...', 'Beneath the table, in shadow...'] : ['Canis meus flatum dedit!', 'My dog has released a fart!']);
   };
-  for (let k = 0; k < 36; k++) r.frame(room, (p) => banquet(p, k), 1, 1, k >= 13 && k < 30 ? greened(pal.pal, Math.min(1, (k - 13) / 6) * (k < 24 ? 1 : (30 - k) / 6)) : pal.pal);
+  for (let k = 0; k < 36; k++)
+    r.frame(room, (p) => banquet(p, k), 1, 1, k >= 13 && k < 30 ? greened(pal.pal, Math.min(1, (k - 13) / 6) * (k < 24 ? 1 : (30 - k) / 6)) : pal.pal);
   // 3. The Senate's decree, and Emperor Gravis, stern
   const curia = portico(pal, 9);
   const decree = (p: Pixels, k: number) => {
@@ -262,7 +283,9 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     // III. a titulus twists its letters, a spell flies past
     (p, k) => {
       const tw = k >= 12;
-      p.rect(120, STRIP + 30, 80, 26, tw ? c('ochre', 3) : c('marble', 3)).frame(120, STRIP + 30, 80, 26, c('pompeii', 1)).rect(158, STRIP + 56, 4, 30, c('wood', 1));
+      p.rect(120, STRIP + 30, 80, 26, tw ? c('ochre', 3) : c('marble', 3))
+        .frame(120, STRIP + 30, 80, 26, c('pompeii', 1))
+        .rect(158, STRIP + 56, 4, 30, c('wood', 1));
       say(p, pal, 160, STRIP + 39, tw ? 'TVTIS TVT!' : 'TITVS TOT', tw ? 'pompeii' : 'ink', tw ? 2 : 0);
       scaleBlit(p, N(`spell${k % 2}`), 300 - k * 10, STRIP + 20, 2);
       scaleBlit(p, M(k < 12 ? `walk${k % 4}` : 'sing1'), Math.min(80, 10 + k * 6), STRIP + 80, 2);
@@ -327,7 +350,11 @@ export function howtoFli(cast: Cast): Uint8Array {
     }
     scaleBlit(p, M(pose), x, y, 2);
     if (k >= 9 && k < 16) say(p, pal, x + 20, y - 14, 'HOP!');
-    caption(p, pal, k < 30 ? ['UP hops, Q and E hop sideways.', 'Hop the clouds (or tell a joke).'] : ['SPACE: a joke to the right, Z: left.', 'Stone faces laugh at last.']);
+    caption(
+      p,
+      pal,
+      k < 30 ? ['UP hops, Q and E hop sideways.', 'Hop the clouds (or tell a joke).'] : ['SPACE: a joke to the right, Z: left.', 'Stone faces laugh at last.'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);
@@ -357,7 +384,11 @@ export function lostFli(cast: Cast): Uint8Array {
     scaleBlit(p, sprite(cast.man, k % 16 < 12 ? 'sneak0' : 'worry'), 120, 118, 3);
     say(p, pal, 150, 90, nums[Math.min(nums.length - 1, Math.floor(k / 8))], 'marble', 3);
     if (k >= 36) scaleBlit(p, sprite(cast.mons, 'teddy0'), 210, 136, 2);
-    caption(p, pal, k < 30 ? ['Rident in corde... sed tacent.', 'They laugh in their hearts.'] : ['Risus erit... forsitan cras?', 'Laughter... maybe tomorrow? Try again!']);
+    caption(
+      p,
+      pal,
+      k < 30 ? ['Rident in corde... sed tacent.', 'They laugh in their hearts.'] : ['Risus erit... forsitan cras?', 'Laughter... maybe tomorrow? Try again!'],
+    );
   };
   const first = new Pixels(W, H);
   first.px.set(bg.px);

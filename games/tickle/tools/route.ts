@@ -144,8 +144,16 @@ export async function theSewers(bot: Bot): Promise<void> {
   await tickle(bot, 'right', 'the first wild rat');
   await carefully(bot, 'up the steam and onto the pipe', 0, async () => {
     await must(bot, bot.walk(12, 'by the grate'), 'grate');
-    await must(bot, bot.until('right', () => bot.px.x >= 13 * 20, 'into the steam', 30), 'steam');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 3 * 20, 'up the steam', 160), 'lift');
+    await must(
+      bot,
+      bot.until('right', () => bot.px.x >= 13 * 20, 'into the steam', 30),
+      'steam',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 3 * 20, 'up the steam', 160),
+      'lift',
+    );
     await upTo(bot, 'right', 14.4, 4, 'onto the pipe', 4);
   });
   await tickle(bot, 'right', 'the rat on the pipe');

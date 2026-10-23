@@ -31,7 +31,9 @@ export const PLATES = 4;
 /** A plate seen from the side and a little above, at (cx, y): its rim, its well. */
 function plate(p: Pixels, pal: Pal, cx: number, y: number, w: number, smear?: string): void {
   const c = pal.c;
-  p.rect(cx - w / 2, y, w, 3, c('china', 2)).rect(cx - w / 2 + 1, y - 1, w - 2, 1, c('china', 1)).rect(cx - w / 2 + 2, y + 3, w - 4, 1, c('china', 0));
+  p.rect(cx - w / 2, y, w, 3, c('china', 2))
+    .rect(cx - w / 2 + 1, y - 1, w - 2, 1, c('china', 1))
+    .rect(cx - w / 2 + 2, y + 3, w - 4, 1, c('china', 0));
   p.rect(cx - w / 2 + 3, y, w - 6, 1, c('china', 1));
   if (smear) p.rect(cx - 2, y, 4, 1, c(smear, 2)).set(cx + 2, y + 1, c(smear, 1));
 }
@@ -64,13 +66,23 @@ export function platesBlocks(book: BlockBook, pal: Pal): void {
   micro(doors, 7, 1, 'KITCHEN', c('gold', 2));
   for (const x of [3, 21]) {
     doors.rect(x, 7, 16, 33, c('wood', 2)).rect(x, 7, 16, 1, c('wood', 3)).rect(x, 30, 16, 10, c('metal', 1)).rect(x, 30, 16, 1, c('metal', 2));
-    doors.disc(x + 8, 17, 5, c('metal', 2)).disc(x + 8, 17, 4, c('spot', 1)).set(x + 6, 15, c('spot', 2)).set(x + 7, 15, c('spot', 2));
+    doors
+      .disc(x + 8, 17, 5, c('metal', 2))
+      .disc(x + 8, 17, 4, c('spot', 1))
+      .set(x + 6, 15, c('spot', 2))
+      .set(x + 7, 15, c('spot', 2));
     // the invisible eyes at the porthole
     doors.set(x + 6, 18, ink).set(x + 10, 18, ink);
   }
   doors.rect(19, 7, 2, 33, c('wood', 0));
   outline(doors, ink);
-  cut(book, 'kitchen', doors, (_col, row) => (row === 1 ? wainscot : wall()), (col, row) => (row === 1 && col === 0 ? { ...AIR, birthMon: PM.whisper, birthTime: 130 } : AIR));
+  cut(
+    book,
+    'kitchen',
+    doors,
+    (_col, row) => (row === 1 ? wainscot : wall()),
+    (col, row) => (row === 1 && col === 0 ? { ...AIR, birthMon: PM.whisper, birthTime: 130 } : AIR),
+  );
   // the leaning tower of greasy plates: four blocks of it, each one's top a ledge
   const tower = clear(20, 80);
   for (let k = 0; k < 20; k++) {
@@ -80,7 +92,13 @@ export function platesBlocks(book: BlockBook, pal: Pal): void {
     plate(tower, pal, 9 + lean, y, w, k % 3 === 0 ? 'coffee' : k % 3 === 1 ? 'yellow' : undefined);
   }
   outline(tower, ink);
-  cut(book, 'tower', tower, (_col, row) => (row === 3 ? wainscot : wall()), () => ({ solid: LEDGE, grav: GRAV.down }));
+  cut(
+    book,
+    'tower',
+    tower,
+    (_col, row) => (row === 3 ? wainscot : wall()),
+    () => ({ solid: LEDGE, grav: GRAV.down }),
+  );
   // the bus tub on its cart (the gate): empty, then every plate stacked like an Olympic event
   const busCart = (full: boolean) =>
     over(wainscot, pal, (p) => {
@@ -99,25 +117,45 @@ export function platesBlocks(book: BlockBook, pal: Pal): void {
     draw(t);
     p.blit(outline(t, ink), 0, 0, T);
   };
-  plotThing(book, 'wallpaper', 'soupBowl', thing((p) => {
-    p.rect(4, 11, 12, 2, c('china', 2)).rect(5, 13, 10, 3, c('china', 1)).rect(7, 16, 6, 2, c('china', 0));
-    p.rect(5, 11, 10, 1, c('orange', 2)).line(14, 8, 18, 4, c('metal', 2));
-  }));
-  plotThing(book, 'wallpaper', 'pastaPlate', thing((p) => {
-    plate(p, pal, 10, 13, 16, 'red');
-    // a fork nested inside: ceramic heresy
-    p.line(5, 12, 15, 9, c('metal', 2)).line(14, 8, 17, 7, c('metal', 2)).line(15, 10, 18, 9, c('metal', 2));
-    p.set(8, 11, c('yellow', 2)).set(11, 11, c('yellow', 2));
-  }));
-  plotThing(book, 'wallpaper', 'dessertPlate', thing((p) => {
-    plate(p, pal, 10, 14, 14);
-    p.rect(7, 9, 7, 5, c('cream', 3)).rect(7, 9, 7, 1, c('red', 2)).set(13, 12, c('cream', 1)).set(5, 13, c('cream', 2));
-  }));
-  plotThing(book, 'wallpaper', 'entreePlate', thing((p) => {
-    plate(p, pal, 10, 13, 18, 'coffee');
-    plate(p, pal, 10, 10, 14, 'yellow');
-    p.set(6, 9, c('coffee', 1)).set(13, 9, c('coffee', 1));
-  }));
+  plotThing(
+    book,
+    'wallpaper',
+    'soupBowl',
+    thing((p) => {
+      p.rect(4, 11, 12, 2, c('china', 2)).rect(5, 13, 10, 3, c('china', 1)).rect(7, 16, 6, 2, c('china', 0));
+      p.rect(5, 11, 10, 1, c('orange', 2)).line(14, 8, 18, 4, c('metal', 2));
+    }),
+  );
+  plotThing(
+    book,
+    'wallpaper',
+    'pastaPlate',
+    thing((p) => {
+      plate(p, pal, 10, 13, 16, 'red');
+      // a fork nested inside: ceramic heresy
+      p.line(5, 12, 15, 9, c('metal', 2)).line(14, 8, 17, 7, c('metal', 2)).line(15, 10, 18, 9, c('metal', 2));
+      p.set(8, 11, c('yellow', 2)).set(11, 11, c('yellow', 2));
+    }),
+  );
+  plotThing(
+    book,
+    'wallpaper',
+    'dessertPlate',
+    thing((p) => {
+      plate(p, pal, 10, 14, 14);
+      p.rect(7, 9, 7, 5, c('cream', 3)).rect(7, 9, 7, 1, c('red', 2)).set(13, 12, c('cream', 1)).set(5, 13, c('cream', 2));
+    }),
+  );
+  plotThing(
+    book,
+    'wallpaper',
+    'entreePlate',
+    thing((p) => {
+      plate(p, pal, 10, 13, 18, 'coffee');
+      plate(p, pal, 10, 10, 14, 'yellow');
+      p.set(6, 9, c('coffee', 1)).set(13, 9, c('coffee', 1));
+    }),
+  );
 }
 
 export function platesSprites(book: SpriteBook, pal: Pal): void {
@@ -126,11 +164,15 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
   // a phantom of the dining room: a waiter you can't quite see but for his eyes, a domed tray aloft
   const phantom = (f: number) => {
     const p = clear();
-    for (let y = 5; y < 19; y++) for (let x = 4; x < 16; x++) if (Math.abs(x - 9.5) < 3 + y / 4 && !(y === 18 && (x + f) % 3 === 0)) p.set(x, y, (x + y + f) % 2 ? c('white', 2) : c('china', 1));
+    for (let y = 5; y < 19; y++)
+      for (let x = 4; x < 16; x++)
+        if (Math.abs(x - 9.5) < 3 + y / 4 && !(y === 18 && (x + f) % 3 === 0)) p.set(x, y, (x + y + f) % 2 ? c('white', 2) : c('china', 1));
     p.rect(7, 8, 3, 3, c('white', 2)).rect(11, 8, 3, 3, c('white', 2)).rect(8, 9, 2, 2, ink).rect(12, 9, 2, 2, ink);
     p.rect(9, 15, 3, 2, ink);
     p.rect(9, 12, 2, 1, ink);
-    p.rect(13, 3 + f, 6, 1, c('metal', 2)).rect(14, 1 + f, 4, 2, c('metal', 1)).set(16, f, c('metal', 2));
+    p.rect(13, 3 + f, 6, 1, c('metal', 2))
+      .rect(14, 1 + f, 4, 2, c('metal', 1))
+      .set(16, f, c('metal', 2));
     return p;
   };
   book.add('phantom0', phantom(0), hurts(-6));
@@ -156,7 +198,10 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
     const hx = 10;
     p.rect(hx - 3, 2, 7, 7, c('skin', 3)).rect(hx - 3, 1, 7, 2, c('hair', 0));
     const look = f ? 1 : -1;
-    p.set(hx - 1 + look, 5, ink).set(hx + 2 + look, 5, ink).rect(hx - 2, 4, 2, 1, c('hair', 0)).rect(hx + 1, 3, 2, 1, c('hair', 0));
+    p.set(hx - 1 + look, 5, ink)
+      .set(hx + 2 + look, 5, ink)
+      .rect(hx - 2, 4, 2, 1, c('hair', 0))
+      .rect(hx + 1, 3, 2, 1, c('hair', 0));
     p.rect(hx - 1, 7, 3, 1, c('skin', 1));
     return outline(p, ink);
   };
@@ -166,7 +211,13 @@ export function platesSprites(book: SpriteBook, pal: Pal): void {
 
 export function platesMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: PM.poof };
-  set[PM.phantom] = mon(anim(mb, 'phantom0', 'phantom1', 5), { ...foe, thru: 0 }, [corner(0, 0, 1), corner(2, -1, 1, 0), corner(4, 0, 1, 0), corner(2, -1, 1, 4), corner(0, 0, 1, 4)]);
+  set[PM.phantom] = mon(anim(mb, 'phantom0', 'phantom1', 5), { ...foe, thru: 0 }, [
+    corner(0, 0, 1),
+    corner(2, -1, 1, 0),
+    corner(4, 0, 1, 0),
+    corner(2, -1, 1, 4),
+    corner(0, 0, 1, 4),
+  ]);
   set[PM.whisper] = mon(anim(mb, 'whisper0', 'whisper1', 6), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-8, 0, 2, 4)]);
   set[PM.chuckle] = mon(anim(mb, 'chuckle0', 'chuckle1', 6), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 1), corner(-2, 0, 1, 4)]);
   set[PM.grease] = mon(anim(mb, 'grease0', 'grease1', 6), foe, pace(3, 1));
@@ -212,7 +263,11 @@ export const plates: Monologue = {
     // the scene ends
     const OFF = 13;
     const W = 58 + OFF;
-    m.row(0, 0, W - 1, '^').fill(0, 1, W, 9, '.').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
+    m.row(0, 0, W - 1, '^')
+      .fill(0, 1, W, 9, '.')
+      .row(10, 0, W - 1, '_')
+      .row(11, 0, W - 1, '=')
+      .row(12, 0, W - 1, '#');
     for (const x of [6, 14, 27, 36, 46]) m.set(x, 1, 'pendant');
     const table = (x0: number, x1: number) => {
       m.set(x0, 9, 'L').set(x1, 9, 'R');

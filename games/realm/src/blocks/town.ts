@@ -64,8 +64,15 @@ export const castleWall: Shader = (x, y, d, nx, ny) => {
 
 /** The shared ground and families both town block sets start with. */
 export function townGround(book: BlockBook, o: { water?: boolean } = {}): void {
-  book.add('grass', plain((x, y) => grass(x, y)));
-  for (const k of [1, 2, 3]) book.add(`grass${k}`, plain((x, y) => grass(x, y, k)));
+  book.add(
+    'grass',
+    plain((x, y) => grass(x, y)),
+  );
+  for (const k of [1, 2, 3])
+    book.add(
+      `grass${k}`,
+      plain((x, y) => grass(x, y, k)),
+    );
   addFamily(book, { layer: 'street', shader: street, diag: true, rough: 0.5, seed: 31 });
   if (o.water) addFamily(book, { layer: 'water', shader: quay, rough: 0.3, seed: 33, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
   addFamily(book, { layer: 'hedge', shader: hedge, rough: 1.3, seed: 35, attrs: (m) => (bitsOf(m) >= 2 ? { solid: ALL } : {}) });
@@ -164,7 +171,15 @@ function barrels(): Canvas {
 // ---------------------------------------------------------------- multi-block things
 
 /** Paints a w x h picture over grass and cuts it into blocks `${name}:${x},${y}`; `solid` picks the solid blocks. */
-export function cutBlocks(book: BlockBook, name: string, w: number, h: number, paint: (cv: Canvas) => void, solid: (x: number, y: number) => boolean | Attrs = () => true, base?: (x: number, y: number) => RGB): void {
+export function cutBlocks(
+  book: BlockBook,
+  name: string,
+  w: number,
+  h: number,
+  paint: (cv: Canvas) => void,
+  solid: (x: number, y: number) => boolean | Attrs = () => true,
+  base?: (x: number, y: number) => RGB,
+): void {
   const cv = new Canvas(w * 20, h * 20).shade(base ?? ((x, y) => grass(x, y)), 2);
   paint(cv);
   for (let y = 0; y < h; y++)
@@ -181,14 +196,21 @@ export function cottage(book: BlockBook, name: string, st: HouseStyle, seed: num
 
 /** A big house three blocks square with a sign hanging by the door. */
 export function hall(book: BlockBook, name: string, st: HouseStyle, seed: number, sign?: (cv: Canvas, x: number, y: number) => void): void {
-  cutBlocks(book, name, 3, 3, (cv) => {
-    const { door } = house(cv, 2, 4, 56, 55, { ...st, windows: 2 }, seed);
-    if (sign) {
-      cv.line(door[0] + 8, 36, door[0] + 14, 36, 0.8, [60, 40, 24]);
-      cv.rrect(door[0] + 8, 37, 9, 7, 1, [214, 190, 140]);
-      sign(cv, door[0] + 12.5, 40.5);
-    }
-  }, (x, y) => !(x === 1 && y === 2));
+  cutBlocks(
+    book,
+    name,
+    3,
+    3,
+    (cv) => {
+      const { door } = house(cv, 2, 4, 56, 55, { ...st, windows: 2 }, seed);
+      if (sign) {
+        cv.line(door[0] + 8, 36, door[0] + 14, 36, 0.8, [60, 40, 24]);
+        cv.rrect(door[0] + 8, 37, 9, 7, 1, [214, 190, 140]);
+        sign(cv, door[0] + 12.5, 40.5);
+      }
+    },
+    (x, y) => !(x === 1 && y === 2),
+  );
 }
 
 /** A market stall: a striped awning over a counter; the wares go on separate counter blocks. */
@@ -275,7 +297,14 @@ export const wares = {
 };
 
 /** A shop's buy chain as counter blocks: pay at `name`, collect at `name`+'2', then the empty counter. */
-export function buyChain(book: BlockBook, name: string, price: number, give: Attrs, ware: (cv: Canvas) => void, after: (cv: Canvas) => void = wares.sold): void {
+export function buyChain(
+  book: BlockBook,
+  name: string,
+  price: number,
+  give: Attrs,
+  ware: (cv: Canvas) => void,
+  after: (cv: Canvas) => void = wares.sold,
+): void {
   book.add(name, counter(ware), { solid: ALL, effect: C.money, eamt: -price, touch: `${name}2` });
   book.add(`${name}2`, counter(ware), { solid: ALL, ...give, touch: `${name}3` });
   book.add(`${name}3`, counter(after), { solid: ALL });

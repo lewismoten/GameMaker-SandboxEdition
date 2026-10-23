@@ -32,7 +32,9 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
   // the couch fabric you walk on in there: rose and teal, worn
   const fabric = (seed: number) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (x % 9 === 4 && y % 8 === 3) || (x % 9 === 0 && y % 8 === 7) ? c('flora', 2) : c('couch', (x + y + seed) % 7 === 0 ? 1 : 2));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++)
+        p.set(x, y, (x % 9 === 4 && y % 8 === 3) || (x % 9 === 0 && y % 8 === 7) ? c('flora', 2) : c('couch', (x + y + seed) % 7 === 0 ? 1 : 2));
     const r = rng(seed);
     for (let i = 0; i < 6; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('couch', 3));
     return p;
@@ -59,24 +61,40 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
   };
   lost('pen', (p) => p.line(4, 15, 15, 4, c('blue', 1)).line(5, 15, 16, 4, c('blue', 2)).set(15, 4, c('white', 2)).set(4, 16, ink), 50);
   lost('spoon', (p) => (blob(p, 6, 6, 3, 2.4, R('silver'), 1, 2), p.line(8, 8, 16, 16, c('silver', 2))), 100);
-  lost('xmasSock', (p) => {
-    p.rect(6, 2, 7, 9, c('red', 2)).rect(6, 10, 10, 6, c('red', 2)).rect(6, 2, 7, 3, c('white', 2));
-    p.set(9, 7, c('green', 2)).set(11, 12, c('green', 2)).set(8, 13, c('gold', 2));
-  }, 250);
-  lost('milkcap', (p) => {
-    p.disc(10, 10, 6, c('yellow', 2)).ring(10, 10, 6, c('red', 1));
-    for (let a = 0; a < 6.28; a += 0.8) p.line(10, 10, 10 + Math.cos(a) * 5, 10 + Math.sin(a) * 5, c('red', 2));
-    p.disc(10, 10, 2, c('blue', 2));
-  }, 25);
-  lost('guide', (p) => {
-    p.rect(4, 3, 12, 15, c('white', 2)).rect(4, 3, 12, 4, c('red', 2));
-    micro(p, 6, 4, 'TV', c('white', 2));
-    p.rect(6, 9, 8, 1, ink).rect(6, 11, 6, 1, ink).rect(6, 13, 8, 1, ink);
-  }, 150);
-  lost('crumb', (p) => {
-    p.line(4, 10, 16, 10, c('gold', 1)).line(10, 4, 10, 16, c('gold', 1));
-    blob(p, 10, 10, 3, 2.6, R('wood'), 3, 4, 1.2);
-  }, 77);
+  lost(
+    'xmasSock',
+    (p) => {
+      p.rect(6, 2, 7, 9, c('red', 2)).rect(6, 10, 10, 6, c('red', 2)).rect(6, 2, 7, 3, c('white', 2));
+      p.set(9, 7, c('green', 2)).set(11, 12, c('green', 2)).set(8, 13, c('gold', 2));
+    },
+    250,
+  );
+  lost(
+    'milkcap',
+    (p) => {
+      p.disc(10, 10, 6, c('yellow', 2)).ring(10, 10, 6, c('red', 1));
+      for (let a = 0; a < 6.28; a += 0.8) p.line(10, 10, 10 + Math.cos(a) * 5, 10 + Math.sin(a) * 5, c('red', 2));
+      p.disc(10, 10, 2, c('blue', 2));
+    },
+    25,
+  );
+  lost(
+    'guide',
+    (p) => {
+      p.rect(4, 3, 12, 15, c('white', 2)).rect(4, 3, 12, 4, c('red', 2));
+      micro(p, 6, 4, 'TV', c('white', 2));
+      p.rect(6, 9, 8, 1, ink).rect(6, 11, 6, 1, ink).rect(6, 13, 8, 1, ink);
+    },
+    150,
+  );
+  lost(
+    'crumb',
+    (p) => {
+      p.line(4, 10, 16, 10, c('gold', 1)).line(10, 4, 10, 16, c('gold', 1));
+      blob(p, 10, 10, 3, 2.6, R('wood'), 3, 4, 1.2);
+    },
+    77,
+  );
   // fake remotes: a calculator, the garage door opener, a handheld game. NOPE.
   const fake = (name: string, draw: (p: Pixels) => void) => {
     const p = fabric(60 + book.index.size);
@@ -101,7 +119,11 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
   const candy = fabric(71);
   candy.rect(4, 7, 12, 6, c('wood', 0)).rect(4, 7, 4, 6, c('red', 2)).rect(12, 7, 4, 6, c('red', 2));
   book.add('candy', candy, { hp: 20, score: 10, touch: 'fabric' });
-  book.add('pennyF', penny(() => fabric(72)), { effect: MONEY, eamt: 1, score: 5, touch: 'fabric' });
+  book.add(
+    'pennyF',
+    penny(() => fabric(72)),
+    { effect: MONEY, eamt: 1, score: 5, touch: 'fabric' },
+  );
   // the pay TV: an old coin-op set floating in the void (insert ten pennies), and it warms up
   const payTv = (on: boolean) => {
     const p = fabric(73);
@@ -120,5 +142,4 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
   micro(sign, 2, 5, 'LOST', ink);
   micro(sign, 2, 10, '&FND', ink);
   book.add('sign', sign, solid);
-
 }

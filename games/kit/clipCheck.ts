@@ -14,7 +14,9 @@ for (const id of process.argv.slice(2)) {
   const r = await replay(id, walk, { clips: true });
   const cuts = r.clipCuts ?? [];
   for (const c of cuts) console.log(`${id}: ${describeCut(c)}`);
-  console.log(`${id}: ${cuts.length ? `${cuts.length} clips cut off` : 'every end and start clip plays to the end'}${r.won ? '' : ' (the run did not reach the ending)'}`);
+  console.log(
+    `${id}: ${cuts.length ? `${cuts.length} clips cut off` : 'every end and start clip plays to the end'}${r.won ? '' : ' (the run did not reach the ending)'}`,
+  );
   if (cuts.length || !r.won) bad++;
 }
 process.exit(bad ? 1 : 0);

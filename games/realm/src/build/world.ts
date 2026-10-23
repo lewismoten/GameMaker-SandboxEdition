@@ -30,10 +30,15 @@ export function buildWorld(cast: Cast) {
   worldTerrain(book);
   for (const [wm, rm] of bridgeCombos(plan.cm)) book.add(bridgeName(wm, rm), paintBridge(wm, rm), {});
   worldFeatures(book);
-  book.add('egg', eggBlock((x, y) => grass(x, y)), { obj: 1 });
+  book.add(
+    'egg',
+    eggBlock((x, y) => grass(x, y)),
+    { obj: 1 },
+  );
   const keepOut = [...Object.values(plan.spot), ...plan.stamps.map((s) => [s.x, s.y] as [number, number])];
   const clear = (x: number, y: number) => {
-    for (let dy = -2; dy <= 3; dy++) for (let dx = -2; dx <= 3; dx++) for (const l of ['water', 'road', 'forest', 'rock']) if (plan.cm.in(l, x + dx, y + dy)) return false;
+    for (let dy = -2; dy <= 3; dy++)
+      for (let dx = -2; dx <= 3; dx++) for (const l of ['water', 'road', 'forest', 'rock']) if (plan.cm.in(l, x + dx, y + dy)) return false;
     return keepOut.every(([sx, sy]) => Math.abs(sx - x) > 4 || Math.abs(sy - y) > 4);
   };
   const ground = resolveGround(plan.cm, book, {
@@ -52,7 +57,8 @@ export function buildWorld(cast: Cast) {
     console.log('world: layers meet in', ground.conflicts.filter(([, , l]) => !(l.includes('water') && l.includes('road'))).slice(0, 8));
   const map: GameMap = newMap();
   map.blocks.set(ground.blocks);
-  for (const s of plan.stamps) for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * 100 + s.x + x] = book.n(`${s.name}:${x},${y}`);
+  for (const s of plan.stamps)
+    for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) map.blocks[(s.y + y) * 100 + s.x + x] = book.n(`${s.name}:${x},${y}`);
   const blocks = book.finish();
 
   const mb = peopleSheet();

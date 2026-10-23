@@ -67,7 +67,8 @@ export function coverRgb(t: number): Uint8Array {
   const open = 0.55 + t * 0.45;
   const flash = Math.exp(-(((t - 0.62) / 0.05) ** 2));
   // the fridge's glow on everything: cold blue-white, falling off with distance
-  const glowAt = (x: number, y: number) => open * (Math.exp(-Math.hypot((x - GLOW.x) * 0.8, (y - GLOW.y) * 1.1) / 70) * 0.9 + (x < GLOW.x && y > 150 ? 0.25 * smooth(0, 1, (x - 40) / 150) : 0));
+  const glowAt = (x: number, y: number) =>
+    open * (Math.exp(-Math.hypot((x - GLOW.x) * 0.8, (y - GLOW.y) * 1.1) / 70) * 0.9 + (x < GLOW.x && y > 150 ? 0.25 * smooth(0, 1, (x - 40) / 150) : 0));
   const lit = (c: RGB, x: number, y: number, k = 1): RGB => {
     const g = glowAt(x, y) * k;
     return [c[0] * (0.35 + g * 0.8) + g * 40, c[1] * (0.38 + g * 0.9) + g * 60, c[2] * (0.5 + g) + g * 90];
@@ -96,8 +97,10 @@ export function coverRgb(t: number): Uint8Array {
       for (let w = -1; w <= 1; w++) put(bx + w, y, [255, 255, 240], flash);
     }
   }
-  for (let x = win.x0 - 3; x < win.x1 + 3; x++) for (const y of [win.y0 - 3, win.y0 - 2, win.y1, win.y1 + 1, (win.y0 + win.y1) / 2]) put(x, y, lit([120, 90, 60], x, y));
-  for (let y = win.y0 - 3; y < win.y1 + 2; y++) for (const x of [win.x0 - 3, win.x0 - 2, win.x1, win.x1 + 1, (win.x0 + win.x1) / 2]) put(x, y, lit([120, 90, 60], x, y));
+  for (let x = win.x0 - 3; x < win.x1 + 3; x++)
+    for (const y of [win.y0 - 3, win.y0 - 2, win.y1, win.y1 + 1, (win.y0 + win.y1) / 2]) put(x, y, lit([120, 90, 60], x, y));
+  for (let y = win.y0 - 3; y < win.y1 + 2; y++)
+    for (const x of [win.x0 - 3, win.x0 - 2, win.x1, win.x1 + 1, (win.x0 + win.x1) / 2]) put(x, y, lit([120, 90, 60], x, y));
 
   // ---- the floor: checkered linoleum catching the light
   for (let y = 150; y < H; y++)
@@ -173,9 +176,12 @@ export function coverRgb(t: number): Uint8Array {
       put(x, y, [255, 176, 40], (1 - r / len) * 0.75 * (0.75 + 0.25 * Math.sin(t * 12)));
     }
   }
-  for (let y = CAKE.y - 30; y < CAKE.y + 30; y++) for (let x = CAKE.x - 40; x < CAKE.x + 40; x++) put(x, y, [255, 200, 90], 0.6 * Math.exp(-Math.hypot(x - CAKE.x, (y - CAKE.y) * 1.3) / 16));
+  for (let y = CAKE.y - 30; y < CAKE.y + 30; y++)
+    for (let x = CAKE.x - 40; x < CAKE.x + 40; x++) put(x, y, [255, 200, 90], 0.6 * Math.exp(-Math.hypot(x - CAKE.x, (y - CAKE.y) * 1.3) / 16));
   // the plate
-  for (let x = CAKE.x - 18; x <= CAKE.x + 18; x++) for (let y = CAKE.y + 10; y < CAKE.y + 14; y++) if (((x - CAKE.x) / 18) ** 2 + ((y - CAKE.y - 12) / 2.5) ** 2 <= 1) put(x, y, y < CAKE.y + 12 ? [255, 255, 255] : [190, 196, 210]);
+  for (let x = CAKE.x - 18; x <= CAKE.x + 18; x++)
+    for (let y = CAKE.y + 10; y < CAKE.y + 14; y++)
+      if (((x - CAKE.x) / 18) ** 2 + ((y - CAKE.y - 12) / 2.5) ** 2 <= 1) put(x, y, y < CAKE.y + 12 ? [255, 255, 255] : [190, 196, 210]);
   // the wedge: graham crust under, cream, a glaze of strawberry on top
   for (let y = CAKE.y - 6; y < CAKE.y + 11; y++)
     for (let x = CAKE.x - 14; x < CAKE.x + 14; x++) {
@@ -187,10 +193,13 @@ export function coverRgb(t: number): Uint8Array {
       if (y > CAKE.y + 6 && (x + y) % 3 === 0) c = [150, 96, 50];
       put(x, y, c);
     }
-  for (let a = 0; a < 6.3; a += 0.2) for (let r = 0; r < 3.4; r += 0.5) put(CAKE.x - 4 + Math.cos(a) * r, CAKE.y - 9 + Math.sin(a) * r, r < 1.5 ? [255, 120, 140] : [200, 20, 50]);
+  for (let a = 0; a < 6.3; a += 0.2)
+    for (let r = 0; r < 3.4; r += 0.5) put(CAKE.x - 4 + Math.cos(a) * r, CAKE.y - 9 + Math.sin(a) * r, r < 1.5 ? [255, 120, 140] : [200, 20, 50]);
   // a sparkle
   const sp = Math.abs(Math.sin(t * Math.PI * 3));
-  for (let k = -5; k <= 5; k++) (add(CAKE.x + 8 + k, CAKE.y - 10, [255, 255, 220], sp * (1 - Math.abs(k) / 6)), add(CAKE.x + 8, CAKE.y - 10 + k, [255, 255, 220], sp * (1 - Math.abs(k) / 6)));
+  for (let k = -5; k <= 5; k++)
+    (add(CAKE.x + 8 + k, CAKE.y - 10, [255, 255, 220], sp * (1 - Math.abs(k) / 6)),
+      add(CAKE.x + 8, CAKE.y - 10 + k, [255, 255, 220], sp * (1 - Math.abs(k) / 6)));
 
   // ---- the door, swung open toward us on the right (its shelves glowing)
   const dw = Math.round(34 + open * 22);
@@ -221,7 +230,8 @@ export function coverRgb(t: number): Uint8Array {
     const dx = x - man.x;
     const dy = y - man.y;
     // legs (pajama pants)
-    if (dy > -44 && dy <= 0 && Math.abs(dx) < 14 && !(Math.abs(dx) < 2 && dy > -30)) return (Math.floor((x + 400) / 3) % 2 ? [40, 60, 130] : [70, 100, 180]) as RGB;
+    if (dy > -44 && dy <= 0 && Math.abs(dx) < 14 && !(Math.abs(dx) < 2 && dy > -30))
+      return (Math.floor((x + 400) / 3) % 2 ? [40, 60, 130] : [70, 100, 180]) as RGB;
     // the belly and chest
     if (((dx + 1) / 18) ** 2 + ((dy + 62) / 22) ** 2 <= 1) return [214, 150, 112];
     // the head
@@ -252,7 +262,8 @@ export function coverRgb(t: number): Uint8Array {
   }
 
   // the lightning lights the whole room for a moment
-  if (flash > 0.05) for (let i = 0; i < W * H; i++) for (let k = 0; k < 3; k++) img[i * 3 + k] += (Math.min(255, img[i * 3 + k]) * 0.2 + [30, 34, 60][k]) * flash;
+  if (flash > 0.05)
+    for (let i = 0; i < W * H; i++) for (let k = 0; k < 3; k++) img[i * 3 + k] += (Math.min(255, img[i * 3 + k]) * 0.2 + [30, 34, 60][k]) * flash;
 
   const out = new Uint8Array(W * H * 3);
   for (let i = 0; i < out.length; i++) out[i] = Math.max(0, Math.min(255, Math.round(img[i])));

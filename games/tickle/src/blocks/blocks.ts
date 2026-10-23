@@ -97,7 +97,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   const under = speckle(P(), 0, 0, 20, 20, R('stone'), 0, 1, 15, 0.3);
   book.add('under', under, { solid: SOLID });
   const ceil = (a: Area) => {
-    const p = a === 'lab' ? speckle(P(), 0, 0, 20, 20, R('steel'), 1, 1, 17, 0.2) : a === 'course' ? speckle(P(), 0, 0, 20, 20, R('wood'), 0, 1, 18, 0.2) : under.crop(0, 0, 20, 20);
+    const p =
+      a === 'lab'
+        ? speckle(P(), 0, 0, 20, 20, R('steel'), 1, 1, 17, 0.2)
+        : a === 'course'
+          ? speckle(P(), 0, 0, 20, 20, R('wood'), 0, 1, 18, 0.2)
+          : under.crop(0, 0, 20, 20);
     if (a === 'lab') p.rect(2, 14, 16, 4, c('glass', 2)).rect(2, 18, 16, 1, c('steel', 0)).rect(3, 15, 14, 2, c('paint', 1));
     if (a === 'course') p.rect(0, 17, 20, 3, c('wood', 2)).rect(0, 19, 20, 1, c('wood', 0));
     return p;
@@ -135,7 +140,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   const cage = (top: boolean) => {
     const p = wall('lab');
     p.rect(0, top ? 4 : 0, 20, top ? 16 : 20, c('steel', 1));
-    for (let y = top ? 6 : 1; y < 18; y++) for (let x = 1; x < 19; x++) p.set(x, y, (x % 3 === 0 || y % 4 === 0) ? c('steel', 3) : y > 13 ? c('agouti', 4) : c('sky', 1));
+    for (let y = top ? 6 : 1; y < 18; y++)
+      for (let x = 1; x < 19; x++) p.set(x, y, x % 3 === 0 || y % 4 === 0 ? c('steel', 3) : y > 13 ? c('agouti', 4) : c('sky', 1));
     if (top) p.rect(0, 1, 20, 3, c('steel', 4)).rect(0, 4, 20, 1, c('steel', 0));
     p.rect(0, 18, 20, 2, c('steel', 2));
     return p;
@@ -230,7 +236,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(6, 17, 8, 3, c('steel', 2)).rect(9, 10, 2, 7, c('steel', 3));
     for (let k = 0; k < 3; k++) {
       const h = 6 + ((k * 2 + f * 3) % 4);
-      for (let y = 0; y < h; y++) p.set(8 + k + Math.round(Math.sin((y + f * 2 + k) / 2) * 0.8), 9 - y, c(y < h / 2 ? 'spark' : 'flame', 3 - Math.floor((y / h) * 3)));
+      for (let y = 0; y < h; y++)
+        p.set(8 + k + Math.round(Math.sin((y + f * 2 + k) / 2) * 0.8), 9 - y, c(y < h / 2 ? 'spark' : 'flame', 3 - Math.floor((y / h) * 3)));
     }
     return p;
   };
@@ -284,7 +291,12 @@ export function buildBlocks(pal: Pal): BlockBook {
       const w = y < 11 ? 2 : 2 + (y - 11) * 0.8;
       for (let x = Math.round(10 - w); x <= 10 + w; x++) p.set(x, y, y > 11 ? c('potion', 1 + ((x + y + f) % 3 === 0 ? 2 : 0)) : c('glass', 2));
     }
-    for (const [x, y] of [[9 + f, 4 - f], [11 - f, 2 + f], [10, 0 + f * 2]]) p.set(x, y, c('potion', 3));
+    for (const [x, y] of [
+      [9 + f, 4 - f],
+      [11 - f, 2 + f],
+      [10, 0 + f * 2],
+    ])
+      p.set(x, y, c('potion', 3));
     return p;
   };
   book.add('flask0', flask(0), { ...air, next: 'flask1', ntime: 6 });
@@ -293,7 +305,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   const out = wall('lab');
   out.rect(1, 0, 18, 20, c('steel', 2));
   for (let y = 1; y < 20; y++) for (let x = 2; x < 18; x++) out.set(x, y, shadeAt(R('blue'), 0, 2, y / 26, x, y));
-  for (const [x, y] of [[4, 14], [7, 12], [12, 15], [15, 11], [5, 6]]) out.rect(x, y, 2, 2, c('cheese', 2));
+  for (const [x, y] of [
+    [4, 14],
+    [7, 12],
+    [12, 15],
+    [15, 11],
+    [5, 6],
+  ])
+    out.rect(x, y, 2, 2, c('cheese', 2));
   book.add('windowL', out, air);
   // a lab poster: "TICKLE FIRST, DATA LATER"
   const poster = wall('lab');
@@ -327,7 +346,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     const p = wall('sewer');
     for (let k = 0; k < 3; k++) {
       const x = 4 + k * 6;
-      for (let y = 0; y < 20; y++) if ((y + f * 5 + k * 4) % 10 < 5) p.set(x + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('paper', 1)).set(x + 1 + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('grey', 3));
+      for (let y = 0; y < 20; y++)
+        if ((y + f * 5 + k * 4) % 10 < 5)
+          p.set(x + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('paper', 1)).set(x + 1 + Math.round(Math.sin((y + k) / 3) * 1.5), y, c('grey', 3));
     }
     return p;
   };
@@ -346,7 +367,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('manhole', manhole, { grav: GRAV.none });
   // an arch into the dark (scenery)
   const arch = wall('sewer');
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x - 10) ** 2 / 64 + ((y - 20) ** 2) / 300 < 1) arch.set(x, y, c('ink', 0));
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x - 10) ** 2 / 64 + (y - 20) ** 2 / 300 < 1) arch.set(x, y, c('ink', 0));
   book.add('archS', arch, air);
   // a drain spout dribbling (scenery)
   const spout = wall('sewer');
@@ -359,7 +380,9 @@ export function buildBlocks(pal: Pal): BlockBook {
   const storm = (flash: boolean) => {
     const p = wall('tower');
     p.rect(4, 1, 12, 18, c('stone', 0));
-    for (let y = 2; y < 19; y++) for (let x = 5; x < 15; x++) if ((x - 10) ** 2 / 25 + Math.max(0, 7 - y) ** 2 / 25 < 1 || y >= 7) p.set(x, y, flash ? c('paper', 2) : shadeAt(R('blue'), 0, 1, y / 30, x, y));
+    for (let y = 2; y < 19; y++)
+      for (let x = 5; x < 15; x++)
+        if ((x - 10) ** 2 / 25 + Math.max(0, 7 - y) ** 2 / 25 < 1 || y >= 7) p.set(x, y, flash ? c('paper', 2) : shadeAt(R('blue'), 0, 1, y / 30, x, y));
     if (flash) p.line(11, 3, 8, 9, c('spark', 1)).line(8, 9, 11, 11, c('spark', 1)).line(11, 11, 7, 18, c('spark', 1));
     p.rect(9, 2, 2, 17, c('stone', 1));
     return p;
@@ -374,7 +397,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     if (f > 0) {
       const y = 16 - f * 5;
       const half = 4 + f;
-      p.line(10 - half, y, 10, y - 2, c('spark', 3)).line(10, y - 2, 10 + half, y, c('spark', 3)).line(10 - half, y + 1, 10 + half, y + 1, c('spark', 1));
+      p.line(10 - half, y, 10, y - 2, c('spark', 3))
+        .line(10, y - 2, 10 + half, y, c('spark', 3))
+        .line(10 - half, y + 1, 10 + half, y + 1, c('spark', 1));
     }
     return p;
   };
@@ -400,12 +425,23 @@ export function buildBlocks(pal: Pal): BlockBook {
   const items = (a: Area, bgName: string) => {
     // yogurt drops: points (rat treats)
     const drops = wall(a);
-    for (const [x, y] of [[6, 12], [11, 9], [14, 14], [9, 15]]) blob(drops, x, y, 2.2, 1.8, R('paper'), 0, 2).set(x, y - 1, c('pink', 2));
+    for (const [x, y] of [
+      [6, 12],
+      [11, 9],
+      [14, 14],
+      [9, 15],
+    ])
+      blob(drops, x, y, 2.2, 1.8, R('paper'), 0, 2).set(x, y - 1, c('pink', 2));
     book.add(`drops.${a}`, drops, { score: 10, touch: bgName, ...air });
     // a cup of coffee: rapport back
     const coffee = wall(a);
     coffee.rect(6, 9, 8, 9, c('paper', 2)).rect(7, 10, 6, 2, c('coffee', 1)).rect(14, 11, 2, 4, c('paper', 1)).rect(5, 18, 10, 1, c('paper', 0));
-    for (const [x, y] of [[8, 6], [10, 4], [12, 6]]) coffee.set(x, y, c('grey', 3)).set(x + 1, y - 1, c('grey', 2));
+    for (const [x, y] of [
+      [8, 6],
+      [10, 4],
+      [12, 6],
+    ])
+      coffee.set(x, y, c('grey', 3)).set(x + 1, y - 1, c('grey', 2));
     book.add(`coffee.${a}`, coffee, { hp: 20, score: 10, touch: bgName, ...air });
     // Doc Leo's rubber chicken on its leash: an extra life
     const chicken = wall(a);
@@ -423,7 +459,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   // cheese in the sewers: a big wedge of points
   const cheese = wall('sewer');
   for (let y = 9; y < 18; y++) cheese.rect(4 + Math.round((17 - y) * 0.6), y, 14 - Math.round((17 - y) * 0.6), 1, c('cheese', y === 9 ? 2 : 1));
-  for (const [x, y] of [[10, 13], [14, 15], [8, 16]]) cheese.set(x, y, c('cheese', 0));
+  for (const [x, y] of [
+    [10, 13],
+    [14, 15],
+    [8, 16],
+  ])
+    cheese.set(x, y, c('cheese', 0));
   book.add('cheese', cheese, { score: 50, touch: 'wallS', ...air });
 
   // ---------- the doors: a Dutch door, the bottom half shut until the carpet is big enough ----------
@@ -461,7 +502,8 @@ export function buildBlocks(pal: Pal): BlockBook {
   const lotWin = new Pixels(40, 20);
   lotWin.blit(wall('course'), 0, 0).blit(wall('course'), 20, 0);
   lotWin.rect(1, 2, 38, 16, c('wood', 1));
-  for (let y = 3; y < 17; y++) for (let x = 2; x < 38; x++) lotWin.set(x, y, y < 13 ? shadeAt(R('blue'), 0, 1, y / 30, x, y) : shadeAt(R('grey'), 0, 1, 0.2 + (y - 13) / 10, x, y));
+  for (let y = 3; y < 17; y++)
+    for (let x = 2; x < 38; x++) lotWin.set(x, y, y < 13 ? shadeAt(R('blue'), 0, 1, y / 30, x, y) : shadeAt(R('grey'), 0, 1, 0.2 + (y - 13) / 10, x, y));
   const st = rng(37);
   for (let i = 0; i < 6; i++) lotWin.set(3 + Math.floor(st() * 34), 4 + Math.floor(st() * 4), c('paper', 2));
   lotWin.rect(2, 13, 36, 1, c('grey', 2));
@@ -470,19 +512,26 @@ export function buildBlocks(pal: Pal): BlockBook {
   lotWin.rect(34, 5, 1, 9, c('grey', 1)).rect(31, 4, 4, 1, c('grey', 1)).rect(31, 5, 3, 1, c('cheese', 2));
   // the charger, its green light, and the cord to the car's port
   lotWin.rect(28, 10, 2, 5, c('grey', 2)).set(28, 11, c('potion', 3));
-  const port = chezSide(lotWin, 6, 6, {
-    body: [c('red', 1), c('red', 2), c('red', 3)],
-    trim: c('red', 0),
-    glass: [c('navy', 0), c('glass', 0)],
-    roof: c('ink', 1),
-    tire: c('ink', 0),
-    hub: c('grey', 3),
-    rim: c('paper', 2),
-    stripe: c('ink', 1),
-    bumper: c('grey', 0),
-    lamp: c('paper', 2),
-    tail: c('flame', 1),
-  }, 'left', 0.5);
+  const port = chezSide(
+    lotWin,
+    6,
+    6,
+    {
+      body: [c('red', 1), c('red', 2), c('red', 3)],
+      trim: c('red', 0),
+      glass: [c('navy', 0), c('glass', 0)],
+      roof: c('ink', 1),
+      tire: c('ink', 0),
+      hub: c('grey', 3),
+      rim: c('paper', 2),
+      stripe: c('ink', 1),
+      bumper: c('grey', 0),
+      lamp: c('paper', 2),
+      tail: c('flame', 1),
+    },
+    'left',
+    0.5,
+  );
   lotWin.line(port.portX + 1, port.portY, 27, 11, c('ink', 0));
   lotWin.rect(1, 17, 38, 1, c('wood', 3));
   book.add('windowLotL', lotWin.crop(0, 0, 20, 20), air);
@@ -492,13 +541,34 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a glint crosses it now and then; 100 points
   const tin = { ink: c('ink', 0), tin: [c('steel', 1), c('steel', 2), c('steel', 4)], white: c('paint', 1), dark: c('steel', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(wall('tower'), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'wallT', score: 100, ...air });
+    book.add(`tinHeart${k || ''}`, drawTinHeart(wall('tower'), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'wallT',
+      score: 100,
+      ...air,
+    });
   // a dyed Easter egg rolled under the lab's first bench: 50 points
   const egg = { ink: c('ink', 0), shell: R('pink'), paint: R('blue').slice(1), accent: c('gold', 3), white: c('paint', 1) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(wall('lab'), egg, 'dots', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'wallL', score: 50, ...air });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(wall('lab'), egg, 'dots', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 3 : 60,
+      touch: 'wallL',
+      score: 50,
+      ...air,
+    });
   // Mystery Robot Joe (Keep It Brief!), the tin box night librarian, keeping count of the course's
   // rats by the chalkboard (scenery: walk right past him)
-  book.add('joe', wains().blit(joeCameo(buildPalette('plain').pal, 'down', 0, { use: ['ink', 'steel', 'grey', 'paint', 'glass', 'red', 'navy', 'gold', 'nose'].flatMap((n) => R(n)) }), 0, 0, CLEAR), air);
+  book.add(
+    'joe',
+    wains().blit(
+      joeCameo(buildPalette('plain').pal, 'down', 0, { use: ['ink', 'steel', 'grey', 'paint', 'glass', 'red', 'navy', 'gold', 'nose'].flatMap((n) => R(n)) }),
+      0,
+      0,
+      CLEAR,
+    ),
+    air,
+  );
   return book;
 }

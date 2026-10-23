@@ -202,7 +202,15 @@ export function city(book: BlockBook): Level {
   const H = 13;
   const m = new MapBuilder(book, CITY, 'earth');
   // sky, the street (standing row 9), earth under it, the wall all round
-  m.fill(1, 0, W - 2, 1, '^').row(1, 1, W - 2, '_').fill(1, 2, W - 2, 2, '-').row(4, 1, W - 2, ',').fill(1, 5, W - 2, 5, '.').row(10, 0, W - 1, '=').fill(0, 11, W, 2, '#').col(0, 0, 9, 'W').col(W - 1, 0, 9, 'W');
+  m.fill(1, 0, W - 2, 1, '^')
+    .row(1, 1, W - 2, '_')
+    .fill(1, 2, W - 2, 2, '-')
+    .row(4, 1, W - 2, ',')
+    .fill(1, 5, W - 2, 5, '.')
+    .row(10, 0, W - 1, '=')
+    .fill(0, 11, W, 2, '#')
+    .col(0, 0, 9, 'W')
+    .col(W - 1, 0, 9, 'W');
   m.set(12, 2, '~').set(36, 3, '~').set(61, 2, '~');
   // the great city gate behind him, where he was mindin' his humps
   m.row(1, 1, 3, 'T').fill(1, 2, 3, 3, 'W').text(1, 5, '(|)').fill(1, 6, 3, 4, 'g');
@@ -210,7 +218,12 @@ export function city(book: BlockBook): Level {
   // the city in the morning haze, where the rich man struts with his moneybags
   // the city in the haze behind the market, all along the street
   const SKYLINE = ['  3       3    ', '1 3 2  1  3 2 1', '000004000000400'];
-  for (const x of [8, 23, 41, 56]) m.patch(x, 7, SKYLINE.map((r) => r.slice(0, Math.min(15, 69 - x))));
+  for (const x of [8, 23, 41, 56])
+    m.patch(
+      x,
+      7,
+      SKYLINE.map((r) => r.slice(0, Math.min(15, 69 - x))),
+    );
   m.set(13, 9, '*');
   // the first stall, with pots; a beggar beside it
   m.row(6, 18, 22, 'R').col(18, 7, 9, 'I').col(22, 7, 9, 'I').row(9, 19, 21, 'p').set(20, 5, '*');
@@ -241,7 +254,13 @@ export function desert(book: BlockBook): Level {
   const W = 84;
   const H = 13;
   const m = new MapBuilder(book, DESERT, 'sandFill');
-  m.fill(1, 0, W - 2, 1, '^').row(1, 1, W - 2, '_').fill(1, 2, W - 2, 2, '-').row(4, 1, W - 2, ',').fill(1, 5, W - 2, 6, '.').col(0, 0, 10, 'R').col(W - 1, 0, 10, 'R');
+  m.fill(1, 0, W - 2, 1, '^')
+    .row(1, 1, W - 2, '_')
+    .fill(1, 2, W - 2, 2, '-')
+    .row(4, 1, W - 2, ',')
+    .fill(1, 5, W - 2, 6, '.')
+    .col(0, 0, 10, 'R')
+    .col(W - 1, 0, 10, 'R');
   m.set(70, 2, 'O');
   // the ground: [from x, to x, top row] (he stands on the row above)
   const ground: [number, number, number][] = [
@@ -334,7 +353,9 @@ export function tailor(book: BlockBook): Level {
   const W = 64;
   const H = 18;
   const m = new MapBuilder(book, TAILOR, 'rafter');
-  m.fill(1, 1, W - 2, 15, '.').row(16, 0, W - 1, '=').row(17, 0, W - 1, '#');
+  m.fill(1, 1, W - 2, 15, '.')
+    .row(16, 0, W - 1, '=')
+    .row(17, 0, W - 1, '#');
   m.text(14, 1, 'R K').text(14, 2, '2 3').text(36, 1, 'K').text(36, 2, '3').text(26, 1, 'R').text(26, 2, '2');
   m.set(4, 6, 'L').set(20, 12, 'w').set(30, 3, 'L').set(40, 6, 'w').set(44, 11, 'L').set(52, 7, 'w');
   // the seamstress by the door, a spool on the floor; the first thread, frayed halfway up
@@ -388,7 +409,9 @@ export function eye(book: BlockBook): Level {
   const H = 46;
   const m = new MapBuilder(book, { '.': 'bg' }, 'edge');
   for (const [a, b, s] of EYE_SHADES) for (let y = a; y <= b; y++) m.row(y, 1, W - 2, s < 0 ? `band${Math.floor(-s)}` : s === 0 ? 'bg' : `sky${s}`);
-  m.fill(0, 44, W, 2, 'dune').col(0, 0, 43, 'edge').col(W - 1, 0, 43, 'edge');
+  m.fill(0, 44, W, 2, 'dune')
+    .col(0, 0, 43, 'edge')
+    .col(W - 1, 0, 43, 'edge');
   const cloud = (y: number, x0: number, x1: number) => m.row(y, x0, x1, `cloud${eyeShade(y)}`);
   // the sleeping city far below, the moon
   for (let x = 1; x < W - 1; x++) if (x < 11 || x > 14) m.set(x, 43, x % 2 ? 'town0' : 'town1');

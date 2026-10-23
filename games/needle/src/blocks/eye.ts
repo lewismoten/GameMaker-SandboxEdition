@@ -112,10 +112,11 @@ export function eyeBlocks(pal: Pal): Kit {
   };
   const shaft = (half: 0 | 1, shade: number) => {
     const p = starry(50 + half, shade);
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) {
-      const gx = half * 20 + x;
-      if (gx >= 6 && gx < 34) p.set(x, y, needle(gx - 6 + 6, y, 0));
-    }
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) {
+        const gx = half * 20 + x;
+        if (gx >= 6 && gx < 34) p.set(x, y, needle(gx - 6 + 6, y, 0));
+      }
     return p;
   };
   for (const s of [0, 1, 2, 3, 4, 5]) {
@@ -140,8 +141,7 @@ export function eyeBlocks(pal: Pal): Kit {
   const HEAD_H = 140;
   const head = new Pixels(40, HEAD_H, 255);
   const widthAt = (y: number) => (y < 60 ? (y / 60) * 19 : y < 120 ? 19 - ((y - 60) / 60) * 5 : 14);
-  for (let y = 0; y < HEAD_H; y++)
-    for (let x = 0; x < 40; x++) if (Math.abs(x - 19.5) < widthAt(y)) head.set(x, y, needle(x, y, 0));
+  for (let y = 0; y < HEAD_H; y++) for (let x = 0; x < 40; x++) if (Math.abs(x - 19.5) < widthAt(y)) head.set(x, y, needle(x, y, 0));
   // the eye: white, a blue-violet iris, a deep pupil, a glint, lashes
   const ex = 19.5;
   const ey = 110;
@@ -150,7 +150,15 @@ export function eyeBlocks(pal: Pal): Kit {
       const d = ((x - ex) / 16) ** 2 + ((y - ey) / 13) ** 2;
       if (d > 1) continue;
       const r = Math.hypot(x - ex, y - ey);
-      head.set(x, y, r < 4.5 ? c('ink', 0) : r < 11 ? shadeAt(R('purple'), 1, 3, 1 - r / 13 + ((Math.atan2(y - ey, x - ex) * 6) % 1) * 0.15, x, y) : shadeAt(R('white'), 0, 2, 1 - Math.abs(y - ey) / 14, x, y));
+      head.set(
+        x,
+        y,
+        r < 4.5
+          ? c('ink', 0)
+          : r < 11
+            ? shadeAt(R('purple'), 1, 3, 1 - r / 13 + ((Math.atan2(y - ey, x - ex) * 6) % 1) * 0.15, x, y)
+            : shadeAt(R('white'), 0, 2, 1 - Math.abs(y - ey) / 14, x, y),
+      );
     }
   head.disc(ex - 4, ey - 4, 1.6, c('white', 2));
   for (let a = 0; a < 7; a++) head.line(ex - 12 + a * 4, ey - 13, ex - 13 + a * 4.2, ey - 17, c('ink', 0));
@@ -173,7 +181,11 @@ export function eyeBlocks(pal: Pal): Kit {
   book.add('pupil', shut, { solid: SOLID, effect: GRACE, eamt: -EYE_GRACE, score: 1000, touch: 'pupilOpen' });
 
   // a small eye gate through the shaft (one grace), and its hole
-  addGate(k, () => shaft(0, 4), () => shaft(1, 4).map((x, y, v) => (x < 18 && y > 1 ? c('sky', 4) : v)));
+  addGate(
+    k,
+    () => shaft(0, 4),
+    () => shaft(1, 4).map((x, y, v) => (x < 18 && y > 1 ? c('sky', 4) : v)),
+  );
   const hole = shaft(1, 4).map((x, y, v) => (x < 14 && y > 1 ? c('sky', 4) : v));
   for (let x = 0; x < 14; x++) hole.set(x, 0, c('gold', 3)).set(x, 1, c('gold', 2));
   book.add('hole', hole, air);
@@ -186,7 +198,14 @@ export function eyeBlocks(pal: Pal): Kit {
   // a dove's olive branch: points
   const olive = starry(81, 4);
   olive.line(4, 14, 16, 6, c('wood', 2));
-  for (const [x, y] of [[7, 11], [10, 9], [13, 8], [9, 13], [14, 10]]) blob(olive, x, y, 2, 1.2, R('leaf'), 1, 3);
+  for (const [x, y] of [
+    [7, 11],
+    [10, 9],
+    [13, 8],
+    [9, 13],
+    [14, 10],
+  ])
+    blob(olive, x, y, 2, 1.2, R('leaf'), 1, 3);
   book.add('olive', olive, { score: 100, touch: 'sky4', grav: GRAV.down });
   return k;
 }

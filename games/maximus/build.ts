@@ -24,7 +24,7 @@ if (old.box?.hours) aboutJson.box.hours = old.box.hours;
 else delete aboutJson.box.hours;
 writeFileSync(here('about.json'), JSON.stringify(aboutJson, null, 2) + '\n');
 writeFileSync(here('manual.json'), JSON.stringify(manual(built), null, 2) + '\n');
-disk.put('license.txt', licenseText("Maximus: The Hundred Worlds"));
+disk.put('license.txt', licenseText('Maximus: The Hundred Worlds'));
 disk.write();
 for (const p of built.problems) console.log('PROBLEM', p);
 console.log(

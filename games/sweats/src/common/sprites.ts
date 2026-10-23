@@ -95,10 +95,21 @@ export function poetArt(pal: Pal) {
     const arms = o.arms ?? 'down';
     const mood = o.mood ?? 'calm';
     // sweatpants (baggy, a darker crease) and fuzzy slippers
-    const legs = side && step % 2 ? [[7, -2], [12, 2]] : [[7, 0], [12, 0]];
+    const legs =
+      side && step % 2
+        ? [
+            [7, -2],
+            [12, 2],
+          ]
+        : [
+            [7, 0],
+            [12, 0],
+          ];
     for (const [lx, d] of legs) {
       for (let y = 13 + cr; y < 18; y++) p.rect(lx + Math.round(((y - 13) / 5) * d) - 2, y, 4, 1, c('sweats', y % 4 === 0 ? 1 : 2));
-      p.rect(lx + d - 2, 18, 5, 2, c('pink', 1)).set(lx + d - 2, 18, c('pink', 2)).set(lx + d + 2, 19, c('pink', 0));
+      p.rect(lx + d - 2, 18, 5, 2, c('pink', 1))
+        .set(lx + d - 2, 18, c('pink', 2))
+        .set(lx + d + 2, 19, c('pink', 0));
     }
     p.rect(5, 12 + cr, 10, 2, c('sweats', 2)).rect(9, 12 + cr, 1, 2, c('white', 0));
     // the velvet doublet with its gold buttons
@@ -110,7 +121,8 @@ export function poetArt(pal: Pal) {
     const hy = 3 + cr + bow;
     blob(p, hx, hy, 3.6, 3.6, pal.r('skin'), 1, 4);
     p.set(hx - 1, hy - 3, c('skin', 4)).set(hx, hy - 3, c('skin', 4));
-    for (const sx of side ? [hx - 3, hx - 4] : [hx - 4, hx - 3, hx + 3, hx + 4]) for (let y = hy - 1; y <= hy + 2; y++) p.set(sx, y, c('hair', (sx + y) % 2 ? 1 : 2));
+    for (const sx of side ? [hx - 3, hx - 4] : [hx - 4, hx - 3, hx + 3, hx + 4])
+      for (let y = hy - 1; y <= hy + 2; y++) p.set(sx, y, c('hair', (sx + y) % 2 ? 1 : 2));
     if (!side) p.set(hx - 4, hy + 2, c('gold', 3));
     else p.set(hx - 2, hy + 2, c('gold', 3));
     const eyes = side ? [hx + 1, hx + 3] : [hx - 2, hx + 1];
@@ -121,7 +133,9 @@ export function poetArt(pal: Pal) {
     }
     const mx = side ? hx + 2 : hx;
     // the moustache and beard
-    p.set(mx - 1, hy + 2, c('hair', 0)).set(mx + 1, hy + 2, c('hair', 0)).set(mx, hy + 2, c('hair', 0));
+    p.set(mx - 1, hy + 2, c('hair', 0))
+      .set(mx + 1, hy + 2, c('hair', 0))
+      .set(mx, hy + 2, c('hair', 0));
     if (mood === 'shout' || mood === 'ouch') p.rect(mx - 1, hy + 3, 2, 1, ink).set(mx, hy + 3, c('red', 2));
     else if (mood === 'smug') p.set(mx + 1, hy + 3, ink);
     p.set(mx, hy + 4, c('hair', 1)).set(mx, hy + 5, c('hair', 0));
@@ -148,7 +162,9 @@ export function poetArt(pal: Pal) {
       arm(3, sy, 3, sy + 4);
       arm(15, sy, 17, sy - 5);
       // the coffee cup held up and contemplated: to drink, or not to drink
-      p.rect(15, sy - 10, 5, 5, c('white', 2)).rect(15, sy - 10, 5, 1, c('coffee', 2)).set(19, sy - 8, c('white', 0));
+      p.rect(15, sy - 10, 5, 5, c('white', 2))
+        .rect(15, sy - 10, 5, 1, c('coffee', 2))
+        .set(19, sy - 8, c('white', 0));
       p.set(16, sy - 12, c('white', 1)).set(17, sy - 13, c('white', 1));
     }
     if (arms === 'bow') (arm(4, sy + 2, 2, sy + 6), arm(15, sy + 2, 12, sy + 4));
@@ -210,11 +226,28 @@ export function face(p: Pixels, pal: Pal, x: number, y: number, o: { wink?: bool
   const ink = pal.c('ink', 0);
   p.set(x - 2, y, ink).set(x + 2, y, o.wink ? pal.c('white', 2) : ink);
   if (o.wink) p.set(x + 1, y, ink).set(x + 3, y, ink);
-  if (o.angry) p.set(x - 3, y - 2, ink).set(x - 2, y - 1, ink).set(x + 3, y - 2, ink).set(x + 2, y - 1, ink);
+  if (o.angry)
+    p.set(x - 3, y - 2, ink)
+      .set(x - 2, y - 1, ink)
+      .set(x + 3, y - 2, ink)
+      .set(x + 2, y - 1, ink);
   if (o.sad) p.set(x - 3, y - 1, ink).set(x + 3, y - 1, ink);
-  if (o.grin) p.set(x - 2, y + 2, ink).set(x - 1, y + 3, ink).set(x, y + 3, ink).set(x + 1, y + 3, ink).set(x + 2, y + 2, ink);
-  else if (o.sad) p.set(x - 2, y + 3, ink).set(x - 1, y + 2, ink).set(x, y + 2, ink).set(x + 1, y + 2, ink).set(x + 2, y + 3, ink);
-  else p.set(x - 1, y + 2, ink).set(x, y + 2, ink).set(x + 1, y + 2, ink);
+  if (o.grin)
+    p.set(x - 2, y + 2, ink)
+      .set(x - 1, y + 3, ink)
+      .set(x, y + 3, ink)
+      .set(x + 1, y + 3, ink)
+      .set(x + 2, y + 2, ink);
+  else if (o.sad)
+    p.set(x - 2, y + 3, ink)
+      .set(x - 1, y + 2, ink)
+      .set(x, y + 2, ink)
+      .set(x + 1, y + 2, ink)
+      .set(x + 2, y + 3, ink);
+  else
+    p.set(x - 1, y + 2, ink)
+      .set(x, y + 2, ink)
+      .set(x + 1, y + 2, ink);
 }
 
 /** The sprites every .MBL starts with (in this order, so every group's monster file agrees). */
@@ -271,7 +304,11 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
     blob(p, 10, 11, 4.5, 3.4, pal.r('fly'), 0, 2);
     p.disc(13.5, 9.5, 1.8, c('red', 2)).set(14, 9, c('white', 2));
     const wy = f ? 4 : 6;
-    for (const [x0, x1] of [[6, 9], [10, 13]]) p.line(x0, wy, x1, 8, c('white', 1)).line(x0, wy + 1, x1, 8, c('white', 0));
+    for (const [x0, x1] of [
+      [6, 9],
+      [10, 13],
+    ])
+      p.line(x0, wy, x1, 8, c('white', 1)).line(x0, wy + 1, x1, 8, c('white', 0));
     for (const x of [8, 10, 12]) p.line(x, 14, x - 1 + (f ? 1 : 0), 16, ink);
     return done(p);
   };
@@ -284,7 +321,9 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
     blob(p, 11, 11, 6.5, 3.8, pal.r('grey'), 2, 3);
     blob(p, 4.5, 8 + f * 0.5, 2.8, 2.6, pal.r('grey'), 2, 3);
     p.line(3, 5, 1, 3, c('grey', 1)).line(5, 5, 6, 2, c('grey', 1));
-    p.set(4, 8, ink).set(2, 10 + f, c('grey', 1)).set(3, 11 + f, c('grey', 1));
+    p.set(4, 8, ink)
+      .set(2, 10 + f, c('grey', 1))
+      .set(3, 11 + f, c('grey', 1));
     p.line(17, 9, 19, 8, c('grey', 2));
     return done(p);
   };
@@ -294,7 +333,11 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   // red sneakers, and the rubber chicken on its leash
   const leo = (f: number) => {
     const p = P();
-    for (const [x, d] of [[7, f ? 1 : 0], [11, f ? -1 : 0]]) p.rect(x + d, 14, 2, 4, c('navy', 1)).rect(x + d - 1, 18, 3, 2, c('red', 2));
+    for (const [x, d] of [
+      [7, f ? 1 : 0],
+      [11, f ? -1 : 0],
+    ])
+      p.rect(x + d, 14, 2, 4, c('navy', 1)).rect(x + d - 1, 18, 3, 2, c('red', 2));
     p.rect(5, 8, 9, 6, c('navy', 2)).rect(8, 8, 3, 5, c('purple', 2)).rect(9, 8, 1, 5, c('teal', 2));
     blob(p, 9.5, 4.5, 3.2, 3, pal.r('skin'), 2, 4);
     p.rect(6, 5, 7, 2, c('grey', 0)).rect(8, 6, 3, 1, c('white', 2));

@@ -65,15 +65,24 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
     f({ pic: 'blink', pause: 3 }),
     f({ pic: 'front', pause: 24, top: 'top1' }),
   ]);
-  set(S[SEQ.die], [f({ pic: 'hurt', top: 'topOuch', pause: 3 }), f({ pic: 'wilt0', top: 'topWilt', pause: 8 }), f({ pic: 'wilt1', top: 'topWilt', pause: 30 })], { sound: SND.wilt, jstkBut: 0 });
-  set(S[SEQ.hurt], [f({ pic: 'hurt', top: 'topOuch', pause: 2 }), f({ pic: 'front', pause: 1 }), f({ pic: 'hurt', top: 'topOuch', pause: 2 }), f({ pic: 'front', pause: 1 })], {
-    sound: SND.hurt,
-    jstkBut: 0,
-  });
+  set(
+    S[SEQ.die],
+    [f({ pic: 'hurt', top: 'topOuch', pause: 3 }), f({ pic: 'wilt0', top: 'topWilt', pause: 8 }), f({ pic: 'wilt1', top: 'topWilt', pause: 30 })],
+    { sound: SND.wilt, jstkBut: 0 },
+  );
+  set(
+    S[SEQ.hurt],
+    [f({ pic: 'hurt', top: 'topOuch', pause: 2 }), f({ pic: 'front', pause: 1 }), f({ pic: 'hurt', top: 'topOuch', pause: 2 }), f({ pic: 'front', pause: 1 })],
+    {
+      sound: SND.hurt,
+      jstkBut: 0,
+    },
+  );
   set(S[3], [f({ pic: 'front' })], { key: 0 });
   set(S[4], [f({ pic: 'front' })], { key: 0 });
 
-  const walk = (dx: number, mirror: boolean) => ['side1', 'side0', 'side2', 'side0'].map((pic, i) => f({ pic, x: dx, mirror, top: tall ? ['top1', 'top0', 'top2', 'top0'][i] : undefined }));
+  const walk = (dx: number, mirror: boolean) =>
+    ['side1', 'side0', 'side2', 'side0'].map((pic, i) => f({ pic, x: dx, mirror, top: tall ? ['top1', 'top0', 'top2', 'top0'][i] : undefined }));
   set(S[SEQ.right], walk(STEP, false), { key: KEY.right, jstkMov: JOY.right });
   set(S[SEQ.left], walk(-STEP, true), { key: KEY.left, jstkMov: JOY.left });
   set(S[SEQ.rightD], walk(STEP, false), { key: KEY.d });
@@ -81,7 +90,10 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   const hop = [f({ pic: 'hopFront', y: -HOP, top: 'topJoy' })];
   set(S[SEQ.hop], hop, { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
   set(S[SEQ.hopW], hop, { key: KEY.w, sound: SND.hop });
-  const side = (dx: number, mirror: boolean) => [f({ pic: 'hop', x: dx, y: -HOP, mirror, top: 'topJoy' }), f({ pic: 'hop', x: dx, y: -HOP, mirror, top: 'top0' })];
+  const side = (dx: number, mirror: boolean) => [
+    f({ pic: 'hop', x: dx, y: -HOP, mirror, top: 'topJoy' }),
+    f({ pic: 'hop', x: dx, y: -HOP, mirror, top: 'top0' }),
+  ];
   set(S[SEQ.hopLeft], side(-HOP_STEP, true), { key: KEY.q, jstkMov: JOY.upLeft, sound: SND.hop });
   set(S[SEQ.hopRight], side(HOP_STEP, false), { key: KEY.e, jstkMov: JOY.upRight, sound: SND.hop });
   set(S[SEQ.hopLeft7], side(-HOP_STEP, true), { key: KEY.home, sound: SND.hop });
@@ -91,7 +103,12 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   set(S[SEQ.root], root, { key: KEY.down, jstkMov: JOY.down, sound: SND.root });
   set(S[SEQ.rootS], root, { key: KEY.s, sound: SND.root });
   // A Hallelujah: a little jump for joy, and the song sings it.
-  const joy = [f({ pic: 'joy', top: 'topJoy', pause: 4 }), f({ pic: 'front', pause: 3 }), f({ pic: 'joy', top: 'topJoy', pause: 6 }), f({ pic: 'front', pause: 2 })];
+  const joy = [
+    f({ pic: 'joy', top: 'topJoy', pause: 4 }),
+    f({ pic: 'front', pause: 3 }),
+    f({ pic: 'joy', top: 'topJoy', pause: 6 }),
+    f({ pic: 'front', pause: 2 }),
+  ];
   set(S[SEQ.joy], joy, { key: KEY.space, sound: SND.joy, norepeat: 1, jstkMov: JOY.any, jstkBut: 1 });
   set(S[SEQ.joyH], joy, { key: KEY.h, sound: SND.joy, norepeat: 1 });
 
@@ -157,14 +174,26 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   // Pebbles roll out of the scree, down the slope to the right, and fall apart in a puff.
   set[MON.pebble] = mon(anim('pebble0', 'pebble1', 2), { power: 150, thru: 0, end: 60, newmon: MON.dust }, [corner(0, 0, 3), corner(30, 0, 3)]);
   set[MON.dust] = mon([[n('dust'), 5]], { power: 100, thru: 0, end: 6 });
-  set[MON.eagle] = mon(anim('eagle0', 'eagle1', 4), { power: 150, thru: 0 }, [corner(0, 0, 3), corner(9, 2, 3, 0), corner(14, 0, 3, 0), corner(5, -2, 3, 4), corner(0, 0, 3, 4)]);
+  set[MON.eagle] = mon(anim('eagle0', 'eagle1', 4), { power: 150, thru: 0 }, [
+    corner(0, 0, 3),
+    corner(9, 2, 3, 0),
+    corner(14, 0, 3, 0),
+    corner(5, -2, 3, 4),
+    corner(0, 0, 3, 4),
+  ]);
   // A white goat, a long way from Bethlehem, pacing her ledge. Harmless.
   set[MON.goat] = mon(anim('goat0', 'goat1', 6), { power: 200, thru: 1 }, pace(3, 1));
   set[MON.squirrel] = mon(anim('squirrel0', 'squirrel1', 3), { power: 150, thru: 1 }, pace(3, 2));
   // Birds sit in the nests; a hello (a touch) is worth points, and off they fly.
   set[MON.bird] = mon(anim('bird0', 'bird1', 12), { power: 50, thru: 0, newmon: MON.birdOff });
   set[MON.birdOff] = mon(anim('birdOff0', 'birdOff1', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 4), corner(4, -8, 4, 0)]);
-  set[MON.bee] = mon(anim('bee0', 'bee1', 2), { power: 150, thru: 0 }, [corner(0, 0, 2), corner(2, -2, 2, 0), corner(4, 0, 2, 0), corner(2, 2, 2, 4), corner(0, 0, 2, 4)]);
+  set[MON.bee] = mon(anim('bee0', 'bee1', 2), { power: 150, thru: 0 }, [
+    corner(0, 0, 2),
+    corner(2, -2, 2, 0),
+    corner(4, 0, 2, 0),
+    corner(2, 2, 2, 4),
+    corner(0, 0, 2, 4),
+  ]);
   return set;
 }
 

@@ -20,7 +20,12 @@ export interface LevelSet {
   pal: Uint8Array;
 }
 
-export function buildLevelSet(level: Level, spriteColors: Col[], extra?: (kind: string, plane: Plane, part: number) => Behavior | undefined, prepare?: (book: TileBook) => void): LevelSet {
+export function buildLevelSet(
+  level: Level,
+  spriteColors: Col[],
+  extra?: (kind: string, plane: Plane, part: number) => Behavior | undefined,
+  prepare?: (book: TileBook) => void,
+): LevelSet {
   const book = new TileBook(level.theme, rulesFor({ level: level.n, extra }));
   pinHidden(book);
   prepare?.(book);

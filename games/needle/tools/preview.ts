@@ -21,7 +21,24 @@ const mb = buildMonsterBlocks(day);
 writePng(join(out, 'monsters.png'), blockSheet(mb.blocks.slice(0, mb.index.size), 10, day.c('sky', 4)), day.pal, 4);
 // the camel: every pose of every form, tall ones stacked, on the sky
 const forms = Object.keys(FORMS) as Form[];
-const names = ['stand', 'blink', 'chew', 'walk0', 'walk1', 'walk2', 'hop', 'dream', 'hurt', 'kneel0', 'kneel1', 'crawl0', 'crawl1', 'faint0', 'faint1', 'stars0'];
+const names = [
+  'stand',
+  'blink',
+  'chew',
+  'walk0',
+  'walk1',
+  'walk2',
+  'hop',
+  'dream',
+  'hurt',
+  'kneel0',
+  'kneel1',
+  'crawl0',
+  'crawl1',
+  'faint0',
+  'faint1',
+  'stars0',
+];
 const sheet = new Pixels(names.length * 22, forms.length * 42, day.c('sky', 4));
 forms.forEach((form, row) => {
   const cb = buildCharBlocks(day, form);

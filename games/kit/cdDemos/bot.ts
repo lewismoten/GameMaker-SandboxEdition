@@ -58,7 +58,8 @@ const pos = (w: World) => ({ x: w.chr.x[0] * 20 + w.chr.x[1], y: w.chr.y[0] * 20
 const carried = (w: World) => w.ci.inv.filter((b) => b !== BACKBL + 1 && b < BACKBL).length;
 
 export class Bot {
-  private o: Required<Omit<BotOptions, 'links' | 'goals' | 'route' | 'seed' | 'searchRoute'>> & Pick<BotOptions, 'links' | 'goals' | 'route'> & { searchRoute: boolean };
+  private o: Required<Omit<BotOptions, 'links' | 'goals' | 'route' | 'seed' | 'searchRoute'>> &
+    Pick<BotOptions, 'links' | 'goals' | 'route'> & { searchRoute: boolean };
   /** The next waypoint of the scene's route. */
   private leg = 0;
   private visits = new Map<number, Uint16Array>();
@@ -102,9 +103,7 @@ export class Bot {
     const scenes = s.game.scenes;
     const valid = (i: number | undefined): i is number => i !== undefined && i > 1 && i < scenes.length;
     const candidates =
-      this.scene < 0
-        ? [scenes[0]?.links[0]?.toScene].filter(valid)
-        : [this.scene, ...(scenes[this.scene]?.links ?? []).map((l) => l.toScene).filter(valid)];
+      this.scene < 0 ? [scenes[0]?.links[0]?.toScene].filter(valid) : [this.scene, ...(scenes[this.scene]?.links ?? []).map((l) => l.toScene).filter(valid)];
     let best = candidates[0] ?? -1;
     let bestDiff = Infinity;
     for (const i of new Set(candidates)) {
@@ -150,7 +149,10 @@ export class Bot {
   private goals(s: Session): { x: number; y: number }[] {
     const leg = this.o.route?.[this.scene]?.[this.leg];
     if (leg) return [leg];
-    return this.o.goals?.[this.scene] ?? (s.game.scenes[this.scene]?.links ?? []).filter((l, i) => l.toScene < s.game.scenes.length && this.allowed(i)).map((l) => l.from);
+    return (
+      this.o.goals?.[this.scene] ??
+      (s.game.scenes[this.scene]?.links ?? []).filter((l, i) => l.toScene < s.game.scenes.length && this.allowed(i)).map((l) => l.from)
+    );
   }
 
   private fields = new Map<string, Int32Array>();
@@ -172,7 +174,12 @@ export class Bot {
       const c = queue[i];
       const x = c % MAP_W;
       const y = (c - x) / MAP_W;
-      for (const [nx, ny] of [[(x + 1) % MAP_W, y], [(x + MAP_W - 1) % MAP_W, y], [x, (y + 1) % MAP_W], [x, (y + MAP_W - 1) % MAP_W]]) {
+      for (const [nx, ny] of [
+        [(x + 1) % MAP_W, y],
+        [(x + MAP_W - 1) % MAP_W, y],
+        [x, (y + 1) % MAP_W],
+        [x, (y + MAP_W - 1) % MAP_W],
+      ]) {
         const n = ny * MAP_W + nx;
         if (open(nx, ny) && f[n] < 0) {
           f[n] = f[c] + 1;
@@ -243,14 +250,18 @@ export class Bot {
     const back = this.trail[Math.max(0, this.trail.length - 12)];
     if (back) value += Math.min(60, Math.hypot(end.x - back.x, end.y - back.y) / 4) * this.o.explore;
     if (process.env.BOT_DEBUG === '2' && dice === 0)
-      this.log.push(`    key ${opt?.key} from ${pos(w).x},${pos(w).y} to ${end.x},${end.y} back ${back?.x},${back?.y} hp ${before.hp}->${ci.hitpts} score +${ci.score - before.score} cells ${seenHere.size}`);
+      this.log.push(
+        `    key ${opt?.key} from ${pos(w).x},${pos(w).y} to ${end.x},${end.y} back ${back?.x},${back?.y} hp ${before.hp}->${ci.hitpts} score +${ci.score - before.score} cells ${seenHere.size}`,
+      );
     const goals = this.goals(s);
     if (goals.length) {
       // steps along open blocks to the nearest goal, or as the crow flies where no path is known
       const field = this.goalField(w, goals);
       const d = (q: { x: number; y: number }) => {
         const steps = field[Math.floor(q.y / 20) * MAP_W + Math.floor(q.x / 20)];
-        return steps >= 0 ? steps + (Math.abs((q.x % 20) - 10) + Math.abs((q.y % 20) - 10)) / 20 : 2 * Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
+        return steps >= 0
+          ? steps + (Math.abs((q.x % 20) - 10) + Math.abs((q.y % 20) - 10)) / 20
+          : 2 * Math.min(...goals.map((g) => Math.hypot(q.x / 20 - g.x, q.y / 20 - g.y)));
       };
       value += (d(pos(w)) - d(end)) * this.o.goalWeight;
     }
@@ -282,7 +293,7 @@ export class Bot {
     const at = pos(w);
     this.trail.push(at);
     const leg = this.o.route?.[this.scene]?.[this.leg];
-    const wrap = (d: number) => ((d % MAP_W) + MAP_W * 1.5) % MAP_W - MAP_W / 2;
+    const wrap = (d: number) => (((d % MAP_W) + MAP_W * 1.5) % MAP_W) - MAP_W / 2;
     if (leg && Math.hypot(wrap(at.x / 20 - leg.x), wrap(at.y / 20 - leg.y)) < 2) {
       this.log.push(`tick ${s.rec.tick}: reached waypoint ${this.leg} (${leg.x},${leg.y})`);
       this.leg++;
@@ -382,9 +393,14 @@ export class Bot {
 
   /** Two presses (key and how long), tried on copies: the pair that comes nearest the waypoint without getting hurt. */
   private async searchRoute(w: World, s: Session, leg: { x: number; y: number }): Promise<{ key: number; ticks: number }[]> {
-    const keys = [0, ...this.options(w).filter((o) => o.kind === 'move' || o.kind === 'jump').map((o) => o.key)];
+    const keys = [
+      0,
+      ...this.options(w)
+        .filter((o) => o.kind === 'move' || o.kind === 'jump')
+        .map((o) => o.key),
+    ];
     const durs = [2, 4, 8, 14];
-    const wrap = (d: number) => ((d % MAP_W) + MAP_W * 1.5) % MAP_W - MAP_W / 2;
+    const wrap = (d: number) => (((d % MAP_W) + MAP_W * 1.5) % MAP_W) - MAP_W / 2;
     const dist = (x: World) => Math.hypot(wrap(pos(x).x / 20 - leg.x), wrap(pos(x).y / 20 - leg.y));
     let best: { key: number; ticks: number }[] = [];
     let bestValue = Infinity;
@@ -398,7 +414,10 @@ export class Bot {
             let near = Infinity;
             let bad = false;
             const hp = w.ci.hitpts;
-            for (const [k, d] of [[a, da], [b, db]] as const) {
+            for (const [k, d] of [
+              [a, da],
+              [b, db],
+            ] as const) {
               if (k) p.key(k);
               for (let t = 0; t < d && !bad; t++) {
                 await p.tick();
@@ -414,13 +433,14 @@ export class Bot {
             }
             if (bad) continue;
             const value = near + dist(copy) * 0.5 + Math.max(0, hp - copy.ci.hitpts) * 0.5 + (da + db) / 60;
-            if (value < bestValue) [best, bestValue] = [
-              [
-                { key: a, ticks: da },
-                { key: b, ticks: db },
-              ],
-              value,
-            ];
+            if (value < bestValue)
+              [best, bestValue] = [
+                [
+                  { key: a, ticks: da },
+                  { key: b, ticks: db },
+                ],
+                value,
+              ];
           }
     return best;
   }

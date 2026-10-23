@@ -122,7 +122,12 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a window: the curtains and the night outside
   const window = wallpaper(6);
   window.rect(3, 4, 14, 14, c('wood', 3)).rect(4, 5, 12, 12, c('sky', 1)).rect(9, 5, 2, 12, c('wood', 3)).rect(4, 10, 12, 1, c('wood', 3));
-  for (const [x, y] of [[6, 7], [13, 6], [14, 13]]) window.set(x, y, c('star', 0));
+  for (const [x, y] of [
+    [6, 7],
+    [13, 6],
+    [14, 13],
+  ])
+    window.set(x, y, c('star', 0));
   window.disc(6, 13, 1.5, c('lamp', 1));
   for (let y = 3; y < 19; y++) window.rect(1, y, 3 - (y % 2), 1, c('red', 1)).rect(16 + (y % 2), y, 3, 1, c('red', 1));
   book.add('window', window, solid);
@@ -139,7 +144,9 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a shelf of VHS tapes (the panel row)
   const shelf = panel.crop(0, 0, 20, 20);
   shelf.rect(1, 2, 18, 13, c('wood', 0));
-  ['red', 'blue', 'white', 'yellow', 'green', 'red', 'blue'].forEach((k, i) => shelf.rect(2 + i * 2 + Math.floor(i / 4), 4, 2, 10, c(k, i % 2 ? 1 : 2)).set(2 + i * 2 + Math.floor(i / 4), 6, c('white', 2)));
+  ['red', 'blue', 'white', 'yellow', 'green', 'red', 'blue'].forEach((k, i) =>
+    shelf.rect(2 + i * 2 + Math.floor(i / 4), 4, 2, 10, c(k, i % 2 ? 1 : 2)).set(2 + i * 2 + Math.floor(i / 4), 6, c('white', 2)),
+  );
   book.add('tapes', shelf, solid);
 
   // ---------- the TV and the VCR ----------
@@ -157,7 +164,8 @@ export function buildBlocks(pal: Pal): BlockBook {
         if (corner) continue;
         let col = c('screen', 1);
         if (show === 'blue') col = c('screen', (x + y) % 9 === 0 ? 2 : 1);
-        if (show.startsWith('snow')) col = rng(x * 31 + y * 7 + (show === 'snow1' ? 999 : 0))() < 0.5 ? c('screen', 3) : c('crt', (x * y + (show === 'snow1' ? 1 : 0)) % 3);
+        if (show.startsWith('snow'))
+          col = rng(x * 31 + y * 7 + (show === 'snow1' ? 999 : 0))() < 0.5 ? c('screen', 3) : c('crt', (x * y + (show === 'snow1' ? 1 : 0)) % 3);
         p.set(sx + x, sy + y, col);
       }
     if (show.startsWith('cook')) {
@@ -165,7 +173,9 @@ export function buildBlocks(pal: Pal): BlockBook {
       const f = show === 'cook1' ? 1 : 0;
       p.rect(sx, sy + 8, 23, 4, c('wood', 2));
       blob(p, sx + 8, sy + 9, 4, 2, R('silver'), 0, 2);
-      p.rect(sx + 14, sy + 3, 5, 6, c('white', 2)).rect(sx + 15, sy, 3, 3, c('white', 2)).rect(sx + 15, sy + 4, 3, 2, c('skin', 2));
+      p.rect(sx + 14, sy + 3, 5, 6, c('white', 2))
+        .rect(sx + 15, sy, 3, 3, c('white', 2))
+        .rect(sx + 15, sy + 4, 3, 2, c('skin', 2));
       for (let k = 0; k < 3; k++) p.set(sx + 7 + k * 2, sy + 4 - ((k + f) % 2), c('white', 1));
       micro(p, sx + 1, sy + 1, '13', c('yellow', 2));
     }
@@ -197,7 +207,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(12, 9, 6, 5, ink);
     if (playing) micro(p, 12, 9, '>', c('led', 1));
     else if (lit) micro(p, 12, 9, '12', c('led', 1));
-    p.rect(3, 15, 2, 1, c('crt', 3)).rect(6, 15, 2, 1, c('crt', 3)).rect(9, 15, 2, 1, playing ? c('led', 1) : c('crt', 3));
+    p.rect(3, 15, 2, 1, c('crt', 3))
+      .rect(6, 15, 2, 1, c('crt', 3))
+      .rect(9, 15, 2, 1, playing ? c('led', 1) : c('crt', 3));
     return p;
   };
   book.add('vcr', vcr(true), { solid: SOLID, next: 'vcrOff', ntime: 18 });
@@ -252,7 +264,14 @@ export function buildBlocks(pal: Pal): BlockBook {
       p.disc(6, 10, 2, c('copper', 2)).disc(13, 13, 2, c('copper', 1));
       p.rect(9, 8, 6, 1, c('blue', 2)).set(15, 8, c('white', 2));
     } else {
-      for (const [x, y] of [[5, 9], [9, 14], [14, 10], [12, 7], [7, 13]]) p.rect(x, y, 2, 1, c('orange', 2));
+      for (const [x, y] of [
+        [5, 9],
+        [9, 14],
+        [14, 10],
+        [12, 7],
+        [7, 13],
+      ])
+        p.rect(x, y, 2, 1, c('orange', 2));
       p.rect(10, 11, 1, 4, c('silver', 2));
     }
     return p;
@@ -274,7 +293,13 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(0, 0, 40, 20, c('carpet', 3));
     p.rect(1, 3, 38, 13, c('wood', 3)).rect(1, 15, 38, 3, c('wood', 1)).rect(1, 3, 38, 1, c('wood', 4));
     blob(p, 10, 9, 6, 4, R('red'), 1, 3);
-    for (const [x, y] of [[8, 7], [11, 8], [13, 6], [9, 10]]) p.rect(x, y, 2, 2, c('white', 2));
+    for (const [x, y] of [
+      [8, 7],
+      [11, 8],
+      [13, 6],
+      [9, 10],
+    ])
+      p.rect(x, y, 2, 2, c('white', 2));
     p.rect(26, 5, 5, 7, c('red', 2)).rect(26, 5, 5, 1, c('silver', 2)).set(28, 8, c('white', 2));
     p.rect(32, 8, 6, 4, c('yellow', 1));
     return p;
@@ -292,7 +317,11 @@ export function buildBlocks(pal: Pal): BlockBook {
       p.set(13, 9, c('cat', 2)).set(15, 9, c('cat', 2)).line(13, 11, 14, 11, ink).line(5, 15, 9, 16, c('cat', 2));
     } else {
       p.rect(6, 10, 3, 2, c('copper', 2)).rect(10, 13, 5, 1, c('silver', 2));
-      for (const [x, y] of [[7, 14], [13, 10]]) p.set(x, y, c('cat', 2));
+      for (const [x, y] of [
+        [7, 14],
+        [13, 10],
+      ])
+        p.set(x, y, c('cat', 2));
     }
     return p;
   };
@@ -345,7 +374,9 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the afghan on the floor: walk over it and flip it
   const blanket = (flipped: boolean) => {
     const p = carpet(14);
-    for (let y = 2; y < 19; y++) for (let x = 1; x < 19; x++) if (!(flipped && y < 7 && x > y)) p.set(x, y, c(['orange', 'yellow', 'green', 'purple'][Math.floor((x + y) / 4) % 4], (x + y) % 2 ? 1 : 2));
+    for (let y = 2; y < 19; y++)
+      for (let x = 1; x < 19; x++)
+        if (!(flipped && y < 7 && x > y)) p.set(x, y, c(['orange', 'yellow', 'green', 'purple'][Math.floor((x + y) / 4) % 4], (x + y) % 2 ? 1 : 2));
     if (flipped) {
       for (let k = 0; k < 7; k++) p.line(k + 1, k + 1, 18, k + 1, c('orange', 0));
       p.rect(12, 12, 4, 1, c('silver', 2)).set(16, 12, c('silver', 1));
@@ -358,8 +389,22 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the magazines (and the TV listings from 1993)
   const mags = (spread: boolean) => {
     const p = carpet(16);
-    const list: [number, number, string][] = spread ? [[1, 3, 'red'], [10, 2, 'blue'], [4, 10, 'yellow'], [11, 11, 'white']] : [[4, 5, 'red'], [5, 7, 'blue'], [4, 9, 'yellow']];
-    for (const [x, y, k] of list) p.rect(x, y, 9, 7, c(k, 2)).rect(x, y, 9, 2, c(k, 1)).rect(x + 1, y + 3, 5, 1, c('ink', 1));
+    const list: [number, number, string][] = spread
+      ? [
+          [1, 3, 'red'],
+          [10, 2, 'blue'],
+          [4, 10, 'yellow'],
+          [11, 11, 'white'],
+        ]
+      : [
+          [4, 5, 'red'],
+          [5, 7, 'blue'],
+          [4, 9, 'yellow'],
+        ];
+    for (const [x, y, k] of list)
+      p.rect(x, y, 9, 7, c(k, 2))
+        .rect(x, y, 9, 2, c(k, 1))
+        .rect(x + 1, y + 3, 5, 1, c('ink', 1));
     micro(p, list[list.length - 1][0] + 1, list[list.length - 1][1] + 1, 'TV', c('red', 0));
     return p;
   };
@@ -385,7 +430,15 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a potted ficus
   const plant = carpet(18);
   plant.rect(6, 12, 8, 7, c('orange', 0)).rect(5, 12, 10, 2, c('orange', 1));
-  for (const [x, y] of [[7, 5], [12, 4], [10, 8], [5, 8], [14, 9], [9, 2]]) blob(plant, x, y, 3, 2.4, R('green'), 0, 2);
+  for (const [x, y] of [
+    [7, 5],
+    [12, 4],
+    [10, 8],
+    [5, 8],
+    [14, 9],
+    [9, 2],
+  ])
+    blob(plant, x, y, 3, 2.4, R('green'), 0, 2);
   book.add('plant', plant, solid);
   // things to find: a penny (money), popcorn (points), half a candy bar (patience)
   const penny = (bg: () => Pixels) => {
@@ -394,10 +447,19 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.ring(10, 11, 2.4, c('copper', 1)).set(8, 9, c('gold', 2));
     return p;
   };
-  book.add('penny', penny(() => carpet(19)), { effect: MONEY, eamt: 1, score: 5, touch: 'carpet' });
+  book.add(
+    'penny',
+    penny(() => carpet(19)),
+    { effect: MONEY, eamt: 1, score: 5, touch: 'carpet' },
+  );
   const kernels = (bg: () => Pixels, to: string) => {
     const p = bg();
-    for (const [x, y] of [[6, 8], [12, 11], [9, 14]] as const) blob(p, x, y, 2, 1.8, R('white'), 1, 2);
+    for (const [x, y] of [
+      [6, 8],
+      [12, 11],
+      [9, 14],
+    ] as const)
+      blob(p, x, y, 2, 1.8, R('white'), 1, 2);
     p.set(12, 12, c('yellow', 1));
     book.add(`popcorn${to}`, p, { score: 10, touch: to });
   };
@@ -436,15 +498,29 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a tin heart on the carpet in the living room's far corner: a glint crosses it now and then; 100 points
   const tin = { ink, tin: R('silver'), white: c('white', 2), dark: c('crt', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(carpet(1), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'carpet', score: 100 });
+    book.add(`tinHeart${k || ''}`, drawTinHeart(carpet(1), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'carpet',
+      score: 100,
+    });
   // a dyed Easter egg at a far bend of the couch fabric in the void: 50 points
   const fabric = () => book.pics.get('fabric')!.crop(0, 0, 20, 20);
   const egg = { ink, shell: R('yellow'), paint: R('blue').slice(1), accent: c('red', 3), white: c('white', 2) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(fabric(), egg, 'stars', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'fabric', score: 50 });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(fabric(), egg, 'stars', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 3 : 60,
+      touch: 'fabric',
+      score: 50,
+    });
   // Will (Shakespeare in Sweatpants), the playwright, framed on the living room wall: a signed
   // head shot, ruff and all (part of the wall)
-  const will = willCameo(buildPalette('plain').pal, { face: 'front' }, { use: ['ink', 'skin', 'hair', 'white', 'purple', 'silver', 'crt', 'pink', 'gold', 'red'].flatMap((n) => R(n)) });
+  const will = willCameo(
+    buildPalette('plain').pal,
+    { face: 'front' },
+    { use: ['ink', 'skin', 'hair', 'white', 'purple', 'silver', 'crt', 'pink', 'gold', 'red'].flatMap((n) => R(n)) },
+  );
   const shot = wallpaper(8);
   shot.rect(3, 3, 14, 16, c('gold', 0)).rect(4, 4, 12, 14, c('wall', 3));
   shot.blit(will.crop(4, 0, 12, 14), 4, 4, CLEAR).rect(4, 17, 12, 1, c('wall', 3));
@@ -452,4 +528,3 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('willShot', shot, solid);
   return book;
 }
-

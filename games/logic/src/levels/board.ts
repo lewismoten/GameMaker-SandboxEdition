@@ -248,7 +248,13 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
   const crawling = specs.some((s) => s.rows.some((r) => r.includes('!')));
   if (crawling && SLOTS.slice(0, specs.length).some(([, y]) => y === CRAWL_AT[1])) throw new Error(`${room}: the crawlspace is in the way of a board`);
   const easterEgg = specs.some((s) => s.rows.some((r) => r.includes('y'))) || crawling;
-  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard'), seams: [...seams], fusebox, easterEgg, hatches: crawling ? [...hatches] : [] });
+  const tiles = buildTiles(STYLES[room], batteries, {
+    breadboard: specs.some((s) => s.look === 'breadboard'),
+    seams: [...seams],
+    fusebox,
+    easterEgg,
+    hatches: crawling ? [...hatches] : [],
+  });
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
   let placed = 0;
@@ -347,13 +353,21 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     const at = (x: number, y: number) => CRAWL[y]?.[x] ?? '#';
     // housing all round, so the view never scrolls past it onto the void (it can run on about
     // half a screen past either end)
-    for (let y = oy - 2; y < oy + ROWS + 2; y++) for (let x = ox - 16; x < ox + CRAWL[0].length + 16; x++) map.blocks[y * MLEN + ((x + MLEN) % MLEN)] = tiles.id('wall15');
+    for (let y = oy - 2; y < oy + ROWS + 2; y++)
+      for (let x = ox - 16; x < ox + CRAWL[0].length + 16; x++) map.blocks[y * MLEN + ((x + MLEN) % MLEN)] = tiles.id('wall15');
     const names: Record<string, string> = { '@': 'pad', h: 'tinHeart', y: 'easterEgg', ...DECOR };
     const cell = { start: { x: 0, y: 0 }, exit: { x: 0, y: 0 } };
     for (let y = 0; y < ROWS; y++)
       for (let x = 0; x < CRAWL[0].length; x++) {
         const ch = at(x, y);
-        const name = ch === '#' ? `wall${wallMask(at, x, y)}` : ch === '!' ? `hatch${wallMask(at, x, y)}` : ch === '.' ? `floor${(x * 7 + y * 3 + ((x * y) % 5)) % 3}` : names[ch];
+        const name =
+          ch === '#'
+            ? `wall${wallMask(at, x, y)}`
+            : ch === '!'
+              ? `hatch${wallMask(at, x, y)}`
+              : ch === '.'
+                ? `floor${(x * 7 + y * 3 + ((x * y) % 5)) % 3}`
+                : names[ch];
         if (!name) throw new Error(`crawlspace: what is '${ch}'?`);
         map.blocks[(oy + y) * MLEN + ox + x] = tiles.id(name);
         if (ch === '@') cell.start = { x: ox + x, y: oy + y };

@@ -20,7 +20,9 @@ export function tailorBlocks(pal: Pal): Kit {
   // wood paneling (the "sky" ramp, lit by lamplight)
   const panel = (seed: number, k0 = 3) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, x % 10 === 0 ? c('sky', k0 - 2) : shadeAt(R('sky'), k0 - 1, k0, 0.5 + Math.sin((y + seed * 3) / 3 + x / 9) * 0.25, x, y));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++)
+        p.set(x, y, x % 10 === 0 ? c('sky', k0 - 2) : shadeAt(R('sky'), k0 - 1, k0, 0.5 + Math.sin((y + seed * 3) / 3 + x / 9) * 0.25, x, y));
     return p;
   };
   k.sky = (seed: number, kk = 3) => panel(seed, kk);
@@ -34,7 +36,9 @@ export function tailorBlocks(pal: Pal): Kit {
   book.add('rafter', rafter, { solid: SOLID });
   // the plank floor
   const floor = P();
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) floor.set(x, y, y % 5 === 0 ? c('wood', 0) : shadeAt(R('wood'), 1, 3, 0.6 - y / 40 + ((x * 3 + Math.floor(y / 5) * 7) % 13) / 40, x, y));
+  for (let y = 0; y < 20; y++)
+    for (let x = 0; x < 20; x++)
+      floor.set(x, y, y % 5 === 0 ? c('wood', 0) : shadeAt(R('wood'), 1, 3, 0.6 - y / 40 + ((x * 3 + Math.floor(y / 5) * 7) % 13) / 40, x, y));
   floor.rect(0, 0, 20, 1, c('wood', 4));
   book.add('floor', floor, { solid: SOLID });
   // a lamp on the wall, and a window onto the night (scenery)
@@ -56,7 +60,7 @@ export function tailorBlocks(pal: Pal): Kit {
   // bolts of cloth, stacked (solid)
   const bolt = (col: string) => {
     const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R(col), 0, 3, 0.75 - Math.abs(y % 10 - 5) / 8, x, y));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R(col), 0, 3, 0.75 - Math.abs((y % 10) - 5) / 8, x, y));
     for (const y of [0, 10]) p.rect(0, y, 20, 1, c('ink', 1));
     p.disc(17, 5, 2, c(col, 0)).disc(17, 15, 2, c(col, 0));
     return p;
@@ -68,7 +72,13 @@ export function tailorBlocks(pal: Pal): Kit {
   const button = (col: string) => {
     const p = panel(13);
     blob(p, 10, 6, 9.6, 4.4, R(col), 0, 3);
-    for (const [x, y] of [[7, 5], [13, 5], [7, 8], [13, 8]]) p.disc(x, y, 1, c(col, 0));
+    for (const [x, y] of [
+      [7, 5],
+      [13, 5],
+      [7, 8],
+      [13, 8],
+    ])
+      p.disc(x, y, 1, c(col, 0));
     return p;
   };
   book.add('buttonR', button('red'), { solid: LEDGE, grav: GRAV.down });
@@ -132,7 +142,12 @@ export function tailorBlocks(pal: Pal): Kit {
   // pins stuck up from a pincushion (solid, they prick)
   const pins = panel(31);
   blob(pins, 10, 16, 9, 5, R('red'), 1, 3);
-  for (const [x, top] of [[4, 4], [8, 1], [12, 3], [16, 6]]) {
+  for (const [x, top] of [
+    [4, 4],
+    [8, 1],
+    [12, 3],
+    [16, 6],
+  ]) {
     pins.line(x, top + 2, x, 14, c('steel', 3));
     pins.disc(x, top + 1, 1.6, c(x % 8 === 0 ? 'gold' : 'blue', 3));
   }
@@ -161,7 +176,12 @@ export function tailorBlocks(pal: Pal): Kit {
   }
   book.add('point', point, { solid: SOLID });
   // one needle's eye is an eye gate (a grace to open it)
-  addGate(k, () => shaft('none'), () => eye.crop(0, 0, 20, 20), 'gate');
+  addGate(
+    k,
+    () => shaft('none'),
+    () => eye.crop(0, 0, 20, 20),
+    'gate',
+  );
 
   // ---------- the poor, good things, the way out ----------
   for (const who of ['seamstress', 'widow', 'beggar'] as const) addSoul(k, who, () => panel(41));
@@ -184,7 +204,8 @@ export function tailorBlocks(pal: Pal): Kit {
     if (part === 0) p.line(10, 0, 10, 3, c('wood', 1)).line(4, 5, 16, 5, c('wood', 2));
     for (let y = part ? 0 : 5; y < (part ? 18 : 20); y++) {
       const w = 5 + (part ? y + 15 : y - 5) / 12; // one flare down both blocks, no step at the seam
-      for (let x = Math.round(10 - w); x <= Math.round(10 + w); x++) p.set(x, y, shadeAt(R(col), 0, 3, 0.8 - Math.abs(x - 10) / 12 - (x % 4 === 0 ? 0.2 : 0), x, y));
+      for (let x = Math.round(10 - w); x <= Math.round(10 + w); x++)
+        p.set(x, y, shadeAt(R(col), 0, 3, 0.8 - Math.abs(x - 10) / 12 - (x % 4 === 0 ? 0.2 : 0), x, y));
     }
     const hem = 5 + 32 / 12;
     if (part) p.rect(Math.round(10 - hem), 17, Math.round(10 + hem) - Math.round(10 - hem) + 1, 1, c('gold', 2));
@@ -208,13 +229,17 @@ export function tailorBlocks(pal: Pal): Kit {
   book.add('machineBase', machinePart(2, 5), air);
   // the tin heart, dropped on the floor under the sewing machine's table (points only, no sound of its own)
   for (let f = 0; f < SHINE_FRAMES; f++)
-    book.add(`tinHeart${f || ''}`, drawTinHeart(panel(1), { ink: c('ink', 0), tin: [c('steel', 1), c('steel', 2), c('steel', 3)], white: c('white', 2), dark: c('steel', 0) }, f), {
-      score: 100,
-      touch: 'bg',
-      grav: GRAV.down,
-      next: `tinHeart${(f + 1) % SHINE_FRAMES || ''}`,
-      ntime: f ? 2 : 50,
-    });
+    book.add(
+      `tinHeart${f || ''}`,
+      drawTinHeart(panel(1), { ink: c('ink', 0), tin: [c('steel', 1), c('steel', 2), c('steel', 3)], white: c('white', 2), dark: c('steel', 0) }, f),
+      {
+        score: 100,
+        touch: 'bg',
+        grav: GRAV.down,
+        next: `tinHeart${(f + 1) % SHINE_FRAMES || ''}`,
+        ntime: f ? 2 : 50,
+      },
+    );
   // Watt, the repair robot from Ohm Sweet Ohm, under the table seeing to the treadle (scenery)
   const watt = (blink: boolean) => {
     const p = panel(1);

@@ -97,7 +97,20 @@ built.forEach(({ l, m, start }, i) => {
   const scene = emptyScene(ADVTYPE);
   scene.desc = l.desc;
   scene.pos = { x: 60 + i * 60, y: 110 };
-  scene.files = [`${l.file}.pal`, `${l.file}.map`, 'goat.bbl', `${l.file}.mon`, 'goat.mbl', 'goat.chr', 'goat.cbl', `${l.snd}.snd`, `${l.file}.cmf`, `lvl${i + 1}.lst`, '', ...new Array(9).fill('')];
+  scene.files = [
+    `${l.file}.pal`,
+    `${l.file}.map`,
+    'goat.bbl',
+    `${l.file}.mon`,
+    'goat.mbl',
+    'goat.chr',
+    'goat.cbl',
+    `${l.snd}.snd`,
+    `${l.file}.cmf`,
+    `lvl${i + 1}.lst`,
+    '',
+    ...new Array(9).fill(''),
+  ];
   if (m.links.length > MAXSCENELINKS) throw new Error(`${l.file}: too many links`);
   scene.links = Array.from({ length: MAXSCENELINKS }, (_, k) => {
     const spec = m.links[k];
@@ -111,7 +124,21 @@ built.forEach(({ l, m, start }, i) => {
 });
 
 const start = game.scenes[0];
-start.files = ['title.lst', 'title.cmf', 'menu.gif', 'menu.cmf', 'story.lst', 'story.cmf', 'howto.lst', 'credits.lst', 'hiscore.gif', 'loadgame.gif', 'savegame.gif', 'demo.rec', ...new Array(8).fill('')];
+start.files = [
+  'title.lst',
+  'title.cmf',
+  'menu.gif',
+  'menu.cmf',
+  'story.lst',
+  'story.cmf',
+  'howto.lst',
+  'credits.lst',
+  'hiscore.gif',
+  'loadgame.gif',
+  'savegame.gif',
+  'demo.rec',
+  ...new Array(8).fill(''),
+];
 start.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: built[0].start[0], y: built[0].start[1] } };
 const end = game.scenes[1];
 end.files = ['won.lst', 'won.cmf', 'lost.lst', 'lost.cmf', ...new Array(16).fill('')];
@@ -121,7 +148,13 @@ const goatPics = cb.pics;
 const screens = buildScreens({ goat: goatPics });
 for (const [name, bytes] of Object.entries(screens)) disk.put(name, bytes);
 disk.put(BARDLOGO, bardIntroFli());
-disk.put('title.lst', serializeSlideList([{ name: BARDLOGO, pause: 0 }, { name: 'title.gif', pause: 12 }]));
+disk.put(
+  'title.lst',
+  serializeSlideList([
+    { name: BARDLOGO, pause: 0 },
+    { name: 'title.gif', pause: 12 },
+  ]),
+);
 const cast: Cast = {
   goat: cb.pics,
   mons: mb.pics,
@@ -138,7 +171,14 @@ disk.put('faint.fli', faintFli(cast));
 disk.put('howto.lst', serializeSlideList([{ name: 'faint.fli', pause: 2 }, { name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'bardpic.gif', pause: 8 }, { name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 for (const [name, bytes] of Object.entries(wonFlis(cast, line!))) disk.put(name, bytes);
-disk.put('won.lst', serializeSlideList([{ name: 'won1.fli', pause: 4 }, { name: 'won2.fli', pause: 8 }, { name: 'won3.fli', pause: 8 }]));
+disk.put(
+  'won.lst',
+  serializeSlideList([
+    { name: 'won1.fli', pause: 4 },
+    { name: 'won2.fli', pause: 8 },
+    { name: 'won3.fli', pause: 8 },
+  ]),
+);
 disk.put('lost.fli', lostFli(cast));
 disk.put('lost.lst', serializeSlideList([{ name: 'lost.fli', pause: 6 }]));
 disk.put('story.txt', STORY);

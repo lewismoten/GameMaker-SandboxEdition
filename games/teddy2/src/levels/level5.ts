@@ -46,7 +46,10 @@ export function farm(): Level {
   m.rect(b1, 34, 1, 6, 'barnWall');
   m.set(b1, 32, 'loftDoor');
   m.rect(b1, 30, 1, 2, 'barnWall');
-  m.set(b0 + 1, 38, 'cow00').set(b0 + 2, 38, 'cow10').set(b0 + 1, 39, 'cow01').set(b0 + 2, 39, 'cow11');
+  m.set(b0 + 1, 38, 'cow00')
+    .set(b0 + 2, 38, 'cow10')
+    .set(b0 + 1, 39, 'cow01')
+    .set(b0 + 2, 39, 'cow11');
   // the belt runs from the floor at x 27 up to the loft's edge at x 32
   for (let k = 0; k < 6; k++) {
     const x = 27 + k;
@@ -61,7 +64,9 @@ export function farm(): Level {
   const w0 = 42;
   for (let x = w0; x < w0 + 8; x++) {
     m.set(x, 39, 'sky3');
-    m.set(x, G, 'mud0').set(x, G + 1, 'mudDeep0').set(x, G + 2, 'dirt');
+    m.set(x, G, 'mud0')
+      .set(x, G + 1, 'mudDeep0')
+      .set(x, G + 2, 'dirt');
   }
   // The pasture fence and gate, x 56 (the rope is a monster).
   const fx = 56;
@@ -75,8 +80,14 @@ export function farm(): Level {
   m.set(71, 38, 'stand00').set(72, 38, 'stand10').set(71, 39, 'stand01').set(72, 39, 'stand11');
   const truck = 76;
   m.rect(truck, 39, 6, 1, 'flatbed');
-  m.set(truck + 2, 37, 'carL0').set(truck + 3, 37, 'carR0').set(truck + 2, 38, 'gondola').set(truck + 3, 38, 'carR1');
-  m.set(truck + 6, 38, 'cab00').set(truck + 7, 38, 'cab10').set(truck + 6, 39, 'cab01').set(truck + 7, 39, 'cab11');
+  m.set(truck + 2, 37, 'carL0')
+    .set(truck + 3, 37, 'carR0')
+    .set(truck + 2, 38, 'gondola')
+    .set(truck + 3, 38, 'carR1');
+  m.set(truck + 6, 38, 'cab00')
+    .set(truck + 7, 38, 'cab10')
+    .set(truck + 6, 39, 'cab01')
+    .set(truck + 7, 39, 'cab11');
   m.rect(88, 26, 4, 14, 'silo');
   m.rect(92, 30, 8, 10, 'hedgeWall');
   m.rect(92, 29, 8, 1, 'hedgeTop');

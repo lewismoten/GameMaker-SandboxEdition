@@ -89,7 +89,8 @@ function shepherd(p: Pixels, cast: Cast, pal: Pal, x: number, y: number, f: numb
   scaleBlit(p, cast.mons.get(f % 2 ? 'walkB1' : 'walkB0')!, x, y, 2, flip);
   const cx = flip ? x + 6 : x + 34;
   p.rect(cx, y - 6, 2, 46, pal.c('wood', 2));
-  for (let k = 0; k < 6; k++) p.set(cx + (flip ? -1 : 1) * Math.round(Math.sin((k / 5) * Math.PI) * 4), y - 6 - Math.round(Math.cos((k / 5) * Math.PI) * 3) - 3, pal.c('wood', 3));
+  for (let k = 0; k < 6; k++)
+    p.set(cx + (flip ? -1 : 1) * Math.round(Math.sin((k / 5) * Math.PI) * 4), y - 6 - Math.round(Math.cos((k / 5) * Math.PI) * 3) - 3, pal.c('wood', 3));
 }
 
 /** A vertical gradient in solid bands (no dither: long runs keep the frames small). */
@@ -214,7 +215,9 @@ export function storyFli(cast: Cast): Uint8Array {
         shepherd(p, cast, pal, x, 116 + jump, run ? k + i : 0, false);
         if (k >= 16 && k < 26) outlined(p, x + 16, 96 + jump, '!', c('gold', 3), c('ink', 0));
       }
-      lambs.forEach(([x, y], i) => scaleBlit(p, cast.mons.get(k % 2 ? 'lamb1' : 'lamb0')!, x + Math.max(0, k - 30) * 8, y - (k > 16 && (k + i) % 4 === 0 ? 2 : 0), 1));
+      lambs.forEach(([x, y], i) =>
+        scaleBlit(p, cast.mons.get(k % 2 ? 'lamb1' : 'lamb0')!, x + Math.max(0, k - 30) * 8, y - (k > 16 && (k + i) % 4 === 0 ? 2 : 0), 1),
+      );
       caption(p, pal, k < 26 ? ['The stars were bright,', 'the angels loud,'] : ['...and the shepherds ran', 'to Bethlehem to see.'], 'mixed');
     });
   r.fadeOut(3);
@@ -258,7 +261,13 @@ export function storyFli(cast: Cast): Uint8Array {
       caption(
         p,
         pal,
-        k < 14 ? ["The donkey's in paintings,", 'the ox gets praise,'] : k < 28 ? ['Even pigeons got hymns', 'these days.'] : k < 40 ? ['But me? I stood there,', 'chewing hay...'] : ['...and a goat nobody', 'painted.'],
+        k < 14
+          ? ["The donkey's in paintings,", 'the ox gets praise,']
+          : k < 28
+            ? ['Even pigeons got hymns', 'these days.']
+            : k < 40
+              ? ['But me? I stood there,', 'chewing hay...']
+              : ['...and a goat nobody', 'painted.'],
         'mixed',
       );
     });
@@ -298,7 +307,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     if (k >= 9) centered(p, 178, `"${info.lines[0]}`, c('cloth', 3));
     if (k >= 15) centered(p, 189, ` ${info.lines[1]}"`, c('cloth', 3));
   };
-  const say = (p: Pixels, x: number, y: number, words: string, color = 'cloth') => outlined(p, Math.round(x - textWidth(words) / 2), y, words, c(color, 3), ink);
+  const say = (p: Pixels, x: number, y: number, words: string, color = 'cloth') =>
+    outlined(p, Math.round(x - textWidth(words) / 2), y, words, c(color, 3), ink);
   const sprite = (set: Map<string, Pixels>, name: string) => set.get(name)!;
   const goat = (name: string) => sprite(cast.goat, name);
   const mon = (name: string) => sprite(cast.mons, name);
@@ -429,7 +439,11 @@ export function faintFli(cast: Cast): Uint8Array {
     caption(
       p,
       pal,
-      k < 17 ? ['Fainting cousins stand in', 'the narrow places.'] : k < 27 ? ['SPACE screams (one BREATH).', 'They keel over, stiff.'] : ['Walk right over them.', "(They're fine. Honest.)"],
+      k < 17
+        ? ['Fainting cousins stand in', 'the narrow places.']
+        : k < 27
+          ? ['SPACE screams (one BREATH).', 'They keel over, stiff.']
+          : ['Walk right over them.', "(They're fine. Honest.)"],
       'mixed',
     );
   };
@@ -503,7 +517,8 @@ export function wonFlis(cast: Cast, line: LineView): Record<string, Uint8Array> 
     const ink = c('ink', 0);
     const base = (map: Pixels) => {
       const p = new Pixels(W, H, ink);
-      for (let y = 0; y < 52; y++) for (let x = 0; x < W; x++) p.set(x, y, c('glow', Math.max(0, Math.min(2, Math.round(2.4 * (1 - Math.hypot(x - 160, (y - 60) * 1.6) / 170))))));
+      for (let y = 0; y < 52; y++)
+        for (let x = 0; x < W; x++) p.set(x, y, c('glow', Math.max(0, Math.min(2, Math.round(2.4 * (1 - Math.hypot(x - 160, (y - 60) * 1.6) / 170))))));
       scaleBlit(p, map, 0, 52, 2);
       p.rect(0, 172, W, 28, ink);
       return p;

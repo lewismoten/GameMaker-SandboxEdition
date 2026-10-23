@@ -55,7 +55,13 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
  * without losing a life or more than `loss` hit points; otherwise the seed is put back where it
  * was and carries on without it, as a player leaves what's too far or too risky.
  */
-export async function grab(bot: Bot, label: string, cells: [number, number][], stretch: () => Promise<void>, { ticks = 90, loss = 6, wait = 30 } = {}): Promise<boolean> {
+export async function grab(
+  bot: Bot,
+  label: string,
+  cells: [number, number][],
+  stretch: () => Promise<void>,
+  { ticks = 90, loss = 6, wait = 30 } = {},
+): Promise<boolean> {
   const start = bot.snapshot();
   const t0 = bot.sim.ticks;
   const { deaths } = bot.sim;
@@ -102,8 +108,16 @@ export async function theMound(bot: Bot): Promise<void> {
     await must(bot, bot.walk(31, 'the dandelion'), 'dandelion');
   });
   await carefully(bot, 'over the wall', 12, async () => {
-    await must(bot, bot.until('right', () => bot.px.x >= 33 * 20, 'into the fluff', 60), 'fluff');
-    await must(bot, bot.until(undefined, () => bot.px.y <= 3 * 20, 'up on the fluff', 120), 'fluff');
+    await must(
+      bot,
+      bot.until('right', () => bot.px.x >= 33 * 20, 'into the fluff', 60),
+      'fluff',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= 3 * 20, 'up on the fluff', 120),
+      'fluff',
+    );
     await must(bot, bot.hop('right', 4, 'right', 37), 'onto the wall');
     await must(bot, bot.walk(39, 'the top of the wall'), 'wall');
     await grab(bot, 'the sunbeam over the wall', [[39, 3]], () => must(bot, bot.hop('up', 6), 'hop'));
@@ -142,13 +156,22 @@ export async function theDust(bot: Bot): Promise<void> {
     await go('right', 14);
     // an ant patrols the cave floor under its sunbeam: roots along the cave's roof brush the
     // sunbeam, then drop down onto the drop of water
-    const over = await grab(bot, 'the sunbeam in the first cave', [[5, 7], [7, 8]], async () => {
-      await go('down', 6);
-      await go('left', 5, 'over the sunbeam');
-      await go('right', 7, 'over the drop of water');
-      await go('down', 8, 'down onto the drop of water');
-      await must(bot, bot.walk(10.5, 'back to the roots'), 'back');
-    }, { ticks: 220, loss: 10 });
+    const over = await grab(
+      bot,
+      'the sunbeam in the first cave',
+      [
+        [5, 7],
+        [7, 8],
+      ],
+      async () => {
+        await go('down', 6);
+        await go('left', 5, 'over the sunbeam');
+        await go('right', 7, 'over the drop of water');
+        await go('down', 8, 'down onto the drop of water');
+        await must(bot, bot.walk(10.5, 'back to the roots'), 'back');
+      },
+      { ticks: 220, loss: 10 },
+    );
     if (!over) {
       await go('down', 8);
       await go('left', 10, 'into the first cave');
@@ -171,13 +194,23 @@ export async function theDust(bot: Bot): Promise<void> {
   });
   await carefully(bot, "the mole's cave", 10, async () => {
     // roots along the mole's ceiling brush its sunbeam, out of the mole's way
-    const roof = await grab(bot, "the sunbeam in the mole's cave", [[34, 13]], async () => {
-      await go('up', 12);
-      await must(bot, bot.until('down', () => bot.px.y > 12 * 20, 'on the cave roof', 20), 'roof');
-      await go('right', 34, "along the mole's ceiling");
-      await go('left', 32, 'under the groundwater');
-      await go('up', 4, 'the groundwater');
-    }, { ticks: 210, loss: 10 });
+    const roof = await grab(
+      bot,
+      "the sunbeam in the mole's cave",
+      [[34, 13]],
+      async () => {
+        await go('up', 12);
+        await must(
+          bot,
+          bot.until('down', () => bot.px.y > 12 * 20, 'on the cave roof', 20),
+          'roof',
+        );
+        await go('right', 34, "along the mole's ceiling");
+        await go('left', 32, 'under the groundwater');
+        await go('up', 4, 'the groundwater');
+      },
+      { ticks: 210, loss: 10 },
+    );
     if (!roof) {
       await go('right', 26, "into the mole's cave");
       await must(bot, bot.walk(30, 'its drop of water'), 'water 3');
@@ -195,19 +228,29 @@ export async function theDust(bot: Bot): Promise<void> {
   if (water(bot) < 5) throw new Error(`only ${water(bot)} drops of water`);
   await carefully(bot, 'up to the crack', 10, async () => {
     // the groundwater down past the last cave's far wall, on the way up to the crack
-    const deep = await grab(bot, 'the groundwater past the last cave', [[45, 15]], async () => {
-      await go('right', 45, 'out of the last cave');
-      await go('down', 15, 'the groundwater');
-      await go('up', 1, 'under the sidewalk');
-      await go('left', 44);
-    }, { ticks: 110 });
+    const deep = await grab(
+      bot,
+      'the groundwater past the last cave',
+      [[45, 15]],
+      async () => {
+        await go('right', 45, 'out of the last cave');
+        await go('down', 15, 'the groundwater');
+        await go('up', 1, 'under the sidewalk');
+        await go('left', 44);
+      },
+      { ticks: 110 },
+    );
     if (!deep) {
       await go('up', 1, 'under the sidewalk');
       await go('right', 44);
     }
     // up through the crack (five drops of water open it: "Keep on hustlin'") and along the
     // sidewalk to the sunny spot, while the clip plays
-    await must(bot, bot.until('up', () => bot.px.y <= -20, 'up through the crack', 40), 'the crack');
+    await must(
+      bot,
+      bot.until('up', () => bot.px.y <= -20, 'up through the crack', 40),
+      'the crack',
+    );
     await leave(bot, bot.walk(40, 'the sunny spot'), 'the sunny spot');
   });
 }
@@ -246,10 +289,16 @@ export async function theMountain(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the last wall', 12, async () => {
     await must(bot, bot.walk(48, 'through the last wall'), 'wall C');
-    await grab(bot, 'the sunbeam by the pass', [[60, 9]], async () => {
-      await must(bot, bot.walk(59.4, 'under the sunbeam'), 'sunbeam');
-      await must(bot, bot.hop('up', 12), 'the sunbeam');
-    }, { ticks: 130 });
+    await grab(
+      bot,
+      'the sunbeam by the pass',
+      [[60, 9]],
+      async () => {
+        await must(bot, bot.walk(59.4, 'under the sunbeam'), 'sunbeam');
+        await must(bot, bot.hop('up', 12), 'the sunbeam');
+      },
+      { ticks: 130 },
+    );
     await leave(bot, bot.walk(62, 'the pass'), 'the pass');
   });
 }
@@ -257,11 +306,20 @@ export async function theMountain(bot: Bot): Promise<void> {
 /** 4. Up the great plant, on the breeze, past the clouds and into the palm of God's hand. */
 export async function theSky(bot: Bot): Promise<void> {
   expect(bot, 5, 'the sky');
-  const rise = (row: number, label: string) => must(bot, bot.until(undefined, () => bot.px.y <= row * 20, label, 160), label);
+  const rise = (row: number, label: string) =>
+    must(
+      bot,
+      bot.until(undefined, () => bot.px.y <= row * 20, label, 160),
+      label,
+    );
   await carefully(bot, 'the lower branches', 10, async () => {
     await must(bot, bot.walk(14, 'under the branches'), 'start');
     // what's on each branch: along it and back to the stalk
-    const along: Record<number, [string, number, number]> = { 39: ['the dewdrop on the first branch', 10, 39], 36: ['the sunbeam by the nest', 16, 36], 33: ['the sunbeam on the long branch', 9, 32] };
+    const along: Record<number, [string, number, number]> = {
+      39: ['the dewdrop on the first branch', 10, 39],
+      36: ['the sunbeam by the nest', 16, 36],
+      33: ['the sunbeam on the long branch', 9, 32],
+    };
     for (const row of [39, 36, 33]) {
       await must(bot, bot.hop('up', 14), `up to ${row}`);
       if (bot.at.y !== row) throw new Error(`not on the branch at ${row} (${bot.at.y})`);
@@ -274,13 +332,25 @@ export async function theSky(bot: Bot): Promise<void> {
     }
   });
   await carefully(bot, 'the evening breeze', 10, async () => {
-    await must(bot, bot.until('right', () => bot.px.x >= 22 * 20, 'into the breeze', 120), 'breeze');
+    await must(
+      bot,
+      bot.until('right', () => bot.px.x >= 22 * 20, 'into the breeze', 120),
+      'breeze',
+    );
     // the sunbeam just off the breeze: lean out for it on the way up (the breeze carries the
     // seed on up while it does), and back in
     await grab(bot, 'the sunbeam by the breeze', [[20, 23]], async () => {
       await rise(28.5, 'below the sunbeam');
-      await must(bot, bot.until('left', () => bot.px.x <= 20.9 * 20, 'out to the sunbeam', 30), 'out');
-      await must(bot, bot.until('right', () => bot.px.x >= 22 * 20, 'back into the breeze', 40), 'back');
+      await must(
+        bot,
+        bot.until('left', () => bot.px.x <= 20.9 * 20, 'out to the sunbeam', 30),
+        'out',
+      );
+      await must(
+        bot,
+        bot.until('right', () => bot.px.x >= 22 * 20, 'back into the breeze', 40),
+        'back',
+      );
     });
     await rise(20, 'up on the breeze');
     await must(bot, bot.hop('left', 4, 'left', 18.5), 'onto the nest branch');
@@ -295,11 +365,18 @@ export async function theSky(bot: Bot): Promise<void> {
   });
   await carefully(bot, 'the breeze to the clouds', 10, async () => {
     await must(bot, bot.walk(6, 'the left breeze'), 'breeze');
-    await must(bot, bot.until('left', () => bot.px.x <= 5 * 20, 'into the breeze', 60), 'breeze');
+    await must(
+      bot,
+      bot.until('left', () => bot.px.x <= 5 * 20, 'into the breeze', 60),
+      'breeze',
+    );
     await rise(6, 'up on the breeze');
     // over the clouds, into the light that lifts into the palm, and across it to the middle
     const toPalm = async () =>
-      (await bot.hop('right', 4, 'right', 9.5)) ?? (await bot.hop('up', 14)) ?? (await bot.hop('right', 6)) ?? (await bot.until('right', () => false, 'the palm', 200));
+      (await bot.hop('right', 4, 'right', 9.5)) ??
+      (await bot.hop('up', 14)) ??
+      (await bot.hop('right', 6)) ??
+      (await bot.until('right', () => false, 'the palm', 200));
     await leave(bot, toPalm(), "the palm of God's hand");
   });
 }

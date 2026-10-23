@@ -27,9 +27,24 @@ export function align(): number {
   const leo = (g: string) => ({ leoTop: 'cone14', leoBot: 'cone15' })[g] ?? g;
   const RULES: PartRule[] = [
     gridParts(GRID, sizes, (o, c, r) => `${o}${c}${r}`, leo),
-    { part: /^cloud(\d)0$/, need: (m) => [[1, 0, `cloud${m[1]}1`], [2, 0, `cloud${m[1]}2`]] },
-    { part: /^cloud(\d)2$/, need: (m) => [[-1, 0, `cloud${m[1]}1`], [-2, 0, `cloud${m[1]}0`]] },
-    ...shape('Klown Car', [['carRoofL', 'carRoofR'], [/^car(Door|Open)$/, 'carBack']]),
+    {
+      part: /^cloud(\d)0$/,
+      need: (m) => [
+        [1, 0, `cloud${m[1]}1`],
+        [2, 0, `cloud${m[1]}2`],
+      ],
+    },
+    {
+      part: /^cloud(\d)2$/,
+      need: (m) => [
+        [-1, 0, `cloud${m[1]}1`],
+        [-2, 0, `cloud${m[1]}0`],
+      ],
+    },
+    ...shape('Klown Car', [
+      ['carRoofL', 'carRoofR'],
+      [/^car(Door|Open)$/, 'carBack'],
+    ]),
   ];
   return alignGame('teddy', (m) => names.get(m)?.map((n) => n && strip(n)), RULES, { seamOk: SEAM_OK });
 }

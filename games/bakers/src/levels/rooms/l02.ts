@@ -15,8 +15,20 @@ export const L02: RoomSpec = {
   card: ['Kitchen doors swing one way.', 'Rolling pins keep rolling.', 'Mind where you step.'],
   signs: { Q: 'signNotHere', R: 'signNorth' },
   legend: {
-    '1': { mon: (b) => KINDS.pin(b, [[8, 0, 2], [-8, 0, 2]]) },
-    '2': { mon: (b) => KINDS.pin(b, [[0, 4, 2], [0, -4, 2]]) },
+    '1': {
+      mon: (b) =>
+        KINDS.pin(b, [
+          [8, 0, 2],
+          [-8, 0, 2],
+        ]),
+    },
+    '2': {
+      mon: (b) =>
+        KINDS.pin(b, [
+          [0, 4, 2],
+          [0, -4, 2],
+        ]),
+    },
     '3': { mon: (b) => KINDS.mouse(b) },
   },
   rows: [

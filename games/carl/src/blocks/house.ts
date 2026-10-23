@@ -155,7 +155,8 @@ export function buildHouse(pal: Pal): BlockBook {
 
   // ---------- the couch (burnt-orange corduroy) and the man on it ----------
   const cord = (p: Pixels, x0: number, y0: number, w: number, h: number, lo = 2) => {
-    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) p.set(x, y, ((x % 20) + 20) % 3 === 0 ? c('couch', lo - 1) : c('couch', lo + ((y - y0) < 2 ? 1 : 0)));
+    for (let y = y0; y < y0 + h; y++)
+      for (let x = x0; x < x0 + w; x++) p.set(x, y, ((x % 20) + 20) % 3 === 0 ? c('couch', lo - 1) : c('couch', lo + (y - y0 < 2 ? 1 : 0)));
     return p;
   };
   const back = cord(P(), 0, 0, 20, 20);
@@ -203,8 +204,17 @@ export function buildHouse(pal: Pal): BlockBook {
     big.rect(11, 14, 2, 4, c('skin', 1)).rect(28, 14, 2, 4, c('skin', 1));
     const eyeY = 14;
     big.rect(15, eyeY, 3, 1, ink).rect(22, eyeY, 3, 1, ink);
-    if (gloom) big.rect(15, eyeY + 1, 3, 1, c('skin', 0)).rect(22, eyeY + 1, 3, 1, c('skin', 0)).rect(17, 20, 6, 1, ink);
-    else big.set(16, eyeY - 1, ink).set(23, eyeY - 1, ink).rect(17, 20, 6, 1, ink).set(23, 19, ink);
+    if (gloom)
+      big
+        .rect(15, eyeY + 1, 3, 1, c('skin', 0))
+        .rect(22, eyeY + 1, 3, 1, c('skin', 0))
+        .rect(17, 20, 6, 1, ink);
+    else
+      big
+        .set(16, eyeY - 1, ink)
+        .set(23, eyeY - 1, ink)
+        .rect(17, 20, 6, 1, ink)
+        .set(23, 19, ink);
     big.rect(14, 11, 4, 1, c('hair', 0)).rect(22, 11, 4, 1, c('hair', 0));
     big.rect(19, 15, 2, 4, c('skin', 1));
     big.rect(13, 23, 14, 3, c('skin', 2)).rect(17, 26, 6, 2, c('skin', 1));
@@ -258,11 +268,23 @@ export function buildHouse(pal: Pal): BlockBook {
       blob(p, 16, 9, 2.6, 1.6, R('chip'), 1, 3);
     } else if (kind === 'pizza') {
       for (let y = 9; y < 18; y++) for (let x = 3 + Math.round((y - 9) * 0.3); x < 17 - (y - 9); x++) p.set(x, y, y < 11 ? c('chip', 1) : c('daisy', 2));
-      for (const [x, y] of [[6, 13], [10, 12], [8, 15]]) p.disc(x, y, 1.2, c('red', 1));
+      for (const [x, y] of [
+        [6, 13],
+        [10, 12],
+        [8, 15],
+      ])
+        p.disc(x, y, 1.2, c('red', 1));
       p.rect(2, 18, 16, 2, c('white', 3));
     } else if (kind === 'candy') {
       p.rect(4, 15, 12, 4, c('steel', 1)).rect(3, 14, 14, 1, c('steel', 2));
-      for (const [x, y, k] of [[6, 12, 'red'], [10, 11, 'leaf'], [13, 12, 'purple'], [8, 13, 'gold'], [12, 13, 'pink']] as const) p.disc(x, y, 1.6, c(k, 2));
+      for (const [x, y, k] of [
+        [6, 12, 'red'],
+        [10, 11, 'leaf'],
+        [13, 12, 'purple'],
+        [8, 13, 'gold'],
+        [12, 13, 'pink'],
+      ] as const)
+        p.disc(x, y, 1.6, c(k, 2));
     } else if (kind === 'pie') {
       blob(p, 10, 13, 8, 3.6, R('chip'), 1, 3);
       for (let x = 4; x < 17; x += 3) p.line(x, 11, x + 2, 15, c('chip', 0));
@@ -311,7 +333,13 @@ export function buildHouse(pal: Pal): BlockBook {
     blob(p, 10, 12, 8, 5.5, R('chip'), 1, 3);
     blob(p, 10, 11, 7, 4.2, R('pink'), 1, 2);
     p.disc(10, 11, 2, bg().get(10, 11));
-    for (const [x, y, k] of [[6, 10, 'gold'], [13, 9, 'leaf'], [8, 13, 'shirt'], [14, 12, 'white']] as const) p.set(x, y, c(k, 3));
+    for (const [x, y, k] of [
+      [6, 10, 'gold'],
+      [13, 9, 'leaf'],
+      [8, 13, 'shirt'],
+      [14, 12, 'white'],
+    ] as const)
+      p.set(x, y, c(k, 3));
     micro(p, 1, 1, '+1', c('white', 3));
     return p;
   };
@@ -377,7 +405,11 @@ export function buildHouse(pal: Pal): BlockBook {
     return p;
   };
   book.add('pole', poleOn(paper), AIR);
-  book.add('poleR', poleOn(() => rail.crop(0, 0, 20, 20)), AIR);
+  book.add(
+    'poleR',
+    poleOn(() => rail.crop(0, 0, 20, 20)),
+    AIR,
+  );
   book.add('poleP', poleOn(panel), AIR);
   const lampBase = poleOn(panel);
   blob(lampBase, 10, 18, 7, 3, R('steel'), 0, 2);
@@ -385,7 +417,8 @@ export function buildHouse(pal: Pal): BlockBook {
 
   // ---------- the kitchen ----------
   const tilesAt = (p: Pixels, accent = false) => {
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, x % 10 === 0 || y % 10 === 0 ? c('tile', 0) : c('tile', (x % 10) + (y % 10) < 4 ? 3 : 2));
+    for (let y = 0; y < 20; y++)
+      for (let x = 0; x < 20; x++) p.set(x, y, x % 10 === 0 || y % 10 === 0 ? c('tile', 0) : c('tile', (x % 10) + (y % 10) < 4 ? 3 : 2));
     if (accent) p.rect(11, 11, 9, 9, c('shirt', 3)).rect(13, 13, 5, 5, c('white', 3));
     return p;
   };
@@ -418,7 +451,13 @@ export function buildHouse(pal: Pal): BlockBook {
   book.add('fridge', fridge(false), { solid: SOLID });
   // fridge magnets: the Bard's own, and a crayon drawing of a fly
   const fridgeArt = fridge(false);
-  fridgeArt.rect(3, 4, 7, 9, c('white', 3)).frame(3, 4, 7, 9, c('grey', 2)).disc(6, 8, 1.6, c('ink', 0)).set(5, 7, c('eye', 2)).set(7, 7, c('eye', 2)).line(4, 6, 2, 4, c('wing', 1));
+  fridgeArt
+    .rect(3, 4, 7, 9, c('white', 3))
+    .frame(3, 4, 7, 9, c('grey', 2))
+    .disc(6, 8, 1.6, c('ink', 0))
+    .set(5, 7, c('eye', 2))
+    .set(7, 7, c('eye', 2))
+    .line(4, 6, 2, 4, c('wing', 1));
   fridgeArt.disc(6, 3, 1.4, c('red', 2)).disc(11, 15, 1.6, c('gold', 2));
   book.add('fridgeArt', fridgeArt, { solid: SOLID });
   const stove = P().rect(0, 0, 20, 20, c('grey', 3));
@@ -435,7 +474,13 @@ export function buildHouse(pal: Pal): BlockBook {
   // the spice rack (a ledge to land on)
   const rack = tiles();
   rack.rect(0, 15, 20, 3, c('wood', 2)).rect(0, 18, 20, 1, c('wood', 0));
-  for (const [x, k] of [[2, 'red'], [7, 'ochre'], [12, 'leaf'], [16, 'gold']] as const) rack.rect(x, 8, 3, 7, c(k, 2)).rect(x, 7, 3, 1, c('white', 3));
+  for (const [x, k] of [
+    [2, 'red'],
+    [7, 'ochre'],
+    [12, 'leaf'],
+    [16, 'gold'],
+  ] as const)
+    rack.rect(x, 8, 3, 7, c(k, 2)).rect(x, 7, 3, 1, c('white', 3));
   book.add('rack', rack, { solid: LEDGE });
   // a hook with a dish towel's empty loop (the towel is out flying)
   const breadbox = P().rect(0, 0, 20, 20, c('steel', 1));
@@ -447,7 +492,12 @@ export function buildHouse(pal: Pal): BlockBook {
   const smileMark = (p: Pixels) => {
     p.disc(15, 15, 4, c('gold', 3)).disc(15, 15, 3, c('gold', 2));
     p.set(14, 14, c('ink', 0)).set(16, 14, c('ink', 0)).line(13, 16, 17, 16, c('ink', 0)).set(13, 15, c('ink', 0)).set(17, 15, c('ink', 0));
-    for (const [x, y] of [[9, 10], [19, 9], [10, 19]]) p.set(x, y, c('white', 3));
+    for (const [x, y] of [
+      [9, 10],
+      [19, 9],
+      [10, 19],
+    ])
+      p.set(x, y, c('white', 3));
     return p;
   };
   const spot = (kind: string) => {
@@ -504,7 +554,12 @@ export function buildHouse(pal: Pal): BlockBook {
   };
   book.add('blanket', blanket(false), { solid: SOLID });
   const frame = panel();
-  frame.rect(0, 0, 20, 8, c('wood', 2)).rect(0, 0, 20, 1, c('wood', 3)).rect(0, 8, 20, 1, c('wood', 0)).rect(1, 9, 3, 11, c('wood', 1)).rect(16, 9, 3, 11, c('wood', 1));
+  frame
+    .rect(0, 0, 20, 8, c('wood', 2))
+    .rect(0, 0, 20, 1, c('wood', 3))
+    .rect(0, 8, 20, 1, c('wood', 0))
+    .rect(1, 9, 3, 11, c('wood', 1))
+    .rect(16, 9, 3, 11, c('wood', 1));
   book.add('bedFrame', frame, { solid: SOLID });
   book.add('blanketEnd', blanket(true), { solid: SOLID });
   // his head on the pillow, asleep (two blocks; his ear is a monster)
@@ -548,7 +603,8 @@ export function buildHouse(pal: Pal): BlockBook {
   const sashArt = (part: 'top' | 'shut' | 'open') => {
     const p = side.crop(0, 0, 20, 20);
     const glassTo = part === 'top' ? 20 : 15;
-    for (let y = part === 'top' ? 3 : 0; y < glassTo; y++) for (let x = 6; x < 14; x++) p.set(x, y, part === 'open' ? c('sky', 0) : shadeAt(R('sky'), 0, 2, y / 20, x, y));
+    for (let y = part === 'top' ? 3 : 0; y < glassTo; y++)
+      for (let x = 6; x < 14; x++) p.set(x, y, part === 'open' ? c('sky', 0) : shadeAt(R('sky'), 0, 2, y / 20, x, y));
     p.rect(5, part === 'top' ? 2 : 0, 1, 20, c('white', 3)).rect(14, part === 'top' ? 2 : 0, 1, 20, c('white', 1));
     if (part === 'top') p.rect(5, 2, 10, 1, c('white', 3)).line(7, 5, 9, 9, c('sky', 3));
     else {
@@ -614,7 +670,16 @@ export function buildHouse(pal: Pal): BlockBook {
     const p = panel();
     for (let y = 0; y < 14; y++) p.set(10 + Math.round(Math.sin(y / 3) * 2), y, c('ink', 0)).set(11 + Math.round(Math.sin(y / 3) * 2), y, c('grey', 1));
     p.rect(8, 13, 5, 4, c('grey', 2)).rect(9, 17, 3, 3, c('gold', 3));
-    if (held) for (const [x, y] of [[3, 4], [17, 6], [4, 15], [16, 16]]) p.set(x, y, c('gold', 3)).set(x + 1, y, c('gold', 2)).set(x, y + 1, c('gold', 2));
+    if (held)
+      for (const [x, y] of [
+        [3, 4],
+        [17, 6],
+        [4, 15],
+        [16, 16],
+      ])
+        p.set(x, y, c('gold', 3))
+          .set(x + 1, y, c('gold', 2))
+          .set(x, y + 1, c('gold', 2));
     else micro(p, 1, 2, 'AUX', c('led', 1));
     return p;
   };
@@ -630,11 +695,23 @@ export function buildHouse(pal: Pal): BlockBook {
   // points are the PC speaker's alone, so it never cuts a lyric or a buzz)
   const tin = { ink: c('ink', 0), tin: R('steel'), white: c('white', 3), dark: c('grey', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(panel(), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'panel', score: 100, ...AIR });
+    book.add(`tinHeart${k || ''}`, drawTinHeart(panel(), tin, k), {
+      next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
+      ntime: k ? 2 : 50,
+      touch: 'panel',
+      score: 100,
+      ...AIR,
+    });
   // a dyed Easter egg on the bedroom floor by the nightstand: 50 points
   const egg = { ink: c('ink', 0), shell: R('pink'), paint: R('shirt').slice(1), accent: c('gold', 3), white: c('white', 3) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(panel(), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'panel', score: 50, ...AIR });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(panel(), egg, 'zigzag', k), {
+      next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`,
+      ntime: k ? 3 : 60,
+      touch: 'panel',
+      score: 50,
+      ...AIR,
+    });
   // Watt (Ohm Sweet Ohm), the repair robot, seeing to the stereo's left speaker (scenery)
   const use = ['ink', 'grey', 'steel', 'white', 'gold', 'red', 'led', 'screen', 'shirt', 'chip'].flatMap((n) => R(n));
   book.add('watt', panel().blit(wattCameo(buildPalette('plain').pal, 'side', 0, 'ok', { use }), 0, 0, CLEAR), AIR);

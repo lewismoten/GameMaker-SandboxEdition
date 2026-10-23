@@ -29,7 +29,26 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encodeVoc } from '../../../../web/src/formats/voc';
 
-export const CLIPS = ['mild', 'fog', 'okay', 'afraid', 'getdown', 'cardbrd', 'target', 'exit', 'werewolf', 'dontrun', 'sneezing', 'notreal', 'pats', 'juice', 'badge', 'sword', 'ashamed', 'datewell'] as const;
+export const CLIPS = [
+  'mild',
+  'fog',
+  'okay',
+  'afraid',
+  'getdown',
+  'cardbrd',
+  'target',
+  'exit',
+  'werewolf',
+  'dontrun',
+  'sneezing',
+  'notreal',
+  'pats',
+  'juice',
+  'badge',
+  'sword',
+  'ashamed',
+  'datewell',
+] as const;
 export type ClipName = (typeof CLIPS)[number];
 const RATE = 11025;
 

@@ -243,21 +243,25 @@ export function mazeSong(): Uint8Array {
   const m3 = 'C5 q, F5 e, A5 e, C6 q, A5 q, G5 q, E5 e, G5 e, C6 h, Bb5 q, A5 e, G5 e, F5 q, D5 q, E5 e, G5 e, C#6 e, A5 e, E5 h';
   const m4 = 'F5 q, E5 e, D5 e, A4 q, D5 q, Bb4 q, D5 e, F5 e, Bb5 h, A5 q, G5 e, F5 e, E5 q, C#5 q, D5 h, r h';
   const [a, b, c] = comp(chords, 'q r q r', -1);
-  return tune(104, [
-    v(0, pluck, join(m1, m2, m3, m4), 100),
-    v(1, pad, a, 50),
-    v(2, pad, b, 50),
-    v(3, pad, c, 50),
-    v(4, BASS, bass(chords, 'half'), 95),
-  ]);
+  return tune(104, [v(0, pluck, join(m1, m2, m3, m4), 100), v(1, pad, a, 50), v(2, pad, b, 50), v(3, pad, c, 50), v(4, BASS, bass(chords, 'half'), 95)]);
 }
 
 /** Level 7, the midway: a carnival on the calliope, chromatic runs and all. */
 export function midwaySong(): Uint8Array {
   const chords = ['C', 'C', 'G7', 'G7', 'G7', 'G7', 'C', 'C', 'F', 'F', 'C', 'A7', 'D7', 'G7', 'C', 'C'];
-  const m1 = join('E5 e, D#5 e, E5 e, G5 e, C6 q, G5 q', 'E5 e, D#5 e, E5 e, G5 e, C6 q, E6 q', 'D6 e, C#6 e, D6 e, B5 e, G5 q, F5 q', 'D5 e, C#5 e, D5 e, F5 e, B5 h');
+  const m1 = join(
+    'E5 e, D#5 e, E5 e, G5 e, C6 q, G5 q',
+    'E5 e, D#5 e, E5 e, G5 e, C6 q, E6 q',
+    'D6 e, C#6 e, D6 e, B5 e, G5 q, F5 q',
+    'D5 e, C#5 e, D5 e, F5 e, B5 h',
+  );
   const m2 = join('D6 e, C#6 e, D6 e, B5 e, G5 q, F5 q', 'D5 e, F5 e, G5 e, B5 e, D6 q, B5 q', 'C6 e, B5 e, C6 e, G5 e, E5 q, C5 q', 'E5 q, G5 q, C6 h');
-  const m3 = join('A5 e, G#5 e, A5 e, C6 e, F6 q, C6 q', 'A5 e, G5 e, F5 e, A5 e, C6 h', 'G5 e, F#5 e, G5 e, C6 e, E6 q, G5 q', 'C#6 e, A5 e, E5 e, C#5 e, A4 h');
+  const m3 = join(
+    'A5 e, G#5 e, A5 e, C6 e, F6 q, C6 q',
+    'A5 e, G5 e, F5 e, A5 e, C6 h',
+    'G5 e, F#5 e, G5 e, C6 e, E6 q, G5 q',
+    'C#6 e, A5 e, E5 e, C#5 e, A4 h',
+  );
   const m4 = join('D5 e, F#5 e, A5 e, D6 e, C6 q, A5 q', 'G5 e, F5 e, D5 e, B4 e, G4 q, B4 q', 'C5 e, E5 e, G5 e, C6 e, E6 q, C6 q', 'C6 h, r h');
   const [a, b, c] = comp(chords, 'r q q q', -1);
   return tune(150, [
@@ -309,4 +313,3 @@ export function lostSong(): Uint8Array {
   const [a, b, c] = comp(chords, 'w', -1);
   return tune(80, [v(0, TROMBONE, mel, 110), v(1, pad, a, 50), v(2, pad, b, 50), v(3, pad, c, 50), v(4, BASS, bass(chords, 'whole'), 90)]);
 }
-

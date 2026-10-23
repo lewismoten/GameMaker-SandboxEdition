@@ -24,11 +24,35 @@ export const ERRANDS_RAMPS: Ramp[] = [
 ];
 
 /** The parking lot: Tuesday, cloudy skies, unforgiving humidity (a muggy grey-green cast). */
-export const MUGGY: Lighting = { sky: [[118, 124, 120], [214, 214, 200], [168, 172, 162]], mul: [0.94, 0.96, 0.9], add: [6, 8, 0] };
+export const MUGGY: Lighting = {
+  sky: [
+    [118, 124, 120],
+    [214, 214, 200],
+    [168, 172, 162],
+  ],
+  mul: [0.94, 0.96, 0.9],
+  add: [6, 8, 0],
+};
 /** The restaurant after dinner: warm lamps, night in the windows. */
-export const DINNER: Lighting = { sky: [[12, 14, 40], [60, 70, 120], [30, 34, 76]], mul: [1, 0.94, 0.86], add: [8, 2, 0] };
+export const DINNER: Lighting = {
+  sky: [
+    [12, 14, 40],
+    [60, 70, 120],
+    [30, 34, 76],
+  ],
+  mul: [1, 0.94, 0.86],
+  add: [8, 2, 0],
+};
 /** The banquet at 6:42 p.m.: the sun going down in the tall windows. */
-export const DUSK: Lighting = { sky: [[60, 40, 100], [255, 190, 110], [220, 110, 110]], mul: [1, 0.95, 0.9], add: [6, 0, 0] };
+export const DUSK: Lighting = {
+  sky: [
+    [60, 40, 100],
+    [255, 190, 110],
+    [220, 110, 110],
+  ],
+  mul: [1, 0.95, 0.9],
+  add: [6, 0, 0],
+};
 
 /** A transparent canvas. */
 export const clear = (w = 20, h = 20) => new Pixels(w, h, T);
@@ -45,7 +69,14 @@ export function over(bg: Pixels, pal: Pal, draw: (p: Pixels) => void): Pixels {
  * Cuts a picture (whole blocks) into blocks named `<name>.<col>.<row>` over `bg` (whose pixels
  * show through the picture's T), adding only the cells `only` names (all of them by default).
  */
-export function cut(book: BlockBook, name: string, pic: Pixels, bg: Pixels | ((col: number, row: number) => Pixels), attrs: (col: number, row: number) => object, only?: [number, number][]): void {
+export function cut(
+  book: BlockBook,
+  name: string,
+  pic: Pixels,
+  bg: Pixels | ((col: number, row: number) => Pixels),
+  attrs: (col: number, row: number) => object,
+  only?: [number, number][],
+): void {
   const cols = Math.ceil(pic.w / 20);
   const rows = Math.ceil(pic.h / 20);
   for (let r = 0; r < rows; r++)
@@ -68,7 +99,10 @@ export function poofSprites(book: SpriteBook, pal: Pal): void {
       const r = 4 + f * 3;
       p.disc(10 + Math.cos(a) * r, 11 + Math.sin(a) * r * 0.8, 2.4 - f * 0.8, c('grey', 3 - f));
     }
-    p.set(10, 4 - f, c('gold', 3)).set(9, 5 - f, c('gold', 2)).set(11, 5 - f, c('gold', 2)).set(10, 6 - f, c('gold', 3));
+    p.set(10, 4 - f, c('gold', 3))
+      .set(9, 5 - f, c('gold', 2))
+      .set(11, 5 - f, c('gold', 2))
+      .set(10, 6 - f, c('gold', 3));
     return p;
   };
   book.add('poof0', puff(0));

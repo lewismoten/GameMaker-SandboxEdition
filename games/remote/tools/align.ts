@@ -13,7 +13,13 @@ const RULES: PartRule[] = [
   ...pair('fridge', /^(fridgeTop|freezerOpen)$/, /^fridge(Open)?$/, 0, 1),
   // the couch: arms and seats over its back; any seat cushion fits any seat column
   ...shape('couch', [
-    ['couchArmL', /^(cushion2?|cushionUp2?|couchSeat|couchSat|seatCushion)$/, /^(cushion2?|cushionUp2?|couchSeat|couchSat|seatCushion)$/, /^(cushion2?|cushionUp2?|couchSeat|couchSat|seatCushion)$/, 'couchArmR'],
+    [
+      'couchArmL',
+      /^(cushion2?|cushionUp2?|couchSeat|couchSat|seatCushion)$/,
+      /^(cushion2?|cushionUp2?|couchSeat|couchSat|seatCushion)$/,
+      /^(cushion2?|cushionUp2?|couchSeat|couchSat|seatCushion)$/,
+      'couchArmR',
+    ],
     ['couchBackL', 'couchBack', 'couchBack2', 'couchBack3', 'couchBackR'],
   ]),
 ];

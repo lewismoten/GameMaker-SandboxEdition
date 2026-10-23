@@ -117,7 +117,10 @@ export function buildLevel(book: TileBook, lv: LevelText): BuiltLevel {
 
   const maps = { near: newMap(), far: newMap() };
   // the whole world is void first, then the level is laid in
-  const voidBlock = book.get({ kind: 'void', ctx: { near: { w: false, n: false, nw: false, nPit: true }, far: { w: false, n: false, nw: false, nPit: true } } });
+  const voidBlock = book.get({
+    kind: 'void',
+    ctx: { near: { w: false, n: false, nw: false, nPit: true }, far: { w: false, n: false, nw: false, nPit: true } },
+  });
   for (const p of PLANES) maps[p].blocks.fill(voidBlock);
   for (let y = -1; y <= h; y++)
     for (let x = -1; x <= w; x++) {

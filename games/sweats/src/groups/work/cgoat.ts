@@ -44,7 +44,12 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   book.add('counter', counter, { solid: SOLID });
   // the upper cabinets (ledges: stand on top of them, hop up through them)
   const upper = wall(30);
-  upper.rect(0, 0, 20, 17, c('wood', 3)).rect(0, 0, 20, 2, c('wood', 4)).rect(0, 16, 20, 1, c('wood', 0)).frame(2, 3, 7, 12, c('wood', 2)).frame(11, 3, 7, 12, c('wood', 2));
+  upper
+    .rect(0, 0, 20, 17, c('wood', 3))
+    .rect(0, 0, 20, 2, c('wood', 4))
+    .rect(0, 16, 20, 1, c('wood', 0))
+    .frame(2, 3, 7, 12, c('wood', 2))
+    .frame(11, 3, 7, 12, c('wood', 2));
   upper.rect(7, 12, 1, 2, c('metal', 2)).rect(12, 12, 1, 2, c('metal', 2));
   book.add('upperCab', upper, { solid: LEDGE, grav: GRAV.down });
   // the coffee maker (two blocks tall): the reservoir, the basket, the drip onto an empty plate,
@@ -66,7 +71,16 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   book.add('microwave', micro_, { solid: SOLID });
   const sink = tile.crop(0, 0, 20, 20);
   sink.rect(12, 6, 2, 10, c('metal', 2)).rect(7, 6, 7, 2, c('metal', 2)).rect(7, 8, 1, 2, c('metal', 1));
-  for (const [x, y, col] of [[2, 14, 'red'], [6, 12, 'white'], [3, 9, 'teal'], [9, 15, 'yellow']] as const) sink.rect(x, y, 5, 5, c(col, 2)).rect(x, y, 5, 1, c(col, 1)).set(x + 5, y + 2, c(col, 1));
+  for (const [x, y, col] of [
+    [2, 14, 'red'],
+    [6, 12, 'white'],
+    [3, 9, 'teal'],
+    [9, 15, 'yellow'],
+  ] as const)
+    sink
+      .rect(x, y, 5, 5, c(col, 2))
+      .rect(x, y, 5, 1, c(col, 1))
+      .set(x + 5, y + 2, c(col, 1));
   sink.rect(0, 19, 20, 1, c('metal', 1));
   book.add('sink', sink, { solid: SOLID });
   // the fridge, its door flung open (two blocks wide, three tall): the light on, the shelves, a
@@ -85,16 +99,32 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   fridge.rect(28, 2, 12, 58, c('white', 0)).rect(29, 3, 10, 56, c('white', 1)).rect(26, 6, 2, 6, c('metal', 1)).rect(26, 46, 2, 6, c('metal', 1));
   for (const y of [22, 42]) {
     fridge.rect(29, y, 10, 3, c('mint', 1));
-    fridge.rect(30, y - 9, 3, 9, c('red', 1)).rect(30, y - 10, 3, 1, c('red', 0)).rect(34, y - 7, 4, 7, c('yellow', 2)).rect(35, y - 8, 2, 1, c('white', 2));
+    fridge
+      .rect(30, y - 9, 3, 9, c('red', 1))
+      .rect(30, y - 10, 3, 1, c('red', 0))
+      .rect(34, y - 7, 4, 7, c('yellow', 2))
+      .rect(35, y - 8, 2, 1, c('white', 2));
   }
-  addPicture(book, 'fridge', fridge, (col, row) => (row === 2 ? officeBase(pal) : wall(31 + col)), (col, row) => ({ ...(row ? AIR : { solid: LEDGE, grav: GRAV.down }), ...(col === 1 && row === 2 ? { birthMon: CGOAT_MON.creamer, birthTime: 90 } : {}) }));
+  addPicture(
+    book,
+    'fridge',
+    fridge,
+    (col, row) => (row === 2 ? officeBase(pal) : wall(31 + col)),
+    (col, row) => ({ ...(row ? AIR : { solid: LEDGE, grav: GRAV.down }), ...(col === 1 && row === 2 ? { birthMon: CGOAT_MON.creamer, birthTime: 90 } : {}) }),
+  );
   // the soda machine (two blocks tall), humming
   const vend = new Pixels(20, 40, 255);
   vend.rect(1, 1, 18, 38, c('red', 1)).rect(1, 1, 18, 1, c('red', 3)).rect(3, 3, 10, 22, c('ink2', 0));
   for (let y = 4; y < 24; y += 5) for (let x = 4; x < 12; x += 3) vend.rect(x, y, 2, 4, c(['blue', 'yellow', 'green', 'red'][(x + y) % 4], 2));
   vend.rect(14, 4, 4, 6, c('fluor', 0)).rect(15, 12, 2, 4, c('ink', 0)).rect(3, 29, 14, 5, c('ink', 1)).rect(1, 37, 18, 2, c('ink', 0));
   micro(vend, 3, 26, 'SODA', c('white', 2));
-  addPicture(book, 'vend', vend, (_c, row) => (row ? officeBase(pal) : wall(33)), () => AIR);
+  addPicture(
+    book,
+    'vend',
+    vend,
+    (_c, row) => (row ? officeBase(pal) : wall(33)),
+    () => AIR,
+  );
   // the breakroom notice
   const notice = wall(34);
   notice.rect(1, 2, 18, 15, c('white', 2)).rect(1, 2, 18, 1, c('red', 1)).set(10, 1, c('red', 2));
@@ -111,25 +141,45 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   for (let k = 0; k < 10; k++) cup.disc(4 + rr() * 26, 10 + rr() * 2, 1 + rr(), c('coffee', 3));
   micro(cup, 8, 20, 'NON', c('ink', 1));
   micro(cup, 6, 27, 'DAIRY', c('ink', 1));
-  addPicture(book, 'fizzCup', cup, (_c, row) => (row ? officeBase(pal) : wall(36)), (col, row) => ({ solid: SOLID, ...(row || col ? {} : { birthMon: CGOAT_MON.fizz, birthTime: 70 }) }));
+  addPicture(
+    book,
+    'fizzCup',
+    cup,
+    (_c, row) => (row ? officeBase(pal) : wall(36)),
+    (col, row) => ({ solid: SOLID, ...(row || col ? {} : { birthMon: CGOAT_MON.fizz, birthTime: 70 }) }),
+  );
   // the breakroom table (its top a ledge), two chairs tucked under it, someone's lunch
   const table = new Pixels(40, 20, 255);
   table.rect(2, 4, 36, 3, c('white', 1)).rect(2, 4, 36, 1, c('white', 2)).rect(19, 7, 3, 12, c('metal', 1)).rect(13, 18, 15, 2, c('metal', 0));
-  for (const x of [3, 29]) table.rect(x, 2, 2, 9, c('teal', 0)).rect(x - 1, 10, 9, 2, c('teal', 1)).rect(x, 12, 1, 7, c('metal', 1)).rect(x + 6, 12, 1, 7, c('metal', 1));
+  for (const x of [3, 29])
+    table
+      .rect(x, 2, 2, 9, c('teal', 0))
+      .rect(x - 1, 10, 9, 2, c('teal', 1))
+      .rect(x, 12, 1, 7, c('metal', 1))
+      .rect(x + 6, 12, 1, 7, c('metal', 1));
   table.rect(12, 1, 7, 3, c('wood', 4)).rect(23, 2, 4, 2, c('red', 2));
   addPicture(book, 'bTable', table, officeBase(pal), () => ({ solid: LEDGE, grav: GRAV.down }));
   // employee of the month: a goat (he blinks, and there it is)
   const eom = wall(38);
   eom.rect(2, 1, 16, 18, c('wood', 1)).rect(4, 3, 12, 11, c('daylight', 2));
   blob(eom, 10, 9, 3.4, 3, R('grey'), 1, 3);
-  eom.line(7, 6, 5, 3, c('grey', 1)).line(13, 6, 15, 3, c('grey', 1)).set(9, 8, c('ink', 0)).set(11, 8, c('ink', 0)).rect(9, 12, 3, 2, c('grey', 2)).rect(4, 13, 12, 1, c('navy', 1));
+  eom
+    .line(7, 6, 5, 3, c('grey', 1))
+    .line(13, 6, 15, 3, c('grey', 1))
+    .set(9, 8, c('ink', 0))
+    .set(11, 8, c('ink', 0))
+    .rect(9, 12, 3, 2, c('grey', 2))
+    .rect(4, 13, 12, 1, c('navy', 1));
   eom.rect(4, 15, 12, 3, c('gold', 2));
   micro(eom, 5, 15, 'NO1', c('ink', 0));
   book.add('goatPortrait', eom, AIR);
   // the boss's door: BOSS on a brass plate. It takes his coffee, and opens: a lanyard on the hook
   const door = (open: boolean) => {
     const p = wall(37);
-    p.rect(2, 0, 16, 20, open ? c('ink2', 0) : c('wood', 3)).rect(2, 0, 16, 1, c('wood', 0)).rect(2, 0, 1, 20, c('wood', 0)).rect(17, 0, 1, 20, c('wood', 0));
+    p.rect(2, 0, 16, 20, open ? c('ink2', 0) : c('wood', 3))
+      .rect(2, 0, 16, 1, c('wood', 0))
+      .rect(2, 0, 1, 20, c('wood', 0))
+      .rect(17, 0, 1, 20, c('wood', 0));
     if (open) {
       p.line(6, 1, 10, 9, c('blue', 2)).line(14, 1, 10, 9, c('blue', 2)).rect(7, 9, 7, 9, c('white', 2)).rect(7, 9, 7, 2, c('blue', 2));
       micro(p, 7, 12, 'BRW', c('ink', 0));
@@ -143,7 +193,11 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   gate(book, 'bossDoor', door(false), 'bossDoorOpen', COFFEE_THINGS);
   // the four things: the boss's mug, the fresh pot, the sugar, the powdered creamer
   plotThing(book, 'tile', 'bossMug@tile', (p) => {
-    p.rect(5, 10, 9, 10, c('red', 2)).rect(5, 10, 9, 1, c('red', 3)).rect(14, 12, 3, 1, c('red', 1)).rect(16, 12, 1, 5, c('red', 1)).rect(14, 16, 3, 1, c('red', 1));
+    p.rect(5, 10, 9, 10, c('red', 2))
+      .rect(5, 10, 9, 1, c('red', 3))
+      .rect(14, 12, 3, 1, c('red', 1))
+      .rect(16, 12, 1, 5, c('red', 1))
+      .rect(14, 16, 3, 1, c('red', 1));
     micro(p, 6, 13, '1', c('white', 2));
     p.set(10, 14, c('white', 2)).set(11, 13, c('white', 2)).set(11, 15, c('white', 2));
   });
@@ -185,7 +239,10 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
   const creamer = (f: number) => {
     const p = P();
     const y = f ? 2 : 4;
-    p.rect(6, y + 4, 9, 13, c('white', 2)).rect(7, y + 2, 7, 2, c('white', 1)).rect(8, y, 5, 2, c('blue', 2)).rect(6, y + 4, 1, 13, c('white', 1));
+    p.rect(6, y + 4, 9, 13, c('white', 2))
+      .rect(7, y + 2, 7, 2, c('white', 1))
+      .rect(8, y, 5, 2, c('blue', 2))
+      .rect(6, y + 4, 1, 13, c('white', 1));
     p.rect(6, y + 9, 9, 4, c('blue', 1));
     micro(p, 8, y + 9, 'E', c('white', 2));
     face(p, pal, 10, y + 6, { sad: true });
@@ -197,7 +254,11 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
   // a fizz bubble: three wobbling bubbles of coffee foam
   const bubble = (f: number) => {
     const p = P();
-    for (const [x, y, rr] of [[8, 9, 4], [14, 13 - f, 2.6], [6, 15 + f, 2]] as [number, number, number][]) {
+    for (const [x, y, rr] of [
+      [8, 9, 4],
+      [14, 13 - f, 2.6],
+      [6, 15 + f, 2],
+    ] as [number, number, number][]) {
       p.ring(x + f, y, rr, c('coffee', 3)).set(x - 1 + f, y - 1, c('white', 2));
     }
     return p;
@@ -221,7 +282,10 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
 
 export function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
   set[CGOAT_MON.static] = mon(anim(mb, 'fuzz0', 'fuzz1', 3), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(3, 1));
-  set[CGOAT_MON.creamer] = mon(anim(mb, 'creamer0', 'creamer1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [corner(0, 0, 1), corner(3, 0, 1)]);
+  set[CGOAT_MON.creamer] = mon(anim(mb, 'creamer0', 'creamer1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [
+    corner(0, 0, 1),
+    corner(3, 0, 1),
+  ]);
   set[CGOAT_MON.fizz] = mon(anim(mb, 'fizz0', 'fizz1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [corner(0, 0, 2), corner(0, -4, 2)]);
   set[CGOAT_MON.mirage] = mon(anim(mb, 'mirage0', 'mirage1', 6), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(2, 1));
   set[CGOAT_MON.puff] = mon(anim(mb, 'ink0', 'ink1', 3), { power: POWER.friend, thru: 0, end: 8 });
@@ -270,7 +334,10 @@ export const cgoat: Monologue = {
     const W = 64 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 3; x < W; x += 6) m.set(x, 0, '*');
-    m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, 'slab');
+    m.fill(0, 1, W, 8, '.')
+      .row(9, 0, W - 1, '_')
+      .row(10, 0, W - 1, '=')
+      .row(11, 0, W - 1, 'slab');
     // the way in: the spotlight, a coffee for the road, the HOPE poster
     m.set(2, 9, '!').set(4, 9, 'm').set(2, 4, 'poster');
     // the breakroom counter: the backsplash, the cabinets above, the microwave, the boss's mug,

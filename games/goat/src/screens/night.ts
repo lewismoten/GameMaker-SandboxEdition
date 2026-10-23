@@ -48,6 +48,9 @@ export function twinkle(p: Pixels, pal: Pal, x: number, y: number, size: number)
   p.set(x, y, c('star', 2));
   for (let k = 1; k <= size; k++) {
     const col = c('star', Math.max(0, 2 - k));
-    p.set(x + k, y, col).set(x - k, y, col).set(x, y + k, col).set(x, y - k, col);
+    p.set(x + k, y, col)
+      .set(x - k, y, col)
+      .set(x, y + k, col)
+      .set(x, y - k, col);
   }
 }

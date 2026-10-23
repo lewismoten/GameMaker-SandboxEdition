@@ -42,7 +42,9 @@ export const BREATH = 4;
 type F = Partial<Frame> & { pic: number };
 function frames(list: F[]): Frame[] {
   const out = Array.from({ length: 10 }, () => emptyFrame(true));
-  list.forEach((f, i) => (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? 50, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }));
+  list.forEach(
+    (f, i) => (out[i] = { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: f.orient ?? 0, pic1: f.pic1 ?? 50, pic2: f.pic2 ?? f.pic, pause: f.pause ?? 1 }),
+  );
   return out;
 }
 
@@ -193,7 +195,12 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.cousin] = mon(anim('brown0', 'brown1', 4), { power: 110, thru: 1, towards: 64, newmon: MON.cousinFaint, upscore: 50 });
   set[MON.cousinFaint] = mon([[n('brownFaint'), 10]], { power: 120, thru: 1, end: faint, newmon: MON.cousin });
   // Pigeons come for you when you're close, and peck; a scream sends them off in feathers.
-  set[MON.pigeon] = mon(anim('pigeon0', 'pigeon1', 3), { power: 40, thru: 1, towards: 64, activate: 2, newmon: MON.feathers, upscore: 25 }, [], [corner(0, 0, 1), corner(0, 0, 2)]);
+  set[MON.pigeon] = mon(
+    anim('pigeon0', 'pigeon1', 3),
+    { power: 40, thru: 1, towards: 64, activate: 2, newmon: MON.feathers, upscore: 25 },
+    [],
+    [corner(0, 0, 1), corner(0, 0, 2)],
+  );
   set[MON.feathers] = mon(anim('feathers0', 'feathers1', 2), { power: 100, thru: 0, end: 6 });
   // Camels: two monsters side by side; at the end of each leg each "dies" into its mirror twin.
   const run = o.camelRun ?? 8;

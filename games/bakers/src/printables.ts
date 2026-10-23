@@ -4,7 +4,8 @@ import { RECIPE } from './recipe';
 
 export function printables(): unknown {
   return {
-    pitch: "Gwinn ate the family root beer recipe; as Doc Leo, find all twelve ingredients in Ebenezer Baker's booby-trapped 1777 kitchen (and the thirteenth).",
+    pitch:
+      "Gwinn ate the family root beer recipe; as Doc Leo, find all twelve ingredients in Ebenezer Baker's booby-trapped 1777 kitchen (and the thirteenth).",
     keys: {
       Up: 'Walk one step up (hold to keep walking)',
       Down: 'Walk one step down',
@@ -35,7 +36,7 @@ export function printables(): unknown {
         address: 'Est. 1776 (do not write that down)',
         date: 'July 3rd, late',
         to: 'Leo,',
-        body: "<p>I heard about the card. I am not angry with Gwinn. I am a little angry with Gwinn.</p><p>You know where the other copy is. You have always known. Great-great-great-great-great-grandpa Ebenezer built that kitchen so no Redcoat could ever find his way through it, and as far as anyone can tell, no Baker can either. Your Uncle Walt went down for the nutmeg in 1971 and came back up in 1974. He says it was worth it.</p><p>A few things the family knows: lean on the walls. The doors only go one way, so read the arrows. If the dough is rising, do not stand and admire it. The Tea Room is full of Redcoats (toy ones; we hope); they do not care for your chicken. Nobody does.</p><p>And whatever you find in the Vault, do not read it out loud. You know who might be listening.</p>",
+        body: '<p>I heard about the card. I am not angry with Gwinn. I am a little angry with Gwinn.</p><p>You know where the other copy is. You have always known. Great-great-great-great-great-grandpa Ebenezer built that kitchen so no Redcoat could ever find his way through it, and as far as anyone can tell, no Baker can either. Your Uncle Walt went down for the nutmeg in 1971 and came back up in 1974. He says it was worth it.</p><p>A few things the family knows: lean on the walls. The doors only go one way, so read the arrows. If the dough is rising, do not stand and admire it. The Tea Room is full of Redcoats (toy ones; we hope); they do not care for your chicken. Nobody does.</p><p>And whatever you find in the Vault, do not read it out loud. You know who might be listening.</p>',
         signature: 'Aunt Bernice\n(the Pie)',
         style: 'hand',
       },
@@ -61,28 +62,62 @@ export function printables(): unknown {
         kind: 'hintbook',
         title: "The Family's Hint Book",
         note: 'Answers hidden: use the red film',
-        intro: 'Find your question, then lay the red film over the answer. The family wrote these down over two hundred and fifty years. Some of them are about the kitchen.',
+        intro:
+          'Find your question, then lay the red film over the answer. The family wrote these down over two hundred and fifty years. Some of them are about the kitchen.',
         sections: [
           {
             head: 'Every Room',
             hints: [
-              { q: 'Where is the ingredient?', a: 'On a little glowing rug, always as far from the stairs as Ebenezer could manage. Walk onto it and you are on your way up.' },
-              { q: 'A door will not open.', a: 'A spoon latch wants a wooden spoon (each latch eats one). A swing door only goes the way its arrow points. A numbered panel opens in three seconds; the other number closes.' },
-              { q: 'I keep playing dead.', a: 'Everything that is not a mouse or an ant is one touch. Wait for a gap: rolling pins and Redcoats keep to their beats, hot plates glow before they burn, and ovens fire on a steady count.' },
-              { q: 'What does the chicken do?', a: 'Space squawks it the way you last walked. A mouse runs off, and a toy Redcoat retreats under a white flag, for a few seconds.' },
+              {
+                q: 'Where is the ingredient?',
+                a: 'On a little glowing rug, always as far from the stairs as Ebenezer could manage. Walk onto it and you are on your way up.',
+              },
+              {
+                q: 'A door will not open.',
+                a: 'A spoon latch wants a wooden spoon (each latch eats one). A swing door only goes the way its arrow points. A numbered panel opens in three seconds; the other number closes.',
+              },
+              {
+                q: 'I keep playing dead.',
+                a: 'Everything that is not a mouse or an ant is one touch. Wait for a gap: rolling pins and Redcoats keep to their beats, hot plates glow before they burn, and ovens fire on a steady count.',
+              },
+              {
+                q: 'What does the chicken do?',
+                a: 'Space squawks it the way you last walked. A mouse runs off, and a toy Redcoat retreats under a white flag, for a few seconds.',
+              },
             ],
           },
           {
             head: 'Particular Rooms',
             hints: [
-              { q: 'The Larder: the corridor of nothing.', a: 'The sign says NOTHING DOWN HERE. There are mousetraps down there, under ordinary floorboards. Keep to the top row.' },
-              { q: 'The Spice Parlor: something hums behind a wall.', a: 'In the little room on the left with a bottle cap in it, lean on the east wall. Stand on the kazoo and press Enter. K plays it, all four ways at once.' },
-              { q: 'The Bakehouse: the dough closed the shortcut.', a: 'Take the long way: down the left side, past the burners (wait for them to go dark) and up at the far end.' },
-              { q: 'Under the Stove: I am a rubber chicken.', a: 'You are Sir Reginald Cluckington III. Arrows waddle, W A S D flap and glide two blocks at once, Space squawks (mice still run), B bounces. Mind the embers from the firebox and the pilot lights. The sugar is at the far end; the grease under the bottom hall only slides east.' },
+              {
+                q: 'The Larder: the corridor of nothing.',
+                a: 'The sign says NOTHING DOWN HERE. There are mousetraps down there, under ordinary floorboards. Keep to the top row.',
+              },
+              {
+                q: 'The Spice Parlor: something hums behind a wall.',
+                a: 'In the little room on the left with a bottle cap in it, lean on the east wall. Stand on the kazoo and press Enter. K plays it, all four ways at once.',
+              },
+              {
+                q: 'The Bakehouse: the dough closed the shortcut.',
+                a: 'Take the long way: down the left side, past the burners (wait for them to go dark) and up at the far end.',
+              },
+              {
+                q: 'Under the Stove: I am a rubber chicken.',
+                a: 'You are Sir Reginald Cluckington III. Arrows waddle, W A S D flap and glide two blocks at once, Space squawks (mice still run), B bounces. Mind the embers from the firebox and the pilot lights. The sugar is at the far end; the grease under the bottom hall only slides east.',
+              },
               { q: 'The Cold Cellar: the ice will not move.', a: 'It thaws in about twenty-five seconds. Use the time: there is a lot to look at downstairs.' },
-              { q: 'The Sugar Room: where is the sugar?', a: 'It hid under the stove when the tax man came in 1773, and it never came out. Walk up to the gap under the stove in the bottom-right room. Doc Leo will not fit. Somebody will.' },
-              { q: 'The Clock Room: I am lost.', a: 'Everybody is. Every door marked 1 opens when every door marked 2 closes. Head right along the top to the alcove at the end, then down the right side; the latch is on the bottom-right chamber.' },
-              { q: 'The Clock Room: the spoon is on a lazy Susan, and it will not turn.', a: 'Read the sign over it again: STIR COUNTER CLOCKWISE. Not counterclockwise. Turn the COUNTER CLOCKWISE. Push the handle at XII, then III, then VI, then IX. Pushed the other way it jams. A full turn and the spoon is yours.' },
+              {
+                q: 'The Sugar Room: where is the sugar?',
+                a: 'It hid under the stove when the tax man came in 1773, and it never came out. Walk up to the gap under the stove in the bottom-right room. Doc Leo will not fit. Somebody will.',
+              },
+              {
+                q: 'The Clock Room: I am lost.',
+                a: 'Everybody is. Every door marked 1 opens when every door marked 2 closes. Head right along the top to the alcove at the end, then down the right side; the latch is on the bottom-right chamber.',
+              },
+              {
+                q: 'The Clock Room: the spoon is on a lazy Susan, and it will not turn.',
+                a: 'Read the sign over it again: STIR COUNTER CLOCKWISE. Not counterclockwise. Turn the COUNTER CLOCKWISE. Push the handle at XII, then III, then VI, then IX. Pushed the other way it jams. A full turn and the spoon is yours.',
+              },
               { q: 'The Lightning Loft: the plates.', a: 'They all go live together. Start across the moment they go dark, and do not stop.' },
               { q: 'The Cistern: there is a wall I cannot see.', a: 'It is glass. Go around by the top row.' },
             ],
@@ -92,24 +127,44 @@ export function printables(): unknown {
             hints: [
               { q: 'Is there really a secret room?', a: 'Nobody talks about it. But somebody left a trail of bottle caps in the Cold Cellar.' },
               { q: 'I followed the caps. They end at a wall.', a: 'So did Ebenezer. Lean on it.' },
-              { q: 'Just tell me.', a: 'Cold Cellar, bottom left: the caps along the bottom hall lead west to the corner. The wall below the last cap is false; the second vanilla bean behind it drops you into the hidey-hole, whose spare tea takes you past the Tea Room altogether.', sketch: { rows: ['##########', '#o.o.o.o.#', ':#########', 'X.########', '..########'], labels: [{ x: 2, y: 3, text: 'bean' }] } },
+              {
+                q: 'Just tell me.',
+                a: 'Cold Cellar, bottom left: the caps along the bottom hall lead west to the corner. The wall below the last cap is false; the second vanilla bean behind it drops you into the hidey-hole, whose spare tea takes you past the Tea Room altogether.',
+                sketch: { rows: ['##########', '#o.o.o.o.#', ':#########', 'X.########', '..########'], labels: [{ x: 2, y: 3, text: 'bean' }] },
+              },
             ],
           },
           {
             head: 'Eggs (the family will not explain these)',
             hints: [
               { q: 'Is there an egg in the Larder? Something smells.', a: 'There is a room in the Larder with counters in it that nobody can get into.' },
-              { q: 'I found the room with the counters.', a: 'Lean on its west wall from the room with the pie. The stair in its far corner goes down to a crock.' },
+              {
+                q: 'I found the room with the counters.',
+                a: 'Lean on its west wall from the room with the pie. The stair in its far corner goes down to a crock.',
+              },
               { q: 'The crock. Do I want this?', a: 'No. Press Enter anyway. It is the Rotten Egg, best before 1776, and it is yours to keep (F2).' },
-              { q: 'The Vault: the sign says THIRTEEN OF SOMETHING.', a: 'Count the eggs again. A baker always does. Then lean on the wall right beside the sign.' },
-              { q: 'There is a hatch behind the sign.', a: "It goes down to Ebenezer's display case. The egg is behind glass on three sides: go around and come at it from below, then press Enter. It plays a music box." },
+              {
+                q: 'The Vault: the sign says THIRTEEN OF SOMETHING.',
+                a: 'Count the eggs again. A baker always does. Then lean on the wall right beside the sign.',
+              },
+              {
+                q: 'There is a hatch behind the sign.',
+                a: "It goes down to Ebenezer's display case. The egg is behind glass on three sides: go around and come at it from below, then press Enter. It plays a music box.",
+              },
             ],
           },
         ],
       },
     ],
     stickers: [
-      { text: "BAKER'S DOZEN", sub: 'THE THIRTEENTH INGREDIENT', shape: 'badge', color: '#14214a', ink: '#e8b84a', hero: { chr: 'leo.chr', cbl: 'leo.cbl', pal: 'pantry.pal' } },
+      {
+        text: "BAKER'S DOZEN",
+        sub: 'THE THIRTEENTH INGREDIENT',
+        shape: 'badge',
+        color: '#14214a',
+        ink: '#e8b84a',
+        hero: { chr: 'leo.chr', cbl: 'leo.cbl', pal: 'pantry.pal' },
+      },
       { text: 'SQUAWK!', sub: 'RUBBER CHICKEN', shape: 'star', color: '#ffd23f', ink: '#3a1608' },
       { text: 'CLASSIFIED', sub: 'BAKER FAMILY EYES ONLY', shape: 'rect', color: '#fff6e0', ink: '#c8241e' },
       { text: 'FEED GERALD', sub: 'AGE 250', shape: 'circle', color: '#e8b84a', ink: '#3a1608' },

@@ -65,7 +65,10 @@ export class Arranger {
   ) {
     const w = new Writer(bpm);
     this.fx = new Fx(w);
-    this.fx.open(LEAD, band.lead).open(TWIN_CH, band.lead === TENOR ? TWIN : detuned(band.lead)).open(BASS, band.bass ?? BASSP);
+    this.fx
+      .open(LEAD, band.lead)
+      .open(TWIN_CH, band.lead === TENOR ? TWIN : detuned(band.lead))
+      .open(BASS, band.bass ?? BASSP);
     COMP.forEach((ch) => this.fx.open(ch, band.comp));
     this.fx.open(COLOR, band.color);
     this.fx.open(DRUM.tom, TIMPANI);
@@ -96,10 +99,12 @@ export class Arranger {
         const notes = chord(name, 55, shift);
         if (p.comp === 'hold') notes.slice(0, 2).forEach((n, j) => fx.note(COMP[j], t, span, j ? notes[2] : n, vel - 30, 0.97));
         if (p.comp === 'pah') for (let b = 1; b < span; b += 2) notes.slice(1).forEach((n, j) => fx.note(COMP[j], t + b, 0.5, n, vel - 26, 0.7));
-        if (p.comp === 'pump') for (let e = 0; e < span; e += 0.5) notes.slice(1).forEach((n, j) => fx.note(COMP[j], t + e, 0.5, n, vel - 34 + (e % 1 ? 0 : 6), 0.6));
+        if (p.comp === 'pump')
+          for (let e = 0; e < span; e += 0.5) notes.slice(1).forEach((n, j) => fx.note(COMP[j], t + e, 0.5, n, vel - 34 + (e % 1 ? 0 : 6), 0.6));
         const r = root(name, shift);
         if (p.bass === 'long') fx.note(BASS, t, span, r, vel, 0.95);
-        if (p.bass === 'march' || p.bass === 'oompah') for (let b = 0; b < span; b += p.bass === 'march' ? 1 : 2) fx.note(BASS, t + b, 1, b % 2 === 0 ? r : r + 7, vel - 2, 0.7);
+        if (p.bass === 'march' || p.bass === 'oompah')
+          for (let b = 0; b < span; b += p.bass === 'march' ? 1 : 2) fx.note(BASS, t + b, 1, b % 2 === 0 ? r : r + 7, vel - 2, 0.7);
         if (p.bass === 'eighths') for (let e = 0; e < span; e += 0.5) fx.note(BASS, t + e, 0.5, e % 2 === 1.5 ? r + 12 : r, vel - 6, 0.75);
         if (p.color === 'arp') fx.arp(COLOR, t, span, chord(name, 67, shift), 1 / 4, vel - 40, 'updown');
         if (p.color === 'harp') fx.harp([COLOR], t, span, [...chord(name, 55, shift), ...chord(name, 67, shift)], 1 / 2, vel - 34);

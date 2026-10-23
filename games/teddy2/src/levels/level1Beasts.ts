@@ -70,7 +70,12 @@ const spider = (k: number) =>
     0,
     0,
   );
-const toast = (k: number) => S(['..tttttttt..', '.tTTTTTTTTt.', 'tTTccTTTTTTt', 'tTTTTTTccTTt', 'tTTTTTTTTTTt', k ? 'tTTTcTTTTTTt' : 'tTTTTTTTTTTt', 'tTTTTTTTTTTt', '.tttttttttt.'], undefined, 6);
+const toast = (k: number) =>
+  S(
+    ['..tttttttt..', '.tTTTTTTTTt.', 'tTTccTTTTTTt', 'tTTTTTTccTTt', 'tTTTTTTTTTTt', k ? 'tTTTcTTTTTTt' : 'tTTTTTTTTTTt', 'tTTTTTTTTTTt', '.tttttttttt.'],
+    undefined,
+    6,
+  );
 
 export function houseBeasts() {
   const b = newBestiary();
@@ -81,7 +86,8 @@ export function houseBeasts() {
   b.pic('toast1', toast(0), { hp: 10, score: 25 }).pic('toast2', toast(1), { hp: 10, score: 25 });
   b.pic('collar', propSprite('collar'), { effect: CTR.clues, eamt: 1, score: 500 });
   b.pic('collarAir', propSprite('collar'));
-  for (const [name, px] of Object.entries(TOYS)) if (name.startsWith('wobble') || name.startsWith('ballAir')) b.pic(name, px, name.startsWith('wobble') ? { effect: CTR.lives, eamt: 1, score: 500 } : {});
+  for (const [name, px] of Object.entries(TOYS))
+    if (name.startsWith('wobble') || name.startsWith('ballAir')) b.pic(name, px, name.startsWith('wobble') ? { effect: CTR.lives, eamt: 1, score: 500 } : {});
 
   // Pests: a bark sends each one off (the dust bunnies blow away, the rest run).
   pacer(

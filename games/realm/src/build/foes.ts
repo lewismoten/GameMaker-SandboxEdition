@@ -17,7 +17,16 @@ export function addChaser(
   o: { pics: [string, number][]; hurt: [string, number][]; power: number; wander: number; rush: number; drop: number; score: number; hits?: number },
 ): number {
   const p = (l: [string, number][]) => l.map(([b, t]) => [mons.mb.n(b), t] as [number, number]);
-  const base = { power: o.power, towards: 64 * o.wander, activate: 2, attack: [[0, 0, 0], [0, 0, o.rush]] as [number, number, number][], upscore: o.score };
+  const base = {
+    power: o.power,
+    towards: 64 * o.wander,
+    activate: 2,
+    attack: [
+      [0, 0, 0],
+      [0, 0, o.rush],
+    ] as [number, number, number][],
+    upscore: o.score,
+  };
   const hits = o.hits ?? 2;
   // the last stage drops the gem; earlier stages become the next one
   let next: number = o.drop;
@@ -27,8 +36,36 @@ export function addChaser(
 
 export function worldMons(mb: SpriteSheet): MonBook {
   const mons = new MonBook(mb);
-  addChaser(mons, 'slime', { pics: [['slime0', 8], ['slime1', 8]], hurt: [['slimeHit', 2], ['slime1', 2]], power: POWER.foeEasy, wander: 1, rush: 1, drop: MON.gem, score: 10 });
-  addChaser(mons, 'bat', { pics: [['bat0', 3], ['bat1', 3]], hurt: [['batHit', 2], ['bat1', 2]], power: POWER.foeEasy, wander: 2, rush: 2, drop: MON.gem, score: 15 });
+  addChaser(mons, 'slime', {
+    pics: [
+      ['slime0', 8],
+      ['slime1', 8],
+    ],
+    hurt: [
+      ['slimeHit', 2],
+      ['slime1', 2],
+    ],
+    power: POWER.foeEasy,
+    wander: 1,
+    rush: 1,
+    drop: MON.gem,
+    score: 10,
+  });
+  addChaser(mons, 'bat', {
+    pics: [
+      ['bat0', 3],
+      ['bat1', 3],
+    ],
+    hurt: [
+      ['batHit', 2],
+      ['bat1', 2],
+    ],
+    power: POWER.foeEasy,
+    wander: 2,
+    rush: 2,
+    drop: MON.gem,
+    score: 15,
+  });
   mons.npc('teddy');
   mons.npc('gwinn');
   mons.npc('chick');

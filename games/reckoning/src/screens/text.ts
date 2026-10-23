@@ -113,7 +113,7 @@ export const INSTRUCTIONS = [
 
 /** Each act's card: its name, where, and two lines of the monologue. */
 export const CARDS: { title: string; where: string; lines: [string, string] }[] = [
-  { title: 'I. 3:17 A.M.', where: 'The bedroom. She is asleep.', lines: ['I shouldn\'t.', "I can't."] },
+  { title: 'I. 3:17 A.M.', where: 'The bedroom. She is asleep.', lines: ["I shouldn't.", "I can't."] },
   { title: 'II. THE FRIDGE', where: 'The kitchen. The glow.', lines: ['Graham-crackered by', 'angels themselves.'] },
   { title: 'III. OH NO', where: 'SMASH CUT. The hall.', lines: ['That was immediate.', 'That was TOO immediate.'] },
   { title: 'IV. THE RECKONING', where: 'Lights turn blood red.', lines: ['Well, well, well...', "Couldn't resist, could ya?"] },
@@ -135,7 +135,7 @@ const CREDITS_TEXT = page(
     'lactose intolerant, and he',
     'loves cheesecake.',
     '',
-    "Monologue: ChatGPT, from",
+    'Monologue: ChatGPT, from',
     "Lewis's prompt (it called it",
     '"The Cheesecake Temptation: A',
     'Lactose Odyssey"). Recording',

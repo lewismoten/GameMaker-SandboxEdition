@@ -141,7 +141,19 @@ function gwinnScene(reel: Reel): void {
   const knee = new Pixels(W, H, CLEAR);
   bg.blit(outline(drawArt(knee, JEANS, c), c('ink', 0)), 0, 0, CLEAR);
   // Teddy's purple rope leash, from his collar clip round in a loop and under the knee
-  const purple: Pt[] = [[93, 126], [110, 124], [140, 122], [165, 120], [179, 124], [185, 135], [183, 150], [175, 162], [160, 168], [140, 171], [124, 173]];
+  const purple: Pt[] = [
+    [93, 126],
+    [110, 124],
+    [140, 122],
+    [165, 120],
+    [179, 124],
+    [185, 135],
+    [183, 150],
+    [175, 162],
+    [160, 168],
+    [140, 171],
+    [124, 173],
+  ];
   for (let f = 0; f < 52; f++) {
     const p = new Pixels(W, H);
     p.px.set(bg.px);
@@ -157,12 +169,45 @@ function gwinnScene(reel: Reel): void {
     p.blit(outline(t, c('ink', 0)), 0, 0, CLEAR);
     rope(p, purple, 4, 5, 'purple');
     if (!gone) {
-      rope(p, [[196, 108], [205, 113], [210, 125], [207, 142], [205, 160], [203, 175], [195, 185], [180, 190], [165, 189], [150, 191], [130, 196], [112, 203]], 4, 8, 'pink', true);
+      rope(
+        p,
+        [
+          [196, 108],
+          [205, 113],
+          [210, 125],
+          [207, 142],
+          [205, 160],
+          [203, 175],
+          [195, 185],
+          [180, 190],
+          [165, 189],
+          [150, 191],
+          [130, 196],
+          [112, 203],
+        ],
+        4,
+        8,
+        'pink',
+        true,
+      );
     } else {
       // zoomies: she bolts past Teddy, right in front of him, trailing her pink leash
       const x = 166 - (f - 40) * 20;
       const y = 100;
-      rope(p, [[x + 38, y + 24], [x + 70, y + 46], [x + 110, y + 62], [x + 150, y + 80], [x + 170, y + 110]], 4, 7, 'pink', true);
+      rope(
+        p,
+        [
+          [x + 38, y + 24],
+          [x + 70, y + 46],
+          [x + 110, y + 62],
+          [x + 150, y + 80],
+          [x + 170, y + 110],
+        ],
+        4,
+        7,
+        'pink',
+        true,
+      );
       const g = new Pixels(W, H, CLEAR);
       drawArt(g, f % 2 ? GWINN_RUN1 : GWINN_RUN2, c, x, y, true);
       for (let k = 0; k < 4; k++) g.rect(x + 152 + k * 12 + (f % 2) * 4, y + 14 + k * 9, 12 - k * 2, 2, c('paint', 3));
@@ -213,9 +258,33 @@ function leoScene(reel: Reel): void {
     if (on) drawArt(l, LEO_NOSE, c, 0, bob);
     if (f === 8 || f === 40) drawArt(l, LEO_BLINK, c, 0, bob);
     // his right arm up, in its corduroy sleeve, the chicken in his fist and its leash hanging
-    poly(l, [[194, 200], [198, 172], [212, 158], [226, 164], [222, 176], [210, 186], [212, 200]], (x) => c('ink', x % 3 ? 1 : 0));
+    poly(
+      l,
+      [
+        [194, 200],
+        [198, 172],
+        [212, 158],
+        [226, 164],
+        [222, 176],
+        [210, 186],
+        [212, 200],
+      ],
+      (x) => c('ink', x % 3 ? 1 : 0),
+    );
     l.line(212, 158, 198, 172, c('blue', 0)).line(198, 172, 194, 200, c('blue', 0));
-    rope(l, [[219, 138], [214, 150], [212, 168], [214, 186], [218, 204]], 3, 3, 'red');
+    rope(
+      l,
+      [
+        [219, 138],
+        [214, 150],
+        [212, 168],
+        [214, 186],
+        [218, 204],
+      ],
+      3,
+      3,
+      'red',
+    );
     drawArt(l, bawk ? CHICKEN_BAWK : CHICKEN, c, 196, 55);
     p.blit(outline(l, c('ink', 0)), 0, 0, CLEAR);
     if (bawk) outlined(p, 262, 50, 'BAWK!', c('yellow', 3), c('ink', 0), 1);
@@ -243,12 +312,22 @@ function carScene(reel: Reel): void {
   // stucco wall over a stone base, the parking space, a strip of grass, the curb
   gradient(p, 0, 0, W, 70, r('cream'), 3, 1);
   p.rect(0, 68, W, 2, c('cream', 0));
-  for (let y = 70; y < 122; y += 5) for (let x = (y / 5) % 2 ? 0 : 7; x < W; x += 14) p.rect(x, y, 13, 4, c('stone', 2 + ((x * 3 + y) % 7 === 0 ? 1 : 0))).rect(x, y + 4, 13, 1, c('stone', 1));
+  for (let y = 70; y < 122; y += 5)
+    for (let x = (y / 5) % 2 ? 0 : 7; x < W; x += 14) p.rect(x, y, 13, 4, c('stone', 2 + ((x * 3 + y) % 7 === 0 ? 1 : 0))).rect(x, y + 4, 13, 1, c('stone', 1));
   p.rect(0, 122, W, 78, c('asphalt', 1));
   speckle(p, 0, 122, W, 78, r('asphalt'), 1, 1, 13, 0.2);
   p.rect(250, 122, 70, 78, c('grass', 2));
   speckle(p, 250, 122, 70, 78, r('grass'), 2, 1, 7, 0.3);
-  poly(p, [[246, 122], [252, 122], [228, 200], [220, 200]], () => c('cream', 2));
+  poly(
+    p,
+    [
+      [246, 122],
+      [252, 122],
+      [228, 200],
+      [220, 200],
+    ],
+    () => c('cream', 2),
+  );
   p.line(0, 196, 210, 140, c('paint', 3));
   // the red charging-station sign
   p.rect(8, 6, 116, 32, c('red', 1)).frame(8, 6, 116, 32, c('paint', 3));
@@ -337,4 +416,3 @@ export function castFli(): Uint8Array {
   libraryScene(reel);
   return encodeFli(reel.frames, CP.pal, { speed: 7, palettes: reel.pals });
 }
-

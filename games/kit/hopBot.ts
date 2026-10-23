@@ -36,7 +36,10 @@ export class HopBot<S extends GameSim = GameSim, K extends HopKeys = HopKeys> {
   private readonly meterShown: { name: string; n: number };
   private readonly traced: number[];
 
-  constructor(readonly sim: S, setup: HopSetup<K>) {
+  constructor(
+    readonly sim: S,
+    setup: HopSetup<K>,
+  ) {
     this.scan = setup.scan;
     this.origin = setup.origin;
     this.meterShown = setup.meter;
@@ -74,9 +77,13 @@ export class HopBot<S extends GameSim = GameSim, K extends HopKeys = HopKeys> {
     const r = (await this.sim.tick()) ?? undefined;
     if (process.env.BOT_HURT && this.sim.ci.hitpts < hp) {
       const w = this.sim.w;
-      const mons = w.mi.map((mi, i) => ({ mi, n: w.mm[i].monnum })).filter(({ mi, n }) => n < 64 && Math.abs(mi.curx[0] - this.sim.pos.x) <= 1 && Math.abs(mi.cury[0] - this.sim.pos.y) <= 1);
+      const mons = w.mi
+        .map((mi, i) => ({ mi, n: w.mm[i].monnum }))
+        .filter(({ mi, n }) => n < 64 && Math.abs(mi.curx[0] - this.sim.pos.x) <= 1 && Math.abs(mi.cury[0] - this.sim.pos.y) <= 1);
       const m = this.meterShown;
-      this.say(`  hurt ${hp - this.sim.ci.hitpts}: monsters ${mons.map((m) => m.n).join(',')} block ${this.sim.blockAt(this.sim.pos.x + 1, this.sim.pos.y)} ${m.name} ${this.sim.meter(m.n) - 1}`);
+      this.say(
+        `  hurt ${hp - this.sim.ci.hitpts}: monsters ${mons.map((m) => m.n).join(',')} block ${this.sim.blockAt(this.sim.pos.x + 1, this.sim.pos.y)} ${m.name} ${this.sim.meter(m.n) - 1}`,
+      );
     }
     // BOT_TRACE=1: every tick's position, the keys held and the fall speed
     if (process.env.BOT_TRACE) this.say(`  keys ${this.traced.filter((k) => this.sim.isHeld(k)).join(',')} gy ${this.sim.ci.gravy}${r ? ' ' + r : ''}`);

@@ -41,7 +41,8 @@ function bossParts(b: Bot): { slot: number; x: number; y: number }[] {
   w.mm.forEach((m, i) => {
     if (m.monnum >= 64) return;
     const pic = w.mon[m.monnum]?.pic[Math.max(0, w.mi[i].curPic)]?.[0] ?? 100;
-    if (pic < 100 && w.mblk[pic].solid !== 0) out.push({ slot: i, x: Math.round(w.mi[i].curx[0] + w.mi[i].curx[1] / 20), y: Math.round(w.mi[i].cury[0] + w.mi[i].cury[1] / 20) });
+    if (pic < 100 && w.mblk[pic].solid !== 0)
+      out.push({ slot: i, x: Math.round(w.mi[i].curx[0] + w.mi[i].curx[1] / 20), y: Math.round(w.mi[i].cury[0] + w.mi[i].cury[1] / 20) });
   });
   return out;
 }
@@ -77,7 +78,7 @@ async function bossFight(b: Bot, x: number, y: number, name: string, face: 'up' 
     const t = open[0];
     if (!t) throw new Error(`${name}: no way to reach a part`);
     if (p.x !== t.sx || p.y !== t.sy || p.sx || p.sy) {
-      const g = await b.goto(t.sx, t.sy, process.env.BOSS_LOG ? `next to ${t.x},${t.y}` : "");
+      const g = await b.goto(t.sx, t.sy, process.env.BOSS_LOG ? `next to ${t.x},${t.y}` : '');
       if (g) throw new Error(`${name}: ${g}`);
     }
     if (!b.stepTouchesLink(face)) {

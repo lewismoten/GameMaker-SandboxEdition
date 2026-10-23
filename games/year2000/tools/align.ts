@@ -7,9 +7,23 @@ import { LEVELS, SETS } from '../src/levels/levels';
 
 /** Pictures named <name><n>, n = row * columns + column: [columns, rows]. */
 const BIGS: Record<string, [number, number]> = {
-  dome: [4, 3], domeB: [4, 3], mdome: [4, 3], citi: [2, 2], bbHome: [3, 2], bbInfo: [3, 2], bbFax: [3, 2],
-  bbMoon: [3, 2], bbWelcome: [3, 2], nArcade: [3, 1], nTv: [3, 1], nPill: [3, 1], crater: [2, 2],
-  ttyBody: [2, 1], plaque: [3, 1], rocket: [2, 3], banner: [8, 1],
+  dome: [4, 3],
+  domeB: [4, 3],
+  mdome: [4, 3],
+  citi: [2, 2],
+  bbHome: [3, 2],
+  bbInfo: [3, 2],
+  bbFax: [3, 2],
+  bbMoon: [3, 2],
+  bbWelcome: [3, 2],
+  nArcade: [3, 1],
+  nTv: [3, 1],
+  nPill: [3, 1],
+  crater: [2, 2],
+  ttyBody: [2, 1],
+  plaque: [3, 1],
+  rocket: [2, 3],
+  banner: [8, 1],
 };
 // the CitiCar's lit headlight frames stand in for its part 2
 const alias = (n: string) => (n === 'citiLit' || n === 'citiLit2' ? 'citi2' : n);
@@ -33,10 +47,20 @@ const RULES: PartRule[] = [
   },
   { part: /^pinTop2?$/, need: [[0, 1, /^pin(ball|Tilt)$/]] },
   { part: /^pin(ball|Tilt)$/, need: [[0, -1, /^pinTop2?$/]] },
-  { part: /^ttyL(\d+)$/, need: (m) => [[1, 0, `ttyR${m[1]}`], [0, 1, 'ttyBody0'], [1, 1, 'ttyBody1']] },
+  {
+    part: /^ttyL(\d+)$/,
+    need: (m) => [
+      [1, 0, `ttyR${m[1]}`],
+      [0, 1, 'ttyBody0'],
+      [1, 1, 'ttyBody1'],
+    ],
+  },
   { part: /^ttyR\d+$/, need: [[-1, 0, /^ttyL\d+$/]] },
   // the ticker's letters step two at a time
-  { part: /^tick(\d+)$/, need: (m) => [[1, 0, { test: (g) => !/^tick\d+$/.test(g) || g === `tick${(Number(m[1]) + 2) % 30}`, toString: () => `tick${(Number(m[1]) + 2) % 30}` }]] },
+  {
+    part: /^tick(\d+)$/,
+    need: (m) => [[1, 0, { test: (g) => !/^tick\d+$/.test(g) || g === `tick${(Number(m[1]) + 2) % 30}`, toString: () => `tick${(Number(m[1]) + 2) % 30}` }]],
+  },
 ];
 
 /** Joins drawn as edges on purpose (looked at): the rocket's fins and band, the teletype's paper. */

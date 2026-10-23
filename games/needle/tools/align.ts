@@ -11,21 +11,56 @@ const shaftR = /^shaftR\d$/;
 const RULES: PartRule[] = [
   ...shape('arch', [['archL', 'archM', 'archR']]),
   { part: 'palmTop', need: [[0, 1, 'palm']] },
-  ...shape('tent', [['tent0', 'tent1', 'tent2'], ['tentWall', 'tentSign', 'tentWallR'], ['tentWall', 'tentDoor', 'tentWallR']]),
+  ...shape('tent', [
+    ['tent0', 'tent1', 'tent2'],
+    ['tentWall', 'tentSign', 'tentWallR'],
+    ['tentWall', 'tentDoor', 'tentWallR'],
+  ]),
   ...pair('robe', 'robe0', 'robe1', 0, 1),
   ...pair('cloak', 'cloak0', 'cloak1', 0, 1),
   ...pair('back door', 'doorTop', 'door', 0, 1),
-  ...shape('sewing machine', [['machine0', 'machine1', 'machineArm'], [null, null, 'machineWheel']]),
-  { part: 'machinePillar', need: [[0, -1, /^machine(Pillar|Wheel)$/], [0, 1, /^machine(Pillar|Base)$/]] },
+  ...shape('sewing machine', [
+    ['machine0', 'machine1', 'machineArm'],
+    [null, null, 'machineWheel'],
+  ]),
+  {
+    part: 'machinePillar',
+    need: [
+      [0, -1, /^machine(Pillar|Wheel)$/],
+      [0, 1, /^machine(Pillar|Base)$/],
+    ],
+  },
   ...shape('machine bed', [['machineBedL', 'machineBed', 'machineBase']]),
   // the needle: its eye's head over the shaft, the shaft (with its eye gate) down to the point
-  ...shape('needle head', Array.from({ length: 7 }, (_, y) => [`head${y}L`, y === 5 ? /^(head5R|pupil(Open)?)$/ : `head${y}R`])),
+  ...shape(
+    'needle head',
+    Array.from({ length: 7 }, (_, y) => [`head${y}L`, y === 5 ? /^(head5R|pupil(Open)?)$/ : `head${y}R`]),
+  ),
   { part: 'head6L', need: [[0, 1, shaftL]] },
   { part: 'head6R', need: [[0, 1, shaftR]] },
   // (its eye gate: gate and hole across the shaft; gates elsewhere stand alone)
-  { part: 'hole', need: [[-1, 0, 'gate'], [0, -1, shaftR], [0, 1, shaftR]] },
-  { part: shaftL, need: [[1, 0, /^(shaftR\d|hole)$/], [0, 1, /^(shaftL\d|gate|pointL)$/]] },
-  { part: shaftR, need: [[-1, 0, /^(shaftL\d|gate)$/], [0, 1, /^(shaftR\d|hole|pointR)$/]] },
+  {
+    part: 'hole',
+    need: [
+      [-1, 0, 'gate'],
+      [0, -1, shaftR],
+      [0, 1, shaftR],
+    ],
+  },
+  {
+    part: shaftL,
+    need: [
+      [1, 0, /^(shaftR\d|hole)$/],
+      [0, 1, /^(shaftL\d|gate|pointL)$/],
+    ],
+  },
+  {
+    part: shaftR,
+    need: [
+      [-1, 0, /^(shaftL\d|gate)$/],
+      [0, 1, /^(shaftR\d|hole|pointR)$/],
+    ],
+  },
   ...pair('needle point', 'pointL', 'pointR', 1, 0),
 ];
 

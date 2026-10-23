@@ -52,5 +52,5 @@ for (const s of stages) {
 for (const [name, bytes] of Object.entries(buildScreens(stages))) disk.put(name, bytes);
 disk.put('demo.rec', await demoRecording(stages[0]));
 disk.put('blaster.gam', serializeGame(buildGame(stages, process.env.BLASTER_START)));
-disk.put('license.txt', licenseText("Virus Blaster"));
+disk.put('license.txt', licenseText('Virus Blaster'));
 disk.write();

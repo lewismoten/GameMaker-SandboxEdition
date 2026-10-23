@@ -24,7 +24,10 @@ for (const s of SETS) {
   writePng(join(out, `${s}.png`), blockSheet(book.finish().slice(0, book.index.size), 14), day.pal, 3);
 }
 writePng(join(out, 'monsters.png'), clear(blockSheet(mb.blocks.slice(0, mb.index.size), 12)), day.pal, 4);
-for (const [who, build] of [['marcus', buildMarcusBlocks], ['felix', buildFelixBlocks]] as const) {
+for (const [who, build] of [
+  ['marcus', buildMarcusBlocks],
+  ['felix', buildFelixBlocks],
+] as const) {
   const cb = build(day);
   writePng(join(out, `${who}.png`), clear(blockSheet(cb.blocks.slice(0, cb.index.size), 10)), day.pal, 4);
 }
@@ -35,7 +38,9 @@ for (const l of LEVELS) {
   const { m, start, size } = l.build(book);
   const map = m.build();
   const hero = (l.who === 'felix' ? buildFelixBlocks : buildMarcusBlocks)(pal);
-  const pic = renderRegion(map, lit, buildMonsterBlocks(pal).blocks, buildMonsters(mb, l.mons), ORIGIN, ORIGIN, size[0], size[1], [{ pixels: hero.blocks[hero.n('front')].pixels, x: start[0], y: start[1] }]);
+  const pic = renderRegion(map, lit, buildMonsterBlocks(pal).blocks, buildMonsters(mb, l.mons), ORIGIN, ORIGIN, size[0], size[1], [
+    { pixels: hero.blocks[hero.n('front')].pixels, x: start[0], y: start[1] },
+  ]);
   writePng(join(out, `${l.file}.png`), pic, pal.pal, 2);
 }
 console.log(`previews in ${out}`);

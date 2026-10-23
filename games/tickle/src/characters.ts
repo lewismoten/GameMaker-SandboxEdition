@@ -60,7 +60,10 @@ export function buildLeo(cb: ReturnType<typeof buildCharBlocks>): Character {
     f({ pose: 'front', pause: 20 }),
   ]);
   set(S[SEQ.die], [f({ pose: 'hurt', pause: 3 }), f({ pose: 'die0', pause: 8 }), f({ pose: 'die1', pause: 30 })], { sound: SND.die, jstkBut: 0 });
-  set(S[SEQ.hurt], [f({ pose: 'hurt', pause: 2 }), f({ pose: 'front', pause: 1 }), f({ pose: 'hurt', pause: 2 }), f({ pose: 'front', pause: 1 })], { sound: SND.dread, jstkBut: 0 });
+  set(S[SEQ.hurt], [f({ pose: 'hurt', pause: 2 }), f({ pose: 'front', pause: 1 }), f({ pose: 'hurt', pause: 2 }), f({ pose: 'front', pause: 1 })], {
+    sound: SND.dread,
+    jstkBut: 0,
+  });
   set(S[3], [f({ pose: 'front' })], { key: 0 });
   set(S[4], [f({ pose: 'front' })], { key: 0 });
 
@@ -97,7 +100,14 @@ export function buildLeo(cb: ReturnType<typeof buildCharBlocks>): Character {
   set(S[SEQ.tickle], tickle, { key: KEY.space, sound: SND.tickle, norepeat: 1, ground: 1, jstkMov: JOY.any, jstkBut: 2 });
   set(S[SEQ.tickleX], tickle, { key: KEY.x, sound: SND.tickle, norepeat: 1, ground: 1 });
   // the maniacal laugh: MWA-HA-HA-HA!
-  const laugh = [f({ pose: 'laugh0', pause: 3 }), f({ pose: 'laugh1', pause: 3 }), f({ pose: 'laugh0', pause: 3 }), f({ pose: 'laugh1', pause: 3 }), f({ pose: 'laugh0', pause: 4 }), f({ pose: 'grin', pause: 3 })];
+  const laugh = [
+    f({ pose: 'laugh0', pause: 3 }),
+    f({ pose: 'laugh1', pause: 3 }),
+    f({ pose: 'laugh0', pause: 3 }),
+    f({ pose: 'laugh1', pause: 3 }),
+    f({ pose: 'laugh0', pause: 4 }),
+    f({ pose: 'grin', pause: 3 }),
+  ];
   set(S[SEQ.laugh], laugh, { key: KEY.l, sound: SND.laugh, norepeat: 1 });
 
   ch.meter.fill(INF_REPEAT);
@@ -171,10 +181,21 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.gatorA] = mon(anim('gatorA0', 'gatorA1', 6), { power: POWER.hazard, thru: 0 }, pace(o.gator ?? 4, 1));
   set[MON.gatorB] = mon(anim('gatorB0', 'gatorB1', 6), { power: POWER.hazard, thru: 0 }, pace(o.gator ?? 4, 1));
   const fly = o.pigeon ?? 6;
-  set[MON.pigeon] = mon(anim('pigeon0', 'pigeon1', 3), { power: POWER.hazard, thru: 0 }, [corner(0, 0, 2), corner(fly, 1, 2, 0), corner(fly, -1, 2, 0), corner(0, 0, 2, 4)]);
+  set[MON.pigeon] = mon(anim('pigeon0', 'pigeon1', 3), { power: POWER.hazard, thru: 0 }, [
+    corner(0, 0, 2),
+    corner(fly, 1, 2, 0),
+    corner(fly, -1, 2, 0),
+    corner(0, 0, 2, 4),
+  ]);
   set[MON.spark] = mon(anim('spark0', 'spark1', 2), { power: POWER.hazard, thru: 0 }, [corner(0, 0, 1), corner(0, 2, 2, 0), corner(0, 0, 1, 0)]);
   // a bat flutters about: say hello and off it flies
-  set[MON.bat] = mon(anim('bat0', 'bat1', 2), { power: POWER.hello, thru: 0, newmon: MON.batOff }, [corner(0, 0, 1), corner(2, -1, 1, 0), corner(4, 0, 1, 0), corner(2, 1, 1, 4), corner(0, 0, 1, 4)]);
+  set[MON.bat] = mon(anim('bat0', 'bat1', 2), { power: POWER.hello, thru: 0, newmon: MON.batOff }, [
+    corner(0, 0, 1),
+    corner(2, -1, 1, 0),
+    corner(4, 0, 1, 0),
+    corner(2, 1, 1, 4),
+    corner(0, 0, 1, 4),
+  ]);
   set[MON.batOff] = mon(anim('bat1', 'bat0', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(4, -6, 4, 0)]);
   // old friends: a hello for points, and off they go
   const friend = (id: number, off: number, a: string, t: number) => {

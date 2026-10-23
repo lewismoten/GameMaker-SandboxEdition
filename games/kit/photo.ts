@@ -211,8 +211,7 @@ export function pastePhoto(p: Pixels, pal: Uint8Array, s: Scan, x: number, y: nu
   let allowed = slots;
   if (o.share ?? true) {
     const own = new Set<number>();
-    for (let yy = 0; yy < p.h; yy++)
-      for (let xx = 0; xx < p.w; xx++) if (xx < x || yy < y || xx >= x + s.w || yy >= y + s.h) own.add(p.px[yy * p.w + xx]);
+    for (let yy = 0; yy < p.h; yy++) for (let xx = 0; xx < p.w; xx++) if (xx < x || yy < y || xx >= x + s.w || yy >= y + s.h) own.add(p.px[yy * p.w + xx]);
     allowed = [...slots, ...[...own].filter((i) => !(o.reserved ?? []).includes(i)).sort((a, b) => a - b)];
   }
   const idx = ditherTo(s, out, allowed);

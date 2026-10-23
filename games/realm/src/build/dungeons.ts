@@ -63,7 +63,17 @@ const SPECS: Spec[] = [
     shot: 'spark',
     foes: [
       { name: 'crab', wander: 1, rush: 2, hits: 2 },
-      { name: 'eel', wander: 0, rush: 0, hits: 2, thru: 0, path: [[3, 0, 1], [0, 0, 1]] },
+      {
+        name: 'eel',
+        wander: 0,
+        rush: 0,
+        hits: 2,
+        thru: 0,
+        path: [
+          [3, 0, 1],
+          [0, 0, 1],
+        ],
+      },
     ],
     plan: vaultsPlan,
     piece: 'piece2',
@@ -119,7 +129,8 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
   for (const s of SPECS) {
     const mb = new SpriteSheet('mbl');
     addFx(mb);
-    for (const f of s.foes) for (const k of ['0', '1', 'Hit']) mb.add(`${f.name}${k}`, (dfoes.get(`${f.name}${k}`) ?? world.get(`${f.name}${k}`))!, { hp: s.bite });
+    for (const f of s.foes)
+      for (const k of ['0', '1', 'Hit']) mb.add(`${f.name}${k}`, (dfoes.get(`${f.name}${k}`) ?? world.get(`${f.name}${k}`))!, { hp: s.bite });
     mb.add(s.shot, dfoes.get(s.shot)!, { hp: -6 });
     for (const [n, pic] of bossPics(s.boss)) mb.add(n, pic, { hp: -1, solid: ALL });
     const mons = new MonBook(mb);
@@ -128,12 +139,44 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
         // a path walker (eels leaping across their pool)
         const p = (l: [string, number][]) => l.map(([b, t]) => [mb.n(b), t] as [number, number]);
         let next: number = MON.gem;
-        for (let k = f.hits - 1; k >= 1; k--) next = mons.add(`${f.name}${k}`, { pics: p([[`${f.name}Hit`, 2], [`${f.name}1`, 2]]), power: s.power, thru: f.thru ?? 1, path: f.path }, next);
-        mons.add(f.name, { pics: p([[`${f.name}0`, 6], [`${f.name}1`, 6]]), power: s.power, thru: f.thru ?? 1, path: f.path, upscore: 25 }, next);
+        for (let k = f.hits - 1; k >= 1; k--)
+          next = mons.add(
+            `${f.name}${k}`,
+            {
+              pics: p([
+                [`${f.name}Hit`, 2],
+                [`${f.name}1`, 2],
+              ]),
+              power: s.power,
+              thru: f.thru ?? 1,
+              path: f.path,
+            },
+            next,
+          );
+        mons.add(
+          f.name,
+          {
+            pics: p([
+              [`${f.name}0`, 6],
+              [`${f.name}1`, 6],
+            ]),
+            power: s.power,
+            thru: f.thru ?? 1,
+            path: f.path,
+            upscore: 25,
+          },
+          next,
+        );
       } else {
         const id = addChaser(mons, f.name, {
-          pics: [[`${f.name}0`, 6], [`${f.name}1`, 6]],
-          hurt: [[`${f.name}Hit`, 2], [`${f.name}1`, 2]],
+          pics: [
+            [`${f.name}0`, 6],
+            [`${f.name}1`, 6],
+          ],
+          hurt: [
+            [`${f.name}Hit`, 2],
+            [`${f.name}1`, 2],
+          ],
           power: s.power,
           wander: f.wander,
           rush: f.rush,
@@ -150,7 +193,18 @@ export function buildDungeons(doors: DungeonDoors): { files: AreaFile[]; scenes:
       let next: number = LASTMON;
       const base = `${s.boss}${q}`;
       for (let k = s.bossHits - 1; k >= 1; k--)
-        next = mons.add(`${base}${k}`, { pics: [[mb.n(`${base}Hit`), 2], [mb.n(base), 3]], power: s.bossPower, upscore: 100 }, next);
+        next = mons.add(
+          `${base}${k}`,
+          {
+            pics: [
+              [mb.n(`${base}Hit`), 2],
+              [mb.n(base), 3],
+            ],
+            power: s.bossPower,
+            upscore: 100,
+          },
+          next,
+        );
       mons.add(base, { pics: [[mb.n(base), 99]], power: s.bossPower, upscore: 100 }, next);
     }
     const dp = s.plan(mons);

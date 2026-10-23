@@ -16,9 +16,31 @@ export const L13: RoomSpec = {
   card: ['Twelve keyholes.', 'You have twelve ingredients.', 'Do the math.'],
   signs: { Q: 'signThirteen' },
   legend: {
-    '1': { mon: (b) => KINDS.redcoat(b, [[0, 2, 1], [0, -2, 1]]) },
-    '2': { mon: (b) => KINDS.knife(b, [[0, 4, 3], [0, -4, 3]]) },
-    '3': { mon: (b) => KINDS.redcoat(b, [[-4, 0, 1], [4, 0, 1]], 'h') },
+    '1': {
+      mon: (b) =>
+        KINDS.redcoat(b, [
+          [0, 2, 1],
+          [0, -2, 1],
+        ]),
+    },
+    '2': {
+      mon: (b) =>
+        KINDS.knife(b, [
+          [0, 4, 3],
+          [0, -4, 3],
+        ]),
+    },
+    '3': {
+      mon: (b) =>
+        KINDS.redcoat(
+          b,
+          [
+            [-4, 0, 1],
+            [4, 0, 1],
+          ],
+          'h',
+        ),
+    },
     V: 'vault',
   },
   rows: [

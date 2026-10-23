@@ -102,7 +102,11 @@ function jitter(d: V, amount: number, u: number, v: number): V {
   const r = Math.sqrt(v) * amount;
   const t = Math.abs(d[2]) < 0.9 ? norm(cross(d, [0, 0, 1])) : norm(cross(d, [1, 0, 0]));
   const b = cross(d, t);
-  return norm([d[0] + (t[0] * Math.cos(a) + b[0] * Math.sin(a)) * r, d[1] + (t[1] * Math.cos(a) + b[1] * Math.sin(a)) * r, d[2] + (t[2] * Math.cos(a) + b[2] * Math.sin(a)) * r]);
+  return norm([
+    d[0] + (t[0] * Math.cos(a) + b[0] * Math.sin(a)) * r,
+    d[1] + (t[1] * Math.cos(a) + b[1] * Math.sin(a)) * r,
+    d[2] + (t[2] * Math.cos(a) + b[2] * Math.sin(a)) * r,
+  ]);
 }
 
 /** A cosine-weighted direction around n. */
@@ -112,7 +116,11 @@ function hemi(n: V, u: number, v: number): V {
   const t = Math.abs(n[2]) < 0.9 ? norm(cross(n, [0, 0, 1])) : norm(cross(n, [1, 0, 0]));
   const b = cross(n, t);
   const z = Math.sqrt(1 - v);
-  return norm([t[0] * Math.cos(a) * r + b[0] * Math.sin(a) * r + n[0] * z, t[1] * Math.cos(a) * r + b[1] * Math.sin(a) * r + n[1] * z, t[2] * Math.cos(a) * r + b[2] * Math.sin(a) * r + n[2] * z]);
+  return norm([
+    t[0] * Math.cos(a) * r + b[0] * Math.sin(a) * r + n[0] * z,
+    t[1] * Math.cos(a) * r + b[1] * Math.sin(a) * r + n[1] * z,
+    t[2] * Math.cos(a) * r + b[2] * Math.sin(a) * r + n[2] * z,
+  ]);
 }
 
 /** The color seen along a ray. `rs` supplies jitter for soft shadows and occlusion. */
