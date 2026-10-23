@@ -175,12 +175,12 @@ const DIRECTORY: Record<string, Call> = {
     await ring(line, 7);
     await line.say(
       VOICES.grandma,
-      "Hello? … Hello? Who is this? … Oh! Is that you, sweetie? Speak up, Grandma’s hearing aid is acting up again.",
+      "Hello? … Hello? Who is this? … Oh! Is that you, sweetie? Grandma was out filling the bird feeder, I nearly didn’t hear it ring!",
     );
     await line.wait(1);
     await line.say(
       VOICES.grandma,
-      "Have you eaten anything today? You sound skinny. I’m putting five dollars in the mail for you. Don’t tell your mother. Okay, bye-bye now, I love you!",
+      "Have you eaten anything today? You sound skinny. Mister Whiskers says hello. He knocked the African violet off the windowsill again. Okay, bye-bye now, I love you!",
     );
     line.ended("Grandma hung up");
   },
