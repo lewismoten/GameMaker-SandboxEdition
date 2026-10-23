@@ -193,7 +193,8 @@ export async function dash(bot: Bot): Promise<void> {
   });
   if (rolls(bot) - start < 3) throw new Error(`only ${rolls(bot) - start} rolls`);
   await carefully(bot, 'the bathroom door', 16, async () => {
-    await leave(bot, bot.walk(93, 'the bathroom door'), 'the bathroom');
+    await must(bot, bot.walk(84, 'the bathroom door'), 'the bathroom door');
+    await leave(bot, bot.walk(94, 'across the bathroom to the toilet'), 'the bathroom');
   });
 }
 

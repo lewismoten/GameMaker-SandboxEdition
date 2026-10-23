@@ -278,9 +278,11 @@ export function dash(book: BlockBook): Level {
   // a roll on top of the laundry basket
   m.set(72, 9, 'U').set(72, 8, '9');
   m.set(78, 9, 'z').set(82, 9, '!').set(76, 5, 'm');
-  // the bathroom door: three rolls
-  m.set(92, 9, 'W').set(92, 8, 'I');
-  m.link(92, 9, 'next');
+  // the bathroom door: three rolls; then across the bathroom to the toilet (the walk lets the
+  // slam and "IT'S NOT WORTH IT!" finish before the act ends)
+  m.set(85, 9, 'W').set(85, 8, 'I');
+  m.fill(86, 1, 9, 9, 'bathWall').row(10, 86, 94, '+').set(93, 9, 'toilet');
+  m.link(93, 9, 'next');
   // the Swamp Demon, right behind him
   m.mon(MON.gurgle, 1, 8);
   return { m, start: at(4, 9), size: [W, H] };

@@ -472,6 +472,19 @@ export function buildBlocks(pal: Pal): BlockBook {
   bathTop.rect(2, 2, 16, 18, c('wood', 3)).rect(2, 2, 16, 2, c('wood', 1)).rect(4, 6, 12, 12, c('wood', 2));
   text(bathTop, 6, 8, 'WC', c('cheese', 3));
   book.add('bathTop', bathTop, air);
+  // the bathroom past the door: its tiled wall, and the toilet at the back (where the act ends)
+  const bathWall = () => {
+    const p = P().rect(0, 0, 20, 20, c('tile', 1));
+    for (let y = 0; y < 20; y += 10) p.rect(0, y, 20, 1, c('tile', 0));
+    for (let x = 0; x < 20; x += 10) p.rect(x, 0, 1, 20, c('tile', 0));
+    return p;
+  };
+  book.add('bathWall', bathWall(), air);
+  const toilet = bathWall();
+  toilet.rect(3, 2, 14, 10, c('grey', 0)).rect(5, 11, 10, 6, c('grey', 0)).rect(2, 13, 16, 6, c('grey', 0));
+  blob(toilet, 10, 16, 7, 3, R('white'), 0, 2);
+  toilet.rect(4, 3, 12, 8, c('white', 2)).rect(4, 3, 12, 1, c('white', 1)).rect(6, 11, 8, 5, c('white', 1)).rect(13, 5, 2, 1, c('metal', 2));
+  book.add('toilet', toilet, air);
 
   // ---------- the reckoning (the bathroom, in hell) ----------
   const voidAir = (seed: number) => {
