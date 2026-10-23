@@ -225,7 +225,7 @@ main.credits-page .credits-more-games li {
   }
 }
 
-/* ---- the BBS pictures: each board a contact sheet of download buttons, the boards side by side ---- */
+/* ---- the BBS pictures: each board a contact sheet that fills in as its pictures download, the boards side by side ---- */
 
 main.credits-page .bbs-boards {
   display: grid;
@@ -251,29 +251,39 @@ main.credits-page .bbs-sheet-pic {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  width: 100%;
-  min-height: 24px;
   padding: 3px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--panel);
   color: var(--text);
-  font: inherit;
   font-size: 11px;
-  cursor: pointer;
 }
 
-main.credits-page .bbs-sheet-pic:hover {
+main.credits-page .bbs-sheet-pic.arrived {
   border-color: var(--accent);
 }
 
-main.credits-page .bbs-sheet-pic img {
-  display: block;
-  width: 100%;
+/* the picture as it arrives, letterboxed on black */
+main.credits-page .bbs-sheet-screen {
+  display: grid;
+  place-items: center;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
   border-radius: 4px;
   background: #000;
+  overflow: hidden;
+}
+
+main.credits-page .bbs-sheet-canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* how much of this picture has arrived */
+main.credits-page .bbs-sheet-meter {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--accent) calc(var(--got, 0) * 100%), var(--border) 0);
 }
 
 main.credits-page .bbs-sheet-name {
