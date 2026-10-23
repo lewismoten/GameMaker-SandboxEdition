@@ -1,10 +1,15 @@
-// The sound for a screen recording: every AudioContext's output (audio/output.ts), mixed
-// into one track. Each context feeds a MediaStream destination of its own; one mixing
-// context listens to all of them.
+// The sound for a screen recording: every AudioContext's line out (audio/output.ts), mixed
+// into one track. The mix is made on the page's own context (audio/context.ts), which is
+// where everything plays: its sound goes straight in, with no second context that could
+// start suspended (an armed recording starts without a click), run at another sample rate
+// or add a hop of latency between the picture and the sound. Any other context feeds a
+// MediaStream destination of its own, which the mix listens to.
+import { audioContext } from '../audio/context';
 import { tapOutputs } from '../audio/output';
 
 export class AudioMix {
-  private mix = new AudioContext();
+  private page = audioContext();
+  private mix = this.page ?? new AudioContext();
   private dest = this.mix.createMediaStreamDestination();
   private untap: () => void;
   private links: (() => void)[] = [];
@@ -14,9 +19,21 @@ export class AudioMix {
    * or just one node's sound (a game's, audio/engine.ts `node`).
    */
   constructor(want?: ((ctx: BaseAudioContext) => boolean) | AudioNode) {
-    void this.mix.resume().catch(() => undefined);
+    // (the page's context is resumed by the page's own gesture listeners)
+    if (!this.page) void this.mix.resume().catch(() => undefined);
     const add = (ctx: BaseAudioContext, node: AudioNode) => {
       if (typeof want === 'function' && !want(ctx)) return;
+      if (ctx === this.mix) {
+        node.connect(this.dest);
+        this.links.push(() => {
+          try {
+            node.disconnect(this.dest);
+          } catch {
+            /* already gone */
+          }
+        });
+        return;
+      }
       if (!('createMediaStreamDestination' in ctx)) return; // offline rendering
       const out = (ctx as AudioContext).createMediaStreamDestination();
       node.connect(out);
@@ -47,6 +64,6 @@ export class AudioMix {
     this.untap();
     this.links.forEach((f) => f());
     this.track.stop();
-    void this.mix.close().catch(() => undefined);
+    if (!this.page) void this.mix.close().catch(() => undefined);
   }
 }
