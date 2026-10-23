@@ -13,6 +13,7 @@
 // link is taken, so a pass-through scene would flash the board up and back down before
 // the room fades it in again. The card and fuse box page scenes therefore load dark.pal,
 // all black: their map fades in and out unseen, and only the room scene shows the board.
+// The crawlspace behind the Home Computer is a scene of its own, the only one that scrolls.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '../../../web/src/formats/game';
 import type { CompiledRoom } from './levels/board';
 
@@ -108,6 +109,25 @@ export function buildGame(rooms: CompiledRoom[], startAt = 0): Game {
     page.links[0] = { toScene: roomScene(ri), from: fb.from.start, to: fb.from.start };
     game.scenes.push(page);
     links[free()] = { toScene: game.scenes.length - 1, from: fb.exit, to: fb.from.start };
+  });
+  // Behind a hatch in a board's housing: the crawlspace, the one scene that scrolls (two
+  // boards wide, so its far end is off screen as Watt rolls in). Its hatch out puts Watt back
+  // on that board's pad.
+  rooms.forEach((r, ri) => {
+    const cr = r.crawl;
+    if (!cr?.from.hatch) return;
+    const links = game.scenes[roomScene(ri)].links;
+    const i = links.findIndex((l) => l.toScene === NOSCENE);
+    if (i < 0) throw new Error(`${r.room}: no link left for the crawlspace`);
+    const crawl = emptyScene(ADVTYPE);
+    crawl.desc = 'The Crawlspace';
+    crawl.pos = { x: 40 + ri * 70, y: 30 };
+    crawl.scroll = { ...crawl.scroll, up: 0, down: 0, left: 0xff, right: 0xff };
+    crawl.files = files(r.room);
+    crawl.links = noLinks();
+    crawl.links[0] = { toScene: roomScene(ri), from: cr.exit, to: cr.from.start };
+    game.scenes.push(crawl);
+    links[i] = { toScene: game.scenes.length - 1, from: cr.from.hatch, to: cr.start };
   });
   title.links[0] = { toScene: cardScene(startAt), from: { x: 0, y: 0 }, to: boards[startAt].b.start };
   return game;

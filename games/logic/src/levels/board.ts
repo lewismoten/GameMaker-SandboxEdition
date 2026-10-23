@@ -60,7 +60,7 @@ const DECOR: Record<string, string> = { '%': 'cap', '=': 'res', '&': 'ic', '*': 
  * character LCD, and the CitiCar (tail, middle, nose). */
 const LCD: Record<string, string> = { '{': 'lcd0', '}': 'lcd1', K: 'car0', M: 'car1', N: 'car2' };
 const isBattery = (ch: string) => /^[0-9A-F]$/.test(ch);
-const isWall = (ch: string) => ch === '#' || ch === ' ' || ch === ':' || ch === '?' || ch in DECOR || ch in LCD || isBattery(ch);
+const isWall = (ch: string) => ch === '#' || ch === ' ' || ch === ':' || ch === '?' || ch === '!' || ch in DECOR || ch in LCD || isBattery(ch);
 /** Which neighbors of a housing block are housing too (the autotile mask). */
 function wallMask(at: (x: number, y: number) => string, x: number, y: number): number {
   let m = 0;
@@ -86,6 +86,8 @@ export interface Board {
   wireCells: Map<string, [number, number][]>;
   /** A '?' in the housing: a panel Watt can roll into (map block). */
   seam?: { x: number; y: number };
+  /** A '!' in the housing: a hatch into the crawlspace behind the board (map block). */
+  hatch?: { x: number; y: number };
 }
 
 /** Behind the seam: the house's main fuse box, in the room's last slot. Watt lands on its
@@ -103,6 +105,34 @@ export const FUSEBOX = [
   '   ##########   ',
   '                ',
 ];
+
+/**
+ * Behind a hatch ('!') in a board's housing: the crawlspace, a scene of its own two boards
+ * wide. It is the one place in the house that scrolls, so its far end (the tin heart and the
+ * painted Easter egg) is off screen as Watt rolls in. # housing, . board, @ where Watt lands,
+ * ! the hatch back out, % & parts, h the tin heart, y the Easter egg.
+ */
+export const CRAWL = [
+  '################################',
+  '################################',
+  '##..........################..h#',
+  '##.%........##########.........#',
+  '##.............................#',
+  '#!......@......................#',
+  '##........................&....#',
+  '##.........&......#####........#',
+  '##..............#########y.....#',
+  '################################',
+];
+/** The crawlspace's top-left on the room's map (clear of every slot a room uses). */
+export const CRAWL_AT: [number, number] = [2, 42];
+
+export interface Crawl {
+  /** The board whose hatch leads in (and where the hatch out sends Watt back to). */
+  from: Board;
+  start: { x: number; y: number };
+  exit: { x: number; y: number };
+}
 
 export interface Fusebox {
   /** The board whose seam leads in (and where the socket sends Watt back to). */
@@ -129,6 +159,7 @@ export interface CompiledRoom {
   mons: Bestiary;
   boards: Board[];
   fusebox?: Fusebox;
+  crawl?: Crawl;
 }
 
 interface Parsed {
@@ -211,8 +242,13 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     spec.rows.forEach((row, y) => [...row].forEach((ch, x) => ch === '?' && seams.add(wallMask((x2, y2) => spec.rows[y2]?.[x2] ?? ' ', x, y))));
   const fusebox = seams.size > 0;
   if (fusebox && specs.length >= SLOTS.length) throw new Error(`${room}: no slot left for the fuse box`);
-  const easterEgg = specs.some((s) => s.rows.some((r) => r.includes('y')));
-  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard'), seams: [...seams], fusebox, easterEgg });
+  const hatches = new Set<number>();
+  for (const rows of [...specs.map((s) => s.rows), CRAWL])
+    rows.forEach((row, y) => [...row].forEach((ch, x) => ch === '!' && hatches.add(wallMask((x2, y2) => rows[y2]?.[x2] ?? ' ', x, y))));
+  const crawling = specs.some((s) => s.rows.some((r) => r.includes('!')));
+  if (crawling && SLOTS.slice(0, specs.length).some(([x, y]) => y === CRAWL_AT[1])) throw new Error(`${room}: the crawlspace is in the way of a board`);
+  const easterEgg = specs.some((s) => s.rows.some((r) => r.includes('y'))) || crawling;
+  const tiles = buildTiles(STYLES[room], batteries, { breadboard: specs.some((s) => s.look === 'breadboard'), seams: [...seams], fusebox, easterEgg, hatches: crawling ? [...hatches] : [] });
   const map = newMap();
   map.blocks.fill(tiles.id('void'));
   let placed = 0;
@@ -220,6 +256,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     const { spec, ox, oy, traceBits, sideGates, ctrlCells } = p;
     const at = (x: number, y: number) => spec.rows[y]?.[x] ?? ' ';
     let seam: Board['seam'];
+    let hatch: Board['hatch'];
     /** Gates wired from the side, and switches and fuses on up-and-down wires, are turned. */
     const partName = (ch: string, x: number, y: number) => {
       const tb = traceBits.get(`${x},${y}`) ?? 0;
@@ -250,6 +287,10 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
           if (tb || seam) throw new Error(`${spec.file}: one seam, off the wires`);
           put(x, y, `seam${wallMask(at, x, y)}`);
           seam = { x: ox + x, y: oy + y };
+        } else if (ch === '!') {
+          if (tb || hatch) throw new Error(`${spec.file}: one hatch, off the wires`);
+          put(x, y, `hatch${wallMask(at, x, y)}`);
+          hatch = { x: ox + x, y: oy + y };
         } else if (ch in DECOR) put(x, y, DECOR[ch]);
         else if (ch === ':') put(x, y, 'out555');
         else if (isBattery(ch)) {
@@ -274,7 +315,7 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
         }
       }
     if (!exit.x) throw new Error(`${spec.file}: no outlet`);
-    return { spec, map, mons, ox, oy, start: { x: ox + 8, y: oy + 5 }, exit, wireCells: p.wireCells, seam };
+    return { spec, map, mons, ox, oy, start: { x: ox + 8, y: oy + 5 }, exit, wireCells: p.wireCells, seam, hatch };
   });
   reindexMonsters(map);
   let box: Fusebox | undefined;
@@ -299,7 +340,28 @@ export function compileRoom(room: Room, specs: BoardSpec[], mb: BlockSet): Compi
     if (tiles.id('egg') !== EGG) throw new Error('The egg moved');
     box = { from, ...cell };
   }
-  return { room, tiles, map, mons, boards, fusebox: box };
+  let crawl: Crawl | undefined;
+  const into = boards.find((b) => b.hatch);
+  if (into) {
+    const [ox, oy] = CRAWL_AT;
+    const at = (x: number, y: number) => CRAWL[y]?.[x] ?? '#';
+    // housing all round, so the view never scrolls past it onto the void (it can run on about
+    // half a screen past either end)
+    for (let y = oy - 2; y < oy + ROWS + 2; y++) for (let x = ox - 16; x < ox + CRAWL[0].length + 16; x++) map.blocks[y * MLEN + ((x + MLEN) % MLEN)] = tiles.id('wall15');
+    const names: Record<string, string> = { '@': 'pad', h: 'tinHeart', y: 'easterEgg', ...DECOR };
+    const cell = { start: { x: 0, y: 0 }, exit: { x: 0, y: 0 } };
+    for (let y = 0; y < ROWS; y++)
+      for (let x = 0; x < CRAWL[0].length; x++) {
+        const ch = at(x, y);
+        const name = ch === '#' ? `wall${wallMask(at, x, y)}` : ch === '!' ? `hatch${wallMask(at, x, y)}` : ch === '.' ? `floor${(x * 7 + y * 3 + ((x * y) % 5)) % 3}` : names[ch];
+        if (!name) throw new Error(`crawlspace: what is '${ch}'?`);
+        map.blocks[(oy + y) * MLEN + ox + x] = tiles.id(name);
+        if (ch === '@') cell.start = { x: ox + x, y: oy + y };
+        if (ch === '!') cell.exit = { x: ox + x, y: oy + y };
+      }
+    crawl = { from: into, ...cell };
+  }
+  return { room, tiles, map, mons, boards, fusebox: box, crawl };
 }
 
 export const ROOMS: Room[] = ['kitchen', 'living', 'garage', 'attic'];

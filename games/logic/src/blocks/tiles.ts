@@ -344,7 +344,7 @@ export interface Battery {
   high?: number;
 }
 
-export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadboard?: boolean; seams?: number[]; fusebox?: boolean; easterEgg?: boolean } = {}): BlockSet {
+export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadboard?: boolean; seams?: number[]; fusebox?: boolean; easterEgg?: boolean; hatches?: number[] } = {}): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, px: Pixels, def: BlockDef = {}) => bs.add(name, px, def);
   const vp = new Pixels(20, 20, c('night', 0));
@@ -435,6 +435,9 @@ export function buildTiles(st: Style, batteries: Battery[] = [], opts: { breadbo
     for (let k = 0; k < EGG_SHINE_FRAMES; k++)
       add(`easterEgg${k || ''}`, drawEasterEgg(floorPic(st, 0), egg, 'dots', k), { score: 50, touch: 'floor0', next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 2 : 60 });
   }
+  // a hatch in the housing (a panel like the seam's) into the crawlspace behind a board, and
+  // back out of it (added last, so no block before it moves)
+  for (const m of opts.hatches ?? []) add(`hatch${m}`, seamPic(st, m));
   bs.addAt(EGG, 'egg', eggPic(st), { obj: true, touch: 'floor0' });
   return bs;
 }
