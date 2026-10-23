@@ -10,5 +10,5 @@ const { sim } = await play(SEED);
 const titles: Record<number, string> = { 2: 'Level 1: The Hungry Crowd', 3: 'Level 2: The Wicker Wasteland', 4: 'Level 3: Twelve Baskets Full', 5: 'Level 4: The Way Home' };
 const segments: WalkSegment[] = sim.segments.map((s) => ({ scene: s.scene, keys: encodeKeys(s.keys) }));
 const chapters: WalkChapterMark[] = sim.segments.map((s) => ({ scene: s.scene, title: titles[s.scene] }));
-const r = await writeWalkthrough('loaf', { rand: { seed: SEED, per: 'scene' }, segments, chapters });
+const r = await writeWalkthrough('loaf', { rand: { seed: SEED, per: 'scene' }, segments, chapters }, { clips: true });
 console.log(`engine: scenes ${r.scenes.join(' ')}, ${r.keysLeft} keys unplayed`);
