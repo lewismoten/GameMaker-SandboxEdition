@@ -326,7 +326,10 @@ export function stable(book: BlockBook): Level {
     30,
   );
   // the line, all facing the manger: goat, goat, (you), goat, lamb, then the donkey and the ox
-  m.set(12, 4, 'place').set(9, 3, 'dusty');
+  // the empty place, up an aisle roped off at its foot: the rope drops for five wool and the
+  // gift's "Hey..." plays out as she walks up into her place (four blocks, a second and a half)
+  m.set(12, 4, 'placeOpen').set(9, 3, 'dusty');
+  m.fill(11, 5, 1, 4, 'railV').fill(13, 5, 1, 4, 'railV').set(12, 8, 'rope');
   m.mon(MON.lineGoat, 10, 4).mon(MON.lineGoat, 11, 4).mon(MON.lineGoat, 13, 4).mon(MON.lineLamb, 14, 4);
   m.mon(MON.donkey, 15, 4).mon(MON.ox, 16, 4);
   m.mon(MON.lamb, 2, 6).mon(MON.lamb, 25, 12).mon(MON.lamb, 3, 12);

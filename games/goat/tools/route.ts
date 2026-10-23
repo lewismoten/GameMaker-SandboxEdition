@@ -8,6 +8,15 @@ const expect = (bot: Bot, scene: number, what: string) => {
   if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
 };
 
+/**
+ * A level's first few ticks, then standing still while any clip it starts with plays out (in
+ * the fold a lamb bumps her on the third tick: "Yay"), so the bot's first sound doesn't cut
+ * it off.
+ */
+async function hearTheStart(bot: Bot): Promise<void> {
+  if ((await bot.wait(5)) || (await bot.sim.waitForClip())) throw new Error('a scene change at the start');
+}
+
 async function must(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
   const out = await r;
   if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
@@ -51,6 +60,7 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
 /** 1. The shepherds' field. */
 export async function theField(bot: Bot): Promise<void> {
   expect(bot, 2, "the shepherds' field");
+  await hearTheStart(bot);
   await carefully(bot, 'the fold', 10, async () => {
     await must(bot, bot.goto(2, 2, 'wool'), 'wool');
     await must(bot, bot.goto(3, 5, 'wool'), 'wool');
@@ -94,6 +104,7 @@ export async function theField(bot: Bot): Promise<void> {
 /** 2. Bethlehem. */
 export async function bethlehem(bot: Bot): Promise<void> {
   expect(bot, 3, 'Bethlehem');
+  await hearTheStart(bot);
   await carefully(bot, 'the market', 20, async () => {
     await must(bot, bot.take(9, 6, 'down', 'a cabbage'), 'cabbage');
     await must(bot, bot.goto(2, 4, 'the sandal'), 'sandal');
@@ -119,6 +130,7 @@ export async function bethlehem(bot: Bot): Promise<void> {
 /** 3. The caravan. */
 export async function theCaravan(bot: Bot): Promise<void> {
   expect(bot, 4, 'the caravan');
+  await hearTheStart(bot);
   // the kneeling camels' lines of spit
   for (let x = 30; x <= 38; x++) bot.avoid.set(`${x + 2},${18 + 2}`, 30);
   for (let x = 1; x <= 9; x++) bot.avoid.set(`${x + 2},${20 + 2}`, 30);
@@ -152,14 +164,15 @@ export async function theCaravan(bot: Bot): Promise<void> {
 /** 4. The stable. */
 export async function theStable(bot: Bot): Promise<void> {
   expect(bot, 5, 'the stable');
+  await hearTheStart(bot);
   await carefully(bot, 'the stable', 20, async () => {
     await must(bot, bot.take(3, 13, 'up', 'hay in the corner'), 'hay');
     await must(bot, bot.goto(2, 6, 'wool'), 'wool');
     await must(bot, bot.take(9, 3, 'down', 'the dusty straw by Joseph'), 'dust');
-    await must(bot, bot.goto(12, 5, 'before the line'), 'line');
+    await must(bot, bot.goto(12, 9, 'the rope at the foot of the aisle'), 'aisle');
   });
   if (bot.wool < 5) throw new Error(`only ${bot.wool} wool at the manger`);
-  // five wool opens the place, and she steps right into it
+  // five wool drops the rope ("Hey..."), and she walks up the aisle into her place
   let r = await bot.push('up', 4);
   bot.say('offered the wool');
   if (!r) r = await bot.goto(12, 4, 'third from the left');

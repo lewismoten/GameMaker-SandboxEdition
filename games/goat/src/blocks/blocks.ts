@@ -525,5 +525,24 @@ export function buildBlocks(pal: Pal): BlockBook {
     book.add(`tentDoor${n}Low`, tents[k][1][1], { solid: SOLID });
     if (n !== 'P') book.add(`tentDoor${n}`, tents[k][1][0], { solid: SOLID });
   }
+  // The aisle up to the line: rails along it and a rope across its foot, glowing like the
+  // empty place, that only drops for five wool. The gift's "Hey..." plays as it drops, while
+  // she walks up the aisle into her place, so the line is all ears before the stable fades.
+  const railV = () => {
+    const p = straw(199);
+    p.rect(8, 0, 3, 20, c('wood', 2)).rect(8, 0, 1, 20, c('wood', 3)).rect(10, 0, 1, 20, c('wood', 0));
+    p.rect(4, 2, 12, 3, c('wood', 1)).rect(4, 15, 12, 3, c('wood', 1));
+    return p;
+  };
+  book.add('railV', railV(), { solid: SOLID });
+  const rope = () => {
+    const p = straw(201);
+    for (let k = 0; k < 3; k++) p.frame(1 + k, 1 + k, 18 - k * 2, 18 - k * 2, c('glow', k + 1));
+    p.rect(0, 8, 20, 3, c('red', 1)).rect(0, 8, 20, 1, c('red', 3));
+    p.rect(1, 5, 3, 10, c('wood', 1)).rect(16, 5, 3, 10, c('wood', 1));
+    micro(p, 8, 2, '5', c('ink', 0));
+    return p;
+  };
+  book.add('rope', rope(), { solid: SOLID, effect: WOOL, eamt: -WOOL_NEEDED, score: 500, touch: 'straw' });
   return book;
 }
