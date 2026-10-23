@@ -112,7 +112,7 @@
         "blocks": "l2near.bbl",
         "pal": "l2.pal",
         "grid": [[140]],
-        "under": 7
+        "under": "edge"
       }
     },
     {
@@ -125,7 +125,7 @@
         "blocks": "l2near.bbl",
         "pal": "l2.pal",
         "grid": [[141]],
-        "under": 7
+        "under": "edge"
       }
     },
     {
