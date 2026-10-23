@@ -1,7 +1,8 @@
 // The GIF Gallery file area on THE -= S A N D B O X =- BBS: the SysOp's snapshots as GIFs
 // and JPEGs, made by web/scripts/bbsGifs.ts into web/public/bbs (sizes and formats in
-// gallery.json). Downloaded pictures land in C:\IMAGES, where VPIC shows them again
-// (retro/view/vpic.ts).
+// gallery.json). The Sofa's GIF area (board "sofa" in gallery.json: 640x480 interlaced
+// GIFs of THE CHEZ and the Bard's logo) shares the list. Downloaded pictures from either
+// board land in C:\IMAGES, where VPIC shows them again (retro/view/vpic.ts).
 import list from './gallery.json';
 import { decodePartialGif, partialPixels } from '../../formats/gifProgressive';
 import { decodePartialJpeg, isJpeg, type PartialJpeg } from '../../formats/jpeg';
@@ -19,6 +20,8 @@ export interface GalleryFile {
   gray: boolean;
   progressive: boolean;
   desc: string;
+  /** Which board has it: the Sandbox BBS's GIF Gallery, or The Sofa's GIF area. */
+  board?: 'sofa';
 }
 
 const DESC: Record<string, string> = {
@@ -34,9 +37,19 @@ const DESC: Record<string, string> = {
   'DOGHOUSE.JPG': "The Dog House: the SysOp's little lending library.",
   'LIBRARY.GIF': 'The Dog House again, in 16 colors.',
   'CHEZ.JPG': "THE CHEZ: the SysOp's red CitiCar!",
+  // The Sofa's GIF area
+  'THECHEZ1.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Dressed in Christmas lights and a big gold bow.',
+  'THECHEZ2.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Doc Leo and Teddy the corgi out for a spin.',
+  'THECHEZ3.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Plugged in at a public charger.',
+  'BARDLOGO.GIF': "The Bard of Bizarre's logo: the rooster in glasses. Logo made with DeepAI.",
 };
 
-export const GALLERY: GalleryFile[] = list.map((f) => ({ ...f, desc: DESC[f.name] ?? '' }));
+/** Every picture on either board (what C:\IMAGES can hold). */
+export const PICTURES: GalleryFile[] = list.map((f) => ({ ...f, board: f.board === 'sofa' ? 'sofa' : undefined, desc: DESC[f.name] ?? '' }));
+/** The Sandbox BBS's GIF Gallery: the SysOp's snapshots. */
+export const GALLERY: GalleryFile[] = PICTURES.filter((f) => !f.board);
+/** The Sofa's GIF area. */
+export const SOFA_GIFS: GalleryFile[] = PICTURES.filter((f) => f.board === 'sofa');
 
 /** What the file listing says about a picture: "256 color", "16 gray", "JPEG prog"… */
 export function formatLabel(f: GalleryFile): string {

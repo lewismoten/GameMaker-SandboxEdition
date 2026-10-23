@@ -118,5 +118,49 @@
     "colors": 16777216,
     "gray": false,
     "progressive": false
+  },
+  {
+    "name": "THECHEZ1.GIF",
+    "bytes": 124282,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "THECHEZ2.GIF",
+    "bytes": 140743,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "THECHEZ3.GIF",
+    "bytes": 149365,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 96,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
+  },
+  {
+    "name": "BARDLOGO.GIF",
+    "bytes": 35991,
+    "width": 640,
+    "height": 480,
+    "format": "GIF",
+    "colors": 64,
+    "gray": false,
+    "progressive": false,
+    "board": "sofa"
   }
 ]
