@@ -13,7 +13,8 @@
     { "game": "mustard", "as": "tucked in the nook behind the seed’s mound" },
     { "game": "carl", "as": "under the bedroom desk" },
     { "game": "snowbound", "as": "in the snow by the backyard snowman" },
-    { "game": "loaf", "as": "at the foot of a fig tree on the hillside" }
+    { "game": "loaf", "as": "at the foot of a fig tree on the hillside" },
+    { "game": "risi", "as": "on the kitchen floor, under a shelf" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -33,7 +34,8 @@
   "joe": [
     { "game": "realm", "as": "night librarian by the Royal Library’s door" },
     { "game": "tickle", "as": "counting rats by the course’s chalkboard" },
-    { "game": "teddy2", "as": "in the Dog Show’s stands, keeping count" }
+    { "game": "teddy2", "as": "in the Dog Show’s stands, keeping count" },
+    { "game": "risi", "as": "at the top of the theater’s stands, counting the laughs" }
   ],
   "lewie": [
     { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },
