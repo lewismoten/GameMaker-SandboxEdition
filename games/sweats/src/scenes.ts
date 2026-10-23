@@ -48,7 +48,7 @@ export interface SceneDef {
   light: Lighting | undefined;
   filler: string;
   legend?: Record<string, string>;
-  build: (m: MapBuilder) => { start: [number, number] };
+  build: (m: MapBuilder) => { start: [number, number]; size?: [number, number] };
   monsters: (set: Monster[], mb: SpriteBook) => void;
   song: string;
   sounds: SoundPlan;
@@ -79,7 +79,7 @@ function intermission(k: number, set?: Group): SceneDef {
     filler: 'under',
     build: (m) => {
       buildHive(m);
-      return { start: k === 1 ? HIVE_STREET : HIVE_STAGE };
+      return { start: k === 1 ? HIVE_STREET : HIVE_STAGE, size: [HIVE_W, HIVE_H] };
     },
     monsters: (set, mb) => hiveMonsters(set, mb),
     song: k === 1 ? 'hive' : k === 5 ? 'finale' : `inter${k - 1}`,
