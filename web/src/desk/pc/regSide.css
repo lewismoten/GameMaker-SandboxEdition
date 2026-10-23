@@ -221,6 +221,7 @@
 /* the card: cream stock, the red band of the box insert */
 .rs-card {
   overflow: auto;
+  color-scheme: light;
   background: var(--rs-paper);
   border-top: 6px solid var(--rs-red);
 }
@@ -331,33 +332,314 @@
   color: #fff;
 }
 
-.rs-reply {
-  margin: 10px 0 4px;
-  padding: 8px 10px;
-  border: 1px dashed var(--rs-line);
-  background: #fffdf4;
-  rotate: -0.6deg;
+.rs-card [hidden] {
+  display: none !important;
 }
 
-.rs-reply[hidden] {
-  display: none;
+/* the mail-in card: cream card stock with the red band, the printed lines in type */
+.rs-postcard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0 8px;
+  padding: 0 10px 10px;
+  border: 1px solid var(--rs-line);
+  background: #fffbea;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  rotate: -0.4deg;
 }
 
-.rs-reply-head {
+.rs-pc-band {
   display: flex;
   justify-content: space-between;
-  gap: 6px;
-  border-bottom: 1px solid var(--rs-line);
-  font-size: 12px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  margin: 0 -10px 4px;
+  padding: 4px 10px;
+  background: var(--rs-red);
+  color: #fff;
+  font: 12px Helvetica, Arial, sans-serif;
 }
 
-.rs-reply p {
-  margin: 6px 0 0;
+.rs-pc-band b {
+  font-weight: 800;
+  letter-spacing: 0.08em;
 }
 
-.rs-reply p b {
+.rs-printed,
+.rs-keyed {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 10px;
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.rs-printed dt,
+.rs-keyed dt {
+  font: 700 11px/1.8 Helvetica, Arial, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rs-printed dd,
+.rs-keyed dd {
+  margin: 0;
   font-family: 'Courier New', monospace;
-  font-size: 16px;
+  font-weight: 600;
+}
+
+.rs-name-l {
+  font-weight: 600;
+}
+
+.rs-name-l small,
+.rs-filled small,
+.rs-pick small {
+  font-weight: 400;
+  color: #4a4436;
+}
+
+.rs-hand {
+  color: #12305e;
+  font: 600 16px 'Comic Sans MS', 'Bradley Hand', 'Segoe Print', cursive;
+}
+
+.rs-filled {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.rs-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 0;
+  padding: 0 0 4px;
+  border: 0;
+}
+
+.rs-pick legend {
+  width: 100%;
+  padding: 0;
+  font-weight: 600;
+}
+
+.rs-pick label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  cursor: pointer;
+}
+
+.rs-pick input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--rs-red);
+}
+
+/* an earlier reply's number, written in by hand */
+.rs-byhand {
+  margin: 0 0 6px;
+}
+
+.rs-byhand summary {
+  min-height: 28px;
+  padding: 4px 0;
+  color: #12305e;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* the address side going into the mail: Business Reply Mail to RSD */
+.rs-brm {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+  margin: 2px 0 8px;
+  padding: 10px;
+  border: 1px solid var(--rs-line);
+  background: #fffbea;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  font: 12px Helvetica, Arial, sans-serif;
+  animation: rs-flip 500ms ease-out;
+}
+
+@keyframes rs-flip {
+  from {
+    transform: perspective(600px) rotateY(-80deg);
+    opacity: 0.4;
+  }
+}
+
+.rs-brm p {
+  margin: 0;
+}
+
+.rs-from {
+  display: flex;
+  flex-direction: column;
+}
+
+.rs-from .rs-hand {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.rs-nopost {
+  width: 84px;
+  padding: 4px;
+  border: 1px solid var(--rs-ink);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.rs-bars {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rs-bars i {
+  height: 5px;
+  background: var(--rs-ink);
+}
+
+.rs-brm-h {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  padding: 4px 0;
+  border-block: 2px solid var(--rs-ink);
+}
+
+.rs-brm-h b {
+  font: 900 17px Helvetica, Arial, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.rs-brm-h span,
+.rs-brm-h small {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.rs-to {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  padding-left: 22%;
+  font-size: 13px;
+}
+
+.rs-to span:first-child {
+  font-weight: 800;
+}
+
+.rs-postmark {
+  position: absolute;
+  bottom: 14px;
+  left: 8px;
+  padding: 10px 6px;
+  border: 2px solid rgba(26, 58, 140, 0.75);
+  border-radius: 50%;
+  color: rgba(26, 58, 140, 0.8);
+  font: 800 11px Helvetica, Arial, sans-serif;
+  letter-spacing: 0.1em;
+  rotate: -14deg;
+  animation: rs-stamp 300ms 450ms ease-in both;
+}
+
+@keyframes rs-stamp {
+  from {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+.rs-days {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.rs-days b {
+  font: italic 700 16px Georgia, 'Times New Roman', serif;
+}
+
+/* RSD's reply: a dot-matrix letter on tractor-feed paper */
+.rs-letter {
+  margin: 2px 0 8px;
+  padding: 10px 26px 10px;
+  background:
+    radial-gradient(circle at 9px 9px, #d8cfb4 4px, transparent 4.5px) left top / 18px 18px repeat-y,
+    radial-gradient(circle at 9px 9px, #d8cfb4 4px, transparent 4.5px) right top / 18px 18px repeat-y,
+    repeating-linear-gradient(#fdfcf6 0 18px, #eef3e6 18px 36px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  color: #2a2a2a;
+  font: 13px/1.45 'Courier New', Courier, monospace;
+  animation: rs-in 400ms ease-out;
+}
+
+.rs-letter p {
+  margin: 0 0 6px;
+}
+
+.rs-lh {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed #777;
+  text-align: center;
+}
+
+.rs-lh b {
+  letter-spacing: 0.06em;
+}
+
+.rs-lh span {
+  font-size: 11px;
+}
+
+.rs-letter h3 {
+  margin: 0 0 4px;
+  font: 700 14px 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rs-letter h3:focus {
+  outline: none;
+}
+
+.rs-keyed {
+  padding: 4px 6px;
+  border: 1px solid #555;
+}
+
+.rs-keyed dd {
+  font-size: 15px;
+}
+
+.rs-sign {
+  font-style: italic;
+}
+
+.rs-letter .rs-actions {
+  flex-wrap: wrap;
+  font-family: system-ui, sans-serif;
 }
 
 .rs-note {
@@ -422,7 +704,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rs-panel {
+  .rs-panel,
+  .rs-brm,
+  .rs-postmark,
+  .rs-letter {
     animation: none;
   }
+}
+
+/* in the mail and back again: the card's own words say what's going on */
+.rs-card:not([data-stage='card']) .rs-lead {
+  display: none;
 }
