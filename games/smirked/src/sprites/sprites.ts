@@ -374,7 +374,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('zombieDown1', zombieDown(1));
 
   // A papier-mache witch: green face, pointy hat, black dress, a broom, painted-on smile.
-  const witch = (f: number) => {
+  const witchArt = (f: number) => {
     const p = P();
     for (let y = 9; y <= 18; y++) {
       const w = 3 + (y - 9) * 0.4;
@@ -389,8 +389,9 @@ export function buildMonsterBlocks(pal: Pal) {
     // the hat (tilted a little more each time something walks past)
     for (let y = 0; y < 6; y++) p.rect(10 - y * 0.7 + f * (5 - y) * 0.2, y, 1 + y * 1.4, 1, c('black', 1));
     p.rect(5, 5, 10, 1, c('black', 2)).rect(8, 4, 5, 1, c('purple', 2));
-    return lit(p);
+    return p;
   };
+  const witch = (f: number) => lit(witchArt(f));
   book.add('witch0', witch(0));
   book.add('witch1', witch(1));
   // The witch, tackled flat: cardboard, very petite. Walk over and say sorry (counter 21).
@@ -526,6 +527,9 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('seed0', seed(0), { scorePts: 100 });
   book.add('seed1', seed(1), { scorePts: 100 });
+  // waving bye and hopping off: the same pictures worth nothing (brushing past him scores once, not every tick)
+  book.add('seedBye0', seed(0));
+  book.add('seedBye1', seed(1));
   // The 11-year-old in a cardboard knight costume: box armor, a bucket helmet with a slit and a
   // feather, a cardboard sword up. Only your foam sword knocks the helmet off.
   const knightArt = (f: number, helmet = true, taped = false) => {
@@ -607,5 +611,27 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('bill0', bill(0), { effect: MONEY, eamt: 1, scorePts: 5 });
   book.add('bill1', bill(1), { effect: MONEY, eamt: 1, scorePts: 5 });
+  // The helmet knocked off the second time, spinning through the air to land at your feet.
+  const spin = (f: number) => {
+    const p = P();
+    p.rect(6, 5, 9, 8, c('cardboard', 2)).rect(6, 5, 9, 1, c('cardboard', 3)).rect(7, 9, 7, 1, ink).rect(14, 5, 1, 8, c('cardboard', 0));
+    p.line(10, 4, 12, 0, c('red', 2));
+    if (f) p.line(2, 7, 4, 7, c('white', 1)).line(1, 11, 4, 11, c('white', 1));
+    else p.line(16, 15, 18, 15, c('white', 1)).line(15, 17, 18, 17, c('white', 1));
+    p.rect(7, 17, 8, 1, c('black', 0));
+    return lit(f ? p : p.flipX());
+  };
+  book.add('helmetSpin0', spin(0));
+  book.add('helmetSpin1', spin(1));
+  // A witch you said sorry to, propped back up by the staff with a strip of tape: she'll go over again.
+  const taped = (f: number) => {
+    const p = witchArt(f);
+    p.line(6, 11, 14, 17, c('white', 2)).line(6, 12, 14, 18, c('white', 1));
+    return lit(p);
+  };
+  book.add('witchTaped0', taped(0));
+  book.add('witchTaped1', taped(1));
+  // the witch landing flat, worth nothing yet (the falling witch stays a while; a sorry is said once she lies still)
+  book.add('flatFalling', flat(1));
   return book;
 }

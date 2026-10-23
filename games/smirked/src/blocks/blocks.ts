@@ -23,6 +23,8 @@ import { BATTERIES, BATTERIES_NEEDED, MONEY, SMIRKS, SORRY, SORRY_NEEDED, SWORD_
 export { BlockBook, SOLID };
 /** Ticks a fog machine rests, and puffs. */
 export const FOG_REST = 44;
+/** The last ticks of its rest a fog machine rumbles first: wisps at the grate, its pilot light red. */
+export const FOG_WARN = 12;
 export const FOG_PUFF = 22;
 
 export function buildBlocks(pal: Pal): BlockBook {
@@ -495,10 +497,20 @@ export function buildBlocks(pal: Pal): BlockBook {
 
   // ---------- hazards ----------
   /** A fog machine in the floor: a grate that rests, then hisses fog (scream; Lily smirks). */
-  const vent = (puff: number) => {
+  const vent = (puff: number, warn = false, dry = false) => {
     const p = boards(38);
     p.rect(3, 4, 14, 12, c('black', 1)).rect(4, 5, 12, 10, c('black', 0));
     for (let x = 5; x < 16; x += 2) p.rect(x, 5, 1, 10, c('silver', 0));
+    // the pilot light: green at rest, red when it's about to hiss, out once it has run dry
+    p.rect(15, 15, 2, 2, dry ? c('black', 2) : warn || puff ? c('exitred', 2) : c('glow', 1));
+    if (warn)
+      for (const [x, y] of [
+        [7, 6],
+        [11, 8],
+        [9, 12],
+        [13, 5],
+      ] as const)
+        p.set(x, y, c('fog', 1)).set(x, y - 1, c('fog', 0));
     if (puff) {
       const r = rng(39 + puff);
       for (let i = 0; i < 70; i++) {
@@ -510,9 +522,11 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   const hurt = (hp: number) => ({ hp, effect: SMIRKS, eamt: 1 });
-  book.add('vent', vent(0), { next: 'ventPuff', ntime: FOG_REST });
-  book.add('ventPuff', vent(1), { ...hurt(-6), touch: 'vent', next: 'ventPuff2', ntime: FOG_PUFF / 2 });
-  book.add('ventPuff2', vent(2), { ...hurt(-6), touch: 'vent', next: 'vent', ntime: FOG_PUFF / 2 });
+  // A fog machine scares you once, then runs dry (its blocks animate all together, so one that
+  // went back to 'vent' would still be hissing and hurt again every tick you stood on it).
+  book.add('vent', vent(0), { next: 'ventWarn', ntime: FOG_REST - FOG_WARN });
+  book.add('ventPuff', vent(1), { ...hurt(-6), touch: 'ventDry', next: 'ventPuff2', ntime: FOG_PUFF / 2 });
+  book.add('ventPuff2', vent(2), { ...hurt(-6), touch: 'ventDry', next: 'vent', ntime: FOG_PUFF / 2 });
   /** A fake spiderweb hanging across the path: walk through it, sneeze, and it tears. */
   const web = (bg: Pixels, torn: boolean) => {
     const p = bg;
@@ -694,6 +708,9 @@ export function buildBlocks(pal: Pal): BlockBook {
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (will.get(x, y) !== 255) p.set(x, y, will.get(x, y));
     book.add('willCurtain', p, solid);
   }
+  // the fog machine rumbling before it hisses (harmless), and one that has run dry
+  book.add('ventWarn', vent(0, true), { next: 'ventPuff', ntime: FOG_WARN });
+  book.add('ventDry', vent(0, false, true));
   // The crypt's first sign, propped on the flagstones by the way in: how a tackle works (you walk over it).
   {
     const p = new Pixels(60, 20);

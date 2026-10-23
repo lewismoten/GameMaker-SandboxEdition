@@ -157,7 +157,9 @@ export const INSTRUCTIONS = [
   ]),
   page([
     'THE FOG HALL: fog machines',
-    'hiss on and off. Find',
+    'hiss on and off (a red light',
+    'warns first; each one gets',
+    'you once, then runs dry). Find',
     `${BATTERIES_NEEDED} batteries for the`,
     'flashlight: the door to the',
     'dark hallway needs them.',

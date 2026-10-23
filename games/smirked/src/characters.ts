@@ -189,8 +189,14 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.zombie] = mon(stings('zombie0', 'zombie1', 7), { power: 110, thru: 1, newmon: MON.zombieDown, upscore: 50 }, pace(o.zombie ?? 3, 1));
   set[MON.zombieDown] = mon(anim('zombieDown0', 'zombieDown1', 8), { power: 200, thru: 0 }, [corner(0, 0, 1), corner(0, 0, 1)]);
   set[MON.witch] = mon(anim('witch0', 'witch1', 40), { power: 110, thru: 1, newmon: MON.witchFalls, upscore: 25 }, [corner(0, 0, 1), corner(0, 0, 1)]);
-  set[MON.witchFalls] = mon(anim('witch1', 'flat1', 6), { power: 200, thru: 0, end: 20, newmon: MON.witchFlat }, [corner(0, 0, 1), corner(1, 0, 1)]);
-  set[MON.witchFlat] = mon(anim('flat0', 'flat1', 12), { power: 50, thru: 1 }, [corner(0, 0, 1), corner(0, 0, 1)]);
+  set[MON.witchFalls] = mon(anim('witch1', 'flatFalling', 6), { power: 200, thru: 0, end: 20, newmon: MON.witchFlat }, [corner(0, 0, 1), corner(1, 0, 1)]);
+  // Said sorry to, or knocked about again (a second tackle, Lily strolling over her, a zombie), a
+  // flat witch is taped back up and stands again: there are always witches to say sorry to.
+  set[MON.witchFlat] = mon(anim('flat0', 'flat1', 12), { power: 50, thru: 1, newmon: MON.witchTaped }, [corner(0, 0, 1), corner(0, 0, 1)]);
+  set[MON.witchTaped] = mon(anim('witchTaped0', 'witchTaped1', 40), { power: 110, thru: 1, newmon: MON.witchFalls, upscore: 25 }, [
+    corner(0, 0, 1),
+    corner(0, 0, 1),
+  ]);
   // Lily strolls her route and back, whistling, smirking now and then; in the woods she pats you
   const lilyPics: [number, number][] = o.pats
     ? [
@@ -225,15 +231,18 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.spider] = mon(stings('spider0', 'spider1', 6), { power: 150, thru: 0 }, pace(3, 1, true));
   set[MON.carl] = mon(anim('carl0', 'carl1', 2), { power: 200, thru: 0, towards: wander(2) });
   set[MON.seed] = mon(anim('seed0', 'seed1', 4), { power: 50, thru: 1, newmon: MON.seedBye }, [corner(0, 0, 1), corner(0, 0, 1)]);
-  set[MON.seedBye] = mon(anim('seed1', 'seed0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
+  set[MON.seedBye] = mon(anim('seedBye1', 'seedBye0', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(-3, 2, 3, 4)]);
   // The duel has two rounds: the first knock sends the helmet flying and he scoops it back up
   // (two seconds when he can't be hit or hurt you), then he comes on quicker with it taped; the
   // second knock leaves it on the carpet for you.
   set[MON.knight] = mon(stings('knight0', 'knight1', 4), { power: 150, thru: 1, towards: 1, newmon: MON.knightGrab, upscore: 100 });
   set[MON.knightGrab] = mon(anim('knightGrab0', 'knightGrab1', 8), { power: 200, thru: 0, end: 32, newmon: MON.knight2 }, [corner(0, 0, 1), corner(0, 0, 1)]);
-  set[MON.knight2] = mon(stings('knightTaped0', 'knightTaped1', 3), { power: 150, thru: 1, towards: 2, newmon: MON.helmet, upscore: 150 });
+  set[MON.knight2] = mon(stings('knightTaped0', 'knightTaped1', 3), { power: 150, thru: 1, towards: 2, newmon: MON.helmetSpin, upscore: 150 });
+  // The second knock: the helmet spins through the air to your feet (power 200: no swing or
+  // passer-by can knock it away), then rolls the last bit to you and you have it.
+  set[MON.helmetSpin] = mon(anim('helmetSpin0', 'helmetSpin1', 2), { power: 200, thru: 1, towards: 3, end: 30, newmon: MON.helmet });
   set[MON.knightRuns] = mon(anim('knightRuns0', 'knightRuns1', 2), { power: 100, thru: 0, end: 40 }, [corner(0, 0, 3), corner(6, -2, 3, 0)]);
-  set[MON.helmet] = mon(anim('helmet0', 'helmet1', 6), { power: 50, thru: 1, newmon: MON.knightRuns }, [corner(0, 0, 1), corner(0, 0, 1)]);
+  set[MON.helmet] = mon(anim('helmet0', 'helmet1', 6), { power: 50, thru: 1, towards: 3, newmon: MON.knightRuns });
   set[MON.goat] = mon(anim('goat0', 'goat1', 12), { power: 200, thru: 1 }, pace(2, 1));
   set[MON.bill] = mon(anim('bill0', 'bill1', 6), { power: 50, thru: 0 }, [corner(0, 0, 1), corner(1, 0, 1), corner(0, 0, 1, 4)]);
   return set;

@@ -48,6 +48,10 @@ export const MON = {
   knight2: 22,
   /** The werewolf guy, tackled: on his back, mask askew, seeing stars. Harmless, and back up after a moment. */
   wolfDazed: 23,
+  /** The helmet knocked off the second time, spinning to land at your feet (nothing can knock it away in the air). */
+  helmetSpin: 24,
+  /** A witch you already said sorry to, taped back up by the staff: she can go over again. */
+  witchTaped: 25,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

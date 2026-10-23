@@ -15,7 +15,9 @@ away. B screams. C asks Lily
 if it is real.
 
 THE FOG HALL: fog machines
-hiss on and off. Find
+hiss on and off (a red light
+warns first; each one gets
+you once, then runs dry). Find
 4 batteries for the
 flashlight: the door to the
 dark hallway needs them.
@@ -28,8 +30,6 @@ open the STAFF ONLY door.
 THE WOODS: fake webs make you
 sneeze. Collect dollars: the
 souvenir sword is $12.
-
-
 THE LAST HALL: the foam sword
 knocks the cardboard knight's
 helmet off. He grabs it back

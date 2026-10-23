@@ -139,6 +139,8 @@ export async function zombieParade(bot: Bot): Promise<void> {
     if (bot.count(SORRY) >= SORRY_NEEDED + 1) break;
     await carefully(bot, `witch ${i + 1}`, 14, async () => {
       await arrive(bot, x - 2, y, 'right', `beside witch ${i + 1}`);
+      // walking up, you may already have said sorry to a witch someone else knocked flat
+      if (bot.count(SORRY) >= SORRY_NEEDED + 1) return;
       const before = bot.count(SORRY);
       await tackle(bot);
       // she topples back a block, then lies flat
@@ -195,9 +197,10 @@ export async function fakeWoods(bot: Bot): Promise<void> {
 export async function lastHall(bot: Bot): Promise<void> {
   expect(bot, 5, 'the last hall');
   await carefully(bot, "the knight's helmet", 20, async () => {
-    for (let tries = 0; tries < 40 && !mons(bot, MON.helmet).length && bot.count(HELMET) < 1; tries++) {
-      // the first knock: he scoops the helmet back up (wait for him), then comes on taped
-      if (mons(bot, MON.knightGrab).length) {
+    for (let tries = 0; tries < 60 && !mons(bot, MON.helmet).length && bot.count(HELMET) < 1; tries++) {
+      // the first knock: he scoops the helmet back up (wait for him), then comes on taped; the
+      // second sends it spinning to your feet
+      if (mons(bot, MON.knightGrab).length || mons(bot, MON.helmetSpin).length) {
         if (await bot.wait(2)) throw new Error('a scene change');
         continue;
       }
