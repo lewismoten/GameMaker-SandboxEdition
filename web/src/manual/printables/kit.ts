@@ -11,6 +11,7 @@ import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../../for
 import { parsePalette } from '../../formats/palette';
 import { paintIndexed } from '../../editor/core/draw';
 import { bbsName } from '../../retro/bbs/bbsName';
+import { sandboxMarkEl } from './sandboxMark';
 
 /** Printed on everything with an address on it. */
 export const FICTIONAL_NOTE =
@@ -109,9 +110,11 @@ export async function mapPicture(ctx: PrintContext, p: MapPanel, cls = ''): Prom
   return fig;
 }
 
-/** The publisher's little logo: a sand pail and the name. */
+/** The publisher's little logo: its mark (sandboxMark.ts) and the name. */
 export function sandboxLogo(cls = ''): HTMLElement {
-  return h('div', { class: `pp-logo ${cls}` }, h('span', { class: 'pp-logo-mark', 'aria-hidden': 'true' }), h('span', null, 'SANDBOX', h('br'), 'SOFTWARE'));
+  const mark = sandboxMarkEl('pp-logo-mark');
+  mark.setAttribute('aria-hidden', 'true');
+  return h('div', { class: `pp-logo ${cls}` }, mark, h('span', null, 'SANDBOX', h('br'), 'SOFTWARE'));
 }
 
 /** THE -= S A N D B O X =- BBS in its colors, as everywhere (retro/bbs/bbsName.ts). */

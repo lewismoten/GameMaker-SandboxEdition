@@ -141,6 +141,14 @@
   transform: rotate(-16deg);
 }
 
+.pc-to .pc-mark {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 0.35em;
+  vertical-align: -0.4em;
+}
+
 .pc-to {
   position: absolute;
   left: 46%;
@@ -689,6 +697,15 @@
     'Times New Roman',
     serif;
   letter-spacing: -0.02em;
+}
+
+/* Sandbox Software's mark before the paper's name */
+.nl-mark {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.25em;
+  vertical-align: -0.12em;
 }
 
 .nl-sub {

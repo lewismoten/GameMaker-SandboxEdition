@@ -1,6 +1,7 @@
 // The paper every Sandbox Software box has, made from the game's catalog entry, manual and
 // disk: registration postcard, key card, catalog, BBS ad, warranty card, newsletter, hint
 // book offer (the sticker sheet is in stickers.ts).
+import { sandboxMarkEl } from './sandboxMark';
 import { h } from '../../editor/core/ui';
 import { parseCharacter } from '../../formats/character';
 import { scanName } from '../../input/scancodes';
@@ -107,7 +108,7 @@ export async function postcard(ctx: PrintContext): Promise<Sheet[]> {
     h(
       'div',
       { class: 'pc-to' },
-      h('b', null, 'SANDBOX SOFTWARE'),
+      h('b', null, sandboxMarkEl('pc-mark'), 'SANDBOX SOFTWARE'),
       h('span', null, `Attn: ${splitTitle(g.title)[0]} Registration`),
       h('span', null, `P.O. Box ${/P\.O\. Box (\d+)/.exec(ctx.manual.pages.map((p) => p.html).join(''))?.[1] ?? '000'}`),
       h('span', null, 'Pittsburgh, PA 15213'),
@@ -453,7 +454,7 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
       h(
         'header',
         { class: 'nl-mast' },
-        h('div', { class: 'nl-title' }, 'The Sandbox Scoop'),
+        h('div', { class: 'nl-title' }, sandboxMarkEl('nl-mark'), 'The Sandbox Scoop'),
         h(
           'div',
           { class: 'nl-sub' },
