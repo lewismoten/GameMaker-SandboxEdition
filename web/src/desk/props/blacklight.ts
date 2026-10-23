@@ -3,12 +3,32 @@
 // a black-light tube. By day (the room's clock) it is a velvet poster in plain light; after
 // dark the room dims, the tube comes on and the poster glows magenta, green, orange and
 // blue. Only the wall dims: the PC, the lamp's pool, the props and their labels stay as they
-// were, and with the desk lamp on the room is a little brighter. Pressed, the tube flickers
-// (desk-blacklight).
+// were, and with the desk lamp on the room is a little brighter. The tube is a switch: on or
+// off whatever the hour (remembered for the visit; by day it only glows dimly), and the felt
+// eggs on the shelf show patterns only black light brings out (eggGlow.ts). Pressed, the
+// poster's tube flickers (desk-blacklight).
 import { h } from "../../editor/core/ui";
 import { watchDaylight } from "../room/daylight";
 import { flash, pressable, say, stillMotion, turns } from "./propKit";
 import { roomSound } from "./propSound";
+import { eggGlow } from "./eggGlow";
+
+const KEY = "gm-blacklight"; // "on" or "off" when the tube was switched this visit
+const chosen = (): boolean | undefined => {
+  try {
+    const v = sessionStorage.getItem(KEY);
+    return v === "on" ? true : v === "off" ? false : undefined;
+  } catch {
+    return undefined;
+  }
+};
+const choose = (on: boolean) => {
+  try {
+    sessionStorage.setItem(KEY, on ? "on" : "off");
+  } catch {
+    /* private mode: for now only */
+  }
+};
 
 /** The two prints (games/kit/scans/blacklight.py, from Lewis's own hobo clown photo). */
 const PRINT = (when: "day" | "night") =>
@@ -36,7 +56,7 @@ export function blackLight(desk: HTMLElement): () => void {
   const scene = desk.querySelector<HTMLElement>(".desk-scene");
   if (!scene) return () => {};
   const dim = h("div", { class: "bl-dim", "aria-hidden": "true" });
-  const tube = h("div", { class: "bl-tube", "aria-hidden": "true" });
+  const tube = h("div", { class: "bl-tube" });
   // the day print, and the glowing one over it, shown after dark
   const poster = h("div", { class: "bl-poster" }, PRINT("day"), PRINT("night"));
   scene.prepend(dim);
@@ -54,18 +74,44 @@ export function blackLight(desk: HTMLElement): () => void {
     () => {
       roomSound.flicker();
       flash(desk, stillMotion() ? "bl-blink" : "bl-flicker", 1000);
-      say(poster, night ? night1() : day1());
+      say(poster, uv ? night1() : day1());
     },
     { id: "desk-blacklight" },
   );
+  // the tube: on after dark unless switched this visit
+  let uv = false;
+  const show = () => {
+    uv = chosen() ?? night;
+    desk.classList.toggle("bl-night", night);
+    desk.classList.toggle("bl-uv", uv);
+    tube.setAttribute("aria-checked", String(uv));
+    tube.title = `Black light: ${uv ? "on" : "off"} (click to switch it ${uv ? "off" : "on"})`;
+    glow.update();
+  };
+  const offTube = pressable(
+    tube,
+    "Black light",
+    () => {
+      choose(!uv);
+      if (!uv) roomSound.flicker();
+      else roomSound.click();
+      show();
+      say(tube, uv ? (night ? "Bzzzz. The black light hums on: the poster and every felt egg glow." : "The black light comes on. In daylight it’s only a dim purple glow.") : "Click. The black light goes off.");
+    },
+    { id: "desk-uv" },
+  );
+  tube.setAttribute("role", "switch"); // (pressable makes it a button first)
+  const glow = eggGlow(desk);
   const stop = watchDaylight((light) => {
     night = light < 0.5;
-    desk.classList.toggle("bl-night", night);
+    show();
   });
   return () => {
     off();
+    offTube();
     stop();
-    desk.classList.remove("bl-night");
+    glow.dispose();
+    desk.classList.remove("bl-night", "bl-uv");
     for (const el of [dim, tube, poster]) el.remove();
   };
 }

@@ -204,6 +204,12 @@ export const roomSound = {
       osc.stop(o.t + seconds + 0.05);
     }
   },
+  /** A switch clicked. */
+  click(): void {
+    const o = open();
+    if (!o) return;
+    noise(o, 0, 0.025, 3000, 0.2, 2);
+  },
   /** A fluorescent tube flickering on: two tinks of the starter and a buzz. */
   flicker(): void {
     const o = open();
