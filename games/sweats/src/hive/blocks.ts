@@ -63,7 +63,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   // THE CHEZ, Lewis's red CitiCar, parked at the curb (scenery)
   {
     const car = new Pixels(40, 20, 255);
-    chezSide(car, 0, 1, { body: [c('red', 1), c('red', 2), c('red', 3)], trim: c('red', 0), glass: [c('night', 0), c('glass', 2)], roof: c('grey', 2), tire: c('ink', 0), hub: c('grey', 3), bumper: c('ink', 1), lamp: c('lamp', 2), tail: c('red', 3), outline: c('ink', 0) }, 'right');
+    chezSide(car, 0, 1, { body: [c('red', 1), c('red', 2), c('red', 3)], trim: c('red', 0), glass: [c('night', 0), c('glass', 2)], roof: c('ink', 0), tire: c('ink', 0), hub: c('grey', 3), stripe: c('grey', 0), pin: c('white', 2), rim: c('white', 2), bumper: c('ink', 1), lamp: c('lamp', 2), tail: c('red', 3), outline: c('ink', 0) }, 'right');
     addPicture(book, 'chez', car, book.pics.get('cityLow')!, () => AIR);
   }
   // the street lamp: its post and its glowing lantern
