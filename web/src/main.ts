@@ -82,6 +82,7 @@ function startModern(hash?: string): void {
       titleSlot,
       h('span', { class: 'spacer' }),
       h('a', { class: 'hide-narrow', href: '#/cast', title: 'Who’s who in the new games, and the kinds of games' }, 'Cast'),
+      h('a', { class: 'hide-narrow', href: '#/achievements', title: 'What you’ve done: your achievements, here and on the 1994 desk' }, 'Achievements'),
       h('a', { href: '#/help', title: `How to use ${PRODUCT}` }, '? Guide'),
       themeButton(),
       h(
