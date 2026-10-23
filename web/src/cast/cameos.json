@@ -20,7 +20,8 @@
     { "game": "brief", "as": "on the reading room floor by the west shelves" },
     { "game": "reckoning", "as": "on her side of the bed, by her pillow" },
     { "game": "loofah", "as": "on her side of the bed at home, by her pillow" },
-    { "game": "sandcast", "as": "dropped in the sandbox’s far corner" }
+    { "game": "sandcast", "as": "dropped in the sandbox’s far corner" },
+    { "game": "sweats", "as": "on a bookcase shelf at The Hive" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -53,7 +54,8 @@
     { "game": "teddy", "as": "by Puddlewick Park’s gate with his shovel, helping plant the flower beds" },
     { "game": "goat", "as": "mucking out the stable’s back corner, shovel and all" },
     { "game": "loaf", "as": "out in the village at night, shovel and all" },
-    { "game": "reckoning", "as": "a photo in the hall with the family’s, red knit hat and all" }
+    { "game": "reckoning", "as": "a photo in the hall with the family’s, red knit hat and all" },
+    { "game": "sweats", "as": "in the audience at The Hive’s open mic" }
   ],
   "leo": [
     { "game": "sleuth", "as": "a playbill in the lobby" }
