@@ -18,12 +18,33 @@ import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import type { Pal } from '../art/pal';
-import { DIGITS, DIGITS_NEEDED, LIVES, MON, MOMS_NUMBER, MONEY, PENNIES_NEEDED, PLAY, SPOTS, SPOTS_NEEDED } from '../ids';
+import { LIVES, MONEY, PLAY, SPOTS, SPOTS_NEEDED } from '../ids';
+import { kitchenBlocks } from './kitchen';
+import { rideBlocks } from './ride';
+import { voidBlocks } from './void';
 
 export { BlockBook, SOLID };
 export const GRAV = { none: 0, up: 1, right: 2, down: 4, left: 8 } as const;
 /** Ticks between slices of toast. */
 export const TOAST_EVERY = 90;
+
+/** What the kitchen, the void and the ride (kitchen.ts, void.ts, ride.ts) draw with: the book, the palette and the blocks' basics. */
+export interface Ctx {
+  book: BlockBook;
+  P: () => Pixels;
+  R: Pal['r'];
+  c: Pal['c'];
+  ink: number;
+  solid: { solid: number };
+  cut: (pic: Pixels, names: (string | null)[][], attrs?: (name: string) => Parameters<BlockBook['add']>[2]) => void;
+}
+
+/** The living room's art the other rooms reuse. */
+export interface LivingRoom {
+  carpet: (seed: number) => Pixels;
+  wallTop: Pixels;
+  penny: (bg: () => Pixels) => Pixels;
+}
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -402,295 +423,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('babyGate', babyGate(false), { solid: SOLID, effect: SPOTS, eamt: -SPOTS_NEEDED, score: 500, touch: 'gateOpen' });
   book.add('gateOpen', babyGate(true));
 
-  // ---------- the kitchen ----------
-  // checkered linoleum, red and cream
-  const lino = (seed: number) => {
-    const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 10) + Math.floor(y / 10)) % 2 ? c('tile', 1) : c('tile', 3));
-    const r = rng(seed);
-    for (let i = 0; i < 5; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('tile', 2));
-    return p;
-  };
-  book.add('lino', lino(21));
-  // the backsplash (the kitchen's back wall): white tile and a strip of wallpaper
-  const tileWall = P().rect(0, 0, 20, 20, c('white', 2));
-  for (let k = 0; k < 20; k += 5) tileWall.rect(k, 6, 1, 14, c('white', 0)).rect(0, 6 + k, 20, 1, c('white', 0));
-  tileWall.rect(0, 0, 20, 6, c('yellow', 1)).rect(0, 5, 20, 1, c('wood', 1));
-  for (let x = 2; x < 20; x += 6) tileWall.set(x, 2, c('red', 2)).set(x + 1, 3, c('green', 1));
-  book.add('tileWall', tileWall, solid);
-  // the counter: laminate top and cabinet doors, and what sits on it
-  const counter = (what?: 'sink' | 'toaster' | 'micro0' | 'micro1' | 'stove' | 'cereal' | 'drawer' | 'drawerOpen') => {
-    const p = P().rect(0, 0, 20, 20, c('wood', 2));
-    p.rect(0, 0, 20, 9, c('counter', 1)).rect(0, 8, 20, 1, c('counter', 0)).rect(0, 0, 20, 1, c('counter', 2));
-    p.rect(1, 10, 8, 9, c('wood', 3)).rect(11, 10, 8, 9, c('wood', 3)).rect(7, 14, 1, 2, c('silver', 2)).rect(12, 14, 1, 2, c('silver', 2));
-    if (what === 'sink') p.rect(3, 1, 14, 6, c('silver', 1)).rect(4, 2, 12, 4, c('silver', 0)).rect(9, 0, 2, 3, c('silver', 2));
-    if (what === 'toaster') p.rect(4, 0, 12, 7, c('silver', 2)).rect(6, 1, 3, 2, ink).rect(11, 1, 3, 2, ink).rect(16, 3, 2, 1, ink);
-    if (what === 'micro0' || what === 'micro1') {
-      p.rect(1, 0, 18, 8, c('white', 1)).rect(2, 1, 11, 6, ink).rect(14, 1, 4, 3, c('ink', 1));
-      if (what === 'micro0') micro(p, 3, 2, '12:0', c('led', 1));
-    }
-    if (what === 'stove') for (const [x, y] of [[5, 3], [14, 3]]) p.ring(x, y, 3, ink).ring(x, y, 1.5, c('crt', 1));
-    if (what === 'cereal') p.rect(3, 0, 6, 8, c('yellow', 2)).rect(11, 1, 6, 7, c('blue', 2)).set(5, 3, c('red', 2)).set(13, 4, c('white', 2));
-    if (what === 'drawer' || what === 'drawerOpen') {
-      p.rect(1, 10, 18, 4, c('wood', 4)).rect(9, 11, 2, 1, c('silver', 2));
-      if (what === 'drawerOpen') {
-        p.rect(1, 10, 18, 9, c('wood', 1)).rect(2, 11, 16, 7, c('wood', 0));
-        p.rect(3, 12, 5, 1, c('yellow', 2)).rect(9, 14, 6, 1, c('blue', 2)).disc(15, 12, 1.5, c('copper', 2)).rect(4, 15, 3, 2, c('red', 1));
-      }
-    }
-    return p;
-  };
-  book.add('counter', counter(), solid);
-  book.add('sink', counter('sink'), solid);
-  book.add('toaster', counter('toaster'), { solid: SOLID, birthMon: MON.toast, birthTime: TOAST_EVERY });
-  book.add('microwave', counter('micro0'), { solid: SOLID, next: 'microwave2', ntime: 18 });
-  book.add('microwave2', counter('micro1'), { solid: SOLID, next: 'microwave', ntime: 18 });
-  book.add('stove', counter('stove'), solid);
-  book.add('cereal', counter('cereal'), solid);
-  book.add('drawer', counter('drawer'), { solid: SOLID, score: 100, touch: 'drawerOpen' });
-  book.add('drawerOpen', counter('drawerOpen'), solid);
-  // the fridge: almond, two blocks tall, magnets, a crayon drawing; open it (who knows anymore?)
-  const fridge = (part: 'top' | 'bottom', open: boolean) => {
-    const p = P().rect(0, 0, 20, 20, c('fridge', 2));
-    p.rect(0, 0, 1, 20, c('fridge', 1)).rect(19, 0, 1, 20, c('fridge', 1));
-    if (part === 'top') {
-      p.rect(0, 0, 20, 2, c('fridge', 3)).rect(0, 18, 20, 2, c('fridge', 0)).rect(15, 6, 2, 8, c('silver', 2));
-      if (open) p.rect(1, 2, 18, 16, c('screen', 3)).rect(2, 4, 7, 5, c('white', 2)).rect(10, 9, 6, 6, c('blue', 1)).rect(2, 12, 6, 4, c('pink', 2));
-      else p.rect(3, 5, 8, 9, c('white', 2)).line(4, 12, 7, 7, c('red', 2)).line(7, 7, 10, 12, c('blue', 2)).disc(7, 6, 1, c('yellow', 2));
-    } else {
-      p.rect(15, 3, 2, 10, c('silver', 2)).rect(0, 18, 20, 2, c('ink', 1));
-      if (open) {
-        p.rect(1, 0, 18, 18, c('screen', 3));
-        for (const y of [5, 11]) p.rect(1, y, 18, 1, c('silver', 2));
-        p.rect(3, 1, 3, 4, c('red', 2)).rect(7, 2, 3, 3, c('green', 2)).rect(12, 6, 5, 5, c('white', 1)).rect(3, 12, 5, 5, c('yellow', 2)).rect(11, 13, 2, 4, c('blue', 2));
-      } else {
-        for (const [x, y, k] of [[3, 3, 'red'], [8, 9, 'blue'], [4, 13, 'green']] as const) p.rect(x, y, 3, 3, c(k, 2));
-      }
-    }
-    return p;
-  };
-  book.add('fridgeTop', fridge('top', false), { solid: SOLID, score: 50, touch: 'freezerOpen' });
-  book.add('freezerOpen', fridge('top', true), solid);
-  book.add('fridge', fridge('bottom', false), { solid: SOLID, hp: 25, score: 50, touch: 'fridgeOpen' });
-  book.add('fridgeOpen', fridge('bottom', true), solid);
-  // the kitchen table and its chairs
-  const ktable = lino(22);
-  ktable.rect(1, 2, 18, 15, c('wood', 3)).rect(1, 16, 18, 2, c('wood', 1)).rect(1, 2, 18, 1, c('wood', 4));
-  blob(ktable, 7, 9, 3, 2.4, R('white'), 1, 2);
-  ktable.rect(12, 6, 4, 6, c('blue', 2)).rect(12, 6, 4, 1, c('white', 2));
-  book.add('ktable', ktable, solid);
-  const kchair = lino(23);
-  kchair.rect(4, 4, 12, 12, c('wood', 2)).rect(4, 4, 12, 3, c('wood', 1)).rect(4, 15, 12, 1, c('wood', 0));
-  book.add('kchair', kchair, solid);
-  // Teddy's bowl, the trash can, a puddle of spilled milk
-  const bowl = lino(24);
-  blob(bowl, 10, 11, 6, 4, R('red'), 1, 3);
-  blob(bowl, 10, 10, 4, 2.4, R('wood'), 1, 2);
-  micro(bowl, 5, 13, 'TED', c('white', 2));
-  // it's Teddy's: touch it and he grumbles (points off), and it's licked clean
-  book.add('bowl', bowl, { solid: SOLID, score: -5, touch: 'bowlClean' });
-  const clean = lino(24);
-  blob(clean, 10, 11, 6, 4, R('red'), 1, 3);
-  blob(clean, 10, 10, 4, 2.4, R('silver'), 1, 2);
-  micro(clean, 5, 13, 'TED', c('white', 2));
-  book.add('bowlClean', clean, solid);
-  const trash = lino(25);
-  trash.rect(4, 2, 12, 16, c('silver', 1)).rect(4, 2, 12, 3, c('silver', 2)).rect(8, 0, 4, 2, c('silver', 0));
-  trash.rect(6, 7, 1, 9, c('silver', 0)).rect(10, 7, 1, 9, c('silver', 0)).rect(13, 7, 1, 9, c('silver', 0));
-  book.add('trash', trash, solid);
-  const milk = lino(26);
-  blob(milk, 9, 11, 7, 4, R('white'), 1, 2);
-  blob(milk, 15, 7, 3, 2, R('white'), 1, 2);
-  book.add('milk', milk);
-  // a slice of cold pizza on a plate: patience
-  const pizza = lino(27);
-  pizza.disc(10, 10, 7, c('white', 2));
-  for (let y = 5; y < 15; y++) pizza.rect(10 - (y - 5) / 2, y, (y - 5) + 1, 1, c('yellow', 2));
-  pizza.disc(9, 11, 1.2, c('red', 2)).disc(11, 13, 1.2, c('red', 2)).rect(5, 14, 10, 2, c('orange', 1));
-  book.add('pizza', pizza, { hp: 20, score: 25, touch: 'lino' });
-  // Mom's number on fridge magnets (counter 21)
-  for (const d of [...new Set(MOMS_NUMBER)]) {
-    const p = lino(30 + Number(d));
-    p.rect(4, 3, 12, 14, c(['red', 'blue', 'green', 'yellow', 'purple', 'orange'][Number(d) % 6], 2));
-    p.rect(4, 3, 12, 1, c('white', 2)).rect(4, 16, 12, 1, ink);
-    micro(p, 6, 6, d, c('white', 2), 2);
-    book.add(`magnet${d}`, p, { effect: DIGITS, eamt: 1, score: 25, touch: 'lino' });
-  }
-  // the phone: a beige wall phone with a long curly cord. It dials all seven digits ("Called my
-  // mom..."), and you're on the line.
-  const phone = (off: boolean) => {
-    const p = tileWall.crop(0, 0, 20, 20);
-    p.rect(5, 6, 10, 12, c('fridge', 1)).rect(5, 6, 10, 1, c('fridge', 3));
-    for (let k = 0; k < 9; k++) p.rect(7 + (k % 3) * 2, 11 + Math.floor(k / 3) * 2, 1, 1, c('crt', 1));
-    if (!off) p.rect(4, 3, 4, 15, c('fridge', 2)).rect(4, 3, 4, 1, c('fridge', 3));
-    else {
-      p.rect(7, 18, 3, 2, c('fridge', 0));
-      micro(p, 12, 0, 'MA', c('red', 1));
-    }
-    for (let y = 16; y < 20; y++) p.set(5 + ((y * 3) % 4), y, c('fridge', 0));
-    if (!off) micro(p, 12, 1, String(DIGITS_NEEDED), c('red', 1));
-    return p;
-  };
-  book.add('phone', phone(false), { solid: SOLID, effect: DIGITS, eamt: -DIGITS_NEEDED, score: 500, touch: 'phoneDone' });
-  book.add('phoneDone', phone(true));
-
-  // ---------- the void between the cushions ----------
-  const deep = (seed: number) => {
-    const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('sky'), 0, 2, 0.3 + Math.sin((x + seed * 3) / 5 + y / 7) * 0.25, x, y));
-    const r = rng(seed);
-    for (let i = 0; i < 4; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('star', i % 2));
-    return p;
-  };
-  book.add('void', deep(40), solid);
-  book.add('void2', deep(41), solid);
-  // a lost thing floating far off in the void (scenery, solid): a sock, a key, a crayon
-  const far = (k: number) => {
-    const p = deep(42 + k);
-    if (k === 0) p.rect(7, 5, 4, 7, c('red', 1)).rect(7, 11, 7, 3, c('red', 1)).rect(7, 5, 4, 1, c('white', 1));
-    if (k === 1) p.disc(7, 8, 3, c('gold', 0)).rect(9, 8, 8, 2, c('gold', 0)).rect(14, 10, 1, 2, c('gold', 0));
-    if (k === 2) p.rect(4, 10, 12, 3, c('blue', 1)).rect(15, 10, 3, 3, c('blue', 0));
-    return p;
-  };
-  for (const k of [0, 1, 2]) book.add(`far${k}`, far(k), solid);
-  // the couch fabric you walk on in there: rose and teal, worn
-  const fabric = (seed: number) => {
-    const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (x % 9 === 4 && y % 8 === 3) || (x % 9 === 0 && y % 8 === 7) ? c('flora', 2) : c('couch', (x + y + seed) % 7 === 0 ? 1 : 2));
-    const r = rng(seed);
-    for (let i = 0; i < 6; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('couch', 3));
-    return p;
-  };
-  book.add('fabric', fabric(44));
-  book.add('fabric2', fabric(45));
-  // a Bermuda swirl on the path: it stings as you step through it, and closes
-  const swirl = (f: number) => {
-    const p = deep(46);
-    for (let t = 0; t < 60; t++) {
-      const a = t * 0.35 + f * 1.4;
-      const rr = t / 7;
-      p.set(10 + Math.cos(a) * rr, 10 + Math.sin(a) * rr, c('purple', 3 - Math.floor(t / 20)));
-    }
-    return p;
-  };
-  book.add('swirl0', swirl(0), { hp: -8, touch: 'fabric2', next: 'swirl1', ntime: 3 });
-  book.add('swirl1', swirl(1), { hp: -8, touch: 'fabric2', next: 'swirl0', ntime: 3 });
-  // lost things: points (and a few red herrings)
-  const lost = (what: string, draw: (p: Pixels) => void, score: number) => {
-    const p = fabric(50 + book.index.size);
-    draw(p);
-    book.add(what, p, { score, touch: 'fabric' });
-  };
-  lost('pen', (p) => p.line(4, 15, 15, 4, c('blue', 1)).line(5, 15, 16, 4, c('blue', 2)).set(15, 4, c('white', 2)).set(4, 16, ink), 50);
-  lost('spoon', (p) => (blob(p, 6, 6, 3, 2.4, R('silver'), 1, 2), p.line(8, 8, 16, 16, c('silver', 2))), 100);
-  lost('xmasSock', (p) => {
-    p.rect(6, 2, 7, 9, c('red', 2)).rect(6, 10, 10, 6, c('red', 2)).rect(6, 2, 7, 3, c('white', 2));
-    p.set(9, 7, c('green', 2)).set(11, 12, c('green', 2)).set(8, 13, c('gold', 2));
-  }, 250);
-  lost('pog', (p) => {
-    p.disc(10, 10, 6, c('yellow', 2)).ring(10, 10, 6, c('red', 1));
-    for (let a = 0; a < 6.28; a += 0.8) p.line(10, 10, 10 + Math.cos(a) * 5, 10 + Math.sin(a) * 5, c('red', 2));
-    p.disc(10, 10, 2, c('blue', 2));
-  }, 25);
-  lost('guide', (p) => {
-    p.rect(4, 3, 12, 15, c('white', 2)).rect(4, 3, 12, 4, c('red', 2));
-    micro(p, 6, 4, 'TV', c('white', 2));
-    p.rect(6, 9, 8, 1, ink).rect(6, 11, 6, 1, ink).rect(6, 13, 8, 1, ink);
-  }, 150);
-  lost('crumb', (p) => {
-    p.line(4, 10, 16, 10, c('gold', 1)).line(10, 4, 10, 16, c('gold', 1));
-    blob(p, 10, 10, 3, 2.6, R('wood'), 3, 4, 1.2);
-  }, 77);
-  // fake remotes: a calculator, the garage door opener, a Game Boy. NOPE.
-  const fake = (name: string, draw: (p: Pixels) => void) => {
-    const p = fabric(60 + book.index.size);
-    draw(p);
-    book.add(name, p, { score: 10, touch: 'nope' });
-  };
-  fake('calc', (p) => {
-    p.rect(5, 2, 10, 16, c('crt', 0)).rect(6, 3, 8, 4, c('led', 0));
-    for (let k = 0; k < 9; k++) p.rect(6 + (k % 3) * 3, 8 + Math.floor(k / 3) * 3, 2, 2, c('crt', 2));
-  });
-  fake('opener', (p) => {
-    p.rect(5, 5, 10, 10, c('crt', 1)).rect(5, 5, 10, 2, c('crt', 2)).disc(10, 11, 2.4, c('red', 2));
-  });
-  fake('gameboy', (p) => {
-    p.rect(5, 1, 11, 18, c('crt', 3)).rect(7, 3, 7, 6, c('crt', 0)).rect(8, 4, 5, 4, c('green', 0));
-    p.rect(7, 12, 3, 1, ink).rect(8, 11, 1, 3, ink).disc(13, 13, 1, c('purple', 2)).disc(14, 11, 1, c('purple', 2));
-  });
-  const nope = fabric(70);
-  micro(nope, 3, 7, 'NOPE', c('red', 3));
-  book.add('nope', nope);
-  // a candy bar (patience) and pennies lying on the fabric
-  const candy = fabric(71);
-  candy.rect(4, 7, 12, 6, c('wood', 0)).rect(4, 7, 4, 6, c('red', 2)).rect(12, 7, 4, 6, c('red', 2));
-  book.add('candy', candy, { hp: 20, score: 10, touch: 'fabric' });
-  book.add('pennyF', penny(() => fabric(72)), { effect: MONEY, eamt: 1, score: 5, touch: 'fabric' });
-  // the pay TV: an old coin-op set floating in the void (insert ten pennies), and it warms up
-  const payTv = (on: boolean) => {
-    const p = fabric(73);
-    p.rect(1, 1, 18, 17, c('crt', 1)).rect(1, 1, 18, 1, c('crt', 3));
-    p.rect(3, 3, 11, 9, on ? c('screen', 2) : c('crt', 0));
-    if (on) for (let y = 4; y < 11; y += 2) p.rect(4, y, 9, 1, c('screen', 3));
-    p.rect(15, 4, 2, 4, ink).rect(15, 4, 2, 1, c('silver', 2));
-    micro(p, 3, 13, on ? 'ON' : `${PENNIES_NEEDED}C`, on ? c('led', 1) : c('copper', 3));
-    return p;
-  };
-  book.add('payTv', payTv(false), { solid: SOLID, effect: MONEY, eamt: -PENNIES_NEEDED, score: 1000, touch: 'payTvOn' });
-  book.add('payTvOn', payTv(true));
-  // a sign in the void
-  const sign = deep(74);
-  sign.rect(1, 4, 18, 11, c('wood', 3)).rect(1, 4, 18, 1, c('wood', 4)).rect(9, 15, 2, 5, c('wood', 1));
-  micro(sign, 2, 5, 'LOST', ink);
-  micro(sign, 2, 10, '&FND', ink);
-  book.add('sign', sign, solid);
-
-  // ---------- the living room ride ----------
-  // the spinning rug: red and yellow carnival stripes, its arrows the way it carries you
-  const spin = (dir: keyof typeof GRAV, f: number) => {
-    const p = P();
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, (dir === 'up' || dir === 'down' ? Math.floor(x / 5) : Math.floor(y / 5)) % 2 ? c('red', 2) : c('yellow', 2));
-    const arrow = (ax: number, ay: number) => {
-      const [dx, dy] = dir === 'right' ? [1, 0] : dir === 'left' ? [-1, 0] : dir === 'down' ? [0, 1] : [0, -1];
-      for (let k = -3; k <= 3; k++) p.set(ax + dx * k, ay + dy * k, c('white', 2));
-      for (let k = 1; k <= 2; k++) p.set(ax + dx * (3 - k) - dy * k, ay + dy * (3 - k) - dx * k, c('white', 2)).set(ax + dx * (3 - k) + dy * k, ay + dy * (3 - k) + dx * k, c('white', 2));
-    };
-    const o = f * 5;
-    if (dir === 'right' || dir === 'left') arrow((10 + (dir === 'right' ? o : -o) + 20) % 20, 10);
-    else arrow(10, (10 + (dir === 'down' ? o : -o) + 20) % 20);
-    return p;
-  };
-  for (const dir of ['right', 'down', 'left', 'up'] as const) {
-    book.add(`spin${dir}`, spin(dir, 0), { grav: GRAV[dir], next: `spin${dir}2`, ntime: 4 });
-    book.add(`spin${dir}2`, spin(dir, 1), { grav: GRAV[dir], next: `spin${dir}`, ntime: 4 });
-  }
-  // the hub in the middle of the ride, and the bulbs round its edge
-  const hub = carpet(80);
-  hub.disc(10, 10, 9, c('red', 1)).disc(10, 10, 7, c('yellow', 2)).disc(10, 10, 3, c('red', 2));
-  for (let a = 0; a < 6.28; a += 0.785) hub.set(10 + Math.cos(a) * 8, 10 + Math.sin(a) * 8, c('lamp', 2));
-  book.add('hub', hub, solid);
-  const bulbs = (f: number) => {
-    const p = wallTop.crop(0, 0, 20, 20);
-    for (let x = 2; x < 20; x += 5) p.disc(x, 10, 2, (x + f * 5) % 10 < 5 ? c('lamp', 2) : c('lamp', 0));
-    return p;
-  };
-  book.add('bulbs', bulbs(0), { solid: SOLID, next: 'bulbs2', ntime: 6 });
-  book.add('bulbs2', bulbs(1), { solid: SOLID, next: 'bulbs', ntime: 6 });
-  // the ride's way off, a velvet rope between two posts: it only lets you off with the tape
-  // playing, and there, beneath the cushion you sit on... the remote ("There you are, you sneaky
-  // guy." plays as you walk to the couch)
-  const exit = (open: boolean) => {
-    const p = carpet(81);
-    p.rect(2, 12, 16, 7, c('white', 2)).rect(2, 18, 16, 1, c('silver', 0));
-    micro(p, 3, 13, 'EXIT', open ? c('led', 0) : c('red', 1));
-    for (const x of [0, 18]) p.rect(x, 3, 2, 15, c('silver', 1)).rect(x, 2, 2, 1, c('silver', 3)).rect(x, 17, 2, 1, c('silver', 0));
-    const sag = (x: number) => Math.round(Math.sin(((x - 2) / 16) * Math.PI) * 4);
-    if (open) p.line(2, 4, 3, 10, c('red', 1)).line(3, 4, 4, 10, c('red', 2));
-    else for (let x = 2; x < 18; x++) p.set(x, 4 + sag(x), c('red', 1)).set(x, 5 + sag(x), c('red', 2));
-    return p;
-  };
-  book.add('rideExit', exit(false), { solid: SOLID, effect: PLAY, eamt: -1, score: 1000, touch: 'rideExitOpen' });
-  book.add('rideExitOpen', exit(true));
+  const ctx: Ctx = { book, P, R, c, ink, solid, cut };
+  const lr: LivingRoom = { carpet, wallTop, penny };
+  kitchenBlocks(ctx);
+  voidBlocks(ctx, lr);
+  rideBlocks(ctx, lr);
   return book;
 }
 
