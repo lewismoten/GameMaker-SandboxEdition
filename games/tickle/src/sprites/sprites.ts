@@ -283,7 +283,10 @@ export function ratArt(pal: Pal, fur: Fur) {
       )(p);
       blob(p, 9, 16, 6, 2.8, R, 1, 4);
       blob(p, 14.5, 16, 3.2, 2.2, R, 1, 4);
-      // the ear
+      // a wild rat's pale belly, so it reads against the sewer's brick and the tower's stone
+      if (fur === 'wild') p.rect(6, 18, 9, 1, c('paper', 1)).rect(13, 18, 3, 1, c('paper', 1));
+      // the ear (a wild rat's with a light rim)
+      if (fur === 'wild') p.disc(13, 13.6, 1.8, c('paper', 2));
       p.disc(13, 13.6, 1.2, c('pink', 1));
       if (tense) for (const x of [5, 7, 9, 11]) p.set(x, 13, c(coat, 2));
       // eye, nose, whiskers
@@ -472,12 +475,13 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(6, 9, 3, 2, c('glass', 1)).rect(11, 9, 3, 2, c('glass', 1)).rect(9, 9, 2, 1, c('ink', 0));
     p.set(7, 10, ink).set(12, 10, ink).line(6, 8, 9, 9, ink).line(11, 9, 14, 8, ink);
     p.line(8, 15, 12, 15, ink).set(7, 16, ink).set(13, 16, ink);
-    p.rect(7, 17, 6, 3, c('grey', 1)).rect(9, 17, 2, 3, c('red', 1));
+    p.rect(7, 17, 6, 3, c('grey', 1)).rect(8, 17, 4, 3, c('paper', 2)).rect(9, 18, 2, 2, c('red', 1));
     return done(p);
   };
   const deanB = (f: number) => {
     const p = P();
-    p.rect(4, 0, 12, 12, c('grey', 1)).rect(9, 0, 2, 8, c('red', 1)).rect(4, 0, 2, 12, c('grey', 0));
+    // a white shirt front under the red tie, so he reads against the tower's purple stone
+    p.rect(4, 0, 12, 12, c('grey', 1)).rect(7, 0, 6, 7, c('paper', 2)).rect(9, 0, 2, 8, c('red', 1)).rect(4, 0, 2, 12, c('grey', 0));
     // the clipboard
     p.rect(12, 3, 7, 8, c('wood', 2)).rect(13, 4, 5, 6, c('paper', 2)).rect(14, 5, 3, 1, ink).rect(14, 7, 3, 1, ink);
     p.rect(5, 12, 4, 6, c('grey', 0)).rect(11, 12, 4, 6, c('grey', 0));
@@ -586,8 +590,8 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('spark1', spark(1), { chHitPt: -5 });
   const pigeon = (f: number) => {
     const p = P();
-    blob(p, 10, 11, 5, 2.8, pal.r('grey'), 0, 3);
-    blob(p, 15, 8, 2.4, 2.2, pal.r('grey'), 1, 3);
+    blob(p, 10, 11, 5, 2.8, pal.r('grey'), 1, 3);
+    blob(p, 15, 8, 2.4, 2.2, pal.r('grey'), 2, 3);
     p.rect(17, 8, 2, 1, c('wood', 2)).set(15, 7, c('nose', 1)).line(4, 11, 1, 12, c('grey', 1));
     p.set(13, 10, c('purple', 2)).set(14, 11, c('tie', 2));
     if (f) for (let k = 0; k < 6; k++) p.line(7 + k, 10, 5 + k, 3 + k / 3, c('grey', k > 3 ? 1 : 2));
@@ -596,5 +600,16 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('pigeon0', pigeon(0), hurt(-5));
   book.add('pigeon1', pigeon(1), hurt(-5));
+  // (last, so every other block keeps its number) the bat and the old friends flying off: the
+  // same pictures, worth nothing, so brushing past them as they go doesn't score every tick
+  for (const [name, art] of [
+    ['bat', bat],
+    ['loaf', loaf],
+    ['seed', seed],
+    ['goat', goat],
+  ] as const) {
+    book.add(`${name}Off0`, art(0));
+    book.add(`${name}Off1`, art(1));
+  }
   return book;
 }

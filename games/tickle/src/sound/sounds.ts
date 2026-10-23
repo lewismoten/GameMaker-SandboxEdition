@@ -135,7 +135,7 @@ export function buildVocs(): Record<string, Uint8Array> {
     envelope: env(0.01, 1.4),
   });
   // PIN: a soft press, "boop"
-  vocs.press = sample(0.18, mix([osc.sine((t) => 220 - t * 400), 0.7], [gate(lowNoise(7, 0.2), 0, 0.03), 0.4]), { envelope: env(0.01, 1.6) });
+  vocs.press = sample(0.18, mix([osc.sine((t) => 220 - t * 400), 0.7], [gate(lowNoise(7, 0.2), 0, 0.03), 0.4]), { envelope: env(0.01, 1.6), gain: 0.57 });
   // TICKLE: fingers fluttering (brrrrr), giggling chirps on top
   const flutter = lowNoise(8, 0.35);
   const giggles = chirps(4, 0.11, 2400, 3600, 0.03);
@@ -152,7 +152,8 @@ export function buildVocs(): Record<string, Uint8Array> {
   vocs.boing = sample(
     0.26,
     osc.sine((t) => 300 + Math.sin(t * 60) * 90 + t * 500),
-    { envelope: env(0.01, 1.4) },
+    // about 4 dB under the other effects: a hop is the sound heard most often
+    { envelope: env(0.01, 1.4), gain: 0.57 },
   );
   // a step: a soft squeak of sneaker
   vocs.step = sample(0.07, mix([osc.sine((t) => 900 + t * 3000), 0.3], [lowNoise(9, 0.3), 0.2]), { envelope: env(0.1, 1.5), gain: 0.5 });

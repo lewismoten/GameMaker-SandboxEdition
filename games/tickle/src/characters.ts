@@ -196,11 +196,11 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
     corner(2, 1, 1, 4),
     corner(0, 0, 1, 4),
   ]);
-  set[MON.batOff] = mon(anim('bat1', 'bat0', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(4, -6, 4, 0)]);
+  set[MON.batOff] = mon(anim('batOff1', 'batOff0', 1), { power: 100, thru: 0, end: 30 }, [corner(0, 0, 4), corner(4, -6, 4, 0)]);
   // old friends: a hello for points, and off they go
   const friend = (id: number, off: number, a: string, t: number) => {
     set[id] = mon(anim(`${a}0`, `${a}1`, t), { power: POWER.hello, thru: 0, newmon: off }, still);
-    set[off] = mon(anim(`${a}1`, `${a}0`, 2), { power: 100, thru: 0, end: 36 }, [corner(0, 0, 3), corner(2, -2, 3, 0), corner(5, 0, 3, 0)]);
+    set[off] = mon(anim(`${a}Off1`, `${a}Off0`, 2), { power: 100, thru: 0, end: 36 }, [corner(0, 0, 3), corner(2, -2, 3, 0), corner(5, 0, 3, 0)]);
   };
   friend(MON.loaf, MON.loafOff, 'loaf', 10);
   friend(MON.seed, MON.seedOff, 'seed', 5);

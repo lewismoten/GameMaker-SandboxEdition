@@ -56,7 +56,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     },
     // the sewer: old brick, slick and green
     sewer: () => {
-      const p = speckle(P(), 0, 0, 20, 20, R('brick'), 1, 1, 7, 0.3);
+      // a step darker than the rats' agouti, so a wild rat stands out on it
+      const p = speckle(P(), 0, 0, 20, 20, R('brick'), 0, 1, 7, 0.3);
       for (let row = 0; row < 4; row++) {
         p.rect(0, row * 5 + 4, 20, 1, c('slime', 0));
         for (let k = 0; k < 3; k++) p.rect(((row % 2) * 5 + k * 10) % 20, row * 5, 1, 4, c('slime', 0));
@@ -172,7 +173,8 @@ export function buildBlocks(pal: Pal): BlockBook {
     'ledgeT',
     ledge(wall('tower'), (p) => {
       speckle(p, 0, 1, 20, 5, R('stone'), 3, 1, 25, 0.3);
-      p.rect(0, 1, 20, 1, c('stone', 4)).rect(0, 6, 20, 1, c('ink', 0));
+      // a pale lip along the top, so the steps stand out from the wall behind them
+      p.rect(0, 0, 20, 2, c('paper', 1)).rect(0, 2, 20, 1, c('stone', 4)).rect(0, 6, 20, 1, c('ink', 0));
       for (const x of [3, 15]) p.line(x, 7, x + 2, 11, c('stone', 1));
     }),
     { solid: LEDGE, grav: GRAV.down },
