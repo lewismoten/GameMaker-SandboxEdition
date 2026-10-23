@@ -1,8 +1,8 @@
 // Level 6: The Corn Maze, afternoon, on the way into the Fair. Gwinn went through it last
 // night after the corn dog smell and dropped a corn dog stick at its heart. Three tiers of
 // paths between walls of corn: hay bale steps lead up a tier, holes drop down one (no way
-// back up). Faint scents along the way: a sniff turns each one into Gwinn's paw prints,
-// pointing the way she went. Out the far side is the Fair's parking lot, and THE CHEZ.
+// back up), and some paths just end in corn (with a treat for the trouble). Faint scents
+// along the way: a sniff turns each one into Gwinn's paw prints, pointing the way she went. Out the far side is the Fair's parking lot, and THE CHEZ.
 //
 // The blocks are in level6Tiles.ts, the monsters in level6Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
@@ -49,6 +49,10 @@ export function maze(): Level {
   path(12, 44, 36, 35);
   path(46, 62, 36, 35);
   path(26, 60, 32, 31);
+  // dead ends, each with a treat or two at the far end, for a dog who didn't sniff: tier A
+  // runs on past the step up, and tier C on past the corn dog stick
+  path(31, 37, G, 39);
+  path(18, 25, 32, 31);
   // steps up, holes down
   m.set(22, 37, 'step');
   m.set(40, 33, 'step');
@@ -116,6 +120,10 @@ export function maze(): Level {
     [57, 39],
     [66, 39],
     [70, 39],
+    [35, 39],
+    [37, 39],
+    [18, 31],
+    [20, 31],
   ];
   for (const [x, y] of treats) m.treat(x, y);
   m.mark('start', 4, 39);
