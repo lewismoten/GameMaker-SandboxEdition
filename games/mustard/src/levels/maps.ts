@@ -327,13 +327,14 @@ export function sky(book: BlockBook): Level {
   m.set(15, 37, 'n').set(10, 39, 'd').text(9, 32, '*').set(16, 36, '*');
   // the evening breeze lifts on the right, to the nest branch
   m.col(22, 20, 33, 'z').row(20, 14, 20, '-').set(16, 20, 'n').set(20, 23, '*');
-  m.row(17, 9, 15, '-').row(14, 4, 15, '-').set(15, 13, '1').set(9, 16, '*');
+  m.row(17, 9, 15, '-').row(14, 1, 15, '-').set(15, 13, '1').set(9, 16, '*');
   // the top branch, where the breeze gusts on a rhythm and blows a plant off its right end:
   // hop up and cross while it's calm
   m.fill(6, 12, 9, 2, '~');
   // side branches off the long one, up to the left, with two sunbeams
   m.row(31, 5, 10, '-').row(28, 2, 7, '-').set(3, 27, '*').set(6, 26, '*');
-  // and on the left, up past the rain cloud to the clouds
+  // and on the left, up past the rain cloud to the clouds (the top branch runs on to the wall
+  // under the breeze, so drifting off its left side lands on the branch, not far below)
   m.col(5, 5, 13, 'z').text(16, 9, '{}').text(8, 6, '()()').set(9, 5, 'Q');
   // the palm of God's hand: light that lifts into it
   m.row(3, 6, 19, 'g');
