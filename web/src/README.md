@@ -6,7 +6,8 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
   simulated DOS PC running the ported designers; no DOS or x86 code runs) or **today's web** interface
   (`editor/`), whichever the visitor used last (`localStorage` `gm-ui`).
   [`urlState.ts`](urlState.ts) keeps the place in the hash (`#/`, `#/game/cd:nebula`,
-  `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/desk`), so a reload or a shared
+  `#/p/<project>/<file>?scene=3`, `#/help/<section>`, `#/cast`, `#/mac`, `#/windows`,
+  `#/linux`, `#/desk`), so a reload or a shared
   link comes back to it; [`seo/route.ts`](seo/route.ts) keeps the page's title and share
   tags in step with what is on screen.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game
@@ -27,7 +28,10 @@ source names the file it came from (`code/GM/*.C` in the repository root).
 | [`gfx/`](gfx), [`input/`](input) | The mode 13h screen and 8×8 font; keyboard scan codes and the gamepad. |
 | [`player/`](player) | The embeddable player: canvas, start overlay, whole-pixel scaling, touch controls. Used by `play.ts`, the editor's play test, the desk and exports. |
 | [`project/`](project) | A game's files (`GameFiles`, 8.3 names, the CD catalog), streaming a hosted game (`streamGame.ts`), the secret games (`secretGames.ts`, `catalogWatch.ts`), IndexedDB storage, zip, the health check, importing an exported page. |
-| [`export/`](export) | Publishing a game: as an offline web app, a single web page, or a DOS folder with PLAYGAME; plus the service worker. |
+| [`export/`](export) | Publishing a game: as an offline web app, a single web page, or a DOS folder with PLAYGAME; plus the service worker. The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`), `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`). |
+| [`macHelp/`](macHelp), [`winHelp/`](winHelp), [`linuxHelp/`](linuxHelp) | The `#/mac`, `#/windows` and `#/linux` pages for players: opening a downloaded game the first time, what it does, removing it. |
+| [`cast/`](cast) | The Cast page (`#/cast`): the regulars of the new games on a stage, walking with their own sprites, and the games each appears in (`cameos.json` for new cameos). |
+| [`saves/`](saves) | The home page's "Saves & scores" panel: a game's saved games (with a map of the saved level) and high scores. |
 | [`media/`](media) | Demo playback (`.REC`), previews, demos added for CD games, the attract mode and the demos' sound choice; saving the screen as video (MP4), animated GIF or WAV. |
 | [`walkthrough/`](walkthrough) | A Sandbox game's walkthrough: played on the real engine, deterministically, in a player with chapters, and rendered to an MP4 with its soundtrack. |
 | [`eggs/`](eggs) | The felt eggs hidden in the Sandbox games: which are found (`eggState.ts`, from saved games), the shadow box on the desk, its viewer, and `EGG.EXE`. |
@@ -83,7 +87,10 @@ are always written in the original binary formats.
 player listed in `player-files.json`, the game's files, a manifest and a service worker),
 `exportSinglePage.ts` (`standalone.html` with the game embedded, built by
 `../scripts/singlePageBuild.ts`), and `exportDos.ts` (the files plus the CD's
-`XFERPLAY.EXE`, renamed after the game).
+`XFERPLAY.EXE`, renamed after the game). The Mac, Windows and Linux downloads
+(`editor/shell/macDownload.ts`, `winDownload.ts`, `linuxDownload.ts`) put the single page into
+the players in `../public/mac`, `win` and `linux`; `../scripts/macDmg.ts`, `winExe.ts` and
+`linuxTar.ts` run the same code from the command line.
 
 **Media.** `media/demo.ts` plays a `.REC` demo in the player; `media/demoPreview.ts` plays one inside a picture on the home page, with the demos' sound choice (`demoAudio.ts`). `walkthrough/` plays a Sandbox game's `walkthrough.json` and renders it to MP4 (`exportVideo.ts`, `mp4av.ts`). `media/video.ts` turns
 canvases into video: frame by frame with WebCodecs and `mp4Mux.ts`, or live with
@@ -100,4 +107,5 @@ and recordings of the PC's screen with `screenCapture.ts` and the live recorder.
 writes (and serves in dev) `robots.txt`, `sitemap.xml`, `llms.txt`, each game's
 `play-<id>.html` and its preview picture `og/<id>.png` (drawn by `ogImage.ts`). `../vite.config.ts` also emits the
 service worker and `player-files.json`. `bbsGifs.ts` is not a plugin: run once by hand, it
-made the BBS gallery's pictures in `../public/bbs`.
+made the BBS gallery's pictures in `../public/bbs`; neither are `castArt.ts` and
+`castSprites.ts` (the Cast page's pictures in `../public/cast`) or the download scripts above.
