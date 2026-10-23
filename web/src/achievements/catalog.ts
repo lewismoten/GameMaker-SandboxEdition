@@ -31,6 +31,8 @@ export interface Achievement {
   category: Category;
   /** Shown as "???" with `hint` until unlocked. */
   hidden?: boolean;
+  /** Said in place of `desc` once it is unlocked (a little more than it gives away before). */
+  doneDesc?: string;
   /** For a hidden one: a vague nudge. */
   hint?: string;
   /** A fixed total (progress "n of `of`"). */
@@ -74,7 +76,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'play-bizarre', title: 'Bizarre fan', desc: 'Played every game by The Bard of Bizarre.', icon: '🎻', category: 'playing', from: 'bizarre', unit: 'games' },
   { id: 'saves-panel', title: 'Keeping score', desc: 'Looked through a game’s saves and high scores.', icon: '🏆', category: 'playing' },
   { id: 'heart-first', title: 'Tin heart', desc: 'Found a tin heart hidden in a game.', icon: '🩶', category: 'playing' },
-  { id: 'heart-all', title: 'Heart collector', desc: 'Found every tin heart.', icon: '💖', category: 'playing', from: 'hearts', unit: 'hearts' },
+  { id: 'heart-all', title: 'Heart collector', desc: 'Found every tin heart.', doneDesc: 'Found every tin heart, and Joe found something too.', icon: '💖', category: 'playing', from: 'hearts', unit: 'hearts' },
   { id: 'egg-first', title: 'Soft and fuzzy', desc: 'Found a felt egg and saved the game with it.', icon: '🥚', category: 'playing', hidden: true, hint: 'Something soft is tucked away in a game.' },
   { id: 'egg-all', title: 'A full basket', desc: 'Found every felt egg.', icon: '🧺', category: 'playing', hidden: true, hint: 'There is more than one.' },
 
@@ -120,7 +122,7 @@ export const achievementById = (id: string): Achievement | undefined => BY_ID.ge
 
 /** What a list shows for an achievement: its own text once unlocked; "???" and the hint while a hidden one is not. */
 export function shownText(a: Achievement, unlocked: boolean): { title: string; desc: string; icon: string } {
-  if (unlocked || !a.hidden) return { title: a.title, desc: a.desc, icon: a.icon };
+  if (unlocked || !a.hidden) return { title: a.title, desc: (unlocked && a.doneDesc) || a.desc, icon: a.icon };
   return { title: '???', desc: a.hint ?? 'Keep looking.', icon: '❔' };
 }
 

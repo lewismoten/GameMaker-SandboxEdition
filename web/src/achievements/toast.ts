@@ -75,7 +75,7 @@ export function showUnlock(id: string): void {
   title.textContent = a.title;
   const desc = document.createElement('span');
   desc.className = 'ach-toast-desc';
-  desc.textContent = a.desc;
+  desc.textContent = a.doneDesc ?? a.desc;
   text.append(kicker, title, desc);
   if (!isDesk()) {
     const link = document.createElement('a');
