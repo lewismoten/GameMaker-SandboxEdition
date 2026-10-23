@@ -30,6 +30,8 @@ export const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between the cursed citrus suds from the soap dish. */
 export const SUDS_EVERY = 44;
+/** Ticks between fresh sprigs on the rosemary pot in the shower. */
+export const SPRIG_EVERY = 160;
 /** Ticks between drips from the shower head. */
 export const DRIP_EVERY = 30;
 
@@ -687,6 +689,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('rosemaryFirst', rosemary(steamAir(96)), { ...air, hp: 10, effect: SEQ.throw, eamt: SPRIG, score: 50, touch: 'rosemaryGone' });
   book.add('rosemaryS', rosemary(steamAir(97)), { ...air, effect: SEQ.throw, eamt: SPRIG, score: 50, touch: 'rosemaryGone' });
   book.add('rosemaryGone', steamAir(97), air);
+  // a pot of rosemary on the shower floor: now and then a fresh sprig grows on it, so he never
+  // runs out of brine with the sponge still standing
+  const pot = steamAir(89);
+  pot.rect(5, 13, 10, 7, c('coral', 1)).rect(4, 12, 12, 2, c('coral', 2));
+  book.add('pot', pot, { ...air, birthMon: MON.sprig, birthTime: SPRIG_EVERY });
   // her silver rack: it takes the pink one back, clean, beside his own black one
   const herRack = (back: boolean) => {
     const p = rack(back ? 'both' : 'empty');

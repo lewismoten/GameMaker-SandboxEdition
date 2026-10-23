@@ -198,6 +198,9 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.suds] = mon(anim('suds0', 'suds1', 3), { power: 200, thru: 0, end: -1, newmon: MON.splat }, drift);
   set[MON.splat] = mon([[n('splat'), 4]], { power: 200, thru: 0, end: 18 });
   set[MON.brine] = mon(anim('brine0', 'brine1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
+  // a sprig on the rosemary pot by the vent, now and then (weaker than him: picked at a touch),
+  // withered again if he doesn't come for it
+  set[MON.sprig] = mon([[n('sprig'), 30]], { power: 50, thru: 0, end: 150 }, still);
   set[MON.pink] = mon(anim('pink0', 'pink1', 4), { power: 230, thru: 1 }, still);
   set[MON.steam] = mon(anim('steam0', 'steam1', 8), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -3, 1, 0), corner(-1, -6, 1, 4)]);
   return set;

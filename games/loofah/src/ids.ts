@@ -67,6 +67,8 @@ export const MON = {
   spongeB1m: 35,
   spongeB2m: 36,
   spongeB3m: 37,
+  /** A sprig of rosemary that grows on the pot by the vent now and then: so he never runs out of brine. */
+  sprig: 38,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

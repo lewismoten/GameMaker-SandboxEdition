@@ -13,7 +13,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { PINK } from '../ids';
+import { PINK, SEQ } from '../ids';
 
 export { T, outline };
 
@@ -517,5 +517,15 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('seedOff1', seed(1));
   book.add('flapperOff0', flapper(0));
   book.add('flapperOff1', flapper(1));
+  // a fresh sprig of rosemary on the pot in the shower: two splashes of brine
+  const sprig = P();
+  for (const [x, d] of [
+    [8, -1],
+    [12, 1],
+  ]) {
+    sprig.line(x, 18, x + d * 3, 6, c('wood', 2));
+    for (let y = 7; y < 18; y += 2) sprig.set(x + d * ((18 - y) / 4) - 1, y, c('rosemary', 2)).set(x + d * ((18 - y) / 4) + 1, y + 1, c('rosemary', 1));
+  }
+  book.add('sprig', done(sprig), { effect: SEQ.throw, eamt: 2 });
   return book;
 }

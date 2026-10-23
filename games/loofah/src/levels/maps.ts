@@ -314,6 +314,8 @@ export function shower(book: BlockBook): Level {
   // the drain, full of cursed water; a shelf past it
   m.row(10, 11, 12, 'drain0');
   m.row(7, 14, 16, 'caddy').set(15, 6, 'rosemaryS');
+  // a pot of rosemary on the floor (a fresh sprig on it now and then)
+  m.set(13, 9, 'pot');
   // the steam out of the vent, up to his perch (a sprig on it), level with the sponge
   m.set(18, 10, 'vent').col(18, 3, 9, 'steam0');
   m.row(4, 19, 21, 'caddy').set(20, 3, 'rosemaryS');

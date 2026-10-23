@@ -113,9 +113,9 @@ export const INSTRUCTIONS = [
 /** Each act's card: its name, where, and two lines of the song. */
 export const CARDS: { title: string; where: string; lines: [string, string] }[] = [
   { title: 'I. THE SHOWER', where: 'The bathroom. Candlelight.', lines: ['Loofah of Lucifer,', 'you lather my fate.'] },
-  { title: 'II. THE AISLE', where: 'The all-night store. 3 A.M.', lines: ['From some forest-dark', 'aisle you came.'] },
+  { title: 'II. THE AISLE', where: '3 A.M. SPACE throws brine.', lines: ['From some forest-dark', 'aisle you came.'] },
   { title: 'III. HOME', where: 'She is asleep. The mirror...', lines: ['The mirror steamed', 'a warning sign.'] },
-  { title: 'IV. SCRUBBUS', where: 'The shower. Midnight.', lines: ['Scrubbus maximus,', 'demon sponge divine.'] },
+  { title: 'IV. SCRUBBUS', where: 'Midnight. Ride the steam up.', lines: ['Scrubbus maximus,', 'demon sponge divine.'] },
 ];
 
 const CREDITS_TEXT = page(
