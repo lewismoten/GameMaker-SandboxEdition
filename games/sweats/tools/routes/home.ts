@@ -296,7 +296,8 @@ export const HOME_ROUTES: Record<string, Route> = {
       await must(bot, bot.hop('right', 12, 'right', 56.5), 'over the turtle');
       if (plot(bot) < CAUSES) throw new Error(`only ${plot(bot)} causes`);
       nothingLeft(bot, 64, 12);
-      await leave(bot, bot.walk(58.5, 'POST'), 'POST');
+      await must(bot, bot.walk(59, 'POST'), 'POST');
+      await leave(bot, bot.walk(61.5, 'the walk-off'), 'the walk-off');
     });
   },
 };

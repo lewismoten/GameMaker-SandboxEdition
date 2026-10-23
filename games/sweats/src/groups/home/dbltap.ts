@@ -253,7 +253,10 @@ export const dbltap: Monologue = {
     '!': 'spot@wallB',
   },
   build: (m: MapBuilder) => {
-    const W = 64;
+    // the walk-off: OFF blocks more of the feed past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 3;
+    const W = 64 + OFF;
     const IN = 12;
     // the living room at night: the couch, the cereal, the phone
     m.row(0, 0, IN - 1, '^').set(4, 0, '*');
@@ -286,7 +289,7 @@ export const dbltap: Monologue = {
     m.mon(DBLTAP_MON.turtle, 54, 9);
     placePicture(m, 'graphic', 57, 5, 2, 1);
     m.set(58, 9, 'D');
-    m.link(58, 9, 'next');
+    m.link(58 + OFF, 9, 'next');
     m.mon(DBLTAP_MON.turtle, 60, 9);
     return { start: [1, 9], size: [W, 12] };
   },
