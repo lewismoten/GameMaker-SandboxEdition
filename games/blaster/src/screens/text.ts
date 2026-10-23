@@ -145,7 +145,7 @@ const CREDITS_TEXT = pages(
 export const WON = pages([
   'GLITCH is gone!',
   '',
-  'Its brain bursts into a',
+  'Its last shard bursts into a',
   'thousand harmless pixels, and',
   'the 486 shudders, beeps once,',
   'and reboots.',
