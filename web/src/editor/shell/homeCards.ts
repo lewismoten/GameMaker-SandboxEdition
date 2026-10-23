@@ -1,11 +1,13 @@
 // The games on the home page. One model (HomeGame) covers your projects, the CD's sample
 // games, our own games and the shareware. The grid shows each as a compact tile: its
-// picture (the first level, drawn when the tile scrolls into view) with buttons over it
+// title screen (drawn when the tile scrolls into view; the first level when it has none) with buttons over it
 // for the keys and the manual, and its title. Choosing a tile shows the game in the panel
 // at the top (homeShowcase.ts), which plays its demo and offers everything else with gameActions().
 import { h, toast, promptText, modal } from '../core/ui';
 import { Project } from '../core/project';
-import { renderShot } from '../../gfx/gameShots';
+import { renderShot, renderTitle } from '../../gfx/gameShots';
+import { titlePixels } from '../../gfx/titlePicture';
+import { paintIndexed } from '../core/draw';
 import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
@@ -99,6 +101,8 @@ export interface HomeGame {
   health?: HealthTarget;
   /** Draws the game's picture (its first level) into a canvas of any size. */
   drawShot(canvas: HTMLCanvasElement): Promise<unknown>;
+  /** Draws its title screen (320 x 200, gfx/titlePicture.ts); false when it has none. */
+  drawTitle(canvas: HTMLCanvasElement): Promise<boolean>;
   /** All the game's files (loaded once). */
   files(): Promise<GameFiles>;
   /** Enough of its files to start the demo preview, the rest arriving as it plays (hosted games). */
@@ -146,6 +150,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
     entry: g,
     health: g.gam ? catalogTarget(g) : undefined,
     drawShot: (c) => renderShot(g, c, Math.round(c.width / 20), Math.round(c.height / 20)),
+    drawTitle: (c) => renderTitle(g, c),
     files: once(() => loadHostedGame(g)),
     previewFiles: once(async () => {
       // the demo's files as it asks for them, and a little ahead (not the whole game)
@@ -191,6 +196,13 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
       ctx.drawImage(shot, 0, 0, c.width, c.height);
       return true;
     },
+    // its title screen, from its own files as they are now
+    drawTitle: async (c) => {
+      const files = await load();
+      const pic = titlePixels(files, parseGame(files.get(p.gam)!));
+      if (pic) paintIndexed(c, pic.pixels, pic.width, pic.height, pic.palette);
+      return !!pic;
+    },
     files: load,
     // its own demo, one added for the CD game it still is, or the attract mode (demoPreview.ts)
     hasDemo: async () => !!(await (await demoPreview()).filesDemoKind(await load(), p.gam)),
@@ -214,14 +226,31 @@ export const shotObserver = new IntersectionObserver(
 );
 
 /**
- * A canvas showing the game's picture once it is near the view. Until then it is marked
- * `shot-loading` (a placeholder shimmer), and `shot-none` when there is no picture to draw.
+ * A canvas showing the game's title screen once it is near the view, or its first level (8 x 5
+ * blocks) when it has none. Until then it is marked `shot-loading` (a placeholder shimmer),
+ * and `shot-none` when there is no picture to draw.
  */
-export function gameShot(game: HomeGame, width: number, height: number, className = 'card-shot pixel'): HTMLCanvasElement {
-  const c = h('canvas', { class: `${className} shot-loading`, width, height, 'aria-hidden': 'true' }) as HTMLCanvasElement & { draw?: () => Promise<unknown> };
+export function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElement {
+  const c = h('canvas', {
+    class: `${className} shot-loading`,
+    width: 320,
+    height: 200,
+    role: 'img',
+    'aria-label': `${game.title} title screen`,
+  }) as HTMLCanvasElement & {
+    draw?: () => Promise<unknown>;
+  };
+  const level = () => {
+    c.width = 160;
+    c.height = 100;
+    c.setAttribute('aria-label', `${game.title}: its first level`);
+    return game.drawShot(c);
+  };
   c.draw = () =>
     game
-      .drawShot(c)
+      .drawTitle(c)
+      .catch(() => false)
+      .then((title) => title || level())
       .then((drawn) => drawn !== false || c.classList.add('shot-none'))
       .catch(() => c.classList.add('shot-none'))
       .finally(() => c.classList.remove('shot-loading'));
@@ -300,7 +329,7 @@ export interface TileOptions {
 
 /** A game in the grid: its picture with Keys and Manual over it, and its title. */
 export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
-  const shot = game.gam || game.kind === 'mine' ? gameShot(game, 160, 100) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
+  const shot = game.gam || game.kind === 'mine' ? gameShot(game) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
   // Keys and Manual at the top left (⚠ takes the top right); choosing the tile plays its demo in the panel
   const tools = h('div', { class: 'shot-icons shot-tools' });
   const picture = h('div', { class: 'tile-shot' }, shot, tools);

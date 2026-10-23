@@ -4,11 +4,12 @@
 //     link enters the scene (startSceneInits), and the first 3 seconds standing still there
 //     (gravity, auto-scroll), played on kit/gameSim.ts;
 //   - every picture the site draws from a map: the level shots renderShot/gamePicture pick (home
-//     tiles, cast thumbnails, the play page, the desk's boxes, the disk label, the Mac icon),
-//     about.json box.shots (and the label strip builtMapViews makes of the first) and box.poster;
+//     tiles of games without a title screen, cast thumbnails, the play page, the desk's boxes,
+//     the disk label, the Mac icon), about.json box.shots (and the label strip builtMapViews
+//     makes of the first) and box.poster;
 //   - the title demo (disk demo.rec) replayed on gameSim.ts;
-//   - level cards and other pictures on the disk (.gif, every .fli frame) that contain the item's
-//     block, pixel for pixel.
+//   - level cards, title screens (the home tiles', web/src/gfx/titlePicture.ts) and other
+//     pictures on the disk (.gif, every .fli frame) that contain the item's block, pixel for pixel.
 // Run from web/:
 //
 //   npx vite-node ../games/kit/hiddenView.ts [<id>...]          a table of what shows where
@@ -42,7 +43,7 @@ export interface Sighting extends Item {
 
 /** The renderShot / gamePicture sizes the site draws (cols x rows) and where. */
 export const SHOT_SIZES: readonly [number, number, string][] = [
-  [8, 5, 'home tile, cast "Seen in"'],
+  [8, 5, 'home tile without a title screen, cast "Seen in"'],
   [16, 10, 'play page, showcase, desk box face'],
   [12, 4, 'disk label'],
   [16, 12, 'Mac icon'],
