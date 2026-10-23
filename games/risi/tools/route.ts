@@ -18,6 +18,7 @@ async function must(bot: Bot, r: Promise<string | undefined>, what: string): Pro
 
 /** Runs the last order of a level: it must take the hero into the next scene (or the ending). */
 async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
+  if (process.env.BOT_LOOT) bot.say(`loot left: ${lootLeft(bot).join(' ') || 'none'}`);
   const out = await r;
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
@@ -66,6 +67,17 @@ export function where(bot: Bot, n: number): { x: number; y: number }[] {
   return w.mi.map((mi, i) => ({ mi, n: w.mm[i]?.monnum })).filter((m) => m.n === n).map(({ mi }) => ({ x: mi.curx[0] - ORIGIN + mi.curx[1] / 20, y: mi.cury[0] - ORIGIN + mi.cury[1] / 20 }));
 }
 
+/** Pickups (blocks that give points, dignity or a counter when touched) still on the level's map. */
+export function lootLeft(bot: Bot): string[] {
+  const out: string[] = [];
+  for (let y = ORIGIN; y < ORIGIN + 16; y++)
+    for (let x = ORIGIN; x < ORIGIN + 70; x++) {
+      const b = bot.sim.shown(x, y);
+      if (b.touchBl && b.touchBl !== bot.sim.blockAt(x, y) && b.solid === 0 && (b.scorePts > 0 || b.chHitPt > 0 || (b.effect > 0 && b.eamt > 0))) out.push(`${x - ORIGIN},${y - ORIGIN}`);
+    }
+  return out;
+}
+
 /** Is any of these monsters still about? */
 const alive = (bot: Bot, mons: number[]) => bot.sim.w.mm.some((m) => mons.includes(m.monnum));
 
@@ -81,6 +93,7 @@ const up = (bot: Bot, what: string, hold = 12) => must(bot, bot.hop('up', hold),
 /** I. The banquet: five shutters, the figs, Teddy, Flavia, Rufus's table, Gwinn, the amphora, the servus, the door. */
 export async function banquet(bot: Bot): Promise<void> {
   expect(bot, 2, 'the banquet');
+  if (process.env.BOT_LOOT) bot.say(`loot at the start: ${lootLeft(bot).length}`);
   await carefully(bot, 'the first shutter, the coin, the figs', 0, async () => {
     await must(bot, bot.walk(5, 'under the first shutter'), 'shutter');
     await up(bot, 'the first shutter');
