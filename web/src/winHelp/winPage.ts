@@ -145,6 +145,16 @@ export function renderWinHelp(el: HTMLElement): void {
       ),
 
       section(
+        'win-future',
+        'Will it keep working?',
+        h(
+          'p',
+          null,
+          'The download is a convenience: it plays offline and keeps its saved games on your computer. It is not a frozen copy, though. It wraps the same web page as this site in a small native window and plays it with Microsoft Edge WebView2, the web engine built into Windows 10 and 11. It still depends on that engine, so a future Windows or WebView2 update could break the game or change how it plays. The DOS download, played in DOSBox, is the most future-proof way to keep a game.',
+        ),
+      ),
+
+      section(
         'win-remove',
         'Removing it',
         h('p', null, 'Delete the program (the .exe file).'),

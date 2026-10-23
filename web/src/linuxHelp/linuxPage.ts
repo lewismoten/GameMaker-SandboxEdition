@@ -123,6 +123,16 @@ export function renderLinuxHelp(el: HTMLElement): void {
       ),
 
       section(
+        'linux-future',
+        'Will it keep working?',
+        h(
+          'p',
+          null,
+          'The download is a convenience: it plays offline and keeps its saved games on your computer. It is not a frozen copy, though. It wraps the same web page as this site in a small native window and plays it with WebKitGTK, the web engine most Linux desktops already have. It still depends on that engine, so a future Linux or WebKitGTK update could break the game or change how it plays. The DOS download, played in DOSBox, is the most future-proof way to keep a game.',
+        ),
+      ),
+
+      section(
         'linux-remove',
         'Removing it',
         h('p', null, 'If you did not install it, delete the folder. If you did, run its uninstaller, which takes it out of the menu:'),
