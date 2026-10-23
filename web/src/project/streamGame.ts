@@ -4,7 +4,7 @@
 // reads its files synchronously (GameFiles); where the engine is about to read one (a
 // picture, a song, a scene's files) it asks for it first and waits if it is still on its
 // way (engine/machine.ts, need), which moves it to the front of the queue.
-import { GameFiles, cdName, fetchSiteFile, normalize, type CatalogEntry, type FileStream } from './files';
+import { GameFiles, cdName, fetchSiteFile, normalize, openPack, type CatalogEntry, type FileStream, type PackHandle } from './files';
 import { parseGame } from '../formats/game';
 import { parseSoundSet } from '../formats/sound';
 import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
@@ -67,6 +67,26 @@ export function playOrder(gamName: string, gam: Uint8Array | undefined, names: s
   return out;
 }
 
+/**
+ * The order of a game's files in its pack (project/gamePack.ts): play order, each file
+ * followed by the ones it names (a slide list's pictures, a sound set's samples), so a
+ * game read from the start of its pack has what it needs as early as it can.
+ */
+export function packOrder(gamName: string | null, names: string[], get: (name: string) => Uint8Array | undefined): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  const add = (name: string | undefined) => {
+    const n = name ? resolveName(names, name) : undefined;
+    if (!n || seen.has(n)) return;
+    seen.add(n);
+    out.push(n);
+    const bytes = get(n);
+    if (bytes) filesNamedBy(n, bytes).forEach(add);
+  };
+  for (const n of gamName ? playOrder(gamName, get(gamName), names) : names) add(n);
+  return out;
+}
+
 /** The catalog name a game's reference opens (A-J.BKD finds the CD's a_j.bkd), if it has one. */
 function resolveName(names: string[], name: string): string | undefined {
   const n = normalize(name);
@@ -110,14 +130,16 @@ export interface StreamedGame {
 }
 
 /**
- * Starts fetching a hosted game's files, a few at a time, most needed first. `files` fills
+ * Starts fetching a hosted game's files: its pack (project/gamePack.ts), which brings them in
+ * play order, or, without one, a few files at a time, most needed first. `files` fills
  * as they arrive; until the last is in, `files.stream` lets the engine wait for one.
  *
  * `aheadBytes` limits what is fetched before it is asked for (a demo on the home page needs a
  * few of a game's files, not its every picture): files the engine asks for (need, want) always
  * come; others, in play order, only until that many bytes have been fetched ahead. Unlimited
  * by default, so a game being played has everything by the time it gets there; `done` then
- * waits for files that may never be asked for.
+ * waits for files that may never be asked for. A pack read past that budget, with nothing
+ * asked for still on its way, is stopped; what is asked for later comes file by file.
  */
 export function streamHostedGame(entry: CatalogEntry, base = './', concurrency = 4, aheadBytes = Infinity): StreamedGame {
   const files = new GameFiles();
@@ -176,7 +198,35 @@ export function streamHostedGame(entry: CatalogEntry, base = './', concurrency =
     return name;
   };
 
+  // the pack, while it is being read: it brings every file, so none is fetched on its own meanwhile
+  let pack: PackHandle | undefined;
+  const fromPack = (name: string, bytes: Uint8Array) => {
+    if (started.has(name) || !waiting.has(name)) return;
+    started.add(name);
+    if (!asked.has(name)) ahead += bytes.length;
+    arrived(name, bytes);
+    // a preview's budget spent, and nothing it asked for still to come (once what just came is
+    // looked at: the .gam's arrival is what names the demo's files): stop
+    if (ahead > aheadBytes && !checking) {
+      checking = true;
+      setTimeout(() => {
+        checking = false;
+        if (ahead > aheadBytes && ![...asked].some((n) => waiting.has(n))) quitPack();
+      });
+    }
+  };
+  let checking = false;
+  let quit = false;
+  const quitPack = () => {
+    quit = true;
+    const p = pack;
+    pack = undefined;
+    p?.stop();
+    pump();
+  };
+
   const pump = () => {
+    if (pack) return;
     while (active < concurrency) {
       const name = next();
       if (!name) return;
@@ -203,6 +253,10 @@ export function streamHostedGame(entry: CatalogEntry, base = './', concurrency =
   };
   if (names.length) files.stream = stream;
   else resolveDone();
+  pack = names.length ? openPack(entry, base, fromPack) : undefined;
+  if (quit) quitPack(); // all there already
+  // a pack that fails (or ends without a file) leaves the rest to be fetched one by one
+  void pack?.done.then(() => pack && quitPack());
   pump();
   return { files, started: entry.gam ? (waiting.get(entry.gam)?.promise ?? Promise.resolve()) : Promise.resolve(), done };
 }

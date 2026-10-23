@@ -126,6 +126,7 @@ export const IGNORED_FILE = /\.(exe|com|bat|drv|ico|bak|obj|map\.bak)$/i;
 
 import type { OriginalExtras } from '../../scripts/cdGames';
 import { withSecretGames } from './secretGames';
+import { PackReader } from './gamePack';
 
 export interface CatalogEntry {
   id: string;
@@ -160,6 +161,8 @@ export interface CatalogEntry {
   series?: string;
   /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
   gz?: boolean;
+  /** Built sites: all its files in one gzipped file in its folder (project/gamePack.ts, openPack), named with a hash of its content. */
+  pack?: string;
   /** From games/catalog.json: its notice, manual and printables are in games/details/<id>.json (withDetails). */
   details?: boolean;  /** Original games: the site path of its walkthrough (src/walkthrough), when it has one. */
   walkthrough?: string;
@@ -321,25 +324,175 @@ export function fetchSiteFile(url: string, gz?: boolean): Promise<Uint8Array | u
   return entry.p;
 }
 
-/**
- * One file of a hosted game, by the name a game uses for it (A-J.BKD finds the CD's
- * a_j.bkd); undefined when the game has no such file or it could not be fetched.
- */
-export function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz'>, name: string, base = './'): Promise<Uint8Array | undefined> {
-  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
-  return n ? fetchSiteFile(`${base}${entry.path}${n}`, entry.gz) : Promise.resolve(undefined);
+// ---- a game in one file (project/gamePack.ts) ------------------------------------------
+
+interface Pack {
+  /** Files in so far. */
+  files: Map<string, Uint8Array>;
+  listeners: Set<(name: string, bytes: Uint8Array) => void>;
+  /** true once every file is in; false when it failed or was stopped. */
+  done: Promise<boolean>;
+  complete: boolean;
+  /** Readers that may still stop it (openPack): the download stops when the last one does. */
+  holders: number;
+  abort: AbortController;
+  size: number;
 }
 
+// Packs read this session, shared like fileCache: the oldest whole ones are dropped past the budget.
+const packs = new Map<string, Pack>();
+
+function trimPacks(): void {
+  let total = [...packs.values()].reduce((a, p) => a + p.size, 0);
+  for (const [url, p] of packs) {
+    if (total <= FILE_CACHE_BYTES) return;
+    if (!p.complete) continue;
+    packs.delete(url);
+    total -= p.size;
+  }
+}
+
+/** Where a hosted game's pack is, or undefined when it has none (or this browser cannot unpack it). */
+export function packUrl(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): string | undefined {
+  return entry.pack && typeof DecompressionStream !== 'undefined' ? `${base}${entry.path}${entry.pack}` : undefined;
+}
+
+function startPack(url: string): Pack {
+  const pack: Pack = { files: new Map(), listeners: new Set(), done: Promise.resolve(false), complete: false, holders: 0, abort: new AbortController(), size: 0 };
+  pack.done = (async () => {
+    try {
+      const res = await fetch(url, { signal: pack.abort.signal });
+      if (!res.ok || !res.body) return false;
+      const reader = res.body.pipeThrough(new DecompressionStream('gzip')).getReader();
+      const r = new PackReader();
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        for (const [name, bytes] of r.push(value)) {
+          pack.files.set(name, bytes);
+          pack.size += bytes.length;
+          for (const l of pack.listeners) l(name, bytes);
+        }
+      }
+      pack.complete = r.done;
+      return r.done;
+    } catch {
+      return false;
+    } finally {
+      pack.listeners.clear();
+      if (!pack.complete) {
+        if (packs.get(url) === pack) packs.delete(url);
+      } else trimPacks();
+    }
+  })();
+  return pack;
+}
+
+/** A game's pack being read: its files so far, and each one as it comes (see openPack). */
+export interface PackHandle {
+  files: ReadonlyMap<string, Uint8Array>;
+  /** true once every file is in; false when the pack failed (or was stopped): fetch what is missing on its own. */
+  done: Promise<boolean>;
+  /** No longer needed: stops the download when nobody else is reading it. */
+  stop(): void;
+}
+
+/**
+ * Starts reading a hosted game's pack (or joins the reading of it already going on), or
+ * undefined when it has none. `onFile` hears of each file in it: those in already at once,
+ * then the rest as they arrive, in pack order (play order, streamGame.ts packOrder). Shared:
+ * do not modify the files.
+ */
+export function openPack(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './', onFile?: (name: string, bytes: Uint8Array) => void): PackHandle | undefined {
+  const url = packUrl(entry, base);
+  if (!url) return undefined;
+  let pack = packs.get(url);
+  if (pack) packs.delete(url); // most recently used last
+  else pack = startPack(url);
+  packs.set(url, pack);
+  const p = pack;
+  p.holders++;
+  if (onFile) {
+    for (const [n, b] of p.files) onFile(n, b);
+    if (!p.complete) p.listeners.add(onFile);
+  }
+  let stopped = false;
+  return {
+    files: p.files,
+    done: p.done,
+    stop() {
+      if (stopped) return;
+      stopped = true;
+      if (onFile) p.listeners.delete(onFile);
+      if (--p.holders <= 0 && !p.complete) {
+        p.abort.abort();
+        if (packs.get(url) === p) packs.delete(url);
+      }
+    },
+  };
+}
+
+/** One file from a pack being read: once it arrives, or undefined if the pack ends (or fails) without it. */
+function fromPack(entry: Pick<CatalogEntry, 'path' | 'pack'>, name: string, base: string): Promise<Uint8Array | undefined> | undefined {
+  let resolve!: (b: Uint8Array | undefined) => void;
+  const got = new Promise<Uint8Array | undefined>((r) => (resolve = r));
+  const h = openPack(entry, base, (n, b) => n === name && resolve(b));
+  if (!h) return undefined;
+  void h.done.then(() => resolve(h.files.get(name)));
+  return got.then((b) => (h.stop(), b));
+}
+
+/** Whether a game's pack is here already: read this session, or kept by the service worker (offline). */
+async function packAtHand(entry: Pick<CatalogEntry, 'path' | 'pack'>, base: string): Promise<boolean> {
+  const url = packUrl(entry, base);
+  if (!url) return false;
+  if (packs.has(url)) return true;
+  try {
+    return typeof caches !== 'undefined' && !!(await caches.match(new URL(url, location.href).href));
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * One file of a hosted game, by the name a game uses for it (A-J.BKD finds the CD's
+ * a_j.bkd); undefined when the game has no such file or it could not be fetched. From the
+ * game's pack when that is here already (played, opened, or kept offline), else on its own.
+ */
+export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
+  const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
+  if (!n) return undefined;
+  if (await packAtHand(entry, base)) {
+    const bytes = await fromPack(entry, n, base);
+    if (bytes) return bytes;
+  }
+  return fetchSiteFile(`${base}${entry.path}${n}`, entry.gz);
+}
+
+/**
+ * Every file of a hosted game (copies, to change freely): its pack, in one request, when it
+ * has one; files the pack did not bring (an older site, a failed download) one by one.
+ */
 export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
   const files = new GameFiles();
+  const total = entry.files.length;
   let done = 0;
+  const wanted = new Set(entry.files);
+  const h = openPack(entry, base, (name, bytes) => {
+    if (!wanted.has(name) || files.has(name)) return;
+    files.set(name, bytes.slice());
+    onProgress?.(++done, total);
+  });
+  if (h) await h.done;
   await Promise.all(
-    entry.files.map(async (name) => {
-      const bytes = await fetchSiteFile(`${base}${entry.path}${name}`, entry.gz);
-      // a copy: callers may edit their files
-      if (bytes) files.set(name, bytes.slice());
-      onProgress?.(++done, entry.files.length);
-    }),
+    entry.files
+      .filter((name) => !files.has(name))
+      .map(async (name) => {
+        const bytes = await fetchSiteFile(`${base}${entry.path}${name}`, entry.gz);
+        // a copy: callers may edit their files
+        if (bytes) files.set(name, bytes.slice());
+        onProgress?.(++done, total);
+      }),
   );
   return files;
 }
