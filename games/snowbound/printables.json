@@ -475,20 +475,6 @@
       }
     },
     {
-      "text": "THE CHEZ",
-      "sub": "SNOWED IN",
-      "shape": "cut",
-      "color": "#d6362a",
-      "ink": "#ffffff",
-      "px": 4,
-      "sprite": {
-        "blocks": "snow.bbl",
-        "pal": "noon.pal",
-        "grid": [[140, 141]],
-        "under": "edge"
-      }
-    },
-    {
       "text": "TIN HEART",
       "sub": "TICKS LIKE IT MEANS IT",
       "shape": "cut",
