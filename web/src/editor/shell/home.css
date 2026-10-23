@@ -363,6 +363,50 @@
   }
 }
 
+/* Tablets (600-999px wide, 960px+ tall: an iPad upright): the game above the library, the
+   page still fits the window and the tiles scroll by themselves. Getting started moves behind
+   the library's "How it works" button (home.ts sees it clipped). */
+@media (min-width: 600px) and (max-width: 999px) and (min-height: 960px) {
+  #app.modern:has(> .content > main.home) {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  #app.modern > .content > main.home {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+    padding-bottom: 12px;
+  }
+
+  main.home > .showcase {
+    flex: none;
+  }
+
+  .home .library {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  .lib-tiles {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: -4px;
+    padding: 4px;
+    overflow-y: auto;
+  }
+
+  .home-start {
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .home-start.clipped {
+    display: none;
+  }
+}
+
 /* a game tile: its picture (with buttons over it) and its title */
 .game-tile {
   position: relative;
