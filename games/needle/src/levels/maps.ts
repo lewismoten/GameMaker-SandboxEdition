@@ -338,7 +338,10 @@ export function tailor(book: BlockBook): Level {
   // the first great needle: its eye (an eye gate) at the shelf, the shelf on through it
   m.col(22, 1, 5, 'N').set(22, 6, 'A').set(22, 7, 'G').set(22, 8, 'V').col(22, 9, 14, 'N').set(22, 15, 'v').row(8, 23, 25, '-');
   // the sewing machine's table: its needle stabs down (kneel under it); a spool, the beggar
-  m.row(10, 26, 35, 'T').col(26, 11, 15, 't').col(35, 11, 15, 't').set(30, 8, 'm').text(31, 7, 'MM').set(28, 9, 's').set(34, 9, 'B');
+  m.row(10, 26, 35, 'T').col(26, 11, 15, 't').col(35, 11, 15, 't').set(28, 9, 's').set(34, 9, 'B');
+  // the machine on the table: its head over the needle at the end of the arm, the pillar and wheel
+  m.text(31, 4, 'mM').set(33, 4, 'machineArm').set(33, 5, 'machineWheel').col(33, 6, 8, 'machinePillar');
+  m.set(31, 9, 'machineBedL').set(32, 9, 'machineBed').set(33, 9, 'machineBase');
   // the floor: a thimble, dates; the second thread, frayed where he steps on
   m.set(37, 15, 'c').set(40, 15, 's').set(43, 15, 'D').col(46, 1, 15, '|').set(46, 15, 'f').fill(47, 12, 1, 4, 'p');
   // a middle shelf, and a third thread, frayed where he steps on from it

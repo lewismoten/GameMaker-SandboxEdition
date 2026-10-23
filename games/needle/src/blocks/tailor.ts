@@ -4,7 +4,7 @@
 // them that only a spool mends (solid until then), pins that prick, buttons to hop along, the sewing
 // machine's table, needles standing taller than a camel with their eyes to crawl through (one
 // is an eye gate), the poor seamstress, and the back door out into the night.
-import { dither } from '../../../kit/pixels';
+import { dither, Pixels } from '../../../kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
 import { THREAD } from '../ids';
@@ -84,19 +84,19 @@ export function tailorBlocks(pal: Pal): Kit {
   const treadle = panel(17, 2);
   treadle.line(2, 0, 10, 19, c('grey', 1)).line(18, 0, 10, 19, c('grey', 1)).ring(10, 10, 5, c('grey', 2));
   book.add('treadle', treadle, air);
-  // the machine itself on the table, its arm and wheel (scenery: the needle is a monster)
-  const machine = (part: number) => {
-    const p = panel(18 + part, 2);
-    if (part === 0) {
-      p.rect(2, 4, 16, 16, c('ink', 1)).rect(2, 4, 16, 2, c('gold', 2)).ring(10, 12, 5, c('gold', 3));
-    } else {
-      p.rect(0, 4, 20, 6, c('ink', 1)).rect(0, 4, 20, 1, c('gold', 2)).rect(12, 10, 6, 4, c('ink', 1));
-      p.rect(2, 6, 8, 1, c('gold', 3));
-    }
-    return p;
-  };
-  book.add('machine0', machine(0), air);
-  book.add('machine1', machine(1), air);
+  // the machine itself, drawn whole (3 x 6 blocks) and cut: the head over the needle (the needle is
+  // a monster that stabs down out of it), the arm, the pillar with its wheel, the bed on the table
+  const machine = new Pixels(60, 120);
+  for (let ty = 0; ty < 6; ty++) for (let tx = 0; tx < 3; tx++) machine.blit(panel(1), tx * 20, ty * 20);
+  machine.rect(0, 112, 60, 8, c('ink', 1)).rect(0, 112, 60, 1, c('gold', 2)).rect(4, 115, 10, 1, c('steel', 1));
+  machine.rect(42, 10, 14, 102, c('ink', 1)).rect(42, 10, 1, 102, c('ink', 2)).rect(42, 104, 14, 1, c('gold', 2));
+  machine.rect(6, 4, 50, 11, c('ink', 1)).rect(6, 4, 50, 1, c('gold', 2)).rect(20, 8, 18, 1, c('gold', 3));
+  machine.rect(1, 2, 16, 18, c('ink', 1)).rect(1, 2, 16, 1, c('gold', 2)).rect(3, 6, 1, 8, c('gold', 3));
+  machine.rect(8, 18, 4, 2, c('steel', 1)).rect(9, 15, 2, 3, c('steel', 2));
+  machine.ring(52, 30, 6, c('gold', 3)).disc(52, 30, 1.5, c('gold', 2)).line(52, 24, 52, 36, c('gold', 2));
+  const machinePart = (tx: number, ty: number) => machine.crop(tx * 20, ty * 20, 20, 20);
+  book.add('machine0', machinePart(0, 0), air);
+  book.add('machine1', machinePart(1, 0), air);
 
   // ---------- thread ----------
   // a hanging thread: no gravity, climb it
@@ -196,5 +196,12 @@ export function tailorBlocks(pal: Pal): Kit {
   speckle(scraps, 2, 14, 16, 6, R('purple'), 2, 1, 4, 0.5);
   for (let x = 3; x < 17; x += 4) scraps.rect(x, 13, 3, 2, c(x % 8 === 3 ? 'red' : 'gold', 2));
   book.add('scraps', scraps, air);
+  // the rest of the sewing machine (added last, so the blocks before keep their numbers)
+  book.add('machineArm', machinePart(2, 0), air);
+  book.add('machineWheel', machinePart(2, 1), air);
+  book.add('machinePillar', machinePart(2, 2), air);
+  book.add('machineBedL', machinePart(0, 5), air);
+  book.add('machineBed', machinePart(1, 5), air);
+  book.add('machineBase', machinePart(2, 5), air);
   return k;
 }
