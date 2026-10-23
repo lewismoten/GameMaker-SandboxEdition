@@ -13,7 +13,7 @@ import { byCollection, hasBizarreTab, isBizarreGame } from '../../project/bizarr
 import { listProjects } from '../../project/storage';
 import { onCatalogChanged } from '../../project/catalogWatch';
 import './home.css';
-import { FORK_NOTE, NOTICE_URL, PRODUCT } from '../../edition';
+import { PRODUCT } from '../../edition';
 import { catalogGame, gameTile, projectGame, RSD_GAMES, type GameKind, type HomeGame } from './homeCards';
 import { showcase } from './homeShowcase';
 import { newGame, importPicked, importDropped } from './homeImport';
@@ -536,18 +536,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     h(
       'main',
       { class: 'home' },
-      h(
-        'header',
-        { class: 'home-intro' },
-        h('h1', null, PRODUCT),
-        h(
-          'p',
-          null,
-          'Make your own arcade and adventure games — blocks, monsters, heroes, maps, music and sound — in the original 1994 file formats. No programming. ',
-          h('a', { href: NOTICE_URL, target: '_blank', rel: 'noopener', class: 'home-fork' }, FORK_NOTE),
-          '.',
-        ),
-      ),
+      h('h1', { class: 'sr-only' }, PRODUCT),
       top.el,
       h(
         'section',

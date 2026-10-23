@@ -217,6 +217,15 @@ async function route(): Promise<void> {
     return;
   }
   document.title = PRODUCT;
+  // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
+  clear(
+    titleSlot,
+    h(
+      'span',
+      { class: 'topbar-tagline hide-narrow', title: FORK_NOTE },
+      'Make 1994 DOS games. No programming.',
+    ),
+  );
   await renderHome(content, nav);
 }
 
