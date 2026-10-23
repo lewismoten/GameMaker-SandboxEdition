@@ -12,7 +12,7 @@
     "mustard": { "map": "dust.map", "at": [43, 18] },
     "needle": { "map": "tailor.map", "at": [35, 17] },
     "realm": { "map": "port.map", "at": [9, 25] },
-    "reckoning": { "map": "bedroom.map", "at": [5, 9] },
+    "reckoning": { "map": "fridge.map", "at": [44, 15] },
     "remote": { "map": "den.map", "at": [30, 16] },
     "risi": { "map": "kitchen.map", "at": [25, 11] },
     "sandcast": { "map": "keep.map", "at": [32, 1] },
