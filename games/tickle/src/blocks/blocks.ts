@@ -11,12 +11,15 @@
 //   - each level's door is a Dutch door: the top half open, the bottom half shut so the rats stay
 //     in. The bottom half only opens for a laughing carpet big enough (counter 20, all game long),
 //     and gives the rats straight back as Doc Leo steps through.
+import { CLEAR, joeCameo } from '../../../kit/cameos';
 import { chezSide } from '../../../kit/chez';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { Pixels, rng } from '../../../kit/pixels';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
 import { CARPET, NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
@@ -484,5 +487,18 @@ export function buildBlocks(pal: Pal): BlockBook {
   lotWin.rect(1, 17, 38, 1, c('wood', 3));
   book.add('windowLotL', lotWin.crop(0, 0, 20, 20), air);
   book.add('windowLotR', lotWin.crop(20, 0, 20, 20), air);
+
+  // (last too) a tin heart on the tower's floor, tucked in the far corner under the dean's ledge:
+  // a glint crosses it now and then; 100 points
+  const tin = { ink: c('ink', 0), tin: [c('steel', 1), c('steel', 2), c('steel', 4)], white: c('paint', 1), dark: c('steel', 0) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(wall('tower'), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'wallT', score: 100, ...air });
+  // a dyed Easter egg rolled under the lab's first bench: 50 points
+  const egg = { ink: c('ink', 0), shell: R('pink'), paint: R('blue').slice(1), accent: c('gold', 3), white: c('paint', 1) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(wall('lab'), egg, 'dots', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'wallL', score: 50, ...air });
+  // Mystery Robot Joe (Keep It Brief!), the tin box night librarian, keeping count of the course's
+  // rats by the chalkboard (scenery: walk right past him)
+  book.add('joe', wains().blit(joeCameo(buildPalette('plain').pal, 'down', 0, { use: ['ink', 'steel', 'grey', 'paint', 'glass', 'red', 'navy', 'gold', 'nose'].flatMap((n) => R(n)) }), 0, 0, CLEAR), air);
   return book;
 }

@@ -183,6 +183,8 @@ export function course(book: BlockBook): Level {
   // the lesson: the keys on signs, the chalkboard, the clock and the window
   m.text(3, 4, 'P.K.F');
   m.patch(13, 2, ['1234', 'tttt']).set(10, 2, 'O').set(25, 3, 'W').set(53, 3, 'W');
+  // Mystery Robot Joe (Keep It Brief!) by the chalkboard, counting rats on his tally counter
+  m.set(12, 9, 'joe');
   // the wide window onto the parking lot, THE CHEZ charging under the lamp
   m.set(40, 3, 'windowLotL').set(41, 3, 'windowLotR');
   // practice rat 1, on the floor
@@ -236,6 +238,8 @@ export function lab(book: BlockBook): Level {
   m.row(8, 60, 65, 'h').fill(60, 9, 6, 1, 'g').set(65, 7, 'k');
   m.mon(MON.labRat, 61, 7).mon(MON.labTense, 60, 11).mon(MON.labRat, 66, 11);
   m.set(70, 10, 'o').set(70, 11, 'c');
+  // an Easter egg rolled under the first bench (walk under it, past the flasks)
+  m.set(15, 11, 'easterEgg');
   // the door: ten rats in the carpet; out the window into the night
   m.door(72, 11, 'next', 'L');
   return { m, start: at(2, 11), size: [W, H], rats: ratCount(m) };
@@ -296,6 +300,8 @@ export function tower(book: BlockBook): Level {
   m.mon(MON.labTense, 25, 7);
   // the top ledge, and the balcony
   m.row(6, 34, 42, '_');
+  // a tin heart in the far corner of the floor, under the dean's ledge
+  m.set(41, 21, 'tinHeart');
   m.door(39, 5, 'won', 'y');
   return { m, start: at(2, 21), size: [W, H], rats: ratCount(m) };
 }
