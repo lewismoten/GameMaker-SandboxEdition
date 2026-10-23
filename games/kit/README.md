@@ -38,7 +38,12 @@ Making the files:
 - `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a
   cameo in a game's lot or at its curb, drawn in the game's own palette; facing left shows the charge port for a cord.
 - `tinHeart.ts` — the tin heart, a small riveted heart that ticks, as a 20x20 block in any game's palette, with a
-  glint across its frames and a soft tick-tock on the PC speaker.
+  glint across its frames and a soft tick-tock on the PC speaker; `looksLikeTinHeart` knows the block in any palette.
+- `tinHearts.ts` / `tinHeartDisk.ts` — the tin heart hunt: writes web/src/tinHearts/hearts.json from each about.json
+  `"tinHeart"`, finds a heart on a disk, and checks it is there and found when touched (recipe: `TIN-HEARTS.md`).
+- `cameos.ts` — Mystery Robot Joe, Watt, Will and Teenage Lewie drawn by their own games and recolored into
+  another game's palette (`TIN-HEARTS.md`, "Cameos").
+- `easterEgg.ts` — the decorated Easter egg, a painted egg block in any game's palette, hidden like the tin heart.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.
