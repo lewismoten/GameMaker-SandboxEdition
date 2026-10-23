@@ -46,7 +46,9 @@ A hobo will take a job if it's offered. I'm offering YOU one. Find Reggie and I'
 
 Whack 'em with your sword. They drop gems, and gems are as good as gold in any shop in the kingdom.
 
-Bats come out up by the hills. You'll want a better sword than that stick for the bigger trouble. The smith in Laterburg sells steel.`,
+Bats come out up by the hills. You'll want a better sword than that stick for the bigger trouble. The smith in Laterburg sells steel.
+
+The lad with the shovel at the end of the turnips is Lewie. Hardest worker in Nowish, which isn't saying much. He's going to make games of his own one day, he says, with something called a Game-Maker. In Procrastia, "one day" is a big promise. He means it.`,
   ),
   nowsign: t(
     'nowsign',

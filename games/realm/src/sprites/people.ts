@@ -3,7 +3,7 @@
 // animation. Plus the cameos: Doc Leo the hobo clown (grey felt fedora, navy corduroy, purple
 // shirt, green tie, red sneakers, a rubber chicken on a leash), Teddy the corgi and Gwinn, THE
 // CHEZ's owner, Will the playwright from Shakespeare in Sweatpants, Mystery Robot Joe from
-// Keep It Brief!, and Lord Deadline himself.
+// Keep It Brief!, Teenage Lewie from Snowbound, and Lord Deadline himself.
 import { art, lookKey, baseKey, R, type Key } from '../art/sprite';
 import { C } from '../art/pal';
 import type { Canvas, RGB } from '../art/rgb';
@@ -27,6 +27,8 @@ export const HEADS: Record<string, string[]> = {
   long: ['....................', '.......KKKKKK.......', '.....KKhHHHHHhKK....', '....KhHHjjjjHHHhK...', '....KhHjjHHjjHHhK...', '....KhHHHHHHHHHhK...', '...KhHHHHHHHHHHhhK..', '...KhHsSSSSSSsHhhK..', '...KhHsSeSSeSsHhhK..', '...KhHsSeSSeSsHhhK..', '...KhHKsSddSsKHhK...', '...KhK.KKssKK.KhK...'],
   // Will, the bald bard of Shakespeare in Sweatpants: a shiny dome, a fringe over the ears, a gold earring, a pointed beard
   poet: ['....................', '....................', '........KKKK........', '......KKSwSSKK......', '.....KsSwSSSSsK.....', '....KsSSSSSSSSsK....', '....KhsSSSSSSshK....', '....KHsSSSSSSsHK....', '....KHSeSSSSeSHK....', '....yhSeSSSSeShK....', '.....KsShhhhSsK.....', '......KKshhsKK......'],
+  // a red knit hat with a pompom and a ribbed band (Teenage Lewie's)
+  beanie: ['.........KK.........', '........KwwK........', '.......KKKKKK.......', '.....KKcCCCCrKK.....', '....KcCCCCCCCCrK....', '....KcCcCcCcCcCK....', '....KhsSSSSSSshK....', ...FACE],
   // Mystery Robot Joe, night librarian of The Dog House: a tin box head, a bulb on his antenna,
   // reading glasses he does not need, a red bow tie
   tinbox: ['.........KyK........', '..........K.........', '.....KKKKKKKKKK.....', '.....KMMMMMMMMK.....', '.....KKKKMMKKKK.....', '.....KwewKKwewK.....', '.....KKKKMMKKKK.....', '.....KMMMMMMMMK.....', '.....KMmKKKKmMK.....', '.....KMMMMMMMMK.....', '.....KKKKKKKKKK.....', '.......KooKooK......'],
@@ -125,6 +127,9 @@ export const PEOPLE: Record<string, PersonSpec> = {
     legs: 'slippers',
     key: lookKey({ hair: R('hairBrown', 0, 1, 1), coat: R('purple', 1, 2, 3), pants: R('steel', 1, 2), trim: R('gold', 1, 2, 3) }, { f: C('pink', 1), F: C('pink', 2) }),
   },
+  // Teenage Lewie (Snowbound): a red knit hat, a red coat and a snow shovel, here helping
+  // Farmer Hodge with the turnips
+  lewie: { head: 'beanie', body: 'coat', legs: 'boots', key: lookKey({ hair: R('hairBrown', 0, 1), coat: R('red', 1, 2, 3), pants: R('blue', 0, 1), hat: R('red', 1, 2, 3), trim: R('red', 0, 1, 2) }), extra: shovel() },
   // Mystery Robot Joe (Keep It Brief!), visiting the Royal Library after hours
   joe: {
     head: 'tinbox',
@@ -159,6 +164,16 @@ function leash(): [number, number, RGB][] {
   ])
     out.push([x, y, C('gold', 2)]);
   out.push([1, 16, C('gold', 3)], [2, 17, C('red', 2)], [0, 16, C('orange', 1)]);
+  return out;
+}
+
+/** Lewie's snow shovel, held at his side: a wooden handle and a steel blade. */
+function shovel(): [number, number, RGB][] {
+  const out: [number, number, RGB][] = [];
+  for (let y = 10; y < 17; y++) out.push([17, y, C('leather', 2)]);
+  out.push([16, 10, C('leather', 1)], [18, 10, C('leather', 1)]);
+  for (let x = 15; x <= 19; x++) out.push([x, 17, C('steel', 2)], [x, 18, C('steel', 3)]);
+  out.push([15, 19, C('outline')], [19, 19, C('outline')]);
   return out;
 }
 
