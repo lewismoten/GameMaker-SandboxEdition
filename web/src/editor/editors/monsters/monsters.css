@@ -113,8 +113,10 @@
     gap: 8px 10px;
     align-items: end;
   }
-  /* the monster it becomes and the solid-blocks switch take a whole row */
+  /* the monster it becomes, the solid-blocks switch and the choices (Lives, Movement: their
+     words would be cut off at half width) take a whole row */
   .mon-detail > .mon-stats > :nth-child(3),
+  .mon-detail > .mon-stats > :has(select),
   .mon-detail > .mon-stats > .check,
   .mon-detail > .mon-stats > label:has(input[type='checkbox']) {
     grid-column: 1 / -1;
