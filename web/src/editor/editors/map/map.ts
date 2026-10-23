@@ -138,8 +138,8 @@ registerEditor(['map'], (host, project, file) => {
     drawOverlay(over, zoom, overlay, bgImgs);
   };
   const status = h('div', { class: 'meta' });
-  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(180px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px)) * 0.55))' }), 'Blocks to paint with');
-  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(140px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px)) * 0.4))' }), 'Monsters to place');
+  const picker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(120px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.55))' }), 'Blocks to paint with');
+  const monPicker = rovingGrid(h('div', { class: 'block-picker', style: 'max-height:max(100px, calc((var(--ws-vh, 100dvh) - 280px - var(--map-tools-h, 60px) - var(--mt-panel-h, 0px)) * 0.4))' }), 'Monsters to place');
   const monCount = h('div', { class: 'meta' });
 
   // Links touching this map: where the character starts (to) and where scenes change (from).
@@ -739,6 +739,9 @@ registerEditor(['map'], (host, project, file) => {
   const fieldsBar = scroller.closest('.row')?.previousElementSibling as HTMLElement | null;
   const barSize = new ResizeObserver(() => fieldsBar && host.style.setProperty('--map-tools-h', `${fieldsBar.offsetHeight}px`));
   if (fieldsBar) barSize.observe(fieldsBar);
+  // the blocks and monsters give up the height of the tool panel above them
+  const panelSize = new ResizeObserver(() => host.style.setProperty('--mt-panel-h', `${tools.panel.hidden ? 0 : tools.panel.offsetHeight + 8}px`));
+  panelSize.observe(tools.panel);
   const onKey = (e: KeyboardEvent) => {
     const t = e.target as HTMLElement | null;
     if (t instanceof HTMLInputElement || t instanceof HTMLSelectElement || t instanceof HTMLTextAreaElement || t?.closest('dialog')) return;
@@ -793,5 +796,6 @@ registerEditor(['map'], (host, project, file) => {
   return () => {
     window.removeEventListener('keydown', onKey);
     barSize.disconnect();
+    panelSize.disconnect();
   };
 });
