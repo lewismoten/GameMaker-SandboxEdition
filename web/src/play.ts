@@ -9,6 +9,7 @@ import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './pr
 import { streamHostedGame } from './project/streamGame';
 import { loadProject, loadSaveData, writeSaveFile } from './project/storage';
 import { registerServiceWorker } from './offline';
+import { playAchievements, playWrote } from './achievements';
 
 interface BundleManifest {
   id: string;
@@ -101,8 +102,9 @@ async function main(): Promise<void> {
       notice: game.notice,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
-      onFileWrite: (name, bytes) => void writeSaveFile(game.id, name, bytes),
+      onFileWrite: (name, bytes) => (playWrote(game.id, name), void writeSaveFile(game.id, name, bytes)),
       saveId: game.id,
+      ...playAchievements(game.id),
       onQuit: () => !game.back, // stand-alone apps go back to their menu
       onExit: () => {
         if (game.back) location.href = game.back;
