@@ -99,7 +99,8 @@ export const WORK_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(55, 'the third goat from the left'), 'goat');
     });
     if (plot(bot) < COFFEE_THINGS) throw new Error(`only ${plot(bot)} of the coffee things`);
-    await leave(bot, bot.walk(61.5, "the boss's door"), 'the door');
+    await must(bot, bot.walk(62, "the boss's door"), 'the door');
+    await leave(bot, bot.walk(67.5, 'the walk-off'), 'the walk-off');
   },
   /** The Office Chair: the cubicle maze (the screws, the loose screw on a desk), the paper tower (the tape), the janitor (the wrench), over the intern, the memo pile (the gum), the creaks, the chair. */
   chair: async (bot) => {

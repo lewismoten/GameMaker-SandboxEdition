@@ -264,7 +264,10 @@ export const cgoat: Monologue = {
     '!': 'spot@base',
   },
   build: (m: MapBuilder) => {
-    const W = 64;
+    // the walk-off: OFF blocks more of the breakroom past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 6;
+    const W = 64 + OFF;
     m.row(0, 0, W - 1, '^');
     for (let x = 3; x < W; x += 6) m.set(x, 0, '*');
     m.fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, 'slab');
@@ -304,7 +307,7 @@ export const cgoat: Monologue = {
     placePicture(m, 'plant', 58, 8, 1, 2);
     // the boss's door
     m.set(61, 9, 'D').set(61, 8, 'clock');
-    m.link(61, 9, 'next');
+    m.link(61 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: cgoatMonsters,
