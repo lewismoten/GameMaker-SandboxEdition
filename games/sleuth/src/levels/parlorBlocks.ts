@@ -90,15 +90,55 @@ function greenCarpet(): Pixels {
   return p;
 }
 
-function wallpaper(): Pixels {
-  const p = T(c('teal', 1));
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y) % 10 === 0 || (x - y + 20) % 10 === 0) p.set(x, y, c('teal', 2));
+function wallpaper(tint = 'teal'): Pixels {
+  const p = T(c(tint, 1));
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y) % 10 === 0 || (x - y + 20) % 10 === 0) p.set(x, y, c(tint, 2));
   for (const [x, y] of [
     [5, 5],
     [15, 15],
   ])
     p.disc(x, y, 1, c('gold', 1));
   for (let x = 0; x < 20; x++) p.set(x, 0, c('gold', 2)).set(x, 17, c('panel', 2)).set(x, 18, c('panel', 1)).set(x, 19, c('black', 0));
+  return p;
+}
+
+/** Each suspect's interview room wallpaper. */
+const ROOM_TINT: Record<string, string> = { lila: 'velvet', edgar: 'teal', agatha: 'plum', felix: 'green', pike: 'navy' };
+
+/** A thing of the suspect's own in the corners of their room (instead of the green room's ferns). */
+function roomProp(who: string, rug: Pixels): Pixels {
+  const p = clone(rug);
+  if (who === 'lila') {
+    // the leading lady's roses, in a tall vase
+    p.rect(8, 11, 5, 8, c('glow', 0)).rect(8, 11, 5, 1, c('gold', 3));
+    for (const [x, y] of [
+      [7, 6],
+      [10, 4],
+      [13, 6],
+      [9, 8],
+      [12, 8],
+    ])
+      p.disc(x, y, 2, c('velvet', 5)).set(x, y, c('velvet', 7));
+    p.line(10, 10, 7, 7, c('green', 2)).line(10, 10, 13, 7, c('green', 2));
+  } else if (who === 'edgar') {
+    // the barman's drinks cart
+    p.rect(3, 9, 14, 2, c('gold', 3)).rect(3, 15, 14, 2, c('gold', 2)).rect(4, 9, 1, 8, c('gold', 1)).rect(15, 9, 1, 8, c('gold', 1));
+    for (const x of [5, 8, 11]) p.rect(x, 4, 2, 5, c('green', 1)).rect(x, 3, 2, 1, c('gold', 4));
+    p.disc(5, 18, 1.5, c('black', 1)).disc(15, 18, 1.5, c('black', 1));
+  } else if (who === 'agatha') {
+    // the owner's hatboxes, stacked
+    p.rect(3, 12, 14, 7, c('plum', 2)).rect(3, 12, 14, 2, c('plum', 3)).rect(5, 6, 10, 6, c('paper', 3)).rect(5, 6, 10, 2, c('paper', 5));
+    p.rect(9, 6, 2, 6, c('velvet', 4));
+  } else if (who === 'felix') {
+    // the stagehand's coil of rope and a sandbag
+    p.ring(8, 12, 5, c('tan', 3)).ring(8, 12, 3, c('tan', 2)).ring(8, 12, 4, c('tan', 4));
+    p.rect(13, 12, 5, 7, c('tan', 1)).rect(14, 10, 3, 2, c('tan', 2));
+  } else {
+    // the critic's typewriter, a page in it
+    p.rect(3, 11, 14, 7, c('black', 1)).rect(4, 12, 12, 3, c('black', 2));
+    p.rect(6, 4, 8, 8, c('paper', 5)).rect(7, 6, 6, 1, c('grey', 3)).rect(7, 8, 5, 1, c('grey', 3));
+    for (let x = 5; x < 16; x += 2) p.set(x, 16, c('grey', 5));
+  }
   return p;
 }
 
@@ -250,6 +290,9 @@ export function buildParlorBlocks(): BlockSet {
     big.blit(portrait(who, 40), 0, 2, CLEAR);
     big.frame(0, 0, 40, 40, frame);
     for (let i = 0; i < 4; i++) add(`por_${who}${i}`, big.crop((i % 2) * 20, Math.floor(i / 2) * 20, 20, 20), S);
+    // each suspect's own room: their wallpaper, and a thing of theirs in the corners
+    add(`wallpaper_${who}`, wallpaper(ROOM_TINT[who]), S);
+    add(`prop_${who}`, roomProp(who, RUG), S);
   }
   const tbl = new Pixels(40, 20);
   tbl.blit(RUG, 0, 0).blit(RUG, 20, 0);
