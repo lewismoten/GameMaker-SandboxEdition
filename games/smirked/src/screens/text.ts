@@ -302,10 +302,9 @@ THIS IS SHAREWARE
 
   If it made you laugh at
   yourself, register for ${price}:
-  you get a tape of the song
-  and a Bravery Badge of your
-  own. Send a check (US funds)
-  to:
+  you get a Bravery Badge of
+  your own, as a sticker. Send
+  a check (US funds) to:
 
     The Bard of Bizarre
     c/o The Sofa BBS
