@@ -10,16 +10,15 @@ there is nothing to pay. The
 certificate in the game is a
 parody made up for it. The
 song is The Bard of Bizarre's
-(Lewis Moten's): lyrics
-written by ChatGPT from Lewis
-Moten's prompts (after much
-back and forth); no recording
-came with the song, so its
-music was composed for this
-game by Claude Opus 5.5;
-title, cover and certificate
-art drawn for this game by
-Claude Opus 5.5.
+(Lewis Moten's): lyrics shaped
+by ChatGPT from Lewis Moten's
+prompts (after much back and
+forth); no recording came with
+the song, so its music was
+composed for this game by
+Claude Opus 5.5; title, cover
+and certificate art drawn for
+this game by Claude Opus 5.5.
 
 Made in 2026 by Lewis Moten,
 with AI help from Claude.
@@ -82,6 +81,7 @@ OTHERWISE, ARISING FROM, OUT
 OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+
 
 
 

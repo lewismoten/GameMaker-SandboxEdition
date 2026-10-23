@@ -81,7 +81,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Certified Rat
-  Tickler": lyrics written by
+  Tickler": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompts, after much back and
   forth (as The Bard of

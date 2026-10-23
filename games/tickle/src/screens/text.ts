@@ -22,7 +22,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * about.json says the same in its blurb).
  */
 export const SONG_CREDIT =
-  "lyrics written by ChatGPT from Lewis Moten's prompts (after much back and forth); no recording came with the song, so its music was composed for this game by Claude Opus 5.5; title, cover and certificate art drawn for this game by Claude Opus 5.5";
+  "lyrics shaped by ChatGPT from Lewis Moten's prompts (after much back and forth); no recording came with the song, so its music was composed for this game by Claude Opus 5.5; title, cover and certificate art drawn for this game by Claude Opus 5.5";
 
 export const STORY = [
   page([
@@ -245,7 +245,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Certified Rat
-  Tickler": lyrics written by
+  Tickler": lyrics shaped by
   ChatGPT from Lewis Moten's
   prompts, after much back and
   forth (as The Bard of
