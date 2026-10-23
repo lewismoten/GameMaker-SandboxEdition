@@ -41,11 +41,13 @@ export function mainTiles(): Tiles {
   t.air('trunk', trunk(sky(3)));
 
   // The Dog House, the tiny library on Maple Street (a book, the paw-knob snack drawer).
-  const lib = cut(dogHouseLibrary(canvas(2, 3, (_bx, by) => (by < 2 ? sky(3) : t.pic('lawn')))));
+  const libOf = (st: { open?: boolean } = {}) => cut(dogHouseLibrary(canvas(2, 3, (_bx, by) => (by < 2 ? sky(3) : t.pic('lawn'))), st));
+  const lib = libOf();
   t.air('libRoofL', lib[0][0]);
   t.air('libRoofR', lib[0][1]);
   t.air('libBooks', lib[1][0]);
-  t.air('libDrawer', lib[1][1], { effect: CTR.treats, eamt: 3, score: 30, touch: 'libBooks' });
+  t.air('libDrawerOpen', libOf({ open: true })[1][1]);
+  t.air('libDrawer', lib[1][1], { effect: CTR.treats, eamt: 3, score: 30, touch: 'libDrawerOpen' });
   t.ledge('libRocksL', lib[2][0]);
   t.ledge('libRocksR', lib[2][1]);
   // a lamp post
