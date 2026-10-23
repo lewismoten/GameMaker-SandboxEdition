@@ -443,7 +443,9 @@ export class Computer extends ComputerFolders {
   }
 
   openModern(projectId: string, fileName?: string): void {
-    this.opts.openModern(projectId, fileName);
+    if (this.opts.openModern) return this.opts.openModern(projectId, fileName);
+    // no host to switch interfaces: today's web, on the site's own page
+    location.assign(`./#/p/${projectId}${fileName ? `/${encodeURIComponent(fileName)}` : ''}`);
   }
 
   /** Makes the disk in A: editable, formatting blank disks and copying originals. */
