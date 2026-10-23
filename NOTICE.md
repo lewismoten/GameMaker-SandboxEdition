@@ -72,6 +72,11 @@ game folder opens in the browser unchanged.
   and conversations about his interests, experiences and hobbies. Lewis directed each game
   and played it as it came together, and his feedback shaped every one. Teddy, Gwinn,
   Doc Leo and THE CHEZ (Lewis's CitiCar) appear as themselves.
+- **KEEP IT BRIEF!'s stories** are Lewis's 100 Word Stories, written for **Laurence Simon**'s
+  weekly 100 Word Stories challenge on the
+  [100 Word Stories Podcast](https://oneadayuntilthedayidie.com/). Each week's topic, shown on
+  the game's story cards, was set by Laurence or chosen by the week before's winner, voted for
+  by the podcast's writers and listeners; thanks to all of them.
 - **The Bard of Bizarre games** (`games/`: Third Goat from the Left, Mustard Seed Hustle,
   Thread the Needle, Brother Camel, Loaf #13, Certified Rat Tickler, Where's the Remote?!,
   A Fly Named Carl, The Great Dairy Reckoning of 3:17 A.M., Cleanse Me, O Loofah, But Leave
