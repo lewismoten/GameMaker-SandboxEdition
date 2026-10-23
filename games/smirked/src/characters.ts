@@ -10,7 +10,7 @@
 // wig, a dollar); 100 and up stays and its picture's effect lands every touch (a sting, Lily's pat).
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
 import { CHARBL } from '../../../web/src/formats/blocks';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { MAXMARCH, emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
 import { BATTERIES, KEY, MON, MONEY, SEQ, SMIRKS, SND, SORRY, WIG } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 
@@ -108,6 +108,7 @@ function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []):
   m.used = 1;
   pics.forEach((p, i) => (m.pic[i] = p));
   Object.assign(m, o);
+  if (path.length > MAXMARCH) throw new Error(`A march holds ${MAXMARCH} corners, not ${path.length}`);
   path.forEach((c, i) => (m.march[0][i] = c));
   return m;
 }
@@ -120,7 +121,7 @@ const pace = (run: number, speed: number, down = false): March[] =>
 const wander = (speed: number) => speed << 6;
 
 export interface MonsterOptions {
-  /** Lily's stroll: a path of [dx, dy] corners in blocks (relative to where she starts), round and back. */
+  /** Lily's stroll: up to four [dx, dy] corners in blocks (relative to where she starts), there and back. */
   lily?: [number, number][];
   /** Lily pats you as she passes (the fake woods). */
   pats?: boolean;
@@ -141,12 +142,13 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   ];
   /** The same, with its stinging tick first (sprites.ts sting()): it hurts once a round. */
   const stings = (a: string, b: string, t = 3): [number, number][] => [[n(`${a}!`), 1], ...anim(a, b, t)];
-  if (o.sword) set[MON.tackle] = mon(anim('swing0', 'swing1', 2), { power: 160, thru: 1, towards: 6, end: 8, newmon: MON.dust });
-  else set[MON.tackle] = mon(anim('tackle0', 'tackle1', 2), { power: 120, thru: 1, towards: 6, end: 10, newmon: MON.dust });
-  set[MON.dust] = mon(anim('dust0', 'dust1', 3), { power: 100, thru: 0, end: 6 });
+  if (o.sword) set[MON.tackle] = mon(anim('swing0', 'swing1', 2), { power: 160, thru: 1, towards: 6, end: 8 });
+  else set[MON.tackle] = mon(anim('tackle0', 'tackle1', 2), { power: 120, thru: 1, towards: 6, end: 10 });
+  set[MON.dust] = mon(anim('dust0', 'dust1', 3), { power: 10, thru: 0, end: 6 });
   set[MON.zombie] = mon(stings('zombie0', 'zombie1', 7), { power: 110, thru: 1, newmon: MON.zombieDown, upscore: 50 }, pace(o.zombie ?? 3, 1));
   set[MON.zombieDown] = mon(anim('zombieDown0', 'zombieDown1', 8), { power: 200, thru: 0 }, [corner(0, 0, 1), corner(0, 0, 1)]);
-  set[MON.witch] = mon(anim('witch0', 'witch1', 40), { power: 110, thru: 1, newmon: MON.witchFlat, upscore: 25 }, [corner(0, 0, 1), corner(0, 0, 1)]);
+  set[MON.witch] = mon(anim('witch0', 'witch1', 40), { power: 110, thru: 1, newmon: MON.witchFalls, upscore: 25 }, [corner(0, 0, 1), corner(0, 0, 1)]);
+  set[MON.witchFalls] = mon(anim('witch1', 'flat1', 6), { power: 200, thru: 0, end: 20, newmon: MON.witchFlat }, [corner(0, 0, 1), corner(1, 0, 1)]);
   set[MON.witchFlat] = mon(anim('flat0', 'flat1', 12), { power: 50, thru: 1 }, [corner(0, 0, 1), corner(0, 0, 1)]);
   // Lily strolls her route and back, whistling, smirking now and then; in the woods she pats you
   const lilyPics: [number, number][] = o.pats
@@ -155,7 +157,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   const route = o.lily ?? [[4, 0]];
   const there = [corner(0, 0, 1), ...route.map(([x, y], i) => corner(x, y, 1, x < (route[i - 1]?.[0] ?? 0) ? 4 : 0))];
   const back = [...route].reverse().slice(1).map(([x, y]) => corner(x, y, 1, 4));
-  set[MON.lily] = mon(lilyPics, { power: 200, thru: 0 }, [...there, ...back, corner(0, 0, 1, 4)].slice(0, 15));
+  set[MON.lily] = mon(lilyPics, { power: 200, thru: 0 }, [...there, ...back, corner(0, 0, 1, 4)]);
   set[MON.lilyNear] = mon(lilyPics, { power: 200, thru: 1, towards: 1 });
   set[MON.bat] = mon(stings('bat0', 'bat1', 4), { power: 150, thru: 0 }, pace(2, 1, true));
   set[MON.ghost] = mon(stings('ghost0', 'ghost1', 8), { power: 150, thru: 0 }, pace(o.ghost ?? 5, 1));

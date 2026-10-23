@@ -40,6 +40,8 @@ export const MON = {
   lilyNear: 18,
   /** A loose dollar bill blowing about (money). */
   bill: 19,
+  /** The witch toppling over (the tackle passes on before she lands, so it doesn't knock her flat twice). */
+  witchFalls: 20,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

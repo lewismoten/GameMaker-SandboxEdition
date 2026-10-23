@@ -23,7 +23,7 @@ export interface LevelDef {
 
 export const LEVELS: LevelDef[] = [
   { file: 'foyer', desc: 'Mild Scares for All Ages', light: 'fog', build: fogHall, snd: 'foyer', song: 'foyer', mons: { lily: [[0, -11]], ghost: 5 }, cbl: 'smirked', view: [7, 0] },
-  { file: 'parade', desc: 'GET DOWN!', light: 'crypt', build: zombieParade, snd: 'parade', song: 'parade', mons: { lily: [[10, 0], [10, -7], [22, -7], [22, 0], [27, 0]], zombie: 3 }, cbl: 'smirked', view: [8, 3] },
-  { file: 'webs', desc: 'Strategic Repositioning', light: 'moon', build: fakeWoods, snd: 'webs', song: 'webs', mons: { lily: [[10, 0], [10, 3], [2, 3], [2, 6], [20, 6], [20, 11], [28, 11]], pats: true }, cbl: 'smirked', view: [3, 1] },
+  { file: 'parade', desc: 'GET DOWN!', light: 'crypt', build: zombieParade, snd: 'parade', song: 'parade', mons: { lily: [[10, 0], [10, -7], [22, -7], [22, 0]], zombie: 3 }, cbl: 'smirked', view: [8, 3] },
+  { file: 'webs', desc: 'Strategic Repositioning', light: 'moon', build: fakeWoods, snd: 'webs', song: 'webs', mons: { lily: [[0, 5], [18, 5], [18, 10], [28, 10]], pats: true }, cbl: 'smirked', view: [3, 1] },
   { file: 'exit', desc: 'The Emergency Exit Sign', light: 'exit', build: lastHall, snd: 'exit', song: 'exit', mons: { sword: true }, cbl: 'sword', view: [7, 0] },
 ];

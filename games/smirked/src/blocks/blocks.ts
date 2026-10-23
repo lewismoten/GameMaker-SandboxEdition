@@ -474,7 +474,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   pickup('juice', 'BSDC', (p) => {
     p.rect(6, 6, 8, 11, c('purple', 2)).rect(6, 6, 8, 2, c('purple', 3)).rect(8, 10, 4, 4, c('apple', 2)).set(9, 11, c('grass', 2));
     p.line(12, 6, 12, 2, c('white', 2)).line(12, 2, 14, 1, c('white', 2));
-  }, { hp: 20, score: 10 });
+  }, { hp: 10, score: 10 });
   // a glow stick
   pickup('glowstick', 'BS', (p) => {
     p.line(5, 15, 15, 5, c('glow', 2)).line(6, 15, 16, 5, c('glow', 1)).line(4, 14, 14, 4, c('glow', 0));
@@ -487,7 +487,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   pickup('apple', 'BD', (p) => {
     blob(p, 10, 11, 5, 5, R('apple'), 0, 2);
     p.rect(5, 12, 10, 4, c('caramel', 1)).rect(5, 12, 10, 1, c('caramel', 2)).line(10, 6, 10, 1, c('board', 3));
-  }, { hp: 10, score: 15 });
+  }, { hp: 5, score: 15 });
   // a souvenir in the last hall: Loaf #13 (the Bard's loaf), a lost TV remote, a mustard-seed pin
   pickup('loaf', 'C', (p) => {
     blob(p, 10, 11, 7, 4.6, R('caramel'), 0, 2);
