@@ -321,7 +321,7 @@ export function theWild(book: BlockBook): Level {
   m.set(42, 11, 'flower');
   // the desert: Brother Camel resting, a cactus
   m.row(12, 46, 57, 'dune').row(13, 46, 57, 'sand');
-  m.set(50, 11, 'cactus').set(50, 10, 'cactus');
+  m.set(50, 11, 'cactus').set(50, 10, 'cactusTop');
   m.mon(MON.camelA, 53, 11).mon(MON.camelB, 54, 11);
   m.mon(MON.dragonfly, 51, 3);
   // hourglasses: two hours each

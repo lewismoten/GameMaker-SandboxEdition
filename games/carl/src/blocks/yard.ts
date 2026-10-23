@@ -126,7 +126,8 @@ export function buildYard(pal: Pal): BlockBook {
   book.add('towelB', pegged('shirt'), AIR);
   // a tree to rest in
   const trunk = sky(18);
-  for (let y = 0; y < 20; y++) trunk.rect(6 + Math.round(Math.sin(y / 5)), y, 8, 1, shadeAt(R('wood'), 0, 2, 0.5, 9, y));
+  // its sway repeats every block, so stacked trunks join without a notch
+  for (let y = 0; y < 20; y++) trunk.rect(6 + Math.round(Math.sin((y * Math.PI) / 10)), y, 8, 1, shadeAt(R('wood'), 0, 2, 0.5, 9, y));
   book.add('trunk', trunk, { solid: SOLID });
   const leaves = (seed: number, ledge: boolean) => {
     const p = sky(seed);
@@ -264,10 +265,15 @@ export function buildYard(pal: Pal): BlockBook {
   };
   book.add('dune', sandAt(true), { solid: SOLID });
   book.add('sand', sandAt(false), { solid: SOLID });
+  // (its trunk runs from the top edge: the desert's cactus is two blocks tall, cactusTop over it)
   const cactus = sky(38);
-  cactus.rect(8, 2, 5, 18, c('leaf', 2)).rect(8, 2, 1, 18, c('leaf', 3)).rect(3, 8, 5, 3, c('leaf', 2)).rect(3, 4, 3, 5, c('leaf', 2)).rect(13, 10, 4, 3, c('leaf', 2)).rect(15, 6, 3, 5, c('leaf', 2));
+  cactus.rect(8, 0, 5, 20, c('leaf', 2)).rect(8, 0, 1, 20, c('leaf', 3)).rect(3, 8, 5, 3, c('leaf', 2)).rect(3, 4, 3, 5, c('leaf', 2)).rect(13, 10, 4, 3, c('leaf', 2)).rect(15, 6, 3, 5, c('leaf', 2));
   for (let y = 4; y < 20; y += 3) cactus.set(7, y, c('white', 3)).set(13, y + 1, c('white', 3));
   book.add('cactus', cactus, { solid: SOLID, hp: -6 });
+  // a tall cactus's top (over a cactus): its trunk runs on down into the block below
+  const cactusTop = sky(40);
+  cactusTop.rect(8, 6, 5, 14, c('leaf', 2)).rect(9, 5, 3, 1, c('leaf', 2)).rect(8, 6, 1, 14, c('leaf', 3));
+  for (let y = 8; y < 20; y += 3) cactusTop.set(7, y, c('white', 3)).set(13, y + 1, c('white', 3));
   // a spider's web in a corner (it sticks and stings)
   const web = sky(39);
   for (let a = 0; a < 6; a++) web.line(0, 0, Math.cos((a * Math.PI) / 10) * 22, Math.sin((a * Math.PI) / 10) * 22, c('white', 2));
@@ -310,5 +316,7 @@ export function buildYard(pal: Pal): BlockBook {
   };
   book.add('clock', clock(false), { solid: SOLID, effect: HOURS, eamt: -HOURS_NEEDED, score: 1000, touch: 'clockBroken' });
   book.add('clockBroken', clock(true), AIR);
+  // (last, so every other block keeps its number)
+  book.add('cactusTop', cactusTop, { solid: SOLID, hp: -6 });
   return book;
 }
