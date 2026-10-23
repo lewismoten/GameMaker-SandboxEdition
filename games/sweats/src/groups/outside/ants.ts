@@ -273,7 +273,10 @@ export const ants: Monologue = {
     '!': 'spot@kBase',
   },
   build: (m: MapBuilder) => {
-    const W = 66;
+    // the walk-off: OFF blocks more of the kitchen past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 13;
+    const W = 66 + OFF;
     m.row(0, 0, W - 1, '^').fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, '#');
     // the front door, the listing, the spotlight, the vent of 1978
     placePicture(m, 'frontDoor', 0, 8, 1, 2);
@@ -304,7 +307,7 @@ export const ants: Monologue = {
     m.mon(ANTS_MON.king, 60, 9);
     // the cupboard that hisses
     m.set(63, 9, 'cupboard');
-    m.link(63, 9, 'next');
+    m.link(63 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: antsMonsters,

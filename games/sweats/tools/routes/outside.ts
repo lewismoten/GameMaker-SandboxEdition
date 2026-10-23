@@ -91,7 +91,8 @@ export const OUTSIDE_ROUTES: Record<string, Route> = {
       await declaim(bot, 'the king\'s hat');
       await declaim(bot, 'the king');
       if (plot(bot) < SUPPLIES) throw new Error(`only ${plot(bot)} supplies`);
-      await leave(bot, bot.walk(63, 'the cupboard'), 'the cupboard');
+      await must(bot, bot.walk(64, 'the cupboard'), 'the cupboard');
+      await leave(bot, bot.walk(76.5, 'the walk-off'), 'the walk-off');
     });
   },
   /** The Day I Fought Cardboard: Doc Leo, Lily, the fog machine, the zombie (its axe), the witch (her broom, her hat on the beam), the werewolf mask, the webs, Lily's pat, the gift shop's sword, the clown wig, the exit. */
