@@ -54,6 +54,8 @@ export function flyerBlurb(blurb: string | undefined): string {
 }
 
 const price = (g: CatalogEntry) => g.price ?? '$5';
+/** No line break inside a phrase ("40 min at 2400"). */
+const keep = (text: string) => text.replace(/ /g, '\u00a0');
 
 async function gameBlock(g: CatalogEntry): Promise<HTMLElement> {
   const title = await gif(g, 'title.gif');
@@ -73,7 +75,7 @@ async function gameBlock(g: CatalogEntry): Promise<HTMLElement> {
         `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`,
       ),
       // what a caller weighed before tying up the phone line: the ZIP's size and time, and the room it takes
-      h('p', { class: 'bard-meta' }, `${zipName(g)} · ${sizeText(zipBytes(g))}: ${downloadLine(zipBytes(g), ', ')} · ${hardDiskLine(g)}`),
+      h('p', { class: 'bard-meta' }, [`${zipName(g)} · ${sizeText(zipBytes(g))}:`, ...downloadLine(zipBytes(g), ',\n').split('\n'), `· ${hardDiskLine(g)}`].map(keep).join(' ')),
       h('p', null, pitch(g)),
     ),
   );
