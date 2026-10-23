@@ -14,6 +14,7 @@ import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
 import { macDownload, type MacGame } from './macDownload';
 import { winDownload } from './winDownload';
+import { linuxDownload } from './linuxDownload';
 import { isBizarreGame } from '../../project/bizarre';
 
 const KIND_LABEL: Record<GameKind, string> = {
@@ -45,8 +46,8 @@ function whenIdleAndSeen(el: Element, f: () => void): void {
 }
 
 /**
- * "Mac" and "Windows": the game as a Mac app (macDownload.ts) or a Windows program
- * (winDownload.ts). For the CD's games that may be shared (gameware, the Sandbox and Bard
+ * "Mac", "Windows" and "Linux": the game as a Mac app (macDownload.ts), a Windows program
+ * (winDownload.ts) or a Linux folder (linuxDownload.ts). For the CD's games that may be shared (gameware, the Sandbox and Bard
  * of Bizarre games), not the other authors' shareware; a game of yours has them in its
  * ⋯ More menu.
  */
@@ -66,6 +67,12 @@ function appButtons(game: HomeGame): HTMLElement[] {
       { class: 'with-ico', title: 'Play it on Windows: a Windows program of the game (.exe or .zip), built here', 'aria-label': `Download ${game.title} for Windows`, onclick: () => void winDownload(game.title, load) },
       icon('inbox'),
       'Windows',
+    ),
+    h(
+      'button',
+      { class: 'with-ico', title: 'Play it on Linux: the game in a folder with a small player (.tar.gz), built here', 'aria-label': `Download ${game.title} for Linux`, onclick: () => void linuxDownload(game.title, load) },
+      icon('inbox'),
+      'Linux',
     ),
   ];
 }
