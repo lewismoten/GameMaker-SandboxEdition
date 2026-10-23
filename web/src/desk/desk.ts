@@ -833,24 +833,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   setTurbo(turbo);
   void refreshDisks().then(restore);
-  // what is likely next: Game-Maker and the BBS on the PC, then what opens on the desk
+  // what is likely next: switching the PC on. The rest (Game-Maker, the BBS, the boxes and
+  // manuals on the desk) loads when it is opened, and is kept for offline use from then on
   prefetchWhenIdle([
-    pcCode, // the PC itself first, so switching it on is instant
+    pcCode, // so switching it on is instant
     captureCode,
-    () => import("../player/player"),
-    () => import("../retro/gm"),
     () => fetch("./gm/index.json"), // C:\GM's listing, so GM starts offline too
-    lazy.gmBox,
-    lazy.boxViewer,
-    () => import("./boxes/gameBoxContents"), // what a box holds, shown when it is opened
-    lazy.catalog,
-    () => import("./room/phone/phone"),
-    lazy.dosManual,
-    lazy.gameManual,
-    () => import("../retro/bbs/bbs"),
-    lazy.saveFirst,
-    // last, Game-Maker's eight designers (so a later visit can design offline too)
-    () => import("../retro/gm").then((m) => m.loadDesigners()),
   ]);
   void loadGameList().then((cat) =>
     fillShelf(cat.filter((g) => g.original?.box)),
