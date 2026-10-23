@@ -197,8 +197,11 @@ export function buildBlocks(pal: Pal): BlockBook {
         if (x < 14 || x >= 86) k = y < 4 ? 3 : y > 36 ? 0 : 2; // the arms
         p.set(x, y, fabric(x, y, k));
       }
-    // seams between the back cushions and the seat cushions
-    for (const x of [14, 38, 62, 85]) p.rect(x, 2, 1, 36, c('couch', 0));
+    // seams: the arms', the back cushions' and the seat cushions'; each seat cushion is one
+    // block with its seam on the block's left edge, so any seat block fits any seat column
+    for (const x of [14, 85]) p.rect(x, 2, 1, 36, c('couch', 0));
+    for (const x of [38, 62]) p.rect(x, 2, 1, 16, c('couch', 0));
+    for (const x of [20, 40, 60, 80]) p.rect(x, 19, 1, 19, c('couch', 0));
     p.rect(14, 17, 72, 2, c('couch', 0)).rect(0, 38, 100, 2, c('couch', 0));
     p.rect(14, 19, 72, 2, c('couch', 3));
     // the arms roll over
@@ -213,7 +216,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     ['couchBackL', 'couchBack', 'couchBack2', 'couchBack3', 'couchBackR'],
   ]);
   // the seat cushions: touch one and you lift it; under it, the usual
-  const seat = (k: number) => couch.crop(20 + k * 20, 20, 20, 20);
+  const seat = (k: number) => flipped.crop(20 + k * 20, 0, 20, 20);
   book.add('cushion', seat(0), { solid: SOLID, effect: SPOTS, eamt: 1, score: 50, touch: 'cushionUp' });
   book.add('cushion2', seat(1), { solid: SOLID, effect: SPOTS, eamt: 1, score: 50, touch: 'cushionUp2' });
   const lifted = (k: number, junk: 'pennies' | 'crumbs') => {
