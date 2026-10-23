@@ -83,7 +83,8 @@ game folder opens in the browser unchanged.
   Google Flow Music); the games' FM scores are arranged from those recordings, and their
   voice clips are cut from them. The exceptions: Certified Rat Tickler came with no
   recording, so its music was composed for the game by Claude Opus 5.5, as was the music
-  under The Great Dairy Reckoning's spoken recording; Mustard Seed
+  under The Great Dairy Reckoning's spoken recording and Shakespeare in Sweatpants' FM score
+  (composed from the tempo, key and chords of its recordings' music beds); Mustard Seed
   Hustle's animated cover was made with Producer.ai; the covers of Third Goat from the Left
   and Thread the Needle, Brother Camel were made with Riffusion; the other games' title and
   cover art was drawn for them by Claude Opus 5.5. The Bard's logo (the rooster in
@@ -293,10 +294,13 @@ Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 ## Tools used to build and test
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
-[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and vite-node (MIT), and
-`@types/node` (MIT), the only packages in `web/package.json`, used only to build and test;
-none of their code ships in the app except Vite's small module runtime and preload helper
-(MIT). The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
+[Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and its vite-node (MIT), and
+`@types/node` (MIT), and checked with [Prettier](https://prettier.io/) and
+[ESLint](https://eslint.org/) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
+and `globals` (MIT). These are the only packages in `web/package.json`, all used only to build
+and test; none of their code ships in the app except Vite's small module runtime and preload
+helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
+they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
 
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
