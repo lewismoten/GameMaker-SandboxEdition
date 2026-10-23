@@ -247,7 +247,7 @@ export function antsMonsters(set: Monster[], mb: SpriteBook): void {
 export const ants: Monologue = {
   file: 'ants',
   title: 'The Ants Have Spoken',
-  desc: 'The Ants Have Spoken',
+  desc: 'Ants Have Spoken',
   filler: 'soil',
   // night falls, the lights come on: the house dim, the disco glowing
   light: { sky: [[8, 8, 30], [60, 50, 100], [30, 24, 60]], mul: [0.7, 0.68, 0.82], add: [4, 0, 14] },

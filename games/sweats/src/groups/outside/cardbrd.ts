@@ -145,6 +145,7 @@ export function cardBlocks(book: BlockBook, pal: Pal): void {
     p.rect(2, 15, 16, 3, c('ink', 1)).line(6, 15, 11, 2, c('ink', 1)).line(14, 15, 11, 2, c('ink', 1));
     for (let y = 3; y < 15; y++) p.rect(11 - (y - 2) * 0.38, y, (y - 2) * 0.76 + 1, 1, c('ink', 1));
     p.rect(6, 13, 9, 2, c('purple', 2)).rect(9, 13, 3, 2, c('gold', 2));
+    p.line(6, 14, 11, 2, c('haunt', 3)).rect(2, 17, 16, 1, c('haunt', 3)).set(11, 1, c('haunt', 3));
   });
   plotThing(book, 'hWall', 'sword', (p) => {
     p.line(4, 16, 15, 5, c('metal', 2)).line(5, 16, 16, 5, c('metal', 1)).set(16, 4, c('white', 2));

@@ -276,5 +276,5 @@ export const outside: Monologue = {
   song: 'outside',
   clips: { open: 'out_o', line: 'out_l', punch: 'out_p', word: 'out_w' },
   view: [22, 4],
-  card: ['I respect the wind, because', 'once it\'s tasted your secrets'],
+  card: ['Now, I staple my receipts.', 'I respect the wind.'],
 };
