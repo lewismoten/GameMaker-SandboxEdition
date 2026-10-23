@@ -217,7 +217,7 @@ function notHere(): void {
       h(
         'p',
         null,
-        'Games you make are kept in the browser that made them, so a link to one only opens there. If someone shared this link, ask them to send the game itself: in the editor, “Save & share” downloads it as a .zip or a one-page .html you can open here.',
+        'Games you make are kept in the browser that made them, so a link to one only opens there. If someone shared this link, ask them to send the game itself: its Download button saves its files as a .zip, or a one-page .html you can open here.',
       ),
       h('p', null, 'Links to the finished games on the home page work everywhere.'),
       h('p', null, h('a', { class: 'button primary', href: '#/' }, 'See all games')),

@@ -525,7 +525,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     if (saves) top.openSaves(saves);
   } else {
     // your own games live in the browser that made them: a link to one opens only there
-    if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: “Save & share” downloads it.');
+    if (hashKey().startsWith('my:')) toast('That game was made in another browser (or deleted), so it isn’t here. Ask for the game itself: its Download button saves it.');
     showStart();
   }
   // …and the collection and search in the address (#/?tab=sandbox&q=snow) come back too
