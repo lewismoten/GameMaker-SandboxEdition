@@ -288,9 +288,69 @@ export async function kitchen(bot: Bot): Promise<void> {
   await leave(bot, bot.walk(48, 'the crown of cheese'), 'the crown of cheese');
 }
 
+/** V. The baths: seven golden scales (six needed), the cheering mice, steam and drums, the hot pool, her basin. */
 export async function baths(bot: Bot): Promise<void> {
   expect(bot, 6, 'the baths');
-  throw new Error('todo');
+  await carefully(bot, 'the towel, the cold pool', 0, async () => {
+    await must(bot, bot.walk(4, 'under the towel'), 'towel');
+    await up(bot, 'the towel');
+    await must(bot, bot.walk(8, 'into the cold pool, the scale'), 'pool');
+    if (scales(bot) < 1) throw new Error('no scale in the cold pool');
+    await must(bot, bot.walk(10, 'the far side of the pool'), 'side');
+    await must(bot, bot.hop('right', 10, 'right', 11.6), 'out of the pool');
+  });
+  await carefully(bot, 'the bench of cheering mice', 0, async () => {
+    await must(bot, bot.walk(12, 'by the bench'), 'bench');
+    await must(bot, bot.hop('up', 12, 'right', 12.6), 'up on the bench');
+    await must(bot, bot.walk(14, 'the mice and their scale'), 'mice');
+    if (scales(bot) < 2) throw new Error(`only ${scales(bot)} scales`);
+    await must(bot, bot.walk(17, 'down off the bench'), 'down');
+  });
+  await carefully(bot, 'up the steam to the high bench', 0, async () => {
+    await must(bot, bot.walk(17, 'before the steam'), 'steam');
+    await must(bot, bot.until('right', () => bot.px.x >= 18 * 20 - 1, 'into the steam', 40), 'into the steam');
+    await must(bot, bot.until(undefined, () => bot.px.y <= 3 * 20 + 4, 'lifted by the steam', 140), 'lift');
+    await must(bot, bot.hop('up', 6, 'right', 19.4), 'onto the high bench');
+    await must(bot, bot.walk(21, 'the scale and the wreath'), 'scale');
+    if (scales(bot) < 3) throw new Error(`only ${scales(bot)} scales`);
+    await must(bot, bot.walk(22.2, 'down off the high bench'), 'down');
+    await must(bot, bot.land(), 'land');
+  });
+  const drum = async (x: number, bench: number, n: number) => {
+    await must(bot, bot.walk(x - 1, 'before the drum'), 'drum');
+    bot.sim.press(18);
+    await must(bot, bot.until(undefined, () => bot.px.x >= x * 20 - 6, 'over the drum', 40), 'onto the drum');
+    bot.sim.release(18);
+    await must(bot, bot.until('right', () => bot.px.x >= x * 20 - 1, 'onto the drum', 40), 'onto the drum');
+    await must(bot, bot.until(undefined, () => bot.px.y <= 5 * 20, 'bounced up', 140), 'bounce');
+    await must(bot, bot.hop('up', 4, 'right', bench), 'onto the bench');
+    await must(bot, bot.walk(bench + 1, 'the scale'), 'scale');
+    if (scales(bot) < n) throw new Error(`only ${scales(bot)} scales`);
+    await must(bot, bot.walk(bench + 3, 'down off the bench'), 'down');
+    await must(bot, bot.land(), 'land');
+  };
+  await carefully(bot, 'the first drum', 0, () => drum(23, 24, 4));
+  await carefully(bot, 'the hot pool', 10, async () => {
+    await clear(bot, [MON.bubble], 4);
+    await must(bot, bot.walk(33, 'through the hot pool, the scale'), 'hot');
+    if (scales(bot) < 5) throw new Error(`only ${scales(bot)} scales`);
+    await must(bot, bot.walk(35, 'the far side'), 'side');
+    await must(bot, bot.hop('right', 10, 'right', 36.6), 'out of the hot pool');
+  });
+  await carefully(bot, 'the strigil, the second drum', 0, async () => {
+    await must(bot, bot.walk(38, 'under the strigil'), 'strigil');
+    await up(bot, 'the strigil');
+    await drum(40, 41, 6);
+  });
+  await carefully(bot, 'the second cold pool, the mouse, the grapes, the coin', 0, async () => {
+    await must(bot, bot.walk(47, 'into the pool, the scale'), 'pool');
+    await must(bot, bot.walk(49, 'the far side'), 'side');
+    await must(bot, bot.hop('right', 10, 'right', 50), 'out, up onto the bench');
+    await must(bot, bot.walk(51, 'the mouse, the grapes'), 'grapes');
+    await must(bot, bot.walk(55, 'under the coin'), 'coin');
+    await up(bot, 'the coin');
+  });
+  await leave(bot, bot.walk(58, 'her golden basin'), 'the basin');
 }
 
 const GRAVIS = [MON.gravisA0, MON.gravisA1, MON.gravisA2, MON.gravisA3, MON.gravisB0, MON.gravisB1, MON.gravisB2, MON.gravisB3];
