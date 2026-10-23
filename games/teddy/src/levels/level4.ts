@@ -100,7 +100,7 @@ export function city(): Level {
   m.set(50, 38, 'jugTop').set(50, 39, 'jugBot');
 
   // The plaza: a steam vent up to the billboard, the hot dog cart, a kid.
-  for (let y = 30; y < 40; y++) m.set(55, y, y >= 33 ? 'steamS_0' : `steam${Math.max(1, bandOf(y))}_0`);
+  for (let y = 30; y < 40; y++) m.set(55, y, y >= 33 ? 'steamS_0' : y === 32 ? 'steamT_0' : `steam${bandOf(y)}_0`);
   m.set(55, G, 'grate');
   m.rect(56, 31, 3, 1, 'billboard');
   for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) m.set(56 + x, 28 + y, `bb${x}${y}`);

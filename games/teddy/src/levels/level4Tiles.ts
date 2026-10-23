@@ -123,7 +123,7 @@ export function cityTiles(): Tiles {
     })(),
   );
   const awning = (col: string) => {
-    const p = sky(2);
+    const p = copy(t.pic('brick'));
     for (let x = 0; x < 20; x++) p.rect(x, 0, 1, 9, (x >> 2) % 2 ? c('paint', 3) : c(col, 2));
     for (let x = 0; x < 20; x += 4) blob(p, x + 2, 9, 2, 2, (x >> 2) % 2 ? [c('paint', 2), c('paint', 3)] : [c(col, 1), c(col, 2)], 0, 1);
     return p;
@@ -166,9 +166,10 @@ export function cityTiles(): Tiles {
       for (let i = 0; i < 14; i++) blob(p, 4 + R() * 12, R() * 20, 2 + R() * 3, 2 + R() * 3, [c('cloud', 0), c('cloud', 1), c('cloud', 2)], 0, 2, 0.5);
       return p;
     };
-    for (let k = 1; k < 4; k++) t.air(`steam${k}_${ph}`, steam(sky(k)), { grav: GRAV.up, next: `steam${k}_${1 - ph}`, ntime: 4 });
+    for (let k = 0; k < 4; k++) t.air(`steam${k}_${ph}`, steam(sky(k)), { grav: GRAV.up, next: `steam${k}_${1 - ph}`, ntime: 4 });
     t.air(`steamB_${ph}`, steam(t.pic('brick')), { grav: GRAV.up, next: `steamB_${1 - ph}`, ntime: 4 });
     t.air(`steamS_${ph}`, steam(t.pic('skyline')), { grav: GRAV.up, next: `steamS_${1 - ph}`, ntime: 4 });
+    t.air(`steamT_${ph}`, steam(t.pic('skylineTop')), { grav: GRAV.up, next: `steamT_${1 - ph}`, ntime: 4 });
   }
   t.ledge(
     'fireEscape',
@@ -189,7 +190,7 @@ export function cityTiles(): Tiles {
       return p;
     })(),
   );
-  t.prop('chicken', 'chicken', 'brick');
+  t.prop('chicken', 'chicken', 'railing');
 
   // Inside the store: the lobby, Gwinn's shoe-department mess, revolving doors.
   t.air(
@@ -305,7 +306,7 @@ export function cityTiles(): Tiles {
   t.air(
     'umbrella',
     (() => {
-      const p = copy(t.pic('skylineTop'));
+      const p = copy(t.pic('skyline'));
       for (let y = 8; y < 14; y++) for (let x = 10 - (y - 8) * 2; x < 10 + (y - 8) * 2; x++) p.set(x, y, (x >> 2) % 2 ? c('yellow', 3) : c('red', 2));
       p.rect(9, 14, 2, 6, c('metal', 2));
       return p;
@@ -314,7 +315,7 @@ export function cityTiles(): Tiles {
   t.ledge(
     'billboard',
     (() => {
-      const p = sky(2);
+      const p = sky(1);
       p.rect(0, 0, 20, 3, c('metal', 2)).rect(0, 3, 20, 1, c('ink', 1));
       p.rect(9, 4, 2, 16, c('metal', 1));
       return p;
