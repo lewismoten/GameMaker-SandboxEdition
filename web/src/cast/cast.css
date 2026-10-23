@@ -394,3 +394,10 @@ main.cast .lead {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
+/* Mystery Robot Joe is tin gray: he stands against the reading room's warm wood paneling */
+#cast-joe .cast-pic {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 26px),
+    radial-gradient(circle at 50% 55%, #c98a4b 0%, #7a4a22 80%);
+}
