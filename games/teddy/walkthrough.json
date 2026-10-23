@@ -20,7 +20,7 @@
   },
   {
    "scene": 5,
-   "keys": "AU0QzQE5ArkUTSTNGk0QzR8hAqEKTQfNEAQChAZNAkgIyBHNAU0CSAjIDRIDkgVICMgESAjIE80BBAKEBk0CSAjIDc0DBRiFAU0QzSIFFIUBTRTNAU0WSAjIDkgIyA1ICMgNSAjIEUgIyDDN"
+   "keys": "AU0QzQE5ArkUTSTNGk0QzR8hAqEKTQfNEAQChAZNAkgIyBHNAU0CSAjIDRIDkgVICMgESAjIE80BBAKEBk0CSAjIDc0DBRiFAU0QzSIFFIUBTRTNAU0WSAjIDkgIyARICsgKSAjIDUgIyBFICMgwzQ=="
   },
   {
    "scene": 6,
@@ -51,7 +51,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 25469,
+  "frames": 25505,
   "chapters": [
    {
     "title": "Opening",
@@ -79,15 +79,15 @@
    },
    {
     "title": "Level 5: The Klown Klub",
-    "frame": 17443
+    "frame": 17479
    },
    {
     "title": "Ending",
-    "frame": 20480
+    "frame": 20516
    },
    {
     "title": "Credits",
-    "frame": 22585
+    "frame": 22621
    }
   ]
  }

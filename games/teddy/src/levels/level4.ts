@@ -156,9 +156,10 @@ export function city(): Level {
     [c0 + 4, 39],
     [c0 + 6, 39],
     [52, 39],
-    [56, 30],
-    [57, 30],
-    [58, 30],
+    // off the billboard's right end (not over its words): a trail down for hopping off it
+    [59, 31],
+    [59, 33],
+    [59, 35],
     [59, 39],
     [63, 39],
     [67, 39],
@@ -171,7 +172,7 @@ export function city(): Level {
   for (const [x, y] of [
     [13, 35],
     [22, 30],
-    [58, 30],
+    [59, 31],
   ])
     m.mon(x, y, 'poodle');
   m.mon(66, G, 'buried');
