@@ -73,7 +73,7 @@ THIS IS SHAREWARE
 
 CREDITS (NOW)
   The song "Loaf #13 (Left in
-  the Basket)": lyrics written
+  the Basket)": lyrics shaped
   by ChatGPT from Lewis Moten's
   prompt (as The Bard of
   Bizarre); music made with
