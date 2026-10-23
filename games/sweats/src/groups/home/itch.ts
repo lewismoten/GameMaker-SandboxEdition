@@ -257,7 +257,10 @@ export const itch: Monologue = {
     '!': 'spot@wallB',
   },
   build: (m: MapBuilder) => {
-    const W = 64;
+    // the walk-off: OFF blocks more of the lot behind the bank past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 16;
+    const W = 64 + OFF;
     const IN = 18;
     // indoors: Janet's dining room
     m.row(0, 0, IN - 1, '^').set(5, 0, '*').set(14, 0, '*');
@@ -292,7 +295,7 @@ export const itch: Monologue = {
     // the car (it honks); its door the gate
     placePicture(m, 'car', 56, 8, 3, 2);
     m.set(57, 9, 'D');
-    m.link(57, 9, 'next');
+    m.link(57 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: itchMonsters,

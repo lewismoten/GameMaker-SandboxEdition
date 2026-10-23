@@ -249,7 +249,8 @@ export const HOME_ROUTES: Record<string, Route> = {
       await waitAndDeclaim(bot, [ITCH_MON.honk], 'HONK');
       if (plot(bot) < KIT) throw new Error(`only ${plot(bot)} of the kit`);
       nothingLeft(bot, 64, 12);
-      await leave(bot, bot.walk(57.5, 'the car behind the bank'), 'the car');
+      await must(bot, bot.walk(58, 'the car behind the bank'), 'the car');
+      await leave(bot, bot.walk(73.5, 'the walk-off'), 'the walk-off');
     });
   },
   /** Double Tap for Justice: over the couch and Teddy, in through the phone, up the posts to page six, the petitions, the trending tags, the newsletters, the outlier, Doc Leo, the turtles, POST. */
