@@ -172,7 +172,7 @@ export function klubTiles(): Tiles {
   t.air(
     'doorTop',
     (() => {
-      const p = canvasStripes(0);
+      const p = copy(t.pic('canvas'));
       p.rect(0, 6, 20, 14, c('gold', 1));
       micro(p, 1, 9, 'ADMIT', c('red', 1));
       return p;
@@ -314,7 +314,8 @@ export function klubTiles(): Tiles {
 
   // The klown klub members (two blocks tall, over the midway's tent canvas).
   for (const [name, fig] of Object.entries(KLUB)) {
-    const base = name === 'launcher' ? 'backstage' : 'tentOut';
+    // each over the stripe of the column it stands in (honker and twirly on even columns)
+    const base = name === 'launcher' ? 'backstage' : name === 'bubbles' ? 'tentOut' : 'tentOut2';
     const top = new Pixels(20, 20);
     top.px.set(t.pic(base).px);
     over(top, fig.crop(0, 0, 20, 20));
@@ -324,11 +325,11 @@ export function klubTiles(): Tiles {
     t.air(`${name}Top`, top);
     t.air(`${name}Bot`, bot, name === 'bubbles' ? { birthMon: 0, birthTime: 0 } : name === 'launcher' ? { birthMon: 0, birthTime: 0 } : {});
   }
-  // Doc Leo on stage, without his nose; happy once he has it (the way out).
+  // Doc Leo on stage in the middle of the right spotlight, without his nose; happy once he has it (the way out).
   const leo = docLeo({ hat: true, tie: true, shoes: true, chicken: true, nose: false });
   const leoHappy = docLeo(FULL, true);
   const half = (fig: Pixels, y: number) => {
-    const p = copy(t.pic('stageBack'));
+    const p = copy(t.pic(y ? 'cone15' : 'cone14'));
     over(p, fig.crop(0, y, 20, 20));
     return p;
   };

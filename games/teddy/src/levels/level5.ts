@@ -102,10 +102,10 @@ export function klub(): Level {
   m.rect(st0, 20, st1 - st0 + 1, 16, 'stageBack');
   m.rect(st0, 20, 2, 16, 'curtain');
   m.rect(st1 - 1, 20, 2, 16, 'curtain');
-  for (const sx of [71, 77]) for (let y = 0; y < 6; y++) for (let x = 0; x < 3; x++) m.set(sx + x, 29 + y, `cone${x}${y}`);
+  for (const sx of [71, 77]) for (let y = 0; y < 6; y++) for (let x = 0; x < 3; x++) m.set(sx + x, 30 + y, `cone${x}${y}`);
   m.set(st0 + 9, 26, 'starSign')
     .set(st0 + 18, 25, 'starSign')
-    .set(st0 + 21, 31, 'starSign');
+    .set(st0 + 22, 28, 'starSign');
   // the lift shaft from the tunnel up through the stage floor
   const lift = sd + 12;
   m.rect(lift, 36, 1, 6, 'lift_0');
