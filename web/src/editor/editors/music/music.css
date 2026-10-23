@@ -260,6 +260,7 @@
 .mus-ms {
   flex: 0 0 auto;
   width: 26px;
+  min-height: 24px;
   padding: 2px 0;
   font:
     700 12px/1.4 ui-monospace,

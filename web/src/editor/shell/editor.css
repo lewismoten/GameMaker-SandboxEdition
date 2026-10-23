@@ -139,6 +139,13 @@ input[type='number'] {
   width: 6em;
 }
 
+/* sliders, drop-downs and folding headings are targets at least 24px tall (WCAG 2.5.8) */
+input[type='range'],
+select,
+summary {
+  min-height: 24px;
+}
+
 a {
   color: var(--accent);
 }

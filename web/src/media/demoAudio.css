@@ -79,7 +79,7 @@
 
 /* over a picture: small, dark and see-through, in the demo button's yellow */
 .demo-audio.compact[role] label {
-  padding: 3px 8px;
+  padding: 4px 8px; /* 25px tall: a 24px target at least */
   border-color: rgb(255 212 0 / 0.7);
   background: rgb(10 10 40 / 0.75);
   color: #fff;
