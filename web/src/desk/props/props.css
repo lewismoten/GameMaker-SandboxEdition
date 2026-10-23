@@ -469,3 +469,8 @@
     animation: none;
   }
 }
+
+/* ---- THE CHEZ (chez.ts): its button rides along with the car */
+.sw-hits .sw-chez {
+  z-index: 3;
+}
