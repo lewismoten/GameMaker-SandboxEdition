@@ -198,8 +198,6 @@ export function hillside(book: BlockBook): Level {
   // the third goat from the left, grazing; a jar of water
   m.text(45, 9, 'l.,.L').set(52, 9, 'j');
   m.mon(MON.goat, 47, 9);
-  // a tin heart at the foot of the second fig tree
-  m.set(41, 9, '1');
   // another hungry man, and a fish basket throwing to the left
   m.text(54, 6, '*.*.*');
   m.mon(MON.man, 54, 9);
@@ -220,6 +218,8 @@ export function wicker(book: BlockBook): Level {
   // a chaff plug into R2
   m.col(9, 3, 4, 'z');
   m.fill(10, 1, 8, 4, 'o').set(14, 2, '%').set(11, 4, '+').set(15, 4, '+').set(12, 1, '|');
+  // a tin heart up in R2's far corner, a tall hop over the way down
+  m.set(17, 1, '1');
   // down the weave into R3, the long room with a weevil and a mouse
   m.col(17, 5, 9, 'Y');
   m.fill(8, 8, 17, 5, 'o').set(9, 11, '%').set(22, 11, '%').text(12, 12, '+oo+').set(18, 8, '|');

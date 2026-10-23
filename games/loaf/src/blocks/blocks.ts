@@ -443,13 +443,13 @@ export function buildBlocks(pal: Pal): BlockBook {
   const mamaLow = room(104, true);
   mamaLow.rect(5, 0, 10, 17, c('red', 2)).rect(5, 0, 2, 17, c('red', 1)).rect(8, 4, 1, 12, c('red', 1)).rect(6, 17, 3, 2, c('wood', 0)).rect(11, 17, 3, 2, c('wood', 0));
   book.add('mamaLow', mamaLow, air);
-  // (after these, too) friends from the other games: the tin heart at the foot of the second fig
-  // tree, a painted Easter egg in the far crowd at dusk (points only, no sounds of their own), and Teenage Lewie from
+  // (after these, too) friends from the other games: the tin heart up in the second basket's far
+  // corner (in the gloom of the wicker wasteland), a painted Easter egg in the far crowd at dusk (points only, no sounds of their own), and Teenage Lewie from
   // Snowbound, shovel and all, out in the village at night
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(sky(1), { ink: c('ink', 0), tin: [c('grey', 1), c('grey', 2), c('grey', 3)], white: c('white', 2), dark: c('grey', 0) }, k), {
+    book.add(`tinHeart${k || ''}`, drawTinHeart(book.pics.get('gloom')!.crop(0, 0, 20, 20), { ink: c('ink', 0), tin: [c('grey', 1), c('grey', 2), c('grey', 3)], white: c('white', 2), dark: c('grey', 0) }, k), {
       score: 100,
-      touch: 'sky',
+      touch: 'gloom',
       grav: GRAV.down,
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
       ntime: k ? 2 : 50,
