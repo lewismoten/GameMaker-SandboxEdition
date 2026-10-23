@@ -4,7 +4,10 @@
 
 This repository is a **modified fork** of the source code of *Game-Maker*, the game
 construction kit produced from 1991 to 1995 by Recreational Software Designs (RSD) of
-Amherst, New Hampshire, and sold in the US by KD Software. Game-Maker was created by
+Amherst, New Hampshire. It was sold by direct mail in the US by KD Software (RSD also made a
+distribution deal with GameLynk), in the UK as *Captain GameMaker* by Screen Entertainment,
+and worldwide on CD-ROM by Microforum, as [Wikipedia](https://en.wikipedia.org/wiki/Game-Maker)
+records. Game-Maker was created by
 G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Today it is
 usually called **RSD Game-Maker**, to tell it apart from later, unrelated products with
 similar names; this repository does the same.

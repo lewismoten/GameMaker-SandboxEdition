@@ -26,7 +26,14 @@ export function originalSection(): HTMLElement {
           h(
             'p',
             null,
-            'Recreational Software Designs of Amherst, New Hampshire, 1991–1995: G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone. KD Software sold it in the US.',
+            'Recreational Software Designs of Amherst, New Hampshire, 1991–1995: G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone.',
+          ),
+          h(
+            'p',
+            null,
+            'KD Software sold it by direct mail in the US, and RSD also made a distribution deal with GameLynk. Screen Entertainment sold it in the UK as Captain GameMaker, and Microforum repackaged the 3.0 CD-ROM for a worldwide release (',
+            h('a', { href: 'https://en.wikipedia.org/wiki/Game-Maker' }, 'Wikipedia'),
+            ').',
           ),
         ),
         card(
