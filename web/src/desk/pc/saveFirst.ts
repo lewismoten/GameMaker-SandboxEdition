@@ -24,7 +24,7 @@ export function askSaveFirst(d: OpenDesigner, readOnly = false): Promise<string 
       maxlength: '8',
       spellcheck: 'false',
       'aria-label': 'File name',
-    }) as HTMLInputElement;
+    });
     const error = h('p', { class: 'sf-error', role: 'alert' });
     const done = (answer: string | null) => {
       window.removeEventListener('keydown', onKey, true);

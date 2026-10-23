@@ -83,7 +83,7 @@ export async function openOfflineDialog(): Promise<void> {
     const download = async (s: OfflineStatus) => {
       busy = true;
       stop = new AbortController();
-      const bar = h('progress', { max: String(s.wireMissing || 1), value: '0', 'aria-label': 'Download progress' }) as HTMLProgressElement;
+      const bar = h('progress', { max: String(s.wireMissing || 1), value: '0', 'aria-label': 'Download progress' });
       const line = h('p', { class: 'meta', 'aria-live': 'off' });
       const cancel = h('button', { type: 'button', onclick: () => stop.abort() }, 'Cancel');
       status.textContent = 'Downloading the offline copy…';

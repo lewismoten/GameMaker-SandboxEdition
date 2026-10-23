@@ -36,7 +36,7 @@ export function parseRecord(bytes: Uint8Array | undefined): AchievementRecord {
   try {
     const o = JSON.parse(new TextDecoder().decode(bytes));
     for (const [k, v] of Object.entries(o?.unlocked ?? {})) if (typeof v === 'number') r.unlocked[k] = v;
-    for (const [k, v] of Object.entries(o?.progress ?? {}) as [string, { n?: unknown; of?: unknown }][])
+    for (const [k, v] of Object.entries<{ n?: unknown; of?: unknown }>(o?.progress ?? {}))
       if (typeof v?.n === 'number' && typeof v?.of === 'number') r.progress[k] = { n: v.n, of: v.of };
     for (const [k, v] of Object.entries(o?.sets ?? {})) if (Array.isArray(v)) r.sets[k] = v.filter((x): x is string => typeof x === 'string');
   } catch {

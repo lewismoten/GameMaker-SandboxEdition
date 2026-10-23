@@ -161,7 +161,7 @@ function grid(p: Palette, ref: Palette | undefined, focus: Range[], alt: string)
       const b = Math.min(to, row * COLS + COLS - 1) % COLS;
       g.strokeRect(1 + a * CW, 1 + row * RH, (b - a + 1) * CW + 1, 11);
     }
-  return h('img', { src: c.toDataURL(), alt, width: c.width, height: c.height, class: 'ug-pix ug-palgrid' }) as HTMLImageElement;
+  return h('img', { src: c.toDataURL(), alt, width: c.width, height: c.height, class: 'ug-pix ug-palgrid' });
 }
 
 /** A strip of swatches for entries from..to. */
@@ -174,7 +174,7 @@ function strip(p: Palette, [from, to]: Range, alt: string): HTMLImageElement {
     g.fillStyle = css(p, i);
     g.fillRect((i - from) * 10, 0, 10, 10);
   }
-  return h('img', { src: c.toDataURL(), alt, width: c.width, height: c.height, class: 'ug-pix ug-strip-sw' }) as HTMLImageElement;
+  return h('img', { src: c.toDataURL(), alt, width: c.width, height: c.height, class: 'ug-pix ug-strip-sw' });
 }
 
 function windowPixels(map: Uint8Array, bbl: Uint8Array, [x, y, w, hh]: Set['at']): Uint8Array {

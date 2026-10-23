@@ -208,7 +208,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       list.replaceChildren(...setup.mugs.map(mugCard));
       addBtn.disabled = setup.mugs.length >= MAX_MUGS;
       changed();
-      if (focus) (list.querySelector(`[data-focus="${focus}"]`) as HTMLElement | null)?.focus();
+      if (focus) list.querySelector<HTMLElement>(`[data-focus="${focus}"]`)?.focus();
     };
     addBtn.addEventListener('click', () => {
       const last = setup.mugs[setup.mugs.length - 1];
@@ -391,7 +391,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
     );
     document.body.append(overlay);
     rebuild();
-    (overlay.querySelector('select') as HTMLSelectElement | null)?.focus();
+    overlay.querySelector('select')?.focus();
     // a game's picture comes from its files on the CD
     void loadDesigns().then(() => overlay.isConnected && refresh());
   });

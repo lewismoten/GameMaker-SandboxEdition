@@ -33,7 +33,7 @@ export function applyTheme(t: Theme): void {
 
 /** A header button that cycles dark → light → auto. */
 export function themeButton(): HTMLButtonElement {
-  const btn = h('button', { class: 'theme-toggle' }) as HTMLButtonElement;
+  const btn = h('button', { class: 'theme-toggle' });
   const show = (t: Theme) => {
     const [icon, label] = LABEL[t];
     btn.textContent = icon;

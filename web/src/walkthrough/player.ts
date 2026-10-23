@@ -74,7 +74,7 @@ async function copyText(text: string, inside: HTMLElement): Promise<boolean> {
       'textarea',
       { readonly: true, 'aria-hidden': 'true', tabindex: '-1', style: 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0' },
       text,
-    ) as HTMLTextAreaElement;
+    );
     inside.append(ta);
     ta.select();
     let ok = false;
@@ -115,7 +115,7 @@ async function watch(
   const tl = walk.timeline;
   const total = tl.frames;
 
-  const canvas = h('canvas', { class: 'wt-canvas', width: 320, height: 200, 'aria-hidden': 'true' }) as HTMLCanvasElement;
+  const canvas = h('canvas', { class: 'wt-canvas', width: 320, height: 200, 'aria-hidden': 'true' });
   const busy = h('div', { class: 'wt-busy', hidden: true });
   const screen = h('div', { class: 'wt-screen', title: 'Play or pause' }, canvas, busy);
   const playBtn = h('button', { class: 'primary wt-play', type: 'button' });
