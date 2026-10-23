@@ -117,6 +117,17 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
   };
   cut(book, 'aisle3', sign('3'), band, () => AIR);
   cut(book, 'aisle5', sign('5'), band, () => AIR, [[1, 0]]);
+  // over the checkouts: SELF CHECKOUT, an arrow down; and the pennants strung along the store
+  const selfSign = clear(60, 20);
+  selfSign.line(10, 0, 10, 3, c('metal', 0)).line(49, 0, 49, 3, c('metal', 0));
+  selfSign.rect(2, 3, 56, 14, c('red', 1)).rect(3, 4, 54, 12, c('red', 2)).rect(2, 16, 56, 1, c('red', 0));
+  micro(selfSign, 5, 7, 'SELF CHECKOUT', c('white', 2));
+  outline(selfSign, ink);
+  cut(book, 'selfSign', selfSign, wall(), () => AIR);
+  const pennants = wall();
+  pennants.line(0, 2, 10, 4, c('metal', 0)).line(10, 4, 19, 2, c('metal', 0));
+  for (const [x, y, col] of [[2, 3, 'red'], [8, 4, 'yellow'], [14, 4, 'teal']] as const) for (let k = 0; k < 6; k++) pennants.rect(x + Math.floor(k / 2), y + k, 4 - Math.floor(k / 1.5), 1, c(col, 2));
+  book.add('pennants', pennants, AIR);
 
   // ---------- the dairy cooler: a lit glass case of milk ----------
   const coolerTop = wall();
@@ -386,7 +397,7 @@ export const checkout: Monologue = {
     const W = 74;
     m.row(0, 0, W - 1, '^');
     for (let x = 2; x < W; x += 5) m.set(x, 0, '*');
-    m.fill(0, 1, W, 9, '.').row(2, 0, W - 1, '-').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
+    m.fill(0, 1, W, 9, '.').row(2, 0, W - 1, '-').row(3, 0, W - 1, 'pennants').row(10, 0, W - 1, '_').row(11, 0, W - 1, '=').row(12, 0, W - 1, '#');
     // the way in: the spotlight, the carts by the door
     m.set(2, 10, '!').set(4, 10, 'k').set(5, 10, '$');
     // aisle three: shelves from the floor to row 5, ledges on rows 8 and 5
@@ -411,7 +422,8 @@ export const checkout: Monologue = {
       m.set(x, 9, `${name}.0.1`).set(x, 10, `${name}.0.2`);
       m.set(x + 1, 9, 'kioskA.1.1').set(x + 1, 10, 'kioskA.1.2');
     }
-    m.set(30, 10, '$').set(35, 10, '$');
+    m.set(33, 5, 'selfSign.0.0').set(34, 5, 'selfSign.1.0').set(35, 5, 'selfSign.2.0');
+    m.set(30, 10, '$').set(35, 7, '%');
     m.mon(CM.clerk, 34, 10);
     m.set(41, 10, '$').set(43, 10, 'B');
     m.mon(CM.card, 44, 10);
