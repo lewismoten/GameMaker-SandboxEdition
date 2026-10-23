@@ -31,3 +31,10 @@ export const thumb = (src: string, alt: string, caption: Body, href?: string, si
 
 /** A box of related facts or one tool's credit, titled one level under the heading it sits in. */
 export const card = (level: 'h3' | 'h4', title: Body, ...body: Body[]) => h('div', { class: 'credits-card' }, h(level, null, title), ...body);
+
+/**
+ * Long reference material behind a disclosure: a one-line summary that says what is inside
+ * (a native <details>, so screen readers announce it as collapsed or expanded).
+ */
+export const more = (summary: string, ...body: Body[]) =>
+  h('details', { class: 'credits-more' }, h('summary', null, summary), h('div', { class: 'credits-more-body' }, ...body));

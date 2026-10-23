@@ -110,20 +110,12 @@ export function authorsSection(): HTMLElement {
       'div',
       { class: 'credits-group' },
       h('h3', { id: g.id }, g.title),
+      h('p', null, g.intro),
       h(
         'div',
-        { class: g.banner ? 'credits-lead-row' : 'credits-group-head' },
+        { class: 'credits-gallery credits-gallery-small' },
         g.banner,
-        h(
-          'div',
-          { class: 'credits-group-text' },
-          h('p', null, g.intro),
-          h(
-            'div',
-            { class: 'credits-thumbs' },
-            ...g.shots.map(([id, title]) => thumb(`./credits/${id}.webp`, `Title screen of ${title}`, title, `#/game/cd:${id}`)),
-          ),
-        ),
+        ...g.shots.map(([id, title]) => thumb(`./credits/${id}.webp`, `Title screen of ${title}`, title, `#/game/cd:${id}`)),
       ),
       box,
     );
@@ -134,6 +126,6 @@ export function authorsSection(): HTMLElement {
     'Game authors',
     'Who made the games you can play here: on the original CD, and new ones made for this edition.',
     status,
-    ...groups,
+    h('div', { class: 'credits-groups' }, ...groups),
   );
 }

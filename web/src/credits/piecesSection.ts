@@ -2,7 +2,7 @@
 // with its license, who made it and what it does here.
 import { h } from '../editor/core/ui';
 import { NOTICE_URL } from '../edition';
-import { section, ext } from './section';
+import { section, ext, more } from './section';
 import { PIECE_GROUPS, type Piece } from './thirdParty';
 
 const piece = (p: Piece) =>
@@ -27,10 +27,19 @@ export function piecesSection(): HTMLElement {
       ext(NOTICE_URL, 'NOTICE.md'),
       ' credits them; the downloads carry the notices that apply to them as THIRD-PARTY-NOTICES.txt.',
     ),
-    ...PIECE_GROUPS.map((g) => [
-      h('h3', { id: g.id }, g.title),
-      g.note && h('p', null, g.note),
-      h('ul', { class: 'credits-deps credits-deps-grid' }, ...g.pieces.map(piece)),
-    ]),
+    h(
+      'div',
+      { class: 'credits-more-stack' },
+      ...PIECE_GROUPS.map((g) =>
+        more(
+          `${g.title} (${g.pieces.length}): ${g.pieces
+            .map((p) => p.name)
+            .slice(0, 3)
+            .join(', ')}${g.pieces.length > 3 ? '…' : ''}`,
+          g.note && h('p', null, g.note),
+          h('ul', { class: 'credits-deps credits-deps-grid' }, ...g.pieces.map(piece)),
+        ),
+      ),
+    ),
   );
 }

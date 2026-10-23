@@ -16,6 +16,7 @@ import { moreGamesSection } from './moreGames';
 import { peopleSection } from './peopleSection';
 import { bardSection } from './bardTable';
 import { bbsPicturesSection } from './bbsPicturesSection';
+import './creditsLayout.css';
 
 /** The sections, for a window too narrow for "On this page" beside the text (pageToc.css). */
 const SECTIONS: [id: string, title: string, what: string][] = [

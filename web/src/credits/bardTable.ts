@@ -2,7 +2,7 @@
 // made part of that game (bardCredits.ts, checked against each game's credits by its test).
 // A real table with a caption and headers; on a phone each row becomes a card (credits.css).
 import { h } from '../editor/core/ui';
-import { section, banner, ext } from './section';
+import { section, banner, ext, more } from './section';
 import { NOTICE_URL } from '../edition';
 import { BARD_COLUMNS, BARD_GAMES } from './bardCredits';
 
@@ -59,26 +59,29 @@ export function bardSection(): HTMLElement {
         ),
       ),
     ),
-    h('h3', { id: 'credits-bard-key' }, 'What the columns mean'),
-    h('dl', { class: 'bard-key' }, ...BARD_COLUMNS.flatMap((c) => [h('dt', null, c.short), h('dd', null, c.long)])),
-    h('h3', { id: 'credits-bard-notes' }, 'Notes'),
     h(
-      'ul',
-      { class: 'credits-list' },
-      ...BARD_GAMES.filter((g) => g.note).map((g) => h('li', null, h('b', null, g.title), ': ', g.note)),
+      'p',
+      { class: 'credits-callout' },
+      'Every recording was made on Riffusion’s free plan, whose terms allow only “personal, non-commercial uses”, so the voice clips cut from them are not under the MIT License and are never sold. The rest of each game (code, levels, art, text and FM music) is MIT. Each game’s LICENSE.TXT names its clips, and ',
+      ext(NOTICE_URL, 'NOTICE.md'),
+      ' lists them all. The animated covers were made on a paid plan.',
+    ),
+    more(
+      `What each column means, and notes on ${BARD_GAMES.filter((g) => g.note).length} games and on the names`,
+      h('h3', { id: 'credits-bard-key' }, 'What the columns mean'),
+      h('dl', { class: 'bard-key' }, ...BARD_COLUMNS.flatMap((c) => [h('dt', null, c.short), h('dd', null, c.long)])),
+      h('h3', { id: 'credits-bard-notes' }, 'Notes'),
       h(
-        'li',
-        null,
-        'Riffusion is one service under three names: it renamed itself Producer.ai, then Google bought it and it became Google Flow Music. The Riffusion columns count all three; each game’s credits use the name it had when its part was made.',
+        'ul',
+        { class: 'credits-list' },
+        ...BARD_GAMES.filter((g) => g.note).map((g) => h('li', null, h('b', null, g.title), ': ', g.note)),
+        h(
+          'li',
+          null,
+          'Riffusion is one service under three names: it renamed itself Producer.ai, then Google bought it and it became Google Flow Music. The Riffusion columns count all three; each game’s credits use the name it had when its part was made.',
+        ),
+        h('li', null, 'Whisper’s word timings come from the clip tools in each game’s tools folder; they run on the developer’s computer.'),
       ),
-      h(
-        'li',
-        null,
-        'Every recording was made on Riffusion’s free plan, whose terms allow only “personal, non-commercial uses”, so the voice clips cut from them are not under the MIT License and are never sold. The rest of each game (code, levels, art, text and FM music) is MIT. Each game’s LICENSE.TXT names its clips, and ',
-        ext(NOTICE_URL, 'NOTICE.md'),
-        ' lists them all. The animated covers were made on a paid plan.',
-      ),
-      h('li', null, 'Whisper’s word timings come from the clip tools in each game’s tools folder; they run on the developer’s computer.'),
     ),
   );
 }
