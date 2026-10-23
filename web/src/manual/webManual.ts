@@ -177,29 +177,22 @@ const SECTIONS: [id: string, title: string, html: string][] = [
     <b>Mustard Seed Hustle</b>, <b>Thread the Needle, Brother Camel</b>, <b>Loaf #13 (Left in the
     Basket)</b>, <b>Certified Rat Tickler</b>, <b>Where’s the Remote?!</b>, <b>A Fly Named Carl</b> and <b>The Great
     Dairy Reckoning of 3:17 A.M.</b>. With four or more, they get a Bizarre collection of their own on the home page.</p>
-    <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s.
-    Third Goat from the Left and Mustard Seed Hustle: lyrics written by ChatGPT from Lewis’s
-    prompts; music made with Riffusion (now Google Flow Music). Third Goat’s cover art was made
-    by Riffusion, and Mustard Seed Hustle’s animated cover with Producer.ai. Thread the Needle,
-    Brother Camel: lyrics written by ChatGPT from Lewis’s prompts; music and animated cover:
-    credit pending. Loaf #13 (Left in the Basket): lyrics written by ChatGPT from Lewis’s
-    prompt; music: credit pending; its title and cover art were drawn for the game by Claude
-    Opus 5.5. Certified Rat Tickler: lyrics written by ChatGPT from Lewis’s prompts (after much
-    back and forth); no recording came with it, so its music was composed for the game by Claude
-    Opus 5.5, and its title, cover and certificate art were drawn for the game by Claude Opus 5.5.
-    Where’s the Remote?!: lyrics written by ChatGPT from Lewis’s prompt; music: credit pending;
-    its title and cover art were drawn for the game by Claude Opus 5.5.
-    A Fly Named Carl: lyrics written by ChatGPT from Lewis’s prompt; music: credit pending; its
-    title and cover art were drawn for the game by Claude Opus 5.5.
-    The Great Dairy Reckoning of 3:17 A.M.: a spoken piece from Lewis’s own struggle (he is
-    lactose intolerant, and he loves cheesecake); monologue written by ChatGPT from Lewis’s
-    prompt; recording: credit pending; no music came with it, so its music was composed for the
-    game by Claude Opus 5.5, and its title art was drawn for the game by Claude Opus 5.5.
-    The Bard’s logo was
-    made with DeepAI, and the photo of Doc Leo is Lewis’s own.
-    Each game’s music and sounds are drawn from its song’s recording (Certified Rat Tickler’s and
-    The Great Dairy Reckoning’s were made for the game); its code, pictures and
-    levels were made by <b>Claude Opus 5.5</b>, with Lewis directing and playtesting.</p>
+    <p>The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each
+    song’s words were written by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much
+    back and forth), and each recording was made with Riffusion (now Google Flow Music).
+    Certified Rat Tickler came with no recording, so its music was composed for the game by
+    Claude Opus 5.5. The Great Dairy Reckoning of 3:17 A.M. is a spoken piece from Lewis’s own
+    struggle (he is lactose intolerant, and he loves cheesecake): its voice was made with
+    Riffusion, and its music was composed for the game by Claude Opus 5.5. Third Goat from the
+    Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover
+    came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai.
+    The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?! and A Fly
+    Named Carl, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy
+    Reckoning’s title art were drawn for the games by Claude Opus 5.5. The Bard’s logo was made
+    with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn
+    from its song’s recording (Certified Rat Tickler’s and The Great Dairy Reckoning’s music was
+    made for the game); its code, pictures and levels were made by <b>Claude Opus 5.5</b>, with
+    Lewis directing and playtesting.</p>
     <h3>The desk PC, its BBSes and utilities</h3>
     <p>The 1994 desk’s pretend PC, with its DOS prompt, TERMINAL, THE -= S A N D B O X =- BBS
     and The Sofa BBS, and the programs on it (SAVEHACK, BACKUP, GMCRACK and its KEYGEN,
