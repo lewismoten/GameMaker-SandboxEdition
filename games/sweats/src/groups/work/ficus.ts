@@ -315,7 +315,10 @@ export const ficus: Monologue = {
     '!': 'spot@paperBase',
   },
   build: (m: MapBuilder) => {
-    const W = 64;
+    // the walk-off: OFF blocks more of the house past the gate, so its punch line plays out before
+    // the scene ends
+    const OFF = 6;
+    const W = 64 + OFF;
     // the house, inside: crown molding, wallpaper, the hardwood floor
     m.row(0, 0, W - 1, '^').fill(0, 1, W, 8, '.').row(9, 0, W - 1, '_').row(10, 0, W - 1, '=').row(11, 0, W - 1, 'slab');
     // in by the front door (the sticky note), the spotlight, a coffee
@@ -347,7 +350,7 @@ export const ficus: Monologue = {
     placePicture(m, 'sofa', 58, 9, 2, 1);
     m.set(52, 9, 'b').set(60, 9, '$');
     m.set(62, 9, 'D');
-    m.link(62, 9, 'next');
+    m.link(62 + OFF, 9, 'next');
     return { start: [1, 9], size: [W, 12] };
   },
   monsters: ficusMonsters,

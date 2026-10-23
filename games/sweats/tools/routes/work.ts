@@ -174,6 +174,7 @@ export const WORK_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(60, 'back in: the dollar, the sticky note, the coin'), 'staging');
     });
     if (plot(bot) < STAGED) throw new Error(`only ${plot(bot)} of the staging`);
-    await leave(bot, bot.walk(62.5, 'the boss home'), 'the front door');
+    await must(bot, bot.walk(63, 'the boss home'), 'the front door');
+    await leave(bot, bot.walk(68.5, 'the walk-off'), 'the walk-off');
   },
 };
