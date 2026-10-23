@@ -570,14 +570,14 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('throneOpen', throne(true), { grav: GRAV.none });
 
   // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
-  // a tin heart on her side of the bed, by her pillow: a glint crosses it now and then; 100 points
+  // a tin heart at the back of the fridge's bottom, in the cold glow: a glint crosses it now and then; 100 points
   const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('grey', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
-    book.add(`tinHeart${k || ''}`, drawTinHeart(wall(1), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'wall', score: 100, ...air });
-  // a dyed Easter egg on top of the living room TV: 50 points
+    book.add(`tinHeart${k || ''}`, drawTinHeart(inside(0), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'cold', score: 100, ...air });
+  // a dyed Easter egg up in the kitchen's corner over the end of the counter: 50 points
   const egg = { ink: c('ink', 0), shell: R('celery'), paint: R('berry').slice(1), accent: c('gold', 3), white: c('white', 2) };
   for (let k = 0; k < EGG_SHINE_FRAMES; k++)
-    book.add(`easterEgg${k || ''}`, drawEasterEgg(wall(1), egg, 'bands', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'wall', score: 50, ...air });
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(tileWall(71), egg, 'bands', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'backsplash', score: 50, ...air });
   // Teenage Lewie (Snowbound) in the hall's family photos: red knit hat, red coat, the snow shovel
   const lewie = lewieCameo(buildPalette('plain').pal, 'down0', { use: ['ink', 'skin', 'hair', 'red', 'white', 'grey', 'metal', 'wood', 'pjs', 'night'].flatMap((n) => R(n)) });
   book.add('lewiePic', photo(43, (p) => p.blit(lewie.crop(4, 0, 12, 9), 4, 5, CLEAR)), air);

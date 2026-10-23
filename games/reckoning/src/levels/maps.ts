@@ -214,8 +214,6 @@ export function bedroom(book: BlockBook): Level {
   m.set(47, 9, 'A').row(9, 48, 51, 'S').row(8, 48, 51, 'C').set(52, 9, 'A').set(53, 9, 'R');
   m.set(49, 7, '$').set(55, 9, '!');
   m.set(57, 8, 'T').set(57, 9, 'b').set(59, 9, 'P');
-  // an Easter egg on top of the TV; a tin heart on her side of the bed, by her pillow
-  m.set(57, 7, 'easterEgg').set(3, 7, 'tinHeart');
   m.col(61, 4, 8, 'B').col(62, 4, 8, 'B').row(7, 61, 62, 's').row(5, 61, 62, 's').set(61, 4, '$').set(62, 4, 'v');
   m.set(64, 9, 'L');
   // the kitchen door: the fridge's glow spilling out
@@ -235,6 +233,8 @@ export function fridge(book: BlockBook): Level {
   m.set(6, 11, 'j').set(9, 11, 'J').set(12, 11, '2');
   m.row(9, 4, 12, 'u').set(8, 8, '2');
   m.mon(MON.loaf, 6, 11).mon(MON.carl, 15, 5);
+  // an Easter egg up in the corner over the end of the counter, a hop left off the counter
+  m.set(2, 7, 'easterEgg');
   m.set(17, 13, 'V');
   // the fridge, standing open (its bottom open to walk in): its walls, the cold glowing inside, the freezer, the bulb
   m.row(0, 22, 44, 'E').col(22, 1, 9, 'F').col(44, 7, 13, 'F').set(22, 7, '3');
@@ -245,6 +245,8 @@ export function fridge(book: BlockBook): Level {
   m.row(7, 23, 43, 'G').row(7, 40, 41, 'f');
   m.row(4, 23, 44, 'G').row(4, 29, 30, 'f');
   // the dairy, come to life
+  // a tin heart at the back of the fridge's bottom, past the milk, in the corner by the door hinge
+  m.set(42, 13, 'tinHeart');
   m.mon(MON.milk, 30, 13).mon(MON.yogurt, 36, 9).mon(MON.cheese, 24, 6).mon(MON.butter, 34, 6).mon(MON.cream, 24, 2).mon(MON.milk, 24, 3);
   // willpower: seven sticks of celery
   m.set(25, 12, '1').set(24, 9, '1').set(31, 9, '1').set(39, 6, '1').set(35, 3, '1');
