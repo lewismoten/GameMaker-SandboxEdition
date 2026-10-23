@@ -101,7 +101,11 @@ export const ROUTES: Record<string, Order[]> = {
     { walk: 44 },
     { until: 'has three tickets', maxTicks: 60, check: (s) => s.w.ci.meter[CTR.tickets] >= 4 },
     { walk: 53 },
-    { until: 'the car is down', maxTicks: 400, check: (s) => s.monsters('dropIdle').length > 0 || s.monsters('dropBoard').length > 0 || s.monsters('dropCar').some((b) => b.y === 38) },
+    {
+      until: 'the car is down',
+      maxTicks: 400,
+      check: (s) => s.monsters('dropIdle').length > 0 || s.monsters('dropBoard').length > 0 || s.monsters('dropCar').some((b) => b.y === 38),
+    },
     { hop: 6, dir: 'right', dirFor: 5 },
     { until: 'on the car', maxTicks: 60, check: (s) => s.pos.bx === 54 && s.pos.by <= 37 },
     { until: 'at the top', maxTicks: 400, check: (s) => s.pos.by <= 17 },

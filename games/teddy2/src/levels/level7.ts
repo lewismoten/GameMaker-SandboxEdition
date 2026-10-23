@@ -56,7 +56,10 @@ export function midway(): Level {
     m.set(tower, y, `lattice${bandRow(y)}`);
     m.set(tower + 1, y, `track${bandRow(y)}`);
   }
-  for (let y = 19; y < 40; y++) m.set(tower + 2, y, `latticeWall${bandRow(y)}`);
+  // (open at the foot: a dog who dropped off the deck without the entry card can walk
+  // back under and ride up again)
+  for (let y = 19; y < 39; y++) m.set(tower + 2, y, `latticeWall${bandRow(y)}`);
+  m.set(tower + 2, 39, `lattice${bandRow(39)}`);
   m.rect(tower + 2, 18, 4, 1, 'deck');
   m.rect(tower + 2, 17, 4, 1, 'rail');
   m.set(tower + 4, 17, 'tagDeck');
