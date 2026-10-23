@@ -36,6 +36,7 @@
 #define IDM_RESTART 0x0010
 #define IDM_FULLSCREEN 0x0020
 #define IDM_ABOUT 0x0030
+#define IDM_NOTICES 0x0040
 #define TIMER_READY 1
 
 typedef struct { void **vt; } Obj;
@@ -214,10 +215,21 @@ static void restartGame(void) {
   if (webview) VT(webview, WV_Reload, Fn0)(webview);
 }
 
+/** Third-party notices: RCDATA "NOTICES" (web/src/export/notices.ts), saved beside the game's data and opened in the text editor. */
+static void showNotices(void) {
+  DWORD size = 0;
+  const BYTE *text = resource(L"NOTICES", &size);
+  WCHAR path[MAX_PATH];
+  copyW(path, dataDir, MAX_PATH);
+  catW(path, L"\\THIRD-PARTY-NOTICES.txt", MAX_PATH);
+  if (text && writeFile(path, text, size)) ShellExecuteW(win, L"open", path, NULL, NULL, SW_SHOWNORMAL);
+  else MessageBoxW(win, L"This program has no third-party notices in it.", title, MB_OK | MB_ICONINFORMATION);
+}
+
 static void showAbout(void) {
   WCHAR text[1600];
   copyW(text, credits, 1600);
-  catW(text, L"\n\nVisit the Game-Maker: Sandbox Edition website?", 1600);
+  catW(text, L"\n\nThe licenses of the code from others in this program: the window menu (Alt+Space) \u2192 Third-party notices.\n\nVisit the Game-Maker: Sandbox Edition website?", 1600);
   WCHAR caption[300] = L"About ";
   catW(caption, title, 300);
   if (MessageBoxW(win, text, caption, MB_YESNO | MB_ICONINFORMATION) == IDYES) openInBrowser(site);
@@ -532,6 +544,7 @@ static LRESULT CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     case IDM_RESTART: return restartGame(), 0;
     case IDM_FULLSCREEN: return setFullscreen(!fullscreen), 0;
     case IDM_ABOUT: return showAbout(), 0;
+    case IDM_NOTICES: return showNotices(), 0;
     }
     break;
   case WM_TIMER:
@@ -619,6 +632,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prev, PWSTR cmd, int show) {
   catW(about, title, 290);
   catW(about, L"…", 300);
   AppendMenuW(menu, MF_STRING, IDM_ABOUT, about);
+  AppendMenuW(menu, MF_STRING, IDM_NOTICES, L"Third-party notices…");
 
   HRESULT hr = createEnvironment();
   if (FAILED(hr)) noWebView(hr);

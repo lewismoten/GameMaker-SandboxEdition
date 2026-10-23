@@ -7,7 +7,8 @@
 // - RCDATA "INFO": its title, id (the folder of its saved games, %LOCALAPPDATA%\GameMaker\<id>),
 //   credits and the site's address, as UTF-8 key=value lines;
 // - its icon, drawn from the game like the Mac app's (winIcon.ts);
-// - its version information, which the Explorer and the Task Manager show (the title).
+// - its version information, which the Explorer and the Task Manager show (the title);
+// - RCDATA "NOTICES": the third-party notices (notices.ts), which the window menu opens.
 //
 // It comes as the .exe itself, or in a .zip. It is not code-signed (that needs a paid
 // certificate and the author's private key), so Windows SmartScreen asks to confirm the
@@ -16,6 +17,7 @@ import { createZip } from '../project/zip';
 import { SITE_URL } from '../seo/site';
 import { readResources, writeResources, RT, type PeResource } from './peResources';
 import { groupIcon, winIconImages } from './winIcon';
+import { thirdPartyNotices } from './notices';
 import type { IndexedImage } from '../formats/gif';
 import type { IconColors } from './macIcon';
 
@@ -157,7 +159,7 @@ export function versionInfo(o: Pick<WinAppOptions, 'title' | 'id' | 'version' | 
 /** The game's program: the player with the game, its info, icon and version information in its resources. */
 export async function winExe(o: WinAppOptions): Promise<Uint8Array> {
   const enc = new TextEncoder();
-  const replaced = (r: PeResource) => r.type === RT.ICON || r.type === RT.GROUP_ICON || r.type === RT.VERSION || (r.type === RT.RCDATA && (r.name === 'GAME' || r.name === 'INFO'));
+  const replaced = (r: PeResource) => r.type === RT.ICON || r.type === RT.GROUP_ICON || r.type === RT.VERSION || (r.type === RT.RCDATA && (r.name === 'GAME' || r.name === 'INFO' || r.name === 'NOTICES'));
   const kept = readResources(o.player).filter((r) => !replaced(r));
   const images = await winIconImages(o.picture, o.colors);
   return writeResources(o.player, [
@@ -167,12 +169,13 @@ export async function winExe(o: WinAppOptions): Promise<Uint8Array> {
     { type: RT.VERSION, name: 1, lang: 0, data: versionInfo(o) },
     { type: RT.RCDATA, name: 'GAME', lang: 0, data: enc.encode(o.html) },
     { type: RT.RCDATA, name: 'INFO', lang: 0, data: enc.encode(infoText(o)) },
+    { type: RT.RCDATA, name: 'NOTICES', lang: 0, data: enc.encode(thirdPartyNotices('windows')) },
   ]);
 }
 
-/** The program in a .zip. */
+/** The program in a .zip, with its third-party notices beside it. */
 export async function winExeZip(o: WinAppOptions, date?: Date): Promise<Uint8Array> {
-  return createZip([{ name: exeName(o.title), data: await winExe(o) }], date);
+  return createZip([{ name: exeName(o.title), data: await winExe(o) }, { name: 'THIRD-PARTY-NOTICES.txt', data: new TextEncoder().encode(thirdPartyNotices('windows')) }], date);
 }
 
 /** Which player suits this computer: arm64 on Windows on Arm (when the browser says), else x64 (which Arm PCs run too). */
