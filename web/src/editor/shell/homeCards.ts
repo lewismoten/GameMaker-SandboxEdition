@@ -497,7 +497,7 @@ export async function showNotice(listed: CatalogEntry): Promise<unknown> {
       'p',
       { class: 'meta' },
       bard
-        ? 'The Bard of Bizarre’s games are this project’s own: free to play, share and change (MIT license). Edit a copy to see how it was made.'
+        ? 'The Bard of Bizarre’s games are this project’s own: free to play, share and change (MIT license), except their voice clips, cut from recordings made on Riffusion’s free plan: those are for personal, non-commercial use only. Edit a copy to see how it was made.'
         : 'These notices are from 1993–1994; the addresses and prices may no longer be current.',
     ),
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
