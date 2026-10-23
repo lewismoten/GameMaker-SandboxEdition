@@ -12,7 +12,6 @@ import { hiddenView } from '../../../games/kit/hiddenView';
 const STILL_SHOWN = new Set([
   'brief:tinHeart',
   'brief:easterEgg',
-  'depth:tinHeart',
   'loaf:tinHeart',
   'logic:tinHeart',
   'logic:easterEgg',
