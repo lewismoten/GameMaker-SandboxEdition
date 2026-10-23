@@ -59,8 +59,8 @@ THIS IS SHAREWARE
 
   If it made you laugh (in
   any language), register for
-  $5: you get a tape of the
-  six songs and a Latin phrase
+  $5: you get a sticker that
+  says RISI! and a Latin phrase
   book for all occasions. Send
   a check (US funds) to:
 
