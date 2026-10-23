@@ -1,5 +1,5 @@
 // What's in the Game-Maker: Sandbox Edition box besides the Owner's Guide and the bonus-games
-// CD: the program disks, a quick reference card for Game-Maker's own design tools (from the
+// CD: the program disks, The Ultimate Owner's Guide for power users (../ultimate), a quick reference card for Game-Maker's own design tools (from the
 // original help screens), the inserts in gmInserts.ts (keyboard template, map grid pad,
 // registration card, license, customer support), Sandbox Software's catalog, The Bard of
 // Bizarre's (bardCatalog.ts), the BBS ad, a
@@ -16,6 +16,7 @@ import { bardCatalog } from './bardCatalog';
 import { diskSleeve, keyTemplate, licenseSheet, mapGrid, registrationCard, supportCard } from './gmInserts';
 import { PLAYGAME_KEYS } from './keys';
 import { mixedStickers, stickerScreen, type MixedSticker } from './stickers';
+import { ultimateItem } from '../ultimate/ultimateGuide';
 
 /** Game-Maker SE as if it were one more catalog entry, for the generic cards. */
 const GM_ENTRY: CatalogEntry = { id: 'gamemaker-se', title: PRODUCT, kind: 'gameware', path: '', gam: null, files: [], price: '$0.00', year: 1995 };
@@ -210,6 +211,7 @@ export function gmBoxItems(family: CatalogEntry[]): BoxItem[] {
   const ctx = contextFor(GM_ENTRY, family);
   return [
     { id: 'disks', title: 'Program disks', note: 'Two 3½" disks in their sleeve', icon: '💾', render: diskSleeve },
+    ultimateItem(),
     { id: 'gmkeys', title: 'Quick reference card', note: 'Keys for every design tool', icon: '⌨️', render: keyCard },
     { id: 'template', title: 'Keyboard template', note: 'Sits above the function keys', icon: '🎹', render: keyTemplate },
     { id: 'mapgrid', title: 'Map grid pad', note: 'Graph paper for planning maps', icon: '📐', render: mapGrid },
