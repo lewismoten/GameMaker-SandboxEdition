@@ -8,6 +8,7 @@
     "loaf": { "map": "hill.map", "at": [43, 11] },
     "logic": { "map": "attic.map", "at": [3, 7] },
     "loofah": { "map": "home.map", "at": [5, 9] },
+    "maximus": { "map": "home.map", "at": [8, 51] },
     "mustard": { "map": "mound.map", "at": [3, 11] },
     "needle": { "map": "tailor.map", "at": [35, 17] },
     "realm": { "map": "port.map", "at": [10, 33] },
@@ -24,5 +25,5 @@
     "tickle": { "map": "tower.map", "at": [43, 23] },
     "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": ["maximus"]
+  "pending": []
 }
