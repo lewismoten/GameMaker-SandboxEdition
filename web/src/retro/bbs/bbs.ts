@@ -533,8 +533,8 @@ async function files(
     const desc = gameDiz(g).filter((l) => !/^-+$/.test(l));
     return desc.map((l, j) =>
       j === 0
-        ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |07${l.padEnd(46)}${isFree(g) ? "|10FREE" : ""}`
-        : `${" ".repeat(25)}|${j === desc.length - 1 ? "08" : "07"}${l}`,
+        ? `|11${String(i + 1).padStart(2)} ${got}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(9)} |07${l.padEnd(46)}${isFree(g) ? "|10FREE" : ""}`
+        : `${" ".repeat(26)}|${j === desc.length - 1 ? "08" : "07"}${l}`,
     );
   });
   const pager = new Pager(t, {
@@ -542,8 +542,8 @@ async function files(
       boxTop(n > 1 ? `${title} (${pageLabel(p, n)})` : title),
       boxRow(
         ext
-          ? "|11  #  File name        Size  Description"
-          : `|11#  ${"File name".padEnd(12)}${"Size".padStart(8)} ${"Date".padEnd(8)} Description`,
+          ? "|11  #  File name         Size  Description"
+          : `|11#  ${"File name".padEnd(12)}${"Size".padStart(9)} ${"Date".padEnd(8)} Description`,
       ),
       boxBottom(),
     ],
@@ -552,7 +552,7 @@ async function files(
     compact: () =>
       catalog.map(
         (g, i) =>
-          `|11${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? "|10*" : " "}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(8)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g)).padEnd(40)}${isFree(g) ? "|10FREE" : ""}`,
+          `|11${String(i + 1).padStart(2)} ${h.downloads.has(g.id) ? "|10*" : " "}|15${zipName(g).padEnd(12)}|14${commas(zipSize(g)).padStart(9)} |03${uploadDate(g.id, g.year)} |07${dizSummary(gameDiz(g)).padEnd(40)}${isFree(g) ? "|10FREE" : ""}`,
       ),
     footer: () => [
       `|10*|07 = already downloaded to C:\\DOWNLOAD   |10FREE|07 = doesn't count against your ratio`,
