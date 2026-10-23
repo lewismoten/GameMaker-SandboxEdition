@@ -349,7 +349,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   clear(root, desk);
   const unfit = fitStage(desk);
   // the clock, the waste basket, the door, the window, the curtains... (props/)
-  const unProps = deskProps(desk);
+  // (nothing happens outside the window while a game is playing)
+  const unProps = deskProps(desk, { gamePlaying: () => computer?.gamePlaying ?? false });
 
   let enlarged = false; // the user pressed the enlarge button
   // The PC's insides (DOS, Game-Maker, the BBS, the VGA): loaded when the PC is first needed
