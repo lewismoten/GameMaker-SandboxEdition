@@ -3,7 +3,8 @@
 // Linux players", lists the parts). winApp.ts puts the Windows text into the .exe (RCDATA
 // "NOTICES", shown from the window menu's "Third-party notices…") and beside it in the
 // .zip; macApp.ts puts the Mac text on the .dmg and in the .zip; linuxApp.ts puts the Linux
-// text in the folder.
+// text in the folder. A Bard of Bizarre game's notices begin with its non-commercial voice
+// clips (recordedAudio.ts).
 
 export type NoticePlatform = 'windows' | 'mac' | 'linux';
 
@@ -134,10 +135,15 @@ none of their code is included.`;
 
 const RULE = '\n\n' + '-'.repeat(78) + '\n\n';
 
-/** The notices for one platform's download. */
-export function thirdPartyNotices(platform: NoticePlatform): string {
-  const parts = platform === 'windows' ? [PROJECT, WEBVIEW2, WEBVIEW, MINGW, ZIG] : platform === 'linux' ? [PROJECT, ZIG, GLIBC] : [PROJECT, APPLE];
-  const text = `THIRD-PARTY NOTICES\n\nThe game's player program and the notices of the code from others it contains.${RULE}${parts.join(RULE)}\n`;
+/**
+ * The notices for one platform's download; `audio` is the game's own part that isn't MIT (a Bard
+ * of Bizarre game's non-commercial voice clips: recordedAudio.ts), put first when there is one.
+ */
+export function thirdPartyNotices(platform: NoticePlatform, audio?: string): string {
+  const players = platform === 'windows' ? [PROJECT, WEBVIEW2, WEBVIEW, MINGW, ZIG] : platform === 'linux' ? [PROJECT, ZIG, GLIBC] : [PROJECT, APPLE];
+  const parts = audio ? [`The game's voice clips: personal, non-commercial use only\n\n${audio}`, ...players] : players;
+  const lead = audio ? "The game's voice clips, which aren't MIT licensed; then the" : 'The';
+  const text = `THIRD-PARTY NOTICES\n\n${lead} game's player program and the notices of the code from others it contains.${RULE}${parts.join(RULE)}\n`;
   // Windows: CRLF, and a byte order mark so every Notepad reads it as UTF-8
   return platform === 'windows' ? `\uFEFF${text.replace(/\n/g, '\r\n')}` : text;
 }
