@@ -12,7 +12,8 @@
     { "game": "teddy2", "as": "tucked behind Teddy’s bed at home" },
     { "game": "mustard", "as": "tucked in the nook behind the seed’s mound" },
     { "game": "carl", "as": "under the bedroom desk" },
-    { "game": "snowbound", "as": "in the snow by the backyard snowman" }
+    { "game": "snowbound", "as": "in the snow by the backyard snowman" },
+    { "game": "loaf", "as": "at the foot of a fig tree on the hillside" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -37,7 +38,8 @@
   "lewie": [
     { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },
     { "game": "teddy", "as": "by Puddlewick Park’s gate with his shovel, helping plant the flower beds" },
-    { "game": "goat", "as": "mucking out the stable’s back corner, shovel and all" }
+    { "game": "goat", "as": "mucking out the stable’s back corner, shovel and all" },
+    { "game": "loaf", "as": "out in the village at night, shovel and all" }
   ],
   "leo": [
     { "game": "sleuth", "as": "a playbill in the lobby" }
