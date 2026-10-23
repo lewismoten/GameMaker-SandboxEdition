@@ -13,7 +13,8 @@ On 12 July 2014 Andy Stone, Game-Maker's original programmer, published the sour
 the CD image and an installed copy on GitHub under the **MIT License**
 ([gandrewstone/GameMaker](https://github.com/gandrewstone/GameMaker)). This fork keeps
 that history and that license. Everything added here (the browser version in `web/`, the
-"1994 desk", and the Sandbox Software games in `games/`) is released under the same MIT
+"1994 desk", the Sandbox Software and Bard of Bizarre games in `games/`, and the Mac,
+Windows and Linux players in `mac/`, `win/` and `linux/`) is released under the same MIT
 License; see [LICENSE](LICENSE), whose original copyright notice is kept unchanged as the
 license requires.
 
