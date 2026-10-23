@@ -69,6 +69,8 @@ export interface CdCatalogEntry {
   pack?: string;
   /** Built sites: what the home page's quick check finds in it (src/editor/shell/gameHealth.ts), so the page need not fetch files to know. */
   health?: Issue[];
+  /** Built sites: the size of its pack in bytes (what downloading it for offline use costs, src/offline). */
+  packBytes?: number;
   /** Built sites, games with a box: what the box reads from the .gam (src/desk/boxes/boxFacts.ts). */
   boxGame?: BoxGame;
 }
@@ -470,10 +472,14 @@ export function cdGames(cdRoot: string): Plugin {
     },
     generateBundle() {
       const { gm, files } = get();
-      // what the pages would otherwise fetch game files to work out: the quick check, the box's facts
+      // each game's pack, made first so the catalog can say how big it is
+      const packs = new Map<string, Buffer>();
+      for (const e of [...get().catalog, ...get().secret]) if (e.pack) packs.set(`${e.path}${e.pack}`, gamePack(e, files));
+      // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {
         const box = boxGameOf(e, files);
-        return { ...e, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}) };
+        const packBytes = packs.get(`${e.path}${e.pack}`)?.length;
+        return { ...e, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}), ...(packBytes ? { packBytes } : {}) };
       };
       // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
       const catalog = get().catalog.map((e) => {
@@ -497,7 +503,7 @@ export function cdGames(cdRoot: string): Plugin {
       // Whole entries (no games/details/<id>.json), so nothing else the build writes names them.
       this.emitFile({ type: 'asset', fileName: 'games/extra.json', source: JSON.stringify(secret.map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
-      for (const e of [...catalog, ...secret]) if (e.pack) this.emitFile({ type: 'asset', fileName: `${e.path}${e.pack}`, source: gamePack(e, files) });
+      for (const [fileName, source] of packs) this.emitFile({ type: 'asset', fileName, source });
       for (const [site, disk] of files) {
         const bytes = readFileSync(disk);
         this.emitFile({ type: 'asset', fileName: site, source: bytes });

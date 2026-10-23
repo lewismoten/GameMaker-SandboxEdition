@@ -165,6 +165,8 @@ export interface CatalogEntry {
   gz?: boolean;
   /** Built sites: all its files in one gzipped file in its folder (project/gamePack.ts, openPack), named with a hash of its content. */
   pack?: string;
+  /** Built sites: the size of its pack in bytes. */
+  packBytes?: number;
   /** Built sites: what the quick check (project/health.ts) finds in it, so no file need be fetched to know. */
   health?: Issue[];
   /** Built sites, games with a box: its level count and screenshot captions from the .gam (desk/boxes/boxFacts.ts boxGame). */
