@@ -293,20 +293,52 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   }
 
   /** A frame standing on the boards at x (bottom at the floor, `lift` above it), turned round or squeezed. */
-  function put(img: HTMLCanvasElement, px: number, lift = 0, left = false, squeeze = 1): number {
+  /**
+   * A frame with a soft light rim round it (the stage is dark, and so are some outlines: Carl's,
+   * Joe's, the camel's), made once per frame.
+   */
+  const rims = new WeakMap<HTMLCanvasElement, HTMLCanvasElement>();
+  function rimmed(img: HTMLCanvasElement): HTMLCanvasElement {
+    let out = rims.get(img);
+    if (!out) {
+      out = document.createElement('canvas');
+      out.width = img.width + 2;
+      out.height = img.height + 2;
+      const c = out.getContext('2d')!;
+      for (const [dx, dy] of [[0, 1], [2, 1], [1, 0], [1, 2]]) c.drawImage(img, dx, dy);
+      c.globalCompositeOperation = 'source-in';
+      c.fillStyle = 'rgba(232,226,255,0.55)';
+      c.fillRect(0, 0, out.width, out.height);
+      c.globalCompositeOperation = 'source-over';
+      c.drawImage(img, 1, 1);
+      rims.set(img, out);
+    }
+    return out;
+  }
+
+  function put(img0: HTMLCanvasElement, px: number, lift = 0, left = false, squeeze = 1, tilt = 0): number {
+    const img = rimmed(img0);
+    px -= 1;
+    lift -= 1;
     const top = FLOOR - img.height + 1 - lift;
     const w = Math.max(1, Math.round(img.width * squeeze));
     const ox = Math.round(px + (img.width - w) / 2);
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.fillRect(ox + 2, FLOOR, Math.max(1, w - 4), 2);
+    ctx.save();
+    // rocking on its bottom (the Easter egg)
+    if (tilt) {
+      ctx.translate(ox + w / 2, FLOOR);
+      ctx.rotate(tilt);
+      ctx.translate(-(ox + w / 2), -FLOOR);
+    }
     if (left) {
-      ctx.save();
       ctx.translate(ox + w, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(img, 0, top, w, img.height);
-      ctx.restore();
     } else ctx.drawImage(img, ox, top, w, img.height);
-    return top;
+    ctx.restore();
+    return top + 1;
   }
 
   const cycle = (frames: HTMLCanvasElement[], now: number, ms: number) => frames[Math.floor(now / ms) % frames.length];
@@ -409,7 +441,8 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       ctx.globalAlpha = phase === 'exit' && !s.sprite.walk ? 1 - fade : fade;
       // a waddle for one who walks on in a single frame, a hop for the tin heart
       const lift = moving ? (s.sprite.hop ? Math.round(Math.abs(Math.sin((now / 260) * Math.PI)) * 7) : s.walk.length === 1 ? Math.floor(now / 160) % 2 : 0) : 0;
-      const top = put(frame, x, lift + Math.round(up), left, squeeze);
+      const tilt = moving && s.sprite.wobble ? Math.sin(now / 140) * 0.28 : 0;
+      const top = put(frame, x, lift + Math.round(up), left, squeeze, tilt);
       ctx.globalAlpha = 1;
       // Gwinn has Doc Leo's hat in her mouth, all the way off
       if (isGwinn(m)) {
