@@ -103,7 +103,7 @@ export async function bedroom(bot: Bot): Promise<void> {
   });
 }
 
-/** II. The enemy-lover: up onto the counter (Loaf #13, celery), the cabinets, into the fridge and up its shelves for seven sticks of celery, to the cheesecake. */
+/** II. The enemy-lover: up onto the counter (Loaf #13, celery), the cabinets, into the fridge and up its shelves for seven sticks of celery, to the cheesecake, then down off the fridge door and out to the hall. */
 export async function fridge(bot: Bot): Promise<void> {
   expect(bot, 3, 'the kitchen');
   const start = will(bot);
@@ -133,7 +133,12 @@ export async function fridge(bot: Bot): Promise<void> {
     await must(bot, bot.hop('up', 12), 'up through the top shelf');
     await must(bot, bot.walk(35, 'the celery on the top shelf'), 'celery');
     if (will(bot) - start < 7) throw new Error(`only ${will(bot) - start} celery`);
-    await leave(bot, bot.walk(42, 'the cheesecake'), 'the cheesecake');
+    await must(bot, bot.walk(42, 'the cheesecake'), 'the cheesecake');
+  });
+  await carefully(bot, 'down off the fridge door, out to the hall', 10, async () => {
+    await must(bot, bot.walk(47.6, 'off the top shelf and the fridge door'), 'off');
+    await must(bot, bot.land(), 'land');
+    await leave(bot, bot.walk(54, 'the doorway to the hall'), 'the hall');
   });
 }
 

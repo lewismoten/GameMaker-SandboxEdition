@@ -220,7 +220,7 @@ export function bedroom(book: BlockBook): Level {
   return { m, start: at(5, 7), size: [W, H] };
 }
 
-/** 2. The enemy-lover: the counters, the fridge's shelves, the dairy, seven sticks of celery, the cheesecake. */
+/** 2. The enemy-lover: the counters, the fridge's shelves, the dairy, seven sticks of celery, the cheesecake, the doorway to the hall. */
 export function fridge(book: BlockBook): Level {
   const W = 56;
   const H = 16;
@@ -249,7 +249,10 @@ export function fridge(book: BlockBook): Level {
   m.mon(MON.seed, 46, 7);
   // the cheesecake on the top shelf, glowing like a cursed artifact
   m.set(41, 3, '4').set(42, 3, '5').set(41, 2, '5').set(42, 2, '5').set(43, 3, '5');
-  m.link(41, 3, 'next');
+  // the doorway to the dark hall: after the cheesecake, down off the fridge door and out (the
+  // walk lets "Why must betrayal taste so good?!" finish before the act ends)
+  m.set(53, 13, 'd').set(53, 12, 't');
+  m.link(53, 13, 'next');
   return { m, start: at(2, 13), size: [W, H] };
 }
 
