@@ -109,7 +109,7 @@ export async function postcard(ctx: PrintContext): Promise<Sheet[]> {
       { class: 'pc-to' },
       h('b', null, 'SANDBOX SOFTWARE'),
       h('span', null, `Attn: ${splitTitle(g.title)[0]} Registration`),
-      h('span', null, `P.O. Box ${/P\.O\. Box (\d+)/.exec(ctx.manual.pages.map((p) => p.html).join(''))?.[1] ?? '4217'}`),
+      h('span', null, `P.O. Box ${/P\.O\. Box (\d+)/.exec(ctx.manual.pages.map((p) => p.html).join(''))?.[1] ?? '000'}`),
       h('span', null, 'Pittsburgh, PA 15213'),
     ),
     h(

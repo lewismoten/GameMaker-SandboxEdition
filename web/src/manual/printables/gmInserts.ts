@@ -20,7 +20,7 @@ export const SUPPORT = {
   email: 'support@sandbox.pgh.pa.us',
   ftp: 'ftp.sandbox.pgh.pa.us /pub/gamemaker',
   web: 'http://www.sandbox.pgh.pa.us/gamemaker/',
-  address: ['Sandbox Software', 'P.O. Box 4217', 'Pittsburgh, PA 15213'],
+  address: ['Sandbox Software', 'P.O. Box 000', 'Pittsburgh, PA 15213'],
 } as const;
 
 /** The list price printed on the box, and what Bits & Bytes Software marked it down to. */
