@@ -211,8 +211,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.set(9, y + 7, c('white', 2));
     return done(p);
   };
-  book.add('drop0', drop(0), { effect: 20, eamt: 1, chHitPt: 4, scorePts: 10 });
-  book.add('drop1', drop(1), { effect: 20, eamt: 1, chHitPt: 4, scorePts: 10 });
+  book.add('drop0', drop(0), { effect: 20, eamt: 1, chHitPt: 2, scorePts: 10 });
+  book.add('drop1', drop(1), { effect: 20, eamt: 1, chHitPt: 2, scorePts: 10 });
   const splash = P();
   for (const [x, y] of [
     [5, 14],
@@ -260,8 +260,8 @@ export function buildMonsterBlocks(pal: Pal) {
     else for (let k = 0; k < 7; k++) p.line(7 + k, 13, 5 + k, 19 - k / 3, c('crow', 1));
     return done(p);
   };
-  book.add('crow0', crow(0), hurt(-5));
-  book.add('crow1', crow(1), hurt(-5));
+  book.add('crow0', crow(0), hurt(-8));
+  book.add('crow1', crow(1), hurt(-8));
   // The peacock, two blocks wide: A the tail fan (behind), B the head and the strut.
   const peaTail = (f: number) => {
     const p = P();
@@ -321,8 +321,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.line(10, 12, 10 + Math.cos(a) * 4, 12 + Math.sin(a) * 4, c('stone', 0)).set(7, 9, c('stone', 5));
     return done(p);
   };
-  book.add('pebble0', pebble(0), hurt(-5));
-  book.add('pebble1', pebble(1), hurt(-5));
+  book.add('pebble0', pebble(0), hurt(-8));
+  book.add('pebble1', pebble(1), hurt(-8));
   const puff = P();
   for (const [x, y, r] of [
     [6, 14, 3],
@@ -344,8 +344,8 @@ export function buildMonsterBlocks(pal: Pal) {
     p.rect(8, 14, 5, 2, c('white', 1));
     return done(p);
   };
-  book.add('eagle0', eagle(0), hurt(-6));
-  book.add('eagle1', eagle(1), hurt(-6));
+  book.add('eagle0', eagle(0), hurt(-10));
+  book.add('eagle1', eagle(1), hurt(-10));
   // A white goat with her horns, third from the left in another song. Friendly.
   const goat = (f: number) => {
     const p = P();
@@ -375,8 +375,8 @@ export function buildMonsterBlocks(pal: Pal) {
     if (f) micro(p, 16, 1, '!', c('red', 3));
     return done(p);
   };
-  book.add('squirrel0', squirrel(0), hurt(-4));
-  book.add('squirrel1', squirrel(1), hurt(-4));
+  book.add('squirrel0', squirrel(0), hurt(-8));
+  book.add('squirrel1', squirrel(1), hurt(-8));
   // Birds of the air, come to lodge in the branches: a hello is worth points, and off they go.
   const bird = (f: number, flying: boolean) => {
     const p = P();

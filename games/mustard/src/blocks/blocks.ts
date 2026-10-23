@@ -49,7 +49,7 @@ export const LEDGE = 1;
 export const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between raindrops from a rain cloud, and between pebbles from the scree. */
-export const RAIN_EVERY = 40;
+export const RAIN_EVERY = 120;
 export const SCREE_EVERY = 90;
 
 export function buildBlocks(pal: Pal): BlockBook {
@@ -232,7 +232,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     return p;
   };
   book.add('cloudL', cloud(0, true), { grav: GRAV.down, birthMon: MON.drop, birthTime: RAIN_EVERY });
-  book.add('cloudR', cloud(1, true), { grav: GRAV.down, birthMon: MON.drop, birthTime: RAIN_EVERY + 13 });
+  book.add('cloudR', cloud(1, true), { grav: GRAV.down, birthMon: MON.drop, birthTime: RAIN_EVERY + 37 });
   // White clouds to stand on, up in the sky.
   const cloudLedge = (part: number) => {
     const p = sky(57 + part);
@@ -299,15 +299,15 @@ export function buildBlocks(pal: Pal): BlockBook {
     bg.set(9, 9, c('white', 2)).set(8, 10, c('white', 1));
     return bg;
   };
-  book.add('water', waterDrop(cave(65)), { effect: WATER, eamt: 1, hp: 4, score: 10, touch: 'cave' });
-  book.add('waterRoot', waterDrop(rootPic(66)), { effect: WATER, eamt: 1, hp: 4, score: 10, touch: 'root', grav: GRAV.none });
-  book.add('waterSky', waterDrop(sky(67)), { effect: WATER, eamt: 1, hp: 4, score: 10, touch: 'sky' });
+  book.add('water', waterDrop(cave(65)), { effect: WATER, eamt: 1, hp: 2, score: 10, touch: 'cave' });
+  book.add('waterRoot', waterDrop(rootPic(66)), { effect: WATER, eamt: 1, hp: 2, score: 10, touch: 'root', grav: GRAV.none });
+  book.add('waterSky', waterDrop(sky(67)), { effect: WATER, eamt: 1, hp: 2, score: 10, touch: 'sky' });
   // Dew on a blade of grass: health.
   const dew = sky(69);
   dew.line(6, 19, 12, 6, c('grass', 2)).line(7, 19, 13, 7, c('grass', 3));
   blob(dew, 13, 6, 2.6, 2.6, R('water'), 2, 3, 1.4);
   dew.set(12, 5, c('white', 2));
-  book.add('dew', dew, { hp: 25, score: 10, touch: 'tuft' });
+  book.add('dew', dew, { hp: 15, score: 10, touch: 'tuft' });
   // A golden mustard flower: an extra life.
   const golden = (bg: Pixels) => {
     bg.line(10, 19, 10, 10, c('leaf', 2));

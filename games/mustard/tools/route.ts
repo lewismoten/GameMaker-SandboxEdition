@@ -184,10 +184,16 @@ export async function theDust(bot: Bot): Promise<void> {
     await go('down', 14);
     await go('left', 19, 'into the second cave');
     await must(bot, bot.walk(15, 'its drop of water'), 'water 2');
-    await grab(bot, 'the sunbeam in the second cave', [[13, 13]], async () => {
-      await must(bot, bot.walk(13, 'under the sunbeam'), 'sunbeam');
-      await must(bot, bot.hop('up', CAVE_HOP), 'the sunbeam');
-    });
+    await grab(
+      bot,
+      'the sunbeam in the second cave',
+      [[13, 13]],
+      async () => {
+        await must(bot, bot.walk(13, 'under the sunbeam'), 'sunbeam');
+        await must(bot, bot.hop('up', CAVE_HOP), 'the sunbeam');
+      },
+      { ticks: 130 },
+    );
     await must(bot, bot.walk(18, 'the golden flower'), 'flower');
     await grab(bot, 'the golden flower', [[18, 13]], () => must(bot, bot.hop('up', CAVE_HOP), 'the flower'));
     await must(bot, bot.walk(19, 'back to the roots'), 'back');

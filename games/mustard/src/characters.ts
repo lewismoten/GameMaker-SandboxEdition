@@ -18,8 +18,9 @@ const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, l
 const MIRROR = 0x40; // bottom block flipped left-right
 const MIRROR_BOTH = 0x44; // and the top block
 
-/** Pixels a tick walking: slow but sure. */
+/** Pixels a tick walking: the seed is slow but sure; once it has grown (sprout, plant) it strides out. */
 export const STEP = 3;
+export const STEP_GROWN = 4;
 /** Pixels a tick sideways in a hop. */
 export const HOP_STEP = 4;
 /** Upward push a tick while Up is held (gravity takes one more away every tick). */
@@ -81,12 +82,13 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form): C
   set(S[3], [f({ pic: 'front' })], { key: 0 });
   set(S[4], [f({ pic: 'front' })], { key: 0 });
 
+  const step = form === 'seed' ? STEP : STEP_GROWN;
   const walk = (dx: number, mirror: boolean) =>
     ['side1', 'side0', 'side2', 'side0'].map((pic, i) => f({ pic, x: dx, mirror, top: tall ? ['top1', 'top0', 'top2', 'top0'][i] : undefined }));
-  set(S[SEQ.right], walk(STEP, false), { key: KEY.right, jstkMov: JOY.right });
-  set(S[SEQ.left], walk(-STEP, true), { key: KEY.left, jstkMov: JOY.left });
-  set(S[SEQ.rightD], walk(STEP, false), { key: KEY.d });
-  set(S[SEQ.leftA], walk(-STEP, true), { key: KEY.a });
+  set(S[SEQ.right], walk(step, false), { key: KEY.right, jstkMov: JOY.right });
+  set(S[SEQ.left], walk(-step, true), { key: KEY.left, jstkMov: JOY.left });
+  set(S[SEQ.rightD], walk(step, false), { key: KEY.d });
+  set(S[SEQ.leftA], walk(-step, true), { key: KEY.a });
   const hop = [f({ pic: 'hopFront', y: -HOP, top: 'topJoy' })];
   set(S[SEQ.hop], hop, { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
   set(S[SEQ.hopW], hop, { key: KEY.w, sound: SND.hop });
