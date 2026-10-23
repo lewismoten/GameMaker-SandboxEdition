@@ -262,6 +262,8 @@ export function baskets(book: BlockBook): Level {
     .col(W - 1, 0, 11, '#');
   m.set(12, 1, 'w').set(40, 2, 'w');
   crowdBand(m, 14, 22, true);
+  // a brother loaf still being passed hand to hand over the crowd at dusk: say hello
+  m.mon(MON.brother, 12, 3);
   crowdBand(m, 40, 50);
   // the baskets: on the grass, on stones, up in an olive tree, over the fire
   m.set(5, 9, 'e').set(9, 7, '_').set(9, 6, 'e');
