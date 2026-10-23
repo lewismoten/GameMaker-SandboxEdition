@@ -276,7 +276,7 @@ export function fakeWoods(book: BlockBook): Level {
     .mon(MON.carl, 15, 11)
     .mon(MON.bill, 7, 9)
     .mon(MON.bill, 19, 13)
-    .mon(MON.bill, 27, 3);
+    .mon(MON.bill, 28, 3);
   // the way through, past the register: "I get a souvenir sword"
   m.hall(34, 13, 1, 0, SHOP_HALL, '.', 'next');
   return { m, start: at(1, 2), size: [map.w + SHOP_HALL, map.h] };
