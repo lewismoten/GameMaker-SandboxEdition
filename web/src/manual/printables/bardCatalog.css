@@ -165,8 +165,8 @@
 }
 
 .bard-stamp {
-  align-self: flex-end;
-  margin: auto 6cqw 0 0;
+  flex: none;
+  margin-right: 2cqw;
   background: rgba(251, 239, 203, 0.7);
   padding: 1cqw 2.4cqw;
   border: 0.6cqw solid #b3121a;
@@ -221,7 +221,7 @@
   padding: 3cqw 4cqw;
   border: 0.6cqw dashed #341445;
   background: #fff8e4;
-  font-size: 2.8cqw;
+  font-size: 2.7cqw;
 }
 
 .bard-coupon h2 {
@@ -243,21 +243,32 @@
   margin-bottom: 1.4cqw;
   border-collapse: collapse;
   font:
-    700 2.8cqw 'Courier New',
+    700 2.5cqw 'Courier New',
     monospace;
 }
 
 .bard-coupon td {
-  padding: 0.6cqw 0;
+  padding: 0.4cqw 0;
   border-bottom: 0.3cqw solid #c9b98f;
+}
+
+.bard-coupon td:first-child {
+  width: 4cqw;
 }
 
 .bard-coupon td:last-child {
   text-align: right;
 }
 
-.bard-coupon address {
+.bard-mail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 0 0 1.2cqw 6cqw;
+}
+
+.bard-coupon address {
+  margin: 0;
   font:
     italic 3cqw/1.3 Georgia,
     serif;
@@ -277,4 +288,30 @@
     Helvetica,
     sans-serif;
   color: #3d2a46;
+}
+
+/* a collection: its heading, its tagline and its first game, on one page */
+.bard-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6cqw;
+}
+
+.pp-bard .bard-tag {
+  margin: -0.8cqw 0 0;
+  font:
+    italic 2.8cqw/1.3 Georgia,
+    serif;
+  color: #5a3a66;
+}
+
+.pp-bard .bard-run {
+  margin: 0;
+  font:
+    700 2.2cqw 'Courier New',
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5a3a66;
+  text-align: center;
 }

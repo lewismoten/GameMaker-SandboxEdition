@@ -1,6 +1,7 @@
 // The Bard of Bizarre's little catalog, tucked into the Game-Maker SE box (gmItems.ts): a
 // half-letter flyer of his song-games (every "series": "bizarre" game in the catalog, so new
-// ones turn up by themselves), how to get them from The Sofa BBS, a registration coupon (in the
+// ones turn up by themselves, sorted into his collections below; one he hasn't filed yet goes
+// last, told by its blurb), how to get them from The Sofa BBS, a registration coupon (in the
 // story only) and the honest small print about how the songs and pictures were made (the same
 // words as the site's credits, manual/webManual.ts).
 import './bardCatalog.css';
@@ -16,6 +17,57 @@ const ISSUE = 'Winter 1995';
 /** The credits page's words for the Bard's songs and pictures (manual/webManual.ts). */
 export const BARD_CREDIT =
   'The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each song’s words were written by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much back and forth), and each recording was made with Riffusion (now Google Flow Music). Certified Rat Tickler came with no recording, so its music was composed for the game by Claude Opus 5.5. The Great Dairy Reckoning of 3:17 A.M. is a spoken piece from Lewis’s own struggle (he is lactose intolerant, and he loves cheesecake): its voice was made with Riffusion, and its music was composed for the game by Claude Opus 5.5. Shakespeare in Sweatpants is seventeen spoken monologues, shaped with ChatGPT from Lewis’s prompts, with audio and vocals made with Riffusion (now Google Flow Music); its code, art and music were made by Claude Opus 5.5, and its coffee house, The Hive, is inspired by Lewis’s memories of the Beehive in Oakland, Pittsburgh (drawn from memory, not an official picture of it). Third Goat from the Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai. The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly Named Carl, Cleanse Me, O Loofah, But Leave My Soul and I Screamed, She Smirked, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy Reckoning’s title art were drawn for the games by Claude Opus 5.5. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn from its song’s recording (Certified Rat Tickler’s and The Great Dairy Reckoning’s music was made for the game); its code, pictures and levels were made by Claude Opus 5.5, with Lewis directing and playtesting.';
+
+/** The Bard's collections in the flyer's order, each game with its one-line pitch. */
+export const COLLECTIONS: { name: string; tag: string; games: Record<string, string> }[] = [
+  {
+    name: 'Bizarre Gospels',
+    tag: 'The wrong detail of a Bible story, taken very seriously.',
+    games: {
+      goat: 'Bethlehem’s least-painted goat eats, screams and elbows its way to the manger: third from the left, and proud of it.',
+      mustard: 'The smallest seed in all the land hops, roots and moves a mountain with faith the size of, well, itself.',
+      needle: 'The rich man walked away; his camel stayed. Give away the gold, slim down your soul and squeeze through the eye of a needle.',
+      loaf: 'Nobody picked Loaf #13 to feed the five thousand. Roll past hungry hands and flying fish and find a home anyway.',
+    },
+  },
+  {
+    name: 'Mundane Epics',
+    tag: 'Tiny everyday disasters, sung like the end of the world.',
+    games: {
+      carl: 'You are the fly. He has a dish towel. You have a barrel roll and all afternoon.',
+      remote: 'Friday night, snacks ready, remote gone. Search the couch, the dog, the fridge and the void between the cushions. (Check your hand.)',
+      reckoning: 'Lactose intolerant, 3:17 a.m., one slice of cheesecake, and the willpower of seven celery sticks. The Devil waits in leisure wear.',
+      loofah: 'She said don’t touch the pink one. You did. Now the soap has teeth, and only six candles can save you.',
+      smirked: 'MILD SCARES FOR ALL AGES, says the sign. The eight-year-old isn’t scared. You are.',
+      tickle: 'Doc Leo has the certificate; now he needs the rats. Pin first, then tickle, and grow a laughing carpet. No rats are harmed.',
+    },
+  },
+  {
+    name: 'Shakespeare in Sweatpants',
+    tag: 'Monologues for the overly dramatic, in a starched ruff and grey sweatpants.',
+    games: {
+      sweats: 'Seventeen epic monologues at open-mic night: a lost pen, a murderous office chair, a dead ficus named Gerald. Declaim your way through.',
+    },
+  },
+  {
+    name: 'Veni, Vidi, Risi!',
+    tag: 'Grand Latin songs about not-so-grand Roman troubles.',
+    games: {
+      risi: 'A poet in a toga and a cat after the cheese, from a dog who breaks wind at the senators’ banquet to a stern emperor who badly needs a laugh.',
+    },
+  },
+];
+
+/** The Bard's games sorted into his collections (in the collection's order); games not filed yet last, under `More song-games`. */
+export function byCollection<G extends { id: string }>(games: readonly G[]): { name: string; tag?: string; games: G[] }[] {
+  const filed = new Set(COLLECTIONS.flatMap((c) => Object.keys(c.games)));
+  const out: { name: string; tag?: string; games: G[] }[] = COLLECTIONS.map((c) => ({ name: c.name, tag: c.tag, games: Object.keys(c.games).flatMap((id) => games.filter((g) => g.id === id)) }));
+  out.push({ name: 'More song-games', games: games.filter((g) => !filed.has(g.id)) });
+  return out.filter((c) => c.games.length);
+}
+
+/** A game's one-line pitch: its collection's, or its blurb when it hasn't one. */
+export const pitch = (g: CatalogEntry): string => COLLECTIONS.find((c) => g.id in c.games)?.games[g.id] ?? flyerBlurb(g.blurb);
 
 /** Where on the credits slide (bardpic.gif, 320 x 200) Doc Leo's snapshot and the logo sit. */
 const SNAPSHOT = [20, 24, 124, 120] as const;
@@ -66,9 +118,14 @@ async function gameBlock(g: CatalogEntry): Promise<HTMLElement> {
         { class: 'bard-meta' },
         `${g.year ?? 1995} · ${sofaZipName(g)} ${sofaZipSize(g).toLocaleString('en-US')} bytes · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`,
       ),
-      h('p', null, flyerBlurb(g.blurb)),
+      h('p', null, pitch(g)),
     ),
   );
+}
+
+/** A collection's heading, kept on the page with its first game. */
+function sectionBlock(c: { name: string; tag?: string }, first: HTMLElement): HTMLElement {
+  return h('div', { class: 'bard-sec' }, h('h2', { class: 'bard-h' }, c.name), c.tag ? h('p', { class: 'bard-tag' }, c.tag) : null, first);
 }
 
 /** Pages of `blocks`, each holding as many as fit (at least one); always a first page. */
@@ -99,18 +156,25 @@ function fill(blocks: HTMLElement[], page: (blocks: HTMLElement[], index: number
 
 /** The flyer's sheets, from the games given (the catalog's Bard games when none are). */
 export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
-  const bard = games ?? (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isBizarreGame);
+  const sections = byCollection(games ?? (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isBizarreGame));
+  const bard = sections.flatMap((c) => c.games);
   // the Bard's own credits slide holds his snapshot and his logo
   let slide: HTMLCanvasElement | undefined;
   for (const g of bard) if ((slide = await gif(g, 'bardpic.gif'))) break;
-  const blocks = await Promise.all(bard.map(gameBlock));
+  const blocks: HTMLElement[] = [];
+  for (const c of sections) {
+    const [first, ...rest] = await Promise.all(c.games.map(gameBlock));
+    blocks.push(sectionBlock(c, first), ...rest);
+  }
+  // the honest small print follows the games, on the last page of them if it fits
+  blocks.push(h('p', { class: 'bard-small' }, h('b', null, 'The small print, today: '), BARD_CREDIT, ' This flyer was made for Game-Maker: Sandbox Edition; Doc Leo never mailed one.'));
   const logo = slide ? h('img', { class: 'bard-logo', src: crop(slide, LOGO), alt: 'The Bard of Bizarre', width: LOGO[2], height: LOGO[3] }) : h('b', { class: 'bard-logo-text' }, 'The Bard of Bizarre');
 
   const masthead = h(
     'header',
     { class: 'bard-head' },
     logo,
-    h('div', null, h('b', null, 'SONG-GAMES'), h('span', null, 'Gospel oddities & barnyard hymns,', h('br'), 'made into games you can play'), h('em', null, `${ISSUE} · Pittsburgh, PA`)),
+    h('div', null, h('b', null, 'SONG-GAMES'), h('span', null, 'Bizarre gospels, mundane epics', h('br'), '& a little Latin, made into games'), h('em', null, `${ISSUE} · Pittsburgh, PA`)),
   );
   const howdy = h(
     'div',
@@ -123,7 +187,7 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
       null,
       'Howdy, friends! I’m ',
       h('b', null, 'Doc Leo'),
-      ', hobo clown, and these are the songs I write as The Bard of Bizarre: mostly about the small and the overlooked, like the goat nobody painted into the picture. A few got stuck in my head so long they turned into games. Play them, share them, sing along.',
+      ', hobo clown and PhD (Comedic Science). As The Bard of Bizarre I sing about what nobody else will: the goat nobody painted, the loaf nobody picked, the remote that’s gone for good. The smaller the thing, the bigger the song! Some got stuck in my head so long they turned into games. Play them, share them, sing along.',
       h('span', { class: 'bard-sig' }, '— Doc Leo'),
     ),
   );
@@ -132,8 +196,8 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
   // as many games on each page as fit, measured on a real page
   const pages = fill(blocks, (games, i) =>
     i === 0
-      ? sheet(5.5, 8.5, 'bard', masthead, howdy, h('h2', { class: 'bard-h' }, 'On the board now'), ...(games.length ? games : [h('p', null, 'The first song-game is on its way.')]))
-      : sheet(5.5, 8.5, 'bard', h('h2', { class: 'bard-h' }, 'More song-games'), ...games),
+      ? sheet(5.5, 8.5, 'bard', masthead, howdy, ...(bard.length ? games : [h('p', null, 'The first song-game is on its way.'), ...games]))
+      : sheet(5.5, 8.5, 'bard', h('p', { class: 'bard-run' }, `The Bard of Bizarre · Song-games · ${ISSUE}`), ...games),
   );
 
   const back = sheet(
@@ -147,7 +211,7 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
       h(
         'ol',
         null,
-        h('li', null, 'Fire up TERMINAL and call ', h('b', null, 'THE SOFA BBS'), ' at ', h('b', { class: 'bard-phone' }, SOFA_PHONE), '. Eight lines, and they’re busy a lot: just call again.'),
+        h('li', null, 'Fire up TERMINAL and call ', h('b', null, 'THE SOFA BBS'), ' at ', h('b', { class: 'bard-phone' }, SOFA_PHONE), '. Busy? Just call again.'),
         h('li', null, 'Say hi in the teleconference (ignore LUNCHMEAT).'),
         h('li', null, 'Open the ', h('b', null, 'File Library'), ' and type ', h('kbd', null, 'D'), ' and the file’s number. Free for every caller.'),
         h('li', null, 'It unzips into ', h('code', null, 'C:\\DOWNLOAD'), '. Type the game’s name and press Enter.'),
@@ -164,11 +228,9 @@ export async function bardCatalog(games?: CatalogEntry[]): Promise<Sheet[]> {
         ...bard.map((g) => h('tr', null, h('td', null, '☐'), h('td', null, g.title), h('td', null, price(g)))),
       ),
       h('p', null, 'Registered players get a tape of the song and a hand-drawn surprise. Send a check (US funds) to:'),
-      h('address', null, 'The Bard of Bizarre', h('br'), 'c/o The Sofa BBS', h('br'), 'Pittsburgh, PA'),
+      h('div', { class: 'bard-mail' }, h('address', null, 'The Bard of Bizarre', h('br'), 'c/o The Sofa BBS', h('br'), 'Pittsburgh, PA'), stamp),
       h('p', { class: 'bard-story' }, '(In the story only: there is nothing to pay and nowhere to mail. The games are free.)'),
     ),
-    stamp,
-    h('p', { class: 'bard-small' }, h('b', null, 'The small print, today: '), BARD_CREDIT, ' This flyer was made for Game-Maker: Sandbox Edition; Doc Leo never mailed one.'),
   );
   pages.push(back);
   return pages;
