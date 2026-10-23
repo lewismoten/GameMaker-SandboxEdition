@@ -131,7 +131,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       } else if (shown.length === 2 && shown[0] === stapled[0]) spread.append(h('i', { class: 'gmb-staple top' }), h('i', { class: 'gmb-staple bottom' }));
       counter.textContent =
         shown[0] === 0
-          ? `Cover · ${total} pages`
+          ? `Cover · ${total - 2} pages`
           : shown[0] === total - 1
             ? 'Back cover'
             : `Page ${shown.join('–')} of ${total - 2}${!bookComb && shown[0] === stapled[0] ? ' · center' : ''}`;
@@ -196,8 +196,9 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       showManual();
     };
 
+    // page counts are the numbered pages, as the page turner counts them (the covers aren't numbered)
     const entries: { id: string; title: string; note?: string; icon: string; promised?: boolean }[] = [
-      { id: 'manual', title: 'Manual', note: `${pages.length} pages, ${comb ? 'comb-bound' : 'stapled'}`, icon: '📖' },
+      { id: 'manual', title: 'Manual', note: `${pages.length - 2} pages, ${comb ? 'comb-bound' : 'stapled'}`, icon: '📖' },
       ...items,
     ];
     for (const it of entries)
