@@ -86,6 +86,8 @@ fails until it is rerun. The other play-testing tools:
 | carl      | `npx vite-node ../games/carl/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | reckoning | `npx vite-node ../games/reckoning/tools/check.ts`    | the bot sneaks to the fridge, climbs it for seven celery, outruns the gurgle, splashes the Devil |
 | reckoning | `npx vite-node ../games/reckoning/tools/gendemo.ts`  | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| loofah    | `npx vite-node ../games/loofah/tools/check.ts`       | the bot rides the steam for bath salt, tames wild loofahs in the forest-dark aisle, lights six candles, cleanses Scrubbus Maximus |
+| loofah    | `npx vite-node ../games/loofah/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | needle    | `npx vite-node ../games/needle/tools/check.ts`       | the bot gives the gold away, crawls the eye gates, climbs threads, threads the eye |
 | needle    | `npx vite-node ../games/needle/tools/gendemo.ts`     | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
@@ -351,3 +353,22 @@ block's next/ntime is one clock for all its copies). The recording is spoken wit
 the FM score is composed for the game (thunder rolls, the ominous organ, a cow's moo, a tango); the
 voice clips are cut from the recording (`tools/cutClips.py`), and the title art is painted in code
 (`src/art/cover.ts`).
+
+**Cleanse Me, O Loofah, But Leave My Soul** (`loofah`). The Bard of Bizarre's goth rock song about
+domestic life ("Don't touch the pink one. It's mine!"), shareware from The Sofa BBS (`"series":
+"bizarre"`). A side-on platformer in four acts, one character file throughout: the man in his bath
+towel hops like the Reckoning's, and Space throws rosemary brine (power 220, at his head and his
+feet) once he has any: the throw's own count starts at 0 (a sequence with no count left can't be
+done) and each sprig of rosemary adds three, carried from act to act. In the haunted bathroom the
+shower's steam is air that pulls up (it lifts him to the silver rack), the shower head gives birth
+to drips, the mirrors fog up "YOU CROSSED A LINE" by next/ntime, the screaming towel is a solid
+monster, and five jars of bath salt (counter 20) go in the mop bucket. In the forest-dark aisle the
+luffa vines are air with no gravity (climb them), brambles hurt once and are trampled, wild loofahs
+(150) are splashed into tame ones worth points, and the checkout takes six silver coins (counter
+21). At home, touching an unlit candle lights it (counter 22) and the bathroom door takes six. In
+the shower Scrubbus Maximus, the demon sponge, is two monsters in four stages each, like the
+Reckoning's Devil; its top half, cleansed, becomes the pink one (counter 23), and her silver rack
+takes it back. The music is a goth rock FM arrangement of the recording (`tools/analyze.py`,
+`src/sound/song.ts`: fuzz power chords from feedback and pulse waves, a vibrato-twin choir, a
+cathedral organ swelling by program changes, booming tuned toms, a funeral bell), the sung clips
+are cut from it (`tools/cutClips.py`), and the title art is painted in code (`src/art/cover.ts`).
