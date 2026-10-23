@@ -89,7 +89,20 @@ export const SAVES_CHANGED = 'gm-saves-changed';
  * Adds or replaces one save file by rewriting the game's whole save record (read, change,
  * put in separate transactions). Failures are logged, not thrown, so play goes on.
  */
-export async function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+export function writeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
+  // one game's writes take turns: saving writes savnames.dat and gameN.sav back to back,
+  // and two overlapping read-change-puts would lose the first file (the slot's name)
+  const queued = (saveWrites.get(gameId) ?? Promise.resolve()).then(() => storeSaveFile(gameId, name, bytes));
+  saveWrites.set(gameId, queued);
+  void queued.then(() => {
+    if (saveWrites.get(gameId) === queued) saveWrites.delete(gameId);
+  });
+  return queued;
+}
+
+const saveWrites = new Map<string, Promise<void>>();
+
+async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array): Promise<void> {
   try {
     const current = await loadSaveData(gameId);
     current[name] = bytes;
