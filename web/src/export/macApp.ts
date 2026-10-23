@@ -11,7 +11,7 @@
 // Archive Utility unzips it to the app, still executable).
 //
 // The app is not notarized by Apple (that needs a paid Apple Developer ID), so the first
-// time it is opened macOS asks to confirm; MAC_FIRST_OPEN says how.
+// time it is opened macOS asks to confirm (the download dialog, editor/shell/macDownload.ts, says how).
 import { parseGame } from '../formats/game';
 import { decodeGif, isGif, type IndexedImage } from '../formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../formats/fli';
@@ -26,10 +26,6 @@ import { resealPlayer } from './macSign';
 
 export const PLAYER_PATH = 'mac/GameMakerPlayer';
 const EXECUTABLE = 'GameMakerPlayer';
-
-/** What the page says about opening an app that Apple has not notarized. */
-export const MAC_FIRST_OPEN =
-  'The app is not notarized by Apple, so the first time you open it macOS says it cannot check it. Click Done (or Cancel), then open System Settings → Privacy & Security and click “Open Anyway” next to the game’s name. On macOS 14 and earlier you can instead Control-click the app and choose Open. After that it opens normally.';
 
 export interface MacAppOptions {
   title: string;

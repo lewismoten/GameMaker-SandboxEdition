@@ -1,5 +1,6 @@
 // "Download for Mac": asks .dmg or .zip, says how to open an app Apple has not notarized,
 // then builds the Mac app here in the browser (src/export/macApp.ts) and saves it.
+import './macDownload.css';
 import { download, h, modal, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import type { GameFiles } from '../../project/files';
@@ -20,23 +21,36 @@ type Format = 'dmg' | 'zip';
 
 /** The dialog, then the download. `load` gets the game's files once a format is chosen. */
 export async function macDownload(title: string, load: () => Promise<MacGame>): Promise<void> {
-  const { MAC_FIRST_OPEN } = await import('../../export/macApp');
-  const format = await modal<Format>(`Download ${title} for Mac`, (close) => [
-    h('p', null, `A Mac app of ${title} that plays offline, in its own window. It runs on Apple silicon and Intel Macs with macOS 11 Big Sur or later. It is built right here in your browser.`),
-    h(
-      'ol',
-      { class: 'mac-steps' },
-      h('li', null, 'Open the downloaded disk image and drag the game onto Applications (or unzip the .zip and move the app there).'),
-      h('li', null, MAC_FIRST_OPEN),
-    ),
-    h('p', { class: 'meta' }, 'Saved games and high scores stay on the Mac, in the app.'),
+  const format = await modal<Format>(`Download ${title} for Mac`, (close) =>
     h(
       'div',
-      { class: 'buttons' },
-      h('button', { type: 'button', onclick: () => close('zip'), title: 'A .zip with the app inside: double-click it to unzip' }, 'Zip (.zip)'),
-      h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => close('dmg'), title: 'A disk image: open it and drag the game to Applications' }, 'Disk image (.dmg)'),
+      { class: 'mac-dialog' },
+      h('p', null, `${title} as a Mac app: it plays offline in its own window, on Apple silicon and Intel Macs with macOS 11 Big Sur or later. It is built right here in your browser.`),
+      h(
+        'ol',
+        null,
+        h('li', null, 'Open the disk image and drag the game onto Applications (or unzip the .zip and move the app there).'),
+        h(
+          'li',
+          null,
+          'The first time you open it, macOS warns that it cannot check the app: it is not notarized by Apple (that takes a paid Apple developer account). Click ',
+          h('kbd', null, 'Done'),
+          ', then open System Settings → Privacy & Security and click ',
+          h('kbd', null, 'Open Anyway'),
+          '. On macOS 14 or earlier you can instead Control-click the app and choose ',
+          h('kbd', null, 'Open'),
+          '. After that it opens like any app.',
+        ),
+      ),
+      h('p', { class: 'meta' }, 'Saved games and high scores are kept on the Mac.'),
+      h(
+        'div',
+        { class: 'buttons' },
+        h('button', { type: 'button', onclick: () => close('zip'), title: 'A .zip with the app inside: double-click it to unzip' }, 'Zip (.zip)'),
+        h('button', { type: 'button', class: 'primary', autofocus: true, onclick: () => close('dmg'), title: 'A disk image: open it and drag the game to Applications' }, 'Disk image (.dmg)'),
+      ),
     ),
-  ]);
+  );
   if (!format) return;
   try {
     toast(`Building the Mac app of ${title}…`);
