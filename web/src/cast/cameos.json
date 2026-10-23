@@ -8,7 +8,8 @@
     { "game": "teddy", "as": "in the grass by Doc Leo’s back door" },
     { "game": "goat", "as": "in the grass in the far corner of the shepherds’ field" },
     { "game": "needle", "as": "under the tailor’s sewing table" },
-    { "game": "tickle", "as": "on the tower’s floor, in the far corner" }
+    { "game": "tickle", "as": "on the tower’s floor, in the far corner" },
+    { "game": "teddy2", "as": "tucked behind Teddy’s bed at home" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
@@ -25,7 +26,8 @@
   ],
   "joe": [
     { "game": "realm", "as": "night librarian by the Royal Library’s door" },
-    { "game": "tickle", "as": "counting rats by the course’s chalkboard" }
+    { "game": "tickle", "as": "counting rats by the course’s chalkboard" },
+    { "game": "teddy2", "as": "in the Dog Show’s stands, keeping count" }
   ],
   "lewie": [
     { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },
