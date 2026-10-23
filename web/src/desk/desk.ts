@@ -279,7 +279,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
             h(
               "div",
               { class: "rsd-badge" },
-              "CREATED BY RECREATIONAL SOFTWARE DESIGNS",
+              "ORIGINALLY CREATED BY RECREATIONAL SOFTWARE DESIGNS",
             ),
           ),
           h("span", { class: "caption" }, "Game-Maker SE 3.0 — open the box"),
