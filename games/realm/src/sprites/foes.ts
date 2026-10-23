@@ -93,7 +93,7 @@ const BAT = [
 ];
 
 const SLIME_KEY = (body: RGB[]): Key => baseKey({ g: body[0], l: body[1], L: body[2] });
-const BAT_KEY: Key = baseKey({ b: C('purple', 0), B: C('purple', 1), o: C('pink', 1) });
+const BAT_KEY: Key = baseKey({ b: C('purple', 1), B: C('purple', 2), o: C('pink', 1) });
 
 export function foePics(): Map<string, Canvas> {
   const m = new Map<string, Canvas>();

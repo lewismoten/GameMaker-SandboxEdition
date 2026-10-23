@@ -56,7 +56,7 @@ export function buildSounds(): SoundFiles {
     SND.kill,
     'puff',
     SPEAKER.noise(7, 100, 900),
-    sample(0.32, mix([lowNoise(9, (t) => 0.6 - t), 0.8], [osc.sine((t) => 900 - t * 1800), 0.25]), { envelope: env(0.01, 2) }),
+    sample(0.32, mix([lowNoise(9, (t) => 0.6 - t), 0.8], [osc.sine((t) => 900 - t * 1800), 0.25]), { envelope: env(0.01, 2), gain: 0.6 }),
   );
   // Coins in the purse.
   add(
@@ -96,9 +96,9 @@ export function buildSounds(): SoundFiles {
     SND.subOther,
     'clunk',
     SPEAKER.fall(300, 90),
-    sample(0.3, mix([osc.sine((t) => 160 - t * 200), 0.7], [lowNoise(13, 0.3), 0.4]), { envelope: env(0.003, 2) }),
+    sample(0.3, mix([osc.sine((t) => 160 - t * 200), 0.7], [lowNoise(13, 0.3), 0.4]), { envelope: env(0.003, 2), gain: 0.6 }),
   );
-  // The sword: a swish of air.
+  // The sword: a swish of air, kept soft because it plays on every swing.
   add(
     SND.slash,
     'swish',
@@ -106,7 +106,7 @@ export function buildSounds(): SoundFiles {
     sample(
       0.2,
       lowNoise(19, (t) => 0.1 + t * 4),
-      { envelope: (u) => Math.sin(Math.PI * u) ** 2 },
+      { envelope: (u) => Math.sin(Math.PI * u) ** 2, gain: 0.4 },
     ),
   );
   add(

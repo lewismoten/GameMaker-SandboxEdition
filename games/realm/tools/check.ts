@@ -21,3 +21,5 @@ for (const [name, step] of ROUTE) {
   console.log(`${name}: ${bot.log[bot.log.length - 1]}`);
 }
 console.log(`ended: ${sim.ended ?? 'still playing'}; deaths ${sim.deaths}; swings ${bot.swings}; ticks ${sim.trail.length} scenes`);
+if (sim.ended !== 'won') throw new Error('realm: the bot did not win');
+if (sim.deaths) throw new Error(`realm: the bot lost ${sim.deaths} life/lives`);

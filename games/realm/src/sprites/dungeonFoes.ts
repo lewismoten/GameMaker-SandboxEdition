@@ -116,7 +116,7 @@ const KEYS: Record<string, Key> = {
   wight: baseKey({ g: C('ghost', 0), G: C('ghost', 1) }),
   crab: baseKey({ r: C('red', 1), R: C('orange', 1) }),
   eel: baseKey({ e: C('teal', 0), E: C('teal', 1) }),
-  golem: baseKey({ o: C('orange', 0), O: C('leather', 2), y: C('gold', 3) }),
+  golem: baseKey({ o: C('orange', 2), O: C('orange', 1), y: C('gold', 3) }),
   goblin: baseKey({ g: C('slime', 0), G: C('slime', 1), p: C('purple', 0), P: C('purple', 1), y: C('gold', 2), m: C('steel', 2) }),
   tick: baseKey({ y: C('gold', 1), w: C('white', 0) }),
 };
