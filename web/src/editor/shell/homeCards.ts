@@ -22,6 +22,7 @@ import { rememberOrigin } from './homeOrigin';
 import { projectMenuItems } from './homeProjectActions';
 import { chooseCopy } from './homeCopies';
 import { plainError } from '../core/plainError';
+import { isBizarreGame } from '../../project/bizarre';
 
 // Loaded when first used, so the list of games shows without them: the demo player (and
 // the game engine with it), the keyboard map and the manual with the paper in the box.
@@ -127,7 +128,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
     kind === 'sandbox'
       ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
       : kind === 'shareware' || kind === 'bizarre'
-        ? creditLine(g) || 'Shareware · play only'
+        ? creditLine(g) || (isBizarreGame(g) ? 'The Bard of Bizarre · free to change' : 'Shareware · play only')
         : !g.gam
           ? 'Pictures, monsters and sounds'
           : [g.company ?? g.author, g.year].filter(Boolean).join(' · ') || 'Gameware from the Game-Maker CD';
@@ -411,13 +412,15 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
       ),
     ];
   const href = playLink(e.id);
+  // the Bard of Bizarre's games are this project's own (MIT, like the Sandbox games): editable, with their notice as well
+  const playOnly = (game.kind === 'shareware' || game.kind === 'bizarre') && !isBizarreGame(e);
+  const notice = h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice');
   return (
     [
       play(href),
-      game.kind === 'shareware' || game.kind === 'bizarre'
-        ? h('button', { class: 'with-ico', onclick: () => void showNotice(e) }, svgIcon('notice'), 'Notice')
-        : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
+      playOnly ? notice : h('button', { class: 'with-ico', onclick: () => void copyGame(game, nav), 'aria-label': `Edit a copy of ${game.title}` }, svgIcon('edit'), 'Edit a copy'),
       keys,
+      isBizarreGame(e) ? notice : null,
       hasManual(game) ? loadingButton('manual', 'Manual', `Read the ${game.title} manual`, (ready) => openGameManual(e, ready)) : null,
     ] as (HTMLElement | null)[]
   ).filter((x): x is HTMLElement => !!x);
@@ -438,13 +441,20 @@ export function demoDialogButton(game: HomeGame): HTMLElement | null {
 
 export async function showNotice(listed: CatalogEntry): Promise<unknown> {
   const g = await withDetails(listed).catch(() => listed); // the notice is in games/details/<id>.json
-  return modal(`${g.title}: shareware notice`, (close) => [
+  const bard = isBizarreGame(g);
+  return modal(`${g.title}: ${bard ? 'notice' : 'shareware notice'}`, (close) => [
     h(
       'pre',
       { style: 'white-space:pre-wrap;max-height:60vh;overflow:auto;font:13px/1.4 ui-monospace,monospace' },
       g.notice || 'This game is shareware. It is copyrighted by its author.',
     ),
-    h('p', { class: 'meta' }, 'These notices are from 1993–1994; the addresses and prices may no longer be current.'),
+    h(
+      'p',
+      { class: 'meta' },
+      bard
+        ? 'The Bard of Bizarre’s games are this project’s own: free to play, share and change (MIT license). Edit a copy to see how it was made.'
+        : 'These notices are from 1993–1994; the addresses and prices may no longer be current.',
+    ),
     h('div', { class: 'buttons' }, h('button', { class: 'primary', onclick: () => close(undefined) }, 'Close')),
   ]);
 }
