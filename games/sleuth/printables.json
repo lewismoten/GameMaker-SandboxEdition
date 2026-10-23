@@ -454,24 +454,119 @@
   "stickers": [
     {
       "text": "CASE CLOSED",
-      "sub": "Port Ellery P.D.",
-      "shape": "badge",
+      "sub": "ADA",
+      "shape": "cut",
       "color": "#8a1622",
-      "ink": "#f6ead2"
+      "ink": "#f6ead2",
+      "hero": {
+        "chr": "ada.chr",
+        "cbl": "ada.cbl",
+        "pal": "house.pal"
+      }
+    },
+    {
+      "text": "A CLUE!",
+      "sub": "LOOK CLOSER",
+      "shape": "burst",
+      "color": "#e8b830",
+      "ink": "#1a0608",
+      "sprite": {
+        "blocks": "ada.cbl",
+        "pal": "house.pal",
+        "grid": [[11]]
+      }
+    },
+    {
+      "text": "GHOST LIGHT",
+      "sub": "NEVER LET IT GO OUT",
+      "shape": "cut",
+      "color": "#20304a",
+      "ink": "#f6ead2",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[5]]
+      }
+    },
+    {
+      "text": "BREAK A LEG",
+      "sub": "THE STAGEHAND",
+      "shape": "cut",
+      "color": "#e8b830",
+      "ink": "#1a0608",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[8]]
+      }
+    },
+    {
+      "text": "PORT ELLERY P.D.",
+      "sub": "ON THE BEAT",
+      "shape": "cut",
+      "color": "#1d3f7a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[0]]
+      }
+    },
+    {
+      "text": "BACKSTAGE CAT",
+      "sub": "KNOWS EVERYTHING",
+      "shape": "cut",
+      "color": "#7a2bbf",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[2]]
+      }
+    },
+    {
+      "text": "LOOK OUT BELOW!",
+      "sub": "SANDBAG",
+      "shape": "star",
+      "color": "#c86a1e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.mbl",
+        "pal": "house.pal",
+        "grid": [[4]]
+      }
+    },
+    {
+      "text": "THE DIVA",
+      "sub": "NOT A SUSPECT. PROBABLY.",
+      "shape": "cut",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "green.mbl",
+        "pal": "house.pal",
+        "grid": [[0]]
+      }
+    },
+    {
+      "text": "TIN HEART",
+      "sub": "TICKS LIKE IT MEANS IT",
+      "shape": "cut",
+      "color": "#6b7280",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "paragon.bbl",
+        "pal": "house.pal",
+        "grid": [[147]],
+        "under": 19
+      }
     },
     {
       "text": "THE PARAGON",
       "sub": "Opening night",
-      "shape": "rect",
+      "shape": "badge",
       "color": "#1a0608",
       "ink": "#e8b830"
-    },
-    {
-      "text": "GHOST LIGHT",
-      "sub": "Never let it go out",
-      "shape": "circle",
-      "color": "#20304a",
-      "ink": "#f6ead2"
     }
   ],
   "news": [
