@@ -1,6 +1,7 @@
 // Level 8: The Dog Show, at night in the Fair's show barn. Spin through the turnstile into
 // the ring, climb the A-frame, go through the tunnel, go round the hoop (Teddy retired from
-// hoops), play dead under the popcorn, bark the rival poodle off, ring the judges' bell to
+// hoops), play dead under the popcorn, bark the rival poodle off, play dead under the
+// second stand's popcorn, ring the judges' bell to
 // let down the velvet rope, and there is Gwinn in the Best Behaved ring, wiggling. Sit
 // pretty beside her and she SITS. The blue ribbon opens the stage curtain: the Big Show.
 //
@@ -49,6 +50,11 @@ export function show(): Level {
   m.set(40, 38, 'popTop').set(40, 39, 'popBot');
   bs.def('popBot').birthMon = beasts.id('popcorn');
   bs.def('popBot').birthTime = 46;
+  // The second stand, just past the rival poodle: play dead under its popcorn and bark her
+  // off between pops (the routine gets busier as the show goes on).
+  m.set(51, 38, 'popTop').set(51, 39, 'popBot2');
+  bs.def('popBot2').birthMon = beasts.id('popcorn2');
+  bs.def('popBot2').birthTime = 54;
   // The judges' table and bell; the velvet rope (a monster) across the Best Behaved ring.
   m.set(55, 39, 'table').set(56, 39, 'table');
   m.set(57, 38, 'judgeTop').set(57, 39, 'judgeBot');
@@ -69,7 +75,7 @@ export function show(): Level {
   m.mon(64, 38, 'askSit');
   m.mon(65, 39, 'gwinnShow');
   m.mon(25, 37, 'scentBone');
-  m.mon(52, 39, 'scentPoodle');
+  m.mon(68, 39, 'scentPoodle');
   for (const [x, y] of [
     [16, 35],
     [29, 36],
@@ -92,7 +98,7 @@ export function show(): Level {
     [36, 39],
     [43, 39],
     [45, 39],
-    [51, 39],
+    [47, 39],
     [53, 39],
     [61, 39],
     [67, 39],

@@ -1,7 +1,7 @@
 // Level 8's background blocks: the Fair's show barn at night, the dog show. Bleachers full of
 // people, banners, the agility course (an A-frame to climb, a tunnel, a hoop Teddy goes
-// round: he retired from hoops), the popcorn stand (it pops popcorn across the ring now
-// and then: a block giving birth), the judges' table, the Best Behaved ring, and the stage,
+// round: he retired from hoops), two popcorn stands (each pops popcorn across the ring
+// now and then: a block giving birth), the judges' table, the Best Behaved ring, and the stage,
 // whose curtain only opens for a blue ribbon.
 import { Pixels, rng } from '../../../kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
@@ -136,6 +136,8 @@ export function showTiles(): Tiles {
   const pc = cut(pop);
   t.air('popTop', pc[0][0]);
   t.air('popBot', pc[1][0]);
+  // the kettle corn stand past the rival poodle: the same stand, its own pop timing
+  t.air('popBot2', pc[1][0]);
   // the judges' table, the judge, the Best Behaved sign
   t.ledge(
     'table',

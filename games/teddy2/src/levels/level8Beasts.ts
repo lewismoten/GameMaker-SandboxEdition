@@ -1,5 +1,6 @@
 // Level 8's monsters, the dog show. The ring's turnstile turns for a spin; a rival show
-// poodle (a bark sends her off in a huff); popcorn flying across the ring (play dead); the
+// poodle (a bark sends her off in a huff); popcorn flying across the ring from two stands
+// (play dead); the
 // judges' bell (ring it, and its DING drops on the velvet rope, which falls); and Gwinn in
 // the Best Behaved ring, wiggling. The judge's "SIT?" hangs over her: sit pretty beside it,
 // and the heart wins it over; it drops onto Gwinn (a chain of monsters), and Gwinn SITS.
@@ -186,6 +187,16 @@ export function showBeasts() {
     ],
     power: POWER.pest,
     path: [[-9, 0, 6, FLIP]],
+    end: -1,
+  });
+  // the second stand's popcorn, from just past the rival poodle: bark her off between pops
+  b.add('popcorn2', {
+    pics: [
+      ['pop1', 2],
+      ['pop2', 2],
+    ],
+    power: POWER.pest,
+    path: [[-7, 0, 6, FLIP]],
     end: -1,
   });
   // the judges' bell and the velvet rope it lets down
