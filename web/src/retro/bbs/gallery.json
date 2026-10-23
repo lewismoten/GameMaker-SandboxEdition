@@ -120,6 +120,56 @@
     "progressive": false
   },
   {
+    "name": "CHEZXMAS.GIF",
+    "bytes": 32426,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "CHEZTED.GIF",
+    "bytes": 37630,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "CHEZPLUG.GIF",
+    "bytes": 39869,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "LEOWALK.GIF",
+    "bytes": 30547,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
+    "name": "LEONOSE.GIF",
+    "bytes": 30609,
+    "width": 320,
+    "height": 200,
+    "format": "GIF",
+    "colors": 128,
+    "gray": false,
+    "progressive": false
+  },
+  {
     "name": "THECHEZ1.GIF",
     "bytes": 124282,
     "width": 640,

@@ -38,6 +38,11 @@ const DESC: Record<string, string> = {
   'LIBRARY.GIF': 'The Dog House again, in 16 colors.',
   'CHEZ.JPG': "THE CHEZ: the SysOp's red CitiCar!",
   // The Sofa's GIF area
+  'CHEZXMAS.GIF': 'THE CHEZ, the 1976 1/2 CitiCar, strung with Christmas lights.',
+  'CHEZTED.GIF': 'Doc Leo and Teddy the corgi with THE CHEZ, out for a spin.',
+  'CHEZPLUG.GIF': 'THE CHEZ plugged in at a public charger. Electric since 1976!',
+  'LEOWALK.GIF': 'Doc Leo walking his rubber chicken down the middle of a parade.',
+  'LEONOSE.GIF': "Doc Leo's first day as a clown: he got to pick his own nose.",
   'THECHEZ1.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Dressed in Christmas lights and a big gold bow.',
   'THECHEZ2.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Doc Leo and Teddy the corgi out for a spin.',
   'THECHEZ3.GIF': 'THE CHEZ - 1976 1/2 CitiCar, tomato red, electric. Plugged in at a public charger.',
