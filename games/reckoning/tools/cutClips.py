@@ -14,9 +14,6 @@
 import os
 import sys
 
-import numpy as np
-import scipy.signal as sg
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
 sys.dont_write_bytecode = True  # no __pycache__ in games/kit/song
@@ -42,30 +39,13 @@ SONG = {
         'shins': (156.10, 158.85, 0.01, 0.25),  # "I'm sweating from my shins!"
         'lactaid': (176.05, 179.10, 0.01, 0.40),  # "...Is there Lactaid in hell?"
     },
-    # longer than 3.6 s: cut whole and kept at SLOW_RATE
+    # longer than 3.6 s: cut whole and kept at slow_rate
     'slow': {
         'intol': (17.70, 21.75, 0.01, 0.30),  # "I am lactose intolerant."
         'demon': (115.90, 119.75, 0.01, 0.30),  # "Sweet dairy demon, you lie!"
     },
+    'slow_rate': 8000,
 }
-SLOW_RATE = 8000
 
 if __name__ == '__main__':
     cutclips.main(SONG)
-    argv = sys.argv[1:]
-    out = argv[argv.index('--out') + 1] if '--out' in argv else SONG['out']
-    args = [a for a in argv if not a.startswith('--') and a != out]
-    x = cutclips.decode(args[0] if args else SONG['mp3'])
-    env = cutclips.voice_envelope(x)
-    cutclips.MAX_SECONDS = 4.9
-    for name, (s, e, fi, fo) in SONG['slow'].items():
-        start, end, p = cutclips.cut(x, env, s, e, fi, fo)
-        y = (p.astype(np.float64) - 128) / 127
-        y = sg.resample_poly(y, SLOW_RATE // 25, cutclips.RATE // 25)
-        y *= 0.97 / np.abs(y).max()
-        data = np.clip(np.round(y * 127 + 128), 0, 255).astype(np.uint8)
-        if len(data) + 33 >= 40000:
-            raise SystemExit('%s is %d bytes as a VOC' % (name, len(data) + 33))
-        with open(os.path.join(out, name + '.pcm'), 'wb') as f:
-            f.write(data.tobytes())
-        print('%-10s %7.2f - %7.2f s  %.2f s  %6d samples at %d Hz  VOC %6d bytes' % (name, start, end, end - start, len(data), SLOW_RATE, len(data) + 33))

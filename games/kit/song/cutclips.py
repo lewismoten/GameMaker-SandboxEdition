@@ -68,13 +68,38 @@ def cut(x, env, start, end, fade_in, fade_out):
     return start, end, pcm
 
 
+def slow_down(pcm, rate):
+    """8-bit PCM at RATE resampled to `rate` (a VOC can say its own rate), normalized again."""
+    y = (pcm.astype(np.float64) - 128) / 127
+    y = sg.resample_poly(y, rate // 25, RATE // 25)
+    y *= 0.97 / np.abs(y).max()
+    return np.clip(np.round(y * 127 + 128), 0, 255).astype(np.uint8)
+
+
+def write_pcm(out, name, data):
+    """<out>/<name>.pcm, refusing a clip whose VOC would pass Game-Maker's 16-bit size."""
+    if len(data) + 33 >= 40000:
+        raise SystemExit('%s is %d bytes as a VOC' % (name, len(data) + 33))
+    with open(os.path.join(out, name + '.pcm'), 'wb') as f:
+        f.write(data.tobytes())
+
+
+def paths(default_out, argv=None):
+    """The clips folder (--out DIR, else `default_out`) and the recording named on the command line (or None)."""
+    argv = sys.argv[1:] if argv is None else argv
+    out = argv[argv.index('--out') + 1] if '--out' in argv else default_out
+    args = [a for a in argv if not a.startswith('--') and a != out]
+    return out, (args[0] if args else None)
+
+
 def main(song, argv=None):
     """Cuts every clip of one song: a dict with 'mp3' (default path), 'out' (the clips folder)
-    and 'cues' ({name: (start, end, fade in, fade out)} in seconds of the recording)."""
-    argv = sys.argv[1:] if argv is None else argv
-    out = argv[argv.index('--out') + 1] if '--out' in argv else song['out']
-    args = [a for a in argv if not a.startswith('--') and a != out]
-    x = decode(args[0] if args else song['mp3'])
+    and 'cues' ({name: (start, end, fade in, fade out)} in seconds of the recording). Optional:
+    'slow' (cues up to 4.9 s long, kept at 'slow_rate', 8000 Hz unless said) and 'splices'
+    ({name: [cue, ...]} joined by 'splice_gap' seconds of silence, kept at 'splice_rate')."""
+    global MAX_SECONDS
+    out, mp3 = paths(song['out'], argv)
+    x = decode(mp3 or song['mp3'])
     env = voice_envelope(x)
     os.makedirs(out, exist_ok=True)
     for name, (s, e, fi, fo) in song['cues'].items():
@@ -82,3 +107,24 @@ def main(song, argv=None):
         with open(os.path.join(out, name + '.pcm'), 'wb') as f:
             f.write(pcm.tobytes())
         print('%-10s %7.2f - %7.2f s  %.2f s  %6d samples  VOC %6d bytes' % (name, start, end, end - start, len(pcm), len(pcm) + 33))
+    if 'slow' in song:
+        rate = song.get('slow_rate', 8000)
+        MAX_SECONDS = 4.9
+        for name, (s, e, fi, fo) in song['slow'].items():
+            start, end, p = cut(x, env, s, e, fi, fo)
+            data = slow_down(p, rate)
+            write_pcm(out, name, data)
+            print('%-10s %7.2f - %7.2f s  %.2f s  %6d samples at %d Hz  VOC %6d bytes' % (name, start, end, end - start, len(data), rate, len(data) + 33))
+    if 'splices' in song:
+        rate = song.get('splice_rate', 8000)
+        for name, parts in song['splices'].items():
+            pcm = []
+            for k, (s, e, fi, fo) in enumerate(parts):
+                if k:
+                    pcm.append(np.full(int(song['splice_gap'] * RATE), 128, dtype=np.uint8))
+                start, end, p = cut(x, env, s, e, fi, fo)
+                pcm.append(p)
+                print('%-10s part %d %7.2f - %7.2f s' % (name, k + 1, start, end))
+            data = slow_down(np.concatenate(pcm), rate)
+            write_pcm(out, name, data)
+            print('%-10s %.2f s  %6d samples at %d Hz  VOC %6d bytes' % (name, len(data) / rate, len(data), rate, len(data) + 33))
