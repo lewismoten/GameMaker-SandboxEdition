@@ -136,6 +136,19 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
   };
   book.add('payTv', payTv(false), { solid: SOLID, effect: MONEY, eamt: -PENNIES_NEEDED, score: 1000, touch: 'payTvOn' });
   book.add('payTvOn', payTv(true));
+  // stitched arrows in the fabric: a trail of gold thread toward the pay TV (walk on them)
+  for (const [dir, dx, dy] of [
+    ['R', 1, 0],
+    ['L', -1, 0],
+    ['D', 0, 1],
+    ['U', 0, -1],
+  ] as const) {
+    const p = fabric(75);
+    const st = (x: number, y: number) => p.set(x, y, c('yellow', 2)).set(x + Math.abs(dy), y + Math.abs(dx), c('yellow', 1));
+    for (let k = -6; k <= 6; k++) if ((k + 6) % 3 !== 2) st(10 + dx * k, 10 + dy * k);
+    for (let k = 1; k <= 4; k++) (st(10 + dx * (6 - k) - dy * k, 10 + dy * (6 - k) - dx * k), st(10 + dx * (6 - k) + dy * k, 10 + dy * (6 - k) + dx * k));
+    book.add(`trail${dir}`, p);
+  }
   // a sign in the void
   const sign = deep(74);
   sign.rect(1, 4, 18, 11, c('wood', 3)).rect(1, 4, 18, 1, c('wood', 4)).rect(9, 15, 2, 5, c('wood', 1));

@@ -239,6 +239,46 @@ const VOID: Record<string, string> = {
 };
 
 /**
+ * Stitches a trail of gold arrows into the void's plain fabric along the shortest way from
+ * `from` to `to` (every `every` steps, at a turn or on a straight), so the way to the pay TV
+ * can always be found.
+ */
+function trail(m: MapBuilder, lines: string[], from: [number, number], to: [number, number], every: number): void {
+  const W = lines[0].length;
+  const open = (x: number, y: number) => y >= 0 && y < lines.length && x >= 0 && x < W && !'~-iIU>'.includes(lines[y][x]);
+  const prev = new Map<number, number>();
+  const q = [from[1] * W + from[0]];
+  prev.set(q[0], -1);
+  while (q.length) {
+    const c = q.shift()!;
+    const x = c % W;
+    const y = Math.floor(c / W);
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
+      const k = (y + dy) * W + x + dx;
+      if (open(x + dx, y + dy) && !prev.has(k)) (prev.set(k, c), q.push(k));
+    }
+  }
+  const path: number[] = [];
+  for (let c = to[1] * W + to[0]; c !== -1; c = prev.get(c)!) {
+    if (!prev.has(c)) throw new Error('No way to the pay TV');
+    path.unshift(c);
+  }
+  for (let i = 3; i < path.length - 1; i += every) {
+    // the first plain fabric from here on
+    while (i < path.length - 1 && !'o8'.includes(lines[Math.floor(path[i] / W)][path[i] % W])) i++;
+    if (i >= path.length - 1) break;
+    const [a, b] = [path[i], path[i + 1]];
+    const d = b - a === 1 ? 'R' : b - a === -1 ? 'L' : b > a ? 'D' : 'U';
+    m.set(a % W, Math.floor(a / W), `trail${d}`);
+  }
+}
+
+/**
  * 3. The void between the cushions: ten pennies and the pay TV. Its fabric runs two blocks wide
  * (one-wide halls left no room to step round a sock), and two socks drift through it, not three.
  */
@@ -267,6 +307,7 @@ export function theVoid(book: BlockBook): Level {
   ]);
   const m = new MapBuilder(book, 'void', VOID);
   m.patch(0, 0, map.lines);
+  trail(m, map.lines, [1, 1], [29, 17], 7);
   m.mon(MON.sock, 12, 2).mon(MON.sock, 20, 11).mon(MON.lint, 9, 10).mon(MON.lint, 22, 18);
   m.mon(MON.penny, 16, 6).mon(MON.penny, 12, 13).mon(MON.penny, 10, 18);
   m.mon(MON.raccoon, 4, 10).mon(MON.seed, 31, 9).mon(MON.goat, 17, 11);
