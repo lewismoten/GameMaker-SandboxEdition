@@ -4,6 +4,8 @@ main.cast {
   --fam-sandbox: #b8860b;
   --fam-bizarre: #8e3bb5;
   --fam-cd: #2f7d4f;
+  /* beside "On this page" on a wide window (pageToc.css) */
+  --toc-body: 1040px;
   max-width: 1180px;
   margin: 0 auto;
   padding: 24px 16px 64px;

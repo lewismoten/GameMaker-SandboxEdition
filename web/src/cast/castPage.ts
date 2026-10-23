@@ -7,6 +7,7 @@ import { viewState } from '../urlState';
 import { CAST, CAST_GAMES, familiesOf, type CastMember, type Family } from './castData';
 import { castStage } from './castStage';
 import { seenIn } from './castThumbs';
+import { pageToc } from '../pageToc';
 
 const FILTERS: [Family | 'all', string][] = [
   ['all', 'Everyone'],
@@ -172,6 +173,7 @@ export function renderCast(el: HTMLElement): void {
       h('p', { class: 'cast-foot' }, h('a', { href: '#/' }, '← All games'), ' · ', h('a', { href: '#/help/credits' }, 'Credits and the Bard’s songs')),
     ),
   );
+  pageToc(el.querySelector('main')!, { sub: '.cast-card h3[id]' });
   // a link to one member: its card in view, marked for a moment
   const who = state.get('who');
   const target = who && el.querySelector<HTMLElement>(`#cast-${CSS.escape(who)}`);
