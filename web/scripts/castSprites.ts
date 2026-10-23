@@ -28,8 +28,11 @@ type ChrSource = { game: string; chr: string; cbl: string; pal: string; seq?: nu
 type PaintSource = { paint: Pixels[]; colors: [number, number, number][]; still?: boolean };
 /** Drawn by a game's own drawing code (in its palette `pal`): walking frames, then facing you. */
 type DrawnSource = { game: string; pal: string; walk: Pixels[]; front?: Pixels[]; acts?: Record<string, Pixels[]>; ms?: number; still?: boolean };
-/** Blocks of a .bbl/.mbl laid out in rows (-1 for none), one grid per frame. */
-type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean; mirror?: boolean; height?: number };
+/**
+ * Blocks of a .bbl/.mbl laid out in rows (-1 for none), one grid per frame; `recolor` swaps
+ * colors (hex to hex) where the game's palette draws a regular in colors not their own.
+ */
+type BlockSource = { game: string; file: string; pal: string; frames: number[][][]; ms?: number; still?: boolean; mirror?: boolean; height?: number; recolor?: Record<string, string> };
 type Source = ChrSource | BlockSource | DrawnSource | PaintSource | { chez: true } | { tinHeart: true };
 
 export const CAST_SPRITES: Record<string, Source> = {
@@ -66,7 +69,16 @@ export const CAST_SPRITES: Record<string, Source> = {
   lewie: { game: 'snowbound', chr: 'kid.chr', cbl: 'kid.cbl', pal: 'noon.pal', seq: 8 },
   will: { game: 'sweats', chr: 'poet.chr', cbl: 'poet.cbl', pal: 'hive.pal', seq: 5 },
   watt: { game: 'logic', chr: 'watt.chr', cbl: 'watt.cbl', pal: 'watt.pal', seq: 8 },
-  bard: { game: 'goat', file: 'goat.mbl', pal: 'stable.pal', frames: [[[40]], [[41]]], ms: 220 },
+  // the rooster in Third Goat from the Left, white as on his logo (the stable's palette makes
+  // him straw yellow) with the logo's orange beak; comb, spectacles and legs as the game has them
+  bard: {
+    game: 'goat',
+    file: 'goat.mbl',
+    pal: 'stable.pal',
+    frames: [[[40]], [[41]]],
+    ms: 220,
+    recolor: { ffdf9e: 'ffffff', e3c282: 'dde0e6', c6a269: 'aab0bb', ffef79: 'ffc24a', dfbe51: 'f0902c' },
+  },
   carl: { game: 'carl', chr: 'carl.chr', cbl: 'carl.cbl', pal: 'couch.pal', seq: 5 },
   goat: { game: 'goat', chr: 'goat.chr', cbl: 'goat.cbl', pal: 'town.pal', seq: 8, acts: { scream: 9, faint: 1 } },
   seed: { game: 'mustard', chr: 'seed.chr', cbl: 'mustard.cbl', pal: 'mound.pal', seq: 5 },
@@ -207,7 +219,7 @@ export function castSprite(s: Source): CastSprite {
   return {
     w: r.width,
     h: bottom - top,
-    colors: used.map((c) => [0, 1, 2].map((k) => hex(r.palette[c * 3 + k])).join('')),
+    colors: used.map((c) => [0, 1, 2].map((k) => hex(r.palette[c * 3 + k])).join('')).map((c) => ('recolor' in s && s.recolor?.[c]) || c),
     frames: r.frames.map((f) => Buffer.from(f.slice(top * r.width, bottom * r.width).map((c) => (c === TRANSPARENT ? 0 : index.get(c)!))).toString('base64')),
     ms: r.ms,
     walk: r.walk,
