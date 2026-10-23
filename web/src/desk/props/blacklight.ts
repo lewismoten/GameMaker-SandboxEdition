@@ -76,7 +76,7 @@ export function blackLight(desk: HTMLElement): () => void {
       flash(desk, stillMotion() ? "bl-blink" : "bl-flicker", 1000);
       say(poster, uv ? night1() : day1());
     },
-    { id: "desk-blacklight" },
+    { id: "desk-blacklight", title: "" }, // (a tooltip would sit over the art)
   );
   // the tube: on after dark unless switched this visit
   let uv = false;
@@ -85,7 +85,6 @@ export function blackLight(desk: HTMLElement): () => void {
     desk.classList.toggle("bl-night", night);
     desk.classList.toggle("bl-uv", uv);
     tube.setAttribute("aria-checked", String(uv));
-    tube.title = `Black light: ${uv ? "on" : "off"} (click to switch it ${uv ? "off" : "on"})`;
     glow.update();
   };
   const offTube = pressable(
@@ -96,9 +95,10 @@ export function blackLight(desk: HTMLElement): () => void {
       if (!uv) roomSound.flicker();
       else roomSound.click();
       show();
-      say(tube, uv ? (night ? "Bzzzz. The black light hums on: the poster and every felt egg glow." : "The black light comes on. In daylight it’s only a dim purple glow.") : "Click. The black light goes off.");
+      // short, to the right of the tube, so it never covers the poster you want to look at
+      say(tube, uv ? (night ? "Bzzzz. Black light on." : "On. By day, only a dim glow.") : "Click. Black light off.", undefined, { beside: true });
     },
-    { id: "desk-uv" },
+    { id: "desk-uv", title: "" },
   );
   tube.setAttribute("role", "switch"); // (pressable makes it a button first)
   const glow = eggGlow(desk);

@@ -34,7 +34,9 @@ export function pressable(
     el.tabIndex = 0;
   }
   if (name) el.setAttribute("aria-label", name);
-  el.title = opts.title ?? name;
+  // (title "": no tooltip at all, where one would sit over a picture)
+  if (opts.title === "") el.removeAttribute("title");
+  else el.title = opts.title ?? name;
   el.classList.add("room-prop");
   const go = (e: Event) => {
     if (opts.id) achieve(opts.id);
@@ -74,8 +76,10 @@ const escape = (e: KeyboardEvent) => e.key === "Escape" && bubble && closeBubble
 /**
  * A speech bubble beside `anchor` saying `text` (and showing `extra`, a little drawing, if
  * given) for a few seconds; the next one replaces it. Esc, scrolling or resizing closes it.
+ * Above `anchor` if there is room, below if not; `beside` puts it to the right instead (the
+ * black-light tube's, so it never covers the poster under the tube).
  */
-export function say(anchor: Element, text: string, extra?: Node): void {
+export function say(anchor: Element, text: string, extra?: Node, opts: { beside?: boolean } = {}): void {
   closeBubble();
   live ??= document.body.appendChild(
     h("div", { class: "prop-live", role: "status", "aria-live": "polite" }),
@@ -95,6 +99,17 @@ export function say(anchor: Element, text: string, extra?: Node): void {
   const w = b.offsetWidth;
   const ht = b.offsetHeight;
   const gutter = 16;
+  if (opts.beside) {
+    // to the right of it, level with it, its tail pointing back (clear of what is below it)
+    b.style.left = `${Math.min(innerWidth - gutter - w, r.right + 14)}px`;
+    b.style.top = `${Math.max(gutter, Math.min(innerHeight - ht - gutter, r.top + r.height / 2 - ht / 2))}px`;
+    b.classList.add("beside");
+    bubbleTimer = window.setTimeout(closeBubble, 1800 + text.length * 35);
+    addEventListener("resize", closeBubble);
+    addEventListener("scroll", closeBubble);
+    addEventListener("keydown", escape, true);
+    return;
+  }
   const cx = r.left + r.width / 2;
   const left = Math.max(gutter, Math.min(innerWidth - gutter - w, cx - w / 2));
   // above the thing if there is room, below it if not

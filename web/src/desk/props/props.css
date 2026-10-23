@@ -80,6 +80,13 @@
   border-left: 0;
 }
 
+.prop-bubble.beside::after {
+  top: calc(50% - 7px);
+  left: -9px;
+  border-top: 0;
+  border-right: 0;
+}
+
 .prop-bubble.below::after {
   top: -9px;
   border-right: 0;
