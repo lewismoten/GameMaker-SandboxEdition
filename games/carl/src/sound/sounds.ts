@@ -82,7 +82,11 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.money, 'ding', SPEAKER.coin());
   add(SND.pay, 'creak', SPEAKER.noise(2, 80, 400));
   add(SND.life, place === 'wild' ? 'seen' : 'hook', SPEAKER.arpeggio([587, 698, 880, 1175]));
-  add(SND.score, 'ding', speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0)));
+  const ding = speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0));
+  // points in the bedroom are the PC speaker's alone: an ear that counts gives points the same
+  // tick, and a ding.VOC there would cut its buzz.voc off as it starts
+  if (place === 'bed') set.freqs[SND.score] = ding;
+  else add(SND.score, 'ding', ding);
   add(SND.lose, 'named', SPEAKER.fall(600, 200));
   // a counter up: a snack crunched, a smile flashed (kitchen), an ear buzzed (bed), an hour (wild), the aux cord
   const gain = { house: 'crunch', kitchen: 'smile', bed: 'buzz', yard: 'crunch', wild: 'ding', aux: 'aux' }[place];
