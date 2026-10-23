@@ -119,7 +119,8 @@ function lounge(t: Term): void {
   t.line('|07NEW in the File library: THIRD GOAT FROM THE LEFT, MUSTARD SEED HUSTLE,');
   t.line('|07THREAD THE NEEDLE, BROTHER CAMEL, LOAF #13 (LEFT IN THE BASKET),');
   t.line("|07CERTIFIED RAT TICKLER, WHERE'S THE REMOTE?!, A FLY NAMED CARL,");
-  t.line('|07THE GREAT DAIRY RECKONING OF 3:17 A.M. and CLEANSE ME, O LOOFAH,');
+  t.line('|07THE GREAT DAIRY RECKONING OF 3:17 A.M., CLEANSE ME, O LOOFAH and');
+  t.line('|07I SCREAMED, SHE SMIRKED,');
   t.line('|07Game-Maker games by our own DOC LEO (The Bard of Bizarre), from his songs.');
   t.line('|07Free! Hit F.');
   t.line('|07Looking for more games? The Sandbox BBS has Game-Maker shareware.');
