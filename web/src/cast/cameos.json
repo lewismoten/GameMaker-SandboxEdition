@@ -19,7 +19,8 @@
     { "game": "year2000", "as": "tucked behind the food court tables at Mega Mall 2000" },
     { "game": "brief", "as": "on the reading room floor by the west shelves" },
     { "game": "reckoning", "as": "on her side of the bed, by her pillow" },
-    { "game": "loofah", "as": "on her side of the bed at home, by her pillow" }
+    { "game": "loofah", "as": "on her side of the bed at home, by her pillow" },
+    { "game": "sandcast", "as": "dropped in the sandbox’s far corner" }
   ],
   "will": [
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
