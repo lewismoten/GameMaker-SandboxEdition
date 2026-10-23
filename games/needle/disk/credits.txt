@@ -12,7 +12,8 @@ gospels (Matthew 19:24).
 
 Lyrics: ChatGPT, from Lewis's
 prompts. Music and animated
-cover: (credit pending).
+cover: Riffusion (now Google
+Flow Music).
 
 This game's FM music, its
 sung clips and the title
@@ -29,7 +30,6 @@ MAKER by Recreational
 Software Designs.
 
 Even a camel can dream!
-
 FREE TO SHARE
 
 Made in 2026 by Lewis Moten

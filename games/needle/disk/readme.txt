@@ -80,8 +80,9 @@ CREDITS (NOW)
   written by ChatGPT from Lewis
   Moten's prompts (as The Bard
   of Bizarre); music and
-  animated cover: (credit
-  pending).
+  animated cover made with
+  Riffusion (now Google Flow
+  Music).
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made

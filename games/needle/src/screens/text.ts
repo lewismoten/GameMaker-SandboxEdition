@@ -19,7 +19,7 @@ export const AUTHOR = 'The Bard of Bizarre';
  * animated cover its title cartoon comes from. Used by LICENSE.TXT (the credits page and the
  * README spell it out to fit their columns; about.json says the same in its blurb).
  */
-export const SONG_CREDIT = "lyrics written by ChatGPT from Lewis Moten's prompts; music and animated cover: (credit pending)";
+export const SONG_CREDIT = "lyrics written by ChatGPT from Lewis Moten's prompts; music and animated cover made with Riffusion (now Google Flow Music)";
 
 export const STORY = [
   page([
@@ -136,7 +136,8 @@ const CREDITS_TEXT = page(
     '',
     "Lyrics: ChatGPT, from Lewis's",
     'prompts. Music and animated',
-    'cover: (credit pending).',
+    'cover: Riffusion (now Google',
+    'Flow Music).',
     '',
     "This game's FM music, its",
     'sung clips and the title',
@@ -244,8 +245,9 @@ CREDITS (NOW)
   written by ChatGPT from Lewis
   Moten's prompts (as The Bard
   of Bizarre); music and
-  animated cover: (credit
-  pending).
+  animated cover made with
+  Riffusion (now Google Flow
+  Music).
   The music, sung clips and
   title cartoon here are made
   from them. The logo was made
