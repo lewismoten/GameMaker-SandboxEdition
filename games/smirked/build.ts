@@ -56,7 +56,8 @@ for (const [name, voc] of Object.entries(buildVocs())) if (used.has(name)) disk.
 const songs = allSongs();
 
 // Scenes: 0 title/menu, 1 game won/lost, then the levels in order.
-const game = newGame('I SCREAMED, SHE SMIRKED');
+// the menu's heading holds 19 characters
+const game = newGame('SCREAMED & SMIRKED');
 const built = LEVELS.map((l) => ({ l, ...l.build(book) }));
 const cards: CardView[] = [];
 built.forEach(({ l, m }, i) => {
