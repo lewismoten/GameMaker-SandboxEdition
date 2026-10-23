@@ -75,7 +75,17 @@ function bar(p: Pal): Pixels {
   return t;
 }
 
+/** The arena floor's quiet glitch: torn dashes in two dark shades, darker than any bullet. */
+function calm(a: StageArt, seed: number): Pixels {
+  const t = a.floor(0);
+  const r = rng(seed);
+  for (let i = 0; i < 4; i++) t.rect(Math.floor(r() * 16), 1 + Math.floor(r() * 18), 3 + Math.floor(r() * 3), 1, a.pal.c('deep', i % 2 ? 0 : 2));
+  return t;
+}
+
 function bossTiles(bs: BlockSet, a: StageArt): void {
+  bs.add('calm0', calm(a, 21));
+  bs.add('calm1', calm(a, 22));
   const s = slicesOf(face(a.pal), 14, 4);
   for (let r = 0; r < 4; r++)
     for (let c = 0; c < 14; c++) {
@@ -123,7 +133,8 @@ export function bossGlitch(art: StageArt): Leg {
     { mite: 'mite', turretEvery: 9, seekerEvery: 34, flakEvery: 26, hatchShut: 36, hatchOpen: 24, hatchEvery: 7 },
   );
   const g = arena(k.bs, k.beasts, art, 17);
-  g.rect(1, 0, 14, 10, (c, d) => ((c * 3 + d * 5) % 11 === 0 ? 'floor4' : (c + d) % 6 === 0 ? 'floor3' : 'floor0'));
+  // a quiet floor, so the bullets stand out (the bright glitch speckle stays in the scrolling legs)
+  g.rect(1, 0, 14, 10, (c, d) => ((c * 3 + d * 5) % 11 === 0 ? 'calm0' : (c * 5 + d * 3) % 13 === 0 ? 'calm1' : 'floor0'));
   for (let r = 0; r < 4; r++) for (let c = 0; c < 14; c++) if (k.bs.has(`face${r}${c}`)) g.set(1 + c, r, `face${r}${c}`);
   g.set(7, 0, 'gate0').set(8, 0, 'gate2');
   for (let r = 0; r < 2; r++) for (let c = 0; c < 2; c++) g.mon(7 + c, 1 + r, `head${r}${c}`);

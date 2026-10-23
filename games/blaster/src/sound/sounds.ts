@@ -16,6 +16,12 @@ function rumble(seed: number, from: number, to: number, seconds: number): (t: nu
   };
 }
 
+/** The speaker's boom: a few ticks of low noise, then silence. */
+function boomSpeaker(): Uint16Array {
+  const r = rng(3);
+  return speaker((i) => (i < 9 ? 80 + r() * 600 : 0));
+}
+
 export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array> } {
   const set = newSoundSet();
   const vocs: Record<string, Uint8Array> = {};
@@ -30,7 +36,9 @@ export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array>
     SPEAKER.arpeggio([523, 784, 1047, 1568]),
     sample(0.32, mix([osc.square((t) => 520 * 2 ** Math.floor(t * 12)), 0.4], [osc.sine(1040), 0.3])),
   );
-  add(SND.kill, 'boom', SPEAKER.noise(3, 80, 900), sample(0.45, rumble(3, 5000, 300, 0.45), { gain: 1 }));
+  // Game-Maker plays the kill sound for every link of a multi-hit enemy, so the "boom" is a
+  // short, soft crunch (0.16 s) that can fire many times a second without grating.
+  add(SND.kill, 'boom', boomSpeaker(), sample(0.16, mix([rumble(3, 3600, 500, 0.16), 1], [osc.sine((t) => 140 - t * 300), 0.35]), { gain: 0.55 }));
   add(SND.money, 'blip', SPEAKER.coin(), sample(0.12, osc.square(1320), { gain: 0.5 }));
   add(SND.moneyDown, 'blip', SPEAKER.fall(800, 300), sample(0.12, osc.square(1320), { gain: 0.5 }));
   add(
