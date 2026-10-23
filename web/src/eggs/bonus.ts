@@ -77,7 +77,7 @@ export async function bonusStates(): Promise<BonusState[]> {
 export const TAPS = 13;
 
 /**
- * How far the rotten egg has been tapped (0 whole .. TAPS crumbled to the diamond heart),
+ * How far the rotten egg has been tapped (0 whole .. TAPS crumbled open, to the IOU inside),
  * remembered in this browser only. It used to be a yes/no 'gm-egg-hatched' = '1' (open).
  */
 export const TAPS_KEY = 'gm-egg-taps';
@@ -116,8 +116,8 @@ export function setEggTaps(n: number): void {
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(EGGS_CHANGED));
 }
 
-/** The rotten egg is open: crumbled to the diamond heart. */
+/** The rotten egg is open: crumbled to the IOU inside. */
 export const isHatched = (): boolean => eggTaps() >= TAPS;
 
-/** The rotten egg's crack stage in words: "whole", "cracked 5/13" or "diamond heart". */
-export const tapsText = (taps: number): string => (taps >= TAPS ? 'diamond heart' : taps > 0 ? `cracked ${taps}/${TAPS}` : 'whole');
+/** The rotten egg's crack stage in words: "whole", "cracked 5/13" or "IOU note". */
+export const tapsText = (taps: number): string => (taps >= TAPS ? 'IOU note' : taps > 0 ? `cracked ${taps}/${TAPS}` : 'whole');

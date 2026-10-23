@@ -1,6 +1,7 @@
 // Drawing the two eggs kept apart from the dozen (bonus.ts): a rotten egg (mottled, pitted,
-// cracking a little more with every tap, stench rising), the diamond heart inside it (cut
-// with facets, caged in gold filigree, turning), and a pastry egg in the Fabergé manner
+// cracking a little more with every tap, stench rising), the IOU note inside it, the diamond
+// heart that note is for (cut with facets, caged in gold filigree, turning: Mystery Robot Joe's
+// trophy for the tin heart hunt, tinHearts/trophy.ts), and a pastry egg in the Fabergé manner
 // (rose glaze, piped icing, gold leaf, a nest of spun sugar, a clockwork baker on top).
 // The shells are painted flat and wrapped round the egg shape pixel by pixel, like the felt
 // eggs (eggArt.ts), but lit with a sheen and a bump map so icing stands up and cracks sink.
@@ -1188,10 +1189,10 @@ export function drawPastryEgg(g: CanvasRenderingContext2D, box: Box, turn: numbe
 
 /**
  * The little glass cake stand beside the shadow box, `w` x `h`, holding whichever of
- * 'rotten', 'heart' and 'pastry' have been found (left to right); the rotten egg cracked by
+ * 'rotten', 'iou' (the rotten egg tapped open) and 'pastry' have been found (left to right); the rotten egg cracked by
  * `taps` taps (0 .. 12).
  */
-export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number, items: ('rotten' | 'heart' | 'pastry')[], taps = 0): void {
+export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number, items: ('rotten' | 'iou' | 'pastry')[], taps = 0): void {
   const plateY = h * 0.7;
   const cx = w / 2;
   // the foot and stem, pressed glass
@@ -1218,9 +1219,11 @@ export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number,
   const n = Math.max(1, items.length);
   items.forEach((item, i) => {
     const ex = n === 1 ? cx : w * (0.3 + (0.4 * i) / (n - 1));
-    if (item === 'heart') {
-      const s = Math.min(w * 0.4, h * 0.5);
-      drawHeart(g, ex, plateY - s * 0.48, s, 0.45, 0.3);
+    if (item === 'iou') {
+      // the note propped against a shard of its shell
+      const s = Math.min(w * 0.42, h * 0.62);
+      drawRestingShards(g, ex, plateY - h * 0.01, s * 0.7);
+      drawIouNote(g, ex, plateY - s * 0.36, s, 0.35);
       return;
     }
     const eh = item === 'pastry' ? (plateY - h * 0.04) / 1.34 : Math.min(h * 0.44, (w * 0.34) / EGG_ASPECT);
@@ -1234,4 +1237,77 @@ export function drawCakeStand(g: CanvasRenderingContext2D, w: number, h: number,
   g.beginPath();
   g.ellipse(cx, plateY, w * 0.47, h * 0.06, 0, 0.1, Math.PI - 0.1);
   g.stroke();
+}
+
+// ---- the IOU in the rotten egg -------------------------------------------------------------
+
+/**
+ * What the rotten egg holds now: a little folded note on yellowed onionskin, "IOU one (1)
+ * diamond heart", signed by Mystery Robot Joe with a rivet. `size` is its width, centered at
+ * (cx, cy); `turn` swings it about its upright axis (its back is plain paper and the rivet).
+ */
+export function drawIouNote(g: CanvasRenderingContext2D, cx: number, cy: number, size: number, turn: number): void {
+  const w = size;
+  const h = size * 0.64;
+  const c = Math.cos(turn);
+  const sx = Math.max(0.06, Math.abs(c));
+  const front = c >= 0;
+  g.save();
+  g.translate(cx, cy);
+  g.rotate(-0.06);
+  g.scale(sx, 1);
+  // the paper, a little tented along its fold, and its shadow side
+  const paper = g.createLinearGradient(0, -h / 2, 0, h / 2);
+  paper.addColorStop(0, front ? '#f3e7bf' : '#e6d7a8');
+  paper.addColorStop(0.5, front ? '#eadba9' : '#dccb97');
+  paper.addColorStop(1, front ? '#e2cf96' : '#d3c08a');
+  g.fillStyle = paper;
+  g.beginPath();
+  g.moveTo(-w / 2, -h / 2 + h * 0.02);
+  g.lineTo(w / 2, -h / 2);
+  g.lineTo(w / 2 - w * 0.01, h / 2);
+  g.lineTo(-w / 2 + w * 0.012, h / 2 - h * 0.015);
+  g.closePath();
+  g.fill();
+  g.strokeStyle = 'rgba(120, 96, 40, 0.55)';
+  g.lineWidth = Math.max(0.6, w * 0.006);
+  g.stroke();
+  // the fold across the middle, and a stain where the egg sat on it
+  g.strokeStyle = 'rgba(140, 116, 60, 0.45)';
+  g.beginPath();
+  g.moveTo(-w / 2, 0);
+  g.lineTo(w / 2, -h * 0.01);
+  g.stroke();
+  const stain = g.createRadialGradient(w * 0.3, h * 0.22, 0, w * 0.3, h * 0.22, w * 0.18);
+  stain.addColorStop(0, 'rgba(130, 150, 70, 0.28)');
+  stain.addColorStop(1, 'rgba(130, 150, 70, 0)');
+  g.fillStyle = stain;
+  g.fillRect(-w / 2, -h / 2, w, h);
+  // the rivet it is signed with: tin, with a highlight
+  const rivet = (x: number, y: number, r: number) => {
+    const t = g.createRadialGradient(x - r * 0.35, y - r * 0.35, r * 0.1, x, y, r);
+    t.addColorStop(0, '#f4f6f8');
+    t.addColorStop(0.5, '#a9b0b8');
+    t.addColorStop(1, '#5d646c');
+    g.fillStyle = t;
+    g.beginPath();
+    g.arc(x, y, r, 0, Math.PI * 2);
+    g.fill();
+  };
+  if (!front) {
+    rivet(0, 0, w * 0.045);
+    g.restore();
+    return;
+  }
+  // the writing: a careful robot's hand
+  g.fillStyle = '#2b2a4a';
+  g.textAlign = 'center';
+  g.textBaseline = 'alphabetic';
+  g.font = `bold ${Math.round(h * 0.3)}px Georgia, 'Times New Roman', serif`;
+  g.fillText('IOU', 0, -h * 0.12);
+  g.font = `italic ${Math.max(6, Math.round(h * 0.12))}px Georgia, 'Times New Roman', serif`;
+  g.fillText('one (1) diamond heart', 0, h * 0.12);
+  g.fillText('ask for it back: Joe', -w * 0.04, h * 0.33);
+  rivet(w * 0.38, h * 0.3, w * 0.035);
+  g.restore();
 }

@@ -35,15 +35,15 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
     }
     const [{ bonusStates, eggTaps, TAPS }, { drawCakeStand }] = await Promise.all([import('./bonus'), import('./bonusArt')]);
     extra = (await bonusStates()).filter((e) => e.found);
-    // how far the rotten egg was tapped (the viewer, or EGG.EXE): its cracks, or the heart
+    // how far the rotten egg was tapped (the viewer, or EGG.EXE): its cracks, or the IOU inside
     const taps = eggTaps();
-    const items = extra.map((e) => (e.egg.id === 'rotten' ? (taps >= TAPS ? 'heart' : 'rotten') : 'pastry') as 'rotten' | 'heart' | 'pastry');
+    const items = extra.map((e) => (e.egg.id === 'rotten' ? (taps >= TAPS ? 'iou' : 'rotten') : 'pastry') as 'rotten' | 'iou' | 'pastry');
     const key = `${items.join(',')}:${taps}`;
     if (key === standShown) return;
     standShown = key;
     stand.hidden = !items.length;
     if (!items.length) return;
-    const names = items.map((i) => (i === 'rotten' ? (taps ? `a rotten egg, cracked by ${taps} of ${TAPS} taps` : 'a rotten egg') : i === 'heart' ? 'a diamond heart' : 'a pastry egg'));
+    const names = items.map((i) => (i === 'rotten' ? (taps ? `a rotten egg, cracked by ${taps} of ${TAPS} taps` : 'a rotten egg') : i === 'iou' ? 'an IOU note' : 'a pastry egg'));
     stand.setAttribute('aria-label', `Cake stand with ${names.join(' and ')}: take a closer look`);
     stand.title = 'A cake stand';
     const W = 56;
