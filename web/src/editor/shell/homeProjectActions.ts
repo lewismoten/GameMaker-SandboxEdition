@@ -2,7 +2,7 @@
 // make a duplicate, download it, export it, or delete it (with a few seconds to undo).
 import { h, promptText, toast } from '../core/ui';
 import { deleteProject, listProjects, loadProject, newId, saveProject } from '../../project/storage';
-import { downloadProject, exportProject, exportProjectPage, exportProjectForDos, exportProjectForMac } from './projectExport';
+import { downloadProject, exportProject, exportProjectPage, exportProjectForDos, exportProjectForMac, exportProjectForWindows } from './projectExport';
 import { forgetOrigin, isImported, originId, rememberOrigin, setImported } from './homeOrigin';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
@@ -94,6 +94,7 @@ export function projectMenuItems(p: ProjectSummary, refresh: () => Promise<void>
     h('button', { onclick: () => void exportProjectPage(p.id), title: 'One .html file with the game and player inside' }, 'Export as one web page'),
     h('button', { onclick: () => void exportProjectForDos(p.id) }, 'Export for DOS'),
     h('button', { onclick: () => void exportProjectForMac(p.id), title: 'A Mac app of the game (.dmg or .zip), built here' }, 'Download for Mac'),
+    h('button', { onclick: () => void exportProjectForWindows(p.id), title: 'A Windows program of the game (.exe or .zip), built here' }, 'Download for Windows'),
     isImported(p.id)
       ? h('button', { onclick: () => void move(p, false, refresh), title: 'List it with the games you make here' }, 'Move to My games')
       : h('button', { onclick: () => void move(p, true, refresh), title: 'List it with the games brought in from elsewhere' }, 'Move to Imported'),

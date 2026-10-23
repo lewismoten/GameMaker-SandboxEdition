@@ -12,6 +12,7 @@ import { createZip } from '../../project/zip';
 import { exportWebApp } from '../../export/exportWebApp';
 import { exportSinglePage } from '../../export/exportSinglePage';
 import { macDownload } from './macDownload';
+import { winDownload } from './winDownload';
 import { mountPlayer, type PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
 import { levelForMap, startingAt } from '../editors/integrator/startAt';
@@ -217,6 +218,7 @@ export class Workspace {
             ),
             h('button', { onclick: () => void this.exportForDos() }, 'Export for DOS'),
             h('button', { onclick: () => void this.exportForMac(), title: 'A Mac app of the game (.dmg or .zip), built here' }, 'Download for Mac'),
+            h('button', { onclick: () => void this.exportForWindows(), title: 'A Windows program of the game (.exe or .zip), built here' }, 'Download for Windows'),
           ),
         ),
         this.search,
@@ -625,6 +627,11 @@ export class Workspace {
   private exportForMac(): Promise<void> {
     const title = this.project.game().scenes[0]?.desc || this.project.name;
     return macDownload(title, async () => ({ title, gam: this.project.gam, files: this.project.files }));
+  }
+
+  private exportForWindows(): Promise<void> {
+    const title = this.project.game().scenes[0]?.desc || this.project.name;
+    return winDownload(title, async () => ({ title, gam: this.project.gam, files: this.project.files }));
   }
 
   private async exportPage(): Promise<void> {

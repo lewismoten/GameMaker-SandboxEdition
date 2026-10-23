@@ -1,5 +1,5 @@
 // Saving a project out of the browser: as a zip of its files, as an offline web app, as a
-// single web page, as a DOS game folder with PLAYGAME, or as a Mac app (see ../../export).
+// single web page, as a DOS game folder with PLAYGAME, or as a Mac app or a Windows program (see ../../export).
 import { download, toast } from '../core/ui';
 import { loadProject } from '../../project/storage';
 import { createZip } from '../../project/zip';
@@ -8,6 +8,7 @@ import { exportSinglePage } from '../../export/exportSinglePage';
 import { parseGame } from '../../formats/game';
 import { plainError } from '../core/plainError';
 import { macDownload } from './macDownload';
+import { winDownload } from './winDownload';
 
 export async function downloadProject(id: string): Promise<void> {
   const p = await loadProject(id);
@@ -62,4 +63,11 @@ export async function exportProjectForMac(id: string): Promise<void> {
   if (!p) return;
   const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
   await macDownload(title, async () => ({ title, gam: p.record.gam, files: p.files }));
+}
+
+export async function exportProjectForWindows(id: string): Promise<void> {
+  const p = await loadProject(id);
+  if (!p) return;
+  const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc || p.record.name;
+  await winDownload(title, async () => ({ title, gam: p.record.gam, files: p.files }));
 }
