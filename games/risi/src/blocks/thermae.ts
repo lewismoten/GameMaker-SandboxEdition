@@ -28,8 +28,8 @@ export const NOTE_EVERY = 30;
 export const DRIP_EVERY = 54;
 /** Ticks between cabbages from the top of the stands. */
 export const CABBAGE_EVERY = 58;
-/** Ticks between the Emperor's decrees. */
-export const DECREE_EVERY = 50;
+/** Ticks between the hushes ("SILENTIUM!") the herald's horn blows over the Emperor's head. */
+export const HUSH_EVERY = 64;
 
 export function buildThermae(pal: Pal): BlockBook {
   const x = context(pal);
@@ -274,7 +274,7 @@ export function buildThermae(pal: Pal): BlockBook {
   };
   book.add('stairs', stairs(false), { solid: SOLID, effect: LAUGHS, eamt: -LAUGHS_NEEDED, score: 1000, touch: 'stairsOpen' });
   book.add('stairsOpen', stairs(true), { solid: LEDGE, grav: GRAV.down });
-  // the box behind the Emperor (solid): it gives birth to his decrees
+  // the imperial box behind the Emperor (solid), its decrees stacked ready (scenery: his "SILENTIUM!" now comes from the herald's horn)
   const box = frons(42, 'wall');
   box.rect(1, 6, 18, 14, c('purple', 1)).rect(1, 6, 18, 2, c('gold', 2));
   for (const [sx, sy] of [
@@ -283,7 +283,16 @@ export function buildThermae(pal: Pal): BlockBook {
     [14, 10],
   ])
     box.rect(sx, sy, 4, 3, c('marble', 3)).set(sx, sy + 1, c('red', 2));
-  book.add('decreeBox', box, { solid: SOLID, birthMon: MON.decree, birthTime: DECREE_EVERY });
+  book.add('decreeBox', box, { solid: SOLID });
+  // the herald's bronze horn in the stage front behind the throne: it gives birth to his hushes
+  const horn = (seed: number, bell: boolean) => {
+    const p = frons(seed, 'wall');
+    p.rect(6, 9, 14, 3, c('bronze', 2)).rect(6, 9, 14, 1, c('bronze', 3));
+    if (bell) p.disc(5, 10, 4, c('bronze', 1)).disc(5, 10, 2, c('ink', 0));
+    else p.rect(12, 4, 2, 6, c('bronze', 1));
+    return p;
+  };
+  book.add('horn', horn(49, true), { ...air, birthMon: MON.hush, birthTime: HUSH_EVERY });
   // the altar on the stage: the laurel crown laid on it ends the game
   const altar = (crowned: boolean) => {
     const p = frons(43, 'wall');

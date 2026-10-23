@@ -353,9 +353,12 @@ export function theater(book: BlockBook): Level {
   m.row(1, 25, W - 2, 'fronsTop').fill(25, 2, W - 26, 7, 'frons');
   for (const x of [26, 33, 41]) m.col(x, 2, 8, 'fronsCol');
   m.set(29, 7, 'fronsDoor').set(29, 8, 'fronsDoor');
-  // Doc Leo the jester; Emperor Gravis; the box behind him that throws decrees; the altar
-  m.mon(MON.jester, 28, 8);
-  m.mon(MON.gravisA0, 36, 7).mon(MON.gravisB0, 36, 8);
+  // Doc Leo the jester at the foot of the stage stairs (out of the way of the hushes); Emperor
+  // Gravis; the imperial box behind him; the altar
+  m.mon(MON.jester, 23, 11);
+  m.mon(MON.gravisA0, 33, 7).mon(MON.gravisB0, 33, 8);
+  // the herald's horn behind the throne, over his head: "SILENTIUM!"
+  m.set(39, 6, 'horn');
   m.set(38, 4, 'decreeBox');
   m.set(40, 8, 'altar');
   m.link(42, 8, 'won');

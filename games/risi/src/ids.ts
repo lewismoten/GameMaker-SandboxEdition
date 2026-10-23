@@ -73,7 +73,11 @@ export const MON = {
   /** Doc Leo again, the theater's jester. A hello is points. */
   jester: 29,
   jesterOff: 30,
-  /** Emperor Gravis, two blocks tall (A his laurel and stern face, B his toga and throne), four jokes each half. */
+  /**
+   * Emperor Gravis, two blocks tall (A his laurel and stern face, B his toga and throne), four
+   * jokes each half. After the second and the third he shuffles his throne two blocks back
+   * toward his heralds (the "m" stages: no joke lands while he shuffles).
+   */
   gravisA0: 31,
   gravisA1: 32,
   gravisA2: 33,
@@ -87,6 +91,17 @@ export const MON = {
   thud: 40,
   /** The laurel crown, dropped when his top half laughs: the stage's altar takes it. */
   crown: 41,
+  gravisA2m: 44,
+  gravisA3m: 45,
+  gravisB2m: 46,
+  gravisB3m: 47,
+  /**
+   * His "SILENTIUM!": a hush the herald's horn behind him blows over his head; it swoops down
+   * and rolls along the boards at Marcus's feet. Hop it: jokes pass through it, and it stings.
+   */
+  hush: 48,
+  /** His empty throne, when he has laughed himself off it. */
+  throne: 49,
 } as const;
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */

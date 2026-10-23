@@ -422,7 +422,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       const s = Math.min(3, Math.floor(k / 8));
       const f = k % 2 ? 'b' : 'a';
       scaleBlit(p, N(`gravisA${s}${f}`), 200, 70 + (s >= 3 ? k % 2 : 0), 3);
-      scaleBlit(p, N(`gravisB${s}${f}`), 200, 130, 3);
+      scaleBlit(p, N(`gravisB${s >= 3 ? 3 : 0}${f}`), 200, 130, 3);
       scaleBlit(p, M(k < 24 ? 'joke0' : 'bliss'), 70, 118, 3);
       if (k >= 24) {
         say(p, pal, 230, 40, 'RISIT!', 'gold', 3, 3);

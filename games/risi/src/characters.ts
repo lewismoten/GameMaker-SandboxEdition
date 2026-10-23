@@ -234,14 +234,34 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   ]);
   set[MON.jester] = mon(anim('jester0', 'jester1', 7), { power: 50, thru: 0, newmon: MON.jesterOff }, still);
   set[MON.jesterOff] = away('jester1', 'jester0');
+  // Emperor Gravis: a joke a stage; after the second and the third he shuffles his throne two
+  // blocks back toward his heralds (power 230 while he shuffles, so jokes bounce off), then sits
+  // still again. Both halves shuffle the same two blocks, so they line up again whichever is hit
+  // first. Beaten, his top half drops the laurel crown and his bottom half leaves the empty
+  // throne.
   for (const half of ['A', 'B'] as const)
     for (let s = 0; s < 4; s++) {
-      const slot = MON[`gravis${half}${s}` as keyof typeof MON];
-      const next = s < 3 ? MON[`gravis${half}${s + 1}` as keyof typeof MON] : half === 'A' ? MON.crown : NONE;
-      set[slot] = mon(sting('', 11 - s * 2, `gravis${half}${s}a`, `gravis${half}${s}b`, `gravis${half}${s}s`), { power: 200, thru: 1, newmon: next }, still);
+      const key = (k: string) => MON[`gravis${half}${k}` as keyof typeof MON];
+      const next = s === 3 ? (half === 'A' ? MON.crown : MON.throne) : s >= 1 ? key(`${s + 1}m`) : key(`${s + 1}`);
+      const look = half === 'B' ? (s === 3 ? 3 : 0) : s;
+      const pics = (st: number) => sting('', 11 - st * 2, `gravis${half}${look}a`, `gravis${half}${look}b`, `gravis${half}${look}s`);
+      set[key(`${s}`)] = mon(pics(s), { power: 200, thru: 1, newmon: next }, still);
+      if (s >= 2)
+        set[key(`${s}m`)] = mon(anim(`gravis${half}${look}a`, `gravis${half}${look}b`, 3), { power: 230, thru: 1, end: -1, newmon: key(`${s}`) }, [
+          corner(0, 0, 2),
+          corner(2, 0, 2, 0),
+        ]);
     }
+  set[MON.throne] = mon(anim('throne', 'throne', 20), { power: 230, thru: 1 }, still);
+  // his hush (corners from where it is blown): over his head (it never touches him wherever he
+  // sits), down in front of him, along the boards to the top of the stairs, then gone. As strong as a joke, so they pass through
+  // each other: nothing spends one of a joke's two HA!s and not the other, which would set
+  // his two halves a stage apart.
+  set[MON.hush] = mon(sting('hush', 3), { power: 220, thru: 0, end: -1 }, [corner(0, 0, 3), corner(-7, 0, 3, 0), corner(-8, 2, 3, 0), corner(-14, 2, 6, 0)]);
   const arc: March[] = [corner(0, 0, 3), corner(-2, -2, 3, 4), corner(-4, -3, 3, 4), corner(-7, -2, 3, 4), corner(-9, 1, 3, 4), corner(-11, 3, 3, 4)];
-  set[MON.decree] = mon(sting('decree', 2), { power: 200, thru: 0, end: -1, newmon: MON.thud }, arc);
+  // (as strong as a joke, so the two pass through each other: a decree never spends the joke at
+  // his head and lets the one at his feet by, which would set his two halves a stage apart)
+  set[MON.decree] = mon(sting('decree', 2), { power: 220, thru: 0, end: -1, newmon: MON.thud }, arc);
   set[MON.thud] = mon([[n('thud'), 4]], { power: 200, thru: 0, end: 18 });
   set[MON.crown] = mon(anim('crown0', 'crown1', 4), { power: 230, thru: 1 }, still);
   return set;

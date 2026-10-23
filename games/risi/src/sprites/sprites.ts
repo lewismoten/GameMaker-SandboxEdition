@@ -697,12 +697,37 @@ export function buildMonsterBlocks(pal: Pal) {
     }
     return done(p);
   };
-  for (const half of ['A', 'B'] as const)
-    for (let s = 0; s < 4; s++) {
-      book.add(`gravis${half}${s}a`, gravis(half, s, 0), solid);
-      book.add(`gravis${half}${s}b`, gravis(half, s, 1), solid);
-      book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10));
-    }
+  // (his toga and throne look the same until he shakes with laughter: stages 0 and 3 only)
+  for (const [half, s] of [
+    ['A', 0],
+    ['A', 1],
+    ['A', 2],
+    ['A', 3],
+    ['B', 0],
+    ['B', 3],
+  ] as const) {
+    book.add(`gravis${half}${s}a`, gravis(half, s, 0), solid);
+    book.add(`gravis${half}${s}b`, gravis(half, s, 1), solid);
+    book.add(`gravis${half}${s}s`, gravis(half, s, 0), hurt(-10));
+  }
+  // his "SILENTIUM!": a purple hush rolling toward Marcus, a finger to its lips, white-rimmed to read on the red stage front
+  const hush = (f: number) => {
+    const p = P();
+    blob(p, 10, 10, 8, 6, R('purple'), 1, 2);
+    p.ring(10, 10, 8, c('marble', 3));
+    micro(p, 4, 7, 'SH!', c('marble', 3));
+    p.rect(15, 4 + f, 2, 6, c('skin', 3));
+    for (let k = 0; k < 3; k++) p.set(19, 6 + k * 4 + f, c('purple', 2));
+    return done(p);
+  };
+  book.add('hush0', hush(0), { solid: 0 });
+  book.add('hush1', hush(1), { solid: 0 });
+  book.add('hushS', hush(0), hurt(-8, 0));
+  // his empty gilt throne, a purple cushion squashed where he sat (walk past it)
+  const throne = P();
+  throne.rect(1, 2, 18, 18, c('gold', 1)).rect(1, 2, 18, 2, c('gold', 3)).rect(3, 4, 14, 16, c('gold', 0));
+  throne.rect(4, 11, 12, 4, c('purple', 2)).rect(4, 11, 12, 1, c('purple', 1)).rect(4, 15, 12, 1, c('gold', 2));
+  book.add('throne', done(throne), { solid: 0 });
   // a decree, rolled, flying ("SILENTIUM!"), and where it lands
   const decree = (f: number) => {
     const p = P();

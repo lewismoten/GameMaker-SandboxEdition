@@ -423,7 +423,20 @@ export async function baths(bot: Bot): Promise<void> {
   await leave(bot, bot.walk(59, 'on'), 'the basin');
 }
 
-const GRAVIS = [MON.gravisA0, MON.gravisA1, MON.gravisA2, MON.gravisA3, MON.gravisB0, MON.gravisB1, MON.gravisB2, MON.gravisB3];
+const GRAVIS = [
+  MON.gravisA0,
+  MON.gravisA1,
+  MON.gravisA2m,
+  MON.gravisA2,
+  MON.gravisA3m,
+  MON.gravisA3,
+  MON.gravisB0,
+  MON.gravisB1,
+  MON.gravisB2m,
+  MON.gravisB2,
+  MON.gravisB3m,
+  MON.gravisB3,
+];
 
 /** Jokes at the stone face ahead on his row until it laughs, then waits for the laugher to come to him. */
 async function crack(bot: Bot, what: string): Promise<void> {
@@ -462,27 +475,37 @@ export async function theater(bot: Bot): Promise<void> {
     await crack(bot, 'the face on the fourth row');
     if (laughs(bot) < 5) throw new Error(`only ${laughs(bot)} laughs`);
   });
-  await carefully(bot, 'the orchestra: the mask, the last face, the coin', 20, async () => {
+  await carefully(bot, 'the orchestra: the mask, the last face, the coin, Doc Leo', 20, async () => {
     await must(bot, bot.walk(17.2, 'down into the orchestra'), 'orchestra');
     await must(bot, bot.walk(18, 'under the mask'), 'mask');
     await up(bot, 'the mask', 8);
     await crack(bot, 'the face in the orchestra');
     await must(bot, bot.walk(22, 'under the coin'), 'coin');
     await up(bot, 'the coin');
+    await must(bot, bot.walk(23, 'Doc Leo the jester'), 'leo');
   });
-  await carefully(bot, 'the stairs, up onto the stage, Doc Leo', 0, async () => {
+  await carefully(bot, 'the stairs, up onto the stage', 0, async () => {
     await must(bot, bot.walk(24, 'the stairs open'), 'stairs');
     await must(bot, bot.hop('right', 12, 'right', 25.6), 'up onto the stage');
-    await must(bot, bot.walk(29, 'Doc Leo the jester'), 'leo');
+    await must(bot, bot.walk(28, 'across the stage'), 'stage');
   });
-  await carefully(bot, 'Emperor Gravis', 60, async () => {
-    await must(bot, bot.walk(33, 'before the Emperor'), 'emperor');
-    for (let k = 0; k < 30 && alive(bot, GRAVIS); k++) await joke(bot, 'right', 8);
+  // Every hush he blows over his head ("SILENTIUM!") swoops down and rolls at Marcus's feet: the
+  // bot hops each one and jokes between them, and waits while he shuffles his throne back.
+  await carefully(bot, 'Emperor Gravis', 40, async () => {
+    await must(bot, bot.walk(29.2, 'before the Emperor'), 'emperor');
+    for (let k = 0; k < 40 && alive(bot, GRAVIS); k++) {
+      const me = bot.px.x / 20;
+      if (where(bot, MON.hush).some((h) => h.y > 7.9 && h.x - me > 0 && h.x - me < 2)) {
+        await up(bot, 'over the hush');
+        await must(bot, bot.land(), 'land');
+      } else if (where(bot, MON.gravisA2m).length || where(bot, MON.gravisA3m).length) await must(bot, bot.wait(4), 'he shuffles back');
+      else await joke(bot, 'right', 4);
+    }
     if (alive(bot, GRAVIS)) throw new Error('the Emperor keeps a straight face');
     bot.say('Emperor Gravis laughed');
   });
-  await carefully(bot, 'the laurel crown, the altar', 30, async () => {
-    await must(bot, bot.walk(35.6, 'under the crown'), 'crown');
+  await carefully(bot, 'the laurel crown, the altar', 0, async () => {
+    await must(bot, bot.walk(36.6, 'under the crown'), 'crown');
     await up(bot, 'the laurel crown', 6);
     if (crown(bot) < 1) throw new Error('no crown');
     await must(bot, bot.walk(40.6, 'the altar'), 'altar');
