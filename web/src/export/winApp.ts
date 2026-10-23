@@ -1,4 +1,4 @@
-// "Download for Windows": a game as a Windows program (one .exe), made right here in the
+// Download → Windows: a game as a Windows program (one .exe), made right here in the
 // browser (and by scripts/winExe.ts with the same code). The program is the small player
 // from win/ (web/public/win/GameMakerPlayer-x64.exe or -arm64.exe), which plays the game in
 // Microsoft Edge WebView2, with these resources put into it (peResources.ts):
@@ -11,7 +11,7 @@
 //
 // It comes as the .exe itself, or in a .zip. It is not code-signed (that needs a paid
 // certificate and the author's private key), so Windows SmartScreen asks to confirm the
-// first time (the download dialog, editor/shell/winDownload.ts, says how).
+// first time (the Download chooser, editor/shell/download.ts, and the #/windows page say how).
 import { createZip } from '../project/zip';
 import { SITE_URL } from '../seo/site';
 import { readResources, writeResources, RT, type PeResource } from './peResources';

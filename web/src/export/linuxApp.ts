@@ -1,4 +1,4 @@
-// "Download for Linux": a game as a folder that plays in a window of its own, made right here
+// Download → Linux: a game as a folder that plays in a window of its own, made right here
 // in the browser (and by scripts/linuxTar.ts with the same code), saved as <Title>.tar.gz
 // (tar keeps the programs executable). Inside the <Title> folder:
 //

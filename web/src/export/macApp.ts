@@ -1,4 +1,4 @@
-// "Download for Mac": a game as a native Mac app, made right here in the browser (and by
+// Download → Mac: a game as a native Mac app, made right here in the browser (and by
 // mac/package.ts with the same code). The app is the small player program from mac/
 // (web/public/mac/GameMakerPlayer, one universal binary for Apple silicon and Intel Macs),
 // the game's one-web-page export as Contents/Resources/game.html, an Info.plist naming the
@@ -11,7 +11,7 @@
 // Archive Utility unzips it to the app, still executable).
 //
 // The app is not notarized by Apple (that needs a paid Apple Developer ID), so the first
-// time it is opened macOS asks to confirm (the download dialog, editor/shell/macDownload.ts, says how).
+// time it is opened macOS asks to confirm (the Download chooser, editor/shell/download.ts, and the #/mac page say how).
 import { parseGame } from '../formats/game';
 import { decodeGif, isGif, type IndexedImage } from '../formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../formats/fli';

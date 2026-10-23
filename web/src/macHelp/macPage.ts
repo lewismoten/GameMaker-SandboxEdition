@@ -1,7 +1,7 @@
 // The Mac downloads page (#/mac): what macOS's "Apple could not verify…" warning means for
 // the games downloaded as Mac apps (src/export/macApp.ts), why they are not notarized, how to
 // open one the first time, what the app does, and how to remove it. Linked from the
-// Download for Mac dialog (editor/shell/macDownload.ts) and mac/README.md.
+// Download chooser (editor/shell/download.ts) and mac/README.md.
 import './macPage.css';
 import { h, clear } from '../editor/core/ui';
 import { REPO_URL } from '../seo/site';

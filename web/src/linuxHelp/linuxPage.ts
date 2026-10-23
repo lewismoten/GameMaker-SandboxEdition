@@ -1,7 +1,7 @@
 // The Linux downloads page (#/linux): how to extract and play a game downloaded for Linux
 // (src/export/linuxApp.ts), the WebKitGTK package it needs on the common distributions, the
 // web browser fallback, adding it to the applications menu and removing it, and what the
-// program does. Linked from the Download for Linux dialog (editor/shell/linuxDownload.ts)
+// program does. Linked from the Download chooser (editor/shell/download.ts)
 // and linux/README.md. It shares the Mac page's look (macPage.css).
 import '../macHelp/macPage.css';
 import { h, clear } from '../editor/core/ui';

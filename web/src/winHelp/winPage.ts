@@ -1,7 +1,7 @@
 // The Windows downloads page (#/windows): what SmartScreen's "Windows protected your PC" means
 // for the games downloaded as Windows programs (src/export/winApp.ts), why they are not
 // code-signed, how to run one the first time, what the program does, and how to remove it.
-// Linked from the Download for Windows dialog (editor/shell/winDownload.ts) and win/README.md.
+// Linked from the Download chooser (editor/shell/download.ts) and win/README.md.
 // It shares the Mac page's look (macPage.css).
 import '../macHelp/macPage.css';
 import { h, clear } from '../editor/core/ui';
