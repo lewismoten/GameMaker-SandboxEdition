@@ -228,6 +228,8 @@ export function theBed(book: BlockBook): Level {
   room(m, W, H);
   // the desk and the laptop ("Carl watches me work")
   m.row(9, 2, 6, 'desk').set(4, 8, 'laptop');
+  // a tin heart tucked under the desk, an Easter egg on the floor by the nightstand
+  m.set(3, 10, 'tinHeart').set(10, 10, 'easterEgg');
   // the nightstand: the alarm clock, a soda
   m.fill(12, 9, 2, 2, 'nightstand').set(12, 8, 'alarm').set(13, 8, 'soda');
   // the bed: his head on the pillow (his ear is up top), the blanket
@@ -384,6 +386,8 @@ export function theAux(book: BlockBook): Level {
   // at the top of the gap; Carl takes it and dives straight down with it to the receiver, long
   // enough for "Carl's got the aux cord now" to play before the scene ends
   m.col(48, 3, 10, 'speaker').col(50, 3, 10, 'speaker').set(49, 10, 'receiver');
+  // Watt (Ohm Sweet Ohm) at the left speaker's foot, seeing to its wiring
+  m.set(47, 10, 'watt');
   m.set(49, 3, 'aux');
   m.link(49, 9, 'won');
   return { m, start: at(4, 5), size: [W, H] };

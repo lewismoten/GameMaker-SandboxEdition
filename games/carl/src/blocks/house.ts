@@ -8,10 +8,13 @@
 //   - the bedroom window opens once Carl has buzzed three ears (counter 22, from the monsters);
 //   - a soda heals, a donut is an extra life, the stove's burner and a candle burn, the diffuser
 //     and the smudge bowl give birth to oil mist and sage smoke, and the aux cord is the end.
+import { CLEAR, wattCameo } from '../../../kit/cameos';
+import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { Pixels, rng } from '../../../kit/pixels';
+import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
-import type { Pal } from '../art/pal';
+import { buildPalette, type Pal } from '../art/pal';
 import { EARS, EARS_NEEDED, MON, SMILES, SMILES_NEEDED, SNACKS, SNACKS_NEEDED } from '../ids';
 import { AIR, BlockBook, LEDGE, LIFE, SOLID } from './common';
 
@@ -621,5 +624,19 @@ export function buildHouse(pal: Pal): BlockBook {
   bucket.rect(4, 8, 12, 12, c('ochre', 2)).rect(3, 7, 14, 2, c('ochre', 3)).line(4, 8, 10, 2, c('grey', 2)).line(16, 8, 10, 2, c('grey', 2));
   bucket.rect(5, 9, 10, 2, c('water', 2));
   book.add('bucket', bucket, { solid: SOLID });
+
+  // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
+  // a tin heart under the bedroom desk: a glint crosses it now and then; 100 points (the bedroom's
+  // points are the PC speaker's alone, so it never cuts a lyric or a buzz)
+  const tin = { ink: c('ink', 0), tin: R('steel'), white: c('white', 3), dark: c('grey', 0) };
+  for (let k = 0; k < SHINE_FRAMES; k++)
+    book.add(`tinHeart${k || ''}`, drawTinHeart(panel(), tin, k), { next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`, ntime: k ? 2 : 50, touch: 'panel', score: 100, ...AIR });
+  // a dyed Easter egg on the bedroom floor by the nightstand: 50 points
+  const egg = { ink: c('ink', 0), shell: R('pink'), paint: R('shirt').slice(1), accent: c('gold', 3), white: c('white', 3) };
+  for (let k = 0; k < EGG_SHINE_FRAMES; k++)
+    book.add(`easterEgg${k || ''}`, drawEasterEgg(panel(), egg, 'zigzag', k), { next: `easterEgg${(k + 1) % EGG_SHINE_FRAMES || ''}`, ntime: k ? 3 : 60, touch: 'panel', score: 50, ...AIR });
+  // Watt (Ohm Sweet Ohm), the repair robot, seeing to the stereo's left speaker (scenery)
+  const use = ['ink', 'grey', 'steel', 'white', 'gold', 'red', 'led', 'screen', 'shirt', 'chip'].flatMap((n) => R(n));
+  book.add('watt', panel().blit(wattCameo(buildPalette('plain').pal, 'side', 0, 'ok', { use }), 0, 0, CLEAR), AIR);
   return book;
 }
