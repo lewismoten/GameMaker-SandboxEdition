@@ -1,15 +1,21 @@
-// The home set (not laid out yet).
-import { Pixels } from '../../../../kit/pixels';
-import { SOLID } from '../../common/blocks';
+// HOME SWEET HOME: the third set, the monologues of the house. One block set (HOME.BBL) and one
+// monster block set (HOME.MBL) for all of them; each monologue adds its own blocks and sprites
+// in its turn (the order is part of the file format: a block's number is the order it was added).
 import type { Group } from '../types';
+import { blanket, blanketBlocks, blanketSprites } from './blanket';
+import { HOME_RAMPS, buildHouse, houseSprites } from './house';
 
 export const home: Group = {
   id: 'home',
-  name: 'home',
-  ramps: [],
+  name: 'Home Sweet Home',
+  ramps: HOME_RAMPS,
   blocks: (book, pal) => {
-    book.add('homeVoid', new Pixels(20, 20, pal.c('ink', 0)), { solid: SOLID });
+    buildHouse(book, pal);
+    blanketBlocks(book, pal);
   },
-  sprites: () => {},
-  monologues: [],
+  sprites: (book, pal) => {
+    houseSprites(book, pal);
+    blanketSprites(book, pal);
+  },
+  monologues: [blanket],
 };
