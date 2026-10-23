@@ -32,7 +32,7 @@ export interface RunOptions {
   onSession?: (s: Session) => void;
   /** Called every frame while a level is being played. */
   onFrame?: Session['onFrame'];
-  /** Emulated PC speed (shared object: change ticksPerSecond at any time). */
+  /** Emulated PC speed (shared object: change slowPc at any time). */
   speed?: SpeedSetting;
   /** A touch changed a map cell while the player played (never during a demo's playback). */
   onTouched?: Session['onTouched'];

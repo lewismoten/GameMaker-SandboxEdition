@@ -35,7 +35,7 @@ export class Computer extends ComputerFolders {
     s.resetPalette();
     s.clear(attr(7, 0));
     s.cursorVisible = false;
-    const turbo = !this.opts.speed.ticksPerSecond;
+    const turbo = !this.opts.speed.slowPc;
     s.print(
       `AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? "486DX2-66 Turbo" : "486DX2-66 (Turbo off)"}\n\n`,
     );
@@ -111,7 +111,7 @@ export class Computer extends ComputerFolders {
   }
 
   turbo(): boolean {
-    return !this.opts.speed.ticksPerSecond;
+    return !this.opts.speed.slowPc;
   }
 
   /** Types a command at the prompt, as if on the keyboard. */

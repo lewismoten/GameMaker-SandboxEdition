@@ -40,6 +40,7 @@ import { EDITION, FORK_NOTE } from "../edition";
 import { loadCatalog, loadGameList, type CatalogEntry } from "../project/files";
 import { Project } from "../editor/core/project";
 import type { SpeedSetting } from "../engine/scene";
+import { TURBO_OFF } from "../engine/slowPc";
 import { viewState } from "../urlState";
 import { prefetchWhenIdle } from "../prefetch";
 
@@ -59,7 +60,6 @@ export interface DeskNav {
   toModern(projectId?: string, file?: string): void;
 }
 
-const SLOW_TICKS = 8; // a 286-class PC
 
 export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   // the PC starts in turbo every visit; the button slows it down until you leave
@@ -70,7 +70,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     /* private mode */
   }
   const speed: SpeedSetting = {
-    ticksPerSecond: turbo ? undefined : SLOW_TICKS,
+    slowPc: turbo ? undefined : TURBO_OFF,
   };
   let disks: Disk[] = [];
   let lastDisk: string | undefined;
@@ -429,7 +429,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   function setTurbo(on: boolean): void {
     turbo = on;
-    speed.ticksPerSecond = on ? undefined : SLOW_TICKS;
+    speed.slowPc = on ? undefined : TURBO_OFF;
     turboBtn.setAttribute("aria-pressed", String(on));
     turboLed.classList.toggle("on", on && !!computer?.powered);
     mhz.show(computer?.powered ? (on ? "66" : "8") : "");
