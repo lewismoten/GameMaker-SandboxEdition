@@ -416,4 +416,4 @@ export const CAST: CastMember[] = LISTED.map((m) => {
 });
 
 /** The families a member belongs to, from the games they appear in. */
-export const familiesOf = (m: CastMember): Family[] => [...new Set(m.appears.map((a) => CAST_GAMES[a.game][1] as Family))];
+export const familiesOf = (m: CastMember): Family[] => [...new Set(m.appears.map((a) => CAST_GAMES[a.game][1]))];

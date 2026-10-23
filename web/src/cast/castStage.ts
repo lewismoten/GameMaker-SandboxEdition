@@ -637,8 +637,9 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   };
   window.addEventListener('hashchange', onLeave);
 
-  fetch('./cast/sprites.json')
+  void fetch('./cast/sprites.json')
     .then((r) => (r.ok ? (r.json() as Promise<Record<string, CastSprite>>) : {}))
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- without it the chain's value is unknown
     .catch(() => ({}) as Record<string, CastSprite>)
     .then((all) => {
       for (const [id, sprite] of Object.entries(all)) {

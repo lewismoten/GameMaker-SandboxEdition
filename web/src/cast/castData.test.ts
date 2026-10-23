@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { cdCatalog, cdSecretCatalog } from '../../scripts/cdGames';
 import { isBizarreGame } from '../project/bizarre';
-import { CAST, CAST_GAMES, type CastGame } from './castData';
+import { CAST, CAST_GAMES } from './castData';
 import CAMEOS from './cameos.json';
 import HIDDEN_JSON from './hidden.json';
 import { HIDDEN, hiddenPlacements } from '../../scripts/castHiddenScan';
@@ -32,7 +32,7 @@ describe('the cast page', () => {
           catalog.some((g) => g.id === a.game),
           `${m.id} in ${a.game}`,
         ).toBe(true);
-      expect(Object.keys(CAST_GAMES)).toContain(m.art.game as CastGame);
+      expect(Object.keys(CAST_GAMES)).toContain(m.art.game);
     }
   });
 
