@@ -32,7 +32,7 @@
   },
   {
    "scene": 8,
-   "keys": "AU0ozQFIBsgISAbICEgGyAhIBsgISAbICAICghhNK80BAwKDKE0UEgqSD80BTQHNAx8Cnx5NB80BTRjNAU0BzQMEAoQUTQfNAU0kzXZNAUgGyAXNpwFNDM0BIQKhCk0LzQFNJkgIyBHN"
+   "keys": "AU0ozQFIBsgISAbICEgGyAhIBsgISAbICAICghhNK80BAwKDKE0UEgqSD80BTQHNAx8Cnx5NB80BTRjNAU0BzQMEAoQUTQfNAU0kzQFNAUgGyAXNmgFNDM0BIQKhCk0LzQFNJkgIyBHN"
   },
   {
    "scene": 9,
@@ -75,7 +75,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 31654,
+  "frames": 31226,
   "chapters": [
    {
     "title": "Opening",
@@ -115,15 +115,15 @@
    },
    {
     "title": "Level 8: The Dog Show",
-    "frame": 23254
+    "frame": 22826
    },
    {
     "title": "Ending",
-    "frame": 25688
+    "frame": 25260
    },
    {
     "title": "Credits",
-    "frame": 28290
+    "frame": 27862
    }
   ]
  }

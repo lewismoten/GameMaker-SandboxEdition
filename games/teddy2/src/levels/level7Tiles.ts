@@ -230,6 +230,8 @@ export function midwayTiles(): Tiles {
     })(),
   );
   t.air('signRoot', sign(sky(3), 'ROOT\nBEER'));
+  // at the end of THE BIG DROP's deck: the way down is a long, safe drop to the sawdust
+  t.air('signDown', sign(sky(0), 'OUT', 'down'));
 
   // The trampoline: legs and a bed down on the sawdust (walk past under it), and above the
   // bed, air that carries a dog up (gravity up, two pictures of rising sparkles taking turns)

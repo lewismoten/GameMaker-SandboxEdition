@@ -108,16 +108,21 @@ export function midwayBeasts() {
         [0, 0, 1],
       ],
     });
+  // The car waits at the bottom until a dog climbs aboard (a touch beats it: a pest's power),
+  // holds still a moment longer while he settles, then goes up with him; after that it runs
+  // up and down by itself.
+  b.add('dropIdle', { pics: [['dropCar', 50]], power: POWER.pest, becomes: 'dropBoard' });
+  b.add('dropBoard', { pics: [['dropCar', 50]], power: POWER.friend, end: 30, becomes: 'dropCar' });
   b.add('dropCar', {
     pics: [['dropCar', 50]],
     power: POWER.friend,
-    // up steadily, a pause at the top, then the big drop; a pause at the bottom
+    // (from the loading height, a block over the sawdust) up steadily, a pause at the top,
+    // the big drop to the sawdust, and back up to the loading height
     path: [
-      [0, -21, 3],
+      [0, -20, 3],
+      [0, -19, 1],
       [0, -20, 1],
-      [0, -21, 1],
-      [0, 0, 7],
-      [0, -1, 1],
+      [0, 1, 7],
       [0, 0, 1],
     ],
   });

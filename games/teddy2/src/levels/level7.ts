@@ -60,6 +60,7 @@ export function midway(): Level {
   m.rect(tower + 2, 18, 4, 1, 'deck');
   m.rect(tower + 2, 17, 4, 1, 'rail');
   m.set(tower + 4, 17, 'tagDeck');
+  m.set(tower + 5, 17, 'signDown');
   m.set(tower - 1, 15, 'dropSign0')
     .set(tower, 15, 'dropSign1')
     .set(tower + 1, 15, 'dropSign2');
@@ -94,7 +95,7 @@ export function midway(): Level {
   m.mon(43, 39, 'askSpin');
   m.mon(29, 39, 'horse1');
   m.mon(31, 37, 'horse2');
-  m.mon(tower + 1, 39, 'dropCar');
+  m.mon(tower + 1, 38, 'dropIdle');
   m.mon(67, 37, 'bee');
   m.mon(35, 39, 'scentTicket');
   for (const [x, y] of [
