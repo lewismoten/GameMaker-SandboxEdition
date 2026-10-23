@@ -189,6 +189,14 @@
   gap: 4px 10px;
 }
 
+.sc-fiction {
+  max-width: 52ch;
+  margin: -6px 0 10px;
+  color: #cfc8f2;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .sc-blurb {
   display: -webkit-box;
   overflow: hidden;
@@ -426,6 +434,12 @@
   .showcase .sc-byline {
     margin: 0;
     font-size: 12px;
+  }
+
+  .showcase .sc-fiction {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 11px;
   }
 
   .showcase .sc-actions,

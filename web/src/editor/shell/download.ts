@@ -32,6 +32,8 @@ export interface DownloadGame {
   box?: { background?: string };
   /** A game of yours: its files can be downloaded as they are, too. */
   project?: boolean;
+  /** Our own games: made now, presented as a 1990s release (export/fiction.ts), for the About text. */
+  fiction?: string;
 }
 
 export type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'dos' | 'files';
@@ -68,6 +70,13 @@ const CHOICES: Choice[] = [
   { kind: 'dos', name: 'DOS', format: '.zip', line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.' },
   { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
 ];
+
+/**
+ * Every download but DOS still plays on a web engine (a browser, or the one built into the
+ * system), so it is not frozen in time the way the DOS files are.
+ */
+export const ENGINE_CAVEAT =
+  'Each one plays offline, but all except DOS still run on a web engine (your browser, or the one built into Windows, macOS or Linux), so a future update to it could break or change the game. The DOS download, in DOSBox, is the most future-proof.';
 
 /** The visitor's own system, to choose first: a phone or tablet gets the web page. */
 export function visitorSystem(nav: Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'> & { userAgentData?: { platform?: string } } = navigator): DownloadKind {
@@ -157,6 +166,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
       },
       h('fieldset', null, h('legend', null, 'Download it for'), ...rows),
       h('p', { class: 'meta' }, 'It is built right here in your browser. Saved games and high scores are kept on the computer it is played on.'),
+      h('p', { class: 'meta' }, ENGINE_CAVEAT),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), alt, go),
     );
   });
@@ -166,13 +176,14 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
 /** The options the native downloads share. */
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
   const [{ exportSinglePage }, { slug }, mac] = await Promise.all([import('../../export/exportSinglePage'), import('../../export/exportWebApp'), import('../../export/macApp')]);
-  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam });
+  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
   return {
     title: game.title,
     id: game.id ?? slug(game.title),
     html,
     author: game.author,
     year: game.year,
+    fiction: game.fiction,
     picture: mac.iconPicture(files, game.gam),
     colors: mac.boxColors(game.box),
   };
@@ -201,10 +212,10 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       const [o, players] = await Promise.all([nativeOptions(game, files), linux.fetchLinuxPlayers()]);
       save(`${linux.folderName(game.title)}.tar.gz`, await linux.linuxTarGz({ ...o, players }), 'application/gzip', 'Extract it, then run play.sh in the folder.');
     } else if (kind === 'web' && alt) {
-      const { name, zip } = await (await import('../../export/exportWebApp')).exportWebApp(files, { title: game.title, gam: game.gam });
+      const { name, zip } = await (await import('../../export/exportWebApp')).exportWebApp(files, { title: game.title, gam: game.gam, fiction: game.fiction });
       save(name, zip, 'application/zip', 'Unzip it onto any static web host.');
     } else if (kind === 'web') {
-      const { name, html } = await (await import('../../export/exportSinglePage')).exportSinglePage(files, { title: game.title, gam: game.gam });
+      const { name, html } = await (await import('../../export/exportSinglePage')).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'dos') {
       const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(files, { title: game.title, gam: game.gam });

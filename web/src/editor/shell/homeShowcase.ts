@@ -14,6 +14,7 @@ import { walkthroughButton } from '../../walkthrough/button';
 import { savesButton } from '../../saves/button';
 import { chooseDownload, downloadButton } from './download';
 import { catalogDownloadable } from '../../export/downloadable';
+import { fictionNote } from '../../export/fiction';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -48,7 +49,7 @@ function catalogDownload(game: HomeGame): HTMLElement | null {
   const e = game.entry;
   if (!e || game.project || !catalogDownloadable(e)) return null;
   return downloadButton(game.title, () =>
-    chooseDownload({ title: e.title, gam: e.gam!, files: () => game.files(), id: e.id, author: e.author ?? e.company, year: e.year, box: e.original?.box }),
+    chooseDownload({ title: e.title, gam: e.gam!, files: () => game.files(), id: e.id, author: e.author ?? e.company, year: e.year, box: e.original?.box, fiction: fictionNote(e) }),
   );
 }
 
@@ -81,6 +82,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
   const label = h('p', { class: 'sc-label' });
   const title = h('h2', { class: 'sc-title', tabindex: -1 });
   const byline = h('p', { class: 'sc-byline' });
+  // our own games: made now, presented as 1990s releases (export/fiction.ts)
+  const fiction = h('p', { class: 'sc-fiction' });
   const blurb = h('p', { class: 'sc-blurb' });
   const actions = h('div', { class: 'sc-actions' });
   const notes = h('div', { class: 'sc-notes' });
@@ -88,7 +91,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     'section',
     { class: 'showcase', 'aria-label': 'Selected game' },
     h('div', { class: 'sc-screen' }, screen),
-    h('div', { class: 'sc-info' }, label, title, byline, blurb, actions, notes),
+    h('div', { class: 'sc-info' }, label, title, byline, fiction, blurb, actions, notes),
   );
   let current: HomeGame | undefined;
   let demo: { stop(): void } | undefined;
@@ -124,6 +127,8 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
           )
         : null,
     );
+    fiction.textContent = (game.entry && !game.project && fictionNote(game.entry)) || '';
+    fiction.hidden = !fiction.textContent;
     blurb.textContent = game.blurb ?? '';
     blurb.hidden = !game.blurb;
 
