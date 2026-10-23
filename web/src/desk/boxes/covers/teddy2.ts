@@ -6,7 +6,7 @@ import { GWINN, TEDDY } from './dog';
 import { type Ctx, blob, ell, fill, finish, glow, lin, poly, rad, seeded, stars, stroke } from './paint';
 
 /** The 1976½ CitiCar, seen from its front corner as it sits in the photo: a short tomato-red
- * wedge, the hood sloping straight up into a big flat windshield, a tall boxy cabin with a grey
+ * wedge, the hood sloping straight up into a big flat windshield, a tall boxy cabin with a black
  * roof, round headlight pods on the hood's corners, a black bumper with "THE CHEZ" on its plate,
  * and little whitewall wheels (its charge port is round the back, low on the passenger side,
  * out of sight). Drawn in the photo's own coordinates (ground under the middle at
@@ -41,10 +41,16 @@ function citicar(c: Ctx, x: number, y: number, s: number): void {
     [1, '#2a4a6a'],
   ]));
   stroke(c, '#7a1006', 3, [216, 256, 222, 470]);
-  stroke(c, '#e8c070', 3, [152, 400, 266, 436]);
-  // the grey roof
+  // the racing stripes: a dark pair edged in white, low along the side, stepping up over the
+  // rear quarter behind the door
+  const band = (d: number) => [268, 436 + d, 178, 407 + d, 172, 400 + d, 166, 386 + d, 160, 381 + d, 152, 379 + d];
+  stroke(c, '#fff4e8', 16, band(0));
+  stroke(c, '#d02818', 12, band(0));
+  for (const d of [-3.5, 3.5]) stroke(c, '#26262a', 4.5, band(d));
+  // the black roof
   poly(c, [162, 248, 222, 238, 328, 236, 336, 246, 222, 252, 158, 262]);
-  fill(c, '#5a5a62');
+  fill(c, '#141416');
+  stroke(c, 'rgba(255,255,255,0.18)', 2, [226, 241, 326, 239]);
   // the windshield: big, flat, raked back
   poly(c, [224, 252, 330, 246, 380, 300, 226, 324]);
   fill(c, lin(c, 0, 246, 0, 324, [

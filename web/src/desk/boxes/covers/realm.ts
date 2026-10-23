@@ -183,26 +183,62 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
   stroke(c, '#c02020', 4 * s, [x - 96 * s, y - 28 * s, x - 80 * s, y - 14 * s]);
 }
 
-/** THE CHEZ: a little tomato-red wedge with a huge windshield. */
+/** THE CHEZ from the side, nose to the left, in the shared side view's measurements
+ * (games/kit/chez.ts, from Lewis's photos; x along the car, y down, the ground at 20): the
+ * straight line from the low nose over the hood and windshield to the short black roof, the flat
+ * back, the quarters stopping flat over the tires, one door window, the racing stripes stepping
+ * up over the rear quarter, square bumpers, white wheels. (x, y) is the middle of the ground. */
 function chez(c: Ctx, x: number, y: number, s: number): void {
-  ell(c, x, y + 4 * s, 34 * s, 6 * s);
+  const k = 2 * s;
+  const X = (u: number) => x + (20.5 - u) * k;
+  const Y = (v: number) => y + 10 * s - (20 - v) * k;
+  const pts = (q: number[][]) => q.flatMap(([u, v]) => [X(u), Y(v)]);
+  ell(c, x, y + 9 * s, 36 * s, 5 * s);
   fill(c, 'rgba(0,0,0,0.3)');
-  poly(c, [x - 34 * s, y - 6 * s, x - 22 * s, y - 14 * s, x - 6 * s, y - 34 * s, x + 26 * s, y - 34 * s, x + 32 * s, y - 6 * s, x + 32 * s, y + 2 * s, x - 34 * s, y + 2 * s]);
-  fill(c, lin(c, 0, y - 34 * s, 0, y + 2 * s, [
-    [0, '#ff7a60'],
+  // white wheels with chrome caps on black tires, tucked up behind the quarters
+  for (const u of [9.35, 31.1]) {
+    ell(c, X(u), Y(16.75), 3.25 * k, 3.25 * k);
+    fill(c, '#1a1a1a');
+    ell(c, X(u), Y(16.75), 2 * k, 2 * k);
+    fill(c, '#f2eee4');
+    ell(c, X(u), Y(16.75), 1 * k, 1 * k);
+    fill(c, '#b8bcc4');
+  }
+  poly(c, pts([[7.9, 1.3], [17.9, 1.3], [36, 13.2], [36, 14.4], [26.1, 14.4], [26.1, 18.1], [13.7, 18.1], [13.7, 14.4], [5.2, 14.4]]));
+  fill(c, lin(c, 0, Y(1.3), 0, Y(18.1), [
+    [0, '#ff6a50'],
     [1, '#b02018'],
   ]));
-  poly(c, [x - 14 * s, y - 14 * s, x - 2 * s, y - 30 * s, x + 8 * s, y - 30 * s, x + 4 * s, y - 12 * s]);
-  fill(c, '#a8d8f0');
-  for (const wx of [-22, 22]) {
-    ell(c, x + wx * s, y + 2 * s, 8 * s, 8 * s);
-    fill(c, '#1a1a1a');
-    ell(c, x + wx * s, y + 2 * s, 4 * s, 4 * s);
-    fill(c, '#e8e8e8');
-  }
-  ell(c, x - 30 * s, y - 8 * s, 3 * s, 3 * s);
+  // the black roof, the door window, the seams
+  poly(c, pts([[7.9, 1.3], [17.9, 1.3], [19.1, 2.05], [7.75, 2.05]]));
+  fill(c, '#141416');
+  poly(c, pts([[12.5, 2.8], [18.5, 2.8], [24.5, 8.3], [13, 8.3]]));
+  fill(c, lin(c, 0, Y(2.8), 0, Y(8.3), [
+    [0, '#a8d8f0'],
+    [1, '#2a4a6a'],
+  ]));
+  stroke(c, '#7a1006', 1.2 * s, pts([[12.1, 2.2], [13.7, 18.1]]));
+  stroke(c, '#7a1006', 1.2 * s, pts([[26.1, 8.3], [26.1, 18.1]]));
+  // the racing stripes: a dark pair edged in white, stepping up over the rear quarter
+  const band = (d: number) => pts([[35.6, 12.5 + d], [13, 12.5 + d], [12.2, 12.4 + d], [10.8, 10.1 + d], [10, 9.9 + d], [6.9, 9.9 + d]]);
+  stroke(c, '#fff4e8', 1.7 * k, band(0));
+  stroke(c, '#d43020', 1.25 * k, band(0));
+  for (const d of [-0.5, 0.5]) stroke(c, '#26262a', 0.5 * k, band(d));
+  // the markers, the door handle, square black bumpers, the headlight in its pod
+  poly(c, pts([[31.6, 10.9], [30.4, 10.9], [30.4, 11.7], [31.6, 11.7]]));
+  fill(c, '#ffa020');
+  poly(c, pts([[8.3, 12.4], [7.1, 12.4], [7.1, 13.2], [8.3, 13.2]]));
+  fill(c, '#e01818');
+  stroke(c, '#d8d8e0', 0.6 * k, pts([[14.5, 10.9], [16, 10.9]]));
+  poly(c, pts([[37.2, 13], [35.2, 13], [35.2, 14.8], [37.2, 14.8]]));
+  fill(c, '#1a1a1e');
+  poly(c, pts([[5.9, 12.8], [3.9, 12.8], [3.9, 14.6], [5.9, 14.6]]));
+  fill(c, '#1a1a1e');
+  poly(c, pts([[30, 9.1], [30.5, 8.6], [32, 8.6], [32.4, 9.2], [32.4, 10.6]]));
+  fill(c, '#e8402c');
+  ell(c, X(32.4), Y(9.4), 0.4 * k, 0.6 * k);
   fill(c, '#fff8c0');
-  glow(c, x - 34 * s, y - 8 * s, 30 * s, '#fff0b0', 0.5);
+  glow(c, X(33), Y(9.4), 30 * s, '#fff0b0', 0.5);
 }
 
 const paint = (c: Ctx, w: number, h: number): void => {
