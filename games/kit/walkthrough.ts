@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GameFiles } from '../../web/src/project/files';
 import { headlessCanvas, WalkRun } from '../../web/src/walkthrough/runtime';
-import { WALKTHROUGH_FPS, type Walkthrough } from '../../web/src/walkthrough/format';
+import { encodeKeys, WALKTHROUGH_FPS, type Walkthrough } from '../../web/src/walkthrough/format';
 import { clipCuts, describeCut, type ClipCut, type ClipLog } from './clips';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -85,5 +85,25 @@ export async function writeWalkthrough(id: string, walk: Omit<Walkthrough, 'vers
   writeFileSync(path, JSON.stringify(full, null, 1) + '\n');
   const sec = r.frames / WALKTHROUGH_FPS;
   console.log(`${id}: walkthrough reaches the ending; video ${Math.floor(Math.round(sec) / 60)}:${String(Math.round(sec) % 60).padStart(2, '0')}, ${r.chapters.length} chapters -> ${path}`);
+  return r;
+}
+
+/**
+ * writeWalkthrough for a bot's GameSim run (each game's tools/walkthrough.ts): one key segment
+ * a scene entered, each scene's monsters seeded afresh with `seed`, a chapter a segment titled
+ * by `titles` (by scene number). Prints the scenes the engine entered.
+ */
+export async function writeSimWalkthrough(
+  id: string,
+  sim: { segments: { scene: number; keys: { delta: number; key: number }[] }[] },
+  seed: number,
+  titles: Record<number, string> | ((scene: number) => string),
+  opts: { clips?: boolean } = { clips: true },
+): Promise<ReplayResult> {
+  const title = typeof titles === 'function' ? titles : (scene: number) => titles[scene];
+  const segments = sim.segments.map((s) => ({ scene: s.scene, keys: encodeKeys(s.keys) }));
+  const chapters = sim.segments.map((s) => ({ scene: s.scene, title: title(s.scene) }));
+  const r = await writeWalkthrough(id, { rand: { seed, per: 'scene' }, segments, chapters }, opts);
+  console.log(`engine: scenes ${r.scenes.join(' ')}, ${r.keysLeft} keys unplayed`);
   return r;
 }
