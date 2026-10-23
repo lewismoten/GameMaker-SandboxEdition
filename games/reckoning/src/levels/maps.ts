@@ -316,10 +316,9 @@ export function reckoning(book: BlockBook): Level {
     .col(W - 1, 0, 11, '+');
   // the pit (flames) in the floor
   m.row(10, 12, 13, '&');
-  // floating tiles, the milk on them, lactase pills on the floor
-  m.row(7, 4, 6, '@').set(5, 6, 'a');
+  // floating tiles, the milk on them (the first carton gives dignity back: there are no pills in hell)
+  m.row(7, 4, 6, '@').set(5, 6, 'almondFirst');
   m.row(5, 8, 10, '@').set(9, 4, 'e');
-  m.set(8, 9, ';');
   m.row(7, 15, 17, '@').set(16, 6, 'a');
   m.row(7, 19, 20, '@').set(20, 6, 'e');
   // the Devil, lounging, sipping; the soda fountain behind him up on its tiles

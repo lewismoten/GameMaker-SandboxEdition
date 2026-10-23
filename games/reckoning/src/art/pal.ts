@@ -46,6 +46,8 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
   ['aura', 4, [230, 150, 40], [255, 250, 210], undefined, true],
   ['fire', 4, [150, 20, 0], [255, 230, 110], undefined, true],
   ['eye', 2, [255, 200, 40], [255, 255, 180], undefined, true],
+  // the reckoning's floor tiles: a cool slate that keeps its own light, so the play row reads in the red
+  ['slate', 3, [22, 26, 40], [150, 160, 186], undefined, true],
 ];
 
 /** Each act's backdrop ramp ("sky": the dark of a room, top to bottom) and how the rest is lit. */

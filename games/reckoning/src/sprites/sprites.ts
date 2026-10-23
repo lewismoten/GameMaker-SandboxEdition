@@ -444,7 +444,8 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10 + t, 5, 4.4, 2.4, pal.r('cream'), 1, 3);
     p.disc(10 + t, 2, 1.4, c('red', 3));
     p.line(12 + t, 4, 15 - t * 2, 0, c('white', 2));
-    return done(p);
+    // a white rim outside the ink, so it reads against hell's reds
+    return outline(done(p), c('white', 2));
   };
   book.add('shake0', shake(0), hurt(-3, 0));
   book.add('shake1', shake(1), hurt(-3, 0));
@@ -493,5 +494,13 @@ export function buildMonsterBlocks(pal: Pal) {
   };
   book.add('smoke0', puff(0));
   book.add('smoke1', puff(1));
+  // (last, so every other block keeps its number) the friends flying off: the same pictures,
+  // worth nothing, so brushing past them as they go doesn't score every tick
+  book.add('carlOff0', carl(0));
+  book.add('carlOff1', carl(1));
+  book.add('loafOff0', loaf(0));
+  book.add('loafOff1', loaf(1));
+  book.add('seedOff0', seed(0));
+  book.add('seedOff1', seed(1));
   return book;
 }

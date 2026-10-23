@@ -567,11 +567,11 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('flames0', flames(0), { hp: -8, grav: GRAV.down, next: 'flames1', ntime: 4 });
   book.add('flames1', flames(1), { hp: -8, grav: GRAV.down, next: 'flames0', ntime: 4 });
-  // the bathroom's black and white tiles, floating: the floor (solid) and tiles (ledges)
+  // the bathroom's black and white tiles (a cool slate, unlit by hell's red), floating: the floor (solid) and tiles (ledges)
   const hellTile = (ledge: boolean) => {
     const p = ledge ? voidAir(93) : P();
     for (let y = ledge ? 2 : 0; y < (ledge ? 8 : 20); y++)
-      for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('tile', 2) : c('ink', 1));
+      for (let x = 0; x < 20; x++) p.set(x, y, (Math.floor(x / 5) + Math.floor(y / 5)) % 2 ? c('slate', 2) : c('slate', 0));
     if (ledge) p.rect(0, 8, 20, 1, c('ink', 0)).rect(2, 9, 16, 1, c('fire', 0));
     return p;
   };
@@ -607,6 +607,9 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('almond', carton(voidAir(98), 'ALM', 'crust'), { ...air, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'almondGone' });
   book.add('almondGone', voidAir(98), air);
+  // the first carton in hell: it gives dignity back too, so it says "I have almond milk now!" (the
+  // help sound) once, where the rest only glug
+  book.add('almondFirst', carton(voidAir(98), 'ALM', 'crust'), { ...air, hp: 15, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'almondGone' });
   book.add('oat', carton(voidAir(99), 'OAT', 'cheese'), { ...air, effect: SEQ.throw, eamt: MILK_CARTON, score: 50, touch: 'oatGone' });
   book.add('oatGone', voidAir(99), air);
   // lactase pills: dignity back

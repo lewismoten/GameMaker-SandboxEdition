@@ -203,7 +203,7 @@ const alive = (bot: Bot, mons: number[]) => bot.sim.w.mm.some((m) => mons.includ
 const DEVIL_A = [MON.devilA0, MON.devilA1, MON.devilA2, MON.devilA3];
 const DEVIL_B = [MON.devilB0, MON.devilB1, MON.devilB2, MON.devilB3];
 
-/** IV. The reckoning: the almond milk, the oat milk and the lactase pills on the way, over the pit, the Devil splashed top and bottom, his last straw, the porcelain throne, the door home. */
+/** IV. The reckoning: the almond milk and the oat milk on the way, over the pit, the Devil splashed top and bottom, his last straw, the porcelain throne, the door home. */
 export async function reckoning(bot: Bot): Promise<void> {
   expect(bot, 5, 'the reckoning');
   await carefully(bot, 'the milk on the tiles', 20, async () => {
@@ -214,7 +214,7 @@ export async function reckoning(bot: Bot): Promise<void> {
     await must(bot, bot.hop('right', 10, 'right', 9), 'the oat milk up on the next tiles');
     if (bot.at.y !== 4) throw new Error(`not up on the tiles (${bot.at.y})`);
     await must(bot, bot.walk(7.2, 'off the tiles'), 'off');
-    await must(bot, bot.walk(8, 'the lactase pills'), 'lactase pills');
+    await must(bot, bot.walk(8, 'down to the floor'), 'floor');
   });
   await carefully(bot, 'over the pit', 20, async () => {
     await must(bot, bot.walk(10.8, 'the edge of the pit'), 'edge');

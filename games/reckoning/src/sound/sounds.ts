@@ -210,6 +210,12 @@ export function buildVocs(): Record<string, Uint8Array> {
   vocs.squeak = sample(0.3, mix([osc.sine((t) => 1400 + Math.sin(t * 60) * 300), 0.3], [gate(lowNoise(18, 0.3), 0.15, 0.2), 0.5]), {
     envelope: env(0.02, 1.2),
   });
+  // a splash of almond milk, thrown (the reckoning's Space after the first "Begone!" on B)
+  vocs.splash = sample(0.28, mix([lowNoise(23, (t) => 0.7 - t * 2), 0.7], [osc.sine((t) => 900 - t * 2200), 0.2]), { envelope: env(0.01, 2.2) });
+  // a milkshake or the Devil splashed: a short hiss
+  vocs.sizzle = sample(0.34, mix([lowNoise(24, 0.95), 0.6], [osc.sine((t) => 300 + Math.sin(t * 90) * 60), 0.15]), { envelope: env(0.005, 1.6), gain: 0.7 });
+  // a carton picked up: a glug
+  vocs.glug = sample(0.3, (t) => Math.sin(2 * Math.PI * (180 + (t % 0.1) * 1600) * t) * (t % 0.1 < 0.06 ? 0.6 : 0.1), { envelope: env(0.01, 1.4), gain: 0.7 });
   // thunder: a crack and its roll
   vocs.thunder = sample(1.6, mix([gate(lowNoise(19, 0.9), 0, 0.06), 0.9], [thunder(20), 1]), { envelope: env(0.003, 0.9) });
   // the bathroom door slamming, then "IT'S NOT WORTH IT!"
@@ -255,7 +261,21 @@ const PLAYS: Record<Place, Partial<Record<keyof typeof SND, string>>> = {
   bedroom: { speak: 'cant', wail: 'intol', hurt: 'creak', die: 'wake', kill: 'hello', step: 'pat' },
   fridge: { speak: 'enemy', wail: 'intol', hurt: 'nom', die: 'moo', gain: 'better', spend: 'betray', kill: 'hello', step: 'hum' },
   dash: { speak: 'ohno', wail: 'shins', hurt: 'gurgle', die: 'colon', gain: 'squeak', spend: 'slamwrth', kill: 'hello', step: 'pat' },
-  hell: { speak: 'begone', wail: 'demon', hurt: 'coward', die: 'suffer', gain: 'almond', spend: 'flushlac', kill: 'thunder', step: 'pat', score: 'thunder' },
+  // the reckoning voices each line once: "I have almond milk now!" for the first carton (it's
+  // the only thing in hell that gives dignity back), "Begone, foul beast!" on B; a throw splashes,
+  // a hit hisses, and the thunder is for the Devil's last straw
+  hell: {
+    speak: 'splash',
+    wail: 'begone',
+    help: 'almond',
+    hurt: 'coward',
+    die: 'suffer',
+    gain: 'glug',
+    spend: 'flushlac',
+    kill: 'sizzle',
+    step: 'pat',
+    score: 'thunder',
+  },
 };
 
 /** An act's .SND: which VOC each effect plays (a PC speaker tune for each, for no Sound Blaster). */
