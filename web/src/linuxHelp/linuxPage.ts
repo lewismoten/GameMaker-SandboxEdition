@@ -6,6 +6,7 @@
 import '../macHelp/macPage.css';
 import { h, clear } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
+import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
 const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
@@ -16,6 +17,7 @@ const cmd = (text: string) => h('pre', { class: 'mac-cmd' }, h('code', null, tex
 
 /** The page into `el`. */
 export function renderLinuxHelp(el: HTMLElement): void {
+  tally('help-all', 'linux');
   clear(
     el,
     h(

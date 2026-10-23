@@ -6,6 +6,7 @@
 import '../macHelp/macPage.css';
 import { h, clear } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
+import { tally } from '../achievements';
 import { REPO_URL } from '../seo/site';
 
 const section = (id: string, title: string, ...body: Parameters<typeof h>[2][]) =>
@@ -15,6 +16,7 @@ const kbd = (text: string) => h('kbd', null, text);
 
 /** The page into `el`. */
 export function renderWinHelp(el: HTMLElement): void {
+  tally('help-all', 'windows');
   clear(
     el,
     h(
