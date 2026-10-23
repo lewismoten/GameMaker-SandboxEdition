@@ -1,7 +1,7 @@
 {
   "easterEgg": [
     ["blaster","s3b.map"],
-    ["brief","library.map"],
+    ["brief","other.map"],
     ["carl","bed.map"],
     ["depth","l2near.map"],
     ["goat","caravan.map"],
@@ -27,7 +27,7 @@
   ],
   "tinHeart": [
     ["blaster","s2a.map"],
-    ["brief","library.map"],
+    ["brief","other.map"],
     ["carl","bed.map"],
     ["depth","l2near.map"],
     ["goat","field.map"],
