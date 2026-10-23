@@ -16,7 +16,8 @@
     "snowbound": { "map": "gale.map", "at": [13, 24] },
     "teddy": { "map": "backyard.map", "at": [5, 39] },
     "teddy2": { "map": "house.map", "at": [2, 39] },
-    "tickle": { "map": "tower.map", "at": [43, 23] }
+    "tickle": { "map": "tower.map", "at": [43, 23] },
+    "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": ["depth", "loofah", "maximus", "reckoning", "sandcast", "sweats", "year2000"]
+  "pending": ["depth", "loofah", "maximus", "reckoning", "sandcast", "sweats"]
 }
