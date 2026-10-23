@@ -227,11 +227,14 @@ export function wicker(book: BlockBook): Level {
   m.fill(18, 17, 13, 4, 'o').set(20, 19, '%').set(28, 19, '%').set(24, 20, 'J').text(21, 17, '|oo|');
   m.mon(MON.mouse, 19, 20).mon(MON.moth, 26, 18);
   // the weave up the east wall to the lid, a side room on the way
-  m.col(31, 1, 20, 'Y');
+  m.col(31, 3, 20, 'Y');
   m.fill(26, 6, 5, 3, 'o').set(28, 7, '%').set(26, 8, '+');
   m.mon(MON.weevil, 26, 8);
-  m.set(31, 0, 'D');
-  m.link(31, 0, 'next');
+  // the lid, and out on top of the basket in the light coming in (no gravity, like the weave):
+  // a few rolls along its rim to the way on, so "I'm still bread!" is sung to the end
+  m.set(31, 2, 'D');
+  m.fill(25, 0, 7, 2, 'lidOpen').row(2, 25, 30, 'm');
+  m.link(25, 0, 'next').link(25, 1, 'next');
   return { m, start: at(3, 4), size: [W, H] };
 }
 

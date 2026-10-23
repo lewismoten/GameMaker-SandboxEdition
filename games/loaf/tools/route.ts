@@ -156,7 +156,8 @@ export async function theWasteland(bot: Bot): Promise<void> {
   });
   if (crumbs(bot) - start < 7) throw new Error(`only ${crumbs(bot) - start} holy crumbs here`);
   await carefully(bot, 'up to the lid', 10, async () => {
-    await leave(bot, bot.hold('up', 80), 'up the weave and through the lid');
+    await must(bot, bot.until('up', () => bot.px.y <= 1 * 20, 'up the weave and through the lid', 80), 'the lid');
+    await leave(bot, bot.walk(24, 'along the rim'), 'along the rim to the way on');
   });
 }
 
