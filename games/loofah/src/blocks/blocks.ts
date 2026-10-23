@@ -141,7 +141,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   claw.rect(0, 0, 20, 10, c('white', 1)).rect(0, 8, 20, 2, c('grey', 1));
   claw.rect(6, 10, 6, 6, c('gold', 1)).rect(4, 16, 10, 2, c('gold', 2)).set(4, 18, c('gold', 1)).set(9, 18, c('gold', 1)).set(13, 18, c('gold', 1));
   book.add('claw', claw, { solid: SOLID });
-  // the bathwater: cursed, bubbling (air with no gravity: he wades), it gives birth to bubbles
+  // the bathwater: cursed, bubbling (he wades in it, up to his waist); it gives birth to bubbles
   const water = (seed: number) => {
     const p = P();
     for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(R('tile'), 1, 3, 0.4 + Math.sin((x + seed) / 3) * 0.15 - y / 60, x, y));
@@ -149,7 +149,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(0, 0, 20, 2, c('suds', 2));
     return p;
   };
-  book.add('bathwater', water(15), { grav: GRAV.none, birthMon: MON.bubble, birthTime: 37 });
+  book.add('bathwater', water(15), { grav: GRAV.down, birthMon: MON.bubble, birthTime: 37 });
 
   // ---------- the toilet, the sink and the mirror ----------
   const toilet = (part: 'tank' | 'lid') => {
@@ -259,7 +259,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   blob(duck, 10, 12, 6, 4, R('mango'), 1, 3);
   blob(duck, 13, 7, 3, 3, R('mango'), 1, 3);
   duck.rect(15, 7, 3, 2, c('citrus', 2)).set(13, 6, c('ink', 0));
-  book.add('duck', duck, { grav: GRAV.none, effect: LIFE, eamt: 1, score: 500, touch: 'bathwater' });
+  book.add('duck', duck, { grav: GRAV.down, effect: LIFE, eamt: 1, score: 500, touch: 'bathwater' });
   /** A quarter in the soap dish: points. */
   const quarter = tiles(34);
   quarter.rect(3, 13, 14, 3, c('white', 1)).rect(3, 13, 14, 1, c('white', 2)).disc(10, 11, 3, c('metal', 3)).set(9, 10, c('white', 2));

@@ -157,7 +157,7 @@ const at = (x: number, y: number): [number, number] => [x + ORIGIN, y + ORIGIN];
 
 /** 1. Cursed in the Shower: the haunted bathroom, five jars of bath salt, the mop bucket. */
 export function bathroom(book: BlockBook): Level {
-  const W = 46;
+  const W = 49;
   const H = 14;
   const m = new MapBuilder(book, 'under');
   m.row(0, 1, W - 2, '^').fill(1, 1, W - 2, 10, '.').row(11, 1, W - 2, '_').row(12, 0, W - 1, '=').row(13, 0, W - 1, '#').col(0, 0, 13, '#').col(W - 1, 0, 13, '#');
@@ -166,24 +166,26 @@ export function bathroom(book: BlockBook): Level {
   m.row(3, 1, 3, 'R').set(3, 2, '1');
   // the screaming towel on its bar
   m.set(9, 10, 'b').mon(MON.towel, 9, 11);
-  // the tub: its rim at either end, the cursed bathwater (the rubber duck, the grapefruit soap, bubbles)
+  // the tub: its rim at either end, the cursed bathwater (the rubber duck, bubbles)
   m.set(11, 10, 'r').set(19, 10, 'r').row(10, 12, 18, 'w').row(11, 12, 18, 'T').set(11, 11, 'c').set(19, 11, 'c');
-  m.set(15, 10, 'u').mon(MON.grapefruit, 12, 10);
+  m.set(15, 10, 'u');
   // a shelf over the tub: a jar of salt, a quarter in the soap dish, candles
-  m.row(7, 14, 17, 's').set(15, 6, '1').set(17, 6, 'q').set(14, 6, '*');
+  m.row(8, 14, 17, 's').set(15, 7, '1').set(17, 7, 'q').set(14, 7, '*');
+  // a bar of cursed grapefruit soap, sliding along the floor
+  m.mon(MON.grapefruit, 20, 11);
   // the toilet, a jar on its tank
-  m.set(22, 11, 'l').col(23, 10, 11, 't').set(23, 9, '1');
+  m.set(25, 11, 'l').col(26, 10, 11, 't').set(26, 9, '1');
   // the sink and the vanity, the mirror, the shelf above (candles, a jar, the mango soap)
-  m.row(10, 26, 27, 'k').row(11, 26, 27, 'V');
-  for (let q = 0; q < 4; q++) m.set(25 + q, 8, `mirror0${q}0`);
-  m.row(7, 25, 28, 's').set(25, 6, '*').set(28, 6, '1').mon(MON.mango, 26, 6);
+  m.row(10, 29, 30, 'k').row(11, 29, 30, 'V');
+  for (let q = 0; q < 4; q++) m.set(28 + q, 8, `mirror0${q}0`);
+  m.row(7, 28, 31, 's').set(31, 6, '*').set(28, 6, '1').mon(MON.mango, 30, 6);
   // the window, Carl, a cracked tile, the hamper (the last jar), a dry washcloth
-  m.col(31, 3, 4, 'O').mon(MON.carl, 30, 5);
-  m.set(30, 11, '!').set(34, 11, 'H').set(34, 10, '1').set(37, 11, '4').set(39, 11, '!');
-  m.row(6, 36, 38, 's').set(37, 5, '*');
+  m.col(34, 3, 4, 'O').mon(MON.carl, 33, 5);
+  m.set(33, 11, '!').set(37, 11, 'H').set(37, 10, '1').set(40, 11, '4').set(42, 11, '!');
+  m.row(6, 39, 41, 's').set(40, 5, '*');
   // the door, and the mop bucket by it: five jars of salt in it make the brine
-  m.set(43, 11, 'D').set(43, 10, 'd').set(41, 11, 'B');
-  m.link(41, 11, 'next');
+  m.set(46, 11, 'D').set(46, 10, 'd').set(44, 11, 'B');
+  m.link(44, 11, 'next');
   return { m, start: at(4, 11), size: [W, H] };
 }
 

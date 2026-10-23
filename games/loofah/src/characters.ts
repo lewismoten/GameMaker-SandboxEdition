@@ -134,7 +134,7 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   // I. the haunted bathroom
   set[MON.drip] = mon(anim('drip0', 'drip1', 2), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 4), corner(0, o.fall ?? 8, 4, 1)]);
   set[MON.grapefruit] = mon(anim('grapefruit0', 'grapefruit1', 4), { power: 150, thru: 1 }, pace(run, 1));
-  set[MON.mango] = mon(anim('mango0', 'mango1', 3), { power: 150, thru: 1 }, pace(run, 2));
+  set[MON.mango] = mon(anim('mango0', 'mango1', 3), { power: 150, thru: 1 }, pace(1, 1));
   set[MON.towel] = mon(anim('towel0', 'towel1', 14), { power: 200, thru: 1 }, still);
   set[MON.bubble] = mon(anim('bubble0', 'bubble1', 6), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(1, -3, 1, 0), corner(0, -6, 1, 4)]);
   set[MON.carl] = mon(anim('carl0', 'carl1', 1), { power: 50, thru: 0, newmon: MON.carlOff }, [corner(0, 0, 2), corner(3, -1, 2, 0), corner(5, 1, 2, 0), corner(2, 2, 2, 4), corner(0, 0, 2, 4)]);
