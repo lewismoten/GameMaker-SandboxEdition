@@ -4,8 +4,8 @@
 // (src/export/linuxApp.ts). Run from web/:
 //
 //   npx vite-node scripts/linuxTar.ts teddy goat realm     some catalog games, by id
-//   npx vite-node scripts/linuxTar.ts --all                every gameware, Sandbox and Bard game (not
-//                                                         the other authors' shareware)
+//   npx vite-node scripts/linuxTar.ts --all                every game the web app offers for download
+//                                                         (export/downloadable.ts: not other authors' games)
 //   npx vite-node scripts/linuxTar.ts --html mygame.html --title "My Game" --id mygame
 //   ... --out <dir>                                        instead of ../dist/linux
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -16,6 +16,7 @@ import { encodeGame, fillPage } from '../src/export/singlePage';
 import { boxColors, iconPicture } from '../src/export/macApp';
 import { folderName, LINUX_ARCHES, linuxTarGz, type LinuxAppOptions, type LinuxArch } from '../src/export/linuxApp';
 import { GameFiles } from '../src/project/files';
+import { catalogDownloadable } from '../src/export/downloadable';
 
 const web = resolve(__dirname, '..');
 const cd = resolve(web, '../cd');
@@ -46,7 +47,10 @@ async function main(): Promise<void> {
     return;
   }
   const catalog = cdCatalog(cd);
-  const picked = process.argv.includes('--all') ? catalog.filter((e) => e.gam && (e.kind === 'gameware' || e.original)) : ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  const named = ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  for (const e of named) if (!catalogDownloadable(e)) throw new Error(`"${e.id}" is another author's game; it is offered play-only, without downloads.`);
+  // the same games the web app's Download button offers
+  const picked = process.argv.includes('--all') ? catalog.filter(catalogDownloadable) : named;
   if (!picked.length) throw new Error('Name the games (catalog ids), --all, or --html <file>.');
   const template = await buildSinglePageTemplate();
   const where = cdFiles(cd);

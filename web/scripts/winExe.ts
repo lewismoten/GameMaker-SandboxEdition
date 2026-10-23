@@ -2,8 +2,8 @@
 // same code the web app's "Download for Windows" runs (src/export/winApp.ts). Run from web/:
 //
 //   npx vite-node scripts/winExe.ts teddy goat realm      some catalog games, by id
-//   npx vite-node scripts/winExe.ts --all                 every gameware, Sandbox and Bard game (not
-//                                                         the other authors' shareware)
+//   npx vite-node scripts/winExe.ts --all                 every game the web app offers for download
+//                                                         (export/downloadable.ts: not other authors' games)
 //   npx vite-node scripts/winExe.ts --html mygame.html --title "My Game" --id mygame
 //   ... --zip                                              a .zip of each program as well
 //   ... --arm64                                            programs for Windows on Arm as well
@@ -22,6 +22,7 @@ import { encodeGame, fillPage } from '../src/export/singlePage';
 import { boxColors, iconPicture } from '../src/export/macApp';
 import { exeName, winExe, winExeZip, type WinAppOptions, type WinArch } from '../src/export/winApp';
 import { GameFiles } from '../src/project/files';
+import { catalogDownloadable } from '../src/export/downloadable';
 
 const web = resolve(__dirname, '..');
 const cd = resolve(web, '../cd');
@@ -58,7 +59,10 @@ async function main(): Promise<void> {
     return;
   }
   const catalog = cdCatalog(cd);
-  const picked = process.argv.includes('--all') ? catalog.filter((e) => e.gam && (e.kind === 'gameware' || e.original)) : ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  const named = ids.map((id) => catalog.find((e) => e.id === id) ?? (() => { throw new Error(`No game "${id}" in the catalog.`); })());
+  for (const e of named) if (!catalogDownloadable(e)) throw new Error(`"${e.id}" is another author's game; it is offered play-only, without downloads.`);
+  // the same games the web app's Download button offers
+  const picked = process.argv.includes('--all') ? catalog.filter(catalogDownloadable) : named;
   if (!picked.length) throw new Error('Name the games (catalog ids), --all, or --html <file>.');
   const template = await buildSinglePageTemplate();
   const where = cdFiles(cd);
