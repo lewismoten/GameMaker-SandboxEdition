@@ -272,7 +272,7 @@ export function demoInPicture(
       if (stopped || !game.gam) return false;
       sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
       screen.append(host, sound);
-      preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop });
+      preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop, tag: false });
       if (!preview) {
         stop();
         return false;

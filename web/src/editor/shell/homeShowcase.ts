@@ -161,7 +161,20 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     if (saves) actions.insertBefore(saves.el, actions.querySelector('.card-more'));
     const dl = catalogDownload(game);
     if (dl) actions.insertBefore(dl, actions.querySelector('.card-more'));
-    clear(notes, game.health?.released ? healthNote(game.health) : null);
+    // an added demo is said in the notes, not over the picture
+    const entry = game.entry;
+    const demoNotes = async (): Promise<string[]> => {
+      if (!entry) return [];
+      const { catalogDemoKind, catalogExtraDemo } = await import('../../media/demoKind');
+      const kind = await catalogDemoKind(entry).catch(() => undefined);
+      if (kind === 'added')
+        return (await catalogExtraDemo(entry).catch(() => undefined))?.inGame
+          ? ['Its demo is the game’s own recording, which its title screen never played; this edition shows it so you can watch it.']
+          : ['The original game has no title demo, so this edition added one in its place. It isn’t part of the game’s files.'];
+      if (kind === 'attract') return ['The original game has no title demo; its preview here just shows the game running.'];
+      return [];
+    };
+    clear(notes, game.health?.released ? healthNote({ ...game.health, notes: demoNotes }) : null);
     void game.hasDemo().then((yes) => {
       if (gen !== generation || !yes) return;
       playBtn.hidden = false;
