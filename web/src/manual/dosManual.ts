@@ -100,9 +100,10 @@ function pages(shots: GameShot[]): BookletPage[] {
       <p>Press <b>POWER</b> on the front of the computer. The BIOS counts memory, DOS starts,
       and you are left at the <code>C:\\&gt;</code> prompt. Click the screen (or the keyboard)
       before typing.</p>
-      <p>The <b>TURBO</b> button switches between full speed and the speed of an older PC.
-      Games made with Game-Maker run at the same pace either way; Turbo off lets you see how
-      a game felt on a slower 286.</p>
+      <p>The <b>TURBO</b> button switches between full speed and the speed of an older PC,
+      about a 286. Programs load and unpack more slowly with Turbo off. Game-Maker games play
+      at nearly the same pace; with Turbo off a busy scrolling screen can stutter a little and
+      the view trails the player, as on a 286.</p>
       <p>The <b>\u2922</b> button on the monitor fills your window with the screen. Press it
       again to return to the desk.</p>`,
     ),
