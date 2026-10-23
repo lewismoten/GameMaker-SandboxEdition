@@ -270,13 +270,13 @@ export const blanket: Monologue = {
     win(28, 2, false);
     m.set(31, 5, 'o').set(31, 9, 'Z');
     m.set(33, 9, 'r').set(35, 9, 'b');
-    m.mon(MON.carl, 30, 6);
+    m.mon(MON.carl, 29, 7);
     m.mon(MON.teddy, 37, 9);
     m.set(40, 9, 'm');
     // the bedroom: the nightstand (a piece of his soul on it), a shelf, the drafty window, the new blanket
     m.set(42, 9, 'n').set(42, 8, 'S');
     m.row(6, 44, 45, 'h').set(45, 5, '&');
-    win(48, 3, true);
+    win(48, 3, false);
     m.mon(BLANKET_MON.newA, 49, 9);
     m.set(53, 9, 'Z').set(54, 9, '$');
     // the bed: the colder side

@@ -3,6 +3,7 @@
 import { buildPalette } from '../../src/art/pal';
 import { BlockBook } from '../../src/common/blocks';
 import { ORIGIN } from '../../src/common/maps';
+import { MON } from '../../src/ids';
 import { home } from '../../src/groups/home';
 import { SOULS } from '../../src/groups/home/blanket';
 import type { Bot } from '../bot';
@@ -28,7 +29,15 @@ function nothingLeft(bot: Bot, w: number, h: number): void {
       const name = n.get(bot.sim.blockAt(x + ORIGIN, y + ORIGIN)) ?? '';
       if (/^(coin|bill|mug)@/.test(name) || /^(soul|sock|ploy|kit|like)/.test(name)) left.push(`${name} at ${x},${y}`);
     }
+  const friends: number[] = [MON.carl, MON.goat, MON.leo];
+  for (const m of bot.sim.w.mm) if (friends.includes(m.monnum)) left.push(`friend ${m.monnum} at ${m.curx - ORIGIN},${m.cury - ORIGIN}`);
   if (left.length) throw new Error(`left behind: ${left.join(', ')}`);
+}
+
+/** Throws unless the friend `id` has had its hello (a retry waits for a better moment). */
+function greeted(bot: Bot, id: number, who: string): void {
+  if (bot.sim.w.mm.some((m) => m.monnum === id)) throw new Error(`missed ${who}`);
+  bot.say(`hello, ${who}`);
 }
 
 export const HOME_ROUTES: Record<string, Route> = {
@@ -65,6 +74,7 @@ export const HOME_ROUTES: Record<string, Route> = {
     });
     await carefully(bot, 'the kitchen nook', 0, async () => {
       await must(bot, bot.walk(32, 'his soul, by the dish towel; Carl'), 'towel');
+      greeted(bot, MON.carl, 'Carl');
       await must(bot, bot.walk(36, 'over the radiator, the dollar'), 'radiator');
       await must(bot, bot.walk(36, 'by Teddy'), 'teddy');
       await must(bot, bot.hop('right', 12, 'right', 38.5), 'over Teddy');
@@ -77,7 +87,11 @@ export const HOME_ROUTES: Record<string, Route> = {
       await must(bot, bot.walk(46.5, 'off the shelf'), 'off');
     });
     await carefully(bot, 'the new blanket', 0, async () => {
-      for (let k = 0; k < 4; k++) await declaim(bot, 'the new blanket');
+      for (const x of [47, 48, 49, 50]) {
+        await declaim(bot, 'the new blanket');
+        await must(bot, bot.walk(x, 'on'), 'on');
+      }
+      await declaim(bot, 'the new blanket');
       await must(bot, bot.walk(55, 'his soul, the coin'), 'soul');
       if (plot(bot) < SOULS) throw new Error(`only ${plot(bot)} pieces of his soul`);
       nothingLeft(bot, 64, 12);
