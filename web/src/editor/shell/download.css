@@ -86,7 +86,3 @@ dialog.modal:has(.download-chooser) {
     grid-column: 1 / -1;
   }
 }
-
-.download-chooser .meta + .meta {
-  margin-top: 6px;
-}

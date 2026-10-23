@@ -75,8 +75,7 @@ const CHOICES: Choice[] = [
  * Every download but DOS still plays on a web engine (a browser, or the one built into the
  * system), so it is not frozen in time the way the DOS files are.
  */
-export const ENGINE_CAVEAT =
-  'Each one plays offline, but all except DOS still run on a web engine (your browser, or the one built into Windows, macOS or Linux), so a future update to it could break or change the game. The DOS download, in DOSBox, is the most future-proof.';
+export const ENGINE_CAVEAT = 'All but DOS still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
 
 /** The visitor's own system, to choose first: a phone or tablet gets the web page. */
 export function visitorSystem(nav: Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'> & { userAgentData?: { platform?: string } } = navigator): DownloadKind {
@@ -165,8 +164,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
         },
       },
       h('fieldset', null, h('legend', null, 'Download it for'), ...rows),
-      h('p', { class: 'meta' }, 'It is built right here in your browser. Saved games and high scores are kept on the computer it is played on.'),
-      h('p', { class: 'meta' }, ENGINE_CAVEAT),
+      h('p', { class: 'meta' }, `Built right here in your browser, it plays offline and saves on that computer. ${ENGINE_CAVEAT}`),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), alt, go),
     );
   });
