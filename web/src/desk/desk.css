@@ -1693,3 +1693,21 @@
   background: #ff4b36;
   box-shadow: 0 0 5px #ff4b36;
 }
+
+/* ---- the picture's glow on the bezel (pc/screenGlow.ts): each edge of the glass casts the
+   color of the picture nearest it onto the plastic, faint by day, plain after dark ---- */
+.desk[data-zoom='false'][data-power='on'] .crt {
+  --glow-a: 0.3;
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.9),
+    inset 0 0 4px #000,
+    0 -5px 14px -3px rgb(var(--glow-t, 0 0 0) / var(--glow-a)),
+    5px 0 14px -3px rgb(var(--glow-r, 0 0 0) / var(--glow-a)),
+    0 5px 14px -3px rgb(var(--glow-b, 0 0 0) / var(--glow-a)),
+    -5px 0 14px -3px rgb(var(--glow-l, 0 0 0) / var(--glow-a));
+  transition: box-shadow 0.25s linear;
+}
+
+.desk.rl-dark[data-zoom='false'][data-power='on'] .crt {
+  --glow-a: 0.75;
+}

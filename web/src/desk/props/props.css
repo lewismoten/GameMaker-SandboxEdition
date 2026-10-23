@@ -707,3 +707,86 @@
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.6));
 }
+
+/* ---- the room after dark and the overhead light's switch (roomLight.ts): one dark layer
+   over the room, with soft holes cut where there is light. Only on the wide stage. */
+.desk-scene > .room-dark,
+.desk-scene > .light-switch {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .desk-scene > .room-dark {
+    display: block;
+    position: absolute;
+    inset: 0 -1400px -200px;
+    z-index: 20;
+    background: #03050e;
+    opacity: 0;
+    transition: opacity 1.2s;
+    pointer-events: none;
+    mask-repeat: no-repeat;
+    mask-composite: intersect;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-composite: source-in;
+  }
+
+  /* a full-screen game or designer has the room to itself */
+  .desk:not([data-zoom='false']) .desk-scene > .room-dark {
+    display: none;
+  }
+
+  /* a cream switch plate on the wall just right of the phone (deskStage.css: 1350, 168) */
+  .desk-scene > .light-switch {
+    display: block;
+    position: absolute;
+    left: 1411px;
+    top: 196px;
+    z-index: 0;
+    width: 26px;
+    height: 42px;
+    border: 1px solid #a69c80;
+    border-radius: 4px;
+    background:
+      radial-gradient(circle at 50% 5px, #8d8570 1.5px, transparent 2px), radial-gradient(circle at 50% calc(100% - 5px), #8d8570 1.5px, transparent 2px),
+      linear-gradient(135deg, #f3eedd, #d6cdb2);
+    box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  /* its target: the plate and a little wall round it */
+  .desk-scene > .light-switch::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+  }
+
+  .desk-scene > .light-switch:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 4px;
+  }
+
+  /* the lever: down is off, up is on */
+  .light-switch .ls-toggle {
+    position: absolute;
+    left: 9px;
+    top: 18px;
+    width: 8px;
+    height: 13px;
+    border-radius: 2px;
+    background: linear-gradient(#f8f4e8, #c9bfa2);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35);
+    transition: top 0.12s;
+  }
+
+  .light-switch[aria-checked='true'] .ls-toggle {
+    top: 11px;
+    box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.35);
+  }
+
+  /* in the dark, a faint glow in the lever to find it by */
+  .desk.rl-dark .light-switch .ls-toggle {
+    background: linear-gradient(#fff6d0, #e8d58a);
+    box-shadow: 0 0 6px 1px rgba(255, 220, 120, 0.55);
+  }
+}
