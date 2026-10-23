@@ -272,8 +272,10 @@ export function desert(book: BlockBook): Level {
     [14, 40, 10],
     [41, 54, 10],
     [55, 62, 10],
-    [63, 66, 9],
-    [67, 69, 8],
+    [63, 64, 9],
+    [65, 66, 7],
+    [67, 68, 5],
+    [69, 69, 8],
     [70, 82, 10],
   ];
   for (const [x0, x1, top] of ground) m.row(top, x0, x1, '=').fill(x0, top + 1, x1 - x0 + 1, 12 - top, '#');
@@ -292,9 +294,9 @@ export function desert(book: BlockBook): Level {
   // the oasis: palms, the pool, the third goat on her ledge, another traveler
   m.col(56, 6, 9, 'P').set(56, 5, 'Y').row(9, 57, 58, 'w').col(61, 6, 9, 'P').set(61, 5, 'Y').set(60, 5, 'D');
   m.row(6, 58, 60, 'l').set(59, 5, '*').set(62, 9, 'n');
-  // dunes and a vulture, the dry brush where tumbleweeds come from
-  m.set(65, 8, 'B').set(68, 7, '*').set(73, 9, 'b').set(71, 6, 'L');
-  m.row(7, 70, 72, 'l');
+  // the great dune: up its steps to the top (the golden lamp), the vulture circling over it;
+  // down to the dry brush where tumbleweeds come from
+  m.set(63, 8, 'B').set(66, 6, '*').set(68, 4, 'L').set(73, 9, 'b');
   // the tailor's tent at the end of the road
   // (a few blocks on past the lamp, so the song's "Thread the needle" plays out on the way in)
   m.text(79, 7, '[|]').text(79, 8, 'tTt').text(79, 9, 'tdt').col(81, 8, 9, 'tentWallR');

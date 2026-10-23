@@ -186,8 +186,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   ]);
   // The third goat from the left, a long way from Bethlehem, pacing her ledge. Harmless.
   set[MON.goat] = mon(anim('goat0', 'goat1', 6), { power: 200, thru: 1 }, pace(3, 1));
-  // Tumbleweeds blow in from the dry brush, leftward, and are gone.
-  set[MON.tumble] = mon(anim('tumble0', 'tumble1', 2), { power: 150, thru: 0, end: 90 }, [corner(0, 0, 3), corner(-30, 0, 3, 4)]);
+  // Tumbleweeds blow in from the dry brush, leftward, and are gone at the foot of the great dune.
+  set[MON.tumble] = mon(anim('tumble0', 'tumble1', 2), { power: 150, thru: 0, end: 22 }, [corner(0, 0, 3), corner(-30, 0, 3, 4)]);
   // A mustard seed of faith, hopping in place: say hello and it is an extra life.
   set[MON.seed] = mon(anim('seed0', 'seed1', 5), { power: 50, thru: 0, newmon: MON.starOff });
   set[MON.scissors] = mon(anim('scissors0', 'scissors1', 2), { power: 150, thru: 1 }, pace(o.snip ?? 4, 2));

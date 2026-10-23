@@ -140,8 +140,14 @@ export async function theDesert(bot: Bot): Promise<void> {
     picked(bot, 59, 5, 'the coin on the ledge');
     picked(bot, 60, 5, 'the dates on the ledge');
   });
-  await carefully(bot, 'the dunes', 12, async () => {
-    await must(bot, bot.walk(69, 'the top of the dune'), 'top');
+  // up the great dune's steps to the golden lamp on top, under the circling vulture, and down
+  await carefully(bot, 'the great dune', 12, async () => {
+    await must(bot, bot.walk(66, 'up the dune steps'), 'steps');
+    picked(bot, 66, 6, 'the coin on the dune');
+    await must(bot, bot.walk(68, 'the top of the dune'), 'top');
+    if (bot.at.y !== 4) throw new Error(`not on top of the dune (${bot.at.y})`);
+    picked(bot, 68, 4, 'the golden lamp on the dune');
+    await must(bot, bot.walk(70, 'down the far side'), 'down');
   });
   if (gold(bot) !== 3 || grace(bot) !== 5) throw new Error(`gold ${gold(bot)}, grace ${grace(bot)} at the tent`);
   await carefully(bot, 'to the tent', 12, async () => {
