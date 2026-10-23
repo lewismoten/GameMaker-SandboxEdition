@@ -96,18 +96,18 @@ export function chez(p: Pixels, x: number, y: number, s: number, wheel = 0): voi
     R(xx, top, 1, 26 - top, xx < 2 || xx > 57 ? c('ink', 0) : red);
   }
   R(0, 25, 60, 2, c('ink', 0));
-  R(2, 8, 54, 1, c('red', 4));
-  // roof and windows
+  R(2, 8, 29, 1, c('red', 4));
+  // roof and the door's window: from the side the only glass (the panel behind the door is
+  // solid red, no quarter window), its front edge leaning with the windshield
   R(4, 0, 30, 6, c('grey', 3));
   R(4, 0, 30, 1, c('grey', 5));
-  R(6, 6, 12, 10, c('sky', 2));
   R(20, 6, 11, 10, c('sky', 3));
   for (let k = 0; k < 10; k++) R(31 + k * 0.4, 6 + k, 1, 1, c('sky', 3));
   R(18, 6, 2, 18, c('ink', 0));
-  R(7, 7, 4, 1, c('sky', 4));
+  R(21, 7, 4, 1, c('sky', 4));
   // pinstripe, door handle, bumper, headlight, charge port at the back
   R(2, 17, 56, 1, c('paper', 4));
-  R(14, 18, 3, 1, c('grey', 2));
+  R(21, 18, 3, 1, c('grey', 2));
   R(56, 21, 5, 4, c('ink', 1));
   R(53, 15, 4, 4, c('paper', 4));
   R(55, 18, 2, 2, c('orange', 3));
