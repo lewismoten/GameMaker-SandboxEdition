@@ -50,6 +50,7 @@ export const LEVELS: LevelDef[] = [
         [43, 2],
       ],
       chargeSpeed: 2,
+      rally: 2,
       fall: 1,
       wave: [60, 4, 3],
     },

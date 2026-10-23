@@ -254,6 +254,8 @@ export function cardFli(i: number, card: CardView, cast: Cast): Uint8Array {
     micro(p, 4, 3, info.numeral, c('gold', 2), 2);
     outlined(p, 160 - textWidth(info.title, big ? 2 : 1) / 2, drop + (big ? 0 : 6), info.title, c('marble', 3), c('pompeii', 0), big ? 2 : 1);
     if (k >= 5) centered(p, 34, info.english, c('ochre', 3));
+    // what to do here, and the key for it
+    if (k >= 18) centered(p, 44, info.goal, c('marble', 3));
     if (k >= 9) centered(p, 178, info.lines[0], c('marble', 3));
     if (k >= 15) centered(p, 189, info.lines[1], c('ochre', 3));
   };

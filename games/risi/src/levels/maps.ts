@@ -261,7 +261,7 @@ export function kitchen(book: BlockBook): Level {
   m.row(5, 22, 27, 'kshelf').set(24, 4, 'armarium').set(26, 4, 'will');
   // the second mouse by its hole; a cupboard down low
   m.set(30, 9, 'hole').mon(MON.mouse, 29, 9).set(34, 9, 'armariumLow');
-  // a shelf of jars, ants on it, a cupboard at its end; milk underneath
+  // a shelf of jars, ants on it, a cupboard at its end
   m.row(7, 36, 39, 'kshelfJars').mon(MON.ant, 36, 6).set(39, 6, 'armarium');
   // the third mouse
   m.set(42, 9, 'hole').mon(MON.mouse, 41, 9);

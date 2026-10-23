@@ -135,6 +135,8 @@ export interface MonsterOptions {
   /** The Gauls' charge: corners (blocks right, rows down) from where they start, and their speed. */
   charge?: [number, number][];
   chargeSpeed?: number;
+  /** Legs the first horde rallies on the spot (shaking spears, a block up and back) before it charges, so it reads before it runs. */
+  rally?: number;
   /** Rows below the tower's top an arrow comes down to. */
   fall?: number;
   /** The second wave: blocks right to its ditch, rally legs (each a block up or down) before it charges, and its speed. */
@@ -179,7 +181,8 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   set[MON.meow] = mon(anim('meow0', 'meow1', 2), { power: 220, thru: 1, towards: 8, end: 28 });
   set[MON.ant] = mon(sting('ant', 3), { power: 150, thru: 1, newmon: NONE }, pace(Math.min(run, 2), 1));
   // II. the battle: the horde charges along the ground to the gate, whatever is in the way
-  const charge = [corner(0, 0, o.chargeSpeed ?? 3), ...(o.charge ?? [[40, 0]]).map(([cx, cy]) => corner(cx, cy, o.chargeSpeed ?? 3, 0))];
+  const shake: March[] = Array.from({ length: o.rally ?? 0 }, (_, k) => corner(0, k % 2 ? 0 : -1, 1, 0));
+  const charge = [corner(0, 0, o.chargeSpeed ?? 3), ...shake, ...(o.charge ?? [[40, 0]]).map(([cx, cy]) => corner(cx, cy, o.chargeSpeed ?? 3, 0))];
   set[MON.gaul] = mon(sting('gaul', 3), { power: 230, thru: 0, end: -1 }, charge);
   set[MON.gaul2] = mon(sting('gaulB', 3), { power: 230, thru: 0, end: -1 }, charge);
   // the second wave: they rally where they stand (shaking their spears, up and down a block),
